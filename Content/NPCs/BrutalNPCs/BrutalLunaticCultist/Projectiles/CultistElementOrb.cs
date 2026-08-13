@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Rendering;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -88,6 +89,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             age++;
             charge = MathHelper.Clamp(charge + 0.04f, 0f, 1f);
 
+            //蓄力/释放包络（状态机各端标记：localAI[1]=膨胀倒计时 localAI[0]=释放闪衰减）
+            if (Projectile.localAI[1] > 0f) {
+                Projectile.localAI[1]--;
+                //蓄力吸入：环缘符文被拉进球体
+                if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
+                    Vector2 start = Projectile.Center + Main.rand.NextVector2CircularEdge(66f, 66f);
+                    PRTLoader.NewParticle<PRT_CultistRune>(start, Vector2.Zero,
+                        CultistPalette.Main(Element), Main.rand.NextFloat(0.5f, 0.9f))
+                        ?.Configure(Projectile.Center, 0.28f, 10);
+                }
+            }
+            if (Projectile.localAI[0] > 0f) {
+                Projectile.localAI[0] = Math.Max(Projectile.localAI[0] - 0.12f, 0f);
+            }
+
             CultistStateIndex bossState = (CultistStateIndex)(int)boss.ai[2];
             switch (bossState) {
                 case CultistStateIndex.ElementWheel:
@@ -126,8 +142,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CultistRenderHelper.DrawOrb(Main.spriteBatch, Projectile.Center, 40f, Element,
-                charge, 0f, Projectile.identity * 0.77f);
+            float seed = Projectile.identity * 0.77f;
+
+            //轨道涂抹：沿轨道后方两枚低亮重影（旋转运动的各向异性签名）
+            NPC boss = Boss;
+            if (boss != null) {
+                CultistStateIndex bossState = (CultistStateIndex)(int)boss.ai[2];
+                if (bossState is CultistStateIndex.ElementWheel or CultistStateIndex.Cataclysm) {
+                    for (int i = 2; i >= 1; i--) {
+                        Vector2 ghost = WheelPos(boss.Center, OrbIndex, age - i * 3.5f);
+                        CultistRenderHelper.DrawOrb(Main.spriteBatch, ghost, 40f - i * 5f, Element,
+                            charge * (0.32f / i), 0f, seed);
+                    }
+                }
+            }
+
+            //蓄力膨胀（开火前10帧涨到1.28倍）→释放帧白闪收缩
+            float swell = Projectile.localAI[1] > 0f ? 1f - Projectile.localAI[1] / 10f : 0f;
+            float flash = Projectile.localAI[0];
+            float radius = 40f * (1f + 0.28f * swell - 0.12f * flash);
+            CultistRenderHelper.DrawOrb(Main.spriteBatch, Projectile.Center, radius, Element,
+                charge, flash, seed);
             return false;
         }
     }

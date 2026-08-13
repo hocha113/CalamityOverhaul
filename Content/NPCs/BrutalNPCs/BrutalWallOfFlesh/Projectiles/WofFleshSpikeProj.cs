@@ -27,6 +27,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
         private const float MaxLength = 300f;
         private const float SpikeWidth = 34f;
 
+        //刺体自锚点伸出300px：给绘制余量防屏缘裁切
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 420;
+
         private ref float Timer => ref Projectile.localAI[0];
         /// <summary>喷发方向：-1朝上(地板刺) +1朝下(顶板刺)</summary>
         private float ThrustSign => Projectile.ai[0] > 0f ? 1f : -1f;

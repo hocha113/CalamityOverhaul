@@ -38,8 +38,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 MoonLordCoreAI.ActivePerformanceCore = -1;
                 return null;
             }
-            MoonLordCoreAI ai = npc.GetOverride<MoonLordCoreAI>();
-            if (ai == null || !ai.InDeathPerformance) {
+            //槽位复用等异常取不到覆写时按演出结束处理（精确索引缺键会抛出）
+            if (!npc.TryGetOverride(out MoonLordCoreAI ai) || !ai.InDeathPerformance) {
                 MoonLordCoreAI.ActivePerformanceCore = -1;
                 return null;
             }

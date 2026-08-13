@@ -115,7 +115,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                     GolemScreenEffects.Shake(6f);
                     GolemScreenEffects.PushShockRing(npc.Bottom, 0.85f, 620f);
                 }
-                GolemBodyAI.Broadcast(GolemBodyAI.GolemAwaken_Text, new Color(255, 190, 90));
             }
 
             Timer++;

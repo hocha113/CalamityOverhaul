@@ -12,7 +12,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projectiles
 {
     /// <summary>
-    /// 霜牢冰枪：凝晶前摇（锁定前跟瞄，末12帧锁死）→急速刺出；
+    /// 霜牢晶枪：材质=凝晶寒冰（晶棱多面/凝结成形/棱面glint+碎屑剥落）；
+    /// 凝晶前摇（锁定前跟瞄，末12帧锁死）→急速刺出（复合加速）；
     /// ai[0]=前摇帧 ai[1]=刺出速度；出生时 velocity 为归一化瞄准方向
     /// </summary>
     internal class CultistIceLance : ModProjectile
@@ -20,6 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         public override string Texture => CWRConstant.VaultPlaceholder2;
 
         private const int AimLockLead = 12;
+        private const float LancePx = 132f;
         private int TelegraphTime => Math.Max((int)Projectile.ai[0], 10);
         private float LaunchSpeed => Projectile.ai[1] > 0f ? Projectile.ai[1] : 19f;
 
@@ -67,17 +69,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
 
                 Projectile.rotation = Projectile.velocity.ToRotation();
 
-                //凝晶闪点
-                if (!VaultUtils.isServer && Main.rand.NextBool(4)) {
-                    PRTLoader.NewParticle<PRT_CultistFrost>(
-                        Projectile.Center + Main.rand.NextVector2Circular(26f, 26f),
-                        Main.rand.NextVector2Circular(0.5f, 0.5f),
-                        CultistPalette.IceBright, Main.rand.NextFloat(0.5f, 0.9f))?.Configure(Main.rand.Next(14, 24));
+                //凝结中的霜雾被拉入晶体（材质签名：从雾中凝出）
+                if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
+                    Vector2 start = Projectile.Center + Main.rand.NextVector2CircularEdge(42f, 42f);
+                    PRTLoader.NewParticle<PRT_CultistRune>(start, Vector2.Zero,
+                        CultistPalette.IceBright, Main.rand.NextFloat(0.4f, 0.7f))
+                        ?.Configure(Projectile.Center, 0.2f, 14);
+                }
+                //凝结咔嗒声（60%处一声脆响）
+                if ((int)t == (int)(TelegraphTime * 0.6f) && !VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item50 with { Volume = 0.45f, Pitch = 0.5f, MaxInstances = 6 }, Projectile.Center);
                 }
                 return;
             }
 
-            //刺出帧：恢复伤害
+            //刺出帧：恢复伤害+出膛演出
             if (!launched) {
                 launched = true;
                 Projectile.damage = (int)Projectile.localAI[1];
@@ -90,16 +96,36 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item28 with { Volume = 0.75f, Pitch = 0.2f, MaxInstances = 6 }, Projectile.Center);
                     CultistRenderHelper.CastBurst(Projectile.Center, dir, CultistElement.Ice, 1f);
+                    //出膛：垂直碎霜环+尾向冰屑反喷（后坐语义）
+                    for (int i = 0; i < 6; i++) {
+                        Vector2 side = dir.RotatedBy(MathHelper.PiOver2 * (i % 2 == 0 ? 1 : -1))
+                            * Main.rand.NextFloat(2f, 5f) - dir * Main.rand.NextFloat(1f, 3f);
+                        PRTLoader.NewParticle<PRT_CultistShard>(Projectile.Center - dir * 20f, side,
+                            CultistPalette.IceBright, Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(16, 26));
+                    }
                 }
+            }
+
+            //复合加速：刺出后持续增速（恒速飞行=失败）
+            float speed = Projectile.velocity.Length();
+            if (speed < LaunchSpeed * 1.7f) {
+                Projectile.velocity *= 1.022f;
             }
 
             Projectile.rotation = Projectile.velocity.ToRotation();
 
-            //航迹霜雾
-            if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
-                PRTLoader.NewParticle<PRT_CultistFrost>(Projectile.Center,
-                    -Projectile.velocity * 0.05f + Main.rand.NextVector2Circular(0.6f, 0.6f),
-                    CultistPalette.IceMain, Main.rand.NextFloat(0.5f, 0.9f))?.Configure(Main.rand.Next(18, 30));
+            //航迹霜雾+冰屑剥落（材质签名：晶体高速摩擦掉屑）
+            if (!VaultUtils.isServer) {
+                if (Main.rand.NextBool(3)) {
+                    PRTLoader.NewParticle<PRT_CultistFrost>(Projectile.Center - Projectile.velocity * 0.6f,
+                        -Projectile.velocity * 0.05f + Main.rand.NextVector2Circular(0.6f, 0.6f),
+                        CultistPalette.IceMain, Main.rand.NextFloat(0.5f, 0.9f))?.Configure(Main.rand.Next(18, 30));
+                }
+                if (Main.rand.NextBool(5)) {
+                    PRTLoader.NewParticle<PRT_CultistShard>(Projectile.Center - Projectile.velocity * 0.3f,
+                        -Projectile.velocity * 0.08f + Main.rand.NextVector2Circular(1.2f, 1.2f),
+                        CultistPalette.IceBright, Main.rand.NextFloat(0.3f, 0.55f))?.Configure(Main.rand.Next(20, 32));
+                }
             }
             Lighting.AddLight(Projectile.Center, CultistPalette.IceMain.ToVector3() * 0.5f);
         }
@@ -109,48 +135,74 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         }
 
         public override void OnKill(int timeLeft) {
-            if (!VaultUtils.isServer) {
-                CultistRenderHelper.ElementImpact(Projectile.Center, CultistElement.Ice, 1f);
-                SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.6f, MaxInstances = 6 }, Projectile.Center);
+            if (VaultUtils.isServer) {
+                return;
+            }
+            Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            //命中：棱片爆散（前向锥形为主）+霜雾团滞留（余韵超弹体寿命）
+            CultistRenderHelper.ElementImpact(Projectile.Center, CultistElement.Ice, 1f);
+            SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.6f, MaxInstances = 6 }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item50 with { Volume = 0.5f, Pitch = -0.2f, MaxInstances = 6 }, Projectile.Center);
+            for (int i = 0; i < 9; i++) {
+                Vector2 vel = dir.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(2.5f, 9f);
+                PRTLoader.NewParticle<PRT_CultistShard>(Projectile.Center, vel,
+                    CultistPalette.IceBright, Main.rand.NextFloat(0.45f, 0.9f))?.Configure(Main.rand.Next(26, 44));
+            }
+            for (int i = 0; i < 5; i++) {
+                PRTLoader.NewParticle<PRT_CultistFrost>(Projectile.Center + Main.rand.NextVector2Circular(18f, 18f),
+                    Main.rand.NextVector2Circular(1.4f, 1.4f) - Vector2.UnitY * 0.3f,
+                    CultistPalette.IceMain, Main.rand.NextFloat(0.7f, 1.2f))?.Configure(Main.rand.Next(36, 56));
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            Texture2D star = CWRAsset.StarGlow01.Value;
-            Texture2D glow = CWRAsset.SoftGlow.Value;
             float t = Projectile.localAI[0];
             float assemble = MathHelper.Clamp(t / TelegraphTime, 0f, 1f);
-
-            CultistRenderHelper.BeginAdditive(sb);
+            float seed = Projectile.identity * 0.77f;
 
             if (!launched) {
-                //凝晶体：菱形渐显+锁定前摇末端收缩闪
+                //瞄准预示线：亮头端藏在晶体下，渐淡端指向玩家（断口两端均软）
                 float lockFlash = t > TelegraphTime - AimLockLead ? (t - (TelegraphTime - AimLockLead)) / AimLockLead : 0f;
-                Color body = Color.Lerp(CultistPalette.IceMain, CultistPalette.IceBright, lockFlash);
-                sb.Draw(star, drawPos, null, body * (0.35f + assemble * 0.6f),
-                    Projectile.rotation, star.Size() / 2f,
-                    new Vector2(1.5f * assemble + lockFlash * 0.4f, 0.24f), SpriteEffects.None, 0f);
-                sb.Draw(glow, drawPos, null, CultistPalette.IceDeep * (0.4f * assemble),
-                    0f, glow.Size() / 2f, 0.5f * assemble, SpriteEffects.None, 0f);
-
-                //瞄准预示线（薄）
+                CultistRenderHelper.BeginAdditive(sb);
                 Texture2D line = CWRAsset.LightShot.Value;
-                sb.Draw(line, drawPos, null, CultistPalette.IceBright * (0.22f * assemble),
+                sb.Draw(line, drawPos, null, CultistPalette.IceBright * (0.16f + 0.14f * assemble + 0.2f * lockFlash),
                     Projectile.rotation, new Vector2(0f, line.Height / 2f),
-                    new Vector2(3.4f * assemble, 0.1f), SpriteEffects.None, 0f);
+                    new Vector2(4.2f * assemble, 0.09f + 0.05f * lockFlash), SpriteEffects.None, 0f);
+                //凝结期的冷雾垫底（外层媒介，≤30%视觉量）
+                Texture2D glow = CWRAsset.SoftGlow.Value;
+                sb.Draw(glow, drawPos, null, CultistPalette.IceDeep * (0.3f * assemble),
+                    0f, glow.Size() / 2f, 0.55f * assemble, SpriteEffects.None, 0f);
+                CultistRenderHelper.EndAdditive(sb);
+
+                //晶体凝结成形（uGrow 驱动噪声撕裂前沿）
+                CultistRenderHelper.DrawCrystal(sb, Projectile.Center, LancePx, Projectile.rotation,
+                    assemble, lockFlash * 0.7f, seed);
             }
             else {
-                //刺出体：速度拉伸晶枪，亮芯+冷缘
-                float stretch = MathHelper.Clamp(Projectile.velocity.Length() * 0.1f, 1.2f, 2.4f);
-                sb.Draw(star, drawPos, null, CultistPalette.IceDeep * 0.8f,
-                    Projectile.rotation, star.Size() / 2f, new Vector2(2f * stretch, 0.4f), SpriteEffects.None, 0f);
-                sb.Draw(star, drawPos, null, CultistPalette.IceBright * 0.95f,
-                    Projectile.rotation, star.Size() / 2f, new Vector2(1.5f * stretch, 0.2f), SpriteEffects.None, 0f);
-            }
+                //速度残影：两枚旧位置的低亮度晶体（旋转涂抹→速度涂抹）
+                for (int i = 2; i >= 1; i--) {
+                    Vector2 ghost = Projectile.Center - Projectile.velocity * (i * 1.7f);
+                    CultistRenderHelper.DrawCrystal(sb, ghost, LancePx * (1f - i * 0.08f), Projectile.rotation,
+                        1f, 0f, seed, 0.3f / i);
+                }
 
-            CultistRenderHelper.EndAdditive(sb);
+                //霜雾丝带尾（亮头藏在晶尾下，渐淡向后）
+                CultistRenderHelper.BeginAdditive(sb);
+                Texture2D ribbon = CWRAsset.LightShotAlt.Value;
+                float speed = Projectile.velocity.Length();
+                float ribbonLen = MathHelper.Clamp(speed * 9f, 90f, 260f);
+                sb.Draw(ribbon, drawPos - Projectile.velocity.SafeNormalize(Vector2.UnitX) * LancePx * 0.32f, null,
+                    CultistPalette.IceMain * 0.5f, Projectile.rotation + MathHelper.Pi,
+                    new Vector2(0f, ribbon.Height / 2f), new Vector2(ribbonLen / ribbon.Width, 0.3f), SpriteEffects.None, 0f);
+                CultistRenderHelper.EndAdditive(sb);
+
+                //晶枪本体：刺出后首4帧过曝
+                float launchFlash = MathHelper.Clamp(1f - (t - TelegraphTime) / 4f, 0f, 1f);
+                CultistRenderHelper.DrawCrystal(sb, Projectile.Center, LancePx, Projectile.rotation,
+                    1f, launchFlash, seed);
+            }
             return false;
         }
     }

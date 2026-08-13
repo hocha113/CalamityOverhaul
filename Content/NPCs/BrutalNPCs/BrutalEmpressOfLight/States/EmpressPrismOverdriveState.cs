@@ -124,13 +124,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 PlayLocal(SoundID.Item163 with { Volume = 0.95f, Pitch = -0.1f }, npc.Center);
             }
 
-            //心跳弹环：每44帧一记12弹小环，两缺口
+            //心跳弹环：每44帧一记16弹小环，两缺口
             int heartbeat = (Timer - MovementOne) % 44;
             if (heartbeat == 43 && !VaultUtils.isClient) {
                 int pulse = (Timer - MovementOne) / 44;
                 float gapAngle = pulse * 1.1f;
-                for (int i = 0; i < 12; i++) {
-                    float angle = MathHelper.TwoPi / 12f * i + pulse * 0.26f;
+                for (int i = 0; i < 16; i++) {
+                    float angle = MathHelper.TwoPi / 16f * i + pulse * 0.26f;
                     if (Math.Abs(MathHelper.WrapAngle(angle - gapAngle)) < 0.5f
                         || Math.Abs(MathHelper.WrapAngle(angle - gapAngle - MathHelper.Pi)) < 0.5f) {
                         continue;
@@ -169,11 +169,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 }
             }
             else if (Timer == FinaleFrame) {
-                //终唱：三层交错弹环+全屏棱彩脉冲
+                //终唱：三层交错弹环+全屏棱彩脉冲+光蝶十六方
                 EmpressCast.Radiance(npc, npc.Center, 680f, 40, 0.55f);
+                EmpressCast.Radiance(npc, npc.Center, 320f, 28, 0.05f);
                 EmpressMotion.Shake(npc.Center, 9.5f, 30);
                 if (!VaultUtils.isServer) {
                     EmpressScreenFX.PushPrismPulse(npc.Center, 1f, 42);
+                    for (int i = 0; i < 16; i++) {
+                        float bh = i / 16f;
+                        PRTLoader.NewParticle<PRT_EmpressButterfly>(npc.Center,
+                            (MathHelper.TwoPi / 16f * i).ToRotationVector2() * Main.rand.NextFloat(3f, 7f),
+                            EmpressMotion.Prism(bh, 0.7f), Main.rand.NextFloat(0.7f, 1.15f))?.Configure(90, bh);
+                    }
                 }
                 PlayLocal(SoundID.Item162 with { Volume = 1f, Pitch = -0.2f }, npc.Center);
                 PlayLocal(SoundID.Item164 with { Volume = 1f }, npc.Center);
@@ -183,8 +190,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     float[] speeds = [4.2f, 5.5f, 6.8f];
                     for (int ring = 0; ring < 3; ring++) {
                         float gapAngle = 0.8f + ring * 0.7f;
-                        for (int i = 0; i < 20; i++) {
-                            float angle = MathHelper.TwoPi / 20f * i + ring * 0.1f;
+                        for (int i = 0; i < 26; i++) {
+                            float angle = MathHelper.TwoPi / 26f * i + ring * 0.1f;
                             if (Math.Abs(MathHelper.WrapAngle(angle - gapAngle)) < 0.36f
                                 || Math.Abs(MathHelper.WrapAngle(angle - gapAngle - MathHelper.Pi)) < 0.36f) {
                                 continue;
@@ -209,13 +216,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             }
         }
 
-        /// <summary>大招版收缩笼：30弹三缺口</summary>
+        /// <summary>大招版收缩笼：40弹三缺口</summary>
         private void CastOverdriveCage(EmpressStateContext context, NPC npc, Vector2 center, int cageIdx) {
             float gapSeed = Main.rand.NextFloat(MathHelper.TwoPi);
             float chirality = cageIdx % 2 == 0 ? 1f : -1f;
             EmpressCast.Radiance(npc, center, 180f, 20, 0.4f + cageIdx * 0.3f);
-            for (int i = 0; i < 30; i++) {
-                float angle = MathHelper.TwoPi / 30f * i;
+            for (int i = 0; i < 40; i++) {
+                float angle = MathHelper.TwoPi / 40f * i;
                 //三个缺口
                 bool inGap = false;
                 for (int g = 0; g < 3; g++) {

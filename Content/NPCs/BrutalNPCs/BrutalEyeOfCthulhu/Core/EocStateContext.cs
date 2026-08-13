@@ -31,6 +31,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core
         public int MaelstromCooldown { get; set; }
         /// <summary>大招至少放过一次</summary>
         public bool MaelstromPlayed { get; set; }
+        /// <summary>白昼狂暴强度 0~1，各端由已同步的昼夜状态确定性推导</summary>
+        public float EnrageRamp { get; set; }
         #endregion
 
         #region 蓄力/前摇视觉

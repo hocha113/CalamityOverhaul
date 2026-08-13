@@ -199,14 +199,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             float speed = Projectile.velocity.Length();
             float phase = 0.82f + 0.18f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 9f + Projectile.whoAmI * 1.3f);
 
-            //残影拖体（速度门控）
+            //残影拖体（速度门控）：逐段连成收锥光带，段间无断口
             if (speed > 4f) {
-                for (int i = 1; i < Projectile.oldPos.Length; i += 2) {
-                    float fade = 1f - i / (float)Projectile.oldPos.Length;
-                    Vector2 ghostPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                    Main.EntitySpriteDraw(glow, ghostPos, null,
-                        MLordDirector.DeepViolet with { A = 0 } * (0.3f * fade), 0f,
-                        glow.Size() / 2f, 0.2f * fade, SpriteEffects.None, 0);
+                Texture2D soft = CWRAsset.SoftGlow?.Value;
+                if (soft != null) {
+                    Vector2 prev = Projectile.Center;
+                    for (int i = 1; i < Projectile.oldPos.Length; i++) {
+                        //trail 缓存未填满前是零向量，画出去会拉一条通向世界原点的巨型光带
+                        if (Projectile.oldPos[i] == Vector2.Zero) {
+                            break;
+                        }
+                        Vector2 cur = Projectile.oldPos[i] + Projectile.Size / 2f;
+                        Vector2 seg = prev - cur;
+                        float segLen = seg.Length();
+                        if (segLen > 0.5f) {
+                            float fade = 1f - i / (float)Projectile.oldPos.Length;
+                            Vector2 mid = (prev + cur) * 0.5f - Main.screenPosition;
+                            //软圆点沿段拉伸+半段重叠 → 连续锥形拖带
+                            Main.EntitySpriteDraw(soft, mid, null,
+                                MLordDirector.DeepViolet with { A = 0 } * (0.34f * fade), seg.ToRotation(),
+                                soft.Size() / 2f, new Vector2(segLen * 1.7f / soft.Width, (26f * fade + 5f) / soft.Height),
+                                SpriteEffects.None, 0);
+                        }
+                        prev = cur;
+                    }
                 }
             }
 

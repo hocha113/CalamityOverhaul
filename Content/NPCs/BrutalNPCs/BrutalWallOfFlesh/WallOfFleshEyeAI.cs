@@ -208,15 +208,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
             Color bloodshot = new Color(255, 40, 30, 0) * (0.75f * glow);
             spriteBatch.Draw(tex, pos, npc.frame, bloodshot, npc.rotation, orig, npc.scale * (1f + glow * 0.05f), effects, 0f);
 
-            //预告瞄准线：正在点射预告时指向锁定方向
+            //预告瞄准线：正在点射预告时指向锁定方向(分段端部包络，根/尾无平切)
             if (telegraphGlow > 0.05f && Main.player[npc.target].Alives()) {
                 Player target = Main.player[npc.target];
                 Vector2 aim = (target.Center + target.velocity * 9f - npc.Center).SafeNormalize(Vector2.UnitX * npc.direction);
-                Texture2D line = CWRAsset.Line.Value;
-                float len = 900f;
-                Color lineColor = new Color(255, 60, 40, 0) * (0.45f * telegraphGlow);
-                spriteBatch.Draw(line, pos, null, lineColor, aim.ToRotation(),
-                    new Vector2(0f, line.Height / 2f), new Vector2(len / line.Width, 1.6f / line.Height), SpriteEffects.None, 0f);
+                Color lineColor = new Color(255, 60, 40, 0) * (0.5f * telegraphGlow);
+                WofMotionFX.DrawAimLine(spriteBatch, npc.Center + new Vector2(0, npc.gfxOffY), aim, 900f, 7f, lineColor);
             }
 
             //扫描充能的汇聚光点

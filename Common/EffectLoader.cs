@@ -13,6 +13,9 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> SkeletronCurseVeil { get; set; }
         public static Asset<Effect> SkeletronGhostArm { get; set; }
         public static Asset<Effect> SkeletronSpinStorm { get; set; }
+        public static Asset<Effect> SkeletronCurseFlame { get; set; }
+        public static Asset<Effect> SkeletronBoneMatter { get; set; }
+        public static Asset<Effect> SkeletronSpecterRibbon { get; set; }
         public static Asset<Effect> GolemSunTelegraph { get; set; }
         public static Asset<Effect> GolemMagmaVein { get; set; }
         public static Asset<Effect> GolemSolarFlare { get; set; }
@@ -20,9 +23,11 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> CultistSigil { get; set; }
         public static Asset<Effect> CultistElementOrb { get; set; }
         public static Asset<Effect> CultistVeil { get; set; }
+        public static Asset<Effect> CultistCrystal { get; set; }
         public static Asset<Effect> FishronStormSky { get; set; }
         public static Asset<Effect> FishronTornado { get; set; }
         public static Asset<Effect> FishronTsunami { get; set; }
+        public static Asset<Effect> FishronTelegraph { get; set; }
         public static Asset<Effect> EmpressLanceBeam { get; set; }
         public static Asset<Effect> EmpressSunbeam { get; set; }
         public static Asset<Effect> EmpressAurora { get; set; }
@@ -292,5 +297,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> ScrapBeamLine { get; set; }
         public static Asset<Effect> ScrapMagnetField { get; set; }
         public static Asset<Effect> ScrapSiegeFilter { get; set; }
+        public static Asset<Effect> ShockRing { get; set; }
     }
 }

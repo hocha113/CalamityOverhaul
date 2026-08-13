@@ -98,9 +98,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
             return vec.SafeNormalize(new Vector2(npc.direction, 0f));
         }
 
-        /// <summary>弹幕伤害（难度感知，走原版公式）</summary>
+        /// <summary>弹幕伤害（难度感知，走原版公式；狂暴期 1.5 倍）</summary>
         protected static int ProjDamage(NPC npc, float normal, float expert) {
-            return npc.GetAttackDamage_ForProjectiles(normal, expert);
+            int damage = npc.GetAttackDamage_ForProjectiles(normal, expert);
+            if (npc.TryGetOverride(out CultistBossAI bossOverride) && bossOverride.Context?.Enraged == true) {
+                damage = (int)(damage * 1.5f);
+            }
+            return damage;
         }
 
         #endregion

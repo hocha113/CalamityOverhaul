@@ -63,7 +63,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             }
 
             targetPlayer = Main.player[Math.Clamp(core.target, 0, Main.maxPlayers - 1)];
-            MoonLordCoreAI coreAI = core.GetOverride<MoonLordCoreAI>();
+            //槽位复用等异常取不到覆写时保持null，下游已有空值回退（精确索引缺键会抛出）
+            core.TryGetOverride(out MoonLordCoreAI coreAI);
             bool hold = coreAI?.Context?.HoldAllParts ?? false;
             int command = (int)MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvEyeCommand);
             float clock = MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvFormationClock);

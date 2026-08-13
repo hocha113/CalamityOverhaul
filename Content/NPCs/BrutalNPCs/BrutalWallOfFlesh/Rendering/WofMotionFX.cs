@@ -1,6 +1,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -111,6 +112,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
             CameraPunch(wall.Center, 5f * power, 14, "WofRoar");
             if (playSound) {
                 SoundEngine.PlaySound(SoundID.NPCDeath10 with { Volume = MathHelper.Clamp(power, 0.4f, 1.2f) }, wall.Center);
+            }
+        }
+
+        /// <summary>
+        /// 软端瞄准线：MaskLaserLine 长轴全亮无端衰减，整条拉伸必然两端平切；
+        /// 分段绘制+端部包络——根部短淡入、末端长消散并收针，读作指向而非实体光杆
+        /// </summary>
+        public static void DrawAimLine(SpriteBatch spriteBatch, Vector2 startWorld, Vector2 dir,
+            float length, float thickness, Color color) {
+            Texture2D tex = CWRAsset.MaskLaserLine.Value;
+            const int Segments = 12;
+            float segLen = length / Segments;
+            Vector2 origin = new(0f, tex.Height / 2f);
+            float rot = dir.ToRotation();
+            for (int i = 0; i < Segments; i++) {
+                float tMid = (i + 0.5f) / Segments;
+                //末端35%消散，根部10%淡入(根端本就埋在眼/口贴图内)
+                float tipT = MathHelper.Clamp((1f - tMid) / 0.35f, 0f, 1f);
+                float env = MathHelper.Clamp(tMid / 0.10f, 0f, 1f) * tipT;
+                if (env <= 0.01f) {
+                    continue;
+                }
+                Vector2 pos = startWorld + dir * (i * segLen) - Main.screenPosition;
+                //端段轻微收针：透明度与厚度一起走
+                Vector2 scale = new(segLen / tex.Width * 1.03f,
+                    thickness * MathHelper.Lerp(0.55f, 1f, tipT) / tex.Height);
+                spriteBatch.Draw(tex, pos, null, color * env, rot, origin, scale, SpriteEffects.None, 0f);
             }
         }
 

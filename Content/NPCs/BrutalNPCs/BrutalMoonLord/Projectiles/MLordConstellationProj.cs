@@ -75,9 +75,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Texture2D soft = CWRAsset.SoftGlow?.Value;
             Texture2D star = CWRAsset.StarTexture_White?.Value;
-            if (star == null) {
+            if (star == null || soft == null) {
                 return false;
             }
 
@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
                     MLordDirector.MoonWhite with { A = 0 } * (0.85f * alpha * nodeReveal * twinkle),
                     Main.GlobalTimeWrappedHourly * 0.8f + i, star.Size() / 2f, 0.16f, SpriteEffects.None, 0);
 
-                //连线
+                //连线：软光沿段拉伸，两端羽化没入节点星
                 if (i < nodeCount - 1) {
                     float segT = MathHelper.Clamp(drawnSegments - i, 0f, 1f);
                     if (segT <= 0f) {
@@ -112,22 +112,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
                     Vector2 dir = next - node;
                     float len = dir.Length() * segT;
                     float rot = dir.ToRotation();
-                    Main.EntitySpriteDraw(pixel, nodeScreen, null,
-                        MLordDirector.Phantasmal with { A = 0 } * (0.5f * alpha),
-                        rot, new Vector2(0f, pixel.Height * 0.5f),
-                        new Vector2(len / pixel.Width, 1.6f / pixel.Height), SpriteEffects.None, 0);
+                    Vector2 midScreen = nodeScreen + rot.ToRotationVector2() * (len * 0.5f);
+                    Main.EntitySpriteDraw(soft, midScreen, null,
+                        MLordDirector.Phantasmal with { A = 0 } * (0.55f * alpha),
+                        rot, soft.Size() / 2f,
+                        new Vector2(len * 1.12f / soft.Width, 7f / soft.Height), SpriteEffects.None, 0);
                 }
 
-                //弹道预示：节点向下的虚线短标
+                //弹道预示：节点向下的软珠虚线（点串本身即语义，无裸切边）
                 float laneAlpha = alpha * nodeReveal * 0.45f;
                 if (laneAlpha > 0.02f) {
                     Vector2 laneDir = GetLaneVelocity(Seed, i).SafeNormalize(Vector2.UnitY);
                     for (int d = 1; d <= 3; d++) {
                         Vector2 dashPos = nodeScreen + laneDir * (d * 46f);
-                        Main.EntitySpriteDraw(pixel, dashPos, null,
+                        Main.EntitySpriteDraw(soft, dashPos, null,
                             MLordDirector.DeepViolet with { A = 0 } * (laneAlpha * (1f - d * 0.22f)),
-                            laneDir.ToRotation(), new Vector2(0f, pixel.Height * 0.5f),
-                            new Vector2(22f / pixel.Width, 2.2f / pixel.Height), SpriteEffects.None, 0);
+                            laneDir.ToRotation(), soft.Size() / 2f,
+                            new Vector2(30f / soft.Width, 8f / soft.Height), SpriteEffects.None, 0);
                     }
                 }
             }

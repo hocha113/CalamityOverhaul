@@ -1,5 +1,8 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States;
 using InnoVault.Cinematics;
+using InnoVault.GameSystem;
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -78,8 +81,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
                 if (npc.type != NPCID.HallowBoss) {
                     continue;
                 }
-                EmpressOfLightAI ai = npc.GetOverride<EmpressOfLightAI>();
-                if (ai != null && ai.InDeathPerformance) {
+                //本扫描无接管前提：配置关闭时原版女皇没有挂载覆写，字典可能缺键甚至为null，探测字典防炸
+                if (!npc.TryGetOverride(out Dictionary<Type, NPCOverride> overrides)
+                    || !overrides.TryGetValue(typeof(EmpressOfLightAI), out NPCOverride raw)
+                    || raw is not EmpressOfLightAI ai) {
+                    continue;
+                }
+                if (ai.InDeathPerformance) {
                     boss = npc;
                     return ai;
                 }

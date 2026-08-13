@@ -2,31 +2,22 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States;
+using InnoVault.PRT;
 using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.Localization;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
 {
     /// <summary>拜月教邪教徒主控：元素仪式与真身博弈</summary>
-    internal class CultistBossAI : CWRNPCOverride, ILocalizedModType
+    internal class CultistBossAI : CWRNPCOverride
     {
         #region Data
         public override int TargetID => NPCID.CultistBoss;
-        public string LocalizationCategory => "BrutalNPCs";
-
-        public static LocalizedText LunaticCultist_IntroText { get; private set; }
-        public static LocalizedText LunaticCultist_RitualBeginText { get; private set; }
-        public static LocalizedText LunaticCultist_RitualCollapseText { get; private set; }
-        public static LocalizedText LunaticCultist_RitualPunishText { get; private set; }
-        public static LocalizedText LunaticCultist_MirrorPunishText { get; private set; }
-        public static LocalizedText LunaticCultist_MirrorRevealText { get; private set; }
-        public static LocalizedText LunaticCultist_DeathText { get; private set; }
 
         /// <summary>life 低于此值进死亡演出</summary>
         internal const int DeathPerformanceTriggerLife = 10;
@@ -40,23 +31,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
         #endregion
 
         #region 初始化
-        public override void SetStaticDefaults() {
-            LunaticCultist_IntroText = this.GetLocalization(nameof(LunaticCultist_IntroText),
-                () => "月下的仪式，不容凡俗窥视。");
-            LunaticCultist_RitualBeginText = this.GetLocalization(nameof(LunaticCultist_RitualBeginText),
-                () => "教徒们围起了召唤法阵——分辨真身，打断吟唱。");
-            LunaticCultist_RitualCollapseText = this.GetLocalization(nameof(LunaticCultist_RitualCollapseText),
-                () => "法阵崩碎了！教徒踉跄着跌出仪式。");
-            LunaticCultist_RitualPunishText = this.GetLocalization(nameof(LunaticCultist_RitualPunishText),
-                () => "错误的献祭喂饱了仪式！");
-            LunaticCultist_MirrorPunishText = this.GetLocalization(nameof(LunaticCultist_MirrorPunishText),
-                () => "打错了——幻影攥起雷光反击。");
-            LunaticCultist_MirrorRevealText = this.GetLocalization(nameof(LunaticCultist_MirrorRevealText),
-                () => "真身被看破，幻术溃散！");
-            LunaticCultist_DeathText = this.GetLocalization(nameof(LunaticCultist_DeathText),
-                () => "仪式早已完成……抬头，看看天空。");
-        }
-
         public override void SetProperty() {
             NPCID.Sets.TrailingMode[npc.type] = 1;
             NPCID.Sets.TrailCacheLength[npc.type] = 12;
@@ -116,6 +90,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             //纯施法者永不接触伤害（公平阀：瞬移不追尊）
             npc.damage = 0;
 
+            UpdateEnrage();
+
             //破绽硬直：防御归零，计时衰减
             if (!VaultUtils.isClient) {
                 if (stateContext.StaggerTimer > 0) {
@@ -142,6 +118,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             ai[3] = stateContext.StaggerTimer;
             ai[4] = stateContext.RitualCenter.X;
             ai[5] = stateContext.RitualCenter.Y;
+            ai[6] = stateContext.Enraged ? 1f : 0f;
         }
 
         private void UpdateStateContext() {
@@ -158,6 +135,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 stateContext.RitualProgress = ai[2];
                 stateContext.StaggerTimer = (int)ai[3];
                 stateContext.RitualCenter = new Vector2(ai[4], ai[5]);
+                stateContext.Enraged = ai[6] >= 1f;
             }
             if (Main.GameUpdateCount % 30 == 0) {
                 stateContext.RefreshClones();
@@ -213,11 +191,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             }
             targetPlayer = Main.player[npc.target];
 
-            bool lostTarget = !targetPlayer.Alives()
-                || npc.Distance(targetPlayer.Center) > 5600f;
-            if (lostTarget && !VaultUtils.isClient
+            if (VaultUtils.isClient) {
+                return;
+            }
+
+            //只有无有效目标（全员死亡/离线）才撤离；拉远脱战一律转狂暴
+            if (!targetPlayer.Alives()
                 && stateMachine?.CurrentState is not CultistDespawnState and not CultistDeathState) {
                 stateMachine?.ChangeState(new CultistDespawnState());
+                return;
+            }
+
+            //狂暴迟滞带：拉出 5600 触发，收回 4600 内解除（防边界抖动）
+            float dist = targetPlayer.Alives() ? npc.Distance(targetPlayer.Center) : 0f;
+            if (!stateContext.Enraged && dist > 5600f) {
+                stateContext.Enraged = true;
+                npc.netUpdate = true;
+            }
+            else if (stateContext.Enraged && dist < 4600f) {
+                stateContext.Enraged = false;
+                npc.netUpdate = true;
             }
         }
 
@@ -236,6 +229,39 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             }
             npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.12f);
             npc.rotation = npc.velocity.X * 0.012f;
+        }
+
+        private bool prevEnraged;
+
+        /// <summary>脱战狂暴：免伤生效+各端转场演出（纯音画，无文本）</summary>
+        private void UpdateEnrage() {
+            //狂暴时置位免伤；撤离/死亡自管不抢写
+            if (stateContext.Enraged
+                && stateMachine?.CurrentState is not CultistDespawnState and not CultistDeathState) {
+                npc.dontTakeDamage = true;
+            }
+
+            if (stateContext.Enraged != prevEnraged) {
+                if (stateContext.Enraged && !VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Roar with { Volume = 1f, Pitch = 0.35f }, npc.Center);
+                    SoundEngine.PlaySound(SoundID.Zombie105 with { Volume = 0.9f, Pitch = 0.3f }, npc.Center);
+                    CultistScreenFX.PushFlash(0.35f, 14);
+                }
+                //解除沿边清除免伤：只在不自管无敌的状态里放行，避免覆盖 Intro/转阶段/死亡锁
+                if (!stateContext.Enraged
+                    && stateMachine?.CurrentState is not CultistDespawnState and not CultistDeathState
+                        and not CultistIntroState and not CultistPhaseTransitionState) {
+                    npc.dontTakeDamage = false;
+                }
+                prevEnraged = stateContext.Enraged;
+            }
+
+            //狂暴常驻音画：绯白怒焰环绕
+            if (stateContext.Enraged && !VaultUtils.isServer && Main.rand.NextBool(2)) {
+                Vector2 pos = npc.Center + Main.rand.NextVector2CircularEdge(46f, 60f);
+                PRTLoader.NewParticle<PRT_CultistEmber>(pos, -Vector2.UnitY * Main.rand.NextFloat(1.5f, 4f),
+                    new Color(255, 90, 70), Main.rand.NextFloat(0.8f, 1.4f))?.Configure(Main.rand.Next(14, 26));
+            }
         }
 
         private void UpdateAmbientVisuals() {
@@ -304,6 +330,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 return false;
             }
 
+            //博弈窗口真身基座阵（与分身同构；饱和主色 vs 分身灰调=可学习破绽的镜面）
+            CultistStateIndex selfState = (CultistStateIndex)(int)npc.ai[2];
+            if (selfState is CultistStateIndex.MirrorBlink or CultistStateIndex.GrandRitual) {
+                float pedestalFlash = stateContext.StaggerTimer > 0 ? 0.6f : 0f;
+                CultistRenderHelper.DrawSigil(spriteBatch, npc.Bottom + new Vector2(0f, 26f), 64f, stateContext.Element,
+                    opacity, Main.GameUpdateCount * 0.03f, pedestalFlash, 0f, 0.7f * opacity);
+            }
+
             Color main = CultistPalette.Main(stateContext.Element);
             Color bright = CultistPalette.Bright(stateContext.Element);
 
@@ -345,6 +379,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                     npc.rotation, origin, npc.scale * 1.07f, flip, 0f);
             }
 
+            //狂暴：绯红怒焰描边（免伤警示，快频呼吸）
+            if (stateContext.Enraged) {
+                float rage = 0.6f + 0.4f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 24f);
+                spriteBatch.Draw(texture, drawPos, frameRec, new Color(255, 60, 50, 0) * (0.55f * rage * opacity),
+                    npc.rotation, origin, npc.scale * 1.09f, flip, 0f);
+                spriteBatch.Draw(texture, drawPos, frameRec, new Color(255, 160, 90, 0) * (0.3f * rage * opacity),
+                    npc.rotation, origin, npc.scale * 1.045f, flip, 0f);
+            }
+
             return false;
         }
         #endregion
@@ -380,8 +423,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             int need = count - context.Clones.Count;
             for (int i = 0; i < need; i++) {
                 Vector2 pos = boss.Center + new Vector2(Main.rand.NextFloat(-120f, 120f), Main.rand.NextFloat(-80f, 20f));
+                //阵位索引错开，护法编队不叠站（镜像/仪式态进场时会再重排）
+                float slot = context.Clones.Count + i;
                 int idx = NPC.NewNPC(boss.GetSource_FromAI(), (int)pos.X, (int)pos.Y,
-                    NPCID.CultistBossClone, 0, ai0: 0f, ai1: Main.rand.Next(1000), ai2: 0f, ai3: boss.whoAmI);
+                    NPCID.CultistBossClone, 0, ai0: slot, ai1: Main.rand.Next(1000), ai2: 0f, ai3: boss.whoAmI);
                 if (idx >= 0 && idx < Main.maxNPCs) {
                     Main.npc[idx].netUpdate = true;
                 }
@@ -435,14 +480,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                     p.Kill();
                 }
             }
-        }
-
-        /// <summary>本地公告（各端读本地语言）</summary>
-        internal static void LocalText(LocalizedText text, Color color) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            VaultUtils.Text(text.Value, color);
         }
 
         /// <summary>服务端瞬移+各端表现由位置同步兜底</summary>

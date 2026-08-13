@@ -7,20 +7,15 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
 {
     /// <summary>残酷史莱姆王主控：液态质量与地形吞没</summary>
-    internal class KingSlimeAI : CWRNPCOverride, ILocalizedModType
+    internal class KingSlimeAI : CWRNPCOverride
     {
         #region 数据
         public override int TargetID => NPCID.KingSlime;
-
-        public string LocalizationCategory => "BrutalNPCs";
-        public static LocalizedText PhaseShift_Text { get; private set; }
-        public static LocalizedText NinjaFreed_Text { get; private set; }
 
         /// <summary>life低于此值进死亡演出</summary>
         internal const int DeathPerformanceTriggerLife = 10;
@@ -32,19 +27,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
         private VaultStateMachine<KingSlimeStateContext> stateMachine;
         private KingSlimeStateContext stateContext;
         private Player targetPlayer;
+        /// <summary>上一帧处于狂暴，用于释放免伤</summary>
+        private bool wasEnraged;
 
         /// <summary>当前死亡演出中的本体索引，运镜玩家侧查询；-1无</summary>
         internal static int ActivePerformanceIndex = -1;
         #endregion
 
         #region 加载与初始化
-        public override void SetStaticDefaults() {
-            PhaseShift_Text = this.GetLocalization(nameof(PhaseShift_Text),
-                () => "王冠离体升空，凝胶沸腾了起来！");
-            NinjaFreed_Text = this.GetLocalization(nameof(NinjaFreed_Text),
-                () => "一道人影从瘫软的凝胶里挣脱出来，头也不回地消失在原野上。");
-        }
-
         public override void SetProperty() {
             InitializeStateContext();
         }
@@ -97,6 +87,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
             stateContext.HideBodySprite = false;
             stateContext.BodyLean = 0f;
             stateContext.IntroCrownDrop = 0f;
+            stateContext.HideCrown = false;
 
             stateMachine?.Update();
 
@@ -106,11 +97,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
                 stateContext.AuraProgress = Math.Max(stateContext.AuraProgress, 0.28f);
             }
 
+            UpdateEnrage();
+
             ApplyPhysics();
             DetectLanding();
             UpdateScaleAndHitbox();
 
-            //接触伤害由状态声明
+            //接触伤害由状态声明(狂暴期已乘增伤)
             npc.damage = (int)(npc.defDamage * stateContext.ContactDamageScale);
 
             //阶段旗镜像到重制ai槽，供王冠与远端读取
@@ -206,6 +199,46 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
             }
         }
 
+        /// <summary>
+        /// 狂暴阀：目标存活但长期够不着(极远/失联超时，环境性脱战)时不撤离，
+        /// 转入狂暴——AI照常，免伤+接触增伤；贴近后解除。服务端判定，ai[4]镜像
+        /// </summary>
+        private void UpdateEnrage() {
+            bool inPerformance = stateMachine?.CurrentState
+                is KingSlimeDeathState or KingSlimeDespawnState or KingSlimeIntroState;
+
+            if (!VaultUtils.isClient) {
+                if (inPerformance || !targetPlayer.Alives()) {
+                    ai[4] = 0f;
+                }
+                else {
+                    float hDist = Math.Abs(targetPlayer.Center.X - npc.Center.X);
+                    float vDist = Math.Abs(targetPlayer.Center.Y - npc.Center.Y);
+                    if (hDist > 3000f || vDist > 2200f || stateContext.LostContactTimer > 540) {
+                        ai[4] = 1f;
+                    }
+                    else if (ai[4] == 1f && hDist < 1100f && vDist < 900f && stateContext.LostContactTimer == 0) {
+                        ai[4] = 0f;
+                    }
+                }
+            }
+
+            bool enraged = ai[4] == 1f;
+            if (enraged) {
+                wasEnraged = true;
+                npc.dontTakeDamage = true;
+                stateContext.ContactDamageScale *= 1.5f;
+                stateContext.AuraMode = 2;
+                stateContext.AuraProgress = 1f;
+            }
+            else if (wasEnraged) {
+                wasEnraged = false;
+                if (!inPerformance) {
+                    npc.dontTakeDamage = false;
+                }
+            }
+        }
+
         /// <summary>life≤阈值切死亡演出，服务端驱动</summary>
         private void CheckDeathPerformanceTrigger() {
             if (VaultUtils.isClient || stateContext == null || stateMachine == null) {
@@ -220,6 +253,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
             if (npc.life <= DeathPerformanceTriggerLife) {
                 stateMachine.ChangeState(new KingSlimeDeathState());
             }
+        }
+
+        #endregion
+
+        #region 王冠接口(供离体弹幕查询/回冲)
+
+        /// <summary>扣冠锚点(世界系头顶)，离体王冠归位砸扣的落点</summary>
+        internal Vector2 GetCrownAnchor() {
+            return stateContext == null ? npc.Top : KingSlimeRenderer.CrownAnchorWorld(npc, stateContext);
+        }
+
+        /// <summary>王冠砸扣命中：本体凝胶受压微陷+扣冠回弹(各端本地表现)</summary>
+        internal void NotifyCrownMounted(float power) {
+            stateContext?.CrownMountImpact(power);
         }
 
         #endregion

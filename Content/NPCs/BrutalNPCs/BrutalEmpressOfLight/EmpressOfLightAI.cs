@@ -1,13 +1,13 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States;
+using InnoVault.PRT;
 using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
-using Terraria.Localization;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
 {
@@ -15,14 +15,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
     /// 光之女皇主控：InnoVault状态机全接管，棱彩弹幕艺术；
     /// npc.ai[0]/ai[1]=姿态通道（原版绘制语义） npc.ai[2]=状态机 npc.ai[3]=形态位（原版语义）
     /// </summary>
-    internal class EmpressOfLightAI : CWRNPCOverride, ILocalizedModType
+    internal class EmpressOfLightAI : CWRNPCOverride
     {
         #region 数据
         public override int TargetID => NPCID.HallowBoss;
-
-        public string LocalizationCategory => "BrutalNPCs";
-        public static LocalizedText EmpressDawn_Text { get; private set; }
-        public static LocalizedText EmpressDusk_Text { get; private set; }
 
         /// <summary>life低于此值进死亡演出</summary>
         internal const int DeathPerformanceTriggerLife = 10;
@@ -35,13 +31,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
         #endregion
 
         #region 加载与初始化
-        public override void SetStaticDefaults() {
-            EmpressDawn_Text = this.GetLocalization(nameof(EmpressDawn_Text),
-                () => "晨光落在她身上——处刑的时刻到了");
-            EmpressDusk_Text = this.GetLocalization(nameof(EmpressDusk_Text),
-                () => "她随最后一缕日光敛去锋芒");
-        }
-
         public override void SetProperty() {
             //oldPos 供原版冲刺彩虹残影使用
             NPCID.Sets.TrailingMode[npc.type] = 1;
@@ -65,6 +54,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
                 int serverStateIndex = (int)npc.ai[2];
                 IVaultState<EmpressStateContext> syncedState = VaultStateRegistry<EmpressStateContext>.Create(serverStateIndex);
                 stateMachine.SetInitialState(syncedState ?? new EmpressIntroState());
+                //中途加入的端上 SetDefaults 留下 Opacity=0/dontTakeDamage=true（原版靠case0自愈，
+                //接管后的战斗状态没人清）：恢复到非入场态时补回战斗常态，防隐形且本地打不动
+                if (syncedState is not null and not EmpressIntroState) {
+                    npc.Opacity = 1f;
+                    npc.dontTakeDamage = false;
+                }
             }
             else {
                 stateMachine.SetInitialState(new EmpressIntroState());
@@ -84,7 +79,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             UpdateStateContext();
             CheckDeathPerformanceTrigger();
 
-            //原版契约：满血白昼升格真昼形态（ai[3]|2），Terraprisma掉落条件与黄昏离场依赖此位
+            //原版契约：满血白昼升格真昼形态（ai[3]|2），Terraprisma掉落条件依赖此位；升格后不清除、不再触发离场
             if (!VaultUtils.isClient && npc.life == npc.lifeMax
                 && NPC.ShouldEmpressBeEnraged() && ((int)npc.ai[3] & 2) == 0) {
                 npc.ai[3] = (int)npc.ai[3] | 2;
@@ -159,7 +154,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             }
         }
 
-        /// <summary>昼夜换形瞬间：播报+棱彩闪（各端本地检测本地播报，文本各语言正确）</summary>
+        /// <summary>昼夜换形瞬间：纯音画传达——破晓棱彩强拍，入夜柔光敛息</summary>
         private void UpdateDayNightForm() {
             bool now = stateContext.DayEmpowered;
             if (now == lastDayEmpowered) {
@@ -167,28 +162,37 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             }
             lastDayEmpowered = now;
 
-            //服务端写形态位（原版ai[3]语义：+2=真昼强化）
-            if (!VaultUtils.isClient) {
-                int flags = (int)npc.ai[3];
-                if (now) {
-                    flags |= 2;
-                }
-                npc.ai[3] = flags;
+            //服务端写形态位（原版ai[3]语义：+2=真昼位）——契约：只有满血白昼才升格，
+            //残血拖到破晓不白给Terraprisma判定；升格后永不清除
+            if (!VaultUtils.isClient && now && npc.life == npc.lifeMax && ((int)npc.ai[3] & 2) == 0) {
+                npc.ai[3] = (int)npc.ai[3] | 2;
                 npc.netUpdate = true;
             }
 
-            //死亡/离场演出中不做播报
+            //死亡/离场演出中不叠加换形演出
             if (stateMachine?.CurrentState is EmpressDeathState or EmpressDespawnState) {
                 return;
             }
 
             if (!VaultUtils.isServer) {
                 if (now) {
-                    VaultUtils.Text(EmpressDawn_Text.Value, new Color(255, 230, 160));
-                    EmpressScreenFX.PushPrismPulse(npc.Center, 0.7f, 40);
+                    //破晓升格：全屏棱彩强拍+双音高叠+身周迸光
+                    EmpressScreenFX.PushPrismPulse(npc.Center, 0.85f, 40);
+                    SoundEngine.PlaySound(SoundID.Item161 with { Volume = 0.9f, Pitch = 0.25f }, npc.Center);
+                    SoundEngine.PlaySound(SoundID.Item163 with { Volume = 0.7f, Pitch = 0.4f }, npc.Center);
+                    for (int i = 0; i < 14; i++) {
+                        float hue = i / 14f;
+                        PRTLoader.NewParticle<PRT_EmpressSpark>(npc.Center,
+                            VaultUtils.RandVr(3f, 10f), EmpressMotion.Prism(hue, 0.72f),
+                            Main.rand.NextFloat(0.8f, 1.3f))?.Configure(20, hue);
+                    }
                 }
                 else {
-                    VaultUtils.Text(EmpressDusk_Text.Value, new Color(190, 160, 255));
+                    //入夜敛锋：柔和的低音与一圈冷色涟漪
+                    EmpressScreenFX.PushPrismPulse(npc.Center, 0.35f, 30);
+                    SoundEngine.PlaySound(SoundID.Item165 with { Volume = 0.75f, Pitch = -0.3f }, npc.Center);
+                    PRTLoader.NewParticle<PRT_EmpressRipple>(npc.Center, Vector2.Zero,
+                        new Color(190, 160, 255), 0.7f)?.Configure(16, 0.72f);
                 }
                 EmpressMotion.Shake(npc.Center, 4f, 20);
             }

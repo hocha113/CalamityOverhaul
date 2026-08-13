@@ -43,6 +43,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             context.ContactDamageScale = 0f;
             context.SkipGravity = true;
             npc.velocity = Vector2.Zero;
+            //加冕帧(含)前头顶无冠——命中帧由天降演出层画在锚点，次帧交棒常驻扣冠层
+            context.HideCrown = Timer <= CrownHitFrame;
 
             //初始化舞台点：目标侧向地面；客户端不自算，跟随服务端同步的本体位置反推
             if (!stageInit) {
@@ -179,7 +181,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                 KingSlimeGelFX.CrownChime(npc.Top, -0.05f, 1.1f);
                 KingSlimeGelFX.GoldGlint(npc.Top + new Vector2(0f, -10f), 20, 7f);
                 KingSlimeGelFX.CameraPunch(npc.Top, 3.5f, 10, "BKSIntroCrown", Vector2.UnitY);
-                context.SquashVelocity -= 0.18f;
+                //加冕砸扣：凝胶受压微陷+扣冠回弹
+                context.CrownMountImpact(0.18f);
             }
 
             //静止亮相：只有呼吸(菜单式威压)

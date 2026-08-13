@@ -35,7 +35,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
         private int nextBeat;
         private int nextWarn;
         private float[] rolledAngles;
-        private bool textShown;
         private bool falterStarted;
 
         public BrainHeartAttackState() {
@@ -48,7 +47,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
             context.Invulnerable = true;
             nextBeat = 0;
             nextWarn = 0;
-            textShown = false;
             falterStarted = false;
             rolledAngles = new float[FlashBeats.Length];
 
@@ -80,10 +78,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
                 context.Invulnerable = true;
                 if (!VaultUtils.isClient) {
                     npc.velocity *= 0.9f;
-                }
-                if (Timer == 16 && !textShown && !VaultUtils.isServer) {
-                    textShown = true;
-                    VaultUtils.Text(BrainOfCthulhuAI.BrainHeartAttack_Text.Value, BrainMotion.BloodDark);
                 }
                 return null;
             }

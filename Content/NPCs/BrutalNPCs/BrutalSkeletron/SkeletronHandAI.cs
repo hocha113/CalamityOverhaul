@@ -90,6 +90,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
                 return false;
             }
 
+            //透明度收口：渐隐只在撤离分支推进，头中断撤离回场后手必须跟着显形
+            if (npc.alpha > 0) {
+                npc.alpha = Math.Max(npc.alpha - 12, 0);
+            }
+
             //服务端每帧广播位置，客户端傀儡呈现
             if (!VaultUtils.isClient) {
                 npc.netUpdate = true;
@@ -208,7 +213,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
 
             //锁链骨节：自头颅侧锚垂到掌根
             Vector2 anchor = head.Center + new Vector2(npc.ai[SkeletronAiSlots.HandSide] * 36f, 14f).RotatedBy(head.rotation);
-            SkeletronRenderHelper.DrawBoneChain(spriteBatch, anchor, npc.Center, tension, alphaFade);
+            SkeletronRenderHelper.DrawBoneChain(spriteBatch, anchor, npc.Center, tension, alphaFade, npc.whoAmI * 0.157f);
 
             Main.instance.LoadNPC(NPCID.SkeletronHand);
             Texture2D tex = TextureAssets.Npc[NPCID.SkeletronHand].Value;
@@ -220,6 +225,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
             //高速砸击拖影
             float speed = npc.velocity.Length();
             float heat = MathHelper.Clamp((speed - 10f) / 22f, 0f, 1f);
+
+            //砸击轨迹绸带（顶点层，压在掌骨之下）
+            SkeletronRenderHelper.DrawMotionRibbon(npc, heat, 26f * npc.scale, 0.55f * alphaFade);
+
             if (heat > 0.05f) {
                 for (int i = 1; i < npc.oldPos.Length; i += 2) {
                     if (npc.oldPos[i] == Vector2.Zero) {
@@ -236,18 +245,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
             //本体
             spriteBatch.Draw(tex, drawPos, rect, drawColor * alphaFade, npc.rotation, orig, npc.scale, fx, 0f);
 
-            //掌心幽火（蓄力/预警读数，预乘批 A=0 加色）
+            //掌心幽火（蓄力/预警读数，冷焰顶点批：焰轴沿掌口法线）
             float palm = handContext?.PalmFlame ?? 0f;
             if (palm > 0.03f) {
-                Texture2D glow = CWRAsset.SoftGlow.Value;
-                Vector2 palmPos = npc.Center + (npc.rotation - MathHelper.PiOver2).ToRotationVector2() * 12f - screenPos;
+                float palmAngle = npc.rotation - MathHelper.PiOver2;
+                Vector2 palmRoot = npc.Center + palmAngle.ToRotationVector2() * 6f;
                 float pulse = 0.8f + 0.2f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 17f + npc.whoAmI);
-                spriteBatch.Draw(glow, palmPos, null,
-                    SkeletronRenderHelper.AsAdditive(SkeletronRenderHelper.GhostCyan) * (0.6f * palm * pulse * alphaFade),
-                    0f, glow.Size() / 2f, 1.1f * palm * pulse, SpriteEffects.None, 0f);
-                spriteBatch.Draw(glow, palmPos, null,
-                    SkeletronRenderHelper.AsAdditive(SkeletronRenderHelper.BonePale) * (0.35f * palm * pulse * alphaFade),
-                    0f, glow.Size() / 2f, 0.55f * palm * pulse, SpriteEffects.None, 0f);
+                SkeletronFlameRender.Push(palmRoot, palmAngle,
+                    new Vector2(30f, 48f * pulse) * palm * npc.scale,
+                    0.45f + 0.5f * palm, npc.whoAmI * 0.23f, 0.15f,
+                    0.9f * palm * alphaFade);
             }
 
             return false;

@@ -59,10 +59,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
         public override void AI() {
             Timer++;
 
-            //出生涟漪，客户端一次
+            //出生波前：涟漪+一撮迸散光屑，弹幕不是凭空出现
             if (Timer == 1f && !VaultUtils.isServer) {
                 PRTLoader.NewParticle<PRT_EmpressRipple>(Projectile.Center, Vector2.Zero,
-                    PrismColor(0.8f), 0.32f)?.Configure(14, Hue);
+                    PrismColor(0.8f), 0.46f)?.Configure(12, Hue);
+                for (int i = 0; i < 2; i++) {
+                    PRTLoader.NewParticle<PRT_EmpressSpark>(Projectile.Center, VaultUtils.RandVr(1.5f, 3.5f),
+                        PrismColor(0.9f), Main.rand.NextFloat(0.5f, 0.8f))?.Configure(10, Hue);
+                }
             }
 
             //模式行为，全部确定性
@@ -131,7 +135,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             }
         }
 
+        //余韵：棱晶碎成三两粒色散光屑+一圈小涟漪，不许瞬灭
+        public override void OnKill(int timeLeft) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            //自然到寿=完整余韵；被整场清弹（转阶段/大招/死亡）时降载防同帧粒子风暴
+            bool forceCleared = timeLeft > 4;
+            if (forceCleared) {
+                if (Main.rand.NextBool(3)) {
+                    PRTLoader.NewParticle<PRT_EmpressSpark>(Projectile.Center, VaultUtils.RandVr(1f, 3f),
+                        PrismColor(0.8f), Main.rand.NextFloat(0.5f, 0.8f))?.Configure(12, Hue);
+                }
+                return;
+            }
+            PRTLoader.NewParticle<PRT_EmpressRipple>(Projectile.Center, Vector2.Zero,
+                PrismColor(0.7f), 0.3f)?.Configure(10, Hue);
+            for (int i = 0; i < 3; i++) {
+                //碎屑各带一点色相偏移：碎裂即色散
+                PRTLoader.NewParticle<PRT_EmpressSpark>(Projectile.Center,
+                    Projectile.velocity * 0.2f + VaultUtils.RandVr(1f, 3.6f),
+                    Main.hslToRgb((Hue + (i - 1) * 0.07f + 1f) % 1f, 1f, 0.66f),
+                    Main.rand.NextFloat(0.5f, 0.85f))?.Configure(14, Hue);
+            }
+        }
+
         public override bool PreDraw(ref Color lightColor) {
+            //材质：折射棱晶——签名行为=光谱拖影/红紫色散副像/定相闪烁的折射十字
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Texture2D star = CWRAsset.StarTexture_White.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
@@ -140,33 +170,46 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             float envelope = SpeedEnvelope();
 
             Color prism = PrismColor(1f) with { A = 0 };
-            Color halo = PrismColor(0.5f) with { A = 0 };
 
-            //残影链（越旧越窄越淡），零值轨迹点跳过
+            //光谱拖影：残影链逐节旋转色相，读作被拉开的光谱而非重影
             for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {
                     continue;
                 }
                 Vector2 old = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
                 float k = 1f - i / (float)Projectile.oldPos.Length;
-                Main.EntitySpriteDraw(glow, old, null, prism * (0.24f * k * Projectile.Opacity * envelope),
-                    0f, glowOrigin, 0.42f * k, SpriteEffects.None, 0);
+                Color spectral = Main.hslToRgb((Hue + i * 0.045f) % 1f, 1f, 0.6f) with { A = 0 };
+                Main.EntitySpriteDraw(star, old, null, spectral * (0.3f * k * Projectile.Opacity * envelope),
+                    Projectile.rotation, starOrigin, new Vector2(0.07f * k, 0.05f * k), SpriteEffects.None, 0);
             }
 
-            //晕层：色相外晕+主晕
+            //小内晕（只衬底，不再是主体）
             float charge = Projectile.localAI[1];
             float chargePulse = charge > 0f ? 1f + 0.22f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * (18f + charge * 26f)) : 1f;
-            Main.EntitySpriteDraw(glow, drawPos, null, halo * (0.65f * Projectile.Opacity), 0f, glowOrigin,
-                0.72f * chargePulse, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(glow, drawPos, null, prism * (0.9f * Projectile.Opacity), 0f, glowOrigin,
-                0.44f * chargePulse, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(glow, drawPos, null, prism * (0.5f * Projectile.Opacity), 0f, glowOrigin,
+                0.4f * chargePulse, SpriteEffects.None, 0);
 
-            //四芒星核：速度拉伸
+            //色散副像：沿速度向前红移、向后紫移各一枚错位星芒——棱晶的折射边
             float speedStretch = 1f + Projectile.velocity.Length() * envelope * 0.05f;
+            Vector2 dir = Projectile.rotation.ToRotationVector2();
+            Color fringeR = Main.hslToRgb((Hue + 0.93f) % 1f, 1f, 0.58f) with { A = 0 };
+            Color fringeV = Main.hslToRgb((Hue + 0.07f) % 1f, 1f, 0.58f) with { A = 0 };
+            Main.EntitySpriteDraw(star, drawPos + dir * 3.5f, null, fringeR * (0.55f * Projectile.Opacity),
+                Projectile.rotation, starOrigin, new Vector2(0.1f * speedStretch, 0.06f), SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(star, drawPos - dir * 3.5f, null, fringeV * (0.55f * Projectile.Opacity),
+                Projectile.rotation, starOrigin, new Vector2(0.1f * speedStretch, 0.06f), SpriteEffects.None, 0);
+
+            //主星芒（本色）+白热芯
             Main.EntitySpriteDraw(star, drawPos, null, prism * Projectile.Opacity, Projectile.rotation,
-                starOrigin, new Vector2(0.1f * speedStretch, 0.075f), SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(star, drawPos, null, Color.White with { A = 0 } * (0.85f * Projectile.Opacity),
-                Projectile.rotation, starOrigin, new Vector2(0.055f * speedStretch, 0.045f), SpriteEffects.None, 0);
+                starOrigin, new Vector2(0.11f * speedStretch, 0.078f), SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(star, drawPos, null, Color.White with { A = 0 } * (0.9f * Projectile.Opacity),
+                Projectile.rotation, starOrigin, new Vector2(0.058f * speedStretch, 0.045f), SpriteEffects.None, 0);
+
+            //折射十字：垂直于飞行向的细闪，identity定相闪烁——内部有晶面在转
+            float glint = 0.55f + 0.45f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 11f + Projectile.identity * 1.71f);
+            Main.EntitySpriteDraw(star, drawPos, null, Color.White with { A = 0 } * (0.65f * glint * Projectile.Opacity),
+                Projectile.rotation + MathHelper.PiOver2, starOrigin,
+                new Vector2(0.065f * glint * chargePulse, 0.022f), SpriteEffects.None, 0);
             return false;
         }
     }

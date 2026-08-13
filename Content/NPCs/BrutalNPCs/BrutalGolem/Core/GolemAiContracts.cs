@@ -1,3 +1,7 @@
+using InnoVault;
+using InnoVault.GameSystem;
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 
@@ -125,6 +129,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
                 }
             }
             return new GolemLimbStatus(head, freeHead, leftFist, rightFist);
+        }
+
+        /// <summary>
+        /// 按继承关系安全取 Override。<see cref="VaultUtils.GetOverride{T}(NPC)"/> 是精确类型索引，
+        /// 用基类查（如 <see cref="GolemFistAI"/>）或 NPC 槽位被复用时会抛 KeyNotFound，此处扫描字典永不抛出
+        /// </summary>
+        public static T FindOverride<T>(NPC npc) where T : NPCOverride {
+            if (npc == null || !npc.active
+                || !npc.TryGetOverride(out Dictionary<Type, NPCOverride> values) || values == null) {
+                return null;
+            }
+            foreach (NPCOverride value in values.Values) {
+                if (value is T match) {
+                    return match;
+                }
+            }
+            return null;
         }
 
         /// <summary>躯干是否有效存活</summary>

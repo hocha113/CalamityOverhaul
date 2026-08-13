@@ -63,7 +63,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D glow = CWRAsset.DiffusionCircle?.Value;
-            if (glow == null) {
+            Texture2D streak = CWRAsset.LightShot?.Value;
+            Texture2D node = CWRAsset.StarGlow01?.Value;
+            if (glow == null || streak == null || node == null) {
                 return false;
             }
             Vector2 screenPos = Projectile.Center - Main.screenPosition;
@@ -74,6 +76,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
                 0f, glow.Size() / 2f, new Vector2(0.62f, 0.2f) * wobble, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(glow, screenPos, null, MLordDirector.Phantasmal with { A = 0 } * (0.85f * env),
                 0f, glow.Size() / 2f, new Vector2(0.4f, 0.13f) * wobble, SpriteEffects.None, 0);
+
+            //星焰舌：确定性排布的窜升光舌（尖端羽化），高度随相位呼吸
+            Vector2 up = new(0f, -1f);
+            for (int i = 0; i < 5; i++) {
+                float hash = MLordConstellationProj.Hash01(Projectile.whoAmI * 13 + 7, i);
+                float x = (i - 2f) * Projectile.width * 0.2f + (hash - 0.5f) * 16f;
+                float lick = 0.55f + 0.45f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * (9f + hash * 5f) + i * 2.3f);
+                float tall = (34f + hash * 40f) * lick * env;
+                Vector2 basePos = screenPos + new Vector2(x, Projectile.height * 0.32f);
+                float sway = 0.28f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f + i * 1.7f + hash * 9f);
+                float rot = (up.RotatedBy(sway)).ToRotation();
+                Main.EntitySpriteDraw(streak, basePos, null,
+                    Color.Lerp(MLordDirector.Phantasmal, MLordDirector.DeepViolet, hash) with { A = 0 } * (0.6f * env * lick),
+                    rot, new Vector2(0f, streak.Height * 0.5f),
+                    new Vector2(tall / streak.Width, (10f + hash * 7f) / streak.Height), SpriteEffects.None, 0);
+            }
+
+            //焰心星核：判定生效期提示（亮=烫）
+            if (env > 0.55f) {
+                float pulse = 0.75f + 0.25f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 15f + Projectile.whoAmI);
+                Main.EntitySpriteDraw(node, screenPos + new Vector2(0f, 4f), null,
+                    MLordDirector.MoonWhite with { A = 0 } * (0.7f * env * pulse),
+                    Main.GlobalTimeWrappedHourly * 2f, node.Size() / 2f, 0.3f * pulse, SpriteEffects.None, 0);
+            }
             return false;
         }
     }

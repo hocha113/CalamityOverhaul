@@ -1,10 +1,21 @@
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Rendering
 {
+    /// <summary>
+    /// 加色批染色工具：InnoVault AdditiveBlend 批源因子是 SourceAlpha，
+    /// A=0 会让整张消失（VFX.md 樱流事故同款）；包络必须写进 A，rgb 保持本色
+    /// </summary>
+    internal static class EmpressPRTDraw
+    {
+        public static Color Tint(Color rgb, float envelope)
+            => rgb with { A = (byte)(255f * MathHelper.Clamp(envelope, 0f, 1f)) };
+    }
+
     /// <summary>棱彩闪尘：速度拉伸的四芒光点，色相沿寿命缓移</summary>
     internal class PRT_EmpressSpark : BasePRT
     {
@@ -49,9 +60,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             float speed = Velocity.Length();
             Vector2 stretch = new(Scale * 0.06f * (1f + speed * 0.14f), Scale * 0.05f);
             float rot = speed > 0.5f ? Velocity.ToRotation() : Rotation;
-            spriteBatch.Draw(tex, drawPos, null, Color with { A = 0 } * Opacity, rot, origin, stretch, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, drawPos, null, EmpressPRTDraw.Tint(Color, Opacity), rot, origin, stretch, SpriteEffects.None, 0);
             //白核
-            spriteBatch.Draw(tex, drawPos, null, Color.White with { A = 0 } * Opacity * 0.55f, rot, origin, stretch * 0.45f, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, drawPos, null, EmpressPRTDraw.Tint(Color.White, Opacity * 0.55f), rot, origin, stretch * 0.45f, SpriteEffects.None, 0);
             return false;
         }
     }
@@ -100,18 +111,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             Vector2 origin = tex.Size() / 2f;
             //纵横比压成瓣形，随摆动翻面
             float flip = 0.55f + 0.45f * (float)Math.Abs(Math.Sin(Time * 0.11f + swayPhase));
-            spriteBatch.Draw(tex, drawPos, null, Color with { A = 0 } * Opacity, Rotation, origin,
+            spriteBatch.Draw(tex, drawPos, null, EmpressPRTDraw.Tint(Color, Opacity), Rotation, origin,
                 new Vector2(Scale * 0.42f, Scale * 0.42f * flip), SpriteEffects.None, 0);
-            spriteBatch.Draw(tex, drawPos, null, Color.White with { A = 0 } * Opacity * 0.35f, Rotation, origin,
+            spriteBatch.Draw(tex, drawPos, null, EmpressPRTDraw.Tint(Color.White, Opacity * 0.35f), Rotation, origin,
                 new Vector2(Scale * 0.2f, Scale * 0.2f * flip), SpriteEffects.None, 0);
             return false;
         }
     }
 
-    /// <summary>折射涟漪环：一圈扩散的细环，位移闪现与图案落点标记用</summary>
+    /// <summary>折射涟漪环：一圈扩散的细环，位移闪现与图案落点标记用；
+    /// 有机热斑环体+薄锐缘色散镶边（Ring01 灰度图已禁用，见 VFX.md）</summary>
     internal class PRT_EmpressRipple : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "Ring01";
+        public override string Texture => CWRConstant.Masking + "DiffusionCircle5";
+        [VaultLoaden(CWRConstant.Masking + "DiffusionCircle4")]
+        internal static Asset<Texture2D> RimRing = null;
         private float hue;
         private float baseScale;
 
@@ -124,6 +138,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             Lifetime = lifeTime;
             hue = hueSeed;
             baseScale = Scale;
+            //环体贴图不对称，随机朝向防连环盖同章
+            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             return this;
         }
 
@@ -145,8 +161,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             Vector2 drawPos = Position - Main.screenPosition;
-            spriteBatch.Draw(tex, drawPos, null, Color with { A = 0 } * Opacity, Rotation,
-                tex.Size() / 2f, Scale, SpriteEffects.None, 0);
+            //可见环半径与旧 Ring01 对齐：Ring01 环带在 0.83R/128px，DiffusionCircle5 在 0.39R/256px
+            float bodyScale = Scale * 1.06f;
+            spriteBatch.Draw(tex, drawPos, null, EmpressPRTDraw.Tint(Color, Opacity), Rotation,
+                tex.Size() / 2f, bodyScale, SpriteEffects.None, 0);
+            //薄锐缘双层色散镶边：外暖内冷，棱彩折射的材质签名
+            if (RimRing?.Value is Texture2D rim) {
+                float rimScale = Scale * 0.72f;
+                Color outerC = Main.hslToRgb((hue + 0.06f) % 1f, 0.85f, 0.66f);
+                Color innerC = Main.hslToRgb((hue + 0.94f) % 1f, 0.85f, 0.66f);
+                spriteBatch.Draw(rim, drawPos, null, EmpressPRTDraw.Tint(outerC, Opacity * 0.55f), 0f,
+                    rim.Size() / 2f, rimScale * 1.07f, SpriteEffects.None, 0);
+                spriteBatch.Draw(rim, drawPos, null, EmpressPRTDraw.Tint(innerC, Opacity * 0.55f), 0f,
+                    rim.Size() / 2f, rimScale * 0.93f, SpriteEffects.None, 0);
+            }
             return false;
         }
     }
@@ -198,9 +226,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             //两瓣错相缩放读作翅膀开合
             float flap = (float)Math.Abs(Math.Sin(Time * 0.23f + flapPhase));
             Vector2 wing = new(baseScale * 0.05f * (0.35f + flap * 0.65f), baseScale * 0.038f);
-            spriteBatch.Draw(tex, drawPos, null, Color with { A = 0 } * Opacity, 0.6f, origin, wing, SpriteEffects.None, 0);
-            spriteBatch.Draw(tex, drawPos, null, Color with { A = 0 } * Opacity, -0.6f, origin, wing, SpriteEffects.FlipHorizontally, 0);
-            spriteBatch.Draw(tex, drawPos, null, Color.White with { A = 0 } * Opacity * 0.6f, 0f, origin, wing * 0.4f, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, drawPos, null, EmpressPRTDraw.Tint(Color, Opacity), 0.6f, origin, wing, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, drawPos, null, EmpressPRTDraw.Tint(Color, Opacity), -0.6f, origin, wing, SpriteEffects.FlipHorizontally, 0);
+            spriteBatch.Draw(tex, drawPos, null, EmpressPRTDraw.Tint(Color.White, Opacity * 0.6f), 0f, origin, wing * 0.4f, SpriteEffects.None, 0);
             return false;
         }
     }

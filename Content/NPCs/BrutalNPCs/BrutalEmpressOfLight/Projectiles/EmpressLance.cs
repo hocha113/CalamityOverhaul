@@ -66,11 +66,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             }
             else {
                 if (Timer == TelegraphTime + 1) {
-                    //一帧内点火，冲出
+                    //一帧内点火，冲出：涟漪+沿飞行向的迸射光屑（点火拍要读得到）
                     Projectile.velocity = Angle.ToRotationVector2() * FlySpeed;
                     if (!VaultUtils.isServer) {
-                        PRTLoader.NewParticle<PRT_EmpressRipple>(Projectile.Center, Vector2.Zero, Color.White, 0.5f)?
+                        PRTLoader.NewParticle<PRT_EmpressRipple>(Projectile.Center, Vector2.Zero, Color.White, 0.62f)?
                             .Configure(14, Hue);
+                        Vector2 fireDir = Angle.ToRotationVector2();
+                        for (int i = 0; i < 5; i++) {
+                            PRTLoader.NewParticle<PRT_EmpressSpark>(Projectile.Center,
+                                fireDir * Main.rand.NextFloat(4f, 11f) + Main.rand.NextVector2Circular(2f, 2f),
+                                Main.hslToRgb(Hue, 1f, 0.72f), Main.rand.NextFloat(0.7f, 1.1f))?.Configure(13, Hue);
+                        }
                     }
                 }
                 Projectile.Opacity = MathHelper.Clamp(Projectile.timeLeft / 12f, 0f, 1f);
@@ -85,6 +91,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             }
 
             Lighting.AddLight(Projectile.Center, Main.hslToRgb(Hue, 1f, 0.55f).ToVector3() * 0.5f * Projectile.Opacity);
+        }
+
+        //余韵：矛体沿杆散成一串色散光屑，不许瞬灭
+        public override void OnKill(int timeLeft) {
+            if (VaultUtils.isServer || !Launched) {
+                return;
+            }
+            Vector2 dir = Angle.ToRotationVector2();
+            //被整场清弹（转阶段/大招/死亡）时降载，防同帧粒子风暴
+            if (timeLeft > 4) {
+                if (Main.rand.NextBool(2)) {
+                    PRTLoader.NewParticle<PRT_EmpressSpark>(Projectile.Center - dir * SpearLength * 0.3f,
+                        VaultUtils.RandVr(1f, 3f), Main.hslToRgb(Hue, 1f, 0.62f),
+                        Main.rand.NextFloat(0.5f, 0.8f))?.Configure(14, Hue);
+                }
+                return;
+            }
+            for (int i = 0; i < 6; i++) {
+                float along = i / 6f;
+                Vector2 pos = Projectile.Center - dir * SpearLength * along;
+                PRTLoader.NewParticle<PRT_EmpressSpark>(pos,
+                    dir * (3f - along * 2.4f) + Main.rand.NextVector2Circular(1.6f, 1.6f),
+                    Main.hslToRgb((Hue + along * 0.12f) % 1f, 1f, 0.62f),
+                    Main.rand.NextFloat(0.5f, 0.9f))?.Configure(16, Hue);
+            }
         }
 
         //预告期无伤，伤害窗与可见冲刺对齐

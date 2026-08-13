@@ -72,11 +72,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                 GolemScreenEffects.Shake(1.2f + ritualT * 2.4f);
             }
 
-            //广播仪式宣言
-            if (Timer == 70) {
-                GolemBodyAI.Broadcast(GolemBodyAI.GolemSunder_Text, new Color(255, 190, 90));
-            }
-
             //换体瞬间：附着头静默退场，分离头原地接棒
             if (Timer == SwapTick) {
                 if (!VaultUtils.isClient) {
@@ -85,7 +80,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                     if (limbs.HeadAlive) {
                         NPC head = Main.npc[limbs.HeadIndex];
                         headPos = head.Center;
-                        head.GetOverride<GolemHeadAI>()?.SilentRemoveOnServer();
+                        GolemFacts.FindOverride<GolemHeadAI>(head)?.SilentRemoveOnServer();
                     }
                     SpawnFreeHeadAt(context, headPos);
                 }

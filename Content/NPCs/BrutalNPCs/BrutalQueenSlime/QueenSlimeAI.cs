@@ -5,22 +5,15 @@ using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
 {
     /// <summary>史莱姆皇后主控：水晶折射与空降芭蕾</summary>
-    internal class QueenSlimeAI : CWRNPCOverride, ILocalizedModType
+    internal class QueenSlimeAI : CWRNPCOverride
     {
         #region 数据
         public override int TargetID => NPCID.QueenSlimeBoss;
-
-        public string LocalizationCategory => "BrutalNPCs";
-        /// <summary>展翅广播</summary>
-        public static LocalizedText QueenSlime_WingsText { get; private set; }
-        /// <summary>圣殿广播</summary>
-        public static LocalizedText QueenSlime_CathedralText { get; private set; }
 
         /// <summary>life低于此值直接进死亡演出</summary>
         internal const int DeathPerformanceTriggerLife = 10;
@@ -36,13 +29,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
         #endregion
 
         #region 加载与初始化
-        public override void SetStaticDefaults() {
-            QueenSlime_WingsText = this.GetLocalization(nameof(QueenSlime_WingsText),
-                () => "史莱姆皇后展开了羽翼！");
-            QueenSlime_CathedralText = this.GetLocalization(nameof(QueenSlime_CathedralText),
-                () => "水晶圣殿正在成形！");
-        }
-
         public override void SetProperty() {
             //oldPos 残影缓存
             NPCID.Sets.TrailingMode[npc.type] = 1;

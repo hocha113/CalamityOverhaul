@@ -55,6 +55,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 }
             }
 
+            //蓄力预告：每拍前10帧，预测顶位球并标记膨胀（各端本地推演同一公式）
+            const int SwellLead = 10;
+            if (!VaultUtils.isServer && Timer >= FireStart - SwellLead && Timer < FinaleMoment - SwellLead
+                && ((int)Timer - FireStart + SwellLead) % FireInterval == 0 && player.Alives()) {
+                float fireAge = Timer + SwellLead - OrbSpawnMoment;
+                int apexOrb = FindApexOrb(npc, player, fireAge);
+                Projectile orb = FindOrbProj(npc, apexOrb);
+                if (orb != null) {
+                    orb.localAI[1] = SwellLead;
+                }
+            }
+
             //顶位开火节拍
             if (Timer >= FireStart && Timer < FinaleMoment && ((int)Timer - FireStart) % FireInterval == 0) {
                 float orbAge = Timer - OrbSpawnMoment;
@@ -65,6 +77,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 if (!VaultUtils.isServer && player.Alives()) {
                     CultistRenderHelper.CastBurst(orbPos, (player.Center - orbPos).SafeNormalize(Vector2.UnitY),
                         (CultistElement)apexOrb, 1.2f);
+                    //释放帧：球体白闪+收缩（蓄力→释放的包络闭环）
+                    Projectile orb = FindOrbProj(npc, apexOrb);
+                    if (orb != null) {
+                        orb.localAI[0] = 1f;
+                        orb.localAI[1] = 0f;
+                    }
                 }
                 if (!VaultUtils.isClient && player.Alives()) {
                     FireFromOrb(context, npc, player, orbPos, (CultistElement)apexOrb, volleyIndex);
@@ -88,6 +106,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 
             if (Timer >= Duration) {
                 return new CultistWeaveState();
+            }
+            return null;
+        }
+
+        /// <summary>按轮位索引找轮盘球弹幕实体（表现层查找，各端本地）</summary>
+        internal static Projectile FindOrbProj(NPC npc, int orbIndex) {
+            foreach (var p in Main.ActiveProjectiles) {
+                if (p.type == ModContent.ProjectileType<CultistElementOrb>()
+                    && (int)p.ai[1] == orbIndex && (int)p.ai[2] == npc.whoAmI) {
+                    return p;
+                }
             }
             return null;
         }

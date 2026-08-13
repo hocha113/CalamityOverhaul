@@ -88,10 +88,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            //材质：光织花瓣——签名行为=扑动翻瓣/危险段白热芯线/远段光谱余辉
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Texture2D star = CWRAsset.StarTexture_White.Value;
             Vector2 half = Projectile.Size / 2f;
             Vector2 glowOrigin = glow.Size() / 2f;
+            Vector2 starOrigin = star.Size() / 2f;
 
             //缎带：近段亮而宽（危险区），远段快速衰减成余辉
             for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
@@ -101,22 +103,53 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
                 }
                 float k = 1f - i / (float)Projectile.oldPos.Length;
                 bool hazard = i < HazardTrailPoints;
-                float alpha = hazard ? 0.62f : 0.16f * k;
-                float scale = hazard ? 0.5f : 0.34f * (0.4f + k);
+                float alpha = hazard ? 0.55f : 0.16f * k;
+                float scale = hazard ? 0.46f : 0.34f * (0.4f + k);
                 Color c = Main.hslToRgb((Hue + i * 0.012f) % 1f, 1f, hazard ? 0.62f : 0.5f) with { A = 0 };
                 Main.EntitySpriteDraw(glow, pos - Main.screenPosition, null, c * (alpha * Projectile.Opacity),
                     0f, glowOrigin, scale, SpriteEffects.None, 0);
+
+                //危险段芯线：段间拉一根白热星条，判定区读作实体缎带而非糊团
+                if (hazard && Projectile.oldPos[i - 1] != Vector2.Zero) {
+                    Vector2 prev = Projectile.oldPos[i - 1] + half;
+                    Vector2 seg = prev - pos;
+                    float segLen = seg.Length();
+                    if (segLen > 0.5f) {
+                        Main.EntitySpriteDraw(star, (pos + prev) * 0.5f - Main.screenPosition, null,
+                            Color.White with { A = 0 } * (0.5f * Projectile.Opacity), seg.ToRotation(),
+                            starOrigin, new Vector2(segLen / star.Width * 1.4f, 0.02f), SpriteEffects.None, 0);
+                    }
+                }
             }
 
-            //亮头：白核瓣形
+            //亮头：扑动的瓣形——横轴随相位翻转（花瓣在光流里打旋）
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Color prism = Main.hslToRgb(Hue, 1f, 0.66f) with { A = 0 };
-            Main.EntitySpriteDraw(glow, drawPos, null, prism * Projectile.Opacity, 0f, glowOrigin, 0.62f, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(star, drawPos, null, prism * Projectile.Opacity, Projectile.rotation,
-                star.Size() / 2f, new Vector2(0.1f, 0.06f), SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(star, drawPos, null, Color.White with { A = 0 } * (0.8f * Projectile.Opacity),
-                Projectile.rotation, star.Size() / 2f, new Vector2(0.05f, 0.038f), SpriteEffects.None, 0);
+            float flutter = (float)Math.Sin(Timer * 0.19f + Projectile.identity * 0.83f);
+            float petalWide = 0.055f + 0.045f * Math.Abs(flutter);
+            Main.EntitySpriteDraw(glow, drawPos, null, prism * (0.85f * Projectile.Opacity), 0f, glowOrigin, 0.5f, SpriteEffects.None, 0);
+            //两枚交叠斜星芒=瓣形轮廓，随flutter开合
+            Main.EntitySpriteDraw(star, drawPos, null, prism * Projectile.Opacity, Projectile.rotation + 0.5f * flutter,
+                starOrigin, new Vector2(0.105f, petalWide), SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(star, drawPos, null, Main.hslToRgb((Hue + 0.06f) % 1f, 1f, 0.6f) with { A = 0 } * (0.7f * Projectile.Opacity),
+                Projectile.rotation - 0.4f * flutter, starOrigin, new Vector2(0.085f, petalWide * 0.8f), SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(star, drawPos, null, Color.White with { A = 0 } * (0.85f * Projectile.Opacity),
+                Projectile.rotation, starOrigin, new Vector2(0.05f, 0.035f), SpriteEffects.None, 0);
             return false;
+        }
+
+        //余韵：瓣散作光尘，向外绽一小圈；被整场清弹时降载
+        public override void OnKill(int timeLeft) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            if (timeLeft > 4 && !Main.rand.NextBool(3)) {
+                return;
+            }
+            for (int i = 0; i < 4; i++) {
+                PRTLoader.NewParticle<PRT_EmpressPetalDust>(Projectile.Center, VaultUtils.RandVr(0.8f, 2.4f),
+                    Main.hslToRgb((Hue + i * 0.05f) % 1f, 0.9f, 0.64f), Main.rand.NextFloat(0.45f, 0.8f))?.Configure(28, Hue);
+            }
         }
     }
 }

@@ -99,7 +99,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
                 }
 
                 if (!VaultUtils.isClient) {
-                    SkeletronHeadAI.Announce(SkeletronHeadAI.Unbound_Text, SkeletronRenderHelper.CurseViolet);
                     //十二向颅火环，留两处缺口
                     int damage = SkullDamage(context);
                     float baseAngle = Main.rand.NextFloat(MathHelper.TwoPi);

@@ -68,6 +68,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Projecti
                 Direction, origin, scaleOuter, SpriteEffects.None, 0f);
             Main.spriteBatch.Draw(line, start, null, new Color(205, 40, 48, 0) * (0.7f * alpha),
                 Direction, origin, scaleInner, SpriteEffects.None, 0f);
+
+            //端点盖帽：贴图长轴无衰减、两端硬切，用血的语言收口——
+            //根部充血鼓包（血管自裂隙里鼓出来），末端血珠（血涌到头凝成珠）
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            Vector2 glowOrigin = glow.Size() * 0.5f;
+            Vector2 tipPos = start + Direction.ToRotationVector2() * Length;
+            float thick = line.Height * scaleOuter.Y;
+            float rootScale = thick * 3f / glow.Width;
+            float tipScale = thick * 2.1f / glow.Width;
+
+            Main.spriteBatch.Draw(glow, start, null, new Color(96, 10, 20, 0) * (0.6f * alpha),
+                0f, glowOrigin, rootScale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(glow, start, null, new Color(205, 40, 48, 0) * (0.55f * alpha),
+                0f, glowOrigin, rootScale * 0.55f, SpriteEffects.None, 0f);
+
+            Main.spriteBatch.Draw(glow, tipPos, null, new Color(96, 10, 20, 0) * (0.5f * alpha),
+                0f, glowOrigin, tipScale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(glow, tipPos, null, new Color(230, 56, 56, 0) * (0.65f * alpha),
+                0f, glowOrigin, tipScale * 0.5f, SpriteEffects.None, 0f);
             return false;
         }
     }

@@ -67,20 +67,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             float fade = (1f - p) * (1f - p);
             float radius = MaxRadius * VaultUtils.EaseOutCubic(p);
 
-            Texture2D ring = CWRAsset.Ring01.Value;
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Texture2D flare = CWRAsset.StarFlare01.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
-            Color prism = Main.hslToRgb(HueSeed, 0.85f, 0.68f) with { A = 0 };
+            Color prismCol = Main.hslToRgb(HueSeed, 0.85f, 0.68f);
+            Color prism = prismCol with { A = 0 };
             Color white = Color.White with { A = 0 };
 
-            //扩散环双层：白环+色环滞后
-            float ringScale = radius * 2f / ring.Width;
-            Main.EntitySpriteDraw(ring, drawPos, null, white * (0.8f * fade), 0f, ring.Size() / 2f,
-                ringScale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(ring, drawPos, null, prism * (0.65f * fade), 0f, ring.Size() / 2f,
-                ringScale * 0.86f, SpriteEffects.None, 0);
+            //扩散环双层：白环+色环滞后（共享冲击环 shader，撕裂缘；可见半径与旧 Ring01 对齐）
+            float ringR = radius * 0.83f;
+            ShockRingDraw.Draw(Main.spriteBatch, Projectile.Center, ringR, ringR * 0.22f,
+                Color.White, Color.White, prismCol, 0.8f * fade,
+                timeSeed: Projectile.whoAmI * 0.37f);
+            ShockRingDraw.Draw(Main.spriteBatch, Projectile.Center, ringR * 0.86f, ringR * 0.2f,
+                Color.White, prismCol, prismCol, 0.65f * fade,
+                innerGlow: 0.3f, timeSeed: Projectile.whoAmI * 0.37f + 5.1f);
 
             //中心闪耀：星芒旋转收缩
             float flareScale = (0.4f + 0.6f * (1f - p)) * MaxRadius / 340f;

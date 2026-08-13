@@ -22,13 +22,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             base.OnEnter(context);
             context.Npc.dontTakeDamage = true;
 
-            //悬浮王冠改作坠地演出
+            //离体王冠改作坠地演出；头顶扣冠(无弹幕)则弹出一顶坠地
             if (!VaultUtils.isClient) {
                 Projectile crown = context.FindCrown();
                 if (crown != null) {
                     crown.ai[1] = BKSCrownProj.ModeDeathDrop;
                     crown.damage = 0;
                     crown.netUpdate = true;
+                }
+                else {
+                    NPC npc = context.Npc;
+                    int idx = Projectile.NewProjectile(npc.GetSource_FromAI(),
+                        KingSlimeRenderer.CrownAnchorWorld(npc, context),
+                        new Vector2(Main.rand.NextFloat(-1.5f, 1.5f), -2.5f),
+                        ModContent.ProjectileType<BKSCrownProj>(), 0, 0f, Main.myPlayer,
+                        npc.whoAmI, BKSCrownProj.ModeDeathDrop);
+                    if (idx >= 0 && idx < Main.maxProjectiles) {
+                        Main.projectile[idx].damage = 0;
+                    }
                 }
             }
         }
@@ -91,7 +102,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         private bool crownDropped;
         private bool poolSpawned;
         private bool ninjaFled;
-        private bool textShown;
 
         public override void OnEnter(KingSlimeStateContext context) {
             base.OnEnter(context);
@@ -105,7 +115,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             crownDropped = false;
             poolSpawned = false;
             ninjaFled = false;
-            textShown = false;
             KingSlimeAI.ActivePerformanceIndex = npc.whoAmI;
 
             SoundEngine.PlaySound(SoundID.NPCDeath1 with { Pitch = -0.7f, Volume = 1.1f }, npc.Center);
@@ -159,7 +168,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                         crown.netUpdate = true;
                     }
                     else {
-                        int idx = Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Top + new Vector2(0f, -6f),
+                        int idx = Projectile.NewProjectile(npc.GetSource_FromAI(),
+                            KingSlimeRenderer.CrownAnchorWorld(npc, context),
                             new Vector2(Main.rand.NextFloat(-2f, 2f), -3.5f),
                             ModContent.ProjectileType<BKSCrownProj>(), 0, 0f, Main.myPlayer,
                             npc.whoAmI, BKSCrownProj.ModeDeathDrop);
@@ -260,12 +270,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                 }
             }
 
-            if (ninjaFled && !textShown && (int)Timer == NinjaEscapeFrame + 12) {
-                textShown = true;
-                if (!VaultUtils.isServer) {
-                    VaultUtils.Text(KingSlimeAI.NinjaFreed_Text.Value, KingSlimeGelFX.GelFoam);
-                }
-            }
         }
 
         /// <summary>幕四：失去核心，彻底融成一滩</summary>
@@ -300,6 +304,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             npc.dontTakeDamage = false;
             npc.life = 0;
             npc.HitEffect();
+            //原版死亡特效会另喷一顶王冠Gore(NPC.cs:83742)，而演出坠冠弹幕尚未淡完——就地移除，保单冠叙事
+            foreach (Gore gore in Main.gore) {
+                if (gore.active && gore.type == GoreID.KingSlimeCrown && gore.position.Distance(npc.Center) < 300f) {
+                    gore.active = false;
+                }
+            }
             npc.checkDead();
             npc.netUpdate = true;
         }

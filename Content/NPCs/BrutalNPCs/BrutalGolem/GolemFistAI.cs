@@ -55,6 +55,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                 npc.buffImmune[i] = true;
             }
 
+            //原版 SetDefaults 出生 alpha=255（NPC.cs:7295），原版由 AI_047 淡入；
+            //接管后必须自己降，否则拳被绘制为全透明（各端本地执行）
+            if (npc.alpha > 0) {
+                npc.alpha = System.Math.Max(npc.alpha - 12, 0);
+            }
+            //躯干沉地淡出时同步隐去：拳锚随躯干下沉，不淡出会留下贴地实体残影
+            if (GolemFacts.GetStateIndex(body) == GolemStateIndex.Despawn) {
+                npc.alpha = System.Math.Max(npc.alpha, body.alpha);
+            }
+
             EnsureStateMachine();
             UpdateContext();
 

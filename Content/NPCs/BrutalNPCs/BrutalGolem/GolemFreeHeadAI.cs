@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                 }
                 case GolemStateIndex.SolarOverdrive: {
                     //绕大招锁点缓慢巡游，见证者姿态
-                    GolemBodyAI ultOverride = body.GetOverride<GolemBodyAI>();
+                    GolemBodyAI ultOverride = GolemFacts.FindOverride<GolemBodyAI>(body);
                     if (ultOverride == null) {
                         LazyOrbit();
                         break;
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                 }
                 case GolemStateIndex.MeteorLeap: {
                     //悬于锁定落点上空，读作标记助手
-                    GolemBodyAI bodyOverride = body.GetOverride<GolemBodyAI>();
+                    GolemBodyAI bodyOverride = GolemFacts.FindOverride<GolemBodyAI>(body);
                     Vector2 mark = bodyOverride != null
                         ? new Vector2(bodyOverride.ai[GolemAiSlots.OverrideLockX], bodyOverride.ai[GolemAiSlots.OverrideLockY])
                         : Vector2.Zero;

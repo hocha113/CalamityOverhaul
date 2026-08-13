@@ -106,7 +106,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 
             if (Timer == 2 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Roar with { Volume = 1.2f, Pitch = -0.35f }, npc.Center);
-                VaultUtils.Text(EyeOfCthulhuAI.Maelstrom_Text.Value, EocMotion.BrightBlood);
             }
 
             //吞尽在场血雾：雾团被拽向眼球并加速枯竭

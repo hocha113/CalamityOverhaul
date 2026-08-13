@@ -37,6 +37,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
         //方向存velocity只作数据槽，不做位移积分
         public override bool ShouldUpdatePosition() => false;
 
+        //本体在舌尖而链体一路铺回口器：给足绘制余量防边缘裁切
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 1400;
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 30;
             Projectile.hostile = true;
@@ -138,15 +141,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             //回收期舌体松弛下垂
             float slack = stage == 1 ? 18f : 5f;
 
+            //根部内收：首节埋进口器中央暗喉，链头平切不暴露在口面上
+            float rootInset = MathHelper.Min(28f, reach * 0.25f);
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
+                //根段锥收：舌体自喉内细出渐粗，读作自口内长出
+                float rootT = MathHelper.Clamp(t * 4f, 0f, 1f);
                 float sag = (float)Math.Sin(t * MathHelper.Pi) * slack
                     + (float)Math.Sin(t * 9f + Main.GlobalTimeWrappedHourly * 14f) * 2.5f;
-                Vector2 pos = mouth + lashDir * (t * reach) + perp * sag;
+                Vector2 pos = mouth + lashDir * (rootInset + t * (reach - rootInset)) + perp * sag;
                 Color light = Lighting.GetColor((int)pos.X / 16, (int)(pos.Y / 16f));
-                //舌肉着色偏红
-                Color tint = Color.Lerp(light, WofMotionFX.BloodMid, 0.4f);
-                spriteBatchDraw(chainTex, pos, tint, chainRot);
+                //舌肉着色偏红，根段偏暗(喉内)
+                Color tint = Color.Lerp(light, WofMotionFX.BloodMid, 0.4f) * MathHelper.Lerp(0.55f, 1f, rootT);
+                spriteBatchDraw(chainTex, pos, tint, chainRot, MathHelper.Lerp(0.65f, 1f, rootT));
             }
 
             //舌尖肉锤：暗核+湿高光
@@ -160,9 +167,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             return false;
         }
 
-        private static void spriteBatchDraw(Texture2D tex, Vector2 worldPos, Color color, float rotation) {
+        private static void spriteBatchDraw(Texture2D tex, Vector2 worldPos, Color color, float rotation, float scale = 1f) {
             Main.EntitySpriteDraw(tex, worldPos - Main.screenPosition, null, color, rotation,
-                tex.Size() / 2f, 1f, SpriteEffects.None, 0);
+                tex.Size() / 2f, scale, SpriteEffects.None, 0);
         }
     }
 }

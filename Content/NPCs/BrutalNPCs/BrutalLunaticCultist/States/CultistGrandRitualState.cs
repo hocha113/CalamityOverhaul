@@ -94,7 +94,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             }
 
             if ((int)Timer == 6 && !VaultUtils.isServer) {
-                CultistBossAI.LocalText(CultistBossAI.LunaticCultist_RitualBeginText, CultistPalette.Main(context.Element));
                 SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 1f, Pitch = -0.2f }, npc.Center);
             }
 

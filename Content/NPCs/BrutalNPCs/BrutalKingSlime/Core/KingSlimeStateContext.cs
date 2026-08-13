@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
         #endregion
 
         #region 战斗状态
-        /// <summary>低于60%血，王冠离体阶段</summary>
+        /// <summary>低于60%血(阶段2)；王冠仍默认扣顶，仅招式期离体</summary>
         public bool IsPhase2 { get; set; }
         /// <summary>低于30%血</summary>
         public bool IsLowHP { get; set; }
@@ -67,6 +67,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
         public bool NinjaGone { get; set; }
         /// <summary>入场王冠天降进度，(0,1]=坠落中，其余不绘制；每帧声明</summary>
         public float IntroCrownDrop { get; set; }
+        /// <summary>本帧隐藏头顶扣冠(入场未加冕等)；每帧声明</summary>
+        public bool HideCrown { get; set; }
+        /// <summary>扣冠纵向滞后偏移(px，正=下沉)，弹簧跟随本体起落做次级运动</summary>
+        public float CrownLag { get; set; }
+        public float CrownLagVel { get; set; }
         #endregion
 
         #region 落地检测（主控每帧维护）
@@ -91,6 +96,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
             BodyOpacity = 1f;
             ScaleMul = 1f;
             BodyLean = 0f;
+            HideCrown = false;
+        }
+
+        /// <summary>王冠砸扣头顶：凝胶受压微陷+扣冠回弹</summary>
+        public void CrownMountImpact(float power) {
+            ImpactSquash(power);
+            CrownLagVel += 7f + power * 14f;
         }
 
         /// <summary>落地/受压冲击：压扁弹簧冲量</summary>
@@ -104,7 +116,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
             SquashVelocity += power;
         }
 
-        /// <summary>找到本体的常驻悬浮王冠(P2)，无则null</summary>
+        /// <summary>找到本体的离体王冠弹幕(仅招式三拍内存在)，无则null</summary>
         public Projectile FindCrown() {
             int type = ModContent.ProjectileType<BKSCrownProj>();
             foreach (var proj in Main.ActiveProjectiles) {

@@ -1,4 +1,4 @@
-#if DEBUG
+﻿#if DEBUG
 using CalamityOverhaul.Content.HackTimes.Chips;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
@@ -16,9 +16,9 @@ namespace CalamityOverhaul.Content.HackTimes
     internal class HackDebugTools : ModSystem
     {
         public override void PostUpdateInput() {
-            if (Pressed(Keys.D1)) {
-                ResetHackChipDebug(Main.LocalPlayer);
-            }
+            //if (Pressed(Keys.D1)) {
+            //    ResetHackChipDebug(Main.LocalPlayer);
+            //}
         }
 
         //边沿触发：只认"上帧抬起、本帧按下"，避免按住连发

@@ -1,4 +1,6 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Rendering;
+using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 
@@ -58,13 +60,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             }
 
             if (Timer == castA) {
-                CastPetalRing(context, npc, 14, 0.0105f, 3.3f, 0f);
+                CastPetalRing(context, npc, 18, 0.0105f, 3.3f, 0f);
                 PlayLocal(SoundID.Item163 with { Volume = 1f }, npc.Center);
                 EmpressMotion.Shake(npc.Center, 3f, 10);
             }
             if (Timer == castB) {
                 //反旋second层，错半距——双层螺旋园
-                CastPetalRing(context, npc, 14, -0.0105f, 3.7f, MathHelper.TwoPi / 28f);
+                CastPetalRing(context, npc, 18, -0.0105f, 3.7f, MathHelper.TwoPi / 36f);
                 PlayLocal(SoundID.Item163 with { Volume = 0.9f, Pitch = 0.18f }, npc.Center);
             }
             if (Timer == castC) {
@@ -74,13 +76,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             }
             if (Timer == castD) {
                 //终拍紧凑快旋小环
-                CastPetalRing(context, npc, 10, 0.017f, 4.4f, 0f);
+                CastPetalRing(context, npc, 12, 0.017f, 4.4f, 0f);
                 PlayLocal(SoundID.Item163 with { Volume = 0.8f, Pitch = 0.35f }, npc.Center);
             }
 
             EmpressMotion.AmbientGlow(npc, context.DayFormBlend);
-            //绽放期光雨加密
-            EmpressMotion.AmbientGlow(npc, context.DayFormBlend);
+            //绽放期光雨：花园上空飘落的瓣屑（本地装饰）
+            if (!VaultUtils.isServer && Timer > castA && Main.rand.NextBool(3)) {
+                Vector2 rainPos = npc.Center + new Vector2(Main.rand.NextFloat(-900f, 900f), Main.rand.NextFloat(-500f, -200f));
+                PRTLoader.NewParticle<PRT_EmpressPetalDust>(rainPos,
+                    new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(0.5f, 1.3f)),
+                    Main.hslToRgb(Main.rand.NextFloat(), 0.85f, 0.64f), Main.rand.NextFloat(0.4f, 0.75f))?.Configure(40, 0.5f);
+            }
 
             if (Timer >= TotalTime) {
                 return new EmpressConnectorState();

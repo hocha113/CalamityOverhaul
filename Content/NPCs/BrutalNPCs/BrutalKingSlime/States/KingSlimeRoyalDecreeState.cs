@@ -40,6 +40,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             anchorInit = false;
             SoundEngine.PlaySound(SoundID.Roar with { Pitch = -0.5f, Volume = 1.1f }, context.Npc.Center);
             KingSlimeGelFX.CrownChime(context.Npc.Top, 0.6f, 1.1f);
+
+            //王冠脱冕升空赴指挥位(升空模式见宿主处于审判态自动转指挥)
+            if (!VaultUtils.isClient && context.FindCrown() == null) {
+                NPC npc = context.Npc;
+                Projectile.NewProjectile(npc.GetSource_FromAI(),
+                    KingSlimeRenderer.CrownAnchorWorld(npc, context),
+                    Vector2.Zero, ModContent.ProjectileType<BKSCrownProj>(),
+                    (int)(npc.defDamage * 0.55f), 0f, Main.myPlayer,
+                    npc.whoAmI, BKSCrownProj.ModeLaunch);
+            }
         }
 
         public override IKingSlimeState OnUpdate(KingSlimeStateContext context) {
@@ -177,6 +187,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
 
             if (!finaleFired) {
                 finaleFired = true;
+                //王冠终槌即令归位：俯冲砸扣回脱力的王头上，作为大招收束拍
+                if (!VaultUtils.isClient) {
+                    Projectile crown = context.FindCrown();
+                    if (crown != null && (int)crown.ai[1] == BKSCrownProj.ModeDecree) {
+                        crown.ai[1] = BKSCrownProj.ModeReturn;
+                        crown.netUpdate = true;
+                    }
+                }
                 //塔身砸落
                 context.SquashVelocity -= 0.5f;
                 KingSlimeGelFX.ThudSound(npc.Bottom, 24f);

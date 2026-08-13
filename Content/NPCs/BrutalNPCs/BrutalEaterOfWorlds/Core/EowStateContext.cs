@@ -41,8 +41,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Core
         public int AttackPhaseIndex { get; set; }
         /// <summary>死亡演出完成，CheckDead 放行真死</summary>
         public bool DeathPerformanceFinished { get; set; }
-        /// <summary>脱离腐化区累计帧，过阈撤离</summary>
+        /// <summary>脱离腐化区累计帧，过宽限进入狂暴</summary>
         public int OutOfZoneTimer { get; set; }
+        /// <summary>出环境狂暴强度 0~1，权威端推导，随同步槽下发</summary>
+        public float EnrageRamp { get; set; }
         #endregion
 
         #region 分裂协同（状态每帧声明，主控 UpdateSplitSteering 消费）

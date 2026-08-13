@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
 {
     /// <summary>
-    /// 阶段转换演出(60%血)：僵止→鼓胀金光内透→王冠脱冕升空(自此常驻悬浮)→凝胶环爆→沸腾亮相
+    /// 阶段转换演出(60%血)：僵止→鼓胀金光内透→王冠脱冕升空绕场归位砸扣→凝胶环爆→沸腾亮相
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)KingSlimeStateIndex.PhaseShift, typeof(KingSlimeStateContext))]
     internal class KingSlimePhaseShiftState : KingSlimeStateBase
@@ -25,15 +25,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         private const int TotalTime = 186;
         #endregion
 
-        private bool crownLifted;
         private bool burstFired;
-        private bool textShown;
 
         public override void OnEnter(KingSlimeStateContext context) {
             base.OnEnter(context);
-            crownLifted = false;
             burstFired = false;
-            textShown = false;
         }
 
         public override IKingSlimeState OnUpdate(KingSlimeStateContext context) {
@@ -75,7 +71,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                 //脱冕：先立旗再放冠，王冠回归判据依赖此旗
                 context.Phase2Started = true;
                 if (!VaultUtils.isClient && context.FindCrown() == null) {
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Top + new Vector2(0f, -8f),
+                    Projectile.NewProjectile(npc.GetSource_FromAI(),
+                        KingSlimeRenderer.CrownAnchorWorld(npc, context),
                         Vector2.Zero, ModContent.ProjectileType<BKSCrownProj>(),
                         (int)(npc.defDamage * 0.55f), 0f, Main.myPlayer,
                         npc.whoAmI, BKSCrownProj.ModeLaunch);
@@ -107,13 +104,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                     }
                 }
             }
-            else if (Timer > BurstFrame && !textShown) {
-                textShown = true;
-                if (!VaultUtils.isServer) {
-                    VaultUtils.Text(KingSlimeAI.PhaseShift_Text.Value, KingSlimeGelFX.CrownGold);
-                }
-            }
-
             //脱冕到环爆之间保持蓄力光环(王冠升空的悬念拍)
             if (Timer > SwellEnd && Timer <= BurstFrame) {
                 context.AuraMode = 1;

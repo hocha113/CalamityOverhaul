@@ -116,7 +116,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 MoonlordDeathDrama.RequestLight(0.4f, npc.Center);
                 MLordScreenEffects.PushStarRing(npc.Center, 1f, 860f, 34);
                 MLordScreenFX.Punch(npc.Center, 9f, 22);
-                VaultUtils.Text(MoonLordCoreAI.MoonLordIntro_Text.Value, MLordDirector.DeepViolet);
             }
             if (Timer > RoarTick && Timer < RoarTick + 22 && !VaultUtils.isServer) {
                 MoonlordDeathDrama.RequestLight(0.4f * (1f - (Timer - RoarTick) / 22f), npc.Center);

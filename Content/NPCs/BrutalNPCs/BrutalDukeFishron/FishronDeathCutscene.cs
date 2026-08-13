@@ -67,8 +67,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
                 DukeFishronAI.ActivePerformanceBoss = -1;
                 return null;
             }
-            DukeFishronAI ai = npc.GetOverride<DukeFishronAI>();
-            if (ai == null || !ai.InDeathPerformance) {
+            //槽位复用等异常取不到覆写时按演出结束处理（精确索引缺键会抛出）
+            if (!npc.TryGetOverride(out DukeFishronAI ai) || !ai.InDeathPerformance) {
                 DukeFishronAI.ActivePerformanceBoss = -1;
                 return null;
             }

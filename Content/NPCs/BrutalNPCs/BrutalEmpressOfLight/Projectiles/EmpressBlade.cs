@@ -128,6 +128,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             Lighting.AddLight(Projectile.Center, Main.hslToRgb(Hue, 1f, 0.55f).ToVector3() * 0.4f * Projectile.Opacity);
         }
 
+        //余韵：剑体碎成沿刃的光屑扇
+        public override void OnKill(int timeLeft) {
+            if (VaultUtils.isServer || !Launched) {
+                return;
+            }
+            Vector2 dir = Projectile.rotation.ToRotationVector2();
+            //被整场清弹（转阶段/大招/死亡）时降载，防同帧粒子风暴
+            if (timeLeft > 4) {
+                if (Main.rand.NextBool(2)) {
+                    PRTLoader.NewParticle<PRT_EmpressSpark>(Projectile.Center - dir * BladeLength * 0.4f,
+                        VaultUtils.RandVr(1f, 3f), Main.hslToRgb(Hue, 1f, 0.64f),
+                        Main.rand.NextFloat(0.45f, 0.75f))?.Configure(12, Hue);
+                }
+                return;
+            }
+            for (int i = 0; i < 5; i++) {
+                float along = i / 5f;
+                PRTLoader.NewParticle<PRT_EmpressSpark>(Projectile.Center - dir * BladeLength * along,
+                    dir * 2.5f + Main.rand.NextVector2Circular(1.8f, 1.8f),
+                    Main.hslToRgb((Hue + along * 0.1f) % 1f, 1f, 0.64f),
+                    Main.rand.NextFloat(0.45f, 0.8f))?.Configure(14, Hue);
+            }
+        }
+
         //悬停期不结算伤害
         public override bool? CanDamage() => Launched ? null : false;
 
@@ -198,10 +222,32 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
 
             Vector2 dir = Projectile.rotation.ToRotationVector2();
             Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
-            Vector2 tip = Projectile.Center + dir * 28f;
-            Vector2 tail = Projectile.Center - dir * BladeLength;
             float halfW = 30f;
 
+            //挥迹残刃：飞行中沿轨迹补两枚衰减的残刃（挥砍的光谱涂抹）
+            if (Launched) {
+                for (int g = 2; g <= 4; g += 2) {
+                    if (g >= Projectile.oldPos.Length || Projectile.oldPos[g] == Vector2.Zero) {
+                        continue;
+                    }
+                    Vector2 ghostCenter = Projectile.oldPos[g] + Projectile.Size / 2f;
+                    float ghostAlpha = (1f - g / 6f) * 0.34f;
+                    DrawBladeQuad(device, effect, tech, ghostCenter, dir, perp, halfW * (1f - g * 0.06f),
+                        Projectile.Opacity * ghostAlpha);
+                }
+            }
+
+            DrawBladeQuad(device, effect, tech, Projectile.Center, dir, perp, halfW, Projectile.Opacity);
+
+            device.BlendState = origBlend;
+            device.RasterizerState = origRaster;
+        }
+
+        private void DrawBladeQuad(GraphicsDevice device, Effect effect, EffectTechnique tech,
+            Vector2 center, Vector2 dir, Vector2 perp, float halfW, float opacity) {
+            effect.Parameters["uOpacity"]?.SetValue(opacity);
+            Vector2 tip = center + dir * 28f;
+            Vector2 tail = center - dir * BladeLength;
             VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
             verts[0] = new VertexPositionColorTexture((tail + perp * halfW).ToVector3(), Color.White, new Vector2(0f, 0f));
             verts[1] = new VertexPositionColorTexture((tail - perp * halfW).ToVector3(), Color.White, new Vector2(0f, 1f));
@@ -211,9 +257,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
                 pass.Apply();
                 device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);
             }
-
-            device.BlendState = origBlend;
-            device.RasterizerState = origRaster;
         }
     }
 }

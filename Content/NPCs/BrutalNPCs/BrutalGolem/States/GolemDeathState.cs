@@ -163,9 +163,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                 SoundEngine.PlaySound(SoundID.WormDig with { Pitch = -0.5f, Volume = 0.7f }, npc.Center);
                 GolemScreenEffects.Shake(2f);
             }
-            if (Timer == 20) {
-                GolemBodyAI.Broadcast(GolemBodyAI.GolemCrumble_Text, new Color(230, 170, 90));
-            }
             if (Timer % 7 == 0) {
                 Dust dust = Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Stone, 0f, 1f, 60, default, 1.1f);
                 dust.velocity *= 0.3f;

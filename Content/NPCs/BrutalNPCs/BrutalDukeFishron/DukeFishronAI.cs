@@ -8,26 +8,19 @@ using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
 {
     /// <summary>猪龙鱼公爵主控：风暴海啸领域，InnoVault 状态机驱动，ai[2] 同步</summary>
-    internal class DukeFishronAI : CWRNPCOverride, ICWRLoader, ILocalizedModType
+    internal class DukeFishronAI : CWRNPCOverride, ICWRLoader
     {
         #region 数据
         public override int TargetID => NPCID.DukeFishron;
 
-        public string LocalizationCategory => "BrutalNPCs";
-        public static LocalizedText DukeFishron_Frenzy_Text { get; private set; }
-        public static LocalizedText DukeFishron_Nightfall_Text { get; private set; }
-        public static LocalizedText DukeFishron_Maelstrom_Text { get; private set; }
-        public static LocalizedText DukeFishron_Despawn_Text { get; private set; }
-
         /// <summary>life 低于此值进死亡演出</summary>
         internal const int DeathPerformanceTriggerLife = 10;
-        /// <summary>目标失效判定距离，镜像原版 5600</summary>
+        /// <summary>换目标搜索距离，镜像原版 5600（超距不脱战，交远距回归阀处理）</summary>
         private const float MaxFindDistance = 5600f;
 
         /// <summary>死亡演出中的本体 whoAmI，无则 -1（运镜观察用）</summary>
@@ -38,23 +31,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
         private Player targetPlayer;
         /// <summary>远距滞留帧，达上限触发回归瞬移</summary>
         private int farTimer;
+        /// <summary>激怒持续帧计数：滞回消抖，防岸线横跳时免伤抖动</summary>
+        private int enrageArmTimer;
 
         /// <summary>是否处于死亡演出（运镜观察用）</summary>
         internal bool InDeathPerformance => stateMachine?.CurrentState is FishronDeathState;
         #endregion
 
         #region 加载与初始化
-        public override void SetStaticDefaults() {
-            DukeFishron_Frenzy_Text = this.GetLocalization(nameof(DukeFishron_Frenzy_Text),
-                () => "海在他身后立起来了。");
-            DukeFishron_Nightfall_Text = this.GetLocalization(nameof(DukeFishron_Nightfall_Text),
-                () => "天黑了。雨里有什么在动。");
-            DukeFishron_Maelstrom_Text = this.GetLocalization(nameof(DukeFishron_Maelstrom_Text),
-                () => "他把整场风暴攥进了鳍里。");
-            DukeFishron_Despawn_Text = this.GetLocalization(nameof(DukeFishron_Despawn_Text),
-                () => "浪退了，海面合拢。");
-        }
-
         void ICWRLoader.UnLoadData() {
             FishronTideTrailProj.UnloadTrails();
             FishronStormSky.Clear();
@@ -120,6 +104,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
 
             stateMachine?.Update();
 
+            //环境激怒免伤：写在状态机之后压过各状态的显形解锁；
+            //死亡演出除外——演出末帧需要放行击杀，激怒不得把他锁在 1 血
+            if (stateContext.IsLandEnraged && stateMachine?.CurrentState is not FishronDeathState) {
+                npc.dontTakeDamage = true;
+            }
+
             //常规悬停物理（状态可跳过）
             if (!stateContext.SkipDefaultMovement) {
                 UpdateMovement();
@@ -151,11 +141,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             stateContext.Target = targetPlayer;
             stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
 
-            //离开海域/太空的原版式激怒
+            //离开海域/太空的原版式激怒（判定式镜像原版）
             Player p = targetPlayer;
-            stateContext.IsLandEnraged = p != null
+            bool enrageRaw = p != null
                 && (p.position.Y < 800f || p.position.Y > Main.worldSurface * 16.0
                 || (p.position.X > 6400f && p.position.X < Main.maxTilesX * 16 - 6400));
+            //滞回消抖：连续 30 帧在陆才落激怒，一沾海立即解除——
+            //岸线上反复进出不会出现免伤/增伤逐帧抖动，方向永远偏袒玩家
+            enrageArmTimer = enrageRaw ? enrageArmTimer + 1 : 0;
+            stateContext.IsLandEnraged = enrageArmTimer >= 30;
 
             //阶段旗标兜底：仅客户端且留滞回余量——正常对局由转阶段演出（ai[2] 同步）落旗，
             //这里只回填中途加入/漏拍的客户端视觉基准；服务端旗标只能由演出状态设置，
@@ -171,7 +165,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             }
         }
 
-        /// <summary>阶段基线数值：接触伤害与防御</summary>
+        /// <summary>阶段基线数值：接触伤害与防御；环境激怒 = AI 不变 + 免伤 + 增伤</summary>
         private void UpdatePhaseStats() {
             float dmgMult = stateContext.Phase == 3 ? 1.1f : stateContext.Phase == 2 ? 1.2f : 1f;
             int defense = stateContext.Phase == 3 ? 0 : stateContext.Phase == 2
@@ -207,7 +201,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             }
             targetPlayer = Main.player[npc.target];
 
-            if (!targetPlayer.Alives() || Vector2.Distance(targetPlayer.Center, npc.Center) > MaxFindDistance) {
+            //只有全场无有效目标才脱战：距离/环境因素一律不离场（激怒与远距回归阀兜底）
+            if (!targetPlayer.Alives()) {
                 if (!VaultUtils.isClient && stateMachine?.CurrentState is not FishronDespawnState and not FishronDeathState) {
                     stateMachine?.ChangeState(new FishronDespawnState());
                 }

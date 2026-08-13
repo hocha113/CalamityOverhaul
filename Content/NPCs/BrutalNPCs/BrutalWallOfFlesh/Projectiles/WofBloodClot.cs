@@ -84,9 +84,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             float wobble = 1f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 42f + Projectile.whoAmI * 2.4f);
             Vector2 scale = new Vector2(0.42f * (1f + stretch * 1.4f), 0.4f * (1f - stretch * 0.3f) * wobble);
 
-            //底衬幽光(under-layer)
-            Main.EntitySpriteDraw(glow, screenPos, null, WofMotionFX.BloodDark with { A = 0 } * 0.5f, 0f,
-                glow.Size() / 2f, 0.8f, SpriteEffects.None, 0);
+            //底衬幽光(under-layer)：只作湿气衬底，直径压到本体级别防光球感
+            Main.EntitySpriteDraw(glow, screenPos, null, WofMotionFX.BloodDark with { A = 0 } * 0.32f, 0f,
+                glow.Size() / 2f, 0.45f, SpriteEffects.None, 0);
             //暗肉核
             Main.EntitySpriteDraw(drop, screenPos, null, WofMotionFX.BloodDark, Projectile.rotation + MathHelper.PiOver2,
                 drop.Size() / 2f, scale, SpriteEffects.None, 0);

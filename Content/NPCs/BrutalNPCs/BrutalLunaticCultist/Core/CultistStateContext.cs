@@ -88,6 +88,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         public int AttackCycleIndex { get; set; }
         /// <summary>当前元素，服务端在 Weave 轮转并写 Ai[0]</summary>
         public CultistElement Element { get; set; }
+        /// <summary>脱战狂暴（拉远/环境原因）：免伤+增伤，AI 不变；镜像 Ai[6]</summary>
+        public bool Enraged { get; set; }
         #endregion
 
         #region 博弈数据（服务端权威）

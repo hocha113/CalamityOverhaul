@@ -114,7 +114,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
                 return;
             }
 
-            const float CurtainDepth = 560f;
+            //深侧退场包络在 560px 归零，噪声撕裂最深 -37px——quad 多给 90px 让包络先于边界闭合
+            const float CurtainDepth = 650f;
             float top = WofWallField.Top - 320f;
             float bottom = WofWallField.Bottom + 320f;
             float xMin = facingDir > 0 ? edgeX - CurtainDepth : edgeX - 90f;

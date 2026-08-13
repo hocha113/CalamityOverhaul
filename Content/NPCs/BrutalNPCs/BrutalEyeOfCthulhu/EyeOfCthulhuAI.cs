@@ -1,27 +1,20 @@
+using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States;
 using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
-using Terraria.Localization;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
 {
     /// <summary>克苏鲁之眼 AI 主控：血雾迷场与假动作冲刺，状态机驱动</summary>
-    internal class EyeOfCthulhuAI : CWRNPCOverride, ICWRLoader, ILocalizedModType
+    internal class EyeOfCthulhuAI : CWRNPCOverride, ICWRLoader
     {
         #region 数据
-        public string LocalizationCategory => "BrutalNPCs";
-
         public override int TargetID => NPCID.EyeofCthulhu;
-
-        /// <summary>撕皮转阶段播报</summary>
-        public static LocalizedText SkinTear_Text { get; private set; }
-        /// <summary>血漩涡大招播报</summary>
-        public static LocalizedText Maelstrom_Text { get; private set; }
 
         /// <summary>life 低于此值进死亡演出</summary>
         internal const int DeathPerformanceTriggerLife = 12;
@@ -37,13 +30,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
         void ICWRLoader.UnLoadData() {
             EocRenderHelper.Unload();
             EocScreenFX.Clear();
-        }
-
-        public override void SetStaticDefaults() {
-            SkinTear_Text = this.GetLocalization(nameof(SkinTear_Text),
-                () => "表皮裂开了——里面是一直没合上的口器。");
-            Maelstrom_Text = this.GetLocalization(nameof(Maelstrom_Text),
-                () => "血雾在收拢——漩涡要睁眼了。");
         }
 
         public override bool? CanCWROverride() {
@@ -91,7 +77,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
 
             FindTarget();
             UpdateStateContext();
-            CheckDayFlee();
+            UpdateDayEnrage();
             CheckPhaseTransition();
             CheckDeathPerformanceTrigger();
 
@@ -100,11 +86,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
 
             stateMachine?.Update();
 
+            //白昼狂暴增伤：状态按窗口开出的接触伤统一放大
+            if (stateContext.EnrageRamp > 0f && npc.damage > 0) {
+                npc.damage = (int)(npc.damage * (1f + 0.8f * stateContext.EnrageRamp));
+            }
+
             UpdateFogStepValve();
             UpdateAnimation();
             ForcedNetUpdating(npc);
 
-            Lighting.AddLight(npc.Center, EocMotion.Arterial.ToVector3() * 0.6f);
+            Lighting.AddLight(npc.Center, EocMotion.Arterial.ToVector3() * (0.6f + stateContext.EnrageRamp * 0.8f));
 
             if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
                 npc.netUpdate = true;
@@ -147,15 +138,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
             stateContext.DecayVisuals();
         }
 
-        /// <summary>白昼撤离（Boss Rush 除外）</summary>
-        private void CheckDayFlee() {
-            if (VaultUtils.isClient || !Main.dayTime || CWRRef.GetBossRushActive()) {
-                return;
+        /// <summary>
+        /// 白昼狂暴（Boss Rush 除外）：不再撤离，AI 不变，只提高造成伤害并大幅免伤；
+        /// 昼夜为原版已同步的全局状态，各端确定性推导同一强度，不需要新增网络包
+        /// </summary>
+        private void UpdateDayEnrage() {
+            bool active = Main.dayTime && !CWRRef.GetBossRushActive()
+                && stateMachine?.CurrentState is not EocIntroState and not EocDespawnState and not EocDeathState;
+            float old = stateContext.EnrageRamp;
+            stateContext.EnrageRamp = MathHelper.Clamp(old + (active ? 1f / 60f : -1f / 60f), 0f, 1f);
+
+            //入怒瞬间的音画提示（各非服务端本地演出）
+            if (old <= 0f && stateContext.EnrageRamp > 0f && !VaultUtils.isServer) {
+                SoundEngine.PlaySound(SoundID.ForceRoarPitched with { Volume = 1.1f, Pitch = -0.4f }, npc.Center);
+                EocScreenFX.PushVignette(0.4f);
+                EocMotion.Shake(npc.Center, 8f, 16);
             }
-            if (stateMachine?.CurrentState is EocDespawnState or EocDeathState) {
-                return;
+        }
+
+        /// <summary>白昼狂暴免伤（无尽伤害类不受抑制）</summary>
+        public override bool? On_ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers) {
+            if (stateContext != null && stateContext.EnrageRamp > 0f
+                && modifiers.DamageType != EndlessDamageClass.Instance) {
+                modifiers.FinalDamage *= 1f - 0.9f * stateContext.EnrageRamp;
             }
-            stateMachine?.ChangeState(new EocDespawnState());
+            return null;
         }
 
         /// <summary>血量过阈切撕皮演出，权威端</summary>
@@ -264,6 +271,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (stateContext == null) {
                 return true;
+            }
+
+            //白昼狂暴体色：血光灼热
+            if (stateContext.EnrageRamp > 0.01f) {
+                drawColor = Color.Lerp(drawColor, new Color(255, 70, 40), stateContext.EnrageRamp * 0.45f);
             }
 
             //预警车道先铺底

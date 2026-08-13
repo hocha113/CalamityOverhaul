@@ -114,13 +114,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
             return null;
         }
 
-        /// <summary>绽光帧：广播+光暴+羽压轻波</summary>
+        /// <summary>绽光帧：光暴+羽压轻波</summary>
         private static void DoRadianceBurst(QueenSlimeStateContext context) {
             NPC npc = context.Npc;
 
             if (!VaultUtils.isServer) {
-                VaultUtils.Text(QueenSlimeAI.QueenSlime_WingsText.Value, QueenMotion.RoyalPink);
-
                 QueenMotion.CrystalShatterBurst(npc.Center, 1.5f, 0.15f, playSound: false);
                 for (int i = 0; i < 3; i++) {
                     PRTLoader.NewParticle<PRT_DWave>(npc.Center, Vector2.Zero,

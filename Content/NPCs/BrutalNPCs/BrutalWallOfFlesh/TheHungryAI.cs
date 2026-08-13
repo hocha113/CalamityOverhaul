@@ -273,6 +273,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
                 return;
             }
             Vector2 dir = delta / dist;
+            //链端内收：首尾链节埋进两端肉体内，不在肉身表面暴露平切链头
+            float inset = MathHelper.Min(14f, dist * 0.12f);
+            from += dir * inset;
+            dist -= inset * 2f;
             Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
             int segments = (int)(dist / segLen) + 1;
             float rotation = dir.ToRotation() + MathHelper.PiOver2;
@@ -282,6 +286,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
 
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
+                //端点锥收：靠近两端的链节缩小变暗，读作没入肉体
+                float endT = MathHelper.Clamp(Math.Min(t, 1f - t) * 5f, 0f, 1f);
                 //垂坠：中段下垂+轻微呼吸摆
                 float sag = (float)Math.Sin(t * MathHelper.Pi) *
                     (10f + 5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2.3f + from.X * 0.01f));
@@ -290,8 +296,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
                 if (!armed) {
                     light *= 0.75f;
                 }
+                light *= MathHelper.Lerp(0.6f, 1f, endT);
                 spriteBatch.Draw(chainTex, pos - Main.screenPosition, null, light, rotation,
-                    chainTex.Size() / 2f, 1f, SpriteEffects.None, 0f);
+                    chainTex.Size() / 2f, MathHelper.Lerp(0.7f, 1f, endT), SpriteEffects.None, 0f);
 
                 if (armed) {
                     //通电血光

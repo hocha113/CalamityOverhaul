@@ -77,7 +77,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 return false;
             }
 
-            CultistBossAI bossOverride = boss.GetOverride<CultistBossAI>();
+            //槽位复用等异常取不到覆写时保持null，下游已有空值回退（精确索引缺键会抛出）
+            boss.TryGetOverride(out CultistBossAI bossOverride);
             CultistStateIndex bossState = (CultistStateIndex)(int)boss.ai[2];
             CultistElement element = bossOverride?.Context?.Element ?? CultistElement.Fire;
 
@@ -124,7 +125,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                     break;
                 case CultistStateIndex.GrandRitual: {
                     //围绕仪式圆心的确定性环列（各端同算）
-                    CultistBossAI bossOverride = boss.GetOverride<CultistBossAI>();
+                    boss.TryGetOverride(out CultistBossAI bossOverride);
                     Vector2 ritualCenter = bossOverride?.Context != null
                         ? bossOverride.Context.RitualCenter
                         : boss.Center;
@@ -185,10 +186,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                     bossOverride.Context.RitualPunishRequests++;
                 }
                 if (!VaultUtils.isServer) {
-                    //献祭闪红+播报
+                    //错误献祭的音画反馈：绯红吞噬爆+贪婪吸食音；仪式圈侧另有进度跳闪（见 CultistRitualCircle）
                     CultistRenderHelper.ElementImpact(npc.Center, element, 1.4f);
                     SoundEngine.PlaySound(SoundID.Zombie89 with { Volume = 0.9f, Pitch = 0.5f, MaxInstances = 3 }, npc.Center);
-                    CultistBossAI.LocalText(CultistBossAI.LunaticCultist_RitualPunishText, CultistPalette.FireMain);
+                    SoundEngine.PlaySound(SoundID.NPCDeath13 with { Volume = 0.6f, Pitch = -0.5f, MaxInstances = 3 }, npc.Center);
+                    //被吸走的红符文流向仪式圆心（能量被夺的方向性叙事）
+                    var bossCtx = bossOverride?.Context;
+                    Vector2 sink = bossCtx != null && bossCtx.RitualCenter != Vector2.Zero ? bossCtx.RitualCenter : boss.Center;
+                    for (int i = 0; i < 8; i++) {
+                        PRTLoader.NewParticle<PRT_CultistRune>(npc.Center + Main.rand.NextVector2Circular(30f, 44f),
+                            Main.rand.NextVector2Circular(2f, 2f), new Color(255, 70, 60),
+                            Main.rand.NextFloat(0.8f, 1.4f))?.Configure(sink, 0.09f, 40);
+                    }
                 }
             }
             if (npc.localAI[0] > 0f) {
@@ -217,8 +226,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                         CultistPalette.ThunderBright, 0.9f)?.Configure(npc.Center, 0.3f, 14);
                 }
                 if (npc.ai[2] == PunishTelegraph - 1f && !VaultUtils.isServer) {
+                    //打错的音画反馈：蓄雷嗡鸣+嘲弄笑声（警告环见 Draw）
                     SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { Volume = 0.8f, Pitch = -0.2f }, npc.Center);
-                    CultistBossAI.LocalText(CultistBossAI.LunaticCultist_MirrorPunishText, CultistPalette.ThunderMain);
+                    SoundEngine.PlaySound(SoundID.Zombie90 with { Volume = 0.8f, Pitch = 0.45f, MaxInstances = 3 }, npc.Center);
                 }
 
                 npc.ai[2]--;
@@ -272,7 +282,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             NPC boss = GetBoss();
             CultistElement element = CultistElement.Fire;
-            var ctx = boss?.GetOverride<CultistBossAI>()?.Context;
+            //?.只兜得住boss为null，字典缺键仍会抛出，改用Try形态
+            var ctx = boss != null && boss.TryGetOverride(out CultistBossAI bossOverride)
+                ? bossOverride.Context : null;
             if (ctx != null) {
                 element = ctx.Element;
             }
@@ -290,6 +302,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             }
 
             Color main = CultistPalette.CloneMain(element);
+
+            //博弈窗口的舞台基座阵（"这排人可以打"的仪式化提示；去饱和色=破绽线索的延伸）
+            CultistStateIndex bossState = boss != null ? (CultistStateIndex)(int)boss.ai[2] : CultistStateIndex.Weave;
+            if (bossState is CultistStateIndex.MirrorBlink or CultistStateIndex.GrandRitual) {
+                float punishT = npc.ai[2] > 0f ? 1f - npc.ai[2] / PunishTelegraph : 0f;
+                CultistRenderHelper.DrawSigil(spriteBatch, npc.Bottom + new Vector2(0f, 26f), 64f, element,
+                    opacity, Main.GameUpdateCount * 0.03f + npc.whoAmI * 0.7f, punishT, 0f, 0.7f * opacity, cloneTint: true);
+            }
 
             //去饱和元素光环（破绽规则之二：分身色偏灰）
             Texture2D glow = CWRAsset.SoftGlow.Value;

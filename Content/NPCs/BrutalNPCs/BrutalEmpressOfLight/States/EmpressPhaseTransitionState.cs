@@ -70,10 +70,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     //二阶段循环表从头开始
                     context.AttackCounter = 0;
                 }
-                EmpressCast.Radiance(npc, npc.Center, 500f, 34, 0.7f);
+                EmpressCast.Radiance(npc, npc.Center, 640f, 36, 0.7f);
+                EmpressCast.Radiance(npc, npc.Center, 300f, 26, 0.2f);
                 EmpressMotion.Shake(npc.Center, 8f, 24);
                 if (!VaultUtils.isServer) {
                     EmpressScreenFX.PushPrismPulse(npc.Center, 1f, 38);
+                    //真形态自白光展开：光蝶十二方绽出+径向光屑
+                    for (int i = 0; i < 12; i++) {
+                        float bh = i / 12f;
+                        PRTLoader.NewParticle<PRT_EmpressButterfly>(npc.Center,
+                            (MathHelper.TwoPi / 12f * i).ToRotationVector2() * Main.rand.NextFloat(3f, 6.5f),
+                            EmpressMotion.Prism(bh, 0.7f), Main.rand.NextFloat(0.7f, 1.1f))?.Configure(80, bh);
+                    }
+                    for (int i = 0; i < 18; i++) {
+                        float sh = Main.rand.NextFloat();
+                        PRTLoader.NewParticle<PRT_EmpressSpark>(npc.Center, VaultUtils.RandVr(4f, 13f),
+                            EmpressMotion.Prism(sh, 0.72f), Main.rand.NextFloat(0.8f, 1.4f))?.Configure(24, sh);
+                    }
                 }
                 PlayLocal(SoundID.Item161 with { Volume = 1f, Pitch = -0.15f }, npc.Center);
                 PlayLocal(SoundID.Item163 with { Volume = 1f, Pitch = 0.1f }, npc.Center);

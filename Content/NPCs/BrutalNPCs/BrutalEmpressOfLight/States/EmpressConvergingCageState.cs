@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
         /// <summary>悬滞蓄势帧：玩家的读秒窗</summary>
         private const int HoldTime = 50;
         private const float CageRadius = 590f;
-        private const int CageBolts = 34;
+        private const int CageBolts = 46;
         private const float GapHalfAngle = 0.30f;
 
         private EmpressStateContext Context;

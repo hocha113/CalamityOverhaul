@@ -59,8 +59,8 @@ float4 GlobPS(float2 uv : TEXCOORD0) : COLOR0
     float wobble = (valueNoise(p * 2.3 + float2(uTime * 0.9, -uTime * 0.7) + uSeed * 17.0) - 0.5) * 0.24;
     float edge = r + wobble;
 
-    //主体与张力亮缘
-    float body = smoothstep(0.97, 0.6, edge);
+    //主体与张力亮缘(半径护栏：摆动幅度下也不触及quad边中点)
+    float body = smoothstep(0.97, 0.6, edge) * smoothstep(1.0, 0.92, r);
     float rim = exp(-pow((edge - 0.72) * 7.5, 2.0));
 
     //悬浮渣点(内含腐化组织碎屑，更深色)

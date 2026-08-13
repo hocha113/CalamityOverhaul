@@ -7,18 +7,20 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
 {
-    /// <summary>阴魂火舌：速度拉伸、幽青→深青冷却、微浮升、尖端撕闪</summary>
+    /// <summary>阴魂火舌：速度拉伸、冷却降火势、微浮升；绘制委托冷焰顶点批（无灰度图本体）</summary>
     internal class PRT_SkeleGhostFlame : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "TearFlame01";
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override bool CanPool => true;
 
         private float drift;
+        private float seed;
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
             drift = Main.rand.NextFloat(-0.02f, 0.02f);
+            seed = Main.rand.NextFloat();
             if (Lifetime <= 0) {
                 Lifetime = Main.rand.Next(26, 44);
             }
@@ -36,20 +38,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
             Velocity += new Vector2(0f, -ai[0]);
             Rotation = Rotation.AngleLerp(Velocity.ToRotation() + MathHelper.PiOver2, 0.3f) + drift;
             Opacity = (float)Math.Sin(LifetimeCompletion * MathHelper.Pi);
-            //冷却：亮青→深青
-            Color = Color.Lerp(SkeletronRenderHelper.GhostCyan, SkeletronRenderHelper.GhostDeep,
-                MathHelper.Clamp(LifetimeCompletion * 1.35f, 0f, 1f));
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = TexValue;
-            //高频闪变：帧哈希抖尺度
-            float flick = 0.82f + 0.24f * ((Main.GameUpdateCount * 7 + (int)(ai[1] * 97)) % 5) / 4f;
+            //本体是冷焰顶点quad：焰轴沿运动方向，速度拉伸焰高，寿命末段降火势
+            float flick = 0.82f + 0.24f * ((Main.GameUpdateCount * 7 + (int)(seed * 97)) % 5) / 4f;
             float stretch = MathHelper.Clamp(Velocity.Length() / 7f, 0.2f, 1.7f);
-            Vector2 scale = new Vector2(Scale * 0.32f * flick, Scale * (0.34f + 0.22f * stretch));
-            Vector2 orig = new Vector2(tex.Width / 2f, tex.Height * 0.92f);
-            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * (Opacity * 0.85f),
-                Rotation, orig, scale, SpriteEffects.None, 0f);
+            float cooling = 1f - MathHelper.Clamp(LifetimeCompletion * 1.2f, 0f, 0.85f);
+            Vector2 size = new Vector2(Scale * 11f * flick, Scale * (13f + 9f * stretch));
+            //焰根压到粒子后方，尖端指向前进方向
+            float axis = Rotation - MathHelper.PiOver2;
+            Vector2 root = Position - axis.ToRotationVector2() * size.Y * 0.35f;
+            SkeletronFlameRender.Push(root, axis, size,
+                0.35f + 0.6f * cooling, seed, 0.12f + (1f - cooling) * 0.3f,
+                Opacity * 0.85f);
             return false;
         }
     }

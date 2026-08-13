@@ -53,13 +53,17 @@ float4 TelegraphPS(PSInput input) : COLOR0
     float along = uv.x;
     float cross_ = (uv.y - 0.5) * 2.0;
 
-    //细芯：越接近发射越锐越白
-    float coreW = lerp(30.0, 90.0, uProgress);
+    //穿刺前压缩：临射末拍整条线向芯收拢推白（能量被压进杆体）
+    float compress = smoothstep(0.80, 1.0, uProgress);
+
+    //细芯：越接近发射越锐越白，压缩期骤缩
+    float coreW = lerp(30.0, 90.0, uProgress) + compress * 170.0;
     float core = exp(-cross_ * cross_ * coreW);
 
-    //色散侧纹：两侧红/紫错开的干涉细线
-    float fringeA = exp(-pow((cross_ - 0.34) * 9.0, 2.0)) * 0.5;
-    float fringeB = exp(-pow((cross_ + 0.34) * 9.0, 2.0)) * 0.5;
+    //色散侧纹：两侧红/紫错开的干涉细线，压缩期向芯并拢
+    float fringeOff = lerp(0.34, 0.10, compress);
+    float fringeA = exp(-pow((cross_ - fringeOff) * 9.0, 2.0)) * 0.5;
+    float fringeB = exp(-pow((cross_ + fringeOff) * 9.0, 2.0)) * 0.5;
 
     //装填光头沿线奔跑，频率随进度提升
     float runner = frac(along * 1.4 - uTime * (0.7 + uProgress * 1.6));
@@ -73,12 +77,12 @@ float4 TelegraphPS(PSInput input) : COLOR0
     float3 white = float3(1.0, 1.0, 1.0);
 
     float3 color = float3(0.0, 0.0, 0.0);
-    color += lerp(prism, white, 0.35 + 0.55 * uProgress) * core * (0.4 + 0.6 * uProgress) * pulse;
+    color += lerp(prism, white, 0.35 + 0.55 * uProgress) * core * (0.4 + 0.6 * uProgress + compress * 0.7) * pulse;
     color += hueRGB(uHue + 0.06) * fringeA;
     color += hueRGB(uHue - 0.06) * fringeB;
     color += white * runGlow * core * 0.7;
 
-    float alpha = saturate((core * (0.35 + 0.65 * uProgress) + (fringeA + fringeB) * 0.5 + runGlow * core * 0.4) * endFade);
+    float alpha = saturate((core * (0.35 + 0.65 * uProgress + compress * 0.5) + (fringeA + fringeB) * 0.5 + runGlow * core * 0.4) * endFade);
     alpha *= uOpacity;
     return float4(color * alpha * endFade, alpha) * input.Color;
 }
@@ -94,10 +98,16 @@ float4 LancePS(PSInput input) : COLOR0
 
     //矛形宽度包络：尖端极锐，中段饱满，尾段收细
     float profile = smoothstep(1.0, 0.86, along) * lerp(0.34, 1.0, smoothstep(0.0, 0.42, along));
-    float d = abs(cross_) / max(profile, 0.05);
+    float s = cross_ / max(profile, 0.05);
+    float d = abs(s);
 
     float core = exp(-d * d * 34.0);
     float hot = exp(-d * d * 300.0);
+
+    //杆体棱线：芯线外两条对称亮棱，读作实体杆而非光雾
+    float rail = exp(-pow((d - 0.52) * 9.0, 2.0)) * 0.55;
+    //螺旋槽纹：斜向流动细纹（光在杆体内旋进）
+    float flute = 0.84 + 0.16 * sin(along * 64.0 - uTime * 26.0 + s * 3.0);
 
     //光谱鞘：按横截距离色散（内白→本色→偏移色）
     float3 sheath = hueRGB(uHue + d * 0.16 - 0.05);
@@ -105,7 +115,7 @@ float4 LancePS(PSInput input) : COLOR0
     //尾部干涉带：sin细纹让尾段散成光栅
     float grating = 0.75 + 0.25 * sin(along * 90.0 + uTime * 7.0);
     float tailZone = 1.0 - smoothstep(0.30, 0.72, along);
-    float body = lerp(1.0, grating, tailZone * 0.85);
+    float body = lerp(1.0, grating, tailZone * 0.85) * flute;
 
     //尾淡出+尖端聚光
     float tailFade = smoothstep(0.0, 0.24, along);
@@ -115,12 +125,13 @@ float4 LancePS(PSInput input) : COLOR0
     float3 color = float3(0.0, 0.0, 0.0);
     color += sheath * core * 1.0 * body;
     color += white * hot * 1.3;
+    color += hueRGB(uHue + 0.08) * rail * body;
     color += lerp(sheath, white, 0.7) * tipFlare;
     //宽晕
     float halo = exp(-d * d * 2.6) * 0.4;
     color += hueRGB(uHue) * halo;
 
-    float alpha = saturate((core * 0.85 * body + hot * 0.95 + halo * 0.4 + tipFlare * 0.8) * tailFade);
+    float alpha = saturate((core * 0.85 * body + hot * 0.95 + rail * 0.32 + halo * 0.4 + tipFlare * 0.8) * tailFade);
     alpha *= uOpacity;
     return float4(color * alpha * tailFade, alpha) * input.Color;
 }
@@ -137,13 +148,18 @@ float4 BladePS(PSInput input) : COLOR0
     //剑形：腹部在33%处最宽，向尖端二次收锐，柄端快收
     float belly = smoothstep(0.0, 0.30, along) * (1.0 - smoothstep(0.33, 0.97, along) * 0.82);
     float profile = max(belly, 0.06);
-    float d = abs(cross_) / profile;
+    float s = cross_ / profile;
+    float d = abs(s);
+
+    //剑尖收口：贴图缘之前刃体归零，尖端不被四边形边缘裁出断口
+    float tipClose = 1.0 - smoothstep(0.90, 0.995, along);
 
     float core = exp(-d * d * 40.0);
     float hot = exp(-d * d * 340.0);
 
-    //刃缘色散：刃线两侧极细的分光
-    float edge = exp(-pow((d - 0.85) * 7.0, 2.0)) * 0.7;
+    //非对称刃缘：刃侧一条白热锋线，背侧色散逸散——有锋有背才是剑
+    float edgeFore = exp(-pow((s + 0.82) * 9.0, 2.0)) * 0.85;
+    float edgeBack = exp(-pow((s - 0.72) * 5.0, 2.0)) * 0.45;
     float3 edgeCol = hueRGB(uHue + 0.1);
 
     //护手辉点：柄部一粒亮星
@@ -160,12 +176,13 @@ float4 BladePS(PSInput input) : COLOR0
     float3 color = float3(0.0, 0.0, 0.0);
     color += prism * core * forming;
     color += white * hot * 1.25 * forming;
-    color += edgeCol * edge * forming;
+    color += white * edgeFore * forming;
+    color += edgeCol * edgeBack * forming;
     color += white * guard;
 
-    float alpha = saturate((core * 0.8 + hot * 0.9 + edge * 0.5 + guard * 0.7) * forming * tailFade);
+    float alpha = saturate((core * 0.8 + hot * 0.9 + edgeFore * 0.6 + edgeBack * 0.35 + guard * 0.7) * forming * tailFade * tipClose);
     alpha *= uOpacity;
-    return float4(color * alpha * tailFade, alpha) * input.Color;
+    return float4(color * alpha * tailFade * tipClose, alpha) * input.Color;
 }
 
 technique TelegraphTech

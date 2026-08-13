@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Rendering;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -39,6 +40,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
         }
 
         public override bool ShouldUpdatePosition() => false;
+
+        public override void SetStaticDefaults() {
+            //顶部摆动与外层柔光宽于命中盒
+            Terraria.ID.ProjectileID.Sets.DrawScreenCheckFluff[Type] = 160;
+        }
 
         public override void AI() {
             Timer++;
@@ -103,7 +109,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             if (Timer <= DelayFrames) {
                 return false;
             }
-            //柱体：核心亮线+外层宽柔光，喷发起立/塌落收缩
+            //喷发/塌落包络
             float erupt = EruptProgress;
             float collapse = Timer > DelayFrames + EruptTime
                 ? 1f - MathHelper.Clamp((Timer - DelayFrames - EruptTime) / CollapseTime, 0f, 1f) : 1f;
@@ -112,22 +118,84 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
                 return false;
             }
 
-            Texture2D line = TextureAssets.Projectile[Type].Value;
             Vector2 vent = new(Projectile.Center.X, Projectile.position.Y + Projectile.height);
-            Vector2 drawPos = vent - Main.screenPosition;
-            float len = ColumnHeight * env / line.Width;
-            Vector2 origin = new(0, line.Height / 2f);
             float wobble = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 22f + Projectile.whoAmI) * 0.06f;
 
+            //主路径走预警线着色器：根实(0.015羽化)、生长前沿毛边、末端渐隐、
+            //退场向轴心收细——包络全在像素层连续，杜绝分段量化条带
+            Effect effect = EffectLoader.FishronTelegraph?.Value;
+            if (effect != null) {
+                DrawShaderColumn(effect, vent, erupt, collapse, wobble);
+                return false;
+            }
+
+            DrawSpriteColumn(vent, env, wobble);
+            return false;
+        }
+
+        /// <summary>单 quad 着色器水柱：uGrow=喷发爬升，uCollapse=断流收细，整柱轻摆</summary>
+        private void DrawShaderColumn(Effect effect, Vector2 vent, float erupt, float collapse, float wobble) {
+            const float Width = 118f;
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uIntensity"]?.SetValue(0.9f * (0.35f + collapse * 0.65f));
+            effect.Parameters["uGrow"]?.SetValue(erupt);
+            effect.Parameters["uLockProgress"]?.SetValue(0f);
+            effect.Parameters["uCollapse"]?.SetValue(1f - collapse);
+            effect.Parameters["uAspect"]?.SetValue(ColumnHeight / Width);
+            effect.Parameters["uRootFeather"]?.SetValue(0.015f);
+            effect.Parameters["uColor"]?.SetValue(new Vector3(0.24f, 0.72f, 0.74f));
+
+            SpriteBatch sb = Main.spriteBatch;
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+            effect.CurrentTechnique.Passes[0].Apply();
+
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float rot = -MathHelper.PiOver2 + wobble * 0.5f;
+            Vector2 scale = new(ColumnHeight / pixel.Width, Width / pixel.Height);
+            sb.Draw(pixel, vent - Main.screenPosition, null, Color.White,
+                rot, new Vector2(0, pixel.Height / 2f), scale, SpriteEffects.None, 0f);
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        /// <summary>
+        /// 着色器缺失兜底：MaskLaserLine 沿长全亮无端衰减，整条拉伸必在柱顶留硬切平面，
+        /// 故分 28 段、包络按段中点取值收针——段间仍有小台阶，仅作兜底档
+        /// </summary>
+        private void DrawSpriteColumn(Vector2 vent, float env, float wobble) {
+            Texture2D line = TextureAssets.Projectile[Type].Value;
             Color outer = new(FishronMotionFX.SeaGreen.R, FishronMotionFX.SeaGreen.G, FishronMotionFX.SeaGreen.B, 0);
             Color core = new(FishronMotionFX.FoamWhite.R, FishronMotionFX.FoamWhite.G, FishronMotionFX.FoamWhite.B, 0);
-            Main.EntitySpriteDraw(line, drawPos, null, outer * (0.55f * env),
-                -MathHelper.PiOver2 + wobble, origin, new Vector2(len, 3.4f), SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(line, drawPos, null, outer * (0.4f * env),
-                -MathHelper.PiOver2 - wobble * 0.7f, origin, new Vector2(len * 0.96f, 5.2f), SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(line, drawPos, null, core * (0.75f * env),
-                -MathHelper.PiOver2 + wobble * 0.4f, origin, new Vector2(len, 1.3f), SpriteEffects.None, 0);
-            return false;
+
+            const int Segments = 28;
+            float colLen = ColumnHeight * env;
+            float segLen = colLen / Segments;
+            for (int i = 0; i < Segments; i++) {
+                float t0 = i / (float)Segments;
+                //顶端 45% 收针：按段中点取包络，首尾段各贴 0/1 端，台阶减半
+                float tMid = (i + 0.5f) / Segments;
+                float tipT = MathHelper.Clamp((1f - tMid) / 0.45f, 0f, 1f);
+                tipT = tipT * tipT * (3f - 2f * tipT);
+                float envSeg = env * tipT;
+                float widthSeg = 0.45f + 0.55f * tipT;
+                float rot0 = -MathHelper.PiOver2 + wobble * t0;
+                Vector2 segPos = vent + rot0.ToRotationVector2() * (t0 * colLen) - Main.screenPosition;
+                Vector2 segScale = new(segLen / line.Width * 1.05f, 0f);
+
+                segScale.Y = 3.4f * widthSeg;
+                Main.EntitySpriteDraw(line, segPos, null, outer * (0.55f * envSeg),
+                    rot0, new Vector2(0, line.Height / 2f), segScale, SpriteEffects.None, 0);
+                segScale.Y = 5.2f * widthSeg;
+                Main.EntitySpriteDraw(line, segPos, null, outer * (0.35f * envSeg),
+                    rot0 - wobble * 0.5f, new Vector2(0, line.Height / 2f), segScale, SpriteEffects.None, 0);
+                segScale.Y = 1.3f * widthSeg;
+                Main.EntitySpriteDraw(line, segPos, null, core * (0.75f * envSeg * tipT),
+                    rot0, new Vector2(0, line.Height / 2f), segScale, SpriteEffects.None, 0);
+            }
         }
     }
 }

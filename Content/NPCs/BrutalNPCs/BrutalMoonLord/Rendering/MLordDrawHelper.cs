@@ -98,47 +98,92 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             }
         }
 
-        /// <summary>核心侧上臂：肩锚 acos IK 指向手，超程收直；肩锚随核心倾斜旋转防披风错位</summary>
+        /// <summary>核心侧上臂：消费 <see cref="MLordArmIK"/> 解，肩→肘沿骨拉伸绘制；超程画星桥缺口</summary>
         private static void DrawUpperArm(SpriteBatch spriteBatch, Texture2D tex, NPC core, NPC hand,
             int side, Color light, Vector2 screenPos) {
-            float dir = side == 0 ? -1f : 1f;
-            Vector2 shoulder = core.Center + new Vector2(MLordDirector.ShoulderOffset.X * dir, MLordDirector.ShoulderOffset.Y)
-                .RotatedBy(core.rotation);
-            Vector2 handAnchor = hand.Center + new Vector2(0f, 76f);
-            Vector2 half = (handAnchor - shoulder) * 0.5f;
-
-            float ratio = half.Length() / MLordDirector.ArmIKLength;
-            float bend = ratio >= 1f ? 0f : (float)Math.Acos(ratio) * -dir;
+            MLordArmSolve ik = MLordArmIK.Solve(core, hand);
+            if (!ik.Valid) {
+                return;
+            }
             SpriteEffects effects = side == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             Vector2 origin = new(76f, 66f);
             if (side != 0) {
                 origin.X = tex.Width - origin.X;
             }
 
-            float alpha = ratio >= 1f ? MathHelper.Clamp(2.2f - ratio, 0.25f, 1f) : 1f;
-            spriteBatch.Draw(tex, shoulder - screenPos, null, light * alpha,
-                half.ToRotation() - bend - MathHelper.PiOver2, origin, 1f, effects, 0f);
+            spriteBatch.Draw(tex, ik.Shoulder - screenPos, null, light * ik.ArmAlpha,
+                (ik.ElbowUpper - ik.Shoulder).ToRotation() - MathHelper.PiOver2, origin,
+                new Vector2(1f, ik.UpperStretch), effects, 0f);
 
-            //超程幻影补桥：肩到手的星尘光带
-            if (ratio > 1f) {
-                DrawSpectralBridge(shoulder, handAnchor, MathHelper.Clamp(ratio - 1f, 0f, 1f));
+            if (ik.BridgeStrength > 0.01f) {
+                DrawSpectralBridge(ik.ElbowUpper, ik.ElbowFore, ik.BridgeStrength);
+            }
+            else {
+                DrawElbowJoint(ik.ElbowUpper, ik.UpperStretch);
             }
         }
 
-        /// <summary>骨臂超程时的幻影星桥</summary>
+        /// <summary>肘关节星辉：拉伸时提亮，把两骨对接缝读作能量关节</summary>
+        private static void DrawElbowJoint(Vector2 worldPos, float stretch) {
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (glow == null) {
+                return;
+            }
+            float heat = 0.16f + MathHelper.Clamp((stretch - 1f) / 0.22f, 0f, 1f) * 0.3f;
+            float pulse = 0.85f + 0.15f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 7f + worldPos.X * 0.006f);
+            Main.EntitySpriteDraw(glow, worldPos - Main.screenPosition, null,
+                MLordDirector.Phantasmal with { A = 0 } * (heat * pulse), 0f,
+                glow.Size() / 2f, 0.85f * pulse, SpriteEffects.None, 0);
+        }
+
+        /// <summary>
+        /// 超程星桥：臂骨拉断后中段散成星链。两端各自从骨端向中点羽化生长
+        /// （断口两侧无裸切边），链上星节相位错拍明灭
+        /// </summary>
         private static void DrawSpectralBridge(Vector2 from, Vector2 to, float strength) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Texture2D streak = CWRAsset.LightShot?.Value;
+            Texture2D node = CWRAsset.StarGlow01?.Value;
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (streak == null || node == null || glow == null) {
+                return;
+            }
             Vector2 delta = to - from;
             float len = delta.Length();
+            if (len < 4f) {
+                return;
+            }
             float rot = delta.ToRotation();
-            Vector2 screenFrom = from - Main.screenPosition;
-            float pulse = 0.6f + 0.4f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 12f);
-            Main.EntitySpriteDraw(pixel, screenFrom, null,
-                MLordDirector.DeepViolet with { A = 0 } * (0.4f * strength * pulse), rot,
-                new Vector2(0f, pixel.Height * 0.5f), new Vector2(len / pixel.Width, 10f / pixel.Height), SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(pixel, screenFrom, null,
-                MLordDirector.Phantasmal with { A = 0 } * (0.65f * strength * pulse), rot,
-                new Vector2(0f, pixel.Height * 0.5f), new Vector2(len / pixel.Width, 3.2f / pixel.Height), SpriteEffects.None, 0);
+            float pulse = 0.72f + 0.28f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 9f + from.Y * 0.005f);
+            Vector2 anchor = new(0f, streak.Height * 0.5f);
+            //两端对生的羽化光带（LightShot 尖端自带渐隐，根部埋进骨端）
+            Vector2 wideScale = new(len * 0.68f / streak.Width, 34f / streak.Height);
+            Vector2 coreScale = new(len * 0.6f / streak.Width, 12f / streak.Height);
+            Main.EntitySpriteDraw(streak, from - Main.screenPosition, null,
+                MLordDirector.DeepViolet with { A = 0 } * (0.5f * strength * pulse), rot, anchor, wideScale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(streak, to - Main.screenPosition, null,
+                MLordDirector.DeepViolet with { A = 0 } * (0.5f * strength * pulse), rot + MathHelper.Pi, anchor, wideScale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(streak, from - Main.screenPosition, null,
+                MLordDirector.Phantasmal with { A = 0 } * (0.7f * strength * pulse), rot, anchor, coreScale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(streak, to - Main.screenPosition, null,
+                MLordDirector.Phantasmal with { A = 0 } * (0.7f * strength * pulse), rot + MathHelper.Pi, anchor, coreScale, SpriteEffects.None, 0);
+
+            //骨端锚点光核（缺口根部的能量断面）
+            Main.EntitySpriteDraw(glow, from - Main.screenPosition, null,
+                MLordDirector.Phantasmal with { A = 0 } * (0.5f * strength), 0f, glow.Size() / 2f, 0.9f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(glow, to - Main.screenPosition, null,
+                MLordDirector.Phantasmal with { A = 0 } * (0.5f * strength), 0f, glow.Size() / 2f, 0.9f, SpriteEffects.None, 0);
+
+            //中链星节：错拍明灭的臂骨残识
+            int nodes = Math.Clamp((int)(len / 80f), 2, 6);
+            for (int i = 0; i < nodes; i++) {
+                float t = (i + 0.5f) / nodes;
+                Vector2 pos = Vector2.Lerp(from, to, t);
+                float twinkle = 0.55f + 0.45f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 12f + i * 1.9f);
+                Main.EntitySpriteDraw(node, pos - Main.screenPosition, null,
+                    MLordDirector.MoonWhite with { A = 0 } * (0.75f * strength * twinkle),
+                    Main.GlobalTimeWrappedHourly * 1.4f + i, node.Size() / 2f,
+                    0.16f + 0.1f * twinkle, SpriteEffects.None, 0);
+            }
         }
 
         #endregion
@@ -160,21 +205,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             float dir = isLeft ? -1f : 1f;
             SpriteEffects effects = isLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            //小臂 IK（核心在场才画；肩锚随核心倾斜，与上臂同锚）
+            //小臂：消费与上臂同一帧同一份 IK 解（腕→肘沿骨拉伸，两骨必然对接）
             if (core != null) {
-                Vector2 shoulder = core.Center + new Vector2(MLordDirector.ShoulderOffset.X * dir, MLordDirector.ShoulderOffset.Y)
-                    .RotatedBy(core.rotation);
-                Vector2 handAnchor = hand.Center + new Vector2(0f, 76f);
-                Vector2 half = (shoulder - handAnchor) * 0.5f;
-                float ratio = half.Length() / MLordDirector.ArmIKLength;
-                float bend = ratio >= 1f ? 0f : (float)Math.Acos(ratio) * -dir;
-                Vector2 origin = new(60f, 30f);
-                if (!isLeft) {
-                    origin.X = forearmTex.Width - origin.X;
+                MLordArmSolve ik = MLordArmIK.Solve(core, hand);
+                if (ik.Valid) {
+                    Vector2 origin = new(60f, 30f);
+                    if (!isLeft) {
+                        origin.X = forearmTex.Width - origin.X;
+                    }
+                    spriteBatch.Draw(forearmTex, ik.Wrist - screenPos, null, light * ik.ArmAlpha,
+                        (ik.ElbowFore - ik.Wrist).ToRotation() - MathHelper.PiOver2, origin,
+                        new Vector2(1f, ik.ForeStretch), effects, 0f);
                 }
-                float alpha = ratio >= 1f ? MathHelper.Clamp(2.2f - ratio, 0.25f, 1f) : 1f;
-                spriteBatch.Draw(forearmTex, handAnchor - screenPos, null, light * alpha,
-                    half.ToRotation() + bend - MathHelper.PiOver2, origin, 1f, effects, 0f);
             }
 
             Vector2 socketOrigin = new(26f, 42f);
@@ -208,18 +250,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             }
             spriteBatch.Draw(handTex, hand.Center - screenPos, handFrame, light, 0f, handOrigin, 1f, effects, 0f);
 
-            //高速冲线的星尘残影
+            //高速冲线：反向速度拉丝（三层紫/青/月白芯，取代圆形辉团堆叠）
             float speed = hand.velocity.Length();
             if (speed > 16f) {
-                Texture2D glowTex = CWRAsset.DiffusionCircle?.Value;
-                if (glowTex != null) {
+                Texture2D streak = CWRAsset.LightShot?.Value;
+                Texture2D softGlow = CWRAsset.SoftGlow?.Value;
+                if (streak != null && softGlow != null) {
                     float heat = MathHelper.Clamp((speed - 16f) / 30f, 0f, 1f);
-                    Vector2 back = -hand.velocity.SafeNormalize(Vector2.Zero);
-                    for (int i = 1; i <= 3; i++) {
-                        Main.EntitySpriteDraw(glowTex, hand.Center - screenPos + back * (i * 26f), null,
-                            MLordDirector.Phantasmal with { A = 0 } * (heat * (0.5f - i * 0.13f)), 0f,
-                            glowTex.Size() / 2f, 0.6f - i * 0.12f, SpriteEffects.None, 0);
-                    }
+                    float backRot = (-hand.velocity).ToRotation();
+                    float streakLen = 110f + speed * 4.6f;
+                    Vector2 anchor = new(0f, streak.Height * 0.5f);
+                    Vector2 pos = hand.Center - screenPos;
+                    Main.EntitySpriteDraw(streak, pos, null,
+                        MLordDirector.DeepViolet with { A = 0 } * (0.5f * heat), backRot, anchor,
+                        new Vector2(streakLen / streak.Width, 66f / streak.Height), SpriteEffects.None, 0);
+                    Main.EntitySpriteDraw(streak, pos, null,
+                        MLordDirector.Phantasmal with { A = 0 } * (0.65f * heat), backRot, anchor,
+                        new Vector2(streakLen * 0.82f / streak.Width, 34f / streak.Height), SpriteEffects.None, 0);
+                    Main.EntitySpriteDraw(streak, pos, null,
+                        MLordDirector.MoonWhite with { A = 0 } * (0.55f * heat), backRot, anchor,
+                        new Vector2(streakLen * 0.6f / streak.Width, 13f / streak.Height), SpriteEffects.None, 0);
+                    //掌心热核
+                    Main.EntitySpriteDraw(softGlow, pos, null,
+                        MLordDirector.Phantasmal with { A = 0 } * (0.55f * heat), 0f,
+                        softGlow.Size() / 2f, 1.5f * heat, SpriteEffects.None, 0);
                 }
             }
         }
@@ -277,12 +331,40 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
 
         #region 真眼拼装
 
-        /// <summary>真眼：本体帧 + 瞳孔 + 相位辉光</summary>
+        /// <summary>真眼：相位帷幕 + 高速星移拉丝 + 本体帧 + 瞳孔 + 相位辉光</summary>
         public static void DrawFreeEyeAssembly(SpriteBatch spriteBatch, NPC eye, Vector2 screenPos,
             in MLordEyePose pose, int bodyFrame, float scalePulse) {
             Texture2D bodyTex = TextureAssets.Npc[NPCID.MoonLordFreeEye].Value;
             Texture2D pupilTex = TextureAssets.Extra[19].Value;
             Color light = CommonLight(eye);
+
+            //相位帷幕：慢旋的星质薄晕，把脱出体读作能量态而非贴图浮块
+            Texture2D veil = CWRAsset.DiffusionCircle?.Value;
+            if (veil != null) {
+                float breathe = 0.8f + 0.2f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3.4f + eye.whoAmI * 1.1f);
+                Main.EntitySpriteDraw(veil, eye.Center - screenPos, null,
+                    MLordDirector.DeepViolet with { A = 0 } * (0.3f * breathe),
+                    Main.GlobalTimeWrappedHourly * 0.9f + eye.whoAmI, veil.Size() / 2f,
+                    new Vector2(0.42f, 0.34f) * breathe, SpriteEffects.None, 0);
+            }
+
+            //高速星移拉丝（编队换位/俯冲时）
+            float eyeSpeed = eye.velocity.Length();
+            if (eyeSpeed > 9f) {
+                Texture2D streak = CWRAsset.LightShot?.Value;
+                if (streak != null) {
+                    float heat = MathHelper.Clamp((eyeSpeed - 9f) / 16f, 0f, 1f);
+                    float backRot = (-eye.velocity).ToRotation();
+                    float streakLen = 70f + eyeSpeed * 4f;
+                    Vector2 anchor = new(0f, streak.Height * 0.5f);
+                    Main.EntitySpriteDraw(streak, eye.Center - screenPos, null,
+                        MLordDirector.DeepViolet with { A = 0 } * (0.42f * heat), backRot, anchor,
+                        new Vector2(streakLen / streak.Width, 34f / streak.Height), SpriteEffects.None, 0);
+                    Main.EntitySpriteDraw(streak, eye.Center - screenPos, null,
+                        MLordDirector.Phantasmal with { A = 0 } * (0.5f * heat), backRot, anchor,
+                        new Vector2(streakLen * 0.7f / streak.Width, 14f / streak.Height), SpriteEffects.None, 0);
+                }
+            }
 
             Rectangle frame = bodyTex.Frame(1, 4, 0, Math.Clamp(bodyFrame, 0, 3));
             spriteBatch.Draw(bodyTex, eye.Center - screenPos, frame, light, eye.rotation,

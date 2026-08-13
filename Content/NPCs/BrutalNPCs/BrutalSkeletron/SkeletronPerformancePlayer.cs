@@ -40,8 +40,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
                 SkeletronHeadAI.ActivePerformanceHead = -1;
                 return null;
             }
-            SkeletronHeadAI ai = npc.GetOverride<SkeletronHeadAI>();
-            if (ai == null || npc.ai[SkeletronAiSlots.HeadPhase] != SkeletronPhase.DeathShow) {
+            //槽位复用等异常取不到覆写时按演出结束处理（精确索引缺键会抛出）
+            if (!npc.TryGetOverride(out SkeletronHeadAI ai) || npc.ai[SkeletronAiSlots.HeadPhase] != SkeletronPhase.DeathShow) {
                 SkeletronHeadAI.ActivePerformanceHead = -1;
                 return null;
             }

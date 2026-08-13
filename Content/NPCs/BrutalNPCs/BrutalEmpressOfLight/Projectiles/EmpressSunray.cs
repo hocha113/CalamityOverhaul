@@ -105,6 +105,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
                 Lighting.AddLight(Projectile.Center + dir * (BeamLength / 6f * i), prism.ToVector3() * 0.5f * (beamWidth / MaxWidth));
             }
 
+            //点火拍：预告线转正式束的一瞬，根部涟漪+沿束迸发（束是"点燃"的，不是渐显的）
+            if (!VaultUtils.isServer && Timer == TelegraphTime + 1) {
+                PRTLoader.NewParticle<PRT_EmpressRipple>(Projectile.Center, Vector2.Zero, prism, 0.5f)?.Configure(12, HueOf());
+                for (int i = 0; i < 6; i++) {
+                    float along = i / 6f + 0.08f;
+                    PRTLoader.NewParticle<PRT_EmpressSpark>(Projectile.Center + dir * BeamLength * along,
+                        dir.RotatedBy(MathHelper.PiOver2 * (i % 2 == 0 ? 1 : -1)) * Main.rand.NextFloat(2f, 5f),
+                        prism, Main.rand.NextFloat(0.6f, 1f))?.Configure(14, HueOf());
+                }
+            }
+
+            //收拢余韵：束体熄灭期沿束洒落光尘（光不是被掐灭的，是散掉的）
+            if (!VaultUtils.isServer && Timer >= TotalLife - FadeTime && Main.rand.NextBool(2)) {
+                float along = Main.rand.NextFloat(0.1f, 1f);
+                PRTLoader.NewParticle<PRT_EmpressPetalDust>(Projectile.Center + dir * BeamLength * along,
+                    dir.RotatedBy(MathHelper.PiOver2 * (Main.rand.NextBool() ? 1 : -1)) * Main.rand.NextFloat(0.5f, 1.6f),
+                    prism, Main.rand.NextFloat(0.4f, 0.7f))?.Configure(26, HueOf());
+            }
+
             //沿束光尘
             if (!VaultUtils.isServer && beamWidth > MaxWidth * 0.5f && Main.rand.NextBool(3)) {
                 float along = Main.rand.NextFloat(0.15f, 1f);

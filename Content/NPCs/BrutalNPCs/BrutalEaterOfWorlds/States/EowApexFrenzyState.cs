@@ -60,10 +60,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
                 ? context.Target.Center : npc.Center).Y;
 
             EowMotionFX.PlayRoar(npc.Center, -0.3f, 1.25f);
-            //大招广播(各客户端本地打印)
-            if (!VaultUtils.isServer) {
-                VaultUtils.Text(EowHeadAI.EowApex_Text.Value, EowMotionFX.AcidGreen);
-            }
         }
 
         public override IEowState OnUpdate(EowStateContext context) {

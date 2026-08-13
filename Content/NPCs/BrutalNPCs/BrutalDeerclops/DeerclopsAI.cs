@@ -7,22 +7,15 @@ using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
 {
     /// <summary>独眼巨鹿主控：冰封领域与暗影凝视</summary>
-    internal class DeerclopsAI : CWRNPCOverride, ILocalizedModType
+    internal class DeerclopsAI : CWRNPCOverride
     {
         #region 数据
         public override int TargetID => NPCID.Deerclops;
-
-        public string LocalizationCategory => "BrutalNPCs";
-        /// <summary>凝视警告(首次，本地)</summary>
-        public static LocalizedText GazeWarn_Text { get; private set; }
-        /// <summary>白澈领域提示(本地)</summary>
-        public static LocalizedText WhiteoutHint_Text { get; private set; }
 
         /// <summary>npc.ai[0] 位标：第二阶段</summary>
         internal const int FlagPhase2 = 1;
@@ -52,11 +45,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
         #endregion
 
         #region 加载与初始化
-        public override void SetStaticDefaults() {
-            GazeWarn_Text = this.GetLocalization(nameof(GazeWarn_Text), () => "别与它对视！");
-            WhiteoutHint_Text = this.GetLocalization(nameof(WhiteoutHint_Text), () => "跟紧它！暴雪外什么也看不见");
-        }
-
         public override void SetProperty() {
             //冲撞残影用 oldPos
             NPCID.Sets.TrailingMode[npc.type] = 1;

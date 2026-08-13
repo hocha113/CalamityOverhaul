@@ -93,7 +93,7 @@ namespace CalamityOverhaul
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> TearSpread01 = null;//冲击扩散尖刺形（Alpha型）
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> Ring01 = null;//扩散环（白RGB+Alpha形状）
+        public static Asset<Texture2D> Ring01 = null;//名义扩散环，实为硬外缘+盘内灰雾斑的脏光盘；禁新增消费，环形冲击改用 ShockRing shader 或 DiffusionCircle4/5（VFX.md Ring01 禁令）
         //---- 烟雾(烟团见上方 Fog) ----
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> SmokeWisp01 = null;//拉丝烟缕（亮度型）

@@ -47,43 +47,62 @@ float fbm2(float2 p)
 
 // ----------------------------------------------------------------------------
 // 尘柱：uv.y=0 顶端, uv.y=1 底端(锚地表)
+// 轮廓全部由噪声撕裂+裙摆包络给出；左右/顶三边护栏归零杜绝quad裁切直线，
+// 底边即地表，由根部喷发核与C#侧碎土衔接
 // ----------------------------------------------------------------------------
 float4 ColumnPS(float2 uv : TEXCOORD0) : COLOR0
 {
     float xc = (uv.x - 0.5) * 2.0;
     float up = 1.0 - uv.y;              //0底→1顶
+    float live = 1.0 - uFade;
 
-    //柱形：底宽顶窄
-    float width = lerp(1.0, 0.4, up);
+    //画布护栏：左右与顶部必归零(底边贴地允许实切)
+    float guard = smoothstep(1.0, 0.84, abs(xc)) * smoothstep(1.0, 0.80, up);
 
-    //撕裂边：上卷噪声扰动轮廓
-    float edgeN = (valueNoise(float2(xc * 1.9 + uSeed * 29.0, uv.y * 3.2 - uTime * 2.8)) - 0.5) * 0.55;
-    float column = smoothstep(width + 0.05, width - 0.3, abs(xc) + edgeN);
+    //纵向按真实画布比例取样，高柱下噪声不被拉成直线
+    float yTex = uv.y * uAspect * 0.5;
 
-    //上升头部包络：柱头随 uProgress 爬升，头部翻卷更浓
-    float capLine = uProgress * 1.12;
-    float head = smoothstep(capLine, capLine - 0.32, up);
-    float headRoll = exp(-pow((up - capLine) * 5.5, 2.0));
+    //轮廓撕裂：双倍频上卷噪声
+    float edgeN = (fbm2(float2(xc * 2.7 + uSeed * 29.0, yTex * 2.4 - uTime * 2.9)) - 0.5) * 0.46;
 
-    //内部翻滚密度
-    float roll = fbm2(float2(xc * 2.3 + uSeed * 13.0, uv.y * 2.6 - uTime * 3.4));
+    //柱形：根部裙摆外扩→中段收腰→顶部收窄
+    float width = lerp(0.52, 0.26, pow(saturate(up), 0.8));
+    width += smoothstep(0.15, 0.0, up) * 0.20;
 
-    //酸光碎屑：稀疏高阈值亮点，升速更快
-    float fleck = smoothstep(0.82, 0.94, valueNoise(float2(xc * 4.6 + uSeed * 5.0, uv.y * 5.2 - uTime * 4.8)));
+    float rEdge = abs(xc) + edgeN;
+    //实体柱芯
+    float core = smoothstep(width + 0.03, width - 0.24, rEdge);
+    //外圈尘雾羽化：独立噪声相位，柔化余量
+    float fringeN = fbm2(float2(xc * 3.4 - uSeed * 19.0, yTex * 2.0 - uTime * 2.2) + 31.7);
+    float fringe = smoothstep(width + 0.30, width - 0.04, rEdge) * (1.0 - core) * fringeN * 0.55;
 
-    float density = column * head * (0.42 + roll * 0.8);
-    //底部加浓(近地更实)
-    density *= lerp(0.7, 1.35, uv.y);
-    density *= 1.0 - uFade;
+    //上升头部：噪声撕裂收头，配合顶部护栏渐隐，任何时刻无平顶
+    float capTear = (valueNoise(float2(xc * 3.1 + uSeed * 7.0, uTime * 1.8)) - 0.5) * 0.24;
+    float capLine = uProgress * 0.98 + capTear;
+    float head = smoothstep(capLine + 0.02, capLine - 0.36, up);
+    float headRoll = exp(-pow((up - capLine) * 5.0, 2.0)) * core;
 
-    float3 col = uDirtColor * density;
-    //头部翻卷提亮(受光尘缘)
-    col += uDirtColor * 1.3 * headRoll * column * 0.45 * (1.0 - uFade);
-    //酸光
-    col += uAcidColor * fleck * column * head * 0.55 * (1.0 - uFade);
+    //内部高对比上卷湍流
+    float roll = fbm2(float2(xc * 2.1 + uSeed * 13.0, yTex * 1.8 - uTime * 3.8));
+    roll = pow(roll, 1.6);
 
-    float alpha = saturate(density * 0.95 + headRoll * column * 0.2 * (1.0 - uFade));
-    return float4(col, alpha);
+    //酸光碎屑：稀疏高阈值亮点
+    float fleck = smoothstep(0.85, 0.95, valueNoise(float2(xc * 5.0 + uSeed * 5.0, yTex * 3.2 - uTime * 4.8)));
+
+    //根部喷发核：地表源头亮芯，与地面衔接
+    float rootCore = exp(-xc * xc * 8.0) * smoothstep(0.32, 0.0, up) * uProgress;
+
+    float density = (core * (0.55 + roll * 0.75) + fringe) * head * guard * live;
+    density *= lerp(0.8, 1.25, uv.y);   //近地更实
+
+    float3 hue = uDirtColor * (0.8 + roll * 0.55);
+    hue = lerp(hue, uDirtColor * 1.6, headRoll * head * 0.55);
+    hue += uAcidColor * fleck * 0.9;
+    hue = lerp(hue, lerp(uDirtColor, uAcidColor, 0.6) * 1.4, saturate(rootCore * 0.8));
+
+    float alpha = saturate(density + rootCore * 0.6 * guard * live);
+    //预乘输出，匹配 AlphaBlend 批(修复旧版未预乘导致的泛白光柱)
+    return float4(hue * alpha, alpha);
 }
 
 // ----------------------------------------------------------------------------

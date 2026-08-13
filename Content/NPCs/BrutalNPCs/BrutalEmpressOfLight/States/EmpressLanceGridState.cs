@@ -21,6 +21,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 
         /// <summary>行距：留给玩家的胞宽（约3个玩家身位）</summary>
         private const float LaneSpacing = 172f;
+        /// <summary>双轨半距：同行一对平行矛的间隔，胞内安全区仍≥100px</summary>
+        private const float RailGap = 20f;
         private const int BaseTelegraph = 48;
         /// <summary>错拍步长：一行比上一行迟这么多帧发射</summary>
         private const int StaggerStep = 5;
@@ -98,8 +100,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                         float angle = dirSign > 0 ? 0f : MathHelper.Pi;
                         int stagger = (lane + halfLanes) * StaggerStep;
                         float hue = (lane + halfLanes) / (float)(halfLanes * 2 + 1);
-                        EmpressCast.Lance(npc, new Vector2(x, y), angle, context.LanceDamage, hue,
+                        //双轨枪骑：同行一对平行矛错1拍，轨对读作实心行，胞间距不变
+                        EmpressCast.Lance(npc, new Vector2(x, y - RailGap), angle, context.LanceDamage, hue,
                             context.Scaled(BaseTelegraph) + stagger);
+                        EmpressCast.Lance(npc, new Vector2(x, y + RailGap), angle, context.LanceDamage,
+                            (hue + 0.05f) % 1f, context.Scaled(BaseTelegraph) + stagger + 3);
                     }
                     break;
                 }
@@ -112,8 +117,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                         float y = anchor.Y - 1150f;
                         int stagger = (lane + halfCols) * StaggerStep;
                         float hue = 0.5f + (lane + halfCols) / (float)(halfCols * 2 + 1) * 0.5f;
-                        EmpressCast.Lance(npc, new Vector2(x, y), MathHelper.PiOver2, context.LanceDamage, hue,
+                        EmpressCast.Lance(npc, new Vector2(x - RailGap, y), MathHelper.PiOver2, context.LanceDamage, hue,
                             context.Scaled(BaseTelegraph) + stagger);
+                        EmpressCast.Lance(npc, new Vector2(x + RailGap, y), MathHelper.PiOver2, context.LanceDamage,
+                            (hue + 0.05f) % 1f, context.Scaled(BaseTelegraph) + stagger + 3);
                     }
                     break;
                 }
@@ -126,8 +133,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                         Vector2 pos = anchor + perp * (lane * LaneSpacing + LaneSpacing * 0.5f) - dir * 1350f;
                         int stagger = System.Math.Abs(lane) * (StaggerStep + 2);
                         float hue = 0.75f + lane / (float)(halfLanes * 2 + 1) * 0.5f;
-                        EmpressCast.Lance(npc, pos, diagAngle, context.LanceDamage, hue,
+                        EmpressCast.Lance(npc, pos - perp * RailGap, diagAngle, context.LanceDamage, hue,
                             context.Scaled(BaseTelegraph + 8) + stagger);
+                        EmpressCast.Lance(npc, pos + perp * RailGap, diagAngle, context.LanceDamage,
+                            (hue + 0.05f) % 1f, context.Scaled(BaseTelegraph + 8) + stagger + 3);
                     }
                     break;
                 }

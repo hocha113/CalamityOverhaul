@@ -22,7 +22,8 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     //深度 px：0=前缘，正值进入幕内
     float depth = (uEdgeX + fray - worldPos.x) * uDir;
 
-    if (depth < -40.0)
+    //前缘热线高斯在 -70px 处已衰减到 0.02%，此处截断不产生可见台阶
+    if (depth < -70.0)
     {
         return float4(0, 0, 0, 0);
     }
@@ -54,6 +55,14 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
 
     float alpha = saturate(rim * 0.7 + body * (0.72 + strands * 0.2) + deep * 0.2);
     alpha = min(alpha, 0.96);
+
+    //纵向端点包络：quad上下边前被血丝噪声撕散归零，不暴露水平切边
+    float vNorm = coords.y;
+    float vTear = strand2 * 0.05;
+    float vFade = smoothstep(0.0, 0.075 + vTear, vNorm) * smoothstep(1.0, 0.925 - vTear, vNorm);
+    //深侧退场：背缘(560px)前雾化归零，不暴露垂直切边
+    float backFade = smoothstep(560.0, 410.0, depth);
+    alpha *= vFade * backFade;
 
     color *= uIntensity;
     alpha *= uIntensity;

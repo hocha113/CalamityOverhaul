@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -101,29 +102,98 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
             return spikeRect.Intersects(targetHitbox);
         }
 
+        #region 顶点骨刺绘制
+
+        private const int SpikeSegs = 7;
+        private static readonly VertexPositionColorTexture[] spikeVerts = new VertexPositionColorTexture[(SpikeSegs + 1) * 2];
+
         public override bool PreDraw(ref Color lightColor) {
             if (Age <= Delay) {
                 return false;
             }
+            float grow = GrowProgress;
+            float h = SpikeHeight * grow;
+            float crumble = Crumbling
+                ? MathHelper.Clamp((Age - Delay - GrowFrames - HoldFrames) / CrumbleFrames, 0f, 1f)
+                : 0f;
+
+            Effect effect = EffectLoader.SkeletronBoneMatter?.Value;
+            if (effect != null && CWRAsset.PerlinNoise?.Value != null) {
+                DrawSpikeGeometry(effect, h, crumble, lightColor);
+                return false;
+            }
+
+            //回退：原版骨贴图簇（着色器缺失时）
+            DrawFallbackCluster(h, grow, 1f - crumble, lightColor);
+            return false;
+        }
+
+        /// <summary>
+        /// 枯骨材质顶点骨刺：中刺全高+双侧棱外倾，锯齿边由确定性哈希咬出<br/>
+        /// 在活动 Deferred 批期间直接落图元（压在本批贴图之下，地面元素读法），自管设备状态；待游戏内验证
+        /// </summary>
+        private void DrawSpikeGeometry(Effect effect, float h, float crumble, Color lightColor) {
+            GraphicsDevice device = Main.graphics.GraphicsDevice;
+            BlendState origBlend = device.BlendState;
+            RasterizerState origRaster = device.RasterizerState;
+            DepthStencilState origDepth = device.DepthStencilState;
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
+            device.DepthStencilState = DepthStencilState.None;
+
+            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uCrumble"]?.SetValue(crumble);
+            effect.Parameters["uOpacity"]?.SetValue(1f);
+            effect.Parameters["uLight"]?.SetValue(lightColor.ToVector3());
+            effect.Parameters["uBonePale"]?.SetValue(SkeletronRenderHelper.BonePale.ToVector3());
+            effect.Parameters["uBoneShadow"]?.SetValue(SkeletronRenderHelper.BoneShadow.ToVector3());
+            effect.Parameters["uGhostColor"]?.SetValue(SkeletronRenderHelper.GhostCyan.ToVector3());
+
+            for (int i = -1; i <= 1; i++) {
+                float lean = i * 0.26f;
+                float segH = h * (i == 0 ? 1f : 0.62f);
+                if (segH < 8f) {
+                    continue;
+                }
+                float baseHalfW = i == 0 ? 15f : 10f;
+                Vector2 root = Projectile.Center + new Vector2(i * 12f, 2f);
+                Vector2 axis = (-MathHelper.PiOver2 + lean).ToRotationVector2();
+                Vector2 perp = new Vector2(-axis.Y, axis.X);
+                float strandSeed = Projectile.whoAmI * 0.137f + (i + 1) * 0.29f;
+
+                for (int s = 0; s <= SpikeSegs; s++) {
+                    float t = s / (float)SpikeSegs;
+                    Vector2 p = root + axis * (segH * t);
+                    //锥形收窄 + 确定性锯齿咬边（视觉层，各端一致无需同步）
+                    float half = baseHalfW * (1f - t * 0.94f);
+                    float jagL = MathF.Sin(strandSeed * 41f + s * 3.17f) * 2.6f * (1f - t);
+                    float jagR = MathF.Sin(strandSeed * 23f + s * 4.71f) * 2.6f * (1f - t);
+                    Vector2 l = p - perp * (half + jagL);
+                    Vector2 r = p + perp * (half + jagR);
+                    spikeVerts[s * 2] = new VertexPositionColorTexture(new Vector3(l.X, l.Y, 0f), Color.White, new Vector2(0f, t));
+                    spikeVerts[s * 2 + 1] = new VertexPositionColorTexture(new Vector3(r.X, r.Y, 0f), Color.White, new Vector2(1f, t));
+                }
+
+                effect.Parameters["uSeed"]?.SetValue(strandSeed % 1f);
+                foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+                    pass.Apply();
+                    device.DrawUserPrimitives(PrimitiveType.TriangleStrip, spikeVerts, 0, SpikeSegs * 2);
+                }
+            }
+
+            device.BlendState = origBlend;
+            device.RasterizerState = origRaster;
+            device.DepthStencilState = origDepth;
+        }
+
+        /// <summary>回退：原版骨贴图塔簇</summary>
+        private void DrawFallbackCluster(float h, float grow, float crumbleFade, Color lightColor) {
             Main.instance.LoadProjectile(ProjectileID.Bone);
             Texture2D bone = TextureAssets.Projectile[ProjectileID.Bone].Value;
             Vector2 orig = bone.Size() / 2f;
             Vector2 basePos = Projectile.Center - Main.screenPosition;
 
-            float grow = GrowProgress;
-            float h = SpikeHeight * grow;
-            float crumbleFade = Crumbling
-                ? MathHelper.Clamp(1f - (Age - Delay - GrowFrames - HoldFrames) / CrumbleFrames, 0f, 1f)
-                : 1f;
-
-            //幽光衬底（隆起时最亮，预乘批 A=0 加色）
-            Texture2D glow = CWRAsset.SoftGlow.Value;
-            Main.spriteBatch.Draw(glow, basePos - new Vector2(0f, h * 0.4f), null,
-                SkeletronRenderHelper.AsAdditive(SkeletronRenderHelper.GhostDeep) * (0.4f * grow * crumbleFade),
-                0f, glow.Size() / 2f,
-                new Vector2(1.4f, h / glow.Height * 1.4f + 0.3f), SpriteEffects.None, 0f);
-
-            //骨簇塔：三柱交叠，中柱最高，侧柱外倾
             for (int i = -1; i <= 1; i++) {
                 float lean = i * 0.24f;
                 float segH = h * (i == 0 ? 1f : 0.62f);
@@ -138,7 +208,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
                         orig, segScale, SpriteEffects.None, 0f);
                 }
             }
-            return false;
         }
+
+        #endregion
     }
 }

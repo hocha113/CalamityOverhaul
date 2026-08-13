@@ -27,9 +27,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             context.PhaseTwoStarted = true;
             //公平阀：清场上气泡，走廊重置
             DukeFishronAI.ClearMinions(alsoTornado: false);
-            if (!VaultUtils.isServer) {
-                VaultUtils.Text(DukeFishronAI.DukeFishron_Frenzy_Text.Value, FishronMotionFX.SeaGreen);
-            }
         }
 
         public override IFishronState OnUpdate(FishronStateContext context) {
@@ -124,9 +121,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             strikeResolved = false;
             //夜幕清场：气泡与龙卷都归于雨
             DukeFishronAI.ClearMinions(alsoTornado: true);
-            if (!VaultUtils.isServer) {
-                VaultUtils.Text(DukeFishronAI.DukeFishron_Nightfall_Text.Value, FishronMotionFX.StormBolt);
-            }
         }
 
         public override IFishronState OnUpdate(FishronStateContext context) {

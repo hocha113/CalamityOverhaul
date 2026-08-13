@@ -6,26 +6,15 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
 {
     /// <summary>躯干主控 NPCOverride，States 驱动，契约见 GolemPhase、npc.ai[2]</summary>
-    internal class GolemBodyAI : CWRNPCOverride, ICWRLoader, ILocalizedModType
+    internal class GolemBodyAI : CWRNPCOverride, ICWRLoader
     {
-        #region 数据与本地化
+        #region 数据
         public override int TargetID => NPCID.Golem;
-
-        public string LocalizationCategory => "BrutalNPCs";
-        /// <summary>祭坛启动广播</summary>
-        public static LocalizedText GolemAwaken_Text { get; private set; }
-        /// <summary>头部分离广播</summary>
-        public static LocalizedText GolemSunder_Text { get; private set; }
-        /// <summary>太阳核心过载广播</summary>
-        public static LocalizedText GolemOverdrive_Text { get; private set; }
-        /// <summary>石像崩解广播</summary>
-        public static LocalizedText GolemCrumble_Text { get; private set; }
 
         /// <summary>死亡演出中的躯干 whoAmI，无则 -1</summary>
         internal static int ActivePerformanceBody = -1;
@@ -44,17 +33,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         void ICWRLoader.UnLoadData() {
             ActivePerformanceBody = -1;
             GolemScreenEffects.Clear();
-        }
-
-        public override void SetStaticDefaults() {
-            GolemAwaken_Text = this.GetLocalization(nameof(GolemAwaken_Text),
-                () => "祭坛在下沉，石头里传出齿轮咬合的声音。");
-            GolemSunder_Text = this.GetLocalization(nameof(GolemSunder_Text),
-                () => "颈口的锁扣崩开，头颅带着它的光环升了上去。");
-            GolemOverdrive_Text = this.GetLocalization(nameof(GolemOverdrive_Text),
-                () => "太阳核心过载了，光从每道石缝里漏出来。");
-            GolemCrumble_Text = this.GetLocalization(nameof(GolemCrumble_Text),
-                () => "石壳一层层塌下去，只剩那颗宝石还亮着。");
         }
 
         public override bool? CanCWROverride() {
@@ -118,6 +96,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             npc.ai[GolemAiSlots.BodyBeat] = 0f;
 
             stateMachine.Update();
+
+            //中途加入兜底：alpha 不走原版网络包，新客户端本地出生值 255；
+            //过了 Intro 后由各端本地降（Intro 自己管淡入，Despawn 沉地淡出不干扰）
+            GolemStateIndex visState = GolemFacts.GetStateIndex(npc);
+            if (npc.alpha > 0 && visState is not GolemStateIndex.Intro and not GolemStateIndex.Despawn) {
+                npc.alpha = Math.Max(npc.alpha - 12, 0);
+            }
 
             //岩浆脉络余温衰减
             stateContext.VeinGlow = Math.Max(stateContext.VeinGlow - 0.012f, BaseVeinGlow());
@@ -275,7 +260,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             if (!fist.active) {
                 return;
             }
-            GolemFistAI fistOverride = fist.GetOverride<GolemFistAI>();
+            //拳注册的是左右子类，禁用精确类型索引的 GetOverride（基类键不存在会抛出）
+            GolemFistAI fistOverride = GolemFacts.FindOverride<GolemFistAI>(fist);
             if (fistOverride == null) {
                 return;
             }
@@ -290,13 +276,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             fist.netUpdate = true;
         }
 
-        /// <summary>广播文本（服务端裁决，各端显示）</summary>
-        internal static void Broadcast(LocalizedText text, Color color) {
-            if (VaultUtils.isClient || text == null) {
-                return;
-            }
-            VaultUtils.Text(text.Value, color);
-        }
         #endregion
 
         #region 死亡与掉落

@@ -78,7 +78,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
 
             //核心升空
             if (Timer == CoreSpawn) {
-                GolemBodyAI.Broadcast(GolemBodyAI.GolemOverdrive_Text, new Color(255, 190, 90));
                 if (!VaultUtils.isClient) {
                     int spokeDamage = ScaleDamage(context, GolemDirector.UltSpokeDamage);
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + new Vector2(0f, -40f),

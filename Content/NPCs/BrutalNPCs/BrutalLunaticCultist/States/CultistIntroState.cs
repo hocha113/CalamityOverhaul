@@ -96,7 +96,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                                 Main.rand.NextFloat(0.8f, 1.4f), Main.rand.Next(20, 34));
                         }
                     }
-                    CultistBossAI.LocalText(CultistBossAI.LunaticCultist_IntroText, CultistPalette.ThunderMain);
                 }
             }
 

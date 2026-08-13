@@ -7,20 +7,14 @@ using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.Localization;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 {
     /// <summary>月球领主核心主控：状态机指挥、部件生成回收、天体演出数据源</summary>
-    internal class MoonLordCoreAI : CWRNPCOverride, ICWRLoader, ILocalizedModType
+    internal class MoonLordCoreAI : CWRNPCOverride, ICWRLoader
     {
         #region 数据
         public override int TargetID => NPCID.MoonLordCore;
-
-        public string LocalizationCategory => "BrutalNPCs";
-        public static LocalizedText MoonLordIntro_Text { get; private set; }
-        public static LocalizedText MoonLordCoreExposed_Text { get; private set; }
 
         /// <summary>死亡演出中的核心 whoAmI，无则 -1（运镜/玩家侧查询）</summary>
         internal static int ActivePerformanceCore = -1;
@@ -44,13 +38,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             ActivePerformanceCore = -1;
             MLordScreenEffects.Clear();
             MLordEclipseSky.ResetDrive();
-        }
-
-        public override void SetStaticDefaults() {
-            MoonLordIntro_Text = this.GetLocalization(nameof(MoonLordIntro_Text),
-                () => "日轮熄了。那只眼睛正隔着整片天空看你。");
-            MoonLordCoreExposed_Text = this.GetLocalization(nameof(MoonLordCoreExposed_Text),
-                () => "三目俱碎，心脏裸露在星光里——它开始不顾一切了。");
+            MLordArmIK.Reset();
         }
 
         public override bool? CanCWROverride() {
@@ -375,7 +363,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                     other.HitEffect();
                 }
                 other.active = false;
-                other.netUpdate = true;
+                BroadcastServantRemoval(other);
             }
         }
 
@@ -383,7 +371,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             servant.life = 0;
             servant.HitEffect();
             servant.active = false;
-            servant.netUpdate = true;
+            BroadcastServantRemoval(servant);
+        }
+
+        /// <summary>
+        /// 显式广播从属失活。被灭者的 UpdateNPC 因 !active 直接返回，
+        /// 挂 netUpdate 永远不会被冲刷（原版清场同样手动 SendData 23）
+        /// </summary>
+        private static void BroadcastServantRemoval(NPC servant) {
+            if (VaultUtils.isServer) {
+                NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, servant.whoAmI);
+            }
         }
 
         /// <summary>胸甲炸开：原版四块装甲 Gore（客户端视觉）</summary>
@@ -454,6 +452,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         #region 绘制
 
         public override bool FindFrame(int frameHeight) {
+            //专用服务器纹理未加载（Value 为 null）且钩子照常被调（frameHeight=1），帧矩形只有绘制端消费
+            if (VaultUtils.isServer) {
+                return false;
+            }
             //完整重建帧矩形：接管后原版不再初始化 frame 宽高
             int width = TextureAssets.Npc[npc.type].Value.Width;
             npc.frame = new Rectangle(0, heartFrame * frameHeight, width, frameHeight);

@@ -59,14 +59,16 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float core = exp(-d * d * 8.0);
     float hot = exp(-d * d * 90.0);
 
-    //光谱缘：越远离芯越offset色相
-    float3 spectral = hueRGB(uHue + d * 0.12);
+    //光谱缘：越远离芯越offset色相；梢端追加色散撕开（束在末端散成光谱）
+    float tipZone = smoothstep(0.60, 0.96, along);
+    float3 spectral = hueRGB(uHue + d * (0.12 + tipZone * 0.30));
 
-    //外流干涉带：亮带自根向梢流动（能量在输送）
-    float flow = 0.72 + 0.28 * sin(along * 34.0 - uTime * 9.0);
+    //外流干涉带：双频亮带自根向梢流动（能量在输送）
+    float flow = 0.64 + 0.24 * sin(along * 34.0 - uTime * 9.0) + 0.12 * sin(along * 13.0 - uTime * 5.0);
 
-    //根部辉花+梢端渐隐
+    //根部辉花+梢端渐隐；根端羽化封口（束不从她背后裁一条硬边）
     float rootFlare = (1.0 - smoothstep(0.0, 0.14, along)) * 1.3;
+    float rootFade = smoothstep(0.0, 0.03, along);
     float tipFade = 1.0 - smoothstep(0.82, 1.0, along);
 
     //预告呼吸
@@ -82,10 +84,10 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     color += hueRGB(uHue) * halo;
 
     float alpha = saturate(core * 0.8 * flow + hot * 0.95 + halo * 0.4 + rootFlare * core * 0.5);
-    alpha *= tipFade * telePulse;
+    alpha *= tipFade * rootFade * telePulse;
     //预告态整体压暗
     alpha *= lerp(1.0, 0.5, isTele);
-    return float4(color * alpha * tipFade * telePulse, alpha) * input.Color;
+    return float4(color * alpha * tipFade * rootFade * telePulse, alpha) * input.Color;
 }
 
 technique Technique1

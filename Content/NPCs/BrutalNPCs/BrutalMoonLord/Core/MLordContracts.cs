@@ -188,11 +188,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
 
         /// <summary>读取核心 Override ai 槽，核心失效返回退避值</summary>
         public static float ReadCoreOverrideAi(NPC core, int slot, float fallback = 0f) {
-            if (core == null || !core.active) {
+            //补上type守卫：存储索引过期后槽位可能被任意NPC复用，此时也算核心失效
+            if (core == null || !core.active || core.type != NPCID.MoonLordCore) {
                 return fallback;
             }
-            MoonLordCoreAI overrideAI = core.GetOverride<MoonLordCoreAI>();
-            if (overrideAI == null) {
+            //取不到覆写一并退避（精确索引缺键会抛出）
+            if (!core.TryGetOverride(out MoonLordCoreAI overrideAI)) {
                 return fallback;
             }
             return overrideAI.ai[slot];

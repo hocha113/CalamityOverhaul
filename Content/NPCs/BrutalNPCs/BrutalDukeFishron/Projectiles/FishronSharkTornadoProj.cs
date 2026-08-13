@@ -35,8 +35,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
 
         private ref float Charge => ref Projectile.ai[0];
         private ref float Tier => ref Projectile.ai[1];
+        /// <summary>寿命刷新戳（ai[2] 随包同步）：变化即把 timeLeft 抬回下限</summary>
+        private ref float RefreshStamp => ref Projectile.ai[2];
         private ref float LifeTimer => ref Projectile.localAI[0];
         private ref float SharkronTimer => ref Projectile.localAI[1];
+        /// <summary>本地已消化的刷新戳</summary>
+        private ref float SeenStamp => ref Projectile.localAI[2];
+
+        /// <summary>刷新戳抬升的寿命下限</summary>
+        internal const int RefreshLife = 900;
+
+        /// <summary>
+        /// 服务端调用：打刷新戳延长寿命。timeLeft 不在弹幕同步包里，
+        /// 直改只有服务端生效，客户端会按旧寿命提前杀掉本地副本（隐形龙卷）
+        /// </summary>
+        internal static void RefreshLifetime(Projectile proj) {
+            proj.ai[2] += 1f;
+            proj.netUpdate = true;
+        }
 
         private float seed;
 
@@ -67,6 +83,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
 
         public override bool ShouldUpdatePosition() => false;
 
+        public override void SetStaticDefaults() {
+            //绘制 quad 宽出命中盒一倍余：本体近出屏时不允许整柱瞬灭
+            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 520;
+        }
+
         /// <summary>起身/消散期判定关闭</summary>
         private bool HitWindowOpen => LifeTimer >= RiseTime * 0.6f && Projectile.timeLeft >= FadeTime;
 
@@ -75,6 +96,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
         public override void AI() {
             LifeTimer++;
             seed = Projectile.whoAmI * 0.617f;
+
+            //升格落地（尺寸+加寿）由同步的 ai[1] 驱动，所有端各执行一次——
+            //width/timeLeft 不入同步包，只在服务端改会让客户端错位并提前消亡
+            if (Upgraded && Projectile.width != (int)ColumnWidth) {
+                Projectile.timeLeft += TierBonusLife;
+                Resize();
+            }
+            //寿命刷新戳落地（所有端）
+            if (SeenStamp != RefreshStamp) {
+                SeenStamp = RefreshStamp;
+                Projectile.timeLeft = Math.Max(Projectile.timeLeft, RefreshLife);
+            }
 
             //起身期无伤害
             Projectile.damage = HitWindowOpen ? TornadoDamage : 0;
@@ -95,13 +128,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             float shift = MathHelper.Clamp(targetBottom - currentBottom, -9f, 9f);
             Projectile.position.Y += shift;
 
-            //吞吸气泡升级（服务端裁决，netUpdate 广播）
+            //吞吸气泡升级（服务端裁决落旗，尺寸/加寿由上方全端落地块承接）
             if (!VaultUtils.isClient) {
                 AbsorbBubbles();
                 if (!Upgraded && Charge >= ChargeToUpgrade) {
                     Tier = 1f;
-                    Projectile.timeLeft += TierBonusLife;
-                    Resize();
                     Projectile.netUpdate = true;
                 }
                 //升格后周期甩出鲨鱼龙
@@ -218,6 +249,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
                     FishronMotionFX.FoamWhite * (0.35f * env), Main.rand.NextFloat(0.7f, 1.2f))
                     ?.Configure(Main.rand.Next(24, 40), Main.rand.NextFloat(-0.03f, 0.03f));
             }
+            //底部卷吸：柱外碎浪被拖向基座再卷起——吸入感来自向心初速
+            if (Main.rand.NextBool(3)) {
+                float sideSign = Main.rand.NextBool() ? 1f : -1f;
+                Vector2 pos = bottom + new Vector2(sideSign * Main.rand.NextFloat(0.7f, 1.5f) * ColumnWidth * 0.5f,
+                    -Main.rand.NextFloat(4f, 26f));
+                Vector2 vel = new(-sideSign * Main.rand.NextFloat(2.5f, 4.5f), -Main.rand.NextFloat(1f, 2.5f));
+                FishronMotionFX.SpawnSprayCone(pos, vel.SafeNormalize(-Vector2.UnitY), 1,
+                    vel.Length() * 0.7f, vel.Length(), 0.3f, 0.75f * env);
+            }
             //柱身甩出的水珠
             if (Main.rand.NextBool(2)) {
                 float h = Main.rand.NextFloat(0.1f, 0.95f);
@@ -226,6 +266,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
                 Vector2 vel = new(Main.rand.NextFloat(-4f, 4f), -Main.rand.NextFloat(1f, 4f));
                 FishronMotionFX.SpawnSprayCone(pos, vel.SafeNormalize(-Vector2.UnitY), 1,
                     vel.Length() * 0.6f, vel.Length(), 0.4f, 0.8f * env);
+            }
+            //顶冠散逸：顶口水沫被风切横甩出去，向上漂散
+            if (Main.rand.NextBool(4)) {
+                Vector2 top = bottom - new Vector2(0, Projectile.height * Main.rand.NextFloat(0.88f, 1.02f));
+                float flingSign = Main.rand.NextBool() ? 1f : -1f;
+                InnoVault.PRT.PRTLoader.NewParticle<PRT_FishronFoam>(
+                    top + new Vector2(flingSign * ColumnWidth * Main.rand.NextFloat(0.1f, 0.4f), 0),
+                    new Vector2(flingSign * Main.rand.NextFloat(1.5f, 3.5f), -Main.rand.NextFloat(0.8f, 2f)),
+                    FishronMotionFX.FoamWhite * (0.3f * env), Main.rand.NextFloat(0.5f, 0.9f))
+                    ?.Configure(Main.rand.Next(18, 30), Main.rand.NextFloat(-0.05f, 0.05f));
             }
             //风声
             if (LifeTimer % 40 == 0 && env > 0.5f) {
@@ -246,8 +296,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
 
             Effect effect = EffectLoader.FishronTornado?.Value;
             Vector2 bottom = new(Projectile.Center.X, Projectile.position.Y + Projectile.height);
-            float drawW = ColumnWidth * 1.65f;
-            float drawH = ColumnHeight * 1.12f;
+            //quad 大幅宽于名义柱径：撕裂轮廓与离体飞沫全部留在画布内侧，
+            //护栏只作采样保险，绝不承担切边（塑料感的旧病根之一）
+            float drawW = ColumnWidth * 2.6f;
+            float drawH = ColumnHeight * 1.30f;
             Vector2 drawCenter = bottom - new Vector2(0, drawH * 0.5f);
 
             if (effect == null || noiseTex == null) {

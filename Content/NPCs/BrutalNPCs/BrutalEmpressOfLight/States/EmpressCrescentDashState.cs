@@ -113,13 +113,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     npc.damage = 0;
                 }
 
-                //冲刺尾迹：垂直抛洒双列弹幕，光墙自航迹缓缓张开
-                if (dashBeat % 3 == 0 && Math.Abs(npc.velocity.X) > 24f && !VaultUtils.isClient) {
-                    int shed = dashBeat / 3;
-                    float hue = (cycleIdx * 0.31f + shed * 0.045f) % 1f;
+                //冲刺尾迹：垂直抛洒弹幕，快慢双速交替——光墙张开成双层帷幕
+                if (dashBeat % 2 == 0 && Math.Abs(npc.velocity.X) > 24f && !VaultUtils.isClient) {
+                    int shed = dashBeat / 2;
+                    float hue = (cycleIdx * 0.31f + shed * 0.034f) % 1f;
                     //确定性微斜：抛洒角随索引摆动，光墙有编织感
                     float tilt = (float)Math.Sin(shed * 0.9f) * 0.16f;
                     float wallSpeed = context.IsDeathMode ? 3.6f : 3.1f;
+                    //奇偶拍交替快/慢层：同帷幕两种张开速率，视觉双层
+                    if (shed % 2 == 1) {
+                        wallSpeed *= 0.68f;
+                    }
                     Vector2 up = (-MathHelper.PiOver2 + tilt).ToRotationVector2() * wallSpeed;
                     Vector2 down = (MathHelper.PiOver2 - tilt).ToRotationVector2() * wallSpeed;
                     EmpressCast.Bolt(npc, npc.Center, up, context.BoltDamage, 0, hue);

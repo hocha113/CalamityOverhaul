@@ -177,7 +177,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Roar with { Volume = 1.3f, Pitch = -0.2f }, npc.Center);
                 SoundEngine.PlaySound(SoundID.NPCDeath10 with { Volume = 1f, Pitch = -0.3f }, npc.Center);
-                VaultUtils.Text(EyeOfCthulhuAI.SkinTear_Text.Value, EocMotion.BrightBlood);
 
                 EocMotion.BloodBurst(npc.Center, 2.3f);
                 PRTLoader.NewParticle<PRT_DWave>(npc.Center, Vector2.Zero, EocMotion.Arterial, 0.32f)?

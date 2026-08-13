@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
         public override EmpressStateIndex StateIndex => EmpressStateIndex.SwordRain;
 
         private int VolleyCount => Context.IsSecondPhase ? 3 : 2;
-        private int BladesPerVolley => Context.IsSecondPhase ? 11 : 9;
+        private int BladesPerVolley => Context.IsSecondPhase ? 14 : 12;
         /// <summary>单轮时长：召唤+悬停+齐射尾</summary>
         private int VolleyTime => Context.Scaled(118);
         private int TotalTime => VolleyCount * VolleyTime + Context.Scaled(50);

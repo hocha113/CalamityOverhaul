@@ -185,6 +185,100 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
         }
     }
 
+    /// <summary>烟缕：火的余韵——焰熄之后的暖灰烟，缓升糊化，活得比火久</summary>
+    internal class PRT_CultistSmoke : BasePRT
+    {
+        public Color InitialColor;
+        public float SpinRate;
+        public override int InGame_World_MaxCount => 2000;
+        public override bool CanPool => true;
+        public override string Texture => CWRConstant.Masking + "SmokeWisp01";
+
+        public PRT_CultistSmoke Configure(int lifetime) {
+            InitialColor = Color;
+            Lifetime = lifetime;
+            SpinRate = Main.rand.NextFloat(-0.03f, 0.03f);
+            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+            return this;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            InitialColor = default;
+            SpinRate = 0f;
+        }
+
+        public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+
+        public override void AI() {
+            float t = LifetimeCompletion;
+            //升腾+减速漂散
+            Velocity *= 0.96f;
+            Velocity.Y -= 0.035f;
+            Rotation += SpinRate;
+            //焰橙余温→暖灰→熄灭，尺寸膨胀糊化
+            Color cooled = Color.Lerp(InitialColor, new Color(90, 74, 66), MathHelper.Clamp(t * 1.8f, 0f, 1f));
+            Color = cooled * ((1f - t) * (1f - t) * 0.55f);
+            Scale += 0.012f;
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D texture = PRTLoader.PRT_IDToTexture[ID];
+            spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color, Rotation,
+                texture.Size() * 0.5f, 0.4f * Scale, 0, 0f);
+            return false;
+        }
+    }
+
+    /// <summary>电痕：雷的残响——原地驻留的抖动电弧段，频闪衰减</summary>
+    internal class PRT_CultistArcTrace : BasePRT
+    {
+        public Color InitialColor;
+        public float SegLength;
+        public float BaseRotation;
+        public override int InGame_World_MaxCount => 1500;
+        public override bool CanPool => true;
+        public override string Texture => CWRConstant.Masking + "ThunderTrail";
+
+        public PRT_CultistArcTrace Configure(float rotation, float segLength, int lifetime) {
+            InitialColor = Color;
+            BaseRotation = rotation;
+            SegLength = segLength;
+            Lifetime = lifetime;
+            return this;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            InitialColor = default;
+            SegLength = 0f;
+            BaseRotation = 0f;
+        }
+
+        public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+
+        public override void AI() {
+            Velocity = Vector2.Zero;
+            float t = LifetimeCompletion;
+            //频闪：2帧一跳的亮度骤变+偶发熄灭帧
+            float blink = Main.rand.NextBool(7) ? 0f : Main.rand.NextFloat(0.45f, 1f);
+            Color = InitialColor * ((1f - t) * blink);
+            //每2帧抖一次朝向（残响电离仍在游走）
+            if (Time % 2 == 0) {
+                Rotation = BaseRotation + Main.rand.NextFloat(-0.28f, 0.28f);
+            }
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D texture = PRTLoader.PRT_IDToTexture[ID];
+            float t = LifetimeCompletion;
+            Vector2 scale = new(SegLength / texture.Width, (0.24f - 0.12f * t) * Scale);
+            spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color, Rotation,
+                new Vector2(0f, texture.Height / 2f), scale, 0, 0f);
+            return false;
+        }
+    }
+
     /// <summary>法阵碎晶：仪式碎裂/分身破灭用，旋转飘落</summary>
     internal class PRT_CultistShard : BasePRT
     {

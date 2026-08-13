@@ -1,6 +1,5 @@
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.GameContent;
@@ -11,13 +10,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
     /// <summary>灵骨材质绘制辅助：幽灵臂条带、骨链、眼火、冠火、预警线、旋杀涡流</summary>
     internal static class SkeletronRenderHelper
     {
-        #region 自持资源
-        [VaultLoaden(CWRConstant.Masking + "TearFlame01")]
-        internal static Asset<Texture2D> TearFlame = null;
-        [VaultLoaden(CWRConstant.Other + "SoulFire")]
-        internal static Asset<Texture2D> SoulFire = null;
-        #endregion
-
         #region 色板（枯骨+阴魂火+诅咒暗）
         /// <summary>骨白</summary>
         public static readonly Color BonePale = new Color(232, 222, 196);
@@ -48,8 +40,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
 
         private static BasicEffect fallbackEffect;
 
-        /// <summary>着色器缺失时的顶点色回退效果</summary>
-        private static BasicEffect GetFallbackEffect(GraphicsDevice device) {
+        /// <summary>着色器缺失时的顶点色回退效果（冷焰批共用）</summary>
+        internal static BasicEffect GetFallbackEffect(GraphicsDevice device) {
             fallbackEffect ??= new BasicEffect(device) {
                 VertexColorEnabled = true,
                 TextureEnabled = false,
@@ -163,8 +155,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
 
         #region 骨链（物理手锁链）
 
-        /// <summary>沿下垂曲线绘制骨节链，tension=1 时绷直</summary>
-        public static void DrawBoneChain(SpriteBatch spriteBatch, Vector2 from, Vector2 to, float tension, float opacity) {
+        private static readonly Vector2[] chainPts = new Vector2[13];
+
+        /// <summary>沿下垂曲线绘制骨节链，tension=1 时绷直；筋络为灵息绸带顶点层；seed 须逐链稳定</summary>
+        public static void DrawBoneChain(SpriteBatch spriteBatch, Vector2 from, Vector2 to, float tension, float opacity, float seed = 0.37f) {
             if (opacity <= 0.02f) {
                 return;
             }
@@ -180,6 +174,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
             float sag = MathHelper.Lerp(MathHelper.Clamp(dist * 0.22f, 30f, 170f), 6f, MathHelper.Clamp(tension, 0f, 1f));
             Vector2 ctrl = (from + to) * 0.5f + new Vector2(0f, sag);
 
+            //幽蓝筋络：沿链曲线的灵息绸带（顶点层，深压在骨节之下）
+            for (int i = 0; i < chainPts.Length; i++) {
+                chainPts[i] = QuadBez(from, ctrl, to, i / (float)(chainPts.Length - 1));
+            }
+            DrawSpecterRibbon(chainPts, chainPts.Length, 7f, 10f,
+                opacity * (0.34f + tension * 0.30f), 0.5f + tension * 0.6f,
+                seed, 0.18f, 0.14f, 1.1f + tension * 1.6f);
+
             int links = (int)MathHelper.Clamp(dist / 22f, 4f, 34f);
             Vector2 prev = from;
             for (int i = 1; i <= links; i++) {
@@ -192,98 +194,174 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
                 Color lit = Lighting.GetColor((int)(p.X / 16f), (int)(p.Y / 16f));
                 Color col = Color.Lerp(BoneShadow, BonePale, 0.55f).MultiplyRGB(lit) * opacity;
                 spriteBatch.Draw(bone, p - Main.screenPosition, null, col, rot + roll, orig, 0.86f, SpriteEffects.None, 0f);
-                //幽蓝筋络衬在骨节之间（预乘批 A=0 加色）
-                if (i % 2 == 0) {
-                    Texture2D glow = CWRAsset.SoftGlow.Value;
-                    spriteBatch.Draw(glow, (p + prev) * 0.5f - Main.screenPosition, null,
-                        AsAdditive(GhostCyan) * (opacity * 0.16f), 0f, glow.Size() / 2f, 0.30f, SpriteEffects.None, 0f);
-                }
                 prev = p;
             }
         }
 
         #endregion
 
-        #region 眼火 / 冠火
+        #region 眼火 / 冠火（阴魂冷焰顶点批）
 
-        /// <summary>双眼窝阴魂火，随头旋转，intensity 支持 >1 过曝帧</summary>
-        public static void DrawEyeFlames(SpriteBatch spriteBatch, NPC head, float intensity, float alphaFade = 1f) {
+        /// <summary>双眼窝阴魂火，随头旋转，intensity 支持 >1 过曝帧；压入冷焰批待 EndEntityDraw 统一顶点绘制</summary>
+        public static void DrawEyeFlames(NPC head, float intensity, float alphaFade = 1f) {
             if (intensity <= 0.02f || alphaFade <= 0.02f) {
                 return;
             }
-            Texture2D soul = SoulFireTex;
-            if (soul == null) {
-                return;
-            }
-            int frame = (int)(Main.GameUpdateCount / 5 + head.whoAmI) % 5;
-            Rectangle rect = new Rectangle(0, soul.Height / 5 * frame, soul.Width, soul.Height / 5);
-            Vector2 orig = new Vector2(rect.Width / 2f, rect.Height * 0.72f);
-            Texture2D glow = CWRAsset.SoftGlow.Value;
-
+            //焰轴 = 头顶方向
+            float axisAngle = head.rotation - MathHelper.PiOver2;
             for (int side = -1; side <= 1; side += 2) {
-                //眼窝局部偏移随头旋转
-                Vector2 local = new Vector2(side * 15f, -8f) * head.scale;
-                Vector2 pos = head.Center + local.RotatedBy(head.rotation) - Main.screenPosition;
+                //眼窝局部偏移随头旋转，焰根压到眼窝下缘
+                Vector2 local = new Vector2(side * 15f, -2f) * head.scale;
+                Vector2 pos = head.Center + local.RotatedBy(head.rotation);
                 float flick = 0.9f + 0.18f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 11f + side * 2.1f + head.whoAmI);
                 float s = MathHelper.Clamp(intensity, 0f, 1.6f) * flick;
+                float sway = 0.10f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 7f + side * 1.3f);
 
-                //光晕走预乘批 A=0 加色
-                spriteBatch.Draw(glow, pos, null, AsAdditive(GhostDeep) * (0.5f * s * alphaFade), 0f, glow.Size() / 2f, 0.62f * s, SpriteEffects.None, 0f);
-                spriteBatch.Draw(soul, pos, rect, Color.White * (0.9f * MathHelper.Clamp(s, 0f, 1f) * alphaFade),
-                    head.rotation, orig, 0.62f * s, SpriteEffects.None, 0f);
+                SkeletronFlameRender.Push(pos, axisAngle + sway,
+                    new Vector2(26f, 46f) * head.scale * s,
+                    MathHelper.Clamp(intensity * 0.75f, 0.3f, 1f),
+                    (head.whoAmI * 0.31f + side * 0.17f) % 1f, 0.1f,
+                    0.95f * MathHelper.Clamp(s, 0f, 1f) * alphaFade);
             }
         }
 
-        /// <summary>二阶段诅咒火之冠：头顶沿弧五舌幽火</summary>
-        public static void DrawCrownFlames(SpriteBatch spriteBatch, NPC head, float intensity, float alphaFade = 1f) {
+        /// <summary>二阶段诅咒火之冠：头顶沿弧五舌幽火（冷焰顶点批）</summary>
+        public static void DrawCrownFlames(NPC head, float intensity, float alphaFade = 1f) {
             if (intensity <= 0.02f || alphaFade <= 0.02f) {
                 return;
             }
-            Texture2D tongue = TearFlame?.Value;
-            if (tongue == null) {
-                return;
-            }
-            Vector2 torig = new Vector2(tongue.Width / 2f, tongue.Height);
-
             for (int i = 0; i < 5; i++) {
                 float arc = (i - 2f) * 0.38f;
                 //火舌根锚在颅顶弧线上
-                Vector2 local = new Vector2((float)Math.Sin(arc) * 34f, -44f - (float)Math.Cos(arc) * 10f) * head.scale;
-                Vector2 pos = head.Center + local.RotatedBy(head.rotation) - Main.screenPosition;
+                Vector2 local = new Vector2((float)Math.Sin(arc) * 34f, -40f - (float)Math.Cos(arc) * 10f) * head.scale;
+                Vector2 pos = head.Center + local.RotatedBy(head.rotation);
                 float hash = (i * 37 % 11) / 11f;
                 float flick = 0.72f + 0.38f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * (9f + hash * 5f) + i * 2.7f);
-                float h = intensity * flick;
-                Color col = Color.Lerp(GhostCyan, GhostDeep, hash * 0.6f);
-                //黑底遮罩贴图在预乘批必须 A=0 加色，否则出黑框
-                spriteBatch.Draw(tongue, pos, null, AsAdditive(col) * (0.72f * h * alphaFade),
-                    head.rotation + arc * 0.5f, torig, new Vector2(0.30f, 0.44f + 0.3f * h), SpriteEffects.None, 0f);
+                float h = MathHelper.Clamp(intensity * flick, 0f, 1.5f);
+
+                SkeletronFlameRender.Push(pos, head.rotation - MathHelper.PiOver2 + arc * 0.55f,
+                    new Vector2(20f + 8f * h, (44f + 26f * h) * (i == 2 ? 1.2f : 1f)) * head.scale,
+                    MathHelper.Clamp(intensity * 0.8f, 0f, 1f),
+                    (head.whoAmI * 0.11f + i * 0.19f) % 1f, 0.25f + hash * 0.4f,
+                    0.8f * MathHelper.Clamp(h, 0f, 1f) * alphaFade);
             }
         }
 
-        private static Texture2D SoulFireTex => SoulFire?.Value;
-
         #endregion
 
-        #region 冲刺预警线
+        #region 灵息绸带（通用顶点带：预警线/链筋络/运动轨迹）
 
-        /// <summary>沿角度画预警光线（加色，读作"轨迹将至"）</summary>
+        private const int MaxRibbonPoints = 64;
+        private static readonly VertexPositionColorTexture[] ribbonVerts = new VertexPositionColorTexture[MaxRibbonPoints * 2];
+        private static readonly Vector2[] telegraphPts = new Vector2[8];
+        private static readonly Vector2[] trailPts = new Vector2[16];
+
+        /// <summary>
+        /// 灵息绸带顶点条带（世界坐标折线，uv.x 0=首点尾端→1=末点头端）<br/>
+        /// 自管设备状态，可在活动 Deferred 批期间调用（图元先落，压在本批所有贴图之下）<br/>
+        /// 着色器缺失时返回 false，调用方自行降级
+        /// </summary>
+        public static bool DrawSpecterRibbon(Vector2[] pts, int count, float halfWidthTail, float halfWidthHead,
+            float opacity, float coreBoost, float seed, float fadeIn, float fadeOut, float flowSpeed) {
+            if (opacity <= 0.02f || count < 2 || count > MaxRibbonPoints) {
+                return true;
+            }
+            Effect effect = EffectLoader.SkeletronSpecterRibbon?.Value;
+            if (effect == null || CWRAsset.PerlinNoise?.Value == null) {
+                return false;
+            }
+
+            Color pack = new Color(MathHelper.Clamp(coreBoost, 0f, 1f), 0f, 0f, MathHelper.Clamp(opacity, 0f, 1f));
+            for (int i = 0; i < count; i++) {
+                float t = i / (float)(count - 1);
+                Vector2 p = pts[i];
+                //切向差分（端点取邻段）
+                Vector2 tangent = i == 0
+                    ? (pts[1] - pts[0]).SafeNormalize(Vector2.UnitX)
+                    : (p - pts[i - 1]).SafeNormalize(Vector2.UnitX);
+                Vector2 side = new Vector2(-tangent.Y, tangent.X) * MathHelper.Lerp(halfWidthTail, halfWidthHead, t);
+                ribbonVerts[i * 2] = new VertexPositionColorTexture(new Vector3(p.X + side.X, p.Y + side.Y, 0f), pack, new Vector2(t, 0f));
+                ribbonVerts[i * 2 + 1] = new VertexPositionColorTexture(new Vector3(p.X - side.X, p.Y - side.Y, 0f), pack, new Vector2(t, 1f));
+            }
+
+            GraphicsDevice device = Main.graphics.GraphicsDevice;
+            BlendState origBlend = device.BlendState;
+            RasterizerState origRaster = device.RasterizerState;
+            DepthStencilState origDepth = device.DepthStencilState;
+            device.BlendState = BlendState.Additive;
+            device.RasterizerState = RasterizerState.CullNone;
+            device.DepthStencilState = DepthStencilState.None;
+
+            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uSeed"]?.SetValue(seed % 1f);
+            effect.Parameters["uFadeIn"]?.SetValue(MathHelper.Clamp(fadeIn, 0.001f, 1f));
+            effect.Parameters["uFadeOut"]?.SetValue(MathHelper.Clamp(fadeOut, 0.001f, 1f));
+            effect.Parameters["uFlowSpeed"]?.SetValue(flowSpeed);
+            effect.Parameters["uCoreColor"]?.SetValue(BonePale.ToVector3());
+            effect.Parameters["uBodyColor"]?.SetValue(GhostCyan.ToVector3());
+            effect.Parameters["uEdgeColor"]?.SetValue(GhostDeep.ToVector3());
+            effect.Parameters["uNoiseTex"]?.SetValue(CWRAsset.PerlinNoise.Value);
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, ribbonVerts, 0, (count - 1) * 2);
+            }
+
+            device.BlendState = origBlend;
+            device.RasterizerState = origRaster;
+            device.DepthStencilState = origDepth;
+            return true;
+        }
+
+        /// <summary>冲刺预警线：自起点沿角度的灵息绸带（头端在远处收散）</summary>
         public static void DrawDashTelegraph(SpriteBatch spriteBatch, Vector2 origin, float angle, float strength) {
             if (strength <= 0.02f) {
                 return;
             }
+            float len = 1500f;
+            float pulse = 0.85f + 0.15f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 26f);
+            Vector2 dir = angle.ToRotationVector2();
+            for (int i = 0; i < telegraphPts.Length; i++) {
+                telegraphPts[i] = origin + dir * (len * i / (telegraphPts.Length - 1f));
+            }
+            float halfW = MathHelper.Lerp(9f, 26f, strength) * pulse;
+            if (DrawSpecterRibbon(telegraphPts, telegraphPts.Length, halfW, halfW * 0.55f,
+                0.72f * strength, 0.85f, angle * 0.159f, 0.05f, 0.45f, 2.6f)) {
+                return;
+            }
+            //回退：灰度光线仅作衬光（着色器缺失时）
             Texture2D beam = CWRAsset.LightShot?.Value;
             if (beam == null) {
                 return;
             }
-            float len = 1500f;
-            float pulse = 0.85f + 0.15f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 26f);
             Vector2 scale = new Vector2(len / beam.Width, MathHelper.Lerp(0.35f, 1.15f, strength) * pulse);
             Vector2 orig = new Vector2(0f, beam.Height / 2f);
-            //灰度光线贴图在预乘批走 A=0 加色
             spriteBatch.Draw(beam, origin - Main.screenPosition, null, AsAdditive(GhostCyan) * (0.42f * strength),
                 angle, orig, scale, SpriteEffects.None, 0f);
-            spriteBatch.Draw(beam, origin - Main.screenPosition, null, AsAdditive(BonePale) * (0.20f * strength),
-                angle, orig, scale * new Vector2(1f, 0.4f), SpriteEffects.None, 0f);
+        }
+
+        /// <summary>沿 oldPos 的运动轨迹绸带（旋杀涂抹/砸击拖尾），零向量安全</summary>
+        public static void DrawMotionRibbon(NPC npc, float heat, float halfWidth, float opacity) {
+            if (heat <= 0.05f || opacity <= 0.02f) {
+                return;
+            }
+            //oldPos[0] 最新 → 数组尾最旧；绸带 uv.x=0 是尾端，翻转填充
+            int valid = 0;
+            for (int i = npc.oldPos.Length - 1; i >= 0; i--) {
+                if (npc.oldPos[i] == Vector2.Zero) {
+                    continue;
+                }
+                trailPts[valid++] = npc.oldPos[i] + npc.Size / 2f;
+                if (valid >= trailPts.Length - 1) {
+                    break;
+                }
+            }
+            trailPts[valid++] = npc.Center;
+            if (valid < 3) {
+                return;
+            }
+            DrawSpecterRibbon(trailPts, valid, halfWidth * 0.25f, halfWidth,
+                opacity * heat, 0.55f, npc.whoAmI * 0.137f, 0.4f, 0.1f, 1.8f);
         }
 
         #endregion

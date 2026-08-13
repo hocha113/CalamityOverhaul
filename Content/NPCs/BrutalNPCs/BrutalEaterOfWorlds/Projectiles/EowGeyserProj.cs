@@ -23,6 +23,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Projectil
         private int Delay => (int)Projectile.ai[0];
         private float ColumnHeight => Projectile.ai[1] == 1f ? 360f : 270f;
         private const float ColumnWidth = 66f;
+        /// <summary>画布宽放大：给根部裙摆与两侧尘雾羽化留余量(柱芯仍约一个ColumnWidth)</summary>
+        private const float CanvasWidthScale = 1.9f;
+        /// <summary>画布高放大：补偿shader顶部护栏渐隐段，视觉满高约等于ColumnHeight</summary>
+        private const float CanvasHeightScale = 1.18f;
 
         private int Age => (int)Projectile.localAI[0];
         /// <summary>0未喷→1满柱→回落</summary>
@@ -76,7 +80,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Projectil
             int hitHeight = Math.Max((int)(ColumnHeight * coverage), 24);
             Projectile.hostile = coverage > 0.25f;
             Vector2 keepBase = basePoint;
-            Projectile.Resize((int)(ColumnWidth * 0.8f), hitHeight);
+            //判定比视觉柱芯略窄，避免顶端收窄段"被空气打中"
+            Projectile.Resize((int)(ColumnWidth * 0.66f), hitHeight);
             Projectile.Center = keepBase - new Vector2(0f, hitHeight * 0.5f);
 
             //柱内粒子(客户端)
@@ -94,6 +99,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Projectil
                         basePoint + new Vector2(Main.rand.NextFloat(-14f, 14f), 0f),
                         new Vector2(Main.rand.NextFloat(-1f, 1f), -Main.rand.NextFloat(6f, 11f) * coverage),
                         Color.White, Main.rand.NextFloat(0.4f, 0.75f)).Configure(Main.rand.Next(20, 32));
+                }
+                //根部碎土侧抛：重力弧线砸向两侧，衔接地面喷发口
+                if (RiseT < 1f || Main.rand.NextBool(4)) {
+                    Dust chunk = Dust.NewDustDirect(basePoint + new Vector2(-6f, -6f), 12, 6,
+                        DustID.Dirt, 0, 0, 30, default, Main.rand.NextFloat(1.4f, 2.2f));
+                    chunk.velocity = new Vector2(Main.rand.NextFloat(2.5f, 6f) * (Main.rand.NextBool() ? 1f : -1f),
+                        -Main.rand.NextFloat(3f, 7f));
+                    chunk.noGravity = false;
                 }
                 Lighting.AddLight(basePoint - new Vector2(0, ColumnHeight * 0.4f * coverage),
                     EowMotionFX.AcidGreen.ToVector3() * 0.4f * coverage);
@@ -139,7 +152,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Projectil
             effect.Parameters["uSeed"]?.SetValue(Projectile.whoAmI % 83 * 0.131f);
             effect.Parameters["uProgress"]?.SetValue(RiseT);
             effect.Parameters["uFade"]?.SetValue(FadeT);
-            effect.Parameters["uAspect"]?.SetValue(ColumnHeight / ColumnWidth);
+            //传实际画布高宽比：shader据此做各向同性噪声取样
+            effect.Parameters["uAspect"]?.SetValue(ColumnHeight * CanvasHeightScale / (ColumnWidth * CanvasWidthScale));
             effect.Parameters["uDirtColor"]?.SetValue(EowMotionFX.DirtBrown.ToVector3());
             effect.Parameters["uAcidColor"]?.SetValue(EowMotionFX.AcidGreen.ToVector3());
 
@@ -150,7 +164,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Projectil
             effect.CurrentTechnique.Passes[0].Apply();
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            Vector2 scale = new Vector2(ColumnWidth * 1.35f / pixel.Width, ColumnHeight / pixel.Height);
+            Vector2 scale = new Vector2(ColumnWidth * CanvasWidthScale / pixel.Width,
+                ColumnHeight * CanvasHeightScale / pixel.Height);
             //底边锚地表：origin取贴图底中
             sb.Draw(pixel, baseDraw, null, Color.White, 0f,
                 new Vector2(pixel.Width / 2f, pixel.Height), scale, SpriteEffects.None, 0f);

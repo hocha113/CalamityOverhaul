@@ -48,9 +48,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 npc.Opacity = 0f;
                 if (!VaultUtils.isServer && Timer % 2 == 0) {
                     float hue = Main.rand.NextFloat();
-                    Vector2 spawn = npc.Center + new Vector2(Main.rand.NextFloat(-300f, 300f), Main.rand.NextFloat(-360f, -120f));
+                    Vector2 spawn = npc.Center + new Vector2(Main.rand.NextFloat(-420f, 420f), Main.rand.NextFloat(-380f, -120f));
                     PRTLoader.NewParticle<PRT_EmpressPetalDust>(spawn, new Vector2(0f, Main.rand.NextFloat(1.2f, 2.6f)),
                         EmpressMotion.Prism(hue, 0.6f), Main.rand.NextFloat(0.5f, 0.9f))?.Configure(40, hue);
+                }
+                //舞台幕布：显形前两侧升起零伤极光帘（纯装饰，随显形淡去）
+                if (Timer == GatherEnd - 4 && !VaultUtils.isClient) {
+                    EmpressCast.Aurora(npc, npc.Center + new Vector2(-320f, -160f), 0.7f, 0.12f, 210, 0);
+                    EmpressCast.Aurora(npc, npc.Center + new Vector2(320f, -160f), 3.9f, -0.12f, 210, 0);
                 }
             }
             else if (Timer < MaterializeEnd) {
@@ -82,12 +87,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             }
 
             if (Timer == BloomFrame) {
-                //第三乐句：辉光绽放，战斗开始的宣告
-                EmpressCast.Radiance(npc, npc.Center, 340f, 30, 0.62f);
-                EmpressMotion.Shake(npc.Center, 5.5f, 18);
+                //第三乐句：辉光绽放，战斗开始的宣告——双层辉光+光蝶四散+全屏棱彩
+                EmpressCast.Radiance(npc, npc.Center, 480f, 30, 0.62f);
+                EmpressCast.Radiance(npc, npc.Center, 220f, 22, 0.12f);
+                EmpressMotion.Shake(npc.Center, 6.5f, 20);
                 PlayLocal(SoundID.Item163 with { Volume = 0.9f }, npc.Center);
+                PlayLocal(SoundID.Item161 with { Volume = 0.7f, Pitch = 0.2f }, npc.Center);
                 if (!VaultUtils.isServer) {
-                    EmpressScreenFX.PushPrismPulse(npc.Center, 0.45f, 26);
+                    EmpressScreenFX.PushPrismPulse(npc.Center, 0.7f, 30);
+                    for (int i = 0; i < 10; i++) {
+                        float bh = i / 10f;
+                        PRTLoader.NewParticle<PRT_EmpressButterfly>(npc.Center + Main.rand.NextVector2Circular(60f, 60f),
+                            (MathHelper.TwoPi / 10f * i).ToRotationVector2() * Main.rand.NextFloat(2.5f, 5f),
+                            EmpressMotion.Prism(bh, 0.68f), Main.rand.NextFloat(0.6f, 1f))?.Configure(70, bh);
+                    }
                 }
             }
 

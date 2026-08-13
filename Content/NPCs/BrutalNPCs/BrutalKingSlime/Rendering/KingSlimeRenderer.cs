@@ -7,10 +7,18 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering
 {
-    /// <summary>本体绘制：体内忍者→皇家凝胶身体(RoyalAura shader)→挤压拉伸弹簧形变</summary>
+    /// <summary>本体绘制：体内忍者→皇家凝胶身体(RoyalAura shader)→头顶扣冠→挤压拉伸弹簧形变</summary>
     internal static class KingSlimeRenderer
     {
-        /// <summary>每帧推进压扁弹簧与摇晃衰减(各端本地)</summary>
+        /// <summary>
+        /// 原版对照：王冠不在本体贴图里，Main.DrawNPCDirect 对 type 50 用 TextureAssets.Extra[39]
+        /// 独立补画一层(Main.cs:24942-24969)，锚 Center.Y-(70-帧偏移)*scale。
+        /// 本管线接管本体绘制后在此复刻该层：贴图用同款王冠 Gore(与离体弹幕无缝衔接)，
+        /// 位置改锚形变后的头顶，弹簧滞后做次级运动
+        /// </summary>
+        private const int CrownGoreID = Terraria.ID.GoreID.KingSlimeCrown;
+
+        /// <summary>每帧推进压扁弹簧、摇晃衰减与扣冠滞后弹簧(各端本地)</summary>
         public static void UpdateSpring(KingSlimeStateContext ctx) {
             //弹簧回中
             ctx.SquashVelocity += (1f - ctx.VisualSquash) * 0.16f;
@@ -24,6 +32,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering
             if (ctx.WobbleAmp < 0.004f) {
                 ctx.WobbleAmp = 0f;
             }
+
+            //扣冠滞后弹簧：起跳(vy<0)冠慢半拍下沉、下坠(vy>0)冠上浮，落地时砸沉再回弹
+            NPC npc = ctx.Npc;
+            float lagTarget = 0f;
+            if (npc != null) {
+                lagTarget = MathHelper.Clamp(-npc.velocity.Y * 0.9f, -14f, 10f);
+                if (ctx.JustLanded) {
+                    ctx.CrownLagVel += MathHelper.Clamp(ctx.LandingPower * 0.55f, 1.5f, 11f);
+                }
+            }
+            ctx.CrownLagVel += (lagTarget - ctx.CrownLag) * 0.24f;
+            ctx.CrownLagVel *= 0.72f;
+            ctx.CrownLag = MathHelper.Clamp(ctx.CrownLag + ctx.CrownLagVel, -22f, 26f);
+        }
+
+        /// <summary>
+        /// 扣冠锚点(世界系)：形变后头顶中心。服务端 frame 未必有效，回退 122px 帧高估算
+        /// </summary>
+        public static Vector2 CrownAnchorWorld(NPC npc, KingSlimeStateContext ctx) {
+            float frameH = npc.frame.Height > 0 ? npc.frame.Height : 122f;
+            float scaleY = npc.scale * MathHelper.Clamp(ctx.VisualSquash, 0.28f, 1.9f);
+            float bottomY = npc.position.Y + npc.height + 4f;
+            //冠心略沉入头顶(对照原版 Center.Y-70*scale ≈ 贴图顶下 6px)
+            return new Vector2(npc.Center.X, bottomY - frameH * scaleY + 9f * scaleY);
         }
 
         /// <summary>身体绘制入口，返回false=已接管</summary>
@@ -97,8 +129,46 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering
                     origin, new Vector2(scaleX * 1.03f, scaleY * 1.03f), flip, 0f);
             }
 
+            //---------------- 头顶扣冠(复刻原版独立王冠层) ----------------
+            DrawMountedCrown(spriteBatch, npc, ctx, screenPos, drawColor, opacity, scaleY, lean);
+
             //入场王冠天降(纯演出层)
             DrawIntroCrownDrop(spriteBatch, npc, ctx, screenPos);
+        }
+
+        /// <summary>
+        /// 默认态扣冠：稳固扣在形变后的头顶，随压扁下沉/拉伸抬升，弹簧滞后给重量感。<br/>
+        /// 王冠离体期(存在 BKSCrownProj)与状态声明隐藏时不绘制
+        /// </summary>
+        private static void DrawMountedCrown(SpriteBatch spriteBatch, NPC npc, KingSlimeStateContext ctx,
+            Vector2 screenPos, Color drawColor, float opacity, float scaleY, float lean) {
+            if (ctx.HideCrown || ctx.FindCrown() != null) {
+                return;
+            }
+
+            Main.instance.LoadGore(CrownGoreID);
+            Texture2D crown = TextureAssets.Gore[CrownGoreID].Value;
+
+            //锚形变后头顶：与身体同一 bottom/scaleY 推导，压扁自动下沉、拉伸自动抬升
+            float frameH = npc.frame.Height > 0 ? npc.frame.Height : crown.Height * 4f;
+            Vector2 bottom = new Vector2(npc.Center.X, npc.position.Y + npc.height) - screenPos + new Vector2(0f, npc.gfxOffY + 4f);
+            Vector2 offset = new Vector2(0f, -frameH * scaleY + 9f * scaleY + ctx.CrownLag);
+            if (lean != 0f) {
+                offset = offset.RotatedBy(lean);
+            }
+            Vector2 pos = bottom + offset;
+
+            //原版扣冠不随 npc.scale 缩放(Main.cs:24969 恒 1f)；分裂收核期跟随 ScaleMul 缩小
+            float scale = MathHelper.Clamp(ctx.ScaleMul, 0.55f, 1f);
+            //倾角：立塔倾倒+横移小晃
+            float rot = lean + npc.velocity.X * 0.02f;
+
+            Color color = drawColor * opacity;
+            Vector2 origin = crown.Size() * 0.5f;
+            spriteBatch.Draw(crown, pos, null, color, rot, origin, scale, SpriteEffects.None, 0f);
+            //金属泽光(与离体弹幕同款，交接不跳变)
+            spriteBatch.Draw(crown, pos, null, KingSlimeGelFX.CrownGold with { A = 0 } * (0.35f * opacity),
+                rot, origin, scale * 1.03f, SpriteEffects.None, 0f);
         }
 
         /// <summary>入场演出：王冠从天而降扣上头顶，加速下落+金色残影</summary>
@@ -107,11 +177,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering
             if (t <= 0f || t > 1f) {
                 return;
             }
-            Main.instance.LoadGore(Terraria.ID.GoreID.KingSlimeCrown);
-            Texture2D crown = TextureAssets.Gore[Terraria.ID.GoreID.KingSlimeCrown].Value;
-            //加速坠落：ease-in二次
+            Main.instance.LoadGore(CrownGoreID);
+            Texture2D crown = TextureAssets.Gore[CrownGoreID].Value;
+            //加速坠落：ease-in二次；终点=扣冠锚点，命中帧与常驻扣冠层无缝交接
             float fall = t * t;
-            Vector2 dest = npc.Top + new Vector2(0f, -10f);
+            Vector2 dest = CrownAnchorWorld(npc, ctx);
             Vector2 pos = dest - new Vector2(0f, (1f - fall) * 620f) - screenPos;
             Vector2 origin = crown.Size() * 0.5f;
 

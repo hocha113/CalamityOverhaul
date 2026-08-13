@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States;
@@ -10,7 +11,6 @@ using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
@@ -36,14 +36,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
     }
 
     /// <summary>世界吞噬者头部主控：状态机+统一血池+分裂协同驾驶</summary>
-    internal class EowHeadAI : CWRNPCOverride, ICWRLoader, ILocalizedModType
+    internal class EowHeadAI : CWRNPCOverride, ICWRLoader
     {
         #region 数据
         public override int TargetID => NPCID.EaterofWorldsHead;
-
-        public string LocalizationCategory => "BrutalNPCs";
-        /// <summary>大招入场广播</summary>
-        public static LocalizedText EowApex_Text { get; private set; }
 
         /// <summary>常规体节数(不含头尾)</summary>
         internal const int NormalBodyCount = 54;
@@ -55,8 +51,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
         internal const float MoltThreshold = 0.55f;
         /// <summary>大招阈值(生命比)</summary>
         internal const float ApexThreshold = 0.28f;
-        /// <summary>脱离腐化区撤离阈值(帧)</summary>
-        internal const int OutOfZoneDespawnTime = 600;
+        /// <summary>脱离腐化区进入狂暴前的宽限帧(允许短暂追出边界)</summary>
+        internal const int OutOfZoneEnrageDelay = 120;
 
         //override ai 同步槽位分配(12槽)
         /// <summary>统一血池上限</summary>
@@ -67,6 +63,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
         internal const int SlotSplitProgress = 2;
         /// <summary>体节总数(身+尾)</summary>
         internal const int SlotSegmentCount = 3;
+        /// <summary>出环境狂暴强度0~1(权威端写入，体节/客户端回读)</summary>
+        internal const int SlotEnrageRamp = 4;
 
         /// <summary>绿雾滤镜注册名</summary>
         internal const string MiasmaFilterName = "CalamityOverhaul:EowMiasma";
@@ -78,6 +76,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
         private int farTimer;
         /// <summary>绿雾平滑包络(本地)</summary>
         private float miasmaSmooth;
+        /// <summary>入怒吼声已播(本地防重播)</summary>
+        private bool enrageCuePlayed;
+        /// <summary>乘算记忆：上帧原始接触伤(-1=无效)，防状态未逐帧重声明时复利爆炸</summary>
+        private int lastRawDamage = -1;
+        /// <summary>乘算记忆：上帧放大后的输出值</summary>
+        private int lastEnragedOutput = -1;
 
         /// <summary>状态上下文(体节绘制读取脉冲通道)</summary>
         internal EowStateContext Context => stateContext;
@@ -94,10 +98,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
                     .UseColor(0.36f, 0.52f, 0.2f)
                     .UseOpacity(0.22f),
                 EffectPriority.High);
-        }
-
-        public override void SetStaticDefaults() {
-            EowApex_Text = this.GetLocalization(nameof(EowApex_Text), () => "大地在你脚下裂成了无数张嘴……");
         }
 
         public override bool? CanCWROverride() {
@@ -149,8 +149,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
 
             stateMachine?.Update();
 
+            //原版 SetDefaults 给世吞出生 alpha=255，淡入本由被接管的原版AI负责；
+            //入场演出自管 alpha，其余状态兜底淡入(中途加入的客户端会以 255 重建，无此分支则整条虫永久隐形)
+            if (stateMachine?.CurrentState is not EowIntroState && npc.alpha > 0) {
+                npc.alpha = Math.Max(npc.alpha - 42, 0);
+            }
+
             //权威声明→同步槽；客户端回读权威值
             SyncSlots();
+
+            //出环境狂暴：增伤+绿雾拉满+入怒吼声，AI 与招式不动
+            UpdateEnragePresentation();
 
             if (!stateContext.SkipDefaultMovement) {
                 float slitherPhase = stateContext.SlitherPhase;
@@ -183,24 +192,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
             targetPlayer = Main.player[npc.target];
 
             if (!targetPlayer.Alives()) {
-                if (!VaultUtils.isClient && stateMachine?.CurrentState is not EowDespawnState and not EowDeathState) {
-                    stateMachine?.ChangeState(new EowDespawnState());
+                if (!VaultUtils.isClient) {
+                    if (stateMachine?.CurrentState is not EowDespawnState and not EowDeathState) {
+                        stateMachine?.ChangeState(new EowDespawnState());
+                    }
+                    //无目标：狂暴消退
+                    stateContext.OutOfZoneTimer = 0;
+                    stateContext.EnrageRamp = MathHelper.Clamp(stateContext.EnrageRamp - 1f / 60f, 0f, 1f);
                 }
                 return;
             }
 
-            //离开腐化/猩红环境累计，过阈撤离(尊重原版脱战语义)
+            //离开腐化/猩红环境不再撤离：宽限后进入狂暴(AI 不变，只免伤+增伤)，回到环境则消退；权威端裁决
             if (!VaultUtils.isClient) {
-                if (!targetPlayer.ZoneCorrupt && !targetPlayer.ZoneCrimson && !CWRRef.GetBossRushActive()) {
-                    stateContext.OutOfZoneTimer++;
-                    if (stateContext.OutOfZoneTimer > OutOfZoneDespawnTime
-                        && stateMachine?.CurrentState is not EowDespawnState and not EowDeathState) {
-                        stateMachine?.ChangeState(new EowDespawnState());
-                    }
+                bool outOfZone = !targetPlayer.ZoneCorrupt && !targetPlayer.ZoneCrimson && !CWRRef.GetBossRushActive();
+                if (outOfZone) {
+                    //封顶：只留短暂迟滞余量，防长期出界后回环境仍拖着满怒不退
+                    stateContext.OutOfZoneTimer = Math.Min(stateContext.OutOfZoneTimer + 1, OutOfZoneEnrageDelay + 60);
                 }
-                else {
-                    stateContext.OutOfZoneTimer = 0;
+                else if (stateContext.OutOfZoneTimer > 0) {
+                    stateContext.OutOfZoneTimer = Math.Max(stateContext.OutOfZoneTimer - 2, 0);
                 }
+
+                bool cinematic = stateMachine?.CurrentState is EowIntroState or EowDespawnState or EowDeathState;
+                float step = !cinematic && outOfZone && stateContext.OutOfZoneTimer > OutOfZoneEnrageDelay ? 1f / 60f : -1f / 60f;
+                stateContext.EnrageRamp = MathHelper.Clamp(stateContext.EnrageRamp + step, 0f, 1f);
             }
         }
 
@@ -261,11 +277,55 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
             if (!VaultUtils.isClient) {
                 ai[SlotSplitGroups] = stateContext.SplitGroups;
                 ai[SlotSplitProgress] = stateContext.SplitProgress;
+                ai[SlotEnrageRamp] = stateContext.EnrageRamp;
             }
             else {
                 stateContext.SplitGroups = (int)ai[SlotSplitGroups];
                 stateContext.SplitProgress = ai[SlotSplitProgress];
+                stateContext.EnrageRamp = MathHelper.Clamp(ai[SlotEnrageRamp], 0f, 1f);
             }
+        }
+
+        /// <summary>狂暴表现与增伤统一落位：接触伤放大、绿雾包场、入怒瞬间吼声</summary>
+        private void UpdateEnragePresentation() {
+            float ramp = stateContext.EnrageRamp;
+            if (ramp <= 0.01f) {
+                enrageCuePlayed = false;
+                lastRawDamage = -1;
+                lastEnragedOutput = -1;
+                return;
+            }
+
+            //带记忆的乘算：与上帧输出相同说明本帧未被状态重新声明，先还原原始值再乘，防逐帧复利
+            if (npc.damage > 0) {
+                if (npc.damage == lastEnragedOutput && lastRawDamage >= 0) {
+                    npc.damage = lastRawDamage;
+                }
+                lastRawDamage = npc.damage;
+                npc.damage = (int)(npc.damage * (1f + 0.8f * ramp));
+                lastEnragedOutput = npc.damage;
+            }
+            else {
+                lastRawDamage = -1;
+                lastEnragedOutput = -1;
+            }
+            stateContext.MiasmaLevel = Math.Max(stateContext.MiasmaLevel, ramp * 0.9f);
+
+            if (!enrageCuePlayed) {
+                enrageCuePlayed = true;
+                if (!VaultUtils.isServer) {
+                    EowMotionFX.PlayRoar(npc.Center, -0.55f, 1.2f);
+                }
+            }
+        }
+
+        /// <summary>出环境狂暴免伤（无尽伤害类不受抑制）</summary>
+        public override bool? On_ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers) {
+            if (stateContext != null && stateContext.EnrageRamp > 0f
+                && modifiers.DamageType != EndlessDamageClass.Instance) {
+                modifiers.FinalDamage *= 1f - 0.9f * stateContext.EnrageRamp;
+            }
+            return null;
         }
 
         /// <summary>各端按同步槽校正统一血池显示</summary>
@@ -528,6 +588,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
             Vector2 origin = frameRec.Size() / 2f;
             Vector2 mainPos = npc.Center - screenPos;
             float fade = 1f - npc.alpha / 255f;
+
+            //出环境狂暴体色：酸绿灼热
+            if (stateContext.EnrageRamp > 0.01f) {
+                drawColor = Color.Lerp(drawColor, EowMotionFX.AcidGreen, stateContext.EnrageRamp * 0.4f);
+            }
 
             //高速酸绿残影(速度门控)
             float speed = npc.velocity.Length();

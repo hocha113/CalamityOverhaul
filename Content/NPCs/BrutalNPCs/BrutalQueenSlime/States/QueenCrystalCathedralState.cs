@@ -64,7 +64,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
                 anchored = true;
                 cathedralCenter = player.Center + new Vector2(0f, -60f);
                 if (!VaultUtils.isServer) {
-                    VaultUtils.Text(QueenSlimeAI.QueenSlime_CathedralText.Value, QueenMotion.CrystalBlue);
                     SoundEngine.PlaySound(SoundID.Item4 with { Volume = 1f, Pitch = -0.4f }, player.Center);
                 }
             }

@@ -178,10 +178,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering
         }
     }
 
-    /// <summary>凝胶气泡，上浮减速，末帧胀破</summary>
+    /// <summary>凝胶气泡，上浮减速，末帧胀破；薄锐缘壳圈承形（Ring01 灰度图已禁用，见 VFX.md）</summary>
     internal class PRT_BKSBubble : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "Ring01";
+        public override string Texture => CWRConstant.Masking + "DiffusionCircle4";
         public override bool CanPool => true;
         public override int InGame_World_MaxCount => 200;
 
@@ -219,7 +219,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             Vector2 pos = Position - Main.screenPosition;
-            spriteBatch.Draw(tex, pos, null, Color, 0f, tex.Size() * 0.5f, Scale * 0.06f, SpriteEffects.None, 0f);
+            //可见泡径与旧 Ring01 对齐：Ring01 0.83R/128px → DiffusionCircle4 0.95R/156px，0.06 → 0.043
+            spriteBatch.Draw(tex, pos, null, Color, 0f, tex.Size() * 0.5f, Scale * 0.043f, SpriteEffects.None, 0f);
             return false;
         }
     }

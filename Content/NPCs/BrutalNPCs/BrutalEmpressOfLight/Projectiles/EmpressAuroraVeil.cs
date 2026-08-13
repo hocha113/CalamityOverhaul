@@ -94,8 +94,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             //帘心亮带：按目标高度取当前偏摆，做窄带判定
             float yNorm = MathHelper.Clamp((targetHitbox.Center.Y - Projectile.Center.Y) / VeilHalfHeight, -1f, 1f);
             float coreX = Projectile.Center.X + SwayOffset(yNorm);
+            //纵向判定收到视觉实区（羽化端0.78以外纯装饰无判定）
             return Math.Abs(targetHitbox.Center.X - coreX) < CoreHalfWidth + targetHitbox.Width * 0.5f
-                && Math.Abs(targetHitbox.Center.Y - Projectile.Center.Y) < VeilHalfHeight;
+                && Math.Abs(targetHitbox.Center.Y - Projectile.Center.Y) < VeilHalfHeight * 0.78f;
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {

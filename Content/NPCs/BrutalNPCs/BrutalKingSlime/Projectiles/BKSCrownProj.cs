@@ -11,8 +11,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
 {
     /// <summary>
-    /// 史莱姆王之冠，独立威胁单元。ai[0]=宿主whoAmI ai[1]=模式 ai[2]=锁定X<br/>
-    /// 模式：0升空 1瞄准悬停 2天坠 3嵌地 4回归 5常驻悬浮(P2) 6审判指挥 7死亡坠地(纯演出)<br/>
+    /// 史莱姆王之冠，招式期离体威胁单元。默认态王冠由本体渲染层扣画在头顶，
+    /// 本弹幕只在"起飞→执行→归位砸扣"的招式三拍内存在，归位扣上头顶即消亡。<br/>
+    /// ai[0]=宿主whoAmI ai[1]=模式 ai[2]=锁定X<br/>
+    /// 模式：0升空 1瞄准悬停 2天坠 3嵌地 4归位砸扣 6审判指挥 7死亡坠地(纯演出)<br/>
     /// 模式切换服务端驱动；各端按模式+本地计时演出
     /// </summary>
     internal class BKSCrownProj : ModProjectile
@@ -24,13 +26,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
         internal const int ModeSlam = 2;
         internal const int ModeLanded = 3;
         internal const int ModeReturn = 4;
-        internal const int ModeHover = 5;
         internal const int ModeDecree = 6;
         internal const int ModeDeathDrop = 7;
 
         private const int LaunchTime = 24;
         private const int TelegraphTime = 34;
         private const int LandedTime = 34;
+        /// <summary>归位悬停整备拍长</summary>
+        private const int ReturnHoldTime = 10;
 
         private NPC Host => (int)Projectile.ai[0] >= 0 && (int)Projectile.ai[0] < Main.maxNPCs
             ? Main.npc[(int)Projectile.ai[0]] : null;
@@ -39,6 +42,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
 
         private ref float ModeTimer => ref Projectile.localAI[0];
         private ref float PrevMode => ref Projectile.localAI[1];
+        /// <summary>模式内子拍标记：Return=俯冲/已扣位，DeathDrop=弹跳计数(本地)</summary>
+        private ref float SubBeat => ref Projectile.localAI[2];
         /// <summary>首帧入场表现已播(本地)</summary>
         private bool enterInit;
 
@@ -95,7 +100,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
                 case ModeSlam: UpdateSlam(); break;
                 case ModeLanded: UpdateLanded(host); break;
                 case ModeReturn: UpdateReturn(host); break;
-                case ModeHover: UpdateHover(host); break;
                 case ModeDecree: UpdateDecree(host); break;
                 case ModeDeathDrop: UpdateDeathDrop(); break;
             }
@@ -109,6 +113,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
                 case ModeLaunch:
                     KingSlimeGelFX.CrownChime(Projectile.Center, 0.3f, 0.9f);
                     KingSlimeGelFX.GoldGlint(Projectile.Center, 8, 5f);
+                    break;
+                case ModeReturn:
+                case ModeDeathDrop:
+                    SubBeat = 0f;
                     break;
                 case ModeSlam:
                     SoundEngine.PlaySound(SoundID.Item66 with { Pitch = -0.35f, Volume = 0.9f, MaxInstances = 3 }, Projectile.Center);
@@ -137,10 +145,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             Projectile.velocity = new Vector2(0f, -speed);
             Projectile.rotation += 0.2f * (1f - t);
 
-            //服务端调度：天坠态转瞄准，其余(阶段转换脱冕)直接入常驻悬浮
+            //服务端调度：按宿主招式分派——天坠转瞄准、审判转指挥；
+            //其余(阶段转换脱冕等纯演出)升空后直接归位砸扣，绝不滞空闲逛
             if (!VaultUtils.isClient && ModeTimer >= LaunchTime) {
-                bool slamming = (int)host.ai[2] == (int)KingSlimeStateIndex.CrownSlam;
-                SetMode(slamming ? ModeTelegraph : ModeHover);
+                int hostState = (int)host.ai[2];
+                if (hostState == (int)KingSlimeStateIndex.CrownSlam) {
+                    SetMode(ModeTelegraph);
+                }
+                else if (hostState == (int)KingSlimeStateIndex.RoyalDecree) {
+                    SetMode(ModeDecree);
+                }
+                else {
+                    SetMode(ModeReturn);
+                }
             }
         }
 
@@ -216,58 +233,77 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             }
         }
 
+        /// <summary>
+        /// 归位砸扣三拍：悬停整备(急停)→滑翔到头顶正上方→锁X俯冲，
+        /// 砸到扣冠锚点即扣上(本体凝胶受压微陷回弹)，弹幕消亡交还给渲染层扣冠。
+        /// SubBeat：0整备/滑翔 1俯冲 2已扣位待消亡
+        /// </summary>
         private void UpdateReturn(NPC host) {
-            //加速飞回宿主头顶
-            Vector2 dest = host.Top + new Vector2(0f, -26f);
-            float speed = MathHelper.Clamp(4f + ModeTimer * 0.9f, 4f, 34f);
-            Projectile.velocity = (dest - Projectile.Center).SafeNormalize(Vector2.Zero) * speed;
-            Projectile.rotation = Projectile.rotation.AngleLerp(0f, 0.25f);
+            //扣冠锚点：取本体覆写的形变头顶，取不到回退碰撞盒顶
+            Vector2 anchor = host.TryGetOverride(out KingSlimeAI hostAI)
+                ? hostAI.GetCrownAnchor() : host.Top + new Vector2(0f, -6f);
 
-            if (Projectile.Distance(dest) < 40f) {
-                //P2王冠常驻悬浮，P1收回消失
-                bool phase2 = host.GetOverride<KingSlimeAI>()?.ai[3] == 1f;
-                if (phase2) {
-                    if (!VaultUtils.isClient) {
-                        SetMode(ModeHover);
-                    }
-                }
-                else {
-                    KingSlimeGelFX.GoldGlint(Projectile.Center, 10, 5f);
-                    KingSlimeGelFX.CrownChime(Projectile.Center, 0.1f, 0.7f);
-                    if (!VaultUtils.isClient) {
-                        Projectile.Kill();
-                    }
-                }
-            }
-        }
-
-        private void UpdateHover(NPC host) {
-            //头顶悬浮呼吸
-            float bob = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2.4f) * 10f;
-            Vector2 dest = host.Top + new Vector2(0f, -44f + bob);
-            Projectile.velocity = (dest - Projectile.Center) * 0.1f;
-            Projectile.rotation = Projectile.rotation.AngleLerp((float)Math.Sin(Main.GlobalTimeWrappedHourly * 1.7f) * 0.08f, 0.1f);
-
-            if (!VaultUtils.isServer && Main.rand.NextBool(40)) {
-                KingSlimeGelFX.GoldGlint(Projectile.Center + Main.rand.NextVector2Circular(16f, 8f), 1, 2f);
+            //已扣位：钉在锚点上等服务端 Kill 包，防止先到端漂移
+            if (SubBeat >= 2f) {
+                Projectile.Center = anchor;
+                Projectile.velocity = Vector2.Zero;
+                Projectile.rotation = 0f;
+                return;
             }
 
-            //服务端调度：宿主进入王冠天坠态则响应
-            if (!VaultUtils.isClient) {
-                int hostState = (int)host.ai[2];
-                if (hostState == (int)KingSlimeStateIndex.CrownSlam) {
-                    SetMode(ModeLaunch);
+            if (SubBeat < 1f) {
+                //拍一：悬停整备——急停回正，蓄一口气
+                if (ModeTimer <= ReturnHoldTime) {
+                    Projectile.velocity *= 0.72f;
+                    Projectile.rotation = Projectile.rotation.AngleLerp(0f, 0.2f);
+                    return;
                 }
-                else if (hostState == (int)KingSlimeStateIndex.RoyalDecree) {
-                    SetMode(ModeDecree);
+                //拍二：滑翔到头顶正上方(加速趋近，有奔赴感)
+                Vector2 apex = anchor + new Vector2(0f, -130f);
+                Vector2 toApex = apex - Projectile.Center;
+                float speed = MathHelper.Clamp(6f + (ModeTimer - ReturnHoldTime) * 1.1f, 6f, 30f);
+                Projectile.velocity = toApex.SafeNormalize(Vector2.Zero) * Math.Min(speed, toApex.Length());
+                Projectile.rotation = Projectile.rotation.AngleLerp(Projectile.velocity.X * 0.02f, 0.2f);
+
+                //到位(或超时强制)转俯冲
+                if ((Math.Abs(toApex.X) < 22f && toApex.Y > -60f) || ModeTimer > 70f) {
+                    SubBeat = 1f;
+                }
+                return;
+            }
+
+            //拍三：俯冲砸扣——锁X复合加速直坠
+            Projectile.Center = new Vector2(MathHelper.Lerp(Projectile.Center.X, anchor.X, 0.3f), Projectile.Center.Y);
+            float vy = Math.Max(Projectile.velocity.Y, 3f) * 1.17f;
+            Projectile.velocity = new Vector2(0f, Math.Min(vy, 36f));
+            Projectile.rotation = Projectile.rotation.AngleLerp(0f, 0.35f);
+
+            if (Projectile.Center.Y + Projectile.velocity.Y >= anchor.Y - 4f) {
+                //砸扣命中：钉位+压弹表现，服务端消亡交棒
+                float power = MathHelper.Clamp(Projectile.velocity.Y * 0.012f, 0.14f, 0.4f);
+                SubBeat = 2f;
+                Projectile.Center = anchor;
+                Projectile.velocity = Vector2.Zero;
+                Projectile.rotation = 0f;
+                hostAI?.NotifyCrownMounted(power);
+                KingSlimeGelFX.CrownChime(anchor, -0.2f, 0.9f);
+                KingSlimeGelFX.SquishSound(anchor, -0.15f, 0.8f);
+                KingSlimeGelFX.GoldGlint(anchor, 12, 6f);
+                KingSlimeGelFX.CameraPunch(anchor, 3.5f, 10, "BKSCrownMount", Vector2.UnitY);
+                if (!VaultUtils.isClient) {
+                    Projectile.Kill();
                 }
             }
         }
 
         private void UpdateDecree(NPC host) {
-            //升至战场上空中央放光
-            Vector2 dest = host.Center + new Vector2(0f, -430f);
-            Projectile.velocity = (dest - Projectile.Center) * 0.06f;
+            //快速升赴战场上空指挥位，到位后端庄小幅呼吸(不漂)
+            Vector2 dest = host.Center + new Vector2(0f, -430f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 1.8f) * 8f);
+            Vector2 toDest = dest - Projectile.Center;
+            Projectile.velocity = toDest * 0.12f;
+            if (Projectile.velocity.Length() > 26f) {
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 26f;
+            }
             Projectile.rotation = Projectile.rotation.AngleLerp(0f, 0.15f);
 
             if (!VaultUtils.isServer) {
@@ -280,9 +316,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             }
             Lighting.AddLight(Projectile.Center, KingSlimeGelFX.CrownGold.ToVector3() * 1.2f);
 
-            //服务端调度：宿主离开审判态则回归悬浮
+            //服务端调度：宿主离开审判态则归位砸扣(大招状态终拍也会主动下令归位)
             if (!VaultUtils.isClient && (int)host.ai[2] != (int)KingSlimeStateIndex.RoyalDecree) {
-                SetMode(ModeHover);
+                SetMode(ModeReturn);
             }
         }
 
@@ -335,7 +371,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             if (Mode == ModeTelegraph || Mode == ModeSlam) {
                 DrawGuideColumn(pos, fade);
             }
-            if (Mode == ModeSlam) {
+            if (Mode == ModeSlam || (Mode == ModeReturn && Projectile.velocity.Y > 8f)) {
                 for (int i = 1; i <= 4; i++) {
                     Vector2 ghost = pos - new Vector2(0f, Projectile.velocity.Y * i * 0.7f) * -1f;
                     Main.EntitySpriteDraw(crown, ghost, null,

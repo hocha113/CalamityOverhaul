@@ -238,6 +238,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
         );
     }
 
+    //天端顺滑收口：光柱顶部渐隐入天空，拉远视野也不见硬切边
+    alpha *= smoothstep(0.0, 0.12, along);
+
     alpha *= fadeAlpha;
 
     return float4(color * alpha, alpha) * input.Color;

@@ -142,6 +142,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
             }
             else {
                 shoulderDir = ParamAngle.ToRotationVector2();
+                //亡礼臂寿命与其余模式同路：各端首帧确定性设定（生成包不含 timeLeft，生成后外改不会到达客户端）
+                Projectile.timeLeft = States.SkeletronDeathState.DeathEnd - States.SkeletronDeathState.LamentEnd + 20;
             }
 
             if (Mode == ArmMode.DeathCradle) {
@@ -334,13 +336,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
             float rotation = inward.ToRotation() + MathHelper.PiOver2;
             float scale = (Mode == ArmMode.MaelstromSlam ? 1.35f : 1.1f) * (0.7f + 0.3f * grow);
 
-            //掌下辉光
-            Texture2D glowTex = CWRAsset.SoftGlow.Value;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            //掌底灵鞘：宽扁冷焰自腕口向指尖舔出（顶点批）
             float pulse = 0.85f + 0.15f * MathF.Sin(Main.GlobalTimeWrappedHourly * 9f + Projectile.whoAmI * 2.3f);
-            spriteBatch.Draw(glowTex, drawPos, null,
-                SkeletronRenderHelper.GhostDeep * (0.5f * fade * pulse), 0f,
-                glowTex.Size() / 2f, 1.7f * scale * pulse, SpriteEffects.None, 0f);
+            SkeletronFlameRender.Push(Projectile.Center + shoulderDir * 26f * scale, inward.ToRotation(),
+                new Vector2(64f, 84f) * scale * pulse,
+                0.35f, Projectile.whoAmI * 0.137f, 0.2f,
+                0.55f * fade);
 
             SkeletronRenderHelper.DrawGhostHandSprite(spriteBatch, Projectile.Center, rotation, scale, fade,
                 shoulderDir.X >= 0f ? 1 : -1);

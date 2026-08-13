@@ -33,9 +33,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         public override void OnEnter(QueenBeeStateContext context) {
             base.OnEnter(context);
             QueenBeeMotion.RoarBurst(context.Npc.Center, 1.35f);
-            if (!VaultUtils.isServer) {
-                VaultUtils.Text(BrutalQueenBeeAI.RoyalTide_Text.Value, QueenBeeMotion.AmberDeep);
-            }
         }
 
         public override IQueenBeeState OnUpdate(QueenBeeStateContext context) {

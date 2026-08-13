@@ -110,7 +110,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                         n.netUpdate = true;
                     }
                 }
-                PlanteraAI.Broadcast(PlanteraAI.Plantera_Wither_Text);
             }
 
             SoundEngine.PlaySound(SoundID.NPCDeath1 with { Volume = 1f, Pitch = -0.7f }, npc.Center);

@@ -115,9 +115,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
                             SkeletronRenderHelper.GhostCyan, Main.rand.NextFloat(1.4f, 2.4f))?.Configure(Main.rand.Next(24, 40));
                     }
                 }
-                if (!VaultUtils.isClient) {
-                    SkeletronHeadAI.Announce(SkeletronHeadAI.Intro_Text, SkeletronRenderHelper.GhostCyan);
-                }
             }
 
             //眼火回落至常燃

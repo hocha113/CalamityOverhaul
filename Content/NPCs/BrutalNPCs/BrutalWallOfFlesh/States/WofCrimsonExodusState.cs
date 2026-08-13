@@ -28,13 +28,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
         /// <summary>心跳提示拍(蓄势期，间隔递减)</summary>
         private int heartbeatTimer;
         private int heartbeatGap = 30;
-        private bool textShown;
 
         public override void OnEnter(WofStateContext context) {
             base.OnEnter(context);
             heartbeatTimer = 0;
             heartbeatGap = 30;
-            textShown = false;
             context.Npc.ai[0] = 0f;
         }
 
@@ -93,11 +91,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
 
             if (VaultUtils.isServer) {
                 return;
-            }
-
-            if (!textShown && Timer >= 26) {
-                textShown = true;
-                VaultUtils.Text(WallOfFleshAI.WofExodusText.Value, WofMotionFX.BloodHot);
             }
 
             //心跳递紧(蓄力语法：密度随进度，末段死寂)

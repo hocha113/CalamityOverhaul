@@ -58,6 +58,16 @@ float4 VeilPS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
     float runeGlow = band * ticks * (0.45 + 0.55 * n) * uIntensity * 0.65;
     col += uTint * runeGlow;
 
+    //外环第二律动带：36θ反向慢转，更细更暗（双环嵌套的仪式纵深）
+    float band2 = exp(-pow((r - uBandRadius * 1.45) / (0.030 + uBandRadius * 0.045), 2.0));
+    float ticks2 = pow(0.5 + 0.5 * sin(36.0 * theta - uTime * 0.55), 8.0);
+    col += uTint * (band2 * ticks2 * (0.4 + 0.6 * n) * uIntensity * 0.38);
+
+    //香火升流：噪声驱动的缓升微光丝，向心区聚拢（仪式空气里飘的东西）
+    float drift = tex2D(noiseTex, float2(coords.x * 2.2, coords.y * 0.9 + uTime * 0.06)).r;
+    float driftMask = pow(saturate((drift - 0.62) / 0.38), 2.0) * exp(-r * 1.2);
+    col += uTint * driftMask * uIntensity * 0.28;
+
     //心区呼吸微染
     col += uTint * (uIntensity * 0.045 * (0.6 + 0.4 * sin(uTime * 1.7)) * exp(-r * 2.2));
 

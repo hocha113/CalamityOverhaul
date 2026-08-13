@@ -25,7 +25,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
         internal const int CreeperCount = 10;
         #endregion
 
-        private bool textShown;
         private bool creepersSpawned;
         private bool shardsSpawned;
 
@@ -38,7 +37,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
             context.Invulnerable = true;
             npc.damage = 0;
             context.GhostFade = 0f;
-            textShown = false;
             creepersSpawned = false;
             shardsSpawned = false;
         }
@@ -69,10 +67,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
                         npc.velocity = Vector2.Zero;
                         npc.netUpdate = true;
                     }
-                }
-                if (Timer == 12 && !textShown && !VaultUtils.isServer) {
-                    textShown = true;
-                    VaultUtils.Text(BrainOfCthulhuAI.BrainIntro_Text.Value, BrainMotion.BloodDark);
                 }
                 //聚拢的血雾预兆
                 if (!VaultUtils.isServer && Timer % 5 == 0) {

@@ -5,6 +5,7 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -57,6 +58,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                         new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), -Main.rand.NextFloat(1.2f, 3f)),
                         CultistPalette.FireBright, Main.rand.NextFloat(0.6f, 1.1f) * life)?.Configure(Main.rand.Next(18, 30));
                 }
+                //烟缕缓升（火床上方的热对流，尾声期烟多火少）
+                if (Main.rand.NextBool(life > 0.4f ? 9 : 5)) {
+                    PRTLoader.NewParticle<PRT_CultistSmoke>(
+                        Projectile.Center + new Vector2(Main.rand.NextFloat(-20f, 20f), -4f),
+                        new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), -Main.rand.NextFloat(0.5f, 1.1f)),
+                        new Color(170, 95, 55), Main.rand.NextFloat(0.6f, 1f))?.Configure(Main.rand.Next(36, 58));
+                }
             }
             Lighting.AddLight(Projectile.Center, CultistPalette.FireMain.ToVector3() * (0.8f * life));
         }
@@ -68,7 +76,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 Projectile.timeLeft = BurnTime;
                 Projectile.netUpdate = true;
                 if (!VaultUtils.isServer) {
+                    //着地帧：火花横溅+第一波烟（火种炸开成火床）
                     CultistRenderHelper.ElementImpact(Projectile.Center, CultistElement.Fire, 0.8f);
+                    SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.4f, Pitch = 0.15f, MaxInstances = 5 }, Projectile.Center);
+                    for (int i = 0; i < 8; i++) {
+                        Vector2 vel = new(Main.rand.NextFloat(-4.5f, 4.5f), -Main.rand.NextFloat(1f, 4f));
+                        PRTLoader.NewParticle<PRT_CultistEmber>(Projectile.Center + new Vector2(Main.rand.NextFloat(-18f, 18f), 2f),
+                            vel, CultistPalette.FireBright, Main.rand.NextFloat(0.6f, 1.1f))?.Configure(Main.rand.Next(18, 30));
+                    }
                 }
             }
             return false;
@@ -79,31 +94,69 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            SpriteBatch sb = Main.spriteBatch;
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            Texture2D fire = CWRAsset.Fire.Value;
+            int fw = fire.Width / 4;
+            int fh = fire.Height / 4;
+
             if (!Landed) {
-                //坠落中的火种
-                SpriteBatch sbFall = Main.spriteBatch;
-                CultistRenderHelper.BeginAdditive(sbFall);
-                Texture2D g = CWRAsset.SoftGlow.Value;
-                sbFall.Draw(g, Projectile.Center - Main.screenPosition, null,
-                    CultistPalette.FireMain * 0.8f, 0f, g.Size() / 2f, 0.42f, SpriteEffects.None, 0f);
-                CultistRenderHelper.EndAdditive(sbFall);
+                //坠落中的火种：焰帧彗核+速度拉伸（不是光球）
+                float ft = Projectile.localAI[0];
+                int seedFrame = (int)(ft / 3f + Projectile.whoAmI * 5) % 16;
+                Rectangle seedSrc = new(seedFrame % 4 * fw, seedFrame / 4 * fh, fw, fh);
+                float fallStretch = MathHelper.Clamp(Projectile.velocity.Length() * 0.07f, 0.8f, 1.6f);
+                CultistRenderHelper.BeginAdditive(sb);
+                sb.Draw(glow, Projectile.Center - Main.screenPosition, null,
+                    CultistPalette.FireDeep * 0.5f, 0f, glow.Size() / 2f, 0.5f, SpriteEffects.None, 0f);
+                sb.Draw(fire, Projectile.Center - Main.screenPosition, seedSrc,
+                    CultistPalette.FireMain * 0.95f, Projectile.velocity.ToRotation() + MathHelper.PiOver2,
+                    new Vector2(fw / 2f, fh / 2f), new Vector2(0.34f, 0.42f * fallStretch), SpriteEffects.None, 0f);
+                sb.Draw(fire, Projectile.Center - Main.screenPosition, seedSrc,
+                    CultistPalette.FireBright * 0.8f, Projectile.velocity.ToRotation() + MathHelper.PiOver2,
+                    new Vector2(fw / 2f, fh / 2f), new Vector2(0.2f, 0.28f * fallStretch), SpriteEffects.None, 0f);
+                CultistRenderHelper.EndAdditive(sb);
                 return false;
             }
 
             float life = Projectile.timeLeft / (float)BurnTime;
-            SpriteBatch sb = Main.spriteBatch;
             Vector2 basePos = Projectile.Center - Main.screenPosition + new Vector2(0f, 8f);
             Texture2D flame = CultistRenderHelper.TearFlame01?.Value;
-            Texture2D glow = CWRAsset.SoftGlow.Value;
+            Texture2D scorch = CWRAsset.TearSpread01.Value;
             if (flame == null) {
                 return false;
             }
+
+            //落地焦痕：真alpha贴图走实体批直接染暗色（余韵的地面证据，随火床同淡出）
+            float scorchFade = MathHelper.Clamp(life * 2.5f, 0f, 1f) * MathHelper.Clamp((1f - life) * 4f + 0.35f, 0.35f, 1f);
+            sb.Draw(scorch, basePos + new Vector2(0f, 4f), null, new Color(52, 22, 14) * (0.7f * scorchFade),
+                0f, scorch.Size() / 2f, new Vector2(0.62f, 0.2f), SpriteEffects.None, 0f);
 
             CultistRenderHelper.BeginAdditive(sb);
 
             //底部余光
             sb.Draw(glow, basePos, null, CultistPalette.FireDeep * (0.7f * life),
                 0f, glow.Size() / 2f, new Vector2(1.1f, 0.4f), SpriteEffects.None, 0f);
+
+            //烬床：沿地一排hash频闪烬点（烧透的炭在呼吸）
+            for (int i = 0; i < 7; i++) {
+                float ex = (i - 3) * 8.5f + (float)Math.Sin(Projectile.whoAmI * 2.7f + i * 13.7f) * 3f;
+                float breath = 0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * (5f + i * 0.83f) + i * 2.9f + Projectile.whoAmI);
+                float emberLum = (0.28f + 0.5f * breath * breath) * life;
+                Color emberCol = Color.Lerp(CultistPalette.FireDeep, CultistPalette.FireBright, breath * 0.7f);
+                sb.Draw(glow, basePos + new Vector2(ex, 5f), null, emberCol * emberLum,
+                    0f, glow.Size() / 2f, 0.08f + 0.05f * breath, SpriteEffects.None, 0f);
+            }
+
+            //焰帧根层：两团滚卷的火根（帧动画时间签名）
+            for (int i = 0; i < 2; i++) {
+                int frameIdx = (int)(Main.GlobalTimeWrappedHourly * 13f + i * 6 + Projectile.whoAmI * 3) % 16;
+                Rectangle src = new(frameIdx % 4 * fw, frameIdx / 4 * fh, fw, fh);
+                Vector2 pos = basePos + new Vector2((i - 0.5f) * 17f, -2f);
+                float s = (0.3f + 0.07f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 7f + i * 2.4f)) * life;
+                sb.Draw(fire, pos, src, CultistPalette.FireMain * (0.8f * life),
+                    (i - 0.5f) * 0.12f, new Vector2(fw / 2f, fh), s, SpriteEffects.None, 0f);
+            }
 
             //三条火舌，错相闪变（噪声撕裂端）
             for (int i = 0; i < 3; i++) {

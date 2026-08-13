@@ -24,9 +24,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
         /// <summary>清明圈半径(与渲染uClearRadius一致)</summary>
         internal const float ClearRadius = 430f;
 
-        /// <summary>白澈教学提示，本客户端一次</summary>
-        private static bool whiteoutHintShown;
-
         public override void OnEnter(DeerclopsStateContext context) {
             base.OnEnter(context);
             if (!VaultUtils.isClient) {
@@ -60,12 +57,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                 }
                 if (Timer == 30) {
                     DeerclopsMotion.CameraPunch(npc.Center, 8f, 24, "DeerWhiteoutRoar");
-                }
-                //教学提示
-                if (Timer == 44 && !Main.dedServ && !whiteoutHintShown
-                    && Main.LocalPlayer.Alives() && Main.LocalPlayer.Distance(npc.Center) < 2400f) {
-                    whiteoutHintShown = true;
-                    CombatText.NewText(Main.LocalPlayer.Hitbox, DeerclopsMotion.IceBlue, DeerclopsAI.WhiteoutHint_Text.Value, true);
                 }
                 return null;
             }

@@ -30,7 +30,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
 
         private int nextCrack;
         private bool burstDone;
-        private bool textShown;
 
         public BrainPhaseTransitionState() {
         }
@@ -42,7 +41,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
             npc.damage = 0;
             nextCrack = 0;
             burstDone = false;
-            textShown = false;
 
             if (!VaultUtils.isClient) {
                 BrainProjectileUtils.ClearBrainProjectiles();
@@ -120,11 +118,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
             context.BeatSilenced = false;
             context.BeatPeriod = 40;
             context.BeatIntensity = 0.85f;
-
-            if (Timer == BurstTime + 26 && !textShown && !VaultUtils.isServer) {
-                textShown = true;
-                VaultUtils.Text(BrainOfCthulhuAI.BrainPhase2_Text.Value, BrainMotion.BloodBright);
-            }
 
             if (!VaultUtils.isServer && Timer % 4 == 0 && BrainMotion.OnScreen(npc.Center)) {
                 BrainMotion.BloodMistBurst(npc.Center + Main.rand.NextVector2Circular(60f, 46f), 0.5f, 2, 4f);

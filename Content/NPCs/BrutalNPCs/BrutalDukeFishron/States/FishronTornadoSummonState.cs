@@ -120,8 +120,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 }
             }
             if (count >= 2 && oldest != null) {
-                oldest.timeLeft = Math.Max(oldest.timeLeft, 900);
-                oldest.netUpdate = true;
+                //timeLeft 不入同步包：走刷新戳让所有端一致抬寿
+                FishronSharkTornadoProj.RefreshLifetime(oldest);
                 return;
             }
             Projectile.NewProjectile(npc.GetSource_FromAI(),

@@ -77,8 +77,8 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float hue = uPhase * 0.16 + uv.y * 0.34 + fold * 0.10 + uTime * 0.012;
     float3 aurora = hueRGB(hue);
 
-    //上下端羽化+横向羽化
-    float vFade = smoothstep(0.0, 0.16, uv.y) * (1.0 - smoothstep(0.80, 1.0, uv.y));
+    //上下端羽化（对称，实区间与判定带0.78对齐）+横向羽化
+    float vFade = smoothstep(0.0, 0.11, uv.y) * (1.0 - smoothstep(0.89, 1.0, uv.y));
     float hFade = smoothstep(0.0, 0.06, uv.x) * (1.0 - smoothstep(0.94, 1.0, uv.x));
 
     //亮带内偏白（危险区读得出）

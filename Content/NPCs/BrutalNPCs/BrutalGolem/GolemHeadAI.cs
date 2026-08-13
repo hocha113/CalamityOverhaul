@@ -58,6 +58,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             if (npc.alpha > 0) {
                 npc.alpha = Math.Max(npc.alpha - 12, 0);
             }
+            //躯干沉地淡出时同步隐去（头锚随躯干下沉）
+            if (GolemFacts.GetStateIndex(body) == GolemStateIndex.Despawn) {
+                npc.alpha = Math.Max(npc.alpha, body.alpha);
+            }
 
             GolemStateIndex bodyState = GolemFacts.GetStateIndex(body);
             int bodyPhase = (int)body.ai[GolemAiSlots.BodyPhase];

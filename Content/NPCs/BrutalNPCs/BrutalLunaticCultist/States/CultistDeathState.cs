@@ -109,7 +109,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             }
 
             if ((int)Timer == WhisperMoment && !VaultUtils.isServer) {
-                CultistBossAI.LocalText(CultistBossAI.LunaticCultist_DeathText, new Color(210, 200, 255));
                 CultistRenderHelper.ChantVoice(npc.Center, 0.5f, -0.7f);
             }
 

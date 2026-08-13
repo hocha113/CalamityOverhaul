@@ -187,17 +187,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
             npc.velocity = Vector2.Zero;
 
             if (Timer == LamentEnd && !VaultUtils.isClient) {
-                int cradleLife = DeathEnd - LamentEnd + 20;
+                //亡礼臂寿命由臂自身首帧确定性设定（生成后改 timeLeft 不进同步包，客户端收不到）
                 for (int i = 0; i < 8; i++) {
                     float angle = MathHelper.TwoPi * i / 8f + 0.2f;
                     Vector2 pos = npc.Center + angle.ToRotationVector2() * SkeletronGhostArmProj.CradleRadius;
-                    int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), pos, Vector2.Zero,
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), pos, Vector2.Zero,
                         ModContent.ProjectileType<SkeletronGhostArmProj>(), 0, 0f, Main.myPlayer,
                         (float)SkeletronGhostArmProj.ArmMode.DeathCradle, angle, i * 6f);
-                    if (proj >= 0 && proj < Main.maxProjectiles) {
-                        Main.projectile[proj].timeLeft = cradleLife;
-                        Main.projectile[proj].netUpdate = true;
-                    }
                 }
                 npc.netUpdate = true;
             }
@@ -282,9 +278,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
                             Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(5f, 11f),
                             SkeletronRenderHelper.GhostCyan, Main.rand.NextFloat(1.8f, 3f))?.Configure(Main.rand.Next(30, 52));
                     }
-                }
-                if (!VaultUtils.isClient) {
-                    SkeletronHeadAI.Announce(SkeletronHeadAI.Death_Text, SkeletronRenderHelper.GhostDeep);
                 }
             }
 

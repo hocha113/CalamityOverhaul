@@ -151,6 +151,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             context.SetChargeState(3, t);
 
             bool silence = Timer > GatherEnd - 12;
+            //屏息始点：一圈白色收束涟漪标记"万光归一"完成
+            if (!VaultUtils.isServer && Timer == GatherEnd - 12) {
+                PRTLoader.NewParticle<PRT_EmpressRipple>(npc.Center, Vector2.Zero, Color.White, 0.8f)?
+                    .Configure(12, 0.6f);
+            }
             if (!VaultUtils.isServer && !silence) {
                 EmpressScreenFX.DeclareAmbient(0.6f + t * 0.3f);
                 if (Main.rand.NextFloat() < 0.45f + t * 0.5f) {
@@ -199,6 +204,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 //错拍次级绽放
                 float radius = dissolveT == 10 ? 440f : 260f;
                 EmpressCast.Radiance(npc, npc.Center + Main.rand.NextVector2Circular(40f, 40f), radius, 34, 0.3f + dissolveT * 0.02f);
+            }
+
+            //第二波光蝶：主拍余韵里迟到的振翅，升向天幕
+            if (dissolveT == 26 && !VaultUtils.isServer) {
+                for (int i = 0; i < 18; i++) {
+                    float hue = Main.rand.NextFloat();
+                    PRTLoader.NewParticle<PRT_EmpressButterfly>(npc.Center + Main.rand.NextVector2Circular(140f, 120f),
+                        new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-3.5f, -1.2f)),
+                        EmpressMotion.Prism(hue, 0.66f), Main.rand.NextFloat(0.6f, 1.1f))?
+                        .Configure(Main.rand.Next(80, 130), hue);
+                }
             }
 
             if (!VaultUtils.isServer) {

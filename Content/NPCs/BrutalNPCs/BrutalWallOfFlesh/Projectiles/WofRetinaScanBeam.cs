@@ -203,7 +203,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             Vector2 dir = Projectile.rotation.ToRotationVector2();
             Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
             Vector2 tip = muzzle + dir * beamLength;
-            Vector2 origin = muzzle - dir * (beamWidth * 0.4f + 26f);
+            //起始边后撤进眼球内：着色器最后46px是根部生长段，切边永藏眼内
+            float backBleed = beamWidth * 0.4f + 30f;
+            Vector2 origin = muzzle - dir * backBleed;
             float halfW = beamWidth * 2.6f;
 
             VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
@@ -224,6 +226,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             effect.Parameters["fadeAlpha"]?.SetValue(opacity);
             effect.Parameters["seed"]?.SetValue(Projectile.ai[1] * 0.61f + Projectile.whoAmI * 0.137f % 1f);
             effect.Parameters["uScanTurn"]?.SetValue(turn);
+            effect.Parameters["uQuadLen"]?.SetValue(beamLength + backBleed);
             effect.Parameters["uNoiseTex"]?.SetValue(noise);
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                 pass.Apply();
@@ -243,10 +246,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             Vector2 screenPos = Projectile.Center - Main.screenPosition;
             float flicker = 1f + 0.09f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 26f);
 
-            //眼窝聚光
-            Main.EntitySpriteDraw(glow, screenPos, null, WofMotionFX.BloodHot with { A = 0 } * (0.9f * opacity),
+            //眼窝聚光——此批是真加色(源因子=SourceAlpha)，A=0 什么都画不出，A 必须随强度走
+            Main.EntitySpriteDraw(glow, screenPos, null, WofMotionFX.BloodHot * (0.9f * opacity),
                 0f, glow.Size() / 2f, 1.7f * flicker, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(glow, screenPos, null, new Color(255, 170, 150, 0) * (0.7f * opacity),
+            Main.EntitySpriteDraw(glow, screenPos, null, new Color(255, 170, 150) * (0.7f * opacity),
                 0f, glow.Size() / 2f, 0.9f, SpriteEffects.None, 0);
         }
     }

@@ -440,99 +440,99 @@ TBUGRiftPortalProj.DisplayName: 段错误裂缝
 // KikasaWallOfFleshEyeLaser.DisplayName: Kikasa Wall Of Flesh Eye Laser
 // KikasaWallOfFleshLeech.DisplayName: Kikasa Wall Of Flesh Leech
 // KikasaWallOfFleshServant.DisplayName: Kikasa Wall Of Flesh Servant
-// BrainBloodShard.DisplayName: Brain Blood Shard
-// BrainMirrorImage.DisplayName: Brain Mirror Image
-// BrainShellFragment.DisplayName: Brain Shell Fragment
-// BrainTeleportRift.DisplayName: Brain Teleport Rift
-// BrainVeinTelegraph.DisplayName: Brain Vein Telegraph
-// DeerFrostPulseProj.DisplayName: Deer Frost Pulse Proj
-// DeerIceSpikeProj.DisplayName: Deer Ice Spike Proj
-// DeerRubbleProj.DisplayName: Deer Rubble Proj
-// DeerShadowHandProj.DisplayName: Deer Shadow Hand Proj
-// FishronGeyserProj.DisplayName: Fishron Geyser Proj
-// FishronSharkTornadoProj.DisplayName: Fishron Shark Tornado Proj
-// FishronSkyBoltProj.DisplayName: Fishron Sky Bolt Proj
-// FishronTelegraph.DisplayName: Fishron Telegraph
-// FishronTideTrailProj.DisplayName: Fishron Tide Trail Proj
-// FishronTsunamiWallProj.DisplayName: Fishron Tsunami Wall Proj
-// EowAcidGlob.DisplayName: Eow Acid Glob
-// EowAcidPool.DisplayName: Eow Acid Pool
-// EowBreachOmen.DisplayName: Eow Breach Omen
-// EowGeyserProj.DisplayName: Eow Geyser Proj
-// EowHuskMine.DisplayName: Eow Husk Mine
-// EmpressAuroraVeil.DisplayName: Empress Aurora Veil
-// EmpressBlade.DisplayName: Empress Blade
-// EmpressLance.DisplayName: Empress Lance
-// EmpressPetal.DisplayName: Empress Petal
-// EmpressPrismBolt.DisplayName: Empress Prism Bolt
-// EmpressRadiance.DisplayName: Empress Radiance
-// EmpressSunray.DisplayName: Empress Sunray
-// EocBloodShot.DisplayName: Eoc Blood Shot
-// EocBloodSpike.DisplayName: Eoc Blood Spike
-// EocFogCloud.DisplayName: Eoc Fog Cloud
-// GolemEyeRay.DisplayName: Golem Eye Ray
-// GolemShockWave.DisplayName: Golem Shock Wave
-// GolemSolarMeteor.DisplayName: Golem Solar Meteor
-// GolemStoneShrapnel.DisplayName: Golem Stone Shrapnel
-// GolemSunBolt.DisplayName: Golem Sun Bolt
-// GolemSunCore.DisplayName: Golem Sun Core
-// GolemSunMortar.DisplayName: Golem Sun Mortar
-// GolemTelegraph.DisplayName: Golem Telegraph
-// GolemTrapUnit.DisplayName: Golem Trap Unit
-// BKSCrownProj.DisplayName: B K S Crown Proj
-// BKSGelGlobProj.DisplayName: B K S Gel Glob Proj
-// BKSGelPoolProj.DisplayName: B K S Gel Pool Proj
-// BKSGeyserProj.DisplayName: B K S Geyser Proj
-// BKSNinjaProj.DisplayName: B K S Ninja Proj
-// BKSNinjaSlashProj.DisplayName: B K S Ninja Slash Proj
-// BKSRoyalPillarProj.DisplayName: B K S Royal Pillar Proj
-// BKSShockwaveProj.DisplayName: B K S Shockwave Proj
-// BKSShurikenProj.DisplayName: B K S Shuriken Proj
-// BKSSplitSlimeProj.DisplayName: B K S Split Slime Proj
-// BKSTideWaveProj.DisplayName: B K S Tide Wave Proj
-// CultistArcSpark.DisplayName: Cultist Arc Spark
-// CultistCinderPatch.DisplayName: Cultist Cinder Patch
-// CultistElementOrb.DisplayName: Cultist Element Orb
-// CultistFireBolt.DisplayName: Cultist Fire Bolt
-// CultistFrostMistZone.DisplayName: Cultist Frost Mist Zone
-// CultistIceLance.DisplayName: Cultist Ice Lance
-// CultistRitualCircle.DisplayName: Cultist Ritual Circle
-// CultistSigilProj.DisplayName: Cultist Sigil Proj
-// CultistThunderColumn.DisplayName: Cultist Thunder Column
-// MLordArcRayProj.DisplayName: M Lord Arc Ray Proj
-// MLordCometProj.DisplayName: M Lord Comet Proj
-// MLordConstellationProj.DisplayName: M Lord Constellation Proj
-// MLordGravityWellProj.DisplayName: M Lord Gravity Well Proj
-// MLordOrbProj.DisplayName: M Lord Orb Proj
-// MLordScanRayProj.DisplayName: M Lord Scan Ray Proj
-// MLordStarfireProj.DisplayName: M Lord Starfire Proj
-// PlanteraPetalWave.DisplayName: Plantera Petal Wave
-// PlanteraPoisonSeed.DisplayName: Plantera Poison Seed
-// PlanteraSeed.DisplayName: Plantera Seed
-// PlanteraSporeCloud.DisplayName: Plantera Spore Cloud
-// PlanteraTelegraphLine.DisplayName: Plantera Telegraph Line
-// PlanteraThornBall.DisplayName: Plantera Thorn Ball
-// PlanteraVineLattice.DisplayName: Plantera Vine Lattice
-// BrutalBeeStinger.DisplayName: Brutal Bee Stinger
-// HoneyGlobProj.DisplayName: Honey Glob Proj
-// HoneyPuddleZone.DisplayName: Honey Puddle Zone
-// QueenBeeTelegraphLine.DisplayName: Queen Bee Telegraph Line
-// WaxHiveTurret.DisplayName: Wax Hive Turret
-// QueenChandelierProj.DisplayName: Queen Chandelier Proj
-// QueenCrystalSpireProj.DisplayName: Queen Crystal Spire Proj
-// QueenGaleFieldProj.DisplayName: Queen Gale Field Proj
-// QueenGelMeteorProj.DisplayName: Queen Gel Meteor Proj
-// QueenPrismBeamProj.DisplayName: Queen Prism Beam Proj
-// QueenShardProj.DisplayName: Queen Shard Proj
-// SkeletronBoneShard.DisplayName: Skeletron Bone Shard
-// SkeletronBoneSpike.DisplayName: Skeletron Bone Spike
-// SkeletronCursedSkull.DisplayName: Skeletron Cursed Skull
-// SkeletronCurseWisp.DisplayName: Skeletron Curse Wisp
-// SkeletronGhostArmProj.DisplayName: Skeletron Ghost Arm Proj
-// WofBloodClot.DisplayName: Wof Blood Clot
-// WofFleshSpikeProj.DisplayName: Wof Flesh Spike Proj
-// WofRetinaScanBeam.DisplayName: Wof Retina Scan Beam
-// WofTongueLashProj.DisplayName: Wof Tongue Lash Proj
+BrainBloodShard.DisplayName: 搏动血珠
+BrainMirrorImage.DisplayName: 镜像假体
+BrainShellFragment.DisplayName: 护壳碎片
+BrainTeleportRift.DisplayName: 瞬移裂隙
+BrainVeinTelegraph.DisplayName: 充血脉络
+DeerFrostPulseProj.DisplayName: 霜震波
+DeerIceSpikeProj.DisplayName: 破土冰刺
+DeerRubbleProj.DisplayName: 冰岩碎块
+DeerShadowHandProj.DisplayName: 暗影之手
+FishronGeyserProj.DisplayName: 潮涌水柱
+FishronSharkTornadoProj.DisplayName: 鲨鱼龙卷
+FishronSkyBoltProj.DisplayName: 风暴天雷
+FishronTelegraph.DisplayName: 风暴预警线
+FishronTideTrailProj.DisplayName: 潮汐余痕
+FishronTsunamiWallProj.DisplayName: 海啸浪墙
+EowAcidGlob.DisplayName: 腐蚀酸唾
+EowAcidPool.DisplayName: 腐蚀酸池
+EowBreachOmen.DisplayName: 破土预兆
+EowGeyserProj.DisplayName: 蚀土间歇泉
+EowHuskMine.DisplayName: 蜕壳酸雷
+EmpressAuroraVeil.DisplayName: 极光帷幕
+EmpressBlade.DisplayName: 虹光之剑
+EmpressLance.DisplayName: 棱彩光矛
+EmpressPetal.DisplayName: 永恒虹瓣
+EmpressPrismBolt.DisplayName: 棱彩弹
+EmpressRadiance.DisplayName: 辉光绽放
+EmpressSunray.DisplayName: 日舞光束
+EocBloodShot.DisplayName: 血珠弹
+EocBloodSpike.DisplayName: 血棘
+EocFogCloud.DisplayName: 血雾团
+GolemEyeRay.DisplayName: 灼目射线
+GolemShockWave.DisplayName: 滚地石浪
+GolemSolarMeteor.DisplayName: 太阳陨星
+GolemStoneShrapnel.DisplayName: 灼热碎石
+GolemSunBolt.DisplayName: 太阳光弹
+GolemSunCore.DisplayName: 太阳核心
+GolemSunMortar.DisplayName: 太阳臼炮弹
+GolemTelegraph.DisplayName: 金色预警
+GolemTrapUnit.DisplayName: 神殿机关
+BKSCrownProj.DisplayName: 天坠王冠
+BKSGelGlobProj.DisplayName: 凝胶迫击弹
+BKSGelPoolProj.DisplayName: 凝胶滞留池
+BKSGeyserProj.DisplayName: 凝胶喷泉
+BKSNinjaProj.DisplayName: 忍者影身
+BKSNinjaSlashProj.DisplayName: 忍者斩波
+BKSRoyalPillarProj.DisplayName: 皇权光柱
+BKSShockwaveProj.DisplayName: 凝胶冲击环
+BKSShurikenProj.DisplayName: 影手里剑
+BKSSplitSlimeProj.DisplayName: 分裂凝胶体
+BKSTideWaveProj.DisplayName: 凝胶潮浪
+CultistArcSpark.DisplayName: 电蛇火花
+CultistCinderPatch.DisplayName: 焚地余火
+CultistElementOrb.DisplayName: 元素法球
+CultistFireBolt.DisplayName: 焚焰弧弹
+CultistFrostMistZone.DisplayName: 寒雾带
+CultistIceLance.DisplayName: 霜牢晶枪
+CultistRitualCircle.DisplayName: 仪式法阵
+CultistSigilProj.DisplayName: 悬空法印
+CultistThunderColumn.DisplayName: 雷枢天柱
+MLordArcRayProj.DisplayName: 幻影弧光死光
+MLordCometProj.DisplayName: 星陨彗星
+MLordConstellationProj.DisplayName: 星图预兆
+MLordGravityWellProj.DisplayName: 引力井
+MLordOrbProj.DisplayName: 幻影星球
+MLordScanRayProj.DisplayName: 幻影扫描死光
+MLordStarfireProj.DisplayName: 星火余烬
+PlanteraPetalWave.DisplayName: 凋零花瓣环
+PlanteraPoisonSeed.DisplayName: 剧毒种子
+PlanteraSeed.DisplayName: 速射种子
+PlanteraSporeCloud.DisplayName: 孢子雾
+PlanteraTelegraphLine.DisplayName: 猛扑预警线
+PlanteraThornBall.DisplayName: 荆棘滚球
+PlanteraVineLattice.DisplayName: 藤蔓格栅
+BrutalBeeStinger.DisplayName: 女王毒刺
+HoneyGlobProj.DisplayName: 蜂蜜团
+HoneyPuddleZone.DisplayName: 黏滞蜜洼
+QueenBeeTelegraphLine.DisplayName: 琥珀预警线
+WaxHiveTurret.DisplayName: 蜡巢炮台
+QueenChandelierProj.DisplayName: 水晶吊灯
+QueenCrystalSpireProj.DisplayName: 水晶尖塔
+QueenGaleFieldProj.DisplayName: 翼压风道
+QueenGelMeteorProj.DisplayName: 凝胶陨星
+QueenPrismBeamProj.DisplayName: 折射光束
+QueenShardProj.DisplayName: 棱彩碎晶
+SkeletronBoneShard.DisplayName: 骸骨碎片
+SkeletronBoneSpike.DisplayName: 骨脊尖刺
+SkeletronCursedSkull.DisplayName: 诅咒之颅
+SkeletronCurseWisp.DisplayName: 诅咒烛灵
+SkeletronGhostArmProj.DisplayName: 幽魂之臂
+WofBloodClot.DisplayName: 血凝块
+WofFleshSpikeProj.DisplayName: 血肉尖刺
+WofRetinaScanBeam.DisplayName: 视网膜血束
+WofTongueLashProj.DisplayName: 舌鞭
 // ScrapArmHitbox.DisplayName: Scrap Arm Hitbox
 // ScrapAutonomousTool.DisplayName: Scrap Autonomous Tool
 // ScrapDebris.DisplayName: Scrap Debris

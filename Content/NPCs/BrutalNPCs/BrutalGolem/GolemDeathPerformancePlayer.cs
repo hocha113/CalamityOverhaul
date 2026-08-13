@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core;
 using InnoVault.Cinematics;
 using Terraria;
 using Terraria.ID;
@@ -40,7 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                 GolemBodyAI.ActivePerformanceBody = -1;
                 return null;
             }
-            GolemBodyAI ai = npc.GetOverride<GolemBodyAI>();
+            GolemBodyAI ai = GolemFacts.FindOverride<GolemBodyAI>(npc);
             if (ai == null || !ai.InDeathPerformance) {
                 GolemBodyAI.ActivePerformanceBody = -1;
                 return null;

@@ -97,15 +97,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
                 return false;
             }
 
-            //拖尾光带：暗紫外层→青中层→月白热芯
-            for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
-                float fade = 1f - i / (float)Projectile.oldPos.Length;
-                Vector2 pos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                Main.EntitySpriteDraw(glow, pos, null, MLordDirector.DeepViolet with { A = 0 } * (0.5f * fade),
-                    0f, glow.Size() / 2f, 0.42f * fade, SpriteEffects.None, 0);
-                if (i < 6) {
-                    Main.EntitySpriteDraw(glow, pos, null, MLordDirector.Phantasmal with { A = 0 } * (0.65f * fade),
-                        0f, glow.Size() / 2f, 0.26f * fade, SpriteEffects.None, 0);
+            //拖尾光带：逐段连成收锥彗尾（暗紫外鞘 + 青热芯），弯折轨迹上段间无断口
+            Texture2D soft = CWRAsset.SoftGlow?.Value;
+            if (soft != null) {
+                Vector2 prev = Projectile.Center;
+                for (int i = 1; i < Projectile.oldPos.Length; i++) {
+                    //trail 缓存未填满前是零向量，画出去会拉一条通向世界原点的巨型光带
+                    if (Projectile.oldPos[i] == Vector2.Zero) {
+                        break;
+                    }
+                    Vector2 cur = Projectile.oldPos[i] + Projectile.Size / 2f;
+                    Vector2 seg = prev - cur;
+                    float segLen = seg.Length();
+                    if (segLen > 0.5f) {
+                        float fade = 1f - i / (float)Projectile.oldPos.Length;
+                        Vector2 mid = (prev + cur) * 0.5f - Main.screenPosition;
+                        float rot = seg.ToRotation();
+                        Vector2 stretchScale = new(segLen * 1.7f / soft.Width, 1f);
+                        Main.EntitySpriteDraw(soft, mid, null, MLordDirector.DeepViolet with { A = 0 } * (0.5f * fade),
+                            rot, soft.Size() / 2f, stretchScale * new Vector2(1f, (46f * fade + 8f) / soft.Height),
+                            SpriteEffects.None, 0);
+                        if (i < 7) {
+                            Main.EntitySpriteDraw(soft, mid, null, MLordDirector.Phantasmal with { A = 0 } * (0.62f * fade),
+                                rot, soft.Size() / 2f, stretchScale * new Vector2(1f, (24f * fade + 5f) / soft.Height),
+                                SpriteEffects.None, 0);
+                        }
+                    }
+                    prev = cur;
                 }
             }
 

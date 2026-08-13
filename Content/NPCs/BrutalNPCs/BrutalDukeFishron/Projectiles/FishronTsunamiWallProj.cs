@@ -41,6 +41,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             }
         }
 
+        public override void SetStaticDefaults() {
+            //抛沫画布高出命中盒五成：出屏余量不足会整墙瞬灭
+            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 560;
+        }
+
         public override void SetDefaults() {
             Projectile.width = (int)WallWidth;
             Projectile.height = 380;
@@ -81,10 +86,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             if (!VaultUtils.isServer) {
                 float env = Envelope;
                 Vector2 crest = new(Projectile.Center.X + Dir * WallWidth * 0.2f, Projectile.position.Y + 16f);
-                //浪冠喷雾
+                //浪冠喷雾：前甩为主，带重力弧线的断裂抛沫
                 if (Main.rand.NextBool(2)) {
                     FishronMotionFX.SpawnSprayCone(crest + Main.rand.NextVector2Circular(30f, 16f),
-                        new Vector2(Dir * 0.8f, -1f).SafeNormalize(-Vector2.UnitY), 2, 2f, 7f, 0.55f, env);
+                        new Vector2(Dir * 1.4f, -0.9f).SafeNormalize(-Vector2.UnitY), 2, 3f, 9f, 0.5f, env);
+                }
+                //溃散期：冠线崩解成一阵密集碎沫，浪"塌"下去而不是淡出去
+                if (Projectile.timeLeft <= FadeTime && Main.rand.NextBool(2)) {
+                    float collapseT = 1f - Projectile.timeLeft / (float)FadeTime;
+                    Vector2 fallCrest = new(Projectile.Center.X + Main.rand.NextFloat(-0.5f, 0.5f) * WallWidth,
+                        Projectile.position.Y + Projectile.height * (0.1f + collapseT * 0.7f));
+                    FishronMotionFX.SpawnSprayCone(fallCrest, -Vector2.UnitY, 2, 1.5f, 5f, 0.9f, 0.8f);
+                    InnoVault.PRT.PRTLoader.NewParticle<PRT_FishronFoam>(fallCrest,
+                        new Vector2(Main.rand.NextFloat(-1.5f, 1.5f), Main.rand.NextFloat(0.5f, 2f)),
+                        FishronMotionFX.FoamWhite * 0.45f, Main.rand.NextFloat(0.8f, 1.4f))
+                        ?.Configure(Main.rand.Next(20, 36), Main.rand.NextFloat(-0.04f, 0.04f));
                 }
                 //浪脚湿沫余痕：浪走过之后仍留在地上
                 if (Main.rand.NextBool(3)) {
@@ -109,8 +125,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
 
             Effect effect = EffectLoader.FishronTsunami?.Value;
             Vector2 bottom = new(Projectile.Center.X, Projectile.position.Y + Projectile.height);
+            //顶部预留三成画布给冠口抛沫，浪冠永不顶着画布边
             float drawW = WallWidth * 2.6f;
-            float drawH = WallHeight * 1.18f;
+            float drawH = WallHeight * 1.5f;
             Vector2 drawCenter = bottom - new Vector2(0, drawH * 0.5f);
 
             if (effect == null || noiseTex == null) {
@@ -118,8 +135,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
                 return false;
             }
 
+            //起浪/溃散走几何：浪从地里立起、自冠而下蚀掉，alpha 只承担残余
+            float growth = MathHelper.Clamp(LifeTimer / (float)RiseTime, 0f, 1f);
+            growth = growth * growth * (3f - 2f * growth);
+            float collapse = 1f - MathHelper.Clamp(Projectile.timeLeft / (float)FadeTime, 0f, 1f);
+
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-            effect.Parameters["uIntensity"]?.SetValue(env);
+            effect.Parameters["uIntensity"]?.SetValue(0.35f + 0.65f * env);
+            effect.Parameters["uGrowth"]?.SetValue(growth);
+            effect.Parameters["uCollapse"]?.SetValue(collapse);
             effect.Parameters["uDir"]?.SetValue((float)Dir);
             effect.Parameters["uSeed"]?.SetValue(Projectile.whoAmI * 0.313f);
             effect.Parameters["uDeepColor"]?.SetValue(FishronMotionFX.DeepSea.ToVector3());

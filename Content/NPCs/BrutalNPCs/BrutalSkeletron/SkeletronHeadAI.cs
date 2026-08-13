@@ -7,22 +7,15 @@ using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
 {
     /// <summary>骷髅王头部 NPCOverride，States 驱动，契约见 SkeletronPhase、npc.ai[2]</summary>
-    internal class SkeletronHeadAI : CWRNPCOverride, ICWRLoader, ILocalizedModType
+    internal class SkeletronHeadAI : CWRNPCOverride, ICWRLoader
     {
         #region 数据
         public override int TargetID => NPCID.SkeletronHead;
-
-        public string LocalizationCategory => "BrutalNPCs";
-        public static LocalizedText Intro_Text { get; private set; }
-        public static LocalizedText Unbound_Text { get; private set; }
-        public static LocalizedText Day_Text { get; private set; }
-        public static LocalizedText Death_Text { get; private set; }
 
         /// <summary>目标失效判定距离</summary>
         private const int MaxFindDistance = 6200;
@@ -54,17 +47,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
             ActivePerformanceHead = -1;
             SkeletronScreenEffects.Clear();
             SkeletronRenderHelper.Unload();
-        }
-
-        public override void SetStaticDefaults() {
-            Intro_Text = this.GetLocalization(nameof(Intro_Text),
-                () => "老人的皮囊裂开了。诅咒睁开眼睛。");
-            Unbound_Text = this.GetLocalization(nameof(Unbound_Text),
-                () => "骷髅王折断了自己的双腕。");
-            Day_Text = this.GetLocalization(nameof(Day_Text),
-                () => "晨光刺痛了它。逃。");
-            Death_Text = this.GetLocalization(nameof(Death_Text),
-                () => "钟声停了。老人的诅咒散了。");
         }
 
         public override bool? CanCWROverride() {
@@ -290,14 +272,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
             }
         }
 
-        /// <summary>公告文本（各端本地入口，服务端广播）</summary>
-        internal static void Announce(LocalizedText text, Color color) {
-            if (text == null) {
-                return;
-            }
-            VaultUtils.Text(text.Value, color);
-        }
-
         #endregion
 
         #region 死亡与掉落
@@ -376,9 +350,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
                 SkeletronRenderHelper.AsAdditive(SkeletronRenderHelper.GhostDeep) * (0.13f * breath * alphaFade),
                 npc.rotation, orig, npc.scale * 1.045f, SpriteEffects.None, 0f);
 
-            //眼火与冠火
-            SkeletronRenderHelper.DrawEyeFlames(spriteBatch, npc, stateContext.EyeFlame, alphaFade);
-            SkeletronRenderHelper.DrawCrownFlames(spriteBatch, npc, stateContext.CrownFlame, alphaFade);
+            //眼火与冠火（压入冷焰顶点批，EndEntityDraw 统一绘制）
+            SkeletronRenderHelper.DrawEyeFlames(npc, stateContext.EyeFlame, alphaFade);
+            SkeletronRenderHelper.DrawCrownFlames(npc, stateContext.CrownFlame, alphaFade);
 
             return false;
         }
@@ -387,6 +361,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
         private void DrawMotionGhosts(SpriteBatch spriteBatch, Texture2D tex, Rectangle rect, Vector2 orig, float alphaFade) {
             bool spinning = stateContext.SpinVortex > 0.15f;
             float speed = npc.velocity.Length();
+
+            //旋杀/冲刺轨迹绸带（顶点层，压在头颅之下）
+            float ribbonHeat = MathHelper.Clamp((speed - 8f) / 16f, 0f, 1f);
+            if (spinning) {
+                ribbonHeat = Math.Max(ribbonHeat, stateContext.SpinVortex * 0.8f);
+            }
+            SkeletronRenderHelper.DrawMotionRibbon(npc, ribbonHeat, 40f * npc.scale, 0.6f * alphaFade);
 
             if (spinning) {
                 //旋转涂抹：角度错相三重影（A=0 加色）

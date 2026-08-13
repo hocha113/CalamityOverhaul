@@ -629,10 +629,11 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
             form.CurrentTechnique.Passes[0].Apply();
         }
 
-        /// <summary>吊链：Chain22 重链沿悬链弧逐环铺出；突刺绷直时高频颤动</summary>
+        /// <summary>臂链：照抄鬼奴原型——原版机械骷髅王臂骨节（Arm_Bone_2）
+        /// 沿悬链弧分三节拉伸铺出；突刺绷直时高频颤动</summary>
         private void DrawChainArm(SpriteBatch sb, Effect form, bool shaderOk, int i, float alpha, Color lightColor) {
-            Texture2D chain = TextureAssets.Chain22?.Value;
-            if (chain == null) {
+            Texture2D bone = TextureAssets.BoneArm2?.Value;
+            if (bone == null) {
                 return;
             }
             Vector2 s = ShoulderWorld(i);
@@ -648,17 +649,17 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
                 mid += perp * MathF.Sin(Main.GlobalTimeWrappedHourly * 62f + Seed) * (TautVibe / 12f) * 6f;
             }
 
-            Rectangle chainFrame = new(0, 0, chain.Width, chain.Height);
+            Rectangle boneFrame = new(0, 0, bone.Width, bone.Height);
             Color tint = shaderOk
                 ? new Color(lightColor.R, lightColor.G, lightColor.B, (byte)(alpha * 255f))
                 : lightColor.MultiplyRGB(ChainRustMul) * alpha;
             if (shaderOk) {
-                //参数每臂只设一次（链条锈得更透、缝隙渗油最重），链节共享同一材质态
+                //参数每臂只设一次（臂骨锈得更透、关节缝渗油最重），三节共享同一材质态
                 ApplyScrapForm(form, Seed + i * 2.3f,
-                    RustBase() + 0.15f, 0.5f, Context.WeldHeat * 0.5f, chainFrame, chain);
+                    RustBase() + 0.15f, 0.5f, Context.WeldHeat * 0.5f, boneFrame, bone);
             }
-            float linkLen = chain.Height * 0.92f;
-            int segs = Math.Max(3, (int)((dist + sag * 2f) / linkLen));
+            //原型同款：三节骨臂，各节拉伸到自己那段弧长
+            const int segs = 3;
             Vector2 prev = s;
             for (int k = 1; k <= segs; k++) {
                 Vector2 p = Bezier(s, mid, a, k / (float)segs);
@@ -670,9 +671,9 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
                 }
                 Vector2 c = (prev + p) * 0.5f;
                 float rot = dir.ToRotation() + MathHelper.PiOver2;
-                Vector2 scale = new(0.9f, len / chain.Height * 1.06f);
-                sb.Draw(chain, c - Main.screenPosition, null, tint, rot,
-                    chain.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+                Vector2 scale = new(0.92f, len / bone.Height * 1.12f);
+                sb.Draw(bone, c - Main.screenPosition, null, tint, rot,
+                    bone.Size() * 0.5f, scale, SpriteEffects.None, 0f);
                 prev = p;
             }
         }

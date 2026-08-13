@@ -47,9 +47,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             megaLaunched = false;
             boltPlan.Clear();
 
-            if (!VaultUtils.isServer) {
-                VaultUtils.Text(DukeFishronAI.DukeFishron_Maelstrom_Text.Value, FishronMotionFX.StormBolt);
-            }
             //清掉气泡，把在场龙卷灌成满级——风暴归拢到他身上
             if (!VaultUtils.isClient) {
                 foreach (var n in Main.ActiveNPCs) {
@@ -64,8 +61,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 foreach (var proj in Main.ActiveProjectiles) {
                     if (proj.type == tornadoType) {
                         proj.ai[1] = 1f;
-                        proj.timeLeft = Math.Max(proj.timeLeft, 900);
-                        proj.netUpdate = true;
+                        //加寿走刷新戳（各端一致落地，含 netUpdate）
+                        FishronSharkTornadoProj.RefreshLifetime(proj);
                     }
                 }
             }

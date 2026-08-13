@@ -122,10 +122,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             if (Timer < TelegraphTime) {
                 float strength = MathHelper.Clamp(Timer / (float)System.Math.Max(TelegraphTime - 8, 1), 0f, 1f);
-                MLordRayRender.DrawGuideLine(Projectile.Center, Projectile.rotation, BeamLength, strength);
+                MLordRayRender.DrawGuideLine(Projectile.Center, Projectile.rotation, BeamLength, strength, additiveBatch: true);
                 return;
             }
-            MLordRayRender.DrawMuzzle(Projectile.Center, beamWidth / MaxWidth, MathHelper.Clamp(beamWidth / MaxWidth, 0f, 1f));
+            MLordRayRender.DrawMuzzle(Projectile.Center, beamWidth / MaxWidth,
+                MathHelper.Clamp(beamWidth / MaxWidth, 0f, 1f), additiveBatch: true);
         }
     }
 }

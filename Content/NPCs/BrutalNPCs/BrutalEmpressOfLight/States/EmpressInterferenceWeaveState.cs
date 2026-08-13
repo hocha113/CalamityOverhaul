@@ -75,6 +75,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     EmpressCast.Bolt(npc, context.RightHand, thetaR.ToRotationVector2() * BoltSpeed,
                         context.BoltDamage, 0, hue + 0.5f);
 
+                    //双层珠帘：同角一枚慢速珍珠垫后，双壁螺旋让莫尔纹有厚度
+                    EmpressCast.Bolt(npc, context.LeftHand, thetaL.ToRotationVector2() * (BoltSpeed * 0.78f),
+                        context.BoltDamage, 0, (hue + 0.04f) % 1f);
+                    EmpressCast.Bolt(npc, context.RightHand, thetaR.ToRotationVector2() * (BoltSpeed * 0.78f),
+                        context.BoltDamage, 0, (hue + 0.54f) % 1f);
+
                     //二阶段第二对旋臂：错半步长，织纹加密成四臂莫尔
                     if (context.IsSecondPhase && k % 2 == 0) {
                         float thetaL2 = k * (AngleStep + 0.021f) + MathHelper.PiOver2;

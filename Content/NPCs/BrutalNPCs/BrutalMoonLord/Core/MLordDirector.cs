@@ -48,8 +48,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         public static Vector2 HeadWeldOffset => new(0f, -400f);
         /// <summary>核心悬停位相对目标玩家偏移</summary>
         public static Vector2 CoreHoverOffset => new(0f, 130f);
-        /// <summary>骨臂 IK 全长 px，超出后切幻影拉伸绘制</summary>
-        public static float ArmIKLength => 340f;
 
         //―――― 全局阀 ――――
         /// <summary>远距回归瞬移距离</summary>

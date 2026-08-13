@@ -21,9 +21,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             base.OnEnter(context);
             context.SkipDefaultMovement = true;
             splashed = false;
-            if (!VaultUtils.isServer) {
-                VaultUtils.Text(DukeFishronAI.DukeFishron_Despawn_Text.Value, FishronMotionFX.SeaGreen);
-            }
             SoundEngine.PlaySound(SoundID.Zombie20 with { Volume = 0.8f, Pitch = -0.45f, MaxInstances = 3 }, context.Npc.Center);
         }
 

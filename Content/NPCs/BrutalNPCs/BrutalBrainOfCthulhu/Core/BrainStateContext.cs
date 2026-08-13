@@ -27,6 +27,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core
         public bool DeathPerformanceFinished { get; set; }
         /// <summary>心搏骤停后的力竭窗口（帧），期间受伤+30%</summary>
         public int FalterTimer { get; set; }
+        /// <summary>出猩红狂暴强度 0~1，权威端推导，随 override.ai 同步槽下发</summary>
+        public float EnrageRamp { get; set; }
         /// <summary>攻击袋（服务端专用）</summary>
         public List<BrainStateIndex> AttackBag { get; } = [];
         /// <summary>上一招，防复读</summary>

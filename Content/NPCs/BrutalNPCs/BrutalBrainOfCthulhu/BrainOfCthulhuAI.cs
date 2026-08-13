@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States;
@@ -5,25 +6,16 @@ using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
-using Terraria.Localization;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
 {
     /// <summary>克脑主控：镜像瞬移心理战，状态机契约见 BrainStateIndex、npc.ai[2]</summary>
-    internal class BrainOfCthulhuAI : CWRNPCOverride, ICWRLoader, ILocalizedModType
+    internal class BrainOfCthulhuAI : CWRNPCOverride, ICWRLoader
     {
         #region 数据
         public override int TargetID => NPCID.BrainofCthulhu;
-
-        public string LocalizationCategory => "BrutalNPCs";
-        /// <summary>入场低语</summary>
-        public static LocalizedText BrainIntro_Text { get; private set; }
-        /// <summary>裸脑阶段低语</summary>
-        public static LocalizedText BrainPhase2_Text { get; private set; }
-        /// <summary>心搏骤停低语</summary>
-        public static LocalizedText BrainHeartAttack_Text { get; private set; }
 
         /// <summary>life 低于此值进死亡演出</summary>
         internal const int DeathPerformanceTriggerLife = 10;
@@ -31,14 +23,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
         internal const float Phase2LifeRatio = 0.55f;
         /// <summary>低血狂化阈值（解锁心搏骤停）</summary>
         internal const float LowLifeRatio = 0.28f;
+        /// <summary>目标脱离猩红进入狂暴前的宽限帧(允许短暂追出边界)</summary>
+        internal const int OutOfZoneEnrageDelay = 120;
+        /// <summary>override ai 槽位：出猩红狂暴强度0~1(权威端写入，各端回读；0/1=编队锚点 2=矛浪旋向)</summary>
+        internal const int SlotEnrageRamp = 3;
 
         private VaultStateMachine<BrainStateContext> stateMachine;
         private BrainStateContext stateContext;
         private Player targetPlayer;
         /// <summary>远距滞留帧，达上限触发回归瞬移</summary>
         private int farTimer;
-        /// <summary>目标脱离猩红宽限帧（240 帧脱战，镜像原版规则但给足追出边界的余量）</summary>
+        /// <summary>目标脱离猩红累计帧，过宽限进入狂暴</summary>
         private int outOfZoneTimer;
+        /// <summary>入怒吼声已播(本地防重播)</summary>
+        private bool enrageCuePlayed;
+        /// <summary>乘算记忆：上帧原始接触伤(-1=无效)，防状态未逐帧重声明时复利爆炸</summary>
+        private int lastRawDamage = -1;
+        /// <summary>乘算记忆：上帧放大后的输出值</summary>
+        private int lastEnragedOutput = -1;
         /// <summary>客户端瞬移检测：上一帧位置</summary>
         private Vector2 lastFramePos;
         private bool lastPosValid;
@@ -49,15 +51,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
 
         void ICWRLoader.UnLoadData() {
             BrainHeartbeat.Clear();
-        }
-
-        public override void SetStaticDefaults() {
-            BrainIntro_Text = this.GetLocalization(nameof(BrainIntro_Text),
-                () => "你的心跳，和它撞在了同一个节拍上。");
-            BrainPhase2_Text = this.GetLocalization(nameof(BrainPhase2_Text),
-                () => "壳碎了。里面的东西没有停。");
-            BrainHeartAttack_Text = this.GetLocalization(nameof(BrainHeartAttack_Text),
-                () => "心跳停了。哪一边的？");
         }
 
         public override void SetProperty() {
@@ -119,6 +112,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
             //无敌统一落位（每帧声明制；死亡演出锁血由 CheckDead 兜底）
             npc.dontTakeDamage = stateContext.Invulnerable;
 
+            //出猩红狂暴：接触伤放大+心跳加重，AI 与招式不动
+            UpdateEnragePresentation();
+
             //心跳时钟（各端同步递增，netUpdate 纠偏）
             npc.ai[3] += 1f;
             DispatchBeat();
@@ -162,8 +158,51 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
             stateContext.IsLowLife = stateContext.LifeRatio <= LowLifeRatio;
             stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
 
+            //客户端从同步槽回读狂暴强度
+            if (VaultUtils.isClient) {
+                stateContext.EnrageRamp = MathHelper.Clamp(ai[SlotEnrageRamp], 0f, 1f);
+            }
+
             if (Main.GameUpdateCount % 30 == 0) {
                 stateContext.RefreshCreepers();
+            }
+        }
+
+        /// <summary>狂暴表现与增伤统一落位：接触伤放大、心跳加重、入怒瞬间吼声与红光</summary>
+        private void UpdateEnragePresentation() {
+            float ramp = stateContext.EnrageRamp;
+            if (ramp <= 0.01f) {
+                enrageCuePlayed = false;
+                lastRawDamage = -1;
+                lastEnragedOutput = -1;
+                return;
+            }
+
+            //带记忆的乘算：与上帧输出相同说明本帧未被状态重新声明，先还原原始值再乘，防逐帧复利
+            if (npc.damage > 0) {
+                if (npc.damage == lastEnragedOutput && lastRawDamage >= 0) {
+                    npc.damage = lastRawDamage;
+                }
+                lastRawDamage = npc.damage;
+                npc.damage = (int)(npc.damage * (1f + 0.8f * ramp));
+                lastEnragedOutput = npc.damage;
+            }
+            else {
+                lastRawDamage = -1;
+                lastEnragedOutput = -1;
+            }
+
+            //心跳只上抬力度不动周期：心音=判定拍（裂隙真假、整拍出击、环笼收缩都读它），
+            //压缩周期会让心音脱离各状态的判定窗，教玩家错误节拍
+            stateContext.BeatIntensity += 0.35f * ramp;
+
+            Lighting.AddLight(npc.Center, BrainMotion.BloodBright.ToVector3() * 0.7f * ramp);
+
+            if (!enrageCuePlayed) {
+                enrageCuePlayed = true;
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.ForceRoarPitched with { Volume = 1f, Pitch = -0.6f }, npc.Center);
+                }
             }
         }
 
@@ -218,7 +257,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
             }
             targetPlayer = Main.player[npc.target];
 
-            if (VaultUtils.isClient || stateMachine?.CurrentState is BrainDespawnState or BrainDeathState) {
+            if (VaultUtils.isClient) {
+                return;
+            }
+
+            //撤离/死亡演出期间：狂暴消退，不再裁决
+            if (stateMachine?.CurrentState is BrainDespawnState or BrainDeathState) {
+                outOfZoneTimer = 0;
+                stateContext.EnrageRamp = MathHelper.Clamp(stateContext.EnrageRamp - 1f / 60f, 0f, 1f);
+                ai[SlotEnrageRamp] = stateContext.EnrageRamp;
                 return;
             }
 
@@ -227,19 +274,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
                 return;
             }
 
-            //目标持续脱离猩红→脱战（BossRush 豁免）
-            if (!targetPlayer.ZoneCrimson && !CWRRef.GetBossRushActive()) {
-                if (++outOfZoneTimer >= 240) {
-                    outOfZoneTimer = 0;
-                    stateMachine?.ChangeState(new BrainDespawnState());
-                }
+            //目标持续脱离猩红不再脱战：宽限后进入狂暴（AI 不变，免伤+增伤；BossRush 豁免），权威端裁决
+            //入场演出期不累计（防开幕即怒吼撞演出）
+            if (stateMachine?.CurrentState is BrainIntroState) {
+                outOfZoneTimer = 0;
+            }
+            else if (!targetPlayer.ZoneCrimson && !CWRRef.GetBossRushActive()) {
+                outOfZoneTimer++;
             }
             else if (outOfZoneTimer > 0) {
-                outOfZoneTimer -= 2;
-                if (outOfZoneTimer < 0) {
-                    outOfZoneTimer = 0;
-                }
+                outOfZoneTimer = Math.Max(outOfZoneTimer - 2, 0);
             }
+            float step = outOfZoneTimer > OutOfZoneEnrageDelay ? 1f / 60f : -1f / 60f;
+            stateContext.EnrageRamp = MathHelper.Clamp(stateContext.EnrageRamp + step, 0f, 1f);
+            ai[SlotEnrageRamp] = stateContext.EnrageRamp;
         }
 
         private void UpdateDefense() {
@@ -339,10 +387,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
 
         #region 判定与掉落
 
-        /// <summary>力竭窗口受伤加深</summary>
+        /// <summary>力竭窗口受伤加深；出猩红狂暴免伤（无尽伤害类不受抑制）</summary>
         public override bool? On_ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers) {
             if (stateContext != null && stateContext.FalterTimer > 0) {
                 modifiers.FinalDamage *= 1.3f;
+            }
+            if (stateContext != null && stateContext.EnrageRamp > 0f
+                && modifiers.DamageType != EndlessDamageClass.Instance) {
+                modifiers.FinalDamage *= 1f - 0.9f * stateContext.EnrageRamp;
             }
             return null;
         }
@@ -388,6 +440,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (stateContext == null) {
                 return true;
+            }
+            //出猩红狂暴体色：血光灼热
+            if (stateContext.EnrageRamp > 0.01f) {
+                drawColor = Color.Lerp(drawColor, new Color(255, 60, 50), stateContext.EnrageRamp * 0.45f);
             }
             BrainRenderHelper.DrawBrain(spriteBatch, npc, stateContext, screenPos, drawColor);
             return false;

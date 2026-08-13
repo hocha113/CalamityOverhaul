@@ -20,9 +20,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
         private const int PunishWindow = 60;
         private const float GazeRange = 1150f;
 
-        /// <summary>凝视教学提示，本客户端一次</summary>
-        private static bool gazeHintShown;
-
         /// <summary>本地玩家本次咆哮是否已受罚(各端只管自己)</summary>
         private bool localPunished;
 
@@ -55,12 +52,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                 }
                 if (Timer == 6 && !Main.dedServ) {
                     SoundEngine.PlaySound(SoundID.Item119 with { Volume = 0.5f, Pitch = -0.6f }, npc.Center);
-                }
-                //教学提示：首次遇到且看得见它
-                if (Timer == 20 && !Main.dedServ && !gazeHintShown
-                    && Main.LocalPlayer.Alives() && Main.LocalPlayer.Distance(npc.Center) < 1500f) {
-                    gazeHintShown = true;
-                    CombatText.NewText(Main.LocalPlayer.Hitbox, DeerclopsMotion.GazeRed, DeerclopsAI.GazeWarn_Text.Value, true);
                 }
                 return null;
             }

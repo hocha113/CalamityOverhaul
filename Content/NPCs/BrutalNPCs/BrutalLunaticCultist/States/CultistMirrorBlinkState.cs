@@ -1,6 +1,8 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Rendering;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -135,14 +137,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             return null;
         }
 
-        /// <summary>看破演出（本地）</summary>
+        /// <summary>看破演出（本地，纯音画）：真身金白爆芒+幻术碎光，替代文字播报</summary>
         internal static void PlayRevealFx(CultistStateContext context) {
             if (VaultUtils.isServer) {
                 return;
             }
+            Vector2 pos = context.Npc.Center;
             CultistScreenFX.PushFlash(0.45f, 16);
-            SoundEngine.PlaySound(SoundID.Shatter with { Volume = 0.9f, Pitch = 0.2f }, context.Npc.Center);
-            CultistBossAI.LocalText(CultistBossAI.LunaticCultist_MirrorRevealText, CultistPalette.Bright(context.Element));
+            //碎镜双拍：低碎裂+高清亮升调（"看破了"的胜利质感）
+            SoundEngine.PlaySound(SoundID.Shatter with { Volume = 0.9f, Pitch = 0.2f }, pos);
+            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.9f, Pitch = 0.55f }, pos);
+            //真身位置的金白放射爆芒+符文外掷
+            Color gold = new(255, 235, 160);
+            for (int i = 0; i < 14; i++) {
+                float angle = MathHelper.TwoPi * i / 14f;
+                Vector2 away = pos + angle.ToRotationVector2() * 260f;
+                PRTLoader.NewParticle<PRT_CultistRune>(pos + angle.ToRotationVector2() * 20f,
+                    angle.ToRotationVector2() * 7f, gold, Main.rand.NextFloat(0.9f, 1.5f))
+                    ?.Configure(away, 0.02f, 26);
+            }
+            for (int i = 0; i < 10; i++) {
+                PRTLoader.NewParticle<PRT_CultistShard>(pos + Main.rand.NextVector2Circular(30f, 44f),
+                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(4f, 11f), gold,
+                    Main.rand.NextFloat(0.7f, 1.3f))?.Configure(Main.rand.Next(22, 38));
+            }
+            PRTLoader.NewParticle<PRT_StarPulseRing>(pos, Vector2.Zero, gold, 0.1f)?.Configure(0.1f, 1.2f, 18);
         }
 
         /// <summary>环阵洗牌：服务端摆位并同步</summary>

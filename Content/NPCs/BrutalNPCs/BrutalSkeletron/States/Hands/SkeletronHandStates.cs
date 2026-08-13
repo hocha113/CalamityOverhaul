@@ -369,7 +369,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
             npc.velocity = Vector2.Zero;
             ctx.ChainTension = 1f;
 
-            SkeletronHeadAI headOverride = ctx.Head.GetOverride<SkeletronHeadAI>();
+            //槽位复用等异常取不到覆写时保持null，下一行已有回退时钟（精确索引缺键会抛出）
+            ctx.Head.TryGetOverride(out SkeletronHeadAI headOverride);
             float clock = headOverride?.ai[SkeletronAiSlots.OverrideOrbitClock] ?? Main.GameUpdateCount;
             float rot = clock * 0.22f + (ctx.Side < 0 ? 0f : MathHelper.Pi);
             Vector2 toPoint = ctx.Head.Center + rot.ToRotationVector2() * ctx.Head.width * 1.5f;

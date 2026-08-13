@@ -26,8 +26,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
         public override int TargetID => NPCID.WallofFlesh;
 
         public string LocalizationCategory => "BrutalNPCs";
-        public static LocalizedText WofIntroText { get; private set; }
-        public static LocalizedText WofExodusText { get; private set; }
         public static LocalizedText CurtainDeathReason { get; private set; }
         public static LocalizedText NetDeathReason { get; private set; }
 
@@ -72,10 +70,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
         }
 
         public override void SetStaticDefaults() {
-            WofIntroText = this.GetLocalization(nameof(WofIntroText),
-                () => "地狱的地平线立起来了……");
-            WofExodusText = this.GetLocalization(nameof(WofExodusText),
-                () => "血肉在前方合拢——退路没有了。");
             CurtainDeathReason = this.GetLocalization(nameof(CurtainDeathReason),
                 () => "{0}被血潮吞没了");
             NetDeathReason = this.GetLocalization(nameof(NetDeathReason),
@@ -501,16 +495,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
                 WofRenderHelper.DrawMouthCharge(npc, glowStrength, theme);
             }
 
-            //舌鞭预告瞄准线：预告后半段自口器指向预测落点
+            //舌鞭预告瞄准线：预告后半段自口器指向预测落点(分段端部包络，根/尾无平切)
             if (stateContext.ChargeType == 5 && stateContext.ChargeProgress > 0.55f && targetPlayer.Alives()) {
                 Vector2 aim = (targetPlayer.Center + targetPlayer.velocity * 12f - npc.Center)
                     .SafeNormalize(Vector2.UnitX * npc.direction);
-                Texture2D lineTex = CWRAsset.Line.Value;
-                float lineAlpha = (stateContext.ChargeProgress - 0.55f) / 0.45f * 0.5f;
-                spriteBatch.Draw(lineTex, npc.Center - screenPos, null,
-                    new Color(255, 70, 50, 0) * lineAlpha, aim.ToRotation(),
-                    new Vector2(0f, lineTex.Height / 2f),
-                    new Vector2(980f / lineTex.Width, 2.2f / lineTex.Height), SpriteEffects.None, 0f);
+                float lineAlpha = (stateContext.ChargeProgress - 0.55f) / 0.45f * 0.55f;
+                WofMotionFX.DrawAimLine(spriteBatch, npc.Center, aim, 980f, 9f,
+                    new Color(255, 70, 50, 0) * lineAlpha);
             }
 
             //后方血幕(大迁徙)

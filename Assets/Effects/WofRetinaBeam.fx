@@ -9,6 +9,7 @@ float uTime;
 float fadeAlpha;    //整体透明度 0~1
 float seed;         //实例种子，上下眼错相
 float uScanTurn;    //扫描折返增亮 0~1
+float uQuadLen;     //quad总长px(眼后起始边→末端)，根部生长包络用
 
 texture uNoiseTex;
 sampler noiseSamp = sampler_state
@@ -115,6 +116,11 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
         + headFlare * 0.9
     );
     alpha *= fadeAlpha;
+
+    //根部生长包络(像素域)：quad起始边在眼球后方，最后46px内一切成分归零——
+    //光束自眼内长出，起始边不暴露任何平切(headFlare也被包住)
+    float rootGrow = smoothstep(0.0, 46.0, (1.0 - along) * uQuadLen);
+    alpha *= rootGrow;
     return float4(color * alpha, alpha) * input.Color;
 }
 

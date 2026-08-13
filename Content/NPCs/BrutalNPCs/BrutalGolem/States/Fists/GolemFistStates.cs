@@ -293,7 +293,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
             npc.velocity = Vector2.Zero;
 
             //绕躯干旋转编队（相位差半圈）
-            GolemBodyAI bodyOverride = ctx.Body.GetOverride<GolemBodyAI>();
+            GolemBodyAI bodyOverride = GolemFacts.FindOverride<GolemBodyAI>(ctx.Body);
             float clock = bodyOverride != null ? bodyOverride.ai[GolemAiSlots.OverrideShowClock] : Timer;
             float rot = clock * 0.055f + (ctx.Side < 0 ? 0f : MathHelper.Pi);
             Vector2 slot = ctx.Body.Center + rot.ToRotationVector2() * 190f;

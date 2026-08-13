@@ -8,7 +8,6 @@ using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
@@ -18,16 +17,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
     /// npc.ai[2]=状态机同步槽；npc.ai[0/1/3]=状态内掷骰暂存<br/>
     /// override.ai[0]=编队时钟 override.ai[3]=阶段位掩码 override.ai[4]=出招环游标
     /// </summary>
-    internal class BrutalQueenBeeAI : CWRNPCOverride, ICWRLoader, ILocalizedModType
+    internal class BrutalQueenBeeAI : CWRNPCOverride, ICWRLoader
     {
         #region 数据
         public override int TargetID => NPCID.QueenBee;
-
-        public string LocalizationCategory => "BrutalNPCs";
-        /// <summary>蜂潮终曲宣告</summary>
-        public static LocalizedText RoyalTide_Text { get; private set; }
-        /// <summary>二阶段蜕变宣告</summary>
-        public static LocalizedText SwarmRage_Text { get; private set; }
 
         /// <summary>触发死亡演出的生命阈值</summary>
         internal const int DeathPerformanceTriggerLife = 10;
@@ -55,13 +48,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
 
         #region 加载与初始化
         void ICWRLoader.UnLoadData() => SwarmFlowRenderer.Unload();
-
-        public override void SetStaticDefaults() {
-            RoyalTide_Text = this.GetLocalization(nameof(RoyalTide_Text),
-                () => "嗡鸣汇成雷声——蜂潮成矛!");
-            SwarmRage_Text = this.GetLocalization(nameof(SwarmRage_Text),
-                () => "蜂群结成护盾，蜂后正在蜕变……");
-        }
 
         public override bool? CanCWROverride() {
             return null;

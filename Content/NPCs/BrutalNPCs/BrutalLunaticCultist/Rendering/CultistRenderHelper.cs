@@ -14,8 +14,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
     internal static class CultistRenderHelper
     {
         //CWRAsset 未暴露的遮罩，自装载
-        [VaultLoaden(CWRConstant.Masking + "LightBeam")]
-        internal static ReLogic.Content.Asset<Texture2D> LightBeam = null;
         [VaultLoaden(CWRConstant.Masking + "TearFlame01")]
         internal static ReLogic.Content.Asset<Texture2D> TearFlame01 = null;
 
@@ -146,6 +144,57 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
                 radiusPx / (star.Width * 0.42f), SpriteEffects.None, 0f);
             sb.Draw(glow, drawPos, null, bright * (0.35f * charge + flash * 0.5f), 0f,
                 glow.Size() / 2f, gs * 0.5f, SpriteEffects.None, 0f);
+            EndAdditive(sb);
+        }
+
+        #endregion
+
+        #region 晶枪绘制
+
+        /// <summary>
+        /// 霜牢晶枪（CultistCrystal shader），rotation 沿枪轴（+x=尖端）；调用方须处于实体绘制批
+        /// </summary>
+        public static void DrawCrystal(SpriteBatch sb, Vector2 worldPos, float lengthPx, float rotation,
+            float grow, float flash, float seed, float alpha = 1f) {
+            if (grow <= 0.01f || alpha <= 0.01f) {
+                return;
+            }
+
+            Effect effect = EffectLoader.CultistCrystal?.Value;
+            if (effect != null) {
+                effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+                effect.Parameters["uGrow"]?.SetValue(MathHelper.Clamp(grow, 0f, 1f));
+                effect.Parameters["uFlash"]?.SetValue(MathHelper.Clamp(flash, 0f, 1f));
+                effect.Parameters["uSeed"]?.SetValue(seed);
+                effect.Parameters["uColDeep"]?.SetValue(CultistPalette.IceDeep.ToVector3());
+                effect.Parameters["uColMain"]?.SetValue(CultistPalette.IceMain.ToVector3());
+                effect.Parameters["uColBright"]?.SetValue(CultistPalette.IceBright.ToVector3());
+
+                sb.End();
+                sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp,
+                    DepthStencilState.None, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+                effect.CurrentTechnique.Passes[0].Apply();
+
+                Texture2D pixel = VaultAsset.placeholder2.Value;
+                Vector2 scale = new(lengthPx / pixel.Width, lengthPx * 0.40f / pixel.Height);
+                sb.Draw(pixel, worldPos - Main.screenPosition, null, Color.White * alpha, rotation,
+                    pixel.Size() / 2f, scale, SpriteEffects.None, 0f);
+
+                sb.End();
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                    DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+                return;
+            }
+
+            //CPU回退：双层硬边星芒（亮芯+冷缘）
+            BeginAdditive(sb);
+            Vector2 drawPos = worldPos - Main.screenPosition;
+            Texture2D star = CWRAsset.StarGlow01.Value;
+            float len = lengthPx / star.Width;
+            sb.Draw(star, drawPos, null, CultistPalette.IceDeep * (0.8f * grow * alpha),
+                rotation, star.Size() / 2f, new Vector2(len * 1.9f, 0.34f), SpriteEffects.None, 0f);
+            sb.Draw(star, drawPos, null, CultistPalette.IceBright * ((0.9f * grow + flash * 0.6f) * alpha),
+                rotation, star.Size() / 2f, new Vector2(len * 1.5f, 0.16f), SpriteEffects.None, 0f);
             EndAdditive(sb);
         }
 

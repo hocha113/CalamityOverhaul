@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             MLordRayRender.DrawMuzzle(Projectile.Center, beamWidth / MaxWidth,
-                MathHelper.Clamp(beamWidth / MaxWidth, 0f, 1f));
+                MathHelper.Clamp(beamWidth / MaxWidth, 0f, 1f), additiveBatch: true);
         }
     }
 }

@@ -15,13 +15,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
         public override string StateName => "DayEnrage";
         public override SkeletronStateIndex StateIndex => SkeletronStateIndex.DayEnrage;
 
-        public override void OnEnter(SkeletronStateContext context) {
-            base.OnEnter(context);
-            if (!VaultUtils.isClient) {
-                SkeletronHeadAI.Announce(SkeletronHeadAI.Day_Text, SkeletronRenderHelper.BonePale);
-            }
-        }
-
         public override ISkeletronState OnUpdate(SkeletronStateContext context) {
             NPC npc = context.Npc;
 

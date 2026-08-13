@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
         private int RingInterval => Context.Scaled(46);
         private int TailTime => Context.Scaled(70);
         private int TotalTime => RingInterval * RingCount + TailTime;
-        private int BoltsPerRing => Context.IsSecondPhase ? 26 : 22;
+        private int BoltsPerRing => Context.IsSecondPhase ? 36 : 30;
 
         /// <summary>缺口半角：留出可学习的安全通道</summary>
         private const float GapHalfAngle = 0.46f;
@@ -67,9 +67,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 context.PoseTimer = 0f;
             }
 
-            //落拍：绽出一环
-            if (casting && beat == RingInterval - 1) {
-                CastRing(context, npc, ringIdx);
+            //落拍：环分三个子拍旋着"画"出来（生成波前），而非凭空整环出现
+            if (casting && (beat == RingInterval - 7 || beat == RingInterval - 4 || beat == RingInterval - 1)) {
+                int subBeat = (beat - (RingInterval - 7)) / 3;
+                CastRing(context, npc, ringIdx, subBeat);
             }
 
             EmpressMotion.AmbientGlow(npc, context.DayFormBlend);
@@ -80,19 +81,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             return null;
         }
 
-        /// <summary>绽出第 ringIdx 环：两个缺口进动，环内切向微旋</summary>
-        private void CastRing(EmpressStateContext context, NPC npc, int ringIdx) {
-            PlayLocal(SoundID.Item164 with { Volume = 0.85f, Pitch = -0.1f + ringIdx * 0.08f }, npc.Center);
-            EmpressMotion.Shake(npc.Center, 2.6f, 9);
-
-            //发射后坐：环的质量顶了她一下
-            npc.velocity -= npc.velocity.SafeNormalize(Vector2.Zero) * 1.6f;
+        /// <summary>绽出第 ringIdx 环的第 subBeat 三分之一：两个缺口进动，环内切向微旋</summary>
+        private void CastRing(EmpressStateContext context, NPC npc, int ringIdx, int subBeat) {
+            if (subBeat == 0) {
+                PlayLocal(SoundID.Item164 with { Volume = 0.85f, Pitch = -0.1f + ringIdx * 0.08f }, npc.Center);
+                EmpressMotion.Shake(npc.Center, 2.6f, 9);
+                //发射后坐：环的质量顶了她一下
+                npc.velocity -= npc.velocity.SafeNormalize(Vector2.Zero) * 1.6f;
+            }
 
             if (VaultUtils.isClient) {
                 return;
             }
 
-            EmpressCast.Radiance(npc, npc.Center, 130f, 18, ringIdx / (float)RingCount);
+            if (subBeat == 0) {
+                EmpressCast.Radiance(npc, npc.Center, 130f, 18, ringIdx / (float)RingCount);
+            }
 
             float gapCenterA = gapSeed + ringIdx * GapPrecession;
             float gapCenterB = gapCenterA + MathHelper.Pi;
@@ -104,6 +108,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             }
 
             for (int i = 0; i < BoltsPerRing; i++) {
+                //三个子拍按模3认领弹位：环沿圆周被旋着"画"出来
+                if (i % 3 != subBeat) {
+                    continue;
+                }
                 float angle = MathHelper.TwoPi / BoltsPerRing * i + ringIdx * 0.13f;
                 //缺口扇区跳过
                 if (AngleInGap(angle, gapCenterA) || AngleInGap(angle, gapCenterB)) {

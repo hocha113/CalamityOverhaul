@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
     /// <summary>骷髅王诅咒之幕全屏后效：黑暗领域+冲击环+骨白冲击帧，screenTarget ping-pong</summary>
     internal class SkeletronScreenRender : RenderHandle
     {
-        /// <summary>权重 1.09，紧邻机械骷髅王(1.08)之后</summary>
+        /// <summary>权重 1.092，紧邻机械骷髅王(1.08)之后、本折冷焰批(1.0925)之前</summary>
         public override float Weight => 1.092f;
 
         private static readonly Vector4[] ringBuffer = new Vector4[SkeletronScreenEffects.MaxRings];

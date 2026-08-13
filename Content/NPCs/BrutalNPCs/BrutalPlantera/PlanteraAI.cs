@@ -12,17 +12,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
 {
     /// <summary>世纪之花主控：藤蔓悬吊运动+状态机，钩爪/触手/孢子为部件</summary>
-    internal class PlanteraAI : CWRNPCOverride, ICWRLoader, ILocalizedModType
+    internal class PlanteraAI : CWRNPCOverride, ICWRLoader
     {
         #region Data
         public override int TargetID => NPCID.Plantera;
-
-        public string LocalizationCategory => "BrutalNPCs";
-
-        /// <summary>蜕壳广播</summary>
-        public static Terraria.Localization.LocalizedText Plantera_Molt_Text { get; private set; }
-        /// <summary>凋亡广播</summary>
-        public static Terraria.Localization.LocalizedText Plantera_Wither_Text { get; private set; }
 
         private VaultStateMachine<PlanteraStateContext> stateMachine;
         private PlanteraStateContext stateContext;
@@ -50,27 +43,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
 
         #region 加载与初始化
         void ICWRLoader.UnLoadData() => PlanteraScreenFX.Clear();
-
-        public override void SetStaticDefaults() {
-            Plantera_Molt_Text = this.GetLocalization(nameof(Plantera_Molt_Text),
-                () => "花壳崩落，丛林在尖啸。");
-            Plantera_Wither_Text = this.GetLocalization(nameof(Plantera_Wither_Text),
-                () => "藤蔓垂落，荧光一盏盏熄了。");
-        }
-
-        /// <summary>全服广播一句演出文本，绿字；服务端按Key广播让各端用自己语言解析</summary>
-        internal static void Broadcast(Terraria.Localization.LocalizedText text) {
-            if (text == null || VaultUtils.isClient) {
-                return;
-            }
-            Color green = new(120, 220, 130);
-            if (VaultUtils.isServer) {
-                Terraria.Chat.ChatHelper.BroadcastChatMessage(
-                    Terraria.Localization.NetworkText.FromKey(text.Key), green);
-                return;
-            }
-            Main.NewText(text.Value, green);
-        }
 
         public override void SetProperty() {
             InitializeStateContext();

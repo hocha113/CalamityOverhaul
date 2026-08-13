@@ -53,7 +53,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                     Vector2 wish = npc.Center + new Vector2(Main.rand.NextFloat(-260f, 260f), -420f);
                     PlanteraHookAI.Command(hook, PlanteraHookAI.FindAnchorNear(wish, 8f, Vector2.Zero));
                 }
-                PlanteraAI.Broadcast(PlanteraAI.Plantera_Molt_Text);
             }
 
             SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.8f, Pitch = -0.5f }, npc.Center);

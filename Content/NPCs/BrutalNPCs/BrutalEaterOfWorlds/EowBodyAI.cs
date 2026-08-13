@@ -59,6 +59,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
 
         public override bool CheckActive() => false;
 
+        //统一血池：体节不可独立摧毁，悬浮小血条只会误导玩家，返回false拦掉原版绘制
+        //(命中伤害数字与hover判定不走此钩子，不受影响)
+        public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) => false;
+
         public override void SetProperty() {
             npc.aiStyle = -1;
             npc.BossBar = ModContent.GetInstance<EowBossBar>();
@@ -102,6 +106,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
 
             npc.realLife = head.whoAmI;
             npc.timeLeft = 1800;
+            UpdateAlphaFade(head);
 
             //死亡演出：冻结姿态保活+本地溃爆表现
             if (HeadInDeathPerformance(head)) {
@@ -147,10 +152,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
                 FollowChain(front, compression);
             }
 
+            //出环境狂暴增伤：读头部同步槽，接触伤统一放大
+            float enrageRamp = headOverride != null ? MathHelper.Clamp(headOverride.ai[EowHeadAI.SlotEnrageRamp], 0f, 1f) : 0f;
+            if (enrageRamp > 0f && npc.damage > 0) {
+                npc.damage = (int)(npc.damage * (1f + 0.8f * enrageRamp));
+            }
+
             //血池镜像：让原版世吞进度条(Σ各节life)与统一血池一致
             MirrorLifeForVanillaBar(head);
 
-            UpdateAlphaChase(front);
             UpdateAmbientFX(head, splitGroups, totalSegs);
 
             EowHeadAI.ForcedNetUpdating(npc);
@@ -258,14 +268,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
             }
         }
 
-        /// <summary>透明度链式追前邻淡入</summary>
-        private void UpdateAlphaChase(NPC front) {
-            if (front.alpha < 128 && npc.alpha > 0) {
-                npc.alpha -= 42;
-                if (npc.alpha < 0) {
-                    npc.alpha = 0;
+        /// <summary>
+        /// 出生 alpha=255(原版 SetDefaults 给定)：入场演出期按前邻涟漪淡入(破土渐显)，<br/>
+        /// 其余状态直接淡入——中途加入的客户端各节以 255 重建，没人再驱动涟漪
+        /// </summary>
+        private void UpdateAlphaFade(NPC head) {
+            if (npc.alpha <= 0) {
+                return;
+            }
+            if ((int)head.ai[2] == (int)EowStateIndex.Intro) {
+                NPC front = FrontNPC;
+                if (front.Alives() && front.alpha >= 128) {
+                    return; //涟漪未到本节
                 }
             }
+            npc.alpha = Math.Max(npc.alpha - 42, 0);
         }
 
         /// <summary>体节环境表现：高速酸沫/蜕皮波蜕壳(客户端)</summary>
@@ -314,7 +331,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
             }
             //体节减伤：统一血池下抑制穿透武器的多节盛宴
             modifiers.FinalDamage *= 0.5f;
+            //出环境狂暴免伤
+            float enrageRamp = ReadHeadEnrageRamp();
+            if (enrageRamp > 0f) {
+                modifiers.FinalDamage *= 1f - 0.9f * enrageRamp;
+            }
             return false;
+        }
+
+        /// <summary>读头部同步槽里的出环境狂暴强度</summary>
+        protected float ReadHeadEnrageRamp() {
+            NPC head = ResolveHead();
+            return head != null && head.TryGetOverride<EowHeadAI>(out var h)
+                ? MathHelper.Clamp(h.ai[EowHeadAI.SlotEnrageRamp], 0f, 1f) : 0f;
         }
         #endregion
 
@@ -379,6 +408,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
             Color bodyColor = drawColor;
             if (ruptured) {
                 bodyColor = Color.Lerp(drawColor, EowMotionFX.FleshShadow, 0.72f);
+            }
+            else {
+                //出环境狂暴体色：酸绿灼热
+                float enrage = ReadHeadEnrageRamp();
+                if (enrage > 0.01f) {
+                    bodyColor = Color.Lerp(bodyColor, EowMotionFX.AcidGreen, enrage * 0.4f);
+                }
             }
 
             //高速残影

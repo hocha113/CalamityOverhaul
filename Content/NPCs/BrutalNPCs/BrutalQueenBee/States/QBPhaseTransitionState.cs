@@ -29,10 +29,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         public override void OnEnter(QueenBeeStateContext context) {
             base.OnEnter(context);
             QueenBeeMotion.RoarBurst(context.Npc.Center, 1.2f);
-            //蜕变宣告，各端本地化各自渲染
-            if (!VaultUtils.isServer) {
-                VaultUtils.Text(BrutalQueenBeeAI.SwarmRage_Text.Value, QueenBeeMotion.HoneyGold);
-            }
         }
 
         public override IQueenBeeState OnUpdate(QueenBeeStateContext context) {

@@ -36,8 +36,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
         //共享 Trail：固定点数，绘制前重写位置（GPU 缓冲复用，见 DestroyerMotionFX 注释）
         private static Trail sharedTrail;
         private static readonly Vector2[] renderPositions = new Vector2[MaxPoints];
+        private static readonly Vector2[] resampleSource = new Vector2[MaxPoints + 1];
         private static float renderAlpha;
         private static float renderWidthScale;
+        /// <summary>尾先蚀退前沿：>1 全显，向 0 推进时从尾端吃掉条带</summary>
+        private static float renderErodeFront;
 
         private readonly Vector2[] points = new Vector2[MaxPoints];
         private int pointCount;
@@ -47,6 +50,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
         private int ExtendFrames => (int)Projectile.ai[1];
         /// <summary>判定是否仍激活</summary>
         private bool HitActive => Projectile.timeLeft > FadeTail;
+
+        public override void SetStaticDefaults() {
+            //条带最长≈死亡模式+离海激怒冲刺 68px/帧 × 30 跟录帧 ≈ 2040px，
+            //本体只有 16px 且焊在头部：余量必须盖满全尾，否则头部出屏整条瞬灭
+            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2200;
+        }
 
         public override void SetDefaults() {
             Projectile.width = 16;
@@ -146,23 +155,32 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
                 return false;
             }
 
-            //index0=最新点=着色器头部；不足处以最旧点垫尾
-            renderPositions[0] = pointCount > 0 ? points[pointCount - 1] : Projectile.Center;
-            for (int i = 1; i < MaxPoints; i++) {
-                int src = pointCount - 1 - i;
-                renderPositions[i] = src >= 0 ? points[src] : points[0];
+            //弧长重采样：40 个渲染点均匀铺满真实路径。
+            //旧做法用最旧点垫尾，着色器的尾端渐隐区(along 0.72~1)全落在零长度的
+            //垫点上，真实尾端得不到任何淡出——方形硬切口的根源
+            if (!BuildRenderPositions()) {
+                return false;
             }
-            renderAlpha = fade;
-            renderWidthScale = 0.55f + 0.45f * fade;
+            renderAlpha = 0.4f + 0.6f * fade;
+            renderWidthScale = 0.7f + 0.3f * fade;
+            //消散期尾先蚀退：前沿从尾端一路推向头部，几何上"吃掉"条带
+            renderErodeFront = HitActive ? 1.2f : -0.18f + 1.38f * fade;
 
             sharedTrail ??= new Trail(new Vector2[MaxPoints],
-                f => HalfWidth * renderWidthScale * (1f - f * 0.25f),
+                f => {
+                    //尾端几何收针到零宽 + 蚀退前沿软边——两种包络都在顶点层
+                    float tip = MathHelper.Clamp((1f - f) / 0.2f, 0f, 1f);
+                    tip = tip * tip * (3f - 2f * tip);
+                    float erode = MathHelper.Clamp((renderErodeFront - f) / 0.16f, 0f, 1f);
+                    return HalfWidth * renderWidthScale * (1f - f * 0.25f) * tip * erode;
+                },
                 texCoord => Color.White * renderAlpha);
             sharedTrail.TrailPositions = renderPositions;
 
             effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly * 0.9f);
-            effect.Parameters["fadeAlpha"]?.SetValue(fade);
+            //消散主要由顶点层蚀退承担，像素层只轻降——避免"整条变淡"的塑料退场
+            effect.Parameters["fadeAlpha"]?.SetValue(0.45f + 0.55f * fade);
             effect.Parameters["pulse"]?.SetValue(0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f + Projectile.whoAmI));
             effect.Parameters["speedRatio"]?.SetValue(extendTimer > 0 ? 1f : 0.35f);
             effect.Parameters["foamDensity"]?.SetValue(HitActive ? 0.55f : 0.95f);
@@ -179,6 +197,51 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             gd.BlendState = BlendState.AlphaBlend;
 
             return false;
+        }
+
+        /// <summary>
+        /// 把已录路径按弧长均匀重采样进 renderPositions（index0=头部）。
+        /// 跟录期以本体实时位置作头顶点，保证条带根部始终焊在 Boss 身上。
+        /// 返回 false 表示几何退化（总长过短），跳过绘制
+        /// </summary>
+        private bool BuildRenderPositions() {
+            //源折线：头→尾（最新→最旧）
+            int srcCount = 0;
+            if (extendTimer > 0 && Vector2.DistanceSquared(Projectile.Center, points[pointCount - 1]) > 1f) {
+                resampleSource[srcCount++] = Projectile.Center;
+            }
+            for (int i = pointCount - 1; i >= 0; i--) {
+                resampleSource[srcCount++] = points[i];
+            }
+            if (srcCount < 2) {
+                return false;
+            }
+
+            float totalLen = 0f;
+            for (int i = 0; i < srcCount - 1; i++) {
+                totalLen += Vector2.Distance(resampleSource[i], resampleSource[i + 1]);
+            }
+            if (totalLen < 24f) {
+                return false;
+            }
+
+            //双指针等距行走
+            float step = totalLen / (MaxPoints - 1);
+            int seg = 0;
+            float segStart = 0f;
+            float segLen = Vector2.Distance(resampleSource[0], resampleSource[1]);
+            renderPositions[0] = resampleSource[0];
+            for (int i = 1; i < MaxPoints; i++) {
+                float target = step * i;
+                while (segStart + segLen < target && seg < srcCount - 2) {
+                    segStart += segLen;
+                    seg++;
+                    segLen = Vector2.Distance(resampleSource[seg], resampleSource[seg + 1]);
+                }
+                float t = segLen > 0.001f ? MathHelper.Clamp((target - segStart) / segLen, 0f, 1f) : 0f;
+                renderPositions[i] = Vector2.Lerp(resampleSource[seg], resampleSource[seg + 1], t);
+            }
+            return true;
         }
 
         /// <summary>着色器缺失时的泡沫贴图兜底</summary>

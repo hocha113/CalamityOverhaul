@@ -26,9 +26,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             crownLandedReacted = false;
             hopTimer = 0;
 
-            //无常驻王冠(P1)则现场弹出一顶；P2悬浮冠由其自身AI响应本状态
+            //默认态王冠扣在头顶(渲染层绘制，无弹幕)，招式开始时从扣冠锚点脱冕弹出
             if (!VaultUtils.isClient && context.FindCrown() == null) {
-                Projectile.NewProjectile(context.Npc.GetSource_FromAI(), context.Npc.Top + new Vector2(0f, -8f),
+                Projectile.NewProjectile(context.Npc.GetSource_FromAI(),
+                    KingSlimeRenderer.CrownAnchorWorld(context.Npc, context),
                     Vector2.Zero, ModContent.ProjectileType<BKSCrownProj>(),
                     (int)(context.Npc.defDamage * 0.55f), 0f, Main.myPlayer,
                     context.Npc.whoAmI, BKSCrownProj.ModeLaunch);
@@ -76,8 +77,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                 context.AuraProgress = 0.5f;
             }
 
-            //收招：王冠收回(消失)或已转回悬浮
-            bool crownDone = crown == null || crownMode == BKSCrownProj.ModeHover;
+            //收招：王冠归位砸扣完成(弹幕消亡、扣冠交还渲染层)
+            bool crownDone = crown == null;
             if (Timer > 40 && crownDone && !VaultUtils.isClient) {
                 return BackToHop(context);
             }

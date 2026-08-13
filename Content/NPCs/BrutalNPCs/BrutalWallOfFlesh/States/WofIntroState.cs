@@ -22,14 +22,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
         private const int OrganFrame = 178;
         private const int TotalTime = 212;
 
-        /// <summary>本端已播报文本</summary>
-        private bool textShown;
-
-        public override void OnEnter(WofStateContext context) {
-            base.OnEnter(context);
-            textShown = false;
-        }
-
         public override IWofState OnUpdate(WofStateContext context) {
             NPC npc = context.Npc;
             Timer++;
@@ -172,11 +164,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
 
             if (VaultUtils.isServer) {
                 return;
-            }
-
-            if (!textShown) {
-                textShown = true;
-                VaultUtils.Text(WallOfFleshAI.WofIntroText.Value, WofMotionFX.BloodHot);
             }
 
             //破膜血浆(各端本地，位置确定性推导)

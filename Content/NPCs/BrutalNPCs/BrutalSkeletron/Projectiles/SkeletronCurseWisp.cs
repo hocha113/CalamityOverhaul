@@ -1,6 +1,5 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering;
 using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -75,25 +74,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D soul = SkeletronRenderHelper.SoulFire?.Value;
-            Texture2D glow = CWRAsset.SoftGlow.Value;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            //烛焰双层冷焰顶点quad：外鞘大焰 + 内芯小焰，末段回燃染诅咒紫
             float fadeIn = MathHelper.Clamp(Age / 16f, 0f, 1f);
             float flick = 0.85f + 0.15f * MathF.Sin(Main.GlobalTimeWrappedHourly * 13f + Projectile.whoAmI * 1.7f);
+            float flare = MathHelper.Clamp((Age - OrbitFrames) / (float)FlareFrames, 0f, 1f);
+            //烛焰朝上，随风微摆
+            float sway = 0.16f * MathF.Sin(Main.GlobalTimeWrappedHourly * 5f + Projectile.whoAmI * 2.3f);
+            float axis = -MathHelper.PiOver2 + sway;
+            float seed = Projectile.whoAmI * 0.173f;
+            Vector2 root = Projectile.Center + new Vector2(0f, 14f * Projectile.scale);
 
-            //预乘批 A=0 加色光晕
-            Main.spriteBatch.Draw(glow, drawPos, null,
-                SkeletronRenderHelper.AsAdditive(SkeletronRenderHelper.GhostDeep) * (0.55f * fadeIn * flick),
-                0f, glow.Size() / 2f,
-                1.5f * Projectile.scale * flick, SpriteEffects.None, 0f);
-
-            if (soul != null) {
-                int frame = (int)(Main.GameUpdateCount / 5 + Projectile.whoAmI) % 5;
-                Rectangle rect = new Rectangle(0, soul.Height / 5 * frame, soul.Width, soul.Height / 5);
-                Main.spriteBatch.Draw(soul, drawPos, rect, Color.White * (0.9f * fadeIn),
-                    0f, new Vector2(rect.Width / 2f, rect.Height * 0.7f),
-                    0.9f * Projectile.scale * flick, SpriteEffects.None, 0f);
-            }
+            SkeletronFlameRender.Push(root, axis,
+                new Vector2(30f, 58f) * Projectile.scale * flick,
+                0.55f + flare * 0.45f, seed, 0.3f + flare * 0.6f,
+                0.85f * fadeIn);
+            SkeletronFlameRender.Push(root + new Vector2(0f, -4f * Projectile.scale), axis,
+                new Vector2(14f, 32f) * Projectile.scale * flick,
+                0.9f, seed + 0.41f, 0.1f,
+                0.9f * fadeIn);
             return false;
         }
     }

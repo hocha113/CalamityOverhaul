@@ -100,9 +100,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
             return npc.active;
         }
 
+        //LaserScan 采样暂存（主线程复用，免每帧分配）
+        private static readonly float[] scanSamples = new float[3];
+
         /// <summary>激光扫描裁剪长度</summary>
         private float ScanLength() {
-            float[] samples = new float[3];
+            float[] samples = scanSamples;
             Collision.LaserScan(Projectile.Center, Rotation.ToRotationVector2(), 8f, MaxLength, samples);
             float total = 0f;
             foreach (float s in samples) {
@@ -139,6 +142,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
                     Rotation, origin, new Vector2(lenScale, 0.14f + 0.1f * flash), SpriteEffects.None, 0);
                 Main.EntitySpriteDraw(glow, drawPos, null, baseCol * 0.8f,
                     0f, glow.Size() / 2f, 0.4f + 0.25f * progress, SpriteEffects.None, 0);
+                //远端盖帽：线贴图长轴两端硬切，命中点补光点封口，兼作落点预告
+                Vector2 telegraphTip = drawPos + Rotation.ToRotationVector2() * beamLength;
+                Main.EntitySpriteDraw(glow, telegraphTip, null, baseCol * (0.45f + 0.4f * progress),
+                    0f, glow.Size() / 2f, 0.3f + 0.22f * flash, SpriteEffects.None, 0);
                 return false;
             }
 

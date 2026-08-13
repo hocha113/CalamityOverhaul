@@ -62,7 +62,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                     MLordScreenFX.StarBurst(npc.Center, 2f, 30);
                     MLordScreenFX.Punch(npc.Center, 12f, 22);
                     SoundEngine.PlaySound(SoundID.NPCDeath62 with { Volume = 1.1f, Pitch = -0.4f }, npc.Center);
-                    VaultUtils.Text(MoonLordCoreAI.MoonLordCoreExposed_Text.Value, MLordDirector.Phantasmal);
                 }
             }
             if (Timer > CrackTick && Timer < CrackTick + 24 && !VaultUtils.isServer) {
