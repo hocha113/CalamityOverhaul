@@ -28,8 +28,10 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
             if (EffectLoader.ScrapSiegeFilter == null) {
                 return;
             }
+            //第二个参数是"通道名"不是技术名：ShaderData.Apply 按 Passes[名字] 查表，
+            //查空会 NRE 并把 FilterManager 的批撂在半开状态，连锁 Begin/End 崩溃（2026-08 实测）
             Filters.Scene[FilterName] = new Filter(
-                new ScreenShaderData(EffectLoader.ScrapSiegeFilter, "TechSiege"), EffectPriority.High);
+                new ScreenShaderData(EffectLoader.ScrapSiegeFilter, "SiegePass"), EffectPriority.High);
         }
 
         void ICWRLoader.UnLoadData() {

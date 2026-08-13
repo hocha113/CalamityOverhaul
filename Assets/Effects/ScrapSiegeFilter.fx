@@ -44,8 +44,10 @@ float4 PSSiege(float2 uv : TEXCOORD0) : COLOR0 {
     return float4(col, src.a);
 }
 
+//注意：Filters.Scene 的 ScreenShaderData 按"通道名"查表（不是技术名），
+//注册处传的字符串必须与下面的 pass 名一致——传错会在 ShaderData.Apply 空引用崩游戏
 technique TechSiege {
-    pass P0 {
+    pass SiegePass {
         PixelShader = compile ps_3_0 PSSiege();
     }
 }
