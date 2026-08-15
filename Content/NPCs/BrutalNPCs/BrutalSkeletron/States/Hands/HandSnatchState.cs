@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core;
 using System;
 using Terraria;
 using Terraria.Audio;

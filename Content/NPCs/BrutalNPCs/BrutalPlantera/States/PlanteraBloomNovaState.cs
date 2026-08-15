@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Rendering;
 using System;
@@ -182,7 +182,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
 
                 if (!VaultUtils.isServer && Timer % 5 == 0) {
                     SoundEngine.PlaySound(SoundID.Item17 with {
-                        Volume = 0.5f, Pitch = 0.3f, MaxInstances = 8
+                        Volume = 0.5f,
+                        Pitch = 0.3f,
+                        MaxInstances = 8
                     }, npc.Center);
                 }
             }

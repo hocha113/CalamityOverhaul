@@ -1,5 +1,4 @@
-using System;
-using Terraria;
+﻿using System;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 {

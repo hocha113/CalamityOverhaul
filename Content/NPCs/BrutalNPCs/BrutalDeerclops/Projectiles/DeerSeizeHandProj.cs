@@ -1,9 +1,9 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using InnoVault.GameSystem;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;

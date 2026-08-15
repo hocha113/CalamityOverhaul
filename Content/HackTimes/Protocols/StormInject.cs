@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.HackTimes.Scannables;
+﻿using CalamityOverhaul.Content.HackTimes.Scannables;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
@@ -225,7 +224,8 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             }
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Thunder with {
-                    Volume = 0.5f, Pitch = -0.5f,
+                    Volume = 0.5f,
+                    Pitch = -0.5f,
                 }, center);
             }
         }

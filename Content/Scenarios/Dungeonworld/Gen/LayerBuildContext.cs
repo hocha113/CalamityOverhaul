@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Rooms;
+﻿using CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Rooms;
 using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
@@ -50,7 +50,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
 
         /// <summary>按层带索引取上下文(与DungeonworldMetrics.Bands同索引),越界返回null</summary>
         internal static LayerBuildContext ByIndex(int bandIndex) => bandIndex switch {
-            0 => L1, 1 => L2, 2 => L3, 3 => L4, 4 => L5, 5 => L6, 6 => L7,
+            0 => L1,
+            1 => L2,
+            2 => L3,
+            3 => L4,
+            4 => L5,
+            5 => L6,
+            6 => L7,
             _ => null,
         };
 

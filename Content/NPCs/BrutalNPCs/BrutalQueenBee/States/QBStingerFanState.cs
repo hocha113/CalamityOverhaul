@@ -1,7 +1,7 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Projectiles;
-using InnoVault.PRT;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Rendering;
+using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Rendering;
 using CalamityOverhaul.Content.PRTTypes;
@@ -105,7 +105,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
                             SpawnCathedralNode(context, i);
                         }
                         SoundEngine.PlaySound(SoundID.Item29 with {
-                            Volume = 0.8f, Pitch = -0.4f + i * 0.16f, MaxInstances = 3
+                            Volume = 0.8f,
+                            Pitch = -0.4f + i * 0.16f,
+                            MaxInstances = 3
                         }, cathedralCenter);
                     }
                 }

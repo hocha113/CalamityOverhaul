@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Scenarios.OldNet.Gen;
+﻿using CalamityOverhaul.Content.Scenarios.OldNet.Gen;
 using CalamityOverhaul.Content.Scenarios.OldNet.NPCs;
 using CalamityOverhaul.Content.UIs.HudStack;
 using InnoVault.UIHandles;

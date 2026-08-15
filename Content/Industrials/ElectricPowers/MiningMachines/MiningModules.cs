@@ -1,8 +1,7 @@
-using CalamityOverhaul.Content.Industrials.MachineModules;
+﻿using CalamityOverhaul.Content.Industrials.MachineModules;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 {

@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.TimeFreezes;
-using System;
+﻿using System;
 using System.IO;
 using Terraria;
 using Terraria.ID;

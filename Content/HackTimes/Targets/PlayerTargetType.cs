@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.HackTimes.PvP;
-using CalamityOverhaul.Content.HackTimes.Scannables;
+﻿using CalamityOverhaul.Content.HackTimes.Scannables;
 using Terraria;
 using Terraria.ID;
 

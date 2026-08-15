@@ -1,7 +1,6 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Rendering;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

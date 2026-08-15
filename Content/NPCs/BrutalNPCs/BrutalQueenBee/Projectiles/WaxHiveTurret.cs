@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Rendering;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -84,7 +84,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Projectiles
             if (cycleT >= warnStart && cycleT < fireFrame && (cycleT - warnStart) % 12 == 0) {
                 float warnP = (cycleT - warnStart) / (float)WarnTime;
                 SoundEngine.PlaySound(SoundID.Item17 with {
-                    Volume = 0.32f + warnP * 0.2f, Pitch = -0.5f + warnP * 0.7f, MaxInstances = 4
+                    Volume = 0.32f + warnP * 0.2f,
+                    Pitch = -0.5f + warnP * 0.7f,
+                    MaxInstances = 4
                 }, Projectile.Center);
             }
 

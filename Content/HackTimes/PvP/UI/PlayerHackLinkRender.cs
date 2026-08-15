@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.HackTimes.PvP.Protocols;
+﻿using CalamityOverhaul.Content.HackTimes.PvP.Protocols;
 using CalamityOverhaul.Content.HackTimes.Scannables;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HackTimes.PvP.UI
 {

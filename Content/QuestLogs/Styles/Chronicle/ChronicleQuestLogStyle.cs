@@ -1,8 +1,7 @@
-using CalamityOverhaul.Content.QuestLogs.Core;
+﻿using CalamityOverhaul.Content.QuestLogs.Core;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 

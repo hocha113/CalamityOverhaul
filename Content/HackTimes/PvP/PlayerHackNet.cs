@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.HackTimes.PvP.UI;
-using CalamityOverhaul.Content.HackTimes.Scannables;
+﻿using CalamityOverhaul.Content.HackTimes.PvP.UI;
 using CalamityOverhaul.Content.RAMSystems;
 using InnoVault.Cinematics;
 using System;

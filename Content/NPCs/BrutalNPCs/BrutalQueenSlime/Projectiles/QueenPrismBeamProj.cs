@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Rendering;
 using Microsoft.Xna.Framework.Graphics;
@@ -154,7 +154,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles
             if (Timer == 0) {
                 SoundEngine.PlaySound(SoundID.Item29 with {
                     Volume = Mode == BeamMode.FeederVolley ? 0.8f : 0.55f,
-                    Pitch = 0.45f, MaxInstances = 5
+                    Pitch = 0.45f,
+                    MaxInstances = 5
                 }, SourceAnchor);
             }
 

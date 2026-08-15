@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States;
 using Microsoft.Xna.Framework.Graphics;
 using System;

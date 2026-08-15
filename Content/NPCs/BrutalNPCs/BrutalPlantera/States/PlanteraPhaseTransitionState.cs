@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Rendering;
 using System;
@@ -126,7 +126,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                 if (Timer % 12 == 0) {
                     PlanteraScreenFX.CameraPunch(npc.Center, 1.5f + t * 2f, 10, "PlanteraMoltRumble");
                     SoundEngine.PlaySound(SoundID.NPCHit1 with {
-                        Volume = 0.5f + t * 0.3f, Pitch = -0.4f + t * 0.3f, MaxInstances = 4
+                        Volume = 0.5f + t * 0.3f,
+                        Pitch = -0.4f + t * 0.3f,
+                        MaxInstances = 4
                     }, npc.Center);
                 }
                 PlanteraScreenFX.PushDusk(t * 0.4f);
@@ -152,7 +154,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                     Vector2 edge = npc.Center + Main.rand.NextVector2CircularEdge(npc.width * 0.42f, npc.height * 0.42f);
                     PlanteraRenderHelper.SpawnPetalBurst(edge, 3 + (int)(t * 4f), 4f + t * 4f, false);
                     SoundEngine.PlaySound(SoundID.Grass with {
-                        Volume = 0.6f, Pitch = -0.2f + t * 0.4f, MaxInstances = 5
+                        Volume = 0.6f,
+                        Pitch = -0.2f + t * 0.4f,
+                        MaxInstances = 5
                     }, edge);
                     PlanteraScreenFX.CameraPunch(npc.Center, 2f + t * 3f, 8, "PlanteraMoltCrack");
                 }

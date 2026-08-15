@@ -1,5 +1,4 @@
-using Terraria;
-using Terraria.IO;
+﻿using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes

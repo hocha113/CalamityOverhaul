@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States;
 using InnoVault.StateMachines;
@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
 {

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -110,7 +110,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                     EocMotion.Shake(npc.Center, 2f + progress * 2.5f, 6);
                     if (!VaultUtils.isServer) {
                         SoundEngine.PlaySound(SoundID.NPCHit13 with {
-                            Volume = 0.85f, Pitch = -0.85f + progress * 0.45f
+                            Volume = 0.85f,
+                            Pitch = -0.85f + progress * 0.45f
                         }, npc.Center);
                     }
                     break;

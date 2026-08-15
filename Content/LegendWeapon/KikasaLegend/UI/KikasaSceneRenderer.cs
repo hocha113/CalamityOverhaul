@@ -1,7 +1,6 @@
-using CalamityOverhaul.Content.UIs.UIEffect;
+﻿using CalamityOverhaul.Content.UIs.UIEffect;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 {

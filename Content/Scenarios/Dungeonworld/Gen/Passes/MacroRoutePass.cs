@@ -1,5 +1,4 @@
-using Terraria;
-using Terraria.ID;
+﻿using Terraria;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 

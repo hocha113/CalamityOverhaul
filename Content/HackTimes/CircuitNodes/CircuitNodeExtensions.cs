@@ -1,6 +1,5 @@
-using InnoVault.Actors;
+﻿using InnoVault.Actors;
 using System.IO;
-using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
 {

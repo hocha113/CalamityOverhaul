@@ -1,6 +1,4 @@
-using Microsoft.Xna.Framework;
-
-namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
+﻿namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
 {
     /// <summary>战斗调参中心 + 天体配色。材质=幻影星质：星尘拖尾/引力弯折/相位明灭</summary>
     internal static class MLordDirector

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Rooms;
+﻿using CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Rooms;
 using Terraria;
 using Terraria.ID;
 using Terraria.Utilities;
@@ -62,12 +62,18 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
                     0 => rand.NextBool(2) ? Motif.Conveyor : Motif.Dart,
                     1 => rand.Next(4) switch { 0 => Motif.Conveyor, 1 => Motif.Dart, 2 => Motif.DartNet, _ => Motif.PistonSlot },
                     2 => rand.Next(5) switch {
-                        0 => Motif.Dart, 1 => Motif.DartNet, 2 => Motif.Boulder,
-                        3 => Motif.PistonSlot, _ => Motif.GearCrush,
+                        0 => Motif.Dart,
+                        1 => Motif.DartNet,
+                        2 => Motif.Boulder,
+                        3 => Motif.PistonSlot,
+                        _ => Motif.GearCrush,
                     },
                     _ => rand.Next(5) switch {
-                        0 => Motif.Dart, 1 => Motif.DartNet, 2 => Motif.Boulder,
-                        3 => Motif.GearCrush, _ => Motif.DartNet,
+                        0 => Motif.Dart,
+                        1 => Motif.DartNet,
+                        2 => Motif.Boulder,
+                        3 => Motif.GearCrush,
+                        _ => Motif.DartNet,
                     },
                 };
                 if (firstSegment && roll is Motif.DartNet or Motif.Boulder or Motif.GearCrush) {

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Rendering;
 using System;
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 telegraphSpawned = true;
                 if (!VaultUtils.isClient) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center,
-                        (player.Center - npc.Center).SafeNormalize(Vector2.UnitX), 
+                        (player.Center - npc.Center).SafeNormalize(Vector2.UnitX),
                         ModContent.ProjectileType<FishronTelegraph>(), 0, 0f, Main.myPlayer,
                         npc.whoAmI, player.whoAmI, FishronTelegraph.PackParams(0, chargeTime));
                 }

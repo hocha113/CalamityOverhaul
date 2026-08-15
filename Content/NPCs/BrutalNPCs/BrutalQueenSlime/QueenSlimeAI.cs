@@ -1,11 +1,10 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States;
 using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
 {

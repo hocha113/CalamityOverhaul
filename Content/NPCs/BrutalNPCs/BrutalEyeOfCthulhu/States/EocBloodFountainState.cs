@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Projectiles;
 using System;
 using Terraria;
@@ -88,7 +88,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                     EocMotion.BloodSpray(npc.Center - Vector2.UnitY * 30f, -Vector2.UnitY, 3, 9f, 1f);
                     if (!VaultUtils.isServer && sprayTimer % (SprayInterval * 3) == 0) {
                         SoundEngine.PlaySound(SoundID.NPCDeath13 with {
-                            Volume = 0.5f, Pitch = 0.3f + progress * 0.3f
+                            Volume = 0.5f,
+                            Pitch = 0.3f + progress * 0.3f
                         }, npc.Center);
                     }
                 }

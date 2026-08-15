@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.NPCs.ScrapCommanders.Core;
-using System;
+﻿using CalamityOverhaul.Content.NPCs.ScrapCommanders.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

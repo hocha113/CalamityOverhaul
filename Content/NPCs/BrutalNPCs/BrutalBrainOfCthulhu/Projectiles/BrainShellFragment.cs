@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Rendering;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -54,7 +54,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Projecti
             }
             BrainMotion.BloodMistBurst(Projectile.Center, 0.8f, 5, 6f);
             SoundEngine.PlaySound(SoundID.NPCHit1 with {
-                Volume = 0.5f, Pitch = -0.5f, MaxInstances = 6,
+                Volume = 0.5f,
+                Pitch = -0.5f,
+                MaxInstances = 6,
                 SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest
             }, Projectile.Center);
         }

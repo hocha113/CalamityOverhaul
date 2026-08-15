@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -42,11 +42,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Projecti
         public override void AI() {
             if (Age == 0f && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.NPCHit1 with {
-                    Volume = 0.55f, Pitch = -0.8f, MaxInstances = 6,
+                    Volume = 0.55f,
+                    Pitch = -0.8f,
+                    MaxInstances = 6,
                     SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest
                 }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Zombie103 with {
-                    Volume = 0.32f, Pitch = -0.4f, MaxInstances = 3,
+                    Volume = 0.32f,
+                    Pitch = -0.4f,
+                    MaxInstances = 3,
                     SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest
                 }, Projectile.Center);
             }

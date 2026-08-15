@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -142,7 +142,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
                     }
                     if (Timer % 14 == 0) {
                         SoundEngine.PlaySound(SoundID.NPCHit1 with {
-                            Volume = 0.4f, Pitch = -0.4f + p * 0.3f, MaxInstances = 3
+                            Volume = 0.4f,
+                            Pitch = -0.4f + p * 0.3f,
+                            MaxInstances = 3
                         }, npc.Center);
                     }
                 }

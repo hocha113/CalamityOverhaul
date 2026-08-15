@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;

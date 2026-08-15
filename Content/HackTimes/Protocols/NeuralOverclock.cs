@@ -1,5 +1,5 @@
+﻿using CalamityOverhaul.Content.HackTimes.Scannables;
 using CalamityOverhaul.Content.HackTimes.SelfRigs;
-using CalamityOverhaul.Content.HackTimes.Scannables;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;

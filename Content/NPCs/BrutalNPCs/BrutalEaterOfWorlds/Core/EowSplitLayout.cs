@@ -1,6 +1,4 @@
-using Terraria;
-
-namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Core
+﻿namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Core
 {
     /// <summary>
     /// 分裂布局的唯一裁定处：给定体节总数与分组数，推导每节归属与首节身份<br/>

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States;
 using InnoVault.StateMachines;
@@ -7,7 +7,6 @@ using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
 {

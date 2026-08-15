@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.NPCs.ScrapCommanders.Core;
+﻿using CalamityOverhaul.Content.NPCs.ScrapCommanders.Core;
 using Terraria;
 using Terraria.ModLoader;
 

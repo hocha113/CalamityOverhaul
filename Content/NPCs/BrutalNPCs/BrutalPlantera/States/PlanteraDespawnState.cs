@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Rendering;
 using System;
 using Terraria;
@@ -173,7 +173,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                     PlanteraRenderHelper.SpawnPetalBurst(
                         npc.Center + Main.rand.NextVector2Circular(30f, 30f), 2, 3f, context.IsPhase2);
                     SoundEngine.PlaySound(SoundID.NPCHit1 with {
-                        Volume = 0.5f, Pitch = -0.5f, MaxInstances = 4
+                        Volume = 0.5f,
+                        Pitch = -0.5f,
+                        MaxInstances = 4
                     }, npc.Center);
                 }
             }

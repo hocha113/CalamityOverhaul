@@ -1,9 +1,9 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Core;
 using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.GameSystem;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
-using InnoVault.GameSystem;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

@@ -1,6 +1,5 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Rendering;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

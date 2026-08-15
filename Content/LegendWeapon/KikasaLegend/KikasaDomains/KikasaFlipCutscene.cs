@@ -1,5 +1,4 @@
-using InnoVault.Cinematics;
-using System;
+﻿using InnoVault.Cinematics;
 using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains

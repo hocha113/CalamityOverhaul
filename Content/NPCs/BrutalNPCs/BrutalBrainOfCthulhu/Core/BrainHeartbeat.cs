@@ -1,5 +1,4 @@
-using System;
-using Terraria;
+﻿using System;
 using Terraria.Audio;
 using Terraria.ID;
 

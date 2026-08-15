@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes.Chips;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -134,13 +133,15 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.UI
             if (!entry.PlayedCue && !entry.Terminal) {
                 entry.PlayedCue = true;
                 SoundEngine.PlaySound(CWRSound.Hacker with {
-                    Volume = 0.6f, Pitch = -0.3f
+                    Volume = 0.6f,
+                    Pitch = -0.3f
                 });
             }
             else if (entry.State == 3) {
                 //落地故障重音 + 交棒白闪
                 SoundEngine.PlaySound(CWRSound.Hacker with {
-                    Volume = 0.85f, Pitch = 0.15f
+                    Volume = 0.85f,
+                    Pitch = 0.15f
                 });
                 HandoffFlashFrames = Math.Max(HandoffFlashFrames, 10);
             }
@@ -157,7 +158,8 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.UI
             //被拔碎裂有声，自然到期安静淡出
             if (reason is PlayerHackRemoveReason.Uninstalled) {
                 SoundEngine.PlaySound(CWRSound.Hacker with {
-                    Volume = 0.7f, Pitch = -0.5f
+                    Volume = 0.7f,
+                    Pitch = -0.5f
                 });
                 PlayerHackHud.RequestShatter(effect.ActivationId);
             }
@@ -168,7 +170,8 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.UI
             if (Main.dedServ || casterIndex != Main.myPlayer) return;
             //自己的植入物落地：轻确认音（攻击方对称反馈）
             SoundEngine.PlaySound(CWRSound.Hacker with {
-                Volume = 0.5f, Pitch = 0.35f
+                Volume = 0.5f,
+                Pitch = 0.35f
             });
         }
 
@@ -177,7 +180,8 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.UI
             if (Main.dedServ || fx.CasterIndex != Main.myPlayer) return;
             if (reason == PlayerHackRemoveReason.Uninstalled) {
                 SoundEngine.PlaySound(CWRSound.Hacker with {
-                    Volume = 0.6f, Pitch = -0.2f
+                    Volume = 0.6f,
+                    Pitch = -0.2f
                 });
             }
         }
@@ -193,7 +197,8 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.UI
                 case PlayerHackAlert.Traced:
                     EdgeFlashFrames = 24;
                     SoundEngine.PlaySound(CWRSound.Hacker with {
-                        Volume = 0.9f, Pitch = 0.5f
+                        Volume = 0.9f,
+                        Pitch = 0.5f
                     });
                     PushAlert(PvPHudText.AlertTraced.Value, PvPTheme.Hostile, 90);
                     break;

@@ -1,8 +1,7 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering;
 using InnoVault.PRT;
 using System;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles

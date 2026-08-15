@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Rendering;
 using InnoVault.PRT;
 using System;
@@ -83,7 +83,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
                 //掷镖出手轻响，密集时靠MaxInstances压
                 if (!VaultUtils.isServer) {
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Item17 with {
-                        Volume = 0.32f, Pitch = 0.5f, MaxInstances = 3
+                        Volume = 0.32f,
+                        Pitch = 0.5f,
+                        MaxInstances = 3
                     }, npc.Center);
                 }
                 return false;

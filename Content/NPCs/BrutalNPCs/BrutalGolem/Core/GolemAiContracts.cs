@@ -1,5 +1,4 @@
-using InnoVault;
-using InnoVault.GameSystem;
+﻿using InnoVault.GameSystem;
 using System;
 using System.Collections.Generic;
 using Terraria;

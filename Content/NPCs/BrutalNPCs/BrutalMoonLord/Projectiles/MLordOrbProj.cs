@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;

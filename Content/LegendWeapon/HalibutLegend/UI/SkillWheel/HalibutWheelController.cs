@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.HackTimes;
+﻿using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas;
 using CalamityOverhaul.Content.UIs.RadialWheels;
 using InnoVault.UIHandles;

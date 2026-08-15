@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.HackTimes.PvP.UI;
+﻿using CalamityOverhaul.Content.HackTimes.PvP.UI;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;

@@ -1,7 +1,6 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -287,7 +286,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                 if ((int)Timer % 14 == 0 && Main.rand.NextBool(2)) {
                     KingSlimeGelFX.BubbleFizz(npc.Bottom - new Vector2(0f, 6f), npc.width * 0.4f, 1);
                     SoundEngine.PlaySound(SoundID.Drown with {
-                        Pitch = 0.2f + t * 0.3f, Volume = 0.5f * (1f - t * 0.5f), MaxInstances = 2
+                        Pitch = 0.2f + t * 0.3f,
+                        Volume = 0.5f * (1f - t * 0.5f),
+                        MaxInstances = 2
                     }, npc.Center);
                 }
             }

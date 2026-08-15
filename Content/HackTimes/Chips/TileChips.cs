@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.HackTimes.Protocols;
+﻿using CalamityOverhaul.Content.HackTimes.Protocols;
 
 namespace CalamityOverhaul.Content.HackTimes.Chips
 {

@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands;

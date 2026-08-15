@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaEye;
 using CalamityOverhaul.Content.PRTTypes;
@@ -1099,90 +1099,90 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
                 switch (State) {
                     case StateEmerge: {
-                            int start = OmenFrames + ProbeSlot[i] * HookProbeGap;
-                            int local = t - start;
-                            Vector2 apex = new(root.X, lakeY - 58f);
-                            if (local < 0) {
-                                pos = root + new Vector2(0f, 70f);
-                                alpha = 0f;
-                                rooted = false;
-                            }
-                            else if (local < HookProbeRise) {
-                                float u = local / (float)HookProbeRise;
-                                float e = 1f - (1f - u) * (1f - u);
-                                pos = Vector2.Lerp(root + new Vector2(0f, 70f), apex, e);
-                                rot = 0f + MathF.Sin(Seed + i) * 0.12f;
-                                alpha = MathHelper.Clamp(u * 2.2f, 0f, 1f);
-                                rooted = false;
-                            }
-                            else if (local < HookProbeRise + HookProbeHang) {
-                                //悬拍：钩爪当空翻转，爪尖由天转地
-                                float u = (local - HookProbeRise) / (float)HookProbeHang;
-                                pos = apex + new Vector2(MathF.Sin(local * 0.8f + i) * 2f, -MathF.Sin(u * MathHelper.Pi) * 5f);
-                                float side = i == 0 ? -1f : 1f;
-                                rot = MathHelper.Lerp(0f, MathHelper.Pi * side, u * u);
-                                rooted = false;
-                            }
-                            else if (local < HookProbeDur) {
-                                float u = (local - HookProbeRise - HookProbeHang) / (float)(HookProbeDur - HookProbeRise - HookProbeHang);
-                                pos = Vector2.Lerp(apex, root, u * u);
-                                rooted = false;
-                            }
-                            break;
-                        }
-                    case StateRelocate: {
-                            int phase = (int)StateParam;
-                            if (phase == 0) {
-                                int start = ProbeSlot[i] * UprootGap;
-                                int local = t - start;
-                                if (local >= 0 && local < UprootDur) {
-                                    float u = local / (float)UprootDur;
-                                    pos = Vector2.Lerp(root, DanglePos(i), 1f - (1f - u) * (1f - u));
-                                    rot = MathHelper.Lerp(MathHelper.Pi, MathHelper.Pi + MathF.Sin(u * 6f) * 0.2f, u);
-                                    rooted = false;
-                                }
-                                else if (local >= UprootDur) {
-                                    pos = DanglePos(i);
-                                    rooted = false;
-                                }
-                            }
-                            else if (phase == 1) {
-                                //低掠：钩须挂在身下顺流后摆
-                                pos = DanglePos(i) + new Vector2(-Projectile.velocity.X * 1.6f, 6f);
-                                rot = MathHelper.Pi + Projectile.velocity.X * 0.02f
-                                    + MathF.Sin(Main.GlobalTimeWrappedHourly * 4f + i) * 0.12f;
-                                rooted = false;
-                            }
-                            else {
-                                int start = RootStart + ProbeSlot[i] * RootGap;
-                                int local = t - start;
-                                if (local < 0) {
-                                    pos = DanglePos(i);
-                                    rooted = false;
-                                }
-                                else if (local < RootDur) {
-                                    float u = local / (float)RootDur;
-                                    pos = Vector2.Lerp(DanglePos(i), root, u * u);
-                                    rooted = false;
-                                }
-                            }
-                            break;
-                        }
-                    case StateDissolve: {
-                            //从溶解入场帧的实际位置松脱（快照为零向量=迟入场兜底回扎根位）
-                            Vector2 from = hookAtDissolve[i] == Vector2.Zero ? root : hookAtDissolve[i];
-                            int start = ProbeSlot[i] * HookReleaseGap;
-                            int local = t - start;
-                            pos = from;
-                            if (local > 0) {
-                                //松脱：往深处沉去，随溶解淡出
-                                pos = from + new Vector2(0f, local * 1.1f);
-                                dissolve = MathHelper.Clamp(local / 26f, 0f, 1f);
-                                alpha = 1f - dissolve;
-                            }
+                        int start = OmenFrames + ProbeSlot[i] * HookProbeGap;
+                        int local = t - start;
+                        Vector2 apex = new(root.X, lakeY - 58f);
+                        if (local < 0) {
+                            pos = root + new Vector2(0f, 70f);
+                            alpha = 0f;
                             rooted = false;
-                            break;
                         }
+                        else if (local < HookProbeRise) {
+                            float u = local / (float)HookProbeRise;
+                            float e = 1f - (1f - u) * (1f - u);
+                            pos = Vector2.Lerp(root + new Vector2(0f, 70f), apex, e);
+                            rot = 0f + MathF.Sin(Seed + i) * 0.12f;
+                            alpha = MathHelper.Clamp(u * 2.2f, 0f, 1f);
+                            rooted = false;
+                        }
+                        else if (local < HookProbeRise + HookProbeHang) {
+                            //悬拍：钩爪当空翻转，爪尖由天转地
+                            float u = (local - HookProbeRise) / (float)HookProbeHang;
+                            pos = apex + new Vector2(MathF.Sin(local * 0.8f + i) * 2f, -MathF.Sin(u * MathHelper.Pi) * 5f);
+                            float side = i == 0 ? -1f : 1f;
+                            rot = MathHelper.Lerp(0f, MathHelper.Pi * side, u * u);
+                            rooted = false;
+                        }
+                        else if (local < HookProbeDur) {
+                            float u = (local - HookProbeRise - HookProbeHang) / (float)(HookProbeDur - HookProbeRise - HookProbeHang);
+                            pos = Vector2.Lerp(apex, root, u * u);
+                            rooted = false;
+                        }
+                        break;
+                    }
+                    case StateRelocate: {
+                        int phase = (int)StateParam;
+                        if (phase == 0) {
+                            int start = ProbeSlot[i] * UprootGap;
+                            int local = t - start;
+                            if (local >= 0 && local < UprootDur) {
+                                float u = local / (float)UprootDur;
+                                pos = Vector2.Lerp(root, DanglePos(i), 1f - (1f - u) * (1f - u));
+                                rot = MathHelper.Lerp(MathHelper.Pi, MathHelper.Pi + MathF.Sin(u * 6f) * 0.2f, u);
+                                rooted = false;
+                            }
+                            else if (local >= UprootDur) {
+                                pos = DanglePos(i);
+                                rooted = false;
+                            }
+                        }
+                        else if (phase == 1) {
+                            //低掠：钩须挂在身下顺流后摆
+                            pos = DanglePos(i) + new Vector2(-Projectile.velocity.X * 1.6f, 6f);
+                            rot = MathHelper.Pi + Projectile.velocity.X * 0.02f
+                                + MathF.Sin(Main.GlobalTimeWrappedHourly * 4f + i) * 0.12f;
+                            rooted = false;
+                        }
+                        else {
+                            int start = RootStart + ProbeSlot[i] * RootGap;
+                            int local = t - start;
+                            if (local < 0) {
+                                pos = DanglePos(i);
+                                rooted = false;
+                            }
+                            else if (local < RootDur) {
+                                float u = local / (float)RootDur;
+                                pos = Vector2.Lerp(DanglePos(i), root, u * u);
+                                rooted = false;
+                            }
+                        }
+                        break;
+                    }
+                    case StateDissolve: {
+                        //从溶解入场帧的实际位置松脱（快照为零向量=迟入场兜底回扎根位）
+                        Vector2 from = hookAtDissolve[i] == Vector2.Zero ? root : hookAtDissolve[i];
+                        int start = ProbeSlot[i] * HookReleaseGap;
+                        int local = t - start;
+                        pos = from;
+                        if (local > 0) {
+                            //松脱：往深处沉去，随溶解淡出
+                            pos = from + new Vector2(0f, local * 1.1f);
+                            dissolve = MathHelper.Clamp(local / 26f, 0f, 1f);
+                            alpha = 1f - dissolve;
+                        }
+                        rooted = false;
+                        break;
+                    }
                 }
 
                 hookPos[i] = pos;

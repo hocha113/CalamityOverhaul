@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -336,7 +336,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 float tier = StateTimer / (float)ChargeFullFrames;
                 eyeGlow = MathF.Max(eyeGlow, 0.3f + 0.4f * tier);
                 SoundEngine.PlaySound(SoundID.Drip with {
-                    Volume = 0.4f + 0.2f * tier, Pitch = -0.3f - 0.4f * tier, MaxInstances = 2
+                    Volume = 0.4f + 0.2f * tier,
+                    Pitch = -0.3f - 0.4f * tier,
+                    MaxInstances = 2
                 }, Projectile.Center);
                 if (!Main.dedServ) {
                     for (int i = 0; i < 6; i++) {

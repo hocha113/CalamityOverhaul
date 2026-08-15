@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;

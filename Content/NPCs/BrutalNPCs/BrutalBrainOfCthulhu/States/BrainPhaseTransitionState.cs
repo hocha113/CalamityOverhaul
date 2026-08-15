@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Projectiles;
 using System;
 using Terraria;
@@ -87,7 +87,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
                     BrainMotion.Shake(npc.Center, 2.5f + nextCrack * 1.2f, 10);
                     if (!VaultUtils.isServer) {
                         SoundEngine.PlaySound(SoundID.NPCHit2 with {
-                            Volume = 0.85f, Pitch = -0.35f + nextCrack * 0.1f, MaxInstances = 4
+                            Volume = 0.85f,
+                            Pitch = -0.35f + nextCrack * 0.1f,
+                            MaxInstances = 4
                         }, npc.Center);
                         BrainMotion.BloodMistBurst(npc.Center + Main.rand.NextVector2Circular(46f, 40f),
                             0.6f + nextCrack * 0.2f, 3 + nextCrack, 6f);

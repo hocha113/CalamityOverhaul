@@ -1,4 +1,4 @@
-using Terraria;
+﻿using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 {

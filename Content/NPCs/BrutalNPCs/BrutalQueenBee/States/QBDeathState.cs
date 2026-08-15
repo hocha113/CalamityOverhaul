@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Rendering;
 using InnoVault.PRT;
@@ -120,7 +120,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             }
             if (Timer % 18 == 0) {
                 SoundEngine.PlaySound(SoundID.Zombie125 with {
-                    Volume = 0.5f, Pitch = 0.6f + Timer / (float)ConvulseEnd * 0.3f, MaxInstances = 2
+                    Volume = 0.5f,
+                    Pitch = 0.6f + Timer / (float)ConvulseEnd * 0.3f,
+                    MaxInstances = 2
                 }, npc.Center);
                 QueenBeeMotion.Shake(npc.Center, 2.5f, 8);
             }

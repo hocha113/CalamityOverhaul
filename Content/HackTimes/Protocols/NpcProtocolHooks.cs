@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -224,8 +224,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             try {
                 npc.position = realPos + PhaseDesync.GetOffset(effect.Elapsed);
                 Main.instance.DrawNPCDirect(spriteBatch, npc, npc.behindTiles, screenPos);
-            }
-            finally {
+            } finally {
                 npc.position = realPos;
                 drawingGhost = false;
             }

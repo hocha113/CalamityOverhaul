@@ -1,5 +1,4 @@
-using InnoVault.StateMachines;
-using Terraria;
+﻿using InnoVault.StateMachines;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core
 {

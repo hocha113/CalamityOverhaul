@@ -1,8 +1,7 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States;
 using InnoVault.Cinematics;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -193,7 +192,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
             //腹内闷鸣底噪(被吞者独有的听觉层)
             if (Main.GameUpdateCount % 34 == 0) {
                 SoundEngine.PlaySound(SoundID.WormDigQuiet with {
-                    Volume = 0.75f, Pitch = -0.9f, MaxInstances = 2
+                    Volume = 0.75f,
+                    Pitch = -0.9f,
+                    MaxInstances = 2
                 }, Player.Center);
             }
         }

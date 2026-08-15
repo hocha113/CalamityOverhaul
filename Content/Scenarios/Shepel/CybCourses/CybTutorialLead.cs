@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Cyberwares.UIs;
-using CalamityOverhaul.Content.EntrustManager;
+﻿using CalamityOverhaul.Content.Cyberwares.UIs;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI;
 using CalamityOverhaul.Content.Narrative;
@@ -10,7 +8,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -47,7 +47,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
                 SoundEngine.PlaySound(SoundID.Item71 with {
-                    Pitch = 0.2f + ComboIndex * 0.12f, Volume = 0.85f, MaxInstances = 4
+                    Pitch = 0.2f + ComboIndex * 0.12f,
+                    Volume = 0.85f,
+                    MaxInstances = 4
                 }, Projectile.Center);
             }
             Projectile.rotation = SlashDir;
