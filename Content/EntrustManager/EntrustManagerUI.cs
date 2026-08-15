@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.EntrustManager.Styles;
+﻿using CalamityOverhaul.Content.EntrustManager.Styles;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;

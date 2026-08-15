@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
 using CalamityOverhaul.Content.TimeFreezes;
@@ -169,7 +169,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
 
         private static void Refuse(Player player) {
             SoundEngine.PlaySound(SoundID.MenuTick with {
-                Volume = 0.55f, Pitch = -0.7f, MaxInstances = 2
+                Volume = 0.55f,
+                Pitch = -0.7f,
+                MaxInstances = 2
             }, player.Center);
         }
 
@@ -296,7 +298,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
             Player owner = Main.player[show.OwnerWho];
             if (owner?.active == true) {
                 SoundEngine.PlaySound(SoundID.Camera with {
-                    Volume = 0.9f, Pitch = -0.1f
+                    Volume = 0.9f,
+                    Pitch = -0.1f
                 }, owner.Center);
             }
             //施术者本机才有运镜；运镜失败不致命，演出照走
@@ -389,7 +392,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
                     }
                     if (LocallyViewed) {
                         SoundEngine.PlaySound(SoundID.Splash with {
-                            Volume = 0.8f, Pitch = 0.35f
+                            Volume = 0.8f,
+                            Pitch = 0.35f
                         }, owner.Center);
                     }
                 }
