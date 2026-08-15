@@ -1,31 +1,32 @@
-using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
 {
     /// <summary>
-    /// 伞鬼绘制：凝聚/消融期经 <c>OniSewage</c> 着色器（噪声侵蚀 + 地面裁切 + 垂滴扭曲），
-    /// 行走期普通绘制加程序化蹒跚；脚下污潭用真 alpha 水渍贴图压扁铺开。<br/>
-    /// 形制镜 <c>WGMaterializationRenderer</c>：Immediate 批次、s1 噪声、CPU 后备、恢复 Actor 批次。
+    /// 伞鬼绘制：与鬼伞伞奴同根同源的换装——贴图/凝聚着色器/污潭全走
+    /// <see cref="KikasaThrallRenderer"/>（KikasaThrall.png + KikasaThrallForm 帧矩形钳制），
+    /// 敌对杂兵按 <see cref="BodyDrawScale"/> 画得比召唤伞奴矮一头。<br/>
+    /// 出现/落定的水环与冷闪在 <see cref="DrawEmergeBeats"/>，对齐伞奴成形拍；
+    /// 落定头 14 帧撑伞 pop 弹性胀缩。
     /// </summary>
     internal static class KasaOniRenderer
     {
-        [VaultLoaden(CWRConstant.NPC + "OniRain/KasaOni")]
-        private static Asset<Texture2D> KasaOniTex = null;
-        [VaultLoaden(CWRConstant.Masking + "Extra_98")]
-        private static Asset<Texture2D> PuddleMask = null;
+        /// <summary>
+        /// 敌对伞鬼的贴图缩放：伞奴画布自带 1.6 倍身量，×0.75 后可见身板约为
+        /// 旧 KasaOni 素材的 1.2 倍——比人显眼、比召唤伞奴矮一头。验收可调
+        /// </summary>
+        internal const float BodyDrawScale = 0.75f;
 
-        private static bool renderFailureLogged;
+        /// <summary>演出件（污潭/水环/冷闪锚点）的身量系数：按画出来的身板走</summary>
+        internal const float PresenceScale = BodyDrawScale * KikasaThrall.BodyBulk;
+
+        /// <summary>撑伞 pop 帧数：落定进 Walking 后整个身量先胀一圈再落回</summary>
+        private const int PopFrames = 14;
 
         internal static void Draw(SpriteBatch spriteBatch, KasaOniActor oni) {
-            Texture2D body = KasaOniTex?.Value;
-            if (body == null || body.IsDisposed) {
-                return;
-            }
-
             KasaOniPhase phase = oni.Phase;
             float progress = MathHelper.Clamp(oni.CondenseProgress, 0f, 1f);
 
@@ -35,126 +36,33 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
                 return;
             }
 
-            //身体统一以贴图中心锚定：脚底对齐 FeetAnchor（贴图脚在底边上方约4px）
             Vector2 feet = oni.FeetAnchor;
-            Vector2 bodyCenter = feet - new Vector2(0f, body.Height * 0.5f - 4f);
-            SpriteEffects flip = oni.FacingLeft
-                ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            float seed = oni.WhoAmI * 0.7391f;
+            float scale = BodyDrawScale * MaterializePop(oni);
 
-            Color light = Lighting.GetColor((feet / 16f).ToPoint());
             //夜雨里保轮廓：环境光染向湿墨灰白
+            Color light = Lighting.GetColor((feet / 16f).ToPoint());
             light = Color.Lerp(light, KasaOniActor.PaleSheen, 0.30f);
 
             if (phase == KasaOniPhase.Walking) {
-                DrawWalking(spriteBatch, oni, body, bodyCenter, light, flip);
+                float moveFactor = MathHelper.Clamp(Math.Abs(oni.Velocity.X) / 1.15f, 0f, 1f);
+                KikasaThrallRenderer.DrawBodyWalking(spriteBatch, feet, WalkFrame(oni),
+                    scale, oni.FacingLeft, light, oni.WaddlePhase, moveFactor, seed);
+                DrawEmergeBeats(spriteBatch, oni);
                 return;
             }
 
-            //凝聚/消融走着色器；期间的轻微蠕动让液体感不僵
+            //凝聚/消融走 KikasaThrallForm 着色器；期间的轻微蠕动让液体感不僵
             float wobble = MathF.Sin(Main.GlobalTimeWrappedHourly * 5.3f + oni.WhoAmI * 1.7f)
                 * 0.035f * (1f - progress);
-            DrawCondensing(spriteBatch, oni, body, bodyCenter, light, flip, progress, wobble);
+            KikasaThrallRenderer.DrawBodyCondensing(spriteBatch, feet, WalkFrame(oni),
+                progress, scale, oni.FacingLeft, oni.GroundLineY, light, wobble, seed);
+            DrawEmergeBeats(spriteBatch, oni);
         }
 
-        /// <summary>行走：蹒跚摇摆 + 踏步压缩 + 冷灰青幽光衬底</summary>
-        private static void DrawWalking(SpriteBatch spriteBatch, KasaOniActor oni,
-            Texture2D body, Vector2 bodyCenter, Color light, SpriteEffects flip) {
-
-            float moveFactor = MathHelper.Clamp(Math.Abs(oni.Velocity.X) / 1.15f, 0f, 1f);
-            float rotation = MathF.Sin(oni.WaddlePhase) * 0.07f * moveFactor;
-            float bob = Math.Abs(MathF.Sin(oni.WaddlePhase)) * 1.6f * moveFactor;
-            Vector2 scale = new(1f + MathF.Sin(oni.WaddlePhase * 2f) * 0.015f * moveFactor,
-                1f - Math.Abs(MathF.Sin(oni.WaddlePhase * 2f)) * 0.03f * moveFactor);
-            Vector2 drawPos = bodyCenter - Main.screenPosition - new Vector2(0f, bob);
-
-            Texture2D glow = CWRAsset.SoftGlow.Value;
-            float pulse = MathF.Sin(Main.GlobalTimeWrappedHourly * 2.1f + oni.WhoAmI) * 0.5f + 0.5f;
-            Color backing = new Color(80, 102, 106) with { A = 0 } * (0.10f + pulse * 0.05f);
-            spriteBatch.Draw(glow, drawPos, null, backing, 0f, glow.Size() / 2f,
-                new Vector2(110f / glow.Width, 96f / glow.Height), SpriteEffects.None, 0f);
-
-            spriteBatch.Draw(body, drawPos, null, light, rotation,
-                body.Size() * 0.5f, scale, flip, 0f);
-        }
-
-        /// <summary>凝聚/消融：OniSewage 着色器路径，异常回退普通淡入淡出</summary>
-        private static void DrawCondensing(SpriteBatch spriteBatch, KasaOniActor oni,
-            Texture2D body, Vector2 bodyCenter, Color light, SpriteEffects flip,
-            float progress, float rotation) {
-
-            Effect sewage = EffectLoader.OniSewage?.Value;
-            Texture2D noise = CWRAsset.PerlinNoise?.Value;
-            GraphicsDevice graphicsDevice = Main.instance?.GraphicsDevice;
-            if (sewage == null || noise == null || noise.IsDisposed || graphicsDevice == null) {
-                DrawFallback(spriteBatch, body, bodyCenter, light, flip, progress);
-                return;
-            }
-
-            Texture previousTexture1 = graphicsDevice.Textures[1];
-            SamplerState previousSampler1 = graphicsDevice.SamplerStates[1];
-            bool callerBatchEnded = false;
-            bool sewageBatchOpen = false;
-            bool actorBatchRestored = false;
-            bool drawFallback = false;
-
-            try {
-                spriteBatch.End();
-                callerBatchEnded = true;
-
-                sewage.Parameters["uProgress"]?.SetValue(progress);
-                sewage.Parameters["uTime"]?.SetValue(
-                    Main.GlobalTimeWrappedHourly + oni.WhoAmI * 0.613f);
-                sewage.Parameters["uTextureSize"]?.SetValue(new Vector2(body.Width, body.Height));
-                sewage.Parameters["uScale"]?.SetValue(1f);
-                sewage.Parameters["uRotation"]?.SetValue(rotation);
-                sewage.Parameters["uCenterY"]?.SetValue(bodyCenter.Y);
-                sewage.Parameters["uGroundY"]?.SetValue(oni.GroundLineY);
-                sewage.Parameters["uSewageDeep"]?.SetValue(
-                    KasaOniActor.SewageDeep.ToVector3());
-                sewage.Parameters["uEdgeColor"]?.SetValue(
-                    KasaOniActor.PaleSheen.ToVector3());
-
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
-                    SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone,
-                    sewage, Main.GameViewMatrix.TransformationMatrix);
-                sewageBatchOpen = true;
-                graphicsDevice.Textures[1] = noise;
-                graphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
-
-                spriteBatch.Draw(body, bodyCenter - Main.screenPosition, null, light,
-                    rotation, body.Size() * 0.5f, 1f, flip, 0f);
-
-                spriteBatch.End();
-                sewageBatchOpen = false;
-            } catch (Exception exception) {
-                drawFallback = true;
-                LogRenderFailure(exception);
-            } finally {
-                if (sewageBatchOpen) {
-                    TryEnd(spriteBatch);
-                }
-
-                graphicsDevice.Textures[1] = previousTexture1;
-                graphicsDevice.SamplerStates[1] = previousSampler1;
-
-                if (callerBatchEnded) {
-                    actorBatchRestored = TryBeginActorBatch(spriteBatch);
-                }
-            }
-
-            if (drawFallback && actorBatchRestored) {
-                DrawFallback(spriteBatch, body, bodyCenter, light, flip, progress);
-            }
-        }
-
-        /// <summary>脚下污潭：凝聚期铺开又被吸干、消融期反向涨起，真 alpha 深色水渍</summary>
+        /// <summary>脚下污潭：凝聚期铺开又被吸干、消融期反向涨起（包络留在伞鬼侧）</summary>
         private static void DrawPuddle(SpriteBatch spriteBatch, KasaOniActor oni,
             KasaOniPhase phase, float progress) {
-
-            Texture2D mask = PuddleMask?.Value;
-            if (mask == null) {
-                return;
-            }
 
             //包络：正弦弓形，0→张满→0；潜行期由冒泡粒子接管
             float envelope = phase switch {
@@ -164,62 +72,69 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
                     MathHelper.Clamp((1f - progress) * 1.2f, 0f, 1f) * MathHelper.Pi),
                 _ => 0f,
             };
-            if (envelope <= 0.03f) {
-                return;
-            }
+            KikasaThrallRenderer.DrawPuddle(spriteBatch, oni.FeetAnchor, envelope,
+                PresenceScale, oni.WhoAmI * 0.7391f);
+        }
 
+        /// <summary>
+        /// 出现/落定演出的环与光（对齐伞奴 DrawReformBeats）：
+        /// 破土环荡开 → 长凝聚期脉冲 → 撑伞拍地面大环+伞面环+冷闪。
+        /// 水环走 ShockRingDraw（内部切批还原），冷闪是普通批里的 A=0 软辉
+        /// </summary>
+        private static void DrawEmergeBeats(SpriteBatch sb, KasaOniActor oni) {
+            int t = oni.PhaseTimer;
             Vector2 feet = oni.FeetAnchor;
-            Vector2 pos = feet - Main.screenPosition + new Vector2(0f, 3f);
-            float wobble = 1f + MathF.Sin(Main.GlobalTimeWrappedHourly * 3.4f + oni.WhoAmI) * 0.06f;
-            float width = MathHelper.Lerp(24f, 96f, envelope) * wobble;
-            float height = MathHelper.Lerp(4f, 12f, envelope);
-            Vector2 origin = mask.Size() * 0.5f;
-            Vector2 scale = new(width / mask.Width, height / mask.Height);
+            float seed = oni.WhoAmI * 0.7391f;
 
-            //深色浊底 + 尸斑青薄光沿
-            spriteBatch.Draw(mask, pos, null, KasaOniActor.SewageDark * (0.72f * envelope),
-                0f, origin, scale, SpriteEffects.None, 0f);
-            spriteBatch.Draw(mask, pos - new Vector2(0f, 1.5f), null,
-                (KasaOniActor.CorpseTeal with { A = 0 }) * (0.22f * envelope),
-                0f, origin, scale * new Vector2(0.82f, 0.55f), SpriteEffects.None, 0f);
-        }
+            if (oni.Phase == KasaOniPhase.Emerging) {
+                //破土环：雨把地面顶开一圈
+                if (t <= 20) {
+                    float e = t / 20f;
+                    KikasaThrallFX.Flash(sb, feet, 58f * PresenceScale, 0.55f, 0.4f * (1f - e));
+                    KikasaThrallFX.WaterRing(sb, feet,
+                        MathHelper.Lerp(10f, 100f, KikasaThrallFX.EaseOut(e)) * PresenceScale,
+                        0.42f, 0.62f * (1f - e), seed);
+                }
 
-        /// <summary>着色器缺失/失败的后备：按凝聚度淡入淡出</summary>
-        private static void DrawFallback(SpriteBatch spriteBatch, Texture2D body,
-            Vector2 bodyCenter, Color light, SpriteEffects flip, float progress) {
-            if (progress <= 0.01f) {
+                //凝聚脉冲：96 帧长凝聚，每 14 帧荡一圈，越接近成形荡得越急
+                int pulse = (t - 14) % 14;
+                if (t > 14 && t < KasaOniActor.EmergeFrames && pulse < 8) {
+                    float e = pulse / 8f;
+                    float rise = t / (float)KasaOniActor.EmergeFrames;
+                    KikasaThrallFX.WaterRing(sb, feet,
+                        MathHelper.Lerp(8f, 60f + 34f * rise, KikasaThrallFX.EaseOut(e)) * PresenceScale,
+                        0.4f, 0.3f * rise * (1f - e), seed + t * 0.05f);
+                }
                 return;
             }
-            spriteBatch.Draw(body, bodyCenter - Main.screenPosition, null,
-                light * progress, 0f, body.Size() * 0.5f, 1f, flip, 0f);
-        }
 
-        private static bool TryBeginActorBatch(SpriteBatch spriteBatch) {
-            try {
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
-                    Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
-                    null, Main.GameViewMatrix.TransformationMatrix);
-                return true;
-            } catch (Exception exception) {
-                LogRenderFailure(exception);
-                return false;
+            //撑伞拍：落定进 Walking 的头 18 帧，地面大环外扩、伞面另起一圈、中间压一记冷闪
+            if (oni.Phase == KasaOniPhase.Walking && t <= 18) {
+                float e = t / 18f;
+                Vector2 canopy = oni.CanopyAnchor;
+                Vector2 chest = feet - new Vector2(0f, KasaOniActor.HitboxHeight * PresenceScale * 0.5f);
+                KikasaThrallFX.Flash(sb, chest, 95f * PresenceScale, 0.95f, 0.5f * (1f - e));
+                KikasaThrallFX.WaterRing(sb, feet,
+                    MathHelper.Lerp(20f, 185f, KikasaThrallFX.EaseOut(e)) * PresenceScale,
+                    0.36f, 0.8f * (1f - e), seed);
+                KikasaThrallFX.WaterRing(sb, canopy,
+                    MathHelper.Lerp(8f, 80f, KikasaThrallFX.EaseOut(e)) * PresenceScale,
+                    0.82f, 0.65f * (1f - e * e), seed + 2.1f);
             }
         }
 
-        private static void TryEnd(SpriteBatch spriteBatch) {
-            try {
-                spriteBatch.End();
-            } catch (Exception exception) {
-                LogRenderFailure(exception);
+        /// <summary>撑伞落定的弹性 pop：伞一撑开，整个身量先胀一圈再落回</summary>
+        private static float MaterializePop(KasaOniActor oni) {
+            if (oni.Phase != KasaOniPhase.Walking || oni.PhaseTimer > PopFrames) {
+                return 1f;
             }
+            float p = MathHelper.Clamp(oni.PhaseTimer / (float)PopFrames, 0f, 1f);
+            return 1f + 0.26f * MathF.Sin(p * MathHelper.Pi);
         }
 
-        private static void LogRenderFailure(Exception exception) {
-            if (renderFailureLogged) {
-                return;
-            }
-            renderFailureLogged = true;
-            CWRMod.Instance.Logger.Warn($"KasaOni renderer fallback: {exception.Message}");
-        }
+        /// <summary>多帧真贴图接入后的默认步频：0.12 相位一帧；单帧恒 0</summary>
+        private static int WalkFrame(KasaOniActor oni)
+            => KikasaThrallRenderer.FrameCount <= 1
+                ? 0 : (int)(oni.WaddlePhase / 0.12f) % KikasaThrallRenderer.FrameCount;
     }
 }

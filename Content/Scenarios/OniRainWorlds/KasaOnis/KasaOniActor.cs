@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.Actors;
 using InnoVault.PRT;
@@ -84,6 +85,9 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
         internal Vector2 FeetAnchor => Position + new Vector2(Width * 0.5f, Height);
         /// <summary>着色器地面裁切线的世界Y</summary>
         internal float GroundLineY => Position.Y + Height + 2f;
+        /// <summary>伞面锚点：撑伞拍的环心与甩水点，按画出来的身量走</summary>
+        internal Vector2 CanopyAnchor
+            => FeetAnchor - new Vector2(0f, Height * KasaOniRenderer.PresenceScale);
 
         /// <summary>
         /// 个体站位距离：按槽位错开 52~123px，多只围观时呈弧散开而不是叠成一摞；
@@ -457,21 +461,42 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
             }
         }
 
-        /// <summary>凝聚期：污水团自地面弧线扑入正在成形的身体</summary>
+        /// <summary>
+        /// 凝聚期：污水团自地面弧线扑入正在成形的身体，
+        /// 潭里顶上来的水柱把身体撑起来，雨每隔一阵续着往里按（对齐伞奴成形语汇）
+        /// </summary>
         private void EmergingFx() {
             float progress = CondenseProgress;
+            float bodyHeight = Height * KasaOniRenderer.PresenceScale;
             if (progress < 0.85f && Main.GameUpdateCount % 2 == 0) {
                 Vector2 feet = FeetAnchor;
-                float side = Main.rand.NextFloat(26f, 96f) * (Main.rand.NextBool() ? 1f : -1f);
+                float side = Main.rand.NextFloat(26f, 100f) * (Main.rand.NextBool() ? 1f : -1f);
                 Vector2 from = new(feet.X + side, feet.Y - Main.rand.NextFloat(0f, 5f));
                 Vector2 to = feet - new Vector2(Main.rand.NextFloat(-8f, 8f),
-                    Main.rand.NextFloat(6f, Height * (0.2f + progress * 0.75f)));
+                    Main.rand.NextFloat(6f, bodyHeight * (0.2f + progress * 0.75f)));
                 PRTLoader.NewParticle<PRT_SewageGlob>(from,
                     new Vector2(-side * 0.015f, -Main.rand.NextFloat(1.4f, 3f)),
                     Color.Lerp(SewageDeep, CorpseTeal, Main.rand.NextFloat(0.4f))
                         * Main.rand.NextFloat(0.6f, 0.9f),
                     Main.rand.NextFloat(0.5f, 0.95f))
                     ?.Configure(Main.rand.Next(18, 32), to);
+            }
+
+            //自潭里顶上来的水柱：身体是被这股水撑起来的；微斜靠 wind，粒子每帧用它覆写 X 速
+            if (phaseTimer % 4 == 0) {
+                float driftX = Main.rand.NextFloat(-0.7f, 0.7f);
+                PRTLoader.NewParticle<PRT_GhostRainDrop>(
+                    FeetAnchor + new Vector2(Main.rand.NextFloat(-0.55f, 0.55f) * Width, -2f),
+                    new Vector2(driftX, -Main.rand.NextFloat(3.5f, 7f)),
+                    PaleSheen * Main.rand.NextFloat(0.3f, 0.55f),
+                    Main.rand.NextFloat(0.4f, 0.7f))
+                    ?.Configure(Main.rand.Next(18, 30), driftX);
+            }
+
+            //雨一直在按着它成形，不是砸一下就走
+            if (phaseTimer % 12 == 5) {
+                KikasaThrallFX.RainYank(FeetAnchor - new Vector2(0f, bodyHeight * 0.45f),
+                    5, 200f, 0.85f);
             }
 
             if (Main.rand.NextBool(9)) {
@@ -556,7 +581,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
             }
         }
 
-        /// <summary>相位确认拍：湿闷水声与一次性水花，仅雨中观察者可闻</summary>
+        /// <summary>相位确认拍：对齐伞奴成形的破土/撑伞语汇，仅雨中观察者可闻</summary>
         private void PlayPhaseCue(KasaOniPhase phase) {
             if (Main.dedServ || !OniRainWorldState.LocalIn) {
                 return;
@@ -564,29 +589,43 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
 
             switch (phase) {
                 case KasaOniPhase.Emerging:
+                    //破土拍：雨自四面按出身形，地面先顶开一蓬污水
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
                         Pitch = -0.85f,
                         Volume = 0.5f,
                         MaxInstances = 3,
                     }, FeetAnchor);
-                    break;
-                case KasaOniPhase.Walking:
-                    //凝聚落定：甩出一圈污水
-                    SoundEngine.PlaySound(SoundID.SplashWeak with {
-                        Pitch = -0.15f,
-                        Volume = 0.55f,
+                    SoundEngine.PlaySound(SoundID.Drip with {
+                        Pitch = -0.8f,
+                        Volume = 0.4f,
                         MaxInstances = 3,
                     }, FeetAnchor);
-                    for (int i = 0; i < 10; i++) {
-                        float angle = -MathHelper.Pi * (0.12f + 0.76f * i / 9f);
-                        Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(1.6f, 3.6f);
-                        PRTLoader.NewParticle<PRT_SewageGlob>(
-                            Center + new Vector2(Main.rand.NextFloat(-10f, 10f), 0f),
-                            vel, Color.Lerp(SewageDeep, CorpseTeal, Main.rand.NextFloat(0.5f))
-                                * Main.rand.NextFloat(0.55f, 0.85f),
-                            Main.rand.NextFloat(0.4f, 0.75f))
-                            ?.Configure(Main.rand.Next(16, 28));
-                    }
+                    KikasaThrallFX.RainYank(FeetAnchor - new Vector2(0f, 30f), 12, 240f, 0.95f);
+                    KikasaThrallFX.WaterBurst(FeetAnchor, 10, 0.85f, upward: true);
+                    KikasaThrallFX.MistRing(FeetAnchor, 3, 30f, 0.9f);
+                    ShakeViewer(1.6f);
+                    break;
+                case KasaOniPhase.Walking:
+                    //撑伞拍：伞骨绷响 + 脚下整圈水爆 + 伞面甩水，鬼是被雨按着撑开的
+                    SoundEngine.PlaySound(SoundID.SplashWeak with {
+                        Pitch = -0.3f,
+                        Volume = 0.7f,
+                        MaxInstances = 3,
+                    }, FeetAnchor);
+                    SoundEngine.PlaySound(SoundID.Drip with {
+                        Pitch = -0.9f,
+                        Volume = 0.5f,
+                        MaxInstances = 3,
+                    }, FeetAnchor);
+                    SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
+                        Pitch = -0.45f,
+                        Volume = 0.45f,
+                        MaxInstances = 2,
+                    }, CanopyAnchor);
+                    KikasaThrallFX.WaterBurst(FeetAnchor, 16, 1.05f, upward: true);
+                    KikasaThrallFX.WaterBurst(CanopyAnchor, 12, 0.95f, upward: false);
+                    KikasaThrallFX.MistRing(FeetAnchor, 4, 42f, 1.05f);
+                    ShakeViewer(2.2f);
                     break;
                 case KasaOniPhase.Dissolving:
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
@@ -604,6 +643,10 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
                     break;
             }
         }
+
+        /// <summary>屏震落在雨中观察者身上；同屏最多六只，量刻意压过</summary>
+        private static void ShakeViewer(float amount)
+            => Main.LocalPlayer?.CWR()?.GetScreenShake(amount);
         #endregion
 
         #region 绘制

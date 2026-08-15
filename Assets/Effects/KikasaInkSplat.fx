@@ -4,7 +4,9 @@
 //          →滴淌(重力向柱流,uRunScale 随命中面:地面几乎不滴/墙顺流/顶垂挂);
 //          uDir 主轴+uSquish 垂轴压扁承载贴面姿态(地=扁宽墨泊,墙=窄长竖渍),
 //          quad 恒不旋转,滴淌恒沿世界重力;死墨不爬——无 uTime,只有包络在走;
-//          uCanvasFit 把各向异性摊开收进 UV 预算,C# 同步放大 quad(只放大正方形不够)
+//          uCanvasFit 把各向异性摊开收进 UV 预算,C# 同步放大 quad(只放大正方形不够);
+//          uProf 地形剖面(C# 出生时逐列烘焙):像素先沿 uProfN 按列位移——
+//          墨随台阶下沉、贴斜坡、翻上墙角,悬空列淡出,渍不再是一张悬空的完整椭圆
 //TechLakeBlot:湖面墨晕——墨入水沿水线晕开的极扁墨膜,缘先扩、随时间稀释
 //          (墨入水是"散"不是"干"),缘外散丝、水下渗色、水线一线薄光
 //坐标全笛卡尔(无 atan2);直线算术+普通 tex2D,FNA3D 安全
@@ -21,6 +23,12 @@ float uSquish;    //垂轴压扁 0.2~1:贴面姿态
 float uRunScale;  //滴淌长度系数:地 0.3/墙 1.25/顶 1.6
 float2 uDir;      //各向异性主轴(单位向量,quad 空间)
 float2 uCanvasFit;//逻辑坐标/UV 倍率,与 C# quad 缩放配套;(1,1)=旧行为。只放大正方形不够,UV 仍满幅会切左右
+float uProf[24];  //地形剖面:逐取样列的表面偏移(世界像素,相对锚点;±72 悬空哨兵)
+float2 uProfN;    //剖面位移轴:地/顶=(0,1),墙=(1,0),NPC 渍=(0,0) 即不扭
+float uProfQScale;//切向 q → 取样下标倍率(=Size*1.2/16)
+float uProfQOff;  //取样下标偏移(含墙面切向的 0.18 印面上移折算)
+float uInvWorldPerQ; //世界像素 → q 单位(=1/(Size*1.2))
+float uEdgeSign;  //悬空淡出方向符号:地+1/顶-1/左墙-1/右墙+1;0=不淡出
 float3 uColBody;  //墨体
 float3 uColDeep;  //缘沉/干痕
 float3 uColCore;  //新鲜期血芯
@@ -34,6 +42,17 @@ float4 PSSplat(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
     float2 fit = max(uCanvasFit, float2(1.0, 1.0));
     //印面中心略上,下方画布留给滴淌;fit 把各向异性摊开收进 UV 预算,C# 同步放大 quad 保世界尺寸
     float2 q = raw * fit - float2(0.0, -0.18);
+
+    //地形剖面:沿切向(uDir)取列高,q 先按剖面逐列位移——整套形体/滴淌随台阶斜坡垂落。
+    //帐篷权重求和=线性插值,ps_3_0 不能动态寻址常量,展开循环用字面下标
+    float st = clamp(dot(q, uDir) * uProfQScale + uProfQOff, 0.0, 23.0);
+    float prof = 0.0;
+    [unroll] for (int pi = 0; pi < 24; pi++) {
+        prof += uProf[pi] * saturate(1.0 - abs(st - (float)pi));
+    }
+    q -= uProfN * (clamp(prof, -56.0, 56.0) * uInvWorldPerQ);
+    //悬空列(剖面里探不到面)整列淡出:墨溜过棱缘再散掉,不悬空画墨
+    float edgeKeep = 1.0 - smoothstep(44.0, 64.0, prof * uEdgeSign);
 
     //贴面姿态:先把主轴外的方向压扁(地渍摊平/墙渍收窄),再沿主轴拉伸
     float2 perpU = float2(-uDir.y, uDir.x);
@@ -87,7 +106,7 @@ float4 PSSplat(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
     outCol += uColSheen * sheen * 0.3;
 
     float guard = smoothstep(1.0, 0.88, max(abs(raw.x), abs(raw.y)));
-    float k = uFade * guard;
+    float k = uFade * guard * edgeKeep;
     return float4(outCol * k, a * k) * vertexColor;
 }
 

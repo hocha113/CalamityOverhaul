@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 {
@@ -52,6 +53,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private const int GroundLife = 220;
         private const int NpcLife = 150;
 
+        //==================== 地形剖面 ====================
+        //表面渍出生时沿贴面切向逐列取样地形,着色器按剖面逐列位移渍体:
+        //墨随台阶下沉、贴斜坡、翻上墙角,悬空列淡出——不再是一张悬空的完整椭圆
+
+        /// <summary>剖面取样列数,与 KikasaInkSplat.fx 的 uProf 长度一致</summary>
+        private const int ProfN = 24;
+        /// <summary>悬空哨兵(世界像素):落进着色器 44~64 淡出带之外,整列淡掉</summary>
+        private const float ProfChasm = 72f;
+        /// <summary>实心横贯列的位移钉点:墨沿墙角最多上翻这么高,不淡出</summary>
+        private const float ProfClimbCap = 40f;
+        /// <summary>剖面位移夹持上限,与着色器 clamp(±56) 同值</summary>
+        private const float ProfShiftCap = 56f;
+
+        /// <summary>NPC 渍共用的零剖面,不逐渍分配</summary>
+        private static readonly float[] ZeroProfile = new float[ProfN];
+
         private class InkSplat
         {
             public Vector2 Pos;
@@ -74,6 +91,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             /// <summary>宿主消亡后的快淡</summary>
             public float DeadFade = 1f;
             public bool Done;
+
+            //地形剖面(出生烘焙;NPC 渍保持零剖面=不扭不淡)
+            public float[] Profile = ZeroProfile;
+            /// <summary>剖面位移轴(=uProfN):地/顶 (0,1),墙 (1,0),NPC (0,0)</summary>
+            public Vector2 ProfAxis;
+            /// <summary>悬空淡出方向符号(=uEdgeSign)</summary>
+            public float EdgeSign;
+            /// <summary>取样 0 中心的切向世界坐标,滴淌取值用</summary>
+            public float ProfT0;
+            public float ProfQScale;
+            public float ProfQOff;
+            /// <summary>世界像素→q 单位(=1/(Size*1.2))</summary>
+            public float InvWorldPerQ;
+            /// <summary>夹持后的剖面位移范围(世界像素),画布预算用</summary>
+            public float WarpLo;
+            public float WarpHi;
         }
 
         private class LakeBlot
@@ -173,6 +206,124 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
         }
 
+        //==================== 地形剖面烘焙 ====================
+
+        /// <summary>滴淌贴剖面的悬空门:该列位移×EdgeSign 超过它即临近淡出带,不再落滴</summary>
+        private const float DripVoidGate = 48f;
+
+        /// <summary>斜坡感知的点实心:半砖/四种斜坡按格内几何裁剪,剖面才贴得住坡面</summary>
+        private static bool PointSolid(float x, float y) {
+            int tx = (int)(x / 16f);
+            int ty = (int)(y / 16f);
+            Tile t = Framing.GetTileSafely(tx, ty);
+            if (!t.HasTile || !Main.tileSolid[t.TileType] || Main.tileSolidTop[t.TileType]) {
+                return false;
+            }
+            float fx = x - tx * 16f;
+            float fy = y - ty * 16f;
+            if (t.IsHalfBlock) {
+                return fy >= 8f;
+            }
+            return t.Slope switch {
+                SlopeType.SlopeDownLeft => fy >= 16f - fx,
+                SlopeType.SlopeDownRight => fy >= fx,
+                SlopeType.SlopeUpLeft => fy <= fx,
+                SlopeType.SlopeUpRight => fy <= 16f - fx,
+                _ => true,
+            };
+        }
+
+        /// <summary>
+        /// 单列表面扫描:自翻角钉点(空气侧 ProfClimbCap 处)沿入固方向 2px 步进找首个实心,
+        /// 返回沿剖面位移轴的带符号偏移(×EdgeSign 统一四面代数);
+        /// 起点即实心=整列被墙横贯,位移钉在翻角上限不淡出;扫穿无实心=悬空哨兵
+        /// </summary>
+        private static float ScanColumn(Vector2 colBase, Vector2 scanDir, float edgeSign) {
+            Vector2 start = colBase - scanDir * ProfClimbCap;
+            if (PointSolid(start.X, start.Y)) {
+                return -ProfClimbCap * edgeSign;
+            }
+            float range = ProfClimbCap + ProfChasm;
+            for (float u = 2f; u <= range; u += 2f) {
+                Vector2 w = start + scanDir * u;
+                if (PointSolid(w.X, w.Y)) {
+                    return (u - 1f - ProfClimbCap) * edgeSign;
+                }
+            }
+            return ProfChasm * edgeSign;
+        }
+
+        /// <summary>
+        /// 出生烘焙地形剖面:沿贴面切向每 16px 一列共 24 列,逐列扫表面写入相对锚点的
+        /// 位移(世界像素)。下标换算与 KikasaInkSplat.fx 的 st=dot(q,uDir)*uProfQScale+uProfQOff
+        /// 严格同构(墙面切向含 0.18 印面上移折算);顺手记录夹持位移范围供画布让位
+        /// </summary>
+        private static void BakeProfile(InkSplat s) {
+            float halfSide = s.Size * 1.2f;
+            s.Profile = new float[ProfN];
+            s.ProfQScale = halfSide / 16f;
+            s.InvWorldPerQ = 1f / halfSide;
+            s.ProfQOff = (ProfN - 1) * 0.5f;
+
+            Vector2 tan;
+            Vector2 scanDir;
+            switch (s.Surface) {
+                case SplatSurface.Floor:
+                    tan = new Vector2(1f, 0f);
+                    scanDir = new Vector2(0f, 1f);
+                    s.ProfAxis = new Vector2(0f, 1f);
+                    s.EdgeSign = 1f;
+                    break;
+                case SplatSurface.Ceiling:
+                    tan = new Vector2(1f, 0f);
+                    scanDir = new Vector2(0f, -1f);
+                    s.ProfAxis = new Vector2(0f, 1f);
+                    s.EdgeSign = -1f;
+                    break;
+                case SplatSurface.WallLeft:
+                    tan = new Vector2(0f, 1f);
+                    scanDir = new Vector2(-1f, 0f);
+                    s.ProfAxis = new Vector2(1f, 0f);
+                    s.EdgeSign = -1f;
+                    s.ProfQOff -= SplatCenterY * s.ProfQScale;
+                    break;
+                default: //WallRight
+                    tan = new Vector2(0f, 1f);
+                    scanDir = new Vector2(1f, 0f);
+                    s.ProfAxis = new Vector2(1f, 0f);
+                    s.EdgeSign = 1f;
+                    s.ProfQOff -= SplatCenterY * s.ProfQScale;
+                    break;
+            }
+            float anchorT = tan.X != 0f ? s.Pos.X : s.Pos.Y;
+            s.ProfT0 = anchorT - (ProfN - 1) * 0.5f * 16f;
+
+            float lo = 0f;
+            float hi = 0f;
+            for (int i = 0; i < ProfN; i++) {
+                Vector2 colBase = s.Pos + tan * ((i - (ProfN - 1) * 0.5f) * 16f);
+                float prof = ScanColumn(colBase, scanDir, s.EdgeSign);
+                s.Profile[i] = prof;
+                float shift = MathHelper.Clamp(prof, -ProfShiftCap, ProfShiftCap);
+                lo = MathF.Min(lo, shift);
+                hi = MathF.Max(hi, shift);
+            }
+            s.WarpLo = lo;
+            s.WarpHi = hi;
+        }
+
+        /// <summary>CPU 侧剖面取样:与着色器同构的相邻列线性插值,滴淌粒子贴位移后的表面</summary>
+        private static float SampleProfile(InkSplat s, float worldT) {
+            if (s.ProfQScale <= 0f) {
+                return 0f;
+            }
+            float idx = MathHelper.Clamp((worldT - s.ProfT0) / 16f, 0f, ProfN - 1);
+            int i0 = (int)idx;
+            int i1 = Math.Min(i0 + 1, ProfN - 1);
+            float prof = MathHelper.Lerp(s.Profile[i0], s.Profile[i1], idx - i0);
+            return MathHelper.Clamp(prof, -ProfShiftCap, ProfShiftCap);
+        }
+
         //==================== 入账 ====================
 
         /// <summary>表面渍:解析命中面、吸附锚点、按面换贴面姿态</summary>
@@ -213,6 +364,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     s.RunScale = 1.25f;
                     break;
             }
+            //出生即烘焙:渍是死墨,地形剖面只取这一次
+            BakeProfile(s);
             ground.Add(s);
         }
 
@@ -311,7 +464,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
         }
 
-        /// <summary>逐面滴淌:地渍只洇、墙渍贴墙下滑、顶渍垂滴脱离坠落;渍越新滴得越勤</summary>
+        /// <summary>逐面滴淌:地渍只洇、墙渍贴墙下滑、顶渍垂滴脱离坠落;渍越新滴得越勤。
+        /// 滴点经 SampleProfile 贴到位移后的表面,临近悬空淡出带的列不落滴</summary>
         private static void UpdateSurfaceDrip(InkSplat s) {
             if (s.Age >= s.Life * 0.6f) {
                 return;
@@ -320,26 +474,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 case SplatSurface.Floor:
                     if (Main.rand.NextBool(80)) {
                         float dx = (KikasaInk.Hash((int)(s.Seed * 977f), s.Age) - 0.5f) * s.Size * 0.5f;
-                        PRTLoader.NewParticle<PRT_KikasaInkDrip>(s.Pos + new Vector2(dx, -2f),
-                            new Vector2(0f, 0.2f), KikasaInk.InkBody,
-                            Main.rand.NextFloat(0.3f, 0.45f))?.Configure(Main.rand.Next(10, 16));
+                        float sag = SampleProfile(s, s.Pos.X + dx);
+                        if (sag * s.EdgeSign < DripVoidGate) {
+                            PRTLoader.NewParticle<PRT_KikasaInkDrip>(s.Pos + new Vector2(dx, sag - 2f),
+                                new Vector2(0f, 0.2f), KikasaInk.InkBody,
+                                Main.rand.NextFloat(0.3f, 0.45f))?.Configure(Main.rand.Next(10, 16));
+                        }
                     }
                     break;
                 case SplatSurface.Ceiling:
                     if (Main.rand.NextBool(14)) {
                         float dx = (KikasaInk.Hash((int)(s.Seed * 977f), s.Age) - 0.5f) * s.Size * 0.6f;
-                        PRTLoader.NewParticle<PRT_KikasaInkDrip>(s.Pos + new Vector2(dx, 4f),
-                            new Vector2(0f, Main.rand.NextFloat(0.3f, 0.7f)), KikasaInk.InkBody,
-                            Main.rand.NextFloat(0.45f, 0.7f))?.Configure(Main.rand.Next(30, 44));
+                        float sag = SampleProfile(s, s.Pos.X + dx);
+                        if (sag * s.EdgeSign < DripVoidGate) {
+                            PRTLoader.NewParticle<PRT_KikasaInkDrip>(s.Pos + new Vector2(dx, sag + 4f),
+                                new Vector2(0f, Main.rand.NextFloat(0.3f, 0.7f)), KikasaInk.InkBody,
+                                Main.rand.NextFloat(0.45f, 0.7f))?.Configure(Main.rand.Next(30, 44));
+                        }
                     }
                     break;
                 default: //两侧墙:贴着墙面下滑
                     if (Main.rand.NextBool(24)) {
                         float hug = s.Surface == SplatSurface.WallLeft ? 2f : -2f;
                         float dy = KikasaInk.Hash((int)(s.Seed * 977f), s.Age) * s.Size * 0.35f;
-                        PRTLoader.NewParticle<PRT_KikasaInkDrip>(s.Pos + new Vector2(hug, dy),
-                            new Vector2(0f, Main.rand.NextFloat(0.4f, 0.9f)), KikasaInk.InkBody,
-                            Main.rand.NextFloat(0.4f, 0.6f))?.Configure(Main.rand.Next(20, 32));
+                        float shift = SampleProfile(s, s.Pos.Y + dy);
+                        if (shift * s.EdgeSign < DripVoidGate) {
+                            PRTLoader.NewParticle<PRT_KikasaInkDrip>(s.Pos + new Vector2(hug + shift, dy),
+                                new Vector2(0f, Main.rand.NextFloat(0.4f, 0.9f)), KikasaInk.InkBody,
+                                Main.rand.NextFloat(0.4f, 0.6f))?.Configure(Main.rand.Next(20, 32));
+                        }
                     }
                     break;
             }
@@ -457,6 +620,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             float needX = ax * along + ay * perp;
             float needY = ay * along + ax * perp;
             float needYDown = MathF.Max(needY, drip);
+            //地形剖面位移把内容沿 ProfAxis 整体搬走(夹持后范围 WarpLo~WarpHi),画布同步让位
+            float warpNegQ = MathF.Max(0f, -s.WarpLo) * s.InvWorldPerQ;
+            float warpPosQ = MathF.Max(0f, s.WarpHi) * s.InvWorldPerQ;
+            if (s.ProfAxis.Y != 0f) {
+                needY += warpNegQ;
+                needYDown += warpPosQ;
+            }
+            else if (s.ProfAxis.X != 0f) {
+                needX += MathF.Max(warpNegQ, warpPosQ);
+            }
             float fx = MathF.Max(1f, needX / CanvasBudget);
             float fy = MathF.Max(1f, MathF.Abs(needYDown - SplatCenterY) / CanvasBudget);
             fy = MathF.Max(fy, (needY + SplatCenterY) / CanvasBudget);
@@ -534,6 +707,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 fx.Parameters["uRunScale"]?.SetValue(s.RunScale);
                 fx.Parameters["uDir"]?.SetValue(s.Dir);
                 fx.Parameters["uCanvasFit"]?.SetValue(fit);
+                //地形剖面六件套:NPC 渍走默认零值(零剖面/零轴/零符号)=不扭不淡
+                fx.Parameters["uProf"]?.SetValue(s.Profile);
+                fx.Parameters["uProfN"]?.SetValue(s.ProfAxis);
+                fx.Parameters["uProfQScale"]?.SetValue(s.ProfQScale);
+                fx.Parameters["uProfQOff"]?.SetValue(s.ProfQOff);
+                fx.Parameters["uInvWorldPerQ"]?.SetValue(s.InvWorldPerQ);
+                fx.Parameters["uEdgeSign"]?.SetValue(s.EdgeSign);
                 fx.CurrentTechnique.Passes[0].Apply();
 
                 float side = s.Size * 2.4f;

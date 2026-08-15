@@ -261,6 +261,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
                 + $" wells=[{VerticalLinks.Summary()}]"
                 + $" doorAudit={doorFail}/{doorTotal} furnAudit={anchorFail}/{anchorCells} edgeDead={edgeDeadBad}"
                 + $" scatter={ScatterEngine.TotalPlaced}/{ScatterEngine.TotalAttempts}"
+                //填充体系自报增量:本世界从没跑出过"填充前"的基线,把两个pass各自
+                //新增的凿空量单独记一格,单次运行就能读出"没有填充会是什么样"
+                + $" infill[夹层{Infill.IntersticePass.CarveWrites}格 {Infill.IntersticePass.LastSummary}"
+                + $" | 副翼{Infill.AnnexPass.CarveWrites}格 {Infill.AnnexPass.LastSummary}]"
                 + $" downedBoss3={NPC.downedBoss3} hardMode={Main.hardMode}"
                 //地狱判定线与最深可达行的余量在册,阈值排查结论见DungeonworldMetrics头注释
                 + $" underworldLayer={Main.UnderworldLayer} deepestFloor={DungeonworldMetrics.Bands[^1].SpineFloorTop}"

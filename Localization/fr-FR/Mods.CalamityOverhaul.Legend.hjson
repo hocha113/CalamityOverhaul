@@ -903,9 +903,7 @@ KikasaText: {
 		// SummonHintFormat: Press {0} to call it to fight
 	}
 
-	KikasaServantPlayer: {
-		// ServantUnknown: The lake hasn't learned to command it
-	}
+	// KikasaServantPlayer.ServantUnknown: The lake hasn't learned to command it
 
 	KikasaHud: {
 		// ScrollName: Lakeside Village Scroll

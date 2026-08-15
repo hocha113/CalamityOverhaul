@@ -903,9 +903,7 @@ KikasaText: {
 		SummonHintFormat: 按 {0} 召它出手
 	}
 
-	KikasaServantPlayer: {
-		ServantUnknown: 湖还没学会驱使它
-	}
+	KikasaServantPlayer.ServantUnknown: 湖还没学会驱使它
 
 	KikasaHud: {
 		ScrollName: 湖畔村图
