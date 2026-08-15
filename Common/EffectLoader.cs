@@ -253,8 +253,9 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaSky { get; set; }
         public static Asset<Effect> KikasaFlip { get; set; }
         public static Asset<Effect> KikasaItemForm { get; set; }
+        public static Asset<Effect> KikasaThrallForm { get; set; }
         public static Asset<Effect> KikasaVaultPanel { get; set; }
-        public static Asset<Effect> KikasaHud { get; set; }
+        public static Asset<Effect> KikasaScene { get; set; }
         public static Asset<Effect> KikasaHand { get; set; }
         public static Asset<Effect> KikasaNarrativePanel { get; set; }
         public static Asset<Effect> KikasaMoonRay { get; set; }
@@ -314,6 +315,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> UnsungheroChess { get; set; }
         public static Asset<Effect> ScrapForm { get; set; }
         public static Asset<Effect> ScrapBeamLine { get; set; }
+        public static Asset<Effect> ScrapHeavyBeam { get; set; }
         public static Asset<Effect> ScrapMagnetField { get; set; }
         public static Asset<Effect> ScrapSiegeFilter { get; set; }
         public static Asset<Effect> ShockRing { get; set; }

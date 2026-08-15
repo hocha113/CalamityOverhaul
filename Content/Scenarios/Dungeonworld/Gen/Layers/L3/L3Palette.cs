@@ -19,6 +19,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
         internal const ushort CrackedBrick = TileID.CrackedBlueDungeonBrick;
         internal const ushort WallBase = WallID.BlueDungeonUnsafe;
         internal const ushort WallSlab = WallID.BlueDungeonSlabUnsafe;
+        //第三变体95:原版蓝墙有三种,以前只用两种白扔一种,补上表面变化量翻倍
+        internal const ushort WallTiled = WallID.BlueDungeonTileUnsafe;
 
         //===平台/门(RESEARCH §1.1d-6:墙7→平台frameY=108;门style见WorldGen.cs:27965-27981)===
         internal const short PlatformFrameY = DungeonworldMetrics.PlatformFrameY;
@@ -53,6 +55,22 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
         //===做旧签名=墨渍霉斑(INDEX §3:深灰/黑漆系,全paint层,观感【待签字】)===
         internal const byte PaintInk = PaintID.BlackPaint;    //墨渍
         internal const byte PaintMold = PaintID.GrayPaint;    //霉斑
+
+        //===基调层染=纸墨褐(ROOMS-L3 §0:强调色#8A6B3F"不是砖色",靠家具海+paint呈现)===
+        //原版只有一种棕(PaintID.cs:28),与L2锈渍垂痕同ID但形态是两回事——
+        //L2是锚点正下方的窄垂线,本层是整片斑洗;INDEX §3"互不借用"约束的是做旧签名,
+        //层染另立一栏(见该文件§3末两行)
+        internal const byte PaintPaper = PaintID.BrownPaint;
+        //覆盖率:纸墨褐是本层主读色,压得住才有身份;禁书区不染(暗区靠Slab+无光)
+        private const int PaperCoverage = 72;
+        private const int PaperSalt = 0x13A7;
+
+        private static readonly ushort[] TintWalls = [WallBase, WallSlab, WallTiled];
+        private static readonly ushort[] TintBricks = [Brick, CrackedBrick];
+
+        /// <summary>阅览区/迷宫区基调层染:纸墨褐洗墙面与内壁砖面</summary>
+        internal static LayerTint.TintReport PaperWash(Rectangle area)
+            => LayerTint.Wash(area, PaintPaper, PaperCoverage, PaperSalt, TintWalls, TintBricks);
 
         //==================== 放置助手(镜像L2Palette/L1Style先例,自包含不跨层引用) ====================
 
@@ -169,12 +187,16 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                         continue;
                     }
                     Tile tile = Main.tile[x, y];
-                    if (tile.WallType == WallBase || tile.WallType == WallSlab) {
+                    if (IsLayerWall(tile.WallType)) {
                         tile.WallType = newWall;
                     }
                 }
             }
         }
+
+        /// <summary>本层地牢墙族(三变体);骨架实心区wall=0天然被排除</summary>
+        internal static bool IsLayerWall(ushort wall)
+            => wall == WallBase || wall == WallSlab || wall == WallTiled;
 
         //墨渍垂痕:自锚点向下给墙面刷黑漆,遇实心即停(桌下墨渍/封条用)
         internal static void InkStreak(int x, int yTop, int length) {
@@ -198,7 +220,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                         continue;
                     }
                     Tile tile = Main.tile[x, y];
-                    if (!tile.HasTile && (tile.WallType == WallBase || tile.WallType == WallSlab)) {
+                    if (!tile.HasTile && IsLayerWall(tile.WallType)) {
                         tile.WallColor = roll < 55 ? PaintMold : PaintInk;
                     }
                 }
@@ -243,7 +265,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                 if (tile.HasTile) {
                     return;
                 }
-                if (tile.WallType == WallBase || tile.WallType == WallSlab) {
+                if (IsLayerWall(tile.WallType)) {
                     tile.WallColor = paint;
                 }
             }
@@ -263,7 +285,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
         //已开凿的蓝墙室内(骨架实心区wall=0天然排除)
         internal static bool InBlueInterior(int x, int y) {
             Tile t = Main.tile[x, y];
-            return !t.HasTile && (t.WallType == WallBase || t.WallType == WallSlab);
+            return !t.HasTile && IsLayerWall(t.WallType);
         }
     }
 }

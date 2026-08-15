@@ -483,7 +483,8 @@ namespace CalamityOverhaul.Content.EntrustManager
             if (book == null || !book.IsOpen) {
                 return Rectangle.Empty;
             }
-            return book.CurrentStyle.GetStyleSwitchButtonRect(book.CurrentLayout.LegacyChrome);
+            //按钮宿主统一为页脚带，与容器的命中判定同一来源
+            return book.CurrentStyle.GetStyleSwitchButtonRect(book.CurrentLayout.Footer);
         }
 
         private static void DrawStyleButtonPromptCard(SpriteBatch sb) {

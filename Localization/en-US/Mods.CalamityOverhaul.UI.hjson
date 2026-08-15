@@ -453,6 +453,13 @@ DraedonIncomingCall: {
 
 QuestManagerUI: {
 	TitleText: Quest Management
+	ProviderLabelText: Client
+	ProviderHalibut: The Halibut
+	ProviderOnikiri: Onikiri
+	ProviderSHPC: SHPC
+	ProviderOldDuke: The Old Duke
+	ProviderSupCal: Supreme Calamitas
+	ProviderDraedon: Draedon
 	CategoryAll: All
 	CategoryActive: Active
 	CategoryCompleted: Completed

@@ -72,6 +72,26 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
         /// <summary>灰烬缘=灰漆(PaintID.cs L59),仅渣堆/炉缘少量点缀</summary>
         internal const byte AshPaint = PaintID.GrayPaint;
 
+        //==================== 基调层染=炉锈橙(ROOMS-L6 §0:"锈橙点缀靠家具/paint/光,蓝钢底衬锈橙对比") ====================
+        //与上面的焦油做旧分层:焦痕/油渍是局部叙事痕迹,层染只填未上漆的空白格,
+        //所以先染后做旧、先做旧后染都不会把痕迹洗掉
+
+        /// <summary>锈面=深橙漆(PaintID.cs L14)</summary>
+        internal const byte RustPaint = PaintID.DeepOrangePaint;
+        /// <summary>机件热色=亮橙漆(PaintID.cs L2),齿轮/轴承座专用,从蓝钢底子里跳出来</summary>
+        internal const byte HotPaint = PaintID.OrangePaint;
+        //覆盖率压到一半以下:锈橙是对比点缀不是主读色,染满了蓝钢底就没了
+        private const int RustCoverage = 45;
+        private const int RustSalt = 0x6C31;
+
+        private static readonly ushort[] TintWalls = [WallBase, WallSlab, WallTiled];
+        private static readonly ushort[] TintBricks = [Brick, CrackedBrick];
+
+        /// <summary>全层基调层染:锈橙洗墙面与内壁砖面,再把Cog机件刷亮橙</summary>
+        internal static (LayerTint.TintReport Wash, int Cogs) RustWash(Rectangle area) => (
+            LayerTint.Wash(area, RustPaint, RustCoverage, RustSalt, TintWalls, TintBricks),
+            LayerTint.PaintTilesOfType(area, CogBlock, HotPaint));
+
         /// <summary>
         /// 地面油渍条:自(x,floorRow)沿+dx方向给地板砖面刷黑漆(len格)。
         /// 机关段前的引导线——wire原版语义玩家不可见(INDEX §7),

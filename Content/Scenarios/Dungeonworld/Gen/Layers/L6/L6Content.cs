@@ -47,9 +47,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
 
             int shaftL = DungeonworldMetrics.ShaftLeft - 6;
             int shaftR = DungeonworldMetrics.ShaftLeft + DungeonworldMetrics.ShaftWidth + 6;
-            int xLeft = System.Math.Max(DungeonworldMetrics.BorderThick + 8,
+            int xLeft = System.Math.Max(DungeonworldMetrics.PlayLeft + 8,
                 DungeonworldMetrics.SpawnX - 780);
-            int xRight = System.Math.Min(DungeonworldMetrics.Width - DungeonworldMetrics.BorderThick - 8,
+            int xRight = System.Math.Min(DungeonworldMetrics.PlayRight - 8,
                 DungeonworldMetrics.SpawnX + 780);
 
             int foldCount = rand.Next(6, 8);
@@ -130,6 +130,21 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
             int rightWing = PlaceRightWing(ctx, rand, shaftR, xRight,
                 floors[foldCount / 2], band, caps, placed, ref furnPlaced, ref furnRejected);
 
+            //墙变体收尾:蓝基约5%的小点缀盘。§0声明的Tiled75/Slab20/Base5三档里,
+            //Base那一档此前从来没落地过,墙面只有两种在轮换
+            int bandLeft = DungeonworldMetrics.PlayLeft;
+            int bandRight = DungeonworldMetrics.PlayRight;
+            for (int d = 0; d < 16; d++) {
+                L6Palette.WallDisk(rand.Next(bandLeft, bandRight),
+                    rand.Next(band.Top + 20, band.SpineInteriorTop - 4),
+                    rand.Next(5, 12), L6Palette.WallBase);
+            }
+
+            //基调层染:炉锈橙洗全带,Cog机件刷亮橙。
+            //ROOMS-L6 §0把锈橙身份交给了paint,此前只实装了黑灰焦油,整层读起来跟L3/L7一样是素蓝
+            (LayerTint.TintReport rust, int hotCogs) = L6Palette.RustWash(
+                new Rectangle(bandLeft, band.Top, bandRight - bandLeft, band.Bottom - band.Top));
+
             ctx.Scatter.AddRange(L6Scatter.Entries());
             L6MachineSlots.LogAll();
 
@@ -150,6 +165,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
                 + $"(廊{caps.Corridors} 厅{caps.Halls} 车间{caps.Workshops} 库{caps.Vaults}"
                 + $" 井{caps.Wells}(齿轮{caps.Gears}) 渣{caps.Slags} 主控{caps.Controls})"
                 + $" chains={chains} 折间上口={upperLinks} 竖井={wellsBuilt} 脊落口={drops} 右翼={rightWing}"
+                + $" 炉锈橙层染={rust} 热机件={hotCogs}"
                 + $" 家具={furnPlaced}成/{furnRejected}拒 留位={L6MachineSlots.Slots.Count}"
                 + $" graphConnected={ctx.Graph.IsConnected()}(分量间由脊/主井桥接,洪泛为准)"
                 + $" grid={ctx.Grid.ReserveOk}留/{ctx.Grid.ReserveReject}拒");

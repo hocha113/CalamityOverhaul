@@ -41,8 +41,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
 
         /// <summary>在层带内膛执行一个撒布条目,返回(放置数,尝试数)。</summary>
         internal static (int placed, int attempts) Run(LayerBand band, ScatterEntry entry) {
-            int left = DungeonworldMetrics.BorderThick + 2;
-            int right = DungeonworldMetrics.Width - DungeonworldMetrics.BorderThick - 2;
+            int left = DungeonworldMetrics.PlayLeft + 2;
+            int right = DungeonworldMetrics.PlayRight - 2;
             int top = band.Top + 2;
             int bottom = band.Bottom - 2;
             long area = (long)(right - left) * (bottom - top);

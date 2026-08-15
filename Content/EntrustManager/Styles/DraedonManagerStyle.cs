@@ -405,47 +405,39 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
         public override void DrawQuestEntry(SpriteBatch sb, Rectangle entryRect, EntrustEntryData entry,
             bool isSelected, bool isHovered, float alpha, int entryIndex) {
             var font = FontAssets.MouseText.Value;
-            var customStyle = entry.EntryStyle;
 
-            bool bgHandled = customStyle?.DrawEntryBackground(sb, entryRect, entry, isSelected, isHovered, alpha) ?? false;
-            if (!bgHandled) {
-                if (isSelected) {
-                    FillRect(sb, entryRect, PrimaryDim * (alpha * 0.2f));
-                    DrawThinTechBorder(sb, entryRect, AccentCyan * (alpha * 0.5f));
-                }
-                else if (isHovered) {
-                    FillRect(sb, entryRect, PrimaryDim * (alpha * 0.1f));
-                    DrawThinTechBorder(sb, entryRect, PrimaryMid * (alpha * 0.25f));
-                }
-
-                Color statusBarColor = GetStatusColor(entry.Status, alpha);
-                VLine(sb, entryRect.X + 2, entryRect.Y + 4, entryRect.Height - 8, 3, statusBarColor);
-
-                int nodeX = entryRect.X + 16;
-                int nodeY = entryRect.Y + 14;
-                DrawStatusNode(sb, new Vector2(nodeX, nodeY), entry.Status, alpha, entryIndex);
+            if (isSelected) {
+                FillRect(sb, entryRect, PrimaryDim * (alpha * 0.2f));
+                DrawThinTechBorder(sb, entryRect, AccentCyan * (alpha * 0.5f));
+            }
+            else if (isHovered) {
+                FillRect(sb, entryRect, PrimaryDim * (alpha * 0.1f));
+                DrawThinTechBorder(sb, entryRect, PrimaryMid * (alpha * 0.25f));
             }
 
-            float titleX = entryRect.X + (bgHandled ? 10f : 28f);
+            Color statusBarColor = GetStatusColor(entry.Status, alpha);
+            VLine(sb, entryRect.X + 2, entryRect.Y + 4, entryRect.Height - 8, 3, statusBarColor);
+
+            int nodeX = entryRect.X + 16;
+            int nodeY = entryRect.Y + 14;
+            DrawStatusNode(sb, new Vector2(nodeX, nodeY), entry.Status, alpha, entryIndex);
+
+            float titleX = entryRect.X + 28f;
             float titleY = entryRect.Y + 6f;
 
-            float iconOffset = customStyle?.DrawEntryIcon(sb, new Vector2(titleX, titleY), entry, alpha) ?? 0f;
-            titleX += iconOffset;
-
-            Color titleColor = customStyle?.GetTitleColor(entry.Status, alpha)
-                ?? (entry.Status == QuestEntryStatus.Completed
-                    ? StatusComplete * (alpha * 0.75f)
-                    : PrimaryBright * alpha);
+            Color titleColor = entry.Status == QuestEntryStatus.Completed
+                ? StatusComplete * (alpha * 0.75f)
+                : PrimaryBright * alpha;
             if (entry.IsNew) {
                 float newBlink = MathF.Sin(chevronPulse * 2f) * 0.3f + 0.7f;
                 titleColor = Color.Lerp(titleColor, AccentWarm, newBlink * 0.4f);
             }
 
-            //截断标题，预留标签宽
+            //截断标题，预留标签宽；有提供者徽记时再让一枚戳位
             string statusText = GetEntryStatusText(entry.Status);
             float statusBadgeScale = 0.55f;
             int statusBadgeW = GetStatusBadgeWidth(statusText, statusBadgeScale);
-            float statusBadgeX = entryRect.Right - statusBadgeW - 28f;
+            float statusBadgeX = entryRect.Right - statusBadgeW - (entry.Provider != null ? 58f : 28f);
             string displayTitle = entry.Title ?? "";
             float maxEntryTitleW = Math.Max(40f, statusBadgeX - titleX - 8f);
             if (font.MeasureString(displayTitle).X * 0.90f > maxEntryTitleW) {
@@ -461,8 +453,7 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
             if (entry.Status == QuestEntryStatus.Tracked) {
                 float chevBlink = MathF.Sin(chevronPulse * 1.5f) * 0.4f + 0.6f;
                 float titleW = font.MeasureString(displayTitle).X * 0.78f;
-                Color chevColor = customStyle?.GetAccentColor(QuestEntryStatus.Tracked, alpha * chevBlink)
-                    ?? AccentCyan * (alpha * chevBlink);
+                Color chevColor = AccentCyan * (alpha * chevBlink);
                 if (titleX + titleW + 18f < statusBadgeX) {
                     Utils.DrawBorderString(sb, "››",
                         new Vector2(titleX + titleW + 6f, titleY + 1f),
@@ -473,7 +464,7 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
             float summaryY = titleY + 20f;
             Color summaryColor = PrimaryMid * (alpha * 0.6f);
             string summary = (entry.Summary ?? "").Replace("\r", "").Replace("\n", " ").Trim();
-            float maxSummaryW = entryRect.Width - 50f - iconOffset;
+            float maxSummaryW = entryRect.Width - 50f;
             if (font.MeasureString(summary).X * 0.72f > maxSummaryW) {
                 while (summary.Length > 3 && font.MeasureString(summary + "...").X * 0.72f > maxSummaryW)
                     summary = summary[..^1];
@@ -500,7 +491,7 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
 
                 int expandAreaH = entryRect.Height - baseH;
                 if (expandAreaH > 0) {
-                    int bgLeftPad = bgHandled ? 4 : 22;
+                    const int bgLeftPad = 22;
                     Rectangle expandBg = new(entryRect.X + bgLeftPad, (int)descY - 2, entryRect.Width - bgLeftPad - 4, expandAreaH + 2);
                     FillRect(sb, expandBg, new Color(4, 8, 18) * (expandAlpha * 0.35f));
                 }
@@ -523,6 +514,9 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
                 int wrapWidth = (int)((entryRect.Width - 40f) / descScale);
                 Color descColor = new Color(170, 200, 220) * (expandAlpha * 0.75f);
 
+                //正文给落款让出底部
+                int sigH = GetProviderSignatureHeight(entry);
+                float textBottom = entryRect.Bottom - 4f - sigH;
                 string[] paragraphs = fullText.Split('\n');
                 foreach (string paragraph in paragraphs) {
                     string trimmedPara = paragraph.Trim();
@@ -530,11 +524,16 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
                     string[] wrapped = VaultUtils.WrapTextArray(trimmedPara, font, wrapWidth, 99, out _);
                     foreach (string wl in wrapped) {
                         if (string.IsNullOrEmpty(wl)) continue;
-                        if (descY > entryRect.Bottom - 4f) break;
+                        if (descY > textBottom) break;
                         string trimmed = wl.TrimEnd('-', ' ');
                         Utils.DrawBorderString(sb, trimmed, new Vector2(titleX, descY), descColor, descScale);
                         descY += (int)(font.MeasureString(trimmed).Y * descScale) + 2;
                     }
+                }
+
+                if (sigH > 0) {
+                    DrawProviderSignature(sb, entry, titleX, entryRect.Bottom - sigH,
+                        entryRect.Width - (titleX - entryRect.X) - 12f, expandAlpha);
                 }
             }
 
@@ -562,7 +561,11 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
                 }
             }
 
-            customStyle?.DrawEntryOverlay(sb, entryRect, entry, alpha);
+            //提供者徽记钉在行右缘，展开图标左侧
+            if (entry.Provider != null) {
+                DrawProviderBadge(sb, new Vector2(entryRect.Right - 36f, entryRect.Y + GetEntryHeight() * 0.5f),
+                    13f, entry, alpha);
+            }
         }
 
         private void DrawDraedonStatusBadge(SpriteBatch sb, Rectangle badgeRect, string statusText,

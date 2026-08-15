@@ -39,8 +39,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L2
             int floorB = floorA - 15;
 
             //活跃宽度:中央1000~1200(ROOMS-INDEX §5),边缘留白全实心
-            int xLeft = System.Math.Max(DungeonworldMetrics.BorderThick + 6, DungeonworldMetrics.SpawnX - 600);
-            int xRight = System.Math.Min(DungeonworldMetrics.Width - DungeonworldMetrics.BorderThick - 6,
+            int xLeft = System.Math.Max(DungeonworldMetrics.PlayLeft + 6, DungeonworldMetrics.SpawnX - 600);
+            int xRight = System.Math.Min(DungeonworldMetrics.PlayRight - 6,
                 DungeonworldMetrics.SpawnX + 600);
 
             List<NodeKind> sequence = RollSequence(rand, out int rowBudget);

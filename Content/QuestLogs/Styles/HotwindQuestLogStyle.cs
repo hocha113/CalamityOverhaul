@@ -465,9 +465,11 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             }
             float progress = total > 0 ? (float)completed / total : 0f;
 
+            //宿主是页脚带：条压在样式/夜间键之后、右侧按钮簇之前
             int barH = log.ShowProgressBar ? 22 : 8;
-            int barW = panelRect.Width - 40;
-            Rectangle barRect = new Rectangle(panelRect.X + 20, panelRect.Bottom + 10, barW, barH);
+            int barW = Math.Clamp(panelRect.Width / 2 - 290, 80, 340);
+            Rectangle barRect = new Rectangle(panelRect.X + 100,
+                panelRect.Y + (panelRect.Height - barH) / 2, barW, barH);
 
             spriteBatch.Draw(px, barRect, new Color(8, 6, 4) * (0.75f * alpha));
 
@@ -628,7 +630,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         }
 
         public Rectangle GetClaimAllButtonRect(Rectangle panelRect) =>
-            new Rectangle(panelRect.X + panelRect.Width / 2 - 70, panelRect.Bottom + 40, 140, 35);
+            new Rectangle(panelRect.Right - 240, panelRect.Y + 7, 140, 34);
 
         public void DrawClaimAllButton(SpriteBatch spriteBatch, Rectangle panelRect, bool isHovered, float alpha) {
             Rectangle btnRect = GetClaimAllButtonRect(panelRect);

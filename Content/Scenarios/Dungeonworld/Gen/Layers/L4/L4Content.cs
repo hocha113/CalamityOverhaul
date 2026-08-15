@@ -19,7 +19,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
     //===水体时机(本层自包含,管线现无P70)===
     //几何+家具冻结 → FillState(满水) → SettleBand → AssertBandWater → PaintAging。
     //撒布经ctx.Scatter声明,P55执行(沉链依赖此时已写入的液体)。
-    //两态切换=L4WaterWorks.ApplyState(运行时TP只留钩子,资产波接线)。
+    //两态切换:生成期用ApplyState(带settle),运行期用ApplyStateRuntime(纯重写);
+    //阀杆接线在Machines\DungeonworldWaterGate,联机由服务端裁决并回播区块。
     //随机全走WorldGen.genRand(F22);fail loud(纪律6)。
     //====================================================================
     internal static class L4Content
@@ -69,8 +70,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
             LayerBand band = ctx.Band;
             L4WaterWorks.Reset();
 
-            int xLeft = DungeonworldMetrics.BorderThick + 8;
-            int xRight = DungeonworldMetrics.Width - DungeonworldMetrics.BorderThick - 8;
+            int xLeft = DungeonworldMetrics.PlayLeft + 8;
+            int xRight = DungeonworldMetrics.PlayRight - 8;
             int usableTop = band.Top + 14;
             int bottomLimit = band.SpineInteriorTop - 6;
             int span = bottomLimit - usableTop;

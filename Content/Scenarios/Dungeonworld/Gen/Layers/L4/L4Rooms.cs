@@ -43,6 +43,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
                 }
             }
             TileBrush.CarveRect(room.InteriorLeft, room.InteriorTop, room.InteriorRight, room.FloorTop, wall);
+            RoomShell.Dress(room, L4Palette.Brick);
         }
 
         //==================== 半淹管廊(#1,本层主体) ====================
@@ -349,7 +350,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
             StampAndCarve(room, L4Palette.WallBase);
 
             int mid = (room.InteriorLeft + room.InteriorRight) / 2;
-            //拉杆:全局水位控制的钩子占位(运行时TP接线归资产波,L4WaterWorks.ApplyState即其机制函数)
+            //拉杆=全层水位阀。不接线是刻意的:运行时按"无线拉杆"认阀门
+            //(有线的那几根归堰闸走廊管自己的闸门),见 Machines\DungeonworldWaterGate
             tally.Add(L4Palette.TryPlaceLever(mid, floor - 1), "水位拉杆", mid, floor - 1);
             //阀台:工作台+桌面蜡烛(检修台读法)
             tally.Add(L4Palette.TryPlaceTile(mid - 3, floor - 1, TileID.WorkBenches,

@@ -42,6 +42,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
                 }
             }
             TileBrush.CarveRect(room.InteriorLeft, room.InteriorTop, room.InteriorRight, room.FloorTop, wall);
+            RoomShell.Dress(room, L6Palette.Brick);
         }
 
         //==================== 机关走廊A型(#1主体:一段一母题的机关串) ====================

@@ -297,7 +297,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest
 
                 Progress = status == QuestEntryStatus.Completed ? 1f : 0f,
 
-                EntryStyle = new BrimstoneEntryStyle(),
+                Provider = EntrustProviders.SupCal,
 
                 TrackerStyle = new BrimstoneTrackerWidgetStyle(),
 

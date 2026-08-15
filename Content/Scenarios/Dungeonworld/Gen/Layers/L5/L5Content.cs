@@ -76,8 +76,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
             for (int i = 0; i < 6; i++) {
                 int shift = rand.Next(-60, 61);
                 windows[i] = (
-                    System.Math.Max(DungeonworldMetrics.BorderThick + 10, winBase[i, 0] + shift),
-                    System.Math.Min(DungeonworldMetrics.Width - DungeonworldMetrics.BorderThick - 10, winBase[i, 1] + shift));
+                    System.Math.Max(DungeonworldMetrics.PlayLeft + 10, winBase[i, 0] + shift),
+                    System.Math.Min(DungeonworldMetrics.PlayRight - 10, winBase[i, 1] + shift));
             }
 
             //===逐地层布房(镜像L2:掷计划→预留→刻画→装修)===
@@ -160,6 +160,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
                 }
             }
 
+            //===墙变体混斑:主体Slab里成片切出Tiled(原版粉墙三种,此前主体只用一种)===
+            int mixedWalls = L5Palette.MixWallVariants(new Rectangle(
+                DungeonworldMetrics.PlayLeft, band.Top,
+                DungeonworldMetrics.PlayRight - DungeonworldMetrics.PlayLeft, band.Bottom - band.Top));
+
             //===撒布声明(P55统一执行,契约纪律5)===
             L5State.DarkZoneTop = floors[5] - 80;   //深巷带上缘(含游走漂移余量):灯类撒布拒入
             L5State.TombstoneMaxY = floors[1] + 20; //墓碑只散上带
@@ -181,7 +186,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
                 + $" 边:游走{wanderEdges}/直线{straightEdges}/跳过{skippedEdges}"
                 + $" 斜降{descents}(拒{descentSkips}) 骨井{wellsBuilt}建/{wellsSkipped}弃 脊落口{drops}"
                 + $" 坑:骨{pitReport.BonePits}/刺{pitReport.SpikePits}/弃{pitReport.SkippedPits}"
-                + $" 横档{bars} 巷龛{pockets} 家具={tally.Placed}成/{tally.Rejected}拒"
+                + $" 横档{bars} 巷龛{pockets} 墙变体混斑{mixedWalls} 家具={tally.Placed}成/{tally.Rejected}拒"
                 + $" graphConnected={ctx.Graph.IsConnected()}(分量间由脊/主井桥接,洪泛为准)"
                 + $" grid={ctx.Grid.ReserveOk}留/{ctx.Grid.ReserveReject}拒");
         }
@@ -610,8 +615,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
         //==================== 公用小件 ====================
 
         private static Rectangle ClampToBand(LayerBand band, Rectangle rect) {
-            int left = System.Math.Max(rect.Left, DungeonworldMetrics.BorderThick + 2);
-            int right = System.Math.Min(rect.Right, DungeonworldMetrics.Width - DungeonworldMetrics.BorderThick - 2);
+            int left = System.Math.Max(rect.Left, DungeonworldMetrics.PlayLeft + 2);
+            int right = System.Math.Min(rect.Right, DungeonworldMetrics.PlayRight - 2);
             int top = System.Math.Max(rect.Top, band.Top + 4);
             int bottom = System.Math.Min(rect.Bottom, band.SpineInteriorTop - 2);
             return new Rectangle(left, top, right - left, bottom - top);

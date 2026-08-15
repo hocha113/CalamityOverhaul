@@ -75,8 +75,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
             VaultTitle = this.GetLocalization(nameof(VaultTitle), () => "开湖窗取物");
             VaultBody = this.GetLocalization(nameof(VaultBody),
-                () => "沉下去的东西悬在血水里漂着。持鬼伞开湖窗，点一件，湖把它送回你手边。");
-            VaultPrompt = this.GetLocalization(nameof(VaultPrompt), () => "持鬼伞按 {0}，或点击左下水鏡");
+                () => "沉下去的东西悬在血水里漂着。开湖窗点一件，湖把它送回你手边。");
+            VaultPrompt = this.GetLocalization(nameof(VaultPrompt),
+                () => "点开左下小画，再点画中的血湖；或持鬼伞按 {0}");
 
             SummonTitle = this.GetLocalization(nameof(SummonTitle), () => "驱使鬼奴");
             SummonBody = this.GetLocalization(nameof(SummonBody),
@@ -97,14 +98,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         #endregion
 
         private const int CardW = 340;
-        private const int EdgePad = 8;
         //约9秒卡住才出低调跳过；键未绑定时立即放出
         private const int StuckFramesBeforeSkip = 60 * 9;
 
         private static Phase currentPhase = Phase.Inactive;
         private static float animProgress;
         private static int phaseTimer;
-        private static float shaderTimer;
         //Sink 步基线：进相位时的湖藏数与记忆
         private static int sinkBaselineCount;
         private static int sinkBaselineMemory;
@@ -208,9 +207,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             if (Main.dedServ || Main.gameMenu) {
                 return;
             }
-            shaderTimer += (float)gameTime.ElapsedGameTime.TotalSeconds * 0.8f;
-            if (shaderTimer > 100f) shaderTimer -= 100f;
-
             //统一排队、未轮到则待命，异常残留收起
             if (!GuideLeadQueue.IsHolder(this)) {
                 if (currentPhase != Phase.Inactive && currentPhase != Phase.Complete) {
@@ -297,12 +293,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             float rain = MathHelper.Clamp(Domain.RainBlend, 0f, 1f);
             float time = Main.GlobalTimeWrappedHourly;
 
-            //第一步给水鏡一个脉冲环：领域的读数都长在这。伞没拿在手上时鏡不在场，环也不画
+            //第一步给掌中缩影一个脉冲环：画即领域的读数。伞没拿在手上时缩影不在场，环也不画
             if (currentPhase == Phase.Domain && KikasaHud.Instance?.Active == true) {
-                Vector2 mirror = KikasaHud.Anchor;
+                Vector2 mini = KikasaHud.Anchor;
                 float pulse = KikasaHudTheme.Breath(time, 1.3f, 3f);
-                KikasaVaultRenderer.DrawRing(sb, mirror,
-                    KikasaHudTheme.RimHalfW + 14f + pulse * 5f, 18f,
+                KikasaVaultRenderer.DrawRing(sb, mini,
+                    KikasaHudTheme.MiniW * 0.5f + 14f + pulse * 4f, 14f,
                     KikasaHudTheme.Glow(rain) * ((0.35f + pulse * 0.2f) * alpha));
             }
 
@@ -364,20 +360,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 cardY = 78f;
             }
             else {
-                Vector2 mirror = KikasaHud.Anchor;
-                cardX = MathHelper.Clamp(mirror.X - 30f,
+                Vector2 mini = KikasaHud.Anchor;
+                cardX = MathHelper.Clamp(mini.X - 30f,
                     16f, Math.Max(16f, KikasaHudTheme.UIScreenW - CardW - 16f));
-                cardY = MathHelper.Clamp(mirror.Y - 78f - cardH - 20f,
+                cardY = MathHelper.Clamp(mini.Y - 44f - cardH - 14f,
                     16f, Math.Max(16f, KikasaHudTheme.UIScreenH - cardH - 16f));
             }
             float slideY = (1f - alpha) * 16f;
             Rectangle card = new((int)cardX, (int)(cardY + slideY), CardW, (int)cardH);
 
-            DrawCardBg(sb, card, alpha, rain);
-            //连线：卡底垂到水鏡顶；湖窗模式不画，鏡不在场（伞没拿手上）也不画
+            KikasaSceneUI.DrawCardBg(sb, card, alpha, rain);
+            //连线：卡底垂到缩影画片顶；湖窗模式不画，缩影不在场（伞没拿手上）也不画
             if (!vaultOpen && KikasaHud.Instance?.Active == true) {
                 DrawDashedLine(sb, new Vector2(card.X + 26f, card.Bottom),
-                    KikasaHud.Anchor + new Vector2(0f, -(KikasaHudTheme.MirrorH * 0.5f + 4f)),
+                    KikasaHud.Anchor + new Vector2(0f, -(KikasaHudTheme.MiniH * 0.5f + 8f)),
                     KikasaHudTheme.Accent(rain) * (0.45f * alpha), time);
             }
 
@@ -443,44 +439,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             return result;
         }
 
-        //湿纸卡底：KikasaHud.fx TechCard；缺编回退平底 + 边线
-        private static void DrawCardBg(SpriteBatch sb, Rectangle card, float alpha, float rain) {
-            Effect effect = EffectLoader.KikasaHud?.Value;
-            Texture2D noise = CWRAsset.PerlinNoise?.Value;
-            if (effect != null && noise != null && effect.Techniques["TechCard"] != null) {
-                Rectangle ext = card;
-                ext.Inflate(EdgePad, EdgePad);
-                effect.CurrentTechnique = effect.Techniques["TechCard"];
-                effect.Parameters["uTime"]?.SetValue(shaderTimer);
-                effect.Parameters["uAlpha"]?.SetValue(alpha * 0.96f);
-                effect.Parameters["uResolution"]?.SetValue(new Vector2(ext.Width, ext.Height));
-                effect.Parameters["uTear"]?.SetValue(alpha);
-                effect.Parameters["uRain"]?.SetValue(rain);
-                sb.End();
-                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
-                    SamplerState.LinearClamp, DepthStencilState.None,
-                    RasterizerState.CullNone, effect, Main.UIScaleMatrix);
-                Main.instance.GraphicsDevice.Textures[1] = noise;
-                Main.instance.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
-                sb.Draw(VaultAsset.placeholder2.Value, ext, Color.White);
-                KikasaVaultRenderer.RestoreUIBatch(sb);
-            }
-            else {
-                sb.Draw(VaultAsset.placeholder2.Value, card,
-                    KikasaHudTheme.Void(rain) * (0.9f * alpha));
-                Color edge = KikasaHudTheme.Accent(rain) * (0.5f * alpha);
-                KikasaVaultRenderer.DrawLine(sb, new Vector2(card.Left, card.Top),
-                    new Vector2(card.Right, card.Top), 1f, edge);
-                KikasaVaultRenderer.DrawLine(sb, new Vector2(card.Left, card.Bottom),
-                    new Vector2(card.Right, card.Bottom), 1f, edge * 0.7f);
-                KikasaVaultRenderer.DrawLine(sb, new Vector2(card.Left, card.Top),
-                    new Vector2(card.Left, card.Bottom), 1f, edge * 0.85f);
-                KikasaVaultRenderer.DrawLine(sb, new Vector2(card.Right, card.Top),
-                    new Vector2(card.Right, card.Bottom), 1f, edge * 0.85f);
-            }
-        }
-
-        //虚线连接线：卡片指向水鏡
+        //虚线连接线：卡片指向缩影画片
         private static void DrawDashedLine(SpriteBatch sb, Vector2 from, Vector2 to,
             Color color, float time) {
             Vector2 dir = to - from;

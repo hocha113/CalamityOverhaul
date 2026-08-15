@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.UIs.UIEffect;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
@@ -82,6 +83,90 @@ namespace CalamityOverhaul.Content.EntrustManager
         public abstract void DrawQuestEntry(SpriteBatch sb, Rectangle entryRect, EntrustEntryData entry,
             bool isSelected, bool isHovered, float alpha, int entryIndex);
         public abstract void DrawEntrySeparator(SpriteBatch sb, Vector2 start, Vector2 end, float alpha);
+
+        /// <summary>提供者徽记默认框：素圆环 + 纹样，主色描边。悬停名字由行绘制处置</summary>
+        public virtual void DrawProviderBadge(SpriteBatch sb, Vector2 center, float radius,
+            EntrustEntryData entry, float alpha) {
+            EntrustProvider provider = entry?.Provider;
+            if (provider == null || radius < 4f || alpha <= 0.01f) {
+                return;
+            }
+            provider.BadgeFill?.Invoke(sb, center, radius, alpha);
+
+            SvgPath ring = SvgPathPen.Path(BadgeRingD);
+            SvgPathPen.Stroke(sb, ring, center, radius, 0f, provider.Accent, 1.4f, alpha * 0.85f);
+            SvgPath glyph = SvgPathPen.Path(provider.GlyphD);
+            if (glyph != null) {
+                SvgPathPen.Stroke(sb, glyph, center, radius * 0.62f, 0f,
+                    provider.Accent, 1.3f, alpha * 0.95f);
+            }
+
+            //悬停报提供者名，徽记不做点击交互
+            if (Vector2.Distance(Main.MouseScreen, center) < radius + 3f) {
+                Main.hoverItemName = provider.Name?.Value ?? string.Empty;
+            }
+        }
+
+        /// <summary>整圆，徽记默认框用</summary>
+        protected const string BadgeRingD =
+            "M 0,-1 C 0.5523,-1 1,-0.5523 1,0 C 1,0.5523 0.5523,1 0,1"
+            + " C -0.5523,1 -1,0.5523 -1,0 C -1,-0.5523 -0.5523,-1 0,-1 Z";
+
+        public virtual int GetProviderSignatureHeight(EntrustEntryData entry)
+            => entry?.Provider == null ? 0 : 32;
+
+        /// <summary>落款默认版：小头像 + 「委托人 名字」，旧样式的冷色描边字</summary>
+        public virtual void DrawProviderSignature(SpriteBatch sb, EntrustEntryData entry,
+            float x, float y, float width, float alpha) {
+            EntrustProvider provider = entry?.Provider;
+            if (provider == null) {
+                return;
+            }
+            Vector2 avatarCenter = new(x + 12f, y + 15f);
+            DrawProviderAvatar(sb, provider, avatarCenter, 11f, alpha);
+
+            string label = $"{QuestManagerUI.ProviderLabelText?.Value}  {provider.Name?.Value}";
+            Utils.DrawBorderString(sb, label, new Vector2(x + 28f, y + 6f),
+                provider.Accent * (alpha * 0.9f), 0.72f);
+        }
+
+        /// <summary>头像：物品贴图 → 贴图路径 → 纹样兜底，统一夹进直径盒</summary>
+        protected static void DrawProviderAvatar(SpriteBatch sb, EntrustProvider provider,
+            Vector2 center, float radius, float alpha) {
+            Texture2D tex = null;
+            Rectangle frame = default;
+            if (provider.AvatarItemType > 0) {
+                //原版纹理懒加载，不 LoadItem 只会画出空气
+                Main.instance.LoadItem(provider.AvatarItemType);
+                tex = TextureAssets.Item[provider.AvatarItemType]?.Value;
+                if (tex != null) {
+                    frame = Main.itemAnimations[provider.AvatarItemType]?.GetFrame(tex) ?? tex.Frame();
+                }
+            }
+            else if (!string.IsNullOrEmpty(provider.AvatarTexturePath)) {
+                tex = CWRUtils.GetT2DAsset(provider.AvatarTexturePath)?.Value;
+                if (tex != null) {
+                    frame = tex.Frame();
+                }
+            }
+
+            if (tex != null) {
+                float box = radius * 2f;
+                float scale = 1f;
+                if (frame.Width > box || frame.Height > box) {
+                    scale = box / Math.Max(frame.Width, frame.Height);
+                }
+                sb.Draw(tex, center, frame, Color.White * alpha, 0f, frame.Size() / 2f,
+                    scale, SpriteEffects.None, 0f);
+                return;
+            }
+
+            SvgPath glyph = SvgPathPen.Path(provider.GlyphD);
+            if (glyph != null) {
+                SvgPathPen.Stroke(sb, glyph, center, radius * 0.85f, 0f,
+                    provider.Accent, 1.3f, alpha * 0.95f);
+            }
+        }
         public abstract Color GetShadowColor(float alpha);
         public abstract Color GetHeaderTextColor(float alpha);
         public abstract Color GetStatusColor(QuestEntryStatus status, float alpha);

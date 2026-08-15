@@ -83,42 +83,33 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         public static float RailLegendTop(in QuestLogLayout layout)
             => layout.Rail.Bottom - RailLegendH;
 
-        /// <summary>
-        /// 按当前屏幕尺寸与详情栏展开度算一份分区。<br/>
-        /// hasRail 为否时左栏宽度归零（旧样式没有左页，留着会变成一块看不见却能点的死区）
-        /// </summary>
-        public static QuestLogLayout Layout(float detailProgress, bool hasRail = true) {
+        /// <summary>按当前屏幕尺寸与详情栏展开度算一份分区，左栏是全样式标配</summary>
+        public static QuestLogLayout Layout(float detailProgress) {
             int w = (int)MathF.Max(UIScreenW, 640f);
             int h = (int)MathF.Max(UIScreenH, 480f);
             detailProgress = MathHelper.Clamp(detailProgress, 0f, 1f);
-            int railW = hasRail ? RailW : 0;
 
             Rectangle full = new(0, 0, w, h);
             Rectangle header = new(0, 0, w, HeaderH);
             int bodyTop = HeaderH;
             int bodyH = Math.Max(120, h - HeaderH - FooterH);
-            Rectangle rail = new(0, bodyTop, railW, bodyH);
+            Rectangle rail = new(0, bodyTop, RailW, bodyH);
             Rectangle footer = new(0, h - FooterH, w, FooterH);
 
             //详情栏滑入时画布同步收窄，任务图整体向左让位，节点不会被压在栏下
             int detailBite = (int)(DetailW * detailProgress);
-            int canvasX = railW;
-            int canvasW = w - railW - detailBite;
+            int canvasX = RailW;
+            int canvasW = w - RailW - detailBite;
             if (canvasW < CanvasMinW) {
-                canvasW = Math.Min(CanvasMinW, w - railW);
+                canvasW = Math.Min(CanvasMinW, w - RailW);
             }
             Rectangle canvas = new(canvasX, bodyTop, Math.Max(80, canvasW), bodyH);
             Rectangle detail = new(w - detailBite, bodyTop, DetailW, bodyH);
 
-            //旧样式的按钮矩形全是相对 panelRect 推算的（含 Bottom + 40 这类越界写法），
-            //给它们一块画布内缩后的宿主矩形，原有相对数学就能落在屏内
-            Rectangle legacyChrome = new(canvas.X + 10, canvas.Y + 10,
-                Math.Max(80, canvas.Width - 20), Math.Max(80, canvas.Height - 66));
-
             //合卷键锚点由分区统一给出，容器判定与样式绘制读同一份
             Rectangle mainClose = new(w - 46, 15, 32, 32);
 
-            return new QuestLogLayout(full, header, rail, canvas, footer, detail, legacyChrome,
+            return new QuestLogLayout(full, header, rail, canvas, footer, detail,
                 mainClose, detailProgress);
         }
 
@@ -175,9 +166,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// <summary>右侧详情栏，未展开时整体位于屏幕右缘之外</summary>
         public readonly Rectangle Detail;
 
-        /// <summary>旧样式按钮矩形的宿主，画布内缩而来</summary>
-        public readonly Rectangle LegacyChrome;
-
         /// <summary>合卷键命中区</summary>
         public readonly Rectangle MainClose;
 
@@ -185,15 +173,13 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         public readonly float DetailProgress;
 
         public QuestLogLayout(Rectangle full, Rectangle header, Rectangle rail, Rectangle canvas,
-            Rectangle footer, Rectangle detail, Rectangle legacyChrome, Rectangle mainClose,
-            float detailProgress) {
+            Rectangle footer, Rectangle detail, Rectangle mainClose, float detailProgress) {
             Full = full;
             Header = header;
             Rail = rail;
             Canvas = canvas;
             Footer = footer;
             Detail = detail;
-            LegacyChrome = legacyChrome;
             MainClose = mainClose;
             DetailProgress = detailProgress;
         }

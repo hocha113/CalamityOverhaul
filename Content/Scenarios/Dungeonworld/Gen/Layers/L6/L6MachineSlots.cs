@@ -3,9 +3,13 @@ using System.Text;
 
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
 {
-    //TP机器留位登记表(ROOMS-INDEX裁决:大齿轮/活塞/电梯等TP机器本体归资产波,
-    //本波只留"帧对位的空槽+周边结构");登记模式镜像GaolBossRoomSiting.LastOrigin——
-    //ShouldSave=false回放制下每次生成重算,PlanAndBuild/看样入口开头Reset
+    //TP机器留位登记表;登记模式镜像GaolBossRoomSiting.LastOrigin——
+    //ShouldSave=false回放制下每次生成重算,PlanAndBuild/看样入口开头Reset。
+    //
+    //2026-08-15:Piston与GearCrush两类不再只是剪影——运行时由
+    //Machines\DungeonworldMachines读本表开动并致伤(见该文件)。
+    //GearLarge/GearSmall(齿轮井背景)、BellGate、ElevatorStation仍是纯留位:
+    //齿轮井是攀爬路线,在那里致伤不公平;后两者本就不是危险物
     internal enum L6SlotKind
     {
         /// <summary>大齿轮(齿轮井演出位,帧包络8x8,轴承座2x2 Cog已置于Frame中心)</summary>

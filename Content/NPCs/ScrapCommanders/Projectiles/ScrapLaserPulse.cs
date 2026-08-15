@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
 
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation();
-            Lighting.AddLight(Projectile.Center, 0.24f, 0.1f, 0.04f);
+            Lighting.AddLight(Projectile.Center, 0.32f, 0.15f, 0.05f);
         }
 
         public override void OnKill(int timeLeft) {
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //曳光弹体：BeamLine 材质——白热弹头 + 锈红热流尾迹
+            //曳光弹体：BeamLine 双层——宽鞘热晕 + 窄条白热实芯，读出 ~12px 实弹
             SpriteBatch sb = Main.spriteBatch;
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             float tailLen = MathHelper.Clamp(Projectile.velocity.Length() * 2.6f, 44f, 96f);
@@ -57,10 +57,27 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
             Vector2 head = Projectile.Center + dir * 10f;
 
             ScrapVfx.BeginBeamBatch(sb);
-            ScrapVfx.DrawBeam(sb, tail, head, 22f, 0.95f, 0f,
+            //外鞘：宽而虚的锈红热流
+            ScrapVfx.DrawBeam(sb, tail, head, 30f, 0.55f, 0f,
                 Projectile.identity * 0.71f, ScrapVfx.BeamCoreWarm, ScrapVfx.BeamEdgeRust,
-                0.55f, 0.04f);
+                0.55f, 0.04f, 0.8f);
+            //实芯：窄条拉满 hot，弹体主亮度
+            ScrapVfx.DrawBeam(sb, tail + dir * tailLen * 0.35f, head, 13f, 1f, 0f,
+                Projectile.identity * 0.37f, new Vector3(1f, 0.96f, 0.84f), ScrapVfx.BeamCoreWarm,
+                0.4f, 0.03f);
             ScrapVfx.EndBeamBatch(sb);
+
+            //弹头光球：白热点 + 焊橙晕（A=0 加色进 AlphaBlend 批）
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (glow != null) {
+                Vector2 drawPos = Projectile.Center - Main.screenPosition;
+                Color halo = ScrapCommander.WeldOrange with { A = 0 };
+                Color hotCore = Color.White with { A = 0 };
+                Main.EntitySpriteDraw(glow, drawPos, null, halo * 0.85f, 0f, glow.Size() / 2f,
+                    30f / glow.Width, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(glow, drawPos, null, hotCore * 0.9f, 0f, glow.Size() / 2f,
+                    16f / glow.Width, SpriteEffects.None, 0);
+            }
             return false;
         }
     }

@@ -90,6 +90,8 @@ namespace CalamityOverhaul
         MunitionSwapConsume,
         //炮台联网的齐射瞄准：施法者客户端慢节拍上行光标
         TurretMeshAim,
+        //地牢水牢层的阀门：客户端只上行"我拉了这根杆"，水位由服务端裁决并回播区块
+        DungeonworldWaterValve,
     }
 
     public static class CWRNetWork
@@ -156,6 +158,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.ToriiShrineSync) {
                 ToriiShrine.ReceiveShrineSync(reader);
+            }
+            else if (type == CWRMessageType.DungeonworldWaterValve) {
+                Content.Scenarios.Dungeonworld.Machines.DungeonworldWaterGate.HandleValveRequest(reader, whoAmI);
             }
 
             ModifyCrabulon.NetHandle(type, reader, whoAmI);

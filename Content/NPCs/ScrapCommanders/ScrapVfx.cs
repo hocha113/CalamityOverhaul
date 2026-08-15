@@ -70,6 +70,17 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
                 new Vector2(len, width) / pixel.Size(), SpriteEffects.None, 0f);
         }
 
+        /// <summary>就近震屏：只震看得见战斗的本地玩家，带距离衰减门（状态基类与弹幕侧共用）</summary>
+        internal static void ShakeNearby(Vector2 pos, float amount, float range = 1300f) {
+            if (Main.dedServ || Main.LocalPlayer == null) {
+                return;
+            }
+            if (Vector2.Distance(Main.LocalPlayer.Center, pos) > range) {
+                return;
+            }
+            Main.LocalPlayer.CWR()?.GetScreenShake(amount);
+        }
+
         //==================== 粒子配方 ====================
 
         /// <summary>坠地重砸：重剥落弹跳 + 尘土 + 烟 + 贴地冲击环</summary>

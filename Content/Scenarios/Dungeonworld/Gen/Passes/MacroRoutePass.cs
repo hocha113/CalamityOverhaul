@@ -14,11 +14,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
             progress.Message = "开凿层脊走廊与主竖井...";
             long clearBase = TileBrush.ClearWrites;
 
-            int spineLeft = DungeonworldMetrics.BorderThick;
-            int spineRight = DungeonworldMetrics.Width - DungeonworldMetrics.BorderThick;
+            int spineLeft = DungeonworldMetrics.PlayLeft;
+            int spineRight = DungeonworldMetrics.PlayRight;
             LayerBand[] bands = DungeonworldMetrics.Bands;
 
-            //每层一条横贯全宽的空脊走廊,净高6,室内墙保群系判定(F11/F13)
+            //每层一条横贯可达区的空脊走廊(钳制线外不开凿),净高6,室内墙保群系判定(F11/F13)
             for (int i = 0; i < bands.Length; i++) {
                 LayerBand band = bands[i];
                 TileBrush.CarveRect(spineLeft, band.SpineInteriorTop, spineRight, band.SpineFloorTop, band.Wall);
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
             int shaftRight = shaftLeft + DungeonworldMetrics.ShaftWidth;
             LayerBand l7 = bands[^1];
             for (int y = l1.SpineInteriorTop; y < l7.SpineFloorTop; y++) {
-                ushort wall = DungeonworldMetrics.BandForRow(y)?.Wall ?? WallID.BlueDungeonUnsafe;
+                ushort wall = DungeonworldMetrics.WallForRow(y);
                 for (int x = shaftLeft; x < shaftRight; x++) {
                     TileBrush.ClearCell(x, y, wall);
                 }
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
                 int lowerFloor = bands[i + 1].SpineFloorTop;
                 //井身:上层脊地板行(穿透)→下层脊地板行(不挖,井底即下层脊,镜像主竖井语义)
                 for (int y = upperFloor; y < lowerFloor; y++) {
-                    ushort wall = DungeonworldMetrics.BandForRow(y)?.Wall ?? WallID.BlueDungeonUnsafe;
+                    ushort wall = DungeonworldMetrics.WallForRow(y);
                     for (int x = wellLeft; x < wellRight; x++) {
                         TileBrush.ClearCell(x, y, wall);
                     }

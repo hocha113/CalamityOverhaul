@@ -334,9 +334,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             int scrollDelta = ReadScrollDelta();
 
             mainPanelAlpha = QuestLogTheme.EaseOutCubic(OpenProgress.Current);
-            //旧样式没有左页，左栏归零防止出现看不见却能点的死区
-            layout = QuestLogTheme.Layout(QuestLogTheme.EaseOutCubic(detailAnim.Current),
-                CurrentStyle.DrawsOwnChrome);
+            layout = QuestLogTheme.Layout(QuestLogTheme.EaseOutCubic(detailAnim.Current));
             //命中判定阶段就交付分区，样式的按钮矩形与绘制读同一份
             CurrentStyle.SyncLayout(in layout);
             UIHitBox = layout.Full;
@@ -381,13 +379,9 @@ namespace CalamityOverhaul.Content.QuestLogs
         /// <summary>左栏被指到的章目行，样式据此提亮；-1 为无</summary>
         public int HoveredChapter { get; private set; } = -1;
 
-        /// <summary>左栏站点页签与章目，返回指针是否落在左栏可点区域</summary>
+        /// <summary>左栏站点页签与章目，返回指针是否落在左栏可点区域。左栏是全样式标配</summary>
         private bool UpdateRail() {
             HoveredChapter = -1;
-            //左栏只属于自绘外框的样式，旧样式用页脚的站点切换按钮
-            if (!CurrentStyle.DrawsOwnChrome) {
-                return false;
-            }
             Point mouse = Main.MouseScreen.ToPoint();
             bool hovered = false;
             for (int i = 0; i < StationCount; i++) {
@@ -405,7 +399,8 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
 
-            if (View != QuestLogView.Chart) {
+            //章目与图例是自绘外框样式的左页内容，旧样式的左栏只有站点页签，别留隐形命中区
+            if (View != QuestLogView.Chart || !CurrentStyle.DrawsOwnChrome) {
                 return hovered;
             }
 
@@ -465,7 +460,8 @@ namespace CalamityOverhaul.Content.QuestLogs
         private bool UpdateChrome() {
             bool hovered = UpdateRail();
             Point mouse = Main.MouseScreen.ToPoint();
-            Rectangle chrome = layout.LegacyChrome;
+            //旧样式的按钮矩形按宿主矩形推算，宿主统一为页脚带，与新样式同构
+            Rectangle chrome = layout.Footer;
 
             if (layout.MainClose.Contains(mouse)) {
                 hovered = true;
@@ -512,19 +508,6 @@ namespace CalamityOverhaul.Content.QuestLogs
                     hovered = true;
                     if (keyLeftPressState == KeyPressState.Pressed) {
                         NightMode = !NightMode;
-                        SoundEngine.PlaySound(SoundID.MenuTick);
-                    }
-                }
-            }
-
-            //旧样式没有左栏页签，用这枚按钮在图谱与委托两站之间来回；
-            //自绘外框的样式由左栏页签负责，图谱被配置关掉时只剩一站也无需它
-            if (!CurrentStyle.DrawsOwnChrome && ChartEnabled) {
-                Rectangle questMgrRect = CurrentStyle.GetQuestManagerButtonRect(chrome);
-                if (questMgrRect.Contains(mouse)) {
-                    hovered = true;
-                    if (keyLeftPressState == KeyPressState.Pressed) {
-                        SetView(View == QuestLogView.Chart ? QuestLogView.Entrust : QuestLogView.Chart);
                         SoundEngine.PlaySound(SoundID.MenuTick);
                     }
                 }
@@ -802,7 +785,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         private void DrawChromeButtons(SpriteBatch spriteBatch) {
-            Rectangle chrome = layout.LegacyChrome;
+            Rectangle chrome = layout.Footer;
             Point mouse = Main.MouseScreen.ToPoint();
 
             CurrentStyle.DrawProgressBar(spriteBatch, this, chrome);
@@ -837,49 +820,50 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
 
-            if (!CurrentStyle.DrawsOwnChrome && ChartEnabled) {
-                DrawQuestManagerButton(spriteBatch, chrome);
+            //旧样式不自绘左页，站点书口由容器补一版同族暗色的通用件
+            if (!CurrentStyle.DrawsOwnChrome) {
+                DrawGenericRailTabs(spriteBatch);
             }
         }
 
-        private void DrawQuestManagerButton(SpriteBatch spriteBatch, Rectangle panelRect) {
+        /// <summary>
+        /// 通用站点页签：暗钢底 + 状态受光缘 + 标签，给不自绘外框的旧样式。<br/>
+        /// 中性灰族，压得住热风/嘉登/森林三套底色
+        /// </summary>
+        private void DrawGenericRailTabs(SpriteBatch spriteBatch) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            Rectangle buttonRect = CurrentStyle.GetQuestManagerButtonRect(panelRect);
-            Vector2 center = buttonRect.Center.ToVector2();
-            bool isHovered = buttonRect.Contains(Main.MouseScreen.ToPoint());
+            Point mouse = Main.MouseScreen.ToPoint();
+            for (int i = 0; i < StationCount; i++) {
+                Rectangle tab = QuestLogTheme.RailTab(in layout, i);
+                QuestLogView station = StationAt(i);
+                bool selected = View == station;
+                bool isHovered = tab.Contains(mouse);
 
-            Color bgColor = isHovered ? new Color(60, 120, 180) : new Color(30, 50, 70);
-            spriteBatch.Draw(pixel, buttonRect, bgColor * mainPanelAlpha);
+                //贴身投影 + 底板
+                spriteBatch.Draw(pixel, new Rectangle(tab.X + 2, tab.Y + 2, tab.Width, tab.Height),
+                    Color.Black * (mainPanelAlpha * 0.4f));
+                Color bg = selected ? new Color(52, 52, 60)
+                    : isHovered ? new Color(40, 40, 47) : new Color(28, 28, 33);
+                spriteBatch.Draw(pixel, tab, bg * mainPanelAlpha);
 
-            Color borderColor = isHovered ? new Color(140, 210, 255) : new Color(80, 140, 180);
-            int border = 2;
-            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, buttonRect.Width, border), borderColor * mainPanelAlpha);
-            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Bottom - border, buttonRect.Width, border), borderColor * mainPanelAlpha);
-            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, border, buttonRect.Height), borderColor * mainPanelAlpha);
-            spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - border, buttonRect.Y, border, buttonRect.Height), borderColor * mainPanelAlpha);
+                //受光上缘与吃暗下缘，不描四边框
+                Color lip = selected ? new Color(200, 200, 210) : new Color(120, 120, 130);
+                spriteBatch.Draw(pixel, new Rectangle(tab.X, tab.Y, tab.Width, 1),
+                    lip * (mainPanelAlpha * 0.55f));
+                spriteBatch.Draw(pixel, new Rectangle(tab.X, tab.Bottom - 1, tab.Width, 1),
+                    Color.Black * (mainPanelAlpha * 0.6f));
+                //选中：左缘一道亮楔
+                if (selected) {
+                    spriteBatch.Draw(pixel, new Rectangle(tab.X, tab.Y + 2, 2, tab.Height - 4),
+                        new Color(225, 225, 235) * (mainPanelAlpha * 0.8f));
+                }
 
-            //三横线列表标
-            Color iconColor = isHovered ? Color.White : new Color(140, 210, 255);
-            float iconAlpha = mainPanelAlpha;
-            int lineW = 14, lineH = 2, gap = 5;
-            int startY = (int)center.Y - gap - lineH;
-            for (int i = 0; i < 3; i++) {
-                int lw = i == 2 ? lineW - 4 : lineW; //第三条短一点
-                spriteBatch.Draw(pixel,
-                    new Rectangle((int)(center.X - lw / 2f), startY + i * (lineH + gap - 1), lw, lineH),
-                    iconColor * iconAlpha);
-            }
-            for (int i = 0; i < 3; i++) {
-                spriteBatch.Draw(pixel,
-                    new Rectangle((int)(center.X - lineW / 2f - 4), startY + i * (lineH + gap - 1), 2, 2),
-                    iconColor * (iconAlpha * 0.7f));
-            }
-
-            if (isHovered) {
-                //这枚按钮在两站之间来回，提示语跟着目的地走
-                Main.hoverItemName = View == QuestLogView.Chart
-                    ? QuestManagerText.Value
-                    : ChronicleStationChart?.Value ?? string.Empty;
+                string label = station == QuestLogView.Chart
+                    ? ChronicleStationChart?.Value ?? string.Empty
+                    : ChronicleStationEntrust?.Value ?? string.Empty;
+                Color textColor = selected ? Color.White : new Color(168, 168, 178);
+                Utils.DrawBorderString(spriteBatch, label,
+                    new Vector2(tab.X + 12f, tab.Y + 7f), textColor * mainPanelAlpha, 0.78f);
             }
         }
 

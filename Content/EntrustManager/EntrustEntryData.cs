@@ -60,8 +60,11 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         #region 样式系统
 
-        /// <summary>null 用默认绘制</summary>
-        public IEntrustEntryStyle EntryStyle { get; set; }
+        /// <summary>
+        /// 委托提供者。条目本体一律由界面样式绘制，
+        /// 提供者身份走行右缘徽记与展开区落款；null = 无徽记无落款
+        /// </summary>
+        public EntrustProvider Provider { get; set; }
 
         /// <summary>null 用默认</summary>
         public IEntrustTrackerWidgetStyle TrackerStyle { get; set; }

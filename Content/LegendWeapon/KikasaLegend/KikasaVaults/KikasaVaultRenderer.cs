@@ -135,6 +135,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
             sb.Draw(tex, center, frame, color, 0f, origin, scale, SpriteEffects.None, 0f);
         }
 
+        /// <summary>
+        /// 血水态 NPC 剪影（湖底记忆共用）：form 1=全血水 0=真身。
+        /// 自管 Immediate 批与噪声挂载，画完复原 UI 默认批；着色器缺编时平染回退
+        /// </summary>
+        public static void DrawFormNpc(SpriteBatch sb, int npcType, Vector2 center,
+            float fit, float form, float alpha, Color fallbackTint) {
+            Main.instance.LoadNPC(npcType);
+            Texture2D tex = TextureAssets.Npc[npcType]?.Value;
+            if (tex == null) {
+                return;
+            }
+            int frameCount = Math.Max(Main.npcFrameCount[npcType], 1);
+            Rectangle frameRect = new(0, 0, tex.Width, tex.Height / frameCount);
+            float scale = MathF.Min(1f, fit / MathF.Max(frameRect.Width, frameRect.Height));
+
+            Effect effect = EffectLoader.KikasaItemForm?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect != null && noise != null) {
+                sb.End();
+                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                    DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+                Main.instance.GraphicsDevice.Textures[1] = noise;
+                Main.instance.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
+                effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+                effect.Parameters["uSeed"]?.SetValue(npcType * 0.173f);
+                effect.Parameters["uForm"]?.SetValue(form);
+                effect.Parameters["uDissolve"]?.SetValue(0f);
+                effect.Parameters["uScanMode"]?.SetValue(0f);
+                effect.Parameters["uUvRect"]?.SetValue(new Vector4(
+                    frameRect.X / (float)tex.Width, frameRect.Y / (float)tex.Height,
+                    frameRect.Width / (float)tex.Width, frameRect.Height / (float)tex.Height));
+                effect.Parameters["uTexel"]?.SetValue(new Vector2(1f / tex.Width, 1f / tex.Height));
+                effect.Parameters["uAspect"]?.SetValue(frameRect.Width / (float)frameRect.Height);
+                effect.CurrentTechnique.Passes[0].Apply();
+                Color color = new(255, 255, 255, (byte)(MathHelper.Clamp(alpha, 0f, 1f) * 235f));
+                sb.Draw(tex, center, frameRect, color, 0f,
+                    frameRect.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+                RestoreUIBatch(sb);
+            }
+            else {
+                //着色器缺编：血色平染剪影
+                Color fallback = Color.Lerp(Color.White, fallbackTint, form) * (alpha * 0.9f);
+                sb.Draw(tex, center, frameRect, fallback, 0f,
+                    frameRect.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+            }
+        }
+
         //==================== 加色小件 ====================
 
         /// <summary>压扁的扩散环（悬停浮圈/提取旋涡）</summary>

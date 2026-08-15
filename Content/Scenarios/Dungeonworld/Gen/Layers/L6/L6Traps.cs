@@ -263,8 +263,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
         }
 
         /// <summary>
-        /// 母题:活塞推杆留位(TP本体归资产波)。龛带内3x3帧精确空槽+Cog缸体
-        /// +焦油垂滴+登记L6MachineSlots;本波零伤害,纯剪影与对接位。
+        /// 母题:活塞推杆。龛带内3x3帧精确空槽+Cog缸体+焦油垂滴+登记L6MachineSlots。
+        /// 登记的帧只是缸体包络,不含行程——运行时由Machines\DungeonworldMachines
+        /// 现场往下量到行走面再决定捶多深。
         /// </summary>
         internal static void SegPistonSlot(RoomNode room, int segL, int segR, UnifiedRandom rand, ref Tally tally) {
             int nicheTop = room.InteriorTop;
@@ -281,9 +282,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
         }
 
         /// <summary>
-        /// 母题:齿轮碾压留位(TP本体归资产波)。行走带顶两行Cog轮齿剪影,净空3
-        /// (F1低威胁净空档,本波零伤害);预告手段:轮齿本身+焦油垂滴+全段油渍
-        /// +躲避龛。登记段宽x行走带包络供资产波对位。
+        /// 母题:齿轮碾压。行走带顶两行Cog轮齿剪影,净空3(F1低威胁净空档);
+        /// 预告手段:轮齿本身+焦油垂滴+全段油渍+躲避龛(碾轮上膛段不咬人,
+        /// 那半秒就是给玩家钻龛的)。登记段宽x行走带包络,运行时由
+        /// Machines\DungeonworldMachines驱动碾轮沿行走面横扫。
         /// </summary>
         internal static void SegGearCrush(RoomNode room, int segL, int segR, UnifiedRandom rand, ref Tally tally) {
             int floor = room.FloorTop;
@@ -298,7 +300,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
             CarvePocket(room, (segL + segR) / 2 - 1, ref tally, lantern: true);
             L6MachineSlots.Register(L6SlotKind.GearCrush,
                 new Rectangle(segL, nicheTop, System.Math.Max(1, segR - segL), NicheBand + WalkH),
-                "机关走廊齿轮碾压段,轮齿朝下扫过行走面(本波零伤害剪影)");
+                "机关走廊齿轮碾压段,轮齿朝下扫过行走面");
             tally.Segments++;
         }
 

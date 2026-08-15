@@ -45,6 +45,20 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         void DrawEntrySeparator(SpriteBatch sb, Vector2 start, Vector2 end, float alpha);
 
+        /// <summary>
+        /// 行右缘的提供者徽记。纹样与主色来自 <see cref="EntrustEntryData.Provider"/>，
+        /// 框的画法归界面样式（Chronicle=邮戳，旧样式=素框）
+        /// </summary>
+        void DrawProviderBadge(SpriteBatch sb, Vector2 center, float radius,
+            EntrustEntryData entry, float alpha);
+
+        /// <summary>展开区提供者落款的占用高度；无提供者返回 0，测量与绘制必须同口径</summary>
+        int GetProviderSignatureHeight(EntrustEntryData entry);
+
+        /// <summary>展开区尾部的提供者落款（头像 + 名字）</summary>
+        void DrawProviderSignature(SpriteBatch sb, EntrustEntryData entry,
+            float x, float y, float width, float alpha);
+
         #endregion
 
         #region 颜色与度量

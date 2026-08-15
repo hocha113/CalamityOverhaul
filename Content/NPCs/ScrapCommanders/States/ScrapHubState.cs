@@ -45,18 +45,31 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.States
             }
             LeanByVelocity(npc);
 
-            //闲臂骚扰层（P2 起）：隔轮在 connector 喘息里补一发慢速脉冲，屏幕不静止
-            if (ctx.Phase >= 2 && t == 8 && ctx.AttackIndex % 2 == 1 && !ctx.Owner.TargetInvalid()) {
+            //闲臂骚扰层（P2 起）：隔轮在 connector 喘息里补一发慢速脉冲，屏幕不静止。
+            //先挂 16 帧瞄准线+聚能再出膛（预警可读；开火拍 24 早于最短冷却 27，转场不吞弹）
+            const int HarassAimStart = 8;
+            const int HarassFire = 24;
+            if (ctx.Phase >= 2 && ctx.AttackIndex % 2 == 1 && !ctx.Owner.TargetInvalid()
+                && t >= HarassAimStart && t <= HarassFire) {
                 Vector2 hAim = (target.Center - ctx.Owner.GetArmPos(ScrapCommander.ArmLaser))
                     .SafeNormalize(Vector2.UnitX);
-                ctx.Owner.LaserFlash = 5;
-                SoundEngine.PlaySound(SoundID.Item33 with { Volume = 0.3f, Pitch = 0.3f, MaxInstances = 2 },
-                    ctx.Owner.GetArmPos(ScrapCommander.ArmLaser));
-                if (!VaultUtils.isClient) {
-                    int hDamage = ScrapDirector.ScaleProjectileDamage(npc, (24f, 20f));
-                    Projectile.NewProjectile(npc.GetSource_FromAI(),
-                        ctx.Owner.GetArmPos(ScrapCommander.ArmLaser) + hAim * 24f, hAim * 13f,
-                        ModContent.ProjectileType<Projectiles.ScrapLaserPulse>(), hDamage, 1f, Main.myPlayer);
+                if (t == HarassAimStart) {
+                    ctx.Owner.ChargeLaser(HarassFire - HarassAimStart);
+                    SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.3f, Pitch = 0.4f, MaxInstances = 2 },
+                        ctx.Owner.GetArmPos(ScrapCommander.ArmLaser));
+                }
+                float aimAlpha = (t - HarassAimStart) / (float)(HarassFire - HarassAimStart) * 0.4f;
+                ctx.AddTelegraph(ctx.Owner.GetArmPos(ScrapCommander.ArmLaser) + hAim * 24f,
+                    hAim, 700f, aimAlpha, 0.45f);
+                if (t == HarassFire) {
+                    SoundEngine.PlaySound(SoundID.Item33 with { Volume = 0.3f, Pitch = 0.3f, MaxInstances = 2 },
+                        ctx.Owner.GetArmPos(ScrapCommander.ArmLaser));
+                    if (!VaultUtils.isClient) {
+                        int hDamage = ScrapDirector.ScaleProjectileDamage(npc, (24f, 20f));
+                        Projectile.NewProjectile(npc.GetSource_FromAI(),
+                            ctx.Owner.GetArmPos(ScrapCommander.ArmLaser) + hAim * 24f, hAim * 13f,
+                            ModContent.ProjectileType<Projectiles.ScrapLaserPulse>(), hDamage, 1f, Main.myPlayer);
+                    }
                 }
             }
 

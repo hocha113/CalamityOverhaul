@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.TrialQuests
             => HimayoStorySync.CanStartOnikiriTrialQuests(player);
 
         protected override LegendData GetLegendData(Player player) => FindLegendData(player, OnikiriOverride.ID);
-        protected override IEntrustEntryStyle CreateEntryStyle() => new OnikiriEntryStyle();
+        protected override EntrustProvider Provider => EntrustProviders.Onikiri;
         protected override IEntrustTrackerWidgetStyle CreateTrackerStyle() => new OnikiriTrackerWidgetStyle();
         protected override Func<bool> CreateTrackerVisibilityCheck()
             => static () => Main.LocalPlayer.GetItem().type == OnikiriOverride.ID;
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.TrialQuests
             var entry = new OnikiriTrialQuestEntry(KEY_PREFIX + trial.Key, trial.Title, trial.Summary, QuestCategory) {
                 Trial = trial,
                 Priority = routeCount - routeIndex,
-                EntryStyle = CreateEntryStyle(),
+                Provider = Provider,
                 TrackerStyle = CreateTrackerStyle(),
                 WaitingHint = TrackerWaiting,
                 FightingFormat = TrackerFighting,

@@ -14,6 +14,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
         internal const ushort CrackedBrick = TileID.CrackedGreenDungeonBrick;
         internal const ushort WallBase = WallID.GreenDungeonUnsafe;      //墙8,水线上主调
         internal const ushort WallSlab = WallID.GreenDungeonSlabUnsafe;  //墙98,水线下主调("泡旧")
+        internal const ushort WallTiled = WallID.GreenDungeonTileUnsafe; //墙99,第三变体成片撒进两带
+        //Tiled占比与块盐:成片而非逐格,否则墙面变成椒盐噪点
+        private const int TiledCoverage = 14;
+        private const int TiledSalt = 0x4B19;
         //格栅块:排水口盖板视觉,Main.tileSolid[546]=true(Main.cs L10009对源),可安全当地板
         internal const ushort Grate = TileID.Grate;
 
@@ -157,6 +161,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
             return placed;
         }
 
+        /// <summary>本层地牢墙族(三变体);骨架实心区wall=0天然被排除</summary>
+        internal static bool IsLayerWall(ushort wall)
+            => wall == WallBase || wall == WallSlab || wall == WallTiled;
+
         //==================== paint助手(§3.2-6:做旧全走wall/paint层,不动碰撞几何) ====================
 
         /// <summary>水线痕:沿指定行给墙面刷横向漆带(paintWall只染有墙格,自动跳过实心与无墙格)</summary>
@@ -165,8 +173,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
                 if (!WorldGen.InWorld(x, y, 5) || Main.tile[x, y].HasTile) {
                     continue;
                 }
-                ushort wall = Main.tile[x, y].WallType;
-                if (wall == WallBase || wall == WallSlab) {
+                if (IsLayerWall(Main.tile[x, y].WallType)) {
                     WorldGen.paintWall(x, y, paint);
                 }
             }
@@ -206,7 +213,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
                         continue;
                     }
                     Tile t = Main.tile[x, y];
-                    if (t.WallType != WallBase && t.WallType != WallSlab) {
+                    if (t.WallType != WallBase && t.WallType != WallSlab && t.WallType != WallTiled) {
+                        continue;
+                    }
+                    //第三变体成片切进来(块散列而非逐格掷骰,否则是椒盐噪点):
+                    //原版绿墙有三种,此前只在两种之间轮换,白扔了一种表面变化
+                    if (LayerTint.BlockPatch(x, y, TiledCoverage, TiledSalt)) {
+                        t.WallType = WallTiled;
                         continue;
                     }
                     int slabChance = y >= waterlineRow ? 3 : 6;   //下带2/3,上带1/6

@@ -451,6 +451,13 @@ DraedonIncomingCall: {
 
 QuestManagerUI: {
 	TitleText: 任务管理
+	ProviderLabelText: 委托人
+	ProviderHalibut: 比目鱼
+	ProviderOnikiri: 鬼切
+	ProviderSHPC: SHPC
+	ProviderOldDuke: 老公爵
+	ProviderSupCal: 至尊灾厄
+	ProviderDraedon: 嘉登
 	CategoryAll: 全部
 	CategoryActive: 进行中
 	CategoryCompleted: 已完成

@@ -85,6 +85,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest
                 Priority = 50,
                 Status = completed ? QuestEntryStatus.Completed : QuestEntryStatus.Active,
                 Progress = completed ? 1f : 0f,
+                Provider = EntrustProviders.Draedon,
                 TrackerStyle = new DraedonTrackerWidgetStyle(),
                 NearestTargetFormat = TrackerNearestTarget,
                 NodeNameFormat = TrackerNodeName,

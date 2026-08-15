@@ -44,8 +44,15 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
     {
         internal const int Width = 2000;
         internal const int Height = 6000;
-        //世界四周实心边界厚度
+        //世界四周实心边界厚度(顶部天空带封口用;左右两侧的硬界是下方PlayLeft/PlayRight)
         internal const int BorderThick = 8;
+
+        //原版玩家钳制(Player.BordersMovement):距世界边缘640+16px≈41格的一圈
+        //地图上看得见却永远进不去。上下两侧天然安全(天空带60行纯背景/深渊带400行实心),
+        //左右两侧必须让渡:各封实42列,水平开凿/落位/审计一律用[PlayLeft,PlayRight)
+        //半开区间,钳制线外保持骨架实心不留废几何(P80死区审计兜底)
+        internal const int PlayLeft = 42;
+        internal const int PlayRight = Width - PlayLeft;
 
         //天空缓冲带[0,SkyRows),M1钟楼尖顶探入
         internal const int SkyRows = 60;
@@ -111,18 +118,22 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
             Bands = new LayerBand[7];
             int cursor = SkyRows;
             int index = 0;
-            void Add(string name, int rows) {
-                //M0全蓝砖套件,换色只动此处(层带墙面规格,§1.2)
-                Bands[index++] = new LayerBand(name, cursor, rows, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe);
+            void Add(string name, int rows, ushort brick, ushort wall) {
+                Bands[index++] = new LayerBand(name, cursor, rows, brick, wall);
                 cursor += rows + SeparatorRows;
             }
-            Add("L1教堂区", L1Rows);
-            Add("L2牢狱层", L2Rows);
-            Add("L3大档案馆", L3Rows);
-            Add("L4水牢", L4Rows);
-            Add("L5万骨窖", L5Rows);
-            Add("L6铸造机关层", L6Rows);
-            Add("L7倒吊教堂", L7Rows);
+            //层带砖/墙主调=各层L#Palette已声明的基调,此处是骨架浇筑、层脊走廊、主竖井、
+            //隔离带井这些"房间之外"几何的取色源(2026-08-15:此前七带全写死蓝砖,
+            //导致绿水牢/粉万骨窖的主干道也是蓝的,层色只剩房间外壳两格厚)。
+            //改层色必须与对应L#Palette同步;原版地牢墙7/8/9/94~99九种全在Main.wallDungeon里
+            //(Main.cs L10462-10470),换绿/粉不影响ZoneDungeon判定与刷怪
+            Add("L1教堂区", L1Rows, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe);
+            Add("L2牢狱层", L2Rows, TileID.PinkDungeonBrick, WallID.PinkDungeonUnsafe);
+            Add("L3大档案馆", L3Rows, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe);
+            Add("L4水牢", L4Rows, TileID.GreenDungeonBrick, WallID.GreenDungeonUnsafe);
+            Add("L5万骨窖", L5Rows, TileID.PinkDungeonBrick, WallID.PinkDungeonSlabUnsafe);
+            Add("L6铸造机关层", L6Rows, TileID.BlueDungeonBrick, WallID.BlueDungeonTileUnsafe);
+            Add("L7倒吊教堂", L7Rows, TileID.BlueDungeonBrick, WallID.BlueDungeonTileUnsafe);
             //最后一层下方是深渊带而非隔离带
             cursor -= SeparatorRows;
             if (cursor + AbyssRows != Height) {
@@ -139,6 +150,31 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
                 }
             }
             return null;
+        }
+
+        /// <summary>行→砖:带内取本带,带外(天空/隔离/深渊)按 <see cref="OwnerBand"/> 归属</summary>
+        internal static ushort BrickForRow(int y) => (BandForRow(y) ?? OwnerBand(y)).Brick;
+
+        /// <summary>行→墙:同 <see cref="BrickForRow"/> 的归属规则,竖井穿隔离带时自然见到砖色交接</summary>
+        internal static ushort WallForRow(int y) => (BandForRow(y) ?? OwnerBand(y)).Wall;
+
+        /// <summary>
+        /// 带外行的取色归属:隔离带以中线切开,上半归上层、下半归下层——
+        /// 12行隔离带因此是一道真过渡带而不是断层(§1.2);
+        /// 天空缓冲带归L1,深渊带归L7。
+        /// </summary>
+        private static LayerBand OwnerBand(int y) {
+            if (y < Bands[0].Top) {
+                return Bands[0];
+            }
+            for (int i = 0; i < Bands.Length - 1; i++) {
+                int gapTop = Bands[i].Bottom;
+                int gapBottom = Bands[i + 1].Top;
+                if (y >= gapTop && y < gapBottom) {
+                    return y < gapTop + (gapBottom - gapTop) / 2 ? Bands[i] : Bands[i + 1];
+                }
+            }
+            return Bands[^1];
         }
     }
 }

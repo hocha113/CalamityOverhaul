@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen;
+﻿using CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen;
 using CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes;
 using CalamityOverhaul.Content.Scenarios.Dungeonworld.UI;
 using SubworldLibrary;
@@ -36,6 +36,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
         ];
 
         public static bool Active => SubworldSystem.IsActive<Dungeonworld>();
+
+        //NormalUpdates=false 把原版世界更新整段停掉(F16/F17),需要逐帧的子系统在这里手动驱动。
+        //SLib 在 ModSystem.PreUpdateWorld 之后、PostUpdateWorld 之前调本方法,每帧必到
+        public override void Update() {
+            Machines.DungeonworldMachines.Update();
+            //Machines.DungeonworldWaterGate.Update();
+        }
 
         //进出统一走这两个入口,快照/加载屏复位/跨世界引用清理不漏
         //过渡链路修复:先遮再冻——压黑门(0.45s 渐入全黑)完成后的下一帧才真正提交过渡,
@@ -85,6 +92,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
         public override void OnLoad() {
             Main.dayTime = false;
             Main.time = 0;
+            //运行时子系统随世界重置(回放制:每次进入都是新生成的一份)
+            Machines.DungeonworldMachines.Reset();
+            //Machines.DungeonworldWaterGate.Reset();
             //worldSurface压到天空缓冲带底,全图判"地下",ZoneDungeon三条件之一(F11/§1.3)
             //太高会误判地表,太低会把上层判进地狱带(F25先例注释)
             Main.worldSurface = DungeonworldMetrics.WorldSurfaceRow;

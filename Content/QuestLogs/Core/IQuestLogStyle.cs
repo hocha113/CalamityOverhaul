@@ -56,12 +56,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// <summary>详情正文总高，供容器夹紧滚动量；返回 0 视为不可滚动</summary>
         float MeasureDetailHeight(QuestNode node, in QuestLogLayout layout) => 0f;
 
-        /// <summary>委托面板入口的命中区，默认贴在夜间模式键右侧</summary>
-        Rectangle GetQuestManagerButtonRect(Rectangle panelRect) {
-            Rectangle nightRect = GetNightModeButtonRect(panelRect);
-            return new Rectangle(nightRect.Right + 10, nightRect.Y, 30, 30);
-        }
-
         #endregion
     }
 }

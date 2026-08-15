@@ -39,7 +39,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
         internal static readonly List<Compartment> Compartments = [];
         //当前应用的态:true=满水(生成期默认);两态切换的回放依据
         internal static bool HighState { get; private set; } = true;
-        //主泵房机器锚(未来WaterLevelController TP挂点,STRUCTURES §4.1;资产波消费)
+        //主泵房机器锚(WaterLevelController TP挂点,STRUCTURES §4.1;
+        //水位切换本身已由Machines\DungeonworldWaterGate接在阀杆上,此锚留给日后的泵机演出)
         internal static Point? PumpMachineAnchor;
 
         //每次生成/看样重算(ShouldSave=false回放制,镜像LayerPlans.Reset纪律)
@@ -156,7 +157,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
         /// </summary>
         internal static int AssertBandWater(LayerBand band) {
             int wet = 0, stray = 0, lava = 0;
-            for (int x = DungeonworldMetrics.BorderThick; x < DungeonworldMetrics.Width - DungeonworldMetrics.BorderThick; x++) {
+            for (int x = DungeonworldMetrics.PlayLeft; x < DungeonworldMetrics.PlayRight; x++) {
                 for (int y = band.Top; y < band.Bottom; y++) {
                     Tile t = Main.tile[x, y];
                     if (t.LiquidAmount == 0) {
@@ -208,10 +209,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
 
         /// <summary>
         /// 一次性事务切换全层水位(R1:预计算版图+一次重写+手动settle,绝不物理模拟排水)。
-        /// 本波只交单机看样用法(拉杆TP接线与联机归资产波):联机时须服务器权威执行
-        /// 并按STRUCTURES §4.5做区块同步(NetMessage.SendTileSquare/段同步),客户端只演出。
         /// 排走的水去向叙事化(排入深渊带),不做守恒模拟。
-        /// 运行时TP钩子=本方法;资产波的泵机/阀杆只负责调用,不另写排水模拟。
+        /// <br/>带settle的这一版只给生成期与看样入口用;运行时切换走
+        /// <see cref="ApplyStateRuntime"/>(settle在运行时会卡秒级)。
         /// </summary>
         internal static void ApplyState(bool high, LayerBand band) {
             if (Compartments.Count == 0) {
@@ -222,6 +222,20 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
             SettleBand(band);
             CWRMod.Instance.Logger.Info(
                 $"[L4WaterWorks] 水位切换→{(high ? "满水" : "排空")} 舱段={Compartments.Count} 水格={wet}");
+        }
+
+        /// <summary>
+        /// 运行时切换:只重写液体版图,不跑settle。返回写入的水格数,无舱段登记时返回-1。
+        /// <br/>为什么敢省掉settle:它是生成期的构造bug保险,内含全图WaterCheck(1200万格)
+        /// 与多轮UpdateLiquid,秒级耗时——放在运行时就是几秒硬卡帧。而堰坎舱段本就是
+        /// 构造性密封的静水(§2.4-④/§3.2-9),且子世界NormalUpdates=false让
+        /// Liquid.UpdateLiquid根本不转(F16/F17),重写完即静定,没有东西会来推它。
+        /// </summary>
+        internal static int ApplyStateRuntime(bool high) {
+            if (Compartments.Count == 0) {
+                return -1;
+            }
+            return FillState(high);
         }
     }
 }

@@ -2,6 +2,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -26,6 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 KikasaDomainDeco.Clear();
                 KikasaLakeFX.Clear();
                 KikasaDrownFX.Clear();
+                KikasaThrallMeltFX.Clear();
                 KikasaHoundReflection.Clear();
             }
         }
@@ -122,9 +124,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             if (Main.gameMenu) {
                 return;
             }
-            //幽灵与鬼手先画、涟漪水花后画，水线的泡沫盖在沉浮物之上
+            //幽灵与鬼手先画、涟漪水花后画，水线的泡沫盖在沉浮物之上；
+            //伞奴化水的尸影随后，同样吃湖面镜面倒影
             KikasaLakeFX.Draw(spriteBatch);
             KikasaDrownFX.Draw(spriteBatch);
+            KikasaThrallMeltFX.Draw(spriteBatch);
             KikasaDomainDeco.Draw(spriteBatch);
         }
 

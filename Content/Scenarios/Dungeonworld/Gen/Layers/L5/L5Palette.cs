@@ -120,6 +120,36 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
             return true;
         }
 
+        //==================== 墙变体混斑(F32圆斑手法的确定性版) ====================
+
+        //Tiled占比与块盐:成片而非逐格,否则墙面变成椒盐噪点
+        private const int TiledCoverage = 18;
+        private const int TiledSalt = 0x2D6F;
+
+        /// <summary>
+        /// 主体Slab里成片切出Tiled补丁,让整层墙面不再是单一变体。
+        /// 只动Slab——Base是集市语义、Tiled是圣骨堂/骨井/深巷的"更老"语义,那两种都有出处不能乱铺。
+        /// 零genRand消耗(块散列),不动R4随机流。
+        /// </summary>
+        internal static int MixWallVariants(Rectangle area) {
+            int changed = 0;
+            for (int x = area.Left; x < area.Right; x++) {
+                for (int y = area.Top; y < area.Bottom; y++) {
+                    if (!WorldGen.InWorld(x, y, 5)) {
+                        continue;
+                    }
+                    Tile tile = Main.tile[x, y];
+                    if (tile.HasTile || tile.WallType != WallSlab
+                        || !LayerTint.BlockPatch(x, y, TiledCoverage, TiledSalt)) {
+                        continue;
+                    }
+                    tile.WallType = WallTiled;
+                    changed++;
+                }
+            }
+            return changed;
+        }
+
         //==================== 尘白做旧(全paint层,§3.2-6;签名与蛛网配对) ====================
 
         /// <summary>横向水洗:矩形内墙面刷白漆(paintWall无墙自动跳过),骨面拉平明度</summary>

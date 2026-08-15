@@ -19,7 +19,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
     /// 湖窗：血湖藏品界面。旧世界的湿纸被撕开一道口子，口子里湖水涨起——
     /// 沉物按深浅悬在血水里漂，悬停时它浮起凝出真身、气泡一串升向水面、
     /// 水线在它正上方泛沫发亮；点击提取，槽位留一个小旋涡。
-    /// 持鬼伞按 <see cref="CWRKeySystem.Legend_UIControl"/> 开阖，湖水退落时自行合上。
+    /// 持鬼伞按 <see cref="CWRKeySystem.Legend_UIControl"/> 开阖；
+    /// 「湖畔村图」点湖也能开——干湖时进只读模式（看得见取不走，涨满自动转正），
+    /// 左下角一格记忆栏亮着湖底的记忆（最后被沉溺的生物）。
     /// </summary>
     internal class KikasaVaultUI : UIHandle, ILocalizedModType
     {
@@ -32,6 +34,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
         public static LocalizedText ExtractHintFormat { get; private set; }
         public static LocalizedText IdleHintFormat { get; private set; }
         public static LocalizedText EmptyHint { get; private set; }
+        public static LocalizedText ViewOnlyFooter { get; private set; }
+        public static LocalizedText SummonHintFormat { get; private set; }
 
         public override void SetStaticDefaults() {
             Title = this.GetLocalization(nameof(Title), () => "湖 藏");
@@ -39,6 +43,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
             ExtractHintFormat = this.GetLocalization(nameof(ExtractHintFormat), () => "点击取回 {0}");
             IdleHintFormat = this.GetLocalization(nameof(IdleHintFormat), () => "持物按 {0} 沉入 · 点击窗外合上");
             EmptyHint = this.GetLocalization(nameof(EmptyHint), () => "湖底空着，只有水声");
+            ViewOnlyFooter = this.GetLocalization(nameof(ViewOnlyFooter), () => "湖还没涨到脚边，先看着");
+            SummonHintFormat = this.GetLocalization(nameof(SummonHintFormat), () => "按 {0} 召它出手");
         }
 
         public override bool Active => IsOpen || OpenProgress > 0.01f;
@@ -103,6 +109,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
         private float lastHoverX01 = -1f;
         private int frame;
 
+        //干湖只读：看得见取不走；开着的途中涨满则自动转正
+        private bool viewOnly;
+
+        /// <summary>画境入口：任何水位都能开，干湖走只读（OnOpen 里按水位定）</summary>
+        internal void OpenFromScene() {
+            if (!IsOpen) {
+                Open();
+            }
+        }
+
         protected override void OnOpen() {
             Main.playerInventory = false;
             scrollOffset = scrollTarget = 0f;
@@ -114,6 +130,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
             stirPulse = 0f;
             hoverGlowSmooth = 0f;
             lastHoverX01 = -1f;
+            //键路径开窗前已验过水位（恒为正常模式）；画境路径干湖进只读
+            viewOnly = !Vault.LakeReady;
         }
 
         private KikasaVaultPlayer Vault => player.GetModPlayer<KikasaVaultPlayer>();
@@ -177,9 +195,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
             frame++;
             KikasaVaultPlayer vault = Vault;
 
-            if (IsOpen && (!vault.LakeReady || player.dead || !player.active)) {
-                //湖退了人也不该还扒着湖窗
+            if (IsOpen && (player.dead || !player.active)) {
                 Close();
+            }
+            if (IsOpen && !viewOnly && !vault.LakeReady) {
+                //正常模式里湖退了，人不该还扒着湖窗
+                Close();
+            }
+            if (viewOnly && vault.LakeReady) {
+                //看着看着水涨满了：只读转正
+                viewOnly = false;
             }
 
             LayoutPanel(a);
@@ -279,6 +304,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                         //演出是主角：合窗让位，旋涡与血珠在淡出里收尾，
                         //破水点就在脚边，窗不合上正好挡在它前面
                         Close();
+                    }
+                    else if (!vault.LakeReady) {
+                        //只读拒答：看得见，取不走——湖还没涨起来
+                        SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.55f, Pitch = -0.7f, MaxInstances = 2 });
+                        CombatText.NewText(player.Hitbox, new Color(190, 84, 80),
+                            KikasaVaultPlayer.LakeNotReady.Value);
                     }
                 }
                 else if (!overPanel) {
@@ -510,10 +541,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                     KikasaVaultTheme.Text * (hover * a), 0.85f);
             }
 
-            //6 页脚：悬停时让位名牌，只留操作提示
+            //6 页脚：只读时先声明"看得见取不走"；悬停时让位名牌，只留操作提示
             string footer;
             Color footerColor;
-            if (hoverIndex >= 0 && hoverIndex < stored.Count) {
+            if (viewOnly) {
+                float breathe = 0.7f + 0.3f * KikasaVaultTheme.Breath(time, 2.3f, 1.6f);
+                footer = ViewOnlyFooter.Value;
+                footerColor = KikasaVaultTheme.TextDim * breathe;
+            }
+            else if (hoverIndex >= 0 && hoverIndex < stored.Count) {
                 footer = string.Format(ExtractHintFormat.Value, string.Empty).Trim();
                 footerColor = KikasaVaultTheme.Foam;
             }
@@ -539,6 +575,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                     new Vector2(panelRect.Center.X - fSize.X * 0.5f, panelRect.Bottom - 34f),
                     footerColor * (MathHelper.Clamp((a - 0.5f) / 0.4f, 0f, 1f)), 0.85f);
             }
+
+            //7 记忆栏：左下角亮着湖底的记忆——储物与鬼奴复制一窗看全
+            DrawMemoryBar(spriteBatch, font, chromeA);
+        }
+
+        /// <summary>
+        /// 记忆栏：沉湖生物的血水剪影 + 名字 + 状态/召唤键提示。
+        /// 没记忆时只有一行暗字，位置固定在窗左下角
+        /// </summary>
+        private void DrawMemoryBar(SpriteBatch sb, DynamicSpriteFont font, float a) {
+            if (a <= 0.02f) {
+                return;
+            }
+            var servant = player.GetModPlayer<KikasaServants.KikasaServantPlayer>();
+            int memoryType = servant.LastDrownedType;
+            float baseX = panelRect.X + 20f;
+            float baseY = panelRect.Bottom - 40f;
+
+            if (memoryType <= 0) {
+                Utils.DrawBorderString(sb, UI.KikasaSceneUI.MemoryEmpty.Value,
+                    new Vector2(baseX, baseY + 8f), KikasaVaultTheme.TextDim * (0.75f * a), 0.68f);
+                return;
+            }
+
+            bool outSide = servant.FindActiveServant() != null;
+            bool tamed = KikasaServants.KikasaServantIndex.TryGet(memoryType, out _);
+            //剪影：在外时淡去（它不在湖底）
+            KikasaVaultRenderer.DrawFormNpc(sb, memoryType,
+                new Vector2(baseX + 15f, baseY + 6f), 28f,
+                tamed ? 0.72f : 0.9f, a * (outSide ? 0.35f : 0.95f), KikasaVaultTheme.Blood);
+
+            string name = Lang.GetNPCNameValue(memoryType);
+            Utils.DrawBorderString(sb, name, new Vector2(baseX + 34f, baseY - 6f),
+                KikasaVaultTheme.Text * (0.9f * a), 0.7f);
+            string state = outSide
+                ? UI.KikasaSceneUI.ServantOutTag.Value
+                : tamed
+                    ? string.Format(SummonHintFormat.Value,
+                        CWRKeySystem.Kikasa_Summon.ToTooltipString(CWRKeySystem.Notbound.Value))
+                    : KikasaServants.KikasaServantPlayer.ServantUnknown.Value;
+            Utils.DrawBorderString(sb, state, new Vector2(baseX + 34f, baseY + 10f),
+                KikasaVaultTheme.TextDim * (0.85f * a), 0.62f);
         }
 
         //伞章：伞骨淡线垫底，伞盖粗笔带亮芯，笔序随 reveal 揭示；伞面一段掠光缓巡

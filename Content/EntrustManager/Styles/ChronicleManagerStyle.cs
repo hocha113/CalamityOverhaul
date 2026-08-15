@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.QuestLogs.Core;
 using CalamityOverhaul.Content.QuestLogs.Styles.Chronicle;
+using CalamityOverhaul.Content.UIs.UIEffect;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -139,11 +140,7 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
 
         public override void DrawQuestEntry(SpriteBatch sb, Rectangle entryRect, EntrustEntryData entry,
             bool isSelected, bool isHovered, float alpha, int entryIndex) {
-            //自定义条目皮肤优先，它自己画底
-            bool bgHandled = entry.EntryStyle?.DrawEntryBackground(sb, entryRect, entry,
-                isSelected, isHovered, alpha) ?? false;
-
-            if (!bgHandled && isHovered) {
+            if (isHovered) {
                 //悬停：左缘一记朱刻痕，纸不压底色
                 ChroniclePen.Line(sb, new Vector2(entryRect.X + 2f, entryRect.Y + 4f),
                     new Vector2(entryRect.X + 2f, entryRect.Y + GetEntryHeight() - 6f),
@@ -156,20 +153,17 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
 
             float titleX = entryRect.X + 34f;
             float titleY = entryRect.Y + 6f;
-            float iconOffset = entry.EntryStyle?.DrawEntryIcon(sb, new Vector2(titleX, titleY), entry, alpha) ?? 0f;
-            titleX += iconOffset;
 
-            //右侧状态明文，纯字不画徽章底框
+            //右侧状态明文，纯字不画徽章底框；有邮戳时整体左移让位
             string statusText = GetEntryStatusText(entry.Status);
             const float StatusScale = 0.62f;
             float statusW = Font.MeasureString(statusText).X * StatusScale;
-            float statusX = entryRect.Right - statusW - 16f;
+            float statusX = entryRect.Right - statusW - (entry.Provider != null ? 58f : 16f);
             ChroniclePen.Ink(sb, Font, statusText, new Vector2(statusX, titleY + 2f),
                 StatusInk(entry.Status), StatusScale, alpha * 0.95f);
 
             //标题，按剩余宽截断
-            Color titleColor = entry.EntryStyle?.GetTitleColor(entry.Status, alpha)
-                ?? (isHovered ? ChroniclePalette.Ink : StatusInk(entry.Status));
+            Color titleColor = isHovered ? ChroniclePalette.Ink : StatusInk(entry.Status);
             string title = Shorten(entry.Title, Math.Max(40f, statusX - titleX - 10f), 0.88f);
             ChroniclePen.Ink(sb, Font, title, new Vector2(titleX, titleY), titleColor, 0.88f, alpha);
 
@@ -188,7 +182,7 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
             if (collapsed > 0.01f) {
                 string summary = (entry.Summary ?? string.Empty)
                     .Replace("\r", string.Empty).Replace("\n", " ").Trim();
-                summary = Shorten(summary, entryRect.Width - 60f - iconOffset, 0.72f);
+                summary = Shorten(summary, entryRect.Width - 60f, 0.72f);
                 ChroniclePen.Ink(sb, Font, summary, new Vector2(titleX, summaryY),
                     ChroniclePalette.InkFaint, 0.72f, alpha * collapsed);
             }
@@ -219,7 +213,11 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
                 }
             }
 
-            entry.EntryStyle?.DrawEntryOverlay(sb, entryRect, entry, alpha);
+            //提供者邮戳钉在行右缘，折角左侧
+            if (entry.Provider != null) {
+                DrawProviderBadge(sb, new Vector2(entryRect.Right - 34f, entryRect.Y + GetEntryHeight() * 0.5f),
+                    13f, entry, alpha);
+            }
         }
 
         private void DrawExpanded(SpriteBatch sb, Rectangle entryRect, EntrustEntryData entry,
@@ -231,16 +229,115 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
             ChroniclePen.GiltRule(sb, new Vector2(titleX, y), wrapW * 0.8f, expandAlpha * 0.85f);
             y += 8f;
 
+            //正文给落款让出底部
+            int sigH = GetProviderSignatureHeight(entry);
+            float textBottom = entryRect.Bottom - 4f - sigH;
             const float Scale = 0.72f;
             float line = Font.MeasureString("A").Y * Scale;
             foreach (string row in ChroniclePen.Wrap(Font, entry.Summary, wrapW, Scale)) {
-                if (y > entryRect.Bottom - 4f) {
+                if (y > textBottom) {
                     break;
                 }
                 ChroniclePen.Ink(sb, Font, row, new Vector2(titleX, y),
                     ChroniclePalette.InkMute, Scale, expandAlpha);
                 y += line + 2f;
             }
+
+            if (sigH > 0) {
+                DrawProviderSignature(sb, entry, titleX, entryRect.Bottom - sigH,
+                    entryRect.Width - (titleX - entryRect.X) - 14f, expandAlpha);
+            }
+        }
+
+        /// <summary>
+        /// 提供者徽记的邮戳版：倾斜双环 + 戳内纹样 + 波浪注销线。<br/>
+        /// 倾角、油墨浓淡、缺口方位全按条目 Key 散列——盖戳的手不会两次一样
+        /// </summary>
+        public override void DrawProviderBadge(SpriteBatch sb, Vector2 center, float radius,
+            EntrustEntryData entry, float alpha) {
+            EntrustProvider provider = entry?.Provider;
+            if (provider == null || radius < 4f || alpha <= 0.01f) {
+                return;
+            }
+            int seed = Math.Abs(entry.Key?.GetHashCode() ?? 0) % 9973;
+            float tilt = (QuestLogTheme.Hash01(seed * 11 + 3) - 0.5f) * 0.5f;
+            float inkMul = 0.72f + QuestLogTheme.Hash01(seed * 5 + 1) * 0.28f;
+            //邮戳油墨：提供者主色沉进墨里，戳出来的不是荧光色
+            Color ink = Color.Lerp(provider.Accent, ChroniclePalette.Ink, 0.42f);
+
+            provider.BadgeFill?.Invoke(sb, center, radius * 0.82f, alpha * 0.85f);
+
+            //外环带一处缺口：戳没盖实的那一角，方位随散列
+            SvgPath ring = SvgPathPen.Path(BadgeRingD);
+            float gapAt = QuestLogTheme.Hash01(seed * 7 + 5) * 0.9f;
+            float gapW = 0.07f + QuestLogTheme.Hash01(seed * 13 + 7) * 0.09f;
+            SvgPathPen.Stroke(sb, ring, center, radius, tilt, ink, 1.7f,
+                alpha * 0.85f * inkMul, gapAt + gapW, 1f);
+            SvgPathPen.Stroke(sb, ring, center, radius, tilt, ink, 1.7f,
+                alpha * 0.85f * inkMul, 0f, gapAt);
+            //内环细一号，油墨更淡
+            SvgPathPen.Stroke(sb, ring, center, radius * 0.78f, tilt, ink, 1f,
+                alpha * 0.5f * inkMul);
+
+            //戳内纹样
+            SvgPath glyph = SvgPathPen.Path(provider.GlyphD);
+            if (glyph != null) {
+                SvgPathPen.Stroke(sb, glyph, center, radius * 0.5f, tilt, ink,
+                    1.3f, alpha * 0.9f * inkMul);
+            }
+
+            //注销线：两道波浪横线扫过戳面并略微出头，邮件被盖销的读法
+            for (int i = 0; i < 2; i++) {
+                float baseY = center.Y - 3.5f + i * 7f
+                    + (QuestLogTheme.Hash01(seed + i * 17) - 0.5f) * 2f;
+                float x0 = center.X - radius * 1.3f;
+                const int Seg = 7;
+                float segW = radius * 2.6f / Seg;
+                for (int s = 0; s < Seg; s++) {
+                    float y0 = baseY + MathF.Sin((s + i * 2.3f) * 1.9f) * 1.2f;
+                    float y1 = baseY + MathF.Sin((s + 1 + i * 2.3f) * 1.9f) * 1.2f;
+                    ChroniclePen.Line(sb, new Vector2(x0 + s * segW, y0),
+                        new Vector2(x0 + (s + 1) * segW, y1), 1f, ink,
+                        alpha * 0.30f * inkMul);
+                }
+            }
+
+            //悬停报提供者名
+            if (Vector2.Distance(Main.MouseScreen, center) < radius + 3f) {
+                Main.hoverItemName = provider.Name?.Value ?? string.Empty;
+            }
+        }
+
+        public override int GetProviderSignatureHeight(EntrustEntryData entry)
+            => entry?.Provider == null ? 0 : 34;
+
+        /// <summary>信末落款：右对齐的「委托人 · 名字」+ 头像窝，名下一道压痕</summary>
+        public override void DrawProviderSignature(SpriteBatch sb, EntrustEntryData entry,
+            float x, float y, float width, float alpha) {
+            EntrustProvider provider = entry?.Provider;
+            if (provider == null || alpha <= 0.01f) {
+                return;
+            }
+            string name = provider.Name?.Value ?? string.Empty;
+            string label = QuestManagerUI.ProviderLabelText?.Value ?? string.Empty;
+            float nameW = Font.MeasureString(name).X * 0.78f;
+            float labelW = Font.MeasureString(label).X * 0.6f;
+            float right = x + width;
+
+            //头像窝在最右，提供者主色沉进墨里当环色
+            Vector2 avatar = new(right - 13f, y + 16f);
+            ChroniclePen.NodeWell(sb, avatar, 12f,
+                Color.Lerp(provider.Accent, ChroniclePalette.InkMute, 0.45f), alpha, 1.2f);
+            DrawProviderAvatar(sb, provider, avatar, 9f, alpha);
+
+            //名字与「委托人」小签
+            float nameX = right - 32f - nameW;
+            ChroniclePen.Ink(sb, Font, name, new Vector2(nameX, y + 8f),
+                ChroniclePalette.Ink, 0.78f, alpha);
+            ChroniclePen.Ink(sb, Font, label, new Vector2(nameX - labelW - 10f, y + 12f),
+                ChroniclePalette.InkFaint, 0.6f, alpha * 0.9f);
+            //名下短压痕，落款划的那一道
+            ChroniclePen.Groove(sb, new Vector2(nameX - 2f, y + 26f), nameW + 6f, alpha * 0.7f);
         }
 
         /// <summary>折角：两笔一记纸角，展开后朝上翻</summary>

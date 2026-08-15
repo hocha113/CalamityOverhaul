@@ -911,6 +911,8 @@ KikasaText: {
 		ExtractHintFormat: 点击取回 {0}
 		IdleHintFormat: 持物按 {0} 沉入 · 点击窗外合上
 		EmptyHint: 湖底空着，只有水声
+		ViewOnlyFooter: 湖还没涨到脚边，先看着
+		SummonHintFormat: 按 {0} 召它出手
 	}
 
 	KikasaServantPlayer: {
@@ -921,10 +923,23 @@ KikasaText: {
 	}
 
 	KikasaHud: {
+		ScrollName: 湖畔村图
+		OpenTag: 点击展开画卷
+	}
+
+	KikasaSceneUI: {
+		SceneTitle: 湖畔村图
+		LakeTag: 血湖
+		HoundTag: 恶犬
 		MemoryEmpty: 湖底还空着
 		ServantOutTag: 它替你出手去了
-		DomainHintFormat: 按 {0} 撑开血湖
-		OpenHintFormat: 点击或按 {0} 开阖湖窗
+		DryHintFormat: 按 {0} 撑开血湖
+		ReflectAwake: 倒影醒着
+		ReflectAsleep: 倒影睡着
+		DreamTitle: 鬼 梦
+		InDreamLine: 你正身在梦中
+		HoundCountFormat: 在场恶犬 {0} / {1}
+		DreamHint: 梦中按住左键，黑水会不断吐出恶犬
 	}
 
 	KikasaHudLead: {
@@ -935,8 +950,8 @@ KikasaText: {
 		SinkBody: 湖是你的私库。手里拿着东西按沉入键，它就沉进湖底；光标指着活物按同一个键，湖会伸手把它按下去。
 		SinkPrompt: 等水涨到脚边，持物或指着生物按 {0}
 		VaultTitle: 开湖窗取物
-		VaultBody: 沉下去的东西悬在血水里漂着。持鬼伞开湖窗，点一件，湖把它送回你手边。
-		VaultPrompt: 持鬼伞按 {0}，或点击左下水鏡
+		VaultBody: 沉下去的东西悬在血水里漂着。开湖窗点一件，湖把它送回你手边。
+		VaultPrompt: 点开左下小画，再点画中的血湖；或持鬼伞按 {0}
 		SummonTitle: 驱使鬼奴
 		SummonBody: 湖永远记着最后一只溺死在它手里的生物。召出它的鬼奴替你出手，再按一次遣返。
 		SummonPrompt: 按 {0}

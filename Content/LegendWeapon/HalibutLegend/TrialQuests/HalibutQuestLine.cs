@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
         }
 
         protected override LegendData GetLegendData(Player player) => FindLegendData(player, HalibutOverride.ID);
-        protected override IEntrustEntryStyle CreateEntryStyle() => new OceanEntryStyle();
+        protected override EntrustProvider Provider => EntrustProviders.Halibut;
         protected override IEntrustTrackerWidgetStyle CreateTrackerStyle() => new HalibutTrackerWidgetStyle();
         protected override Func<bool> CreateTrackerVisibilityCheck()
             => static () => Main.LocalPlayer.GetItem().type == HalibutOverride.ID;
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
             var entry = new HalibutTrialQuestEntry(KEY_PREFIX + trial.Key, trial.Title, trial.Summary, QuestCategory) {
                 Trial = trial,
                 Priority = routeCount - routeIndex,
-                EntryStyle = CreateEntryStyle(),
+                Provider = Provider,
                 TrackerStyle = CreateTrackerStyle(),
                 WaitingHint = TrackerWaiting,
                 FightingFormat = TrackerFighting,

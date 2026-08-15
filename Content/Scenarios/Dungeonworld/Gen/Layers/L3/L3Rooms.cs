@@ -50,6 +50,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                 }
             }
             TileBrush.CarveRect(room.InteriorLeft, room.InteriorTop, room.InteriorRight, room.FloorTop, wall);
+            RoomShell.Dress(room, L3Palette.Brick);
         }
 
         //地板级标准门/拱插槽(底沿与地板齐平,§2.5接缝规则)
@@ -540,7 +541,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
             //底沿灰漆短痕:L3→L4潮气预告(paint层,与泡皱格间同族)
             for (int x = iL + 1; x < iR - 1; x += rand.Next(3, 6)) {
                 Tile tile = Main.tile[x, floor - 1];
-                if (!tile.HasTile && (tile.WallType == L3Palette.WallBase || tile.WallType == L3Palette.WallSlab)) {
+                if (!tile.HasTile && L3Palette.IsLayerWall(tile.WallType)) {
                     tile.WallColor = L3Palette.PaintMold;
                 }
             }

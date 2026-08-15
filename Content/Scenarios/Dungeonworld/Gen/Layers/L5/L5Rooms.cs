@@ -45,6 +45,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
                 }
             }
             TileBrush.CarveRect(room.InteriorLeft, room.InteriorTop, room.InteriorRight, room.FloorTop, wall);
+            RoomShell.Dress(room, L5Palette.Brick);
         }
 
         //==================== 骨柱大厅(#1):柱林节奏+夹层环廊,本层节点大房 ====================

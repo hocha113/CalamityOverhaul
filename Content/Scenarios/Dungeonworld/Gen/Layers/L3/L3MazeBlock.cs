@@ -372,8 +372,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
             for (int x = left + 1; x < right - 1; x += rand.Next(3, 6)) {
                 for (int dy = 0; dy < 2; dy++) {
                     Tile tile = Main.tile[x, floor - 1 - dy];
-                    if (!tile.HasTile && (tile.WallType == L3Palette.WallBase
-                        || tile.WallType == L3Palette.WallSlab)) {
+                    if (!tile.HasTile && L3Palette.IsLayerWall(tile.WallType)) {
                         tile.WallColor = L3Palette.PaintMold;
                     }
                 }

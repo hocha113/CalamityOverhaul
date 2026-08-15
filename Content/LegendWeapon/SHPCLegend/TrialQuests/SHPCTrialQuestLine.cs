@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
             return player.HasItem(SHPCOverride.ID);
         }
         protected override LegendData GetLegendData(Player player) => FindLegendData(player, SHPCOverride.ID);
-        protected override IEntrustEntryStyle CreateEntryStyle() => new SHPCEntryStyle();
+        protected override EntrustProvider Provider => EntrustProviders.SHPC;
         protected override IEntrustTrackerWidgetStyle CreateTrackerStyle() => new SHPCTrackerWidgetStyle();
         protected override Func<bool> CreateTrackerVisibilityCheck()
             => static () => Main.LocalPlayer.GetItem().type == SHPCOverride.ID;
@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
             var entry = new SHPCTrialQuestEntry(KEY_PREFIX + trial.Key, trial.Title, trial.Summary, QuestCategory) {
                 Trial = trial,
                 Priority = routeCount - routeIndex,
-                EntryStyle = CreateEntryStyle(),
+                Provider = Provider,
                 TrackerStyle = CreateTrackerStyle(),
                 WaitingHint = TrackerWaiting,
                 FightingFormat = TrackerFighting,

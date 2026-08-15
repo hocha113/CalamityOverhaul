@@ -18,7 +18,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
         protected abstract LocalizedText TrackerBriefText { get; }
         protected abstract IReadOnlyList<LegendTrialDefinition> Trials { get; }
         protected abstract bool CanCreateEntries(Player player);
-        protected abstract IEntrustEntryStyle CreateEntryStyle();
+        /// <summary>本线委托的提供者，行右缘徽记与展开区落款据此绘制</summary>
+        protected abstract EntrustProvider Provider { get; }
         protected abstract IEntrustTrackerWidgetStyle CreateTrackerStyle();
         protected abstract Func<bool> CreateTrackerVisibilityCheck();
         protected virtual LegendData GetLegendData(Player player) => null;
@@ -150,7 +151,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             return new LegendTrialQuestEntry(GetEntryKey(trial), trial.Title, trial.Summary, QuestCategoryText) {
                 Trial = trial,
                 Priority = routeCount - routeIndex,
-                EntryStyle = CreateEntryStyle(),
+                Provider = Provider,
                 TrackerStyle = CreateTrackerStyle(),
                 WaitingHint = TrackerWaitingText,
                 FightingFormat = TrackerFightingText,

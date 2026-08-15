@@ -141,7 +141,8 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest.FishoilQuest
                 IsNew = true,
             };
             entry.TrackerStyle = entry.oceanStyle;
-            entry.EntryStyle = new OceanEntryStyle();
+            //鱼油是交给比目鱼的差事，落款与邮戳同归比目鱼
+            entry.Provider = EntrustProviders.Halibut;
             entry.OnUnsuspended = entry.ClearSuspendedFlag;
             return entry;
         }

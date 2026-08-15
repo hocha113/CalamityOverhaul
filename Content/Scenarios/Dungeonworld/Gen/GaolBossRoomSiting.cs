@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
         //本次生成的落位,P45盖章与ValidatePass报告消费;ShouldSave=false回放制下每次生成重算
         internal static Point? LastOrigin;
 
-        //水平安全区间:距主竖井≥30格、房间足印避开出生列±10、离世界边界≥4
+        //水平安全区间:距主竖井≥30格、房间足印避开出生列±10、离可达区边缘≥4
         private const int ShaftKeepAway = 30;
         private const int SpawnKeepAway = 10;
 
@@ -47,10 +47,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
             //Wave-2:先扣除触及L2的隔离带楼梯井禁带(井0整柱下行+井1脊口穿透,
             //R4顺序=先竖直后逐层,避让方向=禁室避井);genRand先选侧再取点(决定论F22),
             //随机消耗恒2次(NextBool+Next)与Wave-1一致
-            int leftMin = DungeonworldMetrics.BorderThick + 4;
+            int leftMin = DungeonworldMetrics.PlayLeft + 4;
             int leftMax = DungeonworldMetrics.SpawnX - SpawnKeepAway - GaolBossRoom.Width;
             int rightMin = DungeonworldMetrics.ShaftLeft + DungeonworldMetrics.ShaftWidth + ShaftKeepAway;
-            int rightMax = DungeonworldMetrics.Width - DungeonworldMetrics.BorderThick - 4 - GaolBossRoom.Width;
+            int rightMax = DungeonworldMetrics.PlayRight - 4 - GaolBossRoom.Width;
             var leftSegs = new List<(int min, int max)> { (leftMin, leftMax) };
             var rightSegs = new List<(int min, int max)> { (rightMin, rightMax) };
             VerticalLinks.ExcludeZones(1, GaolBossRoom.Width, leftSegs);

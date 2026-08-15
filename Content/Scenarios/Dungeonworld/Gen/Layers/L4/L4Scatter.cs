@@ -129,8 +129,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
             },
         };
 
-        private static bool IsGreenWall(ushort wall)
-            => wall == L4Palette.WallBase || wall == L4Palette.WallSlab;
+        private static bool IsGreenWall(ushort wall) => L4Palette.IsLayerWall(wall);
 
         //自撒点向上找绿房实心天花(≤8行),返回悬挂起始行(镜像L2Scatter.FindCeiling)
         private static bool FindGreenCeiling(int x, int y, out int belowCeiling) {

@@ -100,8 +100,12 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
         internal bool SawSpinning;
         /// <summary>钳爪咬合帧余量（&gt;0 时钳画咬合帧）</summary>
         internal int ViceClampFrames;
-        /// <summary>镭射出弹前积光余量（&gt;0 时画枪口预闪与开火帧）</summary>
+        /// <summary>镭射聚能余量（&gt;0 时画枪口聚能与开火帧），配合 LaserFlashMax 归一化进度</summary>
         internal int LaserFlash;
+        /// <summary>本次聚能总帧数，绘制层据此算进度（长短聚能共用一套增长/收缩曲线）</summary>
+        internal int LaserFlashMax = 5;
+        /// <summary>镭射口余温计时，热扫收束后冷却光衰减用</summary>
+        internal int LaserHeat;
 
         //==================== 残影环形缓冲（本地表现）====================
 
@@ -230,6 +234,21 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
             }
             if (LaserFlash > 0) {
                 LaserFlash--;
+            }
+            if (LaserHeat > 0) {
+                LaserHeat--;
+            }
+
+            //长聚能的向心火花：密度前段铺、末四分之一静默（攒足再放的吸气拍）
+            if (!Main.dedServ && LaserFlash > 0 && LaserFlashMax >= 12 && Context.ToolAlpha[ArmLaser] > 0.5f) {
+                float chargeP = 1f - LaserFlash / (float)LaserFlashMax;
+                if (chargeP < 0.75f && Main.GameUpdateCount % 2 == 0) {
+                    Vector2 muzzle = LaserMuzzle();
+                    Vector2 from = muzzle + Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(36f, 74f);
+                    PRTLoader.NewParticle<PRT_Spark>(from, (muzzle - from) * 0.13f,
+                        Color.Lerp(WeldOrange, Color.White, Main.rand.NextFloat(0.35f)),
+                        Main.rand.NextFloat(0.4f, 0.8f))?.Configure(false, Main.rand.Next(8, 12));
+                }
             }
 
             float glow = Context.HeadAlpha * 0.5f;
@@ -361,6 +380,16 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
 
         /// <summary>给臂一记冲量（后坐/觉醒绷正等）</summary>
         internal void ImpulseArm(int arm, Vector2 impulse) => armVel[arm] += impulse;
+
+        /// <summary>发起一次镭射聚能：frames 帧后为开火拍；≥12 帧的长聚能自动带向心火花与收缩拍</summary>
+        internal void ChargeLaser(int frames) {
+            LaserFlash = frames;
+            LaserFlashMax = Math.Max(frames, 1);
+        }
+
+        /// <summary>镭射臂枪口世界位（沿工具口方向探出）</summary>
+        internal Vector2 LaserMuzzle()
+            => armPos[ArmLaser] + (armRot[ArmLaser] + MathHelper.PiOver2).ToRotationVector2() * 24f;
 
         /// <summary>把臂直接摆到某点并清速（重构演出的散点起位）</summary>
         internal void PlaceArm(int arm, Vector2 pos) {
@@ -788,13 +817,30 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
                 }
             }
 
-            //镭射出弹前积光
+            //镭射聚能预闪：随进度增长，临射前一口收缩（攒-收-放）
             if (LaserFlash > 0 && Context.ToolAlpha[ArmLaser] > 0.5f) {
                 EnsureBegin();
-                float k = LaserFlash / 5f;
-                Vector2 muzzle = armPos[ArmLaser] + (armRot[ArmLaser] + MathHelper.PiOver2).ToRotationVector2() * 24f;
-                sb.Draw(glow, muzzle - Main.screenPosition, null, WeldOrange * (0.5f * k), 0f,
-                    gOrigin, new Vector2((6f + 10f * (1f - k)) * 2f / glow.Width), SpriteEffects.None, 0f);
+                float p = 1f - LaserFlash / (float)Math.Max(LaserFlashMax, 1);
+                float collapse = p > 0.8f ? MathHelper.Lerp(1f, 0.42f, (p - 0.8f) / 0.2f) : 1f;
+                float radius = (5f + 14f * p * p) * collapse;
+                Vector2 muzzle = LaserMuzzle();
+                sb.Draw(glow, muzzle - Main.screenPosition, null, WeldOrange * (0.28f + 0.5f * p), 0f,
+                    gOrigin, new Vector2(radius * 2f / glow.Width), SpriteEffects.None, 0f);
+                //长聚能补一枚旋转星芒：读出"能量在攒"
+                Texture2D chargeStar = CWRAsset.StarTexture?.Value;
+                if (chargeStar != null && LaserFlashMax >= 12) {
+                    sb.Draw(chargeStar, muzzle - Main.screenPosition, null,
+                        WeldOrange * (0.55f * p * collapse), Main.GlobalTimeWrappedHourly * 4.2f,
+                        chargeStar.Size() * 0.5f, (0.08f + 0.15f * p) * collapse, SpriteEffects.None, 0f);
+                }
+            }
+
+            //镭射口余温：热扫收束后的冷却光
+            if (LaserHeat > 0 && Context.ToolAlpha[ArmLaser] > 0.5f) {
+                EnsureBegin();
+                float heat = LaserHeat / 45f;
+                sb.Draw(glow, LaserMuzzle() - Main.screenPosition, null, WeldOrange * (0.4f * heat), 0f,
+                    gOrigin, new Vector2(14f * 2f / glow.Width), SpriteEffects.None, 0f);
             }
 
             //目镜红点脉冲（扫光束移到 BeamLine 层）

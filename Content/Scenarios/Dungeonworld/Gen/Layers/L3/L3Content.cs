@@ -31,6 +31,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
         private const int PitchMaze = 68;
         private const int PitchForbidden = 62;
         private const int MinPitch = 44;
+        //节距抖动幅度:等距甲板一眼看穿是程序生成的,±5够打散又不撞MinPitch
+        private const int PitchJitter = 5;
         //检索廊净高(主干道档,§2.5)
         private const int GalleryClearance = 5;
         //挂房地板=廊地板上收10行(含壳+padding贴住廊预留带,楼梯井落口刚好一跳程)
@@ -80,8 +82,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
             LayerBand band = ctx.Band;
             L3Lights.ResetCounters();
 
-            int xLeft = DungeonworldMetrics.BorderThick + 6;
-            int xRight = DungeonworldMetrics.Width - DungeonworldMetrics.BorderThick - 6;
+            int xLeft = DungeonworldMetrics.PlayLeft + 6;
+            int xRight = DungeonworldMetrics.PlayRight - 6;
             int usableTop = band.Top + 8;
             //最底廊的预留带(廊地板+3)不得触碰P30脊预留(SpineInteriorTop-1)
             int bottomLimit = band.SpineInteriorTop - 4;
@@ -99,6 +101,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                     DeckZone.Forbidden => PitchForbidden,
                     _ => PitchMaze,
                 };
+                //节距抖动:等距甲板从竖井里看下去是一把标尺,层高不齐才像一座楼
+                //(抖动量压在MinPitch之上:最小的阅览节距52-5=47仍高于下限44)
+                pitch += rand.Next(-PitchJitter, PitchJitter + 1);
                 int floor = System.Math.Min(y + pitch, bottomLimit);
                 if (bottomLimit - floor < MinPitch) {
                     floor = bottomLimit;
@@ -114,7 +119,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
             //2) 检索廊:逐列CanReserve扫描成段(足印天然切段)→预留→刻画
             int segmentsTotal = 0;
             foreach (Deck deck in decks) {
-                BuildGallery(ctx, deck, xLeft, xRight);
+                BuildGallery(ctx, deck, xLeft, xRight, rand);
                 deck.SegmentDownLinks = new int[deck.Segments.Count];
                 segmentsTotal += deck.Segments.Count;
             }
@@ -142,13 +147,25 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
             //8) 最底廊→层脊落井
             int spineWells = RouteSpineWells(decks[^1], band);
 
-            //9) 圆斑混墙:蓝基55%+Slab45%(F32,半径取大;禁书带已Slab主调)
+            //9) 圆斑混墙:蓝基/Slab/Tiled三变体(F32,半径取大;禁书带已Slab主调)
+            //小盘Tiled压在大盘Slab之上,三种变体交叠出来的边界比两种碎得多
             int disks = 22;
             for (int d = 0; d < disks; d++) {
                 L3Palette.WallDisk(rand.Next(xLeft, xRight),
                     rand.Next(band.Top + 40, forbiddenTop),
                     rand.Next(100, 161), L3Palette.WallSlab);
             }
+            int tiledDisks = 14;
+            for (int d = 0; d < tiledDisks; d++) {
+                L3Palette.WallDisk(rand.Next(xLeft, xRight),
+                    rand.Next(band.Top + 40, forbiddenTop),
+                    rand.Next(55, 106), L3Palette.WallTiled);
+            }
+
+            //9b) 基调层染:纸墨褐洗到阅览区与迷宫区。禁书区留素蓝——
+            //暗区的身份是"看不清",染上反而把它洗亮了
+            LayerTint.TintReport tint = L3Palette.PaperWash(
+                new Rectangle(xLeft, band.Top, xRight - xLeft, forbiddenTop - band.Top));
 
             //10) 撒布声明(P55统一执行,契约纪律5)
             ctx.Scatter.AddRange(L3Scatter.Entries(new L3Zones(readingBottom, forbiddenTop)));
@@ -171,7 +188,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                 + $" 抄{caps.Scriptoria} 灯房{caps.LampRooms} 禁{caps.Vaults}"
                 + $" 忏{caps.Confessionals} 坠{caps.Fallings} 井站{caps.Stations})"
                 + $" chains={chains} drops={drops} 塔顶井={towerLinks} 廊际井={wells} 落脊井={spineWells}"
-                + $" 灯=亮{L3Lights.LampsLit}/灭{L3Lights.LampsOff} 开关={L3Lights.SwitchesPlaced}"
+                + $" 纸墨褐层染={tint} 灯=亮{L3Lights.LampsLit}/灭{L3Lights.LampsOff} 开关={L3Lights.SwitchesPlaced}"
                 + $" 家具={furnPlaced}成/{furnRejected}拒 grid={ctx.Grid.ReserveOk}留/{ctx.Grid.ReserveReject}拒"
                 + $" graphConnected={ctx.Graph.IsConnected()}(分量间由检索廊/层脊桥接,洪泛为准)");
         }
@@ -183,7 +200,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
         //==================== 检索廊(甲板动脉):扫描-预留-刻画 ====================
 
         //廊预留带:天花缓冲1+内膛5+地板2+落口缓冲1=9行,[Floor-6,Floor+3)
-        private static void BuildGallery(LayerBuildContext ctx, Deck deck, int xLeft, int xRight) {
+        private static void BuildGallery(LayerBuildContext ctx, Deck deck, int xLeft, int xRight,
+            UnifiedRandom rand) {
             int top = deck.Floor - GalleryClearance - 1;
             int runStart = -1;
             for (int x = xLeft; x <= xRight; x++) {
@@ -197,8 +215,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                         int segL = runStart + 1;
                         int segR = x - 1;
                         ctx.Grid.MarkUnchecked(new Rectangle(segL - 1, top, segR - segL + 2, 9));
-                        TileBrush.CarveRect(segL, deck.Floor - GalleryClearance, segR, deck.Floor,
-                            deck.Zone == DeckZone.Forbidden ? L3Palette.WallSlab : L3Palette.WallBase);
+                        CarveGallerySegment(deck, segL, segR, rand);
                         deck.Segments.Add((segL, segR));
                     }
                     runStart = -1;
@@ -208,6 +225,51 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                 CWRMod.Instance.Logger.Error(
                     $"[L3Content] 甲板廊y={deck.Floor}零可用段,足印占满整幅?责任=P30预留量复核");
             }
+        }
+
+        //段内剖面节奏:直管走40~70列后换一段阅览湾或收窄,再回直管。
+        //一条净高5的直管能横穿近1900列、还要在21层甲板上重复——这是全世界最大的一片
+        //单调面;三种剖面全部压在P30已预留的9行带[Floor-6,Floor+3)内,不越界。
+        //阅览湾:抬顶1+落地1=净高7,进湾自由下落、出湾1格自动登阶(F3),不断路
+        //收窄  :压顶1=净高4,仍高于支线走廊底线3
+        private static void CarveGallerySegment(Deck deck, int segL, int segR, UnifiedRandom rand) {
+            ushort wall = SegmentWall(deck.Zone, rand);
+            int x = segL;
+            bool straight = true;
+            while (x < segR) {
+                bool bay = !straight && rand.Next(5) < 3;
+                int run = straight ? rand.Next(40, 71)
+                    : bay ? rand.Next(10, 21) : rand.Next(6, 13);
+                int end = System.Math.Min(x + run, segR);
+                //末尾不留短头:剩不到一个变化段就并进当前段走完
+                if (segR - end < 8) {
+                    end = segR;
+                }
+                int carveTop = deck.Floor - GalleryClearance;
+                int carveBottom = deck.Floor;
+                if (!straight && bay) {
+                    carveTop--;
+                    carveBottom++;
+                }
+                else if (!straight) {
+                    carveTop++;
+                }
+                TileBrush.CarveRect(x, carveTop, end, carveBottom, wall);
+                x = end;
+                straight = !straight;
+            }
+        }
+
+        //逐段换墙变体:蓝墙原版三种,以前整层只在基/Slab之间按区二选一
+        private static ushort SegmentWall(DeckZone zone, UnifiedRandom rand) {
+            if (zone == DeckZone.Forbidden) {
+                //禁书带保Slab暗调,偶尔掺一段Tiled
+                return rand.NextBool(5) ? L3Palette.WallTiled : L3Palette.WallSlab;
+            }
+            int roll = rand.Next(100);
+            return roll < 55 ? L3Palette.WallBase
+                : roll < 85 ? L3Palette.WallSlab
+                : L3Palette.WallTiled;
         }
 
         //==================== 挂房布置 ====================

@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
     {
         internal readonly LayerBand Band = band;
 
-        //管辖=该带内膛(扣除世界边界),越带预留天然被拒(§1.2隔离带纪律)
+        //管辖=该带内膛(扣除左右钳制死区,见PlayLeft/PlayRight),越带预留天然被拒(§1.2隔离带纪律)
         internal readonly OccupancyGrid Grid = new(new Rectangle(
-            DungeonworldMetrics.BorderThick, band.Top,
-            DungeonworldMetrics.Width - DungeonworldMetrics.BorderThick * 2,
+            DungeonworldMetrics.PlayLeft, band.Top,
+            DungeonworldMetrics.PlayRight - DungeonworldMetrics.PlayLeft,
             band.Bottom - band.Top));
 
         internal readonly RoomGraph Graph = new();

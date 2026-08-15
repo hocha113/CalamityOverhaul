@@ -64,8 +64,8 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Core
 
         /// <summary>滑步帧数</summary>
         public const int LaserStrafeFrames = 12;
-        /// <summary>单组双发窗口帧数</summary>
-        public const int LaserVolleyFrames = 16;
+        /// <summary>单组双发窗口帧数（每发出膛前 8 帧积光）</summary>
+        public const int LaserVolleyFrames = 20;
         /// <summary>脉冲满速 px/f（首组 80% 热身）</summary>
         public const float LaserPulseSpeed = 26f;
 

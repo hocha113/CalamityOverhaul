@@ -17,8 +17,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
         /// <summary>两次唤犬的间隔（帧）</summary>
         private const int CooldownFrames = 22;
 
-        /// <summary>同时在场的犬数上限，超编时最老的那只先散</summary>
-        private const int MaxHounds = 6;
+        /// <summary>同时在场的犬数上限，超编时最老的那只先散；画境题跋卡也读它报数</summary>
+        internal const int MaxHounds = 6;
 
         private int houndCooldown;
 

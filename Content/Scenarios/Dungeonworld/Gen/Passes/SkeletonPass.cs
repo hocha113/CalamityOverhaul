@@ -18,16 +18,17 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
             int width = Main.maxTilesX;
             int height = Main.maxTilesY;
 
-            //逐行砖色表,M0全蓝,换色只动Bands
+            //逐行砖色表,换色只动Bands;隔离带由BrickForRow切成上下两半的过渡带
             ushort[] rowBrick = new ushort[height];
             for (int y = 0; y < height; y++) {
-                rowBrick[y] = DungeonworldMetrics.BandForRow(y)?.Brick ?? TileID.BlueDungeonBrick;
+                rowBrick[y] = DungeonworldMetrics.BrickForRow(y);
             }
 
             for (int x = 0; x < width; x++) {
                 progress.Set(x / (double)(width - 1));
-                bool sideBorder = x < DungeonworldMetrics.BorderThick
-                    || x >= width - DungeonworldMetrics.BorderThick;
+                //侧边实心带一路填到玩家钳制线,天空带内也不留"能飞进却撞隐形墙"的缝
+                bool sideBorder = x < DungeonworldMetrics.PlayLeft
+                    || x >= DungeonworldMetrics.PlayRight;
                 for (int y = 0; y < height; y++) {
                     bool solid = y >= DungeonworldMetrics.SkyRows
                         || y < DungeonworldMetrics.BorderThick

@@ -33,6 +33,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         private static readonly Color RainVoid = new(7, 9, 11);
         private static readonly Color BloodDeep = new(18, 4, 7);
         private static readonly Color RainDeep = new(14, 18, 21);
+        private static readonly Color BloodMid = new(41, 10, 14);
+        private static readonly Color RainMid = new(28, 35, 38);
         private static readonly Color BloodAccent = new(198, 66, 60);
         private static readonly Color RainAccent = new(96, 120, 126);
         private static readonly Color BloodGlow = new(246, 133, 112);
@@ -48,6 +50,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         /// <summary>深水底色（CPU 回退面板底）</summary>
         public static Color Deep(float rain) => Color.Lerp(BloodDeep, RainDeep, rain);
 
+        /// <summary>中间调（CPU 回退的天空带）</summary>
+        public static Color Mid(float rain) => Color.Lerp(BloodMid, RainMid, rain);
+
         /// <summary>主强调色：血红 ⇄ 雨青</summary>
         public static Color Accent(float rain) => Color.Lerp(BloodAccent, RainAccent, rain);
 
@@ -61,43 +66,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         public static Color TextDim(float rain) => Color.Lerp(BloodTextDim, RainTextDim, rain);
         #endregion
 
-        #region 水鏡几何
-        /// <summary>鏡体着色器 quad 宽</summary>
-        public const int MirrorW = 110;
+        #region 掌中缩影几何
+        /// <summary>缩影画片宽（横卷小片）</summary>
+        public const int MiniW = 98;
 
-        /// <summary>鏡体着色器 quad 高</summary>
-        public const int MirrorH = 102;
+        /// <summary>缩影画片高</summary>
+        public const int MiniH = 56;
 
-        /// <summary>鏡内有效半宽/半高（与 KikasaHud.fx 的 halfSize = res*0.5-6 对齐）</summary>
-        public const float RimHalfW = MirrorW * 0.5f - 6f;
-        public const float RimHalfH = MirrorH * 0.5f - 6f;
-
-        /// <summary>HUD 锚点（鏡心）距屏幕左下的偏移</summary>
-        public static readonly Vector2 AnchorOffset = new(86f, -90f);
-
-        /// <summary>满水位时水面线在鏡内的 uv 高度（与湖窗 WaterLineY 同值）</summary>
-        public const float WaterLineY = 0.30f;
-
-        /// <summary>空湖时的水面 uv（低于鏡底=无水）</summary>
-        public const float WaterEmptyY = 1.05f;
-
-        /// <summary>记忆剪影中心相对鏡心的偏移（沉睡在鏡底水里）</summary>
-        public static readonly Vector2 MemoryOffset = new(0f, 19f);
-
-        /// <summary>记忆剪影适配盒边长</summary>
-        public const float MemoryFit = 40f;
-
-        /// <summary>伞章圆心相对鏡心的偏移（顶针坐在拱顶上，弯钩垂进窗内）</summary>
-        public static readonly Vector2 SealOffset = new(0f, -58f);
-
-        /// <summary>伞章半径</summary>
-        public const float SealR = 11f;
-
-        /// <summary>伞拱圆心相对鏡心的偏移（domeCy = -RimHalfH + RimHalfW，与 fx 对齐）</summary>
-        public static readonly Vector2 DomeCenterOffset = new(0f, RimHalfW - RimHalfH);
-
-        /// <summary>沉溺冷却弧半径（贴着伞拱外缘）</summary>
-        public const float CooldownArcR = RimHalfW + 6f;
+        /// <summary>HUD 锚点（缩影中心）距屏幕左下的偏移</summary>
+        public static readonly Vector2 AnchorOffset = new(80f, -66f);
         #endregion
 
         /// <summary>异相位呼吸波，0~1 缓慢脉动</summary>

@@ -22,9 +22,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
             LayerPlans.Reset();
             ScatterEngine.ResetCounters();
 
-            //七带占用栅格内存账(R5护栏):栅格=bool[宽1984,带行数],每格1字节——
-            //L1/L2(150行)各≈0.30MB,L3弹性带(1348行)≈2.67MB,L4(1000)≈1.98MB,
-            //L5(1400)≈2.78MB,L6(1200)≈2.38MB,L7(220)≈0.44MB,合计≈10.9MB,
+            //七带占用栅格内存账(R5护栏):栅格=bool[宽1916,带行数],每格1字节——
+            //L1/L2(150行)各≈0.29MB,L3弹性带(1348行)≈2.58MB,L4(1000)≈1.92MB,
+            //L5(1400)≈2.68MB,L6(1200)≈2.30MB,L7(220)≈0.42MB,合计≈10.5MB,
             //低于P80洪泛visited矩阵(12MB);单次生成生命周期,Reset置null可回收
             LayerBand[] bands = DungeonworldMetrics.Bands;
             LayerPlans.L1 = BuildContext(bands[0]);
@@ -71,8 +71,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
         private static LayerBuildContext BuildContext(LayerBand band) {
             var ctx = new LayerBuildContext(band);
             ctx.Grid.MarkUnchecked(new Rectangle(
-                DungeonworldMetrics.BorderThick, band.SpineInteriorTop - 1,
-                DungeonworldMetrics.Width - DungeonworldMetrics.BorderThick * 2,
+                DungeonworldMetrics.PlayLeft, band.SpineInteriorTop - 1,
+                DungeonworldMetrics.PlayRight - DungeonworldMetrics.PlayLeft,
                 band.Bottom - (band.SpineInteriorTop - 1)));
             ctx.Grid.MarkUnchecked(new Rectangle(
                 DungeonworldMetrics.ShaftLeft - 2, band.Top,

@@ -73,6 +73,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                 if (ui == null) {
                     return;
                 }
+                //画卷开着时按键=收画开窗，别把两张全屏叠在一起
+                UI.KikasaSceneUI scene = UI.KikasaSceneUI.Instance;
+                if (scene?.IsOpen == true) {
+                    scene.Close();
+                }
                 if (ui.IsOpen) {
                     ui.Close();
                 }

@@ -911,6 +911,8 @@ KikasaText: {
 		ExtractHintFormat: Click to retrieve {0}
 		IdleHintFormat: Hold an item and press {0} to sink it · Click outside to close
 		EmptyHint: The lakebed is empty—only the sound of water
+		ViewOnlyFooter: The lake hasn't risen to your feet yet—look, don't touch
+		SummonHintFormat: Press {0} to call it to fight
 	}
 
 	KikasaServantPlayer: {
@@ -921,10 +923,23 @@ KikasaText: {
 	}
 
 	KikasaHud: {
+		ScrollName: Lakeside Village Scroll
+		OpenTag: Click to unroll the painting
+	}
+
+	KikasaSceneUI: {
+		SceneTitle: Lakeside Village Scroll
+		LakeTag: Blood Lake
+		HoundTag: Black Hound
 		MemoryEmpty: The lakebed is still empty
 		ServantOutTag: It's out doing your work
-		DomainHintFormat: Press {0} to raise the blood lake
-		OpenHintFormat: Click or press {0} to toggle the lake window
+		DryHintFormat: Press {0} to raise the blood lake
+		ReflectAwake: The reflection is awake
+		ReflectAsleep: The reflection is asleep
+		DreamTitle: Ghost Dream
+		InDreamLine: You are inside the dream
+		HoundCountFormat: Hounds afield {0} / {1}
+		DreamHint: In the dream, hold left-click—the black water keeps spitting out hounds
 	}
 
 	KikasaHudLead: {
@@ -935,8 +950,8 @@ KikasaText: {
 		SinkBody: The lake is your private vault. Hold an item and press the sink key to drop it in; aim at a living thing and press the same key, and the lake will drag it under.
 		SinkPrompt: Once the water reaches your feet, press {0} while holding an item or aiming at a creature
 		VaultTitle: Open the Lake Window
-		VaultBody: Everything you sank drifts in the blood water. Hold the umbrella, open the window, click one, and the lake hands it back.
-		VaultPrompt: Hold the umbrella and press {0}, or click the water mirror at the bottom left
+		VaultBody: Everything you sank drifts in the blood water. Open the window, click one, and the lake hands it back.
+		VaultPrompt: Open the little scroll at the bottom left and click the blood lake in it; or hold the umbrella and press {0}
 		SummonTitle: Command the Servant
 		SummonBody: The lake always remembers the last creature drowned in its grip. Call its servant to fight for you; press again to dismiss it.
 		SummonPrompt: Press {0}

@@ -176,6 +176,23 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
                     }
                 }
             }
+            //===死区审计:玩家钳制线外(x<PlayLeft或≥PlayRight)必须保持骨架实心===
+            //原版BordersMovement把玩家挡在离左右边缘约41格外,这里出现任何可通行格
+            //或液体都是"地图上看得见却永远走不到"的废几何,责任=越界写入的pass
+            long edgeDeadBad = 0;
+            for (int x = 0; x < width; x++) {
+                if (x == DungeonworldMetrics.PlayLeft) {
+                    x = DungeonworldMetrics.PlayRight;
+                }
+                for (int y = 0; y < height; y++) {
+                    if (Passable(x, y) || Main.tile[x, y].LiquidAmount > 0) {
+                        edgeDeadBad++;
+                    }
+                }
+            }
+            if (edgeDeadBad > 0) {
+                log.Error($"[Dungeonworld] P80 边缘死区{edgeDeadBad}格可通行/含液体,玩家永远到不了,责任=越界写入的pass");
+            }
             long auditMs = watch.ElapsedMilliseconds;
 
             //===密度预算指标(§3.5"防实心大陆"):挖空率/沿脊最大空白段/节点数===
@@ -188,7 +205,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
                 DensityBudget budget = DensityBudgets.ByBand[i];
                 long passableCells = 0;
                 int maxBlank = 0, blank = 0;
-                for (int x = DungeonworldMetrics.BorderThick; x < width - DungeonworldMetrics.BorderThick; x++) {
+                for (int x = DungeonworldMetrics.PlayLeft; x < DungeonworldMetrics.PlayRight; x++) {
                     //列开口=脊地板为可通行(平台/下探口)或脊顶以上有通行格(房/坡道/井/竖井)
                     bool open = Passable(x, band.SpineFloorTop);
                     for (int y = band.Top; y < band.Bottom; y++) {
@@ -206,7 +223,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
                         maxBlank = blank;
                     }
                 }
-                long bandArea = (long)(width - DungeonworldMetrics.BorderThick * 2) * (band.Bottom - band.Top);
+                long bandArea = (long)(DungeonworldMetrics.PlayRight - DungeonworldMetrics.PlayLeft) * (band.Bottom - band.Top);
                 double carve = passableCells * 100.0 / bandArea;
                 int nodes = NodeCount(i);
                 if (budget.HardEnabled) {
@@ -242,7 +259,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
                 + $" bands={bandResults} bossRoom={bossReport}"
                 //隔离带楼梯井位(Wave-2第二通道族),与P20日志互证
                 + $" wells=[{VerticalLinks.Summary()}]"
-                + $" doorAudit={doorFail}/{doorTotal} furnAudit={anchorFail}/{anchorCells}"
+                + $" doorAudit={doorFail}/{doorTotal} furnAudit={anchorFail}/{anchorCells} edgeDead={edgeDeadBad}"
                 + $" scatter={ScatterEngine.TotalPlaced}/{ScatterEngine.TotalAttempts}"
                 + $" downedBoss3={NPC.downedBoss3} hardMode={Main.hardMode}"
                 //地狱判定线与最深可达行的余量在册,阈值排查结论见DungeonworldMetrics头注释

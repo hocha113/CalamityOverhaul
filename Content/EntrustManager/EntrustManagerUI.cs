@@ -56,8 +56,11 @@ namespace CalamityOverhaul.Content.EntrustManager
         public static LocalizedText EntryStatusSuspended { get; private set; }
         public static LocalizedText EntryStatusCompleted { get; private set; }
         public static LocalizedText EntryStatusFailed { get; private set; }
+        public static LocalizedText ProviderLabelText { get; private set; }
 
         public override void SetStaticDefaults() {
+            EntrustProviders.InitLocalization(this);
+            ProviderLabelText = this.GetLocalization(nameof(ProviderLabelText), () => "委托人");
             TitleText = this.GetLocalization(nameof(TitleText), () => "任务管理");
             CategoryAll = this.GetLocalization(nameof(CategoryAll), () => "全部");
             CategoryActive = this.GetLocalization(nameof(CategoryActive), () => "进行中");
@@ -151,6 +154,11 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         public EntrustEntryData GetEntry(string key) {
             return allEntries.Find(e => e.Key == key);
+        }
+
+        public override void UnLoad() {
+            //提供者实例持有本地化引用，卸载时放掉
+            EntrustProviders.UnloadInstances();
         }
 
         public void ClearAll() {
@@ -307,7 +315,6 @@ namespace CalamityOverhaul.Content.EntrustManager
 
             foreach (var entry in allEntries) {
                 entry.OnUpdate();
-                entry.EntryStyle?.Update();
 
                 float expandTarget = entry.IsExpanded ? 1f : 0f;
                 entry.ExpandProgress = MathHelper.Lerp(entry.ExpandProgress, expandTarget, 0.14f);
@@ -546,8 +553,8 @@ namespace CalamityOverhaul.Content.EntrustManager
                     totalLineH += (int)(font.MeasureString(wl.TrimEnd('-', ' ')).Y * textScale) + 2;
                 }
             }
-            //展开高=分隔6+行高+底边8
-            return 6 + totalLineH + 8;
+            //展开高=分隔6+行高+底边8+提供者落款
+            return 6 + totalLineH + 8 + (currentStyle?.GetProviderSignatureHeight(entry) ?? 0);
         }
 
         private float GetTotalEntriesHeight() {
