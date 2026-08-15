@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -17,10 +16,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
     /// 沉入当帧物品即入账（演出只是幽灵视觉），提取先入"在途"、凝实拍才交付背包，
     /// 存档时在途物折返湖藏——中途退出不丢不复制。数据只活在所有者本机，同储钱罐语义。
     /// </summary>
-    public class KikasaVaultPlayer : ModPlayer, ILocalizedModType
+    public class KikasaVaultPlayer : ModPlayer
     {
-        public string LocalizationCategory => "Legend.KikasaText";
-
         /// <summary>湖底容量</summary>
         public const int Capacity = 40;
 
@@ -29,16 +26,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
 
         /// <summary>提取演出在途的物品；交付背包前的暂存，存档时折返湖藏</summary>
         internal readonly List<Item> inFlight = [];
-
-        public static LocalizedText LakeNotReady { get; private set; }
-        public static LocalizedText UmbrellaRefuse { get; private set; }
-        public static LocalizedText VaultFull { get; private set; }
-
-        public override void SetStaticDefaults() {
-            LakeNotReady = this.GetLocalization(nameof(LakeNotReady), () => "湖还没涨到脚边");
-            UmbrellaRefuse = this.GetLocalization(nameof(UmbrellaRefuse), () => "伞沉不进自己撑开的湖");
-            VaultFull = this.GetLocalization(nameof(VaultFull), () => "湖底沉不下更多了");
-        }
 
         /// <summary>血湖是否可收发物品：本人领域非收合/翻转/鬼梦阶段且水位已及脚——梦里没有那面湖</summary>
         public bool LakeReady {
@@ -86,7 +73,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                         ui.Open();
                     }
                     else {
-                        Refuse(LakeNotReady);
+                        Refuse();
                     }
                 }
             }
@@ -111,16 +98,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                 return false;
             }
             if (!LakeReady) {
-                Refuse(LakeNotReady);
+                Refuse();
                 return false;
             }
             if (item.type == ModContent.ItemType<KikasaItem>()) {
                 //鬼伞是重开领域的钥匙，沉进去就捞不回来了
-                Refuse(UmbrellaRefuse);
+                Refuse();
                 return false;
             }
             if (Stored.Count >= Capacity) {
-                Refuse(VaultFull);
+                Refuse();
                 return false;
             }
 
@@ -171,11 +158,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
 
         //==================== 反馈与存档 ====================
 
-        private void Refuse(LocalizedText text) {
+        private void Refuse() {
             SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.55f, Pitch = -0.7f, MaxInstances = 2 }, Player.Center);
-            if (Main.netMode != NetmodeID.Server) {
-                CombatText.NewText(Player.Hitbox, new Color(190, 84, 80), text.Value);
-            }
         }
 
         public override void SaveData(TagCompound tag) {

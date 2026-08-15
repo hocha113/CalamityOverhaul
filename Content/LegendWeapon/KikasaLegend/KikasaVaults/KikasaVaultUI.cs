@@ -308,8 +308,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                     else if (!vault.LakeReady) {
                         //只读拒答：看得见，取不走——湖还没涨起来
                         SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.55f, Pitch = -0.7f, MaxInstances = 2 });
-                        CombatText.NewText(player.Hitbox, new Color(190, 84, 80),
-                            KikasaVaultPlayer.LakeNotReady.Value);
                     }
                 }
                 else if (!overPanel) {

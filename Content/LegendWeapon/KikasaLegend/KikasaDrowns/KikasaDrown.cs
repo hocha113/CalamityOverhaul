@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 {
@@ -105,24 +104,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
             //意图已明确指向生物，以下拒绝均消费按键
             if (!player.GetModPlayer<KikasaVaultPlayer>().LakeReady) {
-                Refuse(player, KikasaVaultPlayer.LakeNotReady);
+                Refuse(player);
                 return true;
             }
             if (Main.GameUpdateCount < localLockUntil
                 || KikasaDrownFX.HasActiveShowFor(player.whoAmI)) {
-                Refuse(player, KikasaDrownSystem.DrownBusy);
+                Refuse(player);
                 return true;
             }
             if (!IsEligibleTarget(hover)) {
                 //已被放逐/别只手攥着：湖收不了
-                Refuse(player, KikasaDrownSystem.BossRefuse);
+                Refuse(player);
                 return true;
             }
             float lakeY = LakeYOf(player);
             if (Vector2.Distance(hover.Center, player.Center) > MaxRange
                 || hover.Center.Y < lakeY - MaxGrabHeight
                 || hover.Center.Y > lakeY + MaxGrabDepth) {
-                Refuse(player, KikasaDrownSystem.DrownOutOfGrip);
+                Refuse(player);
                 return true;
             }
 
@@ -230,11 +229,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         private static float LakeYOf(Player player)
             => player.GetModPlayer<KikasaDomains.KikasaDomainPlayer>().LakeWorldY;
 
-        private static void Refuse(Player player, LocalizedText text) {
+        private static void Refuse(Player player) {
             SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.55f, Pitch = -0.7f, MaxInstances = 2 }, player.Center);
-            if (Main.netMode != NetmodeID.Server && text != null) {
-                CombatText.NewText(player.Hitbox, new Color(190, 84, 80), text.Value);
-            }
         }
 
         /// <summary>本机演出谢幕（完成或取消）后的冷却，由 FX 层回调</summary>

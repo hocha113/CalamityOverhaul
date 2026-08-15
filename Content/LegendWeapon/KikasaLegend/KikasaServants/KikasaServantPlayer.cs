@@ -30,16 +30,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         //本机乐观锁：召唤/遣返后的短冷却，防连点
         private uint localLockUntil;
 
-        public static LocalizedText ServantNoMemory { get; private set; }
         public static LocalizedText ServantUnknown { get; private set; }
-        public static LocalizedText ServantBusy { get; private set; }
-        public static LocalizedText MemoryStamp { get; private set; }
 
         public override void SetStaticDefaults() {
-            ServantNoMemory = this.GetLocalization(nameof(ServantNoMemory), () => "湖还没收过活物");
             ServantUnknown = this.GetLocalization(nameof(ServantUnknown), () => "湖还没学会驱使它");
-            ServantBusy = this.GetLocalization(nameof(ServantBusy), () => "湖底的手还没缓过来");
-            MemoryStamp = this.GetLocalization(nameof(MemoryStamp), () => "湖记住了它");
         }
 
         //==================== 记录 ====================
@@ -58,7 +52,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             }
             //轻声确认拍：湖把它收进了记性里
             SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.5f, Pitch = -0.8f, MaxInstances = 2 }, Player.Center);
-            CombatText.NewText(Player.Hitbox, new Color(190, 84, 80), MemoryStamp.Value);
         }
 
         //==================== 输入 ====================
@@ -95,9 +88,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 if (Main.GameUpdateCount < localLockUntil) {
                     return;
                 }
-                //已在溶解中：给个"没受理"的答话，别让按键静默吞掉
+                //已在溶解中：轻点一声表示没受理，别让按键静默吞掉
                 if (active.IsDismissing) {
-                    Refuse(ServantBusy);
+                    Refuse();
                     return;
                 }
                 active.BeginDismiss();
@@ -106,19 +99,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             }
 
             if (Main.GameUpdateCount < localLockUntil) {
-                Refuse(ServantBusy);
+                Refuse();
                 return;
             }
             if (!Player.GetModPlayer<KikasaVaultPlayer>().LakeReady) {
-                Refuse(KikasaVaultPlayer.LakeNotReady);
+                Refuse();
                 return;
             }
             if (LastDrownedType <= NPCID.None) {
-                Refuse(ServantNoMemory);
+                Refuse();
                 return;
             }
             if (!KikasaServantIndex.TryGet(LastDrownedType, out KikasaServantIndex.ServantSpawner spawner)) {
-                Refuse(ServantUnknown);
+                Refuse();
                 return;
             }
 
@@ -130,11 +123,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             localLockUntil = Main.GameUpdateCount + 45;
         }
 
-        private void Refuse(LocalizedText text) {
+        private void Refuse() {
             SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.55f, Pitch = -0.7f, MaxInstances = 2 }, Player.Center);
-            if (Main.netMode != NetmodeID.Server && text != null) {
-                CombatText.NewText(Player.Hitbox, new Color(190, 84, 80), text.Value);
-            }
         }
 
         //==================== 存档 ====================

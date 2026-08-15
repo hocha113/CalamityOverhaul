@@ -893,24 +893,6 @@ OnikiriTrialQuestLine: {
 }
 
 KikasaText: {
-	KikasaDrownSystem: {
-		BossRefuse: The lake cannot hold something that big
-		DrownBusy: The lake is still taking the last one
-		DrownOutOfGrip: Too far for the lake to reach
-	}
-
-	KikasaResetSystem: {
-		NeedRainForm: The ghost rain must fall first
-		ResetBusy: This rain has not stopped yet
-		ResetCooling: The rain has not gathered enough
-	}
-
-	KikasaVaultPlayer: {
-		LakeNotReady: The lake hasn't risen to your feet yet
-		UmbrellaRefuse: The umbrella won't sink into its own lake
-		VaultFull: The lakebed can't hold any more
-	}
-
 	KikasaVaultUI: {
 		Title: Lake Hoard
 		CountFormat: Sunken {0} / {1}
@@ -922,10 +904,7 @@ KikasaText: {
 	}
 
 	KikasaServantPlayer: {
-		ServantNoMemory: The lake hasn't swallowed anything living yet
 		ServantUnknown: The lake hasn't learned to command it
-		ServantBusy: The lake's hands haven't recovered yet
-		MemoryStamp: The lake remembers it
 	}
 
 	KikasaHud: {
@@ -968,6 +947,4 @@ KikasaText: {
 		SkipBtn: Skip
 		KeyUnbound: This step's key is unbound; bind it in Settings > Controls first, or click skip.
 	}
-
-	KikasaDreamSystem.ReflectAsleepHint: The reflection has not woken yet
 }

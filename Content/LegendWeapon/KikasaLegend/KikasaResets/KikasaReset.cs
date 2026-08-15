@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
 {
@@ -145,15 +144,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
             KikasaDomainPlayer domain = player.GetModPlayer<KikasaDomainPlayer>();
             if (domain.Phase != KikasaDomainPhase.Open || !domain.IsRainForm
                 || domain.RiseT < 0.999f) {
-                Refuse(player, KikasaResetSystem.NeedRainForm);
+                Refuse(player);
                 return;
             }
             if (Active != null) {
-                Refuse(player, KikasaResetSystem.ResetBusy);
+                Refuse(player);
                 return;
             }
             if (Main.GameUpdateCount < localLockUntil) {
-                Refuse(player, KikasaResetSystem.ResetCooling);
+                Refuse(player);
                 return;
             }
 
@@ -168,13 +167,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
             }
         }
 
-        private static void Refuse(Player player, LocalizedText text) {
+        private static void Refuse(Player player) {
             SoundEngine.PlaySound(SoundID.MenuTick with {
                 Volume = 0.55f, Pitch = -0.7f, MaxInstances = 2
             }, player.Center);
-            if (Main.netMode != NetmodeID.Server && text != null) {
-                CombatText.NewText(player.Hitbox, new Color(160, 178, 184), text.Value);
-            }
         }
 
         //==================== 权威路径 ====================

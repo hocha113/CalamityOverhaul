@@ -4,22 +4,13 @@ using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 {
-    /// <summary>鬼梦文案载体与表现泵（延迟雷、梦中氛围：烬灰/潮雾）</summary>
-    internal class KikasaDreamSystem : ModSystem, ILocalizedModType
+    /// <summary>鬼梦表现泵（延迟雷、梦中氛围：烬灰/潮雾）</summary>
+    internal class KikasaDreamSystem : ModSystem
     {
-        public string LocalizationCategory => "Legend.KikasaText";
-
-        public static LocalizedText ReflectAsleepHint { get; private set; }
-
-        public override void SetStaticDefaults() {
-            ReflectAsleepHint = this.GetLocalization(nameof(ReflectAsleepHint), () => "倒影还没醒");
-        }
-
         public override void PostUpdateEverything() {
             if (Main.dedServ) {
                 return;
@@ -101,12 +92,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             return false;
         }
 
-        /// <summary>拒绝反馈，同湖藏的语气：轻点一声 + 短浮字</summary>
-        internal static void Refuse(Player player, LocalizedText text) {
+        /// <summary>拒绝反馈：轻点一声，别让按键静默吞掉</summary>
+        internal static void Refuse(Player player) {
             SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.55f, Pitch = -0.7f, MaxInstances = 2 }, player.Center);
-            if (Main.netMode != NetmodeID.Server && text != null) {
-                CombatText.NewText(player.Hitbox, new Color(190, 84, 80), text.Value);
-            }
         }
     }
 }

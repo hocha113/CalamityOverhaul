@@ -893,24 +893,6 @@ OnikiriTrialQuestLine: {
 }
 
 KikasaText: {
-	KikasaDrownSystem: {
-		BossRefuse: 湖抱不动它
-		DrownBusy: 湖还在收上一个
-		DrownOutOfGrip: 够不到那么远
-	}
-
-	KikasaResetSystem: {
-		NeedRainForm: 得先落一场鬼雨
-		ResetBusy: 这场雨还没停
-		ResetCooling: 雨还没蓄够
-	}
-
-	KikasaVaultPlayer: {
-		LakeNotReady: 湖还没涨到脚边
-		UmbrellaRefuse: 伞沉不进自己撑开的湖
-		VaultFull: 湖底沉不下更多了
-	}
-
 	KikasaVaultUI: {
 		Title: 湖 藏
 		CountFormat: 沉物 {0} / {1}
@@ -922,10 +904,7 @@ KikasaText: {
 	}
 
 	KikasaServantPlayer: {
-		ServantNoMemory: 湖还没收过活物
 		ServantUnknown: 湖还没学会驱使它
-		ServantBusy: 湖底的手还没缓过来
-		MemoryStamp: 湖记住了它
 	}
 
 	KikasaHud: {
@@ -968,6 +947,4 @@ KikasaText: {
 		SkipBtn: 跳过
 		KeyUnbound: 这一步的按键未绑定；请先在 设置 > 控制 里绑定，或点击跳过。
 	}
-
-	KikasaDreamSystem.ReflectAsleepHint: 倒影还没醒
 }

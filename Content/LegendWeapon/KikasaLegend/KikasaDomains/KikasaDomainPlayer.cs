@@ -211,11 +211,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             if (CWRKeySystem.Kikasa_DreamReflect.JustPressed && AnyActive && !Player.mouseInterface) {
                 KikasaDomain.TryDreamReflect(Player, out _);
             }
-            //鬼梦拉入/归返；Open 稳态倒影未醒时给一句提示，别让人对着湖白按
+            //鬼梦拉入/归返；Open 稳态倒影未醒时轻点一声，别让人对着湖白按
             if (CWRKeySystem.Kikasa_DreamPull.JustPressed && AnyActive && !Player.mouseInterface) {
                 if (!KikasaDomain.TryDreamPull(Player, out _)
                     && Phase == KikasaDomainPhase.Open && RiseT >= 0.999f && !HoundReflection) {
-                    KikasaDreamSystem.Refuse(Player, KikasaDreamSystem.ReflectAsleepHint);
+                    KikasaDreamSystem.Refuse(Player);
                 }
             }
         }
