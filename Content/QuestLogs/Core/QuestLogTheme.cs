@@ -106,11 +106,12 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             Rectangle canvas = new(canvasX, bodyTop, Math.Max(80, canvasW), bodyH);
             Rectangle detail = new(w - detailBite, bodyTop, DetailW, bodyH);
 
-            //合卷键锚点由分区统一给出，容器判定与样式绘制读同一份
+            //合卷键与重看教程键锚点由分区统一给出，容器判定与样式绘制读同一份
             Rectangle mainClose = new(w - 46, 15, 32, 32);
+            Rectangle mainHelp = new(w - 84, 15, 32, 32);
 
             return new QuestLogLayout(full, header, rail, canvas, footer, detail,
-                mainClose, detailProgress);
+                mainClose, mainHelp, detailProgress);
         }
 
         #endregion
@@ -209,11 +210,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// <summary>合卷键命中区</summary>
         public readonly Rectangle MainClose;
 
+        /// <summary>重看教程键命中区，紧挨着合卷键左侧</summary>
+        public readonly Rectangle MainHelp;
+
         /// <summary>详情栏展开度 [0,1]</summary>
         public readonly float DetailProgress;
 
         public QuestLogLayout(Rectangle full, Rectangle header, Rectangle rail, Rectangle canvas,
-            Rectangle footer, Rectangle detail, Rectangle mainClose, float detailProgress) {
+            Rectangle footer, Rectangle detail, Rectangle mainClose, Rectangle mainHelp,
+            float detailProgress) {
             Full = full;
             Header = header;
             Rail = rail;
@@ -221,6 +226,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             Footer = footer;
             Detail = detail;
             MainClose = mainClose;
+            MainHelp = mainHelp;
             DetailProgress = detailProgress;
         }
 

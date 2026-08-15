@@ -899,6 +899,12 @@ KikasaText: {
 		DrownOutOfGrip: 够不到那么远
 	}
 
+	KikasaResetSystem: {
+		NeedRainForm: 得先落一场鬼雨
+		ResetBusy: 这场雨还没停
+		ResetCooling: 雨还没蓄够
+	}
+
 	KikasaVaultPlayer: {
 		LakeNotReady: 湖还没涨到脚边
 		UmbrellaRefuse: 伞沉不进自己撑开的湖

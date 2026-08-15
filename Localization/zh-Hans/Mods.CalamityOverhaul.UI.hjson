@@ -465,7 +465,6 @@ QuestManagerUI: {
 	EmptyHintText: 暂无任务...
 	TrackHintText: "[右键] 关注/取消关注"
 	SuspendHintText: "[中键] 挂起/恢复"
-	OpenHintText: 按 [L] 打开任务管理
 	HeaderStatusTag: ◈ ACTIVE
 	FooterStatsFormat: TOTAL: {0}  |  ACTIVE: {1}
 	ExpandHintText: "[左键] 展开/收起详情"
@@ -1018,39 +1017,56 @@ SHPCUI: {
 	Modify_Preset_C: 预设C
 }
 
-EntrustManagerLead: {
-	TextKeyPromptBound: 按 [{0}] 打开委托面板
-	TextKeyPromptWarnTitle: ⚠  委托快捷键尚未绑定！
-	TextKeyPromptDefaultKey: 当前按 [{0}]（默认键）可打开委托面板
-	TextKeyPromptBindHint: 建议前往  设置 → 控制  中绑定自定义按键
-	TextKeyPromptConfirmBtn: 我知道了
-	TextPanelIntroTitle: 委托操作说明
-	TextRightClickLabel: 右键单击委托条目
-	TextRightClickAction: " →  关注委托"
-	TextRightClickDesc: "     左侧追踪窗口将持续显示任务进度"
-	TextMiddleClickLabel: 中键单击委托条目
-	TextMiddleClickAction: " →  挂起委托"
-	TextMiddleClickDesc: "     暂时隐藏该委托，不在追踪窗口中显示"
-	TextStyleButtonTitle: 样式按钮提示
-	TextStyleButtonLabel: 左键单击高亮的小按钮
-	TextStyleButtonAction: " →  切换界面样式"
-	TextStyleButtonDesc: "     可以在几套界面风格之间循环切换"
-	TextConfirmBtn: 明白了
-	TextTrackPromptTitle: 关注感兴趣的委托
-	TextTrackPromptHintLabel: 右键单击委托
-	TextTrackPromptHintAction: " →  设为已关注"
-	TextTrackPromptDesc: "     被关注的委托会被固定显示在屏幕左侧的追踪栏中，方便随时查看进度"
-	TextTrackPromptNextBtn: 下一步
-	TextTrackerIntroTitle: 委托追踪栏
-	TextTrackerIntroLine1: 屏幕左侧的追踪栏会常驻显示所有被关注的委托
-	TextTrackerIntroLine2: 按住左键拖动它，可以在垂直方向调整位置
-	TextTrackerIntroLine3: 打开委托管理器时追踪栏会自动收起，避免遮挡
-	TextTrackerIntroNextBtn: 下一步
-	TextSuspendIntroTitle: 挂起不感兴趣的委托
-	TextSuspendIntroHintLabel: 中键单击委托
-	TextSuspendIntroHintAction: " →  挂起委托"
-	TextSuspendIntroDesc1: "     挂起后的委托不会出现在左侧追踪栏中，适合暂时搁置"
-	TextSuspendIntroDesc2: "     可在  已挂起  选项卡中找到它们并恢复关注"
+QuestBookGuideLead: {
+	WelcomeTitle: 这本书
+	WelcomeLine1: 书里摊着两样东西：任务图谱与委托卷宗。
+	WelcomeLine2: 图谱记主线走到哪一步，卷宗收各路人马托付给你的活儿。
+	RailTitle: 左栏的两枚书口
+	RailLine1: 上面一枚翻到 任务图谱。
+	RailLine2: 下面一枚翻到 委托卷宗。
+	RailLine3: 点书口就换站点，书不用合上。
+	ChartViewTitle: 摊开图谱
+	ChartViewLine1: 滚轮缩放，按住左键拖动平移。
+	ChartViewLine2: 视角跑远了，用页脚右侧的 归位 键拉回来。
+	ChartViewAct: 试着滚一下滚轮，或者把图拖开一段。
+	ChartNodeTitle: 点开一个节点
+	ChartNodeLine1: 节点上的记号就是它的状态：影线未启程，墨环在行中，蜡封待领赏，裂开的蜡封已结卷。
+	ChartNodeAct: 左键点圈出来的这一枚。
+	ChartDetailTitle: 右侧的记录条
+	ChartDetailLine1: 上半是这一节要做的事，下半是做完能领的东西。
+	ChartDetailLine2: 页脚的 一键领取 会把所有已结卷的赏一次收齐。
+	OutroTitle: 委托卷宗还空着
+	OutroLine1: 剧情推进时会有人把活儿托到这一站。
+	OutroLine2: 接到第一份委托时，这份教程会接着往下讲。
+	KeyPromptTitle: 有人托了活儿给你
+	KeyPromptLine1: 第一份委托已经收进卷宗，翻开看看。
+	KeyPromptBound: 按 [{0}] 打开任务书。
+	KeyPromptUnboundTitle: 任务书快捷键还没绑
+	KeyPromptUnboundLine: 默认键是 [{0}]，现在按它也能开。
+	KeyPromptBindHint: 要换键去 设置 → 控制 里改。
+	GotoTitle: 翻到委托卷宗
+	GotoLine1: 书会记住你上次停在哪一站，下次开书直接回到这里。
+	GotoAct: 点左栏下面那枚书口。
+	AnatomyTitle: 一条委托
+	AnatomyLine1: 左边的圆戳是委托人，中间是名目与进度，右边是当前状态。
+	AnatomyLine2: 展开后能看到正文、进度与落款。
+	AnatomyAct: 左键点这一行，把它摊开。
+	TrackTitle: 关注它
+	TrackLine1: 被关注的委托会钉在屏幕左侧的追踪栏里，不开书也看得见进度。
+	TrackAct: 右键单击这一行  →  关注。
+	TrackerTitle: 追踪栏
+	TrackerLine1: 左侧这一列常驻显示所有被关注的委托。
+	TrackerLine2: 按住左键上下拖，可以挪它的位置。
+	TrackerLine3: 打开任务书时它会自己收起来，不挡书页。
+	SuspendTitle: 挂起与分类
+	SuspendLine1: 中键单击一行  →  挂起，它就不再出现在追踪栏里。
+	SuspendLine2: 顶上四个页签分开放着 进行中 / 全部 / 已完成 / 挂起，挂起的去最后一个里找。
+	BtnConfirm: 明白了
+	BtnNext: 下一步
+	BtnSkipStep: 跳过这一步
+	BtnDismiss: 收起教程
+	BtnOpenBook: 直接打开
+	HelpButtonHover: 重看任务书教程
 }
 
 CyberwareSkillRadialUI: {

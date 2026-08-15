@@ -467,7 +467,6 @@ QuestManagerUI: {
 	EmptyHintText: Nenhuma missao disponivel...
 	TrackHintText: "[Clique Direito] Rastrear/Parar Rastrear"
 	SuspendHintText: "[Clique do Meio] Suspender/Retomar"
-	OpenHintText: Pressione [L] para abrir o Gerenciamento de Missoes
 	HeaderStatusTag: ◈ ATIVA
 	FooterStatsFormat: TOTAL: {0} | ATIVAS: {1}
 	ExpandHintText: "[Clique Esquerdo] Expandir/Recolher Detalhes"
@@ -1020,39 +1019,56 @@ SHPCUI: {
 	Modify_Preset_C: PRESET-C
 }
 
-EntrustManagerLead: {
-	TextKeyPromptBound: Pressione [{0}] para abrir o Painel de Comissões
-	TextKeyPromptWarnTitle: ⚠  Tecla de Atalho de Comissao Nao Vinculada!
-	TextKeyPromptDefaultKey: Pressione [{0}] (Tecla Padrao) para abrir o Painel de Comissões
-	TextKeyPromptBindHint: Recomenda-se vincular uma tecla personalizada em Configuracoes → Controles
-	TextKeyPromptConfirmBtn: Entendi
-	TextPanelIntroTitle: Instrucoes de Comissao
-	TextRightClickLabel: Clique direito em uma entrada de comissao
-	TextRightClickAction: " →  Rastrear Comissao"
-	TextRightClickDesc: "     A janela de rastreamento a esquerda exibira continuamente o progresso da missao"
-	TextMiddleClickLabel: Clique do meio em uma entrada de comissao
-	TextMiddleClickAction: " →  Suspender Comissao"
-	TextMiddleClickDesc: "     Oculta temporariamente a comissao, removendo-a da janela de rastreamento"
-	TextStyleButtonTitle: Dica do Botão de Estilo
-	TextStyleButtonLabel: Clique esquerdo no pequeno botão no topo
-	TextStyleButtonAction: " →  Alternar Estilo de UI"
-	TextStyleButtonDesc: "     Alterna entre os estilos de UI Deserto, Draedon e Floresta"
-	TextConfirmBtn: Entendido
-	TextTrackPromptTitle: Rastrear Comissoes de Interesse
-	TextTrackPromptHintLabel: Clique direito em uma comissao
-	TextTrackPromptHintAction: " →  Definir como Rastreada"
-	TextTrackPromptDesc: "     Comissoes rastreadas serao fixadas no rastreador no lado esquerdo da tela para facilitar o monitoramento do progresso"
-	TextTrackPromptNextBtn: Proximo
-	TextTrackerIntroTitle: Rastreador de Comissoes
-	TextTrackerIntroLine1: O rastreador no lado esquerdo da tela exibe persistentemente todas as comissoes rastreadas
-	TextTrackerIntroLine2: Segure o Clique esquerdo para arrastar e ajustar sua posicao vertical
-	TextTrackerIntroLine3: O rastreador recolhe automaticamente quando o Gerenciador de Comissoes esta aberto para evitar obstruir sua visao
-	TextTrackerIntroNextBtn: Proximo
-	TextSuspendIntroTitle: Suspender Comissoes Indesejadas
-	TextSuspendIntroHintLabel: Clique do meio em uma comissao
-	TextSuspendIntroHintAction: " →  Suspender Comissao"
-	TextSuspendIntroDesc1: "     Comissoes suspensas nao aparecerao no rastreador a esquerda, perfeito para arquiva-las temporariamente"
-	TextSuspendIntroDesc2: "     Voce pode encontra-las na aba Suspensas para restaurar o rastreamento"
+QuestBookGuideLead: {
+	// WelcomeTitle: This Book
+	// WelcomeLine1: Two things lie open in here: the quest chart and the commission dossier.
+	// WelcomeLine2: The chart records how far the main story has come; the dossier collects the jobs others have entrusted to you.
+	// RailTitle: The Two Tabs on the Left
+	// RailLine1: The upper one turns to the Quest Chart.
+	// RailLine2: The lower one turns to the Commission Dossier.
+	// RailLine3: Click a tab to switch stations. No need to close the book.
+	// ChartViewTitle: Reading the Chart
+	// ChartViewLine1: Scroll to zoom, hold Left-click to drag and pan.
+	// ChartViewLine2: If the view wanders off, the Recenter key at the bottom right brings it back.
+	// ChartViewAct: Try a scroll, or drag the chart a little.
+	// ChartNodeTitle: Open a Node
+	// ChartNodeLine1: The mark on a node is its state: hatching for not started, an ink ring for underway, a wax seal for a reward waiting, a cracked seal for closed.
+	// ChartNodeAct: Left-click the one circled here.
+	// ChartDetailTitle: The Slip on the Right
+	// ChartDetailLine1: The upper half is what this chapter asks of you; the lower half is what it pays.
+	// ChartDetailLine2: Claim All at the bottom collects every reward from closed chapters at once.
+	// OutroTitle: The Dossier Is Still Empty
+	// OutroLine1: As the story moves along, people will leave work at this station.
+	// OutroLine2: This guide will pick up again when your first commission arrives.
+	// KeyPromptTitle: Someone Left You a Job
+	// KeyPromptLine1: The first commission is filed in the dossier. Go take a look.
+	// KeyPromptBound: Press [{0}] to open the quest book.
+	// KeyPromptUnboundTitle: The Quest Book Hotkey Is Unbound
+	// KeyPromptUnboundLine: "[{0}] is the default, and it still works right now."
+	// KeyPromptBindHint: To rebind it, go to Settings → Controls.
+	// GotoTitle: Turn to the Dossier
+	// GotoLine1: The book remembers which station you left it on and opens there next time.
+	// GotoAct: Click the lower tab on the left.
+	// AnatomyTitle: One Commission
+	// AnatomyLine1: The round stamp on the left is the client, the middle holds the title and progress, the right shows its current state.
+	// AnatomyLine2: Expanding it shows the body text, progress and signature.
+	// AnatomyAct: Left-click this row to open it up.
+	// TrackTitle: Track It
+	// TrackLine1: Tracked commissions get pinned to the tracker on the left of the screen, readable without opening the book.
+	// TrackAct: Right-click this row  →  track.
+	// TrackerTitle: The Tracker
+	// TrackerLine1: This column keeps every tracked commission on screen.
+	// TrackerLine2: Hold Left-click and drag up or down to move it.
+	// TrackerLine3: It folds away on its own when the quest book opens, so it never covers the page.
+	// SuspendTitle: Suspending and Sorting
+	// SuspendLine1: Middle-click a row  →  suspend, and it drops out of the tracker.
+	// SuspendLine2: The four tabs up top hold Active / All / Completed / Suspended. Suspended ones go in the last.
+	// BtnConfirm: Understood
+	// BtnNext: Next
+	// BtnSkipStep: Skip this step
+	// BtnDismiss: Put the guide away
+	// BtnOpenBook: Just open it
+	// HelpButtonHover: Replay the quest book guide
 }
 
 CyberwareSkillRadialUI: {

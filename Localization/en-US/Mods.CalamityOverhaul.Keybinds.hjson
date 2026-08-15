@@ -1,5 +1,4 @@
-QuestLog_Key.DisplayName: Quest Log: Toggle Main Interface
-QuestManager_Key.DisplayName: Quest Manager: Toggle Management Panel
+QuestLog_Key.DisplayName: Quest Book: Toggle (incl. Commissions)
 Legend_UIControl.DisplayName: Legend Weapon: Toggle HUD
 Legend_Domain.DisplayName: Domain Expansion
 RadialWheel_Key.DisplayName: Radial Wheels: Hold to open

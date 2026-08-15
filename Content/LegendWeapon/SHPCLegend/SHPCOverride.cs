@@ -275,7 +275,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         }
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
-            string keyDisplay = CWRKeySystem.QuestManager_Key?.GetAssignedKeys() is { Count: > 0 } k ? k[0] : CWRKeySystem.Notbound.Value;
+            string keyDisplay = CWRKeySystem.QuestLog_Key?.GetAssignedKeys() is { Count: > 0 } k ? k[0] : CWRKeySystem.Notbound.Value;
             tooltips.ReplacePlaceholder("legend_Text", LegendUpgradeManagerSystem.QuestManagerHint.Value.Replace("{KEY}", keyDisplay), "");
             int index = item.CWR()?.LegendData?.TargetLevel ?? 0;
             string num = (index + 1).ToString();

@@ -224,7 +224,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => SetTooltip(item, ref tooltips);
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
-            string keyDisplay = CWRKeySystem.QuestManager_Key?.GetAssignedKeys() is { Count: > 0 } k
+            string keyDisplay = CWRKeySystem.QuestLog_Key?.GetAssignedKeys() is { Count: > 0 } k
                 ? k[0] : CWRKeySystem.Notbound.Value;
             tooltips.ReplacePlaceholder("legend_Text",
                 LegendUpgradeManagerSystem.QuestManagerHint.Value.Replace("{KEY}", keyDisplay), "");

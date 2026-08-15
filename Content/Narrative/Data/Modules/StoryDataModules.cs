@@ -209,9 +209,32 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool GalacticCrisisCompleted;
     }
 
+    /// <summary>
+    /// 旧版「只讲委托」引导的进度。委托并入任务书后由
+    /// <see cref="QuestBookGuideData"/> 接管，此类只为老档迁移保留
+    /// </summary>
     public sealed class EntrustGuideData : DataModule
     {
         public bool GuideSeen;
+    }
+
+    /// <summary>任务书教程进度（图谱 + 委托两章）；随玩家存档</summary>
+    public sealed class QuestBookGuideData : DataModule
+    {
+        /// <summary>已完成的教程版本；0 = 从未走完</summary>
+        public int CompletedVersion;
+        /// <summary>第一章检查点：已讲完的最大步号，0 = 未开讲</summary>
+        public int ChapterOneStep;
+        /// <summary>第二章检查点：已讲完的最大步号，0 = 未开讲</summary>
+        public int ChapterTwoStep;
+        /// <summary>第一章已走完；第二章要等第一条委托到手才排队</summary>
+        public bool ChapterOneDone;
+        /// <summary>玩家至少自己开过一次书，第一章据此才占位</summary>
+        public bool BookEverOpened;
+        /// <summary>玩家主动收起过教程；只能由书内的「?」再启动</summary>
+        public bool Declined;
+        /// <summary>老档的 <see cref="EntrustGuideData"/> 已折算过，别重复折算</summary>
+        public bool LegacyEntrustGuideMerged;
     }
 
     public sealed class HalibutGuideData : DataModule

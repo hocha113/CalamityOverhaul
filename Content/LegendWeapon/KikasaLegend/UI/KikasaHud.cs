@@ -19,7 +19,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
     /// <summary>
     /// 掌中风铃：鬼伞常驻 HUD（左下，持伞或领域激活时浮现）。
     /// 檐钩垂一只玻璃风铃，铃身盛着一小汪血湖——液面=涨水进度、晃荡=事件涌浪、
-    /// 液中烬点=湖藏填充、整铃随形态浸染；短册纸条上挂两道冷却墨线
+    /// 液中烬点=湖藏填充、整铃随形态浸染；常态无水时铃也不空：吹制玻璃质感
+    /// （冠结/双壁/旋纹/封存气泡/暮色反射带）加烬萤（=湖藏）、凝露与潮痕内景。
+    /// 短册纸条压一道墨字水印与朱印，其上挂两道冷却墨线
     /// （沉溺手=主色、梦中唤犬=烬红）。点铃展开「湖畔村图」全画（任何域状态都响应）。
     /// </summary>
     internal class KikasaHud : UIHandle, ILocalizedModType, IBottomLeftHud
@@ -92,6 +94,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         private const string BellRimPath =
             "M -0.78 0.55 Q -1.02 -0.08 -0.56 -0.60 Q 0 -0.96 0.56 -0.60 "
             + "Q 1.02 -0.08 0.78 0.55 Q 0.4 0.63 0 0.60 Q -0.4 0.57 -0.78 0.55";
+
+        //铃顶冠结：小玻璃冠盖 + 一道系绳箍带，接住吊绳
+        private const string CrownPath =
+            "M -1 0.6 Q -0.9 -0.25 0 -0.45 Q 0.9 -0.25 1 0.6 "
+            + "M -0.55 0.05 Q 0 -0.18 0.55 0.05";
+
+        //短册墨字：竖排草书一线的抽象水印（非可读字），冷却墨线仍覆其上
+        private const string TanzakuInkPath =
+            "M 0.04 -1 Q -0.20 -0.72 0.06 -0.48 Q 0.26 -0.30 -0.06 -0.10 "
+            + "Q -0.26 0.04 0.08 0.22 M -0.04 0.42 Q 0.16 0.55 -0.02 0.72 "
+            + "Q -0.14 0.84 0.06 0.98";
 
         /// <summary>自然锚点（风铃中心），未参与左下队列避让时的原始位置</summary>
         public static Vector2 NaturalAnchor => new(KikasaHudTheme.AnchorOffset.X,
@@ -231,7 +244,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             Vector2 Swing(float restY, float theta)
                 => hook + new Vector2(0f, restY - HookY).RotatedBy(theta);
             Vector2 bellC = Swing(BellY, ang);
-            Vector2 bellTop = Swing(BellY - 17f, ang);
+            Vector2 bellTop = Swing(BellY - 23f, ang);
             Vector2 clapper = Swing(ClapperY, angC);
             Vector2 tzTop = Swing(TanzakuY, angT);
 
@@ -254,8 +267,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 px.Size() * 0.5f, new Vector2(4.5f / px.Width, 4.5f / px.Height),
                 SpriteEffects.None, 0f);
 
-            //3 玻璃铃身（TechChime / 缺编回退）
-            DrawBell(spriteBatch, bellC, ang, a, rain, rise, stir01, lightGate, domain, time);
+            //2.5 铃顶冠结：冠盖骑在铃肩上收住吊绳，冠顶一粒系结（缘光稍后压住冠脚）
+            SvgPath crown = SvgPathPen.Path(CrownPath);
+            Vector2 crownC = Swing(BellY - 21.5f, ang);
+            SvgPathPen.Stroke(spriteBatch, crown, crownC, 4.6f, ang, barCol, 1.8f, a * 0.9f);
+            SvgPathPen.Stroke(spriteBatch, crown, crownC, 4.6f, ang, accent, 0.7f, a * 0.35f);
+            spriteBatch.Draw(px, Swing(BellY - 23.8f, ang), null, barCol * (0.9f * a),
+                MathHelper.PiOver4, px.Size() * 0.5f,
+                new Vector2(2.6f / px.Width, 2.6f / px.Height), SpriteEffects.None, 0f);
+
+            //3 玻璃铃身（TechChime / 缺编回退）：先垫一枚随呼吸的衬光，
+            //把暗玻璃从暗背景里托出来（under-layer，不作铃的本体）
+            float glowBreath = KikasaHudTheme.Breath(time, 0.31f, 0.9f);
+            SvgPathPen.SoftDot(spriteBatch, bellC, 26f, glow, (0.05f + glowBreath * 0.03f) * a);
+            DrawBell(spriteBatch, bellC, ang, a, rain, rise, stir01, lightGate, domain, time,
+                hoverLerp);
 
             //4 铃缘巡行亮笔：悬停/涌浪时一段亮笔沿铃缘走
             float runA = (0.10f + hoverLerp * 0.30f + MathF.Max(stir01 - 0.2f, 0f) * 0.3f) * a;
@@ -295,10 +321,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             }
         }
 
-        /// <summary>铃身：TechChime 玻璃质感；缺编回退 SVG 轮廓 + 液面一线</summary>
+        /// <summary>铃身：TechChime 吹制玻璃质感 + 常驻内景（烬萤/凝露/潮痕）；
+        /// 缺编回退 SVG 轮廓 + 液面一线</summary>
         private static void DrawBell(SpriteBatch sb, Vector2 center, float ang, float a,
             float rain, float fill, float stir01, float lightGate,
-            KikasaDomainPlayer domain, float time) {
+            KikasaDomainPlayer domain, float time, float hover) {
             Effect effect = EffectLoader.KikasaScene?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
             Texture2D px = VaultAsset.placeholder2.Value;
@@ -316,6 +343,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 effect.Parameters["uLightGate"]?.SetValue(lightGate);
                 effect.Parameters["uWaterY"]?.SetValue(MathHelper.Clamp(fill, 0f, 1f));
                 effect.Parameters["uSwing"]?.SetValue(ang);
+                effect.Parameters["uHover"]?.SetValue(hover);
 
                 sb.End();
                 sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
@@ -368,6 +396,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             KikasaVaultRenderer.DrawLine(sb, top - halfW + dir * TanzakuH,
                 top + halfW + dir * TanzakuH, 1f, edge * 0.8f);
             sb.Draw(px, top, null, dim * (0.6f * a), MathHelper.PiOver4,
+                px.Size() * 0.5f, new Vector2(3f / px.Width, 3f / px.Height),
+                SpriteEffects.None, 0f);
+
+            //墨字水印与朱印：竖排草书一线沉在纸底，印落条尾略歪（手押的章不会正）；
+            //冷却墨线更亮，仍覆其上作功能层
+            SvgPath inkGlyph = SvgPathPen.Path(TanzakuInkPath);
+            SvgPathPen.Stroke(sb, inkGlyph, top + dir * (TanzakuH * 0.46f), 12.5f, ang,
+                dim, 1.1f, a * 0.20f);
+            sb.Draw(px, top + dir * (TanzakuH - 6f), null,
+                KikasaHudTheme.Accent(rain) * (0.40f * a), ang + 0.3f,
                 px.Size() * 0.5f, new Vector2(3f / px.Width, 3f / px.Height),
                 SpriteEffects.None, 0f);
 

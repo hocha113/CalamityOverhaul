@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.QuestLogs.Core;
+using CalamityOverhaul.Content.QuestLogs.Guide;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -56,6 +57,25 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             DrawRail(sb, log, in current, a);
             DrawFooter(sb, in current, a);
             DrawCloseTag(sb, current.MainClose, a);
+            DrawHelpTag(sb, current.MainHelp, a);
+        }
+
+        /// <summary>重看教程键：同一块黄铜牌，牌面阴刻一个问号</summary>
+        private void DrawHelpTag(SpriteBatch sb, Rectangle rect, float a) {
+            bool hovered = rect.Contains(Main.MouseScreen.ToPoint());
+            if (hovered) {
+                Main.hoverItemName = QuestBookGuideLead.HelpButtonHover.Value;
+            }
+            ChroniclePen.BrassTag(sb, rect, hovered, a, time);
+
+            Vector2 size = Font.MeasureString("?") * 0.9f;
+            var pos = new Vector2(rect.X + (rect.Width - size.X) * 0.5f,
+                rect.Y + (rect.Height - size.Y) * 0.5f);
+            //阴刻：暗痕在上，受光的填漆偏下一格
+            ChroniclePen.Ink(sb, Font, "?", pos,
+                hovered ? ChroniclePalette.SealDeep : ChroniclePalette.BrassDeep, 0.9f, a * 0.95f);
+            ChroniclePen.Ink(sb, Font, "?", pos + new Vector2(0f, 1.3f),
+                ChroniclePalette.BrassHi, 0.9f, a * 0.28f);
         }
 
         /// <summary>页眉：皮面上的烫金卷名 + 结卷刻度</summary>

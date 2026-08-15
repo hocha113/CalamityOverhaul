@@ -899,6 +899,12 @@ KikasaText: {
 		DrownOutOfGrip: Too far for the lake to reach
 	}
 
+	KikasaResetSystem: {
+		NeedRainForm: The ghost rain must fall first
+		ResetBusy: This rain has not stopped yet
+		ResetCooling: The rain has not gathered enough
+	}
+
 	KikasaVaultPlayer: {
 		LakeNotReady: The lake hasn't risen to your feet yet
 		UmbrellaRefuse: The umbrella won't sink into its own lake

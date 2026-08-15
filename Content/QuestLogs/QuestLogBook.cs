@@ -60,6 +60,20 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
     }
 
+    /// <summary>
+    /// 任务书总开关键。委托卷宗并入书内后只剩这一把，<br/>
+    /// 且必须挂在不受 <see cref="CWRServerConfig.QuestLog"/> 影响的系统上——
+    /// 图谱被配置关掉时书仍是委托的唯一宿主，键不能跟着一起没
+    /// </summary>
+    internal class QuestBookKeySystem : ModSystem
+    {
+        public override void UpdateUI(GameTime gameTime) {
+            if (CWRKeySystem.QuestLog_Key != null && CWRKeySystem.QuestLog_Key.JustReleased) {
+                QuestLog.Instance?.Toggle();
+            }
+        }
+    }
+
     internal class QuestLogBookPlayer : ModPlayer
     {
         private bool Change;
@@ -74,10 +88,6 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
         }
         public override void PostUpdateMiscEffects() {
-            if (!VaultUtils.isServer && CWRKeySystem.QuestLog_Key.JustReleased) {
-                QuestLog.Instance.Toggle();
-            }
-
             if (Change) {
                 return;
             }

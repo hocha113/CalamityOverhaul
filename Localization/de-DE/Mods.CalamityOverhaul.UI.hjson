@@ -465,7 +465,6 @@ QuestManagerUI: {
 	EmptyHintText: Keine Aufträge verfügbar...
 	TrackHintText: "[Rechtsklick] Verfolgen/Aufheben"
 	SuspendHintText: "[Mittelklick] Aussetzen/Wiederaufnehmen"
-	OpenHintText: Drücke [L], um die Auftragsverwaltung zu öffnen
 	HeaderStatusTag: ◈ AKTIV
 	FooterStatsFormat: GESAMT: {0} | AKTIV: {1}
 	ExpandHintText: "[Linksklick] Details ein-/ausklappen"
@@ -1018,39 +1017,56 @@ SHPCUI: {
 	Modify_Preset_C: Preset C
 }
 
-EntrustManagerLead: {
-	TextKeyPromptBound: Drücke [{0}], um das Auftragspanel zu öffnen
-	TextKeyPromptWarnTitle: ⚠  Auftrags-Hotkey nicht belegt!
-	TextKeyPromptDefaultKey: Drücke [{0}] (Standardtaste), um das Auftragspanel zu öffnen
-	TextKeyPromptBindHint: Empfohlen: Eigene Taste unter Einstellungen → Steuerung belegen
-	TextKeyPromptConfirmBtn: Verstanden
-	TextPanelIntroTitle: Auftragsbedienung
-	TextRightClickLabel: Rechtsklick auf einen Auftrag
-	TextRightClickAction: " →  Auftrag verfolgen"
-	TextRightClickDesc: "     Das Tracking-Fenster links zeigt den Fortschritt dauerhaft an"
-	TextMiddleClickLabel: Mittelklick auf einen Auftrag
-	TextMiddleClickAction: " →  Auftrag ausblenden"
-	TextMiddleClickDesc: "     Blendet den Auftrag vorübergehend aus dem Tracking-Fenster aus"
-	TextStyleButtonTitle: Stil-Schaltfläche
-	TextStyleButtonLabel: Linksklick auf die kleine Schaltfläche oben
-	TextStyleButtonAction: " →  Oberflächenstil wechseln"
-	TextStyleButtonDesc: "     Wechselt zwischen Wüsten-, Draedon- und Waldstil"
-	TextConfirmBtn: Alles klar
-	TextTrackPromptTitle: Aufträge von Interesse verfolgen
-	TextTrackPromptHintLabel: Rechtsklick auf einen Auftrag
-	TextTrackPromptHintAction: " →  Als verfolgt markieren"
-	TextTrackPromptDesc: "     Verfolgte Aufträge werden links am Bildschirm angeheftet, damit du den Fortschritt jederzeit siehst"
-	TextTrackPromptNextBtn: Weiter
-	TextTrackerIntroTitle: Auftrags-Tracker
-	TextTrackerIntroLine1: Der Tracker links zeigt dauerhaft alle verfolgten Aufträge an
-	TextTrackerIntroLine2: Mit gedrückter linker Maustaste ziehen, um die vertikale Position anzupassen
-	TextTrackerIntroLine3: Beim Öffnen des Auftragsmanagers klappt der Tracker automatisch ein
-	TextTrackerIntroNextBtn: Weiter
-	TextSuspendIntroTitle: Uninteressante Aufträge ausblenden
-	TextSuspendIntroHintLabel: Mittelklick auf einen Auftrag
-	TextSuspendIntroHintAction: " →  Auftrag ausblenden"
-	TextSuspendIntroDesc1: "     Ausgeblendete Aufträge erscheinen nicht mehr im Tracker links – ideal zum vorübergehenden Parken"
-	TextSuspendIntroDesc2: "     Im Tab „Ausgeblendet“ findest du sie wieder und kannst die Verfolgung fortsetzen"
+QuestBookGuideLead: {
+	// WelcomeTitle: This Book
+	// WelcomeLine1: Two things lie open in here: the quest chart and the commission dossier.
+	// WelcomeLine2: The chart records how far the main story has come; the dossier collects the jobs others have entrusted to you.
+	// RailTitle: The Two Tabs on the Left
+	// RailLine1: The upper one turns to the Quest Chart.
+	// RailLine2: The lower one turns to the Commission Dossier.
+	// RailLine3: Click a tab to switch stations. No need to close the book.
+	// ChartViewTitle: Reading the Chart
+	// ChartViewLine1: Scroll to zoom, hold Left-click to drag and pan.
+	// ChartViewLine2: If the view wanders off, the Recenter key at the bottom right brings it back.
+	// ChartViewAct: Try a scroll, or drag the chart a little.
+	// ChartNodeTitle: Open a Node
+	// ChartNodeLine1: The mark on a node is its state: hatching for not started, an ink ring for underway, a wax seal for a reward waiting, a cracked seal for closed.
+	// ChartNodeAct: Left-click the one circled here.
+	// ChartDetailTitle: The Slip on the Right
+	// ChartDetailLine1: The upper half is what this chapter asks of you; the lower half is what it pays.
+	// ChartDetailLine2: Claim All at the bottom collects every reward from closed chapters at once.
+	// OutroTitle: The Dossier Is Still Empty
+	// OutroLine1: As the story moves along, people will leave work at this station.
+	// OutroLine2: This guide will pick up again when your first commission arrives.
+	// KeyPromptTitle: Someone Left You a Job
+	// KeyPromptLine1: The first commission is filed in the dossier. Go take a look.
+	// KeyPromptBound: Press [{0}] to open the quest book.
+	// KeyPromptUnboundTitle: The Quest Book Hotkey Is Unbound
+	// KeyPromptUnboundLine: "[{0}] is the default, and it still works right now."
+	// KeyPromptBindHint: To rebind it, go to Settings → Controls.
+	// GotoTitle: Turn to the Dossier
+	// GotoLine1: The book remembers which station you left it on and opens there next time.
+	// GotoAct: Click the lower tab on the left.
+	// AnatomyTitle: One Commission
+	// AnatomyLine1: The round stamp on the left is the client, the middle holds the title and progress, the right shows its current state.
+	// AnatomyLine2: Expanding it shows the body text, progress and signature.
+	// AnatomyAct: Left-click this row to open it up.
+	// TrackTitle: Track It
+	// TrackLine1: Tracked commissions get pinned to the tracker on the left of the screen, readable without opening the book.
+	// TrackAct: Right-click this row  →  track.
+	// TrackerTitle: The Tracker
+	// TrackerLine1: This column keeps every tracked commission on screen.
+	// TrackerLine2: Hold Left-click and drag up or down to move it.
+	// TrackerLine3: It folds away on its own when the quest book opens, so it never covers the page.
+	// SuspendTitle: Suspending and Sorting
+	// SuspendLine1: Middle-click a row  →  suspend, and it drops out of the tracker.
+	// SuspendLine2: The four tabs up top hold Active / All / Completed / Suspended. Suspended ones go in the last.
+	// BtnConfirm: Understood
+	// BtnNext: Next
+	// BtnSkipStep: Skip this step
+	// BtnDismiss: Put the guide away
+	// BtnOpenBook: Just open it
+	// HelpButtonHover: Replay the quest book guide
 }
 
 CyberwareSkillRadialUI: {

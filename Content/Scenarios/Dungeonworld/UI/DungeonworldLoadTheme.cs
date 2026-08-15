@@ -65,6 +65,17 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
         //前景伪粒子（上飘尘埃与烛烬）数量
         public const int DustCount = 36;
 
+        //吊笼物理台架（DungeonworldCageRig，纵横比空间：x∈[0,aspect]，y 单位=屏高）
+        //挂点/落距两项与 DungeonworldLoading.fx 的 CAGE_DROP / LANT_ATTACH 同源，改这里必须双改
+        public const float CageRopeLen = 0.49f;         //锚点→吊环主索全长（5 段）
+        public const float CageDrop = 0.17f;            //吊环→笼中心（= fx CAGE_DROP）
+        public const float CageLanternAttach = 0.060f;  //笼中心→笼底挂点（= fx LANT_ATTACH）
+        public const float CageLanternDrop = 0.042f;    //挂点→灯笼中心（二级摆臂长）
+        public const float CageAnchorRestY = -0.07f;    //锚点定位（屏外顶，笼中心落位≈0.59 屏高）
+        public const float CageAnchorStartY = -0.82f;   //入场起吊位（整组悬在屏外上方）
+        public const float CageGravity = 1.35f;         //视重力（主摆周期≈4s，贴设计稿 3.8s 节拍）
+        public const float CageBellKick = 0.05f;        //过层钟冲量 Δv（笼锤侧倾峰值≈6°）
+
         /// <summary>颜色转 shader 的 float3（0~1）</summary>
         public static Vector3 Vec3(Color color) => color.ToVector3();
 

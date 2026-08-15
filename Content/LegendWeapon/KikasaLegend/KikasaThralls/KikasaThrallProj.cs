@@ -39,6 +39,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         private const float Gravity = 0.35f;
         private const float MaxFallSpeed = 10f;
 
+        //同伴避让：横向的私人领地、纵向的同层容差、以及推离的速度占比。
+        //纵向差过这一层就当各站各的地，楼上楼下互不挤
+        private const float CrowdSpaceX = 46f;
+        private const float CrowdSpaceY = 56f;
+        private const float CrowdPushRate = 0.9f;
+
         //==================== 状态 ====================
 
         private const int StateGather = 0;
@@ -135,6 +141,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         /// <summary>个体站位距离：按 identity 错开，多只跟随呈弧散开</summary>
         private float PersonalStop => 52f + Projectile.identity * 29 % 72;
 
+        /// <summary>
+        /// 追击站位距离：同样按 identity 错开（44/70/96/122/148），
+        /// 围着同一个目标时排成参差的一圈，不是全挤到同一个落点上
+        /// </summary>
+        private float ChaseStop => 44f + Projectile.identity * 37 % 5 * 26f;
+
         /// <summary>凝聚度 0~1：Reform 升、Dissolve 降、Active=1、Gather=0</summary>
         private float CondenseProgress => State switch {
             StateReform => MathHelper.Clamp(StateTimer / (float)ReformCondenseEnd, 0f, 1f),
@@ -153,6 +165,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             }
             Projectile.netUpdate = true;
         }
+
+        /// <summary>已在化水的不再点名让位</summary>
+        internal bool CanEvict => state != StateDissolve;
+
+        /// <summary>让位排序：站得越久越先化掉，已成形的一律排在还在聚拢/成形的前面</summary>
+        internal int EvictScore
+            => (state == StateActive ? 100000 : 0) + Math.Min(stateTimer, 99999);
+
+        /// <summary>给 boss 尸体让位：走正常溶解退场（只在 owner 端点名）</summary>
+        internal void Evict() => BeginDissolve();
 
         //==================== 定义 ====================
 
@@ -479,7 +501,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 State = StateActive;
                 StateTimer = 0;
                 subState = SubWalk;
-                attackCooldown = 40;
+                attackCooldown = 40 + Stagger(20);
                 Projectile.netUpdate = authority;
             }
         }
@@ -520,9 +542,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             }
 
             float dx = goal.X - Projectile.Center.X;
-            float stop = target >= 0 ? 46f : PersonalStop;
+            float stop = target >= 0 ? ChaseStop : PersonalStop;
             float desiredX = Math.Abs(dx) > stop ? Math.Sign(dx) * maxSpeed : 0f;
-            WalkIntegrate(desiredX);
+            //同伴避让叠在目标欲望之上：站定的那只被挤到也会挪窝，不许两只嵌在一处
+            desiredX += CrowdAvoidance() * maxSpeed * CrowdPushRate;
+            WalkIntegrate(MathHelper.Clamp(desiredX, -maxSpeed * 1.45f, maxSpeed * 1.45f));
 
             //出手裁决：近身跃扑，中距伞旋；规则各端一致，owner 盖章
             if (target >= 0 && attackCooldown <= 0 && StateTimer > 20) {
@@ -538,6 +562,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                     Projectile.netUpdate = authority;
                 }
             }
+        }
+
+        /// <summary>
+        /// 同伴避让：同主人的伞奴挤在同一片地上时互相让开，越贴推得越急；
+        /// 恰好重合的按 identity 定左右，免得两只对着推谁也不动。
+        /// 只读别人的位置不改别人的速度，各端自算，结果随位置同步自然收敛。
+        /// 返回值是 -1.6~1.6 的横向意愿（正=往右让）
+        /// </summary>
+        private float CrowdAvoidance() {
+            float push = 0f;
+            foreach (Projectile other in Main.ActiveProjectiles) {
+                if (other.type != Projectile.type || other.owner != Projectile.owner
+                    || other.whoAmI == Projectile.whoAmI
+                    || other.ModProjectile is not KikasaThrallProj peer) {
+                    continue;
+                }
+                //还在赶路的水团没有身体，不占地方
+                if (peer.State == StateGather) {
+                    continue;
+                }
+                if (Math.Abs(other.Center.Y - Projectile.Center.Y) > CrowdSpaceY) {
+                    continue;
+                }
+                float gap = Projectile.Center.X - other.Center.X;
+                float distance = Math.Abs(gap);
+                if (distance >= CrowdSpaceX) {
+                    continue;
+                }
+                float side = distance > 1f ? Math.Sign(gap)
+                    : Projectile.identity < other.identity ? -1f : 1f;
+                push += side * (1f - distance / CrowdSpaceX);
+            }
+            return MathHelper.Clamp(push, -1.6f, 1.6f);
         }
 
         /// <summary>跃扑：蓄势下压 → 一帧起跳（接触窗开）→ 落地收势</summary>
@@ -599,7 +656,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             }
 
             subState = SubWalk;
-            attackCooldown = 90;
+            attackCooldown = 90 + Stagger(26);
             Projectile.netUpdate = authority;
         }
 
@@ -634,8 +691,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
 
             if (t >= SpinTotal) {
                 subState = SubWalk;
-                attackCooldown = 60;
-                spinCooldown = 200;
+                attackCooldown = 60 + Stagger(22);
+                spinCooldown = 200 + Stagger(48);
                 Projectile.netUpdate = authority;
             }
         }
@@ -801,6 +858,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         }
 
         //==================== 公共小件 ====================
+
+        /// <summary>出手节拍的个体错位帧：同批伞奴不该同一帧一起扑上去（按 identity，各端一致）</summary>
+        private int Stagger(int span) => Projectile.identity * 13 % span;
 
         private int FindTarget(Player owner) {
             if (owner.HasMinionAttackTargetNPC) {

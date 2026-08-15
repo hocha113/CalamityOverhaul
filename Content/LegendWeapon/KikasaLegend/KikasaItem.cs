@@ -28,7 +28,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
     /// （湖沸腾倒转，红天村落、湖水不见；物品封禁、左键连唤恶犬，重按归返）；
     /// 相位与包络在 <see cref="KikasaDomains.KikasaDomainPlayer"/> 与
     /// <see cref="KikasaDreams.KikasaDreamDirector"/>，玩家锁与唤犬在
-    /// <see cref="KikasaDreams.KikasaDreamPlayer"/>
+    /// <see cref="KikasaDreams.KikasaDreamPlayer"/>。
+    /// 第六能力模块：大范围重启——鬼雨形态下持伞按
+    /// <see cref="Common.CWRKeySystem.Legend_Restart"/>（与其余传奇重启共键），屏幕定格成黑白照片、
+    /// 被雨痕冲刷揭开，场内 NPC 与玩家沿位置历史倒退回数秒前，雨滴倒飞，
+    /// 结算时范围内玩家回满、清 debuff，全程无敌；
+    /// 权威与时间轴在 <see cref="KikasaResets.KikasaReset"/>，
+    /// 输入在 <see cref="KikasaResets.KikasaResetPlayer"/>
     /// </summary>
     internal class KikasaItem : ModItem
     {

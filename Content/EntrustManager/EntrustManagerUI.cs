@@ -18,12 +18,6 @@ namespace CalamityOverhaul.Content.EntrustManager
 {
     internal class QuestManagerSysteam : ModSystem
     {
-        public override void UpdateUI(GameTime gameTime) {
-            if (CWRKeySystem.QuestManager_Key != null && CWRKeySystem.QuestManager_Key.JustReleased) {
-                QuestManagerUI.Instance.TogglePanel();
-            }
-        }
-
         public override void OnWorldUnload() {
             QuestManagerUI.Instance?.ClearAll();
         }
@@ -45,7 +39,6 @@ namespace CalamityOverhaul.Content.EntrustManager
         public static LocalizedText EmptyHintText { get; private set; }
         public static LocalizedText TrackHintText { get; private set; }
         public static LocalizedText SuspendHintText { get; private set; }
-        public static LocalizedText OpenHintText { get; private set; }
         public static LocalizedText ExpandHintText { get; private set; }
         public static LocalizedText HeaderStatusTag { get; private set; }
         public static LocalizedText FooterStatsFormat { get; private set; }
@@ -67,7 +60,6 @@ namespace CalamityOverhaul.Content.EntrustManager
             EmptyHintText = this.GetLocalization(nameof(EmptyHintText), () => "暂无任务...");
             TrackHintText = this.GetLocalization(nameof(TrackHintText), () => "[右键] 关注/取消关注");
             SuspendHintText = this.GetLocalization(nameof(SuspendHintText), () => "[中键] 挂起/恢复");
-            OpenHintText = this.GetLocalization(nameof(OpenHintText), () => "按 [L] 打开任务管理");
             ExpandHintText = this.GetLocalization(nameof(ExpandHintText), () => "[左键] 展开/收起详情");
             HeaderStatusTag = this.GetLocalization(nameof(HeaderStatusTag), () => "◈ ACTIVE");
             FooterStatsFormat = this.GetLocalization(nameof(FooterStatsFormat), () => "TOTAL: {0}  |  ACTIVE: {1}");
@@ -224,6 +216,40 @@ namespace CalamityOverhaul.Content.EntrustManager
                 if (e.Status == QuestEntryStatus.Active) return e.Key;
             }
             return null;
+        }
+
+        #endregion
+
+        #region 引导定位（只读）
+
+        //教程要圈出真实的行与页签，几何只此一份，别让引导另算一遍
+
+        /// <summary>分类选项卡带；书没翻到委托站点时为空</summary>
+        public Rectangle CategoryTabRect => hostRect.Width > 0 ? GetTabRect(hostRect) : Rectangle.Empty;
+
+        /// <summary>条目列表可视区</summary>
+        public Rectangle EntryListRect => hostRect.Width > 0 ? GetContentRect(hostRect) : Rectangle.Empty;
+
+        /// <summary>当前分类下的首条委托，教程拿它当讲解样本</summary>
+        public EntrustEntryData FirstVisibleEntry => filteredEntries.Count > 0 ? filteredEntries[0] : null;
+
+        /// <summary>第 index 条可见条目的行矩形，已夹进可视区；整行滚出视口时返回 false</summary>
+        public bool TryGetEntryRect(int index, out Rectangle rect) {
+            rect = Rectangle.Empty;
+            if (hostRect.Width <= 0 || index < 0 || index >= filteredEntries.Count) {
+                return false;
+            }
+            Rectangle content = GetContentRect(hostRect);
+            float top = content.Y + GetEntryYOffset(index) - scrollOffset;
+            float bottom = top + GetDynamicEntryHeight(filteredEntries[index]);
+            if (bottom <= content.Y || top >= content.Bottom) {
+                return false;
+            }
+            int clampedTop = (int)MathF.Max(top, content.Y);
+            int clampedBottom = (int)MathF.Min(bottom, content.Bottom);
+            rect = new Rectangle(content.X, clampedTop, content.Width,
+                Math.Max(1, clampedBottom - clampedTop));
+            return true;
         }
 
         #endregion

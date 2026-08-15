@@ -267,6 +267,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaHound { get; set; }
         public static Asset<Effect> KikasaDream { get; set; }
         public static Asset<Effect> KikasaDreamSky { get; set; }
+        public static Asset<Effect> KikasaReset { get; set; }
         public static Asset<Effect> OniOmokage { get; set; }
         public static Asset<Effect> OniPaperPeel { get; set; }
         public static Asset<Effect> OniSky { get; set; }

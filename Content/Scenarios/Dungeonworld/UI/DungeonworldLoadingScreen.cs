@@ -34,7 +34,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
     /// 自愈复位：一次过渡只复位一次（世界内帧撤防、过渡首帧布防）。旧 1s 帧戳阈值会在头段长帧下
     /// 把入场包络反复清零钉黑<br/>
     /// 时间源只走 DrawSetup 墙钟（加载期 gameMenu 早退，Update 钩不到；本机 SLib 还可能把 Main 当 GameTime 传入）<br/>
-    /// Present：SLib 跳过 EndCapture，DrawSetup 须先把 RT 钉回后台缓冲
+    /// Present：SLib 跳过 EndCapture，DrawSetup 须先把 RT 钉回后台缓冲<br/>
+    /// 吊笼位姿由 <see cref="DungeonworldCageRig"/>（CPU Verlet 绳物理）驱动，shader 只做几何与光影
     /// </summary>
     internal class DungeonworldLoadingScreen : ModSystem, ILocalizedModType
     {
@@ -231,6 +232,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
             tipIndex = 0;
             tipTimer = 0f;
             Array.Clear(plaqueFlash, 0, plaqueFlash.Length);
+            DungeonworldCageRig.Reset();
         }
 
         //自愈布防：未经 Enter()/Exit() 接线时在过渡首帧复位一次;
@@ -360,6 +362,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
                     tipIndex = (tipIndex + 1) % Tips.Length;
                 }
             }
+
+            //吊笼台架:Verlet 绳/笼/灯笼推进(本帧 Toll 的钟冲量在此消化)
+            DungeonworldCageRig.Advance(dt, realSeconds, speedGain, descending);
         }
 
         //梵钟配方（OniMeiBellWave 已上线验证）：Item52 主钟体 + DD2_BetsyWindAttack 风底
@@ -370,6 +375,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
             if (!first) {
                 SoundEngine.PlaySound(SoundID.DD2_BetsyWindAttack with { Pitch = -0.9f, Volume = 0.35f });
             }
+            //钟响笼晃:声画同拍的横向冲量
+            DungeonworldCageRig.BellKick(layer);
         }
         #endregion
 
@@ -393,9 +400,14 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
             shader.Parameters["uScrollY"]?.SetValue(scrollY);
             shader.Parameters["uDepth"]?.SetValue(depth);
             shader.Parameters["uAspectRatio"]?.SetValue((float)w / h);
-            shader.Parameters["uIntro"]?.SetValue(IntroFade);
             shader.Parameters["uTopLight"]?.SetValue(topLight);
             shader.Parameters["uCandle"]?.SetValue(candleFlicker);
+            //吊装组位姿（DungeonworldCageRig 的 Verlet 结果，纵横比空间）
+            shader.Parameters["uRopeA"]?.SetValue(DungeonworldCageRig.PackRope01);
+            shader.Parameters["uRopeB"]?.SetValue(DungeonworldCageRig.PackRope23);
+            shader.Parameters["uRopeC"]?.SetValue(DungeonworldCageRig.PackRope45);
+            shader.Parameters["uCagePose"]?.SetValue(DungeonworldCageRig.PackCagePose);
+            shader.Parameters["uLanternPose"]?.SetValue(DungeonworldCageRig.PackLanternPose);
             for (int i = 0; i < DungeonworldLoadTheme.BandCount; i++) {
                 shader.Parameters["uBand" + i]?.SetValue(DungeonworldLoadTheme.Vec3(DungeonworldLoadTheme.BandAccents[i]));
             }
@@ -441,7 +453,63 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
                     new Rectangle(w / 2 - bw / 2, 0, bw, (int)(h * 0.52f)),
                     DungeonworldLoadTheme.CandleHi * (alphas[i] * topLight));
             }
+
+            DrawCageFallback(px, h, fade);
             Main.spriteBatch.End();
+        }
+
+        //吊装组简版：台架折线绳+三块实底剪影+灯笼亮点（纯黑实底是 magic-pixel 的合法用途，
+        //缺 shader 时中轴主体不缺席；台架输出为纵横比空间，×屏高即像素）
+        private static void DrawCageFallback(Texture2D px, int h, float fade) {
+            if (!DungeonworldCageRig.Warmed || fade <= 0.01f) {
+                return;
+            }
+            var src = new Rectangle(0, 0, 1, 1);
+            Color iron = new Color(8, 10, 16) * (0.95f * fade);
+            for (int i = 0; i < 5; i++) {
+                Vector2 a = DungeonworldCageRig.RopePoint(i) * h;
+                Vector2 b = DungeonworldCageRig.RopePoint(i + 1) * h;
+                Vector2 d = b - a;
+                float len = d.Length();
+                if (len < 0.01f) {
+                    continue;
+                }
+                Main.spriteBatch.Draw(px, a, src, iron, (float)Math.Atan2(d.Y, d.X),
+                    new Vector2(0f, 0.5f), new Vector2(len + 0.7f, 2f), SpriteEffects.None, 0f);
+            }
+
+            Vector2 cage = DungeonworldCageRig.CageCenter * h;
+            Vector2 tilt = DungeonworldCageRig.CageTilt;
+            float rot = (float)Math.Atan2(tilt.X, tilt.Y);
+            //局部(+y 沿吊链向下)→世界
+            Vector2 World(float lx, float ly)
+                => cage + new Vector2(tilt.Y * lx + tilt.X * ly, -tilt.X * lx + tilt.Y * ly) * h;
+            var half = new Vector2(0.5f);
+            Main.spriteBatch.Draw(px, World(0f, -0.0635f), src, iron, rot, half,
+                new Vector2(0.185f, 0.017f) * h, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(px, cage, src, iron, rot, half,
+                new Vector2(0.165f, 0.098f) * h, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(px, World(0f, 0.0565f), src, iron, rot, half,
+                new Vector2(0.175f, 0.015f) * h, SpriteEffects.None, 0f);
+
+            //灯笼：挂链一笔+壳一点+暖光两层（亮色半透明可叠）
+            Vector2 lant = DungeonworldCageRig.LanternPos * h;
+            Vector2 attach = World(0f, DungeonworldLoadTheme.CageLanternAttach);
+            Vector2 hd = lant - attach;
+            float hlen = hd.Length();
+            if (hlen > 0.01f) {
+                Main.spriteBatch.Draw(px, attach, src, iron, (float)Math.Atan2(hd.Y, hd.X),
+                    new Vector2(0f, 0.5f), new Vector2(hlen, 1.6f), SpriteEffects.None, 0f);
+            }
+            float lampPx = 0.022f * h;
+            Main.spriteBatch.Draw(px, lant, src, iron, rot, half,
+                new Vector2(lampPx, lampPx * 1.25f), SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(px, lant, src,
+                DungeonworldLoadTheme.Candle * (0.55f * candleFlicker * fade), 0f, half,
+                new Vector2(lampPx * 0.8f), SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(px, lant, src,
+                DungeonworldLoadTheme.CandleHi * (0.85f * candleFlicker * fade), 0f, half,
+                new Vector2(lampPx * 0.35f), SpriteEffects.None, 0f);
         }
 
         //加载期卸掉世界滤镜/原版压暗,防止菜单帧被 FilterMiniTower 或雾套一层暗幕

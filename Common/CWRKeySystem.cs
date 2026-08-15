@@ -13,8 +13,8 @@ namespace CalamityOverhaul.Common
         public string LocalizationCategory => "Keybinds";
         public static LocalizedText Notbound { get; private set; }
         public static LocalizedText RightClickFallback { get; private set; }
+        /// <summary>任务书总开关，委托卷宗已并为书内站点，不再单设一把键</summary>
         public static ModKeybind QuestLog_Key { get; private set; }
-        public static ModKeybind QuestManager_Key { get; private set; }
         public static ModKeybind Legend_UIControl { get; private set; }
         public static ModKeybind Legend_Domain { get; private set; }
         /// <summary>全部快捷转盘共用的开关键，分发见 RadialWheelHub</summary>
@@ -49,7 +49,6 @@ namespace CalamityOverhaul.Common
         public override void Load() {
             Mod mod = CWRMod.Instance;
             QuestLog_Key = KeybindLoader.RegisterKeybind(mod, nameof(QuestLog_Key), "L");
-            QuestManager_Key = KeybindLoader.RegisterKeybind(mod, nameof(QuestManager_Key), "K");
             Legend_UIControl = KeybindLoader.RegisterKeybind(mod, nameof(Legend_UIControl), "M");
             Legend_Domain = KeybindLoader.RegisterKeybind(mod, nameof(Legend_Domain), "Q");
             //比目鱼技能盘、SHPC 领域盘、义体技能盘共用此键，够格的一起开
@@ -77,6 +76,7 @@ namespace CalamityOverhaul.Common
             Kikasa_DreamReflect = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_DreamReflect), "P");
             //鬼梦：拉入/归返
             Kikasa_DreamPull = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_DreamPull), "X");
+            //鬼伞大范围重启复用 Legend_Restart，与比目鱼/赛博/绯嫁同键、按各自形态门互斥
             WeponSkill_Q = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_Q), "Q");
             WeponSkill_R = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_R), "R");
             Accessory_Skills = KeybindLoader.RegisterKeybind(mod, nameof(Accessory_Skills), "V");
@@ -101,7 +101,6 @@ namespace CalamityOverhaul.Common
 
         public override void Unload() {
             QuestLog_Key = null;
-            QuestManager_Key = null;
             Onikiri_FlashStep = null;
             Onikiri_Execute = null;
             Onikiri_SakuraFlight = null;

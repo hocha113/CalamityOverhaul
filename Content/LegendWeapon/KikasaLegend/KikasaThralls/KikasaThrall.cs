@@ -1,6 +1,7 @@
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -8,10 +9,13 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
 {
     /// <summary>
-    /// 伞奴（雨伞鬼奴）静态枢纽：鬼雨领域内被杀死的普通敌人化水重组为打伞随从。
+    /// 伞奴（雨伞鬼奴）静态枢纽：鬼雨领域内被杀死的敌人化水重组为打伞随从，boss 一并收。
     /// 资格谓词是单一真相：各端在死亡观测帧用本地模拟的领域状态自算
     /// （服务器没有领域状态是既定契约，故服务器不参与判定），
     /// 生成只发生在领域主人本机，其余端只演化水。
+    /// <para/>
+    /// 观测帧只记账：灾厄 boss 多在 CheckDead 里留一条命播死亡演出，真身此刻还在台上，
+    /// 化水快照与重组都等它离场那一帧再办
     /// </summary>
     internal static class KikasaThrall
     {
@@ -60,14 +64,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         //==================== 资格判定（单一真相） ====================
 
         /// <summary>
-        /// 尸体资格：普通敌对生物。Boss 走沉溺役从线，城镇/小动物/雕像怪/弹幕型不收
+        /// 尸体资格：敌对生物即可，boss 一并收——沉溺是主动收魂的另一条线，
+        /// 不该把正面打死的 boss 排除在鬼雨之外。城镇/小动物/雕像怪/弹幕型不收
         /// </summary>
         internal static bool IsEligibleCorpse(NPC npc)
             => npc != null && npc.lifeMax > 5
-            && !npc.boss && !npc.friendly && !npc.townNPC
+            && !npc.friendly && !npc.townNPC
             && !npc.immortal && !npc.dontTakeDamage && !npc.SpawnedFromStatue
             && !npc.CountsAsACritter && !NPCID.Sets.ProjectileNPC[npc.type]
             && npc.type != NPCID.TargetDummy;
+
+        /// <summary>boss 尸体：含被算作 boss 的分段与从属（月亮领主核心、双子魔眼之流）</summary>
+        internal static bool IsBossCorpse(NPC npc)
+            => npc != null && (npc.boss || NPCID.Sets.ShouldBeCountedAsBoss[npc.type]);
 
         /// <summary>该玩家的领域此刻是否处于可收魂的鬼雨稳态</summary>
         internal static bool RainDomainReady(Player player) {
@@ -126,13 +135,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             return count;
         }
 
-        /// <summary>转化闸门：上限 + 最小间隔，全端各自推同一份</summary>
-        internal static bool ConvertGateOpen(int ownerWho) {
+        /// <summary>
+        /// 转化闸门：上限 + 最小间隔，全端各自推同一份。
+        /// boss 两道都不受——一场 boss 的尸体不该被杂兵占着的名额挡回去，满员时另有让位
+        /// </summary>
+        internal static bool ConvertGateOpen(int ownerWho, bool boss) {
             if (ownerWho < 0 || ownerWho >= Main.maxPlayers) {
                 return false;
             }
+            if (boss) {
+                return true;
+            }
             return Main.GameUpdateCount >= nextConvertFrame[ownerWho]
-                && CountActive(ownerWho) < MaxPerOwner;
+                && CountActive(ownerWho) + CountPending(ownerWho) < MaxPerOwner;
         }
 
         internal static void MarkConvertGate(int ownerWho) {
@@ -141,16 +156,61 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             }
         }
 
+        /// <summary>
+        /// 满员时化掉最旧的一只给 boss 让位：只点一名，正在溶解的不重复点名。
+        /// 只在 owner 本机点——溶解转场由 owner 裁决，其余端收包跟上
+        /// </summary>
+        private static void EvictOldest(int ownerWho) {
+            if (CountActive(ownerWho) < MaxPerOwner) {
+                return;
+            }
+            KikasaThrallProj oldest = null;
+            int bestScore = int.MinValue;
+            int type = ModContent.ProjectileType<KikasaThrallProj>();
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (proj.type != type || proj.owner != ownerWho
+                    || proj.ModProjectile is not KikasaThrallProj thrall || !thrall.CanEvict) {
+                    continue;
+                }
+                if (thrall.EvictScore > bestScore) {
+                    bestScore = thrall.EvictScore;
+                    oldest = thrall;
+                }
+            }
+            oldest?.Evict();
+        }
+
         //==================== 重组点与数值 ====================
+
+        /// <summary>boss 尸点探空后的横向重探：先近后远、左右交替，各端同序故结果可复算</summary>
+        private static readonly float[] bossReformOffsets
+            = [48f, -48f, 112f, -112f, 208f, -208f, 336f, -336f];
 
         /// <summary>
         /// 重组点：自尸体脚下向下探可站立地面（探不到=不转化，雨把它冲走了）。
-        /// 地形各端一致，判定结果可复算
+        /// boss 的尸体多半停在半空或压在洞顶下，一列探空就横着挪几格再探，
+        /// 全落空退到主人脚边——水认得回主人的路。地形各端一致，判定结果可复算
         /// </summary>
-        internal static bool TryPickReformPoint(NPC npc, out Vector2 reformFeet)
-            => KasaOniActor.TryFindStandableGround(
-                new Vector2(npc.Center.X, npc.position.Y),
-                KikasaThrallProj.HitboxWidth, KikasaThrallProj.HitboxHeight, out reformFeet);
+        internal static bool TryPickReformPoint(NPC npc, Player owner, bool boss,
+            out Vector2 reformFeet) {
+            Vector2 head = new(npc.Center.X, npc.position.Y);
+            if (Probe(head, out reformFeet)) {
+                return true;
+            }
+            if (!boss) {
+                return false;
+            }
+            foreach (float offsetX in bossReformOffsets) {
+                if (Probe(head + new Vector2(offsetX, 0f), out reformFeet)) {
+                    return true;
+                }
+            }
+            return Probe(owner.Center - new Vector2(0f, 80f), out reformFeet);
+        }
+
+        private static bool Probe(Vector2 from, out Vector2 feet)
+            => KasaOniActor.TryFindStandableGround(from,
+                KikasaThrallProj.HitboxWidth, KikasaThrallProj.HitboxHeight, out feet);
 
         internal static int CorpseBaseDamage(NPC npc)
             => (int)MathHelper.Clamp(npc.lifeMax * DamagePerLifeMax, DamageMin, DamageMax);
@@ -184,16 +244,110 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             }
         }
 
+        //==================== 待确认尸体 ====================
+
+        /// <summary>
+        /// 死亡观测帧到真身离场之间的等待上限。灾厄 boss 常在 CheckDead 里留一条命播死亡演出，
+        /// 这段时间尸体还在台上，化水快照得等它退场再拍；久等不退的当这具收不上来
+        /// </summary>
+        private const int PendingWatchFrames = 1800;
+
+        private struct PendingCorpse
+        {
+            public int NpcIndex;
+            public int NpcType;
+            public int OwnerWho;
+            public bool Boss;
+            public int Wait;
+        }
+
+        private static readonly List<PendingCorpse> pendingCorpses = [];
+
+        /// <summary>死亡观测帧受理：先记账，真身离场那一帧再化水重组</summary>
+        internal static void Watch(NPC npc, int ownerWho, bool boss)
+            => pendingCorpses.Add(new PendingCorpse {
+                NpcIndex = npc.whoAmI,
+                NpcType = npc.type,
+                OwnerWho = ownerWho,
+                Boss = boss,
+            });
+
+        private static int CountPending(int ownerWho) {
+            int count = 0;
+            for (int i = 0; i < pendingCorpses.Count; i++) {
+                if (pendingCorpses[i].OwnerWho == ownerWho) {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        private static void UpdatePending() {
+            for (int i = pendingCorpses.Count - 1; i >= 0; i--) {
+                PendingCorpse entry = pendingCorpses[i];
+                NPC npc = entry.NpcIndex >= 0 && entry.NpcIndex < Main.maxNPCs
+                    ? Main.npc[entry.NpcIndex] : null;
+                //槽位换了人：这具的数据已不可信，放弃
+                if (npc == null || npc.type != entry.NpcType) {
+                    pendingCorpses.RemoveAt(i);
+                    continue;
+                }
+                if (npc.active) {
+                    entry.Wait++;
+                    if (entry.Wait > PendingWatchFrames) {
+                        pendingCorpses.RemoveAt(i);
+                    }
+                    else {
+                        pendingCorpses[i] = entry;
+                    }
+                    continue;
+                }
+                pendingCorpses.RemoveAt(i);
+                ConvertConfirmed(npc, entry);
+            }
+        }
+
+        /// <summary>
+        /// 真身离场帧：此刻的领域状态说了算（死亡演出里主人退了雨，这具就随雨去了）。
+        /// NPC 槽位下线后字段仍完整，化水快照与重组点都取自这一帧
+        /// </summary>
+        private static void ConvertConfirmed(NPC corpse, PendingCorpse entry) {
+            Player owner = entry.OwnerWho >= 0 && entry.OwnerWho < Main.maxPlayers
+                ? Main.player[entry.OwnerWho] : null;
+            if (owner?.active != true) {
+                return;
+            }
+            if (debugForceFrames <= 0 && !RainDomainReady(owner)) {
+                return;
+            }
+            if (!TryPickReformPoint(corpse, owner, entry.Boss, out Vector2 reformFeet)) {
+                return;
+            }
+
+            KikasaThrallMeltFX.Start(corpse, owner.whoAmI);
+            if (owner.whoAmI != Main.myPlayer) {
+                return;
+            }
+            if (entry.Boss) {
+                EvictOldest(owner.whoAmI);
+            }
+            SpawnThrall(owner, corpse, reformFeet);
+        }
+
         //==================== 逐帧与清场 ====================
 
         internal static void Update() {
             if (debugForceFrames > 0) {
                 debugForceFrames--;
             }
+            if (!Main.dedServ) {
+                UpdatePending();
+            }
         }
 
         internal static void ResetLocal() {
             Array.Clear(nextConvertFrame, 0, nextConvertFrame.Length);
+            pendingCorpses.Clear();
             debugForceFrames = 0;
         }
 

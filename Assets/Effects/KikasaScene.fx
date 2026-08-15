@@ -25,6 +25,7 @@ float uFlash;        //0~1 结算白闪
 float uLightGate;    //0~1 村中窗火开度（湖藏填充率）
 float uTear;         //TechCard 用：撕开揭示
 float uSwing;        //TechChime 用：当前摆角（弧度，液面反向找平）
+float uHover;        //TechChime 用：悬停唤醒 0~1（烬萤/凝露亮一拍，缘光呼吸略快）
 
 //====== 血湖族（暮红） ======
 static const float3 SKY_TOP_B   = float3(0.052, 0.008, 0.013);
@@ -348,11 +349,24 @@ technique TechCard {
 
 //============================================================================
 //玻璃风铃（TechChime）：掌中风铃 HUD 的铃身。SDF 球形铃体 + 噪蚀波口
-//（真风铃的切口本就不平），玻璃=低透近黑体 + 菲涅尔缘增亮 + 窗形高光；
+//（真风铃的切口本就不平）。材质=手工吹制玻璃：双壁厚度（内壁第二线）、
+//熔珠唇、顺球面的吹制旋纹、封存气泡、弧形暮色反射带、底缘聚光；
+//常驻内景（无水时铃也不空）：烬萤浮游（稠度=uLightGate 湖藏填充率）、
+//内壁凝露（一枚周期下滑留渐干水迹）、干涸潮痕圈——全部画在水体 lerp
+//之前，涨水自然覆盖。uHover=悬停唤醒（烬萤/凝露亮一拍，缘光呼吸略快）。
 //铃内盛一小汪血湖：uWaterY 复用为液面充盈度（0 空 1 满），uSwing=当前摆角
 //（quad 随摆旋转，液面在铃内反向找平），uStir 晃荡、uBoil 沸腾、
-//uFlash 白闪、uLightGate=液中烬点稠度（湖藏填充率）。预乘输出
+//uFlash 白闪。预乘输出
 //============================================================================
+
+//封存气泡锚位与尺寸（p 空间，嵌在玻璃壁环带内、波口之上）
+static const float2 BUB_P[4] = {
+    float2(-0.257, 0.145), float2(-0.304, -0.177),
+    float2(0.330, -0.093), float2(0.192, 0.239)
+};
+static const float BUB_S[4] = { 0.016, 0.012, 0.014, 0.011 };
+//凝露定珠锚位（下内壁，水汽垂积处）
+static const float2 DEW_P[2] = { float2(-0.195, 0.243), float2(0.240, 0.190) };
 
 float4 PSChime(float2 coords : TEXCOORD0) : COLOR0 {
     float aspect = uResolution.x / max(uResolution.y, 1.0);
@@ -364,6 +378,7 @@ float4 PSChime(float2 coords : TEXCOORD0) : COLOR0 {
     float3 tint = lerp(TINT_B, TINT_R, uRain);
     float3 foam = lerp(FOAM_B, FOAM_R, uRain);
     float3 ember = lerp(EMBER_B, EMBER_R, uRain);
+    float3 horizonC = lerp(HORIZON_B, HORIZON_R, uRain);
     float3 glassDeep = lerp(float3(0.050, 0.014, 0.020), float3(0.018, 0.026, 0.032), uRain);
     float3 glassRim = lerp(float3(0.760, 0.360, 0.300), float3(0.560, 0.660, 0.690), uRain);
 
@@ -378,17 +393,98 @@ float4 PSChime(float2 coords : TEXCOORD0) : COLOR0 {
     float keep = 1.0 - smoothstep(-0.012, 0.012, cut);
     float glass = body * keep;
 
-    //玻璃体：低透近黑 + 菲涅尔缘增亮（中心最透，能看见后面的世界）
-    float fres = smoothstep(-0.16, -0.005, d);
-    float3 col = glassDeep * (0.55 + fres * 0.9);
-    float a = 0.14 + fres * 0.42;
+    //球面坐标：q=归一偏心，lon=经线坐标（旋纹顺球面弯曲的依据）
+    float2 q = (p - c) / r;
+    float lon = q.x / max(sqrt(saturate(1.0 - q.y * q.y)), 0.35);
 
-    //铃内液面：找平（摆角反向）+ 晃荡波
+    //内域遮罩：浅内域（潮痕，允许贴到近壁）与深内域（烬萤悬浮），都避开缘线
+    float inner = (1.0 - smoothstep(-0.060, -0.018, d)) * keep;
+    float air = (1.0 - smoothstep(-0.095, -0.050, d)) * keep;
+
+    //液面参数先行：内景细节据它让位（内景画在水体 lerp 之前，涨水自然覆盖）
     float fill = saturate(uWaterY);
     float surf = lerp(0.325, -0.135, fill)
         - p.x * uSwing * 1.1
         + sin(p.x * 10.0 + uTime * 2.9) * (0.008 + 0.030 * uStir + 0.035 * uBoil);
     float inWater = step(surf, p.y) * glass * step(0.02, fill);
+
+    //玻璃体：低透近黑 + 菲涅尔缘增亮（中心仍最透，能看见后面的世界）
+    //+ 朝口部渐浓的烟色纵渐变——铃体读作有形的器物，不是一圈描边
+    float fres = smoothstep(-0.16, -0.005, d);
+    float smokeG = smoothstep(-0.30, 0.30, p.y);
+    float3 col = glassDeep * (0.62 + fres * 0.9 + smokeG * 0.55);
+    float a = 0.20 + fres * 0.40 + smokeG * 0.07;
+
+    //吹制旋纹：顺经线的明暗微差条纹，缘重心轻，随时间缓慢流转
+    float striaN = noiseTex(float2(lon * 0.9 + uTime * 0.008, q.y * 0.22 + 0.71)) - 0.5;
+    float stria = striaN * (0.35 + 0.65 * fres) * glass;
+    col += glassRim * stria * 0.14;
+    a += stria * 0.10;
+
+    //弧形暮色反射带：铃身下三分之一顺球面弯的天光映带，随摆轻移，涨水让位
+    float refY = 0.38 - 0.14 * q.x * q.x + uSwing * 0.8 * q.x;
+    float hband = exp2(-abs(q.y - refY) * 7.5) * glass * saturate(1.0 - fill * 0.8);
+    float3 dusk = lerp(horizonC, tint, 0.35);
+    col += dusk * hband * 0.30;
+    a += hband * 0.15;
+
+    //潮痕圈：两道干涸旧水位弧，噪声啮边；涨水中渐隐，没入水下由水体覆盖
+    float nJit = noiseTex(float2(coords.x * 3.4 + 0.61, 0.83)) - 0.5;
+    float rings = (exp2(-abs(p.y - 0.075 + nJit * 0.016) * 130.0) * 0.8
+        + exp2(-abs(p.y - 0.185 + nJit * 0.022) * 150.0)) * inner
+        * saturate(1.0 - fill * 1.4);
+    col += tint * rings * 0.30;
+    a += rings * 0.14;
+
+    //烬萤浮游：空铃里缓缓上漂的村火微萤，稠度=湖藏填充率，悬停亮一拍
+    float flyN = noiseTex(float2(p.x * 3.6 + uTime * 0.020, p.y * 4.2 - uTime * 0.035));
+    float fly = saturate((flyN - 0.76) * 9.0) * air * uLightGate;
+    float flyAmp = 0.40 + 0.35 * uHover;
+    col += ember * fly * flyAmp;
+    a += fly * flyAmp * 0.45;
+
+    //封存气泡：四枚静态微泡嵌在玻璃壁内，暗底点上一粒偏光亮斑，轻呼吸
+    float bubDark = 0.0;
+    float bubGlint = 0.0;
+    [unroll]
+    for (int i = 0; i < 4; i++) {
+        float2 bp = (p - BUB_P[i]) / BUB_S[i];
+        bubDark += exp(-dot(bp, bp));
+        float2 gp = (p - BUB_P[i] + float2(0.006, 0.007)) / (BUB_S[i] * 0.55);
+        bubGlint += exp(-dot(gp, gp));
+    }
+    float bubBreath = 0.8 + 0.2 * sin(uTime * 1.3);
+    col = lerp(col, glassDeep * 0.35, saturate(bubDark) * 0.45 * glass);
+    col += glassRim * bubGlint * 0.28 * bubBreath * glass;
+    a += (bubGlint * 0.22 + bubDark * 0.10) * glass;
+
+    //凝露：两枚定珠贴下内壁，另一枚周期沿右内壁下滑并留一线渐干水迹——湖气未散
+    float dewFix = 0.0;
+    [unroll]
+    for (int j = 0; j < 2; j++) {
+        float2 ep = (p - DEW_P[j]) / 0.013;
+        dewFix += exp(-dot(ep, ep));
+    }
+    float cyc = frac(uTime * 0.043);
+    float slideT = smoothstep(0.55, 0.85, cyc);
+    float dropY = lerp(-0.140, 0.235, slideT);
+    float dyq = dropY + 0.035;
+    float2 dropP = float2(sqrt(max(0.1156 - dyq * dyq, 0.0)), dropY);
+    float2 sp = (p - dropP) / 0.014;
+    float bead = smoothstep(0.08, 0.30, cyc) * (1.0 - smoothstep(0.86, 0.97, cyc));
+    float slideBead = exp(-dot(sp, sp)) * bead;
+    float dyp = p.y + 0.035;
+    float wx = sqrt(max(0.1156 - dyp * dyp, 0.0));
+    float trail = exp2(-abs(p.x - wx) * 110.0)
+        * step(p.y, dropY) * step(-0.150, p.y)
+        * saturate(1.0 - (dropY - p.y) * 4.5)
+        * slideT * (1.0 - smoothstep(0.86, 1.0, cyc)) * glass;
+    float dewAmp = 0.55 + 0.45 * uHover;
+    float dewAll = (dewFix * (0.55 + 0.20 * sin(uTime * 1.7)) + slideBead) * glass;
+    col += foam * (dewAll * 0.38 + trail * 0.10) * dewAmp;
+    a += (dewAll * 0.30 + trail * 0.06) * dewAmp;
+
+    //铃内液面：找平（摆角反向）+ 晃荡波
     float depth = saturate((p.y - surf) * 2.2);
     float3 water = lerp(waterHi, waterLo, depth) * 1.35;
     //液中微流
@@ -414,11 +510,22 @@ float4 PSChime(float2 coords : TEXCOORD0) : COLOR0 {
     col += float3(0.92, 0.90, 0.88) * (hl * 0.55 + hl2) * glass;
     a += (hl * 0.35 + hl2 * 0.2) * glass;
 
-    //缘线：球缘一线 + 波口一线亮唇
-    float rimLine = exp2(-abs(d) * 70.0) * keep;
-    float lip = exp2(-abs(cut) * 60.0) * body;
-    col += glassRim * (rimLine * 0.55 + lip * 0.75);
-    a += rimLine * 0.30 + lip * 0.35;
+    //底缘聚光：波口唇上方内壁一弧微亮（玻璃在底缘拢光）
+    float gather = exp2(-abs(cut + 0.055) * 26.0) * glass;
+    col += glassRim * gather * 0.16;
+    a += gather * 0.10;
+
+    //缘线：外缘线粗细随噪声微起伏（手作不是机加工）+ 内壁第二线（玻璃厚度）
+    //+ 波口熔珠唇（亮唇芯 + 圆润珠晕）；慢呼吸，悬停呼吸略快
+    float rimN = noiseTex(float2(lon * 0.7 + 0.13, q.y * 0.4 + 0.29));
+    float breath = 0.88 + 0.12 * sin(uTime * (1.1 + 0.9 * uHover));
+    float rimLine = exp2(-abs(d) * (86.0 - 30.0 * rimN)) * keep;
+    float innerLine = exp2(-abs(d + 0.042) * 120.0) * keep;
+    float lipCore = exp2(-abs(cut) * 70.0) * body;
+    float lipBead = exp2(-abs(cut + 0.012) * 26.0) * body;
+    col += glassRim * ((rimLine * 0.55 + lipCore * 0.70) * breath
+        + innerLine * 0.22 + lipBead * 0.26);
+    a += (rimLine * 0.30 + lipCore * 0.33) * breath + innerLine * 0.13 + lipBead * 0.15;
 
     //结算白闪
     col = lerp(col, float3(0.93, 0.94, 0.95), saturate(uFlash) * 0.8);

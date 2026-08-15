@@ -1,6 +1,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.QuestLogs.Core;
+using CalamityOverhaul.Content.QuestLogs.Guide;
 using CalamityOverhaul.Content.QuestLogs.Styles;
 using CalamityOverhaul.Content.QuestLogs.Styles.Chronicle;
 using CalamityOverhaul.Content.TimeFreezes;
@@ -117,6 +118,24 @@ namespace CalamityOverhaul.Content.QuestLogs
         /// <summary>章目：没有前置的根节点，左栏据此列目并跳转</summary>
         public IReadOnlyList<QuestNode> ChapterRoots => chapterRoots;
         private readonly List<QuestNode> chapterRoots = [];
+
+        #region 教程只读态
+
+        //教程要判断玩家是否真的动过视图、点开过节点，读书自己的字段，别另存一份
+
+        /// <summary>图谱缩放系数</summary>
+        public float ChartZoom => zoom;
+
+        /// <summary>图谱平移量</summary>
+        public Vector2 ChartPan => panOffset;
+
+        /// <summary>右侧详情栏是否摊开</summary>
+        public bool DetailOpen => showDetailPanel;
+
+        /// <summary>图谱上有没有节点可讲，没有就别对着空画布讲解</summary>
+        public bool HasChartNodes => Nodes.Count > 0;
+
+        #endregion
 
         private float zoom = 1f;
         private bool isDraggingMap;
@@ -246,6 +265,8 @@ namespace CalamityOverhaul.Content.QuestLogs
             tag[Name + ":" + nameof(currentStyleIndex)] = currentStyleIndex;
             tag[Name + ":" + nameof(LauncherPosition)] = LauncherPosition;
             tag[Name + ":" + nameof(chronicleMigrated)] = true;
+            //记住上次摊在哪一站，下次开书直接翻回去
+            tag[Name + ":" + nameof(View)] = (byte)View;
         }
 
         public override void LoadUIData(TagCompound tag) {
@@ -267,6 +288,14 @@ namespace CalamityOverhaul.Content.QuestLogs
             tag.TryGet(Name + ":" + nameof(LauncherPosition), out LauncherPosition);
             if (LauncherPosition == Vector2.Zero) {
                 LauncherPosition = new Vector2(572, 108);
+            }
+            if (tag.TryGet(Name + ":" + nameof(View), out byte savedView)
+                && savedView == (byte)QuestLogView.Entrust) {
+                View = QuestLogView.Entrust;
+            }
+            //图谱被配置关掉时只剩委托一站，存档里存的 Chart 不能生效
+            if (!ChartEnabled) {
+                View = QuestLogView.Entrust;
             }
         }
 
@@ -292,6 +321,24 @@ namespace CalamityOverhaul.Content.QuestLogs
             CloseDetail(false);
             isDraggingMap = false;
             hoveredNode = null;
+        }
+
+        /// <summary>开书并翻到委托卷宗；已经摊在那儿就什么都不做。教程兜底走这条，不用会来回开关的 Toggle</summary>
+        public void OpenEntrustView() {
+            SetView(QuestLogView.Entrust);
+            if (!IsOpen) {
+                Open();
+            }
+        }
+
+        /// <summary>把第 index 条章目推到画布中心并摊开它的记录条，供教程兜底演示</summary>
+        public bool FocusAndOpenChapter(int index) {
+            if (index < 0 || index >= chapterRoots.Count) {
+                return false;
+            }
+            FocusNode(chapterRoots[index]);
+            OpenDetail(chapterRoots[index]);
+            return true;
         }
 
         /// <summary>开书并翻到委托卷宗；已在该站点则合书</summary>
@@ -364,8 +411,16 @@ namespace CalamityOverhaul.Content.QuestLogs
                 return;
             }
 
-            bool hoveredChrome = UpdateChrome();
-            bool hoveredDetail = UpdateDetailPanel(scrollDelta);
+            //教程卡浮在书页上：它占住的地方不能再落到图谱或页脚键上，
+            //否则点「下一步」会连带把整张图拖走。只掐输入，分区照常交付——
+            //委托卷宗的行矩形正是教程自己要用来定位的东西，不能因为悬停就停更
+            bool guideBlocking = QuestBookGuideRenderer.PointerBlock.Contains(Main.MouseScreen.ToPoint());
+            if (guideBlocking) {
+                player.mouseInterface = true;
+            }
+
+            bool hoveredChrome = guideBlocking || UpdateChrome();
+            bool hoveredDetail = !guideBlocking && UpdateDetailPanel(scrollDelta);
 
             if (View == QuestLogView.Chart) {
                 UpdateCanvas(scrollDelta, hoveredChrome || hoveredDetail);
@@ -467,6 +522,15 @@ namespace CalamityOverhaul.Content.QuestLogs
                 hovered = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     Close();
+                    return true;
+                }
+            }
+
+            if (layout.MainHelp.Contains(mouse)) {
+                hovered = true;
+                if (keyLeftPressState == KeyPressState.Pressed) {
+                    QuestBookGuideFlow.LocalPlayer?.RestartFromHelp();
+                    SoundEngine.PlaySound(SoundID.MenuTick);
                     return true;
                 }
             }
@@ -711,6 +775,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             if (!styleOwnsChrome) {
                 DrawCloseGlyph(spriteBatch, layout.MainClose, mainPanelAlpha);
+                DrawHelpGlyph(spriteBatch, layout.MainHelp, mainPanelAlpha);
             }
 
             if (showDetailPanel || layout.DetailProgress > 0.01f) {
@@ -952,6 +1017,27 @@ namespace CalamityOverhaul.Content.QuestLogs
                 MathHelper.PiOver4, new Vector2(0.5f), new Vector2(xSize * 2f, 1.5f), SpriteEffects.None, 0f);
             spriteBatch.Draw(pixel, new Vector2(cx, cy), null, xColor,
                 -MathHelper.PiOver4, new Vector2(0.5f), new Vector2(xSize * 2f, 1.5f), SpriteEffects.None, 0f);
+        }
+
+        /// <summary>通用重看教程键，仅在样式不自绘外框时使用</summary>
+        private static void DrawHelpGlyph(SpriteBatch spriteBatch, Rectangle rect, float alpha) {
+            bool hovered = rect.Contains(Main.MouseScreen.ToPoint());
+            if (hovered) {
+                Main.hoverItemName = QuestBookGuideLead.HelpButtonHover.Value;
+            }
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            Color bgC = hovered ? new Color(60, 60, 40) * (alpha * 0.4f)
+                : new Color(10, 10, 10) * (alpha * 0.35f);
+            spriteBatch.Draw(pixel, rect, bgC);
+
+            Color inkColor = hovered ? new Color(255, 226, 176) * alpha
+                : new Color(180, 180, 180) * (alpha * 0.6f);
+            var font = FontAssets.MouseText.Value;
+            Vector2 size = font.MeasureString("?") * 0.92f;
+            Utils.DrawBorderString(spriteBatch, "?",
+                new Vector2(rect.X + (rect.Width - size.X) * 0.5f, rect.Y + (rect.Height - size.Y) * 0.5f),
+                inkColor, 0.92f);
         }
 
         private Vector2 GetNodeScreenPos(Vector2 nodePos) {

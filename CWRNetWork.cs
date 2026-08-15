@@ -8,6 +8,7 @@ using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
@@ -92,6 +93,8 @@ namespace CalamityOverhaul
         TurretMeshAim,
         //地牢水牢层的阀门：客户端只上行"我拉了这根杆"，水位由服务端裁决并回播区块
         DungeonworldWaterValve,
+        //鬼伞·大范围重启：客户端请求 → 服务器圈定并广播 → 各端本地倒带
+        KikasaReset,
     }
 
     public static class CWRNetWork
@@ -177,6 +180,7 @@ namespace CalamityOverhaul
             KikasaDomainNet.NetHandle(type, reader, whoAmI);
             KikasaLakeNet.NetHandle(type, reader, whoAmI);
             KikasaDrownNet.NetHandle(type, reader, whoAmI);
+            KikasaResetNet.NetHandle(type, reader, whoAmI);
             RamNet.NetHandle(type, reader, whoAmI);
             CyberwareNet.NetHandle(type, reader, whoAmI);
             SandevistanNet.NetHandle(type, reader, whoAmI);

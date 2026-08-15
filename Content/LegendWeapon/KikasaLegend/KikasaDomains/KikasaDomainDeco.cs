@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -291,6 +292,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// <summary>异化态满幕雨帘：密度吃领域的雨帘包络，做法镜像鬼雨世界常驻雨（湿墨色板）</summary>
         private static void UpdateRainCurtain(KikasaDomainPlayer kdp) {
             float density = kdp.RainCurtainDensity;
+            //大范围重启演出期间雨帘拉满：冲刷与倒带都要有足量的雨可看
+            if (KikasaReset.LocallyViewed) {
+                density = MathF.Max(density, 1.35f);
+            }
             if (density < 0.02f) {
                 rainCarry = 0f;
                 return;
@@ -310,6 +315,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             Color pale = new(170, 185, 190);
             Color corpse = new(140, 170, 165);
             float wind = MathF.Sin(Main.worldID % 255 * 0.37f) * 2.2f * density;
+            bool rewinding = KikasaReset.RainRewindActive;
             for (int i = 0; i < count; i++) {
                 Vector2 pos = new(Main.rand.NextFloat(left, right),
                     Main.screenPosition.Y - Main.rand.NextFloat(10f, 220f));
@@ -317,10 +323,47 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                     Main.rand.NextFloat(11f, 17f));
                 Color color = (Main.rand.NextBool(7) ? corpse : pale)
                     * Main.rand.NextFloat(0.42f, 0.65f);
-                PRTLoader.NewParticle<PRT_GhostRainDrop>(pos, vel, color,
-                    Main.rand.NextFloat(0.8f, 1.25f))
-                    ?.Configure(Main.rand.Next(70, 110), vel.X);
+                float scale = Main.rand.NextFloat(0.8f, 1.25f);
+                int life = Main.rand.Next(70, 110);
+                if (rewinding) {
+                    //约半数从地表反向扁溅重生：砸过地的雨被时间收回去，聚成珠再升空。
+                    //只是整幕向上飞会读成"一波雨飞回天上"，缺了从地面收回来的那一层
+                    if (Main.rand.NextBool()
+                        && TryFindRainGround(pos.X, out float groundY)) {
+                        PRTLoader.NewParticle<PRT_GhostRainDrop>(
+                            new Vector2(pos.X, groundY - 2f), Vector2.Zero, color, scale)
+                            ?.Configure(life, vel.X).BeginRebirth();
+                        continue;
+                    }
+                    //其余在幕内出生向上飞，补足空中密度
+                    pos.Y = Main.screenPosition.Y
+                        + Main.rand.NextFloat(Main.screenHeight * 0.2f, Main.screenHeight + 60f);
+                    vel.Y = -vel.Y;
+                }
+                PRTLoader.NewParticle<PRT_GhostRainDrop>(pos, vel, color, scale)
+                    ?.Configure(life, vel.X);
             }
+        }
+
+        /// <summary>倒带雨的重生落点：从视区上部向下找首个实心面（鬼梦地雾同型扫描）</summary>
+        private static bool TryFindRainGround(float x, out float groundY) {
+            int tileX = (int)(x / 16f);
+            int tileY = (int)((Main.screenPosition.Y + Main.screenHeight * 0.10f) / 16f);
+            int span = Main.screenHeight * 95 / 100 / 16 + 2;
+            for (int i = 0; i < span; i++) {
+                int y = tileY + i;
+                if (!WorldGen.InWorld(tileX, y, 40)) {
+                    break;
+                }
+                Tile tile = Framing.GetTileSafely(tileX, y);
+                if (tile.HasTile && Main.tileSolid[tile.TileType]
+                    && !Main.tileSolidTop[tile.TileType]) {
+                    groundY = y * 16f;
+                    return true;
+                }
+            }
+            groundY = 0f;
+            return false;
         }
 
         //血滴抛物线：重力+微阻；落回湖面收走并按概率荡个微圈（不占行波槽）
