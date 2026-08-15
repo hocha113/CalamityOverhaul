@@ -512,9 +512,9 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
                 int wrapWidth = (int)((entryRect.Width - 40f) / descScale);
                 Color descColor = new Color(220, 200, 170) * (expandAlpha * 0.75f);
 
-                //正文给落款让出底部
+                //正文给进度条与落款让出底部
                 int sigH = GetProviderSignatureHeight(entry);
-                float textBottom = entryRect.Bottom - 4f - sigH;
+                float textBottom = entryRect.Bottom - 4f - sigH - ExpandedProgressRowH(entry);
                 string[] paragraphs = fullText.Split('\n');
                 foreach (string paragraph in paragraphs) {
                     string trimmedPara = paragraph.Trim();
@@ -535,9 +535,10 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
                 }
             }
 
+            //展开时进度条住在落款上面那一行，不与名字抢地方
             if (entry.Progress > 0f && entry.Status != QuestEntryStatus.Completed) {
                 float barY = entry.ExpandProgress > 0.5f
-                    ? entryRect.Bottom - 14f
+                    ? entryRect.Bottom - GetProviderSignatureHeight(entry) - 10f
                     : summaryY + 18f;
                 int barW = Math.Min(120, entryRect.Width - 50);
                 Rectangle barRect = new((int)titleX, (int)barY, barW, 5);

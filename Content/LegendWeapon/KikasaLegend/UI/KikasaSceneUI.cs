@@ -141,9 +141,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 Close();
             }
 
-            //画心自缩影放大铺开：空间连续
+            //画心自风铃铃身放大铺开：空间连续
             Rectangle full = KikasaSceneTheme.CanvasRect();
-            Rectangle mini = KikasaHud.MiniRect;
+            Rectangle mini = KikasaHud.BellRect;
             float ease = 1f - MathF.Pow(1f - a, 3f);
             canvasRect = new Rectangle(
                 (int)MathHelper.Lerp(mini.X, full.X, ease),
@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             float effStir = MathHelper.Clamp(stir + (1f - a) * 0.4f, 0f, 1f);
             float lightGate = MathHelper.Clamp(lightGateSmooth + lightPulse * 0.25f, 0f, 1f);
             DrawVista(spriteBatch, canvas, a, rain, waterUv, 1f - rise, effStir,
-                domain.FlipBoil, domain.FlipFlash, lightGate, mini: false);
+                domain.FlipBoil, domain.FlipFlash, lightGate);
 
             //2 装裱：左右卷杆
             KikasaSceneRenderer.DrawRollers(spriteBatch, canvas,
@@ -279,7 +279,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             //铺开到能看清内容才落笔画细节
             float detailA = MathHelper.Clamp((a - 0.55f) / 0.45f, 0f, 1f);
             if (detailA > 0.02f) {
-                DrawSvgLayer(spriteBatch, canvas, detailA, rain, time);
+                DrawHound(spriteBatch, canvas, detailA, rain, waterUv, time);
                 DrawMemory(spriteBatch, canvas, detailA, rain, waterUv);
                 DrawAdditiveBits(spriteBatch, canvas, detailA, rain, waterUv, time);
                 DrawInkRipples(spriteBatch, detailA, rain);
@@ -292,7 +292,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         private void DrawVista(SpriteBatch sb, Rectangle rect, float a, float rain,
             float waterUv, float dry, float effStir, float boil, float flash,
-            float lightGate, bool mini) {
+            float lightGate) {
             Effect effect = EffectLoader.KikasaScene?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
             if (effect == null || noise == null || effect.Techniques["TechVista"] == null) {
@@ -310,7 +310,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             effect.Parameters["uBoil"]?.SetValue(boil);
             effect.Parameters["uFlash"]?.SetValue(flash);
             effect.Parameters["uLightGate"]?.SetValue(lightGate);
-            effect.Parameters["uMini"]?.SetValue(mini ? 1f : 0f);
 
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
@@ -320,11 +319,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             sb.Draw(VaultAsset.placeholder2.Value, rect, Color.White);
             KikasaVaultRenderer.RestoreUIBatch(sb);
         }
-
-        /// <summary>缩影 HUD 复用同一画心入口</summary>
-        internal void DrawVistaFor(SpriteBatch sb, Rectangle rect, float a, float rain,
-            float waterUv, float dry, float effStir, float boil, float flash, float lightGate)
-            => DrawVista(sb, rect, a, rain, waterUv, dry, effStir, boil, flash, lightGate, mini: true);
 
         //CPU 回退：三段平涂（天/床/水）+ 岸线一划
 
@@ -348,41 +342,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 new Vector2(rect.Right, shoreY), 1f, KikasaHudTheme.Accent(rain) * (0.4f * a));
         }
 
-        //====== SVG 锐层 ======
+        //====== 画中恶犬（贴图实绘） ======
 
-        private void DrawSvgLayer(SpriteBatch sb, Rectangle canvas, float a, float rain, float time) {
-            //墨色近黑，形态浸染只偏一点色相
-            Color ink = Color.Lerp(new Color(14, 6, 9), new Color(8, 12, 15), rain);
-            Color edge = KikasaHudTheme.TextDim(rain);
-            float unit = canvas.Height;
-
-            //村口鸟居与两座民居
-            KikasaSceneRenderer.DrawTorii(sb,
-                KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.ToriiUv),
-                unit * 0.075f, ink, KikasaHudTheme.Accent(rain) * 0.5f, a);
-            KikasaSceneRenderer.DrawHouse(sb,
-                KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.HouseAUv),
-                unit * 0.070f, false, ink, a);
-            KikasaSceneRenderer.DrawHouse(sb,
-                KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.HouseBUv),
-                unit * 0.058f, true, ink, a * 0.92f);
-            KikasaSceneRenderer.DrawLantern(sb,
-                KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.LanternUv),
-                unit * 0.024f, ink, a);
-
-            //恶犬：坐/昂首/立嚎按状态渐变；悬停也会让它抬头看你
+        private void DrawHound(SpriteBatch sb, Rectangle canvas, float a, float rain,
+            float waterUv, float time) {
+            //姿态渐变；悬停也会让它睁眼看你
             (float idleA, float alertA, float howlA) = HoundPose();
-            KikasaSceneRenderer.DrawHound(sb,
-                KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.HoundUv),
-                unit * 0.062f, idleA, alertA, howlA, ink, edge, a, time);
-
-            //前景芦苇两丛
-            KikasaSceneRenderer.DrawReeds(sb,
-                KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.ReedLUv),
-                unit * 0.085f, ink, a * 0.9f, time, 1.7f, false);
-            KikasaSceneRenderer.DrawReeds(sb,
-                KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.ReedRUv),
-                unit * 0.070f, ink, a * 0.85f, time, 5.3f, true);
+            Vector2 pos = KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.HoundUv);
+            float waterPixY = canvas.Y + waterUv * canvas.Height;
+            //倒影只在水位接近满时可见，免得镜像探出画底
+            float reflGate = MathHelper.Clamp((0.72f - waterUv) / 0.05f, 0f, 1f);
+            KikasaSceneRenderer.DrawInkHound(sb, pos,
+                canvas.Height * KikasaSceneTheme.HoundHeight,
+                idleA, alertA, howlA, houndHoverLerp, rain,
+                MathHelper.Clamp(stir, 0f, 1f), Domain.FlipBoil,
+                waterPixY, reflGate, a, time);
         }
 
         /// <summary>犬姿态权重：鬼梦立嚎 > 倒影醒/被注视昂首 > 垂首打盹</summary>
@@ -427,36 +401,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         private void DrawAdditiveBits(SpriteBatch sb, Rectangle canvas, float a,
             float rain, float waterUv, float time) {
+            //村中窗火与檐灯已由 villageRow 程序化承担（uLightGate），
+            //恶犬烬目由 KikasaHound.fx 内建，这里只剩水语亮件
             Color glow = KikasaHudTheme.Glow(rain);
             Color accent = KikasaHudTheme.Accent(rain);
-            Color emberEye = new(230, 96, 40);
             float waterPixY = canvas.Y + waterUv * canvas.Height;
             bool hasWater = waterUv < 0.94f;
 
             KikasaVaultRenderer.BeginAdditive(sb);
-
-            //檐灯灯芯：呼吸微光，湖藏一变齐闪一记
-            float lanternA = 0.30f + 0.20f * KikasaSceneTheme.Breath(time, 0.7f, 1.9f)
-                + lightPulse * 0.5f;
-            KikasaVaultRenderer.DrawGlowDot(sb,
-                KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.LanternUv)
-                    + new Vector2(0f, canvas.Height * 0.002f),
-                canvas.Height * 0.020f, new Color(235, 140, 60) * (lanternA * a));
-            //乙屋方窗一点暖
-            KikasaVaultRenderer.DrawGlowDot(sb,
-                KikasaSceneTheme.UvToScreen(canvas,
-                    KikasaSceneTheme.HouseBUv + new Vector2(-0.008f, -0.010f)),
-                canvas.Height * 0.012f,
-                new Color(235, 140, 60) * ((0.16f + 0.30f * lightGateSmooth + lightPulse * 0.3f) * a));
-
-            //恶犬烬目：昂首/嚎叫时亮，悬停更亮
-            (float idleA, float alertA, float howlA) = HoundPose();
-            Vector2 eye = KikasaSceneRenderer.HoundEyeAnchor(
-                KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.HoundUv),
-                canvas.Height * 0.062f, idleA, alertA, howlA);
-            float eyeA = (0.18f + alertA * 0.42f + howlA * 0.5f + houndHoverLerp * 0.25f) * a;
-            KikasaVaultRenderer.DrawGlowDot(sb, eye, 2.2f, emberEye * eyeA);
-            KikasaVaultRenderer.DrawGlowDot(sb, eye + new Vector2(3.2f, 0.6f), 1.4f, emberEye * (eyeA * 0.55f));
 
             if (hasWater) {
                 //水面泡沫线 + 两点游光

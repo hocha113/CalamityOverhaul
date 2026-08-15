@@ -649,7 +649,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
 
         //旧接口按 panelRect 推算按钮位；本样式的总控住在页脚，故一律读同步来的分区
         public Rectangle GetStyleSwitchButtonRect(Rectangle panelRect)
-            => new(layout.Footer.Right - 52, layout.Footer.Y + 10, 34, 28);
+            => QuestLogTheme.FooterStyleButton(layout.Footer);
 
         public void DrawStyleSwitchButton(SpriteBatch sb, Rectangle panelRect, bool isHovered, float alpha) {
             Rectangle rect = GetStyleSwitchButtonRect(panelRect);
@@ -664,14 +664,14 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             ChroniclePen.Line(sb, c + new Vector2(-2f, 6f), c + new Vector2(7f, 6f), 1.5f, cut, alpha * 0.9f);
         }
 
-        public Rectangle GetNightModeButtonRect(Rectangle panelRect)
-            => new(layout.Footer.Right - 52, layout.Footer.Y + 10, 0, 0);
+        //本样式不设日夜，夜间槽位空着不给后面的键让路
+        public Rectangle GetNightModeButtonRect(Rectangle panelRect) => Rectangle.Empty;
 
         public void DrawNightModeButton(SpriteBatch sb, Rectangle panelRect, bool isHovered,
             float alpha, bool isNightMode) { }
 
         public Rectangle GetResetViewButtonRect(Rectangle panelRect)
-            => new(layout.Footer.Right - 96, layout.Footer.Y + 10, 34, 28);
+            => QuestLogTheme.FooterResetButton(layout.Footer);
 
         public void DrawResetViewButton(SpriteBatch sb, Rectangle panelRect, Vector2 directionToCenter,
             bool isHovered, float alpha) {
@@ -690,7 +690,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
         }
 
         public Rectangle GetClaimAllButtonRect(Rectangle panelRect)
-            => new(layout.Footer.Right - 268, layout.Footer.Y + 10, 122, 28);
+            => QuestLogTheme.FooterClaimButton(layout.Footer);
 
         public void DrawClaimAllButton(SpriteBatch sb, Rectangle panelRect, bool isHovered, float alpha) {
             Rectangle rect = GetClaimAllButtonRect(panelRect);

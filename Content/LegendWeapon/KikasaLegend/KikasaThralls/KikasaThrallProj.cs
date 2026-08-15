@@ -57,9 +57,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         private const int GatherPoolEnd = 42;
         private const int GatherTotal = 84;
 
-        //成形：凝聚 46f + 实质化落定 10f
+        //成形：凝聚 46f + 撑伞落定 20f（落定段要够长，撑伞拍的水环得张开才收得住）
         private const int ReformCondenseEnd = 46;
-        private const int ReformTotal = 56;
+        private const int ReformTotal = 66;
 
         //突进：蓄势→跃扑（接触窗）→落地收势
         private const int LungeWindup = 14;
@@ -92,6 +92,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         private bool gatherFromSet;
         private Vector2 gatherFrom;
         private bool travelBeatDone;
+        private bool reformBurstDone;
         private bool materializeBeatDone;
         private bool dissolveBeatDone;
         private bool facingLeft;
@@ -107,12 +108,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         /// <summary>重组点脚底（spawn 包自带）</summary>
         private Vector2 ReformFeet => new(Projectile.ai[0], Projectile.ai[1]);
 
-        /// <summary>体型缩放（spawn 包自带）</summary>
+        /// <summary>贴图绘制缩放：画布已是放大版，这里只叠尸体体型（spawn 包自带）</summary>
         private float BodyScale => MathHelper.Clamp(Projectile.ai[2] <= 0.01f ? 1f : Projectile.ai[2],
             KikasaThrall.BodyScaleMin, KikasaThrall.BodyScaleMax);
 
+        /// <summary>身量缩放：污潭、水沫、演出锚点这些贴图外的件，按放大后的身板算</summary>
+        private float BulkScale => BodyScale * KikasaThrall.BodyBulk;
+
         /// <summary>脚底中心锚点</summary>
         private Vector2 FeetAnchor => new(Projectile.Center.X, Projectile.position.Y + Projectile.height);
+
+        //演出锚点一律按画出来的身量走：碰撞箱只管落脚，不代表看得见的体格
+        private float DrawWidth => Projectile.width * BulkScale;
+        private float DrawHeight => Projectile.height * BulkScale;
+        private Vector2 DrawTopLeft => FeetAnchor - new Vector2(DrawWidth * 0.5f, DrawHeight);
+
+        /// <summary>
+        /// 伞面高度：撑伞拍的环心与甩水点。DrawHeight 是名义体高、比贴图矮一截——
+        /// 按 77×115 画布实测，伞缘 ≈0.92×DrawHeight、伞顶穹心 ≈1.07，取 1.0 落在伞面里
+        /// </summary>
+        private Vector2 CanopyAnchor => FeetAnchor - new Vector2(0f, DrawHeight);
 
         /// <summary>连续量抖动的确定性相位，各端一致（不掷 Main.rand 定行为）</summary>
         private float Seed => Projectile.identity * 0.7391f;
@@ -221,6 +236,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 subTimer = 0;
                 lastFlungDrop = -1;
                 travelBeatDone = State == StateGather && StateTimer > GatherPoolEnd;
+                reformBurstDone = State == StateReform && StateTimer > 1;
                 materializeBeatDone = State == StateReform && StateTimer > ReformCondenseEnd;
                 dissolveBeatDone = false;
             }
@@ -274,14 +290,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             int t = StateTimer;
             if (t <= GatherPoolEnd) {
                 //滞蓄：融化的水正在收进来（化水演出同点进行）
-                if (!Main.dedServ && Main.GameUpdateCount % 3 == 0) {
-                    Vector2 from = Projectile.Center + new Vector2(
-                        Main.rand.NextFloat(-46f, 46f), Main.rand.NextFloat(-30f, 4f));
-                    PRTLoader.NewParticle<PRT_SewageGlob>(from,
-                        (Projectile.Center - from) * 0.05f,
-                        KikasaThrall.SewageDeep * Main.rand.NextFloat(0.5f, 0.8f),
-                        Main.rand.NextFloat(0.4f, 0.7f))
-                        ?.Configure(Main.rand.Next(16, 26), Projectile.Center);
+                if (!Main.dedServ) {
+                    if (Main.GameUpdateCount % 2 == 0) {
+                        for (int i = 0; i < 2; i++) {
+                            Vector2 from = Projectile.Center + new Vector2(
+                                Main.rand.NextFloat(-64f, 64f), Main.rand.NextFloat(-42f, 6f));
+                            PRTLoader.NewParticle<PRT_SewageGlob>(from,
+                                (Projectile.Center - from) * 0.05f,
+                                KikasaThrall.SewageDeep * Main.rand.NextFloat(0.55f, 0.85f),
+                                Main.rand.NextFloat(0.45f, 0.85f))
+                                ?.Configure(Main.rand.Next(16, 26), Projectile.Center);
+                        }
+                    }
+                    //雨也在往这口水潭里灌
+                    if (t % 9 == 1) {
+                        KikasaThrallFX.RainYank(Projectile.Center, 5, 150f, 0.85f);
+                    }
+                    if (t % 14 == 6) {
+                        KikasaThrallFX.MistRing(Projectile.Center, 2, 26f, 0.8f);
+                    }
                 }
             }
             else {
@@ -304,13 +331,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 Projectile.Center = line + new Vector2(0f, sag);
 
                 //淌行拖尾
-                if (!Main.dedServ && Main.GameUpdateCount % 2 == 0) {
-                    PRTLoader.NewParticle<PRT_SewageGlob>(
-                        Projectile.Center + Main.rand.NextVector2Circular(10f, 6f),
-                        new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(0.3f, 1.2f)),
-                        KikasaThrall.SewageDark * Main.rand.NextFloat(0.5f, 0.75f),
-                        Main.rand.NextFloat(0.35f, 0.6f))
-                        ?.Configure(Main.rand.Next(12, 20));
+                if (!Main.dedServ) {
+                    if (Main.GameUpdateCount % 2 == 0) {
+                        PRTLoader.NewParticle<PRT_SewageGlob>(
+                            Projectile.Center + Main.rand.NextVector2Circular(14f, 8f),
+                            new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(0.3f, 1.2f)),
+                            KikasaThrall.SewageDark * Main.rand.NextFloat(0.55f, 0.8f),
+                            Main.rand.NextFloat(0.4f, 0.7f))
+                            ?.Configure(Main.rand.Next(12, 20));
+                    }
+                    //淌过地面踢起的水沫，一路都在溅；横向分量走 wind——雨滴粒子每帧用它覆写 X 速
+                    if (t % 3 == 0) {
+                        Vector2 surge = (ReformFeet - gatherFrom).SafeNormalize(Vector2.UnitX);
+                        Vector2 kick = -surge * Main.rand.NextFloat(0.6f, 1.6f)
+                            - Vector2.UnitY * Main.rand.NextFloat(1.4f, 3.2f);
+                        PRTLoader.NewParticle<PRT_GhostRainDrop>(
+                            Projectile.Center + Main.rand.NextVector2Circular(12f, 6f),
+                            kick, KikasaThrall.PaleSheen * Main.rand.NextFloat(0.3f, 0.5f),
+                            Main.rand.NextFloat(0.4f, 0.65f))
+                            ?.Configure(Main.rand.Next(16, 26), kick.X);
+                    }
+                    if (t % 10 == 4) {
+                        KikasaThrallFX.MistRing(Projectile.Center, 2, 18f, 0.7f);
+                    }
                 }
             }
 
@@ -320,6 +363,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 State = StateReform;
                 StateTimer = 0;
                 Projectile.netUpdate = authority;
+                if (!Main.dedServ) {
+                    //落点拍：一整摊水砸回地面，成形从这一下开始
+                    SoundEngine.PlaySound(SoundID.SplashWeak with {
+                        Volume = 0.6f,
+                        Pitch = -0.35f,
+                        MaxInstances = 3,
+                    }, ReformFeet);
+                    KikasaThrallFX.WaterBurst(ReformFeet, 12, 0.95f, upward: true);
+                    KikasaThrallFX.MistRing(ReformFeet, 3, 30f, 0.9f);
+                    if (IsViewedOwner()) {
+                        ShakeViewer(1.4f);
+                    }
+                }
             }
         }
 
@@ -339,42 +395,82 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 facingLeft = look.X < Projectile.Center.X;
             }
 
-            //凝聚期：污水团自地面弧线扑入正在成形的身体（镜 KasaOni EmergingFx）
-            if (!Main.dedServ && progress < 0.85f && Main.GameUpdateCount % 2 == 0) {
-                Vector2 feet = FeetAnchor;
-                float side = Main.rand.NextFloat(26f, 96f) * (Main.rand.NextBool() ? 1f : -1f);
-                Vector2 from = new(feet.X + side, feet.Y - Main.rand.NextFloat(0f, 5f));
-                Vector2 to = feet - new Vector2(Main.rand.NextFloat(-8f, 8f),
-                    Main.rand.NextFloat(6f, Projectile.height * (0.2f + progress * 0.75f)));
-                PRTLoader.NewParticle<PRT_SewageGlob>(from,
-                    new Vector2(-side * 0.015f, -Main.rand.NextFloat(1.4f, 3f)),
-                    Color.Lerp(KikasaThrall.SewageDeep, KikasaThrall.CorpseTeal, Main.rand.NextFloat(0.4f))
-                        * Main.rand.NextFloat(0.6f, 0.9f),
-                    Main.rand.NextFloat(0.5f, 0.95f))
-                    ?.Configure(Main.rand.Next(18, 32), to);
+            //破土拍：雨自四面扑向重组点，地面顶开一蓬污水——成形是被雨按出来的
+            if (!Main.dedServ && !reformBurstDone && t >= 1) {
+                reformBurstDone = true;
+                SoundEngine.PlaySound(SoundID.SplashWeak with {
+                    Volume = 0.7f,
+                    Pitch = -0.6f,
+                    MaxInstances = 3,
+                }, FeetAnchor);
+                SoundEngine.PlaySound(SoundID.Drip with {
+                    Volume = 0.5f,
+                    Pitch = -0.85f,
+                    MaxInstances = 3,
+                }, FeetAnchor);
+                KikasaThrallFX.RainYank(FeetAnchor - new Vector2(0f, DrawHeight * 0.4f), 20, 300f, 1.15f);
+                KikasaThrallFX.WaterBurst(FeetAnchor, 16, 1.1f, upward: true);
+                KikasaThrallFX.MistRing(FeetAnchor, 4, 40f, 1.1f);
+                if (IsViewedOwner()) {
+                    ShakeViewer(2.4f);
+                }
             }
 
-            //实质化确认拍：扇形甩出一圈污水 + 湿闷落定声 + 小屏震
+            //凝聚期：污水团自地面弧线扑入正在成形的身体（镜 KasaOni EmergingFx）
+            if (!Main.dedServ && progress < 0.92f) {
+                Vector2 feet = FeetAnchor;
+                for (int i = 0; i < 2; i++) {
+                    float side = Main.rand.NextFloat(30f, 130f) * (Main.rand.NextBool() ? 1f : -1f);
+                    Vector2 from = new(feet.X + side, feet.Y - Main.rand.NextFloat(0f, 6f));
+                    Vector2 to = feet - new Vector2(Main.rand.NextFloat(-10f, 10f),
+                        Main.rand.NextFloat(6f, DrawHeight * (0.2f + progress * 0.75f)));
+                    PRTLoader.NewParticle<PRT_SewageGlob>(from,
+                        new Vector2(-side * 0.015f, -Main.rand.NextFloat(1.4f, 3f)),
+                        Color.Lerp(KikasaThrall.SewageDeep, KikasaThrall.CorpseTeal, Main.rand.NextFloat(0.4f))
+                            * Main.rand.NextFloat(0.6f, 0.9f),
+                        Main.rand.NextFloat(0.55f, 1f))
+                        ?.Configure(Main.rand.Next(18, 32), to);
+                }
+                //自潭里顶上来的水柱：身体是被这股水撑起来的；微斜靠 wind，粒子每帧用它覆写 X 速
+                if (t % 3 == 0) {
+                    float driftX = Main.rand.NextFloat(-0.8f, 0.8f);
+                    PRTLoader.NewParticle<PRT_GhostRainDrop>(
+                        feet + new Vector2(Main.rand.NextFloat(-0.5f, 0.5f) * DrawWidth, -2f),
+                        new Vector2(driftX, -Main.rand.NextFloat(4.5f, 8.5f)),
+                        KikasaThrall.PaleSheen * Main.rand.NextFloat(0.35f, 0.6f),
+                        Main.rand.NextFloat(0.45f, 0.8f))
+                        ?.Configure(Main.rand.Next(20, 34), driftX);
+                }
+                if (t % 11 == 5) {
+                    KikasaThrallFX.RainYank(feet - new Vector2(0f, DrawHeight * 0.5f), 6, 220f, 0.95f);
+                }
+            }
+
+            //撑伞拍：整圈水爆 + 伞面甩水 + 三层水声，出场就得让人挪不开眼
             if (!materializeBeatDone && t >= ReformCondenseEnd) {
                 materializeBeatDone = true;
                 if (!Main.dedServ) {
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
-                        Volume = 0.55f,
-                        Pitch = -0.15f,
+                        Volume = 0.9f,
+                        Pitch = -0.3f,
                         MaxInstances = 3,
                     }, FeetAnchor);
-                    for (int i = 0; i < 10; i++) {
-                        float angle = -MathHelper.Pi * (0.12f + 0.76f * i / 9f);
-                        Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(1.6f, 3.6f);
-                        PRTLoader.NewParticle<PRT_SewageGlob>(
-                            Projectile.Center + new Vector2(Main.rand.NextFloat(-10f, 10f), 0f),
-                            vel, Color.Lerp(KikasaThrall.SewageDeep, KikasaThrall.CorpseTeal,
-                                Main.rand.NextFloat(0.5f)) * Main.rand.NextFloat(0.55f, 0.85f),
-                            Main.rand.NextFloat(0.4f, 0.75f))
-                            ?.Configure(Main.rand.Next(16, 28));
-                    }
+                    SoundEngine.PlaySound(SoundID.Drip with {
+                        Volume = 0.6f,
+                        Pitch = -0.9f,
+                        MaxInstances = 3,
+                    }, FeetAnchor);
+                    //伞骨绷响：与主人撑伞同一记闷响
+                    SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
+                        Volume = 0.55f,
+                        Pitch = -0.45f,
+                        MaxInstances = 2,
+                    }, CanopyAnchor);
+                    KikasaThrallFX.WaterBurst(FeetAnchor, 22, 1.25f, upward: true);
+                    KikasaThrallFX.WaterBurst(CanopyAnchor, 18, 1.15f, upward: false);
+                    KikasaThrallFX.MistRing(FeetAnchor, 6, 52f, 1.2f);
                     if (IsViewedOwner()) {
-                        ShakeViewer(2f);
+                        ShakeViewer(4.5f);
                     }
                 }
             }
@@ -526,8 +622,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 //旋出的环形水沫
                 if (!Main.dedServ && t % 2 == 0) {
                     float ang = Main.rand.NextFloat(MathHelper.TwoPi);
-                    Vector2 rim = Projectile.Center + new Vector2(0f, -Projectile.height * 0.34f)
-                        + ang.ToRotationVector2() * 20f * BodyScale;
+                    Vector2 rim = Projectile.Center + new Vector2(0f, -DrawHeight * 0.34f)
+                        + ang.ToRotationVector2() * 20f * BulkScale;
                     PRTLoader.NewParticle<PRT_GhostRainDrop>(rim,
                         ang.ToRotationVector2() * Main.rand.NextFloat(1.2f, 2.4f),
                         KikasaThrall.PaleSheen * Main.rand.NextFloat(0.3f, 0.45f),
@@ -549,7 +645,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         /// 雨形态轻滴规格 scale 0.85；ai0=锁定目标 ai1=无目标时的坠落列
         /// </summary>
         private void FlingDroplet(Player owner, int target, int index, bool authority) {
-            Vector2 muzzle = Projectile.Center + new Vector2(0f, -Projectile.height * 0.38f);
+            Vector2 muzzle = Projectile.Center + new Vector2(0f, -DrawHeight * 0.38f);
             SoundEngine.PlaySound(SoundID.Item17 with {
                 Volume = 0.32f,
                 Pitch = -0.5f + index * 0.08f,
@@ -635,10 +731,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             //洒落跟着熔断前沿走：顶部先化，残躯向脚底退缩（镜 KasaOni DissolvingFx）
             if (!Main.dedServ && Main.GameUpdateCount % 2 == 0) {
                 float progress = CondenseProgress;
-                float frontY = Projectile.height * MathHelper.Clamp(1f - progress, 0f, 1f);
-                Vector2 from = Projectile.position + new Vector2(
-                    Main.rand.NextFloat(2f, Projectile.width - 2f),
-                    MathHelper.Clamp(frontY + Main.rand.NextFloat(-6f, 14f), 0f, Projectile.height - 2f));
+                float frontY = DrawHeight * MathHelper.Clamp(1f - progress, 0f, 1f);
+                Vector2 from = DrawTopLeft + new Vector2(
+                    Main.rand.NextFloat(2f, DrawWidth - 2f),
+                    MathHelper.Clamp(frontY + Main.rand.NextFloat(-6f, 14f), 0f, DrawHeight - 2f));
                 PRTLoader.NewParticle<PRT_SewageGlob>(from,
                     new Vector2(Main.rand.NextFloat(-1.4f, 1.4f), Main.rand.NextFloat(0.4f, 1.8f)),
                     Color.Lerp(KikasaThrall.SewageDeep, KikasaThrall.SewageDark, Main.rand.NextFloat())
@@ -750,8 +846,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             dripTimer++;
             if (dripTimer >= 34) {
                 dripTimer = 0;
-                Vector2 rim = Projectile.position + new Vector2(
-                    Main.rand.NextFloat(4f, Projectile.width - 4f), Main.rand.NextFloat(2f, 12f));
+                Vector2 rim = DrawTopLeft + new Vector2(
+                    Main.rand.NextFloat(4f, DrawWidth - 4f), Main.rand.NextFloat(2f, 12f));
                 PRTLoader.NewParticle<PRT_GhostRainDrop>(rim,
                     new Vector2(0f, Main.rand.NextFloat(1.2f, 2f)),
                     KikasaThrall.PaleSheen * Main.rand.NextFloat(0.3f, 0.45f),
@@ -836,13 +932,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                     //凝聚/溶解共用正弦弓形包络：成形期潭被吸干、溶解期潭再涨起
                     float envelope = MathF.Sin(
                         MathHelper.Clamp((1f - progress) * 1.2f, 0f, 1f) * MathHelper.Pi);
-                    KikasaThrallRenderer.DrawPuddle(sb, FeetAnchor, envelope, BodyScale, Seed);
+                    KikasaThrallRenderer.DrawPuddle(sb, FeetAnchor, envelope, BulkScale, Seed);
 
                     float wobble = MathF.Sin(Main.GlobalTimeWrappedHourly * 5.3f + Seed * 1.7f)
                         * 0.035f * (1f - progress);
                     float scale = BodyScale * MaterializePop();
                     KikasaThrallRenderer.DrawBodyCondensing(sb, FeetAnchor, WalkFrame(),
                         progress, scale, facingLeft, FeetAnchor.Y + 2f, light, wobble, Seed);
+                    if (State == StateReform) {
+                        DrawReformBeats(sb);
+                    }
                     return false;
                 }
                 default: {
@@ -861,32 +960,88 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             }
         }
 
+        /// <summary>
+        /// 成形演出的环与光：破土环荡开 → 凝聚期脉冲 → 撑伞拍地面大环+伞面环+冷闪。
+        /// 水环走 ShockRingDraw（内部切批还原），冷闪是普通批里的 A=0 软辉
+        /// </summary>
+        private void DrawReformBeats(SpriteBatch sb) {
+            int t = StateTimer;
+
+            //破土环：地面先被顶开一圈
+            if (t <= 20) {
+                float e = t / 20f;
+                KikasaThrallFX.Flash(sb, FeetAnchor, 70f * BulkScale, 0.55f, 0.45f * (1f - e));
+                KikasaThrallFX.WaterRing(sb, FeetAnchor,
+                    MathHelper.Lerp(12f, 120f, KikasaThrallFX.EaseOut(e)) * BulkScale,
+                    0.42f, 0.7f * (1f - e), Seed);
+            }
+
+            //凝聚期脉冲：越接近成形，地面荡得越急
+            int pulse = (t - 12) % 12;
+            if (t > 12 && t < ReformCondenseEnd && pulse < 8) {
+                float e = pulse / 8f;
+                float rise = t / (float)ReformCondenseEnd;
+                KikasaThrallFX.WaterRing(sb, FeetAnchor,
+                    MathHelper.Lerp(10f, 70f + 40f * rise, KikasaThrallFX.EaseOut(e)) * BulkScale,
+                    0.4f, 0.34f * rise * (1f - e), Seed + t * 0.05f);
+            }
+
+            //撑伞拍：地面大环外扩，伞面另起一圈，中间压一记冷闪
+            if (t >= ReformCondenseEnd) {
+                float e = MathHelper.Clamp((t - ReformCondenseEnd) / 18f, 0f, 1f);
+                KikasaThrallFX.Flash(sb, Projectile.Center, 120f * BulkScale, 0.95f, 0.6f * (1f - e));
+                KikasaThrallFX.WaterRing(sb, FeetAnchor,
+                    MathHelper.Lerp(24f, 230f, KikasaThrallFX.EaseOut(e)) * BulkScale,
+                    0.36f, 0.9f * (1f - e), Seed);
+                KikasaThrallFX.WaterRing(sb, CanopyAnchor,
+                    MathHelper.Lerp(10f, 96f, KikasaThrallFX.EaseOut(e)) * BulkScale,
+                    0.82f, 0.75f * (1f - e * e), Seed + 2.1f);
+            }
+        }
+
         /// <summary>聚拢期的水团：低伏的浊水丘，蠕动呼吸；流动段沿速度拉伸</summary>
         private void DrawGatherMass(SpriteBatch sb) {
             //滞蓄段丘体渐涨，流动段保持；水团中心即贴地锚（spawn 位取的是尸体脚底）
             float grow = MathHelper.Clamp(StateTimer / (float)GatherPoolEnd, 0.25f, 1f);
-            KikasaThrallRenderer.DrawPuddle(sb, Projectile.Center, 0.5f * grow, BodyScale, Seed);
+            KikasaThrallRenderer.DrawPuddle(sb, Projectile.Center, 0.62f * grow, BulkScale, Seed);
 
             Texture2D mask = CWRUtils.GetT2DAsset(CWRConstant.Masking + "Extra_98")?.Value;
             if (mask == null) {
                 return;
             }
+            //一具人的水在赶路：流动段沿行进方向拉长，读作涌而不是飘
+            bool traveling = StateTimer > GatherPoolEnd;
+            float rot = 0f;
+            float stretch = 1f;
+            if (traveling) {
+                rot = (ReformFeet - gatherFrom).SafeNormalize(Vector2.UnitX).ToRotation();
+                stretch = 1.6f;
+            }
+
             Vector2 pos = Projectile.Center - Main.screenPosition;
             float wob = 1f + MathF.Sin(Main.GlobalTimeWrappedHourly * 6.2f + Seed) * 0.12f;
-            Vector2 core = new(38f * grow * wob / mask.Width, 20f * grow / mask.Height);
-            sb.Draw(mask, pos, null, KikasaThrall.SewageDeep * 0.85f, 0f,
-                mask.Size() * 0.5f, core * BodyScale, SpriteEffects.None, 0f);
-            sb.Draw(mask, pos + new Vector2(0f, 2f), null, KikasaThrall.SewageDark * 0.7f, 0f,
-                mask.Size() * 0.5f, core * BodyScale * new Vector2(0.7f, 0.8f), SpriteEffects.None, 0f);
+            //夜雨里这团得先有光才看得见轮廓
+            KikasaThrallFX.Flash(sb, Projectile.Center, 46f * grow * BulkScale, 0.7f,
+                0.3f + 0.1f * MathF.Sin(Main.GlobalTimeWrappedHourly * 4.4f + Seed));
+
+            Vector2 core = new(54f * grow * wob * stretch / mask.Width, 26f * grow / mask.Height);
+            sb.Draw(mask, pos, null, KikasaThrall.SewageDeep * 0.85f, rot,
+                mask.Size() * 0.5f, core * BulkScale, SpriteEffects.None, 0f);
+            sb.Draw(mask, pos + new Vector2(0f, 2f), null, KikasaThrall.SewageDark * 0.7f, rot,
+                mask.Size() * 0.5f, core * BulkScale * new Vector2(0.7f, 0.8f), SpriteEffects.None, 0f);
+            //湿亮脊：浊水面上那道反光
+            sb.Draw(mask, pos - new Vector2(0f, 3f), null, KikasaThrall.PaleSheen * 0.32f, rot,
+                mask.Size() * 0.5f, core * BulkScale * new Vector2(0.5f, 0.28f),
+                SpriteEffects.None, 0f);
         }
 
-        /// <summary>实质化落定的弹性 pop：46~56f 内 1→1.14→1</summary>
+        /// <summary>撑伞落定的弹性 pop：伞一撑开，整个身量先胀一圈再落回</summary>
         private float MaterializePop() {
             if (State != StateReform || StateTimer <= ReformCondenseEnd) {
                 return 1f;
             }
-            float p = MathHelper.Clamp((StateTimer - ReformCondenseEnd) / 10f, 0f, 1f);
-            return 1f + 0.14f * MathF.Sin(p * MathHelper.Pi);
+            float p = MathHelper.Clamp((StateTimer - ReformCondenseEnd) / 14f, 0f, 1f);
+            return 1f + 0.26f * MathF.Sin(p * MathHelper.Pi);
         }
 
         /// <summary>多帧真贴图接入后的默认步频：0.12 相位一帧；单帧恒 0</summary>

@@ -53,6 +53,16 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.States
                 && t >= HarassAimStart && t <= HarassFire) {
                 Vector2 hAim = (target.Center - ctx.Owner.GetArmPos(ScrapCommander.ArmLaser))
                     .SafeNormalize(Vector2.UnitX);
+                //镭射臂从垂链转向目标持位——臂的转向本身就是前摇信号
+                ctx.Arms[ScrapCommander.ArmLaser] = new ArmDirective {
+                    Mode = ArmMode.Hold,
+                    Target = npc.Center + npc.velocity + new Vector2(MathF.Sign(hAim.X) * 122f, -4f),
+                    Spring = 0.2f,
+                    Damping = 0.78f,
+                    UseRot = true,
+                    WantRot = hAim.ToRotation() - MathHelper.PiOver2,
+                    RotRate = 0.3f,
+                };
                 if (t == HarassAimStart) {
                     ctx.Owner.ChargeLaser(HarassFire - HarassAimStart);
                     SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.3f, Pitch = 0.4f, MaxInstances = 2 },
@@ -62,6 +72,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.States
                 ctx.AddTelegraph(ctx.Owner.GetArmPos(ScrapCommander.ArmLaser) + hAim * 24f,
                     hAim, 700f, aimAlpha, 0.45f);
                 if (t == HarassFire) {
+                    ctx.Owner.ImpulseArm(ScrapCommander.ArmLaser, -hAim * 3f);
                     SoundEngine.PlaySound(SoundID.Item33 with { Volume = 0.3f, Pitch = 0.3f, MaxInstances = 2 },
                         ctx.Owner.GetArmPos(ScrapCommander.ArmLaser));
                     if (!VaultUtils.isClient) {

@@ -23,35 +23,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         /// <summary>画心中心的屏高占比</summary>
         public const float CenterYRatio = 0.44f;
 
-        //====== 画内构图锚点（uv） ======
+        //====== 画内构图锚点（uv）——村落/鸟居/窗火由 KikasaScene.fx 程序化承担，不设锚点 ======
 
-        /// <summary>恶犬蹲坐点（岸上，望着湖）</summary>
-        public static readonly Vector2 HoundUv = new(0.36f, 0.605f);
+        /// <summary>恶犬站点（贴图中心；岸上，望着湖）</summary>
+        public static readonly Vector2 HoundUv = new(0.36f, 0.56f);
 
-        /// <summary>鸟居立点（村口）</summary>
-        public static readonly Vector2 ToriiUv = new(0.50f, 0.61f);
-
-        /// <summary>近景民居两座（村沿右侧）</summary>
-        public static readonly Vector2 HouseAUv = new(0.68f, 0.615f);
-        public static readonly Vector2 HouseBUv = new(0.86f, 0.62f);
-
-        /// <summary>檐下灯笼（挂在甲屋檐口）</summary>
-        public static readonly Vector2 LanternUv = new(0.615f, 0.575f);
+        /// <summary>恶犬身高占画高比（狼贴图按此适配）</summary>
+        public const float HoundHeight = 0.13f;
 
         /// <summary>湖底记忆剪影中心</summary>
         public static readonly Vector2 MemoryUv = new(0.20f, 0.80f);
-
-        /// <summary>芦苇丛（画底两角）</summary>
-        public static readonly Vector2 ReedLUv = new(0.06f, 0.97f);
-        public static readonly Vector2 ReedRUv = new(0.955f, 0.985f);
 
         //====== 热区（uv 矩形：x, y, w, h） ======
 
         /// <summary>血湖热区：岸线以下整幅（含干湖床——干湖也点得动）</summary>
         public static readonly Vector4 LakeHotspot = new(0.03f, 0.645f, 0.94f, 0.33f);
 
-        /// <summary>恶犬热区（蹲坐轮廓外扩一圈）</summary>
-        public static readonly Vector4 HoundHotspot = new(0.29f, 0.475f, 0.145f, 0.155f);
+        /// <summary>恶犬热区（狼身轮廓外扩一圈）</summary>
+        public static readonly Vector4 HoundHotspot = new(0.27f, 0.47f, 0.18f, 0.165f);
 
         //====== 开合 ======
 

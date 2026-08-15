@@ -951,7 +951,7 @@ KikasaText: {
 		// SinkPrompt: Once the water reaches your feet, press {0} while holding an item or aiming at a creature
 		// VaultTitle: Open the Lake Window
 		// VaultBody: Everything you sank drifts in the blood water. Open the window, click one, and the lake hands it back.
-		// VaultPrompt: Open the little scroll at the bottom left and click the blood lake in it; or hold the umbrella and press {0}
+		// VaultPrompt: Tap the wind chime at the bottom left to unroll the painting, then click the blood lake in it; or hold the umbrella and press {0}
 		// SummonTitle: Command the Servant
 		// SummonBody: The lake always remembers the last creature drowned in its grip. Call its servant to fight for you; press again to dismiss it.
 		// SummonPrompt: Press {0}

@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         /// <summary>贴图帧数（竖排）。真贴图多帧时只改这一处，帧矩形与着色器自动适配</summary>
         internal const int FrameCount = 1;
 
-        /// <summary>贴图脚底距画布底边的像素，与 KasaOni 同约定</summary>
-        internal const int FeetOffsetY = 4;
+        /// <summary>贴图脚底距画布底边的像素。画布 77×115（KasaOni 的 1.6 倍身量），留白同比放大</summary>
+        internal const int FeetOffsetY = 6;
 
         [VaultLoaden(CWRConstant.NPC + "Kikasa/KikasaThrall")]
         private static Asset<Texture2D> ThrallTex = null;
@@ -157,8 +157,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             if (glow != null) {
                 float pulse = MathF.Sin(Main.GlobalTimeWrappedHourly * 2.1f + identitySeed) * 0.5f + 0.5f;
                 Color backing = new Color(80, 102, 106) with { A = 0 } * (0.10f + pulse * 0.05f);
+                //衬底尺寸按 77×115 画布配，撑得住放大后的身量
                 sb.Draw(glow, drawPos, null, backing, 0f, glow.Size() / 2f,
-                    new Vector2(110f * scale / glow.Width, 96f * scale / glow.Height),
+                    new Vector2(176f * scale / glow.Width, 154f * scale / glow.Height),
                     SpriteEffects.None, 0f);
             }
 

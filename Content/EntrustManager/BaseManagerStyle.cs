@@ -115,6 +115,14 @@ namespace CalamityOverhaul.Content.EntrustManager
         public virtual int GetProviderSignatureHeight(EntrustEntryData entry)
             => entry?.Provider == null ? 0 : 32;
 
+        /// <summary>
+        /// 展开态给进度条单留的一行高。<br/>
+        /// 落款是左对齐的，进度条若还钉在行底就会压在名字上——两者改为上下叠放
+        /// </summary>
+        public static int ExpandedProgressRowH(EntrustEntryData entry)
+            => entry != null && entry.Progress > 0f && entry.Status != QuestEntryStatus.Completed
+                ? 14 : 0;
+
         /// <summary>落款默认版：小头像 + 「委托人 名字」，旧样式的冷色描边字</summary>
         public virtual void DrawProviderSignature(SpriteBatch sb, EntrustEntryData entry,
             float x, float y, float width, float alpha) {

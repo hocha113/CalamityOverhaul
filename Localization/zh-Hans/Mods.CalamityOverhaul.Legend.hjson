@@ -951,7 +951,7 @@ KikasaText: {
 		SinkPrompt: 等水涨到脚边，持物或指着生物按 {0}
 		VaultTitle: 开湖窗取物
 		VaultBody: 沉下去的东西悬在血水里漂着。开湖窗点一件，湖把它送回你手边。
-		VaultPrompt: 点开左下小画，再点画中的血湖；或持鬼伞按 {0}
+		VaultPrompt: 点一下左下的风铃展开画卷，再点画中的血湖；或持鬼伞按 {0}
 		SummonTitle: 驱使鬼奴
 		SummonBody: 湖永远记着最后一只溺死在它手里的生物。召出它的鬼奴替你出手，再按一次遣返。
 		SummonPrompt: 按 {0}

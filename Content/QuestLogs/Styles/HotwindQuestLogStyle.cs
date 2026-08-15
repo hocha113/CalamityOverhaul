@@ -465,10 +465,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             }
             float progress = total > 0 ? (float)completed / total : 0f;
 
-            //宿主是页脚带：条压在样式/夜间键之后、右侧按钮簇之前
+            //宿主是页脚带：总控键统一在右簇，条从页脚左缘起
             int barH = log.ShowProgressBar ? 22 : 8;
             int barW = Math.Clamp(panelRect.Width / 2 - 290, 80, 340);
-            Rectangle barRect = new Rectangle(panelRect.X + 100,
+            Rectangle barRect = new Rectangle(panelRect.X + 16,
                 panelRect.Y + (panelRect.Height - barH) / 2, barW, barH);
 
             spriteBatch.Draw(px, barRect, new Color(8, 6, 4) * (0.75f * alpha));
@@ -613,7 +613,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         #region 按钮区域与绘制
 
         public Rectangle GetStyleSwitchButtonRect(Rectangle panelRect) =>
-            new Rectangle(panelRect.X + 15, panelRect.Bottom - 45, 30, 30);
+            QuestLogTheme.FooterStyleButton(panelRect);
 
         public void DrawStyleSwitchButton(SpriteBatch spriteBatch, Rectangle panelRect, bool isHovered, float alpha) {
             Rectangle btnRect = GetStyleSwitchButtonRect(panelRect);
@@ -621,7 +621,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         }
 
         public Rectangle GetNightModeButtonRect(Rectangle panelRect) =>
-            new Rectangle(panelRect.X + 55, panelRect.Bottom - 45, 30, 30);
+            QuestLogTheme.FooterNightButton(panelRect);
 
         public void DrawNightModeButton(SpriteBatch spriteBatch, Rectangle panelRect, bool isHovered, float alpha, bool isNightMode) {
             Rectangle btnRect = GetNightModeButtonRect(panelRect);
@@ -630,7 +630,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         }
 
         public Rectangle GetClaimAllButtonRect(Rectangle panelRect) =>
-            new Rectangle(panelRect.Right - 240, panelRect.Y + 7, 140, 34);
+            QuestLogTheme.FooterClaimButton(panelRect);
 
         public void DrawClaimAllButton(SpriteBatch spriteBatch, Rectangle panelRect, bool isHovered, float alpha) {
             Rectangle btnRect = GetClaimAllButtonRect(panelRect);
@@ -638,7 +638,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         }
 
         public Rectangle GetResetViewButtonRect(Rectangle panelRect) =>
-            new Rectangle(panelRect.Right - 45, panelRect.Bottom - 48, 36, 36);
+            QuestLogTheme.FooterResetButton(panelRect);
 
         public void DrawResetViewButton(SpriteBatch spriteBatch, Rectangle panelRect, Vector2 directionToCenter, bool isHovered, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;

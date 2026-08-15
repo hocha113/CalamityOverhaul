@@ -115,6 +115,46 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
 
         #endregion
 
+        #region 页脚按钮位
+
+        /// <summary>页脚图标键边长</summary>
+        public const int FooterBtnH = 30;
+
+        /// <summary>页脚一键领取牌宽，按最长的一版译文留的</summary>
+        public const int FooterClaimW = 150;
+
+        /// <summary>页脚按钮间距</summary>
+        private const int FooterBtnGap = 8;
+
+        /// <summary>页脚按钮距右缘</summary>
+        private const int FooterBtnEdge = 14;
+
+        //页脚右簇自右往左固定为 样式 / 夜间 / 归位 / 一键领取。
+        //槽位是死的，缺席的样式（远征纪要没有夜间键）留着空位不往右挪——
+        //换皮肤只该换风格，同一个键不该跑到屏幕另一边
+
+        /// <summary>样式切换键，右簇最右</summary>
+        public static Rectangle FooterStyleButton(Rectangle footer) => FooterSlot(footer, 0);
+
+        /// <summary>夜间模式键</summary>
+        public static Rectangle FooterNightButton(Rectangle footer) => FooterSlot(footer, 1);
+
+        /// <summary>视角归位键</summary>
+        public static Rectangle FooterResetButton(Rectangle footer) => FooterSlot(footer, 2);
+
+        /// <summary>一键领取牌，接在三枚图标键左侧</summary>
+        public static Rectangle FooterClaimButton(Rectangle footer) {
+            Rectangle last = FooterSlot(footer, 2);
+            return new Rectangle(last.X - FooterBtnGap - FooterClaimW, last.Y,
+                FooterClaimW, FooterBtnH);
+        }
+
+        private static Rectangle FooterSlot(Rectangle footer, int slot)
+            => new(footer.Right - FooterBtnEdge - (slot + 1) * FooterBtnH - slot * FooterBtnGap,
+                footer.Y + (footer.Height - FooterBtnH) / 2, FooterBtnH, FooterBtnH);
+
+        #endregion
+
         #region 共用小工具
 
         /// <summary>呼吸系数 [0,1]，phase 用于错开同类元素</summary>

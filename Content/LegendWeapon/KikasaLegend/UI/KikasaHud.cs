@@ -1,8 +1,10 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using CalamityOverhaul.Content.UIs.HudStack;
+using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -15,10 +17,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 {
     /// <summary>
-    /// 掌中缩影：鬼伞常驻 HUD（左下，持伞或领域激活时浮现）。
-    /// 它就是「湖畔村图」的小样——同一个着色器场景低细节跑在一张小横片上，
-    /// 水位、形态浸染、窗火与画同步；点它即展开全画（任何域状态都响应）。
-    /// 画框下缘两条细线是仅存的读数：沉溺手冷却与梦中唤犬冷却。
+    /// 掌中风铃：鬼伞常驻 HUD（左下，持伞或领域激活时浮现）。
+    /// 檐钩垂一只玻璃风铃，铃身盛着一小汪血湖——液面=涨水进度、晃荡=事件涌浪、
+    /// 液中烬点=湖藏填充、整铃随形态浸染；短册纸条上挂两道冷却墨线
+    /// （沉溺手=主色、梦中唤犬=烬红）。点铃展开「湖畔村图」全画（任何域状态都响应）。
     /// </summary>
     internal class KikasaHud : UIHandle, ILocalizedModType, IBottomLeftHud
     {
@@ -61,16 +63,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         bool IBottomLeftHud.HudStackActive => Active;
         int IBottomLeftHud.HudStackOrder => 0;
         Vector2 IBottomLeftHud.HudStackAnchor => NaturalAnchor;
-        //上覆悬停名牌，下覆冷却细线
-        float IBottomLeftHud.HudStackTopExtent => 50f;
-        float IBottomLeftHud.HudStackBottomExtent => 40f;
+        //上覆悬停名牌，下到短册尾
+        float IBottomLeftHud.HudStackTopExtent => KikasaHudTheme.ChimeH * 0.5f + 34f;
+        float IBottomLeftHud.HudStackBottomExtent => KikasaHudTheme.ChimeH * 0.5f + 8f;
         #endregion
 
-        /// <summary>自然锚点（缩影中心），未参与左下队列避让时的原始位置</summary>
+        //====== 风铃内部布局（相对锚点=风铃中心，静止位） ======
+
+        //檐钩（摆锤支点）
+        private const float HookY = -51f;
+        //铃身中心
+        private const float BellY = -16f;
+        //铃舌珠
+        private const float ClapperY = 7f;
+        //短册顶与尺寸
+        private const float TanzakuY = 11f;
+        private const float TanzakuW = 14f;
+        private const float TanzakuH = 35f;
+
+        //====== SVG 路径（归一 [-1,1]，A 弧不可用） ======
+
+        //檐钩短枝：一段斜出的枝子，末端下弯成钩，钩尖收在 (0, 0.5)
+        private const string BranchPath =
+            "M -1 -0.5 Q -0.45 -0.72 0.1 -0.45 Q 0.55 -0.28 0.62 0.0 "
+            + "M 0.62 0.0 Q 0.66 0.3 0.35 0.42 Q 0.12 0.5 0 0.5";
+
+        //铃身轮廓（闭环，供巡行亮笔与缺编回退）：球肩 + 波口唇线
+        private const string BellRimPath =
+            "M -0.78 0.55 Q -1.02 -0.08 -0.56 -0.60 Q 0 -0.96 0.56 -0.60 "
+            + "Q 1.02 -0.08 0.78 0.55 Q 0.4 0.63 0 0.60 Q -0.4 0.57 -0.78 0.55";
+
+        /// <summary>自然锚点（风铃中心），未参与左下队列避让时的原始位置</summary>
         public static Vector2 NaturalAnchor => new(KikasaHudTheme.AnchorOffset.X,
             KikasaHudTheme.UIScreenH + KikasaHudTheme.AnchorOffset.Y);
 
-        /// <summary>缩影中心锚点，经左下队列避让后的最终位</summary>
+        /// <summary>风铃中心锚点，经左下队列避让后的最终位</summary>
         public static Vector2 Anchor {
             get {
                 KikasaHud inst = Instance;
@@ -78,26 +105,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             }
         }
 
-        /// <summary>缩影画片矩形；「湖畔村图」自这里放大铺开</summary>
-        public static Rectangle MiniRect {
+        /// <summary>风铃整体命中矩形</summary>
+        public static Rectangle ChimeRect {
             get {
                 Vector2 anchor = Anchor;
                 return new Rectangle(
-                    (int)(anchor.X - KikasaHudTheme.MiniW * 0.5f),
-                    (int)(anchor.Y - KikasaHudTheme.MiniH * 0.5f),
-                    KikasaHudTheme.MiniW, KikasaHudTheme.MiniH);
+                    (int)(anchor.X - KikasaHudTheme.ChimeW * 0.5f),
+                    (int)(anchor.Y - KikasaHudTheme.ChimeH * 0.5f),
+                    KikasaHudTheme.ChimeW, KikasaHudTheme.ChimeH);
+            }
+        }
+
+        /// <summary>铃身静止中心（引导指环也认它）</summary>
+        public static Vector2 BellAnchor => Anchor + new Vector2(0f, BellY);
+
+        /// <summary>铃身矩形；「湖畔村图」自这里放大铺开</summary>
+        public static Rectangle BellRect {
+            get {
+                Vector2 c = BellAnchor;
+                int s = KikasaHudTheme.BellSize;
+                return new Rectangle((int)(c.X - s * 0.5f), (int)(c.Y - s * 0.5f), s, s);
             }
         }
 
         //==================== 状态 ====================
 
-        //缩影只留最轻的水语：事件搅一记，读数交给画
+        //事件搅一记涌浪（stir），涌浪推摆幅；读数交给画
         private float stir;
+        private float swingT;
         private int lastVaultCount;
         private int lastMemoryType;
         private bool lastLakeReady;
 
-        private bool hoverMini;
+        private bool hoverChime;
         private float hoverLerp;
 
         private KikasaDomainPlayer Domain => player.GetModPlayer<KikasaDomainPlayer>();
@@ -112,11 +152,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             appear = MathHelper.Clamp(appear + (want ? 0.06f : -0.06f), 0f, 1f);
 
             Vector2 anchor = Anchor;
-            Size = new Vector2(KikasaHudTheme.MiniW + 16f, KikasaHudTheme.MiniH + 30f);
+            Size = new Vector2(KikasaHudTheme.ChimeW + 16f, KikasaHudTheme.ChimeH + 16f);
             DrawPosition = anchor - Size * 0.5f;
             UIHitBox = DrawPosition.GetRectangle(Size);
 
-            //事件只在小样上搅一记水，细节反馈都在大画里
+            //事件只在铃上搅一记涌浪，细节反馈都在大画里
             KikasaVaultPlayer vault = Vault;
             int vaultCount = vault.Stored.Count;
             int memoryType = p.GetModPlayer<KikasaServants.KikasaServantPlayer>().LastDrownedType;
@@ -132,11 +172,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 Domain.Phase == KikasaDomainPhase.Opening
                 || Domain.Phase == KikasaDomainPhase.Closing ? 0.45f : 0.12f, 0.06f);
 
+            //摆锤相位：水一搅，铃就荡
+            swingT += 0.030f + MathHelper.Clamp(stir, 0f, 1f) * 0.055f;
+
             //悬停占鼠标；点击展开/收起画卷——任何域状态都响应
-            Rectangle mini = MiniRect;
-            hoverMini = appear > 0.5f && mini.Contains(KikasaHudTheme.UIMouse.ToPoint());
-            hoverLerp = MathHelper.Lerp(hoverLerp, hoverMini ? 1f : 0f, 0.15f);
-            if (hoverMini) {
+            Rectangle chime = ChimeRect;
+            hoverChime = appear > 0.5f && chime.Contains(KikasaHudTheme.UIMouse.ToPoint());
+            hoverLerp = MathHelper.Lerp(hoverLerp, hoverChime ? 1f : 0f, 0.15f);
+            if (hoverChime) {
                 player.mouseInterface = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     KikasaSceneUI scene = KikasaSceneUI.Instance;
@@ -159,7 +202,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             if (a < 0.01f) {
                 return;
             }
-            //画卷展开后小样让位，免得同屏两幅画
+            //画卷展开后风铃让位，免得铃与画同屏抢戏
             float sceneOpen = KikasaSceneUI.Instance?.OpenProgress ?? 0f;
             a *= 1f - MathHelper.Clamp(sceneOpen * 1.4f, 0f, 1f);
             if (a < 0.01f) {
@@ -169,65 +212,183 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             KikasaDomainPlayer domain = Domain;
             float rain = KikasaSceneUI.EffectiveRain(domain);
             float rise = domain.AnyActive ? domain.RiseProgress : 0f;
-            float waterUv = KikasaSceneTheme.WaterUv(rise);
-            Rectangle mini = MiniRect;
-            //浮现自下轻托
-            mini.Y += (int)((1f - a) * 8f);
-
-            //1 画心小样：同一场景低细节；灯火照湖藏
             float lightGate = Vault.Stored.Count / (float)KikasaVaultPlayer.Capacity;
-            KikasaSceneUI.Instance?.DrawVistaFor(spriteBatch, mini, a, rain, waterUv,
-                1f - rise, MathHelper.Clamp(stir, 0f, 1f), domain.FlipBoil,
-                domain.FlipFlash, lightGate);
+            float time = Main.GlobalTimeWrappedHourly;
+            float stir01 = MathHelper.Clamp(stir, 0f, 1f);
 
-            //2 装裱：两侧细卷杆 + 底缘装裱线；悬停提亮
+            //浮现自下轻托
+            Vector2 anchor = Anchor + new Vector2(0f, (1f - a) * 10f);
+            Vector2 hook = anchor + new Vector2(0f, HookY);
+
+            //摆角：铃身主摆，铃舌与短册滞后跟摆
+            float amp = 0.045f + stir01 * 0.24f;
+            float ang = MathF.Sin(swingT) * amp;
+            float angC = MathF.Sin(swingT - 0.85f) * amp * 1.12f;
+            float angT = MathF.Sin(swingT - 1.45f) * amp * 1.05f
+                + MathF.Sin(time * 5.3f) * 0.012f;
+
+            //支点旋转：静止位 y 偏移 → 摆后位置
+            Vector2 Swing(float restY, float theta)
+                => hook + new Vector2(0f, restY - HookY).RotatedBy(theta);
+            Vector2 bellC = Swing(BellY, ang);
+            Vector2 bellTop = Swing(BellY - 17f, ang);
+            Vector2 clapper = Swing(ClapperY, angC);
+            Vector2 tzTop = Swing(TanzakuY, angT);
+
             Color barCol = KikasaHudTheme.Void(rain);
-            Color coreCol = Color.Lerp(KikasaHudTheme.Accent(rain), KikasaHudTheme.Glow(rain),
-                hoverLerp * 0.5f);
-            float frameA = a * (0.7f + hoverLerp * 0.3f);
-            foreach (float x in (Span<float>)[mini.Left - 3f, mini.Right + 3f]) {
-                KikasaVaultRenderer.DrawLine(spriteBatch, new Vector2(x, mini.Top - 4f),
-                    new Vector2(x, mini.Bottom + 4f), 2.6f, barCol * frameA);
-                KikasaVaultRenderer.DrawLine(spriteBatch, new Vector2(x, mini.Top - 4f),
-                    new Vector2(x, mini.Bottom + 4f), 0.9f, coreCol * (frameA * 0.6f));
-            }
-            KikasaVaultRenderer.DrawLine(spriteBatch, new Vector2(mini.Left, mini.Bottom + 1f),
-                new Vector2(mini.Right, mini.Bottom + 1f), 1f, coreCol * (frameA * 0.45f));
-            KikasaVaultRenderer.DrawLine(spriteBatch, new Vector2(mini.Left, mini.Top - 1f),
-                new Vector2(mini.Right, mini.Top - 1f), 1f, coreCol * (frameA * 0.45f));
+            Color accent = KikasaHudTheme.Accent(rain);
+            Color glow = KikasaHudTheme.Glow(rain);
+            Color dim = KikasaHudTheme.TextDim(rain);
+            Texture2D px = VaultAsset.placeholder2.Value;
 
-            //3 读数细线：沉溺手冷却（主色）；梦中另一条唤犬冷却（烬红）
-            float drownCd = KikasaDrown.LocalCooldown01;
-            if (drownCd > 0.005f) {
-                KikasaVaultRenderer.DrawLine(spriteBatch,
-                    new Vector2(mini.Left, mini.Bottom + 5f),
-                    new Vector2(mini.Left + mini.Width * drownCd, mini.Bottom + 5f),
-                    1.6f, KikasaHudTheme.Glow(rain) * (0.55f * a));
-            }
-            if (domain.Phase == KikasaDomainPhase.Dreaming) {
-                float houndCd = Dream.HoundCooldown01;
-                if (houndCd > 0.005f) {
-                    KikasaVaultRenderer.DrawLine(spriteBatch,
-                        new Vector2(mini.Left, mini.Bottom + 8f),
-                        new Vector2(mini.Left + mini.Width * houndCd, mini.Bottom + 8f),
-                        1.4f, new Color(230, 96, 40) * (0.6f * a));
-                }
+            //1 檐钩短枝（静，不随摆）：粗笔枝身 + 一线受光
+            SvgPath branch = SvgPathPen.Path(BranchPath);
+            Vector2 branchC = hook + new Vector2(0f, -8f);
+            SvgPathPen.Stroke(spriteBatch, branch, branchC, 16f, 0f, barCol, 2.4f, a * 0.95f);
+            SvgPathPen.Stroke(spriteBatch, branch, branchC, 16f, 0f, accent, 0.8f, a * 0.35f);
+
+            //2 吊绳与铃舌（先画，玻璃罩在上面）：钩→铃顶→舌珠
+            KikasaVaultRenderer.DrawLine(spriteBatch, hook, bellTop, 1.1f, dim * (0.55f * a));
+            KikasaVaultRenderer.DrawLine(spriteBatch, bellTop, clapper, 1f, dim * (0.4f * a));
+            spriteBatch.Draw(px, clapper, null, barCol * a, MathHelper.PiOver4,
+                px.Size() * 0.5f, new Vector2(4.5f / px.Width, 4.5f / px.Height),
+                SpriteEffects.None, 0f);
+
+            //3 玻璃铃身（TechChime / 缺编回退）
+            DrawBell(spriteBatch, bellC, ang, a, rain, rise, stir01, lightGate, domain, time);
+
+            //4 铃缘巡行亮笔：悬停/涌浪时一段亮笔沿铃缘走
+            float runA = (0.10f + hoverLerp * 0.30f + MathF.Max(stir01 - 0.2f, 0f) * 0.3f) * a;
+            if (runA > 0.03f) {
+                SvgPath rim = SvgPathPen.Path(BellRimPath);
+                SvgPathPen.StrokeRunner(spriteBatch, rim, bellC,
+                    KikasaHudTheme.BellSize * 0.36f, ang, glow, 1.1f, runA,
+                    time * 0.16f, 0.14f);
             }
 
-            //4 悬停名牌：画名 + 展开提示
+            //5 短册纸条：纸底 + 边线 + 两道冷却墨线
+            DrawTanzaku(spriteBatch, tzTop, angT, a, rain, domain, dim);
+
+            //6 摆到头一记铃缘微光
+            float peak = MathF.Abs(MathF.Sin(swingT));
+            float glint = MathHelper.Clamp((peak - 0.94f) / 0.06f, 0f, 1f)
+                * MathHelper.Clamp(stir01 * 2f - 0.3f, 0f, 1f);
+            if (glint > 0.05f) {
+                SvgPathPen.SoftDot(spriteBatch, Swing(BellY + 16f, ang), 7f, glow,
+                    glint * 0.5f * a);
+            }
+
+            //7 悬停名牌：画名 + 展开提示
             if (hoverLerp > 0.05f) {
                 DynamicSpriteFont font = FontAssets.MouseText.Value;
                 string name = ScrollName.Value;
                 Vector2 nameSize = font.MeasureString(name) * 0.78f;
-                float nameY = mini.Top - 22f;
+                float nameY = anchor.Y - KikasaHudTheme.ChimeH * 0.5f - 26f;
                 Utils.DrawBorderString(spriteBatch, name,
-                    new Vector2(mini.Center.X - nameSize.X * 0.5f, nameY),
+                    new Vector2(anchor.X - nameSize.X * 0.5f, nameY),
                     KikasaHudTheme.Text(rain) * (hoverLerp * a), 0.78f);
                 string tag = OpenTag.Value;
                 Vector2 tagSize = font.MeasureString(tag) * 0.62f;
                 Utils.DrawBorderString(spriteBatch, tag,
-                    new Vector2(mini.Center.X - tagSize.X * 0.5f, nameY + nameSize.Y + 1f),
+                    new Vector2(anchor.X - tagSize.X * 0.5f, nameY + nameSize.Y + 1f),
                     KikasaHudTheme.TextDim(rain) * (hoverLerp * a * 0.9f), 0.62f);
+            }
+        }
+
+        /// <summary>铃身：TechChime 玻璃质感；缺编回退 SVG 轮廓 + 液面一线</summary>
+        private static void DrawBell(SpriteBatch sb, Vector2 center, float ang, float a,
+            float rain, float fill, float stir01, float lightGate,
+            KikasaDomainPlayer domain, float time) {
+            Effect effect = EffectLoader.KikasaScene?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
+            int size = KikasaHudTheme.BellSize;
+
+            if (effect != null && noise != null && effect.Techniques["TechChime"] != null) {
+                effect.CurrentTechnique = effect.Techniques["TechChime"];
+                effect.Parameters["uTime"]?.SetValue(time);
+                effect.Parameters["uAlpha"]?.SetValue(a);
+                effect.Parameters["uResolution"]?.SetValue(new Vector2(size, size));
+                effect.Parameters["uRain"]?.SetValue(rain);
+                effect.Parameters["uStir"]?.SetValue(stir01);
+                effect.Parameters["uBoil"]?.SetValue(domain.FlipBoil);
+                effect.Parameters["uFlash"]?.SetValue(domain.FlipFlash);
+                effect.Parameters["uLightGate"]?.SetValue(lightGate);
+                effect.Parameters["uWaterY"]?.SetValue(MathHelper.Clamp(fill, 0f, 1f));
+                effect.Parameters["uSwing"]?.SetValue(ang);
+
+                sb.End();
+                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                    DepthStencilState.None, RasterizerState.CullNone, effect, Main.UIScaleMatrix);
+                Main.instance.GraphicsDevice.Textures[1] = noise;
+                Main.instance.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
+                sb.Draw(px, center, null, Color.White, ang, px.Size() * 0.5f,
+                    new Vector2(size / (float)px.Width, size / (float)px.Height),
+                    SpriteEffects.None, 0f);
+                KikasaVaultRenderer.RestoreUIBatch(sb);
+                return;
+            }
+
+            //缺编回退：铃形轮廓两笔 + 世界水平的液面一线
+            SvgPath rim = SvgPathPen.Path(BellRimPath);
+            float scale = size * 0.36f;
+            SvgPathPen.Stroke(sb, rim, center, scale, ang, KikasaHudTheme.Void(rain), 3.2f, a * 0.95f);
+            SvgPathPen.Stroke(sb, rim, center, scale, ang, KikasaHudTheme.Accent(rain), 1f, a * 0.5f);
+            if (fill > 0.03f) {
+                float lv = MathHelper.Lerp(scale * 0.62f, scale * -0.32f, fill);
+                Vector2 lp = center + new Vector2(0f, lv);
+                float half = scale * 0.6f;
+                KikasaVaultRenderer.DrawLine(sb, lp - new Vector2(half, 0f),
+                    lp + new Vector2(half, 0f), 1.4f, KikasaHudTheme.Glow(rain) * (0.55f * a));
+            }
+        }
+
+        /// <summary>短册：湿暗纸底 + 边线 + 下缘水痕；冷却读数化作纸上两道墨线</summary>
+        private void DrawTanzaku(SpriteBatch sb, Vector2 top, float ang, float a,
+            float rain, KikasaDomainPlayer domain, Color dim) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+            Vector2 dir = new Vector2(0f, 1f).RotatedBy(ang);
+            Vector2 side = new Vector2(1f, 0f).RotatedBy(ang);
+            Vector2 center = top + dir * (TanzakuH * 0.5f);
+
+            //纸底（材料纯色底）与下缘浸润
+            Color paper = Color.Lerp(new Color(56, 38, 32), new Color(34, 40, 44), rain);
+            sb.Draw(px, center, null, paper * (0.92f * a), ang, px.Size() * 0.5f,
+                new Vector2(TanzakuW / px.Width, TanzakuH / px.Height), SpriteEffects.None, 0f);
+            sb.Draw(px, top + dir * (TanzakuH - 3.5f), null,
+                KikasaHudTheme.Accent(rain) * (0.22f * a), ang, px.Size() * 0.5f,
+                new Vector2(TanzakuW / px.Width, 7f / px.Height), SpriteEffects.None, 0f);
+
+            //边线与顶端系结
+            Color edge = dim * (0.35f * a);
+            Vector2 halfW = side * (TanzakuW * 0.5f);
+            KikasaVaultRenderer.DrawLine(sb, top - halfW, top - halfW + dir * TanzakuH, 1f, edge);
+            KikasaVaultRenderer.DrawLine(sb, top + halfW, top + halfW + dir * TanzakuH, 1f, edge);
+            KikasaVaultRenderer.DrawLine(sb, top - halfW, top + halfW, 1f, edge);
+            KikasaVaultRenderer.DrawLine(sb, top - halfW + dir * TanzakuH,
+                top + halfW + dir * TanzakuH, 1f, edge * 0.8f);
+            sb.Draw(px, top, null, dim * (0.6f * a), MathHelper.PiOver4,
+                px.Size() * 0.5f, new Vector2(3f / px.Width, 3f / px.Height),
+                SpriteEffects.None, 0f);
+
+            //冷却墨线：满=刚用完，退尽=可再用
+            float run = TanzakuH - 8f;
+            Vector2 inkTop = top + dir * 4f;
+            float drownCd = KikasaDrown.LocalCooldown01;
+            if (drownCd > 0.005f) {
+                Vector2 off = -side * 2.6f;
+                KikasaVaultRenderer.DrawLine(sb, inkTop + off,
+                    inkTop + off + dir * (run * drownCd), 1.6f,
+                    KikasaHudTheme.Glow(rain) * (0.6f * a));
+            }
+            if (domain.Phase == KikasaDomainPhase.Dreaming) {
+                float houndCd = Dream.HoundCooldown01;
+                if (houndCd > 0.005f) {
+                    Vector2 off = side * 2.6f;
+                    KikasaVaultRenderer.DrawLine(sb, inkTop + off,
+                        inkTop + off + dir * (run * houndCd), 1.4f,
+                        new Color(230, 96, 40) * (0.65f * a));
+                }
             }
         }
     }

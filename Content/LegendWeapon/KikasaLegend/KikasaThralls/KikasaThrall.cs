@@ -38,6 +38,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         internal const float BodyScaleMin = 0.85f;
         internal const float BodyScaleMax = 1.25f;
 
+        /// <summary>
+        /// 身量:伞奴贴图按初版 48×72 的 1.6 倍出图(伞奴得比人显眼一圈)。
+        /// 贴图自带放大,故绘制不再乘它;与 KasaOni 共用的演出件(污潭)和演出锚点得按它放大。
+        /// 碰撞箱与落脚探测一概不变——身位跟着涨会抬高净空要求,洞里就转化不出来了
+        /// </summary>
+        internal const float BodyBulk = 1.6f;
+
         //湿墨色板，与 KasaOni 污水族同源；伞奴是"我们的"鬼，点睛用尸斑青
         internal static readonly Color SewageDeep = new(46, 56, 58);
         internal static readonly Color SewageDark = new(30, 38, 41);

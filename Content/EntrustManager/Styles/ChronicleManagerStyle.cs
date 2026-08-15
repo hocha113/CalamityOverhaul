@@ -198,9 +198,11 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
                 DrawExpanded(sb, entryRect, entry, titleX, alpha);
             }
 
-            //进度：凿槽刻度 + 读数
+            //进度：凿槽刻度 + 读数。展开时住在落款上面那一行
             if (entry.Progress > 0f && entry.Status != QuestEntryStatus.Completed) {
-                float barY = entry.ExpandProgress > 0.5f ? entryRect.Bottom - 13f : summaryY + 19f;
+                float barY = entry.ExpandProgress > 0.5f
+                    ? entryRect.Bottom - GetProviderSignatureHeight(entry) - 10f
+                    : summaryY + 19f;
                 int barW = Math.Min(132, entryRect.Width - 70);
                 if (barW > 24) {
                     ChroniclePen.Tally(sb, new Rectangle((int)titleX, (int)barY, barW, 6),
@@ -229,9 +231,9 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
             ChroniclePen.GiltRule(sb, new Vector2(titleX, y), wrapW * 0.8f, expandAlpha * 0.85f);
             y += 8f;
 
-            //正文给落款让出底部
+            //正文给进度条与落款让出底部
             int sigH = GetProviderSignatureHeight(entry);
-            float textBottom = entryRect.Bottom - 4f - sigH;
+            float textBottom = entryRect.Bottom - 4f - sigH - ExpandedProgressRowH(entry);
             const float Scale = 0.72f;
             float line = Font.MeasureString("A").Y * Scale;
             foreach (string row in ChroniclePen.Wrap(Font, entry.Summary, wrapW, Scale)) {
@@ -311,7 +313,10 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
         public override int GetProviderSignatureHeight(EntrustEntryData entry)
             => entry?.Provider == null ? 0 : 34;
 
-        /// <summary>信末落款：右对齐的「委托人 · 名字」+ 头像窝，名下一道压痕</summary>
+        /// <summary>
+        /// 信末落款：头像窝 + 「委托人 · 名字」+ 名下一道压痕。<br/>
+        /// 与旧三套同样左对齐到正文起笔处——换皮肤不该让委托人换一边
+        /// </summary>
         public override void DrawProviderSignature(SpriteBatch sb, EntrustEntryData entry,
             float x, float y, float width, float alpha) {
             EntrustProvider provider = entry?.Provider;
@@ -320,22 +325,22 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
             }
             string name = provider.Name?.Value ?? string.Empty;
             string label = QuestManagerUI.ProviderLabelText?.Value ?? string.Empty;
-            float nameW = Font.MeasureString(name).X * 0.78f;
             float labelW = Font.MeasureString(label).X * 0.6f;
-            float right = x + width;
+            float nameW = Font.MeasureString(name).X * 0.78f;
 
-            //头像窝在最右，提供者主色沉进墨里当环色
-            Vector2 avatar = new(right - 13f, y + 16f);
+            //头像窝在最左，提供者主色沉进墨里当环色
+            Vector2 avatar = new(x + 13f, y + 16f);
             ChroniclePen.NodeWell(sb, avatar, 12f,
                 Color.Lerp(provider.Accent, ChroniclePalette.InkMute, 0.45f), alpha, 1.2f);
             DrawProviderAvatar(sb, provider, avatar, 9f, alpha);
 
-            //名字与「委托人」小签
-            float nameX = right - 32f - nameW;
+            //「委托人」小签在前，名字跟在后
+            float labelX = x + 32f;
+            ChroniclePen.Ink(sb, Font, label, new Vector2(labelX, y + 12f),
+                ChroniclePalette.InkFaint, 0.6f, alpha * 0.9f);
+            float nameX = labelX + labelW + 10f;
             ChroniclePen.Ink(sb, Font, name, new Vector2(nameX, y + 8f),
                 ChroniclePalette.Ink, 0.78f, alpha);
-            ChroniclePen.Ink(sb, Font, label, new Vector2(nameX - labelW - 10f, y + 12f),
-                ChroniclePalette.InkFaint, 0.6f, alpha * 0.9f);
             //名下短压痕，落款划的那一道
             ChroniclePen.Groove(sb, new Vector2(nameX - 2f, y + 26f), nameW + 6f, alpha * 0.7f);
         }

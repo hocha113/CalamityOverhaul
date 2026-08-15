@@ -511,13 +511,17 @@ namespace CalamityOverhaul.Content.EntrustManager
             };
             int cardH = CardTopPad + MeasureCardBody(lines, font, contentW) + CardFooter;
 
-            float slideX = (1f - animProgress) * 70f;
-            float x = MathHelper.Clamp(styleRect.Right + 16f + slideX, 20f, Main.screenWidth - CardW3 - 20f);
-            float y = MathHelper.Clamp(styleRect.Y - 8f, 20f, Main.screenHeight - cardH - 20f);
+            //样式键统一在页脚右缘，卡片挂到按钮正上方，右侧不再有落卡的地方
+            float slideY = (1f - animProgress) * 40f;
+            float x = MathHelper.Clamp(styleRect.Right - CardW3, 20f, Main.screenWidth - CardW3 - 20f);
+            float y = MathHelper.Clamp(styleRect.Y - cardH - 16f + slideY, 20f,
+                Main.screenHeight - cardH - 20f);
             var card = new Rectangle((int)x, (int)y, CardW3, cardH);
 
             DrawCardBackground(sb, card, 0.5f, alpha);
-            DrawLeftArrow(sb, new Vector2(x - 8f, y + 28f), alpha);
+            DrawDownArrow(sb, new Vector2(
+                MathHelper.Clamp(styleRect.Center.X, card.X + 14f, card.Right - 14f),
+                card.Bottom + 8f), alpha);
             DrawCardBody(sb, lines, font, card.X + CardPadX, card.Y + CardTopPad, contentW, alpha);
 
             bool clickedStyleButton = styleRect.Contains(Main.mouseX, Main.mouseY)
@@ -887,6 +891,16 @@ namespace CalamityOverhaul.Content.EntrustManager
             for (int i = 0; i < 7; i++) {
                 int halfH = 7 - i;
                 sb.Draw(px, new Rectangle((int)tip.X + i, (int)tip.Y - halfH, 1, halfH * 2), color);
+            }
+        }
+
+        /// <summary>卡片挂在目标上方时的指示三角，尖端朝下点着目标</summary>
+        private static void DrawDownArrow(SpriteBatch sb, Vector2 tip, float alpha) {
+            var px = VaultAsset.placeholder2.Value;
+            var color = new Color(100, 200, 225, (int)(160 * alpha));
+            for (int i = 0; i < 7; i++) {
+                int halfW = 7 - i;
+                sb.Draw(px, new Rectangle((int)tip.X - halfW, (int)tip.Y - 6 + i, halfW * 2, 1), color);
             }
         }
     }

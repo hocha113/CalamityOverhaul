@@ -5,9 +5,9 @@
 //（深浅双频横流/焦散/泡沫缝线/沸腾，与湖窗同族）+ 干湖龟裂湖床。
 //uLightGate=湖藏填充率：空仓全村无灯，满仓灯火通明。
 //uRain 在血湖族与鬼雨族（KikasaSky RAIN_* 同源）之间整画浸染。
-//uMini=掌中缩影模式：炊烟/烬点/焦散让位，构图不变。
 //外形＝微噪蚀圆角画心；预乘输出。s0=白像素 s1=PerlinNoise
 //TechCard：湿纸引导卡底（自旧 KikasaHud.fx 迁入，配方不变）。
+//TechChime：掌中风铃 HUD 的玻璃铃身（铃内盛血湖，uWaterY 复用为液面充盈度）。
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -23,8 +23,8 @@ float uStir;         //0~1 水面活性
 float uBoil;         //0~1 翻转沸腾
 float uFlash;        //0~1 结算白闪
 float uLightGate;    //0~1 村中窗火开度（湖藏填充率）
-float uMini;         //0/1 缩影模式
 float uTear;         //TechCard 用：撕开揭示
+float uSwing;        //TechChime 用：当前摆角（弧度，液面反向找平）
 
 //====== 血湖族（暮红） ======
 static const float3 SKY_TOP_B   = float3(0.052, 0.008, 0.013);
@@ -136,8 +136,8 @@ float3 villageRow(float x, float y, float baseY, float rollAmp, float seedRow, f
     float flicker = 0.30 + 0.70 * noiseTex(float2(cell * 0.131, uTime * 0.067 + seedRow));
     float light = (win + twWin) * flicker * lightOrder;
 
-    //炊烟：两成人家一缕（缩影模式让位）
-    float smokeGate = step(0.80, h3) * isHut * (1.0 - uMini);
+    //炊烟：两成人家一缕
+    float smokeGate = step(0.80, h3) * isHut;
     float rise = saturate((top - y) * 6.5);
     float sway = (noiseTex(float2(cell * 0.37, y * 2.2 - uTime * 0.05)) - 0.5) * 0.10 * rise;
     float sx = fx - (h3 - 0.5) * hutW * 0.8 - sway;
@@ -241,10 +241,10 @@ float4 PSVista(float2 coords : TEXCOORD0) : COLOR0 {
     //村火倒影：岸下拉长的暖竖纹，随水流揉碎
     float refl = pow(noiseTex(float2(ux * 2.9 + 0.53, 0.31)), 2.5)
         * exp2(-max(rel, 0.0) * 6.0) * (0.35 + 0.65 * uLightGate);
-    water += ember * refl * 0.18 * (1.0 - uMini * 0.5);
-    //近水面焦散（缩影让位）
+    water += ember * refl * 0.18;
+    //近水面焦散
     float caus = pow(noiseTex(float2(ux * 3.4 - uTime * 0.022, uv.y * 9.0)), 6.0)
-        * exp2(-max(rel, 0.0) * 11.0) * (1.0 - uMini);
+        * exp2(-max(rel, 0.0) * 11.0);
     water += foam * caus * 0.28;
     //沸腾气泡
     float bub = noiseTex(float2(ux * 7.0, uv.y * 5.0 - uTime * 0.30));
@@ -263,10 +263,10 @@ float4 PSVista(float2 coords : TEXCOORD0) : COLOR0 {
     col = lerp(col, water, toWater);
     col += seam * step(SHORE_Y - 0.02, uv.y);
 
-    //====== 远场烬点（缩影让位） ======
+    //====== 远场烬点 ======
     float mote = noiseTex(float2(ux * 2.7 + uTime * 0.006, uv.y * 3.1 + uTime * 0.030));
     float spark = saturate((mote - 0.80) * 12.0)
-        * smoothstep(horizon + 0.10, horizon - 0.30, uv.y) * (1.0 - uMini);
+        * smoothstep(horizon + 0.10, horizon - 0.30, uv.y);
     col += ember * spark * 0.10;
 
     //====== 画心边缘：浸润沉暗 + 结算白闪 ======
@@ -343,5 +343,92 @@ float4 PSCard(float2 coords : TEXCOORD0) : COLOR0 {
 technique TechCard {
     pass P0 {
         PixelShader = compile ps_3_0 PSCard();
+    }
+}
+
+//============================================================================
+//玻璃风铃（TechChime）：掌中风铃 HUD 的铃身。SDF 球形铃体 + 噪蚀波口
+//（真风铃的切口本就不平），玻璃=低透近黑体 + 菲涅尔缘增亮 + 窗形高光；
+//铃内盛一小汪血湖：uWaterY 复用为液面充盈度（0 空 1 满），uSwing=当前摆角
+//（quad 随摆旋转，液面在铃内反向找平），uStir 晃荡、uBoil 沸腾、
+//uFlash 白闪、uLightGate=液中烬点稠度（湖藏填充率）。预乘输出
+//============================================================================
+
+float4 PSChime(float2 coords : TEXCOORD0) : COLOR0 {
+    float aspect = uResolution.x / max(uResolution.y, 1.0);
+    float2 p = float2((coords.x - 0.5) * aspect, coords.y - 0.5);
+
+    //双形态色板：液体沿用血湖/鬼雨水族，玻璃自带一对近黑与缘光色
+    float3 waterHi = lerp(WATER_HI_B, WATER_HI_R, uRain);
+    float3 waterLo = lerp(WATER_LO_B, WATER_LO_R, uRain);
+    float3 tint = lerp(TINT_B, TINT_R, uRain);
+    float3 foam = lerp(FOAM_B, FOAM_R, uRain);
+    float3 ember = lerp(EMBER_B, EMBER_R, uRain);
+    float3 glassDeep = lerp(float3(0.050, 0.014, 0.020), float3(0.018, 0.026, 0.032), uRain);
+    float3 glassRim = lerp(float3(0.760, 0.360, 0.300), float3(0.560, 0.660, 0.690), uRain);
+
+    //铃身：球体，口缘在下方被波状切开
+    float2 c = float2(0.0, -0.035);
+    float r = 0.385;
+    float d = length(p - c) - r;
+    float jag = (noiseTex(float2(coords.x * 2.7 + 0.19, 0.53)) - 0.5) * 0.045;
+    float cut = p.y - (0.295 + jag);
+
+    float body = 1.0 - smoothstep(-0.012, 0.010, d);
+    float keep = 1.0 - smoothstep(-0.012, 0.012, cut);
+    float glass = body * keep;
+
+    //玻璃体：低透近黑 + 菲涅尔缘增亮（中心最透，能看见后面的世界）
+    float fres = smoothstep(-0.16, -0.005, d);
+    float3 col = glassDeep * (0.55 + fres * 0.9);
+    float a = 0.14 + fres * 0.42;
+
+    //铃内液面：找平（摆角反向）+ 晃荡波
+    float fill = saturate(uWaterY);
+    float surf = lerp(0.325, -0.135, fill)
+        - p.x * uSwing * 1.1
+        + sin(p.x * 10.0 + uTime * 2.9) * (0.008 + 0.030 * uStir + 0.035 * uBoil);
+    float inWater = step(surf, p.y) * glass * step(0.02, fill);
+    float depth = saturate((p.y - surf) * 2.2);
+    float3 water = lerp(waterHi, waterLo, depth) * 1.35;
+    //液中微流
+    water += tint * (0.20 + 0.22 * uStir)
+        * noiseTex(float2(p.x * 1.7 + uTime * 0.05, p.y * 2.6 + 0.31));
+    //烬点：湖藏越满，液里漂的村火越稠
+    float mote = noiseTex(float2(p.x * 5.0 + uTime * 0.03, p.y * 6.0 - uTime * 0.05));
+    water += ember * saturate((mote - 0.74) * 9.0) * uLightGate * 0.85;
+    //沸腾气泡
+    float bub = noiseTex(float2(p.x * 8.0, p.y * 7.0 - uTime * 0.35));
+    water += foam * saturate((bub - 0.70) * 6.0) * uBoil;
+    //液面缝光
+    float seam = exp2(-abs(p.y - surf) * (110.0 - 40.0 * saturate(uStir + uBoil)));
+    water += foam * seam * (0.35 + 0.35 * uStir + 0.4 * uBoil);
+    col = lerp(col, water, inWater);
+    a = lerp(a, 0.92, inWater);
+
+    //窗形高光：左上一枚斜长亮斑随摆角轻移，右下一线弱反光
+    float2 hp = (p - float2(-0.145 + uSwing * 0.22, -0.245)) / float2(0.085, 0.050);
+    float hl = exp(-dot(hp, hp));
+    float2 hp2 = (p - float2(0.160 + uSwing * 0.16, 0.080)) / float2(0.035, 0.100);
+    float hl2 = exp(-dot(hp2, hp2)) * 0.35;
+    col += float3(0.92, 0.90, 0.88) * (hl * 0.55 + hl2) * glass;
+    a += (hl * 0.35 + hl2 * 0.2) * glass;
+
+    //缘线：球缘一线 + 波口一线亮唇
+    float rimLine = exp2(-abs(d) * 70.0) * keep;
+    float lip = exp2(-abs(cut) * 60.0) * body;
+    col += glassRim * (rimLine * 0.55 + lip * 0.75);
+    a += rimLine * 0.30 + lip * 0.35;
+
+    //结算白闪
+    col = lerp(col, float3(0.93, 0.94, 0.95), saturate(uFlash) * 0.8);
+
+    float aOut = saturate(a) * glass * uAlpha;
+    return float4(col * aOut, aOut);
+}
+
+technique TechChime {
+    pass P0 {
+        PixelShader = compile ps_3_0 PSChime();
     }
 }

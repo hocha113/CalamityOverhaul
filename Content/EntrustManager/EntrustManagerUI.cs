@@ -551,8 +551,9 @@ namespace CalamityOverhaul.Content.EntrustManager
                     totalLineH += (int)(font.MeasureString(wl.TrimEnd('-', ' ')).Y * textScale) + 2;
                 }
             }
-            //展开高=分隔6+行高+底边8+提供者落款
-            return 6 + totalLineH + 8 + (currentStyle?.GetProviderSignatureHeight(entry) ?? 0);
+            //展开高=分隔6+行高+底边8+进度条行+提供者落款
+            return 6 + totalLineH + 8 + BaseManagerStyle.ExpandedProgressRowH(entry)
+                + (currentStyle?.GetProviderSignatureHeight(entry) ?? 0);
         }
 
         private float GetTotalEntriesHeight() {

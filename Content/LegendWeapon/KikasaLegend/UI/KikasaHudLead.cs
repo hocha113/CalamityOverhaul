@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 {
     /// <summary>
     /// 鬼伞五步引导：首次持伞后串起 开域 → 沉入 → 湖窗 → 鬼奴 → 异化。
-    /// 卡片底板走 KikasaHud.fx 的 TechCard 湿纸技法，与水鏡同一张皮；
+    /// 卡片底板走 KikasaScene.fx 的 TechCard 湿纸技法，与湖畔村图同一张皮；
     /// 推进全靠玩家真实操作，键未绑定或卡住时放出跳过。
     /// 经 <see cref="GuideLeadQueue"/> 排队，晚于比目鱼(10)、早于义体(15)
     /// </summary>
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             VaultBody = this.GetLocalization(nameof(VaultBody),
                 () => "沉下去的东西悬在血水里漂着。开湖窗点一件，湖把它送回你手边。");
             VaultPrompt = this.GetLocalization(nameof(VaultPrompt),
-                () => "点开左下小画，再点画中的血湖；或持鬼伞按 {0}");
+                () => "点一下左下的风铃展开画卷，再点画中的血湖；或持鬼伞按 {0}");
 
             SummonTitle = this.GetLocalization(nameof(SummonTitle), () => "驱使鬼奴");
             SummonBody = this.GetLocalization(nameof(SummonBody),
@@ -293,12 +293,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             float rain = MathHelper.Clamp(Domain.RainBlend, 0f, 1f);
             float time = Main.GlobalTimeWrappedHourly;
 
-            //第一步给掌中缩影一个脉冲环：画即领域的读数。伞没拿在手上时缩影不在场，环也不画
+            //第一步给掌中风铃的铃身一个脉冲环：铃即领域的读数。伞没拿在手上时风铃不在场，环也不画
             if (currentPhase == Phase.Domain && KikasaHud.Instance?.Active == true) {
-                Vector2 mini = KikasaHud.Anchor;
                 float pulse = KikasaHudTheme.Breath(time, 1.3f, 3f);
-                KikasaVaultRenderer.DrawRing(sb, mini,
-                    KikasaHudTheme.MiniW * 0.5f + 14f + pulse * 4f, 14f,
+                KikasaVaultRenderer.DrawRing(sb, KikasaHud.BellAnchor,
+                    KikasaHudTheme.BellSize * 0.5f + 12f + pulse * 4f, 12f,
                     KikasaHudTheme.Glow(rain) * ((0.35f + pulse * 0.2f) * alpha));
             }
 
@@ -351,7 +350,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 + (subLines?.Count ?? 0) * (lineB - 1f)
                 + 38f;
 
-            //====== 卡位：默认悬在水鏡上方；湖窗开着时让位到右上 ======
+            //====== 卡位：默认悬在风铃上方；湖窗开着时让位到右上 ======
             float cardX, cardY;
             bool vaultOpen = KikasaVaultUI.Instance?.IsOpen == true;
             if (vaultOpen) {
@@ -360,20 +359,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 cardY = 78f;
             }
             else {
-                Vector2 mini = KikasaHud.Anchor;
-                cardX = MathHelper.Clamp(mini.X - 30f,
+                Vector2 chime = KikasaHud.Anchor;
+                cardX = MathHelper.Clamp(chime.X - 30f,
                     16f, Math.Max(16f, KikasaHudTheme.UIScreenW - CardW - 16f));
-                cardY = MathHelper.Clamp(mini.Y - 44f - cardH - 14f,
+                cardY = MathHelper.Clamp(
+                    chime.Y - (KikasaHudTheme.ChimeH * 0.5f + 10f) - cardH - 8f,
                     16f, Math.Max(16f, KikasaHudTheme.UIScreenH - cardH - 16f));
             }
             float slideY = (1f - alpha) * 16f;
             Rectangle card = new((int)cardX, (int)(cardY + slideY), CardW, (int)cardH);
 
             KikasaSceneUI.DrawCardBg(sb, card, alpha, rain);
-            //连线：卡底垂到缩影画片顶；湖窗模式不画，缩影不在场（伞没拿手上）也不画
+            //连线：卡底垂到风铃檐钩顶；湖窗模式不画，风铃不在场（伞没拿手上）也不画
             if (!vaultOpen && KikasaHud.Instance?.Active == true) {
                 DrawDashedLine(sb, new Vector2(card.X + 26f, card.Bottom),
-                    KikasaHud.Anchor + new Vector2(0f, -(KikasaHudTheme.MiniH * 0.5f + 8f)),
+                    KikasaHud.Anchor + new Vector2(0f, -(KikasaHudTheme.ChimeH * 0.5f + 6f)),
                     KikasaHudTheme.Accent(rain) * (0.45f * alpha), time);
             }
 

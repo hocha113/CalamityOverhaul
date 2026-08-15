@@ -66,15 +66,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         public static Color TextDim(float rain) => Color.Lerp(BloodTextDim, RainTextDim, rain);
         #endregion
 
-        #region 掌中缩影几何
-        /// <summary>缩影画片宽（横卷小片）</summary>
-        public const int MiniW = 98;
+        #region 掌中风铃几何
+        /// <summary>风铃整体命中宽</summary>
+        public const int ChimeW = 54;
 
-        /// <summary>缩影画片高</summary>
-        public const int MiniH = 56;
+        /// <summary>风铃整体命中高（檐钩到短册尾）</summary>
+        public const int ChimeH = 112;
 
-        /// <summary>HUD 锚点（缩影中心）距屏幕左下的偏移</summary>
-        public static readonly Vector2 AnchorOffset = new(80f, -66f);
+        /// <summary>铃身画布尺寸（TechChime quad，含缘光余量）</summary>
+        public const int BellSize = 52;
+
+        /// <summary>HUD 锚点（风铃中心）距屏幕左下的偏移</summary>
+        public static readonly Vector2 AnchorOffset = new(64f, -92f);
         #endregion
 
         /// <summary>异相位呼吸波，0~1 缓慢脉动</summary>
