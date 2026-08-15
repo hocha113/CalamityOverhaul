@@ -110,10 +110,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             //沸腾隆起与异样涟漪环的圆心取施术者的水平位置
             float originU = MathHelper.Clamp(WorldToScreen(kdp.Player.Center).X / w, -0.2f, 1.2f);
 
-            //倒悬伞影立在施术者倒影旁一步，伞盖远离缝线不被镜面遮罩裁剪
-            Vector2 pUv = WorldToScreen(kdp.Player.Center) / new Vector2(w, h);
-            Vector2 ghostUv = new(pUv.X + 0.06f, MathF.Max(2f * pivotY - pUv.Y, pivotY + 0.15f));
-
             float wobble = 0.0025f + 0.011f * kdp.FoamBoost + 0.010f * kdp.FlipBoil;
             float coldMix = kdp.FlipToRain ? kdp.FlipMix : 1f - kdp.FlipMix;
             //起手淡入：领域自带的湖面镜面先在场，合成层渐进接管避免交接跳变
@@ -131,7 +127,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             fx.Parameters["uGrade"]?.SetValue(kdp.FlipGrade);
             fx.Parameters["uGlimpse"]?.SetValue(kdp.FlipGlimpse);
             fx.Parameters["uGlimpseRing"]?.SetValue(kdp.FlipGlimpseRing);
-            fx.Parameters["uGhostPos"]?.SetValue(ghostUv);
             fx.Parameters["uSeamGlow"]?.SetValue(kdp.FlipSeamGlow);
             fx.Parameters["uBoil"]?.SetValue(kdp.FlipBoil);
             fx.Parameters["uColdMix"]?.SetValue(coldMix);

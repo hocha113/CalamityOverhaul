@@ -18,7 +18,6 @@ float uSwallow;      //0-1 结算后镜面向上吞没旧形态
 float uGrade;        //0-1 镜像侧调色增益，结算后让位真实氛围
 float uGlimpse;      //0-1 冷镜异样脉冲
 float uGlimpseRing;  //0-1 异样涟漪环扩散进度
-float2 uGhostPos;    //倒悬伞影中心 uv（施术者倒影旁）
 float uSeamGlow;     //0-1 水面水膜辉光
 float uBoil;         //0-1 沸腾强度
 float uColdMix;      //0-1 镜面预览调色：0=血湖材质 1=鬼雨浊水材质
@@ -97,16 +96,6 @@ float4 PSMirror(float2 coords : TEXCOORD0) : COLOR0
     float gDark = 1.0 - dot(gcol, float3(0.33, 0.34, 0.33));
     float3 haunt = graded * 0.62 + float3(0.52, 0.58, 0.60) * gDark * 0.55;
     graded = lerp(graded, haunt, uGlimpse * 0.6);
-
-    //倒悬伞影：镜像世界里伞盖朝下的半椭圆 + 向上的伞柄，噪声撕边防贴纸感
-    float2 gvec = float2((uv.x - uGhostPos.x) * uAspect, uv.y - uGhostPos.y);
-    float2 sp = float2(gvec.x * 10.0, gvec.y * 14.0);
-    float canopy = step(length(sp), 1.0) * step(0.0, sp.y);
-    float pole = step(abs(gvec.x), 0.0045) * step(-0.085, gvec.y) * step(gvec.y, 0.0);
-    float tear = saturate(tex2D(uImage1, uv * 3.7 + float2(0.0, uTime * 0.05)).r * 1.7);
-    float figure = saturate(canopy + pole) * tear * uGlimpse;
-    graded *= 1.0 - figure * 0.35;
-    graded += float3(0.55, 0.61, 0.62) * figure * 0.30;
 
     //调色增益门控，结算后镜像逐渐回落为素采样（真实世界已带异化氛围）
     float3 mirrorCol = lerp(mcol, graded, uGrade);
