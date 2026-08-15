@@ -43,8 +43,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
         /// <summary>作用半径，约一屏半</summary>
         public const float ResetRange = 2400f;
 
-        /// <summary>完成后冷却</summary>
-        public const int CooldownFrames = 60 * 60;
+        /// <summary>完成后冷却。调试暂关：原值 60 * 60（60 秒）</summary>
+        public const int CooldownFrames = 0;
 
         /// <summary>落定后的无敌缓冲</summary>
         public const int PostImmuneFrames = 60;
