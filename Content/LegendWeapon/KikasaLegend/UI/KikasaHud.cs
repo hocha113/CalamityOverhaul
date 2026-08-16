@@ -2,6 +2,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using CalamityOverhaul.Content.UIs.HudStack;
 using CalamityOverhaul.Content.UIs.UIEffect;
@@ -21,8 +22,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
     /// 檐钩垂一只玻璃风铃，铃身盛着一小汪血湖——液面=涨水进度、晃荡=事件涌浪、
     /// 液中烬点=湖藏填充、整铃随形态浸染；常态无水时铃也不空：吹制玻璃质感
     /// （冠结/双壁/旋纹/封存气泡/暮色反射带）加烬萤（=湖藏）、凝露与潮痕内景。
-    /// 短册纸条压一道墨字水印与朱印，其上挂两道冷却墨线
-    /// （沉溺手=主色、梦中唤犬=烬红）。点铃展开「湖畔村图」全画（任何域状态都响应）。
+    /// 短册纸条压一道墨字水印与朱印，其上挂三道冷却墨线
+    /// （沉溺手=主色居左、梦中唤犬=烬红居右、鬼雨重启=冷青走中列）。
+    /// 点铃展开「湖畔村图」全画（任何域状态都响应）。
     /// </summary>
     internal class KikasaHud : UIHandle, ILocalizedModType, IBottomLeftHud
     {
@@ -371,7 +373,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             }
         }
 
-        /// <summary>短册：湿暗纸底 + 边线 + 下缘水痕；冷却读数化作纸上两道墨线</summary>
+        /// <summary>短册：湿暗纸底 + 边线 + 下缘水痕；冷却读数化作纸上三道墨线</summary>
         private void DrawTanzaku(SpriteBatch sb, Vector2 top, float ang, float a,
             float rain, KikasaDomainPlayer domain, Color dim) {
             Texture2D px = VaultAsset.placeholder2.Value;
@@ -426,6 +428,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                     KikasaVaultRenderer.DrawLine(sb, inkTop + off,
                         inkTop + off + dir * (run * houndCd), 1.4f,
                         new Color(230, 96, 40) * (0.65f * a));
+                }
+            }
+            //大范围重启（鬼雨限定）走中列冷青：左右两列已被沉溺/唤犬占着，
+            //鬼雨与鬼梦相位不赌互斥；水印 α 只有 0.2，功能线照惯例压上
+            if (domain.IsRainForm) {
+                float resetCd = KikasaReset.LocalCooldown01;
+                if (resetCd > 0.005f) {
+                    KikasaVaultRenderer.DrawLine(sb, inkTop,
+                        inkTop + dir * (run * resetCd), 1.4f,
+                        new Color(108, 190, 198) * (0.6f * a));
                 }
             }
         }

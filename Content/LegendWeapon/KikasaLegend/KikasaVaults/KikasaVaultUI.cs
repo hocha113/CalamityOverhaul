@@ -1,5 +1,4 @@
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -56,19 +55,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
 
         public override Terraria.Audio.SoundStyle? CloseSound
             => SoundID.SplashWeak with { Volume = 0.4f, Pitch = -0.75f };
-
-        //==================== 伞章 ====================
-        //归一 [-1,1] 空间：圆拱伞盖 + 四瓣荷缘；顶针、中棒弯钩与两根斜骨
-        //internal 供 KikasaHud 复用同一枚伞章
-
-        internal const string SealCanopy =
-            "M -0.92 0.14 C -0.55 -0.66 0.55 -0.66 0.92 0.14 "
-            + "Q 0.66 0.03 0.46 0.15 Q 0.23 0.02 0 0.15 "
-            + "Q -0.23 0.02 -0.46 0.15 Q -0.66 0.03 -0.92 0.14";
-
-        internal const string SealFrame =
-            "M 0 -0.62 L 0 0.88 Q 0.02 1.0 0.2 0.92 "
-            + "M 0 -0.44 L -0.58 0.02 M 0 -0.44 L 0.58 0.02";
 
         //==================== 窗内小件 ====================
 
@@ -400,8 +386,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
             float chromeA = MathHelper.Clamp((a - 0.35f) / 0.5f, 0f, 1f);
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             if (chromeA > 0.02f) {
-                DrawSeal(spriteBatch, new Vector2(panelRect.X + 40f, panelRect.Y + 42f),
-                    17f, chromeA, time, reveal: chromeA);
+                KikasaVaultRenderer.DrawSeal(spriteBatch,
+                    new Vector2(panelRect.X + 40f, panelRect.Y + 42f),
+                    17f, chromeA, time, reveal: chromeA,
+                    KikasaVaultTheme.TextDim, KikasaVaultTheme.Blood, KikasaVaultTheme.Foam);
                 Utils.DrawBorderString(spriteBatch, Title.Value,
                     new Vector2(panelRect.X + 66f, panelRect.Y + 26f),
                     KikasaVaultTheme.Text * chromeA, 1.02f);
@@ -599,10 +587,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
 
             bool outSide = servant.FindActiveServant() != null;
             bool tamed = KikasaServants.KikasaServantIndex.TryGet(memoryType, out _);
-            //剪影：在外时淡去（它不在湖底）
-            KikasaVaultRenderer.DrawFormNpc(sb, memoryType,
-                new Vector2(baseX + 15f, baseY + 6f), 28f,
-                tamed ? 0.72f : 0.9f, a * (outSide ? 0.35f : 0.95f), KikasaVaultTheme.Blood);
+            //沉影与画境同一副皮：在外=负形空位，未驯服=被水啃散；湖窗恒血湖形态
+            KikasaVaultRenderer.DrawSunkEffigy(sb, memoryType,
+                new Vector2(baseX + 15f, baseY + 6f), 28f, a * 0.95f,
+                submerge: 1f, depth: 0.35f, tamed, outSide,
+                rain: 0f, MathHelper.Clamp(stir, 0f, 1f), KikasaVaultTheme.Blood);
 
             string name = Lang.GetNPCNameValue(memoryType);
             Utils.DrawBorderString(sb, name, new Vector2(baseX + 34f, baseY - 6f),
@@ -617,20 +606,5 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                 KikasaVaultTheme.TextDim * (0.85f * a), 0.62f);
         }
 
-        //伞章：伞骨淡线垫底，伞盖粗笔带亮芯，笔序随 reveal 揭示；伞面一段掠光缓巡
-
-        private static void DrawSeal(SpriteBatch sb, Vector2 center, float scale,
-            float alpha, float time, float reveal) {
-            SvgPath canopy = SvgPathPen.Path(SealCanopy);
-            SvgPath frame = SvgPathPen.Path(SealFrame);
-            SvgPathPen.Stroke(sb, frame, center, scale, 0f,
-                KikasaVaultTheme.TextDim, 1.2f, alpha * 0.85f, 0f, reveal);
-            SvgPathPen.Stroke(sb, canopy, center, scale, 0f,
-                KikasaVaultTheme.Blood, 2.4f, alpha, 0f, reveal, core: KikasaVaultTheme.Foam);
-            if (reveal >= 0.995f) {
-                SvgPathPen.StrokeRunner(sb, canopy, center, scale, 0f,
-                    KikasaVaultTheme.Foam, 2.6f, alpha * 0.5f, time * 0.07f, 0.10f);
-            }
-        }
     }
 }

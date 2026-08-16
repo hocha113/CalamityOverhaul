@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.UIs.UIEffect;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -136,11 +137,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
         }
 
         /// <summary>
-        /// 血水态 NPC 剪影（湖底记忆共用）：form 1=全血水 0=真身。
-        /// 自管 Immediate 批与噪声挂载，画完复原 UI 默认批；着色器缺编时平染回退
+        /// 湖底沉影（记忆/伞奴共用）：贴图只当形状模板，材质全由 KikasaSunkEffigy.fx 承担。
+        /// 按 NPC 类型取首帧；细节见另一重载
         /// </summary>
-        public static void DrawFormNpc(SpriteBatch sb, int npcType, Vector2 center,
-            float fit, float form, float alpha, Color fallbackTint) {
+        public static void DrawSunkEffigy(SpriteBatch sb, int npcType, Vector2 center,
+            float fit, float alpha, float submerge, float depth, bool tamed, bool absent,
+            float rain, float stir, Color fallbackTint) {
             Main.instance.LoadNPC(npcType);
             Texture2D tex = TextureAssets.Npc[npcType]?.Value;
             if (tex == null) {
@@ -148,9 +150,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
             }
             int frameCount = Math.Max(Main.npcFrameCount[npcType], 1);
             Rectangle frameRect = new(0, 0, tex.Width, tex.Height / frameCount);
+            DrawSunkEffigy(sb, tex, frameRect, center, fit, alpha, submerge, depth,
+                tamed, absent, rain, stir, npcType * 0.173f, fallbackTint, SpriteEffects.None);
+        }
+
+        /// <summary>
+        /// 湖底沉影核心：submerge 0=干湖泥痕 1=水下沉影；depth 越深折射越大越沉入水色；
+        /// tamed=可驱使（形凝得住+缘线+余烬沿缘缓移），absent=鬼奴在外（负形空缺，不是消失）。
+        /// 自管 Immediate 批与噪声挂载，画完复原 UI 默认批；着色器缺编退近黑剪影
+        /// </summary>
+        public static void DrawSunkEffigy(SpriteBatch sb, Texture2D tex, Rectangle frameRect,
+            Vector2 center, float fit, float alpha, float submerge, float depth,
+            bool tamed, bool absent, float rain, float stir, float seed,
+            Color fallbackTint, SpriteEffects flip) {
+            if (tex == null || alpha <= 0.01f) {
+                return;
+            }
             float scale = MathF.Min(1f, fit / MathF.Max(frameRect.Width, frameRect.Height));
 
-            Effect effect = EffectLoader.KikasaItemForm?.Value;
+            Effect effect = EffectLoader.KikasaSunkEffigy?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
             if (effect != null && noise != null) {
                 sb.End();
@@ -159,10 +177,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                 Main.instance.GraphicsDevice.Textures[1] = noise;
                 Main.instance.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
                 effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-                effect.Parameters["uSeed"]?.SetValue(npcType * 0.173f);
-                effect.Parameters["uForm"]?.SetValue(form);
-                effect.Parameters["uDissolve"]?.SetValue(0f);
-                effect.Parameters["uScanMode"]?.SetValue(0f);
+                effect.Parameters["uSeed"]?.SetValue(seed);
+                effect.Parameters["uSubmerge"]?.SetValue(MathHelper.Clamp(submerge, 0f, 1f));
+                effect.Parameters["uDepth"]?.SetValue(MathHelper.Clamp(depth, 0f, 1f));
+                effect.Parameters["uTamed"]?.SetValue(tamed ? 1f : 0f);
+                effect.Parameters["uAbsent"]?.SetValue(absent ? 1f : 0f);
+                effect.Parameters["uRain"]?.SetValue(MathHelper.Clamp(rain, 0f, 1f));
+                effect.Parameters["uStir"]?.SetValue(MathHelper.Clamp(stir, 0f, 1f));
                 effect.Parameters["uUvRect"]?.SetValue(new Vector4(
                     frameRect.X / (float)tex.Width, frameRect.Y / (float)tex.Height,
                     frameRect.Width / (float)tex.Width, frameRect.Height / (float)tex.Height));
@@ -171,14 +192,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                 effect.CurrentTechnique.Passes[0].Apply();
                 Color color = new(255, 255, 255, (byte)(MathHelper.Clamp(alpha, 0f, 1f) * 235f));
                 sb.Draw(tex, center, frameRect, color, 0f,
-                    frameRect.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+                    frameRect.Size() * 0.5f, scale, flip, 0f);
                 RestoreUIBatch(sb);
             }
             else {
-                //着色器缺编：血色平染剪影
-                Color fallback = Color.Lerp(Color.White, fallbackTint, form) * (alpha * 0.9f);
-                sb.Draw(tex, center, frameRect, fallback, 0f,
-                    frameRect.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+                //着色器缺编：近黑剪影，状态只靠透明度分档——在外最淡，未驯服次之
+                float stateA = absent ? 0.35f : tamed ? 0.9f : 0.7f;
+                Color ink = Color.Lerp(new Color(12, 6, 9), fallbackTint, 0.35f) * (alpha * stateA);
+                sb.Draw(tex, center, frameRect, ink, 0f,
+                    frameRect.Size() * 0.5f, scale, flip, 0f);
+            }
+        }
+
+        //==================== 伞章 ====================
+
+        //归一 [-1,1] 空间：圆拱伞盖 + 四瓣荷缘；顶针、中棒弯钩与两根斜骨
+
+        private const string SealCanopy =
+            "M -0.92 0.14 C -0.55 -0.66 0.55 -0.66 0.92 0.14 "
+            + "Q 0.66 0.03 0.46 0.15 Q 0.23 0.02 0 0.15 "
+            + "Q -0.23 0.02 -0.46 0.15 Q -0.66 0.03 -0.92 0.14";
+
+        private const string SealFrame =
+            "M 0 -0.62 L 0 0.88 Q 0.02 1.0 0.2 0.92 "
+            + "M 0 -0.44 L -0.58 0.02 M 0 -0.44 L 0.58 0.02";
+
+        /// <summary>
+        /// 伞章：伞骨淡线垫底，伞盖粗笔带亮芯，笔序随 reveal 揭示；描完伞面一段掠光缓巡。
+        /// 颜色由调用方定——湖窗传 KikasaVaultTheme 定色，画境传 KikasaHudTheme 双形态色随鬼雨浸染
+        /// </summary>
+        public static void DrawSeal(SpriteBatch sb, Vector2 center, float scale, float alpha,
+            float time, float reveal, Color bone, Color canopy, Color core) {
+            SvgPath canopyPath = SvgPathPen.Path(SealCanopy);
+            SvgPath framePath = SvgPathPen.Path(SealFrame);
+            SvgPathPen.Stroke(sb, framePath, center, scale, 0f, bone, 1.2f, alpha * 0.85f, 0f, reveal);
+            SvgPathPen.Stroke(sb, canopyPath, center, scale, 0f, canopy, 2.4f, alpha, 0f, reveal, core: core);
+            if (reveal >= 0.995f) {
+                SvgPathPen.StrokeRunner(sb, canopyPath, center, scale, 0f, core, 2.6f, alpha * 0.5f,
+                    time * 0.07f, 0.10f);
             }
         }
 

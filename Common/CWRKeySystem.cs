@@ -37,6 +37,7 @@ namespace CalamityOverhaul.Common
         public static ModKeybind Kikasa_Summon { get; private set; }
         public static ModKeybind Kikasa_DreamReflect { get; private set; }
         public static ModKeybind Kikasa_DreamPull { get; private set; }
+        public static ModKeybind Kikasa_WispFire { get; private set; }
         public static ModKeybind WeponSkill_Q { get; private set; }
         public static ModKeybind WeponSkill_R { get; private set; }
         public static ModKeybind Accessory_Skills { get; private set; }
@@ -76,6 +77,8 @@ namespace CalamityOverhaul.Common
             Kikasa_DreamReflect = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_DreamReflect), "P");
             //鬼梦：拉入/归返
             Kikasa_DreamPull = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_DreamPull), "X");
+            //血湖鬼火点燃/收火；鬼雨形态压着点不着
+            Kikasa_WispFire = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_WispFire), "Z");
             //鬼伞大范围重启复用 Legend_Restart，与比目鱼/赛博/绯嫁同键、按各自形态门互斥
             WeponSkill_Q = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_Q), "Q");
             WeponSkill_R = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_R), "R");
@@ -110,6 +113,7 @@ namespace CalamityOverhaul.Common
             Kikasa_Summon = null;
             Kikasa_DreamReflect = null;
             Kikasa_DreamPull = null;
+            Kikasa_WispFire = null;
             Legend_Domain = null;
             RadialWheel_Key = null;
             Halibut_Clone = null;

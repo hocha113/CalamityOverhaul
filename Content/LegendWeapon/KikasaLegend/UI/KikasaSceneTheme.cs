@@ -34,6 +34,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         /// <summary>湖底记忆剪影中心</summary>
         public static readonly Vector2 MemoryUv = new(0.20f, 0.80f);
 
+        /// <summary>伞奴岸位首位（贴图中心；恶犬右侧一排，脚跟与犬同踩岸沿）</summary>
+        public static readonly Vector2 ThrallRowUv = new(0.52f, 0.587f);
+
+        /// <summary>伞奴相邻站距（uv.x）</summary>
+        public const float ThrallSpacingX = 0.055f;
+
+        /// <summary>伞奴身高占画高比</summary>
+        public const float ThrallHeight = 0.075f;
+
         //====== 热区（uv 矩形：x, y, w, h） ======
 
         /// <summary>血湖热区：岸线以下整幅（含干湖床——干湖也点得动）</summary>
@@ -41,6 +50,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         /// <summary>恶犬热区（狼身轮廓外扩一圈）</summary>
         public static readonly Vector4 HoundHotspot = new(0.27f, 0.47f, 0.18f, 0.165f);
+
+        /// <summary>伞奴热区（整排岸位；仅鬼雨形态且在场时参与判定）</summary>
+        public static readonly Vector4 ThrallHotspot = new(0.49f, 0.545f, 0.29f, 0.09f);
 
         //====== 开合 ======
 

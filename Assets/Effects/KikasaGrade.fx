@@ -28,6 +28,7 @@ float uRain;            //0~1 鬼雨异化混合：血暮↔湿墨浊水，全�
 float4 uLineWave[4];    //水线行波源 x=源uv.x y=寿命进度01 z=幅度(uv.y) w=备用；空槽 z=0
 float4 uCoverRect;      //倒影抹除矩形（屏幕 uv：xy=左上 zw=右下）——倒影恶犬替换施术者镜像时用
 float uCoverA;          //0~1 抹除强度，随倒影出没渐变；0=不生效
+float uWispGlow;        //0~1 鬼火燃湖：浅水金光渗色 + 缝线金辉（火层画在实体层，这里补水体被照亮）
 
 #define LUMA_W float3(0.299, 0.587, 0.114)
 
@@ -51,6 +52,8 @@ static const float3 RAIN_UNDER  = float3(0.380, 0.460, 0.500);  //水下沉染�
 static const float3 RAIN_FOAM   = float3(0.620, 0.700, 0.720);  //缝线冷沫
 static const float3 RAIN_SOAK   = float3(0.470, 0.520, 0.545);  //浸水纸乘暗（冷灰）
 static const float3 RAIN_FIBER  = float3(0.720, 0.790, 0.810);  //湿纤维冷白
+//====== 鬼火 ======
+static const float3 WISP_GOLD   = float3(1.000, 0.740, 0.300);  //鬼火金（燃湖时渗入水体的光）
 
 float noiseTex(float2 uv) {
     return tex2D(uImage1, uv).r;
@@ -217,6 +220,10 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float rainT = noiseTex(float2(uv.x * 6.5 + uv.y * 0.9, uv.y * 0.45 - uTime * 0.9));
     lake += float3(0.50, 0.57, 0.59) * saturate((rainT - 0.62) * 6.0) * 0.12 * uRain;
 
+    //鬼火渗色：湖面燃着金火时浅水层被照透，随深快速衰减、随水面噪声微闪
+    float wispLit = exp2(-max(below, 0.0) * 7.0) * uWispGlow;
+    lake += WISP_GOLD * wispLit * (0.10 + 0.10 * n1);
+
     float3 domainCol = lerp(tone, lake, belowMask);
     float3 final = lerp(src, domainCol, mask);
 
@@ -231,6 +238,8 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
         * (0.26 + 0.32 * glintN + 0.30 * foam * uFoamBoost + 0.40 * waveGlow);
     float spat = noiseTex(float2(uv.x * 22.0, uTime * 1.7));
     final += foamCol * step(0.80, spat) * seamBand * uSeamGlow * uRain * 0.22 * mask;
+    //鬼火缝线金辉：水线被贴水的火照亮
+    final += WISP_GOLD * seamBand * uWispGlow * mask * (0.16 + 0.20 * glintN);
 
     //湿纸撕裂前沿：浸润带压暗旧世界，湿纤维缘勾撕口，卷影垫出纸厚
     float3 fl = paperFront(coords, sd);

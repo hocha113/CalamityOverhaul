@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps;
 using CalamityOverhaul.Content.Scenarios.OniRainWorlds;
 using InnoVault.Cinematics;
 using Microsoft.Xna.Framework.Input;
@@ -133,6 +134,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// <summary>鬼梦翻转期缝线辉光 0~1</summary>
         public float DreamSeamGlow { get; internal set; }
 
+        //==================== 鬼火 ====================
+
+        /// <summary>鬼火点燃态：满水血湖稳态按键点燃。鬼雨压制拍走完即清除（翻回血湖不自动复燃）；
+        /// 鬼梦只是湖暂时不在（包络退场、归返自动复燃，点燃态保留）；收域清零</summary>
+        public bool WispFireActive { get; internal set; }
+
+        /// <summary>点燃处世界 X，燃沿从这里向两侧蔓延；收火时反向啃回原点</summary>
+        public float WispOriginX { get; internal set; }
+
+        /// <summary>鬼火在场包络 0~1，各端本地推进（燃起/退场的整体强度）</summary>
+        public float WispT { get; internal set; }
+
+        /// <summary>燃沿蔓延进度 0~1（乘半宽 4000 即已扫半径）</summary>
+        public float WispSpread { get; internal set; }
+
+        /// <summary>鬼雨压制熄灭进度 0~1：翻入鬼雨、世界落回视野后确定性推满，拍毕清除点燃态</summary>
+        public float WispQuench { get; internal set; }
+
+        /// <summary>喂给湖面调色的鬼火光强：压制中水里的金光先行冷却</summary>
+        public float WispGlow => WispT * (1f - WispQuench * 0.6f);
+
         /// <summary>处于鬼梦相位（拉入/梦中/归返）任意一段</summary>
         public bool InDreamPhase => Phase == KikasaDomainPhase.DreamPull
             || Phase == KikasaDomainPhase.Dreaming
@@ -218,6 +240,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                     KikasaDreamSystem.Refuse(Player);
                 }
             }
+            //鬼火点燃/收火：满水血湖稳态点燃；鬼雨压着点不着（拒绝反馈在 TryToggle 里）
+            if (CWRKeySystem.Kikasa_WispFire.JustPressed && AnyActive && !Player.mouseInterface) {
+                KikasaWisp.TryToggle(Player);
+            }
         }
 
         /// <summary>湖面物理：移动应用前钳制。每端对所有玩家跑同一规则（状态源自同步快照），各端一致</summary>
@@ -237,6 +263,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             writer.Write(IsRainForm);
             writer.Write(FlipToRain);
             writer.Write(HoundReflection);
+            writer.Write(WispFireActive);
+            writer.Write(WispOriginX);
         }
 
         /// <summary>先读满整份负载再校验，脏包只做丢弃，不留半套状态</summary>
@@ -250,11 +278,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             bool rainForm = reader.ReadBoolean();
             bool flipToRain = reader.ReadBoolean();
             bool houndReflection = reader.ReadBoolean();
+            bool wispFire = reader.ReadBoolean();
+            float wispOriginX = reader.ReadSingle();
 
             if (phase > (byte)KikasaDomainPhase.DreamReturn
                 || !float.IsFinite(spread) || !float.IsFinite(rise)
                 || !float.IsFinite(origin.X) || !float.IsFinite(origin.Y)
-                || !float.IsFinite(lakeY)) {
+                || !float.IsFinite(lakeY) || !float.IsFinite(wispOriginX)) {
                 return;
             }
 
@@ -267,6 +297,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             IsRainForm = rainForm;
             FlipToRain = flipToRain;
             HoundReflection = houndReflection;
+            //鬼火包络/蔓延/压制各端本地自算，只同步点燃态与原点
+            WispFireActive = wispFire;
+            WispOriginX = wispOriginX;
             //触脚拍可从水位推回，中途加入者跨过 1 时照常触发
             contactDone = RiseT >= 0.999f;
             riseBeatNear = RiseT >= 0.75f;
@@ -388,6 +421,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             return true;
         }
 
+        /// <summary>鬼火点燃/收火。点燃把蔓延原点定在脚下；收火走包络反向啃回。
+        /// 门控在 <see cref="KikasaWisp.TryToggle"/>，这里只执行命令；确认拍只在观看端</summary>
+        internal bool ToggleWispFire() {
+            if (!ConsumeCommandGate()) {
+                return false;
+            }
+            if (WispFireActive) {
+                WispFireActive = false;
+                if (IsLocalVisual) {
+                    //收火：一口气把火吸回来的轻响
+                    SoundEngine.PlaySound(SoundID.DD2_BookStaffCast with { Pitch = -0.9f, Volume = 0.4f, MaxInstances = 2 }, Player.Center);
+                }
+            }
+            else {
+                WispFireActive = true;
+                WispOriginX = Player.Center.X;
+                WispSpread = 0f;
+                WispQuench = 0f;
+                if (IsLocalVisual) {
+                    Vector2 lakeAt = new(Player.Center.X, LakeWorldY);
+                    //点燃：低沉的气声起火 + 脚下荡开一圈
+                    SoundEngine.PlaySound(SoundID.DD2_BookStaffCast with { Pitch = -0.45f, Volume = 0.5f, MaxInstances = 2 }, lakeAt);
+                    SoundEngine.PlaySound(SoundID.Item20 with { Pitch = -0.3f, Volume = 0.45f, MaxInstances = 2 }, lakeAt);
+                    KikasaDomainDeco.RippleAt(lakeAt, 1.2f);
+                    KikasaWispFX.IgniteBurst(lakeAt);
+                }
+            }
+            BroadcastCommand();
+            return true;
+        }
+
         /// <summary>
         /// 鬼梦拉入/归返。Open 稳态 + 满水位 + 倒影已醒才拉得动；Dreaming 里再按即归返；
         /// 与入雨/深潜全屏演出互斥，同 <see cref="FlipDomain"/> 的约定
@@ -499,6 +563,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 HoundReflection = false;
                 DreamBlend = 0f;
                 ZeroDreamEnvelopes();
+                //鬼火随域关熄
+                WispFireActive = false;
+                WispT = 0f;
+                WispSpread = 0f;
+                WispQuench = 0f;
                 return;
             }
 
@@ -539,6 +608,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             UpdatePresence();
             UpdateMusicCap();
             UpdateFoam();
+            //鬼火包络/压制/灼烧扫描委托出去，防状态机文件膨胀（同 KikasaDreamDirector 之例）
+            KikasaWisp.Update(this);
 
             //浸润压暗走包络，撕开后随覆盖退场，中断收域时平滑离场
             float dimTarget = 0f;
@@ -1095,6 +1166,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             HoundReflection = false;
             DreamBlend = 0f;
             ZeroDreamEnvelopes();
+            WispFireActive = false;
+            WispOriginX = 0f;
+            WispT = 0f;
+            WispSpread = 0f;
+            WispQuench = 0f;
             contactDone = false;
             riseBeatNear = false;
             riseBeatFar = false;

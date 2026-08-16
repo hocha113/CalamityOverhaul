@@ -23,13 +23,15 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
     }
 
     //生成与运行时常量集中声明；扩容/调参只动此处
-    //蓝图 Doc/plans/OldNet/DESIGN.md，镜像 DungeonworldMetrics 惯例改横向
+    //蓝图 Doc/plans/OldNet/DESIGN.md + M2-PLAN.md，镜像 DungeonworldMetrics 惯例改横向
     internal static class OldNetMetrics
     {
         internal const int Width = 2400;
         internal const int Height = 600;
         //世界四周实心边界厚度
         internal const int BorderThick = 8;
+        //东侧可玩右界（半开）
+        internal const int PlayRight = Width - BorderThick;
 
         //════════ 横向带表（列） ════════
 
@@ -37,20 +39,38 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
         internal const int WallCols = 40;
         //墙脚带 [40,700)：规整几何、安全区起步
         internal const int FootCols = 660;
-        //废墟带 [700,1600)：M1 遗址主产区，M0 只有地板与节点
+        //废墟带 [700,1600)：遗址主产区
         internal const int RuinCols = 900;
-        //信号衰减区 [1600,2400)：M0 实心封死，M3 开放为疯域
+        //信号衰减区 [1600,2400)：M2a 起开放为可入地形，疯域规则 M3 接管
         internal const int FadeCols = Width - WallCols - FootCols - RuinCols;
+        //衰减区左缘（=废墟带右缘）
+        internal const int FadeLeft = WallCols + FootCols + RuinCols;
 
-        //════════ 纵向 ════════
+        //════════ 纵向剖面（M2a 空间重划） ════════
+        //
+        //  [BorderThick,120)   高空带：巨构上层/天线阵（Z4，M3 内容）
+        //  [120,FloorRow)      地表空域：主可玩层
+        //  FloorRow±wobble     地板线
+        //  (floor,460)         浅层：遗址内部/地窖，竖井接地表
+        //  [460,592)           深层：深网机房/管道
+        //
+        //worldSurface=430 / rockLayer=500 恰好切出 地表/地下/洞穴 三段原版判定
 
-        //地板主线（上表面基准行），起伏 ±FloorWobble
+        //高空带下缘
+        internal const int SkyBandBottom = 120;
+        //地板主线（上表面基准行），起伏 ±FloorWobble；衰减区 ±FadeWobble
         internal const int FloorRow = 380;
         internal const int FloorWobble = 6;
-        //地板实体向下浇筑到底部边界，地板以上为开放天空
+        internal const int FadeWobble = 14;
+        //浅层下界 / 深层下界
+        internal const int UnderShallowBottom = 460;
+        internal const int UnderDeepBottom = Height - BorderThick;
+        //浅层/深层平台厅地板行（竖井落点与挂房基准）
+        internal const int UnderShallowFloorRow = 436;
+        internal const int UnderDeepFloorRow = 540;
 
         //worldSurface 压到地板带以下：玩法层判"地表"，天幕可见（与 Dungeonworld 相反）
-        //rockLayer 再往下，只为满足原版分层判定的形式需求
+        //rockLayer 再往下，浅层判"地下"、深层判"洞穴"
         internal const int WorldSurfaceRow = 430;
         internal const int RockLayerRow = 500;
 
@@ -62,6 +82,26 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
         //出生区全平列数（生成 pass 与 ICE 撒布共用基准）
         internal const int SpawnFlatCols = 80;
 
+        //════════ 房间/占用/竖井（M2a 生成架构） ════════
+
+        //房间外壳厚度（Bounds 含壳）
+        internal const int RoomShellThick = 2;
+        //结构预留间距
+        internal const int RoomPadding = 4;
+        //竖井宽（列）与井内歇脚平台竖距（行）
+        internal const int ShaftWidth = 4;
+        internal const int ShaftLedgeStep = 7;
+        //平台厅尺寸（竖井落点开间）
+        internal const int LandingW = 16;
+        internal const int LandingH = 8;
+
+        //════════ 锚位规划（P30 裁决，不再是绝对列位） ════════
+
+        //中继站座数（废墟带等分段各一座）
+        internal const int RelayCount = 2;
+        //锚位与竖井/彼此的最小间距（列），栅格预留兜底
+        internal const int AnchorPadding = 10;
+
         //════════ RAM 距离底噪（每秒） ════════
         //标定基准：基础 RAM 8 / 恢复 0.1s（RamSystem.DefaultBase*）
         //墙脚 SafeCols 内零消耗；此后每离墙 100 格 +DrainPer100，
@@ -71,7 +111,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
 
         //════════ 数据节点 ════════
 
-        //单节点碎片产出；撒布数量见 M1 常量区分级配额
+        //单节点碎片产出
         internal const int NodeShardMin = 1;
         internal const int NodeShardMax = 3;
 
@@ -179,18 +219,21 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
         //基础 24：约 12 个普通节点或 3-4 个加密节点，强迫中期决策
         internal const int LedgerBaseCapacity = 24;
 
-        //──── 节点分级撒布（M1b） ────
+        //──── 节点分级撒布 ────
+        //地表配额（地下房间配额另计）
         internal const int NodePlainCount = 34;
         internal const int NodeEncryptCount = 10;
         internal const int NodeEventCount = 2;
-        //废墟带内加密节点占比（墙脚带只出普通）
-        internal const float RuinEncryptRatio = 0.4f;
+        //地下房间普通节点上限（房间建造期机会性放置）
+        internal const int NodeUnderPlainCount = 12;
+        //衰减区地表加密节点（高险高值）
+        internal const int NodeFadeEncryptCount = 6;
         //加密节点：引导时长、价值倍数、站桩半径
         internal const int EncryptChannelTicks = 180;
         internal const int EncryptValueMul = 3;
         internal const float EncryptChannelRadius = 60f;
 
-        //──── 封锁区与中继站（M1b） ────
+        //──── 封锁区 ────
         internal const int SealBoxCount = 2;
         internal const int SealBoxW = 14;
         internal const int SealBoxH = 8;
@@ -198,13 +241,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
         internal const int SealBoxNodeMax = 10;
         //事件节点离封锁区最小距离（列）：拉闸的人要跑一段才能吃到糖
         internal const int EventToSealMinCols = 80;
-        //中继站基准列位与抖动
-        internal static readonly int[] RelayCols = [1000, 1400];
-        internal const int RelayColJitter = 40;
 
         internal static readonly DistanceBand[] Bands;
 
-        //宏观种子：主世界派生，宏观布局固定的缝（M0 只缓存不使用）
+        //宏观种子：主世界派生，宏观布局固定的缝（当前只缓存供天幕星野）
         internal static int MacroSeed { get; private set; }
 
         static OldNetMetrics() {
@@ -212,7 +252,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
                 new DistanceBand("黑墙体", 0, WallCols, TileID.ObsidianBrick),
                 new DistanceBand("墙脚带", WallCols, FootCols, TileID.GrayBrick),
                 new DistanceBand("废墟带", WallCols + FootCols, RuinCols, TileID.StoneSlab),
-                new DistanceBand("信号衰减区", WallCols + FootCols + RuinCols, FadeCols, TileID.ObsidianBrick),
+                new DistanceBand("信号衰减区", FadeLeft, FadeCols, TileID.ObsidianBrick),
             ];
             int sum = 0;
             foreach (DistanceBand band in Bands) {
@@ -230,6 +270,16 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
                 }
             }
             return null;
+        }
+
+        /// <summary>带索引（0=黑墙体..3=衰减区），越界给 -1；引导横幅与分带逻辑共用</summary>
+        internal static int BandIndexForColumn(int x) {
+            for (int i = 0; i < Bands.Length; i++) {
+                if (Bands[i].Contains(x)) {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         /// <summary>进入前在主世界缓存宏观种子</summary>

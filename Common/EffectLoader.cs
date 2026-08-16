@@ -237,6 +237,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> StormSlashTrail { get; set; }
         public static Asset<Effect> DragonSlashTrail { get; set; }
         public static Asset<Effect> DawnshatterSlash { get; set; }
+        public static Asset<Effect> DragonsWordFX { get; set; }
         public static Asset<Effect> DragonSoulSerpent { get; set; }
         public static Asset<Effect> DragonSporeBeam { get; set; }
         public static Asset<Effect> BarrenPulse { get; set; }
@@ -256,6 +257,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaThrallForm { get; set; }
         public static Asset<Effect> KikasaVaultPanel { get; set; }
         public static Asset<Effect> KikasaScene { get; set; }
+        public static Asset<Effect> KikasaSunkEffigy { get; set; }
         public static Asset<Effect> KikasaHand { get; set; }
         public static Asset<Effect> KikasaNarrativePanel { get; set; }
         public static Asset<Effect> KikasaMoonRay { get; set; }
@@ -268,6 +270,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaDream { get; set; }
         public static Asset<Effect> KikasaDreamSky { get; set; }
         public static Asset<Effect> KikasaReset { get; set; }
+        public static Asset<Effect> KikasaHourglass { get; set; }
+        public static Asset<Effect> KikasaWispFire { get; set; }
         public static Asset<Effect> OniOmokage { get; set; }
         public static Asset<Effect> OniPaperPeel { get; set; }
         public static Asset<Effect> OniSky { get; set; }

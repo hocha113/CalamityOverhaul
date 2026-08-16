@@ -42,8 +42,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
         /// <summary>作用半径，约一屏半</summary>
         public const float ResetRange = 2400f;
 
-        /// <summary>完成后冷却。调试暂关：原值 60 * 60（60 秒）</summary>
-        public const int CooldownFrames = 0;
+        /// <summary>完成后冷却</summary>
+        public const int CooldownFrames = 60 * 60;
 
         /// <summary>落定后的无敌缓冲</summary>
         public const int PostImmuneFrames = 60;
@@ -128,6 +128,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
                 Player owner = Main.player[show.OwnerWho];
                 return owner?.active == true
                     && Vector2.Distance(owner.Center, local.Center) <= ResetRange + 1200f;
+            }
+        }
+
+        /// <summary>本机重启锁剩余 0~1（1=刚上锁），HUD 冷却墨线消费；无锁=0。
+        /// 分母守一道零：冷却常量被调试归零时读数直接归零，不除爆</summary>
+        internal static float LocalCooldown01 {
+            get {
+                if (CooldownFrames <= 0 || Main.GameUpdateCount >= localLockUntil) {
+                    return 0f;
+                }
+                return MathHelper.Clamp(
+                    (localLockUntil - Main.GameUpdateCount) / (float)CooldownFrames, 0f, 1f);
             }
         }
 

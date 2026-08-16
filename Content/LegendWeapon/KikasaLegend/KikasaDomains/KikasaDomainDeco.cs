@@ -53,6 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         //槽位数与着色器 uLineWave[4] 对齐；复用上传缓冲避免逐帧分配
         private static readonly LineWave[] lineWaves = new LineWave[4];
         private static readonly Vector4[] waveUpload = new Vector4[4];
+        private static readonly Vector4[] waveUploadWorld = new Vector4[4];
 
         private const int DropCap = 140;
         private const int RippleCap = 16;
@@ -250,6 +251,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                     uvX, w.Life / (float)w.MaxLife, w.AmpPx / viewSize.Y, w.RangeMul);
             }
             effect.Parameters["uLineWave"]?.SetValue(waveUpload);
+        }
+
+        /// <summary>
+        /// 行波以世界像素域打包（x=源世界X y=寿命进度 z=幅度px w=范围乘数），
+        /// 供世界锚定 quad 的着色器（鬼火层）自算涌动，与屏幕 uv 版波形常数同源
+        /// </summary>
+        internal static void FillWaveUniformsWorld(Effect effect) {
+            for (int i = 0; i < lineWaves.Length; i++) {
+                ref LineWave w = ref lineWaves[i];
+                waveUploadWorld[i] = Vector4.Zero;
+                if (w.MaxLife <= 0 || w.Life >= w.MaxLife) {
+                    continue;
+                }
+                waveUploadWorld[i] = new Vector4(
+                    w.WorldX, w.Life / (float)w.MaxLife, w.AmpPx, w.RangeMul);
+            }
+            effect.Parameters["uLineWave"]?.SetValue(waveUploadWorld);
         }
 
         public static void Update() {

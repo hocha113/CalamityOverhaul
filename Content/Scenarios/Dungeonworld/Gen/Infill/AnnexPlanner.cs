@@ -177,7 +177,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Infill
                     : ceilingLimit;
                 int maxH = hungFloor - roomCeiling - DungeonworldMetrics.RoomShellThick;
                 HangSealedRooms(ctx, skin, rand, corridorIndex, spanL, spanR, hungFloor, maxH,
-                    corridorFloor, t == 0, ref report);
+                    corridorFloor, t == 0, portalAtRight, ref report);
 
                 prevFloor = corridorFloor;
                 prevIndex = corridorIndex;
@@ -236,13 +236,16 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Infill
         //===封存房:沿廊按最小间隔铺开,密度只给主区三分之一===
         private static void HangSealedRooms(LayerBuildContext ctx, InfillSkin skin, UnifiedRandom rand,
             int corridorIndex, int spanL, int spanR, int hungFloor, int maxH, int corridorFloor,
-            bool rewardTier, ref Report report) {
+            bool rewardTier, bool portalAtRight, ref Report report) {
             if (maxH < InfillRooms.RoomMinClearance) {
                 return;
             }
             int cursor = spanL + 4;
             int placedHere = 0;
-            RoomNode outermost = null;
+            //游标自spanL向右推进,所以"最外那间"看的是门面在哪头:
+            //左翼门面在右(spanR侧),最外=第一间;右翼反之
+            RoomNode firstRoom = null;
+            RoomNode lastRoom = null;
             while (cursor < spanR - 12) {
                 bool rubble = maxH >= 8 && rand.NextBool(2);
                 Point size = rubble ? InfillRooms.RubbleInteriorSize(rand)
@@ -274,12 +277,14 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Infill
                 report.Shafts++;
                 report.Rooms++;
                 placedHere++;
-                outermost ??= room;
+                firstRoom ??= room;
+                lastRoom = room;
                 //稀疏感:房与房之间必须留一段没动过的岩
                 cursor = room.Bounds.Right + RoomGapMin + rand.Next(0, 24);
             }
 
             //每翼一个够分量的箱,放在最外那间——让这趟路值得走
+            RoomNode outermost = portalAtRight ? firstRoom : lastRoom;
             if (rewardTier && outermost != null) {
                 int cx = outermost.InteriorRight - 3;
                 int cy = outermost.FloorTop - 1;

@@ -32,6 +32,8 @@ namespace CalamityOverhaul.Content
         public bool VoidErosionBool;
         /// <summary>灵魂火</summary>
         public bool SoulfireExplosion;
+        /// <summary>鬼伞血湖鬼火灼烧</summary>
+        public bool KikasaWispFire;
         /// <summary>染料物品 ID</summary>
         public int DyeItemID;
         /// <summary>&gt;0 虚弱中</summary>
@@ -75,6 +77,7 @@ namespace CalamityOverhaul.Content
             VoidErosionBool = false;
             HellfireExplosion = false;
             SoulfireExplosion = false;
+            KikasaWispFire = false;
         }
 
         public static void MultipleSegmentsLimitDamage(NPC target, ref NPC.HitModifiers modifiers) {
@@ -164,6 +167,10 @@ namespace CalamityOverhaul.Content
             }
             if (SoulfireExplosion) {
                 DebuffSet(1000, 80, ref npc.lifeRegen, ref damage);
+            }
+            if (KikasaWispFire) {
+                //鬼火灼烧：介于地狱炎爆与灵魂火之间，游戏内再调
+                DebuffSet(400, 40, ref npc.lifeRegen, ref damage);
             }
         }
 

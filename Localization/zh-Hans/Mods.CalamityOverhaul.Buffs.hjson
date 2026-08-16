@@ -8,6 +8,11 @@ HellburnBuff: {
 	Description: 来自地狱的火焰
 }
 
+KikasaWispBurn: {
+	DisplayName: 鬼火灼身
+	Description: 湖上的金色鬼火黏在身上烧
+}
+
 VoidErosion: {
 	DisplayName: 虚空侵蚀
 	Description: 逐渐化为虚无

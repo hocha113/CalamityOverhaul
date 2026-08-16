@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Scenarios.OldNet.NPCs;
+﻿using CalamityOverhaul.Content.Scenarios.OldNet.NPCs;
 using CalamityOverhaul.Content.Scenarios.OldNet.Tiles;
 using System;
 using System.Collections.Generic;
@@ -214,24 +214,24 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Passes
         private static void PlaceRelays(int[] floorTop) {
             int relayType = ModContent.TileType<OldNetRelayTile>();
             int placed = 0;
-            foreach (int baseCol in OldNetMetrics.RelayCols) {
-                int anchor = baseCol + WorldGen.genRand.Next(
-                    -OldNetMetrics.RelayColJitter, OldNetMetrics.RelayColJitter + 1);
-                //锚位被占就近扫空位
-                for (int dx = 0; dx < 16; dx++) {
-                    int x = anchor + dx;
-                    Tile slot = Main.tile[x, floorTop[x] - 1];
-                    if (slot.HasTile) {
-                        continue;
-                    }
-                    slot.HasTile = true;
-                    slot.TileType = (ushort)relayType;
-                    slot.TileFrameX = 0;
-                    slot.TileFrameY = 0;
-                    placed++;
-                    break;
-                }
-            }
+            //foreach (int baseCol in OldNetMetrics.RelayCols) {
+            //    int anchor = baseCol + WorldGen.genRand.Next(
+            //        -OldNetMetrics.RelayColJitter, OldNetMetrics.RelayColJitter + 1);
+            //    //锚位被占就近扫空位
+            //    for (int dx = 0; dx < 16; dx++) {
+            //        int x = anchor + dx;
+            //        Tile slot = Main.tile[x, floorTop[x] - 1];
+            //        if (slot.HasTile) {
+            //            continue;
+            //        }
+            //        slot.HasTile = true;
+            //        slot.TileType = (ushort)relayType;
+            //        slot.TileFrameX = 0;
+            //        slot.TileFrameY = 0;
+            //        placed++;
+            //        break;
+            //    }
+            //}
             CWRMod.Instance.Logger.Info($"[OldNet] relays placed={placed}");
         }
 

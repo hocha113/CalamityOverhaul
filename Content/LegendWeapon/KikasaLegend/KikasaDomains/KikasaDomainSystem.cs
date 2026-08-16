@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
@@ -19,6 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             UpdateSkyActivation();
             KikasaDomainDeco.Update();
             KikasaLakeFX.Update();
+            KikasaWispFX.Update();
         }
 
         //领域是玩家主动能力，不进 ModSceneEffect 场景竞争；激活期间每帧重激活，
@@ -80,6 +82,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             KikasaDomainDeco.Clear();
             KikasaLakeFX.Clear();
             KikasaHoundReflection.Clear();
+            KikasaWispFX.Clear();
         }
 
         //血暮压光、氛围级而非致盲级：湖面反光与天空亮红反衬剪影；鬼雨异化再压一档

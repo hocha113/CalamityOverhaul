@@ -911,7 +911,6 @@ KikasaText: {
 	}
 
 	KikasaSceneUI: {
-		SceneTitle: Lakeside Village Scroll
 		LakeTag: Blood Lake
 		HoundTag: Black Hound
 		MemoryEmpty: The lakebed is still empty
@@ -923,6 +922,8 @@ KikasaText: {
 		InDreamLine: You are inside the dream
 		HoundCountFormat: Hounds afield {0} / {1}
 		DreamHint: In the dream, hold left-click—the black water keeps spitting out hounds
+		ThrallTag: Umbrella Thralls
+		ThrallCountFormat: Thralls ashore {0} / {1}
 	}
 
 	KikasaHudLead: {

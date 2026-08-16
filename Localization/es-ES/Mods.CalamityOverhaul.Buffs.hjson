@@ -8,6 +8,11 @@ HellburnBuff: {
 	Description: Llamas del inframundo
 }
 
+KikasaWispBurn: {
+	// DisplayName: Wisp Fire
+	// Description: Golden wisp fire from the lake clings and burns
+}
+
 VoidErosion: {
 	DisplayName: Erosión del Vacío
 	Description: Te desvaneces poco a poco en la nada

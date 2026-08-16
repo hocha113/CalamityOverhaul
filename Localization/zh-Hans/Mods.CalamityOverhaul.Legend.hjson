@@ -911,7 +911,6 @@ KikasaText: {
 	}
 
 	KikasaSceneUI: {
-		SceneTitle: 湖畔村图
 		LakeTag: 血湖
 		HoundTag: 恶犬
 		MemoryEmpty: 湖底还空着
@@ -923,6 +922,8 @@ KikasaText: {
 		InDreamLine: 你正身在梦中
 		HoundCountFormat: 在场恶犬 {0} / {1}
 		DreamHint: 梦中按住左键，黑水会不断吐出恶犬
+		ThrallTag: 伞奴
+		ThrallCountFormat: 在场伞奴 {0} / {1}
 	}
 
 	KikasaHudLead: {

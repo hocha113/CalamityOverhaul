@@ -8,6 +8,11 @@ HellburnBuff: {
 	Description: Из пламени Ада
 }
 
+KikasaWispBurn: {
+	// DisplayName: Wisp Fire
+	// Description: Golden wisp fire from the lake clings and burns
+}
+
 VoidErosion: {
 	DisplayName: Эрозия пустоты
 	Description: Постепенно превращается в ничто

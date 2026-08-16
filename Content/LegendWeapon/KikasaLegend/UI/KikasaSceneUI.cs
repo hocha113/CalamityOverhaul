@@ -3,7 +3,9 @@ using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
+using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -21,10 +23,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 {
     /// <summary>
     /// 湖畔村图：鬼伞主界面。一幅活的横卷——红天血湖畔的村落，
-    /// 自左下掌中缩影放大铺开。画即状态：湖水位=涨水进度、湖底沉着记忆剪影、
-    /// 恶犬随倒影/鬼梦改姿态、村中窗火随湖藏渐次点亮。
-    /// 画内血湖与恶犬是热区：点湖开湖窗（干湖也开，只读），点犬出鬼梦题跋卡；
-    /// 非热区点击荡开一圈墨涟漪——不存在无反馈点击。
+    /// 自左下掌中缩影放大铺开。画即状态：湖水位=涨水进度、湖底沉着记忆沉影
+    /// （干湖=泥上的形，可驱使/未驯服/在外三态可辨）、恶犬随倒影/鬼梦改姿态、
+    /// 村中窗火随湖藏渐次点亮、鬼雨形态岸上立着在场伞奴。
+    /// 画内血湖/恶犬/伞奴排是热区：点湖开湖窗（干湖也开，只读），点犬出鬼梦题跋卡，
+    /// 悬伞奴报在场数；非热区点击荡开一圈墨涟漪——不存在无反馈点击。
     /// </summary>
     internal class KikasaSceneUI : UIHandle, ILocalizedModType
     {
@@ -33,7 +36,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         public static KikasaSceneUI Instance => UIHandleLoader.GetUIHandleOfType<KikasaSceneUI>();
 
         #region 本地化
-        public static LocalizedText SceneTitle { get; private set; }
         public static LocalizedText LakeTag { get; private set; }
         public static LocalizedText HoundTag { get; private set; }
         public static LocalizedText MemoryEmpty { get; private set; }
@@ -45,9 +47,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         public static LocalizedText InDreamLine { get; private set; }
         public static LocalizedText HoundCountFormat { get; private set; }
         public static LocalizedText DreamHint { get; private set; }
+        public static LocalizedText ThrallTag { get; private set; }
+        public static LocalizedText ThrallCountFormat { get; private set; }
 
         public override void SetStaticDefaults() {
-            SceneTitle = this.GetLocalization(nameof(SceneTitle), () => "湖畔村图");
             LakeTag = this.GetLocalization(nameof(LakeTag), () => "血湖");
             HoundTag = this.GetLocalization(nameof(HoundTag), () => "恶犬");
             MemoryEmpty = this.GetLocalization(nameof(MemoryEmpty), () => "湖底还空着");
@@ -59,6 +62,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             InDreamLine = this.GetLocalization(nameof(InDreamLine), () => "你正身在梦中");
             HoundCountFormat = this.GetLocalization(nameof(HoundCountFormat), () => "在场恶犬 {0} / {1}");
             DreamHint = this.GetLocalization(nameof(DreamHint), () => "梦中按住左键，黑水会不断吐出恶犬");
+            ThrallTag = this.GetLocalization(nameof(ThrallTag), () => "伞奴");
+            ThrallCountFormat = this.GetLocalization(nameof(ThrallCountFormat), () => "在场伞奴 {0} / {1}");
         }
         #endregion
 
@@ -74,14 +79,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         //==================== 状态 ====================
 
-        private enum Hotspot { None, Lake, Hound }
+        private enum Hotspot { None, Lake, Hound, Thrall }
 
         private Rectangle canvasRect;
         private Hotspot hover = Hotspot.None;
         private float lakeHoverLerp;
         private float houndHoverLerp;
+        private float thrallHoverLerp;
         private bool dreamCardOpen;
         private float dreamCardLerp;
+        //本帧在场伞奴数（鬼雨形态的岸位读数），Update 里点一次两处共用
+        private int thrallCount;
 
         //画内水语包络
         private float stir;
@@ -120,7 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         protected override void OnOpen() {
             Main.playerInventory = false;
             hover = Hotspot.None;
-            lakeHoverLerp = houndHoverLerp = 0f;
+            lakeHoverLerp = houndHoverLerp = thrallHoverLerp = 0f;
             dreamCardOpen = false;
             dreamCardLerp = 0f;
             ripples.Clear();
@@ -185,12 +193,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             bool overCanvas = canvasRect.Contains(mouse.ToPoint());
             bool inputAvailable = IsOpen && a > 0.9f;
 
+            //岸位读数：鬼雨形态下在场的伞奴
+            thrallCount = KikasaThrall.CountActive(player.whoAmI);
+
             hover = Hotspot.None;
             if (inputAvailable && overCanvas) {
                 Rectangle houndRect = KikasaSceneTheme.UvToScreen(canvasRect, KikasaSceneTheme.HoundHotspot);
+                Rectangle thrallRect = KikasaSceneTheme.UvToScreen(canvasRect, KikasaSceneTheme.ThrallHotspot);
                 Rectangle lakeRect = KikasaSceneTheme.UvToScreen(canvasRect, KikasaSceneTheme.LakeHotspot);
+                bool thrallRowLive = Domain.IsRainForm && thrallCount > 0;
                 if (houndRect.Contains(mouse.ToPoint())) {
                     hover = Hotspot.Hound;
+                }
+                else if (thrallRowLive && thrallRect.Contains(mouse.ToPoint())) {
+                    hover = Hotspot.Thrall;
                 }
                 else if (lakeRect.Contains(mouse.ToPoint())) {
                     hover = Hotspot.Lake;
@@ -198,6 +214,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             }
             lakeHoverLerp = MathHelper.Lerp(lakeHoverLerp, hover == Hotspot.Lake ? 1f : 0f, 0.15f);
             houndHoverLerp = MathHelper.Lerp(houndHoverLerp, hover == Hotspot.Hound ? 1f : 0f, 0.15f);
+            thrallHoverLerp = MathHelper.Lerp(thrallHoverLerp, hover == Hotspot.Thrall ? 1f : 0f, 0.15f);
 
             if (IsOpen && overCanvas) {
                 player.mouseInterface = true;
@@ -280,6 +297,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             float detailA = MathHelper.Clamp((a - 0.55f) / 0.45f, 0f, 1f);
             if (detailA > 0.02f) {
                 DrawHound(spriteBatch, canvas, detailA, rain, waterUv, time);
+                DrawThralls(spriteBatch, canvas, detailA, rain, time);
                 DrawMemory(spriteBatch, canvas, detailA, rain, waterUv);
                 DrawAdditiveBits(spriteBatch, canvas, detailA, rain, waterUv, time);
                 DrawInkRipples(spriteBatch, detailA, rain);
@@ -368,33 +386,69 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             return (idle, alert, howl);
         }
 
+        //====== 岸上伞奴（鬼雨形态的岸位读数） ======
+
+        private void DrawThralls(SpriteBatch sb, Rectangle canvas, float a, float rain, float time) {
+            //鬼雨浸染过半它们才立起来——血湖侧没有伞奴
+            float gate = MathHelper.Clamp((rain - 0.55f) / 0.30f, 0f, 1f);
+            if (gate <= 0.02f || thrallCount <= 0) {
+                return;
+            }
+            Texture2D tex = KikasaThrallRenderer.BodyTexture;
+            if (tex == null) {
+                return;
+            }
+            Rectangle frame = KikasaThrallRenderer.FrameOf(tex, 0);
+            int count = Math.Min(thrallCount, KikasaThrall.MaxPerOwner);
+            float stir01 = MathHelper.Clamp(stir, 0f, 1f);
+            for (int i = 0; i < count; i++) {
+                //站位手排：脚跟、身量与朝向逐个错开，不站成仪仗队
+                float h0 = MathF.Sin(i * 17.39f) * 0.5f + 0.5f;
+                float h1 = MathF.Sin(i * 9.71f + 4.2f) * 0.5f + 0.5f;
+                Vector2 uv = new(
+                    KikasaSceneTheme.ThrallRowUv.X + i * KikasaSceneTheme.ThrallSpacingX
+                        + (h0 - 0.5f) * 0.012f,
+                    KikasaSceneTheme.ThrallRowUv.Y + (h1 - 0.5f) * 0.012f);
+                Vector2 pos = KikasaSceneTheme.UvToScreen(canvas, uv)
+                    + new Vector2(0f, MathF.Sin(time * 0.9f + i * 2.1f) * 1.2f);
+                float fit = canvas.Height * KikasaSceneTheme.ThrallHeight * (0.92f + h0 * 0.16f);
+                //尸斑青幽光衬底（under-layer）：把湿墨小影从雾里托出来，与世界侧行走衬光同源
+                SvgPathPen.SoftDot(sb, pos, fit * 0.62f, KikasaThrall.CorpseTeal,
+                    (0.08f + thrallHoverLerp * 0.05f) * gate * a);
+                KikasaVaultRenderer.DrawSunkEffigy(sb, tex, frame, pos, fit, a * gate,
+                    submerge: 0f, depth: 0f, tamed: true, absent: false,
+                    rain, stir01, 3.17f + i * 1.73f, KikasaHudTheme.Accent(rain),
+                    h1 > 0.5f ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
+            }
+        }
+
         //====== 湖底记忆 ======
 
         private void DrawMemory(SpriteBatch sb, Rectangle canvas, float a, float rain, float waterUv) {
             int memoryType = Servant.LastDrownedType;
-            bool servantOut = memoryType > 0 && Servant.FindActiveServant() != null;
-            if (memoryType <= 0 || servantOut) {
+            if (memoryType <= 0) {
                 return;
             }
-            //水没漫过湖床它就还没显形
-            float reveal = MathHelper.Clamp(
-                (KikasaSceneTheme.MemoryUv.Y - waterUv) * canvas.Height / 26f, 0f, 1f);
-            float alpha = reveal * a;
-            if (alpha <= 0.02f) {
-                return;
-            }
-            Vector2 pos = KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.MemoryUv)
-                + new Vector2(0f, MathF.Sin(Main.GlobalTimeWrappedHourly * 1.2f) * 2.2f);
+            //鬼奴在外=负形空位，不再整个消失
+            bool absent = Servant.FindActiveServant() != null;
             bool tamed = KikasaServantIndex.TryGet(memoryType, out _);
-            float form = tamed
-                ? MathHelper.Clamp(0.80f - lakeHoverLerp * 0.35f - memoryPulse * 0.35f, 0.05f, 1f)
-                : 0.92f;
-            //湖床落影
+            //水漫过湖床多少，它就化进水里多少；干湖时留成泥上的形，不再有看不见的档
+            float submerge = MathHelper.Clamp(
+                (KikasaSceneTheme.MemoryUv.Y - waterUv) * canvas.Height / 26f, 0f, 1f);
+            //满水位时它沉在最深处
+            float depth = MathHelper.Clamp((KikasaSceneTheme.MemoryUv.Y - waterUv)
+                / (KikasaSceneTheme.MemoryUv.Y - KikasaSceneTheme.WaterFullY), 0f, 1f);
+            //泥上不漂，入水才随水呼吸
+            Vector2 pos = KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.MemoryUv)
+                + new Vector2(0f, MathF.Sin(Main.GlobalTimeWrappedHourly * 1.2f) * 2.2f * submerge);
             float fit = canvas.Height * 0.115f;
+            //湖床落影：沉影的座，在外时读作空位的口
             KikasaVaultRenderer.DrawRing(sb, pos + new Vector2(0f, fit * 0.46f),
-                fit * 0.4f, fit * 0.11f, KikasaHudTheme.Void(rain) * (0.5f * alpha));
-            KikasaVaultRenderer.DrawFormNpc(sb, memoryType, pos, fit, form,
-                alpha * (tamed ? 1f : 0.8f), KikasaHudTheme.Accent(rain));
+                fit * 0.4f, fit * 0.11f, KikasaHudTheme.Void(rain) * (0.5f * a));
+            //悬停与记忆更替的涌浪都灌进水面活性，沉影跟着更躁
+            float effStir = MathHelper.Clamp(stir + lakeHoverLerp * 0.4f + memoryPulse, 0f, 1f);
+            KikasaVaultRenderer.DrawSunkEffigy(sb, memoryType, pos, fit, a,
+                submerge, depth, tamed, absent, rain, effStir, KikasaHudTheme.Accent(rain));
         }
 
         //====== 加色小件 ======
@@ -489,23 +543,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             Color text = KikasaHudTheme.Text(rain);
             Color dim = KikasaHudTheme.TextDim(rain);
 
-            //题签：右上竖排画名 + 一枚小朱印
-            string title = SceneTitle.Value;
-            float ty = canvas.Y + 16f;
-            float tx = canvas.Right - 26f;
-            foreach (char c in title) {
-                if (char.IsWhiteSpace(c)) {
-                    continue;
-                }
-                string s = c.ToString();
-                Vector2 size = font.MeasureString(s) * 0.8f;
-                Utils.DrawBorderString(sb, s, new Vector2(tx - size.X * 0.5f, ty),
-                    dim * (0.9f * a), 0.8f);
-                ty += size.Y * 0.92f;
-            }
-            sb.Draw(VaultAsset.placeholder2.Value,
-                new Rectangle((int)(tx - 3.5f), (int)(ty + 4f), 7, 7),
-                KikasaHudTheme.Accent(rain) * (0.75f * a));
+            //题签：右上一枚伞章，画上不落可读汉字——章随画铺开描完自己，与湖窗同一支笔
+            KikasaVaultRenderer.DrawSeal(sb,
+                new Vector2(canvas.Right - 26f, canvas.Y + 34f), 14f,
+                0.9f * a, time, reveal: a,
+                dim, KikasaHudTheme.Accent(rain), KikasaHudTheme.Glow(rain));
 
             //干湖提示：湖床中央一行水语
             KikasaDomainPlayer domain = Domain;
@@ -543,6 +585,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                     }
                     lines.Add((memLine, dim, 0.7f));
                 }
+            }
+            else if (hover == Hotspot.Thrall) {
+                lines.Add((ThrallTag.Value, text, 0.82f));
+                lines.Add((string.Format(ThrallCountFormat.Value,
+                    thrallCount, KikasaThrall.MaxPerOwner), dim, 0.7f));
             }
             else {
                 lines.Add((HoundTag.Value, text, 0.82f));

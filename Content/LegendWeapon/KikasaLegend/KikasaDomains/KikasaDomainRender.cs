@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -29,6 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 KikasaDrownFX.Clear();
                 KikasaThrallMeltFX.Clear();
                 KikasaHoundReflection.Clear();
+                KikasaWispFX.Clear();
             }
         }
 
@@ -125,11 +127,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 return;
             }
             //幽灵与鬼手先画、涟漪水花后画，水线的泡沫盖在沉浮物之上；
-            //伞奴化水的尸影随后，同样吃湖面镜面倒影
+            //伞奴化水的尸影随后，同样吃湖面镜面倒影；
+            //鬼火压最上层——火贴水烧在一切湖面装饰之上，倒影由镜面自动接管
             KikasaLakeFX.Draw(spriteBatch);
             KikasaDrownFX.Draw(spriteBatch);
             KikasaThrallMeltFX.Draw(spriteBatch);
             KikasaDomainDeco.Draw(spriteBatch);
+            KikasaWispFX.Draw(spriteBatch);
         }
 
         //两个 technique 共用的参数（撕纸遮罩/前沿/血湖）
@@ -173,6 +177,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             grade.Parameters["uSeamGlow"]?.SetValue(seamGlow);
             grade.Parameters["uAspect"]?.SetValue(screenSize.X / screenSize.Y);
             grade.Parameters["uRain"]?.SetValue(kdp.RainBlend);
+            grade.Parameters["uWispGlow"]?.SetValue(kdp.WispGlow);
 
             //倒影恶犬醒着时，镜像里抹掉施术者本人——镜像源落在他身上的像素改采身侧背景
             float coverA = kdp.HoundReflection
