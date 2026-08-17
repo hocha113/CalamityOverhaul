@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
         //液体流动/接线定时器/随机tile更新停摆，M0 无此依赖
         public override bool NormalUpdates => false;
 
-        //M2a 流水线：P10骨架→P20路网→P30分带规划→P50带内容→P55撒布→P80校验
+        //M2a 流水线：P10骨架→P20路网→P30分带规划→P50带内容→P55撒布→P70补墙→P80校验
         //TimedPass 记录逐pass耗时（每次深潜重生成，生成耗时=玩家等待时间）
         public override List<GenPass> Tasks => [
             new OldNetTimedPass(new OldNetSkeletonPass()),
@@ -28,6 +28,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             new OldNetTimedPass(new OldNetZonePlanPass()),
             new OldNetTimedPass(new OldNetZoneContentPass()),
             new OldNetTimedPass(new OldNetScatterPass()),
+            new OldNetTimedPass(new OldNetWallFillPass()),
             new OldNetValidatePass(),
         ];
 
@@ -79,6 +80,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             //rockLayer 再往下满足原版分层判定的形式需求
             Main.worldSurface = OldNetMetrics.WorldSurfaceRow;
             Main.rockLayer = OldNetMetrics.RockLayerRow;
+            //600 行世界的 UnderworldLayer=400 落在深层内：SubLib 进子世界时默认置 true
+            //拦掉地狱背景/地狱光（SubworldLibrary.cs IL 补丁），这里显式重申契约
+            SubworldSystem.hideUnderworld = true;
             CWRMod.Instance.Logger.Info(
                 $"[OldNet] OnLoad worldSurface={Main.worldSurface} rockLayer={Main.rockLayer}"
                 + $" spawn=({Main.spawnTileX},{Main.spawnTileY}) macroSeed={OldNetMetrics.MacroSeed}");

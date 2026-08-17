@@ -23,6 +23,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Passes
             progress.Set(0.5);
 
             AuditNodes();
+            progress.Set(0.5);
+
+            AuditWalls();
+            progress.Set(0.55);
+
+            AuditSockets();
             progress.Set(0.6);
 
             progress.Message = "校准数据平原帧序...";
@@ -172,6 +178,57 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Passes
             //加密节点世界计数含封锁区盒内（不入 Budget），只报不判
             CWRMod.Instance.Logger.Info(
                 $"[OldNet] 节点审计 plain={plain} encrypt={encrypt}(含盒内) event={evt}");
+        }
+
+        //DoorSocket 审计：非平台厅房间零开口 = 密闭死房（建造方漏登记或漏凿门）。只报不断
+        private static void AuditSockets() {
+            int sealedRooms = 0;
+            foreach (OldNetBuildContext ctx in new[] {
+                OldNetPlans.Z1, OldNetPlans.Z2, OldNetPlans.Z3, OldNetPlans.Z4 }) {
+                if (ctx == null) {
+                    continue;
+                }
+                foreach (Rooms.OldNetRoomNode room in ctx.Graph.Rooms) {
+                    if (room.Role != Rooms.OldNetRoomRole.Landing && room.Sockets.Count == 0) {
+                        sealedRooms++;
+                    }
+                }
+            }
+            if (sealedRooms > 0) {
+                CWRMod.Instance.Logger.Warn($"[OldNet] 校验：{sealedRooms} 间房零开口（密闭死房）");
+            }
+        }
+
+        //P70 之后地表线以下不允许再有无墙格（无墙=透天幕）；
+        //封锁区内腔在地表以上但属密闭盒，一并查。只报不断
+        private static void AuditWalls() {
+            int[] floorTop = OldNetPlans.FloorTop;
+            int right = Main.maxTilesX - OldNetMetrics.BorderThick;
+            int bottom = Main.maxTilesY - OldNetMetrics.BorderThick;
+            int missing = 0;
+            for (int x = OldNetMetrics.BorderThick; x < right; x++) {
+                for (int y = floorTop[x]; y < bottom; y++) {
+                    if (Main.tile[x, y].WallType == Terraria.ID.WallID.None) {
+                        missing++;
+                    }
+                }
+            }
+            foreach (Rectangle box in OldNetPlans.SealBoxes) {
+                for (int x = box.X + 1; x < box.Right - 1; x++) {
+                    for (int y = box.Y + 1; y < box.Bottom; y++) {
+                        Tile tile = Main.tile[x, y];
+                        if (!tile.HasTile && tile.WallType == Terraria.ID.WallID.None) {
+                            missing++;
+                        }
+                    }
+                }
+            }
+            if (missing > 0) {
+                CWRMod.Instance.Logger.Warn($"[OldNet] 校验：地下/封锁区存在无墙格 {missing} 处");
+            }
+            else {
+                CWRMod.Instance.Logger.Info("[OldNet] 校验：地下墙体覆盖完整");
+            }
         }
 
         private static string GridStats() {

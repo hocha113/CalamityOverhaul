@@ -1230,6 +1230,15 @@ DungeonworldLoadingScreen: {
 	// RevealHold: Lighting the candles
 }
 
+KiyumeLoadingScreen: {
+	// TitleEnter: Kiyume
+	// TitleExit: Waking
+	// VerseEnter: The fog is past the windowsills, and the lamps inside are still lit.
+	// VerseExit: The lake has let go. Don't look back.
+	// StatusEnter: Fog coming in off the lake
+	// StatusExit: The village sinking back into the fog
+}
+
 OldNetTexts: {
 	// OldNetHarvest: +{0} Mold Shards (uninscribed)
 	// OldNetNodeHint: Recover data

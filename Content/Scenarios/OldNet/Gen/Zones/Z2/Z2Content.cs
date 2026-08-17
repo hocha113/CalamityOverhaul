@@ -17,19 +17,21 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z2
             BuildSealBoxes();
             //prefab先落位（优先级），挂房链随后填余量
             int prefabs = StampPrefabRooms(ctx);
-            //M3 地表目录：服务器墓地 + 断裂数据桥
-            int graves = Z2Rooms.BuildServerGraveyards(ctx, 2);
-            int bridges = Z2Rooms.BuildBrokenBridges(ctx, 2);
+            //地表目录（组数集中 Metrics）：墓地/断桥（M3）+ 方舟/冷却塔（本轮扩容）
+            int graves = Z2Rooms.BuildServerGraveyards(ctx, OldNetMetrics.GraveyardCount);
+            int bridges = Z2Rooms.BuildBrokenBridges(ctx, OldNetMetrics.BrokenBridgeCount);
+            int arks = Z2Rooms.BuildDataArks(ctx, OldNetMetrics.DataArkCount);
+            int stacks = Z2Rooms.BuildCoolantStacks(ctx, OldNetMetrics.CoolantStackCount);
             OldNetZoneCommon.PlaceFloatingSlabs(ctx.Area.Left + 20, ctx.Area.Right - 20,
                 55, 95, Z2Style.FloorBrick);
             int rooms = OldNetZoneCommon.HangRoomsForBand(ctx, 2,
-                Z2Style.RoomBrick, Z2Style.RoomWall, roomsPerLanding: 3, nodeChance: 0.5f);
+                Z2Style.RoomBrick, Z2Style.RoomWall, roomsPerLanding: 4, nodeChance: 0.5f);
             rooms += BuildDeepRooms(ctx);
             //带界立牌：西缘一块告示（引导语义，Dungeonworld PlaceSign 先例）
             OldNetZoneCommon.PlaceBoundarySign(ctx.Area.Left + 4, OldNetTexts.OldNetSignRuin.Value);
             CWRMod.Instance.Logger.Info(
-                $"[OldNet] Z2 rooms={rooms} prefabs={prefabs} graves={graves}"
-                + $" bridges={bridges} graphConnected={ctx.Graph.IsConnected()}");
+                $"[OldNet] Z2 rooms={rooms} prefabs={prefabs} graves={graves} bridges={bridges}"
+                + $" arks={arks} stacks={stacks} graphConnected={ctx.Graph.IsConnected()}");
         }
 
         //──────────── 中继站：P30 锚位落tile，锚位被占就近扫空位 ────────────
@@ -67,9 +69,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z2
             int surface = box.Bottom;
 
             //内腔清空 + 地台找平（起伏地形在盒内拉平到 surface）
+            //内腔必须刷墙：密闭盒无墙时背后直接透出天幕（露天空 bug 成员）
             for (int x = box.X; x <= right; x++) {
                 for (int y = box.Y + 1; y < surface; y++) {
-                    OldNetTileBrush.ClearCell(x, y);
+                    OldNetTileBrush.ClearCell(x, y, Z2Style.RoomWall);
                 }
                 for (int y = surface; y < surface + 3; y++) {
                     OldNetTileBrush.SetSolid(x, y, TileID.ObsidianBrick);

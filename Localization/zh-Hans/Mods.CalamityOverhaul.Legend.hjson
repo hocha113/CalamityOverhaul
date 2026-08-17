@@ -561,9 +561,10 @@ OnikiriText: {
 		TitleText: 结 印 盘
 		StatusFormat: 结印 {0} / {1} · 侵蚀 {2}%
 		CostFormat: 每次役使 复苏 +{0}% · 侵蚀 +{1}%
-		SlotEmptyHint: 点外环选一只鬼，再点空位结印。空位不启用任何能力
-		SlotFullHint: 三位已满。点其中一位可换成选中的鬼，再点一次卸下
-		PickHint: 「{0}」已选中 · 点三角上任一位结印
+		SlotEmptyHint: 点外环拾一枚役鬼印，再点空位落印。空位不启用任何能力
+		SlotFullHint: 三位已满。持印点一位换印，空手点一位卸下
+		PickHint: 「{0}」在手 · 点结印位落印 · 点空处收回
+		SwapHint: 点击 换上「{0}」
 		UnbindHint: 点击 卸下
 		PendingText: 候 令
 		BoundFormat: 「{0}」已入结印位

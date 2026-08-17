@@ -73,6 +73,17 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Rooms
                 CarveCorridor(corridor.Left, corridor.Right, floorRow, wall);
                 ctx.Grid.MarkUnchecked(corridor);
 
+                //登记开口：走廊穿房壳的那一段是新房的 socket，
+                //同一开口也是上游结构（平台厅/前一房）的反向 socket
+                var roomSide = right ? OldNetSocketSide.Left : OldNetSocketSide.Right;
+                var roomOpening = right
+                    ? new Rectangle(room.Bounds.Left, floorRow - 3, OldNetMetrics.RoomShellThick, 3)
+                    : new Rectangle(room.InteriorRight, floorRow - 3, OldNetMetrics.RoomShellThick, 3);
+                room.Sockets.Add(new OldNetDoorSocket(roomSide, roomOpening));
+                OldNetRoomNode upstream = ctx.Graph.Rooms[right ? prevRightIdx : prevLeftIdx];
+                upstream.Sockets.Add(new OldNetDoorSocket(
+                    right ? OldNetSocketSide.Right : OldNetSocketSide.Left, roomOpening));
+
                 ctx.Graph.Rooms.Add(room);
                 int idx = ctx.Graph.Rooms.Count - 1;
                 ctx.Graph.AddEdge(right ? prevRightIdx : prevLeftIdx, idx);

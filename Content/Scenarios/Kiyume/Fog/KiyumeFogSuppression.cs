@@ -4,10 +4,10 @@ using System.Collections.Generic;
 namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
 {
     /// <summary>
-    /// 局部清雾公开 API：圆/矩形区域 + TTL + 边缘羽化，多请求取最小因子。<br/>
+    /// 局部清雾公开 API：圆/矩形区域 + TTL + 边缘羽化 + 压制强度，多请求取最小因子。<br/>
     /// 消费者模式=短 TTL + 按帧续订，消费者消失请求自动过期——无注销接口即无泄漏。<br/>
     /// 因子作用在模拟目标值上，压雾/回雾自动继承驱散快、回聚慢的时间不对称。<br/>
-    /// 本轮无消费者（场景优先），留给将来的屋内避难所、驱雾灯、演出留白
+    /// 消费者：玩家身位/尾流推雾（KiyumeFogSystem）；屋内避难所、驱雾灯、演出留白仍是留白
     /// </summary>
     public static class KiyumeFogSuppression
     {
@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
             internal float Radius;
             internal Rectangle Rect;
             internal float Feather;
+            internal float Floor;
             internal uint ExpireTick;
         }
 
@@ -27,10 +28,12 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
         private const int MaxRequests = 256;
 
         /// <summary>
-        /// 圆形清雾。<paramref name="worldCenterPx"/> 圆心（世界px），<paramref name="radiusPx"/> 全清半径，
-        /// <paramref name="ttlTicks"/> 存活期（消费者按帧续订），<paramref name="featherPx"/> 边缘羽化带宽
+        /// 圆形清雾。<paramref name="worldCenterPx"/> 圆心（世界px），<paramref name="radiusPx"/> 核心半径，
+        /// <paramref name="ttlTicks"/> 存活期（消费者按帧续订），<paramref name="featherPx"/> 边缘羽化带宽，
+        /// <paramref name="strength"/> 压制强度：1=核心全清，0.7=核心处雾压到三成
         /// </summary>
-        public static void RequestCircle(Vector2 worldCenterPx, float radiusPx, int ttlTicks = 12, float featherPx = 200f) {
+        public static void RequestCircle(Vector2 worldCenterPx, float radiusPx, int ttlTicks = 12,
+            float featherPx = 200f, float strength = 1f) {
             if (requests.Count >= MaxRequests) {
                 requests.RemoveAt(0);
             }
@@ -39,12 +42,14 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
                 Center = worldCenterPx,
                 Radius = MathHelper.Max(radiusPx, 0f),
                 Feather = MathHelper.Max(featherPx, 1f),
+                Floor = 1f - MathHelper.Clamp(strength, 0f, 1f),
                 ExpireTick = tickNow + (uint)Math.Max(ttlTicks, 1)
             });
         }
 
         /// <summary>矩形清雾（屋内/避难所用）。<paramref name="worldRectPx"/> 世界px矩形</summary>
-        public static void RequestRect(Rectangle worldRectPx, int ttlTicks = 12, float featherPx = 200f) {
+        public static void RequestRect(Rectangle worldRectPx, int ttlTicks = 12,
+            float featherPx = 200f, float strength = 1f) {
             if (requests.Count >= MaxRequests) {
                 requests.RemoveAt(0);
             }
@@ -52,6 +57,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
                 IsRect = true,
                 Rect = worldRectPx,
                 Feather = MathHelper.Max(featherPx, 1f),
+                Floor = 1f - MathHelper.Clamp(strength, 0f, 1f),
                 ExpireTick = tickNow + (uint)Math.Max(ttlTicks, 1)
             });
         }
@@ -73,12 +79,13 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
             }
         }
 
-        /// <summary>抑制因子：1=无抑制，0=全清；多请求取最小，边缘 smoothstep 羽化</summary>
+        /// <summary>抑制因子：1=无抑制，0=全清；多请求取最小，边缘 smoothstep 羽化，
+        /// 每请求有自己的压制下限（Floor）——非全清的推雾贴身仍留薄雾</summary>
         internal static float Evaluate(Vector2 worldPx) {
             float factor = 1f;
             for (int i = 0; i < requests.Count; i++) {
                 Request req = requests[i];
-                //到全清区边界的外距
+                //到核心区边界的外距
                 float d;
                 if (req.IsRect) {
                     float dx = MathHelper.Max(MathHelper.Max(req.Rect.Left - worldPx.X, worldPx.X - req.Rect.Right), 0f);
@@ -89,7 +96,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
                     d = MathHelper.Max(Vector2.Distance(worldPx, req.Center) - req.Radius, 0f);
                 }
                 float t = MathHelper.Clamp(d / req.Feather, 0f, 1f);
-                factor = MathHelper.Min(factor, t * t * (3f - 2f * t));
+                float s = t * t * (3f - 2f * t);
+                factor = MathHelper.Min(factor, MathHelper.Max(s, req.Floor));
             }
             return factor;
         }

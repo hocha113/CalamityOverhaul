@@ -43,13 +43,15 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
         private static readonly float[] densityScratch = new float[CapW * CapH];
         private static readonly ushort[] delay = new ushort[CapW * CapH];
         private static readonly ushort[] delayScratch = new ushort[CapW * CapH];
-        //本步采到的亮度（上传时算染色用）
+        //本步采到的亮度（扩散后上传时算染色用）
         private static readonly float[] lightBuf = new float[CapW * CapH];
+        private static readonly float[] lightScratch = new float[CapW * CapH];
         private static readonly Color[] upload = new Color[CapW * CapH];
-        //逐列缓存：雾面 Y / 浓度系数 / 雾色，每步算一次给整列复用
+        //逐列缓存：雾面 Y / 浓度系数 / 雾色 / 蒸腾闸门，每步算一次给整列复用
         private static readonly float[] colSurface = new float[CapW];
         private static readonly float[] colFactor = new float[CapW];
         private static readonly Vector3[] colColor = new Vector3[CapW];
+        private static readonly float[] colSteamGate = new float[CapW];
 
         private static Texture2D texture;
         private static Point originCell = new(int.MinValue, int.MinValue);
@@ -83,12 +85,19 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
             return TargetAt(worldPx.X, worldPx.Y);
         }
 
-        /// <summary>解析目标浓度：雾线填充 × 离湖衰减 × 带表倍率 × 全局倍率</summary>
+        /// <summary>解析目标浓度：max(雾线填充 × 离湖衰减 × 带表倍率, 贴水蒸腾) × 全局倍率</summary>
         internal static float TargetAt(float worldX, float worldY) {
             KiyumeFogTheme.Sample(worldX / 16f, out _, out float mul);
             float raw = TideFill(KiyumeFogTide.SurfaceAt(worldX) - worldY)
-                * LakeFalloff(worldX) * mul * MathHelper.Max(KiyumeFogDebug.DensityMul, 0f);
-            return MathHelper.Clamp(raw, 0f, 1f);
+                * LakeFalloff(worldX) * mul;
+            if (KiyumeWorld.Active) {
+                float steamGate = MathHelper.Clamp(
+                    (KiyumeMetrics.WaterRightPx - worldX) / KiyumeMetrics.SteamFadeSpanPx, 0f, 1f);
+                if (steamGate > 0f) {
+                    raw = MathHelper.Max(raw, SteamFill(worldY) * steamGate);
+                }
+            }
+            return MathHelper.Clamp(raw * MathHelper.Max(KiyumeFogDebug.DensityMul, 0f), 0f, 1f);
         }
 
         /// <summary>雾线填充：线下按沉深递增趋近满，线上快速衰减到零</summary>
@@ -100,6 +109,16 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
                 return MathHelper.Lerp(SurfaceDensity, DeepDensity, k);
             }
             return SurfaceDensity * MathHelper.Clamp(1f + depthPx / AirFalloffPx, 0f, 1f);
+        }
+
+        /// <summary>贴水蒸腾：水下满值，水上二次衰减——雾底永远锚在湖面，退潮也不悬空</summary>
+        internal static float SteamFill(float worldY) {
+            float above = KiyumeMetrics.LakeWaterYPx - worldY;
+            if (above <= 0f) {
+                return KiyumeMetrics.SteamBaseDensity;
+            }
+            float k = 1f - MathHelper.Clamp(above / KiyumeMetrics.SteamHeightPx, 0f, 1f);
+            return KiyumeMetrics.SteamBaseDensity * k * k;
         }
 
         /// <summary>离湖衰减：湖边满浓，远山那头只剩 FarFogMul</summary>
@@ -138,6 +157,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
             }
             CacheColumns();
             Step();
+            SpreadLight();
             Upload();
         }
 
@@ -215,15 +235,19 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
 
         //=== 逐列缓存 ===
 
-        //浓度沿 x 只变一次（雾面高度、离湖衰减、带表色），整列复用免得在内圈重算
+        //浓度沿 x 只变一次（雾面高度、离湖衰减、带表色、蒸腾闸门），整列复用免得在内圈重算
         private static void CacheColumns() {
             float densityMul = MathHelper.Max(KiyumeFogDebug.DensityMul, 0f);
+            //主世界看样没有血湖，蒸腾只在子世界里存在
+            bool inKiyume = KiyumeWorld.Active;
             for (int x = 0; x < winW; x++) {
                 float worldX = (originCell.X + x + 0.5f) * CellPx;
                 colSurface[x] = KiyumeFogTide.SurfaceAt(worldX);
                 KiyumeFogTheme.Sample(worldX / 16f, out Vector3 color, out float mul);
                 colColor[x] = color;
                 colFactor[x] = LakeFalloff(worldX) * mul * densityMul;
+                colSteamGate[x] = inKiyume ? MathHelper.Clamp(
+                    (KiyumeMetrics.WaterRightPx - worldX) / KiyumeMetrics.SteamFadeSpanPx, 0f, 1f) * densityMul : 0f;
             }
         }
 
@@ -246,8 +270,12 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
                     //亮度只用来染色，不参与驱散——梦里的光穿不过雾
                     lightBuf[i] = Lighting.Brightness(tileX, tileY);
 
-                    float target = MathHelper.Clamp(
-                        TideFill(colSurface[x] - worldY) * colFactor[x], 0f, 1f);
+                    float target = TideFill(colSurface[x] - worldY) * colFactor[x];
+                    //湖区贴水蒸腾与雾线取大：退潮时湖上雾墙仍锚在水面
+                    if (colSteamGate[x] > 0f) {
+                        target = MathHelper.Max(target, SteamFill(worldY) * colSteamGate[x]);
+                    }
+                    target = MathHelper.Clamp(target, 0f, 1f);
                     if (anySuppress) {
                         target *= KiyumeFogSuppression.Evaluate(
                             new Vector2((originCell.X + x + 0.5f) * CellPx, worldY));
@@ -285,6 +313,38 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
             return 1f - MathF.Pow(2f, -SimIntervalTicks / halfLifeTicks);
         }
 
+        //=== 光晕扩散 ===
+
+        //两遍衰减膨胀（3×3 取邻域加权最大）：亮度向外漫开两雾元（~128px）而不稀释峰值，
+        //窗火/火把在雾里成为一团体积暖光——这是"雾吃光"看得见的那一半
+        private static void SpreadLight() {
+            int count = winW * winH;
+            for (int pass = 0; pass < 2; pass++) {
+                for (int y = 0; y < winH; y++) {
+                    int y0 = Math.Max(y - 1, 0);
+                    int y1 = Math.Min(y + 1, winH - 1);
+                    int rowBase = y * winW;
+                    for (int x = 0; x < winW; x++) {
+                        int x0 = Math.Max(x - 1, 0);
+                        int x1 = Math.Min(x + 1, winW - 1);
+                        float best = 0f;
+                        for (int yy = y0; yy <= y1; yy++) {
+                            int row = yy * winW;
+                            float wy = yy == y ? 1f : 0.66f;
+                            for (int xx = x0; xx <= x1; xx++) {
+                                float v = lightBuf[row + xx] * wy * (xx == x ? 1f : 0.66f);
+                                if (v > best) {
+                                    best = v;
+                                }
+                            }
+                        }
+                        lightScratch[rowBase + x] = best;
+                    }
+                }
+                Array.Copy(lightScratch, lightBuf, count);
+            }
+        }
+
         //=== 上传 ===
 
         private static void Upload() {
@@ -296,16 +356,19 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
                 texture = new Texture2D(gd, CapW, CapH, false, SurfaceFormat.Color);
             }
 
+            //染色对比热调：地板越低暗雾越黑、烬色越强亮雾越暖——亮暗差必须肉眼可分
+            float visFloor = MathHelper.Clamp(KiyumeFogDebug.LightVisFloor, 0f, 1f);
+            float tintMax = MathHelper.Clamp(KiyumeFogDebug.LightTintStrength, 0f, 1f);
             for (int y = 0; y < winH; y++) {
                 int rowBase = y * winW;
                 for (int x = 0; x < winW; x++) {
                     int i = rowBase + x;
                     float d = MathHelper.Clamp(density[i], 0f, 1f);
-                    //雾吃光：亮处不是被照穿而是被烘暖，且暗处雾仍看得见（0.35 的可见度地板）
+                    //雾吃光：亮处不是被照穿而是被烘暖，且暗处雾仍看得见（可见度地板防纯黑）
                     float lit = MathHelper.Clamp(lightBuf[i] / 0.42f, 0f, 1f);
                     lit *= lit;
-                    Vector3 c = Vector3.Lerp(colColor[x], EmberTint, lit * 0.55f);
-                    float vis = 0.35f + 0.65f * lit;
+                    Vector3 c = Vector3.Lerp(colColor[x], EmberTint, lit * tintMax);
+                    float vis = visFloor + (1f - visFloor) * lit;
                     upload[i] = new Color(c.X * vis, c.Y * vis, c.Z * vis, d);
                 }
             }

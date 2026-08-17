@@ -75,6 +75,86 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
+        /// <summary>
+        /// 带印文变体的朱印:章体同族,刻痕布局由 seed 决定——
+        /// 六只鬼各有其印,不再共用同一枚"一横一竖一点"
+        /// </summary>
+        public static void DrawSealGlyphSeeded(SpriteBatch sb, Vector2 center, float size,
+            float alpha, int seed, float rotation = 0f, float integrity = 1f) {
+            if (size < 1f || alpha <= 0.01f) {
+                return;
+            }
+            Vector2 half = new(0.5f);
+            Color sealBody = Color.Lerp(OnikiriUITheme.Dark, OnikiriUITheme.Seal, 0.35f + integrity * 0.65f);
+
+            sb.Draw(Pixel, center + new Vector2(1f, 1.4f), PixelSrc, OnikiriUITheme.Dark * (alpha * 0.6f),
+                rotation, half, new Vector2(size), SpriteEffects.None, 0f);
+            sb.Draw(Pixel, center, PixelSrc, OnikiriUITheme.Deep * (alpha * 0.95f),
+                rotation, half, new Vector2(size + 2f), SpriteEffects.None, 0f);
+            sb.Draw(Pixel, center, PixelSrc, sealBody * alpha,
+                rotation, half, new Vector2(size), SpriteEffects.None, 0f);
+
+            //印文:横/竖/点/短斜按 seed 摆位,每只鬼一副刻法
+            Color carve = OnikiriUITheme.Paper * (alpha * (0.5f + integrity * 0.42f));
+            float h1 = Hash01(seed * 3 + 11);
+            float h2 = Hash01(seed * 7 + 29);
+            float h3 = Hash01(seed * 13 + 47);
+            float h4 = Hash01(seed * 19 + 83);
+
+            //主横:高低与宽窄各不同
+            Vector2 hOff = new Vector2((h2 - 0.5f) * size * 0.14f,
+                -size * (0.14f + h1 * 0.20f)).RotatedBy(rotation);
+            sb.Draw(Pixel, center + hOff, PixelSrc, carve, rotation, half,
+                new Vector2(size * (0.42f + h3 * 0.22f), 1.6f), SpriteEffects.None, 0f);
+            //主竖:偏轴与长短各不同
+            Vector2 vOff = new Vector2((h1 - 0.5f) * size * 0.34f,
+                size * (0.02f + h2 * 0.16f)).RotatedBy(rotation);
+            sb.Draw(Pixel, center + vOff, PixelSrc, carve, rotation, half,
+                new Vector2(1.6f, size * (0.34f + h4 * 0.22f)), SpriteEffects.None, 0f);
+            //第三笔:过半的印多一道短斜,其余落一记点
+            if (h3 > 0.48f) {
+                float lean = (h4 - 0.5f) * 1.3f;
+                Vector2 sOff = new Vector2((h4 - 0.5f) * size * 0.36f,
+                    size * (0.18f + h1 * 0.14f)).RotatedBy(rotation);
+                sb.Draw(Pixel, center + sOff, PixelSrc, carve * 0.92f, rotation + lean, half,
+                    new Vector2(size * (0.24f + h2 * 0.14f), 1.5f), SpriteEffects.None, 0f);
+            }
+            else {
+                Vector2 dOff = new Vector2(size * (0.12f + h4 * 0.18f),
+                    size * (0.14f + h2 * 0.16f)).RotatedBy(rotation);
+                sb.Draw(Pixel, center + dOff, PixelSrc, carve * 0.9f, rotation, half,
+                    new Vector2(2.1f, 2.1f), SpriteEffects.None, 0f);
+            }
+            //第四笔:少数印在上角再补一记小点,读得出"不是一个模子"
+            if (h4 > 0.62f) {
+                Vector2 dOff = new Vector2(-size * (0.16f + h1 * 0.12f),
+                    -size * (0.02f + h3 * 0.10f)).RotatedBy(rotation);
+                sb.Draw(Pixel, center + dOff, PixelSrc, carve * 0.85f, rotation, half,
+                    new Vector2(1.8f, 1.8f), SpriteEffects.None, 0f);
+            }
+
+            //裂痕:一道斜贯的暗线,integrity 越低越长越深
+            if (integrity < 0.999f) {
+                float crack = 1f - integrity;
+                Vector2 crackDir = (rotation + 1.05f).ToRotationVector2();
+                Vector2 crackStart = center - crackDir * size * (0.25f + crack * 0.30f);
+                sb.Draw(Pixel, crackStart, PixelSrc, OnikiriUITheme.Ink * (alpha * (0.5f + crack * 0.45f)),
+                    rotation + 1.05f, new Vector2(0f, 0.5f), new Vector2(size * (0.5f + crack * 0.6f), 1.3f), SpriteEffects.None, 0f);
+            }
+        }
+
+        /// <summary>由稳定键取印文种子(与鬼影种子同源不同盐)</summary>
+        public static int SealSeedFromKey(string key) {
+            if (string.IsNullOrEmpty(key)) {
+                return 0;
+            }
+            int h = 23;
+            foreach (char c in key) {
+                h = h * 37 + c;
+            }
+            return h;
+        }
+
         /// <summary>双纸垂,落点与 shader 绸带下垂同源</summary>
         public static void DrawShide(SpriteBatch spriteBatch, Rectangle rect, float alpha, float swayTimer) {
             DrawSingleShide(spriteBatch, rect, 0.10f, 15f, alpha, swayTimer, 0f);

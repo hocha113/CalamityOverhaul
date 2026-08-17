@@ -181,8 +181,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         #region 吊挂切换门
         /// <summary>梁下微缩物整体倍率(门要一眼看见,别缩成页签)</summary>
         public const float HangSwitchScale = 2.25f;
-        /// <summary>改铭台屏上挂盘命中外包(吊环 + 盘身)</summary>
-        public static readonly Vector2 HangSigilHit = new(96f, 208f);
+        /// <summary>吊挂结印盘微缩的专属倍率(太刀微缩是文档正典,别连带缩放)</summary>
+        public const float HangSigilScale = 1.7f;
+        /// <summary>改铭台屏上挂盘命中外包(吊环 + 盘身 + 绯绪)</summary>
+        public static readonly Vector2 HangSigilHit = new(78f, 152f);
         /// <summary>结印盘屏上挂刀命中外包</summary>
         public static readonly Vector2 HangTachiHit = new(68f, 225f);
         /// <summary>梁上双钩名义间距(结印盘钩→太刀钩;受盘体左缘夹持)</summary>

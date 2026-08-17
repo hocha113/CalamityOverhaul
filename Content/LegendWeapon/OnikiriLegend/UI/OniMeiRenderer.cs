@@ -1178,9 +1178,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====================== 吊挂结印盘(去结印盘的门) ======================
 
-        //盘微缩的 SVG:归一 [-1,1]。粗笔当盘缘,细笔作六芒与内三角,亮芯作光
-        private const float SigilN = 40f;
-        /// <summary>盘缘:不闭合的一圈,缺口在右上(手工件不是标准圆)</summary>
+        //盘微缩:实心盘体走 OniSigilBoard 同一支漆盘 shader(与工位材质同源),
+        //细笔线稿/朱点/绯绪作前景;SVG 归一 [-1,1]
+        /// <summary>吊坠盘半径(乘 HangSigilScale)</summary>
+        private const float SigilPendR = 30f;
+        /// <summary>盘缘:不闭合的一圈,缺口在右上(回声亮笔的跑道;CPU 回退时兼作缘线)</summary>
         private const string SigilRimD =
             "M 0.18 -0.965 C 0.62 -0.86 0.965 -0.5 0.965 0 C 0.965 0.533 0.533 0.965 0 0.965"
             + " C -0.533 0.965 -0.965 0.533 -0.965 0 C -0.965 -0.533 -0.533 -0.965 0 -0.965";
@@ -1205,16 +1207,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             sw.DrawRope(sb, alpha);
 
-            float s = OnikiriUITheme.HangSwitchScale;
+            float s = OnikiriUITheme.HangSigilScale;
             float rot = sw.Rot;
             Vector2 top = sw.End;
             Vector2 down = (MathHelper.PiOver2 + rot).ToRotationVector2();
             float a = alpha * (0.92f + sw.HoverEase * 0.08f);
-            float lift = 1f + sw.HoverEase * 0.08f;
-            float scale = SigilN * s * lift;
+            float lift = 1f + sw.HoverEase * 0.06f;
+            float discR = SigilPendR * s * lift;
             //吊环占顶上一小截,盘心再往下一个半径
-            Vector2 loopC = top + down * (7f * s);
-            Vector2 center = top + down * (SigilN * s + 12f * s);
+            Vector2 loopC = top + down * (6f * s);
+            Vector2 center = top + down * (discR + 13f * s);
             Vector2 half = new(0.5f);
             float reveal = MathHelper.Clamp((alpha - 0.08f) / 0.72f, 0f, 1f);
             reveal = 1f - (1f - reveal) * (1f - reveal);
@@ -1230,53 +1232,83 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //挂绪结 + 铁吊环
             sb.Draw(Pixel, top, PixelSrc, OnikiriUITheme.Seal * a, MathHelper.PiOver4 + rot * 0.4f,
-                half, new Vector2(4.2f) * s, SpriteEffects.None, 0f);
-            SvgPathPen.Stroke(sb, loop, loopC, 7f * s, rot,
-                Color.Lerp(OnikiriUITheme.Ink, Color.Black, 0.2f), 2.2f * s, a * 0.95f);
+                half, new Vector2(3.6f) * s, SpriteEffects.None, 0f);
+            SvgPathPen.Stroke(sb, loop, loopC, 6f * s, rot,
+                Color.Lerp(OnikiriUITheme.Ink, Color.Black, 0.2f), 2f * s, a * 0.95f);
 
-            //盘影(错位深笔,不做同心放大)
-            Vector2 shadowOff = new(1.6f * s, 2.4f * s);
-            SvgPathPen.Stroke(sb, rim, center + shadowOff, scale, bodyRot,
-                new Color(8, 2, 5), 9f * s, a * 0.42f, 0f, reveal);
+            //盘影:贴身错位实心影(不做同心放大)
+            OniSigilRenderer.DrawFilledCircle(sb, center + new Vector2(1.6f, 2.4f) * s, discR,
+                new Color(8, 2, 5) * (a * 0.42f * reveal));
 
-            //盘体:黑漆粗笔当缘,顶脊一线受光,内衬一线绯
-            SvgPathPen.Stroke(sb, rim, center, scale, bodyRot,
-                Color.Lerp(OnikiriUITheme.Ink, Color.Black, 0.3f), 7.6f * s, a * 0.97f, 0f, reveal);
-            SvgPathPen.Stroke(sb, rim, center, scale * 0.955f, bodyRot,
-                OnikiriUITheme.Deep, 1.5f * s, a * 0.55f, 0f, reveal);
-            SvgPathPen.Stroke(sb, rim, center, scale * 1.03f, bodyRot,
-                OnikiriUITheme.GoldDeep, 1.1f * s, a * 0.42f, 0f, reveal);
+            //盘体:与工位同一支漆盘 shader(材质同源);缺编退回实心漆底+缘线
+            if (OniSigilBoardDraw.Available) {
+                (Vector3 lit, Vector3 dangerV, float complete) = OniSigilBoardDraw.ReadSlotState();
+                OniSigilBoardDraw.DrawDisc(sb, center, discR, discR * 0.70f, discR * 0.378f,
+                    lit, dangerV, complete, a * reveal, time, OniSigilBoardDraw.BoardSeed, bodyRot);
+            }
+            else {
+                OniSigilRenderer.DrawFilledCircle(sb, center, discR,
+                    Color.Lerp(OnikiriUITheme.Ink, Color.Black, 0.30f) * (a * 0.96f * reveal));
+                SvgPathPen.Stroke(sb, rim, center, discR, bodyRot,
+                    Color.Lerp(OnikiriUITheme.Ink, Color.Black, 0.2f), 3f * s, a * 0.95f, 0f, reveal);
+                OniSigilRenderer.DrawRing(sb, center, discR * 0.94f, 1f,
+                    OnikiriUITheme.GoldDeep * (a * 0.5f * reveal), 40);
+                OniSigilRenderer.DrawRing(sb, center, discR * 0.90f, 1f,
+                    OnikiriUITheme.Deep * (a * 0.32f * reveal), 40);
+            }
 
-            //六芒与内三角:细笔线稿,盘上结了印内三角才通着
-            SvgPathPen.Stroke(sb, star, center, scale, bodyRot,
-                OnikiriUITheme.Deep, 1.5f * s, a * 0.72f, 0f, reveal);
-            float triAlpha = boundCount >= 3 ? 0.95f : 0.3f + boundCount * 0.2f;
-            SvgPathPen.Stroke(sb, tri, center, scale, bodyRot,
+            //六芒与内三角:细笔线稿压在盘面上(与工位同构),盘上结了印内三角才通着
+            SvgPathPen.Stroke(sb, star, center, discR * 0.90f, bodyRot,
+                OnikiriUITheme.Deep, 1.3f * s, a * 0.60f, 0f, reveal);
+            float triAlpha = boundCount >= 3 ? 0.95f : 0.30f + boundCount * 0.18f;
+            SvgPathPen.Stroke(sb, tri, center, discR * 0.90f, bodyRot,
                 boundCount >= 3 ? OnikiriUITheme.Bright : OnikiriUITheme.Dark,
-                1.6f * s, a * triAlpha, 0f, reveal);
+                1.4f * s, a * triAlpha, 0f, reveal);
 
-            //已结印的位:三枚朱点，按盘上实数点亮
+            //已结印的位:三枚朱点按盘上实数点亮(位随摆角转,与眠焰同锚)
             for (int i = 0; i < 3; i++) {
                 float ang = -MathHelper.PiOver2 + MathHelper.TwoPi * i / 3f + bodyRot;
-                Vector2 p = center + ang.ToRotationVector2() * (scale * 0.42f);
-                bool lit = i < boundCount;
-                OniBrush.DrawSoftDot(sb, p, (lit ? 3.4f : 2f) * s,
-                    lit ? OnikiriUITheme.Seal : OnikiriUITheme.Dark, a * (lit ? 0.85f : 0.4f));
+                Vector2 p = center + ang.ToRotationVector2() * (discR * 0.378f);
+                bool litDot = i < boundCount;
+                OniBrush.DrawSoftDot(sb, p, (litDot ? 2.8f : 1.7f) * s,
+                    litDot ? OnikiriUITheme.Seal : OnikiriUITheme.Dark, a * (litDot ? 0.85f : 0.4f));
             }
             //盘心:满盘才点合鬼印
             if (boundCount >= 3) {
                 float breath = 0.5f + 0.5f * MathF.Sin(time * 1.8f);
-                OniBrush.DrawBacklight(sb, center, 14f * s, OnikiriUITheme.Bright,
-                    a * (0.18f + breath * 0.12f));
-                OniBrush.DrawSealGlyph(sb, center, 6f * s, a * 0.9f, time * 0.1f);
+                OniBrush.DrawBacklight(sb, center, 11f * s, OnikiriUITheme.Bright,
+                    a * (0.16f + breath * 0.12f));
+                OniBrush.DrawSealGlyph(sb, center, 5.2f * s, a * 0.9f, time * 0.1f);
+            }
+
+            //绯绪:盘底垂一束穗,随摆与风轻荡
+            Vector2 tasselTop = center + (MathHelper.PiOver2 + bodyRot).ToRotationVector2() * discR;
+            float tasselSway = MathF.Sin(time * 1.6f) * 0.12f + rot * 0.6f;
+            Vector2 knot = tasselTop + (MathHelper.PiOver2 + tasselSway).ToRotationVector2() * (3f * s);
+            sb.Draw(Pixel, knot, PixelSrc, OnikiriUITheme.Seal * (a * reveal),
+                MathHelper.PiOver4 + tasselSway * 0.5f, half, new Vector2(2.8f * s),
+                SpriteEffects.None, 0f);
+            for (int i = -1; i <= 1; i++) {
+                float fr = MathHelper.PiOver2 + tasselSway + i * 0.11f
+                    + MathF.Sin(time * 2.1f + i * 1.7f) * 0.05f;
+                float len = (12f + (i == 0 ? 3f : 0f)) * s;
+                OniBrush.DrawGradientLine(sb, knot, knot + fr.ToRotationVector2() * len,
+                    OnikiriUITheme.Deep * (a * 0.85f * reveal),
+                    OnikiriUITheme.Dark * (a * 0.15f), 1.2f * s);
+            }
+
+            //悬停:缘上一线金亮起,读得出"这扇门应手"
+            if (sw.HoverEase > 0.03f) {
+                OniSigilRenderer.DrawRing(sb, center, discR * 1.04f, 1.1f,
+                    OnikiriUITheme.GoldInlay * (a * 0.45f * sw.HoverEase), 44);
             }
 
             //====回声:盘缘走一道朱光(将醒时更急)====
             float echo = sw.Echo01;
             if (echo > 0.01f) {
                 float pulse = MathF.Sin(echo * MathHelper.Pi);
-                SvgPathPen.StrokeRunner(sb, rim, center, scale, bodyRot,
-                    danger ? OnikiriUITheme.Bright : OnikiriUITheme.Seal, 2.6f * s,
+                SvgPathPen.StrokeRunner(sb, rim, center, discR, bodyRot,
+                    danger ? OnikiriUITheme.Bright : OnikiriUITheme.Seal, 2.2f * s,
                     a * 0.6f * pulse, echo, 0.18f, OnikiriUITheme.HotWhite);
             }
         }

@@ -88,11 +88,36 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
 
             KiyumeFogTide.Update();
             KiyumeFogSuppression.Update();
+            PushFogAroundPlayers();
             KiyumeFogSim.Tick();
             KiyumeHoundShade.Update();
 
             bool shaderReady = EffectLoader.KiyumeFog?.Value != null && KiyumeFogSim.Ready;
             SetFilterActive(shaderReady && presence > 0.02f);
+        }
+
+        //玩家推雾：身位圆每帧续订，移动时再拖一个速度反向的尾流圆——
+        //站定身周雾薄一圈，跑动身后留一条正在回聚的雾沟（回聚滞后由模拟的不对称时序免费提供）。
+        //纯本地表现：每端都看得到彼此推开的雾，不需要同步
+        private static void PushFogAroundPlayers() {
+            float radius = KiyumeFogDebug.PlayerPushRadius;
+            float feather = KiyumeFogDebug.PlayerPushFeather;
+            float strength = KiyumeFogDebug.PlayerPushStrength;
+            if (strength <= 0.01f) {
+                return;
+            }
+            foreach (Player player in Main.ActivePlayers) {
+                if (player.dead || player.ghost) {
+                    continue;
+                }
+                KiyumeFogSuppression.RequestCircle(player.Center, radius, 4, feather, strength);
+                float speed = player.velocity.Length();
+                if (speed > 1.5f) {
+                    //尾流拖在行进反方向，速度越快甩得越远；略小略弱，读成"被身体带起来的搅动"
+                    Vector2 wake = player.Center - player.velocity * MathHelper.Clamp(speed * 0.9f, 3f, 9f);
+                    KiyumeFogSuppression.RequestCircle(wake, radius * 0.7f, 4, feather * 0.8f, strength * 0.8f);
+                }
+            }
         }
 
         private static void SetFilterActive(bool active) {
@@ -212,6 +237,13 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
             //吃光只有滤镜通道做得了——背景通道没有拷屏可采
             fx.Parameters["uEatLight"]?.SetValue(front ? KiyumeFogDebug.EatLight : 0f);
             fx.Parameters["uEatSpread"]?.SetValue(KiyumeFogDebug.EatSpread);
+            //血湖水面：真水面反射带与雾面亮边在岸线处互补交接（湖上 rim 归零，岸上 water 归零）。
+            //主世界看样没有血湖：渐隐起点推到负无穷让 rimGate 恒 1，水面项全灭
+            bool inKiyume = KiyumeWorld.Active;
+            fx.Parameters["uLakeWaterY"]?.SetValue(KiyumeMetrics.LakeWaterYPx);
+            fx.Parameters["uRimFadeStartPx"]?.SetValue(inKiyume ? KiyumeMetrics.WaterRightPx : -1e9f);
+            fx.Parameters["uRimFadeSpanPx"]?.SetValue(KiyumeMetrics.RimFadeSpanPx);
+            fx.Parameters["uWaterGlow"]?.SetValue(inKiyume ? KiyumeFogDebug.WaterGlow : 0f);
         }
     }
 }

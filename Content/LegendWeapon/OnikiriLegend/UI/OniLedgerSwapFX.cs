@@ -24,8 +24,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public override bool Active => running;
 
         private const float TotalFrames = 46f;
-        /// <summary>行进到此比例时开新屏(旧屏被互斥静默收台)</summary>
-        private const float OpenAt = 0.24f;
+        /// <summary>
+        /// 行进到此比例时开新屏(旧屏被互斥静默收台并钉零)。<br/>
+        /// 必须落在墨扫全盖拍内(OniInkWipe 盖沿 ~0.435 全盖,揭沿 0.52 起动)——
+        /// 早了未遮蔽区里两屏共存,旧屏渐隐会被看见"悬浮"在新屏上
+        /// </summary>
+        private const float OpenAt = 0.48f;
 
         private static bool running;
         private static float progress;
@@ -56,7 +60,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             UIHandle incoming = target == OniLedgerView.Mei
                 ? OniMeiUI.Instance
                 : OniSigilUI.Instance;
+            UIHandle outgoing = target == OniLedgerView.Mei
+                ? OniSigilUI.Instance
+                : (UIHandle)OniMeiUI.Instance;
             incoming?.Open();
+            //全盖拍交接:互斥已把旧屏收了,这里再钉零跳过渐隐——
+            //墨底下没有观众,留着淡出只会在揭幕时露出半透明残影
+            outgoing?.SnapOpenProgress();
         }
 
         /// <summary>

@@ -102,6 +102,22 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen
         //离湖越远雾越薄，远山那头剩多少
         internal const float FarFogMul = 0.35f;
 
+        //════════ 水平线体系（血湖真水面是近景唯一锐利线，雾海面只在岸上） ════════
+
+        /// <summary>血湖真水面（世界px，=LakeSurfaceRow，固定不随潮汐）</summary>
+        internal static float LakeWaterYPx => LakeSurfaceRow * 16f;
+        /// <summary>水面右缘（世界px）：灌水的东界（ShoalLeft+40，与 FillLake 同式），
+        /// 也是雾面亮边渐入 / 水面反射带渐出的交接原点</summary>
+        internal static float WaterRightPx => (ShoalLeft + 40) * 16f;
+        //雾面亮边渐入跨度（px）：岸线以东这么远内 rim 从零长回全强，湖上不许有悬空液面线
+        internal const float RimFadeSpanPx = 40f * 16f;
+        //贴水蒸腾雾：水面以上这么高内有贴水雾墙（底部近满浓度、向上二次衰减）
+        internal const float SteamHeightPx = 20f * 16f;
+        //蒸腾雾底部浓度
+        internal const float SteamBaseDensity = 0.88f;
+        //蒸腾雾横向渐出跨度（px）：水面右缘以西这么远内从全强收敛到零，把岸线交给雾海
+        internal const float SteamFadeSpanPx = 30f * 16f;
+
         /// <summary>血湖右缘（世界px）——雾线倾斜与距离衰减的原点</summary>
         internal static float LakeRightPx => LakeCols * 16f;
         /// <summary>距离衰减跨度（世界px）：湖右缘到远山带中段</summary>

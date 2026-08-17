@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     /// <summary>
     /// 结印盘：役鬼工位，接管上梁原属点鬼簿的那一钩。<br/>
     /// 外环六芒摆六只鬼，内三角三个结印位，三边是两两组合，心是三鬼合鬼。<br/>
+    /// 点鬼交互是「拾印在手」：点外环拾起役鬼印随光标走，落在结印位上捺下；
+    /// 持印时空位鬼火相邀、将成之边先以虚线预演。<br/>
     /// 盘座下缘的卷槽里插着点鬼簿——那是图鉴，抽出来只能看，结印仍只在这盘上做
     /// </summary>
     internal sealed class OniSigilUI : UIHandle, ILocalizedModType
@@ -33,6 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText SlotEmptyHint { get; private set; }
         public static LocalizedText SlotFullHint { get; private set; }
         public static LocalizedText PickHint { get; private set; }
+        public static LocalizedText SwapHint { get; private set; }
         public static LocalizedText UnbindHint { get; private set; }
         public static LocalizedText PendingText { get; private set; }
         public static LocalizedText BoundFormat { get; private set; }
@@ -52,11 +55,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             CostFormat = this.GetLocalization(nameof(CostFormat),
                 () => "每次役使 复苏 +{0}% · 侵蚀 +{1}%");
             SlotEmptyHint = this.GetLocalization(nameof(SlotEmptyHint),
-                () => "点外环选一只鬼，再点空位结印。空位不启用任何能力");
+                () => "点外环拾一枚役鬼印，再点空位落印。空位不启用任何能力");
             SlotFullHint = this.GetLocalization(nameof(SlotFullHint),
-                () => "三位已满。点其中一位可换成选中的鬼，再点一次卸下");
+                () => "三位已满。持印点一位换印，空手点一位卸下");
             PickHint = this.GetLocalization(nameof(PickHint),
-                () => "「{0}」已选中 · 点三角上任一位结印");
+                () => "「{0}」在手 · 点结印位落印 · 点空处收回");
+            SwapHint = this.GetLocalization(nameof(SwapHint), () => "点击 换上「{0}」");
             UnbindHint = this.GetLocalization(nameof(UnbindHint), () => "点击 卸下");
             PendingText = this.GetLocalization(nameof(PendingText), () => "候 令");
             BoundFormat = this.GetLocalization(nameof(BoundFormat), () => "「{0}」已入结印位");
@@ -90,13 +94,47 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====交互状态====
         private OniSigilWheel wheel;
-        private int selectedNode = -1;
         private int hoverNode = -1;
         private int hoverSlot = -1;
         private int hoverEdge = -1;
         private bool hoverCore;
         private readonly float[] nodeHover = new float[OniSigilWheel.NodeCount];
         private readonly float[] slotHover = new float[OniSigilWheel.SlotCount];
+
+        //====持印在手====
+        private int carriedNode = -1;
+        private float carryEase;
+        private Vector2 carryPos;
+        private Vector2 carryVel;
+        /// <summary>候令压印：请求在途时印被按在这一槽上</summary>
+        private int pressSlot = -1;
+        private float pressEase;
+
+        //====槽反馈====
+        private readonly float[] slotDeny = new float[OniSigilWheel.SlotCount];
+        private readonly float[] slotStamp = new float[OniSigilWheel.SlotCount];
+        private readonly int[] slotShake = new int[OniSigilWheel.SlotCount];
+
+        //====合鬼边墨线与三印崩====
+        private readonly float[] edgeFlow = new float[3];
+        private readonly int[] edgeFlowOrigin = new int[3];
+        private readonly OniSigilEdgeView[] edgeViews = new OniSigilEdgeView[3];
+        private readonly string[] prevSlotKeys = new string[OniSigilWheel.SlotCount];
+        private const float BurstFrames = 54f;
+        private float burstAnim = -1f;
+
+        //====盘内批注：回执写在盘上，不进聊天栏====
+        private const float NoteFrames = 150f;
+        private string noteText;
+        private float noteTimer = -1f;
+        private Color noteColor;
+
+        //====飞回印：卸下/被换下的印掷回环位====
+        private string flyKey;
+        private Vector2 flyFrom;
+        private int flyNode = -1;
+        private float flyT = -1f;
+
         //收盘木牌，点击关闭，牌绳 Verlet
         private Rectangle closeTagRect;
         private float closeTagHover;
@@ -141,12 +179,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (OniMeiCodexUI.Instance?.IsOpen ?? false) {
                 OniMeiCodexUI.Instance.Close();
             }
+            //点鬼簿若还摊着也静默收:防 HUD/按键路径下盘与卷叠开
+            if (OniRegisterUI.Instance?.IsOpen ?? false) {
+                OniRegisterUI.Instance.SilentSwap = true;
+                OniRegisterUI.Instance.Close();
+                OniRegisterUI.Instance.SilentSwap = false;
+            }
             meiSwitch.Reset();
-            selectedNode = -1;
             pendingSlot = -1;
             appearEase = 0f;
+            carriedNode = -1;
+            carryEase = 0f;
+            carryVel = Vector2.Zero;
+            pressSlot = -1;
+            pressEase = 0f;
+            burstAnim = -1f;
+            noteTimer = -1f;
+            flyT = -1f;
+            flyNode = -1;
             Array.Clear(nodeHover, 0, nodeHover.Length);
             Array.Clear(slotHover, 0, slotHover.Length);
+            Array.Clear(slotDeny, 0, slotDeny.Length);
+            Array.Clear(slotStamp, 0, slotStamp.Length);
+            Array.Clear(slotShake, 0, slotShake.Length);
+            //边墨初始化：已成立的边直接通着，开屏不重播跑线
+            for (int i = 0; i < OniSigilWheel.SlotCount; i++) {
+                prevSlotKeys[i] = OniRegistry.SlotKey(i);
+            }
+            for (int e = 0; e < 3; e++) {
+                edgeFlow[e] = string.IsNullOrEmpty(EdgeName(e)) ? 0f : 1f;
+                edgeFlowOrigin[e] = 0;
+            }
             LayoutCompute();
             closeTagRope.WarmStart(closeTagAnchor);
             if (VaultUtils.isSinglePlayer) {
@@ -159,6 +222,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             sourceInventorySlot = -1;
             sourceInstanceId = 0;
             pendingSlot = -1;
+            pressSlot = -1;
+            carriedNode = -1;
             if (VaultUtils.isSinglePlayer) {
                 WorldFreezeSystem.Deactivate(FreezeReason);
             }
@@ -245,6 +310,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
 
             UpdateInteraction(a);
+            AdvanceFx();
         }
 
         private void LayoutCompute() {
@@ -253,8 +319,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float radius = OniSigilWheel.BodyRadius(sw, sh);
             //换乘横滑：盘体随行进让位，顶梁与门挂物不加
             float slide = OniLedgerSwapFX.SlideOf(OniLedgerView.Sigil);
+            //题头独立在盘上方，盘心随之下移一档
             Vector2 center = new(sw * 0.5f + slide,
-                OniLedgerBeam.Height + 26f + radius + (1f - appearEase) * 18f);
+                OniLedgerBeam.Height + 44f + radius + (1f - appearEase) * 18f);
             wheel = new OniSigilWheel(center, radius);
 
             //卷槽凿在盘座下缘：入口是盘的一部分，不是盘旁另摆一块板
@@ -326,7 +393,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             nicheWasHovered = nicheHovered;
 
-            if (!inputAvailable || keyLeftPressState != KeyPressState.Pressed) {
+            if (!inputAvailable) {
+                return;
+            }
+            //右键收印
+            if (keyRightPressState == KeyPressState.Pressed && carriedNode >= 0) {
+                CancelCarry();
+                return;
+            }
+            if (keyLeftPressState != KeyPressState.Pressed) {
                 return;
             }
             if (tagHovered) {
@@ -338,14 +413,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
             if (hoverNode >= 0) {
-                SelectNode(hoverNode);
+                //再点原位＝放回；点别的鬼＝换着拾
+                if (carriedNode == hoverNode) {
+                    CancelCarry();
+                }
+                else {
+                    PickUp(hoverNode);
+                }
                 return;
             }
             if (hoverSlot >= 0) {
                 ClickSlot(hoverSlot);
                 return;
             }
-            //点盘外收盘
+            if (hoverCore) {
+                //点合鬼心：心跳应一声，说明在底行常驻
+                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.4f, Volume = 0.35f });
+                return;
+            }
+            //持印点空处（盘内外皆）＝收印；空手点盘外＝收盘
+            if (carriedNode >= 0) {
+                CancelCarry();
+                return;
+            }
             if (!wheel.HitBoard(mouse) && !meiSwitch.Hovering && !nicheRect.Contains(mp)) {
                 Close();
             }
@@ -370,31 +460,52 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             return -1;
         }
 
-        private void SelectNode(int index) {
-            if (selectedNode != index) {
-                selectedNode = index;
-                SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.5f });
+        //====================== 持印 ======================
+
+        private void PickUp(int index) {
+            if (NodeEntry(index) == null) {
+                return;
             }
+            carriedNode = index;
+            carryEase = 0f;
+            carryPos = wheel.NodePos(index);
+            carryVel = Vector2.Zero;
+            SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.5f });
+        }
+
+        /// <summary>收印：在手的印掷回环位</summary>
+        private void CancelCarry() {
+            if (carriedNode < 0) {
+                return;
+            }
+            OniGhostEntry entry = CarriedEntry;
+            if (entry != null) {
+                flyKey = entry.Key;
+                flyFrom = carryPos;
+                flyNode = carriedNode;
+                flyT = 0f;
+            }
+            carriedNode = -1;
+            SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.2f, Volume = 0.3f });
         }
 
         /// <summary>
-        /// 点结印位：空位落选中的鬼；占位且未选中新鬼则卸下；
-        /// 占位又选了别的鬼就直接换——不设额外确认态
+        /// 点结印位：持印落印/换印；空手点占位卸下；
+        /// 持着某鬼点它自己的位也是卸下——不设额外确认态
         /// </summary>
         private void ClickSlot(int slot) {
             if (pendingSlot >= 0) {
-                DenyFeedback();
+                Deny(slot);
                 return;
             }
             string current = OniRegistry.SlotKey(slot);
-            OniGhostEntry picked = SelectedEntry;
-            //选中的鬼就在这一位：视作卸下
+            OniGhostEntry picked = CarriedEntry;
             bool unbind = picked == null || picked.Key == current;
             string next = unbind ? null : picked.Key;
             if (unbind && string.IsNullOrEmpty(current)) {
-                //空位又没选鬼：说清楚下一步该干什么，别沉默
-                DenyFeedback();
-                VaultUtils.Text(SlotEmptyHint.Value, OnikiriUITheme.TextDim);
+                //空位又空手：凿圈一震，批注说清下一步，别沉默
+                Deny(slot);
+                PostNote(SlotEmptyHint.Value, OnikiriUITheme.TextDim);
                 return;
             }
             BeginSlotChange(slot, next,
@@ -407,40 +518,174 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             int session = interactionSession;
             pendingSlot = slot;
+            pressSlot = slot;
             if (!OniRegistry.TrySetSlot(SourceItem(), slot, key, success =>
-                CompleteSlotChange(session, success, key, displayName))) {
+                CompleteSlotChange(session, success, slot, key, displayName))) {
                 pendingSlot = -1;
-                DenyFeedback();
+                pressSlot = -1;
+                Deny(slot);
             }
         }
 
-        private void CompleteSlotChange(int session, bool success, string key, string displayName) {
+        private void CompleteSlotChange(int session, bool success, int slot, string key, string displayName) {
             if (!IsOpen || session != interactionSession) {
                 return;
             }
             pendingSlot = -1;
+            pressSlot = -1;
             if (!success) {
-                DenyFeedback();
+                Deny(slot);
                 return;
             }
+            bool bound = !string.IsNullOrEmpty(key);
+            if (bound) {
+                //印已落盘，手上自然消携（落印定妆由状态差分接手）
+                carriedNode = -1;
+            }
             SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.72f, Volume = 0.46f });
-            LocalizedText line = string.IsNullOrEmpty(key) ? UnboundFormat : BoundFormat;
-            VaultUtils.Text(line.Format(displayName ?? key ?? string.Empty), OnikiriUITheme.Bright);
+            LocalizedText line = bound ? BoundFormat : UnboundFormat;
+            PostNote(line.Format(displayName ?? key ?? string.Empty), OnikiriUITheme.Bright);
+        }
+
+        /// <summary>拒绝反馈：凿圈红闪+槽体一震+闷响——点击必有可见回应</summary>
+        private void Deny(int slot) {
+            if (slot >= 0 && slot < slotDeny.Length) {
+                slotDeny[slot] = 1f;
+                slotShake[slot] = 14;
+            }
+            DenyFeedback();
         }
 
         private static void DenyFeedback()
             => SoundEngine.PlaySound(SoundID.Unlock with { Pitch = -0.62f, Volume = 0.38f });
 
-        internal OniGhostEntry SelectedEntry {
-            get {
-                var entries = OniRegistry.Entries;
-                int usable = -1;
-                foreach (OniGhostEntry entry in entries) {
-                    if (entry.CanEquip && ++usable == selectedNode) {
-                        return entry;
+        private void PostNote(string text, Color color) {
+            noteText = text;
+            noteTimer = 0f;
+            noteColor = color;
+        }
+
+        //====================== 表现推进 ======================
+
+        private void AdvanceFx() {
+            //持印弹簧：印追手，带一点惯性拖
+            if (carriedNode >= 0) {
+                carryEase = MathF.Min(1f, carryEase + 0.10f);
+                Vector2 target = MousePosition + new Vector2(0f, -4f);
+                carryVel = carryVel * 0.70f + (target - carryPos) * 0.17f;
+                carryPos += carryVel;
+            }
+            else {
+                carryEase = 0f;
+                carryVel = Vector2.Zero;
+            }
+            //候令压印缓动
+            float pressTarget = pressSlot >= 0 ? 1f : 0f;
+            pressEase += (pressTarget - pressEase) * 0.30f;
+
+            //槽反馈衰减
+            for (int i = 0; i < OniSigilWheel.SlotCount; i++) {
+                slotDeny[i] *= 0.88f;
+                slotStamp[i] = MathF.Max(0f, slotStamp[i] - 1f / 26f);
+                if (slotShake[i] > 0) {
+                    slotShake[i]--;
+                }
+            }
+
+            DiffSlotStates();
+
+            //边墨流通：成边生长，退位排干
+            for (int e = 0; e < 3; e++) {
+                bool formed = !string.IsNullOrEmpty(EdgeName(e));
+                edgeFlow[e] = formed
+                    ? MathF.Min(1f, edgeFlow[e] + 1f / 26f)
+                    : MathF.Max(0f, edgeFlow[e] - 1f / 12f);
+            }
+
+            //三印崩节拍
+            if (burstAnim >= 0f) {
+                burstAnim += 1f;
+                if (burstAnim > BurstFrames) {
+                    burstAnim = -1f;
+                }
+            }
+            //盘内批注
+            if (noteTimer >= 0f) {
+                noteTimer += 1f;
+                if (noteTimer > NoteFrames) {
+                    noteTimer = -1f;
+                }
+            }
+            //飞回印
+            if (flyT >= 0f) {
+                flyT += 1f / 20f;
+                if (flyT >= 1f) {
+                    flyT = -1f;
+                    flyNode = -1;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 状态差分：结印真值一变（含服务器回执与外部改动），落印定妆/旧印飞回/
+        /// 邻边重新跑线/三印齐崩全部由这里点火——表现永远跟着权威状态走
+        /// </summary>
+        private void DiffSlotStates() {
+            int prevCount = 0;
+            for (int i = 0; i < OniSigilWheel.SlotCount; i++) {
+                if (!string.IsNullOrEmpty(prevSlotKeys[i])) {
+                    prevCount++;
+                }
+            }
+            bool changed = false;
+            for (int i = 0; i < OniSigilWheel.SlotCount; i++) {
+                string now = OniRegistry.SlotKey(i) ?? string.Empty;
+                string was = prevSlotKeys[i] ?? string.Empty;
+                if (now == was) {
+                    continue;
+                }
+                changed = true;
+                //旧印离位→掷回环位；已在手上或挪去别槽的不飞
+                if (was.Length > 0 && OniRegistry.SlotOf(was) < 0 && CarriedEntry?.Key != was) {
+                    int node = NodeIndexOfKey(was);
+                    if (node >= 0) {
+                        flyKey = was;
+                        flyFrom = wheel.SlotPos(i);
+                        flyNode = node;
+                        flyT = 0f;
                     }
                 }
-                return null;
+                if (now.Length > 0) {
+                    slotStamp[i] = 1f;
+                    //本位落新印：相邻两边的墨自本位起笔重新流通
+                    for (int e = 0; e < 3; e++) {
+                        (int a, int b) = OniSigilWheel.EdgeSlots(e);
+                        if (a != i && b != i) {
+                            continue;
+                        }
+                        edgeFlowOrigin[e] = a == i ? 0 : 1;
+                        edgeFlow[e] = 0f;
+                    }
+                }
+                prevSlotKeys[i] = now;
+            }
+            if (!changed) {
+                return;
+            }
+            int nowCount = OniRegistry.EquippedCount;
+            if (nowCount >= OniSigilWheel.SlotCount && prevCount < OniSigilWheel.SlotCount) {
+                burstAnim = 0f;
+                SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.95f, Volume = 0.55f });
+            }
+        }
+
+        /// <summary>在手役鬼（外环第 carriedNode 位）</summary>
+        internal OniGhostEntry CarriedEntry {
+            get {
+                if (carriedNode < 0) {
+                    return null;
+                }
+                return NodeEntry(carriedNode);
             }
         }
 
@@ -455,6 +700,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             return null;
         }
 
+        /// <summary>某只鬼在外环的位序；不在名录返回 -1</summary>
+        private static int NodeIndexOfKey(string key) {
+            if (string.IsNullOrEmpty(key)) {
+                return -1;
+            }
+            int usable = -1;
+            foreach (OniGhostEntry entry in OniRegistry.Entries) {
+                if (!entry.CanEquip) {
+                    continue;
+                }
+                usable++;
+                if (entry.Key == key) {
+                    return usable;
+                }
+            }
+            return -1;
+        }
+
+        //====================== 绘制 ======================
+
         public override void Draw(SpriteBatch spriteBatch) {
             float a = OpenProgress;
             if (a < 0.01f) {
@@ -463,6 +728,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle src = new(0, 0, 1, 1);
+            Vector2 mouse = MousePosition;
 
             //====压暗世界 + 绯月（远景视差）====
             Rectangle full = new(0, 0, (int)OnikiriUITheme.UIScreenW + 2, (int)OnikiriUITheme.UIScreenH + 2);
@@ -474,7 +740,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //====顶梁（同一夜屋的骨架，不随换乘滑移）====
             OniLedgerBeam.Draw(spriteBatch, a, ShaderTime, OniLedgerView.Sigil, meiSwitch.HoverEase);
 
-            //====盘座 + 六芒骨架====
+            //====盘座（shader 漆盘）+ 卷槽====
             OniSigilRenderer.DrawBoard(spriteBatch, in wheel, a, ShaderTime);
             OniSigilRenderer.DrawScrollNiche(spriteBatch, font, nicheRect, nicheHover, a, ShaderTime,
                 RegisterTabText.Value);
@@ -484,25 +750,55 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
             OniSigilRenderer.DrawHexagram(spriteBatch, in wheel, contentA, ShaderTime);
-            OniSigilRenderer.DrawEdges(spriteBatch, font, in wheel, contentA, ShaderTime, EdgeName);
 
-            //====三个结印位 + 合鬼心====
+            //====合鬼边（成边流通/预演虚线/崩闪）====
+            BuildEdgeViews();
+            OniSigilRenderer.DrawEdges(spriteBatch, font, in wheel, edgeViews, contentA, ShaderTime);
+
+            //====三个结印位====
             for (int slot = 0; slot < OniSigilWheel.SlotCount; slot++) {
-                OniSigilRenderer.DrawSlot(spriteBatch, font, in wheel, slot,
-                    OniRegistry.SlotEntry(slot), slotHover[slot], pendingSlot == slot,
+                OniSigilSlotView view = BuildSlotView(slot);
+                OniSigilRenderer.DrawSlot(spriteBatch, font, in wheel, slot, in view,
                     contentA, ShaderTime);
             }
+
+            //====三印崩收束墨线 + 合鬼心====
+            float burstT = burstAnim < 0f ? -1f : burstAnim / BurstFrames;
+            OniSigilRenderer.DrawBurstThreads(spriteBatch, in wheel, burstT, contentA, ShaderTime);
             bool complete = OniRegistry.EquippedCount >= OniSigilWheel.SlotCount;
             OniSigilRenderer.DrawCore(spriteBatch, font, in wheel, complete,
-                complete ? WraithCovenText.BurstName?.Value : null, contentA, ShaderTime);
+                complete ? WraithCovenText.BurstName?.Value : null, burstT, contentA, ShaderTime);
+
+            //====悬停引路：这只鬼与盘上谁有专属反应====
+            DrawHoverPartnerThreads(spriteBatch, contentA);
 
             //====外环六鬼位====
             for (int i = 0; i < OniSigilWheel.NodeCount; i++) {
                 OniGhostEntry entry = NodeEntry(i);
                 OniSigilRenderer.DrawNode(spriteBatch, font, in wheel, i, entry,
                     entry == null ? -1 : OniRegistry.SlotOf(entry.Key),
-                    i == selectedNode, nodeHover[i], contentA, ShaderTime);
+                    i == carriedNode, nodeHover[i], mouse, contentA, ShaderTime);
             }
+
+            //====飞回印 / 持印邀请线 / 在手印====
+            if (flyT >= 0f && flyNode >= 0) {
+                OniSigilRenderer.DrawFlyBackSeal(spriteBatch, flyKey, flyFrom,
+                    wheel.NodePos(flyNode), flyT, wheel.NodeHit * 0.78f, contentA);
+            }
+            OniGhostEntry carried = CarriedEntry;
+            if (carried != null && pressSlot < 0) {
+                for (int s = 0; s < OniSigilWheel.SlotCount; s++) {
+                    float strength = hoverSlot == s ? 0.75f : 0.26f;
+                    OniSigilRenderer.DrawDashedLine(spriteBatch, carryPos, wheel.SlotPos(s),
+                        OnikiriUITheme.GhostDim, OnikiriUITheme.GhostFire,
+                        contentA * carryEase * strength, ShaderTime, s * 2.3f);
+                }
+            }
+            OniSigilRenderer.DrawCarriedSeal(spriteBatch, carryPos, carryVel, carried,
+                wheel.NodeHit * 0.78f, carryEase,
+                pressSlot >= 0 ? pressEase : 0f,
+                pressSlot >= 0 ? wheel.SlotPos(pressSlot) : carryPos,
+                contentA, ShaderTime);
 
             //====题头 / 状态行 / 底部说明====
             DrawHeader(spriteBatch, font, contentA);
@@ -527,6 +823,92 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
+        /// <summary>汇总三条边的本帧表现量（成边流通/持印预演/崩闪）</summary>
+        private void BuildEdgeViews() {
+            OniGhostEntry carried = CarriedEntry;
+            float burstT = burstAnim < 0f ? -1f : burstAnim / BurstFrames;
+            for (int e = 0; e < 3; e++) {
+                (int a, int b) = OniSigilWheel.EdgeSlots(e);
+                OniSigilEdgeView v = default;
+                v.Name = EdgeName(e);
+                v.Flow = edgeFlow[e];
+                v.FlowOrigin = edgeFlowOrigin[e];
+                //预演：持印悬停空位，这条边另一端已有印——先看懂再落印
+                if (carried != null && hoverSlot >= 0 && (a == hoverSlot || b == hoverSlot)
+                    && string.IsNullOrEmpty(OniRegistry.SlotKey(hoverSlot))) {
+                    int other = a == hoverSlot ? b : a;
+                    OniGhostEntry otherEntry = OniRegistry.SlotEntry(other);
+                    if (otherEntry != null && otherEntry.Key != carried.Key) {
+                        (LocalizedText name, _) = WraithCovenText.Pair(
+                            KindOfKey(carried.Key), KindOfKey(otherEntry.Key));
+                        v.PreviewName = name?.Value;
+                        v.Preview = slotHover[hoverSlot];
+                    }
+                }
+                //三印崩：三边顺序过闪
+                if (burstT >= 0f) {
+                    float local = burstT - e * 0.11f;
+                    v.Flash = MathF.Exp(-(local - 0.09f) * (local - 0.09f) * 260f);
+                }
+                edgeViews[e] = v;
+            }
+        }
+
+        private OniSigilSlotView BuildSlotView(int slot) {
+            OniGhostEntry carried = CarriedEntry;
+            OniSigilSlotView v = new() {
+                Entry = OniRegistry.SlotEntry(slot),
+                Hover = slotHover[slot],
+                Pending = pendingSlot == slot,
+                Press = pressSlot == slot ? pressEase : 0f,
+                Invite = carried != null ? carryEase : 0f,
+                PreviewEntry = carried != null && hoverSlot == slot ? carried : null,
+                DenyFlash = slotDeny[slot],
+                StampFlash = slotStamp[slot],
+            };
+            //占位槽不做鬼火邀请（它给的是换印预览）
+            if (v.Entry != null) {
+                v.Invite = 0f;
+            }
+            if (slotShake[slot] > 0) {
+                float k = slotShake[slot] / 14f;
+                v.Shake = new Vector2(MathF.Sin(slotShake[slot] * 1.9f) * 3.2f * k, 0f);
+            }
+            return v;
+        }
+
+        /// <summary>空手悬停外环鬼位：与盘上役鬼有专属反应的，鬼火虚线先指给玩家看</summary>
+        private void DrawHoverPartnerThreads(SpriteBatch sb, float contentA) {
+            if (CarriedEntry != null) {
+                return;
+            }
+            for (int i = 0; i < OniSigilWheel.NodeCount; i++) {
+                if (nodeHover[i] <= 0.05f) {
+                    continue;
+                }
+                OniGhostEntry entry = NodeEntry(i);
+                //在盘上的鬼自己的边会亮，不必再引
+                if (entry == null || OniRegistry.IsEquipped(entry.Key)) {
+                    continue;
+                }
+                for (int s = 0; s < OniSigilWheel.SlotCount; s++) {
+                    OniGhostEntry other = OniRegistry.SlotEntry(s);
+                    if (other == null || other.Key == entry.Key) {
+                        continue;
+                    }
+                    (LocalizedText name, _) = WraithCovenText.Pair(
+                        KindOfKey(entry.Key), KindOfKey(other.Key));
+                    //只提示专属反应；「相唤」是底噪，不值一条线
+                    if (name == null || name == WraithCovenText.CallName) {
+                        continue;
+                    }
+                    OniSigilRenderer.DrawDashedLine(sb, wheel.NodePos(i), wheel.SlotPos(s),
+                        OnikiriUITheme.GhostDim, OnikiriUITheme.GhostFire,
+                        contentA * nodeHover[i] * 0.55f, ShaderTime, i * 1.3f + s);
+                }
+            }
+        }
+
         /// <summary>三角某条边的合鬼名：两端都占了才有名字</summary>
         private static string EdgeName(int edge) {
             (int a, int b) = OniSigilWheel.EdgeSlots(edge);
@@ -536,53 +918,66 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         private static WraithAbilityKind KindOfSlot(int slot)
-            => WraithRegistry.TryGetUsable(OniRegistry.SlotKey(slot), out WraithDefinition def)
+            => KindOfKey(OniRegistry.SlotKey(slot));
+
+        private static WraithAbilityKind KindOfKey(string key)
+            => WraithRegistry.TryGetUsable(key, out WraithDefinition def)
                 ? def.AbilityKind : WraithAbilityKind.None;
 
         private void DrawHeader(SpriteBatch sb, DynamicSpriteFont font, float a) {
             string title = TitleText.Value;
             const float TitleScale = 1.08f;
             Vector2 size = font.MeasureString(title) * TitleScale;
-            Vector2 pos = new(wheel.Center.X - size.X * 0.5f, OniLedgerBeam.Height + 12f);
+            Vector2 pos = new(wheel.Center.X - size.X * 0.5f, OniLedgerBeam.Height + 10f);
             OniBrush.DrawSealGlyph(sb, pos + new Vector2(-24f, size.Y * 0.5f), 13f, a * 0.95f);
             Utils.DrawBorderString(sb, title, pos, OnikiriUITheme.HotWhite * a, TitleScale);
             OniBrush.DrawTaperedSlash(sb,
-                new Vector2(pos.X - 10f, pos.Y + size.Y + 6f),
-                new Vector2(pos.X + size.X + 10f, pos.Y + size.Y + 4f), 2.2f, 1.6f, a * 0.9f);
+                new Vector2(pos.X - 10f, pos.Y + size.Y + 4f),
+                new Vector2(pos.X + size.X + 10f, pos.Y + size.Y + 2f), 2.2f, 1.6f, a * 0.9f);
         }
 
         /// <summary>
-        /// 底行：优先报光标落处的说明（边/位/鬼），没有悬停就报总况。<br/>
-        /// 每一种落点都欠玩家一句话，不许出现"点了什么都不说"
+        /// 底行：批注在时批注优先（回执写在盘上），其次报光标落处的说明（边/位/鬼），
+        /// 没有悬停就报总况。每一种落点都欠玩家一句话，不许出现"点了什么都不说"
         /// </summary>
         private void DrawFooter(SpriteBatch sb, DynamicSpriteFont font, float a) {
-            string line = ResolveFooterLine();
-            if (string.IsNullOrEmpty(line)) {
-                return;
-            }
-            const float Scale = 0.7f;
-            Vector2 size = font.MeasureString(line) * Scale;
             float y = MathF.Min(wheel.Center.Y + wheel.Radius + 74f,
                 OnikiriUITheme.UIScreenH - 46f);
-            Utils.DrawBorderString(sb, line,
-                new Vector2(wheel.Center.X - size.X * 0.5f, y),
-                OnikiriUITheme.TextDim * (a * 0.9f), Scale);
+            float lineH;
+            if (noteTimer >= 0f && !string.IsNullOrEmpty(noteText)) {
+                OniSigilRenderer.DrawNote(sb, font, new Vector2(wheel.Center.X, y + 9f),
+                    noteText, noteTimer / NoteFrames, noteColor, a);
+                lineH = font.MeasureString(noteText).Y * 0.72f;
+            }
+            else {
+                string line = ResolveFooterLine();
+                if (string.IsNullOrEmpty(line)) {
+                    return;
+                }
+                const float Scale = 0.7f;
+                Vector2 size = font.MeasureString(line) * Scale;
+                Utils.DrawBorderString(sb, line,
+                    new Vector2(wheel.Center.X - size.X * 0.5f, y),
+                    OnikiriUITheme.TextDim * (a * 0.9f), Scale);
+                lineH = size.Y;
+            }
 
             string hint = string.Format(CloseHintFormat.Value,
                 CWRKeySystem.Legend_UIControl.ToTooltipString(CWRKeySystem.Notbound.Value));
             Vector2 hintSize = font.MeasureString(hint) * 0.62f;
             Utils.DrawBorderString(sb, hint,
                 new Vector2(wheel.Center.X - hintSize.X * 0.5f,
-                    MathF.Min(y + size.Y + 4f, OnikiriUITheme.UIScreenH - 24f)),
+                    MathF.Min(y + lineH + 4f, OnikiriUITheme.UIScreenH - 24f)),
                 OnikiriUITheme.TextDim * (a * 0.55f), 0.62f);
         }
 
         private string ResolveFooterLine() {
+            OniGhostEntry carried = CarriedEntry;
             if (hoverEdge >= 0) {
                 (int a, int b) = OniSigilWheel.EdgeSlots(hoverEdge);
-                var pair = WraithCovenText.Pair(KindOfSlot(a), KindOfSlot(b));
-                if (pair.Note != null) {
-                    return $"{pair.Name.Value} · {pair.Note.Value}";
+                (LocalizedText name, LocalizedText note) = WraithCovenText.Pair(KindOfSlot(a), KindOfSlot(b));
+                if (note != null) {
+                    return $"{name.Value} · {note.Value}";
                 }
             }
             if (hoverCore && OniRegistry.EquippedCount >= OniSigilWheel.SlotCount) {
@@ -590,13 +985,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             if (hoverSlot >= 0) {
                 OniGhostEntry slotEntry = OniRegistry.SlotEntry(hoverSlot);
+                if (carried != null) {
+                    if (slotEntry == null) {
+                        return PickHint.Format(carried.Name?.Invoke() ?? string.Empty);
+                    }
+                    if (slotEntry.Key == carried.Key) {
+                        return $"{slotEntry.Name?.Invoke()} · {UnbindHint.Value}";
+                    }
+                    return SwapHint.Format(carried.Name?.Invoke() ?? string.Empty);
+                }
                 if (slotEntry != null) {
                     return $"{slotEntry.Name?.Invoke()} · {UnbindHint.Value}";
                 }
-                return SelectedEntry == null ? SlotEmptyHint.Value
-                    : PickHint.Format(SelectedEntry.Name?.Invoke() ?? string.Empty);
+                return SlotEmptyHint.Value;
             }
-            OniGhostEntry hovered = hoverNode >= 0 ? NodeEntry(hoverNode) : SelectedEntry;
+            if (carried != null) {
+                return PickHint.Format(carried.Name?.Invoke() ?? string.Empty);
+            }
+            OniGhostEntry hovered = hoverNode >= 0 ? NodeEntry(hoverNode) : null;
             if (hovered != null) {
                 string cost = CostFormat.Format(
                     (int)MathF.Round(hovered.RevivalCost * 100f),

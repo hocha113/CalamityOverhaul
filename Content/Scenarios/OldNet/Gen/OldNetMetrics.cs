@@ -230,7 +230,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
         internal const int NodeEncryptCount = 10;
         internal const int NodeEventCount = 2;
         //结构内普通节点上限（房间/prefab/桅杆顶/方舱共享配额，建造期机会性放置）
-        internal const int NodeUnderPlainCount = 22;
+        //本轮结构扩容后上调：方舟/冷却塔/尖塔/掩体新增约 10 个机会性槽位
+        internal const int NodeUnderPlainCount = 32;
         //衰减区地表加密节点（高险高值）
         internal const int NodeFadeEncryptCount = 6;
         //加密节点：引导时长、价值倍数、站桩半径
@@ -283,11 +284,29 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
         //衰减区内噪音不自然衰减：网在这里永不平静（规则挂 OldNetPlayer）
 
         //──── 高空巨构（Z4） ────
-        internal const int AntennaCount = 3;
-        internal const int HulkCount = 3;
+        internal const int AntennaCount = 4;
+        internal const int HulkCount = 5;
         //巨构悬浮行带
         internal const int HulkRowMin = 36;
         internal const int HulkRowMax = 88;
+
+        //════════════════ 结构扩容常量区（地表目录组数集中此处） ════════════════
+
+        //──── Z1 墙脚带 ────
+        internal const int ShelterPodCount = 3;
+        internal const int DeadPylonGroupCount = 4;
+        //──── Z2 废墟带 ────
+        internal const int GraveyardCount = 3;
+        internal const int BrokenBridgeCount = 4;
+        //坠毁数据方舟：断成两截的运载舰残骸，舱内节点+加密节点
+        internal const int DataArkCount = 2;
+        //冷却塔：中空烟囱竖井，内攀爬横档，废墟带的纵向地标
+        internal const int CoolantStackCount = 2;
+        //──── Z3 衰减区 ────
+        //焦黑尖塔群：信号尽头的烧毁塔林（衰减区首批实体结构）
+        internal const int ScorchedSpireGroupCount = 3;
+        //坍塌掩体：半埋的破壳避难所，藏加密节点
+        internal const int CollapsedBunkerCount = 2;
 
         internal static readonly DistanceBand[] Bands;
 
@@ -341,6 +360,23 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
                 return 0f;
             }
             return dist / 100f * DrainPer100Tiles;
+        }
+
+        /// <summary>
+        /// 带内腐化度 0~1：墙脚带 0，废墟带缓升至 0.45，衰减区升满 1。
+        /// 天幕湍流/调色提边/数据尘密度/环境声共用这一条口径
+        /// </summary>
+        internal static float CorruptionAt(int tileX) {
+            int ruinLeft = WallCols + FootCols;
+            if (tileX < ruinLeft) {
+                return 0f;
+            }
+            if (tileX < FadeLeft) {
+                float ruinT = (tileX - ruinLeft) / (float)RuinCols;
+                return ruinT * 0.45f;
+            }
+            float fadeT = System.Math.Clamp((tileX - FadeLeft) / (float)FadeCols, 0f, 1f);
+            return 0.45f + fadeT * 0.55f;
         }
     }
 }

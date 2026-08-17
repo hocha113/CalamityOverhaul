@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OldNetNode { get; set; }
         public static Asset<Effect> OldNetTerminal { get; set; }
         public static Asset<Effect> OldNetSky { get; set; }
+        public static Asset<Effect> OldNetGrade { get; set; }
         public static Asset<Effect> OldNetHud { get; set; }
         public static Asset<Effect> PowerSFShader { get; set; }
         public static Asset<Effect> EowAcid { get; set; }
@@ -143,6 +144,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniVigorInk { get; set; }
         public static Asset<Effect> OniStanceBlade { get; set; }
         public static Asset<Effect> OniMeiStand { get; set; }
+        public static Asset<Effect> OniSigilBoard { get; set; }
         public static Asset<Effect> OniInkWipe { get; set; }
         public static Asset<Effect> OniMoon { get; set; }
         public static Asset<Effect> HalibutHudEye { get; set; }

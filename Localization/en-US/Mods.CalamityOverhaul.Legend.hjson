@@ -561,9 +561,10 @@ OnikiriText: {
 		TitleText: SIGIL WHEEL
 		StatusFormat: Bound {0} / {1} · Erosion {2}%
 		CostFormat: Per use: Revival +{0}% · Erosion +{1}%
-		SlotEmptyHint: Pick a wraith on the outer ring, then click an empty seat to bind it. Empty seats enable nothing
-		SlotFullHint: All three seats taken. Click one to swap in the selected wraith; click it again to release
-		PickHint: "{0} selected · click any seat on the triangle to bind"
+		SlotEmptyHint: Lift a wraith seal from the outer ring, then press it onto an empty seat. Empty seats enable nothing
+		SlotFullHint: All three seats taken. Press a carried seal onto one to swap; click empty-handed to release
+		PickHint: "{0} in hand · press onto a seat to bind · click open space to put it back"
+		SwapHint: Click to swap in {0}
 		UnbindHint: Click to release
 		PendingText: AWAITING
 		BoundFormat: "{0} now sits on the wheel"

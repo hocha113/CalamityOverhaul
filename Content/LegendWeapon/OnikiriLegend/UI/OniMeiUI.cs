@@ -264,6 +264,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniRegisterUI.Instance.Close();
                 OniRegisterUI.Instance.SilentSwap = false;
             }
+            //结印盘同屋互斥:换乘来时对面工位必须收,否则盘常驻悬浮在台上
+            if (OniSigilUI.Instance?.IsOpen ?? false) {
+                OniSigilUI.Instance.SilentSwap = true;
+                OniSigilUI.Instance.Close();
+                OniSigilUI.Instance.SilentSwap = false;
+            }
             selectedSlot = -1;
             hoverRib = -1;
             hoverTray = -1;

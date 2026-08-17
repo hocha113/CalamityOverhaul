@@ -16,9 +16,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         internal const int SlotCount = OniRegistry.SlotCount;
 
         /// <summary>结印位所在半径与外径之比</summary>
-        private const float SlotRadiusRatio = 0.42f;
-        /// <summary>鬼位所在半径与外径之比（留出印章与读数的余量）</summary>
-        private const float NodeRadiusRatio = 0.84f;
+        internal const float SlotRadiusRatio = 0.42f;
+        /// <summary>鬼位所在半径与外径之比（印章、线香弧与名讳都收在盘缘内）</summary>
+        private const float NodeRadiusRatio = 0.78f;
 
         internal Vector2 Center { get; }
         /// <summary>盘外径（六芒星外接圆）</summary>
@@ -32,15 +32,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Center = center;
             Radius = MathF.Max(radius, 80f);
             //盘越大印越大，但不至于糊成一片；命中随之等比
-            NodeHit = MathHelper.Clamp(Radius * 0.15f, 26f, 54f);
-            SlotHit = MathHelper.Clamp(Radius * 0.13f, 24f, 46f);
+            NodeHit = MathHelper.Clamp(Radius * 0.15f, 26f, 44f);
+            SlotHit = MathHelper.Clamp(Radius * 0.13f, 24f, 40f);
         }
 
-        /// <summary>本屏主体半径：吃屏，但给上梁与底部提示留道</summary>
+        /// <summary>
+        /// 本屏主体半径：一件案上器物的尺度，不吃满屏——
+        /// 高向给上梁/题头/卷槽/底行留道，宽向三成封顶
+        /// </summary>
         internal static float BodyRadius(float screenW, float screenH) {
-            float byHeight = (screenH - OniLedgerBeam.Height - 96f) * 0.5f;
-            float byWidth = screenW * 0.34f;
-            return MathHelper.Clamp(MathF.Min(byHeight, byWidth), 150f, 330f);
+            float byHeight = (screenH - OniLedgerBeam.Height - 132f) * 0.5f;
+            float byWidth = screenW * 0.30f;
+            return MathHelper.Clamp(MathF.Min(byHeight, byWidth), 150f, 250f);
         }
 
         /// <summary>第 i 个鬼位的方位角；正上起，顺时针</summary>

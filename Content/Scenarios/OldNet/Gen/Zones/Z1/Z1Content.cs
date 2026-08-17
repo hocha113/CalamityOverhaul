@@ -10,9 +10,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z1
     {
         internal static void PlanAndBuild(OldNetBuildContext ctx) {
             PlaceAnchors();
-            //M3 地表目录：接入亭（教学动线地标）+ 废弃中继阵列（剪影）
-            int pods = Z1Rooms.BuildShelterPods(ctx, 2);
-            int pylons = Z1Rooms.BuildDeadPylonArrays(ctx, 2);
+            //M3 地表目录：接入亭（教学动线地标）+ 废弃中继阵列（剪影）；组数集中 Metrics
+            int pods = Z1Rooms.BuildShelterPods(ctx, OldNetMetrics.ShelterPodCount);
+            int pylons = Z1Rooms.BuildDeadPylonArrays(ctx, OldNetMetrics.DeadPylonGroupCount);
             OldNetZoneCommon.PlaceFloatingSlabs(
                 OldNetMetrics.WallCols + OldNetMetrics.SpawnFlatCols + 30,
                 ctx.Area.Right - 20, 55, 95, Z1Style.FloorBrick);

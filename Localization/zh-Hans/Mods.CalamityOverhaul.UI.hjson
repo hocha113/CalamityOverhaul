@@ -1228,6 +1228,15 @@ DungeonworldLoadingScreen: {
 	RevealHold: 正在点亮烛火
 }
 
+KiyumeLoadingScreen: {
+	TitleEnter: 鬼梦
+	TitleExit: 梦醒
+	VerseEnter: 雾涨过窗台，屋里的灯还亮着。
+	VerseExit: 湖松手了，别回头。
+	StatusEnter: 雾从湖上漫过来
+	StatusExit: 村子沉回雾里
+}
+
 OldNetTexts: {
 	OldNetHarvest: +{0} 模具碎片（未铭刻）
 	OldNetNodeHint: 回收数据

@@ -48,6 +48,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Renders
                 shader.Parameters["uIntensity"]?.SetValue(1f);
                 shader.Parameters["uScreenSize"]?.SetValue(new Vector2(vpW, vpH));
                 shader.Parameters["uWallScreenX"]?.SetValue(edgeScreen.X);
+                shader.Parameters["uSurge"]?.SetValue(Backgrounds.OldNetSkyEvents.Surge);
                 shader.CurrentTechnique.Passes[0].Apply();
                 spriteBatch.Draw(px, new Rectangle(0, 0, vpW, vpH), Color.White);
             }

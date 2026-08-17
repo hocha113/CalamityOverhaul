@@ -36,7 +36,25 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
         /// <summary>雾吃光强度：亮点在雾里晕开而不是穿透过来</summary>
         public static float EatLight = 0.85f;
         /// <summary>吃光晕开半径（屏幕px）</summary>
-        public static float EatSpread = 9f;
+        public static float EatSpread = 32f;
+        /// <summary>血湖水面烬光反射带强度：近景唯一锐利水平线</summary>
+        public static float WaterGlow = 1f;
+
+        //===雾吃光染色（CPU 密度纹理侧）===
+
+        /// <summary>暗处雾可见度地板：0 全黑、1 无明暗差。压低才拉得开亮暗对比</summary>
+        public static float LightVisFloor = 0.18f;
+        /// <summary>亮处雾向烬色偏移的最大插值：窗火把周围的雾烘成暖团的力度</summary>
+        public static float LightTintStrength = 0.85f;
+
+        //===玩家推雾===
+
+        /// <summary>玩家身位推雾半径（px）</summary>
+        public static float PlayerPushRadius = 40f;
+        /// <summary>玩家推雾羽化带宽（px）</summary>
+        public static float PlayerPushFeather = 140f;
+        /// <summary>玩家推雾强度：1=身位处全清，0.7=压到三成——贴身留薄雾更有氛围</summary>
+        public static float PlayerPushStrength = 0.7f;
 
         //潮位轮换表：退潮 / 半涨 / 涨满 / 交给真实潮汐
         private static readonly float[] cycleTides = [0f, 0.5f, 1f, -1f];
