@@ -1,4 +1,5 @@
 using Terraria;
+using Terraria.WorldBuilding;
 
 namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen
 {
@@ -11,6 +12,13 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen
 
         internal static void Reset() {
             FloorTop = null;
+        }
+
+        //SubLib 不会把 progress.Message 抄到 Main.statusText。
+        //加载屏若只读 statusText，就会一直停在 clearWorld 的「正在清除地图数据」。
+        internal static void Report(GenerationProgress progress, string message) {
+            progress.Message = message;
+            Main.statusText = message;
         }
 
         /// <summary>安全取列地板顶行；规划未就绪时回退基准曲线</summary>

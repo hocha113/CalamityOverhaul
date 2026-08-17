@@ -47,6 +47,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
         public static LocalizedText EntrustTitle { get; private set; }
         public static LocalizedText EntrustSummary { get; private set; }
         public static LocalizedText EntrustCategory { get; private set; }
+        public static LocalizedText TrackerOverworld { get; private set; }
+        public static LocalizedText TrackerDive { get; private set; }
         //M2c 带界立牌
         public static LocalizedText OldNetSignRuin { get; private set; }
         public static LocalizedText OldNetSignFade { get; private set; }
@@ -101,6 +103,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             EntrustSummary = this.GetLocalization(nameof(EntrustSummary),
                 () => "坠舱中舱的接入终端还在通电。接入旧网，采回模具碎片，并从登出终端安全断链一次。RAM 耗尽或死亡会弄丢一切未铭刻的收获。");
             EntrustCategory = this.GetLocalization(nameof(EntrustCategory), () => "深潜考古");
+            TrackerOverworld = this.GetLocalization(nameof(TrackerOverworld), () => "接入坠舱中舱的终端");
+            TrackerDive = this.GetLocalization(nameof(TrackerDive), () => "从登出终端安全断链");
 
             OldNetSignRuin = this.GetLocalization(nameof(OldNetSignRuin),
                 () => "废墟带。主产区，加密节点自此出没——引导破解前，先看好退路。");

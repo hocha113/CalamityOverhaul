@@ -1,6 +1,7 @@
 using System;
 using Terraria;
 using Terraria.ID;
+using Terraria.WorldBuilding;
 
 namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen
 {
@@ -27,34 +28,44 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen
             Huts = Towers = Torches = 0;
         }
 
-        internal static void Build() {
+        internal static void Build(GenerationProgress progress = null) {
             Reset();
             //出生平台留白：别让玩家在墙里醒过来
+            //判定窗口是 [spawnLeft-pad, spawnRight+pad)；跳过必须落到窗口右缘之外，
+            //只加 8 会落回窗口里，while 对同一 x 反复 continue（卡在「岸上的房子还站着」）
+            const int spawnPad = 24;
             int spawnLeft = KiyumeMetrics.SpawnX - KiyumeMetrics.SpawnFlatCols;
             int spawnRight = KiyumeMetrics.SpawnX + KiyumeMetrics.SpawnFlatCols;
 
-            int x = KiyumeMetrics.VillageLeft + 24;
+            int x = KiyumeMetrics.VillageLeft + spawnPad;
             int right = KiyumeMetrics.GroveLeft - 30;
+            int span = Math.Max(right - x, 1);
             while (x < right) {
-                float roll = WorldGen.genRand.NextFloat();
-                int width;
-                if (x + 24 > spawnLeft && x - 24 < spawnRight) {
-                    //跨出生带整段跳过
-                    x = spawnRight + 8;
-                    continue;
-                }
+                int prev = x;
+                progress?.Set(0.72 + 0.28 * (x - (KiyumeMetrics.VillageLeft + spawnPad)) / (double)span);
 
-                if (roll < 0.14f) {
-                    //空地：村里的巷口与空场，剪影要有呼吸
-                    width = WorldGen.genRand.Next(22, 42);
-                }
-                else if (roll < 0.26f) {
-                    width = BuildTower(x) + WorldGen.genRand.Next(16, 30);
+                if (x + spawnPad > spawnLeft && x - spawnPad < spawnRight) {
+                    x = spawnRight + spawnPad;
                 }
                 else {
-                    width = BuildHut(x, ruined: roll > 0.88f) + WorldGen.genRand.Next(11, 26);
+                    float roll = WorldGen.genRand.NextFloat();
+                    int width;
+                    if (roll < 0.14f) {
+                        //空地：村里的巷口与空场，剪影要有呼吸
+                        width = WorldGen.genRand.Next(22, 42);
+                    }
+                    else if (roll < 0.26f) {
+                        width = BuildTower(x) + WorldGen.genRand.Next(16, 30);
+                    }
+                    else {
+                        width = BuildHut(x, ruined: roll > 0.88f) + WorldGen.genRand.Next(11, 26);
+                    }
+                    x += Math.Max(width, 8);
                 }
-                x += Math.Max(width, 8);
+
+                if (x <= prev) {
+                    x = prev + 8;
+                }
             }
         }
 
@@ -164,7 +175,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen
                 return;
             }
             int tx = left + WorldGen.genRand.Next(right - left + 1);
-            if (WorldGen.PlaceTile(tx, floorRow, TileID.Torches, true, false, -1, 0)) {
+            if (WorldGen.InWorld(tx, floorRow) && !Main.tile[tx, floorRow].HasTile) {
+                KiyumeTileBrush.SetTorch(tx, floorRow);
                 Torches++;
             }
         }

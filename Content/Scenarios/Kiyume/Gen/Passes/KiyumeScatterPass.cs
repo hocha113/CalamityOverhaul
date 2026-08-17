@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen.Passes
     //三种形与天幕 villageRow 的抽签对齐；只往地面上放，不动体块
     internal class KiyumeScatterPass : GenPass
     {
-        private const ushort TrunkTile = TileID.LivingWood;
+        private const ushort TrunkTile = TileID.SpookyWood;
 
         private static int trees;
         private static int rocks;
@@ -19,7 +19,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen.Passes
         public KiyumeScatterPass() : base("Kiyume Scatter", 0.6f) { }
 
         protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
-            progress.Message = "枯枝与搁浅物...";
+            KiyumePlans.Report(progress, "枯枝与搁浅物...");
+            CWRMod.Instance.Logger.Info("[Kiyume] Scatter start");
             trees = rocks = webs = 0;
 
             //枯林带：主产区，密；村落带：巷子间零星几棵，让剪影别是一排纯房子

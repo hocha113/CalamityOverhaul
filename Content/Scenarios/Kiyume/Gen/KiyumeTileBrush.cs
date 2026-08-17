@@ -39,6 +39,21 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen
             ClearWrites++;
         }
 
+        //火把直写：不走 PlaceTile/SquareTileFrame，避免 gen 线程上触发坠落砖弹幕
+        internal static void SetTorch(int x, int y) {
+            if (!WorldGen.InWorld(x, y)) {
+                return;
+            }
+            Tile tile = Main.tile[x, y];
+            tile.HasTile = true;
+            tile.TileType = TileID.Torches;
+            tile.TileFrameX = 0;
+            tile.TileFrameY = 0;
+            tile.Slope = SlopeType.Solid;
+            tile.IsHalfBlock = false;
+            tile.LiquidAmount = 0;
+        }
+
         //空腔灌水：NormalUpdates=false 下液体不流动，靠构造性铺设定住
         internal static void SetWater(int x, int y, byte amount = 255) {
             if (!WorldGen.InWorld(x, y)) {

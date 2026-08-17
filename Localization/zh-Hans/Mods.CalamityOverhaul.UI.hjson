@@ -1264,6 +1264,8 @@ OldNetTexts: {
 	EntrustTitle: 越墙深潜
 	EntrustSummary: 坠舱中舱的接入终端还在通电。接入旧网，采回模具碎片，并从登出终端安全断链一次。RAM 耗尽或死亡会弄丢一切未铭刻的收获。
 	EntrustCategory: 深潜考古
+	TrackerOverworld: 接入坠舱中舱的终端
+	TrackerDive: 从登出终端安全断链
 	OldNetSignRuin: 废墟带。主产区，加密节点自此出没——引导破解前，先看好退路。
 	OldNetSignFade: 信号衰减区。底噪自此陡增，链路撑不了多久——深入自负。
 	OldNetEchoHint: 回声节点：只在时停中可触及（零噪音，产出翻倍）

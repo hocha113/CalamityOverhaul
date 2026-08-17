@@ -1266,6 +1266,8 @@ OldNetTexts: {
 	EntrustTitle: Dive Beyond the Wall
 	EntrustSummary: The access terminal in the cradle's mid-hull still hums. Jack into the OldNet, haul back mold shards, and sever safely from the logout terminal once. RAM burnout or death voids everything uninscribed.
 	EntrustCategory: Deep-Dive Archaeology
+	TrackerOverworld: Jack into the mid-hull terminal
+	TrackerDive: Sever safely at the logout terminal
 	OldNetSignRuin: Ruinfield. Prime harvest grounds — encrypted nodes from here on. Mind your exit before you channel.
 	OldNetSignFade: Signal Decay Zone. The drain climbs steeply past this point — the link won't hold long. Proceed at your own risk.
 	OldNetEchoHint: Echo node — only tangible during time-freeze (zero noise, double yield)

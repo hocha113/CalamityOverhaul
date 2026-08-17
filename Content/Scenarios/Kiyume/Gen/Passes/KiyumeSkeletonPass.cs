@@ -13,12 +13,16 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen.Passes
         public KiyumeSkeletonPass() : base("Kiyume Skeleton", 1f) { }
 
         protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
-            progress.Message = "湖水退去，岸上有灯...";
+            KiyumePlans.Report(progress, "湖水退去，岸上有灯...");
+            CWRMod.Instance.Logger.Info("[Kiyume] Skeleton start");
 
             //每次进梦重生成：规划态与计数器全部重置
             //（不能在 OnWorldLoad 清——生成 pass 先于它运行）
             KiyumePlans.Reset();
             KiyumeTileBrush.ResetForNewGen();
+            //SubLib 进 gen 时把 worldSurface 设成 maxY*0.3；必须在第一 pass 就改成玩法层的值
+            Main.worldSurface = KiyumeMetrics.WorldSurfaceRow;
+            Main.rockLayer = KiyumeMetrics.RockLayerRow;
 
             int width = Main.maxTilesX;
             int height = Main.maxTilesY;

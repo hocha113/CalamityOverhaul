@@ -4,6 +4,7 @@ using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameInput;
+using Terraria.WorldBuilding;
 
 namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
 {
@@ -289,7 +290,11 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
             sb.DrawString(titleFont, num, numPos, Ember * 0.92f,
                 0f, Vector2.Zero, numScale, SpriteEffects.None, 0f);
 
-            string status = (Main.statusText ?? string.Empty).ToUpperInvariant();
+            //优先读 gen pass 文案。SubLib 不写 Main.statusText，只读它会一直停在「正在清除地图数据」
+            string status = WorldGenerator.CurrentGenerationProgress?.Message;
+            if (string.IsNullOrEmpty(status)) {
+                status = Main.statusText;
+            }
             if (string.IsNullOrEmpty(status)) {
                 status = entering ? "THE FOG IS COMING IN" : "THE LAKE LETS GO";
             }
