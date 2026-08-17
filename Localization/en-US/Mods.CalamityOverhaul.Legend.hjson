@@ -542,7 +542,7 @@ MoldProcessingUI: {
 OnikiriText: {
 	OniRegisterUI: {
 		TitleText: GHOST REGISTER
-		StatusFormat: Bound {0} · Revival {1}% · Erosion {2}%
+		StatusFormat: "{0} on the wheel · Erosion {1}%"
 		RevivalFormat: Revival {0}%
 		AbilityCostFormat: Per use: Revival +{0}% · Erosion +{1}%
 		OriginLabel: Origin
@@ -550,19 +550,31 @@ OnikiriText: {
 		StateReady: Ready to bind
 		StateDanger: Waking · Use with care
 		StateArchive: Fragment · Cannot bind
-		EmptySlotName: No bound wraith
-		EmptySlotHint: Select a wraith to inspect it, then use the bind seal to place it in the single wraith slot. An empty slot enables no wraith ability
 		UsableSection: WRAITHS
-		CloseTagText: ROLL
-		CloseHintFormat: ESC · {0} · click outside to roll up
+		BrowseHint: Click a name to read its origin and bestowal. This scroll only records them; binding happens on the wheel
+		CloseTagText: CLOSE
+		CloseHintFormat: ESC · {0} · click outside to return to the wheel
+		EquippedActive: On the wheel
+	}
+
+	OniSigilUI: {
+		TitleText: SIGIL WHEEL
+		StatusFormat: Bound {0} / {1} · Erosion {2}%
+		CostFormat: Per use: Revival +{0}% · Erosion +{1}%
+		SlotEmptyHint: Pick a wraith on the outer ring, then click an empty seat to bind it. Empty seats enable nothing
+		SlotFullHint: All three seats taken. Click one to swap in the selected wraith; click it again to release
+		PickHint: "{0} selected · click any seat on the triangle to bind"
+		UnbindHint: Click to release
+		PendingText: AWAITING
+		BoundFormat: "{0} now sits on the wheel"
+		UnboundFormat: "{0} released"
+		DangerNote: Waking · Use with care
+		CloseTagText: CLOSE
+		CloseHintFormat: ESC · {0} · click outside the wheel to close
 		MeiTabText: Inscription Stand
 		MeiTabHint: Click to step over
-		EquipAction: BIND
-		UnequipAction: RELEASE
-		EquipPending: AWAITING
-		EquipChanged: "{0} is now bound"
-		Unequipped: The wraith slot is empty
-		EquippedActive: Bound
+		RegisterTabText: Ghost Register
+		RegisterTabHint: Click to read
 	}
 
 	OniMeiUI: {
@@ -584,8 +596,8 @@ OnikiriText: {
 		BurdenLabel: Price
 		CurrentMark: Present
 		GoldMark: Gold Inlay
-		RegisterTabText: Ghost Register
-		RegisterTabHint: Click to step over
+		SigilTabText: Sigil Wheel
+		SigilTabHint: Click to step over
 		TrayTitle: Satchel Rubbings
 		TrayEmpty: No rubbing for this seat in your satchel. Fan ribs of owned mei still carve
 		CodexTabText: Mei Codex
@@ -606,9 +618,9 @@ OnikiriText: {
 		HudTitle: Sealing Talisman
 		HudHintFormat: "{0} toggles {1}; click the talisman to open it"
 		HudMeiName: the Inscription Stand
-		HudRegisterName: the Ghost Register
+		HudSigilName: the Sigil Wheel
 		HudDangerLine: Revival nearly full; one more use and it wakes
-		HudWraithFormat: Bound {0} · Revival {1}%
+		HudWraithFormat: Closest {0} · Revival {1}% · {2} on the wheel
 		VigorTitle: Vigor
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: Stance
@@ -637,9 +649,9 @@ OnikiriText: {
 		HudTitle: Vigor & Stance
 		HudBody: While holding Onikiri, the lower-left HUD shows Vigor and Stance as read-only gauges. At half Stance, double-dash then left-click for Annihilating Flash; at full Stance, use Execute to auto-lock into Finale. In Omote, holding Sakura Flight turns you to petals on the spot
 		HudPrompt: Learn these readouts; the sealing talisman is the HUD's only panel control
-		RegisterTitle: Ghost Register
-		RegisterBody: The beam plaque "Ghost Register" and its hanging scroll on the left of the Inscription Stand open the ledger. Usable wraiths and archival fragments are separate; clicking only inspects, while the bind seal equips and release disables every wraith ability
-		RegisterPrompt: Click the highlighted plaque or scroll; inspect the register and wraith slot, then close it to continue
+		SigilTitle: Sigil Wheel
+		SigilBody: The beam plaque "Sigil Wheel" on the left of the Inscription Stand hangs a miniature of the wheel. Six wraiths sit on the outer ring, but the inner triangle has only three seats — pick one on the ring, then click an empty seat to bind it. Wraiths sharing the wheel wake each other, so their revival climbs together. The Ghost Register sits in the slot under the wheel's base; pull it out to read, never to bind
+		SigilPrompt: Click the highlighted plaque or wheel; learn the outer ring and the three seats, then close it to continue
 		MeiTitle: Inscription Stand
 		MeiBody: The sealing talisman is the HUD's only panel control and opens the Inscription Stand by default. The blade takes an inscription at three places — tang, groove, and horimono — and each one carries a bestowal and a price. Click a slot to fan out the chisel ribs; the chisels already in your pack sit in the tray below
 		MeiPrompt: Press {0} or click the highlighted talisman to open the stand, then learn the three slots
@@ -677,7 +689,7 @@ OnikiriText: {
 		AssistBtn: Demonstrate
 		RetryBtn: Retry
 		NextBtn: Understood
-		OpenRegisterBtn: Open Register
+		OpenSigilBtn: Open Wheel
 		OpenMeiBtn: Open Stand
 		OpenCodexBtn: Read Codex
 		SkipBtn: Skip

@@ -1,4 +1,6 @@
+using CalamityOverhaul.Content.Wraiths.Abilities.GhostRains;
 using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Wraiths.Marks;
 using CalamityOverhaul.Content.Wraiths.Projectiles;
 using System;
 using Terraria;
@@ -10,28 +12,42 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities
     {
         internal const string Key = "GhostHand";
         internal const float GrabRange = 300f;
-        /// <summary>同时探出的枯手上限，按范围内猎物数量伸手</summary>
-        internal const int MaxHands = 3;
+        /// <summary>手位数组容量，取雨中上限</summary>
+        internal const int MaxHands = 5;
+        /// <summary>常态同时探出的枯手上限</summary>
+        internal const int BaseHands = 3;
 
-        /// <summary>可抓判定：boss 亦可被攥住；按目标体型放宽中心距，巨物不因判定尺寸免疫</summary>
-        internal static bool CanGrab(NPC npc, Vector2 center) {
+        /// <summary>「雨里伸手」：同场有鬼雨时手位放宽到 <see cref="MaxHands"/></summary>
+        internal static int HandCap(WraithCoven coven)
+            => (coven & WraithCoven.GhostRain) != 0 ? MaxHands : BaseHands;
+
+        /// <summary>
+        /// 可抓判定：boss 亦可被攥住；按目标体型放宽中心距，巨物不因判定尺寸免疫。<br/>
+        /// 淋着雨的目标改吃雨域半径——雨落到哪，手就能从哪伸出来
+        /// </summary>
+        internal static bool CanGrab(NPC npc, Vector2 center, int owner = -1) {
             if (!npc.CanBeChasedBy() || npc.HasBuff<Buffs.GhostGripDebuff>()) {
                 return false;
             }
-            float range = GrabRange + MathF.Min(npc.width, npc.height) * 0.5f;
-            return Vector2.DistanceSquared(npc.Center, center) < range * range;
+            return Vector2.DistanceSquared(npc.Center, center) < GrabRangeSq(npc, owner);
         }
 
-        /// <summary>范围内可猎目标数（含已被攥住者，防手数抖动），封顶 <see cref="MaxHands"/></summary>
-        internal static int CountPrey(Vector2 center) {
+        private static float GrabRangeSq(NPC npc, int owner) {
+            float baseRange = owner >= 0 && WraithMarks.Has(npc, WraithMark.Soaked, owner)
+                ? GhostRainStorm.Radius : GrabRange;
+            float range = baseRange + MathF.Min(npc.width, npc.height) * 0.5f;
+            return range * range;
+        }
+
+        /// <summary>范围内可猎目标数（含已被攥住者，防手数抖动），封顶 <paramref name="cap"/></summary>
+        internal static int CountPrey(Vector2 center, int owner, int cap) {
             int count = 0;
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (!npc.CanBeChasedBy()) {
                     continue;
                 }
-                float range = GrabRange + MathF.Min(npc.width, npc.height) * 0.5f;
-                if (Vector2.DistanceSquared(npc.Center, center) < range * range
-                    && ++count >= MaxHands) {
+                if (Vector2.DistanceSquared(npc.Center, center) < GrabRangeSq(npc, owner)
+                    && ++count >= cap) {
                     break;
                 }
             }
@@ -44,6 +60,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities
                 return;
             }
             int projectileType = ModContent.ProjectileType<GhostHandProj>();
+            int cap = HandCap(context.Coven);
 
             //盘点已存在的手位，缺哪个补哪个
             Span<bool> slotTaken = stackalloc bool[MaxHands];
@@ -60,12 +77,12 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities
                 handCount++;
             }
 
-            int desired = Math.Clamp(CountPrey(player.Center), 1, MaxHands);
+            int desired = Math.Clamp(CountPrey(player.Center, player.whoAmI, cap), 1, cap);
             if (handCount >= desired) {
                 return;
             }
 
-            for (int slot = 0; slot < MaxHands && handCount < desired; slot++) {
+            for (int slot = 0; slot < cap && handCount < desired; slot++) {
                 if (slotTaken[slot]) {
                     continue;
                 }

@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Scenarios.OldNet.Gen;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -79,6 +80,34 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
             int vpW = gd.Viewport.Width;
             int vpH = gd.Viewport.Height;
             float t = (float)Main.timeForVisualEffects / 60f;
+
+            //shader 路径：四层天幕（渐变/双层视差星野/数据云/墙侧余晖）一 pass 完成
+            Effect sky = EffectLoader.OldNetSky?.Value;
+            if (sky != null) {
+                //墙右缘屏幕x：远离墙时为大负值，余晖自然消失（与 BlackwallRender 同口径）
+                float wallScreenX = Vector2.Transform(
+                    new Vector2(OldNetMetrics.WallCols * 16f, 0f) - Main.screenPosition,
+                    Main.GameViewMatrix.TransformationMatrix).X;
+
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
+                    SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
+                sky.Parameters["uTime"]?.SetValue(t);
+                sky.Parameters["uIntensity"]?.SetValue(intensity);
+                sky.Parameters["uScreenSize"]?.SetValue(new Vector2(vpW, vpH));
+                sky.Parameters["uCam"]?.SetValue(Main.screenPosition);
+                sky.Parameters["uSeed"]?.SetValue(OldNetMetrics.MacroSeed * 0.001f);
+                sky.Parameters["uWallScreenX"]?.SetValue(wallScreenX);
+                sky.CurrentTechnique.Passes[0].Apply();
+                spriteBatch.Draw(px, new Rectangle(0, 0, vpW, vpH), Color.White);
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                    Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
+                    null, Main.BackgroundViewMatrix.TransformationMatrix);
+                return;
+            }
+
+            //CPU 回退：渐变带 + 星野双重循环
 
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,

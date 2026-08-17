@@ -258,6 +258,14 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool GuideSeen;
     }
 
+    /// <summary>旧网深潜引导与首潜委托进度；随玩家存档</summary>
+    public sealed class OldNetGuideData : DataModule
+    {
+        public bool GuideSeen;
+        /// <summary>完成过一次安全登出（首潜委托的完成判据）</summary>
+        public bool DiveCompleted;
+    }
+
     /// <summary>鬼切教程进度；随玩家存档</summary>
     public sealed class OnikiriGuideData : DataModule
     {

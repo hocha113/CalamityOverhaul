@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         /// <summary>换乘进行中(期间两门与两屏交互挂起)</summary>
         public static bool Running => running;
 
-        /// <summary>发起换乘;to=目的驿站。东去改铭台,西回点鬼簿</summary>
+        /// <summary>发起换乘;to=目的驿站。东去改铭台,西回结印盘</summary>
         public static void Begin(OniLedgerView to) {
             if (running) {
                 return;
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             opened = true;
             UIHandle incoming = target == OniLedgerView.Mei
                 ? OniMeiUI.Instance
-                : OniRegisterUI.Instance;
+                : OniSigilUI.Instance;
             incoming?.Open();
         }
 

@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Wraiths.Abilities;
 using CalamityOverhaul.Content.Wraiths.Buffs;
 using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Wraiths.Marks;
 using CalamityOverhaul.Content.Wraiths.Runtime;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -94,8 +95,19 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private Vector2 knuckleCenter;
 
         //==== 手位扇形分布（x=身后距离，随朝向翻转）====
-        private static readonly Vector2[] ShoulderFan = [new(28f, -8f), new(14f, -34f), new(42f, 12f)];
-        private static readonly Vector2[] HoverFan = [new(34f, -52f), new(10f, -58f), new(50f, -6f)];
+        //后两位是雨中才伸出的加位，摆得更高更外，与常态三位错开
+        private static readonly Vector2[] ShoulderFan = [
+            new(28f, -8f), new(14f, -34f), new(42f, 12f), new(56f, -26f), new(4f, 20f),
+        ];
+        private static readonly Vector2[] HoverFan = [
+            new(34f, -52f), new(10f, -58f), new(50f, -6f), new(64f, -66f), new(-6f, 34f),
+        ];
+
+        //==== 雨里伸手 ====
+        /// <summary>枯手自雨线垂下的高度：肩挪到目标头顶这么高的雨里</summary>
+        private const float RainLineHeight = 210f;
+        /// <summary>肩位向雨线迁移的缓动，别瞬移过去</summary>
+        private const float RainShoulderEase = 0.14f;
 
         //==== 时长 ====
         private const int InitialScanDelay = 18;
@@ -239,7 +251,38 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 ownerDirection = Owner.direction;
             }
             Vector2 fan = ShoulderFan[handSlot];
-            shoulderPos = Owner.Center + new Vector2(-ownerDirection * fan.X, fan.Y);
+            Vector2 home = Owner.Center + new Vector2(-ownerDirection * fan.X, fan.Y);
+            //「雨里伸手」：淋着雨的猎物够不着时，肩挪到它头顶的雨线上，
+            //手就从雨里垂下来抓——臂展没变，是雨把手送过去的
+            if (TryRainLineShoulder(home, out Vector2 rainAnchor)) {
+                shoulderPos = shoulderPos == Vector2.Zero
+                    ? rainAnchor : Vector2.Lerp(shoulderPos, rainAnchor, RainShoulderEase);
+                return;
+            }
+            shoulderPos = shoulderPos == Vector2.Zero
+                ? home : Vector2.Lerp(shoulderPos, home, RainShoulderEase * 1.6f);
+        }
+
+        private bool TryRainLineShoulder(Vector2 home, out Vector2 anchor) {
+            anchor = default;
+            if (State is HandState.Idle or HandState.Dismissing
+                || targetNPCID < 0 || targetNPCID >= Main.maxNPCs) {
+                return false;
+            }
+            NPC target = Main.npc[targetNPCID];
+            if (!target.active
+                || !WraithMarks.Has(target, WraithMark.Soaked, Projectile.owner)) {
+                return false;
+            }
+            //够得着就照常从身后伸，别为了演出把近身抓也搬到天上
+            float slack = MaxReach * 0.82f;
+            if (Vector2.DistanceSquared(target.Center, home) <= slack * slack) {
+                return false;
+            }
+            Vector2 fan = ShoulderFan[handSlot];
+            anchor = target.Center + new Vector2(fan.X * 0.5f,
+                -RainLineHeight - target.height * 0.5f);
+            return true;
         }
 
         private void Transition(HandState next) {
@@ -333,11 +376,15 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             NPC best = null;
             float bestSq = float.MaxValue;
             foreach (NPC npc in Main.ActiveNPCs) {
-                if (!GhostHandAbility.CanGrab(npc, Owner.Center)
+                if (!GhostHandAbility.CanGrab(npc, Owner.Center, Projectile.owner)
                     || TargetClaimedByOther(npc.whoAmI)) {
                     continue;
                 }
                 float distSq = Vector2.DistanceSquared(npc.Center, Owner.Center);
+                //照见：灯照过的目标在手看来近得多，隔着黑也摸得着
+                if (WraithMarks.Has(npc, WraithMark.Lit, Projectile.owner)) {
+                    distSq *= 0.25f;
+                }
                 if (distSq < bestSq) {
                     bestSq = distSq;
                     best = npc;
@@ -454,6 +501,8 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             //权威端滚动续期，8 帧短债松手即断；捏紧脉冲碾轧
             if (!VaultUtils.isClient && gripAuthorized) {
                 target.AddBuff(ModContent.BuffType<GhostGripDebuff>(), 8);
+                WraithMarks.Apply(target, WraithMark.Gripped, WraithMarks.GrippedTicks,
+                    Revival, Projectile.owner);
                 if (pulseFrame) {
                     ApplyGripDamage(target, PulseDamageMin, PulseDamageMax);
                 }
@@ -500,8 +549,14 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
         /// <summary>权威端碾轧伤害：抓取结算帧的武器伤害快照 × 复苏插值，真近战无击退</summary>
         private void ApplyGripDamage(NPC target, float minFraction, float maxFraction) {
-            int damage = Math.Max(1, (int)(weaponDamageSnapshot
-                * MathHelper.Lerp(minFraction, maxFraction, MathHelper.Clamp(Revival, 0f, 1f))));
+            float fraction = MathHelper.Lerp(minFraction, maxFraction,
+                MathHelper.Clamp(Revival, 0f, 1f));
+            //湿手好使力：雨印越重，碾得越狠
+            float soak = WraithMarks.PowerOf(target, WraithMark.Soaked, Projectile.owner);
+            if (WraithMarks.Has(target, WraithMark.Soaked, Projectile.owner)) {
+                fraction *= MathHelper.Lerp(1.15f, 1.45f, MathHelper.Clamp(soak, 0f, 1f));
+            }
+            int damage = Math.Max(1, (int)(weaponDamageSnapshot * fraction));
             int direction = target.Center.X >= Owner.Center.X ? 1 : -1;
             Owner.ApplyDamageToNPC(target, damage, 0f, direction, false,
                 CWRRef.GetTrueMeleeDamageClass());
@@ -889,7 +944,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             float handTolerance = 96f + MathF.Min(target.width, target.height) * 0.5f;
             int buffType = ModContent.BuffType<GhostGripDebuff>();
             if (!target.active || target.type != targetType || target.buffImmune[buffType]
-                || !GhostHandAbility.CanGrab(target, Owner.Center)
+                || !GhostHandAbility.CanGrab(target, Owner.Center, Projectile.owner)
                 || Vector2.DistanceSquared(Projectile.Center, target.Center)
                     > handTolerance * handTolerance
                 || !WraithAbilityService.TryResolve(Owner, GhostHandAbility.Key,
@@ -910,6 +965,8 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
             //结算帧冻结武器伤害快照，本轮碾轧全程沿用
             weaponDamageSnapshot = Math.Max(1, Owner.GetWeaponDamage(context.VesselItem));
+            WraithMarks.Apply(target, WraithMark.Gripped, WraithMarks.GrippedTicks,
+                context.Revival, Projectile.owner);
             authorityGripCommitted = true;
             lastAuthorityGripTick = Main.GameUpdateCount;
             gripAuthorized = true;

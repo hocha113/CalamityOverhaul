@@ -94,8 +94,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText BurdenLabel { get; private set; }
         public static LocalizedText CurrentMark { get; private set; }
         public static LocalizedText GoldMark { get; private set; }
-        public static LocalizedText RegisterTabText { get; private set; }
-        public static LocalizedText RegisterTabHint { get; private set; }
+        public static LocalizedText SigilTabText { get; private set; }
+        public static LocalizedText SigilTabHint { get; private set; }
         public static LocalizedText CodexTabText { get; private set; }
         public static LocalizedText CodexTabHint { get; private set; }
         public static LocalizedText TrayTitle { get; private set; }
@@ -120,8 +120,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             BurdenLabel = this.GetLocalization(nameof(BurdenLabel), () => "代价");
             CurrentMark = this.GetLocalization(nameof(CurrentMark), () => "现铭");
             GoldMark = this.GetLocalization(nameof(GoldMark), () => "金象嵌");
-            RegisterTabText = this.GetLocalization(nameof(RegisterTabText), () => "点鬼簿");
-            RegisterTabHint = this.GetLocalization(nameof(RegisterTabHint), () => "点击 移步");
+            SigilTabText = this.GetLocalization(nameof(SigilTabText), () => "结印盘");
+            SigilTabHint = this.GetLocalization(nameof(SigilTabHint), () => "点击 移步");
             CodexTabText = this.GetLocalization(nameof(CodexTabText), () => "铭谱");
             CodexTabHint = this.GetLocalization(nameof(CodexTabHint), () => "点击 展读");
             TrayTitle = this.GetLocalization(nameof(TrayTitle), () => "行囊錾样");
@@ -203,9 +203,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private Rectangle trayRect;
         private bool trayPageLeftHover;
         private bool trayPageRightHover;
-        //吊挂卷轴:回点鬼簿的门(对面器物的微缩,挂在布左上的梁下)
-        private readonly OniHangingSwitch registerSwitch = new(SoundID.MenuTick with { Pitch = -0.2f, Volume = 0.45f });
-        private Vector2 registerSwitchAnchor;
+        //吊挂结印盘:去结印盘的门(对面器物的微缩,挂在布左上的梁下)
+        private readonly OniHangingSwitch sigilSwitch = new(SoundID.MenuTick with { Pitch = -0.2f, Volume = 0.45f });
+        private Vector2 sigilSwitchAnchor;
 
         //====动画状态====
         internal float ShaderTime;
@@ -283,7 +283,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             lastTypedChars = -1;
             tagHeightEase = 0f;
             postRiteNameEase = 1f;
-            registerSwitch.Reset();
+            sigilSwitch.Reset();
             codexHover = 0f;
             codexWasHovered = false;
             songCooldown = Main.rand.Next(700, 1400);
@@ -401,21 +401,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Vector2 tagTop = closeTagRope.End;
             closeTagRect = new Rectangle((int)(tagTop.X - 16f), (int)tagTop.Y - 2, 32, 48);
 
-            //吊挂卷轴:点击预演到帧即发起换乘;役鬼休眠时回声更急;换乘中挂起交互
-            //驿牌并入命中——梁重做后点「点鬼簿」牌文是自然手势
+            //吊挂结印盘:点击预演到帧即发起换乘;盘上有鬼将醒时回声更急;换乘中挂起交互
+            //驿牌并入命中——梁重做后点「结印盘」牌文是自然手势
             bool doorOk = IsOpen && a > 0.9f && !Rite.Active && !OniLedgerSwapFX.Running;
-            bool openRegister = registerSwitch.Update(registerSwitchAnchor, MousePosition,
-                doorOk, ShaderTime, OnikiriUITheme.HangScrollHit,
+            bool openSigil = sigilSwitch.Update(sigilSwitchAnchor, MousePosition,
+                doorOk, ShaderTime, OnikiriUITheme.HangSigilHit,
                 keyLeftPressState, OniRegistry.IsEquippedInDanger,
                 OniLedgerBeam.DoorBoardHit(OniLedgerView.Mei));
             if (Tutorial.OnikiriTutorialLead.IsActive) {
                 Tutorial.OnikiriTutorialTargets.Publish(
-                    Tutorial.OnikiriTutorialTargets.Tag_RegisterSwitch, registerSwitch.HitBox);
+                    Tutorial.OnikiriTutorialTargets.Tag_SigilSwitch, sigilSwitch.HitBox);
                 Tutorial.OnikiriTutorialTargets.Publish(
                     Tutorial.OnikiriTutorialTargets.Tag_MeiCodex, codexNicheRect);
             }
-            if (openRegister) {
-                OniLedgerSwapFX.Begin(OniLedgerView.Register);
+            if (openSigil) {
+                OniLedgerSwapFX.Begin(OniLedgerView.Sigil);
             }
 
             //鏨仪式推进:期间吞交互,点击可跳;锚=检分镜头不动点的屏幕位
@@ -542,8 +542,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 (int)bookletSize.X, (int)bookletSize.Y);
 
             nameColTop = new Vector2(sw * OnikiriUITheme.MeiNameColXRatio, sh * 0.16f);
-            //顶梁门钩:卷轴挂在梁左钩;纳刀牌系在梁下缘右肩(绳结绕梁,不再没入屏顶)
-            registerSwitchAnchor = OniLedgerBeam.DoorAnchor(OniLedgerView.Mei);
+            //顶梁门钩:结印盘挂在梁左钩;纳刀牌系在梁下缘右肩(绳结绕梁,不再没入屏顶)
+            sigilSwitchAnchor = OniLedgerBeam.DoorAnchor(OniLedgerView.Mei);
             closeTagAnchor = new Vector2(sw * OnikiriUITheme.MeiHangRightXRatio, OniLedgerBeam.Height - 2f);
 
             //换乘横滑:主体随行进方向让位,顶梁/门挂物不加
@@ -756,7 +756,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 (int)(OnikiriUITheme.UIScreenH * 0.6f));
             bool trayHit = selectedSlot >= 0 && fanEase > 0.25f && trayRect.Contains(mp);
             if (!stand.Contains(mp) && !tagRect.Contains(mp) && !trayHit && !nameHit.Contains(mp)
-                && !registerSwitch.Hovering) {
+                && !sigilSwitch.Hovering) {
                 Close();
             }
         }
@@ -1131,7 +1131,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float chromeA = contentA * (1f - zoomK * 0.85f);
 
             //====顶梁(同一夜屋的持续骨架,不随换乘滑移)====
-            OniLedgerBeam.Draw(spriteBatch, a, ShaderTime, OniLedgerView.Mei, registerSwitch.HoverEase);
+            OniLedgerBeam.Draw(spriteBatch, a, ShaderTime, OniLedgerView.Mei, sigilSwitch.HoverEase);
 
             //====台账主板(题字入题头,状态行入脚注,板底带一格书棚)====
             OniMeiRenderer.DrawLedgerPanel(spriteBatch, font, boardRect, panelRect, TitleText.Value,
@@ -1210,8 +1210,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 DrawStatusLine(spriteBatch, font, chromeA);
                 OniRegisterRenderer.DrawCloseTag(spriteBatch, font, closeTagRope, chromeA, closeTagHover,
                     GlobalTimer, CloseTagText.Value);
-                OniMeiRenderer.DrawHangingScroll(spriteBatch, registerSwitch, chromeA, GlobalTimer,
-                    OniRegistry.IsEquippedInDanger);
+                OniMeiRenderer.DrawHangingSigil(spriteBatch, sigilSwitch, chromeA, GlobalTimer,
+                    OniRegistry.IsEquippedInDanger, OniRegistry.EquippedCount);
             }
 
             //====錾样匣====
@@ -1222,9 +1222,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             particles.Draw(spriteBatch, a);
 
             //吊挂卷轴的悬浮说明(最后画,压在一切之上)
-            if (registerSwitch.HoverEase > 0.05f) {
+            if (sigilSwitch.HoverEase > 0.05f) {
                 OniMeiRenderer.DrawSwitchHoverTag(spriteBatch, MousePosition,
-                    RegisterTabText.Value, RegisterTabHint.Value, a * registerSwitch.HoverEase);
+                    SigilTabText.Value, SigilTabHint.Value, a * sigilSwitch.HoverEase);
             }
             else if (codexHover > 0.05f) {
                 OniMeiRenderer.DrawSwitchHoverTag(spriteBatch, MousePosition,

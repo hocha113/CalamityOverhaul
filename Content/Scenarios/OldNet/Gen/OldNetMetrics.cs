@@ -102,6 +102,11 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
         //锚位与竖井/彼此的最小间距（列），栅格预留兜底
         internal const int AnchorPadding = 10;
 
+        //════════ 入口（M2c） ════════
+
+        //L3 领域下潜：接管中按住下潜键的蓄力帧数
+        internal const int L3DiveHoldTicks = 120;
+
         //════════ RAM 距离底噪（每秒） ════════
         //标定基准：基础 RAM 8 / 恢复 0.1s（RamSystem.DefaultBase*）
         //墙脚 SafeCols 内零消耗；此后每离墙 100 格 +DrainPer100，
@@ -224,8 +229,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
         internal const int NodePlainCount = 34;
         internal const int NodeEncryptCount = 10;
         internal const int NodeEventCount = 2;
-        //地下房间普通节点上限（房间建造期机会性放置）
-        internal const int NodeUnderPlainCount = 12;
+        //结构内普通节点上限（房间/prefab/桅杆顶/方舱共享配额，建造期机会性放置）
+        internal const int NodeUnderPlainCount = 22;
         //衰减区地表加密节点（高险高值）
         internal const int NodeFadeEncryptCount = 6;
         //加密节点：引导时长、价值倍数、站桩半径
@@ -241,6 +246,48 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
         internal const int SealBoxNodeMax = 10;
         //事件节点离封锁区最小距离（列）：拉闸的人要跑一段才能吃到糖
         internal const int EventToSealMinCols = 80;
+
+        //════════════════ M3 常量区（内容扩容） ════════════════
+
+        //──── 回声考古（时停显影：NoiseFreezeMul 低噪路线的报偿） ────
+        //废墟+衰减区撒布数
+        internal const int EchoNodeCount = 7;
+        //回声产出倍数；采集零噪音
+        internal const int EchoShardMul = 2;
+
+        //──── 深潜模块缓存（CanGenerateInLabChest=false 保留池的兑现口） ────
+        //衰减区限定
+        internal const int CacheCount = 3;
+        //开缓存一次性噪音
+        internal const float NoiseCacheOpen = 12f;
+
+        //──── 哨戒炮塔 ICE（地下机房与深层的常驻威胁） ────
+        internal const int TurretLife = 900;
+        internal const int TurretDefense = 24;
+        //扫描半径与锁定充能
+        internal const float TurretScanRadius = 300f;
+        internal const int TurretLockChargeTicks = 50;
+        //锁定后射击间隔与弹速
+        internal const int TurretFireInterval = 90;
+        internal const float TurretBoltSpeed = 6.5f;
+        internal const int TurretBoltDamage = 18;
+        //命中追加 RAM 扣减（ICE 家族的牙）
+        internal const float TurretBoltRam = 1.5f;
+        //锁定完成一次性噪音 / 击毁一次性噪音
+        internal const float NoiseTurretSpotted = 10f;
+        internal const float NoiseTurretKill = 12f;
+        //房间布防概率（浅层）；深层房间必装
+        internal const float TurretRoomChance = 0.45f;
+
+        //──── 疯域（衰减区规则异常） ────
+        //衰减区内噪音不自然衰减：网在这里永不平静（规则挂 OldNetPlayer）
+
+        //──── 高空巨构（Z4） ────
+        internal const int AntennaCount = 3;
+        internal const int HulkCount = 3;
+        //巨构悬浮行带
+        internal const int HulkRowMin = 36;
+        internal const int HulkRowMax = 88;
 
         internal static readonly DistanceBand[] Bands;
 

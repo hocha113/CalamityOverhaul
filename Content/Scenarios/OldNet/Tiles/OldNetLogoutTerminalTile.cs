@@ -52,6 +52,17 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            //shader 路径：上行天线柱（源头球根/顶端撕散在着色器内）
+            if (Renders.OldNetTileFX.TerminalShaderReady) {
+                Renders.OldNetTileFX.Columns.Add(new Renders.OldNetTileFX.ColumnEntry {
+                    BasePos = new Vector2(i * 16 + 8, j * 16 + 16),
+                    Relay = false,
+                    Seed = i * 0.53f,
+                });
+                return false;
+            }
+
+            //CPU 回退：三层同轴光柱
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null || px.IsDisposed) {
                 return false;

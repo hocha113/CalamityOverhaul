@@ -32,9 +32,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         public static LocalizedText HudTitle { get; private set; }
         public static LocalizedText HudBody { get; private set; }
         public static LocalizedText HudPrompt { get; private set; }
-        public static LocalizedText RegisterTitle { get; private set; }
-        public static LocalizedText RegisterBody { get; private set; }
-        public static LocalizedText RegisterPrompt { get; private set; }
+        public static LocalizedText SigilTitle { get; private set; }
+        public static LocalizedText SigilBody { get; private set; }
+        public static LocalizedText SigilPrompt { get; private set; }
         public static LocalizedText MeiTitle { get; private set; }
         public static LocalizedText MeiBody { get; private set; }
         public static LocalizedText MeiPrompt { get; private set; }
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         public static LocalizedText AssistBtn { get; private set; }
         public static LocalizedText RetryBtn { get; private set; }
         public static LocalizedText NextBtn { get; private set; }
-        public static LocalizedText OpenRegisterBtn { get; private set; }
+        public static LocalizedText OpenSigilBtn { get; private set; }
         public static LocalizedText OpenMeiBtn { get; private set; }
         public static LocalizedText OpenCodexBtn { get; private set; }
         public static LocalizedText SkipBtn { get; private set; }
@@ -116,9 +116,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "气力与架势");
             HudBody = this.GetLocalization(nameof(HudBody), () => "手持鬼切时，左下角常驻气力笔触与架势鞘");
             HudPrompt = this.GetLocalization(nameof(HudPrompt), () => "认一下这组读数");
-            RegisterTitle = this.GetLocalization(nameof(RegisterTitle), () => "点鬼簿");
-            RegisterBody = this.GetLocalization(nameof(RegisterBody), () => "改铭台顶梁左侧钉着「点鬼簿」驿牌,牌下悬卷");
-            RegisterPrompt = this.GetLocalization(nameof(RegisterPrompt), () => "点高亮驿牌或卷轴移步后再收卷继续");
+            SigilTitle = this.GetLocalization(nameof(SigilTitle), () => "结印盘");
+            SigilBody = this.GetLocalization(nameof(SigilBody), () => "改铭台顶梁左侧钉着「结印盘」驿牌,牌下悬盘");
+            SigilPrompt = this.GetLocalization(nameof(SigilPrompt), () => "点高亮驿牌或盘移步后再收盘继续");
             MeiTitle = this.GetLocalization(nameof(MeiTitle), () => "改铭台");
             MeiBody = this.GetLocalization(nameof(MeiBody), () => "封印札是 HUD 的界面入口");
             MeiPrompt = this.GetLocalization(nameof(MeiPrompt), () => "按 {0} 或点封印札打开改铭台");
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             AssistBtn = this.GetLocalization(nameof(AssistBtn), () => "替我演示");
             RetryBtn = this.GetLocalization(nameof(RetryBtn), () => "重试");
             NextBtn = this.GetLocalization(nameof(NextBtn), () => "已知晓");
-            OpenRegisterBtn = this.GetLocalization(nameof(OpenRegisterBtn), () => "开点鬼簿");
+            OpenSigilBtn = this.GetLocalization(nameof(OpenSigilBtn), () => "开结印盘");
             OpenMeiBtn = this.GetLocalization(nameof(OpenMeiBtn), () => "开改铭台");
             OpenCodexBtn = this.GetLocalization(nameof(OpenCodexBtn), () => "展读铭谱");
             SkipBtn = this.GetLocalization(nameof(SkipBtn), () => "跳过");

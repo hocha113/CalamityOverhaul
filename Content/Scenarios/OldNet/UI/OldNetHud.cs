@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Scenarios.OldNet.Gen;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Scenarios.OldNet.Gen;
 using CalamityOverhaul.Content.Scenarios.OldNet.NPCs;
 using CalamityOverhaul.Content.UIs.HudStack;
 using InnoVault.UIHandles;
@@ -26,7 +27,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
         int IBottomLeftHud.HudStackOrder => 2;
         Vector2 IBottomLeftHud.HudStackAnchor => NaturalAnchor;
         float IBottomLeftHud.HudStackTopExtent => 34f;
-        float IBottomLeftHud.HudStackBottomExtent => 30f;
+        //底沿含深度/底噪读数行（M2c）
+        float IBottomLeftHud.HudStackBottomExtent => 46f;
         #endregion
 
         #region 布局与配色
@@ -56,6 +58,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
         //档位跃迁闪光
         private int lastTier;
         private float tierFlash;
+        //分带横幅：跨带时中上淡入淡出（-2=首帧哨兵，进图不弹）
+        private int lastBandIndex = -2;
+        private int bannerTimer;
+        private string bannerText;
 
         /// <summary>账本读数红闪（满载拒收时由 OldNetPlayer 调）</summary>
         internal static void FlashLedger() {
@@ -85,6 +91,23 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
             if (ledgerFlash > 0) {
                 ledgerFlash--;
             }
+
+            //──── 分带横幅：跨带触发（首帧只记不弹）────
+            int band = OldNetMetrics.BandIndexForColumn((int)(Main.LocalPlayer.Center.X / 16f));
+            if (band != lastBandIndex) {
+                if (lastBandIndex != -2 && band >= 1) {
+                    bannerText = band switch {
+                        1 => OldNetTexts.OldNetBandFoot.Value,
+                        2 => OldNetTexts.OldNetBandRuin.Value,
+                        _ => OldNetTexts.OldNetBandFade.Value,
+                    };
+                    bannerTimer = 210;
+                }
+                lastBandIndex = band;
+            }
+            if (bannerTimer > 0) {
+                bannerTimer--;
+            }
         }
 
         public override void Draw(SpriteBatch sb) {
@@ -99,13 +122,90 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
             float frac = MathHelper.Clamp(displayNoise / 100f, 0f, 1f);
             Color noiseCol = Color.Lerp(ColdCyan, EmberRed, frac);
 
-            DrawTrack(sb, px, barTopLeft);
-            DrawFill(sb, px, barTopLeft, frac);
+            //富层走 shader（暗钢切角底板 + 数据流噪音条），锐利前景仍归 CPU；缺编回退原绘制
+            Effect hudFx = EffectLoader.OldNetHud?.Value;
+            if (hudFx != null) {
+                DrawShaderPlate(sb, px, hudFx, barTopLeft, frac, session);
+            }
+            else {
+                DrawTrack(sb, px, barTopLeft);
+                DrawFill(sb, px, barTopLeft, frac);
+            }
             DrawTierTicks(sb, px, font, barTopLeft);
             DrawTipGlow(sb, barTopLeft, frac, noiseCol);
             DrawHeader(sb, px, font, barTopLeft, session, noiseCol);
             DrawLedgerLine(sb, font, barTopLeft, session);
+            DrawDepthLine(sb, font, barTopLeft);
             DrawHunterPips(sb, px, font, barTopLeft);
+            DrawBandBanner(sb, font);
+        }
+
+        //条下第二行：深度读数 + 回墙方向 + 当前距离底噪（2400 列单锚点世界的定向读数）
+        private static void DrawDepthLine(SpriteBatch sb, DynamicSpriteFont font, Vector2 tl) {
+            int tileX = (int)(Main.LocalPlayer.Center.X / 16f);
+            int depthCols = Math.Max(tileX - OldNetMetrics.WallCols, 0);
+            float drain = OldNetMetrics.DrainPerSecondAt(tileX);
+            string text = drain > 0f
+                ? $"<< DEPTH {depthCols:D4} // -{drain:0.00} RAM/s"
+                : $"<< DEPTH {depthCols:D4} // LINK SAFE";
+            //底噪越贵越向黑墙红靠
+            float severity = MathHelper.Clamp(drain / 0.8f, 0f, 1f);
+            Color col = drain > 0f
+                ? Color.Lerp(TextDim, EmberRed, 0.25f + severity * 0.6f)
+                : TextDim * 0.75f;
+            Utils.DrawBorderString(sb, text, tl + new Vector2(0f, BarH + 30f), col, 0.58f);
+        }
+
+        //跨带横幅：中上淡入淡出
+        private void DrawBandBanner(SpriteBatch sb, DynamicSpriteFont font) {
+            if (bannerTimer <= 0 || string.IsNullOrEmpty(bannerText)) {
+                return;
+            }
+            //前 30 帧淡入、后 60 帧淡出
+            float fade = MathHelper.Clamp((210 - bannerTimer) / 30f, 0f, 1f)
+                * MathHelper.Clamp(bannerTimer / 60f, 0f, 1f);
+            float screenW = Terraria.GameInput.PlayerInput.RealScreenWidth / Main.UIScale;
+            Vector2 size = font.MeasureString(bannerText) * 0.92f;
+            Vector2 pos = new((screenW - size.X) * 0.5f, 110f);
+            //横幅底衬线
+            Texture2D px = VaultAsset.placeholder2.Value;
+            sb.Draw(px, new Rectangle((int)(pos.X - 18f), (int)(pos.Y + size.Y + 6f),
+                (int)(size.X + 36f), 1), ColdCyan * (0.45f * fade));
+            Utils.DrawBorderString(sb, bannerText, pos, ColdCyan * fade, 0.92f);
+        }
+
+        //shader 富层：切角底板罩住 HUD 簇 + 数据流噪音条（Immediate 后恢复 Deferred/UIScaleMatrix）
+        private void DrawShaderPlate(SpriteBatch sb, Texture2D px, Effect fx,
+            Vector2 tl, float frac, OldNetPlayer session) {
+            var panelRect = new Rectangle((int)(tl.X - 12f), (int)(tl.Y - 30f), (int)BarW + 24, 78);
+            var barRect = new Rectangle((int)tl.X, (int)tl.Y, (int)BarW, (int)BarH);
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+            //共享参数化 shader：每个技法调用点全参数重设
+            fx.CurrentTechnique = fx.Techniques["TechPanel"];
+            fx.Parameters["uTime"]?.SetValue(timer);
+            fx.Parameters["uPanelSize"]?.SetValue(new Vector2(panelRect.Width, panelRect.Height));
+            fx.Parameters["uFrac"]?.SetValue(frac);
+            fx.Parameters["uTier"]?.SetValue((float)session.NoiseTier);
+            fx.Parameters["uAlpha"]?.SetValue(1f);
+            fx.CurrentTechnique.Passes[0].Apply();
+            sb.Draw(px, panelRect, Color.White);
+
+            fx.CurrentTechnique = fx.Techniques["TechBar"];
+            fx.Parameters["uTime"]?.SetValue(timer);
+            fx.Parameters["uPanelSize"]?.SetValue(new Vector2(barRect.Width, barRect.Height));
+            fx.Parameters["uFrac"]?.SetValue(frac);
+            fx.Parameters["uTier"]?.SetValue((float)session.NoiseTier);
+            fx.Parameters["uAlpha"]?.SetValue(1f);
+            fx.CurrentTechnique.Passes[0].Apply();
+            sb.Draw(px, barRect, Color.White);
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
         }
 
         //暗色轨道 + 两端封口刻线

@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Wraiths.Abilities;
 using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Wraiths.Marks;
 using CalamityOverhaul.Content.Wraiths.Runtime;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -613,6 +614,9 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             if (target.life >= lifeBefore) {
                 return false;
             }
+            //刀口敞着：断印留给同场其他鬼灌进去
+            WraithMarks.Apply(target, WraithMark.Severed, WraithMarks.SeveredTicks,
+                revival, Projectile.owner);
             return WraithAbilityService.TryCommitUse(in context);
         }
 
@@ -697,6 +701,15 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
         private NPC FindTarget() {
             Vector2 origin = Owner.Center;
+            //按住了再砍：被枯手攥住的靶子速度归零，优先扑它
+            NPC pinned = origin.FindClosestNPC(
+                HeadlessShadeAbility.HuntRange,
+                ignoreTiles: true,
+                chasedByNPC: npc => HeadlessShadeAbility.CanHunt(npc)
+                    && WraithMarks.Has(npc, WraithMark.Gripped, Projectile.owner));
+            if (pinned != null) {
+                return pinned;
+            }
             NPC boss = origin.FindClosestNPC(
                 HeadlessShadeAbility.HuntRange,
                 ignoreTiles: true,

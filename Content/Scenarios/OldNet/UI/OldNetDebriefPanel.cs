@@ -59,6 +59,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
         public static LocalizedText DebriefExitDeath { get; private set; }
         public static LocalizedText DebriefLost { get; private set; }
         public static LocalizedText DebriefContinue { get; private set; }
+        public static LocalizedText DebriefMechHint { get; private set; }
 
         public override void SetStaticDefaults() {
             DebriefSubtitle = this.GetLocalization(nameof(DebriefSubtitle), () => "链路战报");
@@ -72,6 +73,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
             DebriefExitDeath = this.GetLocalization(nameof(DebriefExitDeath), () => "构念崩解——链路烧断");
             DebriefLost = this.GetLocalization(nameof(DebriefLost), () => "{0} 枚未铭刻碎片已烧毁");
             DebriefContinue = this.GetLocalization(nameof(DebriefContinue), () => "继续");
+            DebriefMechHint = this.GetLocalization(nameof(DebriefMechHint),
+                () => "未铭刻的收获只活在链路里——经中继站或登出终端铭刻后才真正属于你");
         }
 
         //════════ 静态战报缓存 ════════
@@ -108,7 +111,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
         private enum Phase { Hidden, FadeIn, Idle, FadeOut }
 
         private const int PanelW = 470;
-        private const int PanelH = 322;
+        private const int PanelH = 348;
 
         private static readonly Color ColdCyan = new(140, 200, 210);
         private static readonly Color EmberRed = new(235, 64, 44);
@@ -295,6 +298,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
                 Utils.DrawBorderString(sb, lost, new Vector2(x0 + (PanelW - lostSz.X) * 0.5f, exitY + 24f),
                     Color.Lerp(EmberRed, TextDim, 0.45f) * alpha, 0.62f);
             }
+
+            //机制注脚：铭刻语义的一行常驻解释（首潜引导的收尾复读）
+            string hint = DebriefMechHint.Value;
+            Vector2 hintSz = body.MeasureString(hint) * 0.56f;
+            Utils.DrawBorderString(sb, hint,
+                new Vector2(x0 + (PanelW - hintSz.X) * 0.5f, panelRect.Bottom - 76f),
+                TextDim * (0.7f * alpha), 0.56f);
 
             //CONTINUE 键
             const int btnW = 150;

@@ -102,11 +102,11 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
                 colors[5] = HackTheme.TextDim;
             }
 
-            //7 当前役鬼与复苏度；休眠中改显示剩余秒数
+            //7 盘上最凶那只役鬼与复苏度；休眠中改显示剩余秒数
             labels[6] = SelfRigScanText.WraithLabel.Value;
             WraithPlayer wraith = player.GetModPlayer<WraithPlayer>();
             SelfRigPlayer rig = player.GetModPlayer<SelfRigPlayer>();
-            string key = wraith.EquippedWraithKey;
+            string key = wraith.HighestRevivalKey;
             if (rig.DormantFrames > 0 && !string.IsNullOrEmpty(rig.DormantKey)) {
                 values[6] = SelfRigScanText.DormantFormat.Format(
                     (rig.DormantFrames + 59) / 60);

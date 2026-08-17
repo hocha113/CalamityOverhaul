@@ -52,3 +52,22 @@ System: {
 	RevivalBrink: The talisman is too hot to hold
 	RevivalHudBrink: One more use and it wakes
 }
+
+Coven: {
+	RainHandName: Reach From The Rain
+	RainHandNote: Soaked prey no longer sits beyond arm's reach — the withered hand hangs down from the rainline above it. Up to five hands reach out at once in the rain, and the crush grows heavier with the downpour
+	RainShadeName: Wet Edge
+	RainShadeNote: While the wound the shade tore is still open, every tick of rain-rot on that target is doubled
+	HandShadeName: Held Down, Then Cut
+	HandShadeNote: The shade goes for prey the withered hand has hold of first — its speed is already pinned to zero, so the strike cannot miss
+	LanternHandName: Seen By Lanternlight
+	LanternHandNote: Prey the lantern has lit can be found by the hand even through cover; lantern slashes land 60% heavier on a target already held
+	BrideName: Wedding Hall
+	BrideNote: Prey drawn into the hall at the cup-sharing frame keeps every other mark on it from fading until the hall breaks up
+	ScapeName: Take The Blow
+	ScapeNote: Each time the substitute dies, every other wraith on the wheel drops one step of revival
+	CallName: Calling Each Other
+	CallNote: Wraiths sharing the wheel wake one another: use any of them and the rest gain a little revival. This holds even between two with no signature reaction
+	BurstName: Three Marks Break
+	BurstNote: When three different marks meet on one target, they detonate together as a single hit, and every wraith involved pays one revival
+}

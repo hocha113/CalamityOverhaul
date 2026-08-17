@@ -340,6 +340,20 @@ namespace CalamityOverhaul.Content.Structures
             int tableType = ModContent.TileType<MoldProcessingTableTile>();
             bool tablePlaced = WorldGen.PlaceObject(origin.X + midMin + 4, origin.Y + furnitureY, tableType, mute: true);
 
+            //中舱旧网接入终端：坠舱既是 SHPC 的家也是深潜口——碎片从这里出发也从这里铭刻
+            int accessX = origin.X + midMin + 8;
+            int accessY = origin.Y + furnitureY;
+            Tile accessSlot = Framing.GetTileSafely(accessX, accessY);
+            if (!accessSlot.HasTile) {
+                accessSlot.HasTile = true;
+                accessSlot.TileType = (ushort)ModContent.TileType<Scenarios.OldNet.Tiles.OldNetAccessTerminalTile>();
+                accessSlot.TileFrameX = 0;
+                accessSlot.TileFrameY = 0;
+            }
+            else {
+                CWRMod.Instance.Logger.Warn("[SHPCCradle] OldNet access terminal slot occupied; skipped.");
+            }
+
             //内舱 SHPC 箱（Containers style 13 = 天域箱，见原版 SkywareChest 物品的 placeStyle）
             int shpcChest = WorldGen.PlaceChest(origin.X + innerMin + 2, origin.Y + furnitureY,
                 TileID.Containers, notNearOtherChests: false, style: 13);

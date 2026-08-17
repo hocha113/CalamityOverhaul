@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.Wraiths.Abilities;
 using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Wraiths.Marks;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -326,11 +327,17 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
             bool crit = round.CritChance > 0 && Main.rand.Next(100) < round.CritChance;
             int lifeBefore = target.life;
-            Owner.ApplyDamageToNPC(target, round.Damage, round.Knockback,
+            //照见：攥住的靶子跑不掉，灯斩落得实，这一刀补上碾轧的分量
+            int slashDamage = WraithMarks.Has(target, WraithMark.Gripped, Projectile.owner)
+                ? (int)(round.Damage * 1.6f) : round.Damage;
+            Owner.ApplyDamageToNPC(target, slashDamage, round.Knockback,
                 round.Facing, crit, Projectile.DamageType);
             if (target.life >= lifeBefore) {
                 return false;
             }
+            //灯照见过：照印留给同场其他鬼索敌
+            WraithMarks.Apply(target, WraithMark.Lit, WraithMarks.LitTicks,
+                Revival, Projectile.owner);
 
             if (!round.Paid) {
                 if (!WraithAbilityService.TryCommitUse(in unpaidContext)) {

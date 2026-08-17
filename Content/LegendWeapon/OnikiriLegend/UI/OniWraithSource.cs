@@ -20,11 +20,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        public string EquippedKey {
+        private static readonly string[] slotKeys = new string[OniRegistry.SlotCount];
+
+        public IReadOnlyList<string> SlotKeys {
             get {
-                return TryResolvePlayer(out WraithPlayer wraithPlayer)
-                    ? wraithPlayer.EquippedWraithKey
-                    : string.Empty;
+                if (TryResolvePlayer(out WraithPlayer wraithPlayer)) {
+                    for (int i = 0; i < slotKeys.Length; i++) {
+                        slotKeys[i] = wraithPlayer.SlotKey(i);
+                    }
+                }
+                else {
+                    Array.Fill(slotKeys, string.Empty);
+                }
+                return slotKeys;
             }
         }
 
@@ -36,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        public bool TrySetEquipped(Item sourceItem, string key, Action<bool> completed) {
+        public bool TrySetSlot(Item sourceItem, int slot, string key, Action<bool> completed) {
             Player player = Main.LocalPlayer;
             if (player == null || sourceItem == null || OnikiriData.TryGet(sourceItem) == null) {
                 return false;
@@ -45,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 && (!WraithRegistry.TryGet(key, out WraithDefinition definition) || !definition.CanEquip)) {
                 return false;
             }
-            return WraithNet.RequestEquippedWraith(player, sourceItem, key, success => {
+            return WraithNet.RequestEquippedWraith(player, sourceItem, slot, key, success => {
                 Invalidate();
                 TryRefresh();
                 completed?.Invoke(success);

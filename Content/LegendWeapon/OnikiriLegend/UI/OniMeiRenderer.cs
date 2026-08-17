@@ -1176,6 +1176,111 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
+        //====================== 吊挂结印盘(去结印盘的门) ======================
+
+        //盘微缩的 SVG:归一 [-1,1]。粗笔当盘缘,细笔作六芒与内三角,亮芯作光
+        private const float SigilN = 40f;
+        /// <summary>盘缘:不闭合的一圈,缺口在右上(手工件不是标准圆)</summary>
+        private const string SigilRimD =
+            "M 0.18 -0.965 C 0.62 -0.86 0.965 -0.5 0.965 0 C 0.965 0.533 0.533 0.965 0 0.965"
+            + " C -0.533 0.965 -0.965 0.533 -0.965 0 C -0.965 -0.533 -0.533 -0.965 0 -0.965";
+        /// <summary>六芒:两枚交叠正三角(尖端上/下)</summary>
+        private const string SigilStarD =
+            "M 0 -0.78 L 0.675 0.39 L -0.675 0.39 Z M 0 0.78 L -0.675 -0.39 L 0.675 -0.39 Z";
+        /// <summary>内三角:三个结印位连成的骨</summary>
+        private const string SigilTriD = "M 0 -0.42 L 0.364 0.21 L -0.364 0.21 Z";
+        /// <summary>吊环:盘顶挂在钩上的那一枚铁环</summary>
+        private const string SigilLoopD =
+            "M -0.5 0.5 C -0.5 -0.5 0.5 -0.5 0.5 0.5";
+
+        /// <summary>
+        /// 悬挂的结印盘微缩:对面工位的器物挂在梁钩下作切换门。<br/>
+        /// SVG 曲线笔铺形(开屏按弧长自画);盘上结了几印就亮几枚位印;
+        /// Echo 盘缘走一道朱光(盘那头在动);Ceremony 盘轻旋半格再回正
+        /// </summary>
+        public static void DrawHangingSigil(SpriteBatch sb, OniHangingSwitch sw, float alpha,
+            float time, bool danger, int boundCount) {
+            if (alpha <= 0.01f) {
+                return;
+            }
+            sw.DrawRope(sb, alpha);
+
+            float s = OnikiriUITheme.HangSwitchScale;
+            float rot = sw.Rot;
+            Vector2 top = sw.End;
+            Vector2 down = (MathHelper.PiOver2 + rot).ToRotationVector2();
+            float a = alpha * (0.92f + sw.HoverEase * 0.08f);
+            float lift = 1f + sw.HoverEase * 0.08f;
+            float scale = SigilN * s * lift;
+            //吊环占顶上一小截,盘心再往下一个半径
+            Vector2 loopC = top + down * (7f * s);
+            Vector2 center = top + down * (SigilN * s + 12f * s);
+            Vector2 half = new(0.5f);
+            float reveal = MathHelper.Clamp((alpha - 0.08f) / 0.72f, 0f, 1f);
+            reveal = 1f - (1f - reveal) * (1f - reveal);
+            //预演:盘轻旋半格,像被手拨了一下
+            float c = sw.Ceremony01;
+            float spin = MathF.Sin(c * MathHelper.Pi) * 0.26f;
+            float bodyRot = rot + spin;
+
+            SvgPath rim = SvgPathPen.Path(SigilRimD);
+            SvgPath star = SvgPathPen.Path(SigilStarD);
+            SvgPath tri = SvgPathPen.Path(SigilTriD);
+            SvgPath loop = SvgPathPen.Path(SigilLoopD);
+
+            //挂绪结 + 铁吊环
+            sb.Draw(Pixel, top, PixelSrc, OnikiriUITheme.Seal * a, MathHelper.PiOver4 + rot * 0.4f,
+                half, new Vector2(4.2f) * s, SpriteEffects.None, 0f);
+            SvgPathPen.Stroke(sb, loop, loopC, 7f * s, rot,
+                Color.Lerp(OnikiriUITheme.Ink, Color.Black, 0.2f), 2.2f * s, a * 0.95f);
+
+            //盘影(错位深笔,不做同心放大)
+            Vector2 shadowOff = new(1.6f * s, 2.4f * s);
+            SvgPathPen.Stroke(sb, rim, center + shadowOff, scale, bodyRot,
+                new Color(8, 2, 5), 9f * s, a * 0.42f, 0f, reveal);
+
+            //盘体:黑漆粗笔当缘,顶脊一线受光,内衬一线绯
+            SvgPathPen.Stroke(sb, rim, center, scale, bodyRot,
+                Color.Lerp(OnikiriUITheme.Ink, Color.Black, 0.3f), 7.6f * s, a * 0.97f, 0f, reveal);
+            SvgPathPen.Stroke(sb, rim, center, scale * 0.955f, bodyRot,
+                OnikiriUITheme.Deep, 1.5f * s, a * 0.55f, 0f, reveal);
+            SvgPathPen.Stroke(sb, rim, center, scale * 1.03f, bodyRot,
+                OnikiriUITheme.GoldDeep, 1.1f * s, a * 0.42f, 0f, reveal);
+
+            //六芒与内三角:细笔线稿,盘上结了印内三角才通着
+            SvgPathPen.Stroke(sb, star, center, scale, bodyRot,
+                OnikiriUITheme.Deep, 1.5f * s, a * 0.72f, 0f, reveal);
+            float triAlpha = boundCount >= 3 ? 0.95f : 0.3f + boundCount * 0.2f;
+            SvgPathPen.Stroke(sb, tri, center, scale, bodyRot,
+                boundCount >= 3 ? OnikiriUITheme.Bright : OnikiriUITheme.Dark,
+                1.6f * s, a * triAlpha, 0f, reveal);
+
+            //已结印的位:三枚朱点，按盘上实数点亮
+            for (int i = 0; i < 3; i++) {
+                float ang = -MathHelper.PiOver2 + MathHelper.TwoPi * i / 3f + bodyRot;
+                Vector2 p = center + ang.ToRotationVector2() * (scale * 0.42f);
+                bool lit = i < boundCount;
+                OniBrush.DrawSoftDot(sb, p, (lit ? 3.4f : 2f) * s,
+                    lit ? OnikiriUITheme.Seal : OnikiriUITheme.Dark, a * (lit ? 0.85f : 0.4f));
+            }
+            //盘心:满盘才点合鬼印
+            if (boundCount >= 3) {
+                float breath = 0.5f + 0.5f * MathF.Sin(time * 1.8f);
+                OniBrush.DrawBacklight(sb, center, 14f * s, OnikiriUITheme.Bright,
+                    a * (0.18f + breath * 0.12f));
+                OniBrush.DrawSealGlyph(sb, center, 6f * s, a * 0.9f, time * 0.1f);
+            }
+
+            //====回声:盘缘走一道朱光(将醒时更急)====
+            float echo = sw.Echo01;
+            if (echo > 0.01f) {
+                float pulse = MathF.Sin(echo * MathHelper.Pi);
+                SvgPathPen.StrokeRunner(sb, rim, center, scale, bodyRot,
+                    danger ? OnikiriUITheme.Bright : OnikiriUITheme.Seal, 2.6f * s,
+                    a * 0.6f * pulse, echo, 0.18f, OnikiriUITheme.HotWhite);
+            }
+        }
+
         /// <summary>切换门悬浮说明:小裱墨牌(跟随光标),题名+移步提示;两屏共用</summary>
         public static void DrawSwitchHoverTag(SpriteBatch sb, Vector2 mouse,
             string title, string hint, float alpha) {

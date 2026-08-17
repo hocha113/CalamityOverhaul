@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
 
         private int checkTimer;
         private bool patrolsSeeded;
+        private bool turretsSeeded;
         private int lastTier;
         private bool cleanupWave;
         private int reinforceTimer;
@@ -53,6 +54,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
         private void ResetSession() {
             checkTimer = 0;
             patrolsSeeded = false;
+            turretsSeeded = false;
             lastTier = 0;
             cleanupWave = false;
             reinforceTimer = 0;
@@ -76,6 +78,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
             if (!patrolsSeeded) {
                 patrolsSeeded = true;
                 SeedPatrols();
+            }
+            if (!turretsSeeded) {
+                turretsSeeded = true;
+                SeedTurrets();
             }
 
             Player player = ResolveThreatTarget();
@@ -225,6 +231,40 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
                 }
             }
             CWRMod.Instance.Logger.Info($"[OldNet] patrol ICE seeded={placed}");
+        }
+
+        //──── 哨戒炮塔布防：地下机房吊装（M3 威胁扩容）────
+        //消费 gen 期规划态：每次深潜重生成，Plans 与本会话同源（SP/服务器同端）
+
+        private void SeedTurrets() {
+            int type = ModContent.NPCType<OldNetTurretICE>();
+            int placed = 0;
+            foreach (Gen.OldNetBuildContext ctx in new[] { Gen.OldNetPlans.Z1, Gen.OldNetPlans.Z2, Gen.OldNetPlans.Z3 }) {
+                if (ctx == null) {
+                    continue;
+                }
+                foreach (Gen.Rooms.OldNetRoomNode room in ctx.Graph.Rooms) {
+                    if (room.Role == Gen.Rooms.OldNetRoomRole.Landing) {
+                        continue;
+                    }
+                    //深层机房必装；浅层按概率
+                    bool deep = room.FloorTop >= OldNetMetrics.UnderShallowBottom;
+                    if (!deep && Main.rand.NextFloat() >= OldNetMetrics.TurretRoomChance) {
+                        continue;
+                    }
+                    int cx = (room.InteriorLeft + room.InteriorRight) / 2;
+                    int cy = room.InteriorTop + 1;
+                    int idx = NPC.NewNPC(new EntitySource_WorldEvent(),
+                        cx * 16 + 8, cy * 16 + 8, type);
+                    if (idx >= 0 && idx < Main.maxNPCs) {
+                        placed++;
+                        if (VaultUtils.isServer) {
+                            NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, idx);
+                        }
+                    }
+                }
+            }
+            CWRMod.Instance.Logger.Info($"[OldNet] turret ICE seeded={placed}");
         }
 
         //从天空向下找该列首块实心，返回行号；找不到给 -1

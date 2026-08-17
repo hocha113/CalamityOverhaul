@@ -12,10 +12,14 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
+    /// <summary>
+    /// 上梁的两个工位。<see cref="Sigil"/> 的数值必须保持 1——
+    /// 它在 <see cref="OniTalismanHud.SaveUIData"/> 里落过档，改值等于把老玩家的记忆读错工位
+    /// </summary>
     internal enum OniLedgerView
     {
         Mei = 0,
-        Register = 1,
+        Sigil = 1,
     }
 
     /// <summary>
@@ -30,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText HudTitle { get; private set; }
         public static LocalizedText HudHintFormat { get; private set; }
         public static LocalizedText HudMeiName { get; private set; }
-        public static LocalizedText HudRegisterName { get; private set; }
+        public static LocalizedText HudSigilName { get; private set; }
         public static LocalizedText HudDangerLine { get; private set; }
         public static LocalizedText HudWraithFormat { get; private set; }
         public static LocalizedText VigorTitle { get; private set; }
@@ -51,9 +55,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "封印札");
             HudHintFormat = this.GetLocalization(nameof(HudHintFormat), () => "{0} 开阖{1} · 点击札打开");
             HudMeiName = this.GetLocalization(nameof(HudMeiName), () => "改铭台");
-            HudRegisterName = this.GetLocalization(nameof(HudRegisterName), () => "点鬼簿");
+            HudSigilName = this.GetLocalization(nameof(HudSigilName), () => "结印盘");
             HudDangerLine = this.GetLocalization(nameof(HudDangerLine), () => "复苏将满，再役使它就会醒");
-            HudWraithFormat = this.GetLocalization(nameof(HudWraithFormat), () => "役鬼 {0} · 复苏 {1}%");
+            HudWraithFormat = this.GetLocalization(nameof(HudWraithFormat), () => "最凶 {0} · 复苏 {1}% · 在盘 {2} 只");
             VigorTitle = this.GetLocalization(nameof(VigorTitle), () => "气力");
             VigorValueFormat = this.GetLocalization(nameof(VigorValueFormat), () => "{0} / {1}");
             StanceTitle = this.GetLocalization(nameof(StanceTitle), () => "架势");
@@ -157,18 +161,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         internal static void ToggleRememberedLedger() {
-            if (OniMeiUI.Instance?.IsOpen ?? false) {
-                OniMeiUI.Instance.Close();
+            //图鉴册也算"开着"：先合册回工位，再按一次才收屏
+            if (OniMeiCodexUI.Instance?.IsOpen ?? false) {
+                OniMeiCodexUI.Instance.Close();
                 return;
             }
             if (OniRegisterUI.Instance?.IsOpen ?? false) {
                 OniRegisterUI.Instance.Close();
                 return;
             }
+            if (OniMeiUI.Instance?.IsOpen ?? false) {
+                OniMeiUI.Instance.Close();
+                return;
+            }
+            if (OniSigilUI.Instance?.IsOpen ?? false) {
+                OniSigilUI.Instance.Close();
+                return;
+            }
 
             OniLedgerView view = Instance?.rememberedLedger ?? OniLedgerView.Mei;
-            if (view == OniLedgerView.Register) {
-                OniRegisterUI.Instance?.Open();
+            if (view == OniLedgerView.Sigil) {
+                OniSigilUI.Instance?.Open();
             }
             else {
                 OniMeiUI.Instance?.Open();
@@ -179,9 +192,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             => tag[Name + ":rememberedLedger"] = (int)rememberedLedger;
 
         public override void LoadUIData(TagCompound tag) {
+            //按枚举范围校验，别写成"认得一个值、其余全当默认"——加第三个工位时那种写法会静默读错
             rememberedLedger = tag.TryGet(Name + ":rememberedLedger", out int value)
-                && value == (int)OniLedgerView.Register
-                ? OniLedgerView.Register
+                && Enum.IsDefined(typeof(OniLedgerView), value)
+                ? (OniLedgerView)value
                 : OniLedgerView.Mei;
         }
 
@@ -222,14 +236,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             particles.Update();
 
             bool danger = OniRegistry.IsEquippedInDanger;
-            float targetBurn = ResolveBurnTarget(OniRegistry.EquippedEntry);
+            //烧蚀读盘上最凶那一只：札只有一处墨批，报最该报的那条
+            float targetBurn = ResolveBurnTarget(HottestEntry());
             burnVisual += (targetBurn - burnVisual) * 0.06f;
             float burnStrength = MathHelper.Clamp(
                 (burnVisual - RestingBurn) / (MaximumBurn - RestingBurn), 0f, 1f);
 
+            float sigilOpen = OniSigilUI.Instance?.OpenProgress ?? 0f;
             float registerOpen = OniRegisterUI.Instance?.OpenProgress ?? 0f;
             float meiOpen = OniMeiUI.Instance?.OpenProgress ?? 0f;
-            bool uiCovered = registerOpen > 0.4f || meiOpen > 0.4f;
+            bool uiCovered = sigilOpen > 0.4f || registerOpen > 0.4f || meiOpen > 0.4f;
 
             //鬼域之眼:先推进眼(它是整簇的挂点),左键开阖、右键/中键翻转
             Vector2 knot = Anchor;
@@ -374,9 +390,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //鬼域之眼(画在系带之上,盖住带头)
             domainEye.Draw(sb, a, GlobalTimer);
 
-            //札体:焚烧 shader 是常态和纸材质,驾驭状态只调节下缘烧蚀强度
+            //札体:焚烧 shader 是常态和纸材质,役鬼状态只调节下缘烧蚀强度
             Vector2 side = rot.ToRotationVector2();
-            OniGhostEntry equipped = OniRegistry.EquippedEntry;
+            //墨批只有一笔,写盘上最凶那一只;其余两只只在印列里各占一枚小印
+            OniGhostEntry equipped = HottestEntry();
             float revival = equipped == null ? 0f : MathHelper.Clamp(equipped.Revival, 0f, 1f);
             float burnStrength = MathHelper.Clamp(
                 (burnVisual - RestingBurn) / (MaximumBurn - RestingBurn), 0f, 1f);
@@ -391,7 +408,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
 
             //方章与完整淡墨笔势属于封印札本体,役鬼只负责写实复苏进度
-            DrawTalismanSeal(sb, stripTop + down * 16f, rot, equipped?.Key, a);
+            DrawSealRow(sb, stripTop + down * 16f, rot, side, a);
             Vector2 strokeStart = stripTop + down * 29f;
             Vector2 strokeFullEnd = stripTop + down * (H - 13f);
             float guideAlpha = equipped == null ? 0.30f : 0.18f;
@@ -415,15 +432,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             particles.Draw(sb, a);
         }
 
-        private static void DrawTalismanSeal(SpriteBatch sb, Vector2 center, float rot, string key, float alpha) {
+        /// <summary>
+        /// 印列：盘上结了几印就在札头压几枚。空盘只留一枚淡印座。<br/>
+        /// 左下角不新增组件——这里仍是原来那一枚印的位置，只是横着排开
+        /// </summary>
+        private static void DrawSealRow(SpriteBatch sb, Vector2 center, float rot,
+            Vector2 side, float alpha) {
+            int count = OniRegistry.EquippedCount;
+            if (count <= 0) {
+                DrawTalismanSeal(sb, center, rot, null, alpha * 0.42f, 9.5f);
+                return;
+            }
+            //一枚居中，两枚以上横排；印随数量缩一点，札头就这么宽
+            float size = count >= 3 ? 7.4f : count == 2 ? 8.4f : 9.5f;
+            float pitch = size * 1.85f;
+            float start = -(count - 1) * 0.5f * pitch;
+            int drawn = 0;
+            for (int slot = 0; slot < OniRegistry.SlotCount; slot++) {
+                string key = OniRegistry.SlotKey(slot);
+                if (string.IsNullOrEmpty(key)) {
+                    continue;
+                }
+                OniGhostEntry entry = OniRegistry.EntryOf(key);
+                float heat = entry?.InDanger == true ? 1f : 0.86f;
+                DrawTalismanSeal(sb, center + side * (start + drawn * pitch), rot, key,
+                    alpha * heat, size);
+                drawn++;
+            }
+        }
+
+        private static void DrawTalismanSeal(SpriteBatch sb, Vector2 center, float rot,
+            string key, float alpha, float size) {
             float seed = string.IsNullOrEmpty(key) ? 0.5f : OniGhostShadowDraw.SeedFromKey(key);
-            OniBrush.DrawSealGlyph(sb, center, 9.5f, alpha * 0.95f, rot + (seed - 0.5f) * 0.18f);
+            OniBrush.DrawSealGlyph(sb, center, size, alpha * 0.95f, rot + (seed - 0.5f) * 0.18f);
             Vector2 side = rot.ToRotationVector2();
             Vector2 down = (rot + MathHelper.PiOver2).ToRotationVector2();
             float offset = (seed - 0.5f) * 3f;
-            OniBrush.DrawGradientLine(sb, center - side * 5f + down * offset,
-                center + side * 5f - down * offset, OnikiriUITheme.Bright * (alpha * 0.76f),
+            float arm = size * 0.53f;
+            OniBrush.DrawGradientLine(sb, center - side * arm + down * offset,
+                center + side * arm - down * offset, OnikiriUITheme.Bright * (alpha * 0.76f),
                 OnikiriUITheme.Deep * (alpha * 0.34f), 1f);
+        }
+
+        /// <summary>盘上离夺身最近的那一只；空盘为 null</summary>
+        private static OniGhostEntry HottestEntry() {
+            OniGhostEntry best = null;
+            for (int slot = 0; slot < OniRegistry.SlotCount; slot++) {
+                OniGhostEntry entry = OniRegistry.SlotEntry(slot);
+                if (entry != null && (best == null || entry.Revival > best.Revival)) {
+                    best = entry;
+                }
+            }
+            return best;
         }
 
         private static float ResolveBurnTarget(OniGhostEntry equipped) {
@@ -522,19 +582,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private void DrawHoverPanel(SpriteBatch sb, float a) {
             string keyName = CWRKeySystem.Legend_UIControl.ToTooltipString(CWRKeySystem.Notbound.Value);
             string title = HudTitle.Value;
-            string ledgerName = rememberedLedger == OniLedgerView.Register
-                ? HudRegisterName.Value
+            string ledgerName = rememberedLedger == OniLedgerView.Sigil
+                ? HudSigilName.Value
                 : HudMeiName.Value;
             string hint = string.Format(HudHintFormat.Value, keyName, ledgerName);
-            OniGhostEntry equipped = OniRegistry.EquippedEntry;
+            OniGhostEntry equipped = HottestEntry();
             if (equipped == null) {
                 OniTooltipPanel.Draw(sb, MousePosition, title, 0.82f, a,
                     new OniTooltipLine(hint, OnikiriUITheme.TextDim));
                 return;
             }
             bool danger = equipped.InDanger;
+            //只报最凶那一只与在盘只数；三条读数塞进浮牌会挤爆
             string wraithLine = HudWraithFormat.Format(equipped.Name?.Invoke() ?? equipped.Key,
-                (int)MathF.Round(equipped.Revival * 100f));
+                (int)MathF.Round(equipped.Revival * 100f), OniRegistry.EquippedCount);
             string dangerLine = danger ? HudDangerLine.Value : null;
             OniTooltipPanel.Draw(sb, MousePosition, title, 0.82f, a,
                 new OniTooltipLine(hint, OnikiriUITheme.TextDim),

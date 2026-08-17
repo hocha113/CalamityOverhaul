@@ -103,6 +103,29 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.CrimsonBrides
             owner.fallStart = (int)(owner.position.Y / 16f);
         }
 
+        /// <summary>喜堂半径：合卺帧圈进这一圈的都算被请来的客</summary>
+        private const float HallRadius = 520f;
+
+        /// <summary>
+        /// 合卺帧给喜堂里的宾客系上缚印。喜堂里时间是停住的——
+        /// 缚在身上时，同一施加者的其他印记不走表
+        /// </summary>
+        internal static void BindHallGuests(Player owner) {
+            if (Main.netMode == NetmodeID.MultiplayerClient || owner?.active != true) {
+                return;
+            }
+            float revival = owner.TryGetModPlayer(out WraithPlayer wraith)
+                ? wraith.GetRevival(WraithPlayer.CrimsonBrideKey) : 0f;
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (npc.CanBeChasedBy()
+                    && Vector2.DistanceSquared(npc.Center, owner.Center)
+                        <= HallRadius * HallRadius) {
+                    Marks.WraithMarks.Apply(npc, Marks.WraithMark.Betrothed,
+                        Marks.WraithMarks.BetrothedTicks, revival, owner.whoAmI);
+                }
+            }
+        }
+
         private static void PlayFailureCue(Player owner) {
             if (Main.dedServ || owner?.whoAmI != Main.myPlayer) {
                 return;
@@ -220,6 +243,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.CrimsonBrides
                         WraithPlayer.CrimsonBrideKey)) {
                     RestoreFired = true;
                     CrimsonBrideRestart.ApplyRestore(Player);
+                    CrimsonBrideRestart.BindHallGuests(Player);
                     if (Main.netMode == NetmodeID.Server) {
                         WraithNet.SendBrideRiteState(Player.whoAmI);
                     }

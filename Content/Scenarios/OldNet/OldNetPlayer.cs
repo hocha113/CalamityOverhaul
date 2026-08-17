@@ -81,6 +81,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
         private bool ejectOnRespawn;
         //烧断弹出倒数：先闪红，倒数到红峰帧才真正 ExitWorld
         private int ejectDelay;
+        //L3 领域下潜蓄力（主世界侧，进阶入口）
+        private int l3DiveHold;
+        private bool l3ChargeShown;
 
         internal static OldNetPlayer Get(Player player) => player.GetModPlayer<OldNetPlayer>();
 
@@ -304,6 +307,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
 
             ejecting = true;
             if (Player.whoAmI == Main.myPlayer) {
+                //首潜委托完成判据：一次安全登出
+                Player.GetModPlayer<Narrative.Data.StoryPlayer>()
+                    .Get<Narrative.Data.Modules.OldNetGuideData>().DiveCompleted = true;
                 OldNetWorld.ExitWorld();
             }
         }
@@ -345,6 +351,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             //单人代驱动 PvP 协议时钟：不做旧网门控，登出后残余效果也要走完（桥内自门控）
             OldNetHostileHack.DriveClock(Player);
 
+            //进阶入口：主世界 SHPC 赛博领域 L3 接管中按住下潜键深潜（桥内自门控）
+            TickL3Dive();
+
             if (!OldNetWorld.Active || Player.whoAmI != Main.myPlayer) {
                 return;
             }
@@ -377,7 +386,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
                 t4DecayImmuneTimer--;
                 quietTimer = 0;
             }
-            else if (++quietTimer >= OldNetMetrics.NoiseQuietDelayTicks && Noise > 0f) {
+            else if (++quietTimer >= OldNetMetrics.NoiseQuietDelayTicks && Noise > 0f
+                //疯域规则（M3）：衰减区内网永不平静——噪音不自然衰减，进来多少带走多少
+                && (int)(Player.Center.X / 16f) < OldNetMetrics.FadeLeft) {
                 float rate = Noise >= OldNetMetrics.NoiseDecayHighThreshold
                     ? OldNetMetrics.NoiseDecayHighPerSecond
                     : OldNetMetrics.NoiseDecayLowPerSecond;
@@ -395,6 +406,52 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             RAMPlayer ram = Player.GetModPlayer<RAMPlayer>();
             if (ram.ProfileInitialized && ram.CurrentRam <= 0.001f) {
                 ForceEject(OldNetTexts.OldNetEjectRam.Value);
+            }
+        }
+
+        //════════ L3 领域下潜（进阶入口）════════
+        //赛博领域 L3 = 世界级接管，领域本身就是通往旧网的口子：
+        //接管中按住下潜键蓄力 2 秒，经由领域越墙。单人门禁与 /oldnet 同口径
+        private void TickL3Dive() {
+            if (OldNetWorld.Active || Player.whoAmI != Main.myPlayer
+                || Main.netMode != NetmodeID.SinglePlayer || Main.gameMenu) {
+                l3DiveHold = 0;
+                return;
+            }
+            var cyber = LegendWeapon.SHPCLegend.Cyberspaces.Cyberspace.Local;
+            if (cyber == null || !cyber.Active
+                || cyber.CurrentLayer < LegendWeapon.SHPCLegend.Cyberspaces.Cyberspace.MaxLayerCount) {
+                l3DiveHold = 0;
+                l3ChargeShown = false;
+                return;
+            }
+            //其他子世界内不启用（子世界间不直跳）
+            if (OtherMods.SubWorld.SubWorldRef.AnyActiveSubWorld()) {
+                l3DiveHold = 0;
+                return;
+            }
+
+            if (!Player.controlDown || Player.mount.Active) {
+                l3DiveHold = 0;
+                l3ChargeShown = false;
+                return;
+            }
+
+            l3DiveHold++;
+            //蓄力起步反馈：一次性文字 + 周期滴答
+            if (l3DiveHold == 15 && !l3ChargeShown) {
+                l3ChargeShown = true;
+                CombatText.NewText(Player.getRect(), new Color(140, 200, 210),
+                    OldNetTexts.OldNetDiveCharge.Value);
+            }
+            if (l3DiveHold % 30 == 0) {
+                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.5f, Pitch = 0.3f }, Player.Center);
+            }
+            if (l3DiveHold >= OldNetMetrics.L3DiveHoldTicks) {
+                l3DiveHold = 0;
+                l3ChargeShown = false;
+                SoundEngine.PlaySound(SoundID.Item78 with { Volume = 0.7f, Pitch = -0.2f }, Player.Center);
+                OldNetWorld.EnterWorld();
             }
         }
 

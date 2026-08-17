@@ -51,6 +51,9 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         InvalidWraith,
         RateLimited,
         SessionNotReady,
+        //以下为三槽制新增，只许追加不许重排——旧包的数值含义不能变
+        InvalidSlot,
+        SlotOccupied,
     }
 
     /// <summary>役鬼资源快照：六鬼复苏（按 <see cref="WraithPlayer.UsableKeys"/> 顺序）+ 侵蚀 + 倍率。</summary>
@@ -100,6 +103,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             internal byte InventorySlot;
             internal long InstanceId;
             internal uint ExpectedRevision;
+            /// <summary>目标结印槽</summary>
+            internal byte WraithSlot;
             internal ushort RequestedWraithId;
             internal ulong CreatedAt;
             internal Action<bool> Completion;
@@ -141,12 +146,14 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             return packet;
         }
 
-        public static bool RequestEquippedWraith(Player player, Item sourceItem, string key,
-            Action<bool> completed = null) {
+        /// <summary>请求把某只鬼结印到某一槽；key 为空即卸下该槽。</summary>
+        public static bool RequestEquippedWraith(Player player, Item sourceItem, int wraithSlot,
+            string key, Action<bool> completed = null) {
             WraithPlayer state = player?.GetModPlayer<WraithPlayer>();
             OnikiriData data = OnikiriData.TryGet(sourceItem);
             if (player == null || player.whoAmI != Main.myPlayer || state == null
                 || !state.SessionInitialized || data == null
+                || wraithSlot < 0 || wraithSlot >= WraithPlayer.SlotCount
                 || !TryResolveSelectedSword(player, sourceItem, out byte inventorySlot)
                 || OnikiriNet.HasDuplicateInstanceId(player, data.InstanceId)) {
                 return false;
@@ -159,18 +166,20 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     || !WraithRegistry.TryGetNetworkId(normalizedKey, out wraithId))) {
                 return false;
             }
-            if (state.EquippedWraithKey == normalizedKey) {
+            //该鬼已经在这一格：无事可做
+            if (state.SlotKey(wraithSlot) == normalizedKey) {
                 return false;
             }
 
             if (Main.netMode != NetmodeID.MultiplayerClient) {
-                bool success = state.TrySetEquippedAuthority(normalizedKey, state.LoadoutRevision);
+                bool success = state.TrySetSlotAuthority(wraithSlot, normalizedKey,
+                    state.LoadoutRevision);
                 completed?.Invoke(success);
                 return success;
             }
 
             if (!TryTrackEquip(inventorySlot, data.InstanceId, state.LoadoutRevision,
-                wraithId, completed, out PendingEquipRequest pending)) {
+                (byte)wraithSlot, wraithId, completed, out PendingEquipRequest pending)) {
                 return false;
             }
 
@@ -180,6 +189,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Write(pending.InventorySlot);
             packet.Write(pending.InstanceId);
             packet.Write(pending.ExpectedRevision);
+            packet.Write(pending.WraithSlot);
             packet.Write(pending.RequestedWraithId);
             packet.Send();
             return true;
@@ -513,11 +523,11 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         }
 
         private static void HandleInitialState(BinaryReader reader, int whoAmI) {
-            string equipped = ResolveUsableKey(reader.ReadUInt16());
+            string[] slots = ReadSlots(reader);
             WraithResourceSnapshot snapshot = WraithResourceSnapshot.Read(reader);
             Player player = ResolvePlayer(whoAmI, requireAlive: false);
             WraithPlayer state = player?.GetModPlayer<WraithPlayer>();
-            if (state == null || !state.AcceptInitialState(equipped, in snapshot)) {
+            if (state == null || !state.AcceptInitialState(slots, in snapshot)) {
                 return;
             }
             SendStateSync(whoAmI);
@@ -525,7 +535,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         private static void HandleStateSync(BinaryReader reader) {
             int playerIndex = reader.ReadByte();
-            string equipped = ResolveUsableKey(reader.ReadUInt16());
+            string[] slots = ReadSlots(reader);
             uint loadoutRevision = reader.ReadUInt32();
             uint resourceRevision = reader.ReadUInt32();
             WraithResourceSnapshot snapshot = WraithResourceSnapshot.Read(reader);
@@ -537,7 +547,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             if (player?.active != true || state == null) {
                 return;
             }
-            state.ApplyNetworkState(equipped, loadoutRevision, resourceRevision,
+            state.ApplyNetworkState(slots, loadoutRevision, resourceRevision,
                 in snapshot, force: !state.SessionInitialized);
         }
 
@@ -547,12 +557,16 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             byte inventorySlot = reader.ReadByte();
             long instanceId = reader.ReadInt64();
             uint expectedRevision = reader.ReadUInt32();
+            byte wraithSlot = reader.ReadByte();
             ushort requestedWraithId = reader.ReadUInt16();
 
             Player player = ResolvePlayer(whoAmI, requireAlive: true);
             WraithPlayer state = player?.GetModPlayer<WraithPlayer>();
             WraithEquipResult result = ValidateEquipSource(player, state, inventorySlot,
                 instanceId, expectedRevision, whoAmI);
+            if (result == WraithEquipResult.Success && wraithSlot >= WraithPlayer.SlotCount) {
+                result = WraithEquipResult.InvalidSlot;
+            }
             string requestedKey = string.Empty;
             if (result == WraithEquipResult.Success && requestedWraithId != NoWraith) {
                 if (!WraithRegistry.TryGetByNetworkId(requestedWraithId,
@@ -564,7 +578,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 }
             }
             if (result == WraithEquipResult.Success
-                && !state.TrySetEquippedAuthority(requestedKey, expectedRevision)) {
+                && !state.TrySetSlotAuthority(wraithSlot, requestedKey, expectedRevision)) {
                 result = WraithEquipResult.StaleRevision;
             }
 
@@ -576,7 +590,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Write(inventorySlot);
             packet.Write(instanceId);
             packet.Write(state?.LoadoutRevision ?? expectedRevision);
-            packet.Write(GetWraithNetworkId(state?.EquippedWraithKey));
+            packet.Write(wraithSlot);
+            WriteSlots(packet, state);
             packet.Send(whoAmI);
         }
 
@@ -616,7 +631,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             byte inventorySlot = reader.ReadByte();
             long instanceId = reader.ReadInt64();
             uint revision = reader.ReadUInt32();
-            ushort equippedWraithId = reader.ReadUInt16();
+            byte wraithSlot = reader.ReadByte();
+            ushort[] slotIds = ReadSlotIds(reader);
             PendingEquipRequest pending = TakePending(requestId);
             if (pending == null) {
                 return;
@@ -625,10 +641,13 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             bool valid = pending.SessionToken == sessionToken
                 && pending.InventorySlot == inventorySlot
                 && pending.InstanceId == instanceId
-                && result <= WraithEquipResult.SessionNotReady
+                && pending.WraithSlot == wraithSlot
+                && result <= WraithEquipResult.SlotOccupied
                 && revision >= pending.ExpectedRevision;
             if (valid && result == WraithEquipResult.Success) {
-                valid = equippedWraithId == pending.RequestedWraithId;
+                //回执要证明目标那一格确实落到了请求的鬼
+                valid = wraithSlot < slotIds.Length
+                    && slotIds[wraithSlot] == pending.RequestedWraithId;
             }
             CompletePending(pending, valid && result == WraithEquipResult.Success);
         }
@@ -732,15 +751,40 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         }
 
         private static void WriteSavedState(BinaryWriter writer, WraithPlayer state) {
-            writer.Write(GetWraithNetworkId(state.EquippedWraithKey));
+            WriteSlots(writer, state);
             state.ExportResourceSnapshot().Write(writer);
         }
 
         private static void WriteStateSync(BinaryWriter writer, WraithPlayer state) {
-            writer.Write(GetWraithNetworkId(state.EquippedWraithKey));
+            WriteSlots(writer, state);
             writer.Write(state.LoadoutRevision);
             writer.Write(state.ResourceRevision);
             state.ExportResourceSnapshot().Write(writer);
+        }
+
+        /// <summary>三槽定长写；空槽写 <see cref="NoWraith"/>。宽度固定，读端才不会错位。</summary>
+        private static void WriteSlots(BinaryWriter writer, WraithPlayer state) {
+            string[] slots = state?.ExportSlots();
+            for (int i = 0; i < WraithPlayer.SlotCount; i++) {
+                writer.Write(GetWraithNetworkId(
+                    slots != null && i < slots.Length ? slots[i] : null));
+            }
+        }
+
+        private static ushort[] ReadSlotIds(BinaryReader reader) {
+            ushort[] ids = new ushort[WraithPlayer.SlotCount];
+            for (int i = 0; i < ids.Length; i++) {
+                ids[i] = reader.ReadUInt16();
+            }
+            return ids;
+        }
+
+        private static string[] ReadSlots(BinaryReader reader) {
+            string[] slots = new string[WraithPlayer.SlotCount];
+            for (int i = 0; i < slots.Length; i++) {
+                slots[i] = ResolveUsableKey(reader.ReadUInt16());
+            }
+            return slots;
         }
 
         private static ushort GetWraithNetworkId(string key) {
@@ -773,15 +817,17 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         }
 
         private static bool TryTrackEquip(byte inventorySlot, long instanceId,
-            uint expectedRevision, ushort requestedWraithId, Action<bool> completed,
-            out PendingEquipRequest request) {
+            uint expectedRevision, byte wraithSlot, ushort requestedWraithId,
+            Action<bool> completed, out PendingEquipRequest request) {
             SweepPending();
             request = null;
             if (pendingEquip.Count >= MaxPendingEquipRequests) {
                 return false;
             }
+            //去重键是「刀 + 结印槽」：同一把刀连着往两格结印是合法操作，
+            //只按 InstanceId 去重会把第二格的请求整个吞掉
             foreach (PendingEquipRequest active in pendingEquip.Values) {
-                if (active.InstanceId == instanceId) {
+                if (active.InstanceId == instanceId && active.WraithSlot == wraithSlot) {
                     return false;
                 }
             }
@@ -800,6 +846,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 InventorySlot = inventorySlot,
                 InstanceId = instanceId,
                 ExpectedRevision = expectedRevision,
+                WraithSlot = wraithSlot,
                 RequestedWraithId = requestedWraithId,
                 CreatedAt = Main.GameUpdateCount,
                 Completion = completed,

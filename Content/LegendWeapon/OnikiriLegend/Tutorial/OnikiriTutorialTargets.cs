@@ -32,8 +32,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         internal const string Tag_VigorStroke = "vigor";
         internal const string Tag_DomainEye = "eye";
         internal const string Tag_TalismanStrip = "talisman";
-        internal const string Tag_RegisterSwitch = "register_switch";
-        internal const string Tag_RegisterEntry = "register_entry";
+        internal const string Tag_SigilSwitch = "sigil_switch";
+        internal const string Tag_SigilSlot = "sigil_slot";
         internal const string Tag_MeiSlotNakago = "mei_nakago";
         internal const string Tag_MeiSlotHi = "mei_hi";
         internal const string Tag_MeiSlotHorimono = "mei_horimono";

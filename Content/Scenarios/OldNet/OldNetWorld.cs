@@ -20,7 +20,16 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
         //液体流动/接线定时器/随机tile更新停摆，M0 无此依赖
         public override bool NormalUpdates => false;
 
-        public override List<GenPass> Tasks => [new OldNetSkeletonPass()];
+        //M2a 流水线：P10骨架→P20路网→P30分带规划→P50带内容→P55撒布→P80校验
+        //TimedPass 记录逐pass耗时（每次深潜重生成，生成耗时=玩家等待时间）
+        public override List<GenPass> Tasks => [
+            new OldNetTimedPass(new OldNetSkeletonPass()),
+            new OldNetTimedPass(new OldNetRoutePass()),
+            new OldNetTimedPass(new OldNetZonePlanPass()),
+            new OldNetTimedPass(new OldNetZoneContentPass()),
+            new OldNetTimedPass(new OldNetScatterPass()),
+            new OldNetValidatePass(),
+        ];
 
         public static bool Active => SubworldSystem.IsActive<OldNetWorld>();
 

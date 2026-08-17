@@ -4,17 +4,36 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Wraiths.Core
 {
+    /// <summary>同场役鬼掩码：让一只鬼能直接问"我旁边站着谁"，不必回头查 ModPlayer。</summary>
+    [System.Flags]
+    internal enum WraithCoven : byte
+    {
+        None = 0,
+        ScapeGhost = 1 << 0,
+        HeadlessShade = 1 << 1,
+        GhostHand = 1 << 2,
+        LanternBoy = 1 << 3,
+        CrimsonBride = 1 << 4,
+        GhostRain = 1 << 5,
+    }
+
     internal readonly struct WraithAbilityContext(
         Player player,
         Item vesselItem,
         WraithDefinition definition,
-        float revival)
+        float revival,
+        WraithCoven coven)
     {
         public Player Player { get; } = player;
         public Item VesselItem { get; } = vesselItem;
         public WraithDefinition Definition { get; } = definition;
         /// <summary>该鬼当前复苏值 0..1；越接近复苏，能力越凶。</summary>
         public float Revival { get; } = revival;
+        /// <summary>本次结印盘上的全部役鬼（含自己）。</summary>
+        public WraithCoven Coven { get; } = coven;
+
+        /// <summary>同场是否有这只鬼（自己也算）。</summary>
+        public bool HasCoven(WraithCoven other) => (Coven & other) != 0;
     }
 
     /// <summary>鬼切普通五连段实际出刀时冻结的役鬼节拍</summary>
@@ -67,10 +86,11 @@ namespace CalamityOverhaul.Content.Wraiths.Core
                 return false;
             }
             context = new WraithAbilityContext(player, player.HeldItem, definition,
-                wraithPlayer.GetRevival(requiredKey));
+                wraithPlayer.GetRevival(requiredKey), ResolveCoven(wraithPlayer));
             return true;
         }
 
+        /// <summary>资格闸门：只问这只鬼在不在结印槽里，不问它是不是唯一那只。</summary>
         private static bool TryResolveChannel(Player player, string requiredKey,
             out Runtime.WraithPlayer wraithPlayer, out WraithDefinition definition) {
             wraithPlayer = null;
@@ -78,9 +98,37 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             return player != null && player.active && !player.dead && IsOnikiriHeld(player)
                 && player.TryGetModPlayer(out wraithPlayer)
                 && !string.IsNullOrEmpty(requiredKey)
-                && wraithPlayer.EquippedWraithKey == requiredKey
+                && wraithPlayer.IsEquipped(requiredKey)
                 && WraithRegistry.TryGetUsable(requiredKey, out definition);
         }
+
+        internal static WraithCoven ResolveCoven(Runtime.WraithPlayer wraithPlayer) {
+            WraithCoven coven = WraithCoven.None;
+            if (wraithPlayer == null) {
+                return coven;
+            }
+            foreach (string key in wraithPlayer.EquippedKeys) {
+                if (WraithRegistry.TryGetUsable(key, out WraithDefinition definition)) {
+                    coven |= CovenOf(definition.AbilityKind);
+                }
+            }
+            return coven;
+        }
+
+        /// <summary>玩家当前的同场役鬼掩码；不检查手持与夺身，只报盘上有谁。</summary>
+        internal static WraithCoven CovenOf(Player player)
+            => player != null && player.TryGetModPlayer(out Runtime.WraithPlayer wraithPlayer)
+                ? ResolveCoven(wraithPlayer) : WraithCoven.None;
+
+        internal static WraithCoven CovenOf(WraithAbilityKind kind) => kind switch {
+            WraithAbilityKind.ScapeGhost => WraithCoven.ScapeGhost,
+            WraithAbilityKind.HeadlessShade => WraithCoven.HeadlessShade,
+            WraithAbilityKind.GhostHand => WraithCoven.GhostHand,
+            WraithAbilityKind.LanternBoy => WraithCoven.LanternBoy,
+            WraithAbilityKind.CrimsonBride => WraithCoven.CrimsonBride,
+            WraithAbilityKind.GhostRain => WraithCoven.GhostRain,
+            _ => WraithCoven.None,
+        };
 
         internal static bool TryCommitUse(Player player, string key) {
             if (Main.netMode == NetmodeID.MultiplayerClient
@@ -103,13 +151,17 @@ namespace CalamityOverhaul.Content.Wraiths.Core
 
         internal static void PublishComboBeat(Player player, in WraithComboBeatEvent beat) {
             if (Main.dedServ || player == null || player.whoAmI != Main.myPlayer
-                || !player.TryGetModPlayer(out Runtime.WraithPlayer wraithPlayer)
-                || string.IsNullOrEmpty(wraithPlayer.EquippedWraithKey)
-                || !TryResolve(player, wraithPlayer.EquippedWraithKey,
-                    out WraithAbilityContext context)) {
+                || !player.TryGetModPlayer(out Runtime.WraithPlayer wraithPlayer)) {
                 return;
             }
-            context.Definition.Ability?.OnComboBeat(in context, in beat);
+            //节拍派给盘上每一只鬼，谁认得就谁接
+            for (int slot = 0; slot < Runtime.WraithPlayer.SlotCount; slot++) {
+                string key = wraithPlayer.SlotKey(slot);
+                if (!string.IsNullOrEmpty(key)
+                    && TryResolve(player, key, out WraithAbilityContext context)) {
+                    context.Definition.Ability?.OnComboBeat(in context, in beat);
+                }
+            }
         }
     }
 }

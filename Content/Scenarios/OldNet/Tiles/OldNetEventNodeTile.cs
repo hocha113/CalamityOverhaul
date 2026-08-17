@@ -77,6 +77,18 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            //shader 路径：闸杆信标技法（慢闪节律在着色器内）
+            if (Renders.OldNetTileFX.NodeShaderReady) {
+                Renders.OldNetTileFX.Nodes.Add(new Renders.OldNetTileFX.NodeEntry {
+                    Center = new Vector2(i * 16 + 8, j * 16 + 8),
+                    Kind = 2,
+                    Seed = i * 0.7f,
+                    Progress = 0f,
+                });
+                return false;
+            }
+
+            //CPU 回退：警戒红闸杆 + 慢闪信标
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null || px.IsDisposed) {
                 return false;

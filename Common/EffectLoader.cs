@@ -8,6 +8,10 @@ namespace CalamityOverhaul.Common
     public static class EffectLoader
     {
         public static Asset<Effect> Blackwall { get; set; }
+        public static Asset<Effect> OldNetNode { get; set; }
+        public static Asset<Effect> OldNetTerminal { get; set; }
+        public static Asset<Effect> OldNetSky { get; set; }
+        public static Asset<Effect> OldNetHud { get; set; }
         public static Asset<Effect> PowerSFShader { get; set; }
         public static Asset<Effect> EowAcid { get; set; }
         public static Asset<Effect> EowGeyser { get; set; }
@@ -329,5 +333,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> DungeonworldEntryReveal { get; set; }
         public static Asset<Effect> DungeonworldSky { get; set; }
         public static Asset<Effect> DungeonworldFog { get; set; }
+        public static Asset<Effect> KiyumeSky { get; set; }
+        public static Asset<Effect> KiyumeFog { get; set; }
     }
 }

@@ -37,40 +37,38 @@ float4 PSBlackwall(float2 uv : TEXCOORD0) : COLOR0
     //d>0 在墙体内，d<0 在墙外
     float d = uWallScreenX - px.x;
 
-    float3 col = float3(0.0, 0.0, 0.0);
-    float alpha = 0.0;
+    //三套全算、step 门控乘混合——全屏 ps_3_0 禁动态分支
+    //（FNA3D 对 fx_2_0 内流程控制的翻译不可信，OniWorldGrade 事故同款处方）
+    float inWall = step(0.0, d);
+    float outWall = 1.0 - inWall;
 
-    //墙体：向上翻涌的红黑数据流
-    if (d > 0.0)
-    {
-        //两层竖向流动噪声，慢底流+快面流
-        float n1 = vnoise(px * float2(0.0045, 0.0028) + float2(0.0, -t * 0.22));
-        float n2 = vnoise(px * float2(0.013, 0.011) + float2(37.0, -t * 0.85));
-        float band = n1 * 0.62 + n2 * 0.38;
+    //墙体：向上翻涌的红黑数据流（两层竖向流动噪声，慢底流+快面流）
+    float n1 = vnoise(px * float2(0.0045, 0.0028) + float2(0.0, -t * 0.22));
+    float n2 = vnoise(px * float2(0.013, 0.011) + float2(37.0, -t * 0.85));
+    float band = n1 * 0.62 + n2 * 0.38;
 
-        //代码列明暗：宽列的静态差异 + 低频重掷
-        float colId = floor(px.x / 18.0);
-        float colFlick = hash21(float2(colId, floor(t * 1.5)));
-        band += (colFlick - 0.5) * 0.10;
+    //代码列明暗：宽列的静态差异 + 低频重掷
+    float colId = floor(px.x / 18.0);
+    float colFlick = hash21(float2(colId, floor(t * 1.5)));
+    band += (colFlick - 0.5) * 0.10;
 
-        float3 body = lerp(float3(0.015, 0.001, 0.004),
-                           float3(0.34, 0.020, 0.050), saturate(band));
+    float3 body = lerp(float3(0.015, 0.001, 0.004),
+                       float3(0.34, 0.020, 0.050), saturate(band));
 
-        //高位亮缝：数据束
-        float seam = smoothstep(0.74, 0.96, band);
-        body += float3(0.85, 0.10, 0.09) * seam * 0.75;
+    //高位亮缝：数据束
+    float seam = smoothstep(0.74, 0.96, band);
+    body += float3(0.85, 0.10, 0.09) * seam * 0.75;
 
-        //缓慢上行的整体脉冲波
-        float wave = sin(px.y * 0.010 - t * 1.35);
-        wave = smoothstep(0.90, 1.0, wave);
-        body += float3(0.55, 0.06, 0.05) * wave * 0.30;
+    //缓慢上行的整体脉冲波
+    float wave = sin(px.y * 0.010 - t * 1.35);
+    wave = smoothstep(0.90, 1.0, wave);
+    body += float3(0.55, 0.06, 0.05) * wave * 0.30;
 
-        //越深入墙体越暗，墙不是一张亮片而是一堵有厚度的黑
-        body *= lerp(1.0, 0.30, saturate(d / 520.0));
+    //越深入墙体越暗，墙不是一张亮片而是一堵有厚度的黑
+    body *= lerp(1.0, 0.30, saturate(d / 520.0));
 
-        col = body;
-        alpha = 1.0;
-    }
+    float3 col = body * inWall;
+    float alpha = inWall;
 
     //边缘热脊：墙面与旧网交界处的窄条白热
     float ridge = exp(-abs(d) / 9.0);
@@ -78,13 +76,11 @@ float4 PSBlackwall(float2 uv : TEXCOORD0) : COLOR0
     alpha = max(alpha, ridge);
 
     //墙外红晕外溢：向旧网一侧衰减的软光
-    if (d < 0.0)
-    {
-        float spill = exp(d / 60.0); //d为负，越远越小
-        float flick = 0.85 + 0.15 * vnoise(float2(px.y * 0.02, t * 0.9));
-        col += float3(0.42, 0.045, 0.045) * spill * flick;
-        alpha = max(alpha, spill * 0.55);
-    }
+    //exp 输入钳到 ≤0：门控乘替代分支后，墙内像素的 exp(d/60) 会溢出，必须夹住
+    float spill = exp(min(d, 0.0) / 60.0) * outWall;
+    float flick = 0.85 + 0.15 * vnoise(float2(px.y * 0.02, t * 0.9));
+    col += float3(0.42, 0.045, 0.045) * spill * flick;
+    alpha = max(alpha, spill * 0.55);
 
     col = saturate(col) * uIntensity;
     alpha = saturate(alpha) * uIntensity;

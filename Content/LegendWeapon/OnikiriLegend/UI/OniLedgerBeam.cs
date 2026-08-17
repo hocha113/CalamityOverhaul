@@ -8,9 +8,10 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
-    /// 两屏共用的顶梁:一根贴屏顶的黑漆横梁,梁上钉着两块驿牌(点鬼簿/改铭台),
+    /// 两个工位共用的顶梁:一根贴屏顶的黑漆横梁,梁上钉着两块驿牌(结印盘/改铭台),
     /// 牌下各出一枚铁钩——本屏器物的钩空着(绳收成一圈,"已取下在案"),
-    /// 对面器物挂在另一钩上作切换门。梁不随换乘滑移,是"同一夜屋"的持续骨架
+    /// 对面器物挂在另一钩上作切换门。梁不随换乘滑移,是"同一夜屋"的持续骨架。<br/>
+    /// 两本图鉴(点鬼簿/铭谱)不上梁——它们是工位上取下来翻的册子,不是驿站
     /// </summary>
     internal static class OniLedgerBeam
     {
@@ -28,40 +29,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private const string CoilData =
             "M 0.02 -1 C 0.5 -0.62 0.62 -0.12 0.06 0.08 C -0.66 0.32 -0.7 0.9 0.02 0.86 C 0.56 0.82 0.5 0.4 -0.04 0.44";
 
-        /// <summary>卷轴钩横位(点鬼簿之门/之家)</summary>
-        public static float ScrollHookX => OnikiriUITheme.UIScreenW * OnikiriUITheme.MeiHangLeftXRatio;
+        /// <summary>结印盘钩横位(役鬼工位之门/之家)</summary>
+        public static float SigilHookX => OnikiriUITheme.UIScreenW * OnikiriUITheme.MeiHangLeftXRatio;
 
-        /// <summary>太刀钩横位:名义在卷轴钩东侧一档,窄屏夹在点鬼簿卷纸左缘外</summary>
+        /// <summary>太刀钩横位:名义在结印盘钩东侧一档,窄屏夹在结印盘主体左缘外</summary>
         public static float TachiHookX {
             get {
-                float x = Math.Min(ScrollHookX + OnikiriUITheme.BeamHookGap, RegisterScrollLeft() - 52f);
-                return Math.Max(x, ScrollHookX + 44f);
+                float x = Math.Min(SigilHookX + OnikiriUITheme.BeamHookGap, SigilBodyLeft() - 52f);
+                return Math.Max(x, SigilHookX + 44f);
             }
         }
 
-        /// <summary>点鬼簿卷轴左缘(与 OniRegisterUI.LayoutCompute 同式,两屏算出同一根梁)</summary>
-        private static float RegisterScrollLeft() {
-            float sw = OnikiriUITheme.UIScreenW;
-            float scrollW = Math.Min(OnikiriUITheme.ScrollMaxWidth, sw * OnikiriUITheme.ScrollWidthRatio);
-            scrollW = Math.Max(scrollW, Math.Min(340f, sw * 0.5f));
-            return sw * OnikiriUITheme.ScrollCenterXRatio - scrollW * 0.5f;
-        }
+        /// <summary>结印盘主体左缘(与 OniSigilUI.LayoutCompute 同式,两屏算出同一根梁)</summary>
+        private static float SigilBodyLeft()
+            => OnikiriUITheme.UIScreenW * 0.5f - OniSigilUI.BodyRadius(
+                OnikiriUITheme.UIScreenW, OnikiriUITheme.UIScreenH);
 
         private static Vector2 HookTip(float x) => new(x, HookTipY);
 
         /// <summary>本屏切换门的挂绳锚(挂着对面器物)</summary>
         public static Vector2 DoorAnchor(OniLedgerView current)
-            => HookTip(current == OniLedgerView.Mei ? ScrollHookX : TachiHookX);
+            => HookTip(current == OniLedgerView.Mei ? SigilHookX : TachiHookX);
 
         /// <summary>本屏器物的空钩锚(它已被取下在案,钩上只剩收绳圈)</summary>
         public static Vector2 VacantAnchor(OniLedgerView current)
-            => HookTip(current == OniLedgerView.Mei ? TachiHookX : ScrollHookX);
+            => HookTip(current == OniLedgerView.Mei ? TachiHookX : SigilHookX);
 
         /// <summary>
         /// 门侧驿牌(+钩颈)命中区。梁上牌文与垂挂器物同属一扇门,并进热区
         /// </summary>
         public static Rectangle DoorBoardHit(OniLedgerView current) {
-            float x = current == OniLedgerView.Mei ? ScrollHookX : TachiHookX;
+            float x = current == OniLedgerView.Mei ? SigilHookX : TachiHookX;
             Vector2 size = OnikiriUITheme.BeamBoardSize;
             float top = BoardCenterY - size.Y * 0.5f - 2f;
             float bottom = HookTipY + 6f;
@@ -115,12 +113,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             sb.Draw(Pixel, new Rectangle(-1, y0 + (int)Height - 1, (int)sw + 2, 1), PixelSrc,
                 OnikiriUITheme.Deep * (alpha * 0.32f));
 
-            //====两块驿牌:卷轴钩挂「点鬼簿」,太刀钩挂「改铭台」====
+            //====两块驿牌:结印盘钩挂「结印盘」,太刀钩挂「改铭台」====
             bool onMei = current == OniLedgerView.Mei;
-            string scrollLabel = OniMeiUI.RegisterTabText?.Value ?? "";
-            string tachiLabel = OniRegisterUI.MeiTabText?.Value ?? "";
+            string sigilLabel = OniMeiUI.SigilTabText?.Value ?? "";
+            string tachiLabel = OniSigilUI.MeiTabText?.Value ?? "";
             //door 牌 = 对面驿站(可点);current 牌 = 现驻(器物已取下,钩空)
-            DrawBoard(sb, ScrollHookX, drop, scrollLabel, isCurrent: !onMei,
+            DrawBoard(sb, SigilHookX, drop, sigilLabel, isCurrent: !onMei,
                 hover: onMei ? doorHover : 0f, alpha, time);
             DrawBoard(sb, TachiHookX, drop, tachiLabel, isCurrent: onMei,
                 hover: onMei ? 0f : doorHover, alpha, time);

@@ -36,13 +36,27 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            float t = Main.GlobalTimeWrappedHourly;
+
+            //shader 路径：整根闸柱共相位的通电扫描（局部扫描行 CPU 折算）
+            if (Renders.OldNetTileFX.TerminalShaderReady) {
+                float scanPhase = (t * 0.8f + i * 0.13f) % 1f;
+                float localScan = (scanPhase * 128f - j * 16 % 128) / 16f;
+                Renders.OldNetTileFX.Gates.Add(new Renders.OldNetTileFX.GateEntry {
+                    TopLeft = new Vector2(i * 16, j * 16),
+                    LocalScan = localScan,
+                    Seed = i * 0.13f,
+                });
+                return false;
+            }
+
+            //CPU 回退：暗底 + 双缘警戒线 + 扫描亮段
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null || px.IsDisposed) {
                 return false;
             }
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 tl = new Vector2(i * 16, j * 16) - Main.screenPosition + offset;
-            float t = Main.GlobalTimeWrappedHourly;
 
             Vector2 Size(float w, float h) => new(w / px.Width, h / px.Height);
 

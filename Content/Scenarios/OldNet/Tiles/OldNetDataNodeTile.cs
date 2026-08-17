@@ -80,6 +80,22 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            float seed = (i * 7 + j * 13) * 0.7f;
+            float t = Main.GlobalTimeWrappedHourly;
+            float bob = MathF.Sin(t * 1.3f + seed) * 1.5f;
+
+            //shader 路径：登记进收集器（物块层后按技法批绘），浮动 bob 保留在 CPU 侧
+            if (Renders.OldNetTileFX.NodeShaderReady) {
+                Renders.OldNetTileFX.Nodes.Add(new Renders.OldNetTileFX.NodeEntry {
+                    Center = new Vector2(i * 16 + 8, j * 16 + 8 + bob),
+                    Kind = 0,
+                    Seed = seed,
+                    Progress = 0f,
+                });
+                return false;
+            }
+
+            //CPU 回退：三层旋转菱晶
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null || px.IsDisposed) {
                 return false;
@@ -87,11 +103,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 center = new Vector2(i * 16 + 8, j * 16 + 8) - Main.screenPosition + offset;
             Vector2 origin = new(px.Width * 0.5f, px.Height * 0.5f);
-
-            float seed = (i * 7 + j * 13) * 0.7f;
-            float t = Main.GlobalTimeWrappedHourly;
             float pulse = 0.75f + 0.25f * MathF.Sin(t * 2.4f + seed);
-            float bob = MathF.Sin(t * 1.3f + seed) * 1.5f;
             center.Y += bob;
 
             Color accent = new(0, 220, 255);

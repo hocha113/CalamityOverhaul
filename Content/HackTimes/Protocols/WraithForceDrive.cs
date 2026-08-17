@@ -44,7 +44,9 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             if (rig.DriveActive || rig.DrivePendingSettle) return false;
             if (!player.TryGetModPlayer(out WraithPlayer wraith)) return false;
 
-            string key = wraith.EquippedWraithKey;
+            //三槽制下强驱只押得住一只：挑盘上离夺身最近的那只，
+            //被它催醒的另外两只照样在爬——这是协议压不住的部分
+            string key = wraith.HighestRevivalKey;
             //资格链：存活 + 手持鬼切 + 已装备该鬼 + 目录可用 + 未被夺身
             if (!WraithAbilityService.TryResolve(player, key,
                 out WraithAbilityContext context)) {
@@ -66,7 +68,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 || !player.TryGetModPlayer(out WraithPlayer wraith)) {
                 return false;
             }
-            string key = wraith.EquippedWraithKey;
+            string key = wraith.HighestRevivalKey;
             if (string.IsNullOrEmpty(key)) return false;
 
             //权威端立账：记基线并挂待结算，退款循环从下一帧起跑
@@ -80,7 +82,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 || !player.TryGetModPlayer(out WraithPlayer wraith)) {
                 return;
             }
-            rig.MirrorDrive(wraith.EquippedWraithKey, GetDuration() - elapsed);
+            rig.MirrorDrive(wraith.HighestRevivalKey, GetDuration() - elapsed);
             EmitApply(player);
         }
 

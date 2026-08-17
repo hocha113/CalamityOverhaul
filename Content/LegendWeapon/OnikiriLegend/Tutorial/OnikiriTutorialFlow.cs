@@ -10,7 +10,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         internal const int Step_HudIntro = 1;
         internal const int Step_Mei = 2;
         internal const int Step_Codex = 3;
-        internal const int Step_Register = 4;
+        //步号已落过档，改名可以，改值不行
+        internal const int Step_Sigil = 4;
         internal const int Step_Domain = 5;
         internal const int Step_Prepare = 6;
         internal const int Step_OpenOmote = 7;

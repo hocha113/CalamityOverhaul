@@ -1245,6 +1245,32 @@ OldNetTexts: {
 	OldNetRelayHint: Relay uplink: inscribe current ledger (the uplink makes noise)
 	OldNetRelayDone: Inscribed {0} Mold Shards — link holds
 	OldNetRelayEmpty: Ledger empty, nothing to uplink
+	OldNetEnterHint: Jack into the OldNet (dive beyond the Blackwall)
+	OldNetEnterConfirm: Link warmed up — interact again to dive beyond the wall
+	OldNetEnterSPOnly: Diving is single-player only
+	OldNetDiveCharge: Hold the descent — crossing the wall
+	OldNetBandFoot: Wallfoot Belt // FOOTHOLD
+	OldNetBandRuin: Ruinfield // RUINFIELD
+	OldNetBandFade: Signal Decay Zone // SIGNAL DECAY
+	GuideNoiseTitle: The Noise Meter
+	GuideNoiseBody: Bottom-left is your noise meter — moving, firing and cracking all light you up. The four ticks are four threat tiers; past T2, something comes from the wall. Stand still and the noise cools off on its own.
+	GuideLedgerTitle: The Uninscribed Ledger
+	GuideLedgerBody: Shards you harvest go into the ledger first (the LEDGER readout). Death or RAM burnout voids all of it — only what you inscribe is truly yours. The ledger has a capacity and refuses overflow.
+	GuideNodesTitle: Node Grades
+	GuideNodesBody: Cyan nodes harvest on right-click. Amber encrypted nodes need ~3s of channeling — loud, but worth triple. The red event breaker unseals every vault on the map, and brings the purge wave with it.
+	GuideRelayTitle: Relay vs Logout
+	GuideRelayBody: The amber column is a relay — inscribe on the spot and keep diving, but the uplink is loud. The mint column is the logout terminal — inscribe and sever safely. Greed or retreat, that is the only question here.
+	GuideDrainTitle: Distance Drain
+	GuideDrainBody: The farther from the wall, the pricier the RAM drain — the DEPTH readout shows your current cost per second. Burning out means ejection, so budget the trip home in advance.
+	GuideSkip: Got it
+	EntrustTitle: Dive Beyond the Wall
+	EntrustSummary: The access terminal in the cradle's mid-hull still hums. Jack into the OldNet, haul back mold shards, and sever safely from the logout terminal once. RAM burnout or death voids everything uninscribed.
+	EntrustCategory: Deep-Dive Archaeology
+	OldNetSignRuin: Ruinfield. Prime harvest grounds — encrypted nodes from here on. Mind your exit before you channel.
+	OldNetSignFade: Signal Decay Zone. The drain climbs steeply past this point — the link won't hold long. Proceed at your own risk.
+	OldNetEchoHint: Echo node — only tangible during time-freeze (zero noise, double yield)
+	OldNetEchoFizzle: The echo is too faint — only tangible in frozen time
+	OldNetCacheHint: Deep-dive cache — pry it open for a sealed module (loudly)
 }
 
 OldNetDebriefPanel: {
@@ -1259,4 +1285,5 @@ OldNetDebriefPanel: {
 	DebriefExitDeath: Construct collapse — link burned out
 	DebriefLost: "{0} uninscribed shards burned away"
 	DebriefContinue: Continue
+	DebriefMechHint: Uninscribed haul lives only in the link — it becomes yours once inscribed at a relay or the logout terminal
 }

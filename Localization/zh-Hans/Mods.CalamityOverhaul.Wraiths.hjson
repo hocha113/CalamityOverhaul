@@ -52,3 +52,22 @@ System: {
 	RevivalBrink: 封印札烫得握不住了
 	RevivalHudBrink: 再役使一次，它就会醒
 }
+
+Coven: {
+	RainHandName: 雨里伸手
+	RainHandNote: 淋着雨的猎物不再受臂展所限，枯手自它头顶的雨线垂下。雨中最多同时探出五只手，碾轧伤害随雨势加重
+	RainShadeName: 湿刃
+	RainShadeNote: 鬼影穿体留下的刀口未合时，该目标每一跳雨蚀翻倍
+	HandShadeName: 按住了斩
+	HandShadeNote: 鬼影优先扑向被枯手攥住的猎物——速度已被压到零，那一刀不会落空
+	LanternHandName: 照见
+	LanternHandNote: 灯照见过的猎物，枯手隔着遮挡也索得到；三灯刀光落在被攥住的目标上时加重一成六
+	BrideName: 喜堂
+	BrideNote: 合卺之刻圈进喜堂的猎物，身上其余印记停止消退，直到喜堂散去
+	ScapeName: 顶劫
+	ScapeNote: 替身死一次，同盘其余役鬼的复苏各退一档
+	CallName: 相唤
+	CallNote: 同盘役鬼彼此催醒：任一只被役使，其余各涨少量复苏。没有专属反应的两只之间也照样如此
+	BurstName: 三印崩
+	BurstNote: 同一猎物身上凑齐三种印记时，印记一并引爆算一次伤害，参与的役鬼各付一次复苏
+}

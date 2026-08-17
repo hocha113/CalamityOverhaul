@@ -88,6 +88,28 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            float seed = (i * 7 + j * 13) * 0.7f;
+            float t = Main.GlobalTimeWrappedHourly;
+            float bob = MathF.Sin(t * 1.1f + seed) * 1.5f;
+
+            //本机引导状态（单人语义：PreDraw 读本地玩家即可）
+            OldNetPlayer session = OldNetPlayer.Get(Main.LocalPlayer);
+            bool channeling = session.Channeling
+                && session.ChannelNode.X == i && session.ChannelNode.Y == j;
+            float progress = channeling ? session.ChannelProgress : 0f;
+
+            //shader 路径：重写波前沿半径=引导进度，进度读数长在材质上
+            if (Renders.OldNetTileFX.NodeShaderReady) {
+                Renders.OldNetTileFX.Nodes.Add(new Renders.OldNetTileFX.NodeEntry {
+                    Center = new Vector2(i * 16 + 8, j * 16 + 8 + bob),
+                    Kind = 1,
+                    Seed = seed,
+                    Progress = progress,
+                });
+                return false;
+            }
+
+            //CPU 回退：琥珀红双层菱晶 + 进度弧
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null || px.IsDisposed) {
                 return false;
@@ -95,17 +117,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 center = new Vector2(i * 16 + 8, j * 16 + 8) - Main.screenPosition + offset;
             Vector2 origin = new(px.Width * 0.5f, px.Height * 0.5f);
-
-            float seed = (i * 7 + j * 13) * 0.7f;
-            float t = Main.GlobalTimeWrappedHourly;
             float pulse = 0.75f + 0.25f * MathF.Sin(t * 3.1f + seed);
-            center.Y += MathF.Sin(t * 1.1f + seed) * 1.5f;
-
-            //本机引导状态（单人语义：PreDraw 读本地玩家即可）
-            OldNetPlayer session = OldNetPlayer.Get(Main.LocalPlayer);
-            bool channeling = session.Channeling
-                && session.ChannelNode.X == i && session.ChannelNode.Y == j;
-            float progress = channeling ? session.ChannelProgress : 0f;
+            center.Y += bob;
 
             Vector2 Size(float s) => new(s / px.Width, s / px.Height);
 

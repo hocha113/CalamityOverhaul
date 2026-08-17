@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.Wraiths.Abilities;
 using CalamityOverhaul.Content.Wraiths.Abilities.GhostRains;
 using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Wraiths.Marks;
 using CalamityOverhaul.Content.Wraiths.Runtime;
 using System;
 using System.IO;
@@ -202,8 +203,14 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                     if (!IsErodable(npc)) {
                         continue;
                     }
+                    //淋着雨的都记上湿印，同场其他鬼靠它认路
+                    WraithMarks.Apply(npc, WraithMark.Soaked, WraithMarks.SoakedTicks,
+                        revivalSnapshot, Projectile.owner);
+                    //湿刃：鬼影开的口子还敞着，雨直接灌进去
+                    int tickDamage = WraithMarks.Has(npc, WraithMark.Severed, Projectile.owner)
+                        ? damage * 2 : damage;
                     int direction = npc.Center.X >= Owner.Center.X ? 1 : -1;
-                    Owner.ApplyDamageToNPC(npc, damage, 0f, direction, false,
+                    Owner.ApplyDamageToNPC(npc, tickDamage, 0f, direction, false,
                         CWRRef.GetTrueMeleeDamageClass());
                 }
             }

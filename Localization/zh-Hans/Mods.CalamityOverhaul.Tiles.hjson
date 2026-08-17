@@ -10,3 +10,6 @@ OldNetEncryptedNodeTile.MapEntry: 加密节点
 OldNetEventNodeTile.MapEntry: 事件节点
 OldNetSealGateTile.MapEntry: 封锁闸门
 OldNetRelayTile.MapEntry: 中继站
+OldNetAccessTerminalTile.MapEntry: 旧网接入终端
+OldNetEchoNodeTile.MapEntry: 回声节点
+OldNetCacheTile.MapEntry: 深潜缓存

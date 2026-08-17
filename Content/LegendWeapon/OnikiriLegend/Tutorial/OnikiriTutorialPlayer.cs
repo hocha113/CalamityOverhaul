@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 
         private bool initialized;
         private bool subscribed;
-        private bool registerOpenedThisStep;
+        private bool sigilOpenedThisStep;
         private bool codexOpenedThisStep;
         private bool suppressCommandEvent;
         private bool prepareReachedClosed;
@@ -220,9 +220,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                         TryBeginLedgerOpen(() => OniMeiUI.Instance?.Open());
                     }
                     break;
-                case OnikiriTutorialFlow.Step_Register:
-                    if (OniRegisterUI.Instance?.IsOpen ?? false) {
-                        OniRegisterUI.Instance.Close();
+                case OnikiriTutorialFlow.Step_Sigil:
+                    if (OniSigilUI.Instance?.IsOpen ?? false) {
+                        OniSigilUI.Instance.Close();
                         AdvanceExplanatoryStep();
                     }
                     else if (!(OniMeiUI.Instance?.IsOpen ?? false)) {
@@ -258,9 +258,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                         TryBeginLedgerOpen(OniMeiCodexUI.OpenFromStand);
                     }
                     break;
-                case OnikiriTutorialFlow.Step_Register:
-                    if (!(OniRegisterUI.Instance?.IsOpen ?? false)) {
-                        TryBeginLedgerOpen(() => OniRegisterUI.Instance?.Open());
+                case OnikiriTutorialFlow.Step_Sigil:
+                    if (!(OniSigilUI.Instance?.IsOpen ?? false)) {
+                        TryBeginLedgerOpen(() => OniSigilUI.Instance?.Open());
                     }
                     break;
                 case OnikiriTutorialFlow.Step_Prepare:
@@ -425,7 +425,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         /// </summary>
         internal void BeginMeiTransaction() {
             if (meiSnapshot != null || CurrentStep is not (OnikiriTutorialFlow.Step_Mei
-                or OnikiriTutorialFlow.Step_Register)) {
+                or OnikiriTutorialFlow.Step_Sigil)) {
                 return;
             }
             OnikiriData data = OnikiriData.TryGet(Player?.GetItem());
@@ -569,6 +569,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             switch (step) {
                 case OnikiriTutorialFlow.Step_Mei:
                     EnsureHoldingOnikiri();
+                    OniSigilUI.Instance?.Close();
                     OniRegisterUI.Instance?.Close();
                     OniTalismanHud.RememberLedger(OniLedgerView.Mei);
                     break;
@@ -576,9 +577,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     EnsureHoldingOnikiri();
                     codexOpenedThisStep = false;
                     break;
-                case OnikiriTutorialFlow.Step_Register:
+                case OnikiriTutorialFlow.Step_Sigil:
                     EnsureHoldingOnikiri();
-                    registerOpenedThisStep = false;
+                    sigilOpenedThisStep = false;
                     break;
                 case OnikiriTutorialFlow.Step_HudIntro:
                     EnsureHoldingOnikiri();
@@ -613,6 +614,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             if (OniRegisterUI.Instance?.IsOpen == true) {
                 OniRegisterUI.Instance.Close();
             }
+            if (OniSigilUI.Instance?.IsOpen == true) {
+                OniSigilUI.Instance.Close();
+            }
         }
 
         private void AdvanceIfReady() {
@@ -636,8 +640,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 case OnikiriTutorialFlow.Step_Codex:
                     TickCodexStep();
                     break;
-                case OnikiriTutorialFlow.Step_Register:
-                    TickRegisterStep();
+                case OnikiriTutorialFlow.Step_Sigil:
+                    TickSigilStep();
                     break;
                 case OnikiriTutorialFlow.Step_Prepare:
                     TickPrepareStep();
@@ -669,11 +673,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private void TickRegisterStep() {
-            if (OniRegisterUI.Instance?.IsOpen ?? false) {
-                registerOpenedThisStep = true;
+        private void TickSigilStep() {
+            if (OniSigilUI.Instance?.IsOpen ?? false) {
+                sigilOpenedThisStep = true;
             }
-            else if (registerOpenedThisStep) {
+            else if (sigilOpenedThisStep) {
                 AdvanceExplanatoryStep();
             }
         }

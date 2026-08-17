@@ -195,12 +195,14 @@ namespace CalamityOverhaul.Content.HackTimes.SelfRigs
             if (DormantFrames <= 0) return;
             DormantFrames--;
 
-            //看门狗：休眠期内该鬼被装回就立刻再卸下。框架的休眠位在 v2 被废弃，
+            //看门狗：休眠期内该鬼被结印到任一槽就立刻再摘掉。框架的休眠位在 v2 被废弃，
             //强制卸下是不改共用文件的降级方案；一等成员提案见补丁文档
             if (authority && !string.IsNullOrEmpty(DormantKey)
-                && Player.TryGetModPlayer(out WraithPlayer wraith)
-                && wraith.EquippedWraithKey == DormantKey) {
-                wraith.TrySetEquippedAuthority(string.Empty);
+                && Player.TryGetModPlayer(out WraithPlayer wraith)) {
+                int slot = wraith.SlotOf(DormantKey);
+                if (slot >= 0) {
+                    wraith.TrySetSlotAuthority(slot, string.Empty);
+                }
             }
 
             if (DormantFrames <= 0) {
@@ -266,8 +268,9 @@ namespace CalamityOverhaul.Content.HackTimes.SelfRigs
 
             WraithDriveShim.AddErosion(wraith, DriveErosionBill);
             BeginDormancy(key);
-            if (wraith.EquippedWraithKey == key) {
-                wraith.TrySetEquippedAuthority(string.Empty);
+            int slot = wraith.SlotOf(key);
+            if (slot >= 0) {
+                wraith.TrySetSlotAuthority(slot, string.Empty);
             }
         }
 

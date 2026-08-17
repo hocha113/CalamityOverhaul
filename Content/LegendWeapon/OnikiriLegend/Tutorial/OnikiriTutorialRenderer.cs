@@ -151,10 +151,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     : OniMeiUI.Instance?.IsOpen == true
                         ? OnikiriTutorialTargets.Tag_MeiCodex
                         : OnikiriTutorialTargets.Tag_TalismanStrip,
-                OnikiriTutorialFlow.Step_Register => OniRegisterUI.Instance?.IsOpen == true
-                    ? OnikiriTutorialTargets.Tag_RegisterEntry
+                OnikiriTutorialFlow.Step_Sigil => OniSigilUI.Instance?.IsOpen == true
+                    ? OnikiriTutorialTargets.Tag_SigilSlot
                     : OniMeiUI.Instance?.IsOpen == true
-                        ? OnikiriTutorialTargets.Tag_RegisterSwitch
+                        ? OnikiriTutorialTargets.Tag_SigilSwitch
                         : OnikiriTutorialTargets.Tag_TalismanStrip,
                 OnikiriTutorialFlow.Step_Domain => OnikiriTutorialTargets.Tag_DomainEye,
                 OnikiriTutorialFlow.Step_CloseEye => OnikiriTutorialTargets.Tag_DomainEye,
@@ -277,10 +277,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     body = OnikiriTutorialLead.DomainBody;
                     prompt = OnikiriTutorialLead.DomainPrompt;
                     break;
-                case OnikiriTutorialFlow.Step_Register:
-                    title = OnikiriTutorialLead.RegisterTitle;
-                    body = OnikiriTutorialLead.RegisterBody;
-                    prompt = OnikiriTutorialLead.RegisterPrompt;
+                case OnikiriTutorialFlow.Step_Sigil:
+                    title = OnikiriTutorialLead.SigilTitle;
+                    body = OnikiriTutorialLead.SigilBody;
+                    prompt = OnikiriTutorialLead.SigilPrompt;
                     break;
                 case OnikiriTutorialFlow.Step_Prepare:
                     title = OnikiriTutorialLead.PrepareTitle;
@@ -402,17 +402,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     secondaryText = OnikiriTutorialLead.OpenCodexBtn.Value;
                 }
             }
-            else if (step == OnikiriTutorialFlow.Step_Register) {
-                bool registerOpen = OniRegisterUI.Instance?.IsOpen ?? false;
+            else if (step == OnikiriTutorialFlow.Step_Sigil) {
+                bool sigilOpen = OniSigilUI.Instance?.IsOpen ?? false;
                 bool meiOpen = OniMeiUI.Instance?.IsOpen ?? false;
-                if (registerOpen) {
+                if (sigilOpen) {
                     primaryText = OnikiriTutorialLead.NextBtn.Value;
                 }
                 else if (!meiOpen) {
                     primaryText = OnikiriTutorialLead.OpenMeiBtn.Value;
                 }
-                if (!registerOpen && skipArmed) {
-                    secondaryText = OnikiriTutorialLead.OpenRegisterBtn.Value;
+                if (!sigilOpen && skipArmed) {
+                    secondaryText = OnikiriTutorialLead.OpenSigilBtn.Value;
                 }
             }
             else if (step == OnikiriTutorialFlow.Step_Prepare) {

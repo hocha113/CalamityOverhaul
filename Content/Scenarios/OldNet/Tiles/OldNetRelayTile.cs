@@ -72,6 +72,17 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            //shader 路径：琥珀中继柱（矮一截+离散数据包，"驿站不是家"在材质里）
+            if (Renders.OldNetTileFX.TerminalShaderReady) {
+                Renders.OldNetTileFX.Columns.Add(new Renders.OldNetTileFX.ColumnEntry {
+                    BasePos = new Vector2(i * 16 + 8, j * 16 + 16),
+                    Relay = true,
+                    Seed = i * 0.53f,
+                });
+                return false;
+            }
+
+            //CPU 回退：琥珀光柱 + 上行数据点
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null || px.IsDisposed) {
                 return false;
