@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using Terraria;
@@ -48,6 +48,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
             //加载期 ModSystem.Update 不跑，SLib 传进来的 GameTime 增量不可信，钉死单帧步进
             loadTime += 0.02f;
 
+            Rectangle rectangle = Main.instance.GraphicsDevice.ScissorRectangle;
+
             PlayerInput.SetZoom_UI();
             Main.instance.GraphicsDevice.Clear(Color.Black);
 
@@ -56,7 +58,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
             //景：原始屏幕空间，铺满的画不该跟着 UI 缩放跑偏
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone);
-            DrawScene(sb, Main.screenWidth, Main.screenHeight);
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            DrawScene(sb, rectangle.Width, rectangle.Height);
             sb.End();
 
             //字：跟随 UI 缩放，坐标换算到逻辑尺寸免得高缩放下偏出屏
@@ -64,7 +67,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
                 SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer,
                 null, Main.UIScaleMatrix);
             float scale = MathHelper.Max(Main.UIScale, 0.05f);
-            DrawMenu(sb, Main.screenWidth / scale, Main.screenHeight / scale);
+            DrawMenu(sb, rectangle.Width / scale, rectangle.Height / scale);
             Main.DrawCursor(Main.DrawThickCursor());
             sb.End();
         }
