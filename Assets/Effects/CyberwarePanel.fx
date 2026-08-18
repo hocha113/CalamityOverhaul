@@ -94,36 +94,36 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     }
 
     //═══ 3. 中央人体能量光场 ═══
-    if (uBodyRadius > 1.0)
-    {
-        float2 bodyDelta = px - uBodyCenter;
-        float bodyDist = length(bodyDelta);
-        float gNorm = bodyDist / uBodyRadius;
+    //step 门乘替代 if(uBodyRadius>1)：大块 uniform 动态分支会被 FNA3D/MojoShader
+    //静默整块丢弃（2026-08-18 沙盒定罪，OniWorldGrade 案同族），光场自上线起从未显示
+    float bodyGate = step(1.0, uBodyRadius);
+    float2 bodyDelta = px - uBodyCenter;
+    float bodyDist = length(bodyDelta);
+    float gNorm = bodyDist / max(uBodyRadius, 1.0);
 
-        //柔和椭圆 halo（红+少量金）
-        float halo = exp(-gNorm * gNorm * 1.6);
-        col += float3(0.95, 0.25, 0.15) * halo * 0.32;
-        col += float3(0.45, 0.30, 0.06) * halo * 0.10;
+    //柔和椭圆 halo（红+少量金）
+    float halo = exp(-gNorm * gNorm * 1.6) * bodyGate;
+    col += float3(0.95, 0.25, 0.15) * halo * 0.32;
+    col += float3(0.45, 0.30, 0.06) * halo * 0.10;
 
-        //内圈较亮一层
-        float inner = exp(-gNorm * gNorm * 5.0);
-        col += float3(1.00, 0.30, 0.18) * inner * 0.22;
+    //内圈较亮一层
+    float inner = exp(-gNorm * gNorm * 5.0) * bodyGate;
+    col += float3(1.00, 0.30, 0.18) * inner * 0.22;
 
-        //极坐标扫描指针（缓慢医疗扫描扇区）
-        float ang = atan2(bodyDelta.y, bodyDelta.x);
-        float scanA = frac(ang / 6.2832 + uTime * 0.15);
-        float pointer = exp(-abs(scanA - 0.5) * 22.0);
-        col += float3(1.00, 0.45, 0.30) * pointer * halo * 0.45;
+    //极坐标扫描指针（缓慢医疗扫描扇区）
+    float ang = atan2(bodyDelta.y, bodyDelta.x);
+    float scanA = frac(ang / 6.2832 + uTime * 0.15);
+    float pointer = exp(-abs(scanA - 0.5) * 22.0);
+    col += float3(1.00, 0.45, 0.30) * pointer * halo * 0.45;
 
-        //同心定位环 0.55r、0.85r
-        float ring1 = exp(-pow(abs(bodyDist - uBodyRadius * 0.55) / 1.4, 2.0));
-        float ring2 = exp(-pow(abs(bodyDist - uBodyRadius * 0.85) / 1.4, 2.0));
-        col += float3(0.80, 0.20, 0.20) * (ring1 + ring2) * 0.45;
+    //同心定位环 0.55r、0.85r
+    float ring1 = exp(-pow(abs(bodyDist - uBodyRadius * 0.55) / 1.4, 2.0));
+    float ring2 = exp(-pow(abs(bodyDist - uBodyRadius * 0.85) / 1.4, 2.0));
+    col += float3(0.80, 0.20, 0.20) * (ring1 + ring2) * 0.45 * bodyGate;
 
-        //径向数据射线
-        float rays = 0.5 + 0.5 * sin(ang * 18.0 + uTime * 0.4);
-        col += float3(0.55, 0.12, 0.12) * pow(rays, 12.0) * halo * 0.35;
-    }
+    //径向数据射线
+    float rays = 0.5 + 0.5 * sin(ang * 18.0 + uTime * 0.4);
+    col += float3(0.55, 0.12, 0.12) * pow(rays, 12.0) * halo * 0.35;
 
     //═══ 4. 顶部色带高光 ═══
     col += float3(0.60, 0.15, 0.15) * (1.0 - smoothstep(0.0, 0.06, uv.y)) * (isMain ? 0.65 : 0.40);
