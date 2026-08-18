@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Wraiths.Marks;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -7,17 +8,6 @@ namespace CalamityOverhaul.Content.Wraiths.Core
     {
         Usable,
         Archive,
-    }
-
-    internal enum WraithAbilityKind : byte
-    {
-        None,
-        ScapeGhost,
-        HeadlessShade,
-        GhostHand,
-        LanternBoy,
-        CrimsonBride,
-        GhostRain,
     }
 
     /// <summary>点鬼簿静态目录项。</summary>
@@ -32,11 +22,14 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         public virtual int SortOrder => 0;
         internal virtual ushort NetworkId => ushort.MaxValue;
         internal virtual WraithCatalogState CatalogState => WraithCatalogState.Archive;
-        internal virtual WraithAbilityKind AbilityKind => WraithAbilityKind.None;
         /// <summary>每次有效结算推进的复苏量；满格即厉鬼夺身。</summary>
         internal virtual float RevivalCost => 0f;
         internal virtual float ErosionCost => 0f;
         internal bool CanEquip => CatalogState == WraithCatalogState.Usable;
+        /// <summary>该鬼往猎物身上留的状态（Flags 并集）；None = 不留状态。</summary>
+        internal virtual WraithMark Emits => WraithMark.None;
+        /// <summary>该鬼的灵异叠加消费规则；注册表惰性收集，结印盘边名由此推导。</summary>
+        internal virtual WraithSynergyRule[] BuildSynergyRules() => [];
 
         public LocalizedText DisplayName { get; private set; }
         public LocalizedText Origin { get; private set; }

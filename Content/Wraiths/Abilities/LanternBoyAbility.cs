@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Wraiths.Marks;
 using CalamityOverhaul.Content.Wraiths.Projectiles;
 using Terraria;
 using Terraria.ModLoader;
@@ -8,6 +9,16 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities
     internal sealed class LanternBoyAbility : WraithPassiveAbility
     {
         internal const string Key = "LanternBoy";
+
+        /// <summary>「照见」灯斩：攥住的靶子跑不掉，灯斩落得实，加重一成六。</summary>
+        internal static readonly WraithSynergyRule GripSlash = new() {
+            Id = "LanternBoy.GripSlash",
+            Trigger = WraithMark.Gripped,
+            Channel = WraithSynergyChannel.DamageAmp,
+            Magnitude = _ => 1.6f,
+            Name = () => WraithCovenText.LanternHandName,
+            UiPriority = 19,
+        };
 
         public override void Update(in WraithAbilityContext context)
             => EnsureController(in context);

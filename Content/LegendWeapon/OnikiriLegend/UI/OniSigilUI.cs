@@ -839,8 +839,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     int other = a == hoverSlot ? b : a;
                     OniGhostEntry otherEntry = OniRegistry.SlotEntry(other);
                     if (otherEntry != null && otherEntry.Key != carried.Key) {
-                        (LocalizedText name, _) = WraithCovenText.Pair(
-                            KindOfKey(carried.Key), KindOfKey(otherEntry.Key));
+                        (LocalizedText name, _) = WraithSynergy.EdgePair(
+                            carried.Key, otherEntry.Key);
                         v.PreviewName = name?.Value;
                         v.Preview = slotHover[hoverSlot];
                     }
@@ -896,8 +896,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     if (other == null || other.Key == entry.Key) {
                         continue;
                     }
-                    (LocalizedText name, _) = WraithCovenText.Pair(
-                        KindOfKey(entry.Key), KindOfKey(other.Key));
+                    (LocalizedText name, _) = WraithSynergy.EdgePair(entry.Key, other.Key);
                     //只提示专属反应；「相唤」是底噪，不值一条线
                     if (name == null || name == WraithCovenText.CallName) {
                         continue;
@@ -912,17 +911,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         /// <summary>三角某条边的合鬼名：两端都占了才有名字</summary>
         private static string EdgeName(int edge) {
             (int a, int b) = OniSigilWheel.EdgeSlots(edge);
-            WraithAbilityKind ka = KindOfSlot(a);
-            WraithAbilityKind kb = KindOfSlot(b);
-            return WraithCovenText.Pair(ka, kb).Name?.Value;
+            return WraithSynergy.EdgePair(
+                OniRegistry.SlotKey(a), OniRegistry.SlotKey(b)).Name?.Value;
         }
-
-        private static WraithAbilityKind KindOfSlot(int slot)
-            => KindOfKey(OniRegistry.SlotKey(slot));
-
-        private static WraithAbilityKind KindOfKey(string key)
-            => WraithRegistry.TryGetUsable(key, out WraithDefinition def)
-                ? def.AbilityKind : WraithAbilityKind.None;
 
         private void DrawHeader(SpriteBatch sb, DynamicSpriteFont font, float a) {
             string title = TitleText.Value;
@@ -975,7 +966,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OniGhostEntry carried = CarriedEntry;
             if (hoverEdge >= 0) {
                 (int a, int b) = OniSigilWheel.EdgeSlots(hoverEdge);
-                (LocalizedText name, LocalizedText note) = WraithCovenText.Pair(KindOfSlot(a), KindOfSlot(b));
+                (LocalizedText name, LocalizedText note) = WraithSynergy.EdgePair(
+                    OniRegistry.SlotKey(a), OniRegistry.SlotKey(b));
                 if (note != null) {
                     return $"{name.Value} · {note.Value}";
                 }

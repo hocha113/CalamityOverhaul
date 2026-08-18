@@ -20,8 +20,10 @@ namespace CalamityOverhaul.Content.Wraiths.Marks
         private static WraithMarkNPC Of(NPC npc)
             => npc?.active == true && npc.TryGetGlobalNPC(out WraithMarkNPC marks) ? marks : null;
 
-        internal static void Apply(NPC npc, WraithMark mark, int ticks, float power, int owner)
-            => Of(npc)?.Apply(mark, ticks, power, owner);
+        /// <summary><paramref name="key"/> 为施加鬼的 Key，三印崩按它付费。</summary>
+        internal static void Apply(NPC npc, WraithMark mark, int ticks, float power,
+            int owner, string key)
+            => Of(npc)?.Apply(mark, ticks, power, owner, key);
 
         internal static bool Has(NPC npc, WraithMark mark, int owner)
             => Of(npc)?.Has(mark, owner) == true;

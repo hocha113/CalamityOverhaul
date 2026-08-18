@@ -1,39 +1,24 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
+using CalamityOverhaul.Content.Wraiths.Marks;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Wraiths.Core
 {
-    /// <summary>同场役鬼掩码：让一只鬼能直接问"我旁边站着谁"，不必回头查 ModPlayer。</summary>
-    [System.Flags]
-    internal enum WraithCoven : byte
-    {
-        None = 0,
-        ScapeGhost = 1 << 0,
-        HeadlessShade = 1 << 1,
-        GhostHand = 1 << 2,
-        LanternBoy = 1 << 3,
-        CrimsonBride = 1 << 4,
-        GhostRain = 1 << 5,
-    }
-
     internal readonly struct WraithAbilityContext(
         Player player,
         Item vesselItem,
         WraithDefinition definition,
         float revival,
-        WraithCoven coven)
+        WraithMark boardEmits)
     {
         public Player Player { get; } = player;
         public Item VesselItem { get; } = vesselItem;
         public WraithDefinition Definition { get; } = definition;
         /// <summary>该鬼当前复苏值 0..1；越接近复苏，能力越凶。</summary>
         public float Revival { get; } = revival;
-        /// <summary>本次结印盘上的全部役鬼（含自己）。</summary>
-        public WraithCoven Coven { get; } = coven;
-
-        /// <summary>同场是否有这只鬼（自己也算）。</summary>
-        public bool HasCoven(WraithCoven other) => (Coven & other) != 0;
+        /// <summary>本次结印盘上全部役鬼（含自己）的发射状态并集：问"盘上有没有鬼弄湿猎物"，不问"是不是鬼雨"。</summary>
+        public WraithMark BoardEmits { get; } = boardEmits;
     }
 
     /// <summary>鬼切普通五连段实际出刀时冻结的役鬼节拍</summary>
@@ -86,7 +71,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
                 return false;
             }
             context = new WraithAbilityContext(player, player.HeldItem, definition,
-                wraithPlayer.GetRevival(requiredKey), ResolveCoven(wraithPlayer));
+                wraithPlayer.GetRevival(requiredKey), WraithSynergy.ResolveBoardEmits(wraithPlayer));
             return true;
         }
 
@@ -101,34 +86,6 @@ namespace CalamityOverhaul.Content.Wraiths.Core
                 && wraithPlayer.IsEquipped(requiredKey)
                 && WraithRegistry.TryGetUsable(requiredKey, out definition);
         }
-
-        internal static WraithCoven ResolveCoven(Runtime.WraithPlayer wraithPlayer) {
-            WraithCoven coven = WraithCoven.None;
-            if (wraithPlayer == null) {
-                return coven;
-            }
-            foreach (string key in wraithPlayer.EquippedKeys) {
-                if (WraithRegistry.TryGetUsable(key, out WraithDefinition definition)) {
-                    coven |= CovenOf(definition.AbilityKind);
-                }
-            }
-            return coven;
-        }
-
-        /// <summary>玩家当前的同场役鬼掩码；不检查手持与夺身，只报盘上有谁。</summary>
-        internal static WraithCoven CovenOf(Player player)
-            => player != null && player.TryGetModPlayer(out Runtime.WraithPlayer wraithPlayer)
-                ? ResolveCoven(wraithPlayer) : WraithCoven.None;
-
-        internal static WraithCoven CovenOf(WraithAbilityKind kind) => kind switch {
-            WraithAbilityKind.ScapeGhost => WraithCoven.ScapeGhost,
-            WraithAbilityKind.HeadlessShade => WraithCoven.HeadlessShade,
-            WraithAbilityKind.GhostHand => WraithCoven.GhostHand,
-            WraithAbilityKind.LanternBoy => WraithCoven.LanternBoy,
-            WraithAbilityKind.CrimsonBride => WraithCoven.CrimsonBride,
-            WraithAbilityKind.GhostRain => WraithCoven.GhostRain,
-            _ => WraithCoven.None,
-        };
 
         internal static bool TryCommitUse(Player player, string key) {
             if (Main.netMode == NetmodeID.MultiplayerClient

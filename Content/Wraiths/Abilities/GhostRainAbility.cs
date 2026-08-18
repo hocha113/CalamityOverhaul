@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Wraiths.Marks;
 using CalamityOverhaul.Content.Wraiths.Projectiles;
 using Terraria;
 using Terraria.ModLoader;
@@ -9,6 +10,17 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities
     internal sealed class GhostRainAbility : WraithPassiveAbility
     {
         internal const string Key = "GhostRain";
+
+        /// <summary>「湿刃」：创口未合的猎物，雨直接灌进去，单跳翻倍。</summary>
+        internal static readonly WraithSynergyRule WetBlade = new() {
+            Id = "GhostRain.WetBlade",
+            Trigger = WraithMark.Severed,
+            Channel = WraithSynergyChannel.DamageAmp,
+            Magnitude = _ => 2f,
+            Name = () => WraithCovenText.RainShadeName,
+            Note = () => WraithCovenText.RainShadeNote,
+            UiPriority = 25,
+        };
 
         public override void Update(in WraithAbilityContext context)
             => EnsureController(in context);

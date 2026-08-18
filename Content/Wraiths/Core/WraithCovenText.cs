@@ -4,8 +4,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Wraiths.Core
 {
     /// <summary>
-    /// 合鬼名录：结印三角每条边写的那个名字，以及它对应的说明。<br/>
-    /// 有专属反应的配对各有其名；其余配对仍然互相催醒，落到「相唤」
+    /// 合鬼名录：结印三角边名与说明的文案容器（本地化键沿用 Wraiths.Coven.*）。<br/>
+    /// 哪条边亮哪个名字不再写在这里——由各鬼声明的 <see cref="WraithSynergyRule"/>
+    /// 经 <see cref="WraithSynergy.EdgePair"/> 推导；「相唤」与「三印崩」是盘的固有性质，仍由 UI 直接引用
     /// </summary>
     internal sealed class WraithCovenText : ILocalizedModType, ICWRLoader
     {
@@ -77,38 +78,5 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             BurstNote = null;
         }
 
-        /// <summary>
-        /// 两只鬼之间那条边的名字与说明。专属反应优先，其次绯嫁与替死的通配，
-        /// 都不沾则落到「相唤」——它们仍然在互相催醒，边不该是死的
-        /// </summary>
-        internal static (LocalizedText Name, LocalizedText Note) Pair(
-            WraithAbilityKind a, WraithAbilityKind b) {
-            if (a == WraithAbilityKind.None || b == WraithAbilityKind.None || a == b) {
-                return (null, null);
-            }
-            if (Match(a, b, WraithAbilityKind.GhostRain, WraithAbilityKind.GhostHand)) {
-                return (RainHandName, RainHandNote);
-            }
-            if (Match(a, b, WraithAbilityKind.GhostRain, WraithAbilityKind.HeadlessShade)) {
-                return (RainShadeName, RainShadeNote);
-            }
-            if (Match(a, b, WraithAbilityKind.GhostHand, WraithAbilityKind.HeadlessShade)) {
-                return (HandShadeName, HandShadeNote);
-            }
-            if (Match(a, b, WraithAbilityKind.LanternBoy, WraithAbilityKind.GhostHand)) {
-                return (LanternHandName, LanternHandNote);
-            }
-            if (a == WraithAbilityKind.CrimsonBride || b == WraithAbilityKind.CrimsonBride) {
-                return (BrideName, BrideNote);
-            }
-            if (a == WraithAbilityKind.ScapeGhost || b == WraithAbilityKind.ScapeGhost) {
-                return (ScapeName, ScapeNote);
-            }
-            return (CallName, CallNote);
-        }
-
-        private static bool Match(WraithAbilityKind a, WraithAbilityKind b,
-            WraithAbilityKind x, WraithAbilityKind y)
-            => a == x && b == y || a == y && b == x;
     }
 }

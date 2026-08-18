@@ -20,21 +20,24 @@ namespace CalamityOverhaul.Content.Wraiths.Marks
             internal int Owner;
             /// <summary>施加时的复苏快照，越接近夺身印得越重</summary>
             internal float Power;
+            /// <summary>施加鬼的 Key：三印崩按它付费，不查身份表</summary>
+            internal string Key;
         }
 
         private readonly MarkSlot[] slots = new MarkSlot[WraithMarkExtensions.Count];
 
-        internal void Apply(WraithMark mark, int ticks, float power, int owner) {
+        internal void Apply(WraithMark mark, int ticks, float power, int owner, string key) {
             int index = mark.Index();
             if (index < 0 || ticks <= 0) {
                 return;
             }
             ref MarkSlot slot = ref slots[index];
-            //换施加者即整条重写；同一人续期取更长的那个
+            //换施加者即整条重写；同一人续期取更长的那个（Key 保持首施加鬼）
             if (slot.Ticks <= 0 || slot.Owner != owner) {
                 slot.Owner = owner;
                 slot.Ticks = ticks;
                 slot.Power = power;
+                slot.Key = key;
                 return;
             }
             slot.Ticks = System.Math.Max(slot.Ticks, ticks);
@@ -49,6 +52,10 @@ namespace CalamityOverhaul.Content.Wraiths.Marks
 
         internal float PowerOf(WraithMark mark, int owner)
             => Has(mark, owner) ? slots[mark.Index()].Power : 0f;
+
+        /// <summary>该印当前施加鬼的 Key；无印或不属该施加者时为 null。</summary>
+        internal string KeyOf(WraithMark mark, int owner)
+            => Has(mark, owner) ? slots[mark.Index()].Key : null;
 
         /// <summary>身上来自该施加者的印记合集。</summary>
         internal WraithMark Active(int owner) {
@@ -67,20 +74,27 @@ namespace CalamityOverhaul.Content.Wraiths.Marks
             }
         }
 
-        /// <summary>喜堂里时间是停住的：缚在身上时其余印记不走表。</summary>
-        private bool Frozen() => slots[WraithMark.Betrothed.Index()].Ticks > 0;
+        /// <summary>身上是否挂着滞时状态：滞在身时其余印记不走表。</summary>
+        private bool AnyTimelock() {
+            for (int i = 0; i < slots.Length; i++) {
+                if (slots[i].Ticks > 0 && WraithMarkExtensions.FromIndex(i).IsTimelock()) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public override void PostAI(NPC npc) {
             if (Main.netMode == NetmodeID.MultiplayerClient) {
                 return;
             }
-            bool frozen = Frozen();
+            bool frozen = AnyTimelock();
             for (int i = 0; i < slots.Length; i++) {
                 if (slots[i].Ticks <= 0) {
                     continue;
                 }
-                //缚自己照常走表，否则喜堂永不散场
-                if (frozen && WraithMarkExtensions.FromIndex(i) != WraithMark.Betrothed) {
+                //滞时印自己照常走表，否则喜堂永不散场
+                if (frozen && !WraithMarkExtensions.FromIndex(i).IsTimelock()) {
                     continue;
                 }
                 if (--slots[i].Ticks <= 0) {

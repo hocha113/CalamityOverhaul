@@ -327,9 +327,9 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
             bool crit = round.CritChance > 0 && Main.rand.Next(100) < round.CritChance;
             int lifeBefore = target.life;
-            //照见：攥住的靶子跑不掉，灯斩落得实，这一刀补上碾轧的分量
-            int slashDamage = WraithMarks.Has(target, WraithMark.Gripped, Projectile.owner)
-                ? (int)(round.Damage * 1.6f) : round.Damage;
+            //照见：攥住的靶子跑不掉，灯斩落得实，量级声明在 GripSlash 规则里
+            int slashDamage = (int)(round.Damage
+                * WraithSynergy.Factor(LanternBoyAbility.GripSlash, target, Projectile.owner));
             Owner.ApplyDamageToNPC(target, slashDamage, round.Knockback,
                 round.Facing, crit, Projectile.DamageType);
             if (target.life >= lifeBefore) {
@@ -337,7 +337,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
             //灯照见过：照印留给同场其他鬼索敌
             WraithMarks.Apply(target, WraithMark.Lit, WraithMarks.LitTicks,
-                Revival, Projectile.owner);
+                Revival, Projectile.owner, Runtime.WraithPlayer.LanternBoyKey);
 
             if (!round.Paid) {
                 if (!WraithAbilityService.TryCommitUse(in unpaidContext)) {

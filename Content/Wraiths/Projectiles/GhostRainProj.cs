@@ -205,10 +205,10 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                     }
                     //淋着雨的都记上湿印，同场其他鬼靠它认路
                     WraithMarks.Apply(npc, WraithMark.Soaked, WraithMarks.SoakedTicks,
-                        revivalSnapshot, Projectile.owner);
-                    //湿刃：鬼影开的口子还敞着，雨直接灌进去
-                    int tickDamage = WraithMarks.Has(npc, WraithMark.Severed, Projectile.owner)
-                        ? damage * 2 : damage;
+                        revivalSnapshot, Projectile.owner, WraithPlayer.GhostRainKey);
+                    //湿刃：创口未合的猎物雨直接灌进去，量级声明在 WetBlade 规则里
+                    int tickDamage = (int)(damage
+                        * WraithSynergy.Factor(GhostRainAbility.WetBlade, npc, Projectile.owner));
                     int direction = npc.Center.X >= Owner.Center.X ? 1 : -1;
                     Owner.ApplyDamageToNPC(npc, tickDamage, 0f, direction, false,
                         CWRRef.GetTrueMeleeDamageClass());

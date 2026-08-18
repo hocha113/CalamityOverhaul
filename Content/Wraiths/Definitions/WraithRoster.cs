@@ -1,7 +1,8 @@
-using CalamityOverhaul.Content.Wraiths.Abilities;
+﻿using CalamityOverhaul.Content.Wraiths.Abilities;
 using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.Deaths;
 using CalamityOverhaul.Content.Wraiths.Deaths.Performances;
+using CalamityOverhaul.Content.Wraiths.Marks;
 
 namespace CalamityOverhaul.Content.Wraiths.Definitions
 {
@@ -10,9 +11,11 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override int SortOrder => 20;
         internal override ushort NetworkId => 1;
         internal override WraithCatalogState CatalogState => WraithCatalogState.Usable;
-        internal override WraithAbilityKind AbilityKind => WraithAbilityKind.LanternBoy;
         internal override float RevivalCost => 0.04f;
         internal override float ErosionCost => 0.01f;
+        internal override WraithMark Emits => WraithMark.Lit;
+        internal override WraithSynergyRule[] BuildSynergyRules()
+            => [LanternBoyAbility.GripSlash];
         internal override WraithPassiveAbility CreateAbility() => new LanternBoyAbility();
         internal override WraithDeathPerformance CreateDeathPerformance()
             => new LanternSeizurePerformance();
@@ -23,9 +26,21 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override int SortOrder => 30;
         internal override ushort NetworkId => 2;
         internal override WraithCatalogState CatalogState => WraithCatalogState.Usable;
-        internal override WraithAbilityKind AbilityKind => WraithAbilityKind.CrimsonBride;
         internal override float RevivalCost => 0.25f;
         internal override float ErosionCost => 0.22f;
+        internal override WraithMark Emits => WraithMark.Betrothed;
+        //「喜堂」的冻结效果由缚印的 Timelock 状态属性兑现（WraithStateDef），
+        //这条规则只声明边：跟谁同盘，谁的印都停在喜堂里
+        internal override WraithSynergyRule[] BuildSynergyRules() => [
+            new WraithSynergyRule {
+                Id = "CrimsonBride.HallTimelock",
+                Channel = WraithSynergyChannel.PlayerChannel,
+                WildcardPartner = true,
+                Name = () => WraithCovenText.BrideName,
+                Note = () => WraithCovenText.BrideNote,
+                UiPriority = 10,
+            },
+        ];
         internal override WraithDeathPerformance CreateDeathPerformance()
             => new BrideSeizurePerformance();
     }
@@ -35,9 +50,19 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override int SortOrder => 40;
         internal override ushort NetworkId => 3;
         internal override WraithCatalogState CatalogState => WraithCatalogState.Usable;
-        internal override WraithAbilityKind AbilityKind => WraithAbilityKind.ScapeGhost;
         internal override float RevivalCost => 0.25f;
         internal override float ErosionCost => 0.30f;
+        //「顶劫」的泄压结算在 WraithPlayer.RelieveCovenRevival，这条规则只声明边
+        internal override WraithSynergyRule[] BuildSynergyRules() => [
+            new WraithSynergyRule {
+                Id = "ScapeGhost.CovenRelief",
+                Channel = WraithSynergyChannel.PlayerChannel,
+                WildcardPartner = true,
+                Name = () => WraithCovenText.ScapeName,
+                Note = () => WraithCovenText.ScapeNote,
+                UiPriority = 5,
+            },
+        ];
         internal override WraithDeathPerformance CreateDeathPerformance()
             => new ScapeSeizurePerformance();
     }
@@ -47,9 +72,11 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override int SortOrder => 50;
         internal override ushort NetworkId => 4;
         internal override WraithCatalogState CatalogState => WraithCatalogState.Usable;
-        internal override WraithAbilityKind AbilityKind => WraithAbilityKind.HeadlessShade;
         internal override float RevivalCost => 0.09f;
         internal override float ErosionCost => 0.025f;
+        internal override WraithMark Emits => WraithMark.Severed;
+        internal override WraithSynergyRule[] BuildSynergyRules()
+            => [HeadlessShadeAbility.PinnedHunt];
         internal override WraithPassiveAbility CreateAbility() => new HeadlessShadeAbility();
         internal override WraithDeathPerformance CreateDeathPerformance()
             => new ShadeSeizurePerformance();
@@ -60,9 +87,15 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override int SortOrder => 60;
         internal override ushort NetworkId => 5;
         internal override WraithCatalogState CatalogState => WraithCatalogState.Usable;
-        internal override WraithAbilityKind AbilityKind => WraithAbilityKind.GhostHand;
         internal override float RevivalCost => 0.10f;
         internal override float ErosionCost => 0.035f;
+        internal override WraithMark Emits => WraithMark.Gripped;
+        internal override WraithSynergyRule[] BuildSynergyRules() => [
+            GhostHandAbility.RainReach,
+            GhostHandAbility.RainCrush,
+            GhostHandAbility.RainHandCap,
+            GhostHandAbility.LitSeek,
+        ];
         internal override WraithPassiveAbility CreateAbility() => new GhostHandAbility();
         internal override WraithDeathPerformance CreateDeathPerformance()
             => new HandSeizurePerformance();
@@ -74,9 +107,11 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override int SortOrder => 70;
         internal override ushort NetworkId => 0;
         internal override WraithCatalogState CatalogState => WraithCatalogState.Usable;
-        internal override WraithAbilityKind AbilityKind => WraithAbilityKind.GhostRain;
         internal override float RevivalCost => 0.25f;
         internal override float ErosionCost => 0.18f;
+        internal override WraithMark Emits => WraithMark.Soaked;
+        internal override WraithSynergyRule[] BuildSynergyRules()
+            => [GhostRainAbility.WetBlade];
         internal override WraithPassiveAbility CreateAbility() => new GhostRainAbility();
         internal override WraithDeathPerformance CreateDeathPerformance()
             => new RainSeizurePerformance();

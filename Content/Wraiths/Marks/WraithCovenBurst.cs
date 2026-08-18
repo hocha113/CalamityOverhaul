@@ -1,5 +1,4 @@
 using CalamityOverhaul.Content.Wraiths.Core;
-using CalamityOverhaul.Content.Wraiths.Runtime;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -20,15 +19,6 @@ namespace CalamityOverhaul.Content.Wraiths.Marks
         private const float PerMarkMin = 0.35f;
         private const float PerMarkMax = 0.75f;
 
-        private static string KeyOf(WraithMark mark) => mark switch {
-            WraithMark.Soaked => WraithPlayer.GhostRainKey,
-            WraithMark.Gripped => WraithPlayer.GhostHandKey,
-            WraithMark.Severed => WraithPlayer.HeadlessShadeKey,
-            WraithMark.Lit => WraithPlayer.LanternBoyKey,
-            WraithMark.Betrothed => WraithPlayer.CrimsonBrideKey,
-            _ => null,
-        };
-
         /// <summary>权威端检查并引爆；印记被吃掉，要再崩得重新攒。</summary>
         internal static void TryBurst(NPC npc, WraithMarkNPC marks, int owner) {
             if (owner < 0 || owner >= Main.maxPlayers) {
@@ -40,8 +30,12 @@ namespace CalamityOverhaul.Content.Wraiths.Marks
                 return;
             }
 
+            //盘点强度与付费名单：付费对象是槽上记的施加鬼 Key，不查身份表；
+            //同一只鬼若发了多种状态也只付一次
             float total = 0f;
             int count = 0;
+            string[] payKeys = new string[WraithMarkExtensions.Count];
+            int payCount = 0;
             for (int i = 0; i < WraithMarkExtensions.Count; i++) {
                 WraithMark mark = WraithMarkExtensions.FromIndex(i);
                 if ((active & mark) == 0) {
@@ -50,6 +44,20 @@ namespace CalamityOverhaul.Content.Wraiths.Marks
                 count++;
                 total += MathHelper.Lerp(PerMarkMin, PerMarkMax,
                     MathHelper.Clamp(marks.PowerOf(mark, owner), 0f, 1f));
+                string key = marks.KeyOf(mark, owner);
+                if (string.IsNullOrEmpty(key)) {
+                    continue;
+                }
+                bool seen = false;
+                for (int k = 0; k < payCount; k++) {
+                    if (payKeys[k] == key) {
+                        seen = true;
+                        break;
+                    }
+                }
+                if (!seen) {
+                    payKeys[payCount++] = key;
+                }
             }
             if (count < MarkThreshold) {
                 return;
@@ -65,11 +73,8 @@ namespace CalamityOverhaul.Content.Wraiths.Marks
                 CWRRef.GetTrueMeleeDamageClass());
 
             //参与的鬼各付一次；互相催醒会让这一下把整盘都往上顶
-            for (int i = 0; i < WraithMarkExtensions.Count; i++) {
-                WraithMark mark = WraithMarkExtensions.FromIndex(i);
-                if ((active & mark) != 0) {
-                    WraithAbilityService.TryCommitUse(player, KeyOf(mark));
-                }
+            for (int k = 0; k < payCount; k++) {
+                WraithAbilityService.TryCommitUse(player, payKeys[k]);
             }
 
             BroadcastFx(npc);

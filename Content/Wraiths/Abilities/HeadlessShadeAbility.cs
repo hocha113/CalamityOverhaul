@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Wraiths.Marks;
 using CalamityOverhaul.Content.Wraiths.Projectiles;
 using System;
 using Terraria;
@@ -11,6 +12,16 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities
     {
         internal const string Key = "HeadlessShade";
         internal const float HuntRange = 620f;
+
+        /// <summary>「按住了斩」：鬼影优先扑向动弹不得的猎物——那一刀不会落空。</summary>
+        internal static readonly WraithSynergyRule PinnedHunt = new() {
+            Id = "HeadlessShade.PinnedHunt",
+            Trigger = WraithMark.Gripped,
+            Channel = WraithSynergyChannel.TargetBias,
+            Name = () => WraithCovenText.HandShadeName,
+            Note = () => WraithCovenText.HandShadeNote,
+            UiPriority = 20,
+        };
 
         internal static bool CanHunt(NPC npc)
             => npc.CanBeChasedBy() && !OniDismember.IsLocked(npc.whoAmI);

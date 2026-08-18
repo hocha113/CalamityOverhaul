@@ -74,6 +74,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             byKey.Clear();
             networkIdByKey.Clear();
             byNetworkId.Clear();
+            WraithSynergy.Unload();
         }
     }
 }

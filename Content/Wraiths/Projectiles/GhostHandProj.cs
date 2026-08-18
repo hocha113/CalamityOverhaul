@@ -271,7 +271,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
             NPC target = Main.npc[targetNPCID];
             if (!target.active
-                || !WraithMarks.Has(target, WraithMark.Soaked, Projectile.owner)) {
+                || !WraithSynergy.TriggersOn(GhostHandAbility.RainReach, target, Projectile.owner)) {
                 return false;
             }
             //够得着就照常从身后伸，别为了演出把近身抓也搬到天上
@@ -381,10 +381,8 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                     continue;
                 }
                 float distSq = Vector2.DistanceSquared(npc.Center, Owner.Center);
-                //照见：灯照过的目标在手看来近得多，隔着黑也摸得着
-                if (WraithMarks.Has(npc, WraithMark.Lit, Projectile.owner)) {
-                    distSq *= 0.25f;
-                }
+                //照见：灯照过的目标在手看来近得多，权重声明在 LitSeek 规则里
+                distSq *= WraithSynergy.Factor(GhostHandAbility.LitSeek, npc, Projectile.owner);
                 if (distSq < bestSq) {
                     bestSq = distSq;
                     best = npc;
@@ -502,7 +500,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             if (!VaultUtils.isClient && gripAuthorized) {
                 target.AddBuff(ModContent.BuffType<GhostGripDebuff>(), 8);
                 WraithMarks.Apply(target, WraithMark.Gripped, WraithMarks.GrippedTicks,
-                    Revival, Projectile.owner);
+                    Revival, Projectile.owner, WraithPlayer.GhostHandKey);
                 if (pulseFrame) {
                     ApplyGripDamage(target, PulseDamageMin, PulseDamageMax);
                 }
@@ -551,11 +549,8 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private void ApplyGripDamage(NPC target, float minFraction, float maxFraction) {
             float fraction = MathHelper.Lerp(minFraction, maxFraction,
                 MathHelper.Clamp(Revival, 0f, 1f));
-            //湿手好使力：雨印越重，碾得越狠
-            float soak = WraithMarks.PowerOf(target, WraithMark.Soaked, Projectile.owner);
-            if (WraithMarks.Has(target, WraithMark.Soaked, Projectile.owner)) {
-                fraction *= MathHelper.Lerp(1.15f, 1.45f, MathHelper.Clamp(soak, 0f, 1f));
-            }
+            //湿手好使力：雨印越重碾得越狠，量级曲线声明在 RainCrush 规则里
+            fraction *= WraithSynergy.Factor(GhostHandAbility.RainCrush, target, Projectile.owner);
             int damage = Math.Max(1, (int)(weaponDamageSnapshot * fraction));
             int direction = target.Center.X >= Owner.Center.X ? 1 : -1;
             Owner.ApplyDamageToNPC(target, damage, 0f, direction, false,
@@ -966,7 +961,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             //结算帧冻结武器伤害快照，本轮碾轧全程沿用
             weaponDamageSnapshot = Math.Max(1, Owner.GetWeaponDamage(context.VesselItem));
             WraithMarks.Apply(target, WraithMark.Gripped, WraithMarks.GrippedTicks,
-                context.Revival, Projectile.owner);
+                context.Revival, Projectile.owner, WraithPlayer.GhostHandKey);
             authorityGripCommitted = true;
             lastAuthorityGripTick = Main.GameUpdateCount;
             gripAuthorized = true;

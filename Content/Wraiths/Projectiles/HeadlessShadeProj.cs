@@ -616,7 +616,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
             //刀口敞着：断印留给同场其他鬼灌进去
             WraithMarks.Apply(target, WraithMark.Severed, WraithMarks.SeveredTicks,
-                revival, Projectile.owner);
+                revival, Projectile.owner, WraithPlayer.HeadlessShadeKey);
             return WraithAbilityService.TryCommitUse(in context);
         }
 
@@ -706,7 +706,8 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 HeadlessShadeAbility.HuntRange,
                 ignoreTiles: true,
                 chasedByNPC: npc => HeadlessShadeAbility.CanHunt(npc)
-                    && WraithMarks.Has(npc, WraithMark.Gripped, Projectile.owner));
+                    && WraithSynergy.TriggersOn(HeadlessShadeAbility.PinnedHunt,
+                        npc, Projectile.owner));
             if (pinned != null) {
                 return pinned;
             }

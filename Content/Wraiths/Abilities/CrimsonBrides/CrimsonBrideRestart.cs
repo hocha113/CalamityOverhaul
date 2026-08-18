@@ -121,7 +121,8 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.CrimsonBrides
                     && Vector2.DistanceSquared(npc.Center, owner.Center)
                         <= HallRadius * HallRadius) {
                     Marks.WraithMarks.Apply(npc, Marks.WraithMark.Betrothed,
-                        Marks.WraithMarks.BetrothedTicks, revival, owner.whoAmI);
+                        Marks.WraithMarks.BetrothedTicks, revival, owner.whoAmI,
+                        WraithPlayer.CrimsonBrideKey);
                 }
             }
         }
