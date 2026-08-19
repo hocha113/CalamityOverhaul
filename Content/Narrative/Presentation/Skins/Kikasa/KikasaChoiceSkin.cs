@@ -29,6 +29,10 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Kikasa
         public override void DrawPanel(SpriteBatch spriteBatch, ChoiceLayoutContext context)
             => KikasaPanelDraw.DrawShaderBackground(spriteBatch, context.PanelRect, context.Alpha, _state);
 
+        //此前只生成不绘制,雨在选择框上一直是哑的
+        public override void DrawBackgroundDecorations(SpriteBatch spriteBatch, ChoiceLayoutContext context)
+            => _state.DrawRain(spriteBatch, context.Alpha);
+
         public override void DrawTitle(SpriteBatch spriteBatch, ChoiceLayoutContext context) {
             DrawTitleDecoration(spriteBatch, context);
             string title = ResolveChoiceTitle();

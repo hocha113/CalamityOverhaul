@@ -1,7 +1,9 @@
 // ============================================================================
-//KikasaNarrativePanel.fx 鬼雨叙事面板背景——湿墨冷青水膜 + 溺月 + 顶沿雨丝 + 底沿积水线 + 水幕开合
+//KikasaNarrativePanel.fx 鬼雨叙事面板背景——湿墨冷青水膜 + 溺月 + 底沿积水线 + 水幕开合
 //AlphaBlend 预乘 alpha 输出;色板与 KikasaSky.fx 鬼雨异化态同源(uCol* 由 CPU 传入,禁红禁暖)
 //构图纪律:签名装饰全部住在边框带(edgePad 区),面板内部保持湿墨静场护住文字
+//顶沿不画雨:噪声带切出来的"雨丝"读作飘带(2026-08 用户判违和),落雨归 CPU 粒子
+//(KikasaPanelState 细丝落檐溅涟漪),shader 顶沿只留溺月与框线,留白衬细丝
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -147,22 +149,8 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float bandHalo = 1.0 - smoothstep(innerMin.y + 16.0, innerMin.y + 80.0, pixelPos.y);
     float moonA = moonDisc * 0.85 * bandDisc + moonHalo * (0.18 + breath * 0.08) * bandHalo;
 
-    //====顶沿雨丝:细密斜落的雨,住在顶沿边框带,落到框沿溅开即止====
-    //下落速率对齐 CPU 雨丝粒子(约 160px/s),背景雨与前景雨不打架
-    float slant = pixelPos.x + pixelPos.y * 0.34;
-    float rainN = valueNoise(float2(slant * 0.16, pixelPos.y * 0.016 - t * 2.6));
-    float rainCol01 = smoothstep(0.66, 0.92, rainN);
-    //纵向包络:画布顶淡入,过框沿后迅速消失
-    float aboveTop = 1.0 - smoothstep(innerMin.y + 2.0, innerMin.y + 7.0, pixelPos.y);
-    float canvasIn = smoothstep(0.0, uEdgePad * 0.5, pixelPos.y);
-    float endTaper = smoothstep(0.0, 0.06, u) * smoothstep(1.0, 0.94, u);
-    float rainA = rainCol01 * aboveTop * canvasIn * endTaper * 0.62;
-    //雨落到框沿:沿线一线溅起的湿光,随雨相位闪动
-    float splash = exp(-pow(pixelPos.y - innerMin.y, 2.0) * 0.10) * rainCol01 * endTaper;
-    float3 rainStreakCol = lerp(uColRain, uColMoon, rainCol01 * 0.55);
-    rainA = saturate(rainA + splash * 0.5);
-
     //====底沿积水线:框底下方一线缓波,承住整个面板====
+    float endTaper = smoothstep(0.0, 0.06, u) * smoothstep(1.0, 0.94, u);
     float waveY = innerMax.y + 5.0
         + sin(u * TAU * 1.6 + t * 0.7) * 1.1
         + (valueNoise(float2(u * 5.0 + t * 0.05, 2.7)) - 0.5) * 2.2;
@@ -186,11 +174,10 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     cutA *= saturate(uReveal * 8.0); //水线独立于面板淡入,起手就亮
     float3 cutCol = lerp(uColRain * 1.3, uColMoon, frontCore);
 
-    //====预乘 over 合成(后→前:溺月→面板体→框线→雨丝→积水线→水幕前沿)====
+    //====预乘 over 合成(后→前:溺月→面板体→框线→积水线→水幕前沿)====
     float bodyA = edgeAlpha * openMask * uAlpha;
     moonA *= openMask * uAlpha;
     rimA *= openMask * uAlpha;
-    rainA *= openMask * uAlpha;
     waterA *= openMask * uAlpha;
 
     float3 C = moonCol * moonA;
@@ -199,8 +186,6 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     A = bodyA + A * (1.0 - bodyA);
     C = rimCol * rimA + C * (1.0 - rimA);
     A = rimA + A * (1.0 - rimA);
-    C = rainStreakCol * rainA + C * (1.0 - rainA);
-    A = rainA + A * (1.0 - rainA);
     C = waterCol * waterA + C * (1.0 - waterA);
     A = waterA + A * (1.0 - waterA);
     C = cutCol * cutA + C * (1.0 - cutA);
