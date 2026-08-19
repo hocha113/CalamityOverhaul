@@ -3529,11 +3529,6 @@ OniMeiRubbingYoen: {
 	Burden: Limite de vigor -5 %; custo da investida ×1,10 enquanto o campo existir
 }
 
-ShenyoStyleDemoItem: {
-	// DisplayName: Ghost Rain Narrative Demo
-	// Tooltip: Use to play the umbrella spirit dialogue demo (test item)
-}
-
 ScrapBeacon: {
 	// DisplayName: Scrap Beacon
 	/* Tooltip:

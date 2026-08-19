@@ -3533,11 +3533,6 @@ OniMeiRubbingYoen: {
 	Burden: Предел энергии -5 %; стоимость рывка ×1,10, пока существует поле
 }
 
-ShenyoStyleDemoItem: {
-	// DisplayName: Ghost Rain Narrative Demo
-	// Tooltip: Use to play the umbrella spirit dialogue demo (test item)
-}
-
 ScrapBeacon: {
 	// DisplayName: Scrap Beacon
 	/* Tooltip:

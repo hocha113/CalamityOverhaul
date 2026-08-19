@@ -111,6 +111,28 @@ namespace CalamityOverhaul.Content.Narrative
         public static Texture2D Himayo_forsmile = null;
         [VaultLoaden(CWRConstant.ADV + "Himayo/")]
         public static Texture2D Himayo_ruminate = null;
+        [VaultLoaden(CWRConstant.ADV + "Shenyo/")]
+        public static Texture2D Shenyo = null;
+        [VaultLoaden(CWRConstant.ADV + "Shenyo/")]
+        public static Texture2D Shenyo_Calm = null;
+        [VaultLoaden(CWRConstant.ADV + "Shenyo/")]
+        public static Texture2D Shenyo_CloseEye = null;
+        [VaultLoaden(CWRConstant.ADV + "Shenyo/")]
+        public static Texture2D Shenyo_Murmur = null;
+        [VaultLoaden(CWRConstant.ADV + "Shenyo/")]
+        public static Texture2D Shenyo_Smile = null;
+        [VaultLoaden(CWRConstant.ADV + "Shenyo/")]
+        public static Texture2D Shenyo_Shock = null;
+        [VaultLoaden(CWRConstant.ADV + "Shenyo/")]
+        public static Texture2D Shenyo_Wry = null;
+        [VaultLoaden(CWRConstant.ADV + "Shenyo/")]
+        public static Texture2D Shenyo_Scrutiny = null;
+        [VaultLoaden(CWRConstant.ADV + "Shenyo/")]
+        public static Texture2D Shenyo_Parted = null;
+        [VaultLoaden(CWRConstant.ADV + "Shenyo/")]
+        public static Texture2D Shenyo_Pensive = null;
+        [VaultLoaden(CWRConstant.ADV + "Shenyo/")]
+        public static Texture2D Shenyo_Lidded = null;
         [VaultLoaden(CWRConstant.ADV + "VoidColony/")]
         public static Texture2D Glitchwraith = null;
     }

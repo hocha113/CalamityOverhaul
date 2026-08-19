@@ -1024,16 +1024,12 @@ OniRainWorld: {
 
 FirstMetShenyo: {
 	// ShenyoName: Shenyo
-	// L1: ...Listen. The rain has taken every footstep away
-	// L2: I have lived under this umbrella a long time. Things left outside sink once they are wet
-	// L3: Did you follow the rain here? Or did the rain follow you
-	// L4: Don't stand under the eaves. The rain there remembers people
-	// L5: Take this old one. There is a hole in the canopy, just right for watching the moon
-	// C0: The rain hasn't stopped
-	// C1: Thank her
-	// C2: Give it back
-	// C3: Ask her name
-	// C1Response: ...No need for thanks. It wants to go with you
-	// C2Response: Keep it. The rain never lands on me
-	// C3Response: Shenyo. Until the rain stops, that name will do
+	// L1: It has been a long time since anything living walked in here
+	// L2: How did you get here?
+	// OptDead: Died once. When I woke up, I was here
+	// OptRain: It was raining outside. I walked in under an umbrella
+	// A1: ...Back from the dead?
+	// A2: A rare thing. Though by the look of you, you hardly seem to care
+	// B1: Then your luck is not bad at all
+	// B2: Now start thinking about how to get out
 }

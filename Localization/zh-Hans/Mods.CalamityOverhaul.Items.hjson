@@ -3656,11 +3656,6 @@ OniMeiRubbingYoen: {
 	Burden: 气力上限 -5%。余烬场还在烧的时候，疾走耗气 +10%
 }
 
-ShenyoStyleDemoItem: {
-	DisplayName: 鬼雨叙事演示
-	Tooltip: 使用后播放伞灵对话演示（测试物品）
-}
-
 ScrapBeacon: {
 	DisplayName: 废钢信标
 	Tooltip:

@@ -3681,11 +3681,6 @@ OniMeiRubbingYoen: {
 	Burden: Vigor cap -5%. While the embers are still burning, dashes cost 10% more vigor
 }
 
-ShenyoStyleDemoItem: {
-	DisplayName: Ghost Rain Narrative Demo
-	Tooltip: Use to play the umbrella spirit dialogue demo (test item)
-}
-
 ScrapBeacon: {
 	DisplayName: Scrap Beacon
 	Tooltip:
