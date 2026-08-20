@@ -111,6 +111,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private float pourTilt;
         /// <summary>倾覆朝向:+1 右 -1 左</summary>
         private float pourDirSign = 1f;
+        /// <summary>倾覆瞄准角(出手瞬间锁定,跟光标)</summary>
+        private float pourAim = MathHelper.PiOver2;
         /// <summary>释放瞬间锁定的蓄力档</summary>
         private float pourFill;
 
@@ -397,8 +399,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             float tiltPhase = MathHelper.Clamp(StateTimer / (float)PourTiltFrames, 0f, 1f);
             bool shaking = StateTimer > PourTiltFrames + PourHoldFrames;
             if (!shaking) {
-                //猛倾带过冲
-                pourTilt = MathHelper.Lerp(pourTilt, 0.62f * (1.1f - 0.1f * tiltPhase), 0.4f);
+                //猛倾跟瞄准走:出手前跟光标,出手后锁角;侧倾随偏角加大,几乎倒平
+                float tiltWant = 0.62f;
+                if (Main.myPlayer == Projectile.owner) {
+                    if (StateTimer <= PourTiltFrames) {
+                        pourAim = (Main.MouseWorld - Projectile.Center).ToRotation();
+                    }
+                    pourDirSign = MathF.Sign(MathF.Cos(pourAim) + 1e-4f);
+                    float fromDown = MathHelper.WrapAngle(pourAim - MathHelper.PiOver2);
+                    tiltWant = MathHelper.Clamp(0.32f + MathF.Abs(fromDown) * 0.55f, 0.32f, 1.12f);
+                }
+                pourTilt = MathHelper.Lerp(pourTilt, tiltWant * (1.1f - 0.1f * tiltPhase), 0.4f);
             }
             else {
                 //甩干:回正路上抖两下
@@ -415,24 +426,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 KikasaInk.Play(KikasaInk.InkSpray, Projectile.Center, 0.7f + 0.2f * pourFill, -0.55f, 2);
                 KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.75f + 0.2f * pourFill, -0.3f, 2);
                 if (Main.myPlayer == Projectile.owner) {
-                    float down = MathHelper.PiOver2;
-                    float aim = (Main.MouseWorld - Projectile.Center).ToRotation();
-                    float delta = MathHelper.Clamp(MathHelper.WrapAngle(aim - down), -0.55f, 0.55f);
+                    //跟光标走,不再卡在朝下 ±31°——倒撑是碗,但瞄准必须跟手
+                    pourAim = (Main.MouseWorld - Projectile.Center).ToRotation();
                     int damage = (int)(Projectile.damage * (1.2f + 0.9f * pourFill));
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), BowlMouthPos(), Vector2.Zero,
                         ModContent.ProjectileType<KikasaInkPour>(), damage, Projectile.knockBack * 1.5f,
-                        Projectile.owner, down + delta, pourFill);
+                        Projectile.owner, pourAim, pourFill);
                 }
                 if (!Main.dedServ) {
+                    //旁观这帧可能还没收到墨瀑包,用倾覆朝向保底
+                    Vector2 pourDir = Main.myPlayer == Projectile.owner
+                        ? pourAim.ToRotationVector2()
+                        : new Vector2(pourDirSign, 1f).SafeNormalize(Vector2.UnitY);
                     for (int i = 0; i < 9; i++) {
-                        Vector2 vel = new(pourDirSign * Main.rand.NextFloat(0.5f, 3f), Main.rand.NextFloat(1f, 4f));
+                        Vector2 vel = pourDir.RotatedByRandom(0.5f) * Main.rand.NextFloat(2f, 5.5f);
                         PRTLoader.NewParticle<PRT_KikasaInkBead>(BowlMouthPos() + Main.rand.NextVector2Circular(10f, 5f),
                             vel, Main.rand.NextBool(3) ? KikasaInk.InkDeep : KikasaInk.InkBody,
                             Main.rand.NextFloat(0.4f, 0.7f) * (0.8f + 0.4f * pourFill))?.Configure(Main.rand.Next(18, 30));
                     }
                     for (int i = 0; i < 3; i++) {
                         PRTLoader.NewParticle<PRT_KikasaInkMist>(BowlMouthPos(),
-                            new Vector2(pourDirSign * 0.6f, 0.8f).RotatedByRandom(0.4f),
+                            pourDir.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.6f, 1.4f),
                             KikasaInk.InkDeep, Main.rand.NextFloat(0.9f, 1.3f))?.Configure(Main.rand.Next(30, 44));
                     }
                 }

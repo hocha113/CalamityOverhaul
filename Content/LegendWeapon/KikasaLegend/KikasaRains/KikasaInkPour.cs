@@ -27,9 +27,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         public const int CollapseFrames = 10;
         public const int TotalFrames = ExpandFrames + SustainFrames + CollapseFrames;
 
-        private const float MaxLenPx = 860f;
+        /// <summary>
+        /// 空射最大射程。必须长过 zoom 拉远后的视野对角线,否则空中开火会看见柱端平切。
+        /// 6400 ≈ 1080p@0.5x 对角+余量,4K@1x 也能出画;有落点时射线提前截断。
+        /// </summary>
+        private const float MaxLenPx = 6400f;
 
-        /// <summary>基准倾泻角(弧度,近竖直向下)</summary>
+        /// <summary>瀑缘散射沿柱的最大距离,不跟空射射程一起拉长</summary>
+        private const float ScatterAlongMax = 480f;
+
+        /// <summary>倾泻角(弧度,跟光标,由生成包写入)</summary>
         private ref float BaseAngle => ref Projectile.ai[0];
 
         /// <summary>蓄力档 0~1,吃宽度与伤害表现</summary>
@@ -148,15 +155,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 KikasaInk.Play(KikasaInk.InkSplash, end, 0.48f, -0.4f, 4);
             }
 
-            //特大墨滴沿瀑缘散射(所有者端)
+            //特大墨滴沿瀑缘散射(所有者端);沿程不跟空射 6400 一起拉长,否则会在视野外刷滴
             if (Main.myPlayer == Projectile.owner && life <= 12f && (int)life % 2 == 0 && scatterCount < 7) {
                 scatterCount++;
-                float along = Main.rand.NextFloat(0.12f, 0.5f) * lenPx;
+                float scatterSpan = MathF.Min(lenPx, ScatterAlongMax);
+                float along = Main.rand.NextFloat(0.12f, 0.5f) * scatterSpan;
                 float side = Main.rand.NextBool() ? 1f : -1f;
                 Vector2 perp = dir.RotatedBy(MathHelper.PiOver2) * side;
                 Vector2 pos = Projectile.Center + dir * along + perp * (WidthPx * 0.5f);
-                Vector2 vel = perp * Main.rand.NextFloat(2f, 4.5f) - Vector2.UnitY * Main.rand.NextFloat(1f, 3f);
-                float fallbackX = Projectile.Center.X + dir.X * lenPx + Main.rand.NextFloat(-150f, 150f);
+                Vector2 vel = perp * Main.rand.NextFloat(2f, 4.5f) + dir * Main.rand.NextFloat(1f, 3f);
+                float fallbackX = Projectile.Center.X + dir.X * scatterSpan + Main.rand.NextFloat(-150f, 150f);
                 int p = Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, vel,
                     ModContent.ProjectileType<KikasaInkDrop>(), (int)(Projectile.damage * 1.25f),
                     Projectile.knockBack, Projectile.owner, -1f, fallbackX, 0f);
@@ -166,7 +174,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 }
             }
 
-            Lighting.AddLight(Projectile.Center + dir * lenPx * 0.5f, 0.14f, 0.03f, 0.04f);
+            Lighting.AddLight(Projectile.Center + dir * MathF.Min(lenPx, 420f) * 0.5f, 0.14f, 0.03f, 0.04f);
         }
 
         /// <summary>线碰撞:柱体全程,宽随包络(收窄断流时判定同步变细);排空过半即失能</summary>
