@@ -217,6 +217,21 @@ namespace CalamityOverhaul.Content.EntrustManager
             return null;
         }
 
+        /// <summary>
+        /// 教程开讲前把分类拉回「进行中」。存档可能停在已完成/挂起页，
+        /// 那里没有可讲的样本行，教程会对着空列表念
+        /// </summary>
+        public void ResetCategoryForGuide() {
+            if (selectedCategoryIndex == 0) {
+                return;
+            }
+            selectedCategoryIndex = 0;
+            scrollTarget = 0f;
+            scrollOffset = 0f;
+            selectedIndex = -1;
+            filterDirty = true;
+        }
+
         #endregion
 
         #region 引导定位（只读）

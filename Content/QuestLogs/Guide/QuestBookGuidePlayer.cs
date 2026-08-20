@@ -2,6 +2,7 @@ using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using CalamityOverhaul.Content.Narrative.Guides;
+using CalamityOverhaul.Content.QuestLogs.Core;
 using System;
 using Terraria;
 using Terraria.ModLoader;
@@ -34,10 +35,25 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
         public bool SkipOffered => StepTimer >= QuestBookGuideFlow.SkipButtonDelay
             && AutoAdvanceDelay <= 0;
 
+        /// <summary>ChartNode 步圈定的节点，Targets 每帧据此取实时屏幕矩形</summary>
+        public QuestNode ChartTargetNode { get; private set; }
+
+        /// <summary>TrackEntry 进入时样本行是否已被自动关注，文案据此换讲法</summary>
+        public bool TrackEntryPreTracked { get; private set; }
+
         private float viewZoomSnapshot;
         private Vector2 viewPanSnapshot;
         private int trackedSnapshot;
         private int suspendedSnapshot;
+
+        /// <summary>Rail 步内见过图谱以外的站点，见过且回到图谱才算完成了切换</summary>
+        private bool railSawOtherView;
+
+        /// <summary>已关注变体里见过关注数下探（玩家取消过一次）</summary>
+        private bool trackSawDip;
+
+        /// <summary>ChartView 兜底演示的剩余帧，>0 时替玩家小步拖图</summary>
+        private int chartDemoPanTicks;
 
         #endregion
 
@@ -58,6 +74,11 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             StepTimer = 0;
             AutoAdvanceDelay = 0;
             AutoAdvanceTotal = 0;
+            ChartTargetNode = null;
+            TrackEntryPreTracked = false;
+            railSawOtherView = false;
+            trackSawDip = false;
+            chartDemoPanTicks = 0;
         }
 
         /// <summary>
@@ -138,6 +159,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             StepTimer++;
 
             if (AutoAdvanceDelay > 0) {
+                TickChartDemoPan();
                 if (--AutoAdvanceDelay == 0) {
                     AdvanceStep();
                 }
@@ -292,9 +314,13 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
                 ResetRuntime();
                 return;
             }
-            //催开书这一步也是中途关书后的退回点，回来时按检查点续，
+            //导航步同时也是场面失守后的退回点，回来时按检查点续，
             //别把已经讲过的几步再走一遍
-            if (finished == QuestBookStep.KeyPrompt) {
+            if (finished == QuestBookStep.Rail) {
+                SetStep(ResolveChapterOneStart());
+                return;
+            }
+            if (finished is QuestBookStep.KeyPrompt or QuestBookStep.GotoEntrust) {
                 SetStep(ResolveChapterTwoStart());
                 return;
             }
@@ -324,6 +350,16 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             AutoAdvanceTotal = delay;
         }
 
+        /// <summary>ChartView 兜底演示：确认条走动期间替玩家平滑拖一小段图，两端减速</summary>
+        private void TickChartDemoPan() {
+            if (chartDemoPanTicks <= 0 || CurrentStep != QuestBookStep.ChartView) {
+                return;
+            }
+            chartDemoPanTicks--;
+            float ease = MathF.Sin(MathHelper.Pi * chartDemoPanTicks / 36f);
+            QuestLog.Instance?.PanChartBy(new Vector2(2.2f, 1.2f) * ease);
+        }
+
         #endregion
 
         #region 进步时的场面准备
@@ -333,22 +369,50 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             QuestManagerUI ui = QuestManagerUI.Instance;
 
             switch (step) {
-                case QuestBookStep.ChartView:
-                    viewZoomSnapshot = book?.ChartZoom ?? 1f;
-                    viewPanSnapshot = book?.ChartPan ?? Vector2.Zero;
+                case QuestBookStep.Rail:
+                    //进入时就不在图谱，玩家要真切一次站点这步才算做完
+                    railSawOtherView = book != null && book.View != QuestLogView.Chart;
                     break;
 
-                //把要讲的节点推到画布正中，别让玩家满图找我说的是哪一个
+                //三个图谱步都可能从检查点或存档直接落进来，而存档会把书钉在委托站，
+                //进步先把图谱翻上来，别对着委托列表讲缩放讲节点
+                case QuestBookStep.ChartView:
+                    book?.SetView(QuestLogView.Chart);
+                    viewZoomSnapshot = book?.ChartZoom ?? 1f;
+                    viewPanSnapshot = book?.ChartPan ?? Vector2.Zero;
+                    chartDemoPanTicks = 0;
+                    break;
+
+                //把要讲的节点推到画布正中，别让玩家满图找我说的是哪一个；
+                //记下它，之后圈定环跟着它的实时位置走
                 case QuestBookStep.ChartNode:
+                    book?.SetView(QuestLogView.Chart);
+                    ChartTargetNode = null;
                     if (book != null && book.ChapterRoots.Count > 0) {
-                        book.FocusNode(book.ChapterRoots[0]);
+                        ChartTargetNode = book.ChapterRoots[0];
+                        book.FocusNode(ChartTargetNode);
                     }
                     break;
 
                 //这一步讲的就是记录条，玩家要是抢先收起来了就再摊开一张
                 case QuestBookStep.ChartDetail:
+                    book?.SetView(QuestLogView.Chart);
                     if (book?.DetailOpen == false) {
                         book.FocusAndOpenChapter(0);
+                    }
+                    break;
+
+                //存档可能停在已完成/挂起分类，那里没有样本行可讲，先拉回进行中
+                case QuestBookStep.EntryAnatomy:
+                case QuestBookStep.TrackEntry:
+                    if (ui != null && ui.FirstVisibleEntry == null && ui.HasAnyEntry) {
+                        ui.ResetCategoryForGuide();
+                    }
+                    if (step == QuestBookStep.TrackEntry) {
+                        //新委托登记时会被自动关注，样本行多半已在关注中——
+                        //这时讲「右键→关注」是教反的，换成教一次取消与恢复
+                        TrackEntryPreTracked = ui?.FirstVisibleEntry?.Status == QuestEntryStatus.Tracked;
+                        trackSawDip = false;
                     }
                     break;
 
@@ -361,6 +425,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
 
                 case QuestBookStep.SuspendAndCategories:
                     book?.OpenEntrustView();
+                    if (ui != null && ui.FirstVisibleEntry == null && ui.HasAnyEntry) {
+                        ui.ResetCategoryForGuide();
+                    }
                     break;
             }
 
@@ -384,6 +451,17 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             QuestManagerUI ui = QuestManagerUI.Instance;
 
             switch (CurrentStep) {
+                //在步内真切到过图谱才算数；进入时就在图谱的，等按钮确认，别闪卡
+                case QuestBookStep.Rail:
+                    if (book == null) {
+                        return false;
+                    }
+                    if (book.View != QuestLogView.Chart) {
+                        railSawOtherView = true;
+                        return false;
+                    }
+                    return railSawOtherView;
+
                 case QuestBookStep.ChartView:
                     return book != null
                         && (MathF.Abs(book.ChartZoom - viewZoomSnapshot) > 0.01f
@@ -405,8 +483,18 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
                 case QuestBookStep.EntryAnatomy:
                     return ui?.FirstVisibleEntry?.IsExpanded == true;
 
-                case QuestBookStep.TrackEntry:
-                    return (ui?.CountByStatus(QuestEntryStatus.Tracked) ?? 0) > trackedSnapshot;
+                case QuestBookStep.TrackEntry: {
+                    int tracked = ui?.CountByStatus(QuestEntryStatus.Tracked) ?? 0;
+                    if (!TrackEntryPreTracked) {
+                        return tracked > trackedSnapshot;
+                    }
+                    //已关注变体教的是一次取消与恢复的往返，恢复回来才算完，
+                    //别让教程结束时委托正好从追踪栏消失
+                    if (tracked < trackedSnapshot) {
+                        trackSawDip = true;
+                    }
+                    return trackSawDip && tracked >= trackedSnapshot;
+                }
 
                 //玩家重新开了书，追踪栏已经缩回去了，别再对着空处讲
                 case QuestBookStep.TrackerWidget:
@@ -426,6 +514,22 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             QuestManagerUI ui = QuestManagerUI.Instance;
 
             switch (CurrentStep) {
+                //等了半天没切站点，替他翻过去；本来就在图谱的直接放行
+                case QuestBookStep.Rail:
+                    if (book == null || book.View == QuestLogView.Chart) {
+                        return false;
+                    }
+                    book.SetView(QuestLogView.Chart);
+                    return true;
+
+                //替玩家拖一小段图，让他看见视图是活的；真正的位移在确认条期间逐帧走
+                case QuestBookStep.ChartView:
+                    if (book == null || book.View != QuestLogView.Chart) {
+                        return false;
+                    }
+                    chartDemoPanTicks = 36;
+                    return true;
+
                 case QuestBookStep.ChartNode:
                     return book?.FocusAndOpenChapter(0) == true;
 
@@ -470,18 +574,40 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             if (!QuestBookGuideFlow.RequiresBookOpen(CurrentStep)) {
                 return true;
             }
-            if (QuestLog.Instance?.IsOpen == true) {
-                return true;
-            }
-
-            //第二章有专门的催开书卡，退回去等玩家自己回来
-            if (QuestBookGuideFlow.IsChapterTwo(CurrentStep)) {
-                SetStep(QuestBookStep.KeyPrompt);
+            QuestLog book = QuestLog.Instance;
+            if (book?.IsOpen != true) {
+                //第二章有专门的催开书卡，退回去等玩家自己回来
+                if (QuestBookGuideFlow.IsChapterTwo(CurrentStep)) {
+                    SetStep(QuestBookStep.KeyPrompt);
+                    return false;
+                }
+                //第一章是玩家自己合上了书，安静退场，下次开书从检查点续讲
+                Suspend();
                 return false;
             }
-            //第一章是玩家自己合上了书，安静退场，下次开书从检查点续讲
-            Suspend();
-            return false;
+
+            //站点也得对。玩家中途翻去了另一站，退回教切站点的那步等他回来，
+            //别对着不在场的东西念，也别每帧抢着把站点扳回去
+            switch (CurrentStep) {
+                case QuestBookStep.ChartView:
+                case QuestBookStep.ChartNode:
+                case QuestBookStep.ChartDetail:
+                    if (book.View != QuestLogView.Chart) {
+                        SetStep(QuestBookStep.Rail);
+                        return false;
+                    }
+                    break;
+
+                case QuestBookStep.EntryAnatomy:
+                case QuestBookStep.TrackEntry:
+                case QuestBookStep.SuspendAndCategories:
+                    if (!book.EntrustViewActive) {
+                        SetStep(QuestBookStep.GotoEntrust);
+                        return false;
+                    }
+                    break;
+            }
+            return true;
         }
 
         private static bool IsStepMeaningful(QuestBookStep step) {
@@ -503,8 +629,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
                 case QuestBookStep.SuspendAndCategories:
                     return ui?.HasAnyEntry == true;
 
+                //追踪栏只在真有关注中的委托时才有东西可指
                 case QuestBookStep.TrackerWidget:
-                    return EntrustTrackerWidget.Instance != null && ui?.HasAnyEntry == true;
+                    return EntrustTrackerWidget.Instance != null && ui?.HasTrackedEntries() == true;
 
                 default:
                     return true;

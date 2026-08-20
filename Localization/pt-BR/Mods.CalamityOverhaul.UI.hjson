@@ -1027,6 +1027,7 @@ QuestBookGuideLead: {
 	// RailLine1: The upper one turns to the Quest Chart.
 	// RailLine2: The lower one turns to the Commission Dossier.
 	// RailLine3: Click a tab to switch stations. No need to close the book.
+	// RailAct: Click the upper tab to turn to the Quest Chart.
 	// ChartViewTitle: Reading the Chart
 	// ChartViewLine1: Scroll to zoom, hold Left-click to drag and pan.
 	// ChartViewLine2: If the view wanders off, the Recenter key at the bottom right brings it back.
@@ -1056,6 +1057,8 @@ QuestBookGuideLead: {
 	// TrackTitle: Track It
 	// TrackLine1: Tracked commissions get pinned to the tracker on the left of the screen, readable without opening the book.
 	// TrackAct: Right-click this row  →  track.
+	// TrackAltLine1: This row was tracked automatically the moment it was filed, and it is already pinned to the tracker on the left of the screen.
+	// TrackAltAct: Right-click this row to untrack it, then right-click again to pin it back.
 	// TrackerTitle: The Tracker
 	// TrackerLine1: This column keeps every tracked commission on screen.
 	// TrackerLine2: Hold Left-click and drag up or down to move it.
@@ -1063,6 +1066,7 @@ QuestBookGuideLead: {
 	// SuspendTitle: Suspending and Sorting
 	// SuspendLine1: Middle-click a row  →  suspend, and it drops out of the tracker.
 	// SuspendLine2: The four tabs up top hold Active / All / Completed / Suspended. Suspended ones go in the last.
+	// SuspendLine3: Find it there and middle-click once more, and it goes back where it was.
 	// BtnConfirm: Understood
 	// BtnNext: Next
 	// BtnSkipStep: Skip this step

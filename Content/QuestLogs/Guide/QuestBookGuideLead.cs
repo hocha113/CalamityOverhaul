@@ -39,6 +39,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
         public static LocalizedText RailLine1 { get; private set; }
         public static LocalizedText RailLine2 { get; private set; }
         public static LocalizedText RailLine3 { get; private set; }
+        /// <summary>书停在别的站点时 Rail 步的动手行，玩家得自己点一次书口</summary>
+        public static LocalizedText RailAct { get; private set; }
         public static LocalizedText ChartViewTitle { get; private set; }
         public static LocalizedText ChartViewLine1 { get; private set; }
         public static LocalizedText ChartViewLine2 { get; private set; }
@@ -70,6 +72,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
         public static LocalizedText TrackTitle { get; private set; }
         public static LocalizedText TrackLine1 { get; private set; }
         public static LocalizedText TrackAct { get; private set; }
+        /// <summary>样本行已被自动关注时的变体：讲清现状，改教一次取消与恢复</summary>
+        public static LocalizedText TrackAltLine1 { get; private set; }
+        public static LocalizedText TrackAltAct { get; private set; }
         public static LocalizedText TrackerTitle { get; private set; }
         public static LocalizedText TrackerLine1 { get; private set; }
         public static LocalizedText TrackerLine2 { get; private set; }
@@ -77,6 +82,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
         public static LocalizedText SuspendTitle { get; private set; }
         public static LocalizedText SuspendLine1 { get; private set; }
         public static LocalizedText SuspendLine2 { get; private set; }
+        public static LocalizedText SuspendLine3 { get; private set; }
 
         //按钮
         public static LocalizedText BtnConfirm { get; private set; }
@@ -99,6 +105,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             RailLine1 = this.GetLocalization(nameof(RailLine1), () => "上面一枚翻到 任务图谱。");
             RailLine2 = this.GetLocalization(nameof(RailLine2), () => "下面一枚翻到 委托卷宗。");
             RailLine3 = this.GetLocalization(nameof(RailLine3), () => "点书口就换站点，书不用合上。");
+            RailAct = this.GetLocalization(nameof(RailAct), () => "点上面那枚书口，翻到任务图谱。");
 
             ChartViewTitle = this.GetLocalization(nameof(ChartViewTitle), () => "摊开图谱");
             ChartViewLine1 = this.GetLocalization(nameof(ChartViewLine1), () => "滚轮缩放，按住左键拖动平移。");
@@ -136,6 +143,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             TrackTitle = this.GetLocalization(nameof(TrackTitle), () => "关注它");
             TrackLine1 = this.GetLocalization(nameof(TrackLine1), () => "被关注的委托会钉在屏幕左侧的追踪栏里，不开书也看得见进度。");
             TrackAct = this.GetLocalization(nameof(TrackAct), () => "右键单击这一行  →  关注。");
+            TrackAltLine1 = this.GetLocalization(nameof(TrackAltLine1), () => "这一行接进卷宗时就被自动关注了，已经钉在屏幕左侧的追踪栏里。");
+            TrackAltAct = this.GetLocalization(nameof(TrackAltAct), () => "右键单击这一行取消关注，再右键一次把它钉回去。");
 
             TrackerTitle = this.GetLocalization(nameof(TrackerTitle), () => "追踪栏");
             TrackerLine1 = this.GetLocalization(nameof(TrackerLine1), () => "左侧这一列常驻显示所有被关注的委托。");
@@ -145,6 +154,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             SuspendTitle = this.GetLocalization(nameof(SuspendTitle), () => "挂起与分类");
             SuspendLine1 = this.GetLocalization(nameof(SuspendLine1), () => "中键单击一行  →  挂起，它就不再出现在追踪栏里。");
             SuspendLine2 = this.GetLocalization(nameof(SuspendLine2), () => "顶上四个页签分开放着 进行中 / 全部 / 已完成 / 挂起，挂起的去最后一个里找。");
+            SuspendLine3 = this.GetLocalization(nameof(SuspendLine3), () => "找到后再中键一次，它就回到原来的地方。");
 
             BtnConfirm = this.GetLocalization(nameof(BtnConfirm), () => "明白了");
             BtnNext = this.GetLocalization(nameof(BtnNext), () => "下一步");

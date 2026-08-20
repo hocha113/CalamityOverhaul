@@ -135,6 +135,24 @@ namespace CalamityOverhaul.Content.QuestLogs
         /// <summary>图谱上有没有节点可讲，没有就别对着空画布讲解</summary>
         public bool HasChartNodes => Nodes.Count > 0;
 
+        /// <summary>
+        /// 目标节点此刻的屏幕矩形，随缩放平移实时变化；节点滚出画布时夹回画布内缘，
+        /// 让圈定环贴边指向它的方向。书不在图谱站点或节点缺席时返回 false
+        /// </summary>
+        public bool TryGetNodeGuideRect(QuestNode node, out Rectangle rect) {
+            rect = Rectangle.Empty;
+            if (node == null || View != QuestLogView.Chart) {
+                return false;
+            }
+            Vector2 pos = GetNodeScreenPos(node.CalculatedPosition);
+            int radius = (int)(24f * zoom) + 10;
+            Rectangle canvas = layout.Canvas;
+            pos.X = MathHelper.Clamp(pos.X, canvas.X + radius, canvas.Right - radius);
+            pos.Y = MathHelper.Clamp(pos.Y, canvas.Y + radius, canvas.Bottom - radius);
+            rect = new Rectangle((int)pos.X - radius, (int)pos.Y - radius, radius * 2, radius * 2);
+            return true;
+        }
+
         #endregion
 
         private float zoom = 1f;
@@ -745,6 +763,14 @@ namespace CalamityOverhaul.Content.QuestLogs
                 return;
             }
             dragStartPanOffset = panOffset = -node.CalculatedPosition * zoom;
+        }
+
+        /// <summary>教程兜底的演示平移：小步推一段图，让玩家看见图是能拖动的</summary>
+        public void PanChartBy(Vector2 delta) {
+            if (View != QuestLogView.Chart) {
+                return;
+            }
+            dragStartPanOffset = panOffset += delta;
         }
 
         /// <summary>重扫章目，节点表在世界内不常变，每 30 帧一次足够</summary>

@@ -35,9 +35,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
         /// </summary>
         public static Rectangle PointerBlock { get; private set; }
 
+        /// <summary>上帧左键是否按着，点击只认按下沿——按住期间逐帧触发会把一次点击放大成连跳步</summary>
+        private static bool prevMouseLeft;
+
         public static void ClearPointerBlock() => PointerBlock = Rectangle.Empty;
 
         public static void Draw(SpriteBatch sb) {
+            bool leftEdge = Main.mouseLeft && !prevMouseLeft;
+            prevMouseLeft = Main.mouseLeft;
+
             QuestBookGuidePlayer guide = QuestBookGuideFlow.LocalPlayer;
             if (guide == null || !QuestBookGuideFlow.IsRunningStep(guide.CurrentStep)) {
                 ClearPointerBlock();
@@ -49,7 +55,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             float time = QuestBookGuideLead.ShaderTimer;
             int seed = (int)step * 37 + 11;
 
-            GuideCopy copy = ResolveCopy(step);
+            GuideCopy copy = ResolveCopy(step, guide);
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             float contentW = CardW - PadX * 2;
 
@@ -62,7 +68,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             DrawConnector(sb, card, focus, alpha, time, seed);
             DrawNote(sb, card, alpha, time, seed);
             DrawBody(sb, copy, font, card, contentW, alpha);
-            DrawControls(sb, copy, font, card, alpha, time, guide);
+            DrawControls(sb, copy, font, card, alpha, time, guide, leftEdge);
         }
 
         #region 文案装配
@@ -88,7 +94,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             }
         }
 
-        private static GuideCopy ResolveCopy(QuestBookStep step) {
+        private static GuideCopy ResolveCopy(QuestBookStep step, QuestBookGuidePlayer guide) {
             switch (step) {
                 case QuestBookStep.Welcome:
                     return new GuideCopy(QuestBookGuideLead.WelcomeTitle.Value, [
@@ -96,7 +102,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
                         QuestBookGuideLead.WelcomeLine2.Value,
                     ], button: QuestBookGuideLead.BtnNext.Value);
 
+                //书不在图谱站时这步是动手步：让玩家自己点一次书口，
+                //否则后面讲图谱的几步全都对不上画面
                 case QuestBookStep.Rail:
+                    if (QuestLog.Instance?.View != QuestLogView.Chart) {
+                        return new GuideCopy(QuestBookGuideLead.RailTitle.Value, [
+                            QuestBookGuideLead.RailLine1.Value,
+                            QuestBookGuideLead.RailLine2.Value,
+                        ], act: QuestBookGuideLead.RailAct.Value);
+                    }
                     return new GuideCopy(QuestBookGuideLead.RailTitle.Value, [
                         QuestBookGuideLead.RailLine1.Value,
                         QuestBookGuideLead.RailLine2.Value,
@@ -140,7 +154,14 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
                         QuestBookGuideLead.AnatomyLine2.Value,
                     ], act: QuestBookGuideLead.AnatomyAct.Value);
 
+                //样本行接进卷宗时就被自动关注了，「右键→关注」在它身上是反的，
+                //改教一次取消与恢复
                 case QuestBookStep.TrackEntry:
+                    if (guide.TrackEntryPreTracked) {
+                        return new GuideCopy(QuestBookGuideLead.TrackTitle.Value, [
+                            QuestBookGuideLead.TrackAltLine1.Value,
+                        ], act: QuestBookGuideLead.TrackAltAct.Value);
+                    }
                     return new GuideCopy(QuestBookGuideLead.TrackTitle.Value, [
                         QuestBookGuideLead.TrackLine1.Value,
                     ], act: QuestBookGuideLead.TrackAct.Value);
@@ -156,6 +177,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
                     return new GuideCopy(QuestBookGuideLead.SuspendTitle.Value, [
                         QuestBookGuideLead.SuspendLine1.Value,
                         QuestBookGuideLead.SuspendLine2.Value,
+                        QuestBookGuideLead.SuspendLine3.Value,
                     ], button: QuestBookGuideLead.BtnConfirm.Value);
             }
         }
@@ -313,7 +335,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
         #region 按键行
 
         private static void DrawControls(SpriteBatch sb, in GuideCopy copy, DynamicSpriteFont font,
-            Rectangle card, float alpha, float time, QuestBookGuidePlayer guide) {
+            Rectangle card, float alpha, float time, QuestBookGuidePlayer guide, bool leftEdge) {
             //倒计推进期间画一道金填，让玩家看清"它自己在往下走"
             if (guide.AutoAdvanceDelay > 0 && guide.AutoAdvanceTotal > 0) {
                 float progress = 1f - guide.AutoAdvanceDelay / (float)guide.AutoAdvanceTotal;
@@ -334,7 +356,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
                 int w = (int)Math.Clamp(font.MeasureString(copy.Button).X * ButtonScale + 30f, 86f,
                     card.Width - PadX * 2);
                 var rect = new Rectangle(cursorRight - w, rowY, w, ButtonRowH - 4);
-                if (BrassButton(sb, rect, copy.Button, font, alpha, time, locked)) {
+                if (BrassButton(sb, rect, copy.Button, font, alpha, time, locked, leftEdge)) {
                     guide.ConfirmStep();
                 }
                 cursorRight = rect.X - 10;
@@ -344,7 +366,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
                 string skip = QuestBookGuideLead.BtnSkipStep.Value;
                 Vector2 size = font.MeasureString(skip) * LinkScale;
                 var rect = new Rectangle(cursorRight - (int)size.X, rowY + 6, (int)size.X, (int)size.Y);
-                if (InkLink(sb, rect, skip, font, alpha, locked)) {
+                if (InkLink(sb, rect, skip, font, alpha, locked, leftEdge)) {
                     guide.SkipStep();
                 }
             }
@@ -354,13 +376,13 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             Vector2 dismissSize = font.MeasureString(dismiss) * LinkScale;
             var dismissRect = new Rectangle(card.X + PadX, rowY + 6,
                 (int)dismissSize.X, (int)dismissSize.Y);
-            if (InkLink(sb, dismissRect, dismiss, font, alpha, locked)) {
+            if (InkLink(sb, dismissRect, dismiss, font, alpha, locked, leftEdge)) {
                 guide.Dismiss();
             }
         }
 
         private static bool BrassButton(SpriteBatch sb, Rectangle rect, string label,
-            DynamicSpriteFont font, float alpha, float time, bool locked) {
+            DynamicSpriteFont font, float alpha, float time, bool locked, bool leftEdge) {
             bool hovered = !locked && rect.Contains(Main.mouseX, Main.mouseY);
             ChroniclePen.BrassTag(sb, rect, hovered, alpha, time);
 
@@ -372,12 +394,12 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             if (hovered) {
                 Main.LocalPlayer.mouseInterface = true;
             }
-            return hovered && Main.mouseLeft && !Main.mouseLeftRelease;
+            return hovered && leftEdge;
         }
 
         /// <summary>纸上的次级操作：一行淡墨字，悬停转朱并划一道下线</summary>
         private static bool InkLink(SpriteBatch sb, Rectangle rect, string label,
-            DynamicSpriteFont font, float alpha, bool locked) {
+            DynamicSpriteFont font, float alpha, bool locked, bool leftEdge) {
             Rectangle hit = rect;
             hit.Inflate(5, 5);
             bool hovered = !locked && hit.Contains(Main.mouseX, Main.mouseY);
@@ -389,7 +411,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
                     new Vector2(rect.Right, rect.Bottom + 1f), 1f, ChroniclePalette.Seal, alpha * 0.7f);
                 Main.LocalPlayer.mouseInterface = true;
             }
-            return hovered && Main.mouseLeft && !Main.mouseLeftRelease;
+            return hovered && leftEdge;
         }
 
         #endregion
@@ -410,9 +432,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
 
             float breath = QuestLogTheme.Breath(time, seed * 0.37f, 6f);
 
-            //小目标：一记铅笔手圈，绕一圈甩出尾巴
+            //小目标：一记铅笔手圈，绕一圈甩出尾巴。
+            //上限要容得下满缩放(2.0)时的节点矩形(2*(24*2+10)=116)，否则一放大就变成刻痕划线
             int longest = Math.Max(focus.Width, focus.Height);
-            if (longest <= 112 && focus.Width < focus.Height * 2.4f) {
+            if (longest <= 128 && focus.Width < focus.Height * 2.4f) {
                 float radius = longest * 0.62f + 7f + breath * 2.5f;
                 ChroniclePen.CircleMark(sb, focus.Center.ToVector2(), radius,
                     ChroniclePalette.Seal, alpha * (0.7f + breath * 0.25f), seed, reveal);

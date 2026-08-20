@@ -29,8 +29,13 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
                 case QuestBookStep.ChartView:
                     return layout.Canvas;
 
-                //FocusNode 已把目标节点推到画布中心，圈这一小块就是圈那个节点
+                //圈定环跟着节点的实时屏幕位置走，缩放平移都不掉队；
+                //节点滚出画布时矩形贴边指向它，取不到目标才退回画布中心
                 case QuestBookStep.ChartNode: {
+                    QuestNode target = QuestBookGuideFlow.LocalPlayer?.ChartTargetNode;
+                    if (target != null && book.TryGetNodeGuideRect(target, out Rectangle nodeRect)) {
+                        return nodeRect;
+                    }
                     Vector2 center = layout.CanvasCenter;
                     return new Rectangle((int)center.X - 34, (int)center.Y - 34, 68, 68);
                 }
