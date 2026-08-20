@@ -216,9 +216,7 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float scum = saturate((n0 - 0.58) * 4.0) * exp2(-max(below, 0.0) * 24.0);
     lake *= 1.0 - scum * (0.10 + 0.15 * uFoamBoost + 0.10 * uRain);
 
-    //镜内雨丝：斜向细纹快速下刷，只在异化态出现
-    float rainT = noiseTex(float2(uv.x * 6.5 + uv.y * 0.9, uv.y * 0.45 - uTime * 0.9));
-    lake += float3(0.50, 0.57, 0.59) * saturate((rainT - 0.62) * 6.0) * 0.12 * uRain;
+    //镜内雨丝已删：同 KikasaFlip，假雨丝勿加回；雨感交给雨帘倒影与天穹雨幡
 
     //鬼火渗色：湖面燃着金火时浅水层被照透，随深快速衰减、随水面噪声微闪
     float wispLit = exp2(-max(below, 0.0) * 7.0) * uWispGlow;

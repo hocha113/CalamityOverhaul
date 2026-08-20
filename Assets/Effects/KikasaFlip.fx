@@ -82,10 +82,7 @@ float4 PSMirror(float2 coords : TEXCOORD0) : COLOR0
     float scum = saturate((n0 - 0.56) * 4.0) * exp2(-max(below, 0.0) * 26.0);
     graded *= 1.0 - scum * (0.10 + 0.16 * uFoamBoost + 0.08 * uBoil);
 
-    //镜内雨丝：斜向细纹快速下刷，按冷向渐显（血向翻转时随 uColdMix 退场）
-    float rain = tex2D(uImage1, float2(uv.x * 6.5 + uv.y * 0.9, uv.y * 0.45 - uTime * 0.9)).r;
-    float streak = saturate((rain - 0.62) * 6.0);
-    graded += float3(0.50, 0.57, 0.59) * streak * 0.15 * uColdMix;
+    //镜内雨丝已删：水下噪声竖丝叠在红水上读成大块假雨；雨感交给雨帘倒影与天穹雨幡，勿加回
 
     //沸腾碎泡辉光：贴水下的碎亮点，滚水的光
     float bead = saturate((nb - 0.72) * 8.0) * exp2(-max(below, 0.0) * 14.0);
