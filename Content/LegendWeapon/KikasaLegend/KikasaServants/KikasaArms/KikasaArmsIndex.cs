@@ -16,7 +16,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         internal delegate void ArmsSpawner(Player owner, Vector2 emergeAt, int count);
 
         private static readonly Dictionary<int, ArmsSpawner> entries = new() {
-            [ItemID.Minishark] = KikasaMinishark.KikasaMinisharkServant.Summon,
+            //鲨系连发枪共用一套鲨群骨架，按沉入武器换皮（贴图/口径/伤害档）
+            [ItemID.Minishark] = (owner, at, count)
+                => KikasaMinishark.KikasaMinisharkServant.Summon(owner, at, count, ItemID.Minishark),
+            [ItemID.Megashark] = (owner, at, count)
+                => KikasaMinishark.KikasaMinisharkServant.Summon(owner, at, count, ItemID.Megashark),
         };
 
         /// <summary>该武器是否已有专门的械奴实现</summary>

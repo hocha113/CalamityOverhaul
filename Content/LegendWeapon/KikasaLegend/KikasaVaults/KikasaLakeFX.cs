@@ -56,6 +56,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
             public float FadeFrom = 1f;
             /// <summary>出手时已在水下：跳过坠落与水花，原地闷沉</summary>
             public bool SubmergedSpawn;
+            /// <summary>起演延迟帧：快捷散沉的错帧起跳</summary>
+            public int Delay;
             public bool Done;
         }
 
@@ -169,6 +171,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
             }
         }
 
+        /// <summary>
+        /// 散布沉入（快捷沉湖用）：起点/落点锚/悬点/起演延迟全由调用方指定，
+        /// 一批幽灵自玩家上方扇形铺开、错帧坠湖。数据须已由调用方入账
+        /// </summary>
+        internal static void SpawnSinkScattered(Player owner, int itemType,
+            Vector2 from, float anchorX, float apexY, int delay) {
+            if (Main.dedServ || owner == null || sinks.Count >= SinkCap) {
+                return;
+            }
+            KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
+            float lakeY = domain.LakeWorldY;
+            sinks.Add(new SinkGhost {
+                OwnerIndex = owner.whoAmI,
+                ItemType = itemType,
+                Seed = Main.rand.NextFloat(10f),
+                State = SinkState.Appear,
+                Pos = from,
+                SpawnPos = from,
+                AnchorX = anchorX,
+                LakeY = lakeY,
+                ApexY = apexY,
+                StandRot = ComputeStandRot(itemType),
+                SubmergedSpawn = from.Y > lakeY + 8f,
+                Delay = delay,
+            });
+        }
+
         /// <summary>浮出演出。payload 是在途物品实体，凝实完成拍交付背包</summary>
         public static void SpawnRaise(Player owner, Item payload) {
             if (owner == null || payload == null) {
@@ -254,6 +283,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                     g.Timer = 0;
                     g.FadeFrom = g.Alpha;
                 }
+            }
+
+            //起演延迟（快捷散沉的错帧）：湖死谢幕照常，未起演时按兵不动
+            if (g.Delay > 0 && g.State == SinkState.Appear) {
+                g.Delay--;
+                return;
             }
 
             bool visible = IsViewedOwner(g.OwnerIndex);

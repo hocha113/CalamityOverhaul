@@ -15,15 +15,16 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms.KikasaMinishark
 {
     /// <summary>
-    /// 械奴·湖水迷你鲨群。单弹幕同时驱动至多五把湖水凝成的迷你鲨：
+    /// 械奴·湖水鲨群（迷你鲨/巨兽鲨换皮共用）。单弹幕同时驱动至多五把湖水凝成的枪：
     /// Projectile.Center 为编队质心权威同步，各枪位置由状态机 + Seed 在各端本地推算
-    /// （双子/毁灭者内部模拟范式），硬纠阈值防抽搐。材质身份：湖水凝形的枪——
-    /// 半血水态贴图（KikasaItemForm）、下缘凝珠滴淌、移动即游弋（贴速度倾斜入弯、
-    /// 周期沿轨道抢位超车）。签名机制：列阵齐射（扇形阵锁线后轮转开火，每发后坐
-    /// 弹簧回弹 + 枪口水花锥 + 枪口上跳，边打边横移）与鲨群环猎（散到目标环位
-    /// 加速环绕内向射击，收拍全员穿心交错）。联机契约与双子同构：owner 裁决转场
-    /// 盖 netUpdate 章、节拍闩防快照回卷、生命线只有 owner 判；
-    /// 枪数在 spawn 后经 ExtraAI 随包补发（生成包迟一帧契约）
+    /// （双子/毁灭者内部模拟范式），硬纠阈值防抽搐。材质身份：凝不全的湖水枪——
+    /// 实体上半 + 液态下缘（KikasaItemForm 扫描模式、水线呼吸起伏）+ 液态水鞘包衣
+    /// 慢晃 + 水光沿身扫掠 + 下缘凝珠滴淌；移动即游弋（贴速度倾斜入弯、周期沿轨道
+    /// 抢位超车）。签名机制：列阵齐射（扇形阵锁线后轮转开火，每发后坐弹簧回弹 +
+    /// 枪口水花锥 + 枪口上跳，边打边横移）与鲨群环猎（散到目标环位加速环绕
+    /// 内向射击，收拍全员穿心交错）。联机契约与双子同构：owner 裁决转场盖
+    /// netUpdate 章、节拍闩防快照回卷、生命线只有 owner 判；
+    /// 枪数与换皮物品类型在 spawn 后经 ExtraAI 随包补发（生成包迟一帧契约）
     /// </summary>
     internal class KikasaMinisharkServant : ModProjectile, IKikasaServant
     {
@@ -31,11 +32,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //==================== 可调基数（占位初值，验收再调）====================
 
-        /// <summary>湖水子弹基伤（召唤加成前），由子弹幕消费</summary>
+        /// <summary>湖水子弹基伤（召唤加成与换皮档倍率前），由子弹幕消费</summary>
         internal const int ShotDamage = 165;
 
         /// <summary>编队上限：湖藏存量再多也只凝五把</summary>
         internal const int MaxGuns = 5;
+
+        //==================== 换皮档案：同一鲨群骨架按沉入武器换贴图/口径 ====================
+
+        /// <summary>换皮档：伤害倍率随武器时代，枪口探出随贴图长度</summary>
+        private readonly record struct ArmsProfile(float DamageMul, float MuzzleLen);
+
+        private static ArmsProfile ProfileOf(int itemType)
+            => itemType == ItemID.Megashark
+                ? new ArmsProfile(2.4f, 34f)
+                : new ArmsProfile(1f, 26f);
+
+        /// <summary>沉入湖中的原型武器物品类型：贴图与档位来源，ExtraAI 同步</summary>
+        private int armsItemType = ItemID.Minishark;
+
+        private ArmsProfile Profile => ProfileOf(armsItemType);
 
         //==================== 状态 ====================
 
@@ -58,7 +74,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private const int OmenFrames = 26;
         private const int BreachGap = 7;
         private const int RiseEnd = 74;
-        private const int ScanSettleEnd = 88;
         private const int FormupFrame = 84;
         private const int EmergeTotal = 100;
         /// <summary>相邻破水点横距</summary>
@@ -137,20 +152,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //==================== 召唤入口 ====================
 
-        /// <summary>KikasaArmsIndex 登记的召唤委托；emergeAt.Y = 湖面，count = 湖藏存量</summary>
-        internal static void Summon(Player owner, Vector2 emergeAt, int count) {
+        /// <summary>KikasaArmsIndex 登记的召唤入口；emergeAt.Y = 湖面，count = 湖藏存量，
+        /// itemType = 沉入的原型武器（换皮档）</summary>
+        internal static void Summon(Player owner, Vector2 emergeAt, int count, int itemType) {
             if (owner.whoAmI != Main.myPlayer) {
                 return;
             }
             count = Math.Clamp(count, 1, MaxGuns);
-            int damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(ShotDamage);
+            ArmsProfile profile = ProfileOf(itemType);
+            int damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(ShotDamage * profile.DamageMul);
             int index = Projectile.NewProjectile(owner.GetSource_Misc("KikasaServant"),
                 emergeAt + new Vector2(0f, 42f), Vector2.Zero,
                 ModContent.ProjectileType<KikasaMinisharkServant>(), damage, 2f, owner.whoAmI);
             if (index >= 0 && index < Main.maxProjectiles
                 && Main.projectile[index].ModProjectile is KikasaMinisharkServant pack) {
-                //生成包已经带默认枪数出门了，这里改完补一发 ExtraAI（迟一帧只影响预兆涟漪点数）
+                //生成包已经带默认编制出门了，这里改完补一发 ExtraAI（迟一帧只影响预兆涟漪点数）
                 pack.gunCount = count;
+                pack.armsItemType = itemType;
                 Main.projectile[index].netUpdate = true;
             }
         }
@@ -183,10 +201,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         public override bool? CanCutTiles() => false;
 
-        public override void SendExtraAI(BinaryWriter writer) => writer.Write((byte)gunCount);
+        public override void SendExtraAI(BinaryWriter writer) {
+            writer.Write((byte)gunCount);
+            writer.Write(armsItemType);
+        }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
             int count = Math.Clamp((int)reader.ReadByte(), 1, MaxGuns);
+            int itemType = reader.ReadInt32();
+            if (itemType > ItemID.None && itemType < ItemLoader.ItemCount) {
+                armsItemType = itemType;
+            }
             if (count != gunCount) {
                 gunCount = count;
                 //编制变了按新编制重建
@@ -233,7 +258,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             Projectile.timeLeft = 180;
-            Projectile.damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(ShotDamage);
+            Projectile.damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(ShotDamage * Profile.DamageMul);
 
             //换场清闩：远端可能靠收包换场而非本地同拍转场，残闩会吞掉新场节拍
             if (State != lastSeenState) {
@@ -578,7 +603,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             //弹体只在 owner 端生成，spawn 包自带全部初值
             if (authority) {
-                int damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(ShotDamage);
+                int damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(ShotDamage * Profile.DamageMul);
                 Vector2 vel = aimDir.RotatedBy(Main.rand.NextFloat(-0.05f, 0.05f)) * 16.5f;
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), muzzle, vel,
                     ModContent.ProjectileType<KikasaMinisharkBullet>(), damage, 2f, Projectile.owner);
@@ -1004,12 +1029,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        /// <summary>常驻氛围：湖水凝成的枪身下缘偶发凝珠滴落</summary>
+        /// <summary>常驻氛围：液态下缘（水线区）偶发凝珠滴落——枪一直在往下滴湖水</summary>
         private void UpdateAmbient() {
-            if (Main.dedServ || State is not (StateFollow or StateVolley)) {
+            if (Main.dedServ || State is not (StateFollow or StateVolley or StateCarousel)) {
                 return;
             }
-            if (Main.rand.NextBool(24)) {
+            if (Main.rand.NextBool(16)) {
                 int i = Main.rand.Next(gunCount);
                 if (GunAlpha(i) > 0.5f) {
                     PRTLoader.NewParticle<PRT_GhostRainDrop>(
@@ -1051,9 +1076,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private Vector2 GunDrawPos(int i)
             => gunPos[i] - gunRot[i].ToRotationVector2() * gunRecoil[i];
 
-        /// <summary>枪口位：绘制位沿瞄准向探出半个枪身</summary>
+        /// <summary>枪口位：绘制位沿瞄准向探出半个枪身（长度随换皮档）</summary>
         private Vector2 MuzzlePos(int i)
-            => GunDrawPos(i) + gunRot[i].ToRotationVector2() * 26f;
+            => GunDrawPos(i) + gunRot[i].ToRotationVector2() * Profile.MuzzleLen;
 
         private bool ViewedOwner
             => KikasaDomain.Viewed != null && KikasaDomain.Viewed.Player.whoAmI == Projectile.owner;
@@ -1072,32 +1097,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             };
         }
 
-        /// <summary>uForm：1=全血水 0=真身。稳态半水半形，出水自血水凝出、溶解化回去</summary>
+        /// <summary>
+        /// uForm：1=全血水 0=真身。常驻走扫描模式（见 CurrentScanMode）——
+        /// 实体上半 + 液态下缘，水线随呼吸慢起伏；斑驳交融模式在小贴图上读作满屏噪点，
+        /// 已弃用（2026-08 用户判"沙沙嚷嚷全是噪点"）。出水自血水凝出、溶解水线漫上来
+        /// </summary>
         private float GunForm(int i) {
             int t = (int)StateTimer;
-            float steady = 0.34f
-                + MathF.Sin(Main.GlobalTimeWrappedHourly * 3.1f + Seed + i * 1.7f) * 0.05f;
+            //水线呼吸：下缘 8%~23% 间涨落，各枪错相
+            float steady = 0.24f
+                + MathF.Sin(Main.GlobalTimeWrappedHourly * 1.9f + Seed + i * 1.7f) * 0.06f;
             return State switch {
                 StateEmerge => t < BreachTime(i)
                     ? 1f
                     : MathHelper.Lerp(1f, steady, SmoothStep01(MathHelper.Clamp(
                         (t - BreachTime(i)) / (float)(RiseEnd - BreachTime(i)), 0f, 1f))),
-                StateDissolve => MathHelper.Clamp(steady + t / (float)DissolveFrames * 0.4f, 0f, 1f),
+                //溶解：水线自下缘漫上来，配合 uDissolve 蚀散读作"化回湖水"
+                StateDissolve => MathHelper.Clamp(steady + t / (float)DissolveFrames * 0.6f, 0f, 1f),
                 _ => steady,
             };
         }
 
-        /// <summary>uScanMode：出水期自上而下扫描凝实，落定后渐回噪声斑驳半沉态</summary>
-        private float CurrentScanMode() {
-            if (State != StateEmerge) {
-                return 0f;
-            }
-            int t = (int)StateTimer;
-            if (t <= RiseEnd) {
-                return 1f;
-            }
-            return 1f - MathHelper.Clamp((t - RiseEnd) / (float)(ScanSettleEnd - RiseEnd), 0f, 1f);
-        }
+        /// <summary>uScanMode：恒为扫描模式——凝实线干净利落，水线即材质身份</summary>
+        private static float CurrentScanMode() => 1f;
 
         /// <summary>uDissolve：溶解期逐枪错帧蚀散，落水的先散</summary>
         private float DissolveAmt(int i) {
@@ -1128,8 +1150,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (!gunsInit) {
                 return false;
             }
-            Main.instance.LoadItem(ItemID.Minishark);
-            Texture2D tex = TextureAssets.Item[ItemID.Minishark]?.Value;
+            Main.instance.LoadItem(armsItemType);
+            Texture2D tex = TextureAssets.Item[armsItemType]?.Value;
             if (tex == null) {
                 return false;
             }
@@ -1148,10 +1170,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             return false;
         }
 
+        /// <summary>
+        /// 翻面走水平镜像 + 旋转加 π（持枪标准做法）：贴图 V 轴不动，
+        /// 扫描水线永远贴着枪的下缘——竖直镜像会把液态下缘翻到枪顶上去
+        /// </summary>
         private SpriteEffects GunFx(int i)
-            => gunFlip[i] ? SpriteEffects.FlipVertically : SpriteEffects.None;
+            => gunFlip[i] ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-        /// <summary>绘制用旋转：后坐抬枪口（屏幕向上，与翻面无关）</summary>
+        /// <summary>翻面时绘制旋转补 π：镜像后的枪鼻在 rotation=0 时朝左</summary>
+        private float FlipRotOffset(int i) => gunFlip[i] ? MathHelper.Pi : 0f;
+
+        /// <summary>绘制用旋转：后坐抬枪口（屏幕向上，符号随翻面）</summary>
         private float GunDrawRot(int i)
             => gunRot[i] - gunRecoil[i] * 0.006f * (gunFlip[i] ? -1f : 1f);
 
@@ -1168,7 +1197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 for (int k = arr.Length - 1; k >= 1; k--) {
                     float fall = 1f - k / (float)arr.Length;
                     sb.Draw(tex, arr[k] - Main.screenPosition, null,
-                        BloodMain * (0.26f * fall * trailA), rots[k],
+                        BloodMain * (0.26f * fall * trailA), rots[k] + FlipRotOffset(i),
                         origin, GunScale(i) * (0.96f - k * 0.015f), GunFx(i), 0f);
                 }
             }
@@ -1198,13 +1227,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 if (alpha <= 0.01f) {
                     continue;
                 }
-                float rot = GunDrawRot(i);
+                float rot = GunDrawRot(i) + FlipRotOffset(i);
+                Vector2 drawPos = GunDrawPos(i) - Main.screenPosition;
+                float dissolve = DissolveAmt(i);
+
+                //液态水鞘包衣：同一剪影放大一号、全血水态、独立慢晃——
+                //枪泡在一层随时要垮的水膜里，这层才是"湖水凝成"的身份主张
+                if (shaderOk) {
+                    float wt = Main.GlobalTimeWrappedHourly * 2.4f + Seed + i * 1.3f;
+                    Vector2 wobOff = new(MathF.Sin(wt) * 1.7f, MathF.Cos(wt * 0.83f) * 2.1f);
+                    float wobRot = MathF.Sin(wt * 0.7f) * 0.035f;
+                    float envScale = GunScale(i) * (1.14f + MathF.Sin(wt * 1.6f) * 0.025f);
+                    form.Parameters["uSeed"]?.SetValue(Seed + i * 2.3f + 5.1f);
+                    form.Parameters["uForm"]?.SetValue(1f);
+                    form.Parameters["uDissolve"]?.SetValue(dissolve);
+                    form.CurrentTechnique.Passes[0].Apply();
+                    sb.Draw(tex, drawPos + wobOff, null,
+                        new Color(255, 255, 255, (byte)(alpha * 130f)),
+                        rot + wobRot, origin, envScale, GunFx(i), 0f);
+                }
 
                 Color color;
                 if (shaderOk) {
                     form.Parameters["uSeed"]?.SetValue(Seed + i * 2.3f);
                     form.Parameters["uForm"]?.SetValue(GunForm(i));
-                    form.Parameters["uDissolve"]?.SetValue(DissolveAmt(i));
+                    form.Parameters["uDissolve"]?.SetValue(dissolve);
                     form.CurrentTechnique.Passes[0].Apply();
                     color = new Color(255, 255, 255, (byte)(alpha * 255f));
                 }
@@ -1213,7 +1260,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     color = Color.Lerp(Color.White, BloodMain, 0.55f) * alpha;
                 }
 
-                sb.Draw(tex, GunDrawPos(i) - Main.screenPosition, null, color,
+                sb.Draw(tex, drawPos, null, color,
                     rot, origin, GunScale(i), GunFx(i), 0f);
             }
 
@@ -1255,6 +1302,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     float r = 20f + 14f * ease;
                     sb.Draw(glow, pos - Main.screenPosition, null, BloodBright * (0.35f * ease), 0f,
                         gOrigin, new Vector2(r * 2.4f / glow.Width, r * 1.05f / glow.Height), SpriteEffects.None, 0f);
+                }
+            }
+
+            //水光扫掠：湿面上一道窄亮痕周期滑过枪身（错帧），湖水质感的常驻记号
+            if (State is StateFollow or StateVolley or StateCarousel) {
+                for (int i = 0; i < gunCount; i++) {
+                    float p = (Main.GlobalTimeWrappedHourly * 0.42f + i * 0.219f + Seed * 0.13f) % 1f;
+                    if (p >= 0.34f || GunAlpha(i) <= 0.5f) {
+                        continue;
+                    }
+                    EnsureBegin();
+                    float k = p / 0.34f;
+                    float a = MathF.Sin(k * MathHelper.Pi) * 0.3f * GunAlpha(i);
+                    Vector2 dir = gunRot[i].ToRotationVector2();
+                    float halfLen = Profile.MuzzleLen * 0.9f;
+                    Vector2 pos = GunDrawPos(i) + dir * MathHelper.Lerp(-halfLen, halfLen, k);
+                    //亮痕横跨枪身、顺枪滑行
+                    sb.Draw(glow, pos - Main.screenPosition, null, BloodBright * a,
+                        gunRot[i] + MathHelper.PiOver2, gOrigin,
+                        new Vector2(20f * 2f / glow.Width, 5f / glow.Height), SpriteEffects.None, 0f);
                 }
             }
 

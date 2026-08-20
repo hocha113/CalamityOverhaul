@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaEye;
 using CalamityOverhaul.Content.PRTTypes;
@@ -13,10 +13,12 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms.KikasaMinishark
 {
     /// <summary>
-    /// 械奴迷你鲨的湖水梭弹。材质身份：被枪膛压紧的一梭湖水——出膛即全速、
-    /// 复利续力越飞越钻，飞行中带极小幅的鱼摆尾（转向恒为弧、幅度随速度收紧）。
-    /// 签名行为：梭体沿速度拉丝（越快越长）；尾拖暗水梭迹渐隐；沿途蜕下细水珠。
-    /// 弹体 = Extra_98 真 alpha 梭形多层（暗水描边/血水裹层/亮芯），非光斑叠层。
+    /// 械奴鲨群的湖水滴弹。材质身份：被枪膛压出去的一滴湖水——出膛即全速、
+    /// 复利续力越飞越钻（弹道快而直、不下坠），飞行中带极小幅的鱼摆尾（转向恒为弧）
+    /// 签名行为：液团头表面张力反相抖动（宽窄互补呼吸，血痰同语法）+ 速度轻拉伸；
+    /// 尾迹是甩在身后的串珠液滴链（Plateau–Rayleigh 断裂成滴——刻意的离散珠，
+    /// 不是连续拖尾的失败态）+ 细水丝相连；沿途蜕下细水珠
+    /// 弹体 = Extra_98 真 alpha 液滴多层（暗水压边/血水主体/湿亮芯偏一侧），非光斑叠层
     /// 命中沿弹道向前的窄扇迸溅、贴壁留渍；落空坠回血湖时被湖收走，谢幕换涟漪
     /// </summary>
     internal class KikasaMinisharkBullet : ModProjectile
@@ -35,7 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private float VisualFade => MathHelper.Clamp(Life / 3f, 0f, 1f);
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 7;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
@@ -170,32 +172,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
             SpriteBatch sb = Main.spriteBatch;
             Vector2 origin = tex.Size() * 0.5f;
-            //Extra_98 梭体沿 Y 拉长，长轴对齐飞行向
             float rot = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+            Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
             float speed = Projectile.velocity.Length();
-            //梭长随速度拉丝：越快越长（比激光眼的针短一号，是水不是光钉）
-            float lenScale = (26f + speed * 1.4f) / tex.Height;
+            //滴被气流轻拉长，但保持"滴"的圆润比例——不是针
+            float stretch = MathHelper.Clamp(speed * 0.022f, 0.1f, 0.55f);
+            //表面张力抖动：宽窄反相呼吸（小滴晃得快），血痰同语法
+            float wob = MathF.Sin(Life * 0.78f + Projectile.identity * 2.1f) * 0.16f;
+            Vector2 jiggle = new(1f + wob, 1f - wob * 0.85f);
 
-            //旧位梭迹：暗水细梭渐隐（真 alpha 直染，主批直接画）
+            //尾迹：串珠液滴链——甩在身后的小滴逐颗缩小、轻微摆散，珠间细水丝相连
             Vector2[] oldPos = Projectile.oldPos;
-            for (int k = oldPos.Length - 1; k >= 1; k--) {
+            Vector2 prev = Projectile.Center;
+            for (int k = 1; k < oldPos.Length; k++) {
                 if (oldPos[k] == Vector2.Zero) {
                     continue;
                 }
                 float fall = 1f - k / (float)oldPos.Length;
-                Vector2 pos = oldPos[k] + Projectile.Size * 0.5f - Main.screenPosition;
-                sb.Draw(tex, pos, null, KikasaMinisharkServant.BloodDeep * (0.28f * fall * fade), rot, origin,
-                    new Vector2(0.06f, lenScale * 0.5f * fall), SpriteEffects.None, 0f);
+                Vector2 world = oldPos[k] + Projectile.Size * 0.5f
+                    + perp * (MathF.Sin(Life * 0.3f + k * 1.7f + Projectile.identity) * k * 0.55f);
+                //珠间水丝：细而暗，拉在两珠之间
+                Vector2 seg = world - prev;
+                float segLen = seg.Length();
+                if (segLen > 2f) {
+                    Vector2 mid = (prev + world) * 0.5f - Main.screenPosition;
+                    sb.Draw(tex, mid, null,
+                        KikasaMinisharkServant.BloodDeep * (0.20f * fall * fade),
+                        seg.ToRotation() + MathHelper.PiOver2, origin,
+                        new Vector2(0.035f, (segLen + 4f) / tex.Height), SpriteEffects.None, 0f);
+                }
+                //珠径起伏：链有断滴的节奏
+                float bead = 0.72f + 0.28f * MathF.Sin(k * 2.4f + Projectile.identity * 1.3f);
+                float bs = (0.075f + 0.065f * fall) * bead;
+                Vector2 pos = world - Main.screenPosition;
+                sb.Draw(tex, pos, null,
+                    KikasaMinisharkServant.BloodDeep * (0.5f * fall * fade), rot, origin,
+                    new Vector2(bs, bs * 1.18f), SpriteEffects.None, 0f);
+                sb.Draw(tex, pos, null,
+                    KikasaMinisharkServant.BloodMain * (0.34f * fall * fade), rot, origin,
+                    new Vector2(bs * 0.7f, bs * 0.85f), SpriteEffects.None, 0f);
+                prev = world;
             }
 
-            //梭体三层：暗水描边→血水裹层→亮芯（A=0 预乘加色）
-            Vector2 head = Projectile.Center - Main.screenPosition;
-            sb.Draw(tex, head, null, KikasaMinisharkServant.BloodDark * (0.8f * fade), rot, origin,
-                new Vector2(0.13f, lenScale), SpriteEffects.None, 0f);
+            //滴头三层：圆润液滴——暗水压边→血水主体→湿亮芯（A=0 预乘加色、偏向一肩）
+            Vector2 head = Projectile.Center + Projectile.velocity * 0.3f - Main.screenPosition;
+            sb.Draw(tex, head, null, KikasaMinisharkServant.BloodDark * (0.85f * fade), rot, origin,
+                new Vector2(0.30f, 0.34f + stretch * 0.55f) * jiggle, SpriteEffects.None, 0f);
             sb.Draw(tex, head, null, KikasaMinisharkServant.BloodMain * fade, rot, origin,
-                new Vector2(0.095f, lenScale * 0.86f), SpriteEffects.None, 0f);
-            sb.Draw(tex, head, null, (KikasaMinisharkServant.BloodBright with { A = 0 }) * (0.85f * fade), rot, origin,
-                new Vector2(0.045f, lenScale * 0.66f), SpriteEffects.None, 0f);
+                new Vector2(0.24f, 0.27f + stretch * 0.46f) * jiggle, SpriteEffects.None, 0f);
+            sb.Draw(tex, head + perp * 1.3f - dir * 1.0f, null,
+                (KikasaMinisharkServant.BloodBright with { A = 0 }) * (0.7f * fade), rot, origin,
+                new Vector2(0.085f, 0.11f + stretch * 0.14f) * jiggle, SpriteEffects.None, 0f);
 
             return false;
         }
