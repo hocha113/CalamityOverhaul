@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps;
 using CalamityOverhaul.Content.Scenarios.OniRainWorlds;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.Cinematics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -202,6 +203,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         private bool riseBeatNear;
         private bool riseBeatFar;
+
+        //WorldFreezeSystem reason：翻转/鬼梦进出专场共用，三相位互斥不会叠挂
+
+        private const string FreezeReason = "KikasaDomainTransition";
+        //本次专场是否由本机挂了时停
+
+        private bool transitionFreezeHeld;
 
         //==================== 输入 ====================
 
@@ -403,6 +411,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             if (!Main.dedServ && Player.whoAmI == Main.myPlayer) {
                 CutsceneDirector.Play<KikasaFlipCutscene>(Player);
             }
+            //专场全程时停、世界屏息，落定后恢复。多人下静态快照体系会失同步，单人才挂
+            HoldTransitionFreeze();
             BroadcastCommand();
             return true;
         }
@@ -476,6 +486,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 if (!Main.dedServ && Player.whoAmI == Main.myPlayer) {
                     CutsceneDirector.Play<KikasaDreamReturnCutscene>(Player);
                 }
+                HoldTransitionFreeze();
                 BroadcastCommand();
                 return true;
             }
@@ -498,12 +509,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             if (!Main.dedServ && Player.whoAmI == Main.myPlayer) {
                 CutsceneDirector.Play<KikasaDreamPullCutscene>(Player);
             }
+            HoldTransitionFreeze();
             BroadcastCommand();
             return true;
         }
 
         /// <summary>拉入落定：进入梦中稳态，湖随之不见</summary>
         internal void DreamSettleToDreaming() {
+            ReleaseTransitionFreeze();
             Phase = KikasaDomainPhase.Dreaming;
             PhaseTimer = 0;
             RiseT = 0f;
@@ -512,6 +525,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         /// <summary>归返落定：回到血湖稳态，形态保持入梦前的模样</summary>
         internal void DreamSettleToOpen() {
+            ReleaseTransitionFreeze();
             Phase = KikasaDomainPhase.Open;
             PhaseTimer = 0;
             RiseT = 1f;
@@ -521,6 +535,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         /// <summary>中断落定（死亡等）：梦拽不住死人，直接回血湖，域保持打开</summary>
         internal void DreamAbort() {
+            ReleaseTransitionFreeze();
             Phase = KikasaDomainPhase.Open;
             PhaseTimer = 0;
             RiseT = 1f;
@@ -533,6 +548,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             DreamSwallow = DreamFlash = DreamSeamGlow = 0f;
             DreamGlimpse = DreamGlimpseRing = 0f;
             DreamGrade = 1f;
+        }
+
+        /// <summary>
+        /// 专场时停：NPC/弹幕/玩家钉住，状态机仍走 PostUpdateEverything。
+        /// 镜像鬼切 <c>OniDomainFlip</c>——多人静态快照会失同步，只在单机挂
+        /// </summary>
+        private void HoldTransitionFreeze() {
+            if (transitionFreezeHeld) {
+                return;
+            }
+            if (!VaultUtils.isSinglePlayer || Player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            WorldFreezeSystem.Activate(FreezeReason);
+            transitionFreezeHeld = true;
+            if (Main.LocalPlayer.Alives()) {
+                //预填飞行时间，防首次进入快照被零值覆盖
+                WorldFreezePlayer freezePlayer = Main.LocalPlayer.GetModPlayer<WorldFreezePlayer>();
+                freezePlayer.frozenWingTime = Main.LocalPlayer.wingTime;
+                freezePlayer.frozenRocketTime = Main.LocalPlayer.rocketTime;
+            }
+        }
+
+        private void ReleaseTransitionFreeze() {
+            if (!transitionFreezeHeld) {
+                return;
+            }
+            WorldFreezeSystem.Deactivate(FreezeReason);
+            transitionFreezeHeld = false;
         }
 
         //同帧防重入
@@ -839,6 +883,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         }
 
         private void SettleFlip() {
+            ReleaseTransitionFreeze();
             IsRainForm = FlipToRain;
             Phase = KikasaDomainPhase.Open;
             PhaseTimer = 0;
@@ -1160,6 +1205,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         public override void PlayerDisconnect() => ResetDomain();
 
         internal void ResetDomain() {
+            ReleaseTransitionFreeze();
             Phase = KikasaDomainPhase.Closed;
             PhaseTimer = 0;
             EffectTime = 0f;
