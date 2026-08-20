@@ -116,6 +116,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
             //GetItem 返回的就是光标物或快捷栏槽位本体，原地清空即可
             item.TurnToAir();
 
+            //已注册的武器同时写进鬼奴记忆：湖学会了驱使这批武器（未注册的照旧纯存储）
+            Player.GetModPlayer<KikasaServants.KikasaServantPlayer>().RecordDrownedItem(stored.type);
+
             KikasaLakeFX.SpawnSink(Player, stored);
             KikasaLakeNet.SendFX(Player, KikasaLakeNet.KindSink, stored.type);
             return true;

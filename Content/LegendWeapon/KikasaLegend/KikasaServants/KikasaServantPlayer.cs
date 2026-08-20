@@ -1,7 +1,9 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -23,6 +25,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
 
         /// <summary>湖记住的生物类型，0=还没记住过；只在所有者本机有意义</summary>
         public int LastDrownedType { get; private set; }
+
+        /// <summary>湖记住的武器物品类型，0=没记住过；与生物记忆互斥覆盖，只认最后沉的那个</summary>
+        public int LastDrownedItemType { get; private set; }
 
         /// <summary>召唤点距玩家的横向上限</summary>
         private const float SummonRangeX = 600f;
@@ -47,10 +52,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 return;
             }
             LastDrownedType = npcType;
+            LastDrownedItemType = 0;
             if (Main.dedServ || Player.whoAmI != Main.myPlayer) {
                 return;
             }
             //轻声确认拍：湖把它收进了记性里
+            SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.5f, Pitch = -0.8f, MaxInstances = 2 }, Player.Center);
+        }
+
+        /// <summary>
+        /// 已注册武器沉湖时的入账口：与生物记忆同一条覆盖式记性，最多一个非零。
+        /// 由 KikasaVaultPlayer.TrySink 在入账帧调用（湖藏数据只活在所有者本机）
+        /// </summary>
+        internal void RecordDrownedItem(int itemType) {
+            if (itemType <= ItemID.None || itemType >= ItemLoader.ItemCount) {
+                return;
+            }
+            if (!KikasaArmsIndex.TryGet(itemType, out _)) {
+                return;
+            }
+            LastDrownedItemType = itemType;
+            LastDrownedType = 0;
+            if (Main.dedServ || Player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            //同一记确认拍：湖学会了驱使这批武器
             SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.5f, Pitch = -0.8f, MaxInstances = 2 }, Player.Center);
         }
 
@@ -102,15 +128,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 Refuse();
                 return;
             }
-            if (!Player.GetModPlayer<KikasaVaultPlayer>().LakeReady) {
-                Refuse();
-                return;
-            }
-            if (LastDrownedType <= NPCID.None) {
-                Refuse();
-                return;
-            }
-            if (!KikasaServantIndex.TryGet(LastDrownedType, out KikasaServantIndex.ServantSpawner spawner)) {
+            KikasaVaultPlayer vault = Player.GetModPlayer<KikasaVaultPlayer>();
+            if (!vault.LakeReady) {
                 Refuse();
                 return;
             }
@@ -119,8 +138,46 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             KikasaDomainPlayer domain = Player.GetModPlayer<KikasaDomainPlayer>();
             float x = MathHelper.Clamp(Main.MouseWorld.X,
                 Player.Center.X - SummonRangeX, Player.Center.X + SummonRangeX);
-            spawner(Player, new Vector2(x, domain.LakeWorldY));
+            Vector2 emergeAt = new(x, domain.LakeWorldY);
+
+            //械奴分支：湖最后记住的是武器——复制体数量按湖藏存量折算，原件不消耗
+            if (LastDrownedItemType > ItemID.None) {
+                if (!KikasaArmsIndex.TryGet(LastDrownedItemType, out KikasaArmsIndex.ArmsSpawner armsSpawner)) {
+                    Refuse();
+                    return;
+                }
+                int count = CountStoredArms(vault, LastDrownedItemType);
+                if (count <= 0) {
+                    //武器都被捞走了，湖里没有可凝形的原件
+                    Refuse();
+                    return;
+                }
+                armsSpawner(Player, emergeAt, count);
+                localLockUntil = Main.GameUpdateCount + 45;
+                return;
+            }
+
+            if (LastDrownedType <= NPCID.None) {
+                Refuse();
+                return;
+            }
+            if (!KikasaServantIndex.TryGet(LastDrownedType, out KikasaServantIndex.ServantSpawner spawner)) {
+                Refuse();
+                return;
+            }
+            spawner(Player, emergeAt);
             localLockUntil = Main.GameUpdateCount + 45;
+        }
+
+        /// <summary>湖藏里该武器的存量（计堆叠），械奴复制体数量的依据</summary>
+        private static int CountStoredArms(KikasaVaultPlayer vault, int itemType) {
+            int count = 0;
+            foreach (Item item in vault.Stored) {
+                if (item?.IsAir == false && item.type == itemType) {
+                    count += Math.Max(item.stack, 1);
+                }
+            }
+            return count;
         }
 
         private void Refuse() {
@@ -130,20 +187,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         //==================== 存档 ====================
 
         public override void SaveData(TagCompound tag) {
-            if (LastDrownedType <= NPCID.None) {
-                return;
+            if (LastDrownedType > NPCID.None) {
+                if (LastDrownedType < NPCID.Count) {
+                    tag["KikasaServantMemory"] = LastDrownedType;
+                }
+                else if (NPCLoader.GetNPC(LastDrownedType) is ModNPC modNPC) {
+                    //模组 NPC 的类型号跨会话不稳定，存全名
+                    tag["KikasaServantMemoryName"] = modNPC.FullName;
+                }
             }
-            if (LastDrownedType < NPCID.Count) {
-                tag["KikasaServantMemory"] = LastDrownedType;
-            }
-            else if (NPCLoader.GetNPC(LastDrownedType) is ModNPC modNPC) {
-                //模组 NPC 的类型号跨会话不稳定，存全名
-                tag["KikasaServantMemoryName"] = modNPC.FullName;
+            if (LastDrownedItemType > ItemID.None) {
+                if (LastDrownedItemType < ItemID.Count) {
+                    tag["KikasaArmsMemory"] = LastDrownedItemType;
+                }
+                else if (ItemLoader.GetItem(LastDrownedItemType) is ModItem modItem) {
+                    //模组物品同理存全名
+                    tag["KikasaArmsMemoryName"] = modItem.FullName;
+                }
             }
         }
 
         public override void LoadData(TagCompound tag) {
             LastDrownedType = 0;
+            LastDrownedItemType = 0;
+            //武器记忆：与生物记忆互斥，读到即定（写侧保证最多一个存在）
+            if (tag.TryGet("KikasaArmsMemoryName", out string armsName)
+                && ModContent.TryFind(armsName, out ModItem modItem)) {
+                LastDrownedItemType = modItem.Type;
+            }
+            else if (tag.TryGet("KikasaArmsMemory", out int vanillaItem)
+                && vanillaItem > ItemID.None && vanillaItem < ItemID.Count) {
+                LastDrownedItemType = vanillaItem;
+            }
             if (tag.TryGet("KikasaServantMemoryName", out string fullName)
                 && ModContent.TryFind(fullName, out ModNPC modNPC)) {
                 LastDrownedType = modNPC.Type;
