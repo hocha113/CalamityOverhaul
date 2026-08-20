@@ -742,12 +742,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         //==================== 鬼雨异化翻转 ====================
 
-        //节拍（60fps）：沸腾骤变 0-90 → 窥影驻留 90-130 → 倒转 130-220 → 落定 220-252
-        //结算帧 175=倒转段时间过半（曲线上 θ≈60°），173-183 的近全白硬闪盖住形态切换；
+        //节拍（60fps）：沸腾骤变 0-54 → 窥影驻留 54-94 → 倒转 94-184 → 落定 184-216
+        //结算帧 139=倒转段时间过半（曲线上 θ≈60°），137-147 的近全白硬闪盖住形态切换；
         //包络全是 PhaseTimer 的确定性函数，远端从快照 timer 自算同一形状，
         //快照漂移最多错开一两帧节拍音
 
-        private const int FlipGlimpseStart = 96;
+        private const int FlipGlimpseStart = KikasaDomain.FlipBoilEnd + 6;
         private const int FlipGlimpseFrames = 20;
 
         private void UpdateFlipping() {
@@ -757,15 +757,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             float prevRoll = FlipRollAngle;
 
             //沸腾：快速拉满，结算后随白闪退场
-            float boilIn = Smooth01(t / 56f);
+            float boilIn = Smooth01(t / (float)KikasaDomain.FlipBoilRamp);
             float boilOut = t < KikasaDomain.FlipCommitFrame ? 1f
                 : 1f - Smooth01((t - KikasaDomain.FlipCommitFrame) / 40f);
             FlipBoil = boilIn * boilOut;
 
-            //镜面预览向目标形态靠拢："猛地变色"——与沸腾同步的 56f 陡坡先撞到 0.78，
+            //镜面预览向目标形态靠拢："猛地变色"——与沸腾同步的陡坡先撞到 0.78，
             //沸腾余下的时间与驻留段再慢慢浸到 0.92 后保持
             FlipMix = t <= KikasaDomain.FlipBoilEnd
-                ? Smooth01(t / 56f) * 0.78f
+                ? Smooth01(t / (float)KikasaDomain.FlipBoilRamp) * 0.78f
                 : MathHelper.Lerp(0.78f, 0.92f, Smooth01(
                     (t - KikasaDomain.FlipBoilEnd)
                     / (float)(KikasaDomain.FlipDwellEnd - KikasaDomain.FlipBoilEnd)));
@@ -861,12 +861,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             //镜面预览的目标侧混合，气泡颜色跟着先行变
             float coldMix = FlipToRain ? FlipMix : 1f - FlipMix;
 
-            //沸腾段：沿水线密集气泡，强度随沸腾包络
-            if (t < KikasaDomain.FlipCommitFrame && FlipBoil > 0.05f && t % 2 == 0) {
+            //沸腾开场缩短后每帧喷保量；驻留/倒转仍隔帧，其它段手感不动
+            if (t < KikasaDomain.FlipCommitFrame && FlipBoil > 0.05f
+                && (t <= KikasaDomain.FlipBoilEnd || t % 2 == 0)) {
                 KikasaDomainDeco.BoilBurst(this, FlipBoil, coldMix);
             }
-            //翻滚的蒸汽潮气
-            if (t < KikasaDomain.FlipCommitFrame && FlipBoil > 0.3f && t % 5 == 0) {
+            //蒸汽同理：开场 %3 加密，其后仍 %5
+            if (t < KikasaDomain.FlipCommitFrame && FlipBoil > 0.3f
+                && t % (t <= KikasaDomain.FlipBoilEnd ? 3 : 5) == 0) {
                 KikasaDomainDeco.BoilSteam(this, FlipBoil, coldMix);
             }
             //落定确认拍：脚下水花溅开一圈，世界是"落"回湖面的
@@ -892,17 +894,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                     KikasaDomainDeco.RippleAt(lakeAt, 1.5f);
                     ShakeViewer(2f);
                     break;
-                case 18:
-                    //水从湖底翻起来的第一记涌拍
+                case 11:
+                    //水从湖底翻起来的第一记涌拍（原 18，随开场缩 40%）
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.7f, Volume = 0.5f, MaxInstances = 2 }, lakeAt);
                     break;
-                case 48:
+                case 29:
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.45f, Volume = 0.55f, MaxInstances = 2 }, lakeAt);
                     KikasaDomainDeco.RippleAt(lakeAt, 1.1f);
                     ShakeViewer(2.5f);
                     break;
-                case 78:
-                    //沸腾顶点，整面湖都在滚
+                case 47:
+                    //沸腾顶点，整面湖都在滚（原 78）
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.15f, Volume = 0.65f, MaxInstances = 2 }, lakeAt);
                     ShakeViewer(3f);
                     break;
@@ -914,11 +916,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                     //倒转起势
                     SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with { Pitch = -0.7f, Volume = 0.5f, MaxInstances = 2 }, lakeAt);
                     break;
-                case 165:
-                    //世界滚动的极低闷响
+                case KikasaDomain.FlipDwellEnd + 35:
+                    //世界滚动的极低闷响（倒转段内相对位置不变）
                     SoundEngine.PlaySound(SoundID.Thunder with { Pitch = -1f, Volume = 0.34f, MaxInstances = 3 }, Player.Center);
                     break;
-                case 205:
+                case KikasaDomain.FlipRollEnd - 15:
                     //新形态的水声落下来
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.35f, Volume = 0.55f, MaxInstances = 2 }, Player.Center);
                     break;
@@ -954,7 +956,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             if (DreamBlend > 0.998f && target >= 1f) DreamBlend = 1f;
         }
 
-        //雨帘密度：稳态吃 RainBlend；正向翻转给前兆稀雨，逆向翻转沸腾段退雨；收域随撕口合拢退场
+        //雨帘密度：稳态吃 RainBlend；正向翻转开场迅猛切入（缩短后加密度），
+        //驻留起改走稀雨台阶、倒转段再加密；逆向沸腾退雨；收域随撕口合拢退场
 
         private void UpdateRainCurtain() {
             float density = RainBlend;
@@ -964,7 +967,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             else if (Phase == KikasaDomainPhase.Flipping) {
                 if (FlipToRain) {
                     float pre = PhaseTimer <= KikasaDomain.FlipBoilEnd
-                        ? FlipBoil * 0.03f
+                        ? 0.04f + FlipBoil * 0.10f
                         : PhaseTimer <= KikasaDomain.FlipDwellEnd ? 0.06f
                         : PhaseTimer < KikasaDomain.FlipCommitFrame
                             ? MathHelper.Lerp(0.06f, 0.2f,

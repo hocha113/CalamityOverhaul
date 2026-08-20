@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
     public static class KikasaDream
     {
         //拉入节拍（60fps）：凶兆沸腾 0-96 → 窥犬驻留 96-166 → 倒转 166-276（含反向蓄势）→ 落定 276-330
-        //比鬼雨异化（252f）更长：这不是换一件衣服，是整个世界被拽进湖底
+        //比鬼雨异化（216f）更长：这不是换一件衣服，是整个世界被拽进湖底
 
         public const int PullBoilEnd = 96;
 

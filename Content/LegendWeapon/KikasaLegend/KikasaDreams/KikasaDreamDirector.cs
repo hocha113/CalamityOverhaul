@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             int t = domain.PhaseTimer;
             float prevRoll = domain.DreamRollAngle;
 
-            //沸腾：64f 拉满，比异化翻转的 56f 更沉——整面湖从底往上滚；结算后随红闪退场
+            //沸腾：64f 拉满，比异化翻转的 34f 更沉——整面湖从底往上滚；结算后随红闪退场
             float boilIn = Smooth01(t / 64f);
             float boilOut = t < KikasaDream.PullCommitFrame ? 1f
                 : 1f - Smooth01((t - KikasaDream.PullCommitFrame) / 40f);

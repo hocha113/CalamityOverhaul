@@ -43,18 +43,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         public const int DrainFrames = 40;       //血湖退落帧数
 
-        //Flipping 时序、沸腾骤变→窥影驻留→倒转→落定；节拍改编自入雨演出
+        //Flipping 时序：开场沸腾+压镜 2026-08 缩 40%（90→54），窥影/倒转/落定时长不动、整体前移
 
-        public const int FlipBoilEnd = 90;       //血湖沸腾变色段
+        public const int FlipBoilEnd = 54;       //血湖沸腾变色+压镜（原 90）
 
-        public const int FlipDwellEnd = 130;     //窥影驻留段（冷镜里的异样一闪）
+        public const int FlipBoilRamp = 34;      //猛地变色陡坡（原 56，同比压缩）
 
-        public const int FlipRollEnd = 220;      //180°倒转段（含反向蓄势）
+        public const int FlipDwellEnd = 94;      //窥影驻留段（时长仍 40）
 
-        public const int FlipTotalFrames = 252;  //落定收尾
+        public const int FlipRollEnd = 184;      //180°倒转段（时长仍 90，含反向蓄势）
+
+        public const int FlipTotalFrames = 216;  //落定收尾（时长仍 32）
 
         /// <summary>翻转结算帧：倒转段时间过半（曲线上 θ≈60°），近全白的白闪掩护下切换形态</summary>
-        public const int FlipCommitFrame = 175;
+        public const int FlipCommitFrame = 139;
 
         /// <summary>本地玩家域状态，服务器与主菜单返回 null</summary>
         public static KikasaDomainPlayer Local {
