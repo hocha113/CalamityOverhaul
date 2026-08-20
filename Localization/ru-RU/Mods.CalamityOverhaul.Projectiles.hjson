@@ -487,12 +487,10 @@ VictorRiftPortalProj.DisplayName: Кибер-разлом Виктора
 // BKSGelGlobProj.DisplayName: Gel Mortar
 // BKSGelPoolProj.DisplayName: Lingering Gel Pool
 // BKSGeyserProj.DisplayName: Gel Geyser
+// BKSMassGlobProj.DisplayName: Royal Mass
 // BKSNinjaProj.DisplayName: Ninja Shade
-// BKSNinjaSlashProj.DisplayName: Ninja Slash
 // BKSRoyalPillarProj.DisplayName: Royal Beam
 // BKSShockwaveProj.DisplayName: Gel Shockwave
-// BKSShurikenProj.DisplayName: Shadow Shuriken
-// BKSSplitSlimeProj.DisplayName: Split Gel
 // BKSTideWaveProj.DisplayName: Gel Tide
 // CultistArcSpark.DisplayName: Arc Spark
 // CultistCinderPatch.DisplayName: Lingering Cinders
@@ -504,6 +502,7 @@ VictorRiftPortalProj.DisplayName: Кибер-разлом Виктора
 // CultistRitualCircle.DisplayName: Ritual Circle
 // CultistSigilProj.DisplayName: Floating Sigil
 // MLordArcRayProj.DisplayName: Phantasmal Arc Ray
+// MLordBlackHoleProj.DisplayName: Black Flash Singularity
 // MLordCometProj.DisplayName: Starfall Comet
 // MLordConstellationProj.DisplayName: Constellation Omen
 // MLordEyeLinkProj.DisplayName: True Eye Link Ray
@@ -538,6 +537,9 @@ VictorRiftPortalProj.DisplayName: Кибер-разлом Виктора
 // WofFleshSpikeProj.DisplayName: Flesh Spike
 // WofRetinaScanBeam.DisplayName: Retina Beam
 // WofTongueLashProj.DisplayName: Tongue Lash
+// WofJawMawProj.DisplayName: Hungering Maw
+// WofRotEyeBudProj.DisplayName: Rot Eye
+// WofRotBeamProj.DisplayName: Rot Guillotine
 // ScrapArmHitbox.DisplayName: Scrap Arm Hitbox
 // ScrapAutonomousTool.DisplayName: Scrap Autonomous Tool
 // ScrapDebris.DisplayName: Scrap Debris
@@ -575,3 +577,9 @@ VictorRiftPortalProj.DisplayName: Кибер-разлом Виктора
 // L6MachineStrike.DisplayName: L6 Machine Strike
 // KikasaMinisharkBullet.DisplayName: Kikasa Minishark Bullet
 // KikasaMinisharkServant.DisplayName: Kikasa Minishark Servant
+// CultistArcBolt.DisplayName: Cultist Arc Bolt
+// CultistFlameBolt.DisplayName: Cultist Flame Bolt
+// CultistFrostSpear.DisplayName: Cultist Frost Spear
+// CultistPaleBolt.DisplayName: Cultist Pale Bolt
+// CultistTrueBolt.DisplayName: Cultist True Bolt
+// SkeletronBoneWheel.DisplayName: Skeletron Bone Wheel
