@@ -97,13 +97,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             }
 
             if (phaseTimer >= LiquifyTime) {
-                //化潮：服务端生成潮波承载伤害
+                //化潮：方向在这一帧锁定，之后只贴地不改向
                 rushDir = DirToTarget(context);
                 rushSpeed = 9f;
+                npc.direction = npc.spriteDirection = rushDir;
                 if (!VaultUtils.isClient) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, new Vector2(rushDir, 0f),
                         ModContent.ProjectileType<BKSTideWaveProj>(), (int)(npc.defDamage * 0.5f), 0f, Main.myPlayer,
                         npc.whoAmI, 0f, 620f);
+                    npc.netUpdate = true;
                 }
                 SoundEngine.PlaySound(SoundID.Splash with { Pitch = -0.55f, Volume = 1f }, npc.Center);
                 KingSlimeGelFX.CameraPunch(npc.Bottom, 4f, 12, "BKSTideStart", new Vector2(rushDir, 0f));
@@ -112,20 +114,37 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             }
         }
 
-        /// <summary>幕二：贴地冲刷，越冲越快，冲过目标后过冲一段</summary>
-        private void UpdateRush(KingSlimeStateContext context) {
+        /// <summary>潮体期：伤害在潮波，本体无形；碰撞盒仍是史莱姆王体积，
+        /// 贴地扫描会把盒埋进地表，引擎碰撞会吃掉横速(左向尤其明显)。贴地改由 FindGroundBelow 接管。</summary>
+        private void ApplyTideBody(KingSlimeStateContext context) {
             NPC npc = context.Npc;
-            Player player = context.Target;
-
-            //潮体期本体隐形无判定(伤害在潮波)
             context.HideBodySprite = true;
             context.ContactDamageScale = 0f;
             context.SkipGravity = true;
             npc.dontTakeDamage = true;
+            npc.noTileCollide = true;
+            if (rushDir != 0) {
+                npc.direction = npc.spriteDirection = rushDir;
+            }
+        }
 
-            //客户端方向自愈：位置同步包把速度拉回服务端值后，本地方向随之校正
-            if (VaultUtils.isClient && Math.Abs(npc.velocity.X) > 1f) {
-                rushDir = Math.Sign(npc.velocity.X);
+        /// <summary>幕二：贴地冲刷，越冲越快，冲过目标后过冲一段</summary>
+        private void UpdateRush(KingSlimeStateContext context) {
+            NPC npc = context.Npc;
+            Player player = context.Target;
+            ApplyTideBody(context);
+
+            //客户端方向自愈：优先用已同步的 npc.direction(液化锁定时写入)，横速只作后备
+            if (VaultUtils.isClient) {
+                if (npc.direction != 0) {
+                    rushDir = npc.direction;
+                }
+                else if (Math.Abs(npc.velocity.X) > 1f) {
+                    rushDir = Math.Sign(npc.velocity.X);
+                }
+            }
+            if (rushDir == 0) {
+                rushDir = DirToTarget(context);
             }
 
             //复合加速
@@ -149,10 +168,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         /// <summary>幕三：硬煞回卷拍，向后抛洒凝胶雨</summary>
         private void UpdateTurnaround(KingSlimeStateContext context) {
             NPC npc = context.Npc;
-            context.HideBodySprite = true;
-            context.ContactDamageScale = 0f;
-            context.SkipGravity = true;
-            npc.dontTakeDamage = true;
+            ApplyTideBody(context);
 
             //硬煞
             npc.velocity.X *= 0.8f;
@@ -187,7 +203,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             phase = 3;
             phaseTimer = 0;
             NPC npc = context.Npc;
+            npc.noTileCollide = false;
             npc.velocity = Vector2.Zero;
+            //潮体期把盒埋进地表，重组前先坐回地面，避免恢复碰撞后掉进物块
+            Vector2 ground = KingSlimeGelFX.FindGroundBelow(npc.Center - new Vector2(0f, 80f), 28);
+            npc.Bottom = new Vector2(npc.Center.X, ground.Y);
             //凝胶逆流回聚
             SoundEngine.PlaySound(SoundID.NPCDeath1 with { Pitch = -0.5f, Volume = 0.8f, MaxInstances = 3 }, npc.Center);
             if (!VaultUtils.isServer) {
@@ -208,6 +228,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             context.HideBodySprite = false;
             context.BodyOpacity = MathHelper.Clamp(t * 1.8f, 0.4f, 1f);
             npc.dontTakeDamage = t < 0.5f;
+            npc.noTileCollide = false;
             npc.velocity.X *= 0.8f;
 
             if (phaseTimer == 1) {
@@ -230,6 +251,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         public override void OnExit(KingSlimeStateContext context) {
             base.OnExit(context);
             context.Npc.dontTakeDamage = false;
+            context.Npc.noTileCollide = false;
             //清位移旗；任意潮汐收招后压一段掠近冷却，防背靠背液化压掉输出窗
             context.TideTravelActive = false;
             context.TideTravelCooldown = Math.Max(context.TideTravelCooldown, 240);

@@ -39,6 +39,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
         private int TravelFrames => (int)Projectile.ai[2] <= 0 ? 90 : (int)Projectile.ai[2];
 
         private ref float Timer => ref Projectile.localAI[0];
+        /// <summary>锁定的行进方向。横速归零(转向/卡停)时不能回退成 +X，否则左向潮体视觉与击退都会翻成朝右</summary>
+        private ref float StoredDir => ref Projectile.localAI[1];
 
         private float WaveLength => Mode switch { 1 => 560f, 2 => 320f, 3 => 300f, _ => 400f };
         private float WaveHeight => Mode switch {
@@ -48,8 +50,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             _ => RushWaveHeightPx,
         };
 
-        /// <summary>行进方向符号，来自横速</summary>
-        private int Dir => Projectile.velocity.X >= 0f ? 1 : -1;
+        /// <summary>行进方向符号：有横速时刷新，否则沿用锁定值</summary>
+        private int Dir {
+            get {
+                if (Math.Abs(Projectile.velocity.X) > 0.4f) {
+                    StoredDir = Math.Sign(Projectile.velocity.X);
+                }
+                return StoredDir < 0f ? -1 : 1;
+            }
+        }
 
         /// <summary>寿命包络：起势→全高→崩解</summary>
         private float HeightEnvelope {
@@ -78,6 +87,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
 
         public override void AI() {
             Timer++;
+            //生成速度在首帧仍是 NewProjectile 写入的锁定方向，先记下再被宿主速度覆盖
+            if (StoredDir == 0f && Math.Abs(Projectile.velocity.X) > 0.01f) {
+                StoredDir = Math.Sign(Projectile.velocity.X);
+            }
 
             //模式0：粘连宿主，宿主不在潮汐态则崩解
             if (Mode == 0) {
@@ -85,6 +98,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
                 bool hostValid = host != null && host.active && host.type == NPCID.KingSlime
                     && (int)host.ai[2] == (int)KingSlimeStateIndex.TideRush;
                 if (hostValid) {
+                    if (Math.Abs(host.velocity.X) > 0.5f) {
+                        StoredDir = Math.Sign(host.velocity.X);
+                    }
+                    else if (host.direction != 0) {
+                        StoredDir = host.direction;
+                    }
                     Projectile.Center = host.Center;
                     Projectile.velocity = host.velocity;
                     //宿主速度极低时(转向/重组拍)波头也塌一点

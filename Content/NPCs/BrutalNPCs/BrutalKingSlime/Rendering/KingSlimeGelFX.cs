@@ -215,12 +215,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering
             }
 
             segments = Math.Clamp(segments, 2, 40);
+            Vector2 unit = dir.SafeNormalize(Vector2.Zero);
+            if (unit == Vector2.Zero) {
+                return;
+            }
             Vector2 up = -Vector2.UnitY;
             VertexPositionColorTexture[] verts = new VertexPositionColorTexture[(segments + 1) * 2];
             for (int i = 0; i <= segments; i++) {
                 float t = i / (float)segments;
                 //尾在头后方 length 处
-                Vector2 basePos = groundHead - dir * (1f - t) * length;
+                Vector2 basePos = groundHead - unit * (1f - t) * length;
                 //沿地形贴地：逐段向下找地表
                 Vector2 ground = FindGroundBelow(basePos - new Vector2(0f, 24f), 14);
                 //波体高度：头部隆起高，尾部矮
