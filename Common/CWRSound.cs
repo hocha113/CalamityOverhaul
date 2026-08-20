@@ -108,5 +108,7 @@ namespace CalamityOverhaul.Common
         public static SoundStyle OutburstCC;
         public static SoundStyle OutburstRelease;
         public static SoundStyle SoulConnection;
+        public static SoundStyle DogWuff;
+        public static SoundStyle DogWorry;
     }
 }
