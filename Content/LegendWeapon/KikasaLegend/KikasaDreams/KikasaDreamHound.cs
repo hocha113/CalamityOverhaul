@@ -15,8 +15,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
     /// <summary>
     /// 鬼梦恶犬：左键自梦里唤出的猎手。原版狼贴图 + <c>KikasaHound.fx</c> 实体模式
     /// （体成而实、双目常燃）。自玩家脚下黑水跃出，落地追猎最近的敌人：
-    /// 中距收步点火冲刺，近身伏地蓄势后一口扑咬，落地滑停回追，
-    /// 高速段拖出噪蚀狼影与黑烟，寿命尽头化雾散回梦里。梦境绑定——离开 Dreaming 即溶解。
+    /// 中距收步点火冲刺，近身伏地蓄势后一口扑咬；蹬地够得到的高度就跳，
+    /// 再高则斜向上冲，落地滑停回追。高速段拖出噪蚀狼影与黑烟，寿命尽头化雾散回梦里。
+    /// 梦境绑定——离开 Dreaming 即溶解。
     /// 各端同推确定性规则，弹幕仅 owner 端生成，伤害在 owner 端结算
     /// </summary>
     internal class KikasaDreamHound : ModProjectile
@@ -54,7 +55,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
         private const float RunMaxSpeed = 9.6f;
         private const float SprintSpeed = 17f;
         private const float PounceSpeed = 21.5f;
-        private const float ChaseRange = 1150f;
+        /// <summary>索敌半径（像素）。约 100 格，犬以自身为圆心找最近可追目标</summary>
+        private const float ChaseRange = 1600f;
+        /// <summary>蹬地还能帮上忙的高度差。约 12 格；再高就改冲，别白跳</summary>
+        private const float JumpReachDy = 192f;
+        /// <summary>仍愿出手的对空高度。约 32 格；再高只追不扑，不硬够天花板</summary>
+        private const float AirAttackDy = 512f;
+        /// <summary>近身伏地扑咬允许的高度差。约 16 格</summary>
+        private const float CrouchMaxDy = 260f;
         private const int CrouchFrames = 14;
         private const int SprintPrepFrames = 6;
         private const int SkidFrames = 8;
@@ -254,42 +262,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 
             float dx = target.Center.X - Projectile.Center.X;
             float dy = target.Center.Y - Projectile.Center.Y;
+            float absDx = MathF.Abs(dx);
+            float absDy = MathF.Abs(dy);
             int dir = dx > 0f ? 1 : -1;
 
             //地面追击
             Projectile.velocity.X = MathHelper.Clamp(
                 Projectile.velocity.X + RunAccel * dir, -RunMaxSpeed, RunMaxSpeed);
 
-            //撞墙小跳；猎物在头顶也蹬地跃起
+            //撞墙小跳；只有蹬地够得到的高度才跳，再高留给冲刺
             if (grounded) {
-                bool blocked = MathF.Abs(Projectile.velocity.X) < 0.6f && MathF.Abs(dx) > 40f;
-                bool preyAbove = dy < -70f && MathF.Abs(dx) < 110f;
+                bool blocked = MathF.Abs(Projectile.velocity.X) < 0.6f && absDx > 40f;
+                bool jumpable = dy < -56f && dy > -JumpReachDy && absDx < 220f;
                 if (blocked) {
                     Projectile.velocity.Y = -7.4f;
                 }
-                else if (preyAbove) {
-                    Projectile.velocity.Y = -9f;
+                else if (jumpable) {
+                    float t = MathHelper.Clamp((-dy - 56f) / (JumpReachDy - 56f), 0f, 1f);
+                    Projectile.velocity.Y = MathHelper.Lerp(-8.4f, -12.2f, t);
                 }
             }
 
             if (LungeCooldown <= 0f) {
-                float near = 170f + PackJitter * 6f;
-                if (grounded && MathF.Abs(dx) < near && MathF.Abs(dy) < 120f) {
-                    //近身伏地蓄势，正菜在后头
-                    EnterState(StateCrouch);
-                    Projectile.velocity.X *= 0.5f;
-                }
-                else if (!grounded && MathF.Abs(dx) < 150f && MathF.Abs(dy) < 130f) {
-                    //空中顺势咬一口，没有仪式
-                    StartLunge(target, PounceSpeed * 0.82f, 40f);
-                }
-                else if (grounded && StateTimer > 16f && MathF.Abs(dy) < 160f
-                    && MathF.Abs(dx) > 280f + PackJitter * 22f && MathF.Abs(dx) < 780f) {
-                    //中距收步点火，一段直线冲刺贴上去
-                    EnterState(StateSprint);
-                }
+                TryCommitHunt(target, grounded, absDx, absDy, dy);
             }
             return Gravity;
+        }
+
+        /// <summary>
+        /// 出手选择：近地伏地扑、空中顺势咬、中距平冲；
+        /// 猎物高于蹬地高度就收步斜向上冲，别在底下空跳。
+        /// </summary>
+        private void TryCommitHunt(NPC target, bool grounded, float absDx, float absDy, float dy) {
+            float near = 190f + PackJitter * 6f;
+            bool aboveJump = dy < -JumpReachDy && absDy <= AirAttackDy;
+
+            if (grounded && aboveJump && StateTimer > 10f) {
+                EnterState(StateSprint);
+                return;
+            }
+            if (grounded && absDx < near && absDy < CrouchMaxDy) {
+                EnterState(StateCrouch);
+                Projectile.velocity.X *= 0.5f;
+                return;
+            }
+            if (!grounded && absDx < 200f && absDy < 320f) {
+                StartLunge(target, PounceSpeed * 0.82f, 40f);
+                return;
+            }
+            if (grounded && StateTimer > 16f && absDy < AirAttackDy
+                && absDx > 260f + PackJitter * 22f && absDx < 1180f) {
+                EnterState(StateSprint);
+            }
         }
 
         /// <summary>伏地蓄势,收步、猛向后一缩、末三帧死寂,黑雾向身体倒吸</summary>
@@ -373,7 +397,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             return StateTimer <= 11f ? 0.05f : Gravity;
         }
 
-        /// <summary>冲刺,收步压身、一帧点火、近乎零转向的直线,冲进扑距直接压进蓄势</summary>
+        /// <summary>冲刺：收步压身、一帧点火。平地近乎零转向直线；对空按预判斜向上冲，近了改咬</summary>
         private float UpdateSprint(bool grounded) {
             StateTimer++;
             NPC target = FindTarget();
@@ -391,8 +415,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                 return Gravity;
             }
             if (StateTimer == SprintPrepFrames) {
-                //一帧点火，不做斜坡
-                Projectile.velocity.X = dir * SprintSpeed;
+                //一帧点火，不做斜坡。平地走直线，对空按预判点斜向上冲
+                Projectile.velocity = SprintLaunchVelocity(target, dir);
                 LungeCooldown = MathF.Max(LungeCooldown, 26f);
                 if (!Main.dedServ) {
                     SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Pitch = -0.3f, Volume = 0.26f, MaxInstances = 3 }, Projectile.Center);
@@ -404,24 +428,54 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                 return Gravity;
             }
 
-            //冲刺段复利续力
-            Projectile.velocity.X = MathHelper.Clamp(Projectile.velocity.X * 1.006f,
-                -SprintSpeed * 1.25f, SprintSpeed * 1.25f);
+            //冲刺段复利续力：对空沿瞄准线续，落地仍只催水平
+            if (Projectile.velocity.Y < -1.5f) {
+                Projectile.velocity *= 1.004f;
+                float cap = SprintSpeed * 1.25f;
+                if (Projectile.velocity.Length() > cap) {
+                    Projectile.velocity *= cap / Projectile.velocity.Length();
+                }
+            }
+            else {
+                Projectile.velocity.X = MathHelper.Clamp(Projectile.velocity.X * 1.006f,
+                    -SprintSpeed * 1.25f, SprintSpeed * 1.25f);
+            }
             ShedFx(0.5f);
 
-            if (target != null && grounded) {
+            if (target != null && StateTimer > SprintPrepFrames) {
                 float dx = target.Center.X - Projectile.Center.X;
                 float dy = target.Center.Y - Projectile.Center.Y;
-                if (MathF.Abs(dx) < 185f && MathF.Abs(dy) < 120f) {
+                float absDx = MathF.Abs(dx);
+                float absDy = MathF.Abs(dy);
+                if (!grounded && absDx < 210f && absDy < 340f) {
+                    //对空冲进牙距，直接咬，别等落地伏地
+                    StartLunge(target, PounceSpeed * 0.9f, 36f, growl: false);
+                    return 0.05f;
+                }
+                if (grounded && absDx < 185f && absDy < 200f) {
                     //冲进扑距，滑进蓄势，一套连招
                     EnterState(StateCrouch);
                     return Gravity;
                 }
             }
-            if (MathF.Abs(Projectile.velocity.X) < 1f || StateTimer > 40f) {
+            //平地撞墙才按水平失速收招；对空冲刺几乎竖直，不能拿 |vx| 当失败
+            if (StateTimer > 48f || (grounded && MathF.Abs(Projectile.velocity.X) < 1f)) {
                 EnterState(StateRun);
             }
-            return Gravity;
+            return grounded ? Gravity : 0.09f;
+        }
+
+        /// <summary>冲刺点火速度：平地保持直线，猎物明显高于跳跃高度则按预判点斜向上冲</summary>
+        private Vector2 SprintLaunchVelocity(NPC target, int dir) {
+            if (target == null) {
+                return new Vector2(dir * SprintSpeed, Projectile.velocity.Y);
+            }
+            Vector2 lead = target.Center + target.velocity * 8f;
+            if (lead.Y - Projectile.Center.Y >= -72f) {
+                return new Vector2(dir * SprintSpeed, Projectile.velocity.Y);
+            }
+            Vector2 aim = (lead - Projectile.Center).SafeNormalize(new Vector2(dir, 0f));
+            return aim * SprintSpeed;
         }
 
         /// <summary>落地滑停,硬刹车,爪下犁出尘雾</summary>
@@ -483,15 +537,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 
         private NPC FindTarget() {
             NPC best = null;
-            float bestDist = ChaseRange;
+            float bestScore = float.MaxValue;
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
                 if (npc?.active != true || !npc.CanBeChasedBy(Projectile)) {
                     continue;
                 }
                 float dist = Vector2.Distance(npc.Center, Projectile.Center);
-                if (dist < bestDist) {
-                    bestDist = dist;
+                if (dist >= ChaseRange) {
+                    continue;
+                }
+                //超高目标仍算看见，但加高度惩罚，地上的菜优先
+                float overHang = MathF.Max(0f, Projectile.Center.Y - npc.Center.Y - AirAttackDy);
+                float score = dist + overHang * 1.6f;
+                if (score < bestScore) {
+                    bestScore = score;
                     best = npc;
                 }
             }
