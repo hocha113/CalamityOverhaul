@@ -148,8 +148,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             UpdateLean(owner);
 
             if (StateTimer == 0f && State == UmbrellaState.Rise) {
-                //撑伞拍:伞骨撑满的一声闷响
-                SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Volume = 0.5f, Pitch = -0.35f, MaxInstances = 2 }, Projectile.Center);
+                //撑伞拍:伞骨闷扫+一层薄水
+                KikasaInk.Play(KikasaInk.UmbrellaWhoosh, Projectile.Center, 0.62f, -0.22f, 2);
+                KikasaInk.Play(SoundID.SplashWeak, Projectile.Center, 0.4f, -0.15f, 2);
             }
 
             switch (State) {
@@ -217,7 +218,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 return;
             }
             if (StateTimer >= RiseFrames) {
-                State = ModeAi > 0.5f ? UmbrellaState.Flip : UmbrellaState.Hover;
+                if (ModeAi > 0.5f) {
+                    State = UmbrellaState.Flip;
+                    //翻成倒扣:伞面一拧
+                    KikasaInk.Play(KikasaInk.UmbrellaWhoosh, Projectile.Center, 0.7f, -0.45f, 2);
+                }
+                else {
+                    State = UmbrellaState.Hover;
+                }
             }
         }
 
@@ -255,10 +263,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
 
             if (beat == WindupFrames) {
-                //出手拍:甩水声+向上后坐+眼睛燃一下+两粒随甩的碎珠
+                //出手拍:湿掌甩墨+向上后坐+眼睛燃一下+两粒随甩的碎珠
                 recoil = 4.5f;
                 eyeGlow = MathF.Max(eyeGlow, 0.5f);
-                SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.32f, Pitch = 0.15f, MaxInstances = 3 }, Projectile.Center);
+                KikasaInk.Play(KikasaInk.InkFlick, Projectile.Center, 0.72f, 0.08f, 4);
+                KikasaInk.Play(SoundID.SplashWeak, Projectile.Center, 0.42f, 0.12f, 4);
                 if (!Main.dedServ) {
                     for (int i = 0; i < 2; i++) {
                         float xOff = MathF.Cos(spinPhase + i * 2.4f) * RimRadius * visualScale;
@@ -330,16 +339,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             float fill = ChargeFill;
             eyeOpen = MathF.Max(eyeOpen, fill * 0.85f);
 
-            //三档换挡拍:一声比一声沉的水响,碗沿荡出一圈碎珠
+            //三档换挡拍:一声比一声沉的水花,碗沿荡出一圈碎珠
             if (StateTimer == ChargeFullFrames / 3f || StateTimer == ChargeFullFrames * 2f / 3f
                 || StateTimer == ChargeFullFrames) {
                 float tier = StateTimer / (float)ChargeFullFrames;
                 eyeGlow = MathF.Max(eyeGlow, 0.3f + 0.4f * tier);
-                SoundEngine.PlaySound(SoundID.Drip with {
-                    Volume = 0.4f + 0.2f * tier,
-                    Pitch = -0.3f - 0.4f * tier,
-                    MaxInstances = 2
-                }, Projectile.Center);
+                KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.48f + 0.28f * tier, -0.25f - 0.35f * tier, 3);
+                KikasaInk.Play(SoundID.Item21, Projectile.Center, 0.32f + 0.22f * tier, -0.4f - 0.25f * tier, 3);
                 if (!Main.dedServ) {
                     for (int i = 0; i < 6; i++) {
                         float xOff = Main.rand.NextFloat(-1f, 1f) * RimRadius * 0.8f * visualScale;
@@ -379,8 +385,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             State = UmbrellaState.Pour;
             eyeOpen = 1f;
             eyeGlow = 1f;
-            SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.9f, Pitch = -0.6f, MaxInstances = 2 }, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.6f, Pitch = -0.8f, MaxInstances = 2 }, Projectile.Center);
+            KikasaInk.Play(KikasaInk.UmbrellaWhoosh, Projectile.Center, 0.65f, -0.55f, 2);
+            KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.9f, -0.45f, 2);
         }
 
         /// <summary>倾覆:猛倾→墨瀑冲刷→甩干回正;结束后按输入续蓄或收伞</summary>
@@ -406,6 +412,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
             //倾覆拍:墨瀑出手(所有者端),各端同帧甩出一蓬碎珠与墨雾
             if ((int)StateTimer == PourTiltFrames) {
+                KikasaInk.Play(KikasaInk.InkSpray, Projectile.Center, 0.7f + 0.2f * pourFill, -0.55f, 2);
+                KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.75f + 0.2f * pourFill, -0.3f, 2);
                 if (Main.myPlayer == Projectile.owner) {
                     float down = MathHelper.PiOver2;
                     float aim = (Main.MouseWorld - Projectile.Center).ToRotation();
@@ -434,6 +442,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 if (owner.controlUseTile) {
                     //按着不放:从空碗重新蓄
                     State = UmbrellaState.Flip;
+                    KikasaInk.Play(KikasaInk.UmbrellaWhoosh, Projectile.Center, 0.5f, -0.35f, 2);
                 }
                 else {
                     BeginRecall();
@@ -455,7 +464,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
             recallFrom = Projectile.Center;
             State = UmbrellaState.Recall;
-            SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Volume = 0.32f, Pitch = -0.55f, MaxInstances = 2 }, Projectile.Center);
+            KikasaInk.Play(KikasaInk.UmbrellaWhoosh, Projectile.Center, 0.4f, -0.5f, 2);
             //收拢拍抖落最后一圈墨珠
             if (!Main.dedServ) {
                 for (int i = 0; i < 8; i++) {

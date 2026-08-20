@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                         -dir * Main.rand.NextFloat(0.5f, 1.2f), KikasaInk.InkDeep,
                         Main.rand.NextFloat(0.9f, 1.3f))?.Configure(Main.rand.Next(26, 40));
                 }
-                SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.42f, Pitch = -0.5f, MaxInstances = 3 }, end);
+                KikasaInk.Play(KikasaInk.InkSplash, end, 0.48f, -0.4f, 4);
             }
 
             //特大墨滴沿瀑缘散射(所有者端)

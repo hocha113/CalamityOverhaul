@@ -50,6 +50,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
             Item.noUseGraphic = true;
             Item.autoReuse = false;
             Item.channel = true;
+            Item.UseSound = null; //音效在悬伞弹幕里播,避免与物品使用声叠
             Item.shoot = ModContent.ProjectileType<KikasaRainUmbrella>();
             Item.shootSpeed = 1f;
             Item.value = Terraria.Item.sellPrice(gold: 25);

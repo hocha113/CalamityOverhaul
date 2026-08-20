@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 //墨入水:水面晕开一片墨膜
                 KikasaInkFX.AddLakeBlot(Projectile.owner, Projectile.Center.X,
                     (36f + ke * 30f) * Projectile.scale);
-                SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.4f, Pitch = -0.3f, MaxInstances = 3 }, Projectile.Center);
+                KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.42f, -0.25f, 4);
                 Projectile.Kill();
                 return;
             }
@@ -271,12 +271,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
             //渍斑归属:贴地>沾敌>空中散尽。NPC 命中只在所有者端跑 OnHitNPC,
             //这里按死点就近找宿主,各端跑同一套规则,旁观者也看得到渍
+            NPC host = null;
             if (onTileHit) {
                 Vector2 into = impactVel.SafeNormalize(Vector2.UnitY) * 8f;
                 KikasaInkFX.AddGroundSplat(Projectile.Center + into, impactVel, splatSize);
             }
             else {
-                NPC host = FindSplatHost();
+                host = FindSplatHost();
                 if (host != null) {
                     KikasaInkFX.AddNpcSplat(host, Projectile.Center, impactVel, splatSize * 0.8f);
                 }
@@ -299,8 +300,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 normal * Main.rand.NextFloat(0.4f, 1f), KikasaInk.InkDeep,
                 Main.rand.NextFloat(0.8f, 1.2f) * Projectile.scale)?.Configure(Main.rand.Next(28, 40));
 
-            SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.5f, Pitch = -0.4f, MaxInstances = 4 }, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.35f, Pitch = -0.5f, MaxInstances = 4 }, Projectile.Center);
+            KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.42f + 0.22f * ke, -0.35f, 5);
+            if (host != null) {
+                KikasaInk.Play(SoundID.NPCHit13, Projectile.Center, 0.32f + 0.12f * ke, -0.45f, 4);
+            }
         }
 
         /// <summary>死点附近最近的可沾渍宿主</summary>
