@@ -1,8 +1,8 @@
 // ============================================================================
 //ShenyoRainForm.fx
 //BlurTech: 雨痕密度遮罩的可分离高斯模糊（同 HimayoPortraitAssembly 结构）
-//CompositeTech: 黑雨汇聚成形——密度场显形出黑水剪影，未定形区垂坠拉丝，
-//               澄清前沿滞后于显形前沿，黑水退去露出立绘本色
+//CompositeTech: 黑雨汇聚成形——密度场显形出黑水剪影，径流挂亮，
+//               本色压到后段再泻，settle 兜底一次收干净
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -35,8 +35,8 @@ float4 BlurPS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 float4 CompositePS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
     float progress = saturate(uProgress);
-    //定形度：后段收束，水的形变与材质随之归零
-    float settle = smoothstep(0.72, 0.97, progress);
+    //定形末拍收束，形变与浊水一并归零
+    float settle = smoothstep(0.76, 0.94, progress);
     float loose = 1.0 - settle;
 
     //噪声三路：蠕动 na、拉丝 nb、竖向拉长向下滚动的径流纹 rivulet
@@ -46,10 +46,9 @@ float4 CompositePS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COL
     float nb = tex2D(uNoise, noiseUVb).r;
     float rivulet = tex2D(uNoise, float2(coords.x * 9.0, coords.y * 0.85 - uTime * 0.42)).r;
 
-    //未定形区采样点上移=内容下垂（水的垂坠拉丝），横向随噪声蠕动
+    //未定形区只留横向蠕动，不把立绘整体扯下去
     float2 warped = coords;
-    warped.y -= loose * (na - 0.38) * 0.10;
-    warped.x += loose * sin(coords.y * 19.0 + uTime * 4.6 + nb * 6.0) * 0.010;
+    warped.x += loose * sin(coords.y * 19.0 + uTime * 4.6 + nb * 6.0) * 0.012;
 
     float4 portrait = tex2D(uImage0, warped);
     if (portrait.a <= 0.001)
@@ -66,16 +65,16 @@ float4 CompositePS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COL
             tex2D(uMask, warped - float2(0, uTexelSize.y * 2.0)).r));
     density = max(density, neighborDensity * 0.85);
 
-    //自上而下的补全前沿：伞顶先积水，末段兜底把孔洞收满；径流纹给前沿毛边
-    float sweepT = smoothstep(0.28, 0.94, progress);
+    //自上而下灌满，起手即扫、中段收束，孔洞交给湿痕密度
+    float sweepT = smoothstep(0.10, 0.68, progress);
     float sweepY = lerp(-0.10, 1.10, sweepT);
-    float sweepJitter = (nb - 0.5) * 0.12 * (1.0 - sweepT) + (rivulet - 0.5) * 0.05;
-    float sweepField = 1.0 - smoothstep(sweepY - 0.04, sweepY + 0.07, coords.y + sweepJitter);
+    float sweepJitter = (nb - 0.5) * 0.14 * (1.0 - sweepT) + (rivulet - 0.5) * 0.06;
+    float sweepField = 1.0 - smoothstep(sweepY - 0.03, sweepY + 0.05, coords.y + sweepJitter);
     float field = max(density * 1.35, sweepField);
 
-    //显形（黑水抵达）与澄清（黑水退去见本色）双前沿，澄清滞后半拍
+    //黑水先到位，本色压到后段再泻；settle 兜底一次收干净
     float reveal = smoothstep(0.27, 0.45, field);
-    float clarityFront = smoothstep(0.52, 0.80, field) * smoothstep(0.34, 0.88, progress);
+    float clarityFront = smoothstep(0.52, 0.80, field) * smoothstep(0.48, 0.82, progress);
     float clarity = saturate(max(clarityFront, settle * settle) + (rivulet - 0.5) * loose * -0.15);
 
     //黑水材质：浊色蠕动明暗 + 竖向径流挂亮

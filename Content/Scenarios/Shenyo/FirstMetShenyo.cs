@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
              .Say(NarrativeIds.Shenyo, A1.Value, Voice[3],
                     onEnter: ShenyoNarrativePortrait.FaceEnter(ShenyoFullBodyPortrait.Face.Lidded))
              .Say(NarrativeIds.Shenyo, A2.Value, Voice[4],
-                    onEnter: ShenyoNarrativePortrait.FaceEnter(ShenyoFullBodyPortrait.Face.Wry))
+                    onEnter: ShenyoNarrativePortrait.FaceEnter(ShenyoFullBodyPortrait.Face.None))
              .End()
              .Label(RainLabel)
              .Say(NarrativeIds.Shenyo, B1.Value, Voice[5],

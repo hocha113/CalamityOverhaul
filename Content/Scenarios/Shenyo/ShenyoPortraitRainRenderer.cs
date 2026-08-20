@@ -9,17 +9,18 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
 {
     /// <summary>
     /// 沈幽立绘黑雨汇聚：雨丝坠向立绘不透明像素，命中处向密度RT盖竖向湿痕，
-    /// 模糊后交给 ShenyoRainForm 合成——黑水剪影先成形，澄清前沿滞后还原本色。
+    /// 模糊后交给 ShenyoRainForm 合成——黑水剪影先灌满，末拍澄清本色
     /// 架构镜像 <see cref="Himayo.HimayoPortraitAssemblyRenderer"/>
     /// </summary>
     internal sealed class ShenyoPortraitRainRenderer : INeedRenderTargetContent
     {
-        private const int TotalFrames = 132;
-        private const int DropCount = 240;
+        //88f 落雨暴→黑水灌满→澄清定形
+        private const int TotalFrames = 88;
+        private const int DropCount = 260;
         private const int TargetPadding = 36;
         //湿痕印记基准尺寸（RT像素）：窄条竖向拉长
         private const float StampWidth = 6f;
-        private const float StampHeight = 20f;
+        private const float StampHeight = 24f;
 
         //黑雨色板：近黑雨体 + 湿墨冷青亮头（鬼雨湿墨系，禁暖）
         private static readonly Color DropDark = new(16, 21, 25);
@@ -387,7 +388,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
             Vector2 faceOffset, Vector2 portraitPosition, float portraitScale, float portraitRotation,
             Color drawColor, float alpha) {
 
-            float reveal = SmoothStep(0.12f, 0.96f, Progress);
+            float reveal = SmoothStep(0.06f, 0.90f, Progress);
             int revealHeight = Math.Clamp((int)(portrait.Height * reveal), 0, portrait.Height);
             Color color = drawColor * alpha;
 
@@ -442,8 +443,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
                     }
 
                     //速度拉伸雨丝：长度吃速度，宽度固定窄条
-                    float length = MathHelper.Clamp(speed * 2.6f, 6f, 34f) * drop.Scale * portraitScale;
-                    float width = 1.6f * drop.Scale * portraitScale;
+                    float length = MathHelper.Clamp(speed * 2.8f, 8f, 42f) * drop.Scale * portraitScale;
+                    float width = 1.8f * drop.Scale * portraitScale;
                     float rotation = pose.Velocity.ToRotation() + MathHelper.PiOver2 + portraitRotation;
                     float opacity = MathHelper.Clamp(alpha * pose.Alpha * (frontLayer ? 0.92f : 0.66f), 0f, 1f);
 
@@ -478,7 +479,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
             position.X += MathF.Sin(drop.DriftPhase + u * MathHelper.TwoPi * 0.8f) * 3.5f * (1f - u);
 
             float visibleAlpha = SmoothStep(0f, 0.10f, u);
-            float merge = drop.MergeIntoPortrait ? SmoothStep(0.82f, 1f, u) : 0f;
+            float merge = drop.MergeIntoPortrait ? SmoothStep(0.72f, 0.96f, u) : 0f;
             Vector2 velocity = fallVelocity;
 
             if (drop.MergeIntoPortrait) {
@@ -491,7 +492,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
                 Vector2 gravity = new(0f, 0.16f * afterArrival);
                 position = drop.Target + drop.ResidualVelocity * afterArrival + gravity * afterArrival * 0.5f;
                 velocity = drop.ResidualVelocity + gravity;
-                visibleAlpha *= 1f - SmoothStep(4f, 16f, afterArrival);
+                visibleAlpha *= 1f - SmoothStep(3f, 10f, afterArrival);
             }
 
             if (visibleAlpha <= 0.005f) {
@@ -505,7 +506,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
 
         private float GetMerge(RainDrop drop) {
             float u = MathHelper.Clamp((timer - drop.Delay) / drop.TravelFrames, 0f, 1f);
-            return SmoothStep(0.82f, 1f, u);
+            return SmoothStep(0.72f, 0.96f, u);
         }
 
         private void BuildDrops(Texture2D portrait) {
@@ -529,16 +530,16 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
                 SampleTarget(pixels, width, height, out Vector2 target);
                 bool mergeIntoPortrait = !Main.rand.NextBool(6);
                 float verticalProgress = MathHelper.Clamp(target.Y / height, 0f, 1f);
-                //伞顶先积水：落点越高越早，整体错拍摊满累积段
+                //伞顶先砸，错拍收成一波暴雨
                 float delay = mergeIntoPortrait
-                    ? verticalProgress * 52f + Main.rand.NextFloat(0f, 14f)
-                    : Main.rand.NextFloat(0f, 20f);
-                float travelFrames = Main.rand.NextFloat(14f, 22f);
+                    ? verticalProgress * 22f + Main.rand.NextFloat(0f, 6f)
+                    : Main.rand.NextFloat(0f, 10f);
+                float travelFrames = Main.rand.NextFloat(10f, 16f);
 
-                //雨近乎垂直：起点横向只带小偏移
+                //雨近乎垂直，起点更高、短行程读成砸落
                 Vector2 startPosition = new(
                     target.X + Main.rand.NextFloat(-width * 0.06f, width * 0.06f),
-                    Main.rand.NextFloat(-height * 0.46f, -height * 0.12f));
+                    Main.rand.NextFloat(-height * 0.58f, -height * 0.18f));
                 //溅开的反弹速度：向上外弹一小口
                 Vector2 residualVelocity = new(
                     Main.rand.NextFloat(-1.4f, 1.4f),
@@ -553,7 +554,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
                     Scale = Main.rand.NextFloat(0.6f, 1.15f),
                     DriftPhase = Main.rand.NextFloat(MathHelper.TwoPi),
                     MergeIntoPortrait = mergeIntoPortrait,
-                    FrontLayer = Main.rand.NextBool(3)
+                    FrontLayer = Main.rand.NextBool(2)
                 });
             }
         }
