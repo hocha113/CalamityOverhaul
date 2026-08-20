@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using CalamityOverhaul.Content.Narrative.Guides;
+using CalamityOverhaul.Content.QuestLogs;
 using CalamityOverhaul.Content.Scenarios.Helen;
 using CalamityOverhaul.Content.UIs.RadialWheels;
 using Microsoft.Xna.Framework.Graphics;
@@ -175,6 +176,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     return false;
                 }
                 if (NarrativeTriggerGate.IsBusy || InnoVault.Cinematics.CutsceneDirector.IsPlaying) {
+                    return false;
+                }
+                if (QuestLog.Instance?.IsOpen == true) {
                     return false;
                 }
                 if (!StillActive()) {

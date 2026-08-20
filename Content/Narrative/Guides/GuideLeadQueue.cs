@@ -22,20 +22,16 @@ namespace CalamityOverhaul.Content.Narrative.Guides
 
     /// <summary>
     /// 教学引导队列，同时刻至多一个持有展示权。<br/>
-    /// 高优先级未就绪也占位压制低优先级；持有者仍占位则不抢占；饥饿保底约 3 分钟放弃卡住的占位者
+    /// 就绪的持有者展示中不抢占；未就绪的占位立刻把展示权让给已经能讲的人，
+    /// 不走三分钟饿死——饿死会误触 <see cref="IGuideLead.OnGuideAbandoned"/>（义体/鬼伞会记成看过）。<br/>
+    /// 玩家显式点重开走 <see cref="ForceHold"/>，连就绪的持有者也让位，且不当成放弃
     /// </summary>
     internal class GuideLeadQueue : ModSystem
     {
         private static readonly List<IGuideLead> leads = [];
         private static IGuideLead holder;
-        //饥饿计时连续性
-        private static IGuideLead blocker;
-        private static int starveTimer;
-        //防同刻重复累加饥饿计时
+        //防同刻重复泵
         private static uint lastPumpTick = uint.MaxValue;
-
-        //约3分钟；对话/过场时低优先级本就未就绪，不计入
-        private const int StarveTimeout = 60 * 60 * 3;
 
         /// <summary>SetStaticDefaults 里登记</summary>
         public static void Register(IGuideLead lead) {
@@ -63,10 +59,19 @@ namespace CalamityOverhaul.Content.Narrative.Guides
             return holder == lead;
         }
 
+        /// <summary>
+        /// 玩家显式要求开讲：立刻把展示权交给指定引导。<br/>
+        /// 不调用 <see cref="IGuideLead.OnGuideAbandoned"/>——被挤掉的只是让位，不是被判定放弃
+        /// </summary>
+        public static void ForceHold(IGuideLead lead) {
+            if (lead == null) {
+                return;
+            }
+            holder = lead;
+        }
+
         private static void ResetRuntime() {
             holder = null;
-            blocker = null;
-            starveTimer = 0;
             lastPumpTick = uint.MaxValue;
         }
 
@@ -83,58 +88,34 @@ namespace CalamityOverhaul.Content.Narrative.Guides
         }
 
         private static void Pump() {
-            //不再占位则释放
             if (holder != null && !holder.GuideReserving) {
                 holder = null;
             }
-            if (holder != null) {
-                //未就绪又饿死已就绪低优先级，超时放弃
-                if (!holder.GuideReady && HasLowerReadyThan(holder)) {
-                    if (blocker != holder) {
-                        blocker = holder;
-                        starveTimer = 0;
-                    }
-                    if (++starveTimer >= StarveTimeout) {
-                        holder.OnGuideAbandoned();
-                        holder = null;
-                        blocker = null;
-                        starveTimer = 0;
-                    }
-                    return;
+
+            //占着坑但讲不了：让给已经能讲的人。书一摊开鬼切/比目鱼往往仍占位却不 Ready，
+            //旧逻辑会空等三分钟再 OnGuideAbandoned，任务书教程整段不可达
+            if (holder != null && !holder.GuideReady) {
+                IGuideLead ready = HighestReady(except: holder);
+                if (ready != null) {
+                    holder = ready;
                 }
-                //展示中不抢占
-                blocker = null;
-                starveTimer = 0;
+                return;
+            }
+            if (holder != null) {
                 return;
             }
 
             IGuideLead top = HighestReserver();
             if (top == null) {
-                blocker = null;
-                starveTimer = 0;
                 return;
             }
             if (top.GuideReady) {
                 holder = top;
-                blocker = null;
-                starveTimer = 0;
                 return;
             }
-
-            //仅有更低优先级已就绪被压制时才累饥饿
-            if (!HasLowerReadyThan(top)) {
-                blocker = null;
-                starveTimer = 0;
-                return;
-            }
-            if (blocker != top) {
-                blocker = top;
-                starveTimer = 0;
-            }
-            if (++starveTimer >= StarveTimeout) {
-                top.OnGuideAbandoned();
-                blocker = null;
-                starveTimer = 0;
+            IGuideLead readyNow = HighestReady();
+            if (readyNow != null) {
+                holder = readyNow;
             }
         }
 
@@ -151,13 +132,17 @@ namespace CalamityOverhaul.Content.Narrative.Guides
             return best;
         }
 
-        private static bool HasLowerReadyThan(IGuideLead top) {
+        private static IGuideLead HighestReady(IGuideLead except = null) {
+            IGuideLead best = null;
             foreach (IGuideLead lead in leads) {
-                if (lead != top && lead.GuidePriority > top.GuidePriority && lead.GuideReady) {
-                    return true;
+                if (lead == except || !lead.GuideReady) {
+                    continue;
+                }
+                if (best == null || lead.GuidePriority < best.GuidePriority) {
+                    best = lead;
                 }
             }
-            return false;
+            return best;
         }
     }
 }

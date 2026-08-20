@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
 
         bool IGuideLead.GuideReady => Ready;
 
-        //只停展示并让位一阵，绝不写 Declined——排不上队不等于玩家拒绝
+        //队列不再饿死调用这里；接口仍保留，被放弃时只停展示不记拒绝
         void IGuideLead.OnGuideAbandoned() {
             QuestBookGuideFlow.LocalPlayer?.Suspend();
             reserveDeferTicks = ReserveDeferFrames;

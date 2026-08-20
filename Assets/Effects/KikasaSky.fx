@@ -1,9 +1,11 @@
 // ============================================================================
 //KikasaSky.fx 鬼伞血湖领域天空，跨0深度切片单次绘制，覆盖所有原版背景层
 //血红黄昏：凝血暗红天穹 + 半沉湖平线下的凝血暗日（盘面比血光更暗）+ 湖面血光倒影柱
-//        + 无山脊的无际血湖地平线（天空倒影+横向波光）
+//        + 无山脊的无际血湖地平线（天空倒影+横向波光）+ 立在远湖里的巨大破纸伞
 //        + 低垂湿重的暗红云带 + 地平血雾。死寂无雨无鸟。
-//远湖破纸伞剪影已删（半椭圆壳+顶针 SDF 实机读成锅盖，2026-08 按玩家反馈去掉，别再加回来）
+//远湖巨伞 2026-08 重做：旧"半椭圆壳+圆球顶、无柄无锯齿"实机读成锅盖，删过一轮后拍板
+//        保留意向重做形——三柄固定实例插在湖中（浅锥伞面+骨间荷叶边+伞骨线+顶针细柄，
+//        纸面半透透天光、破口挖纸露骨，一柄收拢斜插）；近乎静止，穹顶形是败因勿回退
 //鬼雨异化（uRain）：全套色板权重乘混合转湿墨冷青（禁红禁暖），凝血日褪成苍白溺月，
 //        云底垂下倾斜雨幡与细密雨纹，远雷 uFlash 云底先亮（光先于声）；
 //        雨幡/雷闪写在天穹函数里，湖面镜像重采时倒影免费同步
@@ -42,6 +44,7 @@ static const float3 CLOUD_EDGE = float3(0.780, 0.150, 0.095);  //云底伤口红
 static const float3 LAKE_DIM   = float3(0.520, 0.180, 0.180);  //湖面倒影乘暗
 static const float3 LAKE_DEEP  = float3(0.110, 0.014, 0.026);  //湖向下沉底色
 static const float3 MIST_COL   = float3(0.470, 0.095, 0.085);  //地平血雾
+static const float3 UMB_COL    = float3(0.052, 0.010, 0.020);  //巨伞剪影
 //====== 鬼雨异化色板（压顶湿墨，禁红禁暖） ======
 static const float3 RAIN_SKY_TOP    = float3(0.026, 0.032, 0.040);  //头顶近黑沉云
 static const float3 RAIN_SKY_MID    = float3(0.085, 0.105, 0.115);  //墨青
@@ -54,6 +57,7 @@ static const float3 RAIN_CLOUD_EDGE = float3(0.180, 0.212, 0.218);  //云底衬�
 static const float3 RAIN_LAKE_DIM   = float3(0.300, 0.360, 0.380);  //浊水倒影乘暗
 static const float3 RAIN_LAKE_DEEP  = float3(0.026, 0.034, 0.042);  //浊水沉底
 static const float3 RAIN_MIST       = float3(0.140, 0.170, 0.180);  //地平潮雾
+static const float3 RAIN_UMB        = float3(0.014, 0.018, 0.024);  //冷夜巨伞剪影
 static const float3 RAIN_SHAFT      = float3(0.300, 0.345, 0.355);  //雨幡帘
 static const float3 RAIN_FLASH      = float3(0.550, 0.620, 0.640);  //雷闪惨白
 
@@ -134,6 +138,59 @@ float3 skyDome(float2 uv, float aspect, float horizonY) {
     return col;
 }
 
+//====== 远湖巨伞（2026-08 重做：立在湖中的巨大破纸伞，废弃旧"半椭圆穹顶"锅盖形） ======
+//局部空间：y 向上、0=水线、伞面半宽=1；缘口基线(柄顶)=1.0、伞顶=1.5。
+//返回 x=不透明件覆盖（柄/陣笠/顶针/伞骨），y=纸面覆盖（半透，破口已挖除、骨留下）
+
+float2 kasaOpen(float2 p, float ribGain, float tornGain, float seed) {
+    float box = step(abs(p.x), 1.12) * step(-0.02, p.y) * step(p.y, 1.70);
+
+    //伞面：浅锥微凹顶缘（直线斜坡略塌，不是椭圆凸肩）；
+    //缘口荷叶边 12 格——骨尖处最低、骨间纸面向上收
+    float scT = frac((p.x + 1.0) * 6.0);
+    float scal = (0.25 - (scT - 0.5) * (scT - 0.5)) * 4.0;
+    float rimY = 1.0 + scal * 0.055;
+    float coneY = 1.0 + 0.5 * pow(saturate(1.0 - abs(p.x)), 1.15);
+    //x 界收在 0.99：缘口与锥缘的 smoothstep 尾部在 |x|→1 处会重新张开，
+    //留出一粒断开的纸屑孤岛（沙盒实测），收界即除
+    float paper = (1.0 - smoothstep(coneY - 0.012, coneY + 0.018, p.y))
+        * smoothstep(rimY - 0.018, rimY + 0.022, p.y) * step(abs(p.x), 0.99);
+
+    //伞骨：向顶点收拢的放射直线（骨距空间取模，免逐根展开），骨尖略探出缘口；
+    //钳进锥面内——锥缘微凹，直边三角会让骨探出轮廓
+    float qRaw = (1.5 - p.y) * 2.0;
+    float q = saturate(qRaw);
+    float uq = p.x / max(q, 0.02);
+    float dRib = abs(frac(uq * 3.0 + 0.5) - 0.5) * 0.3333 * q;
+    float ribs = (1.0 - smoothstep(0.009, 0.026, dRib)) * step(abs(uq), 1.02)
+        * step(0.03, qRaw) * step(qRaw, 1.06) * step(p.y, coneY + 0.005) * ribGain;
+
+    //破口：右中骨间扇区挖纸留骨，撕缘吃噪声毛化、自缘口向顶点撕入过半
+    float sector = smoothstep(0.30, 0.37, uq) * (1.0 - smoothstep(0.63, 0.70, uq));
+    float tearN = noiseTex(float2(uq * 0.53 + seed, p.y * 1.4 + seed * 0.7));
+    float torn = sector * smoothstep(0.34 + tearN * 0.22, 0.58 + tearN * 0.22, q);
+    paper *= 1.0 - torn * tornGain;
+
+    //柄/陣笠小帽/顶针：细柄插水、杆尖探出伞顶——伞的身份一半在这根杆上
+    float pole = step(abs(p.x), 0.023) * step(0.0, p.y) * step(p.y, 1.02);
+    float cap = step(abs(p.x), 0.070) * step(1.45, p.y) * step(p.y, 1.53);
+    float spike = step(abs(p.x), 0.018) * step(1.50, p.y) * step(p.y, 1.64);
+    return float2(max(max(pole, cap), max(spike, ribs)), paper) * box;
+}
+
+//收拢斜插的死伞：伞衣裹在上段的头重纺锤（居中纺锤读成香蒲，沙盒实测已毙），
+//下端松脱纸缘一圈裙边，杆下段长露、杆尖自伞衣顶探出，褶皱噪声揉边
+float2 kasaClosed(float2 p, float seed) {
+    float box = step(abs(p.x), 0.30) * step(-0.02, p.y) * step(p.y, 2.05);
+    float fold = noiseTex(float2(p.y * 1.6 + seed, seed * 0.53)) - 0.5;
+    float w = 0.11 * smoothstep(0.92, 1.44, p.y) * (1.0 - smoothstep(1.56, 1.88, p.y));
+    //松脱的纸缘裙边：伞衣下摆散开的一小圈
+    w += 0.034 * smoothstep(0.86, 0.97, p.y) * (1.0 - smoothstep(0.99, 1.10, p.y));
+    float bundle = step(abs(p.x - fold * 0.03), w * (1.0 + fold * 0.55));
+    float pole = step(abs(p.x), 0.022) * step(0.0, p.y) * step(p.y, 2.0);
+    return float2(max(bundle, pole), 0.0) * box;
+}
+
 //撕纸遮罩：公式与 KikasaGrade 完全一致（含纤维毛边与振幅成长），圈到哪天空换到哪
 float tearMask(float2 coords) {
     float diag = length(uScreenSize);
@@ -192,6 +249,47 @@ float4 PSSky(float2 coords : TEXCOORD0) : COLOR0 {
     float seam = exp(-pow((uv.y - horizonY) / 0.0045, 2.0));
     col += lerp(SUN_RIM, RAIN_SUN_RIM, uRain) * seam * lerp(0.22, 0.15, uRain);
 
+    //====== 远湖巨伞：三柄固定实例，插在湖里（漂移=0，巨物不晃），远→近叠画 ======
+    float wobR = (noiseTex(float2(uv.x * 6.0, uTime * 0.03)) - 0.5) * 0.14;
+    float3 umbBase = lerp(UMB_COL, RAIN_UMB, uRain);
+    float3 mistBase = lerp(MIST_COL, RAIN_MIST, uRain);
+    //雷闪把常驻剪影短暂压实（与鬼雨天空"闪现伞影"分工：那边闪时才有，这边常在被照亮）
+    float crisp = 1.0 + uFlash * uFlash * 0.35;
+
+    //U3 远景残伞：小、雾色吞半、无骨无破口（常量 0 编译期剪除对应指令）
+    float du3 = frac(uv.x + uCamX * 0.030 / uScreenSize.x - 0.86 + 0.5) - 0.5;
+    float2 lp3 = float2(du3 * aspect, horizonY - uv.y) / 0.060;
+    float cs3 = cos(0.08); float sn3 = sin(0.08);
+    lp3 = float2(lp3.x * cs3 - lp3.y * sn3, lp3.x * sn3 + lp3.y * cs3);
+    float2 k3 = kasaOpen(lp3, 0.0, 0.0, 7.9);
+    float2 r3 = kasaOpen(float2(lp3.x + wobR, -lp3.y * 1.45), 0.0, 0.0, 7.9);
+    float3 uc3 = lerp(umbBase, mistBase, 0.55);
+    col = lerp(col, col * 0.62, saturate(r3.y * 0.45 + r3.x * 0.55) * lakeArea);
+    col = lerp(col, uc3, saturate((k3.y * 0.55 + k3.x * 0.72) * crisp));
+
+    //U1 主视觉巨伞：屏高 16.5% 半宽，伞顶探进云带，破口+伞骨全开
+    float du1 = frac(uv.x + uCamX * 0.055 / uScreenSize.x - 0.30 + 0.5) - 0.5;
+    float2 lp1 = float2(du1 * aspect, horizonY - uv.y) / 0.165;
+    float cs1 = cos(-0.055); float sn1 = sin(-0.055);
+    lp1 = float2(lp1.x * cs1 - lp1.y * sn1, lp1.x * sn1 + lp1.y * cs1);
+    float2 k1 = kasaOpen(lp1, 1.0, 1.0, 3.7);
+    float2 r1 = kasaOpen(float2(lp1.x + wobR, -lp1.y * 1.45), 1.0, 1.0, 3.7);
+    float3 uc1 = lerp(umbBase, mistBase, 0.10);
+    col = lerp(col, col * 0.55, saturate(r1.y * 0.55 + r1.x * 0.75) * lakeArea);
+    col = lerp(col, uc1, saturate(k1.y * 0.80 * crisp));          //纸面半透：天光渗过残纸
+    col = lerp(col, uc1 * 0.82, saturate(k1.x * 0.94 * crisp));   //骨/柄/顶针更实更沉
+
+    //U2 近处收拢死伞：斜插湖中，斜靠角随水极慢摇——三柄里唯一在动的，动得几乎看不见
+    float du2 = frac(uv.x + uCamX * 0.085 / uScreenSize.x - 0.62 + 0.5) - 0.5;
+    float2 lp2 = float2(du2 * aspect, horizonY - uv.y) / 0.115;
+    float lean = 0.26 + sin(uTime * 0.07 + 4.0) * 0.008;
+    float cs2 = cos(lean); float sn2 = sin(lean);
+    lp2 = float2(lp2.x * cs2 - lp2.y * sn2, lp2.x * sn2 + lp2.y * cs2);
+    float2 k2 = kasaClosed(lp2, 5.3);
+    float2 r2 = kasaClosed(float2(lp2.x + wobR, -lp2.y * 1.45), 5.3);
+    col = lerp(col, col * 0.55, saturate(r2.x * 0.7) * lakeArea);
+    col = lerp(col, umbBase, saturate(k2.x * 0.92 * crisp));
+
     //地平雾：湖平线上下各一带，噪声絮动；血雾↔潮雾
     float mistN = fbm2(uv * float2(2.0 * aspect, 3.2) + float2(uTime * 0.010, 0.0));
     float mistBand = exp(-pow((uv.y - horizonY) / 0.10, 2.0));
@@ -201,7 +299,7 @@ float4 PSSky(float2 coords : TEXCOORD0) : COLOR0 {
     col += RAIN_FLASH * uFlash * uFlash * seam * 0.10;
 
     //真水线以下读作一整块血团：远湖细节向死水底色加速沉没，
-    //近线薄带里波光还探得进来一点，被 TechUnify 的湖面重染后成为水下暗底
+    //近线薄带里伞影/波光还探得进来一点，被 TechUnify 的湖面重染后成为水下暗底
     float bodyDepth = max(uv.y - waterY, 0.0);
     col = lerp(col, lerp(LAKE_DEEP, RAIN_LAKE_DEEP, uRain),
         belowMask * smoothstep(0.0, 0.24, bodyDepth) * 0.90);

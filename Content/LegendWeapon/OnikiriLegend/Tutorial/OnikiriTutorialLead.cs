@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using CalamityOverhaul.Content.Narrative.Guides;
+using CalamityOverhaul.Content.QuestLogs;
 using CalamityOverhaul.Content.Scenarios.Himayo;
 using CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines;
 using InnoVault.Cinematics;
@@ -188,7 +189,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static bool Ready
-            => Reserving && !NarrativeTriggerGate.IsBusy && !CutsceneDirector.IsPlaying;
+            => Reserving && !NarrativeTriggerGate.IsBusy && !CutsceneDirector.IsPlaying
+                && QuestLog.Instance?.IsOpen != true;
 
         public override void OnWorldUnload() {
             OnikiriTutorialFlow.Reset();
@@ -204,6 +206,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 OnikiriTutorialRenderer.Reset();
                 return;
             }
+            //书摊开时整屏都是任务书的，稽古符强制会话也先让位，别把卡画在册子上
+            if (QuestLog.Instance?.IsOpen == true) {
+                return;
+            }
 
             OnikiriTutorialFlow.Tick(gameTime);
             ToriiDusk.SetTutorialLease();
@@ -214,7 +220,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
-            if (!HasDisplayLease || !OnikiriTutorialFlow.IsRunning) return;
+            if (!HasDisplayLease || !OnikiriTutorialFlow.IsRunning
+                || QuestLog.Instance?.IsOpen == true) {
+                return;
+            }
             int index = layers.FindIndex(layer => layer.Name == "Vanilla: Mouse Text");
             if (index < 0) {
                 index = layers.FindIndex(layer => layer.Name == "Vanilla: Cursor");

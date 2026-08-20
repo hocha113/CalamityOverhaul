@@ -1,6 +1,7 @@
 using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
+using CalamityOverhaul.Content.Narrative.Guides;
 using System;
 using Terraria;
 using Terraria.ModLoader;
@@ -183,7 +184,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             ResetRuntime();
         }
 
-        /// <summary>书内「?」键：清掉婉拒与进度，从头再讲一遍</summary>
+        /// <summary>书内「?」键：清掉婉拒与进度，当场抢走展示权并从第一章开讲</summary>
         public void RestartFromHelp() {
             QuestBookGuideData guide = Guide;
             guide.Declined = false;
@@ -195,9 +196,19 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             //可能正卡在队列的让位期里，不清掉的话玩家点了「?」要干等一分钟
             QuestBookGuideLead.ClearReserveDefer();
             ResetRuntime();
+            //点「?」是显式要求，不能再等鬼切/比目鱼把队列让出来。
+            //ForceHold 发生在绘制帧，本刻 Pump 已经跑过，必须当帧起步卡片才画得出
+            QuestBookGuideLead lead = ModContent.GetInstance<QuestBookGuideLead>();
+            if (lead != null) {
+                GuideLeadQueue.ForceHold(lead);
+            }
+            if (CanStartNow()) {
+                StartFromCheckpoint();
+                AnimProgress = 1f;
+            }
         }
 
-        /// <summary>队列饿死放弃时挂起。只停展示，绝不写 Declined——缺前置不等于玩家拒绝</summary>
+        /// <summary>失去展示权时挂起。只停展示，绝不写 Declined——缺前置不等于玩家拒绝</summary>
         public void Suspend() {
             if (CurrentStep == QuestBookStep.None) {
                 return;

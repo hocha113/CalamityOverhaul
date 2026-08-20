@@ -419,7 +419,9 @@ namespace CalamityOverhaul.Content.QuestLogs
                 player.mouseInterface = true;
             }
 
-            bool hoveredChrome = guideBlocking || UpdateChrome();
+            //页眉合卷/重开必须在卡片短路之前判定——卡叠到「?」上时 || 会把 UpdateChrome 整段吞掉
+            bool hoveredHeader = UpdateHeaderButtons();
+            bool hoveredChrome = hoveredHeader || guideBlocking || (!guideBlocking && UpdateChrome());
             bool hoveredDetail = !guideBlocking && UpdateDetailPanel(scrollDelta);
 
             if (View == QuestLogView.Chart) {
@@ -511,12 +513,10 @@ namespace CalamityOverhaul.Content.QuestLogs
             return delta;
         }
 
-        /// <summary>页眉与总控按钮，返回指针是否落在其中之一上</summary>
-        private bool UpdateChrome() {
-            bool hovered = UpdateRail();
+        /// <summary>页眉合卷与重看教程，卡片占住内容区时这两枚键仍要能点</summary>
+        private bool UpdateHeaderButtons() {
             Point mouse = Main.MouseScreen.ToPoint();
-            //旧样式的按钮矩形按宿主矩形推算，宿主统一为页脚带，与新样式同构
-            Rectangle chrome = layout.Footer;
+            bool hovered = false;
 
             if (layout.MainClose.Contains(mouse)) {
                 hovered = true;
@@ -529,11 +529,24 @@ namespace CalamityOverhaul.Content.QuestLogs
             if (layout.MainHelp.Contains(mouse)) {
                 hovered = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
-                    QuestBookGuideFlow.LocalPlayer?.RestartFromHelp();
-                    SoundEngine.PlaySound(SoundID.MenuTick);
+                    QuestBookGuidePlayer guide = QuestBookGuideFlow.LocalPlayer;
+                    if (guide != null) {
+                        guide.RestartFromHelp();
+                        SoundEngine.PlaySound(SoundID.MenuTick);
+                    }
                     return true;
                 }
             }
+
+            return hovered;
+        }
+
+        /// <summary>左栏与页脚总控，返回指针是否落在其中之一上</summary>
+        private bool UpdateChrome() {
+            bool hovered = UpdateRail();
+            Point mouse = Main.MouseScreen.ToPoint();
+            //旧样式的按钮矩形按宿主矩形推算，宿主统一为页脚带，与新样式同构
+            Rectangle chrome = layout.Footer;
 
             if (View == QuestLogView.Chart && !showDetailPanel && HasUnclaimedRewards()) {
                 Rectangle claimRect = CurrentStyle.GetClaimAllButtonRect(chrome);
