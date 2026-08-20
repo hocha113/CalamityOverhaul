@@ -418,7 +418,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 KikasaDomainDeco.RippleAt(lakeAt, HoundReflection ? 1.3f : 0.9f);
                 if (HoundReflection) {
                     //影子醒了
-                    SoundEngine.PlaySound(SoundID.Roar with { Pitch = -1f, Volume = 0.28f, MaxInstances = 2 }, lakeAt + new Vector2(0f, 220f));
+                    KikasaHoundVoice.Wuff(lakeAt + new Vector2(0f, 220f), 0.36f, -0.18f, 2);
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.75f, Volume = 0.45f, MaxInstances = 2 }, lakeAt);
                 }
                 else {

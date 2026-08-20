@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -217,11 +216,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 
             if (gazes[who] > 0.92f && !growlLatches[who]) {
                 growlLatches[who] = true;
-                SoundEngine.PlaySound(SoundID.Roar with {
-                    Pitch = -1f,
-                    Volume = 0.2f,
-                    MaxInstances = 2,
-                }, new Vector2(caster.Center.X, kdp.LakeWorldY + 60f));
+                KikasaHoundVoice.Wuff(new Vector2(caster.Center.X, kdp.LakeWorldY + 60f), 0.28f, -0.2f, 2);
             }
             else if (gazes[who] < 0.3f) {
                 growlLatches[who] = false;

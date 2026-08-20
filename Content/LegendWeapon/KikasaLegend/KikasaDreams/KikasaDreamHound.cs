@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             }
             spawnFxDone = true;
             SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.55f, Volume = 0.5f, MaxInstances = 3 }, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.Roar with { Pitch = -0.78f, Volume = 0.3f, MaxInstances = 3 }, Projectile.Center);
+            KikasaHoundVoice.Wuff(Projectile.Center, 0.55f, -0.06f);
             for (int i = 0; i < 7; i++) {
                 Vector2 vel = new(Main.rand.NextFloat(-1.6f, 1.6f), Main.rand.NextFloat(-2.4f, -0.6f));
                 PRTLoader.NewParticle<PRT_GhostRainMist>(
@@ -278,9 +278,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                     //近身伏地蓄势，正菜在后头
                     EnterState(StateCrouch);
                     Projectile.velocity.X *= 0.5f;
-                    if (!Main.dedServ) {
-                        SoundEngine.PlaySound(SoundID.Roar with { Pitch = -1f, Volume = 0.16f, MaxInstances = 3 }, Projectile.Center);
-                    }
                 }
                 else if (!grounded && MathF.Abs(dx) < 150f && MathF.Abs(dy) < 130f) {
                     //空中顺势咬一口，没有仪式
@@ -302,6 +299,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             if (target == null) {
                 EnterState(StateRun);
                 return Gravity;
+            }
+
+            //低吠盖住整段蓄势，起扑不再叠第二声
+            if (StateTimer == 1 && !Main.dedServ) {
+                KikasaHoundVoice.Wuff(Projectile.Center, 0.52f, -0.12f);
             }
 
             //面朝猎物钉死
@@ -331,20 +333,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             }
 
             if (StateTimer >= CrouchFrames + PackJitter * 0.8f) {
-                StartLunge(target, PounceSpeed + PackJitter * 0.4f, 58f);
+                StartLunge(target, PounceSpeed + PackJitter * 0.4f, 58f, growl: false);
             }
             return Gravity;
         }
 
-        /// <summary>一帧点火起扑,带猎物速度预判直线咬向落点</summary>
-        private void StartLunge(NPC target, float speed, float cooldown) {
+        /// <summary>一帧点火起扑,带猎物速度预判直线咬向落点。
+        /// <paramref name="growl"/>：空中顺势咬没有伏地，这里补低吠；伏地起扑则否</summary>
+        private void StartLunge(NPC target, float speed, float cooldown, bool growl = true) {
             Vector2 lead = target.Center + target.velocity * 7f;
             Vector2 aim = (lead - Projectile.Center)
                 .SafeNormalize(Vector2.UnitX * Projectile.spriteDirection);
             Projectile.velocity = aim * speed + new Vector2(0f, -1.4f);
             LungeCooldown = cooldown;
             EnterState(StateLunge);
-            LaunchFx(aim);
+            LaunchFx(aim, growl);
         }
 
         private float UpdateLunge(bool grounded) {
@@ -382,6 +385,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             if (StateTimer < SprintPrepFrames) {
                 Projectile.velocity.X *= 0.72f;
                 Projectile.spriteDirection = dir;
+                if (StateTimer == 1 && !Main.dedServ) {
+                    KikasaHoundVoice.Wuff(Projectile.Center, 0.46f, -0.08f);
+                }
                 return Gravity;
             }
             if (StateTimer == SprintPrepFrames) {
@@ -494,12 +500,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 
         //==================== 表现派发（全部本机） ====================
 
-        /// <summary>起扑那一帧,吼声+俯冲风声,蹬地烬环,向后踹出黑烟楔</summary>
-        private void LaunchFx(Vector2 aim) {
+        /// <summary>起扑那一帧：俯冲风声 + 蹬地烬环。低吠在伏地里已经盖住，空中顺势咬才在这里补</summary>
+        private void LaunchFx(Vector2 aim, bool growl) {
             if (Main.dedServ) {
                 return;
             }
-            SoundEngine.PlaySound(SoundID.Roar with { Pitch = -0.6f, Volume = 0.34f, MaxInstances = 3 }, Projectile.Center);
+            if (growl) {
+                KikasaHoundVoice.Wuff(Projectile.Center, 0.5f, -0.04f);
+            }
             SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Pitch = -0.55f, Volume = 0.3f, MaxInstances = 3 }, Projectile.Center);
             PRTLoader.NewParticle<PRT_HeartcarverPulseRing>(Projectile.Center - aim * 6f, Vector2.Zero,
                 new Color(214, 84, 34) * 0.4f, 0.1f)?.Configure(0.1f, 0.5f, 13);
@@ -576,8 +584,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             if (Main.dedServ) {
                 return;
             }
-            SoundEngine.PlaySound(SoundID.NPCHit7 with { Pitch = -0.35f, Volume = 0.6f, MaxInstances = 3 }, target.Center);
             bool bite = State == StateLunge;
+            KikasaHoundVoice.Worry(target.Center, bite ? 0.78f : 0.48f, bite ? 0.04f : -0.06f);
             if (bite) {
                 PRTLoader.NewParticle<PRT_HeartcarverPulseRing>(target.Center, Vector2.Zero,
                     new Color(214, 84, 34) * 0.36f, 0.06f)?.Configure(0.06f, 0.4f, 11);
@@ -806,6 +814,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
                 DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+    }
+
+    /// <summary>
+    /// 恶犬声带。低吠 <see cref="CWRSound.DogWuff"/>、撕咬 <see cref="CWRSound.DogWorry"/>。
+    /// 素材本身已是犬声，不要再按原版 Roar 那套极端降调。六犬同场 ReplaceOldest 顶掉最旧的。
+    /// </summary>
+    internal static class KikasaHoundVoice
+    {
+        internal static void Wuff(Vector2 pos, float volume, float pitch = 0f, int maxInstances = 4) {
+            SoundEngine.PlaySound(CWRSound.DogWuff with {
+                Volume = volume,
+                Pitch = pitch,
+                PitchVariance = 0.08f,
+                MaxInstances = maxInstances,
+                SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest,
+            }, pos);
+        }
+
+        internal static void Worry(Vector2 pos, float volume, float pitch = 0f, int maxInstances = 4) {
+            SoundEngine.PlaySound(CWRSound.DogWorry with {
+                Volume = volume,
+                Pitch = pitch,
+                PitchVariance = 0.08f,
+                MaxInstances = maxInstances,
+                SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest,
+            }, pos);
         }
     }
 }

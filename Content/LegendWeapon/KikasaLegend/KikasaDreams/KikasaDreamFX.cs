@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                     KikasaDomainSky.NotifyThunder();
                     thunderSoundDelay = Main.rand.Next(12, 22);
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.9f, Volume = 0.5f, MaxInstances = 2 }, lakeAt);
-                    SoundEngine.PlaySound(SoundID.Roar with { Pitch = -0.92f, Volume = 0.26f, MaxInstances = 2 }, lakeAt + new Vector2(0f, 300f));
+                    KikasaHoundVoice.Wuff(lakeAt + new Vector2(0f, 300f), 0.32f, -0.18f, 2);
                     KikasaDomainDeco.RippleAt(lakeAt, 1.6f);
                     ShakeViewer(2f);
                     break;
@@ -61,8 +61,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                     ShakeViewer(3.5f);
                     break;
                 case KikasaDream.PullBoilEnd + 24:
-                    //凝视拍：镜里那双眼睛亮起来，喉底的低吼贴着水皮传上来
-                    SoundEngine.PlaySound(SoundID.Roar with { Pitch = -1f, Volume = 0.34f, MaxInstances = 2 }, lakeAt);
+                    //凝视拍：镜里那双眼睛亮起来，喉底的低吠贴着水皮传上来
+                    KikasaHoundVoice.Wuff(lakeAt, 0.4f, -0.22f, 2);
                     ShakeViewer(1.5f);
                     break;
                 case KikasaDream.PullDwellEnd:
@@ -77,12 +77,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                     //血红闪结算：世界被咬进梦里
                     SoundEngine.PlaySound(SoundID.Thunder with { Pitch = -0.55f, Volume = 0.9f, MaxInstances = 3 }, domain.Player.Center);
                     SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Pitch = -0.7f, Volume = 0.6f, MaxInstances = 2 }, domain.Player.Center);
-                    SoundEngine.PlaySound(SoundID.Roar with { Pitch = -0.7f, Volume = 0.42f, MaxInstances = 2 }, domain.Player.Center);
+                    KikasaHoundVoice.Worry(domain.Player.Center, 0.62f, -0.08f, 2);
                     ShakeViewer(10f);
                     break;
                 case KikasaDream.PullRollEnd:
-                    //落进梦侧：没有水花，只有远处又一声应和
-                    SoundEngine.PlaySound(SoundID.Roar with { Pitch = -0.8f, Volume = 0.3f, MaxInstances = 2 }, domain.Player.Center + new Vector2(600f, -200f));
+                    //落进梦侧：没有水花，只有远处又一声低吠应和
+                    KikasaHoundVoice.Wuff(domain.Player.Center + new Vector2(600f, -200f), 0.34f, -0.16f, 2);
                     ShakeViewer(3f);
                     break;
             }

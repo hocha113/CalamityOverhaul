@@ -1,4 +1,4 @@
-using InnoVault.PRT;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             Vector2 origin = tex.Size() * 0.5f;
             spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color, Rotation,
-                origin, Scale, SpriteEffects.None, 0f);
+                origin, Scale / 6f, SpriteEffects.None, 0f);
             return false;
         }
     }
