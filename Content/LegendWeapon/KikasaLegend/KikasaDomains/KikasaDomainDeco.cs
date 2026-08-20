@@ -130,15 +130,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
         }
 
-        /// <summary>沸腾气泡：沿水线随机散点破水的碎泡，颜色随镜面预览向目标形态先行渐变</summary>
+        /// <summary>沸腾气泡：沿水线随机散点破水的碎泡，颜色随镜面预览向目标形态先行渐变。
+        /// 出生线取 <see cref="KikasaDomainPlayer.VisualLakeY"/>——上涌期从抬高后的面上破水</summary>
         public static void BoilBurst(KikasaDomainPlayer kdp, float strength, float coldMix) {
             Color bubble = Color.Lerp(new(214, 118, 106), new(170, 185, 190), coldMix);
 
-            int count = 1 + (int)(strength * 3f);
+            int count = 2 + (int)(strength * 4f);
             float left = Main.screenPosition.X;
+            float lakeY = kdp.VisualLakeY;
             for (int i = 0; i < count; i++) {
                 float x = left + Main.rand.NextFloat(0f, Main.screenWidth);
-                Vector2 pos = new(x, kdp.LakeWorldY - Main.rand.NextFloat(0f, 4f));
+                Vector2 pos = new(x, lakeY - Main.rand.NextFloat(0f, 4f));
                 Vector2 vel = new(Main.rand.NextFloat(-0.8f, 0.8f),
                     -Main.rand.NextFloat(1.6f, 3.6f) * (0.6f + strength * 0.6f));
                 PRTLoader.NewParticle<PRT_GhostRainDrop>(pos, vel,
@@ -148,19 +150,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
             //滚水自己也荡圈
             if (Main.rand.NextBool(5)) {
-                RippleAt(new Vector2(left + Main.rand.NextFloat(0f, Main.screenWidth), kdp.LakeWorldY),
+                RippleAt(new Vector2(left + Main.rand.NextFloat(0f, Main.screenWidth), lakeY),
                     Main.rand.NextFloat(0.4f, 0.9f) * (0.5f + strength * 0.5f));
             }
         }
 
-        /// <summary>沸腾蒸汽：贴水上浮的翻滚潮气</summary>
+        /// <summary>沸腾蒸汽：贴水上浮的翻滚潮气，同样从抬高后的观感水面出生</summary>
         public static void BoilSteam(KikasaDomainPlayer kdp, float strength, float coldMix) {
             Color steam = Color.Lerp(new(58, 18, 20), new(52, 62, 66), coldMix);
             int count = 1 + (int)(strength * 2f);
             for (int i = 0; i < count; i++) {
                 float x = Main.screenPosition.X + Main.rand.NextFloat(0f, Main.screenWidth);
                 PRTLoader.NewParticle<PRT_GhostRainMist>(
-                    new Vector2(x, kdp.LakeWorldY - Main.rand.NextFloat(2f, 24f)),
+                    new Vector2(x, kdp.VisualLakeY - Main.rand.NextFloat(2f, 24f)),
                     new Vector2(Main.rand.NextFloat(-0.3f, 0.3f),
                         -Main.rand.NextFloat(0.25f, 0.7f) * (0.5f + strength)),
                     steam * Main.rand.NextFloat(0.5f, 0.8f),

@@ -120,7 +120,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             fx.Parameters["uRollProgress"]?.SetValue(rollProgress);
             fx.Parameters["uOriginU"]?.SetValue(originU);
             fx.Parameters["uAspect"]?.SetValue(w / h);
-            fx.Parameters["uWaterLevel"]?.SetValue(pivotY);
+            //沸腾上涌：黑水线抬到枢轴上方盖住旧色近线水面；镜像枢轴不动，倒影几何稳定
+            fx.Parameters["uWaterLevel"]?.SetValue(pivotY - kdp.BoilRiseUv);
             fx.Parameters["uWaterWobble"]?.SetValue(wobble);
             fx.Parameters["uFoamBoost"]?.SetValue(kdp.FoamBoost);
             fx.Parameters["uSwallow"]?.SetValue(kdp.FlipSwallow);

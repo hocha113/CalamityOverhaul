@@ -163,6 +163,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             float waterLevel = MathHelper.Lerp(1.15f, pivotUv, kdp.RiseProgress);
             float wobble = 0.0025f + 0.011f * kdp.FoamBoost;
             float seamGlow = MathHelper.Clamp(kdp.RiseProgress * 1.4f, 0f, 1f);
+            //沸腾上涌期亮红泡沫线让位：不让位会被翻转镜面重采进抬高后的黑水带，悬成第二条毛线
+            seamGlow *= 1f - 0.85f * kdp.FlipBoil;
 
             grade.Parameters["uTime"]?.SetValue(kdp.EffectTime);
             grade.Parameters["uScreenSize"]?.SetValue(screenSize);

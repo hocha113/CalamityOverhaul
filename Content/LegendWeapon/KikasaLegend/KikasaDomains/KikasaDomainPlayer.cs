@@ -65,6 +65,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// <summary>沸腾强度 0~1，驱动水线搅动/气泡/蒸汽</summary>
         public float FlipBoil { get; private set; }
 
+        /// <summary>沸腾上涌的水位抬升（屏幕 uv）：翻转层把黑水线抬到枢轴上方</summary>
+        public float BoilRiseUv => 0.005f * FlipBoil;
+
+        /// <summary>观感水面世界 Y：沸腾上涌期为抬高后的面（气泡/蒸汽从这里破水），
+        /// 非翻转期恒等 <see cref="LakeWorldY"/>，鬼梦沸腾共用无感</summary>
+        public float VisualLakeY => LakeWorldY
+            - BoilRiseUv * Main.screenHeight / Main.GameViewMatrix.Zoom.Y;
+
         /// <summary>镜面预览向目标形态的靠拢 0~1，方向在消费端按 <see cref="FlipToRain"/> 换算</summary>
         public float FlipMix { get; private set; }
 
@@ -858,7 +866,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 KikasaDomainDeco.BoilBurst(this, FlipBoil, coldMix);
             }
             //翻滚的蒸汽潮气
-            if (t < KikasaDomain.FlipCommitFrame && FlipBoil > 0.3f && t % 7 == 0) {
+            if (t < KikasaDomain.FlipCommitFrame && FlipBoil > 0.3f && t % 5 == 0) {
                 KikasaDomainDeco.BoilSteam(this, FlipBoil, coldMix);
             }
             //落定确认拍：脚下水花溅开一圈，世界是"落"回湖面的

@@ -159,6 +159,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             shader.Parameters["uSpreadOrigin"]?.SetValue(origin);
             shader.Parameters["uMaskTime"]?.SetValue(kdp.EffectTime);
             shader.Parameters["uRain"]?.SetValue(kdp.RainBlend);
+            //水侧色板先行值：翻转期取镜面预览的靠拢度——所有的水一拍先行变色、天穹留到白闪；
+            //其余时刻恒等 RainBlend，与 uRain 零差异
+            float lakeRain = kdp.Phase == KikasaDomainPhase.Flipping
+                ? (kdp.FlipToRain
+                    ? MathHelper.Max(kdp.RainBlend, kdp.FlipMix)
+                    : MathHelper.Min(kdp.RainBlend, 1f - kdp.FlipMix))
+                : kdp.RainBlend;
+            shader.Parameters["uLakeRain"]?.SetValue(lakeRain);
             shader.Parameters["uFlash"]?.SetValue(flashStrength);
             shader.Parameters["uWaterLevel"]?.SetValue(waterLevel);
             shader.Parameters["uWaterWobble"]?.SetValue(waterWobble);
