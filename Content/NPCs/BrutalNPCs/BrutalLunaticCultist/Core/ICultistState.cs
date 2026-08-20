@@ -1,4 +1,4 @@
-﻿using InnoVault.StateMachines;
+using InnoVault.StateMachines;
 using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
@@ -6,29 +6,34 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
     /// <summary>状态索引，写入 npc.ai[2] 同步</summary>
     internal enum CultistStateIndex : int
     {
+        /// <summary>入场：法阵描绘+真身显形</summary>
         Intro = 0,
-        /// <summary>连接态：走位/选招/元素轮转</summary>
+        /// <summary>悬浮压场连接段，慢弹点射+选招</summary>
         Weave = 1,
-        /// <summary>元素弹幕（火弧团/冰枪阵/雷柱列）</summary>
-        ElementBarrage = 2,
-        /// <summary>悬空法阵齐射</summary>
-        SigilVolley = 3,
-        /// <summary>真假瞬移环阵博弈</summary>
-        MirrorBlink = 4,
-        /// <summary>三元素轮盘</summary>
-        ElementWheel = 5,
-        /// <summary>远古光/厄运编排（P2）</summary>
-        AncientAssault = 6,
-        /// <summary>大仪式召龙（可打断）</summary>
-        GrandRitual = 7,
-        /// <summary>50% 转阶段演出</summary>
-        PhaseTransition = 8,
-        /// <summary>低血大招 三相灾变</summary>
-        Cataclysm = 9,
-        Despawn = 10,
-        Death = 11,
-        /// <summary>仪式献祭投技（轮盘二次错击惩罚）</summary>
-        SacrificeGrab = 12,
+        /// <summary>帷幕挪移：符文散身+出口印记+重现</summary>
+        VeilStep = 2,
+        /// <summary>火：三连印记狩猎，印记定形后喷焰扇</summary>
+        FlameHunt = 3,
+        /// <summary>冰：印记放射晶枪列，占场拒止</summary>
+        FrostLattice = 4,
+        /// <summary>雷：三拍雷律，细弧预告后落雷</summary>
+        StormCadence = 5,
+        /// <summary>古咒唤影：召唤远古厄运/光辉，本体退场露破绽</summary>
+        AncientRite = 6,
+        /// <summary>仪式咏唱：法阵快充，环轨法球护体，可被打断</summary>
+        Chant = 7,
+        /// <summary>镜像仪式：真假身环阵，读线索点真身</summary>
+        MirrorRite = 8,
+        /// <summary>仪式迸发：充能满格的元素大招</summary>
+        RiteBurst = 9,
+        /// <summary>转阶段演出，P3 唤出幻影龙</summary>
+        PhaseShift = 10,
+        /// <summary>仪式被破的踉跄硬直，受伤加深</summary>
+        Stagger = 11,
+        /// <summary>死亡演出：法阵崩解</summary>
+        Death = 12,
+        /// <summary>无目标撤离</summary>
+        Despawn = 13,
     }
 
     /// <summary>状态接口</summary>
@@ -36,6 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
     {
         CultistStateIndex StateIndex { get; }
         void OnEnter(CultistStateContext context);
+        /// <returns>下一态，null=保持</returns>
         ICultistState OnUpdate(CultistStateContext context);
         void OnExit(CultistStateContext context);
     }
@@ -55,7 +61,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         public abstract ICultistState OnUpdate(CultistStateContext context);
 
         public virtual void OnExit(CultistStateContext context) {
-            context.SkipDefaultHover = false;
         }
 
         public override void OnEnter(VaultStateMachine<CultistStateContext> machine, CultistStateContext ctx) {
@@ -72,41 +77,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
 
         #region 工具方法
 
-        /// <summary>悬浮参数，主控 UpdateHover 消费</summary>
-        protected static void SetHover(CultistStateContext context, Vector2 anchor) {
-            context.HoverAnchor = anchor;
-        }
-
-        /// <summary>面向目标</summary>
-        protected static void FaceTarget(CultistStateContext context) {
-            NPC npc = context.Npc;
-            if (context.Target == null) {
-                return;
-            }
-            int sign = System.Math.Sign(context.Target.Center.X - npc.Center.X);
-            if (sign != 0) {
-                npc.direction = npc.spriteDirection = sign;
+        /// <summary>vanilla 帧语法：localAI[2] 切动画档并复位帧计数</summary>
+        protected static void SetPose(NPC npc, int poseCode) {
+            if (npc.localAI[2] != poseCode) {
+                npc.localAI[2] = poseCode;
+                npc.frameCounter = 0;
             }
         }
 
-        /// <summary>手部施法点（原版弹幕出手位）</summary>
-        protected static Vector2 HandPos(NPC npc) {
-            return npc.Center + new Vector2(npc.direction * 30f, 12f);
+        protected static Vector2 DirectionToTarget(CultistStateContext context) {
+            return (context.Target.Center - context.Npc.Center).SafeNormalize(Vector2.UnitY);
         }
 
-        /// <summary>玩家带前瞻的瞄准向量</summary>
-        protected static Vector2 AimWithLead(NPC npc, Player player, float lead = 16f) {
-            Vector2 vec = player.Center + player.velocity * lead - npc.Center;
-            return vec.SafeNormalize(new Vector2(npc.direction, 0f));
-        }
-
-        /// <summary>弹幕伤害（难度感知，走原版公式；狂暴期 1.5 倍）</summary>
-        protected static int ProjDamage(NPC npc, float normal, float expert) {
-            int damage = npc.GetAttackDamage_ForProjectiles(normal, expert);
-            if (npc.TryGetOverride(out CultistBossAI bossOverride) && bossOverride.Context?.Enraged == true) {
-                damage = (int)(damage * 1.5f);
-            }
-            return damage;
+        /// <summary>面向目标（本体贴图只有左右向）</summary>
+        protected static void FaceTarget(NPC npc, Vector2 targetCenter) {
+            npc.direction = npc.spriteDirection = targetCenter.X >= npc.Center.X ? 1 : -1;
         }
 
         #endregion

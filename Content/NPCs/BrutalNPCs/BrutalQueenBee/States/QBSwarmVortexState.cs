@@ -20,16 +20,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         public override QueenBeeStateIndex StateIndex => QueenBeeStateIndex.SwarmVortex;
 
         #region 节奏常量
-        private const int TotalTime = 344;
-        private const int ContractStart = 60;
-        private const int ContractEnd = 300;
+        private const int TotalTime = 304;
+        private const int ContractStart = 36;   //成笼即开始缓收，砍掉无威胁巡航段
+        private const int ContractEnd = 264;
         private const float RadiusStart = 430f;
         private const float RadiusEnd = 252f;
         //两次穿心冲刺的蓄力起帧
-        private const int Cross1Charge = 118;
-        private const int Cross2Charge = 232;
+        private const int Cross1Charge = 96;
+        private const int Cross2Charge = 204;
         private const int CrossChargeTime = 22;
         private const int CrossDashTime = 26;
+        //公平阀：围笼缺口宽 SwarmDirector.VortexGapWidth(~62°)恒定，转速0.024rad/帧匀速可预判；
+        //缺口两沿蜂由 GetEdgeHighlight 常亮标出；笼锚仅0.02慢跟，持续走位可拖拽整笼
         #endregion
 
         //两次穿心蓄力起帧表(静态避免逐帧分配)
@@ -70,10 +72,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
 
             if (Timer < TotalTime - 26) {
                 context.Swarm.Declare(SwarmFormation.Vortex, cageAnchor, Vector2.UnitX, radius, spinDir * 0.024f);
-                context.Swarm.PushRibbon(0.8f);
+                context.Swarm.PushSignal(0.8f);
             }
             else {
-                context.Swarm.PushRibbon(0.3f);
+                context.Swarm.PushSignal(0.3f);
             }
 
             //女王行为：外沿压制→两次穿心冲刺

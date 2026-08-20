@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering;
 using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ModLoader;
@@ -13,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
 
         internal const float StartRadius = 640f;
         internal const float EndRadius = 190f;
-        internal const int OrbitFrames = 300;
+        internal const int OrbitFrames = 240;
         internal const int FlareFrames = 30;
 
         private ref float Angle0 => ref Projectile.ai[0];
@@ -82,6 +83,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
             float axis = -MathHelper.PiOver2 + sway;
             float seed = Projectile.whoAmI * 0.173f;
             Vector2 root = Projectile.Center + new Vector2(0f, 14f * Projectile.scale);
+
+            //烛芯遗骨：焦骨实体层（A>0 遮挡，契约4），冷焰批在 EndEntityDraw 覆于其上
+            Main.instance.LoadProjectile(Terraria.ID.ProjectileID.Bone);
+            Texture2D boneTex = Terraria.GameContent.TextureAssets.Projectile[Terraria.ID.ProjectileID.Bone].Value;
+            Color charred = Color.Lerp(SkeletronRenderHelper.BoneShadow, SkeletronRenderHelper.CurseDark, 0.45f);
+            Main.EntitySpriteDraw(boneTex, root - Main.screenPosition, null, charred * fadeIn,
+                sway * 0.6f + Projectile.whoAmI * 0.9f, boneTex.Size() / 2f,
+                0.72f * Projectile.scale, SpriteEffects.None, 0);
 
             SkeletronFlameRender.Push(root, axis,
                 new Vector2(30f, 58f) * Projectile.scale * flick,

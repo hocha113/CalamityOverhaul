@@ -152,8 +152,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         }
 
         /// <summary>
-        /// 手作出招环(签名招提频版)：定序天然防背靠背复读且免RNG同步，弃洗牌袋。
-        /// P1 潮汐两倍频；P2 潮汐/立塔/分裂/影袭各双槽，通用招(天坠/迫击)各压到单槽
+        /// 手作出招环：定序天然防背靠背复读且免RNG同步，弃洗牌袋。
+        /// P1 潮汐两倍频教学；P2 八槽按"水平威胁→零区威胁→弹道威胁→点威胁"轮换，
+        /// 签名招(潮汐/立塔/质心抛掷)各双槽，通用招(天坠/迫击)各单槽
         /// </summary>
         private static readonly KingSlimeStateIndex[] RingP1 = [
             KingSlimeStateIndex.TideRush,
@@ -165,14 +166,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         private static readonly KingSlimeStateIndex[] RingP2 = [
             KingSlimeStateIndex.TideRush,
             KingSlimeStateIndex.TowerCollapse,
-            KingSlimeStateIndex.NinjaFlurry,
-            KingSlimeStateIndex.SplitSwarm,
-            KingSlimeStateIndex.TideRush,
-            KingSlimeStateIndex.NinjaFlurry,
-            KingSlimeStateIndex.TowerCollapse,
+            KingSlimeStateIndex.MassEject,
             KingSlimeStateIndex.CrownSlam,
-            KingSlimeStateIndex.SplitSwarm,
+            KingSlimeStateIndex.TideRush,
             KingSlimeStateIndex.GelMortar,
+            KingSlimeStateIndex.TowerCollapse,
+            KingSlimeStateIndex.MassEject,
         ];
 
         /// <summary>窥视环上下一招(不推进索引)，液化掠近防潮汐复读用</summary>
@@ -192,8 +191,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             KingSlimeStateIndex.CrownSlam => new KingSlimeCrownSlamState(),
             KingSlimeStateIndex.GelMortar => new KingSlimeGelMortarState(),
             KingSlimeStateIndex.TowerCollapse => new KingSlimeTowerCollapseState(),
-            KingSlimeStateIndex.SplitSwarm => new KingSlimeSplitSwarmState(),
-            KingSlimeStateIndex.NinjaFlurry => new KingSlimeNinjaFlurryState(),
+            KingSlimeStateIndex.MassEject => new KingSlimeMassEjectState(),
             KingSlimeStateIndex.TideRush => new KingSlimeTideRushState(),
             //环表外索引(新招忘挂case)：回连接器自愈，不静默错招
             _ => new KingSlimeHopState(),

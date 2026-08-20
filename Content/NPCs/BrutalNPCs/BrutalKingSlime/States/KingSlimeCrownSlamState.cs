@@ -46,14 +46,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             Projectile crown = context.FindCrown();
             int crownMode = crown != null ? (int)crown.ai[1] : -1;
 
-            //本体：轻跳保持压迫(小步逼近)
+            //本体：轻跳保持压迫(提频提幅，王冠期本体不当布景板)
             hopTimer++;
             if (Grounded(npc)) {
                 npc.velocity.X *= 0.8f;
-                if (hopTimer > 46) {
+                if (hopTimer > 38) {
                     hopTimer = 0;
                     float dx = player.Center.X - npc.Center.X;
-                    LaunchHop(npc, MathHelper.Clamp(dx / 60f, -6.5f, 6.5f), -8.5f);
+                    LaunchHop(npc, MathHelper.Clamp(dx / 52f, -8f, 8f), -8.5f);
                     context.StretchImpulse(0.2f);
                     KingSlimeGelFX.SquishSound(npc.Bottom, -0.1f, 0.6f);
                 }

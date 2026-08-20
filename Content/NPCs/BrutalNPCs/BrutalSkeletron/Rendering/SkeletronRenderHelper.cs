@@ -11,9 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
     /// <summary>灵骨材质绘制辅助：幽灵臂条带、骨链、眼火、冠火、预警线、旋杀涡流</summary>
     internal static class SkeletronRenderHelper
     {
-        #region 自持资源（眼火/冠火贴图方案专用，用户定向回退保留）
-        [VaultLoaden(CWRConstant.Masking + "TearFlame01")]
-        internal static Asset<Texture2D> TearFlame = null;
+        #region 自持资源（眼火贴图方案专用，用户定向回退保留）
         [VaultLoaden(CWRConstant.Other + "SoulFire")]
         internal static Asset<Texture2D> SoulFire = null;
         #endregion
@@ -144,7 +142,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
             device.RasterizerState = origRaster;
         }
 
-        /// <summary>幽灵手掌贴图（加色三层：深晕/主体/亮核），世界坐标</summary>
+        /// <summary>
+        /// 幽灵手掌贴图（遮挡层批，AlphaBlend）：暗缘/灵体/主体三层 A&gt;0 实体遮挡（契约4，命中箱=手掌），
+        /// 亮核走 A=0 纯加色叠光
+        /// </summary>
         public static void DrawGhostHandSprite(SpriteBatch spriteBatch, Vector2 worldPos, float rotation,
             float scale, float opacity, int spriteDir = 1) {
             Main.instance.LoadNPC(NPCID.SkeletronHand);
@@ -155,10 +156,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
             Vector2 drawPos = worldPos - Main.screenPosition;
             SpriteEffects fx = spriteDir < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            //注意：加色批源因子=SourceAlpha，染色必须携带alpha（A=0 会画不出东西）
-            Main.EntitySpriteDraw(tex, drawPos, rect, GhostDeep * (opacity * 0.85f), rotation, orig, scale * 1.14f, fx, 0);
-            Main.EntitySpriteDraw(tex, drawPos, rect, GhostCyan * (opacity * 0.8f), rotation, orig, scale, fx, 0);
-            Main.EntitySpriteDraw(tex, drawPos, rect, new Color(225, 255, 248) * (opacity * 0.55f), rotation, orig, scale * 0.9f, fx, 0);
+            //实体层（A>0）：暗缘勾出黑暗场景里的剪影，主体压死背景弹幕
+            spriteBatch.Draw(tex, drawPos, rect, Color.Lerp(GhostDeep, CurseDark, 0.55f) * (opacity * 0.9f), rotation, orig, scale * 1.16f, fx, 0f);
+            spriteBatch.Draw(tex, drawPos, rect, GhostDeep * (opacity * 0.9f), rotation, orig, scale * 1.06f, fx, 0f);
+            spriteBatch.Draw(tex, drawPos, rect, GhostCyan * (opacity * 0.85f), rotation, orig, scale, fx, 0f);
+            //亮核（预乘批 A=0 纯加色）
+            spriteBatch.Draw(tex, drawPos, rect, AsAdditive(new Color(225, 255, 248)) * (opacity * 0.5f), rotation, orig, scale * 0.88f, fx, 0f);
         }
 
         #endregion
@@ -240,29 +243,43 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
             }
         }
 
-        /// <summary>二阶段诅咒火之冠：头顶沿弧五舌幽火</summary>
-        public static void DrawCrownFlames(SpriteBatch spriteBatch, NPC head, float intensity, float alphaFade = 1f) {
+        /// <summary>
+        /// 二阶段诅咒火之冠：颅顶弧线七舌冷焰（SkeletronCurseFlame.fx 顶点批），
+        /// 中央舌最高、两缘诅咒紫渐浓、焰轴外张读作王冠；intensity 支持 &gt;1 过曝帧（冠心补底焰）
+        /// </summary>
+        public static void DrawCrownFlames(NPC head, float intensity, float alphaFade = 1f) {
             if (intensity <= 0.02f || alphaFade <= 0.02f) {
                 return;
             }
-            Texture2D tongue = TearFlame?.Value;
-            if (tongue == null) {
-                return;
-            }
-            Vector2 torig = new Vector2(tongue.Width / 2f, tongue.Height);
+            float time = Main.GlobalTimeWrappedHourly;
+            float over = MathHelper.Clamp(intensity, 0f, 1.6f);
 
-            for (int i = 0; i < 5; i++) {
-                float arc = (i - 2f) * 0.38f;
-                //火舌根锚在颅顶弧线上
-                Vector2 local = new Vector2((float)Math.Sin(arc) * 34f, -44f - (float)Math.Cos(arc) * 10f) * head.scale;
-                Vector2 pos = head.Center + local.RotatedBy(head.rotation) - Main.screenPosition;
-                float hash = (i * 37 % 11) / 11f;
-                float flick = 0.72f + 0.38f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * (9f + hash * 5f) + i * 2.7f);
-                float h = intensity * flick;
-                Color col = Color.Lerp(GhostCyan, GhostDeep, hash * 0.6f);
-                //黑底遮罩贴图在预乘批必须 A=0 加色，否则出黑框
-                spriteBatch.Draw(tongue, pos, null, AsAdditive(col) * (0.72f * h * alphaFade),
-                    head.rotation + arc * 0.5f, torig, new Vector2(0.30f, 0.44f + 0.3f * h), SpriteEffects.None, 0f);
+            for (int i = 0; i < 7; i++) {
+                float lane = (i - 3f) / 3f;   //-1 ~ 1 冠位
+                float arc = lane * 0.82f;
+                //焰根锚在颅顶弧线上，随头旋转
+                Vector2 local = new Vector2(MathF.Sin(arc) * 36f, -40f - MathF.Cos(arc) * 12f) * head.scale;
+                Vector2 root = head.Center + local.RotatedBy(head.rotation);
+                //焰轴沿颅顶法线并向外倾张，低频摇曳叠在轴向上
+                float sway = MathF.Sin(time * (2.3f + (i % 3) * 0.7f) + i * 2.1f) * 0.09f;
+                float axis = head.rotation - MathHelper.PiOver2 + arc * 0.55f + sway;
+                float flick = 0.78f + 0.22f * MathF.Sin(time * (8f + (i % 4) * 1.7f) + i * 2.7f);
+                //中央舌最高，向两缘递减
+                float profile = 1f - 0.52f * MathF.Abs(lane);
+                Vector2 size = new Vector2(13f + 8f * profile, (30f + 34f * profile) * over * flick) * head.scale;
+                //诅咒紫混比向冠缘增大：中心幽青、两缘咒紫
+                float curse = 0.18f + 0.55f * MathF.Abs(lane);
+                SkeletronFlameRender.Push(root, axis, size,
+                    0.45f + 0.5f * over * flick, i * 0.173f + head.whoAmI * 0.31f,
+                    curse, (0.6f + 0.35f * profile) * alphaFade);
+            }
+
+            //过曝帧：冠心短宽底焰，读作火冠燃穿
+            if (over > 1f) {
+                Vector2 basePos = head.Center + (new Vector2(0f, -38f) * head.scale).RotatedBy(head.rotation);
+                SkeletronFlameRender.Push(basePos, head.rotation - MathHelper.PiOver2,
+                    new Vector2(52f, 34f) * head.scale, over - 0.5f, head.whoAmI * 0.53f,
+                    0.3f, (over - 1f) * 1.2f * alphaFade);
             }
         }
 

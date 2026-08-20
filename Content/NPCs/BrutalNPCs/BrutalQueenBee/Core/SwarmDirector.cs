@@ -39,6 +39,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core
         internal const float BeeMarker = 2f;
         /// <summary>最大编队蜂数</summary>
         internal const int MaxBees = 32;
+        /// <summary>公平阀：漩涡围笼缺口宽(弧度，约62°)，VortexOffset 排位时跳过该弧</summary>
+        internal const float VortexGapWidth = 1.08f;
+        /// <summary>公平阀：蜂墙缝高(行数)，WallOffset 排位时在 gapA/gapB 处空出</summary>
+        internal const float WallGapRows = 1.7f;
 
         /// <summary>所属女王</summary>
         public NPC Queen;
@@ -56,8 +60,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core
         public float ParamA { get; private set; }
         /// <summary>形状参数B(缺口相位速度等)</summary>
         public float ParamB { get; private set; }
-        /// <summary>编队辉光带强度 0~1，状态推高，控制器衰减</summary>
-        public float RibbonIntensity { get; private set; }
+        /// <summary>指令信号强度 0~1，状态推高控制器衰减；驱动蜂身信号波与花粉痕(替代旧辉光带)</summary>
+        public float SignalIntensity { get; private set; }
         /// <summary>就位加速倍率，阅兵式收拢用，自然衰减回1</summary>
         public float SnapBoost { get; private set; } = 1f;
         /// <summary>本帧已声明过编队</summary>
@@ -93,7 +97,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core
 
         #region 每帧维护(女王AI调用)
 
-        /// <summary>帧首复位：默认光环、辉光衰减、时钟自增</summary>
+        /// <summary>帧首复位：默认光环、信号衰减、时钟自增</summary>
         public void FrameReset() {
             Clock += 1f;
             declaredThisFrame = false;
@@ -102,9 +106,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core
             AimDir = Queen.direction >= 0 ? Vector2.UnitX : -Vector2.UnitX;
             ParamA = 1f;
             ParamB = 0f;
-            RibbonIntensity *= 0.9f;
-            if (RibbonIntensity < 0.01f) {
-                RibbonIntensity = 0f;
+            SignalIntensity *= 0.9f;
+            if (SignalIntensity < 0.01f) {
+                SignalIntensity = 0f;
             }
             SnapBoost = MathHelper.Lerp(SnapBoost, 1f, 0.06f);
         }
@@ -119,10 +123,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core
             declaredThisFrame = true;
         }
 
-        /// <summary>推高编队辉光带</summary>
-        public void PushRibbon(float intensity) {
-            if (intensity > RibbonIntensity) {
-                RibbonIntensity = intensity;
+        /// <summary>推高指令信号强度(不叠加只取峰值)</summary>
+        public void PushSignal(float intensity) {
+            if (intensity > SignalIntensity) {
+                SignalIntensity = intensity;
             }
         }
 
@@ -224,18 +228,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core
             //ParamA=间距倍率；ParamB 打包两个缝位: gapA + gapB*100
             int gapA = (int)ParamB % 100;
             int gapB = (int)ParamB / 100;
-            float gapRows = 1.7f;
 
             float row = slot;
             if (gapA > 0 && slot >= gapA) {
-                row += gapRows;
+                row += WallGapRows;
             }
             if (gapB > 0 && slot >= gapB) {
-                row += gapRows;
+                row += WallGapRows;
             }
             float totalRows = count - 1
-                + (gapA > 0 ? gapRows : 0f)
-                + (gapB > 0 ? gapRows : 0f);
+                + (gapA > 0 ? WallGapRows : 0f)
+                + (gapB > 0 ? WallGapRows : 0f);
 
             float y = (row - totalRows * 0.5f) * 52f * ParamA;
             float flutterX = (float)Math.Sin(Clock * 0.16f + slot * 2.1f) * 6f;
@@ -244,10 +247,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core
 
         private Vector2 VortexOffset(int slot, int count) {
             //ParamA=半径 ParamB=缺口角速度(带符号)
-            const float GapWidth = 1.08f; //~62°
             float gapCenter = Clock * ParamB;
-            float usable = MathHelper.TwoPi - GapWidth;
-            float angle = gapCenter + GapWidth * 0.5f + usable * (slot + 0.5f) / count;
+            float usable = MathHelper.TwoPi - VortexGapWidth;
+            float angle = gapCenter + VortexGapWidth * 0.5f + usable * (slot + 0.5f) / count;
             return angle.ToRotationVector2() * ParamA;
         }
 
@@ -399,104 +401,54 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core
 
         #endregion
 
-        #region 辉光带路径(渲染消费)
+        #region 信号波数学(渲染消费，纯函数，全端一致)
 
         /// <summary>
-        /// 构建编队辉光带折线(穿过实际蜂位)，供 SwarmFlowRenderer 使用<br/>
-        /// 闭环阵型拆成多段带端点羽化的开弧，规避极角接缝
+        /// 摇摆舞信号波：指令沿槽位链行进的波前，返回该槽位当前的闪光强度 0~1<br/>
+        /// 波前从槽位0(箭尖/矛头/墙顶)出发扫向队尾，刚被扫过的蜂最亮后指数熄灭——<br/>
+        /// 读作"命令正在传遍蜂群"；强度越高波越急，替代旧的连环辉光带
         /// </summary>
-        public void BuildRibbonPaths(List<List<Vector2>> paths) {
-            paths.Clear();
-            int count = Bees.Count;
-            if (count < 3 || RibbonIntensity <= 0.02f) {
-                return;
+        public float GetSignalFlash(int slot, int count) {
+            if (count <= 0 || slot < 0 || SignalIntensity <= 0.05f) {
+                return 0f;
             }
+            //信号越强传令越急：周期 96→34 帧
+            float period = MathHelper.Lerp(96f, 34f, SignalIntensity);
+            float front = Clock % period / period * count;
+            //波前驶过本槽位后的距离(环回)
+            float behind = slot <= front ? front - slot : front - slot + count;
+            return (float)Math.Exp(-behind * 0.85f) * SignalIntensity;
+        }
 
+        /// <summary>
+        /// 结构常亮高亮：让阵型的"门框"与"矛尖"在乱战里读得出来，返回 0~1<br/>
+        /// 蜂墙缝沿蜂 / 漩涡缺口两沿蜂 / 箭矢与长矛的领航蜂常亮琥珀色
+        /// </summary>
+        public float GetEdgeHighlight(int slot, int count) {
+            if (count <= 0 || slot < 0) {
+                return 0f;
+            }
             switch (Formation) {
-                case SwarmFormation.Arrow: {
-                    //两翼各一条：左翼尾→箭尖→右翼尾
-                    List<Vector2> left = [];
-                    List<Vector2> right = [];
-                    for (int i = count - 1; i >= 1; i--) {
-                        if (i % 2 == 1) {
-                            left.Add(Bees[i].Center);
-                        }
+                case SwarmFormation.Wall: {
+                    int gapA = (int)ParamB % 100;
+                    int gapB = (int)ParamB / 100;
+                    if (gapA > 0 && (slot == gapA - 1 || slot == gapA)) {
+                        return 1f;
                     }
-                    left.Add(Bees[0].Center);
-                    right.Add(Bees[0].Center);
-                    for (int i = 1; i < count; i++) {
-                        if (i % 2 == 0) {
-                            right.Add(Bees[i].Center);
-                        }
+                    if (gapB > 0 && (slot == gapB - 1 || slot == gapB)) {
+                        return 1f;
                     }
-                    AddIfValid(paths, left);
-                    AddIfValid(paths, right);
-                    break;
+                    return 0f;
                 }
-                case SwarmFormation.Wall:
-                case SwarmFormation.Lance: {
-                    //一条纵贯线，槽位序即路径序
-                    List<Vector2> line = [];
-                    for (int i = 0; i < count; i++) {
-                        line.Add(Bees[i].Center);
-                    }
-                    AddIfValid(paths, line);
-                    break;
-                }
-                case SwarmFormation.Vortex: {
-                    //环带按槽位序连接，首尾天然断在缺口处
-                    List<Vector2> ring = [];
-                    for (int i = 0; i < count; i++) {
-                        ring.Add(Bees[i].Center);
-                    }
-                    AddIfValid(paths, ring);
-                    break;
-                }
-                case SwarmFormation.Shield: {
-                    //内外环各一条
-                    List<Vector2> innerRing = [];
-                    List<Vector2> outerRing = [];
-                    for (int i = 0; i < count; i++) {
-                        if (i % 2 == 0) {
-                            innerRing.Add(Bees[i].Center);
-                        }
-                        else {
-                            outerRing.Add(Bees[i].Center);
-                        }
-                    }
-                    //环闭合：补回首点成环，端点羽化盖住接缝
-                    CloseRing(innerRing);
-                    CloseRing(outerRing);
-                    AddIfValid(paths, innerRing);
-                    AddIfValid(paths, outerRing);
-                    break;
-                }
-                case SwarmFormation.Umbrella:
-                case SwarmFormation.Halo: {
-                    List<Vector2> arc = [];
-                    for (int i = 0; i < count; i++) {
-                        arc.Add(Bees[i].Center);
-                    }
-                    if (Formation == SwarmFormation.Halo) {
-                        CloseRing(arc);
-                    }
-                    AddIfValid(paths, arc);
-                    break;
-                }
+                case SwarmFormation.Vortex:
+                    //槽位0与末位分居旋转缺口两侧
+                    return slot == 0 || slot == count - 1 ? 1f : 0f;
+                case SwarmFormation.Arrow:
+                case SwarmFormation.Lance:
+                    //领航蜂(箭尖/矛头)
+                    return slot == 0 ? 1f : 0f;
                 default:
-                    break;
-            }
-        }
-
-        private static void CloseRing(List<Vector2> ring) {
-            if (ring.Count >= 3) {
-                ring.Add(ring[0]);
-            }
-        }
-
-        private static void AddIfValid(List<List<Vector2>> paths, List<Vector2> path) {
-            if (path.Count >= 2) {
-                paths.Add(path);
+                    return 0f;
             }
         }
 

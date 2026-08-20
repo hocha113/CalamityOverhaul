@@ -20,8 +20,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
 
         #region 节奏常量
         private const int GatherTime = 44;    //亲卫集结
-        private const int MoltTime = 150;     //蜕甲蓄力
-        private const int ReleaseFrame = GatherTime + MoltTime;   //194 炸散帧
+        private const int MoltTime = 132;     //蜕甲蓄力(升调+静默弧线不变，整体提速)
+        private const int ReleaseFrame = GatherTime + MoltTime;   //176 炸散帧
         private const int TotalTime = ReleaseFrame + 52;
         #endregion
 
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             if (Timer <= GatherTime) {
                 context.Swarm.Declare(SwarmFormation.Shield, npc.Center, Vector2.UnitX);
                 context.Swarm.PushSnap(2.4f);
-                context.Swarm.PushRibbon(0.7f);
+                context.Swarm.PushSignal(0.7f);
                 //集结窗口急速补员
                 if (!VaultUtils.isClient && Timer % 8 == 0) {
                     context.Swarm.ServerTopUp(24, 3);
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                 context.Swarm.Declare(SwarmFormation.Shield, npc.Center, Vector2.UnitX,
                     //蜂盾随蓄力缓缓收紧
                     MathHelper.Lerp(1.1f, 0.82f, p));
-                context.Swarm.PushRibbon(0.6f + p * 0.4f);
+                context.Swarm.PushSignal(0.6f + p * 0.4f);
                 context.SetChargeState(3, p);
                 QueenBeeMotion.ChargeGatherFX(npc.Center, p, 130f);
 
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             }
 
             //觉醒余韵：怒辉常驻(控制器由IsPhase2驱动)，蜂群回巢
-            context.Swarm.PushRibbon(0.35f);
+            context.Swarm.PushSignal(0.35f);
             if (Timer >= TotalTime) {
                 return new QBRepositionState();
             }

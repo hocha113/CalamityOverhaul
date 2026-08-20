@@ -1,165 +1,155 @@
-﻿using InnoVault.StateMachines;
+using InnoVault.StateMachines;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
 {
-    /// <summary>三元素轮转</summary>
-    internal enum CultistElement : int
-    {
-        Fire = 0,
-        Ice = 1,
-        Thunder = 2,
-    }
-
-    /// <summary>元素调色板与通用参数</summary>
-    internal static class CultistPalette
-    {
-        //火：焚焰绯金
-        internal static readonly Color FireDeep = new(150, 30, 20);
-        internal static readonly Color FireMain = new(255, 110, 40);
-        internal static readonly Color FireBright = new(255, 205, 110);
-        //冰：霜蓝月白
-        internal static readonly Color IceDeep = new(30, 60, 140);
-        internal static readonly Color IceMain = new(90, 180, 255);
-        internal static readonly Color IceBright = new(210, 245, 255);
-        //雷：紫电白金
-        internal static readonly Color ThunderDeep = new(80, 30, 150);
-        internal static readonly Color ThunderMain = new(170, 110, 255);
-        internal static readonly Color ThunderBright = new(235, 215, 255);
-
-        internal static Color Deep(CultistElement e) => e switch {
-            CultistElement.Fire => FireDeep,
-            CultistElement.Ice => IceDeep,
-            _ => ThunderDeep,
-        };
-
-        internal static Color Main(CultistElement e) => e switch {
-            CultistElement.Fire => FireMain,
-            CultistElement.Ice => IceMain,
-            _ => ThunderMain,
-        };
-
-        internal static Color Bright(CultistElement e) => e switch {
-            CultistElement.Fire => FireBright,
-            CultistElement.Ice => IceBright,
-            _ => ThunderBright,
-        };
-
-        /// <summary>分身用去饱和主色（可学习破绽之一）</summary>
-        internal static Color CloneMain(CultistElement e) {
-            Color c = Main(e);
-            float gray = (c.R + c.G + c.B) / 3f;
-            return Color.Lerp(c, new Color(gray / 255f, gray / 255f, gray / 255f), 0.35f);
-        }
-    }
-
-    /// <summary>施法姿态，映射原版帧行</summary>
-    internal static class CultistPose
-    {
-        internal const int Float = 0;      //悬浮 4-6
-        internal const int CastForward = 1;//前施法 10-12
-        internal const int CastUp = 2;     //上施法 7-9
-        internal const int Scream = 3;     //嘶吼 13-15
-        internal const int Stand = 4;      //静立 帧0
-    }
-
-    /// <summary>拜月教徒状态上下文</summary>
+    /// <summary>
+    /// 状态机共享上下文<br/>
+    /// 同步槽位约定：ai[0]=阶段 ai[1]=当前元素 ai[2]=状态索引(状态机) ai[3]=仪式充能 0~300
+    /// </summary>
     internal class CultistStateContext : INpcStateContext
     {
         #region 核心引用
         public NPC Npc { get; set; }
         public Player Target { get; set; }
-        public List<NPC> Clones { get; } = [];
         #endregion
 
-        #region 战斗进度
+        #region 常量
+        /// <summary>仪式充能满格值（ai[3]）</summary>
+        public const float RitualMax = 300f;
+        /// <summary>二阶段血量比</summary>
+        public const float Phase2Ratio = 0.65f;
+        /// <summary>三阶段血量比</summary>
+        public const float Phase3Ratio = 0.30f;
+        /// <summary>咏唱打断所需伤害占比</summary>
+        public const float ChantBreakRatio = 0.06f;
+        #endregion
+
+        #region 阶段与模式
         public bool IsDeathMode { get; set; }
-        /// <summary>低于50%生命</summary>
-        public bool IsPhase2 { get; set; }
-        /// <summary>转阶段演出已完成</summary>
-        public bool PhaseTransitionDone { get; set; }
-        /// <summary>低血大招已释放</summary>
-        public bool CataclysmUsed { get; set; }
-        /// <summary>死亡演出完，CheckDead 放行真死</summary>
+        /// <summary>阶段 0/1/2，镜像 ai[0]</summary>
+        public int Phase { get; set; }
+        /// <summary>当前元素 0火 1冰 2雷，镜像 ai[1]</summary>
+        public int Element { get; set; }
+        /// <summary>仪式充能，镜像 ai[3]，权威端写</summary>
+        public float RitualCharge { get; set; }
+        /// <summary>转阶段演出进行中</summary>
+        public bool IsInPhaseTransition { get; set; }
+        /// <summary>死亡演出完，CheckDead 放行</summary>
         public bool DeathPerformanceFinished { get; set; }
-        /// <summary>出招环索引</summary>
-        public int AttackCycleIndex { get; set; }
-        /// <summary>当前元素，服务端在 Weave 轮转并写 Ai[0]</summary>
-        public CultistElement Element { get; set; }
-        /// <summary>脱战狂暴（拉远/环境原因）：免伤+增伤，AI 不变；镜像 Ai[6]</summary>
-        public bool Enraged { get; set; }
+
+        /// <summary>咏唱冷却帧，权威端递减；开局留缓冲</summary>
+        public int ChantCooldown { get; set; } = 480;
+        /// <summary>踉跄时长（帧），进 Stagger 前由触发方设置</summary>
+        public int StaggerDuration { get; set; } = 90;
+        /// <summary>本次镜像仪式已计入的假身惩罚充能（上限阀）</summary>
+        public float MirrorPenaltyGained { get; set; }
+        /// <summary>镜像仪式进行中（克隆弹幕语义与渲染提示用）</summary>
+        public bool MirrorActive { get; set; }
+        /// <summary>P3 幻影龙已唤出</summary>
+        public bool DragonSpawned { get; set; }
+        /// <summary>猎杀幻影龙的充能削减已发放</summary>
+        public bool DragonRewardGiven { get; set; }
         #endregion
 
-        #region 博弈数据（服务端权威）
-        /// <summary>真身受击累计（MirrorBlink/GrandRitual 内），服务端</summary>
-        public int TrueBodyHurtAccum { get; set; }
-        /// <summary>上帧生命快照，服务端算受击增量</summary>
-        public int LifeSnapshot { get; set; }
-        /// <summary>破绽硬直剩余帧，>0 时防御归零</summary>
-        public int StaggerTimer { get; set; }
-        /// <summary>大仪式进度 0-1，镜像 Ai[2]</summary>
-        public float RitualProgress { get; set; }
-        /// <summary>大仪式圆心，镜像 Ai[4]/Ai[5] 供分身与各端读取</summary>
-        public Vector2 RitualCenter { get; set; }
-        /// <summary>错误献祭计数（分身被击中），GrandRitual 状态消费，服务端</summary>
-        public int RitualPunishRequests { get; set; }
+        #region 本体视觉数据（各端本地驱动）
+        /// <summary>施法辉光 0~1，状态推高，控制器衰减</summary>
+        public float CastAura { get; set; }
+        /// <summary>施法辉光颜色</summary>
+        public Color AuraColor { get; set; } = new(255, 150, 60);
+        /// <summary>背后仪式法阵描绘进度 0~1，入场推满</summary>
+        public float SigilReveal { get; set; }
+        /// <summary>法阵定形迸发 0~1，充能满/大招时推高</summary>
+        public float SigilCommit { get; set; }
+        /// <summary>身体缩放脉冲</summary>
+        public float ScalePulse { get; set; } = 1f;
+        /// <summary>咏唱强度 0~1，喂给帷幕屏效</summary>
+        public float ChantGlow { get; set; }
 
-        /// <summary>献祭投技目标玩家索引，-1=无；镜像 Ai[7]</summary>
-        public int GrabTargetIndex { get; set; } = -1;
-        /// <summary>献祭投技判定：0=锁阵收拢中 1=已锁身 2=扑空；镜像 Ai[8]</summary>
-        public int GrabResult { get; set; }
-        /// <summary>献祭投技冷却剩余帧，服务端</summary>
-        public int GrabCooldown { get; set; }
-        /// <summary>各玩家献祭印记剩余帧，服务端裁决用（客户端视觉走印记弹幕）</summary>
-        public int[] BrandTimers { get; } = new int[Terraria.Main.maxPlayers];
-        #endregion
-
-        #region 每帧声明的表现数据
-        /// <summary>施法姿态，见 CultistPose</summary>
-        public int CastPose { get; set; }
-        /// <summary>施法辉光 0-1</summary>
-        public float CastGlow { get; set; }
-        /// <summary>元素光环强度 0-1</summary>
-        public float ElementAura { get; set; }
-        /// <summary>悬浮锚点</summary>
-        public Vector2 HoverAnchor { get; set; }
-        /// <summary>跳过默认悬浮（状态直控速度）</summary>
-        public bool SkipDefaultHover { get; set; }
-
-        /// <summary>舞台法阵（入场/撤离/死亡演出），每帧声明</summary>
-        public float StageSigilProgress { get; set; }
-        public Vector2 StageSigilPos { get; set; }
-        public float StageSigilRadius { get; set; } = 200f;
-        public float StageSigilFlash { get; set; }
-        public float StageSigilBreak { get; set; }
-        public float StageSigilSpin { get; set; }
-        #endregion
-
-        #region 动画数据
-        public int FrameCounter { get; set; }
-        #endregion
-
-        /// <summary>刷新分身列表（type 440 且 ai[3] 指向本体）</summary>
-        public void RefreshClones() {
-            Clones.Clear();
-            if (Npc == null) {
-                return;
+        /// <summary>推高施法辉光</summary>
+        public void PushAura(float glow, Color color) {
+            if (glow >= CastAura) {
+                CastAura = glow;
+                AuraColor = color;
             }
-            foreach (var n in Terraria.Main.ActiveNPCs) {
-                if (n.type == NPCID.CultistBossClone && (int)n.ai[3] == Npc.whoAmI) {
-                    Clones.Add(n);
+        }
+
+        /// <summary>每帧衰减与缓动，控制器调用</summary>
+        public void DecayVisuals() {
+            CastAura *= 0.90f;
+            SigilCommit *= 0.92f;
+            ChantGlow *= 0.94f;
+            ScalePulse = MathHelper.Lerp(ScalePulse, 1f, 0.1f);
+            if (CastAura < 0.01f) {
+                CastAura = 0f;
+            }
+            if (SigilCommit < 0.01f) {
+                SigilCommit = 0f;
+            }
+            if (ChantGlow < 0.01f) {
+                ChantGlow = 0f;
+            }
+        }
+        #endregion
+
+        #region 攻击洗牌袋（仅权威端使用）
+        private readonly List<CultistStateIndex> attackBag = [];
+        private CultistStateIndex lastAttack = CultistStateIndex.Weave;
+
+        /// <summary>当前阶段攻击池</summary>
+        private void FillPool(List<CultistStateIndex> pool) {
+            pool.Clear();
+            pool.Add(CultistStateIndex.FlameHunt);
+            pool.Add(CultistStateIndex.FrostLattice);
+            pool.Add(CultistStateIndex.StormCadence);
+            pool.Add(CultistStateIndex.AncientRite);
+            if (Phase >= 1) {
+                pool.Add(CultistStateIndex.MirrorRite);
+            }
+            if (Phase >= 2) {
+                //三阶段镜像加权：骗术是他低血时的求生本能
+                pool.Add(CultistStateIndex.MirrorRite);
+            }
+        }
+
+        /// <summary>抽下一招：咏唱按冷却优先，其余洗牌袋防复读</summary>
+        public CultistStateIndex NextAttack() {
+            if (ChantCooldown <= 0) {
+                return CultistStateIndex.Chant;
+            }
+
+            if (attackBag.Count == 0) {
+                FillPool(attackBag);
+                for (int i = attackBag.Count - 1; i > 0; i--) {
+                    int j = Main.rand.Next(i + 1);
+                    (attackBag[i], attackBag[j]) = (attackBag[j], attackBag[i]);
+                }
+                if (attackBag.Count > 1 && attackBag[0] == lastAttack) {
+                    (attackBag[0], attackBag[^1]) = (attackBag[^1], attackBag[0]);
                 }
             }
+
+            CultistStateIndex next = attackBag[0];
+            attackBag.RemoveAt(0);
+            lastAttack = next;
+            return next;
         }
 
-        /// <summary>本阶段分身编制数</summary>
-        public int DesiredCloneCount => IsPhase2 ? 3 : 2;
-
-        /// <summary>元素前进一步（火→冰→雷）</summary>
-        public void AdvanceElement() {
-            Element = (CultistElement)(((int)Element + 1) % 3);
+        /// <summary>转阶段清袋重排</summary>
+        public void ClearAttackBag() {
+            attackBag.Clear();
         }
+        #endregion
+
+        #region 仪式充能（权威端写，ai[3] 镜像）
+        /// <summary>加充能并封顶</summary>
+        public void AddRitual(float amount) {
+            RitualCharge = MathHelper.Clamp(RitualCharge + amount, 0f, RitualMax);
+        }
+
+        /// <summary>充能是否满格</summary>
+        public bool RitualFull => RitualCharge >= RitualMax - 0.01f;
+        #endregion
     }
 }

@@ -207,7 +207,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
 
             Vector2 haloCenter = (restPos == Vector2.Zero ? npc.Center : restPos) + new Vector2(0f, -100f);
             context.Swarm.Declare(SwarmFormation.Halo, haloCenter, Vector2.UnitX, 0.72f);
-            context.Swarm.PushRibbon(0.4f);
+            context.Swarm.PushSignal(0.4f);
 
             //渐弱的低鸣
             if (Timer % 34 == 0) {

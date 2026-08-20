@@ -22,6 +22,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         private const int LiquifyTime = 28;
         private const int ReformTime = 26;
 
+        //---- 公平阀(契约3) ----
+        //逃逸缺口是垂直的：潮头波高 BKSTideWaveProj.RushWaveHeightPx(96px)低于玩家单跳，
+        //原地起跳即可越过；冲刷方向在液化完成瞬间锁定，途中只贴地不追高(非追踪承诺)
+
         /// <summary>0液化 1冲刷 2转向拍 3重组</summary>
         private int phase;
         private int phaseTimer;

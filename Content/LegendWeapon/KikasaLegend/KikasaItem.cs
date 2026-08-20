@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -25,10 +26,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
     /// 第五能力模块：鬼梦——领域中按 <see cref="Common.CWRKeySystem.Kikasa_DreamReflect"/>
     /// 唤醒倒影恶犬（湖镜里的人影换成黑犬），再按
     /// <see cref="Common.CWRKeySystem.Kikasa_DreamPull"/> 把一切拉入鬼梦
-    /// （湖沸腾倒转，红天村落、湖水不见；物品封禁、左键连唤恶犬，重按归返）；
+    /// （湖沸腾倒转，红天村落、湖水不见；物品封禁、左键连唤恶犬，重按归返；
+    /// 梦中人人失能——梦界内远程射弹无法存在，本伞左右键亦不可用）；
     /// 相位与包络在 <see cref="KikasaDomains.KikasaDomainPlayer"/> 与
     /// <see cref="KikasaDreams.KikasaDreamDirector"/>，玩家锁与唤犬在
-    /// <see cref="KikasaDreams.KikasaDreamPlayer"/>。
+    /// <see cref="KikasaDreams.KikasaDreamPlayer"/>，禁弹辨别在
+    /// <see cref="KikasaDreams.KikasaDreamProjectileBan"/>。
     /// 第六能力模块：大范围重启——鬼雨形态下持伞按
     /// <see cref="Common.CWRKeySystem.Legend_Restart"/>（与其余传奇重启共键），屏幕定格成黑白照片、
     /// 被雨痕冲刷揭开，场内 NPC 与玩家沿位置历史倒退回数秒前，雨滴倒飞，
@@ -60,9 +63,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
         /// <summary>右键=倒撑蓄力重击</summary>
         public override bool AltFunctionUse(Player player) => true;
 
-        //悬伞在场时不重复开伞
+        //悬伞在场时不重复开伞；鬼梦世界里左右键皆封——梦中失能对梦主也不例外，
+        //唤犬读原始输入、各切换键不经物品使用，均不受此限
         public override bool CanUseItem(Player player)
-            => player.ownedProjectileCounts[ModContent.ProjectileType<KikasaRainUmbrella>()] <= 0;
+            => !KikasaDream.DreamWorldAt(player.Center)
+            && player.ownedProjectileCounts[ModContent.ProjectileType<KikasaRainUmbrella>()] <= 0;
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

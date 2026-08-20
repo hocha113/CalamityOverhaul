@@ -487,12 +487,10 @@ BKSCrownProj.DisplayName: 天坠王冠
 BKSGelGlobProj.DisplayName: 凝胶迫击弹
 BKSGelPoolProj.DisplayName: 凝胶滞留池
 BKSGeyserProj.DisplayName: 凝胶喷泉
+BKSMassGlobProj.DisplayName: 王之质心
 BKSNinjaProj.DisplayName: 忍者影身
-BKSNinjaSlashProj.DisplayName: 忍者斩波
 BKSRoyalPillarProj.DisplayName: 皇权光柱
 BKSShockwaveProj.DisplayName: 凝胶冲击环
-BKSShurikenProj.DisplayName: 影手里剑
-BKSSplitSlimeProj.DisplayName: 分裂凝胶体
 BKSTideWaveProj.DisplayName: 凝胶潮浪
 CultistArcSpark.DisplayName: 电蛇火花
 CultistCinderPatch.DisplayName: 焚地余火
@@ -504,6 +502,7 @@ CultistLightningOrb.DisplayName: 雷枢电球
 CultistRitualCircle.DisplayName: 仪式法阵
 CultistSigilProj.DisplayName: 悬空法印
 MLordArcRayProj.DisplayName: 幻影弧光死光
+MLordBlackHoleProj.DisplayName: 黑闪奇点
 MLordCometProj.DisplayName: 星陨彗星
 MLordConstellationProj.DisplayName: 星图预兆
 MLordEyeLinkProj.DisplayName: 真眼链式死光
@@ -538,6 +537,9 @@ WofBloodClot.DisplayName: 血凝块
 WofFleshSpikeProj.DisplayName: 血肉尖刺
 WofRetinaScanBeam.DisplayName: 视网膜血束
 WofTongueLashProj.DisplayName: 舌鞭
+WofJawMawProj.DisplayName: 饥饿之颚
+WofRotEyeBudProj.DisplayName: 腐眼
+WofRotBeamProj.DisplayName: 腐眼断头闸
 // ScrapArmHitbox.DisplayName: Scrap Arm Hitbox
 // ScrapAutonomousTool.DisplayName: Scrap Autonomous Tool
 // ScrapDebris.DisplayName: Scrap Debris

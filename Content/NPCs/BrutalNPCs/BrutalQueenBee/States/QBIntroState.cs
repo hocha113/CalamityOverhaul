@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
 
                 //光环随蜂数自然成形
                 context.Swarm.Declare(SwarmFormation.Halo, npc.Center, Vector2.UnitX, 1.1f);
-                context.Swarm.PushRibbon(0.4f);
+                context.Swarm.PushSignal(0.4f);
                 return null;
             }
 
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                     ? MathHelper.Lerp(1.1f, 1.45f, t / 0.55f)
                     : MathHelper.Lerp(1.45f, 0.85f, (float)Math.Pow((t - 0.55f) / 0.45f, 0.4f));
                 context.Swarm.Declare(SwarmFormation.Halo, npc.Center, Vector2.UnitX, spread);
-                context.Swarm.PushRibbon(0.75f);
+                context.Swarm.PushSignal(0.75f);
 
                 //收拢帧：snap提速+咔哒声
                 if (Timer == SummonEnd + (int)((ParadeEnd - SummonEnd) * 0.55f)) {
@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
 
                 Vector2 aim = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
                 context.Swarm.Declare(SwarmFormation.Arrow, npc.Center + aim * 130f, aim);
-                context.Swarm.PushRibbon(1f);
+                context.Swarm.PushSignal(1f);
                 if (Timer == ParadeEnd + 1) {
                     context.Swarm.PushSnap(2.2f);
                     SoundEngine.PlaySound(SoundID.Zombie125 with { Volume = 0.55f, Pitch = 0.25f }, npc.Center);
@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                 Vector2 vel = npc.velocity.SafeNormalize(Vector2.UnitX);
                 context.Swarm.Declare(SwarmFormation.Lance, npc.Center, vel);
                 context.Swarm.PushSnap(2.2f);
-                context.Swarm.PushRibbon(0.9f);
+                context.Swarm.PushSignal(0.9f);
                 FaceByVelocity(npc);
 
                 if (Timer > SwoopEnd - 10) {

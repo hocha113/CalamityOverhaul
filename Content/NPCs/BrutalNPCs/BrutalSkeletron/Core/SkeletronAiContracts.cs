@@ -108,7 +108,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core
                     or Projectiles.SkeletronBoneSpike
                     or Projectiles.SkeletronCurseWisp
                     or Projectiles.SkeletronGhostArmProj
-                    or Projectiles.SkeletronOrbitSkull) {
+                    or Projectiles.SkeletronOrbitSkull
+                    or Projectiles.SkeletronBoneWheel) {
                     proj.Kill();
                 }
             }

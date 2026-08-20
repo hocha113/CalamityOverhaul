@@ -37,6 +37,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             MLordScreenEffects.Clear();
             MLordEclipseSky.ResetDrive();
             MLordArmIK.Reset();
+            MLordUltArms.Reset();
+            MLordBlackFlashFX.Clear();
         }
 
         public override bool? CanCWROverride() {
@@ -189,10 +191,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 return;
             }
 
+            //终局黑闪（一场一次，比虚空撕裂更迟解锁；不打断进行中的另一大招）
+            if (stateContext.CoreExposed && ai[MLordAiSlots.OvBlackFlashUsed] == 0f
+                && npc.life < npc.lifeMax * MLordDirector.BlackFlashLifeRatio
+                && current is not MLordBlackFlashState and not MLordVoidRuptureState) {
+                stateMachine.ChangeState(new MLordBlackFlashState());
+                return;
+            }
+
             //低血大招（一场一次，裸露期解锁）
             if (stateContext.CoreExposed && ai[MLordAiSlots.OvUltUsed] == 0f
                 && npc.life < npc.lifeMax * MLordDirector.UltLifeRatio
-                && current is not MLordVoidRuptureState) {
+                && current is not MLordVoidRuptureState and not MLordBlackFlashState) {
                 stateMachine.ChangeState(new MLordVoidRuptureState());
             }
         }
@@ -490,6 +500,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 return true;
             }
             MLordDrawHelper.DrawCoreAssembly(spriteBatch, npc, screenPos, stateContext);
+            //黑闪四臂：仅大招期激活，模块自带渐出
+            MLordUltArms.Draw(spriteBatch, npc, screenPos);
             return false;
         }
 

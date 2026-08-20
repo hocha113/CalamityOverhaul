@@ -20,6 +20,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
 
         private const int ChargeTime = 26;
         private const int ApexHold = 9;
+        /// <summary>升空期自控重力：砍掉近半程无威胁滞空，快上快洒</summary>
+        private const float AscendGravity = 0.55f;
+
+        //---- 环状泼洒公平阀(契约3)：发射循环直接读取 ----
+        /// <summary>每隔此数发空出一个弹道槽，弧线雨里留出可站立的落隙</summary>
+        private const int GapSlotModulo = 4;
+        /// <summary>空槽在模组内的位置</summary>
+        private const int GapSlotIndex = 2;
+        /// <summary>瞄准扇预判帧：开火瞬间锁定，此后不追踪</summary>
+        private const float FanLeadFrames = 22f;
 
         /// <summary>0蹲蓄 1升空 2顶点泼洒 3重落</summary>
         private int phase;
@@ -73,7 +83,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                     break;
                 }
                 case 1: {
-                    //升空：接近顶点(纵速衰减)转入悬滞
+                    //升空：自控重力压缩滞空时间，接近顶点(纵速衰减)转入悬滞
+                    context.SkipGravity = true;
+                    npc.velocity.Y += AscendGravity;
                     if (npc.velocity.Y > -1.5f) {
                         phase = 2;
                         phaseTimer = 0;
@@ -138,9 +150,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             int count = context.IsDeathMode ? 15 : 12;
             int dmg = (int)(npc.defDamage * 0.38f);
             for (int i = 0; i < count; i++) {
+                //公平阀：空槽跳过，弧线雨保证留出落隙(去RNG，各端弹幕排布可读且确定)
+                if (i % GapSlotModulo == GapSlotIndex) {
+                    continue;
+                }
                 float t = i / (float)(count - 1);
-                float vx = MathHelper.Lerp(-10f, 10f, t) + Main.rand.NextFloat(-0.7f, 0.7f);
-                float vy = -Main.rand.NextFloat(4.5f, 8.5f);
+                float vx = MathHelper.Lerp(-10f, 10f, t);
+                //纵速按槽位散布(确定性伪散)，落点远近参差但可学习
+                float vy = -4.5f - 4f * ((i * 7) % count) / count;
                 //两发标记生成滞留池
                 float poolFlag = i == count / 3 || i == count * 2 / 3 ? 1f : 0f;
                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, new Vector2(vx, vy),
@@ -157,7 +174,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                 return;
             }
 
-            Vector2 predicted = player.Center + player.velocity * 22f;
+            //公平阀：预判在开火瞬间锁定(FanLeadFrames)，弹道离手不再追踪
+            Vector2 predicted = player.Center + player.velocity * FanLeadFrames;
             Vector2 baseDir = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
             int dmg = (int)(npc.defDamage * 0.38f);
             for (int i = -2; i <= 2; i++) {

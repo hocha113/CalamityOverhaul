@@ -18,9 +18,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         public override string StateName => "HoneyMortar";
         public override QueenBeeStateIndex StateIndex => QueenBeeStateIndex.HoneyMortar;
 
-        private const int MaxTime = 236;
-        //三轮抛射帧
-        private static readonly int[] LobFrames = [70, 128, 186];
+        private const int MaxTime = 196;
+        //三轮抛射帧(首轮蓄力与入场悬停重叠，尾轮后只留短收势)
+        private static readonly int[] LobFrames = [46, 104, 162];
+        /// <summary>公平阀：夹击落点横向间距，保证蜜洼之间始终留有可穿行的走位缝</summary>
+        private const float LandingSpacing = 230f;
 
         public override IQueenBeeState OnUpdate(QueenBeeStateContext context) {
             NPC npc = context.Npc;
@@ -35,7 +37,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
 
             //蜂群伞幕护顶
             context.Swarm.Declare(SwarmFormation.Umbrella, npc.Center, Vector2.UnitX);
-            context.Swarm.PushRibbon(0.45f);
+            context.Swarm.PushSignal(0.45f);
 
             //补员窗口：这招也是女王的"换弹拍"
             if (!VaultUtils.isClient && Timer % 18 == 0) {
@@ -95,7 +97,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                 globCount++;
             }
             for (int i = 0; i < globCount; i++) {
-                float lateral = (i - (globCount - 1) * 0.5f) * 230f + Main.rand.NextFloat(-40f, 40f);
+                float lateral = (i - (globCount - 1) * 0.5f) * LandingSpacing + Main.rand.NextFloat(-40f, 40f);
                 Vector2 targetPos = player.Center + new Vector2(lateral, 0f);
                 Vector2 toTarget = targetPos - muzzle;
                 //高抛弹道：水平匀速+按飞行时间配初始竖速

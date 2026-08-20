@@ -15,12 +15,48 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
         public override string StateName => "Advance";
         public override WofStateIndex StateIndex => WofStateIndex.Advance;
 
+        public override void OnEnter(WofStateContext context) {
+            base.OnEnter(context);
+            //间隔长度按上一招重量伸缩(节奏波形)；LastAttack仅服务端可信，
+            //镜像进ai[0]随NPC同步，客户端速度包络与之一致(防墙体橡皮筋)
+            if (!VaultUtils.isClient) {
+                context.Npc.ai[0] = WofDirector.AdvanceGapFrames(context.Phase, context.IsDeathMode)
+                    * WofDirector.AttackGapMul(context.LastAttack);
+                context.Npc.netUpdate = true;
+            }
+        }
+
+        public override void OnExit(WofStateContext context) {
+            base.OnExit(context);
+            if (!VaultUtils.isClient) {
+                context.Npc.ai[0] = 0f;
+            }
+        }
+
         public override IWofState OnUpdate(WofStateContext context) {
             NPC npc = context.Npc;
             Timer++;
 
-            //推进本身就是压迫，间隔期不额外演出，只留一次咬牙宣告
-            int gap = WofDirector.AdvanceGapFrames(context.Phase, context.IsDeathMode);
+            int gap = npc.ai[0] > 0f ? (int)npc.ai[0]
+                : WofDirector.AdvanceGapFrames(context.Phase, context.IsDeathMode);
+
+            //推进速度即节奏乐器：前段喘息回稳→中段常速→末段蓄势跃进，
+            //出招瞬间各招自带的减速前摇与跃进形成对比刹车
+            float t = MathHelper.Clamp(Timer / (float)gap, 0f, 1f);
+            if (t < WofDirector.GapLullFraction) {
+                context.AdvanceFactor = MathHelper.Lerp(WofDirector.GapLullFactor, 1f,
+                    t / WofDirector.GapLullFraction);
+            }
+            else if (t > 1f - WofDirector.GapChargeFraction) {
+                float c = (t - (1f - WofDirector.GapChargeFraction)) / WofDirector.GapChargeFraction;
+                context.AdvanceFactor = MathHelper.Lerp(1f, WofDirector.GapChargePeak, c * c);
+                //蓄势可视化：潮红上涌、渗血变密(盖过主控基线心跳)
+                context.WallFlush = System.Math.Max(context.WallFlush, 0.25f + 0.45f * c);
+                if (!VaultUtils.isServer && Timer % 3 == 0) {
+                    WofMotionFX.SpawnWallSeep(npc, 1f + c * 2f);
+                }
+            }
+
             if (Timer == gap - 24 && !VaultUtils.isServer && WofMotionFX.OnScreen(npc.Center)) {
                 //下一招前的咬牙前摇
                 SoundEngine.PlaySound(SoundID.NPCHit13 with { Pitch = -0.5f, Volume = 0.85f }, npc.Center);
@@ -48,9 +84,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
                 RefillBag(context);
             }
 
+            //防重招连击：上一招是重招且袋首也是重招时，换到首个轻/中招(波形保证)
+            if (WofDirector.IsHeavyAttack(context.LastAttack)
+                && WofDirector.IsHeavyAttack(context.AttackBag[0])) {
+                for (int i = 1; i < context.AttackBag.Count; i++) {
+                    if (!WofDirector.IsHeavyAttack(context.AttackBag[i])) {
+                        (context.AttackBag[0], context.AttackBag[i]) = (context.AttackBag[i], context.AttackBag[0]);
+                        break;
+                    }
+                }
+            }
+
             WofStateIndex pick = context.AttackBag[0];
             context.AttackBag.RemoveAt(0);
-            context.LastAttack = pick;
 
             //投技冷却中或目标不在推进前方 → 退化为普通舌鞭
             if (pick == WofStateIndex.TongueGrab
@@ -58,6 +104,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
                     || TimeFreezeSystem.IsAnyGlobalFreezeActive)) {
                 pick = WofStateIndex.TongueLash;
             }
+            //记实际出的招：间隔权重与防复读都按真实招计算
+            context.LastAttack = pick;
 
             return pick switch {
                 WofStateIndex.SurgeDash => new WofSurgeDashState(),
@@ -68,6 +116,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
                 WofStateIndex.FleshSpike => new WofFleshSpikeState(),
                 WofStateIndex.TongueLash => new WofTongueLashState(),
                 WofStateIndex.TongueGrab => new WofTongueGrabState(),
+                WofStateIndex.JawRipple => new WofJawRippleState(),
+                WofStateIndex.RotGuillotine => new WofRotGuillotineState(),
                 _ => new WofSurgeDashState(),
             };
         }
@@ -86,10 +136,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
                 pool.Add(WofStateIndex.FleshSpike);
                 //舌卷回吞投技：扣押到二阶段(冷却由PickNextAttack兜底)
                 pool.Add(WofStateIndex.TongueGrab);
+                //腐眼断头闸：水平斩束封锁跑道，逼迫起跳
+                pool.Add(WofStateIndex.RotGuillotine);
             }
-            //阶段3双倍突进权重：死线更凶
+            //阶段3双倍突进权重：死线更凶；饥饿长城入袋(大迁徙后首秀过的王牌)
             if (context.Phase >= 3) {
                 pool.Add(WofStateIndex.SurgeDash);
+                pool.Add(WofStateIndex.JawRipple);
             }
 
             //洗牌

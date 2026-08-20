@@ -32,9 +32,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
 
         private const int LaunchTime = 24;
         private const int TelegraphTime = 34;
-        private const int LandedTime = 34;
-        /// <summary>归位悬停整备拍长</summary>
-        private const int ReturnHoldTime = 10;
+        /// <summary>嵌地滞留拍：伤害只在前8帧，其后是纯读秒——压短掉空等</summary>
+        private const int LandedTime = 22;
+        /// <summary>归位悬停整备拍长(收招尾巴，压短)</summary>
+        private const int ReturnHoldTime = 6;
+        /// <summary>公平阀(契约3)：天坠X在离开瞄准态瞬间按此提前帧锁定，坠落全程不再追踪</summary>
+        private const float SlamLockLeadFrames = 10f;
 
         private NPC Host => (int)Projectile.ai[0] >= 0 && (int)Projectile.ai[0] < Main.maxNPCs
             ? Main.npc[(int)Projectile.ai[0]] : null;
@@ -189,9 +192,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
                     ?.Configure(14);
             }
 
-            //服务端：锁定X后天坠
+            //服务端：锁定X后天坠(预告即承诺，锁死后不追踪)
             if (!VaultUtils.isClient && ModeTimer >= TelegraphTime) {
-                Projectile.ai[2] = target.Center.X + target.velocity.X * 10f;
+                Projectile.ai[2] = target.Center.X + target.velocity.X * SlamLockLeadFrames;
                 SetMode(ModeSlam);
             }
         }
@@ -267,7 +270,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
                 Projectile.rotation = Projectile.rotation.AngleLerp(Projectile.velocity.X * 0.02f, 0.2f);
 
                 //到位(或超时强制)转俯冲
-                if ((Math.Abs(toApex.X) < 22f && toApex.Y > -60f) || ModeTimer > 70f) {
+                if ((Math.Abs(toApex.X) < 22f && toApex.Y > -60f) || ModeTimer > 50f) {
                     SubBeat = 1f;
                 }
                 return;

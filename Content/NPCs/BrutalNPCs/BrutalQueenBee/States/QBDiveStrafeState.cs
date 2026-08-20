@@ -23,6 +23,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         private const int DiveTime = 32;
         private const int BrakeTime = 14;
         private const int SegmentTime = TelegraphTime + DiveTime + BrakeTime;
+        /// <summary>公平阀：两侧毒刺幕成对间隔帧——俯冲全速下相邻对沿线相距约170px，幕帘有恒定穿越缝</summary>
+        private const int CurtainPairInterval = 5;
+        //公平阀：航向段首一次掷定(ai[0])后整段锁死，预警线38帧全程可见；刹车拍接触伤关闭
         #endregion
 
         private bool boomFired;
@@ -87,7 +90,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                 FaceTarget(npc, center);
                 //蜂群拉开高位光环，让出舞台
                 context.Swarm.Declare(SwarmFormation.Halo, player.Center + new Vector2(0f, -420f), Vector2.UnitX, 1.25f);
-                context.Swarm.PushRibbon(0.3f);
+                context.Swarm.PushSignal(0.3f);
                 return null;
             }
 
@@ -106,8 +109,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                 FaceByVelocity(npc);
                 context.Swarm.Declare(SwarmFormation.Halo, player.Center + new Vector2(0f, -420f), Vector2.UnitX, 1.25f);
 
-                //两侧毒刺幕(重力坠落)：每5帧一对
-                if (!VaultUtils.isClient && segT % 5 == 0) {
+                //两侧毒刺幕(重力坠落)：每 CurtainPairInterval 帧一对
+                if (!VaultUtils.isClient && segT % CurtainPairInterval == 0) {
                     Vector2 perp = diveDir.RotatedBy(MathHelper.PiOver2);
                     float curtainSpeed = 3.4f + context.EnrageScale * 0.5f;
                     for (int s = -1; s <= 1; s += 2) {

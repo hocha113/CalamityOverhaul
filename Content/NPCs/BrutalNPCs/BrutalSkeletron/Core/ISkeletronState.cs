@@ -36,6 +36,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core
         Death = 13,
         /// <summary>合掌拍捉（投技）</summary>
         PalmSnatch = 14,
+        /// <summary>旋骨罗盘（二阶段签名：旋骨轮钳杀）</summary>
+        BoneWheel = 15,
     }
 
     /// <summary>头部状态接口</summary>

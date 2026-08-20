@@ -9,7 +9,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
 {
-    /// <summary>诅咒黑暗领域：视界压缩，诅咒烛环收拢，头颅在黑暗中游猎瞬影</summary>
+    /// <summary>诅咒黑暗领域·猎杀（二阶段签名）：视界压缩，诅咒烛环收拢，
+    /// 黑暗中只剩眼火与冠火——头颅三次自环缘凝形，沿预警线直贯扑杀</summary>
     [InnoVault.StateMachines.VaultState((int)SkeletronStateIndex.CurseDomain, typeof(SkeletronStateContext))]
     internal class SkeletronCurseDomainState : SkeletronStateBase
     {
@@ -17,8 +18,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
         public override SkeletronStateIndex StateIndex => SkeletronStateIndex.CurseDomain;
 
         internal const int RingSpawn = 34;
-        internal const int RingLife = 300;      //与 SkeletronCurseWisp 寿命对齐
-        internal const int Duration = 388;
+        internal const int RingLife = SkeletronCurseWisp.OrbitFrames;   //与烛灵寿命对齐
+        internal const int Duration = RingSpawn + RingLife + 26;
+
+        /// <summary>缺口（契约3）：烛环每 RingGapStride 槽永空一位——三条固定穿行走廊，布环循环直接读取</summary>
+        private const int RingGapStride = 4;
+
+        //猎杀节拍：散形→环缘凝形（预警线读秒）→直贯扑杀→刹车
+        private const int HuntCycle = 80;
+        private const int HuntDissolveEnd = 14;
+        private const int HuntCondenseEnd = 30;
+        private const int HuntDashEnd = 58;
+        /// <summary>凝形环缘半径（扑杀出发距离，锁定后不再追踪）</summary>
+        private const float HuntRingRadius = 470f;
 
         private Vector2 anchor;
         private bool anchorSet;
@@ -53,8 +65,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
                     int slots = 13;
                     float baseAngle = Main.rand.NextFloat(MathHelper.TwoPi);
                     for (int i = 0; i < slots; i++) {
-                        //三个缺口给穿行留路
-                        if (i == 3 || i == 7 || i == 11) {
+                        //周期缺口给穿行留路
+                        if (i % RingGapStride == RingGapStride - 1) {
                             continue;
                         }
                         float angle = baseAngle + MathHelper.TwoPi * i / slots;
@@ -77,7 +89,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
             return null;
         }
 
-        /// <summary>黑暗中游猎：三次瞬影换位，每次凝形补一记三连颅火</summary>
+        /// <summary>黑暗猎杀：散形→环缘凝形（黑暗里只亮眼火+预警线）→直贯扑杀→刹车，共三轮</summary>
         private void UpdateStalk(SkeletronStateContext context, NPC npc) {
             if (Timer < RingSpawn) {
                 //先撤到高位
@@ -86,60 +98,71 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
                 SettleRotation(npc, 0.2f);
                 return;
             }
+            if (Timer > RingSpawn + RingLife) {
+                //领域消散段：缓浮回稳
+                npc.damage = npc.defDamage;
+                npc.alpha = 0;
+                npc.velocity *= 0.9f;
+                SettleRotation(npc, 0.12f);
+                context.EyeFlame = MathHelper.Lerp(context.EyeFlame, 1f, 0.08f);
+                return;
+            }
 
-            int stalkPhase = (Timer - RingSpawn) % 92;
+            int stalkPhase = (Timer - RingSpawn) % HuntCycle;
 
-            if (stalkPhase < 14) {
-                //散形
+            if (stalkPhase < HuntDissolveEnd) {
+                //散形没入黑暗
                 npc.damage = 0;
                 npc.velocity *= 0.85f;
-                npc.alpha = (int)MathHelper.Lerp(0f, 255f, stalkPhase / 14f);
-                context.EyeFlame = 1f - stalkPhase / 14f;
+                npc.alpha = (int)MathHelper.Lerp(0f, 255f, stalkPhase / (float)HuntDissolveEnd);
+                context.EyeFlame = 1f - stalkPhase / (float)HuntDissolveEnd;
                 if (!VaultUtils.isServer && stalkPhase % 3 == 0) {
                     PRTLoader.NewParticle<PRT_SkeleGhostFlame>(npc.Center + Main.rand.NextVector2Circular(36f, 36f),
                         Main.rand.NextVector2CircularEdge(3f, 3f),
                         SkeletronRenderHelper.GhostDeep, Main.rand.NextFloat(1.3f, 2f))?.Configure(Main.rand.Next(18, 30));
                 }
-                if (stalkPhase == 13 && !VaultUtils.isClient && anchorSet) {
-                    //瞬移到环缘随机方位
+                if (stalkPhase == HuntDissolveEnd - 1 && !VaultUtils.isClient && anchorSet) {
+                    //瞬移到环缘随机方位，扑杀角当场锁死（此后不追踪）
                     float a = Main.rand.NextFloat(MathHelper.TwoPi);
-                    npc.Center = anchor + a.ToRotationVector2() * 470f;
+                    npc.Center = anchor + a.ToRotationVector2() * HuntRingRadius;
                     npc.velocity = Vector2.Zero;
+                    npc.ai[SkeletronAiSlots.HeadParamB] = (context.Target.Center - npc.Center).ToRotation();
                     npc.netUpdate = true;
                 }
             }
-            else if (stalkPhase < 26) {
-                //凝形
+            else if (stalkPhase < HuntCondenseEnd) {
+                //凝形读秒：黑暗里浮出眼火与沿锁死角的预警线
                 npc.damage = 0;
-                float t = (stalkPhase - 14) / 12f;
+                npc.velocity = Vector2.Zero;
+                float t = (stalkPhase - HuntDissolveEnd) / (float)(HuntCondenseEnd - HuntDissolveEnd);
                 npc.alpha = (int)MathHelper.Lerp(255f, 0f, t);
-                context.EyeFlame = t * 1.4f;
+                context.EyeFlame = t * 1.5f;
+                context.DashTelegraph = t;
+                npc.rotation = npc.rotation.AngleLerp(0f, 0.2f);
             }
-            else if (stalkPhase == 26) {
-                //三连颅火
-                npc.alpha = 0;
-                npc.damage = npc.defDamage;
-                if (!VaultUtils.isClient
-                    && Collision.CanHitLine(npc.Center, 1, 1, context.Target.position, context.Target.width, context.Target.height)) {
-                    int damage = SkullDamage(context);
-                    for (int i = -1; i <= 1; i++) {
-                        Vector2 vel = DirectionToTarget(context).RotatedBy(i * 0.2f) * 7.2f;
-                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + vel * 5f, vel,
-                            ModContent.ProjectileType<SkeletronCursedSkull>(), damage, 0f, Main.myPlayer, 0f, 0f);
+            else if (stalkPhase < HuntDashEnd) {
+                //直贯扑杀：锁死角一往无前，旋杀之躯
+                if (stalkPhase == HuntCondenseEnd) {
+                    npc.velocity = npc.ai[SkeletronAiSlots.HeadParamB].ToRotationVector2()
+                        * (context.DeathMode ? 26f : 23.5f);
+                    if (!VaultUtils.isServer) {
+                        SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Volume = 1f, Pitch = -0.45f }, npc.Center);
+                        SkeletronScreenEffects.PushShake(npc.Center, 5f);
                     }
-                    npc.netUpdate = true;
                 }
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.7f, Pitch = -0.5f }, npc.Center);
-                }
+                npc.alpha = 0;
+                npc.damage = (int)(npc.defDamage * SkeletronDirector.SpinDamageMult);
+                SpinRotation(npc, 0.34f);
+                context.SpinVortex = 0.8f;
+                context.EyeFlame = 1.5f;
             }
             else {
-                //缓压逼近
+                //刹车定格
                 npc.damage = npc.defDamage;
-                Vector2 toward = (context.Target.Center - npc.Center).SafeNormalize(Vector2.UnitY);
-                npc.velocity = Vector2.Lerp(npc.velocity, toward * 3.4f, 0.05f);
-                LeanByVelocity(npc);
-                context.EyeFlame = MathHelper.Lerp(context.EyeFlame, 1.1f, 0.06f);
+                npc.velocity *= 0.82f;
+                context.SpinVortex *= 0.85f;
+                SettleRotation(npc, 0.1f);
+                context.EyeFlame = MathHelper.Lerp(context.EyeFlame, 1.1f, 0.08f);
             }
         }
 

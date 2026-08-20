@@ -19,8 +19,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         public override string StateName => "StingerFan";
         public override QueenBeeStateIndex StateIndex => QueenBeeStateIndex.StingerFan;
 
-        private const int MaxTime = 200;
+        private const int MaxTime = 184;
         private const int MaxVolleys = 6;
+        private const int BaseInterval = 24;
+        /// <summary>公平阀：扇形半张角(一/二阶段)，毒刺条数有限且等角散布，射线之间恒有可穿行角缝</summary>
+        private const float FanSpreadHalfP1 = 0.12f;
+        private const float FanSpreadHalfP2 = 0.24f;
+        /// <summary>公平阀：奇数序毒刺减速比，扇面拆成前后两层，纵深上也留穿越窗</summary>
+        private const float LaggedRayScale = 0.88f;
 
         public override void OnEnter(QueenBeeStateContext context) {
             base.OnEnter(context);
@@ -45,7 +51,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             FaceTarget(npc, player.Center);
 
             //射击节拍：死亡模式/激怒加速
-            int interval = 26;
+            int interval = BaseInterval;
             if (context.IsDeathMode) {
                 interval -= 5;
             }
@@ -88,14 +94,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             }
 
             int count = context.IsPhase2 ? 5 : 3;
-            float spreadHalf = context.IsPhase2 ? 0.2f : 0.12f;
+            float spreadHalf = context.IsPhase2 ? FanSpreadHalfP2 : FanSpreadHalfP1;
             float speed = 8.5f + context.EnrageScale * 1.2f + (context.IsDeathMode ? 1f : 0f);
             for (int i = 0; i < count; i++) {
                 float t = count <= 1 ? 0f : i / (float)(count - 1) * 2f - 1f;
                 Vector2 vel = aim.RotatedBy(t * spreadHalf) * speed;
                 //扇缘略慢，形成层次
                 if (i % 2 == 1) {
-                    vel *= 0.88f;
+                    vel *= LaggedRayScale;
                 }
                 Projectile.NewProjectile(npc.GetSource_FromAI(), muzzle, vel,
                     ModContent.ProjectileType<BrutalBeeStinger>(), BrutalBeeStinger.BaseDamage, 0f, Main.myPlayer, 0f);

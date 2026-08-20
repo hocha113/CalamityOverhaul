@@ -14,7 +14,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
         public override string StateName => "GhostArmCircle";
         public override SkeletronStateIndex StateIndex => SkeletronStateIndex.GhostArmCircle;
 
-        internal const int Duration = 186;
+        internal const int Duration = 164;
+
+        /// <summary>缺口（契约3）：臂环永空 RingGapSlots 个槽（随机朝向的开口扇区），
+        /// 且环心在布阵瞬间锁死不追踪——顺开口撤出即安全，布阵循环直接跳过该槽</summary>
+        private const int RingGapSlots = 1;
 
         public override ISkeletronState OnUpdate(SkeletronStateContext context) {
             NPC npc = context.Npc;
@@ -26,12 +30,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
             HoverMovement(context, 0.045f, 4.2f, 0.1f, 8.6f, 0.95f, 260);
             LeanByVelocity(npc);
 
-            //召唤幽灵臂环（服务端一次性布阵）
+            //召唤幽灵臂环（服务端一次性布阵，环心锁死在此刻站位）
             if (Timer == 8 && !VaultUtils.isClient) {
                 int count = p2 ? 6 : 4;
                 float baseAngle = Main.rand.NextFloat(MathHelper.TwoPi);
                 int damage = SkullDamage(context);
-                for (int i = 0; i < count; i++) {
+                for (int i = 0; i < count - RingGapSlots; i++) {
                     float angle = baseAngle + MathHelper.TwoPi * i / count;
                     Vector2 pos = context.Target.Center + angle.ToRotationVector2() * SkeletronGhostArmProj.LungeRingRadius;
                     //交叉错拍：对角先后错开，读作连环而非齐射

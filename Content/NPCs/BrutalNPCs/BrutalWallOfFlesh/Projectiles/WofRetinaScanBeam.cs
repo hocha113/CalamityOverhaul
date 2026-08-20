@@ -217,7 +217,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             GraphicsDevice device = Main.graphics.GraphicsDevice;
             BlendState origBlend = device.BlendState;
             RasterizerState origRaster = device.RasterizerState;
-            device.BlendState = BlendState.Additive;
+            //预乘AlphaBlend：着色器输出暗血鞘遮挡背景，光束不再是只加亮的幻影(契约4)
+            device.BlendState = BlendState.AlphaBlend;
             device.RasterizerState = RasterizerState.CullNone;
 
             float turn = (float)Math.Pow(Math.Abs(SweepValue), 8);

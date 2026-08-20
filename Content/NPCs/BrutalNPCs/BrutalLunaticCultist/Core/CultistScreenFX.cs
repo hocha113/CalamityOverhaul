@@ -1,113 +1,66 @@
-﻿using CalamityOverhaul.Common;
 using Terraria;
-using Terraria.Graphics.CameraModifiers;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
 {
-    /// <summary>仪式帷幕/闪光/震屏推送，客户端本地，由状态观察驱动</summary>
+    /// <summary>
+    /// 仪式帷幕屏效状态（各端本地推导，无网络）<br/>
+    /// 状态每帧调用 <see cref="SetVeil"/> 声明目标；未声明则自然消散
+    /// </summary>
     internal static class CultistScreenFX
     {
-        /// <summary>帷幕目标强度 0-1，每帧声明</summary>
-        internal static float VeilTarget { get; private set; }
-        /// <summary>帷幕当前强度（平滑追赶）</summary>
-        internal static float VeilIntensity { get; private set; }
-        /// <summary>帷幕世界中心</summary>
-        internal static Vector2 VeilCenter { get; private set; }
-        /// <summary>元素染色 0火 1冰 2雷（浮点内插过渡）</summary>
-        internal static float ElementBlend { get; private set; }
-        private static float elementTargetValue;
-        /// <summary>死亡演出去饱和 0-1</summary>
-        internal static float BreakGrade { get; private set; }
-        private static float breakTarget;
+        /// <summary>帷幕当前强度 0~1，缓动逼近目标</summary>
+        public static float VeilIntensity { get; private set; }
+        /// <summary>帷幕目标强度，每帧自衰减</summary>
+        private static float veilGoal;
+        /// <summary>帷幕圆心（世界坐标）</summary>
+        public static Vector2 VeilWorldCenter { get; private set; }
+        /// <summary>元素染色</summary>
+        public static Vector3 VeilTint { get; private set; } = new(1f, 0.7f, 0.35f);
+        /// <summary>符环带半径（世界px）</summary>
+        public static float BandRadiusPx { get; private set; } = 620f;
+        /// <summary>白闪 0~1，快衰减</summary>
+        public static float Flash { get; private set; }
+        /// <summary>死亡去饱和 0~1</summary>
+        public static float BreakDesat { get; set; }
 
-        //白闪
-        internal static float FlashIntensity { get; private set; }
-        private static int flashAge;
-        private static int flashLife = 1;
+        public static bool HasAny => VeilIntensity > 0.012f || Flash > 0.012f || BreakDesat > 0.012f;
 
-        private static bool declaredThisFrame;
-
-        /// <summary>状态每帧声明帷幕；不声明则自动衰减</summary>
-        public static void DeclareVeil(Vector2 worldCenter, float intensity, CultistElement element, float breakGrade = 0f) {
-            if (VaultUtils.isServer) {
-                return;
+        /// <summary>声明本帧帷幕目标（状态每帧调用保持）</summary>
+        public static void SetVeil(float goal, Vector2 worldCenter, Color tint, float bandRadiusPx = 620f) {
+            if (goal > veilGoal) {
+                veilGoal = MathHelper.Clamp(goal, 0f, 1f);
             }
-            VeilCenter = worldCenter;
-            VeilTarget = MathHelper.Clamp(intensity, 0f, 1f);
-            elementTargetValue = (int)element;
-            breakTarget = MathHelper.Clamp(breakGrade, 0f, 1f);
-            declaredThisFrame = true;
+            VeilWorldCenter = worldCenter;
+            VeilTint = tint.ToVector3();
+            BandRadiusPx = bandRadiusPx;
         }
 
-        /// <summary>一次性白闪</summary>
-        public static void PushFlash(float intensity, int lifeFrames) {
-            if (VaultUtils.isServer) {
-                return;
+        /// <summary>推白闪</summary>
+        public static void PushFlash(float amount) {
+            if (amount > Flash) {
+                Flash = MathHelper.Clamp(amount, 0f, 1f);
             }
-            if (intensity < FlashIntensity * (1f - flashAge / (float)flashLife)) {
-                return;
-            }
-            FlashIntensity = MathHelper.Clamp(intensity, 0f, 1f);
-            flashAge = 0;
-            flashLife = System.Math.Max(lifeFrames, 4);
         }
 
-        /// <summary>震屏，受设置门控</summary>
-        public static void Punch(Vector2 pos, float strength, int frames, string id = "CultistFX", Vector2? dir = null) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
-                return;
-            }
-            Vector2 d = dir.HasValue ? dir.Value.SafeNormalize(Vector2.UnitY) : Main.rand.NextVector2Unit();
-            Main.instance.CameraModifiers.Add(new PunchCameraModifier(pos, d, strength, 8f, frames, 2600f, id));
-        }
-
-        /// <summary>渲染前推进（VeilRender 调）</summary>
+        /// <summary>每帧推进：强度缓动，目标与白闪自衰减</summary>
         public static void Update() {
-            if (!declaredThisFrame) {
-                VeilTarget = 0f;
-                breakTarget = 0f;
-            }
-            declaredThisFrame = false;
-
-            //帷幕起得快收得慢，像舞台灯
-            float rate = VeilTarget > VeilIntensity ? 0.08f : 0.03f;
-            VeilIntensity = MathHelper.Lerp(VeilIntensity, VeilTarget, rate);
+            VeilIntensity = MathHelper.Lerp(VeilIntensity, veilGoal, 0.08f);
+            veilGoal *= 0.93f;
+            Flash *= 0.86f;
             if (VeilIntensity < 0.004f) {
                 VeilIntensity = 0f;
             }
-
-            //元素染色循环内插（0→1→2→0 沿最近方向）
-            float diff = elementTargetValue - ElementBlend;
-            if (diff > 1.5f) {
-                diff -= 3f;
-            }
-            else if (diff < -1.5f) {
-                diff += 3f;
-            }
-            ElementBlend += diff * 0.06f;
-            if (ElementBlend < 0f) {
-                ElementBlend += 3f;
-            }
-            else if (ElementBlend >= 3f) {
-                ElementBlend -= 3f;
-            }
-
-            BreakGrade = MathHelper.Lerp(BreakGrade, breakTarget, 0.05f);
-
-            if (flashAge < flashLife) {
-                flashAge++;
+            if (Flash < 0.004f) {
+                Flash = 0f;
             }
         }
 
-        /// <summary>当前白闪值（含衰减）</summary>
-        public static float CurrentFlash() {
-            if (flashAge >= flashLife) {
-                return 0f;
-            }
-            float t = flashAge / (float)flashLife;
-            return FlashIntensity * (1f - t) * (1f - t);
+        /// <summary>卸载/战斗结束清空</summary>
+        public static void Clear() {
+            VeilIntensity = 0f;
+            veilGoal = 0f;
+            Flash = 0f;
+            BreakDesat = 0f;
         }
-
-        public static bool HasAny => VeilIntensity > 0.004f || CurrentFlash() > 0.004f;
     }
 }

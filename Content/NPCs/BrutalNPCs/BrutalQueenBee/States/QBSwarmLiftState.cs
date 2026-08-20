@@ -22,6 +22,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         public override QueenBeeStateIndex StateIndex => QueenBeeStateIndex.SwarmLift;
 
         #region 节奏常量(玩家侧 QueenBeeGrabPlayer 共用)
+        //公平阀总览：收网52帧telegraph内跑出环外即空挥；判定半径从宽(SeizeRadius<终末环)；
+        //连段总伤有硬预算(TotalDamageBudgetScale，满血必活)；收网/裹茧期蜂群接触伤归零(BeesHarmless)
         /// <summary>收网 telegraph 时长，也是逃出判定帧</summary>
         internal const int CloseEnd = 52;
         /// <summary>成茧顿帧段末</summary>
@@ -197,7 +199,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             float radius = MathHelper.SmoothStep(RingStartRadius, RingEndRadius, t);
 
             context.Swarm.Declare(SwarmFormation.Vortex, anchor, Vector2.UnitX, radius, SpinDir(npc) * 0.05f);
-            context.Swarm.PushRibbon(0.9f);
+            context.Swarm.PushSignal(0.9f);
             if (Timer == 1) {
                 context.Swarm.PushSnap(2.8f);
             }
@@ -248,7 +250,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         /// <summary>判定空窗(仅客户端会进)：环保持终末半径，女王原位悬停</summary>
         private void UpdateVerdictPending(QueenBeeStateContext context, NPC npc, Vector2 anchor) {
             context.Swarm.Declare(SwarmFormation.Vortex, anchor, Vector2.UnitX, RingEndRadius, SpinDir(npc) * 0.05f);
-            context.Swarm.PushRibbon(0.9f);
+            context.Swarm.PushSignal(0.9f);
             npc.velocity *= 0.9f;
             FaceTarget(npc, anchor);
         }
@@ -277,7 +279,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         private void UpdateSeizeClutch(QueenBeeStateContext context, NPC npc) {
             context.Swarm.Declare(SwarmFormation.Absorb, CocoonCenter, Vector2.UnitX);
             context.Swarm.PushSnap(3.4f);
-            context.Swarm.PushRibbon(1f);
+            context.Swarm.PushSignal(1f);
 
             //顿帧感：女王骤停
             npc.velocity *= 0.55f;
@@ -422,7 +424,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         /// <summary>茧壳编队：双环蜂盾紧缚茧心</summary>
         private void DeclareCocoon(QueenBeeStateContext context, float scale) {
             context.Swarm.Declare(SwarmFormation.Shield, CocoonCenter, Vector2.UnitX, scale);
-            context.Swarm.PushRibbon(0.85f);
+            context.Swarm.PushSignal(0.85f);
         }
 
         /// <summary>

@@ -135,6 +135,79 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core
         public const int ExodusRestFrames = 130;
         #endregion
 
+        #region 节奏(推进枢纽波形)
+        /// <summary>重招后间隔倍率(长喘息，波谷)</summary>
+        public const float GapHeavyMul = 1.35f;
+        /// <summary>轻招后间隔倍率(快衔接，压迫收紧)</summary>
+        public const float GapLightMul = 0.7f;
+        /// <summary>间隔前段喘息占比(上一招余韵，墙身松弛)</summary>
+        public const float GapLullFraction = 0.38f;
+        /// <summary>喘息期起始速度系数</summary>
+        public const float GapLullFactor = 0.7f;
+        /// <summary>间隔末段蓄势占比</summary>
+        public const float GapChargeFraction = 0.28f;
+        /// <summary>蓄势末峰值速度系数——出招瞬间的减速与之形成对比刹车</summary>
+        public const float GapChargePeak = 1.5f;
+        #endregion
+
+        #region 饥饿长城(颚浪)
+        /// <summary>颚道数：墙域纵向均分</summary>
+        public const int JawLaneCount = 5;
+        /// <summary>入招紧咬蓄势帧</summary>
+        public const int JawIntroFrames = 30;
+        /// <summary>颚芽自墙面隆起帧</summary>
+        public const int JawGrowFrames = 26;
+        /// <summary>成形到首咬的最短开口期</summary>
+        public const int JawGapeMin = 18;
+        /// <summary>相邻颚咬合错拍帧：≥伤害窗(伸8+扣6)，相邻车道永不同时热(公平阀)</summary>
+        public const int JawSnapStagger = 16;
+        /// <summary>咬合前颤动预告帧(嘶声+喉光)</summary>
+        public const int JawPreSnapFrames = 12;
+        /// <summary>咬合伸出帧</summary>
+        public const int JawLungeFrames = 8;
+        /// <summary>咬死扣合帧</summary>
+        public const int JawClampFrames = 6;
+        /// <summary>缩回帧</summary>
+        public const int JawRetractFrames = 14;
+        /// <summary>咬程 px：贴墙压迫圈，退出圈外即安全</summary>
+        public const float JawReach = 430f;
+        /// <summary>颚体判定厚度 px</summary>
+        public const float JawHitWidth = 40f;
+        /// <summary>噬咬基准伤害</summary>
+        public const int JawDamage = 28;
+        /// <summary>两轮之间喘息帧</summary>
+        public const int JawVolleyGap = 36;
+        /// <summary>收尾恢复帧</summary>
+        public const int JawOutroFrames = 30;
+        /// <summary>单轮颚浪全长(帧)：成形+开口+末位错拍+咬合全程+余韵</summary>
+        public const int JawVolleyLife = JawGrowFrames + JawGapeMin
+            + (JawLaneCount - 1) * JawSnapStagger
+            + JawLungeFrames + JawClampFrames + JawRetractFrames + 12;
+        #endregion
+
+        #region 腐眼断头闸
+        /// <summary>腐眼成形帧(期间跟踪玩家高度)</summary>
+        public const int GuillotineGrow = 40;
+        /// <summary>阶段3第二只腐眼的缩短成形帧</summary>
+        public const int GuillotineGrow2 = 28;
+        /// <summary>锁定闪烁帧(高度已冻结，预告即承诺)</summary>
+        public const int GuillotineLockFlash = 12;
+        /// <summary>击发前静默拍</summary>
+        public const int GuillotineSilence = 8;
+        /// <summary>斩束持续帧</summary>
+        public const int GuillotineSustain = 34;
+        /// <summary>斩束衰减帧(无伤害)</summary>
+        public const int GuillotineDecay = 14;
+        /// <summary>两束间歇帧(阶段3)</summary>
+        public const int GuillotineInterval = 16;
+        /// <summary>收尾恢复帧</summary>
+        public const int GuillotineRecover = 30;
+        /// <summary>斩束判定半厚 px：低于跳跃高度，原地起跳可越(公平阀)</summary>
+        public const float GuillotineHalfHeight = 30f;
+        /// <summary>斩束基准伤害</summary>
+        public const int GuillotineDamage = 24;
+        #endregion
+
         #region 通用
         /// <summary>触发死亡演出的生命阈值</summary>
         public const int DeathTriggerLife = 10;
@@ -163,6 +236,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core
                 baseGap = (int)(baseGap * 0.8f);
             }
             return baseGap;
+        }
+
+        /// <summary>重招判定：这些招之后玩家需要长喘息</summary>
+        public static bool IsHeavyAttack(WofStateIndex idx) {
+            return idx is WofStateIndex.SurgeDash or WofStateIndex.TongueGrab
+                or WofStateIndex.MawVortex or WofStateIndex.JawRipple;
+        }
+
+        /// <summary>招后间隔倍率：重招长谷、轻招短峰，把匀速平推组织成波形</summary>
+        public static float AttackGapMul(WofStateIndex prev) {
+            if (IsHeavyAttack(prev)) {
+                return GapHeavyMul;
+            }
+            if (prev is WofStateIndex.TongueLash or WofStateIndex.LeechWave) {
+                return GapLightMul;
+            }
+            return 1f;
         }
     }
 }

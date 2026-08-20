@@ -20,12 +20,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         public override QueenBeeStateIndex StateIndex => QueenBeeStateIndex.RoyalTide;
 
         #region 节奏常量
-        private const int GatherTime = 92;   //聚矛蓄力
+        private const int GatherTime = 80;   //聚矛蓄力(补员与升调轰鸣同步进行)
         private const int TelegraphTime = 42;
         private const int ChargeTime = 32;
         private const int LoopTime = 34;
         private const int LegTime = TelegraphTime + ChargeTime + LoopTime;
-        private const int FinaleTime = 66;   //甩鞭+力竭
+        private const int FinaleTime = 66;   //甩鞭+力竭(奖励输出窗口)
+        /// <summary>公平阀：冲锋沿途两侧撒刺的间隔帧，成对垂直出射留出棋盘状穿越缝</summary>
+        private const int SideSpitInterval = 6;
+        //公平阀：每段航向在段首一次掷定(ai[0])后整段锁死不再跟踪，预警线全程42帧；
+        //回环拍女王与矛体接触伤关闭
         #endregion
 
         private int ChargeCount(QueenBeeStateContext context) => context.IsDeathMode ? 4 : 3;
@@ -51,7 +55,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                 context.Swarm.Declare(SwarmFormation.Lance, npc.Center, aim);
                 context.Swarm.PushSnap(2.3f);
                 float p = Timer / (float)GatherTime;
-                context.Swarm.PushRibbon(0.5f + p * 0.5f);
+                context.Swarm.PushSignal(0.5f + p * 0.5f);
                 context.SetChargeState(4, p);
                 QueenBeeMotion.ChargeGatherFX(npc.Center, p, 150f);
 
@@ -91,7 +95,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             npc.velocity.Y += (float)Math.Sin(Timer * 0.1f) * 0.04f;
             FaceTarget(npc, player.Center);
             DisableContactDamage(npc);
-            context.Swarm.PushRibbon(0.2f);
+            context.Swarm.PushSignal(0.2f);
             if (finaleT % 22 == 10) {
                 QueenBeeMotion.WingHum(npc.Center, 0.3f, -0.7f);
             }
@@ -138,7 +142,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
 
                 context.Swarm.Declare(SwarmFormation.Lance, npc.Center, chargeDir);
                 context.Swarm.PushSnap(2.6f);
-                context.Swarm.PushRibbon(0.95f);
+                context.Swarm.PushSignal(0.95f);
                 return;
             }
 
@@ -158,9 +162,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
 
                 context.Swarm.Declare(SwarmFormation.Lance, npc.Center, chargeDir);
                 context.Swarm.PushSnap(2.8f);
-                context.Swarm.PushRibbon(1f);
+                context.Swarm.PushSignal(1f);
 
-                if (!VaultUtils.isClient && legT % 6 == 0) {
+                if (!VaultUtils.isClient && legT % SideSpitInterval == 0) {
                     Vector2 perp = chargeDir.RotatedBy(MathHelper.PiOver2);
                     for (int s = -1; s <= 1; s += 2) {
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center,
@@ -180,7 +184,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             context.Swarm.Declare(SwarmFormation.Lance, npc.Center,
                 npc.velocity.SafeNormalize(Vector2.UnitX));
             context.Swarm.PushSnap(2.2f);
-            context.Swarm.PushRibbon(0.8f);
+            context.Swarm.PushSignal(0.8f);
         }
 
         public override void OnExit(QueenBeeStateContext context) {

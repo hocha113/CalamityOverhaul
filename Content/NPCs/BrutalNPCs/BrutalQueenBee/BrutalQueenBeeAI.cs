@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
     /// override.ai[0]=编队时钟 override.ai[3]=阶段位掩码 override.ai[4]=出招环游标<br/>
     /// override.ai[5]=标记玩家whoAmI+1 override.ai[6]=投技冷却 override.ai[7]=标记进度0~1
     /// </summary>
-    internal class BrutalQueenBeeAI : CWRNPCOverride, ICWRLoader
+    internal class BrutalQueenBeeAI : CWRNPCOverride
     {
         #region 数据
         public override int TargetID => NPCID.QueenBee;
@@ -69,8 +69,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
         #endregion
 
         #region 加载与初始化
-        void ICWRLoader.UnLoadData() => SwarmFlowRenderer.Unload();
-
         public override bool? CanCWROverride() {
             return null;
         }
@@ -483,8 +481,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
             }
 
             Texture2D texture = TextureAssets.Npc[npc.type].Value;
-            //编队辉光带垫在女王与蜂群下层(延迟批次内先画的图元后被精灵覆盖)
-            SwarmFlowRenderer.DrawRibbons(swarm);
             QueenBeeRenderHelper.DrawQueen(spriteBatch, npc, stateContext, texture, screenPos, drawColor);
             return false;
         }

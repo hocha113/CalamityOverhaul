@@ -27,10 +27,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> GolemSolarFlare { get; set; }
         public static Asset<Effect> GolemTrapWork { get; set; }
         public static Asset<Effect> GolemThruster { get; set; }
-        public static Asset<Effect> CultistSigil { get; set; }
-        public static Asset<Effect> CultistElementOrb { get; set; }
+        public static Asset<Effect> CultistRuneSigil { get; set; }
         public static Asset<Effect> CultistVeil { get; set; }
-        public static Asset<Effect> CultistCrystal { get; set; }
         public static Asset<Effect> FishronStormSky { get; set; }
         public static Asset<Effect> FishronTornado { get; set; }
         public static Asset<Effect> FishronTsunami { get; set; }
@@ -54,7 +52,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> MLordDeathray { get; set; }
         public static Asset<Effect> MLordEclipseSky { get; set; }
         public static Asset<Effect> MLordCelestial { get; set; }
-        public static Asset<Effect> QueenSwarmFlow { get; set; }
+        public static Asset<Effect> MLordBlackFlash { get; set; }
+        public static Asset<Effect> MLordBlackFlashScreen { get; set; }
         public static Asset<Effect> QueenHoneyPool { get; set; }
         public static Asset<Effect> QueenBeeTelegraph { get; set; }
         public static Asset<Effect> PlanteraVine { get; set; }

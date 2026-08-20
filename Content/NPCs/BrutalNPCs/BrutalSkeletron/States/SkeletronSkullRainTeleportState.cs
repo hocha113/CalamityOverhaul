@@ -22,6 +22,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
         private const int CondenseEnd = 28;     //新位聚形
         private const int PounceFrame = 32;     //佯扑
 
+        /// <summary>缺口（契约3）：颅火扇中央 FanGapHalfWidth 个槽永空——迎着佯扑轴线冲脸是安全走廊
+        /// （奖励贴头输出），发射循环按槽距直接跳过</summary>
+        private const int FanGapHalfWidth = 1;
+
         private int round;
         private int roundTimer;
 
@@ -124,7 +128,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
                     Vector2 baseVel = dir * 6.8f;
                     float centralCount = 0.5f * (numProj - 1f);
                     for (int i = 0; i < numProj; i++) {
-                        //反抛物线扇：中央慢边缘快
+                        //中央槽留缺口走廊
+                        if (MathF.Abs(centralCount - i) < FanGapHalfWidth) {
+                            continue;
+                        }
+                        //反抛物线扇：近央慢边缘快
                         float offset = MathHelper.Lerp(-spread * 0.5f, spread * 0.5f, i / (numProj - 1f));
                         float velMult = MathHelper.Lerp(0.55f, 1.45f, MathF.Abs(centralCount - i) / centralCount);
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + baseVel * 4f,

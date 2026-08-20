@@ -29,6 +29,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Projectiles
         private const int WarnTime = 36;
         /// <summary>萎缩帧</summary>
         private const int DecayTime = 24;
+        /// <summary>公平阀：齐射相邻毒刺角步进，3~4连扇内恒有可穿行角缝；齐射前36帧升调滴答预警</summary>
+        private const float VolleySpreadStep = 0.09f;
 
         private bool DeathBoost => Projectile.ai[0] == 1f;
         private float LivedFrames => LifeTime - Projectile.timeLeft;
@@ -119,7 +121,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Projectiles
             float speed = DeathBoost ? 8.5f : 7f;
             Vector2 baseDir = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
             for (int i = 0; i < count; i++) {
-                float offset = (i - (count - 1) * 0.5f) * 0.09f;
+                float offset = (i - (count - 1) * 0.5f) * VolleySpreadStep;
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center,
                     baseDir.RotatedBy(offset) * speed, ModContent.ProjectileType<BrutalBeeStinger>(),
                     BrutalBeeStinger.BaseDamage, 0f, Main.myPlayer, 2f);

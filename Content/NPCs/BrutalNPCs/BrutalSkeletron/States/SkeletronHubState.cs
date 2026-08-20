@@ -14,6 +14,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
         public override string StateName => "Hub";
         public override SkeletronStateIndex StateIndex => SkeletronStateIndex.Hub;
 
+        /// <summary>缺口（契约3）：贴脸距离内不点射——近身是明确的安全窗，发射条件直接读取</summary>
+        private const float MinFireDistancePx = 240f;
+
         public override ISkeletronState OnUpdate(SkeletronStateContext context) {
             NPC npc = context.Npc;
             npc.damage = npc.defDamage;
@@ -31,9 +34,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
                 hubDuration -= 10;
             }
 
-            //轻压制：诅咒颅火点射，绝不留空白窗口
+            //轻压制：诅咒颅火点射，绝不留空白窗口；近身缺口内停火
             int fireInterval = p2 ? 26 : 34;
             if (!VaultUtils.isClient && Timer % fireInterval == fireInterval - 1
+                && npc.Distance(context.Target.Center) > MinFireDistancePx
                 && Collision.CanHitLine(npc.Center, 1, 1, context.Target.position, context.Target.width, context.Target.height)) {
                 Vector2 vel = DirectionToTarget(context).RotatedByRandom(0.14f) * (p2 ? 7.4f : 6.2f);
                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + vel * 6f, vel,
@@ -69,15 +73,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
                 };
             }
 
-            int stepP2 = context.AttackIndexP2 % 6;
+            //二阶段紧凑五拍：区域压制→机动→迸发→旋骨区域封锁→黑暗猎杀收束（原6拍含颅雨复读+一阶段鬼臂圈返场，删）
+            int stepP2 = context.AttackIndexP2 % 5;
             context.AttackIndexP2++;
             return stepP2 switch {
                 0 => new SkeletronGhostPandemoniumState(),
                 1 => new SkeletronSkullRainTeleportState(),
                 2 => new SkeletronSpinBoneStormState(),
-                3 => new SkeletronCurseDomainState(),
-                4 => new SkeletronGhostArmCircleState(),
-                _ => new SkeletronSkullRainTeleportState(),
+                3 => new SkeletronBoneWheelState(),
+                _ => new SkeletronCurseDomainState(),
             };
         }
 

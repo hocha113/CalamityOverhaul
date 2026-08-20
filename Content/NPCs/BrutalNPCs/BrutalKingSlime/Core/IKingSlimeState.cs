@@ -17,10 +17,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
         TideRush = 4,
         /// <summary>立塔倾倒海啸</summary>
         TowerCollapse = 5,
-        /// <summary>受控分裂-再聚合</summary>
-        SplitSwarm = 6,
-        /// <summary>体内忍者影袭</summary>
-        NinjaFlurry = 7,
+        /// <summary>已删除(原受控分裂)，编号保留防串号</summary>
+        RemovedSplitSwarm = 6,
+        /// <summary>已删除(原忍者影袭)，编号保留防串号</summary>
+        RemovedNinjaFlurry = 7,
         /// <summary>低血大招，皇权审判</summary>
         RoyalDecree = 8,
         /// <summary>阶段转换演出，王冠离体</summary>
@@ -31,6 +31,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
         Death = 12,
         /// <summary>投技：超级砸落正压吞没，带人弹跳消化后高压喷出</summary>
         Engulf = 13,
+        /// <summary>签名：质心抛掷——抛出六成身体质量砸向预测点，核心期受创加深</summary>
+        MassEject = 14,
     }
 
     /// <summary>状态接口</summary>

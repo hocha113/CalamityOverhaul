@@ -12,6 +12,10 @@
         public static Color MoonWhite => new(226, 244, 255);
         /// <summary>蚀金，日蚀冕环专用点缀</summary>
         public static Color EclipseGold => new(255, 202, 112);
+        /// <summary>虚空黑，黑闪大招吞光体（AlphaBlend 真遮挡，禁止加色）</summary>
+        public static Color VoidBlack => new(10, 6, 18);
+        /// <summary>黑闪红，黑闪大招电弧缘专用（与常驻蓝紫划清界限，只在大招期出现）</summary>
+        public static Color BlackFlashRed => new(255, 46, 58);
 
         //―――― 预警节拍（按危险层级取常数，玩家可内化）――――
         /// <summary>光束类预警帧</summary>
@@ -36,6 +40,9 @@
         //投技连段（被抓者无法闪避：预算刻意压低，另有被抓端 1 血兜底）
         public static int GrabLashDamage => 16;      //处刑触须抽打
         public static int GrabRayDamage => 34;       //处刑贴脸死光
+        //黑闪大招（长预告演出级：接触伤害与爆点窗口都对齐可见形体）
+        public static int BlackHoleContactDamage => 90;  //黑洞本体接触
+        public static int BlackFlashBurstDamage => 132;  //黑闪爆点
 
         //―――― 部件血量比例（SetProperty 各端确定性执行）――――
         public static float CoreLifeFactor => 0.9f;
@@ -63,6 +70,10 @@
         public static int DeathTriggerLife => 10;
         /// <summary>大招解锁的核心生命比例</summary>
         public static float UltLifeRatio => 0.4f;
+        /// <summary>黑闪解锁的核心生命比例（比虚空撕裂更迟，终局底牌）</summary>
+        public static float BlackFlashLifeRatio => 0.22f;
+        /// <summary>黑闪蓄力打断阈值：揉搓窗内核心失血达最大生命此比例即失手</summary>
+        public static float BlackFlashBreakRatio => 0.05f;
 
         /// <summary>死亡模式/BossRush 节奏倍率：帧数除以它</summary>
         public static float TempoScale(bool deathMode) => deathMode ? 1.22f : 1f;

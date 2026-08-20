@@ -30,6 +30,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core
         Death = 12,
         /// <summary>舌卷回吞投技：抓取舌命中/绕后惩罚升级</summary>
         TongueGrab = 13,
+        /// <summary>签名招·饥饿长城：全墙裂口接力噬咬，阶段3专属</summary>
+        JawRipple = 14,
+        /// <summary>签名招·腐眼断头闸：墙面长出腐眼，锁定高度后水平斩束封锁跑道</summary>
+        RotGuillotine = 15,
     }
 
     /// <summary>状态接口</summary>

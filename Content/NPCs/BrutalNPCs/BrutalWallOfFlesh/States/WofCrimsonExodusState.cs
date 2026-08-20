@@ -69,7 +69,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
                     npc.netUpdate = true;
                 }
                 context.Phase = 3;
-                return new WofAdvanceState();
+                //阶段3开场白：喘息窗刚过就亮出新王牌——饥饿长城(王牌扣到低血量才放)
+                context.LastAttack = WofStateIndex.JawRipple;
+                return new WofJawRippleState();
             }
             return null;
         }

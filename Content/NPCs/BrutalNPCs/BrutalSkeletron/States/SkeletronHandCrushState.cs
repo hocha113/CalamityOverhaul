@@ -14,6 +14,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
 
         internal const int Duration = 196;
 
+        /// <summary>缺口（契约3）：双颅火对称劈开 ±SplitHalfAngle，瞄准轴正中永远是空走廊——
+        /// 迎着头站/原地不动即安全，发射循环直接读取该角</summary>
+        private const float SplitHalfAngle = 0.34f;
+
         public override ISkeletronState OnUpdate(SkeletronStateContext context) {
             NPC npc = context.Npc;
             npc.damage = npc.defDamage;
@@ -27,11 +31,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
             HoverMovement(context, 0.05f, 4.4f, 0.11f, 9.5f, 0.95f, 430);
             LeanByVelocity(npc);
 
-            //点射封走位（斜角，与砸击垂直威胁交叉）
+            //点射封走位（斜角，与砸击垂直威胁交叉；中央走廊留空）
             if (!VaultUtils.isClient && (Timer == 58 || Timer == 150)
                 && Collision.CanHitLine(npc.Center, 1, 1, context.Target.position, context.Target.width, context.Target.height)) {
                 for (int i = -1; i <= 1; i += 2) {
-                    Vector2 vel = DirectionToTarget(context).RotatedBy(i * 0.34f) * 6.6f;
+                    Vector2 vel = DirectionToTarget(context).RotatedBy(i * SplitHalfAngle) * 6.6f;
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + vel * 6f, vel,
                         ModContent.ProjectileType<SkeletronCursedSkull>(), SkullDamage(context), 0f, Main.myPlayer, 0f, 0f);
                 }
@@ -53,7 +57,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
         public override string StateName => "ClapPincer";
         public override SkeletronStateIndex StateIndex => SkeletronStateIndex.ClapPincer;
 
-        internal const int Duration = 150;
+        internal const int Duration = 136;
+
+        /// <summary>缺口（契约3）：补刀颅火直落不追踪（ai[0]=0），左右分落 ±DropSideVelX——
+        /// 合拍逃出后垂直正下方是安全带，发射循环直接读取</summary>
+        private const float DropSideVelX = 2.4f;
 
         public override ISkeletronState OnUpdate(SkeletronStateContext context) {
             NPC npc = context.Npc;
@@ -68,12 +76,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
             npc.velocity = (watchPoint - npc.Center) * 0.03f;
             SettleRotation(npc, 0.15f);
 
-            //合拍瞬间的补刀：从头顶垂落两枚追踪颅火（合拍后 82 帧）
+            //合拍瞬间的补刀：头顶垂落两枚直线颅火（合拍后 82 帧），钳口窄区里追踪弹无处可躲——不追踪
             if (!VaultUtils.isClient && Timer == 92) {
                 for (int i = -1; i <= 1; i += 2) {
-                    Vector2 vel = new Vector2(i * 2.4f, 5.4f);
+                    Vector2 vel = new Vector2(i * DropSideVelX, 5.4f);
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + new Vector2(i * 40f, 30f), vel,
-                        ModContent.ProjectileType<SkeletronCursedSkull>(), SkullDamage(context), 0f, Main.myPlayer, 1f, 0f);
+                        ModContent.ProjectileType<SkeletronCursedSkull>(), SkullDamage(context), 0f, Main.myPlayer, 0f, 0f);
                 }
                 npc.netUpdate = true;
             }

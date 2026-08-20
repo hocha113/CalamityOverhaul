@@ -18,15 +18,34 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         public override string StateName => "RoyalDecree";
         public override KingSlimeStateIndex StateIndex => KingSlimeStateIndex.RoyalDecree;
 
-        #region 节拍
+        #region 节拍(整体压缩：波次间贴紧，脱力窗保留)
         private const int OvertureEnd = 44;
-        private const int PillarsEnd = 250;
-        private const int TidesEnd = 470;
-        private const int FinaleEnd = 520;
-        private const int ExhaustEnd = 590;
+        private const int PillarsEnd = 216;
+        private const int TidesEnd = 430;
+        private const int FinaleEnd = 478;
+        private const int ExhaustEnd = 548;
+        #endregion
+
+        #region 公平阀(契约3)：发射循环直接读取的净空常量
+        /// <summary>行军柱间距：柱打击半宽46px(BKSRoyalPillarProj)，柱间净空约98px可站立</summary>
+        private const float PillarSpacingPx = 190f;
+        /// <summary>行军起点离锚横距</summary>
+        private const float MarchStartOffsetPx = 500f;
+        /// <summary>行军柱出膛间隔帧(压短，行军更逼人但每柱警示42帧不变)</summary>
+        private const int PillarIntervalFrames = 22;
+        /// <summary>终拍三柱间距：柱缝净空约78px，34帧警示内一次位移可达</summary>
+        private const float FinaleRingSpacingPx = 170f;
+        /// <summary>潮墙起点横距；与速度/寿命共同保证中央净空带 2*(860-4.4*165)=268px，改动须保持此带&gt;0</summary>
+        private const float TideWallStartPx = 860f;
+        private const float TideWallSpeed = 4.4f;
+        private const float TideWallTravelFrames = 165f;
+        /// <summary>塔顶胶雨最小横速：中央塔周(净空带)内不落雨</summary>
+        private const float RainMinVx = 5f;
         #endregion
 
         private int pillarsFired;
+        /// <summary>行军方向：首柱发射时锁定(公平阀——玩家中途穿过锚点不许柱列瞬间换边)</summary>
+        private int marchSide;
         private bool tidesSpawned;
         private bool finaleFired;
         private Vector2 anchor;
@@ -35,6 +54,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         public override void OnEnter(KingSlimeStateContext context) {
             base.OnEnter(context);
             pillarsFired = 0;
+            marchSide = 0;
             tidesSpawned = false;
             finaleFired = false;
             anchorInit = false;
@@ -128,13 +148,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                 }
             }
 
-            //7根光柱：从战场一侧行军到另一侧，跨过玩家
-            int interval = 26;
+            //光柱行军：从战场一侧行军到另一侧，跨过玩家；
+            //方向在首柱锁定(修复：原实现每柱重读玩家方位，玩家横穿锚点会让柱列瞬移换边)
             int maxPillars = context.IsDeathMode ? 8 : 7;
-            if (pillarsFired < maxPillars && (int)Timer % interval == 10 && !VaultUtils.isClient) {
-                int side = player.Center.X >= anchor.X ? 1 : -1;
-                float startX = anchor.X - side * 500f;
-                float x = startX + side * pillarsFired * 190f;
+            if (pillarsFired < maxPillars && (int)Timer % PillarIntervalFrames == 10 && !VaultUtils.isClient) {
+                if (marchSide == 0) {
+                    marchSide = player.Center.X >= anchor.X ? 1 : -1;
+                }
+                float startX = anchor.X - marchSide * MarchStartOffsetPx;
+                float x = startX + marchSide * pillarsFired * PillarSpacingPx;
                 Vector2 ground = KingSlimeGelFX.FindGroundBelow(new Vector2(x, anchor.Y - 200f));
                 Projectile.NewProjectile(npc.GetSource_FromAI(), ground, Vector2.Zero,
                     ModContent.ProjectileType<BKSRoyalPillarProj>(), (int)(npc.defDamage * 0.55f), 0f, Main.myPlayer,
@@ -156,21 +178,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             if (!tidesSpawned && !VaultUtils.isClient) {
                 tidesSpawned = true;
                 int dmg = (int)(npc.defDamage * 0.5f);
-                //两道慢速高墙从两侧向中央合拢，中途消散留出安全窗
+                //两道慢速高墙从两侧向中央合拢；行程常量保证两墙在中央前268px净空带内消散(公平阀)
                 for (int side = -1; side <= 1; side += 2) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(),
-                        anchor + new Vector2(side * 860f, -30f), new Vector2(-side * 4.4f, 0f),
+                        anchor + new Vector2(side * TideWallStartPx, -30f), new Vector2(-side * TideWallSpeed, 0f),
                         ModContent.ProjectileType<BKSTideWaveProj>(), dmg, 0f, Main.myPlayer,
-                        -1f, 2f, 165f);
+                        -1f, 2f, TideWallTravelFrames);
                 }
                 SoundEngine.PlaySound(SoundID.Splash with { Pitch = -0.6f, Volume = 1.1f }, npc.Center);
             }
 
-            //塔顶洒凝胶雨
+            //塔顶洒凝胶雨：横速下限保证中央净空带内无雨，左右交替(公平阀)
             if ((int)Timer % 15 == 4 && !VaultUtils.isClient) {
                 int dmg = (int)(npc.defDamage * 0.36f);
                 Vector2 top = npc.Top + new Vector2(0f, -20f);
-                float vx = Main.rand.NextFloat(-9f, 9f);
+                float side = (int)Timer / 15 % 2 == 0 ? 1f : -1f;
+                float vx = side * Main.rand.NextFloat(RainMinVx, 9f);
                 Projectile.NewProjectile(npc.GetSource_FromAI(), top, new Vector2(vx, -Main.rand.NextFloat(5f, 9f)),
                     ModContent.ProjectileType<BKSGelGlobProj>(), dmg, 0f, Main.myPlayer,
                     Main.rand.NextBool(4) ? 1f : 0f);
@@ -205,11 +228,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                 if (!VaultUtils.isClient) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Bottom, Vector2.Zero,
                         ModContent.ProjectileType<BKSShockwaveProj>(), 0, 0f, Main.myPlayer, 2f);
-                    //玩家脚下三柱围杀(短警示，考验位移)
+                    //玩家脚下三柱围杀(短警示，考验位移)：间距常量保证柱缝可站立(公平阀)
                     if (player.Alives()) {
                         int dmg = (int)(npc.defDamage * 0.55f);
                         for (int i = -1; i <= 1; i++) {
-                            Vector2 ground = KingSlimeGelFX.FindGroundBelow(player.Center + new Vector2(i * 150f, -60f));
+                            Vector2 ground = KingSlimeGelFX.FindGroundBelow(player.Center + new Vector2(i * FinaleRingSpacingPx, -60f));
                             Projectile.NewProjectile(npc.GetSource_FromAI(), ground, Vector2.Zero,
                                 ModContent.ProjectileType<BKSRoyalPillarProj>(), dmg, 0f, Main.myPlayer,
                                 34f);

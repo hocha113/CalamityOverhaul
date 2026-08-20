@@ -1,7 +1,8 @@
 // ============================================================================
-//WofRetinaBeam.fx 视网膜扫描光束
-//UV.x 0末端→1眼口 UV.y 横截面；有机血光：湿核+毛细血管缘+缓脉冲
-//顶点带 transformMatrix，DrawUserPrimitives 使用；Additive
+//WofRetinaBeam.fx 视网膜扫描光束/腐眼斩束共用
+//UV.x 0末端→1眼口 UV.y 横截面；有机血光：暗血鞘+湿核+毛细血管缘+缓脉冲
+//顶点带 transformMatrix，DrawUserPrimitives 使用；输出预乘alpha，
+//C#侧配 BlendState.AlphaBlend——暗鞘真正压暗背景(实体遮挡)，亮芯嵌在暗体内
 // ============================================================================
 
 float4x4 transformMatrix;
@@ -86,15 +87,21 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float halo = exp(-d * d * 2.6) * 0.5;
     float edgeMask = smoothstep(1.0, 0.80, abs(cross_));
 
+    //暗血鞘：包住亮芯的湿肉暗体——预乘AlphaBlend下高alpha低色值真正压暗背景，
+    //光束从纯光变成有暗缘的实体(契约4遮挡层)
+    float sheath = exp(-d * d * 11.0);
+
     //调色：暗血→猩红→苍白粉芯
     float3 cBlood = float3(0.55, 0.05, 0.07);
     float3 cRed   = float3(0.92, 0.13, 0.10);
     float3 cCore  = float3(1.00, 0.62, 0.58);
     float3 cCap   = float3(0.98, 0.28, 0.20);
+    float3 cDark  = float3(0.14, 0.015, 0.025);
 
     float bodyMask = muzzle * tailFade * edgeMask;
     float turnBoost = 1.0 + uScanTurn * 0.5;
     float3 color = float3(0, 0, 0);
+    color += cDark * sheath * 0.6;
     color += cRed * core * 0.95 * turnBoost;
     color += cCore * hot * 1.05;
     color += cCap * capillary;
@@ -105,7 +112,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     color += cBlood * headFlare * 0.5;
 
     float alpha = saturate(
-          (core * 0.72 + hot * 0.9 + capillary * 0.55 + pulseGlow * 0.45 + halo * 0.4) * bodyMask
+          (sheath * 0.85 + core * 0.72 + hot * 0.9 + capillary * 0.55 + pulseGlow * 0.45 + halo * 0.4) * bodyMask
         + headFlare * 0.9
     );
     alpha *= fadeAlpha;

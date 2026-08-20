@@ -34,6 +34,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         Death = 12,
         /// <summary>掌中处刑（月蚀噬咬合掌命中触发的投技）</summary>
         PalmExecution = 13,
+        /// <summary>黑闪（终局大招：四臂合搓黑洞掷出）</summary>
+        BlackFlash = 14,
     }
 
     /// <summary>核心状态接口</summary>

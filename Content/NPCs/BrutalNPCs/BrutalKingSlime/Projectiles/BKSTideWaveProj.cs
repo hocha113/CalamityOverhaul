@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
     /// 模式0：潮汐冲刷头(粘连本体，TideRush期间本体即波体)<br/>
     /// 模式1：海啸波(立塔倾倒后独立行进，渐衰)<br/>
     /// 模式2：皇权涨潮墙(慢速高墙)<br/>
+    /// 模式3：质心回流(矮波，抛掷质量沿地爬回本体)<br/>
     /// 服务端生成
     /// </summary>
     internal class BKSTideWaveProj : ModProjectile
@@ -23,14 +24,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
 
         private const int CollapseTime = 18;
 
+        //---- 波高公平阀(契约3)：一个数字同时驱动视觉与碰撞(Colliding/PreDraw共用WaveHeight) ----
+        /// <summary>模式0冲刷头波高：低于玩家单跳(约6.4格)，原地起跳即可越过</summary>
+        internal const float RushWaveHeightPx = 96f;
+        /// <summary>模式1海啸波高：需借势跳跃或绕到倒塌方向背面</summary>
+        internal const float TsunamiWaveHeightPx = 150f;
+        /// <summary>模式2皇权潮墙波高：不可跳越，中央净空区是唯一解(由生成参数保证)</summary>
+        internal const float DecreeWallHeightPx = 180f;
+        /// <summary>模式3质心回流波高：矮波，单跳轻松越过(公平阀)</summary>
+        internal const float ReturnFlowHeightPx = 64f;
+
         private int HostIndex => (int)Projectile.ai[0];
         private int Mode => (int)Projectile.ai[1];
         private int TravelFrames => (int)Projectile.ai[2] <= 0 ? 90 : (int)Projectile.ai[2];
 
         private ref float Timer => ref Projectile.localAI[0];
 
-        private float WaveLength => Mode switch { 1 => 560f, 2 => 320f, _ => 400f };
-        private float WaveHeight => Mode switch { 1 => 150f, 2 => 180f, _ => 96f };
+        private float WaveLength => Mode switch { 1 => 560f, 2 => 320f, 3 => 300f, _ => 400f };
+        private float WaveHeight => Mode switch {
+            1 => TsunamiWaveHeightPx,
+            2 => DecreeWallHeightPx,
+            3 => ReturnFlowHeightPx,
+            _ => RushWaveHeightPx,
+        };
 
         /// <summary>行进方向符号，来自横速</summary>
         private int Dir => Projectile.velocity.X >= 0f ? 1 : -1;

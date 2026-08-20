@@ -17,6 +17,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
         public override string StateName => "SpinBoneStorm";
         public override SkeletronStateIndex StateIndex => SkeletronStateIndex.SpinBoneStorm;
 
+        /// <summary>缺口（契约3）：骨片幕周期性断档——每 CurtainGapPeriod 帧停撒 CurtainGapFrames 帧，
+        /// 沿冲刺路径留出可穿行的幕墙豁口，发射循环直接读取</summary>
+        private const int CurtainGapPeriod = 24;
+        private const int CurtainGapFrames = 9;
+
         private int phase;      //0预备 1冲刺 2刹车 3收势
         private int phaseTimer;
         private Vector2 dashDir;
@@ -116,9 +121,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
             context.SpinVortex = 1f;
             context.EyeFlame = 1.4f;
 
-            //侧向抛撒骨片（骨风暴主体）
+            //侧向抛撒骨片（骨风暴主体）；周期断档留幕墙豁口
             int shedInterval = p2 ? 3 : 4;
-            if (!VaultUtils.isClient && phaseTimer % shedInterval == 0) {
+            bool inGap = phaseTimer % CurtainGapPeriod < CurtainGapFrames;
+            if (!VaultUtils.isClient && !inGap && phaseTimer % shedInterval == 0) {
                 int damage = SkullDamage(context);
                 Vector2 dir = npc.velocity.SafeNormalize(Vector2.UnitX);
                 for (int side = -1; side <= 1; side += 2) {

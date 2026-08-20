@@ -1,8 +1,10 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Rendering;
 using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
@@ -194,21 +196,82 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
             npc.rotation = MathHelper.Clamp(npc.velocity.X * 0.04f, -0.5f, 0.5f);
         }
 
-        /// <summary>本地表现：琥珀微光+稀疏翅闪</summary>
+        /// <summary>本地表现：琥珀微光+稀疏翅闪+归位花粉痕</summary>
         private static void UpdatePresentation(NPC npc, SwarmDirector director, int slot) {
             if (VaultUtils.isServer) {
                 return;
             }
             Lighting.AddLight(npc.Center, QueenBeeMotion.HoneyGold.ToVector3() * 0.14f);
 
-            //辉光带强时蜂身零星金闪
-            if (director.RibbonIntensity > 0.2f && slot >= 0) {
+            //信号强时蜂身零星金闪(粒子层，与PostDraw波前闪互补)
+            if (director.SignalIntensity > 0.2f && slot >= 0) {
                 int stagger = 26 + slot * 3 % 17;
                 if ((int)director.Clock % stagger == slot % stagger) {
                     PRTLoader.NewParticle<PRT_BeeGlint>(npc.Center + Main.rand.NextVector2Circular(8f, 6f),
-                        Vector2.Zero, QueenBeeMotion.HoneyGold * director.RibbonIntensity, 1f);
+                        Vector2.Zero, QueenBeeMotion.HoneyGold * director.SignalIntensity, 1f);
                 }
             }
+
+            //阵型重整期的信息素淡痕：高速归位的蜂身后洒蜡白花粉，汇入线读作"阵型正在成形"
+            if (director.SnapBoost > 1.2f && npc.velocity.LengthSquared() > 81f && Main.rand.NextBool(3)) {
+                PRTLoader.NewParticle<PRT_BeeGlint>(npc.Center - npc.velocity,
+                    -npc.velocity * 0.06f, QueenBeeMotion.WaxPale * 0.75f, 0.7f);
+            }
+        }
+
+        /// <summary>取蜂所属女王的编队控制器(渲染侧只读)</summary>
+        internal static bool TryGetDirector(NPC npc, out SwarmDirector director) {
+            director = null;
+            int queenWho = (int)npc.ai[2];
+            if (queenWho < 0 || queenWho >= Main.maxNPCs) {
+                return false;
+            }
+            NPC queen = Main.npc[queenWho];
+            if (!queen.active || queen.type != NPCID.QueenBee
+                || !queen.TryGetOverride(out BrutalQueenBeeAI queenAI)) {
+                return false;
+            }
+            director = queenAI.Swarm;
+            return director != null;
+        }
+
+        /// <summary>
+        /// 摇摆舞信号可视化：波前沿槽位链扫过时蜂身金闪(命令传遍蜂群)，<br/>
+        /// 缺口沿蜂/领航蜂常亮琥珀描边(阵型门框与矛尖)；加色层贴蜂身遮罩，亮背景不糊屏
+        /// </summary>
+        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (!IsMarked || !TryGetDirector(npc, out SwarmDirector director)) {
+                return true;
+            }
+            int slot = director.GetEffectiveSlot(npc.whoAmI);
+            int count = director.Bees.Count;
+            float flash = director.GetSignalFlash(slot, count);
+            float edge = director.GetEdgeHighlight(slot, count);
+            if (flash <= 0.04f && edge <= 0.04f) {
+                return true;
+            }
+
+            Texture2D tex = TextureAssets.Npc[npc.type].Value;
+            Rectangle frame = npc.frame;
+            Vector2 origin = frame.Size() / 2f;
+            Vector2 pos = npc.Center - screenPos;
+            SpriteEffects effects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+            //结构常亮：琥珀描边微呼吸，标出墙缝门框/漩涡缺口沿/箭尖
+            if (edge > 0.04f) {
+                float breathe = 0.55f + 0.2f * (float)Math.Sin(director.Clock * 0.12f + slot * 1.7f);
+                Color rim = new Color(QueenBeeMotion.AmberDeep.R, QueenBeeMotion.AmberDeep.G,
+                    QueenBeeMotion.AmberDeep.B, 0) * (edge * breathe);
+                spriteBatch.Draw(tex, pos, frame, rim, npc.rotation, origin, npc.scale * 1.15f, effects, 0f);
+            }
+            //信号波前扫过的金闪：随波微胀
+            if (flash > 0.04f) {
+                Color glint = new Color(QueenBeeMotion.HoneyGold.R, QueenBeeMotion.HoneyGold.G,
+                    QueenBeeMotion.HoneyGold.B, 0) * (flash * 0.85f);
+                spriteBatch.Draw(tex, pos, frame, glint, npc.rotation, origin,
+                    npc.scale * (1f + flash * 0.12f), effects, 0f);
+            }
+            return true;
         }
     }
 

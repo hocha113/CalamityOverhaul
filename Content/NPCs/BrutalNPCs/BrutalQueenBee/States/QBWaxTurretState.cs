@@ -18,13 +18,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         public override QueenBeeStateIndex StateIndex => QueenBeeStateIndex.WaxTurret;
 
         #region 节奏常量
-        private const int SwoopTime = 66;   //单段掠位
+        private const int SwoopTime = 52;   //单段掠位
         private const int PlantPad = 14;    //布设停顿
-        private const int RetreatTime = 34; //收势
+        private const int RetreatTime = 24; //收势
         private const int SegTime = SwoopTime + PlantPad;
+        //护航箭中段顺势甩镖帧：掠位途中不再是零威胁真空
+        private const int EscortDartFrame = 30;
         #endregion
 
-        /// <summary>场上同源炮台上限</summary>
+        /// <summary>公平阀：场上同源炮台上限，超限不再布设，定点威胁总量有顶</summary>
         private const int TurretCap = 4;
 
         public override IQueenBeeState OnUpdate(QueenBeeStateContext context) {
@@ -39,7 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             if (seg >= 2) {
                 QueenBeeMotion.SpringHover(npc, player.Center + new Vector2(0f, -330f), 0.016f, 0.1f, 26f);
                 FaceTarget(npc, player.Center);
-                context.Swarm.PushRibbon(0.3f);
+                context.Swarm.PushSignal(0.3f);
                 if (Timer >= 2 * SegTime + RetreatTime) {
                     return new QBRepositionState();
                 }
@@ -59,7 +61,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                     ? npc.velocity.SafeNormalize(Vector2.UnitX)
                     : Vector2.UnitX * side;
                 context.Swarm.Declare(SwarmFormation.Arrow, npc.Center - vel * 60f, vel);
-                context.Swarm.PushRibbon(0.5f);
+                context.Swarm.PushSignal(0.5f);
+                //护航箭中段顺势甩两镖(沿飞行向直射，不追踪)
+                if (segT == EscortDartFrame) {
+                    context.Swarm.LaunchDarts(1, 2, vel, 22f, 0);
+                }
                 return null;
             }
 

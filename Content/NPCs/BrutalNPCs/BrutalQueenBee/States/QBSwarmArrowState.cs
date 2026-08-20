@@ -18,11 +18,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         public override QueenBeeStateIndex StateIndex => QueenBeeStateIndex.SwarmArrow;
 
         #region 节奏常量
-        private const int TrackTime = 46;   //拼箭跟踪
+        private const int TrackTime = 34;   //拼箭跟踪(阵型成型本身即前摇，不额外加等待)
         private const int FreezeTime = 14;  //锁向定格
         private const int LaunchTime = 12;  //分波出镖
-        private const int RecoverTime = 48; //回巢
+        private const int RecoverTime = 26; //回巢重整
         private const int CycleTime = TrackTime + FreezeTime + LaunchTime + RecoverTime;
+        /// <summary>公平阀：定格帧后弹道锁死；镖仅出手初段微弧修正(≤该帧数×0.03rad/帧)，持续横移即可甩脱</summary>
+        private const int MaxDartSteerFrames = 12;
         #endregion
 
         private int MaxVolleys(QueenBeeStateContext context) =>
@@ -50,7 +52,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             if (cycleT < TrackTime) {
                 context.Swarm.Declare(SwarmFormation.Arrow, npc.Center + aimLive * 130f, aimLive);
                 float build = cycleT / (float)TrackTime;
-                context.Swarm.PushRibbon(0.35f + build * 0.45f);
+                context.Swarm.PushSignal(0.35f + build * 0.45f);
                 if (cycleT == 0) {
                     context.Swarm.PushSnap(1.9f);
                     QueenBeeMotion.WingHum(npc.Center, 0.4f, -0.1f);
@@ -74,7 +76,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             //定格拍：箭阵僵住，辉光拉满(可读性阀门)
             if (cycleT < TrackTime + FreezeTime) {
                 context.Swarm.Declare(SwarmFormation.Arrow, npc.Center + lockedAim * 130f, lockedAim);
-                context.Swarm.PushRibbon(1f);
+                context.Swarm.PushSignal(1f);
                 context.SetChargeState(4, (cycleT - TrackTime) / (float)FreezeTime);
                 return null;
             }
@@ -82,12 +84,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             //出镖拍：尖端先行，成对分波
             if (cycleT < TrackTime + FreezeTime + LaunchTime) {
                 context.Swarm.Declare(SwarmFormation.Arrow, npc.Center + lockedAim * 130f, lockedAim);
-                context.Swarm.PushRibbon(0.9f);
+                context.Swarm.PushSignal(0.9f);
                 int launchT = cycleT - TrackTime - FreezeTime;
                 float dartSpeed = 30f + (context.IsDeathMode ? 4f : 0f) + context.EnrageScale * 1.5f;
                 //波次：尖(0)→前两对→中两对→尾
                 if (launchT == 0) {
-                    context.Swarm.LaunchDarts(0, 0, lockedAim, dartSpeed, 12);
+                    context.Swarm.LaunchDarts(0, 0, lockedAim, dartSpeed, MaxDartSteerFrames);
                     QueenBeeMotion.AmberBoom(npc.Center + lockedAim * 160f, lockedAim, 0.75f);
                 }
                 else if (launchT == 3) {
@@ -103,8 +105,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             }
 
             //回巢拍：光环重整，女王补一记指挥毒刺(存在感)
-            context.Swarm.PushRibbon(0.3f);
-            if (cycleT == TrackTime + FreezeTime + LaunchTime + 22) {
+            context.Swarm.PushSignal(0.3f);
+            if (cycleT == TrackTime + FreezeTime + LaunchTime + 10) {
                 Vector2 muzzle = npc.Center + new Vector2(0f, npc.height * 0.32f);
                 SoundEngine.PlaySound(SoundID.Item17 with { Volume = 0.6f }, muzzle);
                 if (!VaultUtils.isClient) {

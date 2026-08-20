@@ -19,11 +19,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         public override QueenBeeStateIndex StateIndex => QueenBeeStateIndex.SwarmWall;
 
         #region 节奏常量
-        private const int FormTime = 56;    //拼墙
-        private const int HoldTime = 40;    //定格亮缝
+        private const int FormTime = 48;    //拼墙(成型本身即前摇)
+        private const int HoldTime = 40;    //定格亮缝(公平阀：墙成型后静止40帧才扫)
         private const int SweepTime = 118;  //横扫
         private const float SweepSpeed = 13f;
         private const float WallDistance = 640f;
+        //公平阀：两道缝(gapA/gapB)贯穿整次横扫不变，缝高见 SwarmDirector.WallGapRows；
+        //墙Y仅0.018慢速跟踪，垂直走位可甩开；缝沿蜂由 GetEdgeHighlight 常亮标出"门框"
         #endregion
 
         private float sweepStartX;
@@ -64,7 +66,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             if (Timer <= FormTime) {
                 Vector2 anchor = new Vector2(player.Center.X + side * WallDistance, wallY);
                 context.Swarm.Declare(SwarmFormation.Wall, anchor, new Vector2(-side, 0f), 1f, gapPack);
-                context.Swarm.PushRibbon(0.35f + Timer / (float)FormTime * 0.4f);
+                context.Swarm.PushSignal(0.35f + Timer / (float)FormTime * 0.4f);
                 if (Timer == 1) {
                     context.Swarm.PushSnap(2.1f);
                     QueenBeeMotion.WingHum(player.Center, 0.5f, -0.3f);
@@ -76,7 +78,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             if (Timer <= FormTime + HoldTime) {
                 Vector2 anchor = new Vector2(player.Center.X + side * WallDistance, wallY);
                 context.Swarm.Declare(SwarmFormation.Wall, anchor, new Vector2(-side, 0f), 1f, gapPack);
-                context.Swarm.PushRibbon(0.95f);
+                context.Swarm.PushSignal(0.95f);
 
                 if (Timer == FormTime + 8) {
                     SoundEngine.PlaySound(SoundID.Zombie125 with { Volume = 0.6f, Pitch = 0.3f }, npc.Center);
@@ -99,7 +101,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                 Vector2 anchor = new Vector2(x, wallY);
                 context.Swarm.Declare(SwarmFormation.Wall, anchor, new Vector2(-side, 0f), 1f, gapPack);
                 context.Swarm.PushSnap(1.5f);
-                context.Swarm.PushRibbon(0.85f);
+                context.Swarm.PushSignal(0.85f);
 
                 //女王对侧慢速毒刺推人
                 if (sweepT % 32 == 10) {

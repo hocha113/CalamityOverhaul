@@ -13,9 +13,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
 {
     /// <summary>
     /// 幽灵追加臂：凭空凝聚的灵体手，四种役使方式<br/>
-    /// ai[0]=模式 ai[1]=方位角/参数 ai[2]=起手延迟；命中箱=手掌
+    /// ai[0]=模式 ai[1]=方位角/参数 ai[2]=起手延迟；命中箱=手掌<br/>
+    /// 手掌走遮挡层（A&gt;0 实体，契约4），臂条带走预乘图元，掌焰走冷焰批
     /// </summary>
-    internal class SkeletronGhostArmProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
+    internal class SkeletronGhostArmProj : ModProjectile, IPrimitiveDrawable, IOverlayDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
@@ -323,8 +324,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
                 grow, dissolve, opacity, Projectile.whoAmI * 0.137f % 1f);
         }
 
-        /// <summary>手掌灵体与辉光（加色批，颜色必须携带alpha）</summary>
-        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
+        /// <summary>手掌实体与掌焰（遮挡层批：A&gt;0 压死身后弹幕，掌焰入冷焰队列延后画）</summary>
+        void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
             float grow = Grow;
             float fade = (1f - Dissolve) * grow;
             if (fade <= 0.03f) {

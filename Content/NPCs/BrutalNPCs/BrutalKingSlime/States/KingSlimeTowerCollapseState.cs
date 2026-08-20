@@ -25,6 +25,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         private const int ToppleTime = 13;
         private const int RecoverTime = 32;
 
+        //---- 公平阀(契约3) ----
+        /// <summary>倒向在拔塔完成瞬间锁定，之后蓄倾30帧+倒下13帧共43帧不再改向：
+        /// 绕到塔背面即绝对安全(非追踪承诺)</summary>
+        private const int ToppleCommitFrames = LeanTime + ToppleTime;
+        /// <summary>海啸波行进帧数(读入生成参数)：约11px/f行进，波及范围有限且渐衰，
+        /// 波高见 BKSTideWaveProj.TsunamiWaveHeightPx</summary>
+        private const float TsunamiTravelFrames = 74f;
+
         /// <summary>0聚缩 1拔塔 2蓄倾 3倒下 4重组</summary>
         private int phase;
         private int phaseTimer;
@@ -167,11 +175,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             if (VaultUtils.isClient) {
                 return;
             }
-            //海啸波沿倒向推进
+            //海啸波沿倒向推进(行程常量=公平阀：范围有限渐衰)
             Projectile.NewProjectile(npc.GetSource_FromAI(), slamPoint - new Vector2(0f, 20f),
                 new Vector2(toppleDir * (context.IsDeathMode ? 13f : 11f), 0f),
                 ModContent.ProjectileType<BKSTideWaveProj>(), (int)(npc.defDamage * 0.55f), 0f, Main.myPlayer,
-                -1f, 1f, 74f);
+                -1f, 1f, TsunamiTravelFrames);
             //大冲击环
             Projectile.NewProjectile(npc.GetSource_FromAI(), slamPoint, Vector2.Zero,
                 ModContent.ProjectileType<BKSShockwaveProj>(), 0, 0f, Main.myPlayer, 2f);

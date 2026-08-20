@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             FaceTarget(npc, player.Center);
 
             //蜂群重整光环+微光脉动
-            context.Swarm.PushRibbon(0.25f);
+            context.Swarm.PushSignal(0.25f);
 
             //末10帧振翅起手式：轻抬+金闪(下一招的元预告)
             if (Timer == duration - 10) {

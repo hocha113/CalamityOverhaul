@@ -360,9 +360,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
                 SkeletronRenderHelper.AsAdditive(SkeletronRenderHelper.GhostDeep) * (0.13f * breath * alphaFade),
                 npc.rotation, orig, npc.scale * 1.045f, SpriteEffects.None, 0f);
 
-            //眼火与冠火（贴图方案，用户定向回退基线）
+            //眼火（贴图方案，用户定向回退基线）；冠火走 SkeletronCurseFlame.fx 冷焰批
             SkeletronRenderHelper.DrawEyeFlames(spriteBatch, npc, stateContext.EyeFlame, alphaFade);
-            SkeletronRenderHelper.DrawCrownFlames(spriteBatch, npc, stateContext.CrownFlame, alphaFade);
+            SkeletronRenderHelper.DrawCrownFlames(npc, stateContext.CrownFlame, alphaFade);
 
             return false;
         }
