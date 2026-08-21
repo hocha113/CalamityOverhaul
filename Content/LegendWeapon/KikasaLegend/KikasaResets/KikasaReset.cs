@@ -36,8 +36,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
         /// <summary>落定收尾</summary>
         public const int TotalFrames = 176;
 
-        /// <summary>倒放窗口：回到 5 秒前</summary>
-        public const int RewindWindowFrames = 300;
+        /// <summary>倒放窗口：回到 10 秒前</summary>
+        public const int RewindWindowFrames = 600;
 
         /// <summary>作用半径，约一屏半</summary>
         public const float ResetRange = 2400f;
