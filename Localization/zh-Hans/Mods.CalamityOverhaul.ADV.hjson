@@ -1,4 +1,4 @@
-FirstMet: {
+﻿FirstMet: {
 	Rolename1: ???
 	Rolename2: 比目鱼
 	Line0: 先生......你的钓鱼技法，还有一些进步空间
@@ -1022,12 +1022,12 @@ OniRainWorld: {
 
 FirstMetShenyo: {
 	ShenyoName: 沈幽
-	L1: 这地方很久没看到有活人来了
+	L1: 很久没看到有活人来了
 	L2: 你是怎么到这里来的？
 	OptDead: 死过一次，醒了就在这了
-	OptRain: 外面下雨，打伞走进来的
+	OptRain: 抢了把伞冲进来的
 	A1: ……死而复生？
-	A2: 稀罕事，不过看你的反应，倒像是不在意
+	A2: 稀罕事，不过看你，倒像是习以为常了
 	B1: 那你运气真不错
 	B2: 现在想想该怎么出去吧
 }
