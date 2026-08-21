@@ -444,6 +444,8 @@ TBUGRiftPortalProj.DisplayName: 段错误裂缝
 KikasaRainUmbrella.DisplayName: 悬伞
 KikasaInkDrop.DisplayName: 墨雨
 KikasaInkPour.DisplayName: 墨瀑
+KikasaInkPuddle.DisplayName: 墨洼
+KikasaInkGeyser.DisplayName: 墨泉
 BrainBloodShard.DisplayName: 搏动血珠
 BrainMirrorImage.DisplayName: 镜像假体
 BrainShellFragment.DisplayName: 护壳碎片
@@ -492,15 +494,7 @@ BKSNinjaProj.DisplayName: 忍者影身
 BKSRoyalPillarProj.DisplayName: 皇权光柱
 BKSShockwaveProj.DisplayName: 凝胶冲击环
 BKSTideWaveProj.DisplayName: 凝胶潮浪
-CultistArcSpark.DisplayName: 电蛇火花
-CultistCinderPatch.DisplayName: 焚地余火
-CultistElementOrb.DisplayName: 元素法球
-CultistFireBolt.DisplayName: 焚焰弧弹
-CultistFrostMistZone.DisplayName: 寒雾带
-CultistIceLance.DisplayName: 霜牢晶枪
-CultistLightningOrb.DisplayName: 雷枢电球
-CultistRitualCircle.DisplayName: 仪式法阵
-CultistSigilProj.DisplayName: 悬空法印
+CultistSigilProj.DisplayName: 仪式法印
 MLordArcRayProj.DisplayName: 幻影弧光死光
 MLordBlackHoleProj.DisplayName: 黑闪奇点
 MLordCometProj.DisplayName: 星陨彗星
@@ -564,8 +558,6 @@ GaolCuffHitbox.DisplayName: 怨灵铁铐
 // EmpressLightBind.DisplayName: Empress Light Bind
 // EmpressSnareSigil.DisplayName: Empress Snare Sigil
 // GolemGrabRay.DisplayName: Golem Grab Ray
-// CultistSacrificeBrand.DisplayName: Cultist Sacrifice Brand
-// CultistSacrificeSeal.DisplayName: Cultist Sacrifice Seal
 // PincerBindTether.DisplayName: Pincer Bind Tether
 // MLordGrabLashProj.DisplayName: M Lord Grab Lash Proj
 // PlanteraSnareVine.DisplayName: Plantera Snare Vine
@@ -577,9 +569,9 @@ GaolCuffHitbox.DisplayName: 怨灵铁铐
 // L6MachineStrike.DisplayName: L6 Machine Strike
 // KikasaMinisharkBullet.DisplayName: Kikasa Minishark Bullet
 // KikasaMinisharkServant.DisplayName: Kikasa Minishark Servant
-// CultistArcBolt.DisplayName: Cultist Arc Bolt
-// CultistFlameBolt.DisplayName: Cultist Flame Bolt
-// CultistFrostSpear.DisplayName: Cultist Frost Spear
-// CultistPaleBolt.DisplayName: Cultist Pale Bolt
-// CultistTrueBolt.DisplayName: Cultist True Bolt
+CultistArcBolt.DisplayName: 雷律弧闪
+CultistFlameBolt.DisplayName: 焚焰弹
+CultistFrostSpear.DisplayName: 霜晶枪
+CultistPaleBolt.DisplayName: 苍白幻弹
+CultistTrueBolt.DisplayName: 真言弹
 // SkeletronBoneWheel.DisplayName: Skeletron Bone Wheel

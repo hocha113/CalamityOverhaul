@@ -905,6 +905,230 @@ OnikiriTrialQuestLine: {
 		'''
 }
 
+KikasaOverride: {
+	DisplayName: Kikasa
+	Tooltip:
+		'''
+		While held, press the Domain Expansion key to unfurl the Blood Lake domain; press it again to fold the umbrella
+		Within, a blood-red mirror lake lies beneath your feet, and a dark sun sits half-sunken below the waterline
+		Drown a boss in the lake and it becomes a shade. Click the wind chime at the bottom left to unroll the painting, then click the blood lake to seat shades in three slots—stationed shades emerge and fight on their own
+		At full water, tap the Flip the Lake key (middle mouse by default) to invert into cold rain; with a nightmare shade stationed, hold the same key to fall into the Ghost Dream
+		Hold left click to set the umbrella hovering overhead; its eye opens, and ink rain falls after your foes
+		Hold right click to flip it into a brimming vessel; release to pour the whole umbrella down
+		Every minion slot becomes a ghost roosting under the ribs: more slots quicken the rain, add drops, and speed the brew
+		At 4 slots each volley flings an extra ghost-drop at a second target; at 7, every fourth volley is thrown by all ghosts at once
+		At 10, heavy drops pool into scalding ink puddles, and a fully brewed torrent raises three ink geysers where it lands
+		[Lang4]
+		legend_Text
+		"No rain under the umbrella—only the sound of water"
+		'''
+	GhostCountLine: Ghosts roosting under the canopy: {0} — {1}
+	TierName0: Drizzle
+	TierName1: Ghostly Assist
+	TierName2: All-Ghost Volley
+	TierName3: Lake Tilt
+}
+
+KikasaTrialQuestLine: {
+	QuestCategory: Kikasa · The Sinking Feast
+	TrackerWaiting: Not seated yet—go invite it, or wait a while
+	TrackerFighting: "{0}: {1:0%}"
+	TrackerBrief: Next course: {0}
+	BossRushTargetName: A Table Full of Guests
+	EventActiveFormat: "{0}: In progress"
+	Trial_0: First Soft Bite
+	Trial_1: The One Still Staring
+	Trial_2: Burrowers in the Rot
+	Trial_3: Gone Bad Underground
+	Trial_4: The Sweet or the Stubborn
+	Trial_5: Old Bones at the Gate
+	Trial_6: A Puddle Calling Itself God
+	Trial_7: Flesh Walled Across the Road
+	Trial_8: That Pink Smear Up There
+	Trial_9: The Worm Gone Sour
+	Trial_10: Three Pieces of Ironware
+	Trial_11: The Bloom Kept in the Dark
+	Trial_12: The Big One in the Sea
+	Trial_13: Blockhead
+	Trial_14: The Pig That Stirs Waves
+	Trial_15: The One Glowing at Night
+	Trial_16: The Chanter
+	Trial_17: Behind the Moon
+	Trial_18: Kin
+	Trial_19: The Old Thing in Acid
+	Trial_20: The Long Worm in the Sky
+	Trial_21: A Ball of Fire
+	Trial_22: The Iron and the Fire
+	Trial_23: When the Table Is Full
+	TrialSummary_0:
+		'''
+		Something soft wobbles at the foot of the hills, blue and endless
+		The lake has never tasted gel—it wants to know what the bite sounds like
+		Lure it under the umbrella, never mind the stickiness
+		If it melts, call it soup
+		'''
+	TrialSummary_1:
+		'''
+		An eye stares at people in the night, quite rudely
+		The lake wrinkles whenever it catches that stare—it makes the ribs itch
+		Go press that gaze into the water
+		Things that watch all learn to close their eyes eventually
+		'''
+	TrialSummary_2:
+		'''
+		Things come burrowing out of the foul soil—one long, or one wet lump of brain
+		Both taste of rot; the lake isn't picky, take whichever crosses your path
+		Don't gather the pieces, let them flow in on their own
+		'''
+	TrialSummary_3:
+		'''
+		A rotten thought festers underground, or a nest of blood-boring worms
+		One sniff downwind tells you: spoiled
+		The lake says spoiled is still a flavor—serve it
+		Keep your gloves on, that juice clings
+		'''
+	TrialSummary_4:
+		'''
+		A jar of sweetness in the jungle, a stubborn head out in the snow
+		Pick one to bring—the lake is open to both tastes today
+		The sweet one stings, the stubborn one stomps
+		Either way, don't come back empty-handed
+		'''
+	TrialSummary_5:
+		'''
+		Old bones hang at the dungeon door, addicted to keeping watch
+		Bones never soak soft, the lake knows—it just wants to hear the crack
+		End his vigil; keep the key for yourself
+		Bone dregs settle nicely, good for paving
+		'''
+	TrialSummary_6:
+		'''
+		A heap of gel calls itself a god, purple and black stirred together
+		The lake never lacks water—what it lacks is a mouthful this big
+		Lay it flat, see what it really melts into
+		Don't drink; that isn't for you
+		'''
+	TrialSummary_7:
+		'''
+		A wall of flesh stands stacked across hell, blocking everyone's road
+		Something hot—just the thing to cool the lake's temper
+		Pierce it, and the world will change—that's not on you
+		The canopy stops sparks, go without worry
+		'''
+	TrialSummary_8:
+		'''
+		A pink smear hangs over the Hallow, flying with a crystal guard
+		The lake has tasted grounded gel; never the flying kind
+		Drag her down, crystals and all
+		Mind the shards, they chafe the ribs
+		'''
+	TrialSummary_9:
+		'''
+		A long worm soaks in the Sulphurous Sea, half-asleep in rotten scales
+		That water is sour enough to make even the lake frown
+		Fish it out clean—the lake takes the worm, not that mouthful of filth
+		Shake the umbrella well before you come home
+		'''
+	TrialSummary_10:
+		'''
+		Someone forged three iron things: a chain, two lamps, a frame of bones
+		Iron never soaks through; steep it forever and it still tastes of rust
+		Not the lake's favorite, but a feast can't lack these three courses
+		One at a time—don't let them all wake on the same night
+		'''
+	TrialSummary_11:
+		'''
+		Deep in the jungle a great bloom smolders, red, asleep
+		Few who wake her come back whole
+		The lake wants her sap; it colors the water just right
+		Vines on the umbrella? Cut them, no courtesy needed
+		'''
+	TrialSummary_12:
+		'''
+		A big one lives in the sea, kept company by a singing girl
+		The lake has always held a grudge against the sea: why should it get to hold more
+		Invite the big one over, let the lake save some face
+		Don't listen to the song too long, it leads you off
+		'''
+	TrialSummary_13:
+		'''
+		A stone one squats in the temple—blockheaded, fond of hopping
+		Stone sinks fastest; the lake's collection is short exactly one
+		Break its workings and bring the shell whole
+		The splash it throws up is your reward
+		'''
+	TrialSummary_14:
+		'''
+		A pig out at sea grew wings and dares to stir up waves
+		The lake can't stand it: water's temper is not a pig's to wield
+		Press it back into the water—which water, you decide
+		The lake provides the bait; you dig the worm
+		'''
+	TrialSummary_15:
+		'''
+		A glowing one flies the Hallow at night, her temper tied to the sun
+		The lake cannot hold her image—too bright for the surface to keep
+		Go by night; knead that light dim and bring it back
+		Provoke her at noon and the consequences are yours to keep
+		'''
+	TrialSummary_16:
+		'''
+		A chanter stands at the dungeon door, chanting the sky half-open
+		The lake doesn't understand scripture—only that he means to let something in
+		Interrupt him; let the rite rot half-finished
+		If his beads drop, leave them—the lake takes no counterfeits
+		'''
+	TrialSummary_17:
+		'''
+		The one behind the moon has come down, covered in eyes
+		Whatever falls from the sky is only a reflection once it's in the lake
+		Go collect the reflection's original
+		The moon will be lovely that night—watch it once for me
+		'''
+	TrialSummary_18:
+		'''
+		A patched-up soul drifts in the dungeon's depths, mended over centuries
+		Even the ghosts steeping in the lake shrink into the ribs at the sight of it
+		Killing your own kind is an ugly phrase—call it sharing a table
+		After this order the umbrella gets crowded; bear with it
+		'''
+	TrialSummary_19:
+		'''
+		An old thing lies pressed under the Sulphurous Sea, sour in scale and temper
+		The lake and he go way back; neither respects the other's water
+		Deliver a message: the table is set, and he is invited to sink
+		He bites, and his teeth are still good—take care
+		'''
+	TrialSummary_20:
+		'''
+		A long worm circles beyond the sky, and the stars keep out of its way
+		It has swallowed gods; the lake wonders what god tastes like
+		Make it dive into water it should never have entered
+		The shell is yours, the meat belongs to the lake
+		'''
+	TrialSummary_21:
+		'''
+		Across the jungle they keep a ball of fire, burning who knows how long
+		Fire and the lake are old rivals; time to settle it
+		Press that blaze out—the lake will pour the last ladle itself
+		Wet feathers don't fly; leave not one
+		'''
+	TrialSummary_22:
+		'''
+		The last two tables open together: one all iron, one only fire
+		A craftsman's pride and a witch's obsession—the lake wants to watch both settle to the bottom
+		Any order you like; just come to the table alive
+		After this meal, the lake is about full
+		'''
+	TrialSummary_23:
+		'''
+		They have all come back, or the old one in the abyss has woken
+		A full table at last—the lake's water rose just from waiting
+		You only mind the umbrella; take them one by one
+		When this feast is done, the rain stops
+		'''
+}
+
 KikasaText: {
 	KikasaVaultUI: {
 		Title: Lake Hoard
@@ -913,7 +1137,8 @@ KikasaText: {
 		IdleHintFormat: Hold an item and press {0} to sink it · Click outside to close
 		EmptyHint: The lakebed is empty—only the sound of water
 		ViewOnlyFooter: The lake hasn't risen to your feet yet—look, don't touch
-		SummonHintFormat: Press {0} to call it to fight
+		SlotBarFormat: Stationed {0} / {1}
+		SlotBarHint: Compose in the painting—click the blood lake
 	}
 
 	KikasaServantPlayer.ServantUnknown: The lake hasn't learned to command it
@@ -935,8 +1160,38 @@ KikasaText: {
 		InDreamLine: You are inside the dream
 		HoundCountFormat: Hounds afield {0} / {1}
 		DreamHint: In the dream, hold left-click—the black water keeps spitting out hounds
+		DreamGateHint: Station a nightmare shade and the reflection wakes; hold the mutate key and it pulls you into the dream
 		ThrallTag: Umbrella Thralls
 		ThrallCountFormat: Thralls ashore {0} / {1}
+		VillageTag: Lake Hoard
+		VillageOpenTag: Click to open the lake window—lit windows are what you sank
+		BoardOpenTag: Click to unfurl the Shade Board
+		SlotCountFormat: Stationed {0} / {1}
+		BoardTitle: Shade Board
+		BoardCountFormat: Drowned {0} / {1}
+		BoardPickHint: Click a shade on the bank to pick it up, then drop it into a slot
+		BoardPlacedFormat: "{0} settled into a slot"
+		BoardEmptyHint: No shades on the lakebed yet—aim at a boss and press {0} to drag it under
+		BoardAlreadySlotted: Already seated—click it to pick up, then click empty space to unseat
+		BoardUnslotHint: Click empty space to unseat; click the slot again to restation
+		BoardUnslottedFormat: "{0} returned to the lakebed"
+		BoardSlotRemoveHint: Right-click to unseat, or pick it up and click empty space
+		BoardArmsStockFormat: Hoard originals ×{0}
+		BoardArmsNoStock: No original in the lake—it can't take shape
+		BoardAffinityFormat: Affinity · {0}
+		AffinityFlame: Flame
+		AffinityNightmare: Nightmare
+		AffinityRain: Rain
+		AffinityWild: Wild
+		EdgeDreamFire: Dreamfire
+		EdgeBoilRain: Boiling Rain
+		EdgeRainNightmare: Rain-Nightmare
+		EdgeTriSeal: Triple Shade
+		EdgeDreamFireNote: Dreamfire sealed—the dream-hounds' teeth carry wisp fire
+		EdgeBoilRainNote: Boiling rain sealed—ghost rain can no longer snuff this fire
+		EdgeRainNightmareNote: Rain-nightmare sealed—thralls convert twice as fast in the rain
+		EdgeTriSealNote: Triple shade—all three affinities seated, servants hit harder
+		LakeVigorLabel: Lake Vigor
 	}
 
 	KikasaHudLead: {
@@ -944,18 +1199,18 @@ KikasaText: {
 		DomainBody: Everything the umbrella does grows out of the blood lake domain—the hoard, the drowning, the servants. Raise the lake first.
 		DomainPrompt: Hold the umbrella and press {0}
 		SinkTitle: Sink Into the Hoard
-		SinkBody: The lake is your private vault. Hold an item and press the sink key to drop it in; aim at a living thing and press the same key, and the lake will drag it under.
+		SinkBody: The lake is your private vault. Hold an item and press the sink key to drop it in; aim at a living thing and press the same key, and the lake will drag it under. A drowned boss becomes a shade and stays on the lakebed forever.
 		SinkPrompt: Once the water reaches your feet, press {0} while holding an item or aiming at a creature
+		BoardTitle: Compose the Shades
+		BoardBody: Three slots sit on the lakebed; stationed shades emerge and fight on their own. Flame kindles the wisp, nightmare wakes the reflection—hold the mutate key to fall into the dream—rain feeds the thralls. Two affinities together also form an edge.
+		BoardPrompt: Click the wind chime at the bottom left to unroll the painting, then click the blood lake to unfurl the Shade Board
+		BoardNoMemory: No shades on the lakebed yet—drown a boss first, or skip this step.
 		VaultTitle: Open the Lake Window
-		VaultBody: Everything you sank drifts in the blood water. Open the window, click one, and the lake hands it back.
-		VaultPrompt: Tap the wind chime at the bottom left to unroll the painting, then click the blood lake in it; or hold the umbrella and press {0}
-		SummonTitle: Command the Servant
-		SummonBody: The lake always remembers the last creature drowned in its grip. Call its servant to fight for you; press again to dismiss it.
-		SummonPrompt: Press {0}
-		SummonNoMemory: The lake hasn't memorized anything it can command—drown a boss first, or skip this step.
+		VaultBody: Everything you sank drifts in the blood water. Open the window, click one, and the lake hands it back. Lit windows in the village are how many things the lake is holding.
+		VaultPrompt: Click the village house with lit windows in the painting; or hold the umbrella and press {0}
 		MutateTitle: Ghost Rain Mutation
-		MutateBody: The blood lake has two faces. At full water, flip it over into the cold rain side; flip again to come back.
-		MutatePrompt: Press {0} (middle mouse by default)
+		MutateBody: The blood lake has two faces. At full water, tap to invert it into the cold rain side, where slain foes become umbrella thralls; tap again to come back.
+		MutatePrompt: Tap {0} (middle mouse by default)
 		SkipBtn: Skip
 		KeyUnbound: This step's key is unbound; bind it in Settings > Controls first, or click skip.
 	}

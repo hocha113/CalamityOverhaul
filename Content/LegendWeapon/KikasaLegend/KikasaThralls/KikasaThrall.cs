@@ -136,7 +136,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         }
 
         /// <summary>
-        /// 转化闸门：上限 + 最小间隔，全端各自推同一份。
+        /// 该主人的伞奴上限：owner 本机按沉影盘潦系折算（5+潦，封顶 8）；
+        /// 远端读不到盘，放最宽——闸门宁可偏开（多演一场化水）也别把 owner 会收的尸判死
+        /// </summary>
+        internal static int CapFor(int ownerWho) {
+            if (!Main.dedServ && ownerWho == Main.myPlayer) {
+                Player player = Main.player[ownerWho];
+                if (player?.active == true) {
+                    return KikasaServants.KikasaEffigyBoard.ThrallCap(player);
+                }
+            }
+            return 8;
+        }
+
+        /// <summary>该主人的转化间隔：owner 本机按沉影盘折算（潦缩短、雨魇边减半）；远端放最短</summary>
+        private static int GapFor(int ownerWho) {
+            if (!Main.dedServ && ownerWho == Main.myPlayer) {
+                Player player = Main.player[ownerWho];
+                if (player?.active == true) {
+                    return KikasaServants.KikasaEffigyBoard.ThrallConvertGap(player);
+                }
+            }
+            return 10;
+        }
+
+        /// <summary>
+        /// 转化闸门：上限 + 最小间隔，全端各自推同一份（盘系数只有 owner 端算得出，
+        /// 远端放宽——顶多多演一场化水，不会漏掉 owner 认下的转化）。
         /// boss 两道都不受——一场 boss 的尸体不该被杂兵占着的名额挡回去，满员时另有让位
         /// </summary>
         internal static bool ConvertGateOpen(int ownerWho, bool boss) {
@@ -147,12 +173,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 return true;
             }
             return Main.GameUpdateCount >= nextConvertFrame[ownerWho]
-                && CountActive(ownerWho) + CountPending(ownerWho) < MaxPerOwner;
+                && CountActive(ownerWho) + CountPending(ownerWho) < CapFor(ownerWho);
         }
 
         internal static void MarkConvertGate(int ownerWho) {
             if (ownerWho >= 0 && ownerWho < Main.maxPlayers) {
-                nextConvertFrame[ownerWho] = Main.GameUpdateCount + ConvertGapFrames;
+                nextConvertFrame[ownerWho] = Main.GameUpdateCount + (uint)GapFor(ownerWho);
             }
         }
 
@@ -161,7 +187,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         /// 只在 owner 本机点——溶解转场由 owner 裁决，其余端收包跟上
         /// </summary>
         private static void EvictOldest(int ownerWho) {
-            if (CountActive(ownerWho) < MaxPerOwner) {
+            if (CountActive(ownerWho) < CapFor(ownerWho)) {
                 return;
             }
             KikasaThrallProj oldest = null;

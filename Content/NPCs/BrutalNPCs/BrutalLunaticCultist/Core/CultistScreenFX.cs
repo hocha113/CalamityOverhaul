@@ -42,11 +42,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
             }
         }
 
-        /// <summary>每帧推进：强度缓动，目标与白闪自衰减</summary>
+        /// <summary>每帧推进：强度缓动，目标/白闪/去饱和自衰减</summary>
         public static void Update() {
             VeilIntensity = MathHelper.Lerp(VeilIntensity, veilGoal, 0.08f);
             veilGoal *= 0.93f;
             Flash *= 0.86f;
+            BreakDesat *= 0.975f;
+            if (BreakDesat < 0.004f) {
+                BreakDesat = 0f;
+            }
             if (VeilIntensity < 0.004f) {
                 VeilIntensity = 0f;
             }

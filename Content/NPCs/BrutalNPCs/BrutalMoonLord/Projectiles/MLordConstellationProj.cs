@@ -97,6 +97,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
                 if (i == 0) {
                     nodeReveal = MathHelper.Clamp(reveal * nodeCount, 0f, 1f);
                 }
+                //暗芒衬底：StarTexture_White 真 alpha 承实色（契约4），白昼亮空下星点仍有剪影
+                Main.EntitySpriteDraw(star, nodeScreen, null,
+                    new Color(22, 14, 52) * (0.8f * alpha * nodeReveal),
+                    Main.GlobalTimeWrappedHourly * 0.8f + i, star.Size() / 2f, 0.2f, SpriteEffects.None, 0);
                 Main.EntitySpriteDraw(star, nodeScreen, null,
                     MLordDirector.MoonWhite with { A = 0 } * (0.85f * alpha * nodeReveal * twinkle),
                     Main.GlobalTimeWrappedHourly * 0.8f + i, star.Size() / 2f, 0.16f, SpriteEffects.None, 0);

@@ -149,8 +149,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                 return;
             }
 
-            //伤害随召唤加成逐帧刷新
-            Projectile.damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(BiteDamage);
+            //伤害随召唤加成逐帧刷新；魇系倍率只有 owner 端读得到盘，
+            //远端保持基数——命中在 owner 端结算，远端数字只是展示
+            float nightmareScale = Main.myPlayer == Projectile.owner
+                ? KikasaServants.KikasaEffigyBoard.HoundDamageScale(owner) : 1f;
+            Projectile.damage = (int)owner.GetTotalDamage(DamageClass.Summon)
+                .ApplyTo(BiteDamage * nightmareScale);
 
             //梦境绑定：owner 端判定离梦即散，其余端跟同步包
             bool authority = Main.myPlayer == Projectile.owner;
@@ -640,6 +644,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                 if (Main.myPlayer == Projectile.owner) {
                     Projectile.netUpdate = true;
                 }
+            }
+            //梦火（焰×魇）：犬牙带火，咬着就燃——buff 骑原版同步，只在 owner 端施加
+            if (Main.myPlayer == Projectile.owner
+                && KikasaServants.KikasaEffigyBoard.HasDreamFireEdge(Owner)) {
+                target.AddBuff(ModContent.BuffType<KikasaWisps.KikasaWispBurn>(), 120);
             }
             if (Main.dedServ) {
                 return;

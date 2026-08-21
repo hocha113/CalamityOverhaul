@@ -18,6 +18,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         public override string StateName => "Concerto";
         public override MLordStateIndex StateIndex => MLordStateIndex.Concerto;
 
+        /// <summary>公平阀（契约3）：此帧起进入连接拍——节拍表整体停射，
+        /// 状态尾段（约 1/3 时长）保证无新弹幕的喘息窗</summary>
+        internal const int BreatherStart = 200;
+
         private int stateLength;
 
         public override void OnEnter(MLordContext context) {
@@ -45,8 +49,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             return null;
         }
 
-        /// <summary>服务端节拍表；200 帧后进入连接拍（无新弹幕，编队复位喘息）</summary>
+        /// <summary>服务端节拍表；<see cref="BreatherStart"/> 帧起进入连接拍（无新弹幕，编队复位喘息）</summary>
         private void RunServerBeats(MLordContext context) {
+            //喘息窗硬闸：连接拍内任何分支都射不出弹幕
+            if (Timer >= Frames(context, BreatherStart)) {
+                return;
+            }
             int fanA = Frames(context, 24);
             int fanB = Frames(context, 70);
             int shearA = Frames(context, 46);
@@ -71,8 +79,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 SpawnHeadBoltCross(context);
             }
 
-            //裸露阶段：核心自体螺旋波列填充节拍
-            if (context.CoreExposed && (Timer == Frames(context, 56) || Timer == Frames(context, 160) || Timer == Frames(context, 236))) {
+            //裸露阶段：核心自体螺旋波列填充节拍（末拍收在喘息窗之前）
+            if (context.CoreExposed && (Timer == Frames(context, 56) || Timer == Frames(context, 130) || Timer == Frames(context, 188))) {
                 SpawnCoreSpiral(context);
             }
         }

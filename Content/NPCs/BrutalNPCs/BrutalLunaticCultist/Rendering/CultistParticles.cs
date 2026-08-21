@@ -49,7 +49,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 pos = Position - Main.screenPosition;
             Vector2 origin = tex.Size() / 2f;
-            Color edge = Color; edge.A = 0;
+            //加色批 (SrcAlpha,One)：A 必须满值携带强度，A=0 即整层隐形
+            Color edge = Color with { A = 255 };
 
             //底晕
             spriteBatch.Draw(glow, pos, null, edge * 0.3f * Opacity, 0f, glow.Size() / 2f, Scale * 0.3f, SpriteEffects.None, 0f);
@@ -110,7 +111,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
             Texture2D glow = TexValue;
             Texture2D star = CWRAsset.StarTexture.Value;
             Vector2 pos = Position - Main.screenPosition;
-            Color edge = Color; edge.A = 0;
+            //加色批合同：A 携带强度
+            Color edge = Color with { A = 255 };
 
             spriteBatch.Draw(glow, pos, null, edge * 0.85f * Opacity, 0f, glow.Size() / 2f, Scale * 0.22f, SpriteEffects.None, 0f);
             spriteBatch.Draw(star, pos, null, Color.White * 0.5f * Opacity, Time * 0.05f, star.Size() / 2f, Scale * 0.02f, SpriteEffects.None, 0f);
@@ -159,7 +161,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
             Texture2D tex = TexValue;
             Vector2 pos = Position - Main.screenPosition;
             Vector2 origin = tex.Size() / 2f;
-            Color edge = Color; edge.A = 0;
+            //加色批合同：A 携带强度
+            Color edge = Color with { A = 255 };
             Vector2 shard = new Vector2(0.2f, 0.6f) * Scale;
 
             spriteBatch.Draw(tex, pos, null, edge * Opacity, Rotation, origin, shard, SpriteEffects.None, 0f);
@@ -200,7 +203,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
             Texture2D star = TexValue;
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 pos = Position - Main.screenPosition;
-            Color edge = Color; edge.A = 0;
+            //加色批合同：A 携带强度
+            Color edge = Color with { A = 255 };
             float t = LifetimeCompletion;
             float size = Scale * (0.5f + t * 0.5f);
 

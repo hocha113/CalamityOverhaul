@@ -34,7 +34,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
         public static LocalizedText IdleHintFormat { get; private set; }
         public static LocalizedText EmptyHint { get; private set; }
         public static LocalizedText ViewOnlyFooter { get; private set; }
-        public static LocalizedText SummonHintFormat { get; private set; }
+        public static LocalizedText SlotBarFormat { get; private set; }
+        public static LocalizedText SlotBarHint { get; private set; }
 
         public override void SetStaticDefaults() {
             Title = this.GetLocalization(nameof(Title), () => "湖 藏");
@@ -43,7 +44,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
             IdleHintFormat = this.GetLocalization(nameof(IdleHintFormat), () => "持物按 {0} 沉入 · 点击窗外合上");
             EmptyHint = this.GetLocalization(nameof(EmptyHint), () => "湖底空着，只有水声");
             ViewOnlyFooter = this.GetLocalization(nameof(ViewOnlyFooter), () => "湖还没涨到脚边，先看着");
-            SummonHintFormat = this.GetLocalization(nameof(SummonHintFormat), () => "按 {0} 召它出手");
+            SlotBarFormat = this.GetLocalization(nameof(SlotBarFormat), () => "驻影 {0} / {1}");
+            SlotBarHint = this.GetLocalization(nameof(SlotBarHint), () => "编成在画里改——点画中的血湖");
         }
 
         public override bool Active => IsOpen || OpenProgress > 0.01f;
@@ -567,42 +569,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
         }
 
         /// <summary>
-        /// 记忆栏：沉湖生物的血水剪影 + 名字 + 状态/召唤键提示。
-        /// 没记忆时只有一行暗字，位置固定在窗左下角
+        /// 驻影栏：三席影位的血水缩影一排（亮=驻席、暗圈=空席、旋涡=在外），
+        /// 加一行计数与「编成去画里改」的指路。位置固定在窗左下角
         /// </summary>
         private void DrawMemoryBar(SpriteBatch sb, DynamicSpriteFont font, float a) {
             if (a <= 0.02f) {
                 return;
             }
             var servant = player.GetModPlayer<KikasaServants.KikasaServantPlayer>();
-            int memoryType = servant.LastDrownedType;
             float baseX = panelRect.X + 20f;
             float baseY = panelRect.Bottom - 40f;
+            float stir01 = MathHelper.Clamp(stir, 0f, 1f);
 
-            if (memoryType <= 0) {
-                Utils.DrawBorderString(sb, UI.KikasaSceneUI.MemoryEmpty.Value,
-                    new Vector2(baseX, baseY + 8f), KikasaVaultTheme.TextDim * (0.75f * a), 0.68f);
-                return;
+            for (int i = 0; i < KikasaServants.KikasaServantPlayer.SlotCount; i++) {
+                Vector2 center = new(baseX + 15f + i * 32f, baseY + 6f);
+                int key = servant.SlotKeyAt(i);
+                if (key == 0) {
+                    //空席：一圈暗座
+                    KikasaVaultRenderer.DrawRing(sb, center, 10f, 1.6f,
+                        KikasaVaultTheme.TextDim * (0.30f * a));
+                    continue;
+                }
+                bool outSide = servant.FindServantOf(key) != null;
+                //沉影与画境同一副皮：在外=负形空位；湖窗恒血湖形态
+                if (key > 0) {
+                    KikasaVaultRenderer.DrawSunkEffigy(sb, key, center, 26f, a * 0.95f,
+                        submerge: 1f, depth: 0.35f, tamed: true, outSide,
+                        rain: 0f, stir01, KikasaVaultTheme.Blood);
+                }
+                else {
+                    int itemType = -key;
+                    Main.instance.LoadItem(itemType);
+                    Texture2D tex = Terraria.GameContent.TextureAssets.Item[itemType]?.Value;
+                    if (tex != null) {
+                        KikasaVaultRenderer.DrawSunkEffigy(sb, tex,
+                            new Rectangle(0, 0, tex.Width, tex.Height), center, 26f, a * 0.95f,
+                            submerge: 1f, depth: 0.35f, tamed: true, outSide,
+                            rain: 0f, stir01, itemType * 0.173f, KikasaVaultTheme.Blood,
+                            SpriteEffects.None);
+                    }
+                }
             }
 
-            bool outSide = servant.FindActiveServant() != null;
-            bool tamed = KikasaServants.KikasaServantIndex.TryGet(memoryType, out _);
-            //沉影与画境同一副皮：在外=负形空位，未驯服=被水啃散；湖窗恒血湖形态
-            KikasaVaultRenderer.DrawSunkEffigy(sb, memoryType,
-                new Vector2(baseX + 15f, baseY + 6f), 28f, a * 0.95f,
-                submerge: 1f, depth: 0.35f, tamed, outSide,
-                rain: 0f, MathHelper.Clamp(stir, 0f, 1f), KikasaVaultTheme.Blood);
-
-            string name = Lang.GetNPCNameValue(memoryType);
-            Utils.DrawBorderString(sb, name, new Vector2(baseX + 34f, baseY - 6f),
-                KikasaVaultTheme.Text * (0.9f * a), 0.7f);
-            string state = outSide
-                ? UI.KikasaSceneUI.ServantOutTag.Value
-                : tamed
-                    ? string.Format(SummonHintFormat.Value,
-                        CWRKeySystem.Kikasa_Summon.ToTooltipString(CWRKeySystem.Notbound.Value))
-                    : KikasaServants.KikasaServantPlayer.ServantUnknown.Value;
-            Utils.DrawBorderString(sb, state, new Vector2(baseX + 34f, baseY + 10f),
+            float textX = baseX + KikasaServants.KikasaServantPlayer.SlotCount * 32f + 4f;
+            Utils.DrawBorderString(sb, string.Format(SlotBarFormat.Value,
+                servant.FilledSlotCount, KikasaServants.KikasaServantPlayer.SlotCount),
+                new Vector2(textX, baseY - 6f), KikasaVaultTheme.Text * (0.9f * a), 0.7f);
+            Utils.DrawBorderString(sb, SlotBarHint.Value, new Vector2(textX, baseY + 10f),
                 KikasaVaultTheme.TextDim * (0.85f * a), 0.62f);
         }
 

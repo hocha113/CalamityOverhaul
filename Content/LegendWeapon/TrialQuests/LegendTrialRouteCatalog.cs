@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
         private static IReadOnlyList<LegendTrialDefinition> shpcProgression;
         private static IReadOnlyList<LegendTrialDefinition> halibutProgression;
         private static IReadOnlyList<LegendTrialDefinition> onikiriProgression;
+        private static IReadOnlyList<LegendTrialDefinition> kikasaProgression;
 
         public static IReadOnlyList<LegendTrialDefinition> SHPCProgression
             => shpcProgression ??= CreateSHPC();
@@ -21,6 +22,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
 
         public static IReadOnlyList<LegendTrialDefinition> OnikiriProgression
             => onikiriProgression ??= CreateOnikiri();
+
+        public static IReadOnlyList<LegendTrialDefinition> KikasaProgression
+            => kikasaProgression ??= CreateKikasa();
 
 
         public static LegendTrialDefinition[] CreateSHPC(LocalizedText[] titles = null, LocalizedText[] summaries = null,
@@ -74,6 +78,50 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             Trial("onikiri.019.exo_mechs", Npc(() => [CWRID.NPC_AresBody, CWRID.NPC_Apollo, CWRID.NPC_Artemis, CWRID.NPC_ThanatosHead], InWorldBossPhase.Downed29), titles, summaries, 19),
             Trial("onikiri.020.supreme_calamitas", Npc(() => [CWRID.NPC_SupremeCalamitas], InWorldBossPhase.Downed30), titles, summaries, 20),
             Trial("onikiri.021.boss_rush", BossRush(bossRushName, eventActiveFormat), titles, summaries, 21),
+        ];
+
+        /// <summary>
+        /// 鬼伞沉宴试炼,24 段。相对鬼切线的取舍:偏爱"能淹的猎物"——
+        /// 加入史莱姆王/王后史莱姆/利维坦/猪鲨/光女/老公爵五个水与夜的席位,
+        /// 蜂后与巨鹿二选一(均有对应鬼奴);三机械并成一关(铁的不好淹),
+        /// 砍掉硫磺火元素/灾厄之影/普罗维登斯这类火与光的席位;
+        /// 末双关走复合目标:星流且至尊、BossRush 或始源妖龙
+        /// </summary>
+        public static LegendTrialDefinition[] CreateKikasa(LocalizedText[] titles = null, LocalizedText[] summaries = null,
+            LocalizedText bossRushName = null, LocalizedText eventActiveFormat = null) => [
+            Trial("kikasa.000.king_slime", Npc(() => [NPCID.KingSlime], InWorldBossPhase.DownedV0), titles, summaries, 0),
+            Trial("kikasa.001.eye_of_cthulhu", Npc(() => [NPCID.EyeofCthulhu], InWorldBossPhase.DownedV1), titles, summaries, 1),
+            Trial("kikasa.002.evil_boss", Npc(() => [NPCID.EaterofWorldsHead, NPCID.BrainofCthulhu], InWorldBossPhase.DownedV2), titles, summaries, 2),
+            Trial("kikasa.003.calamity_evil_boss", Npc(() => [CWRID.NPC_HiveMind, CWRID.NPC_PerforatorHive], () => InWorldBossPhase.Downed3.Invoke() || InWorldBossPhase.Downed4.Invoke()), titles, summaries, 3),
+            Trial("kikasa.004.queen_bee_or_deerclops", Any(
+                Npc(() => [NPCID.QueenBee], InWorldBossPhase.DownedV3),
+                Npc(() => [NPCID.Deerclops], () => NPC.downedDeerclops)), titles, summaries, 4),
+            Trial("kikasa.005.skeletron", Npc(() => [NPCID.SkeletronHead], InWorldBossPhase.DownedV4), titles, summaries, 5),
+            Trial("kikasa.006.slime_god", Npc(() => [CWRID.NPC_SlimeGodCore], InWorldBossPhase.Downed5), titles, summaries, 6),
+            Trial("kikasa.007.wall_of_flesh", Npc(() => [NPCID.WallofFlesh], () => Main.hardMode), titles, summaries, 7),
+            Trial("kikasa.008.queen_slime", Npc(() => [NPCID.QueenSlimeBoss], () => NPC.downedQueenSlime), titles, summaries, 8),
+            Trial("kikasa.009.aquatic_scourge", Npc(() => [CWRID.NPC_AquaticScourgeHead], InWorldBossPhase.Downed8), titles, summaries, 9),
+            Trial("kikasa.010.mechs", All(
+                Npc(() => [NPCID.TheDestroyer], () => NPC.downedMechBoss1),
+                Npc(() => [NPCID.Retinazer, NPCID.Spazmatism], () => NPC.downedMechBoss2),
+                Npc(() => [NPCID.SkeletronPrime], () => NPC.downedMechBoss3)), titles, summaries, 10),
+            Trial("kikasa.011.plantera", Npc(() => [NPCID.Plantera], InWorldBossPhase.VDownedV7), titles, summaries, 11),
+            Trial("kikasa.012.leviathan", Npc(() => [CWRID.NPC_Leviathan, CWRID.NPC_Anahita], InWorldBossPhase.Downed12), titles, summaries, 12),
+            Trial("kikasa.013.golem", Npc(() => [NPCID.Golem, NPCID.GolemHead], InWorldBossPhase.DownedV7), titles, summaries, 13),
+            Trial("kikasa.014.duke_fishron", Npc(() => [NPCID.DukeFishron], () => NPC.downedFishron), titles, summaries, 14),
+            Trial("kikasa.015.empress", Npc(() => [NPCID.HallowBoss], () => NPC.downedEmpressOfLight), titles, summaries, 15),
+            Trial("kikasa.016.cultist", Npc(() => [NPCID.CultistBoss], InWorldBossPhase.DownedV8), titles, summaries, 16),
+            Trial("kikasa.017.moon_lord", Npc(() => [NPCID.MoonLordCore], InWorldBossPhase.VDownedV16), titles, summaries, 17),
+            Trial("kikasa.018.polterghast", Npc(() => [CWRID.NPC_Polterghast], InWorldBossPhase.Downed23), titles, summaries, 18),
+            Trial("kikasa.019.old_duke", Npc(() => [CWRID.NPC_OldDuke], InWorldBossPhase.Downed26), titles, summaries, 19),
+            Trial("kikasa.020.devourer_of_gods", Npc(() => [CWRID.NPC_DevourerofGodsHead], InWorldBossPhase.Downed27), titles, summaries, 20),
+            Trial("kikasa.021.yharon", Npc(() => [CWRID.NPC_Yharon], InWorldBossPhase.Downed28), titles, summaries, 21),
+            Trial("kikasa.022.exo_and_scal", All(
+                Npc(() => [CWRID.NPC_AresBody, CWRID.NPC_Apollo, CWRID.NPC_Artemis, CWRID.NPC_ThanatosHead], InWorldBossPhase.Downed29),
+                Npc(() => [CWRID.NPC_SupremeCalamitas], InWorldBossPhase.Downed30)), titles, summaries, 22),
+            Trial("kikasa.023.boss_rush_or_wyrm", Any(
+                BossRush(bossRushName, eventActiveFormat),
+                Npc(() => [CWRID.NPC_PrimordialWyrmHead], InWorldBossPhase.Downed31)), titles, summaries, 23),
         ];
 
         public static LegendTrialDefinition[] CreateHalibut(LocalizedText[] titles = null, Func<int, LocalizedText> summaryProvider = null,

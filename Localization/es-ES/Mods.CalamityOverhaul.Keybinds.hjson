@@ -16,11 +16,7 @@ Halibut_Superposition.DisplayName: Fletán: superposición
 // Onikiri_SakuraFlight.DisplayName: Onikiri: Sakura Flight
 // Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
 // Kikasa_Sink.DisplayName: Kikasa: Sink Item into the Lake
-// Kikasa_DomainMutate.DisplayName: Kikasa: Mutate Domain (Ghost Rain)
-// Kikasa_Summon.DisplayName: Kikasa: Command the Drowned Servant
-// Kikasa_DreamReflect.DisplayName: Kikasa: Wake the Hound Reflection
-// Kikasa_DreamPull.DisplayName: Kikasa: Pull into / out of the Ghost Dream
-// Kikasa_WispFire.DisplayName: Kikasa: Kindle / Snuff the Wisp Fire
+// Kikasa_DomainMutate.DisplayName: Kikasa: Flip the Lake
 WeponSkill_Q.DisplayName: Arma: habilidad izquierda
 WeponSkill_R.DisplayName: Arma: habilidad derecha
 Accessory_Skills.DisplayName: Habilidad de accesorio

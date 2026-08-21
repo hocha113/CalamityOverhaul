@@ -158,7 +158,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KingSlimeRoyalAura { get; set; }
         public static Asset<Effect> KingSlimeShockwave { get; set; }
         public static Asset<Effect> KingSlimeRoyalBeam { get; set; }
-        public static Asset<Effect> BKSNinjaSlash { get; set; }
         public static Asset<Effect> BKSCrownFX { get; set; }
         public static Asset<Effect> KingSlimeBloodWing { get; set; }
         public static Asset<Effect> CosmicCrescent { get; set; }

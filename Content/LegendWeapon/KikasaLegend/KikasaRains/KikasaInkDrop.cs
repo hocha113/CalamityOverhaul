@@ -45,10 +45,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>无目标时的坠落列世界 X</summary>
         private ref float FallbackXAi => ref Projectile.ai[1];
 
+        //ai[2] 低位是弹道相位,高位是生成时写死的标记位,随生成包同步
+        /// <summary>鬼滴:伞下鬼的侧掷,换鬼青调</summary>
+        internal const int FlagGhost = 2;
+        /// <summary>湖倾档:落地留墨洼</summary>
+        internal const int FlagPuddle = 4;
+
         private DropPhase Phase {
-            get => (DropPhase)Projectile.ai[2];
-            set => Projectile.ai[2] = (float)value;
+            get => (DropPhase)((int)Projectile.ai[2] & 1);
+            set => Projectile.ai[2] = ((int)Projectile.ai[2] & ~1) | (int)value;
         }
+
+        internal bool IsGhostDrop => ((int)Projectile.ai[2] & FlagGhost) != 0;
+
+        private bool LeavesPuddle => ((int)Projectile.ai[2] & FlagPuddle) != 0;
 
         //弧段曲线:各端由生成包内容首帧确定性解出
         private bool curveSolved;
@@ -81,7 +91,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             Projectile.width = 22;
             Projectile.height = 22;
             Projectile.friendly = true;
-            Projectile.DamageType = CWRRef.GetTrueMeleeDamageClass();
+            Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 420;
             //不吃引擎地形碰撞:弧段允许穿墙(妖伞的墨),坠落段手动检测实心
@@ -275,6 +285,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             if (onTileHit) {
                 Vector2 into = impactVel.SafeNormalize(Vector2.UnitY) * 8f;
                 KikasaInkFX.AddGroundSplat(Projectile.Center + into, impactVel, splatSize);
+                //湖倾档:落点积成一汪滞留的墨洼,持续烫伤踩进来的东西;
+                //近处已有同主墨洼则只续命,一波齐掷不铺一地重叠洼
+                if (LeavesPuddle && Main.myPlayer == Projectile.owner) {
+                    Projectile near = FindNearOwnPuddle(56f);
+                    if (near != null) {
+                        near.timeLeft = Math.Max(near.timeLeft, KikasaInkPuddle.LifeFrames);
+                        near.netUpdate = true;
+                    }
+                    else {
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(),
+                            Projectile.Center, Vector2.Zero,
+                            ModContent.ProjectileType<KikasaInkPuddle>(),
+                            (int)(Projectile.damage * 0.35f), 0f, Projectile.owner);
+                    }
+                }
             }
             else {
                 host = FindSplatHost();
@@ -304,6 +329,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             if (host != null) {
                 KikasaInk.Play(SoundID.NPCHit13, Projectile.Center, 0.32f + 0.12f * ke, -0.45f, 4);
             }
+        }
+
+        /// <summary>死点附近同主的既有墨洼,用于合并续命</summary>
+        private Projectile FindNearOwnPuddle(float radius) {
+            int puddleType = ModContent.ProjectileType<KikasaInkPuddle>();
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile proj = Main.projectile[i];
+                if (proj.active && proj.owner == Projectile.owner && proj.type == puddleType
+                    && Vector2.Distance(proj.Center, Projectile.Center) < radius) {
+                    return proj;
+                }
+            }
+            return null;
         }
 
         /// <summary>死点附近最近的可沾渍宿主</summary>
@@ -342,6 +380,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             //弧段末尾滞空的张力抖动比飞行时明显
             bool apexDwell = Phase == DropPhase.Arc && arcT > 0.7f;
             float wobAmp = apexDwell ? 0.15f : 0.06f;
+            //色板逐滴上载:鬼滴换鬼青,普通滴回填标准色(共享参数会被上一颗鬼滴污染)
+            if (IsGhostDrop) {
+                fx.Parameters["uColBody"]?.SetValue(KikasaInk.GhostBody.ToVector3());
+                fx.Parameters["uColDeep"]?.SetValue(KikasaInk.GhostDeep.ToVector3());
+                fx.Parameters["uColCore"]?.SetValue(KikasaInk.GhostCore.ToVector3());
+            }
+            else {
+                fx.Parameters["uColBody"]?.SetValue(KikasaInk.InkBody.ToVector3());
+                fx.Parameters["uColDeep"]?.SetValue(KikasaInk.InkDeep.ToVector3());
+                fx.Parameters["uColCore"]?.SetValue(KikasaInk.BloodCore.ToVector3());
+            }
             fx.Parameters["uStretch"]?.SetValue(stretch);
             fx.Parameters["uWobAmp"]?.SetValue(wobAmp);
             fx.Parameters["uWobPhase"]?.SetValue(life * 0.5f + Seed * 6f);
@@ -387,11 +436,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
             Vector2 pos = Projectile.Center - Main.screenPosition;
             Vector2 bodyScale = new Vector2(0.24f * (1f - stretch * 0.3f), 0.36f * (1f + stretch * 1.7f)) * jiggle * Projectile.scale;
-            sb.Draw(tex, pos, null, KikasaInk.InkDeep * (0.9f * fade), Projectile.rotation, origin,
+            Color deep = IsGhostDrop ? KikasaInk.GhostDeep : KikasaInk.InkDeep;
+            Color bodyCol = IsGhostDrop ? KikasaInk.GhostBody : KikasaInk.InkBody;
+            Color core = IsGhostDrop ? KikasaInk.GhostCore : KikasaInk.BloodCore;
+            sb.Draw(tex, pos, null, deep * (0.9f * fade), Projectile.rotation, origin,
                 bodyScale * new Vector2(1.3f, 1.06f), SpriteEffects.None, 0f);
-            sb.Draw(tex, pos, null, KikasaInk.InkBody * fade, Projectile.rotation, origin,
+            sb.Draw(tex, pos, null, bodyCol * fade, Projectile.rotation, origin,
                 bodyScale, SpriteEffects.None, 0f);
-            sb.Draw(tex, pos, null, KikasaInk.BloodCore * (0.4f * fade), Projectile.rotation, origin,
+            sb.Draw(tex, pos, null, core * (0.4f * fade), Projectile.rotation, origin,
                 bodyScale * new Vector2(0.3f, 0.7f), SpriteEffects.None, 0f);
         }
     }

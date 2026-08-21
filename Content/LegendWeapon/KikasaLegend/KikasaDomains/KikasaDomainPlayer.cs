@@ -145,9 +145,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         //==================== 鬼火 ====================
 
-        /// <summary>鬼火点燃态：满水血湖稳态按键点燃。鬼雨压制拍走完即清除（翻回血湖不自动复燃）；
-        /// 鬼梦只是湖暂时不在（包络退场、归返自动复燃，点燃态保留）；收域清零</summary>
+        /// <summary>鬼火点燃态：焰影驻湖的满水血湖稳态自燃（门控在 <see cref="KikasaWisps.KikasaWisp"/>）。
+        /// 鬼雨压制拍走完即清除（沸雨边免压制）；鬼梦只是湖暂时不在（包络退场、归返自动复燃，
+        /// 点燃态保留）；收域清零</summary>
         public bool WispFireActive { get; internal set; }
+
+        /// <summary>沸雨边（焰×潦）在效：鬼雨压不灭鬼火，改半强度蒸沸。
+        /// owner 按沉影盘逐帧刷新并随快照同步——远端读不到盘</summary>
+        public bool WispRainProof { get; internal set; }
+
+        /// <summary>湖力 0~1：鬼火与鬼梦共饮的一汪水。鬼火燃着持续耗，火熄慢慢回；
+        /// 拉入鬼梦当帧抽干。自燃要求满格、入梦要求过半——回涨就是这两门灵异的天然冷却</summary>
+        public float LakeVigor { get; internal set; } = 1f;
 
         /// <summary>点燃处世界 X，燃沿从这里向两侧蔓延；收火时反向啃回原点</summary>
         public float WispOriginX { get; internal set; }
@@ -213,13 +222,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         //==================== 输入 ====================
 
+        //异化键长按状态：hold 帧计数；swallowed=本次按住已被长按/归返消费，松手不再翻转
+        private int mutateHold;
+        private bool mutateWasDown;
+        private bool mutateSwallowed;
+        //倒影自动门控的稳定计数，防相位过渡里的抖动
+        private int reflectionStable;
+
+        /// <summary>长按异化键拉入鬼梦的判定帧数</summary>
+        internal const int DreamHoldFrames = 30;
+
+        /// <summary>此刻拉得动鬼梦：稳态满水、倒影既醒、湖力过半（与 PullDream 的门一致）</summary>
+        internal bool DreamPullReady
+            => Phase == KikasaDomainPhase.Open && RiseT >= 0.999f && HoundReflection
+            && LakeVigor >= KikasaServants.KikasaEffigyBoard.DreamVigorNeed;
+
         /// <summary>
         /// 持鬼伞按 <see cref="CWRKeySystem.Legend_Domain"/> 开阖；
-        /// <see cref="CWRKeySystem.Kikasa_DomainMutate"/> 鬼雨异化（默认中键，被清空绑定时回退原生中键），
-        /// 域开时不持伞也受理；骇客时停不受理
+        /// <see cref="CWRKeySystem.Kikasa_DomainMutate"/>（默认中键，被清空绑定时回退原生中键）：
+        /// 短按=开域/血雨翻转，魇影驻湖长按=拉入鬼梦，梦中任按即归返。
+        /// 倒影醒睡与鬼火燃熄随沉影盘自动走，不再占键；骇客时停不受理
         /// </summary>
         public override void PostUpdate() {
             if (Main.dedServ || Player.whoAmI != Main.myPlayer || Player.dead) {
+                mutateWasDown = false;
+                mutateHold = 0;
                 return;
             }
             //原生中键边沿逐帧维护，跨过时停/受理窗口也不留陈旧状态
@@ -229,6 +256,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
             //全屏地图上按键会在地图底下拉起全屏演出；输入被演出锁住时也不受理新命令
             if (HackTime.Active || Main.mapFullscreen || Main.blockInput) {
+                mutateWasDown = false;
+                mutateHold = 0;
                 return;
             }
             Item item = Player.GetItem();
@@ -238,27 +267,95 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 KikasaDomain.TryToggle(Player, out _);
             }
 
-            //异化键：默认 Mouse3；被清空绑定时回退原生中键；悬停 UI 让位界面点击
-            bool mutatePressed = CWRKeySystem.Kikasa_DomainMutate.JustPressed
-                || (CWRKeySystem.IsKeybindUnbound(CWRKeySystem.Kikasa_DomainMutate) && middleEdge);
-            if (mutatePressed && (holding || AnyActive) && !Player.mouseInterface) {
-                KikasaDomain.TryMutate(Player, out _);
-            }
+            //异化键：默认 Mouse3；被清空绑定时回退原生中键
+            bool unbound = CWRKeySystem.IsKeybindUnbound(CWRKeySystem.Kikasa_DomainMutate);
+            bool mutateDown = unbound ? middleDown : CWRKeySystem.Kikasa_DomainMutate.Current;
+            bool mutateEdge = unbound ? middleEdge : CWRKeySystem.Kikasa_DomainMutate.JustPressed;
+            HandleMutateKey(holding, mutateDown, mutateEdge);
 
-            //鬼梦倒影：域开着才有镜可换影
-            if (CWRKeySystem.Kikasa_DreamReflect.JustPressed && AnyActive && !Player.mouseInterface) {
-                KikasaDomain.TryDreamReflect(Player, out _);
+            //魇影驻湖则倒影自醒、撤影则入睡——醒睡不再占键
+            UpdateReflectionGate();
+        }
+
+        /// <summary>
+        /// 异化键的短按/长按分流：按下即计帧，捱过 <see cref="DreamHoldFrames"/> 且拉得动
+        /// 就拉入鬼梦（消费本次按住）；松手时未被消费的短按才翻转。
+        /// 梦中按下沿直接归返。短按因此有约半秒的松手延迟——翻转本身是 216 帧的仪式，吃得下
+        /// </summary>
+        private void HandleMutateKey(bool holding, bool down, bool edge) {
+            bool eligible = (holding || AnyActive) && !Player.mouseInterface;
+            if (edge && eligible) {
+                if (Phase == KikasaDomainPhase.Dreaming) {
+                    //梦中重按即归返，不吃长按
+                    KikasaDomain.TryDreamPull(Player, out _);
+                    mutateWasDown = true;
+                    mutateSwallowed = true;
+                    mutateHold = 0;
+                    return;
+                }
+                mutateWasDown = true;
+                mutateSwallowed = false;
+                mutateHold = 0;
             }
-            //鬼梦拉入/归返；Open 稳态倒影未醒时轻点一声，别让人对着湖白按
-            if (CWRKeySystem.Kikasa_DreamPull.JustPressed && AnyActive && !Player.mouseInterface) {
-                if (!KikasaDomain.TryDreamPull(Player, out _)
-                    && Phase == KikasaDomainPhase.Open && RiseT >= 0.999f && !HoundReflection) {
-                    KikasaDreamSystem.Refuse(Player);
+            if (mutateWasDown && down) {
+                mutateHold++;
+                if (!mutateSwallowed && mutateHold == DreamHoldFrames) {
+                    if (DreamPullReady) {
+                        if (!KikasaDomain.TryDreamPull(Player, out _)) {
+                            KikasaDreamSystem.Refuse(Player);
+                        }
+                        //无论受理与否都吞掉本次按住：到点的长按不能退化成翻转
+                        mutateSwallowed = true;
+                    }
+                    else if (HoundReflection) {
+                        //倒影醒着但条件差口气（湖力未半/正过渡）：拒一声并吞掉，防误翻
+                        KikasaDreamSystem.Refuse(Player);
+                        mutateSwallowed = true;
+                    }
+                    //倒影没醒：长按视作按得久的短按，松手照旧翻转——没梦可入不设陷阱
+                }
+                //长按预兆：拉得动时湖面涟漪渐密，倒影在等你
+                if (!mutateSwallowed && DreamPullReady && mutateHold >= 8 && mutateHold % 7 == 0
+                    && IsLocalVisual) {
+                    float k = mutateHold / (float)DreamHoldFrames;
+                    KikasaDomainDeco.RippleAt(new Vector2(Player.Center.X, LakeWorldY),
+                        0.35f + k * 0.5f);
                 }
             }
-            //鬼火点燃/收火：满水血湖稳态点燃；鬼雨压着点不着（拒绝反馈在 TryToggle 里）
-            if (CWRKeySystem.Kikasa_WispFire.JustPressed && AnyActive && !Player.mouseInterface) {
-                KikasaWisp.TryToggle(Player);
+            if (mutateWasDown && !down) {
+                bool shortPress = !mutateSwallowed && mutateHold < DreamHoldFrames;
+                mutateWasDown = false;
+                mutateHold = 0;
+                mutateSwallowed = false;
+                if (shortPress && eligible) {
+                    KikasaDomain.TryMutate(Player, out _);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 倒影自动门控：魇影驻湖 + 稳态满水 → 醒；魇影全撤 → 睡。
+        /// 只在 Open 稳态切换（翻转/鬼梦里镜面正忙），连续 10 帧稳定才动手防抖
+        /// </summary>
+        private void UpdateReflectionGate() {
+            if (Phase != KikasaDomainPhase.Open) {
+                reflectionStable = 0;
+                return;
+            }
+            int nightmare = KikasaServants.KikasaEffigyBoard.NightmareCount(Player);
+            bool want = nightmare >= 1 && RiseT >= 0.999f;
+            if (want == HoundReflection) {
+                reflectionStable = 0;
+                return;
+            }
+            //入睡只认「魇影全撤」，水位波动不掐醒着的倒影
+            if (!want && HoundReflection && nightmare > 0) {
+                reflectionStable = 0;
+                return;
+            }
+            if (++reflectionStable >= 10) {
+                reflectionStable = 0;
+                ToggleHoundReflection();
             }
         }
 
@@ -281,6 +378,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             writer.Write(HoundReflection);
             writer.Write(WispFireActive);
             writer.Write(WispOriginX);
+            writer.Write(WispRainProof);
+            writer.Write(LakeVigor);
         }
 
         /// <summary>先读满整份负载再校验，脏包只做丢弃，不留半套状态</summary>
@@ -296,11 +395,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             bool houndReflection = reader.ReadBoolean();
             bool wispFire = reader.ReadBoolean();
             float wispOriginX = reader.ReadSingle();
+            bool wispRainProof = reader.ReadBoolean();
+            float lakeVigor = reader.ReadSingle();
 
             if (phase > (byte)KikasaDomainPhase.DreamReturn
                 || !float.IsFinite(spread) || !float.IsFinite(rise)
                 || !float.IsFinite(origin.X) || !float.IsFinite(origin.Y)
-                || !float.IsFinite(lakeY) || !float.IsFinite(wispOriginX)) {
+                || !float.IsFinite(lakeY) || !float.IsFinite(wispOriginX)
+                || !float.IsFinite(lakeVigor)) {
                 return;
             }
 
@@ -313,9 +415,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             IsRainForm = rainForm;
             FlipToRain = flipToRain;
             HoundReflection = houndReflection;
-            //鬼火包络/蔓延/压制各端本地自算，只同步点燃态与原点
+            //鬼火包络/蔓延/压制各端本地自算，只同步点燃态与原点；
+            //沸雨边与湖力是 owner 才算得出的量，快照矫正远端漂移
             WispFireActive = wispFire;
             WispOriginX = wispOriginX;
+            WispRainProof = wispRainProof;
+            LakeVigor = MathHelper.Clamp(lakeVigor, 0f, 1f);
             //触脚拍可从水位推回，中途加入者跨过 1 时照常触发
             contactDone = RiseT >= 0.999f;
             riseBeatNear = RiseT >= 0.75f;
@@ -440,7 +545,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         }
 
         /// <summary>鬼火点燃/收火。点燃把蔓延原点定在脚下；收火走包络反向啃回。
-        /// 门控在 <see cref="KikasaWisp.TryToggle"/>，这里只执行命令；确认拍只在观看端</summary>
+        /// 自燃门控在 <see cref="KikasaWisp"/>（焰影驻湖+湖力蓄满），这里只执行命令；确认拍只在观看端</summary>
         internal bool ToggleWispFire() {
             if (!ConsumeCommandGate()) {
                 return false;
@@ -471,7 +576,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         }
 
         /// <summary>
-        /// 鬼梦拉入/归返。Open 稳态 + 满水位 + 倒影已醒才拉得动；Dreaming 里再按即归返；
+        /// 鬼梦拉入/归返。Open 稳态 + 满水位 + 倒影已醒 + 湖力过半才拉得动，
+        /// 受理帧把湖力整汪抽干（回涨即天然冷却）；Dreaming 里再按即归返；
         /// 与入雨/深潜全屏演出互斥，同 <see cref="FlipDomain"/> 的约定
         /// </summary>
         internal bool PullDream(out bool busy) {
@@ -495,6 +601,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 return false;
             }
             if (RiseT < 0.999f || !HoundReflection
+                || LakeVigor < KikasaServants.KikasaEffigyBoard.DreamVigorNeed
                 || OniRainWorldTransition.Active || OniRainDescentTransition.Active) {
                 busy = true;
                 return false;
@@ -502,6 +609,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             if (!ConsumeCommandGate()) {
                 return false;
             }
+            //梦把湖抽干：出梦后湖力得重新蓄，鬼火也得等它回满才再燃
+            LakeVigor = 0f;
             Phase = KikasaDomainPhase.DreamPull;
             PhaseTimer = 0;
             ZeroDreamEnvelopes();
@@ -615,11 +724,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 HoundReflection = false;
                 DreamBlend = 0f;
                 ZeroDreamEnvelopes();
-                //鬼火随域关熄
+                //鬼火随域关熄；湖力随域关回满——重开总是一汪蓄好的湖
                 WispFireActive = false;
+                WispRainProof = false;
                 WispT = 0f;
                 WispSpread = 0f;
                 WispQuench = 0f;
+                LakeVigor = MathF.Min(LakeVigor + KikasaServants.KikasaEffigyBoard.VigorRefillPerFrame * 2f, 1f);
                 return;
             }
 
@@ -1224,10 +1335,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             DreamBlend = 0f;
             ZeroDreamEnvelopes();
             WispFireActive = false;
+            WispRainProof = false;
             WispOriginX = 0f;
             WispT = 0f;
             WispSpread = 0f;
             WispQuench = 0f;
+            LakeVigor = 1f;
             contactDone = false;
             riseBeatNear = false;
             riseBeatFar = false;

@@ -23,7 +23,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
     /// 液中烬点=湖藏填充、整铃随形态浸染；常态无水时铃也不空：吹制玻璃质感
     /// （冠结/双壁/旋纹/封存气泡/暮色反射带）加烬萤（=湖藏）、凝露与潮痕内景。
     /// 短册纸条压一道墨字水印与朱印，其上挂三道冷却墨线
-    /// （沉溺手=主色居左、梦中唤犬=烬红居右、鬼雨重启=冷青走中列）。
+    /// （沉溺手=主色居左、梦中唤犬=烬红居右、血湖态中列=湖力金线、鬼雨态中列=重启冷青），
+    /// 册底三点驻影小印是沉影盘编成的缩影（亮=驻席，暗=空席）。
     /// 点铃展开「湖畔村图」全画（任何域状态都响应）。
     /// </summary>
     internal class KikasaHud : UIHandle, ILocalizedModType, IBottomLeftHud
@@ -430,14 +431,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                         new Color(230, 96, 40) * (0.65f * a));
                 }
             }
-            //大范围重启（鬼雨限定）走中列冷青：左右两列已被沉溺/唤犬占着，
-            //鬼雨与鬼梦相位不赌互斥；水印 α 只有 0.2，功能线照惯例压上
+            //中列：鬼雨态给大范围重启冷青，血湖态给湖力金线（欠着多少画多少，
+            //烧着/入梦后读得出「这汪水还差几口」）——两形态各占各的相位，不挤
             if (domain.IsRainForm) {
                 float resetCd = KikasaReset.LocalCooldown01;
                 if (resetCd > 0.005f) {
                     KikasaVaultRenderer.DrawLine(sb, inkTop,
                         inkTop + dir * (run * resetCd), 1.4f,
                         new Color(108, 190, 198) * (0.6f * a));
+                }
+            }
+            else if (domain.AnyActive) {
+                float vigorGap = 1f - MathHelper.Clamp(domain.LakeVigor, 0f, 1f);
+                if (vigorGap > 0.005f) {
+                    KikasaVaultRenderer.DrawLine(sb, inkTop,
+                        inkTop + dir * (run * vigorGap), 1.4f,
+                        KikasaWisps.KikasaWisp.GoldBody * (0.55f * a));
+                }
+            }
+
+            //驻影小印：册底缘三点，沉影盘编成的缩影（亮=驻席、暗=空席）
+            var servant = player.GetModPlayer<KikasaServants.KikasaServantPlayer>();
+            Vector2 dotRow = top + dir * (TanzakuH - 10.5f);
+            for (int i = 0; i < KikasaServants.KikasaServantPlayer.SlotCount; i++) {
+                Vector2 pos = dotRow + side * ((i - 1) * 4.2f);
+                bool filled = servant.SlotKeyAt(i) != 0;
+                if (filled) {
+                    float breath = KikasaHudTheme.Breath(Main.GlobalTimeWrappedHourly,
+                        i * 2.7f, 1.6f);
+                    SvgPathPen.SoftDot(sb, pos, 3.4f, KikasaHudTheme.Glow(rain),
+                        (0.45f + breath * 0.25f) * a);
+                }
+                else {
+                    SvgPathPen.SoftDot(sb, pos, 2.4f, dim, 0.20f * a);
                 }
             }
         }

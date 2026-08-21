@@ -1,4 +1,4 @@
-HalibutOverride: {
+﻿HalibutOverride: {
 	FishByStudied:
 		'''
 		[i:CalamityOverhaul/HalibutItem]:
@@ -905,6 +905,229 @@ OnikiriTrialQuestLine: {
 		'''
 }
 
+KikasaOverride: {
+	DisplayName: 鬼伞
+	Tooltip:
+		'''
+		手持时按下「领域展开」键撑开血湖领域，再按一次收伞
+		领域中把 boss 按进湖里，它化作沉影。点左下风铃展开画卷，再点画中血湖，把沉影落进三席影位
+		满水位时短按「血湖表里」键（默认鼠标中键）倒转血湖，翻进冷雨；魇影驻湖时长按同一键坠入鬼梦
+		按住左键悬伞于头顶，伞面睁眼，降下追人的墨雨
+		按住右键倒撑蓄墨，松手把一整伞的墨瀑泼下去
+		每格召唤栏位都化作一只栖在伞骨下的鬼：栏位越多，墨雨节拍越快、滴数越多，蓄墨也越快
+		栏位积到 4 每波追加一颗掷向第二目标的鬼滴；积到 7 每第四波全鬼齐掷
+		积到 10 大滴落地积成灼人的墨洼，满蓄墨瀑落地唤起三道墨泉
+		[Lang4]
+		legend_Text
+		"伞下无雨，只有水声"
+		'''
+	GhostCountLine: 伞下栖鬼 {0} 位——{1}
+	TierName0: 细雨
+	TierName1: 二鬼帮衬
+	TierName2: 众鬼齐掷
+	TierName3: 湖倾
+}
+
+KikasaTrialQuestLine: {
+	QuestCategory: 鬼伞·沉宴
+	TrackerWaiting: 还没入席——去请，或再等等
+	TrackerFighting: "{0}: {1:0%}"
+	TrackerBrief: 下一席：{0}
+	BossRushTargetName: 满桌的客
+	EventActiveFormat: "{0}: 进行中"
+	Trial_0: 第一口软的
+	Trial_1: 睁着的那颗
+	Trial_2: 腐土里拱的
+	Trial_3: 烂在地里的
+	Trial_4: 甜的或倔的
+	Trial_5: 守门的老骨头
+	Trial_6: 一大摊神
+	Trial_7: 垒在路上的肉
+	Trial_8: 上头那摊粉的
+	Trial_9: 馊了的长虫
+	Trial_10: 三件铁器
+	Trial_11: 闷着的那朵
+	Trial_12: 海里的大个子
+	Trial_13: 方脑袋
+	Trial_14: 掀浪的猪
+	Trial_15: 夜里发光的
+	Trial_16: 念经的
+	Trial_17: 月亮后头的
+	Trial_18: 同类
+	Trial_19: 酸水里的老东西
+	Trial_20: 天上的长虫
+	Trial_21: 一团火
+	Trial_22: 铁的和火的
+	Trial_23: 满桌的时候
+	TrialSummary_0:
+		'''
+		山脚有摊软的，蓝汪汪的，抖起来没完
+		湖还没尝过冻子，想知道咬下去是什么响
+		把它引到伞底下来，别嫌黏
+		化了的话，就当是汤
+		'''
+	TrialSummary_1:
+		'''
+		夜里有颗眼睛盯人，盯得很没礼貌
+		湖面一照见它就皱，皱得伞骨发痒
+		去，把那道视线摁进水里
+		看东西的，最后都得学会闭眼
+		'''
+	TrialSummary_2:
+		'''
+		腐土里拱出来的，一条长的，或一团湿脑子
+		两味都腥，湖不挑，你顺路碰上哪个收哪个
+		切碎的不用捡，让它自己流进来
+		'''
+	TrialSummary_3:
+		'''
+		地底下烂着一个念头，或是一窝钻血的虫
+		闻风向就知道，放坏了
+		湖说馊的也是味，端来
+		手套别摘，那汁水沾人
+		'''
+	TrialSummary_4:
+		'''
+		丛林里有罐甜的，雪原里有头倔的
+		你挑一样带来——湖今天两个口味都开
+		甜的螫人，倔的跺脚
+		哪个都别空手回来
+		'''
+	TrialSummary_5:
+		'''
+		地牢门口吊着个老骨头，替人守夜守出瘾了
+		骨头泡不软，湖早知道，可它就想听那声脆
+		打断他的守夜，钥匙你自己留着
+		骨渣沉底，正好铺路
+		'''
+	TrialSummary_6:
+		'''
+		有摊冻子自称神，紫的黑的搅在一起
+		湖里从不缺水，缺的是这么大的一口
+		去把它放平，看它到底化成什么
+		别喝，那不是给你的
+		'''
+	TrialSummary_7:
+		'''
+		地狱里垒着一面肉，挡着所有人的路
+		烫的，湖正好败火
+		捅穿它，世界会跟着变——那不怪你
+		伞面遮得住火星，放心去
+		'''
+	TrialSummary_8:
+		'''
+		神圣地上头悬着摊粉冻，飞起来还带卫兵
+		地上的冻子湖尝过了，会飞的还没有
+		把她拽下来，连那身水晶一起
+		碎晶别踩，硌伞骨
+		'''
+	TrialSummary_9:
+		'''
+		硫海里泡着条长虫，一身烂鳞，半睡半醒
+		那片水馊得连湖都皱眉
+		把它捞干净——湖收虫，不收那口烂水
+		完事把伞抖一抖再回来
+		'''
+	TrialSummary_10:
+		'''
+		有人造了三件铁的：一条链子，两颗灯泡，一副骨架
+		铁的沉不透，泡多久都是铁腥味
+		湖不爱这口，但席上不能缺这三道
+		一件一件来，别让它们同一晚都醒着
+		'''
+	TrialSummary_11:
+		'''
+		丛林深处闷着一朵大的，红的，睡着
+		吵醒她的人，没几个全身回来
+		湖想要她的花汁，兑在水里颜色正好
+		藤蔓缠伞就剪，别客气
+		'''
+	TrialSummary_12:
+		'''
+		海里有位大个子，还有个唱歌的姑娘作伴
+		湖对海一直有意见：凭什么它装得多
+		去把大个子请来，让湖也涨一回脸
+		歌别多听，会跟着走
+		'''
+	TrialSummary_13:
+		'''
+		神庙里蹲着一尊石头的，方脑袋，爱蹦
+		石头沉底最快，湖的收藏里正缺一尊
+		拆了它的机关，壳子整个端来
+		压出来的浪花，算你的赏
+		'''
+	TrialSummary_14:
+		'''
+		海上有头猪，长了翅膀，还学人掀浪
+		湖看不惯：水的脾气轮不到猪来使
+		把它按回水里——按进哪片水，你说了算
+		鱼饵我出，虫子你钓
+		'''
+	TrialSummary_15:
+		'''
+		神圣地夜里飞着位发光的，脾气跟着日头走
+		湖照不住她——太亮的东西水面留不下
+		趁夜去，把那身光揉暗了带回来
+		大白天去惹她的话，后果自己收
+		'''
+	TrialSummary_16:
+		'''
+		地牢门口有个念经的，念得天都要开了
+		湖听不懂经，只听得懂他要放东西进来
+		打断他，让仪式烂在半截
+		念珠掉了别捡，湖不收赝品
+		'''
+	TrialSummary_17:
+		'''
+		月亮后头那位下来了，浑身都是眼睛
+		天上的东西掉进湖里，也就是个倒影
+		去，把倒影的本体收了
+		那晚的月色会很好，替我看一眼
+		'''
+	TrialSummary_18:
+		'''
+		地牢深处荡着一团魂，缝缝补补好几百年
+		湖里泡的鬼见了它，都往伞骨里缩
+		同类相残这话难听——就当是并桌
+		收完这单，伞下会挤一点，忍忍
+		'''
+	TrialSummary_19:
+		'''
+		硫海底下压着个老东西，一身酸气，脾气更酸
+		湖跟他同行多年，谁也不服谁的水
+		去替湖递个话：席面备好了，请他沉下来
+		他咬人，牙口还好，你当心
+		'''
+	TrialSummary_20:
+		'''
+		有条长虫在天外绕圈，绕得星星都躲
+		它吞过神，湖倒想知道神是什么味
+		让它钻一次不该钻的水
+		壳留给你，肉归湖
+		'''
+	TrialSummary_21:
+		'''
+		丛林那头养着一团火，烧了不知多少年
+		火和湖是老对头，这回该做个了断
+		把那身火压熄——最后一瓢湖亲自来盖
+		羽毛湿了就不飘了，一根别留
+		'''
+	TrialSummary_22:
+		'''
+		最后两桌一起开：一桌全是铁，一桌只有火
+		工匠的得意和魔女的执念，湖都想看看沉底的样子
+		先后随你，活着上桌就行
+		这顿吃完，湖差不多就满了
+		'''
+	TrialSummary_23:
+		'''
+		它们又都回来了，或者深渊里那条老的醒了
+		满桌的宴，湖等得水位都高了
+		你只管掌伞，一个一个来
+		吃完这顿，雨就停了
+		'''
+}
+
 KikasaText: {
 	KikasaVaultUI: {
 		Title: 湖 藏
@@ -913,7 +1136,8 @@ KikasaText: {
 		IdleHintFormat: 持物按 {0} 沉入 · 点击窗外合上
 		EmptyHint: 湖底空着，只有水声
 		ViewOnlyFooter: 湖还没涨到脚边，先看着
-		SummonHintFormat: 按 {0} 召它出手
+		SlotBarFormat: 驻影 {0} / {1}
+		SlotBarHint: 编成在画里改——点画中的血湖
 	}
 
 	KikasaServantPlayer.ServantUnknown: 湖还没学会驱使它
@@ -935,8 +1159,38 @@ KikasaText: {
 		InDreamLine: 你正身在梦中
 		HoundCountFormat: 在场恶犬 {0} / {1}
 		DreamHint: 梦中按住左键，黑水会不断吐出恶犬
+		DreamGateHint: 魇影驻湖倒影自醒；长按异化键，它把你拉进梦里
 		ThrallTag: 伞奴
 		ThrallCountFormat: 在场伞奴 {0} / {1}
+		VillageTag: 湖 藏
+		VillageOpenTag: 点击开湖窗——窗火即沉物
+		BoardOpenTag: 点击铺开沉影盘
+		SlotCountFormat: 驻影 {0} / {1}
+		BoardTitle: 沉 影 盘
+		BoardCountFormat: 已沉 {0} / {1}
+		BoardPickHint: 先点岸上的沉影拾起，再落进影位
+		BoardPlacedFormat: "{0} 沉进了影位"
+		BoardEmptyHint: 湖底还没有沉影——光标指着 boss 按 {0}，把它按进湖里
+		BoardAlreadySlotted: 已在影位上——点它拾起，再点空处卸下
+		BoardUnslotHint: 点空处卸下，点回影位再驻上
+		BoardUnslottedFormat: "{0} 回了湖底"
+		BoardSlotRemoveHint: 右键卸下，或点它拾起再点空处
+		BoardArmsStockFormat: 湖藏原件 ×{0}
+		BoardArmsNoStock: 湖里没有它的原件，凝不出形
+		BoardAffinityFormat: 亲和 · {0}
+		AffinityFlame: 焰
+		AffinityNightmare: 魇
+		AffinityRain: 潦
+		AffinityWild: 百搭
+		EdgeDreamFire: 梦火
+		EdgeBoilRain: 沸雨
+		EdgeRainNightmare: 雨魇
+		EdgeTriSeal: 三影镇湖
+		EdgeDreamFireNote: 梦火成边——梦犬的牙带上了鬼火
+		EdgeBoilRainNote: 沸雨成边——鬼雨压不灭这把火了
+		EdgeRainNightmareNote: 雨魇成边——雨里转出伞奴快了一倍
+		EdgeTriSealNote: 三影镇湖——三系齐坐，鬼奴出力更狠
+		LakeVigorLabel: 湖力
 	}
 
 	KikasaHudLead: {
@@ -944,18 +1198,18 @@ KikasaText: {
 		DomainBody: 鬼伞的一切都长在血湖领域里——湖藏、沉溺、鬼奴，都得先让湖涨起来。
 		DomainPrompt: 手持鬼伞按 {0}
 		SinkTitle: 沉入湖藏
-		SinkBody: 湖是你的私库。手里拿着东西按沉入键，它就沉进湖底；光标指着活物按同一个键，湖会伸手把它按下去。
+		SinkBody: 湖是你的私库。手里拿着东西按沉入键，它就沉进湖底；光标指着活物按同一个键，湖会伸手把它按下去——沉过的 boss 化作沉影，永远留在湖底。
 		SinkPrompt: 等水涨到脚边，持物或指着生物按 {0}
+		BoardTitle: 沉影编成
+		BoardBody: 湖底有三席影位，驻影自动出水替你出手。焰影点燃鬼火，魇影唤醒倒影、长按异化键坠入鬼梦，潦影养伞雨——两系同席还会成边。
+		BoardPrompt: 点左下风铃展开画卷，再点画中的血湖，铺开沉影盘
+		BoardNoMemory: 湖底还没有沉影——先沉一只 boss，或跳过这步。
 		VaultTitle: 开湖窗取物
-		VaultBody: 沉下去的东西悬在血水里漂着。开湖窗点一件，湖把它送回你手边。
-		VaultPrompt: 点一下左下的风铃展开画卷，再点画中的血湖；或持鬼伞按 {0}
-		SummonTitle: 驱使鬼奴
-		SummonBody: 湖永远记着最后一只溺死在它手里的生物。召出它的鬼奴替你出手，再按一次遣返。
-		SummonPrompt: 按 {0}
-		SummonNoMemory: 湖还没记住能驱使的活物——先沉一只 boss，或跳过这步。
+		VaultBody: 沉下去的东西悬在血水里漂着。开湖窗点一件，湖把它送回你手边——村里哪扇窗亮着，湖里就存着多少。
+		VaultPrompt: 点画中亮着窗火的村屋；或持鬼伞按 {0}
 		MutateTitle: 鬼雨异化
-		MutateBody: 血湖有表里两面。满水位时倒转它，翻进冷雨那一侧；再倒转一次就翻回来。
-		MutatePrompt: 按 {0}（默认鼠标中键）
+		MutateBody: 血湖有表里两面。满水位时短按倒转它，翻进冷雨那一侧，雨里死去的敌人化作伞奴；再倒转一次就翻回来。
+		MutatePrompt: 短按 {0}（默认鼠标中键）
 		SkipBtn: 跳过
 		KeyUnbound: 这一步的按键未绑定；请先在 设置 > 控制 里绑定，或点击跳过。
 	}

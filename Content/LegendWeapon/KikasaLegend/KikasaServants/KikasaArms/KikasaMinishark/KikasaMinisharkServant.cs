@@ -51,6 +51,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         /// <summary>沉入湖中的原型武器物品类型：贴图与档位来源，ExtraAI 同步</summary>
         private int armsItemType = ItemID.Minishark;
 
+        /// <summary>沉影盘在场判定用：这队械奴复制的是哪件武器</summary>
+        internal int ArmsItemType => armsItemType;
+
         private ArmsProfile Profile => ProfileOf(armsItemType);
 
         //==================== 状态 ====================

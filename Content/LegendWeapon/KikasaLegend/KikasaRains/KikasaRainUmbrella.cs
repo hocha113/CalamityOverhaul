@@ -28,20 +28,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>撑伞上浮帧数</summary>
         public const int RiseFrames = 16;
 
-        /// <summary>甩雨节拍周期</summary>
-        public const int VolleyPeriod = 26;
-
         /// <summary>出手前反向蓄势帧数</summary>
         public const int WindupFrames = 4;
 
-        /// <summary>每波墨滴数,错 2 帧甩出</summary>
+        /// <summary>每波墨滴基数;域外/血湖用此值,鬼雨形态 5,再加栏位加成</summary>
         public const int DropsPerVolley = 3;
 
         /// <summary>收伞回手帧数</summary>
         public const int RecallFrames = 18;
-
-        /// <summary>倒撑蓄满帧数,三档 30/60/90</summary>
-        public const int ChargeFullFrames = 90;
 
         /// <summary>倾覆编舞:猛倾帧数/持续冲刷帧数/甩干回正帧数</summary>
         public const int PourTiltFrames = 5;
@@ -116,13 +110,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>释放瞬间锁定的蓄力档</summary>
         private float pourFill;
 
+        /// <summary>蓄墨满帧:伞下鬼越多蓄得越快(90→56),口径在 <see cref="KikasaOverride"/></summary>
+        private int CurrentChargeFrames
+            => KikasaOverride.GetChargeFullFrames(KikasaOverride.GetSlotCount(Owner));
+
         /// <summary>蓄墨水位(表现):Flip 期随蓄力涨,Pour 期排空</summary>
         private float ChargeFill => State switch {
-            UmbrellaState.Flip => MathHelper.Clamp(StateTimer / (float)ChargeFullFrames, 0f, 1f),
+            UmbrellaState.Flip => MathHelper.Clamp(StateTimer / (float)CurrentChargeFrames, 0f, 1f),
             UmbrellaState.Pour => pourFill * (1f - MathHelper.Clamp(
                 (StateTimer - PourTiltFrames) / (float)PourHoldFrames, 0f, 1f)),
             _ => 0f,
         };
+
+        /// <summary>
+        /// 一波墨雨节拍的完整解:周期/滴数/错拍/是否齐掷波。
+        /// 滴数=域形态基数+每 3 格栏位一滴;周期随栏位缩短,但至少给出手窗留 4 帧回稳;
+        /// S≥<see cref="KikasaOverride.TierGhostVolley"/> 时每第 4 波为齐掷波——
+        /// 出手拍全鬼同帧各掷一滴,不再占用错拍窗口
+        /// </summary>
+        private void SolveVolleyRhythm(Player owner, out int period, out int dropCount,
+            out int stagger, out bool ghostVolley) {
+            int slots = KikasaOverride.GetSlotCount(owner);
+            dropCount = VolleyDropCount(owner) + KikasaOverride.GetDropBonus(slots);
+            stagger = KikasaOverride.GetDropStagger(slots);
+            period = Math.Max(KikasaOverride.GetVolleyPeriod(slots),
+                WindupFrames + dropCount * stagger + 4);
+            ghostVolley = slots >= KikasaOverride.TierGhostVolley
+                && (int)(StateTimer / period) % 4 == 3;
+        }
 
         public override void SetDefaults() {
             Projectile.width = 36;
@@ -243,17 +258,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 return;
             }
 
-            //节拍:回拉蓄势 → 出手窗猛甩 → 回稳;每波滴数随域形态走
-            int dropCount = VolleyDropCount(owner);
-            int beat = (int)(StateTimer % VolleyPeriod);
+            //节拍:回拉蓄势 → 出手窗猛甩 → 回稳;滴数与周期随域形态和伞下鬼数走
+            SolveVolleyRhythm(owner, out int period, out int dropCount, out int stagger, out bool ghostVolley);
+            int slots = KikasaOverride.GetSlotCount(owner);
+            int beat = (int)(StateTimer % period);
+            int fireSpan = ghostVolley ? 4 : dropCount * stagger + 2;
             float targetSpin = beat < WindupFrames
-                ? -0.22f
-                : beat < WindupFrames + dropCount * 2 + 2 ? 0.74f : 0.4f;
+                ? (ghostVolley ? -0.34f : -0.22f)
+                : beat < WindupFrames + fireSpan ? (ghostVolley ? 1.05f : 0.74f) : 0.4f;
             spinSpeed = MathHelper.Lerp(spinSpeed, targetSpin, 0.28f);
             spinPhase += spinSpeed;
 
-            //蓄势绷紧、出手回弹
-            beatSquash = MathHelper.Lerp(beatSquash, beat < WindupFrames ? 0.08f : 0f, 0.35f);
+            //蓄势绷紧、出手回弹;齐掷波拉得更满
+            beatSquash = MathHelper.Lerp(beatSquash,
+                beat < WindupFrames ? (ghostVolley ? 0.13f : 0.08f) : 0f, 0.35f);
             recoil *= 0.8f;
 
             //伞缘闲滴:泡透的伞一直在滴
@@ -265,13 +283,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
 
             if (beat == WindupFrames) {
-                //出手拍:湿掌甩墨+向上后坐+眼睛燃一下+两粒随甩的碎珠
-                recoil = 4.5f;
-                eyeGlow = MathF.Max(eyeGlow, 0.5f);
-                KikasaInk.Play(KikasaInk.InkFlick, Projectile.Center, 0.72f, 0.08f, 4);
+                //出手拍:湿掌甩墨+向上后坐+眼睛燃一下+碎珠随甩;齐掷拍整把伞一沉
+                recoil = ghostVolley ? 7f : 4.5f;
+                eyeGlow = MathF.Max(eyeGlow, ghostVolley ? 1f : 0.5f);
+                KikasaInk.Play(KikasaInk.InkFlick, Projectile.Center,
+                    ghostVolley ? 0.9f : 0.72f, ghostVolley ? -0.12f : 0.08f, 4);
                 KikasaInk.Play(SoundID.SplashWeak, Projectile.Center, 0.42f, 0.12f, 4);
+                if (ghostVolley) {
+                    KikasaInk.Play(KikasaInk.InkSpray, Projectile.Center, 0.55f, -0.3f, 3);
+                }
                 if (!Main.dedServ) {
-                    for (int i = 0; i < 2; i++) {
+                    int beadCount = ghostVolley ? 6 : 2;
+                    for (int i = 0; i < beadCount; i++) {
                         float xOff = MathF.Cos(spinPhase + i * 2.4f) * RimRadius * visualScale;
                         PRTLoader.NewParticle<PRT_KikasaInkBead>(
                             Projectile.Center + new Vector2(xOff, 3f),
@@ -280,10 +303,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     }
                 }
             }
-            //出手窗:错 2 帧连甩
-            if (beat >= WindupFrames && beat < WindupFrames + dropCount * 2
-                && (beat - WindupFrames) % 2 == 0) {
-                FireDrop((beat - WindupFrames) / 2);
+            if (ghostVolley) {
+                //众鬼齐掷:出手拍全鬼同帧各掷一滴,超出常规滴数的那些是鬼滴
+                if (beat == WindupFrames) {
+                    for (int i = 0; i < slots; i++) {
+                        FireDrop(i, ghostDrop: i >= dropCount);
+                    }
+                }
+            }
+            else {
+                //出手窗:错拍连甩
+                if (beat >= WindupFrames && beat < WindupFrames + dropCount * stagger
+                    && (beat - WindupFrames) % stagger == 0) {
+                    FireDrop((beat - WindupFrames) / stagger);
+                }
+                //二鬼帮衬:窗口收尾再补一颗侧掷鬼滴,轮转槽位天然掷向下一个目标
+                if (slots >= KikasaOverride.TierGhostAssist
+                    && beat == WindupFrames + dropCount * stagger) {
+                    FireDrop(dropCount, ghostDrop: true);
+                }
             }
         }
 
@@ -341,10 +379,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             float fill = ChargeFill;
             eyeOpen = MathF.Max(eyeOpen, fill * 0.85f);
 
-            //三档换挡拍:一声比一声沉的水花,碗沿荡出一圈碎珠
-            if (StateTimer == ChargeFullFrames / 3f || StateTimer == ChargeFullFrames * 2f / 3f
-                || StateTimer == ChargeFullFrames) {
-                float tier = StateTimer / (float)ChargeFullFrames;
+            //三档换挡拍:一声比一声沉的水花,碗沿荡出一圈碎珠;满帧随伞下鬼数缩短
+            int chargeFull = CurrentChargeFrames;
+            if ((int)StateTimer == chargeFull / 3 || (int)StateTimer == chargeFull * 2 / 3
+                || (int)StateTimer == chargeFull) {
+                float tier = MathHelper.Clamp(StateTimer / (float)chargeFull, 0f, 1f);
                 eyeGlow = MathF.Max(eyeGlow, 0.3f + 0.4f * tier);
                 KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.48f + 0.28f * tier, -0.25f - 0.35f * tier, 3);
                 KikasaInk.Play(SoundID.Item21, Projectile.Center, 0.32f + 0.22f * tier, -0.4f - 0.25f * tier, 3);
@@ -428,7 +467,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 if (Main.myPlayer == Projectile.owner) {
                     //跟光标走,不再卡在朝下 ±31°——倒撑是碗,但瞄准必须跟手
                     pourAim = (Main.MouseWorld - Projectile.Center).ToRotation();
-                    int damage = (int)(Projectile.damage * (1.2f + 0.9f * pourFill));
+                    int damage = (int)(Projectile.damage * (1.2f + 0.9f * pourFill)
+                        * KikasaOverride.GetSlotDamageMul(KikasaOverride.GetSlotCount(owner)));
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), BowlMouthPos(), Vector2.Zero,
                         ModContent.ProjectileType<KikasaInkPour>(), damage, Projectile.knockBack * 1.5f,
                         Projectile.owner, pourAim, pourFill);
@@ -521,9 +561,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
             float openTarget;
             if (gazeTarget >= 0) {
-                int beat = (int)(StateTimer % VolleyPeriod);
-                openTarget = beat >= WindupFrames && beat < WindupFrames + DropsPerVolley * 2
-                    ? 0.9f : 0.6f;
+                openTarget = 0.6f;
+                //只有悬伞态存在甩雨节拍;倒撑态 StateTimer 是蓄力计时,不套周期
+                if (State == UmbrellaState.Hover) {
+                    SolveVolleyRhythm(owner, out int period, out int dropCount, out int stagger, out bool ghostVolley);
+                    int beat = (int)(StateTimer % period);
+                    int fireSpan = ghostVolley ? 4 : dropCount * stagger;
+                    if (beat >= WindupFrames && beat < WindupFrames + fireSpan) {
+                        openTarget = 0.9f;
+                    }
+                }
             }
             else {
                 openTarget = 0.12f;
@@ -563,15 +610,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         //==================== 甩雨 ====================
 
-        /// <summary>甩出一滴:弹幕只在所有者端生成,生成包带走目标与坠落列</summary>
-        private void FireDrop(int slot) {
+        /// <summary>
+        /// 甩出一滴:弹幕只在所有者端生成,生成包带走目标/坠落列/鬼滴与墨洼标记。
+        /// 鬼滴(伞下鬼的侧掷)从对侧伞缘出手并换鬼青调;湖倾档(S≥10)全部大滴且落地留墨洼
+        /// </summary>
+        private void FireDrop(int slot, bool ghostDrop = false) {
             if (Main.myPlayer != Projectile.owner) {
                 return;
             }
             int target = PickTarget(slot, out float fallbackX);
 
-            //伞缘切向甩出:出点随自旋相位在伞沿摆动,初速偏外偏上
-            float yaw = MathF.Cos(spinPhase);
+            //伞缘切向甩出:出点随自旋相位在伞沿摆动,初速偏外偏上;鬼滴走对侧相位
+            float yaw = MathF.Cos(spinPhase + (ghostDrop ? MathHelper.Pi : 0f));
             float xOff = yaw * RimRadius * visualScale;
             Vector2 rimPos = Projectile.Center + new Vector2(xOff, 2f);
             float side = xOff >= 0f ? 1f : -1f;
@@ -592,9 +642,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 }
             }
 
+            //伞下鬼乘区与湖倾档:滴变大,落地留墨洼
+            int slots = KikasaOverride.GetSlotCount(Owner);
+            dmgMul *= KikasaOverride.GetSlotDamageMul(slots);
+            int flags = 0;
+            if (ghostDrop) {
+                flags |= KikasaInkDrop.FlagGhost;
+            }
+            if (slots >= KikasaOverride.TierLakeTilt) {
+                scale *= 1.2f;
+                flags |= KikasaInkDrop.FlagPuddle;
+            }
+
             int p = Projectile.NewProjectile(Projectile.GetSource_FromThis(), rimPos, flickVel,
                 ModContent.ProjectileType<KikasaInkDrop>(), (int)(Projectile.damage * dmgMul),
-                Projectile.knockBack, Projectile.owner, target, fallbackX, 0f);
+                Projectile.knockBack, Projectile.owner, target, fallbackX, flags);
             if (p >= 0 && p < Main.maxProjectiles && scale != 1f) {
                 Main.projectile[p].scale = scale;
                 Main.projectile[p].netUpdate = true;
@@ -733,6 +795,60 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     origin, scale * 0.95f, flip, 0f);
             }
             sb.Draw(tex, pos, frame, light, rotation, origin, scale, flip, 0f);
+        }
+
+        /// <summary>
+        /// 伞下鬼:每个召唤栏位一只,吊在伞骨下沿弧排开,档位换魂色——
+        /// 玩家一眼读出当前强度档。黑底贴图按 A=0 加色,暗体用真透明的 Extra_98;
+        /// 收伞随湿度退场。由 <see cref="KikasaRainRender"/> 在伞体之后另开无着色器批调用
+        /// </summary>
+        internal void DrawCanopyGhosts(SpriteBatch sb) {
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            Texture2D body = CWRAsset.Extra_98?.Value;
+            if (glow == null || body == null) {
+                return;
+            }
+            float fade = MathHelper.Clamp(visualScale * 1.6f - 0.6f, 0f, 1f)
+                * MathHelper.Clamp((wetness - 0.15f) / 0.85f, 0f, 1f);
+            if (fade <= 0.03f) {
+                return;
+            }
+            int slots = KikasaOverride.GetSlotCount(Owner);
+            int tier = KikasaOverride.GetTier(slots);
+            //档位魂色:细雨灰青 → 帮衬青白 → 齐掷鬼青 → 湖倾血芯
+            Color soul = tier switch {
+                3 => new Color(214, 84, 92),
+                2 => new Color(148, 216, 210),
+                1 => new Color(126, 176, 188),
+                _ => new Color(104, 128, 140),
+            };
+            Vector2 anchor = Projectile.Center - Main.screenPosition;
+            //倒撑时鬼群跟着翻到碗口上方
+            float hangSign = flipT > 0.5f ? -1f : 1f;
+            for (int i = 0; i < slots; i++) {
+                //沿伞骨下沿弧排开,随自旋缓摆,逐鬼错拍浮沉
+                float u = slots == 1 ? 0.5f : i / (float)(slots - 1);
+                float ang = MathHelper.Lerp(-1.05f, 1.05f, u)
+                    + MathF.Sin(spinPhase * 0.35f + i * 1.7f) * 0.1f;
+                float hang = (11f + MathF.Sin(bobPhase * 1.3f + i * 2.3f) * 2.6f) * hangSign;
+                Vector2 pos = anchor + new Vector2(
+                    MathF.Sin(ang) * RimRadius * 0.86f * visualScale,
+                    (MathF.Cos(ang) * 5f + hang) * visualScale);
+                float pulse = 0.82f + MathF.Sin(bobPhase * 2f + i * 2.9f) * 0.18f;
+                float sizePx = (13f + 2.6f * tier) * visualScale * pulse;
+
+                //鬼身:暗滴为体,魂色为芯(A=0 加色),顶上一粒白眼点
+                sb.Draw(body, pos, null, KikasaInk.InkBody * (0.85f * fade), 0f,
+                    body.Size() * 0.5f,
+                    new Vector2(sizePx * 0.6f / body.Width, sizePx * 1.05f / body.Height),
+                    SpriteEffects.None, 0f);
+                Color core = soul with { A = 0 };
+                sb.Draw(glow, pos, null, core * (0.5f * fade * pulse), 0f,
+                    glow.Size() * 0.5f, sizePx * 2.4f / glow.Width, SpriteEffects.None, 0f);
+                sb.Draw(glow, pos - new Vector2(0f, sizePx * 0.18f), null,
+                    (Color.White with { A = 0 }) * (0.28f * fade * pulse), 0f,
+                    glow.Size() * 0.5f, sizePx * 0.8f / glow.Width, SpriteEffects.None, 0f);
+            }
         }
     }
 }

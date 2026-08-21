@@ -34,10 +34,6 @@ namespace CalamityOverhaul.Common
         public static ModKeybind Onikiri_DomainFlip { get; private set; }
         public static ModKeybind Kikasa_Sink { get; private set; }
         public static ModKeybind Kikasa_DomainMutate { get; private set; }
-        public static ModKeybind Kikasa_Summon { get; private set; }
-        public static ModKeybind Kikasa_DreamReflect { get; private set; }
-        public static ModKeybind Kikasa_DreamPull { get; private set; }
-        public static ModKeybind Kikasa_WispFire { get; private set; }
         public static ModKeybind WeponSkill_Q { get; private set; }
         public static ModKeybind WeponSkill_R { get; private set; }
         public static ModKeybind Accessory_Skills { get; private set; }
@@ -69,16 +65,10 @@ namespace CalamityOverhaul.Common
             //鬼域翻转，默认 Mouse3
             Onikiri_DomainFlip = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_DomainFlip), "Mouse3");
             Kikasa_Sink = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_Sink), "I");
-            //血湖领域鬼雨异化，默认 Mouse3；被清空绑定时输入层回退原生中键
+            //血湖领域鬼雨异化，默认 Mouse3；被清空绑定时输入层回退原生中键。
+            //短按=开域/血雨翻转，魇影驻湖长按=拉入鬼梦——鬼伞灵异全走沉影盘自动门控，
+            //旧 Kikasa_Summon/DreamReflect/DreamPull/WispFire 四键已随编成制删除
             Kikasa_DomainMutate = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_DomainMutate), "Mouse3");
-            //鬼奴召唤/遣返
-            Kikasa_Summon = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_Summon), "O");
-            //鬼梦：湖镜倒影换黑犬
-            Kikasa_DreamReflect = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_DreamReflect), "P");
-            //鬼梦：拉入/归返
-            Kikasa_DreamPull = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_DreamPull), "X");
-            //血湖鬼火点燃/收火；鬼雨形态压着点不着
-            Kikasa_WispFire = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_WispFire), "Z");
             //鬼伞大范围重启复用 Legend_Restart，与比目鱼/赛博/绯嫁同键、按各自形态门互斥
             WeponSkill_Q = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_Q), "Q");
             WeponSkill_R = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_R), "R");
@@ -110,10 +100,6 @@ namespace CalamityOverhaul.Common
             Onikiri_DomainFlip = null;
             Kikasa_Sink = null;
             Kikasa_DomainMutate = null;
-            Kikasa_Summon = null;
-            Kikasa_DreamReflect = null;
-            Kikasa_DreamPull = null;
-            Kikasa_WispFire = null;
             Legend_Domain = null;
             RadialWheel_Key = null;
             Halibut_Clone = null;

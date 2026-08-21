@@ -67,16 +67,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
         //命中窗与甩直动作精确对齐
         public override bool? CanDamage() => Timer >= WindupTime && Timer <= SnapEnd ? null : false;
 
-        public override bool PreDraw(ref Color lightColor) => false;
-
-        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            Texture2D streak = CWRAsset.LightShot?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (streak == null || glow == null) {
-                return;
-            }
+        /// <summary>鞭形几何（AlphaBlend 暗鞘与加色光层共用同一条曲线）</summary>
+        private void BuildWhip(out Vector2 mouth, out Vector2 mid, out Vector2 tip, out float fade) {
             NPC head = Head;
-            Vector2 mouth = head.Alives()
+            mouth = head.Alives()
                 ? head.Center + new Vector2(0f, 214f)
                 : Projectile.Center + new Vector2(0f, -260f);
 
@@ -96,12 +90,42 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             else {
                 bend = 30f * (float)Math.Sin((t - SnapEnd) * 0.6f) * (1f - (t - SnapEnd) / (TotalLife - SnapEnd));
             }
-            float fade = t > SnapEnd ? MathHelper.Clamp(1f - (t - SnapEnd) / (float)(TotalLife - SnapEnd), 0f, 1f) : 1f;
+            fade = t > SnapEnd ? MathHelper.Clamp(1f - (t - SnapEnd) / (float)(TotalLife - SnapEnd), 0f, 1f) : 1f;
 
-            //二次贝塞尔取样：口须根→控制点（侧向外凸）→鞭梢
-            Vector2 tip = Vector2.Lerp(mouth, Projectile.Center, extend);
-            Vector2 mid = Vector2.Lerp(mouth, tip, 0.5f)
+            //二次贝塞尔：口须根→控制点（侧向外凸）→鞭梢
+            tip = Vector2.Lerp(mouth, Projectile.Center, extend);
+            mid = Vector2.Lerp(mouth, tip, 0.5f)
                 + (tip - mouth).SafeNormalize(Vector2.UnitY).RotatedBy(MathHelper.PiOver2) * bend * Side;
+        }
+
+        /// <summary>暗鞘触须体：真 alpha 圆斑沿曲线滚出连续暗管（契约4，遮挡层走 AlphaBlend）</summary>
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D disc = CWRAsset.DiffusionCircle?.Value;
+            if (disc == null) {
+                return false;
+            }
+            BuildWhip(out Vector2 mouth, out Vector2 mid, out Vector2 tip, out float fade);
+            Color dark = new Color(18, 10, 44) * (0.85f * fade);
+            const int segments = 18;
+            for (int i = 0; i <= segments; i++) {
+                float p = i / (float)segments;
+                Vector2 pos = Vector2.Lerp(Vector2.Lerp(mouth, mid, p), Vector2.Lerp(mid, tip, p), p);
+                //根粗梢细，直径略宽于加色光身撑出剪影
+                float thick = MathHelper.Lerp(26f, 9f, p);
+                Main.EntitySpriteDraw(disc, pos - Main.screenPosition, null, dark, 0f,
+                    disc.Size() / 2f, thick * 2.6f / disc.Width, SpriteEffects.None, 0);
+            }
+            return false;
+        }
+
+        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
+            Texture2D streak = CWRAsset.LightShot?.Value;
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (streak == null || glow == null) {
+                return;
+            }
+            BuildWhip(out Vector2 mouth, out Vector2 mid, out Vector2 tip, out float fade);
+            float t = Timer;
 
             const int segments = 14;
             Vector2 prev = mouth;

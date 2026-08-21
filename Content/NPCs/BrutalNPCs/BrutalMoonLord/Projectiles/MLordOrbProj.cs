@@ -187,6 +187,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             SoundEngine.PlaySound(SoundID.Item118 with { Volume = 0.4f, Pitch = 0.3f, MaxInstances = 6 }, Projectile.Center);
         }
 
+        /// <summary>星球暗鞘色（真 alpha 遮挡层，契约4.4：暗层禁走加色）</summary>
+        private static readonly Color OrbDark = new(20, 12, 50);
+
+        /// <summary>星球本体三层：暗紫外鞘（真 alpha 剪影）+ 深紫晕 + 幻影芯（加色）</summary>
+        private static void DrawOrbBody(Texture2D glow, Texture2D star, Vector2 screenPos,
+            float bodyRot, Vector2 bodyScale, float alpha, float starRot) {
+            Main.EntitySpriteDraw(glow, screenPos, null, OrbDark * (0.88f * alpha),
+                bodyRot, glow.Size() / 2f, bodyScale * 1.25f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(glow, screenPos, null, MLordDirector.DeepViolet with { A = 0 } * (0.85f * alpha),
+                bodyRot, glow.Size() / 2f, bodyScale * 1.7f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(glow, screenPos, null, MLordDirector.Phantasmal with { A = 0 } * alpha,
+                bodyRot, glow.Size() / 2f, bodyScale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(star, screenPos, null, MLordDirector.MoonWhite with { A = 0 } * (0.75f * alpha),
+                starRot, star.Size() / 2f, 0.24f * alpha, SpriteEffects.None, 0);
+        }
+
         public override bool PreDraw(ref Color lightColor) {
             Texture2D glow = CWRAsset.DiffusionCircle?.Value;
             Texture2D star = CWRAsset.StarTexture?.Value;
@@ -198,44 +214,28 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             float speed = Projectile.velocity.Length();
             float phase = 0.82f + 0.18f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 9f + Projectile.whoAmI * 1.3f);
 
-            //残影拖体（速度门控）：逐段连成收锥光带，段间无断口
-            if (speed > 4f) {
-                Texture2D soft = CWRAsset.SoftGlow?.Value;
-                if (soft != null) {
-                    Vector2 prev = Projectile.Center;
-                    for (int i = 1; i < Projectile.oldPos.Length; i++) {
-                        //trail 缓存未填满前是零向量，画出去会拉一条通向世界原点的巨型光带
-                        if (Projectile.oldPos[i] == Vector2.Zero) {
-                            break;
-                        }
-                        Vector2 cur = Projectile.oldPos[i] + Projectile.Size / 2f;
-                        Vector2 seg = prev - cur;
-                        float segLen = seg.Length();
-                        if (segLen > 0.5f) {
-                            float fade = 1f - i / (float)Projectile.oldPos.Length;
-                            Vector2 mid = (prev + cur) * 0.5f - Main.screenPosition;
-                            //软圆点沿段拉伸+半段重叠 → 连续锥形拖带
-                            Main.EntitySpriteDraw(soft, mid, null,
-                                MLordDirector.DeepViolet with { A = 0 } * (0.34f * fade), seg.ToRotation(),
-                                soft.Size() / 2f, new Vector2(segLen * 1.7f / soft.Width, (26f * fade + 5f) / soft.Height),
-                                SpriteEffects.None, 0);
-                        }
-                        prev = cur;
-                    }
-                }
-            }
-
             //速度各向异性拉伸主体
             float stretch = MathHelper.Clamp(speed * 0.02f, 0f, 0.55f);
             Vector2 bodyScale = new Vector2(0.34f * (1f + stretch), 0.34f * (1f - stretch * 0.4f));
             float bodyRot = speed > 2f ? Projectile.velocity.ToRotation() : Projectile.rotation;
 
-            Main.EntitySpriteDraw(glow, screenPos, null, MLordDirector.DeepViolet with { A = 0 } * (0.85f * phase),
-                bodyRot, glow.Size() / 2f, bodyScale * 1.7f, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(glow, screenPos, null, MLordDirector.Phantasmal with { A = 0 } * phase,
-                bodyRot, glow.Size() / 2f, bodyScale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(star, screenPos, null, MLordDirector.MoonWhite with { A = 0 } * (0.75f * phase),
-                Projectile.rotation, star.Size() / 2f, 0.24f, SpriteEffects.None, 0);
+            //拖尾 = 本体同材质残影（契约5，速度门控）：横轴比 0.85→0.55
+            if (speed > 4f) {
+                for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
+                    //trail 缓存未填满前是零向量，画出去会闪到世界原点
+                    if (Projectile.oldPos[i] == Vector2.Zero) {
+                        continue;
+                    }
+                    float k = 1f - i / (float)Projectile.oldPos.Length;
+                    Vector2 pos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                    DrawOrbBody(glow, star, pos, bodyRot,
+                        bodyScale * MathHelper.Lerp(0.55f, 0.85f, k), (0.1f + 0.38f * k) * phase,
+                        Projectile.rotation);
+                }
+            }
+
+            //本体
+            DrawOrbBody(glow, star, screenPos, bodyRot, bodyScale, phase, Projectile.rotation);
             return false;
         }
     }

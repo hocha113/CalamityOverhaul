@@ -147,6 +147,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     }
                 }
                 spriteBatch.End();
+
+                //伞下鬼另开无着色器批:躲开 TechCanopy 对非伞贴图的染指
+                DrawCanopyGhosts(spriteBatch, umbrellaType, view);
                 return;
             }
 
@@ -159,6 +162,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     && view.Contains(proj.Center.ToPoint())
                     && proj.ModProjectile is KikasaRainUmbrella umbrella) {
                     umbrella.DrawUmbrella(spriteBatch);
+                    umbrella.DrawCanopyGhosts(spriteBatch);
+                }
+            }
+            spriteBatch.End();
+        }
+
+        /// <summary>伞下鬼批:伞体着色器批结束后单独一趟</summary>
+        private static void DrawCanopyGhosts(SpriteBatch spriteBatch, int umbrellaType, Rectangle view) {
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone,
+                null, Main.GameViewMatrix.TransformationMatrix);
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile proj = Main.projectile[i];
+                if (proj.active && proj.type == umbrellaType
+                    && view.Contains(proj.Center.ToPoint())
+                    && proj.ModProjectile is KikasaRainUmbrella umbrella) {
+                    umbrella.DrawCanopyGhosts(spriteBatch);
                 }
             }
             spriteBatch.End();

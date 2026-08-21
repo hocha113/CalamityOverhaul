@@ -456,6 +456,7 @@ QuestManagerUI: {
 	// ProviderLabelText: Client
 	// ProviderHalibut: The Halibut
 	// ProviderOnikiri: Onikiri
+	// ProviderKikasa: Kikasa
 	// ProviderSHPC: SHPC
 	// ProviderOldDuke: The Old Duke
 	// ProviderSupCal: Supreme Calamitas

@@ -31,8 +31,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         /// <summary>恶犬身高占画高比（狼贴图按此适配）</summary>
         public const float HoundHeight = 0.13f;
 
-        /// <summary>湖底记忆剪影中心</summary>
+        /// <summary>湖底记忆剪影中心（未驯服的最近沉溺仍在这里留形）</summary>
         public static readonly Vector2 MemoryUv = new(0.20f, 0.80f);
+
+        /// <summary>三席影位的湖床锚点：驻湖记忆沉在这里，深浅错落不站成一排</summary>
+        public static readonly Vector2[] SlotUv = [
+            new(0.13f, 0.785f), new(0.21f, 0.845f), new(0.29f, 0.795f),
+        ];
 
         /// <summary>伞奴岸位首位（贴图中心；恶犬右侧一排，脚跟与犬同踩岸沿）</summary>
         public static readonly Vector2 ThrallRowUv = new(0.52f, 0.587f);
@@ -53,6 +58,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         /// <summary>伞奴热区（整排岸位；仅鬼雨形态且在场时参与判定）</summary>
         public static readonly Vector4 ThrallHotspot = new(0.49f, 0.545f, 0.29f, 0.09f);
+
+        /// <summary>村落热区：窗火本就是湖藏填充的读数——点村屋开湖窗。
+        /// 与伞奴排有重叠，命中判定按 恶犬→伞奴→村落→血湖 的先后让位</summary>
+        public static readonly Vector4 VillageHotspot = new(0.55f, 0.44f, 0.42f, 0.185f);
 
         //====== 开合 ======
 

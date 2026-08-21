@@ -23,11 +23,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 {
     /// <summary>
     /// 湖畔村图：鬼伞主界面。一幅活的横卷——红天血湖畔的村落，
-    /// 自左下掌中缩影放大铺开。画即状态：湖水位=涨水进度、湖底沉着记忆沉影
-    /// （干湖=泥上的形，可驱使/未驯服/在外三态可辨）、恶犬随倒影/鬼梦改姿态、
+    /// 自左下掌中缩影放大铺开。画即状态：湖水位=涨水进度、湖底沉着三席驻影
+    /// （干湖=泥上的形，在外/未驯服可辨）、恶犬随倒影/鬼梦改姿态、
     /// 村中窗火随湖藏渐次点亮、鬼雨形态岸上立着在场伞奴。
-    /// 画内血湖/恶犬/伞奴排是热区：点湖开湖窗（干湖也开，只读），点犬出鬼梦题跋卡，
-    /// 悬伞奴报在场数；非热区点击荡开一圈墨涟漪——不存在无反馈点击。
+    /// 画内血湖/村落/恶犬/伞奴排是热区：点湖铺开沉影盘（编成在这改）、
+    /// 点村屋开湖窗（窗火本就是湖藏读数）、点犬出鬼梦题跋卡、悬伞奴报在场数；
+    /// 非热区点击荡开一圈墨涟漪——不存在无反馈点击。
     /// </summary>
     internal class KikasaSceneUI : UIHandle, ILocalizedModType
     {
@@ -47,8 +48,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         public static LocalizedText InDreamLine { get; private set; }
         public static LocalizedText HoundCountFormat { get; private set; }
         public static LocalizedText DreamHint { get; private set; }
+        public static LocalizedText DreamGateHint { get; private set; }
         public static LocalizedText ThrallTag { get; private set; }
         public static LocalizedText ThrallCountFormat { get; private set; }
+        public static LocalizedText VillageTag { get; private set; }
+        public static LocalizedText VillageOpenTag { get; private set; }
+        public static LocalizedText BoardOpenTag { get; private set; }
+        public static LocalizedText SlotCountFormat { get; private set; }
+        public static LocalizedText BoardTitle { get; private set; }
+        public static LocalizedText BoardCountFormat { get; private set; }
+        public static LocalizedText BoardPickHint { get; private set; }
+        public static LocalizedText BoardPlacedFormat { get; private set; }
+        public static LocalizedText BoardEmptyHint { get; private set; }
+        public static LocalizedText BoardAlreadySlotted { get; private set; }
+        public static LocalizedText BoardUnslotHint { get; private set; }
+        public static LocalizedText BoardUnslottedFormat { get; private set; }
+        public static LocalizedText BoardSlotRemoveHint { get; private set; }
+        public static LocalizedText BoardArmsStockFormat { get; private set; }
+        public static LocalizedText BoardArmsNoStock { get; private set; }
+        public static LocalizedText BoardAffinityFormat { get; private set; }
+        public static LocalizedText AffinityFlame { get; private set; }
+        public static LocalizedText AffinityNightmare { get; private set; }
+        public static LocalizedText AffinityRain { get; private set; }
+        public static LocalizedText AffinityWild { get; private set; }
+        public static LocalizedText EdgeDreamFire { get; private set; }
+        public static LocalizedText EdgeBoilRain { get; private set; }
+        public static LocalizedText EdgeRainNightmare { get; private set; }
+        public static LocalizedText EdgeTriSeal { get; private set; }
+        public static LocalizedText EdgeDreamFireNote { get; private set; }
+        public static LocalizedText EdgeBoilRainNote { get; private set; }
+        public static LocalizedText EdgeRainNightmareNote { get; private set; }
+        public static LocalizedText EdgeTriSealNote { get; private set; }
+        public static LocalizedText LakeVigorLabel { get; private set; }
 
         public override void SetStaticDefaults() {
             LakeTag = this.GetLocalization(nameof(LakeTag), () => "血湖");
@@ -62,8 +93,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             InDreamLine = this.GetLocalization(nameof(InDreamLine), () => "你正身在梦中");
             HoundCountFormat = this.GetLocalization(nameof(HoundCountFormat), () => "在场恶犬 {0} / {1}");
             DreamHint = this.GetLocalization(nameof(DreamHint), () => "梦中按住左键，黑水会不断吐出恶犬");
+            DreamGateHint = this.GetLocalization(nameof(DreamGateHint),
+                () => "魇影驻湖倒影自醒；长按异化键，它把你拉进梦里");
             ThrallTag = this.GetLocalization(nameof(ThrallTag), () => "伞奴");
             ThrallCountFormat = this.GetLocalization(nameof(ThrallCountFormat), () => "在场伞奴 {0} / {1}");
+            VillageTag = this.GetLocalization(nameof(VillageTag), () => "湖 藏");
+            VillageOpenTag = this.GetLocalization(nameof(VillageOpenTag), () => "点击开湖窗——窗火即沉物");
+            BoardOpenTag = this.GetLocalization(nameof(BoardOpenTag), () => "点击铺开沉影盘");
+            SlotCountFormat = this.GetLocalization(nameof(SlotCountFormat), () => "驻影 {0} / {1}");
+            BoardTitle = this.GetLocalization(nameof(BoardTitle), () => "沉 影 盘");
+            BoardCountFormat = this.GetLocalization(nameof(BoardCountFormat), () => "已沉 {0} / {1}");
+            BoardPickHint = this.GetLocalization(nameof(BoardPickHint), () => "先点岸上的沉影拾起，再落进影位");
+            BoardPlacedFormat = this.GetLocalization(nameof(BoardPlacedFormat), () => "{0} 沉进了影位");
+            BoardEmptyHint = this.GetLocalization(nameof(BoardEmptyHint),
+                () => "湖底还没有沉影——光标指着 boss 按 {0}，把它按进湖里");
+            BoardAlreadySlotted = this.GetLocalization(nameof(BoardAlreadySlotted),
+                () => "已在影位上——点它拾起，再点空处卸下");
+            BoardUnslotHint = this.GetLocalization(nameof(BoardUnslotHint),
+                () => "点空处卸下，点回影位再驻上");
+            BoardUnslottedFormat = this.GetLocalization(nameof(BoardUnslottedFormat),
+                () => "{0} 回了湖底");
+            BoardSlotRemoveHint = this.GetLocalization(nameof(BoardSlotRemoveHint),
+                () => "右键卸下，或点它拾起再点空处");
+            BoardArmsStockFormat = this.GetLocalization(nameof(BoardArmsStockFormat), () => "湖藏原件 ×{0}");
+            BoardArmsNoStock = this.GetLocalization(nameof(BoardArmsNoStock), () => "湖里没有它的原件，凝不出形");
+            BoardAffinityFormat = this.GetLocalization(nameof(BoardAffinityFormat), () => "亲和 · {0}");
+            AffinityFlame = this.GetLocalization(nameof(AffinityFlame), () => "焰");
+            AffinityNightmare = this.GetLocalization(nameof(AffinityNightmare), () => "魇");
+            AffinityRain = this.GetLocalization(nameof(AffinityRain), () => "潦");
+            AffinityWild = this.GetLocalization(nameof(AffinityWild), () => "百搭");
+            EdgeDreamFire = this.GetLocalization(nameof(EdgeDreamFire), () => "梦火");
+            EdgeBoilRain = this.GetLocalization(nameof(EdgeBoilRain), () => "沸雨");
+            EdgeRainNightmare = this.GetLocalization(nameof(EdgeRainNightmare), () => "雨魇");
+            EdgeTriSeal = this.GetLocalization(nameof(EdgeTriSeal), () => "三影镇湖");
+            EdgeDreamFireNote = this.GetLocalization(nameof(EdgeDreamFireNote),
+                () => "梦火成边——梦犬的牙带上了鬼火");
+            EdgeBoilRainNote = this.GetLocalization(nameof(EdgeBoilRainNote),
+                () => "沸雨成边——鬼雨压不灭这把火了");
+            EdgeRainNightmareNote = this.GetLocalization(nameof(EdgeRainNightmareNote),
+                () => "雨魇成边——雨里转出伞奴快了一倍");
+            EdgeTriSealNote = this.GetLocalization(nameof(EdgeTriSealNote),
+                () => "三影镇湖——三系齐坐，鬼奴出力更狠");
+            LakeVigorLabel = this.GetLocalization(nameof(LakeVigorLabel), () => "湖力");
         }
         #endregion
 
@@ -79,17 +150,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         //==================== 状态 ====================
 
-        private enum Hotspot { None, Lake, Hound, Thrall }
+        private enum Hotspot { None, Lake, Hound, Thrall, Village }
 
         private Rectangle canvasRect;
         private Hotspot hover = Hotspot.None;
         private float lakeHoverLerp;
         private float houndHoverLerp;
         private float thrallHoverLerp;
+        private float villageHoverLerp;
         private bool dreamCardOpen;
         private float dreamCardLerp;
         //本帧在场伞奴数（鬼雨形态的岸位读数），Update 里点一次两处共用
         private int thrallCount;
+
+        //沉影盘：画境的编成面板（点血湖铺开）
+        private readonly KikasaBoardPanel board = new();
+
+        /// <summary>沉影盘正开着（引导的编成步认它）</summary>
+        internal bool BoardIsOpen => board.IsOpen;
 
         //画内水语包络
         private float stir;
@@ -128,11 +206,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         protected override void OnOpen() {
             Main.playerInventory = false;
             hover = Hotspot.None;
-            lakeHoverLerp = houndHoverLerp = thrallHoverLerp = 0f;
+            lakeHoverLerp = houndHoverLerp = thrallHoverLerp = villageHoverLerp = 0f;
             dreamCardOpen = false;
             dreamCardLerp = 0f;
             ripples.Clear();
             stir = 0.5f;
+            board.Reset();
             //边沿基线取当前值，开画瞬间不虚报事件
             lastMemoryType = Servant.LastDrownedType;
             lastVaultCount = Vault.Stored.Count;
@@ -196,10 +275,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             //岸位读数：鬼雨形态下在场的伞奴
             thrallCount = KikasaThrall.CountActive(player.whoAmI);
 
+            //沉影盘开着时输入全归它，画面热区歇着
+            board.Update(player, canvasRect, inputAvailable, mouse,
+                keyLeftPressState, keyRightPressState);
+
             hover = Hotspot.None;
-            if (inputAvailable && overCanvas) {
+            if (inputAvailable && overCanvas && !board.Visible) {
                 Rectangle houndRect = KikasaSceneTheme.UvToScreen(canvasRect, KikasaSceneTheme.HoundHotspot);
                 Rectangle thrallRect = KikasaSceneTheme.UvToScreen(canvasRect, KikasaSceneTheme.ThrallHotspot);
+                Rectangle villageRect = KikasaSceneTheme.UvToScreen(canvasRect, KikasaSceneTheme.VillageHotspot);
                 Rectangle lakeRect = KikasaSceneTheme.UvToScreen(canvasRect, KikasaSceneTheme.LakeHotspot);
                 bool thrallRowLive = Domain.IsRainForm && thrallCount > 0;
                 if (houndRect.Contains(mouse.ToPoint())) {
@@ -208,6 +292,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 else if (thrallRowLive && thrallRect.Contains(mouse.ToPoint())) {
                     hover = Hotspot.Thrall;
                 }
+                else if (villageRect.Contains(mouse.ToPoint())) {
+                    hover = Hotspot.Village;
+                }
                 else if (lakeRect.Contains(mouse.ToPoint())) {
                     hover = Hotspot.Lake;
                 }
@@ -215,6 +302,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             lakeHoverLerp = MathHelper.Lerp(lakeHoverLerp, hover == Hotspot.Lake ? 1f : 0f, 0.15f);
             houndHoverLerp = MathHelper.Lerp(houndHoverLerp, hover == Hotspot.Hound ? 1f : 0f, 0.15f);
             thrallHoverLerp = MathHelper.Lerp(thrallHoverLerp, hover == Hotspot.Thrall ? 1f : 0f, 0.15f);
+            villageHoverLerp = MathHelper.Lerp(villageHoverLerp, hover == Hotspot.Village ? 1f : 0f, 0.15f);
 
             if (IsOpen && overCanvas) {
                 player.mouseInterface = true;
@@ -223,17 +311,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/KikasaScene");
             }
 
-            //====== 点击分发：点哪都有回应 ======
-            if (inputAvailable && keyLeftPressState == KeyPressState.Pressed) {
+            //====== 点击分发：点哪都有回应（盘开着时点击已被盘吃掉） ======
+            if (inputAvailable && !board.Visible && keyLeftPressState == KeyPressState.Pressed) {
                 if (hover == Hotspot.Hound) {
                     dreamCardOpen = !dreamCardOpen;
                     SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.5f, Pitch = -0.3f });
                 }
-                else if (hover == Hotspot.Lake) {
-                    //干湖也开：湖窗只读模式自己接手
+                else if (hover == Hotspot.Village) {
+                    //窗火即湖藏：点村屋开湖窗（干湖也开，只读模式自己接手）
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.5f, Pitch = -0.4f });
                     Close();
                     KikasaVaultUI.Instance?.OpenFromScene();
+                }
+                else if (hover == Hotspot.Lake) {
+                    //点湖铺开沉影盘：编成就写在湖面上
+                    board.Open();
                 }
                 else if (overCanvas) {
                     //非热区：墨涟漪答话
@@ -245,7 +337,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 }
             }
 
-            dreamCardLerp = MathHelper.Lerp(dreamCardLerp, dreamCardOpen && IsOpen ? 1f : 0f, 0.16f);
+            dreamCardLerp = MathHelper.Lerp(dreamCardLerp,
+                dreamCardOpen && IsOpen && !board.Visible ? 1f : 0f, 0.16f);
 
             for (int i = ripples.Count - 1; i >= 0; i--) {
                 Ripple r = ripples[i];
@@ -303,6 +396,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 DrawInkRipples(spriteBatch, detailA, rain);
                 DrawTextLayer(spriteBatch, canvas, detailA, rain, time);
                 DrawDreamCard(spriteBatch, canvas, detailA, rain, time);
+                //沉影盘盖在画面之上：湖面的特写
+                board.Draw(spriteBatch, player, canvas, detailA, rain, time);
             }
         }
 
@@ -399,7 +494,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 return;
             }
             Rectangle frame = KikasaThrallRenderer.FrameOf(tex, 0);
-            int count = Math.Min(thrallCount, KikasaThrall.MaxPerOwner);
+            int count = Math.Min(thrallCount, KikasaThrall.CapFor(player.whoAmI));
             float stir01 = MathHelper.Clamp(stir, 0f, 1f);
             for (int i = 0; i < count; i++) {
                 //站位手排：脚跟、身量与朝向逐个错开，不站成仪仗队
@@ -422,33 +517,61 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             }
         }
 
-        //====== 湖底记忆 ======
+        //====== 湖底驻影（三席影位就沉在画里的湖底） ======
 
         private void DrawMemory(SpriteBatch sb, Rectangle canvas, float a, float rain, float waterUv) {
-            int memoryType = Servant.LastDrownedType;
-            if (memoryType <= 0) {
-                return;
+            KikasaServantPlayer servant = Servant;
+            float effStir = MathHelper.Clamp(stir + lakeHoverLerp * 0.4f + memoryPulse, 0f, 1f);
+            bool anySlot = false;
+            for (int i = 0; i < KikasaServantPlayer.SlotCount; i++) {
+                int key = servant.SlotKeyAt(i);
+                Vector2 uv = KikasaSceneTheme.SlotUv[i];
+                if (key == 0) {
+                    continue;
+                }
+                anySlot = true;
+                DrawLakeBedEffigy(sb, canvas, a, rain, waterUv, effStir, key, uv,
+                    servant.FindServantOf(key) != null);
             }
-            //鬼奴在外=负形空位，不再整个消失
-            bool absent = Servant.FindActiveServant() != null;
-            bool tamed = KikasaServantIndex.TryGet(memoryType, out _);
+            //一席未驻而最近沉过不认识的活物：泥上留它的形，好知道「沉了但驱使不了」
+            int lastType = Servant.LastDrownedType;
+            if (!anySlot && lastType > 0 && KikasaServantIndex.CanonicalOf(lastType) <= 0) {
+                DrawLakeBedEffigy(sb, canvas, a, rain, waterUv, effStir,
+                    lastType, KikasaSceneTheme.MemoryUv, absent: false, tamed: false);
+            }
+        }
+
+        /// <summary>湖床上一席沉影：座圈 + 随水位化水/化泥的形</summary>
+        private void DrawLakeBedEffigy(SpriteBatch sb, Rectangle canvas, float a, float rain,
+            float waterUv, float effStir, int key, Vector2 uv, bool absent, bool tamed = true) {
             //水漫过湖床多少，它就化进水里多少；干湖时留成泥上的形，不再有看不见的档
-            float submerge = MathHelper.Clamp(
-                (KikasaSceneTheme.MemoryUv.Y - waterUv) * canvas.Height / 26f, 0f, 1f);
-            //满水位时它沉在最深处
-            float depth = MathHelper.Clamp((KikasaSceneTheme.MemoryUv.Y - waterUv)
-                / (KikasaSceneTheme.MemoryUv.Y - KikasaSceneTheme.WaterFullY), 0f, 1f);
+            float submerge = MathHelper.Clamp((uv.Y - waterUv) * canvas.Height / 26f, 0f, 1f);
+            float depth = MathHelper.Clamp((uv.Y - waterUv)
+                / (uv.Y - KikasaSceneTheme.WaterFullY), 0f, 1f);
             //泥上不漂，入水才随水呼吸
-            Vector2 pos = KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.MemoryUv)
-                + new Vector2(0f, MathF.Sin(Main.GlobalTimeWrappedHourly * 1.2f) * 2.2f * submerge);
-            float fit = canvas.Height * 0.115f;
+            Vector2 pos = KikasaSceneTheme.UvToScreen(canvas, uv)
+                + new Vector2(0f, MathF.Sin(Main.GlobalTimeWrappedHourly * 1.2f + uv.X * 9f)
+                    * 2.2f * submerge);
+            float fit = canvas.Height * 0.105f;
             //湖床落影：沉影的座，在外时读作空位的口
             KikasaVaultRenderer.DrawRing(sb, pos + new Vector2(0f, fit * 0.46f),
                 fit * 0.4f, fit * 0.11f, KikasaHudTheme.Void(rain) * (0.5f * a));
-            //悬停与记忆更替的涌浪都灌进水面活性，沉影跟着更躁
-            float effStir = MathHelper.Clamp(stir + lakeHoverLerp * 0.4f + memoryPulse, 0f, 1f);
-            KikasaVaultRenderer.DrawSunkEffigy(sb, memoryType, pos, fit, a,
-                submerge, depth, tamed, absent, rain, effStir, KikasaHudTheme.Accent(rain));
+            if (key > 0) {
+                KikasaVaultRenderer.DrawSunkEffigy(sb, key, pos, fit, a,
+                    submerge, depth, tamed, absent, rain, effStir, KikasaHudTheme.Accent(rain));
+            }
+            else {
+                //械奴驻影：物品贴图走纹理重载
+                int itemType = -key;
+                Main.instance.LoadItem(itemType);
+                Texture2D tex = TextureAssets.Item[itemType]?.Value;
+                if (tex != null) {
+                    KikasaVaultRenderer.DrawSunkEffigy(sb, tex,
+                        new Rectangle(0, 0, tex.Width, tex.Height), pos, fit, a,
+                        submerge, depth, tamed, absent, rain, effStir,
+                        itemType * 0.173f, KikasaHudTheme.Accent(rain), SpriteEffects.None);
+                }
+            }
         }
 
         //====== 加色小件 ======
@@ -490,15 +613,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 }
             }
 
-            //鬼奴外出：记忆位留一个慢旋涡
-            int memoryType = Servant.LastDrownedType;
-            if (memoryType > 0 && Servant.FindActiveServant() != null && hasWater) {
-                Vector2 vc = KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.MemoryUv);
-                for (int ring = 0; ring < 2; ring++) {
-                    float rp = (time * 0.35f + ring * 0.5f) % 1f;
-                    float r = MathHelper.Lerp(15f, 4f, rp);
-                    KikasaVaultRenderer.DrawRing(sb, vc, r, r * 0.4f,
-                        glow * (0.22f * (1f - rp) * a));
+            //驻影外出：席位上留一个慢旋涡
+            if (hasWater) {
+                KikasaServantPlayer servant = Servant;
+                for (int i = 0; i < KikasaServantPlayer.SlotCount; i++) {
+                    int key = servant.SlotKeyAt(i);
+                    if (key == 0 || servant.FindServantOf(key) == null) {
+                        continue;
+                    }
+                    Vector2 vc = KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.SlotUv[i]);
+                    for (int ring = 0; ring < 2; ring++) {
+                        float rp = (time * 0.35f + ring * 0.5f + i * 0.23f) % 1f;
+                        float r = MathHelper.Lerp(15f, 4f, rp);
+                        KikasaVaultRenderer.DrawRing(sb, vc, r, r * 0.4f,
+                            glow * (0.22f * (1f - rp) * a));
+                    }
                 }
             }
 
@@ -517,6 +646,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 KikasaVaultRenderer.DrawGlowDot(sb,
                     KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.HoundUv),
                     canvas.Height * 0.055f, accent * (0.10f * houndHoverLerp * a));
+            }
+            //悬停村落：窗火那一带浮一层暖光——「点这里开湖窗」
+            if (villageHoverLerp > 0.05f) {
+                Rectangle villageRect = KikasaSceneTheme.UvToScreen(canvas, KikasaSceneTheme.VillageHotspot);
+                KikasaVaultRenderer.DrawGlowDot(sb,
+                    villageRect.Center.ToVector2() + new Vector2(0f, villageRect.Height * 0.18f),
+                    villageRect.Width * 0.30f, glow * (0.08f * villageHoverLerp * a));
             }
 
             KikasaVaultRenderer.RestoreUIBatch(sb);
@@ -568,28 +704,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             List<(string line, Color col, float scale)> lines = [];
             if (hover == Hotspot.Lake) {
                 lines.Add((LakeTag.Value, text, 0.82f));
-                lines.Add((string.Format(KikasaVaultUI.CountFormat.Value,
-                    Vault.Stored.Count, KikasaVaultPlayer.Capacity), dim, 0.7f));
-                int memoryType = Servant.LastDrownedType;
-                if (memoryType <= 0) {
+                lines.Add((string.Format(SlotCountFormat.Value,
+                    Servant.FilledSlotCount, KikasaServantPlayer.SlotCount), dim, 0.7f));
+                int lastType = Servant.LastDrownedType;
+                if (Servant.FilledSlotCount == 0 && lastType > 0
+                    && KikasaServantIndex.CanonicalOf(lastType) <= 0) {
+                    //沉过却驱使不了的，湖记着这口气
+                    lines.Add((Lang.GetNPCNameValue(lastType) + " · "
+                        + KikasaServantPlayer.ServantUnknown.Value, dim, 0.7f));
+                }
+                else if (Servant.CollectedServantCount == 0) {
                     lines.Add((MemoryEmpty.Value, dim, 0.7f));
                 }
-                else {
-                    bool outSide = Servant.FindActiveServant() != null;
-                    string memLine = Lang.GetNPCNameValue(memoryType);
-                    if (outSide) {
-                        memLine += " · " + ServantOutTag.Value;
-                    }
-                    else if (!KikasaServantIndex.TryGet(memoryType, out _)) {
-                        memLine += " · " + KikasaServantPlayer.ServantUnknown.Value;
-                    }
-                    lines.Add((memLine, dim, 0.7f));
-                }
+                lines.Add((BoardOpenTag.Value, dim, 0.62f));
+            }
+            else if (hover == Hotspot.Village) {
+                lines.Add((VillageTag.Value, text, 0.82f));
+                lines.Add((string.Format(KikasaVaultUI.CountFormat.Value,
+                    Vault.Stored.Count, KikasaVaultPlayer.Capacity), dim, 0.7f));
+                lines.Add((VillageOpenTag.Value, dim, 0.62f));
             }
             else if (hover == Hotspot.Thrall) {
                 lines.Add((ThrallTag.Value, text, 0.82f));
                 lines.Add((string.Format(ThrallCountFormat.Value,
-                    thrallCount, KikasaThrall.MaxPerOwner), dim, 0.7f));
+                    thrallCount, KikasaThrall.CapFor(player.whoAmI)), dim, 0.7f));
             }
             else {
                 lines.Add((HoundTag.Value, text, 0.82f));
@@ -638,10 +776,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 awake ? new Color(235, 150, 90) : KikasaHudTheme.TextDim(rain), 0.72f));
             if (dreaming) {
                 lines.Add((InDreamLine.Value, KikasaHudTheme.Glow(rain), 0.72f));
-                lines.Add((string.Format(HoundCountFormat.Value, hounds, KikasaDreamPlayer.MaxHounds),
-                    KikasaHudTheme.TextDim(rain), 0.72f));
+                lines.Add((string.Format(HoundCountFormat.Value, hounds,
+                    KikasaDreamPlayer.MaxHoundsFor(player)), KikasaHudTheme.TextDim(rain), 0.72f));
+                lines.Add((DreamHint.Value, KikasaHudTheme.TextDim(rain) * 0.85f, 0.62f));
             }
-            lines.Add((DreamHint.Value, KikasaHudTheme.TextDim(rain) * 0.85f, 0.62f));
+            else {
+                //梦门读数：魇影自醒 + 长按入梦；湖力不足时倒影拉不动人
+                lines.Add((DreamGateHint.Value, KikasaHudTheme.TextDim(rain) * 0.85f, 0.62f));
+                if (awake && domain.AnyActive
+                    && domain.LakeVigor < KikasaServants.KikasaEffigyBoard.DreamVigorNeed) {
+                    lines.Add((string.Format("{0} {1:P0}", LakeVigorLabel.Value,
+                        MathHelper.Clamp(domain.LakeVigor, 0f, 1f)),
+                        KikasaHudTheme.Accent(rain), 0.62f));
+                }
+            }
 
             float cardH = 14f + lineT * 0.84f + 8f;
             foreach ((string line, _, float scale) in lines) {

@@ -4,8 +4,8 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
 {
     /// <summary>
-    /// 大范围重启的位置历史：客户端与服务器都无条件记录活跃 NPC 与玩家的位置环形缓冲。
-    /// 服务器不模拟领域、无法按形态门控，纯位置拷贝的开销可忽略；
+    /// 大范围重启的运动历史：客户端与服务器都无条件记录活跃 NPC（位置+姿态）
+    /// 与玩家（位置）的环形缓冲。服务器不模拟领域、无法按形态门控，纯拷贝的开销可忽略；
     /// 倒放期间由 <see cref="KikasaReset"/> 暂停记录（最新样本即触发帧），
     /// 倒放结束后旧轨迹作废、整表清空重新积累。
     /// </summary>
@@ -14,12 +14,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
         /// <summary>采样间隔（帧）</summary>
         public const int SampleInterval = 3;
 
-        /// <summary>每实体样本容量：覆盖 384 帧，大于倒放窗口 <see cref="KikasaReset.RewindWindowFrames"/></summary>
-        public const int SampleCapacity = 128;
+        /// <summary>每实体样本容量：覆盖 768 帧，必须大于倒放窗口
+        /// <see cref="KikasaReset.RewindWindowFrames"/>——容量不足时倒带后段
+        /// 深度越过缓冲，所有实体会钉死在最老样本上不再后退</summary>
+        public const int SampleCapacity = 256;
+
+        /// <summary>单帧运动快照：位置之外连姿态一起倒放，才读得出"倒带"而非"拖拽"</summary>
+        private struct Sample
+        {
+            public Vector2 Pos;
+            public float Rot;
+            public sbyte Dir;
+            public sbyte SpriteDir;
+        }
 
         private sealed class Track
         {
-            public readonly Vector2[] Samples = new Vector2[SampleCapacity];
+            public readonly Sample[] Samples = new Sample[SampleCapacity];
             public int Head = -1;
             public int Count;
 
@@ -28,16 +39,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
                 Count = 0;
             }
 
-            public void Push(Vector2 position) {
+            public void Push(in Sample sample) {
                 Head = (Head + 1) % SampleCapacity;
-                Samples[Head] = position;
+                Samples[Head] = sample;
                 if (Count < SampleCapacity) {
                     Count++;
                 }
             }
 
             /// <summary>从最新往回第 index 个样本（0=最新），越界钳到最老</summary>
-            public Vector2 Peek(int index) {
+            public Sample Peek(int index) {
                 index = Math.Clamp(index, 0, Count - 1);
                 int slot = Head - index;
                 if (slot < 0) {
@@ -86,13 +97,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
                 if (npc?.active == true) {
-                    (npcTracks[i] ??= new Track()).Push(npc.position);
+                    (npcTracks[i] ??= new Track()).Push(new Sample {
+                        Pos = npc.position,
+                        Rot = float.IsFinite(npc.rotation) ? npc.rotation : 0f,
+                        Dir = (sbyte)Math.Clamp(npc.direction, -1, 1),
+                        SpriteDir = (sbyte)Math.Clamp(npc.spriteDirection, -1, 1),
+                    });
                 }
             }
             for (int i = 0; i < Main.maxPlayers; i++) {
                 Player player = Main.player[i];
                 if (player?.active == true && !player.dead) {
-                    (playerTracks[i] ??= new Track()).Push(player.position);
+                    (playerTracks[i] ??= new Track()).Push(new Sample {
+                        Pos = player.position,
+                    });
                 }
             }
         }
@@ -104,26 +122,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
         /// </summary>
         internal static void ForceSample() => PushAll();
 
-        /// <summary>按"距最新样本多少帧"取 NPC 历史位置，样本间线性插值；无历史返回 false</summary>
-        internal static bool TrySampleNpc(int index, float ageFrames, out Vector2 position)
+        /// <summary>
+        /// 按"距最新样本多少帧"取 NPC 历史运动快照：位置线性、角度最短弧插值，
+        /// 朝向取较近样本；无历史返回 false
+        /// </summary>
+        internal static bool TrySampleNpc(int index, float ageFrames, out Vector2 position,
+            out float rotation, out int direction, out int spriteDirection)
             => TrySample(index >= 0 && index < npcTracks.Length
-                ? npcTracks[index] : null, ageFrames, out position);
+                ? npcTracks[index] : null, ageFrames,
+                out position, out rotation, out direction, out spriteDirection);
 
         /// <summary>按"距最新样本多少帧"取玩家历史位置</summary>
         internal static bool TrySamplePlayer(int who, float ageFrames, out Vector2 position)
             => TrySample(who >= 0 && who < playerTracks.Length
-                ? playerTracks[who] : null, ageFrames, out position);
+                ? playerTracks[who] : null, ageFrames, out position, out _, out _, out _);
 
-        private static bool TrySample(Track track, float ageFrames, out Vector2 position) {
+        /// <summary>
+        /// 历史深度 ageFrames 当刻的 NPC 速度（像素/帧），由相邻样本差商还原；
+        /// 深度越过缓冲时两样本同值、自然得零。落行时用它把"当年的动量"接回去
+        /// </summary>
+        internal static bool TryNpcVelocityAt(int index, float ageFrames, out Vector2 velocity) {
+            velocity = Vector2.Zero;
+            Track track = index >= 0 && index < npcTracks.Length ? npcTracks[index] : null;
+            if (track == null || track.Count < 2) {
+                return false;
+            }
+            int nearer = (int)(MathF.Max(ageFrames, 0f) / SampleInterval);
+            Vector2 newer = track.Peek(nearer).Pos;
+            Vector2 older = track.Peek(nearer + 1).Pos;
+            velocity = (newer - older) / SampleInterval;
+            return true;
+        }
+
+        private static bool TrySample(Track track, float ageFrames, out Vector2 position,
+            out float rotation, out int direction, out int spriteDirection) {
             position = default;
+            rotation = 0f;
+            direction = 0;
+            spriteDirection = 0;
             if (track == null || track.Count <= 0) {
                 return false;
             }
             float f = MathF.Max(ageFrames, 0f) / SampleInterval;
             int nearer = (int)f;
-            Vector2 a = track.Peek(nearer);
-            Vector2 b = track.Peek(nearer + 1);
-            position = Vector2.Lerp(a, b, MathHelper.Clamp(f - nearer, 0f, 1f));
+            float t = MathHelper.Clamp(f - nearer, 0f, 1f);
+            Sample a = track.Peek(nearer);
+            Sample b = track.Peek(nearer + 1);
+            position = Vector2.Lerp(a.Pos, b.Pos, t);
+            //角度沿最短弧插值，跨 ±π 不打转
+            rotation = a.Rot + MathHelper.WrapAngle(b.Rot - a.Rot) * t;
+            Sample near = t < 0.5f ? a : b;
+            direction = near.Dir;
+            spriteDirection = near.SpriteDir;
             return true;
         }
 

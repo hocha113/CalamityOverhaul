@@ -444,6 +444,8 @@ KikasaWallOfFleshServant.DisplayName: Kikasa Wall Of Flesh Servant
 KikasaRainUmbrella.DisplayName: Hovering Kikasa
 KikasaInkDrop.DisplayName: Ink Rain
 KikasaInkPour.DisplayName: Ink Torrent
+KikasaInkPuddle.DisplayName: Ink Puddle
+KikasaInkGeyser.DisplayName: Ink Geyser
 BrainBloodShard.DisplayName: Pulsing Blood Bead
 BrainMirrorImage.DisplayName: Mirror Image
 BrainShellFragment.DisplayName: Shell Fragment
@@ -492,15 +494,7 @@ BKSNinjaProj.DisplayName: Ninja Shade
 BKSRoyalPillarProj.DisplayName: Royal Beam
 BKSShockwaveProj.DisplayName: Gel Shockwave
 BKSTideWaveProj.DisplayName: Gel Tide
-CultistArcSpark.DisplayName: Arc Spark
-CultistCinderPatch.DisplayName: Lingering Cinders
-CultistElementOrb.DisplayName: Elemental Orb
-CultistFireBolt.DisplayName: Flame Bolt
-CultistFrostMistZone.DisplayName: Frost Mist
-CultistIceLance.DisplayName: Frost Lance
-CultistLightningOrb.DisplayName: Lightning Orb
-CultistRitualCircle.DisplayName: Ritual Circle
-CultistSigilProj.DisplayName: Floating Sigil
+CultistSigilProj.DisplayName: Ritual Sigil
 MLordArcRayProj.DisplayName: Phantasmal Arc Ray
 MLordBlackHoleProj.DisplayName: Black Flash Singularity
 MLordCometProj.DisplayName: Starfall Comet
@@ -564,8 +558,6 @@ EowDevourOmen.DisplayName: Eow Devour Omen
 EmpressLightBind.DisplayName: Empress Light Bind
 EmpressSnareSigil.DisplayName: Empress Snare Sigil
 GolemGrabRay.DisplayName: Golem Grab Ray
-CultistSacrificeBrand.DisplayName: Cultist Sacrifice Brand
-CultistSacrificeSeal.DisplayName: Cultist Sacrifice Seal
 PincerBindTether.DisplayName: Pincer Bind Tether
 MLordGrabLashProj.DisplayName: M Lord Grab Lash Proj
 PlanteraSnareVine.DisplayName: Plantera Snare Vine
@@ -577,9 +569,9 @@ KikasaThrallProj.DisplayName: Kikasa Thrall Proj
 L6MachineStrike.DisplayName: L6 Machine Strike
 KikasaMinisharkBullet.DisplayName: Kikasa Minishark Bullet
 KikasaMinisharkServant.DisplayName: Kikasa Minishark Servant
-CultistArcBolt.DisplayName: Cultist Arc Bolt
-CultistFlameBolt.DisplayName: Cultist Flame Bolt
-CultistFrostSpear.DisplayName: Cultist Frost Spear
-CultistPaleBolt.DisplayName: Cultist Pale Bolt
-CultistTrueBolt.DisplayName: Cultist True Bolt
+CultistArcBolt.DisplayName: Storm Cadence Arc
+CultistFlameBolt.DisplayName: Flame Bolt
+CultistFrostSpear.DisplayName: Frost Crystal Spear
+CultistPaleBolt.DisplayName: Pale Bolt
+CultistTrueBolt.DisplayName: Verity Bolt
 SkeletronBoneWheel.DisplayName: Skeletron Bone Wheel

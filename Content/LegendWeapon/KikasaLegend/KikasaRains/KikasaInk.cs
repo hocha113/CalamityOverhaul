@@ -24,6 +24,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>湿反光:小面积 A=0 加色玻头</summary>
         public static Color WetSheen => KikasaDomain.CoolTint(new(238, 122, 106), new(178, 202, 208));
 
+        //鬼青三件:伞下鬼与鬼滴的魂色,不随域形态冷暖走——鬼火自有其色
+        /// <summary>鬼滴墨体:近黑偏青</summary>
+        public static readonly Color GhostBody = new(16, 26, 30);
+
+        /// <summary>鬼滴墨缘</summary>
+        public static readonly Color GhostDeep = new(34, 66, 72);
+
+        /// <summary>鬼滴芯:青白鬼火,替掉血芯</summary>
+        public static readonly Color GhostCore = new(150, 220, 214);
+
         /// <summary>确定性散列 0~1:绘制与多端一致的抖动都用它,不掷 Main.rand</summary>
         public static float Hash(int seed, int salt) {
             uint h = (uint)(seed * 374761393 + salt * 668265263);

@@ -89,6 +89,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             }
         }
 
+        /// <summary>彗核暗鞘色（真 alpha 遮挡层，契约4.4：暗层禁走加色）</summary>
+        private static readonly Color CometDark = new(26, 16, 58);
+
+        /// <summary>彗星本体双层：暗紫外鞘（真 alpha 剪影）+ 幻影青热芯（加色）</summary>
+        private static void DrawCometBody(Texture2D glow, Texture2D star, Vector2 screenPos,
+            float rotation, Vector2 bodyScale, float alpha, float starRot) {
+            Main.EntitySpriteDraw(glow, screenPos, null, CometDark * (0.9f * alpha),
+                rotation, glow.Size() / 2f, bodyScale * 1.18f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(glow, screenPos, null, MLordDirector.Phantasmal with { A = 0 } * alpha,
+                rotation, glow.Size() / 2f, bodyScale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(star, screenPos, null, MLordDirector.MoonWhite with { A = 0 } * (0.9f * alpha),
+                starRot, star.Size() / 2f, 0.3f * alpha, SpriteEffects.None, 0);
+        }
+
         public override bool PreDraw(ref Color lightColor) {
             Texture2D glow = CWRAsset.DiffusionCircle?.Value;
             Texture2D star = CWRAsset.StarTexture?.Value;
@@ -96,45 +110,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
                 return false;
             }
 
-            //拖尾光带：逐段连成收锥彗尾（暗紫外鞘 + 青热芯），弯折轨迹上段间无断口
-            Texture2D soft = CWRAsset.SoftGlow?.Value;
-            if (soft != null) {
-                Vector2 prev = Projectile.Center;
-                for (int i = 1; i < Projectile.oldPos.Length; i++) {
-                    //trail 缓存未填满前是零向量，画出去会拉一条通向世界原点的巨型光带
-                    if (Projectile.oldPos[i] == Vector2.Zero) {
-                        break;
-                    }
-                    Vector2 cur = Projectile.oldPos[i] + Projectile.Size / 2f;
-                    Vector2 seg = prev - cur;
-                    float segLen = seg.Length();
-                    if (segLen > 0.5f) {
-                        float fade = 1f - i / (float)Projectile.oldPos.Length;
-                        Vector2 mid = (prev + cur) * 0.5f - Main.screenPosition;
-                        float rot = seg.ToRotation();
-                        Vector2 stretchScale = new(segLen * 1.7f / soft.Width, 1f);
-                        Main.EntitySpriteDraw(soft, mid, null, MLordDirector.DeepViolet with { A = 0 } * (0.5f * fade),
-                            rot, soft.Size() / 2f, stretchScale * new Vector2(1f, (46f * fade + 8f) / soft.Height),
-                            SpriteEffects.None, 0);
-                        if (i < 7) {
-                            Main.EntitySpriteDraw(soft, mid, null, MLordDirector.Phantasmal with { A = 0 } * (0.62f * fade),
-                                rot, soft.Size() / 2f, stretchScale * new Vector2(1f, (24f * fade + 5f) / soft.Height),
-                                SpriteEffects.None, 0);
-                        }
-                    }
-                    prev = cur;
-                }
-            }
-
-            Vector2 screenPos = Projectile.Center - Main.screenPosition;
             float stretch = MathHelper.Clamp(Projectile.velocity.Length() * 0.03f, 0.2f, 0.8f);
             Vector2 bodyScale = new(0.4f * (1f + stretch), 0.4f * (1f - stretch * 0.35f));
             float flicker = 0.85f + 0.15f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 21f + Projectile.whoAmI);
 
-            Main.EntitySpriteDraw(glow, screenPos, null, MLordDirector.Phantasmal with { A = 0 } * flicker,
-                Projectile.rotation, glow.Size() / 2f, bodyScale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(star, screenPos, null, MLordDirector.MoonWhite with { A = 0 } * (0.9f * flicker),
-                Projectile.rotation * 0.4f, star.Size() / 2f, 0.3f, SpriteEffects.None, 0);
+            //拖尾 = 本体同材质重绘（契约5）：双层彗体沿轨迹衰减，横轴比 0.85→0.5
+            for (int i = Projectile.oldPos.Length - 1; i >= 2; i -= 2) {
+                //trail 缓存未填满前是零向量，画出去会闪到世界原点
+                if (Projectile.oldPos[i] == Vector2.Zero) {
+                    continue;
+                }
+                float k = 1f - i / (float)Projectile.oldPos.Length;
+                Vector2 pos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                DrawCometBody(glow, star, pos, Projectile.rotation,
+                    bodyScale * MathHelper.Lerp(0.5f, 0.85f, k), 0.12f + 0.4f * k,
+                    Projectile.rotation * 0.4f);
+            }
+
+            //本体
+            DrawCometBody(glow, star, Projectile.Center - Main.screenPosition, Projectile.rotation,
+                bodyScale, flicker, Projectile.rotation * 0.4f);
             return false;
         }
     }

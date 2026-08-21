@@ -206,23 +206,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
         }
 
-        /// <summary>倒影恶犬命令：域激活稳态切换开关；翻转与鬼梦相位不受理——镜面正忙</summary>
-        internal static bool TryDreamReflect(Player player, out bool busy) {
-            busy = false;
-            KikasaDomainPlayer kdp = player.GetModPlayer<KikasaDomainPlayer>();
-            if (!kdp.AnyActive) {
-                return false;
-            }
-            if (kdp.Phase == KikasaDomainPhase.Flipping || kdp.InDreamPhase) {
-                busy = true;
-                return false;
-            }
-            return kdp.ToggleHoundReflection();
-        }
-
         /// <summary>
-        /// 鬼梦拉入/归返命令：Open 稳态 + 满水位 + 倒影已醒 → 拉入；
-        /// Dreaming → 归返；其余阶段 busy 不受理。域关着时不代开——入梦要先有湖有影
+        /// 鬼梦拉入/归返命令：Open 稳态 + 满水位 + 倒影已醒 + 湖力过半 → 拉入；
+        /// Dreaming → 归返；其余阶段 busy 不受理。域关着时不代开——入梦要先有湖有影。
+        /// 倒影醒睡已随沉影盘自动走（KikasaDomainPlayer.UpdateReflectionGate），不再有独立命令
         /// </summary>
         internal static bool TryDreamPull(Player player, out bool busy) {
             busy = false;

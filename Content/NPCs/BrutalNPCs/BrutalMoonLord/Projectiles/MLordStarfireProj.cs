@@ -70,6 +70,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             Vector2 screenPos = Projectile.Center - Main.screenPosition;
             float env = Envelope;
             float wobble = 1f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 13f + Projectile.whoAmI * 2f);
+            //焦土暗床：真 alpha 遮挡层（契约4.4），亮背景下撑起火区剪影
+            Main.EntitySpriteDraw(glow, screenPos, null, new Color(16, 10, 40) * (0.85f * env),
+                0f, glow.Size() / 2f, new Vector2(0.7f, 0.24f) * wobble, SpriteEffects.None, 0);
             //横扁焰床
             Main.EntitySpriteDraw(glow, screenPos, null, MLordDirector.DeepViolet with { A = 0 } * (0.7f * env),
                 0f, glow.Size() / 2f, new Vector2(0.62f, 0.2f) * wobble, SpriteEffects.None, 0);

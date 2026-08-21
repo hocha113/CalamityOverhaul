@@ -17,15 +17,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
     /// 沉物入湖存储，持伞按 <see cref="Common.CWRKeySystem.Legend_UIControl"/> 开湖窗提取；
     /// 数据与输入在 <see cref="KikasaVaults.KikasaVaultPlayer"/>，
     /// 沉浮演出在 <see cref="KikasaVaults.KikasaLakeFX"/>。
-    /// 第三能力模块：能力复制——湖记住最后一只被沉溺的生物，
-    /// 按 <see cref="Common.CWRKeySystem.Kikasa_Summon"/> 召唤对应鬼奴驱使；
-    /// 记录与输入在 <see cref="KikasaServants.KikasaServantPlayer"/>，
-    /// 穷举条目在 <see cref="KikasaServants.KikasaServantIndex"/>。
+    /// 第三能力模块：沉影编成——沉溺过的 boss 永久入册，画境点血湖铺开沉影盘，
+    /// 三席影位驻影即役使；记录在 <see cref="KikasaServants.KikasaServantPlayer"/>，
+    /// 穷举条目在 <see cref="KikasaServants.KikasaServantIndex"/>，
+    /// 焰/魇/潦门控与组合边在 <see cref="KikasaServants.KikasaEffigyBoard"/>。
     /// 第四能力模块：普攻·墨雨——按住左键撑出悬伞
     /// <see cref="KikasaRains.KikasaRainUmbrella"/>，头顶自旋按节拍降下大墨滴追踪敌人。
-    /// 第五能力模块：鬼梦——领域中按 <see cref="Common.CWRKeySystem.Kikasa_DreamReflect"/>
-    /// 唤醒倒影恶犬（湖镜里的人影换成黑犬），再按
-    /// <see cref="Common.CWRKeySystem.Kikasa_DreamPull"/> 把一切拉入鬼梦
+    /// 第五能力模块：鬼梦——魇影驻湖倒影自醒；长按
+    /// <see cref="Common.CWRKeySystem.Kikasa_DomainMutate"/> 拉入鬼梦
     /// （湖沸腾倒转，红天村落、湖水不见；物品封禁、左键连唤恶犬，重按归返；
     /// 梦中人人失能——梦界内远程射弹无法存在，本伞左右键亦不可用）；
     /// 相位与包络在 <see cref="KikasaDomains.KikasaDomainPlayer"/> 与
@@ -37,15 +36,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
     /// 被雨痕冲刷揭开，场内 NPC 与玩家沿位置历史倒退回数秒前，雨滴倒飞，
     /// 结算时范围内玩家回满、清 debuff，全程无敌；
     /// 权威与时间轴在 <see cref="KikasaResets.KikasaReset"/>，
-    /// 输入在 <see cref="KikasaResets.KikasaResetPlayer"/>
+    /// 输入在 <see cref="KikasaResets.KikasaResetPlayer"/>。
+    /// 召唤师武器：召唤栏位化作栖在伞骨下的鬼，左右键普攻的节拍、滴数、
+    /// 伤害与三档质变全按栏位数走，口径集中在 <see cref="KikasaOverride"/>；
+    /// 传奇成长（伤害等级表+沉宴试炼路线）同在 <see cref="KikasaOverride"/> 与
+    /// <see cref="KikasaData"/>，试炼注册在 <see cref="TrialQuests.KikasaTrialQuestLine"/>
     /// </summary>
     internal class KikasaItem : ModItem
     {
         public override void SetDefaults() {
             Item.width = 50;
             Item.height = 54;
-            Item.damage = 100;
-            Item.DamageType = CWRRef.GetTrueMeleeDamageClass();
+            //基伤与等级缩放由成长层 KikasaOverride 接管,这里只落个 L0 值
+            Item.damage = 8;
+            Item.DamageType = DamageClass.Summon;
             Item.useTime = Item.useAnimation = 24;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 6f;

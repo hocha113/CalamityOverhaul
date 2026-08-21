@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using Microsoft.Xna.Framework.Graphics;
@@ -45,6 +46,7 @@ namespace CalamityOverhaul.Content.EntrustManager
     {
         public static LocalizedText NameHalibut { get; private set; }
         public static LocalizedText NameOnikiri { get; private set; }
+        public static LocalizedText NameKikasa { get; private set; }
         public static LocalizedText NameSHPC { get; private set; }
         public static LocalizedText NameOldDuke { get; private set; }
         public static LocalizedText NameSupCal { get; private set; }
@@ -53,6 +55,7 @@ namespace CalamityOverhaul.Content.EntrustManager
         public static void InitLocalization(ILocalizedModType host) {
             NameHalibut = host.GetLocalization("ProviderHalibut", () => "比目鱼");
             NameOnikiri = host.GetLocalization("ProviderOnikiri", () => "鬼切");
+            NameKikasa = host.GetLocalization("ProviderKikasa", () => "鬼伞");
             NameSHPC = host.GetLocalization("ProviderSHPC", () => "SHPC");
             NameOldDuke = host.GetLocalization("ProviderOldDuke", () => "老公爵");
             NameSupCal = host.GetLocalization("ProviderSupCal", () => "至尊灾厄");
@@ -60,7 +63,7 @@ namespace CalamityOverhaul.Content.EntrustManager
         }
 
         public static void UnloadInstances() {
-            halibut = onikiri = shpc = oldDuke = supCal = draedon = null;
+            halibut = onikiri = kikasa = shpc = oldDuke = supCal = draedon = null;
         }
 
         #region 纹样
@@ -78,6 +81,14 @@ namespace CalamityOverhaul.Content.EntrustManager
             "M -0.82,0.6 C -0.3,0.28 0.24,-0.2 0.72,-0.78"
             + " M 0.52,-0.6 L 0.72,-0.4"
             + " M -0.66,0.36 L -0.42,0.62";
+
+        //鬼伞：伞冠圆顶 + 四瓣波边 + 伞柄弯钩 + 两滴坠雨
+        private const string KikasaGlyphD =
+            "M -0.8,0.02 C -0.52,-0.66 0.52,-0.66 0.8,0.02"
+            + " Q 0.6,0.18 0.4,0.02 Q 0.2,0.18 0,0.02"
+            + " Q -0.2,0.18 -0.4,0.02 Q -0.6,0.18 -0.8,0.02"
+            + " M 0,-0.5 L 0,0.62 C 0,0.78 0.24,0.78 0.24,0.62"
+            + " M -0.44,0.34 L -0.44,0.52 M 0.5,0.28 L 0.5,0.42";
 
         //海妖珍珠：合抱贝口 + 一粒珠
         private const string SHPCGlyphD =
@@ -117,6 +128,7 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         private static EntrustProvider halibut;
         private static EntrustProvider onikiri;
+        private static EntrustProvider kikasa;
         private static EntrustProvider shpc;
         private static EntrustProvider oldDuke;
         private static EntrustProvider supCal;
@@ -135,6 +147,14 @@ namespace CalamityOverhaul.Content.EntrustManager
             GlyphD = OnikiriGlyphD,
             Accent = new Color(196, 64, 58),
             AvatarItemType = OnikiriOverride.ID,
+        };
+
+        /// <summary>鬼伞：沉宴试炼的委托人是湖本身,主色取血湖的冷酒红</summary>
+        public static EntrustProvider Kikasa => kikasa ??= new EntrustProvider {
+            Name = NameKikasa,
+            GlyphD = KikasaGlyphD,
+            Accent = new Color(168, 44, 72),
+            AvatarItemType = KikasaOverride.ID,
         };
 
         public static EntrustProvider SHPC => shpc ??= new EntrustProvider {

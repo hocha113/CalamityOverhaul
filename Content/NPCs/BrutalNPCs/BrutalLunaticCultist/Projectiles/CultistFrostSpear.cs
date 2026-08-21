@@ -99,8 +99,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         public override void OnKill(int timeLeft) {
             CultistMotion.ImpactBurst(Projectile.Center, 1, IsShard ? 0.5f : 0.9f);
 
-            //立柱崩解：沿已声明的列向放出 2 枚碎片，不折向玩家
-            if (!IsShard && !VaultUtils.isClient && GrowT >= 1f) {
+            //立柱崩解：沿已声明的列向放出 2 枚碎片，不折向玩家（仅自然驻场期满；被清场不炸）
+            if (!IsShard && !VaultUtils.isClient && Timer > GrowDelay + GrowFrames + StandFrames) {
                 for (int i = 0; i < 2; i++) {
                     float jitter = Main.rand.NextFloat(-0.07f, 0.07f);
                     Vector2 vel = (RayAngle + jitter).ToRotationVector2() * Main.rand.NextFloat(7.5f, 9.5f);

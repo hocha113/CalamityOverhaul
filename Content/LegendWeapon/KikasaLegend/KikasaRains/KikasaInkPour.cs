@@ -47,12 +47,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private bool hitGround;
         private bool hitLake;
         private int scatterCount;
+        //伞下鬼接线:栏位数每帧自所有者装备读取,各端一致;冲刷延时在首帧一次性落定
+        private int slotCount = 1;
+        private int sustainFrames = SustainFrames;
+        private bool geyserFired;
 
         //刚性摆压到极小(判定线跟随),流体甩尾由 shader 内行波承担——源头钉死碗口
         private float DirAngle
             => BaseAngle + MathF.Sin(life * 0.16f + Projectile.identity * 0.71f) * 0.03f;
 
-        private float WidthPx => 54f + Fill * 36f;
+        private float WidthPx => 54f + Fill * 36f + KikasaOverride.GetPourWidthBonus(slotCount);
 
         private float LenT {
             get {
@@ -62,7 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         }
 
         private float DrainT
-            => MathHelper.Clamp((life - ExpandFrames - SustainFrames) / (float)CollapseFrames, 0f, 1f);
+            => MathHelper.Clamp((life - ExpandFrames - sustainFrames) / (float)CollapseFrames, 0f, 1f);
 
         /// <summary>宽度生命周期:展开 EaseOut 铺满,排空 EaseIn 收窄断流(视觉与判定同源)</summary>
         private float WidthT {
@@ -78,7 +82,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             Projectile.width = 26;
             Projectile.height = 26;
             Projectile.friendly = true;
-            Projectile.DamageType = CWRRef.GetTrueMeleeDamageClass();
+            Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = -1;
             Projectile.timeLeft = TotalFrames;
             Projectile.tileCollide = false;
@@ -90,6 +94,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         public override void AI() {
             life++;
+            slotCount = KikasaOverride.GetSlotCount(Main.player[Projectile.owner]);
+            //众鬼齐掷档:冲刷段拉长 12 帧,各端从同步的装备各自推得,首帧一次性落定
+            if ((int)life == 1 && slotCount >= KikasaOverride.TierGhostVolley) {
+                sustainFrames = SustainFrames + 12;
+                Projectile.timeLeft += 12;
+            }
             Vector2 dir = DirAngle.ToRotationVector2();
 
             //域内湖面:墨倾进湖里,落点换涟漪
@@ -155,8 +165,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 KikasaInk.Play(KikasaInk.InkSplash, end, 0.48f, -0.4f, 4);
             }
 
-            //特大墨滴沿瀑缘散射(所有者端);沿程不跟空射 6400 一起拉长,否则会在视野外刷滴
-            if (Main.myPlayer == Projectile.owner && life <= 12f && (int)life % 2 == 0 && scatterCount < 7) {
+            //特大墨滴沿瀑缘散射(所有者端);沿程不跟空射 6400 一起拉长,否则会在视野外刷滴。
+            //二鬼帮衬档(S≥4)散射 7→9 颗,窗口相应放宽
+            int scatterCap = slotCount >= KikasaOverride.TierGhostAssist ? 9 : 7;
+            float scatterWindow = scatterCap > 7 ? 18f : 12f;
+            if (Main.myPlayer == Projectile.owner && life <= scatterWindow
+                && (int)life % 2 == 0 && scatterCount < scatterCap) {
                 scatterCount++;
                 float scatterSpan = MathF.Min(lenPx, ScatterAlongMax);
                 float along = Main.rand.NextFloat(0.12f, 0.5f) * scatterSpan;
@@ -165,16 +179,113 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 Vector2 pos = Projectile.Center + dir * along + perp * (WidthPx * 0.5f);
                 Vector2 vel = perp * Main.rand.NextFloat(2f, 4.5f) + dir * Main.rand.NextFloat(1f, 3f);
                 float fallbackX = Projectile.Center.X + dir.X * scatterSpan + Main.rand.NextFloat(-150f, 150f);
+                //湖倾档的散射滴同样落地留墨洼
+                int flags = slotCount >= KikasaOverride.TierLakeTilt ? KikasaInkDrop.FlagPuddle : 0;
                 int p = Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, vel,
                     ModContent.ProjectileType<KikasaInkDrop>(), (int)(Projectile.damage * 1.25f),
-                    Projectile.knockBack, Projectile.owner, -1f, fallbackX, 0f);
+                    Projectile.knockBack, Projectile.owner, -1f, fallbackX, flags);
                 if (p >= 0 && p < Main.maxProjectiles) {
                     Main.projectile[p].scale = 1.2f;
                     Main.projectile[p].netUpdate = true;
                 }
             }
 
+            //众鬼齐掷档:瀑线带沉溺内吸——推 NPC 归权威端,联机客户端靠同步兜底
+            if (slotCount >= KikasaOverride.TierGhostVolley && LenT >= 0.6f && DrainT <= 0.35f
+                && Main.netMode != NetmodeID.MultiplayerClient) {
+                SuckIntoFall(dir);
+            }
+
+            //湖倾终幕:满蓄且触地的墨瀑在排空前沿,沿落线唤起三道墨泉(所有者端)
+            if (Main.myPlayer == Projectile.owner && !geyserFired
+                && slotCount >= KikasaOverride.TierLakeTilt && Fill >= 0.99f && hitGround
+                && (int)life >= ExpandFrames + sustainFrames) {
+                geyserFired = true;
+                FireGeysers(dir);
+            }
+
             Lighting.AddLight(Projectile.Center + dir * MathF.Min(lenPx, 420f) * 0.5f, 0.14f, 0.03f, 0.04f);
+        }
+
+        /// <summary>
+        /// 沉溺内吸:瀑身外一圈的敌人被往落线里拖,力度吃击退抗性,
+        /// 上限压得很低——是"水在拽",不是磁铁
+        /// </summary>
+        private void SuckIntoFall(Vector2 dir) {
+            Vector2 a = Projectile.Center;
+            Vector2 b = Projectile.Center + dir * (lenPx * LenT);
+            float inner = WidthPx * 0.7f;
+            float outer = WidthPx * 2.4f;
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (npc?.active != true || npc.friendly || npc.boss
+                    || npc.dontTakeDamage || npc.knockBackResist <= 0f
+                    || !npc.CanBeChasedBy(Projectile)) {
+                    continue;
+                }
+                Vector2 closest = ClosestOnSegment(npc.Center, a, b);
+                float dist = Vector2.Distance(npc.Center, closest);
+                if (dist < inner || dist > outer) {
+                    continue;
+                }
+                Vector2 pull = (closest - npc.Center).SafeNormalize(Vector2.Zero);
+                //已经朝瀑里冲就不再加力,不做弹弓
+                if (Vector2.Dot(npc.velocity, pull) < 2.5f) {
+                    npc.velocity += pull * (0.5f * npc.knockBackResist);
+                }
+            }
+        }
+
+        private static Vector2 ClosestOnSegment(Vector2 p, Vector2 a, Vector2 b) {
+            Vector2 ab = b - a;
+            float lenSq = ab.LengthSquared();
+            if (lenSq < 1e-4f) {
+                return a;
+            }
+            float t = MathHelper.Clamp(Vector2.Dot(p - a, ab) / lenSq, 0f, 1f);
+            return a + ab * t;
+        }
+
+        /// <summary>沿落线取三个探针,向下吸附地表(域内湖面直接按湖线),各起一道墨泉,错 5 帧喷发</summary>
+        private void FireGeysers(Vector2 dir) {
+            Player owner = Main.player[Projectile.owner];
+            bool lakeAlive = owner?.active == true
+                && owner.TryGetModPlayer(out KikasaDomainPlayer domain)
+                && domain.AnyActive && domain.RiseT > 0.5f;
+            float lakeY = lakeAlive ? owner.GetModPlayer<KikasaDomainPlayer>().LakeWorldY : float.MaxValue;
+
+            Vector2 end = Projectile.Center + dir * lenPx;
+            int fired = 0;
+            for (int i = 0; i < 3; i++) {
+                float off = (i - 1) * 96f;
+                Vector2 basePos;
+                if (hitLake) {
+                    basePos = new Vector2(end.X + off, lakeY);
+                }
+                else if (!TryFindGroundBelow(new Vector2(end.X + off, end.Y - 90f), 320f, out basePos)) {
+                    continue;
+                }
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), basePos, Vector2.Zero,
+                    ModContent.ProjectileType<KikasaInkGeyser>(), (int)(Projectile.damage * 0.9f),
+                    Projectile.knockBack * 1.6f, Projectile.owner, fired * 5f);
+                fired++;
+            }
+        }
+
+        /// <summary>自探针点向下逐格找实心地表,命中返回表面世界坐标</summary>
+        private static bool TryFindGroundBelow(Vector2 probe, float maxDown, out Vector2 surface) {
+            int x = (int)(probe.X / 16f);
+            int startY = (int)(probe.Y / 16f);
+            int endY = (int)((probe.Y + maxDown) / 16f);
+            for (int y = startY; y <= endY; y++) {
+                Tile t = Framing.GetTileSafely(x, y);
+                if (t.HasTile && Main.tileSolid[t.TileType] && !Main.tileSolidTop[t.TileType]) {
+                    surface = new Vector2(probe.X, y * 16f);
+                    return true;
+                }
+            }
+            surface = default;
+            return false;
         }
 
         /// <summary>线碰撞:柱体全程,宽随包络(收窄断流时判定同步变细);排空过半即失能</summary>
