@@ -909,23 +909,25 @@ KikasaOverride: {
 	DisplayName: Kikasa
 	Tooltip:
 		'''
-		While held, press the Domain Expansion key to unfurl the Blood Lake domain; press it again to fold the umbrella
-		Within, a blood-red mirror lake lies beneath your feet, and a dark sun sits half-sunken below the waterline
-		Drown a boss in the lake and it becomes a shade. Click the wind chime at the bottom left to unroll the painting, then click the blood lake to seat shades in three slots—stationed shades emerge and fight on their own
-		At full water, tap the Flip the Lake key (middle mouse by default) to invert into cold rain; with a nightmare shade stationed, hold the same key to fall into the Ghost Dream
-		Hold left click to set the umbrella hovering overhead; its eye opens, and ink rain falls after your foes
-		Hold right click to flip it into a brimming vessel; release to pour the whole umbrella down
-		Every minion slot becomes a ghost roosting under the ribs: more slots quicken the rain, add drops, and speed the brew
-		At 4 slots each volley flings an extra ghost-drop at a second target; at 7, every fourth volley is thrown by all ghosts at once
-		At 10, heavy drops pool into scalding ink puddles, and a fully brewed torrent raises three ink geysers where it lands
+		While held, press Domain Expansion to open the Blood Lake; press again to close it
+		Hold left click to hover the umbrella overhead and drop ink rain that tracks enemies
+		Hold right click to charge; release to pour an ink torrent
+		Aim at an enemy or hold an item and press Sink into the Lake to push it under. A drowned boss leaves a shade
+		Click the wind chime at the bottom left to open the Lakeheart and seat shades in three slots
+		At full water, tap Flip the Lake (middle mouse by default) to switch between Blood Lake and Ghost Rain
+		Past half lake vigor, hold the same key to enter the Ghost Dream
+		More minion slots make the rain faster and thicker, and speed up the right-click charge
+		4 slots: each volley throws one extra drop at a second target
+		7 slots: every fourth volley throws every drop at once
+		10 slots: heavy drops leave burning ink puddles; a full torrent raises three ink geysers
 		[Lang4]
 		legend_Text
 		"No rain under the umbrella—only the sound of water"
 		'''
-	GhostCountLine: Ghosts roosting under the canopy: {0} — {1}
+	GhostCountLine: Minion slots {0} · {1}
 	TierName0: Drizzle
-	TierName1: Ghostly Assist
-	TierName2: All-Ghost Volley
+	TierName1: Side Toss
+	TierName2: Volley
 	TierName3: Lake Tilt
 }
 
@@ -1130,128 +1132,128 @@ KikasaTrialQuestLine: {
 }
 
 KikasaText: {
-	KikasaServantPlayer.ServantUnknown: The lake hasn't learned to command it
+	KikasaServantPlayer.ServantUnknown: You can't command it yet
 
 	KikasaUIText: {
 		AffinityFlame: Flame
 		AffinityNightmare: Nightmare
 		AffinityRain: Rain
-		AffinityWild: Wild
-		AffinityArms: Armament
-		StateOut: Afield
+		AffinityWild: Any
+		AffinityArms: Arms
+		StateOut: Out
 		StateHeld: Held back
-		StateAwait: Awaiting the lake
-		LakeNotReadyLine: The lake is not ready—it will surface once the water rises
+		StateAwait: Waiting
+		LakeNotReadyLine: The lake isn't open. It will come out once you raise it
 	}
 
 	KikasaHud: {
 		ScrollName: Lakeheart
-		OpenTag: Click to unfold
+		OpenTag: Click to open
 		TipWaterFormat: Water {0}%
 		TipVaultFormat: Hoard {0} / {1}
-		TipVigorDream: Past the dream line (50%), the reflection can pull you under
-		TipVigorWisp: At the ignite line (100%), the gold flame lights itself
+		TipVigorDream: At 50% vigor, hold to enter the Ghost Dream
+		TipVigorWisp: At full vigor, ghost fire lights itself
 		TipCooldownFormat: Cooling down · {0}%
-		TipDrownTitle: The Drowning Hand
-		TipDrownHintFormat: Point at a foe or hold an item and press {0}
-		TipDrownReady: The hand is ready
+		TipDrownTitle: Drown
+		TipDrownHintFormat: Aim at an enemy or hold an item and press {0}
+		TipDrownReady: Ready
 		TipResetTitle: Wide Restart
-		TipResetHintFormat: Press {0} in the ghost rain to wind the field back
-		TipThrallFormat: Umbrella thralls afield {0} / {1}
-		TipHoundCountFormat: Hounds afield {0} / {1}
-		TipSeatsHintFormat: "{0} wheel calls or recalls · manage seats in the Lakeheart"
-		TipSeatEmpty: Vacant seat
+		TipResetHintFormat: In Ghost Rain, press {0} to rewind nearby things a few seconds
+		TipThrallFormat: Thralls out {0} / {1}
+		TipHoundCountFormat: Hounds out {0} / {1}
+		TipSeatsHintFormat: Hold {0} for the wheel · change the lineup in the Lakeheart
+		TipSeatEmpty: Empty
 	}
 
 	KikasaServantWheelUI: {
-		WheelEmptyTitle: Vacant Seat
-		WheelEmptyDesc: Drown a registered foe and its sunken shade takes this seat
-		WheelEmptyStatus: Nothing seated here
+		WheelEmptyTitle: Empty
+		WheelEmptyDesc: Drown a registered boss and its shade takes this seat
+		WheelEmptyStatus: Nothing here yet
 		WheelSeatFormat: Seat {0}
-		WheelStatusRecall: "[Release] Recall this shade"
-		WheelStatusSummon: "[Release] Call it out of the water"
-		WheelStatusAwaitOrder: "[Release] Accept the order—it surfaces once the lake rises"
-		WheelCenterTitle: Umbrella Decree
-		WheelCenterDesc: One decree for all seats: recall every shade afield, or call out every shade held back
-		WheelCenterCountFormat: "{0}/{1} afield"
-		WheelCenterRecallAll: "[Release] Recall all"
-		WheelCenterSummonAll: "[Release] Call out all"
-		WheelCenterEmpty: No shades seated in the lake
-		WheelDamageFormat: Output per shade afield {0}%
-		WheelHint: "[{0}] Hold · Release to commit · Right-click to cancel"
+		WheelStatusRecall: "[Release] Call it back"
+		WheelStatusSummon: "[Release] Call it out"
+		WheelStatusAwaitOrder: "[Release] Remember this; it comes out when the lake opens"
+		WheelCenterTitle: All Seats
+		WheelCenterDesc: If any are out, call them all back. If none are out, call them all out
+		WheelCenterCountFormat: "{0}/{1} out"
+		WheelCenterRecallAll: "[Release] Call all back"
+		WheelCenterSummonAll: "[Release] Call all out"
+		WheelCenterEmpty: No shades seated yet
+		WheelDamageFormat: Damage per shade out {0}%
+		WheelHint: "[{0}] Hold · Release to confirm · Right-click to cancel"
 	}
 
 	KikasaPanoramaUI: {
 		Title: Lakeheart
-		VigorLabel: Lake Vigor
-		VigorDreamMark: dream line
-		VigorWispMark: ignite line
-		HoundTitle: The Hound · Ghost Dream
-		WispTitle: The Gold Flame · Ghost Fire
+		VigorLabel: Vigor
+		VigorDreamMark: Dream
+		VigorWispMark: Ignite
+		HoundTitle: Hound · Ghost Dream
+		WispTitle: Gold Flame · Ghost Fire
 		ReflectAwake: The reflection is awake
-		ReflectAsleep: The reflection is asleep
-		InDreamLine: You are inside the dream
+		ReflectAsleep: The reflection is still asleep
+		InDreamLine: You are in the Ghost Dream
 		DreamReturnFormat: Press {0} again to return
-		DreamEnterKeyFormat: "[Hold {0}] Sink into the dream"
-		DreamEnterClick: "[Click] Let it pull you under"
-		NeedDomainFormat: Press {0} to raise the blood lake
-		NeedFullWater: The lake has not fully risen
-		NeedVigorFormat: Lake vigor {0}%—the dream needs {1}%
-		HoundBonusFormat: Dream hounds: cap {0} · bite {1}%
-		WispBurning: Burning—scorching along the waterline
-		WispIdle: Unlit—ignites itself once vigor refills
-		WispBoil: Boiling on through the rain
-		WispQuenchedLine: The ghost rain is pressing it out
-		WispBonusFormat: Scorch {0}s · flame reach +{1}px
+		DreamEnterKeyFormat: "[Hold {0}] Enter the Ghost Dream"
+		DreamEnterClick: "[Click] Enter the Ghost Dream"
+		NeedDomainFormat: Press {0} to open the Blood Lake
+		NeedFullWater: The lake isn't full yet
+		NeedVigorFormat: Vigor {0}% — the dream needs {1}%
+		HoundBonusFormat: Hound cap {0} · damage {1}%
+		WispBurning: Burning, scorching along the shore
+		WispIdle: Unlit; lights itself at full vigor
+		WispBoil: Still burning in the rain
+		WispQuenchedLine: Being put out by Ghost Rain
+		WispBonusFormat: Burn {0}s · flame {1}
 		EdgeDreamFire: Dreamfire
 		EdgeBoilRain: Boiling Rain
 		EdgeRainNightmare: Rain-Nightmare
-		EdgeTriSeal: Three Shades Still the Lake
-		SeatsTitle: Three Seats of Shades
-		SeatEmptyLine: A vacant seat—pick a shade from the codex below
-		SeatPickHint: Click to pick up · right-click to unseat
-		SeatPlaceHint: Click to seat it here
-		SeatHeldLineFormat: Held back—recall it on the wheel ({0})
-		SeatOutLine: It's out doing your work
-		SeatAwaitLine: Awaiting the lake
-		RosterTallyFormat: Sunken shades {0} / {1}
-		RosterUnknown: An undrowned shade
-		RosterUnknownHintFormat: Point at the foe and press {0} while the lake is ready
+		EdgeTriSeal: Three-Shade Seal
+		SeatsTitle: Three Seats
+		SeatEmptyLine: Empty — pick a shade from the list below
+		SeatPickHint: Click to pick up · right-click to remove
+		SeatPlaceHint: Click to place it here
+		SeatHeldLineFormat: Held back — hold {0} for the wheel to call it out
+		SeatOutLine: On the field
+		SeatAwaitLine: Waiting for the lake
+		RosterTallyFormat: Shades {0} / {1}
+		RosterUnknown: Not drowned yet
+		RosterUnknownHintFormat: With the lake open, aim at it and press {0}
 		RosterSeatedTag: Seated
-		RosterPickHint: Click to pick it up
-		NotePlacedFormat: "{0} settled into the seat"
-		NoteUnslottedFormat: "{0} returned to the lakebed"
-		NoteNotCollected: The lake hasn't drowned it yet
-		NotePickFirst: Pick a shade from the codex first
-		NoteArmsNoStock: No original in the hoard—it can't take shape
+		RosterPickHint: Click to pick up
+		NotePlacedFormat: "{0} is now seated"
+		NoteUnslottedFormat: "{0} was removed from its seat"
+		NoteNotCollected: You haven't drowned it yet
+		NotePickFirst: Pick a shade from the list below first
+		NoteArmsNoStock: That weapon isn't in the hoard, so it can't take shape
 		VaultTitle: Lake Hoard
-		VaultCountFormat: Sunken {0} / {1}
-		VaultEmptyHint: The lakebed is empty—only the sound of water
-		VaultExtractHint: Click to retrieve
-		VaultViewOnlyLine: The lake hasn't risen to your feet—look, don't reach
-		ArmsStockFormat: Servant originals ×{0}
-		ThrallLineFormat: Umbrella thralls: cap {0} · convert every {1}s
-		FooterHintFormat: Esc / {0} to close · hold an item and press {1} to sink it · {2} servant wheel
+		VaultCountFormat: "{0} / {1}"
+		VaultEmptyHint: Nothing here yet
+		VaultExtractHint: Click to take it back
+		VaultViewOnlyLine: The lake hasn't risen yet — you can only look
+		ArmsStockFormat: Originals ×{0}
+		ThrallLineFormat: Thrall cap {0} · convert one every {1}s
+		FooterHintFormat: Esc or {0} to close · hold an item and press {1} to sink it · {2} for the wheel
 	}
 
 	KikasaHudLead: {
-		DomainTitle: Raise the Blood Lake
-		DomainBody: Everything the umbrella does grows out of the blood lake domain—the hoard, the drowning, the shades. Raise the lake first.
-		DomainPrompt: Hold the umbrella and press {0}
-		SinkTitle: Sink Into the Hoard
-		SinkBody: The lake is your private vault. Hold an item and press the sink key to drop it in; aim at a living thing and press the same key, and the lake will drag it under. A drowned boss becomes a shade and stays with you forever.
-		SinkPrompt: Once the water reaches your feet, press {0} while holding an item or aiming at a creature
+		DomainTitle: Open the Blood Lake
+		DomainBody: The hoard, drowning, and shades all need the Blood Lake open first.
+		DomainPrompt: Hold Kikasa and press {0}
+		SinkTitle: Sink Something
+		SinkBody: Hold an item and press the sink key to store it. Aim at a living thing and press the same key to push it under. A drowned boss leaves a shade you can seat later.
+		SinkPrompt: Once the water reaches your feet, press {0} while holding an item or aiming at an enemy
 		PanoramaTitle: Open the Lakeheart
-		PanoramaBody: One screen holds it all: the hound and the gold flame up top, three seats of shades on the waterline, and your hoard on the lakebed.
-		PanoramaPrompt: Click the wind chime at the bottom left, or hold the umbrella and press {0}
-		WheelTitle: Command the Shades
-		WheelBody: Seated shades surface on their own when the lake is ready. The wheel calls them out or holds them back mid-fight—fewer afield, harder each one bites.
-		WheelPrompt: Hold {0} to open the wheel, hover a seat and release to toggle it
-		WheelNoMemory: No shades in the codex yet—drown a boss first, or skip this step.
-		DreamTitle: Sink Into the Ghost Dream
-		DreamBody: With the lake full and its vigor past half, the reflection wakes on its own. Hold the mutate key and it pulls you under—hold left-click in the dream to call hounds, press again to return.
+		PanoramaBody: This is Kikasa's main screen. The hound and ghost fire sit at the top, three seats in the middle, and the hoard at the bottom.
+		PanoramaPrompt: Click the wind chime at the bottom left, or hold Kikasa and press {0}
+		WheelTitle: Call the Shades
+		WheelBody: Seated shades come out on their own while the lake is open. The wheel calls them out or back at any time. Fewer on the field means each one hits harder.
+		WheelPrompt: Hold {0} to open the wheel, then release on a seat
+		WheelNoMemory: No shades yet. Drown a boss first, or skip this step.
+		DreamTitle: Enter the Ghost Dream
+		DreamBody: When the lake is full and vigor is past half, the reflection wakes on its own. Hold Flip the Lake to enter the Ghost Dream. Hold left click inside to call hounds; press the same key again to return.
 		DreamPrompt: At full water, hold {0} (middle mouse by default)
 		SkipBtn: Skip
-		KeyUnbound: This step's key is unbound; bind it in Settings > Controls first, or click skip.
+		KeyUnbound: This step's key isn't bound. Bind it in Settings > Controls, or click Skip.
 	}
 }

@@ -12,32 +12,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
     /// </summary>
     public static class KikasaDream
     {
-        //拉入节拍（60fps）：凶兆沸腾 0-96 → 窥犬驻留 96-166 → 倒转 166-276（含反向蓄势）→ 落定 276-330
-        //比鬼雨异化（216f）更长：这不是换一件衣服，是整个世界被拽进湖底
+        //拉入节拍（60fps）：凶兆沸腾 0-64 → 窥犬驻留 64-120 → 倒转 120-210（含反向蓄势）→ 落定 210-244
+        //只比鬼雨异化（216f）长一口气：仪式感留在驻留段，沸腾/落定不再拖（2026-08 自 330 压缩）
 
-        public const int PullBoilEnd = 96;
+        public const int PullBoilEnd = 64;
 
-        public const int PullDwellEnd = 166;
+        public const int PullDwellEnd = 120;
 
-        public const int PullRollEnd = 276;
+        public const int PullRollEnd = 210;
 
-        public const int PullTotalFrames = 330;
+        public const int PullTotalFrames = 244;
 
         /// <summary>拉入结算帧：倒转段时间过半，血红硬闪掩护下切到梦侧</summary>
-        public const int PullCommitFrame = 221;
+        public const int PullCommitFrame = 165;
 
-        //归返节拍：湖水自屏底涌回 0-70 → 短沸驻留 70-100 → 倒转 100-210 → 落定 210-260
+        //归返节拍：湖水自屏底涌回 0-54 → 短沸驻留 54-76 → 倒转 76-166 → 落定 166-198（自 260 压缩）
 
-        public const int ReturnSurgeEnd = 70;
+        public const int ReturnSurgeEnd = 54;
 
-        public const int ReturnDwellEnd = 100;
+        public const int ReturnDwellEnd = 76;
 
-        public const int ReturnRollEnd = 210;
+        public const int ReturnRollEnd = 166;
 
-        public const int ReturnTotalFrames = 260;
+        public const int ReturnTotalFrames = 198;
 
         /// <summary>归返结算帧：暖白闪掩护下切回血湖侧</summary>
-        public const int ReturnCommitFrame = 155;
+        public const int ReturnCommitFrame = 121;
 
         /// <summary>梦界半径（世界像素）。确定性常量，与 KikasaLakeSurface.HalfWidth、
         /// KikasaDrown.MaxRange 同源：覆盖最大缩放下整屏可视，不随各端屏幕尺寸漂移</summary>

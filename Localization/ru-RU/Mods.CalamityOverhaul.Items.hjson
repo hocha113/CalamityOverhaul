@@ -326,13 +326,17 @@ KikasaItem: {
 	// DisplayName: Kikasa
 	/* Tooltip:
 		'''
-		While held, press the Domain Expansion key to unfurl the Blood Lake domain; press it again to fold the umbrella
-		Within, a blood-red mirror lake lies beneath your feet, and a dark sun sits half-sunken below the waterline
-		Hold left click to set the umbrella hovering overhead; its eye opens, and ink rain falls after your foes
-		Hold right click to flip it into a brimming vessel; release to pour the whole umbrella down
-		Every minion slot becomes a ghost roosting under the ribs: more slots quicken the rain, add drops, and speed the brew
-		At 4 slots each volley flings an extra ghost-drop at a second target; at 7, every fourth volley is thrown by all ghosts at once
-		At 10, heavy drops pool into scalding ink puddles, and a fully brewed torrent raises three ink geysers where it lands
+		While held, press Domain Expansion to open the Blood Lake; press again to close it
+		Hold left click to hover the umbrella overhead and drop ink rain that tracks enemies
+		Hold right click to charge; release to pour an ink torrent
+		Aim at an enemy or hold an item and press Sink into the Lake to push it under. A drowned boss leaves a shade
+		Click the wind chime at the bottom left to open the Lakeheart and seat shades in three slots
+		At full water, tap Flip the Lake (middle mouse by default) to switch between Blood Lake and Ghost Rain
+		Past half lake vigor, hold the same key to enter the Ghost Dream
+		More minion slots make the rain faster and thicker, and speed up the right-click charge
+		4 slots: each volley throws one extra drop at a second target
+		7 slots: every fourth volley throws every drop at once
+		10 slots: heavy drops leave burning ink puddles; a full torrent raises three ink geysers
 		[Lang4]
 		legend_Text
 		"No rain under the umbrella—only the sound of water"

@@ -46,16 +46,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                     KikasaDomainDeco.RippleAt(lakeAt, 1.6f);
                     ShakeViewer(2f);
                     break;
-                case 20:
+                case 14:
                     //湖底翻起来的第一记涌拍
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.7f, Volume = 0.5f, MaxInstances = 2 }, lakeAt);
                     break;
-                case 52:
+                case 34:
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.4f, Volume = 0.6f, MaxInstances = 2 }, lakeAt);
                     KikasaDomainDeco.RippleAt(lakeAt, 1.2f);
                     ShakeViewer(2.5f);
                     break;
-                case 84:
+                case 56:
                     //沸腾顶点，整面湖都在滚
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.1f, Volume = 0.7f, MaxInstances = 2 }, lakeAt);
                     ShakeViewer(3.5f);
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                     //倒转起势
                     SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with { Pitch = -0.75f, Volume = 0.55f, MaxInstances = 2 }, lakeAt);
                     break;
-                case 196:
+                case KikasaDream.PullDwellEnd + 30:
                     //世界滚动的极低闷响
                     SoundEngine.PlaySound(SoundID.Thunder with { Pitch = -1f, Volume = 0.36f, MaxInstances = 3 }, domain.Player.Center);
                     break;
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                     //湖水从屏底涌回来
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.8f, Volume = 0.5f, MaxInstances = 2 }, lakeAt);
                     break;
-                case 34:
+                case 26:
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.55f, Volume = 0.55f, MaxInstances = 2 }, lakeAt);
                     break;
                 case KikasaDream.ReturnSurgeEnd:
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                 case KikasaDream.ReturnDwellEnd:
                     SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with { Pitch = -0.7f, Volume = 0.5f, MaxInstances = 2 }, lakeAt);
                     break;
-                case 132:
+                case KikasaDream.ReturnDwellEnd + 30:
                     SoundEngine.PlaySound(SoundID.Thunder with { Pitch = -1f, Volume = 0.32f, MaxInstances = 3 }, domain.Player.Center);
                     break;
                 case KikasaDream.ReturnCommitFrame:

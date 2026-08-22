@@ -12,8 +12,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
     {
         //==================== 拉入 ====================
 
-        //节拍：凶兆沸腾 0-96 → 窥犬驻留 96-166 → 倒转 166-276 → 落定 276-330
-        //结算 221=倒转段时间过半，173-183 同款的近全红硬闪盖住世界切换
+        //节拍：凶兆沸腾 0-64 → 窥犬驻留 64-120 → 倒转 120-210 → 落定 210-244
+        //结算 165=倒转段时间过半，163-183 的近全红硬闪盖住世界切换
 
         public static void UpdatePull(KikasaDomainPlayer domain) {
             domain.SpreadProgress = 1f;
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             //窥犬凝视：驻留段里双目自暗处亮起，倒转期仍燃着，直到结算被红闪吞掉
             domain.DreamGaze = t <= KikasaDream.PullBoilEnd ? 0f
                 : t < KikasaDream.PullCommitFrame
-                    ? Smooth01((t - KikasaDream.PullBoilEnd) / 44f)
+                    ? Smooth01((t - KikasaDream.PullBoilEnd) / 36f)
                     : 1f - Smooth01((t - KikasaDream.PullCommitFrame) / 26f);
 
             //倒转角：反向蓄势一小口，再 0→π 先慢后快再慢
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                     / (float)(KikasaDream.PullTotalFrames - KikasaDream.PullRollEnd));
 
             //异样脉冲：驻留中段镜里错位一晃，涟漪从人脚下荡开
-            const int glimpseStart = 128;
+            const int glimpseStart = 92;
             const int glimpseFrames = 20;
             domain.DreamGlimpse = t >= glimpseStart && t < glimpseStart + glimpseFrames
                 ? MathF.Sin(MathHelper.Pi * (t - glimpseStart) / glimpseFrames) : 0f;
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             domain.RiseT = Smooth01(t / (float)KikasaDream.ReturnSurgeEnd);
 
             //短沸：水涌到位前后翻起，结算后退场
-            float boilIn = Smooth01((t - 30) / 50f);
+            float boilIn = Smooth01((t - 24) / 40f);
             float boilOut = t < KikasaDream.ReturnCommitFrame ? 1f
                 : 1f - Smooth01((t - KikasaDream.ReturnCommitFrame) / 36f);
             domain.DreamBoil = boilIn * boilOut;

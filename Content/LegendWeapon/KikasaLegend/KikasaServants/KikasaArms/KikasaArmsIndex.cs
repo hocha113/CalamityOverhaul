@@ -16,10 +16,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         /// <summary>
         /// 专门条目：想给某件武器完全定制的械奴实现时挂这里，命中即短路通用推断。
-        /// 当前全部走推断（迷你鲨/巨兽鲨的手调数值收进推断器的覆写档），
-        /// 未来 boss 级武器的专属实现是这张表存在的理由
+        /// 普通武器走推断（迷你鲨/巨兽鲨的手调数值收进推断器的覆写档），
+        /// 传奇武器的专属实现登记在静态构造里
         /// </summary>
         private static readonly Dictionary<int, ArmsSpawner> entries = new();
+
+        /// <summary>
+        /// 传奇武器专属械奴：比目鱼（海洋枪奴，鬼切 useStyle=Shoot 进不了推断、
+        /// 比目鱼推断只会读到模板伤 4——两件都必须专门条目）。
+        /// 静态构造在首次 TryGet（进游戏后）才触发，ModContent 查询此时安全
+        /// </summary>
+        static KikasaArmsIndex() {
+            entries[HalibutLegend.HalibutOverride.ID] = KikasaHalibut.KikasaHalibutServant.Summon;
+            entries[OnikiriLegend.OnikiriOverride.ID] = KikasaOnikiri.KikasaOnikiriServant.Summon;
+        }
 
         /// <summary>该武器能否被湖驱使：专门条目 → 枪推断 → 刀剑推断</summary>
         internal static bool TryGet(int itemType, out ArmsSpawner spawner) {

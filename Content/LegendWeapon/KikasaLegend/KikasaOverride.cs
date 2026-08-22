@@ -133,9 +133,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
 
         public override void SetStaticDefaults() {
             LoadWeaponData();
-            GhostCountLine = this.GetLocalization(nameof(GhostCountLine), () => "伞下栖鬼 {0} 位——{1}");
+            GhostCountLine = this.GetLocalization(nameof(GhostCountLine), () => "召唤栏 {0} · {1}");
             TierNames = new LocalizedText[4];
-            string[] tierDefaults = ["细雨", "二鬼帮衬", "众鬼齐掷", "湖倾"];
+            string[] tierDefaults = ["细雨", "侧掷", "齐掷", "湖倾"];
             for (int i = 0; i < TierNames.Length; i++) {
                 int idx = i;
                 TierNames[i] = this.GetLocalization($"TierName{i}", () => tierDefaults[idx]);

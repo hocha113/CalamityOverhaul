@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         public static LocalizedText ServantUnknown { get; private set; }
 
         public override void SetStaticDefaults() {
-            ServantUnknown = this.GetLocalization(nameof(ServantUnknown), () => "湖还没学会驱使它");
+            ServantUnknown = this.GetLocalization(nameof(ServantUnknown), () => "还不能驱使它");
         }
 
         //==================== 影位读数 ====================
@@ -191,6 +191,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             }
             //同一记确认拍：湖学会了驱使这批武器
             SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.5f, Pitch = -0.8f, MaxInstances = 2 }, Player.Center);
+        }
+
+        /// <summary>
+        /// 入世追认湖藏：注册表扩了专门条目后（如传奇武器专属械奴），
+        /// 更新前就泡在湖里的原件静默补入械奴册——不落座、不出声，编成自己来
+        /// </summary>
+        public override void OnEnterWorld() {
+            foreach (Item item in Player.GetModPlayer<KikasaVaultPlayer>().Stored) {
+                if (item?.IsAir == false && !collectedArms.Contains(item.type)
+                    && KikasaArmsIndex.TryGet(item.type, out _)) {
+                    collectedArms.Add(item.type);
+                }
+            }
         }
 
         /// <summary>新记忆有空席就自动落座——沉下去当场看见回报（落座默认出战）</summary>

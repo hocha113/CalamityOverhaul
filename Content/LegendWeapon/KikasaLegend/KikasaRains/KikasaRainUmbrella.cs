@@ -31,8 +31,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>出手前反向蓄势帧数</summary>
         public const int WindupFrames = 4;
 
-        /// <summary>每波墨滴基数;域外/血湖用此值,鬼雨形态 5,再加栏位加成</summary>
-        public const int DropsPerVolley = 3;
+        /// <summary>每波墨滴基数;域外/血湖用此值,鬼雨形态再加 2,再加栏位加成</summary>
+        public const int DropsPerVolley = 1;
 
         /// <summary>收伞回手帧数</summary>
         public const int RecallFrames = 18;
@@ -325,11 +325,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
         }
 
-        /// <summary>形态差异:血湖形态少而重、鬼雨形态密而细,域外基准三滴</summary>
+        /// <summary>形态差异:血湖形态少而重、鬼雨形态密而细,域外基准一滴</summary>
         private int VolleyDropCount(Player owner) {
             KikasaDomainPlayer kdp = owner.GetModPlayer<KikasaDomainPlayer>();
             if (kdp.AnyActive) {
-                return kdp.IsRainForm ? 5 : DropsPerVolley;
+                return kdp.IsRainForm ? DropsPerVolley + 2 : DropsPerVolley;
             }
             return DropsPerVolley;
         }

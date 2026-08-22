@@ -113,6 +113,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             bool pull = kdp.Phase == KikasaDomainPhase.DreamPull;
             float rollProgress = MathHelper.Clamp(kdp.DreamRollAngle / MathHelper.Pi, 0f, 1f);
 
+            //结算后镜面吞满全屏、就是世界本体：抹人遮罩与镜中犬影必须趁结算闪退场，
+            //不然玩家的像素会一直被推去矩形边缘重采，落定前全程是横向拉花的损坏影像
+            int commit = pull ? KikasaDream.PullCommitFrame : KikasaDream.ReturnCommitFrame;
+            float mirrorLife = kdp.PhaseTimer < commit ? 1f
+                : 1f - MathHelper.Clamp((kdp.PhaseTimer - commit) / 8f, 0f, 1f);
+
             //缝线取湖面线的实际投影，翻转期间收敛到屏幕中线；旁观者靠 clamp 兜底
             float pivotY = MathHelper.Clamp(
                 WorldToScreen(new Vector2(Main.screenPosition.X, kdp.LakeWorldY)).Y / h,
@@ -141,23 +147,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             fx.Parameters["uDreamSide"]?.SetValue(DreamSideOf(kdp));
             fx.Parameters["uMix"]?.SetValue(fadeIn);
 
-            //镜里抹掉施术者本人，人影不与犬影同镜
-            float coverA = kdp.HoundReflection ? fadeIn : 0f;
+            //镜里抹掉施术者本人，人影不与犬影同镜；遮罩与犬影同一条生命线
+            float coverA = kdp.HoundReflection ? fadeIn * mirrorLife : 0f;
             Rectangle hit = kdp.Player.Hitbox;
             Vector2 coverTl = WorldToScreen(new Vector2(hit.Left - 18f, hit.Top - 16f)) / new Vector2(w, h);
             Vector2 coverBr = WorldToScreen(new Vector2(hit.Right + 18f, hit.Bottom + 6f)) / new Vector2(w, h);
             fx.Parameters["uCoverRect"]?.SetValue(new Vector4(coverTl.X, coverTl.Y, coverBr.X, coverBr.Y));
             fx.Parameters["uCoverA"]?.SetValue(coverA);
 
-            SetHoundParams(fx, kdp, wolf, pull, fadeIn, w, h);
+            SetHoundParams(fx, kdp, wolf, pull, fadeIn * mirrorLife, w, h);
         }
 
         /// <summary>
         /// 镜中黑犬的几何：与 <see cref="KikasaHoundReflection"/> 同一套镜像（爪线=脚底映像），
-        /// 拉入期镜面接管拷屏后，犬影由本着色器续画，玩家的镜像被它替换
+        /// 拉入期镜面接管拷屏后，犬影由本着色器续画，玩家的镜像被它替换。
+        /// strength = 起手淡入 × 结算退场，犬影只活在"镜面还是镜子"的窗口里
         /// </summary>
         private static void SetHoundParams(Effect fx, KikasaDomainPlayer kdp,
-            Texture2D wolf, bool pull, float fadeIn, float w, float h) {
+            Texture2D wolf, bool pull, float strength, float w, float h) {
 
             if (wolf == null) {
                 fx.Parameters["uHoundA"]?.SetValue(0f);
@@ -180,7 +187,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 
             //倒影已醒才有影可用；归返镜里它候在湖底，弱半分
             float presence = kdp.HoundReflection ? 1f : 0f;
-            float houndA = fadeIn * presence * (pull ? 1f : 0.8f);
+            float houndA = strength * presence * (pull ? 1f : 0.8f);
 
             fx.Parameters["uHoundRect"]?.SetValue(new Vector4(
                 topLeft.X / w, topLeft.Y / h, sizePx.X / w, sizePx.Y / h));
