@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using System;
 using Terraria;
 using Terraria.GameInput;
@@ -83,5 +84,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         /// <summary>异相位呼吸波，0~1 缓慢脉动</summary>
         public static float Breath(float time, float seed, float speed = 2f)
             => MathF.Sin(time * speed + seed * 17.39f) * 0.5f + 0.5f;
+
+        /// <summary>
+        /// 翻转期把镜面预览混进浸染，色先于形态半步——
+        /// 风铃 HUD 与湖心景共用这份换算（原 KikasaSceneUI.EffectiveRain）
+        /// </summary>
+        public static float EffectiveRain(KikasaDomainPlayer domain) {
+            float rain = domain.RainBlend;
+            if (domain.Phase == KikasaDomainPhase.Flipping) {
+                rain = MathHelper.Lerp(rain, domain.FlipToRain ? 1f : 0f, domain.FlipMix * 0.65f);
+            }
+            return MathHelper.Clamp(rain, 0f, 1f);
+        }
     }
 }

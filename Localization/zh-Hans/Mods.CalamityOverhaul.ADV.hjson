@@ -1016,7 +1016,8 @@ EternalBlazingNowNoHelen: {
 OniRainWorld: {
 	OniRainWorldSystem: {
 		InteractHint: "[右键] 撑伞入雨"
-		DescendHint: "[右键] 撑伞入深雨"
+		GrabHint: "[右键] 夺伞"
+		OniDeathReason: "{0}被伞下的东西拖进了雨里"
 	}
 }
 
@@ -1026,8 +1027,12 @@ FirstMetShenyo: {
 	L2: 你是怎么到这里来的？
 	OptDead: 死过一次，醒了就在这了
 	OptRain: 抢了把伞冲进来的
+	OptDeadLocked: （你还活着，这话说不出口）
+	OptRainLocked: （你两手空空，没伞可言）
 	A1: ……死而复生？
 	A2: 稀罕事，不过看你，倒像是习以为常了
 	B1: 那你运气真不错
 	B2: 现在想想该怎么出去吧
+	C1: 雨会替你把路撑开，回去吧
+	C2: 那把伞，往后就是你的了
 }

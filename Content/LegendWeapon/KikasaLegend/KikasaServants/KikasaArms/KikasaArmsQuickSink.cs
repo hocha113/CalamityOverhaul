@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return false;
             }
 
-            //消耗并逐件入账（堆叠按件拆入，湖窗一件一格）
+            //消耗并逐件入账（堆叠按件拆入，湖藏一件一格）
             int taken = 0;
             for (int slot = 0; slot < player.inventory.Length && taken < need; slot++) {
                 Item item = player.inventory[slot];

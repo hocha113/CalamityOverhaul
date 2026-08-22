@@ -8,8 +8,9 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
 {
     /// <summary>
-    /// 湖窗过程化绘制：面板走 KikasaVaultPanel.fx（缺编时 CPU 平底回退），
-    /// 沉物用 KikasaItemForm 血水材质，亮件走加色层。
+    /// 湖藏过程化绘制工具箱（湖窗退役后仍是沉影笔/伞章/血水物品的共用家）：
+    /// 沉物用 KikasaItemForm 血水材质，沉影走 KikasaSunkEffigy，亮件走加色层。
+    /// DrawPanel 的撕纸窗面暂无消费者，留给后续需要小窗的场合。
     /// </summary>
     internal static class KikasaVaultRenderer
     {
@@ -204,6 +205,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
             }
         }
 
+        /// <summary>
+        /// 记忆键通用沉影：正键走 NPC 贴图重载，负键取物品贴图走纹理重载。
+        /// 转盘/湖心景/湖窗共用这一支笔，别在各屏重抄
+        /// </summary>
+        public static void DrawEffigyByKey(SpriteBatch sb, int key, Vector2 center, float fit,
+            float alpha, float submerge, bool tamed, bool absent, float rain, float stir,
+            Color fallbackTint) {
+            if (key > 0) {
+                DrawSunkEffigy(sb, key, center, fit, alpha,
+                    submerge, 0.35f, tamed, absent, rain, stir, fallbackTint);
+                return;
+            }
+            if (key == 0) {
+                return;
+            }
+            int itemType = -key;
+            Main.instance.LoadItem(itemType);
+            Texture2D tex = TextureAssets.Item[itemType]?.Value;
+            if (tex == null) {
+                return;
+            }
+            DrawSunkEffigy(sb, tex, new Rectangle(0, 0, tex.Width, tex.Height),
+                center, fit, alpha, submerge, 0.35f, tamed, absent, rain, stir,
+                itemType * 0.173f, fallbackTint, SpriteEffects.None);
+        }
+
         //==================== 伞章 ====================
 
         //归一 [-1,1] 空间：圆拱伞盖 + 四瓣荷缘；顶针、中棒弯钩与两根斜骨
@@ -219,7 +246,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
 
         /// <summary>
         /// 伞章：伞骨淡线垫底，伞盖粗笔带亮芯，笔序随 reveal 揭示；描完伞面一段掠光缓巡。
-        /// 颜色由调用方定——湖窗传 KikasaVaultTheme 定色，画境传 KikasaHudTheme 双形态色随鬼雨浸染
+        /// 颜色由调用方定——湖心景传 KikasaHudTheme 双形态色随鬼雨浸染
         /// </summary>
         public static void DrawSeal(SpriteBatch sb, Vector2 center, float scale, float alpha,
             float time, float reveal, Color bone, Color canopy, Color core) {

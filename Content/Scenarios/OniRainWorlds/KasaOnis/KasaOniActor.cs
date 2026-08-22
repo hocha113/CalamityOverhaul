@@ -1,12 +1,19 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls;
+using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Scenarios.Shenyo;
 using InnoVault.Actors;
+using InnoVault.Cinematics;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
 using System;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
@@ -27,7 +34,8 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
     /// 鬼雨世界的伞鬼：入第一层时从地下以污水凝聚现身。<br/>
     /// 服务器权威推进相位与瞬移调度，运动积分全端一致跑以获得平滑预测；
     /// 雨世界是本地叠加层，故绘制/粒子/音效只对身处雨中的观察者生效。<br/>
-    /// 本里程碑为纯存在感实体，无伤害无受击。
+    /// 行走相位对身处雨中的本地玩家有接触伤害（本地自结算，经原版协议同步），
+    /// 自身仍无受击；靠近自己的伞鬼可右键夺伞下潜（<see cref="OniRainDescentTransition"/>）。
     /// </summary>
     internal sealed class KasaOniActor : Actor
     {
@@ -48,6 +56,12 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
         private const float ReformDistMax = 420f;
         private const float SubmergeSpeed = 14f;
         private const int OrphanFramesToDespawn = 240;
+
+        //接触威胁：新档百血下被围猎会真死，但单次可跑；原版无敌帧定节奏
+        private const int ContactDamage = 22;
+        private const float ContactKnockback = 5f;
+        //夺伞交互距离，按伞盖锚点算
+        private const float GrabDistance = 120f;
 
         //湿墨色板，与鬼雨体系一致
         internal static readonly Color SewageDeep = new(46, 56, 58);
@@ -77,6 +91,8 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
         internal float WaddlePhase;
         private int dripTimer;
         private int squelchTimer;
+        //夺伞提示淡入，仅本地
+        private float grabPromptAlpha;
 
         internal KasaOniPhase Phase => (KasaOniPhase)phaseRaw;
         internal int OwnerWhoAmI => ownerWhoAmI;
@@ -145,6 +161,8 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
 
             UpdateMotion();
             UpdatePresentation();
+            UpdateLocalThreat();
+            UpdateGrabInteraction();
 
             phaseTimer++;
         }
@@ -195,9 +213,9 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
 
         #region 权威决策
         private void UpdateAuthorityDecisions() {
-            //单机里玩家浮出雨世界：伞鬼失去存在的雨，消融退场
+            //单机里玩家离开第一层（浮出或深潜）：伞鬼失去栖息层，消融退场
             //（多人退场由 owner 端 Director 发销毁请求，专用服务器不知深度）
-            if (VaultUtils.isSinglePlayer && !OniRainWorldState.LocalIn) {
+            if (VaultUtils.isSinglePlayer && OniRainWorldState.LocalDepth != 1) {
                 HandleWorldExitAuthority();
                 return;
             }
@@ -649,6 +667,123 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
             => Main.LocalPlayer?.CWR()?.GetScreenShake(amount);
         #endregion
 
+        #region 本地威胁与夺伞
+        /// <summary>
+        /// 接触威胁：行走相位擦到身处雨中的本地玩家就抓一把。
+        /// 伤害由被击端自结算（雨世界是本地叠加层），经原版 Hurt 协议同步；
+        /// 演出与叙事期间收爪。
+        /// </summary>
+        private void UpdateLocalThreat() {
+            if (Main.dedServ || Phase != KasaOniPhase.Walking || !OniRainWorldState.LocalIn) {
+                return;
+            }
+            Player player = Main.LocalPlayer;
+            if (player == null || !player.Alives() || player.ghost || player.immune) {
+                return;
+            }
+            if (NarrativeTriggerGate.IsBusy || CutsceneDirector.IsPlaying
+                || OniRainWorldTransition.Active || OniRainDescentTransition.Active) {
+                return;
+            }
+            Rectangle body = new((int)Position.X, (int)Position.Y, Width, Height);
+            if (!body.Intersects(player.Hitbox)) {
+                return;
+            }
+
+            //先登记命中源，致死打击与 PreKill 拦截同帧结算
+            player.GetModPlayer<OniRainWorldPlayer>().NoteOniHit();
+            int direction = player.Center.X < Center.X ? -1 : 1;
+            player.Hurt(PlayerDeathReason.ByCustomReason(
+                OniRainWorldSystem.OniDeathReason.Format(player.name)),
+                ContactDamage, direction, knockback: ContactKnockback);
+        }
+
+        /// <summary>本地玩家可否对这只伞鬼夺伞：只许夺自己的追猎者，行走相位、未达最深层</summary>
+        private bool LocalPlayerCanGrab(Player player) {
+            return player != null && player.Alives()
+                && OwnerWhoAmI == player.whoAmI
+                && Phase == KasaOniPhase.Walking
+                && OniRainWorldState.LocalIn
+                && OniRainWorldState.LocalDepth < OniRainWorldState.MaxDepth
+                && !OniRainWorldTransition.Active && !OniRainDescentTransition.Active
+                && !CutsceneDirector.IsPlaying && !NarrativeTriggerGate.IsBusy;
+        }
+
+        private void UpdateGrabInteraction() {
+            if (Main.dedServ) {
+                return;
+            }
+            Player player = Main.LocalPlayer;
+            bool near = LocalPlayerCanGrab(player)
+                && player.Center.Distance(CanopyAnchor) < GrabDistance;
+            bool canTrigger = near && !Main.mapFullscreen && !player.mouseInterface;
+
+            grabPromptAlpha = MathHelper.Clamp(
+                grabPromptAlpha + (canTrigger ? 0.05f : -0.05f), 0f, 1f);
+
+            if (canTrigger && grabPromptAlpha > 0.5f
+                && Main.mouseRight && Main.mouseRightRelease) {
+                TriggerGrab(player);
+            }
+        }
+
+        /// <summary>
+        /// 夺伞：确认拍后以这把伞为门起深潜演出，被夺了伞的鬼失去存形之物塌回污水。
+        /// 多人客户端销毁走服务器请求，水幕合拢会盖住生硬处。
+        /// </summary>
+        private void TriggerGrab(Player player) {
+            SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
+                Pitch = -0.3f,
+                Volume = 0.6f,
+                MaxInstances = 3,
+            }, CanopyAnchor);
+            SoundEngine.PlaySound(SoundID.SplashWeak with {
+                Pitch = -0.4f,
+                Volume = 0.6f,
+                MaxInstances = 3,
+            }, CanopyAnchor);
+            KikasaThrallFX.WaterBurst(CanopyAnchor, 14, 1.05f, upward: false);
+            KikasaThrallFX.MistRing(FeetAnchor, 3, 36f, 0.95f);
+            player.CWR()?.GetScreenShake(5f);
+
+            //夺伞入深层：记入场方式，供沈幽初遇选项门
+            ShenyoStorySync.ArrivedByDeath = false;
+
+            //运镜失败不致命，演出照走
+            OniRainDescentTransition.Begin(player, FeetAnchor);
+            CutsceneDirector.Play<OniRainDescentCutscene>(player);
+
+            if (VaultUtils.isClient) {
+                ActorLoader.KillActor(WhoAmI);
+            }
+            else {
+                BeginDespawnDissolve();
+            }
+        }
+
+        /// <summary>夺伞提示，形制镜像立伞交互提示；仅雨中观察者可见</summary>
+        private void DrawGrabPrompt(SpriteBatch sb) {
+            if (grabPromptAlpha <= 0.01f) {
+                return;
+            }
+
+            Vector2 textPos = CanopyAnchor - Main.screenPosition + new Vector2(0f, -46f);
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            string hint = OniRainWorldSystem.GrabHint.Value;
+            Vector2 textSize = font.MeasureString(hint) * 0.9f;
+
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            float pulse = MathF.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f;
+
+            Vector2 backingScale = new((textSize.X + 46f) / glow.Width, (textSize.Y + 26f) / glow.Height);
+            Color backingColor = new Color(70, 92, 98) with { A = 0 } * (grabPromptAlpha * (0.3f + pulse * 0.1f));
+            sb.Draw(glow, textPos, null, backingColor, 0f, glow.Size() / 2f, backingScale, SpriteEffects.None, 0f);
+
+            Color textColor = new Color(214, 228, 230) * grabPromptAlpha;
+            Utils.DrawBorderString(sb, hint, textPos - textSize / 2f, textColor, 0.9f);
+        }
+        #endregion
+
         #region 绘制
         public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {
             //雨世界是本地叠加层：不在雨中的观察者看不见伞鬼
@@ -657,6 +792,13 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
             }
             KasaOniRenderer.Draw(spriteBatch, this);
             return false;
+        }
+
+        public override void PostDraw(SpriteBatch spriteBatch, Color drawColor) {
+            if (Main.dedServ || !OniRainWorldState.LocalIn) {
+                return;
+            }
+            DrawGrabPrompt(spriteBatch);
         }
         #endregion
 

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaEye;
@@ -11,23 +11,33 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms.KikasaArmsPalette;
 
-namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms.KikasaMinishark
+namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms.KikasaGuns
 {
     /// <summary>
-    /// 械奴鲨群的湖水滴弹：血痰（<see cref="KikasaEyeBloodShot"/>）的枪弹化移植——
+    /// 械奴枪群的湖水滴弹：血痰（<see cref="KikasaEyeBloodShot"/>）的枪弹化移植——
     /// 同一套有体积的液团语法：三层液团头（暗血压边→血红主体→血沫亮芯湿反光）
     /// 带表面张力抖动，身后拖一条会珠化断裂的粘血线（复用灵液液柱条带 shader 换血色板），
-    /// 飞行中失稳甩珠；整体缩小约四分之一。弹道改成枪弹的快与直：
+    /// 飞行中失稳甩珠；整体缩小约四分之一。弹道是枪弹的快与直：
     /// 不吃重力、复利续力越飞越钻、只带极小幅鱼摆尾（转向恒为弧）。
-    /// 命中窄扇迸溅、贴壁留渍（手动地形检测只认水线上真地形）、落空坠湖被收走
+    /// 命中窄扇迸溅、贴壁留渍（手动地形检测只认水线上真地形）、落空坠湖被收走。
+    /// 三种弹型走 ai[0]（生成包自带，各端一致）：0 标准滴弹；
+    /// 1 狙击重弹——穿透 3、双倍更新、弹头加大拖尾拉长、几乎不摆尾；
+    /// 2 霰弹轻珠——短命小粒、少甩珠，密喷不轰屏
     /// </summary>
-    internal class KikasaMinisharkBullet : ModProjectile, IPrimitiveDrawable
+    internal class KikasaGunBullet : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
 
         /// <summary>各端本地计帧，仅供表现淡入与抖动相位（extraUpdates 下按更新递增）</summary>
         private ref float Life => ref Projectile.localAI[0];
+
+        /// <summary>弹型：0 标准，1 狙击重弹，2 霰弹轻珠（ai 随生成包走，远端同值）</summary>
+        private int Variant => (int)Projectile.ai[0];
+
+        /// <summary>体量倍率：弹头/拖尾/迸溅统一缩放</summary>
+        private float BulkMul => Variant switch { 1 => 1.35f, 2 => 0.62f, _ => 1f };
 
         private Trail trail;
         //贴壁演出已放，OnKill 不再补迸溅
@@ -54,6 +64,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.penetrate = 1;
             Projectile.timeLeft = 120;
             Projectile.extraUpdates = 1;
+            //穿透弹型走本地免疫（一弹一敌只吃一次），不占全局免疫槽
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
             //不吃引擎地形碰撞：湖下真地形被湖面演出盖住，撞上去像凭空截停；
             //贴壁迸溅+留渍改走 AI 内手动检测（只认水线以上的真地形）
             Projectile.tileCollide = false;
@@ -63,25 +76,40 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         public override void AI() {
             Life++;
 
-            //枪弹弹道：不吃重力、复利续力越飞越钻 + 极小幅鱼摆尾（转向恒为弧，快时收紧）
+            //弹型差异化：OnSpawn 只跑生成端，远端靠 ai[0] 在首个本地更新自配
+            if ((int)Life == 1) {
+                if (Variant == 1) {
+                    Projectile.penetrate = 3;
+                    Projectile.extraUpdates = 2;
+                    Projectile.timeLeft = 150;
+                }
+                else if (Variant == 2) {
+                    Projectile.timeLeft = 52;
+                }
+            }
+
+            //枪弹弹道：不吃重力、复利续力越飞越钻 + 极小幅鱼摆尾（重弹几乎不摆）
             Projectile.velocity *= 1.009f;
             float sway = MathF.Sin(Life * 0.5f + Projectile.identity * 1.3f)
                 * 0.009f * MathHelper.Clamp(28f / (Projectile.velocity.Length() + 1f), 0.5f, 1f);
+            if (Variant == 1) {
+                sway *= 0.35f;
+            }
             Projectile.velocity = Projectile.velocity.RotatedBy(sway);
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
-            //表面张力失稳：从团身后侧撕下小血珠（比血痰稀一半，枪弹密不轰屏）
-            if (!Main.dedServ && (int)Life % 6 == 0) {
+            //表面张力失稳：从团身后侧撕下小血珠（轻珠免了，密喷不轰屏）
+            if (!Main.dedServ && Variant != 2 && (int)Life % (Variant == 1 ? 4 : 6) == 0) {
                 Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitY);
-                Vector2 spawnPos = Projectile.Center - dir * Main.rand.NextFloat(5f, 13f);
+                Vector2 spawnPos = Projectile.Center - dir * Main.rand.NextFloat(5f, 13f) * BulkMul;
                 Vector2 dropVel = Projectile.velocity * Main.rand.NextFloat(0.15f, 0.35f)
                     + dir.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-1f, 1f);
                 PRTLoader.NewParticle<PRT_KikasaBloodGlob>(spawnPos, dropVel,
-                    Main.rand.NextBool(3) ? KikasaMinisharkServant.BloodDeep : KikasaMinisharkServant.BloodMain,
-                    Main.rand.NextFloat(0.28f, 0.45f))?.Configure(Main.rand.Next(12, 20));
+                    Main.rand.NextBool(3) ? BloodDeep : BloodMain,
+                    Main.rand.NextFloat(0.28f, 0.45f) * BulkMul)?.Configure(Main.rand.Next(12, 20));
             }
 
-            float glow = 0.42f * VisualFade;
+            float glow = 0.42f * VisualFade * BulkMul;
             Lighting.AddLight(Projectile.Center, 0.5f * glow, 0.12f * glow, 0.11f * glow);
 
             //落空坠回血湖：湖收回自己的水，不迸溅
@@ -118,62 +146,69 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
             if (!burstDone) {
-                //命中 NPC / 超时坠灭共用（penetrate=1，Kill 各端都跑，队友也看得见）
+                //命中 NPC / 超时坠灭共用（Kill 各端都跑，队友也看得见）
                 ImpactBurst(Projectile.Center, Projectile.velocity, onTile: false);
             }
-            //血线失压散珠：拖尾旧位上留几粒回落的残珠
+            //血线失压散珠：拖尾旧位上留几粒回落的残珠（轻珠省一半）
             Vector2[] oldPos = Projectile.oldPos;
             if (oldPos == null) {
                 return;
             }
-            for (int i = 2; i < oldPos.Length; i += 5) {
+            int step = Variant == 2 ? 8 : 5;
+            for (int i = 2; i < oldPos.Length; i += step) {
                 if (oldPos[i] == Vector2.Zero) {
                     continue;
                 }
                 Vector2 pos = oldPos[i] + Projectile.Size * 0.5f;
                 PRTLoader.NewParticle<PRT_KikasaBloodGlob>(pos + Main.rand.NextVector2Circular(3f, 3f),
                     Projectile.velocity * 0.08f + Main.rand.NextVector2Circular(0.6f, 0.6f),
-                    Main.rand.NextBool(3) ? KikasaMinisharkServant.BloodDeep : KikasaMinisharkServant.BloodMain,
-                    Main.rand.NextFloat(0.26f, 0.45f))?.Configure(Main.rand.Next(12, 22));
+                    Main.rand.NextBool(3) ? BloodDeep : BloodMain,
+                    Main.rand.NextFloat(0.26f, 0.45f) * BulkMul)?.Configure(Main.rand.Next(12, 22));
             }
         }
 
-        /// <summary>滴弹命中：窄扇前向迸溅 + 一粒沉珠 + 细环——比血痰收一号，密射不轰屏</summary>
-        private static void ImpactBurst(Vector2 pos, Vector2 impactVel, bool onTile) {
+        /// <summary>滴弹命中：窄扇前向迸溅 + 一粒沉珠 + 细环——规格随弹型体量缩放</summary>
+        private void ImpactBurst(Vector2 pos, Vector2 impactVel, bool onTile) {
             if (Main.dedServ) {
                 return;
             }
             Vector2 dir = impactVel.SafeNormalize(Vector2.UnitX);
             float angle = dir.ToRotation();
+            float bulk = BulkMul;
 
-            //窄扇：水珠贴着入射向前钻
-            for (int i = 0; i < 5; i++) {
+            //窄扇：水珠贴着入射向前钻（重弹多两粒、轻珠少两粒）
+            int fan = Variant switch { 1 => 7, 2 => 3, _ => 5 };
+            for (int i = 0; i < fan; i++) {
                 Vector2 vel = dir.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f))
-                    * Main.rand.NextFloat(2.2f, 6f);
+                    * Main.rand.NextFloat(2.2f, 6f) * bulk;
                 PRTLoader.NewParticle<PRT_KikasaBloodGlob>(pos + Main.rand.NextVector2Circular(3f, 3f),
-                    vel, Main.rand.NextBool(3) ? KikasaMinisharkServant.BloodDeep : KikasaMinisharkServant.BloodMain,
-                    Main.rand.NextFloat(0.32f, 0.55f))?.Configure(Main.rand.Next(14, 24));
+                    vel, Main.rand.NextBool(3) ? BloodDeep : BloodMain,
+                    Main.rand.NextFloat(0.32f, 0.55f) * bulk)?.Configure(Main.rand.Next(14, 24));
             }
             //一粒沉珠：坠得急，给收口一点分量
             PRTLoader.NewParticle<PRT_KikasaBloodGlob>(pos,
                 dir.RotatedByRandom(0.5f) * Main.rand.NextFloat(1.4f, 3f),
-                KikasaMinisharkServant.BloodDeep,
-                Main.rand.NextFloat(0.6f, 0.8f))?.Configure(Main.rand.Next(20, 32), 0.4f);
-            PRTLoader.NewParticle<PRT_DWave>(pos, Vector2.Zero, KikasaMinisharkServant.BloodBright, 0.045f)
+                BloodDeep,
+                Main.rand.NextFloat(0.6f, 0.8f) * bulk)?.Configure(Main.rand.Next(20, 32), 0.4f);
+            PRTLoader.NewParticle<PRT_DWave>(pos, Vector2.Zero, BloodBright, 0.045f * bulk)
                 ?.Configure(new Vector2(0.5f, 1f), angle, 0.14f, 7);
             if (onTile) {
                 PRTLoader.NewParticle<PRT_KikasaBloodSmear>(pos - dir * 2f, Vector2.Zero,
-                    KikasaMinisharkServant.BloodMain, Main.rand.NextFloat(0.5f, 0.7f))
+                    BloodMain, Main.rand.NextFloat(0.5f, 0.7f) * bulk)
                     ?.Configure(Main.rand.Next(50, 80));
             }
 
-            SoundEngine.PlaySound(SoundID.NPCHit13 with { Volume = 0.26f, Pitch = 0.3f, MaxInstances = 3 }, pos);
+            SoundEngine.PlaySound(SoundID.NPCHit13 with {
+                Volume = 0.26f * bulk,
+                Pitch = Variant == 1 ? 0.1f : 0.3f,
+                MaxInstances = 3
+            }, pos);
         }
 
-        //==================== 图元绘制：血痰同款粘血线 + 液团头，整体缩小一号 ====================
+        //==================== 图元绘制：血痰同款粘血线 + 液团头，规格随弹型 ====================
 
         public float GetWidthFunc(float completionRatio)
-            => MathHelper.Lerp(6.4f, 1f, completionRatio) * VisualFade; //0=团后颈最宽，尾端收成丝
+            => MathHelper.Lerp(6.4f, 1f, completionRatio) * VisualFade * BulkMul; //0=团后颈最宽，尾端收成丝
 
         public Color GetColorFunc(Vector2 coord) => Color.White;
 
@@ -205,10 +240,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (noise != null) {
                 fx.Parameters["uNoiseTex"]?.SetValue(noise);
             }
-            fx.Parameters["uColDark"]?.SetValue(KikasaMinisharkServant.BloodDark.ToVector3());
-            fx.Parameters["uColDeep"]?.SetValue(KikasaMinisharkServant.BloodDeep.ToVector3());
-            fx.Parameters["uColGold"]?.SetValue(KikasaMinisharkServant.BloodMain.ToVector3());
-            fx.Parameters["uColBright"]?.SetValue(KikasaMinisharkServant.BloodBright.ToVector3());
+            fx.Parameters["uColDark"]?.SetValue(BloodDark.ToVector3());
+            fx.Parameters["uColDeep"]?.SetValue(BloodDeep.ToVector3());
+            fx.Parameters["uColGold"]?.SetValue(BloodMain.ToVector3());
+            fx.Parameters["uColBright"]?.SetValue(BloodBright.ToVector3());
 
             Vector2[] positions = new Vector2[Projectile.oldPos.Length];
             for (int i = 0; i < positions.Length; i++) {
@@ -223,13 +258,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             trail.DrawTrail(fx);
         }
 
-        /// <summary>液团头部：暗血压边→血红主体→血沫亮芯，表面张力抖动 + 速度拉伸（血痰 ×0.75）</summary>
+        /// <summary>液团头部：暗血压边→血红主体→血沫亮芯，表面张力抖动 + 速度拉伸（规格随弹型）</summary>
         private void DrawGlobHead(SpriteBatch sb) {
             Texture2D tex = CWRAsset.Extra_98?.Value;
             if (tex == null) {
                 return;
             }
             float fade = VisualFade;
+            float bulk = BulkMul;
             Vector2 pos = Projectile.Center + Projectile.velocity * 0.3f - Main.screenPosition;
             Vector2 origin = tex.Size() * 0.5f;
             float rotation = Projectile.rotation;
@@ -240,15 +276,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Vector2 jiggle = new(1f + wob, 1f - wob * 0.8f);
 
             //暗血压边
-            sb.Draw(tex, pos, null, KikasaMinisharkServant.BloodDark * (0.85f * fade), rotation, origin,
-                new Vector2(0.40f, 0.43f + stretch * 0.62f) * jiggle, SpriteEffects.None, 0f);
+            sb.Draw(tex, pos, null, BloodDark * (0.85f * fade), rotation, origin,
+                new Vector2(0.40f, 0.43f + stretch * 0.62f) * jiggle * bulk, SpriteEffects.None, 0f);
             //血红主体
-            sb.Draw(tex, pos, null, KikasaMinisharkServant.BloodMain * fade, rotation, origin,
-                new Vector2(0.31f, 0.35f + stretch * 0.55f) * jiggle, SpriteEffects.None, 0f);
+            sb.Draw(tex, pos, null, BloodMain * fade, rotation, origin,
+                new Vector2(0.31f, 0.35f + stretch * 0.55f) * jiggle * bulk, SpriteEffects.None, 0f);
             //血沫亮芯：极小面积加色湿反光
-            Color core = KikasaMinisharkServant.BloodBright with { A = 0 };
+            Color core = BloodBright with { A = 0 };
             sb.Draw(tex, pos, null, core * (0.6f * fade), rotation, origin,
-                new Vector2(0.11f, 0.18f + stretch * 0.24f) * jiggle, SpriteEffects.None, 0f);
+                new Vector2(0.11f, 0.18f + stretch * 0.24f) * jiggle * bulk, SpriteEffects.None, 0f);
         }
 
         public override bool PreDraw(ref Color lightColor) => false;

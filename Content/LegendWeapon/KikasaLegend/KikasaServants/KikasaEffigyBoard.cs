@@ -4,14 +4,14 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
 {
-    /// <summary>灵异亲和：每条鬼奴记忆归一系，驻湖后由沉影盘点数出灵异门控</summary>
+    /// <summary>灵异亲和：每条鬼奴记忆归一系，驻湖后由影位点数折算灵异增益</summary>
     public enum KikasaAffinity : byte
     {
         /// <summary>无亲和（械奴记忆：占影位、不点灵异）</summary>
         None,
-        /// <summary>焰：驻湖自燃鬼火</summary>
+        /// <summary>焰：驻湖养旺鬼火（灼烧更久、火舌更高）</summary>
         Flame,
-        /// <summary>魇：驻湖唤醒倒影、开鬼梦之门</summary>
+        /// <summary>魇：驻湖壮大梦犬（上限更高、撕咬更狠）</summary>
         Nightmare,
         /// <summary>潦：驻湖养伞奴</summary>
         Rain,
@@ -21,7 +21,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
 
     /// <summary>
     /// 沉影盘门面：读 <see cref="KikasaServantPlayer"/> 的三影位，
-    /// 折算灵异门控（鬼火自燃/倒影自醒/伞奴增养）与组合边（梦火/沸雨/雨魇/三影镇湖）。
+    /// 折算灵异增益（鬼火养旺/梦犬壮大/伞奴增养）与组合边（梦火/沸雨/雨魇/三影镇湖）。
+    /// 鬼火自燃与倒影自醒随湖自走（满水稳态即醒/燃），亲和不再是开门的硬条件，只做增强。
     /// 槽位数据只活在所有者本机（储钱罐语义）——远端可见的后果各走既有同步通道：
     /// 鬼奴弹幕原版同步、鬼火与倒影走领域快照。非所有者端调用这些门面得到的是默认值，
     /// 消费端注意只在 owner 侧做裁决
@@ -74,12 +75,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         //==================== 鬼奴出力 ====================
 
         /// <summary>
-        /// 多驻同场的单只出力衰减：1 只全额、2 只 0.80、3 只 0.66（合计约 1.0/1.6/2.0 倍）；
-        /// 三影镇湖找回 15%。由 <see cref="KikasaServantBalanceGlobal"/> 在命中端统一乘
+        /// 多驻同场的单只出力衰减：按实际出战席数算（转盘收起的席不摊薄出力），
+        /// 1 只全额、2 只 0.80、3 只 0.66（合计约 1.0/1.6/2.0 倍）；
+        /// 三影镇湖找回 15%（镇湖看席位不看出场——收着的影也在湖里坐镇）。
+        /// 由 <see cref="KikasaServantBalanceGlobal"/> 在命中端统一乘
         /// </summary>
         internal static float ServantDamageScale(Player player) {
-            int filled = FilledSlotCount(player);
-            float scale = filled <= 1 ? 1f : filled == 2 ? 0.80f : 0.66f;
+            int active = player.GetModPlayer<KikasaServantPlayer>().ActiveSlotCount;
+            float scale = active <= 1 ? 1f : active == 2 ? 0.80f : 0.66f;
             if (HasTriSeal(player)) {
                 scale *= 1.15f;
             }
@@ -101,25 +104,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             return Math.Max(gap, 10);
         }
 
-        //==================== 梦犬（魇） ====================
+        //==================== 梦犬（魇增益，首枚即生效） ====================
 
-        /// <summary>梦中唤犬上限：魇 1 系 6 只，每多一枚 +2</summary>
+        /// <summary>梦中唤犬上限：无魇基线 4 只，每枚魇影 +2（一枚回到旧基线 6）</summary>
         internal static int HoundCap(Player player)
-            => 4 + 2 * Math.Max(NightmareCount(player), 1);
+            => 4 + 2 * NightmareCount(player);
 
-        /// <summary>梦犬撕咬倍率：首枚魇影全额，之后每枚 +22%</summary>
+        /// <summary>梦犬撕咬倍率：无魇基线 78%，每枚魇影 +22%（一枚回到全额）</summary>
         internal static float HoundDamageScale(Player player)
-            => 1f + 0.22f * Math.Max(NightmareCount(player) - 1, 0);
+            => 0.78f + 0.22f * NightmareCount(player);
 
-        //==================== 鬼火（焰） ====================
+        //==================== 鬼火（焰增益，首枚即生效） ====================
 
-        /// <summary>灼烧 debuff 时长：基数 95 帧，每多一枚焰影 +45</summary>
+        /// <summary>灼烧 debuff 时长：无焰基线 50 帧，每枚焰影 +45（一枚回到旧基线 95）</summary>
         internal static int WispBurnDuration(Player player)
-            => 95 + 45 * Math.Max(FlameCount(player) - 1, 0);
+            => 50 + 45 * FlameCount(player);
 
-        /// <summary>火舌向水线上方的触及高度：每多一枚焰影 +28px</summary>
+        /// <summary>火舌向水线上方的触及高度：无焰只灼水线近旁（基数 -28px），每枚焰影 +28px</summary>
         internal static float WispFlameReach(Player player)
-            => KikasaWisps.KikasaWisp.FlameReach + 28f * Math.Max(FlameCount(player) - 1, 0);
+            => KikasaWisps.KikasaWisp.FlameReach + 28f * (FlameCount(player) - 1);
 
         //==================== 湖力（鬼火与鬼梦共饮的一汪水） ====================
 

@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         //==================== 鬼火 ====================
 
-        /// <summary>鬼火点燃态：焰影驻湖的满水血湖稳态自燃（门控在 <see cref="KikasaWisps.KikasaWisp"/>）。
+        /// <summary>鬼火点燃态：满水血湖稳态自燃（门控在 <see cref="KikasaWisps.KikasaWisp"/>）。
         /// 鬼雨压制拍走完即清除（沸雨边免压制）；鬼梦只是湖暂时不在（包络退场、归返自动复燃，
         /// 点燃态保留）；收域清零</summary>
         public bool WispFireActive { get; internal set; }
@@ -240,8 +240,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// <summary>
         /// 持鬼伞按 <see cref="CWRKeySystem.Legend_Domain"/> 开阖；
         /// <see cref="CWRKeySystem.Kikasa_DomainMutate"/>（默认中键，被清空绑定时回退原生中键）：
-        /// 短按=开域/血雨翻转，魇影驻湖长按=拉入鬼梦，梦中任按即归返。
-        /// 倒影醒睡与鬼火燃熄随沉影盘自动走，不再占键；骇客时停不受理
+        /// 短按=开域/血雨翻转，长按=拉入鬼梦（满水且湖力过半即可，不看编成），梦中任按即归返。
+        /// 倒影醒睡与鬼火燃熄随湖自动走，不再占键；骇客时停不受理
         /// </summary>
         public override void PostUpdate() {
             if (Main.dedServ || Player.whoAmI != Main.myPlayer || Player.dead) {
@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             bool mutateEdge = unbound ? middleEdge : CWRKeySystem.Kikasa_DomainMutate.JustPressed;
             HandleMutateKey(holding, mutateDown, mutateEdge);
 
-            //魇影驻湖则倒影自醒、撤影则入睡——醒睡不再占键
+            //满水稳态则倒影自醒——醒睡不再占键
             UpdateReflectionGate();
         }
 
@@ -312,7 +312,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                         KikasaDreamSystem.Refuse(Player);
                         mutateSwallowed = true;
                     }
-                    //倒影没醒：长按视作按得久的短按，松手照旧翻转——没梦可入不设陷阱
+                    //倒影没醒（湖还没涨满）：长按视作按得久的短按，松手照旧翻转——没梦可入不设陷阱
                 }
                 //长按预兆：拉得动时湖面涟漪渐密，倒影在等你
                 if (!mutateSwallowed && DreamPullReady && mutateHold >= 8 && mutateHold % 7 == 0
@@ -334,7 +334,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         }
 
         /// <summary>
-        /// 倒影自动门控：魇影驻湖 + 稳态满水 → 醒；魇影全撤 → 睡。
+        /// 倒影自动门控：稳态满水即自醒——梦之门常开，不再看魇影编成。
+        /// 醒着的倒影不因水位波动入睡（收域时在 UpdateLocal 里随域睡透）；
         /// 只在 Open 稳态切换（翻转/鬼梦里镜面正忙），连续 10 帧稳定才动手防抖
         /// </summary>
         private void UpdateReflectionGate() {
@@ -342,14 +343,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 reflectionStable = 0;
                 return;
             }
-            int nightmare = KikasaServants.KikasaEffigyBoard.NightmareCount(Player);
-            bool want = nightmare >= 1 && RiseT >= 0.999f;
-            if (want == HoundReflection) {
-                reflectionStable = 0;
-                return;
-            }
-            //入睡只认「魇影全撤」，水位波动不掐醒着的倒影
-            if (!want && HoundReflection && nightmare > 0) {
+            if (HoundReflection || RiseT < 0.999f) {
                 reflectionStable = 0;
                 return;
             }
@@ -545,7 +539,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         }
 
         /// <summary>鬼火点燃/收火。点燃把蔓延原点定在脚下；收火走包络反向啃回。
-        /// 自燃门控在 <see cref="KikasaWisp"/>（焰影驻湖+湖力蓄满），这里只执行命令；确认拍只在观看端</summary>
+        /// 自燃门控在 <see cref="KikasaWisp"/>（满水稳态+湖力蓄满），这里只执行命令；确认拍只在观看端</summary>
         internal bool ToggleWispFire() {
             if (!ConsumeCommandGate()) {
                 return false;

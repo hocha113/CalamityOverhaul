@@ -1,30 +1,47 @@
 using System.Collections.Generic;
 using Terraria;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms
 {
     /// <summary>
-    /// 械奴穷举注册表：每种可复制武器一条专门实现，不做通用代码——
-    /// 演出与机制个性化优先，后续逐个补条目。key = 被沉武器的物品类型。
-    /// 沉入已注册武器时湖会把它写进鬼奴记忆（见 KikasaVaultPlayer.TrySink），
-    /// 召唤数量由湖藏存量折算，复制体不消耗湖藏原件
+    /// 械奴解析链：专门条目优先，其余交给 <see cref="KikasaArmsProfiler"/> 档案推断兜底——
+    /// 推断为枪类走通用枪奴、刀剑走通用刀奴，演出个性化由档案字段承担。
+    /// key = 被沉武器的物品类型。沉入可复制武器时湖会把它写进鬼奴记忆
+    /// （见 KikasaVaultPlayer.TrySink），召唤数量由湖藏存量折算，复制体不消耗湖藏原件
     /// </summary>
     internal static class KikasaArmsIndex
     {
         /// <summary>召唤委托：owner 本机受理后调用，count = 湖藏存量（实现自行钳上限）</summary>
         internal delegate void ArmsSpawner(Player owner, Vector2 emergeAt, int count);
 
-        private static readonly Dictionary<int, ArmsSpawner> entries = new() {
-            //鲨系连发枪共用一套鲨群骨架，按沉入武器换皮（贴图/口径/伤害档）
-            [ItemID.Minishark] = (owner, at, count)
-                => KikasaMinishark.KikasaMinisharkServant.Summon(owner, at, count, ItemID.Minishark),
-            [ItemID.Megashark] = (owner, at, count)
-                => KikasaMinishark.KikasaMinisharkServant.Summon(owner, at, count, ItemID.Megashark),
-        };
+        /// <summary>
+        /// 专门条目：想给某件武器完全定制的械奴实现时挂这里，命中即短路通用推断。
+        /// 当前全部走推断（迷你鲨/巨兽鲨的手调数值收进推断器的覆写档），
+        /// 未来 boss 级武器的专属实现是这张表存在的理由
+        /// </summary>
+        private static readonly Dictionary<int, ArmsSpawner> entries = new();
 
-        /// <summary>该武器是否已有专门的械奴实现</summary>
-        internal static bool TryGet(int itemType, out ArmsSpawner spawner)
-            => entries.TryGetValue(itemType, out spawner);
+        /// <summary>该武器能否被湖驱使：专门条目 → 枪推断 → 刀剑推断</summary>
+        internal static bool TryGet(int itemType, out ArmsSpawner spawner) {
+            if (entries.TryGetValue(itemType, out spawner)) {
+                return true;
+            }
+            switch (KikasaArmsProfiler.Classify(itemType)) {
+                case KikasaArmsKind.Gun:
+                    spawner = (owner, at, count)
+                        => KikasaGuns.KikasaGunServant.Summon(owner, at, count, itemType);
+                    return true;
+                case KikasaArmsKind.Blade:
+                    spawner = (owner, at, count)
+                        => KikasaBlades.KikasaBladeServant.Summon(owner, at, count, itemType);
+                    return true;
+                case KikasaArmsKind.Whip:
+                    spawner = (owner, at, count)
+                        => KikasaWhips.KikasaWhipServant.Summon(owner, at, count, itemType);
+                    return true;
+            }
+            spawner = null;
+            return false;
+        }
     }
 }

@@ -14,16 +14,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
     /// 领域含鬼雨异化表里形态——按 <see cref="Common.CWRKeySystem.Kikasa_DomainMutate"/>
     /// （默认中键）血湖沸腾倒转切换血/雨形态。
     /// 第二能力模块：湖藏——领域中持物按 <see cref="Common.CWRKeySystem.Kikasa_Sink"/>
-    /// 沉物入湖存储，持伞按 <see cref="Common.CWRKeySystem.Legend_UIControl"/> 开湖窗提取；
+    /// 沉物入湖存储，持伞按 <see cref="Common.CWRKeySystem.Legend_UIControl"/>
+    /// 开「湖心景」全屏（<see cref="UI.Panorama.KikasaPanoramaUI"/>）在湖藏区点击提取；
     /// 数据与输入在 <see cref="KikasaVaults.KikasaVaultPlayer"/>，
     /// 沉浮演出在 <see cref="KikasaVaults.KikasaLakeFX"/>。
-    /// 第三能力模块：沉影编成——沉溺过的 boss 永久入册，画境点血湖铺开沉影盘，
-    /// 三席影位驻影即役使；记录在 <see cref="KikasaServants.KikasaServantPlayer"/>，
+    /// 第三能力模块：沉影编成——沉溺过的 boss 永久入册，湖心景水线三席拾影点放编成，
+    /// 快捷转盘逐席召/收（<see cref="UI.ServantWheel.KikasaServantWheelController"/>）；
+    /// 记录在 <see cref="KikasaServants.KikasaServantPlayer"/>，
     /// 穷举条目在 <see cref="KikasaServants.KikasaServantIndex"/>，
-    /// 焰/魇/潦门控与组合边在 <see cref="KikasaServants.KikasaEffigyBoard"/>。
+    /// 焰/魇/潦增益与组合边在 <see cref="KikasaServants.KikasaEffigyBoard"/>。
     /// 第四能力模块：普攻·墨雨——按住左键撑出悬伞
     /// <see cref="KikasaRains.KikasaRainUmbrella"/>，头顶自旋按节拍降下大墨滴追踪敌人。
-    /// 第五能力模块：鬼梦——魇影驻湖倒影自醒；长按
+    /// 第五能力模块：鬼梦——满水稳态倒影自醒；长按
     /// <see cref="Common.CWRKeySystem.Kikasa_DomainMutate"/> 拉入鬼梦
     /// （湖沸腾倒转，红天村落、湖水不见；物品封禁、左键连唤恶犬，重按归返；
     /// 梦中人人失能——梦界内远程射弹无法存在，本伞左右键亦不可用）；

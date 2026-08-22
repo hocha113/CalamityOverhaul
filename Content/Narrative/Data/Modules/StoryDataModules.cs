@@ -148,6 +148,18 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public int TrialUnlockSafetyTicks;
     }
 
+    /// <summary>沈幽初遇（鬼雨世界）进度；随玩家存档</summary>
+    public sealed class ShenyoStoryData : DataModule
+    {
+        public bool FirstMet;
+        /// <summary>初遇对话播完，送出演出与发伞的门禁</summary>
+        public bool PostFirstMetIsComplete;
+        /// <summary>本次抵达深层的方式：true=被鬼奴杀死拖入，false=夺伞下潜；选项门禁用</summary>
+        public bool ArrivedByDeath;
+        /// <summary>鬼伞已发放，防重复发放</summary>
+        public bool KikasaGranted;
+    }
+
     /// <summary>鬼切试炼节点礼物完成位（双目标试炼共用一位）</summary>
     public sealed class HimayoGiftStoryData : DataModule
     {

@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
         /// <summary>湖底容量</summary>
         public const int Capacity = 40;
 
-        /// <summary>沉在湖底的物品，序位即湖窗展示位</summary>
+        /// <summary>沉在湖底的物品，序位即湖心景湖藏区展示位</summary>
         public List<Item> Stored { get; private set; } = [];
 
         /// <summary>提取演出在途的物品；交付背包前的暂存，存档时折返湖藏</summary>
@@ -54,27 +54,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                     TrySink();
                 }
             }
-            //湖窗开阖：持鬼伞开；已开着则任意持物都能按键合上（键的单一受理点，避免双触发）
+            //湖心景开阖：持鬼伞任意湖态直开（编成/两鬼/湖藏一屏看全）；
+            //已开着则任意持物都能按键合上（键的单一受理点，避免双触发）
             if (CWRKeySystem.Legend_UIControl.JustPressed) {
-                KikasaVaultUI ui = KikasaVaultUI.Instance;
-                if (ui == null) {
+                UI.Panorama.KikasaPanoramaUI pano = UI.Panorama.KikasaPanoramaUI.Instance;
+                if (pano == null) {
                     return;
                 }
-                //画卷开着时按键=收画开窗，别把两张全屏叠在一起
-                UI.KikasaSceneUI scene = UI.KikasaSceneUI.Instance;
-                if (scene?.IsOpen == true) {
-                    scene.Close();
-                }
-                if (ui.IsOpen) {
-                    ui.Close();
+                if (pano.IsOpen) {
+                    pano.Close();
                 }
                 else if (HoldingUmbrella()) {
-                    if (LakeReady) {
-                        ui.Open();
-                    }
-                    else {
-                        Refuse();
-                    }
+                    pano.Open();
+                }
+                else {
+                    Refuse();
                 }
             }
         }
@@ -126,7 +120,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
 
         //==================== 提取 ====================
 
-        /// <summary>湖窗点击提取：物品当帧离账入"在途"，凝实拍交付</summary>
+        /// <summary>湖藏区点击提取：物品当帧离账入"在途"，凝实拍交付</summary>
         internal bool BeginExtract(int index) {
             if (Player.whoAmI != Main.myPlayer) {
                 return false;

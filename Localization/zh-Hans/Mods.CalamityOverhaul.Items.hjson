@@ -1811,6 +1811,65 @@ Thrower: {
 		'''
 }
 
+PlayerLauncher: {
+	NoEnergyText: 能量不足!
+	DisplayName: 弹射平台
+	Tooltip:
+		'''
+		消耗电力把站上来的玩家按设定方向弹射出去
+		弹射后短时间内免疫摔落伤害
+		右键打开操控面板
+		'''
+}
+
+PacifierTower: {
+	FieldOnText: 力场启动
+	FieldOffText: 力场关闭
+	NoEnergyText: 能量不足!
+	DisplayName: 宁静力场发生器
+	Tooltip:
+		'''
+		通电运转时压制范围内的自然刷怪
+		右键或电线信号开关力场
+		'''
+}
+
+PotionBeacon: {
+	NoEnergyText: 能量不足!
+	DisplayName: 药剂弥散信标
+	Tooltip:
+		'''
+		存入增益药水，向范围内的玩家持续弥散药效
+		一瓶药水可供给原增益时长两倍的弥散时间
+		右键打开操控面板
+		'''
+}
+
+HerbFarmer: {
+	NoEnergyText: 能量不足!
+	DisplayName: 草药农场机
+	Tooltip:
+		'''
+		消耗种子与电力在周围的合法土壤上自动播种
+		收割开花期的草药，产出草药与种子
+		右键打开操控面板
+		'''
+}
+
+AutoFisher: {
+	NoEnergyText: 能量不足!
+	NoBaitText: 没有鱼饵!
+	NoWaterText: 附近没有可垂钓的水面!
+	FullText: 渔获仓已满!
+	DisplayName: 自动钓鱼机
+	Tooltip:
+		'''
+		消耗鱼饵与电力，从机身下方的水面自动收获渔获
+		水体越大、鱼饵越好，渔获越丰厚
+		右键打开操控面板
+		'''
+}
+
 SandevistansItem: {
 	DisplayName: 斯安维斯坦Mk5
 	Tooltip: 减缓感知时间流速70%，持续5秒。冷却15秒。

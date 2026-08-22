@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// <summary>
         /// 鬼梦拉入/归返命令：Open 稳态 + 满水位 + 倒影已醒 + 湖力过半 → 拉入；
         /// Dreaming → 归返；其余阶段 busy 不受理。域关着时不代开——入梦要先有湖有影。
-        /// 倒影醒睡已随沉影盘自动走（KikasaDomainPlayer.UpdateReflectionGate），不再有独立命令
+        /// 倒影醒睡随满水自动走（KikasaDomainPlayer.UpdateReflectionGate），不再有独立命令
         /// </summary>
         internal static bool TryDreamPull(Player player, out bool busy) {
             busy = false;

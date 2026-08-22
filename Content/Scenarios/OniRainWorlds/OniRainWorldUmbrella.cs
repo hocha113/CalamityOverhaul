@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Scenarios.Shenyo;
 using InnoVault.Actors;
 using InnoVault.Cinematics;
 using InnoVault.PRT;
@@ -17,10 +18,12 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 {
     /// <summary>
-    /// 插在地上的鬼雨伞，锚点=<see cref="Actor.Position"/>地表中心<br/>
-    /// 靠近右键触发入雨演出（<see cref="OniRainWorldTransition"/> + <see cref="OniRainWorldCutscene"/>），交互纯本地。<br/>
-    /// 雨世界里这把伞还在原地——再撑一次即深潜一层（<see cref="OniRainDescentTransition"/> +
-    /// <see cref="OniRainDescentCutscene"/>），直到最深层。<br/>
+    /// 插在地上的鬼雨伞，锚点=<see cref="Actor.Position"/>地表中心，
+    /// 由 <see cref="OniUmbrellaWorldSpawn"/> 在出生点附近权威放置。<br/>
+    /// 靠近右键触发入雨演出（<see cref="OniRainWorldTransition"/> + <see cref="OniRainWorldCutscene"/>），
+    /// 交互纯本地；下潜交给雨世界里的夺伞（<see cref="KasaOnis.KasaOniActor"/>）。<br/>
+    /// 已真正获得鬼伞的玩家不再看见这把伞——鬼雨初遇是一次性叙事空间，
+    /// 可见性按玩家各自判（<see cref="ShouldShowForLocalPlayer"/>），Actor 本体全端常驻。<br/>
     /// 伞体=鬼伞正式贴图（<see cref="KikasaItem"/>）+ KikasaUmbrella TechCanopy 湿光鬼眼着色；
     /// 伞底一摊黑色积水（倒影由 <see cref="OniUmbrellaPuddleRender"/> 屏幕空间镜像接管），
     /// 水洼呼出上浮的黑水滴，偶发一粒被拽回伞里——水在回流入伞。
@@ -82,6 +85,19 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             swayTimer = Main.rand.NextFloat(MathHelper.TwoPi);
         }
 
+        /// <summary>
+        /// 本地玩家是否还看得见这把伞：真正获得鬼伞后它就不在了（镜像鸟居拔刀后隐藏）。
+        /// Actor 本体全端常驻，这里只裁本地表现与交互。
+        /// </summary>
+        internal static bool ShouldShowForLocalPlayer() {
+            Player player = Main.LocalPlayer;
+            if (player == null || !player.active) {
+                return false;
+            }
+            return !ShenyoStorySync.KikasaGranted
+                && !player.HasItem(ModContent.ItemType<KikasaItem>());
+        }
+
         public override void AI() {
             swayTimer += 0.016f;
             if (swayTimer > MathHelper.TwoPi) {
@@ -89,6 +105,11 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             }
 
             if (Main.dedServ) {
+                return;
+            }
+
+            if (!ShouldShowForLocalPlayer()) {
+                promptAlpha = 0f;
                 return;
             }
 
@@ -189,11 +210,9 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 
         private void UpdateInteraction() {
             Player player = Main.LocalPlayer;
-            //雨世界外撑伞入雨；雨世界内且未达最深层，再撑一次深潜一层
-            bool depthOpen = !OniRainWorldState.LocalIn
-                || OniRainWorldState.LocalDepth < OniRainWorldState.MaxDepth;
+            //只管入雨（雨世界外撑伞）；雨中的下潜交给夺伞
             bool eligible = player != null && player.Alives()
-                && depthOpen
+                && !OniRainWorldState.LocalIn
                 && !OniRainWorldTransition.Active
                 && !OniRainDescentTransition.Active
                 && !CutsceneDirector.IsPlaying;
@@ -258,17 +277,16 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             }
 
             //运镜失败不致命，演出照走
-            if (OniRainWorldState.LocalIn) {
-                OniRainDescentTransition.Begin(player, Position);
-                CutsceneDirector.Play<OniRainDescentCutscene>(player);
-            }
-            else {
-                OniRainWorldTransition.Begin(player, Position);
-                CutsceneDirector.Play<OniRainWorldCutscene>(player);
-            }
+            OniRainWorldTransition.Begin(player, Position);
+            CutsceneDirector.Play<OniRainWorldCutscene>(player);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {
+            //已获伞的玩家看不见它，Actor 本体留给其他玩家
+            if (!ShouldShowForLocalPlayer()) {
+                return false;
+            }
+
             DrawPuddle(spriteBatch);
 
             int itemType = ModContent.ItemType<KikasaItem>();
@@ -467,10 +485,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 
             Vector2 textPos = CanopyAnchor - Main.screenPosition + new Vector2(0f, -64f);
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            //雨世界内提示换成深潜口径
-            string hint = OniRainWorldState.LocalIn
-                ? OniRainWorldSystem.DescendHint.Value
-                : OniRainWorldSystem.InteractHint.Value;
+            string hint = OniRainWorldSystem.InteractHint.Value;
             Vector2 textSize = font.MeasureString(hint) * 0.9f;
 
             Texture2D glow = CWRAsset.SoftGlow.Value;
@@ -490,34 +505,16 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 new Vector2(lineWidth / glow.Width, 4f / glow.Height), SpriteEffects.None, 0f);
         }
 
-        /// <summary>调试放伞：鼠标处向下吸附地面，清掉旧伞；仅单人/服务端权威</summary>
+        /// <summary>
+        /// 调试放伞：世界态归 <see cref="OniUmbrellaWorldSpawn"/> 权威维护，
+        /// 直接放裸 Actor 会被自检纠回锚点，故委托给世界系统重建（仅单人）
+        /// </summary>
         internal static void DebugPlaceAt(Vector2 world) {
-            if (VaultUtils.isClient) {
-                Main.NewText("多人客户端不可直接放伞", Color.IndianRed);
+            if (!VaultUtils.isSinglePlayer) {
+                Main.NewText("仅单人可调试重建世界伞", Color.IndianRed);
                 return;
             }
-
-            //探地表
-            int tileX = (int)(world.X / 16f);
-            int tileY = (int)(world.Y / 16f);
-            Vector2 ground = world;
-            for (int i = 0; i < 120; i++) {
-                int y = tileY + i;
-                if (!WorldGen.InWorld(tileX, y, 40)) {
-                    break;
-                }
-                Tile tile = Framing.GetTileSafely(tileX, y);
-                if (tile.HasTile && Main.tileSolid[tile.TileType]
-                    && !Main.tileSolidTop[tile.TileType]) {
-                    ground = new Vector2(world.X, y * 16f);
-                    break;
-                }
-            }
-
-            foreach (OniRainWorldUmbrella actor in ActorLoader.GetActiveActors<OniRainWorldUmbrella>()) {
-                ActorLoader.KillActor(actor.WhoAmI);
-            }
-            ActorLoader.NewActor<OniRainWorldUmbrella>(ground);
+            OniUmbrellaWorldSpawn.DebugRebuildAt(world);
         }
     }
 }

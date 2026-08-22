@@ -235,6 +235,81 @@ Incinerator: {
 	}
 }
 
+PlayerLauncher: {
+	PlayerLauncherUI: {
+		TitleText: 弹射平台
+		DirectionLabel: 弹射方向
+		PowerLabel: 弹射力度
+		EnableText: 启用
+		DisableText: 停用
+		StatusReady: 就绪
+		StatusNoPower: 缺电
+		StatusOff: 已停用
+		EnergyLabel: 电力
+		CostTip: 单次弹射消耗 {0} UE
+		PowerUnit: UE
+	}
+}
+
+PotionBeacon: {
+	PotionBeaconUI: {
+		TitleText: 药剂弥散信标
+		SlotLabel: 药剂舱
+		EnableText: 启用
+		DisableText: 停用
+		StatusWorking: 弥散中
+		StatusIdle: 待机
+		StatusNoPower: 缺电
+		StatusOff: 已停用
+		EnergyLabel: 电力
+		DropHint: 放入增益药水
+		SupplyTip: 本瓶剩余供给 {0} 秒
+		PowerUnit: UE
+	}
+}
+
+HerbFarmer: {
+	HerbFarmerUI: {
+		TitleText: 草药农场机
+		SeedLabel: 种子仓
+		ProduceLabel: 产出仓
+		EnableText: 启用
+		DisableText: 停用
+		StatusWorking: 耕作中
+		StatusIdle: 待机
+		StatusNoPower: 缺电
+		StatusOff: 已停用
+		EnergyLabel: 电力
+		SeedHint: 放入草药种子
+		TakeHint: 点击取出
+		PowerUnit: UE
+	}
+}
+
+AutoFisher: {
+	AutoFisherUI: {
+		TitleText: 自动钓鱼机
+		BaitLabel: 鱼饵仓
+		CatchLabel: 渔获仓
+		IntervalLabel: 垂钓间隔
+		PowerReadout: 钓力 {0}
+		LakeReadout: 水体 {0}
+		EnableText: 启用
+		DisableText: 停用
+		StatusFishing: 垂钓中
+		StatusIdle: 待机
+		StatusNoPower: 缺电
+		StatusNoBait: 缺饵
+		StatusNoWater: 缺水
+		StatusFull: 仓满
+		StatusOff: 已停用
+		EnergyLabel: 电力
+		BaitHint: 放入鱼饵
+		CatchHint: 渔获存放于此
+		PowerUnit: UE
+	}
+}
+
 ItemPipeline: {
 	Normal: 普通
 	Output: 输出

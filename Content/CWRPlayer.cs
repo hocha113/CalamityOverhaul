@@ -83,6 +83,8 @@ namespace CalamityOverhaul.Content
         public bool RaiderGunDashReady;
         /// <summary>掠袭者共享冲刺冷却(帧)</summary>
         public int RaiderGunDashCooldown;
+        /// <summary>弹射平台摔落免伤剩余帧数,期间每帧重置摔落起点</summary>
+        public int LauncherGraceTime;
         #endregion
 
         public CWRPlayer CloneCWRPlayer(CWRPlayer cwr) {
@@ -110,6 +112,7 @@ namespace CalamityOverhaul.Content
             cwr.CustomCooldownCounter = CustomCooldownCounter;
             cwr.RaiderGunDashReady = RaiderGunDashReady;
             cwr.RaiderGunDashCooldown = RaiderGunDashCooldown;
+            cwr.LauncherGraceTime = LauncherGraceTime;
             return cwr;
         }
 
@@ -208,6 +211,12 @@ namespace CalamityOverhaul.Content
         public override void PostUpdate() {
             if (ThermalGenerationActiveTime > 0) {
                 ThermalGenerationActiveTime--;
+            }
+
+            //弹射免伤期内摔落起点始终跟脚,落地时结算不出高度差
+            if (LauncherGraceTime > 0) {
+                LauncherGraceTime--;
+                Player.fallStart = (int)(Player.position.Y / 16f);
             }
 
             if (!IsJusticeUnveiled) {

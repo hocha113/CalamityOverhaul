@@ -6,8 +6,10 @@ using Terraria;
 namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 {
     /// <summary>
-    /// 深潜演出的全屏合成：拷屏→湿墨冲刷（颜色向下流淌溶解）+ 雨帘合拢
-    /// （满幕遮蔽藏结算）+ 排墨揭深层，一趟 pass 写回。<br/>
+    /// 湿墨冲刷的全屏合成：拷屏→湿墨冲刷（颜色向下流淌溶解）+ 雨帘合拢
+    /// （满幕遮蔽藏结算）+ 排墨揭新层，一趟 pass 写回。<br/>
+    /// 深潜（<see cref="OniRainDescentTransition"/>）与送出（<see cref="OniRainExitTransition"/>）
+    /// 共用这条管线，两条演出互斥，按活动源取包络；
     /// 包络全零时输出恒等输入，与 <see cref="OniRainWorldRender"/> 的翻转合成活动互斥。
     /// </summary>
     internal sealed class OniRainDescentRender : RenderHandle
@@ -15,8 +17,36 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         /// <summary>排在翻转合成之后收尾，两者互斥不会同帧生效</summary>
         public override float Weight => 2.05f;
 
+        //当前活动冲刷源的包络快照，ResolveWashSource 每帧填充
+        private static float srcInkRun;
+        private static float srcCover;
+        private static float srcDrain;
+        private static float srcFlash;
+        private static Vector2 srcOrigin;
+
+        /// <summary>按活动演出取冲刷包络：深潜优先，其次送出；都不活动返回 false</summary>
+        private static bool ResolveWashSource() {
+            if (OniRainDescentTransition.RenderActive) {
+                srcInkRun = OniRainDescentTransition.InkRun;
+                srcCover = OniRainDescentTransition.CurtainCover;
+                srcDrain = OniRainDescentTransition.Drain;
+                srcFlash = OniRainDescentTransition.Flash;
+                srcOrigin = OniRainDescentTransition.UmbrellaWorld;
+                return true;
+            }
+            if (OniRainExitTransition.RenderActive) {
+                srcInkRun = OniRainExitTransition.InkRun;
+                srcCover = OniRainExitTransition.CurtainCover;
+                srcDrain = OniRainExitTransition.Drain;
+                srcFlash = OniRainExitTransition.Flash;
+                srcOrigin = OniRainExitTransition.FocusWorld;
+                return true;
+            }
+            return false;
+        }
+
         public override void EndCaptureDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
-            if (Main.gameMenu || !OniRainDescentTransition.RenderActive) {
+            if (Main.gameMenu || !ResolveWashSource()) {
                 return;
             }
 
@@ -78,22 +108,22 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             float w = Main.screenWidth;
             float h = Main.screenHeight;
 
-            //排墨撕口圆心取伞的水平位置
+            //排墨撕口圆心取演出焦点的水平位置（深潜=伞，送出=人）
             float originU = MathHelper.Clamp(
-                WorldToScreen(OniRainDescentTransition.UmbrellaWorld).X / w, -0.2f, 1.2f);
+                WorldToScreen(srcOrigin).X / w, -0.2f, 1.2f);
 
             fx.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.016f);
-            fx.Parameters["uInkRun"]?.SetValue(OniRainDescentTransition.InkRun);
-            fx.Parameters["uCover"]?.SetValue(OniRainDescentTransition.CurtainCover);
-            fx.Parameters["uDrain"]?.SetValue(OniRainDescentTransition.Drain);
-            fx.Parameters["uFlash"]?.SetValue(OniRainDescentTransition.Flash);
+            fx.Parameters["uInkRun"]?.SetValue(srcInkRun);
+            fx.Parameters["uCover"]?.SetValue(srcCover);
+            fx.Parameters["uDrain"]?.SetValue(srcDrain);
+            fx.Parameters["uFlash"]?.SetValue(srcFlash);
             fx.Parameters["uOriginU"]?.SetValue(originU);
             fx.Parameters["uAspect"]?.SetValue(w / h);
         }
 
         /// <summary>结算雷闪：灰白辉光罩 + 峰值处近全白，与入雨演出同一语汇</summary>
         private static void DrawFlashOverlay(SpriteBatch spriteBatch) {
-            float flash = OniRainDescentTransition.Flash;
+            float flash = srcFlash;
             if (flash <= 0.002f) {
                 return;
             }
@@ -118,7 +148,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             }
         }
 
-        /// <summary>RT 不可用的纯色回退：合幕压暗 + 排墨回亮 + 雷闪，深度切换不受影响</summary>
+        /// <summary>RT 不可用的纯色回退：合幕压暗 + 排墨回亮 + 雷闪，状态切换不受影响</summary>
         private static void DrawLowQualityFallback(SpriteBatch spriteBatch) {
             Texture2D white = VaultAsset.placeholder2?.Value;
             if (white == null) {
@@ -126,9 +156,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             }
 
             //压暗跟合幕走，排墨段随排尽回亮
-            float dim = (OniRainDescentTransition.CurtainCover * 0.32f
-                + OniRainDescentTransition.InkRun * 0.12f)
-                * (1f - OniRainDescentTransition.Drain);
+            float dim = (srcCover * 0.32f + srcInkRun * 0.12f) * (1f - srcDrain);
             Rectangle full = new(0, 0, Main.screenWidth, Main.screenHeight);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,

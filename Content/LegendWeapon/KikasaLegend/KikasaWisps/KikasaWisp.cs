@@ -9,8 +9,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
     /// <summary>
     /// 血湖鬼火门面：自燃门控、湖力收支、包络推进、鬼雨压制节拍、灼烧区扫描。
     /// 状态存在 <see cref="KikasaDomainPlayer"/>（点燃态+原点入快照，包络各端本地自算）；
-    /// 触发已随沉影盘编成制自动化——焰影驻湖、满水稳态、湖力蓄满即自燃，
-    /// 焰影全撤或湖力烧干即熄；键已删。
+    /// 满水稳态、湖力蓄满即自燃，湖力烧干即熄；键已删。
+    /// 焰影只做增强（灼烧更久、火舌更高，见 KikasaEffigyBoard），不再是点火的门。
     /// 设定：鬼火被鬼雨压制——翻入鬼雨后火被迅速压灭且点燃态清除；
     /// 沸雨边（焰×潦）免压制，改作半强度蒸沸
     /// </summary>
@@ -129,20 +129,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
             if (Main.dedServ || player.whoAmI != Main.myPlayer || player.dead) {
                 return;
             }
-            int flame = KikasaEffigyBoard.FlameCount(player);
             //沸雨边逐帧刷新入快照——远端读不到盘，靠这面旗决定压不压火
-            kdp.WispRainProof = flame >= 1 && KikasaEffigyBoard.HasBoilRainEdge(player);
+            kdp.WispRainProof = KikasaEffigyBoard.HasBoilRainEdge(player);
 
             if (kdp.WispFireActive) {
-                //焰影全撤或湖力烧干：收火（湖力回满后若焰影还在会再自燃）
-                if (flame <= 0 || kdp.LakeVigor <= 0f) {
+                //湖力烧干即收火（回满后会再自燃）；焰影去留只改增益，不再掐火
+                if (kdp.LakeVigor <= 0f) {
                     kdp.ToggleWispFire();
                 }
                 return;
             }
-            //自燃：焰影驻湖 + 满水稳态 + 湖力蓄满 + 形态许可（非鬼雨，沸雨边例外）+ 非梦
+            //自燃：满水稳态 + 湖力蓄满 + 形态许可（非鬼雨，沸雨边例外）+ 非梦——不看编成
             bool formOk = !kdp.IsRainForm || kdp.WispRainProof;
-            if (flame >= 1 && kdp.Phase == KikasaDomainPhase.Open && kdp.RiseT >= 0.999f
+            if (kdp.Phase == KikasaDomainPhase.Open && kdp.RiseT >= 0.999f
                 && formOk && kdp.LakeVigor >= 0.999f && !kdp.DreamWorldVisual) {
                 kdp.ToggleWispFire();
             }

@@ -11,50 +11,51 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms.KikasaArmsPalette;
 
-namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms.KikasaMinishark
+namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms.KikasaGuns
 {
     /// <summary>
-    /// 械奴·湖水鲨群（迷你鲨/巨兽鲨换皮共用）。单弹幕同时驱动至多五把湖水凝成的枪：
+    /// 械奴·湖水枪群（通用枪奴，由迷你鲨鲨群骨架演进）。单弹幕同时驱动至多五把湖水凝成的枪：
     /// Projectile.Center 为编队质心权威同步，各枪位置由状态机 + Seed 在各端本地推算
     /// （双子/毁灭者内部模拟范式），硬纠阈值防抽搐。材质身份：凝不全的湖水枪——
     /// 实体上半 + 液态下缘（KikasaItemForm 扫描模式、水线呼吸起伏）+ 液态水鞘包衣
     /// 慢晃 + 水光沿身扫掠 + 下缘凝珠滴淌；移动即游弋（贴速度倾斜入弯、周期沿轨道
-    /// 抢位超车）。签名机制：列阵齐射（扇形阵锁线后轮转开火，每发后坐弹簧回弹 +
-    /// 枪口水花锥 + 枪口上跳，边打边横移）与鲨群环猎（散到目标环位加速环绕
-    /// 内向射击，收拍全员穿心交错）。联机契约与双子同构：owner 裁决转场盖
-    /// netUpdate 章、节拍闩防快照回卷、生命线只有 owner 判；
-    /// 枪数与换皮物品类型在 spawn 后经 ExtraAI 随包补发（生成包迟一帧契约）
+    /// 抢位超车）。个性化由 KikasaArmsProfiler 档案承担：原型定出招池——
+    /// 速射/点射=列阵齐射+环猎（速射数值与演进前鲨群全等），狙击=点名狙杀+慢重齐射，
+    /// 霰弹=拢射墙+贴身环猎；节奏/伤害/弹速/开火音/编队规模随沉入武器推得。
+    /// 联机契约与双子同构：owner 裁决转场盖 netUpdate 章、节拍闩防快照回卷、
+    /// 生命线只有 owner 判；枪数与武器类型在 spawn 后经 ExtraAI 随包补发（生成包迟一帧契约）
     /// </summary>
-    internal class KikasaMinisharkServant : ModProjectile, IKikasaServant
+    internal class KikasaGunServant : ModProjectile, IKikasaArmsServant
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
         //==================== 可调基数（占位初值，验收再调）====================
 
-        /// <summary>湖水子弹基伤（召唤加成与换皮档倍率前），由子弹幕消费</summary>
+        /// <summary>湖水子弹基伤（召唤加成与档案倍率前），由子弹幕消费</summary>
         internal const int ShotDamage = 165;
 
-        /// <summary>编队上限：湖藏存量再多也只凝五把</summary>
+        /// <summary>编队硬上限：数组容量，实际编制还要过档案 MaxUnits</summary>
         internal const int MaxGuns = 5;
 
-        //==================== 换皮档案：同一鲨群骨架按沉入武器换贴图/口径 ====================
+        //==================== 档案：个性化数值全部由推断器供给 ====================
 
-        /// <summary>换皮档：伤害倍率随武器时代，枪口探出随贴图长度</summary>
-        private readonly record struct ArmsProfile(float DamageMul, float MuzzleLen);
-
-        private static ArmsProfile ProfileOf(int itemType)
-            => itemType == ItemID.Megashark
-                ? new ArmsProfile(2.4f, 34f)
-                : new ArmsProfile(1f, 26f);
-
-        /// <summary>沉入湖中的原型武器物品类型：贴图与档位来源，ExtraAI 同步</summary>
+        /// <summary>沉入湖中的原型武器物品类型：贴图与档案来源，ExtraAI 同步</summary>
         private int armsItemType = ItemID.Minishark;
 
         /// <summary>沉影盘在场判定用：这队械奴复制的是哪件武器</summary>
-        internal int ArmsItemType => armsItemType;
+        public int ArmsItemType => armsItemType;
 
-        private ArmsProfile Profile => ProfileOf(armsItemType);
+        private KikasaGunProfile? profileCache;
+
+        /// <summary>档案惰性求值：模板实例化早于 ContentSamples 灌装，首次访问再推</summary>
+        private KikasaGunProfile Profile => profileCache ??= KikasaArmsProfiler.GunProfileOf(armsItemType);
+
+        private void SetArmsItemType(int itemType) {
+            armsItemType = itemType;
+            profileCache = null;
+        }
 
         //==================== 状态 ====================
 
@@ -63,6 +64,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private const int StateVolley = 2;
         private const int StateCarousel = 3;
         private const int StateDissolve = 4;
+        private const int StateSnipe = 5;
+        private const int StateBlastWall = 6;
 
         private int State { get => (int)Projectile.ai[0]; set => Projectile.ai[0] = value; }
         private ref float StateTimer => ref Projectile.ai[1];
@@ -83,13 +86,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private const float EmergeSpan = 62f;
 
         //齐射：甩入扇形阵→锁线 telegraph→轮转开火（边打边横移）→收势
+        //单枪射击周期与相邻枪错帧走档案 FirePeriod/FireStagger
         private const int VolleyFormEnd = 16;
         private const int VolleyLockEnd = 30;
         private const int VolleyFireEnd = 96;
         private const int VolleyTotal = 112;
-        /// <summary>单枪射击周期与相邻枪错帧：五枪叠出不断火的持续弹幕</summary>
-        private const int FirePeriod = 15;
-        private const int FireStagger = 3;
 
         //环猎：冲位→加速环绕收紧（内向射击）→穿心交错→归队
         private const int CarouselDashEnd = 18;
@@ -97,8 +98,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private const int CarouselCrossEnd = 112;
         private const int CarouselTotal = 132;
         private const float CarouselRadius = 205f;
-        private const int CarouselFirePeriod = 12;
-        private const int CarouselFireStagger = 2;
+
+        //点名狙杀（狙击档）：每枪一轮 SnipeTurnLen 帧——甩位就位→瞄准线蓄力→重击翻滚
+        private const int SnipeTurnLen = 46;
+        private const int SnipeFireFrame = 34;
+        private const int SnipeTail = 18;
+
+        private int SnipeTotal => SnipeTurnLen * gunCount + SnipeTail;
+
+        //拢射墙（霰弹档）：收拢紧凑弧压近→泵动双拍蓄势→全员齐轰（整队后坐推退）×3
+        private const int WallFormEnd = 22;
+        private const int WallSalvoGap = 34;
+        private const int WallSalvos = 3;
+        private const int WallTail = 18;
+
+        private int WallTotal => WallFormEnd + 8 + WallSalvoGap * (WallSalvos - 1) + WallSalvoGap + WallTail;
+
+        private static int WallSalvoFrame(int k) => WallFormEnd + 8 + k * WallSalvoGap;
 
         //溶解：逐枪错帧失力坠湖
         private const int DissolveStagger = 5;
@@ -110,7 +126,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private readonly Vector2[] gunVel = new Vector2[MaxGuns];
         private readonly Vector2[] gunTarget = new Vector2[MaxGuns];
         private readonly float[] gunRot = new float[MaxGuns];
-        /// <summary>出水翻腾角速度</summary>
+        /// <summary>出水翻腾/狙击后坐翻滚的角速度</summary>
         private readonly float[] gunSpin = new float[MaxGuns];
         /// <summary>后坐量 px，沿 -瞄准向偏移绘制位并抬枪口</summary>
         private readonly float[] gunRecoil = new float[MaxGuns];
@@ -138,16 +154,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private bool crossFlashed;
         private int crossFlashTick;
 
-        //==================== 血色板（随观看域鬼雨异化冷化，与湖系同族）====================
-
-        internal static Color BloodDark => KikasaDomain.CoolTint(new(64, 12, 14), new(38, 48, 52));
-        internal static Color BloodDeep => KikasaDomain.CoolTint(new(140, 32, 30), new(84, 104, 110));
-        internal static Color BloodMain => KikasaDomain.CoolTint(new(237, 77, 69), new(126, 158, 164));
-        internal static Color BloodBright => KikasaDomain.CoolTint(new(246, 133, 112), new(176, 200, 204));
-        internal static Color MistBlood => KikasaDomain.CoolTint(new(58, 18, 20), new(52, 62, 66));
-        /// <summary>枪口热闪的暖点缀，只作次要加色层</summary>
-        internal static Color MuzzleHot => KikasaDomain.CoolTint(new(255, 190, 170), new(200, 220, 222));
-
         private Player Owner => Main.player[Projectile.owner];
 
         /// <summary>连续量抖动的确定性相位，各端一致（不掷 Main.rand）</summary>
@@ -156,22 +162,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         //==================== 召唤入口 ====================
 
         /// <summary>KikasaArmsIndex 登记的召唤入口；emergeAt.Y = 湖面，count = 湖藏存量，
-        /// itemType = 沉入的原型武器（换皮档）</summary>
+        /// itemType = 沉入的原型武器（档案来源）</summary>
         internal static void Summon(Player owner, Vector2 emergeAt, int count, int itemType) {
             if (owner.whoAmI != Main.myPlayer) {
                 return;
             }
-            count = Math.Clamp(count, 1, MaxGuns);
-            ArmsProfile profile = ProfileOf(itemType);
-            int damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(ShotDamage * profile.DamageMul);
+            KikasaGunProfile profile = KikasaArmsProfiler.GunProfileOf(itemType);
+            count = Math.Clamp(count, 1, profile.MaxUnits);
+            int damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(ShotDamage * profile.ShotDamageMul);
             int index = Projectile.NewProjectile(owner.GetSource_Misc("KikasaServant"),
                 emergeAt + new Vector2(0f, 42f), Vector2.Zero,
-                ModContent.ProjectileType<KikasaMinisharkServant>(), damage, 2f, owner.whoAmI);
+                ModContent.ProjectileType<KikasaGunServant>(), damage, 2f, owner.whoAmI);
             if (index >= 0 && index < Main.maxProjectiles
-                && Main.projectile[index].ModProjectile is KikasaMinisharkServant pack) {
+                && Main.projectile[index].ModProjectile is KikasaGunServant pack) {
                 //生成包已经带默认编制出门了，这里改完补一发 ExtraAI（迟一帧只影响预兆涟漪点数）
                 pack.gunCount = count;
-                pack.armsItemType = itemType;
+                pack.SetArmsItemType(itemType);
                 Main.projectile[index].netUpdate = true;
             }
         }
@@ -205,16 +211,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         public override bool? CanCutTiles() => false;
 
         public override void SendExtraAI(BinaryWriter writer) {
-            writer.Write((byte)gunCount);
             writer.Write(armsItemType);
+            writer.Write((byte)gunCount);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
-            int count = Math.Clamp((int)reader.ReadByte(), 1, MaxGuns);
             int itemType = reader.ReadInt32();
-            if (itemType > ItemID.None && itemType < ItemLoader.ItemCount) {
-                armsItemType = itemType;
+            int count = reader.ReadByte();
+            if (itemType > ItemID.None && itemType < ItemLoader.ItemCount && itemType != armsItemType) {
+                SetArmsItemType(itemType);
             }
+            count = Math.Clamp(count, 1, Profile.MaxUnits);
             if (count != gunCount) {
                 gunCount = count;
                 //编制变了按新编制重建
@@ -261,7 +268,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             Projectile.timeLeft = 180;
-            Projectile.damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(ShotDamage * Profile.DamageMul);
+            Projectile.damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(ShotDamage * Profile.ShotDamageMul);
 
             //换场清闩：远端可能靠收包换场而非本地同拍转场，残闩会吞掉新场节拍
             if (State != lastSeenState) {
@@ -286,6 +293,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 case StateVolley: UpdateVolley(owner, authority); break;
                 case StateCarousel: UpdateCarousel(owner, authority); break;
                 case StateDissolve: UpdateDissolve(domain, authority); break;
+                case StateSnipe: UpdateSnipe(owner, authority); break;
+                case StateBlastWall: UpdateBlastWall(owner, authority); break;
             }
 
             UpdateGuns(owner, domain);
@@ -463,7 +472,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             ShakeViewer(1.5f);
         }
 
-        //==================== 跟随：鲨群环游 ====================
+        //==================== 跟随：枪群环游 ====================
 
         private void UpdateFollow(Player owner, bool authority) {
             int target = FindTarget(owner);
@@ -488,18 +497,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, desired, 0.14f);
 
-            //出手裁决：齐射→环猎轮换；转场规则各端一致，owner 盖章
+            //出手裁决：出招池按档案原型分配；转场规则各端一致，owner 盖章
             if (target >= 0 && attackCooldown <= 0 && StateTimer > 30) {
                 attackIndex++;
                 StateTimer = 0;
-                if (attackIndex % 2 == 1) {
-                    State = StateVolley;
-                    StateParam = 0;
-                }
-                else {
-                    State = StateCarousel;
-                    //环绕方向盖进 ai[2] 符号，owner 章一并带给远端
-                    StateParam = (Projectile.identity + attackIndex) % 2 == 0 ? 1f : -1f;
+                StateParam = 0;
+                bool primary = attackIndex % 2 == 1;
+                switch (Profile.Archetype) {
+                    case KikasaGunArchetype.Sniper:
+                        //狙击：点名狙杀为主，隔次换慢重齐射压制
+                        State = primary ? StateSnipe : StateVolley;
+                        break;
+                    case KikasaGunArchetype.Shotgun:
+                        //霰弹：拢射墙为主，隔次绕环贴身独弹
+                        if (primary) {
+                            State = StateBlastWall;
+                        }
+                        else {
+                            State = StateCarousel;
+                            StateParam = (Projectile.identity + attackIndex) % 2 == 0 ? 1f : -1f;
+                        }
+                        break;
+                    default:
+                        //速射/点射：列阵齐射与环猎轮换（速射数值与演进前全等）
+                        if (primary) {
+                            State = StateVolley;
+                        }
+                        else {
+                            //环绕方向盖进 ai[2] 符号，owner 章一并带给远端
+                            State = StateCarousel;
+                            StateParam = (Projectile.identity + attackIndex) % 2 == 0 ? 1f : -1f;
+                        }
+                        break;
                 }
                 Projectile.netUpdate = authority;
             }
@@ -539,12 +568,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }, Projectile.Center);
             }
 
-            //轮转开火：相邻枪错帧，节拍闩防快照回卷重播
+            //轮转开火：相邻枪错帧（周期/错帧走档案），节拍闩防快照回卷重播
             if (t > VolleyLockEnd && t <= VolleyFireEnd) {
                 for (int i = 0; i < gunCount; i++) {
-                    int local = t - VolleyLockEnd - i * FireStagger;
-                    if (local >= 0 && local % FirePeriod == 0) {
-                        int tick = local / FirePeriod;
+                    int local = t - VolleyLockEnd - i * Profile.FireStagger;
+                    if (local >= 0 && local % Profile.FirePeriod == 0) {
+                        int tick = local / Profile.FirePeriod;
                         if (tick > lastFireTick[i]) {
                             lastFireTick[i] = tick;
                             FireGun(owner, authority, i);
@@ -579,41 +608,54 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             return dt is >= 0 and <= 3 ? 1f - dt / 4f : 0f;
         }
 
-        private void FireGun(Player owner, bool authority, int i) {
+        /// <summary>单枪开火：heavy=狙击重击（更狠的后坐、更快更穿的重弹、垫一记弩砲闷响）</summary>
+        private void FireGun(Player owner, bool authority, int i, bool heavy = false) {
             Vector2 aimDir = gunRot[i].ToRotationVector2();
             Vector2 muzzle = MuzzlePos(i);
-            gunRecoil[i] = 13f;
-            gunVel[i] -= aimDir * 1.3f;
-            muzzleFlash[i] = 4;
+            gunRecoil[i] = (heavy ? 26f : 13f) * Profile.RecoilMul;
+            gunVel[i] -= aimDir * (heavy ? 3.4f : 1.3f) * Profile.RecoilMul;
+            muzzleFlash[i] = heavy ? 7 : 4;
 
-            SoundEngine.PlaySound(SoundID.Item11 with {
-                Volume = 0.3f,
-                Pitch = -0.12f + i * 0.05f,
+            SoundEngine.PlaySound(Profile.FireSound with {
+                Volume = heavy ? 0.52f : 0.3f,
+                Pitch = (heavy ? -0.28f : -0.12f) + i * 0.05f,
                 MaxInstances = 4
             }, muzzle);
+            if (heavy) {
+                SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot with {
+                    Volume = 0.45f,
+                    Pitch = -0.15f,
+                    MaxInstances = 2
+                }, muzzle);
+            }
             if (!Main.dedServ) {
                 //枪口水花锥：出膛的水被崩碎
-                for (int k = 0; k < 3; k++) {
+                int burst = heavy ? 6 : 3;
+                for (int k = 0; k < burst; k++) {
                     PRTLoader.NewParticle<PRT_GhostRainDrop>(muzzle,
-                        aimDir.RotatedBy(Main.rand.NextFloat(-0.34f, 0.34f)) * Main.rand.NextFloat(2f, 5f),
+                        aimDir.RotatedBy(Main.rand.NextFloat(-0.34f, 0.34f)) * Main.rand.NextFloat(2f, heavy ? 7f : 5f),
                         BloodMain * 0.55f, Main.rand.NextFloat(0.28f, 0.48f))
                         ?.Configure(Main.rand.Next(8, 14), 0.2f);
                 }
             }
             if (ViewedOwner) {
-                ShakeViewer(0.4f);
+                ShakeViewer(heavy ? 1.6f : 0.4f);
             }
 
             //弹体只在 owner 端生成，spawn 包自带全部初值
             if (authority) {
-                int damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(ShotDamage * Profile.DamageMul);
-                Vector2 vel = aimDir.RotatedBy(Main.rand.NextFloat(-0.05f, 0.05f)) * 16.5f;
+                int damage = (int)owner.GetTotalDamage(DamageClass.Summon)
+                    .ApplyTo(ShotDamage * Profile.ShotDamageMul * (heavy ? 3f : 1f));
+                float spread = heavy ? 0.012f : 0.05f;
+                Vector2 vel = aimDir.RotatedBy(Main.rand.NextFloat(-spread, spread))
+                    * Profile.BulletSpeed * (heavy ? 1.5f : 1f);
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), muzzle, vel,
-                    ModContent.ProjectileType<KikasaMinisharkBullet>(), damage, 2f, Projectile.owner);
+                    ModContent.ProjectileType<KikasaGunBullet>(), damage, 2f, Projectile.owner,
+                    heavy ? 1f : 0f);
             }
         }
 
-        //==================== 鲨群环猎 ====================
+        //==================== 环猎 ====================
 
         /// <summary>环角解析式：ω 前 60 帧 0.05→0.16 线性加速再恒速，各端从任意 t 都能重建</summary>
         private static float CarouselTheta(int t) {
@@ -665,12 +707,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, back, 0.15f);
             }
 
-            //环绕期内向射击：密一档的轮转
+            //环绕期内向射击：密一档的轮转（周期由档案折算）
             if (t > CarouselDashEnd && t <= CarouselSpinEnd) {
+                int period = Math.Max(6, (int)(Profile.FirePeriod * 0.8f));
+                int stagger = Math.Max(1, Profile.FireStagger - 1);
                 for (int i = 0; i < gunCount; i++) {
-                    int local = t - CarouselDashEnd - i * CarouselFireStagger;
-                    if (local >= 0 && local % CarouselFirePeriod == 0) {
-                        int tick = local / CarouselFirePeriod;
+                    int local = t - CarouselDashEnd - i * stagger;
+                    if (local >= 0 && local % period == 0) {
+                        int tick = local / period;
                         if (tick > lastFireTick[i]) {
                             lastFireTick[i] = tick;
                             FireGun(owner, authority, i);
@@ -684,6 +728,200 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
             if (t >= CarouselTotal) {
                 EndAttack(authority, 150);
+            }
+        }
+
+        //==================== 点名狙杀（狙击档）====================
+
+        private void UpdateSnipe(Player owner, bool authority) {
+            int t = (int)StateTimer;
+            int target = FindTarget(owner);
+
+            if (target < 0 && t <= 12) {
+                EndAttack(authority, 60);
+                return;
+            }
+            Vector2 focus = target >= 0
+                ? Main.npc[target].Center + Main.npc[target].velocity * 8f
+                : Projectile.Center + gunRot[0].ToRotationVector2() * 600f;
+
+            //质心站桩：跟主人稳在中距离，缓慢横移——狙击的从容
+            Vector2 toT = (focus - owner.Center).SafeNormalize(Vector2.UnitX);
+            Vector2 perp = toT.RotatedBy(MathHelper.PiOver2);
+            Vector2 anchor = owner.Center + toT * 34f + perp * MathF.Sin(t * 0.03f + Seed) * 26f
+                + new Vector2(0f, -30f);
+            Vector2 desired = (anchor - Projectile.Center) * 0.1f;
+            if (desired.Length() > 11f) {
+                desired = desired.SafeNormalize(Vector2.Zero) * 11f;
+            }
+            Projectile.velocity = Vector2.Lerp(Projectile.velocity, desired, 0.16f);
+
+            int duty = t / SnipeTurnLen;
+            if (duty < gunCount) {
+                int p = t - duty * SnipeTurnLen;
+                //就位与压稳两声点拍，音高爬升——扳机前的呼吸
+                if (p == 8 || p == 24) {
+                    SoundEngine.PlaySound(SoundID.Unlock with {
+                        Volume = 0.38f,
+                        Pitch = -0.45f + p * 0.012f,
+                        MaxInstances = 3
+                    }, gunPos[duty]);
+                }
+                //重击：节拍闩用轮值序号，快照回卷不重打
+                if (p == SnipeFireFrame && duty > lastFireTick[duty]) {
+                    lastFireTick[duty] = duty;
+                    FireGun(owner, authority, duty, heavy: true);
+                    //大后坐翻滚：整枪被顶得转过去再稳回来
+                    gunSpin[duty] = (gunFlip[duty] ? 1f : -1f) * 0.34f;
+                    if (ViewedOwner) {
+                        ShakeViewer(2.6f);
+                    }
+                }
+            }
+
+            if (t >= SnipeTotal) {
+                EndAttack(authority, 150);
+            }
+        }
+
+        /// <summary>点名狙杀：轮值枪瞄准线蓄力 0~1，非轮值为 0</summary>
+        private float SnipeChargeOf(int i) {
+            if (State != StateSnipe) {
+                return 0f;
+            }
+            int t = (int)StateTimer;
+            int duty = t / SnipeTurnLen;
+            if (duty >= gunCount || i != duty) {
+                return 0f;
+            }
+            int p = t - duty * SnipeTurnLen;
+            if (p < 8 || p > SnipeFireFrame) {
+                return 0f;
+            }
+            return MathHelper.Clamp((p - 8f) / (SnipeFireFrame - 11f), 0f, 1f);
+        }
+
+        /// <summary>重击前 3 帧的预告线闪亮</summary>
+        private float SnipeFlashOf(int i) {
+            if (State != StateSnipe) {
+                return 0f;
+            }
+            int t = (int)StateTimer;
+            int duty = t / SnipeTurnLen;
+            if (duty >= gunCount || i != duty) {
+                return 0f;
+            }
+            int dt = SnipeFireFrame - (t - duty * SnipeTurnLen);
+            return dt is >= 0 and <= 3 ? 1f - dt / 4f : 0f;
+        }
+
+        //==================== 拢射墙（霰弹档）====================
+
+        private void UpdateBlastWall(Player owner, bool authority) {
+            int t = (int)StateTimer;
+            int target = FindTarget(owner);
+
+            if (target < 0 && t <= WallFormEnd) {
+                EndAttack(authority, 60);
+                return;
+            }
+            Vector2 focus = target >= 0
+                ? Main.npc[target].Center + Main.npc[target].velocity * 5f
+                : Projectile.Center + gunRot[0].ToRotationVector2() * 300f;
+            Vector2 toT = (focus - owner.Center).SafeNormalize(Vector2.UnitX);
+
+            //压近站位：贴到目标跟前一段；齐轰后被后坐顶开，拍间再压回
+            Vector2 anchor = focus - toT * 175f + new Vector2(0f, -14f);
+            Vector2 desired = (anchor - Projectile.Center) * 0.12f;
+            if (desired.Length() > 16f) {
+                desired = desired.SafeNormalize(Vector2.Zero) * 16f;
+            }
+            Projectile.velocity = Vector2.Lerp(Projectile.velocity, desired, 0.2f);
+
+            //泵动双拍：全队一顿、枪机咔嚓——要开火了
+            if (t == WallFormEnd || t == WallFormEnd + 6) {
+                SoundEngine.PlaySound(SoundID.Unlock with {
+                    Volume = 0.45f,
+                    Pitch = t == WallFormEnd ? -0.35f : -0.1f,
+                    MaxInstances = 2
+                }, Projectile.Center);
+                for (int i = 0; i < gunCount; i++) {
+                    gunVel[i] -= gunRot[i].ToRotationVector2() * 1.1f;
+                }
+            }
+
+            for (int k = 0; k < WallSalvos; k++) {
+                if (t != WallSalvoFrame(k)) {
+                    continue;
+                }
+                bool fired = false;
+                for (int i = 0; i < gunCount; i++) {
+                    //节拍闩记齐轰轮次，快照回卷不重轰
+                    if (k > lastFireTick[i]) {
+                        lastFireTick[i] = k;
+                        FireBlast(owner, authority, i);
+                        fired = true;
+                    }
+                }
+                if (fired) {
+                    //整队后坐推退：喷出去的水把编队顶回来
+                    Projectile.velocity -= toT * 7f;
+                    if (ViewedOwner) {
+                        ShakeViewer(3f);
+                    }
+                }
+            }
+            //拍间再泵一声，衔接下一轮
+            for (int k = 0; k < WallSalvos - 1; k++) {
+                if (t == WallSalvoFrame(k) + 20) {
+                    SoundEngine.PlaySound(SoundID.Unlock with {
+                        Volume = 0.4f,
+                        Pitch = -0.25f,
+                        MaxInstances = 2
+                    }, Projectile.Center);
+                }
+            }
+
+            if (t >= WallTotal) {
+                EndAttack(authority, 140);
+            }
+        }
+
+        /// <summary>霰弹齐轰的单枪喷散：一口气崩出一锥轻珠，后坐与水花都比单发大一号</summary>
+        private void FireBlast(Player owner, bool authority, int i) {
+            Vector2 aimDir = gunRot[i].ToRotationVector2();
+            Vector2 muzzle = MuzzlePos(i);
+            gunRecoil[i] = 20f * Profile.RecoilMul;
+            gunVel[i] -= aimDir * 2.6f * Profile.RecoilMul;
+            muzzleFlash[i] = 6;
+
+            SoundEngine.PlaySound(Profile.FireSound with {
+                Volume = 0.5f,
+                Pitch = -0.18f + i * 0.04f,
+                MaxInstances = 4
+            }, muzzle);
+            if (!Main.dedServ) {
+                //喷散水花锥：比单发宽一倍的崩碎
+                for (int k = 0; k < 7; k++) {
+                    PRTLoader.NewParticle<PRT_GhostRainDrop>(muzzle,
+                        aimDir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(2.5f, 6.5f),
+                        BloodMain * 0.6f, Main.rand.NextFloat(0.3f, 0.52f))
+                        ?.Configure(Main.rand.Next(9, 16), 0.2f);
+                }
+            }
+            if (ViewedOwner) {
+                ShakeViewer(0.8f);
+            }
+
+            if (authority) {
+                int damage = Math.Max(1, (int)owner.GetTotalDamage(DamageClass.Summon)
+                    .ApplyTo(ShotDamage * Profile.ShotDamageMul * 1.3f / Profile.Pellets));
+                for (int k = 0; k < Profile.Pellets; k++) {
+                    Vector2 vel = aimDir.RotatedBy(Main.rand.NextFloat(-0.24f, 0.24f))
+                        * Profile.BulletSpeed * Main.rand.NextFloat(0.8f, 1.02f);
+                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), muzzle, vel,
+                        ModContent.ProjectileType<KikasaGunBullet>(), damage, 2f, Projectile.owner, 2f);
+                }
             }
         }
 
@@ -842,7 +1080,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     float tGlobal = Main.GlobalTimeWrappedHourly;
                     for (int i = 0; i < gunCount; i++) {
                         float phase = tGlobal * 0.62f + Seed + i * MathHelper.TwoPi / gunCount;
-                        //抢位冲刺：错帧周期沿轨道切向加塞——鲨群的超车
+                        //抢位冲刺：错帧周期沿轨道切向加塞——枪群的超车
                         float dartT = (t + i * 41) % 170;
                         float dart = dartT < 22 ? MathF.Sin(dartT / 22f * MathHelper.Pi) * 46f : 0f;
                         Vector2 radial = new(MathF.Cos(phase) * 118f, MathF.Sin(phase) * 54f - 34f);
@@ -971,6 +1209,59 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     }
                     break;
                 }
+                case StateSnipe: {
+                    Vector2 aimPos = target >= 0
+                        ? Main.npc[target].Center + Main.npc[target].velocity * 9f
+                        : Projectile.Center + gunRot[0].ToRotationVector2() * 600f;
+                    Vector2 toT = (aimPos - Projectile.Center).SafeNormalize(Vector2.UnitX);
+                    Vector2 perp = toT.RotatedBy(MathHelper.PiOver2);
+                    int duty = Math.Min(t / SnipeTurnLen, gunCount - 1);
+                    bool inTurns = t < SnipeTurnLen * gunCount;
+                    for (int i = 0; i < gunCount; i++) {
+                        float lane = i - (gunCount - 1) * 0.5f;
+                        if (inTurns && i == duty) {
+                            //轮值枪顶上前列射击位：探出半身压稳
+                            Vector2 slot = Projectile.Center + toT * 52f + perp * (lane * 12f)
+                                + new Vector2(0f, Sway(i, 1.2f, 2.5f));
+                            gunTarget[i] = slot;
+                            ChaseGun(i, 0.15f, 0.76f);
+                        }
+                        else {
+                            //候场枪退居后排斜列，松散盯梢
+                            Vector2 slot = Projectile.Center - toT * 40f + perp * (lane * 46f)
+                                + new Vector2(0f, Sway(i, 1.6f, 6f));
+                            gunTarget[i] = slot;
+                            ChaseGun(i, 0.07f, 0.85f);
+                        }
+                        //后坐翻滚在场时松开瞄准咬合，让翻滚读得出来
+                        float aimRate = MathF.Abs(gunSpin[i]) > 0.04f ? 0.08f
+                            : inTurns && i == duty ? 0.5f : 0.12f;
+                        FaceGun(i, aimPos, aimRate);
+                        gunRot[i] += gunSpin[i];
+                        gunSpin[i] *= 0.88f;
+                    }
+                    break;
+                }
+                case StateBlastWall: {
+                    Vector2 focus = target >= 0
+                        ? Main.npc[target].Center
+                        : Projectile.Center + gunRot[0].ToRotationVector2() * 300f;
+                    Vector2 aimPos = target >= 0
+                        ? Main.npc[target].Center + Main.npc[target].velocity * 4f
+                        : focus;
+                    Vector2 toT = (focus - Projectile.Center).SafeNormalize(Vector2.UnitX);
+                    Vector2 perp = toT.RotatedBy(MathHelper.PiOver2);
+                    for (int i = 0; i < gunCount; i++) {
+                        float lane = i - (gunCount - 1) * 0.5f;
+                        //紧凑弧：横距压到 26，边缘微微后收——一面水枪墙
+                        Vector2 slot = Projectile.Center + perp * (lane * 26f + Sway(i, 2f, 3f))
+                            - toT * (MathF.Abs(lane) * 9f - 8f);
+                        gunTarget[i] = slot;
+                        ChaseGun(i, 0.13f, 0.78f);
+                        FaceGun(i, aimPos, 0.42f);
+                    }
+                    break;
+                }
                 case StateDissolve: {
                     skipFix = true;
                     for (int i = 0; i < gunCount; i++) {
@@ -1034,7 +1325,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         /// <summary>常驻氛围：液态下缘（水线区）偶发凝珠滴落——枪一直在往下滴湖水</summary>
         private void UpdateAmbient() {
-            if (Main.dedServ || State is not (StateFollow or StateVolley or StateCarousel)) {
+            if (Main.dedServ
+                || State is not (StateFollow or StateVolley or StateCarousel or StateSnipe or StateBlastWall)) {
                 return;
             }
             if (Main.rand.NextBool(16)) {
@@ -1079,7 +1371,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private Vector2 GunDrawPos(int i)
             => gunPos[i] - gunRot[i].ToRotationVector2() * gunRecoil[i];
 
-        /// <summary>枪口位：绘制位沿瞄准向探出半个枪身（长度随换皮档）</summary>
+        /// <summary>枪口位：绘制位沿瞄准向探出半个枪身（长度随档案）</summary>
         private Vector2 MuzzlePos(int i)
             => GunDrawPos(i) + gunRot[i].ToRotationVector2() * Profile.MuzzleLen;
 
@@ -1142,7 +1434,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
             //后坐压缩一口气
             scale *= 1f - gunRecoil[i] * 0.004f;
-            return scale;
+            //档案绘制缩放：超大贴图收一号、小贴图放一号
+            return scale * Profile.DrawScale;
         }
 
         private static float SmoothStep01(float t) => t * t * (3f - 2f * t);
@@ -1309,7 +1602,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             //水光扫掠：湿面上一道窄亮痕周期滑过枪身（错帧），湖水质感的常驻记号
-            if (State is StateFollow or StateVolley or StateCarousel) {
+            if (State is StateFollow or StateVolley or StateCarousel or StateSnipe or StateBlastWall) {
                 for (int i = 0; i < gunCount; i++) {
                     float p = (Main.GlobalTimeWrappedHourly * 0.42f + i * 0.219f + Seed * 0.13f) % 1f;
                     if (p >= 0.34f || GunAlpha(i) <= 0.5f) {
@@ -1329,36 +1622,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             //锁线预告：细水光线一路排到目标向，出膛前一闪
-            float charge = VolleyLockCharge();
-            float flash = VolleyTelegraphFlash();
-            if (charge > 0.03f || flash > 0.02f) {
-                EnsureBegin();
-                for (int i = 0; i < gunCount; i++) {
-                    if (GunAlpha(i) <= 0.1f) {
-                        continue;
-                    }
-                    Vector2 muzzle = MuzzlePos(i);
-                    float lineA = charge * (0.09f + 0.05f * MathF.Sin(Main.GlobalTimeWrappedHourly * 19f + Seed + i))
-                        + flash * 0.4f;
-                    if (lineA <= 0.02f) {
-                        continue;
-                    }
-                    Vector2 dir = gunRot[i].ToRotationVector2();
-                    const float lineLen = 420f;
-                    const int lineSegs = 3;
-                    for (int k = 0; k < lineSegs; k++) {
-                        float f0 = k / (float)lineSegs;
-                        Vector2 segMid = muzzle + dir * lineLen * (f0 + 0.5f / lineSegs);
-                        float segLen = lineLen / lineSegs;
-                        float fallA = lineA * (1f - f0 * 0.4f);
-                        sb.Draw(glow, segMid - Main.screenPosition, null, MuzzleHot * fallA, gunRot[i],
-                            gOrigin, new Vector2(segLen * 1.15f / glow.Width, 2.6f / glow.Height), SpriteEffects.None, 0f);
-                    }
-                    //镜筒积光
-                    float r = 6f + 9f * MathF.Max(charge, flash);
-                    sb.Draw(glow, muzzle - Main.screenPosition, null, MuzzleHot * (0.4f * MathF.Max(charge, flash)), 0f,
-                        gOrigin, new Vector2(r * 2f / glow.Width), SpriteEffects.None, 0f);
+            //（齐射=全员共享蓄力，点名狙杀=只亮轮值枪，二者取大）
+            for (int i = 0; i < gunCount; i++) {
+                float charge = MathF.Max(VolleyLockCharge(), SnipeChargeOf(i));
+                float flash = MathF.Max(VolleyTelegraphFlash(), SnipeFlashOf(i));
+                if ((charge <= 0.03f && flash <= 0.02f) || GunAlpha(i) <= 0.1f) {
+                    continue;
                 }
+                EnsureBegin();
+                Vector2 muzzle = MuzzlePos(i);
+                float lineA = charge * (0.09f + 0.05f * MathF.Sin(Main.GlobalTimeWrappedHourly * 19f + Seed + i))
+                    + flash * 0.4f;
+                if (lineA <= 0.02f) {
+                    continue;
+                }
+                Vector2 dir = gunRot[i].ToRotationVector2();
+                float lineLen = State == StateSnipe ? 680f : 420f;
+                int lineSegs = State == StateSnipe ? 5 : 3;
+                for (int k = 0; k < lineSegs; k++) {
+                    float f0 = k / (float)lineSegs;
+                    Vector2 segMid = muzzle + dir * lineLen * (f0 + 0.5f / lineSegs);
+                    float segLen = lineLen / lineSegs;
+                    float fallA = lineA * (1f - f0 * 0.4f);
+                    sb.Draw(glow, segMid - Main.screenPosition, null, MuzzleHot * fallA, gunRot[i],
+                        gOrigin, new Vector2(segLen * 1.15f / glow.Width, 2.6f / glow.Height), SpriteEffects.None, 0f);
+                }
+                //镜筒积光
+                float r = 6f + 9f * MathF.Max(charge, flash);
+                sb.Draw(glow, muzzle - Main.screenPosition, null, MuzzleHot * (0.4f * MathF.Max(charge, flash)), 0f,
+                    gOrigin, new Vector2(r * 2f / glow.Width), SpriteEffects.None, 0f);
             }
 
             //枪口闪：出膛那一帧的水光爆点，沿射向拉伸

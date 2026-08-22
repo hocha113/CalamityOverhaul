@@ -261,6 +261,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaThrallForm { get; set; }
         public static Asset<Effect> KikasaVaultPanel { get; set; }
         public static Asset<Effect> KikasaScene { get; set; }
+        public static Asset<Effect> KikasaPanorama { get; set; }
         public static Asset<Effect> KikasaSunkEffigy { get; set; }
         public static Asset<Effect> KikasaHand { get; set; }
         public static Asset<Effect> KikasaNarrativePanel { get; set; }

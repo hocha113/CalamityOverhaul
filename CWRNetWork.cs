@@ -95,6 +95,8 @@ namespace CalamityOverhaul
         DungeonworldWaterValve,
         //鬼伞·大范围重启：客户端请求 → 服务器圈定并广播 → 各端本地倒带
         KikasaReset,
+        //世界鬼伞的权威世界态下发（是否已生成+锚点），镜像 ToriiShrineSync
+        OniUmbrellaSync,
     }
 
     public static class CWRNetWork
@@ -161,6 +163,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.ToriiShrineSync) {
                 ToriiShrine.ReceiveShrineSync(reader);
+            }
+            else if (type == CWRMessageType.OniUmbrellaSync) {
+                Content.Scenarios.OniRainWorlds.OniUmbrellaWorldSpawn.ReceiveUmbrellaSync(reader);
             }
             else if (type == CWRMessageType.DungeonworldWaterValve) {
                 Content.Scenarios.Dungeonworld.Machines.DungeonworldWaterGate.HandleValveRequest(reader, whoAmI);

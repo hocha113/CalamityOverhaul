@@ -1,8 +1,11 @@
 ﻿using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Scenarios.Shenyo;
+using InnoVault.Cinematics;
 using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -15,6 +18,26 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
     {
         public int Depth;
 
+        /// <summary>近期被鬼奴击中的剩余帧数（运行期量），死亡拦截据此判源</summary>
+        public int OniHitFrames { get; private set; }
+
+        /// <summary>抵达深层后的静默计时（运行期量），沈幽初遇等它走完再开口</summary>
+        public int DeepArrivalCalm { get; internal set; }
+
+        /// <summary>鬼奴命中登记：致死打击与 PreKill 同帧结算，窗口给短即可</summary>
+        internal void NoteOniHit() => OniHitFrames = 12;
+
+        public override void ResetEffects() {
+            if (OniHitFrames > 0) {
+                OniHitFrames--;
+            }
+            //静默拍只在演出全收后走表
+            if (DeepArrivalCalm > 0 && !OniRainWorldTransition.Active
+                && !OniRainDescentTransition.Active) {
+                DeepArrivalCalm--;
+            }
+        }
+
         public override void SaveData(TagCompound tag) {
             if (Depth > 0) {
                 tag["oniRainDepth"] = Depth;
@@ -26,6 +49,47 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             int depth = tag.TryGet("oniRainDepth", out int saved) ? saved
                 : tag.ContainsKey("inOniRainWorld") ? 1 : 0;
             Depth = Math.Clamp(depth, 0, OniRainWorldState.MaxDepth);
+        }
+
+        public override void OnEnterWorld() {
+            //带档直接醒在深层：给一拍静默，沈幽再开口
+            if (Depth >= 2) {
+                DeepArrivalCalm = 90;
+            }
+        }
+
+        /// <summary>
+        /// 死亡拖入：初遇未完成时在第一层被鬼奴杀死不真死——
+        /// 拦下死亡，醒在更深一层的雨里（复用深潜演出，溺亡起手拍）。
+        /// 仅本地玩家生效；初遇完成后鬼奴致死回归真死。
+        /// </summary>
+        public override bool PreKill(double damage, int hitDirection, bool pvp,
+            ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource) {
+            if (Main.dedServ || Player.whoAmI != Main.myPlayer) {
+                return true;
+            }
+            if (Depth != 1 || OniHitFrames <= 0) {
+                return true;
+            }
+            if (ShenyoStorySync.PostFirstMetIsComplete) {
+                return true;
+            }
+            if (OniRainWorldTransition.Active || OniRainDescentTransition.Active) {
+                return true;
+            }
+
+            playSound = false;
+            genGore = false;
+            OniHitFrames = 0;
+            //醒过来还有几分力气；演出全程另有逐帧无敌
+            Player.statLife = Math.Max(1, (int)(Player.statLifeMax2 * 0.4f));
+            Player.GivePlayerImmuneState(90);
+            ShenyoStorySync.ArrivedByDeath = true;
+
+            //运镜失败不致命，演出照走
+            OniRainDescentTransition.BeginFromDrown(Player, Player.Bottom);
+            CutsceneDirector.Play<OniRainDescentCutscene>(Player);
+            return false;
         }
     }
 
@@ -90,6 +154,10 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             OniRainWorldPlayer orp = player.GetModPlayer<OniRainWorldPlayer>();
             orp.Depth = Math.Min(orp.Depth + 1, MaxDepth);
             thunderTimer = 300;
+            //抵达深层后的静默拍：演出收尾后再计，沈幽等它走完才开口
+            if (orp.Depth >= 2) {
+                orp.DeepArrivalCalm = 75;
+            }
         }
 
         /// <summary>上浮一层，浮出第一层即回到真实世界</summary>
@@ -99,6 +167,14 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             }
             OniRainWorldPlayer orp = player.GetModPlayer<OniRainWorldPlayer>();
             orp.Depth = Math.Max(orp.Depth - 1, 0);
+        }
+
+        /// <summary>被送出鬼雨世界：任意深度直接归零，仅本地玩家生效（沈幽送客的结算口）</summary>
+        internal static void ExitToSurfaceLocal(Player player) {
+            if (player == null || player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            player.GetModPlayer<OniRainWorldPlayer>().Depth = 0;
         }
 
         /// <summary>调试出口：D3 上浮一层，氛围沿控制器包络自行排干</summary>
@@ -135,6 +211,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             float density = inWorld
                 ? Content.Wraiths.Abilities.GhostRains.GhostRainAmbience.Intensity
                     * rainMultByDepth[depthIndex] + OniRainDescentTransition.RainSurge
+                    + OniRainExitTransition.RainSurge
                 : preRain;
             if (density < 0.02f) {
                 return;
@@ -262,12 +339,17 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         public string LocalizationCategory => "OniRainWorld";
 
         public static LocalizedText InteractHint { get; private set; }
-        public static LocalizedText DescendHint { get; private set; }
+        public static LocalizedText GrabHint { get; private set; }
+        public static LocalizedText OniDeathReason { get; private set; }
 
         public override void SetStaticDefaults() {
             InteractHint = this.GetLocalization(nameof(InteractHint), () => "[右键] 撑伞入雨");
-            DescendHint = this.GetLocalization(nameof(DescendHint), () => "[右键] 撑伞入深雨");
+            GrabHint = this.GetLocalization(nameof(GrabHint), () => "[右键] 夺伞");
+            OniDeathReason = this.GetLocalization(nameof(OniDeathReason), () => "{0}被伞下的东西拖进了雨里");
         }
+
+        //送出演出的起演静默拍计数
+        private static int sendOffArmDelay;
 
         public override void PostUpdateEverything() {
             if (Main.dedServ) {
@@ -275,16 +357,65 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             }
             OniRainWorldTransition.Update();
             OniRainDescentTransition.Update();
+            OniRainExitTransition.Update();
             OniRainWorldState.UpdateFx();
             KasaOnis.KasaOniDirector.Update();
+            UpdateShenyoSendOff();
+        }
+
+        /// <summary>
+        /// 沈幽送客的编排与自愈：初遇播完且伞未交付时，静默一拍后起送出演出；
+        /// 掉线/崩溃打断也会在下次条件齐备时重新送一遍；
+        /// 已在真实世界的残局（送出成立但交付被打断）直接补发。
+        /// </summary>
+        private static void UpdateShenyoSendOff() {
+            if (Main.gameMenu) {
+                sendOffArmDelay = 0;
+                return;
+            }
+            Player player = Main.LocalPlayer;
+            if (player?.active != true || !player.Alives()) {
+                sendOffArmDelay = 0;
+                return;
+            }
+            if (!Shenyo.ShenyoStorySync.PostFirstMetIsComplete
+                || Shenyo.ShenyoStorySync.KikasaGranted) {
+                sendOffArmDelay = 0;
+                return;
+            }
+            if (Narrative.NarrativeTriggerGate.IsBusy || CutsceneDirector.IsPlaying) {
+                sendOffArmDelay = 0;
+                return;
+            }
+            if (OniRainWorldTransition.Active || OniRainDescentTransition.Active
+                || OniRainExitTransition.Active) {
+                return;
+            }
+
+            //已在真实世界：交付被打断的残局，直接补发
+            if (!OniRainWorldState.LocalIn) {
+                OniRainExitTransition.GrantKikasa(player);
+                return;
+            }
+
+            //沈幽话音落下，雨合拢前留一口气
+            if (++sendOffArmDelay < 45) {
+                return;
+            }
+            sendOffArmDelay = 0;
+            //运镜失败不致命，演出照走
+            OniRainExitTransition.Begin(player);
+            CutsceneDirector.Play<OniRainExitCutscene>(player);
         }
 
         public override void ClearWorld() {
             if (!Main.dedServ) {
                 OniRainWorldTransition.HardReset();
                 OniRainDescentTransition.HardReset();
+                OniRainExitTransition.HardReset();
                 OniRainWorldState.ResetLocal();
                 KasaOnis.KasaOniDirector.ResetLocal();
+                sendOffArmDelay = 0;
             }
         }
     }

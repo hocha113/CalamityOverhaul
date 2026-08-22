@@ -47,6 +47,8 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         public static float Flash { get; private set; }
         /// <summary>伞的躁动包络，起势段起颤、合幕段拉满、结算后回落</summary>
         public static float UmbrellaAgitation { get; private set; }
+        /// <summary>溺亡拖入模式：被鬼奴杀死时的下潜，起手带一记被拽走的重拍</summary>
+        public static bool DrownMode { get; private set; }
 
         /// <summary>渲染合成是否需要介入：排尽且无闪光后输出等于输入，直接让位</summary>
         public static bool RenderActive => Active
@@ -54,7 +56,17 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             || (CurtainCover > 0.0005f && Drain < 0.999f));
 
         /// <summary>开始深潜演出，仅本地玩家且身处雨世界未达最深层时生效；重复调用无效</summary>
-        public static void Begin(Player player, Vector2 umbrellaGround) {
+        public static void Begin(Player player, Vector2 umbrellaGround)
+            => BeginCore(player, umbrellaGround, drown: false);
+
+        /// <summary>
+        /// 溺亡拖入：被鬼奴杀死后的下潜，共用整条冲刷时间轴，
+        /// 只在起手补一记被拽走的重拍
+        /// </summary>
+        public static void BeginFromDrown(Player player, Vector2 ground)
+            => BeginCore(player, ground, drown: true);
+
+        private static void BeginCore(Player player, Vector2 umbrellaGround, bool drown) {
             if (Active || OniRainWorldTransition.Active || Main.dedServ
                 || player == null || player.whoAmI != Main.myPlayer || !player.Alives()) {
                 return;
@@ -69,6 +81,27 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             UmbrellaWorld = umbrellaGround;
             FocusWorld = umbrellaGround + new Vector2(0f, -40f);
             ZeroEnvelopes();
+            DrownMode = drown;
+
+            if (drown) {
+                //被拽走的一记重锤：致死帧直接砸下，雨随后灌满
+                SoundEngine.PlaySound(SoundID.Thunder with {
+                    Pitch = -0.5f,
+                    Volume = 0.8f,
+                    MaxInstances = 3,
+                }, player.Center);
+                SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
+                    Pitch = -0.6f,
+                    Volume = 0.65f,
+                    MaxInstances = 3,
+                }, player.Center);
+                SoundEngine.PlaySound(SoundID.SplashWeak with {
+                    Pitch = -0.95f,
+                    Volume = 0.7f,
+                    MaxInstances = 3,
+                }, player.Bottom);
+                player.CWR()?.GetScreenShake(10f);
+            }
         }
 
         internal static void Update() {
@@ -304,6 +337,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         private static void ZeroEnvelopes() {
             RainSurge = InkRun = CurtainCover = Drain = Flash = 0f;
             UmbrellaAgitation = 0f;
+            DrownMode = false;
         }
 
         private static float Smooth01(float value) {

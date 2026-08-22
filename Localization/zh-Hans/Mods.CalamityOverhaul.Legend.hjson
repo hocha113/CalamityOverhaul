@@ -1129,68 +1129,108 @@ KikasaTrialQuestLine: {
 }
 
 KikasaText: {
-	KikasaVaultUI: {
-		Title: 湖 藏
-		CountFormat: 沉物 {0} / {1}
-		ExtractHintFormat: 点击取回 {0}
-		IdleHintFormat: 持物按 {0} 沉入 · 点击窗外合上
-		EmptyHint: 湖底空着，只有水声
-		ViewOnlyFooter: 湖还没涨到脚边，先看着
-		SlotBarFormat: 驻影 {0} / {1}
-		SlotBarHint: 编成在画里改——点画中的血湖
-	}
-
 	KikasaServantPlayer.ServantUnknown: 湖还没学会驱使它
 
-	KikasaHud: {
-		ScrollName: 湖畔村图
-		OpenTag: 点击展开画卷
-	}
-
-	KikasaSceneUI: {
-		LakeTag: 血湖
-		HoundTag: 恶犬
-		MemoryEmpty: 湖底还空着
-		ServantOutTag: 它替你出手去了
-		DryHintFormat: 按 {0} 撑开血湖
-		ReflectAwake: 倒影醒着
-		ReflectAsleep: 倒影睡着
-		DreamTitle: 鬼 梦
-		InDreamLine: 你正身在梦中
-		HoundCountFormat: 在场恶犬 {0} / {1}
-		DreamHint: 梦中按住左键，黑水会不断吐出恶犬
-		DreamGateHint: 魇影驻湖倒影自醒；长按异化键，它把你拉进梦里
-		ThrallTag: 伞奴
-		ThrallCountFormat: 在场伞奴 {0} / {1}
-		VillageTag: 湖 藏
-		VillageOpenTag: 点击开湖窗——窗火即沉物
-		BoardOpenTag: 点击铺开沉影盘
-		SlotCountFormat: 驻影 {0} / {1}
-		BoardTitle: 沉 影 盘
-		BoardCountFormat: 已沉 {0} / {1}
-		BoardPickHint: 先点岸上的沉影拾起，再落进影位
-		BoardPlacedFormat: "{0} 沉进了影位"
-		BoardEmptyHint: 湖底还没有沉影——光标指着 boss 按 {0}，把它按进湖里
-		BoardAlreadySlotted: 已在影位上——点它拾起，再点空处卸下
-		BoardUnslotHint: 点空处卸下，点回影位再驻上
-		BoardUnslottedFormat: "{0} 回了湖底"
-		BoardSlotRemoveHint: 右键卸下，或点它拾起再点空处
-		BoardArmsStockFormat: 湖藏原件 ×{0}
-		BoardArmsNoStock: 湖里没有它的原件，凝不出形
-		BoardAffinityFormat: 亲和 · {0}
+	KikasaUIText: {
 		AffinityFlame: 焰
 		AffinityNightmare: 魇
 		AffinityRain: 潦
 		AffinityWild: 百搭
+		AffinityArms: 械
+		StateOut: 在场
+		StateHeld: 已收起
+		StateAwait: 候湖
+		LakeNotReadyLine: 湖未就绪——湖起后它自会出水
+	}
+
+	KikasaHud: {
+		ScrollName: 湖 心 景
+		OpenTag: 点击展开
+		TipWaterFormat: 水位 {0}%
+		TipVaultFormat: 湖藏 {0} / {1}
+		TipVigorDream: 过入梦线（50%），倒影就拽得动你
+		TipVigorWisp: 到自燃线（100%），金焰自己烧起来
+		TipCooldownFormat: 冷却中 · {0}%
+		TipDrownTitle: 沉溺之手
+		TipDrownHintFormat: 指着生物或持物按 {0}
+		TipDrownReady: 手已备好
+		TipResetTitle: 大范围重启
+		TipResetHintFormat: 鬼雨形态按 {0}，把战场倒回数秒前
+		TipThrallFormat: 在场伞奴 {0} / {1}
+		TipHoundCountFormat: 在场恶犬 {0} / {1}
+		TipSeatsHintFormat: "{0} 转盘召/收 · 编成在湖心景里改"
+		TipSeatEmpty: 空席
+	}
+
+	KikasaServantWheelUI: {
+		WheelEmptyTitle: 空席
+		WheelEmptyDesc: 沉溺已注册的宿敌，沉影会自动落座此席
+		WheelEmptyStatus: 这一席还空着
+		WheelSeatFormat: 影位 {0}
+		WheelStatusRecall: "[松开] 收回此影"
+		WheelStatusSummon: "[松开] 召它出水"
+		WheelStatusAwaitOrder: "[松开] 先受理候令——湖起自动出水"
+		WheelCenterTitle: 伞下号令
+		WheelCenterDesc: 一令齐发：有影在外则全收，无影在外则全召
+		WheelCenterCountFormat: "{0}/{1} 出战"
+		WheelCenterRecallAll: "[松开] 全席收回"
+		WheelCenterSummonAll: "[松开] 全席召出"
+		WheelCenterEmpty: 湖里还没有可号令的沉影
+		WheelDamageFormat: 同场单影出力 {0}%
+		WheelHint: "[{0}] 按住 · 松开提交 · 右键取消"
+	}
+
+	KikasaPanoramaUI: {
+		Title: 湖 心 景
+		VigorLabel: 湖力
+		VigorDreamMark: 入梦线
+		VigorWispMark: 自燃线
+		HoundTitle: 恶犬 · 鬼梦
+		WispTitle: 金焰 · 鬼火
+		ReflectAwake: 倒影醒着
+		ReflectAsleep: 倒影睡着
+		InDreamLine: 你正身在梦中
+		DreamReturnFormat: 重按 {0} 归返
+		DreamEnterKeyFormat: "[长按 {0}] 坠入鬼梦"
+		DreamEnterClick: "[点击] 让它拉你下去"
+		NeedDomainFormat: 按 {0} 撑开血湖
+		NeedFullWater: 湖还没涨满
+		NeedVigorFormat: 湖力 {0}%——入梦要 {1}%
+		HoundBonusFormat: 梦犬：上限 {0} · 撕咬 {1}%
+		WispBurning: 燃着——沿水线灼烧敌人
+		WispIdle: 熄着——湖力蓄满自燃
+		WispBoil: 在雨里蒸沸着烧
+		WispQuenchedLine: 鬼雨正把它压熄
+		WispBonusFormat: 灼烧 {0} 秒 · 火舌 +{1}px
 		EdgeDreamFire: 梦火
 		EdgeBoilRain: 沸雨
 		EdgeRainNightmare: 雨魇
 		EdgeTriSeal: 三影镇湖
-		EdgeDreamFireNote: 梦火成边——梦犬的牙带上了鬼火
-		EdgeBoilRainNote: 沸雨成边——鬼雨压不灭这把火了
-		EdgeRainNightmareNote: 雨魇成边——雨里转出伞奴快了一倍
-		EdgeTriSealNote: 三影镇湖——三系齐坐，鬼奴出力更狠
-		LakeVigorLabel: 湖力
+		SeatsTitle: 沉影三席
+		SeatEmptyLine: 空席——从下方册里拾一枚沉影
+		SeatPickHint: 点击拾起 · 右键卸下
+		SeatPlaceHint: 点击让它驻进此席
+		SeatHeldLineFormat: 已收起——转盘（{0}）召回
+		SeatOutLine: 它替你出手去了
+		SeatAwaitLine: 候着湖起
+		RosterTallyFormat: 沉影 {0} / {1}
+		RosterUnknown: 未沉之影
+		RosterUnknownHintFormat: 湖就绪时光标指着它按 {0}
+		RosterSeatedTag: 已驻席
+		RosterPickHint: 点击拾起
+		NotePlacedFormat: "{0} 沉进了影位"
+		NoteUnslottedFormat: "{0} 回了湖底"
+		NoteNotCollected: 湖还没沉溺过它
+		NotePickFirst: 先从册里拾一枚沉影
+		NoteArmsNoStock: 湖里没有它的原件，凝不出形
+		VaultTitle: 湖 藏
+		VaultCountFormat: 沉物 {0} / {1}
+		VaultEmptyHint: 湖底空着，只有水声
+		VaultExtractHint: 点击取回
+		VaultViewOnlyLine: 湖还没涨到脚边，先看着
+		ArmsStockFormat: 械奴原件 ×{0}
+		ThrallLineFormat: 伞奴：上限 {0} · 每 {1} 秒转化
+		FooterHintFormat: Esc / {0} 合上 · 持物按 {1} 沉入 · {2} 转盘号令
 	}
 
 	KikasaHudLead: {
@@ -1200,16 +1240,16 @@ KikasaText: {
 		SinkTitle: 沉入湖藏
 		SinkBody: 湖是你的私库。手里拿着东西按沉入键，它就沉进湖底；光标指着活物按同一个键，湖会伸手把它按下去——沉过的 boss 化作沉影，永远留在湖底。
 		SinkPrompt: 等水涨到脚边，持物或指着生物按 {0}
-		BoardTitle: 沉影编成
-		BoardBody: 湖底有三席影位，驻影自动出水替你出手。焰影点燃鬼火，魇影唤醒倒影、长按异化键坠入鬼梦，潦影养伞雨——两系同席还会成边。
-		BoardPrompt: 点左下风铃展开画卷，再点画中的血湖，铺开沉影盘
-		BoardNoMemory: 湖底还没有沉影——先沉一只 boss，或跳过这步。
-		VaultTitle: 开湖窗取物
-		VaultBody: 沉下去的东西悬在血水里漂着。开湖窗点一件，湖把它送回你手边——村里哪扇窗亮着，湖里就存着多少。
-		VaultPrompt: 点画中亮着窗火的村屋；或持鬼伞按 {0}
-		MutateTitle: 鬼雨异化
-		MutateBody: 血湖有表里两面。满水位时短按倒转它，翻进冷雨那一侧，雨里死去的敌人化作伞奴；再倒转一次就翻回来。
-		MutatePrompt: 短按 {0}（默认鼠标中键）
+		PanoramaTitle: 展开湖心景
+		PanoramaBody: 一屏看全：湖上住着恶犬与金焰两只鬼，水线摆着三席沉影，湖底铺着你的湖藏。
+		PanoramaPrompt: 点左下风铃，或持鬼伞按 {0}
+		WheelTitle: 号令鬼奴
+		WheelBody: 驻席的沉影在湖就绪时自动出水。转盘随手召收——在外的越少，单只咬得越狠。
+		WheelPrompt: 按住 {0} 出转盘，悬停席位松开即召/收
+		WheelNoMemory: 册里还没有沉影——先沉一只 boss，或跳过这步。
+		DreamTitle: 坠入鬼梦
+		DreamBody: 湖满、湖力过半，倒影就自己醒了。长按异化键，它把你拉进梦里——梦中按住左键连唤恶犬，重按归返。
+		DreamPrompt: 满水位时长按 {0}（默认鼠标中键）
 		SkipBtn: 跳过
 		KeyUnbound: 这一步的按键未绑定；请先在 设置 > 控制 里绑定，或点击跳过。
 	}

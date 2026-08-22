@@ -567,8 +567,12 @@ GaolCuffHitbox.DisplayName: 怨灵铁铐
 // WofGrabTongueProj.DisplayName: Wof Grab Tongue Proj
 // KikasaThrallProj.DisplayName: Kikasa Thrall Proj
 // L6MachineStrike.DisplayName: L6 Machine Strike
-// KikasaMinisharkBullet.DisplayName: Kikasa Minishark Bullet
-// KikasaMinisharkServant.DisplayName: Kikasa Minishark Servant
+KikasaGunBullet.DisplayName: 湖水滴弹
+KikasaGunServant.DisplayName: 械奴·湖水枪群
+KikasaBladeServant.DisplayName: 械奴·湖水刃群
+KikasaBladeSlash.DisplayName: 湖水斩痕
+KikasaWhipServant.DisplayName: 械奴·湖水鞭群
+KikasaWhipLash.DisplayName: 湖水鞭笞
 CultistArcBolt.DisplayName: 雷律弧闪
 CultistFlameBolt.DisplayName: 焚焰弹
 CultistFrostSpear.DisplayName: 霜晶枪

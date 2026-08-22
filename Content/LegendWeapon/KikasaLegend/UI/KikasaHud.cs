@@ -3,15 +3,18 @@ using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama;
 using CalamityOverhaul.Content.UIs.HudStack;
 using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -20,12 +23,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
     /// <summary>
     /// 掌中风铃：鬼伞常驻 HUD（左下，持伞或领域激活时浮现）。
     /// 檐钩垂一只玻璃风铃，铃身盛着一小汪血湖——液面=涨水进度、晃荡=事件涌浪、
-    /// 液中烬点=湖藏填充、整铃随形态浸染；常态无水时铃也不空：吹制玻璃质感
-    /// （冠结/双壁/旋纹/封存气泡/暮色反射带）加烬萤（=湖藏）、凝露与潮痕内景。
-    /// 短册纸条压一道墨字水印与朱印，其上挂三道冷却墨线
-    /// （沉溺手=主色居左、梦中唤犬=烬红居右、血湖态中列=湖力金线、鬼雨态中列=重启冷青），
-    /// 册底三点驻影小印是沉影盘编成的缩影（亮=驻席，暗=空席）。
-    /// 点铃展开「湖畔村图」全画（任何域状态都响应）。
+    /// 液中烬点=湖藏填充、整铃随形态浸染。
+    /// 信息层（2026-08 重做）：短册只留纸与三席驻影小印（亲和色+在场/收起态），
+    /// 铃右一列图标读数——湖力条（带入梦/自燃两道门线）、鬼梦犬眼（睡/醒/梦中）、
+    /// 鬼火焰苗（熄/燃/压制）、沉溺冷却、鬼雨态的重启冷却与伞奴计数；
+    /// 一切悬停说明走顶层 <see cref="KikasaHudTipOverlay"/>，题行 1.0 与原版 tooltip 同级。
+    /// 点铃展开「湖心景」全屏（任何域状态都响应）。
     /// </summary>
     internal class KikasaHud : UIHandle, ILocalizedModType, IBottomLeftHud
     {
@@ -35,10 +38,46 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         public static LocalizedText ScrollName { get; private set; }
         public static LocalizedText OpenTag { get; private set; }
+        public static LocalizedText TipWaterFormat { get; private set; }
+        public static LocalizedText TipVaultFormat { get; private set; }
+        public static LocalizedText TipVigorDream { get; private set; }
+        public static LocalizedText TipVigorWisp { get; private set; }
+        public static LocalizedText TipCooldownFormat { get; private set; }
+        public static LocalizedText TipDrownTitle { get; private set; }
+        public static LocalizedText TipDrownHintFormat { get; private set; }
+        public static LocalizedText TipDrownReady { get; private set; }
+        public static LocalizedText TipResetTitle { get; private set; }
+        public static LocalizedText TipResetHintFormat { get; private set; }
+        public static LocalizedText TipThrallFormat { get; private set; }
+        public static LocalizedText TipHoundCountFormat { get; private set; }
+        public static LocalizedText TipSeatsHintFormat { get; private set; }
+        public static LocalizedText TipSeatEmpty { get; private set; }
 
         public override void SetStaticDefaults() {
-            ScrollName = this.GetLocalization(nameof(ScrollName), () => "湖畔村图");
-            OpenTag = this.GetLocalization(nameof(OpenTag), () => "点击展开画卷");
+            ScrollName = this.GetLocalization(nameof(ScrollName), () => "Lakeheart");
+            OpenTag = this.GetLocalization(nameof(OpenTag), () => "Click to unfold");
+            TipWaterFormat = this.GetLocalization(nameof(TipWaterFormat), () => "Water {0}%");
+            TipVaultFormat = this.GetLocalization(nameof(TipVaultFormat), () => "Hoard {0} / {1}");
+            TipVigorDream = this.GetLocalization(nameof(TipVigorDream),
+                () => "Past the dream line (50%), the reflection can pull you under");
+            TipVigorWisp = this.GetLocalization(nameof(TipVigorWisp),
+                () => "At the ignite line (100%), the gold flame lights itself");
+            TipCooldownFormat = this.GetLocalization(nameof(TipCooldownFormat),
+                () => "Cooling down \u00b7 {0}%");
+            TipDrownTitle = this.GetLocalization(nameof(TipDrownTitle), () => "The Drowning Hand");
+            TipDrownHintFormat = this.GetLocalization(nameof(TipDrownHintFormat),
+                () => "Point at a foe or hold an item and press {0}");
+            TipDrownReady = this.GetLocalization(nameof(TipDrownReady), () => "The hand is ready");
+            TipResetTitle = this.GetLocalization(nameof(TipResetTitle), () => "Wide Restart");
+            TipResetHintFormat = this.GetLocalization(nameof(TipResetHintFormat),
+                () => "Press {0} in the ghost rain to wind the field back");
+            TipThrallFormat = this.GetLocalization(nameof(TipThrallFormat),
+                () => "Umbrella thralls afield {0} / {1}");
+            TipHoundCountFormat = this.GetLocalization(nameof(TipHoundCountFormat),
+                () => "Hounds afield {0} / {1}");
+            TipSeatsHintFormat = this.GetLocalization(nameof(TipSeatsHintFormat),
+                () => "{0} wheel calls/recalls \u00b7 manage seats in the Lakeheart");
+            TipSeatEmpty = this.GetLocalization(nameof(TipSeatEmpty), () => "Vacant seat");
         }
 
         //==================== 可见性 ====================
@@ -68,7 +107,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         bool IBottomLeftHud.HudStackActive => Active;
         int IBottomLeftHud.HudStackOrder => 0;
         Vector2 IBottomLeftHud.HudStackAnchor => NaturalAnchor;
-        //上覆悬停名牌，下到短册尾
+        //上覆读数栈顶，下到短册尾
         float IBottomLeftHud.HudStackTopExtent => KikasaHudTheme.ChimeH * 0.5f + 34f;
         float IBottomLeftHud.HudStackBottomExtent => KikasaHudTheme.ChimeH * 0.5f + 8f;
         #endregion
@@ -85,6 +124,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         private const float TanzakuY = 11f;
         private const float TanzakuW = 14f;
         private const float TanzakuH = 35f;
+        //读数栈：铃右一列仪器读数（不随摆——读数是仪器，铃是风物）
+        private const float ReadoutX = 34f;
+        private const float ReadoutTopY = -44f;
+        private const float ReadoutGapY = 23f;
+        private const float ReadoutHitHalf = 10f;
 
         //====== SVG 路径（归一 [-1,1]，A 弧不可用） ======
 
@@ -103,11 +147,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             "M -1 0.6 Q -0.9 -0.25 0 -0.45 Q 0.9 -0.25 1 0.6 "
             + "M -0.55 0.05 Q 0 -0.18 0.55 0.05";
 
-        //短册墨字：竖排草书一线的抽象水印（非可读字），冷却墨线仍覆其上
+        //短册墨字：竖排草书一线的抽象水印（非可读字）
         private const string TanzakuInkPath =
             "M 0.04 -1 Q -0.20 -0.72 0.06 -0.48 Q 0.26 -0.30 -0.06 -0.10 "
             + "Q -0.26 0.04 0.08 0.22 M -0.04 0.42 Q 0.16 0.55 -0.02 0.72 "
             + "Q -0.14 0.84 0.06 0.98";
+
+        //犬眼：杏仁轮廓（醒/梦中睁着），睡时只留下睑一线
+        private const string EyeOpenPath =
+            "M -1 0 Q 0 -0.85 1 0 Q 0 0.85 -1 0";
+        private const string EyeClosedPath =
+            "M -1 0.1 Q 0 0.4 1 0.1";
+
+        //焰苗：一条上收的火舌
+        private const string FlamePath =
+            "M 0 1 Q -0.7 0.25 -0.3 -0.25 Q -0.05 -0.6 0.05 -1 "
+            + "Q 0.45 -0.45 0.3 -0.05 Q 0.55 0.4 0 1";
+
+        //沉溺之手：一滴下坠的水珠
+        private const string DropPath =
+            "M 0 -1 Q 0.8 0.05 0.5 0.55 Q 0.25 1 0 1 Q -0.25 1 -0.5 0.55 Q -0.8 0.05 0 -1";
 
         /// <summary>自然锚点（风铃中心），未参与左下队列避让时的原始位置</summary>
         public static Vector2 NaturalAnchor => new(KikasaHudTheme.AnchorOffset.X,
@@ -135,7 +194,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         /// <summary>铃身静止中心（引导指环也认它）</summary>
         public static Vector2 BellAnchor => Anchor + new Vector2(0f, BellY);
 
-        /// <summary>铃身矩形；「湖畔村图」自这里放大铺开</summary>
+        /// <summary>铃身矩形（引导环与放大动画的锚）</summary>
         public static Rectangle BellRect {
             get {
                 Vector2 c = BellAnchor;
@@ -146,19 +205,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         //==================== 状态 ====================
 
-        //事件搅一记涌浪（stir），涌浪推摆幅；读数交给画
+        /// <summary>悬停目标：HUD 的每个读数都有自己的说明</summary>
+        private enum TipTarget { None, Bell, Vigor, Dream, Wisp, Drown, Reset, Thrall, Seats }
+
+        //事件搅一记涌浪（stir），涌浪推摆幅；读数交给图标列
         private float stir;
         private float swingT;
         private int lastVaultCount;
         private int lastMemoryType;
         private bool lastLakeReady;
 
-        private bool hoverChime;
+        private TipTarget hoverTarget = TipTarget.None;
         private float hoverLerp;
+
+        //本帧读数栈的实际条目与位置（Update 布局，Draw/命中/悬停共用一份）
+        private readonly List<(TipTarget target, Vector2 pos)> readouts = [];
 
         private KikasaDomainPlayer Domain => player.GetModPlayer<KikasaDomainPlayer>();
         private KikasaVaultPlayer Vault => player.GetModPlayer<KikasaVaultPlayer>();
         private KikasaDreamPlayer Dream => player.GetModPlayer<KikasaDreamPlayer>();
+        private KikasaServantPlayer Servant => player.GetModPlayer<KikasaServantPlayer>();
 
         //==================== 更新 ====================
 
@@ -168,14 +234,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             appear = MathHelper.Clamp(appear + (want ? 0.06f : -0.06f), 0f, 1f);
 
             Vector2 anchor = Anchor;
-            Size = new Vector2(KikasaHudTheme.ChimeW + 16f, KikasaHudTheme.ChimeH + 16f);
-            DrawPosition = anchor - Size * 0.5f;
+            Size = new Vector2(KikasaHudTheme.ChimeW + 52f, KikasaHudTheme.ChimeH + 16f);
+            DrawPosition = anchor - new Vector2(KikasaHudTheme.ChimeW * 0.5f + 8f,
+                KikasaHudTheme.ChimeH * 0.5f + 8f);
             UIHitBox = DrawPosition.GetRectangle(Size);
 
-            //事件只在铃上搅一记涌浪，细节反馈都在大画里
+            //事件只在铃上搅一记涌浪，细节反馈都在湖心景里
             KikasaVaultPlayer vault = Vault;
             int vaultCount = vault.Stored.Count;
-            int memoryType = p.GetModPlayer<KikasaServants.KikasaServantPlayer>().LastDrownedType;
+            int memoryType = Servant.LastDrownedType;
             bool lakeReady = vault.LakeReady;
             if ((vaultCount != lastVaultCount || memoryType != lastMemoryType
                 || (lakeReady && !lastLakeReady)) && appear > 0.1f) {
@@ -191,22 +258,75 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             //摆锤相位：水一搅，铃就荡
             swingT += 0.030f + MathHelper.Clamp(stir, 0f, 1f) * 0.055f;
 
-            //悬停占鼠标；点击展开/收起画卷——任何域状态都响应
-            Rectangle chime = ChimeRect;
-            hoverChime = appear > 0.5f && chime.Contains(KikasaHudTheme.UIMouse.ToPoint());
-            hoverLerp = MathHelper.Lerp(hoverLerp, hoverChime ? 1f : 0f, 0.15f);
-            if (hoverChime) {
+            LayoutReadouts(anchor);
+
+            //悬停解析：读数 > 席位排 > 铃身；命中即占鼠标
+            Vector2 mouse = KikasaHudTheme.UIMouse;
+            TipTarget newTarget = TipTarget.None;
+            if (appear > 0.5f) {
+                foreach ((TipTarget target, Vector2 pos) in readouts) {
+                    if (MathF.Abs(mouse.X - pos.X) < ReadoutHitHalf
+                        && MathF.Abs(mouse.Y - pos.Y) < ReadoutHitHalf + 1f) {
+                        newTarget = target;
+                        break;
+                    }
+                }
+                if (newTarget == TipTarget.None) {
+                    //席位排：短册下段一小片
+                    Vector2 seatRow = anchor + new Vector2(0f, TanzakuY + TanzakuH - 10.5f);
+                    Rectangle seatsHit = new((int)(seatRow.X - 12f), (int)(seatRow.Y - 7f), 24, 14);
+                    if (seatsHit.Contains(mouse.ToPoint())) {
+                        newTarget = TipTarget.Seats;
+                    }
+                    else if (ChimeRect.Contains(mouse.ToPoint())) {
+                        newTarget = TipTarget.Bell;
+                    }
+                }
+            }
+            hoverTarget = newTarget;
+            hoverLerp = MathHelper.Lerp(hoverLerp, hoverTarget != TipTarget.None ? 1f : 0f, 0.15f);
+
+            if (hoverTarget != TipTarget.None) {
                 player.mouseInterface = true;
-                if (keyLeftPressState == KeyPressState.Pressed) {
-                    KikasaSceneUI scene = KikasaSceneUI.Instance;
-                    if (scene != null) {
-                        if (scene.IsOpen) {
-                            scene.Close();
+                if (hoverTarget == TipTarget.Bell && keyLeftPressState == KeyPressState.Pressed) {
+                    KikasaPanoramaUI pano = KikasaPanoramaUI.Instance;
+                    if (pano != null) {
+                        if (pano.IsOpen) {
+                            pano.Close();
                         }
                         else {
-                            scene.Open();
+                            pano.Open();
                         }
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 读数栈布局：只排本帧有话可说的条目——湖力（域中）、犬眼与焰苗（常驻两鬼）、
+        /// 沉溺（冷却中）、重启与伞奴（鬼雨态）。绘制与命中共用这一份
+        /// </summary>
+        private void LayoutReadouts(Vector2 anchor) {
+            readouts.Clear();
+            KikasaDomainPlayer domain = Domain;
+            float x = anchor.X + ReadoutX;
+            float y = anchor.Y + ReadoutTopY;
+            void Push(TipTarget target) {
+                readouts.Add((target, new Vector2(x, y)));
+                y += ReadoutGapY;
+            }
+            if (domain.AnyActive) {
+                Push(TipTarget.Vigor);
+            }
+            Push(TipTarget.Dream);
+            Push(TipTarget.Wisp);
+            if (KikasaDrown.LocalCooldown01 > 0.005f) {
+                Push(TipTarget.Drown);
+            }
+            if (domain.IsRainForm) {
+                Push(TipTarget.Reset);
+                if (KikasaThrall.CountActive(player.whoAmI) > 0) {
+                    Push(TipTarget.Thrall);
                 }
             }
         }
@@ -218,15 +338,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             if (a < 0.01f) {
                 return;
             }
-            //画卷展开后风铃让位，免得铃与画同屏抢戏
-            float sceneOpen = KikasaSceneUI.Instance?.OpenProgress ?? 0f;
-            a *= 1f - MathHelper.Clamp(sceneOpen * 1.4f, 0f, 1f);
+            //湖心景铺开后风铃让位，免得铃与全屏同屏抢戏
+            float panoOpen = KikasaPanoramaUI.Instance?.OpenProgress ?? 0f;
+            a *= 1f - MathHelper.Clamp(panoOpen * 1.4f, 0f, 1f);
             if (a < 0.01f) {
                 return;
             }
 
             KikasaDomainPlayer domain = Domain;
-            float rain = KikasaSceneUI.EffectiveRain(domain);
+            float rain = KikasaHudTheme.EffectiveRain(domain);
             float rise = domain.AnyActive ? domain.RiseProgress : 0f;
             float lightGate = Vault.Stored.Count / (float)KikasaVaultPlayer.Capacity;
             float time = Main.GlobalTimeWrappedHourly;
@@ -279,15 +399,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 MathHelper.PiOver4, px.Size() * 0.5f,
                 new Vector2(2.6f / px.Width, 2.6f / px.Height), SpriteEffects.None, 0f);
 
-            //3 玻璃铃身（TechChime / 缺编回退）：先垫一枚随呼吸的衬光，
-            //把暗玻璃从暗背景里托出来（under-layer，不作铃的本体）
+            //3 玻璃铃身（TechChime / 缺编回退）：先垫一枚随呼吸的衬光
             float glowBreath = KikasaHudTheme.Breath(time, 0.31f, 0.9f);
             SvgPathPen.SoftDot(spriteBatch, bellC, 26f, glow, (0.05f + glowBreath * 0.03f) * a);
+            float bellHover = hoverTarget == TipTarget.Bell ? hoverLerp : 0f;
             DrawBell(spriteBatch, bellC, ang, a, rain, rise, stir01, lightGate, domain, time,
-                hoverLerp);
+                bellHover);
 
             //4 铃缘巡行亮笔：悬停/涌浪时一段亮笔沿铃缘走
-            float runA = (0.10f + hoverLerp * 0.30f + MathF.Max(stir01 - 0.2f, 0f) * 0.3f) * a;
+            float runA = (0.10f + bellHover * 0.30f + MathF.Max(stir01 - 0.2f, 0f) * 0.3f) * a;
             if (runA > 0.03f) {
                 SvgPath rim = SvgPathPen.Path(BellRimPath);
                 SvgPathPen.StrokeRunner(spriteBatch, rim, bellC,
@@ -295,32 +415,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                     time * 0.16f, 0.14f);
             }
 
-            //5 短册纸条：纸底 + 边线 + 两道冷却墨线
-            DrawTanzaku(spriteBatch, tzTop, angT, a, rain, domain, dim);
+            //5 短册纸条：纸底 + 边线 + 三席驻影小印
+            DrawTanzaku(spriteBatch, tzTop, angT, a, rain, dim);
 
-            //6 摆到头一记铃缘微光
+            //6 读数栈：铃右一列仪器读数
+            DrawReadouts(spriteBatch, a, rain, domain, time);
+
+            //7 摆到头一记铃缘微光
             float peak = MathF.Abs(MathF.Sin(swingT));
             float glint = MathHelper.Clamp((peak - 0.94f) / 0.06f, 0f, 1f)
                 * MathHelper.Clamp(stir01 * 2f - 0.3f, 0f, 1f);
             if (glint > 0.05f) {
                 SvgPathPen.SoftDot(spriteBatch, Swing(BellY + 16f, ang), 7f, glow,
                     glint * 0.5f * a);
-            }
-
-            //7 悬停名牌：画名 + 展开提示
-            if (hoverLerp > 0.05f) {
-                DynamicSpriteFont font = FontAssets.MouseText.Value;
-                string name = ScrollName.Value;
-                Vector2 nameSize = font.MeasureString(name) * 0.78f;
-                float nameY = anchor.Y - KikasaHudTheme.ChimeH * 0.5f - 26f;
-                Utils.DrawBorderString(spriteBatch, name,
-                    new Vector2(anchor.X - nameSize.X * 0.5f, nameY),
-                    KikasaHudTheme.Text(rain) * (hoverLerp * a), 0.78f);
-                string tag = OpenTag.Value;
-                Vector2 tagSize = font.MeasureString(tag) * 0.62f;
-                Utils.DrawBorderString(spriteBatch, tag,
-                    new Vector2(anchor.X - tagSize.X * 0.5f, nameY + nameSize.Y + 1f),
-                    KikasaHudTheme.TextDim(rain) * (hoverLerp * a * 0.9f), 0.62f);
             }
         }
 
@@ -374,9 +481,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             }
         }
 
-        /// <summary>短册：湿暗纸底 + 边线 + 下缘水痕；冷却读数化作纸上三道墨线</summary>
+        /// <summary>短册：湿暗纸底 + 边线 + 墨字水印与朱印 + 三席驻影小印
+        /// （亲和色，亮=在场、半=候湖、沉线=收起、暗=空席）</summary>
         private void DrawTanzaku(SpriteBatch sb, Vector2 top, float ang, float a,
-            float rain, KikasaDomainPlayer domain, Color dim) {
+            float rain, Color dim) {
             Texture2D px = VaultAsset.placeholder2.Value;
             Vector2 dir = new Vector2(0f, 1f).RotatedBy(ang);
             Vector2 side = new Vector2(1f, 0f).RotatedBy(ang);
@@ -402,70 +510,353 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 px.Size() * 0.5f, new Vector2(3f / px.Width, 3f / px.Height),
                 SpriteEffects.None, 0f);
 
-            //墨字水印与朱印：竖排草书一线沉在纸底，印落条尾略歪（手押的章不会正）；
-            //冷却墨线更亮，仍覆其上作功能层
+            //墨字水印与朱印：竖排草书一线沉在纸底，印落条尾略歪（手押的章不会正）
             SvgPath inkGlyph = SvgPathPen.Path(TanzakuInkPath);
-            SvgPathPen.Stroke(sb, inkGlyph, top + dir * (TanzakuH * 0.46f), 12.5f, ang,
+            SvgPathPen.Stroke(sb, inkGlyph, top + dir * (TanzakuH * 0.42f), 12.5f, ang,
                 dim, 1.1f, a * 0.20f);
-            sb.Draw(px, top + dir * (TanzakuH - 6f), null,
+            sb.Draw(px, top + dir * (TanzakuH - 16f), null,
                 KikasaHudTheme.Accent(rain) * (0.40f * a), ang + 0.3f,
                 px.Size() * 0.5f, new Vector2(3f / px.Width, 3f / px.Height),
                 SpriteEffects.None, 0f);
 
-            //冷却墨线：满=刚用完，退尽=可再用
-            float run = TanzakuH - 8f;
-            Vector2 inkTop = top + dir * 4f;
-            float drownCd = KikasaDrown.LocalCooldown01;
-            if (drownCd > 0.005f) {
-                Vector2 off = -side * 2.6f;
-                KikasaVaultRenderer.DrawLine(sb, inkTop + off,
-                    inkTop + off + dir * (run * drownCd), 1.6f,
-                    KikasaHudTheme.Glow(rain) * (0.6f * a));
-            }
-            if (domain.Phase == KikasaDomainPhase.Dreaming) {
-                float houndCd = Dream.HoundCooldown01;
-                if (houndCd > 0.005f) {
-                    Vector2 off = side * 2.6f;
-                    KikasaVaultRenderer.DrawLine(sb, inkTop + off,
-                        inkTop + off + dir * (run * houndCd), 1.4f,
-                        new Color(230, 96, 40) * (0.65f * a));
+            //驻影小印：册底缘三点，三席编成的缩影——亲和身份色，
+            //亮呼吸=在场、稳半亮=候湖、印下沉线=收起、暗=空席
+            KikasaServantPlayer servant = Servant;
+            Vector2 dotRow = top + dir * (TanzakuH - 8.5f);
+            bool seatsHovered = hoverTarget == TipTarget.Seats;
+            for (int i = 0; i < KikasaServantPlayer.SlotCount; i++) {
+                Vector2 pos = dotRow + side * ((i - 1) * 5.2f);
+                int key = servant.SlotKeyAt(i);
+                if (key == 0) {
+                    SvgPathPen.SoftDot(sb, pos, 2.6f, dim, (0.20f + (seatsHovered ? 0.1f : 0f)) * a);
+                    continue;
                 }
-            }
-            //中列：鬼雨态给大范围重启冷青，血湖态给湖力金线（欠着多少画多少，
-            //烧着/入梦后读得出「这汪水还差几口」）——两形态各占各的相位，不挤
-            if (domain.IsRainForm) {
-                float resetCd = KikasaReset.LocalCooldown01;
-                if (resetCd > 0.005f) {
-                    KikasaVaultRenderer.DrawLine(sb, inkTop,
-                        inkTop + dir * (run * resetCd), 1.4f,
-                        new Color(108, 190, 198) * (0.6f * a));
+                KikasaAffinity affinity = servant.SlotAffinity(i);
+                Color seatCol = affinity == KikasaAffinity.None
+                    ? KikasaHudTheme.TextDim(rain)
+                    : KikasaEffigyBoard.AffinityColor(affinity);
+                bool held = servant.SlotHeldAt(i);
+                bool present = servant.FindServantOf(key) != null;
+                if (held) {
+                    SvgPathPen.SoftDot(sb, pos, 3.2f, seatCol, 0.28f * a);
+                    KikasaVaultRenderer.DrawLine(sb, pos + side * -3f + dir * 3.4f,
+                        pos + side * 3f + dir * 3.4f, 1.1f, seatCol * (0.5f * a));
                 }
-            }
-            else if (domain.AnyActive) {
-                float vigorGap = 1f - MathHelper.Clamp(domain.LakeVigor, 0f, 1f);
-                if (vigorGap > 0.005f) {
-                    KikasaVaultRenderer.DrawLine(sb, inkTop,
-                        inkTop + dir * (run * vigorGap), 1.4f,
-                        KikasaWisps.KikasaWisp.GoldBody * (0.55f * a));
-                }
-            }
-
-            //驻影小印：册底缘三点，沉影盘编成的缩影（亮=驻席、暗=空席）
-            var servant = player.GetModPlayer<KikasaServants.KikasaServantPlayer>();
-            Vector2 dotRow = top + dir * (TanzakuH - 10.5f);
-            for (int i = 0; i < KikasaServants.KikasaServantPlayer.SlotCount; i++) {
-                Vector2 pos = dotRow + side * ((i - 1) * 4.2f);
-                bool filled = servant.SlotKeyAt(i) != 0;
-                if (filled) {
-                    float breath = KikasaHudTheme.Breath(Main.GlobalTimeWrappedHourly,
-                        i * 2.7f, 1.6f);
-                    SvgPathPen.SoftDot(sb, pos, 3.4f, KikasaHudTheme.Glow(rain),
-                        (0.45f + breath * 0.25f) * a);
+                else if (present) {
+                    float breath = KikasaHudTheme.Breath(Main.GlobalTimeWrappedHourly, i * 2.7f, 1.6f);
+                    SvgPathPen.SoftDot(sb, pos, 3.8f, seatCol, (0.55f + breath * 0.3f) * a);
                 }
                 else {
-                    SvgPathPen.SoftDot(sb, pos, 2.4f, dim, 0.20f * a);
+                    SvgPathPen.SoftDot(sb, pos, 3.2f, seatCol, 0.42f * a);
                 }
             }
+        }
+
+        //==================== 读数栈 ====================
+
+        /// <summary>铃右仪器读数列：每模块一枚图标 + 微弧/微条，悬停亮起、说明进顶层</summary>
+        private void DrawReadouts(SpriteBatch sb, float a, float rain,
+            KikasaDomainPlayer domain, float time) {
+            foreach ((TipTarget target, Vector2 pos) in readouts) {
+                float hover = hoverTarget == target ? hoverLerp : 0f;
+                switch (target) {
+                    case TipTarget.Vigor:
+                        DrawVigorReadout(sb, pos, a, rain, domain, hover);
+                        break;
+                    case TipTarget.Dream:
+                        DrawDreamReadout(sb, pos, a, rain, domain, time, hover);
+                        break;
+                    case TipTarget.Wisp:
+                        DrawWispReadout(sb, pos, a, rain, domain, time, hover);
+                        break;
+                    case TipTarget.Drown:
+                        DrawCooldownReadout(sb, pos, a, DropPath,
+                            KikasaHudTheme.Glow(rain), KikasaDrown.LocalCooldown01, hover);
+                        break;
+                    case TipTarget.Reset:
+                        DrawCooldownReadout(sb, pos, a, null,
+                            new Color(108, 190, 198), KikasaReset.LocalCooldown01, hover);
+                        break;
+                    case TipTarget.Thrall:
+                        DrawThrallReadout(sb, pos, a, rain, hover);
+                        break;
+                }
+            }
+        }
+
+        /// <summary>湖力微条：血水填充 + 入梦/自燃两道门线——一条读数解释两道门</summary>
+        private static void DrawVigorReadout(SpriteBatch sb, Vector2 pos, float a, float rain,
+            KikasaDomainPlayer domain, float hover) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+            const float w = 26f;
+            const float h = 5f;
+            Rectangle bar = new((int)(pos.X - w * 0.5f), (int)(pos.Y - h * 0.5f), (int)w, (int)h);
+            sb.Draw(px, bar, KikasaHudTheme.Void(rain) * (0.85f * a));
+            float v = MathHelper.Clamp(domain.LakeVigor, 0f, 1f);
+            int fillW = (int)(w * v);
+            if (fillW > 0) {
+                sb.Draw(px, new Rectangle(bar.X, bar.Y, fillW, bar.Height),
+                    KikasaHudTheme.Accent(rain) * ((0.75f + hover * 0.2f) * a));
+            }
+            //门线：入梦线（半）与自燃线（满端）
+            float dreamX = bar.X + w * KikasaEffigyBoard.DreamVigorNeed;
+            KikasaVaultRenderer.DrawLine(sb, new Vector2(dreamX, bar.Y - 2f),
+                new Vector2(dreamX, bar.Bottom + 2f), 1.1f,
+                KikasaHudTheme.Glow(rain) * ((v >= 0.5f ? 0.8f : 0.35f) * a));
+            KikasaVaultRenderer.DrawLine(sb, new Vector2(bar.Right - 1f, bar.Y - 2f),
+                new Vector2(bar.Right - 1f, bar.Bottom + 2f), 1.1f,
+                KikasaWisp.Tint(KikasaWisp.GoldBody) * ((v >= 0.999f ? 0.85f : 0.35f) * a));
+        }
+
+        /// <summary>犬眼：睡=下睑一线，醒=杏仁睁眼，梦中=烬瞳燃亮；梦中外圈唤犬冷却弧</summary>
+        private void DrawDreamReadout(SpriteBatch sb, Vector2 pos, float a, float rain,
+            KikasaDomainPlayer domain, float time, float hover) {
+            bool dreaming = domain.Phase == KikasaDomainPhase.Dreaming;
+            bool awake = domain.HoundReflection || dreaming;
+            Color ember = new(230, 96, 40);
+            Color lineCol = awake ? ember : KikasaHudTheme.TextDim(rain);
+            float baseA = (awake ? 0.85f : 0.45f) + hover * 0.2f;
+            if (awake) {
+                SvgPath eye = SvgPathPen.Path(EyeOpenPath);
+                SvgPathPen.Stroke(sb, eye, pos, 8f, 0f, lineCol, 1.2f, baseA * a);
+                //烬瞳：醒着微光，梦中燃透
+                float pupil = dreaming ? 0.9f : 0.45f + hover * 0.25f;
+                SvgPathPen.SoftDot(sb, pos, dreaming ? 3.4f : 2.6f, ember, pupil * a);
+            }
+            else {
+                SvgPath lid = SvgPathPen.Path(EyeClosedPath);
+                SvgPathPen.Stroke(sb, lid, pos, 8f, 0f, lineCol, 1.2f, baseA * a);
+            }
+            //梦中：唤犬冷却弧绕着眼走（满=刚唤出，退尽=可再唤）
+            if (dreaming) {
+                float cd = Dream.HoundCooldown01;
+                if (cd > 0.005f) {
+                    DrawArcFraction(sb, pos, 10.5f, cd, ember * (0.7f * a));
+                }
+            }
+        }
+
+        /// <summary>焰苗：熄=苍金余烬轮廓，燃=金焰满描+焰芯闪，压制=失温苍金</summary>
+        private static void DrawWispReadout(SpriteBatch sb, Vector2 pos, float a, float rain,
+            KikasaDomainPlayer domain, float time, float hover) {
+            bool burning = domain.WispFireActive && domain.WispT > 0.1f;
+            float quench = MathHelper.Clamp(domain.WispQuench, 0f, 1f);
+            Color body = Color.Lerp(KikasaWisp.GoldBody, KikasaWisp.PaleDying,
+                burning ? quench : 0.75f);
+            body = KikasaWisp.Tint(body);
+            SvgPath flame = SvgPathPen.Path(FlamePath);
+            float flick = burning ? 1f + MathF.Sin(time * 7.1f) * 0.06f : 1f;
+            SvgPathPen.Stroke(sb, flame, pos, 8.5f * flick, 0f, body, 1.3f,
+                ((burning ? 0.9f : 0.4f) + hover * 0.2f) * a);
+            if (burning) {
+                SvgPathPen.SoftDot(sb, pos + new Vector2(0f, 2f), 3.2f,
+                    KikasaWisp.Tint(KikasaWisp.GoldCore), (0.6f * (1f - quench * 0.6f)) * a);
+            }
+        }
+
+        /// <summary>冷却读数：图标（缺省画环）+ 环上冷却弧，满=刚用完、退尽=可再用</summary>
+        private static void DrawCooldownReadout(SpriteBatch sb, Vector2 pos, float a,
+            string iconPath, Color color, float cooldown01, float hover) {
+            if (iconPath != null) {
+                SvgPath icon = SvgPathPen.Path(iconPath);
+                SvgPathPen.Stroke(sb, icon, pos, 7f, 0f, color, 1.2f, (0.6f + hover * 0.25f) * a);
+            }
+            else {
+                //重启：一圈回卷环 + 逆指小针
+                DrawArcFraction(sb, pos, 6.5f, 0.8f, color * ((0.55f + hover * 0.25f) * a));
+                KikasaVaultRenderer.DrawLine(sb, pos + new Vector2(-2f, -6.5f),
+                    pos + new Vector2(-5f, -3.5f), 1.2f, color * ((0.6f + hover * 0.25f) * a));
+            }
+            float cd = MathHelper.Clamp(cooldown01, 0f, 1f);
+            if (cd > 0.005f) {
+                DrawArcFraction(sb, pos, 10f, cd, color * (0.65f * a));
+            }
+        }
+
+        /// <summary>伞奴计数：一枚小伞章 + n/cap 数字（0.8，不再眯眼）</summary>
+        private void DrawThrallReadout(SpriteBatch sb, Vector2 pos, float a, float rain, float hover) {
+            KikasaVaultRenderer.DrawSeal(sb, pos + new Vector2(-6f, 0f), 6.5f,
+                (0.7f + hover * 0.25f) * a, Main.GlobalTimeWrappedHourly, 1f,
+                KikasaHudTheme.TextDim(rain), KikasaHudTheme.Accent(rain), KikasaHudTheme.Glow(rain));
+            string text = $"{KikasaThrall.CountActive(player.whoAmI)}/{KikasaEffigyBoard.ThrallCap(player)}";
+            Utils.DrawBorderString(sb, text, pos + new Vector2(4f, -8f),
+                KikasaHudTheme.Text(rain) * ((0.85f + hover * 0.15f) * a), 0.8f);
+        }
+
+        /// <summary>自顶顺时针的分数弧（冷却语义）</summary>
+        private static void DrawArcFraction(SpriteBatch sb, Vector2 center, float radius,
+            float fraction, Color color) {
+            float span = MathHelper.TwoPi * MathHelper.Clamp(fraction, 0f, 1f);
+            int segs = Math.Max(4, (int)(span * radius / 3.5f));
+            float start = -MathHelper.PiOver2;
+            Vector2 prev = center + start.ToRotationVector2() * radius;
+            for (int i = 1; i <= segs; i++) {
+                float t = start + span * i / segs;
+                Vector2 cur = center + t.ToRotationVector2() * radius;
+                KikasaVaultRenderer.DrawLine(sb, prev, cur, 1.3f, color);
+                prev = cur;
+            }
+        }
+
+        //==================== 顶层悬停说明 ====================
+
+        /// <summary>
+        /// 顶层悬浮说明（由 <see cref="KikasaHudTipOverlay"/> 在 Mouse_Text 层调用）：
+        /// 状态 + 对应按键提示，题行 1.0、正文 0.9——每个读数都答得上"这是什么、按哪里"
+        /// </summary>
+        internal void DrawTooltipOverlay(SpriteBatch sb) {
+            if (hoverTarget == TipTarget.None || appear < 0.5f) {
+                return;
+            }
+            float panoOpen = KikasaPanoramaUI.Instance?.OpenProgress ?? 0f;
+            float alpha = MathHelper.Clamp(hoverLerp, 0f, 1f)
+                * (1f - MathHelper.Clamp(panoOpen * 1.4f, 0f, 1f));
+            if (alpha < 0.05f) {
+                return;
+            }
+
+            KikasaDomainPlayer domain = Domain;
+            float rain = KikasaHudTheme.EffectiveRain(domain);
+            Color text = KikasaHudTheme.Text(rain);
+            Color dimC = KikasaHudTheme.TextDim(rain);
+            Color glowC = KikasaHudTheme.Glow(rain);
+            Vector2 cursor = KikasaHudTheme.UIMouse;
+            string mutateKey = CWRKeySystem.Kikasa_DomainMutate
+                .ToTooltipString(CWRKeySystem.Notbound.Value);
+
+            switch (hoverTarget) {
+                case TipTarget.Bell: {
+                    KikasaVaultPlayer vault = Vault;
+                    int waterPct = (int)MathF.Round(
+                        (domain.AnyActive ? domain.RiseProgress : 0f) * 100f);
+                    KikasaTipPanel.Draw(sb, cursor, ScrollName.Value, rain, alpha,
+                        new KikasaTipLine($"{OpenTag.Value} \u00b7 "
+                            + CWRKeySystem.Legend_UIControl.ToTooltipString(CWRKeySystem.Notbound.Value),
+                            glowC),
+                        new KikasaTipLine(string.Format(TipWaterFormat.Value, waterPct), dimC),
+                        new KikasaTipLine(string.Format(TipVaultFormat.Value,
+                            vault.Stored.Count, KikasaVaultPlayer.Capacity), dimC));
+                    return;
+                }
+                case TipTarget.Vigor: {
+                    float v = MathHelper.Clamp(domain.LakeVigor, 0f, 1f);
+                    string title = $"{KikasaPanoramaUI.VigorLabel.Value} {(int)MathF.Round(v * 100f)}%";
+                    KikasaTipPanel.Draw(sb, cursor, title, rain, alpha,
+                        new KikasaTipLine(TipVigorDream.Value, v >= 0.5f ? glowC : dimC),
+                        new KikasaTipLine(TipVigorWisp.Value,
+                            v >= 0.999f ? KikasaWisp.Tint(KikasaWisp.GoldBody) : dimC));
+                    return;
+                }
+                case TipTarget.Dream: {
+                    bool dreaming = domain.Phase == KikasaDomainPhase.Dreaming;
+                    List<KikasaTipLine> lines = [];
+                    if (dreaming) {
+                        lines.Add(new KikasaTipLine(KikasaPanoramaUI.InDreamLine.Value,
+                            new Color(230, 96, 40)));
+                        lines.Add(new KikasaTipLine(string.Format(TipHoundCountFormat.Value,
+                            CountHounds(), KikasaDreamPlayer.MaxHoundsFor(player)), dimC));
+                        lines.Add(new KikasaTipLine(string.Format(
+                            KikasaPanoramaUI.DreamReturnFormat.Value, mutateKey), dimC));
+                    }
+                    else {
+                        lines.Add(new KikasaTipLine(domain.HoundReflection
+                            ? KikasaPanoramaUI.ReflectAwake.Value
+                            : KikasaPanoramaUI.ReflectAsleep.Value,
+                            domain.HoundReflection ? new Color(235, 150, 90) : dimC));
+                        lines.Add(new KikasaTipLine(string.Format(
+                            KikasaPanoramaUI.DreamEnterKeyFormat.Value, mutateKey), dimC));
+                    }
+                    lines.Add(new KikasaTipLine(string.Format(KikasaPanoramaUI.HoundBonusFormat.Value,
+                        KikasaEffigyBoard.HoundCap(player),
+                        (int)MathF.Round(KikasaEffigyBoard.HoundDamageScale(player) * 100f)),
+                        KikasaEffigyBoard.NightmareCount(player) > 0
+                            ? KikasaEffigyBoard.AffinityColor(KikasaAffinity.Nightmare) : dimC, 0.85f));
+                    KikasaTipPanel.Draw(sb, cursor, KikasaPanoramaUI.HoundTitle.Value, rain, alpha,
+                        [.. lines]);
+                    return;
+                }
+                case TipTarget.Wisp: {
+                    string state = domain.WispFireActive
+                        ? (domain.WispQuench > 0.3f ? KikasaPanoramaUI.WispQuenchedLine.Value
+                            : domain.WispRainProof && domain.IsRainForm
+                                ? KikasaPanoramaUI.WispBoil.Value
+                                : KikasaPanoramaUI.WispBurning.Value)
+                        : KikasaPanoramaUI.WispIdle.Value;
+                    KikasaTipPanel.Draw(sb, cursor, KikasaPanoramaUI.WispTitle.Value, rain, alpha,
+                        new KikasaTipLine(state, domain.WispFireActive
+                            ? KikasaWisp.Tint(KikasaWisp.GoldBody) : dimC),
+                        new KikasaTipLine(string.Format(KikasaPanoramaUI.WispBonusFormat.Value,
+                            (KikasaEffigyBoard.WispBurnDuration(player) / 60f).ToString("0.0"),
+                            (int)KikasaEffigyBoard.WispFlameReach(player)),
+                            KikasaEffigyBoard.FlameCount(player) > 0
+                                ? KikasaEffigyBoard.AffinityColor(KikasaAffinity.Flame) : dimC, 0.85f));
+                    return;
+                }
+                case TipTarget.Drown: {
+                    int pct = (int)MathF.Round(KikasaDrown.LocalCooldown01 * 100f);
+                    KikasaTipPanel.Draw(sb, cursor, TipDrownTitle.Value, rain, alpha,
+                        new KikasaTipLine(pct > 0
+                            ? string.Format(TipCooldownFormat.Value, pct)
+                            : TipDrownReady.Value, pct > 0 ? dimC : glowC),
+                        new KikasaTipLine(string.Format(TipDrownHintFormat.Value,
+                            CWRKeySystem.Kikasa_Sink.ToTooltipString(CWRKeySystem.Notbound.Value)),
+                            dimC));
+                    return;
+                }
+                case TipTarget.Reset: {
+                    int pct = (int)MathF.Round(KikasaReset.LocalCooldown01 * 100f);
+                    KikasaTipPanel.Draw(sb, cursor, TipResetTitle.Value, rain, alpha,
+                        new KikasaTipLine(string.Format(TipCooldownFormat.Value, pct),
+                            pct > 0 ? dimC : glowC),
+                        new KikasaTipLine(string.Format(TipResetHintFormat.Value,
+                            CWRKeySystem.Legend_Restart.ToTooltipString(CWRKeySystem.Notbound.Value)),
+                            dimC));
+                    return;
+                }
+                case TipTarget.Thrall:
+                    KikasaTipPanel.Draw(sb, cursor,
+                        string.Format(TipThrallFormat.Value,
+                            KikasaThrall.CountActive(player.whoAmI),
+                            KikasaEffigyBoard.ThrallCap(player)), rain, alpha);
+                    return;
+                case TipTarget.Seats: {
+                    KikasaServantPlayer servant = Servant;
+                    List<KikasaTipLine> lines = [];
+                    for (int i = 0; i < KikasaServantPlayer.SlotCount; i++) {
+                        int key = servant.SlotKeyAt(i);
+                        if (key == 0) {
+                            lines.Add(new KikasaTipLine(TipSeatEmpty.Value, dimC * 0.8f));
+                            continue;
+                        }
+                        bool held = servant.SlotHeldAt(i);
+                        bool present = servant.FindServantOf(key) != null;
+                        string state = held ? KikasaUIText.StateHeld.Value
+                            : present ? KikasaUIText.StateOut.Value : KikasaUIText.StateAwait.Value;
+                        KikasaAffinity affinity = servant.SlotAffinity(i);
+                        Color col = affinity == KikasaAffinity.None
+                            ? text : KikasaEffigyBoard.AffinityColor(affinity);
+                        lines.Add(new KikasaTipLine(
+                            $"{KikasaServantPlayer.KeyDisplayName(key)} \u00b7 {state}", col));
+                    }
+                    lines.Add(new KikasaTipLine(string.Format(TipSeatsHintFormat.Value,
+                        CWRKeySystem.GetKeybindText(CWRKeySystem.RadialWheel_Key,
+                            CWRKeySystem.Notbound.Value)), dimC, 0.85f));
+                    KikasaTipPanel.Draw(sb, cursor, KikasaPanoramaUI.SeatsTitle.Value, rain, alpha,
+                        [.. lines]);
+                    return;
+                }
+            }
+        }
+
+        /// <summary>场上属于自己的梦犬计数（梦中读数）</summary>
+        private int CountHounds() {
+            int hounds = 0;
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (proj.owner == player.whoAmI && proj.ModProjectile is KikasaDreamHound) {
+                    hounds++;
+                }
+            }
+            return hounds;
         }
     }
 }

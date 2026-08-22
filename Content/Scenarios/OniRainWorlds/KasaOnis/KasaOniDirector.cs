@@ -4,8 +4,9 @@ using Terraria;
 namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
 {
     /// <summary>
-    /// 伞鬼的本地出没调度：盯着本机玩家的鬼雨深度，
-    /// 初入第一层（含带档回雨）在四周布一圈凝聚生成，浮出雨世界时清场。<br/>
+    /// 伞鬼的本地出没调度：盯着本机玩家的鬼雨深度。
+    /// 伞鬼是第一层独有的现象——进入第一层（含带档回雨）在四周布一圈凝聚生成，
+    /// 离开第一层（浮出雨世界或深潜下去）即清场，深层留静给沈幽。<br/>
     /// 多人下生成与销毁都走 Actor 框架的客户端请求，权威在服务器；
     /// 单机退场由 <see cref="KasaOniActor"/> 权威自检兜底，这里是同帧的显式入口。
     /// </summary>
@@ -35,13 +36,14 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
             }
 
             int depth = OniRainWorldState.LocalDepth;
-            if (depth > 0 && prevDepth == 0) {
-                //初入雨世界（撑伞入雨或带档载入），备一圈凝聚生成
+            if (depth == 1 && prevDepth != 1) {
+                //进入第一层（撑伞入雨或带档载入），备一圈凝聚生成
                 pendingSpawn = true;
                 pendingRemaining = Main.rand.Next(SpawnCountMin, SpawnCountMax + 1);
                 pendingStagger = 0;
             }
-            else if (depth == 0 && prevDepth > 0) {
+            else if (depth != 1 && prevDepth == 1) {
+                //离开第一层：浮出雨世界或深潜下去，伞鬼都失去栖息层
                 pendingSpawn = false;
                 DespawnFor(player);
             }
@@ -58,7 +60,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
                 || !player.Alives()) {
                 return;
             }
-            if (!OniRainWorldState.LocalIn) {
+            if (OniRainWorldState.LocalDepth != 1) {
                 pendingSpawn = false;
                 return;
             }

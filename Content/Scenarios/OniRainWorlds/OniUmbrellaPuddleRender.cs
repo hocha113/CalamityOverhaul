@@ -29,6 +29,11 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 return;
             }
 
+            //已获伞的玩家看不见立伞，倒影同步消隐
+            if (!OniRainWorldUmbrella.ShouldShowForLocalPlayer()) {
+                return;
+            }
+
             //找屏内的立伞（带余量），正常世界至多一把
             OniRainWorldUmbrella target = null;
             Rectangle view = new((int)Main.screenPosition.X - 240, (int)Main.screenPosition.Y - 240,

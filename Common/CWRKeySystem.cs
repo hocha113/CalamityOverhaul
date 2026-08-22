@@ -66,7 +66,8 @@ namespace CalamityOverhaul.Common
             Onikiri_DomainFlip = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_DomainFlip), "Mouse3");
             Kikasa_Sink = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_Sink), "I");
             //血湖领域鬼雨异化，默认 Mouse3；被清空绑定时输入层回退原生中键。
-            //短按=开域/血雨翻转，魇影驻湖长按=拉入鬼梦——鬼伞灵异全走沉影盘自动门控，
+            //短按=开域/血雨翻转，长按=拉入鬼梦（满水+湖力过半，不看编成）——
+            //倒影自醒/鬼火自燃随湖自动走；鬼奴召/收走 RadialWheel_Key 转盘，
             //旧 Kikasa_Summon/DreamReflect/DreamPull/WispFire 四键已随编成制删除
             Kikasa_DomainMutate = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_DomainMutate), "Mouse3");
             //鬼伞大范围重启复用 Legend_Restart，与比目鱼/赛博/绯嫁同键、按各自形态门互斥

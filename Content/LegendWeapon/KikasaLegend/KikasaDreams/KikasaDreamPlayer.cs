@@ -18,8 +18,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
         private const int CooldownFrames = 22;
 
         /// <summary>
-        /// 同时在场的犬数上限：随沉影盘魇系涨（1 系 6 只、每多一枚 +2），
-        /// 超编时最老的那只先散；画境题跋卡也读它报数
+        /// 同时在场的犬数上限：随影位魇系涨（无魇基线 4 只、每枚 +2），
+        /// 超编时最老的那只先散
         /// </summary>
         internal static int MaxHoundsFor(Player player)
             => KikasaServants.KikasaEffigyBoard.HoundCap(player);
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             int dir = Main.MouseWorld.X >= Player.Center.X ? 1 : -1;
             Vector2 spawnAt = Player.Bottom + new Vector2(0f, -12f);
             Vector2 vel = new(dir * Main.rand.NextFloat(6.2f, 8.2f), Main.rand.NextFloat(-7.6f, -5.8f));
-            //魇影愈多犬牙愈利（首枚全额，后续每枚 +22%）
+            //魇影愈多犬牙愈利（无魇 78% 基线，每枚 +22%）
             int damage = (int)Player.GetTotalDamage(DamageClass.Summon)
                 .ApplyTo(KikasaDreamHound.BiteDamage
                     * KikasaServants.KikasaEffigyBoard.HoundDamageScale(Player));
