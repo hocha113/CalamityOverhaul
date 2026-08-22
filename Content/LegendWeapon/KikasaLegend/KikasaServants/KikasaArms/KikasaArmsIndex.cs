@@ -1,5 +1,7 @@
+using CalamityOverhaul.Content.Items.Magic.Pandemoniums;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms
 {
@@ -17,18 +19,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         /// <summary>
         /// 专门条目：想给某件武器完全定制的械奴实现时挂这里，命中即短路通用推断。
         /// 普通武器走推断（迷你鲨/巨兽鲨的手调数值收进推断器的覆写档），
-        /// 传奇武器的专属实现登记在静态构造里
+        /// 传奇与特殊武器的专属实现登记在静态构造里
         /// </summary>
         private static readonly Dictionary<int, ArmsSpawner> entries = new();
 
         /// <summary>
-        /// 传奇武器专属械奴：比目鱼（海洋枪奴，鬼切 useStyle=Shoot 进不了推断、
-        /// 比目鱼推断只会读到模板伤 4——两件都必须专门条目）。
-        /// 静态构造在首次 TryGet（进游戏后）才触发，ModContent 查询此时安全
+        /// 专属械奴：比目鱼（推断只读模板伤 4）、鬼切（useStyle=Shoot 进不了刀推断）、
+        /// 万魔殿（HoldUp 魔法进不了枪/刀/鞭）。静态构造在首次 TryGet（进游戏后）才触发
         /// </summary>
         static KikasaArmsIndex() {
             entries[HalibutLegend.HalibutOverride.ID] = KikasaHalibut.KikasaHalibutServant.Summon;
             entries[OnikiriLegend.OnikiriOverride.ID] = KikasaOnikiri.KikasaOnikiriServant.Summon;
+            entries[ModContent.ItemType<Pandemonium>()] = KikasaPandemonium.KikasaPandemoniumServant.Summon;
         }
 
         /// <summary>该武器能否被湖驱使：专门条目 → 枪推断 → 刀剑推断</summary>
