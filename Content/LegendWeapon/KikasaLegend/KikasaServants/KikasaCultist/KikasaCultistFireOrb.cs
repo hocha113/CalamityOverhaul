@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaCultist
 {
     /// <summary>
-    /// 鬼奴邪教徒的血火追踪球。材质身份：沸血火种——一团被点燃的湖血，烧的是血本身。
+    /// 鬼奴邪教徒的血火追踪球。材质身份：沸血火种，一团被点燃的湖血，烧的是血本身。
     /// 签名行为：主体表面沸泡鼓起又瘪回；行进反向撕出端头破碎的火舌（根部压在身下）；
     /// 沿途甩落仍在燃烧的血滴（液态火舌粒子）。弹体 = Extra_98 真 alpha 多层
     /// （焦壳暗缘/血火主体/沸泡子团/炽白芯 + 撕焰尾舌），非光斑叠层。
@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             //撕焰尾舌：三条错相位火舌拖在行进反向，端头长度被相位撕碎；
-            //先画舌再画身——舌根压进身体（三明治，火从血里长出来）
+            //先画舌再画身，舌根压进身体（三明治，火从血里长出来）
             int tq = (int)(Life * 0.5f);
             for (int i = 0; i < 3; i++) {
                 float flick = KikasaCultistRunes.Hash01(tq * 3.1f + i * 7.7f + Seed);

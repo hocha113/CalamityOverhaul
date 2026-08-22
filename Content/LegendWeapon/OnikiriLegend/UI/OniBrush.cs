@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         /// <summary>
-        /// 带印文变体的朱印:章体同族,刻痕布局由 seed 决定——
+        /// 带印文变体的朱印:章体同族,刻痕布局由 seed 决定
         /// 六只鬼各有其印,不再共用同一枚"一横一竖一点"
         /// </summary>
         public static void DrawSealGlyphSeeded(SpriteBatch sb, Vector2 center, float size,
@@ -353,7 +353,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>
         /// 羽化色块:三层同心堆叠的假模糊(内实外虚),给小暗色/哑光形体用
-        /// (粒子、刀影条带等;大面板请用 <see cref="DrawPanelDropShadow"/>——大幅扩层会叠出方块黑层)
+        /// (粒子、刀影条带等;大面板请用 <see cref="DrawPanelDropShadow"/>：大幅扩层会叠出方块黑层)
         /// </summary>
         public static void DrawFeathered(SpriteBatch sb, Vector2 center, float rotation, Vector2 size,
             Color color, float alpha) {

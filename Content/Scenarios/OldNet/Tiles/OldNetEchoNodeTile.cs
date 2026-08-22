@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
 {
     /// <summary>
     /// 回声节点（M3 回声考古）：过去数据的残影，常态只剩幽淡轮廓不可触及；
-    /// 时停中显影为实体，可右键回收——产出 ×2 且零噪音，
+    /// 时停中显影为实体，可右键回收，产出 ×2 且零噪音，
     /// 是"时停考古低噪路线"（NoiseFreezeMul）的正面报偿
     /// </summary>
     internal class OldNetEchoNodeTile : ModTile
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
             Color color = SHPCModuleItem.SlotCategoryColor((SHPCSlotCategory)category);
             CombatText.NewText(new Rectangle(i * 16, j * 16, 16, 16),
                 color, OldNetTexts.OldNetHarvest.Format(count));
-            //回声回收音：低哑倒放感——注意零噪音，这是低噪路线的糖
+            //回声回收音：低哑倒放感，注意零噪音，这是低噪路线的糖
             SoundEngine.PlaySound(SoundID.Item4 with { Pitch = -0.45f, Volume = 0.55f },
                 new Vector2(i, j) * 16f);
             OldNetAbsorbFX.Emit(new Vector2(i * 16 + 8, j * 16 + 8), color, count);
@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
             b = 0.25f * pulse * vis;
         }
 
-        //回声=轮廓幽灵：常态只有描边残影，时停中补上体积——刻意不走节点 shader（材质是"残影"不是晶体）
+        //回声=轮廓幽灵：常态只有描边残影，时停中补上体积，刻意不走节点 shader（材质是"残影"不是晶体）
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null || px.IsDisposed) {

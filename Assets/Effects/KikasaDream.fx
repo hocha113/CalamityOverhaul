@@ -4,7 +4,7 @@
 //            θ=π 时 180°翻转∘点反射=恒等，与真实渲染零跳变交接；
 //            结算后 uSwallow 吞满、uGrade 让位真实氛围。
 //镜中黑犬直接把狼帧采进镜区（s2）：湿墨压黑 + 余烬双目（uGaze），
-//替换玩家的镜像——梦里牵引一切的是它，不是你。
+//替换玩家的镜像，梦里牵引一切的是它，不是你。
 //直线算术+平 tex2D，无分支；s0=屏幕帧 s1=PerlinNoise s2=狼贴图
 
 float uTime;         //秒（EffectTime）
@@ -31,7 +31,7 @@ float uHoundAspect;  //犬 quad 宽/高（屏幕像素比），目晕保圆用
 float2 uEyeUv;       //眼睛帧内原生 uv（面向左、未翻转）
 float uGaze;         //0-1 双目余烬辉光
 float4 uCoverRect;   //施术者镜像抹除矩形（屏幕 uv：xy=左上 zw=右下）
-float uCoverA;       //0-1 抹除强度——镜里立着的是犬，不是人
+float uCoverA;       //0-1 抹除强度，镜里立着的是犬，不是人
 
 sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
@@ -88,7 +88,7 @@ float4 PSMirror(float2 coords : TEXCOORD0) : COLOR0
     float3 mcol = tex2D(uImage0, cuv).rgb;
     float srcOk = saturate(muv.y * 16.0) * saturate((1.0 - muv.y) * 16.0);
 
-    //双向调色：血湖 ↔ 梦境红黑。梦侧去饱和更重、压得更沉——梦里只剩红与黑
+    //双向调色：血湖 ↔ 梦境红黑。梦侧去饱和更重、压得更沉，梦里只剩红与黑
     float grey = dot(mcol, float3(0.30, 0.55, 0.15));
     float3 graded = lerp(mcol, grey.xxx, lerp(0.40, 0.66, uDreamSide));
     graded *= lerp(BLOOD_TINT, DREAM_TINT, uDreamSide);

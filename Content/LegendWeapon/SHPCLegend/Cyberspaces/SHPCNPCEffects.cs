@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         /// <summary>
         /// 请求引爆目标身上的黑曜石裂纹。OnOrbDetonation 只在 owner 客户端触发，
-        /// 而 <see cref="BurstObsidian"/> 在客户端是 no-op——必须经服务端执行
+        /// 而 <see cref="BurstObsidian"/> 在客户端是 no-op：必须经服务端执行
         /// </summary>
         public void RequestObsidianBurst(NPC npc, int owner, int damage) {
             Player player = ResolveOwnerPlayer(owner);

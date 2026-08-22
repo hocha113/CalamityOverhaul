@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
     /// <summary>
     /// 冷凝固化：把一片液体冻成可以踩的薄冰，到期化开。<br/>
-    /// 只拆自己放下的那些格子——记账在 <see cref="placedIce"/>，
+    /// 只拆自己放下的那些格子，记账在 <see cref="placedIce"/>，
     /// 不按"范围内所有冰"清，那会连玩家自己铺的冰一起铲了
     /// </summary>
     internal class Cryostasis : QuickHackDef

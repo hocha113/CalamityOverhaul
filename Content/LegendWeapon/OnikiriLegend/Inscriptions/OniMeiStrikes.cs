@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             }
         }
 
-        /// <summary>般若面变:鬼面咬合——目标处一记血黑窄斩,白牙只在前缘一线</summary>
+        /// <summary>般若面变:鬼面咬合，目标处一记血黑窄斩,白牙只在前缘一线</summary>
         public static void FireHannyaBite(Player player, Vector2 at, float aim, int weaponDamage,
             float knockback, IEntitySource source = null) {
             if (player == null) {
@@ -226,7 +226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         /// <summary>
         /// 般若翻面:女面↔鬼面的那一帧。翻成鬼时刀身转血黑并炸开一张面,
-        /// 翻回去时只余一缕散墨——玩家从画面就知道自己进了/出了哪一档
+        /// 翻回去时只余一缕散墨，玩家从画面就知道自己进了/出了哪一档
         /// </summary>
         public static void SpawnHannyaShift(Player player, bool masked) {
             if (player == null) {
@@ -305,7 +305,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         /// <summary>
-        /// 铁截「截金」命中反馈:刃咬进钢里再刮出去——沿刃向的刮擦火舌 + 卷起的旧金屑,
+        /// 铁截「截金」命中反馈:刃咬进钢里再刮出去，沿刃向的刮擦火舌 + 卷起的旧金屑,
         /// 音是咬入不是弹开(owner 客户端)
         /// </summary>
         public static void SpawnIronSeverFX(NPC target, Vector2 scrapeDir) {
@@ -365,7 +365,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             }
         }
 
-        /// <summary>默切消费反馈:一记消音重击——发丝白闪 + 坠墨,声音沉短(owner 客户端)</summary>
+        /// <summary>默切消费反馈:一记消音重击，发丝白闪 + 坠墨,声音沉短(owner 客户端)</summary>
         public static void SpawnSilentConsumeFX(Player player) {
             if (player == null) {
                 return;
@@ -473,7 +473,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 return;
             }
             //只在末两拍出声:连段本身每拍已有 ping,逐拍再加一记会把连段变成噪音墙。
-            //这两声的信息量也最大——"再一拍就合颚"
+            //这两声的信息量也最大，"再一拍就合颚"
             float ramp = MathHelper.Clamp((chain - 1) / 4f, 0f, 1f);
             if (chain >= 4) {
                 SoundEngine.PlaySound(
@@ -589,7 +589,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         /// <summary>
         /// 风樋「顺风」:疾走起步一记风哨,身前甩出一串领先半身的气线。
-        /// 气线沿冲刺轴高速拉长,不留痕不挂壁——空气不是液体(owner 客户端)
+        /// 气线沿冲刺轴高速拉长,不留痕不挂壁，空气不是液体(owner 客户端)
         /// </summary>
         public static void SpawnWindGrooveDash(Player player, Vector2 aim) {
             if (player == null) {
@@ -874,7 +874,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
     /// <summary>
     /// 断口的每目标视觉门闩。斩杀线内连段每 5~16 帧就命中一次,断口若跟着刷,
-    /// 残血 boss 身上会常驻两三条重叠白线——既毁掉"决定性一刀"的稀有度,
+    /// 残血 boss 身上会常驻两三条重叠白线，既毁掉"决定性一刀"的稀有度,
     /// 也遮住二阶段的弹幕。了结帧不受门闩约束(那一刀本来就该看见)
     /// </summary>
     internal sealed class OniSeverCutGate : GlobalNPC

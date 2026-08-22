@@ -217,7 +217,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI.DomainWheel
         }
 
         /// <summary>
-        /// 中心骇客按钮是否可点：除准入外还要求骇客键已绑定——
+        /// 中心骇客按钮是否可点：除准入外还要求骇客键已绑定
         /// 骇客时间里转盘开不了，中心只能进不能出，未绑键放行就是单程门
         /// </summary>
         public bool IsHackReady() {

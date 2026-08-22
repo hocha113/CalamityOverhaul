@@ -8,9 +8,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 {
     /// <summary>
-    /// 鬼梦里的玩家：物品与建造全数封禁（镜像鬼切肢解的锁法——SetControls 窗口
+    /// 鬼梦里的玩家：物品与建造全数封禁（镜像鬼切肢解的锁法，SetControls 窗口
     /// 每帧压 noItems，移动保留），左键成为唯一的语言：按住即不断唤出恶犬。
-    /// 冷却与在场数走实例字段，不进 static——联机里每人一份
+    /// 冷却与在场数走实例字段，不进 static：联机里每人一份
     /// </summary>
     public class KikasaDreamPlayer : ModPlayer
     {

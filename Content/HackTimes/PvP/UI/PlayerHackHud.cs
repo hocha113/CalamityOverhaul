@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.UI
 {
     /// <summary>
     /// PvP 骇入的表现主题：防守方视角的入侵语汇<b>恒定敌对红族</b>，
-    /// 不走 HackTheme.HostileBlend 插值——你是受害者，没有中立态。
+    /// 不走 HackTheme.HostileBlend 插值，你是受害者，没有中立态。
     /// 色值与 HackTheme 的敌对态一致（那边是 private，这里是 PvP 侧的公开镜像）
     /// </summary>
     internal static class PvPTheme
@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.UI
     /// ④ 警报标签、UI 碎片、屏幕边缘红闪、读数污染等协议自绘覆盖层。<br/>
     /// 红线与世界标记在 <c>PlayerHackLinkRender</c>（世界坐标层）。<br/>
     /// 布局全走 UI 空间坐标（HackTheme.UIScreenW/H），横幅底板实底 BgPanel + 1px 边框，
-    /// 发光只用亮色多 pass——禁 magic-pixel 暗羽化
+    /// 发光只用亮色多 pass：禁 magic-pixel 暗羽化
     /// </summary>
     internal class PlayerHackHud : UIHandle
     {

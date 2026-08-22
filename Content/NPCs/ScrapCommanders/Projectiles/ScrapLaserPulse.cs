@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //曳光弹体：BeamLine 双层——宽鞘热晕 + 窄条白热实芯，读出 ~12px 实弹
+            //曳光弹体：BeamLine 双层，宽鞘热晕 + 窄条白热实芯，读出 ~12px 实弹
             SpriteBatch sb = Main.spriteBatch;
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             float tailLen = MathHelper.Clamp(Projectile.velocity.Length() * 2.6f, 44f, 96f);

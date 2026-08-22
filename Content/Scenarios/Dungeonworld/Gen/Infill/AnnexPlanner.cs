@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Infill
     //L1只用中央约860列、L2用SpawnX±600、L6用SpawnX±780,1916列的可用宽度里
     //两侧各留着几百列全实心。原设计把这当"隔离哲学"的留白,但玩家的读法是
     //"走到边上就撞墙"。本器把留白改成低密度的封存建筑群:地牢还在延伸,
-    //只是被封存了——密度只给主区的三分之一,留白感保住,墙感去掉。
+    //只是被封存了，密度只给主区的三分之一,留白感保住,墙感去掉。
     //
     //===为什么能安全落地===
     //P20的层脊走廊本来就横贯整个可用宽度(PlayLeft~PlayRight),留白区的脊
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Infill
     //"梳齿挂房"语法把房挂在脊上方即可,连通性与主区同源。
     //
     //门面纪律:封存门面只做材质与框缘(过梁换裂砖、顶角斜切、做旧漆、烛台),
-    //不在脊里加任何几何——脊是全层的穿越动脉,窄一格都不许。
+    //不在脊里加任何几何，脊是全层的穿越动脉,窄一格都不许。
     //裂砖只用在L6(INDEX §3认领表:裂砖假地板禁用L1/L3/L4/L7),
     //L1/L2的过梁改用本层Slab墙+做旧漆表达。
     //====================================================================
@@ -283,7 +283,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Infill
                 cursor = room.Bounds.Right + RoomGapMin + rand.Next(0, 24);
             }
 
-            //每翼一个够分量的箱,放在最外那间——让这趟路值得走
+            //每翼一个够分量的箱,放在最外那间，让这趟路值得走
             RoomNode outermost = portalAtRight ? firstRoom : lastRoom;
             if (rewardTier && outermost != null) {
                 int cx = outermost.InteriorRight - 3;

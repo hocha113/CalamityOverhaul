@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// <summary>
     /// 女皇鬼奴的血虹缎带：一条曲线行进的实体宽条带，不是直线光束。
     /// 带头沿大开大合的 S 曲线扫过战场一侧（ai0=基向 ai1=摆向，路径是
-    /// 生命帧的确定性函数，各端一致），身后拖出双层缎面——血水条带打底、
+    /// 生命帧的确定性函数，各端一致），身后拖出双层缎面，血水条带打底、
     /// 原版虹彩渐变压低透明度做珠光叠层；扫过湖面犁开行进浪线，
     /// 尾声自带尾向头珠化断裂，散作一场珠雨落湖
     /// </summary>
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Life++;
 
             if (Life <= TravelEnd) {
-                //S 曲线行进：方向 = 基向 + 大幅正弦垂摆（幅度缓收），速度复利微增——
+                //S 曲线行进：方向 = 基向 + 大幅正弦垂摆（幅度缓收），速度复利微增
                 //路径是 Life 的确定性函数，各端一致，缎带不是直线光束
                 float sway = MathF.Sin(Life * 0.075f + 0.3f) * 0.92f * SwaySign
                     * (1f - Life / 260f);

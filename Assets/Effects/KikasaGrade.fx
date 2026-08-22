@@ -3,7 +3,7 @@
 //TechGrade（NPC 层之前，只吃环境）：血暮调色（红罩+暗部沉深绯+非红轻去饱和）
 //TechUnify（EndCapture，吃整帧含实体）：
 //  轻血罩 + 血湖镜面（水位线以下真垂直镜像倒影，血染+深度血雾+浮渣+缝线血沫，
-//  反射率贴缝强向深弱、透出水下真实世界——被淹之物经折射采样随水摆动）
+//  反射率贴缝强向深弱、透出水下真实世界，被淹之物经折射采样随水摆动）
 //  + 湿纸撕裂前沿（浸润带/湿纤维缘/卷影）
 //开合遮罩是"被水浸烂的破纸"：圆扩散 + 三频纤维毛边，材质与鬼切墨浪刻意分野
 //直线算术+平 tex2D，门控走 step/lerp 不用分支；s0=屏幕帧 s1=PerlinNoise
@@ -26,7 +26,7 @@ float uSeamGlow;        //0~1 缝线血沫水膜辉光
 float uAspect;          //宽/高
 float uRain;            //0~1 鬼雨异化混合：血暮↔湿墨浊水，全套色板权重乘混合
 float4 uLineWave[4];    //水线行波源 x=源uv.x y=寿命进度01 z=幅度(uv.y) w=备用；空槽 z=0
-float4 uCoverRect;      //倒影抹除矩形（屏幕 uv：xy=左上 zw=右下）——倒影恶犬替换施术者镜像时用
+float4 uCoverRect;      //倒影抹除矩形（屏幕 uv：xy=左上 zw=右下），倒影恶犬替换施术者镜像时用
 float uCoverA;          //0~1 抹除强度，随倒影出没渐变；0=不生效
 float uWispGlow;        //0~1 鬼火燃湖：浅水金光渗色 + 缝线金辉（火层画在实体层，这里补水体被照亮）
 
@@ -61,7 +61,7 @@ float noiseTex(float2 uv) {
 
 //水线行波：一次落点扰动向两侧荡开的衰减波包。像素度量跨分辨率一致：
 //基准波长约 100px、波前约 620px/寿命外扩、距离半衰约 100px、幅度随寿命线性退场；
-//w=范围乘数等比放大波长/传播/衰减——大扰动荡长浪，密峰会读成音频波谱
+//w=范围乘数等比放大波长/传播/衰减，大扰动荡长浪，密峰会读成音频波谱
 float lineWaveOne(float uvx, float4 src) {
     float dpx = abs(uvx - src.x) * uScreenSize.x / max(src.w, 0.25);
     float gate = saturate((src.y * 620.0 - dpx) * 0.05);
@@ -169,7 +169,7 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float2 muv = float2(uv.x, 2.0 * uPivotY - uv.y);
     muv.x += ((n0 - 0.5) * (0.0070 + seamProx * 0.016) + (n1 - 0.5) * 0.0042) * belowMask;
     muv.y += (n1 - 0.5) * 0.0062 * belowMask;
-    //倒影恶犬替换人影：镜像源落在施术者身上的像素，把采样点水平推到身侧——
+    //倒影恶犬替换人影：镜像源落在施术者身上的像素，把采样点水平推到身侧
     //镜里出现的是他背后的天，人从倒影里被抹去
     float inCover = step(uCoverRect.x, muv.x) * step(muv.x, uCoverRect.z)
         * step(uCoverRect.y, muv.y) * step(muv.y, uCoverRect.w) * uCoverA;
@@ -191,7 +191,7 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     mirror = lerp(mirror, fogc, saturate(depth * lerp(0.42, 0.60, uRain) + (1.0 - srcOk)));
 
     //水下折射采样：被淹之物随水摆动。双频偏移水平为主，幅度随深度增长、
-    //贴水线渐入——y 向偏移恒小于离线距离，采不到水线以上的像素
+    //贴水线渐入，y 向偏移恒小于离线距离，采不到水线以上的像素
     float refrIn = saturate(below * 26.0);
     float refrAmp = (0.0045 + 0.0075 * saturate(below * 2.2)) * refrIn;
     float rn0 = noiseTex(float2(uv.x * 3.4 + uTime * 0.050, uv.y * 9.0 - uTime * 0.060));

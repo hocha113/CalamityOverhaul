@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
     /// <summary>
     /// 深潜演出的相位状态机（雨世界内再撑一层）：骤雨起势→湿墨冲刷合幕→满幕遮蔽下结算→
     /// 排墨揭深层→落定，纯本地演出量。<br/>
-    /// 与入雨的镜面翻转不同语法：世界是画在纸上的，雨把它冲掉——颜色先被冲得向下流淌，
+    /// 与入雨的镜面翻转不同语法：世界是画在纸上的，雨把它冲掉，颜色先被冲得向下流淌，
     /// 雨帘随后合拢成整幅水幕，幕后切层，幕再向下排尽。节拍常量是唯一时钟，
     /// <see cref="OniRainDescentCutscene"/> 与 <see cref="OniRainDescentRender"/> 都从这里取数；
     /// 运镜失败不致命，演出照走。

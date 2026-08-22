@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
     /// <summary>
     /// 改铭台全屏:左列黑漆台账主板(题头+三铭位牌+脚注状态),右侧鬼切本体原生姿态 2x 陈列,
-    /// 注记引线把牌钉到刀身对应位置;鏨仪式走"检分镜头"——以铭位锚为不动点把刀推近 5x 特写,
+    /// 注记引线把牌钉到刀身对应位置;鏨仪式走"检分镜头"，以铭位锚为不动点把刀推近 5x 特写,
     /// 凿毕光包沿引线归牌盖章;鏨盘扇/錾样匣/烙印木牌/右缘大字沿用;
     /// 与点鬼簿互斥同级(互斥收台静默,切换只响一声);仪式演出态见 <see cref="OniMeiRite"/>
     /// </summary>
@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             EmptyHintHi = this.GetLocalization(nameof(EmptyHintHi), () => "樋未开。开樋一分，刀轻一分");
             EmptyHintHorimono = this.GetLocalization(nameof(EmptyHintHorimono), () => "雕位素净。请神入刀，先得敬它");
             EraseName = this.GetLocalization(nameof(EraseName), () => "除 铭");
-            EraseHint = this.GetLocalization(nameof(EraseHint), () => "锉去此铭——铭可再凿，刀不忘痕");
+            EraseHint = this.GetLocalization(nameof(EraseHint), () => "锉去此铭，铭可再凿，刀不忘痕");
             OriginLabel = this.GetLocalization(nameof(OriginLabel), () => "出处");
             PowerLabel = this.GetLocalization(nameof(PowerLabel), () => "赋效");
             BurdenLabel = this.GetLocalization(nameof(BurdenLabel), () => "代价");
@@ -360,7 +360,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             particles.Update();
             LayoutCompute();
 
-            //开屏编舞:刀自上落定的一磕——锚钉处起尘,一声轻叩,落定过半刃口鸣光醒刀
+            //开屏编舞:刀自上落定的一磕，锚钉处起尘,一声轻叩,落定过半刃口鸣光醒刀
             if (IsOpen && a >= 0.55f && !settleStarted) {
                 settleStarted = true;
                 SoundEngine.PlaySound(SoundID.Dig with { Pitch = -0.35f, Volume = 0.45f });
@@ -408,7 +408,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             closeTagRect = new Rectangle((int)(tagTop.X - 16f), (int)tagTop.Y - 2, 32, 48);
 
             //吊挂结印盘:点击预演到帧即发起换乘;盘上有鬼将醒时回声更急;换乘中挂起交互
-            //驿牌并入命中——梁重做后点「结印盘」牌文是自然手势
+            //驿牌并入命中，梁重做后点「结印盘」牌文是自然手势
             bool doorOk = IsOpen && a > 0.9f && !Rite.Active && !OniLedgerSwapFX.Running;
             bool openSigil = sigilSwitch.Update(sigilSwitchAnchor, MousePosition,
                 doorOk, ShaderTime, OnikiriUITheme.HangSigilHit,
@@ -1027,7 +1027,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (selectedSlot >= 0 && hoverRib >= 0) {
                 if (IsEraseRib(hoverRib)) {
                     return ("erase", EraseName.Value, SlotLabel(SlotOf(selectedSlot)), EraseHint.Value,
-                        "———", "———", false, true);
+                        "...", "...", false, true);
                 }
                 (OniMeiDefinition def, bool owned) = ribs[hoverRib];
                 if (!owned) {
@@ -1053,7 +1053,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     hint = TrayEmpty.Value;
                 }
                 return ($"empty:{selectedSlot}", EmptyName.Value, SlotLabel(SlotOf(selectedSlot)), hint,
-                    "———", "———", false, false);
+                    "...", "...", false, false);
             }
             //默认:今名
             OniMeiDefinition name = OniMeiRegistry.CurrentBladeName(OniMeiRegistry.DisplayStore);
@@ -1072,7 +1072,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private static (string stamp, string title, string kind, string origin, string power,
             string burden, bool gold, bool erase) ResolveLockedTag(OniMeiDefinition def) {
             string hint = def.DeedHint?.Value ?? "";
-            string progress = OniMeiDeedText.LockedUnknown?.Value ?? "———";
+            string progress = OniMeiDeedText.LockedUnknown?.Value ?? "...";
             int value = 0;
             if (OniMeiDeedRegistry.TryGetByMei(def.Key, out OniMeiDeed deed)) {
                 value = Main.LocalPlayer.TryGetModPlayer(out OnikiriPlayer okp)
@@ -1080,7 +1080,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 progress = OniMeiDeedText.DescribeProgress(deed, value);
             }
             return ($"locked:{def.Key}:{value}", def.DisplayName.Value,
-                OniMeiDeedText.LockedKind.Value, hint, progress, "———", false, false);
+                OniMeiDeedText.LockedKind.Value, hint, progress, "...", false, false);
         }
 
         internal static string SlotLabel(OniMeiSlotKind slot) => slot switch {

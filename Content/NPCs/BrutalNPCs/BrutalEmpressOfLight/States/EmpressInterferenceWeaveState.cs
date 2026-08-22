@@ -6,7 +6,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 {
     /// <summary>
-    /// 干涉织网：左右手各引一条反向旋臂，双螺旋在空间里交织出莫尔纹——
+    /// 干涉织网：左右手各引一条反向旋臂，双螺旋在空间里交织出莫尔纹
     /// 弹幕图案本身即是美学主体，网眼是可学习的呼吸通道
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EmpressStateIndex.InterferenceWeave, typeof(EmpressStateContext))]
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 
             bool weaving = Timer < WeaveTime;
 
-            //织网期：锚点缓移到玩家上方，她本体沿锚点做正弦侧摆——摆动调制织纹
+            //织网期：锚点缓移到玩家上方，她本体沿锚点做正弦侧摆，摆动调制织纹
             if (target.Alives()) {
                 weaveAnchor = Vector2.Lerp(weaveAnchor, target.Center + new Vector2(0f, -330f), 0.02f);
             }

@@ -2,7 +2,7 @@
 //WofRetinaBeam.fx 视网膜扫描光束/腐眼斩束共用
 //UV.x 0末端→1眼口 UV.y 横截面；有机血光：暗血鞘+湿核+毛细血管缘+缓脉冲
 //顶点带 transformMatrix，DrawUserPrimitives 使用；输出预乘alpha，
-//C#侧配 BlendState.AlphaBlend——暗鞘真正压暗背景(实体遮挡)，亮芯嵌在暗体内
+//C#侧配 BlendState.AlphaBlend：暗鞘真正压暗背景(实体遮挡)，亮芯嵌在暗体内
 // ============================================================================
 
 float4x4 transformMatrix;
@@ -87,7 +87,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float halo = exp(-d * d * 2.6) * 0.5;
     float edgeMask = smoothstep(1.0, 0.80, abs(cross_));
 
-    //暗血鞘：包住亮芯的湿肉暗体——预乘AlphaBlend下高alpha低色值真正压暗背景，
+    //暗血鞘：包住亮芯的湿肉暗体，预乘AlphaBlend下高alpha低色值真正压暗背景，
     //光束从纯光变成有暗缘的实体(契约4遮挡层)
     float sheath = exp(-d * d * 11.0);
 
@@ -117,7 +117,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     );
     alpha *= fadeAlpha;
 
-    //根部生长包络(像素域)：quad起始边在眼球后方，最后46px内一切成分归零——
+    //根部生长包络(像素域)：quad起始边在眼球后方，最后46px内一切成分归零
     //光束自眼内长出，起始边不暴露任何平切(headFlare也被包住)
     float rootGrow = smoothstep(0.0, 46.0, (1.0 - along) * uQuadLen);
     alpha *= rootGrow;

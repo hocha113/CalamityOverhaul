@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         /// <summary>
         /// 把所有芯片协议退回未持有，快照一次上报，再把芯片一次发齐。<br/>
-        /// 芯片种类已有几十种，背包装不下的会直接落地——调试用途，可接受
+        /// 芯片种类已有几十种，背包装不下的会直接落地，调试用途，可接受
         /// </summary>
         private static void ResetHackChipDebug(Player player) {
             if (player == null || !player.TryGetModPlayer(out HackTimePlayer htp)) {

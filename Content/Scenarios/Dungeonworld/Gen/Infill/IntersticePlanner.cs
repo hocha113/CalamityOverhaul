@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Infill
     //每个夹层簇必须从锚点生长,绝不自由落位。锚点=主内容已落成的房(ctx.Graph.Rooms),
     //顺序恒为:选锚点→探空→预留→开地板口→检修井下探→落服务廊→挂房→全部注册进图。
     //任何一步预留失败即整簇止步(已建成的部分保留,它们仍挂在锚点上),
-    //不硬写、不留断头井——断头井会被P80洪泛覆盖率立刻抓到。
+    //不硬写、不留断头井，断头井会被P80洪泛覆盖率立刻抓到。
     //
     //===足印纪律===
     //一切落位先过ctx.Grid,主内容的足印(含RoomPadding外扩)天然把本器挡在外面,
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Infill
         private const int GrowStep = 6;
         //宿主门槛:太窄的房开不了3宽落口
         private const int HostMinInteriorWidth = 12;
-        //簇间距按(x槽,死带)二维记,不是只按x——只按x的话每个x槽只出一簇,
+        //簇间距按(x槽,死带)二维记,不是只按x：只按x的话每个x槽只出一簇,
         //五条死带里会有四条一簇都摊不到,纵向照旧空
         private const int HostSeparation = 64;
         private const int GapBucketRows = 64;
@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Infill
                     break;
                 }
 
-                //井段足印:起点要避开上一级自己的占用,否则第一格就判占用、一簇也建不成——
+                //井段足印:起点要避开上一级自己的占用,否则第一格就判占用、一簇也建不成
                 //宿主是RoomPadding外扩带(Bottom+2),上一级服务廊是它的9行预留带(Floor+3)。
                 //刻画起点仍取prevFloor,那两三行本来就在上一级的账里
                 int shaftTop = t == 0

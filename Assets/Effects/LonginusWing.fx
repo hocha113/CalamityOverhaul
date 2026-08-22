@@ -56,7 +56,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float n1 = tex2D(noiseSamp, float2(u * 1.5 - uTime * 0.50 + uPhase, v * 0.40 + uPhase * 1.3)).r;
     float n2 = tex2D(noiseSamp, float2(u * 3.2 - uTime * 0.95 + uPhase * 2.0, v * 0.90 + uPhase)).r;
 
-    //主体：后缘基准随 u 前移，噪声大摆幅撕散——端部整条散成光缕，不许平滑收口
+    //主体：后缘基准随 u 前移，噪声大摆幅撕散，端部整条散成光缕，不许平滑收口
     float bodyEnd = lerp(0.94, 0.34, u * u);
     float body = 1.0 - smoothstep(bodyEnd - 0.34, bodyEnd + 0.10, v + (n2 - 0.5) * 0.55);
 

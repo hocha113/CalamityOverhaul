@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// 出场是湖面隆起血水穹丘（三次抽提越隆越高）、整团拔起凝形；跟随靠有节奏的
     /// 蹲底—起跳—落水压砸循环；攻击为高跳压砸（落点涟漪预告 + 落地按质量守恒分裂
     /// 小血史莱姆）与重踏血浪（双向宽矮横推浪）。挤压拉伸是全身语言，王冠是真身
-    /// 残留物——金属实体骑在凝胶上，弹簧滞后，溶解遣返时最后沉没。
+    /// 残留物，金属实体骑在凝胶上，弹簧滞后，溶解遣返时最后沉没。
     /// 联机同克眼契约：owner 裁决转场盖 netUpdate 章，节拍闩防快照回卷，
     /// 子弹幕只在 owner 端生成，生命线只有 owner 判
     /// </summary>
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private const int EmergeSettleFrames = 26;
         private const int EmergeTimeout = 300;
 
-        //跟随跳：蹲底短、腾空由弹道决定、落地回弹后必歇一拍——节奏而非抖动
+        //跟随跳：蹲底短、腾空由弹道决定、落地回弹后必歇一拍，节奏而非抖动
         private const int HopCrouchFrames = 10;
         private const int HopSettleFrames = 14;
         private const int HopMinRest = 18;
@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         private void BeginDissolve() {
-            //穹丘还没拔起就要收场：整团都在水下，不演谢幕——
+            //穹丘还没拔起就要收场：整团都在水下，不演谢幕
             //否则会凭空闪出一只完整史莱姆再化掉
             if (State == StateEmerge && (int)StateParam == 0) {
                 Projectile.Kill();
@@ -232,7 +232,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：只有 owner 裁决——服务器无领域状态（既定契约），
+            //生命线：只有 owner 裁决，服务器无领域状态（既定契约），
             //迟入场客户端首份快照前也会误判；其余端只跟包换场
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
@@ -400,7 +400,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (phase == 1) {
-                //腾空：弧顶重力减轻——拔起后有一拍悬停，整团凝胶在空中收形
+                //腾空：弧顶重力减轻，拔起后有一拍悬停，整团凝胶在空中收形
                 float g = Gravity * (0.45f + 0.55f * MathHelper.Clamp(MathF.Abs(Projectile.velocity.Y) / 12.5f, 0f, 1f));
                 Projectile.velocity.Y += g;
                 Projectile.velocity.X *= 0.98f;
@@ -444,7 +444,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             return MathHelper.Lerp(steps[heave], steps[heave + 1], ease);
         }
 
-        /// <summary>拔起浪冠：宽矮签名——浅角双侧血扇 + 垂帘 + 横压扩散环，不起高柱</summary>
+        /// <summary>拔起浪冠：宽矮签名，浅角双侧血扇 + 垂帘 + 横压扩散环，不起高柱</summary>
         private void TearFreeBurst(Vector2 hit) {
             KikasaDomainDeco.RippleAt(hit, 2.6f);
             KikasaDomainDeco.RippleAt(hit + new Vector2(66f, 0f), 1.2f);
@@ -540,7 +540,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     return;
                 }
 
-                //跟随跳：歇够了、离锚点够远才起跳——一跳一歇，不许碎步
+                //跟随跳：歇够了、离锚点够远才起跳，一跳一歇，不许碎步
                 if (t >= HopMinRest && MathF.Abs(anchorX - Projectile.Center.X) > HopTriggerDist) {
                     StateParam = 1;
                     StateTimer = 0;
@@ -616,7 +616,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 Projectile.velocity = Vector2.Zero;
                 Projectile.Bottom = new Vector2(Projectile.Bottom.X, lakeY);
 
-                //蓄力吸水：湖面血珠被拽进体内，72% 后静默——爆发前的吸气
+                //蓄力吸水：湖面血珠被拽进体内，72% 后静默，爆发前的吸气
                 if (!Main.dedServ && t < SlamCrouchFrames * 0.72f && t % 2 == 1) {
                     Vector2 from = new(Projectile.Center.X + Main.rand.NextFloat(-90f, 90f), lakeY - Main.rand.NextFloat(0f, 6f));
                     PRTLoader.NewParticle<PRT_GhostRainDrop>(from,
@@ -663,13 +663,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (phase == 2) {
-                //顶点悬停：动量吐尽，一拍死寂——砸落前的静默
+                //顶点悬停：动量吐尽，一拍死寂，砸落前的静默
                 Projectile.velocity *= 0.78f;
                 if (ViewedOwner && t % 3 == 1) {
                     KikasaDomainDeco.RippleAt(new Vector2(diveTargetX, lakeY), 0.7f);
                 }
                 if (t >= SlamHangFrames) {
-                    //一帧折向砸下：陡角直线，中途不转向——直才重
+                    //一帧折向砸下：陡角直线，中途不转向，直才重
                     Vector2 aim = new Vector2(diveTargetX, lakeY + 10f) - Projectile.Center;
                     float vx = MathHelper.Clamp(aim.X / MathF.Max(aim.Y / 24f, 1f), -9f, 9f);
                     Projectile.velocity = new Vector2(vx, SlamDiveSpeed);
@@ -826,7 +826,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (phase == 1) {
-                //腾空：矮弧，重力全额——这一跳的意义全在落地
+                //腾空：矮弧，重力全额，这一跳的意义全在落地
                 Projectile.velocity.Y += Gravity;
                 if (Projectile.velocity.Y > 0f && Projectile.Bottom.Y >= lakeY || t > WaveAirMax) {
                     Projectile.Bottom = new Vector2(Projectile.Bottom.X, lakeY);
@@ -1144,7 +1144,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //==================== 演出小拍 ====================
 
-        /// <summary>起跳拍：蹬水坑——反向水花 + 涟漪 + 短促蹬水声</summary>
+        /// <summary>起跳拍：蹬水坑，反向水花 + 涟漪 + 短促蹬水声</summary>
         private void TakeoffBeat(KikasaDomainPlayer domain, float strength) {
             Vector2 hit = new(Projectile.Center.X, domain.LakeWorldY);
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Volume = 0.35f * strength, Pitch = 0.1f, MaxInstances = 3 }, hit);
@@ -1256,7 +1256,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             return 1f;
         }
 
-        /// <summary>uForm：穹丘期全血水，拔起后凝形回半沉呼吸——比克眼更水，它本来就是一团凝胶</summary>
+        /// <summary>uForm：穹丘期全血水，拔起后凝形回半沉呼吸，比克眼更水，它本来就是一团凝胶</summary>
         private float CurrentForm() {
             float steady = 0.52f + MathF.Sin(Main.GlobalTimeWrappedHourly * 2.7f + Seed) * 0.05f;
             if (State == StateEmerge) {

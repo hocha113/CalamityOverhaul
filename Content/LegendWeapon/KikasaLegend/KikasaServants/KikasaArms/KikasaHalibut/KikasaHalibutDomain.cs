@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 {
     /// <summary>
     /// 械奴的小海：比目鱼械奴施放的定点小型海洋领域。与玩家的 <see cref="SeaDomainProj"/>
-    /// 不同——不跟随玩家、不读 HalibutPlayer 状态、有限寿命自走完展开-存续-坍缩三段；
+    /// 不同，不跟随玩家、不读 HalibutPlayer 状态、有限寿命自走完展开-存续-坍缩三段；
     /// 视觉复用 SeaDomainField 场着色器（单层规格）+ 气泡链 + 一小群环游鱼。
     /// 场内敌人叠湿 + 每半秒一记水压（owner 端结算，伤害烘焙在 Projectile.damage），
     /// 弱小生物被水体缓拽向心。ai0 = 领域半径 px
@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
 
-            //存续期起鱼：一小群就够——这是械奴的小海，不是玩家的十层深渊
+            //存续期起鱼：一小群就够，这是械奴的小海，不是玩家的十层深渊
             if (!fishInit && timer >= ExpandFrames) {
                 fishInit = true;
                 const int fishCount = 10;

@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// <summary>
     /// 鬼奴·湖水版光之女皇「泣血虹裳」。血湖之水凝成的弹幕女皇：
     /// 出水为虹光花纹涟漪绽开→携逆血雨浮出→展翅定格；战斗循环为
-    /// 花瓣扇曼陀罗、圣舞血矛列雨、血虹缎带弧扫三攻轮换——全部是几何图案，
+    /// 花瓣扇曼陀罗、圣舞血矛列雨、血虹缎带弧扫三攻轮换，全部是几何图案，
     /// 预告清晰、绽放华丽、留白讲究，接触伤害恒关（她不用身体碰人）。
     /// 多层特殊绘制复刻原版 HallowBoss（后翅/翅辉/触手裙/本体/裙裾/双臂），
     /// 血水材质走 KikasaItemForm，翅膀珠光借原版 HallowBoss 渐变着色器压低透明度。
@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         private void BeginDissolve() {
-            //还没破水就要收场：什么都没露出来，不走溶解演出——
+            //还没破水就要收场：什么都没露出来，不走溶解演出
             //否则透明度会从 0 跳到 1，水下凭空闪出一位女皇再化掉
             if (State == StateEmerge && StateTimer < OmenFrames) {
                 Projectile.Kill();
@@ -190,7 +190,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：湖塌/收域/退水/主人死亡 → 溶解回湖。只有 owner 裁决——
+            //生命线：湖塌/收域/退水/主人死亡 → 溶解回湖。只有 owner 裁决
             //服务器没有领域状态（恒 Closed 是既定契约），在那边跑这条会把鬼奴当场判死；
             //迟入场的客户端在首份领域快照到达前同样会误判。其余端只跟 owner 的同步包换场
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool viewed = ViewedOwner;
 
             if (t < OmenFrames) {
-                //预兆：湖面自出水点向外绽开三圈成对涟漪——花纹先开，人后到
+                //预兆：湖面自出水点向外绽开三圈成对涟漪，花纹先开，人后到
                 Projectile.velocity = Vector2.Zero;
                 wingRate = 0.35f;
                 if (viewed) {
@@ -410,7 +410,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Vector2 look = target >= 0 ? Main.npc[target].Center : owner.Center;
             facing = look.X < Projectile.Center.X ? -1f : 1f;
 
-            //舞姿衔接：周期小舞步（转身抬臂、裙裾旋开、瓣屑轻散）——纯本地表现
+            //舞姿衔接：周期小舞步（转身抬臂、裙裾旋开、瓣屑轻散），纯本地表现
             if (!Main.dedServ) {
                 if ((int)StateTimer % 110 == 68 && danceTimer <= 0) {
                     danceTimer = 26;
@@ -482,7 +482,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
 
-            //三波绽放：波内 6 瓣等分放射，波间旋进错角、旋向交替——呼吸的玫瑰纹样。
+            //三波绽放：波内 6 瓣等分放射，波间旋进错角、旋向交替，呼吸的玫瑰纹样。
             //rel 从蓄势结束后的第一帧起算，首波在出窗当帧就绽
             int rel = t - MandalaWindup - 1;
             int waveIndex = rel / MandalaWaveGap;
@@ -641,7 +641,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
                 if (authority) {
                     int damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(BoltDamage);
-                    //垂摆起向：目标在上方先向下卷，反之先向上卷——曲线大开大合
+                    //垂摆起向：目标在上方先向下卷，反之先向上卷，曲线大开大合
                     float swaySign = aimPos.Y < Projectile.Center.Y ? 1f : -1f;
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(),
                         Projectile.Center + aim * 36f, aim * KikasaEmpressRibbon.LaunchSpeed,
@@ -811,7 +811,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 ? MathF.Pow(MathHelper.Clamp(StateTimer / 44f, 0f, 1f), 0.9f)
                 : 0f;
 
-        /// <summary>翅膀辉光包络——她的灵魂：出水展翅点亮、蓄力增辉、溶解最先失色</summary>
+        /// <summary>翅膀辉光包络，她的灵魂：出水展翅点亮、蓄力增辉、溶解最先失色</summary>
         private float WingGlow() {
             int t = (int)StateTimer;
             float breath = 0.55f + 0.12f * MathF.Sin(Main.GlobalTimeWrappedHourly * 2.3f + Seed);
@@ -996,7 +996,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             //翅底：翅辉的血色骨架
             DrawFormLayer(wings, wingRect, wingRect.Size() * 0.5f, scale * 2f, 0.10f, 5.7f);
 
-            //翅辉珠光：原版 HallowBoss 渐变着色器压低透明度，血底之上极克制的虹彩——她的灵魂
+            //翅辉珠光：原版 HallowBoss 渐变着色器压低透明度，血底之上极克制的虹彩，她的灵魂
             float wingGlow = WingGlow();
             if (wingGlow > 0.02f
                 && GameShaders.Misc.TryGetValue("HallowBoss", out MiscShaderData hallowShader)) {
@@ -1098,7 +1098,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
             }
 
-            //曼陀罗蓄力：六点花位预告环——花开在哪一瓣，先亮哪一点
+            //曼陀罗蓄力：六点花位预告环，花开在哪一瓣，先亮哪一点
             float charge = ChargeLevel();
             if (State == StateMandala && charge > 0.03f && charge < 1f) {
                 EnsureBegin();

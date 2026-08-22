@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
 {
     /// <summary>
     /// 焚焰弧弹：vanilla 467 火球精灵做体，慢启动增压<br/>
-    /// ai[0]=1 时前 20 帧弱追踪（限转速，之后直线——公平阀）
+    /// ai[0]=1 时前 20 帧弱追踪（限转速，之后直线，公平阀）
     /// </summary>
     internal class CultistFlameBolt : ModProjectile
     {

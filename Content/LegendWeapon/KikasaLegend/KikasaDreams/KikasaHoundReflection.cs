@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
     /// <summary>
     /// 湖镜里的倒影恶犬：原版狼贴图 + <c>KikasaHound.fx</c> 湿墨黑犬材质，
     /// 绕 LakeWorldY 垂直镜像跟随玩家动作（帧逻辑移植原版狼 FindFrame）。
-    /// 画在领域镜面（TechUnify）之后——镜面是拷屏合成，画早了会被镜像换掉；
+    /// 画在领域镜面（TechUnify）之后，镜面是拷屏合成，画早了会被镜像换掉；
     /// 黑犬体量大于玩家镜像，直接盖住原本的人影。
     /// 纯观看端表现，状态开关随 <see cref="KikasaDomainPlayer.HoundReflection"/> 快照同步
     /// </summary>

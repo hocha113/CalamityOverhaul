@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
 {
     /// <summary>
     /// 大范围重启的全屏合成：演出首帧把主屏存作照片层（自持 ScreenTargets[0]），
-    /// 之后每帧拷屏 ping-pong——shader 里照片化（去饱和银盐调+胶片颗粒+晕影）、
+    /// 之后每帧拷屏 ping-pong，shader 里照片化（去饱和银盐调+胶片颗粒+晕影）、
     /// 雨痕冲刷遮罩自上而下刷掉照片、倒带段实时画面加冷调与回卷抖动。
     /// 快门与落定的白闪走 CPU 叠层。旁观者按观看距离同样合成
     /// </summary>

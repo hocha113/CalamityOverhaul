@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
     /// 鬼梦运镜共用件：锁输入、聚焦湖面缝线（水线压到屏幕中线，倒转枢轴恒等的前提）、
     /// 沸腾段压镜变焦、结算震屏。仅施术者本机播放；演出本体由
     /// <see cref="KikasaDreamDirector"/> 驱动，运镜失败不致命。<br/>
-    /// 拉入与归返节拍不同长，拆成两个片段——InnoVault 的时间轴在 VaultSetup
+    /// 拉入与归返节拍不同长，拆成两个片段，InnoVault 的时间轴在 VaultSetup
     /// 构建一次即缓存，<c>BuildTimeline</c> 里只允许常量，不得读玩家状态
     /// </summary>
     internal static class KikasaDreamCutsceneShared

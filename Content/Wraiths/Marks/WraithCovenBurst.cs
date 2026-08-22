@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Wraiths.Marks
 {
     /// <summary>
     /// 三印崩：一个猎物身上同时挂着同一人的三种印时，三只鬼在它身上撞到一起。<br/>
-    /// 印记一并引爆算一次伤害，参与的鬼各自付一次复苏——
+    /// 印记一并引爆算一次伤害，参与的鬼各自付一次复苏
     /// 这是结印三角中心那一格的兑现，也是全系统最贵的一手
     /// </summary>
     internal static class WraithCovenBurst

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
     //布局（x全部自ShaftLeft推导，y全部自层带行推导，预览可整体搬移）：
     //  [悬吊空腔]←26格空隙→[倒吊教堂142宽]←24格渡桥→[前庭(岩肩内)]→主竖井
     //  空腔顶=带顶+18（锚点带），空腔底=脊内膛顶-2（M0层脊保持原样，本层不碰
-    //  竖井/层脊几何——唯一例外是前庭东隧道在竖井西壁开3高口，属自身接驳）。
+    //  竖井/层脊几何，唯一例外是前庭东隧道在竖井西壁开3高口，属自身接驳）。
     //  垂钟井自教堂底探入空腔下部，垂钟龛底=全层最低可通行点（花名册#5）。
     //深渊带薄装（任务brief条目3）：层脊地板下方另凿全封闭剪影厅（不与任何可达
     //空间连通，红线断言兜底），垂链末端+悬空砖构残片+黑暗留白；L7→深渊的
@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
             RoomNode vestibule = BuildVestibule(voidR, shaftLeft, deckRow);
 
             //===3) 锁链渡桥（花名册#2）：平台桥面+桥下悬链承重（护柱转桥下悬柱，
-            //     桥面不设阻断——P80包络洪泛不许1格路障）===
+            //     桥面不设阻断，P80包络洪泛不许1格路障）===
             RoomNode bridge = BuildBridge(cathRight, voidR, deckRow, voidTop);
 
             //===4) 倒吊教堂全套（镜像+倒相定制+垂钟井+垂钟龛+终钟剪影）===

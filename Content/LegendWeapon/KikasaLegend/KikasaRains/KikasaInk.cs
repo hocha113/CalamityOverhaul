@@ -6,7 +6,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 {
     /// <summary>
-    /// 墨雨普攻的共享色板与小工具。墨黑为体、血色为芯——黑保住墨感,
+    /// 墨雨普攻的共享色板与小工具。墨黑为体、血色为芯，黑保住墨感,
     /// 血芯保住鬼伞血统;全部过 <see cref="KikasaDomain.CoolTint"/>,
     /// 域内鬼雨异化时自动冷化(域外恒为血侧)
     /// </summary>
@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>湿反光:小面积 A=0 加色玻头</summary>
         public static Color WetSheen => KikasaDomain.CoolTint(new(238, 122, 106), new(178, 202, 208));
 
-        //鬼青三件:伞下鬼与鬼滴的魂色,不随域形态冷暖走——鬼火自有其色
+        //鬼青三件:伞下鬼与鬼滴的魂色,不随域形态冷暖走，鬼火自有其色
         /// <summary>鬼滴墨体:近黑偏青</summary>
         public static readonly Color GhostBody = new(16, 26, 30);
 

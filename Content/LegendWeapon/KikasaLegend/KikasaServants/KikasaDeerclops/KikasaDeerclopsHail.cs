@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 {
     /// <summary>
     /// 鬼奴鹿角怪的冰血雹：吼声掀落的一阵重力弹。冻成灰蓝的血珠自天而坠，
-    /// 拖一条冷丝尾迹；砸物碎成冻珠与一缕暖血，落湖被水收走、荡出一圈涟漪——
+    /// 拖一条冷丝尾迹；砸物碎成冻珠与一缕暖血，落湖被水收走、荡出一圈涟漪
     /// 一阵雹子连着落水便是成串涟漪。spawn 参数完整（位置/初速/伤害皆在包里）
     /// </summary>
     internal class KikasaDeerclopsHail : ModProjectile
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             float glow = 0.3f * VisualFade;
             Lighting.AddLight(Projectile.Center, 0.12f * glow, 0.18f * glow, 0.2f * glow);
 
-            //落湖：湖收回自己的水，一圈涟漪作数——成串的雹子就是成串的涟漪
+            //落湖：湖收回自己的水，一圈涟漪作数，成串的雹子就是成串的涟漪
             Player owner = Main.player[Projectile.owner];
             bool lakeAlive = owner?.active == true
                 && owner.TryGetModPlayer(out KikasaDomainPlayer domain)
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
 
-            //砸地碎裂（机制身份保留）：手动地形检测替代 tileCollide——
+            //砸地碎裂（机制身份保留）：手动地形检测替代 tileCollide
             //湖线以下的真地形被湖面盖住，撞上去像凭空截停，交给上面的落湖收走
             if (collisionArmed
                 && (!lakeAlive || Projectile.Center.Y < kdp.LakeWorldY - 2f)

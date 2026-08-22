@@ -9,7 +9,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
 {
     /// <summary>
-    /// 投技·攫取：巨鹿垂首伏低，独眼由暗转血红，胸前聚出一只攫取巨手——
+    /// 投技·攫取：巨鹿垂首伏低，独眼由暗转血红，胸前聚出一只攫取巨手
     /// 长预兆后沿直线掠向目标，命中即转入 EyeGrab 携抓演出；扑空则爪散影碎，
     /// 巨鹿僵直喘息露出大破绽。二阶段专属，带长冷却
     /// </summary>
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
         internal const int HandSpawn = 8;
         /// <summary>预兆总长(手在此帧起飞)，满足≥40可读前摇</summary>
         internal const int Telegraph = 46;
-        /// <summary>扑空僵直时长——躲开投技的奖励窗</summary>
+        /// <summary>扑空僵直时长，躲开投技的奖励窗</summary>
         internal const int WhiffRecover = 55;
         /// <summary>保底超时</summary>
         internal const int HardEnd = 260;
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
             npc.damage = 0;
             Player target = DeerclopsEyeGrabState.GrabTarget(npc);
 
-            //扑空僵直：伏低喘息，独眼黯淡——躲开的人赢得输出窗
+            //扑空僵直：伏低喘息，独眼黯淡，躲开的人赢得输出窗
             if (recoverTimer >= 0) {
                 recoverTimer++;
                 context.AnimMode = DeerAnimMode.Crouch;
@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                 return null;
             }
 
-            //预兆与掠夺期共通：风雪退去，独眼转红——"世界澄澈=它盯上你了"
+            //预兆与掠夺期共通：风雪退去，独眼转红，"世界澄澈=它盯上你了"
             context.VeilTarget = 0.12f;
             context.EyeHeat = 1f;
             context.EyeGlow = MathHelper.Lerp(0.25f, 0.95f, MathHelper.Clamp(Timer / (float)Telegraph, 0f, 1f));
@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                 }
 
                 if (Timer == 4 && !Main.dedServ) {
-                    //影渗低嘶——与暗影之手同族但更沉
+                    //影渗低嘶，与暗影之手同族但更沉
                     SoundEngine.PlaySound(SoundID.NPCDeath6 with { Volume = 0.75f, Pitch = -0.95f }, npc.Center);
                 }
                 if (Timer == 26 && !Main.dedServ) {
@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                     recoverTimer = 0;
                     return null;
                 }
-                //命中判定：已起飞的手掌覆盖到目标——抓住了
+                //命中判定：已起飞的手掌覆盖到目标，抓住了
                 bool launched = hand.velocity.LengthSquared() > 16f;
                 if (launched && Utils.CenteredRectangle(hand.Center, new Vector2(120f, 120f)).Intersects(target.Hitbox)) {
                     caught = true;

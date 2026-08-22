@@ -5,7 +5,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen
 {
     //湖畔带：自西（血湖）向东固定列数堆叠，区间半开 [Left,Right)
-    //带内地板行由左右缘线性插值——地面必须是斜的，雾线才有东西可淹
+    //带内地板行由左右缘线性插值，地面必须是斜的，雾线才有东西可淹
     internal readonly struct ShoreBand
     {
         internal readonly string Name;
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen
 
         //════════ 锚点 ════════
 
-        //出生在村口：西边是滩涂与湖，东边是村子——一进来就面对那张剪影
+        //出生在村口：西边是滩涂与湖，东边是村子，一进来就面对那张剪影
         internal const int SpawnX = VillageLeft + 40;
         //出生区全平列数
         internal const int SpawnFlatCols = 34;
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen
         //蒸腾雾横向渐出跨度（px）：水面右缘以西这么远内从全强收敛到零，把岸线交给雾海
         internal const float SteamFadeSpanPx = 30f * 16f;
 
-        /// <summary>血湖右缘（世界px）——雾线倾斜与距离衰减的原点</summary>
+        /// <summary>血湖右缘（世界px），雾线倾斜与距离衰减的原点</summary>
         internal static float LakeRightPx => LakeCols * 16f;
         /// <summary>距离衰减跨度（世界px）：湖右缘到远山带中段</summary>
         internal static float FalloffSpanPx => (RidgeLeft + RidgeCols / 2 - LakeCols) * 16f;

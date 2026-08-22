@@ -6,13 +6,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Rooms
 {
     //====================================================================
     //房间外壳修饰:让"实心矩形盖章+挖空"出来的房间不再是纯矩形。
-    //L3~L6 四层共用同一段 StampAndCarve,天花一律笔直、四角一律直角——
+    //L3~L6 四层共用同一段 StampAndCarve,天花一律笔直、四角一律直角
     //站在房里第一眼看到的就是这条平顶线,是本世界最明显的程序化痕迹。
     //
     //三件事全部走 STRUCTURES §3.2-6 的允许面,且全部是"加砖"不是"减砖":
-    //  1.内角收拱   ——顶两内角补斜切砖(F24),拱起脚
-    //  2.天花阶梯收分——两端每2~4列收1行,穹顶语法的平房版
-    //  3.拱肋       ——长房每8~14列垂一格肋,打断平顶长直线
+    //  1.内角收拱，顶两内角补斜切砖(F24),拱起脚
+    //  2.天花阶梯收分，两端每2~4列收1行,穹顶语法的平房版
+    //  3.拱肋，长房每8~14列垂一格肋,打断平顶长直线
     //
     //为什么不做地板/天花侵蚀(§3.2-6 另一条允许面):
     //  ·地板下抠会掏空后续家具的底锚,P80 FurnitureAudit 直接报悬空;
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Rooms
                 return;
             }
             if (w >= SetbackMinWidth && h >= SetbackMinHeight) {
-                //收分先做,再把拱脚落在收分的内端——顺序反了会被收分的填砖盖掉
+                //收分先做,再把拱脚落在收分的内端，顺序反了会被收分的填砖盖掉
                 (int innerL, int innerR, int depth) = CeilingSetback(left, right, top, brick, rand);
                 CornerArch(innerL, innerR + 1, top + depth, brick);
             }
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Rooms
             TileBrush.SetSloped(right - 1, top, brick, SlopeType.SlopeUpLeft);
         }
 
-        //两端阶梯收分:自房两端向内,每段2~4列填1行,共收1~2行——
+        //两端阶梯收分:自房两端向内,每段2~4列填1行,共收1~2行
         //"每2+列变1行"是§3.2-6对轮廓变化的唯一许可形状(锯齿噪声禁用)。
         //返回(左内端列, 右内端列, 最后一级的填厚),供拱脚接在收分肩上
         private static (int InnerLeft, int InnerRight, int Depth) CeilingSetback(

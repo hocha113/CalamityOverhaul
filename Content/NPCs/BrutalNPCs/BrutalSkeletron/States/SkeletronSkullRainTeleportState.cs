@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
         private const int CondenseEnd = 28;     //新位聚形
         private const int PounceFrame = 32;     //佯扑
 
-        /// <summary>缺口（契约3）：颅火扇中央 FanGapHalfWidth 个槽永空——迎着佯扑轴线冲脸是安全走廊
+        /// <summary>缺口（契约3）：颅火扇中央 FanGapHalfWidth 个槽永空，迎着佯扑轴线冲脸是安全走廊
         /// （奖励贴头输出），发射循环按槽距直接跳过</summary>
         private const int FanGapHalfWidth = 1;
 

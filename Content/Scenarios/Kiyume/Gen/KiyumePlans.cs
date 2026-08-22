@@ -4,7 +4,7 @@ using Terraria.WorldBuilding;
 namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen
 {
     //跨 pass 的规划态：骨架 pass 写，后续 pass 只读
-    //每次进世界重生成，生成 pass 先于 OnWorldLoad 运行——复位必须在骨架 pass 里做
+    //每次进世界重生成，生成 pass 先于 OnWorldLoad 运行，复位必须在骨架 pass 里做
     internal static class KiyumePlans
     {
         /// <summary>逐列地板顶行（第一格实心的行号）；骨架 pass 产出</summary>

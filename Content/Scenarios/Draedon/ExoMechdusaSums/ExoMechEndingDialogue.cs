@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
         public override void SetStaticDefaults() {
 
             //对应原版 DraedonEndText
-            EndLine1 = this.GetLocalization(nameof(EndLine1), () => "一个未知因素——你，是一个特异点");
+            EndLine1 = this.GetLocalization(nameof(EndLine1), () => "一个未知因素，你是一个特异点");
             EndLine2 = this.GetLocalization(nameof(EndLine2), () => "你对这片大地和它的历史而言，只是外来之人，就和我一样");
             EndLine3 = this.GetLocalization(nameof(EndLine3), () => "......很抱歉，但在看了这样一场\"展示\"之后，我必须得离开一小会儿去整理我的思绪");
             EndLine4 = this.GetLocalization(nameof(EndLine4), () => "迄今为止喷洒的血液已经让这片大陆变得陈腐无比，毫无生气");

@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
     /// <summary>
     /// 敌对玩家扫描目标（PvP）。行分两级：<b>本地已知</b>（原版全量同步，零成本）
     /// 与<b>探针行</b>（服务端才知道，选中时经 ScanProbe 限频拉取，1 次/60f）。
-    /// 探针刻意降精度（RAM 只给段位）——侦察给的是态势不是仪表读数。<br/>
+    /// 探针刻意降精度（RAM 只给段位），侦察给的是态势不是仪表读数。<br/>
     /// <b>扫描静默</b>：防守方不知道被扫；上传才吵（DefenderNotice → 被骇横幅）
     /// </summary>
     internal class PlayerScannable : IHackTarget

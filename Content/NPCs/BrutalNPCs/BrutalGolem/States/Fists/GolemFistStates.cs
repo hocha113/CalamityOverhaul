@@ -78,13 +78,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
             bool super = ctx.CmdKind == GolemFistCommand.SuperPunch;
 
             Vector2 aimDir = (ctx.CmdPoint - anchor).SafeNormalize(Vector2.UnitX * ctx.Side);
-            //8次幂后拉：几乎不动——最后几帧猛然吸回
+            //8次幂后拉：几乎不动，最后几帧猛然吸回
             float pull = MathF.Pow(t, 8f) * (super ? 150f : 64f);
             npc.Center = anchor - aimDir * pull;
             npc.velocity = Vector2.Zero;
             npc.rotation = ctx.Side < 0 ? (-aimDir).ToRotation() : aimDir.ToRotation();
 
-            //汇聚尘（前2/3充能，末段静默——爆发前的吸气）
+            //汇聚尘（前2/3充能，末段静默，爆发前的吸气）
             if (!VaultUtils.isServer && t < 0.7f && Timer % (super ? 2 : 3) == 0) {
                 Vector2 from = npc.Center + Main.rand.NextVector2CircularEdge(70f, 70f);
                 Vector2 vel = (npc.Center - from) * 0.09f;
@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
 
             switch (ctx.CmdKind) {
                 case GolemFistCommand.HookSwing: {
-                    //起手偏离目标线 55 度，飞行中弧线弯回——回旋勾拳
+                    //起手偏离目标线 55 度，飞行中弧线弯回，回旋勾拳
                     float side = ctx.Side;
                     Vector2 dir = aim.RotatedBy(-0.96f * side);
                     npc.velocity = dir * speed;

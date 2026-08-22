@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
     /// 沉影盘门面：读 <see cref="KikasaServantPlayer"/> 的三影位，
     /// 折算灵异增益（鬼火养旺/梦犬壮大/伞奴增养）与组合边（梦火/沸雨/雨魇/三影镇湖）。
     /// 鬼火自燃与倒影自醒随湖自走（满水稳态即醒/燃），亲和不再是开门的硬条件，只做增强。
-    /// 槽位数据只活在所有者本机（储钱罐语义）——远端可见的后果各走既有同步通道：
+    /// 槽位数据只活在所有者本机（储钱罐语义），远端可见的后果各走既有同步通道：
     /// 鬼奴弹幕原版同步、鬼火与倒影走领域快照。非所有者端调用这些门面得到的是默认值，
     /// 消费端注意只在 owner 侧做裁决
     /// </summary>
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         internal static bool HasRainNightmareEdge(Player player)
             => NightmareCount(player) >= 1 && RainCount(player) >= 1;
 
-        /// <summary>三影镇湖：满盘三席且三系齐坐——鬼奴出力找回一截、湖力省着烧</summary>
+        /// <summary>三影镇湖：满盘三席且三系齐坐，鬼奴出力找回一截、湖力省着烧</summary>
         internal static bool HasTriSeal(Player player)
             => FilledSlotCount(player) >= KikasaServantPlayer.SlotCount
             && FlameCount(player) >= 1 && NightmareCount(player) >= 1 && RainCount(player) >= 1;
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         /// <summary>
         /// 多驻同场的单只出力衰减：按实际出战席数算（转盘收起的席不摊薄出力），
         /// 1 只全额、2 只 0.80、3 只 0.66（合计约 1.0/1.6/2.0 倍）；
-        /// 三影镇湖找回 15%（镇湖看席位不看出场——收着的影也在湖里坐镇）。
+        /// 三影镇湖找回 15%（镇湖看席位不看出场，收着的影也在湖里坐镇）。
         /// 由 <see cref="KikasaServantBalanceGlobal"/> 在命中端统一乘
         /// </summary>
         internal static float ServantDamageScale(Player player) {
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         internal static float VigorBurnPerFrame(Player player)
             => 1f / (HasTriSeal(player) ? 2250f : 1500f);
 
-        /// <summary>火熄后湖力回满的帧数（约 12 秒）——鬼火自燃与再度入梦的天然冷却</summary>
+        /// <summary>火熄后湖力回满的帧数（约 12 秒），鬼火自燃与再度入梦的天然冷却</summary>
         internal const float VigorRefillPerFrame = 1f / 720f;
 
         /// <summary>入梦门槛：湖力过半才拽得动；拉入受理帧把湖力整汪抽干</summary>

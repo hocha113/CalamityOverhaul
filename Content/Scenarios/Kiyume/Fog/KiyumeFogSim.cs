@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
     /// 每 2 tick 一步：按雾线求目标→驱散/回聚（时间不对称）→上传密度纹理（rgb=雾色, a=密度）。<br/>
     /// 工程骨架照搬深牢迷雾，唯一换掉的是那条目标公式：<br/>
     /// 深牢 <c>baseDensity(深度曲线) × (1 - 亮度×驱散)</c>，
-    /// 这里 <c>tideFill(雾线Y - 世界Y) × 离湖衰减(x)</c>——雾是有水位的液体，不是随深度变浓的空气。<br/>
+    /// 这里 <c>tideFill(雾线Y - 世界Y) × 离湖衰减(x)</c>：雾是有水位的液体，不是随深度变浓的空气。<br/>
     /// 数组/纹理/上传缓冲全部持久复用，零逐帧分配；纯客户端，服务器不进
     /// </summary>
     internal static class KiyumeFogSim
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
 
         /// <summary>
         /// 公开只读采样：世界px处当前雾密度 0~1（窗口外/未就绪回退解析式）。<br/>
-        /// 玩法扩展位的接入口——真去消费它之前，潮汐时钟得先联机同步
+        /// 玩法扩展位的接入口，真去消费它之前，潮汐时钟得先联机同步
         /// </summary>
         public static float DensityAt(Vector2 worldPx) {
             int cx = (int)MathF.Floor(worldPx.X / CellPx) - originCell.X;
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
             return SurfaceDensity * MathHelper.Clamp(1f + depthPx / AirFalloffPx, 0f, 1f);
         }
 
-        /// <summary>贴水蒸腾：水下满值，水上二次衰减——雾底永远锚在湖面，退潮也不悬空</summary>
+        /// <summary>贴水蒸腾：水下满值，水上二次衰减，雾底永远锚在湖面，退潮也不悬空</summary>
         internal static float SteamFill(float worldY) {
             float above = KiyumeMetrics.LakeWaterYPx - worldY;
             if (above <= 0f) {
@@ -267,7 +267,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
                 for (int x = 0; x < winW; x++) {
                     int i = rowBase + x;
                     int tileX = Math.Clamp((originCell.X + x) * 4 + 2, 0, Main.maxTilesX - 1);
-                    //亮度只用来染色，不参与驱散——梦里的光穿不过雾
+                    //亮度只用来染色，不参与驱散，梦里的光穿不过雾
                     lightBuf[i] = Lighting.Brightness(tileX, tileY);
 
                     float target = TideFill(colSurface[x] - worldY) * colFactor[x];
@@ -316,7 +316,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
         //=== 光晕扩散 ===
 
         //两遍衰减膨胀（3×3 取邻域加权最大）：亮度向外漫开两雾元（~128px）而不稀释峰值，
-        //窗火/火把在雾里成为一团体积暖光——这是"雾吃光"看得见的那一半
+        //窗火/火把在雾里成为一团体积暖光，这是"雾吃光"看得见的那一半
         private static void SpreadLight() {
             int count = winW * winH;
             for (int pass = 0; pass < 2; pass++) {
@@ -356,7 +356,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
                 texture = new Texture2D(gd, CapW, CapH, false, SurfaceFormat.Color);
             }
 
-            //染色对比热调：地板越低暗雾越黑、烬色越强亮雾越暖——亮暗差必须肉眼可分
+            //染色对比热调：地板越低暗雾越黑、烬色越强亮雾越暖，亮暗差必须肉眼可分
             float visFloor = MathHelper.Clamp(KiyumeFogDebug.LightVisFloor, 0f, 1f);
             float tintMax = MathHelper.Clamp(KiyumeFogDebug.LightTintStrength, 0f, 1f);
             for (int y = 0; y < winH; y++) {

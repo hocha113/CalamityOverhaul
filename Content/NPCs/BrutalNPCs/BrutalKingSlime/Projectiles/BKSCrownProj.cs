@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
 
         private const int LaunchTime = 24;
         private const int TelegraphTime = 34;
-        /// <summary>嵌地滞留拍：伤害只在前8帧，其后是纯读秒——压短掉空等</summary>
+        /// <summary>嵌地滞留拍：伤害只在前8帧，其后是纯读秒，压短掉空等</summary>
         private const int LandedTime = 22;
         /// <summary>归位悬停整备拍长(收招尾巴，压短)</summary>
         private const int ReturnHoldTime = 6;
@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             Projectile.velocity = new Vector2(0f, -speed);
             Projectile.rotation += 0.2f * (1f - t);
 
-            //服务端调度：按宿主招式分派——天坠转瞄准、审判转指挥；
+            //服务端调度：按宿主招式分派，天坠转瞄准、审判转指挥；
             //其余(阶段转换脱冕等纯演出)升空后直接归位砸扣，绝不滞空闲逛
             if (!VaultUtils.isClient && ModeTimer >= LaunchTime) {
                 int hostState = (int)host.ai[2];
@@ -256,7 +256,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             }
 
             if (SubBeat < 1f) {
-                //拍一：悬停整备——急停回正，蓄一口气
+                //拍一：悬停整备，急停回正，蓄一口气
                 if (ModeTimer <= ReturnHoldTime) {
                     Projectile.velocity *= 0.72f;
                     Projectile.rotation = Projectile.rotation.AngleLerp(0f, 0.2f);
@@ -276,7 +276,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
                 return;
             }
 
-            //拍三：俯冲砸扣——锁X复合加速直坠
+            //拍三：俯冲砸扣，锁X复合加速直坠
             Projectile.Center = new Vector2(MathHelper.Lerp(Projectile.Center.X, anchor.X, 0.3f), Projectile.Center.Y);
             float vy = Math.Max(Projectile.velocity.Y, 3f) * 1.17f;
             Projectile.velocity = new Vector2(0f, Math.Min(vy, 36f));
@@ -385,7 +385,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             }
 
             //审判模式的指挥光环：解析成形光环着色器(软核+双金环+金丝弧+辐条)，
-            //替换旧"巨型八边形辉光块+星形贴图"——贴图多边形 alpha 边界在超尺度放大下暴露
+            //替换旧"巨型八边形辉光块+星形贴图"，贴图多边形 alpha 边界在超尺度放大下暴露
             if (Mode == ModeDecree) {
                 DrawDecreeHalo(fade);
             }

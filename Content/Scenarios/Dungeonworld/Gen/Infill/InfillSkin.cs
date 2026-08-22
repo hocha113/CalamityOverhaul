@@ -50,10 +50,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Infill
         /// <summary>块散列盐,让填充区的墙变体斑形与各层主内容错开</summary>
         internal int PatchSalt;
         /// <summary>
-        /// 本层可否在<b>玩家踩得到的面</b>上用裂砖。裂砖在原版是"假地板"——踩碎坠落
+        /// 本层可否在<b>玩家踩得到的面</b>上用裂砖。裂砖在原版是"假地板"，踩碎坠落
         /// (STRUCTURES F31),所以它同时是陷阱母题:认领表判给 L5/L6,L1/L3/L4/L7 禁用,
         /// L2 只留"教学首现单段"那一处。禁用层的旧损感改由本层砖+做旧漆表达。
-        /// <para/>天花与过梁位不受此限——那里的裂砖只是纹理,是 §3.2-6 明许的做旧手段之一。
+        /// <para/>天花与过梁位不受此限，那里的裂砖只是纹理,是 §3.2-6 明许的做旧手段之一。
         /// </summary>
         internal bool AllowCrackedFloor;
 

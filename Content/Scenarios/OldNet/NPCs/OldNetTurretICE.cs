@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
     /// <summary>
     /// 哨戒炮塔 ICE（M3 威胁扩容）：地下机房的定点岗哨。悬锚不动，
     /// 半径内通视充能锁定（可读性=扫描线收拢），锁定完成点亮玩家并周期射击；
-    /// 弹丸伤 RAM 为主（ICE 家族的牙）。可击毁，击毁有噪音代价——
+    /// 弹丸伤 RAM 为主（ICE 家族的牙）。可击毁，击毁有噪音代价
     /// 潜行绕行 or 拔哨，仍是决策不是清怪
     /// </summary>
     internal class OldNetTurretICE : ModNPC
@@ -226,7 +226,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            //TODO(MP)：本钩子只在被打端跑，RAM 扣减 MP 客户端直调必失败——联机化走请求包
+            //TODO(MP)：本钩子只在被打端跑，RAM 扣减 MP 客户端直调必失败，联机化走请求包
             RamSystem.TryConsume(target, OldNetMetrics.TurretBoltRam, out _);
         }
 

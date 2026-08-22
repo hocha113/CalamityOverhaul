@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
         Death = 12,
         /// <summary>投技：超级砸落正压吞没，带人弹跳消化后高压喷出</summary>
         Engulf = 13,
-        /// <summary>签名：质心抛掷——抛出六成身体质量砸向预测点，核心期受创加深</summary>
+        /// <summary>签名：质心抛掷，抛出六成身体质量砸向预测点，核心期受创加深</summary>
         MassEject = 14,
     }
 

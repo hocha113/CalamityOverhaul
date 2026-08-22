@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
         public override string StateName => "Hub";
         public override SkeletronStateIndex StateIndex => SkeletronStateIndex.Hub;
 
-        /// <summary>缺口（契约3）：贴脸距离内不点射——近身是明确的安全窗，发射条件直接读取</summary>
+        /// <summary>缺口（契约3）：贴脸距离内不点射，近身是明确的安全窗，发射条件直接读取</summary>
         private const float MinFireDistancePx = 240f;
 
         public override ISkeletronState OnUpdate(SkeletronStateContext context) {

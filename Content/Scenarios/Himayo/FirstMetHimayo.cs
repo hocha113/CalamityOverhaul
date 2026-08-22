@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
              .End();
         }
 
-        //拿到鬼切即触发，但要等鸟居退场演出（含余响后的静默拍）收完——
+        //拿到鬼切即触发，但要等鸟居退场演出（含余响后的静默拍）收完
         //目送容身的鸟居沉没之后，真夜才开口
         protected override NarrativePolicy ConfigurePolicy() => new() {
             IsCompleted = _ => HimayoStorySync.FirstMet,

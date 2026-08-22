@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
 {
     /// <summary>
     /// 信号塔：世界里第一种可骇入信号塔 Actor（F14）。<br/>
-    /// 本体不攻击，是区域电子战的枢纽——病毒广播的冲击波、电网瘫痪的断电场从它发出，
+    /// 本体不攻击，是区域电子战的枢纽，病毒广播的冲击波、电网瘫痪的断电场从它发出，
     /// 信标伪造与提权把它当作广播源。贴图为程序化绘制（桅杆+横担+航标灯），待美术替换；
     /// 跨端身份走 <see cref="CircuitActorKey"/>，为解除单人限制预留
     /// </summary>

@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
 
             animTimer += 1f / 60f;
 
-            //绑定失效或走远时收摊。距离按结构包围盒最近点算,不能用左上角——
+            //绑定失效或走远时收摊。距离按结构包围盒最近点算,不能用左上角
             //MK2 风塔 3×27 格,塔顶左上距塔底玩家超 400px,按左上算刚右键开板就被这里关掉
             if (IsActive) {
                 bool shutDown = GeneratorTP == null || !GeneratorTP.Active;

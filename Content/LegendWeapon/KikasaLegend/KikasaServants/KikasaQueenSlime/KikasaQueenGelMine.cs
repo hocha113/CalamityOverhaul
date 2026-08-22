@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 {
     /// <summary>
     /// 鬼奴史莱姆皇后的空中晶格雷：一团凝胶被甩向阵位点，飞行中减速、
-    /// 内里晶种渐长，到位一拍脆响原地结晶成悬浮血晶棱块——
+    /// 内里晶种渐长，到位一拍脆响原地结晶成悬浮血晶棱块
     /// 滞留期微光脉动、缓慢自旋、晶面偶闪；到时或敌人贴近即碎裂成一小扇晶片弹。
     /// 阵位点由 ai[0/1] 随 spawn 包带全；ai[2]=1 为溶解令（皇后遣返/湖塌时下达），
     /// 走"先失光泽再化水"的谢幕而非碎裂。碎裂/收场裁决只在 owner 端，
@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 phaseTimer = 0;
             }
 
-            //湖塌/主人死亡：晶体失去湖的供养——只有 owner 裁决（服务器无领域状态）
+            //湖塌/主人死亡：晶体失去湖的供养，只有 owner 裁决（服务器无领域状态）
             if (Authority && phase != PhaseMelt && phaseTimer % 10 == 0 && !LakeHealthy(owner)) {
                 OrderMelt();
             }

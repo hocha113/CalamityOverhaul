@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             return null;
         }
 
-        /// <summary>幕一：挣扎强撑——抽搐、漏电、风暴在他身上打摆子</summary>
+        /// <summary>幕一：挣扎强撑，抽搐、漏电、风暴在他身上打摆子</summary>
         private void UpdateStruggle(FishronStateContext context, NPC npc) {
             //确定性抽搐（各端一致的正弦抖动，不吃随机）
             float t = Timer * 0.35f;

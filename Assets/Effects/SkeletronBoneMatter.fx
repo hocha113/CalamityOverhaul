@@ -16,7 +16,7 @@ float3 uBonePale;   //骨白
 float3 uBoneShadow; //骨影
 float3 uGhostColor; //幽缘冷光
 
-// 噪声固定 s1：旧 sampler_state 自动分配落 s0，且消费端从未设置过 uNoiseTex 参数——
+// 噪声固定 s1：旧 sampler_state 自动分配落 s0，且消费端从未设置过 uNoiseTex 参数
 // 实机读到的是上一批残留在 s0 的任意贴图（未定义行为）；
 // C# 侧须在 pass.Apply 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
 sampler noiseSamp : register(s1);

@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
     /// <summary>
     /// 任务书总开关键。委托卷宗并入书内后只剩这一把，<br/>
-    /// 且必须挂在不受 <see cref="CWRServerConfig.QuestLog"/> 影响的系统上——
+    /// 且必须挂在不受 <see cref="CWRServerConfig.QuestLog"/> 影响的系统上
     /// 图谱被配置关掉时书仍是委托的唯一宿主，键不能跟着一起没
     /// </summary>
     internal class QuestBookKeySystem : ModSystem

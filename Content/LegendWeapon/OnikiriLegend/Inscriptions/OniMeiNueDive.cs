@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
     /// <summary>
     /// 鵺切「落鵺」：空中第五拍不再横甩巨弧，改成整个人扑下去砸地。<br/>
     /// 俯冲期间接管玩家纵向速度（横向仍留一点操舵余地），落地炸开墨压环并把周围拽向落点。<br/>
-    /// 收势 <see cref="OniMeiCombat.NueDiveRecoverTicks"/> 帧不能疾走——砸完要爬起来。<br/>
+    /// 收势 <see cref="OniMeiCombat.NueDiveRecoverTicks"/> 帧不能疾走，砸完要爬起来。<br/>
     /// ai[0]=基础武器伤害 ai[1]=尺寸倍率
     /// </summary>
     internal class OniMeiNueDive : ModProjectile, IOniBladeOccupant

@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         private const string FreezeReason = "QuestLog";
 
         /// <summary>
-        /// 任务图谱是否启用。关掉时本书仍是委托卷宗的宿主——
+        /// 任务图谱是否启用。关掉时本书仍是委托卷宗的宿主
         /// 委托来自各条剧情线，不该跟着图谱一起消失
         /// </summary>
         public static bool ChartEnabled => CWRServerConfig.Instance.QuestLog;
@@ -430,14 +430,14 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
 
             //教程卡浮在书页上：它占住的地方不能再落到图谱或页脚键上，
-            //否则点「下一步」会连带把整张图拖走。只掐输入，分区照常交付——
+            //否则点「下一步」会连带把整张图拖走。只掐输入，分区照常交付
             //委托卷宗的行矩形正是教程自己要用来定位的东西，不能因为悬停就停更
             bool guideBlocking = QuestBookGuideRenderer.PointerBlock.Contains(Main.MouseScreen.ToPoint());
             if (guideBlocking) {
                 player.mouseInterface = true;
             }
 
-            //页眉合卷/重开必须在卡片短路之前判定——卡叠到「?」上时 || 会把 UpdateChrome 整段吞掉
+            //页眉合卷/重开必须在卡片短路之前判定，卡叠到「?」上时 || 会把 UpdateChrome 整段吞掉
             bool hoveredHeader = UpdateHeaderButtons();
             bool hoveredChrome = hoveredHeader || guideBlocking || (!guideBlocking && UpdateChrome());
             bool hoveredDetail = !guideBlocking && UpdateDetailPanel(scrollDelta);
@@ -854,7 +854,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             spriteBatch.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, canvas);
 
             //视口外的节点直接跳过：裁剪只是不显示，绘制指令照样会发出去。
-            //连线不在这里剔——样式按调用序号取抖动种子，跳过会让墨路随平移重洗一遍
+            //连线不在这里剔，样式按调用序号取抖动种子，跳过会让墨路随平移重洗一遍
             Rectangle cull = canvas;
             cull.Inflate(120, 120);
 

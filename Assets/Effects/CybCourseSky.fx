@@ -1,5 +1,5 @@
 // ============================================================================
-//CybCourseSky.fx 编译中的超梦——训练空间天穹
+//CybCourseSky.fx 编译中的超梦，训练空间天穹
 //材质：被扫描线维持的全息构造体悬在未渲染的记忆虚空里
 //三个元素：虚空底色雾 / 地平线巨型六角构造核心(琥珀心跳) / 六角编译带+上升数据尘
 //纯 ALU 直线算术：无采样器、无动态分支、无 atan2(噪声全走笛卡尔)
@@ -126,7 +126,7 @@ float4 PSCybCourseSky(float2 uv : TEXCOORD0) : COLOR0
     float yFarD = uv.y + uCamY * 0.20;   //远层数据尘
 
     //=
-    //元素 1 —— 未渲染的虚空：上黑下微亮的纵向渐变 + 地平线雾
+    //元素 1：未渲染的虚空：上黑下微亮的纵向渐变 + 地平线雾
     //=
     float3 col = lerp(VOID_TOP, VOID_LOW, pow(saturate(uv.y), 1.35));
 
@@ -137,7 +137,7 @@ float4 PSCybCourseSky(float2 uv : TEXCOORD0) : COLOR0
     col += float3(0.020, 0.070, 0.110) * fog * fogBand * 0.55;
 
     //=
-    //元素 2 —— 巨型六角构造核心（唯一大形体，慢呼吸+琥珀心跳）
+    //元素 2：巨型六角构造核心（唯一大形体，慢呼吸+琥珀心跳）
     //=
     //核心锚在世界坐标里，行走/升降时按远景档位滑移
     float coreX = 0.5 * uAspectRatio - uCamX * 0.024;
@@ -173,7 +173,7 @@ float4 PSCybCourseSky(float2 uv : TEXCOORD0) : COLOR0
     col += AMBER * horizLine * sweep * (0.30 + fog * 0.25);
 
     //=
-    //元素 3 —— 六角编译带 + 上升数据尘
+    //元素 3：六角编译带 + 上升数据尘
     //=
     {
         //地平线附近一条蜂窝带：多数单元是虚空，少数常驻亮边，极少数正在编译就位

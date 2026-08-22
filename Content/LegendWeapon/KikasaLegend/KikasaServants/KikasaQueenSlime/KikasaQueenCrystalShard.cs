@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Lighting.AddLight(Projectile.Center, 0.42f * glow, 0.16f * glow, 0.22f * glow);
 
             //落回血湖：晶体化回血水被湖收走，不迸溅。
-            //只收"坠落中"的晶片并给出生宽限——俯冲晶爆可能在湖面下起爆，
+            //只收"坠落中"的晶片并给出生宽限，俯冲晶爆可能在湖面下起爆，
             //新星的下半圈得先飞完自己的攻击行程，不能出生即被湖吞
             Player owner = Main.player[Projectile.owner];
             bool lakeAlive = owner?.active == true
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
 
-            //贴壁碎裂（机制身份保留）：手动地形检测替代 tileCollide——
+            //贴壁碎裂（机制身份保留）：手动地形检测替代 tileCollide
             //湖线以下的真地形被湖面盖住，撞上去像凭空截停，不算贴壁
             if (Life > 3
                 && (!lakeAlive || Projectile.Center.Y < kdp.LakeWorldY - 2f)

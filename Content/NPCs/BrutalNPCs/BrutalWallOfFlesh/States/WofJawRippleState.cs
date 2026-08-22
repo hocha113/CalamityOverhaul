@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
 {
     /// <summary>
     /// 签名招·饥饿长城：整面墙裂开成一列巨口，按车道接力噬咬(第二轮反向)。
-    /// 每轮掷一张死颚永不咬合——耷拉滴涎的哑口就是贴墙安全屋；
+    /// 每轮掷一张死颚永不咬合，耷拉滴涎的哑口就是贴墙安全屋；
     /// 或退到咬程之外，但墙仍在缓推，咬程圈会逐渐吃掉退路。
     /// 阶段3专属，大迁徙喘息后首秀
     /// </summary>
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
 
         /// <summary>
         /// 生成一轮颚阵(服务端)：五道车道各一张颚，咬合帧按波次错拍写入ai[2]；
-        /// 死颚ai[2]=-1，视觉上耷拉滴涎——缺口有身份，能被读出来
+        /// 死颚ai[2]=-1，视觉上耷拉滴涎，缺口有身份，能被读出来
         /// </summary>
         private static void SpawnVolley(WofStateContext context, bool topDown) {
             if (VaultUtils.isClient) {

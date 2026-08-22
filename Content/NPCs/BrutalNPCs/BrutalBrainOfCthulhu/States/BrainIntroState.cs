@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
                 return null;
             }
 
-            //幕四：凝视静场——威压来自静止
+            //幕四：凝视静场，威压来自静止
             if (Timer <= StillEnd) {
                 context.GhostFade = 1f;
                 //极缓慢地面向玩家漂移

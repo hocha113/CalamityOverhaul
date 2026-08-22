@@ -7,8 +7,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume
 {
     /// <summary>
     /// 鬼梦调试入口，仅调试构建存在（正式入口等玩法定下来再接）：<br/>
-    /// /kiyume enter —— 坠入鬼梦<br/>
-    /// /kiyume exit —— 醒来
+    /// /kiyume enter：坠入鬼梦<br/>
+    /// /kiyume exit：醒来
     /// </summary>
     internal class KiyumeCommand : ModCommand
     {

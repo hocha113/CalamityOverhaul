@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             }
             FishronStormSky.PushRainBoost(0.35f);
 
-            //高空慢漂（缓慢、可读——威胁全在雷上）
+            //高空慢漂（缓慢、可读，威胁全在雷上）
             Vector2 goal = player.Center + new Vector2(0, -440f);
             Vector2 desired = (goal - npc.Center).SafeNormalize(Vector2.Zero) * 6f;
             npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.05f);

@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Industrials
         /// <summary>
         /// 周期性权威锚定间隔(帧)：机器状态在各端本地模拟，事件同步之外由服务器按此节奏
         /// 推一次全量包纠偏累计漂移；按 WhoAmI 错峰。返回 0 关闭。
-        /// 管道类不参与——数量大，且其电量经压差均衡向机器锚点自愈。
+        /// 管道类不参与，数量大，且其电量经压差均衡向机器锚点自愈。
         /// 三重抑制控制空闲流量：UE未变化时降为四倍间隔的保活；范围内无玩家时不发
         /// </summary>
         public virtual int NetAnchorIntervalTicks => 300;

@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 EmpressMotion.Shake(npc.Center, 3f, 10);
             }
             if (Timer == castB) {
-                //反旋second层，错半距——双层螺旋园
+                //反旋second层，错半距，双层螺旋园
                 CastPetalRing(context, npc, 18, -0.0105f, 3.7f, MathHelper.TwoPi / 36f);
                 PlayLocal(SoundID.Item163 with { Volume = 0.9f, Pitch = 0.18f }, npc.Center);
             }

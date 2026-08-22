@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
 {
     /// <summary>
     /// 旧网首潜五步引导：噪音计 → 账本 → 节点分级 → 中继与登出 → 距离底噪。
-    /// 信息卡制——每步都有"知道了"确认，玩家真实做出对应动作也会自动推进。
+    /// 信息卡制，每步都有"知道了"确认，玩家真实做出对应动作也会自动推进。
     /// 卡片底板走 OldNetHud.fx 的 TechPanel（域内同一张皮），缺编 CPU 回退。
     /// 经 <see cref="GuideLeadQueue"/> 排队，优先级 20（排在全部既有引导之后）
     /// </summary>

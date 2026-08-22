@@ -1,17 +1,17 @@
 // ============================================================================
-//KikasaInkDrop.fx 墨雨——鬼伞普攻的演出主角
-//TechDrop:材质=一笔水墨,不是液珠——细长中脊笔触(头收笔锋、腹在前 28%、长锥收尾)、
+//KikasaInkDrop.fx 墨雨，鬼伞普攻的演出主角
+//TechDrop:材质=一笔水墨,不是液珠，细长中脊笔触(头收笔锋、腹在前 28%、长锥收尾)、
 //         左右异 seed 蚀边(墨的边不对称)、uBend 随飞行曲率弓身(笔随轨迹弯)、
 //         体中段飞白镂空(干笔擦痕)、尾后噪声卷曲的墨丝;血统只留脊线一线暗红
 //         头在 quad 上缘(v=0):C# 侧 rotation = 速度角 + PiOver2
-//TechPour:倒撑重击的墨瀑柱——材质=倾倒的黑墨水瀑,起止两端皆有收口:
+//TechPour:倒撑重击的墨瀑柱，材质=倾倒的黑墨水瀑,起止两端皆有收口:
 //         源头=碗口溢流球根+球根下颈缩(任何时刻无水平实切),
 //         落点=推进期坠落头/触地后溅丘+上卷翻沫+撕裂接触线/无落点时散逸成股,
 //         排空=uDrainV 自源撕裂啃掉+尾沿断成滴串;
 //         质感=重力加速签名(sqrt 纵坐标上密下疏+柱身沿程收窄)+股束浓淡+双层视差流,
 //         中轴血芯一线;uWidthT 宽度全生命周期包络(展开/塌缩由 C# 缓动)
 //坐标全笛卡尔（无 atan2）；直线算术+普通 tex2D，FNA3D 安全
-//预乘输出，进 AlphaBlend 批——黑要读作黑，加色批画不出黑
+//预乘输出，进 AlphaBlend 批，黑要读作黑，加色批画不出黑
 //绑定噪声实测值域 0.227~0.776(2026-08 像素探针,三通道同灰度),阈值须过 nrm() 归一
 //消费入口 KikasaRains/KikasaRainRender.cs
 // ============================================================================
@@ -132,7 +132,7 @@ float4 PSPour(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
     float xc = (coords.x - 0.5) * 2.0;
     float ws = max(uWScale, 0.004);  //一个柱宽的 v 跨度,宽度相关纵向特征全用它标定
 
-    //--- 中轴:源头钉死碗口,行波+噪声游走沿程放大——流体甩尾,不是刚体摆 ---
+    //--- 中轴:源头钉死碗口,行波+噪声游走沿程放大，流体甩尾,不是刚体摆 ---
     float swayT = saturate((v - uSrcV) / max(uSpanV - uSrcV, 0.05));
     float swayEnv = pow(swayT, 1.5);
     float nSpine = nrm(tex2D(uNoiseTex, float2(uSeed * 3.1, v * 1.1 - uTime * 0.6)).r);
@@ -140,7 +140,7 @@ float4 PSPour(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
                 + (nSpine - 0.5) * 0.10 * swayEnv;
     float dx = xc - spine;
 
-    //--- 重力加速签名:sqrt 纵坐标——上密下疏,同一滚速在下段跑得更快 ---
+    //--- 重力加速签名:sqrt 纵坐标，上密下疏,同一滚速在下段跑得更快 ---
     float fall = sqrt(max(v - uSrcV, 0.0) + 0.015);
 
     //--- 蚀边噪声(左右异 seed,随流下涌),前锋/接触面/排空的撕裂共用 ---

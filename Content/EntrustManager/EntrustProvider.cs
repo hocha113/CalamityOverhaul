@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.EntrustManager
 {
     /// <summary>
     /// 委托提供者：一次声明，处处使用。<br/>
-    /// 身份由「行右缘徽记 + 展开区落款」承载——徽记框的画法归界面样式
+    /// 身份由「行右缘徽记 + 展开区落款」承载，徽记框的画法归界面样式
     /// （<see cref="IEntrustManagerStyle.DrawProviderBadge"/>），本类只出纹样、主色与头像源
     /// </summary>
     internal sealed class EntrustProvider

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
 {
     /// <summary>
     /// 真眼链式死光：两只真眼之间的有限长弦光束（集群组合技的接力边/星芒弦）。
-    /// 两端点每帧读活体位置——编队缓旋时弦随之转动，视觉永不脱锚。
+    /// 两端点每帧读活体位置，编队缓旋时弦随之转动，视觉永不脱锚。
     /// ai[0]=源真眼 whoAmI，ai[1]=靶真眼 whoAmI，ai[2]=预警帧数。
     /// 端点任一失效则快进收束
     /// </summary>

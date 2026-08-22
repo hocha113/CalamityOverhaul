@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
     /// <summary>
     /// 湖面鬼火层渲染与演出派发（纯客户端，只对观看域生效）：
     /// 火体=KikasaWispFire.TechLakeFire 世界锚定 quad（画在 EndEntityDraw，
-    /// 自动获得湖面镜面倒影）；粒子只作点缀——离体鬼火珠、贴根火舌、
+    /// 自动获得湖面镜面倒影）；粒子只作点缀，离体鬼火珠、贴根火舌、
     /// 压制拍的蒸汽与濒死出逃珠；水线金光照明
     /// </summary>
     internal static class KikasaWispFX
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
             quenchHissDone = false;
         }
 
-        /// <summary>有效燃沿半径：燃满后覆盖整湖——湖带跟着施术者走，火跟着湖走</summary>
+        /// <summary>有效燃沿半径：燃满后覆盖整湖，湖带跟着施术者走，火跟着湖走</summary>
         internal static float EffectiveReachPx(KikasaDomainPlayer kdp)
             => kdp.WispSpread >= 0.999f
                 ? KikasaLakeSurface.HalfWidth * 8f
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
                 return;
             }
 
-            //淬熄嘶声：压制拍起手一记——雨浇进火里
+            //淬熄嘶声：压制拍起手一记，雨浇进火里
             if (kdp.WispQuench > 0.02f && !quenchHissDone) {
                 quenchHissDone = true;
                 SoundEngine.PlaySound(SoundID.LiquidsWaterLava with { Volume = 0.85f, Pitch = -0.25f, MaxInstances = 2 },
@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
                 return;
             }
 
-            //quad 只裁屏幕与湖带，未燃段由着色器的 reach 熄掉——前沿辉光要越出已燃段一点
+            //quad 只裁屏幕与湖带，未燃段由着色器的 reach 熄掉，前沿辉光要越出已燃段一点
             float casterX = kdp.Player.Center.X;
             float left = MathF.Max(Main.screenPosition.X - 120f, casterX - KikasaLakeSurface.HalfWidth);
             float right = MathF.Min(Main.screenPosition.X + Main.screenWidth + 120f, casterX + KikasaLakeSurface.HalfWidth);

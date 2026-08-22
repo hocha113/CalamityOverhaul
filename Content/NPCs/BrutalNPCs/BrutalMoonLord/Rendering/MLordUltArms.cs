@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
     /// 黑闪大招的四条幻影手臂：纯客户端渲染模块，不占 NPC 实体。
     /// 状态每帧下发 <see cref="MLordUltArmDrive"/>，掌位由临界阻尼弹簧追踪确定性目标
     /// （弹簧滞后=重量感，确定性伪噪声=搓动的不完美跟踪）；肘位双骨解析 IK，
-    /// 极性带迟滞投票——历史教训（2026-08-13）：任何从残留状态进入的路径都必须自愈，
+    /// 极性带迟滞投票，历史教训（2026-08-13）：任何从残留状态进入的路径都必须自愈，
     /// 断帧/换主即硬重建（snap），弹簧永不从来历不明的状态里积分。
     /// 视觉双层构造：暗体真 alpha 遮挡 + 红黑电弧加色缘（黑闪专属材质）
     /// </summary>
@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                     return shoulder + outDir.RotatedBy(core.rotation) * reach + tremor;
                 }
                 case MLordUltArmPhase.Embrace: {
-                    //EaseOutBack：掌先冲过球面再回弹——环抱有"合拢撞击"的一拍
+                    //EaseOutBack：掌先冲过球面再回弹，环抱有"合拢撞击"的一拍
                     float back = EaseOutBack(phaseT, 1.4f);
                     float reach = MathHelper.Lerp(330f, drive.BallRadius + 26f, back);
                     return drive.BallCenter + HomeAngles[slot].ToRotationVector2() * Math.Max(reach, 8f);
@@ -367,7 +367,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
         /// <summary>
         /// 解析双骨 IK：肘 = 弦中点 ± 垂距。极性判据 = 垂向对（球外向 + 体侧解剖偏好）的
         /// 带符号投影：球外向让肘环抱朝外，体侧常量偏好在"掌位于球正下/正上"的退化位形里
-        /// 兜底（纯球外向曾在该位形陷入死区永不自愈——2026-08-13 案的形态）。
+        /// 兜底（纯球外向曾在该位形陷入死区永不自愈，2026-08-13 案的形态）。
         /// |投影| 落入 <see cref="SideDeadZone"/> 不计票（边界抖动锁死当前侧），
         /// 对侧连续 <see cref="PolarityVotes"/> 帧足签才翻转。
         /// 仿真回归：错侧残留在全部揉搓驻留位 ≤7 tick 自愈
@@ -413,7 +413,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
 
         /// <summary>
         /// 掌中黑球：shader 出体（暗核吞光+吸积盘+红黑电弧），缺 shader 走 CPU 双层回退。
-        /// 暗体永远真 alpha（遮挡背景），电弧永远加色——黑闪材质铁律
+        /// 暗体永远真 alpha（遮挡背景），电弧永远加色，黑闪材质铁律
         /// </summary>
         private static void DrawHeldBall(Vector2 screenPos) {
             float r = Math.Max(drive.BallRadius, 4f);

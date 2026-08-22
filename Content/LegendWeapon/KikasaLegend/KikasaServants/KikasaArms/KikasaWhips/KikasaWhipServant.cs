@@ -17,14 +17,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 {
     /// <summary>
     /// 械奴·湖水鞭群（通用鞭奴）。单弹幕同时驱动至多三条湖水凝成的盘鞭：
-    /// Projectile.Center 为编队质心权威同步，各鞭位置由状态机 + Seed 在各端本地推算——
+    /// Projectile.Center 为编队质心权威同步，各鞭位置由状态机 + Seed 在各端本地推算
     /// 联机契约与枪奴/刀奴同构（owner 裁决转场盖 netUpdate 章、节拍闩防快照回卷、
     /// 生命线只有 owner 判、鞭数与武器类型经 ExtraAI 随包补发）。
     /// 常态是盘起的鞭（沉入武器物品贴图 + 水鞘扫描水线）绕主人慢游；
     /// 出手为轮转鞭笞：逐鞭错帧抢占目标侧翼驻位（驻距=鞭尖峰值探出×0.62，
-    /// 鞭尖正好扫过目标身后——判定慷慨）、短蓄后甩出 <see cref="KikasaWhipLash"/>
+    /// 鞭尖正好扫过目标身后，判定慷慨）、短蓄后甩出 <see cref="KikasaWhipLash"/>
     /// 鞭体弹幕（几何/判定/鞭响全对齐原版 AI_165 契约），鞭响帧鞭柄后坐一顿。
-    /// 鞭子的机制身份被完整保留：鞭中即把 MinionAttackTargetNPC 指向目标——
+    /// 鞭子的机制身份被完整保留：鞭中即把 MinionAttackTargetNPC 指向目标
     /// 全部役鬼当场集火，原版鞭的标签 buff 照挂。个性化由 KikasaArmsProfiler
     /// 鞭档案承担：射程/段数/节奏/伤害/挥音随沉入武器推得
     /// </summary>
@@ -234,7 +234,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：只有 owner 裁决——服务器无领域状态（既定契约）
+            //生命线：只有 owner 裁决，服务器无领域状态（既定契约）
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
             }
@@ -353,7 +353,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
             }
 
-            //整队起鞭拍：全员一顿 + 一记轻甩空响——鞭醒了
+            //整队起鞭拍：全员一顿 + 一记轻甩空响，鞭醒了
             if (!snapBeatDone && t >= SnapFrame) {
                 snapBeatDone = true;
                 SoundEngine.PlaySound(Profile.SwingSound with { Volume = 0.4f, Pitch = -0.1f, MaxInstances = 2 }, Projectile.Center);
@@ -431,7 +431,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, desired, 0.14f);
 
-            //出手裁决：鞭只有一式——轮转鞭笞；owner 盖章
+            //出手裁决：鞭只有一式，轮转鞭笞；owner 盖章
             if (target >= 0 && attackCooldown <= 0 && StateTimer > 26) {
                 attackIndex++;
                 StateTimer = 0;
@@ -689,7 +689,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         slot.Y += MathF.Sin(tGlobal * 2f + Seed * 2f + i * 1.9f) * 6f;
                         whipTarget[i] = slot;
                         ChaseWhip(i, 0.06f, 0.84f);
-                        //盘鞭微倾慢晃；错帧偶发一记盘卷抽动——静里的一点活
+                        //盘鞭微倾慢晃；错帧偶发一记盘卷抽动，静里的一点活
                         float twitchT = (t + i * 71) % 220;
                         if (twitchT < 16f) {
                             whipRot[i] += MathF.Sin(twitchT / 16f * MathHelper.Pi) * 0.1f;
@@ -851,7 +851,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             return p >= WindupLen && p < WindupLen + Profile.LashTime;
         }
 
-        /// <summary>uForm 水线呼吸：同族契约——实体上半 + 液态下缘</summary>
+        /// <summary>uForm 水线呼吸：同族契约，实体上半 + 液态下缘</summary>
         private float WhipForm(int i) {
             int t = (int)StateTimer;
             float steady = 0.24f
@@ -1032,7 +1032,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
             }
 
-            //蓄势亮意：抢位短蓄期鞭柄积起一点水光——要起鞭了
+            //蓄势亮意：抢位短蓄期鞭柄积起一点水光，要起鞭了
             if (State == StateLash) {
                 for (int i = 0; i < whipCount; i++) {
                     int p = LashPhase(i, t);

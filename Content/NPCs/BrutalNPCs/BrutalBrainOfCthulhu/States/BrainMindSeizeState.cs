@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
 {
     /// <summary>
     /// 二阶段投技·摄心镜狱：六具镜像绕锁死锚点收环（纯预告无判定，走出环心即可反制），
-    /// 收环完成时玩家仍在环心则被念力定身悬空——三具镜像逐一穿刺，真身最后蓄力贯穿撞散镜阵掷飞
+    /// 收环完成时玩家仍在环心则被念力定身悬空，三具镜像逐一穿刺，真身最后蓄力贯穿撞散镜阵掷飞
     /// 落空则镜阵内爆自碎，真身陷入受创加深的力竭惩罚窗
     /// 网络形状：判定与时序服务端权威（override.ai[4]=受害者+1、[5]=掷飞角，netUpdate 载运）；
     /// 受害者的位移钉锚/输入锁/伤害结算全部在其本地客户端（BrainMindSeizePlayer），服务端不写玩家位置

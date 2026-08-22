@@ -698,7 +698,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 ver = Projectile.Center.To(mousePos);
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     Projectile.ai[0] += Main.rand.Next(1, 3);
-                    Projectile.netUpdate = true;//肮脏的手段——HoCha113, 2024-06-02 02:37
+                    Projectile.netUpdate = true;//肮脏的手段，HoCha113, 2024-06-02 02:37
                 }
                 if (Projectile.ai[0] > 30) {
                     SoundEngine.PlaySound(SoundID.Item7, Projectile.Center);

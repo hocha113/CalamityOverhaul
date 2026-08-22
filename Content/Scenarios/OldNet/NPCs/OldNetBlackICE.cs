@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
 {
     /// <summary>
     /// Black ICE 猎杀者：快而笨、可甩掉、不可杀。极速高于玩家但转向率极低
-    /// （天然过冲/回头钝感），断视线拉开距离可甩；伤害偏向 RAM 而非血量——
+    /// （天然过冲/回头钝感），断视线拉开距离可甩；伤害偏向 RAM 而非血量
     /// 接触咬合小额 HP + 扣 RAM，近距嗅探场持续压 RAM，精英三连咬合触发 RAM 锁定
     /// （锁定 = 清零 → 链路烧断弹出）。锁定目标期间按间隔武器化施放 PvP 骇入协议。
     /// TODO(MP)：OnHitPlayer 只在被打端跑而 RAM 扣减需权威端，联机化按 tml-netcode-pitfalls 重排
@@ -200,7 +200,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
         //──── 咬合：RAM 才是牙 ────
 
         public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo) {
-            //TODO(MP)：本钩子只在被打端跑，RAM 扣减 MP 客户端直调必失败——联机化走请求包
+            //TODO(MP)：本钩子只在被打端跑，RAM 扣减 MP 客户端直调必失败，联机化走请求包
             RamSystem.TryConsume(target, OldNetMetrics.HunterBiteRam, out _);
 
             if (!Elite) {

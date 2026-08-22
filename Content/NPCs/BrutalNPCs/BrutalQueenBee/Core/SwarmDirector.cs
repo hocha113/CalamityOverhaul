@@ -405,7 +405,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core
 
         /// <summary>
         /// 摇摆舞信号波：指令沿槽位链行进的波前，返回该槽位当前的闪光强度 0~1<br/>
-        /// 波前从槽位0(箭尖/矛头/墙顶)出发扫向队尾，刚被扫过的蜂最亮后指数熄灭——<br/>
+        /// 波前从槽位0(箭尖/矛头/墙顶)出发扫向队尾，刚被扫过的蜂最亮后指数熄灭，<br/>
         /// 读作"命令正在传遍蜂群"；强度越高波越急，替代旧的连环辉光带
         /// </summary>
         public float GetSignalFlash(int slot, int count) {

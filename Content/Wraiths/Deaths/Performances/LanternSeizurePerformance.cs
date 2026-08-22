@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
     /// 前兆：三盏鬼灯骤停环游、缓缓围拢；<br/>
     /// 显形：逐盏熄灭，黑暗一层层合拢，最后只剩玩家身上一点残光；<br/>
     /// 处决：黑暗中三道灯火斩以 0/2/4 帧错拍自三盏灯的方位穿身而过，暗幕随第三刀骤然揭开；<br/>
-    /// 余韵：尸旁多点起第四盏灯——「再看已是灯中人」。<br/>
+    /// 余韵：尸旁多点起第四盏灯，「再看已是灯中人」。<br/>
     /// 材质：灯笼红纸与暖焰（WraithLantern shader + SoftGlow），安静恐怖，不借雷血。
     /// </summary>
     internal sealed class LanternSeizurePerformance : WraithDeathPerformance

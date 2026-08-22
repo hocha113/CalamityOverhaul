@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.HackTimes.SelfRigs
     /// 所以此处以反射顶住；一等成员的补丁提案见
     /// <c>Doc/patches/HACK32-SelfRig.md</c>（<c>AddErosionAuthority</c> / 复苏回写），
     /// 落地后本垫片整体退役。<br/>
-    /// 任一句柄取不到即 <see cref="Available"/> = false，协议侧据此整条拒用——宁可不可用，不要半生效
+    /// 任一句柄取不到即 <see cref="Available"/> = false，协议侧据此整条拒用，宁可不可用，不要半生效
     /// </summary>
     internal static class WraithDriveShim
     {

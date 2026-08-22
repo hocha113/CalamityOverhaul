@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
     //湿房统一几何契约(堰坎公理的工程化):
     //  * 每簇一条共享水线行 waterline;湿房水面一律锁在该行(满水态);
     //  * 湿房接驳口=「port」:通行洞开在[waterline-4,waterline)四行,
-    //    洞底坎(=堰坎顶/沉槛)在waterline行保持实心——水面恰与坎顶齐平,
+    //    洞底坎(=堰坎顶/沉槛)在waterline行保持实心，水面恰与坎顶齐平,
     //    settle后必然静定(§2.4-④"水面=堰坎顶-0");
     //  * 深湿房(沉没囚室/蓄水厅/深潜井)FloorTop下潜,水面仍锁共享水线;
     //  * 排水态通行:排空后房内爬升全部≤4格/跳(F2)或有平台梯,两态无死区。
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
         //  F-5 平台走道(水面上1行,净空5;两端搭上堰坎顶自动登1格,F3)
         //  F-4 水面行(=堰坎顶;两端堰坎2宽4高构造性锁水位)
         //  F-1..F-4 水体(4深,可潜;水面在走道正下,冒头即呼吸)
-        //排水态:下层地板开放,4高堰坎一跳可越(F2满跳6.6)——通行权互换
+        //排水态:下层地板开放,4高堰坎一跳可越(F2满跳6.6)：通行权互换
 
         internal static Point GalleryInteriorSize(UnifiedRandom rand)
             => new(rand.Next(20, 35), 10);
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
             int floor = room.FloorTop;
             StampAndCarve(room, L4Palette.WallBase);
 
-            //两端堰坎:2宽,自地板立到水线行(含)。必须用整砖——裂纹绿(482)踩踏即碎,
+            //两端堰坎:2宽,自地板立到水线行(含)。必须用整砖，裂纹绿(482)踩踏即碎,
             //承重/坎顶一律禁用(裂砖只准当注水坑假地板;D表"堰坎侧面裂纹绿"以此工程裁决收窄)
             for (int dx = 0; dx < 2; dx++) {
                 for (int y = waterline; y < floor; y++) {
@@ -313,7 +313,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
                 }
             }
 
-            //气龛(潜水钟):贴左井壁的倒扣斗——顶盖3宽+外侧吊柱2高,气袋2x2只开底口;
+            //气龛(潜水钟):贴左井壁的倒扣斗，顶盖3宽+外侧吊柱2高,气袋2x2只开底口;
             //水从下方顶不进来(液体无压力上溯),settle静定;满水态是换气点,排水态读作壁架
             var compartment = L4WaterWorks.Register($"深潜井{room.Bounds.Left}",
                 new Rectangle(wellL, headFloor + 3, wellR - wellL, floor - headFloor - 3),
@@ -328,7 +328,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
                 compartment.AirPockets.Add(new Rectangle(wellL, y, 2, 2));
             }
 
-            //井底沉箱(满水态深潜奖励/排水态走楼梯白捡——低水位残水4深仍盖着它,潜一小口气)
+            //井底沉箱(满水态深潜奖励/排水态走楼梯白捡，低水位残水4深仍盖着它,潜一小口气)
             tally.Add(WorldGen.PlaceChest(wellL + 1, floor - 1, TileID.Containers,
                 notNearOtherChests: false, L4Palette.ChestWaterStyle) >= 0, "井底沉箱", wellL + 1, floor - 1);
 
@@ -503,7 +503,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
                 }
             }
             //出水台阶:池沿1宽立柱,顶在水面上1格(池里一跳上台阶,再一步上台肩,F3)
-            //整砖——可站立结构禁用裂纹绿(踩碎)
+            //整砖，可站立结构禁用裂纹绿(踩碎)
             int poolL = room.InteriorLeft + shoulderW;
             int poolR = room.InteriorRight - shoulderW;
             for (int y = floor - 7; y < floor; y++) {
@@ -572,7 +572,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
         }
 
         /// <summary>
-        /// 注水坑陷阱(F31参数化,ROOMS-L4 §3:全世界注水坑收归本层;禁尖刺内衬——
+        /// 注水坑陷阱(F31参数化,ROOMS-L4 §3:全世界注水坑收归本层;禁尖刺内衬
         /// 溺水压力即坑的牙):干走廊地板3宽裂纹绿假地板,下方5宽7深水袋,
         /// 坑内平台=出坑梯(水里一跳上平台,平台一跳出坑口)。两态恒水。
         /// </summary>
@@ -584,7 +584,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
             }
             //出坑平台:水面上1行,贴坑左壁
             TileBrush.PlatformRow(mouthLeft - 1, mouthLeft + 1, floor + 3, L4Palette.PlatformFrameY);
-            //水袋4深(水面=floor+4行顶,距坑口3行——落进去必湿身,爬出来不卡人)
+            //水袋4深(水面=floor+4行顶,距坑口3行，落进去必湿身,爬出来不卡人)
             L4WaterWorks.Register($"注水坑{mouthLeft}",
                 new Rectangle(mouthLeft - 1, floor + 4, 5, 4), floor + 4, floor + 4);
         }

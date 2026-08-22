@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
 {
     /// <summary>
     /// 冰霜震荡：两次跺地，放出沿地表双向行进的霜脉冲(必须跳越)。
-    /// 第二次更快，二阶段追加错拍第三对——连跳考验
+    /// 第二次更快，二阶段追加错拍第三对，连跳考验
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)DeerclopsStateIndex.FrostQuake, typeof(DeerclopsStateContext))]
     internal class DeerclopsFrostQuakeState : DeerclopsStateBase

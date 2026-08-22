@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
     /// 聚拢（水团自尸点流向重组点）→ 成形（污水自下而上凝聚，伞面最后析出）→
     /// 作战（贴地蹒跚，突进冲撞与伞旋雨溅交替）→ 溶解（化回污水）。
     /// 状态机各端同推（规则确定性），owner 在转场盖 netUpdate 章纠偏；
-    /// 生命线只由 owner 裁决——服务器没有领域状态是既定契约。
+    /// 生命线只由 owner 裁决，服务器没有领域状态是既定契约。
     /// 演出节拍全部走本地闩，快照回卷不重播。
     /// </summary>
     internal class KikasaThrallProj : ModProjectile
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         private Vector2 DrawTopLeft => FeetAnchor - new Vector2(DrawWidth * 0.5f, DrawHeight);
 
         /// <summary>
-        /// 伞面高度：撑伞拍的环心与甩水点。DrawHeight 是名义体高、比贴图矮一截——
+        /// 伞面高度：撑伞拍的环心与甩水点。DrawHeight 是名义体高、比贴图矮一截
         /// 按 77×115 画布实测，伞缘 ≈0.92×DrawHeight、伞顶穹心 ≈1.07，取 1.0 落在伞面里
         /// </summary>
         private Vector2 CanopyAnchor => FeetAnchor - new Vector2(0f, DrawHeight);
@@ -238,7 +238,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：收域/退水/翻回血湖/入梦/主人死亡 → 溶解回水。只有 owner 裁决——
+            //生命线：收域/退水/翻回血湖/入梦/主人死亡 → 溶解回水。只有 owner 裁决
             //服务器没有领域状态（恒 Closed 是既定契约），迟入场客户端在首份快照前也会误判
             if (authority && State != StateDissolve && !RainHealthy(owner, domain)) {
                 BeginDissolve();
@@ -334,7 +334,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 }
             }
             else {
-                //流动：先沉后到——二次弧线压向两点连线下方，读作贴地淌行
+                //流动：先沉后到，二次弧线压向两点连线下方，读作贴地淌行
                 if (!travelBeatDone) {
                     travelBeatDone = true;
                     if (IsViewedOwner()) {
@@ -362,7 +362,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                             Main.rand.NextFloat(0.4f, 0.7f))
                             ?.Configure(Main.rand.Next(12, 20));
                     }
-                    //淌过地面踢起的水沫，一路都在溅；横向分量走 wind——雨滴粒子每帧用它覆写 X 速
+                    //淌过地面踢起的水沫，一路都在溅；横向分量走 wind：雨滴粒子每帧用它覆写 X 速
                     if (t % 3 == 0) {
                         Vector2 surge = (ReformFeet - gatherFrom).SafeNormalize(Vector2.UnitX);
                         Vector2 kick = -surge * Main.rand.NextFloat(0.6f, 1.6f)
@@ -417,7 +417,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 facingLeft = look.X < Projectile.Center.X;
             }
 
-            //破土拍：雨自四面扑向重组点，地面顶开一蓬污水——成形是被雨按出来的
+            //破土拍：雨自四面扑向重组点，地面顶开一蓬污水，成形是被雨按出来的
             if (!Main.dedServ && !reformBurstDone && t >= 1) {
                 reformBurstDone = true;
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
@@ -1007,7 +1007,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 default: {
                     float moveFactor = MathHelper.Clamp(
                         Math.Abs(Projectile.velocity.X) / WalkMaxSpeed, 0f, 1f);
-                    //伞旋期：站桩但伞在转——用高步频假蹒跚读出旋势
+                    //伞旋期：站桩但伞在转，用高步频假蹒跚读出旋势
                     float phase = waddlePhase;
                     if (subState == SubSpin && subTimer > SpinBrakeEnd && subTimer <= SpinFlingEnd) {
                         phase = Main.GlobalTimeWrappedHourly * 26f + Seed;

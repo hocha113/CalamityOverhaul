@@ -15,7 +15,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Scenarios.OldNet
 {
     /// <summary>
-    /// 旧网深潜会话：未结算账本（刻意不落存档——弹出即清是机制本身）、
+    /// 旧网深潜会话：未结算账本（刻意不落存档，弹出即清是机制本身）、
     /// 噪音状态（源/衰减/四档阈值）、距离底噪扣 RAM、死亡/耗尽的强制弹出、会话统计
     /// </summary>
     internal class OldNetPlayer : ModPlayer
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
 
         /// <summary>
         /// 统一噪音入口：时停期间增量 ×0.25（时停考古的低噪路线）。
-        /// RAM 距离底噪不产噪音——那是信号成本，不是声响
+        /// RAM 距离底噪不产噪音，那是信号成本，不是声响
         /// </summary>
         internal void AddNoise(float amount) {
             if (!OldNetWorld.Active || amount <= 0f) {
@@ -387,7 +387,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
                 quietTimer = 0;
             }
             else if (++quietTimer >= OldNetMetrics.NoiseQuietDelayTicks && Noise > 0f
-                //疯域规则（M3）：衰减区内网永不平静——噪音不自然衰减，进来多少带走多少
+                //疯域规则（M3）：衰减区内网永不平静，噪音不自然衰减，进来多少带走多少
                 && (int)(Player.Center.X / 16f) < OldNetMetrics.FadeLeft) {
                 float rate = Noise >= OldNetMetrics.NoiseDecayHighThreshold
                     ? OldNetMetrics.NoiseDecayHighPerSecond

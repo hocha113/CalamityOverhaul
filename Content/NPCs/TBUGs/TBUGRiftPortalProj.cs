@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.TBUGs
 {
     /// <summary>
-    /// TBUG 出场裂缝；材质是"世界渲染漏掉的一块"——纯黑内里 + 报错内容，不是发光的门。
+    /// TBUG 出场裂缝；材质是"世界渲染漏掉的一块"，纯黑内里 + 报错内容，不是发光的门。
     /// <see cref="TBUGRiftSpawner"/> 主端生成，SpitFrame 主端 NewNPC 把她吐出来
     /// <br/>ai0=facing±1 ai1=TBUG whoAmI(主写客读) ai2=尺寸缩放
     /// </summary>

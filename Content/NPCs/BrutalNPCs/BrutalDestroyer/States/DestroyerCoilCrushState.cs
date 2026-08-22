@@ -283,7 +283,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             DestroyerChargeWave.Push(npc.whoAmI, 0f, 1f, 0.4f + 0.5f * t, fullBody: true);
         }
 
-        /// <summary>贯穿前静默：电弧停，光骤暗，只剩环体慢转——尖啸前的吸气</summary>
+        /// <summary>贯穿前静默：电弧停，光骤暗，只剩环体慢转，尖啸前的吸气</summary>
         private void UpdateSilence(DestroyerStateContext context, Vector2 center) {
             NPC npc = context.Npc;
             DriveRing(context, center, TightRadius, 0.05f);

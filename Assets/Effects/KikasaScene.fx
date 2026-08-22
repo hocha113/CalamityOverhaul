@@ -112,7 +112,7 @@ technique TechCard {
 //（真风铃的切口本就不平）。材质=手工吹制玻璃：双壁厚度（内壁第二线）、
 //熔珠唇、顺球面的吹制旋纹、封存气泡、弧形暮色反射带、底缘聚光；
 //常驻内景（无水时铃也不空）：烬萤浮游（稠度=uLightGate 湖藏填充率）、
-//内壁凝露（一枚周期下滑留渐干水迹）、干涸潮痕圈——全部画在水体 lerp
+//内壁凝露（一枚周期下滑留渐干水迹）、干涸潮痕圈，全部画在水体 lerp
 //之前，涨水自然覆盖。uHover=悬停唤醒（烬萤/凝露亮一拍，缘光呼吸略快）。
 //铃内盛一小汪血湖：uWaterY 复用为液面充盈度（0 空 1 满），uSwing=当前摆角
 //（quad 随摆旋转，液面在铃内反向找平），uStir 晃荡、uBoil 沸腾、
@@ -169,7 +169,7 @@ float4 PSChime(float2 coords : TEXCOORD0) : COLOR0 {
     float inWater = step(surf, p.y) * glass * step(0.02, fill);
 
     //玻璃体：低透近黑 + 菲涅尔缘增亮（中心仍最透，能看见后面的世界）
-    //+ 朝口部渐浓的烟色纵渐变——铃体读作有形的器物，不是一圈描边
+    //+ 朝口部渐浓的烟色纵渐变，铃体读作有形的器物，不是一圈描边
     float fres = smoothstep(-0.16, -0.005, d);
     float smokeG = smoothstep(-0.30, 0.30, p.y);
     float3 col = glassDeep * (0.62 + fres * 0.9 + smokeG * 0.55);
@@ -218,7 +218,7 @@ float4 PSChime(float2 coords : TEXCOORD0) : COLOR0 {
     col += glassRim * bubGlint * 0.28 * bubBreath * glass;
     a += (bubGlint * 0.22 + bubDark * 0.10) * glass;
 
-    //凝露：两枚定珠贴下内壁，另一枚周期沿右内壁下滑并留一线渐干水迹——湖气未散
+    //凝露：两枚定珠贴下内壁，另一枚周期沿右内壁下滑并留一线渐干水迹，湖气未散
     float dewFix = 0.0;
     [unroll]
     for (int j = 0; j < 2; j++) {

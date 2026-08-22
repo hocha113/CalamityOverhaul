@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projectiles
 {
     /// <summary>
-    /// 雷律弧闪：锚点驻留，拍点快照→细弧预告 26 帧→落雷 10 帧（预告期间无害，锁线不追人——公平阀）<br/>
+    /// 雷律弧闪：锚点驻留，拍点快照→细弧预告 26 帧→落雷 10 帧（预告期间无害，锁线不追人，公平阀）<br/>
     /// ai[0..1]=拍点快照（权威端写后同步） ai[2]=起拍延迟
     /// </summary>
     internal class CultistArcBolt : ModProjectile
@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 Color.White * anchorPulse, Projectile.rotation, orbFrame.Size() * 0.5f, 0.7f, SpriteEffects.None, 0);
 
             if (phase < WarnFrames) {
-                //细弧预告：低亮直线，亮度缓升——读线的时间
+                //细弧预告：低亮直线，亮度缓升，读线的时间
                 float warnT = phase / (float)WarnFrames;
                 DrawPolyline(start, end, beam, CultistMotion.StormCore with { A = 0 } * (0.16f + warnT * 0.2f),
                     5f, jitterAmp: 6f, segments: 6);

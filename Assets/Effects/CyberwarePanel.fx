@@ -85,13 +85,13 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     //═══ 2. 数据网格背景（静态细密点阵 + 中等方格细线，无任何闪烁/扫描） ═══
     if (isMain)
     {
-        //细密点阵 ： 均匀分布的静态参考点，提供"芯片刻印"的科技纹理
+        //细密点阵：均匀分布的静态参考点，提供"芯片刻印"的科技纹理
         float2 dotUV = uv * float2(60.0, 36.0);
         float2 dotF = frac(dotUV);
         float dotMask = step(0.85, dotF.x) * step(0.85, dotF.y);
         col += float3(0.42, 0.10, 0.10) * dotMask * 0.20 * calm;
 
-        //方格细线 ： 同样静态，提供网格结构感
+        //方格细线：同样静态，提供网格结构感
         float2 grid = uv * float2(12.0, 7.0);
         float2 g = abs(frac(grid) - 0.5);
         float gridLine = step(0.46, max(g.x, g.y)) - step(0.49, max(g.x, g.y));
@@ -106,7 +106,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     }
 
     //═══ 3. 中央全息投影舱 ═══
-    //中心不再堆亮斑（旧版 halo+环+指针+射线全删）——亮度让给上层人体模型；
+    //中心不再堆亮斑（旧版 halo+环+指针+射线全删），亮度让给上层人体模型；
     //舱只提供容器：内部微沉降、椭圆舱壁收口、足下基座供光、上升光尘
 
     //内部微沉降：舱内比外部略暗略净，红色人体线条自然浮起

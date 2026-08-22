@@ -89,7 +89,7 @@ QuestNode: {
 	LunaticCultistQuest: {
 		DisplayName: 拜月教邪教徒
 		Description: 击败拜月教邪教徒
-		DetailedDescription: 在地牢门口，一群狂热的信徒正在试图阻止——或者引发——末日。阻止他们的仪式。
+		DetailedDescription: 在地牢门口，一群狂热的信徒正在试图阻止或引发末日。阻止他们的仪式。
 	}
 
 	MechanicalBossesQuest: {

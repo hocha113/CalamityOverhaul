@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //材质：折射棱晶——签名行为=光谱拖影/红紫色散副像/定相闪烁的折射十字
+            //材质：折射棱晶，签名行为=光谱拖影/红紫色散副像/定相闪烁的折射十字
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Texture2D star = CWRAsset.StarTexture_White.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
 
             Color prism = PrismColor(1f) with { A = 0 };
 
-            //光谱拖尾：相邻轨迹点间拉伸星条连成连续缎带——逐点盖章会读作离散星星复制；
+            //光谱拖尾：相邻轨迹点间拉伸星条连成连续缎带，逐点盖章会读作离散星星复制；
             //悬滞时段间距趋零自然隐没，无需乘速度包络
             for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
                 if (Projectile.oldPos[i] == Vector2.Zero || Projectile.oldPos[i - 1] == Vector2.Zero) {

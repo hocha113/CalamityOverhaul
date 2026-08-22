@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
 
         internal const int Duration = 196;
 
-        /// <summary>缺口（契约3）：双颅火对称劈开 ±SplitHalfAngle，瞄准轴正中永远是空走廊——
+        /// <summary>缺口（契约3）：双颅火对称劈开 ±SplitHalfAngle，瞄准轴正中永远是空走廊
         /// 迎着头站/原地不动即安全，发射循环直接读取该角</summary>
         private const float SplitHalfAngle = 0.34f;
 
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
 
         internal const int Duration = 136;
 
-        /// <summary>缺口（契约3）：补刀颅火直落不追踪（ai[0]=0），左右分落 ±DropSideVelX——
+        /// <summary>缺口（契约3）：补刀颅火直落不追踪（ai[0]=0），左右分落 ±DropSideVelX
         /// 合拍逃出后垂直正下方是安全带，发射循环直接读取</summary>
         private const float DropSideVelX = 2.4f;
 
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
             npc.velocity = (watchPoint - npc.Center) * 0.03f;
             SettleRotation(npc, 0.15f);
 
-            //合拍瞬间的补刀：头顶垂落两枚直线颅火（合拍后 82 帧），钳口窄区里追踪弹无处可躲——不追踪
+            //合拍瞬间的补刀：头顶垂落两枚直线颅火（合拍后 82 帧），钳口窄区里追踪弹无处可躲，不追踪
             if (!VaultUtils.isClient && Timer == 92) {
                 for (int i = -1; i <= 1; i += 2) {
                     Vector2 vel = new Vector2(i * DropSideVelX, 5.4f);

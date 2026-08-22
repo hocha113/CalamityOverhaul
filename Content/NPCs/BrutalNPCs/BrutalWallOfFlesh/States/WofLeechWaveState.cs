@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
 {
     /// <summary>
     /// 水蛭浪：干呕蓄势后成群水蛭错拍冲锋，佐以血凝块飞沫。
-    /// 波次冲锋的活体弹幕，蛭群会追猎——处理它们或被淹没
+    /// 波次冲锋的活体弹幕，蛭群会追猎，处理它们或被淹没
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)WofStateIndex.LeechWave, typeof(WofStateContext))]
     internal class WofLeechWaveState : WofStateBase

@@ -14,10 +14,10 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
     /// <summary>
     /// 弹道倒戈的转阵营标记（独立钩子文件，不动既有分派点）。<br/>
     /// <b>形状照抄 HackConvertedProjectile</b>：唯一赶在生成包发出之前的钩子是 OnSpawn
-    /// ——防守方本机（弹幕 owner 端）在这里打标，标记走 ExtraAI 随首包到达各端，
+    /// ：防守方本机（弹幕 owner 端）在这里打标，标记走 ExtraAI 随首包到达各端，
     /// 各端各自把 friendly/hostile 压平成双 false（原版碰撞全部旁路，
     /// 路人与 NPC 一个都不误伤）并跑同一套确定性回转（目标恒为 owner 本人，
-    /// 各端都算得出，不掷骰不读 Main.rand——netcode §9.2）。<br/>
+    /// 各端都算得出，不掷骰不读 Main.rand，netcode §9.2）。<br/>
     /// 命中裁决只在防守方本机：手动碰撞盒相交 → 自伤 <c>Hurt(pvp:true, quiet:false)</c>
     /// （msg 16 自报 + 117 广播，PvP 生命归属方写），死因记攻击方
     /// </summary>
@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
             if (owner?.active != true || owner.dead) return;
             if (!projectile.Hitbox.Intersects(owner.Hitbox)) return;
 
-            //残余无敌帧内命中：弹幕耗掉，伤害免了——与弹幕直觉一致
+            //残余无敌帧内命中：弹幕耗掉，伤害免了，与弹幕直觉一致
             if (returnDamage > 0 && !owner.immune) {
                 BallisticTurncoat hack = QuickHackDef.Get<BallisticTurncoat>();
                 PlayerDeathReason reason = hack != null

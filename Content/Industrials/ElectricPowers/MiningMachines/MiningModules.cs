@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         public override float WorkIntervalMult => 0.7f;
         internal override Color Accent => new(230, 160, 70);
 
-        //离心调速器:立轴顶帽 + 两甩臂 + 两坠球 + 底座——工业语境里"转速"的正字,
+        //离心调速器:立轴顶帽 + 两甩臂 + 两坠球 + 底座，工业语境里"转速"的正字,
         //避开 chevron/箭头这类和其他模组撞脸的通用符号
         protected override string GlyphPath =>
             "M 0 -0.52 L 0 0.30 "
@@ -298,7 +298,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
     }
 
-    /// <summary>过载核心:周期 ×0.55,能耗 ×1.6——烧电换转速</summary>
+    /// <summary>过载核心:周期 ×0.55,能耗 ×1.6：烧电换转速</summary>
     internal class OverdriveCoreModule : BaseMiningModule
     {
         public override float WorkIntervalMult => 0.55f;
@@ -332,7 +332,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
     }
 
-    /// <summary>节流阀:周期 ×1.5,能耗 ×0.45——慢工省电,挂机取舍</summary>
+    /// <summary>节流阀:周期 ×1.5,能耗 ×0.45：慢工省电,挂机取舍</summary>
     internal class ThrottleValveModule : BaseMiningModule
     {
         public override float WorkIntervalMult => 1.5f;

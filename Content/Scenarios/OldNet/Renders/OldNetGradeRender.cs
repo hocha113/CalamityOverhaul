@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Renders
     /// 旧网世界内分级 + 地形数字化提边（OldNetGrade.fx 消费端）。
     /// 管线契约镜像 CyberspaceRender.ApplyFullScreenShader：物块层后
     /// screenTarget→screenSwap 拷屏，shader 重写回 screenTarget；
-    /// RT 不可用时直接跳过——氛围由 Filter 轻染与压光兜底，不做 CPU 复刻
+    /// RT 不可用时直接跳过，氛围由 Filter 轻染与压光兜底，不做 CPU 复刻
     /// </summary>
     internal class OldNetGradeRender : RenderHandle
     {

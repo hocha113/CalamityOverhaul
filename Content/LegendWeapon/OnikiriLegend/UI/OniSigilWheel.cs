@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     /// <summary>
     /// 结印盘几何：外环六芒摆六只鬼，内三角三个结印位，三边是两两组合的墨线，
     /// 心是三鬼合鬼印。<br/>
-    /// 绘制、命中、悬停预览一律读这一份——照鏨盘扇骨的规矩，同一套角度绝不各算一遍
+    /// 绘制、命中、悬停预览一律读这一份，照鏨盘扇骨的规矩，同一套角度绝不各算一遍
     /// </summary>
     internal readonly struct OniSigilWheel
     {
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         /// <summary>
-        /// 本屏主体半径：一件案上器物的尺度，不吃满屏——
+        /// 本屏主体半径：一件案上器物的尺度，不吃满屏
         /// 高向给上梁/题头/卷槽/底行留道，宽向三成封顶
         /// </summary>
         internal static float BodyRadius(float screenW, float screenH) {

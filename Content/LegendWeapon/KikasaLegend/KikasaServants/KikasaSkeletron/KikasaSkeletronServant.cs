@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// <summary>
     /// 鬼奴·湖水版骷髅王。单弹幕内部模拟"头 + 左右手"三件套：
     /// 头位权威同步（Projectile.Center），双手位置各端本地重建（弹簧追锚 + 拍击窗内
-    /// 沿弧线运动学摆位），手无骨臂、只垂一条若断若续的血水腕链——被湖缚住的手。
+    /// 沿弧线运动学摆位），手无骨臂、只垂一条若断若续的血水腕链，被湖缚住的手。
     /// 出水四拍走"双手先挣出水面、头颅随后顶开浪冠"的挣脱叙事；
     /// 战斗循环：双手交替扇形拍击（第二下更快）→ 追踪血颅间奏 → 经典旋颅
     /// （收手护体、达速才开伤害窗、收势踉跄）→ 血颅间奏。
@@ -265,7 +265,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：只有 owner 裁决——服务器无领域状态（既定契约），
+            //生命线：只有 owner 裁决，服务器无领域状态（既定契约），
             //迟入场客户端首份快照前也会误判；其余端只跟包换场
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
@@ -356,7 +356,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (!handsBreached) {
-                //第二拍：双手猛地挣出水面——两处水花、两声骨响错半拍
+                //第二拍：双手猛地挣出水面，两处水花、两声骨响错半拍
                 handsBreached = true;
                 for (int i = 0; i < 2; i++) {
                     float side = HandDir(i);
@@ -411,7 +411,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (!settleDipped && t >= RiseEnd + 2) {
-                //落定拍：颅骨下沉半口再顶住——重量先答话
+                //落定拍：颅骨下沉半口再顶住，重量先答话
                 settleDipped = true;
                 Projectile.velocity.Y = 1.4f;
             }
@@ -574,7 +574,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 MathHelper.Clamp((aimPos.X - Projectile.Center.X) * 0.0004f, -0.14f, 0.14f), 0.1f);
 
             if (t <= windup) {
-                //蓄力：掌心汇聚血珠，72% 后静默——爆发前的吸气
+                //蓄力：掌心汇聚血珠，72% 后静默，爆发前的吸气
                 if (!Main.dedServ && t < windup * 0.72f && t % 3 == 1) {
                     Vector2 palm = handPos[ActiveHand];
                     Vector2 from = palm + Main.rand.NextVector2Unit() * Main.rand.NextFloat(40f, 80f);
@@ -615,7 +615,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (t >= windup + ImpactAt && lastSlapImpacted < slapIdx) {
-                //冲击拍：掌风落地——拍到水面掀一线横推水花，凌空则甩出弧形血帘
+                //冲击拍：掌风落地，拍到水面掀一线横推水花，凌空则甩出弧形血帘
                 lastSlapImpacted = slapIdx;
                 SlamImpact(domain);
             }
@@ -698,7 +698,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //==================== 经典旋颅 ====================
 
-        /// <summary>旋颅角速度：加速平方爬升、达速恒定、收势指数衰减——全由相位计时确定</summary>
+        /// <summary>旋颅角速度：加速平方爬升、达速恒定、收势指数衰减，全由相位计时确定</summary>
         private float SpinOmega() {
             if (State != StateSpin) {
                 return 0f;
@@ -765,7 +765,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (phase == 2) {
-                //达速漂移逼近：伤害窗开启，缓慢压向目标——威压来自"躲不开的慢"
+                //达速漂移逼近：伤害窗开启，缓慢压向目标，威压来自"躲不开的慢"
                 if (!spinRoared) {
                     spinRoared = true;
                     SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.45f, Pitch = 0.15f, MaxInstances = 2 }, Projectile.Center);
@@ -806,7 +806,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (phase == 3) {
-                //收势踉跄：转速衰减、身位左摇右晃再下沉半口——重量在刹车里
+                //收势踉跄：转速衰减、身位左摇右晃再下沉半口，重量在刹车里
                 float dir = (int)(Seed * 13f) % 2 == 0 ? 1f : -1f;
                 if (t == 2) {
                     Projectile.velocity.X += dir * 3.2f;
@@ -1104,7 +1104,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                             lerpV = 0.34f;
                         }
                         else if (isActive && t <= windup + StrikeFrames) {
-                            //挥击窗：沿定参弧线运动学摆位，几乎全部角程压在前几帧——一记响拍
+                            //挥击窗：沿定参弧线运动学摆位，几乎全部角程压在前几帧，一记响拍
                             float k = (t - windup) / (float)StrikeFrames;
                             float ease = 1f - MathF.Pow(1f - k, 9f);
                             float ang = slamStartAng + slamEndDelta * ease;
@@ -1478,10 +1478,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        /// <summary>血水腕链：从腕根垂向湖面的滴珠串，若断若续——被湖缚住的手</summary>
+        /// <summary>血水腕链：从腕根垂向湖面的滴珠串，若断若续，被湖缚住的手</summary>
         private void DrawWristChains(SpriteBatch sb) {
             Texture2D glow = CWRAsset.SoftGlow?.Value;
-            //暗色珠体用真 alpha 的 Extra_98——黑底 SoftGlow 在 AlphaBlend 里会糊出黑块
+            //暗色珠体用真 alpha 的 Extra_98：黑底 SoftGlow 在 AlphaBlend 里会糊出黑块
             Texture2D beadTex = CWRAsset.Extra_98?.Value;
             if (glow == null || beadTex == null) {
                 return;
@@ -1619,7 +1619,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             int t = (int)StateTimer;
 
-            //出水预兆：湖下三点血光——两翼浅亮（手）、中央深沉（头），越憋越亮
+            //出水预兆：湖下三点血光，两翼浅亮（手）、中央深沉（头），越憋越亮
             if (State == StateEmerge && t < HeadBreachFrame) {
                 float ot = MathHelper.Clamp(t / (float)HeadBreachFrame, 0f, 1f);
                 float ease = 1f - (1f - ot) * (1f - ot);

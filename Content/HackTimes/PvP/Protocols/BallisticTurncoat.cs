@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 {
     /// <summary>
     /// 弹道倒戈（芯片档）：防守方接下来三发主动射出的弹幕出膛后调头，只追打它的原主。<br/>
-    /// <b>红线：这条不剥夺操作</b>——防守方随时可以停火，停火即安全；召唤物/哨兵/持握弹
+    /// <b>红线：这条不剥夺操作</b>：防守方随时可以停火，停火即安全；召唤物/哨兵/持握弹
     /// 一律豁免（持续源头会瞬间烧完额度，且玩家没按键）。条目描述必须写明停火可解。<br/>
     /// "接下来三发"的计数在<b>防守方本机</b>（他开火他计数）：
     /// <see cref="BallisticTurncoatProjectile.OnSpawn"/> 在生成包发出前打标记
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 
         /// <summary>
         /// 防守方本机打标入口（<see cref="BallisticTurncoatProjectile.OnSpawn"/> 调进来）。
-        /// 消耗一发额度并在此刻锁死回击伤害——弹幕落地可能在效果到期之后，
+        /// 消耗一发额度并在此刻锁死回击伤害，弹幕落地可能在效果到期之后，
         /// 预算在这里结不在命中时结，账才不会跨过效果生命周期漂移
         /// </summary>
         internal static bool TryMark(Projectile projectile, out int casterIndex,
@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
             if (effect.ProtocolState is not TurncoatState state) return;
             //准星旁计数：开火决策发生在准星上，警示就贴在准星旁。
             //UIHandle 批（InterfaceScaleType.UI）下 Main.mouseX/Y 已是 UI 空间，
-            //MouseScreen 直接可用——再除 UIScale 会双重缩放（口径同 PlayerHackHud）
+            //MouseScreen 直接可用，再除 UIScale 会双重缩放（口径同 PlayerHackHud）
             Vector2 anchor = Main.MouseScreen + new Vector2(26f, 22f);
             HackTheme.DrawBadge(spriteBatch, anchor,
                 HijackCounter.Format(state.Remaining, MaxShots), PvPTheme.Hostile, 0.95f);

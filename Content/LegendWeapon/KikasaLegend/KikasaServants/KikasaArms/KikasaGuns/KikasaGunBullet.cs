@@ -16,15 +16,15 @@ using static CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.K
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms.KikasaGuns
 {
     /// <summary>
-    /// 械奴枪群的湖水滴弹：血痰（<see cref="KikasaEyeBloodShot"/>）的枪弹化移植——
+    /// 械奴枪群的湖水滴弹：血痰（<see cref="KikasaEyeBloodShot"/>）的枪弹化移植
     /// 同一套有体积的液团语法：三层液团头（暗血压边→血红主体→血沫亮芯湿反光）
     /// 带表面张力抖动，身后拖一条会珠化断裂的粘血线（复用灵液液柱条带 shader 换血色板），
     /// 飞行中失稳甩珠；整体缩小约四分之一。弹道是枪弹的快与直：
     /// 不吃重力、复利续力越飞越钻、只带极小幅鱼摆尾（转向恒为弧）。
     /// 命中窄扇迸溅、贴壁留渍（手动地形检测只认水线上真地形）、落空坠湖被收走。
     /// 三种弹型走 ai[0]（生成包自带，各端一致）：0 标准滴弹；
-    /// 1 狙击重弹——穿透 3、双倍更新、弹头加大拖尾拉长、几乎不摆尾；
-    /// 2 霰弹轻珠——短命小粒、少甩珠，密喷不轰屏
+    /// 1 狙击重弹，穿透 3、双倍更新、弹头加大拖尾拉长、几乎不摆尾；
+    /// 2 霰弹轻珠，短命小粒、少甩珠，密喷不轰屏
     /// </summary>
     internal class KikasaGunBullet : ModProjectile, IPrimitiveDrawable
     {
@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
 
-            //贴壁：迸溅 + 留渍——湖线以下的真地形被湖面盖住，交给上面的落湖收走
+            //贴壁：迸溅 + 留渍，湖线以下的真地形被湖面盖住，交给上面的落湖收走
             if (Life > 3
                 && (!lakeAlive || Projectile.Center.Y < kdp.LakeWorldY - 2f)
                 && Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height)) {
@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        /// <summary>滴弹命中：窄扇前向迸溅 + 一粒沉珠 + 细环——规格随弹型体量缩放</summary>
+        /// <summary>滴弹命中：窄扇前向迸溅 + 一粒沉珠 + 细环，规格随弹型体量缩放</summary>
         private void ImpactBurst(Vector2 pos, Vector2 impactVel, bool onTile) {
             if (Main.dedServ) {
                 return;

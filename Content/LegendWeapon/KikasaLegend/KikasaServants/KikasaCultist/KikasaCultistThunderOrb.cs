@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaCultist
 {
     /// <summary>
-    /// 鬼奴邪教徒的血雷缓行球。材质身份：凝血电浆核——一团凝血壳裹着过载的电浆芯，
+    /// 鬼奴邪教徒的血雷缓行球。材质身份：凝血电浆核，一团凝血壳裹着过载的电浆芯，
     /// 电弧贴着血壳表面爬行找出口。签名行为：壳面爬行的短折线弧（每隔数帧跳新位）；
     /// 放电瞬间球体收缩回弹（吸气再吐）；壳底持续渗落带电血珠。
     /// 弹体 = Extra_98 真 alpha 多层（凝块暗壳双瓣/电浆体/白热芯），非光斑叠层。
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         public override void AI() {
             Life++;
 
-            //缓行：极低转率追向最近敌人，加一缕确定性纵向漂浮——雷云在游
+            //缓行：极低转率追向最近敌人，加一缕确定性纵向漂浮，雷云在游
             int nearest = FindNearest(ArcRange * 2.2f);
             if (nearest >= 0) {
                 float wantAngle = (Main.npc[nearest].Center - Projectile.Center).ToRotation();
@@ -331,7 +331,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     * (shellR + (KikasaCultistRunes.Hash01(crawlSeed * 5.1f + a * 3.3f + Seed) - 0.5f) * 9f);
                 const int segs = 4;
                 for (int sgi = 1; sgi <= segs; sgi++) {
-                    //每段跨 0.5 rad，整弧扫约 2 rad——爬在壳面上但读得出折线
+                    //每段跨 0.5 rad，整弧扫约 2 rad：爬在壳面上但读得出折线
                     float segAng = baseAng + sgi * 0.5f;
                     float jr = shellR + (KikasaCultistRunes.Hash01(crawlSeed * 5.1f + a * 3.3f + sgi * 9.7f + Seed) - 0.5f) * 9f;
                     Vector2 next = pos + segAng.ToRotationVector2() * jr;

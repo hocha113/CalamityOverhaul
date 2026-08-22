@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
     /// <summary>
     /// 镜像仪式：真身混入假身环阵。识真三线索：足影光渍（静态）、体色苍白（静态）、弹色元素/苍白（动态）<br/>
     /// 打真身：仪式当场破碎（踉跄+充能大扣）；打假身：30 帧鼓胀预告后苍弹环爆（朝玩家扇区留空），充能小涨有上限；<br/>
-    /// 拖满 600 帧：教徒自行收阵，充能中涨——不许无限拖
+    /// 拖满 600 帧：教徒自行收阵，充能中涨，不许无限拖
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.MirrorRite, typeof(CultistStateContext))]
     internal class CultistMirrorRiteState : CultistStateBase

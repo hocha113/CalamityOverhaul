@@ -8,7 +8,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 {
     /// <summary>
-    /// 低血大招·棱彩过驱：三个乐章——
+    /// 低血大招·棱彩过驱：三个乐章
     /// I 极光帘幕垂落围出剧场；II 双扇日舞+收缩笼+心跳弹环的三重奏；
     /// III 万光归一的屏息与终唱绽放。一场只此一次
     /// </summary>
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             EmpressMotion.HandChargeDust(context.RightHand, Timer / (float)MovementOne, context.DayFormBlend);
 
             if (Timer == 30 && target.Alives() && !VaultUtils.isClient) {
-                //四道帘幕：外侧两道内拢，内侧两道外推——空间自己在呼吸
+                //四道帘幕：外侧两道内拢，内侧两道外推，空间自己在呼吸
                 float cx = target.Center.X;
                 float cy = target.Center.Y - 300f;
                 EmpressCast.Aurora(npc, new Vector2(cx - 950f, cy), 0.0f, 0.55f, 560, context.AuroraDamage);

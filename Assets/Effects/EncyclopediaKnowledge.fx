@@ -27,7 +27,7 @@ float3 glowColor;       //主辉光（环线/核晕）
 float3 causticColor;    //焦散与高光色
 float3 runeColor;       //符文色
 
-//焦散水网：双层笛卡尔域扭曲取最小值，输入为笛卡尔坐标——天然连续，无极坐标接缝
+//焦散水网：双层笛卡尔域扭曲取最小值，输入为笛卡尔坐标，天然连续，无极坐标接缝
 float causticField(float2 p, float t)
 {
     float2 w1 = tex2D(noiseSamp, frac(p * 0.5 + t * float2(0.020, 0.015))).rg * 0.40;

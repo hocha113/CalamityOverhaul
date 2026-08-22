@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 return null;
             }
 
-            //幕二：死寂——粒子全停，只剩一声线断
+            //幕二：死寂，粒子全停，只剩一声线断
             if (Timer <= SilenceEnd) {
                 npc.damage = 0;
                 npc.dontTakeDamage = true;

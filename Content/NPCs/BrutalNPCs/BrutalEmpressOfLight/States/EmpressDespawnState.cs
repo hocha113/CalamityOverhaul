@@ -6,7 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 {
-    /// <summary>离场：她收起光辉，向上飘散成光雨——去时也要好看</summary>
+    /// <summary>离场：她收起光辉，向上飘散成光雨，去时也要好看</summary>
     [InnoVault.StateMachines.VaultState((int)EmpressStateIndex.Despawn, typeof(EmpressStateContext))]
     internal class EmpressDespawnState : EmpressStateBase
     {

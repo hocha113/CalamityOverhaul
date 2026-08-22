@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z3
 {
-    //Z3 衰减区地表目录（本轮扩容）：焦黑尖塔群 + 坍塌掩体——
+    //Z3 衰减区地表目录（本轮扩容）：焦黑尖塔群 + 坍塌掩体
     //信号尽头终于有了"东西"，但都是烧毁的
     internal static class Z3Rooms
     {
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z3
         }
 
         /// <summary>
-        /// 坍塌掩体：半埋破壳——屋顶塌开一角、碎块落进室内的小室，
+        /// 坍塌掩体：半埋破壳，屋顶塌开一角、碎块落进室内的小室，
         /// 五成藏加密节点（衰减区高险高值），五成普通节点
         /// </summary>
         internal static int BuildCollapsedBunkers(OldNetBuildContext ctx, int count) {

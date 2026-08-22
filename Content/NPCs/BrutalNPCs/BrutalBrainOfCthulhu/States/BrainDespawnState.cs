@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
                 context.RefreshCreepers();
             }
 
-            //幕一：心律失常——错拍+飞眼逐只殉爆
+            //幕一：心律失常，错拍+飞眼逐只殉爆
             if (Timer < ArrhythmiaEnd) {
                 UpdateArrhythmia(context);
             }

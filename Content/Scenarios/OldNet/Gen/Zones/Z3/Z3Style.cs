@@ -2,7 +2,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z3
 {
-    //Z3 信号衰减带 材质表：信号尽头的焦黑——黑曜石底 + 零星导管残骸
+    //Z3 信号衰减带 材质表：信号尽头的焦黑，黑曜石底 + 零星导管残骸
     //主题锚：M3 疯域宿主；M2a 只给地形与最小结构
     internal static class Z3Style
     {

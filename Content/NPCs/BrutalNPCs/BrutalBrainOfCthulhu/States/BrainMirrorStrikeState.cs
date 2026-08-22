@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
                         }
 
                         if (phaseTimer >= orbitTime) {
-                            //锁定打击锚点（预测位），此后锚不再动——给玩家一个可读的静态镜心
+                            //锁定打击锚点（预测位），此后锚不再动，给玩家一个可读的静态镜心
                             strikeAnchor = player.Center + player.velocity * 11f;
                             RetargetMirrors(context, strikeAnchor);
                             npc.netUpdate = true;

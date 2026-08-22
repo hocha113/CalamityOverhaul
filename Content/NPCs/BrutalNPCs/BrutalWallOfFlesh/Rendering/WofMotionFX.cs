@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
 
         /// <summary>
         /// 软端瞄准线：MaskLaserLine 长轴全亮无端衰减，整条拉伸必然两端平切；
-        /// 分段绘制+端部包络——根部短淡入、末端长消散并收针，读作指向而非实体光杆
+        /// 分段绘制+端部包络，根部短淡入、末端长消散并收针，读作指向而非实体光杆
         /// </summary>
         public static void DrawAimLine(SpriteBatch spriteBatch, Vector2 startWorld, Vector2 dir,
             float length, float thickness, Color color) {

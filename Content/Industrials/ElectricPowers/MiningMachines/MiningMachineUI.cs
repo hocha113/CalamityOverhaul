@@ -17,7 +17,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 {
     /// <summary>
-    /// 矿机勘探终端:野外地质仪器语言——钢壳(shader)、黄铜铭牌、岩芯样本管、
+    /// 矿机勘探终端:野外地质仪器语言，钢壳(shader)、黄铜铭牌、岩芯样本管、
     /// 指针仪表、模块插座。报告数据与产出掷骰同源(<see cref="MiningMachineSystem.BuildReport"/>),
     /// 展示的份额即真实概率;模块槽编辑走"本地改 + SendData 推送"。<br/>
     /// 笔刷与材质在 <see cref="IndustrialTerminalRenderer"/>,本类只管布局、交互与编排

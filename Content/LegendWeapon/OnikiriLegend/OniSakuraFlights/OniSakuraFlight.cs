@@ -531,7 +531,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
 
         /// <summary>
         /// 交还操控时撒一把生樱瓣。类内花瓣到 KillFrame 就全没了，
-        /// 这批走 PRT 活得比弹幕久——落地之后现场还有东西在飘
+        /// 这批走 PRT 活得比弹幕久，落地之后现场还有东西在飘
         /// </summary>
         private void SpawnDriftPetals() {
             Vector2 normal = new(-moveDirection.Y, moveDirection.X);
@@ -652,7 +652,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             float baseDistance = role == PetalRole.Braid
                 ? (index + 0.5f) / count * MaxTrailLength + Main.rand.NextFloat(-15f, 15f)
                 : Main.rand.NextFloat(0f, 24f);
-            //核瓣放大到剪影能互相咬合，编织瓣保持细碎——两层不同空间频率
+            //核瓣放大到剪影能互相咬合，编织瓣保持细碎，两层不同空间频率
             float baseScale = role == PetalRole.Core
                 ? Main.rand.NextFloat(0.95f, 1.45f)
                 : Main.rand.NextFloat(0.46f, 0.94f);
@@ -1140,7 +1140,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             }
 
             //这条批是真 Additive(源因子=SourceAlpha):tint 的 A=0 等于不画。
-            //旧代码全用 A=0 染色，所以樱流的加色层此前从未显示过——沿疾走/残心的
+            //旧代码全用 A=0 染色，所以樱流的加色层此前从未显示过，沿疾走/残心的
             //写法让 A 随强度走(new Color(rgb) * x)，强度数值本身不放大
             if (phaseEnvelope > 0.01f) {
                 Color coreColor = new Color(1f, 0.30f, 0.46f) * (0.26f * phaseEnvelope);

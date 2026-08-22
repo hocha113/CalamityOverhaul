@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 {
     /// <summary>
     /// 棱彩环阵：以她为心逐层绽出旋转弹环，缺口按黄金角进动；
-    /// 图案即威胁——读环、找缺口、穿行
+    /// 图案即威胁，读环、找缺口、穿行
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EmpressStateIndex.PrismRings, typeof(EmpressStateContext))]
     internal class EmpressPrismRingsState : EmpressStateBase

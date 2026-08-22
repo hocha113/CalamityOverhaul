@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
 {
     /// <summary>
     /// 哨戒炮塔：世界里第一种可骇入炮台 Actor（F14）。<br/>
-    /// 原生行为是敌对火控——索敌玩家、蓄能、开火；五条存量炮台/信号塔协议
+    /// 原生行为是敌对火控，索敌玩家、蓄能、开火；五条存量炮台/信号塔协议
     /// （短路/过载/劫持/病毒广播/电网瘫痪）与本批的弹药置换、炮台联网都打在它身上。<br/>
     /// 贴图为程序化绘制（底座+云台+炮管+状态灯），待美术替换；
     /// 跨端身份走 <see cref="CircuitActorKey"/>（槽位+代+类型），为解除单人限制预留
@@ -389,7 +389,7 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
             munitionFeederIndex = feeder.whoAmI;
             //上一次覆写的在途扣弹账不许带进这一次
             MunitionSwap.ForgetPending(NetKey);
-            //供弹隐含翻转 IFF，停摆保持——置换不了一台断电的炮
+            //供弹隐含翻转 IFF，停摆保持，置换不了一台断电的炮
             warmup = 0f;
         }
 

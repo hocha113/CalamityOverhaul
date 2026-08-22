@@ -1,6 +1,6 @@
 // ============================================================================
 // TBUGCorruptRift.fx  TBUG 出场裂缝（黑墙 / 代码错误）
-// 材质："世界渲染漏掉的一块"——不是发光的门，是缺失
+// 材质："世界渲染漏掉的一块"，不是发光的门，是缺失
 // 配色与 TBUGTheme 同族：黑底 + 终端蓝，品红只作报错，禁绿
 // 预乘输出 + AlphaBlend：黑墙是吸光暗体，真正遮挡地形；发光成分走低 alpha
 // s0 = quad 画布（内容不采样） s1 = PerlinNoise 512 灰度（LinearWrap）
@@ -58,9 +58,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float rectN = max(abs(p.x), abs(p.y));
     float guard = 1.0 - smoothstep(0.93, 0.995, rectN);
 
-    //————————————————————————————
+    //============================
     // 裂缝几何：竖直细缝，宽先窄后开，高很快到位
-    //————————————————————————————
+    //============================
     float open = max(openProgress, 0.0);
     float doorOn = smoothstep(0.02, 0.10, open);
     float axesX = riftSize.x * max(open, 0.03);
@@ -86,15 +86,15 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float edgePx = wPx - abs(xLoc);            //>0 在缝内
     float insideMask = smoothstep(-1.0, 1.0, edgePx) * doorOn * rowAlive;
 
-    //————————————————————————————
+    //============================
     // 黑墙主体：吸光暗体，只带最微弱的蓝灰底
-    //————————————————————————————
+    //============================
     float3 col = float3(0.004, 0.010, 0.020) * insideMask;
     float a = 0.94 * insideMask;
 
-    //————————————————————————————
+    //============================
     // 报错栈：一行行往上顶、卡顿推进、行号列、整行品红反白、偶发复读
-    //————————————————————————————
+    //============================
     float lineH = 7.0;
     //卡顿滚动：按块随机跳行数，推进节奏不均匀
     float scrollT = tt * 2.2 + seed * 9.0;
@@ -144,9 +144,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     col -= errMagenta * bodyPix * errGate * 0.45;
     a += errBand * 0.10;
 
-    //————————————————————————————
+    //============================
     // 坏显存色块：品红/亮绿硬边方块，闪一两帧就消失
-    //————————————————————————————
+    //============================
     float2 cellB = floor(pxPos / 14.0);
     float bGate = step(0.992, hash11(cellB.x * 1.37 + cellB.y * 7.13 + floor(tt * 13.0) * 0.71 + seed * 3.0));
     float3 bCol = lerp(float3(1.00, 0.24, 0.46), float3(0.35, 0.70, 1.00),
@@ -154,9 +154,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     col += bCol * bGate * insideMask * 0.85;
     a += bGate * insideMask * 0.08;
 
-    //————————————————————————————
+    //============================
     // 撕裂边缘：RGB 三通道错位细沿 + 扫描线断裂，禁柔和光环
-    //————————————————————————————
+    //============================
     float split = (1.5 + unstable * 2.0);
     float edgeR = wPx - abs(xLoc - split);
     float edgeB = wPx - abs(xLoc + split);
@@ -171,9 +171,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     col += float3(0.55, 0.86, 1.00) * rimB * rimAmp * 0.22;
     a += rimMain * rimAmp * 0.12;
 
-    //————————————————————————————
+    //============================
     // 边外吸入痕：短横向绿划线向缝内收，读作背景像素被拖进去
-    //————————————————————————————
+    //============================
     float outPx = max(-edgePx, 0.0);
     float availPx = max(min(quadSize.x - axesX, quadSize.y - axesY), 8.0);
     float glowWin = 1.0 - smoothstep(availPx * 0.40, availPx * 0.85, outPx);
@@ -183,9 +183,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float streak = streakGate * saturate(1.0 - outPx / streakLen) * step(0.001, outPx);
     col += float3(0.16, 0.44, 0.82) * streak * glowWin * doorOn * 0.30 * (1.0 - collapse);
 
-    //————————————————————————————
+    //============================
     // 吐出白闪：只在 spitPulse 峰值几帧，内容整体过曝
-    //————————————————————————————
+    //============================
     col += float3(0.86, 0.95, 1.00) * spitPulse * spitPulse * insideMask * 0.55;
 
     a = saturate(a);

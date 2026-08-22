@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
 {
     /// <summary>
-    /// 俯冲扫射：多段折线航线——琥珀预警线→末段反向蓄势→一帧置位俯冲，沿途两侧撒重力毒刺幕<br/>
+    /// 俯冲扫射：多段折线航线，琥珀预警线→末段反向蓄势→一帧置位俯冲，沿途两侧撒重力毒刺幕<br/>
     /// npc.ai[0]=本段航向角 npc.ai[1]=航线中心X npc.ai[3]=航线中心Y(服务端掷骰)
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)QueenBeeStateIndex.DiveStrafe, typeof(QueenBeeStateContext))]
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         private const int DiveTime = 32;
         private const int BrakeTime = 14;
         private const int SegmentTime = TelegraphTime + DiveTime + BrakeTime;
-        /// <summary>公平阀：两侧毒刺幕成对间隔帧——俯冲全速下相邻对沿线相距约170px，幕帘有恒定穿越缝</summary>
+        /// <summary>公平阀：两侧毒刺幕成对间隔帧，俯冲全速下相邻对沿线相距约170px，幕帘有恒定穿越缝</summary>
         private const int CurtainPairInterval = 5;
         //公平阀：航向段首一次掷定(ai[0])后整段锁死，预警线38帧全程可见；刹车拍接触伤关闭
         #endregion

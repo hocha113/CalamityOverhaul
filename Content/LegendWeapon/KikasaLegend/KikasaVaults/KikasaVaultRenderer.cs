@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                 RestoreUIBatch(sb);
             }
             else {
-                //着色器缺编：近黑剪影，状态只靠透明度分档——在外最淡，未驯服次之
+                //着色器缺编：近黑剪影，状态只靠透明度分档，在外最淡，未驯服次之
                 float stateA = absent ? 0.35f : tamed ? 0.9f : 0.7f;
                 Color ink = Color.Lerp(new Color(12, 6, 9), fallbackTint, 0.35f) * (alpha * stateA);
                 sb.Draw(tex, center, frameRect, ink, 0f,
@@ -246,7 +246,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
 
         /// <summary>
         /// 伞章：伞骨淡线垫底，伞盖粗笔带亮芯，笔序随 reveal 揭示；描完伞面一段掠光缓巡。
-        /// 颜色由调用方定——湖心景传 KikasaHudTheme 双形态色随鬼雨浸染
+        /// 颜色由调用方定，湖心景传 KikasaHudTheme 双形态色随鬼雨浸染
         /// </summary>
         public static void DrawSeal(SpriteBatch sb, Vector2 center, float scale, float alpha,
             float time, float reveal, Color bone, Color canopy, Color core) {

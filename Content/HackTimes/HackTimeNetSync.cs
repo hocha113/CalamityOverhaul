@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.HackTimes
         //新操作一律追加在末尾，已发布的编号是线上格式的一部分
         OwnedSnapshot,
         PointCue,
-        //—— PvP（玩家目标）批：收发全在 PvP/PlayerHackNet，这里只占号 ——
+        //== PvP（玩家目标）批：收发全在 PvP/PlayerHackNet，这里只占号 ==
         //攻击方 → 服务端：玩家扫描探针（限频 1/60f/人）
         ScanProbe,
         //服务端 → 请求者：探针回包（防御/RAM 段位/义体/协议数）
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.HackTimes
         QueueFull,
         InvalidPayload,
         ProtocolLocked,
-        //—— PvP 准入拒绝码（HackPvPRules.CanTarget 逐条映射，尾部追加）——
+        //== PvP 准入拒绝码（HackPvPRules.CanTarget 逐条映射，尾部追加） ==
         //服务端总开关关闭
         PvPDisabled,
         //双方 hostile 不满足（单向 hostile 不可选中）
@@ -88,12 +88,12 @@ namespace CalamityOverhaul.Content.HackTimes
         //叠加上限（全局 ≤3 / 同对 ≤2）
         StackLimit,
         //PvP 距离越界（上传期重验对它单独给 45f 宽限；
-        //不复用 InvalidPayload——那是 claim 一致性校验的拒绝码）
+        //不复用 InvalidPayload：那是 claim 一致性校验的拒绝码）
         OutOfRange,
     }
 
     /// <summary>
-    /// 目标的跨端身份。新种类一律追加可选参数，别改前四个位置——
+    /// 目标的跨端身份。新种类一律追加可选参数，别改前四个位置
     /// 现有构造点全按位置传参
     /// </summary>
     internal readonly record struct HackNetworkTarget(
@@ -550,7 +550,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
 
             if (identity.Kind == HackTargetKind.SelfRig) {
-                //自体目标恒以请求发起者回填——线上不携带玩家索引，
+                //自体目标恒以请求发起者回填，线上不携带玩家索引，
                 //"替别人骇"在结构上不可表达，不需要任何反作弊校验
                 identity = identity with { SelfPlayerIndex = whoAmI };
             }
@@ -690,7 +690,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
             if (kind == HackTargetKind.SelfRig) {
                 //自体目标：距离恒 0、claim 无安全含义（线上格式没有玩家索引，伪造不出"别人"），
-                //几何校验整块免除；恒等断言——解析产物必须就是请求者本人（回填语义的兜底）
+                //几何校验整块免除；恒等断言，解析产物必须就是请求者本人（回填语义的兜底）
                 if ((target as SelfRigScannable)?.PlayerIndex != player.whoAmI) {
                     return HackRequestResultCode.InvalidTarget;
                 }
@@ -736,7 +736,7 @@ namespace CalamityOverhaul.Content.HackTimes
         }
 
         /// <summary>
-        /// 持有校验。服务端在收到该玩家快照前一律放行——进世界时快照与首个请求存在竞态，
+        /// 持有校验。服务端在收到该玩家快照前一律放行，进世界时快照与首个请求存在竞态，
         /// 无脑拒会在联机下全员误杀。持有集本就是客户端自报的，这里不是反作弊面
         /// </summary>
         private static bool HasProtocolAuthority(Player player, QuickHackDef hack) {
@@ -791,7 +791,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 if (hack == null || !TryResolveUploadTarget(upload,
                     out IHackTarget target)) {
                     //Player 目标中途失联（死亡/掉线）：按非自愿取消口径退半
-                    //（其余种类维持原语义——NPC 击杀退款走 RefundKilledEffect）
+                    //（其余种类维持原语义，NPC 击杀退款走 RefundKilledEffect）
                     if (upload.TargetIdentity.Kind == HackTargetKind.Player
                         && upload.PaidRamCost > 0f) {
                         RamSystem.Restore(player, upload.PaidRamCost * 0.5f, out _);
@@ -809,7 +809,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 if (upload.State != HackQueueState.Uploading) continue;
                 hasUploading = true;
                 //Player 目标（PvP）分流：上传期准入重验、攻防双端进度播报、
-                //完成后走 DefenderApply 授予管线——不进 HackEffectTracker
+                //完成后走 DefenderApply 授予管线，不进 HackEffectTracker
                 //（防守方客户端才是自己状态的合法写入者）
                 if (upload.TargetIdentity.Kind == HackTargetKind.Player) {
                     if (PvP.PlayerHackAuthority.TickUpload(player, state, upload)) {
@@ -1160,7 +1160,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 return;
             }
             //部件记录同样带 NpcIdentity，照走迟到 NPC 的挂起解析；
-            //挂起回调造普通 NpcScannable 即可——复制端只跑表现，Replicated 钩子经 TryNpc 解包
+            //挂起回调造普通 NpcScannable 即可，复制端只跑表现，Replicated 钩子经 TryNpc 解包
             if (record.Target.Kind is not HackTargetKind.Npc
                 and not HackTargetKind.BossPart) return;
             int duration = Math.Clamp((int)(hack.GetDuration()

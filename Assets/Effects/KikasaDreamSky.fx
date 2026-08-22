@@ -1,5 +1,5 @@
 //KikasaDreamSky.fx 鬼梦天空：红黑穹顶 + 缓涌暗云带 + 远处村落剪影两层视差
-//（屋脊/烟囱程序化行列，零星窗火忽明忽暗，轮廓带记忆般的微颤——是影像不是实景）
+//（屋脊/烟囱程序化行列，零星窗火忽明忽暗，轮廓带记忆般的微颤，是影像不是实景）
 //+ 地平烬雾。全覆盖预乘输出，跨 0 深度切片画一次盖过原版远景。
 //视差按还原后的真实相机值（uCamX/uCamY）驱动。
 //直线算术+平 tex2D，无分支；s0=白图 s1=PerlinNoise
@@ -34,7 +34,7 @@ float hash1(float cell, float seed) {
 }
 
 //一排村落：连续起伏的地面剪影垫底（屋子长在地上，不是悬在线上的方块），
-//每格抽签——空地/枯树/望楼/民居；民居出檐坡脊（脊线 pow 曲线下垂、檐口外挑），
+//每格抽签，空地/枯树/望楼/民居；民居出檐坡脊（脊线 pow 曲线下垂、檐口外挑），
 //望楼窄高脊陡，枯树团冠被噪声啃出毛边；三成民居亮窗火、两成升炊烟。
 //返回 x=剪影 y=窗火 z=炊烟
 float3 villageRow(float x, float y, float baseY, float rollAmp, float seedRow, float lightGate) {
@@ -58,7 +58,7 @@ float3 villageRow(float x, float y, float baseY, float rollAmp, float seedRow, f
     float isTower = step(0.30, h4) * step(h4, 0.40);
     float isHut = step(0.40, h4);
 
-    //——民居：身比檐窄，脊线下垂、檐口外挑——
+    //== 民居：身比檐窄，脊线下垂、檐口外挑 ==
     float hutH = 0.028 + h1 * 0.034;
     float hutW = 0.125 + h2 * 0.135;
     float eave = 0.045 + h2 * 0.045;
@@ -72,7 +72,7 @@ float3 villageRow(float x, float y, float baseY, float rollAmp, float seedRow, f
         + step(abs(fx), hutW) * step(top, y) * step(y, gBase + 0.02));
     sil = saturate(sil + hutSil * isHut);
 
-    //——望楼：窄高一柱，脊更陡——
+    //== 望楼：窄高一柱，脊更陡 ==
     float twH = 0.065 + h1 * 0.045;
     float twW = 0.042 + h2 * 0.028;
     float twTop = gBase - twH;
@@ -83,7 +83,7 @@ float3 villageRow(float x, float y, float baseY, float rollAmp, float seedRow, f
         + step(abs(fx), twW) * step(twTop, y) * step(y, gBase + 0.02));
     sil = saturate(sil + twSil * isTower);
 
-    //——枯村之树：双团冠 + 细干，冠缘噪声啃蚀——
+    //== 枯村之树：双团冠 + 细干，冠缘噪声啃蚀 ==
     float trH = 0.030 + h1 * 0.026;
     float2 c1 = float2(fx, y - (gBase - trH)) * float2(1.0, 1.6);
     float2 c2 = float2(fx - 0.10 + h2 * 0.20, y - (gBase - trH - 0.012)) * float2(1.0, 1.6);
@@ -93,7 +93,7 @@ float3 villageRow(float x, float y, float baseY, float rollAmp, float seedRow, f
     float trunk = step(abs(fx), 0.008) * step(gBase - trH, y) * step(y, gBase);
     sil = saturate(sil + (saturate(blob) * eaten + trunk) * isTree);
 
-    //——窗火：民居三成一格小窗，望楼顶窗常明——
+    //== 窗火：民居三成一格小窗，望楼顶窗常明 ==
     float wx = fx - (h2 - 0.5) * hutW;
     float wy = y - (top + hutH * 0.55);
     float win = step(abs(wx), 0.020) * step(abs(wy), 0.009) * step(0.72, h1) * isHut;
@@ -101,7 +101,7 @@ float3 villageRow(float x, float y, float baseY, float rollAmp, float seedRow, f
     float flicker = 0.30 + 0.70 * noiseTex(float2(cell * 0.131, uTime * 0.067 + seedRow));
     float light = (win + twWin) * flicker * lightGate;
 
-    //——炊烟：两成人家一缕，越升越散、随风游摆——
+    //== 炊烟：两成人家一缕，越升越散、随风游摆 ==
     float smokeGate = step(0.80, h3) * isHut;
     float rise = saturate((top - y) * 6.5);
     float sway = (noiseTex(float2(cell * 0.37, y * 2.2 - uTime * 0.05)) - 0.5) * 0.10 * rise;
@@ -136,7 +136,7 @@ float4 PSDreamSky(float2 coords : TEXCOORD0) : COLOR0 {
     col += CLOUD_RIM * rim * 0.16;
 
     //====== 远村：影像的两层。地形起伏垫底、屋树塔错落、炊烟窗火 ======
-    //记忆微颤：轮廓横向极小幅漂移 + 整排明度慢呼吸——那只是影像
+    //记忆微颤：轮廓横向极小幅漂移 + 整排明度慢呼吸，那只是影像
     float shiver = (noiseTex(float2(uTime * 0.05, 0.71)) - 0.5) * 0.006;
     float breathe = 0.82 + 0.18 * noiseTex(float2(uTime * 0.021, 0.29));
 

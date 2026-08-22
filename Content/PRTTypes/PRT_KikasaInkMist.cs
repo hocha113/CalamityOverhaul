@@ -7,7 +7,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// 墨雾须:命中/倾覆时在空气里晕开的一小口墨雾——
+    /// 墨雾须:命中/倾覆时在空气里晕开的一小口墨雾
     /// 比空气重,缓慢下沉扩散,Fog 真 alpha 主体可直接染墨色(墨雨普攻自有件)
     /// </summary>
     internal class PRT_KikasaInkMist : BasePRT

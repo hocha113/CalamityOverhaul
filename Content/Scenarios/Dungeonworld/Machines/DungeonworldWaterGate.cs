@@ -12,11 +12,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Machines
     //L4 水位门:把"放水与排水互换整层的路"这条设计主张接成可玩的。
     //
     //在此之前 L4WaterWorks.ApplyState 只被调试看样入口调用过,世界里的阀杆
-    //接不到任何东西——生成期锁死满水,这一层的核心机制等于不存在。
+    //接不到任何东西，生成期锁死满水,这一层的核心机制等于不存在。
     //
     //三个决定:
     //1.不做持久化。子世界 ShouldSave=false,每次进入都重跑生成,舱段表整次访问有效;
-    //  联机下生成只在子服务器跑,表因此只在服务端存在——而水位本来就该服务端裁决,正好。
+    //  联机下生成只在子服务器跑,表因此只在服务端存在，而水位本来就该服务端裁决,正好。
     //2.运行时走 ApplyStateRuntime(纯重写,不 settle)。生成期那套 settle 含全图
     //  WaterCheck,秒级,放运行时就是硬卡帧;堰坎舱段构造性密封 + NormalUpdates=false
     //  让 UpdateLiquid 不转,重写完即静定。
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Machines
         }
 
         /// <summary>
-        /// 阀杆被拉。单机就地排进队列,联机客户端只上行请求——
+        /// 阀杆被拉。单机就地排进队列,联机客户端只上行请求
         /// 水位是世界态,客户端本地写液体立刻 desync。
         /// </summary>
         internal static void RequestToggle(int leverX, int leverY) {
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Machines
         }
 
         //推迟一帧执行:不在 tile 交互回调里当场重写上万格。
-        //节流也压在这里——联机时服务端自己不走 RequestToggle,
+        //节流也压在这里，联机时服务端自己不走 RequestToggle,
         //若只在那边设冷却,两个客户端轮流点就能把服务端刷穿
         private static void Queue(bool high) {
             if (_pending || _cooldown > 0) {
@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Machines
             }
         }
 
-        //整层水面在动,声音得够重——玩家得知道刚才那一拉动的是整条路而不是一扇门。
+        //整层水面在动,声音得够重，玩家得知道刚才那一拉动的是整条路而不是一扇门。
         //只播给还在水牢层里的人:隔着五层听见泵房换气很出戏
         private static void Announce(bool high) {
             if (Main.dedServ || !InWaterBand((int)(Main.LocalPlayer.Center.Y / 16f))) {
@@ -179,7 +179,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Machines
     /// <summary>
     /// 阀杆钩子:原版拉杆右键后 <c>Player.TileInteractionsUse</c> 紧接着就调
     /// <c>TileLoader.RightClick</c>(Player.cs:28947-28953),本钩子挂在那一步。<br/>
-    /// 只认没接线的拉杆——有线的是堰闸走廊那几根,管着自己的闸门,不能抢。
+    /// 只认没接线的拉杆，有线的是堰闸走廊那几根,管着自己的闸门,不能抢。
     /// </summary>
     internal class DungeonworldValveTile : GlobalTile
     {

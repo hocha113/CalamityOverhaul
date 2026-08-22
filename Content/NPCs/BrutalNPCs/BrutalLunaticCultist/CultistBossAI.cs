@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
 {
     /// <summary>
-    /// 拜月教邪教徒 AI 主控：仪式法师——他在推进自己的仪式（充能表即背后法阵），玩家在拆台<br/>
+    /// 拜月教邪教徒 AI 主控：仪式法师，他在推进自己的仪式（充能表即背后法阵），玩家在拆台<br/>
     /// 同步槽位：ai[0]=阶段 ai[1]=元素 ai[2]=状态索引 ai[3]=仪式充能
     /// </summary>
     internal class CultistBossAI : CWRNPCOverride, ICWRLoader
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             stateContext.Target = targetPlayer ?? Main.player[Main.myPlayer];
             stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
 
-            //权威端写同步槽，客户端读回——晚入场/漂移都由 ai 槽兜底
+            //权威端写同步槽，客户端读回，晚入场/漂移都由 ai 槽兜底
             if (VaultUtils.isClient) {
                 stateContext.Phase = (int)npc.ai[0];
                 stateContext.Element = (int)npc.ai[1];
@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
 
         /// <summary>
         /// 仪式经济（权威端）：被动充能随所处状态积累，咏唱最快；<br/>
-        /// 猎杀幻影龙一次性大削充能——P3 的"拆台还是躲避"抉择
+        /// 猎杀幻影龙一次性大削充能，P3 的"拆台还是躲避"抉择
         /// </summary>
         private void UpdateRitualEconomy() {
             if (VaultUtils.isClient || stateContext == null || stateMachine == null) {
@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             Color core = CultistMotion.ElementCore(stateContext.Element);
             Lighting.AddLight(npc.Center, core.ToVector3() * (0.5f + stateContext.CastAura * 0.5f));
 
-            //充能逼近满格：法阵急促脉动——玩家的"要来了"预告
+            //充能逼近满格：法阵急促脉动，玩家的"要来了"预告
             float fill = stateContext.RitualCharge / CultistStateContext.RitualMax;
             if (fill > 0.85f && Main.GameUpdateCount % 30 == 0) {
                 stateContext.SigilCommit = MathHelper.Max(stateContext.SigilCommit, 0.4f);

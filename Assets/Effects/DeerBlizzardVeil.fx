@@ -72,7 +72,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     col = lerp(col, float3(0.94, 0.97, 1.0), saturate(white));
     col += float3(0.30, 0.55, 0.95) * rim * 0.4;
 
-    //凝视渐晕：暗影紫自边缘咬入+内缘结霜细闪——"你正看着它"
+    //凝视渐晕：暗影紫自边缘咬入+内缘结霜细闪，"你正看着它"
     float bite = smoothstep(0.62 - uGazeWarn * 0.34, 1.15, r) * uGazeWarn;
     float3 gazeColor = float3(0.14, 0.05, 0.22);
     col = lerp(col, gazeColor, bite * 0.8);

@@ -2,7 +2,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z4
 {
-    //Z4 高空带（M3）：剪影巨构——天线桅杆（地表通高空的唯一爬升动线）+
+    //Z4 高空带（M3）：剪影巨构，天线桅杆（地表通高空的唯一爬升动线）+
     //浮空残骸方舱（远景敬畏，翼装/绳索可达）
     internal static class Z4Content
     {

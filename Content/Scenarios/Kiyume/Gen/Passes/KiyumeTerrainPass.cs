@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen.Passes
     //骨架 pass 已按带表浇过体块，这里只重写表层那十几行与湖盆，别整列重刷
     internal class KiyumeTerrainPass : GenPass
     {
-        //深处基底行：整个世界坐在血石上——湖不是局部现象，是这地方的底子
+        //深处基底行：整个世界坐在血石上，湖不是局部现象，是这地方的底子
         private const int DeepBaseRow = 640;
         //表层贴面厚度（行）
         private const int VeneerRows = 14;
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen.Passes
             _ => TileID.Stone,
         };
 
-        //湖盆灌到统一水面行；岸线自己浮出来——地面高过水面的列就是滩
+        //湖盆灌到统一水面行；岸线自己浮出来，地面高过水面的列就是滩
         //NormalUpdates=false 液体不流动，构造性铺设即定型；游得太深会淹死，那就是西界的劝返
         private static void FillLake() {
             int surface = KiyumeMetrics.LakeSurfaceRow;

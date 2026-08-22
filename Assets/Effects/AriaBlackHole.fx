@@ -221,7 +221,7 @@ float4 GlowPS(VertexShaderOutput input) : COLOR0
             //内缘白热边界层
             float rimHeat = exp(-pow((dq - uDiskIn) / 0.014, 2.0)) * 1.45;
 
-            //近远侧遮挡：远侧(上半)被视界吞掉，近侧(下半)从黑核前掠过——立体感的关键
+            //近远侧遮挡：远侧(上半)被视界吞掉，近侧(下半)从黑核前掠过，立体感的关键
             float occFar = smoothstep(uHorizonR * 1.01, uHorizonR * 1.14, dist);
             float occ = lerp(occFar, 1.0, smoothstep(-0.015, 0.02, c.y));
 

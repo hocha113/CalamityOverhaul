@@ -16,19 +16,19 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 {
     /// <summary>
-    /// 沉溺演出层：六幕编舞——合围（水面鼓包汇聚）→ 爆发（臂错帧破水甩向各自槽位）→
+    /// 沉溺演出层：六幕编舞，合围（水面鼓包汇聚）→ 爆发（臂错帧破水甩向各自槽位）→
     /// 抱住（逐手卷指合拢，全员到位绷紧拍）→ 拉锯（两轮衰减挣扎，曲率即力量）→
     /// 拖入（绷直收缩下拉，过水线大水花）→ 水下溶解（鬼影快照+臂化回湖水）。
     /// 真身在权威时间轴 40 帧被移除，本层自 32 帧起用鬼影覆绘真身，时差被同路延迟抵消。
     /// 鬼影走逐节 RT 留影（DrawNPCDirect 完整钩子链，改绘皮肤/多部件不丢），
-    /// 全组共享单一刚体位移场——体节相对位置恒等于抓握帧，U 形蠕虫整体拉入不错位；
+    /// 全组共享单一刚体位移场，体节相对位置恒等于抓握帧，U 形蠕虫整体拉入不错位；
     /// RT 不可用时逐节回退裸贴图。画在 EndEntityDraw：水上部分被湖面镜面自动倒影。
     /// </summary>
     internal static class KikasaDrownFX
     {
         //==================== 时间轴 ====================
         //最后一只手（第 7 只 28f 破水+9f 甩到+~4f 卷指）约 41f 攥中，
-        //绷紧拍必须晚于它——"全员合拢后才绷紧"是力量语义的底线
+        //绷紧拍必须晚于它，"全员合拢后才绷紧"是力量语义的底线
 
         private const int ConvergeEnd = 16;
         private const int TenseBeat = 44;
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
         /// <summary>
         /// 单节鬼影：RT 留影为主（外观=真实绘制链输出，旋转/翻转/gfxOffY 已烘焙进像素），
-        /// 裸贴图快照兜底。锚点取捕获帧世界中心——全组被权威钉死，即抓握时刻的形状
+        /// 裸贴图快照兜底。锚点取捕获帧世界中心，全组被权威钉死，即抓握时刻的形状
         /// </summary>
         private sealed class GhostSeg
         {
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             public int OwnerIndex;
             public float Seed;
             public NetworkNPCIdentity Primary;
-            /// <summary>全组鬼影段（含主段），whoAmI 降序——原版 DrawNPCs 从 199 递减遍历，
+            /// <summary>全组鬼影段（含主段），whoAmI 降序，原版 DrawNPCs 从 199 递减遍历，
             /// 低索引后画压上层（Main.cs 21711），按存放序绘制即复刻遮挡关系</summary>
             public readonly List<GhostSeg> Segs = [];
             public GhostSeg PrimarySeg;
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             /// <summary>组包围盒半尺寸</summary>
             public Vector2 TargetHalf;
             /// <summary>体型水花系数：包围盒面积开方对玩家体型归一，约 0.9~2.4。
-            /// 大家伙入水的涟漪、行波、水花、屏震都按它放大——小史莱姆和猪鲨不该溅一样的水</summary>
+            /// 大家伙入水的涟漪、行波、水花、屏震都按它放大，小史莱姆和猪鲨不该溅一样的水</summary>
             public float SplashScale = 1f;
             /// <summary>冻结时组中心：鬼影绘制位 = 节锚点 + (TargetCenter - 此值)</summary>
             public Vector2 GroupCenterAtFreeze;
@@ -286,7 +286,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             => 1f + MathHelper.Clamp((reach - 340f) / 1100f, 0f, 1f);
 
         /// <summary>
-        /// 群组布手：抓点取体节实位（臂展可达者按 X 均匀取样），不再用主段椭圆——
+        /// 群组布手：抓点取体节实位（臂展可达者按 X 均匀取样），不再用主段椭圆
         /// 手要攥住 U 形身体的可达弧段，抓空气或隔空贴手都是失败。无可达节返回 false
         /// </summary>
         private static bool TryBuildGroupHands(DrownShow show, List<NPC> group) {
@@ -561,7 +561,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 }
                 fxBudget--;
                 Vector2 hit = new(seg.AnchorCenter.X + driftX, show.LakeY);
-                //分段按单节体量溅水，组系数只取一小口——蠕虫的量在节数上
+                //分段按单节体量溅水，组系数只取一小口，蠕虫的量在节数上
                 KikasaDomainDeco.RippleAt(hit, 0.7f * MathF.Min(show.SplashScale, 1.4f));
                 if (soundLeft) {
                     soundLeft = false;
@@ -573,7 +573,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
         /// <summary>
         /// 原版把贴图底边锚在碰撞箱底+4px（步行怪贴图高于碰撞箱），
-        /// 中心锚定绘制会差出几像素——换影瞬间目标钉死静止，跳变没有运动掩护。
+        /// 中心锚定绘制会差出几像素，换影瞬间目标钉死静止，跳变没有运动掩护。
         /// 仅裸贴图回退路径需要；RT 留影已把该偏移烘焙进像素
         /// </summary>
         private static float VanillaCenterOffY(NPC npc)
@@ -591,7 +591,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 return;
             }
             if (t <= StruggleStart) {
-                //绷紧拍：两帧内被拽下一小截——手赢了第一口气
+                //绷紧拍：两帧内被拽下一小截，手赢了第一口气
                 show.TargetCenter.Y = show.StruggleBaseY
                     + TenseJolt * (t - TenseBeat) / (StruggleStart - TenseBeat);
                 return;
@@ -677,7 +677,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 const int reachFrames = 9;
 
                 if (localT <= reachFrames) {
-                    //爆发过冲弧线：根先动腕滞后，控制点抬向外上——鞭出去的
+                    //爆发过冲弧线：根先动腕滞后，控制点抬向外上，鞭出去的
                     float rt = localT / (float)reachFrames;
                     float ease = 1f - MathF.Pow(1f - rt, 2.6f);
                     Vector2 start = new(rig.Root.X, show.LakeY + 12f);
@@ -813,7 +813,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                     continue;
                 }
                 int n = show.Segs.Count;
-                //pass0 首捕，pass1 轮转刷新；游标基点先取快照——
+                //pass0 首捕，pass1 轮转刷新；游标基点先取快照
                 //边走边推游标会让 idx 隔一跳一，同帧漏刷半数节
                 int cursorBase = show.CaptureCursor;
                 for (int pass = 0; pass < 2 && budget > 0; pass++) {

@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             breathPushed = true;
         }
 
-        /// <summary>纳刀引爆、全场细线兑现成真实裂缝——闪一下随即快速退场（深处稍慢，纵深最后熄灭）</summary>
+        /// <summary>纳刀引爆、全场细线兑现成真实裂缝，闪一下随即快速退场（深处稍慢，纵深最后熄灭）</summary>
         public static void CashIn() {
             if (cashAge < 0 && lines.Count > 0) {
                 cashAge = 0;
@@ -175,7 +175,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 float pop = cashAge is >= 0 and <= 3 ? 0.7f * MathF.Pow(0.6f, cashAge) : 0f;
                 float hot = MathF.Max(flash, pop);
 
-                //呼吸、深处滞后半拍——同一口气从近处传向纵深
+                //呼吸、深处滞后半拍，同一口气从近处传向纵深
 
                 float breath = breathAmp * (0.5f + 0.5f * MathF.Sin(
                     (breathTimer - line.Depth * 8f) * 0.55f - MathHelper.PiOver2));

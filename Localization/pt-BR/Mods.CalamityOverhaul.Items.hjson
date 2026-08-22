@@ -1967,8 +1967,8 @@ PlowSteelClampArm: {
 	SkillDesc:
 		'''
 		Lanca um fio monomolecular de alta calor da sua palma. Inimigos ao longo do caminho sao continuamente chamuscados.
-		[c/8AC4E8:Toque] —— Coloca um fio curto de ~12 blocos em direcao ao cursor, dura 2 segundos, sem necessidade de ancora.
-		[c/F5C56A:Segurar] —— Quando totalmente carregado, prende-se a um bloco solido perto do cursor por 5 segundos; se nenhuma ancora for encontrada, cai de volta para um fio curto.
+		[c/8AC4E8:Toque]: Coloca um fio curto de ~12 blocos em direcao ao cursor, dura 2 segundos, sem necessidade de ancora.
+		[c/F5C56A:Segurar]: Quando totalmente carregado, prende-se a um bloco solido perto do cursor por 5 segundos; se nenhuma ancora for encontrada, cai de volta para um fio curto.
 		O dano escala com os multiplicadores de dano genericos do jogador.
 		'''
 }
@@ -3261,7 +3261,7 @@ OniMeiRubbingOnikiri: {
 	Tooltip: Inscrição original: mantém a lâmina como está, sem dádiva nem preço
 	// Origin: At Ichijo-Modoribashi, the oni that lost its arm never dared come back for it. The name has been nailed to the tang ever since
 	Power: A inscrição original. A lâmina permanece exatamente como é — nada concedido, nada tomado
-	Burden: ———
+	Burden: None
 }
 
 OniMeiRubbingShishinoko: {

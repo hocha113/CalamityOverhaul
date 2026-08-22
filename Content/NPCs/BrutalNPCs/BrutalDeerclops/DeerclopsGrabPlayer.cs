@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
 {
     /// <summary>
-    /// 投技玩家侧：玩家位置是客户端权威——被抓者的钉身/锁控/伤害节拍/运镜启停
+    /// 投技玩家侧：玩家位置是客户端权威，被抓者的钉身/锁控/伤害节拍/运镜启停
     /// 全部由其own客户端从同步来的NPC状态推导执行(月总舌头形状)；
     /// 其余客户端只对本地镜像做钉身，服务器绝不写玩家位置
     /// </summary>

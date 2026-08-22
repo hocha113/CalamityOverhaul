@@ -9,7 +9,7 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.Industrials.UIs
 {
     /// <summary>
-    /// 工业域机器界面的共享主题与笔刷:野外仪器语言——切角钢壳(shader)、机加工凹槽、
+    /// 工业域机器界面的共享主题与笔刷:野外仪器语言，切角钢壳(shader)、机加工凹槽、
     /// 指针仪表、刻度条、模块插座、黄铜铭牌。勘探终端与发电机系列共用。<br/>
     /// 富层交给 <c>IndustrialTerminal.fx</c>,锐利前景交给 <see cref="SvgPathPen"/> 与 1px 蚀刻线;
     /// 暗部一律是紧贴的机加工线,不做同心放大的假羽化
@@ -247,7 +247,7 @@ namespace CalamityOverhaul.Content.Industrials.UIs
 
         #region 刻度条
         /// <summary>
-        /// 刻度条:蚀刻轨 + 分段琥珀填充 + 逐 10% 刻度齿——仪表读法,不是进度条
+        /// 刻度条:蚀刻轨 + 分段琥珀填充 + 逐 10% 刻度齿，仪表读法,不是进度条
         /// </summary>
         internal static void DrawTickBar(SpriteBatch sb, Rectangle rect, float value, Color accent, float alpha) {
             value = MathHelper.Clamp(value, 0f, 1f);
@@ -360,7 +360,7 @@ namespace CalamityOverhaul.Content.Industrials.UIs
             }
         }
 
-        /// <summary>闩钮(关闭):圆头螺栓 + 一字槽,悬停时槽口轻旋——"拧开面板"的隐喻</summary>
+        /// <summary>闩钮(关闭):圆头螺栓 + 一字槽,悬停时槽口轻旋，"拧开面板"的隐喻</summary>
         internal static void DrawLatch(SpriteBatch sb, Vector2 center, float alpha, float hover) {
             //螺头:斜置方料交叠凑圆
             sb.Draw(Px, center + new Vector2(0.8f), One, Color.Black * (alpha * 0.4f), MathHelper.PiOver4,

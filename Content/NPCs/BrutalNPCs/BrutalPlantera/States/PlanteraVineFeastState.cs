@@ -449,7 +449,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                     : -MawDir(npc);
                 npc.velocity = -spitDir * 7.5f;
 
-                //注意：此处不清ai[1]——被抓者客户端节拍略滞后，
+                //注意：此处不清ai[1]：被抓者客户端节拍略滞后，
                 //需保留标记直到进入收势段，其本地弹射帧才能可靠执行
                 if (!VaultUtils.isClient) {
                     for (int i = -1; i <= 1; i += 2) {

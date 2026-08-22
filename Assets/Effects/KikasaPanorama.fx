@@ -2,7 +2,7 @@
 //KikasaPanorama.fx 湖心景：鬼伞主界面的全屏血湖夜景剖面。
 //上带夜空（竖向层次+两层缓涌云带+鬼雨斜雨丝）、左岸礁（恶犬的立足处，
 //噪声起伏的近黑岩体）、水线（泡沫缝线亮度吃 uVigor 湖力、uWisp 鬼火沿线
-//燃起金焰舌——金=鬼火身份色不随雨浸染）、水下（深浅双频横流+近水焦散+
+//燃起金焰舌，金=鬼火身份色不随雨浸染）、水下（深浅双频横流+近水焦散+
 //烬萤浮游 uLightGate=湖藏填充率）、干湖（uDry 龟裂湖床，与湖畔村图同配方）。
 //uRain 在血湖族与鬼雨族之间整画浸染。色板与 KikasaScene/KikasaHudTheme 同源。
 //屏角轻渐晕收住画面。预乘输出。s0=白像素 s1=PerlinNoise（实测值域 0.22~0.776，
@@ -56,7 +56,7 @@ static const float3 GOLD_CORE = float3(1.000, 0.925, 0.660);
 static const float3 GOLD_BODY = float3(1.000, 0.730, 0.260);
 static const float3 GOLD_TIP  = float3(0.847, 0.424, 0.118);
 
-//满水位 uv.y——必须与 KikasaPanoramaTheme.WaterFullUv 一致
+//满水位 uv.y：必须与 KikasaPanoramaTheme.WaterFullUv 一致
 static const float WATER_FULL_Y = 0.40;
 
 float noiseTex(float2 uv) {
@@ -142,14 +142,14 @@ float4 PSLake(float2 coords : TEXCOORD0) : COLOR0 {
     float caus = pow(noiseTex(float2(ux * 3.4 - uTime * 0.022, uv.y * 9.0)), 6.0)
         * exp2(-max(rel, 0.0) * 11.0);
     water += foam * caus * (0.26 + 0.18 * uVigor);
-    //烬萤浮游：湖藏越满，水里漂的村火越稠——储物的呼吸读数
+    //烬萤浮游：湖藏越满，水里漂的村火越稠，储物的呼吸读数
     float fly = noiseTex(float2(ux * 3.4 + uTime * 0.018, uv.y * 4.4 - uTime * 0.026));
     water += ember * saturate((fly - 0.72) * 9.0) * uLightGate * 0.9
         * (1.0 - depth * 0.4);
     //湖力浅水辉：湖力越满，浅水一层暖光越亮
     water += tint * exp2(-max(rel, 0.0) * 7.0) * uVigor * 0.10;
 
-    //====== 泡沫缝线：亮度吃湖力——一条水线读出这汪湖还有多少力气 ======
+    //====== 泡沫缝线：亮度吃湖力，一条水线读出这汪湖还有多少力气 ======
     float wob = (noiseTex(float2(ux * 2.8 - uTime * 0.020, 0.71)) - 0.5)
         * (0.008 + 0.014 * uStir);
     float seamD = rel + wob;
@@ -176,7 +176,7 @@ float4 PSLake(float2 coords : TEXCOORD0) : COLOR0 {
     //金焰在水下的映光
     col += GOLD_BODY * exp2(-max(rel, 0.0) * 16.0) * step(0.0, rel) * uWisp * 0.14;
 
-    //====== 左岸礁：贴着满水线的岩架，右缘噪声撕、探进水下即隐——不做通底黑柱 ======
+    //====== 左岸礁：贴着满水线的岩架，右缘噪声撕、探进水下即隐，不做通底黑柱 ======
     float shoreProfile = WATER_FULL_Y - 0.014
         + (noiseTex(float2(ux * 1.9 + 0.37, 0.19)) - 0.5) * 0.02
         - smoothstep(0.30, 0.13, ux) * 0.012;

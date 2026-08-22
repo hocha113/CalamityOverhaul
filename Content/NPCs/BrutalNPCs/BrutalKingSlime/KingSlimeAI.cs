@@ -220,7 +220,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
 
         /// <summary>
         /// 狂暴阀：目标存活但长期够不着(极远/失联超时，环境性脱战)时不撤离，
-        /// 转入狂暴——AI照常，免伤+接触增伤；贴近后解除。服务端判定，ai[4]镜像
+        /// 转入狂暴，AI照常，免伤+接触增伤；贴近后解除。服务端判定，ai[4]镜像
         /// </summary>
         private void UpdateEnrage() {
             //吞没投技持人期也豁免：狂暴免伤会消解"队友集火救人"的反制窗口

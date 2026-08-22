@@ -2,7 +2,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
 {
     /// <summary>
     /// 横向带的雾色与厚度微调表：世界列 → (雾色, 浓度倍率)。<br/>
-    /// 色值由鬼梦色板推导（HORIZON/GROUND_FOG 去饱和压暗——雾是载着血湖颜色的空气，
+    /// 色值由鬼梦色板推导（HORIZON/GROUND_FOG 去饱和压暗，雾是载着血湖颜色的空气，
     /// 不是血湖本身），越往东离湖越远越冷越薄；<br/>
     /// 浓度主曲线是雾线与距离衰减的解析式（KiyumeFogSim），这里的倍率只做手调余量
     /// </summary>

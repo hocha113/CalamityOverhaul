@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
     /// <c>invis</c> 旗、潜行值 <c>stealth</c>（1=全可见，喷泊/星旋套的积累源）、
     /// 星旋潜行开关 <c>vortexStealthActive</c>、Calamity 盗贼潜行
     /// （<c>CalamityPlayer.rogueStealth</c>，本文件内的局部反射缓存清零，
-    /// 取不到则静默跳过该项——CWRRef 的缓存是 private，收尾者可回并）。<br/>
+    /// 取不到则静默跳过该项，CWRRef 的缓存是 private，收尾者可回并）。<br/>
     /// 压制在 <c>OnDefenderTick</c> 逐帧重执行（帧末，单帧内的积累残量可忽略）。<br/>
     /// <b>轮廓光是本簇唯一出防守方本机的表现</b>：走 <see cref="OnSpectatorTick"/>
     /// 镜像驱动，各端读广播镜像自绘（含防守方自己），不读防守方本机任何值

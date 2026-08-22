@@ -1,5 +1,5 @@
 // ============================================================================
-//KikasaNarrativePanel.fx 鬼雨叙事面板背景——湿墨冷青水膜 + 溺月 + 底沿积水线 + 水幕开合
+//KikasaNarrativePanel.fx 鬼雨叙事面板背景，湿墨冷青水膜 + 溺月 + 底沿积水线 + 水幕开合
 //AlphaBlend 预乘 alpha 输出;色板与 KikasaSky.fx 鬼雨异化态同源(uCol* 由 CPU 传入,禁红禁暖)
 //构图纪律:签名装饰全部住在边框带(edgePad 区),面板内部保持湿墨静场护住文字
 //顶沿不画雨:噪声带切出来的"雨丝"读作飘带(2026-08 用户判违和),落雨归 CPU 粒子
@@ -144,7 +144,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float moonHalo = exp(-max(dMoon - moonR, 0.0) * (0.13 - breath * 0.03));
     float moonTex = valueNoise(pixelPos * 0.09 + 7.3);
     float3 moonCol = lerp(uColRain, uColMoon, 0.55 + breath * 0.20) * (0.66 + moonTex * 0.4);
-    //月盘卡在沿上,湿光允许向顶部内侧渗一段——给内部一个光源方向
+    //月盘卡在沿上,湿光允许向顶部内侧渗一段，给内部一个光源方向
     float bandDisc = 1.0 - smoothstep(innerMin.y + 10.0, innerMin.y + 34.0, pixelPos.y);
     float bandHalo = 1.0 - smoothstep(innerMin.y + 16.0, innerMin.y + 80.0, pixelPos.y);
     float moonA = moonDisc * 0.85 * bandDisc + moonHalo * (0.18 + breath * 0.08) * bandHalo;

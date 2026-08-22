@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
 
     /// <summary>
     /// 黑闪全屏后效：一帧黑白反转冲击帧（红缘描边）+ 红黑冲击波扩散。
-    /// 权重 1.424（本目录分配频段 1.422~1.428），晚于天体后效(1.16)与扭曲(1.2)——
+    /// 权重 1.424（本目录分配频段 1.422~1.428），晚于天体后效(1.16)与扭曲(1.2)
     /// 冲击帧是"最后一笔"，不被透镜再弯折
     /// </summary>
     internal class MLordBlackFlashRender : RenderHandle

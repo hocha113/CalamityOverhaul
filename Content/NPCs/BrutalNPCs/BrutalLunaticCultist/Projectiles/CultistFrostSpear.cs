@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
 
             float grow = GrowT;
             float scale = IsShard ? 0.72f : 0.5f + grow * 1.05f;
-            //生长期半透明幽蓝——看得见的"还没变硬"
+            //生长期半透明幽蓝，看得见的"还没变硬"
             float solidity = 0.35f + grow * 0.65f;
 
             //底晕

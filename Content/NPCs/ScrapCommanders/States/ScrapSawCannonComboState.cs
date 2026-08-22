@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.States
 {
     /// <summary>
     /// 锯炮协奏（P2 组合招）：锯臂连打三记短突刺贴身施压（striker），
-    /// 炮臂同拍持续迫击封走位（zoning）——一主一辅的显式分工，
+    /// 炮臂同拍持续迫击封走位（zoning），一主一辅的显式分工，
     /// 双臂错拍让屏幕没有静止帧
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)ScrapStateIndex.SawCannonCombo, typeof(ScrapStateContext))]

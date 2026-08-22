@@ -6,7 +6,7 @@ using Terraria.Utilities;
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
 {
     //====================================================================
-    //书塔(ROOMS-L3 §1-#3,纯算法):消化纵深的竖向书库,兼层内垂直捷径——
+    //书塔(ROOMS-L3 §1-#3,纯算法):消化纵深的竖向书库,兼层内垂直捷径
     //
     //2D落地语法(正视图,自上而下一条走读线):
     //  [上层检索廊]═楼梯井(对齐塔芯光井)═

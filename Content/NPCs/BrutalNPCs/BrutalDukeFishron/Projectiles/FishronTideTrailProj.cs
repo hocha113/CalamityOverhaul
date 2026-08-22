@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
 
             //弧长重采样：40 个渲染点均匀铺满真实路径。
             //旧做法用最旧点垫尾，着色器的尾端渐隐区(along 0.72~1)全落在零长度的
-            //垫点上，真实尾端得不到任何淡出——方形硬切口的根源
+            //垫点上，真实尾端得不到任何淡出，方形硬切口的根源
             if (!BuildRenderPositions()) {
                 return false;
             }
@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
 
             effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly * 0.9f);
-            //消散主要由顶点层蚀退承担，像素层只轻降——避免"整条变淡"的塑料退场
+            //消散主要由顶点层蚀退承担，像素层只轻降，避免"整条变淡"的塑料退场
             effect.Parameters["fadeAlpha"]?.SetValue(0.45f + 0.55f * fade);
             effect.Parameters["pulse"]?.SetValue(0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f + Projectile.whoAmI));
             effect.Parameters["speedRatio"]?.SetValue(extendTimer > 0 ? 1f : 0.35f);

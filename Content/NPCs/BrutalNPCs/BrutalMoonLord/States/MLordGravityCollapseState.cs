@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 
         internal const int WindupEnd = 60;
         internal const int WellLife = MLordGravityWellProj.TotalLife;
-        /// <summary>公平阀（契约3）：波间歇——四波之间只剩井的牵引无新弹幕；
+        /// <summary>公平阀（契约3）：波间歇，四波之间只剩井的牵引无新弹幕；
         /// 牵引本身受 <see cref="MLordGravityWellProj.EscapeTowardSpeedCap"/> 逃逸阀约束</summary>
         internal const int VolleyRestFrames = 46;
 

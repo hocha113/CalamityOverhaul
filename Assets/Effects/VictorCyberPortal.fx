@@ -83,9 +83,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float rectN = max(abs(p.x), abs(p.y));
     float guard = 1.0 - smoothstep(0.93, 0.995, rectN);
 
-    //————————————————————————————
+    //============================
     // 竖缝：门外独立存在（前兆发丝缝 / 收口余晖）
-    //————————————————————————————
+    //============================
     float slitHalf = max(slitLen, 0.02) * portalSize.y;
     float lenWin = 1.0 - smoothstep(slitHalf * 0.55, slitHalf, abs(pxPos.y));
     float stutter = 0.55 + 0.45 * hash11(floor(tt * 21.0) + seed * 7.0);
@@ -95,9 +95,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float3 col = (float3(1.0, 0.90, 0.78) * sCore * 1.35 + float3(1.0, 0.36, 0.15) * sHalo * 0.5) * slitAmt;
     float a = (sCore * 0.40 + sHalo * 0.08) * slitAmt;
 
-    //————————————————————————————
+    //============================
     // 门几何
-    //————————————————————————————
+    //============================
     float open = max(openProgress, 0.0);
     float doorOn = smoothstep(0.02, 0.12, open);
     float2 axes = portalSize * max(open, 0.03);
@@ -119,9 +119,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     //供能：断电闪烁只压发光，不动暗体
     float powerMul = lerp(0.22, 1.0, saturate(uPower));
 
-    //————————————————————————————
+    //============================
     // 故障切片：对内部内容做真 UV 错位（不动门形）
-    //————————————————————————————
+    //============================
     float rowJit = hash11(floor(tt * 1.9) + seed) * 3.0;
     float sliceRow = floor(uv.y * 9.0 + rowJit);
     float sliceGate = step(0.74, hash11(sliceRow * 3.71 + floor(tt * 4.3) * 1.13 + seed * 5.1));
@@ -130,9 +130,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float2 pxi = pxPos;
     pxi.x += shiftPx;
 
-    //————————————————————————————
+    //============================
     // 门内暗体 + 吸入隧道
-    //————————————————————————————
+    //============================
     float bodyA = 0.92 * insideMask;
     col += float3(0.014, 0.004, 0.007) * (0.55 + depth * 0.85) * bodyA;
     a += bodyA;
@@ -151,9 +151,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float3 interior = float3(0.40, 0.045, 0.028) * tunnel * annulus;
     interior += float3(0.85, 0.16, 0.09) * tunnel * tunnel * annulus * 0.6;
 
-    //————————————————————————————
+    //============================
     // 数据竖列：双景深层（远小暗慢 + 近大亮快），中心被黑暗吞没
-    //————————————————————————————
+    //============================
     float colFade = smoothstep(0.02, 0.22, depth) * (1.0 - smoothstep(0.50, 0.92, depth));
     colFade *= 1.0 - collapse * 0.85;
     float2 dFar = DataColumns(pxi * 1.55 + float2(37.0, 11.0), tt, 6.0, 10.0, 0.34, seed);
@@ -174,9 +174,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
 
     interior *= scan * insideMask;
 
-    //————————————————————————————
+    //============================
     // 裂缘：内侧能量带 + 热芯（暖白不常驻）
-    //————————————————————————————
+    //============================
     float pxLen = length(pxPos);
     float sPx = pxLen * (1.0 - 1.0 / max(ellipR, 1e-3));  //近边像素距离，门外为正
     float rimBandPx = max(-sPx, 0.0);
@@ -187,27 +187,27 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     rimCol += float3(1.0, 0.76, 0.52) * hotCore * 0.95;
     rimCol *= rimFlick;
 
-    //————————————————————————————
+    //============================
     // 门外辉光：analytic 收尾 + guard，杜绝画布硬切
-    //————————————————————————————
+    //============================
     float availPx = min(quadSize.x - axes.x, quadSize.y - axes.y);
     float glowWin = 1.0 - smoothstep(availPx * 0.45, availPx * 0.88, sPx);
     float og = exp(-max(sPx - spike * 14.0, 0.0) / 15.0) * (1.0 - insideMask) * glowWin * doorOn;
     float3 ogCol = float3(1.0, 0.40, 0.17) * og * (0.55 + 0.30 * rimFlick);
     ogCol += float3(0.90, 0.09, 0.05) * og * og * 0.55;
 
-    //————————————————————————————
+    //============================
     // 浮现增辉：中心泛光 + 双轴衰减短十字（每轴都解析归零）
-    //————————————————————————————
+    //============================
     float bloom = exp(-ellipR * ellipR * 2.6) * doorOn;
     float crossV = exp(-pxPos.x * pxPos.x / 90.0) * exp(-pow(pxPos.y / (portalSize.y * 0.60), 2.0));
     float crossH = exp(-pxPos.y * pxPos.y / 60.0) * exp(-pow(pxPos.x / (portalSize.x * 0.55), 2.0));
     float3 flareCol = (float3(1.0, 0.82, 0.60) * bloom * 1.15
         + float3(1.0, 0.52, 0.28) * (crossV * 0.85 + crossH * 0.30) * doorOn) * flare;
 
-    //————————————————————————————
+    //============================
     // 合成（预乘）
-    //————————————————————————————
+    //============================
     col += (interior + rimCol + ogCol) * powerMul;
     col += flareCol;
     col += float3(1.0, 0.94, 0.86) * uFlash * (insideMask * 0.85 + og * 0.45 + slitAmt * 0.5);

@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 Main.GameViewMatrix.TransformationMatrix);
 
             //真水线（视口 uv）：与 KikasaGrade.SetSharedParams 同公式，
-            //只是投影用还原后的真实相机值——水线以下天空换成实体湖体，垫在湖面着色器之下
+            //只是投影用还原后的真实相机值，水线以下天空换成实体湖体，垫在湖面着色器之下
 
             float pivotUv = MathHelper.Clamp(Vector2.Transform(
                 new Vector2(realScreenPos.X, kdp.LakeWorldY) - realScreenPos,
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             shader.Parameters["uSpreadOrigin"]?.SetValue(origin);
             shader.Parameters["uMaskTime"]?.SetValue(kdp.EffectTime);
             shader.Parameters["uRain"]?.SetValue(kdp.RainBlend);
-            //水侧色板先行值：翻转期取镜面预览的靠拢度——所有的水一拍先行变色、天穹留到白闪；
+            //水侧色板先行值：翻转期取镜面预览的靠拢度，所有的水一拍先行变色、天穹留到白闪；
             //其余时刻恒等 RainBlend，与 uRain 零差异
             float lakeRain = kdp.Phase == KikasaDomainPhase.Flipping
                 ? (kdp.FlipToRain

@@ -17,11 +17,11 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 {
     /// <summary>
     /// 熔断标记（芯片档，Lethal）：四秒可见引信，到期在防守方本机结一次八十点伤害。<br/>
-    /// <b>引信全程可见是设计不是慷慨——这就是反制窗</b>：四秒内强制卸载拔掉即拆弹
+    /// <b>引信全程可见是设计不是慷慨，这就是反制窗</b>：四秒内强制卸载拔掉即拆弹
     /// （<see cref="OnDefenderRemove"/> 只在 <see cref="PlayerHackRemoveReason.Expired"/>
     /// 分支起爆，Uninstalled 走拆弹演出），高防高血硬吃也是一种答案；
-    /// 效果已落地，打死攻击方也不解除——跟时间赛跑。<br/>
-    /// <b>结算端</b>：防守方本机 <c>Hurt(pvp:true, quiet:false)</c>——生命归属方写，
+    /// 效果已落地，打死攻击方也不解除，跟时间赛跑。<br/>
+    /// <b>结算端</b>：防守方本机 <c>Hurt(pvp:true, quiet:false)</c>：生命归属方写，
     /// msg 16 自报 + 117 广播（不经 117 的双 hostile 转播闸，中途关 PvP 也照结，
     /// 设计 §7.5 的文档级 FAQ）；伤害经 <see cref="HackPvPRules.ClampLifeDamage"/>，
     /// 死因记攻击方。防守方 HUD 倒计时走 <see cref="DrawDefenderOverlay"/>，
@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 
         public override bool OnDefenderTick(Player defender, PlayerHackEffect effect) {
             if (effect.ProtocolState is not BrandState state) return true;
-            //每进入新的一秒敲一声心跳，越接近到期音越高——耳朵也能读引信
+            //每进入新的一秒敲一声心跳，越接近到期音越高，耳朵也能读引信
             int second = effect.RemainingFrames / 60;
             if (second < state.LastBeatSecond) {
                 state.LastBeatSecond = second;
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
                 PlayerDeathReason deathReason = PlayerDeathReason.ByCustomReason(
                     NetworkText.FromKey(DeathReason.Key, defender.name,
                         ResolveCasterName(effect)));
-                //dodgeable:false——引信不是弹幕，闪避帧吃不掉计时爆破
+                //dodgeable:false：引信不是弹幕，闪避帧吃不掉计时爆破
                 defender.Hurt(deathReason, damage, 0, pvp: true, quiet: false,
                     dodgeable: false);
             }

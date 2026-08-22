@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         public override KingSlimeStateIndex StateIndex => KingSlimeStateIndex.PursuitBurrow;
 
         private const int SinkTime = 22;
-        /// <summary>公平阀(契约3)：爆出点由喷泉预兆24帧，常量直接写入喷泉弹幕ai——
+        /// <summary>公平阀(契约3)：爆出点由喷泉预兆24帧，常量直接写入喷泉弹幕ai
         /// 警示期本体无判定，玩家有一整段位移窗离开爆点</summary>
         private const int GeyserWarnTime = 24;
         private const int EruptRecover = 30;

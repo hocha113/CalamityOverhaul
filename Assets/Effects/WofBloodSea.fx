@@ -84,7 +84,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     //血雾柱缓升
     float mist = snoise(float2(worldPos.x * 0.0034, worldPos.y * 0.0028 - uTime * 0.05)) * exp(-hz * 0.0028);
     //余烬火星：噪声阈值取尾部成点，集中在近海面。
-    //PerlinNoise 实测灰度域 0.22~0.78(top1%≈0.667)，阈值必须落在域内——0.90 档永不可达
+    //PerlinNoise 实测灰度域 0.22~0.78(top1%≈0.667)，阈值必须落在域内，0.90 档永不可达
     float ember = smoothstep(0.67, 0.71,
         tex2D(uImage1, float2(worldPos.x * 0.0026 + 3.13, worldPos.y * 0.0035 + uTime * 0.14)).g)
         * smoothstep(430.0, 50.0, hz);

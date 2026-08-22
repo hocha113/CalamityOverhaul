@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaMoonLord
 {
     /// <summary>
-    /// 幻月球：心跳拍上自心口挤出的缓行血月——半透明球体内有旋涡缓转，
+    /// 幻月球：心跳拍上自心口挤出的缓行血月，半透明球体内有旋涡缓转，
     /// 幻月苍青只描一线月缘。漂向目标，到位或超时爆成十字血芒弹。
     /// ai[0]=目标 whoAmI（各端同源，寻的确定性）ai[1]=挤出序号（错开相位）；
     /// 爆点裁决在 owner 端，十字弹只在 owner 端生成
@@ -174,7 +174,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
     }
 
-    /// <summary>十字血芒弹：幻月球爆出的四向速矢——血光短矢带苍青芯，命中即溃成血珠</summary>
+    /// <summary>十字血芒弹：幻月球爆出的四向速矢，血光短矢带苍青芯，命中即溃成血珠</summary>
     internal class KikasaMoonShard : ModProjectile
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";

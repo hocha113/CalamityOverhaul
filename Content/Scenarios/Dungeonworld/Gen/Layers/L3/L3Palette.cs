@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
 {
     //====================================================================
     //L3大档案馆 材质与样式表(ROOMS-L3 §0/§2,Wave-2一律原版fallback资产)
-    //主题锚:纸墨褐的书架迷宫——灯三盏灭两盏,馆里名字比人多
+    //主题锚:纸墨褐的书架迷宫，灯三盏灭两盏,馆里名字比人多
     //蓝地牢族样式号沿用L1已审计常量(WorldGen.cs:29164-29177初值=墙7默认分支),
     //本层新增条目逐条对源核实,行号见注释;做旧签名=墨渍霉斑(INDEX §3,深灰/黑漆系)
     //纪律:家具全走合法锚定放置,拒绝即跳过+记日志(F9/§3.2-1);
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
         internal const byte PaintMold = PaintID.GrayPaint;    //霉斑
 
         //===基调层染=纸墨褐(ROOMS-L3 §0:强调色#8A6B3F"不是砖色",靠家具海+paint呈现)===
-        //原版只有一种棕(PaintID.cs:28),与L2锈渍垂痕同ID但形态是两回事——
+        //原版只有一种棕(PaintID.cs:28),与L2锈渍垂痕同ID但形态是两回事
         //L2是锚点正下方的窄垂线,本层是整片斑洗;INDEX §3"互不借用"约束的是做旧签名,
         //层染另立一栏(见该文件§3末两行)
         internal const byte PaintPaper = PaintID.BrownPaint;

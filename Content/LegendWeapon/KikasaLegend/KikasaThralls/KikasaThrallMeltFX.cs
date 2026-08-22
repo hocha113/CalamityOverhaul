@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
     /// <summary>
     /// 伞奴转化·幕一「化水」：死亡瞬间各端各自捕获尸体裸贴图快照
     /// （HitEffect 时真身尚在场，这是全端都能取样的唯一窗口），
-    /// 随后真身消失，本层用快照经 KikasaThrallForm 播 1→0 融化——
+    /// 随后真身消失，本层用快照经 KikasaThrallForm 播 1→0 融化
     /// 头肩先蚀、躯体拉丝下坠、本色渐浊，熔断前沿逐帧洒污水团，
     /// 脚下污潭随融化涨开、尾段排干（水正流向重组点）。
     /// 画在 KikasaDomainRender.EndEntityDraw：湖面镜面自动倒影。
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 return;
             }
 
-            //起拍：雨当众认下这具尸体——三层水声垫底，四面雨线一齐扑进来，脚下先炸一蓬
+            //起拍：雨当众认下这具尸体，三层水声垫底，四面雨线一齐扑进来，脚下先炸一蓬
             float bulk = show.SplashScale;
             SoundEngine.PlaySound(SoundID.SplashWeak with {
                 Volume = 0.75f * bulk,
@@ -134,13 +134,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             }
         }
 
-        /// <summary>融化进度 1→0：pow 曲线先慢后快——结构先撑住，随后加速塌落</summary>
+        /// <summary>融化进度 1→0：pow 曲线先慢后快，结构先撑住，随后加速塌落</summary>
         private static float MeltProgress(MeltShow show)
             => 1f - MathF.Pow(MathHelper.Clamp(show.Timer / (float)MeltFrames, 0f, 1f), 1.35f);
 
         private static void AdvanceShow(MeltShow show) {
             //领域是本地叠加层：不在雨里的人连融化的身体都看不见，粒子也不该漏出去。
-            //闩照推——半途回到雨里的人不该被攒下的拍一齐补演
+            //闩照推，半途回到雨里的人不该被攒下的拍一齐补演
             if (!IsViewedOwner(show.OwnerIndex)) {
                 show.MidBeatDone |= show.Timer >= (int)(MeltFrames * 0.55f);
                 show.EndBeatDone |= show.Timer >= MeltFrames;
@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             Vector2 top = show.Center - new Vector2(0f, frameH * 0.5f);
 
             if (t < MeltFrames) {
-                //熔断前沿洒污水：前沿自顶向下推进，一帧几团——化水要读作整具塌掉，不是零星漏水
+                //熔断前沿洒污水：前沿自顶向下推进，一帧几团，化水要读作整具塌掉，不是零星漏水
                 float frontY = frameH * MathHelper.Clamp(1f - progress, 0f, 1f);
                 int gush = bulk > 1.6f ? 4 : 3;
                 for (int i = 0; i < gush; i++) {
@@ -260,7 +260,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             Texture previousTexture1 = device.Textures[1];
             SamplerState previousSampler1 = device.SamplerStates[1];
 
-            //先普通批画全部污潭——Immediate 批里 Apply 过的像素着色器是粘滞状态，
+            //先普通批画全部污潭，Immediate 批里 Apply 过的像素着色器是粘滞状态，
             //潭若混在身体之间画会被上一份身体的着色器污染
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null,
@@ -318,7 +318,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
 
         /// <summary>
         /// 两记水环：雨扑下来时自尸脚荡开一圈，残躯砸地时再荡一圈更大的。
-        /// 贴地透视环只配贴地的尸体——空中击杀没有"地"，画了就是悬空的飞碟
+        /// 贴地透视环只配贴地的尸体，空中击杀没有"地"，画了就是悬空的飞碟
         /// </summary>
         private static void DrawShowBeats(SpriteBatch sb, MeltShow show) {
             int t = show.Timer;

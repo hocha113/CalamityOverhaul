@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
         }
 
         //进出统一走这两个入口,快照/加载屏复位/跨世界引用清理不漏
-        //过渡链路修复:先遮再冻——压黑门(0.45s 渐入全黑)完成后的下一帧才真正提交过渡,
+        //过渡链路修复:先遮再冻，压黑门(0.45s 渐入全黑)完成后的下一帧才真正提交过渡,
         //把 SLib 接管前后的主线程长帧冻结藏进有意为之的入井压黑(见 DungeonworldTransitionGate)
         public static void EnterWorld() {
             DungeonworldTransitionGate.Begin(true, static () => {

@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
 {
     /// <summary>
-    /// 血肉尖刺场：肉髓钻入前方地脉，地板与顶板交错喷出尖刺波列——
+    /// 血肉尖刺场：肉髓钻入前方地脉，地板与顶板交错喷出尖刺波列
     /// 地狱地形本身成为死线的爪牙。裂纹预告充分，走位穿越波列
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)WofStateIndex.FleshSpike, typeof(WofStateContext))]
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
 
         /// <summary>
         /// 生成一波尖刺(服务端)：地板列与顶板列交错半列距，
-        /// 从墙面向推进方向逐波远去——死线的地脉在你脚下蔓延
+        /// 从墙面向推进方向逐波远去，死线的地脉在你脚下蔓延
         /// </summary>
         private void SpawnSpikeWave(WofStateContext context, int waveIndex) {
             NPC npc = context.Npc;

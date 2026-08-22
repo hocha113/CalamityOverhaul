@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                 return null;
             }
 
-            //幕二：起身仰啸蓄势——冷芒收束入眼
+            //幕二：起身仰啸蓄势，冷芒收束入眼
             if (Timer <= RoarFrame) {
                 context.AnimMode = DeerAnimMode.Roar;
                 context.AnimTimer = (Timer - StaggerEnd) * 2 / 3;

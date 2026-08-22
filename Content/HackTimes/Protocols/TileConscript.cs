@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// 每块替玩家挡下一次命中即碎，右键或到期朝光标依次射出。<br/>
     /// 「改了要还」的账本就是板块弹幕本身：射出与挡刀是正常消耗不退；
     /// 仍在环绕时夭折（施术者倒下 / 未发射先亡）由权威端放回原格或掉出物品。
-    /// 世界卸载时仍在环绕的板块随弹幕表一起消失，物块随之放弃——
+    /// 世界卸载时仍在环绕的板块随弹幕表一起消失，物块随之放弃
     /// 窗口只有十秒且不写坏任何世界数据，属于安全放弃
     /// </summary>
     internal class TileConscript : QuickHackDef
@@ -480,7 +480,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             }
             //射出与挡刀是正常消耗；环绕中夭折的板块由权威端退还：
             //优先放回原格，放不回（原格被占/规则拒绝）就掉出物品。
-            //拥有者的状态包若晚于击杀包到达，权威端会按环绕多退一块——窗口一个 RTT，接受
+            //拥有者的状态包若晚于击杀包到达，权威端会按环绕多退一块，窗口一个 RTT，接受
             if (Main.netMode == NetmodeID.MultiplayerClient || State != StateOrbit) return;
             if (!HackTargets.InWorld(OriginX, OriginY)) return;
 

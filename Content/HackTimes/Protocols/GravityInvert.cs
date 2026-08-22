@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// 字段归属端：敌怪速度只在权威端写（NPC 仿真是服务端权威，客户端写会
     /// 跟同步打架）；掉落物与敌方弹幕在每个端按同一确定性规则各写各的
     /// （它们在各端本地仿真，规则一致仿真就一致）；视觉每端自绘。<br/>
-    /// 区域锚点取施术者而非施放光标——World 身份零负载，光标座标过不了网，
+    /// 区域锚点取施术者而非施放光标，World 身份零负载，光标座标过不了网，
     /// 施术者位置是全端同步的现成锚
     /// </summary>
     internal class GravityInvert : QuickHackDef
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         private static readonly Dictionary<int, ulong> ceilingHitAt = [];
         private static int activeZones;
         //帧驱动去重：OnTick 按效果逐个进来，真正的力场处理一帧只跑一遍，
-        //在第一个到达的 tick 里遍历全部力场——这样每个力场都能拿到
+        //在第一个到达的 tick 里遍历全部力场，这样每个力场都能拿到
         //自己效果上的 CasterIndex（OnTick 签名里拿不到效果实例）
         private static ulong lastAuthorityPassFrame = ulong.MaxValue;
         private static ulong lastClientPassFrame = ulong.MaxValue;
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         public override void OnReplicatedApply(IHackTarget target, int elapsed) {
             if (Main.dedServ) return;
-            //钩子签名拿不到效果实例，但复制表此刻已含刚落地的这条——
+            //钩子签名拿不到效果实例，但复制表此刻已含刚落地的这条
             //取激活号最大（分配是单调的）的那条反查施术者，就地播开场声画，
             //位置化音效对远处旁观者自然衰减
             ActiveHackEffect newest = null;
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         /// <summary>
         /// 一帧一遍：遍历追踪器里全部重力反转效果，按各自施术者的位置张力场。
         /// 权威趟写 NPC/掉落物/弹幕并结算撞顶；客户端趟只写掉落物与弹幕
-        /// （本地仿真需要同样的力，NPC 不碰——位置由服务端同步说了算）
+        /// （本地仿真需要同样的力，NPC 不碰，位置由服务端同步说了算）
         /// </summary>
         private static void RunZonePass(bool authority, ulong frame) {
             IReadOnlyList<ActiveHackEffect> effects

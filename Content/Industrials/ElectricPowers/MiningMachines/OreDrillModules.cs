@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 {
     /// <summary>
-    /// 定向钻头族:一枚钻头锁定一种(或一对二选一)矿物——解锁其开采资格(豁免镐力),
+    /// 定向钻头族:一枚钻头锁定一种(或一对二选一)矿物，解锁其开采资格(豁免镐力),
     /// 并把其产出权重放大到四倍。群系/进度/世界矿源门保持诚实,雪原装叶绿钻头不会出叶绿。<br/>
     /// 图标 = 共用钻头纹 + 右下角内嵌目标矿物贴图,按矿族配色
     /// </summary>

@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             float s = SizeMul;
             float seed = Projectile.identity * 0.6180339887f % 1f;
 
-            //闪现瞬间画面本身被切开一瞬——两侧沿法线错位、缝里烧线（切的是屏幕，不只是世界）
+            //闪现瞬间画面本身被切开一瞬，两侧沿法线错位、缝里烧线（切的是屏幕，不只是世界）
 
             if (!Main.dedServ) {
                 OniFinaleFX.PushSlice(Projectile.Center, BladeAngle, 5.5f * s);
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             //过刃线与落刀碎面只在整场演出中挂账：格架由主控驱动更新/绘制，独立调试直痕不留悬账
 
             if (!Main.dedServ && OniFinaleSlash.ShatterFlowActive) {
-                //这一刀切出去比你看到的更远——刀身之外的贯穿屏幕细线，
+                //这一刀切出去比你看到的更远，刀身之外的贯穿屏幕细线，
                 //另抛 1~2 条深度回声错帧闪现，刀意穿进纵深
 
                 OniFinaleLattice.AddLine(Projectile.Center, BladeAngle, 0f, s);

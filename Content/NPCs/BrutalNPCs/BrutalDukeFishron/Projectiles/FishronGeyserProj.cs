@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             float wobble = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 22f + Projectile.whoAmI) * 0.06f;
 
             //主路径走预警线着色器：根实(0.015羽化)、生长前沿毛边、末端渐隐、
-            //退场向轴心收细——包络全在像素层连续，杜绝分段量化条带
+            //退场向轴心收细，包络全在像素层连续，杜绝分段量化条带
             Effect effect = EffectLoader.FishronTelegraph?.Value;
             if (effect != null) {
                 DrawShaderColumn(effect, vent, erupt, collapse, wobble);
@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
 
         /// <summary>
         /// 着色器缺失兜底：MaskLaserLine 沿长全亮无端衰减，整条拉伸必在柱顶留硬切平面，
-        /// 故分 28 段、包络按段中点取值收针——段间仍有小台阶，仅作兜底档
+        /// 故分 28 段、包络按段中点取值收针，段间仍有小台阶，仅作兜底档
         /// </summary>
         private void DrawSpriteColumn(Vector2 vent, float env, float wobble) {
             Texture2D line = TextureAssets.Projectile[Type].Value;

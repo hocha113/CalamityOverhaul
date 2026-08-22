@@ -92,7 +92,7 @@ float4 PSSky(float2 coords : TEXCOORD0) : COLOR0 {
     float3 col = lerp(skyTop, skyHor, grad) * (0.90 + wash * 0.20);
 
     //====== 溺月：被雨晕开的惨白光斑，慢呼吸；画在云前，云过即吞 ======
-    //逐层下沉——第一层挂天上，第二层贴向水面，最深层半沉进地平积水，
+    //逐层下沉，第一层挂天上，第二层贴向水面，最深层半沉进地平积水，
     //越沉晕越大越糊：月位即层数
     float2 moonC = float2(0.63 - uCamX * 0.000012, 0.27 + uDepth * 0.58);
     float2 dm = (uv - moonC) * float2(aspect, 1.0);

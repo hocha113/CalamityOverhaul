@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// 判定窗只开爆发前几帧、每敌一次），但视觉走绯红裂空的水墨刀光管线
     /// （<see cref="CrimsonSlashRenderer"/> 三层异步 + OniCrimsonSlash shader）。
     /// ai0=判定半长，ai1=0 居合直线 / 1 终结月牙；方向由初速定，帧内缓存后弹速只管击退。
-    /// 命中走 <see cref="OnikiriItem.ApplySlashPenetration"/>——鬼切斩击的无视防御是复制体同享的签名
+    /// 命中走 <see cref="OnikiriItem.ApplySlashPenetration"/>：鬼切斩击的无视防御是复制体同享的签名
     /// </summary>
     internal class KikasaOnikiriSlash : ModProjectile, IPrimitiveDrawable
     {

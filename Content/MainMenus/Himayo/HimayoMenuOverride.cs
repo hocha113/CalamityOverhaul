@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
                 DrawAtmosphereLayer();
 
                 if (Main.menuMode != 0) {
-                    //放行 orig：若本帧点「返回」把 menuMode 改成 0，原版帧末会画社交/版本号——PostDrawMenu 用 yielded 标记盖回
+                    //放行 orig：若本帧点「返回」把 menuMode 改成 0，原版帧末会画社交/版本号，PostDrawMenu 用 yielded 标记盖回
                     yieldedToVanilla = true;
                     return null;
                 }

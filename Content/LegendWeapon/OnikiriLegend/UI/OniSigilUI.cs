@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     /// 外环六芒摆六只鬼，内三角三个结印位，三边是两两组合，心是三鬼合鬼。<br/>
     /// 点鬼交互是「拾印在手」：点外环拾起役鬼印随光标走，落在结印位上捺下；
     /// 持印时空位鬼火相邀、将成之边先以虚线预演。<br/>
-    /// 盘座下缘的卷槽里插着点鬼簿——那是图鉴，抽出来只能看，结印仍只在这盘上做
+    /// 盘座下缘的卷槽里插着点鬼簿，那是图鉴，抽出来只能看，结印仍只在这盘上做
     /// </summary>
     internal sealed class OniSigilUI : UIHandle, ILocalizedModType
     {
@@ -491,7 +491,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>
         /// 点结印位：持印落印/换印；空手点占位卸下；
-        /// 持着某鬼点它自己的位也是卸下——不设额外确认态
+        /// 持着某鬼点它自己的位也是卸下，不设额外确认态
         /// </summary>
         private void ClickSlot(int slot) {
             if (pendingSlot >= 0) {
@@ -547,7 +547,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             PostNote(line.Format(displayName ?? key ?? string.Empty), OnikiriUITheme.Bright);
         }
 
-        /// <summary>拒绝反馈：凿圈红闪+槽体一震+闷响——点击必有可见回应</summary>
+        /// <summary>拒绝反馈：凿圈红闪+槽体一震+闷响，点击必有可见回应</summary>
         private void Deny(int slot) {
             if (slot >= 0 && slot < slotDeny.Length) {
                 slotDeny[slot] = 1f;
@@ -628,7 +628,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>
         /// 状态差分：结印真值一变（含服务器回执与外部改动），落印定妆/旧印飞回/
-        /// 邻边重新跑线/三印齐崩全部由这里点火——表现永远跟着权威状态走
+        /// 邻边重新跑线/三印齐崩全部由这里点火，表现永远跟着权威状态走
         /// </summary>
         private void DiffSlotStates() {
             int prevCount = 0;
@@ -833,7 +833,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 v.Name = EdgeName(e);
                 v.Flow = edgeFlow[e];
                 v.FlowOrigin = edgeFlowOrigin[e];
-                //预演：持印悬停空位，这条边另一端已有印——先看懂再落印
+                //预演：持印悬停空位，这条边另一端已有印，先看懂再落印
                 if (carried != null && hoverSlot >= 0 && (a == hoverSlot || b == hoverSlot)
                     && string.IsNullOrEmpty(OniRegistry.SlotKey(hoverSlot))) {
                     int other = a == hoverSlot ? b : a;

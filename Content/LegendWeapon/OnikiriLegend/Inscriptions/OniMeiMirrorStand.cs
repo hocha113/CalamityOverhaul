@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
     /// <summary>
     /// 鏡樋「镜写」：疾走终点立一枚纸镜。<br/>
     /// 你之后的第一记刀命中时，立像同步复刻同一记斩击朝它自己的正面挥出，然后碎。<br/>
-    /// 复刻是"再来一刀"，落点由立像所在决定——所以疾走停在哪、面朝哪，是有讲究的。<br/>
+    /// 复刻是"再来一刀"，落点由立像所在决定，所以疾走停在哪、面朝哪，是有讲究的。<br/>
     /// ai[0]=立像朝向(±1) ai[1]=基础武器伤害
     /// </summary>
     internal class OniMeiMirrorStand : ModProjectile, IPrimitiveDrawable, IOverlayDrawable
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             shatterTimer = 0;
             Projectile.netUpdate = true;
 
-            //镜里那一刀朝立像自己的正面挥，不是照抄玩家的角度——
+            //镜里那一刀朝立像自己的正面挥，不是照抄玩家的角度
             //所以"把镜子摆在哪、朝哪"才是这枚铭真正在玩的东西
             float mirrored = Facing > 0 ? 0f : MathHelper.Pi;
             //玩家那一刀的上下取向仍然保留，只把左右换成立像的朝向
@@ -281,7 +281,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         /// <summary>
         /// 镜中人走遮挡层：镜面是图元层画的，会盖住 PreDraw，所以剪影必须更晚。<br/>
-        /// 姿态取自立镜那一刻的持刀者快照，左右按立像朝向翻——照的是你自己
+        /// 姿态取自立镜那一刻的持刀者快照，左右按立像朝向翻，照的是你自己
         /// </summary>
         void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
             if (!TryPose(out float fade, out float rise, out float shatter) || !poseCaptured) {

@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
 {
     /// <summary>
     /// 中继站：废墟带的部分结算点。右键把账本铭刻进 MoldShards、人不弹出、
-    /// 账本清零继续潜；上行广播加噪——存完钱正是最危险的时候。
+    /// 账本清零继续潜；上行广播加噪，存完钱正是最危险的时候。
     /// 琥珀色光柱区别于登出终端的薄荷绿："能存钱但不是家"
     /// </summary>
     internal class OldNetRelayTile : ModTile
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
             float pulse = 0.8f + 0.2f * MathF.Sin(t * 2.1f + i * 0.5f);
             Vector2 Size(float w, float h) => new(w / px.Width, h / px.Height);
 
-            //琥珀光柱：比终端矮一截——"驿站不是家"
+            //琥珀光柱：比终端矮一截，"驿站不是家"
             spriteBatch.Draw(px, basePos, null, Amber * 0.10f, 0f, origin,
                 Size(18f, 92f * pulse), SpriteEffects.None, 0f);
             spriteBatch.Draw(px, basePos, null, Amber * (0.30f * pulse), 0f, origin,
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
             spriteBatch.Draw(px, basePos, null, Amber * 0.9f, 0f, origin,
                 Size(15f, 3.5f), SpriteEffects.None, 0f);
 
-            //上行数据点：离散上升的短划，区别于终端的整环——中继在"发包"
+            //上行数据点：离散上升的短划，区别于终端的整环，中继在"发包"
             for (int k = 0; k < 3; k++) {
                 float phase = (t * 0.9f + k * 0.33f + i * 0.17f) % 1f;
                 float y = 76f * phase;

@@ -3,7 +3,7 @@
 // 顶点色 R=剩余寿命 0..1；G=世界光照亮度
 // 材质是打磨过的棋盘漆面：黑白格解析 AA 交界、新格自格心翻入(出生带一线白闪)、
 // 老格按逐格随机阈值向格心收缩沉没、白格斜向掠光缓行、黑格弱冷光泽、逐格微色差防死平。
-// 黑格必须读作黑——预乘输出配 AlphaBlend，加色批画不出黑。
+// 黑格必须读作黑，预乘输出配 AlphaBlend，加色批画不出黑。
 // 全笛卡尔条带坐标，无极角；直线算术无动态分支无贴图；ps_3_0 / vs_3_0
 
 float4x4 transformMatrix;
@@ -63,9 +63,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float2 cell = floor(float2(u, v));
     float h = frac(sin(dot(cell, float2(127.1, 311.7))) * 43758.5453);
 
-    //出生：头几帧自格心长满，逐格轻微错相——棋盘在脚后一格格拼合
+    //出生：头几帧自格心长满，逐格轻微错相，棋盘在脚后一格格拼合
     float mat = saturate((1.0 - lifeT) * 15.0 - h * 0.35);
-    //死亡：寿命逼近逐格随机阈值时收缩——尾端一格格沉没而非整体淡出
+    //死亡：寿命逼近逐格随机阈值时收缩，尾端一格格沉没而非整体淡出
     float dieTh = 0.05 + h * 0.24;
     float alive = smoothstep(dieTh, dieTh + 0.14, lifeT);
 

@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Projectiles
 {
     /// <summary>
     /// 攫取巨手(投技专用，与掠袭影手 DeerShadowHandProj 独立)。
-    /// ai[0]=目标玩家 ai[1]=起飞延时。全程无伤害判定——命中裁决在
+    /// ai[0]=目标玩家 ai[1]=起飞延时。全程无伤害判定，命中裁决在
     /// DeerclopsSeizeHuntState 服务端完成；本弹幕负责可读预兆与携抓视觉：
     /// 胸前成形蜷曲→红芒掌心→直线掠夺→(命中)化作握爪随节拍演出→砸雪后散作影雪
     /// </summary>
@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Projectiles
             //本体
             Main.EntitySpriteDraw(tex, drawPos, null, Projectile.GetAlpha(lightColor), rot, origin, Projectile.scale, fx, 0);
 
-            //掌心红瞳：成形期随蓄势涨大脉动，掠夺期定亮——投技的专属识别色
+            //掌心红瞳：成形期随蓄势涨大脉动，掠夺期定亮，投技的专属识别色
             if (Phase <= 1f) {
                 float p = Phase == 1f ? 1f : MathHelper.Clamp(Elapsed / LaunchDelay, 0f, 1f);
                 float pulse = 0.62f + 0.38f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 13f + Projectile.identity);

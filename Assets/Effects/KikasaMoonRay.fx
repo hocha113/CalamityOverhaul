@@ -2,7 +2,7 @@
 //KikasaMoonRay.fx 噬月心藏·幻月血芒
 //贯屏毁灭射线：白炽核→血色体→暗色吸光外缘，三层同束；
 //噪声沸腾蚀边把两侧撕成滚沸的舌状，末端收纺锤尖、心缝口收喷口；
-//预乘 alpha 输出走 AlphaBlend——暗缘要压暗背景，纯加色画不出有分量的光，
+//预乘 alpha 输出走 AlphaBlend：暗缘要压暗背景，纯加色画不出有分量的光，
 //白炽核 rgb 超出 alpha 时天然获得加色亮溢。
 //uv.x 1=心缝口 → 0=远端；uv.y 横截面；直线算术+平贴 tex2D，无动态分支
 //ps_3_0 / vs_3_0
@@ -68,7 +68,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     taper = min(taper, muzzleTaper);
 
     //=========================================================
-    //沸腾蚀边：两侧独立的滚沸噪声啃咬边界——血被烧滚的边不是直线
+    //沸腾蚀边：两侧独立的滚沸噪声啃咬边界，血被烧滚的边不是直线
     //=========================================================
     float sideSel = step(0.0, cross_);
     float boilA = tex2D(noiseSamp, float2(along * 4.6 - uTime * 2.4, uSeed + 0.13)).r;
@@ -122,7 +122,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     //苍青环带：贴着白核外侧一圈幻月色
     float moonBand = saturate(exp(-d * d * 26.0) - exp(-d * d * 90.0));
 
-    //预乘合成：每层 rgb 自带各自权重，暗缘 rgb 极低但 alpha 实——压暗背景
+    //预乘合成：每层 rgb 自带各自权重，暗缘 rgb 极低但 alpha 实，压暗背景
     float aHot = hot * 0.95;
     float aCore = core * 0.85;
     float aBody = body * 0.72;

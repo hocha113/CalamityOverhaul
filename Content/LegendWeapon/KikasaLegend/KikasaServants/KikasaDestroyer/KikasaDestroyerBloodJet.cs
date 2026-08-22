@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaDestroyer
 {
     /// <summary>
-    /// 毁灭者鬼奴的口吐光柱：本体颚束（DestroyerMawBeamProj）的友方复刻——
+    /// 毁灭者鬼奴的口吐光柱：本体颚束（DestroyerMawBeamProj）的友方复刻
     /// 同一套 DestroyerBeam 着色器与加色装饰，展开→横扫→收束；
     /// ai[0]=起始角 ai[1]=角速度，逐帧锚定鬼奴头部，宿主没了快进收束。
     /// 额外保留血湖交互：光柱扫过湖面掀起行进浪线与飞血

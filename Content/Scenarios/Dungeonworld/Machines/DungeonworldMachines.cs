@@ -9,11 +9,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Machines
 {
     //====================================================================
     //L6 机器驱动:把 L6MachineSlots 登记的活塞/碾压槽真正开动起来。
-    //在此之前这两类槽只有 Cog 剪影,零伤害——"每条走廊都上了膛"是句空话。
+    //在此之前这两类槽只有 Cog 剪影,零伤害，"每条走廊都上了膛"是句空话。
     //
     //数据来源:子世界 ShouldSave=false,每次进入都重跑生成,槽位表因此在
     //整次访问里都有效,不需要额外的持久化层。联机下生成只在子服务器跑,
-    //所以表只在服务端存在——伤害本来就该由服务端裁决,正好对上。
+    //所以表只在服务端存在，伤害本来就该由服务端裁决,正好对上。
     //
     //时钟:自己数帧,不吃 Main.GameUpdateCount。子世界 NormalUpdates=false,
     //原版世界更新整段停摆,唯一保证每帧到的钩子是 Subworld.Update()(SLib
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Machines
 
         private static void Fire(L6MachineSlot slot, bool roller) {
             Rectangle frame = slot.Frame;
-            //登记的帧只是机器本体的包络,不含行程——行程按现场量:
+            //登记的帧只是机器本体的包络,不含行程，行程按现场量:
             //从槽内往下找第一层实心,那就是它要捶到/碾过的行走面。
             //这样活塞多深、碾轮贴哪一行都由几何自己说了算,不靠帧尺寸猜
             Vector2 origin;

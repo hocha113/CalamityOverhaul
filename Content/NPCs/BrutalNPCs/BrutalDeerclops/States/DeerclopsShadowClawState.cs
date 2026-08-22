@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
 {
     /// <summary>
     /// 暗影之手：巨鹿垂首引影，手从每个玩家的视界之外成形，红芒预兆后直线掠过。
-    /// 波次逐涨(1→2→二阶段3)，逐玩家结算；引影期间本体不设防——贴身输出的奖励窗
+    /// 波次逐涨(1→2→二阶段3)，逐玩家结算；引影期间本体不设防，贴身输出的奖励窗
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)DeerclopsStateIndex.ShadowClaw, typeof(DeerclopsStateContext))]
     internal class DeerclopsShadowClawState : DeerclopsStateBase
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
 
             context.HaltMovement = true;
             npc.damage = 0;
-            //垂首引影，独眼熄暗——影从视界外来
+            //垂首引影，独眼熄暗，影从视界外来
             context.EyeGlow = 0.06f;
             context.VeilTarget = (context.IsPhase2 ? 0.7f : 0.45f) + 0.15f;
             if (Timer < 30) {

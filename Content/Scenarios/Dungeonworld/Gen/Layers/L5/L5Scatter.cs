@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
     //密度对位ROOMS-INDEX §7矩阵L5列:
     //  灯=低(集市高由房型定向装修,本表不重复)/挂画=标(变体墙骨画)/旗帜=标(集市幡)
     //  蛛网=峰/地面杂物=峰(骨堆)/墓碑=上带去重≥20
-    //无光深巷(y≥L5State.DarkZoneTop)拒灯/幡/画——二现靠携带光源(INDEX §3)
+    //无光深巷(y≥L5State.DarkZoneTop)拒灯/幡/画，二现靠携带光源(INDEX §3)
     //裂砖/尖刺表面拒杂物:保"裂=危险"可读性(F31)
     internal static class L5Scatter
     {

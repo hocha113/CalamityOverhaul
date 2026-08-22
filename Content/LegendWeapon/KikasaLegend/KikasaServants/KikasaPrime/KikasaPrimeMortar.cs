@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// <summary>
     /// 机械骷髅王鬼奴的迫击血雷：一颗凝着血水的定时雷，明显的迫击弧线抛出，
     /// 飞行中翻滚滴血、引信红光越掉越急，下坠段在湖面投出落点涟漪预告；
-    /// 到时/贴壁/命中即爆——血浪新星 + 半球血珠扇，落进湖里则被湖吞成一柱血涌。
+    /// 到时/贴壁/命中即爆，血浪新星 + 半球血珠扇，落进湖里则被湖吞成一柱血涌。
     /// 只在 owner 端生成，spawn 参数自带全部初值，各端按同一套规则推进
     /// </summary>
     internal class KikasaPrimeMortar : ModProjectile

@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Passes
 {
     //P70 补墙：地表线以下所有格子统一保证有背景墙。
     //旧网把 worldSurface 压到地板以下让天幕可见（OldNetWorld.OnLoad），代价是原版
-    //"无墙空格显示天空"规则在地下同样生效——任何漏刷墙的地下空腔都会透出天幕。
+    //"无墙空格显示天空"规则在地下同样生效，任何漏刷墙的地下空腔都会透出天幕。
     //结构自带的室内墙（CarveRect/prefab）先落，这里只补 WallID.None 的缺口；
     //实心格也一并垫墙，玩家挖穿地板后露出的仍是带内墙而不是天空
     internal class OldNetWallFillPass : GenPass

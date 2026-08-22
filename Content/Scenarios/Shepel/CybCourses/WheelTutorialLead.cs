@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         /// <summary>{0}转盘键、{1}骇客键，台词与卡片共用</summary>
         public static string ResolveKeyTokens(string raw) {
             if (string.IsNullOrEmpty(raw)) return raw;
-            //骇客键未绑定时如实报未绑定——骇客教程那句"N 临时开关"只在它自己运行期有效
+            //骇客键未绑定时如实报未绑定，骇客教程那句"N 临时开关"只在它自己运行期有效
             string hackKey = HackTimeTutorialLead.IsHackToggleBound()
                 ? HackTimeTutorialLead.GetHackToggleKeyDisplay()
                 : CWRKeySystem.Notbound.Value;
@@ -330,7 +330,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         }
 
         /// <summary>
-        /// 环形高亮标记转盘位置；中心取 Hub 排布后的 ScreenAnchor——
+        /// 环形高亮标记转盘位置；中心取 Hub 排布后的 ScreenAnchor
         /// 子世界不剥离义体，两盘并存时 SHPC 盘会被顶上去，画死 0.72 就指错了
         /// </summary>
         private static void DrawWheelHighlight(SpriteBatch sb, Texture2D px, float alpha) {

@@ -146,7 +146,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         /// <summary>
         /// 敌怪高速撞上区内地形按体质掉血。判定用「中心在区内 + 本帧发生物块碰撞 +
-        /// 撞击速度过阈」的近似，不逐格反查它撞的是哪一块——半径二十格，边缘误差可忽略
+        /// 撞击速度过阈」的近似，不逐格反查它撞的是哪一块，半径二十格，边缘误差可忽略
         /// </summary>
         internal static void TickCollisionDamage() {
             if (Main.netMode == NetmodeID.MultiplayerClient || zones.Count == 0) return;

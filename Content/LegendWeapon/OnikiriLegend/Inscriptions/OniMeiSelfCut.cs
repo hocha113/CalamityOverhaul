@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
     /// 鬼丸「自斩」：刀真的脱手飞出去斩人再飞回来。<br/>
     /// 三拍：抽离（刀自手中拔起、原地一顿）→ 扑击（高速直取目标，命中帧落一记断斩）
     /// → 回鞘（沿去路倒飞回手）。全程 <see cref="IOniBladeOccupant.HardOccupiesBlade"/> 为真，
-    /// 手上没刀就挥不了也走不了——这是它的代价，不是隐形数值。<br/>
+    /// 手上没刀就挥不了也走不了，这是它的代价，不是隐形数值。<br/>
     /// ai[0]=目标 whoAmI ai[1]=基础武器伤害
     /// </summary>
     internal class OniMeiSelfCut : ModProjectile, IOniBladeOccupant

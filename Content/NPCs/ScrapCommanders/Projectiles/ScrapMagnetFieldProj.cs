@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
 {
     /// <summary>
     /// 磁力场表现体（伤害 0）：一场战斗只有一枚，进场磁力启动时由服务端生成，
-    /// 各端本地从统帅的 MagnetGlow/MagnetPull 读强度与流向——不再发任何包。
+    /// 各端本地从统帅的 MagnetGlow/MagnetPull 读强度与流向，不再发任何包。
     /// 可见层画 ScrapMagnetField 力线，扭曲层走 NeutronWarp 引力透镜。
     /// ai[0]=统帅 whoAmI
     /// </summary>

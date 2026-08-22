@@ -8,7 +8,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 {
-    /// <summary>鬼伞悬浮说明行（默认字号 0.9——悬停介绍不再眯眼）</summary>
+    /// <summary>鬼伞悬浮说明行（默认字号 0.9：悬停介绍不再眯眼）</summary>
     internal readonly struct KikasaTipLine(string text, Color color, float scale = 0.9f)
     {
         public readonly string Text = text;

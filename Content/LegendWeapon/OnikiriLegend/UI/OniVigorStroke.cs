@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (guiltLayers > 0) {
                 DrawGuiltNotches(sb, alpha, denyShake);
             }
-            //潮樋:笔道下方潮头游标涨落,合潮窗纸白涨亮——节拍从此看得见
+            //潮樋:笔道下方潮头游标涨落,合潮窗纸白涨亮，节拍从此看得见
             if (tidePhase01 >= 0f) {
                 DrawTideCrest(sb, alpha, denyShake, time);
             }

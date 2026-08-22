@@ -7,7 +7,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
 {
     /// <summary>
-    /// 伞奴绘制与换装契约的唯一所在：贴图资产、帧约定、锚点约定都收在这里——
+    /// 伞奴绘制与换装契约的唯一所在：贴图资产、帧约定、锚点约定都收在这里
     /// 换真贴图 = 覆盖 PNG（多帧竖排则只改 <see cref="FrameCount"/>）。
     /// 凝聚/融化走 <c>KikasaThrallForm</c> 着色器（帧矩形钳制，任意精灵表可用），
     /// 行走期普通绘制加程序化蹒跚；批次形制镜 KasaOniRenderer/KikasaDrownFX。

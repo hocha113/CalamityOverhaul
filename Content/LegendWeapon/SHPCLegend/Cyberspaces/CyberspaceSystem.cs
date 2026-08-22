@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (t <= 0.001f) {
                 return;
             }
-            //日光换色而非熄灭：染色重心在背景——背景沉黑让地形剪影剥出来(纵深线索)，
+            //日光换色而非熄灭：染色重心在背景，背景沉黑让地形剪影剥出来(纵深线索)，
             //地砖只轻染，黑墙气质靠"黑场景+红轮廓"的对比而非满屏红罩
             Color cyberTile = new(126, 72, 68);
             Color cyberBg = new(40, 18, 20);

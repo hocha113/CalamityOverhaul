@@ -10,10 +10,10 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
     /// <summary>
     /// 冷却注入（芯片档）：六秒内防守方本机 useTime/useAnimation ×1.35
     /// （出手放缓 35%），落地瞬间若药水冷却计时中则一次性 +300f。<br/>
-    /// 不锁输入不禁物品——出手全能出，只是慢。数值全走
+    /// 不锁输入不禁物品，出手全能出，只是慢。数值全走
     /// <see cref="HackPvPRules.ClampUseSlow"/> / <see cref="HackPvPRules.ClampUseSlowDuration"/>
     /// 红线（≤35%·≤360f），落点是防守方本机的物品使用速度乘区
-    /// （<see cref="CooldownInjectUseHook"/>，GlobalItem.UseSpeedMultiplier——
+    /// （<see cref="CooldownInjectUseHook"/>，GlobalItem.UseSpeedMultiplier
     /// 物品级乘子，全 DamageClass 与工具一体覆盖）。<br/>
     /// 迟滞类必须带屏幕语汇（设计 §7.3）：漂移扫描线 + 出手迟滞角标，
     /// 让"慢"读成"被骇"而不是"掉帧"
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 
         public override bool OnDefenderApply(Player defender, PlayerHackEffect effect) {
             //红线落地点①：放缓比例进 ClampUseSlow（≤0.35）
-            //红线落地点②：时长进 ClampUseSlowDuration（≤360f）——授予时长本就 360，
+            //红线落地点②：时长进 ClampUseSlowDuration（≤360f），授予时长本就 360，
             //这里是防御性压回，防未来有人只改 GetDuration 不看红线
             effect.ProtocolState = new SlowState {
                 Fraction = HackPvPRules.ClampUseSlow(DesignSlowFraction),
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
             return effect?.ProtocolState is SlowState state ? state.Fraction : 0f;
         }
 
-        //防守方本机的手部拖影（世界空间，只在防守方自己的屏幕上——
+        //防守方本机的手部拖影（世界空间，只在防守方自己的屏幕上
         //本簇唯一出防守方本机的表现是隐身剥离的轮廓光，这里不走镜像）
         public override bool OnDefenderTick(Player defender, PlayerHackEffect effect) {
             if (defender.itemAnimation > 0 && Main.rand.NextBool(3)) {

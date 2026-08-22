@@ -5,7 +5,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
     /// 改铭台陈列刀身:鬼切本体贴图(<see cref="OnikiriItem"/>)以原生对角姿态、
-    /// 整数倍缩放、零旋转陈列——像素网格不破;剪影轮廓表由
+    /// 整数倍缩放、零旋转陈列，像素网格不破;剪影轮廓表由
     /// <see cref="OniBladeProfile"/> 共用(与在世刀身铭刻层同一份扫描)。
     /// 绘制以"贴图内锚点(originPx)+锚点屏幕位+缩放"为变换,检分镜头缩放时锚点即不动焦点
     /// </summary>

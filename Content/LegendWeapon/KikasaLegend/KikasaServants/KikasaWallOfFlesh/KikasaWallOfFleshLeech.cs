@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaWallOfFlesh
 {
     /// <summary>
-    /// 血肉墙鬼奴口吐的血水蛭：一条会在空中"游泳"的小虫弹——
+    /// 血肉墙鬼奴口吐的血水蛭：一条会在空中"游泳"的小虫弹
     /// 头+三节体+尾的微型链体（原版水蛭贴图，CPU 血染双层），
     /// 正弦泳姿（速度脉冲 + 航向摆尾）缓慢追踪，命中/超时爆成血雾，
     /// 落回血湖则被湖收走；鬼物穿行地形不受阻。出膛直冲几帧再入泳姿，弹道是活的
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
             spine[0] = head;
             segRot[0] = Projectile.rotation;
-            //逐节贴前节后方，转差阻尼旋转——小虫的柔体
+            //逐节贴前节后方，转差阻尼旋转，小虫的柔体
             for (int i = 1; i < SegCount; i++) {
                 Vector2 toPrev = spine[i - 1] - spine[i];
                 if (segRot[i - 1] != segRot[i]) {

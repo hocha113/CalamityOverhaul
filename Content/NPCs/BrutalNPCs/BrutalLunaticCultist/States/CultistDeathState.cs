@@ -6,7 +6,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
-    /// 死亡演出：仪式反噬——法阵碎裂声起，符文从身上剥落回天，帷幕褪色，最后一声与本体一同散场<br/>
+    /// 死亡演出：仪式反噬，法阵碎裂声起，符文从身上剥落回天，帷幕褪色，最后一声与本体一同散场<br/>
     /// 演出毕由权威端补刀走 vanilla 死亡（掉落与进度旗照常）
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.Death, typeof(CultistStateContext))]

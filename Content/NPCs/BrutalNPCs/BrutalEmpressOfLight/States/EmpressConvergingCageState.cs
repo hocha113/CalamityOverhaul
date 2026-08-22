@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 {
     /// <summary>
     /// 收缩笼：弹幕在玩家四周悬空成环，蓄势屏息，而后向心合拢；
-    /// 缺口随切向分量进动，穿过弹环中心后压力自解——笼是会呼吸的。
+    /// 缺口随切向分量进动，穿过弹环中心后压力自解，笼是会呼吸的。
     /// 二阶段或昼形态下首座笼挂捕获符印：收拢完成时环心仍有人则转入光绫缚舞投技
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EmpressStateIndex.ConvergingCage, typeof(EmpressStateContext))]

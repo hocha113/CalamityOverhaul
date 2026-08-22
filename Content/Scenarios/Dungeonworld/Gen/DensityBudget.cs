@@ -1,7 +1,7 @@
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
 {
     //密度预算(用户拍板的"防实心大陆"机制,指标定义见STRUCTURES §3.5):
-    //两档制——硬下限fail loud(回归护栏语义:防未来改动劣化,不追求理想值),
+    //两档制，硬下限fail loud(回归护栏语义:防未来改动劣化,不追求理想值),
     //目标值只进report-only字段,Wave-2提档
     internal readonly struct DensityBudget(bool hardEnabled, int minNodes, int nodeTarget,
         int maxBlankRun, double minCarvePercent, double carveIdealPercent)
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
     //  3.MinCarvePercent ← 实测值x0.85(推演:脊6行+房间群,L1/L2约5~10%量级)
     //
     //2026-08-15:L3~L7全部转硬闸。取线沿用L1/L2那套"代码路径推演+现状必过"的
-    //保守法(本地无游戏环境),三条线一律只拦灾难级退化——层内容整个没生成、
+    //保守法(本地无游戏环境),三条线一律只拦灾难级退化，层内容整个没生成、
     //活跃区塌成一条缝、房间全被占用栅格拒了这一类,不追求理想值。
     //节点下限的依据是各层自己已经在打的花名册下限告警(层内容入口里那段Warn),
     //取其和的六到八成:
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
     //  · NodeTarget(report-only)按填充器自己的硬上限推算提档,依据见各行注释。
     //    推算法沿用上面那套"代码路径+现状必过",不是实测。
     //  · 三条硬线一律不动。填充失败会由P52/P54自己fail loud(零簇/零翼各有Error),
-    //    不需要也不应该靠密度闸兜——闸线抬高而填充又恰好缺席时刷的是假错误。
+    //    不需要也不应该靠密度闸兜，闸线抬高而填充又恰好缺席时刷的是假错误。
     //  · 理想挖空率仍留0。这一栏的语义是"实测基线",填进推算值就是把估算冒充测量;
     //    首次QA跑出 density[] 与 infill[] 两组数之后再一并落定。
     internal static class DensityBudgets

@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
     /// <summary>
     /// 视网膜扫描光束：三角波上下扫掠的持续血光。
     /// ai[0]=眼whoAmI ai[1]=相位偏移(0/0.5) ai[2]=扫速倍率。
-    /// 上下眼错半周期——一束在极点时另一束恰过中线，窗口恒存
+    /// 上下眼错半周期，一束在极点时另一束恰过中线，窗口恒存
     /// </summary>
     internal class WofRetinaScanBeam : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             Vector2 screenPos = Projectile.Center - Main.screenPosition;
             float flicker = 1f + 0.09f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 26f);
 
-            //眼窝聚光——此批是真加色(源因子=SourceAlpha)，A=0 什么都画不出，A 必须随强度走
+            //眼窝聚光，此批是真加色(源因子=SourceAlpha)，A=0 什么都画不出，A 必须随强度走
             Main.EntitySpriteDraw(glow, screenPos, null, WofMotionFX.BloodHot * (0.9f * opacity),
                 0f, glow.Size() / 2f, 1.7f * flicker, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(glow, screenPos, null, new Color(255, 170, 150) * (0.7f * opacity),

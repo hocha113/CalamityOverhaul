@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         /// <summary>
         /// 身量:伞奴贴图按初版 48×72 的 1.6 倍出图(伞奴得比人显眼一圈)。
         /// 贴图自带放大,故绘制不再乘它;与 KasaOni 共用的演出件(污潭)和演出锚点得按它放大。
-        /// 碰撞箱与落脚探测一概不变——身位跟着涨会抬高净空要求,洞里就转化不出来了
+        /// 碰撞箱与落脚探测一概不变，身位跟着涨会抬高净空要求,洞里就转化不出来了
         /// </summary>
         internal const float BodyBulk = 1.6f;
 
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         //==================== 资格判定（单一真相） ====================
 
         /// <summary>
-        /// 尸体资格：敌对生物即可，boss 一并收——沉溺是主动收魂的另一条线，
+        /// 尸体资格：敌对生物即可，boss 一并收，沉溺是主动收魂的另一条线，
         /// 不该把正面打死的 boss 排除在鬼雨之外。城镇/小动物/雕像怪/弹幕型不收
         /// </summary>
         internal static bool IsEligibleCorpse(NPC npc)
@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
 
         /// <summary>
         /// 该主人的伞奴上限：owner 本机按沉影盘潦系折算（5+潦，封顶 8）；
-        /// 远端读不到盘，放最宽——闸门宁可偏开（多演一场化水）也别把 owner 会收的尸判死
+        /// 远端读不到盘，放最宽，闸门宁可偏开（多演一场化水）也别把 owner 会收的尸判死
         /// </summary>
         internal static int CapFor(int ownerWho) {
             if (!Main.dedServ && ownerWho == Main.myPlayer) {
@@ -162,8 +162,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
 
         /// <summary>
         /// 转化闸门：上限 + 最小间隔，全端各自推同一份（盘系数只有 owner 端算得出，
-        /// 远端放宽——顶多多演一场化水，不会漏掉 owner 认下的转化）。
-        /// boss 两道都不受——一场 boss 的尸体不该被杂兵占着的名额挡回去，满员时另有让位
+        /// 远端放宽，顶多多演一场化水，不会漏掉 owner 认下的转化）。
+        /// boss 两道都不受，一场 boss 的尸体不该被杂兵占着的名额挡回去，满员时另有让位
         /// </summary>
         internal static bool ConvertGateOpen(int ownerWho, bool boss) {
             if (ownerWho < 0 || ownerWho >= Main.maxPlayers) {
@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
 
         /// <summary>
         /// 满员时化掉最旧的一只给 boss 让位：只点一名，正在溶解的不重复点名。
-        /// 只在 owner 本机点——溶解转场由 owner 裁决，其余端收包跟上
+        /// 只在 owner 本机点，溶解转场由 owner 裁决，其余端收包跟上
         /// </summary>
         private static void EvictOldest(int ownerWho) {
             if (CountActive(ownerWho) < CapFor(ownerWho)) {
@@ -215,7 +215,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         /// <summary>
         /// 重组点：自尸体脚下向下探可站立地面（探不到=不转化，雨把它冲走了）。
         /// boss 的尸体多半停在半空或压在洞顶下，一列探空就横着挪几格再探，
-        /// 全落空退到主人脚边——水认得回主人的路。地形各端一致，判定结果可复算
+        /// 全落空退到主人脚边，水认得回主人的路。地形各端一致，判定结果可复算
         /// </summary>
         internal static bool TryPickReformPoint(NPC npc, Player owner, bool boss,
             out Vector2 reformFeet) {

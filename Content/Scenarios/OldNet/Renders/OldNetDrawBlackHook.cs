@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Renders
     /// 屏顶在世界上半（&lt;maxTilesY/2）时只涂 worldSurface+1 以上，
     /// 屏顶进下半后只涂 UnderworldLayer(=maxTilesY-200) 以下。旧网 600 行世界
     /// （半高 300 / UnderworldLayer 400 / worldSurface 430）的地板带与浅层地下
-    /// 恰好落进 300~400 行的涂黑死窗——无光瓦片被瓦片渲染器剔除
+    /// 恰好落进 300~400 行的涂黑死窗，无光瓦片被瓦片渲染器剔除
     /// （TileDrawing 光照全零跳绘）后，天幕直接透出。<br/>
     /// 这里在旧网内把 DrawBlack 整体替换为无行域钳制的等价实现。不走 force=true
     /// 转发：force 路径对 UnderworldLayer 以下改用 0.2 地狱亮度阈值，

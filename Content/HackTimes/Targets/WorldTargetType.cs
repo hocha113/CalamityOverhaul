@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.HackTimes.Targets
 {
     /// <summary>
-    /// 世界状态目标。没有实体——指向地表线以上的空白天空即命中，
+    /// 世界状态目标。没有实体，指向地表线以上的空白天空即命中，
     /// 优先级压到液体(-10)之下做全场兜底
     /// </summary>
     internal class WorldTargetType : HackTargetType

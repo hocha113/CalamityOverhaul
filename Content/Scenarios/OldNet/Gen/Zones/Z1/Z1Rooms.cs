@@ -3,12 +3,12 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z1
 {
-    //Z1 墙脚带地表目录（M3）：废弃中继阵列 + 接入亭——教学密度的低威胁地标
+    //Z1 墙脚带地表目录（M3）：废弃中继阵列 + 接入亭，教学密度的低威胁地标
     internal static class Z1Rooms
     {
         /// <summary>
         /// 废弃中继阵列：一排断头死塔（锡镀立柱+横梁+顶端断口），
-        /// 纯剪影装饰——"这里曾经有人维护"的第一眼证据
+        /// 纯剪影装饰，"这里曾经有人维护"的第一眼证据
         /// </summary>
         internal static int BuildDeadPylonArrays(OldNetBuildContext ctx, int groups) {
             int built = 0;

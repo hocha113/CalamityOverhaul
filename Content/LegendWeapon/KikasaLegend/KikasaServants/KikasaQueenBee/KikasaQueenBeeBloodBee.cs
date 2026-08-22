@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             else {
                 int target = FindTarget();
                 if (target >= 0) {
-                    //咬向猎物：转率封顶的追踪 + 种子摆尾——活的飞行不是直线平移
+                    //咬向猎物：转率封顶的追踪 + 种子摆尾，活的飞行不是直线平移
                     Vector2 want = (Main.npc[target].Center - Projectile.Center).SafeNormalize(Vector2.UnitX);
                     want = want.RotatedBy(MathF.Sin(Life * 0.5f + Seed * 3f) * 0.34f);
                     float wantRot = want.ToRotation();

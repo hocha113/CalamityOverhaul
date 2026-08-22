@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>晕染扩张帧数:缘先扩后定</summary>
         private const int BloomFrames = 22;
 
-        //画布合同:着色器 guard 从 0.88 起切,内容须先归零。只放大 C# 正方形不够——UV 仍满幅,左右照切。
+        //画布合同:着色器 guard 从 0.88 起切,内容须先归零。只放大 C# 正方形不够，UV 仍满幅,左右照切。
         //下列上界对齐 KikasaInkSplat.fx(碎斑 R*1.8+噪声、滴淌 0.22+colN*0.5、湖晕指状 R*1.6+缘噪声)
         private const float CanvasBudget = 0.82f;
         private const float SplatQaExt = 1.52f;
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         //==================== 地形剖面 ====================
         //表面渍出生时沿贴面切向逐列取样地形,着色器按剖面逐列位移渍体:
-        //墨随台阶下沉、贴斜坡、翻上墙角,悬空列淡出——不再是一张悬空的完整椭圆
+        //墨随台阶下沉、贴斜坡、翻上墙角,悬空列淡出，不再是一张悬空的完整椭圆
 
         /// <summary>剖面取样列数,与 KikasaInkSplat.fx 的 uProf 长度一致</summary>
         private const int ProfN = 24;

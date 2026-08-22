@@ -9,10 +9,10 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 {
     /// <summary>
-    /// 链路回溯（默认档，基础反制之一：掐上传）。<b>挂 SelfRig 位不挂 Player 位</b>——
+    /// 链路回溯（默认档，基础反制之一：掐上传）。<b>挂 SelfRig 位不挂 Player 位</b>
     /// 目标是你自己，对自己施放不过 PvP 准入门槛，被骇是唯一前置。<br/>
     /// 服务端裁决（OnApply 跑在权威端）：立即作废所有正在瞄准施术者的上传
-    /// （<b>攻击方 RAM 不退</b>——被回溯的上传白丢，这是攻击方的风险成本）、
+    /// （<b>攻击方 RAM 不退</b>：被回溯的上传白丢，这是攻击方的风险成本）、
     /// 每个被作废的攻击方吃 2 RAM 烧蚀（RAM 归服务端，直写）、
     /// 攻击方位置对施术者穿墙标记 900f（坐标广播的镜像，只发施术者）。<br/>
     /// 自身冷却 900f：真值记在服务端的 <see cref="PlayerHackLedger"/> 实例上，

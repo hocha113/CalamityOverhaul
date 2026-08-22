@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.States
 {
     /// <summary>
     /// 头锤摆荡：反向拉起蓄势（目镜警闪 + 越缩越紧）→ 一帧定初速的钟摆冲撞 →
-    /// 越过目标即硬刹（早退计时）→ 拖链回摆。接触伤害只在速度过门槛时开——
+    /// 越过目标即硬刹（早退计时）→ 拖链回摆。接触伤害只在速度过门槛时开
     /// 冲势可见才咬人。过载阶段升级三连摆
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)ScrapStateIndex.HeadSwing, typeof(ScrapStateContext))]

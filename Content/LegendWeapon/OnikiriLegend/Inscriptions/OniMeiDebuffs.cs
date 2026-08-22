@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
     /// <summary>
     /// 滞缚/痺的效果层：AI 之后阻尼位移(boss 减效)，蠕虫节体跳过(跟头走不重复拖)；
-    /// 痺中的 NPC 接触伤打折——"麻了的手打不疼"
+    /// 痺中的 NPC 接触伤打折，"麻了的手打不疼"
     /// </summary>
     internal class OniMeiNPCEffects : GlobalNPC
     {

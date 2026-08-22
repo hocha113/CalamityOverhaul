@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
     /// 效果时钟框架只在 MP 客户端驱动（PlayerHackNet.PostUpdateEverything），
     /// 单人由 <see cref="DriveClock"/> 代驱动。<br/>
     /// TODO(MP)：联机化需要走服务端授账 + DefenderApply 包路径，
-    /// 且 ActivationId 高位段要与服务器分配段做冲突治理——M1 严格单人门控，不实装
+    /// 且 ActivationId 高位段要与服务器分配段做冲突治理，M1 严格单人门控，不实装
     /// </summary>
     internal static class OldNetHostileHack
     {
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
         }
 
         /// <summary>
-        /// 单人代驱动帐本时钟。挂 OldNetPlayer.PostUpdate 且不做旧网门控——
+        /// 单人代驱动帐本时钟。挂 OldNetPlayer.PostUpdate 且不做旧网门控
         /// 带着在册效果登出回主世界，效果也要走完而不是冻结；
         /// 严格 SinglePlayer 门控防将来 MP 双驱（双驱 = 时长减半级 bug）。
         /// SendLedgerReport 在非 MP 客户端自行早退，帐本空转开销可忽略

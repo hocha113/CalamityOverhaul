@@ -15,7 +15,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaMoonLord
 {
     /// <summary>
-    /// 鬼奴·噬月心藏。血湖之水凝成的月球领主核心——只有一颗巨大的裸心，
+    /// 鬼奴·噬月心藏。血湖之水凝成的月球领主核心，只有一颗巨大的裸心，
     /// 没有躯体没有头手。数条主动脉血管自心脏垂坠没入湖面，湖就是它的供血源：
     /// 血管以可见的蠕动鼓包把湖水一口一口逆流泵上去，心脏按心缩/心舒节拍搏动，
     /// 全部演出与攻击时序都锚在心跳拍上。出水演出为甲壳裹心破水升起、
@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         public override bool MinionContactDamage() => true;
 
-        /// <summary>接触伤害只开在心缩拍的收缩窗：碰它的代价按它的节拍收——
+        /// <summary>接触伤害只开在心缩拍的收缩窗：碰它的代价按它的节拍收
         /// 每拍心脏可见地猛缩+微光圈，窗口与演出严格对齐；甲壳期/停搏期恒关</summary>
         public override bool? CanDamage() {
             if (State == StateDissolve || State == StateEmerge && !awakenDone) {
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：只有 owner 裁决——服务器无领域状态（既定契约），
+            //生命线：只有 owner 裁决，服务器无领域状态（既定契约），
             //迟入场客户端首份快照前也会误判；其余端只跟包换场
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(ContactDamage);
 
             //换场清闩：远端可能靠收包换场，残闩会吞掉新场节拍；
-            //心跳相位刻意不清——心脏的节律跨状态连续，只在觉醒拍起跳
+            //心跳相位刻意不清，心脏的节律跨状态连续，只在觉醒拍起跳
             if (State != lastSeenState) {
                 lastSeenState = State;
                 silenceLatched = false;
@@ -493,7 +493,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 int start = VesselRaiseStart + i * VesselRaiseGap;
                 float raise = MathHelper.Clamp((t - start) / (float)VesselRaiseFrames, 0f, 1f);
                 if (raise > 0f && vesselRaise[i] <= 0f) {
-                    //起拽拍：入水点先炸开一蓬水花——它是被拽出来的
+                    //起拽拍：入水点先炸开一蓬水花，它是被拽出来的
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.5f, Pitch = -0.5f + i * 0.06f, MaxInstances = 3 },
                         new Vector2(vesselEntryX[i], domain.LakeWorldY));
                     if (viewed) {
@@ -514,7 +514,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        /// <summary>破水浪冠：压轴级——涟漪/水花/抛血柱/血雾全量级压过毁灭者一头</summary>
+        /// <summary>破水浪冠：压轴级，涟漪/水花/抛血柱/血雾全量级压过毁灭者一头</summary>
         private void BreachBurst(Vector2 hit) {
             KikasaDomainDeco.RippleAt(hit, 3.4f);
             KikasaDomainDeco.RippleAt(hit + new Vector2(64f, 0f), 1.4f);
@@ -787,7 +787,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             if (t < RayChargeEnd) {
                 //长充能：心跳骤然加速（BeatRate 侧），泵血频率随相位自然拉满；
-                //光向心脏汇聚——72% 后一切静默
+                //光向心脏汇聚，72% 后一切静默
                 Projectile.velocity *= 0.92f;
                 float c = ChargeT();
 
@@ -813,7 +813,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                             FoamGlow, Main.rand.NextFloat(0.7f, 1.2f))?.Configure(false, 18);
                     }
                 }
-                //低鸣震屏随充能平方爬升；静默段不震——死寂才吓人
+                //低鸣震屏随充能平方爬升；静默段不震，死寂才吓人
                 if (c < 0.72f && t % 6 == 0 && ViewedOwner) {
                     ShakeViewer(0.5f + 2.2f * c * c);
                 }
@@ -905,7 +905,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             float lakeY = domain.LakeWorldY;
             bool viewed = ViewedOwner;
 
-            //心脏悬停原地缓慢下沉——供血断了，浮力也跟着走
+            //心脏悬停原地缓慢下沉，供血断了，浮力也跟着走
             Projectile.velocity *= 0.9f;
             Projectile.velocity.Y += 0.015f;
 
@@ -1038,7 +1038,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             };
         }
 
-        /// <summary>uForm：1=全血水 0=真身；心脏常态比克眼更血——它本来就是血做的器官</summary>
+        /// <summary>uForm：1=全血水 0=真身；心脏常态比克眼更血，它本来就是血做的器官</summary>
         private float CurrentForm() {
             int t = (int)StateTimer;
             float steady = 0.42f + MathF.Sin(Main.GlobalTimeWrappedHourly * 2.7f + Seed) * 0.05f;
@@ -1068,7 +1068,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 : 0f;
 
         /// <summary>体积：心缩拍猛缩回弹；充能鼓胀、静默前收拢（爆发前先变小）；
-        /// 倾泻期竖向瘪掉——血袋被倒空</summary>
+        /// 倾泻期竖向瘪掉，血袋被倒空</summary>
         private void BodyScale(out float sx, out float sy) {
             float s = BaseScale * (1f - 0.085f * beatEnvelope);
             int t = (int)StateTimer;
@@ -1150,13 +1150,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         /// <summary>充能暗幕：软径向黑罩沉在心脏与湖面之间 + 水线暗带，
-        /// 静默段持满、开火即散——湖面整体变暗变静的主载体</summary>
+        /// 静默段持满、开火即散，湖面整体变暗变静的主载体</summary>
         private void DrawChargeVeil(SpriteBatch sb, KikasaDomainPlayer domain) {
             float dim = ChargeDim();
             if (dim < 0.02f) {
                 return;
             }
-            //暗幕必须用真 alpha 的 Extra_98——黑底 SoftGlow 的 alpha 通道是全 255，
+            //暗幕必须用真 alpha 的 Extra_98：黑底 SoftGlow 的 alpha 通道是全 255，
             //在 AlphaBlend 里压不出软径向，只会糊出一整块硬边黑矩形
             Texture2D veil = CWRAsset.Extra_98?.Value;
             if (veil == null) {
@@ -1474,7 +1474,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             int t = (int)StateTimer;
 
-            //出水预兆：湖底血光自深处鼓起，比克眼更大更沉——那是一颗器官的分量
+            //出水预兆：湖底血光自深处鼓起，比克眼更大更沉，那是一颗器官的分量
             if (State == StateEmerge && t < OmenEnd) {
                 float ot = MathHelper.Clamp(t / (float)OmenEnd, 0f, 1f);
                 float ease = 1f - (1f - ot) * (1f - ot);
@@ -1525,7 +1525,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
             }
 
-            //竖缝与瞳状芯：睁眼后压在心脏正面，恒竖直——光是从缝里挤出来的
+            //竖缝与瞳状芯：睁眼后压在心脏正面，恒竖直，光是从缝里挤出来的
             float slit = SlitOpen();
             if (slit > 0.02f && alpha > 0.1f) {
                 EnsureBegin();

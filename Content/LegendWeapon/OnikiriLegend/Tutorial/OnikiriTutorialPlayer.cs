@@ -293,7 +293,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         /// <summary>
-        /// 无刀收摊。不写 Declined——这不是玩家的决定,而且补符万一落地丢了就再也开不起来。
+        /// 无刀收摊。不写 Declined：这不是玩家的决定,而且补符万一落地丢了就再也开不起来。
         /// 只把排队推远一分钟,刀回到行囊后自己会重新找上门,讲解也从存档的落点接着走
         /// </summary>
         private void SuspendForMissingBlade() {

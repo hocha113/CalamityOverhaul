@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
 {
     /// <summary>
     /// 蜕壳演出：清弹幕→痉挛聚能(孢子回吸)→花壳逐瓣崩裂→
-    /// 壳爆蜕形，八根触手破体而出——二阶段开始
+    /// 壳爆蜕形，八根触手破体而出，二阶段开始
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PlanteraStateIndex.PhaseTransition, typeof(PlanteraStateContext))]
     internal class PlanteraPhaseTransitionState : PlanteraStateBase

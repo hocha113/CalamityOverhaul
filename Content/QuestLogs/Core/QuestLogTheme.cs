@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         private const int FooterBtnEdge = 14;
 
         //页脚右簇自右往左固定为 样式 / 夜间 / 归位 / 一键领取。
-        //槽位是死的，缺席的样式（远征纪要没有夜间键）留着空位不往右挪——
+        //槽位是死的，缺席的样式（远征纪要没有夜间键）留着空位不往右挪
         //换皮肤只该换风格，同一个键不该跑到屏幕另一边
 
         /// <summary>样式切换键，右簇最右</summary>

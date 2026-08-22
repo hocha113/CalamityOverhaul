@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         }
 
         /// <summary>
-        /// 死亡拖入：初遇未完成时在第一层被鬼奴杀死不真死——
+        /// 死亡拖入：初遇未完成时在第一层被鬼奴杀死不真死
         /// 拦下死亡，醒在更深一层的雨里（复用深潜演出，溺亡起手拍）。
         /// 仅本地玩家生效；初遇完成后鬼奴致死回归真死。
         /// </summary>
@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 
         /// <summary>
         /// 常驻表现：满幕雨帘 + 贴地潮雾 + 稀有脸痕 + 远雷，密度吃氛围强度并按深度分级。<br/>
-        /// 演出结算前也承担前兆稀雨——两个世界开始互相渗透的零星雨丝；
+        /// 演出结算前也承担前兆稀雨，两个世界开始互相渗透的零星雨丝；
         /// 深潜演出的骤雨增压（<see cref="OniRainDescentTransition.RainSurge"/>）也加在这里。
         /// </summary>
         internal static void UpdateFx() {

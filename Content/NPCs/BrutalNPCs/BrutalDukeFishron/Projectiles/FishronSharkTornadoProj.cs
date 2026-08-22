@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             LifeTimer++;
             seed = Projectile.whoAmI * 0.617f;
 
-            //升格落地（尺寸+加寿）由同步的 ai[1] 驱动，所有端各执行一次——
+            //升格落地（尺寸+加寿）由同步的 ai[1] 驱动，所有端各执行一次
             //width/timeLeft 不入同步包，只在服务端改会让客户端错位并提前消亡
             if (Upgraded && Projectile.width != (int)ColumnWidth) {
                 Projectile.timeLeft += TierBonusLife;
@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
                     FishronMotionFX.FoamWhite * (0.35f * env), Main.rand.NextFloat(0.7f, 1.2f))
                     ?.Configure(Main.rand.Next(24, 40), Main.rand.NextFloat(-0.03f, 0.03f));
             }
-            //底部卷吸：柱外碎浪被拖向基座再卷起——吸入感来自向心初速
+            //底部卷吸：柱外碎浪被拖向基座再卷起，吸入感来自向心初速
             if (Main.rand.NextBool(3)) {
                 float sideSign = Main.rand.NextBool() ? 1f : -1f;
                 Vector2 pos = bottom + new Vector2(sideSign * Main.rand.NextFloat(0.7f, 1.5f) * ColumnWidth * 0.5f,

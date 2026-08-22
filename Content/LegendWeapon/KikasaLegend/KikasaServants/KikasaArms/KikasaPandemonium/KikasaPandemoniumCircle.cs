@@ -221,7 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 Vector2 aim = target >= 0 ? Main.npc[target].Center : Projectile.Center;
                 int dmg = Math.Max((int)(Projectile.damage * 1.4f), 1);
                 for (int k = 0; k < 6; k++) {
-                    //确定性扇位，各端若误跑也不会分叉出不同数量
+                    //确定性扇位,各端误跑也不会分叉数量
                     float lane = (k - 2.5f) * 28f;
                     Vector2 from = Projectile.Center + new Vector2(lane, -220f - k * 8f);
                     Vector2 to = aim + new Vector2(lane * 0.4f, 0f);
@@ -261,7 +261,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
             }
 
-            //表现弧：场心到最近敌或场缘，与玩家右键阵的主人雷索脱钩
+            //表现弧,场心到最近敌或场缘,不拴主人
             if (Main.dedServ || timer % 10 != 0 || DomainAlpha() < 0.4f) {
                 return;
             }
@@ -283,7 +283,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             float len = Vector2.Distance(start, end) / segs;
             for (int i = 1; i < segs; i++) {
                 float t = i / (float)segs;
-                //表现用抖动：用进度当相位，不掷 Main.rand
+                //表现抖动用进度当相位,不掷 Main.rand
                 float wobble = MathF.Sin(t * 11.3f + start.X * 0.01f) * len * 0.28f;
                 Vector2 perp = (end - start).SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2);
                 pts.Add(Vector2.Lerp(start, end, t) + perp * wobble);

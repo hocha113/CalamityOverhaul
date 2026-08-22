@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
             //幽灵与鬼手先画、涟漪水花后画，水线的泡沫盖在沉浮物之上；
             //伞奴化水的尸影随后，同样吃湖面镜面倒影；
-            //鬼火压最上层——火贴水烧在一切湖面装饰之上，倒影由镜面自动接管
+            //鬼火压最上层，火贴水烧在一切湖面装饰之上，倒影由镜面自动接管
             KikasaLakeFX.Draw(spriteBatch);
             KikasaDrownFX.Draw(spriteBatch);
             KikasaThrallMeltFX.Draw(spriteBatch);
@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             grade.Parameters["uRain"]?.SetValue(kdp.RainBlend);
             grade.Parameters["uWispGlow"]?.SetValue(kdp.WispGlow);
 
-            //倒影恶犬醒着时，镜像里抹掉施术者本人——镜像源落在他身上的像素改采身侧背景
+            //倒影恶犬醒着时，镜像里抹掉施术者本人，镜像源落在他身上的像素改采身侧背景
             float coverA = kdp.HoundReflection
                 ? KikasaHoundReflection.GetAppear(kdp.Player.whoAmI) : 0f;
             Rectangle hit = kdp.Player.Hitbox;

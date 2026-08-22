@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
 {
     /// <summary>
     /// 二阶段连环狂扑：三连弹弓猛扑，扑线撒孢子雷，
-    /// 刹车点回喷交叉种子——近身处刑的位移压迫
+    /// 刹车点回喷交叉种子，近身处刑的位移压迫
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PlanteraStateIndex.FrenzyPounce, typeof(PlanteraStateContext))]
     internal class PlanteraFrenzyPounceState : PlanteraStateBase

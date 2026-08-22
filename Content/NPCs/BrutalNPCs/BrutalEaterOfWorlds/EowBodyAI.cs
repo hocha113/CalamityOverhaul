@@ -275,7 +275,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
 
         /// <summary>
         /// 出生 alpha=255(原版 SetDefaults 给定)：入场演出期按前邻涟漪淡入(破土渐显)，<br/>
-        /// 其余状态直接淡入——中途加入的客户端各节以 255 重建，没人再驱动涟漪
+        /// 其余状态直接淡入，中途加入的客户端各节以 255 重建，没人再驱动涟漪
         /// </summary>
         private void UpdateAlphaFade(NPC head) {
             if (npc.alpha <= 0) {

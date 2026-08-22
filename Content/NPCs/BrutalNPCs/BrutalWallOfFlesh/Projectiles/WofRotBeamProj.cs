@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
     /// <summary>
     /// 腐眼断头闸斩束：锁定高度上的水平血光铡刀，贴着跑道把整条车道封死一拍。
     /// ai[0]=墙whoAmI ai[1]=锁定高度(生成后永不再瞄，预告即承诺)。
-    /// 判定半厚固定30px(低于跳跃高度)，可见束体更宽——判定窄于视觉
+    /// 判定半厚固定30px(低于跳跃高度)，可见束体更宽，判定窄于视觉
     /// </summary>
     internal class WofRotBeamProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             if (VaultUtils.isServer) {
                 return;
             }
-            //沿束余波：灼落的血珠雨(衰减期更密——车道上留下的湿痕)
+            //沿束余波：灼落的血珠雨(衰减期更密，车道上留下的湿痕)
             int dropChance = Timer >= collapseStart ? 2 : 4;
             if (Main.rand.NextBool(dropChance)) {
                 Vector2 dropPos = Projectile.Center + beamDir * beamLength * Main.rand.NextFloat(0.05f, 0.9f);

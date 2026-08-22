@@ -1978,8 +1978,8 @@ PlowSteelClampArm: {
 	SkillDesc:
 		'''
 		Hurls a high-heat monomolecular wire from your palm. Enemies along the path are continuously scorched.
-		[c/8AC4E8:Tap] —— Lays a ~12-tile short wire toward the cursor, lasts 2 seconds, no anchor required.
-		[c/F5C56A:Hold] —— Once fully charged, pins to a solid tile near the cursor for 5 seconds; if no anchor is found, falls back to a short wire.
+		[c/8AC4E8:Tap]: Lays a ~12-tile short wire toward the cursor, lasts 2 seconds, no anchor required.
+		[c/F5C56A:Hold]: Once fully charged, pins to a solid tile near the cursor for 5 seconds; if no anchor is found, falls back to a short wire.
 		Damage scales with the player's generic damage multipliers.
 		'''
 }

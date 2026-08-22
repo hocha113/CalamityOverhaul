@@ -10,7 +10,7 @@
 //  高光渐变；有机破碎/笔刷撕裂全部属于 h=1 侧；溶解从 h=1 侧向剃刀线推进，
 //  剃刀线保持干净到最后
 //uFlash：完全张开瞬间全形过曝再速落（干脆感 pop 帧）
-//uTailErode：彗星逻辑——前缘还在揭开时起笔端已开始蒸发
+//uTailErode：彗星逻辑，前缘还在揭开时起笔端已开始蒸发
 //
 //水墨件套（自 OniAnnihilateArc 降档移植，uInk=0 时与原光润能量完全一致）：
 //  uInk 主权重：domain-warp 墨场替换双八度拉丝、墨分五色密度台阶 + 积墨线、
@@ -168,7 +168,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     }
     float vc = saturate(v);
 
-    //---- 笔刷主体：双八度 + 沿刃奔涌相位（墨相下滚动降速——墨落在纸上不流动） ----
+    //---- 笔刷主体：双八度 + 沿刃奔涌相位（墨相下滚动降速，墨落在纸上不流动） ----
     float flow = uTime * 0.30 * (1.0 - uInk * 0.85) + uSeed;
     float4 b1 = tex2D(brushSamp, float2(uc * 1.30 - flow * 0.22 - uFlowPhase, vc));
     float4 b2 = tex2D(brushSamp, float2(uc * 3.10 + flow * 0.40 + uFlowPhase * 0.6 + 0.37, vc * 0.62 + 0.20));
@@ -280,7 +280,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     col += uColHot * razor * (1.15 + widen * 0.35) * (1.0 - uColorShift * 0.65);
 
     //笔刷高光 + 燃边 + 前缘 + 全形白闪
-    //白闪只做适度提亮增益（不整面覆盖成纯白），笔刷streak/色带在闪光期依然可辨——
+    //白闪只做适度提亮增益（不整面覆盖成纯白），笔刷streak/色带在闪光期依然可辨
     //这是"干脆感"与"细节质感"的平衡点：闪光是"提亮一拍"而不是"擦掉重画"
     //墨相下笔刷高光大幅收敛（只留行笔方向感），刀光读作纸上的颜料而非发光体
     col += uColBright * streak * (1.0 - h * 0.55) * 0.50 * (1.0 - uInk * 0.72);

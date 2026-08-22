@@ -4,7 +4,7 @@ using CalamityOverhaul.Content.QuestLogs.Core;
 namespace CalamityOverhaul.Content.QuestLogs.Guide
 {
     /// <summary>
-    /// 每一步要圈出的东西。几何一律问现成的分区与列表要，教程自己不算一遍——
+    /// 每一步要圈出的东西。几何一律问现成的分区与列表要，教程自己不算一遍
     /// 算第二遍就意味着换皮肤或改布局时会有一处忘了跟
     /// </summary>
     internal static class QuestBookGuideTargets
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
                 case QuestBookStep.TrackerWidget:
                     return EntrustTrackerWidget.Instance?.GetTrackerBounds() ?? Rectangle.Empty;
 
-                //挂起要同时指着行和分类页签——挂起后的委托就落到那几个页签里
+                //挂起要同时指着行和分类页签，挂起后的委托就落到那几个页签里
                 case QuestBookStep.SuspendAndCategories: {
                     QuestManagerUI ui = QuestManagerUI.Instance;
                     if (ui == null) {

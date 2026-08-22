@@ -59,11 +59,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         int Pellets,           //霰弹每喷粒数，其余为 1
         int MaxUnits,          //编队上限（重武器凝得少）
         float RecoilMul,       //后坐幅度倍率
-        SoundStyle FireSound,  //开火音：直接借原武器的 UseSound——个性化白送
+        SoundStyle FireSound,  //开火音：直接借原武器的 UseSound：个性化白送
         float MuzzleLen,       //枪口探出距离
         float DrawScale);      //绘制缩放（超大贴图收一号、小贴图放一号）
 
-    /// <summary>刀奴档案：同枪奴契约——行为字段服务器安全，贴图字段只管绘制</summary>
+    /// <summary>刀奴档案：同枪奴契约，行为字段服务器安全，贴图字段只管绘制</summary>
     internal readonly record struct KikasaBladeProfile(
         KikasaBladeWeight Weight,
         int RelayPeriod,       //轮转突斩的接力节拍基准
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         float DrawScale);      //绘制缩放
 
     /// <summary>
-    /// 鞭奴档案：几何与时序全部对齐原版 AI_165 契约——
+    /// 鞭奴档案：几何与时序全部对齐原版 AI_165 契约
     /// 段数/射程倍率读鞭弹幕模板的 WhipSettings，甩出时长与 itemAnimationMax×MaxUpdates
     /// 的实际帧数等价（复制体不吃玩家挥舞，用 useAnimation 自持计时）
     /// </summary>
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
     /// <summary>
     /// 械奴档案推断器：从沉湖物品的基础数值推族别与个性化档案。
-    /// 全部读 ContentSamples 模板（不读玩家实例——词缀不参与，远端与服务器无湖藏数据）；
+    /// 全部读 ContentSamples 模板（不读玩家实例，词缀不参与，远端与服务器无湖藏数据）；
     /// 影响行为/时序的字段只用服务器可用的数值，贴图尺寸只允许影响纯绘制
     /// </summary>
     internal static class KikasaArmsProfiler
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        /// <summary>枪身量尺：客户端量贴图宽、服务器回退 item.width——两处都只喂绘制与出膛点</summary>
+        /// <summary>枪身量尺：客户端量贴图宽、服务器回退 item.width：两处都只喂绘制与出膛点</summary>
         private static (float muzzleLen, float drawScale) MeasureGun(Item sample) {
             float width = Math.Max(sample.width, 20f);
             if (!Main.dedServ) {

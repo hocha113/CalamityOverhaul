@@ -7,11 +7,11 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 {
     /// <summary>
     /// 战术榨取（芯片档）：十秒内攻击方打防守方，按伤害给攻击方回 RAM。<br/>
-    /// <b>落点是攻击方 RAM——服务端拥有的资源</b>：额度记在授予账载荷
+    /// <b>落点是攻击方 RAM：服务端拥有的资源</b>：额度记在授予账载荷
     /// （<see cref="OnAuthorityGranted"/>），逐击结算由
     /// <see cref="CombatSiphonSettlement"/> 在服务端处理 msg 117 转播的位置捕获
     /// （tML 源码核对见该文件头注释）。防守方侧无任何数值变化，只挂 HUD 条目
-    /// ——知道自己在被当电池打。<br/>
+    /// ：知道自己在被当电池打。<br/>
     /// 预算形状镜像 DataLeech 修复后的裁决：单次上限 + 全程总额 + 回流间隔三闸，
     /// 多段武器一帧几十跳也钉不满 RAM 条
     /// </summary>
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 
         internal static readonly Color Drain = new(255, 180, 90);
 
-        /// <summary>晶粒纹：躯体上着一圈瞄准刻线，命中处引出的数据流注进右上的电量格——人形电池</summary>
+        /// <summary>晶粒纹：躯体上着一圈瞄准刻线，命中处引出的数据流注进右上的电量格，人形电池</summary>
         internal const string Die =
             "M -0.66 -0.40 L -0.30 -0.40 M -0.66 0.48 L -0.30 0.48 "
             + "M -0.66 -0.40 Q -0.76 0.04 -0.66 0.48 M -0.30 -0.40 Q -0.20 0.04 -0.30 0.48 "

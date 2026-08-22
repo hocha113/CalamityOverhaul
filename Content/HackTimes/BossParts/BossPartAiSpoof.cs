@@ -9,11 +9,11 @@ namespace CalamityOverhaul.Content.HackTimes.BossParts
 {
     /// <summary>
     /// F1 落地：NPC AI 前后配对的值伪装。<br/>
-    /// 两条通道——肢体征收把「部件 AI 读到的玩家位置」换成本体中心，
+    /// 两条通道，肢体征收把「部件 AI 读到的玩家位置」换成本体中心，
     /// 协同断链把 Calamity 的 Exo 协同槽临时写成 -1。<br/>
     /// 配对根基：tML 的 <c>NPCLoader.NPCAI</c> 里 <c>PostAI</c> 无条件运行
     /// （PreAI 返回 false 只跳过 AI 本体），InnoVault 的全局 override 提前拦截时
-    /// 整个 NPCAI 不跑，两个钩子都不执行——要么成对、要么全无。
+    /// 整个 NPCAI 不跑，两个钩子都不执行，要么成对、要么全无。
     /// 唯一能拆散配对的是 AI 抛异常，由 <see cref="BossPartSpoofGuard"/> 帧末兜底还原
     /// </summary>
     internal static class BossPartAiSpoof

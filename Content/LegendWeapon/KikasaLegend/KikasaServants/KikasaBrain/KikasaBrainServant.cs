@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// （水下心跳预兆→破水浪冠→升起凝实（凝块逐颗归轨）→觉醒拍假身裂出）。
     /// 签名机制为心跳节拍闪现环绕：绕目标定环连跳四拍，闪现前落点汇聚涟漪、
     /// 旧位留一瞬血形残壳；两具低凝实假身镜像常驻（纯本地表现、Seed 确定性分布），
-    /// 假身的"攻击"在接触前碎成血珠——真伤害只来自真身与凝块。
+    /// 假身的"攻击"在接触前碎成血珠，真伤害只来自真身与凝块。
     /// 攻击为闪现环绕接触压迫与献祭爆（按规则消耗一颗血凝块卫星换范围爆发，冷却重凝）。
     /// 联机契约同基准：闪现落点 owner 裁决盖 netUpdate 章，假身与凝块轨道
     /// 全部由状态+Seed 各端本地重建，绝不逐个同步；生命线只有 owner 判
@@ -281,7 +281,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：只有 owner 裁决——服务器无领域状态（既定契约），
+            //生命线：只有 owner 裁决，服务器无领域状态（既定契约），
             //迟入场客户端首份快照前也会误判；其余端只跟 owner 的同步包换场
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
@@ -401,7 +401,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Vector2 surface = new(Projectile.Center.X, lakeY);
 
             if (t < OmenFrames) {
-                //水下待命：先让湖面自己"心跳"起来——闷响与同心涟漪按拍走
+                //水下待命：先让湖面自己"心跳"起来，闷响与同心涟漪按拍走
                 Projectile.velocity = Vector2.Zero;
                 if (t == 10 || t == 32) {
                     HeartbeatFX(t == 10 ? 0.55f : 0.7f, underwater: true);
@@ -537,7 +537,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             Vector2 to = anchor - Projectile.Center;
             if (to.Length() > 2400f) {
-                //跟丢硬贴回：连贴回都走闪现语法——旧位留壳，新位直接显形
+                //跟丢硬贴回：连贴回都走闪现语法，旧位留壳，新位直接显形
                 if (!Main.dedServ) {
                     AddShellAt(Projectile.Center);
                 }
@@ -601,7 +601,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     return;
                 }
                 Projectile.velocity *= 0.88f;
-                //蓄势血珠向体心收拢，72% 后静默——爆发前的吸气
+                //蓄势血珠向体心收拢，72% 后静默，爆发前的吸气
                 if (!Main.dedServ && t < BlinkPrelude * 0.72f && t % 3 == 1) {
                     Vector2 from = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(60f, 110f);
                     PRTLoader.NewParticle<PRT_KikasaBloodGlob>(from,
@@ -623,7 +623,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 int k = (t - BlinkPrelude) / BlinkCycleLen;
                 int ct = (t - BlinkPrelude) % BlinkCycleLen;
 
-                //拍首取落点：冻结在预告开始帧——预告要诚实
+                //拍首取落点：冻结在预告开始帧，预告要诚实
                 if (telegraphedBlink < k) {
                     if (target < 0) {
                         EndAttack(authority, 60);
@@ -1038,7 +1038,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        /// <summary>假身基准位：常态绕真身对称慢旋；闪现拍则镜像到目标环上——三影围心，只有一颗是真的</summary>
+        /// <summary>假身基准位：常态绕真身对称慢旋；闪现拍则镜像到目标环上，三影围心，只有一颗是真的</summary>
         private Vector2 MirageBasePos(int i, int target) {
             if (State == StateBlink && lastBlinkFired >= 0 && lastBlinkFired < BlinkCount) {
                 float ang = blinkBaseAngle + lastBlinkFired * BlinkRingStep
@@ -1401,7 +1401,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             int t = (int)StateTimer;
 
-            //水下心音：湖面下的血光随每记闷响涨缩——看不见形，先看见搏动
+            //水下心音：湖面下的血光随每记闷响涨缩，看不见形，先看见搏动
             if (State == StateEmerge && t < OmenFrames) {
                 float ot = t / (float)OmenFrames;
                 Vector2 pos = new(Projectile.Center.X, domain.LakeWorldY + MathHelper.Lerp(46f, 10f, ot));
@@ -1412,7 +1412,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     gOrigin, new Vector2(r * 2.8f / glow.Width, r * 1.1f / glow.Height), SpriteEffects.None, 0f);
             }
 
-            //闪现汇聚预告：真落点亮环收拢，两处假落点淡一档——三影同摆，虚实难辨
+            //闪现汇聚预告：真落点亮环收拢，两处假落点淡一档，三影同摆，虚实难辨
             if (State == StateBlink && telegraphedBlink >= 0 && lastBlinkFired < telegraphedBlink + 1
                 && t >= BlinkPrelude && t < BlinkExitTick) {
                 int ct = (t - BlinkPrelude) % BlinkCycleLen;

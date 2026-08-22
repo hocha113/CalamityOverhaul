@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 {
     /// <summary>
     /// 立伞水洼的屏幕空间倒影：拷屏后在水洼椭圆内绕水面线垂直镜像
-    /// （纵向压缩的伪透视——扁水洼里映出整把伞与走近的人），
+    /// （纵向压缩的伪透视，扁水洼里映出整把伞与走近的人），
     /// 涟漪扰动、染墨、入水深度衰减、水线一线青沫。<br/>
     /// 压在入雨全屏翻转（2.0）之前，演出期倒影随整屏一并被镜走，语义自洽；
     /// 着色器/RT 不可用时静默跳过，Actor 侧的精灵水洼仍在。
@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
     {
         public override float Weight => 1.5f;
 
-        /// <summary>伪透视压缩率：洼内每深入 1px，镜像源向上走 13px——7px 半高映出整把伞</summary>
+        /// <summary>伪透视压缩率：洼内每深入 1px，镜像源向上走 13px，7px 半高映出整把伞</summary>
         private const float ReflScale = 13f;
 
         //墨底与湿亮，与立伞水洼精灵层同源

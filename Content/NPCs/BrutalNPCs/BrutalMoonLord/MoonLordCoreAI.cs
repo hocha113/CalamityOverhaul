@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             int phase = (int)npc.ai[MLordAiSlots.CorePhase];
 
             //死亡演出：低血阈值，或被巨伤一击触发原版 checkDead 的 398 特判
-            //（该特判先于 tML 钩子执行，会把 ai[0] 写成 2 并回满生命——视作死亡信号接管）
+            //（该特判先于 tML 钩子执行，会把 ai[0] 写成 2 并回满生命，视作死亡信号接管）
             bool vanillaDeathConverted = phase == MLordPhase.VanillaDeathSentinel
                 && !stateContext.DeathPerformanceFinished;
             if ((vanillaDeathConverted

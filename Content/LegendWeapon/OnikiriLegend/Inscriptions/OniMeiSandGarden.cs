@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 {
     /// <summary>
     /// 枯山水「砂纹」：立定耙出来的一片石庭。<br/>
-    /// 场世界锚定——你耙好就可以走开，它留在原地继续割；
+    /// 场世界锚定，你耙好就可以走开，它留在原地继续割；
     /// 你站在自己的场里时架势涨得更快，所以"要不要守着它"是个真选择。<br/>
     /// 同时只有一场，耙新的即废旧的。<br/>
     /// ai[0]=半径 ai[1]=寿命(帧)

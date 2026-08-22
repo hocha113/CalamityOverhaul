@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
                     glow.Size() * 0.5f, 2.6f * context.CastAura + 1.2f, SpriteEffects.None, 0f);
             }
 
-            //真身足影：脚下光渍，假身没有——识真的静态线索
+            //真身足影：脚下光渍，假身没有，识真的静态线索
             Vector2 footPos = drawPos + new Vector2(0f, npc.height * 0.5f + 12f);
             Color shadowTint = elemCore with { A = 0 };
             sb.Draw(glow, footPos, null, shadowTint * (0.5f * bodyAlpha), 0f, glow.Size() * 0.5f,
@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
         }
 
         /// <summary>
-        /// 假身本体：无足影、无法阵、体色去饱和偏苍——三条识别线索的静态两条
+        /// 假身本体：无足影、无法阵、体色去饱和偏苍，三条识别线索的静态两条
         /// </summary>
         public static void DrawCloneBody(SpriteBatch sb, NPC npc, Vector2 screenPos, Color drawColor, float paleness) {
             Main.instance.LoadNPC(NPCID.CultistBossClone);

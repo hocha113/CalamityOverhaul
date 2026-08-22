@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Projectil
                 }, Projectile.Center);
             }
 
-            //向心蚀土流：两族运动——径向吸入+切向旋涡(比普通预兆多一层"卷")
+            //向心蚀土流：两族运动，径向吸入+切向旋涡(比普通预兆多一层"卷")
             if (t < 0.8f) {
                 int count = 1 + (int)(t * 4f);
                 for (int i = 0; i < count; i++) {

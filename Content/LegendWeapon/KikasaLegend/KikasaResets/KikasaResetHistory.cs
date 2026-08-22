@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
         public const int SampleInterval = 3;
 
         /// <summary>每实体样本容量：覆盖 768 帧，必须大于倒放窗口
-        /// <see cref="KikasaReset.RewindWindowFrames"/>——容量不足时倒带后段
+        /// <see cref="KikasaReset.RewindWindowFrames"/>：容量不足时倒带后段
         /// 深度越过缓冲，所有实体会钉死在最老样本上不再后退</summary>
         public const int SampleCapacity = 256;
 

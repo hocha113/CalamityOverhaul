@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Kiyume.Backgrounds
 {
-    //场景判定：梦里激活专属天幕与沉红滤镜；音乐置 0——湖畔只有水声
+    //场景判定：梦里激活专属天幕与沉红滤镜；音乐置 0：湖畔只有水声
     internal class KiyumeSkyScene : ModSceneEffect
     {
         public override int Music => 0;

@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
 
         /// <summary>
         /// 剧本伤害：走常规Hurt在本人客户端结算(原版受伤包自动广播)。
-        /// 公平阀：留命余量不足则跳过本拍——满血玩家绝不会被一套投技处死，残血终结击减免留命
+        /// 公平阀：留命余量不足则跳过本拍，满血玩家绝不会被一套投技处死，残血终结击减免留命
         /// </summary>
         private void ApplyScriptedHurt(NPC holder, int raw) {
             if (raw <= 0 || Player.dead) {
@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
         }
 
         /// <summary>高压喷出：终结一击(最重)+大弹射+足额无敌帧+缓落保护。
-        /// 震屏不走运镜通道——启停器在相位3已释放镜头，状态侧EjectFX的普通震屏此时生效</summary>
+        /// 震屏不走运镜通道，启停器在相位3已释放镜头，状态侧EjectFX的普通震屏此时生效</summary>
         private void Eject(NPC holder) {
             ejected = true;
             int dir = Math.Sign(Player.Center.X - holder.Center.X);

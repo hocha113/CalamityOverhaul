@@ -24,10 +24,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
     }
 
     /// <summary>终之太刀碎屏系统(纯客户端视觉)，技法承自村正次元斩（PowerSF 位移场折射碎镜）：
-    /// 屏幕不是被掰成几块飞走，而是像透过碎掉的棱镜看世界——
+    /// 屏幕不是被掰成几块飞走，而是像透过碎掉的棱镜看世界
     /// 每落一刀就在落点附近碎开几面三角折射面，随乱舞→死寂逐步积攒（空间早已被斩碎，
     /// 只是还没人察觉）；死寂期径向模糊向刀线中心蓄力；纳刀爆发的一瞬碎面急速收缩闭合、
-    /// RGB 色差打峰后退潮——被斩碎的空间"啪"地合拢，只剩下那道真正的伤口</summary>
+    /// RGB 色差打峰后退潮，被斩碎的空间"啪"地合拢，只剩下那道真正的伤口</summary>
     internal static class OniFinaleShatter
     {
         private const int MaxFacets = 22;

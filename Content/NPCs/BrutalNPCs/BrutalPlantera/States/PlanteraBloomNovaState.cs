@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
 
             if (!VaultUtils.isServer) {
                 PlanteraScreenFX.PushDusk(t * t * 0.6f);
-                //双族吸入：径向+切向卷旋(72%后剪断——尖啸前的吸气)
+                //双族吸入：径向+切向卷旋(72%后剪断，尖啸前的吸气)
                 PlanteraRenderHelper.SpawnChargeIntake(context, t);
                 if (t < 0.72f && Main.rand.NextBool(2)) {
                     Vector2 from = npc.Center + Main.rand.NextVector2CircularEdge(520f, 480f);

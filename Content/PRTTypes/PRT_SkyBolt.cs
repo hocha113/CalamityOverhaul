@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
     /// 天幕落雷：一根从高空劈到落点的 ThunderTrail 光柱，纯表现无判定。<br/>
-    /// 走 PRT 而不走弹幕——落雷视觉每端自绘（权威端结算伤害后各端
+    /// 走 PRT 而不走弹幕，落雷视觉每端自绘（权威端结算伤害后各端
     /// 用同一确定性选靶各自生成），粒子天生端本地，正合此用。<br/>
     /// 绘制复用 <see cref="Lightning"/> 同款的 ThunderTrail 管线，
     /// 在 PRT 的 PreDraw 里出图（与弹幕 PreDraw 同为世界层批次）

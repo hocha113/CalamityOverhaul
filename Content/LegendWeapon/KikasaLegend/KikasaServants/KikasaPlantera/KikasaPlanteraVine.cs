@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// <summary>
     /// 鬼奴世纪之花的湖面藤袭：在点名的 X 位先鼓涟漪与荆棘尖 tell，
     /// 随后一根带刺血藤破水暴起直上鞭笞（快、狠、带水花），抽完瘫软沉回。
-    /// 与鹿角怪的行进冰刺列语义相反——这是"在目标位置点名冒出"。
+    /// 与鹿角怪的行进冰刺列语义相反，这是"在目标位置点名冒出"。
     /// 全生命周期由 spawn 参数确定（ai0=鞭高 ai2=甩鞘侧向），各端本地同推；
     /// 伤害窗严格对齐暴起+鞭笞段，碰撞沿藤身当前曲线取线段
     /// </summary>

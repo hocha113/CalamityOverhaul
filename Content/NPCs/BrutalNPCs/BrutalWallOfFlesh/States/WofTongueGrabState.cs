@@ -190,7 +190,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
         }
 
         #region 阶段更新
-        /// <summary>预告：巨口洞开、血珠向喉内倒卷、双声递进警报——比普通舌鞭更长更重</summary>
+        /// <summary>预告：巨口洞开、血珠向喉内倒卷、双声递进警报，比普通舌鞭更长更重</summary>
         private void UpdateTelegraph(WofStateContext context) {
             NPC npc = context.Npc;
             float p = MathHelper.Clamp(Timer / (float)WofDirector.GrabTelegraph, 0f, 1f);
@@ -491,7 +491,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
 
         /// <summary>
         /// 投技节拍伤害：穿透无敌帧(DD2OgreKnockback槽)但请求值封顶在当前生命-1，
-        /// 残血只演不杀——满血玩家绝不会被一套投技处死
+        /// 残血只演不杀，满血玩家绝不会被一套投技处死
         /// </summary>
         private static void HurtVictimBeat(NPC wall, Player player, int baseDamage) {
             if (!player.Alives()) {

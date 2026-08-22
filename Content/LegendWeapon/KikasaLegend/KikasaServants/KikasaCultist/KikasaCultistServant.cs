@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 {
     /// <summary>
     /// 鬼奴·湖水版拜月教邪教徒。血湖之水凝成的仪式法师，湖面即祭坛：
-    /// 出水为"先有祭坛后有祭司"——湖面先铭亮一整圈符文环，他从环心升起、悬袍滴水、合掌开坛。
+    /// 出水为"先有祭坛后有祭司"，湖面先铭亮一整圈符文环，他从环心升起、悬袍滴水、合掌开坛。
     /// 战斗循环为水面符文法阵（点名单阵/绕身三阵，铭刻满溢即喷发）与三元素轮转施法
     /// （血冰簇弹/血火双追/血雷缓行球）交替；每种攻击绑定一种可读祷姿（原版帧 + 光效附加层）。
     /// 位移是短滑步闪现：化作一蓬血珠侧滑半米重凝，距离短、频率低、无假身。
@@ -222,7 +222,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：湖塌/收域/主人死亡→溶解回湖。只有 owner 裁决——
+            //生命线：湖塌/收域/主人死亡→溶解回湖。只有 owner 裁决
             //服务器无领域状态（恒 Closed 是既定契约），别处判会当场误杀；其余端只跟包换场
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
@@ -300,7 +300,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 int lit = (int)(RingLitT(t) * EmergeRuneCount);
                 if (lit > lastLitRune && lit <= EmergeRuneCount) {
                     lastLitRune = lit;
-                    //每字一声清音，音高逐字爬升——铭刻在推进
+                    //每字一声清音，音高逐字爬升，铭刻在推进
                     SoundEngine.PlaySound(SoundID.Item29 with {
                         Volume = 0.3f,
                         Pitch = -0.7f + lit * 0.055f,
@@ -384,7 +384,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         /// <summary>出水铭环进度（0~1），绘制层与节拍共用同一条曲线</summary>
         private static float RingLitT(int t) => MathHelper.Clamp(t / (float)(OmenFrames - 6), 0f, 1f);
 
-        /// <summary>环形喷帘：环位一圈小水柱同时起，环心一柱最高——破的是"坛"不是点</summary>
+        /// <summary>环形喷帘：环位一圈小水柱同时起，环心一柱最高，破的是"坛"不是点</summary>
         private void BreachRingBurst(Vector2 center) {
             KikasaDomainDeco.RippleAt(center, 2.2f);
             KikasaDomainDeco.SplashAt(center, 12);
@@ -423,7 +423,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private void UpdateFollow(Player owner, KikasaDomainPlayer domain, bool authority) {
             int target = FindTarget(owner);
 
-            //悬在主人侧上方，比克眼更高更远——他是站在后排的祭司
+            //悬在主人侧上方，比克眼更高更远，他是站在后排的祭司
             Vector2 anchor = owner.Center + new Vector2(-owner.direction * 110f, -148f);
             anchor.Y += MathF.Sin(Main.GlobalTimeWrappedHourly * 1.7f + Seed) * 7f;
             anchor.X += MathF.Sin(Main.GlobalTimeWrappedHourly * 1.1f + Seed * 2f) * 5f;
@@ -438,7 +438,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
 
-            //短滑步闪现：跟不上就化珠滑半步，不加速狂追——仪式间的从容挪步。
+            //短滑步闪现：跟不上就化珠滑半步，不加速狂追，仪式间的从容挪步。
             //只在 owner 端裁决（盖章瞬移），远端靠位置突变检测播同款演出
             if (authority && dist > SlideTriggerDist && slideCooldown <= 0) {
                 slideCooldown = SlideCooldownFrames;
@@ -590,7 +590,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (t <= RiteSilenceEnd) {
-                //合袖静默：流光断、姿态回合掌——喷发前的吸气
+                //合袖静默：流光断、姿态回合掌，喷发前的吸气
                 Projectile.velocity *= 0.9f;
                 return;
             }

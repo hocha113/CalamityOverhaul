@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Projecti
             Main.spriteBatch.Draw(line, start, null, new Color(205, 40, 48, 0) * (0.7f * alpha),
                 Direction, origin, scaleInner, SpriteEffects.None, 0f);
 
-            //端点盖帽：贴图长轴无衰减、两端硬切，用血的语言收口——
+            //端点盖帽：贴图长轴无衰减、两端硬切，用血的语言收口
             //根部充血鼓包（血管自裂隙里鼓出来），末端血珠（血涌到头凝成珠）
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 glowOrigin = glow.Size() * 0.5f;

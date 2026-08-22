@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
                     return 1f;
                 }
                 if (Elapsed < CollapseEnd) {
-                    //爆前收缩到四成——变小之后才变响
+                    //爆前收缩到四成，变小之后才变响
                     return MathHelper.Lerp(1f, 0.4f, (Elapsed - SpokeEnd) / (float)(CollapseEnd - SpokeEnd));
                 }
                 //终爆展开

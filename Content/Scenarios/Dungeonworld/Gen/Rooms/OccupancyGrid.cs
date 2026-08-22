@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Rooms
 {
     //占用栅格(§3.2-3):房间落位前预留,失败重试/缩房/放弃,
-    //不做任何"重叠后合并"——重叠在本表示法里不该发生
+    //不做任何"重叠后合并"，重叠在本表示法里不该发生
     //区域局部坐标存储,构造时给定管辖矩形(通常=某层带内膛)
     internal sealed class OccupancyGrid
     {
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Rooms
 
         /// <summary>
         /// 扫描行带 [top,top+height) 内的连续空闲横段(半开区间)。
-        /// 窄于 minWidth 的碎段直接丢弃——比一间最小房还窄的缝填不出东西。
+        /// 窄于 minWidth 的碎段直接丢弃，比一间最小房还窄的缝填不出东西。
         /// </summary>
         internal List<(int left, int right)> FreeSpans(int top, int height, int xFrom, int xTo, int minWidth) {
             var spans = new List<(int, int)>();

@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
     /// 鬼伞·沉影快捷转盘状态机，视觉见 <see cref="KikasaServantWheelUI"/>。
     /// <br/>开关键与排布归 <see cref="RadialWheelHub"/>（与比目鱼/SHPC/义体共键）；
     /// 扇区=三席影位，松键/点击翻转该席召/收；中心伞章=全席齐令。
-    /// 编成（谁坐哪席）在湖心景里改，转盘只管出战与收起——湖未就绪时受理成候令，绝不无声
+    /// 编成（谁坐哪席）在湖心景里改，转盘只管出战与收起，湖未就绪时受理成候令，绝不无声
     /// </summary>
     internal class KikasaServantWheelController : ModPlayer, IRadialWheel
     {
@@ -148,14 +148,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
             Item held = Player.GetItem();
             bool holding = held != null && !held.IsAir
                 && held.type == ModContent.ItemType<KikasaItem>();
-            //血湖开着时不持伞也能号令——鬼奴的生命线本就挂在湖上
+            //血湖开着时不持伞也能号令，鬼奴的生命线本就挂在湖上
             if (!holding && !Player.GetModPlayer<KikasaDomainPlayer>().AnyActive) {
                 return false;
             }
             if (QuestLog.Instance?.IsOpen == true || QuestManagerUI.Instance?.IsOpen == true) {
                 return false;
             }
-            //湖心景全屏铺开时不叠转盘——编成在屏里做，转盘是战时的手
+            //湖心景全屏铺开时不叠转盘，编成在屏里做，转盘是战时的手
             if (Panorama.KikasaPanoramaUI.Instance?.IsOpen == true) {
                 return false;
             }
@@ -231,7 +231,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
 
         /// <summary>
         /// 翻转单席召/收。空席拒绝出声；召令在湖未就绪时受理成候令
-        /// （湖起自动出水），确认音区分三种结果——点击必有可听的回应
+        /// （湖起自动出水），确认音区分三种结果，点击必有可听的回应
         /// </summary>
         private void ToggleSeat(int seatIndex) {
             KikasaServantPlayer servant = Player.GetModPlayer<KikasaServantPlayer>();
@@ -278,7 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
                 }, Player.Center);
             }
             else {
-                //候令：湖未就绪，先把令收下——闷水滴与面板状态行一起把"为什么没出来"说清
+                //候令：湖未就绪，先把令收下，闷水滴与面板状态行一起把"为什么没出来"说清
                 SoundEngine.PlaySound(SoundID.Drip with {
                     Pitch = -0.85f, Volume = 0.55f, MaxInstances = 2
                 }, Player.Center);

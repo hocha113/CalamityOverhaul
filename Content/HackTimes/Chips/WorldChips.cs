@@ -4,7 +4,7 @@ namespace CalamityOverhaul.Content.HackTimes.Chips
 {
     //容器族纹样语汇：箱体剖面 + 锁栓/槽格，读作"看进一只箱子"
     //世界族纹样语汇：地平线 + 天体/垂线，唯一一族底部固定一条地平线
-    //（重力反转是全族唯一的例外——它的地平线画在顶部，本身就是纹义）
+    //（重力反转是全族唯一的例外，它的地平线画在顶部，本身就是纹义）
 
     /// <summary>索引预读芯片。箱体剖开露出三格槽位，一道视线从箱外斜穿进最亮那格</summary>
     internal class IndexPrereadChip : BaseHackProtocolChip<IndexPreread>

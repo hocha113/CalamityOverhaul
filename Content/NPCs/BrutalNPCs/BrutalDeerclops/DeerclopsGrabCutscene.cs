@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
 {
     /// <summary>
     /// 投技·凝视擒抱运镜，仅被抓玩家客户端播放，节拍对齐 DeerclopsEyeGrabState 常量。
-    /// 优先级低于死亡运镜——boss中途进入死亡演出时被其顶替
+    /// 优先级低于死亡运镜，boss中途进入死亡演出时被其顶替
     /// </summary>
     internal sealed class DeerclopsGrabCutscene : CutsceneClip<NPC>
     {

@@ -5,7 +5,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
 {
     /// <summary>
     /// 局部清雾公开 API：圆/矩形区域 + TTL + 边缘羽化 + 压制强度，多请求取最小因子。<br/>
-    /// 消费者模式=短 TTL + 按帧续订，消费者消失请求自动过期——无注销接口即无泄漏。<br/>
+    /// 消费者模式=短 TTL + 按帧续订，消费者消失请求自动过期，无注销接口即无泄漏。<br/>
     /// 因子作用在模拟目标值上，压雾/回雾自动继承驱散快、回聚慢的时间不对称。<br/>
     /// 消费者：玩家身位/尾流推雾（KiyumeFogSystem）；屋内避难所、驱雾灯、演出留白仍是留白
     /// </summary>
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
         }
 
         /// <summary>抑制因子：1=无抑制，0=全清；多请求取最小，边缘 smoothstep 羽化，
-        /// 每请求有自己的压制下限（Floor）——非全清的推雾贴身仍留薄雾</summary>
+        /// 每请求有自己的压制下限（Floor），非全清的推雾贴身仍留薄雾</summary>
         internal static float Evaluate(Vector2 worldPx) {
             float factor = 1f;
             for (int i = 0; i < requests.Count; i++) {

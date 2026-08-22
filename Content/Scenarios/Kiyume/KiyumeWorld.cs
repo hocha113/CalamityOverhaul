@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume
 
         //梦不落盘：每次进来按（宏观种子,进度）重生成
         public override bool ShouldSave => false;
-        //液体流动/接线定时器/随机 tile 更新停摆——湖水靠构造性铺设定住
+        //液体流动/接线定时器/随机 tile 更新停摆，湖水靠构造性铺设定住
         public override bool NormalUpdates => false;
 
         //P10 骨架 → P30 地表材质与村落 → P55 撒布 → P90 帧修收尾（帧修永远排最后一位）

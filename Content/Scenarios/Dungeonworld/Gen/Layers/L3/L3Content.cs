@@ -15,11 +15,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
     //中区迷宫(节距68,书架迷宫+书塔)→下区禁书区带(节距62,Slab暗区,贴层底)。
     //每层甲板=一条水平检索廊(净高5)+廊上方挂房(L2挂房制同构:地板=廊地板-10,
     //含壳+padding恰好贴住廊预留带);甲板间以楼梯井+书塔织成次级垂直循环
-    //(塔顶接上层廊/塔底落本层廊,塔即带内容的竖向捷径);最底层廊落层脊——
+    //(塔顶接上层廊/塔底落本层廊,塔即带内容的竖向捷径);最底层廊落层脊
     //从脊走廊一路向上钻进迷宫深处(§1.4连通不变量:每廊段≥1条向下连接,归纳到脊)。
     //
     //===足印纪律===
-    //检索廊逐列过ctx.Grid.CanReserve后才成段——主竖井与管线路预留的跨层垂直
+    //检索廊逐列过ctx.Grid.CanReserve后才成段，主竖井与管线路预留的跨层垂直
     //连接足印天然把廊切段,构造性避开,不硬编码任何避让位置(brief §2.7);
     //房间全走RoomPlacer.TryPlace;链边只在同廊段内配对(不跨足印,契约纪律4)。
     //随机全走WorldGen.genRand(F22);撒布经ctx.Scatter声明(纪律5);fail loud(纪律6)。
@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                     rand.Next(55, 106), L3Palette.WallTiled);
             }
 
-            //9b) 基调层染:纸墨褐洗到阅览区与迷宫区。禁书区留素蓝——
+            //9b) 基调层染:纸墨褐洗到阅览区与迷宫区。禁书区留素蓝
             //暗区的身份是"看不清",染上反而把它洗亮了
             LayerTint.TintReport tint = L3Palette.PaperWash(
                 new Rectangle(xLeft, band.Top, xRight - xLeft, forbiddenTop - band.Top));
@@ -228,7 +228,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
         }
 
         //段内剖面节奏:直管走40~70列后换一段阅览湾或收窄,再回直管。
-        //一条净高5的直管能横穿近1900列、还要在21层甲板上重复——这是全世界最大的一片
+        //一条净高5的直管能横穿近1900列、还要在21层甲板上重复，这是全世界最大的一片
         //单调面;三种剖面全部压在P30已预留的9行带[Floor-6,Floor+3)内,不越界。
         //阅览湾:抬顶1+落地1=净高7,进湾自由下落、出湾1格自动登阶(F3),不断路
         //收窄  :压顶1=净高4,仍高于支线走廊底线3

@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         public override string StateName => "Concerto";
         public override MLordStateIndex StateIndex => MLordStateIndex.Concerto;
 
-        /// <summary>公平阀（契约3）：此帧起进入连接拍——节拍表整体停射，
+        /// <summary>公平阀（契约3）：此帧起进入连接拍，节拍表整体停射，
         /// 状态尾段（约 1/3 时长）保证无新弹幕的喘息窗</summary>
         internal const int BreatherStart = 200;
 

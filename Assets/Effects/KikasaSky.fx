@@ -4,12 +4,12 @@
 //        + 无山脊的无际血湖地平线（天空倒影+横向波光）+ 立在远湖里的巨大破纸伞
 //        + 低垂湿重的暗红云带 + 地平血雾。死寂无雨无鸟。
 //远湖巨伞 2026-08 重做：旧"半椭圆壳+圆球顶、无柄无锯齿"实机读成锅盖，删过一轮后拍板
-//        保留意向重做形——三柄固定实例插在湖中（浅锥伞面+骨间荷叶边+伞骨线+顶针细柄，
+//        保留意向重做形，三柄固定实例插在湖中（浅锥伞面+骨间荷叶边+伞骨线+顶针细柄，
 //        纸面半透透天光、破口挖纸露骨，一柄收拢斜插）；近乎静止，穹顶形是败因勿回退
 //鬼雨异化（uRain）：全套色板权重乘混合转湿墨冷青（禁红禁暖），凝血日褪成苍白溺月，
 //        云底垂下倾斜雨幡与细密雨纹，远雷 uFlash 云底先亮（光先于声）；
 //        雨幡/雷闪写在天穹函数里，湖面镜像重采时倒影免费同步
-//水侧拆分（uLakeRain）：远湖带/湖平线光/地平雾/湖体/伞雾底色单独吃 uLakeRain——
+//水侧拆分（uLakeRain）：远湖带/湖平线光/地平雾/湖体/伞雾底色单独吃 uLakeRain
 //        稳态恒等于 uRain 零差异；翻转期喂镜面预览值，所有的水一拍先行变色、天穹留到白闪，
 //        沸腾段"黑水切入而线上方仍挂红色远湖"的两色水面由此根除；
 //        previewGap=|uLakeRain−uRain| 时远湖倒影先去饱和再染+加搅（倒影内容仍是旧色天穹）
@@ -103,7 +103,7 @@ float3 skyDome(float2 uv, float aspect, float horizonY) {
     col *= 0.93 + wash * 0.14;
 
     //凝血暗日↔溺月：同一轮盘，血形态盘面比血光更暗，异化后褪成苍白月斑、缘光收敛
-    //盘心钉在湖平线上，水线动构图跟着动——半沉的暗日始终泡在血湖里
+    //盘心钉在湖平线上，水线动构图跟着动，半沉的暗日始终泡在血湖里
     float2 sunC = float2(0.620 - uCamX * 0.000010, horizonY);
     float2 ds = (uv - sunC) * float2(aspect, 1.0);
     float sr = length(ds);
@@ -135,7 +135,7 @@ float3 skyDome(float2 uv, float aspect, float horizonY) {
     col += RAIN_SHAFT * saturate((fallN - 0.62) * 5.0) * (0.08 + shaft * 0.10) * shaftEnv * uRain;
 
     //雷闪：云底先亮起的惨白，光先于声；写在天穹里，湖面倒影同步反照。
-    //不吃 uRain 门控——触发时机由 C# 决定，血形态的翻转起手也要这记凶兆冷闪
+    //不吃 uRain 门控，触发时机由 C# 决定，血形态的翻转起手也要这记凶兆冷闪
     float flashQ = uFlash * uFlash;
     float flashGrad = 1.0 - smoothstep(0.05, 0.55, uv.y);
     col += RAIN_FLASH * flashQ * (0.20 + band * 0.45) * flashGrad;
@@ -151,7 +151,7 @@ float2 kasaOpen(float2 p, float ribGain, float tornGain, float seed) {
     float box = step(abs(p.x), 1.12) * step(-0.02, p.y) * step(p.y, 1.70);
 
     //伞面：浅锥微凹顶缘（直线斜坡略塌，不是椭圆凸肩）；
-    //缘口荷叶边 12 格——骨尖处最低、骨间纸面向上收
+    //缘口荷叶边 12 格，骨尖处最低、骨间纸面向上收
     float scT = frac((p.x + 1.0) * 6.0);
     float scal = (0.25 - (scT - 0.5) * (scT - 0.5)) * 4.0;
     float rimY = 1.0 + scal * 0.055;
@@ -162,7 +162,7 @@ float2 kasaOpen(float2 p, float ribGain, float tornGain, float seed) {
         * smoothstep(rimY - 0.018, rimY + 0.022, p.y) * step(abs(p.x), 0.99);
 
     //伞骨：向顶点收拢的放射直线（骨距空间取模，免逐根展开），骨尖略探出缘口；
-    //钳进锥面内——锥缘微凹，直边三角会让骨探出轮廓
+    //钳进锥面内，锥缘微凹，直边三角会让骨探出轮廓
     float qRaw = (1.5 - p.y) * 2.0;
     float q = saturate(qRaw);
     float uq = p.x / max(q, 0.02);
@@ -176,7 +176,7 @@ float2 kasaOpen(float2 p, float ribGain, float tornGain, float seed) {
     float torn = sector * smoothstep(0.34 + tearN * 0.22, 0.58 + tearN * 0.22, q);
     paper *= 1.0 - torn * tornGain;
 
-    //柄/陣笠小帽/顶针：细柄插水、杆尖探出伞顶——伞的身份一半在这根杆上
+    //柄/陣笠小帽/顶针：细柄插水、杆尖探出伞顶，伞的身份一半在这根杆上
     float pole = step(abs(p.x), 0.023) * step(0.0, p.y) * step(p.y, 1.02);
     float cap = step(abs(p.x), 0.070) * step(1.45, p.y) * step(p.y, 1.53);
     float spike = step(abs(p.x), 0.018) * step(1.50, p.y) * step(p.y, 1.64);
@@ -236,13 +236,13 @@ float4 PSSky(float2 coords : TEXCOORD0) : COLOR0 {
     float previewGap = abs(uLakeRain - uRain);
 
     //湖面：天穹绕湖平线的垂直镜像，横向波纹扰动 + 压暗 + 向下沉底；浊水倒影更糊更沉；
-    //预览期加搅——变色是被沸腾搅出来的，不是滤镜淡入
+    //预览期加搅，变色是被沸腾搅出来的，不是滤镜淡入
     float lakeDepth = max(uv.y - horizonY, 0.0);
     float wob = (noiseTex(float2(uv.x * 3.2 + uTime * 0.02, uv.y * 9.0)) - 0.5)
         * (0.006 + lakeDepth * 0.05) * (1.0 + 0.8 * uLakeRain + 1.1 * previewGap);
     float2 muv = float2(uv.x + wob, 2.0 * horizonY - uv.y);
     float3 lake = skyDome(muv, aspect, horizonY);
-    //预览期倒影内容仍是旧色天穹，乘色抹不掉色相——先去饱和再染（与 KikasaFlip 镜面同法）
+    //预览期倒影内容仍是旧色天穹，乘色抹不掉色相，先去饱和再染（与 KikasaFlip 镜面同法）
     float lakeGrey = dot(lake, float3(0.30, 0.55, 0.15));
     lake = lerp(lake, lakeGrey.xxx, 0.58 * previewGap);
     lake *= lerp(LAKE_DIM, RAIN_LAKE_DIM, uLakeRain);
@@ -293,7 +293,7 @@ float4 PSSky(float2 coords : TEXCOORD0) : COLOR0 {
     col = lerp(col, uc1, saturate(k1.y * 0.80 * crisp));          //纸面半透：天光渗过残纸
     col = lerp(col, uc1 * 0.82, saturate(k1.x * 0.94 * crisp));   //骨/柄/顶针更实更沉
 
-    //U2 近处收拢死伞：斜插湖中，斜靠角随水极慢摇——三柄里唯一在动的，动得几乎看不见
+    //U2 近处收拢死伞：斜插湖中，斜靠角随水极慢摇，三柄里唯一在动的，动得几乎看不见
     float du2 = frac(uv.x + uCamX * 0.085 / uScreenSize.x - 0.62 + 0.5) - 0.5;
     float2 lp2 = float2(du2 * aspect, horizonY - uv.y) / 0.115;
     float lean = 0.26 + sin(uTime * 0.07 + 4.0) * 0.008;

@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
             Projectile.Center = owner.GetArmPos(ArmIndex);
         }
 
-        /// <summary>伤害窗几何门控：突刺类只在臂伸展超过 55% 链长时有效——收臂/急停段不打人，
+        /// <summary>伤害窗几何门控：突刺类只在臂伸展超过 55% 链长时有效，收臂/急停段不打人，
         /// 且该判定在每个端点都贴着各自画面成立（公平阀）；十字旋辐条全程即攻击</summary>
         public override bool? CanDamage() {
             NPC boss = BossNpc;

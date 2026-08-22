@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
     /// <summary>
     /// 雾线潮汐：一条水平的雾面在退潮行与涨潮行之间长周期涨落。<br/>
     /// 主周期三分钟，叠一层不整除的副周期，免得读成节拍器。<br/>
-    /// 计时器进世界归零，且从<b>涨满</b>起步——加载屏最后一眼是雾海淹掉村子，
+    /// 计时器进世界归零，且从<b>涨满</b>起步，加载屏最后一眼是雾海淹掉村子，
     /// 落地第一眼就该接着那一帧，然后雾退下去把村子还给你。入场演出就是这条潮汐本身。<br/>
     /// 本轮纯表现，各端各算不发包；将来玩法真去消费浓度时，这条时钟必须换成服务器权威的
     /// </summary>
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
             return MathHelper.Clamp(main + wobble * WobbleAmp * 0.5f, 0f, 1f);
         }
 
-        /// <summary>该列的雾面世界 Y：越靠湖抬得越高——雾是从湖里蒸上来的</summary>
+        /// <summary>该列的雾面世界 Y：越靠湖抬得越高，雾是从湖里蒸上来的</summary>
         internal static float SurfaceAt(float worldX) {
             float t = MathHelper.Clamp(
                 1f - (worldX - KiyumeMetrics.LakeRightPx) / KiyumeMetrics.TiltSpanPx, 0f, 1f);

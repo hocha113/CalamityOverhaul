@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
         //===漆（PaintID.cs对源核实：DeepPurple=22/White=26）===
         //冥紫变调主漆：深紫漆刷砖（"明度压暗、偏紫"的保守解【待签字】）
         internal const byte PaintPurple = PaintID.DeepPurplePaint;
-        //倒挂蜡泪：白漆（与L1蜡泪同料——同一教堂的蜡，倒吊后垂向深渊）
+        //倒挂蜡泪：白漆（与L1蜡泪同料，同一教堂的蜡，倒吊后垂向深渊）
         internal const byte PaintWax = PaintID.WhitePaint;
 
         //===定点仪式光（ROOMS-L7 §0光照：候选骨火把/恶魔火把族紫相【待签字】）===
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
         internal const int StyleChandelier = 27;   //吊灯 tile34
         internal const int StyleBannerA = 10;      //旗帜 tile91 基础墙组
         internal const int StyleBannerB = 11;
-        //锁金箱 tile21 style2（F35房间箱；L2Palette同款已对源）——终点宝库顶位
+        //锁金箱 tile21 style2（F35房间箱；L2Palette同款已对源），终点宝库顶位
         internal const int StyleChestLockedGold = 2;
 
         //前庭告示（玩家可见，game-prose-voice：具体物件+平收；呼应L6阈值告示）
@@ -277,7 +277,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
 
         /// <summary>
         /// 倒挂蜡泪：自(x,yTop)向下给墙面刷白漆len行（蜡凝在"天花板"=原地板上，
-        /// 垂向深渊方向；遇实心即停——蜡泪挂在下垂物末端的语义）。
+        /// 垂向深渊方向；遇实心即停，蜡泪挂在下垂物末端的语义）。
         /// </summary>
         internal static void WaxDrip(int x, int yTop, int len) {
             for (int i = 0; i < len; i++) {
@@ -356,7 +356,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
         /// <summary>
         /// L7撒布母题表=空。ROOMS-L7量产brief禁用清单："一切散布陷阱与撒布装饰pass
         /// （本层全定点）"；INDEX §7矩阵L7列全部为零或定点。灯/挂画/旗帜由构建代码
-        /// 定点落位，杂物/蛛网/骨堆/书台=零——P55对本层应无内置条目（矩阵归管线路配置）。
+        /// 定点落位，杂物/蛛网/骨堆/书台=零，P55对本层应无内置条目（矩阵归管线路配置）。
         /// </summary>
         internal static List<ScatterEntry> LayerScatter() => [];
     }

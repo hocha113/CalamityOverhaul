@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
 {
     /// <summary>
     /// 委托卷宗的「远征纪要」皮肤：铺在任务书的羊皮纸内页上。<br/>
-    /// 条目没有底盒——负空间 + 发丝线分行，左缘一记状态记号，进度走凿槽刻度。<br/>
+    /// 条目没有底盒，负空间 + 发丝线分行，左缘一记状态记号，进度走凿槽刻度。<br/>
     /// 面板级绘制（底衬/外框/粒子/样式键）在内嵌态不会被调用，故一概留空
     /// </summary>
     internal class ChronicleManagerStyle : BaseManagerStyle
@@ -253,7 +253,7 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
 
         /// <summary>
         /// 提供者徽记的邮戳版：倾斜双环 + 戳内纹样 + 波浪注销线。<br/>
-        /// 倾角、油墨浓淡、缺口方位全按条目 Key 散列——盖戳的手不会两次一样
+        /// 倾角、油墨浓淡、缺口方位全按条目 Key 散列，盖戳的手不会两次一样
         /// </summary>
         public override void DrawProviderBadge(SpriteBatch sb, Vector2 center, float radius,
             EntrustEntryData entry, float alpha) {
@@ -315,7 +315,7 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
 
         /// <summary>
         /// 信末落款：头像窝 + 「委托人 · 名字」+ 名下一道压痕。<br/>
-        /// 与旧三套同样左对齐到正文起笔处——换皮肤不该让委托人换一边
+        /// 与旧三套同样左对齐到正文起笔处，换皮肤不该让委托人换一边
         /// </summary>
         public override void DrawProviderSignature(SpriteBatch sb, EntrustEntryData entry,
             float x, float y, float width, float alpha) {

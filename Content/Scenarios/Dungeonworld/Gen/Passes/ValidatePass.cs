@@ -298,7 +298,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
             return data.Height - 1;
         }
 
-        //可通行体素(§3.4):空气/平台/门——关门玩家可开(原版语义),开门本就通行
+        //可通行体素(§3.4):空气/平台/门，关门玩家可开(原版语义),开门本就通行
         //M0无门时代只认空气+平台,L1路建议采纳后补齐门语义(安全房/忏悔室室内不再折损覆盖率)
         private static bool Passable(int x, int y) {
             Tile tile = Main.tile[x, y];

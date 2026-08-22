@@ -168,7 +168,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     def.HalfY = 90f * s;
                     break;
                 case CleaveStyle.MirrorEcho:
-                    //镜写:玻璃质感——墨全退,只留冷白薄刃与一记硬白闪
+                    //镜写:玻璃质感，墨全退,只留冷白薄刃与一记硬白闪
                     def.Ink = 0f;
                     def.FeiBai = 0f;
                     def.Bleed = 0f;

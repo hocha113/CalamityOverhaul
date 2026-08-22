@@ -3,10 +3,10 @@ using System.Text;
 
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
 {
-    //TP机器留位登记表;登记模式镜像GaolBossRoomSiting.LastOrigin——
+    //TP机器留位登记表;登记模式镜像GaolBossRoomSiting.LastOrigin
     //ShouldSave=false回放制下每次生成重算,PlanAndBuild/看样入口开头Reset。
     //
-    //2026-08-15:Piston与GearCrush两类不再只是剪影——运行时由
+    //2026-08-15:Piston与GearCrush两类不再只是剪影，运行时由
     //Machines\DungeonworldMachines读本表开动并致伤(见该文件)。
     //GearLarge/GearSmall(齿轮井背景)、BellGate、ElevatorStation仍是纯留位:
     //齿轮井是攀爬路线,在那里致伤不公平;后两者本就不是危险物

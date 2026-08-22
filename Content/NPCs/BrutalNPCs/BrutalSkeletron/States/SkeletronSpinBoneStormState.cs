@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
         public override string StateName => "SpinBoneStorm";
         public override SkeletronStateIndex StateIndex => SkeletronStateIndex.SpinBoneStorm;
 
-        /// <summary>缺口（契约3）：骨片幕周期性断档——每 CurtainGapPeriod 帧停撒 CurtainGapFrames 帧，
+        /// <summary>缺口（契约3）：骨片幕周期性断档，每 CurtainGapPeriod 帧停撒 CurtainGapFrames 帧，
         /// 沿冲刺路径留出可穿行的幕墙豁口，发射循环直接读取</summary>
         private const int CurtainGapPeriod = 24;
         private const int CurtainGapFrames = 9;

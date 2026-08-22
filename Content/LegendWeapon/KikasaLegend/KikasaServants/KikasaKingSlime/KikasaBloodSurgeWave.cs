@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// <summary>
     /// 重踏激起的宽矮血浪：贴着湖面横推的一段隆起水体，不是飞行物。
     /// 出生鼓浪→全速横扫→末段泄劲摊平，全程犁着水面走（连环涟漪 + 浪冠甩珠），
-    /// 与石巨人的高窄双水柱在量感上反着来——宽、矮、横。
+    /// 与石巨人的高窄双水柱在量感上反着来，宽、矮、横。
     /// ai0=横推方向(±1)，ai1=湖面 Y，spawn 一次带齐，轨迹各端确定性
     /// </summary>
     internal class KikasaBloodSurgeWave : ModProjectile
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             int t = Timer;
             float dir = MathF.Sign(Dir) == 0f ? 1f : MathF.Sign(Dir);
 
-            //速度剖面：出生鼓浪提速，中段微泄，末段摊平骤减——没有一帧是匀速
+            //速度剖面：出生鼓浪提速，中段微泄，末段摊平骤减，没有一帧是匀速
             float speed;
             if (t < SwellFrames) {
                 speed = MathHelper.Lerp(3.5f, 13.5f, t / (float)SwellFrames);
@@ -179,7 +179,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Vector2 baseLine = new(Projectile.Center.X, FloorY);
 
             //水线暗底带：被犁开的浑浊水体，比浪冠宽一截
-            //（暗色层必须用真 alpha 的 Extra_98——黑底 SoftGlow 在 AlphaBlend 里会糊出黑块；
+            //（暗色层必须用真 alpha 的 Extra_98：黑底 SoftGlow 在 AlphaBlend 里会糊出黑块；
             //×2 补偿其更紧的径向衰减，视觉尺寸对齐原稿）
             sb.Draw(blob, baseLine - Main.screenPosition + new Vector2(0f, -4f), null,
                 GelDark * (0.55f * hk), 0f, blobOrigin,

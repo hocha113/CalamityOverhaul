@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
     /// 仪式咏唱：驻停快充（法阵充能表全程可见），六法球环轨护体<br/>
-    /// 拆台窗：240 帧内打掉其 6% 血量即打断——踉跄+充能大扣；不打则充能大涨<br/>
+    /// 拆台窗：240 帧内打掉其 6% 血量即打断，踉跄+充能大扣；不打则充能大涨<br/>
     /// 公平阀：环轨半径/角速恒定、球间 60° 空档；本体咏唱期不出手
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.Chant, typeof(CultistStateContext))]

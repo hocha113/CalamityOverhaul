@@ -8,7 +8,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 {
     /// <summary>
-    /// 核心裸露转换：部件全破后的仪式拍——胸甲炸开、心跳加速、日蚀压满，
+    /// 核心裸露转换：部件全破后的仪式拍，胸甲炸开、心跳加速、日蚀压满，
     /// 自此核心可被伤害，真眼集群成为常驻威胁
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)MLordStateIndex.CoreExposure, typeof(MLordContext))]

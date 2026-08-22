@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 {
     /// <summary>
     /// 墨雨渲染层:渍斑贴花最底、墨滴居中、悬伞最上。
-    /// 独立于领域渲染——普攻在领域外也要工作;
+    /// 独立于领域渲染，普攻在领域外也要工作;
     /// 地面渍与墨滴画在 EndEntityDraw,域内会被血湖镜面自动倒影;
     /// 湖晕由领域 EndCapture 在 TechUnify 之后叠到水面上
     /// </summary>

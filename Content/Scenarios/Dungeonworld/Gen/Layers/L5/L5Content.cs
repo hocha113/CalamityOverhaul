@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
     /// ctx.Grid/ctx.Graph/ctx.Scatter与冻结机器公开API(RoomPlacer/CorridorRouter/TileBrush),
     /// 不触碰 Dungeonworld.cs 与任何pass文件;随机全走WorldGen.genRand(F22)。
     /// <para/>层结构:1400行大带切六地层(上带2层龛廊+骨柱厅/中带集市检查点/下带坑场+深巷),
-    /// 地层内横向游走坑道成链、地层间之字斜降坑道+骨井竖连、底层骨室楼梯井回脊——
+    /// 地层内横向游走坑道成链、地层间之字斜降坑道+骨井竖连、底层骨室楼梯井回脊
     /// 游走走廊=本层主连接形态(ROOMS-L5 §0连接语法/STRUCTURES §2.1裁决3)。
     /// <para/>凿刻预算心算(R5,全局生成<3min):房约27间x平均2.5k格≈7万,游走坑道约
     /// 25条x均8k格(每步盖章约170格x步数)≈20万~60万,井/坑/横档≈5万;合计≤百万格级,

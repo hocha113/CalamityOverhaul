@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
     /// （体成而实、双目常燃）。自玩家脚下黑水跃出，落地追猎最近的敌人：
     /// 中距收步点火冲刺，近身伏地蓄势后一口扑咬；蹬地够得到的高度就跳，
     /// 再高则斜向上冲，落地滑停回追。高速段拖出噪蚀狼影与黑烟，寿命尽头化雾散回梦里。
-    /// 梦境绑定——离开 Dreaming 即溶解。
+    /// 梦境绑定，离开 Dreaming 即溶解。
     /// 各端同推确定性规则，弹幕仅 owner 端生成，伤害在 owner 端结算
     /// </summary>
     internal class KikasaDreamHound : ModProjectile
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             }
 
             //伤害随召唤加成逐帧刷新；魇系倍率只有 owner 端读得到盘，
-            //远端保持基数——命中在 owner 端结算，远端数字只是展示
+            //远端保持基数，命中在 owner 端结算，远端数字只是展示
             float nightmareScale = Main.myPlayer == Projectile.owner
                 ? KikasaServants.KikasaEffigyBoard.HoundDamageScale(owner) : 1f;
             Projectile.damage = (int)owner.GetTotalDamage(DamageClass.Summon)
@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             SpawnBurstFx();
 
             //接地性必须在施加重力前采样：原版碰撞在 AI 之后才把竖速归零，
-            //先加重力再看 velocity.Y 会永远读到下坠——犬会卡在跃出态不索敌、帧停在坠落
+            //先加重力再看 velocity.Y 会永远读到下坠，犬会卡在跃出态不索敌、帧停在坠落
             bool grounded = Projectile.velocity.Y == 0f;
             float vyIn = Projectile.velocity.Y;
 
@@ -645,7 +645,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                     Projectile.netUpdate = true;
                 }
             }
-            //梦火（焰×魇）：犬牙带火，咬着就燃——buff 骑原版同步，只在 owner 端施加
+            //梦火（焰×魇）：犬牙带火，咬着就燃，buff 骑原版同步，只在 owner 端施加
             if (Main.myPlayer == Projectile.owner
                 && KikasaServants.KikasaEffigyBoard.HasDreamFireEdge(Owner)) {
                 target.AddBuff(ModContent.BuffType<KikasaWisps.KikasaWispBurn>(), 120);

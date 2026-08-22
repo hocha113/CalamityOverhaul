@@ -2,7 +2,7 @@
 //OniSakuraFlow.fx 鬼切樱流（花吹雪的流路 + 螺旋花涡）
 //
 //TechStream 航线三角带：uv.x=u 沿航线 0=尾 1=头(花核)，uv.y 横向 0..1
-//  与神威流带(OniKamuiFlow)的分野：那条是墨绸——连续绸面、撕裂舌、暗涡压近黑、
+//  与神威流带(OniKamuiFlow)的分野：那条是墨绸，连续绸面、撕裂舌、暗涡压近黑、
 //  蒸发烧蚀橙边。这条是"很多瓣挤在同一条流里"，五条签名行为：
 //   1) 带内是瓣粒密度场：高频噪声过阈值切成离散团块，沿流向低频横向高频
 //      → 团块被速度抹成条，团块之间留孔，读得出"粒"不是"绸"；
@@ -12,7 +12,7 @@
 //      （尾暗→白热的能量拖尾腔是刀/激光的语法，瓣不发热）；
 //   5) uRetract 回卷自尾端推进，前沿是褪色发白的边（瓣被召回，不是被烧掉）。
 //
-//TechCoreBloom 花核 quad：螺旋花涡——被攥紧的一团花吹雪，不是盖章的樱花图案。
+//TechCoreBloom 花核 quad：螺旋花涡，被攥紧的一团花吹雪，不是盖章的樱花图案。
 //  三条螺旋臂向心卷入，臂身由瓣粒组成（瓣粒噪声走刚体旋转坐标，双速率视差），
 //  心口攥成近实的樱色，外缘被瓣粒咬开。
 //  极角审计：theta 的唯一消费是 sin(3θ - k·logR + spin)，3∈ℤ 跨 ±π 连续（安全表
@@ -154,7 +154,7 @@ float4 PSStream(PSInput input) : COLOR0
     float washiBand = smoothstep(0.08, 0.42, u) * (1.0 - smoothstep(0.60, 0.94, u));
     col = lerp(col, col * uColWashi, washiBand * (0.18 + 0.28 * n1));
 
-    //瓣面反光斑：只挑噪声峰值，稀疏的亮斑在流里闪——不是整片 sheen
+    //瓣面反光斑：只挑噪声峰值，稀疏的亮斑在流里闪，不是整片 sheen
     float glint = smoothstep(0.78, 0.96, grain) * clump;
     col += uColHot * glint * (0.34 + heat * 0.46) * 0.75;
 
@@ -175,7 +175,7 @@ float4 PSStream(PSInput input) : COLOR0
 }
 
 //螺旋花涡：三条瓣粒臂向心卷入 + 近实心口 + 瓣粒咬边。
-//"被攥紧的一团花吹雪"——不对称、有进动，不是居中自转的樱花图案
+//"被攥紧的一团花吹雪"，不对称、有进动，不是居中自转的樱花图案
 float4 PSCoreBloom(PSInput input) : COLOR0
 {
     float2 p = (input.TexCoords - 0.5) * 2.0;

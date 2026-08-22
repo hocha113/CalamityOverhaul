@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
 {
     /// <summary>
     /// 月总部件绘制登记。原版 396/397/398 均为 hide=true，唯一绘制入口是
-    /// Main.CacheNPCDraws 填充的 DrawCacheNPCsMoonMoon——但原版扫描硬编码
+    /// Main.CacheNPCDraws 填充的 DrawCacheNPCsMoonMoon：但原版扫描硬编码
     /// "左右各取第一只手 + 全找齐才登记"，四臂的下对永远进不了缓存（Draw 根本不被调用），
     /// 手部生成前核心也会整体隐形。此处在核心的 DrawBehind 拍上剔除原版登记的半套条目，
     /// 按层序全量重排：核心→下对手→上对手→头（下对垫底、头压最前，与原版层序一致）

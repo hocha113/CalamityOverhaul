@@ -533,7 +533,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
 
         /// <summary>
         /// 贯穿突刺位置步进:指数缓出,16px 子步防穿墙,无橡皮筋回传<br/>
-        /// 阻挡只看沿冲刺向的推进量——地面托住竖直分量不算撞墙(斜向下突刺曾被误判秒停)
+        /// 阻挡只看沿冲刺向的推进量，地面托住竖直分量不算撞墙(斜向下突刺曾被误判秒停)
         /// </summary>
         private void LungeStep(in BeatDef d, float from, float to) {
             float u0 = MathF.Max(from - d.Windup, 0f);
@@ -651,7 +651,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
 
         /// <summary>
         /// 弧带按扫角解析重建:几何从纯函数推导而不是帧历史累积,角速度再快也按 16px 补点<br/>
-        /// 头端钉死在刃的当前扫角——收势回撤与过冲回坐都把头吃回来,断面永远压在刀身底下。
+        /// 头端钉死在刃的当前扫角，收势回撤与过冲回坐都把头吃回来,断面永远压在刀身底下。
         /// 镜像 WeaverGrievancesHeld.TrimTrailToCurrentRotation:冻结头端而放任刃回撤,
         /// 会在空中留下一条贯穿整幅带宽的径向切面,任何着色器端遮罩都掩不住
         /// </summary>
@@ -1002,7 +1002,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             //伪 z 只做 ±12% 的轴向呼吸,立体线索留住、橡皮感去掉
             float depthScale = ViewZ / MathF.Max(ViewZ - depthZ * 0.8f, 220f);
 
-            //残影强度随枪尖位移,快才拖得出影——速度感是对比不是常驻虚影
+            //残影强度随枪尖位移,快才拖得出影，速度感是对比不是常驻虚影
             BeatDef d = GetBeat(beatIndex);
             bool inActive = elapsed > d.Windup && elapsed < d.Windup + d.Active + d.Recover * 0.25f;
             if (inActive && ghostCount > 1) {

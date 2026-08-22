@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms
 {
     /// <summary>
-    /// 械奴解析链：专门条目优先，其余交给 <see cref="KikasaArmsProfiler"/> 档案推断兜底——
+    /// 械奴解析链：专门条目优先，其余交给 <see cref="KikasaArmsProfiler"/> 档案推断兜底
     /// 推断为枪类走通用枪奴、刀剑走通用刀奴，演出个性化由档案字段承担。
     /// key = 被沉武器的物品类型。沉入可复制武器时湖会把它写进鬼奴记忆
     /// （见 KikasaVaultPlayer.TrySink），召唤数量由湖藏存量折算，复制体不消耗湖藏原件

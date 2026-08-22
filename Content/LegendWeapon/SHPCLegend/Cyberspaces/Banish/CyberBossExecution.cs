@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                     Main.rand.Next(1, int.MaxValue));
             }
             // 服务器不是弹幕 owner（myPlayer=255），NewProjectile 不会自动下发，
-            // netUpdate 也会被原版 owner 门吞掉——目标身份写完后必须显式 SyncProjectile
+            // netUpdate 也会被原版 owner 门吞掉，目标身份写完后必须显式 SyncProjectile
             SyncProjectileFromServer(projectile);
         }
 

@@ -344,7 +344,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
 
             context.SkipDefaultMovement = true;
 
-            //终喷帧(沿用汇拢期提交点，不重瞄——预告即承诺)
+            //终喷帧(沿用汇拢期提交点，不重瞄，预告即承诺)
             if (Timer == FinaleFrame) {
                 //中途加入未经历汇拢帧的兜底
                 if (apexBreachPoint == Vector2.Zero) {

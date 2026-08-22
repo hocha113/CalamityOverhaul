@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 {
     /// <summary>
-    /// 脱出真眼：部件破坏后的独立威胁集群，协同技随集群规模进化——
+    /// 脱出真眼：部件破坏后的独立威胁集群，协同技随集群规模进化
     /// 1 眼：三技轮转（波弹连射/星球短扇/预兆冲撞）；
     /// 2 眼：剪式弧光对扫（两束自两翼相向合拢，交叉推进留移动安全区）；
     /// 3 眼：三角闭环（缓旋三角阵 + 链式死光沿边接力传递）；
@@ -226,7 +226,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 
         /// <summary>
         /// 2 眼·剪式弧光对扫：两眼分踞玩家两翼高位站桩，同拍各放一道弧光死光
-        /// 相向合拢——两束在玩家轴线处交叉推进，安全区是随扫角移动的菱形楔口
+        /// 相向合拢，两束在玩家轴线处交叉推进，安全区是随扫角移动的菱形楔口
         /// </summary>
         private void UpdateScissorSweep(float clock, int ordinal) {
             int phase = (int)(clock % ScissorPeriod);
@@ -354,7 +354,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             }
 
             //阵心交叉爆：收缩到底一拍，各眼向阵心（玩家当时位）对射双弹，
-            //惩罚蹲在阵心不动——收缩本身即预告，移动即可让弹道交叉扑空
+            //惩罚蹲在阵心不动，收缩本身即预告，移动即可让弹道交叉扑空
             if (phase == 446) {
                 foreach (int eyeIndex in eyes.AsSpan(0, eyeCount)) {
                     NPC eye = Main.npc[eyeIndex];

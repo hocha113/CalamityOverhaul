@@ -8,7 +8,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
 {
     /// <summary>
-    /// 转化演出的共用拍：化水、聚拢、成形三幕共一套语汇——
+    /// 转化演出的共用拍：化水、聚拢、成形三幕共一套语汇
     /// 雨拽（四面雨线扑向一点，让人看清动手的是"雨"）、水爆、浊雾、水环、尸斑青冷闪。
     /// 全是本地表现，dedServ 与可见性由调用方把关。
     /// </summary>

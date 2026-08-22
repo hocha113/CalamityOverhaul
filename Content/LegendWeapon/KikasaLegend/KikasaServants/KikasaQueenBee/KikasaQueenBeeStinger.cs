@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaQueenBee
 {
     /// <summary>
-    /// 鬼奴蜂后的血色螫针：四相演出预算——升空拖珠、顶点悬滞翻转、
+    /// 鬼奴蜂后的血色螫针：四相演出预算，升空拖珠、顶点悬滞翻转、
     /// 坠落拉丝、落点收尾（贴壁血渍 / 落水涟漪 / 命中化珠）。
     /// 弹道纯确定性（重力 + 出生速度），顶点行为由本地速度符号裁决，各端一致
     /// </summary>
@@ -115,14 +115,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (apexTimer < ApexFrames) {
-                //顶点悬滞：动量近乎冻结，针身缓缓翻转向下——重力反转的可读拍
+                //顶点悬滞：动量近乎冻结，针身缓缓翻转向下，重力反转的可读拍
                 apexTimer++;
                 Projectile.velocity *= 0.8f;
                 float flip = SmoothStep01(apexTimer / (float)ApexFrames);
                 //翻转方向跟着水平残速走，两侧的针各自向内翻
                 float sign = Projectile.velocity.X >= 0f ? 1f : -1f;
                 Projectile.rotation = apexBaseRot + MathHelper.Pi * flip * sign;
-                //悬滞中点的一粒冷光——雨落前最后的安静
+                //悬滞中点的一粒冷光，雨落前最后的安静
                 if (!Main.dedServ && apexTimer == ApexFrames / 2) {
                     PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, Vector2.Zero,
                         GlintShine, 0.7f)?.Configure(false, 10);

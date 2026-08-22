@@ -6,11 +6,11 @@ using Terraria.Utilities;
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
 {
     //====================================================================
-    //L5有机坑道凿刻器——原版MakeDungeon游标随机游走(RESEARCH §1.2a DungeonHalls
+    //L5有机坑道凿刻器，原版MakeDungeon游标随机游走(RESEARCH §1.2a DungeonHalls
     //WorldGen.cs:30454-30972拆解)的参数化重写,作为图边的第三种几何形态
     //(STRUCTURES §2.1裁决3/§2.5边形态"游走走廊")。层内自包含,只服务L5。
     //
-    //凿刻语法(壳-膛盖章,F29):每步以游标为心盖一章——外壳矩形填砖但只动
+    //凿刻语法(壳-膛盖章,F29):每步以游标为心盖一章，外壳矩形填砖但只动
     //"未挖区"(墙即已挖标记:凡带地牢墙的格视为已挖,自动免填→笔画重叠/
     //撞进房间socket时无缝融合);内膛矩形清空+刷墙。
     //

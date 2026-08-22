@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.timeLeft = NadoLife;
         }
 
-        /// <summary>成柱后才伤人，塌柱前收口——窗口与可见的立柱严格对齐</summary>
+        /// <summary>成柱后才伤人，塌柱前收口，窗口与可见的立柱严格对齐</summary>
         public override bool? CanDamage()
             => Elapsed > 12 && Projectile.timeLeft > 12 ? null : false;
 

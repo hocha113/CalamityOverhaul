@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
     /// 游戏内视觉快照台:job 驱动 spawn → 逐帧抓屏 → 裁剪 → 帧条+stats 落盘,
     /// 输出与离线沙盒同一契约(.vissandbox\out\&lt;job&gt;\strip.png + stats.json)。<br/>
     /// 双门控:DEBUG 构建 + .vissandbox 目录存在(开发机);仅单人模式。
-    /// 会话状态用 static——单人开发工具,不涉及多端同步。
+    /// 会话状态用 static：单人开发工具,不涉及多端同步。
     /// </summary>
     internal class VisLabSystem : ModSystem
     {
@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
                     }
                     break;
                 case Phase.Running:
-                    //弹幕死亡后不中断——余韵痕迹本就是要看的东西
+                    //弹幕死亡后不中断，余韵痕迹本就是要看的东西
                     if (job.Follow && targetProj >= 0 && Main.projectile[targetProj].active) {
                         anchorWorld = Main.projectile[targetProj].Center;
                     }

@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
 {
     /// <summary>
-    /// 投技大漩涡舞台（纯演出，无接触伤害——危险是"被卷"本身）。
+    /// 投技大漩涡舞台（纯演出，无接触伤害，危险是"被卷"本身）。
     /// ai[0]=Boss whoAmI；相位/强度各端本地从 Boss 覆写状态推导，
     /// Boss 离开投技状态即本地渐隐，服务端到点 Kill 收尸
     /// </summary>

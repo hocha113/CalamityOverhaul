@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
     /// <summary>
     /// 血湖湖面的物理面：只对玩家生效的单向平台。
     /// 服务器不持有领域状态（<see cref="KikasaDomainNet"/> 的既定契约），而玩家移动本就是
-    /// 客户端权威——每端用已同步的领域快照对所有玩家跑同一条钳制规则，各端自然一致；
+    /// 客户端权威，每端用已同步的领域快照对所有玩家跑同一条钳制规则，各端自然一致；
     /// NPC/物品/弹幕是服务器权威实体，有意不参与，拖敌入湖走 KikasaDrown 通道。
     /// </summary>
     internal static class KikasaLakeSurface
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         /// <summary>
         /// 逐帧钳制，移动应用前调用：本帧脚底将下穿湖面且未主动下潜时，把纵速截到精确落线。
-        /// 落线后纵速自然归零，跳跃/站立走原版判定；单向语义——水下可向上跳穿回湖面
+        /// 落线后纵速自然归零，跳跃/站立走原版判定；单向语义，水下可向上跳穿回湖面
         /// </summary>
         public static void ApplyStanding(Player player) {
             if (Main.dedServ || Main.gameMenu) {

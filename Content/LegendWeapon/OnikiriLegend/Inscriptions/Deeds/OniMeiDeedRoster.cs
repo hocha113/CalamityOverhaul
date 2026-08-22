@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
             => OniMeiDeedTargets.IsArachnid(context.Npc) ? 1 : 0;
     }
 
-    /// <summary>鬼丸：站着一动不动挨了一记还站着——刀替你动了那一次</summary>
+    /// <summary>鬼丸：站着一动不动挨了一记还站着，刀替你动了那一次</summary>
     internal sealed class DeedOnimaru : OniMeiDeed
     {
         /// <summary>十秒</summary>

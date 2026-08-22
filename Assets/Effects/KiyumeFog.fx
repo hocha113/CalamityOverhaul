@@ -1,9 +1,9 @@
 // ============================================================================
-//KiyumeFog.fx 鬼梦湖雾——世界锚定密度场 + 看得见的雾面（单 technique 双 pass）
+//KiyumeFog.fx 鬼梦湖雾，世界锚定密度场 + 看得见的雾面（单 technique 双 pass）
 //FogFilter: Filters.Scene 前景瘴气（拷屏合成，并在这一层把亮点晕开=雾吃光）
 //FogOverlay: PostDrawTiles 背景雾（预乘 AlphaBlend）
 //密度住在世界坐标: s1 密度窗口纹理(rgb=雾色, a=密度, KiyumeFogSim 每 2 tick 上传)
-//与深牢迷雾的分野：那团雾是均质的空气，这层雾是有水位的液体——
+//与深牢迷雾的分野：那团雾是均质的空气，这层雾是有水位的液体
 //uFogLineY 给出水平面，着色器在面上压一条亮边，从下看是天花板，从上看是海面
 //直线算术、无分支、无 atan2、噪声全走绑定贴图（FNA3D 翻译纪律）
 //uniform 是设备全局状态：两个调用点各自全参数重设，防跨调用残值串场
@@ -102,7 +102,7 @@ float4 FogEval(float2 tpx) {
     col += WATER_TINT * (waterRim * 0.90 + glint * glintBand * 0.50) * waterLit;
     a = saturate(a + (waterRim * 0.30 + glint * glintBand * 0.12) * waterLit);
 
-    //水下深渊：面线以下渐入深血色，游得越深世界越沉——这就是西界的劝返
+    //水下深渊：面线以下渐入深血色，游得越深世界越沉，这就是西界的劝返
     float underwater = saturate(dw * 0.004) * waterGate;
     col = lerp(col, DEEP_TINT, underwater * 0.72);
     a = saturate(a + underwater * 0.42 * uPresence);
@@ -110,7 +110,7 @@ float4 FogEval(float2 tpx) {
     return float4(col, a);
 }
 
-//双环十六向采样：内环拾光斑本体、外环拾漫开的余晖——亮点在雾里晕成一团而不是穿透过来
+//双环十六向采样：内环拾光斑本体、外环拾漫开的余晖，亮点在雾里晕成一团而不是穿透过来
 float3 ScreenHalo(float2 uv, float2 r) {
     float2 ri = r * 0.45;
     float3 s = tex2D(uScreen, uv + float2(ri.x, 0.0)).rgb;
@@ -139,7 +139,7 @@ float4 PSFogFilter(float2 uv : TEXCOORD0) : COLOR0 {
     float4 fog = FogEval(uv * uScreenSize);
     float3 outc = lerp(src.rgb, fog.rgb, fog.a);
 
-    //雾吃光：光穿不过记忆，只把雾自己烘亮一圈。溢出量按雾浓度回加，并向烬色偏——雾里的光是暖的
+    //雾吃光：光穿不过记忆，只把雾自己烘亮一圈。溢出量按雾浓度回加，并向烬色偏，雾里的光是暖的
     float2 r = uEatSpread / max(uScreenSize, 1.0);
     float3 halo = max(ScreenHalo(uv, r) - src.rgb, 0.0);
     float haloLum = dot(halo, float3(0.30, 0.50, 0.20));
@@ -149,7 +149,7 @@ float4 PSFogFilter(float2 uv : TEXCOORD0) : COLOR0 {
     return float4(outc, src.a);
 }
 
-//背景雾：预乘输出进 AlphaBlend 批（暗雾必须能压暗——加色批物理上画不出暗，全线预乘）
+//背景雾：预乘输出进 AlphaBlend 批（暗雾必须能压暗，加色批物理上画不出暗，全线预乘）
 float4 PSFogOverlay(float2 uv : TEXCOORD0) : COLOR0 {
     float4 fog = FogEval(uv * uScreenSize);
     return float4(fog.rgb * fog.a, fog.a);

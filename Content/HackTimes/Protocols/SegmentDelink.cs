@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// 节段离网：窗口期内打这一节不伤本体，落上去的伤害只记账，
     /// 到期把账面的六成一次性结算给本体（吃防御与 DR）。<br/>
     /// 设计稿原案要求悬空 <c>realLife</c> 并拦截 Calamity 的每帧回写（§5.2 全批最脆），
-    /// 这里按其自己给出的处置降级：<b>不动 realLife</b>——命中照常经 realLife 落到本体，
+    /// 这里按其自己给出的处置降级：<b>不动 realLife</b>：命中照常经 realLife 落到本体，
     /// 由 <see cref="SegmentDelinkCombat"/> 在 <c>HitEffect</c>（扣血之后、checkDead 之前）
     /// 原额回填本体生命并记账。链条永远不断、体节永远不死、
     /// 「现在拿 100% 还是到期拿 60%」的投资决策完整保留

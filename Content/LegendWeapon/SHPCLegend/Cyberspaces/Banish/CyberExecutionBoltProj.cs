@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             targetIdentity.Write(writer);
             writer.Write(pathSeed);
             //SyncProjectile 的 damage 字段是 short：处决伤害上限一千万，
-            //经生成包会截断成垃圾值，而命中在 owner 客户端结算——ExtraAI 带全量还原
+            //经生成包会截断成垃圾值，而命中在 owner 客户端结算，ExtraAI 带全量还原
             writer.Write(Projectile.damage);
         }
 

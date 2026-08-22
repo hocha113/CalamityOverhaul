@@ -5,7 +5,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 {
     /// <summary>
-    /// 以太枪骑网格：整片战场铺开平行预告线，按行错拍执行——
+    /// 以太枪骑网格：整片战场铺开平行预告线，按行错拍执行
     /// 一波贯穿沿网格荡过去；网格胞是安全区，读格站位是解法
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EmpressStateIndex.LanceGrid, typeof(EmpressStateContext))]

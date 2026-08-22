@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
 {
     /// <summary>
     /// 雾墙后的犬影：远处雾里走过一条黑犬，你往那边看，它化了。<br/>
-    /// 复用鬼伞的 <c>KikasaHound.fx</c> 实体态材质与原版狼帧，只是这里没有湖镜——
+    /// 复用鬼伞的 <c>KikasaHound.fx</c> 实体态材质与原版狼帧，只是这里没有湖镜
     /// 它不是倒影，是雾里真有个东西。<br/>
     /// 由 <see cref="KiyumeFogSystem.PostDrawTiles"/> 在背景雾层<b>之前</b>调用绘制，
     /// 顺序就是"在雾墙后面"这句话的全部实现。纯客户端表现，不是 NPC，不参与任何判定

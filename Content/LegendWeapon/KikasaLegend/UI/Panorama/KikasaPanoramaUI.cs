@@ -21,12 +21,12 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
 {
     /// <summary>
-    /// 湖心景：鬼伞主界面。整屏是一幅血湖夜景剖面，分区即空间位置——
+    /// 湖心景：鬼伞主界面。整屏是一幅血湖夜景剖面，分区即空间位置
     /// 湖上住两鬼（左岸恶犬=鬼梦、右水金焰=鬼火，湖力条横在两鬼之间，一条读数解释两道门），
     /// 水线摆三席影位（席间水脉=组合边，拾影在手点放编成），
     /// 浅水横着收集册（沉溺过的宿敌永久入册），湖底铺着湖藏四十格（点击提取）。
     /// 持鬼伞按 <see cref="CWRKeySystem.Legend_UIControl"/> 或点风铃展开；
-    /// 点恶犬在就绪时直接入梦；点哪都有回应——非热区点击落一圈墨涟漪
+    /// 点恶犬在就绪时直接入梦；点哪都有回应，非热区点击落一圈墨涟漪
     /// </summary>
     internal class KikasaPanoramaUI : UIHandle, ILocalizedModType
     {
@@ -384,7 +384,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
         }
 
         /// <summary>
-        /// 席位真值差分：外部改动（转盘/自动落座/沉溺入席）与本屏点放走同一条表现路径——
+        /// 席位真值差分：外部改动（转盘/自动落座/沉溺入席）与本屏点放走同一条表现路径
         /// 落影定妆、离席掷回册位
         /// </summary>
         private void DiffSeatStates() {
@@ -589,7 +589,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 CancelCarry();
                 return;
             }
-            //持着别的影时直接换拾——少一次收手
+            //持着别的影时直接换拾，少一次收手
             carryKey = key;
             carryOriginSeat = -1;
             carryPos = RosterPos(index);
@@ -649,7 +649,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.5f, Pitch = -0.55f });
         }
 
-        /// <summary>点金焰：报它此刻的状态——鬼火自己烧，不受号令</summary>
+        /// <summary>点金焰：报它此刻的状态，鬼火自己烧，不受号令</summary>
         private void ClickWisp() {
             KikasaDomainPlayer domain = Domain;
             string line = domain.WispFireActive
@@ -672,7 +672,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.45f, Pitch = -0.7f });
         }
 
-        /// <summary>拒绝反馈：席圈红闪+横震+闷响——点击必有可见回应</summary>
+        /// <summary>拒绝反馈：席圈红闪+横震+闷响，点击必有可见回应</summary>
         private void Deny(int seat, bool playSound = true) {
             if (seat >= 0 && seat < seatDeny.Length) {
                 seatDeny[seat] = 1f;
@@ -915,7 +915,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             DrawEdgePair(sb, font, a, rain, time, now, next, preview,
                 KikasaAffinity.Nightmare, KikasaAffinity.Rain, EdgeRainNightmare.Value);
 
-            //三影镇湖：三席满且三系齐——环着三席一圈共鸣
+            //三影镇湖：三席满且三系齐，环着三席一圈共鸣
             bool tri = KikasaEffigyBoard.HasTriSeal(player);
             if (tri) {
                 float breath = KikasaPanoramaTheme.Breath(time, 5.2f, 1.8f);
@@ -959,7 +959,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             if (active) {
                 Vector2 from = KikasaPanoramaTheme.SeatPos(Math.Min(a1, a2));
                 Vector2 to = KikasaPanoramaTheme.SeatPos(Math.Max(a1, a2));
-                //相邻席浅垂，跨席（0-2）深垂——两条边不打架
+                //相邻席浅垂，跨席（0-2）深垂，两条边不打架
                 float sag = Math.Abs(a1 - a2) > 1 ? 40f : 16f;
                 KikasaPanoramaRenderer.DrawWaterVein(sb, from + new Vector2(0f, 10f),
                     to + new Vector2(0f, 10f), 1.6f,
@@ -970,7 +970,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                     KikasaHudTheme.Glow(rain) * (0.9f * a), 0.8f);
                 return;
             }
-            //将成之边：预演里成立而现况没有——虚线先亮给你看
+            //将成之边：预演里成立而现况没有，虚线先亮给你看
             if (preview && FindPair(next, need1, need2, out int p1, out int p2)) {
                 Vector2 from = KikasaPanoramaTheme.SeatPos(Math.Min(p1, p2));
                 Vector2 to = KikasaPanoramaTheme.SeatPos(Math.Max(p1, p2));
@@ -1322,7 +1322,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 KikasaHudTheme.TextDim(rain) * (0.9f * a), 0.78f);
         }
 
-        /// <summary>悬停名牌：贴光标浮出，题行 1.0 + 细行 0.85——字不再眯眼</summary>
+        /// <summary>悬停名牌：贴光标浮出，题行 1.0 + 细行 0.85：字不再眯眼</summary>
         private void DrawHoverPlate(SpriteBatch sb, DynamicSpriteFont font, float a, float rain,
             KikasaServantPlayer servant, KikasaVaultPlayer vault) {
             if (hoverKind == HoverKind.None || hoverKind == HoverKind.Hound

@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
             progress.Message = "撒布装饰...";
             var report = new StringBuilder();
 
-            //L1按矩阵:蛛网=零,杂物=低(蜡烬)——蜡烬无原版fallback家具,
+            //L1按矩阵:蛛网=零,杂物=低(蜡烬)：蜡烬无原版fallback家具,
             //按Wave-1资产纪律执行保守解:A路不内置,留给L1路经ctx.Scatter声明【待签字】
             RunLayer(LayerPlans.L1, [], report);
             progress.Set(0.3);
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
             ], report);
             progress.Set(0.5);
 
-            //L3~L7(Wave-2):A路不内置通用条目——INDEX §7矩阵中蛛网/骨堆/罐的
+            //L3~L7(Wave-2):A路不内置通用条目，INDEX §7矩阵中蛛网/骨堆/罐的
             //档位(如L5蛛网峰+骨堆峰)属层母题认领,由各层代理经ctx.Scatter自行
             //声明(CommonScatter工厂对层代理可用),防止内置与层声明双重覆盖;
             //本循环只兑现各层已声明条目,单条目MaxPlaced上限内建(R5耗时保险)

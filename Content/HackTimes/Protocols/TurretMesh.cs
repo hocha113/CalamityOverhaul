@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// <summary>
     /// 炮台联网：以命中炮台为根，把 3000px 内所有可组网炮台连成一个 mesh
     /// （含已停摆的，联网顺手唤醒它们），全员朝施法者光标齐射，
-    /// 共用四十发总弹池；弹池打空或效果结束，全体成员长时间报废——这是代价。<br/>
+    /// 共用四十发总弹池；弹池打空或效果结束，全体成员长时间报废，这是代价。<br/>
     /// 共享弹池与成员表是 per-effect 状态，挂在本类静态账上，
     /// OnRemove / Unload / 世界切换（CircuitNodeSpawner.OnWorldUnload）三处清账
     /// </summary>
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         internal static void ClearMeshes() => meshes.Clear();
 
         public override bool CanApplyTo(IHackTarget target) {
-            //停摆的根也允许——联网本来就会唤醒它
+            //停摆的根也允许，联网本来就会唤醒它
             return base.CanApplyTo(target)
                 && target is IHackableTurret && target is IMeshFireTurret;
         }
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             }
             if (!meshes.TryGetValue(rootKey, out MeshState state)
                 || state.CasterIndex != whoAmI) {
-                //网已散或不是这张网的施法者——正常时序里只会是迟到包
+                //网已散或不是这张网的施法者，正常时序里只会是迟到包
                 return;
             }
             state.LastAim = aim;

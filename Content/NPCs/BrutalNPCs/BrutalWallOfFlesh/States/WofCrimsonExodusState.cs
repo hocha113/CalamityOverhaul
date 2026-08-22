@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
 {
     /// <summary>
     /// 低血大招·绯红大迁徙：整片地狱的血肉在玩家前方立起第二道死线，
-    /// 口袋在墙与血幕之间收缩——不再是逃亡，是被押送。
+    /// 口袋在墙与血幕之间收缩，不再是逃亡，是被押送。
     /// 血幕收拢到公平下限后保持；结束后力竭喘息，是留给玩家的DPS窗口
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)WofStateIndex.CrimsonExodus, typeof(WofStateContext))]
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
                     npc.netUpdate = true;
                 }
                 context.Phase = 3;
-                //阶段3开场白：喘息窗刚过就亮出新王牌——饥饿长城(王牌扣到低血量才放)
+                //阶段3开场白：喘息窗刚过就亮出新王牌，饥饿长城(王牌扣到低血量才放)
                 context.LastAttack = WofStateIndex.JawRipple;
                 return new WofJawRippleState();
             }
@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
             WofMotionFX.SpawnWallSeep(npc, 3f);
         }
 
-        /// <summary>力竭喘息：血幕散解，墙速跌落——这是留给你的窗口</summary>
+        /// <summary>力竭喘息：血幕散解，墙速跌落，这是留给你的窗口</summary>
         private void UpdateRest(WofStateContext context) {
             NPC npc = context.Npc;
             int restT = Timer - SurgeEnd;

@@ -1,9 +1,9 @@
 // ============================================================================
-//OniVigorInk.fx 气力墨脉——书法"一"字横笔作气力计:
+//OniVigorInk.fx 气力墨脉，书法"一"字横笔作气力计:
 //宣纸底痕(上限轮廓,淡灰断裂干笔) + 湿墨主体(uFill 截断,洇墨/纤维/暗红血线)
 //+ 飞白(低气力加剧,避开前沿保住读数边界) + 墨锋前沿(恢复时洇进,消耗时利落回切)
 //+ 消耗残痕(uFill~uTrailFill 间的绯红湿迹,随脉冲蒸散成断丝) + 回满白热收笔扫光
-//轮廓噪声吃恒定 uSeed,时间只驱动湿光/内部流动/墨锋——笔形每帧稳定,读数才可信
+//轮廓噪声吃恒定 uSeed,时间只驱动湿光/内部流动/墨锋，笔形每帧稳定,读数才可信
 //AlphaBlend 预乘 alpha 输出;色板由 CPU 传入与 OnikiriUITheme 同源
 // ============================================================================
 
@@ -74,7 +74,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float ux = clamp(px.x, x0, x1);
     float u = (ux - x0) / (x1 - x0);
 
-    //中线:轻微上弓 + 右端微翘——书家手笔不是直尺
+    //中线:轻微上弓 + 右端微翘，书家手笔不是直尺
     float center = midY - sin(u * PI) * 1.6 - (u - 0.5) * 1.8;
     //压力曲线:藏锋起笔顿点 / 中段收细 / 收笔按压 / 锋尖出锋
     float press = 0.62
@@ -150,7 +150,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float frontClean = smoothstep(4.0, 18.0, frontX - px.x);
     float wetA = strokeA * wet * 0.96 * (1.0 - holes * flyStr * frontClean);
 
-    //====外辉与纸白裱边:深红微光衬底,零线一圈淡纸光——墨悬在夜里也读得清====
+    //====外辉与纸白裱边:深红微光衬底,零线一圈淡纸光，墨悬在夜里也读得清====
     float glowA = exp(-max(d, 0.0) * 0.28) * (1.0 - strokeA)
         * wet * (0.20 + uGainPulse * 0.15 + uSpendPulse * 0.12);
     float rimA = exp(-d * d * 1.1) * wet * 0.28;

@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         /// <summary>
         /// 展开态给进度条单留的一行高。<br/>
-        /// 落款是左对齐的，进度条若还钉在行底就会压在名字上——两者改为上下叠放
+        /// 落款是左对齐的，进度条若还钉在行底就会压在名字上，两者改为上下叠放
         /// </summary>
         public static int ExpandedProgressRowH(EntrustEntryData entry)
             => entry != null && entry.Progress > 0f && entry.Status != QuestEntryStatus.Completed

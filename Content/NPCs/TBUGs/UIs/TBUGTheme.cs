@@ -5,7 +5,7 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
 {
     /// <summary>
     /// TBUG 界面色板、字号梯队与几何常量。
-    /// <br/>材质："深空黑底上的一块冷蓝终端玻璃"——不是霓虹招牌，不是绿字矩阵。
+    /// <br/>材质："深空黑底上的一块冷蓝终端玻璃"，不是霓虹招牌，不是绿字矩阵。
     /// <para>
     /// 风格铁律（新增任何绘制前先对一遍，别现场编数值）：
     /// <br/>1. 底只有三档：<see cref="Void"/> 凹陷 / <see cref="Deep"/> 面板 / <see cref="Panel"/> 抬起面，越靠近用户越亮。

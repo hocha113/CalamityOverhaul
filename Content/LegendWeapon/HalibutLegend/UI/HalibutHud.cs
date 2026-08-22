@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             resPhases[1] = Language.GetOrRegister(LegacyResKey + "Phase2", () => "局势渐起波纹，能量仍可控");
             resPhases[2] = Language.GetOrRegister(LegacyResKey + "Phase3", () => "脉冲已具侵蚀感，需要留意");
             resPhases[3] = Language.GetOrRegister(LegacyResKey + "Phase4", () => "高压区形成，领域边缘不稳定");
-            resPhases[4] = Language.GetOrRegister(LegacyResKey + "Phase5", () => "深渊临界——随时可能失控");
+            resPhases[4] = Language.GetOrRegister(LegacyResKey + "Phase5", () => "深渊临界，随时可能失控");
             resTrends[0] = Language.GetOrRegister(LegacyResKey + "Trend1", () => "几乎静止");
             resTrends[1] = Language.GetOrRegister(LegacyResKey + "Trend2", () => "缓慢上升");
             resTrends[2] = Language.GetOrRegister(LegacyResKey + "Trend3", () => "稳态攀升");

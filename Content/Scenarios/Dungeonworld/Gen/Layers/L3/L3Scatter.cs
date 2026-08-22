@@ -4,7 +4,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
 {
     //L3层内三区(ROOMS-L3 §0):上区阅览(亮)/中区迷宫(标)/下区禁书区带(暗),
-    //撒布条目按区门控——密度矩阵(INDEX §7)L3列:灯=亮区高/禁书区零,
+    //撒布条目按区门控，密度矩阵(INDEX §7)L3列:灯=亮区高/禁书区零,
     //挂画=峰,贴墙书台=峰,杂物=标(纸堆书堆),蛛网=禁书区低,旗帜=定向(目录厅,不入撒布)
     internal readonly struct L3Zones(int readingBottom, int forbiddenTop)
     {
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
             },
         };
 
-        //贴墙书台:峰档(本层独占母题全形态,F30语法)——沿墙伸1~3格平台,
+        //贴墙书台:峰档(本层独占母题全形态,F30语法)：沿墙伸1~3格平台,
         //台上书(样式0~4,水矢书5禁用)或墨瓶/水蜡烛(:28376-28436原版分支)
         private static ScatterEntry WallBookNooks(L3Zones zones) => new() {
             Name = "贴墙书台", Density = ScatterDensity.Peak,

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
     //
     //===随机消耗顺序纪律(R4,全链路定序,改动必须同步本注释)===
     //P20:隔离带井位x6(先竖直连接)→P30:禁室定点x2(后逐层,选址内部先扣触井
-    //禁带)→P50:各层内容自上而下——本pass自身零随机消耗;
+    //禁带)→P50:各层内容自上而下，本pass自身零随机消耗;
     //新增层级定点类随机务必排在禁室之后并在此登记
     internal class LayerPlanPass : GenPass
     {
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
             LayerPlans.Reset();
             ScatterEngine.ResetCounters();
 
-            //七带占用栅格内存账(R5护栏):栅格=bool[宽1916,带行数],每格1字节——
+            //七带占用栅格内存账(R5护栏):栅格=bool[宽1916,带行数],每格1字节
             //L1/L2(150行)各≈0.29MB,L3弹性带(1348行)≈2.58MB,L4(1000)≈1.92MB,
             //L5(1400)≈2.68MB,L6(1200)≈2.30MB,L7(220)≈0.42MB,合计≈10.5MB,
             //低于P80洪泛visited矩阵(12MB);单次生成生命周期,Reset置null可回收
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
                 DungeonworldMetrics.SafeRoomWidth, DungeonworldMetrics.SafeRoomHeight),
                 DungeonworldMetrics.RoomPadding));
 
-            //后逐层:L2深牢禁室定点(Wave-1定论沿革)——选址在规划期定点,
+            //后逐层:L2深牢禁室定点(Wave-1定论沿革)：选址在规划期定点,
             //足印+padding先行预留,层内容房间构造性避开;P45只按已定坐标盖章;
             //Wave-2追加:选址内部扣除触井禁带(避让方向=禁室避井,见GaolBossRoomSiting)
             Point? bossOrigin = GaolBossRoomSiting.PickOrigin();

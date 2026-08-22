@@ -11,13 +11,13 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
     /// （<c>ValidateAuthorityRequest</c> 的 Player 分支）与上传期逐帧重验调的都是它，
     /// 谓词只写一份（tml-netcode-pitfalls §2.4 companion rule）。<br/>
     /// 部分子句依赖只有一端持有的数据（对冷却/叠加账在服务端、复活保护在各自本机），
-    /// 数据缺席的端对该子句直接放行——预检宽松无害，服务端重验才是闸。
+    /// 数据缺席的端对该子句直接放行，预检宽松无害，服务端重验才是闸。
     /// </summary>
     internal static class HackPvPRules
     {
         #region 准入数值（设计文档 §2.4，改动要先过设计）
 
-        /// <summary>PvP 骇入最大距离（px）。刻意小于 PvE 的 6400——跨屏骇人没有反制窗口</summary>
+        /// <summary>PvP 骇入最大距离（px）。刻意小于 PvE 的 6400：跨屏骇人没有反制窗口</summary>
         internal const float MaxDistance = 2400f;
         /// <summary>复活后保护帧数，窗口内不可被选中（出生点蹲人红线）</summary>
         internal const int SpawnProtectFrames = 300;
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
         /// PvP 骇入准入判定，全部条件按序短路。<br/>
         /// 返回 false 时 <paramref name="reason"/> 是拒绝码（服务端拒绝必须点名子句写日志）。<br/>
         /// 端别差异：对冷却与叠加上限只在持有账本的端上生效（服务端授予账 / 客户端镜像），
-        /// 复活保护只在观测得到复活事件的端上生效——缺数据的子句自动放行，服务端重验兜底
+        /// 复活保护只在观测得到复活事件的端上生效，缺数据的子句自动放行，服务端重验兜底
         /// </summary>
         internal static bool CanTarget(Player attacker, Player defender,
             out HackRequestResultCode reason) {
@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
                 reason = HackRequestResultCode.PvPDisabled;
                 return false;
             }
-            //基础可用性（含自指排除——自己走 SelfRig 位，不走 PvP 准入）
+            //基础可用性（含自指排除，自己走 SelfRig 位，不走 PvP 准入）
             if (attacker?.active != true || attacker.dead
                 || defender?.active != true || defender.dead || defender.ghost
                 || attacker.whoAmI == defender.whoAmI) {

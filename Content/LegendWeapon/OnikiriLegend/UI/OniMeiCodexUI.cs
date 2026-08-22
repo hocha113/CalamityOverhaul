@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     /// <summary>
     /// 铭谱：改铭台旁那本线装册子摊开的样子。<br/>
     /// 左页名录（按槽位分卷、暗刻未得、朱点标现铭），右页详情（大字形按笔序凿现 + 全文或线索）。<br/>
-    /// 只读——凿刻仍只在改铭台做，此处不动刀。<br/>
+    /// 只读，凿刻仍只在改铭台做，此处不动刀。<br/>
     /// 与改铭台是"取书/放书"的关系而非姊妹屏：开册静默收台，合册静默回台
     /// </summary>
     internal sealed class OniMeiCodexUI : UIHandle, ILocalizedModType

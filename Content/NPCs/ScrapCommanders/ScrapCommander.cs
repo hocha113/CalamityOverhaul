@@ -17,7 +17,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
 {
     /// <summary>
-    /// 废钢统帅——机械三王战争残料拼成的刑架工头。
+    /// 废钢统帅，机械三王战争残料拼成的刑架工头。
     /// 形体承袭鬼奴四械刑架：单 NPC 内部模拟"头 + 四条工具臂"，
     /// 头位服务器权威同步，四臂在各端按肩锚 + 指令做弹簧摆模拟（吊链有重量），
     /// 臂链用原版 Chain22 重链沿悬链弧铺出，贴图全部借用原版（Prime 头与四工具）。
@@ -521,7 +521,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
             SawSpinning = false;
         }
 
-        /// <summary>常态损耗底噪：关节渗油、偶发接触不良的火星——废钢的呼吸</summary>
+        /// <summary>常态损耗底噪：关节渗油、偶发接触不良的火星，废钢的呼吸</summary>
         private void UpdateAmbientWear() {
             if (Main.dedServ || !armsInit || Context.HeadAlpha < 0.4f) {
                 return;
@@ -658,7 +658,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
             form.CurrentTechnique.Passes[0].Apply();
         }
 
-        /// <summary>臂链：照抄鬼奴原型——原版机械骷髅王臂骨节（Arm_Bone_2）
+        /// <summary>臂链：照抄鬼奴原型，原版机械骷髅王臂骨节（Arm_Bone_2）
         /// 沿悬链弧分三节拉伸铺出；突刺绷直时高频颤动</summary>
         private void DrawChainArm(SpriteBatch sb, Effect form, bool shaderOk, int i, float alpha, Color lightColor) {
             Texture2D bone = TextureAssets.BoneArm2?.Value;

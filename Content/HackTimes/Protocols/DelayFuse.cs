@@ -11,7 +11,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
     /// <summary>
-    /// 延迟引信：弹幕原地悬停三十秒变成雷，阵营不变——敌弹仍会炸你。<br/>
+    /// 延迟引信：弹幕原地悬停三十秒变成雷，阵营不变，敌弹仍会炸你。<br/>
     /// 与弹道冻结的分界：那条五秒后原样放行，这条要么被碰响、要么到期消散，不放行。<br/>
     /// 悬停完全交给时停层（速度快照、位置钉死、timeLeft 逐帧补偿都由它做），
     /// 协议这边只负责每帧续租，不自己缓存任何运动量
@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 if (Main.netMode != NetmodeID.Server) EmitTrigger(projectile.Center);
                 return;
             }
-            //到期（或施术者离场）：自然消散——走 Kill 让弹幕按自己的死亡逻辑收尾
+            //到期（或施术者离场）：自然消散，走 Kill 让弹幕按自己的死亡逻辑收尾
             if (Main.netMode != NetmodeID.Server) EmitDissipate(projectile.Center);
             KillProjectileSynced(projectile);
         }

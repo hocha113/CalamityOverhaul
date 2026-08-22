@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 if (npc.townNPC || npc.friendly || npc.CountsAsACritter) return false;
                 return npc.damage > 0 || npc.lifeMax > 5000;
             }
-            //玩家目标（PvP）永远走扫描仪红——即便暂不可入侵，侦察语汇也不该是中立青
+            //玩家目标（PvP）永远走扫描仪红，即便暂不可入侵，侦察语汇也不该是中立青
             if (target is PlayerScannable) return true;
             return target is IHackableTurret;
         }

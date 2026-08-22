@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>
         /// 一波墨雨节拍的完整解:周期/滴数/错拍/是否齐掷波。
         /// 滴数=域形态基数+每 3 格栏位一滴;周期随栏位缩短,但至少给出手窗留 4 帧回稳;
-        /// S≥<see cref="KikasaOverride.TierGhostVolley"/> 时每第 4 波为齐掷波——
+        /// S≥<see cref="KikasaOverride.TierGhostVolley"/> 时每第 4 波为齐掷波
         /// 出手拍全鬼同帧各掷一滴,不再占用错拍窗口
         /// </summary>
         private void SolveVolleyRhythm(Player owner, out int period, out int dropCount,
@@ -358,7 +358,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         //==================== 倒撑重击:蓄墨与倾覆 ====================
 
         /// <summary>
-        /// 倒扣蓄墨:伞翻转成器皿,墨在伞里蓄积——
+        /// 倒扣蓄墨:伞翻转成器皿,墨在伞里蓄积
         /// "伞下无雨":你没淋过的雨都记在伞里,现在连本带利还给别人
         /// </summary>
         private void UpdateFlip(Player owner) {
@@ -366,7 +366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             Projectile.Center = Vector2.Lerp(Projectile.Center, anchor, 0.2f);
             visualScale = MathHelper.Lerp(visualScale, 1f, 0.2f);
 
-            //翻成倒扣,自旋慢下来——蓄力不是转出来的
+            //翻成倒扣,自旋慢下来，蓄力不是转出来的
             flipT = MathHelper.Lerp(flipT, 1f, 0.16f);
             pourTilt = MathHelper.Lerp(pourTilt, 0f, 0.3f);
             spinSpeed = MathHelper.Lerp(spinSpeed, 0.06f, 0.2f);
@@ -419,7 +419,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         private void BeginPour(Player owner) {
             pourFill = ChargeFill;
-            //倾覆朝向:所有者按光标,旁观端按朝向——纯表现
+            //倾覆朝向:所有者按光标,旁观端按朝向，纯表现
             pourDirSign = Main.myPlayer == Projectile.owner
                 ? MathF.Sign(Main.MouseWorld.X - Projectile.Center.X + 0.01f)
                 : owner.direction;
@@ -465,7 +465,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 KikasaInk.Play(KikasaInk.InkSpray, Projectile.Center, 0.7f + 0.2f * pourFill, -0.55f, 2);
                 KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.75f + 0.2f * pourFill, -0.3f, 2);
                 if (Main.myPlayer == Projectile.owner) {
-                    //跟光标走,不再卡在朝下 ±31°——倒撑是碗,但瞄准必须跟手
+                    //跟光标走,不再卡在朝下 ±31°，倒撑是碗,但瞄准必须跟手
                     pourAim = (Main.MouseWorld - Projectile.Center).ToRotation();
                     int damage = (int)(Projectile.damage * (1.2f + 0.9f * pourFill)
                         * KikasaOverride.GetSlotDamageMul(KikasaOverride.GetSlotCount(owner)));
@@ -545,7 +545,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>
         /// 锁定 telegraph:获取目标的瞬间猛地睁眼(伴一记低哑水响),
         /// 出手窗全睁、持锁半睁、无人时眼睑几乎垂死;偶发眨眼保活性。
-        /// 视线纯表现——所有者按光标就近,旁观端按离所有者最近,端间近似无碍
+        /// 视线纯表现，所有者按光标就近,旁观端按离所有者最近,端间近似无碍
         /// </summary>
         private void UpdateEye(Player owner) {
             int newTarget = FindGazeTarget(owner);
@@ -798,7 +798,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         }
 
         /// <summary>
-        /// 伞下鬼:每个召唤栏位一只,吊在伞骨下沿弧排开,档位换魂色——
+        /// 伞下鬼:每个召唤栏位一只,吊在伞骨下沿弧排开,档位换魂色
         /// 玩家一眼读出当前强度档。黑底贴图按 A=0 加色,暗体用真透明的 Extra_98;
         /// 收伞随湿度退场。由 <see cref="KikasaRainRender"/> 在伞体之后另开无着色器批调用
         /// </summary>

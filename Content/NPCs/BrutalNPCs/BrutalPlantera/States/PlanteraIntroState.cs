@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         private void UpdateStill(PlanteraStateContext context) {
             NPC npc = context.Npc;
 
-            //几乎静止，只余轻摆——威压来自静
+            //几乎静止，只余轻摆，威压来自静
             npc.velocity *= 0.86f;
             context.RotationMode = 0;
             npc.alpha = 0;

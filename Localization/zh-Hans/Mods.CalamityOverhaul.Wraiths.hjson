@@ -59,7 +59,7 @@ Coven: {
 	RainShadeName: 湿刃
 	RainShadeNote: 鬼影穿体留下的刀口未合时，该目标每一跳雨蚀翻倍
 	HandShadeName: 按住了斩
-	HandShadeNote: 鬼影优先扑向被枯手攥住的猎物——速度已被压到零，那一刀不会落空
+	HandShadeNote: 鬼影优先扑向被枯手攥住的猎物，速度已被压到零，那一刀不会落空
 	LanternHandName: 照见
 	LanternHandNote: 灯照见过的猎物，枯手隔着遮挡也索得到；三灯刀光落在被攥住的目标上时加重一成六
 	BrideName: 喜堂

@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //材质：光织花瓣——签名行为=扑动翻瓣/危险段白热芯线/远段光谱余辉
+            //材质：光织花瓣，签名行为=扑动翻瓣/危险段白热芯线/远段光谱余辉
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Texture2D star = CWRAsset.StarTexture_White.Value;
             Vector2 half = Projectile.Size / 2f;
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
                 }
             }
 
-            //亮头：扑动的瓣形——用横轴开合表现翻瓣，两层星芒夹角收小、同步缓摆，
+            //亮头：扑动的瓣形，用横轴开合表现翻瓣，两层星芒夹角收小、同步缓摆，
             //避免大角度反向摆动读作抖动重影
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Color prism = Main.hslToRgb(Hue, 1f, 0.66f) with { A = 0 };

@@ -4,9 +4,9 @@
 //材质换成影：没有白热镶边，缝心比影体还黑（"黑纸撕开一道、缝底下是空的"），
 //  骨白只作 ≤2px 结构细线且只在新生几帧存在，之后整条转暗留成疤。
 //非对称是"斩"区别于"激光"的关键：uFlip 侧被噪声撕出毛口并沿刀线错位（出刀侧），
-//  另一侧收得干净（入刀侧）。厚度包络的峰不在中点而在 uPeak——力点写进轮廓。
+//  另一侧收得干净（入刀侧）。厚度包络的峰不在中点而在 uPeak：力点写进轮廓。
 //刻意不带 uTime：斩痕是已经发生完的事件的遗迹，不允许沿线流动。
-//无极角运算——极角审计免除。预乘 alpha 输出，配 BlendState.AlphaBlend
+//无极角运算，极角审计免除。预乘 alpha 输出，配 BlendState.AlphaBlend
 //ps_3_0 / vs_3_0
 // ============================================================================
 
@@ -102,7 +102,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float sc = saturate(s);
     float3 col = lerp(uColVoid, uColBody, smoothstep(0.0, 0.55, sc));
     col += uColFray * (tornSide * n2 * (1.0 - sc) * 0.55);
-    //撕口新生时本体压得更暗，白只在细线上——结构白，不是整体提亮
+    //撕口新生时本体压得更暗，白只在细线上，结构白，不是整体提亮
     col *= 1.0 - uTear * 0.38;
     col += uColRim * rim * uTear;
 

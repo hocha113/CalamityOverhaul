@@ -1,7 +1,7 @@
 // ============================================================================
 // FishronTornado.fx 鲨鱼龙卷柱体（水+风复合材质，2026-08 反塑料重写）
 // 世界 quad：uv.x 横向 0~1，uv.y 纵向 0(顶)~1(底)；柱体只占 quad 中带，
-// 四周留足撕裂余量——轮廓由噪声蚀刻半径决定，绝无干净数学圆柱边。
+// 四周留足撕裂余量，轮廓由噪声蚀刻半径决定，绝无干净数学圆柱边。
 // 签名行为：双层反向螺旋水带(前亮后暗遮挡差) / 噪声撕裂轮廓+离体飞沫 /
 // 底部卷吸裙摆碎浪 / 顶部风切歪斜散逸 / 多频不可通约摆轴
 // 直线算术无分支，噪声全走绑定贴图，无极角
@@ -23,7 +23,7 @@ sampler noiseSamp : register(s1);
 float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLOR0
 {
     // =========================================================
-    // A. 摆轴：三条不可通约频率 + 噪声漂移——绝不出现单摆钟摆感
+    // A. 摆轴：三条不可通约频率 + 噪声漂移，绝不出现单摆钟摆感
     // =========================================================
     float swayN = tex2D(noiseSamp, float2(uTime * 0.045 + uSeed, uv.y * 0.6)).r - 0.5;
     float sway = (sin(uTime * 1.83 + uSeed * 7.0 + (1.0 - uv.y) * 2.2) * 0.45
@@ -59,7 +59,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLO
 
     // =========================================================
     // C. 双层反向螺旋水带：斜向条带(横滚+爬升) → 读作旋转上升
-    //    前层快、亮、窄；后层慢、暗、宽——速差+遮挡=假体积
+    //    前层快、亮、窄；后层慢、暗、宽，速差+遮挡=假体积
     // =========================================================
     // 前层：向右横滚 + 向上爬升的斜带
     float2 fUV = float2(side * 0.55 - uTime * 1.35 + uSeed,
@@ -80,7 +80,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLO
     float backLit = back * 0.42 * (1.0 - front * 0.75);
     float field = front * 0.85 + backLit + updraft * 0.22;
 
-    // 圆柱受光：临边压暗 + 左亮右暗的侧光不对称 + 随高度的纵向明暗——
+    // 圆柱受光：临边压暗 + 左亮右暗的侧光不对称 + 随高度的纵向明暗
     // 整柱亮度均匀是贴纸感的病根之一，顶亮底沉才有体量
     float shade = (1.0 - rad * rad * 0.50) * (1.0 + side * -0.22);
     float vLight = lerp(1.10, 0.68, smoothstep(0.12, 0.95, uv.y));
@@ -92,7 +92,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLO
     float crownZone = smoothstep(0.36, 0.04, uv.y);
     float crownN = tex2D(noiseSamp, float2(side * 1.1 - uTime * 0.55 + uSeed,
         uv.y * 4.2 + uSeed * 5.0)).r;
-    // 破絮蚀刻：越靠顶部被吃得越碎；最顶 8% 再叠确定性软零——顶边永无硬切
+    // 破絮蚀刻：越靠顶部被吃得越碎；最顶 8% 再叠确定性软零，顶边永无硬切
     float crownFade = 1.0 - crownZone * smoothstep(0.28, 0.55, crownN + crownZone * 0.25);
     crownFade *= smoothstep(0.0, 0.08, uv.y);
 
@@ -122,7 +122,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLO
     // =========================================================
     float density = body * (0.40 + field * 0.60) * crownFade * shade;
     density += flecks * 0.55 + churn * skirt * 0.3;
-    // 底缘 4% 渐没入地——斜坡地形上不露水平硬线
+    // 底缘 4% 渐没入地，斜坡地形上不露水平硬线
     float guard = smoothstep(0.0, 0.015, uv.x) * smoothstep(1.0, 0.985, uv.x)
         * smoothstep(0.0, 0.012, uv.y) * smoothstep(1.0, 0.96, uv.y);
     float alpha = saturate(density * uIntensity * guard) * 0.92;

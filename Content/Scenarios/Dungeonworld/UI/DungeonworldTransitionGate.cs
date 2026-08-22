@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
     /// <summary>
     /// 过渡链路修复：进入/退出的「先遮再冻」压黑门<br/>
     /// 已核实 SubworldLibrary 时序：BeginEntering 当帧设 gameMenu=true（SubworldSystem.cs:223）后
-    /// 存档/卸载/生成全在后台 Task（:225→ExitWorldCallBack :1067），主线程理论上持续绘制加载屏——
+    /// 存档/卸载/生成全在后台 Task（:225→ExitWorldCallBack :1067），主线程理论上持续绘制加载屏
     /// 但 12M tile 世界的分配与 GC 会造成主线程长帧，暴露出未经修饰的冻结黑。<br/>
     /// 本门在真正调 SubworldSystem.Enter/Exit 之前先播 0.45s 客户端压黑（入井意象），
     /// 全黑再多呈现一帧后才提交过渡，把「突兀冻结黑」变成「有意为之的入井压黑」；

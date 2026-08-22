@@ -7,8 +7,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
 {
     /// <summary>
     /// 旧网调试入口，仅调试构建存在（正式入口在 M1：坠舱终端 / L3 下潜）：<br/>
-    /// /oldnet enter —— 越墙深潜<br/>
-    /// /oldnet exit —— 直接断链（视同非登出途径离开，账本按机制作废）
+    /// /oldnet enter：越墙深潜<br/>
+    /// /oldnet exit：直接断链（视同非登出途径离开，账本按机制作废）
     /// </summary>
     internal class OldNetCommand : ModCommand
     {

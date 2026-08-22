@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
             }
 
             Projectile.rotation = Projectile.velocity.ToRotation();
-            //飞行中缓慢增速——不是匀速贴图平移
+            //飞行中缓慢增速，不是匀速贴图平移
             if (Projectile.velocity.Length() < 22f) {
                 Projectile.velocity *= 1.012f;
             }

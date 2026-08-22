@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.HackTimes.Chips
     //本页是 2026-08 扩展批的六枚 Npc 协议芯片；坐标全部压在 ±0.80，
     //孤立点写成单点子路径（M x y），圆角一律用 Q 表达（解析器不吃 A 指令）
 
-    /// <summary>代偿协议芯片。躯体右腹被导管抽走一段，导管另一头指回一个人形小记号——债主在你这边</summary>
+    /// <summary>代偿协议芯片。躯体右腹被导管抽走一段，导管另一头指回一个人形小记号，债主在你这边</summary>
     internal class CompensationProtocolChip : BaseHackProtocolChip<CompensationProtocol>
     {
         protected override string DiePath =>
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.HackTimes.Chips
             + "M 0.52 0.10 L 0.40 0.34 M 0.52 0.10 L 0.64 0.34";
     }
 
-    /// <summary>载荷改写芯片。躯体的枪口位置分出三道箭簇，箭簇全部实心——归属已经翻转</summary>
+    /// <summary>载荷改写芯片。躯体的枪口位置分出三道箭簇，箭簇全部实心，归属已经翻转</summary>
     internal class PayloadRewriteChip : BaseHackProtocolChip<PayloadRewrite>
     {
         protected override string DiePath =>
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.HackTimes.Chips
             + "M 0.10 -0.56 L 0.24 -0.62 M 0.10 -0.56 L 0.20 -0.44";
     }
 
-    /// <summary>躯壳征用芯片。躯体倒下一半，一根提线从上方勾住肩点——傀儡线</summary>
+    /// <summary>躯壳征用芯片。躯体倒下一半，一根提线从上方勾住肩点，傀儡线</summary>
     internal class ShellRequisitionChip : BaseHackProtocolChip<ShellRequisition>
     {
         protected override string DiePath =>

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
 {
     /// <summary>
     /// 通用兜底夺身演出：封印墨收束。<br/>
-    /// 材质为「墨」——无彩暗体收拢 + 札红芯闪，不借用任何一只鬼的专属语汇；
+    /// 材质为「墨」，无彩暗体收拢 + 札红芯闪，不借用任何一只鬼的专属语汇；
     /// 仅在该鬼未提供专属演出时使用。
     /// </summary>
     internal sealed class GenericSeizurePerformance : WraithDeathPerformance

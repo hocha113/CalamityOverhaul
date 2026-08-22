@@ -6,7 +6,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
 {
     /// <summary>
-    /// 鬼火舌：贴根蹿起的小簇金焰——速度拉伸泪滴、明灭闪变、幽缓上浮（鬼火不窜天、不冒烟）。
+    /// 鬼火舌：贴根蹿起的小簇金焰，速度拉伸泪滴、明灭闪变、幽缓上浮（鬼火不窜天、不冒烟）。
     /// 层次=外琥珀辉/金体/白金芯，全 A=0 加色进 AlphaBlend 批；Extra_98 真 alpha 底只作形状承载，
     /// 单层速度拉伸，不做灰度叠层复合（设计约束）
     /// </summary>
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
     }
 
     /// <summary>
-    /// 离体鬼火珠：脱火上浮的游魂灯——正弦游移、速度向淡拖尾、呼吸明灭、末段一缩即灭。
+    /// 离体鬼火珠：脱火上浮的游魂灯，正弦游移、速度向淡拖尾、呼吸明灭、末段一缩即灭。
     /// dying 形态（鬼雨压制中出逃）升得急、喘得凶、灭得快
     /// </summary>
     internal class PRT_KikasaWispOrb : BasePRT

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.States
 {
     /// <summary>
     /// 过载熔断连接段（20% 一次性）：警报音逐拍加急、焊缝热光拉满、
-    /// 全身火星喷涌——之后攻速解锁、每次出招后自落零件、头锤升级三连摆
+    /// 全身火星喷涌，之后攻速解锁、每次出招后自落零件、头锤升级三连摆
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)ScrapStateIndex.OverloadConnector, typeof(ScrapStateContext))]
     internal class ScrapOverloadConnectorState : ScrapStateBase

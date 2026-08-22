@@ -15,11 +15,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
     /// <summary>
     /// 入场揭示层：加载硬切后的「落底—棺门推开」演出，追加为最顶层 LegacyGameInterfaceLayer<br/>
     /// 过渡链路修复后的触发协议（旧一次性布尔在主世界残余帧被 PostUpdateEverything 提前消费，弃用）：<br/>
-    /// 1. 军备时戳——加载屏每个下行帧刷新 <see cref="ArmFromLoading"/>，世界侧首个界面帧
+    /// 1. 军备时戳，加载屏每个下行帧刷新 <see cref="ArmFromLoading"/>，世界侧首个界面帧
     ///    检测到新鲜时戳即起黑幕，激活判定放在绘制侧保证世界首帧必被盖住（不变量）；<br/>
-    /// 2. 首帧闩锁——纯黑保持到 PostDrawTiles 实跳 ≥2 帧（世界真实开画），8s 超时防御性放行，
+    /// 2. 首帧闩锁，纯黑保持到 PostDrawTiles 实跳 ≥2 帧（世界真实开画），8s 超时防御性放行，
     ///    黑幕期间显示「正在点亮烛火」状态行；<br/>
-    /// 3. 演出用绘制侧墙钟限幅推进——只有真实呈现的帧才消耗演出时间，
+    /// 3. 演出用绘制侧墙钟限幅推进，只有真实呈现的帧才消耗演出时间，
     ///    Update 追帧突发（黑屏卡顿后的补跑）无法再把整段演出烧掉。全程不锁输入
     /// </summary>
     internal class DungeonworldEntryReveal : ModSystem

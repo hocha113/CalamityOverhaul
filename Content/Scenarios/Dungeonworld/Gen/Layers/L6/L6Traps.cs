@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
     //
     //类型编号对源校正(WorldGen.cs L5556-5923,placeTrap本体):
     //  type0=飞镖+灰压板(墙下style2,L5983)  type1=巨石落石(活石塞+石巢,L5637)
-    //  type2=埋地炸药  type3=间歇泉 ——D表"type2巨石/type3炸药"系research笔误,
+    //  type2=埋地炸药  type3=间歇泉，D表"type2巨石/type3炸药"系research笔误,
     //  本层落石用type1;炸药(type2)与间歇泉(type3)全层禁用(炸几何/离题)
     //
     //每处杀招的预告手段(逐母题注释),统一底线:
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
 
         /// <summary>
         /// 落石(placeTrap type1)。要求板行上8行起有6宽x4高全实心巢区且含>=3格
-        /// 石/土/泥(L5677-5718)——全砖世界必失败,调用方须先SeedBoulderNest;
+        /// 石/土/泥(L5677-5718)：全砖世界必失败,调用方须先SeedBoulderNest;
         /// 函数自凿2宽落槽+石质巢领+活石塞(巢领剪影即预告,L5735-5779)。
         /// </summary>
         internal static bool TryPlaceBoulder(int plateX, int plateRow, ref Tally tally) {
@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
 
         /// <summary>
         /// 母题:活塞推杆。龛带内3x3帧精确空槽+Cog缸体+焦油垂滴+登记L6MachineSlots。
-        /// 登记的帧只是缸体包络,不含行程——运行时由Machines\DungeonworldMachines
+        /// 登记的帧只是缸体包络,不含行程，运行时由Machines\DungeonworldMachines
         /// 现场往下量到行走面再决定捶多深。
         /// </summary>
         internal static void SegPistonSlot(RoomNode room, int segL, int segR, UnifiedRandom rand, ref Tally tally) {
@@ -337,7 +337,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
                 tally.WantsSign = true;
             }
             else {
-                //软着陆下厅:安慰奖罐+油渍(渣场语汇,无骨堆——骨归L5)
+                //软着陆下厅:安慰奖罐+油渍(渣场语汇,无骨堆，骨归L5)
                 tally.Furn(WorldGen.PlacePot(spanL + 1, lowerFloor - 1, TileID.Pots,
                     rand.Next(L6Palette.PotStyleMin, L6Palette.PotStyleMax + 1)),
                     "缓冲室罐", spanL + 1, lowerFloor - 1);

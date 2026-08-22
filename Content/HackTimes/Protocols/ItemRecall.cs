@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
     /// <summary>
     /// 远程回收：把掉落物瞬移到施法者脚下，剩下的交给原版拾取。<br/>
-    /// 刻意不直接写背包——非 ServerSideCharacter 的联机里背包归客户端管，
+    /// 刻意不直接写背包，非 ServerSideCharacter 的联机里背包归客户端管，
     /// 服务端写下去会被原版丢弃（<c>MessageBuffer</c> case 5）
     /// </summary>
     internal class ItemRecall : QuickHackDef

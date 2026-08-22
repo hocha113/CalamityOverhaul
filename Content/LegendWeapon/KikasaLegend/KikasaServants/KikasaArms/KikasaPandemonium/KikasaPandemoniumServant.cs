@@ -17,7 +17,7 @@ using static CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.K
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms.KikasaPandemonium
 {
     /// <summary>
-    /// 械奴·万魔殿（专属条目，短路通用推断——HoldUp 魔法进不了枪/刀/鞭）。
+    /// 械奴·万魔殿（专属条目，短路通用推断，HoldUp 魔法进不了枪/刀/鞭）。
     /// 单本法书：血湖凝成的书身吐真硫磺火（直接生成武器本体镰/火球/闪电/血雨），
     /// 出招池 = 镰刀螺旋与火球拍击轮换；法阵冷却就绪时冲位泼出
     /// <see cref="KikasaPandemoniumCircle"/> 小硫磺阵。

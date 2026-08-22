@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 {
     /// <summary>
     /// 鬼奴·湖水版世纪之花。全鬼奴中唯一的锚定炮台：花体悬在湖面上方一点点
-    /// 随水波轻晃，三根钩须呈扇形垂下扎进水面以下——它锚在湖里，湖是它的土壤。
+    /// 随水波轻晃，三根钩须呈扇形垂下扎进水面以下，它锚在湖里，湖是它的土壤。
     /// 出水为钩须逐根探出扎位、链身绷直后把花体从水里拽起；跟随即搬家演出
     /// （拔须→低掠水面→扎回），不做漂移追击。攻击三式：湖面藤袭（目标脚下
     /// 涟漪预告→血藤破水鞭笞，独立弹幕）、种子机关枪（口部后坐、弹壳水珠）、
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：只有 owner 裁决——服务器无领域状态（既定契约），
+            //生命线：只有 owner 裁决，服务器无领域状态（既定契约），
             //迟入场客户端首份快照前也会误判；其余端只跟 owner 的同步包换场
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
@@ -324,7 +324,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         /// <summary>
-        /// 迟入场静默补齐已过节拍：只预标记比当前计时旧 12 帧以上的拍——
+        /// 迟入场静默补齐已过节拍：只预标记比当前计时旧 12 帧以上的拍
         /// 正常联机包迟到几帧的拍照常补播，真正的中途入场才整段静默，
         /// 防止首帧连环重播开场炮
         /// </summary>
@@ -408,7 +408,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (t < OmenFrames) {
-                //预兆：出水点涟漪收拢 + 三处扎根位各自小圈——湖在替它量地
+                //预兆：出水点涟漪收拢 + 三处扎根位各自小圈，湖在替它量地
                 if (viewed) {
                     if (t % 6 == 2) {
                         float converge = 1f - t / (float)OmenFrames;
@@ -459,7 +459,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (t >= TautFrame && PlayOnce(6)) {
-                //绷直拍：三链同时吃劲，纤维吱嘎——拽起前最后一口气
+                //绷直拍：三链同时吃劲，纤维吱嘎，拽起前最后一口气
                 chainTwang = 0.7f;
                 SoundEngine.PlaySound(SoundID.NPCHit7 with { Volume = 0.45f, Pitch = -0.85f, MaxInstances = 2 }, Projectile.Center);
                 if (viewed) {
@@ -681,7 +681,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (phase == 1) {
-                //低掠：贴水面滑向主人近旁，尾迹涟漪一路跟随——搬家不是漂移
+                //低掠：贴水面滑向主人近旁，尾迹涟漪一路跟随，搬家不是漂移
                 if ((int)relocateSide == 0) {
                     relocateSide = anchorX >= owner.Center.X ? 1f : -1f;
                 }
@@ -810,7 +810,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 if (t == 3) {
                     SoundEngine.PlaySound(SoundID.DD2_BookStaffCast with { Volume = 0.4f, Pitch = -0.7f, MaxInstances = 2 }, Projectile.Center);
                 }
-                //蓄口血珠向口部汇聚，72% 后静默——喷发前吸气
+                //蓄口血珠向口部汇聚，72% 后静默，喷发前吸气
                 if (!Main.dedServ && t < SeedAimFrames * 0.72f && t % 2 == 1) {
                     Vector2 mouth = MouthPos();
                     Vector2 from = mouth + Main.rand.NextVector2Unit() * Main.rand.NextFloat(40f, 90f);
@@ -961,7 +961,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         BloodMain * 0.5f, Main.rand.NextFloat(0.35f, 0.6f))?.Configure(Main.rand.Next(10, 18));
                 }
 
-                //皮筋极限：链绷到头被硬生生拽停——够到够不到都认账
+                //皮筋极限：链绷到头被硬生生拽停，够到够不到都认账
                 bool leashed = Vector2.Distance(Projectile.Center, pounceAnchor) >= ChainReach;
                 if (leashed && PlayOnce(1)) {
                     Projectile.velocity *= -0.32f;

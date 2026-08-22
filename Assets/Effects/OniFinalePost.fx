@@ -38,7 +38,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         float sideSign = side >= 0.0 ? 1.0 : -1.0;
         float slide = uSplitOffset * sideSign;
         sampleUV = coords - float2(perp.x / max(uAspect, 1e-3), perp.y) * slide;
-        //两半各滑开 uSplitOffset 后，|side|<offset 的带不再有任何一半覆盖——
+        //两半各滑开 uSplitOffset 后，|side|<offset 的带不再有任何一半覆盖
         //这就是伤口内部：显示虚空而非被拉扯的屏幕像素（采样跳变也被虚空盖住，无需羽化）
         float inGap = uSplitOffset - abs(side);
         gapMask = smoothstep(-0.0015, 0.0015, inGap);

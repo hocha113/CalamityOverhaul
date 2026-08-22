@@ -1,5 +1,5 @@
 // ============================================================================
-//DungeonworldFog.fx 深牢迷雾——世界锚定密度场雾（单 technique 双 pass）
+//DungeonworldFog.fx 深牢迷雾，世界锚定密度场雾（单 technique 双 pass）
 //FogFilter: Filters.Scene 前景瘴气（拷屏合成）/ FogOverlay: PostDrawTiles 背景雾（预乘 AlphaBlend）
 //密度住在世界坐标: s1 密度窗口纹理(rgb=受光雾色, a=密度, DungeonworldFogSim 每 2 tick 上传)
 //直线算术、无分支、无 atan2、噪声全走绑定贴图（FNA3D 翻译纪律）
@@ -41,7 +41,7 @@ float4 FogEval(float2 tpx) {
     return float4(col, a);
 }
 
-//前景瘴气：拷屏合成。忽略 COLOR0（签名同 ScrapSiegeFilter——
+//前景瘴气：拷屏合成。忽略 COLOR0（签名同 ScrapSiegeFilter
 //FilterManager 中间级把 ColorOfTheSkies 当顶点色传入，消费它会引入夜色二次压暗）
 float4 PSFogFilter(float2 uv : TEXCOORD0) : COLOR0 {
     float4 src = tex2D(uScreen, uv);
@@ -49,7 +49,7 @@ float4 PSFogFilter(float2 uv : TEXCOORD0) : COLOR0 {
     return float4(lerp(src.rgb, fog.rgb, fog.a), src.a);
 }
 
-//背景雾：预乘输出进 AlphaBlend 批（暗雾必须能压暗——加色批物理上画不出暗，全线预乘）
+//背景雾：预乘输出进 AlphaBlend 批（暗雾必须能压暗，加色批物理上画不出暗，全线预乘）
 float4 PSFogOverlay(float2 uv : TEXCOORD0) : COLOR0 {
     float4 fog = FogEval(uv * uScreenSize);
     return float4(fog.rgb * fog.a, fog.a);

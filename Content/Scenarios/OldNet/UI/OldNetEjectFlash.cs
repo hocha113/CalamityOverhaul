@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
     /// <summary>
     /// 弹出闪红转场：链路烧断的最简 CPU 全屏层（黑墙红 alpha 包络 + 横向撕裂线），
     /// 约 25 tick，红峰处交棒 LINK SEVERED 加载屏；残余帧落在主世界侧自然收尾。
-    /// 刻意不用 shader——新 fx 有 FNA3D 无日志崩溃风险，此处挣不回成本
+    /// 刻意不用 shader：新 fx 有 FNA3D 无日志崩溃风险，此处挣不回成本
     /// </summary>
     internal class OldNetEjectFlash : ModSystem
     {

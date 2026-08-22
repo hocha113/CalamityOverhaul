@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
     /// <summary>
     /// 落地揭示：加载屏是硬切，直接亮起来会露馅。这里从全黑淡出，中途透一层暗红余烬，
     /// 让"睁眼"这一下有个过渡。<br/>
-    /// 真正的入场演出是潮汐本身——雾从涨满退下去把村子还给你（<see cref="Fog.KiyumeFogTide"/>），
+    /// 真正的入场演出是潮汐本身，雾从涨满退下去把村子还给你（<see cref="Fog.KiyumeFogTide"/>），
     /// 这层只负责接住加载屏最后那一帧
     /// </summary>
     internal class KiyumeEntryReveal : ModSystem

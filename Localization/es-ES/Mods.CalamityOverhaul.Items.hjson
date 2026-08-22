@@ -3267,7 +3267,7 @@ OniMeiRubbingOnikiri: {
 	Tooltip: Inscripción original: mantiene la hoja tal cual, sin don ni precio
 	// Origin: At Ichijo-Modoribashi, the oni that lost its arm never dared come back for it. The name has been nailed to the tang ever since
 	Power: La inscripción original. La hoja permanece exactamente como es — no concede ni arrebata nada
-	Burden: ———
+	Burden: None
 }
 
 OniMeiRubbingShishinoko: {

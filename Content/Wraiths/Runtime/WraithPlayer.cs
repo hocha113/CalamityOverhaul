@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         /// <summary>
         /// 结算一次役使：推进主鬼复苏，并按互相催醒带动同场其他鬼。
-        /// 一次结算可能同时推满多槽，全部清零，但只挑一只启动夺身——演出一次只能有一个
+        /// 一次结算可能同时推满多槽，全部清零，但只挑一只启动夺身，演出一次只能有一个
         /// </summary>
         private bool TryChargeCore(string key, float revivalGain, float erosionCost,
             out string seizeKey) {

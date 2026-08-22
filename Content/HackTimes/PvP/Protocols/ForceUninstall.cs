@@ -11,10 +11,10 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
     /// <summary>
     /// 强制卸载（默认档，基础反制之二：拔已落地效果）。对自己施放（SelfRig 位）。<br/>
     /// 服务端裁决：拔掉施术者身上<b>最早落地</b>的一条敌方效果（授予账与防守方帐本
-    /// 同为落地序，按账头拔即对齐）——服务端撤账并广播 PlayerEffectRemove(Uninstalled)，
+    /// 同为落地序，按账头拔即对齐），服务端撤账并广播 PlayerEffectRemove(Uninstalled)，
     /// 防守方本机收包执行 OnDefenderRemove，HUD 条目碎裂退场，
     /// 攻击方植入物面板对应卡爆裂 + "被卸载"标签。<br/>
-    /// 刻意贵（4 RAM）+ 长冷却 1800f：它是解创口的绷带不是免疫开关——
+    /// 刻意贵（4 RAM）+ 长冷却 1800f：它是解创口的绷带不是免疫开关
     /// 面对叠加上限 3 条的满压制，一次只能拔一条
     /// </summary>
     internal class ForceUninstall : QuickHackDef
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
             }
             //没账可拔返回 false（竞态：上传完成与最后一条效果到期同帧，窗口不到一帧）。
             //注意：追踪器的 OnApply 失败路径没有退款管线（EndAuthorityEffect 不退），
-            //这 4 RAM 按沉没处理——冷却不吃（ExecuteUninstall 未跑），代价可接受
+            //这 4 RAM 按沉没处理，冷却不吃（ExecuteUninstall 未跑），代价可接受
             if (!PlayerHackAuthority.ExecuteUninstall(caster)) return false;
             if (Main.netMode != NetmodeID.Server) EmitCue(caster);
             return true;

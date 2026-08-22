@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Fog
     /// <summary>
     /// 深牢迷雾系统：模拟驱动、Filter 激活、PostDrawTiles 背景雾层与 CPU 回退、
     /// 深牢怨灵禁室压雾消费者。纯客户端表现，零同步包（FOG.md）。<br/>
-    /// 双层夹心：背景雾画在墙/砖/NPC 之后、弹幕/玩家之前（TML Main.cs L59957 时序）——
+    /// 双层夹心：背景雾画在墙/砖/NPC 之后、弹幕/玩家之前（TML Main.cs L59957 时序）
     /// 敌人被裹进雾里，玩家走在雾前；前景瘴气经 Filters.Scene 盖在世界最上层
     /// </summary>
     internal class DungeonworldFogSystem : ModSystem, ICWRLoader

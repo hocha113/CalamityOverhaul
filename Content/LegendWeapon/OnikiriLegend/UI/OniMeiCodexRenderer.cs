@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
     /// 铭谱绘制：线装册子的封面/纸面/中缝/栞，左页名录格与页签，右页详情。<br/>
-    /// 纹样一律走 <see cref="SvgPathPen"/> 的嵌入路径串——无贴图，缩放不糊
+    /// 纹样一律走 <see cref="SvgPathPen"/> 的嵌入路径串，无贴图，缩放不糊
     /// </summary>
     internal static class OniMeiCodexRenderer
     {
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private static readonly Color PaperBurden = new(148, 48, 40);
 
         /// <summary>
-        /// 和纸墨字：单次绘制。禁止 DrawBorderString——四向黑描边叠在深墨上会糊成一团
+        /// 和纸墨字：单次绘制。禁止 DrawBorderString：四向黑描边叠在深墨上会糊成一团
         /// </summary>
         internal static void DrawPaperInk(SpriteBatch sb, DynamicSpriteFont font, string text,
             Vector2 pos, Color color, float scale, float alpha = 1f,
@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>
         /// 一格：字形在上、铭名在下。<br/>
-        /// 已得走阴刻，未得整体压暗并罩一层薄墨——看得见轮廓，读不出内容
+        /// 已得走阴刻，未得整体压暗并罩一层薄墨，看得见轮廓，读不出内容
         /// </summary>
         public static void DrawCell(SpriteBatch sb, DynamicSpriteFont font, Rectangle rect,
             in OniMeiCodexRow row, bool selected, float hover, float alpha, float time) {
@@ -278,7 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             style.Lit = locked ? 0.02f : 0.10f + hover * 0.45f;
             OniMeiGlyph.Draw(sb, row.Key, glyphAt, size, style);
 
-            //铭名：未得也照给——铭名本身就是线索
+            //铭名：未得也照给，铭名本身就是线索
             string name = row.Name;
             float scale = 0.86f;
             Vector2 textSize = font.MeasureString(name) * scale;

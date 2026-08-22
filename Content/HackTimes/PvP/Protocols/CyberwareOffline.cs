@@ -13,14 +13,14 @@ using Terraria.Audio;
 namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 {
     /// <summary>
-    /// 义体离线（芯片档）：八秒内断掉防守方全部义体——
+    /// 义体离线（芯片档）：八秒内断掉防守方全部义体
     /// <c>CyberwarePlayer</c> 的两条效果 Update 通道（UpdateEquipped /
     /// PostUpdateEquipped）被 <see cref="CyberwareOfflineHook"/> 旁路跳过，
     /// Sandevistan 正在运行则立即经它自己的开关请求链中止，技能轮盘当场合拢。<br/>
     /// <b>不动的东西</b>：装配表一格不卸（服务端拥有的 loadout 一个字不碰）、
-    /// 义体物品不消失、容量不变——纯防守方本机的收益抑制，到期收益自然回流。<br/>
+    /// 义体物品不消失、容量不变，纯防守方本机的收益抑制，到期收益自然回流。<br/>
     /// <b>防火墙豁免</b>（设计 §3.3：义体离线明确豁免防火墙义体，否则自相矛盾）：
-    /// 按类型名含 "Firewall" 判定——防火墙义体是第三波内容尚未落地，
+    /// 按类型名含 "Firewall" 判定，防火墙义体是第三波内容尚未落地，
     /// 这是给它留的名字接缝，落地时命中或换成标记接口都行
     /// </summary>
     internal class CyberwareOffline : PlayerHackDef
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
             radial.CancelChargeIfAny();
             radial.ForceCloseRadial();
 
-            //Sandevistan 正在运行则立即中止——走它自己的开关请求链
+            //Sandevistan 正在运行则立即中止，走它自己的开关请求链
             //（单人直落权威，联机发请求给服务端，权威语义不被绕过）
             var sandevistan = defender.GetModPlayer<SandevistanPlayer>();
             if (sandevistan.IsActive) {

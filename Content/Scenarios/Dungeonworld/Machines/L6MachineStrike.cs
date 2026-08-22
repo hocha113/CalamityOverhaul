@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Machines
     /// <summary>
     /// L6 铸造层机器的一次行程：活塞下捶 / 碾轮横扫。<br/>
     /// 上膛段不致伤，只出声出尘把"要砸了"喊出来（§机关必须可读，公平性）；
-    /// 行程段才咬人。预警与伤害压在同一个实体里，各端就不必对"机器相位"达成一致——
+    /// 行程段才咬人。预警与伤害压在同一个实体里，各端就不必对"机器相位"达成一致
     /// 弹幕生成包一发过去，看到的和挨打的自然对齐。<br/>
     /// ai[0]=形态（0 活塞 / 1 碾轮）· ai[1]=行程长度（格）
     /// </summary>
@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Machines
             Projectile.rotation += 0.11f * SweepDir;
         }
 
-        //上膛期只有伤害是关的，声画照常——这就是"读得出来"的那半秒
+        //上膛期只有伤害是关的，声画照常，这就是"读得出来"的那半秒
         private void WindDust(float t) {
             if (Main.dedServ || Main.rand.NextFloat() > 0.25f + t * 0.35f) {
                 return;

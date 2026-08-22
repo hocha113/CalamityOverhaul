@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
 {
     /// <summary>
     /// 任务书教程的状态机。推进、检查点、跳步与兜底都在这里，
-    /// 绘制只读它的公开态——渲染层不该有第二份"当前在第几步"
+    /// 绘制只读它的公开态，渲染层不该有第二份"当前在第几步"
     /// </summary>
     internal class QuestBookGuidePlayer : ModPlayer
     {
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
         }
 
         /// <summary>
-        /// 老档折算：旧版只讲委托的引导看完过，就当两章都讲过了——
+        /// 老档折算：旧版只讲委托的引导看完过，就当两章都讲过了
         /// 已经会用委托的人不该被重新教一遍
         /// </summary>
         private void MergeLegacyEntrustGuide() {
@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
 
             if (CurrentStep == QuestBookStep.None) {
                 //场面还不具备就别起步。第一章每一步都要书摊开着，
-                //书没开就起步会当帧被 KeepStepAlive 挂起，下一帧再起——
+                //书没开就起步会当帧被 KeepStepAlive 挂起，下一帧再起
                 //空转本身无害，但进步时的场面准备（摊记录条、翻站点）会跟着每帧重放一次
                 if (!CanStartNow()) {
                     return;
@@ -230,7 +230,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             }
         }
 
-        /// <summary>失去展示权时挂起。只停展示，绝不写 Declined——缺前置不等于玩家拒绝</summary>
+        /// <summary>失去展示权时挂起。只停展示，绝不写 Declined：缺前置不等于玩家拒绝</summary>
         public void Suspend() {
             if (CurrentStep == QuestBookStep.None) {
                 return;
@@ -409,7 +409,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
                         ui.ResetCategoryForGuide();
                     }
                     if (step == QuestBookStep.TrackEntry) {
-                        //新委托登记时会被自动关注，样本行多半已在关注中——
+                        //新委托登记时会被自动关注，样本行多半已在关注中
                         //这时讲「右键→关注」是教反的，换成教一次取消与恢复
                         TrackEntryPreTracked = ui?.FirstVisibleEntry?.Status == QuestEntryStatus.Tracked;
                         trackSawDip = false;
@@ -441,7 +441,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
 
         /// <summary>
         /// 只有"翻到某处"这类导航步允许当帧判过。<br/>
-        /// 讲解步不许——那会让卡片一闪而过，玩家什么都没读到
+        /// 讲解步不许，那会让卡片一闪而过，玩家什么都没读到
         /// </summary>
         private static bool AllowsInstantSkip(QuestBookStep step)
             => step is QuestBookStep.KeyPrompt or QuestBookStep.GotoEntrust;

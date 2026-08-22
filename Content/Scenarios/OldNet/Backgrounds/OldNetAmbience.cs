@@ -10,9 +10,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
 {
     /// <summary>
     /// 旧网氛围接管（镜像 CyberspaceSystem 的压光换色，参数按旧网永夜标定）：
-    /// 染色重心在背景——背景沉黑让地形剪影从天幕上剥出来，地砖只轻染保战斗可读性；
+    /// 染色重心在背景，背景沉黑让地形剪影从天幕上剥出来，地砖只轻染保战斗可读性；
     /// 黑墙气质靠"黑场景+红轮廓"的对比而非满屏红罩。<br/>
-    /// 另持环境声层：死寂基调（Music=0）上的两条低鸣——黑墙低频嗡鸣随离墙距离
+    /// 另持环境声层：死寂基调（Music=0）上的两条低鸣，黑墙低频嗡鸣随离墙距离
     /// 指数衰减、静电风噪随带内腐化上量，全部原版音源
     /// </summary>
     internal class OldNetAmbience : ModSystem
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
             return true;
         }
 
-        //静电风噪：墙脚近乎无声，衰减区压满——疯域的背景嘶声
+        //静电风噪：墙脚近乎无声，衰减区压满，疯域的背景嘶声
         private static bool UpdateStaticWind(ActiveSound sound) {
             if (!OldNetWorld.Active || Main.gameMenu) {
                 return false;
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
             return true;
         }
 
-        //压光：氛围级而非致盲级——旧网是永夜，压得比领域(0.30)轻
+        //压光：氛围级而非致盲级，旧网是永夜，压得比领域(0.30)轻
         public override void ModifyLightingBrightness(ref float scale) {
             if (Presence > 0.001f) {
                 scale *= 1f - 0.22f * Presence;

@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         public override void AI() {
             Life++;
 
-            //出膛短程复利增速到极速，随后远程微坠——种子是"打"出去的
+            //出膛短程复利增速到极速，随后远程微坠，种子是"打"出去的
             float speed = Projectile.velocity.Length();
             if (speed < 23f) {
                 Projectile.velocity *= 1.028f;

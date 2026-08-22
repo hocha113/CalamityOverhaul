@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
                 Projectile.Center = new Vector2(head.ai[0], head.ai[1]);
             }
             else if (LocalTimer > 20f) {
-                //出生宽限后宿主仍不在投技态才淡出自毁——
+                //出生宽限后宿主仍不在投技态才淡出自毁
                 //防客户端先收到本弹生成包、后收到头的ai[2]状态包时误自杀
                 FadeTimer++;
                 if (FadeTimer >= FadeTime) {

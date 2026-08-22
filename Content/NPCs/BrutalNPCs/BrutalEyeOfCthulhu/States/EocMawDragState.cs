@@ -253,7 +253,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 
         private void UpdatePivot(NPC npc, Player player, EocStateContext context) {
             float progress = Timer / (float)PivotTime;
-            //急刹+回首死盯，口器越张越大——这是投技的专属语言
+            //急刹+回首死盯，口器越张越大，这是投技的专属语言
             npc.velocity *= 0.8f;
             FaceTarget(npc, player.Center, 0.35f);
             context.FrameRate = 2;
@@ -313,7 +313,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             context.PushDashVisuals(1f, 1f);
             context.FrameRate = 2;
             FaceVelocity(npc);
-            //真冲刺无接触伤：咬中即投技，擦过不算——与普通冲撞的本质区别
+            //真冲刺无接触伤：咬中即投技，擦过不算，与普通冲撞的本质区别
             DisableContactDamage(npc);
             dashTraveled += npc.velocity.Length();
 
@@ -638,7 +638,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         }
 
         /// <summary>
-        /// 找拖行地表（含平台）：起点取眼体略上方——起点在空中就向下找地板（平地/洞穴都不误认洞顶），
+        /// 找拖行地表（含平台）：起点取眼体略上方，起点在空中就向下找地板（平地/洞穴都不误认洞顶），
         /// 起点已在地里说明前方地形抬升，向上找表面攀越；都找不到视作悬崖缓降
         /// </summary>
         internal static float FindGroundY(Vector2 from) {

@@ -194,7 +194,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Rendering
         }
 
         /// <summary>
-        /// 拳部推进器喷焰（火箭拳身份件）：随状态切换喷焰语言——
+        /// 拳部推进器喷焰（火箭拳身份件）：随状态切换喷焰语言
         /// 飞行全开随速伸缩 / 蓄力喷口预热脉冲 / 反弹侧向修正喷 / 回归反向减速喷 / 待机导火苗
         /// </summary>
         internal static void DrawFistThruster(SpriteBatch sb, NPC npc, GolemFistStateContext ctx) {

@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
                     BrainMotion.Shake(npc.Center, 3f, 8);
                 }
 
-                //舒张期：血雾向心吸入（末段渐静——爆发前的收势）
+                //舒张期：血雾向心吸入（末段渐静，爆发前的收势）
                 if (!VaultUtils.isServer && beatPhase > 14 && beatPhase < PulsePeriod - 8 && Timer % 3 == 0
                     && BrainMotion.OnScreen(npc.Center)) {
                     Vector2 pos = npc.Center + Main.rand.NextVector2CircularEdge(190f, 190f);

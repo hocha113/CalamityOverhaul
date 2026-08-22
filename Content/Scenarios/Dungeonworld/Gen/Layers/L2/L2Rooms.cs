@@ -265,7 +265,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L2
             TileBrush.SetSolid(pierX, midFloor - 2, L2Palette.Brick);
 
             //压力板+飞镖:复用placeTrap(F35;type0=飞镖+灰压板)
-            //扫描行=板上1~3行:右向撞柱(2/3),左向被梯口平台放行后撞左壳——两侧皆合法镖位
+            //扫描行=板上1~3行:右向撞柱(2/3),左向被梯口平台放行后撞左壳，两侧皆合法镖位
             bool trapOk = false;
             for (int attempt = 0; attempt < 6 && !trapOk; attempt++) {
                 trapOk = WorldGen.placeTrap(plateX + attempt % 2, midFloor - 1, 0);

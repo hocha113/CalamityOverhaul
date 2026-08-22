@@ -377,7 +377,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 return;
             }
 
-            //蓄力压到 ChargeStillFrames 之前为止，剩下几帧完全定住——静止谷框住爆发
+            //蓄力压到 ChargeStillFrames 之前为止，剩下几帧完全定住，静止谷框住爆发
             int compressFrames = ChargeDuration - ChargeStillFrames;
             if (StateTimer <= compressFrames) {
                 float progress = MathHelper.Clamp(StateTimer / compressFrames, 0f, 1f);

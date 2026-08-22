@@ -146,7 +146,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.States
                 ModContent.ProjectileType<ScrapMortarShell>(), damage, 5f, Main.myPlayer);
         }
 
-        /// <summary>弹道解算：先定"必须有的弧顶高度"再反推初速与滞空——
+        /// <summary>弹道解算：先定"必须有的弧顶高度"再反推初速与滞空
         /// 目标再低也保证一段明显的迫击弧线，绝不平射</summary>
         internal static Vector2 SolveArcVelocity(Vector2 muzzle, Vector2 landing) {
             const float gravity = ScrapDirector.MortarGravity;

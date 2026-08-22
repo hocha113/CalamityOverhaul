@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 {
     /// <summary>
     /// 在世刀身的铭刻读数。三槽 Key 随物品/动作快照同步,各端一致;
-    /// 活仪表(槽内充盈、雕纹点亮、裂痕)只有本地玩家维护——
+    /// 活仪表(槽内充盈、雕纹点亮、裂痕)只有本地玩家维护
     /// <see cref="OnikiriPlayer.PostUpdate"/> 对远端玩家直接返回,
     /// 故远端刀只画静态材质身份,不画读数
     /// </summary>
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         private const float HoriU = 0.70f;
         /// <summary>
         /// 雕纹字径(贴图 px),取改铭台同一标定 <see cref="OnikiriUITheme.MeiBladeMarkPx"/>。<br/>
-        /// 更大就会挂出刃宽读成贴纸——彫物是刻进刀里的,不是盖在刀上的
+        /// 更大就会挂出刃宽读成贴纸，彫物是刻进刀里的,不是盖在刀上的
         /// </summary>
         private const float HorimonoMarkPx = 13f;
         /// <summary>雕纹相对剪影厚度的硬上限,保证任何缩放下都不越过刃缘</summary>
@@ -179,7 +179,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         /// <summary>
         /// 狮子之子「狮势」:每续一拍,金象嵌自镡向锋多爬一程,前锋一点更亮。
-        /// 攒到满即第五拍合颚——蓄了几拍看刃就知道,不必去数粒子
+        /// 攒到满即第五拍合颚，蓄了几拍看刃就知道,不必去数粒子
         /// </summary>
         private static void DrawLionCharge(SpriteBatch sb, in OniBladeProfile.BladeXform xform,
             float chain, float alpha) {
@@ -283,7 +283,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 float u = MathHelper.Lerp(HiStartU, HiEndU, i / (float)HiSegments);
                 path[i] = xform.Map(GroovePx(u)) - Main.screenPosition;
             }
-            //受光唇:光固定自左上来,凿口下缘接住光——这条才是"凹进去"的主读物
+            //受光唇:光固定自左上来,凿口下缘接住光，这条才是"凹进去"的主读物
             Vector2 lip = new Vector2(0.55f, 0.8f) * MathF.Max(1f, width * 0.5f);
             for (int i = 0; i < HiSegments; i++) {
                 float t = (i + 0.5f) / HiSegments;
@@ -369,7 +369,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         /// <summary>
-        /// 风樋「顺风」:槽里跑的是空气不是液体——三段错相的高速细亮丝掠过槽腔,
+        /// 风樋「顺风」:槽里跑的是空气不是液体，三段错相的高速细亮丝掠过槽腔,
         /// 不挂壁、不留痕,疾走时跑得更急更亮
         /// </summary>
         private static void DrawWindGroove(SpriteBatch sb, ReadOnlySpan<Vector2> path,
@@ -430,7 +430,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         /// <summary>
         /// 闲樋「闲息」:接上脱战窗时槽面浮一层极淡白息并缓慢起伏,唇线转锐;
-        /// 交战中槽面压暗——玩家第一次能看见那 120 帧窗口的开合
+        /// 交战中槽面压暗，玩家第一次能看见那 120 帧窗口的开合
         /// </summary>
         private static void DrawQuietGroove(SpriteBatch sb, ReadOnlySpan<Vector2> path,
             in OniMeiEngraveState state, float alpha, float width, float time) {
@@ -456,7 +456,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         /// <summary>
-        /// 滞樋「滞缚」:墨不流只挂——沿槽结着大小不一的墨珠,珠体带一点湿高光;
+        /// 滞樋「滞缚」:墨不流只挂，沿槽结着大小不一的墨珠,珠体带一点湿高光;
         /// 每轮只有一颗慢慢往柄滑,滑到底重挂
         /// </summary>
         private static void DrawStickyGroove(SpriteBatch sb, ReadOnlySpan<Vector2> path,
@@ -486,7 +486,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         /// <summary>
-        /// 潮樋「潮拍」:节拍器搬到刀上——槽内水位随 48 帧周期自柄涨到锋再退,
+        /// 潮樋「潮拍」:节拍器搬到刀上，槽内水位随 48 帧周期自柄涨到锋再退,
         /// 水面是一条明确的横线;合潮窗整槽提亮一线,不必再盯 HUD 游标
         /// </summary>
         private static void DrawTideGroove(SpriteBatch sb, ReadOnlySpan<Vector2> path,
@@ -575,7 +575,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         //====茎铭不在世界里画====
-        //茎是插在柄里的部分,刀装好了就看不见茎铭——这正是改铭台要把刀拆开展示它的理由。
+        //茎是插在柄里的部分,刀装好了就看不见茎铭，这正是改铭台要把刀拆开展示它的理由。
         //在世画它既不成立(位置落在柄上、还撞玩家的手),也只是"加了个考据细节"的姿态。
         //茎铭在世的职责改为常态刀相,见 DrawNakagoTraits(铁截钝刃/友切咎裂/狮势金线)
 

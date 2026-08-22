@@ -4,7 +4,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
 {
     //L4水牢/下水道 材质与样式表(ROOMS-L4 §0/§2,样式号全部对TML源逐符号核实,行号见各注释)
-    //主题锚:绿砖半淹管廊——水位是这层唯一的门;做旧签名=双水线痕+苔藓(INDEX §3,与L2锈渍垂痕分家:
+    //主题锚:绿砖半淹管廊，水位是这层唯一的门;做旧签名=双水线痕+苔藓(INDEX §3,与L2锈渍垂痕分家:
     //本层水线是"横向paint带",L2是"纵向垂痕",形态两轴以上差异)
     internal static class L4Palette
     {

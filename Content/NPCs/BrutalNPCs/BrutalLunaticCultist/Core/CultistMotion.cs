@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         internal static Color StormCore => new(206, 176, 255);
         /// <summary>雷律缘电紫</summary>
         internal static Color StormEdge => new(128, 86, 255);
-        /// <summary>假身苍灰，无元素饱和度——识破谎言的颜色线索</summary>
+        /// <summary>假身苍灰，无元素饱和度，识破谎言的颜色线索</summary>
         internal static Color PaleClone => new(186, 208, 208);
         /// <summary>仪式符金，法阵与符文的中性底色</summary>
         internal static Color RuneGold => new(255, 214, 128);

@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.HackTimes.Chips
             + "M 0 -0.70 L 0 -0.54";
     }
 
-    /// <summary>信标伪造芯片。塔身向外三层同心弧，两侧各一对箭头朝内——招来，不是发散，与电网瘫痪的向外弧刻意相反</summary>
+    /// <summary>信标伪造芯片。塔身向外三层同心弧，两侧各一对箭头朝内，招来，不是发散，与电网瘫痪的向外弧刻意相反</summary>
     internal class BeaconForgeChip : BaseHackProtocolChip<BeaconForge>
     {
         protected override string DiePath =>

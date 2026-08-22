@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
 {
     /// <summary>
-    /// 事件节点（拉闸）：右键两件事同时发生——噪音直上清剿波档 +
+    /// 事件节点（拉闸）：右键两件事同时发生，噪音直上清剿波档 +
     /// 全图封锁区闸门解除。一次决策、全局后果；节点一次性消耗。
     /// 零贴图：警戒红闸杆 + 慢闪信标
     /// </summary>

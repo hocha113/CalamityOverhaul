@@ -269,7 +269,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
         /// </summary>
         private void UpdateAdvance() {
             //初始方向锁定：只在从未定向时执行一次(镜像原版 velocity.X==0 分支)；
-            //演出把速度压到0不会触发重新定向——方向一经锁定永不回头
+            //演出把速度压到0不会触发重新定向，方向一经锁定永不回头
             if (npc.velocity.X == 0f && npc.direction == 0) {
                 npc.TargetClosest();
                 if (Main.player[npc.target].dead) {

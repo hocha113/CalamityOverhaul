@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 player.mouseInterface = true;
                 //不锁的话滚轮会同时翻快捷栏，骇入时快捷栏虽被隐藏但物品仍会换。
                 //挂在悬停块而不是 UpdateScroll 里：面板不可滚时那边会提前 return，
-                //而"不能滚"不等于"可以翻武器"。两把锁都必须每帧常驻——UI 跑在绘制阶段，
+                //而"不能滚"不等于"可以翻武器"。两把锁都必须每帧常驻，UI 跑在绘制阶段，
                 //滚轮增量帧首已被 Player.Update 消费，等检测到 delta 再锁就晚一帧
                 UIInputGuard.SuppressWeaponSwitch();
                 PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/HackTimePanel");

@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         /// <summary>
         /// 改铭台账主板:黑漆卡面(shader TechLacquer 优先,缺席退回 CPU 简笔)+
         /// 题头(朱印+题字+烙痕线)+脚注界线;reveal 驱动卡面自下浮上。<br/>
-        /// board 是板全体(台账区 + 底部书棚带),rect 只是台账区——板必须一个 quad 画完,
+        /// board 是板全体(台账区 + 底部书棚带),rect 只是台账区，板必须一个 quad 画完,
         /// 拆成两块会在接缝处各长一条上缘金压线
         /// </summary>
         public static void DrawLedgerPanel(SpriteBatch sb, DynamicSpriteFont font, Rectangle board,
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 new Vector2(shown.Right - 18f, footY),
                 OnikiriUITheme.Deep * (a * 0.42f), OnikiriUITheme.Deep * (a * 0.2f), 1.1f);
 
-            //棚带横木:台账到书棚的分界,金细线衬一线绯——与题头同一套规矩,读作同板异格
+            //棚带横木:台账到书棚的分界,金细线衬一线绯，与题头同一套规矩,读作同板异格
             float railY = shown.Bottom;
             OniBrush.DrawGradientLine(sb, new Vector2(shownBoard.X + 12f, railY),
                 new Vector2(shownBoard.Right - 12f, railY),
@@ -231,7 +231,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>注记墨线取点:二次贝塞尔,控制点自弦中点垂下一手——静垂感,不作物理摆</summary>
+        /// <summary>注记墨线取点:二次贝塞尔,控制点自弦中点垂下一手，静垂感,不作物理摆</summary>
         private static Vector2 InkPoint(Vector2 start, Vector2 end, float t) {
             Vector2 mid = (start + end) * 0.5f;
             float sag = MathF.Min(Vector2.Distance(start, end) * 0.09f, 42f);
@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         /// <summary>
-        /// 注记墨线:牌→刀身搭点的一笔缓垂墨线——起笔略顿、行笔渐细、收笔出锋,
+        /// 注记墨线:牌→刀身搭点的一笔缓垂墨线，起笔略顿、行笔渐细、收笔出锋,
         /// 金阶收笔染金;drawEase 走笔揭示(开屏),lit 悬停/选中时墨里透绯
         /// </summary>
         public static void DrawLeaderInk(SpriteBatch sb, Vector2 start, Vector2 end, float drawEase,
@@ -700,7 +700,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             sb.Draw(Pixel, new Rectangle(rect.Right - thick, rect.Y, thick, rect.Height), PixelSrc, color);
         }
 
-        /// <summary>书唇:挡在册子下缘的前板,顶棱吃一线烛光——这条光是"册子插在格里"的成立点</summary>
+        /// <summary>书唇:挡在册子下缘的前板,顶棱吃一线烛光，这条光是"册子插在格里"的成立点</summary>
         private static void DrawNicheLip(SpriteBatch sb, Rectangle niche, float a, float hover, float flick) {
             int h = (int)OnikiriUITheme.CodexLipH;
             Rectangle lip = new(niche.X - 4, niche.Bottom - h, niche.Width + 8, h);
@@ -1056,7 +1056,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>
         /// 悬挂的收卷点鬼簿微缩:对面屏(纸面)的器物本体挂在梁钩下作切换门。
-        /// SVG 曲线笔铺形(开屏按弧长自画),纸垂随风;Echo 鬼火漏缝(本屏唯一许可的青——簿那头在闹);
+        /// SVG 曲线笔铺形(开屏按弧长自画),纸垂随风;Echo 鬼火漏缝(本屏唯一许可的青，簿那头在闹);
         /// Ceremony 地轴弹开一截瞥见名录
         /// </summary>
         public static void DrawHangingScroll(SpriteBatch sb, OniHangingSwitch sw, float alpha, float time, bool danger) {

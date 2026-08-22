@@ -11,7 +11,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
 {
     /// <summary>
-    /// 绯嫁夺身「你成了新娘」——迎亲反转。<br/>
+    /// 绯嫁夺身「你成了新娘」，迎亲反转。<br/>
     /// 前兆：花轿不请自来，沿干血痕自远处吱呀而至；<br/>
     /// 显形：红绸自轿中探出缚身，把人抬进喜堂，帘合拢罩住；<br/>
     /// 处决：合卺之刻帘缝一线冷烛，闷锣落下，喝下的不是酒；<br/>

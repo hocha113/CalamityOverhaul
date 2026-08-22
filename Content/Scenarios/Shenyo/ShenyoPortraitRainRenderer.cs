@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
 {
     /// <summary>
     /// 沈幽立绘黑雨汇聚：雨丝坠向立绘不透明像素，命中处向密度RT盖竖向湿痕，
-    /// 模糊后交给 ShenyoRainForm 合成——黑水剪影先灌满，末拍澄清本色
+    /// 模糊后交给 ShenyoRainForm 合成，黑水剪影先灌满，末拍澄清本色
     /// 架构镜像 <see cref="Himayo.HimayoPortraitAssemblyRenderer"/>
     /// </summary>
     internal sealed class ShenyoPortraitRainRenderer : INeedRenderTargetContent

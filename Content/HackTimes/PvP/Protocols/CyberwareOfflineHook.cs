@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
     /// <b>为什么敢整段跳过</b>：ProfileInitialized == true 时原方法体只剩义体循环
     /// （联机档案重试只在未初始化分支跑），抑制判定把未初始化档案排除在外。<br/>
     /// <b>为什么只压本机</b>：义体收益的真值端是拥有者客户端（本机结算契约），
-    /// 帐本也只在防守方本机非空——远端与服务端的判定天然为 false，原样放行。<br/>
+    /// 帐本也只在防守方本机非空，远端与服务端的判定天然为 false，原样放行。<br/>
     /// 收尾者如愿意在 CyberwarePlayer 循环里内联一行抑制标记检查，可删本文件换一行 if
     /// </summary>
     internal sealed class CyberwareOfflineHook : ModSystem

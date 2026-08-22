@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                 muzzle = npc.Center + new Vector2(0f, -6f);
             }
 
-            //射线锚向玩家预读位置，预警期不追踪——留出穿缝空间
+            //射线锚向玩家预读位置，预警期不追踪，留出穿缝空间
             Vector2 aim = target.Center + target.velocity * 10f;
             float rot = (aim - muzzle).ToRotation();
             int damage = ScaleDamage(context, GolemDirector.EyeRayDamage);

@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaWallOfFlesh
 {
     /// <summary>
-    /// 血肉墙鬼奴的眼激光：一道"细、快、短促"的血光剪切——3 帧弹出全长、
+    /// 血肉墙鬼奴的眼激光：一道"细、快、短促"的血光剪切，3 帧弹出全长、
     /// 16 帧快扫一小段弧、8 帧收细熄灭，全程不足半秒。与毁灭者的持续粗束横扫、
     /// 月球领主的巨粗毁灭射线在宽度/时长/根数上严格区分。
     /// ai[0]=起始角 ai[1]=角速度 ai[2]=眼位（0上/1下），逐帧锚定宿主墙眼；
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         internal const float HalfArc = 0.26f;
 
         private const float MaxLength = 2300f;
-        /// <summary>核宽——细刃，不是光炮</summary>
+        /// <summary>核宽，细刃，不是光炮</summary>
         private const float CoreWidth = 9f;
 
         private ref float Timer => ref Projectile.localAI[0];

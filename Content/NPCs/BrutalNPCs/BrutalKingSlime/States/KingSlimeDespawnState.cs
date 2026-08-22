@@ -305,7 +305,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             npc.dontTakeDamage = false;
             npc.life = 0;
             npc.HitEffect();
-            //原版死亡特效会另喷一顶王冠Gore(NPC.cs:83742)，而演出坠冠弹幕尚未淡完——就地移除，保单冠叙事
+            //原版死亡特效会另喷一顶王冠Gore(NPC.cs:83742)，而演出坠冠弹幕尚未淡完，就地移除，保单冠叙事
             foreach (Gore gore in Main.gore) {
                 if (gore.active && gore.type == GoreID.KingSlimeCrown && gore.position.Distance(npc.Center) < 300f) {
                     gore.active = false;

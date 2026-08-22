@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
     /// 点鬼簿全屏,卷轴名录+影绘细节板。<br/>
-    /// 只读——结印仍只在结印盘上做,此处不装鬼。
+    /// 只读，结印仍只在结印盘上做,此处不装鬼。
     /// 与结印盘是"抽卷/归卷"的关系而非姊妹屏:展卷静默收盘,合卷静默回盘
     /// </summary>
     internal sealed class OniRegisterUI : UIHandle, ILocalizedModType
@@ -409,7 +409,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>线香燃点,燃去比=复苏进度——香烧到底,鬼就该醒了</summary>
+        /// <summary>线香燃点,燃去比=复苏进度，香烧到底,鬼就该醒了</summary>
         internal Vector2 IncenseEmberPos() {
             OniGhostEntry sel = SelectedEntry;
             float revival = MathHelper.Clamp(sel?.Revival ?? 0f, 0f, 1f);

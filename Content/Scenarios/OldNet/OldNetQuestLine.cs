@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Scenarios.OldNet
 {
     /// <summary>
-    /// 首潜委托："越墙深潜"——把旧网入口暴露进任务书
+    /// 首潜委托："越墙深潜"，把旧网入口暴露进任务书
     /// 完成判据 = 一次安全登出（OldNetPlayer.SettleAndLogout 写 DiveCompleted）
     /// 逐帧同步注册的既有惯例（DraedonQuestLine 同款泵）
     /// </summary>

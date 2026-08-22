@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// <summary>
     /// 弹药置换：炮台改吃施法者背包里的弹药，发射物换成该弹药的弹，
     /// 伤害按施法者的远程面板算，隐含翻转 IFF；弹尽或效果结束即回落原生弹。<br/>
-    /// 每一发的扣弹结算落在拥有者本机（背包归客户端所有，服务端写不动——
+    /// 每一发的扣弹结算落在拥有者本机（背包归客户端所有，服务端写不动
     /// tml-netcode-pitfalls §6.2）：单人直接扣；联机由服务端校验镜像背包后发
     /// <see cref="CWRMessageType.MunitionSwapConsume"/> 意图包，喂弹者本机结算，
     /// 背包差分每帧自动回同步，无需回执。在途扣弹上限防镜像滞后被连发放大

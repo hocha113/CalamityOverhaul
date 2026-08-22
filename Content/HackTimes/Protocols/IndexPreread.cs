@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
     /// <summary>
     /// 索引预读：纯信息协议，不改容器任何状态。<br/>
-    /// "索引"没有独立存储——效果本身挂在追踪器里就是索引，
+    /// "索引"没有独立存储，效果本身挂在追踪器里就是索引，
     /// <see cref="ContainerScannable.BuildScanData"/> 查 <see cref="IsIndexed"/>
     /// 决定是否把内容清单铺进扫描面板；效果到期即索引失效，零清账、零泄漏
     /// </summary>
@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         /// <summary>
         /// 该锚点的箱子是否已被任何施术者索引。
-        /// 复制效果也进 <c>activeTileEffects</c>，所以每个端都能查到——
+        /// 复制效果也进 <c>activeTileEffects</c>，所以每个端都能查到
         /// 情报在队伍里共享是设计意图
         /// </summary>
         public static bool IsIndexed(int anchorX, int anchorY) {

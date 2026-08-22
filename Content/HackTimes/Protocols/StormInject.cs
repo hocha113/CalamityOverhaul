@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// 雷暴注入：招来雷暴，落雷只砸身上挂着任意骇入效果的敌人。<br/>
     /// 天气写入权威端专属（F9）：直接置 <c>Main.raining / maxRaining / rainTime</c>
     /// 并广播 <see cref="MessageID.WorldData"/>；伤害与硬直由权威端结算，
-    /// 落雷视觉每端自绘——选靶不发包，靠"打表序 + 种子哈希"在每个端上
+    /// 落雷视觉每端自绘，选靶不发包，靠"打表序 + 种子哈希"在每个端上
     /// 确定性地选出同一只（候选集按 NPC 槽位升序收集，NPC 槽位跨端一致）。<br/>
     /// 没有任何挂效果的敌人时不落雷，协议空转是明说的设计
     /// </summary>
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         }
 
         public override bool OnTick(IHackTarget target, int elapsed) {
-            //时停期间追踪器整表冻结，雨量却在原版通道里继续流失——
+            //时停期间追踪器整表冻结，雨量却在原版通道里继续流失
             //低频回填一次，效果活着雨就不停
             if (elapsed % 300 == 0 && Main.netMode != NetmodeID.MultiplayerClient) {
                 int remaining = GetDuration() - elapsed;
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         }
 
         public override void OnReplicatedTick(IHackTarget target, int elapsed) {
-            //与权威端同一节拍、同一种子、同一候选序——各端独立算出同一只。
+            //与权威端同一节拍、同一种子、同一候选序，各端独立算出同一只。
             //进度包把 Elapsed 往前校正跨过 45 的倍数时会漏掉一记视觉，
             //伤害不受影响，纯表现层的已知取舍
             if (elapsed <= 0 || elapsed % StrikeInterval != 0) return;
@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         /// <summary>
         /// 收集"身上挂着任意骇入效果"的敌怪。为保证跨端确定性：
-        /// 先把效果表烧进槽位标记，再按槽位升序回收——效果表的插入序
+        /// 先把效果表烧进槽位标记，再按槽位升序回收，效果表的插入序
         /// 每个端不同，直接遍历它得到的候选序会不一致
         /// </summary>
         private static void CollectHackedCandidates() {
@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             return false;
         }
 
-        //种子只吃"第几记雷"，不碰 Main.rand——离散选靶必须每端同值
+        //种子只吃"第几记雷"，不碰 Main.rand：离散选靶必须每端同值
         private static int DeterministicPick(int elapsed, int count) {
             uint ordinal = (uint)(elapsed / StrikeInterval);
             uint hash = ordinal * 2654435761u ^ 0x9E3779B9u;

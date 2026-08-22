@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
     }
 
     /// <summary>
-    /// 深潜战报数据。<b>静态缓存跨世界搬运</b>——ModPlayer 字段不跨世界切换存续，
+    /// 深潜战报数据。<b>静态缓存跨世界搬运</b>，ModPlayer 字段不跨世界切换存续，
     /// 弹出时写入，回主世界 OnEnterWorld 一次性消费即清（CybCourse._grantMewtwoOnExit 同款手法；
     /// MP 多玩家共用静态是已知反模式，MP 化时改 per-player 传递 TODO）
     /// </summary>
@@ -69,12 +69,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
             DebriefHunted = this.GetLocalization(nameof(DebriefHunted), () => "被追猎");
             DebriefTime = this.GetLocalization(nameof(DebriefTime), () => "深潜用时");
             DebriefExitSafe = this.GetLocalization(nameof(DebriefExitSafe), () => "安全断链");
-            DebriefExitBurnout = this.GetLocalization(nameof(DebriefExitBurnout), () => "RAM 耗尽——链路烧断");
-            DebriefExitDeath = this.GetLocalization(nameof(DebriefExitDeath), () => "构念崩解——链路烧断");
+            DebriefExitBurnout = this.GetLocalization(nameof(DebriefExitBurnout), () => "RAM 耗尽，链路烧断");
+            DebriefExitDeath = this.GetLocalization(nameof(DebriefExitDeath), () => "构念崩解，链路烧断");
             DebriefLost = this.GetLocalization(nameof(DebriefLost), () => "{0} 枚未铭刻碎片已烧毁");
             DebriefContinue = this.GetLocalization(nameof(DebriefContinue), () => "继续");
             DebriefMechHint = this.GetLocalization(nameof(DebriefMechHint),
-                () => "未铭刻的收获只活在链路里——经中继站或登出终端铭刻后才真正属于你");
+                () => "未铭刻的收获只活在链路里，经中继站或登出终端铭刻后才真正属于你");
         }
 
         //════════ 静态战报缓存 ════════
@@ -274,7 +274,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
             float rowH = 27f;
             DrawStatRow(sb, body, rowY, DebriefDepth.Value, $"{report.MaxDepthCols}", false);
             DrawStatRow(sb, body, rowY + rowH, DebriefHarvest.Value, $"{report.HarvestCount}", false);
-            //烧断且铭刻为 0：灰红删除线——损失要被看见
+            //烧断且铭刻为 0：灰红删除线，损失要被看见
             bool strikeSettled = burned && report.SettledTotal == 0;
             DrawStatRow(sb, body, rowY + rowH * 2, DebriefSettled.Value, $"{report.SettledTotal}", strikeSettled);
             DrawStatRow(sb, body, rowY + rowH * 3, DebriefHunted.Value, $"{report.HuntedCount}", false);

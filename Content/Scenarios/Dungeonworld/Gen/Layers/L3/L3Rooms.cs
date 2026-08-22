@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
             return ok;
         }
 
-        //桌面摆件:镜像原版长桌台面分支(:29387-29413)——蜡烛/书/杯/墨瓶按权重
+        //桌面摆件:镜像原版长桌台面分支(:29387-29413)：蜡烛/书/杯/墨瓶按权重
         private static void FurnishTabletop(int x, int surfaceRow, UnifiedRandom rand, ref Tally tally) {
             int roll = rand.Next(100);
             if (roll < 30) {

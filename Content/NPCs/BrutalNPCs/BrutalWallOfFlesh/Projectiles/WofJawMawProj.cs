@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             fade = MathHelper.Clamp(fade - 0.09f, 0f, 1f);
         }
 
-        /// <summary>死颚：成形后垂头滴涎，全程无害——缺口的可读身份</summary>
+        /// <summary>死颚：成形后垂头滴涎，全程无害，缺口的可读身份</summary>
         private void UpdateDeadJaw(float grow) {
             openAngle = 0.06f * grow;
             //轮末与活颚同步渐隐
@@ -229,7 +229,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;
             float dirAngle = dir > 0 ? 0f : MathHelper.Pi;
 
-            //死颚淡入死灰：血色褪成灰败肉——安全信号
+            //死颚淡入死灰：血色褪成灰败肉，安全信号
             float deadMix = IsDeadJaw ? 0.55f : 0f;
             Color flesh = Color.Lerp(WofMotionFX.BloodDark, new Color(112, 104, 92), deadMix);
             Color lip = Color.Lerp(WofMotionFX.BloodMid, new Color(128, 118, 102), deadMix);
@@ -267,7 +267,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             DrawJawHead(spindle, reach > 8f ? headScreen : baseScreen, dirAngle,
                 flesh * fade, lip * fade, bone * fade, openAngle, grow);
 
-            //喉光：预告期加色暖芯(死颚无光——无光即无害)
+            //喉光：预告期加色暖芯(死颚无光，无光即无害)
             if (!IsDeadJaw && Timer > WofDirector.JawGrowFrames && reach < 8f) {
                 float untilSnap = SnapTick - Timer;
                 float pre = MathHelper.Clamp(1f - untilSnap / WofDirector.JawPreSnapFrames, 0f, 1f);

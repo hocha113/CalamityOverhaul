@@ -9,8 +9,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
 {
     /// <summary>
-    /// 镜像假身：识别线索三条——无足影光渍（静态）、体色偏苍（静态）、齐射弹为苍白色（动态）<br/>
-    /// 被打破：30 帧鼓胀预告后苍弹环爆（朝最近玩家的扇区留空——猜错的惩罚有预告且可躲）<br/>
+    /// 镜像假身：识别线索三条，无足影光渍（静态）、体色偏苍（静态）、齐射弹为苍白色（动态）<br/>
+    /// 被打破：30 帧鼓胀预告后苍弹环爆（朝最近玩家的扇区留空，猜错的惩罚有预告且可躲）<br/>
     /// ai[0]=槽位 ai[1]=命令(0常态 1爆裂 2软散) ai[2]=齐射相位差 ai[3]=本体索引
     /// </summary>
     internal class CultistCloneAI : CWRNPCOverride
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 npc.direction = npc.spriteDirection = player.Center.X >= npc.Center.X ? 1 : -1;
             }
 
-            //齐射：与真身同拍异相——弹色是苍白的（动态识真线索）
+            //齐射：与真身同拍异相，弹色是苍白的（动态识真线索）
             if (player != null && (LocalTimer + npc.ai[2]) % VolleyPeriod == 30f) {
                 Vector2 dir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
                 if (!VaultUtils.isClient) {
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 return;
             }
 
-            //环爆：10 向苍弹，朝最近玩家 ±35° 留空——躲进指向自己的扇区即可
+            //环爆：10 向苍弹，朝最近玩家 ±35° 留空，躲进指向自己的扇区即可
             CultistMotion.ImpactBurst(npc.Center, 1, 1.1f);
             CultistMotion.RuneBurst(npc.Center, CultistMotion.PaleClone, 12, 7f);
             if (!VaultUtils.isClient) {
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             }
         }
 
-        /// <summary>软散：本体收阵指令——化符渐隐，无惩罚弹</summary>
+        /// <summary>软散：本体收阵指令，化符渐隐，无惩罚弹</summary>
         private void UpdateSoftDismiss() {
             EndTimer++;
             npc.dontTakeDamage = true;

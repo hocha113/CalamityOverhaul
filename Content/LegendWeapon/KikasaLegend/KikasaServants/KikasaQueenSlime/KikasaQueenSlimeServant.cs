@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaQueenSlime
 {
     /// <summary>
-    /// 鬼奴·湖水版史莱姆皇后。血湖之水凝成的血晶凤辇，飞行优雅系——
+    /// 鬼奴·湖水版史莱姆皇后。血湖之水凝成的血晶凤辇，飞行优雅系
     /// 与史莱姆王的差异是生死线：他跳，你飞。出水五拍（皇冠形涟漪预兆→
     /// 破水浪冠→披水帘垂直升空→加冕拍皇冠凝成→晶翼展开定格），
     /// 战斗循环为空中晶格雷布阵（弧线/环形交替）与加冕俯冲压轴砸交替；
@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         private void BeginDissolve() {
-            //还没破水（或刚破水淡入未满）就要收场：不走溶解演出——
+            //还没破水（或刚破水淡入未满）就要收场：不走溶解演出
             //否则透明度会从半途跳到 1，水面凭空闪出一位皇后再化掉
             if (State == StateEmerge && StateTimer < OmenFrames + 4) {
                 Projectile.Kill();
@@ -224,7 +224,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：湖塌/收域/退水/主人死亡 → 溶解回湖。只有 owner 裁决——
+            //生命线：湖塌/收域/退水/主人死亡 → 溶解回湖。只有 owner 裁决
             //服务器没有领域状态（恒 Closed 是既定契约），别处判会当场误杀；
             //迟入场客户端首份快照前同样会误判。其余端只跟 owner 的同步包换场
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
@@ -285,7 +285,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             faceDir = owner.Center.X >= Projectile.Center.X ? 1 : -1;
 
             if (t < OmenFrames) {
-                //水下待命：湖面浮起皇冠形涟漪——中间高两侧低的五点冠齿
+                //水下待命：湖面浮起皇冠形涟漪，中间高两侧低的五点冠齿
                 Projectile.velocity = Vector2.Zero;
                 if (viewed) {
                     if (t == 8 || t == 20) {
@@ -457,7 +457,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private void UpdateFollow(Player owner, KikasaDomainPlayer domain, bool authority) {
             int target = FindTarget(owner);
 
-            //悬在主人侧上方，呼吸浮动——端庄的滑翔，不做急转
+            //悬在主人侧上方，呼吸浮动，端庄的滑翔，不做急转
             Vector2 anchor = owner.Center + new Vector2(-owner.direction * 112f, -148f);
             anchor.Y += MathF.Sin(Main.GlobalTimeWrappedHourly * 1.9f + Seed) * 7f;
             anchor.X += MathF.Sin(Main.GlobalTimeWrappedHourly * 1.2f + Seed * 2f) * 5f;
@@ -680,7 +680,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (phase == 1) {
-                //悬停定格：皇冠先行发亮的 tell；前半微微上提——吸气
+                //悬停定格：皇冠先行发亮的 tell；前半微微上提，吸气
                 if (target >= 0) {
                     hoverAimPos = Main.npc[target].Center;
                 }
@@ -694,7 +694,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     hoverChimeDone = true;
                     SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.6f, Pitch = -0.1f, MaxInstances = 2 }, Projectile.Center);
                 }
-                //向皇冠汇聚的晶光，72% 后静默——落砸前的吸气
+                //向皇冠汇聚的晶光，72% 后静默，落砸前的吸气
                 float charge = t / (float)DiveHoverFrames;
                 if (!Main.dedServ && charge < 0.72f && t % 2 == 0 && viewed) {
                     Vector2 crown = CrownWorldPos();
@@ -1120,7 +1120,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 case StateDive: {
                     int phase = DivePhaseKey();
                     if (phase == 1) {
-                        //悬停定格：翼冻结在张开姿——出水定格的同款收束
+                        //悬停定格：翼冻结在张开姿，出水定格的同款收束
                         wingCounter = 0;
                         return;
                     }
@@ -1207,7 +1207,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             };
         }
 
-        /// <summary>光泽系数：溶解先失光泽再化水——晶面高光与脉动灯全走这条包络</summary>
+        /// <summary>光泽系数：溶解先失光泽再化水，晶面高光与脉动灯全走这条包络</summary>
         private float LusterK()
             => State == StateDissolve
                 ? 1f - MathHelper.Clamp(StateTimer / (float)DullFrames, 0f, 1f)
@@ -1343,7 +1343,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             float alpha = CurrentAlpha();
             KikasaDomainPlayer domain = Owner?.GetModPlayer<KikasaDomainPlayer>();
 
-            //预兆：水下血光自深处上浮（她比物件更亮些——这是加冕的生物）
+            //预兆：水下血光自深处上浮（她比物件更亮些，这是加冕的生物）
             if (domain != null) {
                 DrawOmenGlow(sb, domain);
             }
@@ -1500,7 +1500,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             form.CurrentTechnique.Passes[0].Apply();
         }
 
-        /// <summary>晶核与高光层：核心脉动、皇冠 tell 辉光、俯冲流光——全走 A=0 加色，无需切批</summary>
+        /// <summary>晶核与高光层：核心脉动、皇冠 tell 辉光、俯冲流光，全走 A=0 加色，无需切批</summary>
         private void DrawCoreAndAccents(SpriteBatch sb, Texture2D coreTex, float alpha) {
             float luster = LusterK();
             Vector2 bottom = VisualBottom;

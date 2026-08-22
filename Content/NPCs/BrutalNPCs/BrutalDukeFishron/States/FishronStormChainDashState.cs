@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 return new FishronHoverState();
             }
 
-            //相位a：化雨遁走——雾中消隐，服务端择位重投
+            //相位a：化雨遁走，雾中消隐，服务端择位重投
             if (t < VanishEnd) {
                 frozenDashDir = Vector2.Zero;
                 npc.alpha = Math.Min(npc.alpha + 34, 220);
@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                     npc.velocity = Vector2.Zero;
                     npc.netUpdate = true;
 
-                    //落位即亮短预告（恒定 18 帧，比一二阶段更短——第三危险等级）
+                    //落位即亮短预告（恒定 18 帧，比一二阶段更短，第三危险等级）
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center,
                         (player.Center - npc.Center).SafeNormalize(Vector2.UnitY),
                         ModContent.ProjectileType<FishronTelegraph>(), 0, 0f, Main.myPlayer,

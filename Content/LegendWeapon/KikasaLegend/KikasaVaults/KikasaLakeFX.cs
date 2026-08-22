@@ -690,7 +690,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                 color = new Color(255, 255, 255, (byte)(alpha * 255f));
             }
             else {
-                //无着色器：染色近似——沉入越蚀越沉入深血并透明，浮出自血色渐白
+                //无着色器：染色近似，沉入越蚀越沉入深血并透明，浮出自血色渐白
                 float bloodMix = MathHelper.Clamp(form + dissolve * 1.2f, 0f, 1f);
                 Color body = Color.Lerp(Color.White, form > 0f ? BloodTint : BloodDeep, bloodMix);
                 color = body * (alpha * (1f - dissolve));

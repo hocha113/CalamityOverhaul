@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.velocity.X += drift * (1f + ShiverT * 1.5f);
             Projectile.velocity.Y += bob - 0.006f;
 
-            //钻进实体墙就闷掉，别在石头里悬着——只认水线以上的真地形：
+            //钻进实体墙就闷掉，别在石头里悬着，只认水线以上的真地形：
             //湖线以下的墙体被湖面演出盖住，泡在"湖里"生成时不许被隐形地形闷爆
             if (t > 8 && t % 5 == 0
                 && Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height)) {

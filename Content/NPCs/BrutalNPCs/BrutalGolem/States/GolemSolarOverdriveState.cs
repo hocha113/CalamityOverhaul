@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                 return;
             }
 
-            //汇聚粒子（密度∝sqrt(t)，72%后硬切——尖啸前的死寂）
+            //汇聚粒子（密度∝sqrt(t)，72%后硬切，尖啸前的死寂）
             if (t < 0.72f && Main.rand.NextFloat() < MathF.Sqrt(t) * 0.9f) {
                 Vector2 gem = npc.Center + new Vector2(0f, -6f);
                 Vector2 from = gem + Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(150f, 380f);

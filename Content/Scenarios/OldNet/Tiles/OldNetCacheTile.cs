@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
 {
     /// <summary>
     /// 深潜缓存（M3 产出扩容）：衰减区限定的封存件箱。
-    /// 撬开直接掉落一件 SHPC 模块——优先抽 CanGenerateInLabChest=false 的
+    /// 撬开直接掉落一件 SHPC 模块，优先抽 CanGenerateInLabChest=false 的
     /// 深潜保留池（DESIGN 留的口子），保留池为空时退回全池；开箱有噪音
     /// </summary>
     internal class OldNetCacheTile : ModTile
@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
             b = 0.04f * pulse;
         }
 
-        //封存件箱：暗壳方箱 + 琥珀封缝 + 锁芯呼吸——"箱"的读法区别于一切晶体节点
+        //封存件箱：暗壳方箱 + 琥珀封缝 + 锁芯呼吸，"箱"的读法区别于一切晶体节点
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null || px.IsDisposed) {

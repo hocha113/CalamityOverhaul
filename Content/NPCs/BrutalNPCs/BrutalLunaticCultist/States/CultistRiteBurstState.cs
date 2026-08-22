@@ -9,9 +9,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
     /// 仪式迸发：充能满格的元素大招。40+ 帧全局预告（大印记定形+帷幕收拢）后放当前元素的仪式弹幕 ~5 秒<br/>
-    /// 火·焚天螺旋：四臂螺旋，每第 5 拍全臂停一拍——径向走廊恒在<br/>
-    /// 冰·霜环潮汐：三环碎晶外扩，每环 3 道 45° 裂口，环间裂口错位 40°——可读的阶梯<br/>
-    /// 雷·雷格审判：立柱雷幕从一侧扫向另一侧，26 帧细弧先行——跟着波跑<br/>
+    /// 火·焚天螺旋：四臂螺旋，每第 5 拍全臂停一拍，径向走廊恒在<br/>
+    /// 冰·霜环潮汐：三环碎晶外扩，每环 3 道 45° 裂口，环间裂口错位 40°，可读的阶梯<br/>
+    /// 雷·雷格审判：立柱雷幕从一侧扫向另一侧，26 帧细弧先行，跟着波跑<br/>
     /// 结束后元素轮转、充能清零、长喘息（他也累了）
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.RiteBurst, typeof(CultistStateContext))]
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             return null;
         }
 
-        /// <summary>火·焚天螺旋：四臂每 5 帧一拍，每第 5 拍全停——走廊拍</summary>
+        /// <summary>火·焚天螺旋：四臂每 5 帧一拍，每第 5 拍全停，走廊拍</summary>
         private void FireSpiral(CultistStateContext context, int t) {
             if (t % 5 != 0) {
                 return;

@@ -13,7 +13,7 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
-    /// 上梁的两个工位。<see cref="Sigil"/> 的数值必须保持 1——
+    /// 上梁的两个工位。<see cref="Sigil"/> 的数值必须保持 1
     /// 它在 <see cref="OniTalismanHud.SaveUIData"/> 里落过档，改值等于把老玩家的记忆读错工位
     /// </summary>
     internal enum OniLedgerView
@@ -62,13 +62,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             VigorValueFormat = this.GetLocalization(nameof(VigorValueFormat), () => "{0} / {1}");
             StanceTitle = this.GetLocalization(nameof(StanceTitle), () => "架势");
             StanceValueFormat = this.GetLocalization(nameof(StanceValueFormat), () => "{0} / {1}");
-            StanceReadyLine = this.GetLocalization(nameof(StanceReadyLine), () => "锋已离鞘——只欠一拔");
-            StanceHalfLine = this.GetLocalization(nameof(StanceHalfLine), () => "势已过半——足以一记灭世一闪");
+            StanceReadyLine = this.GetLocalization(nameof(StanceReadyLine), () => "锋已离鞘，只欠一拔");
+            StanceHalfLine = this.GetLocalization(nameof(StanceHalfLine), () => "势已过半，足以一记灭世一闪");
             DomainTitle = this.GetLocalization(nameof(DomainTitle), () => "鬼域之眼");
-            DomainStateClosed = this.GetLocalization(nameof(DomainStateClosed), () => "阖目——领域未展");
-            DomainStateOmote = this.GetLocalization(nameof(DomainStateOmote), () => "表世界——泛黄和纸");
-            DomainStateUra = this.GetLocalization(nameof(DomainStateUra), () => "里世界——水墨阴间");
-            DomainStateShifting = this.GetLocalization(nameof(DomainStateShifting), () => "变相中——莫扰");
+            DomainStateClosed = this.GetLocalization(nameof(DomainStateClosed), () => "阖目，领域未展");
+            DomainStateOmote = this.GetLocalization(nameof(DomainStateOmote), () => "表世界，泛黄和纸");
+            DomainStateUra = this.GetLocalization(nameof(DomainStateUra), () => "里世界，水墨阴间");
+            DomainStateShifting = this.GetLocalization(nameof(DomainStateShifting), () => "变相中，莫扰");
             DomainToggleHintFormat = this.GetLocalization(nameof(DomainToggleHintFormat), () => "{0} 或左键 展开/收阖领域");
             DomainFlipHintFormat = this.GetLocalization(nameof(DomainFlipHintFormat), () => "{0} 或右键 翻转表里(阖时先展)");
         }
@@ -192,7 +192,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             => tag[Name + ":rememberedLedger"] = (int)rememberedLedger;
 
         public override void LoadUIData(TagCompound tag) {
-            //按枚举范围校验，别写成"认得一个值、其余全当默认"——加第三个工位时那种写法会静默读错
+            //按枚举范围校验，别写成"认得一个值、其余全当默认"，加第三个工位时那种写法会静默读错
             rememberedLedger = tag.TryGet(Name + ":rememberedLedger", out int value)
                 && Enum.IsDefined(typeof(OniLedgerView), value)
                 ? (OniLedgerView)value
@@ -434,7 +434,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>
         /// 印列：盘上结了几印就在札头压几枚。空盘只留一枚淡印座。<br/>
-        /// 左下角不新增组件——这里仍是原来那一枚印的位置，只是横着排开
+        /// 左下角不新增组件，这里仍是原来那一枚印的位置，只是横着排开
         /// </summary>
         private static void DrawSealRow(SpriteBatch sb, Vector2 center, float rot,
             Vector2 side, float alpha) {

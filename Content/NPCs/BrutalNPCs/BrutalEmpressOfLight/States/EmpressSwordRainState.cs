@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 {
     /// <summary>
     /// 剑雨阵：光剑编队在她身后展开成冠弧，悬停锁定，
-    /// 而后自一端向另一端涟漪式齐射——一整排杀意的波浪
+    /// 而后自一端向另一端涟漪式齐射，一整排杀意的波浪
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EmpressStateIndex.SwordRain, typeof(EmpressStateContext))]
     internal class EmpressSwordRainState : EmpressStateBase

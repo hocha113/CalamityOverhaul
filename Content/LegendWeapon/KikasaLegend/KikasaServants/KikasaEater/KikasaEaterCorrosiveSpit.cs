@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// <summary>
     /// 鬼奴世界吞噬怪的腐蚀血痰：一口沸着蚀泡的粘稠血团，飞行中不断有
     /// 小泡从团面炸开、掉出速度拉伸的碎珠。命中 NPC / 贴壁 / 砸上血湖面
-    /// 都爆成滞留腐蚀血雾（<see cref="KikasaEaterCorrosionMist"/>）——
+    /// 都爆成滞留腐蚀血雾（<see cref="KikasaEaterCorrosionMist"/>）
     /// 与克眼血痰被湖收走的语义刻意相反：蚀液碰上湖水是沸炸不是回收。
     /// 弹体只在 owner 端生成，spawn 参数自带全部初值；血雾只由 owner 端补生
     /// </summary>
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             float glow = 0.4f * VisualFade;
             Lighting.AddLight(Projectile.Center, 0.42f * glow, 0.10f * glow, 0.16f * glow);
 
-            //砸上血湖面：蚀液把湖面炸沸，血雾贴水滞留——不被湖收走
+            //砸上血湖面：蚀液把湖面炸沸，血雾贴水滞留，不被湖收走
             Player owner = Main.player[Projectile.owner];
             bool lakeAlive = owner?.active == true
                 && owner.TryGetModPlayer(out KikasaDomainPlayer domain)
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
 
-            //贴壁爆雾（机制身份保留）：手动地形检测替代 tileCollide——
+            //贴壁爆雾（机制身份保留）：手动地形检测替代 tileCollide
             //只认水线以上的真地形，湖线以下的墙体被湖面盖着，交给上面的落湖沸炸
             if (Life > 3
                 && (!lakeAlive || Projectile.Center.Y < kdp.LakeWorldY - 2f)
@@ -204,7 +204,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             SpriteBatch sb = Main.spriteBatch;
             Vector2 origin = tex.Size() * 0.5f;
 
-            //短拖影：速度拉伸的旧位残团，尾端收小——痰有分量地飞
+            //短拖影：速度拉伸的旧位残团，尾端收小，痰有分量地飞
             Vector2[] oldPos = Projectile.oldPos;
             if (oldPos != null) {
                 for (int k = oldPos.Length - 1; k >= 2; k -= 2) {

@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
 
         /// <summary>
         /// 真死：先解除 realLife 重定向再按链序放行体节原版死亡(每节掉鳞/魔矿)，<br/>
-        /// 头最后死——它作为场上最后一节触发 DropEoWLoot 的 boss 结算(袋/旗标/事件)
+        /// 头最后死，它作为场上最后一节触发 DropEoWLoot 的 boss 结算(袋/旗标/事件)
         /// </summary>
         private void FinishForReal(EowStateContext context) {
             NPC npc = context.Npc;

@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
         }
 
         private static void SpawnSweep(NPC npc, Vector2 pos, Vector2 vel, int telegraph, int active, int damage) {
-            //注意：不追加 netUpdate——生成包已带原始巷道速度，
+            //注意：不追加 netUpdate：生成包已带原始巷道速度，
             //冻结后再同步会把速度0覆写给远端，导致远端永不起扫
             Projectile.NewProjectile(npc.GetSource_FromAI(), pos, vel,
                 ModContent.ProjectileType<SkeletronGhostArmProj>(), damage, 0f, Main.myPlayer,

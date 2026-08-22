@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             stateMachine?.Update();
 
             //环境激怒免伤：写在状态机之后压过各状态的显形解锁；
-            //死亡演出除外——演出末帧需要放行击杀，激怒不得把他锁在 1 血
+            //死亡演出除外，演出末帧需要放行击杀，激怒不得把他锁在 1 血
             if (stateContext.IsLandEnraged && stateMachine?.CurrentState is not FishronDeathState) {
                 npc.dontTakeDamage = true;
             }
@@ -155,12 +155,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             bool enrageRaw = p != null
                 && (p.position.Y < 800f || p.position.Y > Main.worldSurface * 16.0
                 || (p.position.X > 6400f && p.position.X < Main.maxTilesX * 16 - 6400));
-            //滞回消抖：连续 30 帧在陆才落激怒，一沾海立即解除——
+            //滞回消抖：连续 30 帧在陆才落激怒，一沾海立即解除
             //岸线上反复进出不会出现免伤/增伤逐帧抖动，方向永远偏袒玩家
             enrageArmTimer = enrageRaw ? enrageArmTimer + 1 : 0;
             stateContext.IsLandEnraged = enrageArmTimer >= 30;
 
-            //阶段旗标兜底：仅客户端且留滞回余量——正常对局由转阶段演出（ai[2] 同步）落旗，
+            //阶段旗标兜底：仅客户端且留滞回余量，正常对局由转阶段演出（ai[2] 同步）落旗，
             //这里只回填中途加入/漏拍的客户端视觉基准；服务端旗标只能由演出状态设置，
             //否则演出会被抢跑成永不触发的死代码
             if (VaultUtils.isClient) {
@@ -415,7 +415,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
 
         /// <summary>
         /// 清场（服务端）：气泡/鲨鱼龙必清；fullSweep 时连同龙卷、水迹、
-        /// 海啸、间歇泉与预告线一并撤走——死亡/退场/入夜演出期间不留残余判定
+        /// 海啸、间歇泉与预告线一并撤走，死亡/退场/入夜演出期间不留残余判定
         /// </summary>
         internal static void ClearMinions(bool alsoTornado) {
             if (VaultUtils.isClient) {

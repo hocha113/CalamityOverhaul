@@ -1,6 +1,6 @@
 // ============================================================================
 //GolemThruster.fx 拳部推进器喷焰（火箭拳身份件）
-//FlameTech：Additive 批喷焰锥——quad origin 在左端中点，+X 即喷射方向
+//FlameTech：Additive 批喷焰锥，quad origin 在左端中点，+X 即喷射方向
 //喷口束腰→中段鼓包→尾段收尖；噪声撕焰缘；白热芯贴喷口；马赫环节律
 //s0 刻意为批次主贴图：quad 本体直接画 Perlin 噪声图（LinearWrap 批），无二次绑定
 //无极角运算无动态分支，调色对齐 GolemSolarFlare（白热芯/琥珀中段/深红焰缘）

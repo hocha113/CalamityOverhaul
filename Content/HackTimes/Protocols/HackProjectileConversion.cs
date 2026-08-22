@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// <summary>
     /// 骇入复制/复刻弹的生成来源（镜像水面、弹幕采样共用）。<br/>
     /// friendly/hostile 不在任何原版同步包里（弹道接管的既有教训），
-    /// 而 NewProjectile 的生成包在它内部就发走了——生成后再补赋值必然漏包。
+    /// 而 NewProjectile 的生成包在它内部就发走了，生成后再补赋值必然漏包。
     /// 唯一赶在包发出之前的钩子是 OnSpawn，所以用自定义源把
     /// "这发要转成友方"带进 <see cref="HackConvertedProjectile.OnSpawn"/>
     /// </summary>
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// <summary>
     /// 敌弹转友方的持久标记。<br/>
     /// 标记走 GlobalProjectile 的 ExtraAI 通道随 27 号包到达每一端，
-    /// 各端收到后自己翻阵营——和弹道接管"各端各自翻"是同一套分工，
+    /// 各端收到后自己翻阵营，和弹道接管"各端各自翻"是同一套分工，
     /// 只是这里有生成包可搭，不需要各端各自扫描
     /// </summary>
     internal class HackConvertedProjectile : GlobalProjectile

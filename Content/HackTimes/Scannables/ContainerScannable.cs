@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
     /// 容器扫描目标。身份 = 箱子的锚点格（左上角 tile 座标），
     /// 悬停命中任意一格都归一化到锚点，<c>Main.chest</c> 靠
     /// <see cref="Chest.FindChest(int, int)"/> 反查。<br/>
-    /// 假箱（陷阱箱 <c>BasicChestFake</c>）没有 chest 实体，反查失败即不可扫——
+    /// 假箱（陷阱箱 <c>BasicChestFake</c>）没有 chest 实体，反查失败即不可扫
     /// 这本身就是一条可读的信息
     /// </summary>
     internal class ContainerScannable : IHackTarget

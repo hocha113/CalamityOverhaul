@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
     }
 
     //每次生成重算的规划态(ShouldSave=false回放制),P30入口重置
-    //Wave-2:七带全槽——L3~L7上下文由P30一并建立(含隔离带楼梯井足印预留,
+    //Wave-2:七带全槽，L3~L7上下文由P30一并建立(含隔离带楼梯井足印预留,
     //见VerticalLinks),层内容入口按波次接线(P50 LayerContentPass调度)
     internal static class LayerPlans
     {

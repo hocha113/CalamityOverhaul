@@ -4,7 +4,7 @@ namespace CalamityOverhaul.Content.Wraiths.Marks
 {
     /// <summary>
     /// 灵异状态：一只鬼在猎物身上留下的痕，供同场其他鬼读取。<br/>
-    /// 这是"灵异叠加"的唯一介质——鬼不直接认识彼此，只认得对方留下的状态。<br/>
+    /// 这是"灵异叠加"的唯一介质，鬼不直接认识彼此，只认得对方留下的状态。<br/>
     /// 状态只描述猎物"怎么了"（湿了/被攥住/开了口子），不描述"谁干的"；
     /// 谁干的记在印记槽的施加鬼 Key 上（见 <see cref="WraithMarkNPC"/>）
     /// </summary>
@@ -12,15 +12,15 @@ namespace CalamityOverhaul.Content.Wraiths.Marks
     internal enum WraithMark : byte
     {
         None = 0,
-        /// <summary>湿——正被鬼雨淋着</summary>
+        /// <summary>湿，正被鬼雨淋着</summary>
         Soaked = 1 << 0,
-        /// <summary>攥——被枯手压着，动弹不得</summary>
+        /// <summary>攥，被枯手压着，动弹不得</summary>
         Gripped = 1 << 1,
-        /// <summary>断——被利刃穿过，创口未合</summary>
+        /// <summary>断，被利刃穿过，创口未合</summary>
         Severed = 1 << 2,
-        /// <summary>照——被鬼灯照见，无所遁形</summary>
+        /// <summary>照，被鬼灯照见，无所遁形</summary>
         Lit = 1 << 3,
-        /// <summary>缚——被圈进喜堂，身上时间停住</summary>
+        /// <summary>缚，被圈进喜堂，身上时间停住</summary>
         Betrothed = 1 << 4,
 
         All = Soaked | Gripped | Severed | Lit | Betrothed,

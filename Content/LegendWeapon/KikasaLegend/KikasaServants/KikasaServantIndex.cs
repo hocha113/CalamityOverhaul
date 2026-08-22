@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
 {
     /// <summary>
-    /// 鬼奴穷举注册表：每种可复制生物一条专门实现，不做通用代码——
+    /// 鬼奴穷举注册表：每种可复制生物一条专门实现，不做通用代码
     /// 演出与机制个性化优先，后续逐个补条目。多部位 boss 归并到规范类型
     /// （毁灭者沉哪一节都记同一条），沉影盘的收集册与影位都以规范类型为键；
     /// 每条记忆标一系灵异亲和，驻湖后由 <see cref="KikasaEffigyBoard"/> 点数
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             Register(KikasaAffinity.Wild, KikasaCultist.KikasaCultistServant.Summon,
                 static () => ModContent.ProjectileType<KikasaCultist.KikasaCultistServant>(),
                 NPCID.CultistBoss, NPCID.CultistBossClone);
-            //月球领主：核心/头/手/真眼沉哪个都记同一颗心——湖只认得那颗心脏
+            //月球领主：核心/头/手/真眼沉哪个都记同一颗心，湖只认得那颗心脏
             Register(KikasaAffinity.Nightmare, KikasaMoonLord.KikasaMoonLordServant.Summon,
                 static () => ModContent.ProjectileType<KikasaMoonLord.KikasaMoonLordServant>(),
                 NPCID.MoonLordCore, NPCID.MoonLordHead, NPCID.MoonLordHand,

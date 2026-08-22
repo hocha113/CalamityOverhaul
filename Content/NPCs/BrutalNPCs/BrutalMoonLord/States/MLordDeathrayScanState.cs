@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 if (Timer != FirstPass + i * PassInterval) {
                     continue;
                 }
-                //缺口束跳过——安全走廊
+                //缺口束跳过，安全走廊
                 if (i == gapIndex) {
                     continue;
                 }

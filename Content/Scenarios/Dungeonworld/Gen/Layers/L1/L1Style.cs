@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L1
     //  2.装修应用助手（合法锚定PlaceTile/PlaceObject、paint做旧、彩窗墙、撒布三段式）
     //  3.给A路撒布引擎的装饰条目声明表（自包含常量，引擎条目格式定稿后适配）
     //纪律：家具全走合法锚定放置，拒绝即跳过+记日志（F9/§3.2-1）；
-    //碰撞几何零改动——本文件只动家具/wall/paint层（§3.1-3装修单向性）
+    //碰撞几何零改动，本文件只动家具/wall/paint层（§3.1-3装修单向性）
     //====================================================================
     internal static class L1Style
     {

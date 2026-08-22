@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 }
             }
 
-            //幕四：公爵压轴俯冲——先亮短预告再走直线
+            //幕四：公爵压轴俯冲，先亮短预告再走直线
             if (Timer == SelfTelegraphStart && !VaultUtils.isClient) {
                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center,
                     (player.Center - npc.Center).SafeNormalize(Vector2.UnitY),

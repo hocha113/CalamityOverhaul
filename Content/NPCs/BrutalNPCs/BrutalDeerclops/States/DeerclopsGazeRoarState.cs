@@ -7,7 +7,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
 {
     /// <summary>
-    /// 凝视吼叫——"别与它对视"。风雪先退(反向预兆)，独眼白转血红，
+    /// 凝视吼叫，"别与它对视"。风雪先退(反向预兆)，独眼白转血红，
     /// 长鸣升调后骤然噤声，随即咆哮：惩罚窗内面向它的玩家被冻结。逐玩家本地结算
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)DeerclopsStateIndex.GazeRoar, typeof(DeerclopsStateContext))]
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
             int warnEnd = WarnEnd(context);
             int roarEnd = RoarEnd(context);
 
-            //幕一：风雪退去——预兆用寂静书写
+            //幕一：风雪退去，预兆用寂静书写
             if (Timer <= SetupEnd) {
                 context.VeilTarget = 0.1f;
                 context.EyeGlow = 0.3f;
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                 return null;
             }
 
-            //幕二：蓄势——眼由白转红，长鸣升调，末12帧骤然噤声
+            //幕二：蓄势，眼由白转红，长鸣升调，末12帧骤然噤声
             if (Timer <= warnEnd) {
                 context.VeilTarget = 0.08f;
                 context.GazePhase = 1;

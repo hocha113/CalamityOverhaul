@@ -13,12 +13,12 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
     /// <summary>
     /// 肢体征收：八秒内这条肢体把自己的招式表用在本体身上。<br/>
-    /// 不夺 AI——<see cref="BossPartAiSpoof"/> 在部件 AI 前后把「它读到的玩家位置」
+    /// 不夺 AI，<see cref="BossPartAiSpoof"/> 在部件 AI 前后把「它读到的玩家位置」
     /// 换成本体中心再还原，部件用原生逻辑瞄准并攻击本体所在的位置。<br/>
     /// 伤害走两条通道，都按部件原伤害的六成、由权威端 <c>SimpleStrikeNPC</c> 结算（吃 DR）：
     /// 弹幕通道由 <see cref="LimbSeizureProjectile"/> 对本体做手动碰撞，
     /// 接触通道在 OnTick 里查部件与本体的判定盒重叠（爪类冲撞用）。<br/>
-    /// 部件自身不受影响也不掉血，它的弹幕对玩家依然致命——站位照躲
+    /// 部件自身不受影响也不掉血，它的弹幕对玩家依然致命，站位照躲
     /// </summary>
     internal class LimbSeizure : QuickHackDef
     {
@@ -197,9 +197,9 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// <summary>
     /// 征收弹幕的手动本体碰撞。<br/>
     /// 敌对弹幕在原版管线里根本不测 NPC 碰撞（trap 弹除外），
-    /// 翻 <c>CanHitNPC</c> 没有用——这里在权威端自己做 AABB。<br/>
+    /// 翻 <c>CanHitNPC</c> 没有用，这里在权威端自己做 AABB。<br/>
     /// 标记只在生成端（权威端）打上：NPC 的弹幕由权威端生成，
-    /// 远端客户端拿不到标记也不需要——结算与判定全在权威端
+    /// 远端客户端拿不到标记也不需要，结算与判定全在权威端
     /// </summary>
     internal class LimbSeizureProjectile : GlobalProjectile
     {

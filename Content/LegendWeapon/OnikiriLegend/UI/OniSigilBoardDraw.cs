@@ -5,7 +5,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
-    /// 结印盘盘体 shader 桥(OniSigilBoard.fx TechDisc):圆漆盘一件全包——
+    /// 结印盘盘体 shader 桥(OniSigilBoard.fx TechDisc):圆漆盘一件全包
     /// 轆轤旋纹/漆光/蒔絵六芒/金压线衬绯/三槽鬼火眠焰/烛染炭沉;
     /// 线宽随盘径折算,全幅工位与吊坠微缩共用同一支盘;
     /// 失败退回 <see cref="OniSigilRenderer"/> 的 CPU 简笔

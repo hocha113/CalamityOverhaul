@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
     }
 
     /// <summary>
-    /// 黑客商店购买通道。铁律：服务端只过审并定价，钱货两清由请求方本机结算——
+    /// 黑客商店购买通道。铁律：服务端只过审并定价，钱货两清由请求方本机结算
     /// 非 SSC 下服务端写不了客户端自己的背包与钱包（参照 CyberwareLocalSettlement）。
     /// NPC 用裸下标寻址，服务端对解析出的 NPC 复验存活/类型/距离
     /// </summary>

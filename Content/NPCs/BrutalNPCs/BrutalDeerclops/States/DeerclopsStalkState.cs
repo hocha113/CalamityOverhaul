@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
             int duration = BaseDuration(context);
             float dist = player != null ? npc.Distance(player.Center) : 9999f;
 
-            //远则多走一会，近则提前出招——节奏服务于压迫
+            //远则多走一会，近则提前出招，节奏服务于压迫
             bool timeUp = Timer > duration && dist < 860f;
             bool hardTimeUp = Timer > duration + 65;
             bool closeEarly = Timer > 22 && dist < 400f;

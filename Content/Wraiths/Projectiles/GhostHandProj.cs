@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
         private ref float StateRaw => ref Projectile.ai[0];
         private ref float StateTimer => ref Projectile.ai[1];
-        /// <summary>复苏值 0~1，生成时传入，攥握时长与伤害插值——越接近复苏越凶</summary>
+        /// <summary>复苏值 0~1，生成时传入，攥握时长与伤害插值，越接近复苏越凶</summary>
         private ref float Revival => ref Projectile.ai[2];
 
         private HandState State {
@@ -253,7 +253,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             Vector2 fan = ShoulderFan[handSlot];
             Vector2 home = Owner.Center + new Vector2(-ownerDirection * fan.X, fan.Y);
             //「雨里伸手」：淋着雨的猎物够不着时，肩挪到它头顶的雨线上，
-            //手就从雨里垂下来抓——臂展没变，是雨把手送过去的
+            //手就从雨里垂下来抓，臂展没变，是雨把手送过去的
             if (TryRainLineShoulder(home, out Vector2 rainAnchor)) {
                 shoulderPos = shoulderPos == Vector2.Zero
                     ? rainAnchor : Vector2.Lerp(shoulderPos, rainAnchor, RainShoulderEase);

@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
     /// 转阶段演出：清场→仰首嘶吼→帷幕变调；进 P3 时唤出幻影龙（共享血池，可猎杀换充能削减）<br/>
-    /// 全程免伤但不出手——纯语调重置拍
+    /// 全程免伤但不出手，纯语调重置拍
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.PhaseShift, typeof(CultistStateContext))]
     internal class CultistPhaseShiftState : CultistStateBase

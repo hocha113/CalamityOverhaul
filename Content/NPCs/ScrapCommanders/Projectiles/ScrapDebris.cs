@@ -12,8 +12,8 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
     /// <summary>
     /// 废钢碎片：磁暴收束的风暴弹药。ai[0]=统帅 whoAmI（&lt;0 为自由坠落件），
     /// ai[1]=环绕倒计时（各端确定性同拍翻转为切线甩出，不吃服务器推送；
-    /// -2 为"来袭件"——从场边被磁力拽向统帅、沿途咬人），
-    /// ai[2]=环号（0 内环 / 1 外环，半径与甩出拍不同——两波交错风暴）。
+    /// -2 为"来袭件"，从场边被磁力拽向统帅、沿途咬人），
+    /// ai[2]=环号（0 内环 / 1 外环，半径与甩出拍不同，两波交错风暴）。
     /// 环绕聚拢段无伤害（公平阀），甩出/坠落/来袭段才咬人
     /// </summary>
     internal class ScrapDebris : ModProjectile

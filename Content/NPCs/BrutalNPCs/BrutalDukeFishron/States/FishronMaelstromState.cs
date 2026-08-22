@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
 {
     /// <summary>
-    /// 低血大招·灭世潮漩：聚拢整场风暴→雨声骤停的死寂→雷击己身引爆——
+    /// 低血大招·灭世潮漩：聚拢整场风暴→雨声骤停的死寂→雷击己身引爆
     /// 间歇泉行进、海啸双向合拢、预判落雷、压轴巨冲，一整套过山车后力竭喘息
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)FishronStateIndex.Maelstrom, typeof(FishronStateContext))]
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             megaLaunched = false;
             boltPlan.Clear();
 
-            //清掉气泡，把在场龙卷灌成满级——风暴归拢到他身上
+            //清掉气泡，把在场龙卷灌成满级，风暴归拢到他身上
             if (!VaultUtils.isClient) {
                 foreach (var n in Main.ActiveNPCs) {
                     if (n.type == NPCID.DetonatingBubble) {
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
 
             Timer++;
 
-            //幕一：升至场心蓄漩——静止的公爵是给玩家的输出窗口
+            //幕一：升至场心蓄漩，静止的公爵是给玩家的输出窗口
             if (Timer <= SpinUpEnd) {
                 npc.damage = 0;
                 Vector2 goal = player.Center + new Vector2(0, -420f);
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 return null;
             }
 
-            //幕二：死寂——雨声骤停，天黑到底
+            //幕二：死寂，雨声骤停，天黑到底
             if (Timer <= SilenceEnd) {
                 npc.damage = 0;
                 npc.velocity *= 0.9f;
@@ -174,7 +174,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 }
             }
 
-            //弹幕波期间：镇在风暴眼里缓浮，正对玩家——静止的王座即输出窗口
+            //弹幕波期间：镇在风暴眼里缓浮，正对玩家，静止的王座即输出窗口
             if (Timer > SilenceEnd + 1 && Timer < MegaTelegraph) {
                 Vector2 eye = player.Center + new Vector2(0, -400f);
                 npc.velocity = Vector2.Lerp(npc.velocity, (eye - npc.Center).SafeNormalize(Vector2.Zero) * 4f, 0.05f);
@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 return null;
             }
 
-            //尾声：力竭喘息——奖励窗口
+            //尾声：力竭喘息，奖励窗口
             if (Timer >= ExhaleStart) {
                 npc.damage = 0;
                 npc.velocity *= 0.93f;

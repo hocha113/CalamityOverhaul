@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         /// <summary>
         /// 掉落物；<paramref name="itemIndex"/> 是 <c>Main.item</c> 的槽位。<br/>
-        /// <c>SyncItem</c> 要的就是这个槽位——<c>Item.whoAmI</c> 只在
+        /// <c>SyncItem</c> 要的就是这个槽位，<c>Item.whoAmI</c> 只在
         /// <c>Item.UpdateItem</c> 里被盖过，新生成的掉落物身上是旧值
         /// </summary>
         public static bool TryItem(IHackTarget target, out Item item, out int itemIndex) {

@@ -63,20 +63,20 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             OldNetTerminalHint = this.GetLocalization(nameof(OldNetTerminalHint), () => "登出并铭刻收获");
             OldNetSettleDone = this.GetLocalization(nameof(OldNetSettleDone), () => "已铭刻 {0} 枚模具碎片，链路安全断开");
             OldNetSettleEmpty = this.GetLocalization(nameof(OldNetSettleEmpty), () => "链路安全断开，本次没有收获");
-            OldNetEjectRam = this.GetLocalization(nameof(OldNetEjectRam), () => "RAM耗尽——链路烧断，未铭刻的收获已丢失");
-            OldNetEjectDeath = this.GetLocalization(nameof(OldNetEjectDeath), () => "构念崩解——链路烧断，未铭刻的收获已丢失");
-            OldNetLedgerFull = this.GetLocalization(nameof(OldNetLedgerFull), () => "账本已满——先去中继站或登出");
+            OldNetEjectRam = this.GetLocalization(nameof(OldNetEjectRam), () => "RAM耗尽，链路烧断，未铭刻的收获已丢失");
+            OldNetEjectDeath = this.GetLocalization(nameof(OldNetEjectDeath), () => "构念崩解，链路烧断，未铭刻的收获已丢失");
+            OldNetLedgerFull = this.GetLocalization(nameof(OldNetLedgerFull), () => "账本已满，先去中继站或登出");
             OldNetEncryptHint = this.GetLocalization(nameof(OldNetEncryptHint), () => "引导破解（站桩约3秒，动静很大）");
             OldNetEventHint = this.GetLocalization(nameof(OldNetEventHint), () => "拉闸：解除全图封锁，惊动整张网");
-            OldNetEventPulled = this.GetLocalization(nameof(OldNetEventPulled), () => "封锁已解除——清剿波正在路上");
+            OldNetEventPulled = this.GetLocalization(nameof(OldNetEventPulled), () => "封锁已解除，清剿波正在路上");
             OldNetRelayHint = this.GetLocalization(nameof(OldNetRelayHint), () => "中继上行：铭刻当前账本（上行有噪音）");
             OldNetRelayDone = this.GetLocalization(nameof(OldNetRelayDone), () => "已铭刻 {0} 枚模具碎片，链路保持");
             OldNetRelayEmpty = this.GetLocalization(nameof(OldNetRelayEmpty), () => "账本为空，无可上行");
 
             OldNetEnterHint = this.GetLocalization(nameof(OldNetEnterHint), () => "接入旧网（越墙深潜）");
-            OldNetEnterConfirm = this.GetLocalization(nameof(OldNetEnterConfirm), () => "链路已预热——再次交互，越墙深潜");
+            OldNetEnterConfirm = this.GetLocalization(nameof(OldNetEnterConfirm), () => "链路已预热，再次交互，越墙深潜");
             OldNetEnterSPOnly = this.GetLocalization(nameof(OldNetEnterSPOnly), () => "深潜仅单人模式可用");
-            OldNetDiveCharge = this.GetLocalization(nameof(OldNetDiveCharge), () => "保持下潜——正在穿墙");
+            OldNetDiveCharge = this.GetLocalization(nameof(OldNetDiveCharge), () => "保持下潜，正在穿墙");
 
             OldNetBandFoot = this.GetLocalization(nameof(OldNetBandFoot), () => "墙脚带 // FOOTHOLD");
             OldNetBandRuin = this.GetLocalization(nameof(OldNetBandRuin), () => "废墟带 // RUINFIELD");
@@ -84,10 +84,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
 
             GuideNoiseTitle = this.GetLocalization(nameof(GuideNoiseTitle), () => "噪音计");
             GuideNoiseBody = this.GetLocalization(nameof(GuideNoiseBody),
-                () => "左下角是噪音计：移动、开火、破解都会点亮你。四道刻度对应四档威胁——过 T2 就会有东西从墙那边过来。静止不动，噪音会自己冷却。");
+                () => "左下角是噪音计：移动、开火、破解都会点亮你。四道刻度对应四档威胁，过 T2 就会有东西从墙那边过来。静止不动，噪音会自己冷却。");
             GuideLedgerTitle = this.GetLocalization(nameof(GuideLedgerTitle), () => "未铭刻账本");
             GuideLedgerBody = this.GetLocalization(nameof(GuideLedgerBody),
-                () => "采到的碎片先进账本（LEDGER 读数），死亡或 RAM 耗尽会全部作废——只有铭刻过的才真正属于你。账本有容量，满载会拒收。");
+                () => "采到的碎片先进账本（LEDGER 读数），死亡或 RAM 耗尽会全部作废，只有铭刻过的才真正属于你。账本有容量，满载会拒收。");
             GuideNodesTitle = this.GetLocalization(nameof(GuideNodesTitle), () => "节点分级");
             GuideNodesBody = this.GetLocalization(nameof(GuideNodesBody),
                 () => "青色节点右键即采；琥珀色加密节点要站桩引导约 3 秒，动静很大但值三倍；红色事件闸一拉，全图封锁解除，清剿波也会立刻到场。");
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
                 () => "琥珀光柱是中继站：就地铭刻账本、人不撤，但上行广播很响。薄荷绿光柱是登出终端：铭刻并安全断链。贪还是撤，是这里唯一的问题。");
             GuideDrainTitle = this.GetLocalization(nameof(GuideDrainTitle), () => "距离底噪");
             GuideDrainBody = this.GetLocalization(nameof(GuideDrainBody),
-                () => "离墙越远，RAM 底噪越贵——HUD 的 DEPTH 读数旁标着当前每秒消耗。RAM 烧干等于弹出，回程的路费要提前算进去。");
+                () => "离墙越远，RAM 底噪越贵，HUD 的 DEPTH 读数旁标着当前每秒消耗。RAM 烧干等于弹出，回程的路费要提前算进去。");
             GuideSkip = this.GetLocalization(nameof(GuideSkip), () => "知道了");
 
             EntrustTitle = this.GetLocalization(nameof(EntrustTitle), () => "越墙深潜");
@@ -107,14 +107,14 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             TrackerDive = this.GetLocalization(nameof(TrackerDive), () => "从登出终端安全断链");
 
             OldNetSignRuin = this.GetLocalization(nameof(OldNetSignRuin),
-                () => "废墟带。主产区，加密节点自此出没——引导破解前，先看好退路。");
+                () => "废墟带。主产区，加密节点自此出没，引导破解前，先看好退路。");
             OldNetSignFade = this.GetLocalization(nameof(OldNetSignFade),
-                () => "信号衰减区。底噪自此陡增，链路撑不了多久——深入自负。");
+                () => "信号衰减区。底噪自此陡增，链路撑不了多久，深入自负。");
 
             OldNetEchoHint = this.GetLocalization(nameof(OldNetEchoHint),
                 () => "回声节点：只在时停中可触及（零噪音，产出翻倍）");
             OldNetEchoFizzle = this.GetLocalization(nameof(OldNetEchoFizzle),
-                () => "回声太淡——时停中才能触及");
+                () => "回声太淡，时停中才能触及");
             OldNetCacheHint = this.GetLocalization(nameof(OldNetCacheHint),
                 () => "深潜缓存：撬开取一件封存模块（动静不小）");
         }

@@ -6,7 +6,7 @@ using Terraria.WorldBuilding;
 namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen
 {
     /// <summary>
-    /// 湖畔村轮廓：民居、望楼、枯树三种形，与天幕 <c>KiyumeSky.fx</c> 的 villageRow 抽签同构——
+    /// 湖畔村轮廓：民居、望楼、枯树三种形，与天幕 <c>KiyumeSky.fx</c> 的 villageRow 抽签同构
     /// 抬头看见的剪影，低头走进去要是同一个村子。<br/>
     /// 本轮只做外壳与门窗洞，屋内不摆家具（内部结构后续再说）。
     /// 房子必须平放，所以每栋先削/垫地基并回写 <see cref="KiyumePlans.FloorTop"/>，
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen
             return w + eave * 2;
         }
 
-        //望楼：窄高一柱，脊更陡，顶窗常明——雾涨上来时它是最后沉没的东西
+        //望楼：窄高一柱，脊更陡，顶窗常明，雾涨上来时它是最后沉没的东西
         private static int BuildTower(int left) {
             int w = WorldGen.genRand.Next(5, 8);
             int h = WorldGen.genRand.Next(14, 22);

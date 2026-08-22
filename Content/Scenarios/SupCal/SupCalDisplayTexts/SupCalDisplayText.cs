@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.SupCalDisplayTexts
             BH5Text = this.GetLocalization(nameof(BH5Text), () => "胜利的天平有些不确定会倒向何方了...你只需站住一会儿就可以改变现状，好吗？");
             Sepulcher2Text = this.GetLocalization(nameof(Sepulcher2Text), () => "如果今天只能活一个，你觉得我会希望是谁？");
             Desperation1Text = this.GetLocalization(nameof(Desperation1Text), () => "给 我 老 老 实 实 站 那 里，杂 鱼");
-            Desperation2Text = this.GetLocalization(nameof(Desperation2Text), () => "别得意——我之前只是在陪你玩罢了");
+            Desperation2Text = this.GetLocalization(nameof(Desperation2Text), () => "别得意，我之前只是在陪你玩罢了");
             Desperation3Text = this.GetLocalization(nameof(Desperation3Text), () => "咳……咳……我承认，今天的状态不太好");
             Desperation4Text = this.GetLocalization(nameof(Desperation4Text), () => "看来是我输了……遇见你，真是幸事一件");
             Acceptance1Text = this.GetLocalization(nameof(Acceptance1Text), () => "这是我百年来最开心的一天……");

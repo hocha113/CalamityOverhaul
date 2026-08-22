@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Wraiths.Marks
         internal static WraithMark Active(NPC npc, int owner)
             => Of(npc)?.Active(owner) ?? WraithMark.None;
 
-        /// <summary>身上来自同一施加者的不同印记数量——三印崩读它。</summary>
+        /// <summary>身上来自同一施加者的不同印记数量，三印崩读它。</summary>
         internal static int CountActive(NPC npc, int owner) {
             WraithMark active = Active(npc, owner);
             int count = 0;

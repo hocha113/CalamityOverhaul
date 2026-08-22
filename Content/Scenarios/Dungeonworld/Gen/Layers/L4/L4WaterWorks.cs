@@ -8,14 +8,14 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
     //====================================================================
     //L4静态水体系统 + 两态水位机雏形(STRUCTURES §5.1-R1定论:两态脚本化)
     //
-    //公理:湿舱段是"堰坎水密舱段"——水体只经构造性密封的实心边界与外界相邻,
+    //公理:湿舱段是"堰坎水密舱段"，水体只经构造性密封的实心边界与外界相邻,
     //一切开口(门/走道/栅洞)都在水面之上,或与同一水体连续(§2.4-④/§3.2-9)。
     //推论(本波裁决,记档):跨房连续水柱在该公理下不可密封(井底出口必在水面下),
     //故ROOMS-L4 §1"排水井满水态泳道"改为(a)组间干楼梯井+(b)房内自包含深潜井,
-    //垂直泳感由蓄水大厅/深潜井的房内水柱承担——泄漏风险构造性归零。
+    //垂直泳感由蓄水大厅/深潜井的房内水柱承担，泄漏风险构造性归零。
     //
     //两态数据结构:两张"液体版图"不存全图位图(12M格浪费),按舱段存
-    //"矩形+两态水面行"——版图=Σ舱段,一次性重写=逐舱段逐格赋LiquidAmount。
+    //"矩形+两态水面行"，版图=Σ舱段,一次性重写=逐舱段逐格赋LiquidAmount。
     //
     //耗时心算(写入注释供回归):全层水体约1.5万格,FillState为O(水体面积)毫秒级;
     //settle配方QuickWater限带扫描约200万格次+WaterCheck全图1200万格次×(2~11次,
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
         internal static void SettleBand(LayerBand band) {
             //暗礁(对源核实):SettleWaterAt在WorldGen.gen期间会把"下落过的水"按
             //GenVars.waterLine转岩浆(Liquid.cs L173-183),子世界gen期WorldGen.gen=true
-            //(SubworldSystem.cs L1193)而waterLine是主世界残值——必须先钝化两条线
+            //(SubworldSystem.cs L1193)而waterLine是主世界残值，必须先钝化两条线
             //(原版恐慌模式同款处理,Liquid.cs L969),用毕恢复
             int savedWaterLine = GenVars.waterLine;
             int savedLavaLine = GenVars.lavaLine;
@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
 
         /// <summary>
         /// 双水线痕+分带墙:几何与液体冻结后调用(paint/wall层,§3.2-6)。
-        /// 排水态水面行==Area.Bottom(排空)时,下线刷在底行上一格——干舱也留"水曾经到过这"的黑线。
+        /// 排水态水面行==Area.Bottom(排空)时,下线刷在底行上一格，干舱也留"水曾经到过这"的黑线。
         /// </summary>
         internal static void PaintAging() {
             foreach (Compartment c in Compartments) {
@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
         /// <summary>
         /// 运行时切换:只重写液体版图,不跑settle。返回写入的水格数,无舱段登记时返回-1。
         /// <br/>为什么敢省掉settle:它是生成期的构造bug保险,内含全图WaterCheck(1200万格)
-        /// 与多轮UpdateLiquid,秒级耗时——放在运行时就是几秒硬卡帧。而堰坎舱段本就是
+        /// 与多轮UpdateLiquid,秒级耗时，放在运行时就是几秒硬卡帧。而堰坎舱段本就是
         /// 构造性密封的静水(§2.4-④/§3.2-9),且子世界NormalUpdates=false让
         /// Liquid.UpdateLiquid根本不转(F16/F17),重写完即静定,没有东西会来推它。
         /// </summary>

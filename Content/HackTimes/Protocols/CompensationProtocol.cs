@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// 还账因此分两条路：单机在 <see cref="OnRemove"/> 直接结算，
     /// 联机由服务端广播移除后在施术者本机的 <see cref="OnReplicatedRemove"/> 结算。<br/>
     /// 施术者死亡或下线时 <c>ResolveEffectCaster</c> 取不到人，债务勾销
-    /// ——命都没了没人再去讨账，也不把账转嫁给队友
+    /// ：命都没了没人再去讨账，也不把账转嫁给队友
     /// </summary>
     internal class CompensationProtocol : QuickHackDef
     {

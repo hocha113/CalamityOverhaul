@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
     /// <summary>
     /// 弹道超频：给自己的一发弹幕加料。<br/>
-    /// 做成即时而非持续——弹幕随时会消失，没有一个"到期还原"的落点
+    /// 做成即时而非持续，弹幕随时会消失，没有一个"到期还原"的落点
     /// </summary>
     internal class BallisticOverclock : QuickHackDef
     {

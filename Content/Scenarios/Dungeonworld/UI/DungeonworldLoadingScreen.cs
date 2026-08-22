@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
     /// public override void OnExit() => DungeonworldLoadingScreen.Exit();//状态兜底复位
     /// </code>
     /// 触发进入的一方（传送物品等）建议在 SubworldSystem.Enter&lt;Dungeonworld&gt;() 之前
-    /// 先调 <see cref="Enter"/>，退出侧在 SubworldSystem.Exit() 之前先调 <see cref="Exit"/>——
+    /// 先调 <see cref="Enter"/>，退出侧在 SubworldSystem.Exit() 之前先调 <see cref="Exit"/>
     /// 主线程先复位，规避首帧竞态<br/>
     /// 自愈复位：一次过渡只复位一次（世界内帧撤防、过渡首帧布防）。旧 1s 帧戳阈值会在头段长帧下
     /// 把入场包络反复清零钉黑<br/>

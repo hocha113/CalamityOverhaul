@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
         }
 
         /// <summary>
-        /// 区内层染:只认已开凿格(空格+本层地牢墙),染其墙面,并顺带染四邻实心砖面——
+        /// 区内层染:只认已开凿格(空格+本层地牢墙),染其墙面,并顺带染四邻实心砖面
         /// 玩家实际看得见的就是内壁这一圈,实心大陆在第一个判断就退出,不做无用扫描。
         /// </summary>
         /// <param name="coverage">粗块覆盖率0~100,决定层染占多大面(不是逐格概率)</param>
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
             return false;
         }
 
-        //粗块(8x8)定大形、细块(2x2)啃边——两级叠出参差边界而不是棋盘格
+        //粗块(8x8)定大形、细块(2x2)啃边，两级叠出参差边界而不是棋盘格
         private static bool Hit(int x, int y, int coverage, int salt) {
             int coarse = Hash(x >> 3, y >> 3, salt) % 100;
             if (coarse < coverage) {

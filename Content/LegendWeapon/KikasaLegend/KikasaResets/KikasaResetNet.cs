@@ -9,11 +9,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
 {
     /// <summary>
     /// 大范围重启三段包：Request（客户端→服务器，无负载，来源以连接为准，
-    /// 领域形态由客户端预检——服务器没有领域状态是既定契约）；
+    /// 领域形态由客户端预检，服务器没有领域状态是既定契约）；
     /// Apply（服务器→全体，owner+resetId+seed+NPC 身份组+玩家组，各端时间轴自此起跑）；
     /// Cancel（服务器→全体，施术者掉线的收场令）。
     /// 链式 handler 共用一条流：所有字段先读满，校验只做丢弃；
-    /// 计数一律 byte——maxNPCs=200、maxPlayers=255，天然有界
+    /// 计数一律 byte，maxNPCs=200、maxPlayers=255，天然有界
     /// </summary>
     internal static class KikasaResetNet
     {

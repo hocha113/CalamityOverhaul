@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 {
     /// <summary>
     /// 鬼伞·沉溺权威核心。封印=直接移除（无掉落不算击杀，CyberBanish 同款），
-    /// 服务器只验资格/距离/频率，不验领域——服务器没有领域状态是既定契约；
+    /// 服务器只验资格/距离/频率，不验领域，服务器没有领域状态是既定契约；
     /// 领域就绪由客户端预检。定身走轻量方案：权威端逐帧钉位+定期 netUpdate，
     /// 40 帧短持有后在抓握节拍移除真身，此后演出全靠客户端鬼影。
     /// </summary>
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         public const float MaxRange = 4000f;
 
         /// <summary>湖上抓握高度上限：与 FX 层臂展预算对齐（段长动态定标 26..240，
-        /// 6 节解算臂展 ≈1411px、抓点筛选 1350px）——此界之内手臂真伸得到，
+        /// 6 节解算臂展 ≈1411px、抓点筛选 1350px），此界之内手臂真伸得到，
         /// 不会出现卷指计时驱动下指尖离目标半屏远照样"攥中"的隔空贴手</summary>
         public const float MaxGrabHeight = 1200f;
 
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         /// <summary>
         /// 共享资格谓词：客户端预检与服务器复检同一份（一处真相）。
         /// 2026-08 暂时全放开：任何活跃 NPC（含 boss/城镇/免伤）都能沉，
-        /// 只留技术性守卫——正被放逐或已在沉溺中的目标不能被第二只手抓
+        /// 只留技术性守卫，正被放逐或已在沉溺中的目标不能被第二只手抓
         /// </summary>
         public static bool IsEligibleTarget(NPC npc)
             => npc?.active == true && npc.lifeMax > 0
@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
         /// <summary>
         /// 光标下有生物时受理沉溺，返回是否消费了这次按键
-        /// （冷却/湖未就绪的拒绝也算消费——玩家的意图明确是生物，不该误沉手中物）
+        /// （冷却/湖未就绪的拒绝也算消费，玩家的意图明确是生物，不该误沉手中物）
         /// </summary>
         internal static bool TryDrownAtCursor(Player player) {
             if (player == null || player.whoAmI != Main.myPlayer) {
@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         private static int hoverOmenNpc = -1;
 
         /// <summary>
-        /// 可沉暗示：湖就绪时光标悬着够得到的生物，它脚下的湖面先泛起极淡的涟漪——
+        /// 可沉暗示：湖就绪时光标悬着够得到的生物，它脚下的湖面先泛起极淡的涟漪
         /// 把按键后的涟漪预兆提前到悬停。纯本机演出，每帧由
         /// <see cref="KikasaDrownSystem.PostUpdateEverything"/> 泵动
         /// </summary>

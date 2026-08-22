@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
 
         /// <summary>本机兑现重启恢复：回满生命法力、清 debuff、短无敌与提示</summary>
         internal static void ApplyLocalRestore(Player owner) {
-            //恢复包在途一个 RTT，玩家可能已死亡——不给尸体结算
+            //恢复包在途一个 RTT，玩家可能已死亡，不给尸体结算
             if (owner?.active != true || owner.dead || Main.dedServ) {
                 return;
             }

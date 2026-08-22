@@ -558,7 +558,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
             }
         }
 
-        /// <summary>消融期：洒落跟着熔断前沿走——顶部先化，残躯向脚底退缩</summary>
+        /// <summary>消融期：洒落跟着熔断前沿走，顶部先化，残躯向脚底退缩</summary>
         private void DissolvingFx() {
             if (Main.GameUpdateCount % 2 != 0) {
                 return;

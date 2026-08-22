@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// <summary>
     /// 鬼奴·湖水版血巢蜂后。血湖之水凝成的蜂后随从：
     /// 出水四拍（蜂巢涌泡预兆→破水浪冠→血水升起凝实→抖翅甩水觉醒），
-    /// 签名机制为全横幅定高耙扫——锁定目标高度后拉出屏外距离，折返做贯穿
+    /// 签名机制为全横幅定高耙扫，锁定目标高度后拉出屏外距离，折返做贯穿
     /// 战场宽度的车道式横扫，多次来回，每次折返有减速-悬停-转身-振翅蓄力 tell；
     /// 副攻为腹部泼出的短命追踪血蜂群与螫针上抛重力雨。
     /// 联机契约同克眼基准：状态机各端同推，owner 转场盖 netUpdate 章，
@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         private void BeginDissolve() {
-            //破水前后几帧内收场：本体还没显形，不走溶解演出——
+            //破水前后几帧内收场：本体还没显形，不走溶解演出
             //否则透明度会从淡入半途跳满，水面凭空闪出一只蜂后再化掉
             if (State == StateEmerge && StateTimer < OmenFrames + 4) {
                 Projectile.Kill();
@@ -218,7 +218,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：湖塌/收域/主人死亡 → 溶解回湖。只有 owner 裁决——
+            //生命线：湖塌/收域/主人死亡 → 溶解回湖。只有 owner 裁决
             //服务器无领域状态（恒 Closed 是既定契约），别处判会当场误杀
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
@@ -350,7 +350,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (!wingShakeDone && t >= WingShakeFrame) {
-                //觉醒拍：抖翅甩水——湿虫甩干翅膀，血珠横着排开
+                //觉醒拍：抖翅甩水，湿虫甩干翅膀，血珠横着排开
                 wingShakeDone = true;
                 wingFlashTimer = 10;
                 SoundEngine.PlaySound(SoundID.Zombie125 with { Volume = 0.5f, Pitch = 0.15f, MaxInstances = 2 }, Projectile.Center);
@@ -535,7 +535,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Vector2 targetPos = target >= 0 ? Main.npc[target].Center : owner.Center;
 
             if (phase == RakeReposition) {
-                //首趟：水平拉出屏外距离——就近一侧闩定，防目标横穿时锚点左右横跳
+                //首趟：水平拉出屏外距离，就近一侧闩定，防目标横穿时锚点左右横跳
                 if (repoSide == 0f) {
                     repoSide = MathF.Sign(Projectile.Center.X - targetPos.X);
                     if (repoSide == 0f) {
@@ -593,7 +593,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         MaxInstances = 3
                     }, Projectile.Center);
                 }
-                //蓄力血珠向翅根收拢，72% 后静默——爆发前的吸气
+                //蓄力血珠向翅根收拢，72% 后静默，爆发前的吸气
                 if (!Main.dedServ && p < 0.72f && t % 3 == 1) {
                     Vector2 root = Projectile.Center + new Vector2(0f, -14f);
                     Vector2 from = root + Main.rand.NextVector2Unit() * Main.rand.NextFloat(46f, 92f);
@@ -611,7 +611,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             if (phase == RakeSweep) {
                 if (lastSweepLaunched < pass) {
-                    //launch 一帧定速：车道方向水平贯穿，纵速清零——定高锁死
+                    //launch 一帧定速：车道方向水平贯穿，纵速清零，定高锁死
                     lastSweepLaunched = pass;
                     float dir = target >= 0 ? MathF.Sign(targetPos.X - Projectile.Center.X) : faceDir;
                     if (dir == 0f) {
@@ -639,7 +639,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     }
                 }
 
-                //横扫段：复利续力、纵向死锁——车道式冲锋直才快
+                //横扫段：复利续力、纵向死锁，车道式冲锋直才快
                 Projectile.velocity.X *= 1.012f;
                 Projectile.velocity.X = MathHelper.Clamp(Projectile.velocity.X, -36f, 36f);
                 Projectile.velocity.Y = 0f;
@@ -670,7 +670,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
 
                 //收线：贯穿到目标另一侧屏外，或超时（目标没了只扫个短程）；
-                //贴近世界边则提前刹——原版会把出界弹幕直接杀掉
+                //贴近世界边则提前刹，原版会把出界弹幕直接杀掉
                 float edgeMargin = 720f;
                 bool nearEdge = Projectile.Center.X < edgeMargin
                     || Projectile.Center.X > Main.maxTilesX * 16f - edgeMargin;
@@ -810,7 +810,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
             int damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(SwarmDamage);
             for (int k = 0; k < BeesPerBurst && alive < BeeBudgetCap; k++, alive++) {
-                //扇形泼出，速度参差——一窝蜂不是一排枪
+                //扇形泼出，速度参差，一窝蜂不是一排枪
                 Vector2 vel = aim.RotatedBy((k - 1) * 0.34f + Main.rand.NextFloat(-0.12f, 0.12f))
                     * Main.rand.NextFloat(7.5f, 10f);
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), belly, vel,
@@ -858,7 +858,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (!tossDone && t > StingChargeEnd) {
-                //上抛一拍：扇排螫针冲天，身体重重下坐——知重量者先沉腰
+                //上抛一拍：扇排螫针冲天，身体重重下坐，知重量者先沉腰
                 tossDone = true;
                 TossStingers(owner, aimPos, authority);
             }
@@ -1251,7 +1251,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 ? new Color(255, 255, 255, (byte)(a * 255f))
                 : Color.Lerp(Color.White, BloodTint, 0.55f) * a;
 
-            //振翅叠帧：下一帧半透明叠画——翅膀高频颤动的双重曝光（悬停姿态专属）
+            //振翅叠帧：下一帧半透明叠画，翅膀高频颤动的双重曝光（悬停姿态专属）
             if (!dashPose && wing > 0.3f && alpha > 0.2f) {
                 int nextRow = 4 + (frameIndex + 1) % 8;
                 Rectangle nextFrame = new(0, frameH * nextRow, tex.Width, frameH);
@@ -1331,7 +1331,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     new Vector2(66f * 2f / glow.Width, 14f * 2f / glow.Height), SpriteEffects.None, 0f);
             }
 
-            //折返 tell：转身完成后沿冲锋方向铺一条渐亮的低幅光带——车道预告（可读性阀门）
+            //折返 tell：转身完成后沿冲锋方向铺一条渐亮的低幅光带，车道预告（可读性阀门）
             if (State == StateRake && RakePhase == RakeTell && alpha > 0.3f) {
                 float tellP = MathHelper.Clamp(t / (float)(RakePass == 0 ? TellFirst : TellNext), 0f, 1f);
                 if (tellP > 0.42f) {

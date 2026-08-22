@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities
         internal const string Key = "HeadlessShade";
         internal const float HuntRange = 620f;
 
-        /// <summary>「按住了斩」：鬼影优先扑向动弹不得的猎物——那一刀不会落空。</summary>
+        /// <summary>「按住了斩」：鬼影优先扑向动弹不得的猎物，那一刀不会落空。</summary>
         internal static readonly WraithSynergyRule PinnedHunt = new() {
             Id = "HeadlessShade.PinnedHunt",
             Trigger = WraithMark.Gripped,

@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
 
         /// <summary>
         /// 脚本咬合结算：HurtInfo 直伤（不过防御与闪避，数值即设计值），
-        /// 非致死钳制——投技任何一段都不处死玩家，至多打到 1 血
+        /// 非致死钳制，投技任何一段都不处死玩家，至多打到 1 血
         /// </summary>
         private void Bite(NPC eye, float fraction) {
             if (Player.dead || Player.creativeGodMode) {

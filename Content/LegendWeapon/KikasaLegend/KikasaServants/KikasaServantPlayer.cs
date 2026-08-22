@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
 {
     /// <summary>
     /// 鬼伞·沉影盘玩家态。沉溺过的 boss 化作沉影永久入册（收集册），
-    /// 湖底有三席影位——驻影即役使：影位上的鬼奴在湖就绪时自动出水随行，
+    /// 湖底有三席影位，驻影即役使：影位上的鬼奴在湖就绪时自动出水随行，
     /// 湖退自散、湖涨自回；快捷转盘可逐席召/收（收起的席位溶解遣返、不再自动补位）。
     /// 编成在湖心景的编成区里改（数据随存档保存，储钱罐语义只活在所有者本机）。
     /// 影位键编码：0=空，正数=鬼奴规范 NPC 类型，负数=-械奴物品类型。
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             }
         }
 
-        /// <summary>驻着影且未被收起的席数——出力分摊按实际出战席算</summary>
+        /// <summary>驻着影且未被收起的席数，出力分摊按实际出战席算</summary>
         internal int ActiveSlotCount {
             get {
                 int count = 0;
@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
 
         /// <summary>
         /// 入世追认湖藏：注册表扩了专门条目后（如传奇武器专属械奴），
-        /// 更新前就泡在湖里的原件静默补入械奴册——不落座、不出声，编成自己来
+        /// 更新前就泡在湖里的原件静默补入械奴册，不落座、不出声，编成自己来
         /// </summary>
         public override void OnEnterWorld() {
             foreach (Item item in Player.GetModPlayer<KikasaVaultPlayer>().Stored) {
@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             }
         }
 
-        /// <summary>新记忆有空席就自动落座——沉下去当场看见回报（落座默认出战）</summary>
+        /// <summary>新记忆有空席就自动落座，沉下去当场看见回报（落座默认出战）</summary>
         private bool TryAutoSlot(int key) {
             if (SlotIndexOf(key) >= 0) {
                 return false;
@@ -235,7 +235,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             if (lakeSlots[slotIndex] == key) {
                 return false;
             }
-            //同鬼挪席：旧席腾出但不遣返——鬼还是那只鬼
+            //同鬼挪席：旧席腾出但不遣返，鬼还是那只鬼
             for (int i = 0; i < SlotCount; i++) {
                 if (i != slotIndex && lakeSlots[i] == key) {
                     lakeSlots[i] = 0;
@@ -559,7 +559,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             }
         }
 
-        /// <summary>老档折算：唯一的「最后记忆」入册并落首席——旧玩家开档就有编成，不用重沉</summary>
+        /// <summary>老档折算：唯一的「最后记忆」入册并落首席，旧玩家开档就有编成，不用重沉</summary>
         private void MigrateLegacyMemory() {
             int canonical = KikasaServantIndex.CanonicalOf(LastDrownedType);
             if (canonical > 0) {

@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             shader.Parameters["uIntensity"]?.SetValue(intensity);
             shader.Parameters["uAspectRatio"]?.SetValue((float)vpW / vpH);
             //相机偏移按视口高归一喂层间视差：X 用于横向漂移，
-            //Y 以甲板行走面为锚——飞离甲板时构造核心按远景档位下沉，钉在世界里
+            //Y 以甲板行走面为锚，飞离甲板时构造核心按远景档位下沉，钉在世界里
             shader.Parameters["uCamX"]?.SetValue(Main.screenPosition.X / vpH);
             float camCenterY = Main.screenPosition.Y + vpH * 0.5f;
             float anchorY = CybCourseGen.SurfaceY * 16f;

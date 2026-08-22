@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume
     /// </summary>
     internal class KiyumeAmbienceSystem : ModSystem
     {
-        //梦色板：物块暗红余温，背景压向黑红——地形从红空里剥成剪影
+        //梦色板：物块暗红余温，背景压向黑红，地形从红空里剥成剪影
         internal static Color DreamTile = new(150, 52, 44);
         internal static Color DreamBackground = new(64, 12, 14);
         /// <summary>物块/背景染色强度（1=完全接管原版日光）</summary>

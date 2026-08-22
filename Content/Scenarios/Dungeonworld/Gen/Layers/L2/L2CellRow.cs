@@ -13,8 +13,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L2
     //排内地板齐平禁高差;尽端排(约1/3)以拷问室或牢栅藏物室收尾。
     //
     //口的形态(比例语法,决定论掷点):
-    //  Door   真门板(粉门style18)——主体,约2/3
-    //  Broken 破栅口(3高全开,顶格残留铁栏墙+锈痕)——约1/3
+    //  Door   真门板(粉门style18)：主体,约2/3
+    //  Broken 破栅口(3高全开,顶格残留铁栏墙+锈痕)：约1/3
     //  Barred 牢栅封死(上部1宽透视缝+铁栏墙,下部裂粉砖暗塞):
     //         "看得见拿不到",答案=原版"裂砖可破"语言,只用于尾段藏物室
     internal static class L2CellRow

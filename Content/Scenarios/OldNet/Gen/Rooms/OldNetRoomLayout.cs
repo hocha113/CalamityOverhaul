@@ -4,7 +4,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Rooms
 {
     //房间图数据层：图先于几何，本文件零tile写入
     //镜像 Dungeonworld RoomLayout 的精简版。DoorSocket 词汇已补（原 M3 遗留债）：
-    //建造方每凿一个真实开口就登记一个 socket，图层因此知道房的连通词汇——
+    //建造方每凿一个真实开口就登记一个 socket，图层因此知道房的连通词汇
     //零 socket 的非平台厅房 = 密闭死房，P80 审计报警
 
     internal enum OldNetRoomRole { Normal, Landing, Vault, Machine, Archive }

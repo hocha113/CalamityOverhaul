@@ -18,7 +18,7 @@ using static CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.K
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms.KikasaHalibut
 {
     /// <summary>
-    /// 械奴·比目鱼（专属条目，短路通用枪奴推断——通用档案只会读到模板伤 4 的笑话）。
+    /// 械奴·比目鱼（专属条目，短路通用枪奴推断，通用档案只会读到模板伤 4 的笑话）。
     /// 单杆湖水凝成的星港比目鱼枪：普攻吐真海水（直接生成武器本体的
     /// <see cref="OceanCurrent"/> 洪流，血湖的枪打出海洋的弹，反差即身份），
     /// 出招池 = 洪流点射与潮涌扇喷轮换；领域冷却就绪时冲位到猎物上方泼出
@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private int domainCooldown;
         private bool formSnapDone;
         private bool dissolveSplashed;
-        /// <summary>领域施放点：冲位/蓄水/泼出共用——先声明后泼</summary>
+        /// <summary>领域施放点：冲位/蓄水/泼出共用，先声明后泼</summary>
         private Vector2 castPos;
         private bool castDeclared;
 
@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         //==================== 召唤入口 ====================
 
         /// <summary>
-        /// KikasaArmsIndex 专门条目的召唤入口；count 不折算编制——传奇武器沉一件即完整形态，
+        /// KikasaArmsIndex 专门条目的召唤入口；count 不折算编制，传奇武器沉一件即完整形态，
         /// 多件只取最高等级件定强度
         /// </summary>
         internal static void Summon(Player owner, Vector2 emergeAt, int count) {
@@ -261,7 +261,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：只有 owner 裁决——服务器无领域状态（既定契约）
+            //生命线：只有 owner 裁决，服务器无领域状态（既定契约）
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
             }
@@ -386,7 +386,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     ?.Configure(Main.rand.Next(12, 24), 0f);
             }
 
-            //上膛双拍：一顿、枪机咔嗒——它醒了
+            //上膛双拍：一顿、枪机咔嗒，它醒了
             if (!formSnapDone && t >= FormupFrame) {
                 formSnapDone = true;
                 SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.5f, Pitch = -0.25f, MaxInstances = 2 }, Projectile.Center);
@@ -539,7 +539,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        /// <summary>吐一口洪流：blood 枪身泼出海洋的水——出膛即比目鱼普攻的 OceanCurrent</summary>
+        /// <summary>吐一口洪流：blood 枪身泼出海洋的水，出膛即比目鱼普攻的 OceanCurrent</summary>
         private void FireTorrent(Player owner, bool authority, Vector2 focus, float spreadAng = 0f, float damageMul = TorrentDamageMul) {
             Vector2 aimDir = gunRot.ToRotationVector2().RotatedBy(spreadAng);
             Vector2 muzzle = MuzzlePos();
@@ -921,7 +921,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             gunOldRot[0] = gunRot;
         }
 
-        /// <summary>常驻氛围：液态下缘偶发凝珠滴落——枪一直在往下滴湖水</summary>
+        /// <summary>常驻氛围：液态下缘偶发凝珠滴落，枪一直在往下滴湖水</summary>
         private void UpdateAmbient() {
             if (Main.dedServ
                 || State is not (StateFollow or StateTorrent or StateSurge or StateDomainCast)) {
@@ -987,7 +987,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             };
         }
 
-        /// <summary>uForm 水线呼吸：同通用械奴——实体上半 + 液态下缘</summary>
+        /// <summary>uForm 水线呼吸：同通用械奴，实体上半 + 液态下缘</summary>
         private float GunForm() {
             int t = (int)StateTimer;
             float steady = 0.24f
@@ -1201,7 +1201,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
             }
 
-            //蓄水预告：施放点一圈渐涨的海光——领域要来了
+            //蓄水预告：施放点一圈渐涨的海光，领域要来了
             float charge = CastCharge();
             if (charge > 0.05f) {
                 EnsureBegin();
@@ -1215,7 +1215,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     gOrigin, new Vector2((8f + 12f * charge) * 2f / glow.Width), SpriteEffects.None, 0f);
             }
 
-            //枪口闪：出膛那一帧的浪光爆点（海洋色——弹的身份）
+            //枪口闪：出膛那一帧的浪光爆点（海洋色，弹的身份）
             if (muzzleFlash > 0) {
                 EnsureBegin();
                 float a = muzzleFlash / 4f;

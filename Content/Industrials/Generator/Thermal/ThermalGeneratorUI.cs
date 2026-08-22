@@ -18,7 +18,7 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 {
     /// <summary>
-    /// 热力发电机面板:锅炉房仪器语言——钢壳(随炉温沁暖)、黄铜门框的炉门观火窗、
+    /// 热力发电机面板:锅炉房仪器语言，钢壳(随炉温沁暖)、黄铜门框的炉门观火窗、
     /// 温度/电力双指针表、状态灯。笔刷与材质在 <see cref="IndustrialTerminalRenderer"/>。<br/>
     /// 生命周期沿用 <see cref="BaseGeneratorUI"/>(IsActive/右键开合/超距自动关/位置持久化),
     /// 燃料交互(点击投放/满手燃料右键直投)与旧版语义一致

@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             if (VaultUtils.isServer) {
                 return;
             }
-            //末四分之一静默——尖啸前的吸气
+            //末四分之一静默，尖啸前的吸气
             if (chargeRatio > 0.72f || !Main.rand.NextBool(2)) {
                 return;
             }

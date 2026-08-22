@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
 
             //玩家目标（PvP）不进本追踪器：权威端施加通道对它不存在，
-            //防守方客户端才是合法写入者——走 PvP/PlayerHackNet 的 DefenderApply 管线。
+            //防守方客户端才是合法写入者，走 PvP/PlayerHackNet 的 DefenderApply 管线。
             //这里的硬拒是防后来者顺手接错的闸，正常流程在 UpdatePlayerUploads 就分流了
             if (target is PlayerScannable) return null;
 
@@ -667,7 +667,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         private static void RemoveEffect(ActiveHackEffect effect) {
             //迭代中不能直接改表：按索引遍历时删掉一项会让游标跳过下一个效果，
-            //症状是某个效果莫名少跑一帧。这条路真的会走到——
+            //症状是某个效果莫名少跑一帧。这条路真的会走到
             //Electrolysis / SynapseBurn 的 Tick 伤害会进 NPC.HitEffect，
             //HackEffectNPCCombat 在那里给强制注销结算并回头删效果。
             //新增效果已经靠 pendingEffects 延后，删除照同一套走 removeBuffer

@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             }
 
             if (Timer == BloomFrame) {
-                //第三乐句：辉光绽放，战斗开始的宣告——双层辉光+光蝶四散+全屏棱彩
+                //第三乐句：辉光绽放，战斗开始的宣告，双层辉光+光蝶四散+全屏棱彩
                 EmpressCast.Radiance(npc, npc.Center, 480f, 30, 0.62f);
                 EmpressCast.Radiance(npc, npc.Center, 220f, 22, 0.12f);
                 EmpressMotion.Shake(npc.Center, 6.5f, 20);

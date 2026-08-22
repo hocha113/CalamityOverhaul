@@ -12,12 +12,12 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaCultist
 {
     /// <summary>
-    /// 鬼奴邪教徒的血冰簇弹。材质身份：冻血晶棱——湖血在激发帧被冻成的多面晶刃，
+    /// 鬼奴邪教徒的血冰簇弹。材质身份：冻血晶棱，湖血在激发帧被冻成的多面晶刃，
     /// 冰壳里封着一线未冻透的暖血。签名行为：晶面按自转相位打出锐星闪；
     /// 飞行中冰壳持续剥落寒雾；尾段冰壳渐融、暖血珠自尾端甩落（血比冰重）。
     /// 弹体 = Extra_98 真 alpha 多层（暗缘/晶身/斜十字棱面/暖血芯/霜白芯），非光斑叠层。
     /// 出膛短暂复利加速（激发的锐气），中段泄劲、尾段微坠；
-    /// 命中/超时皆碎裂——冰屑四溅里裹着几粒解冻的血珠。落回血湖则被湖收走；
+    /// 命中/超时皆碎裂，冰屑四溅里裹着几粒解冻的血珠。落回血湖则被湖收走；
     /// 鬼物穿行地形不受阻
     /// </summary>
     internal class KikasaCultistIceShard : ModProjectile

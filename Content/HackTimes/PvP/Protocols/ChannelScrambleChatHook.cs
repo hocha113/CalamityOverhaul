@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 {
     /// <summary>
     /// 信道乱码的防守方本机渲染钩子。三个拦截面：<br/>
-    /// · 聊天行：挂 <c>RemadeChatMonitor.AddNewMessage / DrawChat</c>——
+    /// · 聊天行：挂 <c>RemadeChatMonitor.AddNewMessage / DrawChat</c>
     ///   效果期间新到的行只做<b>标记</b>，绘制时按标记临时换成乱码字形；
     ///   消息存储原文一字不改（§7.7 表达边界），到期后连乱码期的旧行都按原文渲染；<br/>
     /// · 队友抬头名牌："Vanilla: MP Player Names" 图层整层熄灭

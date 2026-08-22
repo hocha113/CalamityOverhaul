@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
     /// <summary>
     /// 加载屏吊笼物理台架（镜像 OniRope 的 UI Verlet 绳先例，改造成加载屏专用）<br/>
     /// 坐标系=纵横比空间：x∈[0,aspect]、y∈[0,1]（单位=屏高），与 DungeonworldLoading.fx 的距离场同域<br/>
-    /// 结构：主索 6 节 + 笼锤 1 节共 7 粒一条链（末段=吊环→笼中心），灯笼再挂一粒二级摆——
+    /// 结构：主索 6 节 + 笼锤 1 节共 7 粒一条链（末段=吊环→笼中心），灯笼再挂一粒二级摆
     /// 绳摆、笼滞后、灯笼再滞后的三级跟随全部由约束自然产生，不手写相位<br/>
     /// 加载期墙钟 dt 可达 0.1s（长帧钳制），固定 1/120s 子步推进保数值稳定
     /// </summary>

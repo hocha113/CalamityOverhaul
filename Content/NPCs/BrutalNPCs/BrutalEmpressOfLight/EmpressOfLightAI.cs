@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             }
         }
 
-        /// <summary>昼夜换形瞬间：纯音画传达——破晓棱彩强拍，入夜柔光敛息</summary>
+        /// <summary>昼夜换形瞬间：纯音画传达，破晓棱彩强拍，入夜柔光敛息</summary>
         private void UpdateDayNightForm() {
             bool now = stateContext.DayEmpowered;
             if (now == lastDayEmpowered) {
@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             }
             lastDayEmpowered = now;
 
-            //服务端写形态位（原版ai[3]语义：+2=真昼位）——契约：只有满血白昼才升格，
+            //服务端写形态位（原版ai[3]语义：+2=真昼位），契约：只有满血白昼才升格，
             //残血拖到破晓不白给Terraprisma判定；升格后永不清除
             if (!VaultUtils.isClient && now && npc.life == npc.lifeMax && ((int)npc.ai[3] & 2) == 0) {
                 npc.ai[3] = (int)npc.ai[3] | 2;

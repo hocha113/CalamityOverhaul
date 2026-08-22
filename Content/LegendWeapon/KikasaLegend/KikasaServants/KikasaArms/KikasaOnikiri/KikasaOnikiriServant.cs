@@ -19,8 +19,8 @@ using static CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.K
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms.KikasaOnikiri
 {
     /// <summary>
-    /// 械奴·鬼切（专属条目，短路通用推断——鬼切 useStyle=Shoot 本也进不了刀奴档案）。
-    /// 单柄无主之刀：湖水凝成的鬼切复制体，普攻是它生前的居合——
+    /// 械奴·鬼切（专属条目，短路通用推断，鬼切 useStyle=Shoot 本也进不了刀奴档案）。
+    /// 单柄无主之刀：湖水凝成的鬼切复制体，普攻是它生前的居合
     /// 蓄（收鞘锁线）→ 闪步穿越（两帧瞬移藏行程，神威流带承载路径）→
     /// 绯红斩痕在穿越线上炸开 → 停驻亮相，一轮三拍换三条刀路；
     /// 每第三轮起手大居合：连续三段闪步链斩不同猎物，末拍巨月牙终结。
@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         /// <summary>刀尖指向角（护手支点绘制按贴图轴修正）</summary>
         private float bladeRot;
         private float bladeSpin;
-        //当前拍冲线：声明后蓄/爆/斩痕共用同一条线——先声明后砍
+        //当前拍冲线：声明后蓄/爆/斩痕共用同一条线，先声明后砍
         private Vector2 dashFrom;
         private Vector2 dashTo;
         private float dashAng;
@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         //==================== 召唤入口 ====================
 
         /// <summary>
-        /// KikasaArmsIndex 专门条目的召唤入口；count 不折算编制——传奇武器沉一件即完整形态，
+        /// KikasaArmsIndex 专门条目的召唤入口；count 不折算编制，传奇武器沉一件即完整形态，
         /// 多件只取最高等级件定强度
         /// </summary>
         internal static void Summon(Player owner, Vector2 emergeAt, int count) {
@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：只有 owner 裁决——服务器无领域状态（既定契约）
+            //生命线：只有 owner 裁决，服务器无领域状态（既定契约）
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
             }
@@ -376,7 +376,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     ?.Configure(Main.rand.Next(12, 24), 0f);
             }
 
-            //出鞘鸣：一顿、一声幽冷刃鸣——它醒了
+            //出鞘鸣：一顿、一声幽冷刃鸣，它醒了
             if (!sheatheSnapDone && t >= SheatheFrame) {
                 sheatheSnapDone = true;
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.42f, Pitch = -0.2f, MaxInstances = 2 }, Projectile.Center);
@@ -527,7 +527,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (beat >= 0) {
                 int p = IaiPhase(t, beat);
                 if (!beatDeclared[beat]) {
-                    //蓄势起点锁线（跳帧进窗也补上）；轻声引拍——刀要来了
+                    //蓄势起点锁线（跳帧进窗也补上）；轻声引拍，刀要来了
                     beatDeclared[beat] = true;
                     DeclareIaiBeat(beat, owner, target);
                     SoundEngine.PlaySound(SoundID.Unlock with {
@@ -882,7 +882,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         }
                     }
                     else if (p == IaiGather || p == IaiGather + 1) {
-                        //闪步穿越：两帧瞬移全程——刀体让位给流带与拖影（藏行程）
+                        //闪步穿越：两帧瞬移全程，刀体让位给流带与拖影（藏行程）
                         skipFix = true;
                         Vector2 snapPos = p == IaiGather ? (dashFrom + dashTo) * 0.5f : dashTo;
                         bladeVel = snapPos - bladePos;
@@ -891,7 +891,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         bladeRot = dashAng;
                     }
                     else {
-                        //停驻：过冲点硬停亮相，几何冻住——静谷本身就是下一拍的蓄势
+                        //停驻：过冲点硬停亮相，几何冻住，静谷本身就是下一拍的蓄势
                         bladeVel *= 0.6f;
                         bladePos += bladeVel;
                         bladeTarget = bladePos;
@@ -1028,7 +1028,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        /// <summary>常驻氛围：液态下缘偶发凝珠滴落——刀一直在往下滴湖水</summary>
+        /// <summary>常驻氛围：液态下缘偶发凝珠滴落，刀一直在往下滴湖水</summary>
         private void UpdateAmbient() {
             if (Main.dedServ || State is not (StateFollow or StateIai or StateGrand)) {
                 return;
@@ -1115,7 +1115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             return alpha;
         }
 
-        /// <summary>uForm 水线呼吸：同通用械奴——实体上半 + 液态下缘，出水凝出、溶解漫上来</summary>
+        /// <summary>uForm 水线呼吸：同通用械奴，实体上半 + 液态下缘，出水凝出、溶解漫上来</summary>
         private float BladeForm() {
             int t = (int)StateTimer;
             float steady = 0.24f
@@ -1181,7 +1181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private static readonly Vector2 HiltUV = new(0.1f, 1f);
         private static readonly Vector2 TipUV = new(0.73f, 0.01f);
 
-        /// <summary>贴图轴修正：护手→刀尖在贴图空间的基准角（不镜像——械奴同刃群约定）</summary>
+        /// <summary>贴图轴修正：护手→刀尖在贴图空间的基准角（不镜像，械奴同刃群约定）</summary>
         private static float TextureAxis(Texture2D tex) {
             Vector2 size = tex.Size();
             Vector2 origin = new(size.X * HiltUV.X, size.Y * HiltUV.Y);
@@ -1327,7 +1327,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     gOrigin, new Vector2(r * 2.2f / glow.Width, r * 1.05f / glow.Height), SpriteEffects.None, 0f);
             }
 
-            //蓄势刃口冷光：收鞘末段沿冲线一道渐亮的窄光——刀要来了
+            //蓄势刃口冷光：收鞘末段沿冲线一道渐亮的窄光，刀要来了
             float charge = GatherCharge();
             if (charge > 0.05f) {
                 EnsureBegin();

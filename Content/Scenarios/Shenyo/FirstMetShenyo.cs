@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
         }
 
         //抵达深层（无论夺伞还是被拖入）且演出全收、静默拍走完才开口；
-        //完成判定走 PostFirstMetIsComplete——中途掉线重进会从头再播一遍
+        //完成判定走 PostFirstMetIsComplete：中途掉线重进会从头再播一遍
         protected override NarrativePolicy ConfigurePolicy() => new() {
             IsCompleted = _ => ShenyoStorySync.PostFirstMetIsComplete,
             CanTrigger = (_, player) => CanTriggerFirstMet(player),

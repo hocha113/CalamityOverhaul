@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaPrime
 {
     /// <summary>
-    /// 机械骷髅王鬼奴的镭射短脉冲：一粒细而快的血光曳光弹——
+    /// 机械骷髅王鬼奴的镭射短脉冲：一粒细而快的血光曳光弹
     /// 不是持续光束，是双发点射里那一"哒"。速度拉伸的三层血芯 + 短尾迹，
     /// 命中小迸溅、落进血湖被湖收走。只在 owner 端生成
     /// </summary>

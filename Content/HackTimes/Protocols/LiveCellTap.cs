@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
     /// <summary>
     /// 活体电源：目标钉死并免疫伤害，按脉冲抽它的生命换施术者的 RAM。<br/>
-    /// 与 <see cref="DataLeech"/> 的分工：那条鼓励你打目标，这条禁止你打——
+    /// 与 <see cref="DataLeech"/> 的分工：那条鼓励你打目标，这条禁止你打
     /// 敌人从战斗对象变成经济设施，代价是彻底放弃这份战利品。<br/>
     /// 抽血直写 <c>npc.life</c> 不走伤害管线（不触发 HitEffect、不掉血字、不掉战利品），
     /// 榨干时静默移除（不进 checkDead，无 NPCLoot、不计击杀）。<br/>
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
             int drain = Math.Max(1, (int)(npc.lifeMax * DrainRatio));
             if (npc.life <= drain) {
-                //榨干：留 1 血再下架，避开追踪器"目标被打死"的返还路径——
+                //榨干：留 1 血再下架，避开追踪器"目标被打死"的返还路径
                 //榨干是这条协议的正收益结局，不该再叠一笔击杀退款
                 npc.life = 1;
                 npc.active = false;

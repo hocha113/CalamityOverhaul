@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
 {
     /// <summary>
-    /// 投技·蜜牢收网玩家侧：只在被抓玩家自己的客户端生效——<br/>
+    /// 投技·蜜牢收网玩家侧：只在被抓玩家自己的客户端生效，<br/>
     /// 从女王同步状态推导钉位/运镜/受伤拍/释放，服务器与旁观端不写本地玩家任何东西<br/>
     /// (玩家位置客户端权威，月总舌头形状；伤害在受害者端走常规 Hurt)
     /// </summary>

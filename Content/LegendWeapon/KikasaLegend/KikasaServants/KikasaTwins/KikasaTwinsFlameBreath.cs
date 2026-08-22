@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaTwins
 {
     /// <summary>
-    /// 鬼奴魔焰眼的锥形血焰吐息：短程扇形火舌，燃烧的是血不是气——
+    /// 鬼奴魔焰眼的锥形血焰吐息：短程扇形火舌，燃烧的是血不是气
     /// 液态血焰粒子浓密推涌、烧尽的血滴从锥端坠回，病绿诅咒余烬只作次要点缀。
     /// ai[0]=起始角；逐帧锚定鬼奴魔焰眼口器，追踪转率有限（推着目标走而不是黏着烧）；
     /// 宿主没了/开始溶解就快进熄火。命中方向沿吐息轴，把目标往外推
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     KikasaTwinsServant.CursedTinge * 0.8f, Main.rand.NextFloat(0.35f, 0.55f))
                     ?.Configure(Main.rand.Next(14, 24), Main.rand.NextFloat(0.05f, 0.09f));
             }
-            //烧尽的血滴从锥中后段坠回——血比火重
+            //烧尽的血滴从锥中后段坠回，血比火重
             if (Main.rand.NextBool(3)) {
                 Vector2 dropPos = Projectile.Center + dir * len * Main.rand.NextFloat(0.45f, 0.95f)
                     + dir.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-30f, 30f);

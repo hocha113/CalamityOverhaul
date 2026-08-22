@@ -5,7 +5,7 @@ using Terraria.Utilities;
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
 {
     //L5万骨窖 材质与样式表(ROOMS-L5 §0/§2;样式号全部对TML源逐符号核实,行号见各注释)
-    //主题锚:骨砌的墓城坑道——骨头咬得比灰浆紧,集市篝火是中途唯一的暖
+    //主题锚:骨砌的墓城坑道，骨头咬得比灰浆紧,集市篝火是中途唯一的暖
     //母题纪律(INDEX §3):骨=本层全权;锁链只许"绷直承重悬链"(井链锚顶锚底/吊笼吊索),
     //禁松垂散链(L2形态)与铐;做旧签名=尘白+蛛网(白漆横向水洗,与L1蜡泪窄垂线两轴区分)
     internal static class L5Palette
@@ -13,13 +13,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
         //==================== 砖与墙(RESEARCH §1.1a粉套件44/9/483;变体墙96/97) ====================
 
         internal const ushort Brick = TileID.PinkDungeonBrick;
-        //裂纹粉483:本层严格限定坑陷阱语言(预告+假地板),不作装饰过渡——保"裂=危险"可读性(F31)
+        //裂纹粉483:本层严格限定坑陷阱语言(预告+假地板),不作装饰过渡，保"裂=危险"可读性(F31)
         internal const ushort CrackedBrick = TileID.CrackedPinkDungeonBrick;
         //骨块=骨砌主材(TileID.cs L1085);群系计数靠粉砖收边与墙面维持(F12/F13)
         internal const ushort Bone = TileID.BoneBlock;
 
         internal const ushort WallBase = WallID.PinkDungeonUnsafe;      //9(WallID.cs L80),集市局部
-        internal const ushort WallSlab = WallID.PinkDungeonSlabUnsafe;  //96(L254)主体——刷怪派系1+尖刺球白送(F28)
+        internal const ushort WallSlab = WallID.PinkDungeonSlabUnsafe;  //96(L254)主体，刷怪派系1+尖刺球白送(F28)
         internal const ushort WallTiled = WallID.PinkDungeonTileUnsafe; //97(L256)"更老的骨窖区":圣骨堂/骨井/深巷
 
         //==================== 平台/门 ====================
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
 
         /// <summary>
         /// 绷紧链柱:自(x,yTop)向下逐格落链(tile214可攀爬)直到遇实心或铺满rows。
-        /// 用于骨井"锚顶锚底"全跨链与吊笼吊索——调用方构造保证顶端贴实心/平台、
+        /// 用于骨井"锚顶锚底"全跨链与吊笼吊索，调用方构造保证顶端贴实心/平台、
         /// 底端有承重物(平台篮/井底),不得用于无载荷的松垂散链(INDEX §3裁决)。
         /// 返回实际落链节数。直写镜像 L2Palette.HangChain 先例。
         /// </summary>
@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
             for (int dx = -1; dx <= 1; dx++) {
                 TileBrush.SetPlatform(cx + dx, ceilingY + drop, PlatformBone);
             }
-            //承重物:篮下笼灯(拒绝不回滚——链+空篮也是合法吊架形态)
+            //承重物:篮下笼灯(拒绝不回滚，链+空篮也是合法吊架形态)
             TryPlaceObject(cx, ceilingY + drop + 1, TileID.HangingLanterns, LanternCaged);
             return true;
         }
@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
 
         /// <summary>
         /// 主体Slab里成片切出Tiled补丁,让整层墙面不再是单一变体。
-        /// 只动Slab——Base是集市语义、Tiled是圣骨堂/骨井/深巷的"更老"语义,那两种都有出处不能乱铺。
+        /// 只动Slab，Base是集市语义、Tiled是圣骨堂/骨井/深巷的"更老"语义,那两种都有出处不能乱铺。
         /// 零genRand消耗(块散列),不动R4随机流。
         /// </summary>
         internal static int MixWallVariants(Rectangle area) {

@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             bool hold = coreAI?.Context?.HoldAllParts ?? false;
             bool broken = npc.ai[MLordAiSlots.PartBroken] == MLordAiSlots.BrokenMark;
 
-            //速度门控接触伤害（各端同式）；抓捕合掌与掌中处刑期清零——威胁是抓取判定，不叠撞击
+            //速度门控接触伤害（各端同式）；抓捕合掌与掌中处刑期清零，威胁是抓取判定，不叠撞击
             bool graspWindow = coreState == MLordStateIndex.PalmExecution
                 || (coreState == MLordStateIndex.MoonBite && MLordMoonBiteState.InClapWindow(stateTimer));
             npc.damage = !broken && !graspWindow && npc.velocity.Length() > 24f ? MLordDirector.PalmContactDamage : 0;
@@ -283,7 +283,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                         ? core.Center + new Vector2(260f * dir, -30f) + breath * 0.5f
                         : core.Center + new Vector2(320f * dir, 52f) + breath * 0.5f;
                 case MLordStateIndex.MoonBite: {
-                    //四臂合围：四掌踞于绕玩家缓旋的方阵四角，半径随呼吸收放——
+                    //四臂合围：四掌踞于绕玩家缓旋的方阵四角，半径随呼吸收放
                     //缺口随整阵旋转移动，玩家沿旋转缺口游走脱压
                     float ringAngle = clock * 0.012f + slot * MathHelper.PiOver2;
                     float radius = 470f - (float)Math.Sin(clock * 0.024f) * 90f;

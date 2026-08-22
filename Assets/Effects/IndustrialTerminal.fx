@@ -1,6 +1,6 @@
 // ============================================================================
 // IndustrialTerminal.fx  工业域机器界面共享机壳底(勘探终端/发电机系列)
-// 材质："矿场野外仪器的切角钢壳"——拉丝暗钢 + 氧化锈斑 + 磨亮切角棱线,
+// 材质："矿场野外仪器的切角钢壳"，拉丝暗钢 + 氧化锈斑 + 磨亮切角棱线,
 // 不是发光面板,也不是纯色填充;亮度只出现在顶缘受光与棱线磨损处
 // uMode: 0 主机壳(暗钢) 1 铭牌/小件(黄铜)
 // uHeat: 0..1 机壳受热,底缘向上沁暖 + 极轻热浪(热力炉体用,常温机器传 0)
@@ -64,24 +64,24 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
 
     float brass = saturate(uMode);
 
-    //———— 基色:暗暖钢 / 黄铜 ————
+    //== 基色:暗暖钢 / 黄铜 ==
     float3 steel = float3(0.058, 0.049, 0.043);
     float3 brassBase = float3(0.120, 0.088, 0.044);
     float3 base = lerp(steel, brassBase, brass);
 
-    //———— 拉丝:逐行细纹,分段断续(横向的加工痕,不是网格) ————
+    //== 拉丝:逐行细纹,分段断续(横向的加工痕,不是网格) ==
     float row = floor(px.y);
     float seg = floor(px.x / 42.0);
     float streak = hash21(float2(row * 0.731, seg * 1.173)) * 0.55
                  + hash11(row * 0.317) * 0.45;
     float brush = (streak - 0.5) * (0.14 - brass * 0.05);
 
-    //———— 氧化噪斑:低频云 + 中频碎斑,沉向锈色 ————
+    //== 氧化噪斑:低频云 + 中频碎斑,沉向锈色 ==
     float mottle = vnoise(px * 0.017) * 0.62 + vnoise(px * 0.071) * 0.38;
     float rustAmt = smoothstep(0.58, 0.95, mottle) * (1.0 - brass * 0.65);
     float3 rustTint = float3(0.115, 0.055, 0.028);
 
-    //———— 顶部受光 + vignette + 极低幅呼吸(低调稳定) ————
+    //== 顶部受光 + vignette + 极低幅呼吸(低调稳定) ==
     float topLight = 1.0 - smoothstep(0.0, 68.0, px.y);
     float2 cuv = uv - 0.5;
     float vig = 1.0 - dot(cuv, cuv) * 0.60;
@@ -91,15 +91,15 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     col += base * topLight * 0.55;
     col = lerp(col, rustTint * (0.35 + 0.65 * mottle), rustAmt * 0.38);
 
-    //———— 机壳受热:底缘向上沁暖,叠一丝慢热浪的亮度摆动 ————
+    //== 机壳受热:底缘向上沁暖,叠一丝慢热浪的亮度摆动 ==
     float heatBase = pow(saturate(uv.y), 2.2) * uHeat;
     float heatWaver = sin(px.x * 0.11 + uTime * 2.1) * sin(uTime * 1.3 + uv.y * 9.0);
     col += float3(0.215, 0.088, 0.030) * heatBase * (0.62 + 0.12 * heatWaver);
 
-    //———— 逐像素微粒噪,压住渐变条带 ————
+    //== 逐像素微粒噪,压住渐变条带 ==
     col *= 1.0 + (hash21(px) - 0.5) * 0.030;
 
-    //———— 切角棱线:外缘一线磨亮(黄铜暖),内侧一线沉影(机加工读法) ————
+    //== 切角棱线:外缘一线磨亮(黄铜暖),内侧一线沉影(机加工读法) ==
     float rimHi = 1.0 - smoothstep(0.0, 1.8, edgeDist);
     float rimLo = smoothstep(1.8, 3.4, edgeDist) * (1.0 - smoothstep(3.4, 6.4, edgeDist));
     col += float3(0.235, 0.150, 0.068) * rimHi * (0.55 + brass * 0.25);

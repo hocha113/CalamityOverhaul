@@ -1,5 +1,5 @@
 // ============================================================================
-//DungeonworldSky.fx 地牢子世界天幕——暗石蓝灰永夜 + 地平烛金残光
+//DungeonworldSky.fx 地牢子世界天幕，暗石蓝灰永夜 + 地平烛金残光
 //倒置明度天穹(OniRainSky 同法):头顶近黑,地平残光;随 uDepthGrade 压暗并染当层强调色
 //预乘淡入(整体乘 uIntensity);直线算术,无分支,无采样器,fbm ≤3 octave
 //色板与 DungeonworldLoadTheme 同源,改动必须双改

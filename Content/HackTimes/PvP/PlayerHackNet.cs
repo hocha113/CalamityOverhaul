@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
     /// <summary>
     /// PvP 骇入的服务端账房：授予账（per-defender）、对冷却、复活保护查询、
     /// 反制协议的服务端裁决。全部是<b>服务端世界级 static</b>（单人=本机权威），
-    /// 世界卸载与防守方断线时清账。客户端不要读这里——观众数据走 <see cref="PlayerHackMirror"/>
+    /// 世界卸载与防守方断线时清账。客户端不要读这里，观众数据走 <see cref="PlayerHackMirror"/>
     /// </summary>
     internal static class PlayerHackAuthority
     {
@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
 
         #region 查询（HackPvPRules 的子句数据源；数据缺席的端返回"放行"）
 
-        /// <summary>该防守方的在册效果数（含待回执——授予即占坑，防回执窗口内超发）</summary>
+        /// <summary>该防守方的在册效果数（含待回执，授予即占坑，防回执窗口内超发）</summary>
         internal static int CountEffectsOn(int defenderIndex) {
             if (Main.netMode == NetmodeID.MultiplayerClient) {
                 return PlayerHackMirror.CountEffectsOn(defenderIndex);
@@ -237,7 +237,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
         #region 反制协议的服务端裁决（LinkTraceback / ForceUninstall 的 OnApply 调进来）
 
         /// <summary>
-        /// 链路回溯：作废所有瞄着施术者的上传（攻击方 RAM 不退——白丢是攻击方的风险成本）、
+        /// 链路回溯：作废所有瞄着施术者的上传（攻击方 RAM 不退，白丢是攻击方的风险成本）、
         /// 每个被作废的攻击方吃 2 RAM 烧蚀（RAM 归服务端，直写）、
         /// 攻击方位置对施术者穿墙标记 900f。返回被作废的攻击方数
         /// </summary>
@@ -366,7 +366,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
             upload.Elapsed = Math.Min(upload.Elapsed + 1, upload.UploadFrames);
 
             //进度双播：攻击方 15f 一份 QueueState（原样），防守方同拍一份 Notice
-            //（首帧也发一份——被骇横幅在接受当帧就要亮）
+            //（首帧也发一份，被骇横幅在接受当帧就要亮）
             if (Main.netMode == NetmodeID.Server
                 && (upload.Elapsed == 1 || upload.Elapsed % 15 == 0)) {
                 HackTimeNetSync.SendQueueState(caster.whoAmI, upload.SessionId,
@@ -379,7 +379,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
             }
             if (upload.Elapsed < upload.UploadFrames) return false;
 
-            //上传完成 → 授予（不调 ApplyAuthorityEffect——那是权威端施加，玩家目标没有这一步）
+            //上传完成 → 授予（不调 ApplyAuthorityEffect：那是权威端施加，玩家目标没有这一步）
             outOfRangeFrames.Remove(upload);
             PlayerHackGrant grant = Grant(caster, defender, playerHack,
                 upload.PaidRamCost);
@@ -816,7 +816,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
     /// <summary>
     /// PvP 骇入的收发集中地。<see cref="Handle"/> 由 <c>HackTimeNetSync.HandleApplyPacket</c>
     /// 的分发接线调进来（共用文件那侧只有一行）。<br/>
-    /// 读包纪律：<b>先把负载吃干净再守卫</b>——CWRNetWork 全家共用一个 reader，
+    /// 读包纪律：<b>先把负载吃干净再守卫</b>，CWRNetWork 全家共用一个 reader，
     /// 提前 return 会把字节留在流里错位后续分支（tml-netcode-pitfalls §1.1）。
     /// 变长载荷一律带 1 字节长度前缀进子流
     /// </summary>
@@ -1295,7 +1295,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
     }
 
     /// <summary>
-    /// PvP 骇入的每帧驱动。刻意独立于 <c>HackTime.PostUpdateEverything</c>——
+    /// PvP 骇入的每帧驱动。刻意独立于 <c>HackTime.PostUpdateEverything</c>
     /// 不给共用文件加行；ModSystem 钩不吃世界冻结（§5.2），但 HackTime 的世界冻结
     /// 只在单人开，而单人没有 PvP 目标，无需 TimeGear 闸
     /// </summary>

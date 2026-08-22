@@ -15,12 +15,12 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.UI
     /// PvP 骇入的世界坐标表现层（红线 / 穿墙标记 / 旁观者光环）。全 CPU 折线，无 shader。<br/>
     /// · 防守方视角：来袭上传 = 琥珀细虚弧（被追踪的低压感）；落地翻红爆闪，
     ///   90f 全强度后坍缩成防守方身边的方向残段（<b>不做效果全程的免费反向
-    ///   wallhack</b>——想全程看穿攻击方去开链路回溯）；回溯激活 = 亮青主动追踪线
+    ///   wallhack</b>：想全程看穿攻击方去开链路回溯）；回溯激活 = 亮青主动追踪线
     ///   900f 全程 + 攻击方穿墙标记。<br/>
     /// · 攻击方视角：自己的上传 = 细琥珀虚线上行链（与防守方看到的是同一条线的两端）。<br/>
     /// · 坐标广播：defender 挂穿墙标记，只画给施加者及其非零同队。<br/>
     /// · 旁观者：被骇玩家身上低频故障粒子光环（密度 = 在册条数），不画线不显名。<br/>
-    /// 红线是 HUD 隐喻不是物理光束——穿墙可见，但被实心物块遮挡的分段降到
+    /// 红线是 HUD 隐喻不是物理光束，穿墙可见，但被实心物块遮挡的分段降到
     /// 35% 透明度 + 虚线化（每 4 段采一次 CanHitLine）；攻击方隐身时后 45% 段散成
     /// 噪声云（方向可读、精确位置不可读）
     /// </summary>
@@ -315,7 +315,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.UI
                     + normal * (wave + jitter);
                 if (i == LineSegments) point = clampedEnd;
 
-                //隐身降级：后 45% 段散成噪声云——方向可读、精确位置不可读
+                //隐身降级：后 45% 段散成噪声云，方向可读、精确位置不可读
                 if (remoteInvis && t > 0.55f) {
                     if (Hash(seed * 17 + i + (long)(time * 8)) > 0.45f) {
                         Vector2 scatter = point + new Vector2(

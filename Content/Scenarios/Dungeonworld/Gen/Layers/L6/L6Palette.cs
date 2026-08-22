@@ -4,7 +4,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
 {
     //L6铸造机关层 材质与样式表(ROOMS-L6 §0/§2;样式号逐条对TML源核实,行号见注释)
-    //主题锚:锈橙铸造场——齿轮没停过,每条走廊都上了膛
+    //主题锚:锈橙铸造场，齿轮没停过,每条走廊都上了膛
     //认领裁决(INDEX §3):做旧签名=焦油(焦痕+油渍,黑漆族,与L2棕锈/L1灰烟分家);
     //锁链/骨/书纸/水/蛛网均非本层母题,一律不用
     internal static class L6Palette
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
 
         /// <summary>
         /// 地面油渍条:自(x,floorRow)沿+dx方向给地板砖面刷黑漆(len格)。
-        /// 机关段前的引导线——wire原版语义玩家不可见(INDEX §7),
+        /// 机关段前的引导线，wire原版语义玩家不可见(INDEX §7),
         /// "看得见的上膛"由油渍+压板+箭垛表达。paintTile只染有物块格,自动跳空。
         /// </summary>
         internal static void OilStreakFloor(int x, int floorRow, int len, int dx = 1) {

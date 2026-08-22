@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
     internal class EowBossBar : ModBossBar
     {
         //贴图契约（BossBarLoader.DrawFancyBar_TML）：Texture 会被直接当作 516x348 六帧条体图集使用；
-        //占位图会让条体塌缩成不可见。这里故意不给贴图路径——BossBarLoader.GetTexture 在
+        //占位图会让条体塌缩成不可见。这里故意不给贴图路径，BossBarLoader.GetTexture 在
         //RequestIfExists 失败时回落到原版 UI_BossBar 图集，得到标准框+填充+背景
         public override string Texture => "CalamityOverhaul/UseVanillaBossBarSheet";
 

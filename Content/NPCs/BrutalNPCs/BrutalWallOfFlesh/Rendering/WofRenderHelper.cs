@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
                 return;
             }
 
-            //深侧退场包络在 560px 归零，噪声撕裂最深 -37px——quad 多给 90px 让包络先于边界闭合
+            //深侧退场包络在 560px 归零，噪声撕裂最深 -37px，quad 多给 90px 让包络先于边界闭合
             const float CurtainDepth = 650f;
             float top = WofWallField.Top - 320f;
             float bottom = WofWallField.Bottom + 320f;
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
         /// <summary>
         /// 尸山血海背景层：墙体碾过的后方是凝血海面+尸山剪影+升腾血雾。
         /// 纯视觉零判定，quad裁剪到屏幕可见部分(图案世界/视差锚定，裁剪不位移)。
-        /// 在口器 Draw 最先调用——垫在覆膜/口器/弹幕之下
+        /// 在口器 Draw 最先调用，垫在覆膜/口器/弹幕之下
         /// </summary>
         public static void DrawBloodSea(SpriteBatch sb, NPC wall, float intensity) {
             if (intensity <= 0.01f) {

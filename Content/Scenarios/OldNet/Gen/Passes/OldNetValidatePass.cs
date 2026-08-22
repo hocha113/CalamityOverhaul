@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Passes
 {
     //P80 校验：连通性洪泛（锚点可达/封锁区不可达）+ 节点配额审计 +
     //全图 RangeFrame（本子世界任务表没有原版收尾帧修）+ GenReport
-    //问题一律 log 报告不中断生成——fail loud but keep playable
+    //问题一律 log 报告不中断生成，fail loud but keep playable
     internal class OldNetValidatePass : GenPass
     {
         public OldNetValidatePass() : base("OldNet Validate", 0.4f) { }

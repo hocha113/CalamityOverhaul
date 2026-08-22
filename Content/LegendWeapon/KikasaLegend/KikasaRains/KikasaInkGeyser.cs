@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         public override void AI() {
             Projectile.velocity = Vector2.Zero;
 
-            //延迟期:预告即承诺——洼面先鼓一个包,墨珠向根部倒吸
+            //延迟期:预告即承诺，洼面先鼓一个包,墨珠向根部倒吸
             if (DelayAi > 0f) {
                 DelayAi--;
                 if (!Main.dedServ) {

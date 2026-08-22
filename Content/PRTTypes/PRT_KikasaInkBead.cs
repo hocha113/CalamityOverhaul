@@ -7,7 +7,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// 墨珠:伞缘甩出/命中迸溅的小墨滴——重力弧线、速度拉伸、
+    /// 墨珠:伞缘甩出/命中迸溅的小墨滴，重力弧线、速度拉伸、
     /// 暗缘压边给体积、新鲜期一点湿反光,渐干转沉、尾段陡淡(墨雨普攻自有件)
     /// </summary>
     internal class PRT_KikasaInkBead : BasePRT

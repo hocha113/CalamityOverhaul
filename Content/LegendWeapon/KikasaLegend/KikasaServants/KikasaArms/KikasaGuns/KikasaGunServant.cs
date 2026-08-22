@@ -18,10 +18,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// <summary>
     /// 械奴·湖水枪群（通用枪奴，由迷你鲨鲨群骨架演进）。单弹幕同时驱动至多五把湖水凝成的枪：
     /// Projectile.Center 为编队质心权威同步，各枪位置由状态机 + Seed 在各端本地推算
-    /// （双子/毁灭者内部模拟范式），硬纠阈值防抽搐。材质身份：凝不全的湖水枪——
+    /// （双子/毁灭者内部模拟范式），硬纠阈值防抽搐。材质身份：凝不全的湖水枪
     /// 实体上半 + 液态下缘（KikasaItemForm 扫描模式、水线呼吸起伏）+ 液态水鞘包衣
     /// 慢晃 + 水光沿身扫掠 + 下缘凝珠滴淌；移动即游弋（贴速度倾斜入弯、周期沿轨道
-    /// 抢位超车）。个性化由 KikasaArmsProfiler 档案承担：原型定出招池——
+    /// 抢位超车）。个性化由 KikasaArmsProfiler 档案承担：原型定出招池
     /// 速射/点射=列阵齐射+环猎（速射数值与演进前鲨群全等），狙击=点名狙杀+慢重齐射，
     /// 霰弹=拢射墙+贴身环猎；节奏/伤害/弹速/开火音/编队规模随沉入武器推得。
     /// 联机契约与双子同构：owner 裁决转场盖 netUpdate 章、节拍闩防快照回卷、
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private const int CarouselTotal = 132;
         private const float CarouselRadius = 205f;
 
-        //点名狙杀（狙击档）：每枪一轮 SnipeTurnLen 帧——甩位就位→瞄准线蓄力→重击翻滚
+        //点名狙杀（狙击档）：每枪一轮 SnipeTurnLen 帧，甩位就位→瞄准线蓄力→重击翻滚
         private const int SnipeTurnLen = 46;
         private const int SnipeFireFrame = 34;
         private const int SnipeTail = 18;
@@ -262,7 +262,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：只有 owner 裁决——服务器无领域状态（既定契约）
+            //生命线：只有 owner 裁决，服务器无领域状态（既定契约）
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
             }
@@ -394,7 +394,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
             }
 
-            //整队上膛双拍：全员一顿、枪机咔嗒——它们醒了
+            //整队上膛双拍：全员一顿、枪机咔嗒，它们醒了
             if (!formSnapDone && t >= FormupFrame) {
                 formSnapDone = true;
                 SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.5f, Pitch = -0.25f, MaxInstances = 2 }, Projectile.Center);
@@ -461,7 +461,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 MistBlood * 0.75f, Main.rand.NextFloat(0.55f, 0.8f))
                 ?.Configure(Main.rand.Next(50, 80));
 
-            //首尾两把带一记闷响垫底，中间几把只留水声——五连不轰成一锅
+            //首尾两把带一记闷响垫底，中间几把只留水声，五连不轰成一锅
             if (i == 0 || i == gunCount - 1) {
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
                     Volume = 0.32f,
@@ -548,7 +548,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 ? Main.npc[target].Center + Main.npc[target].velocity * 6f
                 : Projectile.Center + gunRot[0].ToRotationVector2() * 500f;
 
-            //质心压到玩家与目标之间的射击位，随扫射横移——边打边走
+            //质心压到玩家与目标之间的射击位，随扫射横移，边打边走
             Vector2 toT = (focus - owner.Center).SafeNormalize(Vector2.UnitX);
             Vector2 perp = toT.RotatedBy(MathHelper.PiOver2);
             float strafe = MathF.Sin(t * 0.05f + Seed) * 30f;
@@ -559,7 +559,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, desired, 0.18f);
 
-            //锁线三声上膛，音高爬升——开火前的呼吸
+            //锁线三声上膛，音高爬升，开火前的呼吸
             if (t == 4 || t == 12 || t == 20) {
                 SoundEngine.PlaySound(SoundID.Unlock with {
                     Volume = 0.4f,
@@ -745,7 +745,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 ? Main.npc[target].Center + Main.npc[target].velocity * 8f
                 : Projectile.Center + gunRot[0].ToRotationVector2() * 600f;
 
-            //质心站桩：跟主人稳在中距离，缓慢横移——狙击的从容
+            //质心站桩：跟主人稳在中距离，缓慢横移，狙击的从容
             Vector2 toT = (focus - owner.Center).SafeNormalize(Vector2.UnitX);
             Vector2 perp = toT.RotatedBy(MathHelper.PiOver2);
             Vector2 anchor = owner.Center + toT * 34f + perp * MathF.Sin(t * 0.03f + Seed) * 26f
@@ -759,7 +759,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             int duty = t / SnipeTurnLen;
             if (duty < gunCount) {
                 int p = t - duty * SnipeTurnLen;
-                //就位与压稳两声点拍，音高爬升——扳机前的呼吸
+                //就位与压稳两声点拍，音高爬升，扳机前的呼吸
                 if (p == 8 || p == 24) {
                     SoundEngine.PlaySound(SoundID.Unlock with {
                         Volume = 0.38f,
@@ -838,7 +838,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, desired, 0.2f);
 
-            //泵动双拍：全队一顿、枪机咔嚓——要开火了
+            //泵动双拍：全队一顿、枪机咔嚓，要开火了
             if (t == WallFormEnd || t == WallFormEnd + 6) {
                 SoundEngine.PlaySound(SoundID.Unlock with {
                     Volume = 0.45f,
@@ -1080,7 +1080,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     float tGlobal = Main.GlobalTimeWrappedHourly;
                     for (int i = 0; i < gunCount; i++) {
                         float phase = tGlobal * 0.62f + Seed + i * MathHelper.TwoPi / gunCount;
-                        //抢位冲刺：错帧周期沿轨道切向加塞——枪群的超车
+                        //抢位冲刺：错帧周期沿轨道切向加塞，枪群的超车
                         float dartT = (t + i * 41) % 170;
                         float dart = dartT < 22 ? MathF.Sin(dartT / 22f * MathHelper.Pi) * 46f : 0f;
                         Vector2 radial = new(MathF.Cos(phase) * 118f, MathF.Sin(phase) * 54f - 34f);
@@ -1253,7 +1253,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     Vector2 perp = toT.RotatedBy(MathHelper.PiOver2);
                     for (int i = 0; i < gunCount; i++) {
                         float lane = i - (gunCount - 1) * 0.5f;
-                        //紧凑弧：横距压到 26，边缘微微后收——一面水枪墙
+                        //紧凑弧：横距压到 26，边缘微微后收，一面水枪墙
                         Vector2 slot = Projectile.Center + perp * (lane * 26f + Sway(i, 2f, 3f))
                             - toT * (MathF.Abs(lane) * 9f - 8f);
                         gunTarget[i] = slot;
@@ -1323,7 +1323,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        /// <summary>常驻氛围：液态下缘（水线区）偶发凝珠滴落——枪一直在往下滴湖水</summary>
+        /// <summary>常驻氛围：液态下缘（水线区）偶发凝珠滴落，枪一直在往下滴湖水</summary>
         private void UpdateAmbient() {
             if (Main.dedServ
                 || State is not (StateFollow or StateVolley or StateCarousel or StateSnipe or StateBlastWall)) {
@@ -1393,7 +1393,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         /// <summary>
-        /// uForm：1=全血水 0=真身。常驻走扫描模式（见 CurrentScanMode）——
+        /// uForm：1=全血水 0=真身。常驻走扫描模式（见 CurrentScanMode）
         /// 实体上半 + 液态下缘，水线随呼吸慢起伏；斑驳交融模式在小贴图上读作满屏噪点，
         /// 已弃用（2026-08 用户判"沙沙嚷嚷全是噪点"）。出水自血水凝出、溶解水线漫上来
         /// </summary>
@@ -1413,7 +1413,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             };
         }
 
-        /// <summary>uScanMode：恒为扫描模式——凝实线干净利落，水线即材质身份</summary>
+        /// <summary>uScanMode：恒为扫描模式，凝实线干净利落，水线即材质身份</summary>
         private static float CurrentScanMode() => 1f;
 
         /// <summary>uDissolve：溶解期逐枪错帧蚀散，落水的先散</summary>
@@ -1468,7 +1468,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         /// <summary>
         /// 翻面走水平镜像 + 旋转加 π（持枪标准做法）：贴图 V 轴不动，
-        /// 扫描水线永远贴着枪的下缘——竖直镜像会把液态下缘翻到枪顶上去
+        /// 扫描水线永远贴着枪的下缘，竖直镜像会把液态下缘翻到枪顶上去
         /// </summary>
         private SpriteEffects GunFx(int i)
             => gunFlip[i] ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
@@ -1527,7 +1527,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 Vector2 drawPos = GunDrawPos(i) - Main.screenPosition;
                 float dissolve = DissolveAmt(i);
 
-                //液态水鞘包衣：同一剪影放大一号、全血水态、独立慢晃——
+                //液态水鞘包衣：同一剪影放大一号、全血水态、独立慢晃
                 //枪泡在一层随时要垮的水膜里，这层才是"湖水凝成"的身份主张
                 if (shaderOk) {
                     float wt = Main.GlobalTimeWrappedHourly * 2.4f + Seed + i * 1.3f;

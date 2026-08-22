@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projectiles
 {
     /// <summary>
-    /// 苍白弹：假身的无火之弹，vanilla 468 苍白火球做体——没有元素色，识破谎言的动态线索
+    /// 苍白弹：假身的无火之弹，vanilla 468 苍白火球做体，没有元素色，识破谎言的动态线索
     /// </summary>
     internal class CultistPaleBolt : ModProjectile
     {
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Type];
             }
 
-            //苍白弱光——比真弹暗，光强也是线索
+            //苍白弱光，比真弹暗，光强也是线索
             Lighting.AddLight(Projectile.Center, CultistMotion.PaleClone.ToVector3() * 0.18f);
         }
 

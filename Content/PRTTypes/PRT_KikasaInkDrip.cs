@@ -7,7 +7,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// 滴淌墨:伞缘闲滴/蓄墨溢缘/渍斑垂流的细长墨线——
+    /// 滴淌墨:伞缘闲滴/蓄墨溢缘/渍斑垂流的细长墨线
     /// 近零初速被重力拽下,越坠越细长,末段断成一点(墨雨普攻自有件)
     /// </summary>
     internal class PRT_KikasaInkDrip : BasePRT

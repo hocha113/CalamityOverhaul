@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
 {
     /// <summary>
-    /// 深牢怨灵：Dungeonworld 牢狱层专属小 Boss。形体承袭骷髅王鬼奴三件套——
+    /// 深牢怨灵：Dungeonworld 牢狱层专属小 Boss。形体承袭骷髅王鬼奴三件套
     /// 单 NPC 内部模拟"鬼躯 + 左右铁铐"，躯位服务器权威同步，双铐各端本地
     /// 弹簧摆模拟（挥击窗内换运动学摆位），铐到躯体之间用原版 Chain22 沿悬链弧铺链。
     /// 贴图全借原版（Wraith 躯 + Shackle 铐），材质身份：青灰灵质 + 锈铁链具 + 冷粉狱火。

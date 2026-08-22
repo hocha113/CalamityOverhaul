@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
     /// <summary>
     /// Actor 的跨端稳定身份：槽位 + 代 + 类型。<br/>
     /// 槽位会被复用，代由服务器在生成时分配并随生成包下发（<see cref="Actor.Generation"/>），
-    /// 三元组一起才是身份——镜像 NetworkNPCIdentity 的形状。<br/>
+    /// 三元组一起才是身份，镜像 NetworkNPCIdentity 的形状。<br/>
     /// 现阶段炮台/信号塔目标被 HackEffectTracker 限在单人，本结构是为解除限制预留的线上格式，
     /// 读写两侧的接入点见 Doc/patches/HACK32-Circuit.md
     /// </summary>

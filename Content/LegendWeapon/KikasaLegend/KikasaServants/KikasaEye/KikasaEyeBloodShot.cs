@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
 
-            //贴壁：迸溅 + 血渍 decal（机制身份保留）——手动地形检测替代 tileCollide，
+            //贴壁：迸溅 + 血渍 decal（机制身份保留），手动地形检测替代 tileCollide，
             //湖线以下的真地形被湖面盖住，撞上去像凭空截停，交给上面的落湖收走
             if (Life > 3
                 && (!lakeAlive || Projectile.Center.Y < kdp.LakeWorldY - 2f)

@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
                 return false;
             }
 
-            //挥迹辉带：相邻轨迹点间拉伸星条连成连续光带——突进速度下逐点盖章会读作点状虚影
+            //挥迹辉带：相邻轨迹点间拉伸星条连成连续光带，突进速度下逐点盖章会读作点状虚影
             if (Launched) {
                 Texture2D trailStar = CWRAsset.StarTexture_White.Value;
                 for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {

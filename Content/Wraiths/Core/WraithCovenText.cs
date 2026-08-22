@@ -5,7 +5,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
 {
     /// <summary>
     /// 合鬼名录：结印三角边名与说明的文案容器（本地化键沿用 Wraiths.Coven.*）。<br/>
-    /// 哪条边亮哪个名字不再写在这里——由各鬼声明的 <see cref="WraithSynergyRule"/>
+    /// 哪条边亮哪个名字不再写在这里，由各鬼声明的 <see cref="WraithSynergyRule"/>
     /// 经 <see cref="WraithSynergy.EdgePair"/> 推导；「相唤」与「三印崩」是盘的固有性质，仍由 UI 直接引用
     /// </summary>
     internal sealed class WraithCovenText : ILocalizedModType, ICWRLoader
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
                 () => "鬼影穿体留下的刀口未合时，该目标每一跳雨蚀翻倍");
             HandShadeName = this.GetLocalization(nameof(HandShadeName), () => "按住了斩");
             HandShadeNote = this.GetLocalization(nameof(HandShadeNote),
-                () => "鬼影优先扑向被枯手攥住的猎物——速度已被压到零，那一刀不会落空");
+                () => "鬼影优先扑向被枯手攥住的猎物，速度已被压到零，那一刀不会落空");
             LanternHandName = this.GetLocalization(nameof(LanternHandName), () => "照见");
             LanternHandNote = this.GetLocalization(nameof(LanternHandNote),
                 () => "灯照见过的猎物，枯手隔着遮挡也索得到；三灯刀光落在被攥住的目标上时加重一成六");

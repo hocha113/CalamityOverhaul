@@ -6,11 +6,11 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z2
 {
     //Z2 废墟带地表目录（M3 + 本轮扩容）：服务器墓地 + 断裂数据桥 +
-    //坠毁数据方舟 + 冷却塔——主产区的信服力结构
+    //坠毁数据方舟 + 冷却塔，主产区的信服力结构
     internal static class Z2Rooms
     {
         /// <summary>
-        /// 服务器墓地：方碑场——竖立/倾颓混排的导管镀层碑。
+        /// 服务器墓地：方碑场，竖立/倾颓混排的导管镀层碑。
         /// "死机的机柜排成墓园"是废墟带的第一母题
         /// </summary>
         internal static int BuildServerGraveyards(OldNetBuildContext ctx, int fields) {
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z2
         }
 
         /// <summary>
-        /// 断裂数据桥：中空双墩桥——两端桥面自浮空断开，中央缺口读作"链路断了"。
+        /// 断裂数据桥：中空双墩桥，两端桥面自浮空断开，中央缺口读作"链路断了"。
         /// 桥面可走（悬空双层板 + 缺口），是废墟带的立体动线
         /// </summary>
         internal static int BuildBrokenBridges(OldNetBuildContext ctx, int count) {
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z2
         }
 
         /// <summary>
-        /// 坠毁数据方舟：断成两截的运载舰残骸——两段中空舱体隔着撕裂口对望，
+        /// 坠毁数据方舟：断成两截的运载舰残骸，两段中空舱体隔着撕裂口对望，
         /// 舱内普通节点，够大的主舱五成藏加密节点。"从天上掉下来的东西"
         /// </summary>
         internal static int BuildDataArks(OldNetBuildContext ctx, int count) {
@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z2
         }
 
         /// <summary>
-        /// 冷却塔：中空烟囱——内井通顶敞口，井内横档交替贴壁可攀爬，
+        /// 冷却塔：中空烟囱，内井通顶敞口，井内横档交替贴壁可攀爬，
         /// 塔基双侧门洞，中段一枚节点。废墟带的纵向地标
         /// </summary>
         internal static int BuildCoolantStacks(OldNetBuildContext ctx, int count) {

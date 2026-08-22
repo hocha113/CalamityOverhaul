@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaMoonLord
 {
     /// <summary>
-    /// 血管鞭：噬月心藏对远处目标的答话——一条血管从其脚下湖面暴起鞭抽。
+    /// 血管鞭：噬月心藏对远处目标的答话，一条血管从其脚下湖面暴起鞭抽。
     /// 湖面先鼓起一条血管脊线（涟漪+泡沫+水下血光的 tell）→ 一帧暴起上撩鞭抽
     /// （伤害窗严格对齐抽击帧）→ 张力散尽瘫回水里溶解。
     /// ai[0]=打击高度（目标 Y 快照）ai[1]=甩弧方向；几何全部是自身计时的
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
-            //湖没了：快进瘫回——只有 owner 裁决，服务器领域恒 Closed、
+            //湖没了：快进瘫回，只有 owner 裁决，服务器领域恒 Closed、
             //远端快照未到，别处判会把刚出鞘的鞭当场掐死
             if (Main.myPlayer == Projectile.owner
                 && (!domain.AnyActive || domain.RiseT < 0.5f) && t < SlumpEnd) {
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool viewed = ViewedOwner;
 
             if (t <= TellEnd) {
-                //脊线 tell：涟漪自两侧向暴起点收拢、泡沫翻涌、闷咕声——湖面在鼓一条脊
+                //脊线 tell：涟漪自两侧向暴起点收拢、泡沫翻涌、闷咕声，湖面在鼓一条脊
                 float ridge = t / (float)TellEnd;
                 if (t == 6) {
                     SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.6f, Pitch = -0.7f, MaxInstances = 2 }, Projectile.Center);
@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Vector2 headApex = new(root.X + side * 96f, reachY);
             Vector2 head = Vector2.Lerp(headStart, headApex, snap);
 
-            //弓弧翻面：蓄时正弓、抽出后反弓——鞭花的来源
+            //弓弧翻面：蓄时正弓、抽出后反弓，鞭花的来源
             float bowAmp = MathHelper.Lerp(52f, -44f, snap);
             //余势摆动
             if ((int)Life > SnapEnd) {

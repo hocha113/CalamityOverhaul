@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
     /// <summary>
     /// 层级链 IK：身带肩→肩带肘→肘带掌。
     /// 肩锚 = 躯干姿态的确定性函数；肘 = 肩 + 上臂方向×骨长，方向由
-    /// 弦向角与肘偏角两个**标量**临界阻尼弹簧驱动——肘偏角带符号过零连续
+    /// 弦向角与肘偏角两个**标量**临界阻尼弹簧驱动，肘偏角带符号过零连续
     /// （换侧无镜像跳变）、极向侧由迟滞决定、幅度硬限位（永不折叠反悖）；
     /// 小臂永远从肘出发指向手掌真实位置，臂链从肩到腕链尖**不可能断开**。
     /// 手掌超出可达域时钳制其绘制锚到腕链尖（判定位置不动），
@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                 || Vector2.DistanceSquared(wrist, st.LastWrist) > 260f * 260f;
 
             //极向：躯干外侧偏下，迟滞防抖；带符号目标令换侧过零连续（无镜像跳变）。
-            //下偏权重须足够大，令休息位/各编队驻留弦向都远离极性死区——
+            //下偏权重须足够大，令休息位/各编队驻留弦向都远离极性死区
             //权重过小时驻留位落在迟滞带内：残留错侧数秒不自愈（肘上翻）、
             //且 sideBlend 常驻收拢弯度导致小臂骨段长期压瘪（仿真：0.42 时休息位错侧
             //自愈 193 tick、小臂/上臂比 0.42；0.85 时上对全驻留位 0 tick 自愈、比 0.98）。
@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                 SpringAngle(ref st.Chord, ref st.ChordVel, chordTarget, ChordOmega);
                 SpringScalar(ref st.Bend, ref st.BendVel, bendTarget, BendOmega);
             }
-            //硬限位：肘偏角封顶——弹簧输出也不许越界（过渡期同样受约束）
+            //硬限位：肘偏角封顶，弹簧输出也不许越界（过渡期同样受约束）
             st.Bend = MathHelper.Clamp(st.Bend, -MaxBend, MaxBend);
             st.LastWrist = wrist;
             st.LastTick = stamp;

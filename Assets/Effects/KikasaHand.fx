@@ -2,7 +2,7 @@
 // 世界空间 TriangleStrip：uv.x 0=水面根 → 0.70 腕 → 0.84 掌根 → 1=爪尖；uv.y 横跨条带
 // 顶点色 R=臂中线 v 位；G=爪面掩码（0 臂身 → 1 手面）
 // 材质是血湖水凝成的臂：深血半透水体、顺臂向根下淌的流层、窄亮水膜边、
-// 稀疏顺流湿亮；根部不撕散——与湖面融为一体（泡沫搅动、越根越实），
+// 稀疏顺流湿亮；根部不撕散，与湖面融为一体（泡沫搅动、越根越实），
 // 与焦黑枯手的分野：焦炭黑壳/龟裂烬红/烟根 ↔ 血水半透/水膜亮边/融水根。
 // uGrip=绷紧：整臂提亮+水膜边收锐（张力表面）；uDrain=化水回收：自爪端向根噪声侵蚀+蚀缘泡沫
 // 全笛卡尔条带坐标，无极角；直线算术+平贴 tex2D，无动态分支；预乘 alpha
@@ -84,7 +84,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     //---- 水体组织：深血底 + 顺臂向根下淌的流层 ----
     float tissue = tex2D(noiseSamp, float2(u * 2.6 + uSeed * 9.0, across * 1.2 - uTime * 0.03)).r;
     float3 col = lerp(WaterDeep, WaterMid, tissue);
-    //流层：特征随时间向 u=0（根）移动——水顺着臂淌回湖里
+    //流层：特征随时间向 u=0（根）移动，水顺着臂淌回湖里
     float flow1 = tex2D(noiseSamp, float2(u * 3.4 + uTime * 0.42 + uSeed * 5.1, across * 0.9)).r;
     float flow2 = tex2D(noiseSamp, float2(u * 6.8 + uTime * 0.27 + uSeed * 1.3, across * 2.2 + 0.41)).r;
     float streak = saturate(flow1 * 0.62 + flow2 * 0.48 - 0.30);
@@ -104,7 +104,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
         + FoamCol * smoothstep(0.93, 1.0, u) * (0.25 + uGrip * 0.75);
     col = lerp(col, clawCol, claw);
 
-    //---- 水膜亮边：窄亮 FOAM 边——暗景里读形靠它；绷紧提亮 ----
+    //---- 水膜亮边：窄亮 FOAM 边，暗景里读形靠它；绷紧提亮 ----
     float rim = smoothstep(edge - 0.20, edge - 0.02, across);
     col += FoamCol * rim * (0.30 + 0.30 * uGrip + 0.18 * uFoam);
     //蚀缘泡沫

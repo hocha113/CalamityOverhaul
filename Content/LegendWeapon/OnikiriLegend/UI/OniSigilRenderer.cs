@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     }
                 }
                 else if (view.Preview > 0.02f && !string.IsNullOrEmpty(view.PreviewName)) {
-                    //预演:鬼火虚线缓移——落印之前就读得懂"这条边会通、通成什么"
+                    //预演:鬼火虚线缓移，落印之前就读得懂"这条边会通、通成什么"
                     DrawDashedLine(sb, p0, p1, OnikiriUITheme.GhostDim, OnikiriUITheme.GhostFire,
                         alpha * view.Preview * 0.8f, time, e * 1.7f);
                     DrawCentered(sb, font, view.PreviewName, mid + new Vector2(0f, -9f),
@@ -555,7 +555,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         /// <summary>
-        /// 盘内批注:一句渐显渐隐的墨字,字下一道两端渐没的朱线——
+        /// 盘内批注:一句渐显渐隐的墨字,字下一道两端渐没的朱线
         /// 结印回执写在盘上,不进聊天栏
         /// </summary>
         public static void DrawNote(SpriteBatch sb, DynamicSpriteFont font, Vector2 center,
@@ -591,7 +591,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>
         /// 盘座下缘凿出的卷槽,点鬼簿插在里面。<br/>
-        /// 悬停语言是「抽卷」——卷自槽里升起一截、绳札松一分,不是图标变亮。<br/>
+        /// 悬停语言是「抽卷」，卷自槽里升起一截、绳札松一分,不是图标变亮。<br/>
         /// 卷身按圆筒排明暗(烛在屏下:下缘受暖光,上缘沉),两端天地轴朱帽带受光点
         /// </summary>
         public static void DrawScrollNiche(SpriteBatch sb, DynamicSpriteFont font, Rectangle rect,
@@ -608,7 +608,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //抽书行程:卷升起一截,槽口漏出的暖光跟着涨
             float pull = hover * OnikiriUITheme.CodexBookPull;
 
-            //====槽体:凿进盘座的暗腔——内暗上缘/两壁沉影/受光下唇====
+            //====槽体:凿进盘座的暗腔，内暗上缘/两壁沉影/受光下唇====
             Vector2 slotC = new(rect.Center.X, rect.Center.Y + 6f);
             Vector2 slotSize = new(rect.Width - 8f, rect.Height - 14f);
             sb.Draw(pixel, slotC, PixelSrc, Color.Black * (a * 0.84f), 0f, half,

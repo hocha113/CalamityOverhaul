@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             if (VaultUtils.isServer) {
                 return;
             }
-            //刻意什么都不放——静默本身是演出
+            //刻意什么都不放，静默本身是演出
             if (Timer == PhaseSilenceEnd - 16) {
                 SoundEngine.PlaySound(SoundID.NPCHit57 with { Volume = 1.2f, Pitch = -0.9f }, npc.Center);
             }

@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
 {
     /// <summary>
     /// 环舞爆发：绕圈布下气泡环→一拍死寂→全环径向齐射。
-    /// 环内圆心是安全眼——敢贴近的人得到奖赏；提前打掉气泡能射穿缺口
+    /// 环内圆心是安全眼，敢贴近的人得到奖赏；提前打掉气泡能射穿缺口
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)FishronStateIndex.RingSpin, typeof(FishronStateContext))]
     internal class FishronRingSpinState : FishronStateBase
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 return null;
             }
 
-            //幕三：环成，死寂一拍——泡光收敛，只剩雨声
+            //幕三：环成，死寂一拍，泡光收敛，只剩雨声
             if (Timer < FireFrame) {
                 npc.velocity *= 0.82f;
                 FaceBody(npc, player.Center, 0.12f);

@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// <summary>
     /// 鬼奴·湖水版克苏鲁之眼。血湖之水凝成的眼球随从：
     /// 出水四拍（预兆聚涟漪→破水浪冠→血水升起凝实→觉醒睁瞳），
-    /// 战斗循环为三连冲刺与血弹连射交替，领域绑定——收域/退水/主人死亡即溶解回湖。
+    /// 战斗循环为三连冲刺与血弹连射交替，领域绑定，收域/退水/主人死亡即溶解回湖。
     /// 状态机各端同推（规则确定性），owner 在每次转场盖 netUpdate 章纠偏；
     /// 血弹只在 owner 端生成，演出节拍用本地闩防快照回卷重播
     /// </summary>
@@ -158,7 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         private void BeginDissolve() {
-            //还没破水就要收场：什么都没露出来，不走溶解演出——
+            //还没破水就要收场：什么都没露出来，不走溶解演出
             //否则透明度会从 0 跳到 1，水下凭空闪出一只眼再化掉
             if (State == StateEmerge && StateTimer < OmenFrames) {
                 Projectile.Kill();
@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：湖塌/收域/退水/主人死亡 → 溶解回湖。只有 owner 裁决——
+            //生命线：湖塌/收域/退水/主人死亡 → 溶解回湖。只有 owner 裁决
             //服务器没有领域状态（恒 Closed 是既定契约），在那边跑这条会把鬼奴当场判死；
             //迟入场的客户端在首份领域快照到达前同样会误判。其余端只跟 owner 的同步包换场
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
@@ -430,7 +430,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, -aim * (2f + 16f * k), 0.35f);
                 FaceToward(aimPos, 0.45f);
 
-                //蓄势收拢的血珠，72% 后静默——爆发前的吸气
+                //蓄势收拢的血珠，72% 后静默，爆发前的吸气
                 if (!Main.dedServ && t < windup * 0.72f && t % 3 == 1) {
                     Vector2 mouth = MouthPos();
                     Vector2 from = mouth + Main.rand.NextVector2Unit() * Main.rand.NextFloat(48f, 90f);
@@ -456,7 +456,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (t <= windup + DashActiveFrames) {
-                //冲刺段：复利续力，不转向——直才快
+                //冲刺段：复利续力，不转向，直才快
                 Projectile.velocity *= 1.013f;
                 Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
                 //沿途甩出速度拉伸的血水
@@ -893,7 +893,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             int t = (int)StateTimer;
 
-            //预兆：水下血光自深处上浮（复刻湖藏浮出预兆但更宽更亮——这是生物不是物件）
+            //预兆：水下血光自深处上浮（复刻湖藏浮出预兆但更宽更亮，这是生物不是物件）
             if (State == StateEmerge && t < OmenFrames) {
                 float ot = MathHelper.Clamp(t / (float)OmenFrames, 0f, 1f);
                 float ease = 1f - (1f - ot) * (1f - ot);

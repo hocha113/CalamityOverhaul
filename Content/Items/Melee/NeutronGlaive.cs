@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <see cref="DivineSourceBlades.DivineSourceBladeHeld"/> 的成熟做法：
     /// 刀角直接沿弧插值，刀光是从玩家展开的扇形网格。<br/>
     /// 扇形复用 DivineSourceArc 着色器（调色板参数化，这里换中子星紫蓝色板），
-    /// 背景扭曲仍走 NeutronWarp 的 GravitationalLens——这一刀的身份是把空间掰弯
+    /// 背景扭曲仍走 NeutronWarp 的 GravitationalLens：这一刀的身份是把空间掰弯
     /// </summary>
     internal class NeutronGlaiveHeld : BaseHeldProj, IWarpDrawable
     {
@@ -533,7 +533,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             return x * x * (3f - 2f * x);
         }
 
-        /// <summary>扇形刀光画在世界层，会被自己的引力透镜轻微掰弯——光也逃不出引力</summary>
+        /// <summary>扇形刀光画在世界层，会被自己的引力透镜轻微掰弯，光也逃不出引力</summary>
         public override bool PreDraw(ref Color lightColor) {
             DrawArcFan(Main.spriteBatch);
             return false;
@@ -767,7 +767,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private int Age => lifetime - Projectile.timeLeft;
         private float LifeT => MathHelper.Clamp(Age / (float)lifetime, 0f, 1f);
 
-        /// <summary>出生 12 帧内快速撑开，之后随寿命缓慢扩张——振幅随距离衰减的波</summary>
+        /// <summary>出生 12 帧内快速撑开，之后随寿命缓慢扩张，振幅随距离衰减的波</summary>
         private float WaveScale {
             get {
                 float burst = 1f - MathF.Pow(1f - Math.Min(1f, Age / 12f), 3f);
@@ -836,7 +836,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             Projectile.rotation = Projectile.velocity.ToRotation();
             traveled += Projectile.velocity.Length();
-            //波在扩张中散失能量，速度持续衰减——不是匀速平移的贴图
+            //波在扩张中散失能量，速度持续衰减，不是匀速平移的贴图
             Projectile.velocity *= SpeedDecay;
 
             if (VaultUtils.isServer) {

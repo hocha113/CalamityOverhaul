@@ -18,10 +18,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// 鬼奴·湖水版世界吞噬怪。单弹幕内部模拟整条短链血蟒（头+18体+尾），
     /// 与毁灭者的机械直线相对：高转向柔性的有机 S 形蜿蜒，链体跟随阻尼更松。
     /// 出场为湖面裂缝：水线先被从中扯开一道横缝，蟒身自缝里挤出、S 形爬升。
-    /// 签名机制是空中血水裂隙对——撕开成对传送门，从一口一节节穿入、
+    /// 签名机制是空中血水裂隙对，撕开成对传送门，从一口一节节穿入、
     /// 另一口穿出实施包抄冲撞（每次转移都有可见的入口→出口穿行，无瞬移假身）。
     /// 第二攻击为腐蚀血痰齐射（命中或落水爆成滞留腐蚀血雾，见 KikasaEaterCorrosiveSpit）。
-    /// 跟随态还有链体"裂开又弥合"的分裂假动作——纯演出错位再咬合，不产生实体。
+    /// 跟随态还有链体"裂开又弥合"的分裂假动作，纯演出错位再咬合，不产生实体。
     /// 联机同克眼契约：状态走 ai[0..2]、owner 转场盖 netUpdate 章、
     /// 裂隙端点是不可归约的一次性裁决量，经 SendExtraAI 随包同步；
     /// 链体各端本地重建，节拍闩防快照回卷，生命线只有 owner 判
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //==================== 链体数据（各端本地重建，头位置由同步纠偏）====================
 
-        //毁灭者鬼奴同源跟随，阻尼加松到 0.24——弯得动才是活蟒
+        //毁灭者鬼奴同源跟随，阻尼加松到 0.24：弯得动才是活蟒
         private readonly Vector2[] spine = new Vector2[SegCount];
         /// <summary>蠕虫约定旋转（指向前节的方向角 + PiOver2）；原版 EoW 贴图头朝上，绘制直用不加翻转</summary>
         private readonly float[] segRot = new float[SegCount];
@@ -207,7 +207,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             => State == StateRiftRam && (int)StateParam == 2 && StateTimer <= RiftRamActive
                 ? null : false;
 
-        /// <summary>多节命中：相邻脊柱点两两线碰撞；冲撞窗内跨着裂隙口的节对不连线——
+        /// <summary>多节命中：相邻脊柱点两两线碰撞；冲撞窗内跨着裂隙口的节对不连线
         /// 那条"线"物理上并不存在，两侧可见的身体照常判</summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (!spineInit) {
@@ -286,7 +286,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：只有 owner 裁决——服务器无领域状态（既定契约），别处判会当场误杀
+            //生命线：只有 owner 裁决，服务器无领域状态（既定契约），别处判会当场误杀
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
             }
@@ -368,7 +368,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             float dir = MathF.Sign(StateParam) == 0f ? 1f : MathF.Sign(StateParam);
 
             if (t < OmenEnd) {
-                //分水预兆：两列涟漪自缝心向两侧推开——水面被从中扯开的前奏
+                //分水预兆：两列涟漪自缝心向两侧推开，水面被从中扯开的前奏
                 Projectile.velocity = Vector2.Zero;
                 if (viewed) {
                     if (t % 5 == 2) {
@@ -439,7 +439,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        /// <summary>撕裂拍浪冠：两翼斜抛血珠扇——缝是被"扯开"的，水往两边翻</summary>
+        /// <summary>撕裂拍浪冠：两翼斜抛血珠扇，缝是被"扯开"的，水往两边翻</summary>
         private void SeamTearBurst(Vector2 hit) {
             KikasaDomainDeco.RippleAt(hit, 2.6f);
             KikasaDomainDeco.RippleAt(hit + new Vector2(64f, 0f), 1.1f);
@@ -598,7 +598,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             if (phase == 0) {
                 //撕隙蓄势：owner 首帧一次性裁决裂隙端点（入口卡在自己与猎物之间、
-                //出口越过猎物背后——从一口扎进去、另一口咬回来）
+                //出口越过猎物背后，从一口扎进去、另一口咬回来）
                 if (riftEntry == Vector2.Zero) {
                     if (target < 0) {
                         EndAttack(authority, 45);
@@ -626,7 +626,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         ShakeViewer(2f);
                     }
                 }
-                //出口撕开滞后几拍——先近后远，撕裂有先后因果
+                //出口撕开滞后几拍，先近后远，撕裂有先后因果
                 if (t == 9 && ViewedOwner) {
                     RiftTearFX(riftExit, -inDir);
                     SoundEngine.PlaySound(SoundID.Item95 with { Volume = 0.45f, Pitch = -0.45f, MaxInstances = 2 }, riftExit);
@@ -656,7 +656,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (phase == 1) {
-                //俯冲入口：直线复利续力——直才快；穿口裁决在链体推进里做
+                //俯冲入口：直线复利续力，直才快；穿口裁决在链体推进里做
                 Vector2 toEntry = (riftEntry - Projectile.Center).SafeNormalize(RiftInDir);
                 float speed = MathF.Min(Projectile.velocity.Length() * 1.03f, 36f);
                 Projectile.velocity = toEntry * speed;
@@ -757,7 +757,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 if (t == 2) {
                     SoundEngine.PlaySound(SoundID.Item95 with { Volume = 0.35f, Pitch = -0.8f, MaxInstances = 2 }, Projectile.Center);
                 }
-                //蓄势血珠向口器汇聚，72% 后静默——喷吐前的吸气
+                //蓄势血珠向口器汇聚，72% 后静默，喷吐前的吸气
                 if (!Main.dedServ && t < CoilFrames * 0.72f && t % 3 == 0) {
                     Vector2 mouth = MouthPos();
                     Vector2 from = mouth + Main.rand.NextVector2Unit() * Main.rand.NextFloat(46f, 100f);
@@ -922,7 +922,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool portal = PortalActive;
 
             if (portal) {
-                //头的穿口状态是路径依赖量，位置分不清"没出发"和"已冲远"——
+                //头的穿口状态是路径依赖量，位置分不清"没出发"和"已冲远"
                 //相位即真相：2 起头必在出口侧（本地传送或同步包都会把相位推到 2），
                 //不做硬纠重建
                 bool headWasThrough = segThrough[0];
@@ -946,7 +946,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             //每节独立追前节：目标向量先按转差做阻尼旋转再贴位；
-            //阻尼比毁灭者松（0.24），弯得更快——有机蜿蜒的手感来源
+            //阻尼比毁灭者松（0.24），弯得更快，有机蜿蜒的手感来源
             const float dampingInertia = 0.24f;
             Vector2 inDir = portal ? RiftInDir : Vector2.UnitX;
             Vector2 outDir = -inDir;
@@ -989,7 +989,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             UpdateSegmentCrossings(domain);
         }
 
-        /// <summary>头破出口拍：血水炸开、吼声、震屏——包抄的第一口</summary>
+        /// <summary>头破出口拍：血水炸开、吼声、震屏，包抄的第一口</summary>
         private void OnHeadBreachRift() {
             if (ramBurstDone) {
                 return;
@@ -1295,7 +1295,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
             SpriteBatch sb = Main.spriteBatch;
 
-            //裂隙对与出水缝：压在蟒身之下——身要从口里钻出来
+            //裂隙对与出水缝：压在蟒身之下，身要从口里钻出来
             DrawRifts(sb);
 
             //本体：血湖材质逐节
@@ -1497,7 +1497,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         softGlow.Size() * 0.5f,
                         new Vector2(r * 3.4f / softGlow.Width, r * 0.8f / softGlow.Height), SpriteEffects.None, 0f);
                 }
-                //齐射蓄势：口器积光，静默段骤缩——爆发前先收一口
+                //齐射蓄势：口器积光，静默段骤缩，爆发前先收一口
                 if (State == StateSpitVolley && (int)StateParam <= 1) {
                     float charge = (int)StateParam == 1
                         ? 0.45f

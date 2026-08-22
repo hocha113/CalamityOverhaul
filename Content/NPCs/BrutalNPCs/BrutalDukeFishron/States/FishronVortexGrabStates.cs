@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
     }
 
     /// <summary>
-    /// 投技·蓄涡抽吸：公爵在目标脚下唤起大漩涡，抽吸把人往涡心拖——
+    /// 投技·蓄涡抽吸：公爵在目标脚下唤起大漩涡，抽吸把人往涡心拖
     /// 逆流游出力场即可脱身；到点仍滞留涡心者被卷入涡底（转入连段状态）
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)FishronStateIndex.VortexSnare, typeof(FishronStateContext))]
@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 return new FishronHoverState();
             }
 
-            //幕一：蓄涡前摇——奔赴漩涡侧翼，咆哮压场
+            //幕一：蓄涡前摇，奔赴漩涡侧翼，咆哮压场
             if (Timer <= SuctionStart) {
                 float p = Timer / (float)SuctionStart;
                 Vector2 goal = anchor + new Vector2(side * 430f, -190f);
@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 return null;
             }
 
-            //幕二：抽吸窗口——吸力由 FishronGrabPlayer 各端本地施加，这里只做演出
+            //幕二：抽吸窗口，吸力由 FishronGrabPlayer 各端本地施加，这里只做演出
             if (Timer < CommitTick) {
                 float suction = (Timer - SuctionStart) / (float)(CommitTick - SuctionStart);
 
@@ -218,7 +218,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 }
             }
 
-            //幕三：空振坍缩——客户端留 8 帧宽限等抓取包，未到即本地播坍缩
+            //幕三：空振坍缩，客户端留 8 帧宽限等抓取包，未到即本地播坍缩
             if ((int)Timer == CommitTick + 8) {
                 SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.9f, Pitch = -0.4f, MaxInstances = 3 }, anchor);
                 if (!VaultUtils.isServer) {
@@ -325,7 +325,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             int victimIdx = FishronGrabFacts.ReadVictim(ov);
             Player victim = victimIdx >= 0 && victimIdx < Main.maxPlayers ? Main.player[victimIdx] : null;
 
-            //异常出口（服务端裁决）：受害者死亡/掉线/被传送远离、硬超时——破水后受害者本就自由
+            //异常出口（服务端裁决）：受害者死亡/掉线/被传送远离、硬超时，破水后受害者本就自由
             if (!VaultUtils.isClient) {
                 bool victimGone = victim == null || !victim.Alives()
                     || victim.Distance(heart) > 2200f;
@@ -338,7 +338,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             context.StormBoost = 0.15f;
             FishronStormSky.PushRainBoost(0.2f);
 
-            //幕一：卷入顿帧——世界停一拍，只有水花在飞
+            //幕一：卷入顿帧，世界停一拍，只有水花在飞
             if (Timer <= HitStopEnd) {
                 npc.velocity = Vector2.Zero;
                 context.FrameCommand = 1;
@@ -355,7 +355,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 return null;
             }
 
-            //幕二：拖入涡底——绕涡贴面游走，宣示所有权
+            //幕二：拖入涡底，绕涡贴面游走，宣示所有权
             if (Timer <= DragEnd) {
                 float p = (Timer - HitStopEnd) / (float)(DragEnd - HitStopEnd);
                 float angle = seed * 0.4f + p * MathHelper.TwoPi * 0.8f;
@@ -376,7 +376,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 return null;
             }
 
-            //幕三：三轮鳍击——前摇亮相→直线掠过命中→弧线甩出
+            //幕三：三轮鳍击，前摇亮相→直线掠过命中→弧线甩出
             if (Timer < DiveStart) {
                 int t = (int)Timer - PassStart;
                 if (t < 0) {
@@ -441,7 +441,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 return null;
             }
 
-            //幕四：深潜蓄力——沉入涡底不见，雨声骤停，预静默拍
+            //幕四：深潜蓄力，沉入涡底不见，雨声骤停，预静默拍
             if (Timer < LaunchTick) {
                 Vector2 deep = anchor + new Vector2((float)Math.Sin(Timer * 0.11f) * 40f, 420f);
                 npc.velocity = Vector2.Lerp(npc.velocity,
@@ -479,7 +479,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 }
             }
 
-            //幕五：破水冲天——强拖拽泄力，升势在浪脊上耗尽（26 帧从 44 衰到 ~3）
+            //幕五：破水冲天，强拖拽泄力，升势在浪脊上耗尽（26 帧从 44 衰到 ~3）
             if (Timer < StallTick) {
                 npc.velocity *= 0.90f;
                 npc.velocity.Y += 0.12f;
@@ -500,7 +500,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 }
             }
 
-            //幕六：力竭喘息——奖励输出窗口
+            //幕六：力竭喘息，奖励输出窗口
             Player target = context.Target;
             npc.velocity *= 0.92f;
             if (target.Alives()) {
@@ -529,7 +529,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
 
         /// <summary>
         /// 单拍命中结算：伤害只在受害者自己的客户端 Hurt（生命客户端权威，命中拍与本端画面严格同帧）；
-        /// 视觉水花各端都放。剧本伤害尊重无敌帧（闪避饰品照常生效），残血跳拍——满血不可能被投技处死
+        /// 视觉水花各端都放。剧本伤害尊重无敌帧（闪避饰品照常生效），残血跳拍，满血不可能被投技处死
         /// </summary>
         private static void ResolvePassHit(NPC npc, Player victim, int victimIdx, Vector2 heart, int passIndex) {
             //命中重音：所有端可见

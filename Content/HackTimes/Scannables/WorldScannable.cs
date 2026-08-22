@@ -6,7 +6,7 @@ using Terraria.Localization;
 namespace CalamityOverhaul.Content.HackTimes.Scannables
 {
     /// <summary>
-    /// 世界状态扫描目标。没有实体——kind 本身就是身份，任意两个
+    /// 世界状态扫描目标。没有实体，kind 本身就是身份，任意两个
     /// <see cref="WorldScannable"/> 视作同一目标（<see cref="TargetEquals"/>）。<br/>
     /// <see cref="WorldCenter"/> 只是悬停时捕获的天空锚点，用于锁定框与运镜；
     /// 协议逻辑一律不吃这个座标（反查出的实例拿到的是世界中央的兜底锚点）
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
 
         public Vector2 WorldCenter => anchor;
 
-        //世界总在，目标永远有效——效果生命周期只由时长决定
+        //世界总在，目标永远有效，效果生命周期只由时长决定
         public bool IsValid => true;
 
         public bool IsHackable => true;

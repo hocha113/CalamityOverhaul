@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
     /// （<c>Main.Map</c> 的探索进度一字不改），效果到期图层原样回来。
     /// 图层压制与全屏雪花在 <see cref="MapBlackoutRenderer"/>（防守方本机钩子）；
     /// 小地图角落的雪花面板画在本类的 HUD 覆盖层。<br/>
-    /// 红线遵守：只糊地图区——覆盖式大地图（mapStyle 2）是整层隐藏而不是整屏糊雪花，
+    /// 红线遵守：只糊地图区，覆盖式大地图（mapStyle 2）是整层隐藏而不是整屏糊雪花，
     /// 角色本体与来袭弹幕的可见性不受任何影响
     /// </summary>
     internal class MapBlackout : PlayerHackDef

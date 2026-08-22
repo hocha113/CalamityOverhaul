@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 {
     /// <summary>
     /// 血湖领域装饰：湖面涟漪、水线行波、贴水血雾、破水抛洒的血水滴。
-    /// 血滴走真抛物线并落回湖面荡出微圈——湖是实体存在，不是贴图。
+    /// 血滴走真抛物线并落回湖面荡出微圈，湖是实体存在，不是贴图。
     /// </summary>
     internal static class KikasaDomainDeco
     {
@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         }
 
         /// <summary>沸腾气泡：沿水线随机散点破水的碎泡，颜色随镜面预览向目标形态先行渐变。
-        /// 出生线取 <see cref="KikasaDomainPlayer.VisualLakeY"/>——上涌期从抬高后的面上破水</summary>
+        /// 出生线取 <see cref="KikasaDomainPlayer.VisualLakeY"/>：上涌期从抬高后的面上破水</summary>
         public static void BoilBurst(KikasaDomainPlayer kdp, float strength, float coldMix) {
             Color bubble = Color.Lerp(new(214, 118, 106), new(170, 185, 190), coldMix);
 
@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
         }
 
-        /// <summary>湖面荡开一圈涟漪：加色双环，量级够时（scale≥0.3）水线行波一并登记——
+        /// <summary>湖面荡开一圈涟漪：加色双环，量级够时（scale≥0.3）水线行波一并登记
         /// 血滴回落的微圈只画环不起浪，四个波槽留给真正的事件</summary>
         public static void RippleAt(Vector2 world, float scale) {
             if (scale >= 0.3f) {

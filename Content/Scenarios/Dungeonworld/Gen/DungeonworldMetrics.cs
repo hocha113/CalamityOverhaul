@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
         internal static ushort WallForRow(int y) => (BandForRow(y) ?? OwnerBand(y)).Wall;
 
         /// <summary>
-        /// 带外行的取色归属:隔离带以中线切开,上半归上层、下半归下层——
+        /// 带外行的取色归属:隔离带以中线切开,上半归上层、下半归下层
         /// 12行隔离带因此是一道真过渡带而不是断层(§1.2);
         /// 天空缓冲带归L1,深渊带归L7。
         /// </summary>

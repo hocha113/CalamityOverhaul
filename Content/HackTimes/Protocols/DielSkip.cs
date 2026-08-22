@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
     /// <summary>
     /// 昼夜跳转：把时间快进到最近的日出或日落。<br/>
-    /// 实现完全镜像原版日晷/月晷——权威端置
+    /// 实现完全镜像原版日晷/月晷，权威端置
     /// <c>Main.fastForwardTimeToDawn / fastForwardTimeToDusk</c> 并广播
     /// <see cref="MessageID.WorldData"/>；60 倍速的天空扫掠、边界处的事件重掷、
     /// 到点自动清旗全部由原版 <c>UpdateTime_StartDay/StartNight</c> 兜底，
@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// </summary>
     internal class DielSkip : QuickHackDef
     {
-        //全服冷却，不是个人冷却——时间是全员共享的资源
+        //全服冷却，不是个人冷却，时间是全员共享的资源
         private static ulong worldCooldownUntil;
         private const int WorldCooldownTicks = 60 * 60;
 

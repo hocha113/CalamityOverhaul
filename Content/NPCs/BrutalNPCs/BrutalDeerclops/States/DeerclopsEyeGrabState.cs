@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
 
             DriveBossPresentation(context, npc, victim);
 
-            //——服务端出口阀——
+            //== 服务端出口阀 ==
             if (!VaultUtils.isClient) {
                 //目标死亡/离场：立即断投(玩家侧自会释放)
                 if (Timer < ReleaseTick && !victim.Alives()) {
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
 
         /// <summary>boss姿态/音画节拍，各端按本地Timer推进</summary>
         private void DriveBossPresentation(DeerclopsStateContext context, NPC npc, Player victim) {
-            //凝视窗内风雪骤退——"世界安静下来=它在看你"的既有语言
+            //凝视窗内风雪骤退，"世界安静下来=它在看你"的既有语言
             bool gazeWindow = Timer > LiftEnd && Timer <= BreathEnd;
             context.VeilTarget = gazeWindow ? 0.05f : 0.12f;
             context.EyeHeat = 1f;
@@ -153,7 +153,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                 return;
             }
 
-            //幕三：静止凝视一拍——独眼血红，全场只剩心跳
+            //幕三：静止凝视一拍，独眼血红，全场只剩心跳
             if (Timer <= GazeEnd) {
                 context.AnimMode = DeerAnimMode.Crouch;
                 float p = (Timer - LiftEnd) / (float)(GazeEnd - LiftEnd);

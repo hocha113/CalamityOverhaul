@@ -11,13 +11,13 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 {
     /// <summary>
-    /// 鬼梦禁弹："梦中人人失能"的射弹面——梦界内不容飞行射弹存在，
+    /// 鬼梦禁弹："梦中人人失能"的射弹面，梦界内不容飞行射弹存在，
     /// 敌人的远程弹一出现就被梦吞没，只剩恶犬与獠牙说话。
     /// 一致性模型与湖面物理同款：服务器不持有领域相位（KikasaDomainNet 既定契约），
     /// 而命中本就在判定端本地结算（敌弹=受害者本机、友弹=持有者本机），
     /// 每端从已同步的快照跑同一条确定性规则各自熄灭，无需任何包。
     /// 辨别机制在 <see cref="IsSwallowed"/>：只吞"明显是远程攻击"的自由飞行弹，
-    /// 功能性/手持类/随从本体从宽豁免——漏放一发冷枪比误杀钩爪代价小
+    /// 功能性/手持类/随从本体从宽豁免，漏放一发冷枪比误杀钩爪代价小
     /// </summary>
     internal class KikasaDreamProjectileBan : ModSystem
     {
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 
         /// <summary>
         /// 辨别机制：该射弹是否属于梦要吞的"远程攻击弹"。
-        /// 白名单从宽——一切功能弹、手持弹、随从本体都放行，恶犬（minion+projPet）天然豁免
+        /// 白名单从宽，一切功能弹、手持弹、随从本体都放行，恶犬（minion+projPet）天然豁免
         /// </summary>
         internal static bool IsSwallowed(Projectile proj) {
             //非攻击性=功能弹：墓碑/传送门/星云拾取/telegraph 等零伤实体一概不碰
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                 or ProjAIStyleID.HeldProjectile or ProjAIStyleID.Yoyo or ProjAIStyleID.Whip) {
                 return false;
             }
-            //隐藏层多为内部挂件；需持有者视线的是手持近战——吞了会拆别人的状态机
+            //隐藏层多为内部挂件；需持有者视线的是手持近战，吞了会拆别人的状态机
             if (proj.hide || proj.ownerHitCheck) {
                 return false;
             }

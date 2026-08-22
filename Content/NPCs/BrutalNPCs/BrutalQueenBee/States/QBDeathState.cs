@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
     /// <summary>
     /// 死亡演出：痉挛失控(蜂群四散惊逃)→残翅爬升→顶点失速→坠地蜜爆→<br/>
     /// 幸存蜂群归来结环志哀→散场真死<br/>
-    /// 编舞核心：指挥者死了，编队随之瓦解——蜂群的失序就是她的死亡叙事
+    /// 编舞核心：指挥者死了，编队随之瓦解，蜂群的失序就是她的死亡叙事
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)QueenBeeStateIndex.Death, typeof(QueenBeeStateContext))]
     internal class QBDeathState : QueenBeeStateBase

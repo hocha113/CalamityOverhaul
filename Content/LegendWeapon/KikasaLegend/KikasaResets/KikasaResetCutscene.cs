@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
     /// 大范围重启的运镜：全程锁输入、快门段轻推近、落定回拉，
     /// 定格与结算各一记震屏。仅施术者本机播放；演出本体由
     /// <see cref="KikasaReset"/> 的时间轴驱动，运镜失败不致命。
-    /// 被波及的其他玩家不锁镜——他们的位置被倒放接管，镜头自然跟人走
+    /// 被波及的其他玩家不锁镜，他们的位置被倒放接管，镜头自然跟人走
     /// </summary>
     internal sealed class KikasaResetCutscene : CutsceneClip
     {

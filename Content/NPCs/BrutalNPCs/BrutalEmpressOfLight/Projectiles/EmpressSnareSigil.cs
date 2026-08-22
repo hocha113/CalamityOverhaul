@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             Color goldAdd = gold with { A = 0 };
             Color whiteAdd = Color.White with { A = 0 };
 
-            //捕获圈：呼吸随进度加急，末段轻微内缩——笼在收口
+            //捕获圈：呼吸随进度加急，末段轻微内缩，笼在收口
             float pulse = (float)Math.Sin(time * (4f + p * p * 22f) + Projectile.identity * 1.3f);
             float ringR = CaptureR * (1f - 0.04f * p * (0.5f + 0.5f * pulse));
             ShockRingDraw.Draw(Main.spriteBatch, Projectile.Center, ringR, CaptureR * 0.085f,

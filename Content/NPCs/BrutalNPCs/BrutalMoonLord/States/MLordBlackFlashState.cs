@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             }
         }
 
-        /// <summary>寂静一拍：一切收干。无声、无粒子、无移动——爆发前的黑</summary>
+        /// <summary>寂静一拍：一切收干。无声、无粒子、无移动，爆发前的黑</summary>
         private void UpdateSilence(MLordContext context) {
             NPC npc = context.Npc;
             npc.velocity *= 0.78f;
@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 //吸气：所有声音的截断由这一声短促的收干标出
                 SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.7f, Pitch = -0.8f }, npc.Center);
             }
-            //寂静期不推 GravityDim——上一帧的余晖自然衰减，画面亮度回抬一拍再暗
+            //寂静期不推 GravityDim：上一帧的余晖自然衰减，画面亮度回抬一拍再暗
         }
 
         /// <summary>掷出：服务端生成黑洞弹体，客户端冲击帧+反冲</summary>
@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             MLordScreenFX.StarBurst(ballPos, 1.6f, 20);
         }
 
-        /// <summary>失手段：主动打断的奖励——超长硬直+受击加伤，比正常余波更痛</summary>
+        /// <summary>失手段：主动打断的奖励，超长硬直+受击加伤，比正常余波更痛</summary>
         private void UpdateFumble(MLordContext context) {
             NPC npc = context.Npc;
             npc.velocity *= 0.88f;

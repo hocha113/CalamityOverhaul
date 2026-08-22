@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaWallOfFlesh
 {
     /// <summary>
-    /// 鬼奴·湖水版血肉墙：界墙残像，唯一的区域压制者。不是全图墙——
+    /// 鬼奴·湖水版血肉墙：界墙残像，唯一的区域压制者。不是全图墙
     /// 一面局部墙段从湖里升起（基座永浸水下），墙面嵌两眼一口。
     /// 出水四拍（涟漪横排宽度预告→整排破水浪冠→墙体指数衰减推升、水帘倾泻→双眼觉醒）；
     /// 跟随即压制：朝目标恒缓速水平漂移，不追不冲，接触判定覆盖整面墙；
@@ -223,7 +223,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
             lakeYCache = domain.LakeWorldY;
 
-            //生命线：湖塌/收域/主人死亡 → 倒塌回湖。只有 owner 裁决——
+            //生命线：湖塌/收域/主人死亡 → 倒塌回湖。只有 owner 裁决
             //服务器无领域状态（恒 Closed 是既定契约），别处判会当场误杀；其余端只跟包换场
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
@@ -296,7 +296,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.velocity.X = 0f;
 
             if (t < OmenFrames) {
-                //预兆：一整排涟漪自中心向两侧横着排开——宽度预告，读出"墙"而非"怪"
+                //预兆：一整排涟漪自中心向两侧横着排开，宽度预告，读出"墙"而非"怪"
                 if (viewed) {
                     if (t % 4 == 1) {
                         float spread = t / (float)OmenFrames;
@@ -481,7 +481,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         private void UpdateEyeLaser(Player owner, bool authority) {
             int t = (int)StateTimer;
-            //剪切期墙照旧压来——攻击不打断推进，这是它的性格
+            //剪切期墙照旧压来，攻击不打断推进，这是它的性格
             AdvanceDrift(owner, 0.7f);
 
             int target = FindTarget(owner);
@@ -495,7 +495,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     EyeWorldPos(0));
             }
 
-            //蓄光：两眼各自积攒收拢的血光，72% 后静默——剪切前的吸气
+            //蓄光：两眼各自积攒收拢的血光，72% 后静默，剪切前的吸气
             if (!Main.dedServ && t < LaserLockFrames * 0.72f && t % 2 == 0) {
                 for (int e = 0; e < 2; e++) {
                     Vector2 eye = EyeWorldPos(e);
@@ -507,7 +507,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
             }
 
-            //上眼先出横切，下眼隔拍反扫出斜切——两道细激光在猎物身上交叉
+            //上眼先出横切，下眼隔拍反扫出斜切，两道细激光在猎物身上交叉
             if (t >= LaserLockFrames && lastLaserFired < 0) {
                 lastLaserFired = 0;
                 StateParam = 1;
@@ -712,7 +712,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        /// <summary>列滑落深度：边缘列先垮、中心列殿后，加速度下滑——建筑倒塌的秩序</summary>
+        /// <summary>列滑落深度：边缘列先垮、中心列殿后，加速度下滑，建筑倒塌的秩序</summary>
         private float ColDrop(int col) {
             if (State != StateDissolve) {
                 return 0f;
@@ -751,7 +751,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             return best;
         }
 
-        /// <summary>出水高度：破水后指数衰减推升——首拍猛涌，随后缓慢而不可阻挡地顶满。
+        /// <summary>出水高度：破水后指数衰减推升，首拍猛涌，随后缓慢而不可阻挡地顶满。
         /// 落定后带轻微呼吸浮沉（水线处读出活着的起伏）；溶解期定高，列滑落自己演</summary>
         private float ExposedHeight() {
             int t = (int)StateTimer;
@@ -1046,7 +1046,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        /// <summary>眼/口贴图：原版脸朝左约定——面朝右翻转、旋转取世界视线角</summary>
+        /// <summary>眼/口贴图：原版脸朝左约定，面朝右翻转、旋转取世界视线角</summary>
         private void DrawFacePart(SpriteBatch sb, Texture2D tex, int npcType, int frameIdx,
             Vector2 worldPos, float lookRot, Color lightColor, float exposed) {
             //溶解期部件跟自己那列一起滑

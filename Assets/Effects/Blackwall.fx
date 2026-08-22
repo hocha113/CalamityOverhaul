@@ -39,7 +39,7 @@ float4 PSBlackwall(float2 uv : TEXCOORD0) : COLOR0
     //d>0 在墙体内，d<0 在墙外
     float d = uWallScreenX - px.x;
 
-    //三套全算、step 门控乘混合——全屏 ps_3_0 禁动态分支
+    //三套全算、step 门控乘混合，全屏 ps_3_0 禁动态分支
     //（FNA3D 对 fx_2_0 内流程控制的翻译不可信，OniWorldGrade 事故同款处方）
     float inWall = step(0.0, d);
     float outWall = 1.0 - inWall;
@@ -61,7 +61,7 @@ float4 PSBlackwall(float2 uv : TEXCOORD0) : COLOR0
     float seam = smoothstep(0.74, 0.96, band);
     body += float3(0.85, 0.10, 0.09) * seam * 0.75;
 
-    //纵向楼层缝：墙是建起来的巨构不是一张纹理——
+    //纵向楼层缝：墙是建起来的巨构不是一张纹理
     //每 ~130px 一道横向结构缝，暗缝为主，少数缝亮着（还通电的层）
     float strataId = floor(px.y / 130.0);
     float fy = frac(px.y / 130.0);

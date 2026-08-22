@@ -130,13 +130,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
             LockedCount = this.GetLocalization(nameof(LockedCount), () => "縁分 {0} / {1}");
             LockedFeat = this.GetLocalization(nameof(LockedFeat), () => "縁分未至");
             LockedUnknown = this.GetLocalization(nameof(LockedUnknown), () => "此铭无縁可循");
-            Settle = this.GetLocalization(nameof(Settle), () => "刀縁已结——「{0}」的拓本落在脚下");
+            Settle = this.GetLocalization(nameof(Settle), () => "刀縁已结，「{0}」的拓本落在脚下");
         }
 
         /// <summary>某縁在木牌上的进度读法</summary>
         internal static string DescribeProgress(OniMeiDeed deed, int value) {
             if (deed == null) {
-                return LockedUnknown?.Value ?? "———";
+                return LockedUnknown?.Value ?? "...";
             }
             if (deed.ProgressKind == OniMeiDeedProgressKind.Count) {
                 return LockedCount.Format(Math.Clamp(value, 0, Math.Max(1, deed.NeedCount)),

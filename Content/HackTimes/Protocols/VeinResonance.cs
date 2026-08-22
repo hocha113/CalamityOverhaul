@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// 矿脉共振：命中矿格后同种矿脉透墙点亮，期间挖掉的同种矿双倍掉落，
     /// 但每次翻倍都会在矿格处生成一只看守，到期看守全部消散。<br/>
     /// 区域账本以锚点格为键外挂在静态字典上（协议实例是单例，对齐 Cryostasis）；
-    /// 账本存活性每帧与追踪器对齐——锚点矿被挖掉时追踪器直接丢效果、不走 OnRemove，
+    /// 账本存活性每帧与追踪器对齐，锚点矿被挖掉时追踪器直接丢效果、不走 OnRemove，
     /// 靠 <see cref="SweepZones"/> 兜底清账并消散看守，不存在无主账
     /// </summary>
     internal class VeinResonance : QuickHackDef

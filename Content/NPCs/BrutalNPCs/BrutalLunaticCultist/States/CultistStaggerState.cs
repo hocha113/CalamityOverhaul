@@ -6,7 +6,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
-    /// 仪式被破的踉跄：身体下坠飘摇，仪式辉光熄灭，受伤加深 ×1.25——玩家拆台的奖励窗口
+    /// 仪式被破的踉跄：身体下坠飘摇，仪式辉光熄灭，受伤加深 ×1.25：玩家拆台的奖励窗口
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.Stagger, typeof(CultistStateContext))]
     internal class CultistStaggerState : CultistStateBase

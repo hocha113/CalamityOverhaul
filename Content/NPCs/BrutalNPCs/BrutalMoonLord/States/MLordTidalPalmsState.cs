@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         }
 
         /// <summary>
-        /// 本拍执行者集合（各端确定性一致）：对角双掌——拍偶取{上左,下右}、拍奇取{上右,下左}，
+        /// 本拍执行者集合（各端确定性一致）：对角双掌，拍偶取{上左,下右}、拍奇取{上右,下左}，
         /// 对角缺位以就近存活手补位（不重复征用）；全无手时由真眼冲撞（单执行者）。
         /// 返回执行者数，索引写入 performers
         /// </summary>

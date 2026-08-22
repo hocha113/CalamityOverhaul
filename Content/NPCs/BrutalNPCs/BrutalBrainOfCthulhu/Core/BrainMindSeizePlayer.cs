@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core
     /// <summary>
     /// 摄心镜狱受害端：本人客户端读同步抓取态（npc.ai[2] 状态 + override.ai[4] 受害者标记），
     /// 施加输入锁、位置钉锚悬浮、按本地节拍结算穿刺/掷飞伤害、启停运镜
-    /// 玩家位置客户端权威——服务端从不写玩家位置；旁观者不受任何锁定与镜头接管
+    /// 玩家位置客户端权威，服务端从不写玩家位置；旁观者不受任何锁定与镜头接管
     /// </summary>
     internal class BrainMindSeizePlayer : ModPlayer
     {

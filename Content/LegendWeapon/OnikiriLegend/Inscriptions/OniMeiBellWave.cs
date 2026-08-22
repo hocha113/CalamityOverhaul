@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 {
     /// <summary>
     /// 梵鐘「一撞」的钟波：一圈向外推的低频声压。<br/>
-    /// 主波之后跟两道追不上的余波，环推过去的地方空气被挤了一下——
+    /// 主波之后跟两道追不上的余波，环推过去的地方空气被挤了一下
     /// 是"声音把人推开"，不是"一个亮圈在放大"。<br/>
     /// 只在主波扫过的那一圈上结算，所以站得远的敌手挨得晚，是有节奏的一击。<br/>
     /// ai[0]=半径
@@ -215,7 +215,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             fx.CurrentTechnique = fx.Techniques["WaveTech"];
 
             //正圆：判定用的是真实距离（Colliding/BindAtFront 都按 Distance 算），
-            //所以画面也必须是正圆——压成贴地椭圆会让头顶的敌人在"环还没扫到"时就挨打
+            //所以画面也必须是正圆，压成贴地椭圆会让头顶的敌人在"环还没扫到"时就挨打
             //顶点收世界坐标：GetTransfromMatrix 自带 -screenPosition
             Vector2 center = Projectile.Center;
             float half = Radius;
@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
     /// <summary>
     /// 梵鐘自鸣环：满架势起算的那三秒，在脚下画一圈逐渐咬合的钟纹。<br/>
-    /// 这一圈就是「现在放终结，还是让钟自己响」的决策窗——没有它，
+    /// 这一圈就是「现在放终结，还是让钟自己响」的决策窗，没有它，
     /// 玩家只能靠听那记越来越紧的嗡声猜还剩多久。<br/>
     /// 只画本地玩家：自鸣计数与架势一样是本机自治的，远端读不到真值
     /// </summary>

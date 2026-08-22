@@ -17,7 +17,7 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
 {
     /// <summary>
-    /// 电动焚化炉面板:电熔炉仪器语言——钢壳(随工况发热)、入料口/出料口插座、
+    /// 电动焚化炉面板:电熔炉仪器语言，钢壳(随工况发热)、入料口/出料口插座、
     /// 熔炼室电热棒组(通电炭红转亮橙,断电冷却)、流向箭标、电力表盘。<br/>
     /// 交互契约与旧版一致(点击入料/取料、右键开合、超距自动关、位置持久化),
     /// 笔刷与材质在 <see cref="IndustrialTerminalRenderer"/>

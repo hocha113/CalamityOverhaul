@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
 {
     /// <summary>
     /// 废钢统帅战场滤镜系统：锈尘暮色基调 + 过载橙边晕 + impact frame + 死亡转灰。
-    /// 全部是客户端表现——各端从同步的 NPC 状态自行推导，无网络通道。
+    /// 全部是客户端表现，各端从同步的 NPC 状态自行推导，无网络通道。
     /// 状态代码通过 Push/Trigger 静态口喂通道，帧末聚合衰减
     /// </summary>
     internal class ScrapSiegeScreen : ModSystem, ICWRLoader

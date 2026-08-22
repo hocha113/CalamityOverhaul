@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 {
     /// <summary>
     /// 鬼奴·湖水版毁灭者。单弹幕内部模拟整条短链蠕虫（头+12体+尾，
-    /// 体节沿头部走过的路径回溯摆位——全体从同一个破水孔穿行）。
+    /// 体节沿头部走过的路径回溯摆位，全体从同一个破水孔穿行）。
     /// 出场为蛟龙出海：潜行航迹预兆→破水弹道弧（弧顶重力减轻悬拍）→按战场高度
     /// 回落入湖巡游或拉起转空中蟒行；双栖跟随带滞回。攻击为血液喷柱（独立弹幕）
     /// 与潜浪跃出冲撞。逐节湿度驱动滴落与材质血水度，过水线双向水花。
@@ -233,7 +233,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：只有 owner 裁决——服务器无领域状态（既定契约），
+            //生命线：只有 owner 裁决，服务器无领域状态（既定契约），
             //迟入场客户端首份快照前也会误判；其余端只跟包换场
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
@@ -340,7 +340,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
 
-            //弹道推进：越近弧顶重力越轻——顶点悬拍，蛟龙弓身读满
+            //弹道推进：越近弧顶重力越轻，顶点悬拍，蛟龙弓身读满
             const float v0y = 20.7f;
             float g = 0.55f * (0.4f + 0.6f * MathHelper.Clamp(MathF.Abs(Projectile.velocity.Y) / v0y, 0f, 1f));
             Projectile.velocity.Y += g;
@@ -382,7 +382,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        /// <summary>破水浪冠：毁灭者级——量级压过克眼一头</summary>
+        /// <summary>破水浪冠：毁灭者级，量级压过克眼一头</summary>
         private void BreachBurst(Vector2 hit) {
             KikasaDomainDeco.RippleAt(hit, 3.0f);
             KikasaDomainDeco.RippleAt(hit + new Vector2(52f, 0f), 1.2f);
@@ -440,7 +440,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             float lakeY = domain.LakeWorldY;
             cruisePhase += 0.045f + MathF.Abs(Projectile.velocity.X) * 0.004f;
 
-            //巡游目标：玩家两侧游弋，纵向正弦穿越水线——背弓由轨迹自然形成
+            //巡游目标：玩家两侧游弋，纵向正弦穿越水线，背弓由轨迹自然形成
             float targetX = owner.Center.X + MathF.Sin(StateTimer * 0.013f + Seed) * 90f
                 + (MathF.Sin(Seed * 3f + StateTimer * 0.0021f) > 0f ? 1f : -1f) * 220f;
             float targetY = lakeY - 6f + MathF.Sin(cruisePhase) * 44f;
@@ -566,11 +566,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 if (Projectile.velocity.Length() > 9f) {
                     Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 9f;
                 }
-                //鼻锁：转率随蓄力衰减——"锁线"
+                //鼻锁：转率随蓄力衰减，"锁线"
                 float wantAngle = (aimPos - Projectile.Center).ToRotation();
                 lockedHeadRot = lockedHeadRot.AngleTowards(wantAngle, MathHelper.Lerp(0.24f, 0.1f, p));
 
-                //口器向心汇聚流光（本体同款橙热），72% 后停粒子——尖啸前的吸气
+                //口器向心汇聚流光（本体同款橙热），72% 后停粒子，尖啸前的吸气
                 if (!Main.dedServ && p < 0.72f && Main.rand.NextFloat() < 0.35f + 0.5f * p) {
                     Vector2 from = spine[0] + Main.rand.NextVector2Unit() * Main.rand.NextFloat(90f, 320f);
                     PRTLoader.NewParticle<PRT_Spark>(from, (spine[0] - from) * 0.1f,
@@ -599,7 +599,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (phase == 2) {
-                //静默：充能骤停、转向起始角——巨炮前的吸气
+                //静默：充能骤停、转向起始角，巨炮前的吸气
                 Projectile.velocity *= 0.7f;
                 lockedHeadRot = lockedHeadRot.AngleLerp(
                     float.IsNaN(jetStartAngle) ? lockedHeadRot : jetStartAngle, 0.4f);
@@ -846,7 +846,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 segRot[0] = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             }
 
-            //每节独立对象追前节：目标向量先按转差做阻尼旋转再贴位——本体手感的来源
+            //每节独立对象追前节：目标向量先按转差做阻尼旋转再贴位，本体手感的来源
             const float dampingInertia = 0.18f;
             for (int i = 1; i < SegCount; i++) {
                 Vector2 segmentTarget = spine[i - 1] - spine[i];
@@ -1093,7 +1093,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            //血灯呼吸：压向深血、低亮度——加色粉光盖贴图是泡沫感主凶
+            //血灯呼吸：压向深血、低亮度，加色粉光盖贴图是泡沫感主凶
             Color lampTint = Color.Lerp(BloodMain, KikasaEyeBloodShot.BloodDeep, 0.55f);
             for (int i = SegCount - 1; i >= 0; i--) {
                 float dissolve = SegDissolve(i);

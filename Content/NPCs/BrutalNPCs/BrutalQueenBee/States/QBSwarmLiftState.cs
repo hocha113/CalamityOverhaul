@@ -10,7 +10,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
 {
     /// <summary>
-    /// 投技·蜜牢收网(二阶段)：蜂蜜滞留满标后收网——蜂群拉成收缩旋涡环困住猎物，<br/>
+    /// 投技·蜜牢收网(二阶段)：蜂蜜滞留满标后收网，蜂群拉成收缩旋涡环困住猎物，<br/>
     /// 成茧裹人垂直抬升，女王绕茧穿刺三轮，蜂茧爆散把人抛落<br/>
     /// npc.ai[0/1]=收网锚点 npc.ai[3]=阶段旗(0收网 1已抓 2空挥 3中断)<br/>
     /// 网络形状：判定全在服务端；被抓者位移/受伤/运镜由其客户端(QueenBeeGrabPlayer)读本状态施加
@@ -367,7 +367,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             }
         }
 
-        /// <summary>爆散前静默：茧收缩、万籁俱寂——尖叫前的吸气</summary>
+        /// <summary>爆散前静默：茧收缩、万籁俱寂，尖叫前的吸气</summary>
         private void UpdatePreSilence(QueenBeeStateContext context, NPC npc) {
             float t = (Timer - PassEnd) / (float)(DetonateTick - PassEnd);
             DeclareCocoon(context, MathHelper.Lerp(0.38f, 0.29f, t));

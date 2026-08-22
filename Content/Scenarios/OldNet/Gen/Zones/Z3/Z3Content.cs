@@ -1,6 +1,6 @@
 namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z3
 {
-    //Z3 信号衰减带：疯域宿主。本轮扩容后不再只是空地——
+    //Z3 信号衰减带：疯域宿主。本轮扩容后不再只是空地
     //焦黑尖塔群/坍塌掩体给"信号尽头"实体证据，平台加密一档
     internal static class Z3Content
     {

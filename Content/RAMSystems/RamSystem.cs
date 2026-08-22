@@ -278,7 +278,7 @@ namespace CalamityOverhaul.Content.RAMSystems
         /// <summary>
         /// 权威循环：驱动全部玩家的恢复/锁定/快照发送。
         /// 由 <see cref="HackTime.PostUpdateEverything"/> 每帧调用，
-        /// 不挂在 ModPlayer.PostUpdate 上——死亡玩家的 Player.Update
+        /// 不挂在 ModPlayer.PostUpdate 上，死亡玩家的 Player.Update
         /// 提前返回，会把恢复与锁倒计时一并冻住。
         /// </summary>
         public static void Update() {

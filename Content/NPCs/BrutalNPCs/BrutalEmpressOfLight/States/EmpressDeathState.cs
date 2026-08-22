@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             }
         }
 
-        /// <summary>万光归一：全场光尘坍缩入她，末12帧完全静默——绽散前的屏息</summary>
+        /// <summary>万光归一：全场光尘坍缩入她，末12帧完全静默，绽散前的屏息</summary>
         private void GatherUpdate(EmpressStateContext context, NPC npc) {
             context.Pose = EmpressPose.Transform;
             //上限58：避开原版变身绘制在ai[1]≥60后的本体隐没窗（此处她必须始终可见）

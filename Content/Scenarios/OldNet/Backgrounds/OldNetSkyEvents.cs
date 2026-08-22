@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
     /// <see cref="Surge"/> 黑墙涌动脉冲（OldNetSky/Blackwall 消费），
     /// <see cref="GiantPos"/>/<see cref="GiantScale"/>/<see cref="GiantMix"/>
     /// 巨物剪影（OldNetSky uGiant 消费）。
-    /// 全部状态本机确定性推进，不落存档不发包——事件是氛围不是玩法
+    /// 全部状态本机确定性推进，不落存档不发包，事件是氛围不是玩法
     /// </summary>
     internal class OldNetSkyEvents : ModSystem
     {

@@ -433,7 +433,7 @@ MartyrdomBarUI: {
 	SlotLabel_11: 犹
 	RevelationJudgingText: 启示录 后三印审判进行中
 	RevelationStatusText: 启示录 四骑士 {0}/4 Q陨石 R审判
-	RevelationReadyText: 按 Q — 启示录就绪
+	RevelationReadyText: 按 Q：启示录就绪
 	MartyrdomPowerText: 殉道之力 {0}/11
 }
 
@@ -475,7 +475,7 @@ GalacticCrisisRender: {
 	KortoPrimaryObjective: ◢ 首要目标 ◣
 	KortoClassTerrestrial: 类型：类地行星
 	KortoThreatCritical: 威胁：危急
-	KortoPlanetCountInfo: 科尔托星系 — 6颗行星
+	KortoPlanetCountInfo: 科尔托星系：6颗行星
 	KortoStatusCompromised: 状态：已沦陷
 	HeaderAndroidProfile: ◢ TACTICAL ANDROID DOSSIER ◣
 	AndroidArtisName: ARTIS
@@ -589,17 +589,17 @@ VictorTalkUI: {
 	Greet9: 时间就是金钱，尤其是我的，直说你需要什么，省去那些废话
 	Greet10: 新零件需要磨合期，尽量几天内别中太多子弹
 	Greet11: 身体只是工具，你这具看起来已经很久没保养了
-	TalkFirstMeet0: 生面孔，让我猜猜——你不是来找医生的，是来找奇迹的，坐吧，两样我都卖
+	TalkFirstMeet0: 生面孔，让我猜猜，你不是来找医生的，是来找奇迹的，坐吧，两样我都卖
 	TalkFirstMeet1: 欢迎光临，客人，记住三条规矩：不赊账，不问来路，不对我的手艺指手画脚
 	TalkPostSurgery0: 缝合线还热着，二十四小时内别拿新零件去挡刀
 	TalkPostSurgery1: 手术很成功，当然，我的手术从来都很成功
-	TalkPostSurgery2: 感觉如何？有异响、漏电、幻肢痛就随时回来——维修另收费
+	TalkPostSurgery2: 感觉如何？有异响、漏电、幻肢痛就随时回来，维修另收费
 	TalkMoodHomeless0: 在你们给我腾出一间诊室之前，报价里都得算上露天营业的风险费
 	TalkMoodHomeless1: 手术台扛在背上可做不了精细活，给我找间屋子，价格好商量
 	TalkMoodHappy0: 今天心情不错，报价给你抹了个零头，别声张
 	TalkMoodHappy1: 这地方我待得挺舒服，舒服到愿意给你打折
 	TalkMoodGrumpy0: 别嫌贵，把我搬到住得顺心的地方去，价格自然会降
-	TalkMoodGrumpy1: 心情不好，手术刀就不稳，账单里含了风险费——这都得怪你们
+	TalkMoodGrumpy1: 心情不好，手术刀就不稳，账单里含了风险费，这都得怪你们
 	TalkNoChrome0: 全原装的身体……稀罕，像一台从没刷过固件的老机器
 	TalkNoChrome1: 一件义体都没装？你是来参观的，还是来怀旧的
 	TalkFullChrome0: 你身上的铬件比血肉还多，走路的动静都像我的收银机
@@ -637,7 +637,7 @@ VictorTalkUI: {
 
 VictorClinicUI: {
 	TitleText: 维克托诊所
-	StatusText: 义体医生在线 —— 选择一个部位
+	StatusText: 义体医生在线：选择一个部位
 	GuideText: 选择一个身体部位，查看、更换并购买对应的义体。
 	LabelOwned: 已拥有
 	LabelForSale: 在售
@@ -669,7 +669,7 @@ TBUGTalkUI: {
 	TalkFirstPurchase1: 货拿稳，出了问题先检讨你自己的使用习惯
 	TalkMoodHomeless0: 我天天睡露天，硬件早上全是露水，给我个房间，价格能降一档
 	TalkMoodHomeless1: 没屋顶的商店叫地摊，我不喜欢当地摊主
-	TalkMoodHappy0: 今天心情不错，报价的时候手滑了一下——往下滑的，别声张
+	TalkMoodHappy0: 今天心情不错，报价的时候手滑了一下，往下滑的，别声张
 	TalkMoodHappy1: 这地方越住越顺眼，你们的建筑水平比物理引擎强
 	TalkMoodGrumpy0: 别嫌贵，把我搬去个像样的地方，价格自己会掉
 	TalkMoodGrumpy1: 心情差，报价就冲，这是市场规律，不是我的问题
@@ -677,14 +677,14 @@ TBUGTalkUI: {
 	TalkHackUnlocked1: 会骇入的客人是好客人，至少不会问"这芯片插哪头"
 	TalkHackLocked0: 我这些货，一半你现在还用不了，先去弄一套能骇入的行头
 	TalkLowHealth0: 你在滴血，先去找护士，我的货架上不卖血袋
-	TalkLowHealth1: 血条那种东西，快见底才要紧——你这条已经快了
+	TalkLowHealth1: 血条那种东西，快见底才要紧，你这条已经快了
 	TalkRich0: 一股铂金味，今天打算清空哪层货架？
 	TalkPoor0: 口袋比我的回收站还干净，先去赚钱，我不赊账
 	TalkPoor1: 没钱就当逛展览，看可以，别摸
 	TalkPreHardmode0: 世界还在前期，怪的数值都写得客客气气，趁现在多囤点
 	TalkPreHardmode1: 那堵肉墙还没倒，等它倒了，你会回来搬空我的货架的
 	TalkHardmode0: 世界打了个大补丁，怪变强了，掉的东西也值钱了，对生意是好事
-	TalkHardmode1: 光和暗在外面撕地图，别站在新裂开的缝旁边——我就是从那种地方掉出来的
+	TalkHardmode1: 光和暗在外面撕地图，别站在新裂开的缝旁边，我就是从那种地方掉出来的
 	TalkPostMoonlord0: 月亮领主都被你拆了，你的战斗日志我想拷一份，学习用
 	TalkPostMoonlord1: 神仙都打完了还来照顾我这小铺子，我该涨价还是该感动？
 	TalkPostSupCal0: 至尊灾厄都倒了，现在这个世界最大的漏洞是你才对
@@ -693,7 +693,7 @@ TBUGTalkUI: {
 	TalkEclipse0: 日食，白天比夜里还吵，很难不怀疑是哪个配置写反了
 	TalkRain0: 下雨，我的设备套了袋子，你的装备自己看着办
 	TalkRain1: 雨点全是直线下落，连个风的扰动项都不给，偷懒
-	TalkDeepNight0: 这个点还不睡？行，夜猫子打九五折——开玩笑的，原价
+	TalkDeepNight0: 这个点还不睡？行，夜猫子打九五折，开玩笑的，原价
 	TalkDeepNight1: 深夜好，跑的进程少，世界确实比白天流畅
 	TalkUnderground0: 地下好，恒温，安静，石头把信号噪声全挡了
 	TalkUnderground1: 闻到没有，一股机房味，我怀疑这个世界的服务器就埋在下面
@@ -929,7 +929,7 @@ SelfRigScanText: {
 	WraithLabel: 役鬼
 	ErosionLabel: 侵蚀
 	ProtocolLabel: 协议库
-	NoneText: —
+	NoneText: 无
 	RamLockFormat: RAM {0}%
 	DormantFormat: 休眠 {0}秒
 	TransmuteGainFormat: +{0} RAM
@@ -1050,7 +1050,7 @@ SHPCUI: {
 	Cyber_Layer2_Title: 深层下潜
 	Cyber_Layer3_Title: 黑墙穿透
 	Cyber_NoSkill: 无特有技能
-	Cyber_LayerBaseFooter: 基础层 — 仅用于建立领域场域
+	Cyber_LayerBaseFooter: 基础层：仅用于建立领域场域
 	Cyber_SkillUnlocked: "[#] 已解锁"
 	Cyber_SkillLocked: "[X] 需要 {0} 层领域"
 	Cyber_KeyUnbound: 未绑定
@@ -1061,7 +1061,7 @@ SHPCUI: {
 	Cyber_Skill_Banish_Name: 赛博放逐
 	Cyber_Skill_Banish_Desc: 将光标下的敌人送入深层赛博空间
 	Cyber_Skill_Freeze_Name: 领域冻结
-	Cyber_Skill_Freeze_Desc: 第三层领域即整个世界——锁定世界上所有敌对实体的运动
+	Cyber_Skill_Freeze_Desc: 第三层领域即整个世界，锁定世界上所有敌对实体的运动
 	Cyber_DrainHeader: RAM 消耗
 	Cyber_DrainPerSec: -{0}/秒
 	Cyber_SustainTime: 可维持 ~{0} 秒
@@ -1173,7 +1173,7 @@ CyberwareGuideLead: {
 }
 
 SHPCDomainWheelUI: {
-	Layer1_Desc: 基础层 — 只在身周撑起领域场域
+	Layer1_Desc: 基础层：只在身周撑起领域场域
 	Layer2_Desc: 下潜一层，场域铺得更远，RAM 也烧得更快
 	Layer3_Desc: 捅穿黑墙，整个世界都成了领域
 	Layer_HintActivate: 「单击」展开领域
@@ -1323,42 +1323,42 @@ OldNetTexts: {
 	OldNetTerminalHint: 登出并铭刻收获
 	OldNetSettleDone: 已铭刻 {0} 枚模具碎片，链路安全断开
 	OldNetSettleEmpty: 链路安全断开，本次没有收获
-	OldNetEjectRam: RAM耗尽——链路烧断，未铭刻的收获已丢失
-	OldNetEjectDeath: 构念崩解——链路烧断，未铭刻的收获已丢失
-	OldNetLedgerFull: 账本已满——先去中继站或登出
+	OldNetEjectRam: RAM耗尽，链路烧断，未铭刻的收获已丢失
+	OldNetEjectDeath: 构念崩解，链路烧断，未铭刻的收获已丢失
+	OldNetLedgerFull: 账本已满，先去中继站或登出
 	OldNetEncryptHint: 引导破解（站桩约3秒，动静很大）
 	OldNetEventHint: 拉闸：解除全图封锁，惊动整张网
-	OldNetEventPulled: 封锁已解除——清剿波正在路上
+	OldNetEventPulled: 封锁已解除，清剿波正在路上
 	OldNetRelayHint: 中继上行：铭刻当前账本（上行有噪音）
 	OldNetRelayDone: 已铭刻 {0} 枚模具碎片，链路保持
 	OldNetRelayEmpty: 账本为空，无可上行
 	OldNetEnterHint: 接入旧网（越墙深潜）
-	OldNetEnterConfirm: 链路已预热——再次交互，越墙深潜
+	OldNetEnterConfirm: 链路已预热，再次交互，越墙深潜
 	OldNetEnterSPOnly: 深潜仅单人模式可用
-	OldNetDiveCharge: 保持下潜——正在穿墙
+	OldNetDiveCharge: 保持下潜，正在穿墙
 	OldNetBandFoot: 墙脚带 // FOOTHOLD
 	OldNetBandRuin: 废墟带 // RUINFIELD
 	OldNetBandFade: 信号衰减区 // SIGNAL DECAY
 	GuideNoiseTitle: 噪音计
-	GuideNoiseBody: 左下角是噪音计：移动、开火、破解都会点亮你。四道刻度对应四档威胁——过 T2 就会有东西从墙那边过来。静止不动，噪音会自己冷却。
+	GuideNoiseBody: 左下角是噪音计：移动、开火、破解都会点亮你。四道刻度对应四档威胁，过 T2 就会有东西从墙那边过来。静止不动，噪音会自己冷却。
 	GuideLedgerTitle: 未铭刻账本
-	GuideLedgerBody: 采到的碎片先进账本（LEDGER 读数），死亡或 RAM 耗尽会全部作废——只有铭刻过的才真正属于你。账本有容量，满载会拒收。
+	GuideLedgerBody: 采到的碎片先进账本（LEDGER 读数），死亡或 RAM 耗尽会全部作废，只有铭刻过的才真正属于你。账本有容量，满载会拒收。
 	GuideNodesTitle: 节点分级
 	GuideNodesBody: 青色节点右键即采；琥珀色加密节点要站桩引导约 3 秒，动静很大但值三倍；红色事件闸一拉，全图封锁解除，清剿波也会立刻到场。
 	GuideRelayTitle: 中继与登出
 	GuideRelayBody: 琥珀光柱是中继站：就地铭刻账本、人不撤，但上行广播很响。薄荷绿光柱是登出终端：铭刻并安全断链。贪还是撤，是这里唯一的问题。
 	GuideDrainTitle: 距离底噪
-	GuideDrainBody: 离墙越远，RAM 底噪越贵——HUD 的 DEPTH 读数旁标着当前每秒消耗。RAM 烧干等于弹出，回程的路费要提前算进去。
+	GuideDrainBody: 离墙越远，RAM 底噪越贵，HUD 的 DEPTH 读数旁标着当前每秒消耗。RAM 烧干等于弹出，回程的路费要提前算进去。
 	GuideSkip: 知道了
 	EntrustTitle: 越墙深潜
 	EntrustSummary: 坠舱中舱的接入终端还在通电。接入旧网，采回模具碎片，并从登出终端安全断链一次。RAM 耗尽或死亡会弄丢一切未铭刻的收获。
 	EntrustCategory: 深潜考古
 	TrackerOverworld: 接入坠舱中舱的终端
 	TrackerDive: 从登出终端安全断链
-	OldNetSignRuin: 废墟带。主产区，加密节点自此出没——引导破解前，先看好退路。
-	OldNetSignFade: 信号衰减区。底噪自此陡增，链路撑不了多久——深入自负。
+	OldNetSignRuin: 废墟带。主产区，加密节点自此出没，引导破解前，先看好退路。
+	OldNetSignFade: 信号衰减区。底噪自此陡增，链路撑不了多久，深入自负。
 	OldNetEchoHint: 回声节点：只在时停中可触及（零噪音，产出翻倍）
-	OldNetEchoFizzle: 回声太淡——时停中才能触及
+	OldNetEchoFizzle: 回声太淡，时停中才能触及
 	OldNetCacheHint: 深潜缓存：撬开取一件封存模块（动静不小）
 }
 
@@ -1370,9 +1370,9 @@ OldNetDebriefPanel: {
 	DebriefHunted: 被追猎
 	DebriefTime: 深潜用时
 	DebriefExitSafe: 安全断链
-	DebriefExitBurnout: RAM 耗尽——链路烧断
-	DebriefExitDeath: 构念崩解——链路烧断
+	DebriefExitBurnout: RAM 耗尽，链路烧断
+	DebriefExitDeath: 构念崩解，链路烧断
 	DebriefLost: "{0} 枚未铭刻碎片已烧毁"
 	DebriefContinue: 继续
-	DebriefMechHint: 未铭刻的收获只活在链路里——经中继站或登出终端铭刻后才真正属于你
+	DebriefMechHint: 未铭刻的收获只活在链路里，经中继站或登出终端铭刻后才真正属于你
 }

@@ -22,7 +22,7 @@ float hash(float n)
 }
 
 //帧界内 alpha 采样：邻域采样会越过源矩形帧界采到相邻帧实体像素
-//(横线根因)——越界一律视作透明
+//(横线根因)：越界一律视作透明
 float frameAlpha(float2 uv)
 {
     if (uv.x < uvFrame.x || uv.y < uvFrame.y || uv.x > uvFrame.z || uv.y > uvFrame.w)

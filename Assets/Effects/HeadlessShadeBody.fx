@@ -106,7 +106,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     color += RimBone * tornEdge * uRimFlash * 0.85;
 
     //断颈口骨白细线：只咬剪影上缘中段的撕口线，缓慢明灭、蓄力/扑出时燃亮。
-    //  无头是身份——颈口给一线白，比堆几何更能说"这上面没有头"
+    //  无头是身份，颈口给一线白，比堆几何更能说"这上面没有头"
     float neckBand = smoothstep(0.30, 0.12, uv.y) * exp(-pow((uv.x - 0.5) * 3.2, 2.0));
     float neckStir = 0.55 + 0.45 * sin(uTime * 2.1 + uSeed * 3.7);
     float neckRim = tornEdge * neckBand * (0.14 + 0.22 * neckStir + 0.50 * phaseBeat);

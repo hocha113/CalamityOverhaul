@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
     /// <summary>
     /// 紙樋「表影」：把里世界的面影搬到表世界。<br/>
     /// 疾走穿身时在落点挂一张该敌手的纸型；你朝纸型挥刀，伤害传导到真身，
-    /// 并让它接下来一段时间挨刀更疼。纸型不会自己打人——它是个靶子，
+    /// 并让它接下来一段时间挨刀更疼。纸型不会自己打人，它是个靶子，
     /// 打不打、什么时候打，都是玩家的决定。<br/>
     /// ai[0]=真身 whoAmI ai[1]=真身 type ai[2]=基础武器伤害
     /// </summary>
@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         /// <summary>
         /// 纸型不是 NPC，接不到刀的命中回调；改为主动看"本机玩家的刀这一帧扫到我没有"。<br/>
-        /// 只认鬼切自己的伤害动作，且必须处在其伤害窗内——挥空的收势不算斩到
+        /// 只认鬼切自己的伤害动作，且必须处在其伤害窗内，挥空的收势不算斩到
         /// </summary>
         private void DetectBladeSweep() {
             Rectangle box = Projectile.Hitbox;
@@ -235,7 +235,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
             NPC live = ResolveSource();
             Rectangle frame = live?.frame ?? default;
-            //真身已经不在、或帧越界，就退回第一帧的定姿——纸型本来就是静的
+            //真身已经不在、或帧越界，就退回第一帧的定姿，纸型本来就是静的
             if (frame.Width <= 0 || frame.Height <= 0 || frame.X < 0 || frame.Y < 0
                 || frame.Right > texture.Width || frame.Bottom > texture.Height) {
                 int frames = Math.Max(1, Main.npcFrameCount[type]);

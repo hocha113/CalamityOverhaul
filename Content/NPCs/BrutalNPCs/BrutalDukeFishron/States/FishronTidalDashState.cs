@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 }
             }
 
-            //蓄力期跟瞄，预告线锁定的同一帧冻结方向——锁线即承诺，绝不再变
+            //蓄力期跟瞄，预告线锁定的同一帧冻结方向，锁线即承诺，绝不再变
             if (Timer < chargeTime - FishronTelegraph.LockTime || dashDirection == Vector2.Zero) {
                 dashDirection = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
             }

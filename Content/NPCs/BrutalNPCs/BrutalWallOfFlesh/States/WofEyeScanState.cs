@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
 {
     /// <summary>
     /// 双眼激光扫描协议：双眼充能后各自射出持续扫描光束，
-    /// 三角波错拍上下扫掠——当一束在极点时另一束恰在中线，永远存在可穿越的窗口。
+    /// 三角波错拍上下扫掠，当一束在极点时另一束恰在中线，永远存在可穿越的窗口。
     /// 慢速可读的"死亡扫描线"，非双子式剪刀交叉
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)WofStateIndex.EyeScan, typeof(WofStateContext))]

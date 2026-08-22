@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.States
     /// <summary>
     /// 磁暴收束·二环：磁场力线亮起、音调爬升（长预警）→ 场上废钢堆被整座拽飞进统帅 →
     /// 内外两圈碎片交错环绕（聚拢段无伤害）→ 内环先甩、外环追杀，两波读法。
-    /// 场上废钢堆越多风暴越密——迫击埋的伏笔在这里结账
+    /// 场上废钢堆越多风暴越密，迫击埋的伏笔在这里结账
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)ScrapStateIndex.MagnetStorm, typeof(ScrapStateContext))]
     internal class ScrapMagnetStormState : ScrapStateBase
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.States
             return null;
         }
 
-        /// <summary>聚拢拍：双环碎片入轨——内环密先甩、外环稀追杀；密度吃堆数</summary>
+        /// <summary>聚拢拍：双环碎片入轨，内环密先甩、外环稀追杀；密度吃堆数</summary>
         private void GatherStorm(ScrapStateContext ctx, NPC npc) {
             ShakeNearby(npc.Center, 2.5f);
             if (VaultUtils.isClient) {

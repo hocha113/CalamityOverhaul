@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         private static readonly Color Mirror = new(170, 220, 255);
 
         //每个效果的复制配额，键用 ActivationId（全局唯一、永不复用，
-        //比格座标更稳——同一格被两名施术者先后骇入时不共享账）。只在权威端写
+        //比格座标更稳，同一格被两名施术者先后骇入时不共享账）。只在权威端写
         private static readonly Dictionary<long, int> copyCounts = [];
         private static readonly List<long> pruneScratch = [];
 
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         /// <summary>
         /// 表层格：本列有液体且上一格没有液体。从种子列向两侧收拢成一条水平镜线；
-        /// 泄漏路径说明——效果因液体被抽干而无 OnRemove 结束时，配额账目会滞留，
+        /// 泄漏路径说明，效果因液体被抽干而无 OnRemove 结束时，配额账目会滞留，
         /// 由下一次 OnApply 的 <see cref="PruneOrphans"/> 兜底清掉
         /// </summary>
         private static bool TryComputeMirrorLine(int tileX, int tileY,
@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             if (index < 0 || index >= Main.maxProjectiles) return false;
 
             //转阵营已在 OnSpawn 里按来源做完。服务端上 owner 不是本机（255），
-            //NewProjectile 不会自己发生成包，这里显式广播一次——
+            //NewProjectile 不会自己发生成包，这里显式广播一次
             //包里的阵营与 ExtraAI 标记都是转换后的值，各端从第一帧起就一致
             if (Main.netMode == NetmodeID.Server) {
                 NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, index);

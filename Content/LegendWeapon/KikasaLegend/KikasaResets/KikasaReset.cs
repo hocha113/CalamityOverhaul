@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
     /// 鬼伞·大范围重启权威核心。鬼雨形态下把最近数秒"冲洗"回去：
     /// 屏幕定格成黑白照片、被雨痕刷掉，场内 NPC 与玩家沿运动历史倒退，
     /// 结算分两拍：先清 debuff，隔两帧回满生命法力，全程无敌。
-    /// 契约：服务器只验冷却/在场，不验领域——服务器没有领域状态，形态由客户端预检；
+    /// 契约：服务器只验冷却/在场，不验领域，服务器没有领域状态，形态由客户端预检；
     /// NPC 倒放两端各按本端历史推演，服务器周期 netUpdate 与落定 SyncNPC 兜住终位；
     /// NPC 冻结走 TimeFreezes 租约（统一 AI 入口把 Override/原版 AI 一并停摆，
     /// 位置由冻结锚点沿历史驱动），敌方弹幕在范围内计时冻结、演出收场自然解冻；
@@ -382,7 +382,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
                 return;
             }
 
-            //施术者掉线整场收场；死亡不收——无敌顶着，且其余人还等着被倒放回血
+            //施术者掉线整场收场；死亡不收，无敌顶着，且其余人还等着被倒放回血
             Player owner = Main.player[show.OwnerWho];
             if (owner?.active != true) {
                 if (Main.netMode == NetmodeID.Server) {
@@ -436,7 +436,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
             }
 
             //结算拆两拍归本机；服务器只负责把 NPC 终位推正。
-            //第一拍清 debuff+落定无敌——本帧 statLifeMax2 仍带着削上限效果算出的值，
+            //第一拍清 debuff+落定无敌，本帧 statLifeMax2 仍带着削上限效果算出的值，
             //回满放到第二拍，等上限恢复后兑现，免得清完 debuff 血却钉在低位
             if (!show.RestoreFired && show.Timer >= RewindEnd) {
                 show.RestoreFired = true;
@@ -480,7 +480,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
         /// <summary>
         /// 倒带进度曲线：smoothstep 主干混三重脉冲波。旧版纯脉冲在段界导数归零，
         /// 实体"停一下再猛冲"读作跳切；混入主干后波谷仍保有均速近五成、
-        /// 两端缓起缓落，整体连续单调——胶片回卷的呼吸感而非顿挫
+        /// 两端缓起缓落，整体连续单调，胶片回卷的呼吸感而非顿挫
         /// </summary>
         private static float RewindEase(float x) {
             x = MathHelper.Clamp(x, 0f, 1f);
@@ -550,7 +550,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
         }
 
         private static void FinishShow(ResetShow show) {
-            //放行：以回溯终点当刻的历史速度续走——时间接回过去，动量也接回过去
+            //放行：以回溯终点当刻的历史速度续走，时间接回过去，动量也接回过去
             foreach (int index in heldNpcIndices) {
                 Vector2? resume = KikasaResetHistory.TryNpcVelocityAt(index,
                     RewindWindowFrames, out Vector2 velocity) ? velocity : null;

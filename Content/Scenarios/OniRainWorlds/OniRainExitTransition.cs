@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             }
         }
 
-        /// <summary>相位粒子：合幕段满屏流水、排水段沿前沿泼水、落定溅圈——与深潜同语汇</summary>
+        /// <summary>相位粒子：合幕段满屏流水、排水段沿前沿泼水、落定溅圈，与深潜同语汇</summary>
         private static void SpawnStageFx(Player player) {
             //湿墨色板，与鬼雨体系一致
             Color pale = new(170, 185, 190);

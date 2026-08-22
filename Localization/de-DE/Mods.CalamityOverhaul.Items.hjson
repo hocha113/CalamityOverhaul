@@ -3243,7 +3243,7 @@ OniMeiRubbingOnikiri: {
 	Tooltip: Ursprüngliche Inschrift: Die Klinge bleibt unverändert, ohne Gabe und ohne Preis
 	// Origin: At Ichijo-Modoribashi, the oni that lost its arm never dared come back for it. The name has been nailed to the tang ever since
 	Power: Die ursprüngliche Inschrift. Die Klinge bleibt genau, wie sie ist — nichts wird gewährt, nichts genommen
-	Burden: ———
+	Burden: None
 }
 
 OniMeiRubbingShishinoko: {

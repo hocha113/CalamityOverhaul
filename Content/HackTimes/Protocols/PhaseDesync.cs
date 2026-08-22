@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
     /// <summary>
     /// 相位偏移：把目标的躯体表现和真实判定分开。<br/>
-    /// 不改数值、不夺 AI——鲜活的躯体画在偏移处（见
+    /// 不改数值、不夺 AI：鲜活的躯体画在偏移处（见
     /// <see cref="HackNpcProtocolNPC"/> 的幽灵重绘），真身压暗并套一圈判定线框；
     /// 该 NPC 射出的弹幕出生点也套同一偏移（权威端在生成包发出前改，
     /// 各端靠首包拿到同一落点），于是它的攻击也从"看起来的位置"打出。<br/>

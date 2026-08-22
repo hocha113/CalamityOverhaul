@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 {
     /// <summary>
     /// 墨雨:一笔会追人的水墨,普攻的演出主角。
-    /// 弹道两段——弧段=三次贝塞尔(出手方向定 P1 保切线连续、P2 悬在顶点正上方
+    /// 弹道两段，弧段=三次贝塞尔(出手方向定 P1 保切线连续、P2 悬在顶点正上方
     /// 保证末端切线朝下),追踪藏在端点的阻尼平移里,曲线整体缓慢变形,无锐角;
     /// 坠落段=重力加速+曲率限幅转向(只转方向不改速率),轨迹恒为光滑弧线。
     /// 滞空拍是弧段末的速度极小值,不是急停。
@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         /// <summary>
         /// 首帧解弧线:P1 沿出手方向(切线连续),P3 压在目标头顶上方
-        /// (天花板向下钳制),P2 悬在 P3 正上方——末端切线天然朝下,
+        /// (天花板向下钳制),P2 悬在 P3 正上方，末端切线天然朝下,
         /// 弧段飞完直接切入坠落,交接处无折角
         /// </summary>
         private void SolveCurve(NPC target) {
@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
             arcT += 1f / arcDur;
             float t = MathHelper.Clamp(arcT, 0f, 1f);
-            //参数速度:出手快、近顶点慢——滞空拍是速度极小值,保留 0.15 底速不归零
+            //参数速度:出手快、近顶点慢，滞空拍是速度极小值,保留 0.15 底速不归零
             float eased = 0.15f * t + 0.85f * (1f - (1f - t) * (1f - t));
             Vector2 pos = Bezier(p0, p1, p2, p3, eased);
             //位置差写进 velocity,引擎推进,旋转与拉伸自然继承
@@ -261,7 +261,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             if (target == null) {
                 return;
             }
-            //曲率限幅转向:只转方向不改速率,转率随速度升高收紧——永远是弧,不是折线
+            //曲率限幅转向:只转方向不改速率,转率随速度升高收紧，永远是弧,不是折线
             Vector2 want = target.Center + target.velocity * 6f - Projectile.Center;
             float dAng = MathHelper.WrapAngle(want.ToRotation() - Projectile.velocity.ToRotation());
             float speedT = MathHelper.Clamp(Projectile.velocity.Length() / PlungeMaxSpeed, 0f, 1f);
@@ -407,7 +407,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 Projectile.rotation, canvas.Size() * 0.5f, scale, SpriteEffects.None, 0f);
         }
 
-        /// <summary>精灵回退:分层 Extra_98——暗缘给体积、墨体近黑、血芯与 A=0 加色玻头</summary>
+        /// <summary>精灵回退:分层 Extra_98：暗缘给体积、墨体近黑、血芯与 A=0 加色玻头</summary>
         internal void DrawInk(SpriteBatch sb) {
             Texture2D tex = CWRAsset.Extra_98?.Value;
             if (tex == null || VisualFade <= 0.01f) {

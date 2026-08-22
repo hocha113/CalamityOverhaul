@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 
             Timer++;
             if (Timer >= LeaveEnd && !VaultUtils.isClient) {
-                //移除形制对齐原版 CheckActive：life 归零再失活——SyncNPC 收包端只认
+                //移除形制对齐原版 CheckActive：life 归零再失活，SyncNPC 收包端只认
                 //life<=0 为摘除信号，带血失活会在联机端留下一具幽灵核心
                 npc.life = 0;
                 npc.active = false;

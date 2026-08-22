@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
     /// 显形：暗体在身后弓身蓄势，骨白瞄线在要害上闪烁；<br/>
     /// 处决：穿体一闪，主刀 + 两道交叉切口按 0/3/6 帧错拍落下，躯体撕成影屑；<br/>
     /// 余韵：暗体沉回地面，斩痕自行针尖捏合。<br/>
-    /// 材质：影——无彩黑吸光暗体 + 骨白结构细线，复用 <see cref="ShadeStrikeField"/> 斩痕场。
+    /// 材质：影，无彩黑吸光暗体 + 骨白结构细线，复用 <see cref="ShadeStrikeField"/> 斩痕场。
     /// </summary>
     internal sealed class ShadeSeizurePerformance : WraithDeathPerformance
     {

@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.States
                 if (t == 10) {
                     SoundEngine.PlaySound(SoundID.Item22 with { Volume = 0.5f, Pitch = -0.15f, MaxInstances = 2 }, owner.GetArmPos(arm));
                 }
-                //蓄势收拢火星，72% 后静默——弹出前的吸气
+                //蓄势收拢火星，72% 后静默，弹出前的吸气
                 if (!Main.dedServ && t < DartBeat * 0.72f && t % 3 == 1) {
                     Vector2 from = owner.GetArmPos(arm) + Main.rand.NextVector2Unit() * Main.rand.NextFloat(40f, 84f);
                     PRTLoader.NewParticle<PRT_Spark>(from, (owner.GetArmPos(arm) - from) * 0.14f,

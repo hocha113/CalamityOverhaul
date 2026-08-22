@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private int sustainFrames = SustainFrames;
         private bool geyserFired;
 
-        //刚性摆压到极小(判定线跟随),流体甩尾由 shader 内行波承担——源头钉死碗口
+        //刚性摆压到极小(判定线跟随),流体甩尾由 shader 内行波承担，源头钉死碗口
         private float DirAngle
             => BaseAngle + MathF.Sin(life * 0.16f + Projectile.identity * 0.71f) * 0.03f;
 
@@ -190,7 +190,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 }
             }
 
-            //众鬼齐掷档:瀑线带沉溺内吸——推 NPC 归权威端,联机客户端靠同步兜底
+            //众鬼齐掷档:瀑线带沉溺内吸，推 NPC 归权威端,联机客户端靠同步兜底
             if (slotCount >= KikasaOverride.TierGhostVolley && LenT >= 0.6f && DrainT <= 0.35f
                 && Main.netMode != NetmodeID.MultiplayerClient) {
                 SuckIntoFall(dir);
@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         /// <summary>
         /// 沉溺内吸:瀑身外一圈的敌人被往落线里拖,力度吃击退抗性,
-        /// 上限压得很低——是"水在拽",不是磁铁
+        /// 上限压得很低，是"水在拽",不是磁铁
         /// </summary>
         private void SuckIntoFall(Vector2 dir) {
             Vector2 a = Projectile.Center;

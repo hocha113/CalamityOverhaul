@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
 {
     /// <summary>
     /// 潮汐平扫：撤到场边贴地蓄势，横贯冲刺拖起海啸浪墙。
-    /// 浪比他慢半拍——先躲公爵，再躲浪。三阶段回程再扫一趟高浪
+    /// 浪比他慢半拍，先躲公爵，再躲浪。三阶段回程再扫一趟高浪
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)FishronStateIndex.TsunamiSweep, typeof(FishronStateContext))]
     internal class FishronTsunamiSweepState : FishronStateBase

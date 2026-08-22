@@ -16,7 +16,7 @@ using static CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.K
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms.KikasaWhips
 {
     /// <summary>
-    /// 鞭奴的湖水鞭体：原版鞭 AI_165 契约的锚点移植——控制点曲线算法逐行对齐
+    /// 鞭奴的湖水鞭体：原版鞭 AI_165 契约的锚点移植，控制点曲线算法逐行对齐
     /// Projectile.FillWhipControlPoints（甩出/回收包络、段长公式、三链混合、
     /// 回收回旋 3π/2），只把锚点从玩家手臂位换成鞭柄驻位、计时从 itemAnimationMax
     /// 换成档案 LashTime 自持（extraUpdates=0 下实际时长与原版等价）。
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// 鞭响 Item153 固定在半程、播在鞭尖控制点（与原版同拍同位）。
     /// 绘制沿原版 DrawWhip 双层法：鞭绳线（FishingLine 换血色）+ 鞭段贴图
     /// Frame(1,5) 帧布局（0=柄、末段=4 鞭尖、中段 1+i%3 轮换），水化只做染色
-    /// 与撕珠——鞭体是快演出，扫描水线留给盘鞭常态。
+    /// 与撕珠，鞭体是快演出，扫描水线留给盘鞭常态。
     /// ai[0]=原型武器物品类型（档案之源）；velocity=甩向×原武器弹速，
     /// 全程保真不清零（方向/射程/击退/迟到端重建都吃它），锚定靠逐帧位移预补偿
     /// </summary>
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private float LashRot => Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
         public override void SetDefaults() {
-            //18×18 判定框沿控制点逐点盖章——原版 DefaultToWhip 同款规格
+            //18×18 判定框沿控制点逐点盖章，原版 DefaultToWhip 同款规格
             Projectile.width = 18;
             Projectile.height = 18;
             Projectile.friendly = true;
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         public override void AI() {
-            //锚定：velocity 保真承载甩向与射程因子，位移逐帧预补偿抵掉引擎推进——
+            //锚定：velocity 保真承载甩向与射程因子，位移逐帧预补偿抵掉引擎推进
             //中途 netUpdate/迟到端收到的永远是真实甩向，不会拿到清零残包
             Projectile.position -= Projectile.velocity;
 
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
 
-            //鞭响：半程整帧、播在鞭尖控制点——与原版 AI_165 同拍同位，各端都响（按距离衰减）
+            //鞭响：半程整帧、播在鞭尖控制点，与原版 AI_165 同拍同位，各端都响（按距离衰减）
             if ((int)Life == lashTime / 2) {
                 FillLashPoints(lashPoints);
                 Vector2 tip = lashPoints[^1];
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Lighting.AddLight(Projectile.Center, 0.45f * glow, 0.1f * glow, 0.09f * glow);
         }
 
-        /// <summary>鞭尖炸响：水花锥 + 细环——鞭速崩碎了鞭梢的水</summary>
+        /// <summary>鞭尖炸响：水花锥 + 细环，鞭速崩碎了鞭梢的水</summary>
         private void CrackBurst(Vector2 tip) {
             if (Main.dedServ) {
                 return;
@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //鞭子的机制身份：鞭中即集火——全部役鬼当场认这个目标（原版 aiStyle 165 同款）
+            //鞭子的机制身份：鞭中即集火，全部役鬼当场认这个目标（原版 aiStyle 165 同款）
             if (target.active && target.CanBeChasedBy(Projectile)) {
                 Main.player[Projectile.owner].MinionAttackTargetNPC = target.whoAmI;
             }
@@ -258,7 +258,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
             }
 
-            //鞭段贴图：Frame(1,5) 帧布局——0=柄、末段=4 鞭尖、中段 1+i%3 轮换（原版通用式）
+            //鞭段贴图：Frame(1,5) 帧布局，0=柄、末段=4 鞭尖、中段 1+i%3 轮换（原版通用式）
             Rectangle segFrame = segTex.Frame(1, 5);
             int frameHeight = segFrame.Height;
             segFrame.Height -= 2;
@@ -275,7 +275,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
                 Vector2 seg = lashPoints[i + 1] - lashPoints[i];
                 float rot = seg.ToRotation() - MathHelper.PiOver2;
-                //血湖染色：亮度取环境光，向血色收拢——是"湖水凝成的鞭"，不是原物
+                //血湖染色：亮度取环境光，向血色收拢，是"湖水凝成的鞭"，不是原物
                 Color lit = Lighting.GetColor(lashPoints[i].ToTileCoordinates());
                 Color color = Color.Lerp(lit, BloodMain, 0.45f);
                 sb.Draw(segTex, lashPoints[i] - Main.screenPosition, segFrame, color,

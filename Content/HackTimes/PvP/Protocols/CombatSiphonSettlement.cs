@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
     /// 先在自己的防守方副本上跑 <c>Main.player[n].Hurt(HurtInfo, quiet: true)</c>
     /// 再转播（MessageBuffer.cs case 117 ≈L3877），而 <c>Player.Hurt(HurtInfo)</c>
     /// 无条件调 <c>PlayerLoader.OnHurt</c>（Player.cs ≈L34654，无 netMode/quiet 闸）
-    /// ——所以本钩子在服务端确实触发，且 <c>info.PvP</c> 与
+    /// ：所以本钩子在服务端确实触发，且 <c>info.PvP</c> 与
     /// <c>info.DamageSource.SourcePlayerIndex</c> 都随包到达。<br/>
     /// 转播同时到达每个客户端（发起的攻击方除外），OnHurt 在各端重放：
     /// 服务端分支记账（RAM 是服务端资源），客户端分支只发命中表现。<br/>

@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Passes
             progress.Message = "重建旧网数据平原...";
 
             //每次深潜重生成：规划态/计数器/闸门登记全部重置
-            //（闸门表不能在 OnWorldLoad 清——生成 pass 先于它运行）
+            //（闸门表不能在 OnWorldLoad 清，生成 pass 先于它运行）
             OldNetGenClock.Reset();
             OldNetTileBrush.ResetForNewGen();
             OldNetPlans.Reset();

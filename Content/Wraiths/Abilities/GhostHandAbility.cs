@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities
 
         /// <summary>
         /// 可抓判定：boss 亦可被攥住；按目标体型放宽中心距，巨物不因判定尺寸免疫。<br/>
-        /// 淋着雨的目标改吃雨域半径——雨落到哪，手就能从哪伸出来
+        /// 淋着雨的目标改吃雨域半径，雨落到哪，手就能从哪伸出来
         /// </summary>
         internal static bool CanGrab(NPC npc, Vector2 center, int owner = -1) {
             if (!npc.CanBeChasedBy() || npc.HasBuff<Buffs.GhostGripDebuff>()) {

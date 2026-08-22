@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
 {
     /// <summary>
     /// 鬼梦加载屏：红黑穹顶下的湖畔村剪影，雾海随进度涨上来把村子淹掉。<br/>
-    /// 语汇是怪谈志怪：竖排题字与落款印、木桩水尺当进度、窗火在雾里晕开、灯影落在雾面上——
+    /// 语汇是怪谈志怪：竖排题字与落款印、木桩水尺当进度、窗火在雾里晕开、灯影落在雾面上
     /// 没有任何 HUD 科技元素。<br/>
     /// 纯 CPU 绘制零 shader 依赖（加载期 shader 资产未必就绪）；
     /// 接线走 A 路薄转发（KiyumeWorld 内各一行）
@@ -243,7 +243,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
             sb.Draw(px, new Rectangle(cx - eaveW / 2, bodyTop - 3, 2, 3), PixelSrc, sil);
             sb.Draw(px, new Rectangle(cx + eaveW / 2 - 2, bodyTop - 3, 2, 3), PixelSrc, sil);
 
-            //檐下灯笼：挂绳一线 + 暖色小灯身，长明——有没有人是另一回事
+            //檐下灯笼：挂绳一线 + 暖色小灯身，长明，有没有人是另一回事
             if (lantern) {
                 int lx = cx + eaveW / 2 - 3;
                 int ly = bodyTop + 1;
@@ -271,11 +271,11 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
                 sb.Draw(px, new Rectangle(cx - ww, wy - ww / 2, ww * 2, ww * 2), PixelSrc,
                     Ember * (glow * 0.10f));
             }
-            //雾面之下的锐利窗火不画——被雾吞了，光学层会补一团糊晕
+            //雾面之下的锐利窗火不画，被雾吞了，光学层会补一团糊晕
             emberLights.Add(new EmberLight { X = cx, Y = wy + ww * 0.4f, W = ww, Glow = glow });
         }
 
-        //牌坊：两柱一梁，梁上一段小顶——村口那种，谁立的没人记得
+        //牌坊：两柱一梁，梁上一段小顶，村口那种，谁立的没人记得
         private static void DrawGateArch(SpriteBatch sb, Texture2D px, int cx, int groundY,
             float unit, Color sil) {
             int hgt = (int)(unit * 1.15f);
@@ -290,7 +290,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
             sb.Draw(px, new Rectangle(cx - 3, top - 2, 6, 2), PixelSrc, sil);
         }
 
-        //电线杆：高杆 + 双层横臂 + 向两侧垂下的线——村里唯一一件新东西，也早就不响了
+        //电线杆：高杆 + 双层横臂 + 向两侧垂下的线，村里唯一一件新东西，也早就不响了
         private static void DrawUtilityPole(SpriteBatch sb, Texture2D px, int cx, int groundY,
             float unit, int cell, Color sil, int seed) {
             int hgt = (int)(unit * 1.65f);
@@ -299,7 +299,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
             sb.Draw(px, new Rectangle(cx - 6, top + 2, 12, 1), PixelSrc, sil);
             sb.Draw(px, new Rectangle(cx - 4, top + 5, 8, 1), PixelSrc, sil);
 
-            //垂线：抛物线近似，向两侧远端渐淡渐没——线的那头没有下一根杆
+            //垂线：抛物线近似，向两侧远端渐淡渐没，线的那头没有下一根杆
             int span = (int)(cell * 1.35f);
             float sag = unit * 0.34f * (0.8f + Hash(seed, 3) * 0.4f);
             for (int dir = -1; dir <= 1; dir += 2) {

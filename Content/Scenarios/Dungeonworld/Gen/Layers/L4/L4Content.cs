@@ -456,7 +456,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
             int wellR = wellX + DungeonworldMetrics.StairWellWidth;
             int linked = 0;
 
-            //干层:井口接到最近齐平干房(4高走廊,不开湿port——湿port会在井内铺堰坎堵竖向)
+            //干层:井口接到最近齐平干房(4高走廊,不开湿port：湿port会在井内铺堰坎堵竖向)
             PlacedNode dry = NearestFloor(group.Dry, wellX, group.DryFloor);
             if (dry != null && !HitsShaft(System.Math.Min(dry.Room.Bounds.Left, wellX),
                 System.Math.Max(dry.Room.Bounds.Right, wellR))) {
@@ -502,7 +502,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
 
         //==================== 做旧补笔 / 几何助手 ====================
 
-        //干涸舱段不入舱段表,仍刷历史水线(灰/黑)——玩家读线知道"水曾经到过这"
+        //干涸舱段不入舱段表,仍刷历史水线(灰/黑)：玩家读线知道"水曾经到过这"
         private static void PaintDrainedMemory(List<Group> groups) {
             foreach (Group group in groups) {
                 foreach (PlacedNode n in group.DrainedGalleries) {

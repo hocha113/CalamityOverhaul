@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 return null;
             }
 
-            //幕三：压低身形逼近凝视——狂化的宣告
+            //幕三：压低身形逼近凝视，狂化的宣告
             npc.velocity *= 0.94f;
             Vector2 stare = player.Center + new Vector2(Math.Sign(npc.Center.X - player.Center.X) * 300f, -80f);
             npc.velocity = Vector2.Lerp(npc.velocity, (stare - npc.Center).SafeNormalize(Vector2.Zero) * 7f, 0.08f);
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 return null;
             }
 
-            //幕二：他不在了，只剩雨——空场张力
+            //幕二：他不在了，只剩雨，空场张力
             if (Timer < StrikeFrame) {
                 npc.dontTakeDamage = true;
                 npc.chaseable = false;

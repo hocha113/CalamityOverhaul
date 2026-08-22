@@ -85,7 +85,7 @@ float4 CorePS(PSInput input, float arcMode)
     ageMask *= lerp(shred, 1.0, smoothstep(tailEdge, tailEdge + 0.30, age));
 
     //头端参差:几何头端已钉在刃上(最新的火最亮,不该淡出),只把端线本身咬碎
-    //归零位置必须逐行不同——上版让斜坡起点起伏却把终点钉死在 0.995,alpha 仍在同一 age 归零,照样是直线
+    //归零位置必须逐行不同，上版让斜坡起点起伏却把终点钉死在 0.995,alpha 仍在同一 age 归零,照样是直线
     float headEnd = 1.0 - tear * 0.05 - ragged * 0.02;
     float headMask = 1.0 - smoothstep(headEnd - 0.05 - flow * 0.03, headEnd, age);
 

@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projectiles
 {
     /// <summary>
-    /// 真言弹：真身元素弹，体帧随元素取 vanilla 467/464/465 精灵——镜像仪式里的动态识真线索<br/>
+    /// 真言弹：真身元素弹，体帧随元素取 vanilla 467/464/465 精灵，镜像仪式里的动态识真线索<br/>
     /// ai[0]=元素 ai[1]=模式(0直线 1咏唱环轨) ai[2]=环轨初相
     /// </summary>
     internal class CultistTrueBolt : ModProjectile

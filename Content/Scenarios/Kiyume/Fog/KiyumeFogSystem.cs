@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
     /// <summary>
     /// 鬼梦湖雾系统：潮汐推进、模拟驱动、Filter 激活、PostDrawTiles 背景雾层与 CPU 回退。
     /// 纯客户端表现，零同步包。<br/>
-    /// 双层夹心：背景雾画在墙/砖/NPC 之后、玩家/弹幕之前——村子被裹进雾里，玩家走在雾前；
+    /// 双层夹心：背景雾画在墙/砖/NPC 之后、玩家/弹幕之前，村子被裹进雾里，玩家走在雾前；
     /// 前景瘴气经 Filters.Scene 盖在世界最上层，并在那一层把亮点晕开（雾吃光）
     /// </summary>
     internal class KiyumeFogSystem : ModSystem, ICWRLoader
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
         private static float presence;
 
         /// <summary>
-        /// 雾自己的淡入淡出，不复用 <see cref="KiyumeAmbienceSystem.Presence"/>——
+        /// 雾自己的淡入淡出，不复用 <see cref="KiyumeAmbienceSystem.Presence"/>
         /// 主世界看样开关只该开雾，不该把整个世界染红
         /// </summary>
         internal static float Presence => presence;
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
             SetFilterActive(shaderReady && presence > 0.02f);
         }
 
-        //玩家推雾：身位圆每帧续订，移动时再拖一个速度反向的尾流圆——
+        //玩家推雾：身位圆每帧续订，移动时再拖一个速度反向的尾流圆
         //站定身周雾薄一圈，跑动身后留一条正在回聚的雾沟（回聚滞后由模拟的不对称时序免费提供）。
         //纯本地表现：每端都看得到彼此推开的雾，不需要同步
         private static void PushFogAroundPlayers() {
@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
             if (Main.dedServ || Main.gameMenu || presence < 0.01f) {
                 return;
             }
-            //犬影必须画在背景雾层之前——"在雾墙后面"这句话的全部实现就是这个顺序
+            //犬影必须画在背景雾层之前，"在雾墙后面"这句话的全部实现就是这个顺序
             KiyumeHoundShade.Draw(Main.spriteBatch);
 
             Effect fx = EffectLoader.KiyumeFog?.Value;
@@ -234,7 +234,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
             fx.Parameters["uTiltPx"]?.SetValue(KiyumeMetrics.LakeTiltPx);
             fx.Parameters["uTiltSpanPx"]?.SetValue(KiyumeMetrics.TiltSpanPx);
             fx.Parameters["uSurfaceGlow"]?.SetValue(KiyumeFogDebug.SurfaceGlow);
-            //吃光只有滤镜通道做得了——背景通道没有拷屏可采
+            //吃光只有滤镜通道做得了，背景通道没有拷屏可采
             fx.Parameters["uEatLight"]?.SetValue(front ? KiyumeFogDebug.EatLight : 0f);
             fx.Parameters["uEatSpread"]?.SetValue(KiyumeFogDebug.EatSpread);
             //血湖水面：真水面反射带与雾面亮边在岸线处互补交接（湖上 rim 归零，岸上 water 归零）。

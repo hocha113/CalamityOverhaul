@@ -8,7 +8,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
     /// <summary>
-    /// 协同断链：十秒内 Exo Mechs 的协同图对成员 AI 读不到——
+    /// 协同断链：十秒内 Exo Mechs 的协同图对成员 AI 读不到
     /// 卫星不再继承队长仇恨、各自 <c>TargetClosest</c>，
     /// 队长「其他机体还活着」的记账落空，被动/免疫相位判据失效，
     /// 三机战短时间退化成各打各的单机战。<br/>
@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// 「仍是 -1 才还原」的规则放回，绝不覆盖 AI 刚写入的新注册。
     /// 全程 <see cref="ExoLinkRef"/> 反射，任一字段缺失整条协议失活（宁可不可用，不要半生效）。<br/>
     /// 漏还兜底：这四槽 Calamity 每帧自校验、各机体 AI 每帧重新注册，
-    /// 极端漏还也会在下一帧被上游自愈——没有永久坏值路径
+    /// 极端漏还也会在下一帧被上游自愈，没有永久坏值路径
     /// </summary>
     internal class CommandLinkCut : QuickHackDef
     {

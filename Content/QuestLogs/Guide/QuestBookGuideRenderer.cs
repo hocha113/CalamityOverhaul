@@ -9,7 +9,7 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.QuestLogs.Guide
 {
     /// <summary>
-    /// 教程卡：一张用蜡封摁在书页上的便笺。材质跟着书走——羊皮纸、褐墨、烫金压线、
+    /// 教程卡：一张用蜡封摁在书页上的便笺。材质跟着书走，羊皮纸、褐墨、烫金压线、
     /// 手绘墨路。焦点不套高亮方框，小目标用铅笔手圈，长条目用左缘朱刻痕加一道铅笔划线
     /// </summary>
     internal static class QuestBookGuideRenderer
@@ -31,11 +31,11 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
         private const float LinkScale = 0.72f;
 
         /// <summary>
-        /// 本帧卡片占住的区域。任务书据此让开输入——否则点"下一步"会连带把图谱拖走
+        /// 本帧卡片占住的区域。任务书据此让开输入，否则点"下一步"会连带把图谱拖走
         /// </summary>
         public static Rectangle PointerBlock { get; private set; }
 
-        /// <summary>上帧左键是否按着，点击只认按下沿——按住期间逐帧触发会把一次点击放大成连跳步</summary>
+        /// <summary>上帧左键是否按着，点击只认按下沿，按住期间逐帧触发会把一次点击放大成连跳步</summary>
         private static bool prevMouseLeft;
 
         public static void ClearPointerBlock() => PointerBlock = Rectangle.Empty;

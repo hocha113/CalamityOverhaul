@@ -6,7 +6,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 {
     /// <summary>
-    /// 日舞：她敛势静立，径向光束自身周绽开旋切——
+    /// 日舞：她敛势静立，径向光束自身周绽开旋切
     /// 一阶段同向三阕，二阶段双扇反向，扇间即舞池
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EmpressStateIndex.RadiantDance, typeof(EmpressStateContext))]

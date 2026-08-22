@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
     /// </summary>
     internal static class KikasaStoryTheme
     {
-        //基底由深到浅——带青壳的近黑沉云，不是纯黑
+        //基底由深到浅，带青壳的近黑沉云，不是纯黑
         public static readonly Color Void = new(7, 9, 11);
         public static readonly Color Deep = new(14, 18, 21);
         public static readonly Color Mid = new(28, 35, 38);
@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
         public static readonly Color Rain = new(96, 120, 126);
         //溺月惨白：高光、名字辉环（同 RAIN_SUN_RIM 一族提亮）
         public static readonly Color Moon = new(196, 214, 218);
-        //湿墨水光：打字机尾字、hover 文字的浸水冷青——near-white 在白字上不可见，必须偏色
+        //湿墨水光：打字机尾字、hover 文字的浸水冷青，near-white 在白字上不可见，必须偏色
         public static readonly Color WetInk = new(136, 202, 216);
         //文字主次色，冷白与灰青（次级兼提示行）
         public static readonly Color Text = new(226, 234, 236);

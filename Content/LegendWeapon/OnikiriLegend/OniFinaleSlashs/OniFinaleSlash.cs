@@ -153,7 +153,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             OniFinaleLattice.Update();
 
             //死寂呼吸、全场细线同一口气，随逼近纳刀升压（深处相位滞后在格架内处理）；
-            //同窗径向模糊向刀线中心蓄力——空间被吸向那道将落未落的斩线
+            //同窗径向模糊向刀线中心蓄力，空间被吸向那道将落未落的斩线
 
             if (timer >= SilenceStart - 4 && timer <= DetonateFrame) {
                 float amp = MathHelper.Lerp(0.45f, 1f
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             return false;
         }
 
-        /// <summary>过刃线格架主体 + 出生掠光，锋利层（后效之上）——切线是施刀者，不被自己的斩击切碎</summary>
+        /// <summary>过刃线格架主体 + 出生掠光，锋利层（后效之上），切线是施刀者，不被自己的斩击切碎</summary>
         void IOniCrispDrawable.DrawCrisp() {
             if (Main.dedServ || !OniFinaleLattice.HasAny || !IsLatticeDriver()) {
                 return;
@@ -299,7 +299,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             int scarDamage = (int)(baseWeaponDamage * 0.35f);
 
             //环斩/直痕是本招式编排好的主体伤害，不是铭刻附属：出生后立刻回填主伤身份，
-            //否则 OnSpawn 的父源继承默认把它们记作副伤，被"同目标副伤总量 100% 预算"拦停——
+            //否则 OnSpawn 的父源继承默认把它们记作副伤，被"同目标副伤总量 100% 预算"拦停
             //表现为乱舞只有头两刀有伤、其余斩击与撕裂拍全部空刀
 
             for (int i = 0; i < RingBeats.Length; i++) {
@@ -340,7 +340,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         public override void OnKill(int timeLeft) {
             ShatterFlowActive = false;
             //格架随主控退场：自然走完时细线早已在纳刀帧兑现清空，
-            //提前夭折（玩家阵亡等）则硬清——没有主控继续驱动淡出
+            //提前夭折（玩家阵亡等）则硬清，没有主控继续驱动淡出
 
             OniFinaleLattice.Clear();
 

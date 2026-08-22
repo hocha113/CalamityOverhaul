@@ -9,9 +9,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
     /// 两个工位共用的顶梁:一根贴屏顶的黑漆横梁,梁上钉着两块驿牌(结印盘/改铭台),
-    /// 牌下各出一枚铁钩——本屏器物的钩空着(绳收成一圈,"已取下在案"),
+    /// 牌下各出一枚铁钩，本屏器物的钩空着(绳收成一圈,"已取下在案"),
     /// 对面器物挂在另一钩上作切换门。梁不随换乘滑移,是"同一夜屋"的持续骨架。<br/>
-    /// 两本图鉴(点鬼簿/铭谱)不上梁——它们是工位上取下来翻的册子,不是驿站
+    /// 两本图鉴(点鬼簿/铭谱)不上梁，它们是工位上取下来翻的册子,不是驿站
     /// </summary>
     internal static class OniLedgerBeam
     {
@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 0f, half, new Vector2(1.2f), SpriteEffects.None, 0f);
         }
 
-        /// <summary>空钩上的收绳圈:器物取下在案,绳松松绕成两匝——一眼读出"现驻此屏"</summary>
+        /// <summary>空钩上的收绳圈:器物取下在案,绳松松绕成两匝，一眼读出"现驻此屏"</summary>
         private static void DrawVacantCoil(SpriteBatch sb, Vector2 tip, float alpha, float time) {
             SvgPath coil = SvgPathPen.Path(CoilData);
             if (coil == null) {

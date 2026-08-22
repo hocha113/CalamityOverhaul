@@ -13,10 +13,10 @@ using static CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.K
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms.KikasaBlades
 {
     /// <summary>
-    /// 刀奴的湖水斩痕：一刀是事件不是过程——两帧暴力显现（超冲 1.2 倍再落回），
+    /// 刀奴的湖水斩痕：一刀是事件不是过程，两帧暴力显现（超冲 1.2 倍再落回），
     /// 消散温柔（水读得出的收法）。形状语法走压扁月牙：主轴贴着冲线（切过去，
     /// 不绕圈），腹部垂直微弓、力点偏向出刀端（不对称厚度=看得见的发力点）；
-    /// 材质身份是"湖水凝成的刀光"——暗血压边、血红主体、加色亮缘线，
+    /// 材质身份是"湖水凝成的刀光"，暗血压边、血红主体、加色亮缘线，
     /// 显现帧沿刃撕落水珠，不做通用白刀光。伤害窗只开爆发前几帧、
     /// 判定沿冲线整段加宽（贴脸与擦边都得算数），击退方向由弹速给（顺劈向推）。
     /// owner 生成、生成包自含（ai0=判定半长，ai1=重拍），各端从 ai 自配一致
@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             return MathHelper.Clamp(1f - (Life - DamageWindow) / (LifeTotal - DamageWindow), 0f, 1f);
         }
 
-        /// <summary>显现超冲：第 1 帧 1.22 倍、第 2 帧 1.06，随后落回 1——生得暴烈</summary>
+        /// <summary>显现超冲：第 1 帧 1.22 倍、第 2 帧 1.06，随后落回 1：生得暴烈</summary>
         private float RevealPop() => (int)Life switch {
             1 => 1.22f,
             2 => 1.06f,
@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             const int segs = 11;
             for (int k = 0; k < segs; k++) {
                 float u = k / (segs - 1f) * 2f - 1f;
-                //力点偏向出刀端：厚度峰值不在正中——不对称即发力
+                //力点偏向出刀端：厚度峰值不在正中，不对称即发力
                 float shifted = MathHelper.Clamp(u - 0.22f, -1f, 1f);
                 float lens = MathF.Pow(MathF.Max(1f - shifted * shifted, 0f), 0.72f);
                 if (lens <= 0.04f) {

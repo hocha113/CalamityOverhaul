@@ -8,12 +8,12 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Infill
     //====================================================================
     //填充体系的四族构件,夹层带(P52)与封存副翼(P54)共用。
     //
-    //设计意图:这四族是"连接组织",不是与主房并列的内容——刻意做小做短,
+    //设计意图:这四族是"连接组织",不是与主房并列的内容，刻意做小做短,
     //玩家的读法应当是"主结构之间还塞着后勤面",而不是"又一层房间"。
     //所以尺寸上限压在主房之下,装修密度也只给主房的一半。
     //
     //几何纪律:外壳不刻画。P10 已把全世界浇成本带砖,房间落位又有 RoomPadding
-    //保证四周≥2格未被预留,所以只挖内膛、只刷墙,壳自然就是本带砖——
+    //保证四周≥2格未被预留,所以只挖内膛、只刷墙,壳自然就是本带砖
     //这既省一半写入,也天然满足§2.5的"侧墙≥2厚"。
     //家具一律 WorldGen.PlaceObject/PlaceTile,拒绝即计失败不强写帧(§3.2-1)。
     //====================================================================
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Infill
             PatchWalls(left, right, top, floorTop, skin);
 
             //地面旧损:成段而非逐格(§3.2-6禁逐格噪声)。
-            //认领层(L5/L6)换裂砖,其余层只上做旧漆——裂砖在踩得到的面上是真陷阱(F31),
+            //认领层(L5/L6)换裂砖,其余层只上做旧漆，裂砖在踩得到的面上是真陷阱(F31),
             //在禁用层铺一段就等于偷偷给那层加了一处坠落机关
             for (int x = left + 4; x < right - 4; x += rand.Next(18, 31)) {
                 int len = rand.Next(3, 7);
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Infill
 
         /// <summary>
         /// 小功能间:一件工作面 + 一盏光 + 一两件杂物。最廉价的体积填充,
-        /// 所以坚决不放大件家具——大件是主房的语汇。
+        /// 所以坚决不放大件家具，大件是主房的语汇。
         /// </summary>
         internal static Tally BuildUtility(RoomNode room, InfillSkin skin, UnifiedRandom rand) {
             var tally = new Tally();
@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Infill
             //地面碎砖堆:2~3处,每处宽3~7,梯形收边(不是逐格噪点)。
             //堆是玩家要踩上去的面,所以一律本层砖+做旧漆:裂砖踩碎会坠(F31),
             //堆用裂砖等于给每间废墟白送一个陷阱。
-            //堆区避开塌陷那一侧——顶上塌下来、地上又堆起来,叠在同一列就是堵死
+            //堆区避开塌陷那一侧，顶上塌下来、地上又堆起来,叠在同一列就是堵死
             int moundL = caveLeft ? left + caveW + 1 : left + 1;
             int moundR = caveLeft ? right - 1 : right - caveW - 1;
             int mounds = rand.Next(2, 4);

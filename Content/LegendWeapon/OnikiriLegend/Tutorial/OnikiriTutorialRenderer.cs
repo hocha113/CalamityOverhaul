@@ -455,7 +455,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         /// <summary>
-        /// 卡头右肩的收起纸片。询问步已有「不必」,其余每一步都靠这枚纸片保证有路可退——
+        /// 卡头右肩的收起纸片。询问步已有「不必」,其余每一步都靠这枚纸片保证有路可退
         /// 收起会补一枚稽古符,不至于把人锁在教习里
         /// </summary>
         private static void DrawAbortTag(SpriteBatch spriteBatch, DynamicSpriteFont font,

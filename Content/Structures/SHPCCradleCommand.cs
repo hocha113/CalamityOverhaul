@@ -8,8 +8,8 @@ namespace CalamityOverhaul.Content.Structures
 {
     /// <summary>
     /// SHPC 坠舱空岛的调试命令，仅调试构建存在：<br/>
-    /// /shpccradle gen —— 走一遍真实的世界生成流程（天空寻位，失败仅 Warn 不放置）<br/>
-    /// /shpccradle here —— 以光标为箱体左上角直接构建，便于反复迭代观感（会清空该区域）
+    /// /shpccradle gen：走一遍真实的世界生成流程（天空寻位，失败仅 Warn 不放置）<br/>
+    /// /shpccradle here：以光标为箱体左上角直接构建，便于反复迭代观感（会清空该区域）
     /// </summary>
     internal class SHPCCradleCommand : ModCommand
     {

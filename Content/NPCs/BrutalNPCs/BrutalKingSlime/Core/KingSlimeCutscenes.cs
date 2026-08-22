@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
     }
 
     /// <summary>
-    /// 吞没投技运镜：仅被吞玩家本人客户端播放——推近半透明腹内，全程锁操控，
+    /// 吞没投技运镜：仅被吞玩家本人客户端播放，推近半透明腹内，全程锁操控，
     /// 挤压拍震动由玩家侧按同步计数请求。旁观者不被接管镜头
     /// </summary>
     internal sealed class KingSlimeEngulfCutscene : CutsceneClip<NPC>

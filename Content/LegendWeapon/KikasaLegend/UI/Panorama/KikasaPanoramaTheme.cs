@@ -5,7 +5,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
     /// <summary>
     /// 湖心景布局：全屏血湖夜景剖面的分区几何。色板一律走
     /// <see cref="KikasaHudTheme"/> 的双形态访问器，不另立一套。
-    /// 分区即空间位置——湖上住两鬼、水线摆三席、册在浅水、藏在湖底。
+    /// 分区即空间位置，湖上住两鬼、水线摆三席、册在浅水、藏在湖底。
     /// 坐标全部按 UI 空间实时计算，禁止直读 Main.screenWidth/Height
     /// </summary>
     internal static class KikasaPanoramaTheme

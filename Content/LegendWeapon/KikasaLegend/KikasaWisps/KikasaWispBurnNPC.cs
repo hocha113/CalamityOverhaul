@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
 {
     /// <summary>
-    /// 鬼火灼身重绘：被鬼火点燃的 NPC 经 KikasaWispFire.TechBurnBody 后处理——
+    /// 鬼火灼身重绘：被鬼火点燃的 NPC 经 KikasaWispFire.TechBurnBody 后处理
     /// 热浪扭曲 + 斑驳焦痕（越烧越花）+ 轮廓边缘火 + 金脉动；外加金光照明。
     /// 批次做法镜像 SHPCThermalHeatNPC：PreDraw 切 Immediate 套 shader、PostDraw 还原，
     /// 顶部自愈防上一实体的 PostDraw 被吞掉后状态泄漏

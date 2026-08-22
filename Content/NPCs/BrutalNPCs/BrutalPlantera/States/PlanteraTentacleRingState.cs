@@ -7,7 +7,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
 {
     /// <summary>
-    /// 触手绽放处刑圈：触手外扩成旋转硬环，本体贴身追猎——
+    /// 触手绽放处刑圈：触手外扩成旋转硬环，本体贴身追猎
     /// 玩家要么卡进环缝里贴身周旋，要么退到环外吃追击；
     /// 打死相邻触手能撕开永久缺口
     /// </summary>

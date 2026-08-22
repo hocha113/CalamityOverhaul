@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public LocalizedText Origin { get; private set; }
         /// <summary>赋效文案（真实机制说明）</summary>
         public LocalizedText Power { get; private set; }
-        /// <summary>代价文案（真实负担说明，原铭无代价="———"）</summary>
+        /// <summary>代价文案（真实负担说明，原铭无代价="..."）</summary>
         public LocalizedText Burden { get; private set; }
         /// <summary>物品悬浮短摘要（赋效;代价）</summary>
         public LocalizedText Summary { get; private set; }

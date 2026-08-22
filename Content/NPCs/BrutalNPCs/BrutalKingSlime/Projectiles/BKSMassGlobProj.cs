@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
 {
     /// <summary>
     /// 质心弹：史莱姆王抛出的六成身体质量。ai[0]=宿主whoAmI ai[1]=落点X ai[2]=落点地表Y<br/>
-    /// 抛物线由生成端按常量(飞行帧数/重力)一次性解出，出手即锁定落点——
+    /// 抛物线由生成端按常量(飞行帧数/重力)一次性解出，出手即锁定落点
     /// 落点凝胶标记从第一帧起全程可见(契约2实体预告+契约3非追踪承诺)。<br/>
     /// 坠地爆开：两侧凝胶喷泉+滞留池+一道爬回本体的矮回流波。服务端生成
     /// </summary>
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             Lighting.AddLight(new Vector2(ImpactX, ImpactY - 20f), KingSlimeGelFX.CrownGold.ToVector3() * 0.3f);
 
             //坠地判定：下落段越过落点地表即爆(各端位置确定性一致)；
-            //上升段豁免——落点高于出手点时(玩家站高地)不许半途早爆
+            //上升段豁免，落点高于出手点时(玩家站高地)不许半途早爆
             if (Timer > 6f && Projectile.velocity.Y > 0f && Projectile.Center.Y >= ImpactY - 12f) {
                 Projectile.Kill();
             }

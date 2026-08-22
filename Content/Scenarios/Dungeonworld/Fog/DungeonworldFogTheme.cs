@@ -2,7 +2,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Fog
 {
     /// <summary>
     /// 层带浓度曲线与雾色表：世界行 → (基础浓度, 雾色)。<br/>
-    /// 色值由 DungeonworldLoadTheme.BandAccents 七层强调色推导（向中性灰/骨白方向去饱和——
+    /// 色值由 DungeonworldLoadTheme.BandAccents 七层强调色推导（向中性灰/骨白方向去饱和
     /// 雾是"载着层色的空气"，不是层色本身），不发明新色彩身份；<br/>
     /// 行号区间对 DungeonworldMetrics.Bands 现值（2000×6000），调层带只改关键帧表（FOG.md §3）
     /// </summary>

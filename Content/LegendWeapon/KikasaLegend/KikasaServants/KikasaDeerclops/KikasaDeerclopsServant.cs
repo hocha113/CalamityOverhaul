@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// <summary>
     /// 鬼奴·湖水版鹿角怪。雾行僵蹄，十六鬼奴里唯一在湖面上行走的：
     /// 蹄子踏水而行、步步溅圈，转身笨重（先停、顿一拍、再挪），跟不上时跳步趔趄。
-    /// 全员唯一主用 CoolTint 冷端——血雾被冻成灰蓝调，常驻贴身冷雾罩，暖血只做伤口点缀。
+    /// 全员唯一主用 CoolTint 冷端，血雾被冻成灰蓝调，常驻贴身冷雾罩，暖血只做伤口点缀。
     /// 出水演出：湖底闷步预兆→一只蹄子先踏出水面→整个身躯拖着湖水站起→落定披雾。
     /// 攻击一为跺脚血冰刺列（从自己脚下出发、沿水面行进的方向性序列，节奏渐快间距渐大），
     /// 攻击二为吼声冲击环（仰头蓄力→俯身怒吼推开血雾）接冰血雹（重力弹落水成串涟漪）。
@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private const int TurnPauseFrames = 12;
         private const float WalkCycle = 150f;
 
-        /// <summary>刺列喷发节拍：间隔渐短——第一根迟疑，越到后面越急</summary>
+        /// <summary>刺列喷发节拍：间隔渐短，第一根迟疑，越到后面越急</summary>
         private static readonly int[] SpikeTicks = { 42, 46, 50, 54, 57, 60, 63, 65, 67, 69, 71, 73 };
 
         //==================== 本地表现量（不入同步，节拍闩防快照回卷重播）====================
@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：湖塌/收域/主人死亡 → 溶解回湖。只有 owner 裁决——
+            //生命线：湖塌/收域/主人死亡 → 溶解回湖。只有 owner 裁决
             //服务器没有领域状态（恒 Closed 是既定契约），别处判会当场误杀
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
@@ -380,7 +380,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (t >= BodySurgeTick) {
-                //拖身站起：指数衰减，前猛后缓——湖水拽着不肯放
+                //拖身站起：指数衰减，前猛后缓，湖水拽着不肯放
                 float rise = 176f * MathF.Pow(0.94f, t - BodySurgeTick);
                 if (t >= SettleTick) {
                     rise = 0f;
@@ -414,7 +414,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     KikasaDomainDeco.SplashAt(Feet, 8);
                     ShakeViewer(3f);
                 }
-                //冷雾自四周收拢披上身——雾行僵蹄的觉醒不是亮起，是罩进雾里
+                //冷雾自四周收拢披上身，雾行僵蹄的觉醒不是亮起，是罩进雾里
                 if (!Main.dedServ) {
                     for (int i = 0; i < 6; i++) {
                         Vector2 off = (MathHelper.TwoPi * i / 6f + Seed).ToRotationVector2() * Main.rand.NextFloat(90f, 130f);
@@ -619,7 +619,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         ShakeViewer(1.5f);
                     }
                 }
-                //腾空：重量很快收回——这不是跳跃见长的怪，是一次不体面的赶路
+                //腾空：重量很快收回，这不是跳跃见长的怪，是一次不体面的赶路
                 Projectile.velocity.Y += 0.46f;
                 if (!Main.dedServ && t % 3 == 0) {
                     PRTLoader.NewParticle<PRT_GhostRainMist>(
@@ -683,7 +683,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.velocity.X *= 0.85f;
 
             if (t < StompSlamTick) {
-                //抬蹄蓄力：身体后坐，冷雾往抬起的蹄上收拢；72% 后静默——踩落前吸气
+                //抬蹄蓄力：身体后坐，冷雾往抬起的蹄上收拢；72% 后静默，踩落前吸气
                 float u = (t - StompBrakeEnd) / (float)(StompSlamTick - StompBrakeEnd);
                 if (t == StompBrakeEnd + 2) {
                     SoundEngine.PlaySound(SoundID.DeerclopsStep with { Volume = 0.45f, Pitch = -0.5f, MaxInstances = 2 }, Feet);
@@ -895,7 +895,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (lakeAlive) {
-                //从当前站位缓缓沉进湖里：越沉越快，站着没入——行走者的谢幕不漂浮
+                //从当前站位缓缓沉进湖里：越沉越快，站着没入，行走者的谢幕不漂浮
                 //（趔趄半空被遣返也从半空开始坠，不做硬贴）
                 Projectile.position.Y += MathF.Min(0.16f * t, 5.5f);
 
@@ -1037,7 +1037,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         return 0;
                     }
                     if (t < StompSlamTick) {
-                        //抬蹄 12，随后 13/14 交替打颤——僵蹄悬着也在抖
+                        //抬蹄 12，随后 13/14 交替打颤，僵蹄悬着也在抖
                         return t < StompBrakeEnd + 6 ? 12 : 13 + (t - StompBrakeEnd - 6) / 5 % 2;
                     }
                     if (t < StompSlamTick + 4) {
@@ -1242,7 +1242,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         /// <summary>
-        /// 本体：对齐原版 DrawNPCDirect_Deerclops 的帧与锚点——
+        /// 本体：对齐原版 DrawNPCDirect_Deerclops 的帧与锚点
         /// 5×5 网格列主序、脚底锚点、蹄锚横位 106、原生朝右
         /// </summary>
         private void DrawBody(Texture2D tex, float alpha) {
@@ -1379,7 +1379,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             int t = (int)StateTimer;
 
-            //预兆：湖下一团逼近的冷光——蹄声的形
+            //预兆：湖下一团逼近的冷光，蹄声的形
             if (State == StateEmerge && t < OmenEnd) {
                 float ot = MathHelper.Clamp(t / (float)OmenEnd, 0f, 1f);
                 float ease = 1f - (1f - ot) * (1f - ot);

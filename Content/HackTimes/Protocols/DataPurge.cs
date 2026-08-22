@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         private static void PurgeOne(Projectile projectile) {
             //必须走 Kill：直接置 active=false 既跳过 PreKill/OnKill，
-            //也发不出任何同步——Projectile.Update 每帧清 netUpdate，
+            //也发不出任何同步，Projectile.Update 每帧清 netUpdate，
             //且只在 active && owner == Main.myPlayer 时才发，服务端的 myPlayer 是 255
             int identity = projectile.identity;
             int owner = projectile.owner;

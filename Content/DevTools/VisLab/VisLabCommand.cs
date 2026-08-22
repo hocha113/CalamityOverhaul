@@ -9,9 +9,9 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
 {
     /// <summary>
     /// 游戏内快照台命令,仅调试构建存在,且要求本机有 .vissandbox 目录(开发机门控):<br/>
-    /// /vlab list —— 列出可用 job<br/>
-    /// /vlab run &lt;名字&gt; —— 执行快照会话<br/>
-    /// /vlab stop —— 中止当前会话
+    /// /vlab list：列出可用 job<br/>
+    /// /vlab run &lt;名字&gt;：执行快照会话<br/>
+    /// /vlab stop：中止当前会话
     /// </summary>
     internal class VisLabCommand : ModCommand
     {

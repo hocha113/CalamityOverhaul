@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
 {
     /// <summary>
     /// 孢子云播撒：三轮喷发把漂浮地雷铺进战场，
-    /// 雷慢漂向玩家、被打爆连锁殉爆——清雷本身是风险决策
+    /// 雷慢漂向玩家、被打爆连锁殉爆，清雷本身是风险决策
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PlanteraStateIndex.SporeSow, typeof(PlanteraStateContext))]
     internal class PlanteraSporeSowState : PlanteraStateBase

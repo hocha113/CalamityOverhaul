@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
     //L7倒吊中殿（ROOMS-L7 §1-#3/#4/#5）：L1CathedralPrefab（只读镜像素材源）
     //经机器FlipY（§2.3镜像五层法1+2+3层自动）后的倒相定制集：
     //  ·承重层：原天花成地板后加铺2格实心拉平（§2.4-⑦，避开朝下穹顶slope怪坑）
-    //  ·舞台再开凿：倒吊通行生成器职责（§2.3-4镜像不管通行）——切开吊柱下段
+    //  ·舞台再开凿：倒吊通行生成器职责（§2.3-4镜像不管通行），切开吊柱下段
     //    打通东西向Boss舞台，柱残端补斜切收尾（吊柱拱廊倒相）
     //  ·封门：镜像侧门全封，"顶部唯一入口"=原地板竖井槽翻上来的天窗（花名册#3）
     //  ·垂钟井：镜像尖塔向下延伸60行+倒像钟室（垂钟龛）收底，钟体剪影砖砌
@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
             }
         }
 
-        //prefab辖域内链束：全部≥3宽结构链（通行路径的2x3包络已避让——
+        //prefab辖域内链束：全部≥3宽结构链（通行路径的2x3包络已避让
         //P80洪泛把链视为不可通行，链束一律贴在包络路线侧旁）
         private static int PlaceChains(int left, int top) {
             int cells = 0;
@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
             //倒置玫瑰窗：同一扇窗的紫相（LOADING-SCREEN §5-VII，图案素圆【待签字】）
             L7Style.RoseWindowDisk(left + RoseX, top + RoseY, L1CathedralPrefab.RoseRadius);
 
-            //镜像祭坛尖窗组（原L1代码刷窗行28-40/32-39的行倒序）——中高侧低翻成中深侧浅
+            //镜像祭坛尖窗组（原L1代码刷窗行28-40/32-39的行倒序），中高侧低翻成中深侧浅
             int lx = left + L1CathedralPrefab.LancetArtX;
             L7Style.GlassRect(lx - 1, top + 17, lx + 2, top + 29);
             L7Style.GlassRect(lx - 5, top + 18, lx - 2, top + 25);

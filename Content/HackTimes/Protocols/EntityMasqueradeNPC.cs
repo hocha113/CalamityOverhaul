@@ -5,7 +5,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
     /// <summary>
     /// 身份伪装的位置伪装 pass：AI 运行前把"该 NPC 正在追的玩家"的位置
-    /// 换成诱饵落点，AI 跑完无条件还原——敌怪的索敌、走位、弹幕出生点
+    /// 换成诱饵落点，AI 跑完无条件还原，敌怪的索敌、走位、弹幕出生点
     /// 全都读到假位置，仇恨便被掉落物接走。<br/>
     /// tML 的 PostAI 不受任何 PreAI 返回值影响、必定执行，换位/还原配对天然成立；
     /// PreAI 开头再做一次自愈还原，兜 AI 中途抛异常打断配对的账。<br/>

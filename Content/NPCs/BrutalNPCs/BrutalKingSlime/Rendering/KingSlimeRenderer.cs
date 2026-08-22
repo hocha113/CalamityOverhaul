@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering
                 frameRec = bodyTex.GetRectangle(0, frameCount);
             }
             //邻帧渗线防护：原版帧表零间距(帧高=贴图高/帧数，NPC.FindFrame NPC.cs:60035)，
-            //非整数缩放下线性过滤在帧界会混入相邻帧边缘像素行——源矩形上下各内缩 1px
+            //非整数缩放下线性过滤在帧界会混入相邻帧边缘像素行，源矩形上下各内缩 1px
             if (frameRec.Height > 4) {
                 frameRec.Y += 1;
                 frameRec.Height -= 2;

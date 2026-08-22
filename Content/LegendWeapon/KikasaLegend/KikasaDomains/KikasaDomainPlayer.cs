@@ -151,11 +151,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         public bool WispFireActive { get; internal set; }
 
         /// <summary>沸雨边（焰×潦）在效：鬼雨压不灭鬼火，改半强度蒸沸。
-        /// owner 按沉影盘逐帧刷新并随快照同步——远端读不到盘</summary>
+        /// owner 按沉影盘逐帧刷新并随快照同步，远端读不到盘</summary>
         public bool WispRainProof { get; internal set; }
 
         /// <summary>湖力 0~1：鬼火与鬼梦共饮的一汪水。鬼火燃着持续耗，火熄慢慢回；
-        /// 拉入鬼梦当帧抽干。自燃要求满格、入梦要求过半——回涨就是这两门灵异的天然冷却</summary>
+        /// 拉入鬼梦当帧抽干。自燃要求满格、入梦要求过半，回涨就是这两门灵异的天然冷却</summary>
         public float LakeVigor { get; internal set; } = 1f;
 
         /// <summary>点燃处世界 X，燃沿从这里向两侧蔓延；收火时反向啃回原点</summary>
@@ -179,7 +179,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             || Phase == KikasaDomainPhase.DreamReturn;
 
         /// <summary>此刻画面处于梦侧：拉入结算后、梦中全程、归返结算前。
-        /// 湖面物理与湖系表现按它关停——梦里没有那面湖</summary>
+        /// 湖面物理与湖系表现按它关停，梦里没有那面湖</summary>
         public bool DreamWorldVisual =>
             Phase == KikasaDomainPhase.Dreaming
             || (Phase == KikasaDomainPhase.DreamPull && PhaseTimer >= KikasaDream.PullCommitFrame)
@@ -273,14 +273,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             bool mutateEdge = unbound ? middleEdge : CWRKeySystem.Kikasa_DomainMutate.JustPressed;
             HandleMutateKey(holding, mutateDown, mutateEdge);
 
-            //满水稳态则倒影自醒——醒睡不再占键
+            //满水稳态则倒影自醒，醒睡不再占键
             UpdateReflectionGate();
         }
 
         /// <summary>
         /// 异化键的短按/长按分流：按下即计帧，捱过 <see cref="DreamHoldFrames"/> 且拉得动
         /// 就拉入鬼梦（消费本次按住）；松手时未被消费的短按才翻转。
-        /// 梦中按下沿直接归返。短按因此有约半秒的松手延迟——翻转本身是 216 帧的仪式，吃得下
+        /// 梦中按下沿直接归返。短按因此有约半秒的松手延迟，翻转本身是 216 帧的仪式，吃得下
         /// </summary>
         private void HandleMutateKey(bool holding, bool down, bool edge) {
             bool eligible = (holding || AnyActive) && !Player.mouseInterface;
@@ -312,7 +312,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                         KikasaDreamSystem.Refuse(Player);
                         mutateSwallowed = true;
                     }
-                    //倒影没醒（湖还没涨满）：长按视作按得久的短按，松手照旧翻转——没梦可入不设陷阱
+                    //倒影没醒（湖还没涨满）：长按视作按得久的短按，松手照旧翻转，没梦可入不设陷阱
                 }
                 //长按预兆：拉得动时湖面涟漪渐密，倒影在等你
                 if (!mutateSwallowed && DreamPullReady && mutateHold >= 8 && mutateHold % 7 == 0
@@ -334,7 +334,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         }
 
         /// <summary>
-        /// 倒影自动门控：稳态满水即自醒——梦之门常开，不再看魇影编成。
+        /// 倒影自动门控：稳态满水即自醒，梦之门常开，不再看魇影编成。
         /// 醒着的倒影不因水位波动入睡（收域时在 UpdateLocal 里随域睡透）；
         /// 只在 Open 稳态切换（翻转/鬼梦里镜面正忙），连续 10 帧稳定才动手防抖
         /// </summary>
@@ -655,7 +655,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         /// <summary>
         /// 专场时停：NPC/弹幕/玩家钉住，状态机仍走 PostUpdateEverything。
-        /// 镜像鬼切 <c>OniDomainFlip</c>——多人静态快照会失同步，只在单机挂
+        /// 镜像鬼切 <c>OniDomainFlip</c>：多人静态快照会失同步，只在单机挂
         /// </summary>
         private void HoldTransitionFreeze() {
             if (transitionFreezeHeld) {
@@ -718,7 +718,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 HoundReflection = false;
                 DreamBlend = 0f;
                 ZeroDreamEnvelopes();
-                //鬼火随域关熄；湖力随域关回满——重开总是一汪蓄好的湖
+                //鬼火随域关熄；湖力随域关回满，重开总是一汪蓄好的湖
                 WispFireActive = false;
                 WispRainProof = false;
                 WispT = 0f;
@@ -911,7 +911,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 : 1f - Smooth01((t - KikasaDomain.FlipCommitFrame) / 40f);
             FlipBoil = boilIn * boilOut;
 
-            //镜面预览向目标形态靠拢："猛地变色"——与沸腾同步的陡坡先撞到 0.78，
+            //镜面预览向目标形态靠拢："猛地变色"，与沸腾同步的陡坡先撞到 0.78，
             //沸腾余下的时间与驻留段再慢慢浸到 0.92 后保持
             FlipMix = t <= KikasaDomain.FlipBoilEnd
                 ? Smooth01(t / (float)KikasaDomain.FlipBoilRamp) * 0.78f
@@ -1037,7 +1037,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             Vector2 lakeAt = new(Player.Center.X, LakeWorldY);
             switch (PhaseTimer) {
                 case 1:
-                    //受理拍：天幕先无声地闪、湖面荡开第一圈大涟漪，雷声隔十几帧才砸到——凶兆先到
+                    //受理拍：天幕先无声地闪、湖面荡开第一圈大涟漪，雷声隔十几帧才砸到，凶兆先到
                     KikasaDomainSky.NotifyThunder();
                     thunderSoundDelay = Main.rand.Next(12, 22);
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.9f, Volume = 0.5f, MaxInstances = 2 }, lakeAt);

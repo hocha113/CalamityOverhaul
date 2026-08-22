@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
 {
     /// <summary>
     /// 脱链地锯犬·回旋镖：去程贴地滚向玩家一侧（撞墙跳一下翻越、磨地甩火星），
-    /// 滚够路程后升空回程斜切——沿途二次判定，回到统帅锯臂上咔哒归位。
+    /// 滚够路程后升空回程斜切，沿途二次判定，回到统帅锯臂上咔哒归位。
     /// ai[0]=滚动方向，ai[1]=统帅 whoAmI（回收锚）
     /// </summary>
     internal class ScrapGroundSaw : ModProjectile

@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Narrative.Guides
     /// <summary>
     /// 教学引导队列，同时刻至多一个持有展示权。<br/>
     /// 就绪的持有者展示中不抢占；未就绪的占位立刻把展示权让给已经能讲的人，
-    /// 不走三分钟饿死——饿死会误触 <see cref="IGuideLead.OnGuideAbandoned"/>（义体/鬼伞会记成看过）。<br/>
+    /// 不走三分钟饿死，饿死会误触 <see cref="IGuideLead.OnGuideAbandoned"/>（义体/鬼伞会记成看过）。<br/>
     /// 玩家显式点重开走 <see cref="ForceHold"/>，连就绪的持有者也让位，且不当成放弃
     /// </summary>
     internal class GuideLeadQueue : ModSystem
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Narrative.Guides
 
         /// <summary>
         /// 玩家显式要求开讲：立刻把展示权交给指定引导。<br/>
-        /// 不调用 <see cref="IGuideLead.OnGuideAbandoned"/>——被挤掉的只是让位，不是被判定放弃
+        /// 不调用 <see cref="IGuideLead.OnGuideAbandoned"/>：被挤掉的只是让位，不是被判定放弃
         /// </summary>
         public static void ForceHold(IGuideLead lead) {
             if (lead == null) {

@@ -283,7 +283,7 @@ HalibutTrialQuestLine: {
 		'''
 		你知道无机物是怎么动起来的吗，我曾经制造过一个巨大的水下机器，它可以发射由泡泡组成的导弹，
 		以及数不清的热核聚变鱼雷，我曾经用它来捕猎生活在海底10000米下的巨型生物，直到我遇到了...
-		哦说偏了——我想，一会儿会有四个机械朋友来拜访我们，我们需要做好准备
+		哦说偏了，我想，一会儿会有四个机械朋友来拜访我们，我们需要做好准备
 		另外，深渊上方被污染的海域里，有一条变异的巨型海虫，它曾经是硫磺海大学的门卫
 		它现在应该还是挺友善的，我们可以去找它喝喝下午茶
 		'''
@@ -379,7 +379,7 @@ SHPCTrialQuestLine: {
 		'''
 	TrialSummary_3:
 		'''
-		凝胶聚合体——无中枢、无固定形态的神明级目标。
+		凝胶聚合体，无中枢、无固定形态的神明级目标。
 		主人，请击碎它的核心。这种混沌架构我会妥善记录。
 		'''
 	TrialSummary_4:
@@ -591,7 +591,7 @@ OnikiriText: {
 		EmptyHintHi: 樋未开。开樋一分，刀轻一分
 		EmptyHintHorimono: 雕位素净。请神入刀，先得敬它
 		EraseName: 除 铭
-		EraseHint: 锉去此铭——铭可再凿，刀不忘痕
+		EraseHint: 锉去此铭，铭可再凿，刀不忘痕
 		OriginLabel: 出处
 		PowerLabel: 赋效
 		BurdenLabel: 代价
@@ -610,7 +610,7 @@ OnikiriText: {
 		LockedCount: 縁分 {0} / {1}
 		LockedFeat: 縁分未至
 		LockedUnknown: 此铭无縁可循
-		Settle: 刀縁已结——「{0}」的拓本落在脚下
+		Settle: 刀縁已结，「{0}」的拓本落在脚下
 	}
 
 	OniPlayerDismemberSystem.SelfHurtDeathReason: "{0}被自己的一刀斩作了两段"
@@ -626,13 +626,13 @@ OnikiriText: {
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: 架势
 		StanceValueFormat: "{0} / {1}"
-		StanceReadyLine: 势已圆满——{0} 锁敌终斩；双疾走仍可穿身
-		StanceHalfLine: 势已过半——连按 {0} 两次，再按左键可接灭世
+		StanceReadyLine: 势已圆满，{0} 锁敌终斩；双疾走仍可穿身
+		StanceHalfLine: 势已过半，连按 {0} 两次，再按左键可接灭世
 		DomainTitle: 鬼域之眼
-		DomainStateClosed: 阖目——领域未展
-		DomainStateOmote: 表世界——泛黄和纸
-		DomainStateUra: 里世界——水墨阴间
-		DomainStateShifting: 变相中——莫扰
+		DomainStateClosed: 阖目，领域未展
+		DomainStateOmote: 表世界，泛黄和纸
+		DomainStateUra: 里世界，水墨阴间
+		DomainStateShifting: 变相中，莫扰
 		DomainToggleHintFormat: "{0} 或左键 展开/收阖领域"
 		DomainFlipHintFormat: "{0} 或右键 翻转表里(阖时先展)"
 	}
@@ -651,7 +651,7 @@ OnikiriText: {
 		HudBody: 手持鬼切时，左下角常驻气力笔触与架势鞘，两者都只显示读数。半架势可双疾走接左键灭世，满架势可用处决键锁敌终结；表世界中按住樱流键当场化樱
 		HudPrompt: 认一下这组读数；HUD 的界面入口只有封印札
 		SigilTitle: 结印盘
-		SigilBody: 改铭台顶梁左侧钉着「结印盘」驿牌，牌下悬着盘的微缩。盘上外环摆六只鬼，内三角只有三个结印位——点外环选鬼，再点空位结印。同盘的鬼会互相催醒，复苏一起涨；盘座下缘的卷槽里插着点鬼簿，抽出来只看不结印
+		SigilBody: 改铭台顶梁左侧钉着「结印盘」驿牌，牌下悬着盘的微缩。盘上外环摆六只鬼，内三角只有三个结印位，点外环选鬼，再点空位结印。同盘的鬼会互相催醒，复苏一起涨；盘座下缘的卷槽里插着点鬼簿，抽出来只看不结印
 		SigilPrompt: 点高亮驿牌或盘移步；打开后认一下外环与三个结印位，再收盘继续
 		MeiTitle: 改铭台
 		MeiBody: 封印札是 HUD 唯一的界面入口，首次打开进入改铭台。刀上茎铭、樋位、雕位三处可凿，每一枚铭带一份赋效和一份代价。点铭位展开扇骨挑錾样，行囊里现有的錾样列在下方木匣
@@ -933,7 +933,7 @@ KikasaOverride: {
 
 KikasaTrialQuestLine: {
 	QuestCategory: 鬼伞·沉宴
-	TrackerWaiting: 还没入席——去请，或再等等
+	TrackerWaiting: 还没入席，去请，或再等等
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: 下一席：{0}
 	BossRushTargetName: 满桌的客
@@ -992,7 +992,7 @@ KikasaTrialQuestLine: {
 	TrialSummary_4:
 		'''
 		丛林里有罐甜的，雪原里有头倔的
-		你挑一样带来——湖今天两个口味都开
+		你挑一样带来，湖今天两个口味都开
 		甜的螫人，倔的跺脚
 		哪个都别空手回来
 		'''
@@ -1014,7 +1014,7 @@ KikasaTrialQuestLine: {
 		'''
 		地狱里垒着一面肉，挡着所有人的路
 		烫的，湖正好败火
-		捅穿它，世界会跟着变——那不怪你
+		捅穿它，世界会跟着变，那不怪你
 		伞面遮得住火星，放心去
 		'''
 	TrialSummary_8:
@@ -1028,7 +1028,7 @@ KikasaTrialQuestLine: {
 		'''
 		硫海里泡着条长虫，一身烂鳞，半睡半醒
 		那片水馊得连湖都皱眉
-		把它捞干净——湖收虫，不收那口烂水
+		把它捞干净，湖收虫，不收那口烂水
 		完事把伞抖一抖再回来
 		'''
 	TrialSummary_10:
@@ -1063,13 +1063,13 @@ KikasaTrialQuestLine: {
 		'''
 		海上有头猪，长了翅膀，还学人掀浪
 		湖看不惯：水的脾气轮不到猪来使
-		把它按回水里——按进哪片水，你说了算
+		把它按回水里，按进哪片水，你说了算
 		鱼饵我出，虫子你钓
 		'''
 	TrialSummary_15:
 		'''
 		神圣地夜里飞着位发光的，脾气跟着日头走
-		湖照不住她——太亮的东西水面留不下
+		湖照不住她，太亮的东西水面留不下
 		趁夜去，把那身光揉暗了带回来
 		大白天去惹她的话，后果自己收
 		'''
@@ -1091,7 +1091,7 @@ KikasaTrialQuestLine: {
 		'''
 		地牢深处荡着一团魂，缝缝补补好几百年
 		湖里泡的鬼见了它，都往伞骨里缩
-		同类相残这话难听——就当是并桌
+		同类相残这话难听，就当是并桌
 		收完这单，伞下会挤一点，忍忍
 		'''
 	TrialSummary_19:
@@ -1112,7 +1112,7 @@ KikasaTrialQuestLine: {
 		'''
 		丛林那头养着一团火，烧了不知多少年
 		火和湖是老对头，这回该做个了断
-		把那身火压熄——最后一瓢湖亲自来盖
+		把那身火压熄，最后一瓢湖亲自来盖
 		羽毛湿了就不飘了，一根别留
 		'''
 	TrialSummary_22:

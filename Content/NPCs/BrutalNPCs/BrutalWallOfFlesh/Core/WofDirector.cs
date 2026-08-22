@@ -146,7 +146,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core
         public const float GapLullFactor = 0.7f;
         /// <summary>间隔末段蓄势占比</summary>
         public const float GapChargeFraction = 0.28f;
-        /// <summary>蓄势末峰值速度系数——出招瞬间的减速与之形成对比刹车</summary>
+        /// <summary>蓄势末峰值速度系数，出招瞬间的减速与之形成对比刹车</summary>
         public const float GapChargePeak = 1.5f;
         #endregion
 

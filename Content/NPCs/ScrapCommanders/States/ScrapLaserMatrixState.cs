@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.States
     /// <summary>
     /// 镭射矩阵（P2 组合招，需军团在场）：统帅目镜 + 全体仆从的瞄准线
     /// 追着玩家收束 → 末段冻结成交叉网格（最后的走位窗）→ 齐射快脉冲。
-    /// 网格线本身就是预警——线越亮离齐射越近
+    /// 网格线本身就是预警，线越亮离齐射越近
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)ScrapStateIndex.LaserMatrix, typeof(ScrapStateContext))]
     internal class ScrapLaserMatrixState : ScrapStateBase

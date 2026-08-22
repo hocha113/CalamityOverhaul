@@ -7,7 +7,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// 双子鬼奴的血焰舌：燃烧的液血，不是气体火——
+    /// 双子鬼奴的血焰舌：燃烧的液血，不是气体火
     /// 前段热浮上窜、中段膨大翻卷、后段烧尽转暗坠落（血比火重）。
     /// 暗缘压边给体积、鲜活期白热芯湿反光，Extra_98 真 alpha 主体 + A=0 加色芯
     /// </summary>

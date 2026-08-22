@@ -15,7 +15,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaGolem
 {
     /// <summary>
-    /// 鬼奴·石首浮屠。只有一颗石巨人头，没有身体没有拳头——
+    /// 鬼奴·石首浮屠。只有一颗石巨人头，没有身体没有拳头
     /// 材质反向读数：其他鬼奴是血水凝成的形，它是石头本身（uForm 压到最低），
     /// 裂缝渗血、眼窝里蓄着晃动的血水。重量感贯穿一切：加速慢、停不住、转向像船，
     /// 低空贴水面滑浮并犁出持续水痕。签名攻击为升天砸水（窄高双水柱+全场最大单击震屏）、
@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：只有 owner 裁决——服务器无领域状态（恒 Closed 是既定契约），
+            //生命线：只有 owner 裁决，服务器无领域状态（恒 Closed 是既定契约），
             //迟入场客户端首份快照前也会误判；其余端只跟 owner 的同步包换场
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
@@ -354,7 +354,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (!breachDone) {
-                //破水拍：一帧起速——不是跃出，是石头被湖捧出来
+                //破水拍：一帧起速，不是跃出，是石头被湖捧出来
                 breachDone = true;
                 Projectile.velocity = new Vector2(0f, -7.8f);
                 SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.55f, Pitch = -0.85f, MaxInstances = 2 }, Projectile.Center);
@@ -401,7 +401,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        /// <summary>破水浪冠：重物顶破水面——宽环涟漪 + 低抛血珠 + 石屑迸散 + 蒸汽</summary>
+        /// <summary>破水浪冠：重物顶破水面，宽环涟漪 + 低抛血珠 + 石屑迸散 + 蒸汽</summary>
         private void BreachBurst(Vector2 hit) {
             KikasaDomainDeco.RippleAt(hit, 2.8f);
             KikasaDomainDeco.RippleAt(hit + new Vector2(44f, 0f), 1.1f);
@@ -555,7 +555,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (phase == 1) {
-                //悬停一拍：眼窝血光亮起，72% 后静默，末几帧微微上提——落锤前的吸气
+                //悬停一拍：眼窝血光亮起，72% 后静默，末几帧微微上提，落锤前的吸气
                 //迟入场的远端没跑过升天段，落点兜底取当前头位，等 owner 的坠落包纠偏
                 if (slamX == 0f) {
                     slamX = Projectile.Center.X;
@@ -586,7 +586,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (phase == 2) {
-                //自由落体：重力逐帧压满，直坠——石头不拐弯
+                //自由落体：重力逐帧压满，直坠，石头不拐弯
                 if (!dropWhooshed) {
                     dropWhooshed = true;
                     SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Volume = 0.8f, Pitch = -0.65f, MaxInstances = 2 }, Projectile.Center);
@@ -678,7 +678,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             KikasaDomainDeco.SplashAt(hit + new Vector2(-20f, 0f), 10);
             KikasaDomainDeco.SplashAt(hit + new Vector2(20f, 0f), 10);
 
-            //双水柱：砸点两侧轰起，又高又窄——与史莱姆王的宽矮横推浪划清界限
+            //双水柱：砸点两侧轰起，又高又窄，与史莱姆王的宽矮横推浪划清界限
             for (int side = -1; side <= 1; side += 2) {
                 float baseX = hit.X + side * 46f;
                 for (int i = 0; i < 20; i++) {
@@ -724,7 +724,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (t < MagmaFireFrame) {
-                //张口蓄热：火星向口部收拢，72% 后静默——喷发前的吸气
+                //张口蓄热：火星向口部收拢，72% 后静默，喷发前的吸气
                 float charge = (t - MagmaBrakeEnd) / (float)(MagmaFireFrame - MagmaBrakeEnd);
                 Projectile.velocity *= 0.92f;
                 if (t == MagmaBrakeEnd + 2) {
@@ -741,7 +741,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (!magmaFired) {
-                //喷吐一帧：后坐退步 + 微微仰头——知重量者的答话
+                //喷吐一帧：后坐退步 + 微微仰头，知重量者的答话
                 magmaFired = true;
                 int freshTarget = FindTarget(owner);
                 Vector2 mouth = MouthPos();
@@ -970,7 +970,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             });
         }
 
-        /// <summary>碎裂拍：闭口帧切成 3×4 块，各块从原位带角速度散开——头是碎的，不是化的</summary>
+        /// <summary>碎裂拍：闭口帧切成 3×4 块，各块从原位带角速度散开，头是碎的，不是化的</summary>
         private void SpawnShatterChunks() {
             Main.instance.LoadNPC(NPCID.GolemHeadFree);
             Texture2D tex = TextureAssets.Npc[NPCID.GolemHeadFree]?.Value;
@@ -1157,7 +1157,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             };
         }
 
-        /// <summary>uForm 反向读数：几乎不血水化——石头本身，湿度只借走一点水光</summary>
+        /// <summary>uForm 反向读数：几乎不血水化，石头本身，湿度只借走一点水光</summary>
         private float CurrentForm() {
             float steady = 0.055f + MathF.Sin(Main.GlobalTimeWrappedHourly * 1.7f + Seed) * 0.02f
                 + wetness * 0.34f;
@@ -1257,13 +1257,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (State != StateSlam || (int)StateParam > 1 || domain == null) {
                 return;
             }
-            //暗色落点影必须用真 alpha 的 Extra_98——黑底 SoftGlow 在 AlphaBlend 里会糊出黑块
+            //暗色落点影必须用真 alpha 的 Extra_98：黑底 SoftGlow 在 AlphaBlend 里会糊出黑块
             Texture2D shadow = CWRAsset.Extra_98?.Value;
             if (shadow == null) {
                 return;
             }
             int t = (int)StateTimer;
-            //升天期渐显，悬停期收拢脉动——暗斑越攥越实
+            //升天期渐显，悬停期收拢脉动，暗斑越攥越实
             float strength = (int)StateParam == 0
                 ? MathHelper.Clamp(t / 40f, 0f, 0.55f)
                 : 0.55f + 0.25f * MathF.Sin(t * 0.42f + Seed);
@@ -1362,7 +1362,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     glow.Size() * 0.5f, new Vector2(r * 2.8f / glow.Width, r * 1.0f / glow.Height), SpriteEffects.None, 0f);
             }
 
-            //眼部发光层：原版帧布局——Extra106 四步眼焰动画 + Extra107 辉光罩
+            //眼部发光层：原版帧布局，Extra106 四步眼焰动画 + Extra107 辉光罩
             float eyeA = EyeAlpha() * alpha;
             float charge = ChargeLevel();
             if (!crumbled && eyeA > 0.02f) {
@@ -1384,7 +1384,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         frame.Size() * 0.5f, DrawScale, SpriteEffects.None, 0f);
                 }
 
-                //眼窝积血：两粒滞后晃动的血光——石头急动时血水在窝里甩
+                //眼窝积血：两粒滞后晃动的血光，石头急动时血水在窝里甩
                 if (glow != null) {
                     for (int side = -1; side <= 1; side += 2) {
                         Vector2 pool = EyePos(side) + eyeSlosh * 0.6f;

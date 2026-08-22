@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
     /// 前兆：脚下焦土渗烟，五枚指尖破土；<br/>
     /// 显形：远大于役使时的巨掌自地底托起，五指自四周合拢，按 32%/68% 节拍两度碾紧；<br/>
     /// 处决：五指完全攥死成拳；余韵：拳头带着人缩回地底，只留一枚焦黑掌印。<br/>
-    /// 材质：焦炭枯尸手——近实心暗体、龟裂缝透血烬（沿用枯手橙红烬 + 焦烟 + 暗血）。
+    /// 材质：焦炭枯尸手，近实心暗体、龟裂缝透血烬（沿用枯手橙红烬 + 焦烟 + 暗血）。
     /// </summary>
     internal sealed class HandSeizurePerformance : WraithDeathPerformance
     {

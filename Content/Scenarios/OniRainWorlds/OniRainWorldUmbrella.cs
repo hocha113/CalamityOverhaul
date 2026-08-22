@@ -22,11 +22,11 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
     /// 由 <see cref="OniUmbrellaWorldSpawn"/> 在出生点附近权威放置。<br/>
     /// 靠近右键触发入雨演出（<see cref="OniRainWorldTransition"/> + <see cref="OniRainWorldCutscene"/>），
     /// 交互纯本地；下潜交给雨世界里的夺伞（<see cref="KasaOnis.KasaOniActor"/>）。<br/>
-    /// 已真正获得鬼伞的玩家不再看见这把伞——鬼雨初遇是一次性叙事空间，
+    /// 已真正获得鬼伞的玩家不再看见这把伞，鬼雨初遇是一次性叙事空间，
     /// 可见性按玩家各自判（<see cref="ShouldShowForLocalPlayer"/>），Actor 本体全端常驻。<br/>
     /// 伞体=鬼伞正式贴图（<see cref="KikasaItem"/>）+ KikasaUmbrella TechCanopy 湿光鬼眼着色；
     /// 伞底一摊黑色积水（倒影由 <see cref="OniUmbrellaPuddleRender"/> 屏幕空间镜像接管），
-    /// 水洼呼出上浮的黑水滴，偶发一粒被拽回伞里——水在回流入伞。
+    /// 水洼呼出上浮的黑水滴，偶发一粒被拽回伞里，水在回流入伞。
     /// </summary>
     internal class OniRainWorldUmbrella : Actor
     {
@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                     Main.rand.NextFloat(0.55f, 1f))
                     ?.Configure(Main.rand.Next(46, 90));
 
-                //偶发一粒被拽回伞底——洼里的水在回流入伞
+                //偶发一粒被拽回伞底，洼里的水在回流入伞
                 if (Main.rand.NextBool(6)) {
                     PRTLoader.NewParticle<PRT_GhostRainYank>(from,
                         new Vector2(0f, -Main.rand.NextFloat(1f, 1.8f)),

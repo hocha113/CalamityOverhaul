@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
         //════════ RAM 距离底噪（每秒） ════════
         //标定基准：基础 RAM 8 / 恢复 0.1s（RamSystem.DefaultBase*）
         //墙脚 SafeCols 内零消耗；此后每离墙 100 格 +DrainPer100，
-        //新角色约在墙脚带中段收支平衡，废墟带净消耗——贪心半径随 RAM build 增长
+        //新角色约在墙脚带中段收支平衡，废墟带净消耗，贪心半径随 RAM build 增长
         internal const int DrainSafeCols = 150;
         internal const float DrainPer100Tiles = 0.05f;
 

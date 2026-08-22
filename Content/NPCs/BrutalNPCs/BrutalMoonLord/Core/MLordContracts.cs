@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         /// <summary>
         /// 手/头 ai[0] 破坏标记：-2=已破。原版 checkDead 对 396/397 的特判
         /// 先于 tML CheckDead 钩子执行（NPC.cs 71306 早于 71390 的钩子位），
-        /// 会自行写入 -2 并生成真眼——本值即采纳原版约定
+        /// 会自行写入 -2 并生成真眼，本值即采纳原版约定
         /// </summary>
         public const int PartBroken = 0;
         /// <summary>破坏标记值（原版写入）</summary>

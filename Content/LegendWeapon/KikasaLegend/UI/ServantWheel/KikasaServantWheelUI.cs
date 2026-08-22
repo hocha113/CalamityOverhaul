@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
     /// <summary>
     /// 鬼伞转盘可视层，状态读 <see cref="KikasaServantWheelController"/>。
     /// 语汇是血湖的：涟漪弧带作扇区、沉影笔作徽章、伞章作中心，
-    /// 收起的影下沉变暗、在外的影负形留旋涡——与湖心景同一副沉影笔
+    /// 收起的影下沉变暗、在外的影负形留旋涡，与湖心景同一副沉影笔
     /// </summary>
     internal class KikasaServantWheelUI : UIHandle, ILocalizedModType
     {
@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
         }
 
         /// <summary>
-        /// 单席扇区：内外涟漪弧夹出环带，出战令亮中脉，徽章用沉影笔——
+        /// 单席扇区：内外涟漪弧夹出环带，出战令亮中脉，徽章用沉影笔
         /// 在外=负形旋涡、候湖=干泥痕、收起=下沉变暗
         /// </summary>
         private void DrawSeatSector(SpriteBatch sb, KikasaServantWheelController ctrl,
@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
                 return;
             }
 
-            //徽章：沉影笔按状态换形——submerge 干湖⇄水下，absent=在外负形
+            //徽章：沉影笔按状态换形，submerge 干湖⇄水下，absent=在外负形
             float submerge = lakeReady ? 1f : 0f;
             float effigyA = (held ? 0.62f : 0.95f) * a;
             KikasaVaultRenderer.DrawEffigyByKey(sb, key, seatPos, 40f, effigyA,
@@ -419,7 +419,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
         private static Vector2 AngleDir(float angle) => new(MathF.Cos(angle), MathF.Sin(angle));
 
         /// <summary>
-        /// 涟漪弧：半径随角度与时间轻晃的弧线——盘上没有一条死直的几何线。
+        /// 涟漪弧：半径随角度与时间轻晃的弧线，盘上没有一条死直的几何线。
         /// wobble 是晃幅（px），传 0 即普通弧
         /// </summary>
         private static void DrawWaterArc(SpriteBatch sb, Vector2 center, float radius,

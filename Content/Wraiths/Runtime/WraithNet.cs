@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         InvalidWraith,
         RateLimited,
         SessionNotReady,
-        //以下为三槽制新增，只许追加不许重排——旧包的数值含义不能变
+        //以下为三槽制新增，只许追加不许重排，旧包的数值含义不能变
         InvalidSlot,
         SlotOccupied,
     }

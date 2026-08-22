@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// <summary>
     /// 役鬼强驱：十秒内役鬼出手不花代价（复苏与侵蚀涨账当帧退回），
     /// 到期一次性侵蚀 +0.12 并强制休眠该鬼一分钟。<br/>
-    /// 资格链原样走 <see cref="WraithAbilityService.TryResolve"/>——持鬼切这一条不动，
+    /// 资格链原样走 <see cref="WraithAbilityService.TryResolve"/>：持鬼切这一条不动，
     /// 协议只免代价不绕资格。免费实现为权威端逐帧退款（<see cref="WraithDriveShim"/>），
     /// 不拦 <c>TryCommitUse</c> 本身；入场另要求复苏余量
     /// （当前复苏 + 该鬼单次涨幅 &lt; 1），封住"窗口内一记役使直接夺身"的缝。<br/>
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override int GetDuration() => SelfRigPlayer.DriveDuration;
 
         public override bool CanApplyTo(IHackTarget target) {
-            //反射垫片不健康就整条禁用——宁可不可用，不要半生效
+            //反射垫片不健康就整条禁用，宁可不可用，不要半生效
             if (!WraithDriveShim.Available || !base.CanApplyTo(target)
                 || !SelfRigPlayer.TryGet(target, out Player player, out SelfRigPlayer rig)) {
                 return false;
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             if (!player.TryGetModPlayer(out WraithPlayer wraith)) return false;
 
             //三槽制下强驱只押得住一只：挑盘上离夺身最近的那只，
-            //被它催醒的另外两只照样在爬——这是协议压不住的部分
+            //被它催醒的另外两只照样在爬，这是协议压不住的部分
             string key = wraith.HighestRevivalKey;
             //资格链：存活 + 手持鬼切 + 已装备该鬼 + 目录可用 + 未被夺身
             if (!WraithAbilityService.TryResolve(player, key,

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
     /// <summary>
     /// 弹幕采样：采下一发敌弹的型号，二十秒内你每十二次开火复刻它一发。<br/>
-    /// 采样槽是 owner 端自治状态：存在施术者本机的 ModPlayer 里、本机消费、不进网络——
+    /// 采样槽是 owner 端自治状态：存在施术者本机的 ModPlayer 里、本机消费、不进网络
     /// 复刻弹由 owner 端 NewProjectile 生成再自然同步，这是弹幕生成唯一的正路
     /// </summary>
     internal class ProjectileSample : QuickHackDef
@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         private static readonly Color Sample = new(120, 255, 190);
 
-        //白名单：只收 aiStyle 自持的类型——0 直线弹、1 箭矢、2 重抛体、
+        //白名单：只收 aiStyle 自持的类型，0 直线弹、1 箭矢、2 重抛体、
         //8 弹跳法弹、18 镰刀。这些风格不引用父 NPC 的 ai[]，脱离原主也能正常跑；
         //Calamity 大量 aiStyle -1 的 Boss 弹依赖父体状态，收进来会 NRE 或行为失控
         private static readonly HashSet<int> SelfContainedAiStyles = [0, 1, 2, 8, 18];

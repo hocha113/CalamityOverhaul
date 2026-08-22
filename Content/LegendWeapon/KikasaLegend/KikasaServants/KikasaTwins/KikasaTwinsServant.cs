@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// <summary>
     /// 鬼奴·湖水版双子魔眼。单弹幕同时驱动两只眼：Projectile.Center 为编队质心权威同步，
     /// 两眼位置由状态机 + Seed 在各端本地推算（毁灭者内部模拟范式），硬纠阈值防抽搐，
-    /// 两眼各自朝向自己的表演目标。签名视觉为两眼之间下垂滴血的血脐带——悬链弧垂随
+    /// 两眼各自朝向自己的表演目标。签名视觉为两眼之间下垂滴血的血脐带，悬链弧垂随
     /// 间距绷紧/松弛，中点周期坠血珠；签名机制为交叉剪切冲刺：两眼拉开到目标两侧对峙
     /// （同时后拉蓄力、脐带绷直发亮），互换位置交叉冲过，剪切窗内绷直的脐带就是伤害线。
     /// 激光眼压阵远程负责精准脉冲点射（细直快二连发、弹道预告线一闪），魔焰眼游走近逼
@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：只有 owner 裁决——服务器无领域状态（既定契约），
+            //生命线：只有 owner 裁决，服务器无领域状态（既定契约），
             //迟入场客户端首份快照前也会误判；其余端只跟 owner 的包换场
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
@@ -566,7 +566,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 if (t == 2) {
                     SoundEngine.PlaySound(SoundID.DD2_BookStaffCast with { Volume = 0.45f, Pitch = -0.7f, MaxInstances = 2 }, Projectile.Center);
                 }
-                //蓄势血珠向脐带中点收拢，72% 后静默——爆发前的吸气
+                //蓄势血珠向脐带中点收拢，72% 后静默，爆发前的吸气
                 if (!Main.dedServ && t < PoiseFrames * 0.72f && t % 2 == 1) {
                     Vector2 mid = Vector2.Lerp(eyePos[0], eyePos[1], 0.5f);
                     Vector2 from = mid + Main.rand.NextVector2Unit() * Main.rand.NextFloat(60f, 130f);
@@ -676,7 +676,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 pulseAimInit = true;
                 aimRotRet = (aimPos - eyePos[0]).ToRotation();
             }
-            //锁线：转率随进度衰减——"锁死"读得见；轮间重新提转率
+            //锁线：转率随进度衰减，"锁死"读得见；轮间重新提转率
             float lockRate = t <= PulseFirstAimEnd
                 ? MathHelper.Lerp(0.3f, 0.07f, t / (float)PulseFirstAimEnd)
                 : t is > PulseReAimStart and <= 73 ? 0.18f : 0.1f;
@@ -1050,7 +1050,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         eyeTarget[1] = ScissorPost(1, pull);
                         ChaseEye(0, 0.16f, 0.7f);
                         ChaseEye(1, 0.16f, 0.7f);
-                        //面对面锁向对方——冲刺方向的 tell
+                        //面对面锁向对方，冲刺方向的 tell
                         FaceEye(0, eyePos[1], 0.35f);
                         FaceEye(1, eyePos[0], 0.35f);
                     }

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
     /// <summary>
     /// 巡逻 ICE：旧网的常驻哨兵。锚点区间匀速往返悬浮，前向视锥充能侦测
     /// （慢速通过=潜行可绕），目击完成 → 玩家噪音 +15 并引来猎杀小队。
-    /// 可击杀但高防高血，击杀本身是高噪决策（+20）；无掉落——
+    /// 可击杀但高防高血，击杀本身是高噪决策（+20）；无掉落
     /// 安静最优路线不该被刷怪收益污染。零贴图程序化绘制
     /// </summary>
     internal class OldNetPatrolICE : ModNPC

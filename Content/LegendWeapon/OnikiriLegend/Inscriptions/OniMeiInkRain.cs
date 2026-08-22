@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 {
     /// <summary>
     /// 雨樋「落雨」：樱流巡航时沿途甩下的墨滴。<br/>
-    /// 墨滴不追踪，只往下坠——所以航线本身就是攻击范围，飞哪儿淋哪儿。<br/>
+    /// 墨滴不追踪，只往下坠，所以航线本身就是攻击范围，飞哪儿淋哪儿。<br/>
     /// 落地摊成一小片墨洼，踩进去的敌手被滞缚一段。<br/>
     /// ai[0]=坠落初速的横向分量
     /// </summary>

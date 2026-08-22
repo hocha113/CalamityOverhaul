@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             float dream = KikasaDomain.ViewedDreamBlend;
             Color duskTile = Color.Lerp(new(214, 96, 82), new(52, 62, 68), rain);
             Color duskBg = Color.Lerp(new(126, 34, 32), new(34, 42, 48), rain);
-            //梦色板：物块暗红余温，背景压向黑红——地形从红空里剥成剪影
+            //梦色板：物块暗红余温，背景压向黑红，地形从红空里剥成剪影
             duskTile = Color.Lerp(duskTile, new(150, 52, 44), dream);
             duskBg = Color.Lerp(duskBg, new(64, 12, 14), dream);
             tileColor = Color.Lerp(tileColor, duskTile,

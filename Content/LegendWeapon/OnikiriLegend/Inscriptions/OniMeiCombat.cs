@@ -426,7 +426,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public const int SenjuRecoverTicks = 180;
 
         /// <summary>
-        /// 表影：目标身上还挂着受创就加深。与铭是否在手无关——纸已经斩过了，
+        /// 表影：目标身上还挂着受创就加深。与铭是否在手无关，纸已经斩过了，
         /// 这一档欠的是那张纸，不是当下这把刀
         /// </summary>
         public static float BuildPaperBrandMul(NPC target) {

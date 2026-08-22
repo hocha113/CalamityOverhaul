@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
         public static Vector2 UIMouse => new Vector2(PlayerInput.MouseX, PlayerInput.MouseY) / Main.UIScale;
         #endregion
 
-        //基底，由深到浅——带红壳的近黑，不是纯黑
+        //基底，由深到浅，带红壳的近黑，不是纯黑
         public static readonly Color Void = new(8, 2, 4);
         public static readonly Color Deep = new(18, 4, 7);
         public static readonly Color Mid = new(41, 10, 14);
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
         public const float PanelH = 356f;
         /// <summary>水面线在面板内的 uv 高度（开窗动画的终值）</summary>
         public const float WaterLineY = 0.30f;
-        /// <summary>面板中心的屏高占比——放上一点，玩家脚边的湖面演出别被窗子挡住</summary>
+        /// <summary>面板中心的屏高占比，放上一点，玩家脚边的湖面演出别被窗子挡住</summary>
         public const float PanelCenterYRatio = 0.40f;
         #endregion
 

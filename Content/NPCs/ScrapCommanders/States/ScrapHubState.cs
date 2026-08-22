@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.States
                 && t >= HarassAimStart && t <= HarassFire) {
                 Vector2 hAim = (target.Center - ctx.Owner.GetArmPos(ScrapCommander.ArmLaser))
                     .SafeNormalize(Vector2.UnitX);
-                //镭射臂从垂链转向目标持位——臂的转向本身就是前摇信号
+                //镭射臂从垂链转向目标持位，臂的转向本身就是前摇信号
                 ctx.Arms[ScrapCommander.ArmLaser] = new ArmDirective {
                     Mode = ArmMode.Hold,
                     Target = npc.Center + npc.velocity + new Vector2(MathF.Sign(hAim.X) * 122f, -4f),

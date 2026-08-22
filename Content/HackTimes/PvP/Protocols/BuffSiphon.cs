@@ -14,11 +14,11 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
     /// <summary>
     /// 增益抽取（芯片档，即时）：抽走防守方一个正面 buff，转授攻击方。<br/>
     /// <b>回执载荷的示范用例</b>：msg 50 给远端的 buffTime 全是 60 占位（设计 §0.7），
-    /// 全世界只有防守方本机知道真实剩余时长——防守方在 <see cref="OnDefenderApply"/> 里
+    /// 全世界只有防守方本机知道真实剩余时长，防守方在 <see cref="OnDefenderApply"/> 里
     /// 挑走 buff 并把 (型号, 真值时长) 写进 <see cref="WriteReceiptPayload"/>；
     /// 服务端 <see cref="HandleReceiptPayload"/> 校验后以 msg 55 直发攻击方
     /// （服务端直发不过 pvpBuff 转播闸，§0.9 的原版先例），攻击方本机 AddBuff 落地
-    /// ——攻击方资源归攻击方客户端，服务端只转发（结算落点表 §1.4）。<br/>
+    /// ：攻击方资源归攻击方客户端，服务端只转发（结算落点表 §1.4）。<br/>
     /// 防守方无可抽 buff 时本机终审拒绝（返回 false → 回执 Rejected → 服务端全额退款）
     /// </summary>
     internal class BuffSiphon : PlayerHackDef
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 
         private static readonly Color Siphon = new(150, 255, 190);
 
-        /// <summary>晶粒纹：躯体里的增益箭头被导管吸出，落在管口重新立起——增益换了主人</summary>
+        /// <summary>晶粒纹：躯体里的增益箭头被导管吸出，落在管口重新立起，增益换了主人</summary>
         internal const string Die =
             "M -0.72 -0.28 L -0.32 -0.28 M -0.72 0.52 L -0.32 0.52 "
             + "M -0.72 -0.28 Q -0.80 0.12 -0.72 0.52 M -0.32 -0.28 Q -0.24 0.12 -0.32 0.52 "
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
         /// <summary>
         /// 可抽判定，一份谓词各端共用：攻击方预检与服务端校验读的是 msg 50 同步来的
         /// buff 型号（时长占位 60 恰好过 <see cref="MinStealFrames"/> 线，预检宽松无害），
-        /// 防守方本机终审读真值——最终裁决权在真值端
+        /// 防守方本机终审读真值，最终裁决权在真值端
         /// </summary>
         internal static bool IsSiphonable(int type, int time) {
             if (type <= 0 || type >= BuffLoader.BuffCount) return false;

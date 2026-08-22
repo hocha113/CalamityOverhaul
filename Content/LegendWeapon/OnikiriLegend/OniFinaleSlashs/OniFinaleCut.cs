@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         public override void AI() {
             if (!initialized) {
                 Initialize();
-                //出鞘的"斩击"本身近乎无声、世界还没意识到已经被斩开——但画面本身被切开一瞬
+                //出鞘的"斩击"本身近乎无声、世界还没意识到已经被斩开，但画面本身被切开一瞬
 
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 1f, Volume = 0.28f }, Projectile.Center);
                 OniFinaleFX.PushSlice(Projectile.Center, CutAngle, 4f * SizeMul);
@@ -240,7 +240,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 return;
             }
 
-            //全场过刃线兑现退场；积攒整场的碎镜面在此刻急速闭合——被斩碎的空间随纳刀合拢，
+            //全场过刃线兑现退场；积攒整场的碎镜面在此刻急速闭合，被斩碎的空间随纳刀合拢，
             //径向模糊与 RGB 色差同帧打峰（村正次元斩的爆发语言）
 
             OniFinaleLattice.CashIn();
@@ -484,7 +484,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             }
         }
 
-        /// <summary>锋利层（后效之上）：滞拍细线与引爆敷层——刀线永远锋利，不被裂屏/切片/折射处理</summary>
+        /// <summary>锋利层（后效之上）：滞拍细线与引爆敷层，刀线永远锋利，不被裂屏/切片/折射处理</summary>
         void IOniCrispDrawable.DrawCrisp() {
             if (Main.dedServ || !initialized) {
                 return;

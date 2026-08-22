@@ -3,7 +3,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
     /// <summary>
     /// 地牢加载屏色板与布局常量<br/>
     /// 色板与 DungeonworldLoading.fx / DungeonworldSky.fx 同源，改这里必须同步改 shader 内的 #define 常量<br/>
-    /// 鎏金两档取 ChroniclePalette.Gold / GoldHi 同值——地牢的教团手工与任务书的远征纪要共用一种金
+    /// 鎏金两档取 ChroniclePalette.Gold / GoldHi 同值，地牢的教团手工与任务书的远征纪要共用一种金
     /// </summary>
     internal static class DungeonworldLoadTheme
     {

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.States
 {
     /// <summary>
     /// 链锤十字旋：四工具收拢成十字（预警辐条亮线）→ 随头自旋，
-    /// 辐条半径先扩到三百再收回——外扩逼走位、内收给反打窗。
+    /// 辐条半径先扩到三百再收回，外扩逼走位、内收给反打窗。
     /// 辐条间隙与外圈是安全读法，本体缓压玩家保持威胁
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)ScrapStateIndex.CrossSpin, typeof(ScrapStateContext))]

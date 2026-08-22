@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// <summary>
-    /// 化境的连击进度。挂在玩家身上而不是 ModItem 字段上——后者每帧会被 tML 重建冲掉
+    /// 化境的连击进度。挂在玩家身上而不是 ModItem 字段上，后者每帧会被 tML 重建冲掉
     /// </summary>
     internal class FlawlessPlayer : ModPlayer
     {

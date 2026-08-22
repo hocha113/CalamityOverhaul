@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// <summary>
     /// 2026-08 扩展批 Npc 协议共用的实体钩子。<br/>
     /// 载荷改写/相位偏移要在弹幕出生一刻动手，固件回滚要在 AI 前后配对伪装，
-    /// 躯壳征用要接死亡边，相位偏移还要一条重绘通道——
+    /// 躯壳征用要接死亡边，相位偏移还要一条重绘通道
     /// 这些时机协议基类都没有，集中挂在这一个文件里，不去动既有的分派点
     /// </summary>
     internal class HackNpcSourceProjectile : GlobalProjectile
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         /// 只在权威端翻等于单机正常联机空炮。<br/>
         /// owner 保持原样（NPC 弹一般是 255）：改成玩家索引会把服务端唯一的推送通道
         /// 关掉，还会让客户端按 owner+identity 反查未果、把同步包当成新弹再生成一发
-        /// ——这是 <see cref="ProjectileHijack"/> 修复后的既有裁决，此处照抄。
+        /// ：这是 <see cref="ProjectileHijack"/> 修复后的既有裁决，此处照抄。
         /// 于是改判后的 NPC 命中由服务端结算（伤害靠 SyncNPC 回传），
         /// 各端只负责把标志翻对，让玩家碰撞判定与观感在每台机器上一致
         /// </summary>

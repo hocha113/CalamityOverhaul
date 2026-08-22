@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 {
     /// <summary>
     /// 沉溺四段包：Request（客户端→服务器，index+type+generation，
-    /// generation 允许为 0——客户端可能铸不出章，服务器按 index+type 回退再盖自己的）；
+    /// generation 允许为 0：客户端可能铸不出章，服务器按 index+type 回退再盖自己的）；
     /// Apply（服务器→全体，owner+drownId+seed+身份组，各端演出时间轴自此起跑）；
     /// Cancel（服务器→全体，目标提前没了的谢幕令）；
     /// Complete（服务器→全体，权威完成帧的沉湖记忆通报，仅所有者本机入账）。

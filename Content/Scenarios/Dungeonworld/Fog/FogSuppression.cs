@@ -5,7 +5,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Fog
 {
     /// <summary>
     /// 雾抑制公开 API：圆/矩形区域 + TTL + 边缘羽化，多请求取最小因子。<br/>
-    /// 消费者模式=短 TTL + 按帧续订，消费者消失请求自动过期——无注销接口即无泄漏。<br/>
+    /// 消费者模式=短 TTL + 按帧续订，消费者消失请求自动过期，无注销接口即无泄漏。<br/>
     /// 因子作用在模拟目标值上，压雾/回雾自动继承驱散快/回聚慢的时间不对称（FOG.md §5）。<br/>
     /// 首版消费者：深牢怨灵禁室压雾（DungeonworldFogSystem）；将来安全区/排雾机关直接调用
     /// </summary>

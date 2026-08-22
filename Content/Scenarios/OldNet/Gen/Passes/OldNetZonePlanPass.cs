@@ -4,7 +4,7 @@ using Terraria.WorldBuilding;
 
 namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Passes
 {
-    //P30 分带规划：纯数据零tile写入——建立四带上下文、宏观足印入格、
+    //P30 分带规划：纯数据零tile写入，建立四带上下文、宏观足印入格、
     //锚位裁决（封锁区/中继在栅格上互斥落位，撤销一切硬编码列位）
     internal class OldNetZonePlanPass : GenPass
     {

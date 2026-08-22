@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
                 context.SetCameraZoom(1.4f, 0.02f);
             }
             else if (t < FishronVortexGrabState.LaunchTick) {
-                //深潜死寂：贴得最近，水面渐平——最安静的一拍
+                //深潜死寂：贴得最近，水面渐平，最安静的一拍
                 context.SetCameraFocus(heart + new Vector2(0f, 26f), 0.1f);
                 context.SetCameraZoom(1.46f, 0.03f);
             }
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
     /// <summary>
     /// 投技玩家侧：位移与控制锁只由被抓玩家自己的客户端施加（玩家位置客户端权威），
     /// 运镜/滤镜/闷音只在 Main.myPlayer==受害者 时启用；旁观者两不沾。
-    /// 抽吸期的吸力也在本地施加——可以逆流游出去
+    /// 抽吸期的吸力也在本地施加，可以逆流游出去
     /// </summary>
     internal class FishronGrabPlayer : ModPlayer
     {
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
 
         /// <summary>
         /// 抽吸吸力：只对本机自己的玩家施加（位置客户端权威）。
-        /// 力度低于起飞/冲刺加速度——决意外游必能脱出，站桩才会被卷
+        /// 力度低于起飞/冲刺加速度，决意外游必能脱出，站桩才会被卷
         /// </summary>
         private void ApplySuction(DukeFishronAI ov, FishronVortexSnareState snare) {
             if (Main.dedServ || Player.whoAmI != Main.myPlayer || !Player.Alives() || Player.ghost) {

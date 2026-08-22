@@ -1,5 +1,5 @@
 // ============================================================================
-//DungeonworldEntryReveal.fx 地牢子世界入场揭示——落底后棺门自中央竖缝向两侧推开
+//DungeonworldEntryReveal.fx 地牢子世界入场揭示，落底后棺门自中央竖缝向两侧推开
 //uReveal: 0=闭合黑幕;0..1 推开(CPU 已做 SmoothStep 缓动);>1 残余黑角淡出
 //预乘输出进 AlphaBlend:黑幕本体 rgb=0,金缘与顶光加进 rgb
 //直线算术,无动态分支,无采样器;参数接口与 CybCourseEntryReveal 同构(uTime/uReveal/uAspectRatio)

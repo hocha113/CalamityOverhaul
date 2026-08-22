@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
     /// <summary>
     /// 锁芯烧穿：无钥匙解锁上锁容器，随机烧毁其中一件。<br/>
-    /// 箱子是世界实体，权威端可以直接写 <c>Main.chest[].item[]</c>——
+    /// 箱子是世界实体，权威端可以直接写 <c>Main.chest[].item[]</c>
     /// 这与玩家背包（服务端写不进，见 tml-netcode-pitfalls §6.2）是两回事。
     /// 解锁走 <see cref="Chest.Unlock"/> + <see cref="MessageID.Unlock"/> 广播
     /// （镜像原版 MessageBuffer case 52 的服务端转发），烧毁槽位走
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool CanApplyTo(IHackTarget target) {
             if (!base.CanApplyTo(target)) return false;
             if (target is not ContainerScannable c) return false;
-            //必须上锁，且锁型在可烧穿名单里——名单镜像 Chest.Unlock 的
+            //必须上锁，且锁型在可烧穿名单里，名单镜像 Chest.Unlock 的
             //接受集，避免"付了 8 RAM 却开不了"的静默失败
             if (!Chest.IsLocked(c.AnchorX, c.AnchorY)) return false;
             return CanBurnOpen(c.AnchorX, c.AnchorY);

@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.CrimsonBrides
         private const float HallRadius = 520f;
 
         /// <summary>
-        /// 合卺帧给喜堂里的宾客系上缚印。喜堂里时间是停住的——
+        /// 合卺帧给喜堂里的宾客系上缚印。喜堂里时间是停住的
         /// 缚在身上时，同一施加者的其他印记不走表
         /// </summary>
         internal static void BindHallGuests(Player owner) {
@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.CrimsonBrides
                 WraithPlayer.CrimsonBrideKey);
 
         /// <summary>失格中止：跳到散场起点。计时越过合卺帧后自然不再结算，
-        /// 不得置 <see cref="RestoreFired"/>——那会让客户端把中止误读成合卺确认而错误满血。</summary>
+        /// 不得置 <see cref="RestoreFired"/>：那会让客户端把中止误读成合卺确认而错误满血。</summary>
         private void AbortToDepart() {
             if (RiteTimer < CrimsonBrideRestart.PhaseUnionEnd) {
                 RiteTimer = CrimsonBrideRestart.PhaseUnionEnd;

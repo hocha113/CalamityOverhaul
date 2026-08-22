@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
 
     /// <summary>
     /// 一条灵异叠加规则：某鬼声明"我对带某状态的猎物（或盘上发某状态的同伴）有什么反应"。<br/>
-    /// 规则绑定状态语义而非具体某只鬼——任何发同一状态的新鬼自动接入既有反应。<br/>
+    /// 规则绑定状态语义而非具体某只鬼，任何发同一状态的新鬼自动接入既有反应。<br/>
     /// 文案与行为同源：结印盘边名从这些声明推导，不再另维护一张配对表
     /// </summary>
     internal sealed class WraithSynergyRule
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         /// <summary>
         /// 两只鬼之间那条边的名字与说明，从双方声明推导：
         /// 一方的规则被另一方的发射触发（或通配）即亮；
-        /// 全不沾则落到「相唤」——它们仍然在互相催醒，边不该是死的
+        /// 全不沾则落到「相唤」，它们仍然在互相催醒，边不该是死的
         /// </summary>
         internal static (LocalizedText Name, LocalizedText Note) EdgePair(string keyA, string keyB) {
             if (string.IsNullOrEmpty(keyA) || string.IsNullOrEmpty(keyB) || keyA == keyB

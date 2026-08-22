@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 {
     /// <summary>
     /// 千手：终结定格期自玩家背后浮出的一只持刀鬼手。<br/>
-    /// 六只错拍挥出，各自朝不同角度落一记断斩——终结那一停里同框多刀。<br/>
+    /// 六只错拍挥出，各自朝不同角度落一记断斩，终结那一停里同框多刀。<br/>
     /// 手本身不结算伤害，斩由 <see cref="CrimsonRendCleave"/> 承担，
     /// 所以它不会偷偷多打，看到几刀就是几刀。<br/>
     /// ai[0]=绕身角度 ai[1]=基础武器伤害 ai[2]=起手延迟(帧)

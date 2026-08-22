@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Tutorial
 {
     /// <summary>
     /// 义体转盘引导：首次装上带主动技能的义体后，教"转盘选定 → 触发键释放"两步
-    /// <br/>触发靠每帧轮询装配表而非装机事件——权威端事件本机收不到，读档也不会补发
+    /// <br/>触发靠每帧轮询装配表而非装机事件，权威端事件本机收不到，读档也不会补发
     /// <br/>经 <see cref="GuideLeadQueue"/> 排队，晚于比目鱼、早于委托
     /// </summary>
     internal class CyberwareGuideLead : ModSystem, ILocalizedModType, IGuideLead

@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
 
     /// <summary>
     /// 生吞入腹的玩家侧：被吞玩家自己的客户端负责钉位/锁控/免疫/挤压拍结算/释放弹射。<br/>
-    /// 服务器绝不写玩家位置——一切位移与生命结算都发生在此(玩家位置与生命是客户端权威)
+    /// 服务器绝不写玩家位置，一切位移与生命结算都发生在此(玩家位置与生命是客户端权威)
     /// </summary>
     internal class EowDevourPlayer : ModPlayer
     {

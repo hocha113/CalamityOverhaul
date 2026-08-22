@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         private static Color ThemeBlood => KikasaDomain.CoolTint(new(220, 40, 26), new(120, 150, 156));
         private static Color ThemeCore => new(255, 244, 230);
-        /// <summary>蒸汽白：近白微血——烧滚的血水汽</summary>
+        /// <summary>蒸汽白：近白微血，烧滚的血水汽</summary>
         private static Color SteamPale => KikasaDomain.CoolTint(new(236, 224, 220), new(206, 216, 218));
 
         private float Seed => Projectile.identity * 0.7391f % 1f;
@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             UpdateLakeBoil(beamDir);
         }
 
-        /// <summary>射线扫过血湖：交点处水被烧沸——蒸汽柱、行波扭曲、飞血与嘶鸣</summary>
+        /// <summary>射线扫过血湖：交点处水被烧沸，蒸汽柱、行波扭曲、飞血与嘶鸣</summary>
         private void UpdateLakeBoil(Vector2 dir) {
             Player owner = Main.player[Projectile.owner];
             if (owner?.active != true
@@ -217,7 +217,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (t % 2 == 0) {
                 KikasaDomainDeco.RippleAt(cross, MathHelper.Clamp(1.3f + sweep * 0.05f, 1.3f, 2.4f));
             }
-            //蒸汽白雾柱：贴水快速腾起（每帧 1 团短命雾——雾池 120 上限是全场共用的）
+            //蒸汽白雾柱：贴水快速腾起（每帧 1 团短命雾，雾池 120 上限是全场共用的）
             PRTLoader.NewParticle<PRT_GhostRainMist>(
                 cross + new Vector2(Main.rand.NextFloat(-20f, 20f), -Main.rand.NextFloat(2f, 14f)),
                 new Vector2(dir.X * 0.5f + Main.rand.NextFloat(-0.3f, 0.3f), -Main.rand.NextFloat(1.8f, 3.4f)),
@@ -308,7 +308,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             DrawAdditiveDressing(MathHelper.Clamp(beamWidth / MaxWidth, 0f, 1f));
         }
 
-        /// <summary>KikasaMoonRay.fx 三层束体：预乘 AlphaBlend——暗缘要能压暗背景</summary>
+        /// <summary>KikasaMoonRay.fx 三层束体：预乘 AlphaBlend：暗缘要能压暗背景</summary>
         private void DrawShaderBeam(Effect effect, Texture2D noise, float opacity) {
             Vector2 mouth = Projectile.Center;
             Vector2 dir = Projectile.rotation.ToRotationVector2();

@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
     /// <summary>
     /// 拆解协议的配方反查表。<br/>
-    /// 设计稿写 PostSetupContent 建表，但那时 <c>Main.recipe</c> 还是空的——
+    /// 设计稿写 PostSetupContent 建表，但那时 <c>Main.recipe</c> 还是空的
     /// 配方在 AddRecipes 阶段才注册，所以建表挪到 <see cref="PostAddRecipes"/>。<br/>
     /// 存 Recipe 引用而不是数组下标，配方排序整理不影响表的有效性
     /// </summary>

@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// 与 <see cref="ProjectileHijack"/> 的分工：那条改一发已经在飞的弹，
     /// 这条改弹幕源，目标本身不受影响、照常开火。<br/>
     /// 真正的翻转在 <see cref="HackNpcSourceProjectile.OnSpawn"/>（权威端，赶在生成包发出之前）
-    /// 与 <c>ReceiveExtraAI</c>（各客户端）里各自执行——hostile/friendly 不在任何原版同步包里，
+    /// 与 <c>ReceiveExtraAI</c>（各客户端）里各自执行，hostile/friendly 不在任何原版同步包里，
     /// 只在权威端翻等于联机空炮，这是镜像 ProjectileHijack 修复后的裁决
     /// </summary>
     internal class PayloadRewrite : QuickHackDef

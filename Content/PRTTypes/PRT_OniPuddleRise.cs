@@ -6,7 +6,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// 鬼雨立伞水洼呼出的上浮黑水滴：倒着落的雨——自水面渗出般淡入，
+    /// 鬼雨立伞水洼呼出的上浮黑水滴：倒着落的雨，自水面渗出般淡入，
     /// 越升越快（有封顶），横向微摆，速度纵向拉伸，头顶一线青灰湿亮，
     /// 尾段散作潮气。Extra_98 真 alpha，暗体非加色。
     /// </summary>

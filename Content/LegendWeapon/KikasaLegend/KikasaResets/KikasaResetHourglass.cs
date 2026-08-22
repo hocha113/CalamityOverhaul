@@ -455,7 +455,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
     }
 
     /// <summary>
-    /// 沙漏的绘制层：物块之后、NPC/玩家之前——被倒放的演员从沙漏前掠过，
+    /// 沙漏的绘制层：物块之后、NPC/玩家之前，被倒放的演员从沙漏前掠过，
     /// 读作背景结构；Weight 压在血湖领域调色(1.24)之前，
     /// 领域调色与湖面镜面会把它一并接管（沙漏在血湖里有倒影）
     /// </summary>

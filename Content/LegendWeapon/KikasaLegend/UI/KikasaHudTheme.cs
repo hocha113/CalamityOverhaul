@@ -6,7 +6,7 @@ using Terraria.GameInput;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 {
     /// <summary>
-    /// 伞下水鏡 HUD 色板与几何。HUD 不用图标表示领域形态——
+    /// 伞下水鏡 HUD 色板与几何。HUD 不用图标表示领域形态
     /// 整面鏡子随 RainBlend 在两套现成色板间浸染：
     /// 血湖态取 <see cref="KikasaVaults.KikasaVaultTheme"/> 族（与 KikasaGrade.fx 同源），
     /// 鬼雨态取 <see cref="KikasaStoryTheme"/> 族（与 KikasaSky.fx RAIN_* 同源，禁红禁暖）。
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             => MathF.Sin(time * speed + seed * 17.39f) * 0.5f + 0.5f;
 
         /// <summary>
-        /// 翻转期把镜面预览混进浸染，色先于形态半步——
+        /// 翻转期把镜面预览混进浸染，色先于形态半步
         /// 风铃 HUD 与湖心景共用这份换算（原 KikasaSceneUI.EffectiveRain）
         /// </summary>
         public static float EffectiveRain(KikasaDomainPlayer domain) {

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// 实现是"在 AI 通道里撒谎"：<see cref="HackNpcProtocolNPC"/> 在 PreAI 前
     /// 把 <c>npc.life</c> 顶到 95% lifeMax，PostAI 无条件还原（tML 里 PostAI
     /// 不会被 PreAI 的 false 跳过，已对上游源码核过）。真实血量不变、伤害照算。<br/>
-    /// 只对相位每帧从 lifeRatio 现算的 Boss 有效——把相位闩进 newAI 的
+    /// 只对相位每帧从 lifeRatio 现算的 Boss 有效，把相位闩进 newAI 的
     /// （Thanatos / Twins / AstrumDeus 等）骗不动，所以走逐 Boss 白名单，
     /// 白名单之外 <see cref="CanApplyTo(IHackTarget)"/> 直接拒绝，不收白花的 RAM。<br/>
     /// 灾厄在场时 QueenBee / Plantera 的招式表跑在灾厄自家 GlobalNPC.PreAI 里

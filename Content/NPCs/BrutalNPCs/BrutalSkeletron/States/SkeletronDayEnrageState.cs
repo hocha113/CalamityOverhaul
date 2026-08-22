@@ -9,7 +9,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
 {
     /// <summary>白昼狂暴：晨光撕开诅咒的缰绳，头颅化作不可抗拒的旋杀死神<br/>
-    /// 惩罚态豁免（契约3.4）：无预警无缺口是本状态的设计目标——白昼拖延的代价即不可躲</summary>
+    /// 惩罚态豁免（契约3.4）：无预警无缺口是本状态的设计目标，白昼拖延的代价即不可躲</summary>
     [InnoVault.StateMachines.VaultState((int)SkeletronStateIndex.DayEnrage, typeof(SkeletronStateContext))]
     internal class SkeletronDayEnrageState : SkeletronStateBase
     {

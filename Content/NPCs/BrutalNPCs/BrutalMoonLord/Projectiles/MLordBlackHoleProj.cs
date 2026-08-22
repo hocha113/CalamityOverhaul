@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
         private const float PullRadius = 780f;
         /// <summary>强拉半径（此内拉力最大）</summary>
         private const float HardPullRadius = 260f;
-        /// <summary>被拉向洞的分速度封顶：低于它才施力——正常位移速度即可挣脱（逃逸阀）</summary>
+        /// <summary>被拉向洞的分速度封顶：低于它才施力，正常位移速度即可挣脱（逃逸阀）</summary>
         private const float EscapeTowardSpeedCap = 8f;
         /// <summary>出手后引力宽限帧：贴脸掷出不做无预警吸附</summary>
         private const int GraceFrames = 20;

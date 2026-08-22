@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
 {
     /// <summary>
     /// 深牢禁室落位 pass（待注册）。A 路接线：在 Dungeonworld.Tasks 的 P50 装修段
-    /// 前后插入 <c>new GaolBossRoomPass(() => 选址)</c> 即可——坐标提供者返回房间
+    /// 前后插入 <c>new GaolBossRoomPass(() => 选址)</c> 即可，坐标提供者返回房间
     /// 左上角 tile 坐标（尺寸见 GaolBossRoom.Width/Height），返回 null 则本次跳过。
     /// 选址建议参数见 Doc\plans\Dungeonworld\BOSS-DeepGaolWraith.md §Boss 房。
     /// </summary>

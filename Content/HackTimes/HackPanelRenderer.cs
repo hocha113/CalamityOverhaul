@@ -370,7 +370,7 @@ namespace CalamityOverhaul.Content.HackTimes
             float centered = (screenH - (viewportHeight + footerHeight)) * 0.5f;
             float maxStart = screenH - HackTheme.BottomSafe - viewportHeight - footerHeight;
             //可用高为负时（小屏 + 高 UI 缩放 + 大 MaxRam），避让线退让到刚好装下
-            //——宁可与弧的装饰环重叠，也不把可交互的行推出屏外
+            //：宁可与弧的装饰环重叠，也不把可交互的行推出屏外
             float minStart = MathF.Min(minY, MathF.Max(maxStart, 0f));
             viewportTop = MathHelper.Clamp(centered, minStart, MathF.Max(minStart, maxStart));
 
@@ -863,7 +863,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 float rowY = GetRowY(i);
                 float y = rowY - 20f;
                 //标题跟着自己那一行走：行滚没了就不画。
-                //允许探出视口上缘一点——那上面是 RAM 弧的留白，越界 20px 不碰到东西
+                //允许探出视口上缘一点，那上面是 RAM 弧的留白，越界 20px 不碰到东西
                 if (maxScroll > 0.5f
                     && (GetClipFade(rowY) <= 0.25f || y > viewportTop + viewportHeight - 8f)) {
                     continue;
@@ -1197,7 +1197,7 @@ namespace CalamityOverhaul.Content.HackTimes
         }
 
         /// <summary>
-        /// 协议计数文案。未持全时报"已解锁/总数"——未持有的协议不再占行，
+        /// 协议计数文案。未持全时报"已解锁/总数"，未持有的协议不再占行，
         /// 这一行是玩家唯一能看出库外还有协议的地方
         /// </summary>
         private string ResolveCountText(out bool partialOwned) {

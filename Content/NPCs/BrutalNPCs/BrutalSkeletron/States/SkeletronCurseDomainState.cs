@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
 {
     /// <summary>诅咒黑暗领域·猎杀（二阶段签名）：视界压缩，诅咒烛环收拢，
-    /// 黑暗中只剩眼火与冠火——头颅三次自环缘凝形，沿预警线直贯扑杀</summary>
+    /// 黑暗中只剩眼火与冠火，头颅三次自环缘凝形，沿预警线直贯扑杀</summary>
     [InnoVault.StateMachines.VaultState((int)SkeletronStateIndex.CurseDomain, typeof(SkeletronStateContext))]
     internal class SkeletronCurseDomainState : SkeletronStateBase
     {
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
         internal const int RingLife = SkeletronCurseWisp.OrbitFrames;   //与烛灵寿命对齐
         internal const int Duration = RingSpawn + RingLife + 26;
 
-        /// <summary>缺口（契约3）：烛环每 RingGapStride 槽永空一位——三条固定穿行走廊，布环循环直接读取</summary>
+        /// <summary>缺口（契约3）：烛环每 RingGapStride 槽永空一位，三条固定穿行走廊，布环循环直接读取</summary>
         private const int RingGapStride = 4;
 
         //猎杀节拍：散形→环缘凝形（预警线读秒）→直贯扑杀→刹车

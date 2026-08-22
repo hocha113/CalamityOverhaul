@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.States
 {
     /// <summary>
     /// 拼装军团：吊臂探向地面，把仆从从废钢堆/地里拉起来。
-    /// 优先用场上废钢堆的位置出兵——迫击留下的堆是它的兵营
+    /// 优先用场上废钢堆的位置出兵，迫击留下的堆是它的兵营
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)ScrapStateIndex.Legion, typeof(ScrapStateContext))]
     internal class ScrapLegionState : ScrapStateBase

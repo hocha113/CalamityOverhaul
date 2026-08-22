@@ -30,18 +30,18 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
     ///
     /// <b>三条通道，别写错端</b>：<br/>
     /// · <b>防守方通道</b>（<see cref="OnDefenderApply"/> / <see cref="OnDefenderTick"/> /
-    ///   <see cref="OnDefenderRemove"/>）——只在防守方本机跑，落点必须是防守方自己的资源：
+    ///   <see cref="OnDefenderRemove"/>），只在防守方本机跑，落点必须是防守方自己的资源：
     ///   ModPlayer 字段、属性乘区、本机 <c>AddBuff</c>（自己给自己上 buff，msg 50 自动扩散图标）、
     ///   本机 <c>Hurt(pvp:true)</c>。<br/>
     /// · <b>权威通道</b>（<see cref="OnAuthorityGranted"/> / <see cref="OnAuthorityRevoked"/>）
-    ///   ——在服务端（单人=本机）跑，落点必须是服务端拥有的资源：RAM、授予账载荷（额度/计数）。
+    ///   ：在服务端（单人=本机）跑，落点必须是服务端拥有的资源：RAM、授予账载荷（额度/计数）。
     ///   例：内存烧蚀在这里烧 RAM，战术榨取在这里记回流额度。<br/>
     /// · <b>表现通道</b>（<see cref="OnSpectatorTick"/> / <see cref="DrawDefenderOverlay"/>）
-    ///   ——前者在每个客户端跑（数据源是 PlayerEffectState 广播镜像，含攻击方与旁观者），
+    ///   ：前者在每个客户端跑（数据源是 PlayerEffectState 广播镜像，含攻击方与旁观者），
     ///   后者只在防守方本机 HUD 层跑。表现不读防守方本机数值（观众读不到，也不该读）。<br/><br/>
     ///
     /// <b>per-effect 状态放哪</b>：写进 <see cref="PlayerHackEffect.ProtocolState"/>
-    /// （防守方侧）或 <see cref="PlayerHackGrant.AuthorityState"/>（服务端侧）——
+    /// （防守方侧）或 <see cref="PlayerHackGrant.AuthorityState"/>（服务端侧）
     /// 帐本条目是实例化的，生命周期随效果自清，<b>不要开协议侧静态字典</b>
     /// （这是与 NPC 协议不同的一点：NPC 侧追踪器条目不可挂载荷才被迫外挂静态账）。<br/><br/>
     ///
@@ -49,11 +49,11 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
     /// （服务端写、防守方读，前置 1 字节长度由管线负责）；防守方要回传真值
     /// （如增益抽取的 buff 型号与真实剩余时长）走 <see cref="WriteReceiptPayload"/> →
     /// <see cref="HandleReceiptPayload"/>（防守方写、服务端读并转交攻击方结算）。
-    /// 读侧不用自己守流对齐——管线按长度前缀切好子流才调你。<br/><br/>
+    /// 读侧不用自己守流对齐，管线按长度前缀切好子流才调你。<br/><br/>
     ///
-    /// <b>红线（框架层强制）</b>：完全失控 0 帧——基类不提供任何输入劫持入口；
+    /// <b>红线（框架层强制）</b>：完全失控 0 帧，基类不提供任何输入劫持入口；
     /// 减速/迟滞/烧蚀/生命伤害一律经 <see cref="HackPvPRules"/> 的 Clamp* 落地，
-    /// 数值超限会被静默压回上限，别试。每个可感知效果必须有 HUD 条目——
+    /// 数值超限会被静默压回上限，别试。每个可感知效果必须有 HUD 条目
     /// 这由框架保证（帐本条目即 HUD 条目），协议作者无需也无法自行开关。<br/><br/>
     ///
     /// <b>SetDefaults 写法</b>（与 NPC 协议一致，但目标位被基类钉死为 Player）：
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
 
         /// <summary>
         /// 目标位在类型层钉死为 Player：先跑子类 <see cref="QuickHackDef.SetDefaults"/>，
-        /// 再强制覆写 <c>SupportedTargets</c>——权威通道与防守通道在类型层分开，
+        /// 再强制覆写 <c>SupportedTargets</c>：权威通道与防守通道在类型层分开，
         /// 双目标协议在结构上不可表达（用户裁决：玩家是另一个系统，不做 NPC 协议适配）
         /// </summary>
         public sealed override void VaultSetup() {
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
         /// <summary>
         /// 服务端授予时（发出 DefenderApply 的同一帧）。落点只许是服务端拥有的资源：
         /// RAM 直写、<paramref name="grant"/>.AuthorityState 记额度。
-        /// 不要在这里碰防守方的生命/buff/背包——服务端写不进（tml-netcode-pitfalls §6.2）
+        /// 不要在这里碰防守方的生命/buff/背包，服务端写不进（tml-netcode-pitfalls §6.2）
         /// </summary>
         public virtual void OnAuthorityGranted(Player caster, Player defender,
             PlayerHackGrant grant) { }
@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
         public virtual void ReadApplyPayload(BinaryReader reader, PlayerHackEffect effect) { }
 
         /// <summary>
-        /// 防守方 → 服务端的回执真值（如增益抽取：被抽 buff 型号与真实剩余时长——
+        /// 防守方 → 服务端的回执真值（如增益抽取：被抽 buff 型号与真实剩余时长
         /// msg 50 给远端的 buffTime 全是 60 占位，全世界只有防守方知道真值）。默认空载荷
         /// </summary>
         public virtual void WriteReceiptPayload(BinaryWriter writer,
@@ -175,7 +175,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
         /// <summary>
         /// 每客户端逐帧，数据源是 PlayerEffectState 广播镜像（elapsed 为服务端影子时钟，
         /// 60f 刷新粒度 + 本机补间）。攻击方与旁观者的世界表现（描边光、粒子）写这里。
-        /// 防守方本机也会收到自己的镜像——想只对旁观者生效就查
+        /// 防守方本机也会收到自己的镜像，想只对旁观者生效就查
         /// <c>defender.whoAmI != Main.myPlayer</c>
         /// </summary>
         public virtual void OnSpectatorTick(Player defender, int casterIndex,
@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
 
         /// <summary>
         /// HUD 条目图标的晶粒纹（SvgPathPen 路径，M/L/Q/C 指令，归一 [-1,1] 空间）。
-        /// 返回 null 走 <c>HackChipGlyph.FallbackDie</c> 通用电路纹——不配纹样也能上线
+        /// 返回 null 走 <c>HackChipGlyph.FallbackDie</c> 通用电路纹，不配纹样也能上线
         /// </summary>
         public virtual string GlyphDiePath => null;
 

@@ -2,7 +2,7 @@
 //KikasaUmbrella.fx 悬伞伞面处理(KikasaItemForm 血统:物品贴图 alpha 承载)
 //TechCanopy:湿墨光泽随自旋横扫(旋转要被看见)+伞骨水膜下流+轮廓湿水线
 //          +内建鬼眼(uEye 开阖/uEyeLook 瞳向/uEyeGlow 释放红芒,雨随目光)
-//TechFill: 倒撑蓄墨的碗内液面(独立椭圆 quad,与贴图布局解耦)——
+//TechFill: 倒撑蓄墨的碗内液面(独立椭圆 quad,与贴图布局解耦)
 //          液面随 uSlosh 晃荡、缘高中低的张力弯月、满蓄溢缘
 //坐标全笛卡尔;直线算术+普通 tex2D,FNA3D 安全;预乘输出进 AlphaBlend 批
 //s0=物品贴图(TechFill 为画布,不采样) s1=PerlinNoise
@@ -55,7 +55,7 @@ float4 PSCanopy(float4 vc : COLOR0, float2 uv : TEXCOORD0) : COLOR0 {
     //伞盖区权重:上半为盖,扫光与水膜只认盖
     float canopyW = 1.0 - smoothstep(0.42, 0.64, luv.y);
 
-    //湿光扫掠:高光带位置=sin(自旋相位),背面(cos<0)减弱——伪偏航自旋的光学证据
+    //湿光扫掠:高光带位置=sin(自旋相位),背面(cos<0)减弱，伪偏航自旋的光学证据
     float lx = luv.x * 2.0 - 1.0;
     float sweepPos = sin(uSpinPhase) * 0.7;
     float dSweep = lx - sweepPos;

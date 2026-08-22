@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
     /// <summary>
     /// 地图熄灭的防守方本机渲染钩子。两条路各管一半：<br/>
     /// · 常规界面：整层禁用 "Vanilla: Map / Minimap"（小地图、覆盖式大地图、
-    ///   其上的队友头像与图钉一并熄灭）——只翻本帧的图层 Active 位，
+    ///   其上的队友头像与图钉一并熄灭），只翻本帧的图层 Active 位，
     ///   图层表每帧由 tML 重建，效果一到期自动复原；<br/>
     /// · 全屏地图：它不走界面图层，在 <c>PostDrawFullscreenMap</c> 里糊整幅雪花
     ///   （全屏地图本来就盖住战场，这里糊满不违反"不遮挡角色与弹幕"红线），
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 
         /// <summary>
         /// 雪花面板：实底 + 噪声细胞 + 扫描亮线 + 1px 边框 + 失联角标。
-        /// 亮色语汇，不做 magic-pixel 暗羽化（UI 律）。cell 越大越省——
+        /// 亮色语汇，不做 magic-pixel 暗羽化（UI 律）。cell 越大越省
         /// 小地图用 8，全屏用 20
         /// </summary>
         internal static void DrawSnow(SpriteBatch sb, Rectangle rect, float seed,

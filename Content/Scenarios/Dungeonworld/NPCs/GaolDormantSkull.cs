@@ -146,7 +146,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             }
 
             if (t == RattleAt) {
-                //第三拍：整颅战栗，近处震屏——最后的逃跑窗口
+                //第三拍：整颅战栗，近处震屏，最后的逃跑窗口
                 SoundEngine.PlaySound(SoundID.NPCHit36 with { Volume = 0.5f, Pitch = -0.5f, MaxInstances = 2 }, NPC.Center);
                 ShakeNearby(2f);
             }

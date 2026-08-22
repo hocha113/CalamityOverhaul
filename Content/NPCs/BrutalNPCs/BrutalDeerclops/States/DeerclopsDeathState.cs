@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
         public override string StateName => "Death";
         public override DeerclopsStateIndex StateIndex => DeerclopsStateIndex.Death;
 
-        //演出节拍(帧)——运镜与玩家侧对齐这些常量
+        //演出节拍(帧)：运镜与玩家侧对齐这些常量
         internal const int StaggerEnd = 70;
         internal const int GazeEnd = 190;
         internal const int ImpactFrame = 230;
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
             }
             context.HaltMovement = true;
 
-            //幕一：踉跪，风雪骤停——整场战斗第一次澄澈
+            //幕一：踉跪，风雪骤停，整场战斗第一次澄澈
             if (Timer <= StaggerEnd) {
                 context.VeilTarget = 0.03f;
                 context.AnimMode = DeerAnimMode.Crouch;
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                 return null;
             }
 
-            //幕二：最后的凝视——挣扎起身，独眼明灭，躯体冰裂
+            //幕二：最后的凝视，挣扎起身，独眼明灭，躯体冰裂
             if (Timer <= GazeEnd) {
                 context.VeilTarget = 0.03f;
                 context.AnimMode = DeerAnimMode.Roar;
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                 context.VeilTarget = 0.03f;
                 context.AnimMode = DeerAnimMode.Crouch;
                 float fallT = MathHelper.Clamp((Timer - GazeEnd) / (float)(ImpactFrame - GazeEnd), 0f, 1f);
-                //poly(3)前扑——起慢坠快
+                //poly(3)前扑，起慢坠快
                 context.BodyLean = fallT * fallT * fallT * 0.62f;
                 context.EyeGlow = 0.9f;
 
@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                 return null;
             }
 
-            //幕四：寂静消散——自足向上化雪
+            //幕四：寂静消散，自足向上化雪
             context.VeilTarget = 0f;
             context.AnimMode = DeerAnimMode.Crouch;
             context.BodyLean = 0.62f;

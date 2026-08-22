@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// <summary>
     /// 躯壳征用：标记目标，不改任何行为；标记期间被打死的目标在原地
     /// 立起一具 <see cref="ShellPuppetProj"/> 傀儡替你打十五秒。<br/>
-    /// 不真的复活 NPC 实体——傀儡是借死者贴图绘制的友方弹幕，
+    /// 不真的复活 NPC 实体，傀儡是借死者贴图绘制的友方弹幕，
     /// 战利品照掉（死亡走正常管线）。投资型协议：花 5 RAM 押"我能在窗口内杀掉它"。<br/>
     /// 死亡边由 <see cref="HackNpcProtocolNPC.OnKill"/> 接（权威端独占），
     /// 效果本身留给追踪器按房规收尾（目标死亡照常给击杀退款）
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         }
 
         /// <summary>
-        /// 标记目标死亡时由权威端调用；生成傀儡并显式广播——
+        /// 标记目标死亡时由权威端调用；生成傀儡并显式广播
         /// 服务端替玩家生成的弹幕不带自动同步包（owner 不是服务端的 myPlayer）
         /// </summary>
         internal static void OnMarkedKill(NPC npc, ActiveHackEffect effect) {

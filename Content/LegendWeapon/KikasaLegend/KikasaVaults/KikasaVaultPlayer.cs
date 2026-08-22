@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
     /// <summary>
     /// 鬼伞·湖藏。血湖是施术者私有的异空间储物场：
     /// 沉入当帧物品即入账（演出只是幽灵视觉），提取先入"在途"、凝实拍才交付背包，
-    /// 存档时在途物折返湖藏——中途退出不丢不复制。数据只活在所有者本机，同储钱罐语义。
+    /// 存档时在途物折返湖藏，中途退出不丢不复制。数据只活在所有者本机，同储钱罐语义。
     /// </summary>
     public class KikasaVaultPlayer : ModPlayer
     {
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
         /// <summary>提取演出在途的物品；交付背包前的暂存，存档时折返湖藏</summary>
         internal readonly List<Item> inFlight = [];
 
-        /// <summary>血湖是否可收发物品：本人领域非收合/翻转/鬼梦阶段且水位已及脚——梦里没有那面湖</summary>
+        /// <summary>血湖是否可收发物品：本人领域非收合/翻转/鬼梦阶段且水位已及脚，梦里没有那面湖</summary>
         public bool LakeReady {
             get {
                 KikasaDomainPlayer domain = Player.GetModPlayer<KikasaDomainPlayer>();

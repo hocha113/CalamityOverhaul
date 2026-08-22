@@ -13,12 +13,12 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 {
     /// <summary>
     /// 内存烧蚀（芯片档）：落地即烧防守方 3 RAM，随后十秒回复率归零。<br/>
-    /// <b>落点是 RAM——服务端拥有的资源</b>，烧蚀与封回复全在权威通道结算
+    /// <b>落点是 RAM：服务端拥有的资源</b>，烧蚀与封回复全在权威通道结算
     /// （<see cref="OnAuthorityGranted"/> / <see cref="OnAuthorityRevoked"/>，结算落点表 §1.4）；
     /// 防守方通道只做本机表现，不碰任何数值。防守方 HUD 的 RAM 弧随权威快照自然掉格。<br/>
     /// 封回复走既有 <see cref="IRamModifierProvider"/> 通道（PrivilegeRamSuppressor 同款）：
     /// 大负数经 RecomputeEffectiveCore 的 [0, Max] 夹取落成零回复，
-    /// <b>只封自然回复，不封消费与退款</b>——防守方的回溯/卸载弹药不受影响（反挫败底线）。<br/>
+    /// <b>只封自然回复，不封消费与退款</b>：防守方的回溯/卸载弹药不受影响（反挫败底线）。<br/>
     /// 授予从未转正（防守方拒绝/回执超时）时把烧掉的 RAM 全额还给防守方
     /// </summary>
     internal class MemoryScorch : PlayerHackDef
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 
         private static readonly Color Ember = new(255, 140, 60);
 
-        /// <summary>晶粒纹：躯体旁一列内存格，顶格断裂上蹿火舌——弹药库正在烧</summary>
+        /// <summary>晶粒纹：躯体旁一列内存格，顶格断裂上蹿火舌，弹药库正在烧</summary>
         internal const string Die =
             "M -0.70 -0.44 L -0.30 -0.44 M -0.70 0.44 L -0.30 0.44 "
             + "M -0.70 -0.44 Q -0.78 0 -0.70 0.44 M -0.30 -0.44 Q -0.22 0 -0.30 0.44 "
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
     /// IRamModifierProvider + ICWRLoader 自持注册，大负数回复加成经
     /// RecomputeEffectiveCore 的 [0, Max] 夹取落成零回复，不动任何现有文件。<br/>
     /// 记账是<b>服务端世界级</b>的 per-player 计数 + 到期帧双保险：计数由授予/撤销对称驱动
-    /// （每条授予必经 Revoke 退场），到期帧兜住任何漏减——残留封印活不过自己的时长
+    /// （每条授予必经 Revoke 退场），到期帧兜住任何漏减，残留封印活不过自己的时长
     /// </summary>
     internal sealed class MemoryScorchSeal : IRamModifierProvider, ICWRLoader
     {

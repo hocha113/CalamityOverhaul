@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaFishron
 {
     /// <summary>
-    /// 鬼奴·湖水版猪龙鱼公爵。全员唯一默认活在水下的鬼奴——渊主归湖：
+    /// 鬼奴·湖水版猪龙鱼公爵。全员唯一默认活在水下的鬼奴，渊主归湖：
     /// 跟随态是水面下的鱼雷环游，玩家只看得见割开水面的背鳍与身后的航迹涟漪
     /// （身体经裁剪只画水线以上，水下只留暗影团）。出场为背鳍远来：
     /// 航迹渐近高速逼近→玩家面前全身跃出的亮相回旋（血水在空中凝成真身）→落水入巡游。
@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
             lakeYCache = domain.LakeWorldY;
 
-            //生命线：只有 owner 裁决——服务器无领域状态（既定契约），
+            //生命线：只有 owner 裁决，服务器无领域状态（既定契约），
             //迟入场客户端首份快照前也会误判；其余端只跟 owner 的同步包换场
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
                 BeginDissolve();
@@ -372,7 +372,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     }
                 }
 
-                //弹道：越近弧顶重力越轻——悬拍让回旋读满
+                //弹道：越近弧顶重力越轻，悬拍让回旋读满
                 float g = 0.62f * (0.45f + 0.55f * MathHelper.Clamp(MathF.Abs(Projectile.velocity.Y) / 19f, 0f, 1f));
                 Projectile.velocity.Y += g;
 
@@ -779,7 +779,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (phase == 1) {
-                //绕圈：追参数点成圆，空中航速被水下压一头——空中不是它的主场
+                //绕圈：追参数点成圆，空中航速被水下压一头，空中不是它的主场
                 if (!ringInit) {
                     //环几何各端进相自建；绕向走确定性籽。中途接管的端
                     //从自己当前所在角续圆，不做闪跳
@@ -1129,7 +1129,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             return 1f;
         }
 
-        /// <summary>绘制旋转与翻面：原版猪龙鱼约定——贴图朝右；
+        /// <summary>绘制旋转与翻面：原版猪龙鱼约定，贴图朝右；
         /// 全角机动时向左走水平翻并给角度补 π，巡游时只做小倾角不补</summary>
         private void GetDrawPose(out float rotation, out SpriteEffects flip) {
             Vector2 v = Projectile.velocity;
@@ -1188,7 +1188,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             //水下暗影团：主批直接画（身体沉在湖里时唯一的"体量"读数）
             DrawUnderwaterShadow(sb, lakeAlive);
 
-            //本体：血湖材质 + 水线裁剪（湖面以下不画——只露背鳍）
+            //本体：血湖材质 + 水线裁剪（湖面以下不画，只露背鳍）
             DrawBody(sb, tex, frame, rotation, flip, alpha, lakeAlive);
 
             //加色层：水面行进光斑 / 鳍尖泡沫 / 咬合闪光
@@ -1198,7 +1198,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         private void DrawUnderwaterShadow(SpriteBatch sb, bool lakeAlive) {
-            //暗影团必须用真 alpha 的 Extra_98——黑底 SoftGlow 在 AlphaBlend 里会糊出黑块
+            //暗影团必须用真 alpha 的 Extra_98：黑底 SoftGlow 在 AlphaBlend 里会糊出黑块
             Texture2D shadow = CWRAsset.Extra_98?.Value;
             if (shadow == null || !lakeAlive || dissolveBurstDone
                 || Projectile.Center.Y < lakeYCache + 8f) {
@@ -1233,7 +1233,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     ? new Rectangle(0, cut, device.Viewport.Width, vh - cut)
                     : new Rectangle(0, 0, device.Viewport.Width, cut);
                 if (above.Height <= 0) {
-                    return;   //整个水上区都不在屏里，身体全沉着——没有可画的部分
+                    return;   //整个水上区都不在屏里，身体全沉着，没有可画的部分
                 }
                 if (above.Height < vh) {
                     clip = true;
@@ -1318,7 +1318,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             float speedX = MathF.Abs(Projectile.velocity.X);
 
-            //水下行进的水面光斑：速度越快越亮越长——航迹密度之外的第二速度读数
+            //水下行进的水面光斑：速度越快越亮越长，航迹密度之外的第二速度读数
             if (Projectile.Center.Y > lakeYCache + 8f && speedX > 3f) {
                 EnsureBegin();
                 float speedK = MathHelper.Clamp(speedX / 27f, 0.2f, 1f);

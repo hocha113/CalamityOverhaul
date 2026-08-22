@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 {
     /// <summary>
     /// 弦月突进：入位→迟滞回吸蓄势→一帧点火横贯，
-    /// 冲刺尾迹垂直抛洒双列弹幕成扩张的光墙——她本身就是弹幕源
+    /// 冲刺尾迹垂直抛洒双列弹幕成扩张的光墙，她本身就是弹幕源
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EmpressStateIndex.CrescentDash, typeof(EmpressStateContext))]
     internal class EmpressCrescentDashState : EmpressStateBase
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 }
             }
             else if (beat < PositionTime + FreezeTime) {
-                //屏息：动作全停，辉光拉满——冲刺前的寂静
+                //屏息：动作全停，辉光拉满，冲刺前的寂静
                 npc.damage = 0;
                 npc.velocity *= 0.55f;
                 context.SetChargeState(3, (beat - PositionTime) / (float)FreezeTime);
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     npc.damage = 0;
                 }
 
-                //冲刺尾迹：垂直抛洒弹幕，快慢双速交替——光墙张开成双层帷幕
+                //冲刺尾迹：垂直抛洒弹幕，快慢双速交替，光墙张开成双层帷幕
                 if (dashBeat % 2 == 0 && Math.Abs(npc.velocity.X) > 24f && !VaultUtils.isClient) {
                     int shed = dashBeat / 2;
                     float hue = (cycleIdx * 0.31f + shed * 0.034f) % 1f;

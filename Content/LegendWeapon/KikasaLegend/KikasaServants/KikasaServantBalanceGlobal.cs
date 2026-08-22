@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
     /// <summary>
     /// 鬼奴多驻同场的出力平衡：驻影席数越多单只越省力（合计仍是净增）。
     /// 在命中端统一乘 <see cref="KikasaEffigyBoard.ServantDamageScale"/>，
-    /// 覆盖鬼奴本体接触伤害与它们派生的一切子弹幕——
+    /// 覆盖鬼奴本体接触伤害与它们派生的一切子弹幕
     /// 逐个改 18 条鬼奴实现的伤害公式既碎又漏，标记随生成源传染一次即可
     /// </summary>
     internal class KikasaServantBalanceGlobal : GlobalProjectile

@@ -9,10 +9,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 {
     /// <summary>
     /// 调试快捷沉湖：背包里凑足 need 件已注册武器就全部消耗，
-    /// 以玩家为中心向上扇形散开、错帧坠入湖中——普通逐件沉湖的快捷版。
+    /// 以玩家为中心向上扇形散开、错帧坠入湖中，普通逐件沉湖的快捷版。
     /// 触发方式由调试代码自行接线（直接调 <see cref="TryQuickSink"/>）；
     /// 仅所有者本机受理，入账语义与 KikasaVaultPlayer.TrySink 逐件一致（湖藏数据本机私有），
-    /// 演出不发网络包——调试工具不惊动别的端
+    /// 演出不发网络包，调试工具不惊动别的端
     /// </summary>
     internal static class KikasaArmsQuickSink
     {

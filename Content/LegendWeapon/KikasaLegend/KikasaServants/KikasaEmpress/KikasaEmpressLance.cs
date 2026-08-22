@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// 女皇鬼奴的圣舞血矛：借原版 FairyQueenLance 贴图的血水凝矛。
     /// 整排七根一帧布阵在女皇头顶冠状弧线上（ai0=席位 ai1/ai2=各自落点），
     /// 虚影按席位逐根点亮（弧线阵列预告拍），然后按同一顺序逐根激发俯冲，
-    /// 落点沿目标横向排开成列；落水成整排错拍水花与涟漪列——图案的收尾也要美
+    /// 落点沿目标横向排开成列；落水成整排错拍水花与涟漪列，图案的收尾也要美
     /// </summary>
     internal class KikasaEmpressLance : ModProjectile
     {
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (!ignited) {
-                //预告期：悬停呼吸，矛尖缓缓校向落点——转率随临近激发收紧（锁线）
+                //预告期：悬停呼吸，矛尖缓缓校向落点，转率随临近激发收紧（锁线）
                 Projectile.velocity = Vector2.Zero;
                 float want = (AimPoint - Projectile.Center).ToRotation();
                 float k = MathHelper.Clamp(Life / IgniteFrame, 0f, 1f);
@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
 
                 //激发拍：一帧定速俯冲，不做斜坡；owner 盖章校准远端的时差漂移
-                //（不开引擎地形碰撞——湖下真地形被湖面盖住，钉地走 AI 内手动检测）
+                //（不开引擎地形碰撞，湖下真地形被湖面盖住，钉地走 AI 内手动检测）
                 if (Life >= IgniteFrame) {
                     ignited = true;
                     Vector2 dive = (AimPoint - Projectile.Center).SafeNormalize(Vector2.UnitY);
@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
 
-            //钉进地面（机制身份保留）：手动地形检测替代 tileCollide——
+            //钉进地面（机制身份保留）：手动地形检测替代 tileCollide
             //湖线以下的真地形被湖面盖住，交给上面的落水收尾
             if ((!lakeAlive || Projectile.Center.Y < kdp.LakeWorldY - 2f)
                 && Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height)) {

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
 {
     /// <summary>
     /// 蓄力短程突进：墙面压缩蓄势→整面墙猛扑一段→碾磨刹车。
-    /// 死线本身的杀招——推进速度就是武器。阶段3双连突进
+    /// 死线本身的杀招，推进速度就是武器。阶段3双连突进
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)WofStateIndex.SurgeDash, typeof(WofStateContext))]
     internal class WofSurgeDashState : WofStateBase
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
             return null;
         }
 
-        /// <summary>蓄势：墙近乎停滞、面缘白热、向心汇聚——静止越久，扑出越凶</summary>
+        /// <summary>蓄势：墙近乎停滞、面缘白热、向心汇聚，静止越久，扑出越凶</summary>
         private void UpdateTelegraph(WofStateContext context) {
             NPC npc = context.Npc;
             int telegraph = TelegraphFrames(context);

@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
 {
     /// <summary>
     /// 旧网接入终端：主世界侧的标准深潜入口（坠舱中舱随世界生成）。
-    /// 两次交互确认制——首次预热链路，5 秒内再次交互越墙深潜；
+    /// 两次交互确认制，首次预热链路，5 秒内再次交互越墙深潜；
     /// 深潜仅单人模式开放（旧网系统单人优先，MP 后置）
     /// </summary>
     internal class OldNetAccessTerminalTile : ModTile
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
-            //shader 路径：上行天线柱（与旧网内登出终端同语汇——两端是同一条链路）
+            //shader 路径：上行天线柱（与旧网内登出终端同语汇，两端是同一条链路）
             if (Renders.OldNetTileFX.TerminalShaderReady) {
                 Renders.OldNetTileFX.Columns.Add(new Renders.OldNetTileFX.ColumnEntry {
                     BasePos = new Vector2(i * 16 + 8, j * 16 + 16),

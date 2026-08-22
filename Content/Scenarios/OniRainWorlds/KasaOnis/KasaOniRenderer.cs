@@ -6,7 +6,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
 {
     /// <summary>
-    /// 伞鬼绘制：与鬼伞伞奴同根同源的换装——贴图/凝聚着色器/污潭全走
+    /// 伞鬼绘制：与鬼伞伞奴同根同源的换装，贴图/凝聚着色器/污潭全走
     /// <see cref="KikasaThrallRenderer"/>（KikasaThrall.png + KikasaThrallForm 帧矩形钳制），
     /// 敌对杂兵按 <see cref="BodyDrawScale"/> 画得比召唤伞奴矮一头。<br/>
     /// 出现/落定的水环与冷闪在 <see cref="DrawEmergeBeats"/>，对齐伞奴成形拍；
@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
     {
         /// <summary>
         /// 敌对伞鬼的贴图缩放：伞奴画布自带 1.6 倍身量，×0.75 后可见身板约为
-        /// 旧 KasaOni 素材的 1.2 倍——比人显眼、比召唤伞奴矮一头。验收可调
+        /// 旧 KasaOni 素材的 1.2 倍，比人显眼、比召唤伞奴矮一头。验收可调
         /// </summary>
         internal const float BodyDrawScale = 0.75f;
 

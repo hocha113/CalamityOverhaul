@@ -205,7 +205,7 @@ namespace CalamityOverhaul.Content.RAMSystems
             if (!snapshot.IsValid || snapshot.PlayerIndex != Player.whoAmI) {
                 return false;
             }
-            //同会话内旧版本丢弃；会话不同则直接收养——自身快照只可能来自
+            //同会话内旧版本丢弃；会话不同则直接收养，自身快照只可能来自
             //服务器权威，硬拒会在会话漂移后永久卡死本地显示
             if (ProfileInitialized && snapshot.SessionId == SessionId
                 && !IsRevisionAtLeast(snapshot.Revision, Revision)) {

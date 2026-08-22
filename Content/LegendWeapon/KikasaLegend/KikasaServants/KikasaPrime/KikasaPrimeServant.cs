@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaPrime
 {
     /// <summary>
-    /// 鬼奴·湖水版机械骷髅王——四械刑架。单弹幕内部模拟"头 + 四条工具臂"：
+    /// 鬼奴·湖水版机械骷髅王，四械刑架。单弹幕内部模拟"头 + 四条工具臂"：
     /// 头位权威同步，四臂在各端按锚点 + 摆动相位做弹簧摆模拟（链条下垂有重量），
     /// 臂链用原版 Arm_Bone_2 骨节沿悬链弧分三节铺出。
     /// 出水演出为"四件工具先后破水举起（锯-钳-炮-镭射逐件就位），头最后升起点睛"；
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private const int ArmCannon = 2;
         private const int ArmLaser = 3;
 
-        /// <summary>悬挂队形：锯/钳贴身低垂，炮/镭射外侧高挂——四械刑架</summary>
+        /// <summary>悬挂队形：锯/钳贴身低垂，炮/镭射外侧高挂，四械刑架</summary>
         private static readonly Vector2[] RestOffset = {
             new(-66f, 96f),
             new(66f, 96f),
@@ -261,7 +261,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             bool authority = Main.myPlayer == Projectile.owner;
             KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
 
-            //生命线：湖塌/收域/主人死亡 → 溶解回湖。只有 owner 裁决——
+            //生命线：湖塌/收域/主人死亡 → 溶解回湖。只有 owner 裁决
             //服务器无领域状态（恒 Closed 是既定契约），别处判会当场误杀；
             //其余端只跟 owner 的同步包换场
             if (authority && State != StateDissolve && !LakeHealthy(owner, domain)) {
@@ -572,7 +572,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 Vector2 aimPos = Main.npc[target].Center + Main.npc[target].velocity * 8f;
                 dartAim = (aimPos - armPos[arm]).SafeNormalize(Vector2.UnitY);
 
-                //蓄势收拢血珠，72% 后静默——弹出前的吸气
+                //蓄势收拢血珠，72% 后静默，弹出前的吸气
                 if (!Main.dedServ && t < DartWindup * 0.72f && t % 3 == 1) {
                     Vector2 from = armPos[arm] + Main.rand.NextVector2Unit() * Main.rand.NextFloat(40f, 84f);
                     PRTLoader.NewParticle<PRT_GhostRainDrop>(from, (armPos[arm] - from) * 0.16f,
@@ -749,7 +749,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (!authority || target < 0) {
                 return;
             }
-            //弹道解算：先定"必须有的弧顶高度"再反推初速与滞空——
+            //弹道解算：先定"必须有的弧顶高度"再反推初速与滞空
             //目标再低也保证一段明显的迫击弧线，绝不平射
             NPC npc = Main.npc[target];
             const float gravity = 0.42f;
@@ -796,7 +796,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     //先撤半步再切回，两段滑步方向相反
                     float dir = phase == 0 ? -side : side;
                     Projectile.velocity = new Vector2(dir * 13f, Projectile.velocity.Y * 0.4f);
-                    //拉栓音——脉冲前的机械应答
+                    //拉栓音，脉冲前的机械应答
                     SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.5f, Pitch = 0.3f, MaxInstances = 3 }, armPos[ArmLaser]);
                     if (phase == 0) {
                         ToolStartupHiss(ArmLaser);
@@ -1010,7 +1010,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                             damp = 0.7f;
                         }
                         else if (t < HeadBreachFrame) {
-                            //破水举起持位：强弹簧自带过冲——机械弹出的脆劲
+                            //破水举起持位：强弹簧自带过冲，机械弹出的脆劲
                             target = ToolHoldPoint(i, lakeY);
                             k = 0.34f;
                             damp = 0.78f;

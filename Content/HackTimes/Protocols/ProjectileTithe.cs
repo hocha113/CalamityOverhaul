@@ -238,7 +238,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             }
             entry.LastTouchedFrame = Main.GameUpdateCount;
             UpdateVisualWatch(projectile, entry);
-            //owner 端的 scale 顺带放大了他本机的命中盒——命中本来就在 owner 端结算，
+            //owner 端的 scale 顺带放大了他本机的命中盒，命中本来就在 owner 端结算，
             //这份成长因此是真实收益而不止是观感
             projectile.scale = entry.BaseScale + ScaleStep * entry.SeenEats;
             EmitCharged(projectile, entry.SeenEats, elapsed);

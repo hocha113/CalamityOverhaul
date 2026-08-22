@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 {
     /// <summary>
     /// 鬼梦模块的时序常量与梦界谓词。演出推进在 <see cref="KikasaDreamDirector"/>，
-    /// 状态权威在 <see cref="KikasaDomains.KikasaDomainPlayer"/>——鬼梦是血湖领域之下的更深一层：
+    /// 状态权威在 <see cref="KikasaDomains.KikasaDomainPlayer"/>：鬼梦是血湖领域之下的更深一层：
     /// 倒影醒来（恶犬替换湖镜里的人影）→ 拉入（湖沸腾、世界绕水线倒转进梦侧）→
     /// 梦中封物品、梦界禁弹（<see cref="KikasaDreamProjectileBan"/>）、左键唤犬 → 再按拉入键归返
     /// </summary>

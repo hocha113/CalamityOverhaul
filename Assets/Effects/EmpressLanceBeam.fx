@@ -157,7 +157,7 @@ float4 BladePS(PSInput input) : COLOR0
     float core = exp(-d * d * 40.0);
     float hot = exp(-d * d * 340.0);
 
-    //非对称刃缘：刃侧一条白热锋线，背侧色散逸散——有锋有背才是剑
+    //非对称刃缘：刃侧一条白热锋线，背侧色散逸散，有锋有背才是剑
     float edgeFore = exp(-pow((s + 0.82) * 9.0, 2.0)) * 0.85;
     float edgeBack = exp(-pow((s - 0.72) * 5.0, 2.0)) * 0.45;
     float3 edgeCol = hueRGB(uHue + 0.1);

@@ -7,7 +7,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
 {
     /// <summary>
-    /// 白澈长嚎(≤28%血，一次性大招)：暴雪吞没一切，唯它身侧留一圈清明——
+    /// 白澈长嚎(≤28%血，一次性大招)：暴雪吞没一切，唯它身侧留一圈清明
     /// 安全区反转，玩家被迫与恐惧同行。圈内冰刺梳交替扫出，圈外压边手巡猎
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)DeerclopsStateIndex.Whiteout, typeof(DeerclopsStateContext))]
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                 return null;
             }
 
-            //幕二：白澈巡猎——缓步逼近，圈内梳刺，圈外放手
+            //幕二：白澈巡猎，缓步逼近，圈内梳刺，圈外放手
             if (Timer <= LoopEnd) {
                 context.MoveSpeedMult = 0.55f;
                 npc.damage = npc.defDamage;
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                 return null;
             }
 
-            //幕三：力竭喘息——白幕散去，破绽全开
+            //幕三：力竭喘息，白幕散去，破绽全开
             context.HaltMovement = true;
             npc.damage = 0;
             context.AnimMode = DeerAnimMode.Crouch;

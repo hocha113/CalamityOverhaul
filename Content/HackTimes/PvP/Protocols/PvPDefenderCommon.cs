@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
     /// <summary>
     /// 防守方本机帐本的只读查询，供本簇的辅助钩子（图层压制、聊天拦截、
     /// UseSpeed 乘子、义体旁路）判断"效果是否在本机在册"。<br/>
-    /// 只读 <see cref="PlayerHackLedger"/> 真值——帐本只在防守方自己的客户端非空，
+    /// 只读 <see cref="PlayerHackLedger"/> 真值，帐本只在防守方自己的客户端非空，
     /// 所以这些查询在远端与服务端天然返回 false，钩子在错误的端上自动失活
     /// </summary>
     internal static class PvPDefenderLocal

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 {
     /// <summary>
     /// 弦月合拢（四臂对位版）：上对双手各持一道弧光死光沿天体弧线相向合拢，
-    /// 逃生楔口随缓动曲线移动（快→慢→快的呼吸）；下对双手反相开弧——
+    /// 逃生楔口随缓动曲线移动（快→慢→快的呼吸）；下对双手反相开弧
     /// 自底部中央向两侧扫离（先封底后让位），与上对合拢形成"下开上合"的对位呼吸；
     /// 头部向楔口滴弹逼走位。上对单手退化为单弧+对侧扫描束，核心裸露版由真眼补顶弧
     /// </summary>
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                     arcType, damage, 0f, Main.myPlayer, hand.whoAmI, -0.55f, -2.15f);
             }
 
-            //下对开弧：起于底部中央、向本侧扫离——先封底逼跳，后半程让位给上对楔口
+            //下对开弧：起于底部中央、向本侧扫离，先封底逼跳，后半程让位给上对楔口
             if (parts.HandAlive(2) && parts.HandIndex(2) >= 0) {
                 NPC hand = Main.npc[parts.HandIndex(2)];
                 Projectile.NewProjectile(hand.GetSource_FromAI(), hand.Center, Vector2.Zero,

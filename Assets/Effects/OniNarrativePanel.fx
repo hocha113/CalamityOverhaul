@@ -1,5 +1,5 @@
 // ============================================================================
-//OniNarrativePanel.fx 鬼切叙事面板背景——墨染和纸 + 顶沿注连墨绸 + 绯月 + 拔刀开合
+//OniNarrativePanel.fx 鬼切叙事面板背景，墨染和纸 + 顶沿注连墨绸 + 绯月 + 拔刀开合
 //AlphaBlend 预乘 alpha 输出;调色板与绯红裂空斩共享(uCol* 由 CPU 传入,保证同源)
 //构图纪律:签名装饰全部住在边框带(edgePad 区),面板内部保持墨黑静场护住文字
 // ============================================================================
@@ -109,7 +109,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float wash = exp(-innerDist * 0.055);
     bg = lerp(bg, uColDark * 0.55, wash * 0.34);
 
-    //一缕极缓的墨流(大尺度 fbm,左右两翼,中央只衰减不扑灭——文字列横向够不到两翼)
+    //一缕极缓的墨流(大尺度 fbm,左右两翼,中央只衰减不扑灭，文字列横向够不到两翼)
     float2 flowUV = float2(uv.x * 2.6, uv.y * 1.4 - t * 0.03);
     float inkFlow = fbm4(flowUV * 1.3);
     float flank = smoothstep(0.24, 0.95, abs(uv.x - 0.5) * 2.0);
@@ -151,7 +151,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float moonTex = valueNoise(pixelPos * 0.11 + 7.3);
     float3 moonCol = lerp(uColDeep, uColBright, 0.30 + breath * 0.28) * (0.72 + moonTex * 0.5);
     moonCol += uColHot * pow(saturate(1.0 - dMoon / moonR), 3.0) * 0.10;
-    //月盘卡在沿上,光晕允许向右上角内部渗一段——给内部一个光源方向
+    //月盘卡在沿上,光晕允许向右上角内部渗一段，给内部一个光源方向
     float bandDisc = 1.0 - smoothstep(innerMin.y + 10.0, innerMin.y + 34.0, pixelPos.y);
     float bandHalo = 1.0 - smoothstep(innerMin.y + 16.0, innerMin.y + 80.0, pixelPos.y);
     float moonA = moonDisc * 0.92 * bandDisc + moonHalo * (0.22 + breath * 0.10) * bandHalo;

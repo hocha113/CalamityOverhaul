@@ -6,10 +6,10 @@ using Terraria;
 namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 {
     /// <summary>
-    /// 信道乱码（芯片档）：二十秒内防守方本机聊天<b>显示层</b>乱码化——
+    /// 信道乱码（芯片档）：二十秒内防守方本机聊天<b>显示层</b>乱码化
     /// 期间新到的聊天行 40% 字符替换为故障字形，同期队伍层信号
     /// （队友抬头名牌、地图队伍图钉）在其屏幕上不显示。<br/>
-    /// <b>表达边界（设计 §7.7，别越线）</b>：只改防守方看到的渲染——
+    /// <b>表达边界（设计 §7.7，别越线）</b>：只改防守方看到的渲染
     /// 聊天存储（RemadeChatMonitor 的消息表）一字不改、不冒充任何人发言、
     /// 不影响任何其他玩家看到的聊天；效果到期连乱码期到达的旧行都恢复原文。
     /// 未来别在这里"顺手加个假消息注入"，那是平台层风险。<br/>
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
         }
 
         //聊天框边缘故障描边：左缘竖向故障短划 + 顶部角标，标出"这一片读数不可信"。
-        //只描边不遮字——乱码本身已经由渲染钩子完成
+        //只描边不遮字，乱码本身已经由渲染钩子完成
         public override void DrawDefenderOverlay(SpriteBatch spriteBatch, Player defender,
             PlayerHackEffect effect) {
             Texture2D pixel = HackTheme.Pixel;

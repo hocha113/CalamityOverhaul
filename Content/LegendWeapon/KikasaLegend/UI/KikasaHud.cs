@@ -22,10 +22,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 {
     /// <summary>
     /// 掌中风铃：鬼伞常驻 HUD（左下，持伞或领域激活时浮现）。
-    /// 檐钩垂一只玻璃风铃，铃身盛着一小汪血湖——液面=涨水进度、晃荡=事件涌浪、
+    /// 檐钩垂一只玻璃风铃，铃身盛着一小汪血湖，液面=涨水进度、晃荡=事件涌浪、
     /// 液中烬点=湖藏填充、整铃随形态浸染。
     /// 信息层（2026-08 重做）：短册只留纸与三席驻影小印（亲和色+在场/收起态），
-    /// 铃右一列图标读数——湖力条（带入梦/自燃两道门线）、鬼梦犬眼（睡/醒/梦中）、
+    /// 铃右一列图标读数，湖力条（带入梦/自燃两道门线）、鬼梦犬眼（睡/醒/梦中）、
     /// 鬼火焰苗（熄/燃/压制）、沉溺冷却、鬼雨态的重启冷却与伞奴计数；
     /// 一切悬停说明走顶层 <see cref="KikasaHudTipOverlay"/>，题行 1.0 与原版 tooltip 同级。
     /// 点铃展开「湖心景」全屏（任何域状态都响应）。
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         private const float TanzakuY = 11f;
         private const float TanzakuW = 14f;
         private const float TanzakuH = 35f;
-        //读数栈：铃右一列仪器读数（不随摆——读数是仪器，铃是风物）
+        //读数栈：铃右一列仪器读数（不随摆，读数是仪器，铃是风物）
         private const float ReadoutX = 34f;
         private const float ReadoutTopY = -44f;
         private const float ReadoutGapY = 23f;
@@ -303,7 +303,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         }
 
         /// <summary>
-        /// 读数栈布局：只排本帧有话可说的条目——湖力（域中）、犬眼与焰苗（常驻两鬼）、
+        /// 读数栈布局：只排本帧有话可说的条目，湖力（域中）、犬眼与焰苗（常驻两鬼）、
         /// 沉溺（冷却中）、重启与伞奴（鬼雨态）。绘制与命中共用这一份
         /// </summary>
         private void LayoutReadouts(Vector2 anchor) {
@@ -519,7 +519,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 px.Size() * 0.5f, new Vector2(3f / px.Width, 3f / px.Height),
                 SpriteEffects.None, 0f);
 
-            //驻影小印：册底缘三点，三席编成的缩影——亲和身份色，
+            //驻影小印：册底缘三点，三席编成的缩影，亲和身份色，
             //亮呼吸=在场、稳半亮=候湖、印下沉线=收起、暗=空席
             KikasaServantPlayer servant = Servant;
             Vector2 dotRow = top + dir * (TanzakuH - 8.5f);
@@ -584,7 +584,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             }
         }
 
-        /// <summary>湖力微条：血水填充 + 入梦/自燃两道门线——一条读数解释两道门</summary>
+        /// <summary>湖力微条：血水填充 + 入梦/自燃两道门线，一条读数解释两道门</summary>
         private static void DrawVigorReadout(SpriteBatch sb, Vector2 pos, float a, float rain,
             KikasaDomainPlayer domain, float hover) {
             Texture2D px = VaultAsset.placeholder2.Value;
@@ -702,7 +702,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         /// <summary>
         /// 顶层悬浮说明（由 <see cref="KikasaHudTipOverlay"/> 在 Mouse_Text 层调用）：
-        /// 状态 + 对应按键提示，题行 1.0、正文 0.9——每个读数都答得上"这是什么、按哪里"
+        /// 状态 + 对应按键提示，题行 1.0、正文 0.9：每个读数都答得上"这是什么、按哪里"
         /// </summary>
         internal void DrawTooltipOverlay(SpriteBatch sb) {
             if (hoverTarget == TipTarget.None || appear < 0.5f) {

@@ -3265,7 +3265,7 @@ OniMeiRubbingOnikiri: {
 	Tooltip: Исходная надпись: сохраняет клинок как есть, без дара и без цены
 	// Origin: At Ichijo-Modoribashi, the oni that lost its arm never dared come back for it. The name has been nailed to the tang ever since
 	Power: Исходная надпись. Клинок остаётся в точности таким, каков он есть — ничего не даёт и ничего не отнимает
-	Burden: ———
+	Burden: None
 }
 
 OniMeiRubbingShishinoko: {

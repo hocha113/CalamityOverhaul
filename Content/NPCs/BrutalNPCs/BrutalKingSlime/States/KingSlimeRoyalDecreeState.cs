@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         #endregion
 
         private int pillarsFired;
-        /// <summary>行军方向：首柱发射时锁定(公平阀——玩家中途穿过锚点不许柱列瞬间换边)</summary>
+        /// <summary>行军方向：首柱发射时锁定(公平阀，玩家中途穿过锚点不许柱列瞬间换边)</summary>
         private int marchSide;
         private bool tidesSpawned;
         private bool finaleFired;

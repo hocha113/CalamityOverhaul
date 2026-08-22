@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 {
     /// <summary>
     /// 赠礼名册一项：只描述"哪场戏、系于哪些首领、递哪张拓本"。<br/>
-    /// 完成位不在此登记——那是场景自己的 IsGiftCompleted / MarkGiftCompleted，只留一个读写入口
+    /// 完成位不在此登记，那是场景自己的 IsGiftCompleted / MarkGiftCompleted，只留一个读写入口
     /// </summary>
     internal sealed class HimayoGiftEntry
     {
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
     {
         /// <summary>
         /// 递拓本：走框架自带的奖励弹窗与发放服务（优先进背包，装不下才落地），<br/>
-        /// 不做成败判定——拓本能否进包与"这场戏演过了"无关
+        /// 不做成败判定，拓本能否进包与"这场戏演过了"无关
         /// </summary>
         public static NarrativeComposer GiftReward(this NarrativeComposer composer, string giftKey)
             => HimayoGiftCatalog.TryGet(giftKey, out HimayoGiftEntry entry)

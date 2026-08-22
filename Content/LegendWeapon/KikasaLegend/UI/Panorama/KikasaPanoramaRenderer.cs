@@ -225,7 +225,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             KikasaVaultRenderer.BeginAdditive(sb);
 
             if (t < 0.05f) {
-                //熄着：一粒余烬压着呼吸，悬停亮一拍——它还在等湖力回满
+                //熄着：一粒余烬压着呼吸，悬停亮一拍，它还在等湖力回满
                 float breath = KikasaPanoramaTheme.Breath(time, 4.1f, 1.8f);
                 KikasaVaultRenderer.DrawGlowDot(sb, pos + new Vector2(0f, 22f), 7f,
                     KikasaWisp.Tint(KikasaWisp.PaleDying) * ((0.30f + breath * 0.20f + hover * 0.25f) * alpha));

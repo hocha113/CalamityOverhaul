@@ -12,19 +12,19 @@ namespace CalamityOverhaul.Content.HackTimes.SelfRigs
 {
     /// <summary>
     /// SelfRig 三条协议的玩家侧状态。字段归属端：<br/>
-    /// · 效果窗口计时（超频/强驱）——每个知晓效果的端各自倒数（权威由 OnApply/OnTick 写，
+    /// · 效果窗口计时（超频/强驱），每个知晓效果的端各自倒数（权威由 OnApply/OnTick 写，
     ///   客户端由 OnReplicated* 写），彼此靠效果包的 elapsed 自愈，权威端为真值；<br/>
-    /// · 攻速加成——读本端计时，开火端算伤害所以必须每端都落（照 ArmorParse 的教训）；<br/>
-    /// · 掉血代价——仅拥有者本机扣（血量归 owner 客户端，服务端写不进）；<br/>
-    /// · RAM 回复抑制——provider 在权威端被 <see cref="RAMPlayer"/> 求值，读权威侧计时；<br/>
-    /// · 折算冷却——权威侧为校验真值，拥有者本机镜像一份供面板灰显；<br/>
-    /// · 役鬼退款基线/待结算标记——仅权威端；休眠看门狗——权威端执行，拥有者镜像倒计时供显示
+    /// · 攻速加成，读本端计时，开火端算伤害所以必须每端都落（照 ArmorParse 的教训）；<br/>
+    /// · 掉血代价，仅拥有者本机扣（血量归 owner 客户端，服务端写不进）；<br/>
+    /// · RAM 回复抑制，provider 在权威端被 <see cref="RAMPlayer"/> 求值，读权威侧计时；<br/>
+    /// · 折算冷却，权威侧为校验真值，拥有者本机镜像一份供面板灰显；<br/>
+    /// · 役鬼退款基线/待结算标记，仅权威端；休眠看门狗，权威端执行，拥有者镜像倒计时供显示
     /// </summary>
     internal sealed class SelfRigPlayer : ModPlayer
     {
         #region 常量（协议数值集中在此，便于对账）
 
-        //—— 电能折算 ——
+        //== 电能折算 ==
         /// <summary>UE→RAM 兑换率</summary>
         internal const float TransmuteUEPerRam = 500f;
         /// <summary>单次折算上限（RAM）</summary>
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.HackTimes.SelfRigs
         /// （仓库没有任何储电武器，可折算物只有电池/机器物品），收紧为 3600f，论证见补丁文档</summary>
         internal const int TransmuteCooldownFrames = 60 * 60;
 
-        //—— 神经超频 ——
+        //== 神经超频 ==
         internal const int OverclockDuration = 60 * 8;
         internal const float OverclockAttackSpeed = 0.4f;
         /// <summary>每次掉血占 statLifeMax2 比例</summary>
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.HackTimes.SelfRigs
         internal const float SandeRefundRatio = 0.5f;
         private const int SandeRefundFlushInterval = 15;
 
-        //—— 役鬼强驱 ——
+        //== 役鬼强驱 ==
         internal const int DriveDuration = 60 * 10;
         internal const float DriveErosionBill = 0.12f;
         internal const int DormantDuration = 60 * 60;

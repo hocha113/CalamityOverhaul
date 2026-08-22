@@ -244,7 +244,7 @@ namespace CalamityOverhaul.Content.NPCs.Victors
             float halfW = BaseHalfWidth * VisualWidthMul * Scale;
             float halfH = BaseHalfHeight * Scale;
 
-            //——前兆：微粒向成缝点汇聚；末 3 帧静默，给撕开留空拍——
+            //== 前兆：微粒向成缝点汇聚；末 3 帧静默，给撕开留空拍 ==
             if (age < HeraldEnd) {
                 if (age >= HeraldEnd - 3 || age % 3 != 0) {
                     return;
@@ -263,7 +263,7 @@ namespace CalamityOverhaul.Content.NPCs.Victors
                 return;
             }
 
-            //——撕开：环状爆散 + 地面暗尘——
+            //== 撕开：环状爆散 + 地面暗尘 ==
             if (age == HeraldEnd) {
                 for (int i = 0; i < 16; i++) {
                     float ang = MathHelper.TwoPi * i / 16f + Main.rand.NextFloat(-0.14f, 0.14f);
@@ -282,7 +282,7 @@ namespace CalamityOverhaul.Content.NPCs.Victors
                 return;
             }
 
-            //——收口：贴边吸入——
+            //== 收口：贴边吸入 ==
             if (age >= HoldEnd && age < CloseEnd) {
                 if (age % 2 != 0) {
                     return;
@@ -299,7 +299,7 @@ namespace CalamityOverhaul.Content.NPCs.Victors
                 return;
             }
 
-            //——余韵：竖缝残点带重力坠落，痕迹活得比门久——
+            //== 余韵：竖缝残点带重力坠落，痕迹活得比门久 ==
             if (age >= CloseEnd) {
                 if (age % 6 == 0 && age < TotalLife - 30) {
                     float slitHalf = ComputeSlitLen(age) * halfH;
@@ -311,7 +311,7 @@ namespace CalamityOverhaul.Content.NPCs.Victors
                 return;
             }
 
-            //——稳定/浮现/停驻：裂缘剥落烬屑（带重力）+ 偶发短弧——
+            //== 稳定/浮现/停驻：裂缘剥落烬屑（带重力）+ 偶发短弧 ==
             if (age % 8 == 0) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                 Vector2 rim = new(MathF.Cos(ang) * halfW, MathF.Sin(ang) * halfH);
@@ -330,7 +330,7 @@ namespace CalamityOverhaul.Content.NPCs.Victors
                         Main.rand.NextFloat(0.4f, 0.9f)).Configure(Main.rand.Next(12, 22));
                 }
             }
-            //——蓄势：推出前微粒倒吸回门心，越近越急——
+            //== 蓄势：推出前微粒倒吸回门心，越近越急 ==
             if (age >= StableEnd - InhaleFrames && age < StableEnd) {
                 float charge = (age - (StableEnd - InhaleFrames)) / (float)InhaleFrames;
                 int n = 1 + (int)(charge * 3f);
@@ -344,7 +344,7 @@ namespace CalamityOverhaul.Content.NPCs.Victors
                 }
             }
 
-            //——推出：环状爆点 + 朝 facing 一侧的定向喷出，读作"他是被推出去的"——
+            //== 推出：环状爆点 + 朝 facing 一侧的定向喷出，读作"他是被推出去的" ==
             if (age == StableEnd) {
                 for (int i = 0; i < 14; i++) {
                     float ang = MathHelper.TwoPi * i / 14f + Main.rand.NextFloat(-0.12f, 0.12f);
@@ -365,7 +365,7 @@ namespace CalamityOverhaul.Content.NPCs.Victors
             }
         }
 
-        /// <summary>震动只写本机玩家，并按距离衰减——远处队友不该跟着晃</summary>
+        /// <summary>震动只写本机玩家，并按距离衰减，远处队友不该跟着晃</summary>
         private void ShakeLocalNear(float strength, float maxDist) {
             Player lp = Main.LocalPlayer;
             if (lp?.active != true || lp.dead) {

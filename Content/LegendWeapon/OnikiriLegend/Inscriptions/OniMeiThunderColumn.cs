@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 {
     /// <summary>
     /// 雷切「斩雷」的雷柱：自天顶垂直劈到目标头上，沿途穿透。<br/>
-    /// 落雷要求头顶通天——洞里砍不出雷，这条硬限制由 <see cref="TryStrike"/> 在生成前探顶把关，
+    /// 落雷要求头顶通天，洞里砍不出雷，这条硬限制由 <see cref="TryStrike"/> 在生成前探顶把关，
     /// 玩家能从"这一刀没落雷"直接读出自己在室内。<br/>
     /// 三拍：闪现全宽过曝(3f) → 主放电收窄见分叉(~12f) → 余辉退成绯红残像。<br/>
     /// ai[0]=柱高(px) ai[1]=柱宽(px)
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         private static readonly Vector3 ColorDeep = new(0.88f, 0.16f, 0.14f);
 
         private int timer;
-        /// <summary>柱心已就位。本机 AI 首帧自置，网络绝不置位——否则远端跳过锚定，柱子低半屏</summary>
+        /// <summary>柱心已就位。本机 AI 首帧自置，网络绝不置位，否则远端跳过锚定，柱子低半屏</summary>
         private bool anchored;
         private float seed;
 
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         /// <summary>
         /// 在目标头顶探顶；探得到天才落雷。<br/>
-        /// 返回是否真的落下——调用方据此决定要不要放"落空"的提示
+        /// 返回是否真的落下，调用方据此决定要不要放"落空"的提示
         /// </summary>
         internal static bool TryStrike(Player player, Vector2 at, int damage, float knockback,
             float widthMul = 1f, IEntitySource source = null) {

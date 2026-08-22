@@ -1,11 +1,11 @@
 // ============================================================================
-//KikasaWispFire.fx 鬼伞血湖鬼火——金色鬼火是这件模块的身份色（用户指定的对比设计）
-//TechLakeFire: 湖面鬼火层（世界锚定长条 quad，火体纯程序化、不吃任何灰度形状图）——
+//KikasaWispFire.fx 鬼伞血湖鬼火，金色鬼火是这件模块的身份色（用户指定的对比设计）
+//TechLakeFire: 湖面鬼火层（世界锚定长条 quad，火体纯程序化、不吃任何灰度形状图）
 //  贴水熔金根床（吃行波与水线波动，火随涟漪起伏）+ 双频撕裂火舌场（上升流、幽缓摆动：
-//  鬼火不是篝火——慢、冷、无烟）+ 游离鬼火星 + 点燃/收火前沿 + 浸线金晕；
+//  鬼火不是篝火，慢、冷、无烟）+ 游离鬼火星 + 点燃/收火前沿 + 浸线金晕；
 //  端部收口：湖两端阈值抬升撕散渐没、舌尖噪声撕裂不平切、画布顶 guard 保险归零；
 //  uQuench 鬼雨压制通道：火冠塌缩、连续火幕撕成孤舌、闪烁变急变弱（残喘）、根床失温
-//TechBurnBody: 灼身重绘（NPC 帧后处理）——热浪扭曲（采样全数钳进 uUvRect 帧界防串帧）
+//TechBurnBody: 灼身重绘（NPC 帧后处理），热浪扭曲（采样全数钳进 uUvRect 帧界防串帧）
 //  + 斑驳焦痕（噪声阈值暗斑自脚部向上蔓延）+ 轮廓边缘火（邻域 alpha 四采样，下缘加权）
 //  + 金色脉动余光
 //坐标全笛卡尔（无 atan2）；直线算术+普通 tex2D，FNA3D 安全
@@ -17,11 +17,11 @@
 sampler uImage0 : register(s0);   //批主纹理：LakeFire=白像素（不采样）；BurnBody=NPC 帧图
 sampler uNoiseTex : register(s1); //PerlinNoise，LinearWrap，消费端上 s1
 
-//—— 共用 ——
+//== 共用 ==
 float uTime;        //秒（湖面层=EffectTime，灼身=GlobalTime）
 float uRain;        //0~1 观看域鬼雨冷化（只轻推金色，不换板）
 
-//—— TechLakeFire ——
+//== TechLakeFire ==
 float2 uQuadSize;   //quad 世界像素尺寸
 float uWaterV;      //水线在 quad 内的 v
 float uWorldX0;     //quad 左缘世界 X
@@ -35,7 +35,7 @@ float uQuench;      //0~1 鬼雨压制
 float uWobblePx;    //水线噪声波动幅度（px），与湖面着色器同源换算
 float4 uLineWave[4];//行波（世界像素域）x=源worldX y=寿命01 z=幅度px w=范围乘数；空槽 z=0
 
-//—— TechBurnBody ——
+//== TechBurnBody ==
 float2 uTexelSize;  //1/贴图尺寸
 float4 uUvRect;     //帧界（xy=min zw=max，半像素内缩）
 float uBurnT;       //0~1 灼烧强度（淡入淡出）
@@ -73,7 +73,7 @@ float4 PSLakeFire(float2 coords : TEXCOORD0, float4 vc : COLOR0) : COLOR0 {
     float flameCanvas = uWaterV * uQuadSize.y;      //水线以上画布高（px）
     float lipCanvas = uQuadSize.y - flameCanvas;    //水线以下画布高（px）
 
-    //水面局部起伏：双频噪声波动 + 落点行波——火贴着真实水面烧
+    //水面局部起伏：双频噪声波动 + 落点行波，火贴着真实水面烧
     //（波动形状与湖面着色器的屏幕空间版不逐像素同源，幅度同源；根床带厚度吸收差异）
     float n0 = nrm(tex2D(uNoiseTex, float2(worldX * 0.0009 + uTime * 0.020, uTime * 0.011)).r);
     float n1 = nrm(tex2D(uNoiseTex, float2(worldX * 0.0025 - uTime * 0.016, 0.41 + uTime * 0.027)).r);
@@ -97,7 +97,7 @@ float4 PSLakeFire(float2 coords : TEXCOORD0, float4 vc : COLOR0) : COLOR0 {
     float q = h / max(hMax, 1.0);
     float envGate = saturate(hMax * 0.25);          //火矮到没有时整场熄灭
 
-    //火舌场：双频上升流噪声，撕裂阈值随高度抬升——根近实、越高越碎；
+    //火舌场：双频上升流噪声，撕裂阈值随高度抬升，根近实、越高越碎；
     //压制抬阈值：连续火幕被雨撕成孤立残舌
     float sway = (n0 - 0.5) * h * 0.004;
     float f1 = nrm(tex2D(uNoiseTex, float2(worldX * 0.0065 + sway, h * 0.0075 - uTime * 0.60)).r);
@@ -136,7 +136,7 @@ float4 PSLakeFire(float2 coords : TEXCOORD0, float4 vc : COLOR0) : COLOR0 {
     float3 col = flameCol * dens * stria;
     col += lerp(GOLD_CORE, PALE_DIE, uQuench * 0.7) * bed * 0.95;
     col += GOLD_BODY * lip * 0.30;
-    //前沿光柱自带高度衰减、不吃 envGate——锋线正压在 reach=0 处，光要略洒到未燃侧
+    //前沿光柱自带高度衰减、不吃 envGate：锋线正压在 reach=0 处，光要略洒到未燃侧
     float frontHeight = exp2(-max(h, 0.0) * 0.055);
     col += GOLD_CORE * front * uBurn * endFade * frontHeight * (0.55 + 0.50 * f2) * rootGate * guard;
     col += GOLD_CORE * speck * 0.90;
@@ -167,7 +167,7 @@ float4 PSBurnBody(float2 coords : TEXCOORD0, float4 vc : COLOR0) : COLOR0 {
     float3 charCol = float3(0.130, 0.078, 0.056) * (0.35 + 0.85 * srcLuma);
     base.rgb = lerp(base.rgb, charCol * base.a, charM * 0.80);
 
-    //轮廓边缘火：邻域 alpha 四采样找轮廓缺口，下缘加权——火从脚下舔上来
+    //轮廓边缘火：邻域 alpha 四采样找轮廓缺口，下缘加权，火从脚下舔上来
     float2 t3 = uTexelSize * 3.0;
     float aL = tex2D(uImage0, clamp(suv - float2(t3.x, 0.0), uUvRect.xy, uUvRect.zw)).a;
     float aR = tex2D(uImage0, clamp(suv + float2(t3.x, 0.0), uUvRect.xy, uUvRect.zw)).a;

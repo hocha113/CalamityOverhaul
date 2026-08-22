@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 
         /// <summary>攻击选择：特判优先，其余走循环表</summary>
         private IEmpressState PickNext(EmpressStateContext context, NPC npc, Player target) {
-            //唯一离场条件：目标失效/过远。有目标就战斗到底——
+            //唯一离场条件：目标失效/过远。有目标就战斗到底
             //入夜自动回落标准形态（DayEmpowered随全局昼夜标志），破晓自动升格，不离场
             if (!target.Alives() || npc.Distance(target.Center) > 6400f) {
                 return new EmpressDespawnState();

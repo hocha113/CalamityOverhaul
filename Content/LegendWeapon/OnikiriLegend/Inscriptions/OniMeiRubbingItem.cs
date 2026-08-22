@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override void SetDefaults() {
             Origin ??= this.GetLocalization(nameof(Origin), () => "...");
             Power ??= this.GetLocalization(nameof(Power), () => "...");
-            Burden ??= this.GetLocalization(nameof(Burden), () => "———");
+            Burden ??= this.GetLocalization(nameof(Burden), () => "...");
             //只有靠刀縁得来的铭才注册残句，免得给赠礼铭平白多出一条空词条
             if (Deeds.OniMeiDeedRegistry.TryGetByMei(MeiKey, out _)) {
                 DeedHint ??= this.GetLocalization(nameof(DeedHint), () => "...");

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.HackTimes.PvP
 {
     /// <summary>
-    /// 防守方帐本里的一条已生效协议。<b>条目本身就是 HUD 条目</b>——
+    /// 防守方帐本里的一条已生效协议。<b>条目本身就是 HUD 条目</b>
     /// 框架直接遍历帐本画效果卡，协议无法拥有"不可见的可感知效果"（反幽灵卡顿铁律）。<br/>
     /// per-effect 状态挂 <see cref="ProtocolState"/>，随条目自清，不开协议侧静态字典
     /// </summary>
@@ -87,10 +87,10 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
     /// 服务端的真值是 <see cref="PlayerHackAuthority"/> 授予账，两账靠 300f 周期对账报文
     /// 与 60f 影子广播互相自愈。<br/>
     /// <b>推进</b>：由 <c>PlayerHackSystem.PostUpdateEverything</c> 驱动（死人不跑 PostUpdate，
-    /// 不能挂 ModPlayer.PostUpdate——tml-netcode-pitfalls §5.1 三次翻车的原坑），
+    /// 不能挂 ModPlayer.PostUpdate，tml-netcode-pitfalls §5.1 三次翻车的原坑），
     /// <see cref="UpdateDead"/> 双保险负责死亡清账。<br/>
     /// <b>HUD 契约</b>：ActiveEffects 每一条都会被画成效果卡，IncomingUploads 每一条都会
-    /// 进被骇横幅——可感知效果必有 HUD 条目由这里的结构保证，不靠协议作者自觉
+    /// 进被骇横幅，可感知效果必有 HUD 条目由这里的结构保证，不靠协议作者自觉
     /// </summary>
     internal sealed class PlayerHackLedger : ModPlayer
     {

@@ -12,10 +12,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaTwins
 {
     /// <summary>
-    /// 鬼奴激光眼的脉冲血矢。材质身份：凝血光钉——被镜筒压缩成针的一滴血，烧得发白。
+    /// 鬼奴激光眼的脉冲血矢。材质身份：凝血光钉，被镜筒压缩成针的一滴血，烧得发白。
     /// 签名行为：针体沿速度拉丝（越快越长）；针尾拖暗血针迹渐隐；头端星芒热闪。
     /// 弹体 = Extra_98 真 alpha 针形多层（暗血描边/血红裹层/白热芯 + 星闪），非光斑叠层。
-    /// 义眼镜筒式的精准弹道——出膛即全速、复利续力越飞越钻、绝不下坠；
+    /// 义眼镜筒式的精准弹道，出膛即全速、复利续力越飞越钻、绝不下坠；
     /// 飞行中沿途蜕下细血火星；命中沿弹道向前的窄扇迸溅、贴壁留渍，落空坠回血湖时被湖收走
     /// </summary>
     internal class KikasaTwinsPulseShot : ModProjectile
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        /// <summary>点射命中：窄扇前向迸溅 + 细环 + 短余闪——精准武器的收口要干脆</summary>
+        /// <summary>点射命中：窄扇前向迸溅 + 细环 + 短余闪，精准武器的收口要干脆</summary>
         private static void ImpactBurst(Vector2 pos, Vector2 impactVel, bool onTile) {
             if (Main.dedServ) {
                 return;

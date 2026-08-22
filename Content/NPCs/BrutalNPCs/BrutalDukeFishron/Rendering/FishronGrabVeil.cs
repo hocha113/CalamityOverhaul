@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Rendering
 {
     /// <summary>
     /// 入水滤镜状态：只描述"本机视点是否沉在涡底"。
-    /// 屏幕级静态按 Viewed=自己 gate——只有被抓玩家的客户端会 Report，
+    /// 屏幕级静态按 Viewed=自己 gate：只有被抓玩家的客户端会 Report，
     /// 旁观者/服务器永远是 0；停报后自行衰减，异常断线自愈
     /// </summary>
     internal static class FishronGrabVeilFX

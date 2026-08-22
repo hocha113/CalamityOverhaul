@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
 {
     /// <summary>
     /// TBUG 界面绘制原语。拐角只有切角一种语言，发光只靠亮笔叠宽，
-    /// 暗部一律靠着色器底或紧贴投影——不做同心放大的假羽化
+    /// 暗部一律靠着色器底或紧贴投影，不做同心放大的假羽化
     /// </summary>
     internal static class TBUGRenderer
     {
@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
             }
         }
 
-        /// <summary>紧贴投影，位移不放大——放大只会摞出方块黑层</summary>
+        /// <summary>紧贴投影，位移不放大，放大只会摞出方块黑层</summary>
         public static void DrawDropShadow(SpriteBatch sb, Rectangle r, float alpha, int ch = TBUGTheme.Chamfer) {
             Rectangle s = r;
             s.Offset(3, 4);

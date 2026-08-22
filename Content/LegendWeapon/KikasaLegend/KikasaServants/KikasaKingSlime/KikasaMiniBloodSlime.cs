@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 {
     /// <summary>
     /// 压砸分裂出的小血史莱姆：从本体撕下来的一小团活凝胶。
-    /// 先朝猎物蹦两跳（落地蹲一拍再弹，凝胶节奏），跳完掉头回流——
+    /// 先朝猎物蹦两跳（落地蹲一拍再弹，凝胶节奏），跳完掉头回流
     /// 追着本体跳最后一程，贴身即被吞并合体，不留常驻单位。
     /// ai0=回弹地板（湖面 Y，spawn 一次带齐），ai1=已完成跳数（owner 盖章纠偏）。
     /// 接触伤害全程有效，命中在 owner 端结算，落点视觉允许端间微漂
@@ -237,7 +237,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //==================== 绘制 ====================
 
-        /// <summary>小凝胶三层 CPU 血染：暗缘压边、半透主体、A=0 湿亮芯——小到不值一次批切换</summary>
+        /// <summary>小凝胶三层 CPU 血染：暗缘压边、半透主体、A=0 湿亮芯，小到不值一次批切换</summary>
         public override bool PreDraw(ref Color lightColor) {
             Main.instance.LoadNPC(NPCID.BlueSlime);
             Texture2D tex = TextureAssets.Npc[NPCID.BlueSlime]?.Value;

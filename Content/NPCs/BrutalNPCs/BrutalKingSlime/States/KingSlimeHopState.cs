@@ -234,7 +234,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
 
         /// <summary>
         /// 中距液化掠近判定(服务端)：目标在中距带(720~1500px)且大致同层时，
-        /// 用潮汐冲刷代替干跳逼近——更远交给追击阀潜地(1900+)，冷却防连锁液化。
+        /// 用潮汐冲刷代替干跳逼近，更远交给追击阀潜地(1900+)，冷却防连锁液化。
         /// 环上下一招是潮汐时让位(防复读)
         /// </summary>
         private static IKingSlimeState TryTideTravel(KingSlimeStateContext context) {

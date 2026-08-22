@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 {
     /// <summary>
     /// 鬼奴克脑的献祭凝块：被心脏挤出轨道的一颗 Creeper 血凝块，
-    /// 惊惶的心跳碎片——起步一帧定速、复利续力微转向扑向猎物，
+    /// 惊惶的心跳碎片，起步一帧定速、复利续力微转向扑向猎物，
     /// 沿途甩珠、表面高频悸动；到位/贴壁/超时按同一确定性规则起爆，
     /// 范围伤害只开在起爆窗（6 帧），飞行段不结算接触。
     /// ai[0]=目标 NPC 槽位（spawn 参数自带，2.7 安全），起爆各端同规则自算
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
 
-            //追踪：直飞解锁后小角度转向 + 复利续力——凝块越追越急
+            //追踪：直飞解锁后小角度转向 + 复利续力，凝块越追越急
             int targetIdx = (int)TargetIndex;
             NPC target = targetIdx >= 0 && targetIdx < Main.maxNPCs ? Main.npc[targetIdx] : null;
             bool targetValid = target?.active == true && target.CanBeChasedBy(Projectile);
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
 
-            //贴壁即爆（机制身份保留）：手动地形检测替代 tileCollide——
+            //贴壁即爆（机制身份保留）：手动地形检测替代 tileCollide
             //湖线以下的真地形被湖面盖住，撞上去像凭空截停，不算贴壁
             Player owner = Main.player[Projectile.owner];
             bool underLake = owner?.active == true

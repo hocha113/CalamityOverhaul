@@ -247,7 +247,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
 
         /// <summary>
         /// 脚本化落伤：占最大生命比例的定额直伤（不吃防御，可被闪避），
-        /// 铁律——投技永不处死，任何一击至多打到剩1血
+        /// 铁律，投技永不处死，任何一击至多打到剩1血
         /// </summary>
         private void ApplyGrabHurt(NPC boss, float fraction, int hitDirection) {
             int damage = Math.Max((int)(Player.statLifeMax2 * fraction), 60);

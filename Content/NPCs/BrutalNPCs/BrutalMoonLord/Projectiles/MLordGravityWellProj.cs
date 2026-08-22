@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
 
         private const float PullRadius = 920f;
         private const float HardPullRadius = 320f;
-        /// <summary>公平阀：向井分速度达此值后不再施力——全程保留主动挣脱手段（契约3）</summary>
+        /// <summary>公平阀：向井分速度达此值后不再施力，全程保留主动挣脱手段（契约3）</summary>
         internal const float EscapeTowardSpeedCap = 8.5f;
 
         private ref float Timer => ref Projectile.localAI[0];
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             get {
                 float rise = MathHelper.Clamp(Timer / ExpandTime, 0f, 1f);
                 float fall = MathHelper.Clamp((TotalLife - Timer) / CollapseTime, 0f, 1f);
-                //崩解前塌缩到 0.42——变小再变响
+                //崩解前塌缩到 0.42：变小再变响
                 return Math.Min(VaultUtils.EaseOutCubic(rise), MathHelper.Lerp(0.42f, 1f, fall));
             }
         }

@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
 
             int charge = Tempo(context, ChargeTime);
 
-            //充能段：宝石汇聚（末1/4静默——尖啸前的吸气）
+            //充能段：宝石汇聚（末1/4静默，尖啸前的吸气）
             if (Timer < charge) {
                 float t = Timer / (float)charge;
                 context.SetChargeState(1, t);

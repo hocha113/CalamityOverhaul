@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                     return;
                 }
             }
-            //甲板前段，Y先落在行走面附近再校正；X夹进甲板范围——
+            //甲板前段，Y先落在行走面附近再校正；X夹进甲板范围
             //玩家贴着护沿触发时标靶不许吊在虚空外
             int baseX = (int)Main.LocalPlayer.Center.X + 350;
             int minX = (CybCourseGen.PlatformLeft + 8) * 16;

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
 {
     /// <summary>
     /// 饥饿者系绳网：饥饿者飞到墙前编成垂直拦截网，肉链只在成对节点间通电，
-    /// 对与对之间是可穿越的窗口。网随墙推进——穿窗而过，或击杀节点撕开永久缺口
+    /// 对与对之间是可穿越的窗口。网随墙推进，穿窗而过，或击杀节点撕开永久缺口
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)WofStateIndex.HungryNet, typeof(WofStateContext))]
     internal class WofHungryNetState : WofStateBase
@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
         }
 
         /// <summary>
-        /// 链条伤害：只在成对节点(0-1、2-3...)间拉链，对与对之间留出可穿越的窗口——
+        /// 链条伤害：只在成对节点(0-1、2-3...)间拉链，对与对之间留出可穿越的窗口
         /// 网是筛子不是墙。判定为本地玩家自伤模型
         /// </summary>
         private void UpdateLinkDamage(WofStateContext context) {

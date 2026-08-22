@@ -1294,7 +1294,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             TryDripInkRain();
         }
 
-        /// <summary>雨樋：樱流沿途甩墨——航线走过哪儿，雨就下在哪儿</summary>
+        /// <summary>雨樋：樱流沿途甩墨，航线走过哪儿，雨就下在哪儿</summary>
         private void TryDripInkRain() {
             if (!Mei.InkRain || Player.whoAmI != Main.myPlayer
                 || scaledTime % OniMeiCombat.InkRainDripInterval != 0) {
@@ -2647,7 +2647,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         /// <summary>
         /// 站定累计够久，刀就自己开始动。<br/>
-        /// 判据与止足同口径（速度平方阈），但要求"手上确有刀"——刀飞出去的那段不再累计，
+        /// 判据与止足同口径（速度平方阈），但要求"手上确有刀"，刀飞出去的那段不再累计，
         /// 也不再放下一把，所以永远只有一把在外面
         /// </summary>
         private void TickSelfCut() {
@@ -2962,7 +2962,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         //==================== 枯山水 砂纹 ====================
 
-        /// <summary>站在自己耙的场里，架势涨得更快——守着它是有回报的</summary>
+        /// <summary>站在自己耙的场里，架势涨得更快，守着它是有回报的</summary>
         private float ResolveSandGardenStanceMul(in OniMeiCombatProfile profile)
             => profile.SandGarden && OniMeiSandGarden.StandingInOwnGarden(Player)
                 ? OniMeiCombat.SandGardenStanceBonus
@@ -3010,7 +3010,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         /// <summary>
         /// 大招命中即引雷。雷暴天多落两道并加宽；晴天只落一道。<br/>
-        /// 头顶有遮挡就落不下来——这条硬限制在弹幕侧探顶，玩家能从"没落雷"读出自己在洞里
+        /// 头顶有遮挡就落不下来，这条硬限制在弹幕侧探顶，玩家能从"没落雷"读出自己在洞里
         /// </summary>
         internal void TryCallThunder(NPC target, in OniMeiCombatProfile profile,
             int baseWeaponDamage, float knockback, Projectile sourceProjectile) {

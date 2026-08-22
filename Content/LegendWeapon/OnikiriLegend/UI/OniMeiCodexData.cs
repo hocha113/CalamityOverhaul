@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
     /// <summary>
     /// 铭谱的数据面：把名册、所持、刀縁进度与赠礼来路合成图鉴行。<br/>
-    /// 与改铭台扇骨的口径**有意不同**——扇骨会藏掉"无縁又未持"的赠礼铭（挂上去也点不动），
+    /// 与改铭台扇骨的口径**有意不同**，扇骨会藏掉"无縁又未持"的赠礼铭（挂上去也点不动），
     /// 而图鉴正是要让人看见自己还差什么，故三十六枚一枚不落
     /// </summary>
     internal static class OniMeiCodexData
@@ -175,7 +175,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 : OniMeiCodexUI.SourceGiftFormat?.Format(bosses) ?? bosses;
         }
 
-        /// <summary>至多报两位，多于两位只说前两位——牌面写不下，也没必要</summary>
+        /// <summary>至多报两位，多于两位只说前两位，牌面写不下，也没必要</summary>
         private static string DescribeBosses(HimayoGiftEntry entry) {
             int[] ids = entry.TargetBossIds;
             if (ids == null || ids.Length == 0) {

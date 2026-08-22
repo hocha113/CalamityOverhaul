@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume
 {
     /// <summary>
     /// 鬼梦常驻氛围粒子：飘浮烬灰 + 雾面浮丝。<br/>
-    /// 烬灰照搬鬼伞鬼梦相位的用法；潮雾换了落点——鬼伞那套贴地面，
+    /// 烬灰照搬鬼伞鬼梦相位的用法；潮雾换了落点，鬼伞那套贴地面，
     /// 这里贴<b>雾面</b>，浮丝顺着那条水位横漂，是"雾有表面"在粒子层的第二遍陈述。<br/>
     /// 纯客户端，强度吃 <see cref="KiyumeAmbienceSystem.Presence"/>
     /// </summary>

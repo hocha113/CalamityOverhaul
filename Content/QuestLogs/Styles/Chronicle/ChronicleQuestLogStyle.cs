@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
 
         /// <summary>
         /// 站点书口：书页侧面伸出来的两枚纸舌，当前那枚探得更出、边缘吃暗更重。<br/>
-        /// 不画标签页方框——纸的厚度与投影就是选中态
+        /// 不画标签页方框，纸的厚度与投影就是选中态
         /// </summary>
         private void DrawStationTabs(SpriteBatch sb, QuestLog log, in QuestLogLayout current, float a) {
             Point mouse = Main.MouseScreen.ToPoint();

@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Projectiles
 {
     /// <summary>
-    /// 缠足藤索：投技的抓取判定与全程藤蔓视觉。本身零伤害零接触伤——
+    /// 缠足藤索：投技的抓取判定与全程藤蔓视觉。本身零伤害零接触伤
     /// 命中即"抓"。飞行段直线(出手前已有预警线)，服务端逐帧判缠；
     /// 缠中后钉在被抓者脚踝，全程画本体→自身的藤蔓，各端从Boss同步ai自决生命周期
     /// </summary>

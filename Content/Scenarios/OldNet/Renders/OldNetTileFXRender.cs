@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Renders
     /// <summary>
     /// 节点/锚点着色器绘制收集器：tile PreDraw 逐帧登记（天然只含可见格），
     /// <see cref="OldNetTileFXRender"/> 在物块层之后一次性按技法批绘。
-    /// shader 缺失时 tile 走各自的 CPU 回退、不登记——本收集器不承担回退
+    /// shader 缺失时 tile 走各自的 CPU 回退、不登记，本收集器不承担回退
     /// </summary>
     internal static class OldNetTileFX
     {

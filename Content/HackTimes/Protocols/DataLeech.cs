@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         /// 把这次伤害折算成 RAM 还给施法者。<br/>
         /// 单次上限管不住多段武器：六秒窗口里鞭子与穿透弹能打进几十次，
         /// 四下就把施放成本赚回来，之后一路把 RAM 条钉满。
-        /// 所以按激活给总额，并给回流本身上一层间隔——
+        /// 所以按激活给总额，并给回流本身上一层间隔
         /// 每次回流都会立刻提交一次 RAM 状态，频率本身也是成本
         /// </summary>
         internal static void ApplyLeech(Player caster, NPC npc, int damage,

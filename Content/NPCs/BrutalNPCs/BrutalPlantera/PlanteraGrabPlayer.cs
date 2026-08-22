@@ -222,7 +222,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         }
 
         /// <summary>
-        /// 分拍结算：请求伤害钳到"当前血-1"以内，防御只会再降——
+        /// 分拍结算：请求伤害钳到"当前血-1"以内，防御只会再降
         /// 满血玩家绝不会被一套投技处死；走Boss免疫槽绕过钉身期通用免疫
         /// </summary>
         private void ApplyScriptedHit(NPC boss, float scale) {

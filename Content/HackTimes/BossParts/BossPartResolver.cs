@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.HackTimes.BossParts
     /// F15：部件↔本体关系解析。<br/>
     /// 「这个 NPC 是谁的部件、本体在哪、同体还有谁」都从这里问，
     /// 三条 BossPart 协议与扫描面板共用同一套判据。<br/>
-    /// 肢体表在 <c>SetupData</c>（PostSetupContent）建一次——CWRID 是懒查缓存，
+    /// 肢体表在 <c>SetupData</c>（PostSetupContent）建一次，CWRID 是懒查缓存，
     /// 那时 Calamity 内容已注册完；缺员只是表里少一行，判定静默退化为普通 NPC
     /// </summary>
     internal class BossPartResolver : ICWRLoader
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.HackTimes.BossParts
 
         /// <summary>
         /// 判定这个 NPC 是不是「已注册 Boss 群组的非本体部件」。<br/>
-        /// 肢体表优先于 realLife——Ares 炮组两者都占，按肢体算
+        /// 肢体表优先于 realLife，Ares 炮组两者都占，按肢体算
         /// </summary>
         public static bool TryGetPart(NPC npc, out BossPartInfo info) {
             info = default;

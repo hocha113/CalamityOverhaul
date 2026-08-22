@@ -4,7 +4,7 @@
 // 签名行为：起浪几何生长(浪从地里立起来，不是淡入) / 浪冠前倾卷曲+管内阴影 /
 // 冠下透光薄水层 / 冠口断裂抛沫(孤立水屑) / 浪尾底部拖曳水裙 /
 // 溃散自冠而下(几何蚀顶，不是整墙变淡)
-// 顶部预留 30% 画布给抛沫——裁切在布局层杜绝
+// 顶部预留 30% 画布给抛沫，裁切在布局层杜绝
 // 直线算术无分支，噪声全走绑定贴图，无极角
 // ============================================================================
 
@@ -19,7 +19,7 @@ float3 uSeaColor;
 float3 uFoamColor;
 
 // 噪声固定在 s1：SpriteBatch.Draw 会把 s0 覆写成画布贴图，
-// sampler_state 块在 FNA 下会被分配到 s0 导致噪声读到画布渐变——
+// sampler_state 块在 FNA 下会被分配到 s0 导致噪声读到画布渐变
 // 三审实机"浪顶灰度图"= 画布贴图自身辉光从抛沫通道漏出；
 // C# 侧须在 pass.Apply 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
 sampler noiseSamp : register(s1);
@@ -38,14 +38,14 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLO
     float crestLine = lerp(0.82, 0.36, rise);            // 完全体浪面
     float surfN = tex2D(noiseSamp, float2(xu * 1.8 + uSeed - uTime * 0.35, 0.27)).r;
     crestLine += (surfN - 0.5) * 0.09;
-    // 起浪几何生长：浪面从贴地(0.97)抬升到位——浪是"立起来"的
+    // 起浪几何生长：浪面从贴地(0.97)抬升到位，浪是"立起来"的
     float surfLine = lerp(0.97, crestLine, uGrowth);
 
     // 前脸截断：浪头前方没有水（噪声撕出参差前缘）
     float frontN = tex2D(noiseSamp, float2(uv.y * 2.2 + uSeed, xu * 3.0 - uTime * 0.5)).g;
     float frontCut = smoothstep(0.90, 0.72, xu + (frontN - 0.5) * 0.16);
 
-    // 浪冠卷曲：临近浪面的水向前探出——前缘随高度前倾
+    // 浪冠卷曲：临近浪面的水向前探出，前缘随高度前倾
     float nearCrest = smoothstep(surfLine + 0.16, surfLine, uv.y);
     float lipLean = nearCrest * 0.09;
     float lipCut = smoothstep(0.99, 0.81, xu - lipLean + (frontN - 0.5) * 0.16);
@@ -79,7 +79,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLO
     float translucent = smoothstep(0.14, 0.0, uv.y - surfLine) * body;
     col += uSeaColor * float3(0.65, 1.25, 1.05) * translucent * 0.5;
 
-    // 卷管阴影：冠唇正下方一道压暗——卷曲的体积由这道暗侧撑起
+    // 卷管阴影：冠唇正下方一道压暗，卷曲的体积由这道暗侧撑起
     float tubeShade = smoothstep(surfLine + 0.03, surfLine + 0.10, uv.y)
         * smoothstep(surfLine + 0.20, surfLine + 0.10, uv.y)
         * smoothstep(0.45, 0.85, xu);
@@ -93,7 +93,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLO
     float crest = crestBand * smoothstep(0.30, 0.66, crestN) * (0.45 + rise * 0.8) * collapseCut;
     col += uFoamColor * crest;
 
-    // 抛沫区：冠上方一大片画布，只被离散噪声点亮——断裂的碎白不是连片辉光
+    // 抛沫区：冠上方一大片画布，只被离散噪声点亮，断裂的碎白不是连片辉光
     float sprayZone = smoothstep(0.55, 0.95, xu)
         * smoothstep(surfLine + 0.02, surfLine - 0.22, uv.y)
         * smoothstep(surfLine - 0.30, surfLine - 0.18, uv.y);
@@ -114,14 +114,14 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLO
     float drag = dragZone * smoothstep(0.42, 0.68, dragN);
     col += lerp(uDeepColor, uFoamColor, 0.55) * drag * 0.5;
 
-    // 面上泡沫脉络：密度沿前进方向递增——浪尾平静、前脸翻涌的梯度
+    // 面上泡沫脉络：密度沿前进方向递增，浪尾平静、前脸翻涌的梯度
     float veins = smoothstep(0.68, 0.9, field) * (1.0 - depth * 0.6)
         * (0.45 + 0.75 * smoothstep(0.30, 0.90, xu));
     col += uFoamColor * veins * 0.30 * body;
 
     // =========================================================
     // 合成（预乘）：溃散/生长由几何承担，uIntensity 只作残余亮度；
-    // 护栏仅防采样溢出——顶部 30% 画布本就留白，不靠护栏切形
+    // 护栏仅防采样溢出，顶部 30% 画布本就留白，不靠护栏切形
     // =========================================================
     float density = body * (0.58 + field * 0.42) + spray * 0.6 + drag * 0.35;
     float guard = smoothstep(0.0, 0.02, uv.x) * smoothstep(1.0, 0.98, uv.x)

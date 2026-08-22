@@ -340,7 +340,7 @@ namespace CalamityOverhaul.Content.Structures
             int tableType = ModContent.TileType<MoldProcessingTableTile>();
             bool tablePlaced = WorldGen.PlaceObject(origin.X + midMin + 4, origin.Y + furnitureY, tableType, mute: true);
 
-            //中舱旧网接入终端：坠舱既是 SHPC 的家也是深潜口——碎片从这里出发也从这里铭刻
+            //中舱旧网接入终端：坠舱既是 SHPC 的家也是深潜口，碎片从这里出发也从这里铭刻
             int accessX = origin.X + midMin + 8;
             int accessY = origin.Y + furnitureY;
             Tile accessSlot = Framing.GetTileSafely(accessX, accessY);

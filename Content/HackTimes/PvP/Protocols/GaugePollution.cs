@@ -13,11 +13,11 @@ using Terraria.UI;
 namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 {
     /// <summary>
-    /// 读数污染（默认档）：八秒内污染防守方本机 HUD 渲染层——原版生命/魔力层被
+    /// 读数污染（默认档）：八秒内污染防守方本机 HUD 渲染层，原版生命/魔力层被
     /// <see cref="GaugePollutionLayerHook"/> 整层熄灭，代之以随机漂移 ±40% 的伪读数；
     /// 快捷栏与增益图标区盖故障切条。<b>真实数值一字不改</b>，纯读数攻击；
     /// 真实槽位、真实 buff 都原样工作。<br/>
-    /// 防守方每次受击/大额回血后 20f 内显示真值（防纯盲盒，留读屏窗口）——
+    /// 防守方每次受击/大额回血后 20f 内显示真值（防纯盲盒，留读屏窗口）
     /// 真值窗口内原版层原样放行，掉血急救永远看得到真血线。<br/>
     /// 红线遵守：只污染 HUD 读数区，永不遮挡角色本体与来袭弹幕的可见性
     /// </summary>
@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP.Protocols
 
     /// <summary>
     /// 读数污染的原版层熄灭钩子（防守方本机）。真读数与伪读数并排各显各的，
-    /// 污染就成了摆设——污染期把 "Vanilla: Resource Bars"（GUIBarsDraw，
+    /// 污染就成了摆设，污染期把 "Vanilla: Resource Bars"（GUIBarsDraw，
     /// 生命/魔力显示）整层熄灭，伪读数成为唯一读数；真值窗口内原样放行。
     /// 只翻本帧 Active 位，图层表每帧由 tML 重建，效果一到期自动复原
     /// （形状同 <see cref="MapBlackoutRenderer.ModifyInterfaceLayers"/>）。

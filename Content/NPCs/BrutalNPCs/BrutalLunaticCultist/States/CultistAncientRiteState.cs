@@ -6,7 +6,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
-    /// 古咒唤影：召 3 枚远古厄运（P2+ 加 2 道远古光辉）后本体退至高位持咒，不再出手——带作业的呼吸拍<br/>
+    /// 古咒唤影：召 3 枚远古厄运（P2+ 加 2 道远古光辉）后本体退至高位持咒，不再出手，带作业的呼吸拍<br/>
     /// 公平阀：厄运离玩家保底 300px，其爆环有 vanilla 自带脉冲预告；本体全程可打（拆作业还是打本体的取舍窗）
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.AncientRite, typeof(CultistStateContext))]

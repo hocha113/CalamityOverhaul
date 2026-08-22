@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
         public static float PlayerPushRadius = 40f;
         /// <summary>玩家推雾羽化带宽（px）</summary>
         public static float PlayerPushFeather = 140f;
-        /// <summary>玩家推雾强度：1=身位处全清，0.7=压到三成——贴身留薄雾更有氛围</summary>
+        /// <summary>玩家推雾强度：1=身位处全清，0.7=压到三成，贴身留薄雾更有氛围</summary>
         public static float PlayerPushStrength = 0.7f;
 
         //潮位轮换表：退潮 / 半涨 / 涨满 / 交给真实潮汐

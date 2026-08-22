@@ -78,7 +78,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float f1 = tex2D(noiseSamp, float2(p.x * 1.4 + uSeed * 3.1, flowV)).r;
     float f2 = tex2D(noiseSamp, float2(p.x * 2.9 - uSeed * 1.7, p.y * 1.5 + uTime * 0.10)).r;
 
-    //离缘越深越黑——里头是另一处水底，不是发光门
+    //离缘越深越黑，里头是另一处水底，不是发光门
     float depth = saturate(1.0 - abs(p.x) / max(halfW, 1e-4));
     float3 body = uColDark * (0.50 + f2 * 0.22);
     body = lerp(body, uColDeep, saturate(f1 * 1.1 - 0.25) * 0.55);

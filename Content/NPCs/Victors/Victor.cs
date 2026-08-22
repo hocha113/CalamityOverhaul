@@ -296,7 +296,7 @@ namespace CalamityOverhaul.Content.NPCs.Victors
             }
         }
 
-        /// <summary>震动只写本机玩家，并按距离衰减——远处队友不该跟着晃</summary>
+        /// <summary>震动只写本机玩家，并按距离衰减，远处队友不该跟着晃</summary>
         private void ShakeLocalNear(float strength, float maxDist) {
             Player lp = Main.LocalPlayer;
             if (lp?.active != true || lp.dead) {

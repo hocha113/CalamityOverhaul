@@ -9,9 +9,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
 {
     /// <summary>
-    /// 大范围重启的按键单一受理点：复用 Legend_Restart，与比目鱼/赛博/绯嫁共键——
+    /// 大范围重启的按键单一受理点：复用 Legend_Restart，与比目鱼/赛博/绯嫁共键
     /// 比目鱼与绯嫁各有持械门，这里同样只在手持鬼伞时受理，赛博空间激活时让位，
-    /// 四家天然互斥。倒放/无敌/结算不挂在这里——那些每帧工作由
+    /// 四家天然互斥。倒放/无敌/结算不挂在这里，那些每帧工作由
     /// <see cref="KikasaResetSystem"/> 驱动的 <see cref="KikasaReset"/> 统一做
     /// </summary>
     public class KikasaResetPlayer : ModPlayer
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
 
         /// <summary>
         /// 全程无敌的语义覆盖 DoT：immune 只挡碰撞与弹幕，
-        /// 中毒/灼烧走 lifeRegen——倒带途中坏再生钳零，防被烧死在照片里
+        /// 中毒/灼烧走 lifeRegen：倒带途中坏再生钳零，防被烧死在照片里
         /// </summary>
         public override void UpdateBadLifeRegen() {
             if (KikasaReset.IsPlayerAffected(Player.whoAmI) && Player.lifeRegen < 0) {

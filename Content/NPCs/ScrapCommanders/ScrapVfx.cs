@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
 {
     /// <summary>
     /// 废钢统帅的视觉工具箱：BeamLine 射线绘制 + 全事件粒子配方。
-    /// 粒子配方对应审查定下的分配表——坠地=重剥落+烟+冲击环、爆炸=机械爆炸+热烬、
+    /// 粒子配方对应审查定下的分配表，坠地=重剥落+烟+冲击环、爆炸=机械爆炸+热烬、
     /// 枪口=曳光+火花、命中=火花+剥落。全部自带 dedServ 门
     /// </summary>
     internal static class ScrapVfx

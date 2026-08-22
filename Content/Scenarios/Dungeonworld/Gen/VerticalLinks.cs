@@ -5,19 +5,19 @@ using Terraria;
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
 {
     //垂直连接清单·第二通道族(蓝图§1.4:每相邻层对≥2条贯穿通道,Wave-2补全):
-    //主竖井(P20既有,几何连续贯穿)之外,每个隔离带开一口楼梯井式穿透——
+    //主竖井(P20既有,几何连续贯穿)之外,每个隔离带开一口楼梯井式穿透
     //上层脊地板穿透下行(全宽平台桥防断路),之字平台语法与主竖井一致,
     //井底落在下层脊地板;水平取位genRand在安全区间取,与主竖井/出生列/
     //教堂对齐带互斥,相邻隔离带井位互错(防两口井同列串成一落到底)。
     //
     //分工三段(随机消耗顺序纪律R4:先竖直连接后逐层,全链路定序):
-    //  1.P20 MacroRoutePass:PickAll()取位+井身刻画——全管线第一组genRand
+    //  1.P20 MacroRoutePass:PickAll()取位+井身刻画，全管线第一组genRand
     //    消耗点,每隔离带至多1次Next,先于P30禁室定点与P50层内容;
     //  2.P30 LayerPlanPass:ReserveInto()把足印预留进相邻两带ctx.Grid
     //    (零随机),层代理TryPlace构造性避开;
     //  3.P30 GaolBossRoomSiting:ExcludeZones()扣掉触井禁带后再选址(禁室避井)。
     //
-    //L7→深渊带裁决【Wave-2定论】:不开贯穿口——深渊带底200行恒为地狱判定带
+    //L7→深渊带裁决【Wave-2定论】:不开贯穿口，深渊带底200行恒为地狱判定带
     //(F21)且蓝图§1.2明言不放可通行内容;"倒吊教堂悬在深渊上方"的演出语义由
     //视觉悬空(四周≥20格空隙)与L7层内容的垂钟龛(向下探入深渊上部,ROOMS-L7
     //§1-5)表达,均属层内容/演出波职责;垂直连接清单终止于L6→L7隔离带。
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
         /// </summary>
         internal static void PickAll() {
             //L1教堂群落对齐带:主教堂+扩建占x∈cathLeft+[-24,+160](L1Content布局表),
-            //cathLeft由主竖井对齐推导为常量;全部井位统一避开本带——既防W1穿教堂
+            //cathLeft由主竖井对齐推导为常量;全部井位统一避开本带，既防W1穿教堂
             //地板,也给镜像同一竖井对齐惯例的深层演出建筑(L7倒吊中殿)留同列净空
             int cathLeft = DungeonworldMetrics.ShaftLeft - Layers.L1.L1CathedralPrefab.ShaftArtLeft;
             int cathZoneMin = cathLeft - 24;
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
                 WellLeft[i] = -1;
 
                 //基准区间(井左缘候选,闭区间):W1(L1→L2)钉在L1井口房Stairhead
-                //窗口近旁(cathLeft+[300,348]起排、房宽≤20,L1Content布局表)——
+                //窗口近旁(cathLeft+[300,348]起排、房宽≤20,L1Content布局表)
                 //兑现Wave-1"口部预留"叙事:玩家自井口房落口下到脊,穿透井就在近旁;
                 //其余隔离带以SpawnX为心按活跃宽度档取
                 int baseMin, baseMax;
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
 
         /// <summary>
         /// 把触及bandIndex带的井柱禁带从候选段表(某结构左缘,闭区间)中扣除。
-        /// 触井规则:井(band-1)整柱穿过本带下行,井(band)在本带脊地板开口——
+        /// 触井规则:井(band-1)整柱穿过本带下行,井(band)在本带脊地板开口
         /// 两者都不许被跨脊足印(如禁室)吞掉封死。
         /// </summary>
         internal static void ExcludeZones(int bandIndex, int footprintWidth, List<(int min, int max)> segs) {

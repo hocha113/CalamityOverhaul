@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
 {
     /// <summary>
     /// 「远征纪要」的手工笔刷：纸墨字、压痕凹槽、烫金压线、凿槽刻度、蜡封、手绘墨路、圈注。<br/>
-    /// 形状一律交给 <see cref="SvgPathPen"/> 或折线笔身——矩形只出现在着色器载体、
+    /// 形状一律交给 <see cref="SvgPathPen"/> 或折线笔身，矩形只出现在着色器载体、
     /// 裁剪与纯色底三处，绝不用来当"边框"和"按钮底盒"
     /// </summary>
     internal static class ChroniclePen
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             "M 0,-1 C 0.5523,-1 1,-0.5523 1,0 C 1,0.5523 0.5523,1 0,1"
             + " C -0.5523,1 -1,0.5523 -1,0 C -1,-0.5523 -0.5523,-1 0,-1 Z";
 
-        //手圈：绕一整圈后甩出一条过头的尾巴，起收不闭合——铅笔圈出来的样子
+        //手圈：绕一整圈后甩出一条过头的尾巴，起收不闭合，铅笔圈出来的样子
         private const string CircleMarkD =
             "M 0.04,-1 C 0.62,-1.03 1.05,-0.57 1.0,0.04"
             + " C 0.96,0.63 0.53,1.04 -0.06,0.99"
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
         #region 纸墨字
 
         /// <summary>
-        /// 纸面墨字：单次绘制。纸上禁用四向描边——黑描边叠褐墨会糊成一团
+        /// 纸面墨字：单次绘制。纸上禁用四向描边，黑描边叠褐墨会糊成一团
         /// </summary>
         public static void Ink(SpriteBatch sb, DynamicSpriteFont font, string text, Vector2 pos,
             Color color, float scale, float alpha = 1f) {
@@ -341,7 +341,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
 
         /// <summary>
         /// 蜡封：不等径的溢蜡饼 + 压纹 + 溢出的一滴。<br/>
-        /// broken 为真时压上一道裂缝并整体压暗——已拆封
+        /// broken 为真时压上一道裂缝并整体压暗，已拆封
         /// </summary>
         public static void WaxSeal(SpriteBatch sb, Vector2 center, float radius, float alpha,
             int seed, float time, bool broken, bool live = false) {

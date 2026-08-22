@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
     /// <summary>
     /// 鬼梦天空：红黑穹顶与远处村落的影像。与血暮天空同法手动驱动
     /// （<see cref="KikasaDomainSystem"/> 每帧按 DreamBlend 激活），
-    /// 交叉渐变全靠 <see cref="KikasaDomainPlayer.DreamBlend"/>——
+    /// 交叉渐变全靠 <see cref="KikasaDomainPlayer.DreamBlend"/>
     /// 拉入结算的红闪掩护下梦空浮现，归返时同路退场
     /// </summary>
     internal class KikasaDreamSky : CustomSky, ICWRLoader

@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
             npc.damage = 0;
 
             if (!VaultUtils.isClient) {
-                //二阶段与低血时喘息更短——节奏越打越快
+                //二阶段与低血时喘息更短，节奏越打越快
                 duration = context.IsPhase2 ? Main.rand.Next(26, 40) : Main.rand.Next(40, 62);
                 if (context.IsLowLife) {
                     duration = Math.Max(20, duration - 10);

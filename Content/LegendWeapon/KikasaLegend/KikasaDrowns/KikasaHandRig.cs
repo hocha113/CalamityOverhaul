@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
     /// <summary>
     /// 血湖鬼手单臂装备：水面根固定，6 节 FABRIK 追腕，卷指与三种条带装配。
     /// 骨架沿用焦黑枯手（GhostHandProj）的解算与条带口径，
-    /// 宽度包络改水柱形（根粗腕细）、骨瘤弱化、爪尖圆润——是抱不是撕。
+    /// 宽度包络改水柱形（根粗腕细）、骨瘤弱化、爪尖圆润，是抱不是撕。
     /// </summary>
     internal sealed class KikasaHandRig
     {
@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                     p += ang.ToRotationVector2() * (total * FingerSegFractions[j]);
                     fingerJoints[k, j + 1] = p;
                 }
-                //爪尖：圆钝短钩——是抱不是撕
+                //爪尖：圆钝短钩，是抱不是撕
                 float clawAng = ang + bendSign * (0.34f + curl * 0.45f);
                 fingerJoints[k, 4] = p + clawAng.ToRotationVector2() * (5f + total * 0.09f);
             }

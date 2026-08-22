@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.HackTimes.Targets
 {
     /// <summary>
     /// 容器目标（箱子/梳妆台等 <c>Main.chest</c> 实体）。<br/>
-    /// 优先级压在炮台(40)之下、物块(0)之上——悬停箱子时先认容器，
+    /// 优先级压在炮台(40)之下、物块(0)之上，悬停箱子时先认容器，
     /// 否则永远被物块目标截胡
     /// </summary>
     internal class ContainerTargetType : HackTargetType

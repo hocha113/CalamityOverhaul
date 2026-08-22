@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Common
         /// <param name="main">环带主体色</param>
         /// <param name="deep">内侧尾波/残波色</param>
         /// <param name="alpha">整体透明度 0~1</param>
-        /// <param name="tearPx">撕裂位移幅度（世界px），≤0 时取厚度的 0.9 倍——环缘不许是干净数学圆</param>
+        /// <param name="tearPx">撕裂位移幅度（世界px），≤0 时取厚度的 0.9 倍，环缘不许是干净数学圆</param>
         /// <param name="squish">Y 透视压缩，1=正圆，贴地环常用 0.4</param>
         /// <param name="innerGlow">环内残波 0~1，绽放类给小值、预警类给 0</param>
         /// <param name="timeSeed">时间种子，错开多实例噪声相位</param>

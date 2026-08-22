@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             }
         }
 
-        /// <summary>会话可用；不满足只暂停不重置。湖心景开着不算占用——它本身是教学的一步</summary>
+        /// <summary>会话可用；不满足只暂停不重置。湖心景开着不算占用，它本身是教学的一步</summary>
         private static bool SessionUsable() {
             Player p = Main.LocalPlayer;
             if (p == null || !p.active || p.dead) {
@@ -300,7 +300,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             float time = Main.GlobalTimeWrappedHourly;
 
             //第一步给掌中风铃的铃身一个脉冲环：铃即领域的读数。伞没拿在手上时风铃不在场，环也不画；
-            //第三步同样用脉冲环指路——点铃即开湖心景
+            //第三步同样用脉冲环指路，点铃即开湖心景
             bool ringStep = currentPhase == Phase.Domain || currentPhase == Phase.Panorama;
             if (ringStep && KikasaHud.Instance?.Active == true) {
                 float pulse = KikasaHudTheme.Breath(time, 1.3f, 3f);

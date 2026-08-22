@@ -6,11 +6,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
 {
     //====================================================================
     //L3灭灯+开关电线玩法(本层独占,INDEX §3裁决;语法逐行对源=F33):
-    //  ·吊灯:WorldGen.PlaceChand(中列,首空行,34,style)——自带3x3净空+中列顶锚校验
+    //  ·吊灯:WorldGen.PlaceChand(中列,首空行,34,style)：自带3x3净空+中列顶锚校验
     //    (WorldGen.cs:46176-46243);熄灭=3x3全格frameX+=54,与Wiring.ToggleChandelier
-    //    (Wiring.cs:2836-2874,点亮判据frameX%108==0)完全互逆——原版gen里对吊灯只写
+    //    (Wiring.cs:2836-2874,点亮判据frameX%108==0)完全互逆，原版gen里对吊灯只写
     //    两格frameX=18(:28688-28689)是无效操作,本层修正为可开关的真熄灭
-    //  ·灯笼:WorldGen.Place1x2Top(x,首空行,42,style)——自带顶锚实心+下格空校验
+    //  ·灯笼:WorldGen.Place1x2Top(x,首空行,42,style)：自带顶锚实心+下格空校验
     //    (:38648-38671);熄灭=两格frameX=18(:28754-28757原版逐字),ToggleHangingLantern互逆
     //  ·开关:tile136裸PlaceTile+落点条件镜像原版(:28718-28727):
     //    候选=灯±12列/下方3~20行,侧邻实心非门或脚下实心,以active()为准

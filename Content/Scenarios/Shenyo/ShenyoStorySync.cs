@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
 {
     /// <summary>
     /// 沈幽初遇进度的本地读写口（镜像 <see cref="Himayo.HimayoStorySync"/>）。<br/>
-    /// 全部按本地玩家取数——鬼雨世界是本地叠加层，进度也随玩家存档。
+    /// 全部按本地玩家取数，鬼雨世界是本地叠加层，进度也随玩家存档。
     /// </summary>
     internal static class ShenyoStorySync
     {

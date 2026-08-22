@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             context.ContactDamageScale = 0f;
             context.SkipGravity = true;
             npc.velocity = Vector2.Zero;
-            //加冕帧(含)前头顶无冠——命中帧由天降演出层画在锚点，次帧交棒常驻扣冠层
+            //加冕帧(含)前头顶无冠，命中帧由天降演出层画在锚点，次帧交棒常驻扣冠层
             context.HideCrown = Timer <= CrownHitFrame;
 
             //初始化舞台点：目标侧向地面；客户端不自算，跟随服务端同步的本体位置反推

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
     /// <summary>
     /// 旋骨罗盘（二阶段签名）：头颅升空默祷，两波旋骨轮从侧翼/天地钳杀碾场<br/>
     /// 缺口（契约3）：轮辐 90° 豁口可穿（SkeletronBoneWheel.SpokeGapSlots，碰撞绘制同源）；
-    /// 头颅全程停火悬停——本招是纯输出窗，压力全在轮上
+    /// 头颅全程停火悬停，本招是纯输出窗，压力全在轮上
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)SkeletronStateIndex.BoneWheel, typeof(SkeletronStateContext))]
     internal class SkeletronBoneWheelState : SkeletronStateBase
