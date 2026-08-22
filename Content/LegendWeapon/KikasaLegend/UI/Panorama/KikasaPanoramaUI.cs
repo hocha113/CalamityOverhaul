@@ -420,9 +420,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
         //==================== 悬停解析 ====================
 
         private void ResolveHover(Vector2 mouse, bool inputAvailable) {
-            hoverKind = HoverKind.None;
-            hoverIndex = -1;
             if (!inputAvailable) {
+                SetHover(HoverKind.None, -1);
                 return;
             }
             //席位（圆命中）
@@ -456,11 +455,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             }
             if (KikasaPanoramaTheme.WispHit.Contains(mouse.ToPoint())) {
                 SetHover(HoverKind.Wisp, 0);
+                return;
             }
+            SetHover(HoverKind.None, -1);
         }
 
+        /// <summary>只在真正换到新热区时嘀一声。先清 None 再 Set 会让每帧都像刚进入</summary>
         private void SetHover(HoverKind kind, int index) {
-            if (hoverKind != kind || hoverIndex != index) {
+            if (hoverKind == kind && hoverIndex == index) {
+                return;
+            }
+            if (kind != HoverKind.None) {
                 SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.25f, Volume = 0.3f });
             }
             hoverKind = kind;
