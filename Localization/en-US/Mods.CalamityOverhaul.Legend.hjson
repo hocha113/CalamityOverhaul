@@ -1172,7 +1172,7 @@ KikasaText: {
 		WheelStatusSummon: "[Release] Call it out of the water"
 		WheelStatusAwaitOrder: "[Release] Accept the order—it surfaces once the lake rises"
 		WheelCenterTitle: Umbrella Decree
-		WheelCenterDesc: "One decree for all seats: recall every shade afield, or call out every shade held back"
+		WheelCenterDesc: One decree for all seats: recall every shade afield, or call out every shade held back
 		WheelCenterCountFormat: "{0}/{1} afield"
 		WheelCenterRecallAll: "[Release] Recall all"
 		WheelCenterSummonAll: "[Release] Call out all"
@@ -1197,7 +1197,7 @@ KikasaText: {
 		NeedDomainFormat: Press {0} to raise the blood lake
 		NeedFullWater: The lake has not fully risen
 		NeedVigorFormat: Lake vigor {0}%—the dream needs {1}%
-		HoundBonusFormat: "Dream hounds: cap {0} · bite {1}%"
+		HoundBonusFormat: Dream hounds: cap {0} · bite {1}%
 		WispBurning: Burning—scorching along the waterline
 		WispIdle: Unlit—ignites itself once vigor refills
 		WispBoil: Boiling on through the rain
@@ -1230,7 +1230,7 @@ KikasaText: {
 		VaultExtractHint: Click to retrieve
 		VaultViewOnlyLine: The lake hasn't risen to your feet—look, don't reach
 		ArmsStockFormat: Servant originals ×{0}
-		ThrallLineFormat: "Umbrella thralls: cap {0} · convert every {1}s"
+		ThrallLineFormat: Umbrella thralls: cap {0} · convert every {1}s
 		FooterHintFormat: Esc / {0} to close · hold an item and press {1} to sink it · {2} servant wheel
 	}
 
@@ -1242,7 +1242,7 @@ KikasaText: {
 		SinkBody: The lake is your private vault. Hold an item and press the sink key to drop it in; aim at a living thing and press the same key, and the lake will drag it under. A drowned boss becomes a shade and stays with you forever.
 		SinkPrompt: Once the water reaches your feet, press {0} while holding an item or aiming at a creature
 		PanoramaTitle: Open the Lakeheart
-		PanoramaBody: "One screen holds it all: the hound and the gold flame up top, three seats of shades on the waterline, and your hoard on the lakebed."
+		PanoramaBody: One screen holds it all: the hound and the gold flame up top, three seats of shades on the waterline, and your hoard on the lakebed.
 		PanoramaPrompt: Click the wind chime at the bottom left, or hold the umbrella and press {0}
 		WheelTitle: Command the Shades
 		WheelBody: Seated shades surface on their own when the lake is ready. The wheel calls them out or holds them back mid-fight—fewer afield, harder each one bites.

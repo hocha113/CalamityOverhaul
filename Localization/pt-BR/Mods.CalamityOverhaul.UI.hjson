@@ -237,6 +237,81 @@ Incinerator: {
 	}
 }
 
+PlayerLauncher: {
+	PlayerLauncherUI: {
+		// TitleText: Launch Pad
+		// DirectionLabel: Direction
+		// PowerLabel: Launch Power
+		// EnableText: Enable
+		// DisableText: Disable
+		// StatusReady: Ready
+		// StatusNoPower: No Power
+		// StatusOff: Disabled
+		// EnergyLabel: Power
+		// CostTip: Each launch costs {0} UE
+		// PowerUnit: UE
+	}
+}
+
+PotionBeacon: {
+	PotionBeaconUI: {
+		// TitleText: Potion Diffuser Beacon
+		// SlotLabel: Potion Bay
+		// EnableText: Enable
+		// DisableText: Disable
+		// StatusWorking: Diffusing
+		// StatusIdle: Idle
+		// StatusNoPower: No Power
+		// StatusOff: Disabled
+		// EnergyLabel: Power
+		// DropHint: Place buff potions
+		// SupplyTip: "{0}s of supply left in this bottle"
+		// PowerUnit: UE
+	}
+}
+
+HerbFarmer: {
+	HerbFarmerUI: {
+		// TitleText: Herb Farming Machine
+		// SeedLabel: Seed Bay
+		// ProduceLabel: Produce Bay
+		// EnableText: Enable
+		// DisableText: Disable
+		// StatusWorking: Farming
+		// StatusIdle: Idle
+		// StatusNoPower: No Power
+		// StatusOff: Disabled
+		// EnergyLabel: Power
+		// SeedHint: Place herb seeds
+		// TakeHint: Click to retrieve
+		// PowerUnit: UE
+	}
+}
+
+AutoFisher: {
+	AutoFisherUI: {
+		// TitleText: Auto Fisher
+		// BaitLabel: Bait Bay
+		// CatchLabel: Catch Bay
+		// IntervalLabel: Cast Interval
+		// PowerReadout: Fishing Power {0}
+		// LakeReadout: Lake Size {0}
+		// EnableText: Enable
+		// DisableText: Disable
+		// StatusFishing: Fishing
+		// StatusIdle: Idle
+		// StatusNoPower: No Power
+		// StatusNoBait: No Bait
+		// StatusNoWater: No Water
+		// StatusFull: Storage Full
+		// StatusOff: Disabled
+		// EnergyLabel: Power
+		// BaitHint: Place bait
+		// CatchHint: Catches are stored here
+		// PowerUnit: UE
+	}
+}
+
 ItemPipeline: {
 	Normal: Normal
 	Output: Saida

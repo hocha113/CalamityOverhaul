@@ -567,8 +567,12 @@ VictorRiftPortalProj.DisplayName: Grieta cibernética de Víctor
 // WofGrabTongueProj.DisplayName: Wof Grab Tongue Proj
 // KikasaThrallProj.DisplayName: Kikasa Thrall Proj
 // L6MachineStrike.DisplayName: L6 Machine Strike
-// KikasaMinisharkBullet.DisplayName: Kikasa Minishark Bullet
-// KikasaMinisharkServant.DisplayName: Kikasa Minishark Servant
+// KikasaGunBullet.DisplayName: Kikasa Lakewater Bullet
+// KikasaGunServant.DisplayName: Kikasa Gun Servant
+// KikasaBladeServant.DisplayName: Kikasa Blade Servant
+// KikasaBladeSlash.DisplayName: Kikasa Lakewater Slash
+// KikasaWhipServant.DisplayName: Kikasa Whip Servant
+// KikasaWhipLash.DisplayName: Kikasa Lakewater Lash
 // CultistArcBolt.DisplayName: Storm Cadence Arc
 // CultistFlameBolt.DisplayName: Flame Bolt
 // CultistFrostSpear.DisplayName: Frost Crystal Spear

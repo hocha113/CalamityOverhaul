@@ -1018,7 +1018,8 @@ EternalBlazingNowNoHelen: {
 OniRainWorld: {
 	OniRainWorldSystem: {
 		// InteractHint: "[Right Click] Step beneath the umbrella"
-		// DescendHint: "[Right Click] Step deeper into the rain"
+		// GrabHint: "[Right Click] Seize the umbrella"
+		// OniDeathReason: "{0} was dragged into the rain by something under an umbrella"
 	}
 }
 
@@ -1027,9 +1028,13 @@ FirstMetShenyo: {
 	// L1: It has been a long time since anything living walked in here
 	// L2: How did you get here?
 	// OptDead: Died once. When I woke up, I was here
-	// OptRain: It was raining outside. I walked in under an umbrella
+	// OptRain: Snatched an umbrella and charged in
+	// OptDeadLocked: (You are still alive. That answer will not leave your mouth)
+	// OptRainLocked: (Your hands are empty. No umbrella to speak of)
 	// A1: ...Back from the dead?
 	// A2: A rare thing. Though by the look of you, you hardly seem to care
 	// B1: Then your luck is not bad at all
 	// B2: Now start thinking about how to get out
+	// C1: The rain will hold the way open for you. Go back
+	// C2: That umbrella is yours from now on
 }

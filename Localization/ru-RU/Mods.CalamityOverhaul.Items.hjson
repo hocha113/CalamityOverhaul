@@ -1830,6 +1830,65 @@ Thrower: {
 		'''
 }
 
+PlayerLauncher: {
+	// NoEnergyText: Insufficient energy!
+	// DisplayName: Launch Pad
+	/* Tooltip:
+		'''
+		Consumes power to launch players standing on it in the configured direction
+		Grants brief fall damage immunity after launch
+		Right-click to open the control panel
+		''' */
+}
+
+PacifierTower: {
+	// FieldOnText: Field activated
+	// FieldOffText: Field deactivated
+	// NoEnergyText: Insufficient energy!
+	// DisplayName: Pacifier Field Generator
+	/* Tooltip:
+		'''
+		Suppresses natural enemy spawns nearby while powered
+		Right-click or wire signal to toggle the field
+		''' */
+}
+
+PotionBeacon: {
+	// NoEnergyText: Insufficient energy!
+	// DisplayName: Potion Diffuser Beacon
+	/* Tooltip:
+		'''
+		Stores buff potions and continuously diffuses their effects to nearby players
+		One potion supplies twice its original buff duration
+		Right-click to open the control panel
+		''' */
+}
+
+HerbFarmer: {
+	// NoEnergyText: Insufficient energy!
+	// DisplayName: Herb Farming Machine
+	/* Tooltip:
+		'''
+		Consumes seeds and power to automatically plant herbs on valid soil nearby
+		Harvests blooming herbs, yielding herbs and seeds
+		Right-click to open the control panel
+		''' */
+}
+
+AutoFisher: {
+	// NoEnergyText: Insufficient energy!
+	// NoBaitText: Out of bait!
+	// NoWaterText: No fishable water nearby!
+	// FullText: Catch storage is full!
+	// DisplayName: Auto Fisher
+	/* Tooltip:
+		'''
+		Consumes bait and power to automatically fish from water below
+		Bigger water bodies and better bait yield richer catches
+		Right-click to open the control panel
+		''' */
+}
+
 SandevistansItem: {
 	DisplayName: Сандевистан Mk.5
 	Tooltip: Замедляет восприятие времени на 70% в течение 5 секунд. Перезарядка 15 секунд.
