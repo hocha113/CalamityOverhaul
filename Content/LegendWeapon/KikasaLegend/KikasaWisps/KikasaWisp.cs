@@ -7,10 +7,11 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
 {
     /// <summary>
-    /// 血湖鬼火门面：自燃门控、湖力收支、包络推进、鬼雨压制节拍、灼烧区扫描。
+    /// 血湖鬼火门面：点燃/收火命令门控、包络推进、鬼雨压制节拍、灼烧区扫描。
     /// 状态存在 <see cref="KikasaDomainPlayer"/>（点燃态+原点入快照，包络各端本地自算）；
-    /// 满水稳态、湖力蓄满即自燃，湖力烧干即熄；键已删。
-    /// 焰影只做增强（灼烧更久、火舌更高，见 KikasaEffigyBoard），不再是点火的门。
+    /// 点燃与收火都是玩家的主动号令（入口：转盘金焰扇、HUD 焰苗、湖心景金焰，
+    /// 共走 <see cref="TryToggle"/>），鬼雨压灭与收域是仅有的两只外力。
+    /// 焰影只做增强（灼烧更久、火舌更高，见 KikasaEffigyBoard），不是点火的门。
     /// 设定：鬼火被鬼雨压制，翻入鬼雨后火被迅速压灭且点燃态清除；
     /// 沸雨边（焰×潦）免压制，改作半强度蒸沸
     /// </summary>
@@ -63,8 +64,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
         //==================== 逐帧推进（UpdateLocal 委托，各端对每个活跃域都跑） ====================
 
         internal static void Update(KikasaDomainPlayer kdp) {
-            //owner 端裁决：自燃/收火/沸雨边刷新，盘只活在所有者本机
-            UpdateOwnerGate(kdp);
+            //owner 端逐帧刷新沸雨边旗，远端读不到盘，靠快照跟上
+            RefreshOwnerFlags(kdp);
 
             //压制：形态已切进鬼雨、且倒转段收尾（世界落回视野）后才起拍
             //倒转前半段火在翻滚的旧世界里烧着，雨落下来才开始压灭；沸雨边免压制
@@ -74,24 +75,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
             if (suppressed) {
                 kdp.WispQuench = MathF.Min(kdp.WispQuench + 1f / QuenchFrames, 1f);
                 if (kdp.WispQuench >= 1f) {
-                    //火死透了：点燃态清除，翻回血湖等湖力回满再自燃
+                    //火死透了：点燃态清除，翻回血湖后由玩家再点
                     kdp.WispFireActive = false;
                 }
             }
             else if (!kdp.WispFireActive && kdp.WispQuench > 0f) {
                 kdp.WispQuench = MathF.Max(kdp.WispQuench - 0.05f, 0f);
-            }
-
-            //湖力收支：燃着耗、熄着回。远端用基础耗速自算，快照每两秒矫正
-            //三影镇湖的省烧系数只有 owner 算得出，误差是慢表读数级
-            if (kdp.WispFireActive && kdp.WispQuench < 0.5f) {
-                float burn = !Main.dedServ && kdp.Player.whoAmI == Main.myPlayer
-                    ? KikasaEffigyBoard.VigorBurnPerFrame(kdp.Player)
-                    : 1f / 1500f;
-                kdp.LakeVigor = MathF.Max(kdp.LakeVigor - burn, 0f);
-            }
-            else {
-                kdp.LakeVigor = MathF.Min(kdp.LakeVigor + KikasaEffigyBoard.VigorRefillPerFrame, 1f);
             }
 
             //蔓延：点燃后前沿扫向两端；收火反向啃回；压制时冻在原地，雨压灭的是站着的火
@@ -122,29 +111,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
             OwnerScan(kdp);
         }
 
-        //==================== 自燃门控（仅 owner 端；点燃/收火命令走既有确认拍与快照） ====================
+        //==================== 点燃/收火号令（仅 owner 端；命令走既有确认拍与快照） ====================
 
-        private static void UpdateOwnerGate(KikasaDomainPlayer kdp) {
+        private static void RefreshOwnerFlags(KikasaDomainPlayer kdp) {
             Player player = kdp.Player;
             if (Main.dedServ || player.whoAmI != Main.myPlayer || player.dead) {
                 return;
             }
             //沸雨边逐帧刷新入快照，远端读不到盘，靠这面旗决定压不压火
             kdp.WispRainProof = KikasaEffigyBoard.HasBoilRainEdge(player);
+        }
 
-            if (kdp.WispFireActive) {
-                //湖力烧干即收火（回满后会再自燃）；焰影去留只改增益，不再掐火
-                if (kdp.LakeVigor <= 0f) {
-                    kdp.ToggleWispFire();
-                }
-                return;
+        /// <summary>此刻能否受理点燃：满水稳态 + 形态许可（非鬼雨，沸雨边例外）+ 非梦侧。
+        /// 阈值取 0.98 与在场包络的养火线（lakeHolds）同源，湖面托得住火即点得着</summary>
+        internal static bool IgniteReady(KikasaDomainPlayer kdp)
+            => kdp.Phase == KikasaDomainPhase.Open && kdp.RiseT >= 0.98f
+            && (!kdp.IsRainForm || kdp.WispRainProof)
+            && !kdp.DreamWorldVisual;
+
+        /// <summary>
+        /// 点燃/收火号令（仅 owner 本机），转盘金焰扇、HUD 焰苗、湖心景金焰共用这一个门。
+        /// 燃着即收火（任何相位都收得下）；熄着须 <see cref="IgniteReady"/> 才点得燃。
+        /// 返回是否受理，确认拍与广播在 <see cref="KikasaDomainPlayer.ToggleWispFire"/>
+        /// </summary>
+        internal static bool TryToggle(Player player) {
+            if (Main.dedServ || player.whoAmI != Main.myPlayer || player.dead) {
+                return false;
             }
-            //自燃：满水稳态 + 湖力蓄满 + 形态许可（非鬼雨，沸雨边例外）+ 非梦，不看编成
-            bool formOk = !kdp.IsRainForm || kdp.WispRainProof;
-            if (kdp.Phase == KikasaDomainPhase.Open && kdp.RiseT >= 0.999f
-                && formOk && kdp.LakeVigor >= 0.999f && !kdp.DreamWorldVisual) {
-                kdp.ToggleWispFire();
+            KikasaDomainPlayer kdp = player.GetModPlayer<KikasaDomainPlayer>();
+            if (!kdp.WispFireActive && !IgniteReady(kdp)) {
+                return false;
             }
+            return kdp.ToggleWispFire();
         }
 
         //==================== 灼烧扫描（仅 owner 端；AddBuff 骑原版 buff 同步） ====================

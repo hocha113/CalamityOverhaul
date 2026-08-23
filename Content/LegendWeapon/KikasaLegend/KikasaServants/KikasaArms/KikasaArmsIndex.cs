@@ -1,6 +1,7 @@
 using CalamityOverhaul.Content.Items.Magic.Pandemoniums;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms
@@ -25,12 +26,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         /// <summary>
         /// 专属械奴：比目鱼（推断只读模板伤 4）、鬼切（useStyle=Shoot 进不了刀推断）、
-        /// 万魔殿（HoldUp 魔法进不了枪/刀/鞭）。静态构造在首次 TryGet（进游戏后）才触发
+        /// 万魔殿（HoldUp 魔法进不了枪/刀/鞭）、天顶剑（noMelee=true 进不了刀推断，
+        /// 且万剑归一的名剑理应有自己的演出）。静态构造在首次 TryGet（进游戏后）才触发
         /// </summary>
         static KikasaArmsIndex() {
             entries[HalibutLegend.HalibutOverride.ID] = KikasaHalibut.KikasaHalibutServant.Summon;
             entries[OnikiriLegend.OnikiriOverride.ID] = KikasaOnikiri.KikasaOnikiriServant.Summon;
             entries[ModContent.ItemType<Pandemonium>()] = KikasaPandemonium.KikasaPandemoniumServant.Summon;
+            entries[ItemID.Zenith] = KikasaZenith.KikasaZenithServant.Summon;
         }
 
         /// <summary>该武器能否被湖驱使：专门条目 → 枪推断 → 刀剑推断</summary>

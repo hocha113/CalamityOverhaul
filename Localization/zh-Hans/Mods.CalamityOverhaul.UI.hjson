@@ -1227,6 +1227,8 @@ BulletinBoardUI: {
 
 HimayoMenu.ThemeName: 夜樱境
 
+ShenyoMenu.ThemeName: 鬼湖夜雨
+
 AcknowledgmentUI: {
 	ArtistRole: 画师
 	CodeAssistanceRole: 代码援助

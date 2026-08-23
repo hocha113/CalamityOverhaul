@@ -1144,6 +1144,8 @@ KikasaText: {
 		StateHeld: Held back
 		StateAwait: Waiting
 		LakeNotReadyLine: The lake isn't open. It will come out once you raise it
+		WispRainBlock: The ghost rain smothers any spark
+		NeedSettleLine: The lake hasn't settled yet
 	}
 
 	KikasaHud: {
@@ -1151,8 +1153,7 @@ KikasaText: {
 		OpenTag: Click to open
 		TipWaterFormat: Water {0}%
 		TipVaultFormat: Hoard {0} / {1}
-		TipVigorDream: At 50% vigor, hold to enter the Ghost Dream
-		TipVigorWisp: At full vigor, ghost fire lights itself
+		TipWispClick: "[Click] Light / draw back the flame"
 		TipCooldownFormat: Cooling down · {0}%
 		TipDrownTitle: Drown
 		TipDrownHintFormat: Aim at an enemy or hold an item and press {0}
@@ -1181,13 +1182,14 @@ KikasaText: {
 		WheelCenterEmpty: No shades seated yet
 		WheelDamageFormat: Damage per shade out {0}%
 		WheelHint: "[{0}] Hold · Release to confirm · Right-click to cancel"
+		WheelWispName: Gold Flame
+		WheelWispDesc: Once lit, the gold flame spreads along the shore and scorches whatever it reaches
+		WheelWispIgnite: "[Release] Light it"
+		WheelWispSnuff: "[Release] Draw the fire back"
 	}
 
 	KikasaPanoramaUI: {
 		Title: Lakeheart
-		VigorLabel: Vigor
-		VigorDreamMark: Dream
-		VigorWispMark: Ignite
 		HoundTitle: Hound · Ghost Dream
 		WispTitle: Gold Flame · Ghost Fire
 		ReflectAwake: The reflection is awake
@@ -1198,13 +1200,14 @@ KikasaText: {
 		DreamEnterClick: "[Click] Enter the Ghost Dream"
 		NeedDomainFormat: Press {0} to open the Blood Lake
 		NeedFullWater: The lake isn't full yet
-		NeedVigorFormat: Vigor {0}% — the dream needs {1}%
 		HoundBonusFormat: Hound cap {0} · damage {1}%
 		WispBurning: Burning, scorching along the shore
-		WispIdle: Unlit; lights itself at full vigor
+		WispIdle: Unlit; the flame waits on your word
 		WispBoil: Still burning in the rain
 		WispQuenchedLine: Being put out by Ghost Rain
 		WispBonusFormat: Burn {0}s · flame {1}
+		WispIgniteClick: "[Click] Light the flame"
+		WispSnuffClick: "[Click] Draw the fire back"
 		EdgeDreamFire: Dreamfire
 		EdgeBoilRain: Boiling Rain
 		EdgeRainNightmare: Rain-Nightmare
@@ -1247,13 +1250,27 @@ KikasaText: {
 		PanoramaBody: This is Kikasa's main screen. The hound and ghost fire sit at the top, three seats in the middle, and the hoard at the bottom.
 		PanoramaPrompt: Click the wind chime at the bottom left, or hold Kikasa and press {0}
 		WheelTitle: Call the Shades
-		WheelBody: Seated shades come out on their own while the lake is open. The wheel calls them out or back at any time. Fewer on the field means each one hits harder.
+		WheelBody: Seated shades come out on their own while the lake is open. The wheel calls them out or back at any time; fewer on the field means each one hits harder. The gold-flame sector on the same wheel lights or draws back the ghost fire.
 		WheelPrompt: Hold {0} to open the wheel, then release on a seat
 		WheelNoMemory: No shades yet. Drown a boss first, or skip this step.
+		RainTitle: Mutate into Ghost Rain
+		RainBody: The Flip the Lake key speaks twice — at full water, a tap flips the lake into ghost rain; a long hold pulls you into the dream. Foes slain under the rain rise as umbrella thralls that fight for you.
+		RainPrompt: At full water, tap {0} to flip the lake
+		RestartTitle: Rewind in the Rain
+		RestartBody: Ghost rain remembers. One press freezes the scene into a photograph, then the rain washes it open — everyone slides back to where they stood, wounds close, curses rinse off, and nothing can touch you while it rewinds.
+		RestartPrompt: In ghost rain at full water, press {0}
 		DreamTitle: Enter the Ghost Dream
-		DreamBody: When the lake is full and vigor is past half, the reflection wakes on its own. Hold Flip the Lake to enter the Ghost Dream. Hold left click inside to call hounds; press the same key again to return.
+		DreamBody: Once the lake is full, hold Flip the Lake and the reflection pulls you under. Hold left click inside to call hounds; press the same key again to return.
 		DreamPrompt: At full water, hold {0} (middle mouse by default)
 		SkipBtn: Skip
+		ConfirmBtn: Got it
+		AssistBtn: Show me
+		OpenPanoramaBtn: Open it for me
+		DismissBtn: Put away
 		KeyUnbound: This step's key isn't bound. Bind it in Settings > Controls, or click Skip.
+		AlreadyDoneNote: This one is already done — read on, then press Got it.
+		WaterRisingNote: Wait for the blood water to reach your feet first.
+		ResetCooldownFormat: "The rewind ink is still coiling back: {0}%"
+		HelpHover: Replay the umbrella tutorial
 	}
 }

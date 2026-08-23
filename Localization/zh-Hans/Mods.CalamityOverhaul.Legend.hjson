@@ -915,7 +915,7 @@ KikasaOverride: {
 		对着敌人或拿着物品按「沉物入湖」键，可以把它按进湖里。Boss 沉过后会留下沉影
 		点左下角风铃打开湖心景，把沉影编进三个影位
 		湖水涨满后，短按「血湖表里」键（默认鼠标中键）在血湖和鬼雨之间切换
-		湖力过半时，长按同一键进入鬼梦
+		长按同一键进入鬼梦；沉影转盘上的金焰扇点燃或收起鬼火
 		召唤栏位越多，墨雨越快、雨滴越多，右键也蓄得越快
 		4 栏：每波多甩一滴，打向第二个目标
 		7 栏：每四波会一次性甩出全部雨滴
@@ -1144,6 +1144,8 @@ KikasaText: {
 		StateHeld: 已收起
 		StateAwait: 等湖水
 		LakeNotReadyLine: 湖还没开，开湖后它会自己出来
+		WispRainBlock: 鬼雨压着，火点不着
+		NeedSettleLine: 湖面还没安定下来
 	}
 
 	KikasaHud: {
@@ -1151,8 +1153,7 @@ KikasaText: {
 		OpenTag: 点击打开
 		TipWaterFormat: 水位 {0}%
 		TipVaultFormat: 湖藏 {0} / {1}
-		TipVigorDream: 湖力达到 50% 后，可以长按进入鬼梦
-		TipVigorWisp: 湖力满时，鬼火会自己点燃
+		TipWispClick: "[点击] 点燃 / 收火"
 		TipCooldownFormat: 冷却中 · {0}%
 		TipDrownTitle: 沉溺
 		TipDrownHintFormat: 对着敌人或拿着物品按 {0}
@@ -1181,13 +1182,14 @@ KikasaText: {
 		WheelCenterEmpty: 还没有编进影位的沉影
 		WheelDamageFormat: 每只在场沉影的伤害 {0}%
 		WheelHint: "[{0}] 按住 · 松开确认 · 右键取消"
+		WheelWispName: 金焰
+		WheelWispDesc: 点燃后金焰沿湖岸蔓延，灼烧沿岸的敌人
+		WheelWispIgnite: "[松开] 点燃"
+		WheelWispSnuff: "[松开] 收火"
 	}
 
 	KikasaPanoramaUI: {
 		Title: 湖 心 景
-		VigorLabel: 湖力
-		VigorDreamMark: 入梦
-		VigorWispMark: 点燃
 		HoundTitle: 恶犬 · 鬼梦
 		WispTitle: 金焰 · 鬼火
 		ReflectAwake: 倒影已醒
@@ -1198,13 +1200,14 @@ KikasaText: {
 		DreamEnterClick: "[点击] 进入鬼梦"
 		NeedDomainFormat: 按 {0} 撑开血湖
 		NeedFullWater: 湖还没涨满
-		NeedVigorFormat: 湖力 {0}%，入梦需要 {1}%
 		HoundBonusFormat: 恶犬上限 {0} · 伤害 {1}%
 		WispBurning: 燃烧中，沿湖岸灼烧敌人
-		WispIdle: 未点燃，湖力满时会自己烧起来
+		WispIdle: 未点燃，火等你号令
 		WispBoil: 鬼雨里仍在烧
 		WispQuenchedLine: 正在被鬼雨浇灭
 		WispBonusFormat: 灼烧 {0} 秒 · 火舌 {1}
+		WispIgniteClick: "[点击] 点燃"
+		WispSnuffClick: "[点击] 收火"
 		EdgeDreamFire: 梦火
 		EdgeBoilRain: 沸雨
 		EdgeRainNightmare: 雨魇
@@ -1247,13 +1250,27 @@ KikasaText: {
 		PanoramaBody: 这是鬼伞的主界面。上面是恶犬和鬼火，中间三个影位用来编成，底下是湖藏。
 		PanoramaPrompt: 点左下角风铃，或手持鬼伞按 {0}
 		WheelTitle: 召出沉影
-		WheelBody: 编进影位的沉影，湖开着时会自己出来。转盘可以随时召出或收回。场上越少，每只打得越重。
+		WheelBody: 编进影位的沉影，湖开着时会自己出来。转盘可以随时召出或收回，场上越少，每只打得越重。盘上那扇金焰负责点燃和收起鬼火。
 		WheelPrompt: 按住 {0} 打开转盘，对准一个影位松开
 		WheelNoMemory: 还没有沉影。先把一只 Boss 沉进湖里，或者跳过这一步。
+		RainTitle: 异化成鬼雨
+		RainBody: 「血湖表里」键有两重话：满水时短按，血湖翻成鬼雨；长按，是往梦里去。鬼雨底下杀死的敌人会化作伞奴，替你打。
+		RainPrompt: 湖水涨满后，短按 {0} 翻转血湖
+		RestartTitle: 雨中重启
+		RestartBody: 鬼雨记得几秒前的样子。按下重启，画面定格成黑白照片，再被雨痕冲开——场上所有人退回原位，伤口合上，诅咒被冲净，倒带途中没人碰得到你。
+		RestartPrompt: 鬼雨满水时，按 {0}
 		DreamTitle: 进入鬼梦
-		DreamBody: 湖水涨满、湖力过半时，倒影会自己醒来。长按「血湖表里」键进入鬼梦。梦里按住左键会不断唤出恶犬，再按一次同一键回来。
+		DreamBody: 湖水涨满后，长按「血湖表里」键，倒影就会把你拽进鬼梦。梦里按住左键会不断唤出恶犬，再按一次同一键回来。
 		DreamPrompt: 湖水涨满后，长按 {0}（默认鼠标中键）
 		SkipBtn: 跳过
+		ConfirmBtn: 明白了
+		AssistBtn: 替我演示
+		OpenPanoramaBtn: 帮我打开
+		DismissBtn: 收起教程
 		KeyUnbound: 这一步的按键还没绑定。先到 设置 > 控制 里绑好，或者点跳过。
+		AlreadyDoneNote: 这一步你已经做到了——看完就点「明白了」。
+		WaterRisingNote: 先等血水漫到脚下。
+		ResetCooldownFormat: 重启的墨线还在回卷：{0}%
+		HelpHover: 重看鬼伞教程
 	}
 }

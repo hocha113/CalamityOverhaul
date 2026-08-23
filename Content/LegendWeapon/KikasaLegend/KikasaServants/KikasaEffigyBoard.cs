@@ -22,7 +22,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
     /// <summary>
     /// 沉影盘门面：读 <see cref="KikasaServantPlayer"/> 的三影位，
     /// 折算灵异增益（鬼火养旺/梦犬壮大/伞奴增养）与组合边（梦火/沸雨/雨魇/三影镇湖）。
-    /// 鬼火自燃与倒影自醒随湖自走（满水稳态即醒/燃），亲和不再是开门的硬条件，只做增强。
+    /// 鬼火点燃/收火是玩家号令（KikasaWisp.TryToggle）、倒影随满水自醒，
+    /// 亲和不是开门的硬条件，只做增强。
     /// 槽位数据只活在所有者本机（储钱罐语义），远端可见的后果各走既有同步通道：
     /// 鬼奴弹幕原版同步、鬼火与倒影走领域快照。非所有者端调用这些门面得到的是默认值，
     /// 消费端注意只在 owner 侧做裁决
@@ -67,7 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         internal static bool HasRainNightmareEdge(Player player)
             => NightmareCount(player) >= 1 && RainCount(player) >= 1;
 
-        /// <summary>三影镇湖：满盘三席且三系齐坐，鬼奴出力找回一截、湖力省着烧</summary>
+        /// <summary>三影镇湖：满盘三席且三系齐坐，鬼奴出力找回一截</summary>
         internal static bool HasTriSeal(Player player)
             => FilledSlotCount(player) >= KikasaServantPlayer.SlotCount
             && FlameCount(player) >= 1 && NightmareCount(player) >= 1 && RainCount(player) >= 1;
@@ -123,18 +124,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         /// <summary>火舌向水线上方的触及高度：无焰只灼水线近旁（基数 -28px），每枚焰影 +28px</summary>
         internal static float WispFlameReach(Player player)
             => KikasaWisps.KikasaWisp.FlameReach + 28f * (FlameCount(player) - 1);
-
-        //==================== 湖力（鬼火与鬼梦共饮的一汪水） ====================
-
-        /// <summary>鬼火满燃排空湖力的帧数（约 25 秒）；三影镇湖省着烧（约 37 秒）</summary>
-        internal static float VigorBurnPerFrame(Player player)
-            => 1f / (HasTriSeal(player) ? 2250f : 1500f);
-
-        /// <summary>火熄后湖力回满的帧数（约 12 秒），鬼火自燃与再度入梦的天然冷却</summary>
-        internal const float VigorRefillPerFrame = 1f / 720f;
-
-        /// <summary>入梦门槛：湖力过半才拽得动；拉入受理帧把湖力整汪抽干</summary>
-        internal const float DreamVigorNeed = 0.5f;
 
         //==================== 亲和身份色（三灵异既有的系统色） ====================
 

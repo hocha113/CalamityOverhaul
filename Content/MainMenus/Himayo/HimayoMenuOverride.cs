@@ -88,8 +88,8 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
             HimayoPetalField.Tick(interactive, mouse, mouseVel, catching);
         }
 
-        //公告栏主热区、词条与立绘头像占用判断
-        private static bool MouseOverMenuOverlays(Point pt) {
+        //公告栏主热区、词条与立绘头像占用判断（鬼湖主题复用同一份判定）
+        internal static bool MouseOverMenuOverlays(Point pt) {
             if (!VaultLoad.LoadenContent) {
                 return false;
             }

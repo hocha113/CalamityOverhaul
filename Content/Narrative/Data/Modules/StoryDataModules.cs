@@ -264,10 +264,17 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool GuideSeen;
     }
 
-    /// <summary>鬼伞五步引导进度；随玩家存档</summary>
+    /// <summary>鬼伞七步引导进度；随玩家存档</summary>
     public sealed class KikasaGuideData : DataModule
     {
+        /// <summary>教程走完（含跳过收尾）；老档五步版的完成标记同样生效，不重讲</summary>
         public bool GuideSeen;
+        /// <summary>已完成的教程版本；0 = 从未走完。步骤改版时 +1 让老玩家补讲</summary>
+        public int CompletedVersion;
+        /// <summary>已讲完的最大步号（1 起，对应步序），中断后从下一步续讲</summary>
+        public int StepCheckpoint;
+        /// <summary>玩家主动收起过教程；只能由湖心景的「?」再启动</summary>
+        public bool Declined;
     }
 
     /// <summary>旧网深潜引导与首潜委托进度；随玩家存档</summary>

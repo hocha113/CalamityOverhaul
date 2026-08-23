@@ -258,6 +258,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaSky { get; set; }
         public static Asset<Effect> KikasaFlip { get; set; }
         public static Asset<Effect> KikasaItemForm { get; set; }
+        public static Asset<Effect> KikasaServantGhost { get; set; }
         public static Asset<Effect> KikasaThrallForm { get; set; }
         public static Asset<Effect> KikasaVaultPanel { get; set; }
         public static Asset<Effect> KikasaScene { get; set; }
@@ -284,6 +285,10 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> HimayoPortraitAssembly { get; set; }
         public static Asset<Effect> HimayoPanorama { get; set; }
         public static Asset<Effect> ShenyoRainForm { get; set; }
+        public static Asset<Effect> ShenyoMenuLake { get; set; }
+        public static Asset<Effect> ShenyoMenuGhost { get; set; }
+        public static Asset<Effect> ShenyoMenuWet { get; set; }
+        public static Asset<Effect> ShenyoMenuInk { get; set; }
         public static Asset<Effect> ToriiDissolve { get; set; }
         public static Asset<Effect> OniEye { get; set; }
         public static Asset<Effect> AckBackdrop { get; set; }

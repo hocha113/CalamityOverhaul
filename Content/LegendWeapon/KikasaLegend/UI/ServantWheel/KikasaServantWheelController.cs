@@ -16,22 +16,25 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
 {
-    /// <summary>鬼伞转盘扇区条目，一席一扇，仅本机</summary>
+    /// <summary>鬼伞转盘扇区条目，仅本机：三席影位各一扇，外加一扇金焰（鬼火点燃/收火）</summary>
     internal sealed class KikasaWheelSector
     {
-        /// <summary>对应影位 0..2</summary>
+        /// <summary>对应影位 0..2；金焰扇不用</summary>
         public int SeatIndex;
+        /// <summary>金焰扇：松键/点击翻转鬼火点燃态</summary>
+        public bool IsWisp;
         //悬停强度 0~1
         public float HoverAmount;
-        //出战令高亮 0~1（未收起的驻影席）
+        //出战令高亮 0~1（未收起的驻影席 / 燃着的金焰）
         public float OrderAmount;
     }
 
     /// <summary>
     /// 鬼伞·沉影快捷转盘状态机，视觉见 <see cref="KikasaServantWheelUI"/>。
     /// <br/>开关键与排布归 <see cref="RadialWheelHub"/>（与比目鱼/SHPC/义体共键）；
-    /// 扇区=三席影位，松键/点击翻转该席召/收；中心伞章=全席齐令。
-    /// 编成（谁坐哪席）在湖心景里改，转盘只管出战与收起，湖未就绪时受理成候令，绝不无声
+    /// 扇区=三席影位+一扇金焰，松键/点击翻转该席召/收（金焰扇翻转鬼火点燃/收火）；
+    /// 中心伞章=全席齐令。编成（谁坐哪席）在湖心景里改，转盘只管出战与收起，
+    /// 湖未就绪时受理成候令，绝不无声
     /// </summary>
     internal class KikasaServantWheelController : ModPlayer, IRadialWheel
     {
@@ -93,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
         void IRadialWheel.WheelOpen(bool silent) => OpenWheel(silent);
         void IRadialWheel.WheelClose(bool silent) => CloseWheel(silent);
 
-        /// <summary>松键提交：席扇翻转召/收，中心伞章提交全席齐令</summary>
+        /// <summary>松键提交：席扇翻转召/收，金焰扇翻转鬼火，中心伞章提交全席齐令</summary>
         void IRadialWheel.WheelCommitHovered() {
             if (!IsOpen) {
                 return;
@@ -103,7 +106,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
                 return;
             }
             if (HoveredIndex >= 0 && HoveredIndex < sectors.Count) {
-                ToggleSeat(sectors[HoveredIndex].SeatIndex);
+                CommitSector(sectors[HoveredIndex]);
             }
         }
 
@@ -199,7 +202,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
                 }
                 else if (HoveredIndex >= 0 && HoveredIndex < sectors.Count) {
                     Main.mouseLeftRelease = false;
-                    ToggleSeat(sectors[HoveredIndex].SeatIndex);
+                    CommitSector(sectors[HoveredIndex]);
                 }
             }
 
@@ -214,13 +217,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
             CenterHoverAmount = MathHelper.Lerp(CenterHoverAmount, CenterHovered ? 1f : 0f, 0.25f);
         }
 
-        /// <summary>扇区高亮平滑：出战令跟 SlotHeld 真值走</summary>
+        /// <summary>扇区高亮平滑：席扇出战令跟 SlotHeld 真值走，金焰扇跟点燃态走</summary>
         private void RefreshSectorStates() {
             KikasaServantPlayer servant = Player.GetModPlayer<KikasaServantPlayer>();
+            bool wispLit = Player.GetModPlayer<KikasaDomainPlayer>().WispFireActive;
             for (int i = 0; i < sectors.Count; i++) {
                 KikasaWheelSector sec = sectors[i];
-                bool ordered = servant.SlotKeyAt(sec.SeatIndex) != 0
-                    && !servant.SlotHeldAt(sec.SeatIndex);
+                bool ordered = sec.IsWisp ? wispLit
+                    : servant.SlotKeyAt(sec.SeatIndex) != 0
+                        && !servant.SlotHeldAt(sec.SeatIndex);
                 sec.HoverAmount = MathHelper.Lerp(sec.HoverAmount, i == HoveredIndex ? 1f : 0f, 0.25f);
                 sec.OrderAmount = MathHelper.Lerp(sec.OrderAmount, ordered ? 1f : 0f, 0.25f);
             }
@@ -228,6 +233,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
 
         /// <summary>湖此刻是否托得住鬼奴（就绪=召令立即出水，否则成候令）</summary>
         public bool LakeReadyNow => Player.GetModPlayer<KikasaVaultPlayer>().LakeReady;
+
+        /// <summary>扇区落令分流：席扇翻转召/收，金焰扇翻转鬼火</summary>
+        private void CommitSector(KikasaWheelSector sector) {
+            if (sector.IsWisp) {
+                ToggleWisp();
+                return;
+            }
+            ToggleSeat(sector.SeatIndex);
+        }
 
         /// <summary>
         /// 翻转单席召/收。空席拒绝出声；召令在湖未就绪时受理成候令
@@ -240,6 +254,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
                 return;
             }
             PlayOrderSound(nowHeld);
+        }
+
+        /// <summary>
+        /// 金焰落令：点燃/收火走 <see cref="KikasaWisps.KikasaWisp.TryToggle"/> 的统一门，
+        /// 确认拍由命令本体播（自己的域恒为观看端）；点不着只回一声拒绝
+        /// </summary>
+        private void ToggleWisp() {
+            if (!KikasaWisps.KikasaWisp.TryToggle(Player)) {
+                PlayRejectSound();
+            }
         }
 
         /// <summary>全席齐令：有任一出战席则全收，否则全召；空盘拒绝出声</summary>
@@ -296,6 +320,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
                     OrderAmount = ordered ? 1f : 0f,
                 });
             }
+            //第四扇金焰：鬼火的点燃/收火令，与三席同盘（首扇中线朝上，金焰落在左位）
+            sectors.Add(new KikasaWheelSector {
+                IsWisp = true,
+                HoverAmount = 0f,
+                OrderAmount = Player.GetModPlayer<KikasaDomainPlayer>().WispFireActive ? 1f : 0f,
+            });
 
             IsOpen = true;
             HoveredIndex = -1;

@@ -27,8 +27,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
 
         /// <summary>
         /// 背景：夜空雨幕 + 左岸礁 + 血湖水体。waterUv 是当前水线（涨落即状态），
-        /// dry 驱动干湖龟裂，vigor 喂水面辉光，wisp 是鬼火燃势（水线金焰带），
-        /// lightGate 是湖藏填充率（水中烬萤稠度）
+        /// dry 驱动干湖龟裂，vigor 喂水面辉光（湖力裁撤后调用端恒传 1），
+        /// wisp 是鬼火燃势（水线金焰带），lightGate 是湖藏填充率（水中烬萤稠度）
         /// </summary>
         public static void DrawBackdrop(SpriteBatch sb, Rectangle rect, float alpha,
             float rain, float waterUv, float dry, float stir, float vigor,
@@ -259,39 +259,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 body * (0.16f * t * alpha));
 
             KikasaVaultRenderer.RestoreUIBatch(sb);
-        }
-
-        //==================== 湖力条 ====================
-
-        /// <summary>
-        /// 湖力条几何：暗槽 + 血水填充 + 两道门线（入梦 50%、自燃 100%）。
-        /// 文字标注归 UI 层，这里只画几何
-        /// </summary>
-        public static void DrawVigorBar(SpriteBatch sb, Rectangle rect, float vigor,
-            float rain, float alpha, float time) {
-            float v = MathHelper.Clamp(vigor, 0f, 1f);
-            //暗槽与贴身投影
-            Rectangle shadow = rect;
-            shadow.Offset(2, 2);
-            sb.Draw(Pixel, shadow, Color.Black * (0.35f * alpha));
-            sb.Draw(Pixel, rect, KikasaHudTheme.Void(rain) * (0.88f * alpha));
-            //填充：血水从左灌入，前沿一点亮
-            int fillW = (int)(rect.Width * v);
-            if (fillW > 1) {
-                sb.Draw(Pixel, new Rectangle(rect.X, rect.Y, fillW, rect.Height),
-                    KikasaHudTheme.Accent(rain) * (0.75f * alpha));
-                float breath = KikasaPanoramaTheme.Breath(time, 2.6f, 2.8f);
-                KikasaVaultRenderer.DrawGlowDot(sb, new Vector2(rect.X + fillW, rect.Center.Y),
-                    5f + breath * 2f, KikasaHudTheme.Glow(rain) * (0.4f * alpha));
-            }
-            //门线：入梦线（半）与自燃线（满）
-            float dreamX = rect.X + rect.Width * KikasaServants.KikasaEffigyBoard.DreamVigorNeed;
-            KikasaVaultRenderer.DrawLine(sb, new Vector2(dreamX, rect.Y - 3f),
-                new Vector2(dreamX, rect.Bottom + 3f), 1.3f,
-                KikasaHudTheme.Glow(rain) * ((v >= 0.5f ? 0.75f : 0.35f) * alpha));
-            KikasaVaultRenderer.DrawLine(sb, new Vector2(rect.Right - 1f, rect.Y - 3f),
-                new Vector2(rect.Right - 1f, rect.Bottom + 3f), 1.3f,
-                KikasaWisp.Tint(KikasaWisp.GoldBody) * ((v >= 0.999f ? 0.85f : 0.35f) * alpha));
         }
 
         //==================== 湿纸卡底 ====================

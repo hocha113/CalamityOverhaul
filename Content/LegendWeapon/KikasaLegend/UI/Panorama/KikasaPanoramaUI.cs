@@ -36,9 +36,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
 
         #region 本地化
         public static LocalizedText Title { get; private set; }
-        public static LocalizedText VigorLabel { get; private set; }
-        public static LocalizedText VigorDreamMark { get; private set; }
-        public static LocalizedText VigorWispMark { get; private set; }
         public static LocalizedText HoundTitle { get; private set; }
         public static LocalizedText WispTitle { get; private set; }
         public static LocalizedText ReflectAwake { get; private set; }
@@ -49,13 +46,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
         public static LocalizedText DreamEnterClick { get; private set; }
         public static LocalizedText NeedDomainFormat { get; private set; }
         public static LocalizedText NeedFullWater { get; private set; }
-        public static LocalizedText NeedVigorFormat { get; private set; }
         public static LocalizedText HoundBonusFormat { get; private set; }
         public static LocalizedText WispBurning { get; private set; }
         public static LocalizedText WispIdle { get; private set; }
         public static LocalizedText WispBoil { get; private set; }
         public static LocalizedText WispQuenchedLine { get; private set; }
         public static LocalizedText WispBonusFormat { get; private set; }
+        public static LocalizedText WispIgniteClick { get; private set; }
+        public static LocalizedText WispSnuffClick { get; private set; }
         public static LocalizedText EdgeDreamFire { get; private set; }
         public static LocalizedText EdgeBoilRain { get; private set; }
         public static LocalizedText EdgeRainNightmare { get; private set; }
@@ -88,9 +86,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
 
         public override void SetStaticDefaults() {
             Title = this.GetLocalization(nameof(Title), () => "Lakeheart");
-            VigorLabel = this.GetLocalization(nameof(VigorLabel), () => "Lake Vigor");
-            VigorDreamMark = this.GetLocalization(nameof(VigorDreamMark), () => "dream line");
-            VigorWispMark = this.GetLocalization(nameof(VigorWispMark), () => "ignite line");
             HoundTitle = this.GetLocalization(nameof(HoundTitle), () => "The Hound \u00b7 Ghost Dream");
             WispTitle = this.GetLocalization(nameof(WispTitle), () => "The Gold Flame \u00b7 Ghost Fire");
             ReflectAwake = this.GetLocalization(nameof(ReflectAwake), () => "The reflection is awake");
@@ -106,20 +101,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 () => "Press {0} to raise the blood lake");
             NeedFullWater = this.GetLocalization(nameof(NeedFullWater),
                 () => "The lake has not fully risen");
-            NeedVigorFormat = this.GetLocalization(nameof(NeedVigorFormat),
-                () => "Lake vigor {0}% \u2014 the dream needs {1}%");
             HoundBonusFormat = this.GetLocalization(nameof(HoundBonusFormat),
                 () => "Dream hounds: cap {0} \u00b7 bite {1}%");
             WispBurning = this.GetLocalization(nameof(WispBurning),
                 () => "Burning \u2014 scorching along the waterline");
             WispIdle = this.GetLocalization(nameof(WispIdle),
-                () => "Unlit \u2014 ignites itself once vigor refills");
+                () => "Unlit \u2014 the flame waits on your word");
             WispBoil = this.GetLocalization(nameof(WispBoil),
                 () => "Boiling on through the rain");
             WispQuenchedLine = this.GetLocalization(nameof(WispQuenchedLine),
                 () => "The ghost rain is pressing it out");
             WispBonusFormat = this.GetLocalization(nameof(WispBonusFormat),
                 () => "Scorch {0}s \u00b7 flame reach {1}px");
+            WispIgniteClick = this.GetLocalization(nameof(WispIgniteClick),
+                () => "[Click] Light the flame");
+            WispSnuffClick = this.GetLocalization(nameof(WispSnuffClick),
+                () => "[Click] Draw the fire back");
             EdgeDreamFire = this.GetLocalization(nameof(EdgeDreamFire), () => "Dreamfire");
             EdgeBoilRain = this.GetLocalization(nameof(EdgeBoilRain), () => "Boil-Rain");
             EdgeRainNightmare = this.GetLocalization(nameof(EdgeRainNightmare), () => "Rain-Mare");
@@ -179,12 +176,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
 
         //==================== 状态 ====================
 
-        private enum HoverKind { None, Hound, Wisp, Seat, Roster, Vault }
+        private enum HoverKind { None, Hound, Wisp, Seat, Roster, Vault, Help }
 
         private HoverKind hoverKind = HoverKind.None;
         private int hoverIndex = -1;
         private float houndHover;
         private float wispHover;
+        private float helpHover;
+
+        /// <summary>页脚右端的「?」重看教程钮，命中与绘制共用一份几何</summary>
+        private static Rectangle HelpRect
+            => new((int)(KikasaPanoramaTheme.UIScreenW - 54f),
+                (int)(KikasaPanoramaTheme.FooterY - 8f), 32, 32);
         private readonly float[] seatHover = new float[KikasaServantPlayer.SlotCount];
         private readonly List<float> rosterHover = [];
         private readonly List<float> vaultHover = [];
@@ -246,7 +249,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             Main.playerInventory = false;
             hoverKind = HoverKind.None;
             hoverIndex = -1;
-            houndHover = wispHover = 0f;
+            houndHover = wispHover = helpHover = 0f;
             Array.Clear(seatHover, 0, seatHover.Length);
             Array.Clear(seatStamp, 0, seatStamp.Length);
             Array.Clear(seatDeny, 0, seatDeny.Length);
@@ -304,6 +307,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             //悬停缓动
             houndHover = MathHelper.Lerp(houndHover, hoverKind == HoverKind.Hound ? 1f : 0f, 0.16f);
             wispHover = MathHelper.Lerp(wispHover, hoverKind == HoverKind.Wisp ? 1f : 0f, 0.16f);
+            helpHover = MathHelper.Lerp(helpHover, hoverKind == HoverKind.Help ? 1f : 0f, 0.16f);
             for (int i = 0; i < seatHover.Length; i++) {
                 bool on = hoverKind == HoverKind.Seat && hoverIndex == i;
                 seatHover[i] = MathHelper.Lerp(seatHover[i], on ? 1f : 0f, 0.2f);
@@ -457,6 +461,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 SetHover(HoverKind.Wisp, 0);
                 return;
             }
+            //页脚「?」重看钮
+            if (HelpRect.Contains(mouse.ToPoint())) {
+                SetHover(HoverKind.Help, 0);
+                return;
+            }
             SetHover(HoverKind.None, -1);
         }
 
@@ -500,6 +509,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                     return;
                 case HoverKind.Wisp:
                     ClickWisp();
+                    return;
+                case HoverKind.Help:
+                    //重看教程：清进度当场重讲，RestartFromHelp 里会合掉本屏
+                    SoundEngine.PlaySound(SoundID.MenuOpen with { Volume = 0.45f, Pitch = 0.2f });
+                    KikasaHudLead.RestartFromHelp();
                     return;
             }
             //空处：持影=收手（把影放回），空手=墨涟漪答话
@@ -640,25 +654,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 reason = NeedFullWater.Value;
             }
             else {
-                reason = string.Format(NeedVigorFormat.Value,
-                    (int)MathF.Round(domain.LakeVigor * 100f),
-                    (int)MathF.Round(KikasaEffigyBoard.DreamVigorNeed * 100f));
+                //满水但非 Open 稳态：正处翻转/入梦演出等过渡
+                reason = KikasaUIText.NeedSettleLine.Value;
             }
             PostNote(reason, KikasaHudTheme.Accent(Rain));
             AddRipple(KikasaPanoramaTheme.HoundPos, ink: true);
             SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.5f, Pitch = -0.55f });
         }
 
-        /// <summary>点金焰：报它此刻的状态，鬼火自己烧，不受号令</summary>
+        /// <summary>点金焰：点燃/收火号令（统一走 KikasaWisp.TryToggle）；点不着说清差哪一步</summary>
         private void ClickWisp() {
             KikasaDomainPlayer domain = Domain;
-            string line = domain.WispFireActive
-                ? (domain.WispQuench > 0.3f ? WispQuenchedLine.Value
-                    : domain.WispRainProof && domain.IsRainForm ? WispBoil.Value : WispBurning.Value)
-                : WispIdle.Value;
-            PostNote(line, KikasaHudTheme.TextDim(Rain));
-            AddRipple(KikasaPanoramaTheme.WispPos + new Vector2(0f, 44f), ink: false);
-            SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.4f, Pitch = -0.35f });
+            if (KikasaWisps.KikasaWisp.TryToggle(player)) {
+                //受理：确认拍由命令本体播，这里只落屏内涟漪与结果批注
+                PostNote(KikasaUIText.WispStateLine(domain),
+                    domain.WispFireActive
+                        ? KikasaWisps.KikasaWisp.Tint(KikasaWisps.KikasaWisp.GoldBody)
+                        : KikasaHudTheme.TextDim(Rain));
+                AddRipple(KikasaPanoramaTheme.WispPos + new Vector2(0f, 44f), ink: false);
+                return;
+            }
+            //点不着：差哪一步就说哪一步
+            string reason = KikasaUIText.WispBlockReason(domain) ?? KikasaUIText.NeedSettleLine.Value;
+            PostNote(reason, KikasaHudTheme.Accent(Rain));
+            AddRipple(KikasaPanoramaTheme.WispPos + new Vector2(0f, 44f), ink: true);
+            SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.5f, Pitch = -0.55f });
         }
 
         private void CancelCarry() {
@@ -718,10 +738,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             float waterPixY = uiH * waterUv;
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
-            //1 背景：整屏血湖夜景
+            //1 背景：整屏血湖夜景（水面辉光恒满，湖力已随主动化裁撤）
             float effStir = MathHelper.Clamp(stir + (1f - a) * 0.4f, 0f, 1f);
             KikasaPanoramaRenderer.DrawBackdrop(sb, full, a, rain, waterUv, 1f - rise,
-                effStir, domain.LakeVigor, domain.WispT,
+                effStir, 1f, domain.WispT,
                 vault.Stored.Count / (float)KikasaVaultPlayer.Capacity);
 
             //铺开到能看清内容才落笔
@@ -730,7 +750,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 return;
             }
 
-            //2 题头与湖力条
+            //2 题头
             DrawHeader(sb, font, detailA, rain, domain, time);
 
             //3 两鬼
@@ -770,29 +790,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 KikasaPanoramaTheme.TitlePos + new Vector2(size.X * 0.5f + 34f, 4f), 15f,
                 0.9f * a, time, reveal: a,
                 KikasaHudTheme.TextDim(rain), KikasaHudTheme.Accent(rain), KikasaHudTheme.Glow(rain));
-
-            //湖力条：一条读数解释两道门
-            Rectangle bar = KikasaPanoramaTheme.VigorBarRect;
-            KikasaPanoramaRenderer.DrawVigorBar(sb, bar, domain.LakeVigor, rain, a, time);
-            string label = VigorLabel.Value;
-            Vector2 labelSize = font.MeasureString(label) * 0.85f;
-            Utils.DrawBorderString(sb, label,
-                new Vector2(bar.X - labelSize.X - 12f, bar.Center.Y - labelSize.Y * 0.5f),
-                KikasaHudTheme.Text(rain) * a, 0.85f);
-            string pct = $"{(int)MathF.Round(MathHelper.Clamp(domain.LakeVigor, 0f, 1f) * 100f)}%";
-            Utils.DrawBorderString(sb, pct,
-                new Vector2(bar.Right + 12f, bar.Center.Y - font.MeasureString(pct).Y * 0.85f * 0.5f),
-                KikasaHudTheme.Text(rain) * a, 0.85f);
-            //两道门线的名字，小而清楚
-            float dreamX = bar.X + bar.Width * KikasaEffigyBoard.DreamVigorNeed;
-            Vector2 dreamSize = font.MeasureString(VigorDreamMark.Value) * 0.75f;
-            Utils.DrawBorderString(sb, VigorDreamMark.Value,
-                new Vector2(dreamX - dreamSize.X * 0.5f, bar.Bottom + 6f),
-                KikasaHudTheme.TextDim(rain) * (0.9f * a), 0.75f);
-            Vector2 wispSize = font.MeasureString(VigorWispMark.Value) * 0.75f;
-            Utils.DrawBorderString(sb, VigorWispMark.Value,
-                new Vector2(bar.Right - wispSize.X * 0.5f, bar.Bottom + 6f),
-                KikasaWisps.KikasaWisp.Tint(KikasaWisps.KikasaWisp.GoldBody) * (0.9f * a), 0.75f);
         }
 
         //====== 两鬼 ======
@@ -851,21 +848,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 rain, wispHover, a, time);
 
             int flame = KikasaEffigyBoard.FlameCount(player);
-            string state = domain.WispFireActive
-                ? (domain.WispQuench > 0.3f ? WispQuenchedLine.Value
-                    : domain.WispRainProof && domain.IsRainForm ? WispBoil.Value : WispBurning.Value)
-                : WispIdle.Value;
             List<(string line, Color col, float scale)> lines = [
                 (WispTitle.Value, KikasaHudTheme.Text(rain), 0.95f),
-                (state, domain.WispFireActive
+                (KikasaUIText.WispStateLine(domain), domain.WispFireActive
                     ? KikasaWisps.KikasaWisp.Tint(KikasaWisps.KikasaWisp.GoldBody)
                     : KikasaHudTheme.TextDim(rain), 0.85f),
-                (string.Format(WispBonusFormat.Value,
-                    (KikasaEffigyBoard.WispBurnDuration(player) / 60f).ToString("0.0"),
-                    (int)KikasaEffigyBoard.WispFlameReach(player)),
-                    flame > 0 ? KikasaEffigyBoard.AffinityColor(KikasaAffinity.Flame)
-                        : KikasaHudTheme.TextDim(rain), 0.85f),
             ];
+            //操作行：燃着可收、点得着可点；点不着就把原因摆在这
+            string block = KikasaUIText.WispBlockReason(domain);
+            if (domain.WispFireActive) {
+                lines.Add((WispSnuffClick.Value, KikasaHudTheme.Glow(rain), 0.85f));
+            }
+            else if (block == null) {
+                lines.Add((WispIgniteClick.Value, KikasaHudTheme.Glow(rain), 0.85f));
+            }
+            else {
+                lines.Add((block, KikasaHudTheme.TextDim(rain), 0.85f));
+            }
+            lines.Add((string.Format(WispBonusFormat.Value,
+                (KikasaEffigyBoard.WispBurnDuration(player) / 60f).ToString("0.0"),
+                (int)KikasaEffigyBoard.WispFlameReach(player)),
+                flame > 0 ? KikasaEffigyBoard.AffinityColor(KikasaAffinity.Flame)
+                    : KikasaHudTheme.TextDim(rain), 0.85f));
             if (KikasaEffigyBoard.HasBoilRainEdge(player)) {
                 lines.Add((EdgeBoilRain.Value, KikasaHudTheme.Glow(rain), 0.85f));
             }
@@ -1320,6 +1324,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 new Vector2(KikasaPanoramaTheme.UIScreenW * 0.5f - fSize.X * 0.5f,
                     KikasaPanoramaTheme.FooterY),
                 KikasaHudTheme.TextDim(rain) * (0.9f * a), 0.78f);
+
+            //页脚右端「?」：重看教程入口，悬停亮环并浮出一行说明
+            Rectangle help = HelpRect;
+            Vector2 hc = help.Center.ToVector2();
+            KikasaVaultRenderer.DrawRing(sb, hc, 13f + helpHover * 2f, 13f + helpHover * 2f,
+                KikasaHudTheme.Accent(rain) * ((0.35f + helpHover * 0.5f) * a));
+            Vector2 qSize = font.MeasureString("?") * 0.85f;
+            Utils.DrawBorderString(sb, "?", hc - qSize * 0.5f,
+                (helpHover > 0.5f ? KikasaHudTheme.Text(rain) : KikasaHudTheme.TextDim(rain)) * a,
+                0.85f);
+            if (helpHover > 0.05f) {
+                string tip = KikasaHudLead.HelpHover.Value;
+                Vector2 tSize = font.MeasureString(tip) * 0.78f;
+                Utils.DrawBorderString(sb, tip,
+                    new Vector2(help.X - tSize.X - 10f, hc.Y - tSize.Y * 0.5f),
+                    KikasaHudTheme.Text(rain) * (helpHover * a), 0.78f);
+            }
         }
 
         /// <summary>悬停名牌：贴光标浮出，题行 1.0 + 细行 0.85：字不再眯眼</summary>

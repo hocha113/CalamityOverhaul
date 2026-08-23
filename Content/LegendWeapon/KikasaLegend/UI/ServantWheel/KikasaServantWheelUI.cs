@@ -2,7 +2,9 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps;
 using CalamityOverhaul.Content.UIs.RadialWheels;
+using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -39,6 +41,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
         public static LocalizedText WheelCenterEmpty { get; private set; }
         public static LocalizedText WheelDamageFormat { get; private set; }
         public static LocalizedText WheelHint { get; private set; }
+        public static LocalizedText WheelWispName { get; private set; }
+        public static LocalizedText WheelWispDesc { get; private set; }
+        public static LocalizedText WheelWispIgnite { get; private set; }
+        public static LocalizedText WheelWispSnuff { get; private set; }
 
         public override void SetStaticDefaults() {
             WheelEmptyTitle = this.GetLocalization(nameof(WheelEmptyTitle), () => "Vacant Seat");
@@ -59,6 +65,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
             WheelCenterEmpty = this.GetLocalization(nameof(WheelCenterEmpty), () => "No shades seated in the lake");
             WheelDamageFormat = this.GetLocalization(nameof(WheelDamageFormat), () => "Output per shade afield: {0}%");
             WheelHint = this.GetLocalization(nameof(WheelHint), () => "[{0}] Hold \u00b7 Release to commit \u00b7 RMB cancel");
+            WheelWispName = this.GetLocalization(nameof(WheelWispName), () => "Gold Flame");
+            WheelWispDesc = this.GetLocalization(nameof(WheelWispDesc),
+                () => "Once lit, the gold flame spreads along the shore and scorches whatever it reaches");
+            WheelWispIgnite = this.GetLocalization(nameof(WheelWispIgnite), () => "[Release] Light it");
+            WheelWispSnuff = this.GetLocalization(nameof(WheelWispSnuff), () => "[Release] Draw the fire back");
         }
 
         //存活 + OpenProgress>0 时显示
@@ -112,8 +123,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
             bool lakeReady = ctrl.LakeReadyNow;
             for (int i = 0; i < count; i++) {
                 ctrl.GetSectorAngles(i, out float aStart, out float aEnd);
-                DrawSeatSector(sb, ctrl, servant, ctrl.Sectors[i], center,
-                    aStart, aEnd, a, rain, time, lakeReady);
+                if (ctrl.Sectors[i].IsWisp) {
+                    DrawWispSector(sb, ctrl.Sectors[i], domain, center,
+                        aStart, aEnd, a, rain, time);
+                }
+                else {
+                    DrawSeatSector(sb, ctrl, servant, ctrl.Sectors[i], center,
+                        aStart, aEnd, a, rain, time, lakeReady);
+                }
             }
 
             DrawCenterSeal(sb, ctrl, servant, center, a, rain, time);
@@ -224,6 +241,69 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
             }
         }
 
+        //焰苗 SVG（与风铃 HUD 焰苗读数同形）：一条上收的火舌
+        private const string FlamePath =
+            "M 0 1 Q -0.7 0.25 -0.3 -0.25 Q -0.05 -0.6 0.05 -1 "
+            + "Q 0.45 -0.45 0.3 -0.05 Q 0.55 0.4 0 1";
+
+        /// <summary>
+        /// 金焰扇：环带弧照席扇的语汇，徽章是一枚焰苗——
+        /// 燃着金焰满描+焰芯呼吸，熄着苍金余烬轮廓，压制中随失温褪色
+        /// </summary>
+        private static void DrawWispSector(SpriteBatch sb, KikasaWheelSector sec,
+            KikasaDomainPlayer domain, Vector2 center,
+            float aStart, float aEnd, float a, float rain, float time) {
+
+            float hover = sec.HoverAmount;
+            float order = sec.OrderAmount;
+            float midA = (aStart + aEnd) * 0.5f;
+            float midR = (KikasaServantWheelController.WheelInnerR
+                + KikasaServantWheelController.WheelOuterR) * 0.5f;
+
+            //环带内外缘（悬停亮起），与席扇同一支笔
+            Color band = KikasaHudTheme.Accent(rain);
+            DrawWaterArc(sb, center, KikasaServantWheelController.WheelInnerR, aStart, aEnd,
+                1.2f, band * ((0.30f + hover * 0.25f) * a), time, 1.4f);
+            DrawWaterArc(sb, center, KikasaServantWheelController.WheelOuterR, aStart, aEnd,
+                1.5f, band * ((0.38f + hover * 0.30f) * a), time, 1.8f);
+
+            //燃令水脉：金色，跟点燃态走
+            if (order > 0.01f) {
+                DrawWaterArc(sb, center, KikasaServantWheelController.WheelOuterR - 7f,
+                    aStart + 0.06f, aEnd - 0.06f, 1.8f,
+                    KikasaWisp.Tint(KikasaWisp.GoldBody) * (0.5f * order * a), time, 1.2f);
+            }
+
+            Vector2 pos = center + AngleDir(midA) * midR;
+            pos.Y -= hover * 3f;
+
+            bool burning = domain.WispFireActive && domain.WispT > 0.1f;
+            float quench = MathHelper.Clamp(domain.WispQuench, 0f, 1f);
+            Color body = Color.Lerp(KikasaWisp.GoldBody, KikasaWisp.PaleDying,
+                burning ? quench : 0.75f);
+            body = KikasaWisp.Tint(body);
+            SvgPath flame = SvgPathPen.Path(FlamePath);
+            float flick = burning ? 1f + MathF.Sin(time * 7.1f) * 0.06f : 1f;
+            SvgPathPen.Stroke(sb, flame, pos, 15f * flick, 0f, body, 1.6f,
+                ((burning ? 0.95f : 0.5f) + hover * 0.2f) * a);
+            if (burning) {
+                SvgPathPen.SoftDot(sb, pos + new Vector2(0f, 3.5f), 5.5f,
+                    KikasaWisp.Tint(KikasaWisp.GoldCore), (0.6f * (1f - quench * 0.6f)) * a);
+            }
+
+            //名字沿中线外放，与席扇同款
+            string name = WheelWispName.Value;
+            if (!string.IsNullOrEmpty(name)) {
+                DynamicSpriteFont font = FontAssets.MouseText.Value;
+                float scale = 0.82f + hover * 0.06f;
+                Vector2 size = font.MeasureString(name) * scale;
+                Vector2 namePos = center + AngleDir(midA)
+                    * (KikasaServantWheelController.WheelOuterR + 22f + size.Length() * 0.18f);
+                Color col = burning ? KikasaWisp.Tint(KikasaWisp.GoldBody) : KikasaHudTheme.TextDim(rain);
+                Utils.DrawBorderString(sb, name, namePos - size * 0.5f, col * a, scale);
+            }
+        }
+
         /// <summary>空席：一圈断续的虚环，等一位沉影落座</summary>
         private static void DrawEmptySocket(SpriteBatch sb, Vector2 pos,
             float a, float rain, float time, float hover) {
@@ -289,6 +369,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
             else {
                 int idx = ctrl.HoveredIndex;
                 if (idx < 0 || idx >= ctrl.Sectors.Count) {
+                    return;
+                }
+                if (ctrl.Sectors[idx].IsWisp) {
+                    //金焰扇：状态口径与拒绝原因走 KikasaUIText 的共享门面
+                    KikasaDomainPlayer domain = Main.LocalPlayer.GetModPlayer<KikasaDomainPlayer>();
+                    title = Panorama.KikasaPanoramaUI.WispTitle.Value;
+                    subtitle = KikasaUIText.WispStateLine(domain);
+                    desc = WheelWispDesc.Value;
+                    string block = KikasaUIText.WispBlockReason(domain);
+                    if (block != null) {
+                        extra = block;
+                        status = string.Empty;
+                    }
+                    else {
+                        status = domain.WispFireActive
+                            ? WheelWispSnuff.Value : WheelWispIgnite.Value;
+                    }
+                    DrawInfoPanel(sb, px, center, a, rain, title, subtitle, desc, extra, status);
                     return;
                 }
                 int seat = ctrl.Sectors[idx].SeatIndex;

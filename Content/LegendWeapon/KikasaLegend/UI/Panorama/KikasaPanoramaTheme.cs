@@ -33,14 +33,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
         /// <summary>题头中心</summary>
         public static Vector2 TitlePos => new(UIScreenW * 0.5f, 40f);
 
-        /// <summary>湖力条：题头下方居中，一条读数解释两道门（入梦线/自燃线）</summary>
-        public static Rectangle VigorBarRect {
-            get {
-                float w = MathF.Min(400f, UIScreenW * 0.28f);
-                return new Rectangle((int)(UIScreenW * 0.5f - w * 0.5f), 84, (int)w, 8);
-            }
-        }
-
         /// <summary>恶犬（鬼梦之鬼）站点：左岸，脚跟踩着满水位的岸沿</summary>
         public static Vector2 HoundPos => new(
             MathF.Max(150f, UIScreenW * 0.155f),

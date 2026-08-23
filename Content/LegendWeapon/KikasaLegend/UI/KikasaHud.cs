@@ -15,6 +15,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -25,8 +27,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
     /// 檐钩垂一只玻璃风铃，铃身盛着一小汪血湖，液面=涨水进度、晃荡=事件涌浪、
     /// 液中烬点=湖藏填充、整铃随形态浸染。
     /// 信息层（2026-08 重做）：短册只留纸与三席驻影小印（亲和色+在场/收起态），
-    /// 铃右一列图标读数，湖力条（带入梦/自燃两道门线）、鬼梦犬眼（睡/醒/梦中）、
-    /// 鬼火焰苗（熄/燃/压制）、沉溺冷却、鬼雨态的重启冷却与伞奴计数；
+    /// 铃右一列图标读数，鬼梦犬眼（睡/醒/梦中）、鬼火焰苗（熄/燃/压制，点击点燃/收火）、
+    /// 沉溺冷却、鬼雨态的重启冷却与伞奴计数；
     /// 一切悬停说明走顶层 <see cref="KikasaHudTipOverlay"/>，题行 1.0 与原版 tooltip 同级。
     /// 点铃展开「湖心景」全屏（任何域状态都响应）。
     /// </summary>
@@ -40,8 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         public static LocalizedText OpenTag { get; private set; }
         public static LocalizedText TipWaterFormat { get; private set; }
         public static LocalizedText TipVaultFormat { get; private set; }
-        public static LocalizedText TipVigorDream { get; private set; }
-        public static LocalizedText TipVigorWisp { get; private set; }
+        public static LocalizedText TipWispClick { get; private set; }
         public static LocalizedText TipCooldownFormat { get; private set; }
         public static LocalizedText TipDrownTitle { get; private set; }
         public static LocalizedText TipDrownHintFormat { get; private set; }
@@ -58,10 +59,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             OpenTag = this.GetLocalization(nameof(OpenTag), () => "Click to unfold");
             TipWaterFormat = this.GetLocalization(nameof(TipWaterFormat), () => "Water {0}%");
             TipVaultFormat = this.GetLocalization(nameof(TipVaultFormat), () => "Hoard {0} / {1}");
-            TipVigorDream = this.GetLocalization(nameof(TipVigorDream),
-                () => "Past the dream line (50%), the reflection can pull you under");
-            TipVigorWisp = this.GetLocalization(nameof(TipVigorWisp),
-                () => "At the ignite line (100%), the gold flame lights itself");
+            TipWispClick = this.GetLocalization(nameof(TipWispClick),
+                () => "[Click] Light / draw back the flame");
             TipCooldownFormat = this.GetLocalization(nameof(TipCooldownFormat),
                 () => "Cooling down \u00b7 {0}%");
             TipDrownTitle = this.GetLocalization(nameof(TipDrownTitle), () => "The Drowning Hand");
@@ -206,7 +205,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         //==================== 状态 ====================
 
         /// <summary>悬停目标：HUD 的每个读数都有自己的说明</summary>
-        private enum TipTarget { None, Bell, Vigor, Dream, Wisp, Drown, Reset, Thrall, Seats }
+        private enum TipTarget { None, Bell, Dream, Wisp, Drown, Reset, Thrall, Seats }
 
         //事件搅一记涌浪（stir），涌浪推摆幅；读数交给图标列
         private float stir;
@@ -299,11 +298,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                         }
                     }
                 }
+                //焰苗即开关：点燃/收火走统一门，点不着回一声轻拒
+                if (hoverTarget == TipTarget.Wisp && keyLeftPressState == KeyPressState.Pressed
+                    && !KikasaWisp.TryToggle(player)) {
+                    SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.5f, Volume = 0.5f });
+                }
             }
         }
 
         /// <summary>
-        /// 读数栈布局：只排本帧有话可说的条目，湖力（域中）、犬眼与焰苗（常驻两鬼）、
+        /// 读数栈布局：只排本帧有话可说的条目，犬眼与焰苗（常驻两鬼）、
         /// 沉溺（冷却中）、重启与伞奴（鬼雨态）。绘制与命中共用这一份
         /// </summary>
         private void LayoutReadouts(Vector2 anchor) {
@@ -314,9 +318,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             void Push(TipTarget target) {
                 readouts.Add((target, new Vector2(x, y)));
                 y += ReadoutGapY;
-            }
-            if (domain.AnyActive) {
-                Push(TipTarget.Vigor);
             }
             Push(TipTarget.Dream);
             Push(TipTarget.Wisp);
@@ -560,9 +561,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             foreach ((TipTarget target, Vector2 pos) in readouts) {
                 float hover = hoverTarget == target ? hoverLerp : 0f;
                 switch (target) {
-                    case TipTarget.Vigor:
-                        DrawVigorReadout(sb, pos, a, rain, domain, hover);
-                        break;
                     case TipTarget.Dream:
                         DrawDreamReadout(sb, pos, a, rain, domain, time, hover);
                         break;
@@ -582,30 +580,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                         break;
                 }
             }
-        }
-
-        /// <summary>湖力微条：血水填充 + 入梦/自燃两道门线，一条读数解释两道门</summary>
-        private static void DrawVigorReadout(SpriteBatch sb, Vector2 pos, float a, float rain,
-            KikasaDomainPlayer domain, float hover) {
-            Texture2D px = VaultAsset.placeholder2.Value;
-            const float w = 26f;
-            const float h = 5f;
-            Rectangle bar = new((int)(pos.X - w * 0.5f), (int)(pos.Y - h * 0.5f), (int)w, (int)h);
-            sb.Draw(px, bar, KikasaHudTheme.Void(rain) * (0.85f * a));
-            float v = MathHelper.Clamp(domain.LakeVigor, 0f, 1f);
-            int fillW = (int)(w * v);
-            if (fillW > 0) {
-                sb.Draw(px, new Rectangle(bar.X, bar.Y, fillW, bar.Height),
-                    KikasaHudTheme.Accent(rain) * ((0.75f + hover * 0.2f) * a));
-            }
-            //门线：入梦线（半）与自燃线（满端）
-            float dreamX = bar.X + w * KikasaEffigyBoard.DreamVigorNeed;
-            KikasaVaultRenderer.DrawLine(sb, new Vector2(dreamX, bar.Y - 2f),
-                new Vector2(dreamX, bar.Bottom + 2f), 1.1f,
-                KikasaHudTheme.Glow(rain) * ((v >= 0.5f ? 0.8f : 0.35f) * a));
-            KikasaVaultRenderer.DrawLine(sb, new Vector2(bar.Right - 1f, bar.Y - 2f),
-                new Vector2(bar.Right - 1f, bar.Bottom + 2f), 1.1f,
-                KikasaWisp.Tint(KikasaWisp.GoldBody) * ((v >= 0.999f ? 0.85f : 0.35f) * a));
         }
 
         /// <summary>犬眼：睡=下睑一线，醒=杏仁睁眼，梦中=烬瞳燃亮；梦中外圈唤犬冷却弧</summary>
@@ -738,15 +712,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                             vault.Stored.Count, KikasaVaultPlayer.Capacity), dimC));
                     return;
                 }
-                case TipTarget.Vigor: {
-                    float v = MathHelper.Clamp(domain.LakeVigor, 0f, 1f);
-                    string title = $"{KikasaPanoramaUI.VigorLabel.Value} {(int)MathF.Round(v * 100f)}%";
-                    KikasaTipPanel.Draw(sb, cursor, title, rain, alpha,
-                        new KikasaTipLine(TipVigorDream.Value, v >= 0.5f ? glowC : dimC),
-                        new KikasaTipLine(TipVigorWisp.Value,
-                            v >= 0.999f ? KikasaWisp.Tint(KikasaWisp.GoldBody) : dimC));
-                    return;
-                }
                 case TipTarget.Dream: {
                     bool dreaming = domain.Phase == KikasaDomainPhase.Dreaming;
                     List<KikasaTipLine> lines = [];
@@ -776,20 +741,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                     return;
                 }
                 case TipTarget.Wisp: {
-                    string state = domain.WispFireActive
-                        ? (domain.WispQuench > 0.3f ? KikasaPanoramaUI.WispQuenchedLine.Value
-                            : domain.WispRainProof && domain.IsRainForm
-                                ? KikasaPanoramaUI.WispBoil.Value
-                                : KikasaPanoramaUI.WispBurning.Value)
-                        : KikasaPanoramaUI.WispIdle.Value;
-                    KikasaTipPanel.Draw(sb, cursor, KikasaPanoramaUI.WispTitle.Value, rain, alpha,
-                        new KikasaTipLine(state, domain.WispFireActive
+                    //状态与拒绝原因走共享口径；可操作时给点击提示，点不着时说清差哪一步
+                    List<KikasaTipLine> lines = [
+                        new KikasaTipLine(KikasaUIText.WispStateLine(domain), domain.WispFireActive
                             ? KikasaWisp.Tint(KikasaWisp.GoldBody) : dimC),
-                        new KikasaTipLine(string.Format(KikasaPanoramaUI.WispBonusFormat.Value,
-                            (KikasaEffigyBoard.WispBurnDuration(player) / 60f).ToString("0.0"),
-                            (int)KikasaEffigyBoard.WispFlameReach(player)),
-                            KikasaEffigyBoard.FlameCount(player) > 0
-                                ? KikasaEffigyBoard.AffinityColor(KikasaAffinity.Flame) : dimC, 0.85f));
+                    ];
+                    string block = KikasaUIText.WispBlockReason(domain);
+                    lines.Add(block != null
+                        ? new KikasaTipLine(block, dimC)
+                        : new KikasaTipLine(TipWispClick.Value, glowC));
+                    lines.Add(new KikasaTipLine(string.Format(KikasaPanoramaUI.WispBonusFormat.Value,
+                        (KikasaEffigyBoard.WispBurnDuration(player) / 60f).ToString("0.0"),
+                        (int)KikasaEffigyBoard.WispFlameReach(player)),
+                        KikasaEffigyBoard.FlameCount(player) > 0
+                            ? KikasaEffigyBoard.AffinityColor(KikasaAffinity.Flame) : dimC, 0.85f));
+                    KikasaTipPanel.Draw(sb, cursor, KikasaPanoramaUI.WispTitle.Value, rain, alpha,
+                        [.. lines]);
                     return;
                 }
                 case TipTarget.Drown: {

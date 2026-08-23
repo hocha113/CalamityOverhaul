@@ -207,9 +207,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         }
 
         /// <summary>
-        /// 鬼梦拉入/归返命令：Open 稳态 + 满水位 + 倒影已醒 + 湖力过半 → 拉入；
-        /// Dreaming → 归返；其余阶段 busy 不受理。域关着时不代开，入梦要先有湖有影。
-        /// 倒影醒睡随满水自动走（KikasaDomainPlayer.UpdateReflectionGate），不再有独立命令
+        /// 鬼梦拉入/归返命令：Open 稳态 + 满水位 → 拉入（无资源门）；
+        /// Dreaming → 归返；其余阶段 busy 不受理。域关着时不代开，入梦要先有湖。
+        /// 倒影醒睡随满水自动走（KikasaDomainPlayer.UpdateReflectionGate），纯氛围指示，
+        /// 拉入受理帧会强制点醒它（镜中黑犬是演出主角）
         /// </summary>
         internal static bool TryDreamPull(Player player, out bool busy) {
             busy = false;

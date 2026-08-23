@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -84,6 +83,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private int lastShotFired = -1;
         private bool dissolveSplashed;
         private bool brakeFlungOnce;
+
+        //记忆脉冲：出手/命中/主人受击时原色随带自下而上扫一遍（纯本地表现量）
+        private const int PulseFrames = 30;
+        private int pulseTimer = PulseFrames;
+        private int ownerLifePrev;
 
         //血系配色随观看域鬼雨异化冷化，与沉溺/湖藏同族
         private static Color BloodTint => KikasaDomain.CoolTint(new(237, 77, 69), new(126, 158, 164));
@@ -191,6 +195,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.timeLeft = 180;
             //伤害随召唤加成逐帧刷新，命中在 owner 端结算
             Projectile.damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(DashDamage);
+
+            //主人受击 → 记忆震颤（各端都能从生命值下降本地判知，不用同步）
+            if (owner.statLife < ownerLifePrev) {
+                StartPulse();
+            }
+            ownerLifePrev = owner.statLife;
+            if (pulseTimer < PulseFrames) {
+                pulseTimer++;
+            }
 
             //换场清闩：远端可能靠收包切状态而非本地同拍转场，
             //上一场残闩会吞掉新场的节拍（起跳音、后坐、过水线拍）
@@ -450,6 +463,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 brakeFlungOnce = false;
                 SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Volume = 0.6f, Pitch = -0.15f + dashIndex * 0.08f, MaxInstances = 3 }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.4f, Pitch = 0.1f, MaxInstances = 3 }, Projectile.Center);
+                StartPulse();
                 if (ViewedOwner) {
                     ShakeViewer(3f);
                 }
@@ -546,6 +560,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     lastShotFired = shotIndex;
                     StateParam = shotIndex + 1;
                     FireBloodShot(owner, aim, authority);
+                    if (shotIndex == 0) {
+                        //连射开火拍只在首发闪回一次，四连逐发会抖成频闪
+                        StartPulse();
+                    }
                 }
                 //弹间悬停微稳
                 Projectile.velocity *= 0.9f;
@@ -728,15 +746,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             };
         }
 
-        /// <summary>uForm：1=全血水 0=真身；常态半沉呼吸，出水自上而下凝实</summary>
+        /// <summary>记忆脉冲重起拍：原色随带自下而上扫一遍</summary>
+        private void StartPulse() => pulseTimer = 0;
+
+        /// <summary>
+        /// uForm：1=全液态血躯 0=落定鬼躯；落定态基本全鬼躯（血玻璃材质自带活性），
+        /// 只留一丝微沸呼吸，出水仍自上而下凝实、溶解回液
+        /// </summary>
         private float CurrentForm() {
             int t = (int)StateTimer;
-            float steady = 0.36f + MathF.Sin(Main.GlobalTimeWrappedHourly * 3.1f + Seed) * 0.05f;
+            float steady = 0.06f + MathF.Sin(Main.GlobalTimeWrappedHourly * 3.1f + Seed) * 0.03f;
             return State switch {
                 StateEmerge => t < OmenFrames
                     ? 1f
                     : MathHelper.Lerp(1f, steady, SmoothStep01(MathHelper.Clamp((t - OmenFrames) / (float)(RiseEnd - OmenFrames), 0f, 1f))),
-                StateDissolve => MathHelper.Clamp(steady + t / (float)DissolveFrames * 0.3f, 0f, 1f),
+                StateDissolve => MathHelper.Clamp(steady + t / (float)DissolveFrames * 0.55f, 0f, 1f),
                 _ => steady,
             };
         }
@@ -832,38 +856,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         private void DrawBody(SpriteBatch sb, Texture2D tex, Rectangle frame, float alpha) {
-            Effect form = EffectLoader.KikasaItemForm?.Value;
-            Texture2D noise = CWRAsset.PerlinNoise?.Value;
-            bool shaderOk = form != null && noise != null;
-
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            Color color;
-            if (shaderOk) {
-                Main.instance.GraphicsDevice.Textures[1] = noise;
-                Main.instance.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
-                form.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-                form.Parameters["uSeed"]?.SetValue(Seed);
-                form.Parameters["uForm"]?.SetValue(CurrentForm());
-                form.Parameters["uDissolve"]?.SetValue(CurrentDissolve());
-                form.Parameters["uScanMode"]?.SetValue(CurrentScanMode());
-                form.Parameters["uUvRect"]?.SetValue(new Vector4(
-                    frame.X / (float)tex.Width, frame.Y / (float)tex.Height,
-                    frame.Width / (float)tex.Width, frame.Height / (float)tex.Height));
-                form.Parameters["uTexel"]?.SetValue(new Vector2(1f / tex.Width, 1f / tex.Height));
-                form.Parameters["uAspect"]?.SetValue(frame.Width / (float)frame.Height);
-                form.CurrentTechnique.Passes[0].Apply();
-                color = new Color(255, 255, 255, (byte)(alpha * 255f));
+            if (KikasaServantGhostDraw.Ready) {
+                float pulsePhase = MathHelper.Clamp(pulseTimer / (float)PulseFrames, 0f, 1f);
+                KikasaServantGhostDraw.Apply(tex, frame, new KikasaGhostParams {
+                    Seed = Seed,
+                    Form = CurrentForm(),
+                    Dissolve = CurrentDissolve(),
+                    ScanMode = CurrentScanMode(),
+                    Liquefy = 0.85f,
+                    //钟形包络：闪回渐入渐出，不硬切
+                    Pulse = pulseTimer < PulseFrames ? MathF.Sin(pulsePhase * MathHelper.Pi) : 0f,
+                    PulsePhase = pulsePhase,
+                    Memory = 0f,
+                });
+                KikasaServantGhostDraw.DrawPadded(sb, tex, frame,
+                    Projectile.Center - Main.screenPosition,
+                    new Color(255, 255, 255, (byte)(alpha * 255f)),
+                    Projectile.rotation, frame.Size() * 0.5f, new Vector2(BodyScale()),
+                    SpriteEffects.None);
             }
             else {
                 //无着色器回退：CPU 血染
-                color = Color.Lerp(Color.White, BloodTint, 0.55f) * alpha;
+                sb.Draw(tex, Projectile.Center - Main.screenPosition, frame,
+                    Color.Lerp(Color.White, BloodTint, 0.55f) * alpha,
+                    Projectile.rotation, frame.Size() * 0.5f, BodyScale(), SpriteEffects.None, 0f);
             }
-
-            sb.Draw(tex, Projectile.Center - Main.screenPosition, frame, color,
-                Projectile.rotation, frame.Size() * 0.5f, BodyScale(), SpriteEffects.None, 0f);
 
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
@@ -952,7 +973,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         //==================== 命中 ====================
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //冲刺撞击的溅血（OnHit 只在 owner 端跑，队友看拖尾即可）
+            //冲刺撞击的溅血（OnHit 只在 owner 端跑，队友看拖尾即可；脉冲同样 owner 本地）
+            StartPulse();
             if (Main.dedServ) {
                 return;
             }
