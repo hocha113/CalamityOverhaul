@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
         private const string RainLabel = "rain";
         private const string OutroLabel = "outro";
 
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.Shenyo";
 
         public static LocalizedText ShenyoName { get; private set; }
         public static LocalizedText L1 { get; private set; }

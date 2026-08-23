@@ -160,6 +160,35 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool KikasaGranted;
     }
 
+    /// <summary>鬼伞沉宴试炼节点礼物完成位，顺序对应 KikasaTrialQuestLine 的24关</summary>
+    public sealed class ShenyoGiftStoryData : DataModule
+    {
+        public bool KingSlimeGift;
+        public bool EyeOfCthulhuGift;
+        public bool EvilBossGift;
+        public bool CalamityEvilGift;
+        public bool QueenBeeOrDeerclopsGift;
+        public bool SkeletronGift;
+        public bool SlimeGodGift;
+        public bool WallOfFleshGift;
+        public bool QueenSlimeGift;
+        public bool AquaticScourgeGift;
+        public bool MechsGift;
+        public bool PlanteraGift;
+        public bool LeviathanGift;
+        public bool GolemGift;
+        public bool DukeFishronGift;
+        public bool EmpressGift;
+        public bool CultistGift;
+        public bool MoonLordGift;
+        public bool PolterghastGift;
+        public bool OldDukeGift;
+        public bool DevourerOfGodsGift;
+        public bool YharonGift;
+        public bool ExoAndSCalGift;
+        public bool BossRushGift;
+    }
+
     /// <summary>鬼切试炼节点礼物完成位（双目标试炼共用一位）</summary>
     public sealed class HimayoGiftStoryData : DataModule
     {

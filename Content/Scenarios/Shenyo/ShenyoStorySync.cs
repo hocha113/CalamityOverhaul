@@ -34,5 +34,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
             get => Story.KikasaGranted;
             set => Story.KikasaGranted = value;
         }
+
+        /// <summary>沉宴礼物线完成位，随玩家存档</summary>
+        public static ShenyoGiftStoryData GiftStory
+            => Main.LocalPlayer.GetModPlayer<StoryPlayer>().Get<ShenyoGiftStoryData>();
     }
 }

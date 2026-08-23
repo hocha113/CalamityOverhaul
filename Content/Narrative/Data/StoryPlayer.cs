@@ -16,12 +16,16 @@ namespace CalamityOverhaul.Content.Narrative.Data
 
         internal string HimayoGiftDelayKey { get; set; }
         internal int HimayoGiftDelayTicks { get; set; }
+        internal string ShenyoGiftDelayKey { get; set; }
+        internal int ShenyoGiftDelayTicks { get; set; }
 
         public override void Initialize() {
             StoryData = new DataModuleStore();
             HasNewFormatData = false;
             HimayoGiftDelayKey = null;
             HimayoGiftDelayTicks = 0;
+            ShenyoGiftDelayKey = null;
+            ShenyoGiftDelayTicks = 0;
         }
 
         public T Get<T>() where T : DataModule, new() => StoryData.Get<T>();
@@ -47,6 +51,8 @@ namespace CalamityOverhaul.Content.Narrative.Data
             HasNewFormatData = false;
             HimayoGiftDelayKey = null;
             HimayoGiftDelayTicks = 0;
+            ShenyoGiftDelayKey = null;
+            ShenyoGiftDelayTicks = 0;
             try {
                 //只读新格式；旧档走 ADVSavePlayer / HalibutSave
                 if (tag.TryGet<TagCompound>("StoryData", out TagCompound storyTag)) {
