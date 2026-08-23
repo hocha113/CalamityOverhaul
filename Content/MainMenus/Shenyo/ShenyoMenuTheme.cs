@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace CalamityOverhaul.Content.MainMenus.Shenyo
 {
@@ -41,8 +41,8 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
 
         //====== 立绘映射（Shenyo.png 258×544，沙盒校准）======
         public static readonly Vector2 PortraitTexel = new(1f / 258f, 1f / 544f);
-        /// <summary>双目中心（立绘uv）</summary>
-        public static readonly Vector2 EyeUv = new(0.541f, 0.204f);
+        /// <summary>双目中心（立绘uv），目芒落虹膜右上</summary>
+        public static Vector2 EyeUv => new(0.566f, 0.196f);
         /// <summary>目距半宽（uv）</summary>
         public const float EyeSep = 0.0485f;
 

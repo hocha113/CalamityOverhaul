@@ -1270,7 +1270,7 @@ KikasaText: {
 		KeyUnbound: This step's key isn't bound. Bind it in Settings > Controls, or click Skip.
 		AlreadyDoneNote: This one is already done — read on, then press Got it.
 		WaterRisingNote: Wait for the blood water to reach your feet first.
-		ResetCooldownFormat: "The rewind ink is still coiling back: {0}%"
+		ResetCooldownFormat: The rewind ink is still coiling back: {0}%
 		HelpHover: Replay the umbrella tutorial
 	}
 }

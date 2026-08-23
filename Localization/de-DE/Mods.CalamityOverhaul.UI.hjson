@@ -1226,6 +1226,7 @@ BulletinBoardUI: {
 }
 
 // HimayoMenu.ThemeName: Sakura Night
+// ShenyoMenu.ThemeName: Ghost Lake Rains
 
 AcknowledgmentUI: {
 	ArtistRole: Künstler

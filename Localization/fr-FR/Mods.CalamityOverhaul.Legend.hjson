@@ -1253,10 +1253,24 @@ KikasaText: {
 		// WheelBody: Seated shades come out on their own while the lake is open. The wheel calls them out or back at any time; fewer on the field means each one hits harder. The gold-flame sector on the same wheel lights or draws back the ghost fire.
 		// WheelPrompt: Hold {0} to open the wheel, then release on a seat
 		// WheelNoMemory: No shades yet. Drown a boss first, or skip this step.
+		// RainTitle: Mutate into Ghost Rain
+		// RainBody: The Flip the Lake key speaks twice — at full water, a tap flips the lake into ghost rain; a long hold pulls you into the dream. Foes slain under the rain rise as umbrella thralls that fight for you.
+		// RainPrompt: At full water, tap {0} to flip the lake
+		// RestartTitle: Rewind in the Rain
+		// RestartBody: Ghost rain remembers. One press freezes the scene into a photograph, then the rain washes it open — everyone slides back to where they stood, wounds close, curses rinse off, and nothing can touch you while it rewinds.
+		// RestartPrompt: In ghost rain at full water, press {0}
 		// DreamTitle: Enter the Ghost Dream
 		// DreamBody: Once the lake is full, hold Flip the Lake and the reflection pulls you under. Hold left click inside to call hounds; press the same key again to return.
 		// DreamPrompt: At full water, hold {0} (middle mouse by default)
 		// SkipBtn: Skip
+		// ConfirmBtn: Got it
+		// AssistBtn: Show me
+		// OpenPanoramaBtn: Open it for me
+		// DismissBtn: Put away
 		// KeyUnbound: This step's key isn't bound. Bind it in Settings > Controls, or click Skip.
+		// AlreadyDoneNote: This one is already done — read on, then press Got it.
+		// WaterRisingNote: Wait for the blood water to reach your feet first.
+		// ResetCooldownFormat: The rewind ink is still coiling back: {0}%
+		// HelpHover: Replay the umbrella tutorial
 	}
 }
