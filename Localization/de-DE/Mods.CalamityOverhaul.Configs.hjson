@@ -66,10 +66,7 @@ CWRServerConfig: {
 
 CWRClientConfig: {
 	DisplayName: Client-Einstellungen
-
-	Headers: {
-		CWRWeapon: Overhaul-Waffeneinstellungen
-	}
+	Headers.CWRWeapon: Overhaul-Waffeneinstellungen
 
 	ScreenVibration: {
 		Label: Bildschirmvibration für spezielle Waffenangriffe

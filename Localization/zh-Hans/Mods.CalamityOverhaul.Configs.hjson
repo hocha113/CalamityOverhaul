@@ -66,10 +66,7 @@ CWRServerConfig: {
 
 CWRClientConfig: {
 	DisplayName: 客户端设置
-
-	Headers: {
-		CWRWeapon: 大修武器设置
-	}
+	Headers.CWRWeapon: 大修武器设置
 
 	ScreenVibration: {
 		Label: 武器特殊攻击屏幕振动效果

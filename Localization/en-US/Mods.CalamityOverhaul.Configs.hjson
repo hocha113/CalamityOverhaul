@@ -66,10 +66,7 @@ CWRServerConfig: {
 
 CWRClientConfig: {
 	DisplayName: Client Config
-
-	Headers: {
-		CWRWeapon: Weapon Configs
-	}
+	Headers.CWRWeapon: Weapon Configs
 
 	ScreenVibration: {
 		Label: Weapon Screen Vibration
