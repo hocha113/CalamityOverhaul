@@ -13,7 +13,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
 {
-    /// <summary>骷髅手 NPCOverride：锁链骨掌，行为见 States.Hands</summary>
+    /// <summary>骷髅手 NPCOverride，行为见 States.Hands</summary>
     internal class SkeletronHandAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.SkeletronHand;
@@ -210,11 +210,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
                 return true;
             }
             float alphaFade = 1f - npc.alpha / 255f;
-            float tension = handContext?.ChainTension ?? 0f;
-
-            //锁链骨节：自头颅侧锚垂到掌根
-            Vector2 anchor = head.Center + new Vector2(npc.ai[SkeletronAiSlots.HandSide] * 36f, 14f).RotatedBy(head.rotation);
-            SkeletronRenderHelper.DrawBoneChain(spriteBatch, anchor, npc.Center, tension, alphaFade, npc.whoAmI * 0.157f);
 
             //合掌拍捉对峙走廊预警（左手绘制，防双份）
             DrawSnatchCorridor(spriteBatch, alphaFade);

@@ -78,9 +78,4 @@ CWRServerConfig: {
 
 	ConfigChangePrefix: Benutzer
 	ConfigChangeSuffix: hat die Serverkonfiguration geändert
-
-	HackPvP: {
-		// Label: Hack Pv P
-		// Tooltip: ""
-	}
 }

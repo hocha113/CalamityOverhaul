@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.HackTimes
         InvalidPayload,
         ProtocolLocked,
         //== PvP 准入拒绝码（HackPvPRules.CanTarget 逐条映射，尾部追加） ==
-        //服务端总开关关闭
+        //曾为服务端总开关拒绝码；开关已删，占位不可挪以免线上格式错位
         PvPDisabled,
         //双方 hostile 不满足（单向 hostile 不可选中）
         NotHostile,

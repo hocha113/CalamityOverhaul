@@ -1,4 +1,3 @@
-using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.ID;
 
@@ -75,12 +74,6 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
         #endregion
 
         /// <summary>
-        /// 服务端总开关。运行时在请求校验处读，不需要 ReloadRequired；
-        /// 键在 <see cref="CWRServerConfig"/>（共用文件，接线批落地）
-        /// </summary>
-        internal static bool ServerEnabled => CWRServerConfig.Instance?.HackPvP ?? true;
-
-        /// <summary>
         /// PvP 骇入准入判定，全部条件按序短路。<br/>
         /// 返回 false 时 <paramref name="reason"/> 是拒绝码（服务端拒绝必须点名子句写日志）。<br/>
         /// 端别差异：对冷却与叠加上限只在持有账本的端上生效（服务端授予账 / 客户端镜像），
@@ -88,11 +81,6 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
         /// </summary>
         internal static bool CanTarget(Player attacker, Player defender,
             out HackRequestResultCode reason) {
-            //1 服务端总开关
-            if (!ServerEnabled) {
-                reason = HackRequestResultCode.PvPDisabled;
-                return false;
-            }
             //基础可用性（含自指排除，自己走 SelfRig 位，不走 PvP 准入）
             if (attacker?.active != true || attacker.dead
                 || defender?.active != true || defender.dead || defender.ghost
@@ -100,17 +88,17 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
                 reason = HackRequestResultCode.InvalidTarget;
                 return false;
             }
-            //2 双方 hostile（镜像 msg 117 的转播闸：单向 hostile 不可选中）
+            //1 双方 hostile（镜像 msg 117 的转播闸：单向 hostile 不可选中）
             if (!attacker.hostile || !defender.hostile) {
                 reason = HackRequestResultCode.NotHostile;
                 return false;
             }
-            //3 队伍谓词（镜像原版弹幕命中：同一支非零队伍互相免疫）
+            //2 队伍谓词（镜像原版弹幕命中：同一支非零队伍互相免疫）
             if (attacker.team != 0 && attacker.team == defender.team) {
                 reason = HackRequestResultCode.SameTeam;
                 return false;
             }
-            //4 PvP 距离（服务端另有 claimedCenter 一致性校验，这里查双方实测距离）。
+            //3 PvP 距离（服务端另有 claimedCenter 一致性校验，这里查双方实测距离）。
             //  专用拒绝码：上传期重验按它单独走 45f 拉距宽限，
             //  与 claim 不一致的 InvalidPayload 必须可区分
             if (Vector2.DistanceSquared(attacker.Center, defender.Center)
@@ -118,31 +106,31 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
                 reason = HackRequestResultCode.OutOfRange;
                 return false;
             }
-            //5 复活保护（数据在观测端：服务端脉冲 / 防守方本机，缺席即放行）
+            //4 复活保护（数据在观测端：服务端脉冲 / 防守方本机，缺席即放行）
             if (PlayerHackAuthority.IsSpawnProtected(defender.whoAmI)) {
                 reason = HackRequestResultCode.SpawnProtected;
                 return false;
             }
-            //6 对冷却（服务端真值；攻击方本机有自己那份镜像供预检变灰）
+            //5 对冷却（服务端真值；攻击方本机有自己那份镜像供预检变灰）
             if (PlayerHackAuthority.IsPairOnCooldown(attacker.whoAmI, defender.whoAmI)) {
                 reason = HackRequestResultCode.PairCooldown;
                 return false;
             }
-            //7 叠加上限（服务端读授予账，客户端读 PlayerEffectState 镜像）
+            //6 叠加上限（服务端读授予账，客户端读 PlayerEffectState 镜像）
             if (PlayerHackAuthority.CountEffectsOn(defender.whoAmI) >= MaxEffectsPerDefender
                 || PlayerHackAuthority.CountEffectsOnPair(attacker.whoAmI, defender.whoAmI)
                     >= MaxEffectsPerPair) {
                 reason = HackRequestResultCode.StackLimit;
                 return false;
             }
-            //8 状态排除的服务端可见部分（dead/ghost 已在上面；演出保护
+            //7 状态排除的服务端可见部分（dead/ghost 已在上面；演出保护
             //   服务端不知道，由防守方收到 DefenderApply 时本机终审兜底）
             reason = HackRequestResultCode.Success;
             return true;
         }
 
-        /// <summary>本机是否处于多人环境且 PvP 骇入内容可见（面板/扫描侧的粗闸）</summary>
+        /// <summary>本机是否处于多人环境（面板/扫描侧的粗闸；PvP 骇入联机默认启用）</summary>
         internal static bool ContentVisible
-            => Main.netMode != NetmodeID.SinglePlayer && ServerEnabled;
+            => Main.netMode != NetmodeID.SinglePlayer;
     }
 }

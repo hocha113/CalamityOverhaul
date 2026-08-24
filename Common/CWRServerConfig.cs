@@ -25,12 +25,7 @@ namespace CalamityOverhaul.Common
         public bool QuestLog { get; set; }//任务书开关
 
         //生物大修配置已移除：BrutalNPCs 的 AI 重制现在由残酷模式（世界级游戏模式）管理
-
-        //联机 PvP 骇入总开关。运行时在请求校验处读（HackPvPRules.ServerEnabled），
-        //不需要 ReloadRequired；PvP 本身已是 hostile 双向自愿，默认开只是把内容亮出来
-        [BackgroundColor(35, 185, 78, 255)]
-        [DefaultValue(true)]
-        public bool HackPvP { get; set; }
+        //联机 PvP 骇入无独立开关：开了原版 PvP 即启用
 
         [Header("CWRWeapon")]
 

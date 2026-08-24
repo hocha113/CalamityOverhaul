@@ -8,7 +8,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
 {
-    /// <summary>灵骨材质绘制辅助：幽灵臂条带、骨链、眼火、冠火、预警线、旋杀涡流</summary>
+    /// <summary>灵骨材质绘制辅助：幽灵臂条带、眼火、冠火、预警线、旋杀涡流</summary>
     internal static class SkeletronRenderHelper
     {
         #region 自持资源（眼火贴图方案专用，用户定向回退保留）
@@ -162,53 +162,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
             spriteBatch.Draw(tex, drawPos, rect, GhostCyan * (opacity * 0.85f), rotation, orig, scale, fx, 0f);
             //亮核（预乘批 A=0 纯加色）
             spriteBatch.Draw(tex, drawPos, rect, AsAdditive(new Color(225, 255, 248)) * (opacity * 0.5f), rotation, orig, scale * 0.88f, fx, 0f);
-        }
-
-        #endregion
-
-        #region 骨链（物理手锁链）
-
-        private static readonly Vector2[] chainPts = new Vector2[13];
-
-        /// <summary>沿下垂曲线绘制骨节链，tension=1 时绷直；筋络为灵息绸带顶点层；seed 须逐链稳定</summary>
-        public static void DrawBoneChain(SpriteBatch spriteBatch, Vector2 from, Vector2 to, float tension, float opacity, float seed = 0.37f) {
-            if (opacity <= 0.02f) {
-                return;
-            }
-            Main.instance.LoadProjectile(ProjectileID.Bone);
-            Texture2D bone = TextureAssets.Projectile[ProjectileID.Bone].Value;
-            Vector2 orig = bone.Size() / 2f;
-
-            float dist = from.Distance(to);
-            if (dist < 24f) {
-                return;
-            }
-            //松弛下垂量随张紧度收敛
-            float sag = MathHelper.Lerp(MathHelper.Clamp(dist * 0.22f, 30f, 170f), 6f, MathHelper.Clamp(tension, 0f, 1f));
-            Vector2 ctrl = (from + to) * 0.5f + new Vector2(0f, sag);
-
-            //幽蓝筋络：沿链曲线的灵息绸带（顶点层，深压在骨节之下）
-            for (int i = 0; i < chainPts.Length; i++) {
-                chainPts[i] = QuadBez(from, ctrl, to, i / (float)(chainPts.Length - 1));
-            }
-            DrawSpecterRibbon(chainPts, chainPts.Length, 7f, 10f,
-                opacity * (0.34f + tension * 0.30f), 0.5f + tension * 0.6f,
-                seed, 0.18f, 0.14f, 1.1f + tension * 1.6f);
-
-            int links = (int)MathHelper.Clamp(dist / 22f, 4f, 34f);
-            Vector2 prev = from;
-            for (int i = 1; i <= links; i++) {
-                float t = i / (float)links;
-                Vector2 p = QuadBez(from, ctrl, to, t);
-                Vector2 seg = p - prev;
-                float rot = seg.ToRotation() + MathHelper.PiOver2;
-                //隔节翻滚，避免复读贴纸
-                float roll = (i % 2 == 0) ? 0.35f : -0.28f;
-                Color lit = Lighting.GetColor((int)(p.X / 16f), (int)(p.Y / 16f));
-                Color col = Color.Lerp(BoneShadow, BonePale, 0.55f).MultiplyRGB(lit) * opacity;
-                spriteBatch.Draw(bone, p - Main.screenPosition, null, col, rot + roll, orig, 0.86f, SpriteEffects.None, 0f);
-                prev = p;
-            }
         }
 
         #endregion

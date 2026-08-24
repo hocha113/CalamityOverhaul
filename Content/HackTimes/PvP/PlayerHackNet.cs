@@ -884,8 +884,7 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
             if (Main.netMode != NetmodeID.Server
                 || whoAmI < 0 || whoAmI >= Main.maxPlayers
                 || defenderIndex >= Main.maxPlayers
-                || !PlayerHackAuthority.AllowProbe(whoAmI)
-                || !HackPvPRules.ServerEnabled) {
+                || !PlayerHackAuthority.AllowProbe(whoAmI)) {
                 return;
             }
             Player defender = Main.player[defenderIndex];
