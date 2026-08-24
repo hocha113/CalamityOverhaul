@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
         private static Texture2D Pixel => VaultAsset.placeholder2.Value;
         private static readonly Rectangle One = new(0, 0, 1, 1);
 
-        internal static void DrawTab(SpriteBatch sb, Rectangle rect, GameModeKind kind,
+        internal static void DrawTab(SpriteBatch sb, Rectangle rect, GameModeFace face,
             float lit, float hover, float burst, bool burstOn, float disabled, float alpha) {
             if (alpha <= 0.01f || rect.Width < 4 || rect.Height < 4) {
                 return;
@@ -24,16 +24,16 @@ namespace CalamityOverhaul.Content.GameModes.UI
 
             Effect effect = EffectLoader.GameModeTab?.Value;
             if (effect == null) {
-                DrawTabFallback(sb, rect, kind, lit, disabled, alpha);
+                DrawTabFallback(sb, rect, face, lit, disabled, alpha);
                 return;
             }
 
-            Color accent = GameModeTheme.Accent(kind);
-            Color ember = kind == GameModeKind.Brutal ? GameModeTheme.BrutalEmber : GameModeTheme.AsuraGold;
+            Color accent = GameModeTheme.Accent(face);
+            Color ember = GameModeTheme.Ember(face);
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             effect.Parameters["uAlpha"]?.SetValue(alpha);
             effect.Parameters["uResolution"]?.SetValue(new Vector2(rect.Width, rect.Height));
-            effect.Parameters["uMode"]?.SetValue(kind == GameModeKind.Brutal ? 0f : 1f);
+            effect.Parameters["uMode"]?.SetValue((float)face);
             effect.Parameters["uLit"]?.SetValue(lit);
             effect.Parameters["uHover"]?.SetValue(hover);
             effect.Parameters["uBurst"]?.SetValue(burst);
@@ -45,12 +45,12 @@ namespace CalamityOverhaul.Content.GameModes.UI
         }
 
         /// <summary>shader 缺编时的诚实矢量回退：漆底 + 边线 + 模式线稿</summary>
-        private static void DrawTabFallback(SpriteBatch sb, Rectangle rect, GameModeKind kind,
+        private static void DrawTabFallback(SpriteBatch sb, Rectangle rect, GameModeFace face,
             float lit, float disabled, float alpha) {
             Color baseCol = GameModeTheme.NightBase * (0.94f * alpha);
             sb.Draw(Pixel, rect, One, baseCol);
 
-            Color iconCol = Color.Lerp(GameModeTheme.BoneDim, GameModeTheme.Accent(kind), lit);
+            Color iconCol = Color.Lerp(GameModeTheme.BoneDim, GameModeTheme.Accent(face), lit);
             iconCol = Color.Lerp(iconCol, Color.Gray * 0.6f, disabled) * alpha;
             Color rim = iconCol * 0.8f;
 
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
 
             Vector2 c = rect.Center.ToVector2();
             float s = rect.Width * 0.30f;
-            if (kind == GameModeKind.Brutal) {
+            if (face == GameModeFace.Brutal) {
                 //三道斜痕
                 Vector2 dir = new Vector2(-0.46f, 0.89f) * s;
                 Vector2 perp = new Vector2(-dir.Y, dir.X) / s * (s * 0.42f);
@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
                     DrawLine(sb, c - dir + perp * i, c + dir + perp * i, 2f, iconCol);
                 }
             }
-            else {
+            else if (face == GameModeFace.Asura) {
                 //环 + 三棱的线稿近似
                 const int seg = 20;
                 float r = s * 0.9f;
@@ -86,6 +86,19 @@ namespace CalamityOverhaul.Content.GameModes.UI
                     Vector2 d = ang.ToRotationVector2();
                     DrawLine(sb, c + d * r, c + d * (r + s * 0.55f), 2f, iconCol);
                 }
+            }
+            else {
+                //镰月线稿近似：外弧 + 一粒坠星
+                const int seg = 14;
+                float r = s * 0.95f;
+                Vector2 prev = c + (-MathHelper.PiOver2 * 1.4f).ToRotationVector2() * r;
+                for (int i = 1; i <= seg; i++) {
+                    float ang = MathHelper.Lerp(-MathHelper.PiOver2 * 1.4f, MathHelper.PiOver2 * 1.4f, i / (float)seg);
+                    Vector2 next = c + ang.ToRotationVector2() * r;
+                    DrawLine(sb, prev, next, 2.5f, iconCol);
+                    prev = next;
+                }
+                sb.Draw(Pixel, new Rectangle((int)(c.X + s * 0.55f) - 2, (int)(c.Y - s * 0.8f) - 2, 4, 4), One, iconCol);
             }
         }
 
@@ -123,7 +136,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
                 return;
             }
 
-            string text = GameModeText.ToggleLine(GameModeCeremony.LineKind, GameModeCeremony.LineEnabled).Value;
+            string text = GameModeText.ToggleLine(GameModeCeremony.LineFace, GameModeCeremony.LineEnabled).Value;
             var font = FontAssets.DeathText.Value;
             Vector2 size = font.MeasureString(text);
 
@@ -134,7 +147,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
             }
 
             Vector2 pos = new(GameModeTheme.UIScreenW * 0.5f, GameModeTheme.UIScreenH * 0.30f - t * 16f);
-            Color accent = GameModeTheme.Accent(GameModeCeremony.LineKind);
+            Color accent = GameModeTheme.Accent(GameModeCeremony.LineFace);
             Color textCol = Color.Lerp(accent, GameModeTheme.BoneDim, GameModeCeremony.LineEnabled ? 0f : 0.4f);
 
             Utils.DrawBorderStringBig(sb, text, pos, textCol * a, scale, 0.5f, 0.5f);

@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.GameModes
             return 1f - Math.Min(ResistCap, stacks * ResistPerStack);
         }
 
-        /// <summary>记一次同类命中：折算现有层数后 +1，封顶并刷新计时</summary>
+        /// <summary>记一次同类命中：折算现有层数后加层（毁灭下适应更快），封顶并刷新计时</summary>
         private void Accumulate(int key) {
             adapt ??= [];
             uint now = Main.GameUpdateCount;
@@ -71,8 +71,9 @@ namespace CalamityOverhaul.Content.GameModes
             if (adapt.TryGetValue(key, out AdaptEntry entry)) {
                 stacks = Math.Max(0f, EffectiveStacks(in entry, now));
             }
+            float gain = GameModeSystem.AnnihilationActive ? GameModeTuning.AnnihilationAdaptStacksPerHit : 1f;
             adapt[key] = new AdaptEntry {
-                Stacks = Math.Min(stacks + 1f, StackCap),
+                Stacks = Math.Min(stacks + gain, StackCap),
                 LastHitTick = now,
             };
         }

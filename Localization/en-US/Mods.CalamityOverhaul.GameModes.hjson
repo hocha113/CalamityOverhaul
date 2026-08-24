@@ -1,12 +1,16 @@
 GameModeText: {
-	BrutalName: Brutal Mode
-	AsuraName: Asura Mode
+	BrutalName: Cruel World
+	AsuraName: Asura Hell
+	AnnihilationName: Death's End
 	BrutalOnLine: This world is cruel, and yet you love it still.
 	BrutalOffLine: The world sheathes its fangs. Its mercy is only a pause.
 	AsuraOnLine: The Asura path opens. Every pain you deal shall be repaid in full.
 	AsuraOffLine: The Asura path closes. All debts are settled.
-	BrutalDesc: Unleashes the reworked, merciless AI of every brutal foe
-	AsuraDesc: Foes adapt to repeated damage of the same kind, and any blow you deal sets the least they deal back
+	AnnihilationOnLine: All shall pass; only Death lives forever.
+	AnnihilationOffLine: Death rests a while; the living steal a breath.
+	BrutalDesc: Unleashes the reworked, merciless AI of brutal foes; all other enemies gain 50% more life and damage, and lesser fiends turn swift and frenzied
+	AsuraDesc: The enhancement rises to 100%. Foes adapt to repeated damage of the same kind, and any blow you deal sets the least they deal back
+	AnnihilationDesc: The final form of Asura Hell in a zenith world. Every terror doubles again: foes adapt twice as fast, and your pain is repaid twofold
 	StateOn: Active
 	StateOff: Dormant
 	HintEnable: Click to awaken

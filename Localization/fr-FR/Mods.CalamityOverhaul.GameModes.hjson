@@ -1,12 +1,16 @@
 GameModeText: {
-	BrutalName: Mode Brutal
-	AsuraName: Mode Asura
+	BrutalName: Monde Cruel
+	AsuraName: Enfer Asura
+	AnnihilationName: La Mort immortelle
 	BrutalOnLine: Ce monde est cruel, et pourtant tu l'aimes encore.
 	BrutalOffLine: Le monde rengaine ses crocs. Sa clémence n'est qu'un répit.
 	AsuraOnLine: La voie Asura s'ouvre. Chaque douleur infligée sera pleinement rendue.
 	AsuraOffLine: La voie Asura se ferme. Toutes les dettes sont soldées.
-	BrutalDesc: Libère l'IA retravaillée et impitoyable de tous les ennemis brutaux
-	AsuraDesc: Les ennemis s'adaptent aux dégâts répétés du même type, et chacun de tes coups fixe le plancher des leurs
+	AnnihilationOnLine: Tout passera; seule la Mort vit à jamais.
+	AnnihilationOffLine: La Mort se repose un instant; les vivants volent un souffle.
+	BrutalDesc: Libère l'IA retravaillée et impitoyable des boss brutaux; tous les autres ennemis gagnent 50% de vie et de dégâts, et les moindres créatures deviennent rapides et frénétiques
+	AsuraDesc: L'amélioration monte à 100%. Les ennemis s'adaptent aux dégâts répétés du même type, et chacun de tes coups fixe le plancher des leurs
+	AnnihilationDesc: La forme ultime de l'Enfer Asura dans un monde zénith. Chaque terreur double encore: les ennemis s'adaptent deux fois plus vite et ta douleur est rendue au double
 	StateOn: Actif
 	StateOff: En sommeil
 	HintEnable: Cliquer pour éveiller

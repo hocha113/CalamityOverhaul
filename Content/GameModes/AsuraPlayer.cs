@@ -44,7 +44,9 @@ namespace CalamityOverhaul.Content.GameModes
                 return;
             }
 
-            int floor = LastDealtDamage;
+            //毁灭下苦痛双倍奉还
+            float floorMult = GameModeSystem.AnnihilationActive ? GameModeTuning.AnnihilationFloorMult : 1f;
+            int floor = (int)(LastDealtDamage * floorMult);
             modifiers.ModifyHurtInfo += (ref Player.HurtInfo info) => {
                 if (info.Damage < floor) {
                     info.Damage = floor;

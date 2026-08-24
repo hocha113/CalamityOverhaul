@@ -134,11 +134,12 @@ namespace CalamityOverhaul.Content.GameModes.UI
 
         private static string ComposeTip(GameModeKind kind) {
             bool on = kind == GameModeKind.Brutal ? GameModeSystem.BrutalActive : GameModeSystem.AsuraActive;
+            GameModeFace face = GameModeSystem.FaceOf(kind);
             string state = on ? GameModeText.StateOn.Value : GameModeText.StateOff.Value;
             string hint = !GameModeSystem.CanToggleNow() ? GameModeText.BossRefuse.Value
                 : on ? GameModeText.HintDisable.Value : GameModeText.HintEnable.Value;
-            return GameModeText.Name(kind).Value + " · " + state
-                + "\n" + GameModeText.Desc(kind).Value
+            return GameModeText.Name(face).Value + " · " + state
+                + "\n" + GameModeText.Desc(face).Value
                 + "\n" + hint;
         }
 
@@ -146,14 +147,14 @@ namespace CalamityOverhaul.Content.GameModes.UI
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (TabsVisible) {
-                //修罗先画（从残酷背后滑出），残酷压在上层
+                //修罗先画（从残酷背后滑出），残酷压在上层；天顶世界里修罗恒以毁灭脸示人
                 float reveal = EasedReveal();
                 if (reveal > 0.01f) {
                     Rectangle asuraRect = GameModeTheme.AsuraTab(reveal);
                     if (shakeTimer > 0 && shakeTab == 1) {
                         asuraRect.X += ShakeOffset();
                     }
-                    GameModeRenderer.DrawTab(spriteBatch, asuraRect, GameModeKind.Asura,
+                    GameModeRenderer.DrawTab(spriteBatch, asuraRect, GameModeSystem.FaceOf(GameModeKind.Asura),
                         asuraLit, asuraHover, asuraBurst, asuraBurstOn, disabledDim, reveal);
                 }
 
@@ -161,7 +162,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
                 if (shakeTimer > 0 && shakeTab == 0) {
                     brutalRect.X += ShakeOffset();
                 }
-                GameModeRenderer.DrawTab(spriteBatch, brutalRect, GameModeKind.Brutal,
+                GameModeRenderer.DrawTab(spriteBatch, brutalRect, GameModeFace.Brutal,
                     brutalLit, brutalHover, brutalBurst, brutalBurstOn, disabledDim, 1f);
             }
 

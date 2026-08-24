@@ -1,8 +1,8 @@
 // ============================================================================
-//GameModeTab.fx 游戏模式标签（残酷/修罗）
-//SDF 旗标：暗漆底 + 模式纹样（爪痕/修罗火环）+ 点亮呼吸 + 切换爆发环
+//GameModeTab.fx 游戏模式标签（残酷/修罗/毁灭）
+//SDF 旗标：暗漆底 + 模式纹样 + 点亮呼吸 + 切换爆发环
 //AlphaBlend 预乘；ps_3_0
-//uMode 0=残酷（三道爪痕） 1=修罗（环+三棱+芯）
+//uMode 0=残酷（三道爪痕） 1=修罗（环+三棱+芯） 2=毁灭（坍缩环+镰月+坠星）
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -10,7 +10,7 @@ sampler uImage0 : register(s0);
 float uTime;
 float uAlpha;
 float2 uResolution; //quad 尺寸（px），只用于长宽比
-float uMode;        //0 残酷 / 1 修罗
+float uMode;        //0 残酷 / 1 修罗 / 2 毁灭
 float uLit;         //0..1 点亮程度（CPU 缓动）
 float uHover;       //0..1 悬停
 float uBurst;       //0..1 切换爆发进度（1=无）
@@ -98,7 +98,18 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     asura += (prong(p, -1.5708) + prong(p, 2.618) + prong(p, 0.5236)) * g1;
     asura += smoothstep(0.055, 0.018, r) * g2;
 
-    float icon = saturate(lerp(claw, asura, saturate(uMode)));
+    //毁灭：坍缩细环 + 镰月弯刃 + 坠星
+    float collR = 0.355 - 0.045 * (0.5 + 0.5 * sin(uTime * 0.9));
+    float annih = smoothstep(0.014, 0.004, abs(r - collR)) * 0.55 * g0;
+    float cOut = smoothstep(0.015, -0.005, length(p - float2(-0.035, 0.0)) - 0.255);
+    float cCut = smoothstep(0.012, -0.008, length(p - float2(0.085, -0.028)) - 0.235);
+    annih += saturate(cOut - cCut) * g1;
+    float2 starP = p - float2(0.175, -0.215 + 0.04 * sin(uTime * 1.6));
+    annih += smoothstep(0.055, 0.014, length(starP)) * g2;
+
+    //纹样链式混合：uniform 上禁 if 分支（MojoShader 常量布局教训）
+    float icon = lerp(claw, asura, saturate(uMode));
+    icon = saturate(lerp(icon, annih, saturate(uMode - 1.0)));
 
     //未点亮=石上刻痕，点亮=主色+余烬芯
     float hot = icon * icon * icon;

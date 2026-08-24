@@ -5,13 +5,27 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.GameModes
 {
-    /// <summary>游戏模式种类</summary>
+    /// <summary>游戏模式种类（旗标与网络协议层面只有两种，毁灭是修罗的派生态）</summary>
     internal enum GameModeKind : byte
     {
         /// <summary>残酷模式：解锁 BrutalNPCs 全部 AI 重制</summary>
         Brutal,
         /// <summary>修罗模式：残酷模式的上位，敌怪自适应免疫 + 伤害下限镜像</summary>
         Asura,
+    }
+
+    /// <summary>
+    /// 模式的表现脸：名字/台词/色板/纹样按脸取。
+    /// 毁灭是修罗在天顶世界的呈现，只存在于表现层与数值层，不进旗标与网络
+    /// </summary>
+    internal enum GameModeFace : byte
+    {
+        /// <summary>残酷世界</summary>
+        Brutal,
+        /// <summary>修罗地狱</summary>
+        Asura,
+        /// <summary>死神永生（天顶世界的修罗）</summary>
+        Annihilation,
     }
 
     /// <summary>
@@ -77,6 +91,14 @@ namespace CalamityOverhaul.Content.GameModes
 
         /// <summary>当前是否允许切换模式（Boss 在场时锁定）</summary>
         public static bool CanToggleNow() => !CWRWorld.HasBoss;
+
+        /// <summary>模式种类在本世界的表现脸：天顶世界里修罗恒以毁灭示人（含休眠态）</summary>
+        public static GameModeFace FaceOf(GameModeKind kind) {
+            if (kind == GameModeKind.Brutal) {
+                return GameModeFace.Brutal;
+            }
+            return Main.zenithWorld ? GameModeFace.Annihilation : GameModeFace.Asura;
+        }
 
         /// <summary>
         /// 本地玩家请求切换指定模式。返回是否受理；

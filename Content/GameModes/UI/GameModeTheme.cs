@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
             return new Rectangle(x, TabAnchor.Y, TabW, TabH);
         }
 
-        //——色板：残酷=血红族，修罗=黑金紫红族；shader 背景与 CPU 前景同族取色——
+        //——色板：残酷=血红族，修罗=黑金紫红族，毁灭=苍银冷白族；shader 背景与 CPU 前景同族取色——
 
         /// <summary>近黑底色</summary>
         public static readonly Color NightBase = new(14, 10, 12);
@@ -46,11 +46,25 @@ namespace CalamityOverhaul.Content.GameModes.UI
         public static readonly Color AsuraAccent = new(176, 54, 152);
         /// <summary>修罗描金</summary>
         public static readonly Color AsuraGold = new(224, 176, 92);
+        /// <summary>毁灭主 accent（苍银，死神的褪色相）</summary>
+        public static readonly Color AnnihilationAccent = new(186, 196, 212);
+        /// <summary>毁灭冷白余烬</summary>
+        public static readonly Color AnnihilationEmber = new(240, 246, 255);
         /// <summary>休眠态骨灰色</summary>
         public static readonly Color BoneDim = new(118, 106, 100);
 
-        /// <summary>模式对应的主 accent</summary>
-        public static Color Accent(GameModeKind kind)
-            => kind == GameModeKind.Brutal ? BrutalAccent : AsuraAccent;
+        /// <summary>表现脸的主 accent</summary>
+        public static Color Accent(GameModeFace face) => face switch {
+            GameModeFace.Brutal => BrutalAccent,
+            GameModeFace.Annihilation => AnnihilationAccent,
+            _ => AsuraAccent,
+        };
+
+        /// <summary>表现脸的余烬色</summary>
+        public static Color Ember(GameModeFace face) => face switch {
+            GameModeFace.Brutal => BrutalEmber,
+            GameModeFace.Annihilation => AnnihilationEmber,
+            _ => AsuraGold,
+        };
     }
 }
