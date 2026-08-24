@@ -1,4 +1,5 @@
 using System.IO;
+using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -27,6 +28,22 @@ namespace CalamityOverhaul.Content.GameModes
 
         /// <summary>修罗模式已开启（依赖残酷模式，残酷关闭时强制随关）</summary>
         public static bool AsuraActive { get; internal set; }
+
+        /// <summary>毁灭模式：修罗在天顶世界的派生终相（隐藏难度，无独立旗标与网络协议）</summary>
+        public static bool AnnihilationActive => AsuraActive && Main.zenithWorld;
+
+        /// <summary>当前生效档位：0 无 / 1 残酷 / 2 修罗 / 3 毁灭</summary>
+        public static int EffectiveTier {
+            get {
+                if (!BrutalActive) {
+                    return 0;
+                }
+                if (!AsuraActive) {
+                    return 1;
+                }
+                return Main.zenithWorld ? 3 : 2;
+            }
+        }
 
         public override void ClearWorld() {
             BrutalActive = false;

@@ -710,19 +710,29 @@ TBUGTalkUI: {
 }
 
 TBUGShopUI: {
-	// PromptText: tbug@rift:~$
-	// TitleText: shop --list
+	// TitleText: TBUG BUG MARKET
+	// BuyTabText: BUY
+	// SellTabText: SELL
 	// BalanceText: BALANCE
 	// PriceText: PRICE
+	// SellPriceText: OFFER
 	// TagAffordText: IN STOCK
 	// TagNoFundsText: NO FUNDS
+	// TagSoldOutText: SOLD OUT
+	// StockText: STOCK x{0}
+	// SpecialTagText: -25%
+	// SpecialTipText: daily special, 25% off
+	// RestockText: restock at dawn, {0} left
+	// SellHintText: left click sells one, right click sells the stack
+	// SellReceiptText: sold {0} x{1}
+	// SellEmptyText: nothing sellable in your bag
 	// StatusPendingText: awaiting authority...
-	// StatusIdleText: connected · one click buys · no refunds
 	// ResultSuccessText: exit 0 · transaction complete
 	// ResultInvalidText: ERR: bad request
 	// ResultOutOfRangeText: ERR: too far from vendor
 	// ResultNoFundsText: ERR: insufficient funds
 	// ResultNoSpaceText: ERR: inventory full
+	// ResultOutOfStockText: ERR: sold out, restock at dawn
 	// ResultBusyText: ERR: too many requests, slow down
 	// ResultTimeoutText: ERR: request timed out
 }
@@ -1383,6 +1393,8 @@ OldNetDebriefPanel: {
 CharacterDockUI: {
 	// OpenHintLabel: Click to view portrait
 	// DragHintLabel: Drag to move · Scroll to zoom · Right-click to reset
+	// LockedHintLabel: Not yet unlocked
 	// SupCal.Name: Brimstone Witch
 	// Helen.Name: Helen
+	// Shenyo.Name: Shenyo
 }
