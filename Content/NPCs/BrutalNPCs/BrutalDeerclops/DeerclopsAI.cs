@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
 {
     /// <summary>独眼巨鹿主控：冰封领域与暗影凝视</summary>
-    internal class DeerclopsAI : CWRNPCOverride
+    internal class DeerclopsAI : BrutalNPCOverride
     {
         #region 数据
         public override int TargetID => NPCID.Deerclops;
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
             InitializeStateContext();
         }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

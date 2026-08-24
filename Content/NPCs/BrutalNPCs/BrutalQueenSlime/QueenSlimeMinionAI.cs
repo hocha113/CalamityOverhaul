@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
 {
     /// <summary>皇后随从接管基类：ai[0]=角色 ai[1]=槽位 ai[2]=皇后whoAmI ai[3]=角色计时</summary>
-    internal abstract class QueenMinionOverrideBase : CWRNPCOverride
+    internal abstract class QueenMinionOverrideBase : BrutalNPCOverride
     {
         /// <summary>localAI[0] 管辖锁存：0未判 1本系统 2原版放行</summary>
         private const int LatchUnset = 0;
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
         /// <summary>本随从对应角色</summary>
         protected abstract int Role { get; }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

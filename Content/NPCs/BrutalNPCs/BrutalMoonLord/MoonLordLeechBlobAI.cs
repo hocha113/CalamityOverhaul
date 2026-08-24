@@ -13,14 +13,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
     /// 抵达按 头→核心→四手 分配回复（核心裸露期核心优先）。
     /// ai 槽沿用原版：[0]=头 whoAmI+1，[1]=舌弹幕索引，[2]=航程计时
     /// </summary>
-    internal class MoonLordLeechBlobAI : CWRNPCOverride
+    internal class MoonLordLeechBlobAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.MoonLordLeechBlob;
 
         internal const float TravelFrames = 90f;
         internal const int HealPool = 800;
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

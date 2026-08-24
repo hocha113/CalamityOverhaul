@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             float target = 0f;
 
             //召唤倒计时：日蚀渐临（最高咬到 0.6，把"满蚀"留给登场演出）
-            if (NPC.MoonLordCountdown > 0 && CWRServerConfig.Instance.BiologyOverhaul) {
+            if (NPC.MoonLordCountdown > 0 && GameModes.GameModeSystem.BrutalActive) {
                 float progress = 1f - NPC.MoonLordCountdown / (float)NPC.MaxMoonLordCountdown;
                 target = Math.Max(target, progress * 0.6f);
             }

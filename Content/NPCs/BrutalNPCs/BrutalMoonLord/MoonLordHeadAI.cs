@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
     /// 月总之头：焊接于核心正上方的主炮台。天眼开阖即弱点窗口（睁眼可打），
     /// 死光扫描/星陨颂唱/月蚀噬咬期间承诺兑换。破坏后残口仍供噬咬锚定
     /// </summary>
-    internal class MoonLordHeadAI : CWRNPCOverride
+    internal class MoonLordHeadAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.MoonLordHead;
 
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         private float wriggleTimer;
         private Player targetPlayer;
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

@@ -11,14 +11,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
     /// 飞眼编队接管：ai[0]=模式(0编队/闲逛 3四散)，ai[1]=槽位
     /// 编队目标位每帧从 BrainFormationChannel 读取（各端一致推演）
     /// </summary>
-    internal class BrainCreeperAI : CWRNPCOverride
+    internal class BrainCreeperAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.Creeper;
 
         private const int ModeFollow = 0;
         private const int ModeScatter = 3;
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

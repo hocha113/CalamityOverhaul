@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
     /// override.ai[0]=编队时钟 override.ai[3]=阶段位掩码 override.ai[4]=出招环游标<br/>
     /// override.ai[5]=标记玩家whoAmI+1 override.ai[6]=投技冷却 override.ai[7]=标记进度0~1
     /// </summary>
-    internal class BrutalQueenBeeAI : CWRNPCOverride
+    internal class BrutalQueenBeeAI : BrutalNPCOverride
     {
         #region 数据
         public override int TargetID => NPCID.QueenBee;
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
         #endregion
 
         #region 加载与初始化
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

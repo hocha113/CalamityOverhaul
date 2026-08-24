@@ -26,7 +26,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 {
     /// <summary>双子魔眼 AI 控制器，状态机驱动战斗</summary>
-    internal class TwinsAIController : CWRNPCOverride, ICWRLoader, ILocalizedModType
+    internal class TwinsAIController : BrutalNPCOverride, ICWRLoader, ILocalizedModType
     {
         public string LocalizationCategory => "BrutalNPCs";
 
@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
         #region 初始化
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

@@ -23,7 +23,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     /// <summary>头部 NPCOverride，States 驱动，契约见 PrimePhase、npc.ai[2]</summary>
-    internal class HeadPrimeAI : CWRNPCOverride, ICWRLoader, ILocalizedModType
+    internal class HeadPrimeAI : BrutalNPCOverride, ICWRLoader, ILocalizedModType
     {
         #region 数据与资源
         public override int TargetID => NPCID.SkeletronPrime;
@@ -96,20 +96,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         void ICWRLoader.LoadAsset() {
-            //缓存原版纹理
+            //只缓存原版纹理；置换随世界会话由 BrutalBossBagTextureSync 驱动
+            //（残酷模式是世界级旗标，加载期没有世界可读）
             Vanilla_TwinsBossBag = TextureAssets.Item[ItemID.TwinsBossBag];
             Vanilla_DestroyerBossBag = TextureAssets.Item[ItemID.DestroyerBossBag];
             Vanilla_SkeletronPrimeBossBag = TextureAssets.Item[ItemID.SkeletronPrimeBossBag];
-            if (CWRServerConfig.Instance.BiologyOverhaul) {
-                TextureAssets.Item[ItemID.TwinsBossBag] = TwinBag;
-                TextureAssets.Item[ItemID.DestroyerBossBag] = DestroyerBag;
-                TextureAssets.Item[ItemID.SkeletronPrimeBossBag] = PrimeBag;
-            }
-            else {//关大修时恢复原版
-                TextureAssets.Item[ItemID.TwinsBossBag] = Vanilla_TwinsBossBag;
-                TextureAssets.Item[ItemID.DestroyerBossBag] = Vanilla_DestroyerBossBag;
-                TextureAssets.Item[ItemID.SkeletronPrimeBossBag] = Vanilla_SkeletronPrimeBossBag;
-            }
         }
 
         void ICWRLoader.UnLoadData() {
@@ -134,7 +125,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 () => "别妄图用这愚蠢的东西杀死我!去死吧有机体!");
         }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
         #endregion
@@ -939,5 +930,39 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// 机械三王宝箱袋贴图随残酷模式的世界态置换。
+    /// 逐帧引用赋值代价可忽略，且天然覆盖进档同步、运行时切换等一切路径
+    /// </summary>
+    internal class BrutalBossBagTextureSync : ModSystem
+    {
+        public override void PostUpdateEverything() => Sync();
+
+        public override void OnWorldLoad() => Sync();
+
+        public override void OnWorldUnload() {
+            //离档一律还原版，防止残酷贴图漂进主菜单或下一个未开模式的世界
+            if (!Main.dedServ) {
+                Apply(false);
+            }
+        }
+
+        private static void Sync() {
+            if (Main.dedServ) {
+                return;
+            }
+            Apply(GameModes.GameModeSystem.BrutalActive);
+        }
+
+        private static void Apply(bool brutal) {
+            if (HeadPrimeAI.Vanilla_TwinsBossBag == null) {
+                return;//资产尚未缓存（加载早期）
+            }
+            TextureAssets.Item[ItemID.TwinsBossBag] = brutal ? HeadPrimeAI.TwinBag : HeadPrimeAI.Vanilla_TwinsBossBag;
+            TextureAssets.Item[ItemID.DestroyerBossBag] = brutal ? HeadPrimeAI.DestroyerBag : HeadPrimeAI.Vanilla_DestroyerBossBag;
+            TextureAssets.Item[ItemID.SkeletronPrimeBossBag] = brutal ? HeadPrimeAI.PrimeBag : HeadPrimeAI.Vanilla_SkeletronPrimeBossBag;
+        }
     }
 }

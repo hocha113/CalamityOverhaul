@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
     /// 光之女皇主控：InnoVault状态机全接管，棱彩弹幕艺术；
     /// npc.ai[0]/ai[1]=姿态通道（原版绘制语义） npc.ai[2]=状态机 npc.ai[3]=形态位（原版语义）
     /// </summary>
-    internal class EmpressOfLightAI : CWRNPCOverride
+    internal class EmpressOfLightAI : BrutalNPCOverride
     {
         #region 数据
         public override int TargetID => NPCID.HallowBoss;
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             InitializeStateContext();
         }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

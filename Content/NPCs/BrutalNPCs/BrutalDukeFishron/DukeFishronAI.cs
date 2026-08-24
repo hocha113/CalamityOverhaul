@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
 {
     /// <summary>猪龙鱼公爵主控：风暴海啸领域，InnoVault 状态机驱动，ai[2] 同步</summary>
-    internal class DukeFishronAI : CWRNPCOverride, ICWRLoader
+    internal class DukeFishronAI : BrutalNPCOverride, ICWRLoader
     {
         #region 数据
         public override int TargetID => NPCID.DukeFishron;
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             InitializeStateContext();
         }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

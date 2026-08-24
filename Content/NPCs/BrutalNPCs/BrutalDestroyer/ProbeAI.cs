@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 {
-    internal class ProbeAI : CWRNPCOverride
+    internal class ProbeAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.Probe;
         [VaultLoaden(CWRConstant.NPC + "BTD/")]
@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         [VaultLoaden(CWRConstant.NPC + "BTD/")]
         private static Asset<Texture2D> Probe_Glow { get; set; }
         public static int ReelBackTime => CWRRef.GetBossRushActive() ? 30 : 60;
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
         public override void SetProperty() {

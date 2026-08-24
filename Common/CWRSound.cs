@@ -110,5 +110,6 @@ namespace CalamityOverhaul.Common
         public static SoundStyle SoulConnection;
         public static SoundStyle DogWuff;
         public static SoundStyle DogWorry;
+        public static SoundStyle CrueltyOpen;
     }
 }

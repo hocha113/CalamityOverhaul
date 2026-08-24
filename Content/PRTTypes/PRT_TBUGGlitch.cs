@@ -6,7 +6,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// TBUG 裂缝故障切片；轴对齐横条，终端蓝为主、少量报错品红（与 TBUGTheme 同族），
+    /// TBUG 裂缝故障切片；轴对齐横条，终端蓝为主、少量报错品红（与裂缝报错色同族），
     /// 移动走离散步进而不是平滑漂移，读作"屏幕撕裂的碎渣"
     /// </summary>
     internal class PRT_TBUGGlitch : BasePRT

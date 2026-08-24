@@ -9,7 +9,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
 {
     /// <summary>史莱姆皇后主控：水晶折射与空降芭蕾</summary>
-    internal class QueenSlimeAI : CWRNPCOverride
+    internal class QueenSlimeAI : BrutalNPCOverride
     {
         #region 数据
         public override int TargetID => NPCID.QueenSlimeBoss;
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
             InitializeStateContext();
         }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

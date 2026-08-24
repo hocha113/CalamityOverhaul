@@ -31,16 +31,6 @@ CWRServerConfig: {
 		Tooltip: Quando ativado, deslocamentos rapidos de longa distancia suavizarao a camera, o que evita a sensacao de ser movido muito rapido
 	}
 
-	BiologyOverhaul: {
-		Label: Reformulacao de Biologia [c/06e33f:(Experimental)]
-		Tooltip:
-			'''
-			[c/c20909:Incompleto]
-			Ativado por padrao, isso modificara o comportamento de IA de certas criaturas, como chefes no Modo Morte.
-			Isso pode aumentar significativamente a dificuldade do jogo, entao voce pode optar por desativar com base na sua preferencia pessoal.
-			'''
-	}
-
 	QuestLog: {
 		Label: Orientacao do Registro de Missoes
 		Tooltip:

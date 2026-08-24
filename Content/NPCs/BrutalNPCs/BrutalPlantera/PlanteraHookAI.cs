@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
     /// npc.ai[0/1]=锚点tile坐标 ai[2]=模式 ai[3]=序号0~2；
     /// 决策服务端，运动各端从ai确定性积分，netUpdate对账
     /// </summary>
-    internal class PlanteraHookAI : CWRNPCOverride
+    internal class PlanteraHookAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.PlanterasHook;
 
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         private bool embedded;
         private float glowFlash;
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

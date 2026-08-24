@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.HackTimes;
+using CalamityOverhaul.Content.NPCs.CommonUIs;
 using CalamityOverhaul.Content.NPCs.TBUGs.UIs;
 using System.Collections.Generic;
 using Terraria;
@@ -245,7 +246,7 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
                 && player.statLife < player.statLifeMax2 * 0.3f) {
                 Add(pool, lowHealth);
             }
-            long coins = TBUGRenderer.CountCoins(player);
+            long coins = NPCUIStyle.CountCoins(player);
             if (coins >= Item.buyPrice(platinum: 1)) {
                 Add(pool, rich);
             }

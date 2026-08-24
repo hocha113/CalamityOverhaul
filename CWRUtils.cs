@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
@@ -131,6 +132,42 @@ namespace CalamityOverhaul
             List<Vector2> list = [];
             Projectile.FillWhipControlPoints(projectile, list);
             return list;
+        }
+
+        //以下两个 TryGetOverride 重写有意与 InnoVault.VaultUtils 中的同名同参数扩展方法保持一致的签名。
+        //由于本项目 CWR 命名空间比 "using InnoVault;" 更贴近调用处，重载解析会优先命中这里的版本而不产生歧义，
+        //等价于在本项目范围内整体“打补丁”替换掉 InnoVault 里的实现。
+        //起因：InnoVault 的 NPC.TryGetOverride 系列在早期已发布版本中没有校验 globalInstance.NPCOverrides 是否为 null，
+        //在一些时序下（例如 NPCOverrides 尚未构建完成）会直接抛出 NullReferenceException 导致崩溃。
+        //InnoVault 本地仓库已经修复此问题，但尚未发布上线，为了避免依赖用户本地未更新的 InnoVault 版本而崩溃，
+        //这里在本项目内自行实现一份带有完整空值校验的版本，不依赖 InnoVault 内部实现是否已修复。
+        /// <summary>
+        /// 安全获取目标 <paramref name="npc"/> 的全部 <see cref="NPCOverride"/> 节点集合，
+        /// 内部完整校验空值，不会因为 InnoVault 未修复版本的缺陷而崩溃
+        /// </summary>
+        public static bool TryGetOverride(this NPC npc, out Dictionary<Type, NPCOverride> values) {
+            values = null;
+            if (npc == null || !npc.TryGetGlobalNPC(out NPCRebuildLoader globalInstance) || globalInstance.NPCOverrides == null) {
+                return false;
+            }
+            values = globalInstance.NPCOverrides;
+            return true;
+        }
+
+        /// <summary>
+        /// 安全获取目标 <paramref name="npc"/> 上特定类型 <typeparamref name="T"/> 的 <see cref="NPCOverride"/> 实例，
+        /// 内部完整校验空值，不会因为 InnoVault 未修复版本的缺陷而崩溃
+        /// </summary>
+        public static bool TryGetOverride<T>(this NPC npc, out T value) where T : NPCOverride {
+            value = null;
+            if (!npc.TryGetOverride(out Dictionary<Type, NPCOverride> values)) {
+                return false;
+            }
+            if (!values.TryGetValue(typeof(T), out var value2)) {
+                return false;
+            }
+            value = value2 as T;
+            return value != null;
         }
 
         #endregion

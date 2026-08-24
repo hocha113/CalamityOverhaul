@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
 {
     /// <summary>分离飞头 NPCOverride：环场激光平台，服务端权威运动 + 客户端傀儡</summary>
-    internal class GolemFreeHeadAI : CWRNPCOverride
+    internal class GolemFreeHeadAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.GolemHeadFree;
 
@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         //死亡坠毁本地表现
         private bool crashed;
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

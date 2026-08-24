@@ -31,16 +31,6 @@ CWRServerConfig: {
 		Tooltip: Al habilitar, los movimientos rápidos a larga distancia suavizarán la cámara, evitando la sensación de desajuste por moverse demasiado rápido.
 	}
 
-	BiologyOverhaul: {
-		Label: Reforma biológica[c/06e33f:(experimental)]
-		Tooltip:
-			'''
-			[c/c20909:Incompleto]
-			Activado por defecto, modifica la IA de algunas criaturas, como la de los jefes en Modo Muerte.
-			Esto puede aumentar drásticamente la dificultad del juego; se puede elegir desactivarlo según las preferencias personales.
-			'''
-	}
-
 	QuestLog: {
 		Label: Guía del diario de misiones
 		Tooltip:

@@ -15,14 +15,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
     /// 孢子地雷：慢漂向玩家的荧光浮雷，互斥保持间距；
     /// 被打爆/引信到点→毒雾+点燃邻雷连锁殉爆。ai[0]=引信倒计时(0闲置)
     /// </summary>
-    internal class PlanteraSporeAI : CWRNPCOverride
+    internal class PlanteraSporeAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.Spore;
 
         /// <summary>连锁引信帧数</summary>
         private const int FuseFrames = 26;
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

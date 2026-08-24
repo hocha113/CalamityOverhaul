@@ -8,8 +8,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.TBUGs
 {
-    /// <summary>商店条目：物品与基础价（铜币计）</summary>
-    internal readonly record struct TBUGCatalogEntry(int ItemType, long Price);
+    /// <summary>商店条目：物品、基础价（铜币计）与补货上限</summary>
+    internal readonly record struct TBUGCatalogEntry(int ItemType, long Price, int MaxStock);
 
     /// <summary>
     /// 黑客商店货表；显式登记而不是扫描基类，增删货物只改 <see cref="EnsureBuilt"/> 那张表
@@ -116,16 +116,31 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
             Register(ModContent.ItemType<CyberwareOfflineChip>(), Item.buyPrice(gold: 26));
             Register(ModContent.ItemType<MeltdownBrandChip>(), Item.buyPrice(gold: 28));
 
-            //RAM 升级
-            Register(ModContent.ItemType<RamCapacityUpgradeChip>(), Item.buyPrice(gold: 8));
-            Register(ModContent.ItemType<RamRecoveryUpgradeChip>(), Item.buyPrice(gold: 6));
+            //RAM 升级（可重复消耗的芯片，备货比一次性解锁的协议芯片厚）
+            Register(ModContent.ItemType<RamCapacityUpgradeChip>(), Item.buyPrice(gold: 8), stock: 5);
+            Register(ModContent.ItemType<RamRecoveryUpgradeChip>(), Item.buyPrice(gold: 6), stock: 5);
         }
 
-        private static void Register(int itemType, long price) {
+        /// <summary>补货上限默认按价位分档：便宜的走量、能改战局的稀缺</summary>
+        private static int DefaultStock(long price) {
+            long gold = price / 10000L;
+            if (gold >= 26) {
+                return 1;
+            }
+            if (gold >= 20) {
+                return 2;
+            }
+            if (gold >= 10) {
+                return 3;
+            }
+            return 4;
+        }
+
+        private static void Register(int itemType, long price, int stock = 0) {
             if (itemType <= ItemID.None || price <= 0L || byType.ContainsKey(itemType)) {
                 return;
             }
-            TBUGCatalogEntry entry = new(itemType, price);
+            TBUGCatalogEntry entry = new(itemType, price, stock > 0 ? stock : DefaultStock(price));
             entries.Add(entry);
             byType[itemType] = entry;
         }
@@ -141,10 +156,19 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
             return Math.Max(1L, (long)Math.Round(basePrice * clamped));
         }
 
+        /// <summary>
+        /// 每日特惠折价；名单由 <see cref="TBUGStock"/> 按补货纪元确定性推导，
+        /// 展示端与权威端只要纪元一致就折出同一个数
+        /// </summary>
+        private static long WithSpecial(int itemType, long basePrice)
+            => TBUGStock.IsSpecial(itemType)
+                ? Math.Max(1L, (long)Math.Round(basePrice * TBUGStock.SpecialFactor))
+                : basePrice;
+
         /// <summary>展示价：本机缓存的幸福度估算，仅供 UI</summary>
         internal static long GetDisplayPrice(int itemType)
             => TryGetEntry(itemType, out TBUGCatalogEntry entry)
-                ? ApplyMoodAdjustment(entry.Price, TBUGMood.PriceAdjustment)
+                ? ApplyMoodAdjustment(WithSpecial(itemType, entry.Price), TBUGMood.PriceAdjustment)
                 : 0L;
 
         /// <summary>权威价：即时取幸福度，服务端/单机定价用</summary>
@@ -155,7 +179,7 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
             }
             double adjustment = Main.ShopHelper
                 .GetShoppingSettings(player, tbug).PriceAdjustment;
-            return ApplyMoodAdjustment(entry.Price, adjustment);
+            return ApplyMoodAdjustment(WithSpecial(itemType, entry.Price), adjustment);
         }
     }
 }

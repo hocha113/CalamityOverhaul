@@ -8,6 +8,7 @@ namespace CalamityOverhaul.Common
     public static class EffectLoader
     {
         public static Asset<Effect> Blackwall { get; set; }
+        public static Asset<Effect> GameModeTab { get; set; }
         public static Asset<Effect> OldNetNode { get; set; }
         public static Asset<Effect> OldNetTerminal { get; set; }
         public static Asset<Effect> OldNetSky { get; set; }
@@ -179,7 +180,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> VictorEyelidTransition { get; set; }
         public static Asset<Effect> VictorCyberPortal { get; set; }
         public static Asset<Effect> TBUGCorruptRift { get; set; }
-        public static Asset<Effect> TBUGTerminalPanel { get; set; }
         public static Asset<Effect> IndustrialTerminal { get; set; }
         public static Asset<Effect> ThermalPanel { get; set; }
         public static Asset<Effect> ThermalBar { get; set; }

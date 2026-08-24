@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
 
             string reading = QuestLog.ChronicleProgress?.Format(done, total) ?? $"{done} / {total}";
             ChroniclePen.LeatherInk(sb, Font, reading,
-                new Vector2(header.Right - 232f, header.Y + 6f), ChroniclePalette.Brass, 0.76f, a);
+                new Vector2(header.Right - 232f, header.Y + 6f), ChroniclePalette.Brass, 0.8f, a);
         }
 
         /// <summary>左页：站点书口 → 章目 → 底部图例</summary>
@@ -155,8 +155,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
                 string label = station == QuestLogView.Chart
                     ? QuestLog.ChronicleStationChart?.Value ?? "任务图谱"
                     : QuestLog.ChronicleStationEntrust?.Value ?? "委托卷宗";
-                ChroniclePen.Ink(sb, Font, label, new Vector2(body.X + 12f, body.Y + 7f),
-                    selected ? ChroniclePalette.Ink : ChroniclePalette.InkMute, 0.8f, a);
+                ChroniclePen.Ink(sb, Font, label, new Vector2(body.X + 12f, body.Y + 6f),
+                    selected ? ChroniclePalette.Ink : ChroniclePalette.InkMute, 0.85f, a);
             }
         }
 
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             float top = QuestLogTheme.RailContentTop(in current, 2);
             float x = current.Rail.X + 20f;
             ChroniclePen.Ink(sb, Font, QuestLog.ChronicleChapterTitle?.Value ?? "章 目",
-                new Vector2(x, top - 4f), ChroniclePalette.Ink, 0.84f, a * 0.9f);
+                new Vector2(x, top - 4f), ChroniclePalette.Ink, 0.88f, a * 0.9f);
             ChroniclePen.GiltRule(sb, new Vector2(x, top + 16f), current.Rail.Width - 52f, a * 0.5f);
 
             int capacity = Math.Min(log.ChapterRoots.Count, QuestLogTheme.RailChapterCapacity(in current));
@@ -193,9 +193,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
                 }
 
                 string name = node.DisplayName?.Value ?? node.ID;
-                ChroniclePen.Ink(sb, Font, Shorten(name, row.Width - 26f, 0.74f),
+                ChroniclePen.Ink(sb, Font, Shorten(name, row.Width - 26f, 0.78f),
                     new Vector2(row.X + 18f, row.Y + 2f),
-                    hovered ? ChroniclePalette.Ink : StateInk(state), 0.74f, a);
+                    hovered ? ChroniclePalette.Ink : StateInk(state), 0.78f, a);
             }
         }
 
@@ -225,7 +225,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             float y = QuestLogTheme.RailLegendTop(in current);
 
             ChroniclePen.Ink(sb, Font, QuestLog.ChronicleLegendTitle?.Value ?? "图 例",
-                new Vector2(x, y), ChroniclePalette.Ink, 0.84f, a * 0.85f);
+                new Vector2(x, y), ChroniclePalette.Ink, 0.88f, a * 0.85f);
             ChroniclePen.GiltRule(sb, new Vector2(x, y + 20f), rail.Width - 52f, a * 0.5f);
 
             y += 40f;
@@ -245,14 +245,14 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             //图例里的记号与图上的同一支笔，故直接复用状态绘制
             DrawStateMark(sb, pos, R, state, 0.5f, 7 + (int)state * 13, a * 0.95f, false);
             ChroniclePen.Ink(sb, Font, label ?? string.Empty,
-                pos + new Vector2(R + 16f, -8f), StateInk(state), 0.76f, a * 0.9f);
+                pos + new Vector2(R + 16f, -8f), StateInk(state), 0.8f, a * 0.9f);
         }
 
         /// <summary>页脚：皮面提示。站点切换归左栏书口，这里不再摆第二个入口</summary>
         private void DrawFooter(SpriteBatch sb, in QuestLogLayout current, float a) {
             Rectangle footer = current.Footer;
             ChroniclePen.LeatherInk(sb, Font, QuestLog.ChronicleHint?.Value ?? string.Empty,
-                new Vector2(26f, footer.Y + 15f), ChroniclePalette.Brass, 0.74f, a * 0.85f);
+                new Vector2(26f, footer.Y + 15f), ChroniclePalette.Brass, 0.78f, a * 0.85f);
         }
 
         /// <summary>合卷键：黄铜牌 + 阴刻的一记斜叉</summary>
@@ -383,7 +383,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             if (string.IsNullOrEmpty(name)) {
                 return;
             }
-            float textScale = 0.74f * MathHelper.Clamp(scale, 0.7f, 1.25f);
+            //节点名随缩放走但托底 0.7，缩到最远时标签保持可读，不跟着节点一起缩没
+            float textScale = MathF.Max(0.7f, 0.78f * MathHelper.Clamp(scale, 0.7f, 1.25f));
             Vector2 size = Font.MeasureString(name) * textScale;
             Vector2 namePos = new(drawPos.X - size.X * 0.5f, drawPos.Y + radius + 7f);
             Color ink = isHovered ? ChroniclePalette.Ink : StateInk(state);
@@ -434,7 +435,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
         #region 详情：贴在右页上的一张记录条
 
         private const float SlipPadX = 22f;
-        private const float BodyScale = 0.82f;
+        //正文与小节题头字号，测量与绘制共用一份；0.85 以下的字在羊皮纸上读作没墨水
+        private const float BodyScale = 0.88f;
+        private const float SectionScale = 0.9f;
 
         public Rectangle GetCloseButtonRect(Rectangle panelRect)
             => new(panelRect.Right - 46, panelRect.Y + 18, 26, 26);
@@ -459,11 +462,11 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
                 h += ChroniclePen.Wrap(Font, desc, wrapWidth, BodyScale).Count * line * BodyScale + 14f;
             }
             if (node.Objectives != null && node.Objectives.Count > 0) {
-                h += line * 0.86f + 10f;
+                h += line * SectionScale + 10f;
                 h += node.Objectives.Count * (line * BodyScale + 8f);
             }
             if (node.Rewards != null && node.Rewards.Count > 0) {
-                h += line * 0.86f + 12f;
+                h += line * SectionScale + 12f;
                 h += MathF.Ceiling(node.Rewards.Count / 4f) * 44f;
             }
             return h;
@@ -507,7 +510,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             }
             Rectangle prevScissor = sb.GraphicsDevice.ScissorRectangle;
             sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
                 DepthStencilState.None, new RasterizerState { ScissorTestEnable = true }, null,
                 Main.UIScaleMatrix);
             sb.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(sb, body);
@@ -516,7 +519,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
 
             sb.End();
             sb.GraphicsDevice.ScissorRectangle = prevScissor;
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
             //溢出提示：右缘一道随滚动走的短墨迹，不是现代滑块
@@ -554,8 +557,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
 
             if (node.Objectives != null && node.Objectives.Count > 0) {
                 ChroniclePen.Ink(sb, Font, QuestLog.ObjectiveText?.Value ?? string.Empty,
-                    new Vector2(x, y), ChroniclePalette.Ink, 0.86f, alpha);
-                y += line * 0.86f + 10f;
+                    new Vector2(x, y), ChroniclePalette.Ink, SectionScale, alpha);
+                y += line * SectionScale + 10f;
                 foreach (var objective in node.Objectives) {
                     y = DrawObjectiveRow(sb, objective, x, y, wrapW, line, alpha);
                 }
@@ -563,8 +566,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
 
             if (node.Rewards != null && node.Rewards.Count > 0) {
                 ChroniclePen.Ink(sb, Font, QuestLog.RewardText?.Value ?? string.Empty,
-                    new Vector2(x, y), ChroniclePalette.Ink, 0.86f, alpha);
-                y += line * 0.86f + 12f;
+                    new Vector2(x, y), ChroniclePalette.Ink, SectionScale, alpha);
+                y += line * SectionScale + 12f;
                 DrawRewards(sb, node, x, y, alpha);
             }
         }
@@ -596,9 +599,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             }
             else if (objective.RequiredProgress > 1) {
                 string progress = $"{objective.CurrentProgress}/{objective.RequiredProgress}";
-                float pw = Font.MeasureString(progress).X * 0.74f;
+                float pw = Font.MeasureString(progress).X * 0.78f;
                 ChroniclePen.Ink(sb, Font, progress, new Vector2(x + wrapW - pw, y + 1f),
-                    ChroniclePalette.GoldDeep, 0.74f, alpha * 0.95f);
+                    ChroniclePalette.GoldDeep, 0.78f, alpha * 0.95f);
             }
 
             return y + line * BodyScale + 8f;
@@ -633,7 +636,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
 
                 if (reward.Amount > 1) {
                     ChroniclePen.Ink(sb, Font, $"x{reward.Amount}",
-                        center + new Vector2(6f, 6f), ChroniclePalette.GoldDeep, 0.7f, alpha);
+                        center + new Vector2(6f, 6f), ChroniclePalette.GoldDeep, 0.74f, alpha);
                 }
             }
         }

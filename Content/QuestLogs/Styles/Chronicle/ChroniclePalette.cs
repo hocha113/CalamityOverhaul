@@ -14,10 +14,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
         public static readonly Color Paper = new(212, 193, 158);
         public static readonly Color PaperDeep = new(146, 122, 88);
 
-        //褐墨三档：正文 / 次级 / 未点亮
+        //褐墨三档：正文 / 次级 / 未点亮。次级与未点亮压深过一次，浅墨在纸上读作没墨水
         public static readonly Color Ink = new(46, 33, 26);
-        public static readonly Color InkMute = new(94, 76, 58);
-        public static readonly Color InkFaint = new(134, 116, 92);
+        public static readonly Color InkMute = new(76, 59, 43);
+        public static readonly Color InkFaint = new(122, 103, 79);
 
         //烫金：压印线、已通路线、强调
         public static readonly Color Gold = new(186, 146, 76);

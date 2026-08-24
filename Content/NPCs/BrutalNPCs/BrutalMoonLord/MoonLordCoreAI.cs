@@ -11,7 +11,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 {
     /// <summary>月球领主核心主控：状态机指挥、部件生成回收、天体演出数据源</summary>
-    internal class MoonLordCoreAI : CWRNPCOverride, ICWRLoader
+    internal class MoonLordCoreAI : BrutalNPCOverride, ICWRLoader
     {
         #region 数据
         public override int TargetID => NPCID.MoonLordCore;
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             MLordBlackFlashFX.Clear();
         }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

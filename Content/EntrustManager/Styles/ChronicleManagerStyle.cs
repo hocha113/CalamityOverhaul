@@ -88,8 +88,9 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
         /// <summary>悬停提示：页脚上方右对齐的淡墨小字，不用描边</summary>
         public override void DrawInteractionHints(SpriteBatch sb, Rectangle footerRect,
             EntrustEntryData entry, float alpha) {
-            float hintY = footerRect.Y - 17f;
-            const float Scale = 0.6f;
+            float hintY = footerRect.Y - 19f;
+            //字号托底 0.7，行距跟着字高走
+            const float Scale = 0.7f;
 
             void InkHint(string text, Color color) {
                 if (string.IsNullOrEmpty(text)) {
@@ -98,7 +99,7 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
                 float w = Font.MeasureString(text).X * Scale;
                 ChroniclePen.Ink(sb, Font, text, new Vector2(footerRect.Right - w - 12f, hintY),
                     color, Scale, alpha * 0.85f);
-                hintY -= 14f;
+                hintY -= 16f;
             }
 
             if (entry.Status is QuestEntryStatus.Active or QuestEntryStatus.Tracked
@@ -156,7 +157,7 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
 
             //右侧状态明文，纯字不画徽章底框；有邮戳时整体左移让位
             string statusText = GetEntryStatusText(entry.Status);
-            const float StatusScale = 0.62f;
+            const float StatusScale = 0.7f;
             float statusW = Font.MeasureString(statusText).X * StatusScale;
             float statusX = entryRect.Right - statusW - (entry.Provider != null ? 58f : 16f);
             ChroniclePen.Ink(sb, Font, statusText, new Vector2(statusX, titleY + 2f),
@@ -209,8 +210,8 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
                         entry.Progress, 12, alpha * 0.95f);
                     if (entry.ProgressText != null) {
                         ChroniclePen.Ink(sb, Font, entry.ProgressText,
-                            new Vector2(titleX + barW + 10f, barY - 4f),
-                            ChroniclePalette.GoldDeep, 0.64f, alpha * 0.95f);
+                            new Vector2(titleX + barW + 10f, barY - 5f),
+                            ChroniclePalette.GoldDeep, 0.7f, alpha * 0.95f);
                     }
                 }
             }
@@ -325,7 +326,7 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
             }
             string name = provider.Name?.Value ?? string.Empty;
             string label = QuestManagerUI.ProviderLabelText?.Value ?? string.Empty;
-            float labelW = Font.MeasureString(label).X * 0.6f;
+            float labelW = Font.MeasureString(label).X * 0.7f;
             float nameW = Font.MeasureString(name).X * 0.78f;
 
             //头像窝在最左，提供者主色沉进墨里当环色
@@ -336,8 +337,8 @@ namespace CalamityOverhaul.Content.EntrustManager.Styles
 
             //「委托人」小签在前，名字跟在后
             float labelX = x + 32f;
-            ChroniclePen.Ink(sb, Font, label, new Vector2(labelX, y + 12f),
-                ChroniclePalette.InkFaint, 0.6f, alpha * 0.9f);
+            ChroniclePen.Ink(sb, Font, label, new Vector2(labelX, y + 11f),
+                ChroniclePalette.InkFaint, 0.7f, alpha * 0.9f);
             float nameX = labelX + labelW + 10f;
             ChroniclePen.Ink(sb, Font, name, new Vector2(nameX, y + 8f),
                 ChroniclePalette.Ink, 0.78f, alpha);

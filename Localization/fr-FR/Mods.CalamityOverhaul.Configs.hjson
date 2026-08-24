@@ -31,16 +31,6 @@ CWRServerConfig: {
 		Tooltip: Lorsqu'activé, les déplacements rapides à longue distance adoucissent la caméra, évitant ainsi toute sensation de malaise due à un déplacement trop rapide
 	}
 
-	BiologyOverhaul: {
-		Label: Modification du comportement biologique [c/06e33f:(expérimental)]
-		Tooltip:
-			'''
-			[c/c20909:Non achevé]
-			Activé par défaut, modifie le comportement de l'IA de certaines créatures, comme l'IA des boss en Mode Mort
-			Cela peut considérablement augmenter la difficulté du jeu, et peut être désactivé selon les préférences personnelles
-			'''
-	}
-
 	QuestLog: {
 		Label: Guide du journal de quêtes
 		Tooltip:

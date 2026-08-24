@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
     /// 触手部件：二阶段近身武器。ai[0]=方位种子 ai[1]=命令参数(环向/鞭角)
     /// ai[2]=模式 ai[3]=0(保持原版锚语义)；决策服务端，运动各端确定性积分
     /// </summary>
-    internal class PlanteraTentacleAI : CWRNPCOverride
+    internal class PlanteraTentacleAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.PlanterasTentacle;
 
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         private float spinPhase;
         private bool lashing;
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

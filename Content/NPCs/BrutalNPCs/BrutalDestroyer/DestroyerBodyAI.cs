@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 {
-    internal class DestroyerBodyAI : CWRNPCOverride, ICWRLoader
+    internal class DestroyerBodyAI : BrutalNPCOverride, ICWRLoader
     {
         #region Data
         public override int TargetID => NPCID.TheDestroyerBody;
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         public override bool CheckActive() => false;
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

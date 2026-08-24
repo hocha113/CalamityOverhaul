@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
     /// 掌击等直控动作由服务端状态写速度、客户端积分跟随。
     /// 接触伤害按速度门控（各端一致），破坏后转蠕动残口
     /// </summary>
-    internal class MoonLordHandAI : CWRNPCOverride
+    internal class MoonLordHandAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.MoonLordHand;
 
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         /// <summary>掌击预警线强度（蓄势后半段亮起，各端本地推导）</summary>
         private float slamTelegraph;
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

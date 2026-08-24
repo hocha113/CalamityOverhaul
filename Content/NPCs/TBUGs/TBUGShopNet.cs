@@ -12,6 +12,12 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
         PurchaseRequest,
         PurchaseResult,
         BestiaryChat,
+        /// <summary>服务端 → 全体：全量库存表（补货沿广播；入世快照走 TBUGStockSystem.NetSend）</summary>
+        StockSync,
+        /// <summary>服务端 → 全体：单件余量（成交/退货后广播绝对值）</summary>
+        StockDelta,
+        /// <summary>客户端 → 服务端：本机结算失败，退回一件库存</summary>
+        SettleRollback,
     }
 
     internal enum TBUGShopResult : byte
@@ -21,6 +27,7 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
         OutOfRange,
         InsufficientFunds,
         InventoryFull,
+        OutOfStock,
         Busy,
         /// <summary>仅客户端本地：回执超时</summary>
         Timeout,
@@ -77,6 +84,10 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
                 if (code == TBUGShopResult.Success) {
                     code = SettlePurchase(player, itemType, price);
                 }
+                if (code == TBUGShopResult.Success) {
+                    //单机权威就在本机：钱货两清后才扣库存
+                    TBUGStock.Consume(itemType);
+                }
                 completion?.Invoke(code, price);
                 return true;
             }
@@ -112,6 +123,9 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
             if (!TBUGCatalog.TryGetEntry(itemType, out TBUGCatalogEntry entry)
                 || entry.Price <= 0L) {
                 return TBUGShopResult.InvalidRequest;
+            }
+            if (TBUGStock.GetStock(itemType) <= 0) {
+                return TBUGShopResult.OutOfStock;
             }
             price = TBUGCatalog.GetAuthorityPrice(itemType, player, tbug);
             if (price <= 0L) {
@@ -204,6 +218,11 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
                 CWRMod.Instance.Logger.Info(
                     $"TBUG purchase rejected ({code}): player={whoAmI} npc={tbugWho} item={itemType}");
             }
+            else {
+                //过审即占货：钱货两清在客户端，客户端结算失败会发 SettleRollback 退回
+                TBUGStock.Consume(itemType);
+                BroadcastStockDelta(itemType);
+            }
 
             ModPacket reply = NewPacket(TBUGShopOp.PurchaseResult);
             reply.Write(serial);
@@ -237,6 +256,12 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
             if (code == TBUGShopResult.Success) {
                 //权威只回价，钱货两清在本机
                 code = SettlePurchase(Main.LocalPlayer, itemType, price);
+                if (code != TBUGShopResult.Success) {
+                    //服务端过审时已占货，本机没结算成就退回去
+                    ModPacket rollback = NewPacket(TBUGShopOp.SettleRollback);
+                    rollback.Write(itemType);
+                    rollback.Send();
+                }
             }
             entry.Callback?.Invoke(code, price);
         }
@@ -259,6 +284,71 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
         internal static void ClearPending() {
             pending.Clear();
             lastRequestFrame.Clear();
+        }
+
+        #endregion
+
+        #region 库存同步
+
+        /// <summary>补货沿广播全量库存表；单机/客户端调用是空操作</summary>
+        internal static void BroadcastStockSync() {
+            if (Main.netMode != NetmodeID.Server) {
+                return;
+            }
+            ModPacket packet = NewPacket(TBUGShopOp.StockSync);
+            packet.Write(TBUGStock.RestockEpoch);
+            IReadOnlyDictionary<int, int> export = TBUGStock.Export();
+            packet.Write((short)export.Count);
+            foreach ((int itemType, int count) in export) {
+                packet.Write(itemType);
+                packet.Write((short)count);
+            }
+            packet.Send();
+        }
+
+        /// <summary>成交/退货后广播单件余量绝对值</summary>
+        private static void BroadcastStockDelta(int itemType) {
+            if (Main.netMode != NetmodeID.Server) {
+                return;
+            }
+            ModPacket packet = NewPacket(TBUGShopOp.StockDelta);
+            packet.Write(itemType);
+            packet.Write((short)TBUGStock.GetStock(itemType));
+            packet.Send();
+        }
+
+        private static void HandleStockSync(BinaryReader reader) {
+            //链式共享 reader：先读完全部载荷再做任何校验早退
+            int epoch = reader.ReadInt32();
+            int count = reader.ReadInt16();
+            List<(int, int)> entries = new(Math.Max(0, count));
+            for (int i = 0; i < count; i++) {
+                entries.Add((reader.ReadInt32(), reader.ReadInt16()));
+            }
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                return;
+            }
+            TBUGStock.ApplyNet(epoch, entries);
+        }
+
+        private static void HandleStockDelta(BinaryReader reader) {
+            int itemType = reader.ReadInt32();
+            int count = reader.ReadInt16();
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                return;
+            }
+            TBUGStock.SetStock(itemType, count);
+        }
+
+        private static void HandleSettleRollback(BinaryReader reader, int whoAmI) {
+            int itemType = reader.ReadInt32();
+            if (Main.netMode != NetmodeID.Server) {
+                return;
+            }
+            //退货同样要可诊断：正常玩法里它只在"过审后背包又满了"这类边角出现
+            CWRMod.Instance.Logger.Info($"TBUG purchase rolled back: player={whoAmI} item={itemType}");
+            TBUGStock.Refund(itemType);
+            BroadcastStockDelta(itemType);
         }
 
         #endregion
@@ -309,6 +399,15 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
                         break;
                     case TBUGShopOp.BestiaryChat:
                         HandleBestiaryChat(reader);
+                        break;
+                    case TBUGShopOp.StockSync:
+                        HandleStockSync(reader);
+                        break;
+                    case TBUGShopOp.StockDelta:
+                        HandleStockDelta(reader);
+                        break;
+                    case TBUGShopOp.SettleRollback:
+                        HandleSettleRollback(reader, whoAmI);
                         break;
                 }
             } catch (EndOfStreamException) {

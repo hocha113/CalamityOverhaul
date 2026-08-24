@@ -31,16 +31,6 @@ CWRServerConfig: {
 		Tooltip: Bei Aktivierung wird bei schnellen Langstreckenbewegungen ein Easing-Effekt auf das Objektiv angewendet, um ein unnatürliches Gefühl zu vermeiden
 	}
 
-	BiologyOverhaul: {
-		Label: Biologische Verhaltensüberlagerung[c/06e33f:(Experimentell)]
-		Tooltip:
-			'''
-			[c/c20909:Nicht vollständig implementiert]
-			Standardmäßig aktiviert, ändert das Verhalten einiger Kreaturen, z. B. Boss-KIs unter dem Einfluss des Tod-Moduls
-			Dies kann die Spielherausforderung erhöhen, je nach Vorliebe kann dies deaktiviert werden
-			'''
-	}
-
 	QuestLog: {
 		Label: Questbuch-Anleitung
 		Tooltip:

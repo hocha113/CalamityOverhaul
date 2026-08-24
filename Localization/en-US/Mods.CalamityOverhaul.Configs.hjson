@@ -31,16 +31,6 @@ CWRServerConfig: {
 		Tooltip: When enabled, long distance rapid displacement will slow the lens, which avoids the feeling of being moved too fast
 	}
 
-	BiologyOverhaul: {
-		Label: Biology Overhaul [c/06e33f:(Experimental)]
-		Tooltip:
-			'''
-			[c/c20909:Unfinished]
-			Enabled by default, this will modify the AI behavior of certain creatures, such as Boss AI in Death Mode.
-			This might significantly increase the game's difficulty, so you can choose to disable it based on your personal preference.
-			'''
-	}
-
 	QuestLog: {
 		Label: Quest Log Guidance
 		Tooltip:

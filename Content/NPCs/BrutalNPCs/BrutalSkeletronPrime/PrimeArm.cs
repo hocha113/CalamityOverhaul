@@ -7,7 +7,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     /// <summary>臂 NPCOverride 基类，行为见 States.Arms</summary>
-    internal abstract class PrimeArm : CWRNPCOverride
+    internal abstract class PrimeArm : BrutalNPCOverride
     {
         /// <summary>十字封位锚点，绞杀瞬间冻结</summary>
         private Vector2 crossAnchor;
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         /// <summary>环绕编队的角位索引（0~3）</summary>
         protected abstract int FormationIndex { get; }
 
-        public sealed override bool? CanCWROverride() {
+        public sealed override bool? CanBrutalOverride() {
             return null;
         }
 

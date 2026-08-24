@@ -11,7 +11,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
 {
     /// <summary>拳 NPCOverride 基类，行为见 States.Fists</summary>
-    internal abstract class GolemFistAI : CWRNPCOverride
+    internal abstract class GolemFistAI : BrutalNPCOverride
     {
         internal NPC body;
         internal Player player;
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         /// <summary>拳侧 -1左 / 1右</summary>
         protected abstract int Side { get; }
 
-        public sealed override bool? CanCWROverride() {
+        public sealed override bool? CanBrutalOverride() {
             return null;
         }
 

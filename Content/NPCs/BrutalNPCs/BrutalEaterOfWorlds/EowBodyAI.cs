@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
     }
 
     /// <summary>体节：跟链/分组首节自驾/压缩呼吸/脉冲染色</summary>
-    internal class EowBodyAI : CWRNPCOverride
+    internal class EowBodyAI : BrutalNPCOverride
     {
         #region 数据
         public override int TargetID => NPCID.EaterofWorldsBody;
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
         private bool ruptureFired;
         #endregion
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
     /// 被打破：30 帧鼓胀预告后苍弹环爆（朝最近玩家的扇区留空，猜错的惩罚有预告且可躲）<br/>
     /// ai[0]=槽位 ai[1]=命令(0常态 1爆裂 2软散) ai[2]=齐射相位差 ai[3]=本体索引
     /// </summary>
-    internal class CultistCloneAI : CWRNPCOverride
+    internal class CultistCloneAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.CultistBossClone;
 
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
         /// <summary>爆裂/软散演出计帧</summary>
         private ref float EndTimer => ref npc.localAI[1];
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

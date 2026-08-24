@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
 {
     /// <summary>附着头 NPCOverride：确定性锚点 + 观察躯干状态行动，伤害经 realLife 转给躯干</summary>
-    internal class GolemHeadAI : CWRNPCOverride
+    internal class GolemHeadAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.GolemHead;
 
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         //分离仪式本地表现计时
         private int detachTimer;
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

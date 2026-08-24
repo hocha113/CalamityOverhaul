@@ -11,7 +11,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
 {
     /// <summary>世纪之花主控：藤蔓悬吊运动+状态机，钩爪/触手/孢子为部件</summary>
-    internal class PlanteraAI : CWRNPCOverride, ICWRLoader
+    internal class PlanteraAI : BrutalNPCOverride, ICWRLoader
     {
         #region Data
         public override int TargetID => NPCID.Plantera;
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             InitializeStateContext();
         }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

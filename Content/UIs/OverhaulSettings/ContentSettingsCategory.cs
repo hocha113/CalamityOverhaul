@@ -32,7 +32,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
             //CWRSystem(需重载)
             AddToggle("QuestLog", () => config.QuestLog, v => config.QuestLog = v, true);
-            AddToggle("BiologyOverhaul", () => config.BiologyOverhaul, v => config.BiologyOverhaul = v, true);
 
             //CWRWeapon
             AddToggle(nameof(config.ScreenVibration), () => config.ScreenVibration, v => config.ScreenVibration = v, false);
@@ -51,7 +50,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
             //CWRSystem
             config.QuestLog = true;
-            config.BiologyOverhaul = true;
 
             //CWRWeapon
             config.ScreenVibration = true;

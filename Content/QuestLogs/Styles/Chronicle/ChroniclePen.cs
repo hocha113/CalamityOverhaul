@@ -81,8 +81,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             sb.Draw(Pixel, full, Color.White);
 
             sb.End();
+            //点采样会让缩小的字形不规则丢像素，读作断墨；文字与贴图一律各向异性采样
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
-                SamplerState.PointClamp, DepthStencilState.None,
+                SamplerState.AnisotropicClamp, DepthStencilState.None,
                 RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }
 
@@ -148,14 +149,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
         #region 纸墨字
 
         /// <summary>
-        /// 纸面墨字：单次绘制。纸上禁用四向描边，黑描边叠褐墨会糊成一团
+        /// 纸面墨字：同色双笔加重——右偏一笔加厚竖画，下偏半墨一笔加厚横画，
+        /// 读作蘸饱墨的笔锋压进纸里。纸上仍禁用四向黑描边，黑描边叠褐墨会糊成一团
         /// </summary>
         public static void Ink(SpriteBatch sb, DynamicSpriteFont font, string text, Vector2 pos,
             Color color, float scale, float alpha = 1f) {
             if (string.IsNullOrEmpty(text) || alpha <= 0.01f) {
                 return;
             }
-            sb.DrawString(font, text, pos, color * alpha, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            InkStrike(sb, font, text, pos, color * alpha, scale);
         }
 
         /// <summary>居中墨字</summary>
@@ -165,8 +167,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
                 return;
             }
             Vector2 size = font.MeasureString(text) * scale;
-            sb.DrawString(font, text, center - size * 0.5f, color * alpha, 0f, Vector2.Zero,
-                scale, SpriteEffects.None, 0f);
+            InkStrike(sb, font, text, center - size * 0.5f, color * alpha, scale);
         }
 
         /// <summary>皮面上的浅色刻字：暗压痕 + 亮填漆，皮革对比度不够故保留一层影</summary>
@@ -177,7 +178,21 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             }
             sb.DrawString(font, text, pos + new Vector2(0f, 1.2f), ChroniclePalette.LeatherDeep * (alpha * 0.85f),
                 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-            sb.DrawString(font, text, pos, color * alpha, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            InkStrike(sb, font, text, pos, color * alpha, scale);
+        }
+
+        /// <summary>
+        /// 同色三笔：主笔 + 右偏加厚竖画 + 下偏半墨加厚横画。<br/>
+        /// 偏移随字号收放，小字不糊、大字不虚；同色故不会像描边一样发黑
+        /// </summary>
+        private static void InkStrike(SpriteBatch sb, DynamicSpriteFont font, string text, Vector2 pos,
+            Color ink, float scale) {
+            float d = MathHelper.Clamp(scale * 0.9f, 0.55f, 1.05f);
+            sb.DrawString(font, text, pos + new Vector2(d, 0f), ink * 0.85f, 0f, Vector2.Zero,
+                scale, SpriteEffects.None, 0f);
+            sb.DrawString(font, text, pos + new Vector2(0f, d * 0.75f), ink * 0.5f, 0f, Vector2.Zero,
+                scale, SpriteEffects.None, 0f);
+            sb.DrawString(font, text, pos, ink, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
 
         /// <summary>按宽度断行，返回每行文本</summary>

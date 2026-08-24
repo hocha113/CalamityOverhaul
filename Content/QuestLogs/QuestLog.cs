@@ -868,7 +868,8 @@ namespace CalamityOverhaul.Content.QuestLogs
             Rectangle prevScissor = spriteBatch.GraphicsDevice.ScissorRectangle;
 
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+            //点采样叠小数字号会让节点名不规则丢像素读作断墨，画布一律各向异性采样
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
                 DepthStencilState.None, new RasterizerState { ScissorTestEnable = true }, null, Main.UIScaleMatrix);
             spriteBatch.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, canvas);
 
@@ -909,7 +910,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             spriteBatch.End();
             spriteBatch.GraphicsDevice.ScissorRectangle = prevScissor;
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
                 DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
         }
 

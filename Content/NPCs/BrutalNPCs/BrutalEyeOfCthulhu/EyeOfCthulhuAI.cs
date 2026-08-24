@@ -11,7 +11,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
 {
     /// <summary>克苏鲁之眼 AI 主控：血雾迷场与假动作冲刺，状态机驱动</summary>
-    internal class EyeOfCthulhuAI : CWRNPCOverride, ICWRLoader
+    internal class EyeOfCthulhuAI : BrutalNPCOverride, ICWRLoader
     {
         #region 数据
         public override int TargetID => NPCID.EyeofCthulhu;
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
             EocScreenFX.Clear();
         }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

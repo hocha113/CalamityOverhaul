@@ -13,11 +13,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
     /// 饥饿者：常态系绳突袭(移植原版锚点几何+灾厄口径加速)；
     /// 结网态飞入网槽编成拦截网，绘制肉链与通电辉光
     /// </summary>
-    internal class TheHungryAI : CWRNPCOverride
+    internal class TheHungryAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.TheHungry;
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

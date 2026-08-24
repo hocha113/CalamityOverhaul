@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
     /// 复用原版 wofNPCIndex/wofDrawArea 契约(墙体绘制/舌头惩罚/越狱语义全保留)，
     /// 接管推进速度、全部攻击编排与部件指挥。状态索引写 npc.ai[2]，阶段写 npc.ai[1]
     /// </summary>
-    internal class WallOfFleshAI : CWRNPCOverride, ICWRLoader, ILocalizedModType
+    internal class WallOfFleshAI : BrutalNPCOverride, ICWRLoader, ILocalizedModType
     {
         #region 数据与资源
         public override int TargetID => NPCID.WallofFlesh;
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
                 () => "{0}被饥饿者的肉网绞碎了");
         }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
         #endregion

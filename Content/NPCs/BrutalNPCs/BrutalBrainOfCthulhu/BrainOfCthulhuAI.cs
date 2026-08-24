@@ -12,7 +12,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
 {
     /// <summary>克脑主控：镜像瞬移心理战，状态机契约见 BrainStateIndex、npc.ai[2]</summary>
-    internal class BrainOfCthulhuAI : CWRNPCOverride, ICWRLoader
+    internal class BrainOfCthulhuAI : BrutalNPCOverride, ICWRLoader
     {
         #region 数据
         public override int TargetID => NPCID.BrainofCthulhu;
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
             InitializeStateContext();
         }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

@@ -1,7 +1,7 @@
 // ============================================================================
 // TBUGCorruptRift.fx  TBUG 出场裂缝（黑墙 / 代码错误）
 // 材质："世界渲染漏掉的一块"，不是发光的门，是缺失
-// 配色与 TBUGTheme 同族：黑底 + 终端蓝，品红只作报错，禁绿
+// 配色：黑底 + 终端蓝，品红只作报错，禁绿（TBUG 裂缝世界观自有的色族，与 UI 无关）
 // 预乘输出 + AlphaBlend：黑墙是吸光暗体，真正遮挡地形；发光成分走低 alpha
 // s0 = quad 画布（内容不采样） s1 = PerlinNoise 512 灰度（LinearWrap）
 // 三个签名行为：纯黑内里+坏显存色块 / 报错栈卡顿滚动 / RGB 错位量化撕裂边
@@ -128,7 +128,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     //文本只在竖向中段 88% 出现
     float textWin = insideMask * (1.0 - smoothstep(0.78, 0.95, abs(yn)));
 
-    //调色与 TBUGTheme 对齐：终端蓝主体，行号暗蓝，报错品红
+    //调色：终端蓝主体，行号暗蓝，报错品红
     float3 termBlue = float3(0.28, 0.62, 1.00);
     float3 dimBlue = float3(0.09, 0.24, 0.44);
     float3 errMagenta = float3(1.00, 0.24, 0.46);

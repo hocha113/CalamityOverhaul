@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
     /// 拜月教邪教徒 AI 主控：仪式法师，他在推进自己的仪式（充能表即背后法阵），玩家在拆台<br/>
     /// 同步槽位：ai[0]=阶段 ai[1]=元素 ai[2]=状态索引 ai[3]=仪式充能
     /// </summary>
-    internal class CultistBossAI : CWRNPCOverride, ICWRLoader
+    internal class CultistBossAI : BrutalNPCOverride, ICWRLoader
     {
         #region 数据
         public override int TargetID => NPCID.CultistBoss;
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             CultistScreenFX.Clear();
         }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

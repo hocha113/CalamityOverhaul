@@ -11,7 +11,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
 {
     /// <summary>骷髅王头部 NPCOverride，States 驱动，契约见 SkeletronPhase、npc.ai[2]</summary>
-    internal class SkeletronHeadAI : CWRNPCOverride, ICWRLoader
+    internal class SkeletronHeadAI : BrutalNPCOverride, ICWRLoader
     {
         #region 数据
         public override int TargetID => NPCID.SkeletronHead;
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
             SkeletronRenderHelper.Unload();
         }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
         #endregion

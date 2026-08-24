@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Cyberwares;
 using CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans;
+using CalamityOverhaul.Content.NPCs.CommonUIs;
 using CalamityOverhaul.Content.NPCs.Victors.UIs;
 using System.Collections.Generic;
 using Terraria;
@@ -249,7 +250,7 @@ namespace CalamityOverhaul.Content.NPCs.Victors
                 && player.statLife < player.statLifeMax2 * 0.3f) {
                 Add(pool, lowHealth);
             }
-            long coins = VictorUIStyle.CountCoins(player);
+            long coins = NPCUIStyle.CountCoins(player);
             if (coins >= Item.buyPrice(platinum: 1)) {
                 Add(pool, rich);
             }

@@ -15,14 +15,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
     /// localAI[0]=属性已初始化 localAI[1]=镖向角 localAI[2]=镖计时<br/>
     /// 编队目标 = 确定性函数(女王同步ai+编队时钟+槽位)，全端一致，服务端周期纠偏
     /// </summary>
-    internal class BrutalBeeAI : CWRNPCOverride
+    internal class BrutalBeeAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.Bee;
 
         /// <summary>掷镖全程帧数</summary>
         private const int DartDuration = 52;
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

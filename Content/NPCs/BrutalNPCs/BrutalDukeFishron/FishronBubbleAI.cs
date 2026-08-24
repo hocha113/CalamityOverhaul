@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
     /// ai[0]=模式(0追踪 1迷宫驻停 2环阵待发) ai[1]=模式参数(驻停前飞行帧/待发计时)
     /// ai[2]=爆裂倒计时(0未爆) ai[3]=体型系数
     /// </summary>
-    internal class FishronBubbleAI : CWRNPCOverride
+    internal class FishronBubbleAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.DetonatingBubble;
 
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
         private ref float Param => ref npc.ai[1];
         private ref float PopTimer => ref npc.ai[2];
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

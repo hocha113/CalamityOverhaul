@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
     /// 克苏鲁仆从编队接管：克眼生成时赋予编队参数，否则回退原版 AI<br/>
     /// ai[0]=模式(0原版 1编队就位 2出击 3环卫)　ai[1]=槽位+阵型*100　ai[2]=主眼索引　ai[3]=模式参数
     /// </summary>
-    internal class ServantOfCthulhuAI : CWRNPCOverride
+    internal class ServantOfCthulhuAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.ServantofCthulhu;
 
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
         internal const int FormationLance = 0;
         internal const int FormationRing = 1;
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

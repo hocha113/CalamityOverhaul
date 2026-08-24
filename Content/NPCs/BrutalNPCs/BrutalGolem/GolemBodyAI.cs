@@ -10,7 +10,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
 {
     /// <summary>躯干主控 NPCOverride，States 驱动，契约见 GolemPhase、npc.ai[2]</summary>
-    internal class GolemBodyAI : CWRNPCOverride, ICWRLoader
+    internal class GolemBodyAI : BrutalNPCOverride, ICWRLoader
     {
         #region 数据
         public override int TargetID => NPCID.Golem;
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             GolemScreenEffects.Clear();
         }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
         #endregion

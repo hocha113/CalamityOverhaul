@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
     }
 
     /// <summary>世界吞噬者头部主控：状态机+统一血池+分裂协同驾驶</summary>
-    internal class EowHeadAI : CWRNPCOverride, ICWRLoader
+    internal class EowHeadAI : BrutalNPCOverride, ICWRLoader
     {
         #region 数据
         public override int TargetID => NPCID.EaterofWorldsHead;
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
                 EffectPriority.High);
         }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

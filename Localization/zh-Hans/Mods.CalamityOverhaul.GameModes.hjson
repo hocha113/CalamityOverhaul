@@ -1,0 +1,15 @@
+GameModeText: {
+	BrutalName: 残酷模式
+	AsuraName: 修罗模式
+	BrutalOnLine: 这个世界是残酷的，而你依旧爱它。
+	BrutalOffLine: 世界收起了獠牙，温柔只是暂时的。
+	AsuraOnLine: 修罗道开，你施予的苦痛，都将如数奉还。
+	AsuraOffLine: 修罗道闭，因果两清。
+	BrutalDesc: 解放所有生物的残酷本性，Boss 将换上重制的狂暴 AI
+	AsuraDesc: 敌人会适应你反复使用的同种攻击，你造成的伤害也将成为敌人对你出手的下限
+	StateOn: 已开启
+	StateOff: 沉眠中
+	HintEnable: 点击唤醒
+	HintDisable: 点击封印
+	BossRefuse: Boss 仍在世间，此刻无法更改契约
+}

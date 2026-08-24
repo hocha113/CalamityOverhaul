@@ -14,7 +14,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
 {
     /// <summary>骷髅手 NPCOverride：锁链骨掌，行为见 States.Hands</summary>
-    internal class SkeletronHandAI : CWRNPCOverride
+    internal class SkeletronHandAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.SkeletronHand;
 
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
         private float impactLatch;
         private bool impactLatchInit;
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

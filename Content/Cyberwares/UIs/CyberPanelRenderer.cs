@@ -145,9 +145,9 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
         }
 
-        /// <summary>标题栏/版本/底状态栏</summary>
+        /// <summary>标题栏/版本/底状态栏；statusColor 覆写状态灯与文字色（报错红等），缺省绿灯暗字</summary>
         public void DrawTitleAndDecor(SpriteBatch sb, float alpha, Rectangle panelRect, Vector2 panelCenter,
-            float globalTimer, string title, string statusText) {
+            float globalTimer, string title, string statusText, Color? statusColor = null) {
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
 
@@ -224,11 +224,11 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             //运行状态指示灯和文字
             float bottomTextY = footerTop + 4;
             float statusPulse = MathF.Sin(globalTimer * 3f) > 0 ? 1f : 0.4f;
-            Color statusDot = new Color(50, 255, 80) * (alpha * statusPulse);
+            Color statusDot = (statusColor ?? new Color(50, 255, 80)) * (alpha * statusPulse);
             sb.Draw(px, new Vector2(panelRect.X + 10, bottomTextY + 2), new Rectangle(0, 0, 1, 1),
                 statusDot, 0, Vector2.Zero, 4f, SpriteEffects.None, 0);
             Utils.DrawBorderString(sb, statusText, new Vector2(panelRect.X + 22, bottomTextY - 2),
-                CyberwareTheme.TextDim * alpha, 0.44f * CyberwareTheme.FontScale);
+                (statusColor ?? CyberwareTheme.TextDim) * alpha, 0.44f * CyberwareTheme.FontScale);
 
             //右下角滚动数据标签
             string dataTag = $"NET::0x{(int)(globalTimer * 100) % 0xFFFF:X4}";

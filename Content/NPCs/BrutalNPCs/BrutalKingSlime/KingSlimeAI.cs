@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
 {
     /// <summary>残酷史莱姆王主控：液态质量与地形吞没</summary>
-    internal class KingSlimeAI : CWRNPCOverride
+    internal class KingSlimeAI : BrutalNPCOverride
     {
         #region 数据
         public override int TargetID => NPCID.KingSlime;
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
             InitializeStateContext();
         }
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

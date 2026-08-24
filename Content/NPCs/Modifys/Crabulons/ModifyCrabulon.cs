@@ -12,7 +12,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    /// <summary>驯养菌生蟹，不依赖BiologyOverhaul</summary>
+    /// <summary>驯养菌生蟹，不依赖残酷模式（直接继承 NPCOverride，不走 BrutalNPCOverride 门控）</summary>
     internal class ModifyCrabulon : NPCOverride, ILocalizedModType
     {
         public override int TargetID => CWRID.NPC_Crabulon;

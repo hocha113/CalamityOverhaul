@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
     /// 全部编排由核心编队时钟确定性推导，核心指令可召其锚定或退避。
     /// 保持原版不可伤身份，随核心死亡消散
     /// </summary>
-    internal class MoonLordFreeEyeAI : CWRNPCOverride
+    internal class MoonLordFreeEyeAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.MoonLordFreeEye;
 
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         /// <summary>冲撞锁定方向（出手窗内各端确定性推导）</summary>
         private Vector2 ramDir;
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

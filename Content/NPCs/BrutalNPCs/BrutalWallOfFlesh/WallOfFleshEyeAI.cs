@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
     /// 平时按预告-点射节奏压制；扫描协议期锁定跟随光束；
     /// 接触伤害恒为0(墙面与舌头已经足够惩罚，眼不做廉价碰撞)
     /// </summary>
-    internal class WallOfFleshEyeAI : CWRNPCOverride
+    internal class WallOfFleshEyeAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.WallofFleshEye;
 
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
         /// <summary>localAI[1]=服务端点射充能累计</summary>
         private ref float ChargeAccum => ref npc.localAI[1];
 
-        public override bool? CanCWROverride() {
+        public override bool? CanBrutalOverride() {
             return null;
         }
 

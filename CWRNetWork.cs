@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Cyberwares;
 using CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans;
 using CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals;
+using CalamityOverhaul.Content.GameModes;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.Items.Melee.Arbiters;
 using CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses;
@@ -105,6 +106,8 @@ namespace CalamityOverhaul
         ArbiterManifestation,
         //鬼伞·唤雨符 NPC 叠层（洇痕/渍/霉蚀）：归属端写入→紧凑广播，服务端承载并转播给旁观端
         KikasaTalismanStack,
+        //游戏模式（残酷/修罗）切换：客户端请求→服务端校验落地→广播全端各自演出
+        GameModeToggle,
     }
 
     public static class CWRNetWork
@@ -205,6 +208,7 @@ namespace CalamityOverhaul
             SHPCModuleNet.NetHandle(type, reader, whoAmI);
             SHPCNPCEffects.NetHandle(type, reader, whoAmI);
             TBUGShopNet.NetHandle(type, reader, whoAmI);
+            GameModeSystem.NetHandle(type, reader, whoAmI);
         }
     }
 }

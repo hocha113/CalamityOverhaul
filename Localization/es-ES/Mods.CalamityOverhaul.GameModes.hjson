@@ -1,0 +1,15 @@
+GameModeText: {
+	BrutalName: Modo Brutal
+	AsuraName: Modo Asura
+	BrutalOnLine: Este mundo es cruel, y aun así lo sigues amando.
+	BrutalOffLine: El mundo envaina sus colmillos. Su clemencia es solo una pausa.
+	AsuraOnLine: La senda Asura se abre. Todo dolor que inflijas será devuelto por completo.
+	AsuraOffLine: La senda Asura se cierra. Todas las deudas quedan saldadas.
+	BrutalDesc: Libera la IA rediseñada y despiadada de todos los enemigos brutales
+	AsuraDesc: Los enemigos se adaptan al daño repetido del mismo tipo, y cada golpe tuyo fija el mínimo del suyo
+	StateOn: Activo
+	StateOff: Latente
+	HintEnable: Clic para despertar
+	HintDisable: Clic para sellar
+	BossRefuse: Un jefe sigue vivo. El pacto no puede alterarse ahora
+}

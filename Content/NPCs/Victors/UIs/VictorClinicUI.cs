@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Cyberwares;
 using CalamityOverhaul.Content.Cyberwares.UIs;
+using CalamityOverhaul.Content.NPCs.CommonUIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -237,7 +238,7 @@ namespace CalamityOverhaul.Content.NPCs.Victors.UIs
             const int w = 304;
             const int h = 138;
             Rectangle card = new(panelRect.Right + 12, (int)(panelCenter.Y - h / 2f), w, h);
-            VictorUIStyle.DrawHoloFrame(sb, card, CyberwareTheme.AccentCyan, alpha * 0.92f, GlobalTimer);
+            NPCUIStyle.DrawHoloFrame(sb, card, CyberwareTheme.AccentCyan, alpha * 0.92f, GlobalTimer);
 
             //脉冲箭头指回人体槽位
             float ax = card.X - 10 - pulse * 8f;
@@ -249,7 +250,7 @@ namespace CalamityOverhaul.Content.NPCs.Victors.UIs
             Vector2 hsz = FontAssets.MouseText.Value.MeasureString(head) * hs;
             Utils.DrawBorderString(sb, head, new Vector2(card.Center.X - hsz.X / 2f, card.Y + 14),
                 CyberwareTheme.AccentCyan * alpha, hs);
-            VictorUIStyle.DrawHDivider(sb, card.X + 16, card.Right - 16, card.Y + 38, CyberwareTheme.AccentCyan * (alpha * 0.5f));
+            NPCUIStyle.DrawHDivider(sb, card.X + 16, card.Right - 16, card.Y + 38, CyberwareTheme.AccentCyan * (alpha * 0.5f));
 
             float gs = 0.46f * CyberwareTheme.FontScale;
             string[] lines = VaultUtils.WrapTextArray(GuideText.Value, FontAssets.MouseText.Value, w - 32, 4, out _);

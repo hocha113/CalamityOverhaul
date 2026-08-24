@@ -708,19 +708,29 @@ TBUGTalkUI: {
 }
 
 TBUGShopUI: {
-	PromptText: tbug@rift:~$
-	TitleText: shop --list
+	TitleText: TBUG 漏洞黑市
+	BuyTabText: 购买
+	SellTabText: 出售
 	BalanceText: 余额
 	PriceText: 售价
+	SellPriceText: 收购价
 	TagAffordText: 可购买
 	TagNoFundsText: 余额不足
+	TagSoldOutText: 缺货
+	StockText: 库存 ×{0}
+	SpecialTagText: -25%
+	SpecialTipText: 今日特惠，七五折
+	RestockText: 黎明补货，还剩 {0}
+	SellHintText: 左键卖出一件，右键卖出整叠
+	SellReceiptText: 已售出 {0} ×{1}
+	SellEmptyText: 背包里没有能卖的东西
 	StatusPendingText: 等待权威端应答……
-	StatusIdleText: 已连接 · 单击购买 · 概不退换
 	ResultSuccessText: exit 0 · 交易完成
 	ResultInvalidText: ERR：请求无效
 	ResultOutOfRangeText: ERR：离店主太远
 	ResultNoFundsText: ERR：余额不足
 	ResultNoSpaceText: ERR：背包已满
+	ResultOutOfStockText: ERR：这件卖完了，黎明后再来
 	ResultBusyText: ERR：请求太频繁，慢点
 	ResultTimeoutText: ERR：请求超时
 }

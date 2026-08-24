@@ -31,16 +31,6 @@ CWRServerConfig: {
 		Tooltip: 启用后，长距离快速位移会让镜头具有缓动，这避免了移动过快所带来的违和感
 	}
 
-	BiologyOverhaul: {
-		Label: 生物大修[c/06e33f:(实验性)]
-		Tooltip:
-			'''
-			[c/c20909:未完成]
-			默认开启，会修改一些生物的AI行为，比如死亡模组下的BossAI
-			这可能会让游戏的挑战性剧增，可以根据个人喜好选择是否关闭
-			'''
-	}
-
 	QuestLog: {
 		Label: 任务书指引
 		Tooltip:

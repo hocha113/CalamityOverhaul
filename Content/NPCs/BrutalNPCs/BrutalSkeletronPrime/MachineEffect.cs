@@ -210,7 +210,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            if (!CWRServerConfig.Instance.BiologyOverhaul) {
+            if (!GameModes.GameModeSystem.BrutalActive) {
                 return;
             }
 
