@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
     /// ai[0..3] 乘 SyncNPC 过线，各端本地跑同一状态机做表现，节拍闩防快照回卷，
     /// 弹幕只在权威端生成，铐位命中走贴合各端本地模拟的 GaolCuffHitbox（公平阀）
     /// </summary>
-    internal class DeepGaolWraith : ModNPC
+    internal class DeepGaolWraith : GaolModNPC
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

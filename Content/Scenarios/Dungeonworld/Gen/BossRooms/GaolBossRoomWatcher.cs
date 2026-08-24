@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
     /// 冷却 5 秒后骷髅头重新蛰伏。世界为 ShouldSave=false 回放制，注册表不持久化，
     /// 每次进世界随生成期重登记、骷髅头重新蛰伏，属预期行为。
     /// </summary>
-    internal class GaolBossRoomWatcher : ModSystem
+    internal class GaolBossRoomWatcher : GaolModSystem
     {
         private sealed class RoomState
         {
@@ -45,6 +45,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
 
         /// <summary>登记一间禁室（生成期或测试物品调用；按坐标去重）</summary>
         internal static void RegisterRoom(Point origin) {
+            if (!DeepGaolWraithGate.Enabled) {
+                return;
+            }
             foreach (RoomState room in rooms) {
                 if (room.Origin == origin) {
                     return;

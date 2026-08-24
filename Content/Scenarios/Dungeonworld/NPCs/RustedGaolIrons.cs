@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
     /// 暂借原版镣铐贴图，无进度门槛，任意世界可召
     /// （M0 独立测试用；接入 Dungeonworld 牢狱层刷新逻辑后另做正式召唤链路）
     /// </summary>
-    internal class RustedGaolIrons : ModItem
+    internal class RustedGaolIrons : GaolModItem
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.Shackle;
 

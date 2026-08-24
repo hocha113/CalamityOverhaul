@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
     /// 联机契约：触发裁决与换体只在服务器，phase/timer 乘 ai[0..1] 过线，
     /// 各端本地跑同一演出时间线；换体= NewNPC(带 ai) + SyncNPC + 原地静默移除
     /// </summary>
-    internal class GaolDormantSkull : ModNPC
+    internal class GaolDormantSkull : GaolModNPC
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

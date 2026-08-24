@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
     /// ai[0]=追踪目标玩家位（服务器定，spawn 包自带），ai[1]=蛇摆相位符号。
     /// 命中/超时冷粉迸溅；纯发光体自绘，无贴图依赖
     /// </summary>
-    internal class GaolFireBolt : ModProjectile
+    internal class GaolFireBolt : GaolModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

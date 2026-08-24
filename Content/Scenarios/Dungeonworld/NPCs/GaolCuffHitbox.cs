@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
     /// 受击玩家的判定与他屏幕上画出的铁铐严格一致（公平阀，承 ScrapArmHitbox 先例）。
     /// ai[0]=怨灵 whoAmI，ai[1]=铐号；怨灵离开挥击/链旋态即自毁
     /// </summary>
-    internal class GaolCuffHitbox : ModProjectile
+    internal class GaolCuffHitbox : GaolModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

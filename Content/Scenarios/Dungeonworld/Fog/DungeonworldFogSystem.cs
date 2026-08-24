@@ -113,6 +113,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Fog
                 return;
             }
             if (wraithType == -2) {
+                if (!NPCs.DeepGaolWraithGate.Enabled) {
+                    wraithType = -1;
+                    return;
+                }
                 wraithType = ModContent.NPCType<NPCs.DeepGaolWraith>();
             }
             if (++bossScanTimer < 4) {

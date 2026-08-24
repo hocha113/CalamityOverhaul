@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
     /// 囚笼链栏：合围圈上的一节静止鬼链（生成即定位不再动，零同步漂移）。
     /// 淡入 20 帧无伤 → 锁定 160 帧为伤害段 → 锈解崩散。ai[0]=栏杆倾角（沿圈切向）
     /// </summary>
-    internal class GaolCageBar : ModProjectile
+    internal class GaolCageBar : GaolModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

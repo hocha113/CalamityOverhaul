@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
     /// 一帧绷直成伤害线撑 70 帧，再锈解崩散。几何全由 spawn 包携带：
     /// 位置=中点，ai[0]=倾角，ai[1]=半长；相位走本地计时，迟入场只会看到更长的预告（安全方向）
     /// </summary>
-    internal class GaolCrossChain : ModProjectile
+    internal class GaolCrossChain : GaolModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

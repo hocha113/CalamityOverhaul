@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
     /// 玩家落位在左门内侧（距祭坛约 22 格，在触发半径外），先看得见蛰伏再走近点火。
     /// 联机：世界改写只在权威端执行，随后整块 SendTileSquare 过线
     /// </summary>
-    internal class GaolCellKey : ModItem
+    internal class GaolCellKey : GaolModItem
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.GoldenKey;
 
