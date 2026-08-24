@@ -1,6 +1,5 @@
 CWRServerConfig: {
 	DisplayName: 内容设置
-
 	Headers.CWRWorldGen: 大修结构设置
 
 	GenWindGrivenGenerator: {

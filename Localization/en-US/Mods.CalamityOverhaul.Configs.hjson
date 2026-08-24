@@ -1,6 +1,5 @@
 CWRServerConfig: {
 	DisplayName: Content Config
-
 	Headers.CWRWorldGen: World Gen Configs
 
 	GenWindGrivenGenerator: {

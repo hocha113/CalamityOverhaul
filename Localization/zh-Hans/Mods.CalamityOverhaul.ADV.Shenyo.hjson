@@ -1,4 +1,4 @@
-﻿FirstMetShenyo: {
+FirstMetShenyo: {
 	ShenyoName: 沈幽
 	L1: 很久没看到有活人来了
 	L2: 你是怎么到这里来的？
@@ -14,16 +14,47 @@
 	C2: 那把伞往后就是你的了
 }
 
-ShenyoKingSlimeGift: {
-	L0: 这也配称王？
-	L1: 浑身软趴趴的，倒是挺能蹦
-	L2: 往后碰上真正难缠的，别学它虚张声势
+ShenyoAquaticScourgeGift: {
+	L0: 水里泡烂的东西，我最看不惯
+	L1: 那滩脏水，倒是比我的雨还难闻
+	L2: 收拾完了把伞收一收，别沾着那股味回来
 }
 
-ShenyoEyeOfCthulhuGift: {
-	L0: 夜里睁着一只眼睛到处看，倒是不怕吓着自己
-	L1: 眨都不眨，看得人心里发毛
-	L2: 闭上了，也好，眼不见心不烦
+ShenyoBossRushGift: {
+	L0: 都回来了，还是深渊里那条老的醒了？
+	L1: 不管是哪种，这一趟都不轻松
+	L2: 站稳了，别在我面前晃
+	L3: 这顿吃完，雨也该停了
+}
+
+ShenyoCalamityEvilGift: {
+	L0: 一窝一窝的，钻血又钻肉，看着都疼
+	L1: 你倒是不怕疼
+	L2: 下次当心点，我这把伞挡雨，挡不了那些虫子
+}
+
+ShenyoCultistGift: {
+	L0: 念念叨叨，吵得很
+	L1: 他要放的那点东西，不是什么好东西
+	L2: 打断得好，省得把场面弄大了
+}
+
+ShenyoDevourerOfGodsGift: {
+	L0: 天上绕圈的那条，听说吞过神
+	L1: 神是什么味道，我倒是有点好奇
+	L2: 壳留着也好，肉不必留给我
+}
+
+ShenyoDukeFishronGift: {
+	L0: 一头猪也学人掀浪，也是奇了
+	L1: 水的脾气，轮不到它使
+	L2: 按回水里也好，省得它总在我眼皮底下晃
+}
+
+ShenyoEmpressGift: {
+	L0: 太亮的东西，我这双眼睛看着费劲
+	L1: 白天不必去招惹她，你倒好，专挑难的
+	L2: 光都揉暗了，也算你的本事
 }
 
 ShenyoEvilBossGift: {
@@ -34,10 +65,64 @@ ShenyoEvilBossGift: {
 	L2: 了结了就好，别沾一身腥气回来找我
 }
 
-ShenyoCalamityEvilGift: {
-	L0: 一窝一窝的，钻血又钻肉，看着都疼
-	L1: 你倒是不怕疼
-	L2: 下次当心点，我这把伞挡雨，挡不了那些虫子
+ShenyoExoAndSCalGift: {
+	L0: 工匠的得意，魔女的执念，凑一块倒是般配
+	L1: 两桌都收了，算你今天没白忙
+	L2: 往后这样的日子，不会再有几回了
+}
+
+ShenyoEyeOfCthulhuGift: {
+	L0: 夜里睁着一只眼睛到处看，倒是不怕吓着自己
+	L1: 眨都不眨，看得人心里发毛
+	L2: 闭上了，也好，眼不见心不烦
+}
+
+ShenyoGolemGift: {
+	L0: 石头脑袋，还会蹦跶
+	L1: 砸开了也不过是个空壳子
+	L2: 浪花是你自己挣的，我可没帮忙
+}
+
+ShenyoKingSlimeGift: {
+	L0: 这也配称王？
+	L1: 浑身软趴趴的，倒是挺能蹦
+	L2: 往后碰上真正难缠的，别学它虚张声势
+}
+
+ShenyoLeviathanGift: {
+	L0: 海里那个头，还有个爱唱歌的丫头跟着
+	L1: 歌声这种东西，听多了会跟着走，你倒是清醒
+	L2: 水里的事，我多少懂一些，算你今天走运
+}
+
+ShenyoMechsGift: {
+	L0: 链子、灯泡、骨架，凑一块倒像个笑话
+	L1: 铁腥味重，我不爱，你倒是不嫌
+	L2: 三件一起收拾，算你有耐心
+}
+
+ShenyoMoonLordGift: {
+	L0: 月亮后头那位，也算见过世面了
+	L1: 浑身是眼睛，倒是和我这把伞下的雨有点像
+	L2: 了结了，今晚的月色还不错嘛
+}
+
+ShenyoOldDukeGift: {
+	L0: 硫海底下那老东西，脾气比酸水还酸
+	L1: 跟我打过几次照面，谁也没让过谁
+	L2: 这回是你赢了，替我记他一笔
+}
+
+ShenyoPlanteraGift: {
+	L0: 睡着的花，吵醒了她就得担着
+	L1: 藤蔓缠人的样子，倒有点像我那把伞收不住的时候
+	L2: 花汁染了手，回来记得洗干净
+}
+
+ShenyoPolterghastGift: {
+	L0: 地牢里那团魂，缝缝补补好几百年
+	L1: 跟我算是同类，你倒不必替它说情
+	L2: 散了也好，好过在那儿吊着
 }
 
 ShenyoQueenBeeOrDeerclopsGift: {
@@ -46,6 +131,12 @@ ShenyoQueenBeeOrDeerclopsGift: {
 	L0Deer: 独眼的，脾气比我还倔
 	L1Deer: 一根木头也能闹出这么大动静
 	L2: 这一趟，没伤着吧
+}
+
+ShenyoQueenSlimeGift: {
+	L0: 粉粉嫩嫩的，倒是会打扮
+	L1: 还带着侍卫，排场不小
+	L2: 排场再大，也经不起一场雨
 }
 
 ShenyoSkeletronGift: {
@@ -66,99 +157,8 @@ ShenyoWallOfFleshGift: {
 	L2: 以后这种阵仗，还有的是
 }
 
-ShenyoQueenSlimeGift: {
-	L0: 粉粉嫩嫩的，倒是会打扮
-	L1: 还带着侍卫，排场不小
-	L2: 排场再大，也经不起一场雨
-}
-
-ShenyoAquaticScourgeGift: {
-	L0: 水里泡烂的东西，我最看不惯
-	L1: 那滩脏水，倒是比我的雨还难闻
-	L2: 收拾完了把伞收一收，别沾着那股味回来
-}
-
-ShenyoMechsGift: {
-	L0: 链子、灯泡、骨架，凑一块倒像个笑话
-	L1: 铁腥味重，我不爱，你倒是不嫌
-	L2: 三件一起收拾，算你有耐心
-}
-
-ShenyoPlanteraGift: {
-	L0: 睡着的花，吵醒了她就得担着
-	L1: 藤蔓缠人的样子，倒有点像我那把伞收不住的时候
-	L2: 花汁染了手，回来记得洗干净
-}
-
-ShenyoLeviathanGift: {
-	L0: 海里那个头，还有个爱唱歌的丫头跟着
-	L1: 歌声这种东西，听多了会跟着走，你倒是清醒
-	L2: 水里的事，我多少懂一些，算你今天走运
-}
-
-ShenyoGolemGift: {
-	L0: 石头脑袋，还会蹦跶
-	L1: 砸开了也不过是个空壳子
-	L2: 浪花是你自己挣的，我可没帮忙
-}
-
-ShenyoDukeFishronGift: {
-	L0: 一头猪也学人掀浪，也是奇了
-	L1: 水的脾气，轮不到它使
-	L2: 按回水里也好，省得它总在我眼皮底下晃
-}
-
-ShenyoEmpressGift: {
-	L0: 太亮的东西，我这双眼睛看着费劲
-	L1: 白天不必去招惹她，你倒好，专挑难的
-	L2: 光都揉暗了，也算你的本事
-}
-
-ShenyoCultistGift: {
-	L0: 念念叨叨，吵得很
-	L1: 他要放的那点东西，不是什么好东西
-	L2: 打断得好，省得把场面弄大了
-}
-
-ShenyoMoonLordGift: {
-	L0: 月亮后头那位，也算见过世面了
-	L1: 浑身是眼睛，倒是和我这把伞下的雨有点像
-	L2: 了结了，今晚的月色还不错嘛
-}
-
-ShenyoPolterghastGift: {
-	L0: 地牢里那团魂，缝缝补补好几百年
-	L1: 跟我算是同类，你倒不必替它说情
-	L2: 散了也好，好过在那儿吊着
-}
-
-ShenyoOldDukeGift: {
-	L0: 硫海底下那老东西，脾气比酸水还酸
-	L1: 跟我打过几次照面，谁也没让过谁
-	L2: 这回是你赢了，替我记他一笔
-}
-
-ShenyoDevourerOfGodsGift: {
-	L0: 天上绕圈的那条，听说吞过神
-	L1: 神是什么味道，我倒是有点好奇
-	L2: 壳留着也好，肉不必留给我
-}
-
 ShenyoYharonGift: {
 	L0: 烧了这么多年的一团火，也该熄了
 	L1: 火和雨，本来就合不来
 	L2: 羽毛湿了，就飘不起来了，正好
-}
-
-ShenyoExoAndSCalGift: {
-	L0: 工匠的得意，魔女的执念，凑一块倒是般配
-	L1: 两桌都收了，算你今天没白忙
-	L2: 往后这样的日子，不会再有几回了
-}
-
-ShenyoBossRushGift: {
-	L0: 都回来了，还是深渊里那条老的醒了？
-	L1: 不管是哪种，这一趟都不轻松
-	L2: 站稳了，别在我面前晃
-	L3: 这顿吃完，雨也该停了
 }

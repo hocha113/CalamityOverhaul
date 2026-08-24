@@ -1,6 +1,5 @@
 CWRServerConfig: {
 	DisplayName: Configuracao de Conteudo
-
 	Headers.CWRWorldGen: Configuracoes de Geracao de Mundo de Overhaul
 
 	GenWindGrivenGenerator: {
