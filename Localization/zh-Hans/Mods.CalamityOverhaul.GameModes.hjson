@@ -1,13 +1,13 @@
-GameModeText: {
+﻿GameModeText: {
 	BrutalName: 残酷世界
 	AsuraName: 修罗地狱
 	AnnihilationName: 死神永生
-	BrutalOnLine: 这个世界是残酷的，而你依旧爱它。
-	BrutalOffLine: 世界收起了獠牙，温柔只是暂时的。
-	AsuraOnLine: 修罗道开，你施予的苦痛，都将如数奉还。
-	AsuraOffLine: 修罗道闭，因果两清。
-	AnnihilationOnLine: 一切都将逝去，只有死神永生。
-	AnnihilationOffLine: 死神稍憩，众生偷得一息。
+	BrutalOnLine: 这个世界是残酷的，而你依旧爱它
+	BrutalOffLine: 世界收起了獠牙，温柔只是暂时的
+	AsuraOnLine: 修罗道开，你施予的苦痛，都将如数奉还
+	AsuraOffLine: 修罗道闭，因果两清
+	AnnihilationOnLine: 一切都将逝去，只有死神永生
+	AnnihilationOffLine: 死神稍憩，众生偷得一息
 	BrutalDesc: 解放狂暴重制的 Boss AI，其余敌人血量与伤害提升 50%，小型敌怪提速且常态狂暴
 	AsuraDesc: 增幅提升至 100%。敌人会适应你反复使用的同种攻击，你造成的伤害也将成为敌人对你出手的下限
 	AnnihilationDesc: 修罗地狱在天顶世界的终相。一切恐怖再次翻倍，敌人适应更快，你施予的苦痛将双倍奉还
