@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -299,7 +299,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
                 if (viewed && (t == 5 || t == 14 || t == 22)) {
                     SoundEngine.PlaySound(SoundID.Drip with {
-                        Volume = 0.42f, Pitch = -0.55f + t * 0.012f, MaxInstances = 3
+                        Volume = 0.42f,
+                        Pitch = -0.55f + t * 0.012f,
+                        MaxInstances = 3
                     }, new Vector2(Projectile.Center.X, lakeY));
                 }
                 return;
@@ -315,7 +317,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         Projectile.velocity = new Vector2(0f, -3.2f);
                     }
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
-                        Volume = 0.72f, Pitch = -0.38f + i * 0.07f, MaxInstances = 3
+                        Volume = 0.72f,
+                        Pitch = -0.38f + i * 0.07f,
+                        MaxInstances = 3
                     }, spearPos[i]);
                     if (viewed) {
                         BreachBurst(new Vector2(BreachX(i), lakeY), i);
@@ -375,7 +379,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
             if (i == 0 || i == spearCount - 1) {
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                    Volume = 0.3f, Pitch = -0.75f, MaxInstances = 1
+                    Volume = 0.3f,
+                    Pitch = -0.75f,
+                    MaxInstances = 1
                 }, hit);
             }
             ShakeViewer(1.4f);
@@ -445,7 +451,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     lungeFrom[duty] = spearPos[duty];
                     lungeAng[duty] = (focus - spearPos[duty]).ToRotation();
                     SoundEngine.PlaySound(SoundID.Item1 with {
-                        Volume = 0.26f, Pitch = -0.4f, MaxInstances = 3
+                        Volume = 0.26f,
+                        Pitch = -0.4f,
+                        MaxInstances = 3
                     }, spearPos[duty]);
                 }
                 //刺出帧：矛体已在穿越，贯线判定炸开
@@ -468,7 +476,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Vector2 center = start + dir * lineLen * 0.5f;
 
             SoundEngine.PlaySound(Profile.ThrustSound with {
-                Volume = 0.42f, Pitch = 0.1f + i * 0.05f, MaxInstances = 4
+                Volume = 0.42f,
+                Pitch = 0.1f + i * 0.05f,
+                MaxInstances = 4
             }, spearPos[i]);
             if (ViewedOwner) {
                 ShakeViewer(1.2f * mul);
@@ -501,7 +511,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (!dashWhooshDone) {
                 dashWhooshDone = true;
                 SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with {
-                    Volume = 0.55f, Pitch = -0.1f, MaxInstances = 3
+                    Volume = 0.55f,
+                    Pitch = -0.1f,
+                    MaxInstances = 3
                 }, Projectile.Center);
                 if (ViewedOwner) {
                     ShakeViewer(1.8f);
@@ -532,7 +544,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
                 //心点撞拍
                 SoundEngine.PlaySound(SoundID.Item71 with {
-                    Volume = 0.5f, Pitch = -0.3f, MaxInstances = 2
+                    Volume = 0.5f,
+                    Pitch = -0.3f,
+                    MaxInstances = 2
                 }, Projectile.Center);
                 if (ViewedOwner) {
                     ShakeViewer(2.6f);
@@ -572,7 +586,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 if (lakeAlive && !dissolveSplashed[i] && lt >= 0 && spearPos[i].Y >= lakeY) {
                     dissolveSplashed[i] = true;
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
-                        Volume = 0.55f, Pitch = -0.4f + i * 0.08f, MaxInstances = 3
+                        Volume = 0.55f,
+                        Pitch = -0.4f + i * 0.08f,
+                        MaxInstances = 3
                     }, spearPos[i]);
                     if (ViewedOwner) {
                         Vector2 hit = new(spearPos[i].X, lakeY);

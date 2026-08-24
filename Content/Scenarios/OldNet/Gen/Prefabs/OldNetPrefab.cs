@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Prefabs

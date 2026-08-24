@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;

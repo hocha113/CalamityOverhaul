@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic.Pandemoniums;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.PRTTypes;
@@ -283,7 +283,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
                 if (viewed && (t == 6 || t == 16)) {
                     SoundEngine.PlaySound(SoundID.Drip with {
-                        Volume = 0.42f, Pitch = -0.55f + t * 0.012f, MaxInstances = 3
+                        Volume = 0.42f,
+                        Pitch = -0.55f + t * 0.012f,
+                        MaxInstances = 3
                     }, new Vector2(Projectile.Center.X, lakeY));
                 }
                 return;
@@ -295,7 +297,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 bookSpin = 0.26f;
                 Projectile.velocity = new Vector2(0f, -3.2f);
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Volume = 0.72f, Pitch = -0.38f, MaxInstances = 3
+                    Volume = 0.72f,
+                    Pitch = -0.38f,
+                    MaxInstances = 3
                 }, bookPos);
                 if (viewed) {
                     BreachBurst(new Vector2(Projectile.Center.X, lakeY));
@@ -354,7 +358,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     ?.Configure(Main.rand.Next(18, 30), Main.rand.NextFloat(-0.4f, 0.4f));
             }
             SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                Volume = 0.32f, Pitch = -0.75f, MaxInstances = 1
+                Volume = 0.32f,
+                Pitch = -0.75f,
+                MaxInstances = 1
             }, hit);
             ShakeViewer(1.5f);
         }
@@ -418,7 +424,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             if (t == 8) {
                 SoundEngine.PlaySound(SoundID.Item8 with {
-                    Volume = 0.4f, Pitch = -0.45f, MaxInstances = 3
+                    Volume = 0.4f,
+                    Pitch = -0.45f,
+                    MaxInstances = 3
                 }, Projectile.Center);
             }
 
@@ -440,7 +448,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             castFlash = 6;
 
             SoundEngine.PlaySound(SoundID.Item71 with {
-                Volume = 0.7f, Pitch = -0.45f, MaxInstances = 3
+                Volume = 0.7f,
+                Pitch = -0.45f,
+                MaxInstances = 3
             }, emit);
             if (ViewedOwner) {
                 ShakeViewer(1.4f);
@@ -492,7 +502,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             if (t == FireFormEnd) {
                 SoundEngine.PlaySound(SoundID.Item20 with {
-                    Volume = 0.42f, Pitch = -0.5f, MaxInstances = 2
+                    Volume = 0.42f,
+                    Pitch = -0.5f,
+                    MaxInstances = 2
                 }, Projectile.Center);
                 bookVel -= toT * 0.8f;
             }
@@ -527,7 +539,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             castFlash = 5;
 
             SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with {
-                Volume = 0.55f, Pitch = -0.25f + lane * 0.08f, MaxInstances = 4
+                Volume = 0.55f,
+                Pitch = -0.25f + lane * 0.08f,
+                MaxInstances = 4
             }, emit);
             if (!Main.dedServ) {
                 Dust d = Dust.NewDustPerfect(emit, DustID.Torch, aim * 3f, 60, Color.OrangeRed, 1.6f);
@@ -554,7 +568,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 castDeclared = true;
                 castPos = target >= 0 ? Main.npc[target].Center : Projectile.Center;
                 SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with {
-                    Volume = 0.48f, Pitch = -0.15f, MaxInstances = 3
+                    Volume = 0.48f,
+                    Pitch = -0.15f,
+                    MaxInstances = 3
                 }, Projectile.Center);
             }
 
@@ -568,7 +584,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             if (t == CastDashEnd + 4) {
                 SoundEngine.PlaySound(SoundID.DD2_DarkMageCastHeal with {
-                    Volume = 0.55f, Pitch = -0.4f, MaxInstances = 2
+                    Volume = 0.55f,
+                    Pitch = -0.4f,
+                    MaxInstances = 2
                 }, Projectile.Center);
             }
             if (!Main.dedServ && t > CastDashEnd && t < CastReleaseFrame && t % 3 == 0) {
@@ -584,10 +602,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 bookVel += new Vector2(0f, -2.6f);
                 castFlash = 8;
                 SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with {
-                    Volume = 0.7f, Pitch = -0.5f, MaxInstances = 2
+                    Volume = 0.7f,
+                    Pitch = -0.5f,
+                    MaxInstances = 2
                 }, castPos);
                 SoundEngine.PlaySound(SoundID.Item74 with {
-                    Volume = 0.5f, Pitch = -0.2f, MaxInstances = 2
+                    Volume = 0.5f,
+                    Pitch = -0.2f,
+                    MaxInstances = 2
                 }, bookPos);
                 if (ViewedOwner) {
                     ShakeViewer(2.6f);
@@ -630,7 +652,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (lakeAlive && !dissolveSplashed && bookPos.Y >= lakeY) {
                 dissolveSplashed = true;
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Volume = 0.55f, Pitch = -0.4f, MaxInstances = 3
+                    Volume = 0.55f,
+                    Pitch = -0.4f,
+                    MaxInstances = 3
                 }, bookPos);
                 if (ViewedOwner) {
                     Vector2 hit = new(bookPos.X, lakeY);

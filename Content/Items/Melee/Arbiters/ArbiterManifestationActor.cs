@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using InnoVault.Actors;
+﻿using InnoVault.Actors;
 using InnoVault.Cinematics;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;

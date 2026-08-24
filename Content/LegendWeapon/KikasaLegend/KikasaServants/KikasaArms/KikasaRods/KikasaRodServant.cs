@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -256,7 +256,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
                 if (viewed && (t == 6 || t == 16)) {
                     SoundEngine.PlaySound(SoundID.Drip with {
-                        Volume = 0.4f, Pitch = -0.55f + t * 0.012f, MaxInstances = 3
+                        Volume = 0.4f,
+                        Pitch = -0.55f + t * 0.012f,
+                        MaxInstances = 3
                     }, new Vector2(Projectile.Center.X, lakeY));
                 }
                 return;
@@ -268,7 +270,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 rodSpin = 0.26f;
                 Projectile.velocity = new Vector2(0f, -3f);
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Volume = 0.68f, Pitch = -0.38f, MaxInstances = 3
+                    Volume = 0.68f,
+                    Pitch = -0.38f,
+                    MaxInstances = 3
                 }, rodPos);
                 if (viewed) {
                     KikasaDomainDeco.RippleAt(new Vector2(Projectile.Center.X, lakeY), 1.3f);
@@ -398,7 +402,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 lastPlopCycle = cycle;
                 Vector2 plop = BobberAnchor(domain);
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Volume = 0.3f, Pitch = 0.3f, MaxInstances = 3
+                    Volume = 0.3f,
+                    Pitch = 0.3f,
+                    MaxInstances = 3
                 }, plop);
                 if (viewed) {
                     KikasaDomainDeco.RippleAt(plop, 0.6f);
@@ -411,7 +417,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 cycleBiting = target >= 0;
                 if (cycleBiting) {
                     SoundEngine.PlaySound(SoundID.Drip with {
-                        Volume = 0.42f, Pitch = IsBigCycle() ? -0.6f : -0.2f, MaxInstances = 3
+                        Volume = 0.42f,
+                        Pitch = IsBigCycle() ? -0.6f : -0.2f,
+                        MaxInstances = 3
                     }, BobberAnchor(domain));
                 }
             }
@@ -430,7 +438,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 else {
                     //空竿：轻一声收线
                     SoundEngine.PlaySound(SoundID.Unlock with {
-                        Volume = 0.22f, Pitch = 0.35f, MaxInstances = 2
+                        Volume = 0.22f,
+                        Pitch = 0.35f,
+                        MaxInstances = 2
                     }, Projectile.Center);
                 }
             }
@@ -443,10 +453,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             rodSpin = -rodFacing * (big ? 0.3f : 0.18f);
 
             SoundEngine.PlaySound(Profile.CastSound with {
-                Volume = big ? 0.55f : 0.36f, Pitch = big ? -0.35f : 0.1f, MaxInstances = 3
+                Volume = big ? 0.55f : 0.36f,
+                Pitch = big ? -0.35f : 0.1f,
+                MaxInstances = 3
             }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Splash with {
-                Volume = big ? 0.6f : 0.35f, Pitch = big ? -0.4f : -0.1f, MaxInstances = 3
+                Volume = big ? 0.6f : 0.35f,
+                Pitch = big ? -0.4f : -0.1f,
+                MaxInstances = 3
             }, from);
             if (ViewedOwner) {
                 KikasaDomainDeco.SplashAt(from, big ? 9 : 5);
@@ -500,7 +514,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (lakeAlive && !dissolveSplashed && rodPos.Y >= lakeY) {
                 dissolveSplashed = true;
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Volume = 0.5f, Pitch = -0.4f, MaxInstances = 3
+                    Volume = 0.5f,
+                    Pitch = -0.4f,
+                    MaxInstances = 3
                 }, rodPos);
                 if (ViewedOwner) {
                     Vector2 hit = new(rodPos.X, lakeY);

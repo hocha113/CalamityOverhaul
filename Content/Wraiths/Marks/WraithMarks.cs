@@ -1,5 +1,4 @@
-using Terraria;
-using Terraria.ModLoader;
+﻿using Terraria;
 
 namespace CalamityOverhaul.Content.Wraiths.Marks
 {

@@ -1,6 +1,4 @@
-using Terraria;
-
-namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
+﻿namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
 {
     /// <summary>
     /// 仪式帷幕屏效状态（各端本地推导，无网络）<br/>

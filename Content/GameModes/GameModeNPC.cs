@@ -1,6 +1,5 @@
-using CalamityOverhaul.Content.NPCs;
+﻿using CalamityOverhaul.Content.NPCs;
 using InnoVault.GameSystem;
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using Terraria;

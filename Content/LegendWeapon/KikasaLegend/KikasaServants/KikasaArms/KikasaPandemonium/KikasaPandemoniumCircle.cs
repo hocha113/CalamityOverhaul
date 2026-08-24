@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic.Pandemoniums;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -113,17 +113,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             if (timer == 1) {
                 SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with {
-                    Volume = 0.72f, Pitch = -0.55f, MaxInstances = 2
+                    Volume = 0.72f,
+                    Pitch = -0.55f,
+                    MaxInstances = 2
                 }, Projectile.Center);
             }
             if (timer == ExpandFrames) {
                 SoundEngine.PlaySound(SoundID.Item74 with {
-                    Volume = 0.55f, Pitch = -0.25f, MaxInstances = 2
+                    Volume = 0.55f,
+                    Pitch = -0.25f,
+                    MaxInstances = 2
                 }, Projectile.Center);
             }
             if (timer == collapseStart + 1) {
                 SoundEngine.PlaySound(SoundID.Item74 with {
-                    Volume = 0.4f, Pitch = -0.55f, MaxInstances = 2
+                    Volume = 0.4f,
+                    Pitch = -0.55f,
+                    MaxInstances = 2
                 }, Projectile.Center);
             }
 

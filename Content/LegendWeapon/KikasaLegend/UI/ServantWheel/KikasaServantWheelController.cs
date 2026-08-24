@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.EntrustManager;
+﻿using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants;
@@ -292,19 +291,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
         private void PlayOrderSound(bool nowHeld) {
             if (nowHeld) {
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Pitch = -0.7f, Volume = 0.45f, MaxInstances = 2
+                    Pitch = -0.7f,
+                    Volume = 0.45f,
+                    MaxInstances = 2
                 }, Player.Center);
                 return;
             }
             if (LakeReadyNow) {
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Pitch = -0.25f, Volume = 0.5f, MaxInstances = 2
+                    Pitch = -0.25f,
+                    Volume = 0.5f,
+                    MaxInstances = 2
                 }, Player.Center);
             }
             else {
                 //候令：湖未就绪，先把令收下，闷水滴与面板状态行一起把"为什么没出来"说清
                 SoundEngine.PlaySound(SoundID.Drip with {
-                    Pitch = -0.85f, Volume = 0.55f, MaxInstances = 2
+                    Pitch = -0.85f,
+                    Volume = 0.55f,
+                    MaxInstances = 2
                 }, Player.Center);
             }
         }

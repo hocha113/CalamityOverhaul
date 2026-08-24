@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
 using InnoVault.Narrative.Composition;
 using Terraria;
 

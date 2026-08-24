@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
-using Terraria;
+﻿using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using static CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.KikasaTalismanGlyph;

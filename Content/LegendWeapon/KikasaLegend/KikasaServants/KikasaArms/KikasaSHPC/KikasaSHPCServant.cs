@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
@@ -314,7 +314,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
                 if (viewed && (t == 6 || t == 16)) {
                     SoundEngine.PlaySound(SoundID.Drip with {
-                        Volume = 0.42f, Pitch = -0.55f + t * 0.012f, MaxInstances = 3
+                        Volume = 0.42f,
+                        Pitch = -0.55f + t * 0.012f,
+                        MaxInstances = 3
                     }, new Vector2(Projectile.Center.X, lakeY));
                 }
                 return;
@@ -326,7 +328,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 gunSpin = 0.3f;
                 Projectile.velocity = new Vector2(0f, -3.2f);
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Volume = 0.72f, Pitch = -0.38f, MaxInstances = 3
+                    Volume = 0.72f,
+                    Pitch = -0.38f,
+                    MaxInstances = 3
                 }, gunPos);
                 if (viewed) {
                     BreachBurst(new Vector2(Projectile.Center.X, lakeY));
@@ -395,7 +399,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 MistBlood * 0.75f, Main.rand.NextFloat(0.55f, 0.8f))
                 ?.Configure(Main.rand.Next(50, 80));
             SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                Volume = 0.32f, Pitch = -0.75f, MaxInstances = 1
+                Volume = 0.32f,
+                Pitch = -0.75f,
+                MaxInstances = 1
             }, hit);
             ShakeViewer(1.5f);
         }
@@ -466,7 +472,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             //锁线一声充能
             if (t == 6) {
                 SoundEngine.PlaySound(SoundID.Item15 with {
-                    Volume = 0.32f, Pitch = 0.3f, MaxInstances = 3
+                    Volume = 0.32f,
+                    Pitch = 0.3f,
+                    MaxInstances = 3
                 }, Projectile.Center);
             }
 
@@ -493,7 +501,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             flashTheme = theme;
 
             SoundEngine.PlaySound(SoundID.Item91 with {
-                Volume = 0.4f, Pitch = 0.05f + k * 0.06f, MaxInstances = 4
+                Volume = 0.4f,
+                Pitch = 0.05f + k * 0.06f,
+                MaxInstances = 4
             }, muzzle);
             if (!Main.dedServ) {
                 for (int d = 0; d < 4; d++) {
@@ -542,7 +552,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             //蓄压双拍：电容充能的嗡
             if (t == VoltFormEnd || t == VoltFormEnd + 6) {
                 SoundEngine.PlaySound(SoundID.Item15 with {
-                    Volume = 0.4f, Pitch = t == VoltFormEnd ? 0.1f : 0.35f, MaxInstances = 2
+                    Volume = 0.4f,
+                    Pitch = t == VoltFormEnd ? 0.1f : 0.35f,
+                    MaxInstances = 2
                 }, Projectile.Center);
                 gunVel -= gunRot.ToRotationVector2() * 1.1f;
             }
@@ -570,7 +582,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             flashTheme = 1;
 
             SoundEngine.PlaySound(SoundID.Item94 with {
-                Volume = 0.5f, Pitch = -0.1f + k * 0.1f, MaxInstances = 3
+                Volume = 0.5f,
+                Pitch = -0.1f + k * 0.1f,
+                MaxInstances = 3
             }, muzzle);
             if (!Main.dedServ) {
                 for (int d = 0; d < 6; d++) {
@@ -606,7 +620,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 castDeclared = true;
                 castPos = target >= 0 ? Main.npc[target].Center : Projectile.Center;
                 SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with {
-                    Volume = 0.5f, Pitch = -0.1f, MaxInstances = 3
+                    Volume = 0.5f,
+                    Pitch = -0.1f,
+                    MaxInstances = 3
                 }, Projectile.Center);
             }
 
@@ -621,7 +637,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             //充能：电容爬升音
             if (t == CastDashEnd + 6) {
                 SoundEngine.PlaySound(SoundID.Item15 with {
-                    Volume = 0.42f, Pitch = 0.4f, MaxInstances = 2
+                    Volume = 0.42f,
+                    Pitch = 0.4f,
+                    MaxInstances = 2
                 }, Projectile.Center);
             }
             if (!Main.dedServ && t > CastDashEnd && t < CastReleaseFrame && t % 3 == 0) {
@@ -639,7 +657,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 muzzleFlash = 7;
                 flashTheme = 2;
                 SoundEngine.PlaySound(SoundID.Item92 with {
-                    Volume = 0.6f, Pitch = -0.3f, MaxInstances = 2
+                    Volume = 0.6f,
+                    Pitch = -0.3f,
+                    MaxInstances = 2
                 }, castPos);
                 if (ViewedOwner) {
                     ShakeViewer(3f);
@@ -682,7 +702,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (lakeAlive && !dissolveSplashed && gunPos.Y >= lakeY) {
                 dissolveSplashed = true;
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Volume = 0.55f, Pitch = -0.4f, MaxInstances = 3
+                    Volume = 0.55f,
+                    Pitch = -0.4f,
+                    MaxInstances = 3
                 }, gunPos);
                 if (ViewedOwner) {
                     Vector2 hit = new(gunPos.X, lakeY);

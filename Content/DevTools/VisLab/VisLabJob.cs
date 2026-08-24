@@ -1,4 +1,4 @@
-#if DEBUG
+﻿#if DEBUG
 using InnoVault.PRT;
 using InnoVault.UIHandles;
 using System;
@@ -59,15 +59,13 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
 
         public static VisLabJob Load(string path) => JsonSerializer.Deserialize<VisLabJob>(File.ReadAllText(path), options);
 
-        public (string modName, string typeName) SplitType()
-        {
+        public (string modName, string typeName) SplitType() {
             int slash = Type?.IndexOf('/') ?? -1;
             return slash < 0 ? ("CalamityOverhaul", Type) : (Type[..slash], Type[(slash + 1)..]);
         }
 
         /// <summary>解析弹幕类型 ID,失败返回 -1</summary>
-        public int ResolveProjType(out string error)
-        {
+        public int ResolveProjType(out string error) {
             (string modName, string typeName) = SplitType();
             if (ModContent.TryFind(modName, typeName, out ModProjectile mp)) {
                 error = null;
@@ -78,8 +76,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
         }
 
         /// <summary>解析 PRT 粒子 ID,失败返回 -1(按类名匹配,同名多命中时优先指定 mod 的程序集)</summary>
-        public int ResolvePrtID(out string error)
-        {
+        public int ResolvePrtID(out string error) {
             (string modName, string typeName) = SplitType();
             Type match = null;
             foreach (Type t in PRTLoader.PRT_TypeToID.Keys) {
@@ -104,8 +101,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
         }
 
         /// <summary>解析 UIHandle 实例,失败返回 null</summary>
-        public UIHandle ResolveUI(out string error)
-        {
+        public UIHandle ResolveUI(out string error) {
             (string modName, string typeName) = SplitType();
             string fullName = modName + "/" + typeName;
             foreach (UIHandle handle in UIHandleLoader.UIHandles) {

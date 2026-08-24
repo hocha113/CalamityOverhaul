@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -86,7 +85,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
             //落点闷响 + 水珠崩散：湿东西砸地
             SoundEngine.PlaySound(SoundID.NPCHit1 with {
-                Volume = Big ? 0.6f : 0.38f, Pitch = Big ? -0.5f : -0.15f, MaxInstances = 3
+                Volume = Big ? 0.6f : 0.38f,
+                Pitch = Big ? -0.5f : -0.15f,
+                MaxInstances = 3
             }, Projectile.Center);
             int burst = Big ? 12 : 7;
             for (int k = 0; k < burst; k++) {

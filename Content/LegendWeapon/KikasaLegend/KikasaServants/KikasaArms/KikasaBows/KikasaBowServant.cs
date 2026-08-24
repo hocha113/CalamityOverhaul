@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -311,7 +311,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
                 if (viewed && (t == 5 || t == 14 || t == 22)) {
                     SoundEngine.PlaySound(SoundID.Drip with {
-                        Volume = 0.42f, Pitch = -0.55f + t * 0.012f, MaxInstances = 3
+                        Volume = 0.42f,
+                        Pitch = -0.55f + t * 0.012f,
+                        MaxInstances = 3
                     }, new Vector2(Projectile.Center.X, lakeY));
                 }
                 return;
@@ -326,7 +328,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         Projectile.velocity = new Vector2(0f, -3.2f);
                     }
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
-                        Volume = 0.72f, Pitch = -0.38f + i * 0.07f, MaxInstances = 3
+                        Volume = 0.72f,
+                        Pitch = -0.38f + i * 0.07f,
+                        MaxInstances = 3
                     }, bowPos[i]);
                     if (viewed) {
                         BreachBurst(new Vector2(BreachX(i), lakeY), i);
@@ -404,7 +408,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 ?.Configure(Main.rand.Next(50, 76));
             if (i == 0 || i == bowCount - 1) {
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                    Volume = 0.3f, Pitch = -0.75f, MaxInstances = 1
+                    Volume = 0.3f,
+                    Pitch = -0.75f,
+                    MaxInstances = 1
                 }, hit);
             }
             ShakeViewer(1.4f);
@@ -473,7 +479,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             //锁线两声弦紧
             if (t == 6 || t == 18) {
                 SoundEngine.PlaySound(SoundID.Item5 with {
-                    Volume = 0.28f, Pitch = -0.62f + t * 0.01f, MaxInstances = 3
+                    Volume = 0.28f,
+                    Pitch = -0.62f + t * 0.01f,
+                    MaxInstances = 3
                 }, Projectile.Center);
             }
 
@@ -558,7 +566,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }, nock);
             if (heavy) {
                 SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot with {
-                    Volume = 0.4f, Pitch = 0.05f, MaxInstances = 2
+                    Volume = 0.4f,
+                    Pitch = 0.05f,
+                    MaxInstances = 2
                 }, nock);
             }
             if (!Main.dedServ) {
@@ -606,7 +616,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (!climbWhooshDone) {
                 climbWhooshDone = true;
                 SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with {
-                    Volume = 0.5f, Pitch = 0.05f, MaxInstances = 3
+                    Volume = 0.5f,
+                    Pitch = 0.05f,
+                    MaxInstances = 3
                 }, Projectile.Center);
             }
 
@@ -633,7 +645,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
                 if (fired) {
                     SoundEngine.PlaySound(SoundID.Item5 with {
-                        Volume = 0.5f, Pitch = -0.2f + k * 0.08f, MaxInstances = 2
+                        Volume = 0.5f,
+                        Pitch = -0.2f + k * 0.08f,
+                        MaxInstances = 2
                     }, Projectile.Center);
                     if (ViewedOwner) {
                         ShakeViewer(1.6f);
@@ -709,7 +723,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 //弦紧两声，音高爬升
                 if (p == 10 || p == 28) {
                     SoundEngine.PlaySound(SoundID.Item5 with {
-                        Volume = 0.3f, Pitch = -0.6f + p * 0.012f, MaxInstances = 3
+                        Volume = 0.3f,
+                        Pitch = -0.6f + p * 0.012f,
+                        MaxInstances = 3
                     }, bowPos[duty]);
                 }
                 if (p == PierceFireFrame && duty > lastFireTick[duty]) {
@@ -769,7 +785,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 if (lakeAlive && !dissolveSplashed[i] && lt >= 0 && bowPos[i].Y >= lakeY) {
                     dissolveSplashed[i] = true;
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
-                        Volume = 0.55f, Pitch = -0.4f + i * 0.08f, MaxInstances = 3
+                        Volume = 0.55f,
+                        Pitch = -0.4f + i * 0.08f,
+                        MaxInstances = 3
                     }, bowPos[i]);
                     if (ViewedOwner) {
                         Vector2 hit = new(bowPos[i].X, lakeY);

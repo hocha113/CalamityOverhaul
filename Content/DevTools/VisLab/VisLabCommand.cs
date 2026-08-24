@@ -1,4 +1,4 @@
-#if DEBUG
+﻿#if DEBUG
 using System.IO;
 using System.Linq;
 using Terraria;
@@ -20,8 +20,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
         public override string Description => "视觉快照台:弹幕/PRT/UI 抓帧导出";
         public override string Usage => "/vlab list\n/vlab run <job名>\n/vlab stop";
 
-        public override void Action(CommandCaller caller, string input, string[] args)
-        {
+        public override void Action(CommandCaller caller, string input, string[] args) {
             if (!VisLabSystem.DevMachine) {
                 caller.Reply("非开发机(.vissandbox 不存在),快照台不可用", Color.IndianRed);
                 return;

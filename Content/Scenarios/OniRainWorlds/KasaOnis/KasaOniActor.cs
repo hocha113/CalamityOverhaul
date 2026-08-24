@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Scenarios.Shenyo;

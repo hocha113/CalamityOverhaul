@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -84,7 +83,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
             SoundEngine.PlaySound(SoundID.Drip with {
-                Volume = 0.3f, Pitch = 0.2f, MaxInstances = 3
+                Volume = 0.3f,
+                Pitch = 0.2f,
+                MaxInstances = 3
             }, Projectile.Center);
             int burst = Heavy ? 8 : 5;
             for (int k = 0; k < burst; k++) {

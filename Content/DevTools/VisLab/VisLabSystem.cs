@@ -1,4 +1,4 @@
-#if DEBUG
+﻿#if DEBUG
 using InnoVault.PRT;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -50,15 +50,13 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
         public static bool DevMachine => Directory.Exists(Root);
         public static bool Busy => phase != Phase.Idle;
 
-        public override void Load()
-        {
+        public override void Load() {
             if (!Main.dedServ) {
                 Main.OnPostDraw += CaptureHook;
             }
         }
 
-        public override void Unload()
-        {
+        public override void Unload() {
             if (!Main.dedServ) {
                 Main.OnPostDraw -= CaptureHook;
             }
@@ -66,8 +64,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
 
         //═══════════════ 会话入口 ═══════════════
 
-        public static bool TryStart(string name, out string error)
-        {
+        public static bool TryStart(string name, out string error) {
             error = null;
             if (!DevMachine) {
                 error = "非开发机(.vissandbox 不存在)";
@@ -88,8 +85,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
             }
             try {
                 job = VisLabJob.Load(path);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 error = "job 解析失败: " + ex.Message;
                 return false;
             }
@@ -137,8 +133,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
             return true;
         }
 
-        public static void Stop(string reason)
-        {
+        public static void Stop(string reason) {
             if (phase == Phase.Idle) {
                 return;
             }
@@ -150,8 +145,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
 
         //═══════════════ 状态机(更新相) ═══════════════
 
-        public override void PostUpdateEverything()
-        {
+        public override void PostUpdateEverything() {
             if (phase == Phase.Idle || Main.gameMenu) {
                 return;
             }
@@ -187,8 +181,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
             }
         }
 
-        private static void ScenePrep()
-        {
+        private static void ScenePrep() {
             bool uiJob = uiHandle != null;
             Main.hideUI = !uiJob && job.HideUI;
             Player player = Main.LocalPlayer;
@@ -210,8 +203,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
             }
         }
 
-        private static void SpawnTarget()
-        {
+        private static void SpawnTarget() {
             Player player = Main.LocalPlayer;
             Vector2 pos = player.Center + job.OffsetVec();
             anchorWorld = pos;
@@ -248,8 +240,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
 
         //═══════════════ 抓帧(绘制相末尾,backbuffer 已完整) ═══════════════
 
-        private static void CaptureHook(GameTime gameTime)
-        {
+        private static void CaptureHook(GameTime gameTime) {
             if (phase == Phase.Idle || (!wantBaseline && !wantCapture) || Main.gameMenu) {
                 return;
             }
@@ -259,8 +250,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
             Color[] full = new Color[w * h];
             try {
                 device.GetBackBufferData(full);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Stop("抓帧失败: " + ex.Message);
                 return;
             }
@@ -284,8 +274,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
             contextFull ??= full;
         }
 
-        private static Rectangle ComputeCropRect(int w, int h)
-        {
+        private static Rectangle ComputeCropRect(int w, int h) {
             if (cropSize == Point.Zero) {
                 return new Rectangle(0, 0, w, h);
             }
@@ -298,8 +287,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
             return new Rectangle(x, y, cw, ch);
         }
 
-        private static Color[] ExtractRect(Color[] full, int fullW, Rectangle rect)
-        {
+        private static Color[] ExtractRect(Color[] full, int fullW, Rectangle rect) {
             Color[] outData = new Color[rect.Width * rect.Height];
             for (int row = 0; row < rect.Height; row++) {
                 Array.Copy(full, (rect.Y + row) * fullW + rect.X, outData, row * rect.Width, rect.Width);
@@ -309,8 +297,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
 
         //═══════════════ 落盘与统计 ═══════════════
 
-        private static void Finish()
-        {
+        private static void Finish() {
             string outDir = Path.Combine(Root, "out", jobName);
             List<string> flags = [];
             string result = "FAIL";
@@ -385,11 +372,9 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
                 }
                 File.WriteAllText(Path.Combine(outDir, "stats.json"),
                     JsonSerializer.Serialize(doc, new JsonSerializerOptions { WriteIndented = true }));
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Main.NewText("[VisLab] 落盘失败: " + ex.Message, Color.IndianRed);
-            }
-            finally {
+            } finally {
                 RestoreScene();
                 ClearBuffers();
                 phase = Phase.Idle;
@@ -401,8 +386,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
             Main.NewText("  -> " + outDir, Color.LightGray);
         }
 
-        private static void ComposeStrip(GraphicsDevice device, string path)
-        {
+        private static void ComposeStrip(GraphicsDevice device, string path) {
             if (crops.Count == 0) {
                 return;
             }
@@ -436,24 +420,21 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
                 device.SetRenderTarget(null);
                 using FileStream fs = File.Create(path);
                 composite.SaveAsPng(fs, gw, cellH);
-            }
-            finally {
+            } finally {
                 foreach (Texture2D tex in cellTex) {
                     tex.Dispose();
                 }
             }
         }
 
-        private static void SavePng(GraphicsDevice device, Color[] data, int w, int h, string path)
-        {
+        private static void SavePng(GraphicsDevice device, Color[] data, int w, int h, string path) {
             using Texture2D tex = new Texture2D(device, w, h);
             tex.SetData(data);
             using FileStream fs = File.Create(path);
             tex.SaveAsPng(fs, w, h);
         }
 
-        private static (double coverage, int unique, double luma) Measure(Color[] frame, Color[] baseline)
-        {
+        private static (double coverage, int unique, double luma) Measure(Color[] frame, Color[] baseline) {
             int changed = 0;
             double luma = 0;
             HashSet<int> uniqueSet = [];
@@ -469,8 +450,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
             return (changed / (double)frame.Length, uniqueSet.Count, luma / frame.Length);
         }
 
-        private static double Motion(Color[] a, Color[] b)
-        {
+        private static double Motion(Color[] a, Color[] b) {
             int moved = 0;
             int len = Math.Min(a.Length, b.Length);
             for (int i = 0; i < len; i++) {
@@ -483,16 +463,14 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
 
         //═══════════════ 复原 ═══════════════
 
-        private static void RestoreScene()
-        {
+        private static void RestoreScene() {
             Main.hideUI = prevHideUI;
             if (uiHandle != null && !uiWasOpen) {
                 uiHandle.Close();
             }
         }
 
-        private static void ClearBuffers()
-        {
+        private static void ClearBuffers() {
             crops.Clear();
             rects.Clear();
             baselineFull = null;
@@ -502,8 +480,7 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
             wantBaseline = wantCapture = false;
         }
 
-        private static void InjectFields()
-        {
+        private static void InjectFields() {
             if (job.Fields == null || uiHandle == null) {
                 return;
             }
@@ -522,15 +499,13 @@ namespace CalamityOverhaul.Content.DevTools.VisLab
                         continue;
                     }
                     Main.NewText("[VisLab] 字段不存在: " + key, Color.Orange);
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     Main.NewText("[VisLab] 注入失败 " + key + ": " + ex.Message, Color.Orange);
                 }
             }
         }
 
-        private static object ConvertJson(JsonElement val, Type target)
-        {
+        private static object ConvertJson(JsonElement val, Type target) {
             if (target == typeof(float)) {
                 return (float)val.GetDouble();
             }

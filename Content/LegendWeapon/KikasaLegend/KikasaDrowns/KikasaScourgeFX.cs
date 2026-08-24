@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
@@ -579,7 +578,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                     hand.WhooshDone = true;
                     if (visible) {
                         SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
-                            Volume = 0.65f, Pitch = -0.2f, MaxInstances = 2
+                            Volume = 0.65f,
+                            Pitch = -0.2f,
+                            MaxInstances = 2
                         }, rig.Wrist);
                     }
                 }
@@ -634,10 +635,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 KikasaDomainDeco.RippleAt(waterline, 1.6f * s);
                 KikasaDomainDeco.RippleAt(waterline + new Vector2(30f * s, 0f), 0.7f * s);
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                    Volume = 0.7f, Pitch = -0.55f, MaxInstances = 1
+                    Volume = 0.7f,
+                    Pitch = -0.55f,
+                    MaxInstances = 1
                 }, hit);
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Volume = 0.85f, Pitch = -0.35f, MaxInstances = 2
+                    Volume = 0.85f,
+                    Pitch = -0.35f,
+                    MaxInstances = 2
                 }, waterline);
                 ShakeViewer(4f * MathF.Min(s, 1.7f));
                 PRTLoader.NewParticle<PRT_GhostRainMist>(hit, new Vector2(0f, -0.5f),
@@ -647,10 +652,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             else {
                 KikasaDomainDeco.RippleAt(waterline, 0.8f * MathF.Min(s, 1.5f));
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                    Volume = ambient ? 0.32f : 0.5f, Pitch = -0.25f, MaxInstances = 2
+                    Volume = ambient ? 0.32f : 0.5f,
+                    Pitch = -0.25f,
+                    MaxInstances = 2
                 }, hit);
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Volume = ambient ? 0.35f : 0.5f, Pitch = 0.05f, MaxInstances = 3
+                    Volume = ambient ? 0.35f : 0.5f,
+                    Pitch = 0.05f,
+                    MaxInstances = 3
                 }, hit);
                 ShakeViewer(ambient ? 1.2f : 2.4f);
             }

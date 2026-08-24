@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
-using System;
+﻿using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;

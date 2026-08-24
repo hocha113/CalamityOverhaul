@@ -1,7 +1,6 @@
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using System;
 using Terraria;
 using Terraria.ID;
 
