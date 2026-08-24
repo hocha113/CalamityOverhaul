@@ -1381,10 +1381,6 @@ OldNetDebriefPanel: {
 CharacterDockUI: {
 	OpenHintLabel: 点击查看立绘
 	DragHintLabel: 拖拽移动 · 滚轮缩放 · 右键复位
-	SupCal: {
-		Name: 硫火女巫
-	}
-	Helen: {
-		Name: 海伦
-	}
+	SupCal.Name: 硫火女巫
+	Helen.Name: 海伦
 }

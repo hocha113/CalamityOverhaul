@@ -102,3 +102,8 @@ OniPaperBrandDebuff: {
 	DisplayName: Oni Paper Brand Debuff
 	Description: Mods.CalamityOverhaul.Buffs.OniPaperBrandDebuff.Description
 }
+
+FuHongBlessBuff: {
+	DisplayName: 虹桥眷护
+	Description: 虹下移速 +10%，召唤伤害 +10%
+}

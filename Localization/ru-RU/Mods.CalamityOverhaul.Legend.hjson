@@ -587,9 +587,9 @@ OnikiriText: {
 		// SlotHi: Groove
 		// SlotHorimono: Horimono
 		// EmptyName: (vacant)
-		// EmptyHintNakago: No name on the tang. A bare blade is fine — only, nothing answers it at night
+		// EmptyHintNakago: The tang bears no name — this slot sits empty, granting no boon and charging no price. Pick a chisel print and cut one in; that is what gives the blade its temper
 		// EmptyHintHi: No groove opened. Each groove cut is a measure of weight gone
-		// EmptyHintHorimono: The carving bed is bare. To invite a deity into the steel, first show it respect
+		// EmptyHintHorimono: The carving bed sits empty, granting nothing. Decide which one you would invite into the steel, then pick its chisel print and set to work
 		// EraseName: EFFACE
 		// EraseHint: File this inscription away — a mei can be cut again, but the blade forgets no scar
 		// OriginLabel: Provenance
@@ -1164,6 +1164,7 @@ KikasaText: {
 		// TipHoundCountFormat: Hounds out {0} / {1}
 		// TipSeatsHintFormat: Hold {0} for the wheel · change the lineup in the Lakeheart
 		// TipSeatEmpty: Empty
+		// TipTalisHint: Click to open the Lakeheart and tend the rope
 	}
 
 	KikasaServantWheelUI: {
@@ -1229,6 +1230,17 @@ KikasaText: {
 		// NoteNotCollected: You haven't drowned it yet
 		// NotePickFirst: Pick a shade from the list below first
 		// NoteArmsNoStock: That weapon isn't in the hoard, so it can't take shape
+		// TalisTitle: Raincall Rope
+		// TalisEmptyLine: An empty knot — click to open the talisman case
+		// TalisNoneOwned: The talisman case is empty — scribe a Raincall Talisman by the water first
+		// TalisNeedUmbrella: Hold Kikasa in hand — the talismans answer only the umbrella
+		// TalisSwapHint: Click to swap · right-click to take down
+		// TalisHangHint: Click to hang it here
+		// TalisTakeDownLabel: Take down
+		// TalisAlreadyHung: It already hangs on another knot
+		// TalisCurrentTag: Hanging here
+		// NoteFuHungFormat: 「{0}」rose onto the raincall rope
+		// NoteFuTakenFormat: 「{0}」returned to the talisman case
 		// VaultTitle: Lake Hoard
 		// VaultCountFormat: "{0} / {1}"
 		// VaultEmptyHint: Nothing here yet

@@ -1,4 +1,4 @@
-﻿FirstMet: {
+FirstMet: {
 	Rolename1: ???
 	Rolename2: 比目鱼
 	Line0: 先生......你的钓鱼技法，还有一些进步空间
@@ -1020,4 +1020,3 @@ OniRainWorld: {
 		OniDeathReason: "{0}被伞下的东西拖进了雨里"
 	}
 }
-

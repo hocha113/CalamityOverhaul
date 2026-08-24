@@ -1377,3 +1377,10 @@ OldNetDebriefPanel: {
 	// DebriefContinue: Continue
 	// DebriefMechHint: Uninscribed haul lives only in the link — it becomes yours once inscribed at a relay or the logout terminal
 }
+
+CharacterDockUI: {
+	// OpenHintLabel: Click to view portrait
+	// DragHintLabel: Drag to move · Scroll to zoom · Right-click to reset
+	// SupCal.Name: Brimstone Witch
+	// Helen.Name: Helen
+}

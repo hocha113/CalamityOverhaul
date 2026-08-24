@@ -1239,8 +1239,8 @@ KikasaText: {
 		TalisTakeDownLabel: Take down
 		TalisAlreadyHung: It already hangs on another knot
 		TalisCurrentTag: Hanging here
-		NoteFuHungFormat: "「{0}」rose onto the raincall rope"
-		NoteFuTakenFormat: "「{0}」returned to the talisman case"
+		NoteFuHungFormat: 「{0}」rose onto the raincall rope
+		NoteFuTakenFormat: 「{0}」returned to the talisman case
 		VaultTitle: Lake Hoard
 		VaultCountFormat: "{0} / {1}"
 		VaultEmptyHint: Nothing here yet
