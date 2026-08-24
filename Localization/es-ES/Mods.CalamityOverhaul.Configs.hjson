@@ -1,34 +1,7 @@
 CWRServerConfig: {
 	DisplayName: Configuración de contenido
 
-	WeaponOverhaul: {
-		Label: Overhaul de armas
-		Tooltip:
-			'''
-			Al activarlo, se modificarán la mayoría de las armas.
-			[c/FF0000:¡Para disfrutar al máximo el contenido de Calamity Overhaul, actívalo!]
-			'''
-	}
-
-	Headers: {
-		CWRSystem: Ajustes del sistema Overhaul
-		CWRWorldGen: Ajustes de estructuras Overhaul
-	}
-
-	QuestLog: {
-		Label: Guía del diario de misiones
-		Tooltip:
-			'''
-			Al activarlo, el diario de misiones te guiará durante la partida
-			Puedes abrir la interfaz con el objeto diario, desde el inventario o con un atajo
-			Activado por defecto. Al desactivarlo, desaparece toda la guía de misiones
-			'''
-	}
-
-	DialogueBox_Scale_Value: {
-		Label: Escala del cuadro de diálogo
-		Tooltip: Ajusta el tamaño general del cuadro de diálogo
-	}
+	Headers.CWRWorldGen: Ajustes de estructuras Overhaul
 
 	GenWindGrivenGenerator: {
 		Label: Generar aerogeneradores

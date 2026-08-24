@@ -27,8 +27,6 @@ namespace CalamityOverhaul.Content.QuestLogs
         /// <summary>信任世界列表，写玩家档</summary>
         public List<string> TrustedQuestWorldFullNames = new();
 
-        public override bool IsLoadingEnabled(Mod mod) => CWRServerConfig.Instance.QuestLog;
-
         public override void SaveData(TagCompound tag) {
             try {
                 QuestProgress ??= [];

@@ -1,34 +1,7 @@
 CWRServerConfig: {
 	DisplayName: 内容设置
 
-	WeaponOverhaul: {
-		Label: 武器大修
-		Tooltip:
-			'''
-			启用后会修改大部分的武器
-			[c/FF0000:如果您希望可以最优化的体验灾厄大修的内容，请开启它！]
-			'''
-	}
-
-	Headers: {
-		CWRSystem: 大修系统设置
-		CWRWorldGen: 大修结构设置
-	}
-
-	QuestLog: {
-		Label: 任务书指引
-		Tooltip:
-			'''
-			启用后，在游戏进程中将会有任务书指引玩家
-			可以使用任务书物品、背包中的启动UI，或者快捷键打开任务书界面查看当前任务
-			默认开启，禁用后将不会有任何任务指引
-			'''
-	}
-
-	DialogueBox_Scale_Value: {
-		Label: 对话框缩放
-		Tooltip: 调整对话框的整体大小
-	}
+	Headers.CWRWorldGen: 大修结构设置
 
 	GenWindGrivenGenerator: {
 		Label: 生成风力发电机

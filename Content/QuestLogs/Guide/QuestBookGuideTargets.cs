@@ -20,9 +20,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             switch (step) {
                 case QuestBookStep.Rail: {
                     Rectangle first = QuestLogTheme.RailTab(in layout, 0);
-                    if (book.StationCount <= 1) {
-                        return first;
-                    }
                     return Rectangle.Union(first, QuestLogTheme.RailTab(in layout, 1));
                 }
 
@@ -45,7 +42,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
 
                 case QuestBookStep.ChapterOneOutro:
                 case QuestBookStep.GotoEntrust:
-                    return EntrustTabRect(book, in layout);
+                    return EntrustTabRect(in layout);
 
                 case QuestBookStep.EntryAnatomy:
                 case QuestBookStep.TrackEntry:
@@ -74,8 +71,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             }
         }
 
-        /// <summary>委托卷宗那枚书口；图谱被配置关掉时它就是唯一一枚</summary>
-        public static Rectangle EntrustTabRect(QuestLog book, in QuestLogLayout layout)
-            => QuestLogTheme.RailTab(in layout, book.StationCount - 1);
+        /// <summary>委托卷宗那枚书口，固定是第二个站点</summary>
+        public static Rectangle EntrustTabRect(in QuestLogLayout layout)
+            => QuestLogTheme.RailTab(in layout, 1);
     }
 }

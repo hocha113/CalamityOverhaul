@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.QuestLogs
         private static Asset<Texture2D> QuestLogBook_Close = null;
         private static Asset<Texture2D> QuestLogBook_Open1 = null;
         private static Asset<Texture2D> QuestLogBook_Open2 = null;
-        public override bool IsLoadingEnabled(Mod mod) => CWRServerConfig.Instance.QuestLog;
         public override void SetDefaults() {
             Item.width = 58;
             Item.height = 48;
@@ -62,8 +61,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
     /// <summary>
     /// 任务书总开关键。委托卷宗并入书内后只剩这一把，<br/>
-    /// 且必须挂在不受 <see cref="CWRServerConfig.QuestLog"/> 影响的系统上
-    /// 图谱被配置关掉时书仍是委托的唯一宿主，键不能跟着一起没
+    /// 挂在 ModSystem 上而不是 <see cref="QuestLogBookPlayer"/>，与后者管的起始包换书职责分开
     /// </summary>
     internal class QuestBookKeySystem : ModSystem
     {
@@ -77,7 +75,6 @@ namespace CalamityOverhaul.Content.QuestLogs
     internal class QuestLogBookPlayer : ModPlayer
     {
         private bool Change;
-        public override bool IsLoadingEnabled(Mod mod) => CWRServerConfig.Instance.QuestLog;
         public override void SaveData(TagCompound tag) {
             tag[nameof(Change)] = Change;
         }

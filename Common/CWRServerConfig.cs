@@ -17,18 +17,6 @@ namespace CalamityOverhaul.Common
         public static CWRServerConfig Instance { get; private set; }
         public override ConfigScope Mode => ConfigScope.ServerSide;
 
-        [Header("CWRSystem")]
-
-        [BackgroundColor(35, 185, 78, 255)]
-        [ReloadRequired]
-        [DefaultValue(true)]
-        public bool QuestLog { get; set; }//任务书开关
-
-        //生物大修配置已移除：BrutalNPCs 的 AI 重制现在由残酷模式（世界级游戏模式）管理
-        //联机 PvP 骇入无独立开关：开了原版 PvP 即启用
-
-        //屏幕振动/领域简约显示/镜头缓动已移至 CWRClientConfig：纯本地视觉偏好，不需要服务器仲裁
-
         [Header("CWRWorldGen")]
 
         [BackgroundColor(100, 160, 80, 255)]

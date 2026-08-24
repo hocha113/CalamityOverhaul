@@ -139,8 +139,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         public string LocalizationCategory => "QuestLogs.QuestNode";
         #endregion
 
-        public override bool IsLoadingEnabled(Mod mod) => CWRServerConfig.Instance.QuestLog;
-
         /// <summary>完成回调，勿在此改<see cref="IsCompleted"/></summary>
         protected virtual void OnCompletion() {
             if (Main.LocalPlayer.active) {

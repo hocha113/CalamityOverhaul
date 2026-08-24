@@ -1,34 +1,7 @@
 CWRServerConfig: {
 	DisplayName: Inhalts-Einstellungen
 
-	WeaponOverhaul: {
-		Label: Waffen-Overhaul
-		Tooltip:
-			'''
-			Durch Aktivierung werden die meisten Waffen geändert.
-			[c/FF0000:Aktiviere diese Option, wenn du das Calamity-Overhaul-Erlebnis möglichst vollständig erleben möchtest!]
-			'''
-	}
-
-	Headers: {
-		CWRSystem: Overhaul-Systemeinstellungen
-		CWRWorldGen: Overhaul-Struktureinstellungen
-	}
-
-	QuestLog: {
-		Label: Questbuch-Anleitung
-		Tooltip:
-			'''
-			Wenn aktiviert, führt dich das Questbuch durch den Spielfortschritt
-			Du kannst die Quest-Oberfläche über das Questbuch-Item, die Inventar-UI oder eine Tastenkombination öffnen, um aktuelle Quests anzuzeigen
-			Standardmäßig aktiviert. Deaktivieren entfernt jegliche Quest-Anleitung
-			'''
-	}
-
-	DialogueBox_Scale_Value: {
-		Label: Dialogfeld-Skalierung
-		Tooltip: Passt die Gesamtgröße des Dialogfelds an
-	}
+	Headers.CWRWorldGen: Overhaul-Struktureinstellungen
 
 	GenWindGrivenGenerator: {
 		Label: Windkraftgeneratoren erzeugen

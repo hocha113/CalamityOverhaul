@@ -70,23 +70,16 @@ namespace CalamityOverhaul.Content.QuestLogs
         //WorldFreezeSystem 的 reason 标签，单人开书即冻世界
         private const string FreezeReason = "QuestLog";
 
-        /// <summary>
-        /// 任务图谱是否启用。关掉时本书仍是委托卷宗的宿主
-        /// 委托来自各条剧情线，不该跟着图谱一起消失
-        /// </summary>
-        public static bool ChartEnabled => CWRServerConfig.Instance.QuestLog;
-
-        /// <summary>左栏站点数：图谱关掉时只剩委托一站</summary>
-        public int StationCount => ChartEnabled ? 2 : 1;
+        /// <summary>左栏站点数：图谱、委托卷宗恒两站</summary>
+        public int StationCount => 2;
 
         /// <summary>第 index 个站点对应的视图</summary>
         public QuestLogView StationAt(int index)
-            => !ChartEnabled ? QuestLogView.Entrust
-                : index == 0 ? QuestLogView.Chart : QuestLogView.Entrust;
+            => index == 0 ? QuestLogView.Chart : QuestLogView.Entrust;
 
-        //摊开期间恒活跃；背包里的启动图标只在图谱启用时出现
+        //摊开期间恒活跃；背包里的启动图标同样恒显示
         public override bool Active
-            => IsOpen || OpenProgress.Current > 0.001f || (Main.playerInventory && ChartEnabled);
+            => IsOpen || OpenProgress.Current > 0.001f || Main.playerInventory;
 
         //详情栏摊开时先退详情，Esc 的第二下才合书
         public override bool CloseOnEscape => !showDetailPanel;
@@ -311,18 +304,11 @@ namespace CalamityOverhaul.Content.QuestLogs
                 && savedView == (byte)QuestLogView.Entrust) {
                 View = QuestLogView.Entrust;
             }
-            //图谱被配置关掉时只剩委托一站，存档里存的 Chart 不能生效
-            if (!ChartEnabled) {
-                View = QuestLogView.Entrust;
-            }
         }
 
         protected override void OnOpen() {
             //全屏摊开，背包让位
             Main.playerInventory = false;
-            if (!ChartEnabled) {
-                View = QuestLogView.Entrust;
-            }
             CloseDetail(false);
             isDraggingMap = false;
             if (VaultUtils.isSinglePlayer) {
@@ -332,7 +318,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         /// <summary>切站点，详情随之收起</summary>
         public void SetView(QuestLogView view) {
-            if (View == view || (view == QuestLogView.Chart && !ChartEnabled)) {
+            if (View == view) {
                 return;
             }
             View = view;

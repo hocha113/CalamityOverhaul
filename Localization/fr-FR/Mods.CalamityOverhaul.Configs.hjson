@@ -1,34 +1,7 @@
 CWRServerConfig: {
 	DisplayName: Paramétrage du contenu
 
-	WeaponOverhaul: {
-		Label: Refonte des armes
-		Tooltip:
-			'''
-			L’activation modifiera la plupart des armes.
-			[c/FF0000:Pour une expérience optimale du contenu de Calamité, veuillez l'activer !]
-			'''
-	}
-
-	Headers: {
-		CWRSystem: Paramètres du système Overhaul
-		CWRWorldGen: Paramètres des structures Overhaul
-	}
-
-	QuestLog: {
-		Label: Guide du journal de quêtes
-		Tooltip:
-			'''
-			Une fois activé, le journal de quêtes vous guidera dans la progression du jeu
-			Vous pouvez ouvrir l'interface des quêtes avec l'objet Journal de quêtes, depuis l'interface d'inventaire ou avec un raccourci
-			Activé par défaut. Le désactiver supprime tous les guides de quêtes
-			'''
-	}
-
-	DialogueBox_Scale_Value: {
-		Label: Échelle de la boîte de dialogue
-		Tooltip: Ajuste la taille globale de la boîte de dialogue
-	}
+	Headers.CWRWorldGen: Paramètres des structures Overhaul
 
 	GenWindGrivenGenerator: {
 		Label: Générer des générateurs éoliens

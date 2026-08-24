@@ -1,34 +1,7 @@
 CWRServerConfig: {
 	DisplayName: Configuracao de Conteudo
 
-	WeaponOverhaul: {
-		Label: Reformulacao de Armas
-		Tooltip:
-			'''
-			Ativar isso modificara a maioria das armas.
-			[c/FF0000: Se voce quer otimizar a experiencia do conteudo de Overhaul, por favor ative!]
-			'''
-	}
-
-	Headers: {
-		CWRSystem: Configuracoes do Sistema de Overhaul
-		CWRWorldGen: Configuracoes de Geracao de Mundo de Overhaul
-	}
-
-	QuestLog: {
-		Label: Orientacao do Registro de Missoes
-		Tooltip:
-			'''
-			Quando ativado, o registro de missoes guiara voce atraves do progresso do jogo
-			Voce pode acessar a interface de missoes atraves do item Livro de Missoes, UI do inventario ou uma tecla de atalho para ver as missoes atuais
-			Ativado por padrao. Desativar isso remove toda a orientacao de missoes
-			'''
-	}
-
-	DialogueBox_Scale_Value: {
-		Label: Escala da Caixa de Dialogo
-		Tooltip: Ajusta o tamanho geral da caixa de dialogo
-	}
+	Headers.CWRWorldGen: Configuracoes de Geracao de Mundo de Overhaul
 
 	GenWindGrivenGenerator: {
 		Label: Gerar Gerador Eolico

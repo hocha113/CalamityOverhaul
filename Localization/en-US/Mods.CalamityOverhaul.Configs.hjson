@@ -1,34 +1,7 @@
 CWRServerConfig: {
 	DisplayName: Content Config
 
-	WeaponOverhaul: {
-		Label: Weapon Overhaul
-		Tooltip:
-			'''
-			Enabling it will modify most weapons.
-			[c/FF0000: If you want the best Calamity Overhaul experience, please enable it!]
-			'''
-	}
-
-	Headers: {
-		CWRSystem: System Configs
-		CWRWorldGen: World Gen Configs
-	}
-
-	QuestLog: {
-		Label: Quest Log Guidance
-		Tooltip:
-			'''
-			When enabled, the quest log will guide you through game progression
-			You can access the quest interface via the Quest Book item, inventory UI, or a hotkey to view current quests
-			Enabled by default. Disabling this removes all quest guidance
-			'''
-	}
-
-	DialogueBox_Scale_Value: {
-		Label: Dialogue Box Scale
-		Tooltip: Adjusts the overall size of the dialogue box
-	}
+	Headers.CWRWorldGen: World Gen Configs
 
 	GenWindGrivenGenerator: {
 		Label: Generate Wind-Driven Generator

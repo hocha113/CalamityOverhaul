@@ -615,14 +615,13 @@ namespace CalamityOverhaul.Content.QuestLogs.Guide
             QuestManagerUI ui = QuestManagerUI.Instance;
 
             switch (step) {
-                //只剩一个站点时没有"切站点"可讲
                 case QuestBookStep.Rail:
-                    return book != null && book.StationCount > 1;
+                    return book != null;
 
                 case QuestBookStep.ChartView:
                 case QuestBookStep.ChartNode:
                 case QuestBookStep.ChartDetail:
-                    return QuestLog.ChartEnabled && book?.HasChartNodes == true;
+                    return book?.HasChartNodes == true;
 
                 case QuestBookStep.EntryAnatomy:
                 case QuestBookStep.TrackEntry:

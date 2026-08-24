@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.QuestLogs;
+﻿using CalamityOverhaul.Content.QuestLogs;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -172,9 +171,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostAddRecipes() {
-            if (!CWRServerConfig.Instance.QuestLog) {
-                return;
-            }
             for (int i = 0; i < Recipe.numRecipes; i++) {
                 Main.recipe[i].AddOnCraftCallback(QLPlayer.CraftedItem);
             }

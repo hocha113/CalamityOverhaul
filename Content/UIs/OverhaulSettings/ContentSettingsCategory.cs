@@ -37,12 +37,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         public override void Initialize() {
-            if (CWRServerConfig.Instance != null) {
-                var config = CWRServerConfig.Instance;
-                //CWRSystem(需重载)
-                AddToggle("QuestLog", () => config.QuestLog, v => config.QuestLog = v, true);
-            }
-
             if (CWRClientConfig.Instance != null) {
                 var clientConfig = CWRClientConfig.Instance;
                 //CWRWeapon(纯本地偏好)
@@ -58,12 +52,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         private void ResetAllToDefault() {
-            var config = CWRServerConfig.Instance;
-            if (config != null) {
-                //CWRSystem
-                config.QuestLog = true;
-            }
-
             var clientConfig = CWRClientConfig.Instance;
             if (clientConfig != null) {
                 //CWRWeapon
