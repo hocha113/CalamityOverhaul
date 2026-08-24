@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -39,8 +40,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>倾泻角(弧度,跟光标,由生成包写入)</summary>
         private ref float BaseAngle => ref Projectile.ai[0];
 
-        /// <summary>蓄力档 0~1,吃宽度与伤害表现</summary>
-        private ref float Fill => ref Projectile.ai[1];
+        //ai[1] 量化编码:无符为裸蓄力档(0~1),带符为 1024*标签+蓄力档*1000,
+        //随生成包同步;解码见 Fill/TalismanTag
+        /// <summary>打包蓄力档与符标签进 ai[1]（tag=0 保持裸值,旧路径不变）</summary>
+        internal static float PackFillTag(float fill, int tag) {
+            float clamped = MathHelper.Clamp(fill, 0f, 1f);
+            return tag <= 0 ? clamped : tag * 1024f + MathF.Round(clamped * 1000f);
+        }
+
+        /// <summary>符标签(0=无符),ModifyPourSpawn 打上,材质/命中按此分支</summary>
+        internal int TalismanTag => Projectile.ai[1] > 1.001f ? (int)(Projectile.ai[1] / 1024f) : 0;
+
+        /// <summary>蓄力档 0~1,吃宽度与伤害表现（自 ai[1] 解码）</summary>
+        private float Fill => Projectile.ai[1] > 1.001f
+            ? MathHelper.Clamp((Projectile.ai[1] - TalismanTag * 1024f) / 1000f, 0f, 1f)
+            : Projectile.ai[1];
 
         private float life;
         private float lenPx = MaxLenPx;
@@ -52,11 +66,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private int sustainFrames = SustainFrames;
         private bool geyserFired;
 
+        //唤雨符:每帧一解的档与派发器快照(空绳零开销),绘制线程复用上一帧
+        private KikasaTalismanProfile pourProfile = KikasaTalismanProfile.Identity;
+        private KikasaTalismanHookRunner pourHooks;
+
+        /// <summary>瀑宽材质旋钮(霸月瀑等):OnPourStart 首帧按标签一次性写,默认 1</summary>
+        internal float TalismanWidthMul = 1f;
+
+        /// <summary>落线终点(挂钩实现取落点用,如虹符落点拱桥)</summary>
+        internal Vector2 FallEndPoint => Projectile.Center + DirAngle.ToRotationVector2() * lenPx;
+
+        /// <summary>本帧是否触地(含湖面)</summary>
+        internal bool HitGroundNow => hitGround;
+
         //刚性摆压到极小(判定线跟随),流体甩尾由 shader 内行波承担，源头钉死碗口
         private float DirAngle
             => BaseAngle + MathF.Sin(life * 0.16f + Projectile.identity * 0.71f) * 0.03f;
 
-        private float WidthPx => 54f + Fill * 36f + KikasaOverride.GetPourWidthBonus(slotCount);
+        private float WidthPx => (54f + Fill * 36f + KikasaOverride.GetPourWidthBonus(slotCount))
+            * pourProfile.PourWidthMul * TalismanWidthMul;
 
         private float LenT {
             get {
@@ -94,16 +122,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         public override void AI() {
             life++;
-            slotCount = KikasaOverride.GetSlotCount(Main.player[Projectile.owner]);
-            //众鬼齐掷档:冲刷段拉长 12 帧,各端从同步的装备各自推得,首帧一次性落定
-            if ((int)life == 1 && slotCount >= KikasaOverride.TierGhostVolley) {
-                sustainFrames = SustainFrames + 12;
-                Projectile.timeLeft += 12;
+            Player owner = Main.player[Projectile.owner];
+            slotCount = KikasaOverride.GetSlotCount(owner);
+            //唤雨符快照:一帧一解,宽度/散射/泉齐发全部复用
+            pourProfile = KikasaTalismanCombat.Resolve(owner.HeldItem);
+            pourHooks = KikasaTalismanHooks.For(owner);
+            if ((int)life == 1) {
+                //冲刷时长首帧一次性落定:齐掷档+12,泷符时长倍率再折入;timeLeft 补同一差值
+                int baseSustain = SustainFrames
+                    + (slotCount >= KikasaOverride.TierGhostVolley ? 12 : 0);
+                sustainFrames = Math.Max(
+                    (int)MathF.Round(baseSustain * pourProfile.PourSustainMul), 4);
+                Projectile.timeLeft += sustainFrames - SustainFrames;
+                //墨瀑首帧挂钩(泷推移伴生/霸月瀑材质旋钮),各端同拍
+                pourHooks.OnPourStart(Projectile);
             }
             Vector2 dir = DirAngle.ToRotationVector2();
 
             //域内湖面:墨倾进湖里,落点换涟漪
-            Player owner = Main.player[Projectile.owner];
             bool lakeAlive = owner?.active == true
                 && owner.TryGetModPlayer(out KikasaDomainPlayer domain)
                 && domain.AnyActive && domain.RiseT > 0.5f;
@@ -179,14 +215,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 Vector2 pos = Projectile.Center + dir * along + perp * (WidthPx * 0.5f);
                 Vector2 vel = perp * Main.rand.NextFloat(2f, 4.5f) + dir * Main.rand.NextFloat(1f, 3f);
                 float fallbackX = Projectile.Center.X + dir.X * scatterSpan + Main.rand.NextFloat(-150f, 150f);
-                //湖倾档的散射滴同样落地留墨洼
-                int flags = slotCount >= KikasaOverride.TierLakeTilt ? KikasaInkDrop.FlagPuddle : 0;
-                int p = Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, vel,
-                    ModContent.ProjectileType<KikasaInkDrop>(), (int)(Projectile.damage * 1.25f),
-                    Projectile.knockBack, Projectile.owner, -1f, fallbackX, flags);
+                //湖倾档或潦符的散射滴同样落地留墨洼(本分支已在所有者端);
+                //散射滴同样过滴生成挂钩(霰打标大滴等),FromPourScatter 供符区分伞掷/瀑散
+                KikasaDropSpawnContext dropCtx = new() {
+                    Position = pos,
+                    Velocity = vel,
+                    Scale = 1.2f,
+                    DamageMul = 1.25f,
+                    Penetrate = 1,
+                    TargetWho = -1,
+                    FallbackX = fallbackX,
+                    Ghost = false,
+                    Puddle = slotCount >= KikasaOverride.TierLakeTilt || pourProfile.PuddleUnlock,
+                    GhostVolley = false,
+                    FromPourScatter = true,
+                    DropIndex = scatterCount - 1,
+                    TagId = 0,
+                    TagPayload = 0,
+                };
+                pourHooks.ModifyDropSpawn(ref dropCtx);
+                int flags = (dropCtx.Ghost ? KikasaInkDrop.FlagGhost : 0)
+                    | (dropCtx.Puddle ? KikasaInkDrop.FlagPuddle : 0)
+                    | KikasaTalismanHooks.PackTag(dropCtx.TagId, dropCtx.TagPayload);
+                int p = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
+                    dropCtx.Position, dropCtx.Velocity,
+                    ModContent.ProjectileType<KikasaInkDrop>(),
+                    (int)(Projectile.damage * dropCtx.DamageMul),
+                    Projectile.knockBack, Projectile.owner,
+                    dropCtx.TargetWho, dropCtx.FallbackX, flags);
                 if (p >= 0 && p < Main.maxProjectiles) {
-                    Main.projectile[p].scale = 1.2f;
-                    Main.projectile[p].netUpdate = true;
+                    Projectile drop = Main.projectile[p];
+                    drop.scale = dropCtx.Scale;
+                    if (dropCtx.Penetrate != 1) {
+                        drop.penetrate = dropCtx.Penetrate;
+                    }
+                    drop.netUpdate = true;
                 }
             }
 
@@ -196,12 +259,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 SuckIntoFall(dir);
             }
 
-            //湖倾终幕:满蓄且触地的墨瀑在排空前沿,沿落线唤起三道墨泉(所有者端)
-            if (Main.myPlayer == Projectile.owner && !geyserFired
-                && slotCount >= KikasaOverride.TierLakeTilt && Fill >= 0.99f && hitGround
+            //湖倾终幕:满蓄且触地的墨瀑在排空前沿,沿落线唤起墨泉(所有者端)。
+            //齐发决策一瀑只做一次:基础条件不满足也过泉齐发挂钩(霆非满蓄小雷泉/雩大雩解锁可强开)
+            if (Main.myPlayer == Projectile.owner && !geyserFired && hitGround
                 && (int)life >= ExpandFrames + sustainFrames) {
                 geyserFired = true;
-                FireGeysers(dir);
+                bool fullCharge = slotCount >= KikasaOverride.TierLakeTilt && Fill >= 0.99f;
+                KikasaGeyserVolleyContext geyserCtx = new() {
+                    Fire = fullCharge,
+                    FromFullCharge = fullCharge,
+                    Count = 3,
+                    DamageMul = 1f,
+                    HeightMul = 1f,
+                    DelayStepFrames = 5,
+                    TagId = 0,
+                    TagPayload = 0,
+                };
+                pourHooks.ModifyGeyserVolley(Projectile, ref geyserCtx);
+                if (geyserCtx.Fire && geyserCtx.Count > 0) {
+                    FireGeysers(dir, in geyserCtx);
+                }
             }
 
             Lighting.AddLight(Projectile.Center + dir * MathF.Min(lenPx, 420f) * 0.5f, 0.14f, 0.03f, 0.04f);
@@ -246,18 +323,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             return a + ab * t;
         }
 
-        /// <summary>沿落线取三个探针,向下吸附地表(域内湖面直接按湖线),各起一道墨泉,错 5 帧喷发</summary>
-        private void FireGeysers(Vector2 dir) {
+        /// <summary>
+        /// 沿落线取探针,向下吸附地表(域内湖面直接按湖线),各起一道墨泉,按齐发决策错拍喷发;
+        /// 泉数/伤害/柱高/符标签均出自 <see cref="KikasaGeyserVolleyContext"/>(标签与柱高随泉 ai 同步)
+        /// </summary>
+        private void FireGeysers(Vector2 dir, in KikasaGeyserVolleyContext geyserCtx) {
             Player owner = Main.player[Projectile.owner];
             bool lakeAlive = owner?.active == true
                 && owner.TryGetModPlayer(out KikasaDomainPlayer domain)
                 && domain.AnyActive && domain.RiseT > 0.5f;
             float lakeY = lakeAlive ? owner.GetModPlayer<KikasaDomainPlayer>().LakeWorldY : float.MaxValue;
 
+            //沛符墨泉乘区(FireGeysers 只在所有者端被调,伤害随生成包带走)
+            float geyserMul = pourProfile.GeyserDamageMul * geyserCtx.DamageMul;
+            float geyserAi1 = KikasaTalismanHooks.PackTag(geyserCtx.TagId, geyserCtx.TagPayload);
+            float geyserAi2 = MathF.Round(MathHelper.Clamp(geyserCtx.HeightMul, 0.2f, 8f) * 1000f);
+
             Vector2 end = Projectile.Center + dir * lenPx;
             int fired = 0;
-            for (int i = 0; i < 3; i++) {
-                float off = (i - 1) * 96f;
+            for (int i = 0; i < geyserCtx.Count; i++) {
+                float off = (i - (geyserCtx.Count - 1) * 0.5f) * 96f;
                 Vector2 basePos;
                 if (hitLake) {
                     basePos = new Vector2(end.X + off, lakeY);
@@ -266,11 +351,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     continue;
                 }
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), basePos, Vector2.Zero,
-                    ModContent.ProjectileType<KikasaInkGeyser>(), (int)(Projectile.damage * 0.9f),
-                    Projectile.knockBack * 1.6f, Projectile.owner, fired * 5f);
+                    ModContent.ProjectileType<KikasaInkGeyser>(),
+                    (int)(Projectile.damage * 0.9f * geyserMul),
+                    Projectile.knockBack * 1.6f, Projectile.owner,
+                    fired * geyserCtx.DelayStepFrames, geyserAi1, geyserAi2);
                 fired++;
             }
         }
+
+        /// <summary>墨瀑谢幕挂钩(虹落点拱桥/霹开天雷窗等),非服务器各端派发</summary>
+        public override void OnKill(int timeLeft) {
+            if (Main.dedServ) {
+                return;
+            }
+            KikasaTalismanHooks.ForOwner(Projectile.owner).OnPourEnd(Projectile);
+        }
+
+        //==================== 命中挂钩(引擎保证只在归属端跑) ====================
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+            => KikasaTalismanHooks.ForOwner(Projectile.owner)
+                .ModifyRainHitNPC(Projectile, KikasaRainSourceKind.Pour, target, ref modifiers);
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+            => KikasaTalismanHooks.ForOwner(Projectile.owner)
+                .OnRainHitNPC(Projectile, KikasaRainSourceKind.Pour, target, in hit, damageDone);
 
         /// <summary>自探针点向下逐格找实心地表,命中返回表面世界坐标</summary>
         private static bool TryFindGroundBelow(Vector2 probe, float maxDown, out Vector2 surface) {

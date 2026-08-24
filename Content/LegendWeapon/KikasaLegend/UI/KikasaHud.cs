@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps;
@@ -53,6 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         public static LocalizedText TipHoundCountFormat { get; private set; }
         public static LocalizedText TipSeatsHintFormat { get; private set; }
         public static LocalizedText TipSeatEmpty { get; private set; }
+        public static LocalizedText TipTalisHint { get; private set; }
 
         public override void SetStaticDefaults() {
             ScrollName = this.GetLocalization(nameof(ScrollName), () => "Lakeheart");
@@ -77,6 +79,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             TipSeatsHintFormat = this.GetLocalization(nameof(TipSeatsHintFormat),
                 () => "{0} wheel calls/recalls \u00b7 manage seats in the Lakeheart");
             TipSeatEmpty = this.GetLocalization(nameof(TipSeatEmpty), () => "Vacant seat");
+            TipTalisHint = this.GetLocalization(nameof(TipTalisHint),
+                () => "Click to open the Lakeheart and tend the rope");
         }
 
         //==================== 可见性 ====================
@@ -128,6 +132,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         private const float ReadoutTopY = -44f;
         private const float ReadoutGapY = 23f;
         private const float ReadoutHitHalf = 10f;
+        //祈雨符回显：铃左一列微缩符纸（有挂符才现，读数列的对侧）
+        private const float TalisEchoX = -33f;
+        private const float TalisEchoTopY = -38f;
+        private const float TalisEchoGapY = 30f;
+        private static readonly Vector2 TalisEchoSize = new(12f, 24f);
 
         //====== SVG 路径（归一 [-1,1]，A 弧不可用） ======
 
@@ -205,7 +214,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         //==================== 状态 ====================
 
         /// <summary>悬停目标：HUD 的每个读数都有自己的说明</summary>
-        private enum TipTarget { None, Bell, Dream, Wisp, Drown, Reset, Thrall, Seats }
+        private enum TipTarget { None, Bell, Dream, Wisp, Drown, Reset, Thrall, Seats, Talis }
 
         //事件搅一记涌浪（stir），涌浪推摆幅；读数交给图标列
         private float stir;
@@ -220,6 +229,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         //本帧读数栈的实际条目与位置（Update 布局，Draw/命中/悬停共用一份）
         private readonly List<(TipTarget target, Vector2 pos)> readouts = [];
 
+        //铃左符纸回显的本帧内容（按符位序跳过空位；无伞数据即空）
+        private readonly List<string> hungTalis = [];
+
         private KikasaDomainPlayer Domain => player.GetModPlayer<KikasaDomainPlayer>();
         private KikasaVaultPlayer Vault => player.GetModPlayer<KikasaVaultPlayer>();
         private KikasaDreamPlayer Dream => player.GetModPlayer<KikasaDreamPlayer>();
@@ -233,8 +245,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             appear = MathHelper.Clamp(appear + (want ? 0.06f : -0.06f), 0f, 1f);
 
             Vector2 anchor = Anchor;
-            Size = new Vector2(KikasaHudTheme.ChimeW + 52f, KikasaHudTheme.ChimeH + 16f);
-            DrawPosition = anchor - new Vector2(KikasaHudTheme.ChimeW * 0.5f + 8f,
+            //左缘多留 12px 盖住符纸回显列
+            Size = new Vector2(KikasaHudTheme.ChimeW + 64f, KikasaHudTheme.ChimeH + 16f);
+            DrawPosition = anchor - new Vector2(KikasaHudTheme.ChimeW * 0.5f + 20f,
                 KikasaHudTheme.ChimeH * 0.5f + 8f);
             UIHitBox = DrawPosition.GetRectangle(Size);
 
@@ -258,8 +271,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             swingT += 0.030f + MathHelper.Clamp(stir, 0f, 1f) * 0.055f;
 
             LayoutReadouts(anchor);
+            CollectHungTalis();
 
-            //悬停解析：读数 > 席位排 > 铃身；命中即占鼠标
+            //悬停解析：读数 > 符纸回显 > 席位排 > 铃身；命中即占鼠标
             Vector2 mouse = KikasaHudTheme.UIMouse;
             TipTarget newTarget = TipTarget.None;
             if (appear > 0.5f) {
@@ -268,6 +282,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                         && MathF.Abs(mouse.Y - pos.Y) < ReadoutHitHalf + 1f) {
                         newTarget = target;
                         break;
+                    }
+                }
+                if (newTarget == TipTarget.None && hungTalis.Count > 0) {
+                    //符纸回显列：铃左一小条
+                    Rectangle talisHit = new((int)(anchor.X + TalisEchoX - 10f),
+                        (int)(anchor.Y + TalisEchoTopY - 5f), 20,
+                        (int)(hungTalis.Count * TalisEchoGapY + 4f));
+                    if (talisHit.Contains(mouse.ToPoint())) {
+                        newTarget = TipTarget.Talis;
                     }
                 }
                 if (newTarget == TipTarget.None) {
@@ -287,7 +310,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
             if (hoverTarget != TipTarget.None) {
                 player.mouseInterface = true;
-                if (hoverTarget == TipTarget.Bell && keyLeftPressState == KeyPressState.Pressed) {
+                //铃身与符纸回显同效：开合湖心景（符的管理都在景里）
+                if ((hoverTarget == TipTarget.Bell || hoverTarget == TipTarget.Talis)
+                    && keyLeftPressState == KeyPressState.Pressed) {
                     KikasaPanoramaUI pano = KikasaPanoramaUI.Instance;
                     if (pano != null) {
                         if (pano.IsOpen) {
@@ -302,6 +327,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 if (hoverTarget == TipTarget.Wisp && keyLeftPressState == KeyPressState.Pressed
                     && !KikasaWisp.TryToggle(player)) {
                     SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.5f, Volume = 0.5f });
+                }
+            }
+        }
+
+        /// <summary>已挂符收集：按符位序跳过空位；未持过伞（无缓存 store）即空</summary>
+        private void CollectHungTalis() {
+            hungTalis.Clear();
+            KikasaTalismanStore store = KikasaTalismanRegistry.DisplayStore;
+            if (store == null) {
+                return;
+            }
+            for (int i = 0; i < KikasaTalismanStore.SlotCount; i++) {
+                string key = store.Get(i);
+                if (key != null) {
+                    hungTalis.Add(key);
                 }
             }
         }
@@ -418,6 +458,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
             //5 短册纸条：纸底 + 边线 + 三席驻影小印
             DrawTanzaku(spriteBatch, tzTop, angT, a, rain, dim);
+
+            //5.5 祈雨符回显：铃左微缩符纸列（有挂符才现）
+            DrawTalisEcho(spriteBatch, anchor, a, rain, time);
 
             //6 读数栈：铃右一列仪器读数
             DrawReadouts(spriteBatch, a, rain, domain, time);
@@ -550,6 +593,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 else {
                     SvgPathPen.SoftDot(sb, pos, 3.2f, seatCol, 0.42f * a);
                 }
+            }
+        }
+
+        /// <summary>
+        /// 祈雨符回显：铃左垂一列微缩符纸（雨浸纸+符文身份色），随风轻摆；
+        /// 只读缩影，点击开湖心景调符
+        /// </summary>
+        private void DrawTalisEcho(SpriteBatch sb, Vector2 anchor, float a, float rain, float time) {
+            if (hungTalis.Count == 0) {
+                return;
+            }
+            bool hovered = hoverTarget == TipTarget.Talis;
+            for (int i = 0; i < hungTalis.Count; i++) {
+                string key = hungTalis[i];
+                Vector2 top = anchor + new Vector2(TalisEchoX, TalisEchoTopY + i * TalisEchoGapY);
+                float sway = MathF.Sin(time * 1.3f + i * 2.4f) * 0.06f;
+                Vector2 down = (MathHelper.PiOver2 + sway).ToRotationVector2();
+                //一小段吊线示意挂着
+                KikasaVaultRenderer.DrawLine(sb, top - down * 4f, top, 1f,
+                    KikasaHudTheme.TextDim(rain) * (0.5f * a));
+                float soak = 0.20f + 0.06f * MathF.Sin(time * 0.9f + i * 2.1f) + rain * 0.25f;
+                float sa = (hovered ? 1f : 0.85f) * a;
+                KikasaTalismanPaperDraw.DrawUI(sb, top, sway, TalisEchoSize, sa, soak,
+                    time + i * 1.31f);
+                Color accent = KikasaTalismanRegistry.TryGet(key, out KikasaTalismanDefinition def)
+                    ? def.InkAccent : KikasaTalismanPaperDraw.Sheen;
+                KikasaTalismanGlyph.DrawInk(sb, key, top + down * (TalisEchoSize.Y * 0.42f),
+                    TalisEchoSize.X * 1.25f, sa, KikasaTalismanPaperDraw.Ink, accent, time, sway);
             }
         }
 
@@ -786,6 +857,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                             KikasaThrall.CountActive(player.whoAmI),
                             KikasaEffigyBoard.ThrallCap(player)), rain, alpha);
                     return;
+                case TipTarget.Talis: {
+                    List<KikasaTipLine> lines = [];
+                    foreach (string key in hungTalis) {
+                        if (KikasaTalismanRegistry.TryGet(key, out KikasaTalismanDefinition def)) {
+                            lines.Add(new KikasaTipLine(def.DisplayName.Value, def.InkAccent));
+                            lines.Add(new KikasaTipLine(def.Summary.Value, dimC, 0.85f));
+                        }
+                    }
+                    lines.Add(new KikasaTipLine(TipTalisHint.Value, glowC, 0.85f));
+                    KikasaTipPanel.Draw(sb, cursor, KikasaPanoramaUI.TalisTitle.Value, rain, alpha,
+                        [.. lines]);
+                    return;
+                }
                 case TipTarget.Seats: {
                     KikasaServantPlayer servant = Servant;
                     List<KikasaTipLine> lines = [];

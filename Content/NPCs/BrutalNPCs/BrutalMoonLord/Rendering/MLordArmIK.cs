@@ -44,6 +44,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
         private const float Bone = 340f;
         /// <summary>远伸骨段最大拉伸</summary>
         private const float StretchCap = 1.3f;
+        /// <summary>冲刺窗骨段拉伸上限（掌击冲线时实体臂链多覆盖 ~170px）</summary>
+        private const float StrikeStretchCap = 1.55f;
+        /// <summary>冲刺判定速度阈（与掌接触伤门控同族，略低以提前接管）</summary>
+        private const float StrikeSpeed = 20f;
         /// <summary>贴身骨段最小压缩</summary>
         private const float SquashFloor = 0.6f;
         /// <summary>肘偏角硬限位 rad（相对弦向，~66°）</summary>
@@ -72,6 +76,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             public float BendVel;
             /// <summary>期望肘向极性 +1/-1（迟滞锁定）</summary>
             public float DesiredSide;
+            /// <summary>冲刺混合 0~1（高速快进慢出，视觉贴判定的过渡量）</summary>
+            public float StrikeBlend;
             public Vector2 LastWrist;
             public uint LastTick;
             public bool Init;
@@ -122,8 +128,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             Vector2 dN = len < 1f ? Vector2.UnitY : d / len;
             len = Math.Max(len, 1f);
 
-            //骨长：远伸均匀拉伸；贴身受压缩，保肘内角不反折
-            float boneEff = Bone * MathHelper.Clamp(len / (Bone * 2f), 1f, StretchCap);
+            //冲刺混合：高速窗内视觉必须贴住判定位（快进慢出迟滞，刹车减速时不弹跳）
+            bool strikeNow = hand.velocity.LengthSquared() > StrikeSpeed * StrikeSpeed;
+            st.StrikeBlend = strikeNow
+                ? Math.Min(st.StrikeBlend + 0.25f, 1f)
+                : Math.Max(st.StrikeBlend - 0.08f, 0f);
+            float stretchCap = MathHelper.Lerp(StretchCap, StrikeStretchCap, st.StrikeBlend);
+
+            //骨长：远伸均匀拉伸（冲刺窗上限放宽）；贴身受压缩，保肘内角不反折
+            float boneEff = Bone * MathHelper.Clamp(len / (Bone * 2f), 1f, stretchCap);
             boneEff = Math.Min(boneEff, Math.Max(len * 1.06f, Bone * SquashFloor));
 
             //―――― 肩带肘：弦向角 + 带符号肘偏角，双标量弹簧 ――――
@@ -164,6 +177,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                 st.ChordVel = 0f;
                 st.Bend = bendTarget;
                 st.BendVel = 0f;
+                st.StrikeBlend = strikeNow ? 1f : 0f;
                 st.Init = true;
             }
             else {
@@ -211,6 +225,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                 //深度超程（掌击冲线等）：手掌以幻影形态归位真实判定点，星桥续接
                 wristDraw = wrist;
                 bridge = Math.Min(0.55f + (over - BlendBand) / 400f * 0.45f, 1f);
+            }
+
+            //冲刺窗覆盖：视觉强制贴判定位（伤害窗=视觉窗，契约2.3），超程全交幻影延伸
+            if (st.StrikeBlend > 0.001f) {
+                wristDraw = Vector2.Lerp(wristDraw, wrist, st.StrikeBlend);
+                if (over > 4f) {
+                    float strikeBridge = Math.Min(0.45f + over / 500f * 0.55f, 1f) * st.StrikeBlend;
+                    bridge = Math.Max(bridge, strikeBridge);
+                }
             }
 
             s.Shoulder = shoulder;

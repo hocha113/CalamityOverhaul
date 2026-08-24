@@ -5,6 +5,7 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -47,6 +48,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
         public float BallVisible;
         /// <summary>黑球压缩度 0~1（喂给 shader：越压越暗、电弧越躁）</summary>
         public float Collapse;
+        /// <summary>打断进度 0~1（揉搓窗失血占阈值比例）：红纹/电弧随之加剧，打断博弈可见化</summary>
+        public float BreakCharge;
         /// <summary>演出种子（服务端骰点同步）</summary>
         public int Seed;
     }
@@ -62,12 +65,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
     internal static class MLordUltArms
     {
         //―――― 几何常数 ――――
-        /// <summary>幻影臂单骨长 px（比本体骨臂 340 短，读作"次生幻影"）</summary>
-        private const float Bone = 175f;
+        /// <summary>幻影臂单骨长 px（略短于本体骨臂 340，读作"次生幻影"但不失体量——
+        /// 175/0.58 的旧值在引力昏暗背景上小到近乎不可见，2026-08 审计根因）</summary>
+        private const float Bone = 250f;
         /// <summary>骨段最大拉伸</summary>
         private const float StretchCap = 1.3f;
         /// <summary>幻影臂贴图整体缩放</summary>
-        private const float ArmScale = 0.58f;
+        private const float ArmScale = 0.82f;
         /// <summary>断帧硬重建阈值：超过此 tick 未驱动即视作残留状态</summary>
         private const uint SnapGapTicks = 8;
         /// <summary>极性侧向死区：|外向投影| 低于此值不计翻转票（纯抖动锁死当前侧）</summary>
@@ -91,6 +95,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             public float Polarity;
             /// <summary>对侧优势连续帧计数</summary>
             public int FlipVotes;
+            /// <summary>物化登场时本臂已弹出（逐条星爆只放一次）</summary>
+            public bool Popped;
             public bool Init;
         }
 
@@ -136,9 +142,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                     sim.PalmVel = Vector2.Zero;
                     sim.Polarity = 0f;
                     sim.FlipVotes = 0;
+                    sim.Popped = false;
                     sim.Init = true;
                     continue;
                 }
+
+                //物化逐条弹出：本臂错拍苏醒的一记星爆+轻震屏（召唤要一条条被看见）
+                if (drive.Phase == MLordUltArmPhase.Manifest && !sim.Popped
+                    && ManifestSlotT(drive.PhaseT, i) > 0.03f) {
+                    sim.Popped = true;
+                    MLordScreenFX.StarBurst(shoulder, 0.85f, 9);
+                    MLordScreenFX.Punch(shoulder, 2.4f, 6);
+                    SoundEngine.PlaySound(SoundID.Item103 with { Volume = 0.6f, Pitch = -0.7f + i * 0.12f, MaxInstances = 4 }, shoulder);
+                }
+
                 SpringVector(ref sim.Palm, ref sim.PalmVel, target, PhaseOmega(drive.Phase));
                 //NaN 防线：任何数值事故直接硬贴目标，绝不让污染扩散到下一帧
                 if (float.IsNaN(sim.Palm.X) || float.IsNaN(sim.Palm.Y)) {
@@ -173,9 +190,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
 
             switch (drive.Phase) {
                 case MLordUltArmPhase.Manifest: {
-                    //自披风后向外舒展，末段微颤（苏醒）
-                    float reach = 50f + 250f * VaultUtils.EaseOutCubic(phaseT);
-                    Vector2 tremor = phaseT > 0.6f
+                    //自披风后向外舒展：四臂按槽序错拍逐条弹出，末段微颤（苏醒）
+                    float slotT = ManifestSlotT(phaseT, slot);
+                    float reach = 60f + 300f * VaultUtils.EaseOutCubic(slotT);
+                    Vector2 tremor = slotT > 0.7f
                         ? new Vector2(Noise(t * 0.9f, slot), Noise(t * 0.9f, slot + 7)) * 4f
                         : Vector2.Zero;
                     return shoulder + outDir.RotatedBy(core.rotation) * reach + tremor;
@@ -183,7 +201,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                 case MLordUltArmPhase.Embrace: {
                     //EaseOutBack：掌先冲过球面再回弹，环抱有"合拢撞击"的一拍
                     float back = EaseOutBack(phaseT, 1.4f);
-                    float reach = MathHelper.Lerp(330f, drive.BallRadius + 26f, back);
+                    float reach = MathHelper.Lerp(420f, drive.BallRadius + 30f, back);
                     return drive.BallCenter + HomeAngles[slot].ToRotationVector2() * Math.Max(reach, 8f);
                 }
                 case MLordUltArmPhase.Knead: {
@@ -206,24 +224,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                     if (phaseT < 0.45f) {
                         //甩出：四掌顺掷向猛推
                         float push = VaultUtils.EaseOutCubic(phaseT / 0.45f);
-                        return drive.BallCenter + drive.ThrowDir * (40f + 300f * push)
-                            + HomeAngles[slot].ToRotationVector2() * 30f;
+                        return drive.BallCenter + drive.ThrowDir * (40f + 340f * push)
+                            + HomeAngles[slot].ToRotationVector2() * 34f;
                     }
                     //反冲：质量守恒的回撤（掷出重量感来源）
-                    return shoulder + outDir.RotatedBy(core.rotation) * 170f - drive.ThrowDir * 70f;
+                    return shoulder + outDir.RotatedBy(core.rotation) * 210f - drive.ThrowDir * 80f;
                 }
                 case MLordUltArmPhase.Fumble: {
                     //失手：黑球崩散的冲击把四掌炸开，外上方甩脱 + 剧烈抖动衰减
                     float kick = 1f - VaultUtils.EaseOutCubic(phaseT);
-                    Vector2 jolt = new Vector2(Noise(t * 1.7f, slot + 11), Noise(t * 1.7f, slot + 17)) * 26f * kick;
-                    return shoulder + outDir.RotatedBy(core.rotation) * 300f + new Vector2(0f, -70f) + jolt;
+                    Vector2 jolt = new Vector2(Noise(t * 1.7f, slot + 11), Noise(t * 1.7f, slot + 17)) * 30f * kick;
+                    return shoulder + outDir.RotatedBy(core.rotation) * 360f + new Vector2(0f, -80f) + jolt;
                 }
                 default: {
                     //Aftermath/Hidden：归位外张，缓慢漂散
                     Vector2 driftOff = new(Noise(t * 0.2f, slot + 23) * 18f, Noise(t * 0.17f, slot + 29) * 14f);
-                    return shoulder + outDir.RotatedBy(core.rotation) * 210f + driftOff;
+                    return shoulder + outDir.RotatedBy(core.rotation) * 250f + driftOff;
                 }
             }
+        }
+
+        /// <summary>物化错拍进度：槽 i 延迟 0.16·i 后在 0.52 相位窗内完成弹出</summary>
+        private static float ManifestSlotT(float phaseT, int slot) {
+            return MathHelper.Clamp((phaseT - slot * 0.16f) / 0.52f, 0f, 1f);
         }
 
         /// <summary>搓动/寂静期的红黑星尘（向球心汇聚 + 掌间迸溅）</summary>
@@ -239,8 +262,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                     PRTLoader.NewParticle<PRT_HeavenfallStar>(pos, pull.RotatedBy(0.5f), c,
                         Main.rand.NextFloat(0.35f, 0.7f))?.Configure(false, Main.rand.Next(12, 20));
                 }
-                //掌根迸红火花（搓出的静电）
-                if (Main.rand.NextBool(6)) {
+                //掌根迸红火花（搓出的静电；打断进度越高迸得越密——球在被打碎的边缘）
+                int sparkDenom = Math.Max(2, 6 - (int)(drive.BreakCharge * 4f));
+                if (Main.rand.NextBool(sparkDenom)) {
                     int slot = Main.rand.Next(4);
                     PRTLoader.NewParticle<PRT_Spark>(arms[slot].Palm,
                         Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f),
@@ -337,15 +361,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             //掌朝球心：掌根方向对准球（掷出/余波时对准运动方向反向）
             float palmRot = (drive.BallCenter - sim.Palm).SafeNormalize(-Vector2.UnitY).ToRotation() - MathHelper.PiOver2;
             Vector2 palmPos = sim.Palm - screenPos;
-            //红黑电弧缘（加色，放大投影）
-            spriteBatch.Draw(handTex, palmPos, frame, MLordDirector.BlackFlashRed with { A = 0 } * (0.4f * alpha),
+            //红黑电弧缘（加色，放大投影）——引力昏暗背景上就靠这圈亮缘立住剪影
+            spriteBatch.Draw(handTex, palmPos, frame, MLordDirector.BlackFlashRed with { A = 0 } * (0.65f * alpha),
                 palmRot, handOrigin, ArmScale * 1.07f, fx, 0f);
-            //暗体（真 alpha 遮挡）
-            spriteBatch.Draw(handTex, palmPos, frame, new Color(24, 14, 38) * alpha,
+            //揉搓期白热边脉冲（憋住的力；打断进度越高越躁）
+            float hot = KneadHotPulse();
+            if (hot > 0.02f) {
+                spriteBatch.Draw(handTex, palmPos, frame, MLordDirector.MoonWhite with { A = 0 } * (0.3f * hot * alpha),
+                    palmRot, handOrigin, ArmScale * 1.1f, fx, 0f);
+            }
+            //暗体（真 alpha 遮挡，提高明度与背景暗化拉开档位）
+            spriteBatch.Draw(handTex, palmPos, frame, new Color(46, 24, 66) * alpha,
                 palmRot, handOrigin, ArmScale, fx, 0f);
         }
 
-        /// <summary>骨段绘制：红缘投影 + 暗体，沿骨轴缩放到实际距离</summary>
+        /// <summary>揉搓白热脉冲强度：~2Hz 呼吸，打断进度抬升底数（红纹加剧的可见语言）</summary>
+        private static float KneadHotPulse() {
+            if (drive.Phase != MLordUltArmPhase.Knead && drive.Phase != MLordUltArmPhase.Silence) {
+                return 0f;
+            }
+            float breathe = 0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 12.6f);
+            return breathe * (0.45f + 0.55f * drive.BreakCharge);
+        }
+
+        /// <summary>骨段绘制：红缘投影 + 白热脉冲 + 暗体，沿骨轴缩放到实际距离</summary>
         private static void DrawBone(SpriteBatch spriteBatch, Texture2D tex, Vector2 from, Vector2 to,
             Vector2 origin, bool leftSide, float alpha, Vector2 screenPos, SpriteEffects fx) {
             float dist = Vector2.Distance(from, to);
@@ -359,9 +398,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             //340 = 原贴图关节距；纵向贴合骨距，横向统一幻影缩放
             Vector2 scale = new(ArmScale, dist / 340f);
             Vector2 pos = from - screenPos;
-            spriteBatch.Draw(tex, pos, null, MLordDirector.BlackFlashRed with { A = 0 } * (0.35f * alpha),
+            spriteBatch.Draw(tex, pos, null, MLordDirector.BlackFlashRed with { A = 0 } * (0.6f * alpha),
                 rot, origin, scale * 1.06f, fx, 0f);
-            spriteBatch.Draw(tex, pos, null, new Color(24, 14, 38) * alpha, rot, origin, scale, fx, 0f);
+            float hot = KneadHotPulse();
+            if (hot > 0.02f) {
+                spriteBatch.Draw(tex, pos, null, MLordDirector.MoonWhite with { A = 0 } * (0.26f * hot * alpha),
+                    rot, origin, scale * 1.09f, fx, 0f);
+            }
+            spriteBatch.Draw(tex, pos, null, new Color(46, 24, 66) * alpha, rot, origin, scale, fx, 0f);
         }
 
         /// <summary>
@@ -427,7 +471,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                 float scale = r * 5f / canvas.Width;
                 shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
                 shader.Parameters["uCollapse"]?.SetValue(drive.Collapse);
-                shader.Parameters["uArc"]?.SetValue(0.5f + drive.Collapse * 0.5f);
+                //打断进度抬升电弧强度：球体红纹加剧 = 打断博弈的可见语言
+                shader.Parameters["uArc"]?.SetValue(0.5f + drive.Collapse * 0.5f + drive.BreakCharge * 0.4f);
                 shader.Parameters["uAlpha"]?.SetValue(vis);
                 shader.Parameters["uSeed"]?.SetValue(drive.Seed % 89 * 0.211f);
 
@@ -447,13 +492,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                 return;
             }
 
-            //CPU 回退：暗核（真 alpha）+ 红缘 + 吸积斜盘
+            //CPU 回退：暗核（真 alpha）+ 红缘（打断进度提亮）+ 吸积斜盘
             Texture2D glow = CWRAsset.DiffusionCircle?.Value;
             if (glow == null) {
                 return;
             }
             float texScale = r * 2.6f / glow.Width;
-            Main.EntitySpriteDraw(glow, pos, null, MLordDirector.BlackFlashRed with { A = 0 } * (0.5f * vis),
+            Main.EntitySpriteDraw(glow, pos, null,
+                MLordDirector.BlackFlashRed with { A = 0 } * ((0.5f + 0.35f * drive.BreakCharge) * vis),
                 Main.GlobalTimeWrappedHourly * 1.3f, glow.Size() / 2f, texScale * 1.25f, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(glow, pos, null, MLordDirector.VoidBlack * (0.96f * vis),
                 -Main.GlobalTimeWrappedHourly * 0.8f, glow.Size() / 2f, texScale, SpriteEffects.None, 0);

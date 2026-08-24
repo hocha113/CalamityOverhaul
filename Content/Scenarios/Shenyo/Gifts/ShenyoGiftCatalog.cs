@@ -5,7 +5,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
 {
     /// <summary>
-    /// 沉宴礼物名册一项：只描述"哪场戏、序号对应沉宴试炼线第几关、系于哪些首领"。<br/>
+    /// 沉宴礼物名册一项：只描述"哪场戏、序号对应沉宴试炼线第几关、系于哪些首领、递哪张唤雨符"。<br/>
     /// 完成位不在此登记，那是场景自己的 IsGiftCompleted / MarkGiftCompleted，只留一个读写入口
     /// </summary>
     internal sealed class ShenyoGiftEntry
@@ -16,12 +16,15 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public int Order { get; }
         public string Id { get; }
         public Type ScenarioType { get; }
+        /// <summary>本场递出的唤雨符 Key，运行期经 KikasaTalismanItem.ItemTypeForKey 解析物品</summary>
+        public string TalismanKey { get; }
         public int[] TargetBossIds => resolvedTargetBossIds ??= targetBossIds() ?? [];
 
-        public ShenyoGiftEntry(int order, string id, Type scenarioType, Func<int[]> targetBossIds) {
+        public ShenyoGiftEntry(int order, string id, Type scenarioType, string talismanKey, Func<int[]> targetBossIds) {
             Order = order;
             Id = id;
             ScenarioType = scenarioType;
+            TalismanKey = talismanKey;
             this.targetBossIds = targetBossIds;
         }
     }
@@ -35,34 +38,35 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
     {
         public const int GiftCount = 24;
 
+        //符 Key 按获取序对应"雨部单字"家族：霎洇露霏霰汐/渍霆虹沆雹澍/泷霜霅霓雯霸/霄霉霹霞霁雩
         private static readonly ShenyoGiftEntry[] entries = [
-            Gift<ShenyoKingSlimeGift>(0, "KingSlime", () => [NPCID.KingSlime]),
-            Gift<ShenyoEyeOfCthulhuGift>(1, "EyeOfCthulhu", () => [NPCID.EyeofCthulhu]),
-            Gift<ShenyoEvilBossGift>(2, "EvilBoss", () => [NPCID.EaterofWorldsHead, NPCID.BrainofCthulhu]),
-            Gift<ShenyoCalamityEvilGift>(3, "CalamityEvil", () => [CWRID.NPC_HiveMind, CWRID.NPC_PerforatorHive]),
-            Gift<ShenyoQueenBeeOrDeerclopsGift>(4, "QueenBeeOrDeerclops", () => [NPCID.QueenBee, NPCID.Deerclops]),
-            Gift<ShenyoSkeletronGift>(5, "Skeletron", () => [NPCID.SkeletronHead]),
-            Gift<ShenyoSlimeGodGift>(6, "SlimeGod", () => [CWRID.NPC_SlimeGodCore]),
-            Gift<ShenyoWallOfFleshGift>(7, "WallOfFlesh", () => [NPCID.WallofFlesh]),
-            Gift<ShenyoQueenSlimeGift>(8, "QueenSlime", () => [NPCID.QueenSlimeBoss]),
-            Gift<ShenyoAquaticScourgeGift>(9, "AquaticScourge", () => [CWRID.NPC_AquaticScourgeHead]),
-            Gift<ShenyoMechsGift>(10, "Mechs", () =>
+            Gift<ShenyoKingSlimeGift>(0, "KingSlime", "FuSha", () => [NPCID.KingSlime]),
+            Gift<ShenyoEyeOfCthulhuGift>(1, "EyeOfCthulhu", "FuYin", () => [NPCID.EyeofCthulhu]),
+            Gift<ShenyoEvilBossGift>(2, "EvilBoss", "FuLu", () => [NPCID.EaterofWorldsHead, NPCID.BrainofCthulhu]),
+            Gift<ShenyoCalamityEvilGift>(3, "CalamityEvil", "FuFei", () => [CWRID.NPC_HiveMind, CWRID.NPC_PerforatorHive]),
+            Gift<ShenyoQueenBeeOrDeerclopsGift>(4, "QueenBeeOrDeerclops", "FuXian", () => [NPCID.QueenBee, NPCID.Deerclops]),
+            Gift<ShenyoSkeletronGift>(5, "Skeletron", "FuXi", () => [NPCID.SkeletronHead]),
+            Gift<ShenyoSlimeGodGift>(6, "SlimeGod", "FuZi", () => [CWRID.NPC_SlimeGodCore]),
+            Gift<ShenyoWallOfFleshGift>(7, "WallOfFlesh", "FuTing", () => [NPCID.WallofFlesh]),
+            Gift<ShenyoQueenSlimeGift>(8, "QueenSlime", "FuHong", () => [NPCID.QueenSlimeBoss]),
+            Gift<ShenyoAquaticScourgeGift>(9, "AquaticScourge", "FuHang", () => [CWRID.NPC_AquaticScourgeHead]),
+            Gift<ShenyoMechsGift>(10, "Mechs", "FuBao", () =>
                 [NPCID.TheDestroyer, NPCID.Retinazer, NPCID.Spazmatism, NPCID.SkeletronPrime]),
-            Gift<ShenyoPlanteraGift>(11, "Plantera", () => [NPCID.Plantera]),
-            Gift<ShenyoLeviathanGift>(12, "Leviathan", () => [CWRID.NPC_Leviathan, CWRID.NPC_Anahita]),
-            Gift<ShenyoGolemGift>(13, "Golem", () => [NPCID.Golem, NPCID.GolemHead]),
-            Gift<ShenyoDukeFishronGift>(14, "DukeFishron", () => [NPCID.DukeFishron]),
-            Gift<ShenyoEmpressGift>(15, "Empress", () => [NPCID.HallowBoss]),
-            Gift<ShenyoCultistGift>(16, "Cultist", () => [NPCID.CultistBoss]),
-            Gift<ShenyoMoonLordGift>(17, "MoonLord", () => [NPCID.MoonLordCore]),
-            Gift<ShenyoPolterghastGift>(18, "Polterghast", () => [CWRID.NPC_Polterghast]),
-            Gift<ShenyoOldDukeGift>(19, "OldDuke", () => [CWRID.NPC_OldDuke]),
-            Gift<ShenyoDevourerOfGodsGift>(20, "DevourerOfGods", () => [CWRID.NPC_DevourerofGodsHead]),
-            Gift<ShenyoYharonGift>(21, "Yharon", () => [CWRID.NPC_Yharon]),
-            Gift<ShenyoExoAndSCalGift>(22, "ExoAndSCal", () =>
+            Gift<ShenyoPlanteraGift>(11, "Plantera", "FuShu", () => [NPCID.Plantera]),
+            Gift<ShenyoLeviathanGift>(12, "Leviathan", "FuLong", () => [CWRID.NPC_Leviathan, CWRID.NPC_Anahita]),
+            Gift<ShenyoGolemGift>(13, "Golem", "FuShuang", () => [NPCID.Golem, NPCID.GolemHead]),
+            Gift<ShenyoDukeFishronGift>(14, "DukeFishron", "FuZha", () => [NPCID.DukeFishron]),
+            Gift<ShenyoEmpressGift>(15, "Empress", "FuNi", () => [NPCID.HallowBoss]),
+            Gift<ShenyoCultistGift>(16, "Cultist", "FuWen", () => [NPCID.CultistBoss]),
+            Gift<ShenyoMoonLordGift>(17, "MoonLord", "FuPo", () => [NPCID.MoonLordCore]),
+            Gift<ShenyoPolterghastGift>(18, "Polterghast", "FuXiao", () => [CWRID.NPC_Polterghast]),
+            Gift<ShenyoOldDukeGift>(19, "OldDuke", "FuMei", () => [CWRID.NPC_OldDuke]),
+            Gift<ShenyoDevourerOfGodsGift>(20, "DevourerOfGods", "FuPi", () => [CWRID.NPC_DevourerofGodsHead]),
+            Gift<ShenyoYharonGift>(21, "Yharon", "FuXia", () => [CWRID.NPC_Yharon]),
+            Gift<ShenyoExoAndSCalGift>(22, "ExoAndSCal", "FuJi", () =>
                 [CWRID.NPC_AresBody, CWRID.NPC_Apollo, CWRID.NPC_Artemis, CWRID.NPC_ThanatosHead, CWRID.NPC_SupremeCalamitas]),
             //终章双路径：BossRush本身不是击杀事件，靠Tracker的边沿检测；始源妖龙走正常击杀路径
-            Gift<ShenyoBossRushGift>(23, "BossRush", () => [CWRID.NPC_PrimordialWyrmHead]),
+            Gift<ShenyoBossRushGift>(23, "BossRush", "FuYu", () => [CWRID.NPC_PrimordialWyrmHead]),
         ];
 
         private static readonly Dictionary<string, ShenyoGiftEntry> byId = CreateIdMap();
@@ -98,9 +102,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
             return false;
         }
 
-        private static ShenyoGiftEntry Gift<TScenario>(int order, string id, Func<int[]> targetBossIds)
+        private static ShenyoGiftEntry Gift<TScenario>(int order, string id, string talismanKey, Func<int[]> targetBossIds)
             where TScenario : ShenyoBossGiftNarrative
-            => new(order, id, typeof(TScenario), targetBossIds);
+            => new(order, id, typeof(TScenario), talismanKey, targetBossIds);
 
         private static Dictionary<string, ShenyoGiftEntry> CreateIdMap() {
             Dictionary<string, ShenyoGiftEntry> map = new(StringComparer.Ordinal);

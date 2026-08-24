@@ -191,9 +191,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 return;
             }
 
-            //终局黑闪（一场一次，比虚空撕裂更迟解锁；不打断进行中的另一大招）
+            //终局黑闪（比虚空撕裂更迟解锁；不打断进行中的另一大招）。
+            //失手不消耗底牌：重试门线=失手时血线再降一档（OvBlackFlashRearm），
+            //每次失手门线更低，被死亡阈值自然封顶——底牌被打断后更低血量孤注一掷
+            float blackFlashGate = npc.lifeMax * MLordDirector.BlackFlashLifeRatio;
+            float rearmRatio = ai[MLordAiSlots.OvBlackFlashRearm];
+            if (rearmRatio > 0f) {
+                blackFlashGate = Math.Min(blackFlashGate, npc.lifeMax * rearmRatio);
+            }
             if (stateContext.CoreExposed && ai[MLordAiSlots.OvBlackFlashUsed] == 0f
-                && npc.life < npc.lifeMax * MLordDirector.BlackFlashLifeRatio
+                && npc.life < blackFlashGate
                 && current is not MLordBlackFlashState and not MLordVoidRuptureState) {
                 stateMachine.ChangeState(new MLordBlackFlashState());
                 return;

@@ -1,4 +1,3 @@
-using CalamityOverhaul.Content.MainMenus.Characters;
 using CalamityOverhaul.Content.MainMenus.Himayo;
 using CalamityOverhaul.Content.MainMenus.Overs;
 using CalamityOverhaul.Content.UIs.OverhaulSettings;
@@ -157,28 +156,12 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
             ShenyoMenuButtons.Draw(sb, fade);
             sb.End();
 
-            //公告栏等 Mod_MenuLoad 层（内部自管批次与固定步长逻辑）
+            //公告栏与角色码头等 Mod_MenuLoad 层（内部自管批次与固定步长逻辑）
             HimayoMenuActions.DriveMenuOverlays(sb);
 
-            //立绘：需处于已开启的 UIScale 批次
+            //交还开启批次，框架随后 End
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
-            DrivePortraits(sb);
-            //交还开启批次，框架随后 End；此处不再 End+Begin，直接沿用
-        }
-
-        private static void DrivePortraits(SpriteBatch sb) {
-            if (!VaultLoad.LoadenContent) {
-                return;
-            }
-            if (SupCalPortraitUI.Instance?.Active == true) {
-                SupCalPortraitUI.Instance.Update();
-                SupCalPortraitUI.Instance.Draw(sb);
-            }
-            if (HelenPortraitUI.Instance?.Active == true) {
-                HelenPortraitUI.Instance.Update();
-                HelenPortraitUI.Instance.Draw(sb);
-            }
         }
 
         //异常恢复：确保存在已开启批次；若已开启则 Begin 抛出并忽略

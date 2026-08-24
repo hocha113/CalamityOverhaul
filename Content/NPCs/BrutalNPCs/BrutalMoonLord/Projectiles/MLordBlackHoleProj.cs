@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
         //―――― 时间轴（timeLeft 递减制）――――
         internal const int FlightLife = 180;
         internal const int CollapseLife = 16;
-        internal const int FlashLife = 8;
+        internal const int FlashLife = 14;
         internal const int LingerLife = 34;
         internal const int TotalLife = FlightLife + CollapseLife + FlashLife + LingerLife;
 
@@ -42,12 +42,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
         private const float HardPullRadius = 260f;
         /// <summary>被拉向洞的分速度封顶：低于它才施力，正常位移速度即可挣脱（逃逸阀）</summary>
         private const float EscapeTowardSpeedCap = 8f;
-        /// <summary>出手后引力宽限帧：贴脸掷出不做无预警吸附</summary>
+        /// <summary>出手后引力宽限帧：贴脸掷出不做无预警吸附（接触伤同吃此宽限）</summary>
         private const int GraceFrames = 20;
-        /// <summary>黑洞本体接触判定半径</summary>
-        private const float CoreRadius = 36f;
+        /// <summary>黑洞本体接触判定半径（与可见暗核 φ 对齐：判定=视觉）</summary>
+        private const float CoreRadius = 48f;
         /// <summary>黑闪爆点最大半径：伤害窗逐帧取当前可见环半径，绝不超出</summary>
-        internal const float DetonationRadius = 210f;
+        internal const float DetonationRadius = 320f;
+        /// <summary>飞行体绘制半径（终局大招的体量：暗核+吸积盘+电弧结构约 2.5 倍此值）</summary>
+        private const float FlightBodyRadius = 76f;
 
         /// <summary>飞行帧计数（本地推进，仅表现与宽限判断用）</summary>
         private ref float FlightTimer => ref Projectile.localAI[0];
@@ -56,7 +58,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
 
         private Vector2 Anchor => new(Projectile.ai[0], Projectile.ai[1]);
 
-        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 1400;
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 1400;
+            //同材质拖尾缓存（契约5：飞行弹必须有可读尾迹）
+            ProjectileID.Sets.TrailCacheLength[Type] = 10;
+            ProjectileID.Sets.TrailingMode[Type] = 2;
+        }
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = (int)(CoreRadius * 2f);
@@ -186,9 +193,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             }
         }
 
-        /// <summary>判定：飞行/坍缩=本体小圆；爆闪=逐帧对齐可见冲击环；余辉无判定</summary>
+        /// <summary>判定：飞行/坍缩=本体小圆；爆闪=逐帧对齐可见冲击环；余辉无判定。
+        /// 出手宽限帧内接触伤随引力一起豁免：贴脸掷出不做无预警判定（契约3）</summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (InLinger) {
+                return false;
+            }
+            if (InFlight && FlightTimer <= GraceFrames) {
                 return false;
             }
             float radius = InFlash ? FlashRingRadius : CoreRadius;
@@ -217,16 +228,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             float size;
             if (InFlight) {
                 env = MathHelper.Clamp(FlightTimer / 20f, 0f, 1f);
-                size = 620f;
+                size = 800f;
             }
             else if (InCollapse) {
                 env = 1f;
-                size = MathHelper.Lerp(620f, 340f, CollapseT);
+                size = MathHelper.Lerp(800f, 420f, CollapseT);
             }
             else {
                 float fade = InFlash ? 1f : 1f - Projectile.timeLeft / (float)LingerLife;
                 env = 1f - fade * 0.85f;
-                size = MathHelper.Lerp(340f, 1150f, VaultUtils.EaseOutCubic(FlashT));
+                size = MathHelper.Lerp(420f, 1400f, VaultUtils.EaseOutCubic(FlashT));
             }
             if (env <= 0.04f) {
                 return;
@@ -236,17 +247,50 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
 
         public override bool PreDraw(ref Color lightColor) {
             Vector2 pos = Projectile.Center - Main.screenPosition;
-            float bodyR = InCollapse ? MathHelper.Lerp(46f, 26f, CollapseT) : 46f;
+            float bodyR = InCollapse
+                ? MathHelper.Lerp(FlightBodyRadius, 40f, CollapseT) : FlightBodyRadius;
             float bodyVis = InLinger ? Projectile.timeLeft / (float)LingerLife : 1f;
             if (InFlash) {
-                bodyR = MathHelper.Lerp(26f, 12f, FlashT);
+                bodyR = MathHelper.Lerp(40f, 18f, FlashT);
             }
 
+            if (InFlight) {
+                DrawTrail(bodyR);
+            }
             DrawHoleBody(pos, bodyR, bodyVis * (1f - FlashT));
             if (FlashT > 0f) {
                 DrawFlashRing(pos);
             }
             return false;
+        }
+
+        /// <summary>
+        /// 同材质拖尾（契约5）：黑洞自己的暗核+红缘按 oldPos 重绘（0.55×、衰减 alpha），
+        /// 读作洞体撕开空间留下的尾迹而非装饰光带
+        /// </summary>
+        private void DrawTrail(float bodyR) {
+            Texture2D glow = CWRAsset.DiffusionCircle?.Value;
+            if (glow == null) {
+                return;
+            }
+            for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
+                Vector2 oldPos = Projectile.oldPos[i];
+                if (oldPos == Vector2.Zero) {
+                    continue;
+                }
+                float k = 1f - i / (float)Projectile.oldPos.Length;
+                Vector2 pos = oldPos + Projectile.Size * 0.5f - Main.screenPosition;
+                float r = bodyR * 0.55f * (0.45f + 0.55f * k);
+                float texScale = r * 2.6f / glow.Width;
+                //红缘（加色）压底，暗核（真 alpha）叠上：与本体同层序同材质
+                Main.EntitySpriteDraw(glow, pos, null,
+                    MLordDirector.BlackFlashRed with { A = 0 } * (0.34f * k),
+                    Main.GlobalTimeWrappedHourly * 1.5f + i * 0.3f, glow.Size() / 2f,
+                    texScale * 1.25f, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(glow, pos, null, MLordDirector.VoidBlack * (0.55f * k),
+                    -Main.GlobalTimeWrappedHourly + i * 0.3f, glow.Size() / 2f,
+                    texScale, SpriteEffects.None, 0);
+            }
         }
 
         /// <summary>洞体：shader 量体（暗核+吸积盘+电弧），缺 shader 走 CPU 双层</summary>

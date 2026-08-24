@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         protected override void Build(NarrativeComposer n) {
             n.Say(NarrativeIds.Shenyo, L0.Value, Voice[1], onEnter: PortraitFace(ShenyoFullBodyPortrait.Face.Pensive))
              .Say(NarrativeIds.Shenyo, L1.Value, Voice[2], onEnter: PortraitFace(ShenyoFullBodyPortrait.Face.Wry))
+             .GiftTalisman(GiftId)
              .Say(NarrativeIds.Shenyo, L2.Value, Voice[3], onEnter: PortraitFace(ShenyoFullBodyPortrait.Face.Calm));
         }
 

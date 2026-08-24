@@ -20,6 +20,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         Blade,
         /// <summary>鞭子：发射物登记在 ProjectileID.Sets.IsAWhip 的召唤武器</summary>
         Whip,
+        /// <summary>弓弩：远程且吃箭弹药</summary>
+        Bow,
+        /// <summary>鱼竿：fishingPole 大于 0 的钓具（无伤害武器，渔力定强度）</summary>
+        Rod,
+        /// <summary>长矛：近战且发射物是原版矛 AI（aiStyle 19）</summary>
+        Spear,
+        /// <summary>投掷消耗品：手里剑/苦无/炸弹族（消耗品自含弹幕）</summary>
+        Thrown,
+    }
+
+    /// <summary>弓弩原型：决定拉弦节奏与出招池</summary>
+    internal enum KikasaBowArchetype : byte
+    {
+        /// <summary>速射连弩族：平射连珠 + 箭雨</summary>
+        Rapid,
+        /// <summary>制式弓族：抛射排箭 + 箭雨</summary>
+        Standard,
+        /// <summary>重弓族：贯穿重箭轮值 + 抛射排箭</summary>
+        Longbow,
     }
 
     /// <summary>枪械原型：决定出招池与编队规模，数值个性化走档案字段</summary>
@@ -74,6 +93,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         float BladeLen,        //刃长（对角线口径），斩痕规格与判定宽度的基准
         float DrawScale);      //绘制缩放
 
+    /// <summary>弓奴档案：同枪奴契约，行为字段服务器安全、贴图字段只管绘制</summary>
+    internal readonly record struct KikasaBowProfile(
+        KikasaBowArchetype Archetype,
+        int DrawPeriod,        //拉弦-放箭一轮的节拍基准
+        int FireStagger,       //相邻弓错帧
+        float ArrowDamageMul,  //单箭伤害倍率（已含节奏折算）
+        float ArrowSpeed,      //出弦速度
+        int MaxUnits,          //编队上限
+        SoundStyle FireSound,  //放箭音：借原武器 UseSound
+        float BowSpan,         //弓身纵距（贴图高折算），握点与搭箭位的基准
+        float DrawScale);      //绘制缩放
+
+    /// <summary>
+    /// 钓奴档案：强度不走 DPS 曲线（鱼竿无伤害），渔力是唯一证词，
+    /// CatchDamage 为甩出渔获的基伤、CastPeriod 为收竿节拍（渔力越高收得越勤）
+    /// </summary>
+    internal readonly record struct KikasaRodProfile(
+        int FishPower,         //渔力（item.fishingPole）
+        int CastPeriod,        //一轮起竿-收获的节拍
+        int CatchDamage,       //单件渔获基伤
+        SoundStyle CastSound,  //起竿音：借原武器 UseSound
+        float RodLen,          //竿身对角线长，竿梢出线点的基准
+        float DrawScale);      //绘制缩放
+
+    /// <summary>矛奴档案：同刀奴契约</summary>
+    internal readonly record struct KikasaSpearProfile(
+        int ThrustPeriod,      //轮转突刺的接力节拍
+        float ThrustDamageMul, //单刺伤害倍率（已含节奏折算）
+        int MaxUnits,          //矛数上限
+        SoundStyle ThrustSound,//突刺音：借原武器 UseSound
+        float ReachLen,        //矛身对角线长，突刺行程与判定长度的基准
+        float DrawScale);      //绘制缩放
+
+    /// <summary>
+    /// 掷奴档案：唯一转发原武器弹幕的族，安全性由消耗品结构背书
+    /// （物品掷出即消耗，弹幕不可能依赖仍被手持）
+    /// </summary>
+    internal readonly record struct KikasaThrowProfile(
+        int ThrowProjType,     //原武器登记的投掷弹幕（item.shoot），直接转发
+        int ThrowPeriod,       //轮转投掷的接力节拍
+        int ThrowStagger,      //相邻掷手错帧
+        float ThrowDamageMul,  //单掷伤害倍率（已含节奏折算）
+        float ThrowSpeed,      //掷出速度（原武器 shootSpeed 兜底抬升）
+        int MaxUnits,          //掷手上限
+        SoundStyle ThrowSound, //掷出音：借原武器 UseSound
+        float DrawScale);      //绘制缩放
+
     /// <summary>
     /// 鞭奴档案：几何与时序全部对齐原版 AI_165 契约
     /// 段数/射程倍率读鞭弹幕模板的 WhipSettings，甩出时长与 itemAnimationMax×MaxUpdates
@@ -107,12 +173,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (sample == null) {
                 return KikasaArmsKind.None;
             }
+            //鱼竿先判：无伤害钓具，后面的战斗判定全会漏掉它
+            if (IsRod(sample)) {
+                return KikasaArmsKind.Rod;
+            }
             //鞭先判：鞭也是 Swing 挥舞，但 noMelee=true 不会撞刀剑判定，先后只为语义清晰
             if (IsWhip(sample)) {
                 return KikasaArmsKind.Whip;
             }
             if (IsGun(sample)) {
                 return KikasaArmsKind.Gun;
+            }
+            if (IsBow(sample)) {
+                return KikasaArmsKind.Bow;
+            }
+            if (IsThrown(sample)) {
+                return KikasaArmsKind.Thrown;
+            }
+            if (IsSpear(sample)) {
+                return KikasaArmsKind.Spear;
             }
             if (IsBlade(sample)) {
                 return KikasaArmsKind.Blade;
@@ -147,6 +226,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             => item.damage > 0
             && item.shoot > ProjectileID.None && item.shoot < ProjectileLoader.ProjectileCount
             && ProjectileID.Sets.IsAWhip[item.shoot];
+
+        /// <summary>弓弩：远程且吃箭弹药</summary>
+        private static bool IsBow(Item item)
+            => item.damage > 0
+            && item.DamageType.CountsAsClass<RangedDamageClass>()
+            && item.useAmmo == AmmoID.Arrow;
+
+        /// <summary>鱼竿：钓具旗即身份（伤害为 0，不与任何战斗判定相争）</summary>
+        private static bool IsRod(Item item)
+            => item.fishingPole > 0;
+
+        /// <summary>长矛：近战且发射物是原版矛 AI（模组规范矛同 aiStyle）</summary>
+        private static bool IsSpear(Item item)
+            => item.damage > 0
+            && item.DamageType.CountsAsClass<MeleeDamageClass>()
+            && item.shoot > ProjectileID.None && item.shoot < ProjectileLoader.ProjectileCount
+            && ContentSamples.ProjectilesByType.TryGetValue(item.shoot, out Projectile proj)
+            && proj?.aiStyle == ProjAIStyleID.Spear;
+
+        /// <summary>
+        /// 投掷消耗品：远程消耗品自带弹幕且不是弹药本身
+        /// （ammo==None 是承重墙——箭/子弹也是带弹幕的远程消耗品）
+        /// </summary>
+        private static bool IsThrown(Item item)
+            => item.damage > 0
+            && item.consumable
+            && item.ammo == AmmoID.None
+            && item.DamageType.CountsAsClass<RangedDamageClass>()
+            && item.shoot > ProjectileID.None && item.shoot < ProjectileLoader.ProjectileCount;
 
         //==================== 伤害自平衡 ====================
 
@@ -237,6 +345,118 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     return new(arch, period, 4, mul, speed, 4, 4, 2f, sound, muzzleLen, drawScale);
                 }
             }
+        }
+
+        //==================== 弓档案 ====================
+
+        internal static KikasaBowProfile BowProfileOf(int itemType) {
+            Item sample = SampleOf(itemType);
+            SoundStyle sound = sample?.UseSound ?? SoundID.Item5;
+            if (sample == null || !IsBow(sample)) {
+                //异常兜底：按制式弓出场
+                return new(KikasaBowArchetype.Standard, 26, 4, 1.5f, 15.5f, 4, sound, 40f, 1f);
+            }
+
+            KikasaBowArchetype arch =
+                sample.useAnimation <= 17 ? KikasaBowArchetype.Rapid
+                : sample.useAnimation >= 30 ? KikasaBowArchetype.Longbow
+                : KikasaBowArchetype.Standard;
+
+            float baseMul = DamageCurve(sample);
+            float speed = 15.5f * Math.Clamp(sample.shootSpeed / 9f, 0.8f, 1.4f);
+            (float bowSpan, float drawScale) = MeasureBow(sample);
+
+            switch (arch) {
+                case KikasaBowArchetype.Rapid: {
+                    int period = Math.Clamp((int)(sample.useAnimation * 1.5f), 12, 22);
+                    float mul = Math.Clamp(baseMul * period / BaseFirePeriod, 0.4f, 8f);
+                    return new(arch, period, 3, mul, speed, 4, sound, bowSpan, drawScale);
+                }
+                case KikasaBowArchetype.Longbow: {
+                    //DrawPeriod 供排箭用；贯穿重箭另有自己的轮值时间线
+                    const int period = 34;
+                    float mul = Math.Clamp(baseMul * period / BaseFirePeriod, 1f, 10f);
+                    return new(arch, period, 5, mul, speed * 1.1f, 3, sound, bowSpan, drawScale);
+                }
+                default: {
+                    int period = Math.Clamp((int)(sample.useAnimation * 1.3f), 20, 32);
+                    float mul = Math.Clamp(baseMul * period / BaseFirePeriod, 0.5f, 9f);
+                    return new(arch, period, 4, mul, speed, 4, sound, bowSpan, drawScale);
+                }
+            }
+        }
+
+        /// <summary>弓身量尺：弓贴图竖长，量高折算；只喂绘制与出弦点</summary>
+        private static (float bowSpan, float drawScale) MeasureBow(Item sample) {
+            float height = Math.Max(sample.height, 24f);
+            if (!Main.dedServ) {
+                Main.instance.LoadItem(sample.type);
+                Texture2D tex = TextureAssets.Item[sample.type]?.Value;
+                if (tex != null) {
+                    height = Math.Max(tex.Height, 24f);
+                }
+            }
+            float drawScale = Math.Clamp(46f / height, 0.8f, 1.35f);
+            return (height * drawScale, drawScale);
+        }
+
+        //==================== 钓档案 ====================
+
+        internal static KikasaRodProfile RodProfileOf(int itemType) {
+            Item sample = SampleOf(itemType);
+            SoundStyle sound = sample?.UseSound ?? SoundID.Item1;
+            int power = Math.Max(sample?.fishingPole ?? 0, 1);
+            //渔获基伤与收竿节拍全押渔力：木竿 5 力≈开荒配枪，金竿 50 力≈困难前中期
+            int catchDamage = 12 + power * 2;
+            int period = Math.Clamp(66 - power / 2, 34, 66);
+            (float rodLen, float drawScale) = MeasureDiag(sample, 52f, 0.7f, 1.4f);
+            return new(power, period, catchDamage, sound, rodLen, drawScale);
+        }
+
+        //==================== 矛档案 ====================
+
+        internal static KikasaSpearProfile SpearProfileOf(int itemType) {
+            Item sample = SampleOf(itemType);
+            SoundStyle sound = sample?.UseSound ?? SoundID.Item1;
+            if (sample == null || !IsSpear(sample)) {
+                return new(30, 1.4f, 3, sound, 78f, 1f);
+            }
+            int period = Math.Clamp((int)(sample.useAnimation * 1.6f), 26, 56);
+            float mul = Math.Clamp(DamageCurve(sample) * period / BaseFirePeriod * 0.95f, 0.6f, 12f);
+            (float reach, float drawScale) = MeasureDiag(sample, 84f, 0.65f, 1.5f);
+            return new(period, mul, 3, sound, reach, drawScale);
+        }
+
+        //==================== 掷档案 ====================
+
+        internal static KikasaThrowProfile ThrowProfileOf(int itemType) {
+            Item sample = SampleOf(itemType);
+            SoundStyle sound = sample?.UseSound ?? SoundID.Item1;
+            if (sample == null || !IsThrown(sample)) {
+                return new(ProjectileID.Shuriken, 30, 5, 1f, 10f, 3, sound, 1.1f);
+            }
+            int period = Math.Clamp((int)(sample.useAnimation * 1.8f), 22, 50);
+            float mul = Math.Clamp(DamageCurve(sample) * period / BaseFirePeriod, 0.4f, 8f);
+            float speed = Math.Max(sample.shootSpeed, 8f);
+            (_, float drawScale) = MeasureDiag(sample, 30f, 0.9f, 1.7f);
+            return new(sample.shoot, period, 5, mul, speed, 3, sound, drawScale);
+        }
+
+        /// <summary>通用对角线量尺：目标长度→缩放，客户端量贴图、服务器回退 item 宽高</summary>
+        private static (float len, float drawScale) MeasureDiag(Item sample, float targetLen, float minScale, float maxScale) {
+            float w = Math.Max(sample?.width ?? 24, 16f);
+            float h = Math.Max(sample?.height ?? 24, 16f);
+            float diag = MathF.Sqrt(w * w + h * h);
+            if (!Main.dedServ && sample != null) {
+                Main.instance.LoadItem(sample.type);
+                Texture2D tex = TextureAssets.Item[sample.type]?.Value;
+                if (tex != null) {
+                    diag = MathF.Sqrt(tex.Width * tex.Width + tex.Height * tex.Height);
+                }
+            }
+            diag = Math.Max(diag, 20f);
+            float drawScale = Math.Clamp(targetLen / diag, minScale, maxScale);
+            return (diag * drawScale, drawScale);
         }
 
         /// <summary>枪身量尺：客户端量贴图宽、服务器回退 item.width：两处都只喂绘制与出膛点</summary>

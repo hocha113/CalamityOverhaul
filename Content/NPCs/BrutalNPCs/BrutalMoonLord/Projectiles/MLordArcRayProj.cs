@@ -13,8 +13,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
 {
     /// <summary>
     /// 弧光死光：角速度走缓动曲线的天体弧线（快→慢→快），或大招期的追踪衰减模式。
-    /// ai[0]=宿主 whoAmI，ai[1]=起始角，ai[2]=总扫角(带符号弧度)。
-    /// 追踪衰减：宿主为核心且核心状态==VoidRupture 时自动启用（各端确定性判定）
+    /// ai[0]=宿主 whoAmI，ai[1]=起始角，ai[2]=总扫角(带符号弧度)；
+    /// 追踪模式下 ai[2] 改义为该束在阵中的固定相位偏移。
+    /// 追踪衰减：宿主为核心且核心状态==VoidRupture 时自动启用（各端确定性判定）；
+    /// 各束目标角 = 玩家向 + 自身偏移 → 三叉阵刚性旋转，扇区间距永不塌缩（契约3）
     /// </summary>
     internal class MLordArcRayProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
@@ -73,12 +75,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
 
             float sweepT = MathHelper.Clamp((Timer - ExpandTime) / SweepFrames, 0f, 1f);
             if (TrackingMode) {
-                //追踪衰减：增益随扫描进度衰竭，逼迫走位从周旋转为一次性拉开
+                //追踪衰减：增益随扫描进度衰竭，逼迫走位从周旋转为一次性拉开。
+                //目标角 = 玩家向 + 本束固定相位偏移(ai[2])：三束刚性同旋，
+                //120° 逃生扇区任意时刻保持完整（独立追踪会向玩家收敛塌缩扇区）
                 float gain = MathHelper.Lerp(0.046f, 0f, VaultUtils.EaseInQuad(sweepT));
                 if (host.Alives() && host.target >= 0 && host.target < Main.maxPlayers) {
                     Player target = Main.player[host.target];
                     if (target.active && !target.dead) {
-                        float wantAngle = (target.Center - Projectile.Center).ToRotation();
+                        float wantAngle = (target.Center - Projectile.Center).ToRotation() + Projectile.ai[2];
                         TrackAngle = TrackAngle.AngleTowards(wantAngle, gain);
                     }
                 }

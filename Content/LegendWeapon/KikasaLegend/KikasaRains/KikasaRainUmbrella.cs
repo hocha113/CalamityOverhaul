@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -110,9 +111,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>释放瞬间锁定的蓄力档</summary>
         private float pourFill;
 
-        /// <summary>蓄墨满帧:伞下鬼越多蓄得越快(90→56),口径在 <see cref="KikasaOverride"/></summary>
-        private int CurrentChargeFrames
-            => KikasaOverride.GetChargeFullFrames(KikasaOverride.GetSlotCount(Owner));
+        //唤雨符:每 AI 帧解析一次的档与派发器快照(空绳零开销),绘制线程复用上一帧
+        private KikasaTalismanProfile talismanProfile = KikasaTalismanProfile.Identity;
+        private KikasaTalismanHookRunner talismanHooks;
+
+        /// <summary>
+        /// 蓄墨满帧:伞下鬼越多蓄得越快(90→56),口径在 <see cref="KikasaOverride"/>；
+        /// 沛符再除蓄墨速率倍率,下限护住换挡拍的可读性
+        /// </summary>
+        private int CurrentChargeFrames {
+            get {
+                int frames = KikasaOverride.GetChargeFullFrames(KikasaOverride.GetSlotCount(Owner));
+                float rate = talismanProfile.ChargeRateMul;
+                return Math.Max((int)MathF.Round(frames / MathF.Max(rate, 0.01f)), 18);
+            }
+        }
+
+        /// <summary>撑伞上浮帧数:霎符缩时经倍率折入,下限护住演出可读性</summary>
+        private int CurrentRiseFrames
+            => Math.Max((int)MathF.Round(RiseFrames * talismanProfile.RiseFramesMul), 2);
 
         /// <summary>蓄墨水位(表现):Flip 期随蓄力涨,Pour 期排空</summary>
         private float ChargeFill => State switch {
@@ -124,19 +141,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         /// <summary>
         /// 一波墨雨节拍的完整解:周期/滴数/错拍/是否齐掷波。
-        /// 滴数=域形态基数+每 3 格栏位一滴;周期随栏位缩短,但至少给出手窗留 4 帧回稳;
+        /// 滴数=域形态基数+每 3 格栏位一滴;周期随栏位缩短,再乘唤雨符节拍倍率
+        /// (霖加密/沛放缓),但至少给出手窗留 4 帧回稳;
         /// S≥<see cref="KikasaOverride.TierGhostVolley"/> 时每第 4 波为齐掷波
-        /// 出手拍全鬼同帧各掷一滴,不再占用错拍窗口
+        /// 出手拍全鬼同帧各掷一滴,不再占用错拍窗口。
+        /// 唤雨符节奏挂钩在基准解之后叠改(霎三连/雹自造齐掷/澍雩时窗等),护栏再钳一次
         /// </summary>
         private void SolveVolleyRhythm(Player owner, out int period, out int dropCount,
             out int stagger, out bool ghostVolley) {
             int slots = KikasaOverride.GetSlotCount(owner);
             dropCount = VolleyDropCount(owner) + KikasaOverride.GetDropBonus(slots);
             stagger = KikasaOverride.GetDropStagger(slots);
-            period = Math.Max(KikasaOverride.GetVolleyPeriod(slots),
+            float tempoMul = talismanProfile.RainTempoMul;
+            period = Math.Max((int)MathF.Round(KikasaOverride.GetVolleyPeriod(slots) * tempoMul),
                 WindupFrames + dropCount * stagger + 4);
             ghostVolley = slots >= KikasaOverride.TierGhostVolley
                 && (int)(StateTimer / period) % 4 == 3;
+
+            if (!talismanHooks.IsEmpty) {
+                KikasaVolleyRhythm rhythm = new() {
+                    Period = period,
+                    DropCount = dropCount,
+                    Stagger = stagger,
+                    GhostVolley = ghostVolley,
+                };
+                talismanHooks.ModifyVolleyRhythm(Projectile, ref rhythm);
+                dropCount = Math.Max(rhythm.DropCount, 0);
+                stagger = Math.Max(rhythm.Stagger, 1);
+                ghostVolley = rhythm.GhostVolley;
+                //出手窗+回稳帧的护栏在挂钩之后再钳一次,防节拍窗溢出周期
+                period = Math.Max(rhythm.Period, WindupFrames + dropCount * stagger + 4);
+            }
         }
 
         public override void SetDefaults() {
@@ -161,6 +196,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             Projectile.timeLeft = 2;
             Projectile.velocity = Vector2.Zero;
 
+            //唤雨符快照:一帧一解,后续节拍/滴生成/挂钩全部复用
+            talismanProfile = KikasaTalismanCombat.Resolve(owner.HeldItem);
+            talismanHooks = KikasaTalismanHooks.For(owner);
+
             bobPhase += 0.07f;
             UpdateLean(owner);
 
@@ -168,6 +207,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 //撑伞拍:伞骨闷扫+一层薄水
                 KikasaInk.Play(KikasaInk.UmbrellaWhoosh, Projectile.Center, 0.62f, -0.22f, 2);
                 KikasaInk.Play(SoundID.SplashWeak, Projectile.Center, 0.4f, -0.15f, 2);
+                //起伞挂钩(霎首拍预置/霁清零等),各端同拍
+                talismanHooks.OnRainStart(Projectile);
             }
 
             switch (State) {
@@ -194,10 +235,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         private Vector2 HoverAnchor(Player owner)
             => owner.MountedCenter + new Vector2(owner.velocity.X * 2.2f,
-                -HoverHeight + MathF.Sin(bobPhase) * 6f - recoil);
+                -HoverHeight * talismanProfile.HoverHeightMul + MathF.Sin(bobPhase) * 6f - recoil);
 
         private void UpdateRise(Player owner) {
-            float t = MathHelper.Clamp(StateTimer / (float)RiseFrames, 0f, 1f);
+            float t = MathHelper.Clamp(StateTimer / (float)CurrentRiseFrames, 0f, 1f);
             //EaseOutBack:上浮带过冲再回落定位
             const float c1 = 1.70158f;
             const float c3 = c1 + 1f;
@@ -234,7 +275,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 BeginRecall();
                 return;
             }
-            if (StateTimer >= RiseFrames) {
+            if (StateTimer >= CurrentRiseFrames) {
                 if (ModeAi > 0.5f) {
                     State = UmbrellaState.Flip;
                     //翻成倒扣:伞面一拧
@@ -302,12 +343,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                             KikasaInk.InkDeep, Main.rand.NextFloat(0.3f, 0.46f))?.Configure(Main.rand.Next(14, 24));
                     }
                 }
+                //出手拍事件(霅节拍环/雹齐掷重音等),各端同拍一次
+                talismanHooks.OnVolley(Projectile, (int)(StateTimer / period), ghostVolley);
             }
             if (ghostVolley) {
                 //众鬼齐掷:出手拍全鬼同帧各掷一滴,超出常规滴数的那些是鬼滴
                 if (beat == WindupFrames) {
                     for (int i = 0; i < slots; i++) {
-                        FireDrop(i, ghostDrop: i >= dropCount);
+                        FireDrop(i, ghostDrop: i >= dropCount, ghostVolley: true);
                     }
                 }
             }
@@ -317,8 +360,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     && (beat - WindupFrames) % stagger == 0) {
                     FireDrop((beat - WindupFrames) / stagger);
                 }
-                //二鬼帮衬:窗口收尾再补一颗侧掷鬼滴,轮转槽位天然掷向下一个目标
-                if (slots >= KikasaOverride.TierGhostAssist
+                //二鬼帮衬:窗口收尾再补一颗侧掷鬼滴,轮转槽位天然掷向下一个目标;
+                //节拍解 DropCount=0(霅停雨拍等)时本拍整体无滴,帮衬滴一并停手,
+                //否则出手条件退化成 beat==WindupFrames 照样漏滴
+                if (dropCount > 0 && slots >= KikasaOverride.TierGhostAssist
                     && beat == WindupFrames + dropCount * stagger) {
                     FireDrop(dropCount, ghostDrop: true);
                 }
@@ -469,9 +514,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     pourAim = (Main.MouseWorld - Projectile.Center).ToRotation();
                     int damage = (int)(Projectile.damage * (1.2f + 0.9f * pourFill)
                         * KikasaOverride.GetSlotDamageMul(KikasaOverride.GetSlotCount(owner)));
+                    //墨瀑生成挂钩(霸月瀑打标等):标签经 ai[1] 量化编码随生成包同步
+                    KikasaPourSpawnContext pourCtx = new() {
+                        Aim = pourAim,
+                        Fill = pourFill,
+                        DamageMul = 1f,
+                        TagId = 0,
+                    };
+                    talismanHooks.ModifyPourSpawn(ref pourCtx);
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), BowlMouthPos(), Vector2.Zero,
-                        ModContent.ProjectileType<KikasaInkPour>(), damage, Projectile.knockBack * 1.5f,
-                        Projectile.owner, pourAim, pourFill);
+                        ModContent.ProjectileType<KikasaInkPour>(),
+                        (int)(damage * pourCtx.DamageMul), Projectile.knockBack * 1.5f,
+                        Projectile.owner, pourCtx.Aim,
+                        KikasaInkPour.PackFillTag(pourFill, pourCtx.TagId));
                 }
                 if (!Main.dedServ) {
                     //旁观这帧可能还没收到墨瀑包,用倾覆朝向保底
@@ -518,6 +573,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
             recallFrom = Projectile.Center;
             State = UmbrellaState.Recall;
+            //收伞挂钩(霁光结算等);持有条件破裂的直接 Kill 不经此处,视作非主动收伞
+            talismanHooks.OnRecall(Projectile);
             KikasaInk.Play(KikasaInk.UmbrellaWhoosh, Projectile.Center, 0.4f, -0.5f, 2);
             //收拢拍抖落最后一圈墨珠
             if (!Main.dedServ) {
@@ -612,9 +669,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         /// <summary>
         /// 甩出一滴:弹幕只在所有者端生成,生成包带走目标/坠落列/鬼滴与墨洼标记。
-        /// 鬼滴(伞下鬼的侧掷)从对侧伞缘出手并换鬼青调;湖倾档(S≥10)全部大滴且落地留墨洼
+        /// 鬼滴(伞下鬼的侧掷)从对侧伞缘出手并换鬼青调;湖倾档(S≥10)全部大滴且落地留墨洼;
+        /// 唤雨符滴生成挂钩在基准值备齐后叠改(霏雾化/雹巨雹/霓染色/霄高坠等),符标签随 ai[2] 高位同步
         /// </summary>
-        private void FireDrop(int slot, bool ghostDrop = false) {
+        private void FireDrop(int slot, bool ghostDrop = false, bool ghostVolley = false) {
             if (Main.myPlayer != Projectile.owner) {
                 return;
             }
@@ -642,24 +700,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 }
             }
 
-            //伞下鬼乘区与湖倾档:滴变大,落地留墨洼
+            //伞下鬼乘区与湖倾档:滴变大,落地留墨洼;唤雨符乘区与积潦解锁叠在其上
             int slots = KikasaOverride.GetSlotCount(Owner);
-            dmgMul *= KikasaOverride.GetSlotDamageMul(slots);
-            int flags = 0;
-            if (ghostDrop) {
-                flags |= KikasaInkDrop.FlagGhost;
-            }
+            dmgMul *= KikasaOverride.GetSlotDamageMul(slots) * talismanProfile.DropDamageMul;
+            bool ghost = ghostDrop;
+            bool puddle = false;
             if (slots >= KikasaOverride.TierLakeTilt) {
                 scale *= 1.2f;
-                flags |= KikasaInkDrop.FlagPuddle;
+                puddle = true;
+            }
+            else if (talismanProfile.PuddleUnlock) {
+                //潦符:湖倾档之下也积洼,滴的大小不变(积洼是符的事,不是档位的事)
+                puddle = true;
             }
 
-            int p = Projectile.NewProjectile(Projectile.GetSource_FromThis(), rimPos, flickVel,
-                ModContent.ProjectileType<KikasaInkDrop>(), (int)(Projectile.damage * dmgMul),
-                Projectile.knockBack, Projectile.owner, target, fallbackX, flags);
-            if (p >= 0 && p < Main.maxProjectiles && scale != 1f) {
-                Main.projectile[p].scale = scale;
-                Main.projectile[p].netUpdate = true;
+            //滴生成挂钩:基准值全部备齐后派发,挂钩只做叠改
+            KikasaDropSpawnContext dropCtx = new() {
+                Position = rimPos,
+                Velocity = flickVel,
+                Scale = scale,
+                DamageMul = dmgMul,
+                Penetrate = 1,
+                TargetWho = target,
+                FallbackX = fallbackX,
+                Ghost = ghost,
+                Puddle = puddle,
+                GhostVolley = ghostVolley,
+                FromPourScatter = false,
+                DropIndex = slot,
+                TagId = 0,
+                TagPayload = 0,
+            };
+            talismanHooks.ModifyDropSpawn(ref dropCtx);
+
+            int flags = (dropCtx.Ghost ? KikasaInkDrop.FlagGhost : 0)
+                | (dropCtx.Puddle ? KikasaInkDrop.FlagPuddle : 0)
+                | KikasaTalismanHooks.PackTag(dropCtx.TagId, dropCtx.TagPayload);
+            int p = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
+                dropCtx.Position, dropCtx.Velocity,
+                ModContent.ProjectileType<KikasaInkDrop>(),
+                (int)(Projectile.damage * dropCtx.DamageMul),
+                Projectile.knockBack, Projectile.owner,
+                dropCtx.TargetWho, dropCtx.FallbackX, flags);
+            if (p >= 0 && p < Main.maxProjectiles) {
+                Projectile drop = Main.projectile[p];
+                //穿透只在归属端判伤,不需同步;体积走既有的补包路径
+                if (dropCtx.Penetrate != 1) {
+                    drop.penetrate = dropCtx.Penetrate;
+                }
+                if (dropCtx.Scale != 1f) {
+                    drop.scale = dropCtx.Scale;
+                    drop.netUpdate = true;
+                }
             }
         }
 

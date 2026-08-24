@@ -110,7 +110,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             }
         }
 
-        /// <summary>三辉弧：120° 相位差的追踪衰减死光（宿主为大招期核心自动挂追踪）</summary>
+        /// <summary>
+        /// 三辉弧：120° 相位差的追踪衰减死光（宿主为大招期核心自动挂追踪）。
+        /// 公平阀（契约3）：三束共享刚性 120° 相位追踪——ai[2] 传各束固定偏移，
+        /// 追踪只旋整个三叉阵，任意时刻保证两个完整 120° 逃生扇区（独立追踪会收敛塌缩扇区）
+        /// </summary>
         private void FireTriArc(MLordContext context) {
             if (!VaultUtils.isServer) {
                 MLordScreenEffects.PushStarRing(context.Npc.Center, 1.1f, 980f, 34);
@@ -124,10 +128,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             int damage = ScaleDamage(context, MLordDirector.UltRayDamage);
             float baseAngle = (context.Target.Center - npc.Center).ToRotation();
             for (int i = 0; i < 3; i++) {
-                float angle = baseAngle + MathHelper.TwoPi / 3f * i;
+                float offset = MathHelper.TwoPi / 3f * i;
                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
                     ModContent.ProjectileType<MLordArcRayProj>(), damage, 0f, Main.myPlayer,
-                    npc.whoAmI, angle, 0f);
+                    npc.whoAmI, baseAngle + offset, offset);
             }
         }
 

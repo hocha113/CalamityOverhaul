@@ -3,12 +3,14 @@ using CalamityOverhaul.Content.Cyberwares;
 using CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans;
 using CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals;
 using CalamityOverhaul.Content.HackTimes;
+using CalamityOverhaul.Content.Items.Melee.Arbiters;
 using CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
@@ -97,6 +99,12 @@ namespace CalamityOverhaul
         KikasaReset,
         //世界鬼伞的权威世界态下发（是否已生成+锚点），镜像 ToriiShrineSync
         OniUmbrellaSync,
+        //鬼伞·唤雨符：挂/摘请求→服务端校验→回执，另有符箧快照上行
+        KikasaTalisman,
+        //断罪师显现：认领请求→服务端许可→归属端拔斧结算，镜像 WeaverGrievancesManifestation
+        ArbiterManifestation,
+        //鬼伞·唤雨符 NPC 叠层（洇痕/渍/霉蚀）：归属端写入→紧凑广播，服务端承载并转播给旁观端
+        KikasaTalismanStack,
     }
 
     public static class CWRNetWork
@@ -179,6 +187,7 @@ namespace CalamityOverhaul
             MachineEffect.NetHandle(type, reader, whoAmI);
             WraithNet.NetHandle(type, reader, whoAmI);
             WGManifestationNet.NetHandle(type, reader, whoAmI);
+            ArbiterManifestationNet.NetHandle(type, reader, whoAmI);
             OnikiriTutorialNet.NetHandle(type, reader, whoAmI);
             OnikiriNet.NetHandle(type, reader, whoAmI);
             OniDomainNet.NetHandle(type, reader, whoAmI);
@@ -186,6 +195,8 @@ namespace CalamityOverhaul
             KikasaLakeNet.NetHandle(type, reader, whoAmI);
             KikasaDrownNet.NetHandle(type, reader, whoAmI);
             KikasaResetNet.NetHandle(type, reader, whoAmI);
+            KikasaTalismanNet.NetHandle(type, reader, whoAmI);
+            KikasaTalismanStackNPC.NetHandle(type, reader, whoAmI);
             RamNet.NetHandle(type, reader, whoAmI);
             CyberwareNet.NetHandle(type, reader, whoAmI);
             SandevistanNet.NetHandle(type, reader, whoAmI);

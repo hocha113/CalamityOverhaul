@@ -142,10 +142,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         private void UpdateBurn(float alpha, float radius) {
-            if (alpha < 0.55f) {
+            //小海有向心拽所以全端逐帧跑,小阵只有结算,非结算帧整个循环免跑
+            if (alpha < 0.55f || timer % BurnTick != 0 || !Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
-            bool strikeTick = timer % BurnTick == 0 && Projectile.IsOwnedByLocalPlayer();
             Player owner = Owner;
 
             for (int i = 0; i < Main.maxNPCs; i++) {
@@ -160,16 +160,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     continue;
                 }
 
-                if (strikeTick) {
-                    int damage = Math.Max(Projectile.damage, 1);
-                    if (npc.boss) {
-                        damage = (int)(damage * 1.35f);
-                    }
-                    npc.SimpleStrikeNPC(damage, npc.direction);
-                    npc.AddBuff(BuffID.OnFire3, 180);
-                    if (!VaultUtils.isServer) {
-                        SpawnBurnDust(npc);
-                    }
+                int damage = Math.Max(Projectile.damage, 1);
+                if (npc.boss) {
+                    damage = (int)(damage * 1.35f);
+                }
+                npc.SimpleStrikeNPC(damage, npc.direction);
+                npc.AddBuff(BuffID.OnFire3, 180);
+                if (!VaultUtils.isServer) {
+                    SpawnBurnDust(npc);
                 }
             }
         }
@@ -208,12 +206,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             if (beat % LightningPeriod == 0 && beat / LightningPeriod > lastLightningTick) {
                 lastLightningTick = beat / LightningPeriod;
-                Vector2 spawn = target >= 0
-                    ? Main.npc[target].Center + new Vector2(0f, -80f)
-                    : Projectile.Center + new Vector2(0f, -60f);
-                int dmg = Math.Max((int)(Projectile.damage * 1.6f), 1);
-                Projectile.NewProjectile(Projectile.GetSource_FromAI(), spawn, Vector2.Zero,
-                    ModContent.ProjectileType<PandemoniumLightning>(), dmg, 1f, Projectile.owner, 0f, 1f);
+                //闪电初速为零,没猎物时找不到目标当帧即自杀,干脆不放
+                if (target >= 0) {
+                    Vector2 spawn = Main.npc[target].Center + new Vector2(0f, -80f);
+                    int dmg = Math.Max((int)(Projectile.damage * 1.6f), 1);
+                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), spawn, Vector2.Zero,
+                        ModContent.ProjectileType<PandemoniumLightning>(), dmg, 1f, Projectile.owner, 0f, 1f);
+                }
             }
 
             if (beat % RainPeriod == 0 && beat / RainPeriod > lastRainTick) {

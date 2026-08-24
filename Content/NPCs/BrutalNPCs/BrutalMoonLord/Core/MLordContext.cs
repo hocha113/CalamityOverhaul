@@ -28,6 +28,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         public int TrinityCursor { get; set; }
         /// <summary>核心裸露出招序列游标</summary>
         public int ExposedCursor { get; set; }
+        /// <summary>本次协奏走短变体（循环内非首位协奏席；服务端选招时写入，协奏 OnEnter 消费）</summary>
+        public bool ConcertoShortVariant { get; set; }
         /// <summary>死亡演出已完，CheckDead 据此放行</summary>
         public bool DeathPerformanceFinished { get; set; }
         /// <summary>待处理的部件破坏事件数（服务端排队）</summary>
@@ -60,29 +62,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         /// <summary>编队时钟引用</summary>
         public ref float FormationClock => ref Owner.ai[MLordAiSlots.OvFormationClock];
 
-        /// <summary>三相拱卫固定出招表</summary>
+        /// <summary>三相拱卫固定出招表：最强演出（噬咬投技）居中段，两个长光束态拆开，坍缩收尾</summary>
         internal static readonly MLordStateIndex[] TrinityCycle = [
             MLordStateIndex.Concerto,
             MLordStateIndex.TidalPalms,
-            MLordStateIndex.DeathrayScan,
-            MLordStateIndex.Concerto,
             MLordStateIndex.Starfall,
-            MLordStateIndex.CrescentClose,
             MLordStateIndex.Concerto,
             MLordStateIndex.MoonBite,
+            MLordStateIndex.DeathrayScan,
+            MLordStateIndex.Concerto,
+            MLordStateIndex.CrescentClose,
             MLordStateIndex.GravityCollapse,
         ];
 
-        /// <summary>核心裸露强化出招表（同状态吃 CoreExposed 旗标）</summary>
+        /// <summary>核心裸露强化出招表（同状态吃 CoreExposed 旗标）：噬咬前移进终局前半</summary>
         internal static readonly MLordStateIndex[] ExposedCycle = [
             MLordStateIndex.Concerto,
+            MLordStateIndex.MoonBite,
             MLordStateIndex.CrescentClose,
             MLordStateIndex.Starfall,
+            MLordStateIndex.Concerto,
             MLordStateIndex.TidalPalms,
             MLordStateIndex.DeathrayScan,
             MLordStateIndex.GravityCollapse,
-            MLordStateIndex.Concerto,
-            MLordStateIndex.MoonBite,
         ];
 
         public void ResetChargeState() {
@@ -95,16 +97,41 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
             ChargeProgress = MathHelper.Clamp(progress, 0f, 1f);
         }
 
-        /// <summary>按当前阶段推进出招游标并返回下一状态索引</summary>
+        /// <summary>
+        /// 按当前阶段推进出招游标并返回下一状态索引。
+        /// 协奏席规则：循环首位协奏为完整连接拍，其余席走短变体；
+        /// 升压跳拍：三相期部件破坏≥2 后非首位协奏直接让位（后期压力上行，
+        /// PartBreak 事件演出本身已提供喘息）
+        /// </summary>
         public MLordStateIndex NextAttackIndex() {
             if (CoreExposed) {
-                MLordStateIndex next = ExposedCycle[ExposedCursor % ExposedCycle.Length];
-                ExposedCursor++;
+                int cursor = ExposedCursor;
+                MLordStateIndex next = AdvanceCycle(ExposedCycle, ref cursor, allowSkip: false);
+                ExposedCursor = cursor;
                 return next;
             }
-            MLordStateIndex trinityNext = TrinityCycle[TrinityCursor % TrinityCycle.Length];
-            TrinityCursor++;
+            int trinityCursor = TrinityCursor;
+            MLordStateIndex trinityNext = AdvanceCycle(TrinityCycle, ref trinityCursor,
+                allowSkip: Parts.BrokenCount >= 2);
+            TrinityCursor = trinityCursor;
             return trinityNext;
+        }
+
+        private MLordStateIndex AdvanceCycle(MLordStateIndex[] cycle, ref int cursor, bool allowSkip) {
+            for (int guard = 0; guard <= cycle.Length; guard++) {
+                int pos = cursor % cycle.Length;
+                MLordStateIndex next = cycle[pos];
+                cursor++;
+                if (next == MLordStateIndex.Concerto) {
+                    bool firstSlot = pos == 0;
+                    if (!firstSlot && allowSkip) {
+                        continue;
+                    }
+                    ConcertoShortVariant = !firstSlot;
+                }
+                return next;
+            }
+            return MLordStateIndex.Concerto;    //表内不可能全为可跳协奏，兜底不可达
         }
     }
 

@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         /// <summary>
         /// 专属械奴：比目鱼（推断只读模板伤 4）、鬼切（useStyle=Shoot 进不了刀推断）、
-        /// 万魔殿（HoldUp 魔法进不了枪/刀/鞭）、天顶剑（noMelee=true 进不了刀推断，
+        /// 万魔殿与 SHPC（HoldUp 魔法进不了通用推断）、天顶剑（noMelee=true 进不了刀推断，
         /// 且万剑归一的名剑理应有自己的演出）。静态构造在首次 TryGet（进游戏后）才触发
         /// </summary>
         static KikasaArmsIndex() {
@@ -34,6 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             entries[OnikiriLegend.OnikiriOverride.ID] = KikasaOnikiri.KikasaOnikiriServant.Summon;
             entries[ModContent.ItemType<Pandemonium>()] = KikasaPandemonium.KikasaPandemoniumServant.Summon;
             entries[ItemID.Zenith] = KikasaZenith.KikasaZenithServant.Summon;
+            entries[SHPCLegend.SHPCOverride.ID] = KikasaSHPC.KikasaSHPCServant.Summon;
         }
 
         /// <summary>该武器能否被湖驱使：专门条目 → 枪推断 → 刀剑推断</summary>
@@ -53,6 +54,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 case KikasaArmsKind.Whip:
                     spawner = (owner, at, count)
                         => KikasaWhips.KikasaWhipServant.Summon(owner, at, count, itemType);
+                    return true;
+                case KikasaArmsKind.Bow:
+                    spawner = (owner, at, count)
+                        => KikasaBows.KikasaBowServant.Summon(owner, at, count, itemType);
+                    return true;
+                case KikasaArmsKind.Rod:
+                    spawner = (owner, at, count)
+                        => KikasaRods.KikasaRodServant.Summon(owner, at, count, itemType);
+                    return true;
+                case KikasaArmsKind.Spear:
+                    spawner = (owner, at, count)
+                        => KikasaSpears.KikasaSpearServant.Summon(owner, at, count, itemType);
+                    return true;
+                case KikasaArmsKind.Thrown:
+                    spawner = (owner, at, count)
+                        => KikasaThrows.KikasaThrowServant.Summon(owner, at, count, itemType);
                     return true;
             }
             spawner = null;

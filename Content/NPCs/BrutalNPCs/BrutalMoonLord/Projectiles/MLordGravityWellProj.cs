@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
 {
     /// <summary>
     /// 引力井：牵引玩家 + 引力透镜扭曲 + 环绕星尘吸积。
-    /// 崩解时放出环形幻影眼（服务端）。本体不接触伤害
+    /// 崩解时放出环形幻影眼（服务端，连缺三位留可穿走廊）。本体不接触伤害
     /// </summary>
     internal class MLordGravityWellProj : ModProjectile, IWarpDrawable
     {
@@ -29,6 +29,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
         private const float HardPullRadius = 320f;
         /// <summary>公平阀：向井分速度达此值后不再施力，全程保留主动挣脱手段（契约3）</summary>
         internal const float EscapeTowardSpeedCap = 8.5f;
+        /// <summary>公平阀（契约3）：崩解环连缺位数——玩家刚被井吸向中心，满环即近乎必中</summary>
+        internal const int BurstGapSlots = 3;
 
         private ref float Timer => ref Projectile.localAI[0];
 
@@ -117,7 +119,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
                 }
                 int count = 10;
                 float baseAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+                int gapAt = Main.rand.Next(count);
                 for (int i = 0; i < count; i++) {
+                    //连缺 BurstGapSlots 位：被吸向井心的玩家有一条可穿走廊（发射循环实读，契约3.1）
+                    if ((i - gapAt + count) % count < BurstGapSlots) {
+                        continue;
+                    }
                     float angle = baseAngle + MathHelper.TwoPi / count * i;
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center,
                         angle.ToRotationVector2() * 7.5f, ProjectileID.PhantasmalEye, damage, 0f, Main.myPlayer);

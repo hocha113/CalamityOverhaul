@@ -9,9 +9,10 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.MainMenus.Shenyo
 {
     /// <summary>
-    /// 鬼湖夜雨场景渲染器：湖景天穹（<c>ShenyoMenuLake</c> TechLake）打底，
+    /// 鬼湖夜雨场景渲染器：湖景天穹（<c>ShenyoMenuLake</c> TechLake，含湖面雨砸溅环）打底，
     /// 沈幽雨水幽灵立影按远近三组绘制（<c>ShenyoMenuGhost</c>，倒影翻面先画、潮雾带隔行），
-    /// 前景雨幕（TechRain）盖顶后整幅送入湿屏合成（<c>ShenyoMenuWet</c>，镜头水珠折射）。<br/>
+    /// 雨幕（TechRain）按远/中/近三次插层——远雨止于水线被立影遮挡、近雨盖顶，
+    /// 整幅送入湿屏合成（<c>ShenyoMenuWet</c>，镜头水珠折射+溅击）；风暴脉动 gust 全链同拍。<br/>
     /// 立影循环走「汇聚成形→驻立→坠散入湖→缺席」的黑雨拍子（承 <see cref="Scenarios.Shenyo.ShenyoPortraitRainRenderer"/> 的入场语言），
     /// 右侧大近影为常驻锚。着色器或噪声缺席时退化为 CPU 渐变+压色立影，绝不黑屏。<br/>
     /// 调用契约：进入 <see cref="Draw"/> 时批次已结束，返回时不留任何已开启批次。
@@ -87,6 +88,11 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
         private static int thunderTimer = 900;
         private static int thunderSoundDelay;
 
+        //风暴脉动：慢涌打底+随机阵风冲顶，雨幕/湿屏/湖面溅击同源呼吸
+        private static float gust = 0.4f;
+        private static float gustSurge;
+        private static int gustTimer = 300;
+
         private static RenderTarget2D sceneTarget;
         private static bool targetFault;
 
@@ -105,6 +111,9 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
             flashEcho = 0;
             thunderSoundDelay = 0;
             thunderTimer = 600 + Main.rand.Next(600);
+            gust = 0.4f;
+            gustSurge = 0f;
+            gustTimer = 240 + Main.rand.Next(360);
             for (int i = 0; i < states.Length; i++) {
                 FigureState st = states[i];
                 st.Phase = FigurePhase.Absent;
@@ -169,6 +178,16 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
                     MaxInstances = 2,
                 });
             }
+
+            //风暴脉动：双正弦慢涌打底，阵风冲顶后指数回落
+            if (--gustTimer <= 0) {
+                gustTimer = 420 + Main.rand.Next(780);
+                gustSurge = 0.72f + Main.rand.NextFloat(0.28f);
+            }
+            gustSurge *= 0.99f;
+            float swell = 0.5f + 0.30f * MathF.Sin(tickCount * 0.0041f)
+                + 0.20f * MathF.Sin(tickCount * 0.0013f + 1.7f);
+            gust = MathHelper.Clamp(swell * 0.5f + gustSurge, 0.15f, 1f);
         }
 
         private static void TickFigure(int i) {
@@ -269,12 +288,20 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
             float time = (float)Main.timeForVisualEffects * 0.016f;
             DrawLakePass(spriteBatch, graphicsDevice, lake, noise, white, vpW, vpH, time, fade);
             DrawCrowd(spriteBatch, graphicsDevice, ghost, noise, portrait, vpW, vpH, time, fade);
+            //远雨幕：细/慢/暗，止于水线——立影身后也在下雨，纵深由遮挡读出
+            DrawRainPass(spriteBatch, graphicsDevice, lake, noise, white, vpW, vpH, time, fade,
+                new Vector4(1.65f, 0.70f, 0.45f, 0.00f), ShenyoMenuTheme.HorizonY + 0.02f);
             DrawFigureGroup(spriteBatch, graphicsDevice, ghost, noise, portrait, vpW, vpH, time, fade, 0f, 0.30f);
             DrawMistRow(spriteBatch, MistRows[0], vpW, vpH, time, fade);
             DrawFigureGroup(spriteBatch, graphicsDevice, ghost, noise, portrait, vpW, vpH, time, fade, 0.30f, 0.55f);
+            //中雨幕：插在中影与近影之间
+            DrawRainPass(spriteBatch, graphicsDevice, lake, noise, white, vpW, vpH, time, fade,
+                new Vector4(1.25f, 0.85f, 0.65f, 0.02f), ShenyoMenuTheme.HorizonY + 0.20f);
             DrawMistRow(spriteBatch, MistRows[1], vpW, vpH, time, fade);
             DrawFigureGroup(spriteBatch, graphicsDevice, ghost, noise, portrait, vpW, vpH, time, fade, 0.55f, 1.01f);
-            DrawRainPass(spriteBatch, graphicsDevice, lake, noise, white, vpW, vpH, time, fade);
+            //近雨幕：粗/快/亮，全屏盖顶
+            DrawRainPass(spriteBatch, graphicsDevice, lake, noise, white, vpW, vpH, time, fade,
+                new Vector4(1.00f, 1.15f, 1.00f, 0.03f), 1.30f);
 
             if (useWet) {
                 UnbindTextures(graphicsDevice);
@@ -323,9 +350,10 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
             }
         }
 
-        //====== 前景雨幕（预乘 AlphaBlend 盖顶）======
+        //====== 雨幕层（预乘 AlphaBlend）：cfg=频率/速度/透明度/斜度，bottom=下缘软截止 ======
         private static void DrawRainPass(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice,
-            Effect lake, Texture2D noise, Texture2D white, int vpW, int vpH, float time, float fade) {
+            Effect lake, Texture2D noise, Texture2D white, int vpW, int vpH, float time, float fade,
+            Vector4 cfg, float bottom) {
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
                 SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
@@ -333,6 +361,8 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
                 graphicsDevice.Textures[1] = noise;
                 graphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
                 SetLakeParams(lake, vpW, vpH, time, fade);
+                lake.Parameters["uRainCfg"]?.SetValue(cfg);
+                lake.Parameters["uRainBottom"]?.SetValue(bottom);
                 lake.CurrentTechnique = lake.Techniques["TechRain"];
                 lake.CurrentTechnique.Passes[0].Apply();
                 spriteBatch.Draw(white, new Rectangle(0, 0, vpW, vpH), Color.White);
@@ -348,6 +378,7 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
             lake.Parameters["uScreenSize"]?.SetValue(new Vector2(vpW, vpH));
             lake.Parameters["uParallax"]?.SetValue(parallax * ShenyoMenuTheme.ParallaxMax);
             lake.Parameters["uFlash"]?.SetValue(flash);
+            lake.Parameters["uGust"]?.SetValue(gust);
             lake.Parameters["uHorizon"]?.SetValue(ShenyoMenuTheme.HorizonY);
             lake.Parameters["uMoonUv"]?.SetValue(ShenyoMenuTheme.MoonUv);
             FillFeetBuffer(fade);
@@ -400,10 +431,11 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
                     float blur = ShenyoMenuTheme.BlurTexels(2.2f, scale);
                     //雾化封顶：群影必须比地平雾暗一档，否则融底隐形
                     float haze = MathHelper.Clamp(ShenyoMenuTheme.FigureHaze(def.Depth) + 0.06f, 0f, 0.62f);
+                    Vector2 moonDir = MoonDirTex(xPx, feetPx - heightPx * 0.62f, vpW, vpH, def.Flip);
 
                     SetGhostParams(ghost, time, form, 0f, haze, reflect: 0f,
                         alpha: def.Alpha * fade, wobble: 1.2f, seed: 20f + i * 1.91f,
-                        eyeGlow, rimDir: def.Flip ? -1f : 1f, blur);
+                        eyeGlow, moonDir, blur);
                     ghost.CurrentTechnique.Passes[0].Apply();
                     spriteBatch.Draw(portrait, new Vector2(xPx - widthPx * 0.5f, feetPx - heightPx), null,
                         Color.White, 0f, Vector2.Zero, scale, flip, 0f);
@@ -444,9 +476,9 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
                     float feetPx = ShenyoMenuTheme.FigureFeetY(def.Depth) * vpH;
 
                     SpriteEffects flip = def.Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-                    //缘光挂在朝月一侧；翻面时纹理空间方向取反
-                    float rimScreenDir = def.X < ShenyoMenuTheme.MoonUv.X ? 1f : -1f;
-                    float rimTexDir = def.Flip ? -rimScreenDir : rimScreenDir;
+                    //缘光光向：逐影指向溺月（翻面镜像u轴，倒影再翻v轴）
+                    Vector2 moonDir = MoonDirTex(xPx, feetPx - heightPx * 0.62f, vpW, vpH, def.Flip);
+                    Vector2 moonDirRefl = new(moonDir.X, -moonDir.Y);
                     float wobble = ShenyoMenuTheme.FigureWobble(def.Depth);
                     float haze = ShenyoMenuTheme.FigureHaze(def.Depth);
                     float seed = i * 1.37f + 0.7f;
@@ -456,7 +488,7 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
                     //倒影（足点在屏内才有得画）
                     if (feetPx < vpH - 2f) {
                         SetGhostParams(ghost, time, st.Form, 0f, haze + 0.10f, reflect: 1f,
-                            alpha: 0.85f * fade, wobble, seed, st.EyeGlow * 0.35f, rimTexDir, blur);
+                            alpha: 0.85f * fade, wobble, seed, st.EyeGlow * 0.35f, moonDirRefl, blur);
                         ghost.CurrentTechnique.Passes[0].Apply();
                         spriteBatch.Draw(portrait, new Vector2(xPx - widthPx * 0.5f, feetPx), null,
                             Color.White, 0f, Vector2.Zero, new Vector2(scale, scale * 0.82f),
@@ -473,7 +505,7 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
                         SetGhostParams(ghost, time, st.Form, 0f,
                             MathHelper.Clamp(haze + 0.15f, 0f, 0.85f), reflect: 0f,
                             alpha: (far ? 0.34f : 0.20f) * st.Form * fade, wobble, seed + 7.7f,
-                            eyeGlow: 0f, rimTexDir, blur * 1.5f);
+                            eyeGlow: 0f, moonDir, blur * 1.5f);
                         ghost.CurrentTechnique.Passes[0].Apply();
                         spriteBatch.Draw(portrait, bodyPos + echoOff, null,
                             Color.White, 0f, Vector2.Zero, scale, flip, 0f);
@@ -481,7 +513,7 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
 
                     //本体
                     SetGhostParams(ghost, time, st.Form, def.Clarity, haze, reflect: 0f,
-                        alpha: fade, wobble, seed, st.EyeGlow, rimTexDir, blur);
+                        alpha: fade, wobble, seed, st.EyeGlow, moonDir, blur);
                     ghost.CurrentTechnique.Passes[0].Apply();
                     spriteBatch.Draw(portrait, bodyPos, null,
                         Color.White, 0f, Vector2.Zero, scale, flip, 0f);
@@ -493,7 +525,7 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
 
         private static void SetGhostParams(Effect ghost, float time, float form, float clarity,
             float haze, float reflect, float alpha, float wobble, float seed, float eyeGlow,
-            float rimDir, float blur) {
+            Vector2 moonDir, float blur) {
             ghost.Parameters["uTime"]?.SetValue(time);
             ghost.Parameters["uForm"]?.SetValue(form);
             ghost.Parameters["uClarity"]?.SetValue(clarity);
@@ -506,8 +538,18 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
             ghost.Parameters["uEyeUv"]?.SetValue(ShenyoMenuTheme.EyeUv);
             ghost.Parameters["uEyeSep"]?.SetValue(ShenyoMenuTheme.EyeSep);
             ghost.Parameters["uEyeGlow"]?.SetValue(eyeGlow);
-            ghost.Parameters["uRimDir"]?.SetValue(rimDir);
+            ghost.Parameters["uMoonDir"]?.SetValue(moonDir);
             ghost.Parameters["uBlur"]?.SetValue(blur);
+        }
+
+        //指向溺月的纹理空间光向：翻面镜像u轴；倒影另由调用侧翻v
+        private static Vector2 MoonDirTex(float xPx, float chestPx, int vpW, int vpH, bool flip) {
+            Vector2 dir = new(ShenyoMenuTheme.MoonUv.X * vpW - xPx, ShenyoMenuTheme.MoonUv.Y * vpH - chestPx);
+            if (dir.LengthSquared() < 1f) {
+                dir = new Vector2(0f, -1f);
+            }
+            dir.Normalize();
+            return new Vector2(flip ? -dir.X : dir.X, dir.Y);
         }
 
         //====== 潮雾带：Fog 真alpha贴片慢漂，普通批（Immediate 粘滞着色器不可染指）======
@@ -552,8 +594,10 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
                 graphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
                 wet.Parameters["uTime"]?.SetValue(time);
                 wet.Parameters["uScreenSize"]?.SetValue(new Vector2(vpW, vpH));
-                wet.Parameters["uWet"]?.SetValue(0.85f);
+                //湿度随风暴脉动呼吸：阵风越猛镜头越湿、溅击越密
+                wet.Parameters["uWet"]?.SetValue(0.70f + 0.30f * gust);
                 wet.Parameters["uFlash"]?.SetValue(flash);
+                wet.Parameters["uGust"]?.SetValue(gust);
                 wet.Parameters["uIntensity"]?.SetValue(fade);
                 wet.CurrentTechnique = wet.Techniques["TechWet"];
                 wet.CurrentTechnique.Passes[0].Apply();

@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -45,7 +46,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>无目标时的坠落列世界 X</summary>
         private ref float FallbackXAi => ref Projectile.ai[1];
 
-        //ai[2] 低位是弹道相位,高位是生成时写死的标记位,随生成包同步
+        //ai[2] 低位是弹道相位与标记位,bit3..9 符标签、bit10..23 符载荷
+        //(KikasaTalismanHooks 位段口径),全部随生成包同步
         /// <summary>鬼滴:伞下鬼的侧掷,换鬼青调</summary>
         internal const int FlagGhost = 2;
         /// <summary>湖倾档:落地留墨洼</summary>
@@ -60,11 +62,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         private bool LeavesPuddle => ((int)Projectile.ai[2] & FlagPuddle) != 0;
 
-        //弧段曲线:各端由生成包内容首帧确定性解出
+        /// <summary>符标签(0=无符),ModifyDropSpawn 打上,落点/命中/绘制按此分支</summary>
+        internal int TalismanTagId => KikasaTalismanHooks.ReadTagId(Projectile.ai[2]);
+
+        /// <summary>符标签载荷(语义由标签符自定,如霓的色序)</summary>
+        internal int TalismanTagPayload => KikasaTalismanHooks.ReadTagPayload(Projectile.ai[2]);
+
+        //弧段曲线:各端由生成包内容首帧确定性解出;坠落参数可被弹道挂钩改写(霄高坠等)
         private bool curveSolved;
         private Vector2 p0, p1, p2, p3;
         private float arcT;
         private float arcDur = 28f;
+        private float plungeGravity = PlungeGravity;
+        private float plungeMaxSpeed = PlungeMaxSpeed;
 
         //本地表现
         private float life;
@@ -154,7 +164,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             KikasaDomainPlayer kdp = lakeAlive ? owner.GetModPlayer<KikasaDomainPlayer>() : null;
             if (lakeAlive && Projectile.Center.Y >= kdp.LakeWorldY + 4f) {
                 lakeSwallowed = true;
-                float ke = MathHelper.Clamp(Projectile.velocity.Length() / PlungeMaxSpeed, 0.25f, 1f);
+                float ke = MathHelper.Clamp(Projectile.velocity.Length() / plungeMaxSpeed, 0.25f, 1f);
                 if (!Main.dedServ && KikasaDomain.Viewed == kdp) {
                     KikasaDomainDeco.RippleAt(new Vector2(Projectile.Center.X, kdp.LakeWorldY), 0.8f);
                     KikasaDomainDeco.SplashAt(new Vector2(Projectile.Center.X, kdp.LakeWorldY), 5);
@@ -190,7 +200,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>
         /// 首帧解弧线:P1 沿出手方向(切线连续),P3 压在目标头顶上方
         /// (天花板向下钳制),P2 悬在 P3 正上方，末端切线天然朝下,
-        /// 弧段飞完直接切入坠落,交接处无折角
+        /// 弧段飞完直接切入坠落,交接处无折角。
+        /// 唤雨符弹道挂钩在默认参数备齐后叠改(各端同参,实现须确定性)
         /// </summary>
         private void SolveCurve(NPC target) {
             curveSolved = true;
@@ -198,18 +209,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             Vector2 flickDir = Projectile.velocity.SafeNormalize(-Vector2.UnitY);
             p0 = Projectile.Center;
 
+            //弹道挂钩:顶点高度/坠落加速度/终速/弧段时长可被符改写(霄高坠、霎直坠)
+            KikasaDropCurve curve = new() {
+                ApexAboveTarget = ApexAboveTarget,
+                PlungeGravity = PlungeGravity,
+                PlungeMaxSpeed = PlungeMaxSpeed,
+                ArcDur = 26f + jit * 8f,
+            };
+            KikasaTalismanHookRunner hooks = KikasaTalismanHooks.ForOwner(Projectile.owner);
+            if (!hooks.IsEmpty) {
+                hooks.ModifyDropCurve(Projectile, ref curve);
+            }
+            plungeGravity = MathF.Max(curve.PlungeGravity, 0.05f);
+            plungeMaxSpeed = MathF.Max(curve.PlungeMaxSpeed, 4f);
+
             float apexX = target != null
                 ? target.Center.X + target.velocity.X * 9f
                 : FallbackXAi;
             float idealY = target != null
-                ? MathF.Min(p0.Y, target.Hitbox.Top - ApexAboveTarget - jit * 44f)
+                ? MathF.Min(p0.Y, target.Hitbox.Top - curve.ApexAboveTarget - jit * 44f)
                 : p0.Y - 16f - jit * 30f;
             float apexY = target != null ? CeilingClampApex(target.Top, idealY) : idealY;
 
             p3 = new Vector2(apexX, apexY);
             p1 = p0 + flickDir * (54f + jit * 50f);
             p2 = p3 - new Vector2(0f, 62f + jit * 40f);
-            arcDur = 26f + jit * 8f;
+            arcDur = MathF.Max(curve.ArcDur, 4f);
         }
 
         /// <summary>自目标顶部向上逐格探实心,顶点被天花板压回其下沿</summary>
@@ -257,17 +282,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         }
 
         private void UpdatePlunge(NPC target) {
-            Projectile.velocity.Y = MathF.Min(Projectile.velocity.Y + PlungeGravity, PlungeMaxSpeed);
+            Projectile.velocity.Y = MathF.Min(Projectile.velocity.Y + plungeGravity, plungeMaxSpeed);
             if (target == null) {
                 return;
             }
             //曲率限幅转向:只转方向不改速率,转率随速度升高收紧，永远是弧,不是折线
             Vector2 want = target.Center + target.velocity * 6f - Projectile.Center;
             float dAng = MathHelper.WrapAngle(want.ToRotation() - Projectile.velocity.ToRotation());
-            float speedT = MathHelper.Clamp(Projectile.velocity.Length() / PlungeMaxSpeed, 0f, 1f);
+            float speedT = MathHelper.Clamp(Projectile.velocity.Length() / plungeMaxSpeed, 0f, 1f);
             float maxTurn = MathHelper.Lerp(0.016f, 0.006f, speedT);
             Projectile.velocity = Projectile.velocity.RotatedBy(MathHelper.Clamp(dAng, -maxTurn, maxTurn));
         }
+
+        //==================== 命中挂钩 ====================
+
+        //引擎保证命中钩只在归属端跑,不需再设 owner 门
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+            => KikasaTalismanHooks.ForOwner(Projectile.owner)
+                .ModifyRainHitNPC(Projectile, KikasaRainSourceKind.Drop, target, ref modifiers);
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+            => KikasaTalismanHooks.ForOwner(Projectile.owner)
+                .OnRainHitNPC(Projectile, KikasaRainSourceKind.Drop, target, in hit, damageDone);
 
         //==================== 谢幕 ====================
 
@@ -275,8 +312,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             if (Main.dedServ || lakeSwallowed) {
                 return;
             }
+            //落点挂钩(霰碎珠/霏雾团/霜碎镜等):非服务器各端派发,生成物由实现自设 owner 门
+            KikasaTalismanHooks.ForOwner(Projectile.owner).OnDropKill(Projectile, onTileHit);
+
             Vector2 impactVel = Projectile.velocity;
-            float ke = MathHelper.Clamp(impactVel.Length() / PlungeMaxSpeed, 0.25f, 1f);
+            float ke = MathHelper.Clamp(impactVel.Length() / plungeMaxSpeed, 0.25f, 1f);
             float splatSize = 20f + ke * 42f;
 
             //渍斑归属:贴地>沾敌>空中散尽。NPC 命中只在所有者端跑 OnHitNPC,
@@ -286,18 +326,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 Vector2 into = impactVel.SafeNormalize(Vector2.UnitY) * 8f;
                 KikasaInkFX.AddGroundSplat(Projectile.Center + into, impactVel, splatSize);
                 //湖倾档:落点积成一汪滞留的墨洼,持续烫伤踩进来的东西;
-                //近处已有同主墨洼则只续命,一波齐掷不铺一地重叠洼
+                //近处已有同主墨洼则只续命,一波齐掷不铺一地重叠洼;
+                //潦符的寿命/半径倍率随生成参数带给洼(ai 通道随生成包同步)
                 if (LeavesPuddle && Main.myPlayer == Projectile.owner) {
-                    Projectile near = FindNearOwnPuddle(56f);
+                    KikasaTalismanProfile talismans =
+                        KikasaTalismanCombat.Resolve(Main.player[Projectile.owner].HeldItem);
+                    int puddleLife = (int)(KikasaInkPuddle.LifeFrames * talismans.PuddleLifeMul);
+                    //霜符"不可叠寿":禁合并续命,每滴各起各的洼
+                    Projectile near = talismans.PuddleNoRefresh
+                        ? null : FindNearOwnPuddle(56f * talismans.PuddleRadiusMul);
                     if (near != null) {
-                        near.timeLeft = Math.Max(near.timeLeft, KikasaInkPuddle.LifeFrames);
+                        near.timeLeft = Math.Max(near.timeLeft, puddleLife);
                         near.netUpdate = true;
                     }
                     else {
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(),
                             Projectile.Center, Vector2.Zero,
                             ModContent.ProjectileType<KikasaInkPuddle>(),
-                            (int)(Projectile.damage * 0.35f), 0f, Projectile.owner);
+                            (int)(Projectile.damage * 0.35f * talismans.PuddleDamageMul),
+                            0f, Projectile.owner,
+                            talismans.PuddleRadiusMul, talismans.PuddleLifeMul);
                     }
                 }
             }
@@ -380,17 +428,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             //弧段末尾滞空的张力抖动比飞行时明显
             bool apexDwell = Phase == DropPhase.Arc && arcT > 0.7f;
             float wobAmp = apexDwell ? 0.15f : 0.06f;
-            //色板逐滴上载:鬼滴换鬼青,普通滴回填标准色(共享参数会被上一颗鬼滴污染)
-            if (IsGhostDrop) {
-                fx.Parameters["uColBody"]?.SetValue(KikasaInk.GhostBody.ToVector3());
-                fx.Parameters["uColDeep"]?.SetValue(KikasaInk.GhostDeep.ToVector3());
-                fx.Parameters["uColCore"]?.SetValue(KikasaInk.GhostCore.ToVector3());
+            //色板逐滴上载:鬼滴换鬼青,带符标签的滴再过一道符绘制挂钩(霓染色/雹冰蓝等);
+            //共享参数会被上一颗滴污染,必须全量重设
+            KikasaDropDrawParams draw = new() {
+                Body = IsGhostDrop ? KikasaInk.GhostBody : KikasaInk.InkBody,
+                Deep = IsGhostDrop ? KikasaInk.GhostDeep : KikasaInk.InkDeep,
+                Core = IsGhostDrop ? KikasaInk.GhostCore : KikasaInk.BloodCore,
+                SizeMul = 1f,
+            };
+            if (TalismanTagId != 0) {
+                KikasaTalismanHooks.ModifyDropDraw(Projectile, ref draw);
             }
-            else {
-                fx.Parameters["uColBody"]?.SetValue(KikasaInk.InkBody.ToVector3());
-                fx.Parameters["uColDeep"]?.SetValue(KikasaInk.InkDeep.ToVector3());
-                fx.Parameters["uColCore"]?.SetValue(KikasaInk.BloodCore.ToVector3());
-            }
+            fx.Parameters["uColBody"]?.SetValue(draw.Body.ToVector3());
+            fx.Parameters["uColDeep"]?.SetValue(draw.Deep.ToVector3());
+            fx.Parameters["uColCore"]?.SetValue(draw.Core.ToVector3());
             fx.Parameters["uStretch"]?.SetValue(stretch);
             fx.Parameters["uWobAmp"]?.SetValue(wobAmp);
             fx.Parameters["uWobPhase"]?.SetValue(life * 0.5f + Seed * 6f);
@@ -400,8 +451,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             fx.CurrentTechnique = fx.Techniques["TechDrop"];
             fx.CurrentTechnique.Passes[0].Apply();
 
-            //Projectile.scale 承载特大墨滴(墨瀑散射)
-            float side = (62f + stretch * 30f) * Projectile.scale;
+            //Projectile.scale 承载特大墨滴(墨瀑散射),符绘制倍率只动画布不动判定
+            float side = (62f + stretch * 30f) * Projectile.scale * draw.SizeMul;
             Vector2 scale = new(side / canvas.Width, side / canvas.Height);
             sb.Draw(canvas, Projectile.Center - Main.screenPosition, null, Color.White,
                 Projectile.rotation, canvas.Size() * 0.5f, scale, SpriteEffects.None, 0f);
@@ -435,15 +486,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
 
             Vector2 pos = Projectile.Center - Main.screenPosition;
-            Vector2 bodyScale = new Vector2(0.24f * (1f - stretch * 0.3f), 0.36f * (1f + stretch * 1.7f)) * jiggle * Projectile.scale;
-            Color deep = IsGhostDrop ? KikasaInk.GhostDeep : KikasaInk.InkDeep;
-            Color bodyCol = IsGhostDrop ? KikasaInk.GhostBody : KikasaInk.InkBody;
-            Color core = IsGhostDrop ? KikasaInk.GhostCore : KikasaInk.BloodCore;
-            sb.Draw(tex, pos, null, deep * (0.9f * fade), Projectile.rotation, origin,
+            //符绘制挂钩与着色器路径同一套参数,回退路径不缺席
+            KikasaDropDrawParams draw = new() {
+                Body = IsGhostDrop ? KikasaInk.GhostBody : KikasaInk.InkBody,
+                Deep = IsGhostDrop ? KikasaInk.GhostDeep : KikasaInk.InkDeep,
+                Core = IsGhostDrop ? KikasaInk.GhostCore : KikasaInk.BloodCore,
+                SizeMul = 1f,
+            };
+            if (TalismanTagId != 0) {
+                KikasaTalismanHooks.ModifyDropDraw(Projectile, ref draw);
+            }
+            Vector2 bodyScale = new Vector2(0.24f * (1f - stretch * 0.3f), 0.36f * (1f + stretch * 1.7f))
+                * jiggle * Projectile.scale * draw.SizeMul;
+            sb.Draw(tex, pos, null, draw.Deep * (0.9f * fade), Projectile.rotation, origin,
                 bodyScale * new Vector2(1.3f, 1.06f), SpriteEffects.None, 0f);
-            sb.Draw(tex, pos, null, bodyCol * fade, Projectile.rotation, origin,
+            sb.Draw(tex, pos, null, draw.Body * fade, Projectile.rotation, origin,
                 bodyScale, SpriteEffects.None, 0f);
-            sb.Draw(tex, pos, null, core * (0.4f * fade), Projectile.rotation, origin,
+            sb.Draw(tex, pos, null, draw.Core * (0.4f * fade), Projectile.rotation, origin,
                 bodyScale * new Vector2(0.3f, 0.7f), SpriteEffects.None, 0f);
         }
     }

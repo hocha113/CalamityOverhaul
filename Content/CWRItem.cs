@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Items.Modifys;
 using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
@@ -99,9 +100,14 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnCreated(Item item, ItemCreationContext context) {
-            if (context is JourneyDuplicationItemCreationContext
-                && OnikiriData.TryGet(item) is OnikiriData data) {
+            if (context is not JourneyDuplicationItemCreationContext) {
+                return;
+            }
+            if (OnikiriData.TryGet(item) is OnikiriData data) {
                 data.RenewIdentity();
+            }
+            if (KikasaData.TryGet(item) is KikasaData kikasaData) {
+                kikasaData.RenewIdentity();
             }
         }
 
@@ -167,6 +173,13 @@ namespace CalamityOverhaul.Content
                 && currentOnikiri.InstanceId == receivedOnikiri.InstanceId
                 && receivedOnikiri.EditRevision < currentOnikiri.EditRevision) {
                 receivedOnikiri.PreserveEditedStateFrom(currentOnikiri);
+            }
+            //鬼伞同款：迟到的旧修订同步不许吃掉本机更新的挂符
+            if (LegendData is KikasaData currentKikasa
+                && receivedLegend is KikasaData receivedKikasa
+                && currentKikasa.InstanceId == receivedKikasa.InstanceId
+                && receivedKikasa.EditRevision < currentKikasa.EditRevision) {
+                receivedKikasa.PreserveEditedStateFrom(currentKikasa);
             }
             if (item.type == OnikiriOverride.ID && receivedLegend != null) {
                 receivedLegend.Level = OnikiriOverride.ClampLevel(receivedLegend.Level);

@@ -210,9 +210,7 @@ namespace CalamityOverhaul.Content
                 dontExpertRule.SimpleAdd(ModContent.ItemType<SandVortexOfTheDecayedSea>(), 6);
                 npcLoot.Add(dontExpertRule);
             }
-            else if (npc.type == NPCID.WallofFlesh) {
-                npcLoot.SimpleAdd(ModContent.ItemType<Arbiter>(), 1);//必掉断罪师
-            }
+            //断罪师不再由血肉之墙直接掉落,改为击败后的世界显现仪式(ArbiterManifestationSystem)
         }
 
         public override void ModifyShop(NPCShop shop) {

@@ -75,10 +75,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         public const int OvGrabTarget = 7;
         /// <summary>Override ai[8] 投技抓握之手 whoAmI+1，0=无</summary>
         public const int OvGrabHand = 8;
-        /// <summary>Override ai[9] 黑闪已用标记 0/1（独立于 OvUltUsed，两大招各一次）</summary>
+        /// <summary>Override ai[9] 黑闪已用标记 0/1（失手不消耗：失手退场时清回 0 允许重试）</summary>
         public const int OvBlackFlashUsed = 9;
         /// <summary>Override ai[10] 黑闪节拍：0正常 / 1蓄力被打断（服务端写，各端演出分支）</summary>
         public const int OvBlackFlashBeat = 10;
+        /// <summary>Override ai[11] 黑闪重试门线（生命比例）：失手时写入"当前血线-一档"，
+        /// 0=未设；核心转移检测取它与解锁线的较小者</summary>
+        public const int OvBlackFlashRearm = 11;
     }
 
     /// <summary>真眼编队指令</summary>

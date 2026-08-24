@@ -346,5 +346,57 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 }
             }
         }
+
+        //==================== 祈雨绳 ====================
+
+        //麻绳双色:血湖暗褐 ⇄ 鬼雨湿灰,上缘一线受月光
+        private static readonly Color RopeWarm = new(74, 46, 44);
+        private static readonly Color RopeCool = new(52, 62, 68);
+
+        /// <summary>
+        /// 祈雨绳：两锚点间的下垂麻绳，随夜风微摆；雨态绳身浸湿微亮。
+        /// 静态垂弧几何与 <see cref="KikasaPanoramaTheme.TalisRopePoint"/> 同源，
+        /// 风摆只加在绘制上不进命中
+        /// </summary>
+        public static void DrawTalisRope(SpriteBatch sb, float rain, float alpha, float time) {
+            Vector2 l = KikasaPanoramaTheme.TalisRopeLeft;
+            Vector2 r = KikasaPanoramaTheme.TalisRopeRight;
+            Color cord = Color.Lerp(RopeWarm, RopeCool, rain);
+            Color lit = Color.Lerp(cord, Color.White, 0.22f + rain * 0.12f);
+
+            const int segs = 26;
+            Vector2 prev = KikasaPanoramaTheme.TalisRopePoint(0f);
+            for (int i = 1; i <= segs; i++) {
+                float u = i / (float)segs;
+                float wind = MathF.Sin(u * 5.2f + time * 1.15f) * (1.5f + rain * 1.2f)
+                    * MathF.Sin(u * MathHelper.Pi);
+                Vector2 cur = KikasaPanoramaTheme.TalisRopePoint(u) + new Vector2(0f, wind);
+                KikasaVaultRenderer.DrawLine(sb, prev, cur, 2.1f, cord * (0.85f * alpha));
+                KikasaVaultRenderer.DrawLine(sb, prev + new Vector2(0f, -0.9f),
+                    cur + new Vector2(0f, -0.9f), 0.9f, lit * (0.5f * alpha));
+                prev = cur;
+            }
+            //两端绳结:一粒沉色小方
+            Rectangle src = new(0, 0, 1, 1);
+            foreach (Vector2 anchor in stackalloc[] { l, r }) {
+                sb.Draw(Pixel, anchor, src, cord * alpha, MathHelper.PiOver4,
+                    new Vector2(0.5f), new Vector2(4.6f), SpriteEffects.None, 0f);
+            }
+        }
+
+        /// <summary>符位吊线：绳点垂到符顶，随符同摆</summary>
+        public static void DrawTalisCord(SpriteBatch sb, Vector2 ropePoint, Vector2 stripTop,
+            float rain, float alpha) {
+            Color cord = Color.Lerp(RopeWarm, RopeCool, rain);
+            KikasaVaultRenderer.DrawLine(sb, ropePoint, stripTop, 1.3f, cord * (0.9f * alpha));
+        }
+
+        /// <summary>空绳位：吊线短垂 + 一枚断续绳环，等符来挂</summary>
+        public static void DrawEmptyTalisSlot(SpriteBatch sb, Vector2 ropePoint,
+            Color color, float alpha, float time) {
+            Vector2 knot = ropePoint + new Vector2(0f, KikasaPanoramaTheme.TalisCordLen * 0.7f);
+            DrawTalisCord(sb, ropePoint, knot, 0f, alpha * 0.7f);
+            DrawDashedSocket(sb, knot + new Vector2(0f, 7f), 6.5f, color * alpha, time, 0.22f);
+        }
     }
 }

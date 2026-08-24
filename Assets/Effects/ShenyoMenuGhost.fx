@@ -1,7 +1,9 @@
 // ============================================================================
 //ShenyoMenuGhost.fx 鬼湖立影：沈幽立绘的雨水幽灵态（主菜单专用）
 //TechGhost：立绘压成湿墨黑水剪影，体内竖向径流常挂（身体由落雨构成），
-//          轮廓月侧惨白缘光 + 微幅横向蠕动 + 双目冷青微芒；
+//          月照湿体缘光（沿uMoonDir光向双尺度边检：亮芯+软晕+体内湿光回卷，
+//          径流噪声碎化成流动湿条、头肩吃光下身沉暗——不是等宽描边）
+//          + 微幅横向蠕动 + 双目冷青微芒；
 //          uForm 复刻黑雨汇聚入场：自上而下灌满，前沿水膜挂亮，
 //          未成形区先有穿过轮廓的残雨丝；
 //          uReflect 切倒影态：波纹加剧、随离水线渐深渐散
@@ -26,7 +28,7 @@ float2 uTexel;    //立绘纹理texel尺寸
 float2 uEyeUv;    //双目中心（立绘uv）
 float uEyeSep;    //目距半宽（uv）
 float uEyeGlow;   //0-1 目芒强度（C#驱动呼吸与眨灭）
-float uRimDir;    //±1 月侧缘光的纹理空间方向（翻面时由C#取反）
+float2 uMoonDir;  //指向溺月的纹理空间单位光向（翻面/倒影由C#换算）
 float uBlur;      //距离模糊半径（texel数，C#按屏幕像素÷缩放折算）；远影糊成雾形仍留轮廓
 
 //====== 湿墨色板（承 ShenyoRainForm）======
@@ -97,14 +99,28 @@ float4 PSGhost(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0 
     //倒影泛一层月气惨白（随径流明暗起伏），否则黑水上读不出剪影
     body = lerp(body, HAZE * 1.40, (0.34 + 0.34 * nrm(rivulet)) * uReflect);
 
-    //====== 月侧缘光：轮廓单侧惨白细边 + 顶缘弱光；重模糊的远影不挂锐边 ======
+    //====== 月照湿体缘光：沿光向双尺度边检——亮芯细线+软晕渐层+体内湿光回卷；
+    //径流噪声碎化成顺流湿条（不是等宽白描边），头肩吃光下身沉暗；重模糊的远影不挂锐边 ======
     float blurFade = saturate(uBlur / 14.0);
-    float aSide = tex2D(uImage0, p + float2(uTexel.x * 2.0 * uRimDir, 0.0)).a;
-    float aUp = tex2D(uImage0, p + float2(0.0, -uTexel.y * 2.0)).a;
-    float rim = saturate(portrait.a - aSide);
-    float rimUp = saturate(portrait.a - aUp);
+    float2 litStep = uMoonDir * uTexel;
+    float aLit2 = tex2D(uImage0, p + litStep * 2.0).a;
+    float aLit6 = tex2D(uImage0, p + litStep * 6.0).a;
+    float aLit12 = tex2D(uImage0, p + litStep * 12.0).a;
+    //三段带：0-2texel亮芯 / 2-6软晕 / 6-12体内回卷（都只挂在朝月一侧的轮廓）
+    float core = saturate(portrait.a - aLit2);
+    float halo = saturate(saturate(portrait.a - aLit6) - core);
+    float wrap = saturate(saturate(portrait.a - aLit12) - saturate(portrait.a - aLit6));
+    //径流碎化：缘光是落在流水上的月光，条纹顺雨下行、忽明忽暗
+    float litN = nrm(noiseTex(float2(p.x * 11.0 + uSeed * 5.3, p.y * 1.1 - uTime * 0.50)));
+    float breakup = 0.45 + 0.65 * smoothstep(0.22, 0.80, litN);
+    //纵向包络：月光自上来，头肩亮、下身沉
+    float vEnv = lerp(1.0, 0.30, smoothstep(0.06, 0.85, p.y));
     float rimPulse = 0.78 + 0.22 * sin(uTime * 2.1 + uSeed * 9.0);
-    float3 rimGlow = EDGE * (rim * 0.66 + rimUp * 0.22) * rimPulse * formed * (1.0 - blurFade * 0.85);
+    float rimAmp = rimPulse * formed * (1.0 - blurFade * 0.85) * vEnv;
+    float3 rimGlow = EDGE * core * breakup * 1.55 * rimAmp;
+    rimGlow += lerp(EDGE, STREAK, 0.45) * halo * (0.26 + 0.46 * litN) * rimAmp;
+    //湿光回卷：贴亮缘的体侧顺着径流泛冷光，光"包"上湿身体而非只描边
+    rimGlow += STREAK * wrap * smoothstep(0.55, 0.92, nrm(rivulet)) * 0.52 * rimAmp;
 
     //汇聚前沿水膜：一线惨白挂在灌注线上，定形后蒸干
     float frontGate = 1.0 - smoothstep(0.90, 1.0, uForm);
@@ -134,7 +150,8 @@ float4 PSGhost(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0 
     float aBody = portrait.a * formed;
     float mul = uAlpha * vertexColor.a * reflFade;
     float3 rgb = body * aBody + (rimGlow + eyeGlow) * portrait.a + STREAK * ghostRain * portrait.a * 0.5;
-    float alpha = saturate(aBody + (rim * 0.28 + frontBand * 0.30 + ghostRain * 0.45) * portrait.a);
+    float alpha = saturate(aBody
+        + (core * breakup * 0.26 + halo * 0.10 + frontBand * 0.30 + ghostRain * 0.45) * portrait.a);
 
     return float4(rgb * mul * vertexColor.rgb, alpha * mul);
 }

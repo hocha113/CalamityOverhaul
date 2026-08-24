@@ -30,7 +30,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         public override void OnEnter(MLordContext context) {
             base.OnEnter(context);
             nodeCount = context.CoreExposed ? 7 : 6;
-            stateLength = WaveTwoFire + nodeCount * CometStagger + Frames(context, 110);
+            //收尾拍 80：末彗星落地+星火燃尽即换拍，不拖节奏
+            stateLength = WaveTwoFire + nodeCount * CometStagger + Frames(context, 80);
             if (!VaultUtils.isClient) {
                 context.Owner.ai[MLordAiSlots.OvAttackSeed] = Main.rand.Next(1, 100000);
                 context.Npc.netUpdate = true;

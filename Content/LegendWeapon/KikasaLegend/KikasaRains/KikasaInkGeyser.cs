@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,7 +12,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
     /// 墨泉:湖倾档(S≥<see cref="KikasaOverride.TierLakeTilt"/>)满蓄墨瀑的终幕,
     /// 沿落线自地表喷起的墨柱,重击退。两端收口:根部溅丘坐进地里,
     /// 头部圆冠+顶珠,排空自上而下缩回;宽度走展开→收窄断流的包络,判定同源。
-    /// ai[0]=喷发前延迟帧(三泉错拍),延迟期洼面鼓包、墨珠向根部倒吸作预告
+    /// ai[0]=喷发前延迟帧(三泉错拍),延迟期洼面鼓包、墨珠向根部倒吸作预告;
+    /// ai[1]=符标签位段、ai[2]=柱高倍率×1000(墨泉齐发挂钩写入,0 视作 1,随生成包各端一致)
     /// </summary>
     internal class KikasaInkGeyser : ModProjectile
     {
@@ -25,6 +27,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         /// <summary>喷发前延迟帧,由墨瀑侧写入错拍</summary>
         private ref float DelayAi => ref Projectile.ai[0];
+
+        /// <summary>符标签(0=无符,霆雷泉等按此分支)</summary>
+        internal int TalismanTag => KikasaTalismanHooks.ReadTagId(Projectile.ai[1]);
+
+        /// <summary>符标签载荷</summary>
+        internal int TalismanTagPayload => KikasaTalismanHooks.ReadTagPayload(Projectile.ai[1]);
+
+        /// <summary>柱高倍率(霆 1.5 等),量化自 ai[2],判定与绘制同源</summary>
+        private float HeightMul => Projectile.ai[2] > 0.5f ? Projectile.ai[2] / 1000f : 1f;
+
+        /// <summary>符倍率折入后的满柱高</summary>
+        private float FullHeightPx => HeightPx * HeightMul;
 
         /// <summary>自喷发帧起算的寿命</summary>
         private float life;
@@ -97,9 +111,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 return;
             }
 
-            //喷发拍:一声重水花,根部炸出一圈上掷墨珠
+            //喷发拍:一声重水花,根部炸出一圈上掷墨珠;标签符的喷发挂钩同帧派发(霆雷冠等)
             if (!erupted) {
                 erupted = true;
+                KikasaTalismanHooks.OnGeyserErupt(Projectile);
                 KikasaInk.Play(KikasaInk.InkSpray, Projectile.Center, 0.8f, -0.2f, 3);
                 KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.85f, -0.5f, 3);
                 if (!Main.dedServ) {
@@ -121,27 +136,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
             //顶冠滴落:柱头一直在甩珠,头部不平切
             if (!Main.dedServ && CollapseT < 0.5f && Main.rand.NextBool(2)) {
-                Vector2 head = Projectile.Center - new Vector2(0f, HeightPx * HeightT);
+                Vector2 head = Projectile.Center - new Vector2(0f, FullHeightPx * HeightT);
                 PRTLoader.NewParticle<PRT_KikasaInkBead>(
                     head + new Vector2(Main.rand.NextFloat(-0.4f, 0.4f) * WidthPx * WidthT, 0f),
                     new Vector2(Main.rand.NextFloat(-1.6f, 1.6f), -Main.rand.NextFloat(0.5f, 2.4f)),
                     Main.rand.NextBool(4) ? KikasaInk.BloodCore : KikasaInk.InkDeep,
                     Main.rand.NextFloat(0.22f, 0.38f))?.Configure(Main.rand.Next(14, 22));
             }
-            Lighting.AddLight(Projectile.Center - new Vector2(0f, HeightPx * HeightT * 0.5f),
+            Lighting.AddLight(Projectile.Center - new Vector2(0f, FullHeightPx * HeightT * 0.5f),
                 0.12f, 0.025f, 0.035f);
         }
 
-        /// <summary>竖直线判定:根到柱头,宽随包络;延迟与收干后段失能</summary>
+        /// <summary>竖直线判定:根到柱头,宽随包络;延迟与收干后段失能;柱高倍率判定绘制同源</summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (!erupted || CollapseT > 0.6f) {
                 return false;
             }
             float _ = 0f;
-            Vector2 top = Projectile.Center - new Vector2(0f, HeightPx * HeightT);
+            Vector2 top = Projectile.Center - new Vector2(0f, FullHeightPx * HeightT);
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
                 Projectile.Center, top, WidthPx * 0.75f * WidthT, ref _);
         }
+
+        //==================== 命中挂钩(引擎保证只在归属端跑) ====================
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+            => KikasaTalismanHooks.ForOwner(Projectile.owner)
+                .ModifyRainHitNPC(Projectile, KikasaRainSourceKind.Geyser, target, ref modifiers);
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+            => KikasaTalismanHooks.ForOwner(Projectile.owner)
+                .OnRainHitNPC(Projectile, KikasaRainSourceKind.Geyser, target, in hit, damageDone);
 
         /// <summary>
         /// 精灵分层:根部溅丘(坐进地里)→柱身(暗缘+墨体+血芯)→头部圆冠+湿反光。
@@ -161,7 +186,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             Vector2 origin = tex.Size() * 0.5f;
             //柱身锚底:origin 取贴图下沿中点
             Vector2 columnOrigin = new(tex.Width * 0.5f, tex.Height);
-            float h = HeightPx * hT;
+            float h = FullHeightPx * hT;
             float w = WidthPx * wT;
             float alpha = 1f - CollapseT * 0.45f;
             float sway = MathF.Sin(life * 0.23f + Seed * 3f) * 0.02f;

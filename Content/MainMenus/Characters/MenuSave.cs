@@ -1,32 +1,66 @@
 ﻿using InnoVault.GameSystem;
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.MainMenus.Characters
 {
-    /// <summary>主菜单立绘存档</summary>
+    /// <summary>单个角色的菜单持久状态</summary>
+    internal sealed class CharacterMenuState
+    {
+        public int Expression;
+        public Vector2 Offset = Vector2.Zero;
+        public int ZoomStep = CharacterDockUI.DefaultZoomStep;
+        public bool Show;
+
+        public TagCompound ToTag() => new() {
+            ["Expression"] = Expression,
+            ["Offset"] = Offset,
+            ["ZoomStep"] = ZoomStep,
+            ["Show"] = Show
+        };
+
+        public static CharacterMenuState FromTag(TagCompound tag) {
+            CharacterMenuState state = new();
+            if (tag.TryGet("Expression", out int expression)) {
+                state.Expression = expression;
+            }
+            if (tag.TryGet("Offset", out Vector2 offset)) {
+                state.Offset = offset;
+            }
+            if (tag.TryGet("ZoomStep", out int zoomStep)) {
+                state.ZoomStep = zoomStep;
+            }
+            if (tag.TryGet("Show", out bool show)) {
+                state.Show = show;
+            }
+            state.ZoomStep = Math.Clamp(state.ZoomStep, CharacterDockUI.MinZoomStep, CharacterDockUI.MaxZoomStep);
+            return state;
+        }
+    }
+
+    /// <summary>主菜单立绘存档，按角色 Key 存通用状态</summary>
     internal class MenuSave : SaveMod
     {
-
-        private const int CurrentDataVersion = 1;
+        private const int CurrentDataVersion = 2;
 
         /// <summary>解锁"永恒燃烧的现在"结局立绘</summary>
         public static bool ADV_SupCal_EBN { get; private set; }
 
-        public static Vector2 Helen_PortraitOffset { get; private set; } = Vector2.Zero;
+        private static readonly Dictionary<string, CharacterMenuState> states = [];
 
-        /// <summary>SupCal表情 0/1/2=Default/CloseEyes/Smile</summary>
-        public static int SupCal_Expression { get; private set; } = 0;
+        /// <summary>取角色状态，缺省即建</summary>
+        public static CharacterMenuState GetState(string key) {
+            if (!states.TryGetValue(key, out CharacterMenuState state)) {
+                state = new CharacterMenuState();
+                states[key] = state;
+            }
+            return state;
+        }
 
-        public static Vector2 SupCal_LeftPortraitOffset { get; private set; } = Vector2.Zero;
-
-        public static Vector2 SupCal_RightPortraitOffset { get; private set; } = Vector2.Zero;
-
-        public static bool SupCal_ShowFullPortrait { get; private set; } = false;
-
-        public static float SupCal_LeftPortraitScale { get; private set; } = 2.0f;
-
-        public static float SupCal_RightPortraitScale { get; private set; } = 0.85f;
+        /// <summary>立即落盘，防抖由调用方持有</summary>
+        public static void SaveNow() => DoSave<MenuSave>();
 
         public override void SetStaticDefaults() {
             if (!HasSave) {
@@ -36,80 +70,56 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
         }
 
         public override void SaveData(TagCompound tag) {
-
             tag["DataVersion"] = CurrentDataVersion;
-
             tag["ADV_SupCal_EBN"] = ADV_SupCal_EBN;
-            tag["SupCal_Expression"] = SupCal_Expression;
-            tag["SupCal_LeftPortraitOffset"] = SupCal_LeftPortraitOffset;
-            tag["SupCal_RightPortraitOffset"] = SupCal_RightPortraitOffset;
-            tag["SupCal_ShowFullPortrait"] = SupCal_ShowFullPortrait;
-            tag["SupCal_LeftPortraitScale"] = SupCal_LeftPortraitScale;
-            tag["SupCal_RightPortraitScale"] = SupCal_RightPortraitScale;
-            tag["Helen_PortraitOffset"] = Helen_PortraitOffset;
+
+            TagCompound characters = [];
+            foreach (KeyValuePair<string, CharacterMenuState> pair in states) {
+                characters[pair.Key] = pair.Value.ToTag();
+            }
+            tag["Characters"] = characters;
         }
 
         public override void LoadData(TagCompound tag) {
+            states.Clear();
 
             if (!tag.TryGet("DataVersion", out int dataVersion)) {
                 dataVersion = 0;//旧档无版本戳
             }
-
-            MigrateData(tag, dataVersion);
-
-            LoadCurrentVersionData(tag);
-
-            //加载后同步UI(若已init)
-            if (ADV_SupCal_EBN) {
-                SupCalPortraitUI.Instance?.LoadSavedState();
-                HelenPortraitUI.Instance?.LoadSavedState();
-            }
-        }
-
-        private static void MigrateData(TagCompound tag, int fromVersion) {
-
-        }
-
-        private static void LoadCurrentVersionData(TagCompound tag) {
-            if (!tag.TryGet("Helen_PortraitOffset", out Vector2 helenOffset)) {
-                helenOffset = Vector2.Zero;
-            }
-            Helen_PortraitOffset = helenOffset;
 
             if (!tag.TryGet("ADV_SupCal_EBN", out bool unlocked)) {
                 unlocked = false;
             }
             ADV_SupCal_EBN = unlocked;
 
-            if (!tag.TryGet("SupCal_Expression", out int expression)) {
-                expression = 0;
+            if (dataVersion < 2) {
+                MigrateLegacy(tag);
+                return;
             }
-            SupCal_Expression = expression;
 
-            if (!tag.TryGet("SupCal_LeftPortraitOffset", out Vector2 leftOffset)) {
-                leftOffset = Vector2.Zero;
+            if (tag.TryGet("Characters", out TagCompound characters)) {
+                foreach (KeyValuePair<string, object> pair in characters) {
+                    if (pair.Value is TagCompound sub) {
+                        states[pair.Key] = CharacterMenuState.FromTag(sub);
+                    }
+                }
             }
-            SupCal_LeftPortraitOffset = leftOffset;
+        }
 
-            if (!tag.TryGet("SupCal_RightPortraitOffset", out Vector2 rightOffset)) {
-                rightOffset = Vector2.Zero;
+        /// <summary>v1 旧键折算，偏移基于已死布局不迁</summary>
+        private static void MigrateLegacy(TagCompound tag) {
+            CharacterMenuState supCal = GetState("SupCal");
+            if (tag.TryGet("SupCal_Expression", out int expression)) {
+                supCal.Expression = Math.Clamp(expression, 0, 2);
             }
-            SupCal_RightPortraitOffset = rightOffset;
-
-            if (!tag.TryGet("SupCal_ShowFullPortrait", out bool showFullPortrait)) {
-                showFullPortrait = false;
+            if (tag.TryGet("SupCal_ShowFullPortrait", out bool show)) {
+                supCal.Show = show;
             }
-            SupCal_ShowFullPortrait = showFullPortrait;
-
-            if (!tag.TryGet("SupCal_LeftPortraitScale", out float leftScale)) {
-                leftScale = 2.0f;
+            //旧值绘制时另乘 1.6，先折回实际观感再取整数档
+            if (tag.TryGet("SupCal_LeftPortraitScale", out float scale)) {
+                supCal.ZoomStep = Math.Clamp((int)Math.Round(scale * 1.6f),
+                    CharacterDockUI.MinZoomStep, CharacterDockUI.MaxZoomStep);
             }
-            SupCal_LeftPortraitScale = leftScale;
-
-            if (!tag.TryGet("SupCal_RightPortraitScale", out float rightScale)) {
-                rightScale = 0.85f;
-            }
-            SupCal_RightPortraitScale = rightScale;
         }
 
         /// <summary>达成结局时解锁主菜单立绘</summary>
@@ -117,83 +127,9 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
             if (!ADV_SupCal_EBN) {
                 ADV_SupCal_EBN = true;
                 DoSave<MenuSave>();
-
-                SupCalPortraitUI.Instance?.LoadSavedState();
-                HelenPortraitUI.Instance?.LoadSavedState();
             }
         }
 
         public static bool IsPortraitUnlocked() => ADV_SupCal_EBN;
-
-        public static void SaveSupCalPortraitState(int expression, Vector2 leftOffset, Vector2 rightOffset, bool showFullPortrait, float leftScale = 2.0f, float rightScale = 0.85f) {
-            bool changed = false;
-
-            if (SupCal_Expression != expression) {
-                SupCal_Expression = expression;
-                changed = true;
-            }
-
-            if (SupCal_LeftPortraitOffset != leftOffset) {
-                SupCal_LeftPortraitOffset = leftOffset;
-                changed = true;
-            }
-
-            if (SupCal_RightPortraitOffset != rightOffset) {
-                SupCal_RightPortraitOffset = rightOffset;
-                changed = true;
-            }
-
-            if (SupCal_ShowFullPortrait != showFullPortrait) {
-                SupCal_ShowFullPortrait = showFullPortrait;
-                changed = true;
-            }
-
-            if (SupCal_LeftPortraitScale != leftScale) {
-                SupCal_LeftPortraitScale = leftScale;
-                changed = true;
-            }
-
-            if (SupCal_RightPortraitScale != rightScale) {
-                SupCal_RightPortraitScale = rightScale;
-                changed = true;
-            }
-
-            if (changed) {
-                DoSave<MenuSave>();
-            }
-        }
-
-        public static void SaveHelenPortraitState(Vector2 offset) {
-            if (Helen_PortraitOffset != offset) {
-                Helen_PortraitOffset = offset;
-                DoSave<MenuSave>();
-            }
-        }
-
-        public static void ResetPortraitPositions() {
-            SupCal_LeftPortraitOffset = Vector2.Zero;
-            SupCal_RightPortraitOffset = Vector2.Zero;
-            Helen_PortraitOffset = Vector2.Zero;
-            DoSave<MenuSave>();
-
-            SupCalPortraitUI.Instance?.LoadSavedState();
-            HelenPortraitUI.Instance?.LoadSavedState();
-        }
-
-        public static void ResetSupCalExpression() {
-            SupCal_Expression = 0;
-            DoSave<MenuSave>();
-
-            SupCalPortraitUI.Instance?.LoadSavedState();
-        }
-
-        public static void ResetSupCalPortraitScale() {
-            SupCal_LeftPortraitScale = 2.0f;
-            SupCal_RightPortraitScale = 0.85f;
-            DoSave<MenuSave>();
-
-            SupCalPortraitUI.Instance?.LoadSavedState();
-        }
     }
 }
-

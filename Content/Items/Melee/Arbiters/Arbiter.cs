@@ -12,9 +12,9 @@ using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Melee
+namespace CalamityOverhaul.Content.Items.Melee.Arbiters
 {
-    /// 断罪师重斧，蓄力高举松手劈下+火冲击波
+    /// 断罪师重斧，蓄力高举松手劈下+火冲击波;由击败血肉之墙后的显现仪式取得
     internal class Arbiter : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "Arbiter";
@@ -522,6 +522,9 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //撞击点火柱(≈12帧)
             if (Projectile.timeLeft >= 18) {
+                //撞击点给狱火条带一记前沿拔高
+                ArbiterFlameRenderer.PushFront(Projectile.Center.X, 1f);
+
                 int density = (int)MathHelper.Lerp(3, 8, ChargeRatio);
                 for (int i = 0; i < density; i++) {
                     Vector2 pos = Projectile.Center + new Vector2(Main.rand.NextFloat(-22f, 22f), 0f);
@@ -613,6 +616,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         private bool stopped;
         //停止衰减计时
         private int deathTimer;
+
+        /// 渲染器读取:蛇头是否仍在行进(前沿亮度)
+        internal bool RenderMoving => !stopped;
 
         public override void SetDefaults() {
             Projectile.width = 24;
@@ -757,9 +763,22 @@ namespace CalamityOverhaul.Content.Items.Melee
             return -1;
         }
 
-        /// 地表喷溅火焰(克制，主效在 GroundFire)
+        /// 地表喷溅火焰(狱火条带承担主体后只留前沿火星;着色器缺失回退原密度)
         private void SpawnEdgeFlames(float densityMul) {
             Vector2 basePos = Projectile.Center;
+
+            if (ArbiterFlameRenderer.ShaderReady) {
+                //蛇头行进的前沿火星,克制点缀
+                if (Main.rand.NextFloat() < 0.45f * densityMul) {
+                    Vector2 pos = basePos + new Vector2(Main.rand.NextFloat(-10f, 10f), Main.rand.NextFloat(-4f, 0f));
+                    Vector2 vel = new Vector2(Math.Sign(MoveDir) * Main.rand.NextFloat(0.5f, 1.6f), -Main.rand.NextFloat(2f, 4.5f));
+                    Dust d = Dust.NewDustPerfect(pos, DustID.Torch, vel, 0
+                        , Color.Lerp(Color.OrangeRed, Color.Yellow, Main.rand.NextFloat()), Main.rand.NextFloat(1.2f, 1.9f));
+                    d.noGravity = true;
+                    d.fadeIn = 1.1f;
+                }
+                return;
+            }
 
             //橙色火星向上飘
             int sparks = Math.Max(1, (int)(3 * densityMul));
@@ -792,7 +811,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// 持久地面火坑，贴地燃烧伤害
+    /// 持久地面火坑，贴地燃烧伤害;视觉主体由 ArbiterFlameRenderer 的狱火条带承载,
+    /// 本体只喷稀疏余烬点缀,着色器缺失时回退旧版粒子堆叠
     internal class ArbiterGroundFire : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -816,6 +836,15 @@ namespace CalamityOverhaul.Content.Items.Melee
         internal static int HitboxHeight => 124;
         internal static float BaseVisualHeight => 28f;
         internal static float BaseVisualWidth => 40f;
+
+        /// 渲染器读取:地面 Y(火根所在)
+        internal float RenderGroundY => visualGroundY;
+        /// 渲染器读取:生命包络(点燃 0→1、稳态 1、衰减 →0)
+        internal float RenderEnvelope { get; private set; }
+        /// 渲染器读取:火高比例
+        internal float RenderScale => VisualScale;
+        /// 渲染器读取:是否已初始化(首帧前 groundY 未定)
+        internal bool RenderReady => Timer > 0;
 
         public override void SetDefaults() {
             Projectile.width = HitboxWidth;
@@ -854,21 +883,24 @@ namespace CalamityOverhaul.Content.Items.Melee
             Timer++;
             swayPhase += 0.18f;
 
-            //高度呼吸
+            //高度呼吸(回退粒子用);条带包络单独结算,摇曳交给着色器火冠
             float lifeRatio = Projectile.timeLeft / Math.Max(LifeMax, 1f);
             float baseHeight = BaseVisualHeight * VisualScale;
             visualWidth = BaseVisualWidth * VisualScale;
             if (Timer < 10) {
                 //点燃 0→baseHeight
                 visualHeight = MathHelper.Lerp(0f, baseHeight, Timer / 10f);
+                RenderEnvelope = Timer / 10f;
             }
             else if (lifeRatio < 0.3f) {
                 //衰减阶段
                 visualHeight = baseHeight * (lifeRatio / 0.3f);
+                RenderEnvelope = lifeRatio / 0.3f;
             }
             else {
                 //稳定 sin 起伏
                 visualHeight = baseHeight * (0.9f + (float)Math.Sin(swayPhase) * 0.1f);
+                RenderEnvelope = 1f;
             }
 
             if (lifeRatio > 0.2f) {
@@ -881,7 +913,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 , 1.0f * lightFactor, 0.45f * lightFactor, 0.15f * lightFactor);
         }
 
-        /// 分层火焰粒子(限数保性能)
+        /// 火焰粒子:条带承担主体后只留稀疏余烬;着色器缺失回退旧版分层堆叠
         private void SpawnFlameDust() {
             if (visualHeight < 4f) {
                 return;
@@ -889,6 +921,37 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             float baseY = visualGroundY;
             float spreadX = visualWidth * 0.45f;
+
+            if (ArbiterFlameRenderer.ShaderReady) {
+                //稀疏余烬:约旧版四分之一密度,只做火体之上的颗粒点缀
+                if (Timer % 8 == 0) {
+                    Vector2 pos = new Vector2(Projectile.Center.X + Main.rand.NextFloat(-spreadX, spreadX), baseY);
+                    Vector2 vel = new Vector2(Main.rand.NextFloat(-0.6f, 0.6f), -Main.rand.NextFloat(1.2f, 2.8f));
+                    Dust d = Dust.NewDustPerfect(pos, DustID.Torch, vel, 80
+                        , Color.Lerp(Color.OrangeRed, Color.Yellow, Main.rand.NextFloat()), Main.rand.NextFloat(1.0f, 1.6f) * VisualScale);
+                    d.noGravity = true;
+                    d.fadeIn = 1.0f;
+                }
+                //偶发大颗 PRT 火舌
+                if (Timer % 18 == 0 && Main.rand.NextBool(2)) {
+                    float h = Main.rand.NextFloat(visualHeight * 0.2f, visualHeight * 0.6f);
+                    Vector2 pos = new Vector2(Projectile.Center.X + Main.rand.NextFloat(-spreadX * 0.5f, spreadX * 0.5f)
+                        , baseY - h);
+                    Vector2 vel = new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), -Main.rand.NextFloat(0.6f, 1.6f));
+                    PRTLoader.NewParticle<PRT_LavaFire>(pos, vel, Color.White, Main.rand.NextFloat(0.6f, 0.9f) * VisualScale);
+                }
+                //偶发向上火星
+                if (Main.rand.NextBool(24)) {
+                    Vector2 pos = new Vector2(Projectile.Center.X + Main.rand.NextFloat(-spreadX, spreadX), baseY);
+                    Vector2 vel = new Vector2(Main.rand.NextFloat(-2.5f, 2.5f), -Main.rand.NextFloat(3f, 7f));
+                    Dust d = Dust.NewDustPerfect(pos, DustID.GoldFlame, vel, 0, default
+                        , Main.rand.NextFloat(0.8f, 1.3f));
+                    d.noGravity = true;
+                }
+                return;
+            }
+
+            //====== 回退路径:旧版分层火焰粒子(限数保性能) ======
 
             //底层余烬每 3 帧 1 颗
             if (Timer % 3 == 0) {

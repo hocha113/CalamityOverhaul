@@ -29,6 +29,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
             n.Say(NarrativeIds.Shenyo, L0.Value, Voice[1], onEnter: PortraitFace(ShenyoFullBodyPortrait.Face.Scrutiny))
              .Say(NarrativeIds.Shenyo, L1.Value, Voice[2], onEnter: PortraitFace(ShenyoFullBodyPortrait.Face.Calm))
              .Say(NarrativeIds.Shenyo, L2.Value, Voice[3], onEnter: PortraitFace(ShenyoFullBodyPortrait.Face.Wry))
+             //双入口（BossRush 边沿/始源妖龙击杀）共用同一场戏，发放只此一处
+             .GiftTalisman(GiftId)
              .Say(NarrativeIds.Shenyo, L3.Value, Voice[4], onEnter: PortraitFace(ShenyoFullBodyPortrait.Face.Pensive));
         }
 

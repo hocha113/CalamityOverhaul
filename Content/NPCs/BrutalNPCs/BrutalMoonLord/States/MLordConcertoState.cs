@@ -10,7 +10,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
     /// <summary>
     /// 幻影协奏（四臂分声部）：基线火力网兼连接拍。上对错拍星球扇射（布阵声部），
     /// 下对同拍低位剪切波（自两肋交叉掠过玩家脚下，执行声部），头交叉波弹，
-    /// 中段留一个可读的换位喘息，核心裸露后追加螺旋波列
+    /// 中段留一个可读的换位喘息，核心裸露后追加螺旋波列。
+    /// 出手前各声部抬手亮眼（预备动作兼弹幕预告，手部 AI 经 <see cref="BeatWindup"/> 查询）。
+    /// 循环内非首位协奏走短变体（连接拍收紧，节拍表只保留前段）
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)MLordStateIndex.Concerto, typeof(MLordContext))]
     internal class MLordConcertoState : MLordStateBase
@@ -19,14 +21,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         public override MLordStateIndex StateIndex => MLordStateIndex.Concerto;
 
         /// <summary>公平阀（契约3）：此帧起进入连接拍，节拍表整体停射，
-        /// 状态尾段（约 1/3 时长）保证无新弹幕的喘息窗</summary>
+        /// 状态尾段保证无新弹幕的喘息窗</summary>
         internal const int BreatherStart = 200;
+        internal const int FullLength = 300;
+        /// <summary>短变体：时长与喘息点整体前移（连接拍不再每次都是完整五秒）</summary>
+        internal const int ShortBreatherStart = 132;
+        internal const int ShortLength = 192;
+        /// <summary>声部预备窗帧长：出弹前抬手亮眼（预备动作兼预告，契约2）</summary>
+        internal const int WindupLead = 20;
+
+        //―――― 声部节拍（原始帧，运行期吃 Frames 压缩）――――
+        private const int FanABeat = 24;
+        private const int FanBBeat = 70;
+        private const int ShearABeat = 46;
+        private const int ShearBBeat = 148;
+        private const int BoltStartBeat = 124;
 
         private int stateLength;
+        private int breatherStart;
 
         public override void OnEnter(MLordContext context) {
             base.OnEnter(context);
-            stateLength = Frames(context, 300);
+            bool shortVariant = context.ConcertoShortVariant;
+            stateLength = Frames(context, shortVariant ? ShortLength : FullLength);
+            breatherStart = Frames(context, shortVariant ? ShortBreatherStart : BreatherStart);
         }
 
         public override IMLordState OnUpdate(MLordContext context) {
@@ -49,17 +67,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             return null;
         }
 
-        /// <summary>服务端节拍表；<see cref="BreatherStart"/> 帧起进入连接拍（无新弹幕，编队复位喘息）</summary>
+        /// <summary>服务端节拍表；喘息点起进入连接拍（无新弹幕，编队复位喘息）</summary>
         private void RunServerBeats(MLordContext context) {
             //喘息窗硬闸：连接拍内任何分支都射不出弹幕
-            if (Timer >= Frames(context, BreatherStart)) {
+            if (Timer >= breatherStart) {
                 return;
             }
-            int fanA = Frames(context, 24);
-            int fanB = Frames(context, 70);
-            int shearA = Frames(context, 46);
-            int shearB = Frames(context, 148);
-            int boltStart = Frames(context, 124);
+            int fanA = Frames(context, FanABeat);
+            int fanB = Frames(context, FanBBeat);
+            int shearA = Frames(context, ShearABeat);
+            int shearB = Frames(context, ShearBBeat);
+            int boltStart = Frames(context, BoltStartBeat);
 
             //错拍星球扇（上对声部）：上左先手，上右后半拍
             if (Timer == fanA) {
@@ -161,6 +179,39 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 return Main.npc[parts.Head];
             }
             return context.Npc;
+        }
+
+        /// <summary>
+        /// 该手槽声部预备窗进度 0~1（出弹前 <see cref="WindupLead"/> 帧内爬升）。
+        /// 手部 AI 消费：抬手 + 亮眼 + 张掌，预备动作即弹幕预告（契约2）
+        /// </summary>
+        internal static float BeatWindup(MLordContext context, int stateTimer, int slot) {
+            Span<int> beats = stackalloc int[2];
+            int count = 0;
+            if (slot == 0) {
+                beats[count++] = FanABeat;
+            }
+            else if (slot == 1) {
+                beats[count++] = FanBBeat;
+            }
+            else {
+                beats[count++] = ShearABeat;
+                beats[count++] = ShearBBeat;
+            }
+            int breather = context.ConcertoShortVariant ? ShortBreatherStart : BreatherStart;
+            float best = 0f;
+            for (int i = 0; i < count; i++) {
+                int beat = MLordDirector.Frames(beats[i], context.DeathMode);
+                //喘息窗后的节拍不会开火，不给预备（短变体裁掉的拍不抬手）
+                if (beats[i] >= breather) {
+                    continue;
+                }
+                int wait = beat - stateTimer;
+                if (wait > 0 && wait <= WindupLead) {
+                    best = Math.Max(best, 1f - wait / (float)WindupLead);
+                }
+            }
+            return best;
         }
     }
 }

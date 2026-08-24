@@ -41,10 +41,10 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
 
         //====== 立绘映射（Shenyo.png 258×544，沙盒校准）======
         public static readonly Vector2 PortraitTexel = new(1f / 258f, 1f / 544f);
-        /// <summary>双目中心（立绘uv），目芒落虹膜右上</summary>
-        public static Vector2 EyeUv => new(0.566f, 0.196f);
-        /// <summary>目距半宽（uv）</summary>
-        public const float EyeSep = 0.0485f;
+        /// <summary>双目中心（立绘uv），瞳孔实测像素 (130,107)/(156,109) 的中点</summary>
+        public static Vector2 EyeUv => new(0.5543f, 0.1985f);
+        /// <summary>目距半宽（uv），瞳距 26px 之半</summary>
+        public const float EyeSep = 0.0504f;
 
         /// <summary>湖上立影排布：X=uv横位 Depth=0远1近 Flip=翻面 Clarity=澄出本色量 Anchor=常驻锚影</summary>
         public readonly struct FigureDef(float x, float depth, bool flip, float clarity, bool anchor = false)

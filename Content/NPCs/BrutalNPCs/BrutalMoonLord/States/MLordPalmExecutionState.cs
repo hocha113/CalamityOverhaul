@@ -173,7 +173,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             SpringHand(hand, goal, 18f, 0.25f);
         }
 
-        /// <summary>连段节拍：触须两抽 + 贴脸死光 + 擦颊虚惊束（全部锚定头颅）</summary>
+        /// <summary>
+        /// 连段节拍：触须两抽 + 贴脸死光 + 擦颊虚惊束（全部锚定头颅）。
+        /// 投技演出段：被抓者必中，豁免公平缺口契约（契约3.4）——
+        /// 兜底在别处：伤害预算刻意压低 + 被抓端 1 血保命 + 队友击破抓握手可提前救人
+        /// </summary>
         private void RunComboBeats(MLordContext context, Player victim) {
             if (context.Parts.Head < 0) {
                 return;

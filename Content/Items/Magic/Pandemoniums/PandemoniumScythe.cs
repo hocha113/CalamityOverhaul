@@ -49,6 +49,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     oldPositions[i] = Projectile.Center;
                 }
                 spiralRadius = 50f + Wave * 30f;
+                //ai2 携带追踪档（械奴用，随生成包各端同步；本体路径不传恒 0 无影响。
+                //post-spawn 写 localAI 只有 owner 端看得见追踪，远端直线飞）
+                if (Projectile.ai[2] > 0 && HomingMode == 0) {
+                    HomingMode = Projectile.ai[2];
+                }
             }
             TrailTimer++;
 

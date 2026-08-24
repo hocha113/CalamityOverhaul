@@ -72,8 +72,13 @@
         public static float UltLifeRatio => 0.4f;
         /// <summary>黑闪解锁的核心生命比例（比虚空撕裂更迟，终局底牌）</summary>
         public static float BlackFlashLifeRatio => 0.22f;
-        /// <summary>黑闪蓄力打断阈值：揉搓窗内核心失血达最大生命此比例即失手</summary>
-        public static float BlackFlashBreakRatio => 0.05f;
+        /// <summary>黑闪蓄力打断阈值：揉搓窗内核心失血达最大生命此比例即失手。
+        /// 需要刻意爆发才打得断——裸露期常规输出 2.5 秒约 5%~8%，阈值必须高于它，
+        /// 否则大招永远以失手收场、掷出演出被吞（2026-08 审计根因）</summary>
+        public static float BlackFlashBreakRatio => 0.16f;
+        /// <summary>黑闪失手重试门降：失手不消耗底牌，血线比失手时再降此比例才准再试
+        /// （每次重试门线更低，被死亡阈值自然封顶）</summary>
+        public static float BlackFlashRearmStep => 0.06f;
 
         /// <summary>死亡模式/BossRush 节奏倍率：帧数除以它</summary>
         public static float TempoScale(bool deathMode) => deathMode ? 1.22f : 1f;

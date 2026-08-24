@@ -1377,3 +1377,14 @@ OldNetDebriefPanel: {
 	DebriefContinue: 继续
 	DebriefMechHint: 未铭刻的收获只活在链路里，经中继站或登出终端铭刻后才真正属于你
 }
+
+CharacterDockUI: {
+	OpenHintLabel: 点击查看立绘
+	DragHintLabel: 拖拽移动 · 滚轮缩放 · 右键复位
+	SupCal: {
+		Name: 硫火女巫
+	}
+	Helen: {
+		Name: 海伦
+	}
+}

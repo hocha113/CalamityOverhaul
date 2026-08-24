@@ -102,10 +102,7 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
                     return true;
                 }
             }
-            if (SupCalPortraitUI.Instance?.CapturesMenuInput(pt) == true) {
-                return true;
-            }
-            if (HelenPortraitUI.Instance?.CapturesMenuInput(pt) == true) {
+            if (CharacterDockUI.Instance?.CapturesMenuInput(pt) == true) {
                 return true;
             }
             return false;
@@ -206,14 +203,8 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
             HimayoMenuButtons.Draw(sb, fade);
             sb.End();
 
-            //公告栏等 Mod_MenuLoad 层（内部自管批次与固定步长逻辑）
+            //公告栏与角色码头等 Mod_MenuLoad 层（内部自管批次与固定步长逻辑）
             HimayoMenuActions.DriveMenuOverlays(sb);
-
-            //立绘：HoverHook 同款直调，需处于已开启的 UIScale 批次
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
-            DrivePortraits(sb);
-            sb.End();
 
             //近景花瓣盖在 chrome 之上（氛围层已画过一轮；此处再画一次保证压住按钮/立绘）
             HimayoPetalField.DrawFront(sb, alpha, fade);
@@ -221,20 +212,6 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
             //交还开启批次，框架随后 End
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
-        }
-
-        private static void DrivePortraits(SpriteBatch sb) {
-            if (!VaultLoad.LoadenContent) {
-                return;
-            }
-            if (SupCalPortraitUI.Instance?.Active == true) {
-                SupCalPortraitUI.Instance.Update();
-                SupCalPortraitUI.Instance.Draw(sb);
-            }
-            if (HelenPortraitUI.Instance?.Active == true) {
-                HelenPortraitUI.Instance.Update();
-                HelenPortraitUI.Instance.Draw(sb);
-            }
         }
 
         //全景绘制核心：着色器路径按视线方向采样 equirect；着色器或噪声缺席时退化为静态 cover 铺满

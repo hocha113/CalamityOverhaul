@@ -236,6 +236,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> WeaverWraith { get; set; }
         public static Asset<Effect> WeaverSoulVortex { get; set; }
         public static Asset<Effect> WeaverMaterialize { get; set; }
+        public static Asset<Effect> ArbiterHellfire { get; set; }
         public static Asset<Effect> EnergySlashTrail { get; set; }
         public static Asset<Effect> RebelSlashTrail { get; set; }
         public static Asset<Effect> StormSlashTrail { get; set; }
@@ -278,6 +279,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaReset { get; set; }
         public static Asset<Effect> KikasaHourglass { get; set; }
         public static Asset<Effect> KikasaWispFire { get; set; }
+        public static Asset<Effect> KikasaTalisman { get; set; }
         public static Asset<Effect> OniOmokage { get; set; }
         public static Asset<Effect> OniPaperPeel { get; set; }
         public static Asset<Effect> OniSky { get; set; }

@@ -34,6 +34,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
                     onEnter: PortraitFace(ShenyoFullBodyPortrait.Face.Wry))
              .Say(NarrativeIds.Shenyo, brain ? L1Brain.Value : L1Worm.Value, brain ? Voice[4] : Voice[2],
                     onEnter: PortraitFace(ShenyoFullBodyPortrait.Face.Lidded))
+             //台词分支只换文本，节点图仍是单线，两条路径都会经过这一次发放
+             .GiftTalisman(GiftId)
              .Say(NarrativeIds.Shenyo, L2.Value, Voice[5], onEnter: PortraitFace(ShenyoFullBodyPortrait.Face.Smile));
         }
 

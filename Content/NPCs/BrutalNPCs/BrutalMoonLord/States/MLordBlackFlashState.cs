@@ -77,8 +77,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         public override void OnExit(MLordContext context) {
             base.OnExit(context);
             if (!VaultUtils.isClient) {
+                //失手不消耗底牌：清回未用标记，重试门线（OvBlackFlashRearm）已在打断帧写入
+                if (Timer >= FumbleStart) {
+                    context.Owner.ai[MLordAiSlots.OvBlackFlashUsed] = 0f;
+                }
                 context.Owner.ai[MLordAiSlots.OvEyeCommand] = MLordEyeCommand.Solo;
                 context.Owner.ai[MLordAiSlots.OvBlackFlashBeat] = 0f;
+                context.Npc.netUpdate = true;
             }
         }
 
@@ -140,15 +145,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             UpdateLean(context);
             context.SetChargeState(Timer / (float)KneadEnd);
 
-            //揉搓打断窗（服务端）：窗内核心失血超阈值→失手
-            if (!VaultUtils.isClient && Timer >= EmbraceEnd) {
-                if (Timer == EmbraceEnd) {
-                    kneadStartLife = npc.life;
-                }
-                else if (kneadStartLife - npc.life >= npc.lifeMax * MLordDirector.BlackFlashBreakRatio) {
-                    context.Owner.ai[MLordAiSlots.OvBlackFlashBeat] = 1f;
-                    npc.netUpdate = true;
-                }
+            //失血基线各端镜像（客户端供打断进度红纹演出，服务端供裁定）
+            if (Timer == EmbraceEnd) {
+                kneadStartLife = npc.life;
+            }
+            //揉搓打断窗（服务端裁定）：窗内核心失血超阈值→失手；
+            //同时写重试门线=当前血线再降一档（底牌被打断→更低血量孤注一掷）
+            if (!VaultUtils.isClient && Timer > EmbraceEnd && kneadStartLife > 0
+                && kneadStartLife - npc.life >= npc.lifeMax * MLordDirector.BlackFlashBreakRatio) {
+                context.Owner.ai[MLordAiSlots.OvBlackFlashBeat] = 1f;
+                context.Owner.ai[MLordAiSlots.OvBlackFlashRearm] = MathHelper.Clamp(
+                    npc.life / (float)npc.lifeMax - MLordDirector.BlackFlashRearmStep, 0.02f, 1f);
+                npc.netUpdate = true;
             }
 
             //掷向锁定：寂静拍前最后一刻取玩家位（预告即承诺，此后不再追踪）
@@ -226,7 +234,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             }
         }
 
-        /// <summary>各端跳入失手段：黑球崩散演出 + 服务端广播已写槽</summary>
+        /// <summary>
+        /// 各端跳入失手段：黑球在掌中提前引爆——失手也是一场炸点演出
+        /// （全屏冲击帧+冲击环+碎星，无伤害判定），玩家清楚知道自己打断了它
+        /// </summary>
         private void EnterFumble(MLordContext context) {
             Timer = FumbleStart;
             if (VaultUtils.isServer) {
@@ -236,9 +247,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             Vector2 ballPos = BallCenter(npc);
             SoundEngine.PlaySound(SoundID.Item62 with { Volume = 1f, Pitch = -0.55f }, ballPos);
             SoundEngine.PlaySound(SoundID.NPCDeath59 with { Volume = 0.7f, Pitch = -0.3f }, ballPos);
-            MLordScreenFX.Punch(ballPos, 9f, 14);
-            //黑球崩散：红黑碎星四溅
-            MLordScreenFX.StarBurst(ballPos, 1.6f, 20);
+            SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1f, Pitch = -0.6f }, ballPos);
+            MLordScreenFX.Punch(ballPos, 11f, 16);
+            //掌中提前引爆：黑闪冲击帧 + 无伤冲击环 + 红黑碎星四溅
+            MLordBlackFlashFX.PushFlash(ballPos);
+            MLordScreenEffects.PushStarRing(ballPos, 1f, 780f, 32);
+            MLordScreenFX.StarBurst(ballPos, 1.9f, 26);
         }
 
         /// <summary>失手段：主动打断的奖励，超长硬直+受击加伤，比正常余波更痛</summary>
@@ -285,7 +299,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 float t = (Timer - ManifestEnd) / (float)(EmbraceEnd - ManifestEnd);
                 d.Phase = MLordUltArmPhase.Embrace;
                 d.PhaseT = t;
-                d.BallRadius = MathHelper.Lerp(8f, 92f, VaultUtils.EaseOutCubic(t));
+                d.BallRadius = MathHelper.Lerp(8f, 124f, VaultUtils.EaseOutCubic(t));
                 d.BallVisible = MathHelper.Clamp(t * 3f, 0f, 1f);
                 return d;
             }
@@ -294,17 +308,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 d.Phase = MLordUltArmPhase.Knead;
                 d.PhaseT = t;
                 //压缩中带阻抗脉动：球在抵抗，越压越小、脉动越弱
-                float pulse = 5f * (1f - t) * (float)Math.Sin(Timer * 0.37f);
-                d.BallRadius = MathHelper.Lerp(92f, 46f, t) + pulse;
+                float pulse = 7f * (1f - t) * (float)Math.Sin(Timer * 0.37f);
+                d.BallRadius = MathHelper.Lerp(124f, 64f, t) + pulse;
                 d.BallVisible = 1f;
                 d.Collapse = t * 0.85f;
+                //打断进度：失血占阈值比例，红纹随之加剧（把打断博弈做成可见的语言）
+                d.BreakCharge = kneadStartLife > 0
+                    ? MathHelper.Clamp((kneadStartLife - npc.life)
+                        / (npc.lifeMax * MLordDirector.BlackFlashBreakRatio), 0f, 1f)
+                    : 0f;
                 return d;
             }
             if (Timer < SilenceEnd) {
                 float t = (Timer - KneadEnd) / (float)(SilenceEnd - KneadEnd);
                 d.Phase = MLordUltArmPhase.Silence;
                 d.PhaseT = t;
-                d.BallRadius = MathHelper.Lerp(46f, 40f, t);
+                d.BallRadius = MathHelper.Lerp(64f, 56f, t);
                 d.BallVisible = 1f;
                 d.Collapse = 0.85f + 0.15f * t;
                 return d;
@@ -313,7 +332,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 float t = (Timer - SilenceEnd) / (float)(ThrowEnd - SilenceEnd);
                 d.Phase = MLordUltArmPhase.Throw;
                 d.PhaseT = t;
-                d.BallRadius = 40f;
+                d.BallRadius = 56f;
                 //交棒：弹体已生成，手中球沿掷向外推并快速隐去（覆盖生成包延迟的几帧）
                 d.BallCenter += d.ThrowDir * (MLordBlackHoleProj.LaunchSpeed * (Timer - SilenceEnd));
                 d.BallVisible = MathHelper.Clamp(1f - t * 2.4f, 0f, 1f);

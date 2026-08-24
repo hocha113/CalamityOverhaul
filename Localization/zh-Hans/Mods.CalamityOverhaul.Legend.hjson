@@ -1164,6 +1164,7 @@ KikasaText: {
 		TipHoundCountFormat: 在场恶犬 {0} / {1}
 		TipSeatsHintFormat: 按 {0} 打开转盘召出或收回 · 在湖心景里调整编成
 		TipSeatEmpty: 空位
+		TipTalisHint: 点击打开湖心景调符
 	}
 
 	KikasaServantWheelUI: {
@@ -1229,6 +1230,17 @@ KikasaText: {
 		NoteNotCollected: 还没有把它沉进过湖里
 		NotePickFirst: 先从下面的名册里选一只
 		NoteArmsNoStock: 湖藏里没有这件武器，没法成形
+		TalisTitle: 祈 雨 绳
+		TalisEmptyLine: 空绳结，点击展开符箧挑一张
+		TalisNoneOwned: 符箧还是空的，临水书一张唤雨符再来
+		TalisNeedUmbrella: 把鬼伞握在手里，符才认主
+		TalisSwapHint: 点击换符 · 右键摘下
+		TalisHangHint: 点击挂上
+		TalisTakeDownLabel: 摘下
+		TalisAlreadyHung: 它已经挂在别的绳结上了
+		TalisCurrentTag: 正挂在这里
+		NoteFuHungFormat: 「{0}」升上了祈雨绳
+		NoteFuTakenFormat: 「{0}」收回了符箧
 		VaultTitle: 湖 藏
 		VaultCountFormat: "{0} / {1}"
 		VaultEmptyHint: 这里还是空的

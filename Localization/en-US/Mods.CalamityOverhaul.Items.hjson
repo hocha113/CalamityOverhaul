@@ -65,6 +65,8 @@ FoodStallChair: {
 
 Arbiter: {
 	DisplayName: Arbiter
+	ManifestInteractHint: "[Right Click] Wrench the axe free"
+	ManifestInventoryFullHint: Inventory full - free up a slot before pulling the axe
 	Tooltip:
 		'''
 		Hold left click to charge and raise the axe of judgment
@@ -342,6 +344,226 @@ KikasaItem: {
 		legend_Text
 		"No rain under the umbrella—only the sound of water"
 		'''
+}
+
+KikasaTalismanLin: {
+	DisplayName: "Raincall Talisman: Lin"
+	Tooltip: Denser ink-rain tempo, lighter single drops
+	Origin: It rained for seven days, and no one remembered clear skies. The scribe only asked that it never stop
+	Power: "Ceaseless Drizzle: ink-rain tempo 20% faster, drop after drop without pause"
+	Burden: Drop damage -6%. A long drizzle lands soft
+}
+
+KikasaTalismanLao: {
+	DisplayName: "Raincall Talisman: Lao"
+	Tooltip: Ink drops always pool into puddles; puddles last longer and spread wider; direct hits slightly lighter
+	Origin: The standing water refuses to leave—it is waiting for the next rain. Soaked in the mire, the script reads clearer
+	Power:
+		'''
+		Gathered Mire: ink drops always pool into puddles on landing, no Lake-Tilt tier required
+		Puddles last +50% and spread +30%; whatever steps in soaks a while longer
+		'''
+	Burden: Drop damage -5%. The rain keeps its mind on the ground
+}
+
+KikasaTalismanPei: {
+	DisplayName: "Raincall Talisman: Pei"
+	Tooltip: Faster ink charging, fiercer geysers; the steady rain slows slightly
+	Origin: The moment the sky turned over, the umbrella was the only shore. This talisman was written after that night
+	Power: "Torrential Pour: inverted charge rate +35%, ink geyser damage +20%"
+	Burden: Ink-rain tempo 8% slower. Before a downpour there is always a held breath
+}
+
+KikasaTalismanSha: {
+	DisplayName: "Raincall Talisman: Sha"
+	Tooltip: Umbrella rises near-instantly; the opening beat always drops a rapid rain-triple; the beat after the triple lags slightly
+	Origin: The clouds had not yet closed when the rain reached the lashes. With no time to grind ink, the scribe finished it dipped in the first drop of rain
+	Power: "Instant Squall: umbrella rise time -75%; the opening beat always drops a rapid rain-triple (75% damage each). Rain waits for no one—it arrives in a blink"
+	Burden: After the triple, the next beat's interval +40%. Pour out an instant, and you must catch a breath
+}
+
+KikasaTalismanYin: {
+	DisplayName: "Raincall Talisman: Yin"
+	Tooltip: Ink drops leave bleed-marks on hit; at five stacks they bloom into an ink-flower burst; direct hits slightly lighter
+	Origin: A drop of ink fell on wet paper, and no one wiped it away, so it bled into a flower on its own. The scribe sat by and watched the whole of it
+	Power: "Bleeding Mark: ink drops leave bleed-marks on hit, up to five stacks, each gently eroding; at five the ink blooms into a flower, bursting for 160% drop damage and clearing the stacks"
+	Burden: Direct damage -8%. When the ink sinks three-tenths into the paper, it lands lighter on flesh
+}
+
+KikasaTalismanLu: {
+	DisplayName: "Raincall Talisman: Lu"
+	Tooltip: Ink drops sometimes condense dewdrops on hit; picking one up restores a little life; rain tempo slightly slower
+	Origin: Just before dawn, a blade of grass gathers a whole night's rain into one dewdrop. Whoever picks it up feels the palm turn cool first, then warm
+	Power: "Morning Dew: ink drops have a 12% chance on hit to condense a dewdrop; picking one up restores 2 life; at most three afield"
+	Burden: Ink-rain tempo 6% slower. Dew cannot be hurried, so the rain slows to wait for it
+}
+
+KikasaTalismanFei: {
+	DisplayName: "Raincall Talisman: Fei"
+	Tooltip: Every third drop becomes a mist-drop, leaving a drifting fog that sears and slows where it fades; the mist-drop itself is lighter
+	Origin: "Now I return in thought, and rain and snow fall thick and fast"—the poem was half-copied when the damp blurred it, and the illegible words all fell into this talisman
+	Power: "Thick-Falling Mist: every third ink drop becomes a mist-drop; where it fades, a drifting fog lingers two seconds—foes within take slow searing and lose a tenth of their speed"
+	Burden: Mist-drop damage -30%. Turn rain to mist, and the edge disperses with it
+}
+
+KikasaTalismanXian: {
+	DisplayName: "Raincall Talisman: Xian"
+	Tooltip: Large drops shatter into five bouncing sleet-pearls on landing; ink puddles slightly smaller
+	Origin: That winter the rain froze in mid-air, struck the tiles and bounced three times before it would lie still. The scribe picked one up and held it in his mouth until it melted
+	Power: "Sleet Pearls: large drops (ghost drops and cascade scatter-drops) shatter on landing into five sleet-pearls (30% damage each) that can bounce twice more"
+	Burden: Puddle radius -15%. What scatters away cannot be pooled back
+}
+
+KikasaTalismanXi: {
+	DisplayName: "Raincall Talisman: Xi"
+	Tooltip: Ink puddles breathe with the tide and surge toward nearby foes with a breaking wave; puddle lifespan slightly shorter
+	Origin: After the sea withdrew, the flats kept little seas, puddle by puddle. Each still remembers the hour of high tide, and sets out on its own when it comes
+	Power: "Tide: ink puddles gain the tide's nature—they swell and ebb with its breath, and fresh ink landing in one sends it surging toward the nearest foe, the wave-edge striking for half the puddle's damage"
+	Burden: Puddle lifespan -20%. A tide that rises fast recedes fast
+}
+
+KikasaTalismanZi: {
+	DisplayName: "Raincall Talisman: Zi"
+	Tooltip: Foes steeping in ink puddles gain stacking soak; each stack deepens ink damage taken; the puddle itself is lighter
+	Origin: More than one thing refuses to wash out. The paper soaked in the puddle overnight, and when it was fished out the writing had sunk through to the back
+	Power: "Steeping: foes soaking in an ink puddle gain stacks of soak (up to eight); each stack increases ink damage taken by 2.5%. When ink enters the bone, the wound goes deeper"
+	Burden: Puddle damage -25%. The puddle is in no hurry to bite—it waits for the ink to seep in first
+}
+
+KikasaTalismanTing: {
+	DisplayName: "Raincall Talisman: Ting"
+	Tooltip: Ink geysers become thunder columns—taller, chaining lightning to nearby foes; ink cascades sometimes raise a small thunder-geyser on landing; charging slightly slower
+	Origin: The night lightning struck the lake's heart, the lake remembered it. The scribe merely copied out the lake's memory
+	Power: "Thunderclap: geyser columns +50% taller, hits chain lightning to up to two nearby foes (50% geyser damage each); even an unfilled ink cascade has a 25% chance to raise a small thunder-geyser on landing"
+	Burden: Charge rate -13%. Thunder kept at the bowl's bottom spills when poured too fast
+}
+
+KikasaTalismanHong: {
+	DisplayName: "Raincall Talisman: Hong"
+	Tooltip: After an ink cascade ends, a rainbow arches over the landing point—faster movement and stronger summons beneath it, and its span sears foes passing through; the cascade is slightly narrower
+	Origin: Wherever the rain stops, a rainbow is owed. The colors on this talisman are seven rains each repaying their debt
+	Power: "Clearing Bow: when an ink cascade ends, a rainbow arches over the landing point for five seconds—+10% movement speed and +10% summon damage beneath it, and foes crossing the bow take 40% cascade damage every half second"
+	Burden: Cascade width -10%. Give seven colors away, and the fall runs a shade thinner
+}
+
+KikasaTalismanHang: {
+	DisplayName: "Raincall Talisman: Hang"
+	Tooltip: All ink damage rises at night, and ink puddles steam up miasma columns; slightly weaker by day
+	Origin: Hangxie is the vapor of the night—drink it and become immortal, write it and it becomes a talisman. This one can only be finished when no one is watching
+	Power: "Night Vapor: ink damage +15% at night, and ink puddles steam upward in miasma columns (30% drop damage every half second)"
+	Burden: Ink damage -5% by day. Things that shun the light are listless in daylight
+}
+
+KikasaTalismanBao: {
+	DisplayName: "Raincall Talisman: Bao"
+	Tooltip: Every fourth beat is a full volley, all drops turned to great hail—heavier and harder, armor-breaking with strong knockback, leaving no puddles; ordinary beats slightly lighter
+	Origin: That year the rain froze halfway down. The children gathering hailstones said each one had a sound frozen inside
+	Power: "Hailstorm: every fourth beat is a guaranteed full volley (no Ghost-Host tier required), all drops turned to great hail—size x1.6, damage x2.2, hits break armor and knock hard"
+	Burden: Ordinary-beat drop damage -8%; great hail lands solid and leaves no ink puddles. Save up one hard blow, and the scatterings go untended
+}
+
+KikasaTalismanShu: {
+	DisplayName: "Raincall Talisman: Shu"
+	Tooltip: For three seconds after you are struck, rain beats twice as fast and every drop heals; ordinary tempo slightly slower
+	Origin: Shu is the old name for timely rain. Written by those who have endured too long a drought, every stroke is an urging
+	Power: "Timely Rain: for three seconds after you are struck, rain-beat interval x0.5, the rain-threads turn gold, and every drop that hits restores 1 life; twelve-second cooldown"
+	Burden: Ordinary rain-beat interval +5%. Swift rain saves lives; slow rain keeps the umbrella
+}
+
+KikasaTalismanLong: {
+	DisplayName: "Raincall Talisman: Long"
+	Tooltip: The ink cascade becomes a rushing torrent that scours and shoves foes along the flow, its strikes landing heavier downstream; the cascade runs shorter
+	Origin: Mountain rain crossed the stream and became a torrent overnight. The scribe listened to the water below the cliff all night, and the rush was still in his wrist when the brush came down
+	Power: "Rapids: the ink cascade becomes a torrent—its body scours without pause, shoving foes on the fall line along with the flow; direct hits from the cascade source knock back +35% downstream. Where the water arrives, nothing stands"
+	Burden: A swift torrent is a short one—cascade scouring duration -20%. Rapids never linger
+}
+
+KikasaTalismanShuang: {
+	DisplayName: "Raincall Talisman: Shuang"
+	Tooltip: Ink puddles freeze into frost mirrors—treading slows, and a drop striking the mirror shatters it into a burst; puddles cannot be renewed
+	Origin: The puddle-water on the night of Frost's Descent is the most honest—whoever stepped there left a print. The scribe took that sheet of thin ice whole into the paper
+	Power: "Frost Mirror: large drops freeze into frost puddles where they land (no Lake-Tilt tier required); the mirror no longer sears—treaders are slowed 40%, and an ink drop striking the mirror shatters it, bursting for damage scaled to the mirror's remaining life and raising ice spikes"
+	Burden: Each mirror is its own—ink puddles cannot merge to renew their life. Once shattered, shattered for good
+}
+
+KikasaTalismanZha: {
+	DisplayName: "Raincall Talisman: Zha"
+	Tooltip: Land hits on seven straight beats and the eighth drops all rain at x3 in a heavy crash; the rain rests one beat after
+	Origin: Zhazha is the sound of raindrops on a drumhead. The scribe wrote to the count—seven beats written, not one missed
+	Power: "Seven Beats: a seven-point beat-ring hangs at the umbrella's crown—land at least one drop on each of seven straight beats, and on the eighth all drops strike at x3 damage, crashing down like massed drums"
+	Burden: After the heavy crash the rain rests one beat; miss a beat and the ring shatters, the count restarts. A drumbeat tolerates no hollow stroke
+}
+
+KikasaTalismanNi: {
+	DisplayName: "Raincall Talisman: Ni"
+	Tooltip: Ink drops cycle through three dyes—red bursts, cyan slows, violet deepens wounds; drop damage slightly reduced
+	Origin: The secondary bow is called Ni, its colors reversed from the rainbow's. The scribe dipped into the rain's three deepest colors and wrote it petal by petal
+	Power: "Three Dyes: ink drops take three colors in turn—red drops burst small on hit (40% splash), cyan drops slow foes 15%, violet drops deepen ink damage taken by +5%"
+	Burden: Ink divided into colors runs thinner—drop damage -5%. The secondary bow never burns as fierce as the first
+}
+
+KikasaTalismanWen: {
+	DisplayName: "Raincall Talisman: Wen"
+	Tooltip: Three script-stars circle the umbrella's rim, charged by drop hits; at full charge one hurls itself as a homing ink bolt; rain tempo slightly slower
+	Origin: Clouds woven into patterns are called Wen. The scribe looked up and copied three words from the clouds; set on paper, the words are still slowly moving
+	Power: "Cloud Script: three cloud-script stars circle the umbrella's rim, charged by ink-drop hits; each time the charge fills, the star on duty hurls itself as a homing ink bolt (120% drop damage)"
+	Burden: Steering the stars divides the mind—rain-beat interval +8%. Serve two purposes, and the brush slows half a step
+}
+
+KikasaTalismanPo: {
+	DisplayName: "Raincall Talisman: Po"
+	Tooltip: Night hits wax an ink moon; at full moon the next cascade becomes a moonfall (width x1.5 + moon-mark bursts); useless by day
+	Origin: Po is the first white of the newborn moon. On a moonless night the scribe made one up, feeding it stroke by stroke from new moon to full
+	Power: "Moon Soul: at night an ink moon hangs at the umbrella's crown, waxing with each hit; at full moon the next ink cascade becomes a moonfall—width x1.5, its strikes leaving moon-mark bursts (35% splash)"
+	Burden: By day the talisman's power folds away entirely—it works only at night. The moon does not contend with the sun
+}
+
+KikasaTalismanXiao: {
+	DisplayName: "Raincall Talisman: Xiao"
+	Tooltip: The hovering umbrella climbs to the empyrean; ink drops plunge from on high, faster and harder; rain tempo slightly slower
+	Origin: The one who climbed up to fly the umbrella never came down the mountain. Some say he hung it on the clouds, and ever since, that patch of sky drops its rain straight and hard
+	Power: "Ninth Heaven: umbrella hover height doubled, all ink drops turned to high plunges—terminal speed +40%, damage +25%, a ring of rain-shadow surfacing at the landing point first"
+	Burden: Rain-beat interval +10%. Rain coming down from the empyrean has a long road—always a breath more to wait
+}
+
+KikasaTalismanMei: {
+	DisplayName: "Raincall Talisman: Mei"
+	Tooltip: Drop hits stack mold-rot; when a molded foe dies, a spore cloud infects those around; direct hits slightly lighter
+	Origin: The plum rains fell forty days, and the talisman chest grew mold. The scribe did not wipe it away—he said this too was writing done by the rain
+	Power: "Mold Rain: ink drops apply Mold-Rot on hit (stacks to ten, eroding per stack); when a molded foe dies it bursts into a spore cloud, passing half its stacks to nearby foes with a small hit"
+	Burden: Drop direct damage -10%. The mold rain strikes no one—it simply never leaves
+}
+
+KikasaTalismanPi: {
+	DisplayName: "Raincall Talisman: Pi"
+	Tooltip: For ten seconds after each cascade is poured out, a fifth of drop hits call a sky-bolt straight down; geysers slightly lighter
+	Origin: That night the thunder split the sky in two, and in the white glare the scribe saw every raindrop distinctly. When the talisman was done, the paper's edge was charred
+	Power: "Thunderbolt: each finished ink cascade opens a ten-second lightning window—within it, ink-drop hits have a 20% chance to call a sky-bolt straight down on the point struck (180% damage along a piercing path)"
+	Burden: Geyser damage -20%. When thunder speaks, even the springs give way
+}
+
+KikasaTalismanXia: {
+	DisplayName: "Raincall Talisman: Xia"
+	Tooltip: At dawn and dusk all ink damage burns fiercer, and drop hits kindle glow-flame; slightly duller at noon and midnight
+	Origin: The morning glow burned half the sky, and the rain had not stopped. The scribe dipped into that color to write—the glow, too, is rain set alight
+	Power: "Burning Glow: for a stretch around sunrise and sunset, all ink damage +18% and ink-drop hits kindle Glow-Flame, a brief burn; in the glow hours the whole rain-kit turns orange-gold"
+	Burden: Ink damage -6% at noon and midnight. The glow will only burn at the sky's edge
+}
+
+KikasaTalismanJi: {
+	DisplayName: "Raincall Talisman: Ji"
+	Tooltip: Hits while the umbrella is up store clearing-light; on recall a beam crashes down at the cursor; all damage slightly reduced while the umbrella is up
+	Origin: The moment the rain stopped, a pillar of light leaked through a seam in the clouds. The scribe took its rubbing before the clouds could close
+	Power: "Clearing Light: hits while the umbrella is raised store up the clearing; the instant it is recalled the clouds part in a line, and a beam of clearing light crashes down at the cursor—one great strike scaled to what was stored, fiercest at full"
+	Burden: All ink damage -8% while the umbrella is raised. The rain saves its strength for the moment the sky clears
+}
+
+KikasaTalismanYu: {
+	DisplayName: "Raincall Talisman: Yu"
+	Tooltip: Hits store the rite; at full it opens the altar into the Great Yu—denser rain, fiercer drops, puddles and geysers fully unlocked, three geysers at the close; slightly duller outside the rite
+	Origin: In a year of great drought, the shamans danced the Yu upon the altar, the eight sounds rang as one, and the rain answered. With this the twenty-four talismans were complete—the last stroke fell at the altar's heart
+	Power: "Great Rain Rite: ink-rain hits store up the rite; at full value the altar opens of itself into the Great Yu for ten seconds—rain beats halved, drops carry rainbow ink at +15% and every one pools, all geyser tiers unlocked; when the rite closes, three ink geysers erupt beneath the umbrella"
+	Burden: Outside the Great Yu, all ink damage -10%. Between one great rite and the next, even the sky must rest
 }
 
 SHPCItem: {

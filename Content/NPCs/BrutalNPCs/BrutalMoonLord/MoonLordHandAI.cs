@@ -67,10 +67,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             bool hold = coreAI?.Context?.HoldAllParts ?? false;
             bool broken = npc.ai[MLordAiSlots.PartBroken] == MLordAiSlots.BrokenMark;
 
-            //速度门控接触伤害（各端同式）；抓捕合掌与掌中处刑期清零，威胁是抓取判定，不叠撞击
+            //速度门控接触伤害（各端同式）；抓捕合掌与掌中处刑期清零，威胁是抓取判定，不叠撞击；
+            //掌击入位划线同样免伤：翼位起手是位移不是攻击（伤害窗只在冲线，契约2.3）
             bool graspWindow = coreState == MLordStateIndex.PalmExecution
                 || (coreState == MLordStateIndex.MoonBite && MLordMoonBiteState.InClapWindow(stateTimer));
-            npc.damage = !broken && !graspWindow && npc.velocity.Length() > 24f ? MLordDirector.PalmContactDamage : 0;
+            bool entryDart = coreState == MLordStateIndex.TidalPalms && MLordTidalPalmsState.InBlink(stateTimer);
+            npc.damage = !broken && !graspWindow && !entryDart && npc.velocity.Length() > 24f
+                ? MLordDirector.PalmContactDamage : 0;
 
             if (broken) {
                 UpdateBroken(core);
@@ -124,7 +127,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             if (!claimedByState) {
                 slamTelegraph = 0f;
                 //编队弹簧
-                Vector2 goal = ComputeFormationGoal(core, coreState, hold);
+                Vector2 goal = ComputeFormationGoal(core, coreAI, coreState, stateTimer, hold);
                 Vector2 want = (goal - npc.Center) * 0.06f;
                 if (want.Length() > 14f) {
                     want = want.SafeNormalize(Vector2.Zero) * 14f;
@@ -137,15 +140,43 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 pose.PupilAngle = pose.PupilAngle.AngleLerp((targetPlayer.Center - npc.Center).ToRotation(), 0.25f);
                 pose.PupilOut = MathHelper.Lerp(pose.PupilOut, eyeOpen ? 0.75f : 0.3f, 0.08f);
                 pose.Glow = MathHelper.Lerp(pose.Glow, eyeOpen ? 0.65f : 0.1f, 0.1f);
+
+                //协奏声部预备：出弹前抬手亮眼张掌（预备动作即弹幕预告，契约2）
+                if (coreState == MLordStateIndex.Concerto && coreAI?.Context != null) {
+                    int slot = ((int)npc.ai[MLordAiSlots.HandRow] == 1 ? 2 : 0)
+                        + ((int)npc.ai[MLordAiSlots.HandSide] == 0 ? 0 : 1);
+                    float windup = MLordConcertoState.BeatWindup(coreAI.Context, stateTimer, slot);
+                    if (windup > 0f) {
+                        pose.Glow = Math.Max(pose.Glow, windup);
+                        pose.PupilOut = Math.Max(pose.PupilOut, 0.85f * windup);
+                        gripFrame = MathHelper.Lerp(gripFrame, 0f, 0.3f * windup);
+                        if (!VaultUtils.isServer) {
+                            MLordScreenFX.ConvergeStreak(npc.Center, 130f, windup * 0.6f);
+                        }
+                    }
+                }
             }
 
             pose.Broken = false;
             Lighting.AddLight(npc.Center, MLordDirector.Phantasmal.ToVector3() * (0.25f + pose.Glow * 0.4f));
         }
 
-        /// <summary>掌击子相位姿态（预警张掌/冲线握拳/硬直摊开）</summary>
+        /// <summary>掌击子相位姿态（入位划线/预警张掌/冲线握拳/硬直摊开）</summary>
         private void UpdateSlamPose(int sub) {
-            if (MLordTidalPalmsState.InWindup(sub)) {
+            if (sub < MLordTidalPalmsState.BlinkLen) {
+                //入位划线：面朝行进向，起步与落位各一记星尘（位移可见，不做廉价闪现）
+                gripFrame = MathHelper.Lerp(gripFrame, 1f, 0.2f);
+                if (npc.velocity.LengthSquared() > 9f) {
+                    pose.PupilAngle = npc.velocity.ToRotation();
+                }
+                pose.PupilOut = MathHelper.Lerp(pose.PupilOut, 0.8f, 0.15f);
+                pose.Glow = MathHelper.Lerp(pose.Glow, 0.7f, 0.15f);
+                slamTelegraph = 0f;
+                if (!VaultUtils.isServer && (sub == 1 || sub == MLordTidalPalmsState.BlinkLen - 1)) {
+                    MLordScreenFX.StarBurst(npc.Center, 0.55f, 6);
+                }
+            }
+            else if (MLordTidalPalmsState.InWindup(sub)) {
                 gripFrame = MathHelper.Lerp(gripFrame, 0f, 0.3f);
                 pose.PupilAngle = pose.PupilAngle.AngleLerp((targetPlayer.Center - npc.Center).ToRotation(), 0.4f);
                 pose.PupilOut = MathHelper.Lerp(pose.PupilOut, 1f, 0.2f);
@@ -254,17 +285,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         }
 
         /// <summary>编队目标点：按核心状态与行位（上对/下对）取阵位，四臂分声部不同位</summary>
-        private Vector2 ComputeFormationGoal(NPC core, MLordStateIndex coreState, bool hold) {
+        private Vector2 ComputeFormationGoal(NPC core, MoonLordCoreAI coreAI, MLordStateIndex coreState,
+            int stateTimer, bool hold) {
             float dir = (int)npc.ai[MLordAiSlots.HandSide] == 0 ? -1f : 1f;
             int row = (int)npc.ai[MLordAiSlots.HandRow] == 1 ? 1 : 0;
             int slot = row * 2 + ((int)npc.ai[MLordAiSlots.HandSide] == 0 ? 0 : 1);
             float clock = MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvFormationClock);
 
-            //常态巢位（上对高展、下对外张，X 形构图）+ 呼吸浮动（按槽错相）
+            //常态巢位（上对高展、下对外张，X 形构图）+ 同相呼吸：
+            //四臂共享一个呼吸相位（上→下 0.15rad 级联），X 分量沿外向展开——
+            //一个生物的胸腔起伏，而非四只手各漂各的
             Vector2 homeOffset = row == 0 ? MLordDirector.HandHomeOffset : MLordDirector.LowerHandHomeOffset;
             Vector2 home = core.Center + new Vector2(homeOffset.X * dir, homeOffset.Y);
-            Vector2 breath = new((float)Math.Sin(clock * 0.021f + slot * 1.7f) * 26f,
-                (float)Math.Cos(clock * 0.017f + slot * 1.1f) * 22f);
+            Vector2 breath = new((float)Math.Sin(clock * 0.021f - row * 0.15f) * 20f * dir,
+                (float)Math.Cos(clock * 0.017f - row * 0.15f) * 22f);
 
             //目标失效或全体僵直：一律回巢
             if (hold || !targetPlayer.Alives()) {
@@ -272,6 +306,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             }
 
             switch (coreState) {
+                case MLordStateIndex.TidalPalms:
+                    //非执行手收拢护体（分声部：出手的打、其余的架），冲线的手由状态直控不走此处
+                    return core.Center + new Vector2((homeOffset.X - 96f) * dir, homeOffset.Y + 26f)
+                        + breath * 0.5f;
+                case MLordStateIndex.Concerto: {
+                    //即将出手的声部预备抬起（预备动作兼弹幕预告）
+                    float windup = coreAI?.Context != null
+                        ? MLordConcertoState.BeatWindup(coreAI.Context, stateTimer, slot) : 0f;
+                    Vector2 lift = new(26f * dir * windup, -48f * windup);
+                    return home + breath + lift;
+                }
                 case MLordStateIndex.CrescentClose:
                     //上对高位支点持弧，下对低位外张支点（放出封底弧后原位持握）
                     return row == 0
@@ -283,8 +328,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                         ? core.Center + new Vector2(260f * dir, -30f) + breath * 0.5f
                         : core.Center + new Vector2(320f * dir, 52f) + breath * 0.5f;
                 case MLordStateIndex.MoonBite: {
-                    //四臂合围：四掌踞于绕玩家缓旋的方阵四角，半径随呼吸收放
-                    //缺口随整阵旋转移动，玩家沿旋转缺口游走脱压
+                    //四臂合围：四掌踞于绕玩家缓旋的方阵四角，半径随呼吸收放。
+                    //公平声明：环绕弹簧限速 14 低于接触伤门控 24，本阵只是压迫走位、
+                    //不构成伤害环（豁免缺口契约）；伤害窗只在预告完整的合掌冲线
                     float ringAngle = clock * 0.012f + slot * MathHelper.PiOver2;
                     float radius = 470f - (float)Math.Sin(clock * 0.024f) * 90f;
                     return targetPlayer.Center + ringAngle.ToRotationVector2() * radius;

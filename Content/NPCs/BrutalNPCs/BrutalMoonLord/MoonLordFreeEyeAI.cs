@@ -27,6 +27,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         internal const int StrikePeriod = 150;
         internal const int RamTelegraph = 30;
         internal const int RamDash = 9;
+        /// <summary>接触伤速度门控（契约2）：编队弹簧限速 ≤21，只有冲撞点火(30+)越线——
+        /// 巡游换位擦身无伤，带预告的冲撞才是接触威胁</summary>
+        internal const float ContactDamageSpeedGate = 22f;
         /// <summary>剪式对扫周期（2 眼）</summary>
         internal const int ScissorPeriod = 430;
         /// <summary>三角闭环周期（3 眼）</summary>
@@ -87,7 +90,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 return false;
             }
 
-            npc.damage = command == MLordEyeCommand.Retreat || hold ? 0 : 60;
+            //接触伤速度门控：环绕巡游不带伤（无预告的常驻接触伤=暗亏），冲撞高速窗才开
+            bool contactHot = npc.velocity.LengthSquared() > ContactDamageSpeedGate * ContactDamageSpeedGate;
+            npc.damage = command == MLordEyeCommand.Retreat || hold || !contactHot ? 0 : 60;
 
             if (hold || command == MLordEyeCommand.Retreat) {
                 //退避收拢：贴核心哀鸣漂浮

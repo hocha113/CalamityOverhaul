@@ -10,8 +10,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 {
     /// <summary>
-    /// 潮汐掌击（四臂对角版）：每拍两掌自对角翼位同时闪现（左上+右下 / 右上+左下轮换）
-    /// →反向蓄势→交叉贯穿突进（冲线在玩家处交叉，安全区为垂直走廊）→硬刹→睁眼硬直。
+    /// 潮汐掌击（四臂对角版）：每拍两掌自对角翼位同时划线入位（手按自身左右位落本侧翼，
+    /// 臂链始终可达）→反向蓄势→交叉贯穿突进（一左一右对冲在玩家处交叉，安全区为垂直走廊）
+    /// →硬刹→弹簧回本侧巢位睁眼硬直。核心随节拍俯仰（蓄势微升、冲线下压），全身参与出拳。
     /// 每掌预告线独立；接触伤害由部件 AI 按速度门控（各端确定性），无手后由真眼执行冲撞版
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)MLordStateIndex.TidalPalms, typeof(MLordContext))]
@@ -32,9 +33,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         internal const float DashSpeed = 47f;
         /// <summary>每拍最多同时出手的掌数（对角双掌）</summary>
         internal const int MaxPerformers = 2;
+        /// <summary>公平阀（契约2）：冲线方向在蓄势此进度后锁定，锁后不再追踪（预告即承诺）</summary>
+        internal const float DashLockRatio = 0.55f;
+        /// <summary>入位距离超过此值才退化为瞬移兜底（防跨屏甩鞭），否则高速划线入位</summary>
+        internal const float FlankSnapDistance = 1200f;
+        /// <summary>掩护弹出弹帧（蓄势中拍），预闪提前量见 CoverBoltLead</summary>
+        internal const int CoverBoltTick = BlinkLen + WindupLen / 2;
+        /// <summary>掩护弹预闪帧数（契约2：无预告瞬发弹的可见化）</summary>
+        internal const int CoverBoltLead = 18;
 
         /// <summary>本拍各执行者锁定的冲线方向（服务端，按执行序号分槽）</summary>
         private readonly Vector2[] lockedDashDirs = new Vector2[MaxPerformers];
+        /// <summary>本拍各执行者锁定的翼位落点（服务端，入位划线的恒定终点）</summary>
+        private readonly Vector2[] lockedFlankPos = new Vector2[MaxPerformers];
 
         public override void OnEnter(MLordContext context) {
             base.OnEnter(context);
@@ -48,13 +59,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             NPC npc = context.Npc;
             Player target = context.Target;
 
-            //核心退到后景高位旁观（拉开镜头层次）
-            HoverTo(npc, target.Center + new Vector2(0f, -300f), 6f, 0.04f);
-            UpdateLean(context);
-
             int totalLen = SlamCount * CycleLen + PunishTail;
             int slamIndex = Timer / CycleLen;
             int sub = Timer % CycleLen;
+
+            //核心随节拍俯仰：蓄势缓缓吸气上提，冲线一口气下压把拳送出去（全身参与）
+            float bodyBob = 0f;
+            if (slamIndex < SlamCount) {
+                if (InWindup(sub)) {
+                    bodyBob = -42f * ((sub - BlinkLen) / (float)WindupLen);
+                }
+                else if (InDash(sub)) {
+                    bodyBob = 58f;
+                }
+            }
+            HoverTo(npc, target.Center + new Vector2(0f, -300f + bodyBob), 6f, 0.04f);
+            UpdateLean(context);
 
             if (slamIndex < SlamCount) {
                 Span<int> performers = stackalloc int[MaxPerformers];
@@ -64,8 +84,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                         DriveSlamServer(context, Main.npc[performers[i]], i, slamIndex, sub);
                     }
                 }
+                //掩护弹预闪：出弹前头口聚星（契约2：瞬发弹的可见化）
+                if (!VaultUtils.isServer && sub >= CoverBoltTick - CoverBoltLead && sub < CoverBoltTick) {
+                    NPC muzzle = context.Parts.Head >= 0 && context.Parts.HeadAlive
+                        ? Main.npc[context.Parts.Head] : npc;
+                    MLordScreenFX.ConvergeStreak(muzzle.Center + new Vector2(0f, 30f), 150f,
+                        (sub - (CoverBoltTick - CoverBoltLead)) / (float)CoverBoltLead * 0.7f);
+                }
                 //头部掩护弹：蓄势中拍点一发直射
-                if (sub == BlinkLen + WindupLen / 2 && !VaultUtils.isClient) {
+                if (sub == CoverBoltTick && !VaultUtils.isClient) {
                     SpawnCoverBolt(context);
                 }
             }
@@ -124,39 +151,63 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             return false;
         }
 
-        /// <summary>服务端驱动一名执行者的掌击拍：执行序 0 走高翼位、1 走对侧低翼位（对角交叉）</summary>
+        /// <summary>
+        /// 服务端驱动一名执行者的掌击拍。翼位方向：手按自身左右位落本侧翼
+        /// （肩手距落在臂链可达域内，臂不脱链），真眼无侧别沿用种子骰；
+        /// 对角双掌一左一右对冲，冲线仍在玩家处交叉，安全走廊 = 与冲线垂直方向
+        /// </summary>
         private void DriveSlamServer(MLordContext context, NPC performer, int ordinal, int slamIndex, int sub) {
             Player target = context.Target;
             int seed = (int)context.Owner.ai[MLordAiSlots.OvAttackSeed];
-            float side = MLordConstellationProj.Hash01(seed, slamIndex) > 0.5f ? 1f : -1f;
-            if (ordinal == 1) {
-                side = -side;
+            bool isHand = performer.type == NPCID.MoonLordHand;
+            float side;
+            float flankY;
+            if (isHand) {
+                side = (int)performer.ai[MLordAiSlots.HandSide] == 0 ? -1f : 1f;
+                flankY = (int)performer.ai[MLordAiSlots.HandRow] == 0 ? -190f : 130f;
             }
-            //高翼位与低翼位：两掌冲线在玩家处交叉，安全区为与连线垂直的走廊
-            float flankY = ordinal == 0 ? -190f : 130f;
+            else {
+                side = MLordConstellationProj.Hash01(seed, slamIndex) > 0.5f ? 1f : -1f;
+                if (ordinal == 1) {
+                    side = -side;
+                }
+                flankY = ordinal == 0 ? -190f : 130f;
+            }
 
             if (sub == 0) {
-                //真眼执行者瞬移前掐断其身上的链束：活束随瞬移横甩全屏是不可读判定
+                //真眼执行者入位前掐断其身上的链束：活束随高速位移横甩全屏是不可读判定
                 if (performer.type == NPCID.MoonLordFreeEye) {
                     KillLinksTouching(performer.whoAmI);
                 }
-                //闪现落位：对角翼位
-                Vector2 blinkPos = target.Center + new Vector2(side * 560f,
+                //翼位锁定：入位期恒定终点
+                Vector2 flankPos = target.Center + new Vector2(side * 560f,
                     flankY + MLordConstellationProj.Hash01(seed, slamIndex + 40 + ordinal * 13) * 120f - 60f);
-                performer.Center = blinkPos;
-                performer.velocity = Vector2.Zero;
-                performer.netUpdate = true;
-                if (!VaultUtils.isServer) {
-                    MLordScreenFX.StarBurst(blinkPos, 0.8f, 10);
+                lockedFlankPos[ordinal] = flankPos;
+                if (performer.Distance(flankPos) > FlankSnapDistance) {
+                    //超远兜底：瞬移入位（臂链 IK 自带 snap 硬重建）
+                    performer.Center = flankPos;
+                    performer.velocity = Vector2.Zero;
+                    if (!VaultUtils.isServer) {
+                        MLordScreenFX.StarBurst(flankPos, 0.8f, 10);
+                    }
                 }
+                else {
+                    //划线入位：整个入位窗匀速冲向翼位（可见的位移，不做廉价闪现）
+                    performer.velocity = (flankPos - performer.Center) / BlinkLen;
+                }
+                performer.netUpdate = true;
+            }
+            else if (sub < BlinkLen) {
+                //入位收敛：逐帧重定向，末帧恰好抵达翼位
+                performer.velocity = (lockedFlankPos[ordinal] - performer.Center) / (BlinkLen - sub);
             }
             else if (sub < BlinkLen + WindupLen) {
                 //反向蓄势：pow(t,6) 后仰，末端猛然回吸
                 float t = (sub - BlinkLen) / (float)WindupLen;
                 Vector2 away = (performer.Center - target.Center).SafeNormalize(Vector2.UnitX * side);
                 performer.velocity = away * MathF.Pow(t, 6f) * 20f;
-                //锁定冲线方向（蓄势后半段收敛，前半段跟踪）
-                if (t < 0.55f) {
+                //锁定冲线方向（蓄势后半段收敛，前半段跟踪；锁后不再追踪=预告即承诺）
+                if (t < DashLockRatio) {
                     lockedDashDirs[ordinal] = (target.Center + target.velocity * 8f - performer.Center).SafeNormalize(Vector2.UnitX * -side);
                 }
                 if (sub == BlinkLen + WindupLen - 8 && ordinal == 0 && !VaultUtils.isServer) {
@@ -182,8 +233,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 //硬刹
                 performer.velocity *= 0.76f;
             }
+            else if (isHand) {
+                //硬直期弹簧拉回本侧巢位：交叉冲线后不滞留异侧（臂链回到可达域）
+                NPC core = context.Npc;
+                Vector2 homeOffset = (int)performer.ai[MLordAiSlots.HandRow] == 1
+                    ? MLordDirector.LowerHandHomeOffset : MLordDirector.HandHomeOffset;
+                Vector2 home = core.Center + new Vector2(homeOffset.X * side, homeOffset.Y);
+                Vector2 want = (home - performer.Center) * 0.07f;
+                if (want.Length() > 13f) {
+                    want = want.SafeNormalize(Vector2.Zero) * 13f;
+                }
+                performer.velocity = Vector2.Lerp(performer.velocity, want, 0.15f);
+            }
             else {
-                //硬直悬停
+                //真眼执行者：硬直悬停
                 performer.velocity *= 0.85f;
             }
         }
@@ -216,6 +279,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             sub = stateTimer % CycleLen;
             return slamIndex < SlamCount;
         }
+
+        /// <summary>入位划线期（此窗内手不带接触伤：翼位起手是位移不是攻击，契约2.3）</summary>
+        internal static bool InBlink(int stateTimer)
+            => stateTimer / CycleLen < SlamCount && stateTimer % CycleLen < BlinkLen;
 
         /// <summary>蓄势期（部件绘制预警线用）</summary>
         internal static bool InWindup(int sub) => sub >= BlinkLen && sub < BlinkLen + WindupLen;

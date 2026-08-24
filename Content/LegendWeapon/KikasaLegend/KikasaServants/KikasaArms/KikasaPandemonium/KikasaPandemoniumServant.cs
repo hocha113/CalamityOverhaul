@@ -1,7 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic.Pandemoniums;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -47,6 +46,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         private int State { get => (int)Projectile.ai[0]; set => Projectile.ai[0] = value; }
         private ref float StateTimer => ref Projectile.ai[1];
+        /// <summary>状态内子参数：保位与通用械奴同构，当前未用</summary>
         private ref float StateParam => ref Projectile.ai[2];
 
         private const int OmenFrames = 26;
@@ -64,6 +64,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private const int FireReleaseB = 28;
         private const int FireReleaseC = 36;
         private const int FireTotal = 70;
+
+        /// <summary>拍击三拍帧位（错帧感全靠拍位，火球 ai0 延迟不可用，见 ReleaseFireball）</summary>
+        private static readonly int[] FireBeats = [FireReleaseA, FireReleaseB, FireReleaseC];
 
         private const int CastDashEnd = 16;
         private const int CastReleaseFrame = 34;
@@ -105,16 +108,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (owner.whoAmI != Main.myPlayer) {
                 return;
             }
-            int itemType = ItemType;
+            //模板伤烘焙,词缀不参与(同推断器契约),沉几件都一样
             int baseDmg = 320;
-            foreach (Item item in owner.GetModPlayer<KikasaVaultPlayer>().Stored) {
-                if (item?.IsAir == false && item.type == itemType && item.damage > baseDmg) {
-                    baseDmg = item.damage;
-                }
-            }
-            if (ContentSamples.ItemsByType.TryGetValue(itemType, out Item sample)
-                && sample?.IsAir == false) {
-                baseDmg = Math.Max(baseDmg, sample.damage);
+            if (ContentSamples.ItemsByType.TryGetValue(ItemType, out Item sample)
+                && sample?.IsAir == false && sample.damage > 0) {
+                baseDmg = sample.damage;
             }
             int damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(baseDmg * ScytheDamageMul);
             int index = Projectile.NewProjectile(owner.GetSource_Misc("KikasaServant"),
@@ -465,12 +463,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             for (int k = 0; k < count; k++) {
                 float skew = (k - (count - 1) * 0.5f) * 0.26f;
                 Vector2 vel = (baseAng + skew).ToRotationVector2() * 12f;
-                int idx = Projectile.NewProjectile(Projectile.GetSource_FromAI(), emit, vel,
+                //弱追踪档走 ai2 随生成包同步（post-spawn 写 localAI 远端看不见追踪）
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(), emit, vel,
                     ModContent.ProjectileType<PandemoniumScythe>(), dmg, 2.2f, Projectile.owner,
-                    1f, k * 0.5f);
-                if (idx >= 0 && idx < Main.maxProjectiles) {
-                    Main.projectile[idx].localAI[1] = 1;
-                }
+                    1f, k * 0.5f, 1f);
             }
         }
 
@@ -501,17 +497,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 bookVel -= toT * 0.8f;
             }
 
-            int[] beats = [FireReleaseA, FireReleaseB, FireReleaseC];
             int extra = OwnCircleAlive() ? 1 : 0;
-            for (int k = 0; k < beats.Length; k++) {
-                if (t == beats[k] && k > lastFireTick) {
+            for (int k = 0; k < FireBeats.Length; k++) {
+                if (t == FireBeats[k] && k > lastFireTick) {
                     lastFireTick = k;
-                    ReleaseFireball(owner, authority, focus, k, k * 6f);
+                    ReleaseFireball(owner, authority, focus, k);
                 }
             }
             if (extra > 0 && t == FireReleaseC + 8 && 3 > lastFireTick) {
                 lastFireTick = 3;
-                ReleaseFireball(owner, authority, focus, 3, 4f);
+                ReleaseFireball(owner, authority, focus, 3);
             }
 
             if (t >= FireTotal) {
@@ -519,7 +514,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        private void ReleaseFireball(Player owner, bool authority, Vector2 focus, int lane, float delay) {
+        /// <summary>
+        /// 吐一颗火球。ai0 延迟必须为 0：火球的延迟路径逐帧清零 velocity 后才缓存
+        /// targetVelocity，延迟>0 的普通球会冻在原地——错帧感由三拍帧位承担
+        /// </summary>
+        private void ReleaseFireball(Player owner, bool authority, Vector2 focus, int lane) {
             Vector2 emit = EmitPos();
             float skew = (lane - 1) * 0.12f;
             Vector2 aim = (focus - emit).SafeNormalize(Vector2.UnitY).RotatedBy(skew);
@@ -537,7 +536,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (authority) {
                 int dmg = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(baseDamage * FireballDamageMul);
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), emit, aim * 0.1f,
-                    ModContent.ProjectileType<PandemoniumFireball>(), dmg, 2f, Projectile.owner, delay, 0f);
+                    ModContent.ProjectileType<PandemoniumFireball>(), dmg, 2f, Projectile.owner, 0f, 0f);
             }
         }
 
