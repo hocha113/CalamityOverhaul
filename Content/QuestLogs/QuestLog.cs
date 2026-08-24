@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.QuestLogs.Guide;
 using CalamityOverhaul.Content.QuestLogs.Styles;
 using CalamityOverhaul.Content.QuestLogs.Styles.Chronicle;
 using CalamityOverhaul.Content.TimeFreezes;
+using CalamityOverhaul.Content.UIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -61,11 +62,14 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
     }
 
-    public class QuestLog : UIHandle, ILocalizedModType
+    public class QuestLog : UIHandle, ILocalizedModType, IFullScreenUIHandle
     {
         [VaultLoaden(CWRConstant.UI)]
         public static Asset<Texture2D> QuestLogStart = null;
         public static QuestLog Instance => UIHandleLoader.GetUIHandleOfType<QuestLog>();
+
+        //全屏册子画在各 HUD（默认 1）之上、悬浮说明层（10）之下；说明层由 HUD 让位规则自行熄灭
+        public override float RenderPriority => 2.5f;
 
         //WorldFreezeSystem 的 reason 标签，单人开书即冻世界
         private const string FreezeReason = "QuestLog";
@@ -304,6 +308,14 @@ namespace CalamityOverhaul.Content.QuestLogs
                 && savedView == (byte)QuestLogView.Entrust) {
                 View = QuestLogView.Entrust;
             }
+        }
+
+        //按键、书物品、背包图标、委托入口全走这里：别的全屏界面开着时不抢屏
+        public override void Open() {
+            if (!FullScreenUIHub.TryClaimScreen(this)) {
+                return;
+            }
+            base.Open();
         }
 
         protected override void OnOpen() {

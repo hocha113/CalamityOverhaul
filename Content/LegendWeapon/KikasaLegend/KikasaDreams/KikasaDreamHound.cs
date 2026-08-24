@@ -24,9 +24,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        /// <summary>撕咬基伤（召唤加成前），验收再调</summary>
-        internal const int BiteDamage = 260;
-
         /// <summary>在场寿命（帧），尽头化雾</summary>
         internal const int LifeFrames = 300;
 
@@ -106,6 +103,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             Projectile.timeLeft = LifeFrames;
         }
 
+        /// <summary>
+        /// 撕咬伤：鬼伞面板 × 魇系倍率。命中只在 owner 端结算，
+        /// 远端不要读影位盘（储钱罐语义），保持面板基数
+        /// </summary>
+        internal static int ResolveBiteDamage(Player owner, bool applyNightmare) {
+            float scale = applyNightmare
+                ? KikasaServants.KikasaEffigyBoard.HoundDamageScale(owner) : 1f;
+            return Math.Max(1, (int)(KikasaOverride.GetPanelDamage(owner) * scale));
+        }
+
         public override bool MinionContactDamage() => true;
 
         /// <summary>化雾中没有牙</summary>
@@ -149,12 +156,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                 return;
             }
 
-            //伤害随召唤加成逐帧刷新；魇系倍率只有 owner 端读得到盘，
-            //远端保持基数，命中在 owner 端结算，远端数字只是展示
-            float nightmareScale = Main.myPlayer == Projectile.owner
-                ? KikasaServants.KikasaEffigyBoard.HoundDamageScale(owner) : 1f;
-            Projectile.damage = (int)owner.GetTotalDamage(DamageClass.Summon)
-                .ApplyTo(BiteDamage * nightmareScale);
+            //面板伤逐帧刷新；魇倍率只有 owner 端读得到盘，远端保持面板基数
+            Projectile.damage = ResolveBiteDamage(owner, Main.myPlayer == Projectile.owner);
 
             //梦境绑定：owner 端判定离梦即散，其余端跟同步包
             bool authority = Main.myPlayer == Projectile.owner;

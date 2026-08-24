@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.GameModes
             AnnihilationOffLine = this.GetLocalization(nameof(AnnihilationOffLine),
                 () => "Death rests a while; the living steal a breath.");
             BrutalDesc = this.GetLocalization(nameof(BrutalDesc),
-                () => "Unleashes the reworked, merciless AI of brutal foes; all other enemies gain 50% more life and damage, and lesser fiends turn swift and frenzied");
+                () => "Unleashes the reworked, merciless AI of brutal foes, their stats anchored no lower than Master Mode; all other enemies gain 50% more life and damage, and lesser fiends turn swift and frenzied");
             AsuraDesc = this.GetLocalization(nameof(AsuraDesc),
                 () => "The enhancement rises to 100%. Foes adapt to repeated damage of the same kind, and any blow you deal sets the least they deal back");
             AnnihilationDesc = this.GetLocalization(nameof(AnnihilationDesc),

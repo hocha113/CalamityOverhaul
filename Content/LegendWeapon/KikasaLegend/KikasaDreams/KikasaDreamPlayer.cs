@@ -84,10 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             int dir = Main.MouseWorld.X >= Player.Center.X ? 1 : -1;
             Vector2 spawnAt = Player.Bottom + new Vector2(0f, -12f);
             Vector2 vel = new(dir * Main.rand.NextFloat(6.2f, 8.2f), Main.rand.NextFloat(-7.6f, -5.8f));
-            //魇影愈多犬牙愈利（无魇 78% 基线，每枚 +22%）
-            int damage = (int)Player.GetTotalDamage(DamageClass.Summon)
-                .ApplyTo(KikasaDreamHound.BiteDamage
-                    * KikasaServants.KikasaEffigyBoard.HoundDamageScale(Player));
+            int damage = KikasaDreamHound.ResolveBiteDamage(Player, applyNightmare: true);
 
             Projectile.NewProjectile(Player.GetSource_Misc("KikasaDreamHound"),
                 spawnAt, vel, ModContent.ProjectileType<KikasaDreamHound>(),

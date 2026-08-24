@@ -145,7 +145,10 @@ namespace CalamityOverhaul.Content.UIs.RadialWheels
                 return;
             }
             if (key.JustPressed) {
-                OpenEligible();
+                //全屏界面（任务书/湖心景等）摊开时不开盘，与 B 键无够格盘时的静默同口径
+                if (!FullScreenUIHub.AnyOpen) {
+                    OpenEligible();
+                }
                 return;
             }
             if (!key.JustReleased) {

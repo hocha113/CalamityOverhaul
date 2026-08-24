@@ -8,7 +8,7 @@ GameModeText: {
 	AsuraOffLine: The Asura path closes. All debts are settled.
 	AnnihilationOnLine: All shall pass; only Death lives forever.
 	AnnihilationOffLine: Death rests a while; the living steal a breath.
-	BrutalDesc: Unleashes the reworked, merciless AI of brutal foes; all other enemies gain 50% more life and damage, and lesser fiends turn swift and frenzied
+	BrutalDesc: Unleashes the reworked, merciless AI of brutal foes, their stats anchored no lower than Master Mode; all other enemies gain 50% more life and damage, and lesser fiends turn swift and frenzied
 	AsuraDesc: The enhancement rises to 100%. Foes adapt to repeated damage of the same kind, and any blow you deal sets the least they deal back
 	AnnihilationDesc: The final form of Asura Hell in a zenith world. Every terror doubles again: foes adapt twice as fast, and your pain is repaid twofold
 	StateOn: Active

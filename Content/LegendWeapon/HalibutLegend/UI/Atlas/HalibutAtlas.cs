@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.TimeFreezes;
+using CalamityOverhaul.Content.UIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -14,10 +15,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
     /// 比目鱼图鉴UI、海域/领域之眼切换
     /// 背景 HalibutAtlasBg.fx，随下潜深度与复苏躁动变化
     /// </summary>
-    internal class HalibutAtlas : UIHandle, ILocalizedModType
+    internal class HalibutAtlas : UIHandle, ILocalizedModType, IFullScreenUIHandle
     {
         public string LocalizationCategory => "Legend.HalibutText";
         public static HalibutAtlas Instance => UIHandleLoader.GetUIHandleOfType<HalibutAtlas>();
+
+        FullScreenUIDomain IFullScreenUIHandle.FullScreenDomain => FullScreenUIDomain.Halibut;
+
+        //全屏图鉴画在各 HUD（默认 1）之上，对齐鬼切全屏的 2 档惯例
+        public override float RenderPriority => 2f;
 
         //WorldFreezeSystem 的 reason 标签，统一通过它叠加/释放冻结
         private const string FreezeReason = "HalibutAtlas";
@@ -137,6 +143,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         public override Terraria.Audio.SoundStyle? OpenSound => SoundID.MenuOpen with { Pitch = -0.35f, Volume = 0.6f };
 
         public override Terraria.Audio.SoundStyle? CloseSound => SoundID.MenuClose with { Pitch = -0.2f, Volume = 0.5f };
+
+        //HUD 眼睛点击、引导与剧情自动开屏都走这里：别的全屏界面开着时不抢屏
+        public override void Open() {
+            if (!FullScreenUIHub.TryClaimScreen(this)) {
+                return;
+            }
+            base.Open();
+        }
 
         protected override void OnOpen() {
             Main.playerInventory = false;

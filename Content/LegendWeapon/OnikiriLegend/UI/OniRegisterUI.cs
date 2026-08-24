@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.TimeFreezes;
+using CalamityOverhaul.Content.UIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -18,9 +19,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     /// 只读，结印仍只在结印盘上做,此处不装鬼。
     /// 与结印盘是"抽卷/归卷"的关系而非姊妹屏:展卷静默收盘,合卷静默回盘
     /// </summary>
-    internal sealed class OniRegisterUI : UIHandle, ILocalizedModType
+    internal sealed class OniRegisterUI : UIHandle, ILocalizedModType, IFullScreenUIHandle
     {
         public string LocalizationCategory => "Legend.OnikiriText";
+
+        FullScreenUIDomain IFullScreenUIHandle.FullScreenDomain => FullScreenUIDomain.Onikiri;
         public static OniRegisterUI Instance => UIHandleLoader.GetUIHandleOfType<OniRegisterUI>();
 
         private const string FreezeReason = "OniRegister";

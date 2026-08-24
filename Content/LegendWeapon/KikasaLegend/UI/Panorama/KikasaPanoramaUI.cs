@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
+using CalamityOverhaul.Content.UIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -28,11 +29,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
     /// 持鬼伞按 <see cref="CWRKeySystem.Legend_UIControl"/> 或点风铃展开；
     /// 点恶犬在就绪时直接入梦；点哪都有回应，非热区点击落一圈墨涟漪
     /// </summary>
-    internal class KikasaPanoramaUI : UIHandle, ILocalizedModType
+    internal class KikasaPanoramaUI : UIHandle, ILocalizedModType, IFullScreenUIHandle
     {
         public string LocalizationCategory => "Legend.KikasaText";
 
         public static KikasaPanoramaUI Instance => UIHandleLoader.GetUIHandleOfType<KikasaPanoramaUI>();
+
+        FullScreenUIDomain IFullScreenUIHandle.FullScreenDomain => FullScreenUIDomain.Kikasa;
+
+        //全屏景画在各 HUD（默认 1）之上，对齐鬼切全屏的 2 档惯例
+        public override float RenderPriority => 2f;
 
         #region 本地化
         public static LocalizedText Title { get; private set; }
@@ -284,6 +290,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
         private KikasaDomainPlayer Domain => player.GetModPlayer<KikasaDomainPlayer>();
         private KikasaVaultPlayer Vault => player.GetModPlayer<KikasaVaultPlayer>();
         private KikasaServantPlayer Servant => player.GetModPlayer<KikasaServantPlayer>();
+
+        //M 键与风铃点击都走这里：别的全屏界面（任务书等）开着时不抢屏
+        public override void Open() {
+            if (!FullScreenUIHub.TryClaimScreen(this)) {
+                return;
+            }
+            base.Open();
+        }
 
         protected override void OnOpen() {
             Main.playerInventory = false;

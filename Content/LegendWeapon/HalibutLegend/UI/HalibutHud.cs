@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas;
+using CalamityOverhaul.Content.UIs;
 using CalamityOverhaul.Content.UIs.HudStack;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -206,8 +207,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DrawPosition = anchor - new Vector2(EyeR + 14f, 84f);
             UIHitBox = DrawPosition.GetRectangle(Size);
 
+            //自家图鉴沿用 0.4 缓冲；异域全屏（任务书等）当帧断电，免得眼睛点击在册子底下开图鉴
             float atlasOpen = HalibutAtlas.Instance?.OpenProgress ?? 0f;
-            if (atlasOpen > 0.4f) {
+            if (atlasOpen > 0.4f
+                || FullScreenUIHub.AnyForeignOpen(FullScreenUIDomain.Halibut)) {
                 hoverCore = hoverGauge = false;
                 hoverSatellite = -1;
                 return;
@@ -309,8 +312,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         public override void Draw(SpriteBatch sb) {
-            float atlasOpen = HalibutAtlas.Instance?.OpenProgress ?? 0f;
-            float a = appear * (1f - MathHelper.Clamp(atlasOpen * 1.6f, 0f, 1f));
+            //自家图鉴或异域全屏铺开都让位
+            float cover = MathF.Max(HalibutAtlas.Instance?.OpenProgress ?? 0f,
+                FullScreenUIHub.ForeignOcclusion01(FullScreenUIDomain.Halibut));
+            float a = appear * (1f - MathHelper.Clamp(cover * 1.6f, 0f, 1f));
             if (a < 0.01f) {
                 return;
             }

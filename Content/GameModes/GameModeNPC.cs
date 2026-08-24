@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.GameModes
     /// 游戏模式的通用敌怪增强，作用于没有 Brutal AI 重制的敌人。
     /// 属性缩放在 <see cref="SetDefaults"/> 绑定：世界旗标已全端同步，两端确定性执行零网络，
     /// 切换模式只影响此后生成的个体（与 AI 覆盖同语义）。
+    /// Brutal 重制类型不吃通用增幅，改走大师基线锚定（<see cref="GameModeTuning.MasterAnchorCompensation"/>），
+    /// 保证重制 Boss 在任何世界难度下都不低于原版大师的血量伤害。
     /// 提速与常态狂暴只作用于非 Boss，保护 Boss 招式编排的可读性
     /// </summary>
     internal class GameModeNPC : GlobalNPC
@@ -24,7 +26,16 @@ namespace CalamityOverhaul.Content.GameModes
         public override void SetDefaults(NPC npc) {
             boundTier = 0;
             int tier = GameModeSystem.EffectiveTier;
-            if (tier <= 0 || !Eligible(npc)) {
+            if (tier <= 0) {
+                return;
+            }
+
+            if (GameModeNPCLoader.BrutalOverriddenTypes.Contains(npc.type)) {
+                ApplyMasterAnchor(npc);
+                return;
+            }
+
+            if (!Eligible(npc)) {
                 return;
             }
             boundTier = tier;
@@ -42,16 +53,30 @@ namespace CalamityOverhaul.Content.GameModes
             npc.defDefense = npc.defense;
         }
 
-        /// <summary>通用增强资格：敌对、非小动物、非假人、且不属于 Brutal AI 重制类型</summary>
+        /// <summary>
+        /// 重制 Boss 的大师基线补偿：世界难度不足大师时把血量伤害补足到大师基线，
+        /// 重制自身的系数（各 SetProperty 里的乘法）永远乘在这个底上。
+        /// 此钩子先于原版 ScaleStats 执行，补偿 × 世界缩放 == 大师缩放，乘法可交换故顺序无关
+        /// </summary>
+        private static void ApplyMasterAnchor(NPC npc) {
+            (float lifeComp, float damageComp) = GameModeTuning.MasterAnchorCompensation(npc.type);
+            if (lifeComp > 1f) {
+                npc.lifeMax = (int)(npc.lifeMax * lifeComp);
+                npc.life = npc.lifeMax;
+            }
+            if (damageComp > 1f && npc.damage > 0) {
+                npc.damage = (int)(npc.damage * damageComp);
+                npc.defDamage = npc.damage;
+            }
+        }
+
+        /// <summary>通用增强资格：敌对、非小动物、非假人（重制类型已在上游分流）</summary>
         private static bool Eligible(NPC npc) {
             if (npc.friendly || npc.townNPC || npc.immortal || npc.dontTakeDamage) {
                 return false;
             }
             //镜像原版 ScaleStats 的跳过口径：小动物与零接触伤害载体不参与
-            if (npc.lifeMax <= 5 || npc.damage <= 0) {
-                return false;
-            }
-            return !GameModeNPCLoader.BrutalOverriddenTypes.Contains(npc.type);
+            return npc.lifeMax > 5 && npc.damage > 0;
         }
 
         /// <summary>提速与狂暴资格：非 Boss，且不是共享血池的体节（避免蠕虫链被推散）</summary>

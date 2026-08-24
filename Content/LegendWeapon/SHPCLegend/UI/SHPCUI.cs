@@ -1,12 +1,11 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Cyberwares.UIs;
-using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.Narrative;
-using CalamityOverhaul.Content.QuestLogs;
 using CalamityOverhaul.Content.RAMSystems;
 using CalamityOverhaul.Content.Scenarios.Shepel;
+using CalamityOverhaul.Content.UIs;
 using CalamityOverhaul.Content.UIs.HudStack;
 using CalamityOverhaul.Content.UIs.RadialWheels;
 using InnoVault.UIHandles;
@@ -188,11 +187,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 if (held == null || held.IsAir || held.type != SHPCOverride.ID) {
                     return false;
                 }
-                //避让全屏UI
-                if (QuestLog.Instance?.IsOpen == true) {
-                    return false;
-                }
-                if (QuestManagerUI.Instance?.IsOpen == true) {
+                //避让全屏UI（任务书/湖心景/图鉴/鬼切诸屏，统一问 Hub）
+                if (FullScreenUIHub.AnyOpen) {
                     return false;
                 }
                 return true;

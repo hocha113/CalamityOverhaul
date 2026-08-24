@@ -33,11 +33,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         /// <summary>转化纵向范围：距湖面线的容许高差，雨layer的语义高度</summary>
         internal const float ConvertRangeY = 1600f;
 
-        /// <summary>基伤 = clamp(尸体lifeMax × 系数, Min, Max)，逐帧再乘召唤加成</summary>
-        internal const float DamagePerLifeMax = 0.10f;
-        internal const int DamageMin = 40;
-        internal const int DamageMax = 900;
-
         /// <summary>体型缩放按尸体包围盒对玩家体型归一后钳制</summary>
         internal const float BodyScaleMin = 0.85f;
         internal const float BodyScaleMax = 1.25f;
@@ -238,8 +233,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             => KasaOniActor.TryFindStandableGround(from,
                 KikasaThrallProj.HitboxWidth, KikasaThrallProj.HitboxHeight, out feet);
 
-        internal static int CorpseBaseDamage(NPC npc)
-            => (int)MathHelper.Clamp(npc.lifeMax * DamagePerLifeMax, DamageMin, DamageMax);
+        /// <summary>伞奴伤：鬼伞面板。命中只在 owner 端结算</summary>
+        internal static int ResolveDamage(Player owner)
+            => Math.Max(1, KikasaOverride.GetPanelDamage(owner));
 
         internal static float CorpseBodyScale(NPC npc) {
             float size = MathF.Sqrt(MathF.Max(npc.width * npc.height, 1f));
@@ -250,24 +246,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
 
         /// <summary>
         /// 在尸点生成伞奴弹幕：位置=尸体脚底（聚拢期水团从这里出发），
-        /// ai0/1=重组点脚底（入 spawn 包），ai2=体型；基伤走字段+netUpdate 补包
+        /// ai0/1=重组点脚底（入 spawn 包），ai2=体型；伤走鬼伞面板，spawn 包自带
         /// </summary>
         internal static void SpawnThrall(Player owner, NPC corpse, Vector2 reformFeet) {
             if (owner.whoAmI != Main.myPlayer) {
                 return;
             }
-            int baseDamage = CorpseBaseDamage(corpse);
-            int damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(baseDamage);
+            int damage = ResolveDamage(owner);
             Vector2 corpseFeet = new(corpse.Center.X, corpse.Bottom.Y);
-            int index = Projectile.NewProjectile(owner.GetSource_Misc("KikasaThrall"),
+            Projectile.NewProjectile(owner.GetSource_Misc("KikasaThrall"),
                 corpseFeet, Vector2.Zero, ModContent.ProjectileType<KikasaThrallProj>(),
                 damage, 4f, owner.whoAmI,
                 reformFeet.X, reformFeet.Y, CorpseBodyScale(corpse));
-            if (index >= 0 && index < Main.maxProjectiles
-                && Main.projectile[index].ModProjectile is KikasaThrallProj thrall) {
-                //spawn 包已带 ai/伤害；基伤字段错过了首包，跟发 netUpdate 补上
-                thrall.SetCorpseStats(baseDamage);
-            }
         }
 
         //==================== 待确认尸体 ====================
@@ -398,7 +388,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 return;
             }
             Player owner = Main.LocalPlayer;
-            int damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(DamageMin * 3);
+            int damage = ResolveDamage(owner);
             int index = Projectile.NewProjectile(owner.GetSource_Misc("KikasaThrall"),
                 feet - new Vector2(0f, 6f), Vector2.Zero,
                 ModContent.ProjectileType<KikasaThrallProj>(), damage, 4f, owner.whoAmI,
@@ -406,7 +396,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             if (index >= 0 && index < Main.maxProjectiles
                 && Main.projectile[index].ModProjectile is KikasaThrallProj thrall) {
                 //调试生成没有尸体，跳过聚拢直接看成形与战斗
-                thrall.SetCorpseStats(DamageMin * 3, skipGather: true);
+                thrall.SetCorpseStats(skipGather: true);
             }
         }
 

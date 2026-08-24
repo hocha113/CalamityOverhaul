@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
     /// <summary>
     /// 成长层,经 <see cref="ItemOverride"/> 挂 <see cref="KikasaItem"/>。
     /// 除传奇等级伤害表外,伞下鬼(召唤栏位驱动普攻强度)的数值口径也集中在这里,
-    /// 供 <see cref="KikasaRains.KikasaRainUmbrella"/> 与 <see cref="KikasaRains.KikasaInkPour"/> 取用
+    /// 供墨雨/墨瀑取用;不经物品使用的出口(鬼梦恶犬、鞭笞、伞奴)走 <see cref="GetPanelDamage"/>
     /// </summary>
     internal class KikasaOverride : ItemOverride, ILocalizedModType
     {
@@ -98,6 +98,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
         internal static int ClampLevel(int level) => Math.Clamp(level, 0, MaxLevel);
 
         public static int GetOnDamage(Item item) => DamageDictionary[GetLevel(item)];
+
+        /// <summary>
+        /// 鬼伞面板伤（等级表已缩放，含召唤加成与前缀）
+        /// 梦中 noItems、鞭笞、伞奴等不经物品使用的出口先 HeldItem 再扫背包，不用 GetItem()（远端会被本机 mouseItem 污染）
+        /// </summary>
+        public static int GetPanelDamage(Player player) {
+            if (player == null) {
+                return GetStartDamage;
+            }
+            Item held = player.HeldItem;
+            if (IsKikasa(held)) {
+                return player.GetWeaponDamage(held);
+            }
+            foreach (Item item in player.inventory) {
+                if (IsKikasa(item)) {
+                    return player.GetWeaponDamage(item);
+                }
+            }
+            return GetStartDamage;
+        }
+
+        private static bool IsKikasa(Item item)
+            => item != null && item.Alives() && item.type == ID;
 
         public static void LoadWeaponData() {
             //锚点 0/8(肉山)/11(三机械)/18(月总)/24(湖宴终席),中段近似线性;

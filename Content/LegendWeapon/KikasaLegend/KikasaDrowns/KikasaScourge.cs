@@ -70,9 +70,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         /// <summary>自动鞭击伤害倍率，低于主动鞭笞</summary>
         private const float AmbientMul = 2f;
 
-        /// <summary>湖开着人却没带伞的兜底基伤</summary>
-        private const int FallbackBaseDamage = 60;
-
         //==================== 权威记录 ====================
 
         internal sealed class ScourgeActivation
@@ -347,28 +344,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             float mul = activation.Kind == KindAmbient
                 ? AmbientMul
                 : punishMuls[Math.Min(activation.BeatCursor, punishMuls.Length - 1)];
-            int damage = Math.Max((int)(KikasaWeaponDamage(owner) * mul), 1);
+            int damage = Math.Max((int)(KikasaOverride.GetPanelDamage(owner) * mul), 1);
 
             //手从 side 侧抽来，目标被拍向对侧；合掌下砸无横向击退
             int hitDirection = -side;
             float knockback = side == 0 ? 0f : activation.Kind == KindAmbient ? 3f : 5f;
             target.SimpleStrikeNPC(damage, hitDirection, false, knockback,
                 DamageClass.Summon, damageVariation: true);
-        }
-
-        /// <summary>鞭击基伤取鬼伞当前面板（成长层已按等级缩放）：先看手持，再扫背包</summary>
-        private static int KikasaWeaponDamage(Player owner) {
-            int kikasaType = ModContent.ItemType<KikasaItem>();
-            Item held = owner.GetItem();
-            if (held != null && held.Alives() && held.type == kikasaType) {
-                return owner.GetWeaponDamage(held);
-            }
-            foreach (Item item in owner.inventory) {
-                if (item != null && item.Alives() && item.type == kikasaType) {
-                    return owner.GetWeaponDamage(item);
-                }
-            }
-            return FallbackBaseDamage;
         }
 
         //被拒的请求写日志：静默拒绝没法诊断（自动鞭击的限频除外）

@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.TimeFreezes;
+using CalamityOverhaul.Content.UIs;
 using CalamityOverhaul.Content.Wraiths.Core;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,9 +22,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     /// 持印时空位鬼火相邀、将成之边先以虚线预演。<br/>
     /// 盘座下缘的卷槽里插着点鬼簿，那是图鉴，抽出来只能看，结印仍只在这盘上做
     /// </summary>
-    internal sealed class OniSigilUI : UIHandle, ILocalizedModType
+    internal sealed class OniSigilUI : UIHandle, ILocalizedModType, IFullScreenUIHandle
     {
         public string LocalizationCategory => "Legend.OnikiriText";
+
+        FullScreenUIDomain IFullScreenUIHandle.FullScreenDomain => FullScreenUIDomain.Onikiri;
         public static OniSigilUI Instance => UIHandleLoader.GetUIHandleOfType<OniSigilUI>();
 
         private const string FreezeReason = "OniSigil";

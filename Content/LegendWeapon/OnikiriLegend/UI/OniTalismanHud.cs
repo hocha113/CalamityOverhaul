@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.UIs;
 using CalamityOverhaul.Content.UIs.HudStack;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -245,7 +246,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float sigilOpen = OniSigilUI.Instance?.OpenProgress ?? 0f;
             float registerOpen = OniRegisterUI.Instance?.OpenProgress ?? 0f;
             float meiOpen = OniMeiUI.Instance?.OpenProgress ?? 0f;
-            bool uiCovered = sigilOpen > 0.4f || registerOpen > 0.4f || meiOpen > 0.4f;
+            float codexOpen = OniMeiCodexUI.Instance?.OpenProgress ?? 0f;
+            //自家四屏沿用 0.4 缓冲；异域全屏（任务书等）当帧断电，免得点札在册子底下开簿
+            bool uiCovered = sigilOpen > 0.4f || registerOpen > 0.4f || meiOpen > 0.4f
+                || codexOpen > 0.4f
+                || FullScreenUIHub.AnyForeignOpen(FullScreenUIDomain.Onikiri);
 
             //鬼域之眼:先推进眼(它是整簇的挂点),左键开阖、右键/中键翻转
             Vector2 knot = Anchor;
@@ -363,9 +368,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (appear <= 0.01f) {
                 return;
             }
+            //自家开卷保留 0.7 的部分淡出（札在案上继续呼吸），异域全屏则整簇让位
             float registerOpen = OniRegisterUI.Instance?.OpenProgress ?? 0f;
             float meiOpen = OniMeiUI.Instance?.OpenProgress ?? 0f;
             float a = appear * (1f - Math.Max(registerOpen, meiOpen) * 0.7f);
+            a *= 1f - MathHelper.Clamp(
+                FullScreenUIHub.ForeignOcclusion01(FullScreenUIDomain.Onikiri) * 1.4f, 0f, 1f);
             if (a <= 0.01f) {
                 return;
             }
@@ -502,9 +510,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 tooltipOwner = TooltipOwner.None;
                 return;
             }
+            //说明层压得过任何 UIHandle，异域全屏开着时必须整层熄灭
             float registerOpen = OniRegisterUI.Instance?.OpenProgress ?? 0f;
             float meiOpen = OniMeiUI.Instance?.OpenProgress ?? 0f;
             float a = appear * (1f - Math.Max(registerOpen, meiOpen) * 0.7f);
+            a *= 1f - MathHelper.Clamp(
+                FullScreenUIHub.ForeignOcclusion01(FullScreenUIDomain.Onikiri) * 1.4f, 0f, 1f);
             if (a <= 0.01f) {
                 tooltipOwner = TooltipOwner.None;
                 return;

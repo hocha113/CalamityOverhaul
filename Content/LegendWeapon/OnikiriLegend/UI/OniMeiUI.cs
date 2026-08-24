@@ -2,6 +2,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds;
 using CalamityOverhaul.Content.TimeFreezes;
+using CalamityOverhaul.Content.UIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -64,9 +65,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     /// 凿毕光包沿引线归牌盖章;鏨盘扇/錾样匣/烙印木牌/右缘大字沿用;
     /// 与点鬼簿互斥同级(互斥收台静默,切换只响一声);仪式演出态见 <see cref="OniMeiRite"/>
     /// </summary>
-    internal sealed class OniMeiUI : UIHandle, ILocalizedModType
+    internal sealed class OniMeiUI : UIHandle, ILocalizedModType, IFullScreenUIHandle
     {
         public string LocalizationCategory => "Legend.OnikiriText";
+
+        FullScreenUIDomain IFullScreenUIHandle.FullScreenDomain => FullScreenUIDomain.Onikiri;
         public static OniMeiUI Instance => UIHandleLoader.GetUIHandleOfType<OniMeiUI>();
 
         private const string FreezeReason = "OniMei";

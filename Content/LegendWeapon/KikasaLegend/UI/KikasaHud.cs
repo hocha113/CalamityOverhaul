@@ -9,6 +9,7 @@ using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama;
+using CalamityOverhaul.Content.UIs;
 using CalamityOverhaul.Content.UIs.HudStack;
 using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.UIHandles;
@@ -93,8 +94,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 && item.type == ModContent.ItemType<KikasaItem>();
         }
 
+        //异域全屏（任务书等）摊开时让位；自家湖心景的遮盖仍走绘制淡出，铃保持活着
         private static bool WantVisible(Player p)
-            => HoldingUmbrella(p) || p.GetModPlayer<KikasaDomainPlayer>().AnyActive;
+            => (HoldingUmbrella(p) || p.GetModPlayer<KikasaDomainPlayer>().AnyActive)
+                && !FullScreenUIHub.AnyForeignOpen(FullScreenUIDomain.Kikasa);
 
         public override bool Active {
             get {
@@ -274,9 +277,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             CollectHungTalis();
 
             //悬停解析：读数 > 符纸回显 > 席位排 > 铃身；命中即占鼠标
+            //异域全屏开着时当帧断电，免得点击穿透到册子底下开湖心景
             Vector2 mouse = KikasaHudTheme.UIMouse;
             TipTarget newTarget = TipTarget.None;
-            if (appear > 0.5f) {
+            if (appear > 0.5f && !FullScreenUIHub.AnyForeignOpen(FullScreenUIDomain.Kikasa)) {
                 foreach ((TipTarget target, Vector2 pos) in readouts) {
                     if (MathF.Abs(mouse.X - pos.X) < ReadoutHitHalf
                         && MathF.Abs(mouse.Y - pos.Y) < ReadoutHitHalf + 1f) {
@@ -379,9 +383,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             if (a < 0.01f) {
                 return;
             }
-            //湖心景铺开后风铃让位，免得铃与全屏同屏抢戏
+            //湖心景或异域全屏铺开后风铃让位，免得铃与全屏同屏抢戏
             float panoOpen = KikasaPanoramaUI.Instance?.OpenProgress ?? 0f;
-            a *= 1f - MathHelper.Clamp(panoOpen * 1.4f, 0f, 1f);
+            float cover = MathF.Max(panoOpen,
+                FullScreenUIHub.ForeignOcclusion01(FullScreenUIDomain.Kikasa));
+            a *= 1f - MathHelper.Clamp(cover * 1.4f, 0f, 1f);
             if (a < 0.01f) {
                 return;
             }
@@ -753,9 +759,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             if (hoverTarget == TipTarget.None || appear < 0.5f) {
                 return;
             }
-            float panoOpen = KikasaPanoramaUI.Instance?.OpenProgress ?? 0f;
+            float cover = MathF.Max(KikasaPanoramaUI.Instance?.OpenProgress ?? 0f,
+                FullScreenUIHub.ForeignOcclusion01(FullScreenUIDomain.Kikasa));
             float alpha = MathHelper.Clamp(hoverLerp, 0f, 1f)
-                * (1f - MathHelper.Clamp(panoOpen * 1.4f, 0f, 1f));
+                * (1f - MathHelper.Clamp(cover * 1.4f, 0f, 1f));
             if (alpha < 0.05f) {
                 return;
             }

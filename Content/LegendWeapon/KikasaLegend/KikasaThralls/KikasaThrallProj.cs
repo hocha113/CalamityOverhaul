@@ -84,8 +84,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         private int state = StateGather;
         private int stateTimer;
         private int subState = SubWalk;
-        /// <summary>尸体折算基伤，owner 生成后补包；远端不结算命中只作展示</summary>
-        private int baseDamage;
 
         //==================== 本地表现量（不入同步，节拍闩防快照回卷重播） ====================
 
@@ -157,9 +155,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
 
         //==================== 外部接口 ====================
 
-        /// <summary>owner 生成后补基伤（字段错过 spawn 包，跟发 netUpdate）；调试可跳过聚拢</summary>
-        internal void SetCorpseStats(int damage, bool skipGather = false) {
-            baseDamage = damage;
+        /// <summary>调试可跳过聚拢，直接入成形</summary>
+        internal void SetCorpseStats(bool skipGather = false) {
             if (skipGather) {
                 state = StateReform;
             }
@@ -217,14 +214,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             writer.Write((byte)state);
             writer.Write((ushort)Math.Clamp(stateTimer, 0, ushort.MaxValue));
             writer.Write((byte)subState);
-            writer.Write(baseDamage);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
             state = reader.ReadByte();
             stateTimer = reader.ReadUInt16();
             subState = reader.ReadByte();
-            baseDamage = reader.ReadInt32();
         }
 
         //==================== 推进 ====================
@@ -245,10 +240,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             }
 
             Projectile.timeLeft = 180;
-            //伤害逐帧随召唤加成刷新；只在 owner 端算（基伤字段远端可能未达，命中也只在 owner 结算）
+            //面板伤逐帧刷新；命中只在 owner 端结算
             if (authority) {
-                Projectile.damage = (int)owner.GetTotalDamage(DamageClass.Summon)
-                    .ApplyTo(Math.Max(baseDamage, KikasaThrall.DamageMin));
+                Projectile.damage = KikasaThrall.ResolveDamage(owner);
             }
 
             //换场清闩：远端可能靠收包切状态而非本地同拍转场
