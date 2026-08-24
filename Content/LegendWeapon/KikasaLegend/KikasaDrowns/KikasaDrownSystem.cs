@@ -11,16 +11,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
     {
         public override void PostUpdateEverything() {
             KikasaDrown.UpdateAuthority();
+            KikasaScourge.UpdateAuthority();
             if (!Main.dedServ) {
                 KikasaDrownFX.Update();
+                KikasaScourgeFX.Update();
                 KikasaDrown.UpdateHoverOmen();
+                KikasaScourge.UpdateLocalAmbient();
             }
         }
 
         public override void ClearWorld() {
             KikasaDrown.Reset();
+            KikasaScourge.Reset();
             if (!Main.dedServ) {
                 KikasaDrownFX.Clear();
+                KikasaScourgeFX.Clear();
             }
         }
     }

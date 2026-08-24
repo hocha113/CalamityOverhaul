@@ -892,25 +892,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
         /// <summary>由 KikasaDomainRender.EndEntityDraw 调用；湖面镜面随后给出倒影与水下血染</summary>
         public static void Draw(SpriteBatch spriteBatch) {
-            if (shows.Count == 0) {
-                return;
-            }
             KikasaDomainPlayer viewed = KikasaDomain.Viewed;
             if (viewed == null) {
                 return;
             }
             int viewedOwner = viewed.Player.whoAmI;
 
-            DrawGlowLayer(spriteBatch, viewedOwner);
-
             Effect handFx = EffectLoader.KikasaHand?.Value;
             Texture2D noise = CWRAsset.NoiseSoft01?.Value;
             bool handShaderOk = handFx != null && noise != null;
 
-            //背层手（托底/背箍）→ 鬼影 → 前层手（越顶/侧箍）
-            DrawHandLayer(spriteBatch, viewedOwner, handFx, noise, handShaderOk, front: false);
-            DrawGhostLayer(spriteBatch, viewedOwner);
-            DrawHandLayer(spriteBatch, viewedOwner, handFx, noise, handShaderOk, front: true);
+            if (shows.Count > 0) {
+                DrawGlowLayer(spriteBatch, viewedOwner);
+                //背层手（托底/背箍）→ 鬼影 → 前层手（越顶/侧箍）
+                DrawHandLayer(spriteBatch, viewedOwner, handFx, noise, handShaderOk, front: false);
+                DrawGhostLayer(spriteBatch, viewedOwner);
+                DrawHandLayer(spriteBatch, viewedOwner, handFx, noise, handShaderOk, front: true);
+            }
+
+            //鞭笞/自动鞭击的手画在最上：目标真身在场，手要压着它抽
+            KikasaScourgeFX.Draw(spriteBatch, viewedOwner, handFx, noise, handShaderOk);
         }
 
         //加色层：合围鼓包的水下行进光斑 + 出水根口的泡沫光

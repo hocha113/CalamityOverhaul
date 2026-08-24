@@ -309,6 +309,12 @@ namespace CalamityOverhaul
         public static int NPC_RavagerHead => Get();
         public static int NPC_RavagerLegLeft => Get();
         public static int NPC_RavagerLegRight => Get();
+        public static int NPC_AstrumAureus => Get();
+        public static int NPC_GiantClam => Get();
+        public static int NPC_CragmawMire => Get();
+        public static int NPC_GreatSandShark => Get();
+        public static int NPC_Mauler => Get();
+        public static int NPC_NuclearTerror => Get();
         #endregion
         #region 弹幕ID引用
         public static int Proj_ArcZap => Get();

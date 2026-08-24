@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
     /// 服务器只验资格/距离/频率，不验领域，服务器没有领域状态是既定契约；
     /// 领域就绪由客户端预检。定身走轻量方案：权威端逐帧钉位+定期 netUpdate，
     /// 40 帧短持有后在抓握节拍移除真身，此后演出全靠客户端鬼影。
+    /// BOSS 门槛：未在本世界击败过的 BOSS 级目标沉不下去，请求解析处按
+    /// <see cref="KikasaBossGate.DrownBlocked"/> 分流去 <see cref="KikasaScourge"/> 鞭笞。
     /// </summary>
     internal static class KikasaDrown
     {
@@ -61,13 +63,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
         //本机所有者的乐观锁：请求在途/演出进行/完成冷却，服务器另有真限频
         private static uint localLockUntil;
+        private static int localLockTotal = CooldownFrames;
 
         //==================== 资格 ====================
 
         /// <summary>
         /// 共享资格谓词：客户端预检与服务器复检同一份（一处真相）。
-        /// 2026-08 暂时全放开：任何活跃 NPC（含 boss/城镇/免伤）都能沉，
-        /// 只留技术性守卫，正被放逐或已在沉溺中的目标不能被第二只手抓
+        /// 这里只留技术性守卫（正被放逐或已在沉溺中的目标不能被第二只手抓）；
+        /// BOSS 未击败的门槛不在资格里，在入口分流（<see cref="KikasaBossGate.DrownBlocked"/>，
+        /// 命中者转 <see cref="KikasaScourge"/> 鞭笞），城镇与普通生物照旧全放开
         /// </summary>
         public static bool IsEligibleTarget(NPC npc)
             => npc?.active == true && npc.lifeMax > 0
@@ -91,7 +95,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
         /// <summary>
         /// 光标下有生物时受理沉溺，返回是否消费了这次按键
-        /// （冷却/湖未就绪的拒绝也算消费，玩家的意图明确是生物，不该误沉手中物）
+        /// （冷却/湖未就绪的拒绝也算消费，玩家的意图明确是生物，不该误沉手中物）。
+        /// 未击败的 BOSS 走鞭笞分流：单机直通 <see cref="KikasaScourge"/>，
+        /// 联机仍发同一条请求，门槛真相由服务器重算分流
         /// </summary>
         internal static bool TryDrownAtCursor(Player player) {
             if (player == null || player.whoAmI != Main.myPlayer) {
@@ -108,7 +114,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 return true;
             }
             if (Main.GameUpdateCount < localLockUntil
-                || KikasaDrownFX.HasActiveShowFor(player.whoAmI)) {
+                || KikasaDrownFX.HasActiveShowFor(player.whoAmI)
+                || KikasaScourgeFX.HasPressBlockingShowFor(player.whoAmI)) {
                 Refuse(player);
                 return true;
             }
@@ -128,20 +135,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             //客户端可能铸不出 generation（§4.3），index+type 随行，服务器再盖自己的章
             NetworkNPCIdentity.TryCapture(hover, out NetworkNPCIdentity identity);
 
-            //可丢弃的预兆预测：湖面先应两圈涟漪，一声低水滴；圈随目标体型放大
+            //可丢弃的预兆预测；门槛目标是怒不是馋，水线炸一记沸腾
+            bool gated = KikasaBossGate.DrownBlocked(hover);
             float omen = MathHelper.Clamp(
                 MathF.Sqrt(hover.width * (float)hover.height) / 30f, 0.9f, 2.4f);
-            KikasaDomains.KikasaDomainDeco.RippleAt(
-                new Vector2(hover.Center.X, lakeY), 0.5f * omen);
-            KikasaDomains.KikasaDomainDeco.RippleAt(
-                new Vector2(hover.Center.X + 24f * omen, lakeY), 0.35f * omen);
-            SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.45f, Pitch = -0.55f, MaxInstances = 2 }, hover.Center);
+            if (gated) {
+                KikasaDomains.KikasaDomainDeco.RippleAt(
+                    new Vector2(hover.Center.X, lakeY), 0.7f * omen);
+                KikasaDomains.KikasaDomainDeco.RippleAt(
+                    new Vector2(hover.Center.X - 18f * omen, lakeY), 0.45f * omen);
+                KikasaDomains.KikasaDomainDeco.RippleAt(
+                    new Vector2(hover.Center.X + 18f * omen, lakeY), 0.45f * omen);
+                SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.5f, Pitch = -0.9f, MaxInstances = 2 }, hover.Center);
+            }
+            else {
+                //湖面先应两圈涟漪，一声低水滴；圈随目标体型放大
+                KikasaDomains.KikasaDomainDeco.RippleAt(
+                    new Vector2(hover.Center.X, lakeY), 0.5f * omen);
+                KikasaDomains.KikasaDomainDeco.RippleAt(
+                    new Vector2(hover.Center.X + 24f * omen, lakeY), 0.35f * omen);
+                SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.45f, Pitch = -0.55f, MaxInstances = 2 }, hover.Center);
+            }
 
-            //请求在途短锁，防连点；真限频在权威端
-            localLockUntil = Main.GameUpdateCount + 60;
+            //请求在途短锁，防连点；真限频在权威端。鞭笞的整段长锁在 Apply 到达起演时上
+            LockLocal(60);
 
             if (Main.netMode == NetmodeID.MultiplayerClient) {
                 KikasaDrownNet.SendRequest(hover.whoAmI, hover.type, identity.Generation);
+            }
+            else if (gated) {
+                KikasaScourge.StartPunishAuthoritative(player, hover);
             }
             else {
                 StartAuthoritative(player, hover);
@@ -149,28 +172,46 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             return true;
         }
 
+        /// <summary>吸附半径：光标点到碰撞箱的距离在此之内就认指向，不必真戳中</summary>
+        public const float SnapRadius = 96f;
+
+        /// <summary>
+        /// 光标选目标：精确命中（外扩 12px）优先；都没戳中时，吸附半径内
+        /// 离光标最近的生物顶上。悬停预兆与按键共用本函数，预览恒等于按下结果
+        /// </summary>
         private static NPC FindCursorTarget() {
             Vector2 mouse = Main.MouseWorld;
             NPC best = null;
             float bestDistSq = float.MaxValue;
+            NPC snapBest = null;
+            float snapBestDist = float.MaxValue;
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
-                //资格暂时全放开，选中只留技术性过滤
+                //选中只留技术性过滤，资格与门槛在受理处
                 if (npc?.active != true || npc.lifeMax <= 0) {
                     continue;
                 }
                 Rectangle hitbox = npc.Hitbox;
                 hitbox.Inflate(12, 12);
-                if (!hitbox.Contains(mouse.ToPoint())) {
+                if (hitbox.Contains(mouse.ToPoint())) {
+                    float distSq = Vector2.DistanceSquared(npc.Center, mouse);
+                    if (distSq < bestDistSq) {
+                        bestDistSq = distSq;
+                        best = npc;
+                    }
                     continue;
                 }
-                float distSq = Vector2.DistanceSquared(npc.Center, mouse);
-                if (distSq < bestDistSq) {
-                    bestDistSq = distSq;
-                    best = npc;
+                //点到碰撞箱最近点的距离，箱大箱小同一把尺
+                Vector2 clamped = new(
+                    MathHelper.Clamp(mouse.X, hitbox.Left, hitbox.Right),
+                    MathHelper.Clamp(mouse.Y, hitbox.Top, hitbox.Bottom));
+                float dist = Vector2.Distance(mouse, clamped);
+                if (dist <= SnapRadius && dist < snapBestDist) {
+                    snapBestDist = dist;
+                    snapBest = npc;
                 }
             }
-            return best;
+            return best ?? snapBest;
         }
 
         //==================== 悬停预兆 ====================
@@ -181,8 +222,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
         /// <summary>
         /// 可沉暗示：湖就绪时光标悬着够得到的生物，它脚下的湖面先泛起极淡的涟漪
-        /// 把按键后的涟漪预兆提前到悬停。纯本机演出，每帧由
-        /// <see cref="KikasaDrownSystem.PostUpdateEverything"/> 泵动
+        /// 把按键后的涟漪预兆提前到悬停；门槛拦着的 BOSS 换沸腾预兆
+        /// （密拍双涟漪+细血珠上跳），预告这一按是鞭笞不是拖拽。纯本机演出，
+        /// 每帧由 <see cref="KikasaDrownSystem.PostUpdateEverything"/> 泵动
         /// </summary>
         internal static void UpdateHoverOmen() {
             Player player = Main.LocalPlayer;
@@ -193,6 +235,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             //冷却/在途中悬停也别应声，按下去本就是拒绝
             if (Main.GameUpdateCount < localLockUntil
                 || KikasaDrownFX.HasActiveShowFor(player.whoAmI)
+                || KikasaScourgeFX.HasPressBlockingShowFor(player.whoAmI)
                 || !player.GetModPlayer<KikasaVaultPlayer>().LakeReady) {
                 hoverOmenNpc = -1;
                 return;
@@ -208,6 +251,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 return;
             }
 
+            bool gated = KikasaBossGate.DrownBlocked(hover);
             if (hover.whoAmI != hoverOmenNpc) {
                 hoverOmenNpc = hover.whoAmI;
                 //换目标：首圈略等半拍，避免扫过一排怪时满屏起涟漪
@@ -216,9 +260,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             if (--hoverOmenTimer > 0) {
                 return;
             }
-            hoverOmenTimer = 22;
             float omen = MathHelper.Clamp(
                 MathF.Sqrt(hover.width * (float)hover.height) / 30f, 0.9f, 2.4f);
+            if (gated) {
+                //沸腾：更密的拍子、成对的小涟漪、偶发血珠跳出水线
+                hoverOmenTimer = 12;
+                float x = hover.Center.X;
+                KikasaDomains.KikasaDomainDeco.RippleAt(
+                    new Vector2(x + Main.rand.NextFloat(-14f, 14f) * omen, lakeY),
+                    MathF.Min(0.24f * omen, 0.28f));
+                KikasaDomains.KikasaDomainDeco.RippleAt(
+                    new Vector2(x + Main.rand.NextFloat(-14f, 14f) * omen, lakeY),
+                    MathF.Min(0.18f * omen, 0.24f));
+                if (Main.rand.NextBool(3)) {
+                    InnoVault.PRT.PRTLoader.NewParticle<PRTTypes.PRT_GhostRainDrop>(
+                        new Vector2(x + Main.rand.NextFloat(-10f, 10f) * omen, lakeY - 2f),
+                        new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), -Main.rand.NextFloat(1.2f, 2.2f)),
+                        KikasaDomains.KikasaDomain.CoolTint(new Color(237, 77, 69), new Color(126, 158, 164)) * 0.5f,
+                        Main.rand.NextFloat(0.3f, 0.45f))?.Configure(Main.rand.Next(10, 16), 0f);
+                }
+                return;
+            }
+            hoverOmenTimer = 22;
             //封顶在 RippleAt 的涌浪阈值(0.3)之下：悬停预兆只许极淡涟漪，
             //大型目标也不该每拍掀一次整条水线
             KikasaDomains.KikasaDomainDeco.RippleAt(
@@ -233,10 +296,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.55f, Pitch = -0.7f, MaxInstances = 2 }, player.Center);
         }
 
+        /// <summary>
+        /// 本机锁统一入口：沉溺与鞭笞共用同一把"手忙"锁（同一根键、同一双手），
+        /// 各自按自己的时长上锁，HUD 冷却弧按锁总长归一
+        /// </summary>
+        internal static void LockLocal(int frames) {
+            localLockUntil = Main.GameUpdateCount + (uint)Math.Max(frames, 1);
+            localLockTotal = Math.Max(frames, 1);
+        }
+
         /// <summary>本机演出谢幕（完成或取消）后的冷却，由 FX 层回调</summary>
         internal static void OnLocalShowEnded(int ownerWho) {
             if (ownerWho == Main.myPlayer) {
-                localLockUntil = Main.GameUpdateCount + CooldownFrames;
+                LockLocal(CooldownFrames);
             }
         }
 
@@ -247,7 +319,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                     return 0f;
                 }
                 return MathHelper.Clamp(
-                    (localLockUntil - Main.GameUpdateCount) / (float)CooldownFrames, 0f, 1f);
+                    (localLockUntil - Main.GameUpdateCount) / (float)localLockTotal, 0f, 1f);
             }
         }
 
@@ -280,6 +352,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 Reject(ownerWho, "target-missing");
                 return;
             }
+            //门槛分流以服务器为准：未击败的 BOSS 转鞭笞，客户端预测只是演出口径
+            if (KikasaBossGate.DrownBlocked(target)) {
+                KikasaScourge.StartPunishAuthoritative(owner, target);
+                return;
+            }
             StartAuthoritative(owner, target);
         }
 
@@ -293,12 +370,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 return false;
             }
             int ownerWho = owner.whoAmI;
-            if (cooldowns[ownerWho] > 0 || HasActivationFor(ownerWho)) {
+            if (cooldowns[ownerWho] > 0 || HasActivationFor(ownerWho)
+                || KikasaScourge.HasPunishActivationFor(ownerWho)) {
                 Reject(ownerWho, "cooldown-or-busy");
                 return false;
             }
             if (!IsEligibleTarget(target)) {
                 Reject(ownerWho, "ineligible");
+                return false;
+            }
+            //双保险：门槛目标不该走到沉溺权威（分流在请求解析处），走到就按资格拒绝
+            if (KikasaBossGate.DrownBlocked(target)) {
+                Reject(ownerWho, "boss-gated");
                 return false;
             }
             if (Vector2.Distance(target.Center, owner.Center) > MaxRange) {
@@ -352,7 +435,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 activation.Seed, activation.Targets[0].Identity, members);
         }
 
-        private static bool HasActivationFor(int ownerWho) {
+        internal static bool HasActivationFor(int ownerWho) {
             for (int i = 0; i < activations.Count; i++) {
                 if (activations[i].OwnerWho == ownerWho) {
                     return true;
@@ -471,6 +554,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 cooldowns[i] = 0;
             }
             localLockUntil = 0;
+            localLockTotal = CooldownFrames;
         }
     }
 }

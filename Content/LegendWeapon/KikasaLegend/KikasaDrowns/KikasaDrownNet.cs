@@ -8,11 +8,14 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 {
     /// <summary>
-    /// 沉溺四段包：Request（客户端→服务器，index+type+generation，
-    /// generation 允许为 0：客户端可能铸不出章，服务器按 index+type 回退再盖自己的）；
+    /// 沉溺六段包：Request（客户端→服务器，index+type+generation，
+    /// generation 允许为 0：客户端可能铸不出章，服务器按 index+type 回退再盖自己的；
+    /// 服务器解析后按门槛分流沉溺或鞭笞）；
     /// Apply（服务器→全体，owner+drownId+seed+身份组，各端演出时间轴自此起跑）；
     /// Cancel（服务器→全体，目标提前没了的谢幕令）；
-    /// Complete（服务器→全体，权威完成帧的沉湖记忆通报，仅所有者本机入账）。
+    /// Complete（服务器→全体，权威完成帧的沉湖记忆通报，仅所有者本机入账）；
+    /// ScourgeApply（服务器→全体，鞭笞/自动鞭击起演令，目标死亡由演出自察无需取消令）；
+    /// AmbientRequest（客户端→服务器，自动鞭击索敌上行，载荷同 Request）。
     /// 链式 handler 共用一条流：所有字段先读满，校验只做丢弃。
     /// </summary>
     internal static class KikasaDrownNet
@@ -21,6 +24,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         private const byte OpApply = 1;
         private const byte OpCancel = 2;
         private const byte OpComplete = 3;
+        private const byte OpScourgeApply = 4;
+        private const byte OpAmbientRequest = 5;
 
         internal static void SendRequest(int npcIndex, int npcType, ulong generation) {
             if (Main.netMode != NetmodeID.MultiplayerClient) {
@@ -72,6 +77,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             packet.Write(OpComplete);
             packet.Write((byte)ownerWho);
             packet.Write(npcType);
+            packet.Send();
+        }
+
+        internal static void SendScourgeApply(KikasaScourge.ScourgeActivation activation) {
+            if (Main.netMode != NetmodeID.Server || activation == null) {
+                return;
+            }
+            ModPacket packet = CWRMod.Instance.GetPacket();
+            packet.Write((byte)CWRMessageType.KikasaDrown);
+            packet.Write(OpScourgeApply);
+            packet.Write((byte)activation.OwnerWho);
+            packet.Write(activation.ScourgeId);
+            packet.Write(activation.Seed);
+            packet.Write(activation.Kind);
+            activation.Target.Write(packet);
+            packet.Send();
+        }
+
+        internal static void SendAmbientRequest(int npcIndex, int npcType, ulong generation) {
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                return;
+            }
+            ModPacket packet = CWRMod.Instance.GetPacket();
+            packet.Write((byte)CWRMessageType.KikasaDrown);
+            packet.Write(OpAmbientRequest);
+            packet.Write((ushort)npcIndex);
+            packet.Write(npcType);
+            packet.Write(generation);
             packet.Send();
         }
 
@@ -135,6 +168,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                         Main.LocalPlayer
                             .GetModPlayer<KikasaServants.KikasaServantPlayer>()
                             .RecordDrowned(npcType);
+                    }
+                    break;
+                }
+                case OpScourgeApply: {
+                    int owner = reader.ReadByte();
+                    int scourgeId = reader.ReadInt32();
+                    float seed = reader.ReadSingle();
+                    byte kind = reader.ReadByte();
+                    bool valid = NetworkNPCIdentity.TryRead(reader, out NetworkNPCIdentity identity);
+                    if (Main.netMode != NetmodeID.MultiplayerClient
+                        || owner < 0 || owner >= Main.maxPlayers
+                        || !valid || !float.IsFinite(seed)
+                        || kind > KikasaScourge.KindAmbient) {
+                        break;
+                    }
+                    KikasaScourgeFX.StartShow(owner, scourgeId, seed, kind, identity);
+                    break;
+                }
+                case OpAmbientRequest: {
+                    int npcIndex = reader.ReadUInt16();
+                    int npcType = reader.ReadInt32();
+                    ulong generation = reader.ReadUInt64();
+                    if (Main.netMode == NetmodeID.Server) {
+                        //来源以连接为准
+                        KikasaScourge.HandleAmbientRequest(whoAmI, npcIndex, npcType, generation);
                     }
                     break;
                 }
