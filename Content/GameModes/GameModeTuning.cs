@@ -1,4 +1,4 @@
-namespace CalamityOverhaul.Content.GameModes
+﻿namespace CalamityOverhaul.Content.GameModes
 {
     /// <summary>
     /// 档位数值表：通用增强与修罗强化的全部可调常量收拢在此，机制文件不散写数字。
@@ -12,9 +12,9 @@ namespace CalamityOverhaul.Content.GameModes
         private const float AnnihilationStatMult = 3.0f;
 
         //——仅非 Boss：提速（PostAI 位置推进系数）——
-        private const float BrutalSpeedBonus = 0.15f;
-        private const float AsuraSpeedBonus = 0.30f;
-        private const float AnnihilationSpeedBonus = 0.60f;
+        private const float BrutalSpeedBonus = 0.45f;
+        private const float AsuraSpeedBonus = 0.60f;
+        private const float AnnihilationSpeedBonus = 0.8f;
 
         //——仅非 Boss 常态狂暴：击退抗性衰减（乘在 knockBackResist 上，越小越推不动）——
         private const float BrutalKnockbackMult = 0.6f;
