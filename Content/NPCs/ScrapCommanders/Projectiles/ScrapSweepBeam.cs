@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
     /// 锚在统帅镭射臂口，角度是本地计时的确定性函数。
     /// ai[0]=统帅 whoAmI，ai[1]=扫向 ±1；生成时的 velocity 携带瞄准向量
     /// </summary>
-    internal class ScrapSweepBeam : ModProjectile
+    internal class ScrapSweepBeam : ScrapModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

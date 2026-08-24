@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
     /// 寿命尽头飞回统帅归位。伤害窗只在突贯速度上（公平阀）。
     /// ai[0]=工具号（贴图与错拍），ai[1]=统帅 whoAmI
     /// </summary>
-    internal class ScrapAutonomousTool : ModProjectile
+    internal class ScrapAutonomousTool : ScrapModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

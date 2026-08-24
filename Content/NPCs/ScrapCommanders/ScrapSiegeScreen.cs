@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
     /// 全部是客户端表现，各端从同步的 NPC 状态自行推导，无网络通道。
     /// 状态代码通过 Push/Trigger 静态口喂通道，帧末聚合衰减
     /// </summary>
-    internal class ScrapSiegeScreen : ModSystem, ICWRLoader
+    internal class ScrapSiegeScreen : ScrapModSystem, ICWRLoader
     {
         internal const string FilterName = "CWRMod:ScrapSiege";
 
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
         private static float grayAccum;
 
         void ICWRLoader.LoadAsset() {
-            if (EffectLoader.ScrapSiegeFilter == null) {
+            if (!ScrapCommanderGate.Enabled || EffectLoader.ScrapSiegeFilter == null) {
                 return;
             }
             //第二个参数是"通道名"不是技术名：ShaderData.Apply 按 Passes[名字] 查表，

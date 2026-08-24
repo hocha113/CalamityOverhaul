@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
     /// ai[2]=环号（0 内环 / 1 外环，半径与甩出拍不同，两波交错风暴）。
     /// 环绕聚拢段无伤害（公平阀），甩出/坠落/来袭段才咬人
     /// </summary>
-    internal class ScrapDebris : ModProjectile
+    internal class ScrapDebris : ScrapModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

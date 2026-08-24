@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
     /// 可见层画 ScrapMagnetField 力线，扭曲层走 NeutronWarp 引力透镜。
     /// ai[0]=统帅 whoAmI
     /// </summary>
-    internal class ScrapMagnetFieldProj : ModProjectile, IWarpDrawable
+    internal class ScrapMagnetFieldProj : ScrapModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

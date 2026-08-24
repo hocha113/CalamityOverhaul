@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
     /// <summary>
     /// 镭射短脉冲：细快的锈红曳光弹，速度拉丝 + 焊橙芯，撞地一嘬火星
     /// </summary>
-    internal class ScrapLaserPulse : ModProjectile
+    internal class ScrapLaserPulse : ScrapModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

@@ -1,3 +1,4 @@
+#if DEBUG
 using CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs;
 using Terraria;
 using Terraria.Audio;
@@ -7,8 +8,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
 {
     /// <summary>
-    /// 深牢禁室之钥：Boss 房全流程测试物品。任意世界一键在玩家所在处就地筑起
-    /// 深牢禁室并登记看守（蛰伏枯颅随即由 watcher 布置），可完整验收
+    /// 深牢禁室之钥：Boss 房全流程测试物品，仅调试构建存在。
+    /// 任意世界一键在玩家所在处就地筑起深牢禁室并登记看守
+    /// （蛰伏枯颅随即由 watcher 布置），可完整验收
     /// 房间观感 → 接近触发 → 激活演出 → 无缝变身 → 战斗/脱战复位，无需等 A 路接线。
     /// 玩家落位在左门内侧（距祭坛约 22 格，在触发半径外），先看得见蛰伏再走近点火。
     /// 联机：世界改写只在权威端执行，随后整块 SendTileSquare 过线
@@ -64,3 +66,4 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
         }
     }
 }
+#endif

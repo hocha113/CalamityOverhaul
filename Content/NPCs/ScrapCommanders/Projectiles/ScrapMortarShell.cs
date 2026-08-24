@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
     /// 废钢迫击弹：翻滚的铸铁弹头拖着余烬烟迹走迫击弧线，
     /// 落地炸开尘火并砸出一座废钢堆（P2 磁暴的场上物资）
     /// </summary>
-    internal class ScrapMortarShell : ModProjectile
+    internal class ScrapMortarShell : ScrapModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

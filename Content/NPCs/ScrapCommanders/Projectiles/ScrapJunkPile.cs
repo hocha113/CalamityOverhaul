@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
     /// 废钢堆：迫击弹砸出的场上物资，无伤害的舞台道具，
     /// 齿轮与弹壳的小堆冒着余烟；P2 磁暴收束会把它们吸走当弹药
     /// </summary>
-    internal class ScrapJunkPile : ModProjectile
+    internal class ScrapJunkPile : ScrapModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

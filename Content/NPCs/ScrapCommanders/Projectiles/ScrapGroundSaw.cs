@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
     /// 滚够路程后升空回程斜切，沿途二次判定，回到统帅锯臂上咔哒归位。
     /// ai[0]=滚动方向，ai[1]=统帅 whoAmI（回收锚）
     /// </summary>
-    internal class ScrapGroundSaw : ModProjectile
+    internal class ScrapGroundSaw : ScrapModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

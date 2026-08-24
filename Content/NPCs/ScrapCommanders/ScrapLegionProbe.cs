@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
     /// 出土上升 → 绕统帅巡逻 → 周期性朝目标点射锈脉冲。
     /// ai[0]=统帅 whoAmI，ai[1]=编队槽位
     /// </summary>
-    internal class ScrapLegionProbe : ModNPC
+    internal class ScrapLegionProbe : ScrapModNPC
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

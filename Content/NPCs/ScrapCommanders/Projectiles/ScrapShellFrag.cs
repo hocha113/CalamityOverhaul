@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
     /// 迫击弹空爆碎片：弹头在弧顶炸开的下坠件，翻滚拖烬，
     /// 落地小砸响；ai[0]=1 的那片落地才堆出废钢堆（堆经济守恒）
     /// </summary>
-    internal class ScrapShellFrag : ModProjectile
+    internal class ScrapShellFrag : ScrapModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

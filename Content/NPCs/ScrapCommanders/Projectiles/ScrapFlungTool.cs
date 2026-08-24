@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
     /// 甩壳飞掷工具（转阶段一次性弹幕）：外抛减速 → 悬停亮预警线 →
     /// 直线扑向玩家，撞地炸火星。ai[0]=工具号（决定贴图）
     /// </summary>
-    internal class ScrapFlungTool : ModProjectile
+    internal class ScrapFlungTool : ScrapModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

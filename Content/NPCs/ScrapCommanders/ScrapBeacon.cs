@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
     /// 废钢信标：机械三王残料熔铸的召唤物，夜晚举起唤来废钢统帅。
     /// 暂借原版机械骷髅头贴图，专属贴图后续另做
     /// </summary>
-    internal class ScrapBeacon : ModItem
+    internal class ScrapBeacon : ScrapModItem
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.MechanicalSkull;
 

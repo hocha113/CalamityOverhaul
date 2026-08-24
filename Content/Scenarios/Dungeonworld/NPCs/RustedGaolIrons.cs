@@ -1,3 +1,4 @@
+#if DEBUG
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -6,8 +7,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
 {
     /// <summary>
-    /// 锈蚀的镣铐：深牢怨灵的测试召唤物。暂借原版镣铐贴图，无进度门槛，
-    /// 任意世界可召（M0 独立测试用；接入 Dungeonworld 牢狱层刷新逻辑后另做正式召唤链路）
+    /// 锈蚀的镣铐：深牢怨灵的测试召唤物，仅调试构建存在。
+    /// 暂借原版镣铐贴图，无进度门槛，任意世界可召
+    /// （M0 独立测试用；接入 Dungeonworld 牢狱层刷新逻辑后另做正式召唤链路）
     /// </summary>
     internal class RustedGaolIrons : ModItem
     {
@@ -50,3 +52,4 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
         }
     }
 }
+#endif

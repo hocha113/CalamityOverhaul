@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
     /// 受击玩家的判定线与他屏幕上画出的臂严格一致。
     /// ai[0]=统帅 whoAmI，ai[1]=臂号；统帅离开突刺态即自毁
     /// </summary>
-    internal class ScrapArmHitbox : ModProjectile
+    internal class ScrapArmHitbox : ScrapModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

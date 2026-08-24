@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
     /// 各端本地跑同一状态机做表现，节拍全部键控在本地 Timer 上（单调，不回卷），
     /// 弹幕只在权威端生成，粒子音效全走 !dedServ 门。
     /// </summary>
-    internal class ScrapCommander : ModNPC
+    internal class ScrapCommander : ScrapModNPC
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
