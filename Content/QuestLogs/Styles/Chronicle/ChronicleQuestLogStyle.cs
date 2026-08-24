@@ -275,6 +275,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
         private static (int done, int total) CountSealed() {
             int done = 0, total = 0;
             foreach (var node in QuestNode.AllQuests) {
+                //未现身的隐藏任务不进分母，否则完成比例永远差着看不见的几条
+                if (node.IsHiddenNow) {
+                    continue;
+                }
                 total++;
                 if (node.IsCompleted) {
                     done++;

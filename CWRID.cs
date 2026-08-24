@@ -42,14 +42,23 @@ namespace CalamityOverhaul
         public static int Item_PlagueInfuser => Get();
         public static int Item_MonolithAmalgam => Get();
         public static int Item_VoidCondenser => Get();
-        public static int Item_BloodOrange => Get();
+        //生命果实四件套，2.0 后类名已改：血橙=SanguineTangerine 接骨木莓=TaintedCloudberry 火龙果=SacredStrawberry
+        public static int Item_SanguineTangerine => Get();
         public static int Item_MiracleFruit => Get();
-        public static int Item_Elderberry => Get();
-        public static int Item_Dragonfruit => Get();
+        public static int Item_TaintedCloudberry => Get();
+        public static int Item_SacredStrawberry => Get();
         public static int Item_LoreCynosure => Get();
         public static int Item_BloodOrb => Get();
         public static int Item_Terminus => Get();
         public static int Item_Brimlish => Get();
+        public static int Item_Lumenyl => Get();
+        public static int Item_Voidstone => Get();
+        public static int Item_EssenceofHavoc => Get();
+        public static int Item_EffulgentFeather => Get();
+        public static int Item_SulphurousSand => Get();
+        public static int Item_Navystone => Get();
+        public static int Item_AstralOre => Get();
+        public static int Item_BrimstoneSlag => Get();
         public static int Item_WaveSkipper => Get();
         public static int Item_TerrorBlade => Get();
         public static int Item_BansheeHook => Get();

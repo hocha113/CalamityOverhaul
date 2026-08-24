@@ -21,6 +21,10 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 {
     public class IndustrialStartQuest : QuestNode
     {
+        public override bool IsChapterHub => true;
+
+        public override int ChapterOrder => 30;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "工业起步");
             Description = this.GetLocalization(nameof(Description), () => "制作一台风力发电机");
@@ -444,11 +448,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddObtainObjective();
 
-            if (CWRRef.Has) {
-                if (ModContent.TryFind("CalamityMod", "DubiousPlating", out ModItem dubiousPlatingItem)) {
-                    AddReward(dubiousPlatingItem.Type, 20);
-                }
-            }
+            AddReward(CWRID.Item_DubiousPlating, 20);
         }
 
         public override void UpdateByPlayer() {

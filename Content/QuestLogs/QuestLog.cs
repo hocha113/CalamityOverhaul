@@ -677,6 +677,9 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             hoveredNode = null;
             foreach (var node in Nodes) {
+                if (node.IsHiddenNow) {
+                    continue;
+                }
                 Vector2 nodePos = GetNodeScreenPos(node.CalculatedPosition);
                 if (!canvas.Contains(nodePos.ToPoint())) {
                     continue;
@@ -777,10 +780,26 @@ namespace CalamityOverhaul.Content.QuestLogs
         private void RefreshChapterRoots() {
             chapterRoots.Clear();
             foreach (var node in Nodes) {
-                if (node.ParentIDs == null || node.ParentIDs.Count == 0) {
+                //无父节点的根与登记为枢纽的节点都算章目；隐藏且未解锁的不列
+                if (node.IsHiddenNow) {
+                    continue;
+                }
+                if (node.ParentIDs == null || node.ParentIDs.Count == 0 || node.IsChapterHub) {
                     chapterRoots.Add(node);
                 }
             }
+            //起点(无父根)恒在第 0 条，教程按此讲解；其余按 ChapterOrder，ID 兜底保证全序稳定
+            chapterRoots.Sort(static (a, b) => {
+                int rootA = a.ParentIDs == null || a.ParentIDs.Count == 0 ? 0 : 1;
+                int rootB = b.ParentIDs == null || b.ParentIDs.Count == 0 ? 0 : 1;
+                if (rootA != rootB) {
+                    return rootA.CompareTo(rootB);
+                }
+                if (a.ChapterOrder != b.ChapterOrder) {
+                    return a.ChapterOrder.CompareTo(b.ChapterOrder);
+                }
+                return string.CompareOrdinal(a.ID, b.ID);
+            });
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -859,9 +878,12 @@ namespace CalamityOverhaul.Content.QuestLogs
             cull.Inflate(120, 120);
 
             foreach (var node in Nodes) {
+                if (node.IsHiddenNow) {
+                    continue;
+                }
                 foreach (var parentID in node.ParentIDs) {
                     var parent = QuestNode.GetQuest(parentID);
-                    if (parent == null) {
+                    if (parent == null || parent.IsHiddenNow) {
                         continue;
                     }
                     Vector2 start = GetNodeScreenPos(parent.CalculatedPosition);
@@ -871,6 +893,9 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
 
             foreach (var node in Nodes) {
+                if (node.IsHiddenNow) {
+                    continue;
+                }
                 Vector2 nodePos = GetNodeScreenPos(node.CalculatedPosition);
                 if (!cull.Contains(nodePos.ToPoint())) {
                     continue;

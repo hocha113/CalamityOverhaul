@@ -19,7 +19,8 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
         public string LocalizationCategory => "UI";
         public static CharacterDockUI Instance => UIHandleLoader.GetUIHandleOfType<CharacterDockUI>();
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
-        public override bool Active => VaultLoad.LoadenContent && Main.gameMenu && MenuCharacterRegistry.AnyUnlocked;
+        //锁定角色也显示暗色芯片，故只要有注册角色就活跃
+        public override bool Active => VaultLoad.LoadenContent && Main.gameMenu && MenuCharacterRegistry.HasAny;
 
         //缩放档位，像素图整数倍
         internal const int MinZoomStep = 1;
@@ -44,6 +45,7 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
 
         public static LocalizedText OpenHintLabel { get; private set; }
         public static LocalizedText DragHintLabel { get; private set; }
+        public static LocalizedText LockedHintLabel { get; private set; }
 
         /// <summary>芯片运行态，按角色 Key 常驻</summary>
         private sealed class ChipRuntime
@@ -54,6 +56,7 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
             public float Hover;
             public bool HoverTarget;
             public bool PrevHoverTarget;
+            public float DenyShake;//锁定点击的横震余帧
 
             public Rectangle HitBox => new(
                 (int)(Center.X - Size.X / 2f) - ChipPad,
@@ -82,6 +85,7 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
         public override void SetStaticDefaults() {
             OpenHintLabel = this.GetLocalization(nameof(OpenHintLabel), () => "点击查看立绘");
             DragHintLabel = this.GetLocalization(nameof(DragHintLabel), () => "拖拽移动 · 滚轮缩放 · 右键复位");
+            LockedHintLabel = this.GetLocalization(nameof(LockedHintLabel), () => "尚未解锁");
             foreach (MenuCharacter def in MenuCharacterRegistry.All) {
                 def.DisplayName = this.GetLocalization($"{def.Key}.Name", () => def.FallbackName);
             }
@@ -210,7 +214,8 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
         private void LayoutChips() {
             visibleChips.Clear();
             foreach (MenuCharacter def in MenuCharacterRegistry.All) {
-                if (!def.Unlocked || !def.ChipReady) {
+                //锁定角色也占位显示暗色芯片，只要贴图就绪
+                if (!def.ChipReady) {
                     continue;
                 }
                 if (!chipRuntime.TryGetValue(def.Key, out ChipRuntime chip)) {
@@ -259,6 +264,7 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
             foreach (ChipRuntime chip in visibleChips) {
                 float target = chip.HoverTarget ? 1f : 0f;
                 chip.Hover += Math.Clamp(target - chip.Hover, -0.12f, 0.12f);
+                chip.DenyShake = Math.Max(0f, chip.DenyShake - 1f);
             }
 
             if (portraitOpen) {
@@ -272,7 +278,10 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
             }
 
             foreach (ChipRuntime chip in visibleChips) {
-                chip.Def.UpdateAmbient(BuildScene(chip));
+                //锁定角色不冒粒子，暗芯片保持沉寂
+                if (chip.Def.Unlocked) {
+                    chip.Def.UpdateAmbient(BuildScene(chip));
+                }
             }
 
             if (savePending && ++autoSaveTimer >= AutoSaveDelay) {
@@ -352,7 +361,14 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
             //芯片点击优先于立绘
             if (hoveredChip != null) {
                 if (keyLeftPressState == KeyPressState.Pressed) {
-                    ToggleCharacter(hoveredChip.Def);
+                    if (hoveredChip.Def.Unlocked) {
+                        ToggleCharacter(hoveredChip.Def);
+                    }
+                    else {
+                        //锁定回馈: 锁声 + 横震
+                        hoveredChip.DenyShake = 14f;
+                        SoundEngine.PlaySound(SoundID.Unlock);
+                    }
                 }
                 return;
             }
@@ -525,14 +541,26 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
 
         private void DrawChip(SpriteBatch sb, ChipRuntime chip) {
             MenuCharacter def = chip.Def;
+            bool unlocked = def.Unlocked;
             float lift = chip.Hover * 2f;
-            Vector2 center = chip.Center - new Vector2(0f, lift);
+            //锁定点击的横震
+            float shakeX = 0f;
+            if (chip.DenyShake > 0f) {
+                float s = chip.DenyShake / 14f;
+                shakeX = MathF.Sin(chip.DenyShake * 1.9f) * 3f * s;
+            }
+            Vector2 center = chip.Center + new Vector2(shakeX, -lift);
             float alpha = dockAlpha;
             Rectangle rect = new(
                 (int)(center.X - chip.Size.X / 2f) - ChipPad,
                 (int)(center.Y - chip.Size.Y / 2f) - ChipPad,
                 (int)chip.Size.X + ChipPad * 2,
                 (int)chip.Size.Y + ChipPad * 2);
+
+            if (!unlocked) {
+                DrawLockedChip(sb, chip, def, center, rect, alpha);
+                return;
+            }
 
             float pulse = MathF.Sin(GlobalTimer * 1.8f + rect.X * 0.05f) * 0.5f + 0.5f;
             bool selected = activeKey == def.Key && portraitOpen;
@@ -574,6 +602,30 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
             }
         }
 
+        /// <summary>锁定芯片，剪影半身像 + 灰暗框 + 挂锁，点击拒绝闪红</summary>
+        private static void DrawLockedChip(SpriteBatch sb, ChipRuntime chip, MenuCharacter def,
+            Vector2 center, Rectangle rect, float alpha) {
+            float deny = chip.DenyShake / 14f;
+
+            CharacterDockRenderer.DrawCutFill(sb, rect, (int)ChipCut, new Color(10, 10, 13) * (alpha * 0.9f));
+
+            //剪影压色，悬停微透形体
+            Texture2D bust = def.ChipFrames[0];
+            Color silhouette = Color.Lerp(new Color(30, 28, 35), new Color(54, 50, 62), chip.Hover) * alpha;
+            sb.Draw(bust, center, null, silhouette, 0f, bust.Size() / 2f, def.ChipScale, SpriteEffects.None, 0f);
+
+            //灰暗框，拒绝期闪红
+            Color edgeGray = new Color(96, 92, 104) * (alpha * (0.4f + 0.25f * chip.Hover));
+            Color edge = Color.Lerp(edgeGray, new Color(210, 70, 60) * alpha, deny);
+            CharacterDockRenderer.DrawCutFrame(sb, rect, ChipCut, edge);
+
+            //右下角挂锁
+            Vector2 lockPos = new(rect.Right - 9f, rect.Bottom - 11f);
+            Color lockColor = Color.Lerp(new Color(140, 136, 148), new Color(230, 100, 90), deny)
+                * (alpha * (0.75f + 0.25f * chip.Hover));
+            CharacterDockRenderer.DrawLock(sb, lockPos, 7f, lockColor, new Color(12, 12, 15) * alpha);
+        }
+
         private void DrawOverlayText(SpriteBatch sb) {
             //表情切换件
             if (activeKey != null && portraitOpen && portraitProgress > 0.9f
@@ -591,12 +643,22 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
                     continue;
                 }
                 MenuCharacter def = chip.Def;
-                string name = def.DisplayName?.Value ?? def.FallbackName;
+                bool unlocked = def.Unlocked;
+                //锁定角色不泄名
+                string name = unlocked ? def.DisplayName?.Value ?? def.FallbackName : "???";
+                Color nameColor = (unlocked ? Color.White : new Color(150, 148, 158)) * dockAlpha;
                 float topY = chip.HitBox.Y;
                 Utils.DrawBorderString(sb, name, new Vector2(chip.Center.X, topY - 44f),
-                    Color.White * dockAlpha, 0.9f, 0.5f);
-                if (def.HasPortrait) {
-                    string hint = activeKey == def.Key && portraitOpen ? DragHintLabel.Value : OpenHintLabel.Value;
+                    nameColor, 0.9f, 0.5f);
+
+                string hint = null;
+                if (!unlocked) {
+                    hint = LockedHintLabel.Value;
+                }
+                else if (def.HasPortrait) {
+                    hint = activeKey == def.Key && portraitOpen ? DragHintLabel.Value : OpenHintLabel.Value;
+                }
+                if (hint != null) {
                     Utils.DrawBorderString(sb, hint, new Vector2(chip.Center.X, topY - 22f),
                         new Color(200, 200, 200) * (dockAlpha * 0.85f), 0.75f, 0.5f);
                 }

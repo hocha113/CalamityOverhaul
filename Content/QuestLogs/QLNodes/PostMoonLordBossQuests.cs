@@ -21,9 +21,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            if (ModContent.TryFind("CalamityMod", "UnholyEssence", out ModItem unholyEssenceItem)) {
-                AddReward(unholyEssenceItem.Type, 30);
-            }
+            AddReward(CWRID.Item_UnholyEssence, 30);
         }
 
         public override void UpdateByPlayer() {
@@ -52,12 +50,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            if (ModContent.TryFind("CalamityMod", "EffulgentFeather", out ModItem effulgentFeatherItem)) {
-                Rewards.Add(new QuestReward {
-                    ItemType = effulgentFeatherItem.Type,
-                    Amount = 10
-                });
-            }
+            AddReward(CWRID.Item_EffulgentFeather, 10);
         }
 
         public override void UpdateByPlayer() {
@@ -91,10 +84,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            Rewards.Add(new QuestReward {
-                ItemType = CWRID.Item_DivineGeode,
-                Amount = 20
-            });
+            AddReward(CWRID.Item_DivineGeode, 20);
         }
 
         public override void UpdateByPlayer() {
@@ -131,12 +121,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            if (ModContent.TryFind("CalamityMod", "ArmoredShell", out ModItem armoredShellItem)) {
-                Rewards.Add(new QuestReward {
-                    ItemType = armoredShellItem.Type,
-                    Amount = 5
-                });
-            }
+            AddReward(CWRID.Item_ArmoredShell, 5);
         }
 
         public override void UpdateByPlayer() {
@@ -173,12 +158,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            if (ModContent.TryFind("CalamityMod", "DarkPlasma", out ModItem darkPlasmaItem)) {
-                Rewards.Add(new QuestReward {
-                    ItemType = darkPlasmaItem.Type,
-                    Amount = 5
-                });
-            }
+            AddReward(CWRID.Item_DarkPlasma, 5);
         }
 
         public override void UpdateByPlayer() {
@@ -199,7 +179,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             IconNPCType = CWRID.NPC_Signus;
-            Position = new Vector2(75, 150);
+            Position = new Vector2(0, 300);
             if (BossQuestAvailability.Providence) {
                 AddParent<ProvidenceQuest>();
             }
@@ -215,12 +195,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            if (ModContent.TryFind("CalamityMod", "TwistingNether", out ModItem twistingNetherItem)) {
-                Rewards.Add(new QuestReward {
-                    ItemType = twistingNetherItem.Type,
-                    Amount = 5
-                });
-            }
+            AddReward(CWRID.Item_TwistingNether, 5);
         }
 
         public override void UpdateByPlayer() {
@@ -257,12 +232,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            if (ModContent.TryFind("CalamityMod", "RuinousSoul", out ModItem ruinousSoulItem)) {
-                Rewards.Add(new QuestReward {
-                    ItemType = ruinousSoulItem.Type,
-                    Amount = 10
-                });
-            }
+            AddReward(CWRID.Item_RuinousSoul, 10);
         }
 
         public override void UpdateByPlayer() {
@@ -302,12 +272,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            if (ModContent.TryFind("CalamityMod", "CorrodedFossil", out ModItem corrodedFossilItem)) {
-                Rewards.Add(new QuestReward {
-                    ItemType = corrodedFossilItem.Type,
-                    Amount = 20
-                });
-            }
+            AddReward(CWRID.Item_CorrodedFossil, 20);
         }
 
         public override void UpdateByPlayer() {
@@ -347,10 +312,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            Rewards.Add(new QuestReward {
-                ItemType = CWRID.Item_CosmiliteBar,
-                Amount = 30
-            });
+            AddReward(CWRID.Item_CosmiliteBar, 30);
         }
 
         public override void UpdateByPlayer() {
@@ -393,10 +355,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            Rewards.Add(new QuestReward {
-                ItemType = CWRID.Item_AuricBar,
-                Amount = 20
-            });
+            AddReward(CWRID.Item_AuricBar, 20);
         }
 
         public override void UpdateByPlayer() {
@@ -442,10 +401,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            Rewards.Add(new QuestReward {
-                ItemType = CWRID.Item_ExoPrism,
-                Amount = 20
-            });
+            AddReward(CWRID.Item_ExoPrism, 20);
         }
 
         public override void UpdateByPlayer() {
@@ -491,10 +447,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            Rewards.Add(new QuestReward {
-                ItemType = CWRID.Item_AshesofAnnihilation,
-                Amount = 20
-            });
+            AddReward(CWRID.Item_AshesofAnnihilation, 20);
         }
 
         public override void UpdateByPlayer() {
@@ -540,12 +493,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            if (ModContent.TryFind("CalamityMod", "HalibutCannon", out ModItem halibutCannonItem)) {
-                Rewards.Add(new QuestReward {
-                    ItemType = halibutCannonItem.Type,
-                    Amount = 1
-                });
-            }
+            AddReward(CWRID.Item_HalibutCannon, 1);
         }
 
         public override void UpdateByPlayer() {

@@ -9,6 +9,10 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 {
     internal class AdventurerQuests : QuestNode
     {
+        public override bool IsChapterHub => true;
+
+        public override int ChapterOrder => 10;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "冒险家");
             Description = this.GetLocalization(nameof(Description), () => "世界任我走！");
@@ -102,18 +106,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 TargetItemID = IconItemType
             });
 
-            if (ModLoader.TryGetMod("CalamityMod", out Mod calamityMod)) {
-                if (calamityMod.TryFind("DubiousPlating", out ModItem plating) && calamityMod.TryFind("MysteriousCircuitry", out ModItem circuit)) {
-                    Rewards.Add(new QuestReward {
-                        ItemType = plating.Type,
-                        Amount = 5
-                    });
-                    Rewards.Add(new QuestReward {
-                        ItemType = circuit.Type,
-                        Amount = 5
-                    });
-                }
-            }
+            AddReward(CWRID.Item_DubiousPlating, 5);
+            AddReward(CWRID.Item_MysteriousCircuitry, 5);
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Shiverthorn,
@@ -209,18 +203,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 TargetItemID = IconItemType
             });
 
-            if (ModLoader.TryGetMod("CalamityMod", out Mod calamityMod)) {
-                if (calamityMod.TryFind("DubiousPlating", out ModItem plating) && calamityMod.TryFind("MysteriousCircuitry", out ModItem circuit)) {
-                    Rewards.Add(new QuestReward {
-                        ItemType = plating.Type,
-                        Amount = 5
-                    });
-                    Rewards.Add(new QuestReward {
-                        ItemType = circuit.Type,
-                        Amount = 5
-                    });
-                }
-            }
+            AddReward(CWRID.Item_DubiousPlating, 5);
+            AddReward(CWRID.Item_MysteriousCircuitry, 5);
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Waterleaf,
@@ -286,18 +270,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 TargetItemID = IconItemType
             });
 
-            if (ModLoader.TryGetMod("CalamityMod", out Mod calamityMod)) {
-                if (calamityMod.TryFind("DubiousPlating", out ModItem plating) && calamityMod.TryFind("MysteriousCircuitry", out ModItem circuit)) {
-                    Rewards.Add(new QuestReward {
-                        ItemType = plating.Type,
-                        Amount = 5
-                    });
-                    Rewards.Add(new QuestReward {
-                        ItemType = circuit.Type,
-                        Amount = 5
-                    });
-                }
-            }
+            AddReward(CWRID.Item_DubiousPlating, 5);
+            AddReward(CWRID.Item_MysteriousCircuitry, 5);
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Moonglow,
@@ -705,18 +679,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 TargetItemID = IconItemType
             });
 
-            if (ModLoader.TryGetMod("CalamityMod", out Mod calamityMod)) {
-                if (calamityMod.TryFind("DubiousPlating", out ModItem plating) && calamityMod.TryFind("MysteriousCircuitry", out ModItem circuit)) {
-                    Rewards.Add(new QuestReward {
-                        ItemType = plating.Type,
-                        Amount = 5
-                    });
-                    Rewards.Add(new QuestReward {
-                        ItemType = circuit.Type,
-                        Amount = 5
-                    });
-                }
-            }
+            AddReward(CWRID.Item_DubiousPlating, 5);
+            AddReward(CWRID.Item_MysteriousCircuitry, 5);
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Fireblossom,
@@ -884,18 +848,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 TargetItemID = IconItemType
             });
 
-            if (ModLoader.TryGetMod("CalamityMod", out Mod calamityMod)) {
-                if (calamityMod.TryFind("DubiousPlating", out ModItem plating) && calamityMod.TryFind("MysteriousCircuitry", out ModItem circuit)) {
-                    Rewards.Add(new QuestReward {
-                        ItemType = plating.Type,
-                        Amount = 5
-                    });
-                    Rewards.Add(new QuestReward {
-                        ItemType = circuit.Type,
-                        Amount = 5
-                    });
-                }
-            }
+            AddReward(CWRID.Item_DubiousPlating, 5);
+            AddReward(CWRID.Item_MysteriousCircuitry, 5);
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.FallenStar,

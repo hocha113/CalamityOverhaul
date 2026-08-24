@@ -79,6 +79,27 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// <summary>任务难度</summary>
         public QuestDifficulty Difficulty;
 
+        /// <summary>章目枢纽：登记进左栏章目列表，供点击跳转</summary>
+        public virtual bool IsChapterHub => false;
+
+        /// <summary>
+        /// 章目排序值，越小越靠前。无父根节点(起点)恒排最前，
+        /// 教程按"章目第 0 条 = 起点任务"讲解，枢纽不要用 0 以下的值
+        /// </summary>
+        public virtual int ChapterOrder => 0;
+
+        /// <summary>隐藏任务：解锁前不绘制、不可悬停，连线也不画</summary>
+        public bool HiddenUntilUnlocked;
+
+        /// <summary>此刻是否对玩家不可见</summary>
+        public bool IsHiddenNow => HiddenUntilUnlocked && !IsUnlocked;
+
+        /// <summary>
+        /// 隐藏任务的触发条件，解锁除父任务外还需此条件成立。
+        /// 条件按秒级节奏轮询，触发源要能持续成立（身处环境、持有物品、玩家持久标志）
+        /// </summary>
+        protected virtual bool HiddenTriggerMet() => true;
+
         /// <summary>是否已完成</summary>
         public bool IsCompleted {
             get => Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID).IsCompleted;
@@ -152,7 +173,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
                 }
             }
 
-            if (allParentsCompleted) {
+            if (allParentsCompleted && HiddenTriggerMet()) {
                 IsUnlocked = true;
             }
         }

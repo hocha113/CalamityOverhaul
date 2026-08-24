@@ -189,10 +189,10 @@ namespace CalamityOverhaul
         private static void SetupStaticData() {
             AddMaxStackItemsIn64 = [
                 CWRID.Item_Rock,
-                CWRID.Item_BloodOrange,
+                CWRID.Item_SanguineTangerine,
                 CWRID.Item_MiracleFruit,
-                CWRID.Item_Elderberry,
-                CWRID.Item_Dragonfruit,
+                CWRID.Item_TaintedCloudberry,
+                CWRID.Item_SacredStrawberry,
                 CWRID.Item_LoreCynosure,
                 ItemID.BloodMoonStarter,
             ];

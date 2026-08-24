@@ -1,6 +1,6 @@
 QuestNode: {
 	FirstQuest: {
-		DisplayName: 欢迎来到灾厄世界!
+		DisplayName: 欢迎来到这个世界!
 		Description: 旅途的起点
 		DetailedDescription: 领取你的初始物资。这个世界有神明，也有怪物，而你现在两手空空。
 		QuestObjective.Description: 点击领取初始道具
@@ -96,7 +96,7 @@ QuestNode: {
 		DisplayName: 机械三王
 		Description: 击败所有机械Boss
 		QuestObjective.Description: 击败所有机械Boss
-		DetailedDescription: 嘉登的早期造物，模仿了克苏鲁的部分器官。一对眼睛、一颗头骨、一条长虫。
+		DetailedDescription: 有人用钢铁复刻了克苏鲁的器官。一对眼睛、一颗头骨、一条长虫。
 	}
 
 	MoonLordQuest: {
@@ -258,7 +258,7 @@ QuestNode: {
 	TeslaTowerQuest: {
 		DisplayName: 磁暴高塔
 		Description: 制作一座特斯拉电磁塔
-		DetailedDescription: 抄的嘉登技术。这座塔能无线输电，省掉一大半线。
+		DetailedDescription: 无线输电的杰作。这座塔能隔空送电，省掉一大半线。
 	}
 
 	ThermalPowerQuest: {
@@ -613,5 +613,384 @@ QuestNode: {
 		DisplayName: 投掷助手
 		Description: 制作一个投掷者
 		DetailedDescription: 并非所有物品都值得被珍藏。这个装置能将物品从物流网络中排出，将其抛掷到世界中。无论是为了特定的自动化合成（比如将物品丢入液体），还是单纯地作为垃圾排放口，它都能完美胜任。
+	}
+
+	DeerclopsQuest: {
+		DisplayName: 巡游怪
+		Description: 击败巡游怪
+		DetailedDescription: 暴风雪的深处站着一只独眼巨鹿。它不主动找你，是你非要去找它。
+	}
+
+	DukeFishronQuest: {
+		DisplayName: 猪龙鱼公爵
+		Description: 击败猪龙鱼公爵
+		DetailedDescription: 用松露虫做饵，海里会咬钩一位公爵。猪、龙、鱼，三种凶相长在同一张脸上。
+	}
+
+	EmpressOfLightQuest: {
+		DisplayName: 光之女皇
+		Description: 击败光之女皇
+		DetailedDescription: 踩死神圣之地的七彩蝶，愤怒的女皇会亲自来讨说法。若在白昼激怒她，任何攻击都是一击致命。
+	}
+
+	ZenithQuest: {
+		DisplayName: 天顶剑
+		Description: 锻造天顶剑
+		DetailedDescription: 从铜短剑到弑星者，你挥过的每一把剑都记得你。把它们熔在一起，这段旅途就有了形状。
+	}
+
+	BloodMoonQuest: {
+		DisplayName: 血色之夜
+		Description: 经历一次血月
+		QuestObjective.Description: 经历一次血月
+		DetailedDescription: 月亮变红的晚上，怪物不再敲门，它们直接开门。活过这一夜，天亮见。
+	}
+
+	TorchGodQuest: {
+		DisplayName: 火把神
+		Description: 通过火把神的试炼
+		QuestObjective.Description: 获得火把神的恩宠
+		DetailedDescription: 在地下插满一百支火把，火焰的主人会亲自考验你。熄灭的火光里藏着它的恩宠。
+	}
+
+	GoblinArmyQuest: {
+		DisplayName: 哥布林入侵
+		Description: 击退哥布林军队
+		QuestObjective.Description: 击退哥布林军队
+		DetailedDescription: 打碎暗影珠会引来它们，人多了也会。矮小、成群、没完没了，但打赢了能捡到一位会修装备的俘虏。
+	}
+
+	OldOnesArmyQuest: {
+		DisplayName: 旧日军团
+		Description: 守住埃特尼亚水晶，击退旧日军团三个阶段
+
+		QuestObjective: {
+			Description: {
+				T1: 击退旧日军团 一阶
+				T2: 击退旧日军团 二阶
+				T3: 击退旧日军团 三阶
+			}
+		}
+
+		DetailedDescription: 酒馆老板带来了异世界的求援。摆好水晶，守住传送门，别让任何东西碰到它。三个梯队，一波比一波狠。
+	}
+
+	PirateInvasionQuest: {
+		DisplayName: 海盗入侵
+		Description: 击退海盗入侵
+		QuestObjective.Description: 击退海盗入侵
+		DetailedDescription: 世界变硬之后，海平面上开始出现帆影。他们抢钱，你抢回来，顺便连船长的家当一起。
+	}
+
+	SolarEclipseQuest: {
+		DisplayName: 日食讨伐
+		Description: 在日食中击杀蛾怪
+		QuestObjective.Description: 击杀蛾怪
+		DetailedDescription: 月亮挡住太阳的日子，白天比夜晚更危险。恐怖电影里的东西全都上街了，其中飞得最快的那只叫蛾怪。
+	}
+
+	MartianMadnessQuest: {
+		DisplayName: 火星暴乱
+		Description: 击退火星人入侵
+		QuestObjective.Description: 击退火星人入侵
+		DetailedDescription: 别盯着天上的探测器看，它会回家叫人。飞碟、死光、脑控头盔，全套外星入侵的排场。
+	}
+
+	PumpkinMoonQuest: {
+		DisplayName: 南瓜月
+		Description: 在南瓜月中击败南瓜王
+		QuestObjective.Description: 击败南瓜王
+		DetailedDescription: 用南瓜月勋章唤醒万圣夜。稻草人排着队来收人头，压轴登场的是提着双镰的南瓜王。
+	}
+
+	FrostMoonQuest: {
+		DisplayName: 霜月
+		Description: 在霜月中击败冰雪女王
+		QuestObjective.Description: 击败冰雪女王
+		DetailedDescription: 拆开那份不该拆的礼物，圣诞夜就变了味。坦克在雪地里巡逻，女王在暴雪里俯冲。
+	}
+
+	FishermanQuest: {
+		DisplayName: 渔夫的委托
+		Description: 完成五次渔夫委托
+		QuestObjective.Description: 完成渔夫委托
+		DetailedDescription: 海边住着个使唤人的小鬼，但他给的报酬意外地实在。鱼在哪儿，宝贝就在哪儿。
+	}
+
+	LifeMaxQuest: {
+		DisplayName: 生命之泉
+		Description: 将生命上限提升到400
+		QuestObjective.Description: 生命上限达到400
+		DetailedDescription: 红心水晶只能带你走到一半。剩下的路，要靠不断的战斗与成长。四百点生命是站稳硬模式的门票。
+	}
+
+	ManaMaxQuest: {
+		DisplayName: 魔力之心
+		Description: 将魔力上限提升到200
+		QuestObjective.Description: 魔力上限达到200
+		DetailedDescription: 把坠落之星压成水晶，一颗一颗喂给自己。二十点一口，喝满九口，星空就在你血管里。
+	}
+
+	WingsQuest: {
+		DisplayName: 展翅高飞
+		Description: 装备任意一对翅膀
+		QuestObjective.Description: 装备翅膀
+		DetailedDescription: 云端的宝库、精灵的羽毛、恶魔的皮膜。不管哪种来路，背上长翅膀的那一刻，摔落伤害就成了历史。
+	}
+
+	MoneyQuest: {
+		DisplayName: 第一桶金
+		Description: 持有一枚铂金币
+		QuestObjective.Description: 持有铂金币
+		DetailedDescription: 一百个金币压成一枚铂金币。攒出它的路上，你大概已经死过很多次了，商人管这叫手续费。
+	}
+
+	ExploreAetherQuest: {
+		DisplayName: 微光之湖
+		Description: 找到微光湖
+		QuestObjective.Description: 到达微光湖
+		DetailedDescription: 世界的角落里藏着一汪不属于这里的湖。东西丢进去，捞上来就变了样子。别自己跳进去试。
+	}
+
+	HardmodeOresQuest: {
+		DisplayName: 三色新矿
+		Description: 收集硬模式的三阶矿石
+
+		QuestObjective: {
+			Description: {
+				T1: 收集钴矿或钯金矿
+				T2: 收集秘银矿或山铜矿
+				T3: 收集精金矿或钛金矿
+			}
+		}
+
+		DetailedDescription: 血肉墙倒下后，用神锤砸碎祭坛，地底会长出三种新的金属。它们比先前的一切都更硬。
+	}
+
+	ChlorophyteQuest: {
+		DisplayName: 叶绿之力
+		Description: 收集三十块叶绿矿
+		DetailedDescription: 机械造物倒下后，丛林深处的泥土里开始生长会发光的绿色金属。它有自己的意志，还会自己繁殖。
+	}
+
+	CalamityLoreHub: {
+		DisplayName: 异变调查
+		Description: 这个世界不太对劲
+		QuestObjective.Description: 点击领取
+		DetailedDescription: 海是酸的，崖在烧，星星砸出的坑里长着不认识的东西。把见闻记下来，这个世界的暗面比想象中大得多。
+	}
+
+	ExploreSulphurSea: {
+		DisplayName: 硫磺之海
+		Description: 探索硫磺海
+		QuestObjective.Description: 到达硫磺海
+		DetailedDescription: 世界的一侧没有蓝色的海，只有泛黄的酸水。雨落进去会冒泡，鱼游上来带着毒。捂住口鼻，别喝水。
+	}
+
+	ExploreAbyss: {
+		DisplayName: 深渊入口
+		Description: 潜入硫磺海下的深渊
+		QuestObjective.Description: 进入深渊
+		DetailedDescription: 硫磺海底裂着一道往下的口子。光下不去，呼吸也下不去，越深的地方住着越古老的东西。
+	}
+
+	AbyssDeepQuest: {
+		DisplayName: 深渊之底
+		Description: 从深渊带回流明晶与虚空石
+		DetailedDescription: 浅层的矿灯照不到的地方，岩壁上长着发蓝光的结晶。挖到它们再活着浮上来，才算真正下过深渊。
+	}
+
+	ExploreSunkenSea: {
+		DisplayName: 沉沦之海
+		Description: 找到地下荒漠深处的沉沦之海
+		QuestObjective.Description: 到达沉沦之海
+		DetailedDescription: 荒漠地底藏着一片安静的蓝。棱晶在水里发光，蛤蜊比你的房子还大。这里大概是这个世界最温柔的角落。
+	}
+
+	ExploreBrimstoneCrag: {
+		DisplayName: 硫磺火崖
+		Description: 踏入地狱边缘的硫磺火崖
+		QuestObjective.Description: 到达硫磺火崖
+		DetailedDescription: 地狱的一侧立着烧了不知多少年的崖壁。砖石的缝隙里渗出暗红的火，废墟的深处睡着一位元素之灵。
+	}
+
+	ExploreAstral: {
+		DisplayName: 星染之地
+		Description: 探索被星辉污染的土地
+		QuestObjective.Description: 到达星染之地
+		DetailedDescription: 一颗星星砸进世界，坑里长出的东西不属于任何图鉴。土地在变色，生物在变形，而这只是个开始。
+	}
+
+	AcidRainQuest: {
+		DisplayName: 酸雨将至
+		Description: 经历一场酸雨
+		QuestObjective.Description: 经历酸雨事件
+		DetailedDescription: 硫磺海上空的云是黄的。下雨的时候整片海都在沸腾，水里的东西会顺着雨爬上岸。带把伞，认真的。
+	}
+
+	DeliciousMeatQuest: {
+		DisplayName: 美味肉排
+		Description: 获得一块美味肉排
+		DetailedDescription: 没人知道它是什么动物身上的肉，也没人在乎。好吃，管饱，还能当建材。多囤点。
+	}
+
+	BrimlishQuest: {
+		DisplayName: 硫磺鱼
+		Description: 钓起一条硫磺鱼
+		DetailedDescription: 连酸水里都有鱼活着，而且长得意外地精神。把鱼钩抛进硫磺海，看看会咬上来什么。
+	}
+
+	GiantClamQuest: {
+		DisplayName: 巨像蛤
+		Description: 击败巨像蛤
+		DetailedDescription: 沉沦之海最大的一枚贝壳。平时安静得像块石头，撬开它的人都后悔了。
+	}
+
+	CragmawMireQuest: {
+		DisplayName: 泥沼颚吻
+		Description: 在酸雨中击败泥沼颚吻
+		DetailedDescription: 世界变硬后，酸雨里会浮上来一坨会咬人的淤泥。它长了太多牙，而且都朝着你。
+	}
+
+	MaulerQuest: {
+		DisplayName: 血咬鲨
+		Description: 在酸雨中击败血咬鲨
+		DetailedDescription: 酸水泡大的鲨鱼，脾气和酸度成正比。它跃出水面的时候，记得已经太晚了。
+	}
+
+	NuclearTerrorQuest: {
+		DisplayName: 核之恐惧
+		Description: 在酸雨中击败核之恐惧
+		DetailedDescription: 酸雨的最深处孵着一只发光的庞然大物。它走过的地方连酸水都会退开。
+	}
+
+	GreatSandSharkQuest: {
+		DisplayName: 巨型沙鲨
+		Description: 击败巨型沙鲨
+		DetailedDescription: 沙漠里最快的猎手，沙丘是它的海面。杀够它的同类，族群的王者会亲自出面。
+	}
+
+	LeviathanQuest: {
+		DisplayName: 阿娜希塔与利维坦
+		Description: 击败阿娜希塔与利维坦
+		DetailedDescription: 歌声先来，巨影后到。海妖的乐曲是给深海巨兽引路的，别停下来听。
+	}
+
+	AstrumAureusQuest: {
+		DisplayName: 白金星舰
+		Description: 击败白金星舰
+		DetailedDescription: 星染之地深处趴着一台被感染的巨型机械。夜里它会醒，履带碾过的地方寸草不生。
+	}
+
+	RavagerQuest: {
+		DisplayName: 毁灭魔像
+		Description: 击败毁灭魔像
+		DetailedDescription: 血肉与砖石拼出来的巨人，每个部件都会单独攻击。拆完它的四肢，本体才会认真起来。
+	}
+
+	AstrumDeusQuest: {
+		DisplayName: 星神游龙
+		Description: 击败星神游龙
+		DetailedDescription: 在星染祭坛献上供品，星空里会游下来一条被感染的神明。杀死它，星染的矿脉才会向你敞开。
+	}
+
+	BossRushQuest: {
+		DisplayName: 终末之战
+		Description: 通过一次终末之战
+		QuestObjective.Description: 完成终末之战
+		DetailedDescription: 捏碎终末石，你杀过的所有东西会排着队回来找你。全部再杀一遍，才算给这段旅途盖章。
+	}
+
+	AerialiteQuest: {
+		DisplayName: 天蓝之辉
+		Description: 锻造天蓝锭
+		DetailedDescription: 荒漠灾虫死后，天上会落下淡蓝色的矿尘。它轻得能浮起来，却比铁更结实。
+	}
+
+	CryonicQuest: {
+		DisplayName: 极寒结晶
+		Description: 锻造极寒神锭
+		DetailedDescription: 冰灵碎裂后，雪原深处的坚冰里开始析出蓝色的矿脉。握在手里不化，反而更冷。
+	}
+
+	PerennialQuest: {
+		DisplayName: 常青之赐
+		Description: 锻造常青锭
+		DetailedDescription: 世纪之花凋谢的地方，泥土里长出了会呼吸的绿色金属。丛林在用自己的方式回礼。
+	}
+
+	LifeAlloyQuest: {
+		DisplayName: 生命合金
+		Description: 熔铸生命合金
+		DetailedDescription: 三种活着的金属熔在一起，锭子上还留着脉搏。高阶装备的骨架都用它打底。
+	}
+
+	AstralBarQuest: {
+		DisplayName: 星幻熔铸
+		Description: 锻造星幻锭
+		DetailedDescription: 游龙死后，星染矿脉终于肯让镐子下嘴。熔出来的锭子在黑暗里自己发光。
+	}
+
+	UelibloomQuest: {
+		DisplayName: 悠兰绽放
+		Description: 锻造悠兰锭
+		DetailedDescription: 女神的圣火烧过之后，丛林的泥土里开出了金属的花。花瓣熔成锭，锭里还带着光。
+	}
+
+	BloodstoneQuest: {
+		DisplayName: 血石淬炼
+		Description: 凝聚血石核心
+		DetailedDescription: 女神倒下后，硫磺火崖的岩浆里浮起暗红的石头。它们还在跳，像一颗颗离体的心脏。
+	}
+
+	AscendantEssenceQuest: {
+		DisplayName: 升华之魄
+		Description: 凝聚升华精魄
+		DetailedDescription: 幽魂、星尘、月光，再加一点不肯散去的执念。把它们压进一枚精魄里，足够点亮传说。
+	}
+
+	YharonSoulQuest: {
+		DisplayName: 龙魂余烬
+		Description: 收集犽戎魂魄碎片
+		DetailedDescription: 巨龙燃尽之后，火焰里剩下的不是灰，是一片片还在发烫的魂。捡起来的时候小心别被燎到心。
+	}
+
+	FruitQuest: {
+		DisplayName: 生命的馈赠
+		Description: 集齐四枚强化生命的果实
+		DetailedDescription: 强敌的尸骸旁偶尔会结出奇异的果实。一共四种，每一种都能把你的生命推向新的上限。
+	}
+
+	DraedonPowerCellQuest: {
+		DisplayName: 远古动力
+		Description: 收集动力电池
+		DetailedDescription: 实验室的废墟里散落着还有余电的电池。这种能源密度远超你的发电机，值得研究。
+	}
+
+	DraedonsForgeQuest: {
+		DisplayName: 巨匠熔炉
+		Description: 得到巨匠的熔炉
+		DetailedDescription: 工业的尽头是一台什么都能熔的炉子。组装好它，你的工坊从此不再有做不出的东西。
+	}
+
+	ConquerorMilestone: {
+		DisplayName: 讨伐编年史
+		Description: 击败这个世界的每一位强敌
+		QuestObjective.Description: 完成所有讨伐任务
+		DetailedDescription: 从史莱姆王到世界尽头的存在，把每一场硬仗都打完。写满这一页的人不多。
+	}
+
+	EventMilestone: {
+		DisplayName: 事件平定者
+		Description: 平定每一场入侵与异象
+		QuestObjective.Description: 完成所有事件任务
+		DetailedDescription: 军队、舰队、异界的月亮。凡是成群结队来的，都被你送了回去。
+	}
+
+	CompletionistMilestone: {
+		DisplayName: 完典
+		Description: 完成任务书上的一切
+		QuestObjective.Description: 完成所有任务
+		DetailedDescription: 这本书的最后一页留给读完全书的人。合上它的时候，这个世界已经没有你没见过的东西了。
 	}
 }

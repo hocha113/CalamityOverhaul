@@ -1,6 +1,6 @@
 QuestNode: {
 	FirstQuest: {
-		DisplayName: Добро пожаловать в мир Calamity!
+		DisplayName: Добро пожаловать в этот мир!
 		Description: Начало путешествия
 		DetailedDescription: Каждая легенда начинается с малого. Заберите свое стартовое снаряжение и приготовьтесь встретить этот мир, полный богов и чудовищ.
 		QuestObjective.Description: Нажмите, чтобы получить стартовые предметы
@@ -96,7 +96,7 @@ QuestNode: {
 		DisplayName: Механические боссы
 		Description: Победить всех механических боссов
 		QuestObjective.Description: Победить всех механических боссов
-		DetailedDescription: Ранние творения Дрэйдона, имитирующие части тела Ктулху. Только победив их, мир сможет возродиться.
+		DetailedDescription: Кто-то воссоздал органы Ктулху из стали. Пара глаз, череп и длинный червь.
 	}
 
 	MoonLordQuest: {
@@ -258,7 +258,7 @@ QuestNode: {
 	TeslaTowerQuest: {
 		DisplayName: Башня магнитной бури
 		Description: Создать Башню Теслы
-		DetailedDescription: Венец технологий Дрэйдона. Эта башня обеспечивает беспроводную передачу энергии, полностью меняя ваш подход к прокладке сетей.
+		DetailedDescription: Чудо беспроводной передачи энергии. Башня передаёт энергию по воздуху и избавляет от большей части проводки.
 	}
 
 	ThermalPowerQuest: {
@@ -613,5 +613,384 @@ QuestNode: {
 		DisplayName: Выбрасыватель
 		Description: Создать выбрасыватель
 		DetailedDescription: Не все предметы стоит хранить. Это устройство выводит предметы из логистической сети, выбрасывая их в мир. Будь то для специфического автокрафта (например, сброс предметов в жидкость) или просто как мусоропровод — оно отлично справится.
+	}
+
+	DeerclopsQuest: {
+		// DisplayName: Deerclops
+		// Description: Defeat Deerclops
+		// DetailedDescription: Deep in the blizzard stands a one-eyed giant deer. It does not come looking for you; you insist on looking for it.
+	}
+
+	DukeFishronQuest: {
+		// DisplayName: Duke Fishron
+		// Description: Defeat Duke Fishron
+		// DetailedDescription: Bait your hook with a truffle worm and a duke will bite. Pig, dragon, fish; three kinds of menace on a single face.
+	}
+
+	EmpressOfLightQuest: {
+		// DisplayName: Empress of Light
+		// Description: Defeat the Empress of Light
+		// DetailedDescription: Step on a prismatic lacewing in the Hallow and the furious empress will come to settle the score herself. Anger her in daylight and every one of her attacks kills in one hit.
+	}
+
+	ZenithQuest: {
+		// DisplayName: Zenith
+		// Description: Forge the Zenith
+		// DetailedDescription: From the copper shortsword to the Starwrath, every blade you ever swung remembers you. Melt them together, and this journey takes its final shape.
+	}
+
+	BloodMoonQuest: {
+		// DisplayName: Night of Blood
+		// Description: Live through a Blood Moon
+		// QuestObjective.Description: Experience a Blood Moon
+		// DetailedDescription: On nights when the moon turns red, monsters stop knocking; they open the door themselves. Survive until dawn.
+	}
+
+	TorchGodQuest: {
+		// DisplayName: The Torch God
+		// Description: Pass the Torch God's trial
+		// QuestObjective.Description: Earn the Torch God's Favor
+		// DetailedDescription: Plant a hundred torches underground and the master of flame will test you in person. Its favor hides within the extinguished lights.
+	}
+
+	GoblinArmyQuest: {
+		// DisplayName: Goblin Invasion
+		// Description: Repel the Goblin Army
+		// QuestObjective.Description: Repel the Goblin Army
+		// DetailedDescription: Smashing Shadow Orbs draws them in, and so does a growing settlement. Short, swarming, endless; but win, and you may pick up a captive who repairs gear.
+	}
+
+	OldOnesArmyQuest: {
+		// DisplayName: Old One's Army
+		// Description: Guard the Eternia Crystal and repel all three tiers of the Old One's Army
+
+		QuestObjective: {
+			Description: {
+				// T1: Repel the Old One's Army Tier 1
+				// T2: Repel the Old One's Army Tier 2
+				// T3: Repel the Old One's Army Tier 3
+			}
+		}
+
+		// DetailedDescription: The Tavernkeep brings a plea from another world. Set the crystal, hold the portals, and let nothing touch it. Three tiers, each meaner than the last.
+	}
+
+	PirateInvasionQuest: {
+		// DisplayName: Pirate Invasion
+		// Description: Repel the Pirate Invasion
+		// QuestObjective.Description: Repel the Pirate Invasion
+		// DetailedDescription: Once the world hardens, sails appear on the horizon. They come for your money; take theirs back, captain's belongings included.
+	}
+
+	SolarEclipseQuest: {
+		// DisplayName: Eclipse Hunt
+		// Description: Slay a Mothron during a Solar Eclipse
+		// QuestObjective.Description: Slay a Mothron
+		// DetailedDescription: On days the moon blots out the sun, daytime is deadlier than night. Everything from the horror films takes to the streets, and the fastest flier among them is called Mothron.
+	}
+
+	MartianMadnessQuest: {
+		// DisplayName: Martian Madness
+		// Description: Repel the Martian invasion
+		// QuestObjective.Description: Repel the Martian invasion
+		// DetailedDescription: Do not stare at the probe in the sky; it flies home and brings friends. Saucers, death rays, mind-control helmets; the full alien invasion package.
+	}
+
+	PumpkinMoonQuest: {
+		// DisplayName: Pumpkin Moon
+		// Description: Defeat Pumpking during the Pumpkin Moon
+		// QuestObjective.Description: Defeat Pumpking
+		// DetailedDescription: Wake Halloween night with a Pumpkin Moon Medallion. Scarecrows line up to collect heads, and the closer is a king carrying twin scythes.
+	}
+
+	FrostMoonQuest: {
+		// DisplayName: Frost Moon
+		// Description: Defeat the Ice Queen during the Frost Moon
+		// QuestObjective.Description: Defeat the Ice Queen
+		// DetailedDescription: Open the present that should have stayed wrapped and Christmas Eve goes sour. Tanks patrol the snow while the queen dives through the blizzard.
+	}
+
+	FishermanQuest: {
+		// DisplayName: Angler's Errands
+		// Description: Complete five Angler quests
+		// QuestObjective.Description: Complete Angler quests
+		// DetailedDescription: A bossy little brat lives by the sea, but his rewards are surprisingly solid. Where the fish are, the treasure is.
+	}
+
+	LifeMaxQuest: {
+		// DisplayName: Fountain of Life
+		// Description: Raise your max life to 400
+		// QuestObjective.Description: Reach 400 max life
+		// DetailedDescription: Heart crystals only carry you halfway. The rest of the road is fought and grown through. Four hundred life is the ticket to standing firm in Hardmode.
+	}
+
+	ManaMaxQuest: {
+		// DisplayName: Heart of Mana
+		// Description: Raise your max mana to 200
+		// QuestObjective.Description: Reach 200 max mana
+		// DetailedDescription: Press fallen stars into crystals and feed them to yourself one by one. Twenty points a sip, nine sips in all, and the night sky runs in your veins.
+	}
+
+	WingsQuest: {
+		// DisplayName: Spread Your Wings
+		// Description: Equip any pair of wings
+		// QuestObjective.Description: Equip wings
+		// DetailedDescription: Sky vaults, fairy feathers, demon membranes. Whatever the source, the moment wings sprout from your back, fall damage becomes history.
+	}
+
+	MoneyQuest: {
+		// DisplayName: First Fortune
+		// Description: Hold a Platinum Coin
+		// QuestObjective.Description: Hold a Platinum Coin
+		// DetailedDescription: A hundred gold coins pressed into one platinum. You probably died plenty of times earning it; merchants call that a handling fee.
+	}
+
+	ExploreAetherQuest: {
+		// DisplayName: The Shimmering Lake
+		// Description: Find the Aether
+		// QuestObjective.Description: Reach the Shimmer
+		// DetailedDescription: Tucked in a corner of the world is a lake that does not belong here. Drop something in and it comes back changed. Do not jump in to test it yourself.
+	}
+
+	HardmodeOresQuest: {
+		// DisplayName: Three New Metals
+		// Description: Gather the three tiers of Hardmode ore
+
+		QuestObjective: {
+			Description: {
+				// T1: Collect Cobalt or Palladium Ore
+				// T2: Collect Mythril or Orichalcum Ore
+				// T3: Collect Adamantite or Titanium Ore
+			}
+		}
+
+		// DetailedDescription: After the Wall of Flesh falls, smash the altars with a holy hammer and three new metals grow in the deep. Each is harder than everything that came before.
+	}
+
+	ChlorophyteQuest: {
+		// DisplayName: Power of Chlorophyte
+		// Description: Collect 30 Chlorophyte Ore
+		// DetailedDescription: With the machines destroyed, a glowing green metal starts growing in the deep jungle mud. It has a will of its own, and it spreads on its own too.
+	}
+
+	CalamityLoreHub: {
+		// DisplayName: Anomaly Survey
+		// Description: Something is wrong with this world
+		// QuestObjective.Description: Click to claim
+		// DetailedDescription: The sea is acid, the crags are burning, and things no field guide knows grow in the crater a star left behind. Write it all down; this world's dark side is bigger than you think.
+	}
+
+	ExploreSulphurSea: {
+		// DisplayName: Sulphurous Sea
+		// Description: Explore the Sulphurous Sea
+		// QuestObjective.Description: Reach the Sulphurous Sea
+		// DetailedDescription: One side of the world has no blue ocean, only yellowed acid water. Rain fizzes where it lands and the fish come up venomous. Cover your mouth, and do not drink.
+	}
+
+	ExploreAbyss: {
+		// DisplayName: Mouth of the Abyss
+		// Description: Dive into the Abyss beneath the Sulphurous Sea
+		// QuestObjective.Description: Enter the Abyss
+		// DetailedDescription: A downward rift splits the floor of the sulphurous sea. Light cannot follow, neither can breath, and the deeper you go, the older the things that live there.
+	}
+
+	AbyssDeepQuest: {
+		// DisplayName: Bottom of the Abyss
+		// Description: Bring back Lumenyl and Voidstone from the Abyss
+		// DetailedDescription: Where mining lamps cannot reach, blue-glowing crystal grows along the rock walls. Dig it out and surface alive; only then have you truly been to the Abyss.
+	}
+
+	ExploreSunkenSea: {
+		// DisplayName: Sunken Sea
+		// Description: Find the Sunken Sea deep beneath the desert
+		// QuestObjective.Description: Reach the Sunken Sea
+		// DetailedDescription: Beneath the desert hides a quiet stretch of blue. Prisms glow in the water and the clams are bigger than your house. This may be the gentlest corner of the world.
+	}
+
+	ExploreBrimstoneCrag: {
+		// DisplayName: Brimstone Crags
+		// Description: Set foot in the Brimstone Crags at the edge of the Underworld
+		// QuestObjective.Description: Reach the Brimstone Crags
+		// DetailedDescription: On one side of Hell stands a cliff that has burned longer than anyone remembers. Dark red fire seeps from the brickwork, and an elemental spirit sleeps in the ruins.
+	}
+
+	ExploreAstral: {
+		// DisplayName: Astral Blight
+		// Description: Explore the star-tainted land
+		// QuestObjective.Description: Reach the Astral Infection
+		// DetailedDescription: A star crashed into the world, and what grows in the crater belongs to no bestiary. The land is changing color, the creatures are changing shape, and this is only the beginning.
+	}
+
+	AcidRainQuest: {
+		// DisplayName: Acid Rain
+		// Description: Weather an acid rain
+		// QuestObjective.Description: Experience the Acid Rain event
+		// DetailedDescription: The clouds over the sulphurous sea are yellow. When it rains the whole sea boils, and the things in the water climb ashore with it. Bring an umbrella. Seriously.
+	}
+
+	DeliciousMeatQuest: {
+		// DisplayName: Delicious Meat
+		// Description: Obtain a piece of Delicious Meat
+		// DetailedDescription: Nobody knows what animal it came from, and nobody cares. Tasty, filling, doubles as a building block. Stock up.
+	}
+
+	BrimlishQuest: {
+		// DisplayName: Brimlish
+		// Description: Fish up a Brimlish
+		// DetailedDescription: Even the acid water has fish in it, and they look surprisingly lively. Cast your line into the sulphurous sea and see what bites.
+	}
+
+	GiantClamQuest: {
+		// DisplayName: Giant Clam
+		// Description: Defeat the Giant Clam
+		// DetailedDescription: The largest shell in the Sunken Sea. Quiet as a rock most days; everyone who pried it open regretted it.
+	}
+
+	CragmawMireQuest: {
+		// DisplayName: Cragmaw Mire
+		// Description: Defeat the Cragmaw Mire during the Acid Rain
+		// DetailedDescription: Once the world hardens, something bitey floats up through the acid rain. It has far too many teeth, and all of them point at you.
+	}
+
+	MaulerQuest: {
+		// DisplayName: The Mauler
+		// Description: Defeat the Mauler during the Acid Rain
+		// DetailedDescription: A shark raised on acid, with a temper to match the pH. By the time it breaches, remembering to dodge is already too late.
+	}
+
+	NuclearTerrorQuest: {
+		// DisplayName: Nuclear Terror
+		// Description: Defeat the Nuclear Terror during the Acid Rain
+		// DetailedDescription: At the deepest hour of the acid rain, something enormous and glowing hatches. Even the acid water pulls back from where it walks.
+	}
+
+	GreatSandSharkQuest: {
+		// DisplayName: Great Sand Shark
+		// Description: Defeat the Great Sand Shark
+		// DetailedDescription: The fastest hunter in the desert; the dunes are its open sea. Cull enough of its kin and the king of the pack will show up in person.
+	}
+
+	LeviathanQuest: {
+		// DisplayName: Anahita and the Leviathan
+		// Description: Defeat Anahita and the Leviathan
+		// DetailedDescription: The song comes first, the great shadow after. The siren's melody guides the deep-sea beast; do not stop to listen.
+	}
+
+	AstrumAureusQuest: {
+		// DisplayName: Astrum Aureus
+		// Description: Defeat Astrum Aureus
+		// DetailedDescription: Deep in the astral blight crouches an infected war machine. It wakes at night, and nothing grows where its treads have passed.
+	}
+
+	RavagerQuest: {
+		// DisplayName: Ravager
+		// Description: Defeat the Ravager
+		// DetailedDescription: A giant pieced together from flesh and masonry, every limb attacking on its own. Tear off all four before the body itself gets serious.
+	}
+
+	AstrumDeusQuest: {
+		// DisplayName: Astrum Deus
+		// Description: Defeat Astrum Deus
+		// DetailedDescription: Lay an offering on the astral beacon and an infected god swims down out of the night sky. Only its death opens the astral ore to your pickaxe.
+	}
+
+	BossRushQuest: {
+		// DisplayName: The Final Battle
+		// Description: Clear a Boss Rush
+		// QuestObjective.Description: Complete the Boss Rush
+		// DetailedDescription: Crush the Terminus and everything you have ever slain lines up to find you again. Kill them all a second time to put the seal on this journey.
+	}
+
+	AerialiteQuest: {
+		// DisplayName: Aerialite Gleam
+		// Description: Forge Aerialite Bars
+		// DetailedDescription: When the Desert Scourge dies, pale blue ore-dust settles from the sky. Light enough to float, yet sturdier than iron.
+	}
+
+	CryonicQuest: {
+		// DisplayName: Cryonic Crystal
+		// Description: Forge Cryonic Bars
+		// DetailedDescription: With Cryogen shattered, blue veins crystallize in the deep ice of the tundra. It does not melt in your hand; it only gets colder.
+	}
+
+	PerennialQuest: {
+		// DisplayName: Perennial Gift
+		// Description: Forge Perennial Bars
+		// DetailedDescription: Where Plantera wilted, a breathing green metal grows from the soil. The jungle repays its debts in its own way.
+	}
+
+	LifeAlloyQuest: {
+		// DisplayName: Life Alloy
+		// Description: Smelt Life Alloys
+		// DetailedDescription: Three living metals melted into one; the ingot still carries a pulse. Every high-end frame is built on it.
+	}
+
+	AstralBarQuest: {
+		// DisplayName: Astral Smelting
+		// Description: Forge Astral Bars
+		// DetailedDescription: With the god-worm dead, the astral veins finally yield to the pickaxe. The bars glow on their own in the dark.
+	}
+
+	UelibloomQuest: {
+		// DisplayName: Uelibloom in Blossom
+		// Description: Forge Uelibloom Bars
+		// DetailedDescription: After the goddess's holy fire swept through, metal flowers bloomed in the jungle mud. Smelt the petals into bars; the light stays inside.
+	}
+
+	BloodstoneQuest: {
+		// DisplayName: Bloodstone Tempering
+		// Description: Gather Bloodstone Cores
+		// DetailedDescription: With the goddess fallen, dark red stones float up through the lava of the Brimstone Crags. They are still beating, like hearts outside their bodies.
+	}
+
+	AscendantEssenceQuest: {
+		// DisplayName: Ascendant Spirit
+		// Description: Condense Ascendant Spirit Essence
+		// DetailedDescription: Phantoms, stardust, moonlight, and a stubborn will that refuses to scatter. Press them into one essence; it is enough to light a legend.
+	}
+
+	YharonSoulQuest: {
+		// DisplayName: Embers of the Dragon Soul
+		// Description: Collect Yharon Soul Fragments
+		// DetailedDescription: When the great dragon burned out, what remained in the flames was not ash but shards of soul, still hot. Mind your heart when you pick them up.
+	}
+
+	FruitQuest: {
+		// DisplayName: Gifts of Life
+		// Description: Gather all four life-enhancing fruits
+		// DetailedDescription: Strange fruit sometimes ripens beside the corpses of mighty foes. Four kinds in all, and every one pushes your life to a new limit.
+	}
+
+	DraedonPowerCellQuest: {
+		// DisplayName: Ancient Power
+		// Description: Collect Power Cells
+		// DetailedDescription: The lab ruins are littered with cells that still hold a charge. An energy density far beyond your generators; worth studying.
+	}
+
+	DraedonsForgeQuest: {
+		// DisplayName: The Master's Forge
+		// Description: Obtain the master craftsman's forge
+		// DetailedDescription: At the end of industry stands a furnace that can smelt anything. Assemble it, and your workshop will never again meet something it cannot make.
+	}
+
+	ConquerorMilestone: {
+		// DisplayName: Chronicle of Conquest
+		// Description: Defeat every mighty foe of this world
+		// QuestObjective.Description: Complete all hunt quests
+		// DetailedDescription: From King Slime to the things at the world's end, finish every hard fight there is. Few ever fill this page.
+	}
+
+	EventMilestone: {
+		// DisplayName: Peacekeeper
+		// Description: Quell every invasion and anomaly
+		// QuestObjective.Description: Complete all event quests
+		// DetailedDescription: Armies, fleets, moons from other worlds. Whatever came in numbers, you sent home.
+	}
+
+	CompletionistMilestone: {
+		// DisplayName: The Complete Codex
+		// Description: Finish everything in this book
+		// QuestObjective.Description: Complete all quests
+		// DetailedDescription: The last page of this book is reserved for whoever reads it all. By the time you close it, this world holds nothing you have not seen.
 	}
 }

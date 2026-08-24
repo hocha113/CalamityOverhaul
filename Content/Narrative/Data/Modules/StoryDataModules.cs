@@ -312,6 +312,8 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool GuideSeen;
         /// <summary>完成过一次安全登出（首潜委托的完成判据）</summary>
         public bool DiveCompleted;
+        /// <summary>首潜委托已首次派发过（跨会话去重，避免每次进世界都重新弹"新任务"提示）</summary>
+        public bool EntrustIntroduced;
     }
 
     /// <summary>鬼切教程进度；随玩家存档</summary>

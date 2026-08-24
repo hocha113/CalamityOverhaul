@@ -451,6 +451,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             int total = 0, completed = 0;
             foreach (var node in QuestNode.AllQuests) {
+                if (node.IsHiddenNow) continue; //未现身的隐藏任务不进分母
                 total++;
                 if (node.IsCompleted) completed++;
             }

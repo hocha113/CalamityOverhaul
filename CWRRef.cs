@@ -80,6 +80,9 @@ namespace CalamityOverhaul
         private static MemberInfo calPlayer_infiniteFlight_M;
         private static MemberInfo calPlayer_ZoneSulphur_M;
         private static MemberInfo calPlayer_ZoneAbyss_M;
+        private static MemberInfo calPlayer_ZoneSunkenSea_M;
+        private static MemberInfo calPlayer_ZoneAstral_M;
+        private static MemberInfo calPlayer_ZoneCalamity_M; //硫磺火崖
         private static MemberInfo calPlayer_profanedCrystalBuffs_M;
         private static MemberInfo calPlayer_DashID_M;
         private static MemberInfo calPlayer_AbleToSelectExoMech_M;
@@ -416,6 +419,9 @@ namespace CalamityOverhaul
             calPlayer_infiniteFlight_M = FindMember(calPlayerType, "infiniteFlight");
             calPlayer_ZoneSulphur_M = FindMember(calPlayerType, "ZoneSulphur");
             calPlayer_ZoneAbyss_M = FindMember(calPlayerType, "ZoneAbyss");
+            calPlayer_ZoneSunkenSea_M = FindMember(calPlayerType, "ZoneSunkenSea");
+            calPlayer_ZoneAstral_M = FindMember(calPlayerType, "ZoneAstral");
+            calPlayer_ZoneCalamity_M = FindMember(calPlayerType, "ZoneCalamity");
             calPlayer_profanedCrystalBuffs_M = FindMember(calPlayerType, "profanedCrystalBuffs");
             calPlayer_DashID_M = FindMember(calPlayerType, "DashID");
             calPlayer_AbleToSelectExoMech_M = FindMember(calPlayerType, "AbleToSelectExoMech");
@@ -527,6 +533,9 @@ namespace CalamityOverhaul
             calPlayer_infiniteFlight_M = null;
             calPlayer_ZoneSulphur_M = null;
             calPlayer_ZoneAbyss_M = null;
+            calPlayer_ZoneSunkenSea_M = null;
+            calPlayer_ZoneAstral_M = null;
+            calPlayer_ZoneCalamity_M = null;
             calPlayer_profanedCrystalBuffs_M = null;
             calPlayer_DashID_M = null;
             calPlayer_AbleToSelectExoMech_M = null;
@@ -1179,6 +1188,31 @@ namespace CalamityOverhaul
                 return false;
             }
             return (bool)GetMember(calPlayer_ZoneAbyss_M, cp);
+        }
+
+        public static bool GetPlayerZoneSunkenSea(this Player player) {
+            ModPlayer cp = GetCalPlayer(player);
+            if (cp == null || calPlayer_ZoneSunkenSea_M == null) {
+                return false;
+            }
+            return (bool)GetMember(calPlayer_ZoneSunkenSea_M, cp);
+        }
+
+        public static bool GetPlayerZoneAstral(this Player player) {
+            ModPlayer cp = GetCalPlayer(player);
+            if (cp == null || calPlayer_ZoneAstral_M == null) {
+                return false;
+            }
+            return (bool)GetMember(calPlayer_ZoneAstral_M, cp);
+        }
+
+        /// <summary>硫磺火崖，上游成员名即 ZoneCalamity</summary>
+        public static bool GetPlayerZoneCalamity(this Player player) {
+            ModPlayer cp = GetCalPlayer(player);
+            if (cp == null || calPlayer_ZoneCalamity_M == null) {
+                return false;
+            }
+            return (bool)GetMember(calPlayer_ZoneCalamity_M, cp);
         }
 
         public static bool GetPlayerProfanedCrystalBuffs(this Player player) {

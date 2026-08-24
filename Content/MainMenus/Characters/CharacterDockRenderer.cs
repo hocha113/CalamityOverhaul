@@ -62,6 +62,27 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
                 new Vector2(0.5f, 0.5f), size, SpriteEffects.None, 0f);
         }
 
+        /// <summary>小挂锁，center 为锁体顶中，锁梁悬其上，keyhole 为锁孔暗色</summary>
+        public static void DrawLock(SpriteBatch sb, Vector2 center, float size, Color color, Color keyhole) {
+            //锁体
+            int bodyW = (int)size;
+            int bodyH = (int)(size * 0.78f);
+            Rectangle body = new((int)(center.X - bodyW / 2f), (int)center.Y, bodyW, bodyH);
+            sb.Draw(Pixel, body, unit, color);
+            //锁孔
+            if (bodyH >= 5) {
+                sb.Draw(Pixel, new Rectangle(body.Center.X - 1, body.Y + 2, 2, bodyH - 4), unit, keyhole);
+            }
+            //锁梁，两竖一横近似半环
+            int shW = (int)(size * 0.62f);
+            int shH = (int)(size * 0.55f);
+            int left = (int)(center.X - shW / 2f);
+            int top = (int)(center.Y - shH);
+            sb.Draw(Pixel, new Rectangle(left, top, 1, shH), unit, color);
+            sb.Draw(Pixel, new Rectangle(left + shW - 1, top, 1, shH), unit, color);
+            sb.Draw(Pixel, new Rectangle(left, top, shW, 1), unit, color);
+        }
+
         /// <summary>立绘本体，紧贴投影 + 呼吸描边 + 主体，绘制矩形与命中矩形同一份</summary>
         public static void DrawPortrait(SpriteBatch sb, Texture2D tex, Vector2 topLeft, float scale,
             float alpha, Color glow, float pulse01, float time) {

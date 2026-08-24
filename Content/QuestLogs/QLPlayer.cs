@@ -180,8 +180,9 @@ namespace CalamityOverhaul.Content.QuestLogs
                 return;
             }
 
-            //每60帧查未解锁
-            bool checkUnlock = Main.GameUpdateCount % 60 == 0 && QuestLog.Instance.IsOpen;
+            //每60帧查未解锁。不再要求开书：隐藏任务靠这里轮询触发条件，
+            //普通任务的解锁与通知也不该等到翻书才发生
+            bool checkUnlock = Main.GameUpdateCount % 60 == 0;
 
             foreach (var quest in QuestNode.AllQuests) {
                 if (checkUnlock && !quest.IsUnlocked) {

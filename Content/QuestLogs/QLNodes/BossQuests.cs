@@ -40,10 +40,23 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public static bool ExoMechs => HasNPC(CWRID.NPC_ThanatosHead);
         public static bool SupremeCalamitas => HasNPC(CWRID.NPC_SupremeCalamitas);
         public static bool PrimordialWyrm => HasNPC(CWRID.NPC_PrimordialWyrmHead);
+        public static bool GiantClam => HasNPC(CWRID.NPC_GiantClam);
+        public static bool CragmawMire => HasNPC(CWRID.NPC_CragmawMire);
+        public static bool GreatSandShark => HasNPC(CWRID.NPC_GreatSandShark);
+        public static bool Leviathan => HasNPC(CWRID.NPC_Leviathan);
+        public static bool AstrumAureus => HasNPC(CWRID.NPC_AstrumAureus);
+        public static bool AstrumDeus => HasNPC(CWRID.NPC_AstrumDeusHead);
+        public static bool Ravager => HasNPC(CWRID.NPC_RavagerBody);
+        public static bool Mauler => HasNPC(CWRID.NPC_Mauler);
+        public static bool NuclearTerror => HasNPC(CWRID.NPC_NuclearTerror);
     }
 
     public class KingSlimeQuest : QuestNode
     {
+        public override bool IsChapterHub => true;
+
+        public override int ChapterOrder => 20;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "史莱姆王");
             Description = this.GetLocalization(nameof(Description), () => "击败史莱姆王");
@@ -89,11 +102,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            if (CWRRef.Has) {
-                if (ModContent.TryFind("CalamityMod", "VictoryShard", out ModItem victoryShardItem)) {
-                    AddReward(victoryShardItem.Type, 10);
-                }
-            }
+            AddReward(CWRID.Item_PearlShard, 10);
         }
 
         public override void UpdateByPlayer() {
@@ -408,10 +417,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            Rewards.Add(new QuestReward {
-                ItemType = CWRID.Item_CorrodedFossil,
-                Amount = 10
-            });
+            AddReward(CWRID.Item_CorrodedFossil, 10);
         }
 
         public override void UpdateByPlayer() {
@@ -439,11 +445,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            if (CWRRef.Has) {
-                if (ModContent.TryFind("CalamityMod", "EssenceofEleum", out ModItem essenceOfEleumItem)) {
-                    AddReward(essenceOfEleumItem.Type, 20);
-                }
-            }
+            AddReward(CWRID.Item_EssenceofEleum, 20);
         }
 
         public override void UpdateByPlayer() {
@@ -503,11 +505,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            if (CWRRef.Has) {
-                if (ModContent.TryFind("CalamityMod", "EssenceofHavoc", out ModItem essenceOfHavocItem)) {
-                    AddReward(essenceOfHavocItem.Type, 20);
-                }
-            }
+            AddReward(CWRID.Item_EssenceofHavoc, 20);
         }
 
         public override void UpdateByPlayer() {
@@ -564,10 +562,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            Rewards.Add(new QuestReward {
-                ItemType = CWRID.Item_AshesofCalamity,
-                Amount = 100
-            });
+            AddReward(CWRID.Item_AshesofCalamity, 100);
         }
 
         public override void UpdateByPlayer() {
@@ -624,10 +619,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddDefeatObjective();
 
-            Rewards.Add(new QuestReward {
-                ItemType = CWRID.Item_PlagueCellCanister,
-                Amount = 20
-            });
+            AddReward(CWRID.Item_PlagueCellCanister, 20);
         }
 
         public override void UpdateByPlayer() {

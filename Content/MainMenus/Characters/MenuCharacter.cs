@@ -83,16 +83,7 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
         /// <summary>全部定义，SortOrder 再 Key</summary>
         public static IReadOnlyList<MenuCharacter> All => all;
 
-        public static bool AnyUnlocked {
-            get {
-                foreach (MenuCharacter def in all) {
-                    if (def.Unlocked) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
+        public static bool HasAny => all.Count > 0;
 
         public static bool TryGet(string key, out MenuCharacter definition) {
             if (!string.IsNullOrEmpty(key) && byKey.TryGetValue(key, out definition)) {

@@ -193,10 +193,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             AddCollectObjective(5, CWRID.Item_Rock);
 
-            Rewards.Add(new QuestReward {
-                ItemType = CWRID.Item_Rock,
-                Amount = 5
-            });
+            AddReward(CWRID.Item_Rock, 5);
         }
 
         public override void UpdateByPlayer() {

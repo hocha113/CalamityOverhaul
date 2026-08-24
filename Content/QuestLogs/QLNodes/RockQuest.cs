@@ -8,6 +8,10 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
     {
         public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && CWRID.Item_Terminus > 0;
 
+        public override bool IsChapterHub => true;
+
+        public override int ChapterOrder => 50;
+
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = CWRID.Item_Terminus;

@@ -2,8 +2,10 @@
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
+using CalamityOverhaul.Content.Structures;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -32,6 +34,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             EnsureEntry(manager, data);
         }
 
+        //入口是否算"存在"：深潜仅单人开放，且玩家没把坠舱密度设为灭绝（否则终端根本没落地）
+        private static bool EntranceEligible
+            => Main.netMode == NetmodeID.SinglePlayer && SHPCCradleGen.Enabled;
+
         private static void EnsureEntry(QuestManagerUI manager, OldNetGuideData data) {
             EntrustEntryData existing = manager.GetEntry(QuestKey);
             if (existing is OldNetQuestEntry) {
@@ -40,6 +46,11 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
                     existing.Progress = 1f;
                     manager.MarkFilterDirty();
                 }
+                return;
+            }
+
+            //还没首发过、且入口本身不成立（多人/坠舱被禁）时不主动派发，避免每次进世界都白弹一条
+            if (!data.EntrustIntroduced && !data.DiveCompleted && !EntranceEligible) {
                 return;
             }
 
@@ -68,7 +79,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
                 entry.Progress = keepProgress;
                 entry.IsNew = keepIsNew;
             }
+            else if (data.EntrustIntroduced) {
+                //本会话内是首次注册，但跨会话早已首发过：直接落关注态，不重触发"新任务"提示
+                entry.Status = QuestEntryStatus.Tracked;
+            }
 
+            data.EntrustIntroduced = true;
             manager.RegisterQuest(entry);
         }
     }
