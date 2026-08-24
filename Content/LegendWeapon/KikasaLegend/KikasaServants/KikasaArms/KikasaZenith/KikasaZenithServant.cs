@@ -151,6 +151,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         /// <summary>终结声明/出刀闩</summary>
         private bool finDeclared;
         private bool finSlashed;
+        /// <summary>天顶轮剑环点名闩（跳帧进窗也补）</summary>
+        private bool stormRingSpawned;
         private int finFlashTick;
         private int lastSeenState = -1;
         private int attackCooldown;
@@ -284,6 +286,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 Array.Fill(phSlashed, false);
                 finDeclared = false;
                 finSlashed = false;
+                stormRingSpawned = false;
                 RetirePhantoms(shatter: State == StateDissolve);
                 if (State == StateDissolve) {
                     dissolveSplashed = false;
@@ -538,11 +541,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
 
-            //起手：主刀升位举过头顶，诸剑记忆被点名
+            //起手：主刀升位举过头顶，诸剑记忆被点名（窗口+闩，远端跳帧进场也能补上剑环）
             if (t == 1) {
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.35f, Pitch = -0.3f, MaxInstances = 2 }, bladePos);
             }
-            if (t == 2) {
+            if (!stormRingSpawned && t >= 2 && t < StormHoldEnd) {
+                stormRingSpawned = true;
                 for (int i = 0; i < StormBlades; i++) {
                     ActivateRingPhantom(i, StormHoldEnd + i * StormStagger, StormLife);
                 }
