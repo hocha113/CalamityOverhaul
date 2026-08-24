@@ -493,7 +493,7 @@ KikasaTalismanZha: {
 KikasaTalismanNi: {
 	DisplayName: Tricolor Talisman
 	Tooltip: Drops cycle three dyes—red bursts, cyan slows, violet deepens wounds; drop damage slightly reduced
-	Origin: "Ink holds five colors," goes the saying in the trade. The scribe could only afford three—but red bursts, cyan clings, violet corrodes, and that is plenty
+	Origin: "'Ink holds five colors,' goes the saying in the trade. The scribe could only afford three—but red bursts, cyan clings, violet corrodes, and that is plenty"
 	Power: "'Tricolor': ink drops take three dyes in turn—red drops burst on hit (40% splash), cyan drops slow foes 15%, violet drops increase ink damage taken by 5%"
 	Burden: Drop damage -5%
 }
