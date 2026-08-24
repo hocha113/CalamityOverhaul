@@ -63,8 +63,14 @@ namespace CalamityOverhaul.Content.GameModes
                 return;
             }
 
-            //提速：位置推进。两端本地同跑 AI，模拟一致
-            npc.position += npc.velocity * GameModeTuning.SpeedBonus(boundTier);
+            //提速：位置推进。两端本地同跑 AI，模拟一致。
+            //吃物块碰撞的个体（史莱姆/僵尸等）必须把推进量过一遍碰撞钳制，
+            //否则额外位移会把它们推进墙里；穿墙类（noTileCollide）保持原样
+            Vector2 advance = npc.velocity * GameModeTuning.SpeedBonus(boundTier);
+            if (!npc.noTileCollide) {
+                advance = Collision.TileCollision(npc.position, advance, npc.width, npc.height);
+            }
+            npc.position += advance;
 
             //狂暴余烬：低频血色怒火，纯客户端表现
             if (!Main.dedServ && Main.rand.NextBool(28)) {
