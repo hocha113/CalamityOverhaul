@@ -16,7 +16,11 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public string GiftId
             => ShenyoGiftCatalog.TryGet(GetType(), out ShenyoGiftEntry entry) ? entry.Id : string.Empty;
 
-        /// <summary>默认直接读沉宴试炼线自己的完成位，天然覆盖二选一/多首领合并，通常无需子类重写</summary>
+        /// <summary>
+        /// 默认直接读沉宴试炼线自己的完成位，天然覆盖二选一/多首领合并，通常无需子类重写。<br/>
+        /// 这是"能不能演"的就绪位，由 <see cref="ShenyoGiftNarrativeTracker"/> 每 tick 复查，
+        /// <b>不可</b>在击杀回调里判定：击杀登记跑在 <c>HitEffect</c>，早于 <c>checkDead</c> 落下首领完成旗标
+        /// </summary>
         protected virtual bool CanSpawned()
             => ShenyoGiftCatalog.TryGet(GetType(), out ShenyoGiftEntry entry)
                 && LegendTrialRouteCatalog.KikasaProgression[entry.Order].IsCompleted;
@@ -99,8 +103,14 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
             }
         }
 
+        /// <summary>
+        /// 击杀只做登记，不判就绪：本回调跑在 <c>HitEffect</c>，此刻 <c>checkDead</c> 还没走完，
+        /// 首领完成旗标一律是上一场的旧值，在这里读试炼线等于把每份礼物都推迟到"再杀一次"。<br/>
+        /// 试炼线的完成位改由 <see cref="TryPickNext"/> 每 tick 复查，三机械/星流双首领这类合并关照旧要凑齐才演
+        /// </summary>
         public static void NotifyBossDefeated(int bossId) {
-            if (!byBossId.TryGetValue(bossId, out List<ShenyoGiftEntry> gifts)) {
+            //终焉之战里首领成串地死，逐个登记会在事件结束后连演一整排；那场戏走 TickFinaleEdge
+            if (CWRRef.GetBossRushActive() || !byBossId.TryGetValue(bossId, out List<ShenyoGiftEntry> gifts)) {
                 return;
             }
 
@@ -108,7 +118,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
                 if (gifts[i].TargetBossIds.Length > 1) {
                     lastDefeatedById[gifts[i].Id] = bossId;
                 }
-                if (scenariosById.TryGetValue(gifts[i].Id, out ShenyoBossGiftNarrative gift) && gift.ShouldSpawn()) {
+                if (scenariosById.ContainsKey(gifts[i].Id)) {
                     spawned.Add(gifts[i].Id);
                 }
             }
@@ -130,9 +140,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
             }
 
             bool downed = CWRRef.GetDownedBossRush();
-            if (downed && !wasFinaleDowned
-                && scenariosById.TryGetValue(FinaleGiftId, out ShenyoBossGiftNarrative finale)
-                && finale.ShouldSpawn()) {
+            //边沿只有一帧，就绪与否留给 TryPickNext 复查，否则这一帧不就绪就永远错过
+            if (downed && !wasFinaleDowned && scenariosById.ContainsKey(FinaleGiftId)) {
                 spawned.Add(FinaleGiftId);
             }
             wasFinaleDowned = downed;
@@ -185,7 +194,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
                     spawned.Remove(entry.Id);
                     continue;
                 }
-                if (!candidate.MeetsAdditionalConditions(player)
+                //就绪位在这里复查而非登记时：击杀那一帧旗标还没落，三机械这类合并关也要等最后一只凑齐
+                if (!candidate.ShouldSpawn()
+                    || !candidate.MeetsAdditionalConditions(player)
                     || NarrativeRunner.IsScenarioActiveOrPending(candidate.Key)) {
                     continue;
                 }

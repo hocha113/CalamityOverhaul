@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
     /// 书符演出：神夜礼物线共享的一段本地表现。符纸在玩家身前浮现，
     /// 字形循 <see cref="KikasaTalismanGlyph.DrawInk"/> 的 reveal 逐笔写就（节拍按笔数分配），
     /// 朱点落定回弹后符纸飞入玩家怀中。<br/>
-    /// 由叙事 Command 节点调 <see cref="Begin"/> 启动，Wait 时长取 <see cref="TotalTicksFor"/> 对拍；
+    /// 由叙事 Command 节点调 <see cref="Begin"/> 启动，此后自走时间轴，不占对话节拍（奖励弹窗同拍并行）；
     /// 纯本地表现，不做任何发放/解锁副作用。未注册 Key 由字形库的伞形兜底章接住，演出照常
     /// </summary>
     internal sealed class KikasaTalismanScribeOverlay : RenderHandle
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
         public static int WriteTicksFor(string talismanKey)
             => Math.Clamp(KikasaTalismanGlyph.StrokeCount(talismanKey) * PerStrokeTicks, MinWriteTicks, MaxWriteTicks);
 
-        /// <summary>整场演出时长，叙事 Wait 节点取这里与画面对拍</summary>
+        /// <summary>整场演出时长，供时间轴自用；叙事侧不再拿它对拍等待，演出与奖励弹窗各走各的</summary>
         public static int TotalTicksFor(string talismanKey)
             => AppearTicks + WriteTicksFor(talismanKey) + SealHoldTicks + FlyTicks;
 
