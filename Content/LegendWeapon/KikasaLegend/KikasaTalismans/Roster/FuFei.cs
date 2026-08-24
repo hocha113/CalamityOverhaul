@@ -112,19 +112,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
 
         //zh 正典文案写进代码默认值，双语 hjson 已整并（zh-Hans 为正典）
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·霏");
+            => this.GetLocalization(nameof(DisplayName), () => "凝雾符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "每第三滴化霏雾滴，消散处滞留缓伤缓行的漂雾；雾滴本体较轻");
+            => this.GetLocalization(nameof(Tooltip), () => "每第三滴化作雾滴，落点滞留缓伤减速的墨雾；雾滴本体较轻");
 
         public override void SetDefaults() {
             //先于基类注册真实文案，基类的占位默认因键已存在不再生效
             this.GetLocalization("Origin",
-                () => "「今我来思，雨雪霏霏」——诗抄到一半被水汽洇了，看不清的那几个字，全落进了这张符");
+                () => "山雨下到一半，常化成雾缠着人不散。符师觉得这股缠劲比雨点还难缠，索性收进符里替自己办事");
             this.GetLocalization("Power",
-                () => "「霏霏」每第三滴墨化作霏雾滴，消散处滞留漂雾两秒：雾中之敌缓伤，行速迟一成");
+                () => "「凝雾」每第三滴墨化作雾滴：命中处滞留墨雾两秒，雾中之敌持续受伤、移速 -10%");
             this.GetLocalization("Burden",
-                () => "霏雾滴本体伤害 -30%。化雨为雾，锋芒也散了");
+                () => "雾滴本体伤害 -30%");
             base.SetDefaults();
         }
     }

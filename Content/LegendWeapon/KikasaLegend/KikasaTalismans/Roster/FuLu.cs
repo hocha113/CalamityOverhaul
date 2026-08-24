@@ -76,19 +76,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
 
         //zh 正典文案写进代码默认值，双语 hjson 已整并（zh-Hans 为正典）
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·露");
+            => this.GetLocalization(nameof(DisplayName), () => "甘露符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "墨滴命中偶凝露珠，拾取回复少量生命；雨拍稍缓");
+            => this.GetLocalization(nameof(Tooltip), () => "墨滴命中偶尔凝出露珠，拾取回复生命；雨拍稍缓");
 
         public override void SetDefaults() {
             //先于基类注册真实文案，基类的占位默认因键已存在不再生效
             this.GetLocalization("Origin",
-                () => "天将亮未亮，草叶把整夜的雨攒成一颗露。拾起它的人，掌心会先凉一下，再暖起来");
+                () => "道经上说，天降甘露，百病不侵。符师没求来那等排场，便退而求其次：让每滴雨里都攒上一点甜");
             this.GetLocalization("Power",
-                () => "「朝露」墨滴命中有 12% 凝出露珠，拾取回复 2 点生命；场上至多三颗");
+                () => "「甘露」墨滴命中有 12% 凝出露珠，拾取回复 2 点生命；场上至多三颗");
             this.GetLocalization("Burden",
-                () => "墨雨节拍放缓 6%。凝露急不得，雨也只好慢些");
+                () => "墨雨节拍放缓 6%");
             base.SetDefaults();
         }
     }

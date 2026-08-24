@@ -166,18 +166,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
         public override string TalismanKey => nameof(FuShu);
 
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·澍");
+            => this.GetLocalization(nameof(DisplayName), () => "及时雨符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "受击后三秒雨拍减半、滴滴回血；平时雨拍稍缓");
+            => this.GetLocalization(nameof(Tooltip), () => "受伤后三秒雨势骤密、滴滴回血；平时雨拍稍缓");
 
         public override void SetDefaults() {
             this.GetLocalization("Origin",
-                () => "「澍」是及时雨的旧名。旱了太久的人写它，笔画里全是催");
+                () => "江湖上把救急的人唤作\"及时雨\"。这张符学的就是这个道理：伞主人挨了打，雨就得立刻赶到");
             this.GetLocalization("Power",
-                () => "「澍雨」受击后三秒内雨拍间隔 x0.5，雨丝转金，每滴命中回复 1 点生命；冷却十二秒");
+                () => "「及时雨」受伤后三秒内雨拍间隔减半、雨丝转金，每滴命中回复 1 点生命；冷却十二秒");
             this.GetLocalization("Burden",
-                () => "平时雨拍间隔 +5%。急雨救人，缓雨养伞");
+                () => "平时雨拍间隔 +5%");
             base.SetDefaults();
             Item.rare = Terraria.ID.ItemRarityID.LightRed;
         }

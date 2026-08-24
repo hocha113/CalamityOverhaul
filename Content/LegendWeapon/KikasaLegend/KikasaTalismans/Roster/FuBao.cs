@@ -153,18 +153,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
         public override string TalismanKey => nameof(FuBao);
 
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·雹");
+            => this.GetLocalization(nameof(DisplayName), () => "冰雹符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "每第四拍齐掷，全滴化巨雹：更重更痛、破甲强击退，不留洼；普通拍略轻");
+            => this.GetLocalization(nameof(Tooltip), () => "每第四拍全滴化作巨雹：破甲重击不留洼；平时滴伤略轻");
 
         public override void SetDefaults() {
             this.GetLocalization("Origin",
-                () => "那年雨下到一半冻住了。捡雹子的孩子说，每颗里都冻着一声响");
+                () => "冰雹是雨里的横脾气，砸瓦穿盆没人拦得住。符师没想驯它，只与它讲定：每四拍，让它砸一拍");
             this.GetLocalization("Power",
-                () => "「冰雹」每第四拍必为齐掷（不须众鬼档），全滴化巨雹：体积 x1.6、伤害 x2.2，命中破甲、强击退");
+                () => "「冰雹」每第四拍必为齐掷，全体墨滴化作巨雹：体积 x1.6、伤害 x2.2，命中破甲并强力击退；巨雹不留墨洼");
             this.GetLocalization("Burden",
-                () => "普通拍滴伤 -8%；巨雹砸实了，不留墨洼。攒一记狠的，散碎的就顾不上了");
+                () => "普通拍滴伤 -8%");
             base.SetDefaults();
             Item.rare = Terraria.ID.ItemRarityID.LightRed;
         }

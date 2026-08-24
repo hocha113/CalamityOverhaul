@@ -58,18 +58,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
         public override string TalismanKey => nameof(FuHong);
 
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·虹");
+            => this.GetLocalization(nameof(DisplayName), () => "虹桥符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "墨瀑收势后落点上空拱起虹桥：虹下移速与召唤伤提升，虹身灼过敌；墨瀑略窄");
+            => this.GetLocalization(nameof(Tooltip), () => "墨瀑收势后架起虹桥：桥下增益、桥身灼敌；墨瀑略窄");
 
         public override void SetDefaults() {
             this.GetLocalization("Origin",
-                () => "雨停的地方总欠着一道虹。符上的颜色，是七场雨各还的一笔");
+                () => "雨后见虹是吉兆。符师索性把吉兆画进符里：雨一停就架桥，站在桥下的人人沾光");
             this.GetLocalization("Power",
-                () => "「霁虹」墨瀑收势后，落点上空拱虹桥五秒：虹下移速 +10%、召唤伤害 +10%，穿虹之敌每半秒受 40% 墨瀑伤害");
+                () => "「虹桥」墨瀑收势后，落点上空架起虹桥五秒：桥下移速 +10%、召唤伤害 +10%；穿过桥身的敌人每半秒受 40% 瀑伤");
             this.GetLocalization("Burden",
-                () => "墨瀑宽度 -10%。分了七色出去，瀑就细了一分");
+                () => "墨瀑宽度 -10%");
             base.SetDefaults();
             Item.rare = Terraria.ID.ItemRarityID.LightRed;
         }

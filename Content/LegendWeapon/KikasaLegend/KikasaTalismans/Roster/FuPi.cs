@@ -117,19 +117,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
 
         //zh 正典文案写进代码默认值，双语 hjson 已整并（zh-Hans 为正典）
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·霹");
+            => this.GetLocalization(nameof(DisplayName), () => "天雷符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "泼完墨瀑后十秒内，滴击两成引天雷直劈；墨泉略轻");
+            => this.GetLocalization(nameof(Tooltip), () => "泼完墨瀑后十秒内，滴击偶引天雷直劈；墨泉略轻");
 
         public override void SetDefaults() {
             //先于基类注册真实文案，基类的占位默认因键已存在不再生效
             this.GetLocalization("Origin",
-                () => "那一夜雷把天劈成两半，写符的人在白光里看清了每一滴雨。符成之时，纸缘是焦的");
+                () => "道门五雷法讲究\"以雨引雷\"。符师学艺不精，只学会了后半句。好在他有的是雨");
             this.GetLocalization("Power",
-                () => "「霹雳」每泼完一次墨瀑，开启十秒引雷窗：窗内墨滴命中有 20% 唤天雷直劈命中点（180% 伤害，贯穿雷径）");
+                () => "「天雷」每泼完一次墨瀑，开启十秒引雷窗：窗内墨滴命中有 20% 引天雷直劈命中点（180% 伤害，贯穿整条雷径）");
             this.GetLocalization("Burden",
-                () => "墨泉伤害 -20%。雷声一响，泉涌也要让路");
+                () => "墨泉伤害 -20%");
             base.SetDefaults();
             Item.rare = ItemRarityID.Red;
         }

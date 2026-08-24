@@ -188,18 +188,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
         public override string TalismanKey => nameof(FuZha);
 
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·霅");
+            => this.GetLocalization(nameof(DisplayName), () => "雨鼓符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "七拍连击不漏则第八拍全滴 x3 重霅；重霅后停雨一拍");
+            => this.GetLocalization(nameof(Tooltip), () => "连续七拍每拍命中，第八拍全滴伤害三倍；重鼓后停雨一拍");
 
         public override void SetDefaults() {
             this.GetLocalization("Origin",
-                () => "霅霅，是雨点敲在鼓皮上的声音。写符的人数着拍子落笔，七拍写完，一拍未漏");
+                () => "雨点敲在伞面上，本就是一面鼓。符师听出了门道：只要一拍不漏，第八拍必定最响");
             this.GetLocalization("Power",
-                () => "「七拍」伞顶悬七点节拍环：连续七拍每拍至少一滴命中，第八拍全滴伤害 x3，重霅齐落如擂鼓");
+                () => "「雨鼓」伞顶悬七点鼓环：连续七拍每拍至少命中一滴，则第八拍全滴伤害 x3，如擂重鼓；漏拍则从头再数");
             this.GetLocalization("Burden",
-                () => "重霅之后停雨一拍；漏了拍，环碎重数。鼓点容不得虚一声");
+                () => "重鼓之后停雨一拍");
             base.SetDefaults();
             Item.rare = ItemRarityID.Lime;
             Item.value = Item.sellPrice(gold: 1);

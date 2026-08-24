@@ -86,19 +86,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
 
         //zh 正典文案写进代码默认值，双语 hjson 已整并（zh-Hans 为正典）
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·泷");
+            => this.GetLocalization(nameof(DisplayName), () => "冲瀑符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "墨瀑化急泷冲刷推涌敌人，瀑击顺流更沉；瀑势更短");
+            => this.GetLocalization(nameof(Tooltip), () => "墨瀑化作急流冲开敌人；瀑势较短");
 
         public override void SetDefaults() {
             //先于基类注册真实文案，基类的占位默认因键已存在不再生效
             this.GetLocalization("Origin",
-                () => "山雨过溪，一夜成泷。写符的人在崖下听了一宿水声，落笔时腕上还带着湍急");
+                () => "山洪下来的时候，没人站得住脚。符师在崖上看过一回，回来只往符里写了一个\"冲\"字");
             this.GetLocalization("Power",
-                () => "「急湍」墨瀑化泷：瀑身持续冲刷，把落线上的敌人顺流推涌；瀑源直击的击退顺瀑 +35%。水到之处，无物可立");
+                () => "「冲瀑」墨瀑化作急流：瀑身持续把落线上的敌人顺流推开，瀑源直击的击退 +35%");
             this.GetLocalization("Burden",
-                () => "泷急则短，墨瀑冲刷时长 -20%。湍流从不肯久留");
+                () => "墨瀑持续时间 -20%");
             base.SetDefaults();
             Item.rare = ItemRarityID.Lime;
             Item.value = Item.sellPrice(gold: 1);

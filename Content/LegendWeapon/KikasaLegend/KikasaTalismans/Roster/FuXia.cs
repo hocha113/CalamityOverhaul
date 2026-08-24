@@ -140,19 +140,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
 
         //zh 正典文案写进代码默认值，双语 hjson 已整并（zh-Hans 为正典）
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·霞");
+            => this.GetLocalization(nameof(DisplayName), () => "焚霞符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "晨昏时段墨系全伤更烈，滴击燃霞焰；正午与夜半略钝");
+            => this.GetLocalization(nameof(Tooltip), () => "清晨与黄昏墨伤大涨、滴击点燃霞焰；正午与深夜略降");
 
         public override void SetDefaults() {
             //先于基类注册真实文案，基类的占位默认因键已存在不再生效
             this.GetLocalization("Origin",
-                () => "晨霞烧了半边天，雨还没有停。写符的人蘸着那个颜色落笔——霞也是被烧开的雨");
+                () => "霞是天边烧起来的雨。符师赶在日出前收了一捧，符纸烤得焦黄，符倒是成了");
             this.GetLocalization("Power",
-                () => "「焚霞」日出日落前后各一个半时辰，墨系全伤 +18%，墨滴命中点燃『霞焰』短灼；霞时全套雨具染作橙金");
+                () => "「焚霞」日出与日落前后各一个半时辰内，墨系伤害 +18%，墨滴命中点燃\"霞焰\"短暂灼烧；霞时全套雨具染作橙金");
             this.GetLocalization("Burden",
-                () => "正午与夜半墨系 -6%。霞只肯在天边烧");
+                () => "正午与深夜墨系伤害 -6%");
             base.SetDefaults();
             Item.rare = ItemRarityID.Purple;
         }

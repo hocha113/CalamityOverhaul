@@ -100,19 +100,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
 
         //zh 正典文案写进代码默认值，双语 hjson 已整并（zh-Hans 为正典）
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·霄");
+            => this.GetLocalization(nameof(DisplayName), () => "九霄符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "悬伞升上霄位，墨滴自高空直坠更急更痛；雨拍稍缓");
+            => this.GetLocalization(nameof(Tooltip), () => "悬伞升上高空，墨滴直坠更快更痛；雨拍稍缓");
 
         public override void SetDefaults() {
             //先于基类注册真实文案，基类的占位默认因键已存在不再生效
             this.GetLocalization("Origin",
-                () => "登高放伞的人没有下山。有人说他把伞挂在了云上，从此那片天的雨都落得又直又急");
+                () => "同是一滴雨，从屋檐落下砸个水花，从九霄落下能砸个坑。符师的道理，就这么朴素");
             this.GetLocalization("Power",
-                () => "「九霄」悬伞高度翻倍，墨滴尽改高空直坠：终速 +40%、伤害 +25%，落点先浮出一圈雨影");
+                () => "「九霄」悬伞高度翻倍，墨滴改为高空直坠：终速 +40%、伤害 +25%，落点会先浮出一圈雨影");
             this.GetLocalization("Burden",
-                () => "雨拍间隔 +10%。雨从霄位下来，路远，总要多等一息");
+                () => "雨拍间隔 +10%");
             base.SetDefaults();
             Item.rare = ItemRarityID.Red;
         }

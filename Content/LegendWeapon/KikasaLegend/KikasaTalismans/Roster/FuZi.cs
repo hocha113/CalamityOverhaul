@@ -123,19 +123,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
 
         //zh 正典文案写进代码默认值，双语 hjson 已整并（zh-Hans 为正典）
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·渍");
+            => this.GetLocalization(nameof(DisplayName), () => "浸渍符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "敌浸墨洼层层积渍，每层受墨伤加深；墨洼本体较轻");
+            => this.GetLocalization(nameof(Tooltip), () => "泡在墨洼里的敌人层层积渍、受墨伤加深；洼本体较轻");
 
         public override void SetDefaults() {
             //先于基类注册真实文案，基类的占位默认因键已存在不再生效
             this.GetLocalization("Origin",
-                () => "洗不掉的东西不止一样。符纸在洼里泡了一夜，捞起来时字迹沉进了纸背");
+                () => "染布要下缸泡足三日，颜色才吃得进去。符师染过布，最知道一个\"泡\"字的厉害");
             this.GetLocalization("Power",
-                () => "「浸渍」浸在墨洼里的敌人层层积渍（至多八层），每层受墨系伤害 +2.5%。墨入骨，伤入里");
+                () => "「浸渍」浸在墨洼里的敌人不断积渍（至多八层），每层令其受到的墨系伤害 +2.5%");
             this.GetLocalization("Burden",
-                () => "墨洼本体伤害 -25%。洼不急着咬人，它等墨先渗进去");
+                () => "墨洼本体伤害 -25%");
             base.SetDefaults();
             //获取期二档
             Item.rare = Terraria.ID.ItemRarityID.LightRed;

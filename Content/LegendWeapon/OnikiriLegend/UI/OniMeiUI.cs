@@ -110,9 +110,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             SlotHi = this.GetLocalization(nameof(SlotHi), () => "樋位");
             SlotHorimono = this.GetLocalization(nameof(SlotHorimono), () => "雕位");
             EmptyName = this.GetLocalization(nameof(EmptyName), () => "（铭位空悬）");
-            EmptyHintNakago = this.GetLocalization(nameof(EmptyHintNakago), () => "茎上无名。素刃也好，只是夜里没人应它");
+            EmptyHintNakago = this.GetLocalization(nameof(EmptyHintNakago), () => "茎上无名，此位空着，不带赋效也不收代价。挑一枚錾样凿上，刀才有性子");
             EmptyHintHi = this.GetLocalization(nameof(EmptyHintHi), () => "樋未开。开樋一分，刀轻一分");
-            EmptyHintHorimono = this.GetLocalization(nameof(EmptyHintHorimono), () => "雕位素净。请神入刀，先得敬它");
+            EmptyHintHorimono = this.GetLocalization(nameof(EmptyHintHorimono), () => "雕位空着，不启用任何赋效。想请哪尊入刀，挑好錾样再动手");
             EraseName = this.GetLocalization(nameof(EraseName), () => "除 铭");
             EraseHint = this.GetLocalization(nameof(EraseHint), () => "锉去此铭，铭可再凿，刀不忘痕");
             OriginLabel = this.GetLocalization(nameof(OriginLabel), () => "出处");

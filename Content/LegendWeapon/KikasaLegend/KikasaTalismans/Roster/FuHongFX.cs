@@ -223,7 +223,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
         public override string Texture => CWRConstant.VaultPlaceholder2;
 
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "霁虹眷护");
+            => this.GetLocalization(nameof(DisplayName), () => "虹桥眷护");
 
         public override LocalizedText Description
             => this.GetLocalization(nameof(Description), () => "虹下移速 +10%，召唤伤害 +10%");

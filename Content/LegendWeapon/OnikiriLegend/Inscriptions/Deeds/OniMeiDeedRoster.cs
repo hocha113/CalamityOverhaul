@@ -5,7 +5,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
 {
     //刀縁名册：一铭一縁。条件一律"手持鬼切时做成的事"，
-    //残句提示写在拓本物品的 DeedHint 词条里，此处只写判据
+    //玩家提示写在拓本物品的 DeedHint 词条里，此处只写判据
 
     /// <summary>蜘蛛切：斩够蛛形，刀自己认得那股腥气</summary>
     internal sealed class DeedKumokiri : OniMeiDeed
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
             => context.Amount >= PierceNeed ? 1 : 0;
     }
 
-    /// <summary>梵鐘：整场首领战一次终结都没用，就这么把它敲下来</summary>
+    /// <summary>梵鐘：整场首领战灭世与终结都没动用，就这么把它敲下来</summary>
     internal sealed class DeedBonsho : OniMeiDeed
     {
         public override string MeiKey => nameof(MeiBonsho);

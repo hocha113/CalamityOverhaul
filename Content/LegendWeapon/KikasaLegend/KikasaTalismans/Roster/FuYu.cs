@@ -206,19 +206,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
 
         //zh 正典文案写进代码默认值，双语 hjson 已整并（zh-Hans 为正典）
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·雩");
+            => this.GetLocalization(nameof(DisplayName), () => "舞雩符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "命中蓄雩祭，满则开坛入大雩：雨密滴烈、洼泉全开、祭毕三泉齐发；大典之外略钝");
+            => this.GetLocalization(nameof(Tooltip), () => "命中攒祭数，攒满开坛起舞：雨密滴烈、洼泉全开，祭毕三泉齐发；大祭之外略钝");
 
         public override void SetDefaults() {
             //先于基类注册真实文案，基类的占位默认因键已存在不再生效
             this.GetLocalization("Origin",
-                () => "大旱之年，巫者舞雩于坛，八音齐鸣，雨应声而至。二十四符至此写毕，最后一笔落在坛心");
+                () => "古人求雨，筑坛起舞、唱足八音，这套仪轨唤作\"舞雩\"。符师把整场大典缩进一张符：伞是巫，雨是应");
             this.GetLocalization("Power",
-                () => "「大雩」墨雨命中蓄积雩祭，满值自动开坛入『大雩』十秒：雨拍减半，滴携虹墨 +15% 且尽数积洼，墨泉档全开；祭毕，伞下三泉齐发");
+                () => "「大雩」墨雨命中积攒祭数，攒满自动开坛入\"大雩\"十秒：雨拍减半、滴染虹墨且伤害 +15%、落地皆积洼、墨泉全开；祭毕，伞下三泉齐发");
             this.GetLocalization("Burden",
-                () => "大雩之外墨系全伤 -10%。大典与大典之间，天也要歇息");
+                () => "大雩之外墨系伤害 -10%");
             base.SetDefaults();
             //终章符：灾厄在场再上一档绿松石，否则紫档封顶
             Item.rare = CWRID.Rarity_Turquoise > 0 ? CWRID.Rarity_Turquoise : ItemRarityID.Purple;

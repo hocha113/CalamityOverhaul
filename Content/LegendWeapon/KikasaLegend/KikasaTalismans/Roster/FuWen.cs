@@ -101,18 +101,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
         public override string TalismanKey => nameof(FuWen);
 
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·雯");
+            => this.GetLocalization(nameof(DisplayName), () => "云篆符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "伞缘环绕三符星，滴命中充能，满充自掷追踪墨箭；雨拍稍缓");
+            => this.GetLocalization(nameof(Tooltip), () => "伞缘三枚符星随命中充能，蓄满自掷追踪墨箭；雨拍稍缓");
 
         public override void SetDefaults() {
             this.GetLocalization("Origin",
-                () => "云成章曰雯。写符的人抬头照着云抄了三个字，落到纸上，字还在慢慢地动");
+                () => "云篆是道门写在云上的字，凡人临不来。符师临了个大概，字没临像，倒是学会了自己飞");
             this.GetLocalization("Power",
-                () => "「云篆」伞缘环绕三枚云篆符星，墨滴命中为其充能；每蓄满一次，轮值符星自掷为追踪墨箭（120% 滴伤）");
+                () => "「云篆」伞缘环绕三枚云篆符星，墨滴每次命中为其充能；蓄满时轮值符星自动掷出追踪墨箭（120% 滴伤）");
             this.GetLocalization("Burden",
-                () => "分神驭星，雨拍间隔 +8%。一心二用，笔便慢了半分");
+                () => "雨拍间隔 +8%");
             base.SetDefaults();
             Item.rare = ItemRarityID.Yellow;
             Item.value = Item.sellPrice(gold: 1, silver: 50);

@@ -95,19 +95,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
 
         //zh 正典文案写进代码默认值，双语 hjson 已整并（zh-Hans 为正典）
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·霉");
+            => this.GetLocalization(nameof(DisplayName), () => "霉雨符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "滴击挂霉蚀叠层，带霉者死后孢子雾感染周围；直击略轻");
+            => this.GetLocalization(nameof(Tooltip), () => "墨滴挂霉蚀掉血，带霉者死后孢子感染周围；直击略轻");
 
         public override void SetDefaults() {
             //先于基类注册真实文案，基类的占位默认因键已存在不再生效
             this.GetLocalization("Origin",
-                () => "梅雨下了四十日，符匣长了霉。写符的人没有擦去，他说这也是雨写的字");
+                () => "梅雨连下四十天，符匣里长了霉。符师没舍得擦。都是雨养出来的东西，凑合也算同门");
             this.GetLocalization("Power",
-                () => "「霉雨」墨滴命中挂『霉蚀』（可叠十层，按层蚀伤）；带霉者死去时喷出孢子雾，把一半霉层传给周围的敌人并附小伤");
+                () => "「霉雨」墨滴命中挂\"霉蚀\"（至多十层，按层持续掉血）；带霉的敌人死亡时喷出孢子雾，把一半霉层传给周围敌人并造成小伤");
             this.GetLocalization("Burden",
-                () => "墨滴直击 -10%。霉雨不打人，它只是不走");
+                () => "墨滴直击伤害 -10%");
             base.SetDefaults();
             Item.rare = ItemRarityID.Red;
         }

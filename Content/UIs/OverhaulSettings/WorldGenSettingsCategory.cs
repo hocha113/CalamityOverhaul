@@ -42,6 +42,15 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             "SHPCCradle",
         ];
 
+        /// <summary>
+        /// 只有"有/无"两态的结构：世界唯一，密度倍数无处可用。
+        /// UI 对这些项退化成普通开关，不画六档选择器
+        /// </summary>
+        private static readonly HashSet<string> BinaryStructures = ["SHPCCradle"];
+
+        /// <summary>该结构是否只有开关语义</summary>
+        internal static bool IsBinary(string name) => BinaryStructures.Contains(name);
+
         /// <summary>默认密度</summary>
         internal static StructureDensity GetDefaultDensity(string name) {
             return name switch {
@@ -238,6 +247,10 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private static string GetStructureName(SettingToggle toggle)
             => toggle.ConfigPropertyName[DensityPrefix.Length..];
 
+        /// <summary>世界唯一的结构：仍挂在密度前缀下，但只当开关用</summary>
+        private static bool IsBinaryToggle(SettingToggle toggle)
+            => IsDensityToggle(toggle) && WorldGenDensitySave.IsBinary(GetStructureName(toggle));
+
         public override string GetLabel(SettingToggle toggle) {
             if (IsDensityToggle(toggle)) {
                 string structName = GetStructureName(toggle);
@@ -254,6 +267,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public override string GetTooltip(SettingToggle toggle) {
             if (IsDensityToggle(toggle)) {
                 string structName = GetStructureName(toggle);
+                string binaryKey = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.{WorldGenDensitySave.GetConfigPropertyName(structName)}.Tooltip";
+                if (WorldGenDensitySave.IsBinary(structName)) {
+                    string binaryDesc = Language.GetTextValue(binaryKey);
+                    return binaryDesc == binaryKey ? "" : binaryDesc;
+                }
                 var density = WorldGenDensitySave.GetDensity(structName);
                 int level = (int)density;
                 string levelText = GetDensityLevelText(level);
@@ -327,6 +345,16 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 foreach (var toggle in GetVisibleToggles()) {
                     if (!toggle.Hovering) continue;
 
+                    if (IsBinaryToggle(toggle)) {
+                        string structName = GetStructureName(toggle);
+                        bool enabled = WorldGenDensitySave.GetDensity(structName) != StructureDensity.Extinction;
+                        WorldGenDensitySave.SetDensity(structName, enabled
+                            ? StructureDensity.Extinction
+                            : WorldGenDensitySave.GetDefaultDensity(structName));
+                        SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.4f, Pitch = enabled ? -0.2f : 0.5f });
+                        return true;
+                    }
+
                     if (IsDensityToggle(toggle)) {
                         string name = toggle.ConfigPropertyName;
                         string structName = GetStructureName(toggle);
@@ -378,7 +406,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
         public override void DrawRowExtra(SpriteBatch spriteBatch, SettingToggle toggle,
             Rectangle rect, float alpha, float scale) {
-            if (!IsDensityToggle(toggle)) return;
+            //世界唯一的结构没有密度可调，留给主 UI 画普通开关
+            if (!IsDensityToggle(toggle) || IsBinaryToggle(toggle)) return;
 
             string name = toggle.ConfigPropertyName;
             string structName = GetStructureName(toggle);

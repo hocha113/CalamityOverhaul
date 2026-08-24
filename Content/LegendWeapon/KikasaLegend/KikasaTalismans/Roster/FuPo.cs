@@ -151,18 +151,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
         public override string TalismanKey => nameof(FuPo);
 
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·霸");
+            => this.GetLocalization(nameof(DisplayName), () => "月魄符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "夜间命中蓄月，满月转月瀑（瀑宽 x1.5+月痕爆）；白昼无效");
+            => this.GetLocalization(nameof(Tooltip), () => "夜间命中蓄月，满月时下一次墨瀑化作月瀑；白昼无效");
 
         public override void SetDefaults() {
             this.GetLocalization("Origin",
-                () => "霸者，月始生之白。写符的人在无月的夜里补了一轮，自新月一笔笔养到满月");
+                () => "符师夜里练伞，发现伞顶多出一轮小月亮：打得越多，月亮越圆。养到十五，正好倒一场好瀑");
             this.GetLocalization("Power",
-                () => "「月魄」夜间伞顶悬墨月，随命中渐盈；满月时下一次墨瀑化月瀑：瀑宽 x1.5，瀑击附月痕爆（35% 溅伤）");
+                () => "「月魄」夜间伞顶悬一轮墨月，随命中渐盈；满月时下一次墨瀑化作月瀑：瀑宽 x1.5，瀑击附月痕爆（35% 溅伤）");
             this.GetLocalization("Burden",
-                () => "白昼符力尽敛，此符唯夜有效。月不与日争辉");
+                () => "此符白昼无效");
             base.SetDefaults();
             Item.rare = ItemRarityID.Yellow;
             Item.value = Item.sellPrice(gold: 1, silver: 50);

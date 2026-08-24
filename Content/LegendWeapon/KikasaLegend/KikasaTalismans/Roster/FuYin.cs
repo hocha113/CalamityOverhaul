@@ -90,19 +90,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
 
         //zh 正典文案写进代码默认值，双语 hjson 已整并（zh-Hans 为正典）
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·洇");
+            => this.GetLocalization(nameof(DisplayName), () => "墨花符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "墨滴命中留洇痕，满五层洇开墨花爆伤；直击略轻");
+            => this.GetLocalization(nameof(Tooltip), () => "墨滴命中叠墨痕，叠满五层绽开墨花爆伤；直击略轻");
 
         public override void SetDefaults() {
             //先于基类注册真实文案，基类的占位默认因键已存在不再生效
             this.GetLocalization("Origin",
-                () => "一滴墨落在湿纸上，没人去擦，它便自己洇成了一朵花。写符的人守在旁边，看完了全程");
+                () => "墨滴落在湿纸上，不去擦它，自己会晕成一朵花。符师说敌人也一样：多打几滴，就开花");
             this.GetLocalization("Power",
-                () => "「洇痕」墨滴命中留下洇痕，至多五层，层层微蚀；满五层洇开墨花，爆出 160% 滴伤并清层");
+                () => "「墨花」墨滴命中留下墨痕（至多五层，每层持续掉血）；叠满五层绽开墨花，造成 160% 滴伤并清空层数");
             this.GetLocalization("Burden",
-                () => "直击伤害 -8%。墨意入纸三分，落在皮肉上的便轻了");
+                () => "墨滴直击伤害 -8%");
             base.SetDefaults();
         }
     }

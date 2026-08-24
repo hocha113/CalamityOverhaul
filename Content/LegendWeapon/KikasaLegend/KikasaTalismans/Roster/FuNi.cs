@@ -146,18 +146,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
         public override string TalismanKey => nameof(FuNi);
 
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·霓");
+            => this.GetLocalization(nameof(DisplayName), () => "三彩符");
 
         public override LocalizedText Tooltip
             => this.GetLocalization(nameof(Tooltip), () => "墨滴轮染三色：赤爆、青缓、紫易伤；滴伤微减");
 
         public override void SetDefaults() {
             this.GetLocalization("Origin",
-                () => "副虹曰霓，色序与虹相反。写符的人蘸了雨里最深的三色，一瓣一瓣写完了它");
+                () => "墨分五色是行话，符师只用得起三色。好在赤能炸、青能缠、紫能蚀，够用了");
             this.GetLocalization("Power",
-                () => "「三染」墨滴按序轮染三色：赤滴命中小爆（40% 溅伤），青滴缓敌 15%，紫滴令敌受墨系伤 +5%");
+                () => "「三彩」墨滴按序轮染三色：赤滴命中小范围爆裂（40% 溅伤），青滴使敌减速 15%，紫滴令敌受墨系伤害 +5%");
             this.GetLocalization("Burden",
-                () => "分了色的墨浅了些，墨滴伤害 -5%。霓终究不如虹烈");
+                () => "墨滴伤害 -5%");
             base.SetDefaults();
             Item.rare = ItemRarityID.Yellow;
             Item.value = Item.sellPrice(gold: 1, silver: 50);

@@ -89,19 +89,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
 
         //zh 正典文案写进代码默认值，双语 hjson 已整并（zh-Hans 为正典）
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·霰");
+            => this.GetLocalization(nameof(DisplayName), () => "溅珠符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "大滴落地碎成五粒弹跳霰珠；墨洼略小");
+            => this.GetLocalization(nameof(Tooltip), () => "大滴落地碎成五粒弹跳墨珠；墨洼略小");
 
         public override void SetDefaults() {
             //先于基类注册真实文案，基类的占位默认因键已存在不再生效
             this.GetLocalization("Origin",
-                () => "那年冬天，雨落到半空冻住了，砸在瓦上蹦了三蹦才肯躺下。写符的人捡起一粒，含到它化");
+                () => "大雨砸在石板上，水珠能蹦起半人高，溅人一身。符师把这股蹦劲写进符里，让水珠也学会咬人");
             this.GetLocalization("Power",
-                () => "「霰珠」大滴（鬼滴与瀑散滴）落地碎成五粒霰珠（各 30% 伤害），坠地还能再弹两次");
+                () => "「溅珠」大滴落地碎成五粒墨珠（各 30% 伤害），每粒还能再弹跳两次");
             this.GetLocalization("Burden",
-                () => "墨洼半径 -15%。碎出去的，积不回来");
+                () => "墨洼半径 -15%");
             base.SetDefaults();
         }
     }

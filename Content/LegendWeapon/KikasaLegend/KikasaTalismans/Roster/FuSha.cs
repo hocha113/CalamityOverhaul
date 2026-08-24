@@ -151,19 +151,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
 
         //zh 正典文案写进代码默认值，双语 hjson 已整并（zh-Hans 为正典）
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·霎");
+            => this.GetLocalization(nameof(DisplayName), () => "疾雨符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "起伞极快，开伞首拍必落急雨三连；三连后一拍稍缓");
+            => this.GetLocalization(nameof(Tooltip), () => "起伞极快，开伞第一拍连落三滴急雨；三连后一拍稍缓");
 
         public override void SetDefaults() {
             //先于基类注册真实文案，基类的占位默认因键已存在不再生效
             this.GetLocalization("Origin",
-                () => "云还没合拢，雨已经落到了睫毛上。写符的人来不及研墨，蘸着第一滴雨写完了它");
+                () => "符师赶夜路遇上劫道的，撑伞、落雨、收伞，前后不过一眨眼。事后他把这一手\"快\"字写成了符");
             this.GetLocalization("Power",
-                () => "「急霎」起伞耗时 -75%，开伞首拍必落急雨三连（各 75% 伤害）。雨不等人，霎那即至");
+                () => "「疾雨」起伞耗时 -75%；开伞第一拍必连落三滴急雨（各 75% 伤害）");
             this.GetLocalization("Burden",
-                () => "三连之后，下一拍间隔 +40%。一霎倾尽，总要缓上一息");
+                () => "三连之后，下一拍间隔 +40%");
             base.SetDefaults();
         }
     }

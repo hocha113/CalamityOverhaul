@@ -587,9 +587,9 @@ OnikiriText: {
 		SlotHi: Groove
 		SlotHorimono: Horimono
 		EmptyName: (vacant)
-		EmptyHintNakago: No name on the tang. A bare blade is fine — only, nothing answers it at night
+		EmptyHintNakago: The tang bears no name — this slot sits empty, granting no boon and charging no price. Pick a chisel print and cut one in; that is what gives the blade its temper
 		EmptyHintHi: No groove opened. Each groove cut is a measure of weight gone
-		EmptyHintHorimono: The carving bed is bare. To invite a deity into the steel, first show it respect
+		EmptyHintHorimono: The carving bed sits empty, granting nothing. Decide which one you would invite into the steel, then pick its chisel print and set to work
 		EraseName: EFFACE
 		EraseHint: File this inscription away — a mei can be cut again, but the blade forgets no scar
 		OriginLabel: Provenance

@@ -123,19 +123,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
 
         //zh 正典文案写进代码默认值，双语 hjson 已整并（zh-Hans 为正典）
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·霁");
+            => this.GetLocalization(nameof(DisplayName), () => "天晴符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "撑伞命中蓄霁，收伞在光标处轰落霁光一束；撑伞期间全伤略减");
+            => this.GetLocalization(nameof(Tooltip), () => "撑伞命中攒晴意，收伞在光标处轰下一束天光；撑伞期间全伤略减");
 
         public override void SetDefaults() {
             //先于基类注册真实文案，基类的占位默认因键已存在不再生效
             this.GetLocalization("Origin",
-                () => "雨停的那一刻，云缝里漏下一柱光。写符的人抢在云合拢之前，把它拓了下来");
+                () => "雨过天晴的那一刻，云缝里会漏下一柱光。符师蹲守半月，赶在云合拢前把它拓进了符里");
             this.GetLocalization("Power",
-                () => "「霁光」撑伞期间命中累计蓄霁；收伞瞬间云开一线，在光标处轰落一束霁光——按蓄量折算的大额单发，蓄满最烈");
+                () => "「放晴」撑伞期间的命中不断积攒晴意；收伞瞬间云开一线，在光标处轰落一束天光，伤害按积攒折算，攒满最烈");
             this.GetLocalization("Burden",
-                () => "撑伞期间墨系全伤 -8%。雨把力气都省给了放晴那一刻");
+                () => "撑伞期间墨系伤害 -8%");
             base.SetDefaults();
             Item.rare = ItemRarityID.Purple;
         }

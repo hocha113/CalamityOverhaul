@@ -152,18 +152,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
         public override string TalismanKey => nameof(FuShuang);
 
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·霜");
+            => this.GetLocalization(nameof(DisplayName), () => "霜镜符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "墨洼凝霜镜：踏镜减速，滴落碎镜爆伤；洼不可续命");
+            => this.GetLocalization(nameof(Tooltip), () => "墨洼凝成霜镜：踏镜减速、滴击碎镜爆伤；洼不可续命");
 
         public override void SetDefaults() {
             this.GetLocalization("Origin",
-                () => "霜降那夜的洼水最诚实，谁踩过都留了脚印。写符的人把那面薄冰整片收进了纸里");
+                () => "霜降之后，洼水一夜结成薄冰，看着像面镜子，踩上去才知道厉害。符师收下的，正是这层\"看着没事\"");
             this.GetLocalization("Power",
-                () => "「霜镜」大滴落地自凝霜洼（不须湖倾档）；墨洼凝为霜镜：不再灼敌，踏镜者减速 40%；墨滴击中镜面即碎镜，按剩余镜寿折算爆伤并立起冰锥");
+                () => "「霜镜」大滴落地自凝霜洼（不必等湖倾档），墨洼凝为霜镜：不再灼敌，踏镜者减速 40%；墨滴击中镜面立刻碎镜，按剩余镜寿折算爆伤并立起冰锥");
             this.GetLocalization("Burden",
-                () => "霜镜各自为镜，墨洼不可合并续命。镜碎即碎，无可挽留");
+                () => "霜镜各自成镜，墨洼不可合并续命");
             base.SetDefaults();
             Item.rare = ItemRarityID.Lime;
             Item.value = Item.sellPrice(gold: 1);

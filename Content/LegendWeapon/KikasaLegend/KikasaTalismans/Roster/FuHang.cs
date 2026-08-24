@@ -98,18 +98,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
         public override string TalismanKey => nameof(FuHang);
 
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·沆");
+            => this.GetLocalization(nameof(DisplayName), () => "夜瘴符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "夜间墨系全伤提升，墨洼蒸腾瘴雾柱；白昼略降");
+            => this.GetLocalization(nameof(Tooltip), () => "夜间墨伤提升，墨洼蒸起瘴雾柱；白昼略降");
 
         public override void SetDefaults() {
             this.GetLocalization("Origin",
-                () => "沆瀣是夜里的水汽，饮的人成仙，写的人成符。此符只在无人看时才写得完");
+                () => "老话说，夜里的水汽碰不得。符师偏偏收了一瓶，果然碰不得。那就让敌人去碰");
             this.GetLocalization("Power",
-                () => "「沆瀣」夜间墨系伤害 +15%，墨洼向上蒸腾瘴雾柱（每半秒 30% 滴伤）");
+                () => "「夜瘴」夜间墨系伤害 +15%，墨洼不断蒸起瘴雾柱（每半秒 30% 滴伤）");
             this.GetLocalization("Burden",
-                () => "白昼墨系伤害 -5%。见不得光的东西，白天都懒洋洋");
+                () => "白昼墨系伤害 -5%");
             base.SetDefaults();
             Item.rare = Terraria.ID.ItemRarityID.LightRed;
         }

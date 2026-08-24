@@ -587,9 +587,9 @@ OnikiriText: {
 		SlotHi: 樋位
 		SlotHorimono: 雕位
 		EmptyName: （铭位空悬）
-		EmptyHintNakago: 茎上无名。素刃也好，只是夜里没人应它
+		EmptyHintNakago: 茎上无名，此位空着，不带赋效也不收代价。挑一枚錾样凿上，刀才有性子
 		EmptyHintHi: 樋未开。开樋一分，刀轻一分
-		EmptyHintHorimono: 雕位素净。请神入刀，先得敬它
+		EmptyHintHorimono: 雕位空着，不启用任何赋效。想请哪尊入刀，挑好錾样再动手
 		EraseName: 除 铭
 		EraseHint: 锉去此铭，铭可再凿，刀不忘痕
 		OriginLabel: 出处
@@ -1269,7 +1269,7 @@ KikasaText: {
 		RainBody: 「血湖表里」键有两重话：满水时短按，血湖翻成鬼雨；长按，是往梦里去。鬼雨底下杀死的敌人会化作伞奴，替你打。
 		RainPrompt: 湖水涨满后，短按 {0} 翻转血湖
 		RestartTitle: 雨中重启
-		RestartBody: 鬼雨记得几秒前的样子。按下重启，画面定格成黑白照片，再被雨痕冲开——场上所有人退回原位，伤口合上，诅咒被冲净，倒带途中没人碰得到你。
+		RestartBody: 鬼雨记得几秒前的样子。按下重启，画面定格成黑白照片，再被雨痕冲开。场上所有人退回原位，伤口合上，诅咒被冲净，倒带途中没人碰得到你。
 		RestartPrompt: 鬼雨满水时，按 {0}
 		DreamTitle: 进入鬼梦
 		DreamBody: 湖水涨满后，长按「血湖表里」键，倒影就会把你拽进鬼梦。梦里按住左键会不断唤出恶犬，再按一次同一键回来。
@@ -1280,7 +1280,7 @@ KikasaText: {
 		OpenPanoramaBtn: 帮我打开
 		DismissBtn: 收起教程
 		KeyUnbound: 这一步的按键还没绑定。先到 设置 > 控制 里绑好，或者点跳过。
-		AlreadyDoneNote: 这一步你已经做到了——看完就点「明白了」。
+		AlreadyDoneNote: 这一步你已经做到了。看完就点「明白了」。
 		WaterRisingNote: 先等血水漫到脚下。
 		ResetCooldownFormat: 重启的墨线还在回卷：{0}%
 		HelpHover: 重看鬼伞教程

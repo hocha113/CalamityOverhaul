@@ -164,18 +164,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
         public override string TalismanKey => nameof(FuTing);
 
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·霆");
+            => this.GetLocalization(nameof(DisplayName), () => "雷泉符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "墨泉化雷霆水柱：更高、链电近敌；墨瀑触地偶起小雷泉；蓄墨稍缓");
+            => this.GetLocalization(nameof(Tooltip), () => "墨泉化作雷霆水柱并链电近敌，墨瀑触地偶起小雷泉；蓄墨稍缓");
 
         public override void SetDefaults() {
             this.GetLocalization("Origin",
-                () => "雷落在湖心那晚，湖把它记下了。写符的人只是把湖的记性抄了一遍");
+                () => "雷雨夜的湖面最吓人。闪电劈进水里，整片湖跟着一起亮。符师照着那一幕，画了这张符");
             this.GetLocalization("Power",
-                () => "「雷霆」墨泉柱高 +50%，命中链电至附近至多两敌（各 50% 泉伤）；未满蓄的墨瀑触地也有 25% 唤起一道小雷泉");
+                () => "「雷泉」墨泉柱高 +50%，命中后链电至附近至多两名敌人（各 50% 泉伤）；未满蓄的墨瀑触地时也有 25% 唤起一道小雷泉");
             this.GetLocalization("Burden",
-                () => "蓄墨速率 -13%。雷在碗底攒着，倒得急了会洒");
+                () => "倒撑蓄墨速率 -13%");
             base.SetDefaults();
             Item.rare = Terraria.ID.ItemRarityID.LightRed;
         }

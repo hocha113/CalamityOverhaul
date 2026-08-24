@@ -20,13 +20,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// <summary>绑定铭 Key，须与 <see cref="OniMeiDefinition.Key"/> 一致</summary>
         public abstract string MeiKey { get; }
 
-        /// <summary>铭的来历残句，由物品本地化域统一注册</summary>
+        /// <summary>铭的来历短叙，由物品本地化域统一注册</summary>
         public LocalizedText Origin { get; private set; }
         /// <summary>铭的实际赋效说明，由物品本地化域统一注册</summary>
         public LocalizedText Power { get; private set; }
         /// <summary>铭的实际负担说明，由物品本地化域统一注册</summary>
         public LocalizedText Burden { get; private set; }
-        /// <summary>刀縁残句：未凿位在改铭台上的去处提示；靠刀縁得来的铭才需要</summary>
+        /// <summary>刀縁提示：未凿位在改铭台上的去处说明；靠刀縁得来的铭才需要</summary>
         public LocalizedText DeedHint { get; private set; }
 
         public override string Texture => CWRConstant.VaultPlaceholder2;
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             Origin ??= this.GetLocalization(nameof(Origin), () => "...");
             Power ??= this.GetLocalization(nameof(Power), () => "...");
             Burden ??= this.GetLocalization(nameof(Burden), () => "...");
-            //只有靠刀縁得来的铭才注册残句，免得给赠礼铭平白多出一条空词条
+            //只有靠刀縁得来的铭才注册提示，免得给赠礼铭平白多出一条空词条
             if (Deeds.OniMeiDeedRegistry.TryGetByMei(MeiKey, out _)) {
                 DeedHint ??= this.GetLocalization(nameof(DeedHint), () => "...");
             }

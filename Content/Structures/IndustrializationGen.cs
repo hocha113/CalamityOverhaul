@@ -19,29 +19,36 @@ namespace CalamityOverhaul.Content.Structures
     {
         public static void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
             progress.Message = WorldGenSystem.IndustrializationGenMessage.Value;
+            progress.Set(0f);
 
             //SHPC 坠舱空岛是武器的开局获取点，与灾厄无关，放在 CWRRef.Has 门外无条件尝试生成
             if (SHPCCradleGen.Enabled) {
                 SHPCCradleGen.Generate();
             }
+            progress.Set(0.2f);
 
             if (CWRRef.Has) {
                 if (WorldGenDensitySave.GetDensity("WindGrivenGenerator") != StructureDensity.Extinction) {
                     SpawnWindGrivenGenerator();
                 }
+                progress.Set(0.4f);
                 if (Main.getGoodWorld && WorldGenDensitySave.GetDensity("WGGCollector") != StructureDensity.Extinction) {
                     SpawnWGGCollectorTile();
                 }
+                progress.Set(0.6f);
                 if (WorldGenDensitySave.GetDensity("JunkmanBase") != StructureDensity.Extinction) {
                     JunkmanBase.DoLoad<JunkmanBase>();
                 }
+                progress.Set(0.75f);
                 if (WorldGenDensitySave.GetDensity("RocketHut") != StructureDensity.Extinction) {
                     RocketHut.DoLoad<RocketHut>();
                 }
+                progress.Set(0.9f);
                 if (WorldGenDensitySave.GetDensity("SylvanOutpost") != StructureDensity.Extinction) {
                     SylvanOutpost.DoLoad<SylvanOutpost>();
                 }
             }
+            progress.Set(1f);
         }
 
         public static void Shuffle<T>(IList<T> list) {

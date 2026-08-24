@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
                 () => "鬼影优先扑向被枯手攥住的猎物，速度已被压到零，那一刀不会落空");
             LanternHandName = this.GetLocalization(nameof(LanternHandName), () => "照见");
             LanternHandNote = this.GetLocalization(nameof(LanternHandNote),
-                () => "灯照见过的猎物，枯手隔着遮挡也索得到；三灯刀光落在被攥住的目标上时加重一成六");
+                () => "灯照见过的猎物，枯手隔着遮挡也索得到；三灯刀光落在被攥住的目标上时加重六成");
             BrideName = this.GetLocalization(nameof(BrideName), () => "喜堂");
             BrideNote = this.GetLocalization(nameof(BrideNote),
                 () => "合卺之刻圈进喜堂的猎物，身上其余印记停止消退，直到喜堂散去");

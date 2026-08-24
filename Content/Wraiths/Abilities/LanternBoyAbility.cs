@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities
     {
         internal const string Key = "LanternBoy";
 
-        /// <summary>「照见」灯斩：攥住的靶子跑不掉，灯斩落得实，加重一成六。</summary>
+        /// <summary>「照见」灯斩：攥住的靶子跑不掉，灯斩落得实，加重六成。</summary>
         internal static readonly WraithSynergyRule GripSlash = new() {
             Id = "LanternBoy.GripSlash",
             Trigger = WraithMark.Gripped,

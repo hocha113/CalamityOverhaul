@@ -101,19 +101,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
 
         //zh 正典文案写进代码默认值，双语 hjson 已整并（zh-Hans 为正典）
         public override LocalizedText DisplayName
-            => this.GetLocalization(nameof(DisplayName), () => "唤雨符·汐");
+            => this.GetLocalization(nameof(DisplayName), () => "潮汐符");
 
         public override LocalizedText Tooltip
-            => this.GetLocalization(nameof(Tooltip), () => "墨洼随潮呼吸，向近敌涌潮拍浪；洼寿命略短");
+            => this.GetLocalization(nameof(Tooltip), () => "墨洼随潮呼吸，主动向近敌涌浪；洼寿命略短");
 
         public override void SetDefaults() {
             //先于基类注册真实文案，基类的占位默认因键已存在不再生效
             this.GetLocalization("Origin",
-                () => "海退了以后，滩上留下一洼一洼的小海。每一洼都还记得涨潮的时辰，到点便自己动身");
+                () => "符师在海边住过三年，只学会一件事：水不等人来踩，它自己会扑过去");
             this.GetLocalization("Power",
-                () => "「潮汐」墨洼得潮性：随潮息涨落，新墨落洼便向最近之敌涌潮，浪缘拍出半份洼伤");
+                () => "「潮汐」墨洼获得潮性：随呼吸涨落，新墨落洼时向最近的敌人涌潮，浪缘造成 50% 洼伤");
             this.GetLocalization("Burden",
-                () => "墨洼寿命 -20%。潮起得急，退得也快");
+                () => "墨洼寿命 -20%");
             base.SetDefaults();
         }
     }
