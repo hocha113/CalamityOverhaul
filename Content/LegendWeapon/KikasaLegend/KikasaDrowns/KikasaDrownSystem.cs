@@ -13,8 +13,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             KikasaDrown.UpdateAuthority();
             KikasaScourge.UpdateAuthority();
             if (!Main.dedServ) {
+                //役灵收湖：各端本地的确定性规则，先推规则再推演出
+                KikasaMinionDrown.Update();
                 KikasaDrownFX.Update();
                 KikasaScourgeFX.Update();
+                KikasaMinionDrownFX.Update();
                 KikasaDrown.UpdateHoverOmen();
                 KikasaScourge.UpdateLocalAmbient();
             }
@@ -24,8 +27,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             KikasaDrown.Reset();
             KikasaScourge.Reset();
             if (!Main.dedServ) {
+                KikasaMinionDrown.Reset();
                 KikasaDrownFX.Clear();
                 KikasaScourgeFX.Clear();
+                KikasaMinionDrownFX.Clear();
             }
         }
     }

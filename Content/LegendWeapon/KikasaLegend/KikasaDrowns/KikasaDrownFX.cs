@@ -912,6 +912,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
             //鞭笞/自动鞭击的手画在最上：目标真身在场，手要压着它抽
             KikasaScourgeFX.Draw(spriteBatch, viewedOwner, handFx, noise, handShaderOk);
+
+            //役灵收湖的手同层压上：目标是活体召唤物，真身走普通弹幕层，手要罩着它拖
+            KikasaMinionDrownFX.Draw(spriteBatch, viewedOwner, handFx, noise, handShaderOk);
         }
 
         //加色层：合围鼓包的水下行进光斑 + 出水根口的泡沫光
