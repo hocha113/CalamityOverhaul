@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             //战士手雷: 引爆音效 + 屏震
             SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.1f, Volume = 0.85f }, Projectile.position);
 
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                     Projectile.Center, Vector2.UnitX, 3f, 4.5f, 6, 500f, FullName));
             }

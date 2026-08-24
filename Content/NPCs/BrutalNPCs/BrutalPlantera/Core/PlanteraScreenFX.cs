@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core
 
         /// <summary>震屏，尊重配置</summary>
         public static void CameraPunch(Vector2 pos, float strength, int frames, string uniqueId, Vector2? dir = null) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             Vector2 direction = dir ?? Main.rand.NextVector2Unit();

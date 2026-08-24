@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.7f, Pitch = -0.45f, MaxInstances = 3 }, player.Center);
             SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.4f, Pitch = -0.6f, MaxInstances = 3 }, player.Center);
 
-            if (CWRServerConfig.Instance.ScreenVibration && player.whoAmI == Main.myPlayer) {
+            if (CWRClientConfig.Instance.ScreenVibration && player.whoAmI == Main.myPlayer) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(player.Center
                     , Vector2.UnitY * player.gravDir, 2.5f, 5f, 8, 700f, "MarbleinaBottleJump"));
             }

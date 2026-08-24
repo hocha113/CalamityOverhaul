@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering
 
         /// <summary>定向震屏，服务端与配置关闭时忽略</summary>
         public static void CameraPunch(Vector2 pos, float strength, int frames, string id, Vector2? dir = null) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             Vector2 direction = dir ?? Main.rand.NextVector2Unit();

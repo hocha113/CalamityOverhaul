@@ -311,7 +311,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (!Main.dedServ) {
                 FishBarracudaVFX.BurstSplash(Projectile.Center, dir, 1.1f);
                 //顺行进方向的一次克制震屏，只震拥有者视角
-                if (Main.myPlayer == Projectile.owner && CWRServerConfig.Instance.ScreenVibration) {
+                if (Main.myPlayer == Projectile.owner && CWRClientConfig.Instance.ScreenVibration) {
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                         Main.LocalPlayer.Center, dir, 4f, 6f, 9, 1000f, FullName));
                 }

@@ -246,7 +246,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
             if (Time == 1) {
                 SoundEngine.PlaySound(SoundID.DD2_BetsySummon with { Pitch = -0.5f, Volume = 2f }, Projectile.Center);
-                if (CWRServerConfig.Instance.LensEasing) {
+                if (CWRClientConfig.Instance.LensEasing) {
                     Main.SetCameraLerp(0.15f, 60);
                 }
             }

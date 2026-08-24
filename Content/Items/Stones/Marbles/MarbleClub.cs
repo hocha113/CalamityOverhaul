@@ -279,7 +279,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 }
             }
 
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 if (groundedImpact) {
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(impactPoint
                         , Vector2.UnitY * Owner.gravDir, 9f, 7f, 16, 800f, FullName));
@@ -508,7 +508,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 }
             }
 
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(target.Center
                     , currentRotation.ToRotationVector2(), 3.5f, 5f, 7, 800f, FullName));
             }

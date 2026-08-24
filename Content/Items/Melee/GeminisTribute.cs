@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Projectile.NewProjectile(source, position, vRight, type
                     , (int)(damage * 0.85f), knockback, player.whoAmI, ai0: 1f, ai1: 1f);
 
-                if (CWRServerConfig.Instance.ScreenVibration) {
+                if (CWRClientConfig.Instance.ScreenVibration) {
                     var modifier = new PunchCameraModifier(player.Center, dir, 3.5f, 5f, 8, 600f, FullName);
                     Main.instance.CameraModifiers.Add(modifier);
                 }
@@ -544,7 +544,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.9f, Pitch = -0.4f }, lockPos);
                 SoundEngine.PlaySound(SoundID.Item117 with { Volume = 0.8f, Pitch = 0.3f }, lockPos);
 
-                if (CWRServerConfig.Instance.ScreenVibration) {
+                if (CWRClientConfig.Instance.ScreenVibration) {
                     var modifier = new PunchCameraModifier(lockPos, Vector2.UnitX, 5f, 6f, 12, 700f, FullName);
                     Main.instance.CameraModifiers.Add(modifier);
                 }

@@ -1070,7 +1070,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             impactShake = 13f;
 
             //克制震屏，重击落点专用
-            if (!VaultUtils.isServer && CWRServerConfig.Instance.ScreenVibration) {
+            if (!VaultUtils.isServer && CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(position
                     , Vector2.UnitY, 4.5f, 7f, 9, 800f, FullName));
             }

@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         /// <summary>定向震屏，尊重服务器配置；本技能所有震动统一走此入口</summary>
         public static void Punch(Vector2 pos, Vector2 dir, float strength, float vibrationsPerSec, int frames, float falloff = 800f) {
-            if (Main.dedServ || !CWRServerConfig.Instance.ScreenVibration) {
+            if (Main.dedServ || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             Main.instance.CameraModifiers.Add(new PunchCameraModifier(

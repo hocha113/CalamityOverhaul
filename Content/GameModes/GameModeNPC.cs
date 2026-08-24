@@ -104,15 +104,18 @@ namespace CalamityOverhaul.Content.GameModes
     internal class GameModeNPCLoader : ICWRLoader
     {
         /// <summary>
-        /// 注册了 <see cref="BrutalNPCOverride"/> 重制的 NPC 类型。
+        /// 实际会接管的 Brutal 重制 NPC 类型。
         /// 模式开启时这些类型由 AI 重制承担难度，不吃通用增强。
-        /// 注意：若未来有子类的 CanBrutalOverride 恒拒绝接管，会被此表误排除（现 41 个子类全返回 null）
+        /// <see cref="BrutalNPCOverride.DisabledReworkTypes"/> 里的类型不进此表，留给通用增强。
         /// </summary>
         internal static readonly HashSet<int> BrutalOverriddenTypes = [];
 
         void ICWRLoader.SetupData() {
             BrutalOverriddenTypes.Clear();
             foreach (var pair in NPCOverride.ByID) {
+                if (BrutalNPCOverride.DisabledReworkTypes.Contains(pair.Key)) {
+                    continue;
+                }
                 foreach (var inds in pair.Value.Values) {
                     if (inds is BrutalNPCOverride) {
                         BrutalOverriddenTypes.Add(pair.Key);

@@ -363,7 +363,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                     Main.rand.NextFloat(0.7f, 1.4f))?.Configure(glow, Main.rand.Next(16, 30));
             }
 
-            if (Charge > 0.85f && CWRServerConfig.Instance.ScreenVibration) {
+            if (Charge > 0.85f && CWRClientConfig.Instance.ScreenVibration) {
                 Vector2 tangent = BladeDir.RotatedBy(MathHelper.PiOver2 * SweepSign);
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center,
                     tangent, 4.5f, 7f, 10, 900f, FullName));

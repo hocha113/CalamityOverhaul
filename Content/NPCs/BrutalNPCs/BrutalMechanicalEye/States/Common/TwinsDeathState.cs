@@ -240,7 +240,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         #region 辅助
 
         private static void DoScreenShake(Vector2 pos, float strength, int time) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             PunchCameraModifier modifier = new PunchCameraModifier(pos, Main.rand.NextVector2Unit(),

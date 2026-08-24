@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 }, impact);
                 SoundEngine.PlaySound(SoundID.Dig with { Pitch = -0.3f, Volume = 0.5f }, impact);
                 //约2400+血才震屏
-                if (heat > 0.6f && CWRServerConfig.Instance.ScreenVibration) {
+                if (heat > 0.6f && CWRClientConfig.Instance.ScreenVibration) {
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(impact, -recoil, 3f, 5f, 8, 600f, FullName));
                 }
             }

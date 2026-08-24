@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         /// <summary>定向震屏，尊重服务器配置；幅度克制（技能高频触发）</summary>
         public static void Punch(Vector2 pos, Vector2 dir, float strength, int frames) {
-            if (Main.dedServ || !CWRServerConfig.Instance.ScreenVibration) {
+            if (Main.dedServ || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             Main.instance.CameraModifiers.Add(new PunchCameraModifier(

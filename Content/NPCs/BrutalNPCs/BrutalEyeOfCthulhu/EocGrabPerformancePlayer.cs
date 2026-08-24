@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
 
         /// <summary>投技运镜期间的镜头震动（运镜接管相机后普通震屏可能失效）</summary>
         internal static void RequestShake(float intensity, int duration) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             if (CutsceneDirector.CurrentClip is not EocMawDragCutscene) {

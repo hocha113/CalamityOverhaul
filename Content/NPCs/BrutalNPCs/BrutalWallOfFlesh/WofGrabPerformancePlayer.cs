@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
 
         /// <summary>投技运镜期间的震屏；运镜未在播时退化为普通相机冲击</summary>
         internal static void RequestShake(float intensity, int duration) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             if (CutsceneDirector.CurrentClip is WofGrabCutscene) {

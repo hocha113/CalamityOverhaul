@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core
 
         /// <summary>本地震屏，随距离衰减，尊重震屏设置</summary>
         public static void PushShake(Vector2 worldCenter, float intensity, float falloffPx = 1500f) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             Player player = Main.LocalPlayer;

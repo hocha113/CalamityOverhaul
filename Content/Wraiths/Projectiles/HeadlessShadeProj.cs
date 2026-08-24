@@ -926,7 +926,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             float sizeMul = BodyScale * MathHelper.Clamp(target.Size.Length() / 90f, 0.85f, 2.1f);
             strikeField?.SpawnImpact(impactCenter, dashDirection, sizeMul, steel);
 
-            if (CWRServerConfig.Instance.ScreenVibration && Main.LocalPlayer.active
+            if (CWRClientConfig.Instance.ScreenVibration && Main.LocalPlayer.active
                 && Vector2.DistanceSquared(Main.LocalPlayer.Center, center) < 1400f * 1400f) {
                 PunchCameraModifier modifier = new(center, dashDirection, 7.5f, 6f, 12, 1000f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);

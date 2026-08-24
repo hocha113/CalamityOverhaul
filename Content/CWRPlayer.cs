@@ -299,7 +299,7 @@ namespace CalamityOverhaul.Content
         }
         /// <summary>屏幕震动强度</summary>
         public void GetScreenShake(float mode) {
-            if (!CWRServerConfig.Instance.ScreenVibration) {
+            if (!CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             if (ScreenShakeValue < mode)

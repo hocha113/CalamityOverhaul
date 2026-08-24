@@ -394,7 +394,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
                 }
             }
 
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 var modifier = new PunchCameraModifier(target.Center, dashDir, 4f, 5f, 8, 800f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
             }

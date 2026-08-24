@@ -267,7 +267,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                     }, owner.Center);
                 }
 
-                if (!Main.dedServ && CWRServerConfig.Instance.ScreenVibration) {
+                if (!Main.dedServ && CWRClientConfig.Instance.ScreenVibration) {
                     Vector2 punchDir = (baseAngle + swingDir * MathHelper.PiOver2).ToRotationVector2();
                     float strength = IsHeavy ? 9f : 3.5f;
                     int frames = IsHeavy ? 12 : 6;
@@ -284,7 +284,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                     SoundEngine.PlaySound(SoundID.Item73 with { Pitch = -0.5f, Volume = 1.2f }, owner.Center);
                     SoundEngine.PlaySound(SoundID.Item14 with { Pitch = 0.1f, Volume = 0.9f }, owner.Center);
 
-                    if (!Main.dedServ && CWRServerConfig.Instance.ScreenVibration) {
+                    if (!Main.dedServ && CWRClientConfig.Instance.ScreenVibration) {
                         Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                             owner.Center, dir, 10f, 7f, 13, 1300f, FullName));
                     }
@@ -435,7 +435,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             if (IsHeavy && CurrentPhase == PhaseSlash && !hitstopApplied) {
                 hitstopApplied = true;
                 hitstopTimer = 4;
-                if (!Main.dedServ && CWRServerConfig.Instance.ScreenVibration) {
+                if (!Main.dedServ && CWRClientConfig.Instance.ScreenVibration) {
                     Vector2 dir = (target.Center - Main.player[Projectile.owner].Center).SafeNormalize(Vector2.UnitX);
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                         target.Center, dir, 5f, 9f, 7, 900f, FullName));

@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , Main.rand.NextFloat(0.9f, 1.25f))?.Configure(Main.rand.Next(100, 140));
             }
             //只有全速射流的撞击才配一记克制的定向震
-            if (speed > 14f && CWRServerConfig.Instance.ScreenVibration) {
+            if (speed > 14f && CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                     pos, impactVel.SafeNormalize(Vector2.UnitY), 2f, 7f, 6, 520f, "FishIchorn"));
             }

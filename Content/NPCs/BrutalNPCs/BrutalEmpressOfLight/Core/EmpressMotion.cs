@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
 
         /// <summary>本地距离衰减震屏</summary>
         public static void Shake(Vector2 worldPos, float strength, int frames) {
-            if (VaultUtils.isServer || !CalamityOverhaul.Common.CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CalamityOverhaul.Common.CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             float dist = Main.LocalPlayer.Distance(worldPos);
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
 
         /// <summary>运镜期间的震屏走运镜通道（普通CameraModifier会被运镜锁镜吞掉）</summary>
         public static void CinematicShake(Vector2 worldPos, float strength, int frames) {
-            if (VaultUtils.isServer || !CalamityOverhaul.Common.CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CalamityOverhaul.Common.CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             if (InnoVault.Cinematics.CutsceneDirector.CurrentClip is EmpressDeathCutscene or EmpressGrabCutscene) {

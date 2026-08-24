@@ -321,7 +321,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SpawnExplosionParticles();
 
             //克制的震屏，随距离衰减，尊重服务器配置
-            if (!Main.dedServ && CWRServerConfig.Instance.ScreenVibration) {
+            if (!Main.dedServ && CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center
                     , Main.rand.NextVector2Unit(), 7f, 8f, 14, 1600f, FullName));
             }

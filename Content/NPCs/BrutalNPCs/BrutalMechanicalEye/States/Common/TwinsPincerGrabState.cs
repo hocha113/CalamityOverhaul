@@ -771,7 +771,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
 
         /// <summary>运镜接管期间普通震屏可能失效，被抓者本地改走导演震动</summary>
         private static void GrabShake(Vector2 pos, float strength, int frames) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             if (CutsceneDirector.CurrentClip is TwinsPincerCutscene) {

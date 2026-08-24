@@ -334,7 +334,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             if (IsFinisher) {
                 //终结命中 2帧顿+轻震
                 hitstopTimer = 2f;
-                if (CWRServerConfig.Instance.ScreenVibration) {
+                if (CWRClientConfig.Instance.ScreenVibration) {
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(target.Center
                         , currentRotation.ToRotationVector2(), 3f, 4f, 8, 700f, FullName));
                 }

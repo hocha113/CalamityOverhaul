@@ -10,25 +10,9 @@ CWRServerConfig: {
 			'''
 	}
 
-	ScreenVibration: {
-		Label: Bildschirmvibration für spezielle Waffenangriffe
-		Tooltip: Wenn aktiviert, vibriert der Bildschirm bei bestimmten Angriffen, um den Schlag stärker zu betonen
-	}
-
-	DomainConciseDisplay: {
-		Label: Domain-Minimalanzeige
-		Tooltip: Standardmäßig aus. Wenn aktiviert, werden die meisten visuellen Effekte innerhalb der Domain ausgeblendet.
-	}
-
 	Headers: {
 		CWRSystem: Overhaul-Systemeinstellungen
-		CWRWeapon: Overhaul-Waffeneinstellungen
 		CWRWorldGen: Overhaul-Struktureinstellungen
-	}
-
-	LensEasing: {
-		Label: Objektiv-Easing
-		Tooltip: Bei Aktivierung wird bei schnellen Langstreckenbewegungen ein Easing-Effekt auf das Objektiv angewendet, um ein unnatürliches Gefühl zu vermeiden
 	}
 
 	QuestLog: {
@@ -78,4 +62,27 @@ CWRServerConfig: {
 
 	ConfigChangePrefix: Benutzer
 	ConfigChangeSuffix: hat die Serverkonfiguration geändert
+}
+
+CWRClientConfig: {
+	DisplayName: Client-Einstellungen
+
+	Headers: {
+		CWRWeapon: Overhaul-Waffeneinstellungen
+	}
+
+	ScreenVibration: {
+		Label: Bildschirmvibration für spezielle Waffenangriffe
+		Tooltip: Wenn aktiviert, vibriert der Bildschirm bei bestimmten Angriffen, um den Schlag stärker zu betonen
+	}
+
+	DomainConciseDisplay: {
+		Label: Domain-Minimalanzeige
+		Tooltip: Standardmäßig aus. Wenn aktiviert, werden die meisten visuellen Effekte innerhalb der Domain ausgeblendet.
+	}
+
+	LensEasing: {
+		Label: Objektiv-Easing
+		Tooltip: Bei Aktivierung wird bei schnellen Langstreckenbewegungen ein Easing-Effekt auf das Objektiv angewendet, um ein unnatürliches Gefühl zu vermeiden
+	}
 }

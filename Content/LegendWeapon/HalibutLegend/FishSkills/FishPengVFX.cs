@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         /// <summary>落点竖向震屏，尊重服务器配置；首砸强、回弹减半</summary>
         public static void Punch(Vector2 pos, float strength, int frames) {
-            if (Main.dedServ || !CWRServerConfig.Instance.ScreenVibration) {
+            if (Main.dedServ || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             Main.instance.CameraModifiers.Add(new PunchCameraModifier(

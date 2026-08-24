@@ -33,6 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
         }
 
         public override bool? CanBrutalOverride() {
+            //重制未完成：由 DisabledReworkTypes 拒绝接管
             return null;
         }
 

@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
 
         /// <summary>运镜期间的震屏转发（导演接管相机后普通震屏无效）</summary>
         internal static void RequestShake(float intensity, int duration) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             if (CutsceneDirector.CurrentClip is not FishronGrabCutscene) {

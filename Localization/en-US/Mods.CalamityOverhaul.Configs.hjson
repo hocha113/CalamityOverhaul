@@ -10,25 +10,9 @@ CWRServerConfig: {
 			'''
 	}
 
-	ScreenVibration: {
-		Label: Weapon Screen Vibration
-		Tooltip: If turned on, the screen will vibrate during some attacks, which may make the hit feel more intense
-	}
-
-	DomainConciseDisplay: {
-		Label: Domain Minimal Display
-		Tooltip: Off by default. When enabled, only Cyberspace / Sea Domain style domain visuals are reduced. Onikiri's Oni Domain is unaffected, as are weapon and cyberware visuals such as dismember, omokage, and HackTime.
-	}
-
 	Headers: {
 		CWRSystem: System Configs
-		CWRWeapon: Weapon Configs
 		CWRWorldGen: World Gen Configs
-	}
-
-	LensEasing: {
-		Label: Lens Easing
-		Tooltip: When enabled, long distance rapid displacement will slow the lens, which avoids the feeling of being moved too fast
 	}
 
 	QuestLog: {
@@ -78,4 +62,27 @@ CWRServerConfig: {
 
 	ConfigChangePrefix: User
 	ConfigChangeSuffix: modified the server configuration
+}
+
+CWRClientConfig: {
+	DisplayName: Client Config
+
+	Headers: {
+		CWRWeapon: Weapon Configs
+	}
+
+	ScreenVibration: {
+		Label: Weapon Screen Vibration
+		Tooltip: If turned on, the screen will vibrate during some attacks, which may make the hit feel more intense
+	}
+
+	DomainConciseDisplay: {
+		Label: Domain Minimal Display
+		Tooltip: Off by default. When enabled, only Cyberspace / Sea Domain style domain visuals are reduced. Onikiri's Oni Domain is unaffected, as are weapon and cyberware visuals such as dismember, omokage, and HackTime.
+	}
+
+	LensEasing: {
+		Label: Lens Easing
+		Tooltip: When enabled, long distance rapid displacement will slow the lens, which avoids the feeling of being moved too fast
+	}
 }

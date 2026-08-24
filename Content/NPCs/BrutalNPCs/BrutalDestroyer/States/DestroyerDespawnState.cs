@@ -450,7 +450,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         }
 
         private static void DoScreenShake(Vector2 pos, float strength, int time) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             PunchCameraModifier modifier = new PunchCameraModifier(pos, Main.rand.NextVector2Unit(),

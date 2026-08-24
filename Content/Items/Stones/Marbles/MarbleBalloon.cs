@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 dustWaveLeftY = dustWaveRightY = feet.Y;
             }
 
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(feet, Main.rand.NextVector2Unit()
                     , 5f + growth * 4f, 6f, 12 + (int)(growth * 8f), 800f, "MarbleBalloonSlam"));
             }

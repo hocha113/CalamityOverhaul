@@ -199,7 +199,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             PRTLoader.NewParticle<PRT_StarPulseRing>(muzzle, Vector2.Zero
                 , GraniteMarbleVFX.GraniteDeep, 0).Configure(0.04f, 0.42f, 14);
 
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                     muzzle, aim, 2f, 4f, 5, 400f, FullName));
             }

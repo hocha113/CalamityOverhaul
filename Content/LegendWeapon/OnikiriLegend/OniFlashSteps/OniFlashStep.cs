@@ -275,7 +275,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
             //只设置冲刺玩家的镜头，不要把别的玩家的镜头也设置了
 
-            if (Projectile.IsOwnedByLocalPlayer() && CWRServerConfig.Instance.LensEasing) {
+            if (Projectile.IsOwnedByLocalPlayer() && CWRClientConfig.Instance.LensEasing) {
                 Main.SetCameraLerp(0.12f, 20);
             }
         }

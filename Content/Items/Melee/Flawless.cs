@@ -480,7 +480,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             hitStopFrames = grant;
             hitStopSpent += grant;
 
-            if (!VaultUtils.isServer && CWRServerConfig.Instance.ScreenVibration) {
+            if (!VaultUtils.isServer && CWRClientConfig.Instance.ScreenVibration) {
                 PunchCameraModifier modifier = new(Projectile.Center, bladeUnit, 5f, 6f, 9, 800f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
             }

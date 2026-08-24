@@ -292,7 +292,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             PRTLoader.NewParticle<PRT_DWave>(horn, Vector2.Zero, new Color(215, 190, 255), 0.30f)
                 ?.Configure(new Vector2(1f, 0.55f), dir > 0 ? 0f : MathHelper.Pi, 1.05f, 14);
 
-            if (Main.myPlayer == Projectile.owner && CWRServerConfig.Instance.ScreenVibration) {
+            if (Main.myPlayer == Projectile.owner && CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center
                     , new Vector2(dir, 0f), 4f, 5f, 9, 1200f, FullName));
             }

@@ -231,7 +231,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
                     .Configure(Main.rand.Next(3, 6));
             }
 
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(feet
                     , Vector2.UnitY * player.gravDir, 2.2f, 6f, 7, 650f, "OmniElectricFootAirJump"));
             }
@@ -296,7 +296,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
                     , VoltDeep * 0.6f, Main.rand.NextFloat(0.3f, 0.5f)).Configure(26, 0.5f, 0.03f);
             }
 
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(feet
                     , Vector2.UnitY * player.gravDir, 3f + ratio * 4.5f, 6.5f
                     , 10 + (int)(ratio * 9f), 780f, "OmniElectricFootChargeJump"));

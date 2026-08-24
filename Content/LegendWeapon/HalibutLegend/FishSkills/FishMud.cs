@@ -357,7 +357,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             wrapMud = 1f;
             moundEmerge = 1f;
 
-            if (CWRServerConfig.Instance.ScreenVibration && !Main.dedServ) {
+            if (CWRClientConfig.Instance.ScreenVibration && !Main.dedServ) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                     moundAnchor, -Vector2.UnitY, 4.5f, 5f, 10, 900f, "FishMudBreach"));
             }

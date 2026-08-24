@@ -27,19 +27,7 @@ namespace CalamityOverhaul.Common
         //生物大修配置已移除：BrutalNPCs 的 AI 重制现在由残酷模式（世界级游戏模式）管理
         //联机 PvP 骇入无独立开关：开了原版 PvP 即启用
 
-        [Header("CWRWeapon")]
-
-        [BackgroundColor(192, 54, 94, 255)]
-        [DefaultValue(true)]
-        public bool ScreenVibration { get; set; }//武器屏幕振动
-
-        [BackgroundColor(192, 54, 94, 255)]
-        [DefaultValue(false)]
-        public bool DomainConciseDisplay { get; set; }//领域简约显示（赛博空间/海域；不含鬼域）
-
-        [BackgroundColor(192, 54, 94, 255)]
-        [DefaultValue(true)]
-        public bool LensEasing { get; set; }//镜头缓动
+        //屏幕振动/领域简约显示/镜头缓动已移至 CWRClientConfig：纯本地视觉偏好，不需要服务器仲裁
 
         [Header("CWRWorldGen")]
 

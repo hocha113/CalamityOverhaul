@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core
 
         /// <summary>屏幕震，受设置项</summary>
         public static void Shake(Vector2 pos, float strength, int frames) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             PunchCameraModifier modifier = new PunchCameraModifier(pos, Main.rand.NextVector2Unit(),

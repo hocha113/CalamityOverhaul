@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //右键黑洞爆发，整圈飞镰
             SoundEngine.PlaySound(CWRSound.BlackHole with { Pitch = -0.1f, Volume = 0.9f }, player.Center);
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 Vector2 shakeDir = velocity.SafeNormalize(Vector2.UnitX);
                 PunchCameraModifier modifier = new PunchCameraModifier(player.Center, shakeDir, 6f, 7f, 14, 800f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
@@ -256,7 +256,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             SoundEngine.PlaySound(SoundID.NPCHit5 with { Pitch = 0.2f, Volume = 0.5f }, target.Center);
 
-            if (CWRServerConfig.Instance.ScreenVibration && Projectile.numHits == 0) {
+            if (CWRClientConfig.Instance.ScreenVibration && Projectile.numHits == 0) {
                 Vector2 hitDir = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitX);
                 PunchCameraModifier modifier = new PunchCameraModifier(target.Center, hitDir, 2.2f, 4f, 6, 400f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);

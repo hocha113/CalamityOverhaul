@@ -688,7 +688,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
 
             //攥中顿挫震屏（尊重配置），攥中 boss 更重
-            if (CWRServerConfig.Instance.ScreenVibration && Main.LocalPlayer.active
+            if (CWRClientConfig.Instance.ScreenVibration && Main.LocalPlayer.active
                 && Vector2.DistanceSquared(Main.LocalPlayer.Center, Projectile.Center) < 1200f * 1200f) {
                 var modifier = new PunchCameraModifier(Projectile.Center, Main.rand.NextVector2Unit()
                     , bossCatch ? 6f : 4f, 5f, 9, 800f, FullName);
@@ -742,7 +742,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                     ?.Configure(Main.rand.Next(24, 38), 0.5f);
             }
 
-            if (CWRServerConfig.Instance.ScreenVibration && Main.LocalPlayer.active
+            if (CWRClientConfig.Instance.ScreenVibration && Main.LocalPlayer.active
                 && Vector2.DistanceSquared(Main.LocalPlayer.Center, Projectile.Center) < 1200f * 1200f) {
                 var modifier = new PunchCameraModifier(Projectile.Center, Main.rand.NextVector2Unit()
                     , target.boss ? 7f : 5.5f, 5f, 10, 900f, FullName);

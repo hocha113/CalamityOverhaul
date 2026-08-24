@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
             FishTunabeardVFX.SplashBurst(Projectile.Center, -dashDir, 0.55f);
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center
                     , dashDir, 5f, 9f, 10, 1000f, FullName));
             }

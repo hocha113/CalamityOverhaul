@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using System.Collections.Generic;
 using System.Reflection;
 using Terraria.Localization;
 using Terraria.ModLoader.Config;
@@ -6,13 +7,23 @@ using SettingToggle = CalamityOverhaul.Content.UIs.OverhaulSettings.OverhaulSett
 
 namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 {
-    /// <summary>CWRServerConfig 布尔项</summary>
+    /// <summary>CWRServerConfig 与 CWRClientConfig 的布尔项混合展示</summary>
     internal class ContentSettingsCategory : SettingsCategory
     {
         public override string Title => OverhaulSettingsUI.ContentSettingsText?.Value ?? "内容设置";
 
         private bool needsReload;
         public bool NeedsReload => needsReload;
+
+        //纯本地视觉偏好，本地化键指向 CWRClientConfig 而非 CWRServerConfig
+        private static readonly HashSet<string> ClientConfigProperties = [
+            nameof(CWRClientConfig.ScreenVibration),
+            nameof(CWRClientConfig.DomainConciseDisplay),
+            nameof(CWRClientConfig.LensEasing),
+        ];
+
+        private static string ConfigClassNameFor(string propertyName)
+            => ClientConfigProperties.Contains(propertyName) ? nameof(CWRClientConfig) : nameof(CWRServerConfig);
 
         private static MethodInfo _configManagerSave;
 
@@ -26,17 +37,19 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         public override void Initialize() {
-            if (CWRServerConfig.Instance == null) return;
+            if (CWRServerConfig.Instance != null) {
+                var config = CWRServerConfig.Instance;
+                //CWRSystem(需重载)
+                AddToggle("QuestLog", () => config.QuestLog, v => config.QuestLog = v, true);
+            }
 
-            var config = CWRServerConfig.Instance;
-
-            //CWRSystem(需重载)
-            AddToggle("QuestLog", () => config.QuestLog, v => config.QuestLog = v, true);
-
-            //CWRWeapon
-            AddToggle(nameof(config.ScreenVibration), () => config.ScreenVibration, v => config.ScreenVibration = v, false);
-            AddToggle(nameof(config.DomainConciseDisplay), () => config.DomainConciseDisplay, v => config.DomainConciseDisplay = v, false);
-            AddToggle(nameof(config.LensEasing), () => config.LensEasing, v => config.LensEasing = v, false);
+            if (CWRClientConfig.Instance != null) {
+                var clientConfig = CWRClientConfig.Instance;
+                //CWRWeapon(纯本地偏好)
+                AddToggle(nameof(clientConfig.ScreenVibration), () => clientConfig.ScreenVibration, v => clientConfig.ScreenVibration = v, false);
+                AddToggle(nameof(clientConfig.DomainConciseDisplay), () => clientConfig.DomainConciseDisplay, v => clientConfig.DomainConciseDisplay = v, false);
+                AddToggle(nameof(clientConfig.LensEasing), () => clientConfig.LensEasing, v => clientConfig.LensEasing = v, false);
+            }
 
             ActionButtons.Add(new ActionButton {
                 Label = () => OverhaulSettingsUI.ResetDefaultText?.Value ?? "重置为默认",
@@ -46,15 +59,18 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
         private void ResetAllToDefault() {
             var config = CWRServerConfig.Instance;
-            if (config == null) return;
+            if (config != null) {
+                //CWRSystem
+                config.QuestLog = true;
+            }
 
-            //CWRSystem
-            config.QuestLog = true;
-
-            //CWRWeapon
-            config.ScreenVibration = true;
-            config.DomainConciseDisplay = false;
-            config.LensEasing = true;
+            var clientConfig = CWRClientConfig.Instance;
+            if (clientConfig != null) {
+                //CWRWeapon
+                clientConfig.ScreenVibration = true;
+                clientConfig.DomainConciseDisplay = false;
+                clientConfig.LensEasing = true;
+            }
 
             SaveConfig();
 
@@ -73,7 +89,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         public override string GetLabel(SettingToggle toggle) {
-            string key = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.{toggle.ConfigPropertyName}.Label";
+            string key = $"Mods.CalamityOverhaul.Configs.{ConfigClassNameFor(toggle.ConfigPropertyName)}.{toggle.ConfigPropertyName}.Label";
             string value = Language.GetTextValue(key);
             string label = value == key ? toggle.ConfigPropertyName : value;
             if (toggle.RequiresReload) {
@@ -83,7 +99,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         public override string GetTooltip(SettingToggle toggle) {
-            string key = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.{toggle.ConfigPropertyName}.Tooltip";
+            string key = $"Mods.CalamityOverhaul.Configs.{ConfigClassNameFor(toggle.ConfigPropertyName)}.{toggle.ConfigPropertyName}.Tooltip";
             string value = Language.GetTextValue(key);
             return value == key ? "" : value;
         }
@@ -102,9 +118,13 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         internal static void SaveConfigStatic() {
-            if (CWRServerConfig.Instance == null) return;
-            CWRServerConfig.Instance.OnChanged();
-            _configManagerSave?.Invoke(null, [CWRServerConfig.Instance]);
+            if (CWRServerConfig.Instance != null) {
+                CWRServerConfig.Instance.OnChanged();
+                _configManagerSave?.Invoke(null, [CWRServerConfig.Instance]);
+            }
+            if (CWRClientConfig.Instance != null) {
+                _configManagerSave?.Invoke(null, [CWRClientConfig.Instance]);
+            }
         }
     }
 }

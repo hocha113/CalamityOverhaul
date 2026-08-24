@@ -621,7 +621,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// 取最大值的镜头冲击；仅本地玩家、且服务器配置开启屏幕震动时生效，避免多端各自抖动与配置越权
         /// </summary>
         public static void Punch(Player owner, float amount) {
-            if (owner == null || owner.whoAmI != Main.myPlayer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (owner == null || owner.whoAmI != Main.myPlayer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             owner.CWR().ScreenShakeValue = MathHelper.Max(owner.CWR().ScreenShakeValue, amount);

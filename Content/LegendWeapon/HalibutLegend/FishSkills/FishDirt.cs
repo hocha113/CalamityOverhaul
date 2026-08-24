@@ -793,7 +793,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 BounceImpactFX(oldVelocity);
 
                 if (BounceCount == 1 && Math.Abs(oldVelocity.Y) > 8f && !Main.dedServ
-                    && CWRServerConfig.Instance.ScreenVibration) {
+                    && CWRClientConfig.Instance.ScreenVibration) {
                     //仅首次重着地给一记克制的竖向震
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center,
                         Vector2.UnitY, 3f, 5f, 8, 900f, FullName));

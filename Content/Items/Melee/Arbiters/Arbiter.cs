@@ -289,7 +289,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Arbiters
 
         /// 地面冲击，扫描地面生成 ArbiterShockwave
         private void TriggerGroundImpact() {
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 Vector2 dir = new Vector2(lockedDirection, 1f).SafeNormalize(Vector2.UnitY);
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                     Owner.Center, dir, 7.5f * (0.4f + ChargeRatio * 0.6f), 8f, 12, 700f, FullName));

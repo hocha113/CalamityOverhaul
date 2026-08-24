@@ -435,7 +435,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
 
-            if (IsFinisher && CWRServerConfig.Instance.ScreenVibration) {
+            if (IsFinisher && CWRClientConfig.Instance.ScreenVibration) {
                 var modifier = new PunchCameraModifier(target.Center
                     , currentRotation.ToRotationVector2(), 4f, 5f, 9, 800f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
@@ -807,7 +807,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
 
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 var modifier = new PunchCameraModifier(target.Center
                     , Projectile.rotation.ToRotationVector2(), 3f, 4f, 7, 700f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);

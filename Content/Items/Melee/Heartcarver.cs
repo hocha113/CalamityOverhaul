@@ -373,7 +373,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             SoundEngine.PlaySound(SoundID.NPCHit18 with { Volume = 0.9f, Pitch = -0.25f }, target.Center);
             SoundEngine.PlaySound(SoundID.DrumTamaSnare with { Volume = 0.5f, Pitch = -0.5f }, target.Center);
 
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 PunchCameraModifier modifier = new(target.Center, stabUnit,
                     extracted ? 8f : 5f, extracted ? 7f : 5f, extracted ? 12 : 8, 800f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
@@ -680,7 +680,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private void LaunchDash() {
             dashStartPos = Owner.Center;
 
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 PunchCameraModifier modifier = new(Owner.Center, dashDirection, 6f, 7f, 10, 600f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
             }
@@ -852,7 +852,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             //回刺命中时额外屏幕震动
-            if (InReturn && CWRServerConfig.Instance.ScreenVibration) {
+            if (InReturn && CWRClientConfig.Instance.ScreenVibration) {
                 PunchCameraModifier modifier = new(target.Center, hitDir, 4f, 5f, 8, 500f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
             }

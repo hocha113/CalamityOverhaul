@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         /// <summary>爆点定向震屏，尊重服务器配置</summary>
         public static void Punch(Vector2 pos) {
-            if (Main.dedServ || !CWRServerConfig.Instance.ScreenVibration) {
+            if (Main.dedServ || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             //尸群会接连爆开，单发幅度压低防叠震过量

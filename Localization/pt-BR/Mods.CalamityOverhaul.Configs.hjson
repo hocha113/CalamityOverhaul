@@ -10,25 +10,9 @@ CWRServerConfig: {
 			'''
 	}
 
-	ScreenVibration: {
-		Label: Vibracao de Tela da Arma
-		Tooltip: Se ativado, a tela vibrara durante alguns ataques, o que pode tornar o impacto mais intenso
-	}
-
-	DomainConciseDisplay: {
-		Label: Exibicao Minimalista do Dominio
-		Tooltip: Desativado por padrao. Quando ativado, a maioria dos efeitos visuais dentro do dominio serao ocultados.
-	}
-
 	Headers: {
 		CWRSystem: Configuracoes do Sistema de Overhaul
-		CWRWeapon: Configuracoes de Armas de Overhaul
 		CWRWorldGen: Configuracoes de Geracao de Mundo de Overhaul
-	}
-
-	LensEasing: {
-		Label: Suavizacao da Camera
-		Tooltip: Quando ativado, deslocamentos rapidos de longa distancia suavizarao a camera, o que evita a sensacao de ser movido muito rapido
 	}
 
 	QuestLog: {
@@ -78,4 +62,27 @@ CWRServerConfig: {
 
 	ConfigChangePrefix: Usuario
 	ConfigChangeSuffix: A configuracao do servidor foi modificada
+}
+
+CWRClientConfig: {
+	DisplayName: Configuracao do Cliente
+
+	Headers: {
+		CWRWeapon: Configuracoes de Armas de Overhaul
+	}
+
+	ScreenVibration: {
+		Label: Vibracao de Tela da Arma
+		Tooltip: Se ativado, a tela vibrara durante alguns ataques, o que pode tornar o impacto mais intenso
+	}
+
+	DomainConciseDisplay: {
+		Label: Exibicao Minimalista do Dominio
+		Tooltip: Desativado por padrao. Quando ativado, a maioria dos efeitos visuais dentro do dominio serao ocultados.
+	}
+
+	LensEasing: {
+		Label: Suavizacao da Camera
+		Tooltip: Quando ativado, deslocamentos rapidos de longa distancia suavizarao a camera, o que evita a sensacao de ser movido muito rapido
+	}
 }

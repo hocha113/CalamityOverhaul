@@ -505,7 +505,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //克制的定向震屏，沿下砸方向一记短震
-            if (CWRServerConfig.Instance.ScreenVibration && !Main.dedServ) {
+            if (CWRClientConfig.Instance.ScreenVibration && !Main.dedServ) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(hitPos, Vector2.UnitY
                     , 6f, 5f, 10, 900f, FullName));
             }

@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
 
             //震屏预警
             if (Projectile.timeLeft < 20 && Projectile.timeLeft > 10) {
-                if (CWRServerConfig.Instance.ScreenVibration) {
+                if (CWRClientConfig.Instance.ScreenVibration) {
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                         Projectile.Center,
                         Main.rand.NextVector2Unit(),

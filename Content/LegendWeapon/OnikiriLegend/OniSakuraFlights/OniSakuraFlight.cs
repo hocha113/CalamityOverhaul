@@ -317,7 +317,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Owner.RemoveAllGrapplingHooks();
                 Owner.CWR().GetScreenShake(2.4f);
-                if (CWRServerConfig.Instance.LensEasing) {
+                if (CWRClientConfig.Instance.LensEasing) {
                     Main.SetCameraLerp(0.08f, 18);
                 }
             }

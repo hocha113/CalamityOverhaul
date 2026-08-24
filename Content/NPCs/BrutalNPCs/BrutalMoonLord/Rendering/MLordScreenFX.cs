@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
     {
         /// <summary>方向性镜头冲击，本地，吃震屏配置</summary>
         public static void Punch(Vector2 pos, float strength, int frames, Vector2? direction = null) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             Vector2 dir = direction.HasValue

@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                     }, Projectile.Center);
                 }
 
-                if (CWRServerConfig.Instance.ScreenVibration) {
+                if (CWRClientConfig.Instance.ScreenVibration) {
                     PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
                             Main.rand.NextVector2Unit(), 12f, 6f, 25, 1000f, FullName);
                     Main.instance.CameraModifiers.Add(modifier);
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
 
         private void TriggerMainImpact() {
             //主冲击
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
                     Main.rand.NextVector2Unit(), 18f, 8f, 30, 1200f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
 
         private void TriggerSecondaryImpact() {
             //次级冲击
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
                     Main.rand.NextVector2Unit(), 10f, 6f, 20, 1000f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);

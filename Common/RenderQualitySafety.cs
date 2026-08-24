@@ -94,6 +94,6 @@ namespace CalamityOverhaul.Common
     internal static class DomainVisuals
     {
         /// <summary>开启后领域走简约回退（少后处理、少装饰层）</summary>
-        public static bool Concise => CWRServerConfig.Instance.DomainConciseDisplay;
+        public static bool Concise => CWRClientConfig.Instance.DomainConciseDisplay;
     }
 }

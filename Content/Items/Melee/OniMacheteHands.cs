@@ -805,7 +805,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 mp.PushGripVignette(MathHelper.Clamp(t * 2.2f, 0f, 0.85f) + squeeze * 0.15f);
 
                 //攥紧的顿挫震屏（小幅，尊重配置）
-                if (squeeze > 0.9f && CWRServerConfig.Instance.ScreenVibration && Owner.whoAmI == Main.myPlayer) {
+                if (squeeze > 0.9f && CWRClientConfig.Instance.ScreenVibration && Owner.whoAmI == Main.myPlayer) {
                     var modifier = new PunchCameraModifier(Owner.Center, Main.rand.NextVector2Unit()
                         , 3f, 5f, 8, 500f, FullName);
                     Main.instance.CameraModifiers.Add(modifier);
@@ -1426,7 +1426,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// <summary>冲击帧全层，震屏+音+环+火柱+金屑</summary>
         private void BirthBurst() {
             //定向震屏（沿砸击方向向下，尊重配置开关）
-            if (CWRServerConfig.Instance.ScreenVibration && !Main.dedServ) {
+            if (CWRClientConfig.Instance.ScreenVibration && !Main.dedServ) {
                 var modifier = new PunchCameraModifier(Projectile.Center, Vector2.UnitY
                     , 7f, 6f, 12, 900f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);

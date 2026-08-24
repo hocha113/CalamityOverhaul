@@ -331,7 +331,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 , Owner.velocity.GetNormalVector() * -22
                 , ModContent.ProjectileType<NeutronLaser>(), 800, 0);
                 //仅本机冲刺者镜头
-                if (CWRServerConfig.Instance.LensEasing) {
+                if (CWRClientConfig.Instance.LensEasing) {
                     Main.SetCameraLerp(0.1f, 60);
                 }
             }

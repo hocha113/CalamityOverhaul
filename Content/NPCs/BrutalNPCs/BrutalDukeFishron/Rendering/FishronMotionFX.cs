@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Rendering
         /// <summary>相机冲击，受设置项，服务端跳过</summary>
         public static void CameraPunch(Vector2 pos, float strength, int frames,
             string uniqueId = "FishronMotion", Vector2? direction = null) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             Vector2 dir = direction.HasValue

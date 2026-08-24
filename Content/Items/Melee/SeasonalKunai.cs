@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             target.AddBuff(buff, 180);
 
             //主弹幕命中时屏震 + 火星
-            if (Projectile.ai[0] > 0 && Projectile.numHits <= 1 && CWRServerConfig.Instance.ScreenVibration) {
+            if (Projectile.ai[0] > 0 && Projectile.numHits <= 1 && CWRClientConfig.Instance.ScreenVibration) {
                 Vector2 hitDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                     target.Center, hitDir, 2f, 3.5f, 5, 350f, FullName));

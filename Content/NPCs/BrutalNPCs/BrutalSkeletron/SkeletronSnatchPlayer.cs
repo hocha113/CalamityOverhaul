@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
 
         /// <summary>运镜接管相机后普通震屏可能失效，走导演器震动</summary>
         private static void RequestShake(float intensity, int duration) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             if (CutsceneDirector.CurrentClip is not SkeletronSnatchCutscene) {

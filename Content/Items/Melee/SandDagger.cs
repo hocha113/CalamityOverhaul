@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (OnSand > 0f) {
                 Projectile.Explode();
 
-                if (CWRServerConfig.Instance.ScreenVibration) {
+                if (CWRClientConfig.Instance.ScreenVibration) {
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                         Projectile.Center, Vector2.UnitX, 2.5f, 3.5f, 5, 350f, FullName));
                 }

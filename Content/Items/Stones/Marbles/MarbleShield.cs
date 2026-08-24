@@ -212,7 +212,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                         , GraniteMarbleVFX.MarbleDust, Main.rand.NextFloat(0.4f, 0.7f)).Configure(24, 0.7f, 0.05f);
                 }
 
-                if (strong && CWRServerConfig.Instance.ScreenVibration) {
+                if (strong && CWRClientConfig.Instance.ScreenVibration) {
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(Player.Center
                         , Main.rand.NextVector2Unit(), 4f, 5f, 9, 700f, FullName));
                 }

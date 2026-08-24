@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = -0.2f, Volume = 0.8f }, Projectile.Center);
             SpawnImpactSparks(oldVelocity);
 
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                     Projectile.Center, oldVelocity.SafeNormalize(Vector2.UnitX), 3.5f, 5f, 8, 600f, FullName));
             }
@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = 0.05f, Volume = 0.85f }, target.Center);
             SpawnHitImpact(target);
 
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 Vector2 hitDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                     target.Center, hitDir, 3.2f, 4.5f, 6, 500f, FullName));

@@ -221,7 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //定向后坐震屏（幅度克制）
-            if (CWRServerConfig.Instance.ScreenVibration && !Main.dedServ) {
+            if (CWRClientConfig.Instance.ScreenVibration && !Main.dedServ) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                     Projectile.Center, dir, 4f, 5f, 9, 800f, FullName));
             }
@@ -448,7 +448,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //伤害区域扩大（机制保持不变）
             Projectile.Explode(620, default, false);
 
-            if (CWRServerConfig.Instance.ScreenVibration && !Main.dedServ) {
+            if (CWRClientConfig.Instance.ScreenVibration && !Main.dedServ) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                     Projectile.Center, Projectile.velocity.SafeNormalize(Main.rand.NextVector2Unit()),
                     6.5f, 7f, 13, 1100f, FullName));

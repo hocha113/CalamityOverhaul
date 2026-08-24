@@ -10,25 +10,9 @@ CWRServerConfig: {
 			'''
 	}
 
-	ScreenVibration: {
-		Label: Efecto de vibración de pantalla en ataques especiales de armas
-		Tooltip: Si se activa, al realizar algunos ataques, la pantalla vibrará, lo que podría intensificar la sensación de impacto.
-	}
-
-	DomainConciseDisplay: {
-		Label: Dominio en modo minimalista
-		Tooltip: Desactivado por defecto. Al activarlo, se ocultan la mayoría de efectos visuales dentro del dominio.
-	}
-
 	Headers: {
 		CWRSystem: Ajustes del sistema Overhaul
-		CWRWeapon: Ajustes de armas Overhaul
 		CWRWorldGen: Ajustes de estructuras Overhaul
-	}
-
-	LensEasing: {
-		Label: Suavizado de la cámara
-		Tooltip: Al habilitar, los movimientos rápidos a larga distancia suavizarán la cámara, evitando la sensación de desajuste por moverse demasiado rápido.
 	}
 
 	QuestLog: {
@@ -78,4 +62,27 @@ CWRServerConfig: {
 
 	ConfigChangePrefix: Usuario
 	ConfigChangeSuffix: Se ha modificado la configuración del servidor
+}
+
+CWRClientConfig: {
+	DisplayName: Configuración del cliente
+
+	Headers: {
+		CWRWeapon: Ajustes de armas Overhaul
+	}
+
+	ScreenVibration: {
+		Label: Efecto de vibración de pantalla en ataques especiales de armas
+		Tooltip: Si se activa, al realizar algunos ataques, la pantalla vibrará, lo que podría intensificar la sensación de impacto.
+	}
+
+	DomainConciseDisplay: {
+		Label: Dominio en modo minimalista
+		Tooltip: Desactivado por defecto. Al activarlo, se ocultan la mayoría de efectos visuales dentro del dominio.
+	}
+
+	LensEasing: {
+		Label: Suavizado de la cámara
+		Tooltip: Al habilitar, los movimientos rápidos a larga distancia suavizarán la cámara, evitando la sensación de desajuste por moverse demasiado rápido.
+	}
 }

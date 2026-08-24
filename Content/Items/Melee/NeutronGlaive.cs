@@ -367,7 +367,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                         : SoundID.Item71 with { Volume = 0.6f, Pitch = 0.15f };
                     SoundEngine.PlaySound(style, Owner.Center);
                 }
-                if (!VaultUtils.isServer && CWRServerConfig.Instance.ScreenVibration) {
+                if (!VaultUtils.isServer && CWRClientConfig.Instance.ScreenVibration) {
                     Vector2 punchDir = (baseAngle + (swingDir * MathHelper.PiOver2)).ToRotationVector2();
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(Owner.Center, punchDir
                         , IsFinisher ? 8f : 3f, IsFinisher ? 7f : 4.5f, IsFinisher ? 11 : 6, 1100f, FullName));
@@ -396,7 +396,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 , ModContent.ProjectileType<NeutronGravityWave>(), Projectile.damage
                 , Projectile.knockBack, Owner.whoAmI, IsFinisher ? 1.85f : 0.95f);
 
-            if (IsFinisher && !VaultUtils.isServer && CWRServerConfig.Instance.ScreenVibration) {
+            if (IsFinisher && !VaultUtils.isServer && CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(Owner.Center, dir
                     , 9f, 7f, 12, 1300f, FullName));
             }
@@ -518,7 +518,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 hitstopApplied = true;
                 hitstopTimer = IsFinisher ? 3 : 1;
             }
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration || !IsFinisher) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration || !IsFinisher) {
                 return;
             }
             Vector2 tangent = (mainAngle + (swingDir * MathHelper.PiOver2)).ToRotationVector2();

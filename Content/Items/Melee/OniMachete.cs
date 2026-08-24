@@ -796,7 +796,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             impactHoldFrames = 1;
             recoilPulse = 1f;
 
-            if (IsFinisher && CWRServerConfig.Instance.ScreenVibration) {
+            if (IsFinisher && CWRClientConfig.Instance.ScreenVibration) {
                 var modifier = new PunchCameraModifier(target.Center
                     , currentRotation.ToRotationVector2(), 5f, 6f, 10, 900f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);

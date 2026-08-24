@@ -262,7 +262,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             //终结刺额外播放一次重音 + 屏幕震动反馈
             if (IsFinisher) {
                 SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 0.55f, Pitch = -0.25f }, spawnPos);
-                if (CWRServerConfig.Instance.ScreenVibration) {
+                if (CWRClientConfig.Instance.ScreenVibration) {
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                         Owner.Center, stabUnit, 4.5f, 6f, 8, 500f, FullName));
                 }
@@ -547,7 +547,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Stage == 2 && Projectile.numHits <= 1 && CWRServerConfig.Instance.ScreenVibration) {
+            if (Stage == 2 && Projectile.numHits <= 1 && CWRClientConfig.Instance.ScreenVibration) {
                 Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                     target.Center, dir, 3.5f, 4.5f, 6, 400f, FullName));

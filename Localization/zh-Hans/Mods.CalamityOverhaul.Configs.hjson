@@ -10,25 +10,9 @@ CWRServerConfig: {
 			'''
 	}
 
-	ScreenVibration: {
-		Label: 武器特殊攻击屏幕振动效果
-		Tooltip: 如果开启，在进行一些攻击时会让屏幕发生振动，这或许可以让打击感更加强烈
-	}
-
-	DomainConciseDisplay: {
-		Label: 领域简约显示
-		Tooltip: 默认关闭。开启后仅简化赛博空间、海域等领域演出，不影响鬼切鬼域，以及肢解、面影、黑客时间等武器与植入体效果
-	}
-
 	Headers: {
 		CWRSystem: 大修系统设置
-		CWRWeapon: 大修武器设置
 		CWRWorldGen: 大修结构设置
-	}
-
-	LensEasing: {
-		Label: 镜头缓动
-		Tooltip: 启用后，长距离快速位移会让镜头具有缓动，这避免了移动过快所带来的违和感
 	}
 
 	QuestLog: {
@@ -78,4 +62,27 @@ CWRServerConfig: {
 
 	ConfigChangePrefix: 用户
 	ConfigChangeSuffix: 修改了服务端配置
+}
+
+CWRClientConfig: {
+	DisplayName: 客户端设置
+
+	Headers: {
+		CWRWeapon: 大修武器设置
+	}
+
+	ScreenVibration: {
+		Label: 武器特殊攻击屏幕振动效果
+		Tooltip: 如果开启，在进行一些攻击时会让屏幕发生振动，这或许可以让打击感更加强烈
+	}
+
+	DomainConciseDisplay: {
+		Label: 领域简约显示
+		Tooltip: 默认关闭。开启后仅简化赛博空间、海域等领域演出，不影响鬼切鬼域，以及肢解、面影、黑客时间等武器与植入体效果
+	}
+
+	LensEasing: {
+		Label: 镜头缓动
+		Tooltip: 启用后，长距离快速位移会让镜头具有缓动，这避免了移动过快所带来的违和感
+	}
 }

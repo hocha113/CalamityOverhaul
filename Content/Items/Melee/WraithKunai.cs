@@ -212,7 +212,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //冲锋命中: 屏震 + Spark
             if (Projectile.ai[2] > 0 && Projectile.ai[0] >= Inder2 && Projectile.numHits <= 1) {
-                if (CWRServerConfig.Instance.ScreenVibration) {
+                if (CWRClientConfig.Instance.ScreenVibration) {
                     Vector2 hitDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                         target.Center, hitDir, 2.5f, 4f, 5, 400f, FullName));

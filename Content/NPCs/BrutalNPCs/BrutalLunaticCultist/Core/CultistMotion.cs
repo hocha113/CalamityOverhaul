@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         #region 通用
         /// <summary>屏幕震动，方向可选，距离衰减</summary>
         public static void Shake(Vector2 pos, float strength, int frames, Vector2? direction = null) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             Vector2 dir = direction.HasValue && direction.Value != Vector2.Zero

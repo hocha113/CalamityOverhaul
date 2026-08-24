@@ -435,7 +435,7 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
                 }
             }
 
-            if (IsFinisher && CWRServerConfig.Instance.ScreenVibration) {
+            if (IsFinisher && CWRClientConfig.Instance.ScreenVibration) {
                 var modifier = new PunchCameraModifier(target.Center
                     , currentRotation.ToRotationVector2(), 4f, 5f, 9, 800f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);

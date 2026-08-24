@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
 
         /// <summary>震屏（尊重配置开关）</summary>
         public static void Shake(float intensity) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             Main.LocalPlayer.CWR()?.GetScreenShake(intensity);

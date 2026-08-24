@@ -379,7 +379,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 if (Main.LocalPlayer.Distance(Projectile.Center) < 1600f) {
                     Main.LocalPlayer.CWR().GetScreenShake(RewindStyle ? 8f : 14f);
                 }
-                if (CWRServerConfig.Instance.LensEasing) {
+                if (CWRClientConfig.Instance.LensEasing) {
                     Main.SetCameraLerp(0.12f, 45);
                 }
                 SoundEngine.PlaySound(SoundID.DD2_BetsySummon with { Pitch = RewindStyle ? 0.5f : -0.4f, Volume = 1.8f }, Projectile.Center);

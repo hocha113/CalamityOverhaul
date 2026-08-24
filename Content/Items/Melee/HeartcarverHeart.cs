@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     ?.Configure(Main.rand.Next(24, 40));
             }
 
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 PunchCameraModifier modifier = new(Projectile.Center, Main.rand.NextVector2Unit(), 3f, 4f, 8, 700f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
             }

@@ -741,7 +741,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Lighting.AddLight(center, 1.4f, 0.9f, 0.5f);
 
             //克制的落点小震
-            if (CWRServerConfig.Instance.ScreenVibration) {
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(center
                     , Main.rand.NextVector2Unit(), 2f, 5f, 6, 620f, FullName));
             }

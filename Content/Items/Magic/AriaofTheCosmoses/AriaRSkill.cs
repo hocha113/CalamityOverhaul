@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 SoundEngine.PlaySound(SoundID.Item109 with { Volume = 1.1f, Pitch = 0.4f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 1f, Pitch = 0.2f }, Projectile.Center);
                 player.CWR().GetScreenShake(13f);
-                if (CWRServerConfig.Instance.LensEasing) {
+                if (CWRClientConfig.Instance.LensEasing) {
                     Main.SetCameraLerp(0.12f, 40);
                 }
 

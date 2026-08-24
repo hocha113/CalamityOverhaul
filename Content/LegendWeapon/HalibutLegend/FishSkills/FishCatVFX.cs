@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         /// <summary>克制的爆点震屏，尊重服务器配置</summary>
         public static void Punch(Vector2 pos) {
-            if (Main.dedServ || !CWRServerConfig.Instance.ScreenVibration) {
+            if (Main.dedServ || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             Main.instance.CameraModifiers.Add(new PunchCameraModifier(

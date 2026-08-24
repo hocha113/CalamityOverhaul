@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
     {
         /// <summary>吞没运镜期间的镜头震动(运镜接管相机后普通震屏可能失效)</summary>
         internal static void RequestEngulfShake(float intensity, int duration) {
-            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+            if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             if (CutsceneDirector.CurrentClip is not KingSlimeEngulfCutscene) {
