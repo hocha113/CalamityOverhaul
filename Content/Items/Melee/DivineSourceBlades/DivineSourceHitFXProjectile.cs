@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -7,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 {
-    /// <summary>神源之刃命中爆点，纯视觉</summary>
+    /// <summary>金源灭却刃命中爆点，纯视觉。ai[1] 充能标记(金色支线)</summary>
     internal class DivineSourceHitFXProjectile : ModProjectile
     {
         public override string Texture => CWRConstant.Masking + "SoftGlow";
@@ -15,9 +17,12 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         private const int Lifetime = 24;
         private const float CanvasHalf = 130f;
 
-        private static readonly Color CoreColor = new(255, 248, 225);
-        private static readonly Color RingColor = new(255, 205, 95);
-        private static readonly Color EmberColor = new(255, 135, 35);
+        private bool Empowered => Projectile.ai[1] > 0.5f;
+        private float GoldMix => Empowered ? 0.55f : 0f;
+
+        private Color CoreColor => Empowered ? DivineSourceBladeFX.AuricCream : DivineSourceBladeFX.TechWhite;
+        private Color RingColor => DivineSourceBladeFX.Blend(DivineSourceBladeFX.CyanBright, DivineSourceBladeFX.AuricGold, GoldMix);
+        private Color EmberColor => DivineSourceBladeFX.Blend(DivineSourceBladeFX.AzureBlue, DivineSourceBladeFX.AuricAmber, GoldMix);
 
         private float SizeMul => Projectile.ai[0] > 0.05f ? Projectile.ai[0] : 1f;
 
@@ -44,10 +49,26 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             int sparkCount = (int)(10 * SizeMul);
             for (int i = 0; i < sparkCount; i++) {
                 float ang = MathHelper.TwoPi * i / sparkCount + Main.rand.NextFloat(-0.2f, 0.2f);
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.GoldFlame);
+                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.IceTorch);
                 dust.velocity = ang.ToRotationVector2() * Main.rand.NextFloat(2.5f, 6f) * SizeMul;
                 dust.scale = Main.rand.NextFloat(0.9f, 1.5f);
                 dust.noGravity = true;
+            }
+            //命中崩出三角与方屑，金属质命中的科技回答
+            int shapeCount = (int)(3 * SizeMul);
+            for (int i = 0; i < shapeCount; i++) {
+                bool gold = Empowered && Main.rand.NextBool(2);
+                PRTLoader.NewParticle<PRT_DivineTechTriangle>(Projectile.Center,
+                    Main.rand.NextVector2Circular(4f, 4f),
+                    gold ? DivineSourceBladeFX.AuricGold : DivineSourceBladeFX.CyanBright,
+                    Main.rand.NextFloat(0.06f, 0.11f) * SizeMul)
+                    .Configure(DivineSourceBladeFX.AzureBlue, Main.rand.Next(16, 26));
+                PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center,
+                    Main.rand.NextVector2Circular(5f, 5f),
+                    gold ? DivineSourceBladeFX.AuricGold : DivineSourceBladeFX.CyanBright,
+                    Main.rand.NextFloat(0.5f, 0.9f) * SizeMul)
+                    .Configure(gold ? DivineSourceBladeFX.AuricAmber : DivineSourceBladeFX.AzureBlue,
+                        Main.rand.Next(14, 22));
             }
         }
 
@@ -56,14 +77,15 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
             float t = LifeT;
             float lightMul = (1f - t) * SizeMul;
-            Lighting.AddLight(Projectile.Center, new Vector3(0.95f, 0.72f, 0.30f) * lightMul);
+            Vector3 lightCol = Vector3.Lerp(new Vector3(0.28f, 0.55f, 0.9f), new Vector3(0.9f, 0.72f, 0.32f), GoldMix);
+            Lighting.AddLight(Projectile.Center, lightCol * lightMul);
 
             if (!Main.dedServ && t > 0.15f && Main.rand.NextBool(3)) {
                 float ringR = RingRadiusNow() * CanvasHalf * SizeMul;
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
-                Dust dust = Dust.NewDustPerfect(Projectile.Center + ang.ToRotationVector2() * ringR, DustID.GoldCoin);
+                Dust dust = Dust.NewDustPerfect(Projectile.Center + ang.ToRotationVector2() * ringR, DustID.Electric);
                 dust.velocity = ang.ToRotationVector2() * 0.8f;
-                dust.scale = Main.rand.NextFloat(0.6f, 1.0f);
+                dust.scale = Main.rand.NextFloat(0.4f, 0.7f);
                 dust.noGravity = true;
             }
         }

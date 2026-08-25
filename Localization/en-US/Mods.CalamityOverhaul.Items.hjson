@@ -52,8 +52,11 @@ DivineSourceBlade: {
 	DisplayName: Divine Source Blade
 	Tooltip:
 		'''
-		Chains two swift slashes into a charged heavy cleave
-		The heavy cleave unleashes a colossal golden crescent of sword energy
+		Four-beat combo: a counterclockwise cut, a clockwise cut,
+		then a sweeping elliptical slash and a reverse cut along the same orbit
+		Every swing looses a growing volley of homing tech bolts, the reverse cut hurls a colossal azure crescent
+		Damaging enemies slowly builds charge; right click to spend a full bar and empower the blade for 7 seconds
+		While empowered its damage soars, bolts multiply and track harder, and the light turns auric gold
 		"Life never ceases"
 		'''
 }
@@ -995,6 +998,53 @@ StaffoftheDestroyer: {
 		'''
 }
 
+EyekiteStaff: {
+	DisplayName: Bound Gaze Kite
+	Tooltip:
+		'''
+		Summons a small Eye of Cthulhu bound to you by a red-and-white sinew cord
+		It drifts like a kite, straining to escape before the line yanks it back
+		Near enemies it lunges hard, then the cord snaps it home as the finishing blow
+		Multiple eyes can be summoned at once
+		'''
+}
+
+BloodshotBomb: {
+	DisplayName: Bloodshot Bomb
+	Tooltip:
+		'''
+		Lights its fuse the moment you hold it; the fuse burns through three stages, roughly two seconds each
+		The shorter the fuse, the redder the eye, the fiercer the blast, and the more flesh it flings
+		Throw anytime with left click; it bursts on contact, and only biting into flesh sends chunks flying
+		If the fuse burns out while you are still holding on, it goes off in your hand
+		"It can't bear to leave you"
+		'''
+	SelfBoom: "{0} took one look too many"
+}
+
+Eyetooth: {
+	DisplayName: Eyetooth
+	Tooltip:
+		'''
+		Hurls a fang torn from the Eye of Cthulhu at your foes
+		On biting an enemy, the fang springs above its head, takes aim, then dives in for a second bite
+		The dive deals 150% damage, and fang wounds keep weeping blood
+		'''
+}
+
+Shatterfang: {
+	DisplayName: Shatterfang
+	Tooltip:
+		'''
+		Chain three swings into a staggering cleave that shatters the blade, hurling a huge broken-off tooth fragment
+		Regular swings intermittently fling small gravity-bound tooth shards
+		The half-bladed sword swings faster, but hits weaker and no longer fires shards
+		Sustained attacks destabilize the whole blade until it crumbles on its own
+		Right-click to spend a moment mending the blade; it also knits back slowly while resting, chiming once whole
+		"A fang broken from the gnashing maw, still aching to bite"
+		'''
+}
+
 CommandersClaw: {
 	DisplayName: Commander's Claw
 	Tooltip:
@@ -1050,7 +1100,11 @@ DestroyersBladeEX: {
 	DisplayName: Destroyers Blade EX
 	Tooltip:
 		'''
-		Launch a thermal barrage
+		Heavy swings unleash black-crimson slashes, energy beams and shadow bolts
+		Sheathing the blade briefly engages the Stalk Protocol: increased movement speed
+		While stalking near a target, right click to become the Destroyer's maw and bite it
+		A successful bite deals massive damage and engages the Annihilation Protocol:
+		all projectiles are empowered with homing, and finishers launch Destroyer heads
 		"It's always easier to destroy than to build"
 		'''
 }

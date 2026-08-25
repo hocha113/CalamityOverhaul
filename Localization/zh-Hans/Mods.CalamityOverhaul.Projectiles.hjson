@@ -23,6 +23,10 @@ UnderTheSandSurge.DisplayName: 沙之涌动
 SporeBoboMagic.DisplayName: 孢子波波
 SporeBobo.DisplayName: 孢子波波
 DestroyersBeam.DisplayName: 毁灭者光束
+DestroyersBeamEX.DisplayName: 湮灭光束
+DestroyerShadowBolt.DisplayName: 毁灭者之影
+DestroyerHeadMissile.DisplayName: 毁灭者头颅
+DestroyerBiteProj.DisplayName: 毁灭者之撕咬
 Glomushroom.DisplayName: 辉光菌
 WastelandFangProj.DisplayName: 荒原獠牙
 WeaverBeam.DisplayName: 织怨者光束
@@ -119,6 +123,9 @@ NeutronPulsar.DisplayName: 脉冲星
 NeutronStarquake.DisplayName: 星震
 DivineSourceWaveProjectile.DisplayName: 神源之刃·新月剑气
 DivineSourceHitFXProjectile.DisplayName: 神源之刃·命中
+ShatterfangShard.DisplayName: 崩牙獠刃·碎齿
+ShatterfangBigShard.DisplayName: 崩牙獠刃·崩落巨齿
+ShatterfangBurstFX.DisplayName: 崩牙獠刃·剑身崩坏
 DragonsScaleGreatswordBeam.DisplayName: 螺旋绿藻剑气
 DragonSoulSerpent.DisplayName: 翠龙之魂
 SporeCloud.DisplayName: 孢子云
@@ -609,3 +616,10 @@ CultistTrueBolt.DisplayName: 真言弹
 // FuYinInkBurst.DisplayName: Fu Yin Ink Burst
 // KikasaFuJiLightBeam.DisplayName: Kikasa Fu Ji Light Beam
 // KikasaFuPiThunderStrike.DisplayName: Kikasa Fu Pi Thunder Strike
+// EyetoothDart.DisplayName: Eyetooth Dart
+// DivineSourceBoltProjectile.DisplayName: Divine Source Bolt Projectile
+// BloodButchererBolt.DisplayName: Blood Butcherer Bolt
+// BloodshotBombHeld.DisplayName: Bloodshot Bomb Held
+// BloodshotBombThrown.DisplayName: Bloodshot Bomb Thrown
+// BloodshotFleshChunk.DisplayName: Bloodshot Flesh Chunk
+// EyekiteMinion.DisplayName: Eyekite Minion

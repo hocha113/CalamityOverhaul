@@ -82,6 +82,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> PrimeAfterimage { get; set; }
         public static Asset<Effect> DestroyerThermalOutline { get; set; }
         public static Asset<Effect> DestroyerSlash { get; set; }
+        public static Asset<Effect> DestroyerEXSlash { get; set; }
         public static Asset<Effect> DestroyerBeam { get; set; }
         public static Asset<Effect> DestroyerHeatWake { get; set; }
         public static Asset<Effect> DestroyerTelegraph { get; set; }
@@ -252,6 +253,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> FrostJudgment { get; set; }
         public static Asset<Effect> DivineSourceBladeGlow { get; set; }
         public static Asset<Effect> DivineSourceArc { get; set; }
+        public static Asset<Effect> DivineSourceTechArc { get; set; }
         public static Asset<Effect> DivineSourceCrescent { get; set; }
         public static Asset<Effect> DivineSourceImpact { get; set; }
         public static Asset<Effect> OniWorldGrade { get; set; }
@@ -342,6 +344,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> DungeonworldEntryReveal { get; set; }
         public static Asset<Effect> DungeonworldSky { get; set; }
         public static Asset<Effect> DungeonworldFog { get; set; }
+        public static Asset<Effect> KiteSinew { get; set; }
         public static Asset<Effect> KiyumeSky { get; set; }
         public static Asset<Effect> KiyumeFog { get; set; }
     }

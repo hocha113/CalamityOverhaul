@@ -2,10 +2,12 @@
 using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds;
 using CalamityOverhaul.Content.Items.Magic;
+using CalamityOverhaul.Content.Items.Magic.Eyetooths;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Painting;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.Items.Summon.EyekiteStaffs;
 using CalamityOverhaul.Content.Items.Tools;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -34,6 +36,8 @@ namespace CalamityOverhaul.Content
         public bool SoulfireExplosion;
         /// <summary>鬼伞血湖鬼火灼烧</summary>
         public bool KikasaWispFire;
+        /// <summary>牙创渗血</summary>
+        public bool EyetoothBleed;
         /// <summary>染料物品 ID</summary>
         public int DyeItemID;
         /// <summary>&gt;0 虚弱中</summary>
@@ -78,6 +82,7 @@ namespace CalamityOverhaul.Content
             HellfireExplosion = false;
             SoulfireExplosion = false;
             KikasaWispFire = false;
+            EyetoothBleed = false;
         }
 
         public static void MultipleSegmentsLimitDamage(NPC target, ref NPC.HitModifiers modifiers) {
@@ -172,6 +177,10 @@ namespace CalamityOverhaul.Content
                 //鬼火灼烧：介于地狱炎爆与灵魂火之间，游戏内再调
                 DebuffSet(400, 40, ref npc.lifeRegen, ref damage);
             }
+            if (EyetoothBleed) {
+                //牙创渗血，克眼级轻量流血
+                DebuffSet(16, 4, ref npc.lifeRegen, ref damage);
+            }
         }
 
         public static void DebuffSet(int lifeRegenSet, int damageSet, ref int lifeRegen, ref int damage) {
@@ -194,6 +203,13 @@ namespace CalamityOverhaul.Content
             }
             else if (npc.type == CWRID.NPC_SupremeCalamitas) {
                 npcLoot.SimpleAdd(ModContent.ItemType<CalSelfPortrait>(), 10);//10%
+            }
+            else if (npc.type == NPCID.EyeofCthulhu) {
+                dontExpertRule.SimpleAdd(ModContent.ItemType<EyekiteStaff>(), 4);
+                dontExpertRule.SimpleAdd(ModContent.ItemType<Eyetooth>(), 4);
+                dontExpertRule.SimpleAdd(ModContent.ItemType<Items.Melee.Shatterfangs.Shatterfang>(), 4);
+                dontExpertRule.SimpleAdd(ModContent.ItemType<Items.Ranged.BloodshotBombs.BloodshotBomb>(), 4);
+                npcLoot.Add(dontExpertRule);
             }
             else if (npc.type == CWRID.NPC_DesertScourgeHead) {
                 dontExpertRule.SimpleAdd(ModContent.ItemType<UnderTheSand>(), 10);

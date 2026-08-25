@@ -1,4 +1,6 @@
-﻿using InnoVault.Trails;
+﻿using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -10,8 +12,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 {
     /// <summary>
-    /// 神源之刃新月剑气波
-    /// ai[0] 为尺寸倍率（0 视作 1），大斩切巨型剑气存活更久、衰减更慢
+    /// 金源灭却刃新月剑气波，终结反斩轰出。
+    /// ai[0] 尺寸倍率(0 视作 1)，ai[2] 充能标记(金色支线)
     /// </summary>
     internal class DivineSourceWaveProjectile : ModProjectile
     {
@@ -24,17 +26,19 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         private const int Segments = 56;
         private const float SpeedDecay = 0.985f;
 
-        private static readonly Color RimColor = new(255, 250, 215);
-        private static readonly Color GoldColor = new(255, 208, 90);
-        private static readonly Color OrangeColor = new(255, 150, 40);
-        private static readonly Color DeepColor = new(220, 80, 12);
-
         private float traveled;
         private float swingDir = 1f;
         private int lifetime = Lifetime;
 
         private float SizeMul => Projectile.ai[0] > 0.05f ? Projectile.ai[0] : 1f;
         private bool IsGiant => SizeMul >= 1.3f;
+        private bool Empowered => Projectile.ai[2] > 0.5f;
+        private float GoldMix => Empowered ? 0.55f : 0f;
+
+        private Color RimColor => Empowered ? DivineSourceBladeFX.AuricCream : DivineSourceBladeFX.TechWhite;
+        private Color MainColor => DivineSourceBladeFX.Blend(DivineSourceBladeFX.CyanBright, DivineSourceBladeFX.AuricGold, GoldMix);
+        private Color MidColor => DivineSourceBladeFX.Blend(DivineSourceBladeFX.AzureBlue, DivineSourceBladeFX.AuricAmber, GoldMix);
+        private Color DeepColor => DivineSourceBladeFX.Blend(DivineSourceBladeFX.ElectricBlue, DivineSourceBladeFX.AuricAmber, GoldMix * 0.6f);
 
         private int Age => lifetime - Projectile.timeLeft;
         private float LifeT => MathHelper.Clamp(Age / (float)lifetime, 0f, 1f);
@@ -84,18 +88,28 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
             float dustMul = MathF.Min(SizeMul, 1.7f);
             Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
-            for (int i = 0; i < (int)(26 * dustMul); i++) {
+            for (int i = 0; i < (int)(24 * dustMul); i++) {
                 Vector2 vel = forward.RotatedByRandom(0.85) * Main.rand.NextFloat(3f, 11f) * dustMul;
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.GoldFlame, vel);
+                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.IceTorch, vel);
                 dust.scale = Main.rand.NextFloat(1.1f, 1.9f);
                 dust.noGravity = true;
                 dust.fadeIn = 1.2f;
             }
-            for (int i = 0; i < (int)(10 * dustMul); i++) {
+            for (int i = 0; i < (int)(7 * dustMul); i++) {
                 Vector2 vel = forward.RotatedByRandom(1.6) * Main.rand.NextFloat(2f, 6f);
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.Torch, vel);
-                dust.scale = Main.rand.NextFloat(1.3f, 2.0f);
+                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.Electric, vel);
+                dust.scale = Main.rand.NextFloat(0.7f, 1.1f);
                 dust.noGravity = true;
+            }
+            //出膛甩一圈科技屑，充能期掺金
+            for (int i = 0; i < (int)(6 * dustMul); i++) {
+                bool gold = Empowered && Main.rand.NextBool(2);
+                PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center,
+                    forward.RotatedByRandom(0.9) * Main.rand.NextFloat(2f, 7f),
+                    gold ? DivineSourceBladeFX.AuricGold : DivineSourceBladeFX.CyanBright,
+                    Main.rand.NextFloat(0.5f, 0.9f))
+                    .Configure(gold ? DivineSourceBladeFX.AuricAmber : DivineSourceBladeFX.AzureBlue,
+                        Main.rand.Next(14, 24));
             }
         }
 
@@ -123,7 +137,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                     float thick = MaxThick(outerR) * ThickProfile(theta);
                     Vector2 at = Projectile.Center
                         + (Projectile.rotation + theta).ToRotationVector2() * (outerR - thick * Main.rand.NextFloat(0.2f, 0.9f));
-                    Dust dust = Dust.NewDustPerfect(at, DustID.GoldFlame);
+                    Dust dust = Dust.NewDustPerfect(at, DustID.IceTorch);
                     dust.velocity = backDir * Main.rand.NextFloat(1f, 4f) + Main.rand.NextVector2Circular(0.8f, 0.8f);
                     dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
                     dust.noGravity = true;
@@ -132,27 +146,30 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 if (Main.rand.NextBool(2)) {
                     float hornSign = Main.rand.NextBool() ? 1f : -1f;
                     Vector2 horn = HornPosition(hornSign, outerR);
-                    Dust dust = Dust.NewDustPerfect(horn, DustID.GoldCoin);
-                    dust.velocity = backDir * Main.rand.NextFloat(0.5f, 2.5f);
-                    dust.scale = Main.rand.NextFloat(0.6f, 1.0f);
-                    dust.noGravity = true;
+                    bool gold = Empowered && Main.rand.NextBool(2);
+                    PRTLoader.NewParticle<PRT_CyberSquare>(horn, backDir * Main.rand.NextFloat(0.5f, 2.5f),
+                        gold ? DivineSourceBladeFX.AuricGold : DivineSourceBladeFX.CyanBright,
+                        Main.rand.NextFloat(0.4f, 0.7f))
+                        .Configure(gold ? DivineSourceBladeFX.AuricAmber : DivineSourceBladeFX.AzureBlue,
+                            Main.rand.Next(12, 18));
                 }
 
                 if (Main.rand.NextBool(4)) {
                     float theta = Main.rand.NextFloat(-1f, 1f) * ArcHalf * 0.7f;
                     Vector2 at = Projectile.Center + (Projectile.rotation + theta).ToRotationVector2() * outerR * 0.8f;
-                    Dust dust = Dust.NewDustPerfect(at, DustID.Torch);
+                    Dust dust = Dust.NewDustPerfect(at, DustID.Electric);
                     dust.velocity = backDir * Main.rand.NextFloat(2f, 5f);
-                    dust.scale = Main.rand.NextFloat(1.0f, 1.6f);
+                    dust.scale = Main.rand.NextFloat(0.6f, 1f);
                     dust.noGravity = true;
                 }
             }
 
             float lightMul = Opacity;
+            Vector3 lightCol = Vector3.Lerp(new Vector3(0.24f, 0.52f, 0.9f), new Vector3(0.9f, 0.72f, 0.32f), GoldMix);
             Lighting.AddLight(Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * outerR * 0.5f,
-                new Vector3(1.0f, 0.74f, 0.30f) * lightMul);
-            Lighting.AddLight(HornPosition(1f, outerR), new Vector3(0.55f, 0.40f, 0.15f) * lightMul);
-            Lighting.AddLight(HornPosition(-1f, outerR), new Vector3(0.55f, 0.40f, 0.15f) * lightMul);
+                lightCol * lightMul);
+            Lighting.AddLight(HornPosition(1f, outerR), lightCol * 0.5f * lightMul);
+            Lighting.AddLight(HornPosition(-1f, outerR), lightCol * 0.5f * lightMul);
         }
 
         private static float MaxThick(float outerR) => outerR * ThickRatio;
@@ -228,7 +245,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //巨型剑气贯穿衰减更慢，强化大斩切的压迫感
+            //巨型剑气贯穿衰减更慢，强化终结斩的压迫感
             Projectile.damage = (int)(Projectile.damage * (IsGiant ? 0.85f : 0.7f));
 
             SoundEngine.PlaySound(SoundID.Item14 with {
@@ -236,11 +253,16 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 Volume = IsGiant ? 0.75f : 0.55f
             }, target.Center);
 
+            //剑气命中也喂充能
+            if (Projectile.owner == Main.myPlayer) {
+                Main.player[Projectile.owner].GetModPlayer<DivineSourcePlayer>().AddCharge(0.03f);
+            }
+
             if (!Main.dedServ) {
                 Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
                 for (int i = 0; i < 14; i++) {
                     Vector2 vel = dir.RotatedByRandom(0.9) * Main.rand.NextFloat(3f, 8f);
-                    Dust dust = Dust.NewDustPerfect(target.Center, DustID.GoldFlame, vel);
+                    Dust dust = Dust.NewDustPerfect(target.Center, DustID.IceTorch, vel);
                     dust.scale = Main.rand.NextFloat(1.0f, 1.6f);
                     dust.noGravity = true;
                     dust.fadeIn = 1.1f;
@@ -254,7 +276,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                     Vector2.Zero,
                     ModContent.ProjectileType<DivineSourceHitFXProjectile>(),
                     0, 0f, Projectile.owner,
-                    ai0: IsGiant ? 1.2f : 0.7f);
+                    ai0: IsGiant ? 1.2f : 0.7f, ai1: Empowered ? 1f : 0f);
             }
         }
 
@@ -265,15 +287,26 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
             float outerR = BaseRadius * WaveScale;
             float maxThick = MaxThick(outerR);
-            for (int i = 0; i < 22; i++) {
+            for (int i = 0; i < 18; i++) {
                 float theta = Main.rand.NextFloat(-1f, 1f) * ArcHalf;
                 float thick = maxThick * ThickProfile(theta);
                 Vector2 at = Projectile.Center
                     + (Projectile.rotation + theta).ToRotationVector2() * (outerR - thick * Main.rand.NextFloat(0f, 1f));
-                Dust dust = Dust.NewDustPerfect(at, DustID.GoldFlame);
+                Dust dust = Dust.NewDustPerfect(at, DustID.IceTorch);
                 dust.velocity = Main.rand.NextVector2Circular(2.5f, 2.5f);
                 dust.scale = Main.rand.NextFloat(0.8f, 1.5f);
                 dust.noGravity = true;
+            }
+            //余痕方屑比波体活得久
+            for (int i = 0; i < 8; i++) {
+                bool gold = Empowered && Main.rand.NextBool(2);
+                PRTLoader.NewParticle<PRT_CyberSquare>(
+                    Projectile.Center + Main.rand.NextVector2Circular(outerR * 0.5f, outerR * 0.5f),
+                    Main.rand.NextVector2Circular(2f, 2f),
+                    gold ? DivineSourceBladeFX.AuricGold : DivineSourceBladeFX.CyanBright,
+                    Main.rand.NextFloat(0.45f, 0.8f))
+                    .Configure(gold ? DivineSourceBladeFX.AuricAmber : DivineSourceBladeFX.AzureBlue,
+                        Main.rand.Next(14, 24));
             }
         }
 
@@ -315,8 +348,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             effect.Parameters["StreakStrength"]?.SetValue(IsGiant ? 0.8f : 0.65f);
             effect.Parameters["FlowOffset"]?.SetValue(traveled / 480f);
             effect.Parameters["RimColor"]?.SetValue(RimColor.ToVector4());
-            effect.Parameters["GoldColor"]?.SetValue(GoldColor.ToVector4());
-            effect.Parameters["OrangeColor"]?.SetValue(OrangeColor.ToVector4());
+            effect.Parameters["GoldColor"]?.SetValue(MainColor.ToVector4());
+            effect.Parameters["OrangeColor"]?.SetValue(MidColor.ToVector4());
             effect.Parameters["DeepColor"]?.SetValue(DeepColor.ToVector4());
             Texture2D noise = DivineSourceBladeFX.Noise;
             if (noise != null) {

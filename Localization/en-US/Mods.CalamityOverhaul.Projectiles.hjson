@@ -23,6 +23,10 @@ UnderTheSandSurge.DisplayName: Sand Surge
 SporeBoboMagic.DisplayName: Spore Bobo
 SporeBobo.DisplayName: Spore Bobo
 DestroyersBeam.DisplayName: Destroyer's Beam
+DestroyersBeamEX.DisplayName: Annihilation Beam
+DestroyerShadowBolt.DisplayName: Destroyer's Shadow
+DestroyerHeadMissile.DisplayName: Destroyer Head
+DestroyerBiteProj.DisplayName: Destroyer's Bite
 Glomushroom.DisplayName: Glomushroom
 WastelandFangProj.DisplayName: Wasteland Fang
 WeaverBeam.DisplayName: Weaver Beam
@@ -119,6 +123,9 @@ NeutronPulsar.DisplayName: Pulsar
 NeutronStarquake.DisplayName: Starquake
 DivineSourceWaveProjectile.DisplayName: Divine Source Crescent Wave
 DivineSourceHitFXProjectile.DisplayName: Divine Source Impact
+ShatterfangShard.DisplayName: Shatterfang Shard
+ShatterfangBigShard.DisplayName: Shatterfang Great Shard
+ShatterfangBurstFX.DisplayName: Shatterfang Rupture
 DragonsScaleGreatswordBeam.DisplayName: Spiraling Kelp Blade Beam
 DragonSoulSerpent.DisplayName: Verdant Dragon Soul
 SporeCloud.DisplayName: Spore Cloud
@@ -609,3 +616,10 @@ FuXiTideWave.DisplayName: Fu Xi Tide Wave
 FuYinInkBurst.DisplayName: Fu Yin Ink Burst
 KikasaFuJiLightBeam.DisplayName: Kikasa Fu Ji Light Beam
 KikasaFuPiThunderStrike.DisplayName: Kikasa Fu Pi Thunder Strike
+EyetoothDart.DisplayName: Eyetooth Dart
+DivineSourceBoltProjectile.DisplayName: Divine Source Bolt Projectile
+BloodButchererBolt.DisplayName: Blood Butcherer Bolt
+BloodshotBombHeld.DisplayName: Bloodshot Bomb Held
+BloodshotBombThrown.DisplayName: Bloodshot Bomb Thrown
+BloodshotFleshChunk.DisplayName: Bloodshot Flesh Chunk
+EyekiteMinion.DisplayName: Eyekite Minion

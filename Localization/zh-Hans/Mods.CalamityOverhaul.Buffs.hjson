@@ -13,6 +13,11 @@ KikasaWispBurn: {
 	Description: 湖上的金色鬼火黏在身上烧
 }
 
+DivineSourceChargeBuff: {
+	DisplayName: 金源充能
+	Description: 金源灭却刃全力运转，伤害大增，光矢如雨
+}
+
 VoidErosion: {
 	DisplayName: 虚空侵蚀
 	Description: 逐渐化为虚无
@@ -21,6 +26,26 @@ VoidErosion: {
 DestroyerSummonBuff: {
 	DisplayName: 毁灭者
 	Description: 迷你毁灭者会跟随你征战
+}
+
+DestroyerStalkBuff: {
+	DisplayName: 潜猎协议
+	Description: 移速提升,伺机而动。贴近猎物后右键发动毁灭者之撕咬
+}
+
+DestroyerFrenzyBuff: {
+	DisplayName: 歼灭协议
+	Description: 毁灭者之刃全面过载:伤害提升,弹幕获得追踪,终结斩吐出毁灭者头颅
+}
+
+EyekiteBuff: {
+	DisplayName: 缚瞳
+	Description: 被血线缚住的小克苏鲁之眼正跟在你身边
+}
+
+EyetoothWound: {
+	DisplayName: 牙创
+	Description: 被獠牙咬开的伤口仍在渗血
 }
 
 FrenziedMachineSoul: {

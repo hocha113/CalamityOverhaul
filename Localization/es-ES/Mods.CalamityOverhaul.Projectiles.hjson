@@ -23,6 +23,10 @@ UnderTheSandSurge.DisplayName: Oleada de arena
 SporeBoboMagic.DisplayName: Bobo esporal
 SporeBobo.DisplayName: Bobo esporal
 DestroyersBeam.DisplayName: Rayo del destructor
+// DestroyersBeamEX.DisplayName: Annihilation Beam
+// DestroyerShadowBolt.DisplayName: Destroyer's Shadow
+// DestroyerHeadMissile.DisplayName: Destroyer Head
+// DestroyerBiteProj.DisplayName: Destroyer's Bite
 Glomushroom.DisplayName: Seta luminiscente
 WastelandFangProj.DisplayName: Colmillo del páramo
 WeaverBeam.DisplayName: Rayo del tejedor de rencores
@@ -119,6 +123,9 @@ DragonsWordProj.DisplayName: Palabra del dragón
 // NeutronStarquake.DisplayName: Starquake
 DivineSourceWaveProjectile.DisplayName: Onda creciente de fuente divina
 DivineSourceHitFXProjectile.DisplayName: Impacto de fuente divina
+// ShatterfangShard.DisplayName: Shatterfang Shard
+// ShatterfangBigShard.DisplayName: Shatterfang Great Shard
+// ShatterfangBurstFX.DisplayName: Shatterfang Rupture
 DragonsScaleGreatswordBeam.DisplayName: Rayo de gran hoja de alga dracónica
 DragonSoulSerpent.DisplayName: Alma del dragón verdigris
 SporeCloud.DisplayName: Nube esporal
@@ -609,3 +616,10 @@ VictorRiftPortalProj.DisplayName: Grieta cibernética de Víctor
 // FuYinInkBurst.DisplayName: Fu Yin Ink Burst
 // KikasaFuJiLightBeam.DisplayName: Kikasa Fu Ji Light Beam
 // KikasaFuPiThunderStrike.DisplayName: Kikasa Fu Pi Thunder Strike
+// EyetoothDart.DisplayName: Eyetooth Dart
+// DivineSourceBoltProjectile.DisplayName: Divine Source Bolt Projectile
+// BloodButchererBolt.DisplayName: Blood Butcherer Bolt
+// BloodshotBombHeld.DisplayName: Bloodshot Bomb Held
+// BloodshotBombThrown.DisplayName: Bloodshot Bomb Thrown
+// BloodshotFleshChunk.DisplayName: Bloodshot Flesh Chunk
+// EyekiteMinion.DisplayName: Eyekite Minion

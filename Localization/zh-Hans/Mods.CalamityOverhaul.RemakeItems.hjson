@@ -28,3 +28,13 @@ RDemonConch: {
 		“小心”
 		'''
 }
+
+RBloodButcherer: {
+	DisplayName: "{$ItemName.BloodButcherer}"
+	Tooltip:
+		'''
+		厚重的三段屠宰连击，第三斩更宽更狠
+		挥舞时甩出多道暗红血弹，血液沿弧线坠落并在命中处飞溅
+		被斩中的敌人会陷入血腥屠戮
+		'''
+}

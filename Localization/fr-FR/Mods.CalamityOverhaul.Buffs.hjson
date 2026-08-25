@@ -13,6 +13,11 @@ KikasaWispBurn: {
 	// Description: Golden wisp fire from the lake clings and burns
 }
 
+DivineSourceChargeBuff: {
+	// DisplayName: Auric Surge
+	// Description: The Divine Source Blade runs at full output, damage soars and bolts rain
+}
+
 VoidErosion: {
 	DisplayName: Érosion du Vide
 	Description: Vous vous dissolvez peu à peu dans le néant
@@ -21,6 +26,26 @@ VoidErosion: {
 DestroyerSummonBuff: {
 	DisplayName: Le Destructeur
 	Description: Un mini Destructeur vous accompagne au combat
+}
+
+DestroyerStalkBuff: {
+	// DisplayName: Stalk Protocol
+	// Description: Increased movement speed. Close in and right click to unleash the Destroyer's bite
+}
+
+DestroyerFrenzyBuff: {
+	// DisplayName: Annihilation Protocol
+	// Description: The blade overloads: increased damage, homing projectiles, and finishers launch Destroyer heads
+}
+
+EyekiteBuff: {
+	// DisplayName: Bound Gaze
+	// Description: A small Eye of Cthulhu is bound to you by a blood-soaked cord
+}
+
+EyetoothWound: {
+	// DisplayName: Fang Wound
+	// Description: The bite keeps weeping blood
 }
 
 FrenziedMachineSoul: {
