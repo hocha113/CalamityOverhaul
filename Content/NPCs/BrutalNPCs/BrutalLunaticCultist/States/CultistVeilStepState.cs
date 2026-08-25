@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 //散身：渐隐+符文剥落
                 npc.alpha = (int)(255f * Timer / FadeOut);
                 if (Timer % 4 == 0) {
-                    CultistMotion.RuneBurst(npc.Center, CultistMotion.ElementCore(context.Element), 2, 4f);
+                    CultistMotion.RuneBurst(npc.Center, CultistMotion.PhaseCore(context.Phase), 2, 4f);
                 }
                 if (Timer == 4 && !VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.6f, Pitch = -0.2f }, npc.Center);
@@ -63,8 +63,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 //聚形：渐显
                 npc.alpha = (int)MathHelper.Clamp(255f - (Timer - Blink) * 16f, 0f, 255f);
                 if (Timer == Blink + 2) {
-                    CultistMotion.RuneBurst(npc.Center, CultistMotion.ElementCore(context.Element), 8, 5f);
-                    CultistMotion.CastFlash(npc.Center, CultistMotion.ElementCore(context.Element), 0.8f);
+                    CultistMotion.RuneBurst(npc.Center, CultistMotion.PhaseCore(context.Phase), 8, 5f);
+                    CultistMotion.CastFlash(npc.Center, CultistMotion.PhaseCore(context.Phase), 0.8f);
                 }
                 FaceTarget(npc, player.Center);
             }

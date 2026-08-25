@@ -12,6 +12,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
     //P20:隔离带井位x6(先竖直连接)→P30:禁室定点x2(后逐层,选址内部先扣触井
     //禁带)→P50:各层内容自上而下，本pass自身零随机消耗;
     //新增层级定点类随机务必排在禁室之后并在此登记
+    //→P30续(Wave-2 C路):泄洪堂定点x2(NextBool选侧+Next取点,恒排在禁室定点之后,
+    //  即全链路定点消耗第3、4次;见FloodGallerySiting)
+    //→P30续(Wave-2.5 C路):验收堂定点x2(同款恒2掷,恒排在泄洪堂之后,
+    //  即全链路定点消耗第5、6次;见ProofingHallSiting)
     internal class LayerPlanPass : GenPass
     {
         public LayerPlanPass() : base("Dungeonworld Layer Plan", 1f) { }
@@ -56,6 +60,24 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
                 LayerPlans.L2.Grid.MarkUnchecked(Inflate(bounds, DungeonworldMetrics.RoomPadding));
                 //Boss房开阔区零撒布(§3.2-7特例)
                 LayerPlans.ScatterExclusions.Add(Inflate(bounds, 1));
+            }
+
+            //L4泄洪堂定点(Wave-2 C路)：镜像禁室惯例，定点+足印预留+撒布禁区;
+            //随机消耗恒2次，R4账排在禁室之后(见头注释)；P45后FloodGalleryPass只消费LastOrigin盖章
+            Point? floodOrigin = BossRooms.FloodGallerySiting.PickOrigin();
+            if (floodOrigin is Point fgOrigin) {
+                Rectangle fgBounds = BossRooms.FloodGalleryRoom.Bounds(fgOrigin);
+                LayerPlans.L4.Grid.MarkUnchecked(Inflate(fgBounds, DungeonworldMetrics.RoomPadding));
+                LayerPlans.ScatterExclusions.Add(Inflate(fgBounds, 1));
+            }
+
+            //L6验收堂定点(Wave-2.5 C路)：恒排在泄洪堂之后（R4账第5、6次）；
+            //足印先占使末折布房/巨像装配湾/渣汽疏泄带全部构造性避让
+            Point? proofOrigin = BossRooms.ProofingHallSiting.PickOrigin();
+            if (proofOrigin is Point phOrigin) {
+                Rectangle phBounds = BossRooms.ProofingHallRoom.Bounds(phOrigin);
+                LayerPlans.L6.Grid.MarkUnchecked(Inflate(phBounds, DungeonworldMetrics.RoomPadding));
+                LayerPlans.ScatterExclusions.Add(Inflate(phBounds, 1));
             }
 
             CWRMod.Instance.Logger.Info(

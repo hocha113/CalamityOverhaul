@@ -4,7 +4,6 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -41,13 +40,11 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
 
         public override void AI() {
             if (Init == 0) {
+                //发射不响,声音留给挥砍与命中
                 Init = 1;
                 if (Empowered) {
                     Projectile.penetrate = 4;
                     Projectile.scale = 1.15f;
-                }
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item33 with { Volume = 0.45f, Pitch = 0.2f, MaxInstances = 5 }, Projectile.position);
                 }
             }
 

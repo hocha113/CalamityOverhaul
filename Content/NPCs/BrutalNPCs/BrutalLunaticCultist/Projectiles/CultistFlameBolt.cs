@@ -11,10 +11,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
 {
     /// <summary>
     /// 焚焰弧弹：vanilla 467 火球精灵做体，慢启动增压<br/>
-    /// ai[0]=1 时前 20 帧弱追踪（限转速，之后直线，公平阀）
+    /// ai[0]=1 时前 20 帧弱追踪（限转速，之后直线，公平阀）<br/>
+    /// ai[1]=1 日珥抛物模式：吃重力、碰地即灭并留燃地（可见抛物线,读轨迹的公平阀）
     /// </summary>
     internal class CultistFlameBolt : ModProjectile
     {
+        private bool LobMode => Projectile.ai[1] == 1f;
+
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.CultistBossFireBall;
 
         public override void SetStaticDefaults() {
@@ -36,6 +39,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         public override void AI() {
             int age = 330 - Projectile.timeLeft;
 
+            //日珥抛物模式:重力+碰地
+            if (LobMode) {
+                Projectile.velocity.Y += 0.14f;
+                if (Projectile.velocity.Y > 16f) {
+                    Projectile.velocity.Y = 16f;
+                }
+                Projectile.tileCollide = age > 8;
+            }
+
             //弱追踪窗口：限转速，只修正不锁死
             if (Projectile.ai[0] == 1f && age < 20) {
                 Player target = Main.player[Player.FindClosest(Projectile.position, Projectile.width, Projectile.height)];
@@ -46,8 +58,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 }
             }
 
-            //慢启动增压：飞行期速度有演变
-            if (age > 14 && Projectile.velocity.Length() < 13.5f) {
+            //慢启动增压：飞行期速度有演变(抛物模式交给重力)
+            if (!LobMode && age > 14 && Projectile.velocity.Length() < 13.5f) {
                 Projectile.velocity *= 1.028f;
             }
 
@@ -75,6 +87,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
 
         public override void OnKill(int timeLeft) {
             CultistMotion.ImpactBurst(Projectile.Center, 0, 0.9f);
+            //日珥落地:留下燃地(权威端);寿命/宽度由日耀主场加成
+            if (LobMode && !VaultUtils.isClient) {
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center - Vector2.UnitY * 8f,
+                    Vector2.Zero, ModContent.ProjectileType<CultistBurnPatch>(), 26, 0f, Main.myPlayer,
+                    Projectile.localAI[1] > 0f ? Projectile.localAI[1] : 240f, 90f);
+            }
         }
 
         public override bool PreDraw(ref Color lightColor) {

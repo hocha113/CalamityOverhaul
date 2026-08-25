@@ -38,6 +38,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Machines
             if (Main.netMode == NetmodeID.MultiplayerClient) {
                 return;
             }
+            //渣汽疏泄带喷口(Wave-2 B路):必须排在下方槽表判空 return 之前,
+            //否则 L6 无机器槽的种子会把喷口连坐跳过
+            DungeonworldZoneVents.Update();
             var slots = L6MachineSlots.Slots;
             if (slots.Count == 0) {
                 return;

@@ -72,6 +72,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
         private bool bodyLeanApplied;
         /// <summary>崩坏白裂纹闪帧</summary>
         private int crackFlashTimer;
+        /// <summary>碎裂时刀身抖动余帧，顿帧期间照常走</summary>
+        private int shakeTimer;
+        private float shakeAmp;
         /// <summary>当前视觉是否半刃(终结拍中途翻转)</summary>
         private bool brokenVisual;
         /// <summary>剑身不稳颤抖幅度，出手时从持有者稳固度取样</summary>
@@ -147,7 +150,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
                 raiseBack = 1.85f;
                 follow = 1.05f;
                 reachScale = 0.80f;
-                fanInnerRatio = 0.42f;
+                fanInnerRatio = 0.52f;
                 leanAmp = 0.03f;
                 fanSegments = 34;
                 shardCount = 0;
@@ -160,7 +163,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
                 raiseBack = 2.6f;
                 follow = 1.42f;
                 reachScale = 1.28f;
-                fanInnerRatio = 0.22f;
+                fanInnerRatio = 0.36f;
                 leanAmp = 0.12f;
                 fanSegments = 56;
                 shardCount = 0;
@@ -178,7 +181,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
                 raiseBack = third ? 2.15f : 2.0f;
                 follow = third ? 1.25f : 1.15f;
                 reachScale = third ? 1.06f : 1f;
-                fanInnerRatio = third ? 0.30f : 0.32f;
+                fanInnerRatio = third ? 0.42f : 0.44f;
                 leanAmp = third ? 0.06f : 0.045f;
                 fanSegments = third ? 44 : 40;
                 //0拍甩1片、2拍甩2片，间歇性的碎齿
@@ -218,6 +221,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
             }
             if (crackFlashTimer > 0) {
                 crackFlashTimer--;
+            }
+            if (shakeTimer > 0) {
+                shakeTimer--;
             }
 
             int phase = CurrentPhase;
@@ -442,6 +448,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
             shatterDone = true;
             brokenVisual = true;
             crackFlashTimer = 5;
+            shakeTimer = 9;
+            shakeAmp = 3.8f;
             hitstopTimer = Math.Max(hitstopTimer, 3);
 
             Vector2 breakPos = Vector2.Lerp(Hand, mainTip, 0.62f);
@@ -490,6 +498,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
         private void DoFatigueBreak() {
             fatigueDone = true;
             brokenVisual = true;
+            shakeTimer = 6;
+            shakeAmp = 2.2f;
 
             Vector2 bladeMid = Vector2.Lerp(Hand, mainTip, 0.6f);
             if (!VaultUtils.isServer) {
@@ -674,7 +684,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
             var verts = new ColoredVertex[segs * 2];
             var inds = new short[(segs - 1) * 6];
 
-            float outerR = mainReach * 1.05f;
+            //外缘压在刀尖(1.03)之内，刀尖略微探出刀光
+            float outerR = mainReach * 0.96f;
             float innerR = mainReach * fanInnerRatio;
             Vector2 center = Hand;
             //起点补 0.25 弧度，扇根和刀背衔接
@@ -687,7 +698,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
                 float u = t * sweepT;
                 float ang = arcStart + (swingDir * TotalSweep * u);
                 Vector2 dir = ang.ToRotationVector2();
-                float bulge = 1f + (0.05f * MathF.Pow(t, 3f));
+                float bulge = 1f + (0.02f * MathF.Pow(t, 3f));
                 Vector2 outer = center + (dir * outerR * bulge) - Main.screenPosition;
                 Vector2 inner = center + (dir * innerR) - Main.screenPosition;
                 verts[i * 2] = new ColoredVertex(outer, vertCol, new Vector3(u, 0f, 0f));
@@ -776,7 +787,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
                 return;
             }
             Vector2 origin = tex.Size() / 2f;
-            GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset);
+            GetBladeDrawOrientation(tex, out SpriteEffects effect, out float rotOffset);
             float scale = GetBladeDrawScale(tex);
             Vector2 hand = Hand;
             int phase = CurrentPhase;
@@ -796,6 +807,10 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
             }
 
             Vector2 drawPos = hand + (mainAngle.ToRotationVector2() * mainReach * BladePark) - Main.screenPosition;
+            //碎裂瞬间的小幅抖动，顿帧定格里也在颤
+            if (shakeTimer > 0) {
+                drawPos += Main.rand.NextVector2Circular(1f, 1f) * (shakeAmp * shakeTimer / 9f);
+            }
 
             //厚重暗影垫底
             Color shadow = new Color(16, 4, 8, 190) * 0.5f;
@@ -842,7 +857,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
             if (crackFlashTimer >= 4) {
                 Texture2D tex = (brokenVisual ? ShatterfangAssets.BrokenBlade : ShatterfangAssets.FullBlade)?.Value;
                 if (tex != null) {
-                    GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset);
+                    GetBladeDrawOrientation(tex, out SpriteEffects effect, out float rotOffset);
                     Color sil = ShatterfangFX.BoneLead * 0.9f;
                     sil.A = 0;
                     Vector2 drawPos = Hand + (mainAngle.ToRotationVector2() * mainReach * BladePark) - Main.screenPosition;
@@ -852,12 +867,13 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
             }
         }
 
-        /// <summary>反向拍翻刃，刃口镜像到挥动前缘，否则读作刀背砍人</summary>
-        private void GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset) {
+        /// <summary>反向拍翻刃，刃口镜像到挥动前缘，否则读作刀背砍人；对角偏移按贴图真实宽高算，48×64 不是 45°</summary>
+        private void GetBladeDrawOrientation(Texture2D tex, out SpriteEffects effect, out float rotOffset) {
             bool edgeFlip = (Projectile.ai[1] >= 0f ? 1 : -1) * facingDir < 0;
             bool flipVertically = (facingDir < 0) != edgeFlip;
             effect = flipVertically ? SpriteEffects.FlipVertically : SpriteEffects.None;
-            rotOffset = flipVertically ? -MathHelper.PiOver4 : MathHelper.PiOver4;
+            float axis = ShatterfangFX.BladeAxisOffset(tex);
+            rotOffset = flipVertically ? -axis : axis;
         }
 
         /// <summary>刀身画多大由挥砍半径反推，刀刃沿贴图对角走，对角长即刃轴长</summary>

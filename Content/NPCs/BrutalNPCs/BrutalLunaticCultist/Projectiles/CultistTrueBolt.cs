@@ -9,8 +9,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projectiles
 {
     /// <summary>
-    /// 真言弹：真身元素弹，体帧随元素取 vanilla 467/464/465 精灵，镜像仪式里的动态识真线索<br/>
-    /// ai[0]=元素 ai[1]=模式(0直线 1咏唱环轨) ai[2]=环轨初相
+    /// 真言弹：真身阶段弹，体帧按阶段取 vanilla 精灵，镜像仪式里的动态识真线索<br/>
+    /// ai[0]=阶段(0星旋 1星云 2星尘 3日耀 4月明) ai[1]=模式(0直线 1咏唱环轨) ai[2]=环轨初相
     /// </summary>
     internal class CultistTrueBolt : ModProjectile
     {
@@ -19,11 +19,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         private int Element => (int)Projectile.ai[0];
         private bool IsOrbit => Projectile.ai[1] == 1f;
 
-        /// <summary>元素体帧的 vanilla 弹幕ID</summary>
+        /// <summary>阶段体帧的 vanilla 弹幕ID:电球/苍球/冰雾/火球/电球</summary>
         private int BodyId => Element switch {
-            1 => ProjectileID.CultistBossIceMist,
-            2 => ProjectileID.CultistBossLightningOrb,
-            _ => ProjectileID.CultistBossFireBall,
+            1 => ProjectileID.CultistBossFireBallClone,
+            2 => ProjectileID.CultistBossIceMist,
+            3 => ProjectileID.CultistBossFireBall,
+            _ => ProjectileID.CultistBossLightningOrb,
         };
 
         /// <summary>咏唱环轨半径</summary>
@@ -69,11 +70,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 Projectile.frame = (Projectile.frame + 1) % frames;
             }
 
-            Lighting.AddLight(Projectile.Center, CultistMotion.ElementCore(Element).ToVector3() * 0.45f);
+            Lighting.AddLight(Projectile.Center, CultistMotion.PhaseCore(Element).ToVector3() * 0.45f);
         }
 
         public override void OnKill(int timeLeft) {
-            CultistMotion.ImpactBurst(Projectile.Center, Element, 0.7f, playSound: timeLeft <= 0);
+            CultistMotion.ImpactBurst(Projectile.Center, CultistMotion.PhaseLegacyElement(Element), 0.7f, playSound: timeLeft <= 0);
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -85,14 +86,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             Rectangle frame = new(0, frameHeight * Math.Min(Projectile.frame, frames - 1), tex.Width, frameHeight);
             Vector2 origin = frame.Size() * 0.5f;
             Vector2 pos = Projectile.Center - Main.screenPosition;
-            Color core = CultistMotion.ElementCore(Element);
-            Color edge = CultistMotion.ElementEdge(Element);
+            Color core = CultistMotion.PhaseCore(Element);
+            Color edge = CultistMotion.PhaseEdge(Element);
 
             //底晕
             Main.EntitySpriteDraw(glow, pos, null, edge with { A = 0 } * 0.5f, 0f,
                 glow.Size() * 0.5f, Projectile.scale * 0.6f, SpriteEffects.None, 0);
-            //vanilla 体帧：火球原色直画，冰雾/电球轻染元素色
-            Color bodyColor = Element == 0 ? Color.White : Color.Lerp(Color.White, core, 0.35f);
+            //vanilla 体帧：日耀火球原色直画，其余轻染阶段色
+            Color bodyColor = Element == 3 ? Color.White : Color.Lerp(Color.White, core, 0.35f);
             Main.EntitySpriteDraw(tex, pos, frame, bodyColor, Projectile.rotation, origin,
                 Projectile.scale, SpriteEffects.None, 0);
             return false;

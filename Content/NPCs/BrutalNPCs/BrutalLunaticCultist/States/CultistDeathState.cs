@@ -32,13 +32,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             SetPose(npc, Timer < 100 ? 13 : 0);
             npc.velocity = new Vector2(0f, -0.3f + t * 0.8f);
 
-            Color core = CultistMotion.ElementCore(context.Element);
+            Color core = CultistMotion.PhaseCore(context.Phase);
             CultistScreenFX.SetVeil(0.85f * (1f - t * 0.5f), npc.Center, core, 540f);
             CultistScreenFX.BreakDesat = MathHelper.Clamp(t * 1.3f, 0f, 0.85f);
 
-            //清场：他召的东西随他而散（权威端）
+            //清场：他召的东西随他而散,星球退场,他画的墙塌了（权威端）
             if (Timer == 10 && !VaultUtils.isClient) {
                 CultistBossAI.ClearMinionsAndProjectiles(npc);
+                Projectiles.CultistPlanetProj.BeginDeparture(npc.whoAmI);
+                Projectiles.CultistArenaProj.BeginCollapse(npc.whoAmI);
             }
 
             //法阵碎裂顿点

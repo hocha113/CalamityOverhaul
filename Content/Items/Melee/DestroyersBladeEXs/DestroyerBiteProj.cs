@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         private const int DamageWindow = 3;
 
         private const int SegCount = 5;
-        private const float DrawScale = 0.62f;
+        private const float DrawScale = 0.85f;
         private const float SegSpacing = 64f * DrawScale;
 
         private const int PhaseCoil = 0;
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 return false;
             }
             //以头颅为圆心的贪咬判定
-            float radius = 78f;
+            float radius = 92f;
             Vector2 head = spine[0];
             Vector2 closest = new(
                 MathHelper.Clamp(head.X, targetHitbox.Left, targetHitbox.Right),
@@ -156,8 +156,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 headRot = headRot.AngleLerp((aimPoint - spine[0]).ToRotation(), 0.3f);
             }
             float t = phaseTimer / (float)CoilFrames;
-            //反向预备:头往目标反方向压 46px,末两帧定住
-            float pull = MathF.Sin(MathF.Min(t, 0.8f) / 0.8f * MathHelper.PiOver2) * 46f;
+            //反向预备:头往目标反方向压一段,末两帧定住
+            float pull = MathF.Sin(MathF.Min(t, 0.8f) / 0.8f * MathHelper.PiOver2) * 54f;
             Vector2 head = Owner.Center - headRot.ToRotationVector2() * pull;
             spine[0] = head;
             Projectile.Center = head;
@@ -440,20 +440,32 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             //成形度:盘绕期淡入,散解期尾先蚀
             float formT = phase == PhaseCoil ? phaseTimer / (float)CoilFrames : 1f;
 
-            //突袭残影
+            //突袭残影:旧快照压成黑色剪影(越旧越黑越淡),再沿冲刺反向叠两层即时黑拖影
             if (phase is PhaseLunge or PhaseClamp) {
                 for (int s = 1; s >= 0; s--) {
                     Vector2[] snap = ghostSnaps[s];
                     if (snap == null) {
                         continue;
                     }
-                    float alpha = s == 0 ? 0.30f : 0.15f;
+                    //新快照留一点血红余温,旧快照沉入纯黑
+                    Color ghostCol = s == 0 ? new Color(70, 12, 12) * 0.55f : new Color(10, 2, 4) * 0.45f;
                     for (int i = SegCount - 1; i >= 0; i--) {
                         GetSegDraw(i, out Texture2D gtex, out _, out Rectangle gframe);
                         float rot = i == 0 ? segRot[0] + MathHelper.Pi
                             : (snap[i - 1] - snap[i]).ToRotation() + MathHelper.PiOver2 + MathHelper.Pi;
-                        sb.Draw(gtex, snap[i] - Main.screenPosition, gframe, new Color(255, 45, 30) * alpha,
+                        sb.Draw(gtex, snap[i] - Main.screenPosition, gframe, ghostCol,
                             rot, gframe.Size() * 0.5f, DrawScale, SpriteEffects.None, 0f);
+                    }
+                }
+                //即时黑拖影:整条链体沿冲刺反方向错位重画,贴着本体的速度感
+                Vector2 back = -headRot.ToRotationVector2();
+                for (int k = 1; k <= 2; k++) {
+                    Color smear = new Color(8, 2, 4) * (0.42f / k);
+                    for (int i = SegCount - 1; i >= 0; i--) {
+                        GetSegDraw(i, out Texture2D gtex, out _, out Rectangle gframe);
+                        Vector2 pos = spine[i] + back * (k * 30f) - Main.screenPosition;
+                        sb.Draw(gtex, pos, gframe, smear, segRot[i] + MathHelper.Pi,
+                            gframe.Size() * 0.5f, DrawScale, SpriteEffects.None, 0f);
                     }
                 }
             }

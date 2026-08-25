@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.BloodshotBombs
         }
 
         public override void SetDefaults() {
-            Projectile.width = Projectile.height = 18;
+            Projectile.width = Projectile.height = 26;
             Projectile.friendly = true;
             Projectile.ignoreWater = true;
             Projectile.penetrate = 1;
@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.BloodshotBombs
                 Texture2D glow = CWRAsset.SoftGlow.Value;
                 Main.EntitySpriteDraw(glow, Projectile.Center - Main.screenPosition, null
                     , new Color(255, 28, 18, 0) * (0.25f + redness * 0.5f), 0f, glow.Size() / 2f
-                    , 0.45f + redness * 0.25f, SpriteEffects.None, 0);
+                    , 0.8f + redness * 0.4f, SpriteEffects.None, 0);
             }
 
             Color body = lightColor;
@@ -216,7 +216,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.BloodshotBombs
         public override string Texture => CWRConstant.Projectile_Ranged + "BloodshotFleshChunk";
 
         public override void SetDefaults() {
-            Projectile.width = Projectile.height = 14;
+            Projectile.width = Projectile.height = 18;
             Projectile.friendly = true;
             Projectile.penetrate = 2;
             Projectile.timeLeft = 150;

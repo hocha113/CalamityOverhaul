@@ -77,12 +77,13 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
 
             Projectile.rotation = Projectile.velocity.ToRotation();
 
-            //暗雾脱落:影子的行迹比本体活得久
-            if (!VaultUtils.isServer && Main.rand.NextBool(5)) {
+            //暗雾脱落:浓密的黑烟行迹,比本体活得久
+            if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
                 PRTLoader.NewParticle<PRT_GhostRainMist>(
-                    Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                    -Projectile.velocity * 0.06f, new Color(14, 3, 6) * 0.75f,
-                    Main.rand.NextFloat(0.35f, 0.6f))?.Configure(Main.rand.Next(20, 34));
+                    Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
+                    -Projectile.velocity * 0.05f + Main.rand.NextVector2Circular(0.4f, 0.4f),
+                    new Color(14, 3, 6) * 0.92f,
+                    Main.rand.NextFloat(0.55f, 0.9f))?.Configure(Main.rand.Next(28, 46));
             }
 
             Lighting.AddLight(Projectile.Center, new Vector3(0.25f, 0.03f, 0.03f));
@@ -113,10 +114,10 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 SoundEngine.PlaySound(SoundID.NPCHit54 with { Volume = 0.4f, Pitch = -0.5f, MaxInstances = 4 }, Projectile.Center);
             }
             //暗爆:雾向内收拢再散,红火星点缀
-            for (int i = 0; i < 5; i++) {
-                Vector2 at = Projectile.Center + Main.rand.NextVector2Circular(18f, 18f);
+            for (int i = 0; i < 8; i++) {
+                Vector2 at = Projectile.Center + Main.rand.NextVector2Circular(20f, 20f);
                 PRTLoader.NewParticle<PRT_GhostRainMist>(at, (Projectile.Center - at) * 0.05f,
-                    new Color(16, 4, 6) * 0.85f, Main.rand.NextFloat(0.5f, 0.85f))?.Configure(Main.rand.Next(22, 38));
+                    new Color(16, 4, 6) * 0.92f, Main.rand.NextFloat(0.6f, 1f))?.Configure(Main.rand.Next(26, 44));
             }
             for (int i = 0; i < 6; i++) {
                 PRTLoader.NewParticle<PRT_SparkAlpha>(Projectile.Center, Main.rand.NextVector2Circular(5f, 5f),
@@ -128,7 +129,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             Texture2D tex = ShadowTex.Value;
             Vector2 origin = tex.Size() / 2f;
 
-            //拖影:旧位置的暗渣逐级缩小
+            //拖影:旧位置的暗渣逐级缩小,烟迹压得更实
             if (Projectile.oldPos != null) {
                 for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
                     if (Projectile.oldPos[i] == Vector2.Zero) {
@@ -136,8 +137,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                     }
                     float t = 1f - i / (float)Projectile.oldPos.Length;
                     Vector2 pos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                    Main.EntitySpriteDraw(tex, pos, null, new Color(8, 2, 4) * (0.5f * t),
-                        Projectile.rotation, origin, Projectile.scale * (0.28f + 0.22f * t), SpriteEffects.None, 0);
+                    Main.EntitySpriteDraw(tex, pos, null, new Color(8, 2, 4) * (0.72f * t),
+                        Projectile.rotation, origin, Projectile.scale * (0.42f + 0.3f * t), SpriteEffects.None, 0);
                 }
             }
 

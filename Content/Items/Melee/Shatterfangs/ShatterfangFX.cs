@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using Terraria;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
@@ -48,6 +49,12 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
         public static readonly Color Ivory = new(238, 224, 206);
         /// <summary>牙体暗面</summary>
         public static readonly Color IvoryDark = new(178, 152, 130);
+
+        /// <summary>
+        /// 刃轴相对贴图水平线的对角偏移。刃沿左下柄→右上尖的对角走，
+        /// 48×64 画布的对角是 53° 不是 45°，按真实宽高算才贴合刀光
+        /// </summary>
+        public static float BladeAxisOffset(Texture2D tex) => MathF.Atan2(tex.Height, tex.Width);
 
         /// <summary>定向震屏统一入口</summary>
         public static void Punch(Vector2 pos, Vector2 dir, float strength, float vibrationsPerSec, int frames, float falloff = 1100f) {

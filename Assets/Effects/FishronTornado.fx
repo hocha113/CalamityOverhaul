@@ -82,7 +82,9 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLO
 
     // 圆柱受光：临边压暗 + 左亮右暗的侧光不对称 + 随高度的纵向明暗
     // 整柱亮度均匀是贴纸感的病根之一，顶亮底沉才有体量
-    float shade = (1.0 - rad * rad * 0.50) * (1.0 + side * -0.22);
+    // 临边项须钳非负：rad>1.41 的飞沫/裙摆区一旦翻负,水体色变负蓝,
+    // 叠上泡沫加色后蓝通道被抵消,边缘渗出棕褐(2026-08 永渊复用时实测)
+    float shade = max(1.0 - rad * rad * 0.50, 0.0) * (1.0 + side * -0.22);
     float vLight = lerp(1.10, 0.68, smoothstep(0.12, 0.95, uv.y));
     shade *= vLight;
 
@@ -103,8 +105,8 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLO
     col = lerp(col, uFoamColor * 0.55, crownZone * 0.4);           // 顶部发白
     col *= (0.55 + field * 0.75) * shade;
 
-    // 前层水带亮缘：窄阈值白沫描边
-    float foamEdge = smoothstep(0.60, 0.74, fN) * (1.0 - rad * 0.5);
+    // 前层水带亮缘：窄阈值白沫描边(远缘钳零,防翻负反削泡沫色)
+    float foamEdge = smoothstep(0.60, 0.74, fN) * saturate(1.0 - rad * 0.5);
     col += uFoamColor * foamEdge * (0.4 + uGrade * 0.18);
 
     // 底部卷吸碎浪：裙摆区高对比翻涌

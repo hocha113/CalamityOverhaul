@@ -1,4 +1,5 @@
 EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Dano Infinito
+MeleeMagicDamageClassTextContent.MeleeMagicDamageClass.DisplayName: dano corpo a corpo e mágico
 
 Biomes: {
 	TungstenBiome: {

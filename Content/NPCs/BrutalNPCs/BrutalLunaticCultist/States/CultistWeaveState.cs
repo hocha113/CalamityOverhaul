@@ -26,16 +26,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             restFrames = extraRest;
         }
 
-        /// <summary>基础时长随阶段收紧</summary>
+        /// <summary>基础时长随阶段收紧(五阶段)</summary>
         private static int BaseDuration(CultistStateContext context) {
-            int frames = context.Phase switch { 2 => 46, 1 => 58, _ => 72 };
+            int frames = context.Phase switch { >= 4 => 42, 3 => 46, 2 => 52, 1 => 60, _ => 72 };
             if (context.IsDeathMode) {
                 frames = (int)(frames * 0.85f);
             }
             return frames;
         }
 
-        private int ShootRate(CultistStateContext context) => context.Phase >= 2 ? 38 : 46;
+        private int ShootRate(CultistStateContext context) => context.Phase >= 3 ? 38 : 46;
 
         public override void OnEnter(CultistStateContext context) {
             base.OnEnter(context);
@@ -69,8 +69,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + dir * 30f, dir * 8.5f,
                             ModContent.ProjectileType<CultistTrueBolt>(), 34, 0f, Main.myPlayer, context.Element);
                     }
-                    context.PushAura(0.6f, CultistMotion.ElementCore(context.Element));
-                    CultistMotion.CastFlash(npc.Center + dir * 30f, CultistMotion.ElementCore(context.Element), 0.7f);
+                    context.PushAura(0.6f, CultistMotion.PhaseCore(context.Phase));
+                    CultistMotion.CastFlash(npc.Center + dir * 30f, CultistMotion.PhaseCore(context.Phase), 0.7f);
                     npc.velocity -= dir * 2.4f;
                 }
             }
@@ -80,9 +80,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 return null;
             }
 
-            //充能满格：仪式迸发压过一切
+            //充能满格：仪式迸发压过一切;月明阶段的迸发就是激光
             if (context.RitualFull && Timer > 30) {
-                return new CultistRiteBurstState();
+                return context.Phase >= 4 ? new CultistMoonLaserState() : new CultistRiteBurstState();
             }
 
             //距离过远：先挪移贴近
@@ -99,13 +99,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         /// <summary>按索引实例化攻击状态</summary>
         internal static ICultistState CreateAttackState(CultistStateIndex index) {
             return index switch {
-                CultistStateIndex.FlameHunt => new CultistFlameHuntState(),
-                CultistStateIndex.FrostLattice => new CultistFrostLatticeState(),
-                CultistStateIndex.StormCadence => new CultistStormCadenceState(),
-                CultistStateIndex.AncientRite => new CultistAncientRiteState(),
+                CultistStateIndex.FlameRite => new CultistFlameRiteState(),
+                CultistStateIndex.StarRite => new CultistStarRiteState(),
+                CultistStateIndex.BoltRite => new CultistBoltRiteState(),
+                CultistStateIndex.PhantomRite => new CultistPhantomRiteState(),
                 CultistStateIndex.MirrorRite => new CultistMirrorRiteState(),
+                CultistStateIndex.MoonLaser => new CultistMoonLaserState(),
                 CultistStateIndex.Chant => new CultistChantState(),
-                _ => new CultistFlameHuntState(),
+                _ => new CultistBoltRiteState(),
             };
         }
     }

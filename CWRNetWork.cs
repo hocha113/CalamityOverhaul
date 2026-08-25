@@ -112,6 +112,8 @@ namespace CalamityOverhaul
         IndustrialTimeSkip,
         //工业服务·天气控制机：客户端请求→服务端校验扣电并起雨/止雨→广播全员演出
         IndustrialWeatherSet,
+        //地牢子世界 Boss 击杀记录：客户端进世界自报快照上行，服务器结算名单后广播，名单内客户端自增落盘
+        DungeonworldBossKill,
     }
 
     public static class CWRNetWork
@@ -184,6 +186,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.DungeonworldWaterValve) {
                 Content.Scenarios.Dungeonworld.Machines.DungeonworldWaterGate.HandleValveRequest(reader, whoAmI);
+            }
+            else if (type == CWRMessageType.DungeonworldBossKill) {
+                Content.Scenarios.Dungeonworld.DungeonworldBossRecords.HandlePacket(reader, whoAmI);
             }
 
             ModifyCrabulon.NetHandle(type, reader, whoAmI);

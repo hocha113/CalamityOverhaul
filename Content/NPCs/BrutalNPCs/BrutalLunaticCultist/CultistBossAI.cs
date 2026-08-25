@@ -33,12 +33,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
         }
 
         public override bool? CanBrutalOverride() {
-            //重制未完成：由 DisabledReworkTypes 拒绝接管
+            //跟随残酷模式世界旗标
             return null;
         }
 
+        /// <summary>状态上下文只读口(星球/限制圈等场上实体取用)</summary>
+        internal CultistStateContext Context => stateContext;
+
         public override void SetProperty() {
-            npc.lifeMax = (int)(npc.lifeMax * 1.35f);
+            //五阶段战线更长,血量上调
+            npc.lifeMax = (int)(npc.lifeMax * 1.6f);
             npc.life = npc.lifeMax;
             npc.knockBackResist = 0f;
             npc.npcSlots = 20f;
@@ -129,6 +133,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 }
             }
 
+            //星球开火闸:他收手星球才出手,轮流施压(各端由同步的状态索引一致推导)
+            stateContext.PlanetVolleyGate = stateMachine?.CurrentState
+                is CultistWeaveState or CultistVeilStepState or CultistStaggerState;
+
+            //场心跨端解析:限制圈弹幕 netImportant 同步,客户端从它反推(权威端 Intro 直写)
+            if (!stateContext.ArenaSpawned || Main.GameUpdateCount % 12 == 0) {
+                int arenaType = ModContent.ProjectileType<CultistArenaProj>();
+                foreach (Projectile proj in Main.ActiveProjectiles) {
+                    if (proj.type == arenaType && (int)proj.ai[0] == npc.whoAmI) {
+                        stateContext.ArenaCenter = proj.Center;
+                        stateContext.ArenaSpawned = true;
+                        break;
+                    }
+                }
+            }
+
             stateContext.DecayVisuals();
         }
 
@@ -145,11 +165,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 return;
             }
 
-            float ratio = stateContext.Phase switch {
-                0 => CultistStateContext.Phase2Ratio,
-                1 => CultistStateContext.Phase3Ratio,
-                _ => -1f,
-            };
+            float ratio = stateContext.Phase < CultistStateContext.PhaseRatios.Length
+                ? CultistStateContext.PhaseRatios[stateContext.Phase] : -1f;
             if (ratio > 0f && npc.life < npc.lifeMax * ratio) {
                 stateMachine.ChangeState(new CultistPhaseShiftState());
             }
@@ -182,10 +199,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
 
             float rate = stateMachine.CurrentState switch {
                 CultistChantState => 0.9f,
-                CultistAncientRiteState => 0.25f,
-                CultistWeaveState or CultistVeilStepState or CultistFlameHuntState
-                    or CultistFrostLatticeState or CultistStormCadenceState => 0.08f,
-                CultistMirrorRiteState => 0.05f,
+                CultistWeaveState or CultistVeilStepState or CultistFlameRiteState
+                    or CultistStarRiteState or CultistBoltRiteState or CultistPhantomRiteState => 0.08f,
+                CultistMirrorRiteState or CultistMoonLaserState => 0.05f,
                 _ => 0f,
             };
             if (rate > 0f) {
@@ -202,9 +218,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             }
         }
 
-        /// <summary>常驻氛围：体光与充能高位时的法阵低鸣</summary>
+        /// <summary>常驻氛围：体光、充能预告与分相环境层 v1(走现有帷幕/粒子通道)</summary>
         private void UpdateAmbientVisuals() {
-            Color core = CultistMotion.ElementCore(stateContext.Element);
+            Color core = CultistMotion.PhaseCore(stateContext.Phase);
             Lighting.AddLight(npc.Center, core.ToVector3() * (0.5f + stateContext.CastAura * 0.5f));
 
             //充能逼近满格：法阵急促脉动，玩家的"要来了"预告
@@ -214,6 +230,77 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 if (!VaultUtils.isServer && CultistMotion.OnScreen(npc.Center, 300f)) {
                     SoundEngine.PlaySound(SoundID.Item117 with { Volume = 0.4f, Pitch = -0.5f }, npc.Center);
                 }
+            }
+
+            UpdatePhaseAmbience();
+        }
+
+        /// <summary>
+        /// 分相环境 v1(各端本地演出量,无网络):<br/>
+        /// 星旋=远雷白闪+雷声;星云=画面阴森去饱和;星尘=晶尘缓降;日耀=余烬上浮+暖幕;月明=冷暗低鸣<br/>
+        /// 完整天空层(暴雨/星野/热浪)后续接 CustomSky,此处是恒可用的底座
+        /// </summary>
+        private void UpdatePhaseAmbience() {
+            if (VaultUtils.isServer || stateContext == null || !stateContext.ArenaSpawned) {
+                return;
+            }
+            Vector2 arena = stateContext.ArenaCenter;
+            switch (stateContext.Phase) {
+                case 0: {
+                    //远雷:不规则白闪+闷雷声
+                    if (Main.rand.NextBool(240)) {
+                        CultistScreenFX.PushFlash(0.10f + Main.rand.NextFloat(0.08f));
+                        SoundEngine.PlaySound(SoundID.Thunder with { Volume = 0.35f, Pitch = -0.5f },
+                            arena + Main.rand.NextVector2Circular(900f, 500f));
+                    }
+                    break;
+                }
+                case 1:
+                    //阴森:轻度去饱和垫底(死亡演出会推得更高,取 max 由通道自身衰减兜底)
+                    CultistScreenFX.BreakDesat = MathHelper.Max(CultistScreenFX.BreakDesat, 0.16f);
+                    break;
+                case 2: {
+                    //晶尘缓降:落星阶段的天在飘星屑
+                    if (Main.rand.NextBool(5)) {
+                        Vector2 pos = Main.screenPosition + new Vector2(Main.rand.NextFloat(Main.screenWidth), -20f);
+                        InnoVault.PRT.PRTLoader.NewParticle<Rendering.PRT_CultistFrostMote>(pos,
+                            new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(1.4f, 2.6f)),
+                            Color.Lerp(CultistMotion.StardustCore, CultistMotion.StardustEdge, Main.rand.NextFloat()),
+                            Main.rand.NextFloat(0.5f, 1.0f))?.Configure(Main.rand.Next(80, 140));
+                    }
+                    break;
+                }
+                case 3: {
+                    //炙烤:全场余烬上浮+持续暖幕
+                    CultistScreenFX.SetVeil(0.22f, arena, CultistMotion.SolarEdge, 1100f);
+                    if (Main.rand.NextBool(4)) {
+                        Vector2 pos = Main.screenPosition + new Vector2(Main.rand.NextFloat(Main.screenWidth),
+                            Main.screenHeight + 16f);
+                        InnoVault.PRT.PRTLoader.NewParticle<Rendering.PRT_CultistEmber>(pos,
+                            new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), -Main.rand.NextFloat(1.6f, 3.4f)),
+                            Color.Lerp(CultistMotion.SolarCore, CultistMotion.SolarEdge, Main.rand.NextFloat()),
+                            Main.rand.NextFloat(0.7f, 1.4f))?.Configure(Main.rand.Next(60, 110), 0.02f);
+                    }
+                    break;
+                }
+                default: {
+                    if (stateContext.Phase >= 4) {
+                        //月明:冷暗压场+低鸣
+                        CultistScreenFX.BreakDesat = MathHelper.Max(CultistScreenFX.BreakDesat, 0.10f);
+                        CultistScreenFX.SetVeil(0.18f, arena, CultistMotion.MoonCore, 1200f);
+                        if (Main.GameUpdateCount % 300 == 0) {
+                            SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 0.4f, Pitch = -0.9f }, arena);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        /// <summary>随从出生广播（权威端）</summary>
+        internal static void SyncMinion(int index) {
+            if (index < Main.maxNPCs && Main.netMode == NetmodeID.Server) {
+                NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, index);
             }
         }
 
@@ -254,9 +341,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             int frost = ModContent.ProjectileType<CultistFrostSpear>();
             int arc = ModContent.ProjectileType<CultistArcBolt>();
             int pale = ModContent.ProjectileType<CultistPaleBolt>();
+            int star = ModContent.ProjectileType<CultistStarFall>();
+            int burn = ModContent.ProjectileType<CultistBurnPatch>();
+            int beam = ModContent.ProjectileType<CultistMoonBeam>();
             foreach (Projectile proj in Main.ActiveProjectiles) {
                 if (proj.type == sigil || proj.type == flame || proj.type == trueBolt
-                    || proj.type == frost || proj.type == arc || proj.type == pale) {
+                    || proj.type == frost || proj.type == arc || proj.type == pale
+                    || proj.type == star || proj.type == burn || proj.type == beam) {
                     proj.Kill();
                 }
             }

@@ -227,6 +227,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L2
                             TileBrush.SetSolid(hayL + dx, floor - 1, TileID.HayBlock);
                         }
                         report.FurniturePlaced++;
+                        //干草室登记为越狱洞候选宿主(WAVE2-BUILDINGS §3.3,零随机零几何)
+                        L2EscapeTunnel.RegisterHostCell(
+                            new Rectangle(cellLeft, ceilTop, plan.CellWidth, plan.RowHeight), hayL, hayW);
                         break;
                     case CellKind.Reward:
                         //门后奖励(§2.4-②教学;箱内战利品归M4轮换表)

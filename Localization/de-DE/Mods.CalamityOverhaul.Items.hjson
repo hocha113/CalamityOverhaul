@@ -58,6 +58,20 @@ DivineSourceBlade: {
 		'''
 }
 
+CursedflameBloodfist: {
+	// DisplayName: Cursedflame Bloodfist
+	/* Tooltip:
+		'''
+		Counts as both melee and magic, and takes the full bonus from each
+		Hold left click to pour out a rapid flurry of punches, and keep running while you do
+		Every punch lands one hit of area damage around you with very low knockback
+		Each punch also scatters a stream of flying flame fists along your cursor
+		Targets are set ablaze with Cursed Inferno
+		The flurry drains mana as it runs and stops once you run dry
+		"Whoever this arm belonged to, the fire has burned that away"
+		''' */
+}
+
 FoodStallChair: {
 	DisplayName: Essensstand-Plastikstuhl
 	Tooltip: I AM THE CHAIR THAT IS APPROACHING!
@@ -4347,5 +4361,116 @@ RustedGaolIrons: {
 		'''
 		Summons the Deep Gaol Wraith (test item)
 		"The cell number inside the cuff has been worn smooth"
+		''' */
+}
+
+UndrownedShackleCharm: {
+	// DisplayName: Sunken Shackle Band
+	/* Tooltip:
+		'''
+		Water no longer slows you down; grants the ability to swim
+		Greatly extends underwater breathing time
+		"The anchor sank. The man kept breathing"
+		''' */
+}
+
+GaolAnchorWeapon: {
+	// DisplayName: Gaol Anchor
+	/* Tooltip:
+		'''
+		Hurls a great anchor; while pinned into a wall, its chain becomes a damaging line
+		"Execution tools do not retire"
+		''' */
+}
+
+SumpPearl: {
+	// DisplayName: Sump Pearl
+	/* Tooltip:
+		'''
+		A matte pearl curdled from gaol water in a convict's bones
+		The undead market accepts these
+		''' */
+}
+
+FloodGalleryKey: {
+	// DisplayName: Flood Gallery Key
+	/* Tooltip:
+		'''
+		Builds the flood gallery on the spot and seats the anchored convict (test item)
+		"The depth scale on the wall is his heartbeat chart"
+		''' */
+}
+
+ProofSealCharm: {
+	// DisplayName: Proofing Seal
+	/* Tooltip:
+		'''
+		Trap projectiles deal 25% less damage and have a 15% chance to misfire
+		"Stamped goods pass every mechanism unharassed"
+		''' */
+	// Misfire: Misfire
+}
+
+OverseerLogger: {
+	// DisplayName: Overseer's Logbook
+	/* Tooltip:
+		'''
+		Grants danger sense; nearby traps and mechanisms are laid bare
+		"It keeps the duty roster of every dart port"
+		''' */
+}
+
+ProofingHallKey: {
+	// DisplayName: Proofing Hall Key
+	/* Tooltip:
+		'''
+		Builds the proofing hall on the spot and hangs the dust-caked rig (test item)
+		"The inspection bell still rings"
+		''' */
+}
+
+WheezingWyrm: {
+	// DisplayName: Wheezing Wyrm
+	/* Tooltip:
+		'''
+		Hold to breathe a stream of dragonfire
+		The old head has seen better days, and needs a few smoky coughs before it catches
+		Sustained breathing stokes the throat ever hotter, from dull red all the way to searing blue
+		Brighter flame burns hotter; blue flame deals the highest damage and ignites hellfire
+		"Not quite dead, just an old smoker clearing its throat"
+		''' */
+}
+
+Abyssrend: {
+	// DisplayName: Abyssrend
+	/* Tooltip:
+		'''
+		Left-click alternates tip thrusts and side cuts; each strike tears off a homing ocean undercurrent
+		Right-click clamps a foe in the pincer, crushing them until a high-pressure cavitation burst
+		"It remembers the sound the deep makes when it breaks things"
+		''' */
+}
+
+SneezingWyrm: {
+	// DisplayName: Sneezing Wyrm
+	/* Tooltip:
+		'''
+		Rapidly fires searing wyrmstrike rounds
+		Sustained fire stokes the barrel hotter, pushing the tracers from orange toward blue-white
+		Smoke tickles the old snout into intermittent sneezes that vent thick fumes to the side
+		The fumes smolder in the air, slowly igniting into blooms of dragonfire
+		"Don't stand on its sneezing side"
+		''' */
+}
+
+Everdeep: {
+	// DisplayName: Everdeep
+	/* Tooltip:
+		'''
+		Fires a ring of pressurized abyssal water
+		The ring pierces through foes, coasts a short way, then curls back to strike again
+		Hits build abyssal resonance, counted by the droplets orbiting the tome
+		At full resonance, a giant maelstrom erupts over the victim
+		"The deep does not part for you; it closes behind you"
 		''' */
 }

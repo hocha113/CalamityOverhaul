@@ -1,12 +1,16 @@
 // ============================================================================
 //DivineSourceTechArc.fx 金源灭却刃·科技蓝挥砍刀光
-//UV.x 弧向 0起手 1终点，UV.y 径向 0外缘 1内缘；顶点色 rgb=深度明暗 a=透明度
-//输出预乘 alpha 进 AlphaBlend；s1 绑定噪声(消费端 device.Textures[1])
+//UV.x 弧向 0起手 1终点；UV.y 径向 0网格外缘 1内缘，v<HaloFrac 为带外光晕区
+//顶点色 rgb=深度明暗 a=透明度；输出预乘 alpha 进 AlphaBlend
+//s1 绑定噪声(消费端 device.Textures[1])
 // ============================================================================
 
 float4x4 WorldViewProjection;
 
 sampler2D NoiseSampler : register(s1);
+
+//带外光晕占径向的比例，C# 网格外扩折算与此常量锁定
+static const float HaloFrac = 0.26;
 
 float TotalTime;        //时间(秒)
 float SweepT;           //0~1 已扫过弧向比例，刀锋热区贴 u≈SweepT
@@ -18,6 +22,7 @@ float EmpowerMix;       //0~1 充能金色混入量
 float4 LeadColor;       //前沿白青
 float4 CoreColor;       //亮青高光
 float4 BodyColor;       //碧蓝主体
+float4 MidColor;        //电蓝过渡
 float4 DeepColor;       //深海军蓝拖尾
 float4 AccentColor;     //充能金
 
@@ -52,8 +57,13 @@ float nrm(float x)
 
 float4 MainPS(VSOutput input) : COLOR0
 {
-    float u = saturate(input.TexCoord.x);   //弧向绝对进度
-    float v = saturate(input.TexCoord.y);   //径向 0外缘 1内缘
+    float u = saturate(input.TexCoord.x);       //弧向绝对进度
+    float vRaw = saturate(input.TexCoord.y);    //网格径向
+    //带内坐标 0刃线 1内缘
+    float v = saturate((vRaw - HaloFrac) / (1.0 - HaloFrac));
+    //带/晕分区，交界留一丝 AA
+    float bandMask = smoothstep(HaloFrac - 0.012, HaloFrac + 0.004, vRaw);
+    float haloMask = 1.0 - bandMask;
 
     //相对刀锋的追迹坐标 1=贴刀锋 0=起手拖尾
     float rel = saturate(u / max(SweepT, 0.0001));
@@ -71,9 +81,12 @@ float4 MainPS(VSOutput input) : COLOR0
     float hotCell = step(0.84, h);
     float cellLight = 0.85 + 0.42 * hotCell - 0.22 * step(h, 0.13);
 
-    //主体色带 深蓝拖尾→碧蓝→亮青(近刀锋)
-    float3 col = lerp(DeepColor.rgb, BodyColor.rgb, smoothstep(0.0, 0.40, rel));
-    col = lerp(col, CoreColor.rgb, smoothstep(0.55, 0.92, rel));
+    //主体四段渐变 深海军蓝→电蓝→碧蓝→亮青(贴刀锋)
+    float3 col = lerp(DeepColor.rgb, MidColor.rgb, smoothstep(0.0, 0.30, rel));
+    col = lerp(col, BodyColor.rgb, smoothstep(0.28, 0.62, rel));
+    col = lerp(col, CoreColor.rgb, smoothstep(0.62, 0.93, rel));
+    //径向渐变，内缘沉入深蓝，读出带厚
+    col = lerp(col, DeepColor.rgb * 0.75, v * 0.42);
     col *= cellLight;
 
     //断续数据虚线，step 硬切出科技感
@@ -83,7 +96,7 @@ float4 MainPS(VSOutput input) : COLOR0
     //外缘主刃线+错位第二细线(双描边)
     float rim = pow(saturate(1.0 - v / 0.085), 2.6);
     float rim2 = pow(saturate(1.0 - abs(v - 0.16) / 0.04), 2.0);
-    float edgeGlow = rim * RimIntensity + rim2 * 0.5 * RimIntensity;
+    float edgeGlow = (rim * RimIntensity + rim2 * 0.5 * RimIntensity) * bandMask;
     col += lerp(CoreColor.rgb, LeadColor.rgb, rel) * edgeGlow * (0.4 + 0.6 * rel) * 0.75;
 
     //前沿白热=刀锋后一道窄能量闸线，白是结构不是增益
@@ -100,18 +113,30 @@ float4 MainPS(VSOutput input) : COLOR0
     float alpha = smoothstep(1.02, 0.70, innerEdge);
     alpha = max(alpha, edgeGlow * 0.85);
     alpha *= 0.55 + 0.45 * smoothstep(0.0, 0.38, rel);
+    alpha *= bandMask;
 
-    //块状量化消散，拖尾侧先蚀
+    //块状量化消散，拖尾侧先蚀，带与晕共用同一消散前沿
     float cut = (1.0 - FadeOut) * 1.28;
     float blockNoise = diss * 0.72 + h * 0.28;
-    alpha *= smoothstep(cut - 0.03, cut + 0.22, u + (blockNoise - 0.5) * 0.30);
+    float dissolveMask = smoothstep(cut - 0.03, cut + 0.22, u + (blockNoise - 0.5) * 0.30);
+    alpha *= dissolveMask;
+
+    //带外光晕，从刃线向外软衰减融入环境，充能时染一点金
+    float haloIn = saturate(vRaw / HaloFrac);   //0=网格外缘 1=刃线
+    float haloGlow = pow(haloIn, 2.3) * haloMask * dissolveMask * FadeOut;
+    float3 haloCol = lerp(BodyColor.rgb, CoreColor.rgb, rel) * 0.7 + LeadColor.rgb * 0.22 * rel;
+    haloCol = lerp(haloCol, AccentColor.rgb, EmpowerMix * 0.45);
+    float haloA = haloGlow * (0.30 + 0.24 * rel) * input.Color.a;
 
     alpha = saturate(alpha) * input.Color.a;
     col *= input.Color.rgb;
 
-    //前沿颜色增益略高于 alpha 增益，半加法白热
-    float glowAlpha = saturate(alpha + (lead * 0.15 + rim * 0.16) * FadeOut);
-    return float4(col * alpha + LeadColor.rgb * (head * 0.22 + rim * 0.12) * FadeOut * GlowBoost * 0.35, glowAlpha);
+    //前沿颜色增益略高于 alpha 增益，半加法白热；光晕以低 alpha 叠进来
+    float glowAlpha = saturate(alpha + (lead * 0.15 + rim * 0.16 * bandMask) * FadeOut + haloA * 0.6);
+    float3 rgbOut = col * alpha
+        + LeadColor.rgb * (head * 0.22 + rim * 0.12 * bandMask) * FadeOut * GlowBoost * 0.35
+        + haloCol * haloA * input.Color.rgb;
+    return float4(rgbOut, glowAlpha);
 }
 
 technique Technique1

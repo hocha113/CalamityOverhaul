@@ -397,7 +397,8 @@ namespace CalamityOverhaul.Content.Items.Summon.EyekiteStaffs
             Texture2D tex = TextureAssets.Projectile[Type].Value;
             Vector2 origin = tex.Size() * 0.5f;
             float speed = Projectile.velocity.Length();
-            float stretch = MathHelper.Clamp(speed * 0.035f, 0f, 0.42f);
+            //常态漂移不压扁，速度过阈才拉伸
+            float stretch = MathHelper.Clamp((speed - 4.5f) * 0.042f, 0f, 0.4f);
             Vector2 scale = new Vector2(1f + stretch, 1f - stretch * 0.32f) * Projectile.scale * MathHelper.Lerp(0.4f, 1f, appear);
             Color color = lightColor * appear;
             SpriteEffects fx = SpriteEffects.None;

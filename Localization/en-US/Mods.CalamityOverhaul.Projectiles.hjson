@@ -559,6 +559,13 @@ GaolFireBolt.DisplayName: Gaol Fire
 GaolCrossChain.DisplayName: Deep Gaol Crosschain
 GaolCageBar.DisplayName: Gaol Cage Bar
 GaolCuffHitbox.DisplayName: Wraith's Irons
+UndrownedAnchor.DisplayName: Sunken Anchor
+UndrownedTideWave.DisplayName: Flood Wave
+UndrownedDepthMine.DisplayName: Sump Mine
+UndrownedMineShard.DisplayName: Mine Shard
+GaolAnchorProj.DisplayName: Gaol Anchor
+OverseerPressStrike.DisplayName: Press Stamp
+OverseerSlagGlob.DisplayName: Slag Ladle
 KikasaDreamHound.DisplayName: Kikasa Dream Hound
 DeerSeizeHandProj.DisplayName: Deer Seize Hand Proj
 DestroyerCoilRingProj.DisplayName: Destroyer Coil Ring Proj
@@ -632,3 +639,16 @@ BloodshotBombHeld.DisplayName: Bloodshot Bomb Held
 BloodshotBombThrown.DisplayName: Bloodshot Bomb Thrown
 BloodshotFleshChunk.DisplayName: Bloodshot Flesh Chunk
 EyekiteMinion.DisplayName: Eyekite Minion
+WyrmFlame.DisplayName: Wyrmfire
+WyrmstrikeRound.DisplayName: Wyrmstrike Round
+WyrmSneezeFume.DisplayName: Wyrm Sneeze
+AbyssrendUndercurrent.DisplayName: Ocean Undercurrent
+AbyssrendBurst.DisplayName: Cavitation Burst
+EverdeepHeld.DisplayName: Everdeep
+EverdeepRing.DisplayName: Abyssal Ring
+EverdeepMaelstrom.DisplayName: Abyssal Maelstrom
+CultistArenaProj.DisplayName: Cultist Arena Proj
+CultistBurnPatch.DisplayName: Cultist Burn Patch
+CultistMoonBeam.DisplayName: Cultist Moon Beam
+CultistPlanetProj.DisplayName: Cultist Planet Proj
+CultistStarFall.DisplayName: Cultist Star Fall

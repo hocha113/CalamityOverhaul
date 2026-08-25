@@ -20,22 +20,27 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
         //默认false:液体流动/接线定时器/随机tile更新停摆(F16/F17),需要的子系统日后在Update手动驱动
         public override bool NormalUpdates => false;
 
-        //六阶段切口(STRUCTURES §1.5)现行序:
-        //P10骨架→P20宏观路网→P30层规划(纯数据+足印预留,禁室选址在此定点)
-        //→P45禁室盖章(坐标取P30已定值)→P50层内容入口(七层全接线)
+        //六阶段切口(STRUCTURES §1.5)现行序(Wave-2追加泄洪堂/子地带两刀):
+        //P10骨架→P20宏观路网→P30层规划(纯数据+足印预留,禁室与泄洪堂选址在此定点)
+        //→P45禁室盖章→泄洪堂盖章(Wave-2 C路,坐标均取P30已定值)→P50层内容入口(七层全接线)
         //→P52夹层带/P54封存副翼(填充体系,消费P50留下的空闲足印)
-        //→P55撒布装饰→P80校验(帧修+洪泛+门/家具审计+GenReport)
+        //→P54.5子地带(Wave-2 B路,消费副翼吃剩的死岩)→P55撒布装饰
+        //→P80校验(帧修+洪泛+门/家具审计+GenReport)
         //两个填充pass的位置是硬约束:P50之后才拿得到"全部主内容足印"这份底稿,
-        //P55之前才吃得到撒布;随机消耗整段排在七层之后,既有种子的L1~L7逐格不变(R4)
+        //P55之前才吃得到撒布;Wave-2各新增随机消耗集中在各自接线点(R4账见
+        //LayerPlanPass/ZonePass头注释;裁决§1-12:允许改变既有种子结果)
         //TimedPass=逐pass耗时记录(R5预算<3min),不改被包pass
         public override List<GenPass> Tasks => [
             new TimedPass(new SkeletonPass()),
             new TimedPass(new MacroRoutePass()),
             new TimedPass(new LayerPlanPass()),
             new TimedPass(new Gen.BossRooms.GaolBossRoomPass(() => GaolBossRoomSiting.LastOrigin)),
+            new TimedPass(new Gen.BossRooms.FloodGalleryPass(() => Gen.BossRooms.FloodGallerySiting.LastOrigin)),
+            new TimedPass(new Gen.BossRooms.ProofingHallPass(() => Gen.BossRooms.ProofingHallSiting.LastOrigin)),
             new TimedPass(new LayerContentPass()),
             new TimedPass(new Gen.Infill.IntersticePass()),
             new TimedPass(new Gen.Infill.AnnexPass()),
+            new TimedPass(new Gen.Zones.ZonePass()),
             new TimedPass(new ScatterPass()),
             new ValidatePass()
         ];

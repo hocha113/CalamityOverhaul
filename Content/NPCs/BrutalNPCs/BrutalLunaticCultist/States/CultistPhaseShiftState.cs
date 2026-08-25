@@ -1,13 +1,15 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projectiles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
-    /// 转阶段演出：清场→仰首嘶吼→帷幕变调；进 P3 时唤出幻影龙（共享血池，可猎杀换充能削减）<br/>
-    /// 全程免伤但不出手，纯语调重置拍
+    /// 转阶段演出：清场+旧星球退场 → 仰首嘶吼 → 新星球降临;星云相多出两颗幻象,星尘相唤幻影龙<br/>
+    /// 全程免伤但不出手,攻势不跨阶段(公平阀:清弹幕+新阶段起手有缓冲)
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.PhaseShift, typeof(CultistStateContext))]
     internal class CultistPhaseShiftState : CultistStateBase
@@ -15,7 +17,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         public override string StateName => "CultistPhaseShift";
         public override CultistStateIndex StateIndex => CultistStateIndex.PhaseShift;
 
-        private const int Duration = 110;
+        private const int Duration = 140;
 
         public override void OnEnter(CultistStateContext context) {
             base.OnEnter(context);
@@ -26,7 +28,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 
             if (!VaultUtils.isClient) {
                 context.Phase++;
+                context.Element = context.Phase;
                 npc.ai[0] = context.Phase;
+                npc.ai[1] = context.Element;
                 context.ClearAttackBag();
                 //转阶段后给玩家缓冲，别立刻咏唱
                 context.ChantCooldown = System.Math.Max(context.ChantCooldown, 360);
@@ -41,13 +45,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             SetPose(npc, 13);
             npc.velocity *= 0.9f;
 
-            Color core = CultistMotion.ElementCore(context.Element);
+            Color core = CultistMotion.PhaseCore(context.Phase);
             CultistScreenFX.SetVeil(0.65f, npc.Center, core, 680f);
             context.PushAura(0.9f, core);
 
-            //清场：旧攻势不跨阶段（权威端）
+            //清场+旧星球退场：旧攻势不跨阶段（权威端）
             if (Timer == 10 && !VaultUtils.isClient) {
                 CultistBossAI.ClearMinionsAndProjectiles(npc);
+                CultistPlanetProj.BeginDeparture(npc.whoAmI);
             }
 
             //嘶吼顿点
@@ -61,14 +66,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 }
             }
 
-            //P3：唤出幻影龙（权威端）
-            if (Timer == 64 && context.Phase >= 2 && !context.DragonSpawned && !VaultUtils.isClient) {
+            //新星球降临(权威端):星云相带两颗幻象,遮挡程度即识真线索
+            if (Timer == 52 && !VaultUtils.isClient) {
+                int kind = System.Math.Clamp(context.Phase, 0, 4);
+                Projectile.NewProjectile(npc.GetSource_FromAI(), context.ArenaCenter, Vector2.Zero,
+                    ModContent.ProjectileType<CultistPlanetProj>(), 60, 0f, Main.myPlayer,
+                    kind, npc.whoAmI, 0f);
+                if (kind == CultistPlanetProj.KindNebula) {
+                    for (int i = 1; i <= 2; i++) {
+                        Projectile.NewProjectile(npc.GetSource_FromAI(), context.ArenaCenter, Vector2.Zero,
+                            ModContent.ProjectileType<CultistPlanetProj>(), 60, 0f, Main.myPlayer,
+                            kind, npc.whoAmI, i * 10f);
+                    }
+                }
+            }
+
+            //星尘相：唤出幻影龙(召唤柱的龙,可猎杀换充能削减)
+            if (Timer == 80 && context.Phase == 2 && !context.DragonSpawned && !VaultUtils.isClient) {
                 Vector2 pos = npc.Center + new Vector2(npc.direction * -500f, -320f);
                 //ai[0]=0 让龙头自建 30 节体段并共享血池（realLife）
                 int head = NPC.NewNPC(npc.GetSource_FromAI(), (int)pos.X, (int)pos.Y, NPCID.CultistDragonHead);
                 if (head < Main.maxNPCs) {
-                    Main.npc[head].lifeMax = Main.npc[head].life = 3200;
-                    CultistAncientRiteState.SyncMinion(head);
+                    Main.npc[head].lifeMax = Main.npc[head].life = 3600;
+                    CultistBossAI.SyncMinion(head);
                 }
                 context.DragonSpawned = true;
                 if (!VaultUtils.isServer) {

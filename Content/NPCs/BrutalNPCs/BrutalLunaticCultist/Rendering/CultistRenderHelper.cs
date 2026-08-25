@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
             }
 
             Vector2 drawPos = npc.Center - screenPos;
-            Color elemCore = CultistMotion.ElementCore(context.Element);
+            Color elemCore = CultistMotion.PhaseCore(context.Phase);
 
             //背后仪式法阵：充能表本体，全程可读
             if (context.SigilReveal > 0.01f) {

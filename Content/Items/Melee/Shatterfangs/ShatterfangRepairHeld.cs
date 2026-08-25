@@ -156,7 +156,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
             int dir = Owner.direction;
             float bladeAngle = dir >= 0 ? -0.62f : MathHelper.Pi + 0.62f;
             bool flip = dir < 0;
-            float rot = bladeAngle + (flip ? -MathHelper.PiOver4 + MathHelper.Pi : MathHelper.PiOver4);
+            //朝左垂直镜像，刃轴按贴图真实对角走
+            float axis = ShatterfangFX.BladeAxisOffset(tex);
+            float rot = bladeAngle + (flip ? -axis : axis);
             Vector2 drawPos = Owner.GetPlayerStabilityCenter() + bladeAngle.ToRotationVector2() * 42f - Main.screenPosition;
             Vector2 origin = tex.Size() * 0.5f;
 

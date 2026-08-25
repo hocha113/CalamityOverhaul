@@ -39,8 +39,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.BloodshotBombs
         }
 
         public override void SetDefaults() {
-            Item.width = 21;
-            Item.height = 22;
+            Item.width = 42;
+            Item.height = 44;
             Item.damage = 30;
             Item.knockBack = 5f;
             Item.useTime = Item.useAnimation = 24;

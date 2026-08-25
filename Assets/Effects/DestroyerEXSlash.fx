@@ -68,6 +68,12 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
         return float4(0, 0, 0, 0);
 
     //=========================================================
+    //双向渐变:径向 内黑→外沉红,弧向 尾冷→头热
+    //=========================================================
+    float radGrad = smoothstep(0.10, 0.92, radial);
+    float arcGrad = smoothstep(0.05, 0.95, along);
+
+    //=========================================================
     //吸光黑体:刀光的主体质量,宽带近黑压暗背景
     //厚度不对称:靠外缘 0.55~0.9 最厚(力点在刃侧)
     //=========================================================
@@ -135,12 +141,17 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float3 cCore  = lerp(float3(1.00, 0.86, 0.74), float3(1.00, 0.95, 0.92), empowerMix);
     float3 cVein  = float3(1.00, 0.62, 0.55);
 
+    //黑体染渐变:内缘纯黑,向外缘沉入暗红装甲色
+    float3 bodyTint = lerp(cBlack, cArmor * 0.85, radGrad * 0.85);
+    //弧向热度:尾段冷暗,刀头附近结构件整体升温
+    float heatRamp = 0.55 + 0.45 * arcGrad;
+
     float3 color = float3(0, 0, 0);
-    color += cBlack * bodyMass;                       //黑体几乎不发色,靠 alpha 遮挡
-    color += cArmor * ridge * plate * plateBand * 1.3;
-    color += cBlood * seamGlow * (1.35 + 0.6 * n);    //缝隙泄红
-    color += cLamp  * lamp * 1.8;
-    color += cBlood * edgeGlow * (0.95 + empowerMix * 0.4);
+    color += bodyTint * bodyMass;                     //黑体带径向渐变,靠 alpha 遮挡
+    color += cArmor * ridge * plate * plateBand * 1.3 * heatRamp;
+    color += cBlood * seamGlow * (1.35 + 0.6 * n) * heatRamp;   //缝隙泄红
+    color += cLamp  * lamp * 1.8 * (0.7 + 0.3 * arcGrad);
+    color += cBlood * edgeGlow * (0.95 + empowerMix * 0.4) * heatRamp;
     color += cCore  * edgeCore * (1.15 + empowerMix * 0.55);
     color += cBlood * head * bodyBand * 0.5;
     color += cVein  * vein * 1.5;
@@ -159,7 +170,8 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
         + ember * 0.60
     );
 
-    alpha *= vis;
+    //弧向密度渐变:尾稀头密,叠在噪蚀淡出之上
+    alpha *= vis * (0.70 + 0.30 * arcGrad);
     return float4(color * alpha, alpha) * input.Color;
 }
 
