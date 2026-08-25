@@ -1,27 +1,33 @@
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.TimeFreezes;
+using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 {
     /// <summary>
-    /// 鬼伞·役灵收湖。持伞且血湖就绪时，湖中鬼手把持有者自己的其他召唤物
-    /// （随从/哨兵；鬼伞家系与纯宠物豁免）拖入湖底扣押。真身不杀：
-    /// 杀掉会让召唤 buff 自删、模组随从无法通用重生，"切回来自动放还"就断了。
-    /// 扣押走 <see cref="TimeFreezeSystem"/> 租约（AI/判伤/位移/寿命全停，buff 自然维持），
-    /// 没入水线后隐藏绘制即"消失"，逐条记入 <see cref="OwnerState.Parked"/>；
-    /// 松开鬼伞或收域时整批放还，随从浮出湖面自行归队，哨兵送回原驻位。
+    /// 鬼伞·役灵洗礼。持伞且血湖就绪时，湖中鬼手把持有者自己的其他召唤物
+    /// （随从/哨兵；鬼伞家系与纯宠物豁免）拖入湖底浸洗：停泊一小拍后被湖水吐出，
+    /// 携带限时血湖状态（浸血外观 + 伤害增益，载体见 <see cref="KikasaMinionHeldGlobal"/>），
+    /// 状态激活中免再抓，到期后下一轮抓取波重新洗礼，周期性仪式。真身不杀：
+    /// 杀掉会让召唤 buff 自删、模组随从无法通用重生。
+    /// 浸洗途中走 <see cref="TimeFreezeSystem"/> 租约（AI/判伤/位移/寿命全停，buff 自然维持），
+    /// 没入水线后隐藏绘制即"消失"，逐条记入 <see cref="OwnerState.Parked"/> 停泊待吐；
+    /// 松开鬼伞或收域时未吐出的整批放还（沾过湖水的补发状态），哨兵送回原驻位。
     /// 一致性模型同鬼梦禁弹：服务器不持有领域相位，各端从已同步的快照
-    /// （持有物+域形态）跑同一条确定性规则各自扣押/放还，无需任何包；
+    /// （持有物+域形态）跑同一条确定性规则各自浸洗/吐出，无需任何包；
     /// 服务器那份副本不冻结也无判伤权（友方弹判伤在所有者本机），任其漂移
     /// </summary>
     internal static class KikasaMinionDrown
     {
         //==================== 波时间轴（60fps）====================
-        //合围涟漪 0-12 → 破水错帧 12-27 → 甩到+卷指 ~39 → 绷紧 40 → 拖入 44-70（p² 加速）→ 收尾化水
+        //合围涟漪 0-12 → 破水错帧 12-27 → 甩到+卷指 ~39 → 绷紧 40 → 拖入 44-70（p² 加速）
+        //→ 收尾化水 → 停泊 ~30 帧湖水吐出（血湖状态 900 帧，到期重新可抓）
 
         internal const int ConvergeEnd = 12;
 
@@ -47,6 +53,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         /// <summary>放还后的再收间隔，快速切换武器不至于手忙脚乱刷演出</summary>
         private const int RegrabDelayFrames = 45;
 
+        /// <summary>入湖停泊到被吐出的帧数：湖尝一口就吐，"立刻"里留一拍屏息</summary>
+        private const int SpitDwellFrames = 30;
+
+        /// <summary>吐出错拍间隔（按停泊受理序），一串出水不糊成一声</summary>
+        private const int SpitStaggerFrames = 4;
+
+        /// <summary>血湖状态时长（900 帧 = 15 秒），到期后重新可抓洗礼</summary>
+        internal const int BloodLakeFrames = 900;
+
+        /// <summary>血湖状态的伤害乘区</summary>
+        internal const float BloodDamageMul = 1.10f;
+
         /// <summary>持伞判定的稳定帧，滚轮扫过鬼伞不触发</summary>
         private const int HoldStableFrames = 6;
 
@@ -58,7 +76,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
         //==================== 记录 ====================
 
-        /// <summary>被扣押的一条召唤物记录：拖入途中在波里，入湖后转入 Parked 名单</summary>
+        /// <summary>被浸洗的一条召唤物记录：拖入途中在波里，入湖后转入 Parked 停泊待吐</summary>
         internal sealed class HeldEntry
         {
             public int ProjIndex;
@@ -74,6 +92,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             public int HandIndex = -1;
             /// <summary>过水线闩：真身已隐藏</summary>
             public bool Splashed;
+            /// <summary>停泊读拍：入 Parked 起计，到 <see cref="SpitAt"/> 被湖吐出</summary>
+            public int ParkTimer;
+            /// <summary>吐出到点帧（停泊计时轴），入名单时按序错拍定死，中途除名不塌拍</summary>
+            public int SpitAt;
             /// <summary>真身中途消失（持有者离场等），波内除名</summary>
             public bool Dropped;
             public TimeFreezeLease Lease;
@@ -94,7 +116,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             /// <summary>波间隔/再收间隔共用计时</summary>
             public int WaveDelay;
             public GrabWave Wave;
-            /// <summary>已入湖的扣押名单</summary>
+            /// <summary>已入湖待吐出的停泊名单</summary>
             public readonly List<HeldEntry> Parked = [];
             public bool AnyHeld => Wave != null || Parked.Count > 0;
         }
@@ -132,8 +154,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 state ??= owners[i] = new OwnerState();
                 state.HoldStable = holding ? Math.Min(state.HoldStable + 1, 600) : 0;
 
-                //扣押存续：持伞 + 域活跃且未在收合 + 人活着。
-                //翻转/鬼梦期间湖只是换了模样，握着的不松手；收域=湖没了，放还
+                //浸洗存续：持伞 + 域活跃且未在收合 + 人活着。
+                //翻转/鬼梦期间湖只是换了模样，握着的不松手；收域=湖没了，未吐出的放还
                 bool holdActive = holding && !player.dead
                     && domain.AnyActive && domain.Phase != KikasaDomainPhase.Closing;
                 if (!holdActive) {
@@ -147,7 +169,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 }
 
                 AdvanceWave(state, domain);
-                HoldParked(state);
+                HoldParked(state, domain);
 
                 if (state.WaveDelay > 0) {
                     state.WaveDelay--;
@@ -195,7 +217,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             if (!proj.minion && !proj.sentry && proj.minionSlots <= 0f) {
                 return false;
             }
-            if (proj.GetGlobalProjectile<KikasaMinionHeldGlobal>().LakeHeld) {
+            KikasaMinionHeldGlobal held = proj.GetGlobalProjectile<KikasaMinionHeldGlobal>();
+            //浸洗中排重；血湖状态激活者是刚洗礼过的，到期前不回锅
+            if (held.LakeHeld || held.BloodLakeTime > 0) {
                 return false;
             }
             if (CWRLoad.ProjValue.ImmuneFrozen.TryGetValue(proj.type, out bool immune) && immune) {
@@ -338,6 +362,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             if (t >= DragStart + DragFrames + WaveEndPad || !anyAlive) {
                 foreach (HeldEntry entry in wave.Entries) {
                     if (!entry.Dropped) {
+                        //吐出到点帧入名单时定死，靠名单当前长度错拍，中途除名不塌拍
+                        entry.ParkTimer = 0;
+                        entry.SpitAt = SpitDwellFrames + state.Parked.Count * SpitStaggerFrames;
                         state.Parked.Add(entry);
                     }
                 }
@@ -347,8 +374,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             }
         }
 
-        /// <summary>入湖名单逐帧续租钉在停泊位；失效条目静默除名（租约随实体世代自愈）</summary>
-        private static void HoldParked(OwnerState state) {
+        /// <summary>
+        /// 停泊名单逐帧续租钉在停泊位，读拍到点被湖吐出（发放血湖状态）；
+        /// 失效条目静默除名（租约随实体世代自愈）。全局时停里停拍，与波时间轴同口径
+        /// </summary>
+        private static void HoldParked(OwnerState state, KikasaDomainPlayer domain) {
+            bool frozen = WorldFreezeSystem.IsActive;
             for (int k = state.Parked.Count - 1; k >= 0; k--) {
                 HeldEntry entry = state.Parked[k];
                 Projectile proj = ResolveEntry(entry);
@@ -356,10 +387,57 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                     state.Parked.RemoveAt(k);
                     continue;
                 }
+                if (!frozen && ++entry.ParkTimer >= entry.SpitAt) {
+                    SpitEntry(entry, proj, domain);
+                    state.Parked.RemoveAt(k);
+                    continue;
+                }
                 entry.Lease = TimeFreezeSystem.AcquireProjectile<LakeGripSource>(
                     proj, entry.ParkPos, entry.ProjIndex,
                     TimeFreezeAnchorPriority.Authoritative);
             }
+        }
+
+        //==================== 吐出 ====================
+
+        /// <summary>
+        /// 湖水吐出一条：发放血湖状态，随从从吞没处的水线口猛地抛出（自己的 AI 会归队/超距瞬移），
+        /// 哨兵是驻防工事送回原驻位。确定性同放还：速度只喂 <see cref="Hash"/>，各端一致
+        /// </summary>
+        private static void SpitEntry(HeldEntry entry, Projectile proj, KikasaDomainPlayer domain) {
+            KikasaMinionHeldGlobal held = proj.GetGlobalProjectile<KikasaMinionHeldGlobal>();
+            held.LakeHeld = false;
+            held.LakeHidden = false;
+            held.BloodLakeTime = BloodLakeFrames;
+
+            float lakeY = domain.LakeWorldY;
+            Vector2 spitPos;
+            Vector2 spitVel;
+            bool surface;
+            if (entry.Sentry) {
+                spitPos = entry.CapturePos;
+                spitVel = Vector2.Zero;
+                surface = entry.CapturePos.Y >= lakeY - 30f;
+            }
+            else {
+                //从吞它的地方吐出来，上抛比温和放还更冲一口
+                spitPos = new Vector2(entry.ParkPos.X, lakeY - 12f);
+                spitVel = new Vector2(
+                    (Hash(entry.ParkPos.X, 3) - 0.5f) * 2.4f,
+                    -5.2f - Hash(entry.ParkPos.Y, 7) * 2.6f);
+                surface = true;
+            }
+
+            TimeFreezeSystem.ReleaseProjectile(proj, entry.Lease, spitVel);
+            proj.Center = spitPos;
+            proj.velocity = spitVel;
+            //owner 端的 netUpdate 才会被消费，别端置了也无害
+            proj.netUpdate = true;
+
+            //错拍已由 SpitAt 在规则层走完，演出立即到期
+            KikasaMinionDrownFX.QueueEmergence(proj.owner, spitPos, lakeY,
+                MathHelper.Clamp(MathF.Sqrt(proj.width * (float)proj.height) / 30f, 0.6f, 1.6f),
+                surface, 0, spit: true);
         }
 
         //==================== 放还 ====================
@@ -405,6 +483,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             KikasaMinionHeldGlobal held = proj.GetGlobalProjectile<KikasaMinionHeldGlobal>();
             held.LakeHeld = false;
             held.LakeHidden = false;
+            //沾过湖水就算洗礼：沉过水线还没等到吐出的，放还时补发状态；计时与领域解耦
+            if (entry.Splashed) {
+                held.BloodLakeTime = BloodLakeFrames;
+            }
 
             Vector2 releasePos;
             Vector2 releaseVel;
@@ -451,24 +533,84 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
     }
 
     /// <summary>
-    /// 扣押标记与绘制隐藏。SetDefaults 复位防槽位复用残留；
-    /// 冻结姿态由 TimeFreezeProjectile 持有，这里只管"看不见"
+    /// 浸洗标记、血湖状态与绘制表现。SetDefaults 复位防槽位复用残留；
+    /// 冻结姿态由 TimeFreezeProjectile 持有，这里管"看不见"与吐出后的浸血外观/增益。
+    /// 状态由各端确定性规则同帧发放，倒计时本地自走，伤害在所有者本机结算，无需同步
     /// </summary>
     internal class KikasaMinionHeldGlobal : GlobalProjectile
     {
         public override bool InstancePerEntity => true;
 
-        /// <summary>正被湖扣押（含拖入途中），资格扫描据此排重</summary>
+        /// <summary>正被湖浸洗（含拖入途中），资格扫描据此排重</summary>
         public bool LakeHeld;
 
         /// <summary>已没入湖中，不再绘制</summary>
         public bool LakeHidden;
 
+        /// <summary>血湖状态剩余帧：吐出/放还时发放，激活中免再抓；子弹幕沿父链继承</summary>
+        public int BloodLakeTime;
+
+        /// <summary>浸染强度 0~1：到期前最后 90 帧渐退，预告下一轮抓取</summary>
+        public float BloodFade => MathHelper.Clamp(BloodLakeTime / 90f, 0f, 1f);
+
+        //鬼雨异化时随观看域冷化，同沉溺色板
+        private static Color BloodTint
+            => KikasaDomain.CoolTint(new(237, 77, 69), new(126, 158, 164));
+
         public override void SetDefaults(Projectile projectile) {
             LakeHeld = false;
             LakeHidden = false;
+            BloodLakeTime = 0;
         }
 
-        public override bool PreDraw(Projectile projectile, ref Color lightColor) => !LakeHidden;
+        /// <summary>子弹幕沿父链继承剩余浸血时间，远程役从的弹药同样吃洗礼、带浸染</summary>
+        public override void OnSpawn(Projectile projectile, IEntitySource source) {
+            if (source is EntitySource_Parent parentSource
+                && parentSource.Entity is Projectile parent
+                && parent.TryGetGlobalProjectile(out KikasaMinionHeldGlobal parentHeld)
+                && parentHeld.BloodLakeTime > 0) {
+                BloodLakeTime = parentHeld.BloodLakeTime;
+            }
+        }
+
+        public override void PostAI(Projectile projectile) {
+            if (BloodLakeTime <= 0) {
+                return;
+            }
+            BloodLakeTime--;
+            //滴血只在召唤物/哨兵本体（子弹幕不滴防刷屏），纯装饰客户端限定
+            if (Main.dedServ
+                || (!projectile.minion && !projectile.sentry && projectile.minionSlots <= 0f)) {
+                return;
+            }
+            if (Main.rand.NextBool(10)) {
+                Vector2 at = projectile.Center + new Vector2(
+                    Main.rand.NextFloat(-0.4f, 0.4f) * projectile.width,
+                    Main.rand.NextFloat(-0.2f, 0.45f) * projectile.height);
+                PRTLoader.NewParticle<PRT_GhostRainDrop>(at,
+                    new Vector2(projectile.velocity.X * 0.2f,
+                        MathF.Max(projectile.velocity.Y * 0.2f, 0.4f)),
+                    BloodTint * (0.55f * BloodFade), Main.rand.NextFloat(0.24f, 0.4f))
+                    ?.Configure(Main.rand.Next(16, 26), 0f);
+            }
+        }
+
+        public override void ModifyHitNPC(Projectile projectile, NPC target,
+            ref NPC.HitModifiers modifiers) {
+            if (BloodLakeTime > 0) {
+                modifiers.FinalDamage *= KikasaMinionDrown.BloodDamageMul;
+            }
+        }
+
+        public override bool PreDraw(Projectile projectile, ref Color lightColor) {
+            if (LakeHidden) {
+                return false;
+            }
+            if (BloodLakeTime > 0) {
+                //浸血外观：向血湖色板压染，鬼雨异化随观看域冷化
+                lightColor = Color.Lerp(lightColor, BloodTint, 0.32f * BloodFade);
+            }
+            return true;
+        }
     }
 }

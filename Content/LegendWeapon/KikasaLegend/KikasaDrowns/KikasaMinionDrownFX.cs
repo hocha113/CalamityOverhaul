@@ -16,8 +16,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
     /// 编舞语法承沉溺：合围涟漪 → 错帧破水 → 甩到卷指攥中 → 绷紧拍 →
     /// 拖入（臂收缩绷直）→ 过水线水花墨雾（真身在此帧隐去，溅水掩护）→ 手化水退场。
     /// 目标真身走普通弹幕层绘制且全程在场，手一律画在其上（无前后分层）；
-    /// 放还的浮出水花走延迟队列错拍。绘制由 <see cref="KikasaDrownFX.Draw"/> 转来，
-    /// 与沉溺鬼手同一批次口径
+    /// 放还浮出与洗礼吐出的出水水花共用延迟队列（吐出拍水花更大、血珠更多）。
+    /// 绘制由 <see cref="KikasaDrownFX.Draw"/> 转来，与沉溺鬼手同一批次口径
     /// </summary>
     internal static class KikasaMinionDrownFX
     {
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
         private static readonly List<WaveShow> shows = [];
 
-        //放还浮出的错拍队列
+        //放还浮出/吐出的错拍队列
         private struct EmergenceBeat
         {
             public uint Due;
@@ -55,6 +55,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             public float Scale;
             public bool Surface;
             public int Index;
+            /// <summary>湖水吐出拍：比温和放还多一口气</summary>
+            public bool Spit;
         }
 
         private static readonly List<EmergenceBeat> emergences = [];
@@ -180,20 +182,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             }
         }
 
-        /// <summary>放还浮出入队：按序错 4 帧，一串水花不糊成一声</summary>
+        /// <summary>放还浮出入队：按序错 4 帧，一串水花不糊成一声；
+        /// 吐出拍的错拍规则层已走完，立即到期</summary>
         internal static void QueueEmergence(int ownerWho, Vector2 pos, float lakeY,
-            float scale, bool surface, int index) {
+            float scale, bool surface, int index, bool spit = false) {
             if (Main.dedServ) {
                 return;
             }
             emergences.Add(new EmergenceBeat {
-                Due = (uint)Main.GameUpdateCount + (uint)(index * 4),
+                Due = (uint)Main.GameUpdateCount + (spit ? 0u : (uint)(index * 4)),
                 OwnerWho = ownerWho,
                 Pos = pos,
                 LakeY = lakeY,
                 Scale = scale,
                 Surface = surface,
                 Index = index,
+                Spit = spit,
             });
         }
 
@@ -394,17 +398,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 }
                 if (beat.Surface) {
                     Vector2 hit = new(beat.Pos.X, beat.LakeY);
-                    KikasaDomainDeco.SplashAt(hit, (int)(5 + beat.Scale * 3f));
-                    KikasaDomainDeco.RippleAt(hit, 0.9f * beat.Scale);
+                    //吐出拍比放还多一口气：水花更大、血珠更多、水声更冲
+                    float force = beat.Spit ? 1.35f : 1f;
+                    KikasaDomainDeco.SplashAt(hit, (int)((5 + beat.Scale * 3f) * force));
+                    KikasaDomainDeco.RippleAt(hit, 0.9f * beat.Scale * force);
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
-                        Volume = 0.5f,
-                        Pitch = -0.15f + beat.Index * 0.03f,
+                        Volume = beat.Spit ? 0.6f : 0.5f,
+                        Pitch = (beat.Spit ? 0.05f : -0.15f) + beat.Index * 0.03f,
                         MaxInstances = 3
                     }, hit);
-                    for (int k = 0; k < 3; k++) {
+                    int drops = beat.Spit ? 5 : 3;
+                    for (int k = 0; k < drops; k++) {
                         PRTLoader.NewParticle<PRT_GhostRainDrop>(
                             hit + new Vector2(Main.rand.NextFloat(-10f, 10f), -4f),
-                            new Vector2(Main.rand.NextFloat(-1.2f, 1.2f), -Main.rand.NextFloat(1.6f, 3f)),
+                            new Vector2(Main.rand.NextFloat(-1.2f, 1.2f),
+                                -Main.rand.NextFloat(1.6f, 3f) * force),
                             BloodTint * 0.5f, Main.rand.NextFloat(0.3f, 0.5f))
                             ?.Configure(Main.rand.Next(12, 20), 0f);
                     }

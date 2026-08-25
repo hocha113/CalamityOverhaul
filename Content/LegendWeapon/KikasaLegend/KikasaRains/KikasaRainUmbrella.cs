@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTeleports;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,11 +16,18 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 {
     /// <summary>
-    /// 悬伞:普攻持有体。撑伞拍脱手上浮至头顶悬点绕柄自旋,
-    /// 按住左键期间按节拍自伞缘甩出大墨滴(<see cref="KikasaInkDrop"/>),
-    /// 每拍出手前有一记反向蓄势(与领域倒转同一套动作语法),松手收伞落回手中。
+    /// 悬伞:普攻持有体,持伞常驻(由 CWRItem.heldProjType 的持有生成机制维持)。
+    /// 常态悬在玩家背肩上方随行(Idle);检测到近敌且玩家未主动攻击时,
+    /// 自行往目标方向倾靠过去按放缓节拍抛洒墨滴(AutoRain);
+    /// 按住左键飞到头顶悬点绕柄自旋,按节拍自伞缘甩出大墨滴(<see cref="KikasaInkDrop"/>),
+    /// 每拍出手前有一记反向蓄势(与领域倒转同一套动作语法);右键倒撑蓄墨(Flip/Pour)。
+    /// 所有转移实时直入无前后摇:攻击态间直接变形,归位途中任意帧可再入,
+    /// 只有墨瀑倾覆本体(猛倾+冲刷)不可打断。
+    /// 鬼域传送(<see cref="KikasaTeleports.KikasaTeleport"/>)期间由本伞亲自执行:
+    /// 检测到所有者的水舞台弹幕即入 Teleport 态跟拍,扎水→隐没→彼岸破水,
+    /// 全程只有这一把伞;传送是本体位移,优先级高于倾覆锁。
     /// 状态机由所有者的原版同步控制位驱动,各端自走,无自定义网络包;
-    /// 蓄力倒撑形态(ai[0]=1)由重击模块接管
+    /// 自动索敌的交战/换锁只在所有者端决断,经 State 与 ai[0] 的 netUpdate 补包收敛
     /// </summary>
     internal class KikasaRainUmbrella : ModProjectile
     {
@@ -26,7 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         //==================== 时序与几何 ====================
 
-        /// <summary>撑伞上浮帧数</summary>
+        /// <summary>初次部署上浮帧数(刚拿起伞,从手中升到随行位)</summary>
         public const int RiseFrames = 16;
 
         /// <summary>出手前反向蓄势帧数</summary>
@@ -53,10 +62,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private const float CursorSeekRange = 520f;
         private const float FallbackSeekRange = 1100f;
 
-        private enum UmbrellaState : byte { Rise, Hover, Recall, Flip, Pour }
+        /// <summary>自动索敌半径与交战节奏:确认延迟/脱战再交战冷却/扫描步进(帧)</summary>
+        private const float AutoSeekRange = 620f;
+        private const int AutoEngageDelay = 40;
+        private const int AutoReengageCooldown = 30;
+        private const int AutoScanCadence = 8;
 
-        /// <summary>生成模式:0=墨雨,1=蓄力倒撑(重击模块接线)</summary>
-        private ref float ModeAi => ref Projectile.ai[0];
+        /// <summary>自动攻击节拍放缓倍率:闲时自卫的火力让位于手动指挥</summary>
+        private const float AutoRainTempoMul = 1.5f;
+
+        /// <summary>常态随行锚点:背肩侧偏与悬高</summary>
+        private const float IdleBackOffset = 30f;
+        private const float IdleHeight = 58f;
+
+        private enum UmbrellaState : byte { Rise, Hover, Recall, Flip, Pour, Idle, AutoRain, Teleport }
+
+        /// <summary>自动索敌目标通道:存 whoAmI+1,0=无锁;随生成包与 netUpdate 补包同步</summary>
+        private ref float AutoTargetAi => ref Projectile.ai[0];
+
+        /// <summary>当前自动锁定目标,-1=无</summary>
+        private int AutoTargetWho => (int)Projectile.ai[0] - 1;
 
         private UmbrellaState State {
             get => (UmbrellaState)Projectile.ai[1];
@@ -71,7 +96,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         private ref float StateTimer => ref Projectile.ai[2];
 
+        /// <summary>攻击态(含自动交战):祭符等"撑伞期间"语义读这里,常驻的闲伞不算</summary>
+        internal bool IsRaining => IsAttackState(State);
+
+        private static bool IsAttackState(UmbrellaState state)
+            => state is UmbrellaState.Hover or UmbrellaState.Flip
+            or UmbrellaState.Pour or UmbrellaState.AutoRain;
+
+        /// <summary>该玩家的常驻伞此刻是否在攻击态:"撑伞期间"语义的对外口径(伞常驻后不能再看在场数)</summary>
+        internal static bool OwnerIsRaining(Player owner) {
+            int type = ModContent.ProjectileType<KikasaRainUmbrella>();
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile proj = Main.projectile[i];
+                if (proj.active && proj.owner == owner.whoAmI && proj.type == type
+                    && proj.ModProjectile is KikasaRainUmbrella umbrella) {
+                    return umbrella.IsRaining;
+                }
+            }
+            return false;
+        }
+
         private Player Owner => Main.player[Projectile.owner];
+
+        //会话与自动索敌的端本地量:交战决断只在所有者端跑,旁观端跟同步状态走
+        private UmbrellaState prevState;
+        private int autoScanTimer;
+        private int idleTime;
+        private int manualCooldown;
 
         //表现状态:各端本地自走的连续量,不需同步
         private float spinPhase;
@@ -110,6 +161,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private float pourAim = MathHelper.PiOver2;
         /// <summary>释放瞬间锁定的蓄力档</summary>
         private float pourFill;
+
+        //鬼域传送跟拍
+        /// <summary>传送隐显乘子:没入水中=0,常态=1,乘进伞体与伞下鬼的绘制</summary>
+        private float teleportFade = 1f;
+        /// <summary>扎水拍只放一次</summary>
+        private bool teleportPlunged;
+        /// <summary>破水拍只放一次</summary>
+        private bool teleportPopped;
 
         //唤雨符:每 AI 帧解析一次的档与派发器快照(空绳零开销),绘制线程复用上一帧
         private KikasaTalismanProfile talismanProfile = KikasaTalismanProfile.Identity;
@@ -153,6 +212,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             dropCount = VolleyDropCount(owner) + KikasaOverride.GetDropBonus(slots);
             stagger = KikasaOverride.GetDropStagger(slots);
             float tempoMul = talismanProfile.RainTempoMul;
+            if (State == UmbrellaState.AutoRain) {
+                //自动档放缓节拍:闲时自卫的火力让位于手动指挥
+                tempoMul *= AutoRainTempoMul;
+            }
             period = Math.Max((int)MathF.Round(KikasaOverride.GetVolleyPeriod(slots) * tempoMul),
                 WindupFrames + dropCount * stagger + 4);
             ghostVolley = slots >= KikasaOverride.TierGhostVolley
@@ -187,7 +250,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         public override void AI() {
             Player owner = Owner;
-            if (owner?.active != true || owner.dead || owner.CCed
+            if (owner?.active != true || owner.dead
                 || owner.HeldItem?.type != ModContent.ItemType<KikasaItem>()) {
                 //持有条件破裂:人已不在持伞,直接谢幕不走收伞弧线
                 Projectile.Kill();
@@ -195,6 +258,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
             Projectile.timeLeft = 2;
             Projectile.velocity = Vector2.Zero;
+            if (Main.myPlayer == Projectile.owner) {
+                //持有生成只带基伤,逐帧补活伤(等级表/召唤加成/前缀);滴在所有者端按此出伤
+                Projectile.damage = owner.GetWeaponDamage(owner.HeldItem);
+            }
 
             //唤雨符快照:一帧一解,后续节拍/滴生成/挂钩全部复用
             talismanProfile = KikasaTalismanCombat.Resolve(owner.HeldItem);
@@ -202,13 +269,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
             bobPhase += 0.07f;
             UpdateLean(owner);
+            if (manualCooldown > 0) {
+                manualCooldown--;
+            }
 
             if (StateTimer == 0f && State == UmbrellaState.Rise) {
-                //撑伞拍:伞骨闷扫+一层薄水
+                //初次部署拍:伞骨闷扫+一层薄水
                 KikasaInk.Play(KikasaInk.UmbrellaWhoosh, Projectile.Center, 0.62f, -0.22f, 2);
                 KikasaInk.Play(SoundID.SplashWeak, Projectile.Center, 0.4f, -0.15f, 2);
-                //起伞挂钩(霎首拍预置/霁清零等),各端同拍
-                talismanHooks.OnRainStart(Projectile);
+            }
+
+            //会话切拍:非攻击态⇄攻击态的边沿=一场雨的开拍/收拍,各端从状态变化同拍推得
+            //(自动脱战只在所有者端决断转移,旁观端经补包在这里补齐起点/挂钩/演出)
+            UmbrellaState state = State;
+            if (state != prevState) {
+                if (IsAttackState(state) && !IsAttackState(prevState)) {
+                    OnAttackSessionStart();
+                }
+                else if (!IsAttackState(state) && IsAttackState(prevState)) {
+                    //脱离攻击记冷却:自动索敌稍候再接手,松手的意图先被尊重
+                    manualCooldown = AutoReengageCooldown;
+                    OnAttackSessionEnd();
+                }
+                if (state == UmbrellaState.Recall) {
+                    //远端经补包进归位时,本地兜底一个弧线起点
+                    recallFrom = Projectile.Center;
+                }
+                idleTime = 0;
+                autoScanTimer = 0;
+                prevState = state;
+            }
+
+            //失能/入梦不销毁:常驻的伞只是收工归位,攻击态一律打回
+            //(梦里 sustain 位还挂着也不许倒撑蓄下去,禁弹面只兜生成,姿态这里管)
+            if ((owner.CCed || KikasaDream.DreamWorldAt(owner.Center)) && IsAttackState(State)) {
+                BeginRecall();
+            }
+
+            //鬼域传送夺伞:各端看到所有者的水舞台弹幕即入态跟拍,无自定义包;
+            //传送是本体位移,优先级高于倾覆锁
+            if (State != UmbrellaState.Teleport
+                && KikasaTeleportProj.FindFor(Projectile.owner) != null) {
+                State = UmbrellaState.Teleport;
             }
 
             switch (State) {
@@ -227,6 +329,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 case UmbrellaState.Pour:
                     UpdatePour(owner);
                     break;
+                case UmbrellaState.Idle:
+                    UpdateIdle(owner);
+                    break;
+                case UmbrellaState.AutoRain:
+                    UpdateAutoRain(owner);
+                    break;
+                case UmbrellaState.Teleport:
+                    UpdateTeleport(owner);
+                    break;
             }
             StateTimer++;
         }
@@ -237,17 +348,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             => owner.MountedCenter + new Vector2(owner.velocity.X * 2.2f,
                 -HoverHeight * talismanProfile.HoverHeightMul + MathF.Sin(bobPhase) * 6f - recoil);
 
+        /// <summary>初次部署:刚拿起伞,从手中升到随行位;攻击输入任意帧截断直入攻击态</summary>
         private void UpdateRise(Player owner) {
             float t = MathHelper.Clamp(StateTimer / (float)CurrentRiseFrames, 0f, 1f);
             //EaseOutBack:上浮带过冲再回落定位
             const float c1 = 1.70158f;
             const float c3 = c1 + 1f;
             float e = 1f + c3 * MathF.Pow(t - 1f, 3f) + c1 * (t - 1f) * (t - 1f);
-            Projectile.Center = Vector2.Lerp(owner.MountedCenter, HoverAnchor(owner), e);
-            visualScale = MathHelper.Lerp(0.55f, 1f, MathHelper.Clamp(t * 1.4f, 0f, 1f));
+            Projectile.Center = Vector2.Lerp(owner.MountedCenter, IdleAnchor(owner), e);
+            visualScale = MathHelper.Lerp(0.55f, 0.8f, MathHelper.Clamp(t * 1.4f, 0f, 1f));
 
             //自旋从零加速起转
-            spinSpeed = MathHelper.Lerp(spinSpeed, 0.4f, 0.09f);
+            spinSpeed = MathHelper.Lerp(spinSpeed, 0.25f, 0.09f);
             spinPhase += spinSpeed;
 
             if (!Main.dedServ) {
@@ -271,35 +383,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 }
             }
 
-            if (!HoldingAttack(owner)) {
-                BeginRecall();
+            if (TryEnterCommandedAttack(owner)) {
                 return;
             }
             if (StateTimer >= CurrentRiseFrames) {
-                if (ModeAi > 0.5f) {
-                    State = UmbrellaState.Flip;
-                    //翻成倒扣:伞面一拧
-                    KikasaInk.Play(KikasaInk.UmbrellaWhoosh, Projectile.Center, 0.7f, -0.45f, 2);
-                }
-                else {
-                    State = UmbrellaState.Hover;
-                }
+                State = UmbrellaState.Idle;
             }
         }
 
         private void UpdateHover(Player owner) {
             Projectile.Center = Vector2.Lerp(Projectile.Center, HoverAnchor(owner), 0.22f);
             visualScale = MathHelper.Lerp(visualScale, 1f, 0.2f);
+            wetness = MathHelper.Lerp(wetness, 1f, 0.2f);
             flipT = MathHelper.Lerp(flipT, 0f, 0.2f);
             pourTilt = MathHelper.Lerp(pourTilt, 0f, 0.3f);
             UpdateEye(owner);
 
-            if (!HoldingAttack(owner)) {
-                BeginRecall();
+            if (!owner.channel) {
+                //松左即走:按着右键直接变形倒撑,否则归位;全程无死帧
+                if (owner.controlUseTile && !KikasaDream.DreamWorldAt(owner.Center)) {
+                    State = UmbrellaState.Flip;
+                    //翻成倒扣:伞面一拧
+                    KikasaInk.Play(KikasaInk.UmbrellaWhoosh, Projectile.Center, 0.7f, -0.45f, 2);
+                }
+                else {
+                    BeginRecall();
+                }
                 return;
             }
 
-            //节拍:回拉蓄势 → 出手窗猛甩 → 回稳;滴数与周期随域形态和伞下鬼数走
+            TickVolleyBeat(owner, -1);
+        }
+
+        /// <summary>
+        /// 墨雨节拍主体:回拉蓄势 → 出手窗猛甩 → 回稳;滴数与周期随域形态和伞下鬼数走。
+        /// Hover 与 AutoRain 共用:forcedTarget≥0 时全部滴指向该目标(自动交战),
+        /// 否则按光标就近轮转
+        /// </summary>
+        private void TickVolleyBeat(Player owner, int forcedTarget) {
             SolveVolleyRhythm(owner, out int period, out int dropCount, out int stagger, out bool ghostVolley);
             int slots = KikasaOverride.GetSlotCount(owner);
             int beat = (int)(StateTimer % period);
@@ -350,7 +471,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 //众鬼齐掷:出手拍全鬼同帧各掷一滴,超出常规滴数的那些是鬼滴
                 if (beat == WindupFrames) {
                     for (int i = 0; i < slots; i++) {
-                        FireDrop(i, ghostDrop: i >= dropCount, ghostVolley: true);
+                        FireDrop(i, ghostDrop: i >= dropCount, ghostVolley: true, forcedTarget: forcedTarget);
                     }
                 }
             }
@@ -358,14 +479,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 //出手窗:错拍连甩
                 if (beat >= WindupFrames && beat < WindupFrames + dropCount * stagger
                     && (beat - WindupFrames) % stagger == 0) {
-                    FireDrop((beat - WindupFrames) / stagger);
+                    FireDrop((beat - WindupFrames) / stagger, forcedTarget: forcedTarget);
                 }
                 //二鬼帮衬:窗口收尾再补一颗侧掷鬼滴,轮转槽位天然掷向下一个目标;
                 //节拍解 DropCount=0(霅停雨拍等)时本拍整体无滴,帮衬滴一并停手,
                 //否则出手条件退化成 beat==WindupFrames 照样漏滴
                 if (dropCount > 0 && slots >= KikasaOverride.TierGhostAssist
                     && beat == WindupFrames + dropCount * stagger) {
-                    FireDrop(dropCount, ghostDrop: true);
+                    FireDrop(dropCount, ghostDrop: true, forcedTarget: forcedTarget);
                 }
             }
         }
@@ -379,25 +500,215 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             return DropsPerVolley;
         }
 
+        /// <summary>归位:攻击态收场,弧线滑回随行位;不销毁,任意帧可被新输入截回攻击</summary>
         private void UpdateRecall(Player owner) {
+            if (TryEnterCommandedAttack(owner)) {
+                return;
+            }
             float t = MathHelper.Clamp(StateTimer / (float)RecallFrames, 0f, 1f);
-            //二次贝塞尔回手弧线,控制点在头顶侧上方
-            Vector2 hand = owner.MountedCenter + new Vector2(owner.direction * 8f, -4f);
-            Vector2 ctrl = (recallFrom + hand) * 0.5f + new Vector2(0f, -46f);
+            //二次贝塞尔回位弧线,控制点在侧上方
+            Vector2 home = IdleAnchor(owner);
+            Vector2 ctrl = (recallFrom + home) * 0.5f + new Vector2(0f, -46f);
             float u = 1f - t;
-            Projectile.Center = u * u * recallFrom + 2f * u * t * ctrl + t * t * hand;
-            visualScale = MathHelper.Lerp(visualScale, 0.5f, 0.14f);
-            spinSpeed = MathHelper.Lerp(spinSpeed, 0.05f, 0.2f);
+            Projectile.Center = u * u * recallFrom + 2f * u * t * ctrl + t * t * home;
+            visualScale = MathHelper.Lerp(visualScale, 0.8f, 0.14f);
+            spinSpeed = MathHelper.Lerp(spinSpeed, 0.06f, 0.2f);
             spinPhase += spinSpeed;
-            //水膜退场,眼睛合上,翻转回正
-            wetness = MathHelper.Lerp(wetness, 0.15f, 0.12f);
+            //水膜退到闲置薄膜,眼睛合上,翻转回正
+            wetness = MathHelper.Lerp(wetness, 0.5f, 0.12f);
             eyeOpen = MathHelper.Lerp(eyeOpen, 0f, 0.3f);
             flipT = MathHelper.Lerp(flipT, 0f, 0.22f);
             pourTilt = MathHelper.Lerp(pourTilt, 0f, 0.3f);
 
             if (t >= 1f) {
-                Projectile.Kill();
+                State = UmbrellaState.Idle;
             }
+        }
+
+        //==================== 常态随行与自动索敌 ====================
+
+        /// <summary>随行锚点:背肩上方,配合慢速 lerp 移动时自然拖在身后</summary>
+        private Vector2 IdleAnchor(Player owner)
+            => owner.MountedCenter + new Vector2(-owner.direction * IdleBackOffset,
+                -IdleHeight + MathF.Sin(bobPhase) * 5f);
+
+        /// <summary>输入抢占:右键优先倒撑,左键墨雨;各端从同步控制位同拍直入,无前摇</summary>
+        private bool TryEnterCommandedAttack(Player owner) {
+            if (owner.CCed || KikasaDream.DreamWorldAt(owner.Center)) {
+                return false;
+            }
+            if (owner.controlUseTile) {
+                State = UmbrellaState.Flip;
+                return true;
+            }
+            if (owner.channel) {
+                State = UmbrellaState.Hover;
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 物品使用入口(所有者端):指挥常驻伞直入攻击态;左=墨雨,右=倒撑蓄墨。
+        /// 墨瀑倾覆本体(猛倾+冲刷)不被打断,倒完由持键自然接续
+        /// </summary>
+        internal void CommandAttack(bool alt) {
+            if (State == UmbrellaState.Pour
+                && StateTimer <= PourTiltFrames + PourHoldFrames) {
+                return;
+            }
+            State = alt ? UmbrellaState.Flip : UmbrellaState.Hover;
+        }
+
+        /// <summary>
+        /// 一场雨的开拍:非攻击态进攻击态时各端同拍派发。
+        /// 撑伞拍音效/水膜从旧上浮段挪到这里;起雨挂钩(霎首拍预置/霁清零等)同点
+        /// </summary>
+        private void OnAttackSessionStart() {
+            wetness = MathF.Max(wetness, 0.85f);
+            KikasaInk.Play(KikasaInk.UmbrellaWhoosh, Projectile.Center, 0.62f, -0.22f, 2);
+            KikasaInk.Play(SoundID.SplashWeak, Projectile.Center, 0.4f, -0.15f, 2);
+            talismanHooks.OnRainStart(Projectile);
+            if (!Main.dedServ) {
+                //一圈水膜甩出去:这就是撑伞拍
+                for (int i = 0; i < 10; i++) {
+                    Vector2 dir = (MathHelper.TwoPi * i / 10f).ToRotationVector2();
+                    PRTLoader.NewParticle<PRT_KikasaInkBead>(
+                        Projectile.Center + dir * RimRadius * 0.5f,
+                        dir * Main.rand.NextFloat(2.4f, 4f) - Vector2.UnitY * 1.2f,
+                        KikasaInk.InkDeep, Main.rand.NextFloat(0.32f, 0.5f))?.Configure(Main.rand.Next(16, 26));
+                }
+            }
+        }
+
+        /// <summary>常态随行:半收的伞浮在背肩上方,留意四周;有敌且无人指使时自行接战</summary>
+        private void UpdateIdle(Player owner) {
+            idleTime++;
+            Vector2 home = IdleAnchor(owner);
+            Projectile.Center = Vector2.Lerp(Projectile.Center, home, 0.085f);
+            //拴绳:高速位移(钩爪/坐骑/传送)时慢跟会被甩出屏幕,超距硬拉回绳长内
+            Vector2 offset = Projectile.Center - home;
+            if (offset.Length() > 220f) {
+                Projectile.Center = home + offset.SafeNormalize(Vector2.Zero) * 220f;
+            }
+            visualScale = MathHelper.Lerp(visualScale, 0.8f, 0.12f);
+            wetness = MathHelper.Lerp(wetness, 0.5f, 0.06f);
+            flipT = MathHelper.Lerp(flipT, 0f, 0.2f);
+            pourTilt = MathHelper.Lerp(pourTilt, 0f, 0.3f);
+            spinSpeed = MathHelper.Lerp(spinSpeed, 0.06f, 0.1f);
+            spinPhase += spinSpeed;
+            beatSquash = MathHelper.Lerp(beatSquash, 0f, 0.3f);
+            recoil *= 0.8f;
+            UpdateEye(owner);
+
+            //闲滴:泡透的伞一直在滴,只是慢些
+            if (!Main.dedServ && Main.rand.NextBool(48)) {
+                float xOff = Main.rand.NextFloat(-1f, 1f) * RimRadius * visualScale;
+                PRTLoader.NewParticle<PRT_KikasaInkDrip>(
+                    Projectile.Center + new Vector2(xOff, 6f), Vector2.Zero,
+                    KikasaInk.InkBody, Main.rand.NextFloat(0.4f, 0.65f))?.Configure(Main.rand.Next(24, 36));
+            }
+
+            if (TryEnterCommandedAttack(owner)) {
+                return;
+            }
+
+            //自动索敌:所有者端决断,旁观端等 State/ai[0] 补包;
+            //交战延迟与脱战冷却让"松手"的意图先被尊重
+            if (Main.myPlayer != Projectile.owner
+                || owner.CCed || KikasaDream.DreamWorldAt(owner.Center)
+                || idleTime < AutoEngageDelay || manualCooldown > 0) {
+                return;
+            }
+            if (++autoScanTimer < AutoScanCadence) {
+                return;
+            }
+            autoScanTimer = 0;
+            int who = FindAutoTarget(owner);
+            if (who >= 0) {
+                AutoTargetAi = who + 1;
+                State = UmbrellaState.AutoRain;
+            }
+        }
+
+        /// <summary>自动索敌:召唤师目标标记优先,其余按离玩家最近;要求伞到目标视线通畅</summary>
+        private int FindAutoTarget(Player owner) {
+            int marked = owner.MinionAttackTargetNPC;
+            if (marked >= 0 && marked < Main.maxNPCs) {
+                NPC npc = Main.npc[marked];
+                if (npc?.active == true && npc.CanBeChasedBy(Projectile)
+                    && Vector2.Distance(npc.Center, owner.Center) < AutoSeekRange * 1.4f
+                    && Collision.CanHitLine(Projectile.Center, 1, 1, npc.position, npc.width, npc.height)) {
+                    return marked;
+                }
+            }
+            int best = -1;
+            float bestDist = AutoSeekRange;
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (npc?.active != true || !npc.CanBeChasedBy(Projectile)) {
+                    continue;
+                }
+                float dist = Vector2.Distance(npc.Center, owner.Center);
+                if (dist < bestDist
+                    && Collision.CanHitLine(Projectile.Center, 1, 1, npc.position, npc.width, npc.height)) {
+                    bestDist = dist;
+                    best = i;
+                }
+            }
+            return best;
+        }
+
+        /// <summary>
+        /// 自动交战:往目标方向倾靠一段(始终拴在玩家身边),按放缓节拍抛洒;
+        /// 玩家任何主动输入立刻接管转攻光标,攻击流不断拍
+        /// </summary>
+        private void UpdateAutoRain(Player owner) {
+            if (TryEnterCommandedAttack(owner)) {
+                return;
+            }
+
+            NPC target = AutoTargetWho >= 0 && AutoTargetWho < Main.maxNPCs
+                ? Main.npc[AutoTargetWho] : null;
+            bool valid = target?.active == true && target.CanBeChasedBy(Projectile)
+                && Vector2.Distance(target.Center, owner.Center) < AutoSeekRange * 1.5f;
+            //视线每 30 帧复核(所有者端):目标钻进地形就换锁或收场,不对着墙白抛
+            if (valid && Main.myPlayer == Projectile.owner && (int)StateTimer % 30 == 29
+                && !Collision.CanHitLine(Projectile.Center, 1, 1,
+                    target.position, target.width, target.height)) {
+                valid = false;
+            }
+            bool banned = owner.CCed || KikasaDream.DreamWorldAt(owner.Center);
+            if (!valid || banned) {
+                if (Main.myPlayer == Projectile.owner) {
+                    int next = banned ? -1 : FindAutoTarget(owner);
+                    if (next >= 0) {
+                        //换锁:目标没了顺手找下一个,交战不散场
+                        AutoTargetAi = next + 1;
+                        Projectile.netUpdate = true;
+                    }
+                    else {
+                        BeginRecall();
+                    }
+                }
+                //旁观端等所有者的换锁/归位补包,这帧原地稳住
+                return;
+            }
+
+            //倾靠锚点:从头顶悬点往目标上方靠过去一段,拴绳护住"跟着玩家"的身份
+            Vector2 overhead = HoverAnchor(owner);
+            Vector2 toTarget = target.Center + new Vector2(0f, -140f) - overhead;
+            float leanDist = MathF.Min(toTarget.Length() * 0.45f, 170f);
+            Vector2 anchor = overhead + toTarget.SafeNormalize(Vector2.Zero) * leanDist;
+            Projectile.Center = Vector2.Lerp(Projectile.Center, anchor, 0.16f);
+
+            visualScale = MathHelper.Lerp(visualScale, 1f, 0.16f);
+            wetness = MathHelper.Lerp(wetness, 1f, 0.15f);
+            flipT = MathHelper.Lerp(flipT, 0f, 0.2f);
+            pourTilt = MathHelper.Lerp(pourTilt, 0f, 0.3f);
+            UpdateEye(owner);
+
+            TickVolleyBeat(owner, target.whoAmI);
         }
 
         //==================== 倒撑重击:蓄墨与倾覆 ====================
@@ -453,9 +764,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
 
             if (!owner.controlUseTile) {
-                //一档都不到就松手:忍住不泼,原路收伞
                 if (ChargeFill < 0.2f) {
-                    BeginRecall();
+                    //一档都不到就松手:忍住不泼;按着左键直接转墨雨,否则归位
+                    if (owner.channel && !owner.CCed && !KikasaDream.DreamWorldAt(owner.Center)) {
+                        State = UmbrellaState.Hover;
+                    }
+                    else {
+                        BeginRecall();
+                    }
                     return;
                 }
                 BeginPour(owner);
@@ -547,13 +863,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 }
             }
 
-            if (StateTimer >= PourTiltFrames + PourHoldFrames + PourShakeFrames) {
-                if (owner.controlUseTile) {
+            //甩干回正只是尾巴:墨已倒完,新输入任意帧截断直入下一动作
+            bool tailDone = StateTimer >= PourTiltFrames + PourHoldFrames + PourShakeFrames;
+            if (shaking || tailDone) {
+                bool free = !owner.CCed && !KikasaDream.DreamWorldAt(owner.Center);
+                if (free && owner.controlUseTile) {
                     //按着不放:从空碗重新蓄
                     State = UmbrellaState.Flip;
                     KikasaInk.Play(KikasaInk.UmbrellaWhoosh, Projectile.Center, 0.5f, -0.35f, 2);
+                    return;
                 }
-                else {
+                if (free && owner.channel) {
+                    State = UmbrellaState.Hover;
+                    return;
+                }
+                if (tailDone) {
                     BeginRecall();
                 }
             }
@@ -563,17 +887,138 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private Vector2 BowlMouthPos()
             => Projectile.Center + new Vector2(0f, -4f * visualScale);
 
-        /// <summary>攻击是否仍被按住:墨雨=左键 channel;倒撑模式由重击模块接管</summary>
-        private bool HoldingAttack(Player owner)
-            => ModeAi < 0.5f ? owner.channel : owner.controlUseTile;
+        //==================== 鬼域传送:夺伞跟拍 ====================
 
+        /// <summary>
+        /// 传送跟拍:水舞台(<see cref="KikasaTeleportProj"/>)是同一根时间轴的权威,
+        /// 各端看到它即入态、它谢幕即出态。去程猛扎此岸潭口,
+        /// 隐没期瞬挪彼岸潭口候场,破水带过冲弹回悬点;
+        /// 出态直入下一动作(与其余转移同款,无死帧),观感始终一把伞
+        /// </summary>
+        private void UpdateTeleport(Player owner) {
+            KikasaTeleportProj stage = KikasaTeleportProj.FindFor(Projectile.owner);
+            if (stage == null) {
+                //舞台谢幕:透明度还清,直入下一动作
+                teleportFade = 1f;
+                if (!TryEnterCommandedAttack(owner)) {
+                    State = UmbrellaState.Idle;
+                }
+                return;
+            }
+            if (StateTimer == 0f) {
+                recallFrom = Projectile.Center;
+                teleportPlunged = false;
+                teleportPopped = false;
+            }
+            //传送期姿态回正:伞就是一支扎进水里的镖
+            flipT = MathHelper.Lerp(flipT, 0f, 0.3f);
+            pourTilt = MathHelper.Lerp(pourTilt, 0f, 0.35f);
+            beatSquash = MathHelper.Lerp(beatSquash, 0f, 0.3f);
+            recoil *= 0.8f;
+            wetness = 1f;
+
+            if (stage.UmbrellaEmerging) {
+                UpdateTeleportPop(owner, stage);
+                return;
+            }
+            if (stage.UmbrellaHidden) {
+                //没入水中:扎水拍在入水沿放一次,随后隐身瞬挪彼岸潭口候场
+                if (!teleportPlunged) {
+                    teleportPlunged = true;
+                    TeleportPlungeBeat(stage.OriginPoolPos);
+                }
+                teleportFade = 0f;
+                Projectile.Center = stage.DestPoolPos + new Vector2(0f, 4f);
+                visualScale = 0.5f;
+                spinSpeed = 0.9f;
+                spinPhase += spinSpeed;
+                return;
+            }
+            //去程:加速扎向此岸潭口,伞面收拢、转速拉满,拖出俯冲水线
+            float dive = stage.UmbrellaDiveT;
+            float dIn = dive * dive;
+            Projectile.Center = Vector2.Lerp(recallFrom,
+                stage.OriginPoolPos + new Vector2(0f, 2f), dIn);
+            teleportFade = 1f;
+            visualScale = MathHelper.Lerp(visualScale, 0.5f, 0.3f);
+            spinSpeed = MathHelper.Lerp(spinSpeed, 1.05f, 0.4f);
+            spinPhase += spinSpeed;
+            if (!Main.dedServ) {
+                Vector2 wake = (recallFrom - stage.OriginPoolPos).SafeNormalize(Vector2.Zero);
+                PRTLoader.NewParticle<PRT_KikasaInkBead>(
+                    Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
+                    wake * Main.rand.NextFloat(1f, 2.2f), KikasaInk.InkBody,
+                    Main.rand.NextFloat(0.26f, 0.42f))?.Configure(Main.rand.Next(10, 16), 0.12f);
+            }
+        }
+
+        /// <summary>扎水拍:入水沿的一声闷水与一蓬下压碎珠</summary>
+        private void TeleportPlungeBeat(Vector2 poolPos) {
+            KikasaInk.Play(SoundID.SplashWeak, poolPos, 0.5f, -0.2f, 3);
+            if (Main.dedServ) {
+                return;
+            }
+            for (int i = 0; i < 8; i++) {
+                PRTLoader.NewParticle<PRT_KikasaInkBead>(
+                    poolPos + new Vector2(Main.rand.NextFloat(-16f, 16f), -2f),
+                    new Vector2(Main.rand.NextFloat(-2.4f, 2.4f), -Main.rand.NextFloat(1f, 3.4f)),
+                    KikasaInk.InkDeep, Main.rand.NextFloat(0.26f, 0.42f))?.Configure(Main.rand.Next(12, 20));
+            }
+        }
+
+        /// <summary>破水弹回:EaseOutBack 过冲回悬点,伞面回张、鬼眼出水全睁,伞缘持续甩水</summary>
+        private void UpdateTeleportPop(Player owner, KikasaTeleportProj stage) {
+            if (!teleportPopped) {
+                teleportPopped = true;
+                eyeOpen = 1f;
+                eyeGlow = 1f;
+                KikasaInk.Play(KikasaInk.UmbrellaWhoosh, stage.DestPoolPos, 0.55f, 0.15f, 3);
+                if (!Main.dedServ) {
+                    for (int i = 0; i < 10; i++) {
+                        Vector2 dir = (MathHelper.TwoPi * i / 10f).ToRotationVector2();
+                        PRTLoader.NewParticle<PRT_KikasaInkBead>(
+                            stage.DestPoolPos + dir * 10f - Vector2.UnitY * 8f,
+                            dir * Main.rand.NextFloat(2.6f, 4.6f) - Vector2.UnitY * 2f,
+                            Main.rand.NextBool(3) ? KikasaInk.BloodCore : KikasaInk.InkDeep,
+                            Main.rand.NextFloat(0.3f, 0.48f))?.Configure(Main.rand.Next(16, 26));
+                    }
+                }
+            }
+            float t = stage.UmbrellaPopT;
+            const float c1 = 1.70158f;
+            const float c3 = c1 + 1f;
+            float e = 1f + c3 * MathF.Pow(t - 1f, 3f) + c1 * (t - 1f) * (t - 1f);
+            Vector2 overhead = owner.MountedCenter + new Vector2(0f, -HoverHeight * 0.86f);
+            Projectile.Center = Vector2.Lerp(stage.DestPoolPos + new Vector2(0f, 2f), overhead, e);
+            teleportFade = MathHelper.Clamp(t * 4f, 0f, 1f);
+            visualScale = MathHelper.Lerp(0.5f, 0.86f, MathHelper.Clamp(e, 0f, 1.2f));
+            spinSpeed = MathHelper.Lerp(spinSpeed, 0.16f, 0.14f);
+            spinPhase += spinSpeed;
+            eyeOpen = MathF.Max(eyeOpen, t * 0.85f);
+            //出水甩水:上升途中伞缘持续洒珠
+            if (!Main.dedServ && t < 0.7f && (int)StateTimer % 2 == 0) {
+                float xOff = MathF.Cos(spinPhase) * RimRadius * visualScale;
+                PRTLoader.NewParticle<PRT_KikasaInkDrip>(
+                    Projectile.Center + new Vector2(xOff, 4f), Vector2.Zero,
+                    KikasaInk.InkBody, Main.rand.NextFloat(0.5f, 0.75f))?.Configure(Main.rand.Next(18, 28));
+            }
+        }
+
+        /// <summary>转入归位:只做状态转移,收拍挂钩与演出在会话切拍块各端统一派发</summary>
         private void BeginRecall() {
             if (State == UmbrellaState.Recall) {
                 return;
             }
             recallFrom = Projectile.Center;
+            AutoTargetAi = 0f;
             State = UmbrellaState.Recall;
-            //收伞挂钩(霁光结算等);持有条件破裂的直接 Kill 不经此处,视作非主动收伞
+        }
+
+        /// <summary>
+        /// 一场雨的收拍:攻击态离场时各端同拍派发。
+        /// 收伞挂钩(霁光结算等)在此;持有条件破裂的直接 Kill 不经状态切换,视作非主动收伞
+        /// </summary>
+        private void OnAttackSessionEnd() {
             talismanHooks.OnRecall(Projectile);
             KikasaInk.Play(KikasaInk.UmbrellaWhoosh, Projectile.Center, 0.4f, -0.5f, 2);
             //收拢拍抖落最后一圈墨珠
@@ -605,7 +1050,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// 视线纯表现，所有者按光标就近,旁观端按离所有者最近,端间近似无碍
         /// </summary>
         private void UpdateEye(Player owner) {
-            int newTarget = FindGazeTarget(owner);
+            //自动交战时视线锁死交战目标,其余按光标/就近
+            int newTarget = State == UmbrellaState.AutoRain && AutoTargetWho >= 0
+                ? AutoTargetWho : FindGazeTarget(owner);
             if (newTarget != gazeTarget) {
                 if (newTarget >= 0) {
                     //睁眼拍:锁定瞬间
@@ -619,8 +1066,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             float openTarget;
             if (gazeTarget >= 0) {
                 openTarget = 0.6f;
-                //只有悬伞态存在甩雨节拍;倒撑态 StateTimer 是蓄力计时,不套周期
-                if (State == UmbrellaState.Hover) {
+                //只有甩雨态存在节拍;倒撑态 StateTimer 是蓄力计时,不套周期
+                if (State is UmbrellaState.Hover or UmbrellaState.AutoRain) {
                     SolveVolleyRhythm(owner, out int period, out int dropCount, out int stagger, out bool ghostVolley);
                     int beat = (int)(StateTimer % period);
                     int fireSpan = ghostVolley ? 4 : dropCount * stagger;
@@ -631,6 +1078,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
             else {
                 openTarget = 0.12f;
+            }
+            if (State == UmbrellaState.Idle) {
+                //闲伞半阖:留意但不紧盯
+                openTarget = MathF.Min(openTarget, 0.35f);
             }
             if (--blinkTimer <= 0) {
                 blinkTimer = Main.rand.Next(130, 260);
@@ -670,20 +1121,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>
         /// 甩出一滴:弹幕只在所有者端生成,生成包带走目标/坠落列/鬼滴与墨洼标记。
         /// 鬼滴(伞下鬼的侧掷)从对侧伞缘出手并换鬼青调;湖倾档(S≥10)全部大滴且落地留墨洼;
+        /// forcedTarget≥0 时(自动交战)全部滴指向该目标,不再按光标轮转;
         /// 唤雨符滴生成挂钩在基准值备齐后叠改(霏雾化/雹巨雹/霓染色/霄高坠等),符标签随 ai[2] 高位同步
         /// </summary>
-        private void FireDrop(int slot, bool ghostDrop = false, bool ghostVolley = false) {
+        private void FireDrop(int slot, bool ghostDrop = false, bool ghostVolley = false,
+            int forcedTarget = -1) {
             if (Main.myPlayer != Projectile.owner) {
                 return;
             }
-            int target = PickTarget(slot, out float fallbackX);
+            int target;
+            float fallbackX;
+            if (forcedTarget >= 0 && forcedTarget < Main.maxNPCs
+                && Main.npc[forcedTarget].active
+                && Main.npc[forcedTarget].CanBeChasedBy(Projectile)) {
+                target = forcedTarget;
+                fallbackX = Main.npc[forcedTarget].Center.X + Main.rand.NextFloat(-34f, 34f);
+            }
+            else {
+                target = PickTarget(slot, out fallbackX);
+            }
 
-            //伞缘切向甩出:出点随自旋相位在伞沿摆动,初速偏外偏上;鬼滴走对侧相位
+            //伞缘切向甩出:出点随自旋相位在伞沿摆动,初速偏外偏上;鬼滴走对侧相位。
+            //上抛分量给足,抛洒段才真读作"把水抛上天"而不是小跳一下
             float yaw = MathF.Cos(spinPhase + (ghostDrop ? MathHelper.Pi : 0f));
             float xOff = yaw * RimRadius * visualScale;
             Vector2 rimPos = Projectile.Center + new Vector2(xOff, 2f);
             float side = xOff >= 0f ? 1f : -1f;
-            Vector2 flickVel = new(side * Main.rand.NextFloat(3.2f, 5.8f), -Main.rand.NextFloat(2.4f, 4.6f));
+            Vector2 flickVel = new(side * Main.rand.NextFloat(3.2f, 5.8f), -Main.rand.NextFloat(4.2f, 7f));
 
             //形态差异:血湖滴少而重,鬼雨滴密而细
             float scale = 1f;
@@ -814,8 +1278,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             //倒撑翻转+倾覆侧倾都走旋转,翻到一半的过程本身就是演出
             rotation = lean + MathF.Sin(bobPhase) * 0.035f
                 + flipT * MathHelper.Pi + pourTilt * pourDirSign;
-            light = Lighting.GetColor(Projectile.Center.ToTileCoordinates());
-            return true;
+            //传送隐显:着色器全程乘顶点色,乘光即干净隐身
+            light = Lighting.GetColor(Projectile.Center.ToTileCoordinates()) * teleportFade;
+            return teleportFade > 0.01f;
         }
 
         /// <summary>着色器路径:湿光扫掠/伞骨水膜/轮廓湿线/鬼眼全在 TechCanopy 里</summary>
@@ -901,7 +1366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 return;
             }
             float fade = MathHelper.Clamp(visualScale * 1.6f - 0.6f, 0f, 1f)
-                * MathHelper.Clamp((wetness - 0.15f) / 0.85f, 0f, 1f);
+                * MathHelper.Clamp((wetness - 0.15f) / 0.85f, 0f, 1f) * teleportFade;
             if (fade <= 0.03f) {
                 return;
             }

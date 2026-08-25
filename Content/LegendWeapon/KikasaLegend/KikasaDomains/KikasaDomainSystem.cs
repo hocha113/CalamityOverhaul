@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps;
+using System;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
@@ -85,16 +86,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             KikasaWispFX.Clear();
         }
 
-        //血暮压光、氛围级而非致盲级：湖面反光与天空亮红反衬剪影；鬼雨异化再压一档
+        //血暮压光：scale 乘的是逐格衰减率（上游 LightingEngine 把它乘进
+        //LightDecayThroughAir/Solid），逐格复利、指数放大——旧值 0.22 让十格外的
+        //火把光只剩约 8%，夜晚与地下"领域亮、世界黑"即源于此。
+        //氛围交给调色/滤镜/保底天光承担，这里只留极轻的空气变稠感
 
         public override void ModifyLightingBrightness(ref float scale) {
             float presence = KikasaDomain.ViewedPresence;
             if (presence > 0.001f) {
                 float dream = KikasaDomain.ViewedDreamBlend;
                 float dim = MathHelper.Lerp(
-                    0.22f + 0.10f * KikasaDomain.ViewedRainBlend,
-                    //梦里压得更沉，红天与窗火才衬得出来
-                    0.34f, dream);
+                    0.03f + 0.02f * KikasaDomain.ViewedRainBlend,
+                    //梦里空气再稠一丝，沉感靠梦色板与压光滤镜，不靠掐灭光源
+                    0.05f, dream);
                 scale *= 1f - dim * presence;
             }
         }
@@ -119,6 +123,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 presence * MathHelper.Lerp(MathHelper.Lerp(0.4f, 0.55f, rain), 0.60f, dream));
             backgroundColor = Color.Lerp(backgroundColor, duskBg,
                 presence * MathHelper.Lerp(MathHelper.Lerp(0.5f, 0.72f, rain), 0.80f, dream));
+
+            //保底环境光（对齐鬼切"日光换色而非熄灭"）：领域自带血暮天光，夜里点不灭。
+            //上面的部分插值在夜晚基色近黑时抬不起亮度，这里按形态给露天日光一个下限；
+            //白天原有观感高于下限，分毫不动
+
+            Color floorTile = Color.Lerp(new(146, 58, 52), new(84, 102, 110), rain);
+            floorTile = Color.Lerp(floorTile, new(118, 46, 42), dream);
+            Color floorBg = Color.Lerp(new(88, 30, 28), new(46, 58, 66), rain);
+            floorBg = Color.Lerp(floorBg, new(64, 18, 18), dream);
+            RaiseToFloor(ref tileColor, floorTile, presence);
+            RaiseToFloor(ref backgroundColor, floorBg, presence);
+        }
+
+        //逐通道抬到下限：只补不足，不动已亮的白天
+
+        private static void RaiseToFloor(ref Color color, Color floor, float presence) {
+            color.R = Math.Max(color.R, (byte)(floor.R * presence));
+            color.G = Math.Max(color.G, (byte)(floor.G * presence));
+            color.B = Math.Max(color.B, (byte)(floor.B * presence));
         }
     }
 }

@@ -359,16 +359,22 @@ namespace CalamityOverhaul
         public static Recipe AddEndgameStation(this Recipe recipe) =>
             recipe.AddTile(CWRID.Tile_DraedonsForge > 0 ? CWRID.Tile_DraedonsForge : TileID.LunarCraftingStation);
 
+        /// <summary>
+        /// 是否为物品自带的编号描述行。tML 按 hjson 行序生成 Tooltip0、Tooltip1…且行数无上限,
+        /// 不能只匹配前 9 行:超长描述的尾行会残留,与替换后的 CWRText 叠加成重复文本
+        /// </summary>
+        public static bool IsTooltipBodyLine(TooltipLine line)
+            => line.Name.StartsWith("Tooltip", StringComparison.Ordinal)
+            && int.TryParse(line.Name.AsSpan("Tooltip".Length), out _);
+
         /// <summary>替换 Tooltip 行为宿主本地化</summary>
         public static void OnModifyTooltips(Mod mod, List<TooltipLine> tooltips, LocalizedText value) {
             List<TooltipLine> newTooltips = new(tooltips);
             List<TooltipLine> overTooltips = [];
             List<TooltipLine> prefixTooltips = [];
             foreach (TooltipLine line in tooltips.ToList()) {
-                for (int i = 0; i < 9; i++) {
-                    if (line.Name == "Tooltip" + i) {
-                        line.Hide();
-                    }
+                if (IsTooltipBodyLine(line)) {
+                    line.Hide();
                 }
                 if (line.Name == "CalamityDonor" || line.Name == "CalamityDev") {
                     overTooltips.Add(line.Clone());

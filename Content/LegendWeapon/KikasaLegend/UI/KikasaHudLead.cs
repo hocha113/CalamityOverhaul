@@ -180,7 +180,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         private static KikasaGuideData Guide
             => Main.LocalPlayer.GetModPlayer<StoryPlayer>().Get<KikasaGuideData>();
 
-        /// <summary>教学卡当前在讲：HUD 的提示行让位，别两处重复同一句按键话</summary>
+        /// <summary>
+        /// 教学卡当前在讲：HUD 的提示行让位，别两处重复同一句按键话。
+        /// 同时是鬼雨主题曲发伞后的播放窗口（OniRainTheme），卡停曲停，改语义前先看那边
+        /// </summary>
         internal static bool CardVisible
             => Array.IndexOf(StepOrder, currentPhase) >= 0
             && GuideLeadQueue.IsHolder(ModContent.GetInstance<KikasaHudLead>());

@@ -84,13 +84,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
     /// <summary>墨滴弹道参数；各端首帧同参解算，实现必须确定性（禁 Main.rand）</summary>
     internal struct KikasaDropCurve
     {
-        /// <summary>顶点悬于目标上方的理想高度</summary>
+        /// <summary>上抛力度与头顶偏置的口径（原顶点高度，抛洒追踪制沿用字段名）</summary>
         public float ApexAboveTarget;
-        /// <summary>坠落加速度</summary>
+        /// <summary>坠落加速度，兼追踪段加速度的基准</summary>
         public float PlungeGravity;
-        /// <summary>坠落终速</summary>
+        /// <summary>坠落终速，兼追踪段极速</summary>
         public float PlungeMaxSpeed;
-        /// <summary>弧段时长（帧）</summary>
+        /// <summary>抛洒段时长口径（帧，实际取其半）</summary>
         public float ArcDur;
     }
 
