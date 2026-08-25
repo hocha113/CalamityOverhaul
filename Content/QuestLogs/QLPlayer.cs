@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.QuestLogs.Core;
+﻿using CalamityOverhaul.Content.QuestLogs.Core;
 using CalamityOverhaul.Content.QuestLogs.QLNodes;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.GameSystem;

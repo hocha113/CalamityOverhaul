@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Scenarios.Dungeonworld.Fog;
+﻿using CalamityOverhaul.Content.Scenarios.Dungeonworld.Fog;
 using ReLogic.Utilities;
 using System;
 using Terraria;
@@ -358,7 +358,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Ambience
             float pitch = MathHelper.Clamp(
                 AmbienceScore.BellBasePitch - (sep + 1) * AmbienceScore.BellPitchStep, -1f, 1f);
             SoundEngine.PlaySound(SoundID.Item35 with {
-                Volume = AmbienceScore.BellVolume, Pitch = pitch, MaxInstances = 2
+                Volume = AmbienceScore.BellVolume,
+                Pitch = pitch,
+                MaxInstances = 2
             });
 
             //②雾呼吸：推开一圈，按雾系统自己的时间不对称慢慢合拢（L1/L2 无雾自动无感）

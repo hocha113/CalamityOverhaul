@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.UIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -333,8 +333,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoCrafters
                 bool met;
                 try {
                     met = condition.IsMet();
-                }
-                catch {
+                } catch {
                     met = false;
                 }
                 if (!met) {

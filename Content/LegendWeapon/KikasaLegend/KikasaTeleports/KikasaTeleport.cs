@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets;
 using System;
@@ -89,7 +89,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTeleports
         /// <summary>冷却/相位不受理的轻拒声，与沉溺的拒绝反馈同款</summary>
         private static void Refuse(Player player) {
             SoundEngine.PlaySound(SoundID.MenuTick with {
-                Volume = 0.5f, Pitch = -0.65f, MaxInstances = 2,
+                Volume = 0.5f,
+                Pitch = -0.65f,
+                MaxInstances = 2,
             }, player.Center);
         }
     }

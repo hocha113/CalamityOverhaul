@@ -1,8 +1,7 @@
-using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
+﻿using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.GridSwitches;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks;
-using CalamityOverhaul.Content.Industrials.ElectricPowers.Sensors;
 using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using InnoVault.TileProcessors;

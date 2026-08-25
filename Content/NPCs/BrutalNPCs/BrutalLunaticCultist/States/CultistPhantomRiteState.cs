@@ -1,6 +1,5 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projectiles;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

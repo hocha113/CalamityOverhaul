@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using InnoVault.PRT;
+﻿using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.ID;

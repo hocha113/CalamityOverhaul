@@ -1,6 +1,5 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Rendering;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

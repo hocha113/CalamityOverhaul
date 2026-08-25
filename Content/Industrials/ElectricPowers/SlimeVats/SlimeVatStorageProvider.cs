@@ -1,10 +1,9 @@
-using InnoVault.Storages;
+﻿using InnoVault.Storages;
 using InnoVault.TileProcessors;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.SlimeVats
 {

@@ -2,7 +2,6 @@
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
 {
