@@ -103,11 +103,15 @@ namespace CalamityOverhaul.Content.Industrials.MachineModules
             Register();
     }
 
-    /// <summary>自动进料斗:从近旁存储自动补燃料/可焚物(热力与焚化炉通用)</summary>
+    /// <summary>
+    /// 自动进料斗:从近旁存储自动补燃料/可焚物(热力/焚化炉/生物质通用)。<br/>
+    /// 加工链(粉碎/回收)不在此列,它们用自带的 ProcessingFeedHopper
+    /// </summary>
     internal class AutoFeedHopperModule : BaseMachineModule, ILogisticsModule
     {
         public override MachineModuleTarget ModuleTargets
-            => MachineModuleTarget.ThermalGenerator | MachineModuleTarget.Incinerator;
+            => MachineModuleTarget.ThermalGenerator | MachineModuleTarget.Incinerator
+            | MachineModuleTarget.BiomassGenerator;
         public bool AutoFeed => true;
         public bool AutoEject => false;
         internal override Color Accent => new(205, 170, 105);
@@ -366,13 +370,19 @@ namespace CalamityOverhaul.Content.Industrials.MachineModules
     #endregion
 
     #region 通用
-    /// <summary>扩容电池:储能上限×1.5,五族机器通用</summary>
+    /// <summary>
+    /// 扩容电池:储能上限×1.5,全部消费 StorageMult 的宿主通用。<br/>
+    /// 工业扩展批新增五族(岩浆/生物质/太阳能/粉碎/回收)均已在 MaxUEValue 上消费该域;
+    /// 防御塔族未消费储能扩容,刻意不开
+    /// </summary>
     internal class CapacityCellModule : BaseMachineModule, IStorageModule
     {
         public override MachineModuleTarget ModuleTargets
             => MachineModuleTarget.MiningMachine | MachineModuleTarget.ThermalGenerator
             | MachineModuleTarget.WindGenerator | MachineModuleTarget.HydroGenerator
-            | MachineModuleTarget.Incinerator;
+            | MachineModuleTarget.Incinerator | MachineModuleTarget.MagmaGenerator
+            | MachineModuleTarget.BiomassGenerator | MachineModuleTarget.SolarPanel
+            | MachineModuleTarget.Crusher | MachineModuleTarget.Recycler;
         public float CapacityMult => 1.5f;
         internal override Color Accent => new(240, 210, 110);
 

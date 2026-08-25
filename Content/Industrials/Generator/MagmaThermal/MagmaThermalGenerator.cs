@@ -1,0 +1,278 @@
+using CalamityOverhaul.Content.Industrials.MachineModules;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids;
+using InnoVault.TileProcessors;
+using InnoVault.UIHandles;
+using Microsoft.Xna.Framework.Graphics;
+using System.IO;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.Enums;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
+using Terraria.ObjectData;
+
+namespace CalamityOverhaul.Content.Industrials.Generator.MagmaThermal
+{
+    /// <summary>岩浆热能发电机:液体网络的首个耗液发电机(占位贴图沿用热能电池,待专属美术)</summary>
+    internal class MagmaThermalGenerator : ModItem
+    {
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBattery";
+        public override void SetDefaults() {
+            Item.width = 32;
+            Item.height = 32;
+            Item.maxStack = 9999;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.consumable = true;
+            Item.value = Item.buyPrice(0, 2, 0, 0);
+            Item.rare = ItemRarityID.Orange;
+            Item.createTile = ModContent.TileType<MagmaThermalGeneratorTile>();
+            Item.CWR().StorageUE = true;
+            Item.CWR().ConsumeUseUE = 2000;
+        }
+
+        public override void AddRecipes() {
+            if (CWRID.DubiousCircuitryAvailable) {
+                CreateRecipe().
+                AddIngredient(ItemID.HellstoneBar, 12).
+                AddIngredient(ItemID.Obsidian, 20).
+                AddRecipeGroup(RecipeGroupID.IronBar, 10).
+                AddIngredient(CWRID.Item_DubiousPlating, 10).
+                AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
+                AddTile(TileID.Anvils).
+                Register();
+            }
+            else {
+                CreateRecipe().
+                AddIngredient(ItemID.HellstoneBar, 12).
+                AddIngredient(ItemID.Obsidian, 20).
+                AddRecipeGroup(RecipeGroupID.IronBar, 10).
+                AddTile(TileID.Anvils).
+                Register();
+            }
+        }
+    }
+
+    internal class MagmaThermalGeneratorTile : BaseGeneratorTile
+    {
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryTile";
+        public override int GeneratorTP => TileProcessorLoader.GetModuleID<MagmaThermalGeneratorTP>();
+        public override int GeneratorUI => UIHandleLoader.GetUIHandleID<GeneratorReadoutUI>();
+        public override int TargetItem => ModContent.ItemType<MagmaThermalGenerator>();
+        public override void SetStaticDefaults() {
+            Main.tileLighted[Type] = true;
+            Main.tileFrameImportant[Type] = true;
+            Main.tileNoAttach[Type] = true;
+            Main.tileLavaDeath[Type] = false;
+            Main.tileWaterDeath[Type] = false;
+            Main.tileSolidTop[Type] = true;
+            AddMapEntry(new Color(128, 64, 32), VaultUtils.GetLocalizedItemName<MagmaThermalGenerator>());
+
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
+            TileObjectData.newTile.Width = 3;
+            TileObjectData.newTile.Height = 4;
+            TileObjectData.newTile.Origin = new Point16(1, 1);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile
+                | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16];
+            TileObjectData.newTile.LavaDeath = false;
+
+            TileObjectData.addTile(Type);
+        }
+
+        public override void MouseOver(int i, int j) {
+            Item item = Main.LocalPlayer.GetItem();
+            int type = TargetItem;
+            if (item.type == ItemID.LavaBucket || item.type == ItemID.BottomlessLavaBucket) {
+                type = item.type;
+            }
+            Main.LocalPlayer.SetMouseOverByTile(type);
+        }
+
+        public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) {
+            if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
+                return;
+            }
+            if (!TileProcessorLoader.ByPositionGetTP(point, out MagmaThermalGeneratorTP tp)) {
+                return;
+            }
+            if (tp.WorkLevel > 0f) {
+                r = 0.8f * tp.WorkLevel;
+                g = 0.35f * tp.WorkLevel;
+                b = 0.05f * tp.WorkLevel;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 岩浆热能发电机TP:双模式发电。
+    /// 被动:机体接触世界岩浆时低功率运转(免费弱电,插在地狱就能用);
+    /// 主动:内部岩浆罐有储浆时全功率运转,储浆经液体管道供给或右键岩浆桶倒入。
+    /// 液体角色为耗液机,液管只进不出
+    /// </summary>
+    internal class MagmaThermalGeneratorTP : BaseGeneratorTP, IFluidContainer, IGeneratorReadout
+    {
+        public override int TargetTileID => ModContent.TileType<MagmaThermalGeneratorTile>();
+        public override int TargetItem => ModContent.ItemType<MagmaThermalGenerator>();
+        public override float MaxUEValue => 2000 * ModuleRack.StorageMult;
+        public override MachineModuleTarget ModuleHostKind => MachineModuleTarget.MagmaGenerator;
+        public override int ModuleSlotCount => 2;
+
+        #region 读数板:工况与 GeneratorUpdate 同一组状态字段推导
+        public GeneratorReadoutKind ReadoutKind => GeneratorReadoutKind.Magma;
+        /// <summary>当前基础功率:烧储浆全功率,贴浆被动低功率,否则停摆</summary>
+        private float CurrentBasePower => FluidAmount > 0 ? ActivePower : touchingLava ? PassivePower : 0f;
+        /// <summary>工况比 = 当前功率对满功率(主动 1,被动 0.16,停摆 0)</summary>
+        public float ConditionRatio => CurrentBasePower / ActivePower;
+        public bool ConditionOk => CurrentBasePower > 0f;
+        public float OutputPerSecond => CurrentBasePower * ModuleRack.GenOutputMult * 60f;
+        #endregion
+
+        #region 液体容器契约:只收岩浆
+        public int FluidType { get; set; } = LiquidID.Lava;
+        public int FluidAmount { get; set; }
+        public int FluidCapacity => 4 * FluidHelper.UnitsPerTile;
+        public FluidNetRole FluidRole => FluidNetRole.Consumer;
+        public bool CanAcceptFluid(int liquidId)
+            => liquidId == LiquidID.Lava && FluidHelper.DefaultCanAccept(this, liquidId);
+        #endregion
+
+        /// <summary>被动模式功率(UE/tick),机体接触世界岩浆</summary>
+        internal const float PassivePower = 0.4f;
+        /// <summary>主动模式功率(UE/tick),烧内部储浆</summary>
+        internal const float ActivePower = 2.5f;
+        /// <summary>主动模式岩浆消耗:255 单位烧 600 帧</summary>
+        internal const float LavaPerTick = FluidHelper.UnitsPerTile / 600f;
+        /// <summary>被动接触检测节流(帧)</summary>
+        private const int LavaScanInterval = 30;
+
+        /// <summary>当前工况 0..1,喂给物块发光与显示</summary>
+        internal float WorkLevel;
+
+        private bool touchingLava;
+        private int lavaScanTimer;
+        /// <summary>岩浆消耗的小数累加器</summary>
+        private float lavaAcc;
+
+        public override void GeneratorUpdate() {
+            //被动接触检测按节拍缓存,扫描只读并行安全
+            if (--lavaScanTimer <= 0) {
+                lavaScanTimer = LavaScanInterval;
+                touchingLava = ScanLavaContact();
+            }
+
+            float power = 0f;
+            if (FluidAmount > 0) {
+                //主动:烧储浆全功率
+                power = ActivePower;
+                lavaAcc += LavaPerTick;
+                int steps = (int)lavaAcc;
+                lavaAcc -= steps;
+                if (steps > 0) {
+                    FluidAmount -= steps;
+                    if (FluidAmount < 0) {
+                        FluidAmount = 0;
+                    }
+                }
+            }
+            else if (touchingLava) {
+                //被动:贴浆低功率
+                power = PassivePower;
+            }
+
+            if (power > 0f) {
+                power *= ModuleRack.GenOutputMult;
+                float availableCapacity = MaxUEValue - MachineData.UEvalue;
+                if (availableCapacity > 0f) {
+                    MachineData.UEvalue += power < availableCapacity ? power : availableCapacity;
+                }
+                WorkLevel = MathHelper.Lerp(WorkLevel, FluidAmount > 0 ? 1f : 0.4f, 0.05f);
+            }
+            else {
+                WorkLevel = MathHelper.Lerp(WorkLevel, 0f, 0.03f);
+            }
+        }
+
+        /// <summary>机体及外缘一圈是否接触世界岩浆</summary>
+        private bool ScanLavaContact() {
+            int tileWidth = Width / 16;
+            int tileHeight = Height / 16;
+            for (int i = Position.X - 1; i <= Position.X + tileWidth; i++) {
+                for (int j = Position.Y - 1; j <= Position.Y + tileHeight; j++) {
+                    Tile tile = Framing.GetTileSafely(i, j);
+                    if (tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Lava) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>右键交互(交互客户端执行):岩浆桶倒入储浆,无尽岩浆桶不耗桶</summary>
+        public override void RightClickByTile(bool newTP) {
+            Item item = Main.LocalPlayer.GetItem();
+            if (item.IsAir) {
+                return;
+            }
+
+            bool bottomless = item.type == ItemID.BottomlessLavaBucket;
+            if (item.type != ItemID.LavaBucket && !bottomless) {
+                return;
+            }
+            if (FluidCapacity - FluidAmount < FluidHelper.UnitsPerTile) {
+                return;
+            }
+
+            FluidType = LiquidID.Lava;
+            FluidAmount += FluidHelper.UnitsPerTile;
+            if (!bottomless) {
+                item.stack--;
+                if (item.stack <= 0) {
+                    item.TurnToAir();
+                }
+                Main.LocalPlayer.GiveItem(new EntitySource_WorldEvent(), new Item(ItemID.EmptyBucket));
+            }
+
+            SendData();
+            SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.6f, Pitch = -0.4f });
+        }
+
+        #region 存档与同步:液体字段追加在基类(含模块架)之后
+        public override void SendData(ModPacket data) {
+            base.SendData(data);
+            data.Write((byte)FluidType);
+            data.Write(FluidAmount);
+        }
+
+        public override void ReceiveData(BinaryReader reader, int whoAmI) {
+            base.ReceiveData(reader, whoAmI);
+            FluidType = reader.ReadByte();
+            FluidAmount = reader.ReadInt32();
+        }
+
+        public override void SaveData(TagCompound tag) {
+            base.SaveData(tag);
+            tag["FluidType"] = FluidType;
+            tag["FluidAmount"] = FluidAmount;
+        }
+
+        public override void LoadData(TagCompound tag) {
+            base.LoadData(tag);
+            FluidType = tag.TryGet("FluidType", out int type) ? type : LiquidID.Lava;
+            FluidAmount = tag.TryGet("FluidAmount", out int amount) ? amount : 0;
+        }
+        #endregion
+
+        public override void FrontDraw(SpriteBatch spriteBatch) {
+            DrawChargeBar();
+            if (HoverTP) {
+                FluidHelper.DrawFluidBar(this, this);
+            }
+        }
+    }
+}

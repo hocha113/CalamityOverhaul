@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
         /// <summary>码头排序，小者在左</summary>
         public virtual int SortOrder => 0;
 
-        /// <summary>解锁谓词，false 时芯片不出现</summary>
+        /// <summary>解锁谓词，false 时芯片以暗色剪影占位；全员未解锁时整排码头不出现</summary>
         public abstract bool Unlocked { get; }
 
         /// <summary>芯片帧组，多帧时经 <see cref="GetChipFrame"/> 播动画</summary>
@@ -83,7 +83,17 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
         /// <summary>全部定义，SortOrder 再 Key</summary>
         public static IReadOnlyList<MenuCharacter> All => all;
 
-        public static bool HasAny => all.Count > 0;
+        /// <summary>是否有任一角色已解锁，码头整排的出现门</summary>
+        public static bool AnyUnlocked {
+            get {
+                foreach (MenuCharacter definition in all) {
+                    if (definition.Unlocked) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
 
         public static bool TryGet(string key, out MenuCharacter definition) {
             if (!string.IsNullOrEmpty(key) && byKey.TryGetValue(key, out definition)) {

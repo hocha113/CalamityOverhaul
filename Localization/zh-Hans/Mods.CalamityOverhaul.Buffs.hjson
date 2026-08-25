@@ -132,3 +132,13 @@ FuHongBlessBuff: {
 	// DisplayName: 虹桥眷护
 	// Description: 虹下移速 +10%，召唤伤害 +10%
 }
+
+IndustrialShieldBuff: {
+	DisplayName: 能量护盾
+	Description: 护盾持续蓄能，受击时替你挡下一部分伤害
+}
+
+IndustrialRegenBuff: {
+	DisplayName: 治疗光环
+	Description: 治疗站正在为你回复生命
+}

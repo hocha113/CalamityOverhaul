@@ -311,12 +311,16 @@ OnikiriItem: {
 	DisplayName: 鬼切
 	Tooltip:
 		'''
-		按住左键驱动绯红裂空斩五段连段
-		[DASH] 消耗气力施展普通神威疾走；架势达到一半后于一秒内再次按 [DASH]，可免费衔出处决疾走
-		表世界中按住 [SAKURA] 当场化樱巡航，松开或气尽回卷；疾走途中按住也能衔出樱流
-		半架势的处决疾走后按左键释放灭世一闪；满架势双疾走穿中目标释放终结乱舞
-		满架势按 [EXECUTE]：自动锁敌疾走并直接释放终结乱舞；无目标时朝光标空放
-		处决未兑现不会额外损失气力
+		按住左键驱动绯红裂空斩五段连段，砍中敌人积攒架势
+		按 [DASH] 消耗气力施展神威疾走
+		按「领域展开」键开阖鬼域，按「领域表里翻转」键在表里之间翻转
+		表世界中按住 [SAKURA] 化作樱瓣巡航，疾走途中也能衔接；松开或气尽当场凝回人身
+		里世界中对准敌人按左键施展肢解，重创真身；持刀者承受最大生命 25% 的反噬僵直
+		疾走或樱流收势后的短窗内，按左键接出残心追斩
+		架势过半时，疾走途中或收势后一秒内再按 [DASH]，免费衔出处决疾走
+		处决疾走收势后按左键释放灭世一闪；满架势的处决疾走穿中目标，直接释放终结乱舞
+		满架势按 [EXECUTE]：自动锁敌疾走并释放终结乱舞，无目标时朝光标空放
+		处决疾走不耗气力，没接上后续也不亏
 		[Lang4]
 		legend_Text
 		'''
@@ -1115,6 +1119,85 @@ ThermalBattery: {
 	Tooltip: 存储一定的电能
 }
 
+FluidPipeline: {
+	DisplayName: 液体管道
+	Tooltip:
+		'''
+		输送水、岩浆、蜂蜜或微光
+		一根管道同一时间只运载一种液体，排空后才会改运其他液体
+		右键可快速拆除
+		'''
+}
+
+FluidPump: {
+	DisplayName: 抽液泵
+	Tooltip:
+		'''
+		通电后抽取机身下方的世界液体，存入内部缓冲罐
+		每抽取一格液体消耗2UE，液体经管道送往储罐或机器
+		'''
+}
+
+FluidTank: {
+	DisplayName: 液体储罐
+	Tooltip:
+		'''
+		储存最多32格液体，罐身观察窗会显示液面高度
+		通过液体管道与泵和机器互通
+		拆除时罐内液体会流失
+		'''
+}
+
+FluidInjector: {
+	DisplayName: 灌注机
+	Tooltip:
+		'''
+		消耗储存的液体，向机身下方的世界空间放液
+		每放置一格液体消耗2UE
+		放置岩浆时请注意脚下安全
+		'''
+}
+
+BottlingMachine: {
+	DisplayName: 瓶装机
+	Tooltip:
+		'''
+		放入空瓶或空桶时抽取储液装满，放入整瓶整桶时倒空回收液体
+		每次作业消耗5UE，成品从输出槽取出
+		输入输出槽可对接物品管道，自动进出料
+		'''
+}
+
+MagmaThermalGenerator: {
+	DisplayName: 岩浆热能发电机
+	Tooltip:
+		'''
+		机身贴着岩浆时缓慢发电，罐内有岩浆储备时全力发电
+		岩浆可经液体管道供给，也能右键用岩浆桶直接倒入
+		地狱建厂的第一台主力电源
+		'''
+}
+
+FluidText: {
+	WaterName: 水
+	LavaName: 岩浆
+	HoneyName: 蜂蜜
+	ShimmerName: 微光
+	EmptyName: 空
+	BarFormat: "{0} {1}/{2}"
+}
+
+ShimmerTransmuter: {
+	DisplayName: 微光转化槽
+	Tooltip:
+		'''
+		放入物品，消耗微光将它转化，产物落入输出槽
+		每次转化消耗10UE和64单位微光，微光需用泵从微光湖经管道送入
+		支持物品转化和去合成，硬币或会放出生物的物品不收
+		输入输出槽可对接物品管道，自动进出料
+		'''
+}
+
 WindGrivenGenerator: {
 	DisplayName: 风力发电机
 	Tooltip: 随风而动，生产电能
@@ -1161,6 +1244,84 @@ TeslaElectromagneticTower: {
 		'''
 }
 
+FlameTurret: {
+	TurretOnText: 火焰塔启动
+	TurretOffText: 火焰塔关闭
+	NoEnergyText: 能量不足!
+	FuelLoadText: 装入凝胶 x{0}
+	FuelTakeText: 取出凝胶 x{0}
+	DisplayName: 火焰喷射塔
+	Tooltip:
+		'''
+		需要电能才能工作
+		持续向靠近的敌人喷吐火舌，火焰可以穿透敌群并点燃狱火
+		手持凝胶右键塔身可以装入燃料，燃烧凝胶时火力更猛
+		按住Shift右键取出凝胶；物品管道也可以向燃料槽输送凝胶
+		空手右键或电线信号开关塔
+		"闻起来像烤史莱姆"
+		'''
+}
+
+CryoTurret: {
+	TurretOnText: 冰冻塔启动
+	TurretOffText: 冰冻塔关闭
+	NoEnergyText: 能量不足!
+	DisplayName: 冰冻塔
+	Tooltip:
+		'''
+		需要电能才能工作
+		向范围内的所有敌人持续散布寒气，使其霜冻减速
+		同一敌人被寒气覆盖约两秒后会被短暂冻结
+		减速和冻结才是本职，伤害只有霜火慢烧的一点
+		右键或电线信号开关塔
+		"冷静一下"
+		'''
+}
+
+LaserTurret: {
+	TurretOnText: 激光塔启动
+	TurretOffText: 激光塔关闭
+	NoEnergyText: 能量不足!
+	DisplayName: 激光塔
+	Tooltip:
+		'''
+		需要电能才能工作
+		向视线内的敌人发射高伤害光束，射程极远但射速缓慢
+		被地形挡住的目标不会被锁定，优先攻击Boss
+		右键或电线信号开关塔
+		"一发，一个"
+		'''
+}
+
+ShieldGenerator: {
+	FieldOnText: 护盾力场启动
+	FieldOffText: 护盾力场关闭
+	NoEnergyText: 能量不足!
+	DisplayName: 护盾发生器
+	Tooltip:
+		'''
+		需要电能才能工作
+		通电运转时，范围内的玩家获得能量护盾
+		护盾缓慢蓄能，受击时替你挡下一部分伤害，离开范围后逐渐消散
+		守护的玩家越多，耗电越快
+		右键或电线信号开关力场
+		'''
+}
+
+HealStation: {
+	FieldOnText: 治疗光环启动
+	FieldOffText: 治疗光环关闭
+	NoEnergyText: 能量不足!
+	DisplayName: 治疗站
+	Tooltip:
+		'''
+		需要电能才能工作
+		通电运转时，缓慢回复范围内所有玩家的生命
+		右键或电线信号开关光环
+		"工伤？不存在的"
+		'''
+}
+
 EmblemOfDread: {
 	DisplayName: 惧亡者之证
 	Tooltip:
@@ -1194,6 +1355,75 @@ ElectricMinRocket: {
 		'''
 }
 
+TeleportStation: {
+	NoEnergyText: 能量不足!
+	TargetNoEnergyText: 目的站点缺乏待机电力!
+	UnnamedText: 未命名站点 ({0}, {1})
+	DisplayName: 传送站
+	Tooltip:
+		'''
+		与世界上的其他传送站组成传送网络
+		右键打开面板，点击目的地即可传送
+		传送按距离耗电，目的站也需保有少量待机电力
+		可以为站点命名，方便在列表里辨认
+		'''
+}
+
+ElectricSundial: {
+	NoEnergyText: 能量不足!
+	BusyText: 时间已在快进中!
+	SkipBroadcast: "{0} 启动了电动日晷，时光飞逝，直至黎明"
+	DisplayName: 电动日晷
+	Tooltip:
+		'''
+		储满 1000 电力后右键使用，把时间快进到黎明
+		自带电源，不受附魔日晷七天冷却的限制
+		使用时会通知全服
+		'''
+}
+
+WeatherController: {
+	NoEnergyText: 能量不足!
+	RainBroadcast: "{0} 启动了天气控制机，雨云正在聚集"
+	ClearBroadcast: "{0} 启动了天气控制机，雨过天晴"
+	DisplayName: 天气控制机
+	Tooltip:
+		'''
+		右键消耗 500 电力呼来降雨，雨天使用则驱散降雨
+		只能操纵雨，管不了风
+		使用时会通知全服
+		'''
+}
+
+SolarPanel: {
+	DisplayName: 太阳能板
+	Tooltip:
+		'''
+		白天发电，正午输出到达顶峰
+		雨天效率大减，日食期间完全停摆
+		头顶被实体方块遮挡时无法工作
+		'''
+}
+
+SolarPanelMK2: {
+	DisplayName: 太阳能板MK2
+	Tooltip:
+		'''
+		白天发电，正午输出到达顶峰，效率是初代的三倍
+		雨天效率大减，日食期间完全停摆
+		头顶被实体方块遮挡时无法工作
+		'''
+}
+
+CapacitorMatrix: {
+	DisplayName: 电容矩阵
+	Tooltip:
+		'''
+		可储存 40000 电力的大型储能柜
+		充放电吞吐远超热能电池，是大电网的缓冲中枢
+		'''
+}
+
 UEPipeline: {
 	DisplayName: 能量管道
 	Tooltip:
@@ -1201,6 +1431,66 @@ UEPipeline: {
 		用于传输电能
 		右键可快速拆除目标位置的管道并回收
 		连接发电机等能量来源，将电能传输至电池或其他用电设备
+		'''
+}
+
+WireInterface: {
+	ModeBridgeText: 仅桥接:收到机关信号时切换邻接机器
+	ModeFullText: 满电播报:邻接机器充满时发出机关信号
+	ModeEmptyText: 空电播报:邻接机器耗尽时发出机关信号
+	MachineOffText: 待机
+	MachineOnText: 启用
+	DisplayName: 机关接口器
+	Tooltip:
+		'''
+		机关线与电网之间的双向转接头
+		收到机关信号时，切换紧贴它的机器启用或待机
+		右键切换播报模式：邻接机器充满或耗尽时，沿自身接线发出机关信号
+		贴着要控制的机器安放，再把机关线接到它身上
+		'''
+}
+
+Sensor: {
+	TitleText: 多模式传感器
+	ConditionLabelText: 触发条件
+	ModeOffText: 关闭
+	ModeChargeAboveText: 电量高于阈值
+	ModeChargeBelowText: 电量低于阈值
+	ModeEnemyText: 敌情警戒
+	ModeBloodMoonText: 血月
+	ModeEclipseText: 日食
+	ModeSlimeRainText: 史莱姆雨
+	ModeInvasionText: 入侵
+	ThresholdLabelText: 触发阈值
+	RangeLabelText: 警戒半径
+	EventHintText: 读取世界事件,无需参数
+	OutputLabelText: 输出方式
+	OutputLevelText: 电平跟随
+	OutputPulseText: 单次脉冲
+	StatusActiveText: 条件成立
+	StatusIdleText: 待命
+	StatusNoPowerText: 缺电
+	StatusOffText: 已关闭
+	EnergyLabelText: 电力
+	DisplayName: 多模式传感器
+	Tooltip:
+		'''
+		电网的电子眼，右键打开设置面板
+		可监听邻接电量阈值、附近敌情，或血月、日食、史莱姆雨、入侵
+		条件成立时沿自身接线发出机关信号，支持电平跟随与单次脉冲两种输出
+		待机时每刻消耗 0.1 电力，断电则暂停判定
+		'''
+}
+
+GridSwitch: {
+	OpenText: 已断开
+	CloseText: 已闭合
+	DisplayName: 电网总闸
+	Tooltip:
+		'''
+		嵌进管道线路的电流开关
+		右键或机关信号切换通断，断开时电流无法通过
+		砌进两段管道之间，就能分区启停电网
 		'''
 }
 
@@ -1367,6 +1657,12 @@ MachineModuleText: {
 	NameWind: 风力发电机
 	NameHydro: 水力发电机
 	NameIncinerator: 焚化炉
+	NameCrusher: 粉碎机
+	NameRecycler: 回收机
+	NameMagma: 岩浆热能发电机
+	NameBiomass: 生物质发电机
+	NameTurret: 防御塔
+	NameSolar: 太阳能板
 }
 
 InsulationLiningModule: {
@@ -1409,7 +1705,7 @@ AutoFeedHopperModule: {
 	DisplayName: 自动进料斗
 	Tooltip:
 		'''
-		安装到热能发电机或焚化炉后，自动从近旁的存储补料
+		安装到热能发电机、焚化炉或生物质发电机后，自动从近旁的存储补料
 		料斗只认空槽，手不用再伸
 		'''
 }
@@ -1510,6 +1806,36 @@ CapacityCellModule: {
 		'''
 		安装到任意机器后，储能上限提升50%
 		哪家的插座都认这副极板
+		'''
+}
+
+TurretRangefinderModule: {
+	DisplayName: 测距镜组模块
+	Tooltip:
+		'''
+		安装到防御塔后，索敌半径提升25%
+		护盾与治疗塔改为扩大光环范围
+		镜片先于炮口看见敌人
+		'''
+}
+
+TurretAutoloaderModule: {
+	DisplayName: 快速装填模块
+	Tooltip:
+		'''
+		安装到防御塔后，开火速度提升30%
+		光环塔没有开火节奏，装了不起作用
+		上一发未落，下一发已上膛
+		'''
+}
+
+TurretPowerSaverModule: {
+	DisplayName: 火控节能模块
+	Tooltip:
+		'''
+		安装到防御塔后，耗电降至75%
+		单发耗电与持续耗电都认它
+		守城时电表终于转得慢了
 		'''
 }
 
@@ -2071,6 +2397,102 @@ Incinerator: {
 		'''
 }
 
+Crusher: {
+	DisplayName: 矿石粉碎机
+	Tooltip:
+		'''
+		消耗电力粉碎矿石，两份矿石碎出三份同种矿
+		右键打开操控面板
+		Shift右键可以快速放入矿石，或者取出碎矿
+		碎矿再进焚化炉熔炼，同样的矿能多出一半锭
+		'''
+}
+
+CrusherUI: {
+	TitleText: 矿石粉碎机
+	InputLabel: 矿料
+	OutputLabel: 产出
+	ProgressLabel: 破碎
+	PowerLabel: 电力
+	CrushingText: 破碎中
+	IdleText: 待机
+	NoPowerText: 缺电
+	InputHint: 放入矿石，两份碎出三份
+	OutputHint: 点击取出碎矿
+	PowerUnit: UE
+}
+
+Recycler: {
+	DisplayName: 回收机
+	Tooltip:
+		'''
+		消耗电力拆解武器、盔甲和饰品，按稀有度回收出锭
+		拆解不还原配方，产出价值远低于装备本身
+		右键打开操控面板
+		Shift右键可以快速放入装备，或者取出锭料
+		'''
+}
+
+RecyclerUI: {
+	TitleText: 回收机
+	InputLabel: 装备
+	OutputLabel: 锭料
+	ProgressLabel: 拆解
+	PowerLabel: 电力
+	WorkingText: 拆解中
+	IdleText: 待机
+	NoPowerText: 缺电
+	InputHint: 放入武器、盔甲或饰品
+	OutputHint: 点击取出锭料
+	EstimateLabel: 预估产出:
+	PowerUnit: UE
+}
+
+AutoCrafter: {
+	DisplayName: 自动合成台
+	Tooltip:
+		'''
+		右键打开面板，放入样品并钉选一条它的配方
+		机器会从附近的箱子和机器抽取材料，自动合成
+		配方需要的制作站要摆在机器附近
+		成品优先送进附近的存储，送不出去就留在成品槽
+		'''
+}
+
+AutoCrafterUI: {
+	TitleText: 自动合成台
+	SampleLabel: 样品
+	OutputLabel: 成品
+	ListLabel: 配方清单
+	PowerLabel: 电力
+	StatusIdle: 待机
+	StatusNoPin: 未钉选配方
+	StatusPinMissing: 配方已失效，请重新钉选
+	StatusNoPower: 缺电
+	StatusNoStation: 附近缺少制作站
+	StatusNoCondition: 合成条件未满足
+	StatusNoMaterial: 材料不足:
+	StatusOutputFull: 成品槽已满
+	StatusWorking: 装配中
+	SampleHint: 放入样品物品，列出它的配方
+	ListEmptyText: 样品没有对应配方
+	PinHint: 点击钉选这条配方
+	UnpinHint: 再次点击取消钉选
+	ConditionLockText: 条件未满足
+	PinnedTag: 已钉选
+	PowerUnit: UE
+}
+
+ProcessingFeedHopper: {
+	DisplayName: 加工进料斗
+	Tooltip: 安装到粉碎机或回收机后，机器会从近旁存储自动补料
+}
+
+ProcessingEjectChute: {
+	DisplayName: 加工出料槽
+	Tooltip: 安装到粉碎机或回收机后，产物会直接送进近旁存储
+}
+
 ItemPipeline: {
 	DisplayName: 物流管道
 	Tooltip:
@@ -2137,6 +2559,55 @@ HerbFarmer: {
 		消耗种子与电力在周围的合法土壤上自动播种
 		收割开花期的草药，产出草药与种子
 		右键打开操控面板
+		'''
+}
+
+MushroomFarmer: {
+	NoEnergyText: 能量不足!
+	FullText: 产出仓已满!
+	DisplayName: 蘑菇农场机
+	Tooltip:
+		'''
+		消耗电力在周围的草地培育普通蘑菇，蘑菇草上培育发光蘑菇
+		自动采收入仓，偶尔能收获蘑菇草种子
+		右键打开操控面板
+		'''
+}
+
+Apiary: {
+	NoEnergyText: 能量不足!
+	NoBottleText: 没有空瓶!
+	FullText: 产出仓已满!
+	DisplayName: 养蜂箱
+	Tooltip:
+		'''
+		放入空玻璃瓶，蜂群会消耗电力酿造蜂蜜瓶
+		邻近蜂蜜或身处丛林时蜂群更活跃，产率提高
+		右键打开操控面板
+		'''
+}
+
+SlimeVat: {
+	NoEnergyText: 能量不足!
+	NoWaterText: 水量不足!
+	FullText: 产出仓已满!
+	PourText: +{0} 水
+	DisplayName: 史莱姆培养槽
+	Tooltip:
+		'''
+		消耗水与电力周期性培养凝胶
+		自动汲取邻近水体，也可以手持水桶右键倒水
+		右键打开操控面板
+		'''
+}
+
+BiomassGenerator: {
+	DisplayName: 生物质发电机
+	Tooltip:
+		'''
+		焚烧种子、草药、蘑菇、鱼获等农业废料持续发电
+		功率稳定，介于风力与火力之间，与农业机器构成产烧闭环
+		手持生物质燃料右键直接投料，右键打开面板
 		'''
 }
 
@@ -3861,7 +4332,7 @@ OniMeiRubbingTsuzurihi: {
 
 OniMeiRubbingBonsho: {
 	DisplayName: 梵鐘
-	Tooltip: 架势满了憋住不放终结，刀自己撞钟；架势砍到一半换一圈控场
+	Tooltip: 架势满了憋住不放终结，刀自己撞钟；钟响耗去一半架势，换一圈缚敌控场
 	Origin: 寺里的梵钟要人撞才响，刀上雕的这一口却不等人。雕师说得明白：势攒满了你不放，钟就替你放
 	Power:
 		'''

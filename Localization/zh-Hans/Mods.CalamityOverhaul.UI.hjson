@@ -134,7 +134,110 @@ Generator: {
 		RunningText: 运转中
 		NoWindText: 风力微弱
 		NoWaterText: 水轮离水
+		SunLabel: 日照
+		NoSunText: 日照不足
+		MagmaLabel: 岩浆
+		NoMagmaText: 岩浆枯竭
 		PowerUnitText: UE
+	}
+
+	BiomassGeneratorUI: {
+		TitleText: 生物质发电机
+		FuelLabel: 料仓
+		PowerLabel: 电力
+		ActiveText: 运行中
+		IdleText: 待机
+		InsertFuelHint: 点击放入/取出生物质燃料
+		PowerUnit: UE
+	}
+}
+
+SlimeVat: {
+	SlimeVatUI: {
+		TitleText: 史莱姆培养槽
+		WaterLabel: 水量
+		ProduceLabel: 产出仓
+		EnableText: 启用
+		DisableText: 停用
+		StatusWorking: 培养中
+		StatusIdle: 休眠
+		StatusNoPower: 缺电
+		StatusNoWater: 缺水
+		StatusOff: 已停用
+		EnergyLabel: 电力
+		PourHint: 手持水桶点击可倒水,或让机器汲取邻近水体
+		TakeHint: 点击取出
+		PowerUnit: UE
+	}
+}
+
+ShimmerTransmuter: {
+	ShimmerTransmuterUI: {
+		TitleText: 微光转化槽
+		InputLabel: 输入
+		OutputLabel: 输出
+		ProgressLabel: 转化进度
+		PowerLabel: 电力
+		ShimmerLabel: 微光
+		WorkingText: 转化中
+		IdleText: 待机
+		NoPowerText: 缺电
+		NoShimmerText: 缺微光
+		OutputFullText: 输出已满
+		InputHint: 放入可被微光转化的物品
+		OutputHint: 点击取出产物
+		PowerUnit: UE
+	}
+}
+
+MushroomFarmer: {
+	MushroomFarmerUI: {
+		TitleText: 蘑菇农场机
+		ProduceLabel: 产出仓
+		EnableText: 启用
+		DisableText: 停用
+		StatusWorking: 培育中
+		StatusIdle: 待机
+		StatusNoPower: 缺电
+		StatusOff: 已停用
+		EnergyLabel: 电力
+		TakeHint: 点击取出
+		PowerUnit: UE
+	}
+}
+
+TeleportStation: {
+	TeleportStationUI: {
+		TitleText: 传送站网络
+		LocalLabel: 本站
+		RenameText: 改名
+		RenameHint: 回车确认,Esc 取消
+		EmptyListText: 世界上没有其他传送站
+		RowInfoLine: "{0} 格 · {1} UE"
+		StatusReady: 可传送
+		StatusNoPower: 本站缺电
+		StatusTargetDead: 对端缺电
+		EnergyLabel: 电力
+		PowerUnit: UE
+	}
+}
+
+Apiary: {
+	ApiaryUI: {
+		TitleText: 养蜂箱
+		BottleLabel: 空瓶仓
+		ProduceLabel: 产出仓
+		EnableText: 启用
+		DisableText: 停用
+		StatusWorking: 酿蜜中
+		StatusWorkingBoost: 蜂群活跃
+		StatusIdle: 歇工
+		StatusNoPower: 缺电
+		StatusOff: 已停用
+		EnergyLabel: 电力
+		BottleHint: 放入空玻璃瓶
+		TakeHint: 点击取出
+		PowerUnit: UE
 	}
 }
 

@@ -14,7 +14,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 {
     /// <summary>
     /// 鬼梦恶犬：左键自梦里唤出的猎手。原版狼贴图 + <c>KikasaHound.fx</c> 实体模式
-    /// （体成而实、双目常燃）。自玩家脚下黑水跃出，落地追猎最近的敌人：
+    /// （体成而实、双目常燃）。出场自玩家身旁撕开的一道梦境裂缝
+    /// （<c>KikasaEaterRift.fx</c> 复用，鬼梦色调）：缝先撕开、缝中双目先燃、
+    /// 犬自缝中凝形窜出，裂缝留在原地弹性弥合。落地追猎最近的敌人：
     /// 中距收步点火冲刺，近身伏地蓄势后一口扑咬；蹬地够得到的高度就跳，
     /// 再高则斜向上冲，落地滑停回追。高速段拖出噪蚀狼影与黑烟，寿命尽头化雾散回梦里。
     /// 梦境绑定，离开 Dreaming 即溶解。
@@ -38,6 +40,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
         private const int StateCrouch = 4;
         private const int StateSprint = 5;
         private const int StateSkid = 6;
+        /// <summary>出生态：缝中蓄形。由 <see cref="KikasaDreamPlayer.SummonHound"/> 经 ai0 传入，随 spawn 包各端一致</summary>
+        internal const int StateEmerge = 7;
 
         private int State { get => (int)Projectile.ai[0]; set => Projectile.ai[0] = value; }
         private ref float StateTimer => ref Projectile.ai[1];
@@ -63,6 +67,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
         private const int CrouchFrames = 14;
         private const int SprintPrepFrames = 6;
         private const int SkidFrames = 8;
+
+        //==================== 出生裂缝 ====================
+
+        /// <summary>裂缝撕开到犬窜出的帧数，也是召唤的出手延迟</summary>
+        private const int EmergeFrames = 8;
+        /// <summary>窜出后裂缝弹性弥合的帧数</summary>
+        private const int RiftCloseFrames = 18;
+        private const float RiftHalfLen = 84f;
+        private const float RiftHalfWidth = 40f;
+
+        //鬼梦不安红：比鬼奴血系更暗更闷，缘光落在恶犬既有的烬橙上
+        private static readonly Color RiftDark = new(26, 8, 10);
+        private static readonly Color RiftDeep = new(84, 20, 22);
+        private static readonly Color RiftMain = new(176, 44, 36);
+        private static readonly Color RiftBright = new(214, 84, 34);
+        private static readonly Color RiftAccent = new(104, 46, 92);
+
+        //锚点定在出生位置、倾角由窜出方向派生，全部自 spawn 包确定性重建，不走额外同步
+        private Vector2 riftAnchor;
+        private Vector2 riftLongAxis = Vector2.UnitY;
+        private Vector2 emergeVel;
+        private bool emergeInit;
+        private bool hasRift;
+        /// <summary>窜出后裂缝弥合的本地计时（纯表现量）</summary>
+        private int riftClosePhase;
+        /// <summary>蓄形期间逐帧快照的实际开度。弥合从这里起收，中途被遣散打断也不突跳</summary>
+        private float riftOpenSnap;
 
         //==================== 本地表现量 ====================
 
@@ -115,8 +146,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 
         public override bool MinionContactDamage() => true;
 
-        /// <summary>化雾中没有牙</summary>
-        public override bool? CanDamage() => State == StateDissolve ? false : null;
+        /// <summary>化雾中没有牙；缝里还没成形也没有</summary>
+        public override bool? CanDamage() => State is StateDissolve or StateEmerge ? false : null;
 
         public override bool? CanCutTiles() => false;
 
@@ -173,7 +204,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                 StateTimer = 0f;
             }
 
-            SpawnBurstFx();
+            //出生裂缝首帧初始化：初速与朝向自 spawn 包 velocity 派生，各端一致；
+            //Emerge 期间速度冻结，出穴帧再释放
+            if (!emergeInit) {
+                emergeInit = true;
+                if (State == StateEmerge) {
+                    hasRift = true;
+                    riftAnchor = Projectile.Center;
+                    emergeVel = Projectile.velocity;
+                    int dir = emergeVel.X >= 0f ? 1 : -1;
+                    Projectile.spriteDirection = dir;
+                    //缝顶向窜出方向微倾，像被从里面顶开
+                    riftLongAxis = Vector2.UnitY.RotatedBy(dir * 0.13f);
+                    Projectile.velocity = Vector2.Zero;
+                }
+            }
+
+            //窜出后裂缝留在锚点原地弥合（化雾打断 Emerge 时同样走这条弥合）
+            if (hasRift && State != StateEmerge && riftClosePhase < RiftCloseFrames) {
+                riftClosePhase++;
+            }
+
+            //破缝的爆点粒子等出穴帧再放，缝里蓄形阶段不响
+            if (State != StateEmerge) {
+                SpawnBurstFx();
+            }
 
             //接地性必须在施加重力前采样：原版碰撞在 AI 之后才把竖速归零，
             //先加重力再看 velocity.Y 会永远读到下坠，犬会卡在跃出态不索敌、帧停在坠落
@@ -189,6 +244,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                 case StateCrouch: gravity = UpdateCrouch(); break;
                 case StateSprint: gravity = UpdateSprint(grounded); break;
                 case StateSkid: gravity = UpdateSkid(); break;
+                case StateEmerge: gravity = UpdateEmerge(); break;
             }
             ApplyGravity(gravity);
 
@@ -210,7 +266,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             }
         }
 
-        //出场那一口黑水，各端首帧自播
+        //破缝窜出那一口黑水与黑烟，各端在出穴帧自播
 
         private void SpawnBurstFx() {
             if (spawnFxDone || Main.dedServ) {
@@ -243,6 +299,66 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
         }
 
         //各状态返回本帧应施加的重力，统一在 AI 尾部结算
+
+        /// <summary>缝中蓄形：钉在裂缝里不动，撕声与缝缘飘烬各端自播，时满释放缓存初速窜出</summary>
+        private float UpdateEmerge() {
+            StateTimer++;
+            Projectile.velocity = Vector2.Zero;
+            riftOpenSnap = TearOpenFast(StateTimer);
+
+            if (!Main.dedServ) {
+                //撕开拍
+                if ((int)StateTimer == 1) {
+                    SoundEngine.PlaySound(SoundID.Item95 with { Volume = 0.5f, Pitch = -0.6f, MaxInstances = 3 }, riftAnchor);
+                    SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.5f, Volume = 0.45f, MaxInstances = 3 }, riftAnchor);
+                }
+                //缝缘飘烬
+                if ((int)StateTimer % 3 == 1) {
+                    Vector2 at = riftAnchor + riftLongAxis * Main.rand.NextFloat(-0.8f, 0.8f) * RiftHalfLen;
+                    PRTLoader.NewParticle<PRT_KikasaDreamAsh>(at,
+                        new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(-0.9f, -0.2f)),
+                        RiftBright, Main.rand.NextFloat(0.08f, 0.14f))
+                        ?.Configure(Main.rand.Next(24, 44), true);
+                }
+            }
+
+            if (StateTimer >= EmergeFrames) {
+                Projectile.velocity = emergeVel;
+                EnterState(StateLeap);
+                SpawnBurstFx();
+            }
+            return 0f;
+        }
+
+        /// <summary>撕开包络（KikasaEater.TearOpen 压缩版）：约 7 帧拉满 + 弹性过冲余摆</summary>
+        private static float TearOpenFast(float t) {
+            if (t <= 0f) {
+                return 0f;
+            }
+            float e = MathHelper.Clamp(t / 7f, 0f, 1f);
+            float baseOpen = 1f - (1f - e) * (1f - e) * (1f - e);
+            float overshoot = t > 7f ? 0.2f * MathF.Exp(-(t - 7f) * 0.16f) * MathF.Cos((t - 7f) * 0.5f) : 0f;
+            return baseOpen + overshoot;
+        }
+
+        /// <summary>
+        /// 本帧裂缝开度：Emerge 撕开（同步量驱动）；窜出后自快照开度带一点余摆平方弥合
+        /// （本地量驱动）。从快照起收，Emerge 中途被遣散打断也不突跳
+        /// </summary>
+        private float RiftOpen() {
+            if (!hasRift) {
+                return 0f;
+            }
+            if (State == StateEmerge) {
+                return TearOpenFast(StateTimer);
+            }
+            float close = riftClosePhase / (float)RiftCloseFrames;
+            if (close >= 1f) {
+                return 0f;
+            }
+            float wobble = 1f + 0.15f * MathF.Exp(-riftClosePhase * 0.16f) * MathF.Sin(riftClosePhase * 0.5f);
+            return riftOpenSnap * wobble * (1f - close) * (1f - close);
+        }
 
         private float UpdateLeap(bool grounded) {
             StateTimer++;
@@ -688,6 +804,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
         private void UpdateFrame(bool grounded, float vyIn) {
             float vx = Projectile.velocity.X;
 
+            //缝中蓄形绷在跃起帧，出穴直接衔接空中姿态
+            if (State == StateEmerge) {
+                frameIndex = 10;
+                frameCounter = 0f;
+                return;
+            }
             //伏地/滑停/起跑收步都压在落地过渡帧，身子塌着
             if (State == StateCrouch || State == StateSkid
                 || (State == StateSprint && StateTimer < SprintPrepFrames)) {
@@ -757,9 +879,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             }
         }
 
-        /// <summary>双目辉光随状态呼吸,蓄势一路烧亮、扑咬燃满、化雾熄下去</summary>
+        /// <summary>双目辉光随状态呼吸,缝中蓄形燃到最烈、蓄势一路烧亮、扑咬燃满、化雾熄下去</summary>
         private float EyeGlow() {
             float target = State switch {
+                StateEmerge => 2.3f,
                 StateCrouch => 1.2f + StateTimer / CrouchFrames * 1.3f,
                 StateLunge => 1.7f,
                 StateSprint => 1.25f,
@@ -771,6 +894,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            //出生裂缝压在犬身之下，狗要从口里钻出来
+            DrawRift(Main.spriteBatch);
+
             Main.instance.LoadNPC(NPCID.Wolf);
             Texture2D tex = TextureAssets.Npc[NPCID.Wolf]?.Value;
             if (tex == null) {
@@ -780,8 +906,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             int frameH = tex.Height / Main.npcFrameCount[NPCID.Wolf];
             //源矩形上下各内缩 1px，配 shader 帧界钳制双通道防渗色
             Rectangle frame = new(0, frameIndex * frameH + 1, tex.Width, frameH - 2);
-            float dissolve = State == StateDissolve
-                ? MathHelper.Clamp(StateTimer / DissolveFrames, 0f, 1f) : 0f;
+            float dissolve;
+            if (State == StateDissolve) {
+                dissolve = MathHelper.Clamp(StateTimer / DissolveFrames, 0f, 1f);
+            }
+            else if (State == StateEmerge) {
+                //缝中凝形（化雾的逆过程）：前段只剩噪点碎片，末段快速拢实
+                float form = MathHelper.Clamp((StateTimer - 2f) / (EmergeFrames - 2f), 0f, 1f);
+                dissolve = (1f - form) * (1f - form) * 0.92f;
+            }
+            else {
+                dissolve = 0f;
+            }
             float alpha = 1f - dissolve * 0.4f;
             SpriteBatch sb = Main.spriteBatch;
             SpriteEffects effects = Projectile.spriteDirection > 0
@@ -886,6 +1022,117 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
                 DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        //==================== 出生裂缝绘制 ====================
+
+        /// <summary>
+        /// 出生裂缝：一道竖直略倾的梦境撕口，内腔不安红下涌翻搅，犬走后留在锚点弹性弥合。
+        /// 世界坐标 quad 直画（GetTransfromMatrix 自带世界→屏幕平移，绝不减 screenPosition），
+        /// 压在犬身之下；着色器缺失走暗椭圆回退
+        /// </summary>
+        private void DrawRift(SpriteBatch sb) {
+            float open = RiftOpen();
+            if (open <= 0.01f) {
+                return;
+            }
+
+            Effect fx = EffectLoader.KikasaEaterRift?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            bool shaderOk = fx != null && noise != null;
+            sb.End();
+
+            if (shaderOk) {
+                GraphicsDevice device = Main.graphics.GraphicsDevice;
+                BlendState origBlend = device.BlendState;
+                RasterizerState origRaster = device.RasterizerState;
+                device.BlendState = BlendState.AlphaBlend;
+                device.RasterizerState = RasterizerState.CullNone;
+
+                fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+                fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+                fx.Parameters["uNoiseTex"]?.SetValue(noise);
+                fx.Parameters["uSeed"]?.SetValue(Seed);
+                fx.Parameters["uOpen"]?.SetValue(open);
+                //低开度也要读得见：发丝缝靠透明度撑住，闭合读数交给宽度
+                fx.Parameters["uFade"]?.SetValue(MathHelper.Clamp(open * 6f, 0f, 1f));
+                fx.Parameters["uDrip"]?.SetValue(1f);
+                fx.Parameters["uColDark"]?.SetValue(RiftDark.ToVector3());
+                fx.Parameters["uColDeep"]?.SetValue(RiftDeep.ToVector3());
+                fx.Parameters["uColMain"]?.SetValue(RiftMain.ToVector3());
+                fx.Parameters["uColBright"]?.SetValue(RiftBright.ToVector3());
+                fx.Parameters["uColAccent"]?.SetValue(RiftAccent.ToVector3());
+
+                Vector2 axisL = riftLongAxis * RiftHalfLen;
+                Vector2 axisW = new Vector2(-riftLongAxis.Y, riftLongAxis.X) * RiftHalfWidth;
+                VertexPositionColorTexture[] verts = [
+                    new((riftAnchor - axisW - axisL).ToVector3(), Color.White, new Vector2(0f, 0f)),
+                    new((riftAnchor + axisW - axisL).ToVector3(), Color.White, new Vector2(1f, 0f)),
+                    new((riftAnchor - axisW + axisL).ToVector3(), Color.White, new Vector2(0f, 1f)),
+                    new((riftAnchor + axisW + axisL).ToVector3(), Color.White, new Vector2(1f, 1f)),
+                ];
+                foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
+                    pass.Apply();
+                    device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);
+                }
+
+                device.BlendState = origBlend;
+                device.RasterizerState = origRaster;
+            }
+
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
+            if (!shaderOk) {
+                //回退：暗渊拉长椭圆（Extra_98 真透明）+ 加色缘光
+                Texture2D blob = CWRAsset.Extra_98?.Value;
+                Texture2D ring = CWRAsset.DiffusionCircle?.Value;
+                if (blob != null) {
+                    float rot = riftLongAxis.ToRotation() + MathHelper.PiOver2;
+                    Vector2 pos = riftAnchor - Main.screenPosition;
+                    float openSat = MathHelper.Clamp(open, 0f, 1f);
+                    Vector2 scaleDark = new(open * 0.4f, RiftHalfLen / blob.Height * 2.4f);
+                    sb.Draw(blob, pos, null, RiftDark * (0.85f * openSat),
+                        rot, blob.Size() * 0.5f, scaleDark, SpriteEffects.None, 0f);
+                    if (ring != null) {
+                        Color rim = (RiftMain with { A = 0 }) * (0.55f * openSat);
+                        sb.Draw(ring, pos, null, rim, rot, ring.Size() * 0.5f,
+                            new Vector2(open * 44f / ring.Width, RiftHalfLen * 2.3f / ring.Height), SpriteEffects.None, 0f);
+                    }
+                }
+            }
+
+            DrawRiftEyes(sb);
+        }
+
+        /// <summary>
+        /// 缝中先燃的双目：shader 眼被溶蚀门吃掉（KikasaHound.fx 里 keep 乘在 eyes 上），
+        /// 蓄形前段由这两点烬光顶上，出穴后几帧交棒给 shader 眼淡出。黑底贴图走 A=0 加色
+        /// </summary>
+        private void DrawRiftEyes(SpriteBatch sb) {
+            float vis = State == StateEmerge
+                ? MathHelper.Clamp((StateTimer - 1f) / 4f, 0f, 1f)
+                : 1f - MathHelper.Clamp(riftClosePhase / 5f, 0f, 1f);
+            if (vis <= 0.02f) {
+                return;
+            }
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (glow == null) {
+                return;
+            }
+            float breath = 0.86f + 0.14f * MathF.Sin(Main.GlobalTimeWrappedHourly * 6.3f + Seed);
+            float haloScale = 22f / glow.Width;
+            float coreScale = 10f / glow.Width;
+            Vector2 ahead = new(Projectile.spriteDirection, 0f);
+            Vector2 eyeBase = Projectile.Center + ahead * 16f + new Vector2(0f, -7f) - Main.screenPosition;
+            for (int e = 0; e < 2; e++) {
+                Vector2 at = eyeBase - ahead * (e * 7f);
+                float w = e == 0 ? 1f : 0.5f;
+                sb.Draw(glow, at, null, new Color(214, 84, 34, 0) * (0.8f * vis * breath * w),
+                    0f, glow.Size() * 0.5f, haloScale, SpriteEffects.None, 0f);
+                sb.Draw(glow, at, null, new Color(255, 150, 70, 0) * (vis * breath * w),
+                    0f, glow.Size() * 0.5f, coreScale, SpriteEffects.None, 0f);
+            }
         }
     }
 

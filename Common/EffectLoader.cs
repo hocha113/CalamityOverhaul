@@ -289,6 +289,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniDomainDeco { get; set; }
         public static Asset<Effect> HimayoPortraitAssembly { get; set; }
         public static Asset<Effect> HimayoPanorama { get; set; }
+        public static Asset<Effect> HimayoInkStroke { get; set; }
         public static Asset<Effect> ShenyoRainForm { get; set; }
         public static Asset<Effect> ShenyoMenuLake { get; set; }
         public static Asset<Effect> ShenyoMenuGhost { get; set; }

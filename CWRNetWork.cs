@@ -108,6 +108,10 @@ namespace CalamityOverhaul
         KikasaTalismanStack,
         //游戏模式（残酷/修罗）切换：客户端请求→服务端校验落地→广播全端各自演出
         GameModeToggle,
+        //工业服务·电动日晷：客户端请求→服务端校验扣电并快进时间→广播全员演出
+        IndustrialTimeSkip,
+        //工业服务·天气控制机：客户端请求→服务端校验扣电并起雨/止雨→广播全员演出
+        IndustrialWeatherSet,
     }
 
     public static class CWRNetWork
@@ -209,6 +213,7 @@ namespace CalamityOverhaul
             SHPCNPCEffects.NetHandle(type, reader, whoAmI);
             TBUGShopNet.NetHandle(type, reader, whoAmI);
             GameModeSystem.NetHandle(type, reader, whoAmI);
+            Content.Industrials.ElectricPowers.IndustrialServiceNet.NetHandle(type, reader, whoAmI);
         }
     }
 }

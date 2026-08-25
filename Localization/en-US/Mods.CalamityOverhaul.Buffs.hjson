@@ -132,3 +132,13 @@ FuHongBlessBuff: {
 	DisplayName: 虹桥眷护
 	Description: 虹下移速 +10%，召唤伤害 +10%
 }
+
+IndustrialShieldBuff: {
+	DisplayName: Energy Shield
+	Description: The shield keeps charging and absorbs part of incoming damage
+}
+
+IndustrialRegenBuff: {
+	DisplayName: Healing Aura
+	Description: A healing station is restoring your health
+}

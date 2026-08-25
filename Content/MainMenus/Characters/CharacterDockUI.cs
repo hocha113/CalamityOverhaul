@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
         public string LocalizationCategory => "UI";
         public static CharacterDockUI Instance => UIHandleLoader.GetUIHandleOfType<CharacterDockUI>();
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
-        //锁定角色也显示暗色芯片，故只要有注册角色就活跃
-        public override bool Active => VaultLoad.LoadenContent && Main.gameMenu && MenuCharacterRegistry.HasAny;
+        //至少解锁一人整排才出现，届时锁定角色以暗色剪影占位；全员未解锁时码头整体隐藏
+        public override bool Active => VaultLoad.LoadenContent && Main.gameMenu && MenuCharacterRegistry.AnyUnlocked;
 
         //缩放档位，像素图整数倍
         internal const int MinZoomStep = 1;

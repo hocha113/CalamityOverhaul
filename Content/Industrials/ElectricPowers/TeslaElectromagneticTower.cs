@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -201,16 +201,19 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
     }
 
-    internal class TeslaElectromagneticTowerTP : BaseBattery
+    internal class TeslaElectromagneticTowerTP : BaseTurretTP
     {
         public override int TargetTileID => ModContent.TileType<TeslaElectromagneticTowerTile>();
         public override int TargetItem => ModContent.ItemType<TeslaElectromagneticTower>();
-        public override bool ReceivedEnergy => true;
         public override bool CanDrop => false;
         public override float MaxUEValue => 1200;
-        public bool AttackPattern { get; set; }
-        public NPC TargetByNPC { get; set; }
-        public int FireCoolden { get; set; }
+        //索敌/耗电/冷却参数(700px/60UE每发/60t冷却/视线判定/Boss优先)即基类默认值,不再重写
+        /// <summary>不启用模块架,网络包序与存档格式和迁移前逐字节一致</summary>
+        public override int ModuleSlotCount => 0;
+        /// <summary>旧行为:逻辑在所有端同跑,攻击弹幕从最近玩家的客户端生成</summary>
+        public override bool SimulateOnAllEndpoints => true;
+        /// <summary>旧档缺失模式键时的语义:默认护卫模式</summary>
+        protected override bool DefaultModeWhenMissing => false;
         public float GuardValue { get; set; }
 
         //---- 护卫力场视觉状态：纯客户端表现，不参与判定，判定半径始终是 GuardValue ----
@@ -229,34 +232,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private int crawlArcTimer;
         private int dischargeTimer;
         private int sparkTimer;
-        public override void SendData(ModPacket data) {
-            base.SendData(data);
-            data.Write(AttackPattern);
-        }
 
-        public override void ReceiveData(BinaryReader reader, int whoAmI) {
-            base.ReceiveData(reader, whoAmI);
-            bool oldAttackPattern = AttackPattern;
-            AttackPattern = reader.ReadBoolean();
-            if (!TileProcessorNetWork.InitializeWorld && oldAttackPattern != AttackPattern) {
-                TeslaOpenEffect();//如果判断出切换了形态就调用这个方法生成粒子效果和音效
-            }
-        }
-
-        public override void SaveData(TagCompound tag) {
-            base.SaveData(tag);
-            tag["AttackPattern"] = AttackPattern;
-        }
-
-        public override void LoadData(TagCompound tag) {
-            base.LoadData(tag);
-            if (tag.TryGet("AttackPattern", out bool _ttackPattern)) {
-                AttackPattern = _ttackPattern;
-            }
-            else {
-                AttackPattern = false;
-            }
-        }
+        //模式位序列化(包序:MachineData→AttackPattern)已上移基类,这里只接表现钩子
+        /// <summary>网络端判断出切换了形态时生成粒子效果和音效</summary>
+        protected override void OnModeChangedByNet() => TeslaOpenEffect();
+        /// <summary>本地右键/电线翻转形态时的粒子效果和音效</summary>
+        protected override void OnModeToggleEffect() => TeslaOpenEffect();
 
         public override void SetBattery() {
             IdleDistance = 4000;//玩家远离后停止运行
@@ -448,32 +429,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
         }
 
-        public override void UpdateMachine() {
+        protected override void UpdateTurret() {
             bool guardRunning = false;
             if (AttackPattern) {
                 GuardValue = 0;
-                if (MachineData.UEvalue >= 60 && ++FireCoolden > 60) {
-                    TargetByNPC = CenterInWorld.FindClosestNPC(700, false, true);
-                    if (TargetByNPC != null) {
-                        for (int i = 0; i < 6; i++) {
-                            Vector2 spanPos = PosInWorld + new Vector2(Rand.Next(Width), Rand.Next(Height / 2)) + new Vector2(8, 8);
-                            //并行阶段粒子生成延迟到主线程执行(串行阶段立即执行)
-                            Defer(() => PRTLoader.NewParticle<PRT_TileHightlight>(spanPos, Vector2.Zero, Color.White));
-                        }
-
-                        Defer(() => SoundEngine.PlaySound(CWRSound.MagneticBurst, CenterInWorld));
-                        //这里选择从某个玩家的端口上生成弹幕，因为未知原因从服务端上无法生成闪电，这是一个临时的解决方法
-                        Player player = VaultUtils.FindClosestPlayer(CenterInWorld);
-                        if (player != null && player.whoAmI == Main.myPlayer) {
-                            Vector2 dir = CenterInWorld.To(TargetByNPC.Center).UnitVector();
-                            //并行阶段弹幕生成延迟到主线程执行(串行阶段立即执行)
-                            DeferSpawnProjectile(new EntitySource_WorldEvent(), CenterInWorld
-                                , dir * 8, ModContent.ProjectileType<TeslaBallByAttack>(), 32, 2, -1);
-                        }
-                        MachineData.UEvalue -= 60;
-                    }
-                    FireCoolden = 0;
-                }
+                //攻击帧骨架已提炼进基类:电量门→冷却→索敌→Fire→扣电→冷却归零,数值与迁移前一致
+                RunAttackCycle();
             }
             else if (MachineData.UEvalue > 2) {
                 guardRunning = true;
@@ -512,6 +473,26 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
             GuardActive = guardRunning;
             UpdateGuardVisual();
+        }
+
+        /// <summary>攻击模式开火:塔身高亮+音效,闪电弹从最近玩家的客户端生成</summary>
+        protected override void Fire(NPC target) {
+            for (int i = 0; i < 6; i++) {
+                Vector2 spanPos = PosInWorld + new Vector2(Rand.Next(Width), Rand.Next(Height / 2)) + new Vector2(8, 8);
+                //并行阶段粒子生成延迟到主线程执行(串行阶段立即执行)
+                Defer(() => PRTLoader.NewParticle<PRT_TileHightlight>(spanPos, Vector2.Zero, Color.White));
+            }
+
+            Defer(() => SoundEngine.PlaySound(CWRSound.MagneticBurst, CenterInWorld));
+            //从最近玩家的端口上生成弹幕:TeslaBallByAttack 基于 BaseHeldProj,必须有玩家 owner,
+            //无法从服务端生成;此旧路径随本类保留,新塔一律在权威端生成普通 ModProjectile
+            Player player = VaultUtils.FindClosestPlayer(CenterInWorld);
+            if (player != null && player.whoAmI == Main.myPlayer) {
+                Vector2 dir = CenterInWorld.To(target.Center).UnitVector();
+                //并行阶段弹幕生成延迟到主线程执行(串行阶段立即执行)
+                DeferSpawnProjectile(new EntitySource_WorldEvent(), CenterInWorld
+                    , dir * 8, ModContent.ProjectileType<TeslaBallByAttack>(), 32, 2, -1);
+            }
         }
 
         public override void MachineKill() {
@@ -568,15 +549,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             SoundEngine.PlaySound(CWRSound.TeslaOpen);
         }
 
-        public void RightEvent() {
-            AttackPattern = !AttackPattern;
-            SendData();
-            TeslaOpenEffect();
-        }
-
-        public override void FrontDraw(SpriteBatch spriteBatch) {
-            DrawChargeBar();
-        }
+        //RightEvent(翻转+SendData+表现)与 FrontDraw(充能条)已由基类等价接管
     }
 
     /// <summary>

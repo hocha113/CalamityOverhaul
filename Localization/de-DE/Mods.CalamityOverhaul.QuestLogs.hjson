@@ -261,6 +261,156 @@ QuestNode: {
 		DetailedDescription: Ein Wunderwerk kabelloser Energie. Der Turm überträgt Strom durch die Luft und spart dir den Großteil der Verkabelung.
 	}
 
+	FluidPumpQuest: {
+		// DisplayName: Fluid Engineering
+		// Description: Craft a Fluid Pump
+		// DetailedDescription: Water and lava are resources too. The pump is what invites them out of the world.
+	}
+
+	FluidPipelineQuest: {
+		// DisplayName: Veins of Liquid
+		// Description: Craft Fluid Pipelines
+		// DetailedDescription: Liquids need a grid of their own. Fluid pipes carry only fluids and leave the power grid alone.
+	}
+
+	FluidTankQuest: {
+		// DisplayName: Vessel of Reserves
+		// Description: Craft a Fluid Tank
+		// DetailedDescription: Pumping fast means nothing without somewhere to keep it. The tank is the battery of the fluid network.
+	}
+
+	MagmaGeneratorQuest: {
+		// DisplayName: Magma Thermal Power
+		// Description: Craft a Magma Thermal Generator
+		// DetailedDescription: The pumped magma finally has somewhere to go. It earns a little while touching lava, and runs at full power once its tank is fed.
+	}
+
+	ShimmerTransmuterQuest: {
+		// DisplayName: Shimmer Alchemy
+		// Description: Craft a Shimmer Transmuter
+		// DetailedDescription: Pump shimmer into the machine, and item forms can be rewritten on an assembly line.
+	}
+
+	CrusherQuest: {
+		// DisplayName: Ore from Rubble
+		// Description: Craft an Ore Crusher
+		// DetailedDescription: Two ore crushed into three. The incinerator's supply line just gained a yield step.
+	}
+
+	RecyclerQuest: {
+		// DisplayName: Waste into Worth
+		// Description: Craft a Recycler
+		// DetailedDescription: Don't toss retired gear. Break it into bars by rarity and send it back to the furnace.
+	}
+
+	AutoCrafterQuest: {
+		// DisplayName: Automated Assembly
+		// Description: Craft an Auto Crafter
+		// DetailedDescription: Pin a recipe; materials walk in and products walk out. The crafting bench no longer needs you standing by.
+	}
+
+	MushroomFarmerQuest: {
+		// DisplayName: Fungiculture
+		// Description: Craft a Mushroom Farming Machine
+		// DetailedDescription: Harvests on grass and mushroom grass are its business. Glowing mushrooms included.
+	}
+
+	ApiaryQuest: {
+		// DisplayName: Sweet Industry
+		// Description: Craft an Electric Apiary
+		// DetailedDescription: Empty bottles in, bottled honey out. The hive works harder near honey or in the jungle.
+	}
+
+	SlimeVatQuest: {
+		// DisplayName: Gel Production
+		// Description: Craft a Slime Culture Vat
+		// DetailedDescription: Water and power in, gel out. The vat is the first raw-material machine of the farm waste stream.
+	}
+
+	BiomassGeneratorQuest: {
+		// DisplayName: Closed Ecology
+		// Description: Craft a Biomass Generator
+		// DetailedDescription: Don't waste the farm's surplus. Feed it to the burner for power and the grow-burn loop starts turning.
+	}
+
+	FlameTurretQuest: {
+		// DisplayName: Line of Fire
+		// Description: Craft a Flamethrower Turret
+		// DetailedDescription: A close-range wall of fire against crowds. Load gel and it burns harder.
+	}
+
+	CryoTurretQuest: {
+		// DisplayName: Frost Lockdown
+		// Description: Craft a Cryo Turret
+		// DetailedDescription: Not built to kill, built to freeze. Enemies under the tower slow down until they can barely step.
+	}
+
+	LaserTurretQuest: {
+		// DisplayName: Lightspeed Sniper
+		// Description: Craft a Laser Turret
+		// DetailedDescription: Anything in line of sight is one beam away. Longest range in the family, and it prefers big targets.
+	}
+
+	ShieldGeneratorQuest: {
+		// DisplayName: Energy Bulwark
+		// Description: Craft a Shield Generator
+		// DetailedDescription: Everyone in range gets a layer of absorbing shield. More allies, faster drain.
+	}
+
+	HealStationQuest: {
+		// DisplayName: Field Medicine
+		// Description: Craft a Healing Station
+		// DetailedDescription: Stand in the aura and wounds slowly close. The phrase "workplace injury" retires today.
+	}
+
+	TeleportStationQuest: {
+		// DisplayName: Teleport Network
+		// Description: Craft a Teleport Station
+		// DetailedDescription: Two stations make a network, and the whole map opens up. The farther the hop, the higher the toll.
+	}
+
+	ElectricSundialQuest: {
+		// DisplayName: Winding the Sundial
+		// Description: Craft an Electric Sundial
+		// DetailedDescription: Store a thousand units of power to skip the night in one press. The whole server gets notified.
+	}
+
+	SolarPanelQuest: {
+		// DisplayName: Facing the Sun
+		// Description: Craft a Solar Panel
+		// DetailedDescription: Generates by day and peaks at noon. Keep its sky clear; rain and eclipses are its days off.
+	}
+
+	CapacitorMatrixQuest: {
+		// DisplayName: Grand Reservoir
+		// Description: Craft a Capacitor Matrix
+		// DetailedDescription: Forty thousand units in one bank. The grid's flywheel, and the end of the blackout era.
+	}
+
+	WeatherControllerQuest: {
+		// DisplayName: Rainmaker
+		// Description: Craft a Weather Controller
+		// DetailedDescription: Five hundred power buys a rain, and once more clears it. The wind takes no orders.
+	}
+
+	WireInterfaceQuest: {
+		// DisplayName: Wire Bridging
+		// Description: Craft Wire Interfaces
+		// DetailedDescription: The wire network and the power grid finally speak. Signals can toggle machines, and machines can send signals back.
+	}
+
+	SensorQuest: {
+		// DisplayName: Electric Sentry Eye
+		// Description: Craft a Multi-Mode Sensor
+		// DetailedDescription: Charge levels, enemies and blood moons, nothing escapes its watch. The moment a condition holds, a wire signal goes out.
+	}
+
+	GridSwitchQuest: {
+		// DisplayName: Grid Dispatch
+		// Description: Craft a Grid Switch
+		// DetailedDescription: A master switch built into the lines. Flip it open and the whole downstream grid falls silent at once.
+	}
+
 	ThermalPowerQuest: {
 		DisplayName: Zeit zu brennen
 		Description: Stelle einen Wärmegenerator her

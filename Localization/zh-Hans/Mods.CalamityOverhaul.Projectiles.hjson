@@ -6,6 +6,8 @@ ElectricMinRocketHeld.DisplayName: 微型电弧火箭
 TeslaBallByAttack.DisplayName: 特斯拉感应球
 TeslaBallByGuard.DisplayName: 特斯拉防御球
 WGGCollectorArm.DisplayName: 拾荒者采集臂
+FlameTurretFire.DisplayName: 塔喷烈焰
+LaserTurretBolt.DisplayName: 塔射光束
 DivineJustice.DisplayName: 神圣审判
 EmblemOfDreadDashProj.DisplayName: 恐惧徽记冲锋
 JusticeUnveiledExplode.DisplayName: 正义昭彰
@@ -596,6 +598,12 @@ KikasaSpearThrust.DisplayName: 湖水刺
 KikasaThrowServant.DisplayName: 械奴·湖水掷手
 KikasaZenithServant.DisplayName: 械奴·天顶
 KikasaZenithSlash.DisplayName: 诸剑记忆斩痕
+KikasaBoomerangServant.DisplayName: 械奴·湖水镖手
+KikasaBoomerangProj.DisplayName: 湖水回旋镖
+KikasaYoyoServant.DisplayName: 械奴·湖水球手
+KikasaYoyoProj.DisplayName: 湖水悠悠球
+KikasaFlailServant.DisplayName: 械奴·湖水链锤
+KikasaFlailHead.DisplayName: 湖水锤头
 CultistArcBolt.DisplayName: 雷律弧闪
 CultistFlameBolt.DisplayName: 焚焰弹
 CultistFrostSpear.DisplayName: 霜晶枪

@@ -19,6 +19,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator
     {
         Wind,
         Water,
+        Solar,
+        Magma,
     }
 
     /// <summary>
@@ -95,6 +97,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator
         internal static LocalizedText RunningText;
         internal static LocalizedText NoWindText;
         internal static LocalizedText NoWaterText;
+        internal static LocalizedText SunLabel;
+        internal static LocalizedText NoSunText;
+        internal static LocalizedText MagmaLabel;
+        internal static LocalizedText NoMagmaText;
         internal static LocalizedText PowerUnitText;
 
         public override Texture2D Texture => VaultAsset.placeholder2.Value;
@@ -107,6 +113,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             RunningText = this.GetLocalization(nameof(RunningText), () => "Running");
             NoWindText = this.GetLocalization(nameof(NoWindText), () => "Weak Wind");
             NoWaterText = this.GetLocalization(nameof(NoWaterText), () => "Wheel Dry");
+            SunLabel = this.GetLocalization(nameof(SunLabel), () => "Sun");
+            NoSunText = this.GetLocalization(nameof(NoSunText), () => "No Sunlight");
+            MagmaLabel = this.GetLocalization(nameof(MagmaLabel), () => "Magma");
+            NoMagmaText = this.GetLocalization(nameof(NoMagmaText), () => "No Lava");
             PowerUnitText = this.GetLocalization(nameof(PowerUnitText), () => "UE");
         }
         #endregion
@@ -274,7 +284,12 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             //双表盘:工况(转起来才有微颤)与储能
             bool ok = readout.ConditionOk;
             float jitter = ok ? MathF.Sin(animTimer * 30f) * 0.005f : 0f;
-            string condLabel = readout.ReadoutKind == GeneratorReadoutKind.Wind ? WindLabel.Value : FlowLabel.Value;
+            string condLabel = readout.ReadoutKind switch {
+                GeneratorReadoutKind.Wind => WindLabel.Value,
+                GeneratorReadoutKind.Solar => SunLabel.Value,
+                GeneratorReadoutKind.Magma => MagmaLabel.Value,
+                _ => FlowLabel.Value,
+            };
             Color condAccent = ok ? Amber : Color.Lerp(Amber, WarnRed, 0.55f);
             IndustrialTerminalRenderer.DrawGauge(spriteBatch, condGaugeCenter, 32f, condDisplay + jitter,
                 condAccent, alpha, condLabel, $"{(int)(MathHelper.Clamp(readout.ConditionRatio, 0f, 1f) * 100f)}%");
@@ -299,7 +314,12 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             IndustrialTerminalRenderer.DrawLamp(spriteBatch, new Vector2(panelRect.X + 34, lampY + 8), lampColor, alpha, lampBright);
 
             string state = ok ? RunningText.Value
-                : readout.ReadoutKind == GeneratorReadoutKind.Wind ? NoWindText.Value : NoWaterText.Value;
+                : readout.ReadoutKind switch {
+                    GeneratorReadoutKind.Wind => NoWindText.Value,
+                    GeneratorReadoutKind.Solar => NoSunText.Value,
+                    GeneratorReadoutKind.Magma => NoMagmaText.Value,
+                    _ => NoWaterText.Value,
+                };
             Utils.DrawBorderString(spriteBatch, state, new Vector2(panelRect.X + 48, lampY),
                 Color.Lerp(TextMain, lampColor, 0.35f) * alpha, 0.64f);
 

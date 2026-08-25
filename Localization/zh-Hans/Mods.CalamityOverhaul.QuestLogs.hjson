@@ -261,6 +261,156 @@ QuestNode: {
 		DetailedDescription: 无线输电的杰作。这座塔能隔空送电，省掉一大半线。
 	}
 
+	FluidPumpQuest: {
+		DisplayName: 液体工程
+		Description: 制作一台抽液泵
+		DetailedDescription: 水与岩浆也是资源。抽液泵负责把它们从世界里请出来。
+	}
+
+	FluidPipelineQuest: {
+		DisplayName: 液脉纵横
+		Description: 制作液体管道
+		DetailedDescription: 液体也需要自己的管网。液管只走液体，与电网互不打扰。
+	}
+
+	FluidTankQuest: {
+		DisplayName: 储液之器
+		Description: 制作一座液体储罐
+		DetailedDescription: 泵得再快，也要有地方存。储罐就是液体网络的电池。
+	}
+
+	MagmaGeneratorQuest: {
+		DisplayName: 岩浆热能
+		Description: 制作一台岩浆热能发电机
+		DetailedDescription: 泵好的岩浆终于有了去处。贴着熔岩小赚，喂满储浆全速发电。
+	}
+
+	ShimmerTransmuterQuest: {
+		DisplayName: 微光炼金
+		Description: 制作一台微光转化槽
+		DetailedDescription: 把微光泵进机器，物品的形态从此可以流水线改写。
+	}
+
+	CrusherQuest: {
+		DisplayName: 碎石取矿
+		Description: 制作一台矿石粉碎机
+		DetailedDescription: 两份矿碎成三份。焚化炉的上游从此多了一道增产工序。
+	}
+
+	RecyclerQuest: {
+		DisplayName: 变废为宝
+		Description: 制作一台回收机
+		DetailedDescription: 淘汰的装备别扔。按稀有度拆成锭料，还能回炉再用。
+	}
+
+	AutoCrafterQuest: {
+		DisplayName: 自动装配
+		Description: 制作一台自动合成台
+		DetailedDescription: 钉选一张配方，材料自己进，成品自己出。合成台从此不用你守着。
+	}
+
+	MushroomFarmerQuest: {
+		DisplayName: 菌菇培育
+		Description: 制作一台蘑菇农场机
+		DetailedDescription: 草地和蘑菇草上的收成都交给它。发光蘑菇也在业务范围内。
+	}
+
+	ApiaryQuest: {
+		DisplayName: 甜蜜产业
+		Description: 制作一台养蜂箱
+		DetailedDescription: 空瓶进，蜂蜜瓶出。靠近蜂蜜或身处丛林时蜂群干劲更足。
+	}
+
+	SlimeVatQuest: {
+		DisplayName: 凝胶量产
+		Description: 制作一台史莱姆培养槽
+		DetailedDescription: 水和电换凝胶。培养槽是农业废料流的第一台原料机。
+	}
+
+	BiomassGeneratorQuest: {
+		DisplayName: 生态闭环
+		Description: 制作一台生物质发电机
+		DetailedDescription: 农场的剩余产出别浪费。塞进料仓烧成电，产烧闭环从此转起来。
+	}
+
+	FlameTurretQuest: {
+		DisplayName: 烈焰防线
+		Description: 制作一座火焰喷射塔
+		DetailedDescription: 近距对群的火墙。装上凝胶烧得更疼。
+	}
+
+	CryoTurretQuest: {
+		DisplayName: 寒霜封锁
+		Description: 制作一座冰冻塔
+		DetailedDescription: 不求杀伤，只求冻住。塔下的敌人越走越慢，直到迈不开步。
+	}
+
+	LaserTurretQuest: {
+		DisplayName: 光速狙击
+		Description: 制作一座激光塔
+		DetailedDescription: 视线所及，一束即达。射程全族最远，专挑大目标。
+	}
+
+	ShieldGeneratorQuest: {
+		DisplayName: 能量壁垒
+		Description: 制作一座护盾发生器
+		DetailedDescription: 范围内的同伴人人一层吸收护盾。人越多，耗电越快。
+	}
+
+	HealStationQuest: {
+		DisplayName: 战地医疗
+		Description: 制作一座治疗站
+		DetailedDescription: 站在光环里，伤口慢慢合上。工伤这个词从此成为历史。
+	}
+
+	TeleportStationQuest: {
+		DisplayName: 传送网络
+		Description: 制作一座传送站
+		DetailedDescription: 两座起步，全图互通。距离越远，过路费越贵。
+	}
+
+	ElectricSundialQuest: {
+		DisplayName: 拨快日晷
+		Description: 制作一台电动日晷
+		DetailedDescription: 攒满一千单位电力，夜晚一键跳过。全服都会收到你的通知。
+	}
+
+	SolarPanelQuest: {
+		DisplayName: 向阳而生
+		Description: 制作一块太阳能板
+		DetailedDescription: 白天发电，正午最猛。头顶别盖东西，雨天和日食请另想办法。
+	}
+
+	CapacitorMatrixQuest: {
+		DisplayName: 巨量储能
+		Description: 制作一座电容矩阵
+		DetailedDescription: 四万单位的巨型储电池。电网的飞轮，断电时代的终结者。
+	}
+
+	WeatherControllerQuest: {
+		DisplayName: 呼风唤雨
+		Description: 制作一台天气控制机
+		DetailedDescription: 五百电换一场雨，雨天再按一次就放晴。风不归它管。
+	}
+
+	WireInterfaceQuest: {
+		DisplayName: 机关搭桥
+		Description: 制作机关接口器
+		DetailedDescription: 机关线与电网从此互通。信号能开关机器，机器也能发出信号。
+	}
+
+	SensorQuest: {
+		DisplayName: 电子哨眼
+		Description: 制作一台多模式传感器
+		DetailedDescription: 电量、敌情、血月都逃不过它的眼睛。条件一成立，机关信号立刻发出。
+	}
+
+	GridSwitchQuest: {
+		DisplayName: 电网调度
+		Description: 制作一台电网总闸
+		DetailedDescription: 嵌进管线的总开关。一闸断开，下游整片电网当场安静。
+	}
+
 	ThermalPowerQuest: {
 		DisplayName: 燃烧时刻
 		Description: 制作一台火力发电机

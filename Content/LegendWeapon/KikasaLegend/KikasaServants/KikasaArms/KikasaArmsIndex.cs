@@ -71,6 +71,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     spawner = (owner, at, count)
                         => KikasaThrows.KikasaThrowServant.Summon(owner, at, count, itemType);
                     return true;
+                case KikasaArmsKind.Boomerang:
+                    spawner = (owner, at, count)
+                        => KikasaBoomerangs.KikasaBoomerangServant.Summon(owner, at, count, itemType);
+                    return true;
+                case KikasaArmsKind.Yoyo:
+                    spawner = (owner, at, count)
+                        => KikasaYoyos.KikasaYoyoServant.Summon(owner, at, count, itemType);
+                    return true;
+                case KikasaArmsKind.Flail:
+                    spawner = (owner, at, count)
+                        => KikasaFlails.KikasaFlailServant.Summon(owner, at, count, itemType);
+                    return true;
             }
             spawner = null;
             return false;

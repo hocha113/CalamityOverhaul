@@ -134,7 +134,110 @@ Generator: {
 		// RunningText: Running
 		// NoWindText: Weak Wind
 		// NoWaterText: Wheel Dry
+		// SunLabel: Sun
+		// NoSunText: No Sunlight
+		// MagmaLabel: Magma
+		// NoMagmaText: No Lava
 		// PowerUnitText: UE
+	}
+
+	BiomassGeneratorUI: {
+		// TitleText: Biomass Generator
+		// FuelLabel: Fuel Bin
+		// PowerLabel: Power
+		// ActiveText: Running
+		// IdleText: Idle
+		// InsertFuelHint: Click to insert/remove biomass fuel
+		// PowerUnit: UE
+	}
+}
+
+SlimeVat: {
+	SlimeVatUI: {
+		// TitleText: Slime Culture Vat
+		// WaterLabel: Water
+		// ProduceLabel: Produce Bay
+		// EnableText: Enable
+		// DisableText: Disable
+		// StatusWorking: Culturing
+		// StatusIdle: Dormant
+		// StatusNoPower: No Power
+		// StatusNoWater: No Water
+		// StatusOff: Disabled
+		// EnergyLabel: Power
+		// PourHint: Click with a water bucket to pour, or let it draw from nearby water
+		// TakeHint: Click to retrieve
+		// PowerUnit: UE
+	}
+}
+
+ShimmerTransmuter: {
+	ShimmerTransmuterUI: {
+		// TitleText: Shimmer Transmuter
+		// InputLabel: Input
+		// OutputLabel: Output
+		// ProgressLabel: Progress
+		// PowerLabel: Power
+		// ShimmerLabel: Shimmer
+		// WorkingText: Transmuting
+		// IdleText: Idle
+		// NoPowerText: No Power
+		// NoShimmerText: No Shimmer
+		// OutputFullText: Output Full
+		// InputHint: Insert an item that shimmer can transmute
+		// OutputHint: Click to take the products
+		// PowerUnit: UE
+	}
+}
+
+MushroomFarmer: {
+	MushroomFarmerUI: {
+		// TitleText: Mushroom Farming Machine
+		// ProduceLabel: Produce Bay
+		// EnableText: Enable
+		// DisableText: Disable
+		// StatusWorking: Growing
+		// StatusIdle: Idle
+		// StatusNoPower: No Power
+		// StatusOff: Disabled
+		// EnergyLabel: Power
+		// TakeHint: Click to retrieve
+		// PowerUnit: UE
+	}
+}
+
+TeleportStation: {
+	TeleportStationUI: {
+		// TitleText: Teleport Network
+		// LocalLabel: This Station
+		// RenameText: Rename
+		// RenameHint: Enter to confirm, Esc to cancel
+		// EmptyListText: No other teleport stations in the world
+		// RowInfoLine: "{0} tiles · {1} UE"
+		// StatusReady: Ready
+		// StatusNoPower: This station lacks power
+		// StatusTargetDead: Destination lacks power
+		// EnergyLabel: Power
+		// PowerUnit: UE
+	}
+}
+
+Apiary: {
+	ApiaryUI: {
+		// TitleText: Electric Apiary
+		// BottleLabel: Bottle Bay
+		// ProduceLabel: Produce Bay
+		// EnableText: Enable
+		// DisableText: Disable
+		// StatusWorking: Brewing
+		// StatusWorkingBoost: Hive Thriving
+		// StatusIdle: Resting
+		// StatusNoPower: No Power
+		// StatusOff: Disabled
+		// EnergyLabel: Power
+		// BottleHint: Insert empty glass bottles
+		// TakeHint: Click to retrieve
+		// PowerUnit: UE
 	}
 }
 

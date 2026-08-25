@@ -18,8 +18,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// 鬼奴·湖水版世界吞噬怪。单弹幕内部模拟整条短链血蟒（头+18体+尾），
     /// 与毁灭者的机械直线相对：高转向柔性的有机 S 形蜿蜒，链体跟随阻尼更松。
     /// 出场为湖面裂缝：水线先被从中扯开一道横缝，蟒身自缝里挤出、S 形爬升。
-    /// 签名机制是空中血水裂隙对，撕开成对传送门，从一口一节节穿入、
-    /// 另一口穿出实施包抄冲撞（每次转移都有可见的入口→出口穿行，无瞬移假身）。
+    /// 签名机制是空中血水裂隙对：入口撕在自己嘴前、出口撕在猎物身旁，
+    /// 蟒从嘴前一节节穿入、自敌旁破门同向直贯冲撞，借门跨越两者间的全部距离
+    /// （每次转移都有可见的入口→出口穿行，无瞬移假身）。
     /// 第二攻击为腐蚀血痰齐射（命中或落水爆成滞留腐蚀血雾，见 KikasaEaterCorrosiveSpit）。
     /// 跟随态还有链体"裂开又弥合"的分裂假动作，纯演出错位再咬合，不产生实体。
     /// 联机同克眼契约：状态走 ai[0..2]、owner 转场盖 netUpdate 章、
@@ -32,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //==================== 可调基数（占位初值，验收再调）====================
 
-        /// <summary>裂隙包抄冲撞接触基伤（召唤加成前）</summary>
+        /// <summary>裂隙直贯冲撞接触基伤（召唤加成前）</summary>
         internal const int RamDamage = 450;
 
         /// <summary>腐蚀血痰基伤（召唤加成前），血痰弹幕消费</summary>
@@ -67,7 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private const int EmergeTimeout = 280;
         private const int SeamCloseFrames = 14;
 
-        //裂隙冲撞：撕隙蓄势→俯冲入口→穿出包抄→收势弥合
+        //裂隙冲撞：撕隙蓄势→俯冲入口→穿出直贯→收势弥合
         private const int RiftWindupFrames = 30;
         private const int RiftDiveTimeout = 40;
         private const int RiftRamActive = 26;
@@ -113,6 +114,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private Vector2 riftEntry;
         private Vector2 riftExit;
 
+        /// <summary>穿行方向（入口指向出口）：钻入与穿出同向，直线被虫洞折叠</summary>
         private Vector2 RiftInDir => (riftExit - riftEntry).SafeNormalize(Vector2.UnitX);
 
         private bool PortalActive => State == StateRiftRam && riftEntry != Vector2.Zero;
@@ -202,7 +204,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         public override bool MinionContactDamage() => true;
 
-        /// <summary>接触伤害只开在穿出裂隙的包抄窗，与可见的冲撞严格对齐</summary>
+        /// <summary>接触伤害只开在穿出裂隙的直贯窗，与可见的冲撞严格对齐</summary>
         public override bool? CanDamage()
             => State == StateRiftRam && (int)StateParam == 2 && StateTimer <= RiftRamActive
                 ? null : false;
@@ -567,7 +569,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 feintTimer = 0;
             }
 
-            //出手裁决：裂隙包抄与血痰齐射交替，owner 盖章
+            //出手裁决：裂隙冲撞与血痰齐射交替，owner 盖章
             int target = FindTarget(owner);
             if (target >= 0 && attackCooldown <= 0 && StateTimer > 40) {
                 attackIndex++;
@@ -580,7 +582,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
         }
 
-        //==================== 裂隙对包抄冲撞 ====================
+        //==================== 裂隙对直贯冲撞 ====================
 
         private void UpdateRiftRam(Player owner, bool authority) {
             int t = (int)StateTimer;
@@ -597,8 +599,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (phase == 0) {
-                //撕隙蓄势：owner 首帧一次性裁决裂隙端点（入口卡在自己与猎物之间、
-                //出口越过猎物背后，从一口扎进去、另一口咬回来）
+                //撕隙蓄势：owner 首帧一次性裁决裂隙端点（入口撕在自己嘴前、出口撕在猎物身旁，
+                //两点共线于奔袭直线：从嘴前扎进去、敌旁破门直贯，穿行进出同向）
                 if (riftEntry == Vector2.Zero) {
                     if (target < 0) {
                         EndAttack(authority, 45);
@@ -609,8 +611,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         Vector2 aim = npc.Center + npc.velocity * 10f;
                         Vector2 dirToAim = (aim - Projectile.Center).SafeNormalize(Vector2.UnitX);
                         float dist = Vector2.Distance(Projectile.Center, aim);
-                        riftEntry = aim - dirToAim * MathHelper.Clamp(dist * 0.6f, 300f, 520f);
-                        riftExit = aim + dirToAim * 380f;
+                        riftEntry = Projectile.Center + dirToAim * MathF.Min(240f, dist * 0.25f);
+                        riftExit = aim - dirToAim * MathF.Min(360f, dist * 0.30f);
+                        //门距下限：两门贴得太近读不出传送，入口沿线回拉
+                        if (Vector2.Dot(riftExit - riftEntry, dirToAim) < 200f) {
+                            riftEntry = riftExit - dirToAim * 200f;
+                        }
                         Projectile.netUpdate = true;
                     }
                     return;
@@ -626,9 +632,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         ShakeViewer(2f);
                     }
                 }
-                //出口撕开滞后几拍，先近后远，撕裂有先后因果
+                //出口撕开滞后几拍，先嘴前后敌旁，撕裂有先后因果
                 if (t == 9 && ViewedOwner) {
-                    RiftTearFX(riftExit, -inDir);
+                    RiftTearFX(riftExit, inDir);
                     SoundEngine.PlaySound(SoundID.Item95 with { Volume = 0.45f, Pitch = -0.45f, MaxInstances = 2 }, riftExit);
                 }
 
@@ -661,12 +667,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 float speed = MathF.Min(Projectile.velocity.Length() * 1.03f, 36f);
                 Projectile.velocity = toEntry * speed;
 
-                //头已越过入口平面：整头传送到出口，包抄发动
+                //头已越过入口平面：整头传送到出口，同向直贯发动
                 float overshoot = Vector2.Dot(Projectile.Center + Projectile.velocity - riftEntry, RiftInDir);
                 if (overshoot > 0f) {
-                    Vector2 outDir = -RiftInDir;
-                    Projectile.Center = riftExit + outDir * overshoot;
-                    Projectile.velocity = outDir * 34f;
+                    Projectile.Center = riftExit + RiftInDir * overshoot;
+                    Projectile.velocity = RiftInDir * 34f;
                     StateParam = 2;
                     StateTimer = 0;
                     Projectile.netUpdate = authority;
@@ -679,7 +684,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (phase == 2) {
-                //穿出包抄：激活窗内复利续力直撞，后链还在一节节从入口涌进来
+                //穿出直贯：激活窗内复利续力直撞，后链还在一节节从入口涌进来
                 Projectile.velocity *= 1.012f;
                 if (t > RiftRamActive) {
                     StateParam = 3;
@@ -949,14 +954,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             //阻尼比毁灭者松（0.24），弯得更快，有机蜿蜒的手感来源
             const float dampingInertia = 0.24f;
             Vector2 inDir = portal ? RiftInDir : Vector2.UnitX;
-            Vector2 outDir = -inDir;
             int crossBudget = 2;
             for (int i = 1; i < SegCount; i++) {
                 Vector2 front = spine[i - 1];
                 bool chasingPortalMouth = portal && segThrough[i - 1] && !segThrough[i];
                 if (chasingPortalMouth) {
-                    //前节已在出口侧：本节先奔入口，把前节"越过口多远"镜像回入口延长线上
-                    float beyond = MathF.Max(Vector2.Dot(front - riftExit, outDir), 0f);
+                    //前节已在出口侧：本节先奔入口，把前节"越过出口多远"平移回入口延长线上（穿行同向）
+                    float beyond = MathF.Max(Vector2.Dot(front - riftExit, inDir), 0f);
                     front = riftEntry + inDir * beyond;
                 }
 
@@ -974,13 +978,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     //本节也越线了：穿到出口侧，浑身重新浸满血水
                     float overshoot = Vector2.Dot(spine[i] - riftEntry, inDir);
                     if (overshoot > 0f) {
-                        spine[i] = riftExit + outDir * overshoot;
-                        segRot[i] = outDir.ToRotation() + MathHelper.PiOver2;
+                        spine[i] = riftExit + inDir * overshoot;
+                        segRot[i] = inDir.ToRotation() + MathHelper.PiOver2;
                         segThrough[i] = true;
                         wetness[i] = 1f;
                         if (crossBudget > 0 && ViewedOwner) {
                             crossBudget--;
-                            SegRiftCrossFX(i, outDir);
+                            SegRiftCrossFX(i, inDir);
                         }
                     }
                 }
@@ -989,13 +993,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             UpdateSegmentCrossings(domain);
         }
 
-        /// <summary>头破出口拍：血水炸开、吼声、震屏，包抄的第一口</summary>
+        /// <summary>头破出口拍：血水炸开、吼声、震屏，直贯的第一口</summary>
         private void OnHeadBreachRift() {
             if (ramBurstDone) {
                 return;
             }
             ramBurstDone = true;
-            Vector2 outDir = -RiftInDir;
+            Vector2 outDir = RiftInDir;
             SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.8f, Pitch = -0.1f, MaxInstances = 2 }, riftExit);
             SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.5f, Pitch = -0.05f, MaxInstances = 2 }, riftExit);
             if (!ViewedOwner) {
@@ -1389,7 +1393,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 rifts[count++] = (riftDrawEntry, RiftLongAxis(riftDrawDir), 128f, riftVisEntry, 1f);
             }
             if (riftVisExit > 0.01f && riftDrawExit != Vector2.Zero) {
-                rifts[count++] = (riftDrawExit, RiftLongAxis(-riftDrawDir), 128f, riftVisExit, 1f);
+                rifts[count++] = (riftDrawExit, RiftLongAxis(riftDrawDir), 128f, riftVisExit, 1f);
             }
             if (count == 0) {
                 return;
@@ -1521,7 +1525,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (Main.dedServ) {
                 return;
             }
-            //包抄冲撞的穿体溅血，掺一缕蚀紫
+            //直贯冲撞的穿体溅血，掺一缕蚀紫
             for (int i = 0; i < 10; i++) {
                 PRTLoader.NewParticle<PRT_KikasaBloodGlob>(
                     target.Center + Main.rand.NextVector2Circular(24f, 24f),

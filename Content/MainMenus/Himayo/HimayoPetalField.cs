@@ -6,56 +6,68 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.MainMenus.Himayo
 {
-    /// <summary>三景深樱瓣场：形体走 OniDomainDeco 的 TechMenuPetal（柔边=景深），运动学全在此处；近层可被光标扰动与接住</summary>
+    /// <summary>樱瓣场：花瓣存在于相机周围的世界空间，经 <see cref="HimayoMenuCamera.Project"/>
+    /// 柱面投影上屏（与全景背景同几何，转头时流速严格一致）；深度连续驱动透视尺寸、
+    /// 对焦中距的景深柔边与远景紫雾。形体走 OniDomainDeco 的 TechMenuPetal；近距瓣可被光标扰动与接住</summary>
     internal static class HimayoPetalField
     {
         private class Petal
         {
-            public Vector2 Pos, PrevPos;
-            //光标冲量，指数衰减
-            public Vector2 Imp;
+            //相机原点世界坐标（y 向上，无量纲深度单位）；Prev 供部分帧插值
+            public Vector3 Pos, PrevPos;
+            //光标冲量（世界空间），指数衰减
+            public Vector3 Imp;
             public float Rot, PrevRot, RotSpeed;
             public float SwayPhase;
-            //像素尺寸
-            public float Scale;
+            //世界空间基准尺寸；下落速度逐瓣微差
+            public float Size;
+            public float FallSpeed;
             public Color Tint;
             public bool Caught;
             public int CatchSlot = -1;
         }
 
-        private const int LayerCount = 3;
-        //层参数：0远 1中 2近
-        private static readonly int[] Caps = [36, 24, 12];
-        private static readonly float[] SizeMin = [8f, 14f, 26f];
-        private static readonly float[] SizeMax = [14f, 22f, 40f];
-        private static readonly float[] Softness = [0.24f, 0.12f, 0.03f];
-        private static readonly float[] LayerAlpha = [0.55f, 0.80f, 1f];
-        private static readonly float[] Parallax = [0.22f, 0.50f, 1f];
-        private static readonly float[] SpeedMul = [0.45f, 0.75f, 1.15f];
-        private static readonly float[] HazeMix = [0.45f, 0.20f, 0f];
-
-        //近层交互半径
+        private const int PetalCount = 180;
+        //世界分布：方位角 ±100°（可视 ±82° 加余量）、水平距离与高度范围
+        private const float SpawnYawRange = 1.745f;
+        private const float RhoMin = 0.85f, RhoMax = 7f;
+        private const float TopY = 1.9f, BottomY = -1.7f;
+        //景深对焦距离与前后景深度阈值：近段盖 UI，远段垫底
+        private const float FocusDepth = 1.6f;
+        private const float SplitDepth = 1.35f;
+        //交互只作用近距瓣；判定在投影后的屏幕空间
+        private const float InteractDepth = 1.75f;
         private const float SweepRadius = 92f;
         private const float CatchRadius = 50f;
+        //接住的花瓣锁在光标射线上的固定深度
+        private const float CatchDepth = 1.05f;
 
-        private static readonly List<Petal>[] layers = [new(), new(), new()];
-        //掌心槽位：按住左键最多托起 4 片
+        private static readonly List<Petal> petals = new(PetalCount);
+        //掌心槽位：按住左键最多托起 4 片；偏移在屏幕空间给出，反投影到掌心深度
         private static readonly Petal[] catchSlots = new Petal[4];
         private static readonly Vector2[] SlotOffsets = [new(-15f, 12f), new(11f, 16f), new(-2f, 24f), new(20f, 6f)];
 
         private static bool prewarmed;
         private static float windTime;
 
+        //绘制工作表：逐帧复用，避免分配
+        private struct DrawEntry
+        {
+            public Petal P;
+            public Vector2 Screen;
+            public float Depth;
+        }
+        private static readonly List<DrawEntry> drawList = new(PetalCount);
+        private static readonly Comparison<DrawEntry> FarToNear = (a, b) => b.Depth.CompareTo(a.Depth);
+
         public static void Reset() {
-            foreach (List<Petal> list in layers) {
-                list.Clear();
-            }
+            petals.Clear();
             Array.Clear(catchSlots);
             prewarmed = false;
             windTime = 0f;
         }
 
-        /// <summary>释放全部被托花瓣，可继承释放瞬间的光标速度</summary>
+        /// <summary>释放全部被托花瓣，可继承释放瞬间的光标速度（UI 像素/tick，换算为世界冲量）</summary>
         public static void ReleaseCaught(Vector2 inheritVel = default) {
             for (int i = 0; i < catchSlots.Length; i++) {
                 Petal p = catchSlots[i];
@@ -64,65 +76,72 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
                 }
                 p.Caught = false;
                 p.CatchSlot = -1;
-                p.Imp = inheritVel * 0.55f;
+                float rho = new Vector2(p.Pos.X, p.Pos.Z).Length();
+                p.Imp = ScreenVelToWorld(inheritVel, MathF.Max(rho, 0.3f)) * 0.55f;
                 catchSlots[i] = null;
             }
         }
 
-        /// <summary>固定 60tick 推进；interactive=近层允许交互，uiMouse/mouseVel 为 UI 空间，catching=左键按住托瓣</summary>
+        //垂直焦距（像素）：屏幕尺寸 = 世界尺寸 / 深度 * 焦距，与柱面投影的垂直分量一致
+        private static float FocalV => Main.screenHeight / (2f * HimayoMenuCamera.TanHalfFov);
+
+        //屏幕速度（px/tick）→ 指定深度处的世界速度；方向落在当前视平面
+        private static Vector3 ScreenVelToWorld(Vector2 screenVel, float depth) {
+            HimayoMenuCamera.GetBasis(1f, out _, out Vector3 right, out Vector3 up);
+            return (right * screenVel.X - up * screenVel.Y) * (depth / FocalV);
+        }
+
+        /// <summary>固定 60tick 推进；interactive=近距瓣允许交互，uiMouse/mouseVel 为 UI 空间，catching=左键按住托瓣</summary>
         public static void Tick(bool interactive, Vector2 uiMouse, Vector2 mouseVel, bool catching) {
-            float w = Main.screenWidth, h = Main.screenHeight;
-            if (w <= 0 || h <= 0) {
+            if (Main.screenWidth <= 0 || Main.screenHeight <= 0) {
                 return;
             }
             windTime += 1f / 60f;
             if (!prewarmed) {
-                Prewarm(w, h);
+                Prewarm();
             }
             if (!catching) {
                 ReleaseCaught(mouseVel);
             }
 
-            //视差在绘制侧叠加，交互按玩家所见位置判定：把光标换算进近层空间
-            Vector2 mouseInNear = uiMouse - HimayoMenuCamera.ParallaxOffset(1f, Parallax[2]);
+            //全局缓变横风（世界 +x），叠层内正弦摆；量级为近瓣（深度1）处约 0.2~0.5 px/tick
+            float wind = (0.22f + MathF.Sin(windTime * 0.35f) * 0.18f) / 864f;
 
-            for (int l = 0; l < LayerCount; l++) {
-                List<Petal> list = layers[l];
-                if (list.Count < Caps[l] && Main.rand.NextBool(3)) {
-                    list.Add(SpawnPetal(l, w, h, topOnly: true));
+            for (int i = 0; i < petals.Count; i++) {
+                Petal p = petals[i];
+                p.PrevPos = p.Pos;
+                p.PrevRot = p.Rot;
+
+                if (p.Caught) {
+                    //弹簧吸附掌心：光标射线上的固定深度点 + 槽位屏幕偏移
+                    Vector3 palm = HimayoMenuCamera.Unproject(uiMouse + SlotOffsets[p.CatchSlot], CatchDepth, 1f);
+                    p.Pos = Vector3.Lerp(p.Pos, palm, 0.30f);
+                    p.Rot = p.Rot.AngleLerp(MathF.Sin(windTime * 2.1f + p.SwayPhase) * 0.25f, 0.18f);
+                    continue;
                 }
-                for (int i = list.Count - 1; i >= 0; i--) {
-                    Petal p = list[i];
-                    p.PrevPos = p.Pos;
-                    p.PrevRot = p.Rot;
 
-                    if (p.Caught) {
-                        //弹簧吸附掌心，姿态缓摆若托于掌上
-                        Vector2 palm = mouseInNear + SlotOffsets[p.CatchSlot];
-                        p.Pos = Vector2.Lerp(p.Pos, palm, 0.30f);
-                        p.Rot = p.Rot.AngleLerp(MathF.Sin(windTime * 2.1f + p.SwayPhase) * 0.25f, 0.18f);
-                        continue;
-                    }
+                p.SwayPhase += 0.026f + p.Size * 0.35f;
+                float sway = MathF.Sin(p.SwayPhase);
+                //世界运动学：恒定下落 + 横风 + 水平面正弦摆（含小纵深分量，瓣会缓慢穿越景深）
+                Vector3 vel = new(
+                    sway * 0.00072f + wind,
+                    -p.FallSpeed,
+                    MathF.Sin(p.SwayPhase * 0.63f + 1.7f) * 0.00024f);
 
-                    p.SwayPhase += 0.026f + p.Scale * 0.0006f;
-                    float sway = MathF.Sin(p.SwayPhase);
-                    //全局缓变横风 + 层内正弦摆，远层整体更慢
-                    float wind = 0.22f + MathF.Sin(windTime * 0.35f + l * 1.7f) * 0.18f;
-                    Vector2 vel = new(
-                        sway * (0.55f + 0.30f * l) + wind,
-                        0.66f + p.Scale * 0.016f);
-                    vel *= SpeedMul[l];
-
-                    if (l == 2 && interactive) {
-                        float dist = Vector2.Distance(p.Pos, mouseInNear);
+                if (interactive) {
+                    //交互按玩家所见判定：投影后的屏幕距离；只有近距瓣响应
+                    float rho = new Vector2(p.Pos.X, p.Pos.Z).Length();
+                    if (rho < InteractDepth
+                        && HimayoMenuCamera.Project(p.Pos, 1f, out Vector2 screen, out float depth)) {
+                        float dist = Vector2.Distance(screen, uiMouse);
                         if (dist < SweepRadius) {
                             float falloff = 1f - dist / SweepRadius;
-                            //划过：按光标速度施加冲量，限幅防甩飞
+                            //划过：按光标速度施加世界冲量，先在屏幕空间限幅防甩飞
                             Vector2 impulse = mouseVel * (0.16f * falloff);
                             if (impulse.Length() > 6f) {
                                 impulse = impulse.SafeNormalize(Vector2.Zero) * 6f;
                             }
-                            p.Imp += impulse;
+                            p.Imp += ScreenVelToWorld(impulse, depth);
                             p.RotSpeed += (mouseVel.X >= 0f ? 1f : -1f) * 0.004f * falloff;
 
                             if (catching && dist < CatchRadius) {
@@ -131,23 +150,24 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
                                     p.Caught = true;
                                     p.CatchSlot = slot;
                                     catchSlots[slot] = p;
-                                    p.Imp = Vector2.Zero;
+                                    p.Imp = Vector3.Zero;
                                     continue;
                                 }
                             }
                         }
                     }
+                }
 
-                    p.Imp *= 0.90f;
-                    p.Pos += vel + p.Imp;
-                    p.RotSpeed = MathHelper.Clamp(p.RotSpeed, -0.06f, 0.06f);
-                    p.Rot += p.RotSpeed + sway * 0.010f;
-                    p.RotSpeed *= 0.995f;
+                p.Imp *= 0.90f;
+                p.Pos += vel + p.Imp;
+                p.RotSpeed = MathHelper.Clamp(p.RotSpeed, -0.06f, 0.06f);
+                p.Rot += p.RotSpeed + sway * 0.010f;
+                p.RotSpeed *= 0.995f;
 
-                    //出界回收：底部或两侧过远则回顶部重生
-                    if (p.Pos.Y > h + 70f || p.Pos.X < -220f || p.Pos.X > w + 220f) {
-                        list[i] = SpawnPetal(l, w, h, topOnly: true);
-                    }
+                //回收：落底或横漂出方位余量则回顶部重生；视野外只是不画，转头回来瓣仍在
+                float yawAng = MathF.Atan2(p.Pos.X, p.Pos.Z);
+                if (p.Pos.Y < BottomY || MathF.Abs(yawAng) > SpawnYawRange * 1.12f) {
+                    Respawn(p, topOnly: true);
                 }
             }
         }
@@ -161,51 +181,92 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
             return -1;
         }
 
-        //首帧铺满全屏，避免开场空窗
-        private static void Prewarm(float w, float h) {
+        //首帧铺满整个分布空间，避免开场空窗
+        private static void Prewarm() {
             prewarmed = true;
-            for (int l = 0; l < LayerCount; l++) {
-                layers[l].Clear();
-                for (int i = 0; i < Caps[l]; i++) {
-                    layers[l].Add(SpawnPetal(l, w, h, topOnly: false));
-                }
+            petals.Clear();
+            for (int i = 0; i < PetalCount; i++) {
+                Petal p = new();
+                Respawn(p, topOnly: false);
+                petals.Add(p);
             }
         }
 
-        private static Petal SpawnPetal(int layer, float w, float h, bool topOnly) {
-            float x = Main.rand.NextFloat(-160f, w + 160f);
-            float y = topOnly ? -Main.rand.NextFloat(30f, 120f) : Main.rand.NextFloat(-40f, h);
+        private static void Respawn(Petal p, bool topOnly) {
+            float yaw = Main.rand.NextFloat(-SpawnYawRange, SpawnYawRange);
+            float rho = MathHelper.Lerp(RhoMin, RhoMax, Main.rand.NextFloat());
+            float y = topOnly
+                ? TopY + Main.rand.NextFloat(0.35f)
+                : Main.rand.NextFloat(BottomY, TopY);
+            p.Pos = new Vector3(MathF.Sin(yaw) * rho, y, MathF.Cos(yaw) * rho);
+            p.PrevPos = p.Pos;
+            p.Rot = Main.rand.NextFloat(MathHelper.TwoPi);
+            p.PrevRot = p.Rot;
+            p.RotSpeed = Main.rand.NextFloat(-0.03f, 0.03f);
+            p.SwayPhase = Main.rand.NextFloat(MathHelper.TwoPi);
+            p.Size = Main.rand.NextFloat(0.032f, 0.058f);
+            p.FallSpeed = Main.rand.NextFloat(0.0010f, 0.0016f);
+            p.Imp = Vector3.Zero;
+            p.Caught = false;
+            p.CatchSlot = -1;
+
             Color baseTint = Color.Lerp(HimayoMenuTheme.PetalPink, HimayoMenuTheme.PetalPinkDeep, Main.rand.NextFloat());
-            //近层偶发暗红瓣，呼应背景灯笼
-            if (layer == 2 && Main.rand.NextBool(34)) {
+            //近距瓣偶发暗红，呼应背景灯笼
+            if (rho < 1.8f && Main.rand.NextBool(14)) {
                 baseTint = HimayoMenuTheme.PetalCrimson;
             }
-            Petal p = new() {
-                Pos = new Vector2(x, y),
-                Rot = Main.rand.NextFloat(MathHelper.TwoPi),
-                RotSpeed = Main.rand.NextFloat(-0.03f, 0.03f),
-                SwayPhase = Main.rand.NextFloat(MathHelper.TwoPi),
-                Scale = Main.rand.NextFloat(SizeMin[layer], SizeMax[layer]),
-                Tint = Color.Lerp(baseTint, HimayoMenuTheme.HazePurple, HazeMix[layer])
-            };
-            p.PrevPos = p.Pos;
-            p.PrevRot = p.Rot;
-            return p;
+            p.Tint = baseTint;
         }
 
-        /// <summary>远+中两层，画在标题与按钮之下</summary>
-        public static void DrawBack(SpriteBatch spriteBatch, float alpha, float fade) => DrawLayers(spriteBatch, alpha, fade, 0, 2);
+        //景深柔边：对焦中距，近侧糊得快、远侧糊得缓且更糊
+        private static float SoftnessAt(float depth) {
+            float d = depth - FocusDepth;
+            float soft = d >= 0f ? 0.055f + d * 0.042f : 0.055f - d * 0.095f;
+            return MathHelper.Clamp(soft, 0.05f, 0.28f);
+        }
 
-        /// <summary>近层盖顶，画在一切菜单 UI 之上</summary>
-        public static void DrawFront(SpriteBatch spriteBatch, float alpha, float fade) => DrawLayers(spriteBatch, alpha, fade, 2, 3);
+        //远景紫雾混入与透明度衰减
+        private static float HazeAt(float depth) => MathHelper.SmoothStep(0f, 0.52f,
+            MathHelper.Clamp((depth - 1.8f) / 4.7f, 0f, 1f));
 
-        private static void DrawLayers(SpriteBatch spriteBatch, float alpha, float fade, int from, int to) {
+        private static float AlphaAt(float depth) => MathHelper.Lerp(1f, 0.52f,
+            MathHelper.Clamp((depth - 1.2f) / 5.3f, 0f, 1f));
+
+        /// <summary>远段（深度≥阈值），画在标题与按钮之下</summary>
+        public static void DrawBack(SpriteBatch spriteBatch, float alpha, float fade) =>
+            DrawSegment(spriteBatch, alpha, fade, near: false);
+
+        /// <summary>近段盖顶，画在一切菜单 UI 之上</summary>
+        public static void DrawFront(SpriteBatch spriteBatch, float alpha, float fade) =>
+            DrawSegment(spriteBatch, alpha, fade, near: true);
+
+        private static void DrawSegment(SpriteBatch spriteBatch, float alpha, float fade, bool near) {
             Effect deco = EffectLoader.OniDomainDeco?.Value;
             Texture2D white = VaultAsset.placeholder2?.Value;
             //花瓣是纯着色器形体，着色器缺席时整层跳过（背景与按钮不受影响）
-            if (deco == null || white == null) {
+            if (deco == null || white == null || petals.Count == 0) {
                 return;
             }
+
+            //世界坐标插值后投影（tick 间位移小，直接线性插值再投影足够准）
+            drawList.Clear();
+            foreach (Petal p in petals) {
+                Vector3 pos = Vector3.Lerp(p.PrevPos, p.Pos, alpha);
+                float rho = new Vector2(pos.X, pos.Z).Length();
+                bool isNear = rho < SplitDepth;
+                if (isNear != near) {
+                    continue;
+                }
+                if (!HimayoMenuCamera.Project(pos, alpha, out Vector2 screen, out float depth)) {
+                    continue;
+                }
+                drawList.Add(new DrawEntry { P = p, Screen = screen, Depth = depth });
+            }
+            if (drawList.Count == 0) {
+                return;
+            }
+            //远→近绘制保证近瓣盖远瓣
+            drawList.Sort(FarToNear);
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
                 SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone,
@@ -213,22 +274,23 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
 
             Vector2 origin = white.Size() * 0.5f;
             deco.CurrentTechnique = deco.Techniques["TechMenuPetal"];
-            for (int l = from; l < to; l++) {
-                if (layers[l].Count == 0) {
-                    continue;
+            float focal = FocalV;
+            float appliedSoftness = -1f;
+            foreach (DrawEntry e in drawList) {
+                //柔边=景深，量化成档减少 Apply 次数（排序后深度单调，档位切换有限）
+                float softness = MathF.Round(SoftnessAt(e.Depth) / 0.03f) * 0.03f;
+                if (softness != appliedSoftness) {
+                    appliedSoftness = softness;
+                    deco.Parameters["uPetalSoftness"]?.SetValue(softness);
+                    deco.CurrentTechnique.Passes[0].Apply();
                 }
-                //逐层柔边=景深，重新 Apply 生效
-                deco.Parameters["uPetalSoftness"]?.SetValue(Softness[l]);
-                deco.CurrentTechnique.Passes[0].Apply();
-
-                Vector2 par = HimayoMenuCamera.ParallaxOffset(alpha, Parallax[l]);
-                foreach (Petal p in layers[l]) {
-                    Vector2 pos = Vector2.Lerp(p.PrevPos, p.Pos, alpha) + par;
-                    float rot = MathHelper.Lerp(p.PrevRot, p.Rot, alpha);
-                    Color c = p.Tint * (LayerAlpha[l] * fade);
-                    Vector2 scale = new(p.Scale / white.Width, p.Scale * 1.15f / white.Height);
-                    spriteBatch.Draw(white, pos, null, c, rot, origin, scale, SpriteEffects.None, 0f);
-                }
+                float rot = MathHelper.Lerp(e.P.PrevRot, e.P.Rot, alpha);
+                Color c = Color.Lerp(e.P.Tint, HimayoMenuTheme.HazePurple, HazeAt(e.Depth))
+                    * (AlphaAt(e.Depth) * fade);
+                //透视缩放：世界尺寸 / 深度 * 焦距
+                float px = e.P.Size / e.Depth * focal;
+                Vector2 scale = new(px / white.Width, px * 1.15f / white.Height);
+                spriteBatch.Draw(white, e.Screen, null, c, rot, origin, scale, SpriteEffects.None, 0f);
             }
             spriteBatch.End();
         }

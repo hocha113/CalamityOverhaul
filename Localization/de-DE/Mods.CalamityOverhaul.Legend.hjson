@@ -648,7 +648,7 @@ OnikiriText: {
 		// DeclineBtn: Not Now
 		// DeclineNotice: The Keiko Rune has been left with you; use it to open the lesson any time
 		// HudTitle: Vigor & Stance
-		// HudBody: While holding Onikiri, the lower-left HUD shows Vigor and Stance as read-only gauges. At half Stance, double-dash then left-click for Annihilating Flash; at full Stance, use Execute to auto-lock into Finale. In Omote, holding Sakura Flight turns you to petals on the spot
+		// HudBody: While holding Onikiri, the lower-left HUD keeps two read-only gauges. Vigor feeds flash steps and Sakura Flight and refills on its own; Stance builds as your cuts land, unlocking one execution tier at half and another when full. Learn the readouts here; the full moveset is written on the weapon itself
 		// HudPrompt: Learn these readouts; the sealing talisman is the HUD's only panel control
 		// SigilTitle: Sigil Wheel
 		// SigilBody: The beam plaque "Sigil Wheel" on the left of the Inscription Stand hangs a miniature of the wheel. Six wraiths sit on the outer ring, but the inner triangle has only three seats — pick one on the ring, then click an empty seat to bind it. Wraiths sharing the wheel wake each other, so their revival climbs together. The Ghost Register sits in the slot under the wheel's base; pull it out to read, never to bind
@@ -672,7 +672,7 @@ OnikiriText: {
 		// FlipDomainBody: While in Omote, press the flip key (Mouse3, the middle mouse button, by default) to turn the shallow domain into deep Ura
 		// FlipDomainPrompt: Press {0} to enter Ura, then wait for the ink to settle before drawing the blade
 		// DismemberTitle: Dismemberment Practice
-		// DismemberBody: Put the cursor over the highlighted Santa-NK1 body and make a fresh left-click. Onikiri will dismember the body directly; Omokage paper can also serve as a medium, but this lesson does not require it
+		// DismemberBody: Put the cursor over the highlighted Santa-NK1 body, release left-click, then press it once more. Onikiri will dismember the body directly; Omokage paper can also serve as a medium, but this lesson does not require it
 		// DismemberPrompt: Aim at the tank body, release left-click, then press it once
 		// BacklashTitle: Endure the Backlash
 		// BacklashBody: Directly dismembering a body deals a real 25% of maximum life to the wielder and locks movement during the sheathing rite. Watch the full sequence; I will restore you afterward
@@ -725,15 +725,19 @@ OnikiriText: {
 }
 
 OnikiriOverride: {
-	// DisplayName: 鬼切
+	// DisplayName: Onikiri
 	/* Tooltip:
 		'''
-		Hold left-click to drive the five-beat Crimson Rend combo
-		[DASH] spends Vigor on a normal Kamui Flash Step; at half Stance or above, press [DASH] again within one second for a free execution dash
-		In Omote, hold [SAKURA] to scatter into Sakura Flight on the spot; release or run dry to reform; holding it through a dash chains into the flight too
-		After a half-Stance execution dash, left-click for Annihilating Flash; at full Stance, double-dash through a target for Finale Slash
-		At full Stance, press [EXECUTE] to auto-lock, dash, and automatically unleash Finale Slash; with no target, the dash follows the cursor
-		An unfulfilled execution costs no additional Vigor
+		Hold left-click to drive the five-beat Crimson Rend combo; landing hits builds Stance
+		Press [DASH] to spend Vigor on a Kamui Flash Step
+		The Domain Expansion key unfolds or folds the Oni Domain; the Flip Domain key turns it between Omote and Ura
+		In Omote, hold [SAKURA] to cruise as sakura petals (a dash chains into it too); release or run dry to reform on the spot
+		In Ura, aim at a foe and left-click to dismember its true body; the wielder then suffers a 25% max-life backlash
+		In the short window after a dash or Sakura Flight ends, left-click for a Zanshin Strike
+		At half Stance or more, press [DASH] again mid-dash or within a second after it ends to chain a free execution dash
+		After an execution dash, left-click for Annihilating Flash; at full Stance, an execution dash that pierces its target unleashes Finale Slash directly
+		At full Stance, press [EXECUTE] to auto-lock, dash, and unleash Finale Slash; with no target it strikes toward the cursor
+		An execution dash costs no Vigor; one that never converts loses nothing
 		[Lang4]
 		legend_Text
 		''' */

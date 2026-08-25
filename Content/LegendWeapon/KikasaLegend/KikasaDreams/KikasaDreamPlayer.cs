@@ -1,8 +1,6 @@
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using System;
 using Terraria;
-using Terraria.Audio;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
@@ -59,7 +57,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             }
         }
 
-        /// <summary>唤出一只恶犬：自脚下黑水朝光标方向跃出。仅本机受理，弹幕走原版同步</summary>
+        /// <summary>
+        /// 唤出一只恶犬：玩家朝光标一侧的身旁撕开梦境裂缝，犬自缝中窜出
+        /// （出生态时序与撕裂音效都在 <see cref="KikasaDreamHound"/> 里各端自播）。
+        /// 仅本机受理，弹幕走原版同步
+        /// </summary>
         private void SummonHound() {
             //超编先散最老的：timeLeft 最小者
             int count = 0;
@@ -82,15 +84,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             }
 
             int dir = Main.MouseWorld.X >= Player.Center.X ? 1 : -1;
-            Vector2 spawnAt = Player.Bottom + new Vector2(0f, -12f);
-            Vector2 vel = new(dir * Main.rand.NextFloat(6.2f, 8.2f), Main.rand.NextFloat(-7.6f, -5.8f));
+            //身旁悬空撕缝：朝光标一侧偏出，带小错落让连唤的缝不叠死一处；
+            //位置随 spawn 包同步，各端裂缝锚点一致
+            Vector2 spawnAt = Player.Center + new Vector2(
+                dir * (52f + Main.rand.NextFloat(-8f, 10f)),
+                -18f + Main.rand.NextFloat(-12f, 8f));
+            //横向为主的窜出初速，Emerge 蓄形期间由恶犬自己冻结、出穴帧释放
+            Vector2 vel = new(dir * Main.rand.NextFloat(7.4f, 9f), Main.rand.NextFloat(-3.6f, -1.8f));
             int damage = KikasaDreamHound.ResolveBiteDamage(Player, applyNightmare: true);
 
             Projectile.NewProjectile(Player.GetSource_Misc("KikasaDreamHound"),
                 spawnAt, vel, ModContent.ProjectileType<KikasaDreamHound>(),
-                damage, 4f, Player.whoAmI);
-
-            SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.5f, Volume = 0.45f, MaxInstances = 3 }, spawnAt);
+                damage, 4f, Player.whoAmI, KikasaDreamHound.StateEmerge);
         }
     }
 }

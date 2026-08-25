@@ -23,6 +23,13 @@ namespace CalamityOverhaul.Content.Industrials
         public virtual bool CanDrop => true;
         public int Efficiency = 2;
         /// <summary>
+        /// 待机位:true 时机器脱离电网(不参与 <see cref="UpdateConductive"/> 均衡)且业务冻结
+        /// (不执行 <see cref="UpdateMachine"/>),电量与内部状态保持原值;绘制与悬停不受影响。
+        /// 默认 false 恒启用。由机关接口器/电网总闸在权威端翻转,翻转方负责 SendData 传播;
+        /// 本位追加在基类包尾与存档键 "MachineDisabled" 上,两端对称
+        /// </summary>
+        public bool Disabled;
+        /// <summary>
         /// 周期性权威锚定间隔(帧)：机器状态在各端本地模拟，事件同步之外由服务器按此节奏
         /// 推一次全量包纠偏累计漂移；按 WhoAmI 错峰。返回 0 关闭。
         /// 管道类不参与，数量大，且其电量经压差均衡向机器锚点自愈。
@@ -70,10 +77,13 @@ namespace CalamityOverhaul.Content.Industrials
         }
 
         public sealed override void Update() {
-            if (Efficiency > 0) {
-                UpdateConductive();
+            //待机短路:脱网+冻结,只跳业务两步;锚定照常走,Disabled 状态本身仍需纠偏同步
+            if (!Disabled) {
+                if (Efficiency > 0) {
+                    UpdateConductive();
+                }
+                UpdateMachine();
             }
-            UpdateMachine();
 
             //周期性权威锚定(见 NetAnchorIntervalTicks)；SendData 内部已处理并行阶段转主线程
             int anchorInterval = NetAnchorIntervalTicks;
@@ -110,18 +120,27 @@ namespace CalamityOverhaul.Content.Industrials
 
         public override void SendData(ModPacket data) {
             MachineData?.SendData(data);
+            //待机位追加包尾:无条件写读,不依赖 MachineData 是否为空,两端绝对对称;
+            //全部 base 先行的子类字段整体后移一字节,序列不错位
+            data.Write(Disabled);
         }
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
             MachineData?.ReceiveData(reader, whoAmI);
+            Disabled = reader.ReadBoolean();
         }
 
         public override void SaveData(TagCompound tag) {
             MachineData?.SaveData(tag);
+            //仅待机中才落键,旧档无键 TryGet 默认 false,加载零迁移
+            if (Disabled) {
+                tag["MachineDisabled"] = true;
+            }
         }
 
         public override void LoadData(TagCompound tag) {
             MachineData?.LoadData(tag);
+            Disabled = tag.TryGet("MachineDisabled", out bool disabled) && disabled;
         }
 
         public void DropItem(int id) => DropItem(new Item(id));

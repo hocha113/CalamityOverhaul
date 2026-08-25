@@ -24,10 +24,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         Bow,
         /// <summary>鱼竿：fishingPole 大于 0 的钓具（无伤害武器，渔力定强度）</summary>
         Rod,
-        /// <summary>长矛：近战且发射物是原版矛 AI（aiStyle 19）</summary>
+        /// <summary>长矛：近战且发射物是原版矛 AI（aiStyle 19），短剑（Rapier 突刺）同族</summary>
         Spear,
         /// <summary>投掷消耗品：手里剑/苦无/炸弹族（消耗品自含弹幕）</summary>
         Thrown,
+        /// <summary>回旋镖：非消耗且发射物是原版回旋镖 AI（aiStyle 3），伤害类型不限</summary>
+        Boomerang,
+        /// <summary>悠悠球：Sets.Yoyo 登记的球（原版悬浮机制的必要旗，模组球同旗）</summary>
+        Yoyo,
+        /// <summary>连枷：发射物是原版连枷 AI（aiStyle 15）的甩锤链兵</summary>
+        Flail,
     }
 
     /// <summary>弓弩原型：决定拉弦节奏与出招池</summary>
@@ -159,6 +165,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         SoundStyle SwingSound, //起鞭挥音：借原武器 UseSound
         float DrawScale);      //盘鞭本体（物品贴图）绘制缩放
 
+    /// <summary>镖奴档案：同刀奴契约，行为字段服务器安全、贴图字段只管绘制</summary>
+    internal readonly record struct KikasaBoomerangProfile(
+        int ThrowPeriod,       //轮转掷镖的接力节拍
+        float ThrowDamageMul,  //单镖伤害倍率（已含节奏折算）
+        float FlightSpeed,     //出手速度
+        float Range,           //去程射程 px（回旋折返点）
+        int MaxUnits,          //镖手上限
+        SoundStyle ThrowSound, //掷镖音：借原武器 UseSound
+        float DrawScale);      //绘制缩放
+
+    /// <summary>
+    /// 球奴档案：个性化全押原版悠悠球三件套静态集合（服务器可用）——
+    /// 顶速/最大放线距离定强度姿态，寿命倍率（-1=无限）折驻留时长
+    /// </summary>
+    internal readonly record struct KikasaYoyoProfile(
+        int CastPeriod,        //轮转放球的接力节拍
+        float TickDamageMul,   //单跳伤害倍率（驻留高频跳，单跳轻）
+        float TopSpeed,        //球速（Sets.YoyosTopSpeed）
+        float MaxReach,        //放线距离 px（Sets.YoyosMaximumRange）
+        int DwellTime,         //驻留磨伤时长帧
+        int MaxUnits,          //球手上限
+        SoundStyle CastSound,  //放球音：借原武器 UseSound
+        float DrawScale);      //绘制缩放
+
+    /// <summary>锤奴档案：锤头贴图取原武器弹幕（连枷物品贴图是整柄），链条画血水珠链</summary>
+    internal readonly record struct KikasaFlailProfile(
+        int HeadProjType,      //原连枷锤头弹幕类型：锤头贴图之源
+        int SlamPeriod,        //轮转抡掷的接力节拍
+        float SlamDamageMul,   //单掷伤害倍率（已含节奏折算）
+        float FlightSpeed,     //掷出速度
+        float Reach,           //甩程 px
+        int MaxUnits,          //锤数上限
+        SoundStyle SwingSound, //抡掷音：借原武器 UseSound
+        float DrawScale);      //锤头绘制缩放
+
     /// <summary>
     /// 械奴档案推断器：从沉湖物品的基础数值推族别与个性化档案。
     /// 全部读 ContentSamples 模板（不读玩家实例，词缀不参与，远端与服务器无湖藏数据）；
@@ -180,6 +221,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             //鞭先判：鞭也是 Swing 挥舞，但 noMelee=true 不会撞刀剑判定，先后只为语义清晰
             if (IsWhip(sample)) {
                 return KikasaArmsKind.Whip;
+            }
+            //近战投射三族：特征互斥（Sets.Yoyo / aiStyle 3 / aiStyle 15），排在通用远程判定前
+            if (IsYoyo(sample)) {
+                return KikasaArmsKind.Yoyo;
+            }
+            if (IsBoomerang(sample)) {
+                return KikasaArmsKind.Boomerang;
+            }
+            if (IsFlail(sample)) {
+                return KikasaArmsKind.Flail;
             }
             if (IsGun(sample)) {
                 return KikasaArmsKind.Gun;
@@ -207,11 +258,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 && item?.IsAir == false ? item : null;
         }
 
-        /// <summary>枪：远程且吃子弹/镖弹药（镖族把吹管也带进来，视作水凝射管接受）</summary>
+        /// <summary>
+        /// 枪：远程且吃"从管中射出"式弹药（镖族把吹管也带进来，视作水凝射管接受）。
+        /// 火箭/凝胶/星/雪球/沙/硬币这些特殊弹药炮同样举炮出弹，
+        /// 演出与枪奴同款成立，个性化由档案的音效/贴图/节奏承担
+        /// </summary>
         private static bool IsGun(Item item)
             => item.damage > 0
             && item.DamageType.CountsAsClass<RangedDamageClass>()
-            && (item.useAmmo == AmmoID.Bullet || item.useAmmo == AmmoID.Dart);
+            && (item.useAmmo == AmmoID.Bullet || item.useAmmo == AmmoID.Dart
+                || item.useAmmo == AmmoID.Rocket || item.useAmmo == AmmoID.Gel
+                || item.useAmmo == AmmoID.FallenStar || item.useAmmo == AmmoID.Snowball
+                || item.useAmmo == AmmoID.Sand || item.useAmmo == AmmoID.Coin);
 
         /// <summary>刀剑：挥舞型近战且非工具（镐/斧/锤、回旋镖、矛、鞭都被条件自然排除）</summary>
         private static bool IsBlade(Item item)
@@ -237,23 +295,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private static bool IsRod(Item item)
             => item.fishingPole > 0;
 
-        /// <summary>长矛：近战且发射物是原版矛 AI（模组规范矛同 aiStyle）</summary>
-        private static bool IsSpear(Item item)
+        /// <summary>
+        /// 长矛：近战且发射物是原版矛 AI（模组规范矛同 aiStyle）。
+        /// 短剑（Rapier 持出突刺）演出与矛同款并入此族，短突程由量尺自然折出
+        /// </summary>
+        private static bool IsSpear(Item item) {
+            if (item.damage <= 0 || !item.DamageType.CountsAsClass<MeleeDamageClass>()) {
+                return false;
+            }
+            if (item.useStyle == ItemUseStyleID.Rapier) {
+                return true;
+            }
+            return item.shoot > ProjectileID.None && item.shoot < ProjectileLoader.ProjectileCount
+                && ContentSamples.ProjectilesByType.TryGetValue(item.shoot, out Projectile proj)
+                && proj?.aiStyle == ProjAIStyleID.Spear;
+        }
+
+        /// <summary>回旋镖：非消耗且发射物走原版回旋镖 AI；伤害类型不限（近战镖与模组盗贼镖同收）</summary>
+        private static bool IsBoomerang(Item item)
             => item.damage > 0
-            && item.DamageType.CountsAsClass<MeleeDamageClass>()
+            && !item.consumable
             && item.shoot > ProjectileID.None && item.shoot < ProjectileLoader.ProjectileCount
             && ContentSamples.ProjectilesByType.TryGetValue(item.shoot, out Projectile proj)
-            && proj?.aiStyle == ProjAIStyleID.Spear;
+            && proj?.aiStyle == ProjAIStyleID.Boomerang;
+
+        /// <summary>悠悠球：Sets.Yoyo 旗即身份（原版悬浮机制的必要登记，模组球同旗）</summary>
+        private static bool IsYoyo(Item item)
+            => item.damage > 0 && ItemID.Sets.Yoyo[item.type];
+
+        /// <summary>连枷：发射物走原版连枷 AI（甩绕/掷出/回收三态一体的锤链）</summary>
+        private static bool IsFlail(Item item)
+            => item.damage > 0
+            && item.shoot > ProjectileID.None && item.shoot < ProjectileLoader.ProjectileCount
+            && ContentSamples.ProjectilesByType.TryGetValue(item.shoot, out Projectile proj)
+            && proj?.aiStyle == ProjAIStyleID.Flail;
 
         /// <summary>
-        /// 投掷消耗品：远程消耗品自带弹幕且不是弹药本身
-        /// （ammo==None 是承重墙——箭/子弹也是带弹幕的远程消耗品）
+        /// 投掷消耗品：消耗品自带弹幕且不是弹药本身
+        /// （ammo==None 是承重墙——箭/子弹也是带弹幕的远程消耗品）。
+        /// 伤害类型认远程或投掷系：灾厄盗贼类只继承 Throwing 而 Throwing 不算 Ranged，
+        /// 盗贼消耗投掷由后半边收进来；转发安全性同样由消耗品结构背书
         /// </summary>
         private static bool IsThrown(Item item)
             => item.damage > 0
             && item.consumable
             && item.ammo == AmmoID.None
-            && item.DamageType.CountsAsClass<RangedDamageClass>()
+            && (item.DamageType.CountsAsClass<RangedDamageClass>()
+                || item.DamageType.CountsAsClass<ThrowingDamageClass>())
             && item.shoot > ProjectileID.None && item.shoot < ProjectileLoader.ProjectileCount;
 
         //==================== 伤害自平衡 ====================
@@ -565,6 +653,85 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             float drawScale = Math.Clamp(36f / width, 0.8f, 1.25f);
             return new(whipProj, segments, rangeMul, useAnim, lashTime, lashPeriod, mul,
                 speed, peakReach, 3, sound, drawScale);
+        }
+
+        //==================== 镖档案 ====================
+
+        internal static KikasaBoomerangProfile BoomerangProfileOf(int itemType) {
+            Item sample = SampleOf(itemType);
+            SoundStyle sound = sample?.UseSound ?? SoundID.Item1;
+            if (sample == null || !IsBoomerang(sample)) {
+                //异常兜底：按附魔回旋镖规格出场，别让坏数据打断出水
+                return new(30, 1.2f, 12f, 260f, 3, sound, 1.1f);
+            }
+            int period = Math.Clamp((int)(sample.useAnimation * 1.6f), 24, 54);
+            float mul = Math.Clamp(DamageCurve(sample) * period / BaseFirePeriod, 0.5f, 9f);
+            float speed = Math.Clamp(sample.shootSpeed, 9f, 16f) * 1.1f;
+            //去程射程押弹速：原版镖弹速 9~13 对应中近距回旋圈
+            float range = Math.Clamp(sample.shootSpeed * 26f, 190f, 430f);
+            (_, float drawScale) = MeasureDiag(sample, 34f, 0.8f, 1.6f);
+            return new(period, mul, speed, range, 3, sound, drawScale);
+        }
+
+        //==================== 球档案 ====================
+
+        internal static KikasaYoyoProfile YoyoProfileOf(int itemType) {
+            Item sample = SampleOf(itemType);
+            SoundStyle sound = sample?.UseSound ?? SoundID.Item1;
+            if (sample == null || !IsYoyo(sample)) {
+                //异常兜底：按木悠悠球规格出场
+                return new(112, 0.4f, 12f, 240f, 78, 3, sound, 1.2f);
+            }
+            //三件套按悠悠球弹幕类型索引（原版契约），物品侧只有 Yoyo 身份旗
+            int yoyoProj = sample.shoot > ProjectileID.None && sample.shoot < ProjectileLoader.ProjectileCount
+                ? sample.shoot : ProjectileID.None;
+            float topSpeed = yoyoProj > 0 ? ProjectileID.Sets.YoyosTopSpeed[yoyoProj] : 0f;
+            if (topSpeed <= 0f) {
+                topSpeed = 12f;
+            }
+            float reach = yoyoProj > 0 ? ProjectileID.Sets.YoyosMaximumRange[yoyoProj] : 0f;
+            if (reach <= 0f) {
+                reach = 240f;
+            }
+            //寿命倍率是"能悬多久"的官方证词：秒数折驻留帧，-1 无限档给满
+            float life = yoyoProj > 0 ? ProjectileID.Sets.YoyosLifeTimeMultiplier[yoyoProj] : 8f;
+            int dwell = life < 0f ? 132 : (int)Math.Clamp(60f + life * 7f, 72f, 132f);
+            int period = dwell + 40;
+            //驻留期高频跳（约 6 跳/秒），单跳倍率整体压一档让总 DPS 跟曲线走
+            float mul = Math.Clamp(DamageCurve(sample) * 0.42f, 0.18f, 3.5f);
+            (_, float drawScale) = MeasureDiag(sample, 26f, 0.9f, 1.6f);
+            return new(period, mul, Math.Clamp(topSpeed, 9f, 17.5f),
+                Math.Clamp(reach, 160f, 400f), dwell, 3, sound, drawScale);
+        }
+
+        //==================== 锤档案 ====================
+
+        internal static KikasaFlailProfile FlailProfileOf(int itemType) {
+            Item sample = SampleOf(itemType);
+            SoundStyle sound = sample?.UseSound ?? SoundID.Item1;
+            if (sample == null || !IsFlail(sample)) {
+                //异常兜底：按痛苦之球规格出场
+                return new(ProjectileID.BallOHurt, 44, 2f, 13f, 300f, 3, sound, 1f);
+            }
+            int period = Math.Clamp((int)(sample.useAnimation * 1.2f), 38, 64);
+            float mul = Math.Clamp(DamageCurve(sample) * period / BaseFirePeriod, 0.8f, 12f);
+            float speed = Math.Clamp(sample.shootSpeed + 2f, 11f, 18f);
+            float reach = Math.Clamp(sample.shootSpeed * 24f, 240f, 420f);
+            return new(sample.shoot, period, mul, speed, reach, 3, sound,
+                MeasureFlailHead(sample.shoot));
+        }
+
+        /// <summary>锤头量尺：量原连枷弹幕贴图（客户端），服务器回退默认；只喂绘制</summary>
+        private static float MeasureFlailHead(int projType) {
+            float size = 26f;
+            if (!Main.dedServ && projType > ProjectileID.None && projType < ProjectileLoader.ProjectileCount) {
+                Main.instance.LoadProjectile(projType);
+                Texture2D tex = TextureAssets.Projectile[projType]?.Value;
+                if (tex != null) {
+                    size = Math.Max(Math.Max(tex.Width, tex.Height), 16f);
+                }
+            }
+            return Math.Clamp(30f / size, 0.75f, 1.4f);
         }
 
         /// <summary>刃身量尺：剑贴图是斜置画法，刃长按对角线折算；同样只喂绘制与斩痕规格</summary>

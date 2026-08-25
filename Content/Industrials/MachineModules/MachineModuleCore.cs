@@ -24,6 +24,18 @@ namespace CalamityOverhaul.Content.Industrials.MachineModules
         HydroGenerator = 1 << 3,
         /// <summary>电动焚化炉</summary>
         Incinerator = 1 << 4,
+        /// <summary>岩浆热能发电机(液体工业组专属位段 1&lt;&lt;5 起)</summary>
+        MagmaGenerator = 1 << 5,
+        /// <summary>矿石粉碎机(加工链组专属位段 1&lt;&lt;10 起)</summary>
+        Crusher = 1 << 10,
+        /// <summary>回收机</summary>
+        Recycler = 1 << 11,
+        /// <summary>生物质发电机(农业畜牧组专属位段 1&lt;&lt;13 起)</summary>
+        BiomassGenerator = 1 << 13,
+        /// <summary>防御塔族(特斯拉系/火焰/冰冻/激光/护盾/治疗)</summary>
+        Turret = 1 << 17,
+        /// <summary>太阳能板(玩家服务+能源组专属位段 1&lt;&lt;22 起)</summary>
+        SolarPanel = 1 << 22,
     }
 
     /// <summary>机器升级模块的最小契约:声明自己能装进哪些机器</summary>
@@ -79,6 +91,17 @@ namespace CalamityOverhaul.Content.Industrials.MachineModules
         float CapacityMult { get; }
     }
 
+    /// <summary>防御塔族效果:索敌半径/开火节奏/耗电三个可乘域</summary>
+    public interface ITurretModule
+    {
+        /// <summary>索敌半径乘数(光环塔按光环半径消费)</summary>
+        float RangeMult { get; }
+        /// <summary>射速乘数(大于 1 开火间隔缩短;脉冲型塔按脉冲节拍消费)</summary>
+        float RateMult { get; }
+        /// <summary>耗电乘数(小于 1 为省电,单发与持续耗电通用)</summary>
+        float EnergyMult { get; }
+    }
+
     /// <summary>
     /// 机器模块架:任何 TP 持有一个即可获得模块槽。<br/>
     /// 存档键沿用矿机的 <c>_Module{i}</c>(旧档直读);网络字段一律追加在宿主包尾;
@@ -108,6 +131,9 @@ namespace CalamityOverhaul.Content.Industrials.MachineModules
         public float IncDoubleChance { get; private set; }
         public bool AutoFeed { get; private set; }
         public bool AutoEject { get; private set; }
+        public float TurretRangeMult { get; private set; } = 1f;
+        public float TurretRateMult { get; private set; } = 1f;
+        public float TurretEnergyMult { get; private set; } = 1f;
         #endregion
 
         public Item[] EnsureSlots(int count) {
@@ -158,6 +184,7 @@ namespace CalamityOverhaul.Content.Industrials.MachineModules
             float genOutput = 1f, genFloor = 0f, genSpinUp = 1f;
             float incSpeed = 1f, incEnergy = 1f, incDouble = 0f;
             bool feed = false, eject = false;
+            float turretRange = 1f, turretRate = 1f, turretEnergy = 1f;
 
             if (slots != null) {
                 foreach (Item item in slots) {
@@ -186,6 +213,11 @@ namespace CalamityOverhaul.Content.Industrials.MachineModules
                         feed |= log.AutoFeed;
                         eject |= log.AutoEject;
                     }
+                    if (item.ModItem is ITurretModule turret) {
+                        turretRange *= turret.RangeMult;
+                        turretRate *= turret.RateMult;
+                        turretEnergy *= turret.EnergyMult;
+                    }
                 }
             }
 
@@ -201,6 +233,9 @@ namespace CalamityOverhaul.Content.Industrials.MachineModules
             IncDoubleChance = incDouble;
             AutoFeed = feed;
             AutoEject = eject;
+            TurretRangeMult = turretRange;
+            TurretRateMult = turretRate;
+            TurretEnergyMult = turretEnergy;
         }
 
         #region 存档与网络(键名与字节序沿用矿机既有格式)
@@ -267,6 +302,12 @@ namespace CalamityOverhaul.Content.Industrials.MachineModules
         internal static LocalizedText NameWind;
         internal static LocalizedText NameHydro;
         internal static LocalizedText NameIncinerator;
+        internal static LocalizedText NameMagma;
+        internal static LocalizedText NameCrusher;
+        internal static LocalizedText NameRecycler;
+        internal static LocalizedText NameBiomass;
+        internal static LocalizedText NameTurret;
+        internal static LocalizedText NameSolar;
 
         public override void SetStaticDefaults() {
             TagText = this.GetLocalization(nameof(TagText), () => "Machine Upgrade Module");
@@ -281,6 +322,12 @@ namespace CalamityOverhaul.Content.Industrials.MachineModules
             NameWind = this.GetLocalization(nameof(NameWind), () => "Wind Turbine");
             NameHydro = this.GetLocalization(nameof(NameHydro), () => "Hydro Generator");
             NameIncinerator = this.GetLocalization(nameof(NameIncinerator), () => "Incinerator");
+            NameMagma = this.GetLocalization(nameof(NameMagma), () => "Magma Thermal Generator");
+            NameCrusher = this.GetLocalization(nameof(NameCrusher), () => "Ore Crusher");
+            NameRecycler = this.GetLocalization(nameof(NameRecycler), () => "Recycler");
+            NameBiomass = this.GetLocalization(nameof(NameBiomass), () => "Biomass Generator");
+            NameTurret = this.GetLocalization(nameof(NameTurret), () => "Defense Turret");
+            NameSolar = this.GetLocalization(nameof(NameSolar), () => "Solar Panel");
         }
 
         /// <summary>把 flags 展开成机器名列表</summary>
@@ -291,6 +338,12 @@ namespace CalamityOverhaul.Content.Industrials.MachineModules
             if ((targets & MachineModuleTarget.WindGenerator) != 0) names.Add(NameWind.Value);
             if ((targets & MachineModuleTarget.HydroGenerator) != 0) names.Add(NameHydro.Value);
             if ((targets & MachineModuleTarget.Incinerator) != 0) names.Add(NameIncinerator.Value);
+            if ((targets & MachineModuleTarget.MagmaGenerator) != 0) names.Add(NameMagma.Value);
+            if ((targets & MachineModuleTarget.Crusher) != 0) names.Add(NameCrusher.Value);
+            if ((targets & MachineModuleTarget.Recycler) != 0) names.Add(NameRecycler.Value);
+            if ((targets & MachineModuleTarget.BiomassGenerator) != 0) names.Add(NameBiomass.Value);
+            if ((targets & MachineModuleTarget.Turret) != 0) names.Add(NameTurret.Value);
+            if ((targets & MachineModuleTarget.SolarPanel) != 0) names.Add(NameSolar.Value);
             return names.Count > 0 ? string.Join('/', names) : "-";
         }
     }

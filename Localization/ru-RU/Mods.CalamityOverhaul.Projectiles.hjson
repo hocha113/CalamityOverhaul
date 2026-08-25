@@ -6,6 +6,8 @@ ElectricMinRocketHeld.DisplayName: Микро-дуговая ракета
 TeslaBallByAttack.DisplayName: Индукционная сфера Теслы
 TeslaBallByGuard.DisplayName: Защитная сфера Теслы
 WGGCollectorArm.DisplayName: Рука мусорщика
+// FlameTurretFire.DisplayName: Turret Flame
+// LaserTurretBolt.DisplayName: Turret Beam
 DivineJustice.DisplayName: Божественное правосудие
 EmblemOfDreadDashProj.DisplayName: Рывок Эмблемы страха
 JusticeUnveiledExplode.DisplayName: Явленная справедливость
@@ -596,6 +598,12 @@ VictorRiftPortalProj.DisplayName: Кибер-разлом Виктора
 // KikasaThrowServant.DisplayName: Kikasa Throwing Servants
 // KikasaZenithServant.DisplayName: Kikasa Zenith Servant
 // KikasaZenithSlash.DisplayName: Sword-Memory Slash
+// KikasaBoomerangServant.DisplayName: Kikasa Boomerang Servants
+// KikasaBoomerangProj.DisplayName: Lakewater Boomerang
+// KikasaYoyoServant.DisplayName: Kikasa Yoyo Servants
+// KikasaYoyoProj.DisplayName: Lakewater Yoyo
+// KikasaFlailServant.DisplayName: Kikasa Flail Servants
+// KikasaFlailHead.DisplayName: Lakewater Flail Head
 // CultistArcBolt.DisplayName: Storm Cadence Arc
 // CultistFlameBolt.DisplayName: Flame Bolt
 // CultistFrostSpear.DisplayName: Frost Crystal Spear
