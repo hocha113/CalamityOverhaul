@@ -12,10 +12,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 {
     /// <summary>
     /// 墨雨:一笔会追人的水墨,普攻的演出主角。
-    /// 弹道两段，弧段=三次贝塞尔(出手方向定 P1 保切线连续、P2 悬在顶点正上方
-    /// 保证末端切线朝下),追踪藏在端点的阻尼平移里,曲线整体缓慢变形,无锐角;
-    /// 坠落段=重力加速+曲率限幅转向(只转方向不改速率),轨迹恒为光滑弧线。
-    /// 滞空拍是弧段末的速度极小值,不是急停。
+    /// 弹道两段，抛洒段=真弹道学上抛(重力+微阻力,不追踪),被抛起的水先是水;
+    /// 越过顶点切入坠落段,有目标时曲率限幅平滑追击:转向率随追踪渐拧紧、
+    /// 真拦截提前量、远距先绕到目标头顶再俯冲,轨迹恒为圆滑弧线,无锐角;
+    /// 无目标时重力坠向光标列。追太久或擦身而过即放弃追踪转坠落,不绕圈。
     /// 集中绘制在 <see cref="KikasaRainRender"/>,本体 PreDraw 不画
     /// </summary>
     internal class KikasaInkDrop : ModProjectile
@@ -24,18 +24,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         //==================== 弹道参数 ====================
 
+        /// <summary>抛洒段重力与出顶判速:先演完被抛起来这件事</summary>
+        private const float TossGravity = 0.32f;
+        private const float TossTipSpeed = 1.5f;
+
         /// <summary>坠落加速度与终速:必须是加速曲线,匀速的雨是失败的雨</summary>
         private const float PlungeGravity = 0.95f;
         private const float PlungeMaxSpeed = 26f;
 
-        /// <summary>顶点在目标上方的理想高度</summary>
+        /// <summary>追踪转向率包络(弧度/帧):起手轻、渐拧紧、近距终末最果决</summary>
+        private const float HomingTurnStart = 0.035f;
+        private const float HomingTurnFull = 0.10f;
+        private const float HomingTurnTerminal = 0.14f;
+
+        /// <summary>追踪加速度系数(乘在坠落加速度上)与放弃追踪的时长护栏</summary>
+        private const float HomingAccelMul = 0.55f;
+        private const int HomingGiveUpFrames = 90;
+
+        /// <summary>头顶偏置基准:远距先瞄目标上方再俯冲,雨还是从上面来的</summary>
         private const float ApexAboveTarget = 116f;
 
         private enum DropPhase : byte
         {
-            /// <summary>贝塞尔弧段:甩出→上抛→顶点,末端切线朝下</summary>
-            Arc,
-            /// <summary>垂直加速砸下,仅曲率限幅微调</summary>
+            /// <summary>抛洒段:真弹道学上抛,越过顶点交给坠落</summary>
+            Toss,
+            /// <summary>坠落段:有目标平滑追击,无目标重力坠向光标列</summary>
             Plunge
         }
 
@@ -67,13 +80,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>符标签载荷(语义由标签符自定,如霓的色序)</summary>
         internal int TalismanTagPayload => KikasaTalismanHooks.ReadTagPayload(Projectile.ai[2]);
 
-        //弧段曲线:各端由生成包内容首帧确定性解出;坠落参数可被弹道挂钩改写(霄高坠等)
-        private bool curveSolved;
-        private Vector2 p0, p1, p2, p3;
-        private float arcT;
-        private float arcDur = 28f;
+        //弹道参数:各端由生成包内容首帧确定性解出;可被弹道挂钩改写(霄高坠、霎急坠等)
+        private bool motionSolved;
+        private float tossDur = 14f;
         private float plungeGravity = PlungeGravity;
         private float plungeMaxSpeed = PlungeMaxSpeed;
+        private float overheadBias = ApexAboveTarget * 0.5f;
+
+        //追踪状态:端本地,由同步的目标与确定性规则推导,端间近似一致(伤害只在归属端结算)
+        private float homingT;
+        private float minTargetDist = float.MaxValue;
+        private bool homingGaveUp;
+        private bool retargeted;
 
         //本地表现
         private float life;
@@ -115,8 +133,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             life++;
 
             NPC target = ResolveTarget();
-            if (!curveSolved) {
-                SolveCurve(target);
+            if (!motionSolved) {
+                SolveMotion();
                 prevVel = Projectile.velocity;
                 //特大墨滴(scale>1)的判定同步放大
                 if (Projectile.scale > 1.01f) {
@@ -126,8 +144,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
 
             switch (Phase) {
-                case DropPhase.Arc:
-                    UpdateArc(target);
+                case DropPhase.Toss:
+                    UpdateToss(target);
                     break;
                 case DropPhase.Plunge:
                     UpdatePlunge(target);
@@ -197,18 +215,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         }
 
         /// <summary>
-        /// 首帧解弧线:P1 沿出手方向(切线连续),P3 压在目标头顶上方
-        /// (天花板向下钳制),P2 悬在 P3 正上方，末端切线天然朝下,
-        /// 弧段飞完直接切入坠落,交接处无折角。
-        /// 唤雨符弹道挂钩在默认参数备齐后叠改(各端同参,实现须确定性)
+        /// 首帧解弹道:抛洒段时长/上抛力度/坠落参数一次定死,后续逐帧确定性推进。
+        /// 唤雨符弹道挂钩在默认参数备齐后叠改(各端同参,实现须确定性)。
+        /// 口径重映射:ArcDur→抛洒段时长(霎符减半=抢先入坠照旧),
+        /// ApexAboveTarget→上抛力度与头顶偏置(霄符高抛狠坠照旧),
+        /// PlungeGravity/PlungeMaxSpeed→追踪加速度与极速,兼无目标坠落(雹符坠更沉照旧)
         /// </summary>
-        private void SolveCurve(NPC target) {
-            curveSolved = true;
+        private void SolveMotion() {
+            motionSolved = true;
             float jit = Seed / 3.71f;
-            Vector2 flickDir = Projectile.velocity.SafeNormalize(-Vector2.UnitY);
-            p0 = Projectile.Center;
 
-            //弹道挂钩:顶点高度/坠落加速度/终速/弧段时长可被符改写(霄高坠、霎直坠)
             KikasaDropCurve curve = new() {
                 ApexAboveTarget = ApexAboveTarget,
                 PlungeGravity = PlungeGravity,
@@ -222,75 +238,145 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             plungeGravity = MathF.Max(curve.PlungeGravity, 0.05f);
             plungeMaxSpeed = MathF.Max(curve.PlungeMaxSpeed, 4f);
 
-            float apexX = target != null
-                ? target.Center.X + target.velocity.X * 9f
-                : FallbackXAi;
-            float idealY = target != null
-                ? MathF.Min(p0.Y, target.Hitbox.Top - curve.ApexAboveTarget - jit * 44f)
-                : p0.Y - 16f - jit * 30f;
-            float apexY = target != null ? CeilingClampApex(target.Top, idealY) : idealY;
-
-            p3 = new Vector2(apexX, apexY);
-            p1 = p0 + flickDir * (54f + jit * 50f);
-            p2 = p3 - new Vector2(0f, 62f + jit * 40f);
-            arcDur = MathF.Max(curve.ArcDur, 4f);
-        }
-
-        /// <summary>自目标顶部向上逐格探实心,顶点被天花板压回其下沿</summary>
-        private static float CeilingClampApex(Vector2 from, float idealY) {
-            int x = (int)(from.X / 16f);
-            int startY = (int)(from.Y / 16f) - 1;
-            int endY = Math.Max((int)(idealY / 16f), 1);
-            for (int y = startY; y >= endY; y--) {
-                Tile t = Framing.GetTileSafely(x, y);
-                if (t.HasTile && Main.tileSolid[t.TileType] && !Main.tileSolidTop[t.TileType]) {
-                    return y * 16f + 22f;
+            //抛洒段时长:弧段时长口径折半沿用
+            tossDur = MathHelper.Clamp(curve.ArcDur * 0.5f, 3f, 26f);
+            //上抛力度:顶点高度口径折成初速倍率(抛体高度∝v²,开方保比例)
+            float apexRatio = MathF.Max(curve.ApexAboveTarget / ApexAboveTarget, 0.1f);
+            if (Projectile.velocity.Y < 0f) {
+                Projectile.velocity.Y *= MathF.Sqrt(apexRatio);
+            }
+            //洞穴天花板压制:探头顶实心,把上抛初速钳到撞不进顶板
+            //(抛洒段不吃地形碰撞,坠落段吃;不钳的话相位一切换就死在天花板里)
+            if (Projectile.velocity.Y < 0f) {
+                float rise = Projectile.velocity.Y * Projectile.velocity.Y / (2f * TossGravity);
+                float clearance = CeilingClearance(Projectile.Center, rise + 24f);
+                if (clearance < rise) {
+                    Projectile.velocity.Y = -MathF.Sqrt(MathF.Max(
+                        2f * TossGravity * MathF.Max(clearance - 10f, 8f), 4f));
                 }
             }
-            return idealY;
+            //头顶偏置:远距先绕到目标上方的高度,同吃霄符的顶点口径
+            overheadBias = MathHelper.Clamp(curve.ApexAboveTarget * 0.5f, 36f, 220f);
         }
 
-        private static Vector2 Bezier(Vector2 a, Vector2 b, Vector2 c, Vector2 d, float t) {
-            float u = 1f - t;
-            return u * u * u * a + 3f * u * u * t * b + 3f * u * t * t * c + t * t * t * d;
+        /// <summary>自滴位向上逐格探实心,返回到顶板的净空(px);探满 maxRise 未见实心即返回 maxRise</summary>
+        private static float CeilingClearance(Vector2 from, float maxRise) {
+            int x = (int)(from.X / 16f);
+            int startY = (int)(from.Y / 16f) - 1;
+            int steps = (int)(maxRise / 16f) + 1;
+            for (int i = 0; i < steps; i++) {
+                int y = startY - i;
+                if (y < 1) {
+                    break;
+                }
+                Tile t = Framing.GetTileSafely(x, y);
+                if (t.HasTile && Main.tileSolid[t.TileType] && !Main.tileSolidTop[t.TileType]) {
+                    return MathF.Max(from.Y - (y * 16f + 16f), 0f);
+                }
+            }
+            return maxRise;
         }
 
         //==================== 两段弹道 ====================
 
-        private void UpdateArc(NPC target) {
-            //追踪柔化:端点向目标阻尼平移,曲线整体缓慢变形,不打折
-            if (target != null) {
-                float tx = target.Center.X + target.velocity.X * 6f;
-                p3.X = MathHelper.Lerp(p3.X, tx, 0.06f);
-                p2.X = MathHelper.Lerp(p2.X, tx, 0.05f);
-            }
-            arcT += 1f / arcDur;
-            float t = MathHelper.Clamp(arcT, 0f, 1f);
-            //参数速度:出手快、近顶点慢，滞空拍是速度极小值,保留 0.15 底速不归零
-            float eased = 0.15f * t + 0.85f * (1f - (1f - t) * (1f - t));
-            Vector2 pos = Bezier(p0, p1, p2, p3, eased);
-            //位置差写进 velocity,引擎推进,旋转与拉伸自然继承
-            Projectile.velocity = pos - Projectile.Center;
+        /// <summary>抛洒段:真被抛起的水,重力+微阻力,不追踪</summary>
+        private void UpdateToss(NPC target) {
+            Projectile.velocity.Y += TossGravity;
+            Projectile.velocity *= 0.995f;
 
-            if (arcT >= 1f) {
+            bool tipped = Projectile.velocity.Y > TossTipSpeed;
+            bool timeUp = life >= tossDur;
+            //目标在上方时提早收抛:追飞行目标不必演完整段上抛
+            bool targetAbove = target != null && target.Center.Y < Projectile.Center.Y - 60f
+                && life >= MathF.Min(6f, tossDur);
+            if (tipped || timeUp || targetAbove) {
                 Phase = DropPhase.Plunge;
-                //交接:沿末端切线续走,横向残速轻收,不砍速度
-                Projectile.velocity = new Vector2(Projectile.velocity.X * 0.6f,
-                    MathF.Max(Projectile.velocity.Y, 2.2f));
             }
         }
 
+        /// <summary>坠落段:有目标平滑追击,无目标(或放弃后)重力坠向光标列</summary>
         private void UpdatePlunge(NPC target) {
-            Projectile.velocity.Y = MathF.Min(Projectile.velocity.Y + plungeGravity, plungeMaxSpeed);
-            if (target == null) {
+            if (target == null && !retargeted && !homingGaveUp) {
+                //目标中途失效:就近重锁一次(各端同规则确定性推导)
+                retargeted = true;
+                target = FindRetarget();
+                if (target != null) {
+                    TargetAi = target.whoAmI;
+                    //换锁即清护栏:旧目标的擦身记录不能拿来判新目标,追踪时长也放宽一截
+                    minTargetDist = float.MaxValue;
+                    homingT = MathF.Min(homingT, 30f);
+                }
+            }
+            if (target == null || homingGaveUp) {
+                UpdateGravityFall();
                 return;
             }
-            //曲率限幅转向:只转方向不改速率,转率随速度升高收紧，永远是弧,不是折线
-            Vector2 want = target.Center + target.velocity * 6f - Projectile.Center;
-            float dAng = MathHelper.WrapAngle(want.ToRotation() - Projectile.velocity.ToRotation());
-            float speedT = MathHelper.Clamp(Projectile.velocity.Length() / plungeMaxSpeed, 0f, 1f);
-            float maxTurn = MathHelper.Lerp(0.016f, 0.006f, speedT);
+
+            homingT++;
+            float dist = Vector2.Distance(target.Center, Projectile.Center);
+            minTargetDist = MathF.Min(minTargetDist, dist);
+
+            //防绕圈护栏:追太久,或已擦身而过且渐行渐远,放弃追踪转坠落
+            if (homingT > HomingGiveUpFrames
+                || (minTargetDist < 100f && dist > minTargetDist + 140f)) {
+                homingGaveUp = true;
+                UpdateGravityFall();
+                return;
+            }
+
+            float speed = Projectile.velocity.Length();
+            //真拦截提前量:远打提前近打身
+            float lead = MathHelper.Clamp(dist / MathF.Max(speed, 8f), 0f, 14f);
+            Vector2 aim = target.Center + target.velocity * lead;
+            //远距头顶偏置:先绕到目标上方再俯冲,雨从上落的语言不丢
+            if (dist > 180f) {
+                float bias = MathHelper.Clamp((dist - 180f) / 260f, 0f, 1f);
+                aim.Y -= overheadBias * bias;
+            }
+
+            //曲率限幅转向:转向率随追踪渐拧紧,近距终末段最果决,轨迹恒为圆滑弧线
+            float dAng = MathHelper.WrapAngle((aim - Projectile.Center).ToRotation()
+                - Projectile.velocity.ToRotation());
+            float ramp = MathHelper.Clamp(homingT / 20f, 0f, 1f);
+            float maxTurn = MathHelper.Lerp(HomingTurnStart, HomingTurnFull, ramp);
+            if (dist < 90f) {
+                maxTurn = MathF.Max(maxTurn, HomingTurnTerminal * ramp);
+            }
             Projectile.velocity = Projectile.velocity.RotatedBy(MathHelper.Clamp(dAng, -maxTurn, maxTurn));
+
+            //速度包络:大角度贴近时优雅减速调整,其余时候平滑加速俯冲
+            if (MathF.Abs(dAng) > 1.2f && dist < 140f) {
+                speed = MathF.Max(speed * 0.96f, 13f);
+            }
+            else {
+                speed = MathF.Min(speed + plungeGravity * HomingAccelMul, plungeMaxSpeed);
+            }
+            Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitY) * speed;
+        }
+
+        /// <summary>无主的雨:重力加速坠落,横速轻收,微弱寻列让雨幕仍落在光标列附近</summary>
+        private void UpdateGravityFall() {
+            Projectile.velocity.Y = MathF.Min(Projectile.velocity.Y + plungeGravity, plungeMaxSpeed);
+            float drift = MathHelper.Clamp((FallbackXAi - Projectile.Center.X) * 0.0022f, -0.14f, 0.14f);
+            Projectile.velocity.X = MathHelper.Clamp(Projectile.velocity.X * 0.985f + drift, -7f, 7f);
+        }
+
+        /// <summary>就近重锁:目标中途失效时在滴周围找下一个可追击者</summary>
+        private NPC FindRetarget() {
+            NPC best = null;
+            float bestDist = 480f;
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (npc?.active != true || !npc.CanBeChasedBy(Projectile)) {
+                    continue;
+                }
+                float dist = Vector2.Distance(npc.Center, Projectile.Center);
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    best = npc;
+                }
+            }
+            return best;
         }
 
         //==================== 命中挂钩 ====================
@@ -424,8 +510,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 return;
             }
             float stretch = MathHelper.Clamp(Projectile.velocity.Length() * 0.05f, 0f, 1.4f);
-            //弧段末尾滞空的张力抖动比飞行时明显
-            bool apexDwell = Phase == DropPhase.Arc && arcT > 0.7f;
+            //抛洒段近顶点滞空的张力抖动比飞行时明显
+            bool apexDwell = Phase == DropPhase.Toss && Projectile.velocity.Y > -1.2f;
             float wobAmp = apexDwell ? 0.15f : 0.06f;
             //色板逐滴上载:鬼滴换鬼青,带符标签的滴再过一道符绘制挂钩(霓染色/雹冰蓝等);
             //共享参数会被上一颗滴污染,必须全量重设

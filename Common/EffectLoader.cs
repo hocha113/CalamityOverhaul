@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Common
     {
         public static Asset<Effect> Blackwall { get; set; }
         public static Asset<Effect> GameModeTab { get; set; }
+        public static Asset<Effect> GameModeBanner { get; set; }
         public static Asset<Effect> OldNetNode { get; set; }
         public static Asset<Effect> OldNetTerminal { get; set; }
         public static Asset<Effect> OldNetSky { get; set; }

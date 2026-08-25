@@ -307,6 +307,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             UpdateRainCurtain(kdp);
             UpdateBloodDrops(lakeReady);
             UpdateRipples();
+            EmitLakeLight(kdp);
+        }
+
+        /// <summary>
+        /// 湖是领域自己的光源：沿水线向两岸渗一层低光，夜晚与地下"湖亮、世界黑"的
+        /// 断裂由它缝合。血湖暖红、鬼雨冷青，随涨水渐亮；鬼梦无湖不发光。
+        /// 照明只在观看端，同鬼火水线金光之例（<see cref="KikasaWisps.KikasaWispFX"/>）
+        /// </summary>
+        private static void EmitLakeLight(KikasaDomainPlayer kdp) {
+            if (kdp.DreamWorldVisual || kdp.RiseT <= 0.05f) {
+                return;
+            }
+            float k = kdp.PresenceSmooth * MathHelper.Clamp(kdp.RiseT * 1.4f, 0f, 1f);
+            if (k <= 0.02f) {
+                return;
+            }
+            Vector3 glow = Vector3.Lerp(
+                new Vector3(0.34f, 0.085f, 0.09f),
+                new Vector3(0.13f, 0.19f, 0.23f), kdp.RainBlend) * k;
+            float casterX = kdp.Player.Center.X;
+            float xMin = MathF.Max(Main.screenPosition.X - 60f,
+                casterX - KikasaLakeSurface.HalfWidth);
+            float xMax = MathF.Min(Main.screenPosition.X + Main.screenWidth + 60f,
+                casterX + KikasaLakeSurface.HalfWidth);
+            if (xMax - xMin < 16f) {
+                return;
+            }
+            float lakeY = kdp.VisualLakeY;
+            for (float x = xMin; x <= xMax; x += 170f) {
+                Lighting.AddLight(new Vector2(x, lakeY - 8f), glow.X, glow.Y, glow.Z);
+            }
         }
 
         /// <summary>异化态满幕雨帘：密度吃领域的雨帘包络，做法镜像鬼雨世界常驻雨（湿墨色板）</summary>
@@ -344,6 +375,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 Color color = (Main.rand.NextBool(7) ? corpse : pale)
                     * Main.rand.NextFloat(0.42f, 0.65f);
                 float scale = Main.rand.NextFloat(0.8f, 1.25f);
+                //纵深分层：约四成滴退成远幕（小、淡、慢），雨量不减而读出雨墙层次，
+                //扑在玩家活动层上的遮挡近乎减半；近幕保持原尺寸原速
+                float depthMul = 1f;
+                if (Main.rand.NextFloat() < 0.42f) {
+                    depthMul = Main.rand.NextFloat(0.68f, 0.8f);
+                    vel *= depthMul;
+                    color *= 0.62f;
+                    scale *= 0.66f;
+                }
                 int life = Main.rand.Next(70, 110);
                 if (rewinding) {
                     //约半数从地表反向扁溅重生：砸过地的雨被时间收回去，聚成珠再升空。
@@ -352,7 +392,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                         && TryFindRainGround(pos.X, out float groundY)) {
                         PRTLoader.NewParticle<PRT_GhostRainDrop>(
                             new Vector2(pos.X, groundY - 2f), Vector2.Zero, color, scale)
-                            ?.Configure(life, vel.X).BeginRebirth();
+                            ?.Configure(life, vel.X).AsCurtain(depthMul).BeginRebirth();
                         continue;
                     }
                     //其余在幕内出生向上飞，补足空中密度
@@ -361,7 +401,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                     vel.Y = -vel.Y;
                 }
                 PRTLoader.NewParticle<PRT_GhostRainDrop>(pos, vel, color, scale)
-                    ?.Configure(life, vel.X);
+                    ?.Configure(life, vel.X).AsCurtain(depthMul);
             }
         }
 

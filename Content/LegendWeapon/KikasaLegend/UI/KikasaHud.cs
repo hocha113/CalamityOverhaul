@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTeleports;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps;
@@ -30,7 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
     /// 液中烬点=湖藏填充、整铃随形态浸染。
     /// 信息层（2026-08 重做）：短册只留纸与三席驻影小印（亲和色+在场/收起态），
     /// 铃右一列图标读数，鬼梦犬眼（睡/醒/梦中）、鬼火焰苗（熄/燃/压制，点击点燃/收火）、
-    /// 沉溺冷却、鬼雨态的重启冷却与伞奴计数；
+    /// 沉溺冷却、鬼域传送冷却、鬼雨态的重启冷却与伞奴计数；
     /// 一切悬停说明走顶层 <see cref="KikasaHudTipOverlay"/>，题行 1.0 与原版 tooltip 同级。
     /// 点铃展开「湖心景」全屏（任何域状态都响应）。
     /// </summary>
@@ -51,6 +52,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         public static LocalizedText TipDrownReady { get; private set; }
         public static LocalizedText TipResetTitle { get; private set; }
         public static LocalizedText TipResetHintFormat { get; private set; }
+        public static LocalizedText TipTeleportTitle { get; private set; }
+        public static LocalizedText TipTeleportHintFormat { get; private set; }
         public static LocalizedText TipThrallFormat { get; private set; }
         public static LocalizedText TipHoundCountFormat { get; private set; }
         public static LocalizedText TipSeatsHintFormat { get; private set; }
@@ -73,6 +76,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             TipResetTitle = this.GetLocalization(nameof(TipResetTitle), () => "Wide Restart");
             TipResetHintFormat = this.GetLocalization(nameof(TipResetHintFormat),
                 () => "Press {0} in the ghost rain to wind the field back");
+            TipTeleportTitle = this.GetLocalization(nameof(TipTeleportTitle),
+                () => "Ghostwater Passage");
+            TipTeleportHintFormat = this.GetLocalization(nameof(TipTeleportHintFormat),
+                () => "Press {0} to slip through the water to the cursor; swifter within the lake");
             TipThrallFormat = this.GetLocalization(nameof(TipThrallFormat),
                 () => "Umbrella thralls afield {0} / {1}");
             TipHoundCountFormat = this.GetLocalization(nameof(TipHoundCountFormat),
@@ -179,6 +186,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         private const string DropPath =
             "M 0 -1 Q 0.8 0.05 0.5 0.55 Q 0.25 1 0 1 Q -0.25 1 -0.5 0.55 Q -0.8 0.05 0 -1";
 
+        //鬼域传送：伞盖两褶带一柄弯钩
+        private const string UmbrellaPath =
+            "M -0.85 0.05 Q 0 -1.15 0.85 0.05 Q 0.42 -0.2 0 0.05 Q -0.42 -0.2 -0.85 0.05"
+            + " M 0 0.05 L 0 0.7 Q 0 0.98 -0.28 0.9";
+
         /// <summary>自然锚点（风铃中心），未参与左下队列避让时的原始位置</summary>
         public static Vector2 NaturalAnchor => new(KikasaHudTheme.AnchorOffset.X,
             KikasaHudTheme.UIScreenH + KikasaHudTheme.AnchorOffset.Y);
@@ -217,7 +229,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         //==================== 状态 ====================
 
         /// <summary>悬停目标：HUD 的每个读数都有自己的说明</summary>
-        private enum TipTarget { None, Bell, Dream, Wisp, Drown, Reset, Thrall, Seats, Talis }
+        private enum TipTarget { None, Bell, Dream, Wisp, Drown, Teleport, Reset, Thrall, Seats, Talis }
 
         //事件搅一记涌浪（stir），涌浪推摆幅；读数交给图标列
         private float stir;
@@ -367,6 +379,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             Push(TipTarget.Wisp);
             if (KikasaDrown.LocalCooldown01 > 0.005f) {
                 Push(TipTarget.Drown);
+            }
+            if (KikasaTeleport.LocalCooldown01 > 0.005f) {
+                Push(TipTarget.Teleport);
             }
             if (domain.IsRainForm) {
                 Push(TipTarget.Reset);
@@ -648,6 +663,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                         DrawCooldownReadout(sb, pos, a, DropPath,
                             KikasaHudTheme.Glow(rain), KikasaDrown.LocalCooldown01, hover);
                         break;
+                    case TipTarget.Teleport:
+                        DrawCooldownReadout(sb, pos, a, UmbrellaPath,
+                            KikasaHudTheme.Glow(rain), KikasaTeleport.LocalCooldown01, hover);
+                        break;
                     case TipTarget.Reset:
                         DrawCooldownReadout(sb, pos, a, null,
                             new Color(108, 190, 198), KikasaReset.LocalCooldown01, hover);
@@ -845,6 +864,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                             : TipDrownReady.Value, pct > 0 ? dimC : glowC),
                         new KikasaTipLine(string.Format(TipDrownHintFormat.Value,
                             CWRKeySystem.Kikasa_Sink.ToTooltipString(CWRKeySystem.Notbound.Value)),
+                            dimC));
+                    return;
+                }
+                case TipTarget.Teleport: {
+                    int pct = (int)MathF.Round(KikasaTeleport.LocalCooldown01 * 100f);
+                    KikasaTipPanel.Draw(sb, cursor, TipTeleportTitle.Value, rain, alpha,
+                        new KikasaTipLine(string.Format(TipCooldownFormat.Value, pct),
+                            pct > 0 ? dimC : glowC),
+                        new KikasaTipLine(string.Format(TipTeleportHintFormat.Value,
+                            CWRKeySystem.Legend_Teleport.ToTooltipString(CWRKeySystem.Notbound.Value)),
                             dimC));
                     return;
                 }

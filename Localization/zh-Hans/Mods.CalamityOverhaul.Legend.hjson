@@ -909,17 +909,25 @@ KikasaOverride: {
 	DisplayName: 鬼伞
 	Tooltip:
 		'''
+		持有时鬼伞悬在肩后随行，敌人靠近而你未出手时，会自行倾伞洒墨自卫
+		按住左键把伞悬到头顶，按节拍降下追踪敌人的墨雨
+		按住右键倒撑蓄墨，松手泼出一场墨瀑
 		手持时按「领域展开」键撑开血湖，再按一次收起
-		按住左键把伞悬在头顶，降下追踪敌人的墨雨
-		按住右键倒撑蓄力，松手泼出墨瀑
-		对着敌人或拿着物品按「沉物入湖」键，可以把它按进湖里。Boss 沉过后会留下沉影
-		点左下角风铃打开湖心景，把沉影编进三个影位
-		湖水涨满后，短按「血湖表里」键（默认鼠标中键）在血湖和鬼雨之间切换
-		长按同一键进入鬼梦；沉影转盘上的金焰扇点燃或收起鬼火
-		召唤栏位越多，墨雨越快、雨滴越多，右键也蓄得越快
-		4 栏：每波多甩一滴，打向第二个目标
-		7 栏：每四波会一次性甩出全部雨滴
-		10 栏：大滴落地留下灼烧墨洼；蓄满的墨瀑落地会喷出三道墨泉
+		湖水漫到脚下后，拿着物品按「沉物入湖」键把它存进湖底，可在湖心景取回
+		对着敌人按同一个键则将其沉溺，被沉溺过的 Boss 会留下沉影
+		点左下角风铃打开湖心景，把沉影编进三个影位，它们会像召唤物一样替你作战
+		按住转盘键随时逐只召出或收回沉影；在场的越少，每只的伤害越高
+		转盘上的金焰扇点燃鬼火，金焰沿湖岸蔓延，灼烧碰到的敌人
+		湖水涨满后，短按「血湖表里」键（默认鼠标中键）在血湖与鬼雨之间翻转
+		鬼雨中杀死的敌人会化作伞奴，替你作战
+		鬼雨满水时按「重启自身」键，附近的一切倒回数秒前，你的生命回满、减益洗净
+		湖水涨满后，长按「血湖表里」键沉入鬼梦：梦中敌人失能，远程弹幕无法存在
+		梦里物品封禁，改为按住左键连唤恶犬撕咬，重按同键醒来
+		按「领域传送」键以一滩水为门，瞬移到指针处；在血湖里施展更快
+		召唤栏位越多，墨雨节拍越快、雨滴越多，蓄墨也越快
+		4 栏：每拍多甩一滴，打向第二个目标
+		7 栏：每四拍齐掷一次，甩出全部雨滴
+		10 栏：大滴落地积成灼烧墨洼；蓄满的墨瀑触地喷出三道墨泉
 		[Lang4]
 		legend_Text
 		"伞下无雨，只有水声"
@@ -1160,23 +1168,25 @@ KikasaText: {
 		TipDrownReady: 可以沉溺
 		TipResetTitle: 大范围重启
 		TipResetHintFormat: 在鬼雨中按 {0}，把附近的一切倒回数秒前
+		TipTeleportTitle: 鬼域传送
+		TipTeleportHintFormat: 按 {0} 借一滩水渡到指针处；在血湖里施展更快、冷却更短
 		TipThrallFormat: 在场伞奴 {0} / {1}
 		TipHoundCountFormat: 在场恶犬 {0} / {1}
-		TipSeatsHintFormat: 按 {0} 打开转盘召出或收回 · 在湖心景里调整编成
+		TipSeatsHintFormat: 按住 {0} 打开转盘召出或收回 · 在湖心景里调整编成
 		TipSeatEmpty: 空位
-		TipTalisHint: 点击打开湖心景调符
+		TipTalisHint: 点击打开湖心景，在祈雨绳上挂符
 	}
 
 	KikasaServantWheelUI: {
 		WheelEmptyTitle: 空位
-		WheelEmptyDesc: 把登记过的 Boss 沉进湖里，它的沉影会坐到这里
+		WheelEmptyDesc: 把 Boss 沉进湖里，它的沉影会自动坐进空位；也可以在湖心景里手动编成
 		WheelEmptyStatus: 这里还空着
 		WheelSeatFormat: 影位 {0}
 		WheelStatusRecall: "[松开] 收回这只"
 		WheelStatusSummon: "[松开] 召它出来"
 		WheelStatusAwaitOrder: "[松开] 先记下，开湖后它会自己出来"
 		WheelCenterTitle: 全体号令
-		WheelCenterDesc: 外面有人就全部收回，没人就全部召出
+		WheelCenterDesc: 场上还有沉影就全部收回，一只都没有就全部召出
 		WheelCenterCountFormat: "{0}/{1} 出战"
 		WheelCenterRecallAll: "[松开] 全部收回"
 		WheelCenterSummonAll: "[松开] 全部召出"
@@ -1184,7 +1194,7 @@ KikasaText: {
 		WheelDamageFormat: 每只在场沉影的伤害 {0}%
 		WheelHint: "[{0}] 按住 · 松开确认 · 右键取消"
 		WheelWispName: 金焰
-		WheelWispDesc: 点燃后金焰沿湖岸蔓延，灼烧沿岸的敌人
+		WheelWispDesc: 点燃后金焰沿湖岸蔓延，灼烧碰到的敌人
 		WheelWispIgnite: "[松开] 点燃"
 		WheelWispSnuff: "[松开] 收火"
 	}
@@ -1206,7 +1216,7 @@ KikasaText: {
 		WispIdle: 未点燃，火等你号令
 		WispBoil: 鬼雨里仍在烧
 		WispQuenchedLine: 正在被鬼雨浇灭
-		WispBonusFormat: 灼烧 {0} 秒 · 火舌 {1}
+		WispBonusFormat: 灼烧 {0} 秒 · 火舌长度 {1}
 		WispIgniteClick: "[点击] 点燃"
 		WispSnuffClick: "[点击] 收火"
 		EdgeDreamFire: 梦火
@@ -1217,7 +1227,7 @@ KikasaText: {
 		SeatEmptyLine: 空着，从下面的名册里选一只放上来
 		SeatPickHint: 点击拿起 · 右键卸下
 		SeatPlaceHint: 点击放到这里
-		SeatHeldLineFormat: 已收起，按 {0} 打开转盘可以召回
+		SeatHeldLineFormat: 已收起，按住 {0} 打开转盘可以召回
 		SeatOutLine: 正在场上
 		SeatAwaitLine: 等湖水涨起来
 		RosterTallyFormat: 沉影 {0} / {1}
@@ -1229,10 +1239,10 @@ KikasaText: {
 		NoteUnslottedFormat: "{0} 已从影位卸下"
 		NoteNotCollected: 还没有把它沉进过湖里
 		NotePickFirst: 先从下面的名册里选一只
-		NoteArmsNoStock: 湖藏里没有这件武器，没法成形
+		NoteArmsNoStock: 湖藏里没有这件武器的原件，沉影无法成形
 		TalisTitle: 祈 雨 绳
 		TalisEmptyLine: 空绳结，点击展开符箧挑一张
-		TalisNoneOwned: 符箧还是空的，临水书一张唤雨符再来
+		TalisNoneOwned: 符箧还是空的，先到水边的工作台做一张符再来
 		TalisNeedUmbrella: 把鬼伞握在手里，符才认主
 		TalisSwapHint: 点击换符 · 右键摘下
 		TalisHangHint: 点击挂上
@@ -1248,41 +1258,41 @@ KikasaText: {
 		VaultViewOnlyLine: 湖水还没涨起来，现在只能看
 		ArmsStockFormat: 原件 ×{0}
 		ThrallLineFormat: 伞奴上限 {0} · 每 {1} 秒可转化一只
-		FooterHintFormat: Esc 或 {0} 关闭 · 拿着物品按 {1} 沉入湖藏 · {2} 打开转盘
+		FooterHintFormat: Esc 或 {0} 关闭 · 拿着物品按 {1} 沉入湖藏 · 按住 {2} 打开转盘
 	}
 
 	KikasaHudLead: {
 		DomainTitle: 撑开血湖
-		DomainBody: 湖藏、沉溺和沉影，都要先把血湖撑开。
+		DomainBody: 血湖是鬼伞立足的地方：存取物品、沉溺敌人、驱使沉影，都要先把湖撑开，让血水涨起来。
 		DomainPrompt: 手持鬼伞，按 {0}
 		SinkTitle: 沉进湖里
-		SinkBody: 拿着物品按沉入键，会存进湖底。对着活物按同一个键，会把它按进湖里。Boss 被沉过后会留下沉影，以后都能编进影位。
+		SinkBody: 拿着物品按沉入键，物品会存进湖底，之后能在湖心景里取回。对着敌人按同一个键，就把它按进水里。被沉溺过的 Boss 会留下影子，这就是沉影，往后可以驱使它替你作战。
 		SinkPrompt: 等湖水涨到脚下，拿着物品或对着敌人按 {0}
 		PanoramaTitle: 打开湖心景
-		PanoramaBody: 这是鬼伞的主界面。上面是恶犬和鬼火，中间三个影位用来编成，底下是湖藏。
+		PanoramaBody: 湖心景是鬼伞的总界面：上层住着恶犬和鬼火，中间三个影位用来安放沉影，湖底陈列着沉进来的物品。接下来几步都会用到它。
 		PanoramaPrompt: 点左下角风铃，或手持鬼伞按 {0}
 		WheelTitle: 召出沉影
-		WheelBody: 编进影位的沉影，湖开着时会自己出来。转盘可以随时召出或收回，场上越少，每只打得越重。盘上那扇金焰负责点燃和收起鬼火。
+		WheelBody: 编进影位的沉影，开湖后会自己出来作战。用转盘可以随时逐只召出或收回：在场的越少，每只的伤害越高。盘上那扇金焰负责点燃和收起鬼火。
 		WheelPrompt: 按住 {0} 打开转盘，对准一个影位松开
-		WheelNoMemory: 还没有沉影。先把一只 Boss 沉进湖里，或者跳过这一步。
+		WheelNoMemory: 湖里还没有沉影。先把一只 Boss 沉进湖里，或者跳过这一步。
 		RainTitle: 异化成鬼雨
-		RainBody: 「血湖表里」键有两重话：满水时短按，血湖翻成鬼雨；长按，是往梦里去。鬼雨底下杀死的敌人会化作伞奴，替你打。
+		RainBody: 「血湖表里」键有两种按法：湖水涨满后短按，血湖翻转成鬼雨；长按则沉入鬼梦，留到最后一步。在鬼雨中杀死的敌人会化作伞奴，替你作战。
 		RainPrompt: 湖水涨满后，短按 {0} 翻转血湖
 		RestartTitle: 雨中重启
-		RestartBody: 鬼雨记得几秒前的样子。按下重启，画面定格成黑白照片，再被雨痕冲开。场上所有人退回原位，伤口合上，诅咒被冲净，倒带途中没人碰得到你。
+		RestartBody: 鬼雨记得几秒前的一切。按下重启键，画面定格成黑白照片，再被雨痕冲开：附近的敌人和你都退回数秒前的位置，你的生命回满、减益洗净，倒带全程无敌。
 		RestartPrompt: 鬼雨满水时，按 {0}
 		DreamTitle: 进入鬼梦
-		DreamBody: 湖水涨满后，长按「血湖表里」键，倒影就会把你拽进鬼梦。梦里按住左键会不断唤出恶犬，再按一次同一键回来。
+		DreamBody: 湖水涨满后长按「血湖表里」键，湖里的倒影会把你拽进鬼梦。梦中敌人失能，远程弹幕无法存在；你的物品也被封禁，改为按住左键连续唤出恶犬撕咬。再按一次同键就能醒来。
 		DreamPrompt: 湖水涨满后，长按 {0}（默认鼠标中键）
 		SkipBtn: 跳过
 		ConfirmBtn: 明白了
 		AssistBtn: 替我演示
 		OpenPanoramaBtn: 帮我打开
 		DismissBtn: 收起教程
-		KeyUnbound: 这一步的按键还没绑定。先到 设置 > 控制 里绑好，或者点跳过。
+		KeyUnbound: 这一步的按键还没绑定。先到 设置 > 控制 里绑好，或者点「跳过」。
 		AlreadyDoneNote: 这一步你已经做到了。看完就点「明白了」。
 		WaterRisingNote: 先等血水漫到脚下。
-		ResetCooldownFormat: 重启的墨线还在回卷：{0}%
+		ResetCooldownFormat: 重启还在冷却：{0}%
 		HelpHover: 重看鬼伞教程
 	}
 }

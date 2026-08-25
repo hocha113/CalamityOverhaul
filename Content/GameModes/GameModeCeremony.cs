@@ -41,6 +41,16 @@ namespace CalamityOverhaul.Content.GameModes
             VaultUtils.Text(GameModeText.ToggleLine(face, enabled).Value, GameModeTheme.Accent(face));
             PlaySound(face, enabled);
 
+            if (enabled) {
+                //开启向按档位递增的一记轻震（ScreenVibration 配置门在 GetScreenShake 内部）
+                float shake = face switch {
+                    GameModeFace.Brutal => 6f,
+                    GameModeFace.Asura => 8f,
+                    _ => 10f,
+                };
+                Main.LocalPlayer.CWR()?.GetScreenShake(shake);
+            }
+
             LineFace = face;
             LineEnabled = enabled;
             LineTimer = LineDuration;

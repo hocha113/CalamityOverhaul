@@ -318,11 +318,9 @@ namespace CalamityOverhaul.Content
                     List<TooltipLine> prefixTooltips = [];
                     List<TooltipLine> tooltip = [];
                     foreach (TooltipLine line in tooltips.ToList()) {
-                        for (int i = 0; i < 9; i++) {
-                            if (line.Name == "Tooltip" + i) {
-                                tooltip.Add(line.Clone());
-                                line.Hide();
-                            }
+                        if (CWRUtils.IsTooltipBodyLine(line)) {
+                            tooltip.Add(line.Clone());
+                            line.Hide();
                         }
                         if (line.Name.Contains("Prefix")) {
                             prefixTooltips.Add(line.Clone());

@@ -23,8 +23,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
     /// 记录在 <see cref="KikasaServants.KikasaServantPlayer"/>，
     /// 穷举条目在 <see cref="KikasaServants.KikasaServantIndex"/>，
     /// 焰/魇/潦增益与组合边在 <see cref="KikasaServants.KikasaEffigyBoard"/>。
-    /// 第四能力模块：普攻·墨雨，按住左键撑出悬伞
-    /// <see cref="KikasaRains.KikasaRainUmbrella"/>，头顶自旋按节拍降下大墨滴追踪敌人。
+    /// 第四能力模块：普攻·墨雨。鬼伞持有即常驻，平时悬在玩家背肩上方随行，
+    /// 周围有敌且玩家未主动攻击时自行倾身抛洒墨滴自卫；按住左键悬伞
+    /// <see cref="KikasaRains.KikasaRainUmbrella"/> 飞到头顶自旋，
+    /// 按节拍降下追踪敌人的大墨滴，各动作态实时直入无前后摇。
     /// 第五能力模块：鬼梦，满水稳态倒影自醒；长按
     /// <see cref="Common.CWRKeySystem.Kikasa_DomainMutate"/> 拉入鬼梦
     /// （湖沸腾倒转，红天村落、湖水不见；物品封禁、左键连唤恶犬，重按归返；
@@ -39,6 +41,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
     /// 结算时范围内玩家回满、清 debuff，全程无敌；
     /// 权威与时间轴在 <see cref="KikasaResets.KikasaReset"/>，
     /// 输入在 <see cref="KikasaResets.KikasaResetPlayer"/>。
+    /// 第七能力模块：鬼域传送，持伞按
+    /// <see cref="Common.CWRKeySystem.Legend_Teleport"/>（与其余传奇传送共键）
+    /// 以水为媒介瞬移到指针处，瞬发无前后摇：双潭当帧砸开，数帧内人已渡到彼岸，
+    /// 此岸水柱吞人、彼岸水柱喷发，常驻悬伞亲自扎水→隐没→破水弹回，
+    /// 全程只有一把伞；不需要领域，血湖稳态里节奏与冷却更短、真湖随之荡波；
+    /// 门面与输入在 <see cref="KikasaTeleports.KikasaTeleport"/> 与
+    /// <see cref="KikasaTeleports.KikasaTeleportPlayer"/>，
+    /// 水舞台在 <see cref="KikasaTeleports.KikasaTeleportProj"/>。
     /// 召唤师武器：召唤栏位化作栖在伞骨下的鬼，左右键普攻的节拍、滴数、
     /// 伤害与三档质变全按栏位数走，口径集中在 <see cref="KikasaOverride"/>；
     /// 传奇成长（伤害等级表+沉宴试炼路线）同在 <see cref="KikasaOverride"/> 与
@@ -64,23 +74,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
             Item.shootSpeed = 1f;
             Item.value = Terraria.Item.sellPrice(gold: 25);
             Item.rare = ItemRarityID.Purple;
+            //持有即常驻:悬伞由 CWRItem.HoldItem 的持有生成机制维持,使用只是指挥
+            Item.CWR().heldProjType = ModContent.ProjectileType<KikasaRainUmbrella>();
         }
 
         /// <summary>右键=倒撑蓄力重击</summary>
         public override bool AltFunctionUse(Player player) => true;
 
-        //悬伞在场时不重复开伞；鬼梦世界里左右键皆封，梦中失能对梦主也不例外，
-        //唤犬读原始输入、各切换键不经物品使用，均不受此限
+        //常驻伞由持有生成,使用只负责指挥,不再以伞在场封锁;鬼梦世界里左右键皆封,
+        //梦中失能对梦主也不例外,唤犬读原始输入、各切换键不经物品使用,均不受此限
         public override bool CanUseItem(Player player)
-            => !KikasaDream.DreamWorldAt(player.Center)
-            && player.ownedProjectileCounts[ModContent.ProjectileType<KikasaRainUmbrella>()] <= 0;
+            => !KikasaDream.DreamWorldAt(player.Center);
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            //ai[0]:0=墨雨,1=蓄力倒撑(重击模块接管)
-            float mode = player.altFunctionUse == 2 ? 1f : 0f;
-            Projectile.NewProjectile(source, player.MountedCenter, Vector2.Zero,
-                type, damage, knockback, player.whoAmI, mode);
+            bool alt = player.altFunctionUse == 2;
+            //指挥常驻伞直入攻击态:左=墨雨,右=倒撑蓄墨
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile proj = Main.projectile[i];
+                if (proj.active && proj.owner == player.whoAmI && proj.type == type
+                    && proj.ModProjectile is KikasaRainUmbrella umbrella) {
+                    umbrella.CommandAttack(alt);
+                    return false;
+                }
+            }
+            //兜底:常驻伞尚未就位(刚切装同帧点击),生成后立即下达攻击指令
+            int p = Projectile.NewProjectile(source, player.MountedCenter, Vector2.Zero,
+                type, damage, knockback, player.whoAmI);
+            if (p >= 0 && p < Main.maxProjectiles
+                && Main.projectile[p].ModProjectile is KikasaRainUmbrella fresh) {
+                fresh.CommandAttack(alt);
+            }
             return false;
         }
     }

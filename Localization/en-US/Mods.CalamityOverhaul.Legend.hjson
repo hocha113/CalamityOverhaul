@@ -909,20 +909,28 @@ KikasaOverride: {
 	DisplayName: Kikasa
 	Tooltip:
 		'''
-		While held, press Domain Expansion to open the Blood Lake; press again to close it
-		Hold left click to hover the umbrella overhead and drop ink rain that tracks enemies
-		Hold right click to charge; release to pour an ink torrent
-		Aim at an enemy or hold an item and press Sink into the Lake to push it under. A drowned boss leaves a shade
-		Click the wind chime at the bottom left to open the Lakeheart and seat shades in three slots
-		At full water, tap Flip the Lake (middle mouse by default) to switch between Blood Lake and Ghost Rain
-		Past half lake vigor, hold the same key to enter the Ghost Dream
-		More minion slots make the rain faster and thicker, and speed up the right-click charge
-		4 slots: each volley throws one extra drop at a second target
-		7 slots: every fourth volley throws every drop at once
-		10 slots: heavy drops leave burning ink puddles; a full torrent raises three ink geysers
+		While held, Kikasa trails behind your shoulder and tips over to sprinkle ink at nearby foes when you aren't attacking
+		Hold left click to hover the umbrella overhead, dropping homing ink rain to a steady beat
+		Hold right click to charge ink upside down; release to pour out an ink torrent
+		While held, press Domain Expansion to raise the Blood Lake; press again to close it
+		Once the water reaches your feet, hold an item and press Sink into the Lake to store it; reclaim it in the Lakeheart
+		Press the same key aiming at an enemy to drown it; a drowned boss leaves behind a sunken shade
+		Click the wind chime at the bottom left to open the Lakeheart and seat shades in three slots; they fight for you like minions
+		Hold the wheel key to call shades out or back one by one; the fewer afield, the harder each one hits
+		The gold-flame sector on the wheel lights the ghost fire, which spreads along the shore and scorches foes it touches
+		At full water, tap Flip the Lake (middle mouse by default) to flip between Blood Lake and Ghost Rain
+		Foes slain under the ghost rain rise as umbrella thralls that fight for you
+		In ghost rain at full water, press Self-Restart to wind everything nearby back a few seconds, refilling your life and rinsing off debuffs
+		At full water, hold Flip the Lake to sink into the Ghost Dream: foes there are helpless, and no ranged projectile can exist
+		Items are sealed in the dream; hold left click to loose the hounds instead, and press the same key again to wake
+		Press Domain Teleport to slip through a pool of water to your cursor; swifter within the Blood Lake
+		More minion slots quicken the rain's beat, add more drops, and speed up the charge
+		4 slots: each beat throws one extra drop at a second target
+		7 slots: every fourth beat hurls every drop at once
+		10 slots: heavy drops leave burning ink puddles; a full torrent bursts into three ink geysers
 		[Lang4]
 		legend_Text
-		"No rain under the umbrella—only the sound of water"
+		"No rain under the umbrella, only the sound of water"
 		'''
 	GhostCountLine: Minion slots {0} · {1}
 	TierName0: Drizzle
@@ -1160,16 +1168,18 @@ KikasaText: {
 		TipDrownReady: Ready
 		TipResetTitle: Wide Restart
 		TipResetHintFormat: In Ghost Rain, press {0} to rewind nearby things a few seconds
+		TipTeleportTitle: Ghostwater Passage
+		TipTeleportHintFormat: Press {0} to slip through a pool of water to the cursor; swifter within the lake, with a shorter cooldown
 		TipThrallFormat: Thralls out {0} / {1}
 		TipHoundCountFormat: Hounds out {0} / {1}
 		TipSeatsHintFormat: Hold {0} for the wheel · change the lineup in the Lakeheart
 		TipSeatEmpty: Empty
-		TipTalisHint: Click to open the Lakeheart and tend the rope
+		TipTalisHint: Click to open the Lakeheart and hang talismans on the rope
 	}
 
 	KikasaServantWheelUI: {
 		WheelEmptyTitle: Empty
-		WheelEmptyDesc: Drown a registered boss and its shade takes this seat
+		WheelEmptyDesc: Drown a boss and its shade takes an empty seat on its own; you can also seat one by hand in the Lakeheart
 		WheelEmptyStatus: Nothing here yet
 		WheelSeatFormat: Seat {0}
 		WheelStatusRecall: "[Release] Call it back"
@@ -1206,7 +1216,7 @@ KikasaText: {
 		WispIdle: Unlit; the flame waits on your word
 		WispBoil: Still burning in the rain
 		WispQuenchedLine: Being put out by Ghost Rain
-		WispBonusFormat: Burn {0}s · flame {1}
+		WispBonusFormat: Burn {0}s · flame reach {1}
 		WispIgniteClick: "[Click] Light the flame"
 		WispSnuffClick: "[Click] Draw the fire back"
 		EdgeDreamFire: Dreamfire
@@ -1229,10 +1239,10 @@ KikasaText: {
 		NoteUnslottedFormat: "{0} was removed from its seat"
 		NoteNotCollected: You haven't drowned it yet
 		NotePickFirst: Pick a shade from the list below first
-		NoteArmsNoStock: That weapon isn't in the hoard, so it can't take shape
+		NoteArmsNoStock: No original of that weapon in the hoard, so the shade can't take shape
 		TalisTitle: Raincall Rope
 		TalisEmptyLine: An empty knot — click to open the talisman case
-		TalisNoneOwned: The talisman case is empty — scribe a Raincall Talisman by the water first
+		TalisNoneOwned: The talisman case is empty; craft a talisman at a workbench by the water first
 		TalisNeedUmbrella: Hold Kikasa in hand — the talismans answer only the umbrella
 		TalisSwapHint: Click to swap · right-click to take down
 		TalisHangHint: Click to hang it here
@@ -1248,31 +1258,31 @@ KikasaText: {
 		VaultViewOnlyLine: The lake hasn't risen yet — you can only look
 		ArmsStockFormat: Originals ×{0}
 		ThrallLineFormat: Thrall cap {0} · convert one every {1}s
-		FooterHintFormat: Esc or {0} to close · hold an item and press {1} to sink it · {2} for the wheel
+		FooterHintFormat: Esc or {0} to close · hold an item and press {1} to sink it · hold {2} for the wheel
 	}
 
 	KikasaHudLead: {
-		DomainTitle: Open the Blood Lake
-		DomainBody: The hoard, drowning, and shades all need the Blood Lake open first.
+		DomainTitle: Raise the Blood Lake
+		DomainBody: The Blood Lake is where the umbrella does its work: storing items, drowning foes, and commanding shades all start with the lake open. Raise it and let the water climb.
 		DomainPrompt: Hold Kikasa and press {0}
 		SinkTitle: Sink Something
-		SinkBody: Hold an item and press the sink key to store it. Aim at a living thing and press the same key to push it under. A drowned boss leaves a shade you can seat later.
+		SinkBody: Hold an item and press the sink key to store it on the lakebed; you can reclaim it in the Lakeheart. Press the same key aiming at an enemy to push it under. A drowned boss leaves behind a shade, and you can command it to fight for you later.
 		SinkPrompt: Once the water reaches your feet, press {0} while holding an item or aiming at an enemy
 		PanoramaTitle: Open the Lakeheart
-		PanoramaBody: This is Kikasa's main screen. The hound and ghost fire sit at the top, three seats in the middle, and the hoard at the bottom.
+		PanoramaBody: The Lakeheart is Kikasa's home screen: the hound and the ghost fire live up top, the three seats in the middle hold your shades, and everything you sank rests on the lakebed. The next steps all run through here.
 		PanoramaPrompt: Click the wind chime at the bottom left, or hold Kikasa and press {0}
 		WheelTitle: Call the Shades
-		WheelBody: Seated shades come out on their own while the lake is open. The wheel calls them out or back at any time; fewer on the field means each one hits harder. The gold-flame sector on the same wheel lights or draws back the ghost fire.
+		WheelBody: Seated shades come out to fight on their own once the lake is open. The wheel calls them out or back one by one at any time: the fewer afield, the harder each one hits. The gold-flame sector on the wheel lights or draws back the ghost fire.
 		WheelPrompt: Hold {0} to open the wheel, then release on a seat
-		WheelNoMemory: No shades yet. Drown a boss first, or skip this step.
+		WheelNoMemory: No shades in the lake yet. Drown a boss first, or skip this step.
 		RainTitle: Mutate into Ghost Rain
-		RainBody: The Flip the Lake key speaks twice — at full water, a tap flips the lake into ghost rain; a long hold pulls you into the dream. Foes slain under the rain rise as umbrella thralls that fight for you.
+		RainBody: The Flip the Lake key works two ways: at full water, tap it to flip the Blood Lake into ghost rain; hold it to sink into the Ghost Dream, saved for the last step. Foes slain under the ghost rain rise as umbrella thralls that fight for you.
 		RainPrompt: At full water, tap {0} to flip the lake
 		RestartTitle: Rewind in the Rain
-		RestartBody: Ghost rain remembers. One press freezes the scene into a photograph, then the rain washes it open — everyone slides back to where they stood, wounds close, curses rinse off, and nothing can touch you while it rewinds.
+		RestartBody: The ghost rain remembers the last few seconds. Press the restart key and the scene freezes into a photograph, then washes open: nearby foes and you slide back to where you stood, your life refills, debuffs rinse off, and nothing can touch you while it rewinds.
 		RestartPrompt: In ghost rain at full water, press {0}
 		DreamTitle: Enter the Ghost Dream
-		DreamBody: Once the lake is full, hold Flip the Lake and the reflection pulls you under. Hold left click inside to call hounds; press the same key again to return.
+		DreamBody: At full water, hold the Flip the Lake key and the reflection in the lake pulls you into the dream. Foes there are helpless and no ranged projectile can exist; your items are sealed too, so hold left click to loose the hounds instead. Press the same key again to wake.
 		DreamPrompt: At full water, hold {0} (middle mouse by default)
 		SkipBtn: Skip
 		ConfirmBtn: Got it
@@ -1280,9 +1290,9 @@ KikasaText: {
 		OpenPanoramaBtn: Open it for me
 		DismissBtn: Put away
 		KeyUnbound: This step's key isn't bound. Bind it in Settings > Controls, or click Skip.
-		AlreadyDoneNote: This one is already done — read on, then press Got it.
+		AlreadyDoneNote: You've already done this one. Read on, then press Got it.
 		WaterRisingNote: Wait for the blood water to reach your feet first.
-		ResetCooldownFormat: The rewind ink is still coiling back: {0}%
+		ResetCooldownFormat: Restart still cooling down: {0}%
 		HelpHover: Replay the umbrella tutorial
 	}
 }

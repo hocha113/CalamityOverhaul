@@ -415,7 +415,6 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 OniRainExitTransition.HardReset();
                 OniRainWorldState.ResetLocal();
                 KasaOnis.KasaOniDirector.ResetLocal();
-                OniRainTheme.Reset();
                 sendOffArmDelay = 0;
             }
         }

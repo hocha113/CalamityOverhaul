@@ -64,8 +64,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
 
         internal override void ModifyRainHitNPC(in KikasaTalismanRainContext ctx, Projectile source,
             KikasaRainSourceKind kind, NPC npc, ref NPC.HitModifiers modifiers) {
-            //代价：撑伞期间全伤 -8%（伞收了洼还在烫，那时不减）
-            if (ctx.Owner.ownedProjectileCounts[ModContent.ProjectileType<KikasaRainUmbrella>()] > 0) {
+            //代价：撑伞攻击期间全伤 -8%。伞常驻后在场数恒真，改读攻击态口径
+            //（随行的闲伞不算；伞收了洼还在烫，那时不减）
+            if (KikasaRainUmbrella.OwnerIsRaining(ctx.Owner)) {
                 modifiers.FinalDamage *= 0.92f;
             }
         }

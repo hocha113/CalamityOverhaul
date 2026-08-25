@@ -722,7 +722,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             if (side == 0f) {
                 side = facingLeft ? -1f : 1f;
             }
-            //出手向斜上：墨滴的贝塞尔弧以出手方向为切线，甩上去再追着砸下来
+            //出手向斜上：墨滴先被真抛上去，越过顶点再平滑追击砸下来
             Vector2 flick = new Vector2(side * (0.5f + index * 0.12f), -1f)
                 .SafeNormalize(-Vector2.UnitY) * Main.rand.NextFloat(7f, 9f);
             int damage = Math.Max(1, (int)(Projectile.damage * DropletDamageRatio));
