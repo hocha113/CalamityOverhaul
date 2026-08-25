@@ -62,7 +62,44 @@ DeepGaolWraith: {
 	// Bestiary: The gaoler died at his post, his key rusted solid in the lock. The grudge that lingered wrung itself into a shape along the fetters, and now it walks the rounds between cells, dragging a pair of empty shackles. It checks no roster—only wrists. A wrist without irons counts as an escape.
 }
 
+Undrowned: {
+	// DisplayName: The Undrowned
+	// Bestiary: In the flood gallery at the bottom of the water gaol they keep a condemned man who will not drown. The execution ledger climbs an entire wall: anchor, flood, drain, examine. Every entry ends with the same line: the prisoner is still breathing. Eventually the wardens stopped coming. Only the water remembers his patience.
+	// GateSealed: The flood gallery gates have sealed shut.
+}
+
+// UndrownedThrone.DisplayName: Anchored Convict
+
+FoundryOverseer: {
+	// DisplayName: Foundry Overseer
+	// Bestiary: However many years the foundry has stood idle, the acceptance rig on the ceiling rail has run its empty shifts all the while. It makes nothing; it only inspects: press, pour, dart battery. What passes moves on. What fails goes back to the furnace. The workpiece delivered today is you.
+	// GateSealed: The proofing hall gear-gates have sealed shut.
+}
+
+// OverseerDormantRig.DisplayName: Dust-caked Rig
 // GaolDormantSkull.DisplayName: Deep Gaol Skull
+
+LanternWarden: {
+	// DisplayName: Lantern Warden
+	// Bestiary: The gaol's last lamplighter. It no longer remembers what it patrols for, only the rule of the lantern: whatever the light falls on is an escapee, and an escapee must be rung in.
+}
+
+LampeaterWisp: {
+	// DisplayName: Lampeater Wisp
+	// Bestiary: The archive lamps do not go out on their own. This wisp of smoke remembers every flame it has swallowed. The fuller it feeds, the brighter it burns, until it becomes the one lamp on the wanted list.
+}
+
+DrownedTurnkey: {
+	// DisplayName: Drowned Turnkey
+	// Bestiary: The night the sluice opened, he never came back up. He still calls the roll beneath the surface. Whoever the ripple stops beside is due back in their cell.
+}
+
+BoneStitcher: {
+	// DisplayName: Bone Stitcher
+	// Bestiary: The bones of the ossuary are not allowed to lie down. It sorts, matches and stitches, mending fallen prisoners back onto their posts. The seams run crooked, but it is loyal to its work.
+}
+
+// RestitchedBones.DisplayName: Restitched Bones
 // CybTrainingDummy.DisplayName: Holo Training Target
 // OldNetPatrolICE.DisplayName: Patrol ICE
 // OldNetBlackICE.DisplayName: Black ICE Hunter

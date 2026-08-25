@@ -111,6 +111,8 @@ namespace CalamityOverhaul
         [VaultLoaden(CWRConstant.ColorBar)]
         public static Asset<Texture2D> DarklightGreatsword_Bar = null;
         [VaultLoaden(CWRConstant.ColorBar)]
+        public static Asset<Texture2D> CursedflameFist_Bar = null;//咒焰血拳拖尾，亮绿核→锈橙→焦棕
+        [VaultLoaden(CWRConstant.ColorBar)]
         public static Asset<Texture2D> BrinyBaron_Bar = null;
         [VaultLoaden(CWRConstant.ColorBar)]
         public static Asset<Texture2D> Excelsus_Bar = null;

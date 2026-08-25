@@ -18,19 +18,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         #region 常量
         /// <summary>仪式充能满格值（ai[3]）</summary>
         public const float RitualMax = 300f;
-        /// <summary>二阶段血量比</summary>
-        public const float Phase2Ratio = 0.65f;
-        /// <summary>三阶段血量比</summary>
-        public const float Phase3Ratio = 0.30f;
+        /// <summary>转阶段血量比：P0 星旋→P1 星云→P2 星尘→P3 日耀→P4 月明</summary>
+        public static readonly float[] PhaseRatios = [0.85f, 0.65f, 0.45f, 0.25f];
         /// <summary>咏唱打断所需伤害占比</summary>
         public const float ChantBreakRatio = 0.06f;
+        /// <summary>限制圈半径（世界px），法阵外环=边界=仪式表</summary>
+        public const float ArenaRadius = 1000f;
         #endregion
 
         #region 阶段与模式
         public bool IsDeathMode { get; set; }
-        /// <summary>阶段 0/1/2，镜像 ai[0]</summary>
+        /// <summary>阶段 0星旋 1星云 2星尘 3日耀 4月明，镜像 ai[0]</summary>
         public int Phase { get; set; }
-        /// <summary>当前元素 0火 1冰 2雷，镜像 ai[1]</summary>
+        /// <summary>旧元素通道，恒等于 Phase（沿用 ai[1] 同步位）</summary>
         public int Element { get; set; }
         /// <summary>仪式充能，镜像 ai[3]，权威端写</summary>
         public float RitualCharge { get; set; }
@@ -47,10 +47,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         public float MirrorPenaltyGained { get; set; }
         /// <summary>镜像仪式进行中（克隆弹幕语义与渲染提示用）</summary>
         public bool MirrorActive { get; set; }
-        /// <summary>P3 幻影龙已唤出</summary>
+        /// <summary>幻影龙已唤出（星尘阶段，召唤柱的龙）</summary>
         public bool DragonSpawned { get; set; }
         /// <summary>猎杀幻影龙的充能削减已发放</summary>
         public bool DragonRewardGiven { get; set; }
+
+        /// <summary>竞技场圆心（入场时定桩，全场不动）</summary>
+        public Vector2 ArenaCenter { get; set; }
+        /// <summary>限制圈已生成</summary>
+        public bool ArenaSpawned { get; set; }
+        /// <summary>星球开火闸：本体收手时才放行（轮流出手的公平阀）</summary>
+        public bool PlanetVolleyGate { get; set; }
+        /// <summary>月明竖瞳开度 0~1，MoonLaser 态推高，自然回落</summary>
+        public float PupilOpen { get; set; }
         #endregion
 
         #region 本体视觉数据（各端本地驱动）
@@ -80,6 +89,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
             CastAura *= 0.90f;
             SigilCommit *= 0.92f;
             ChantGlow *= 0.94f;
+            PupilOpen *= 0.985f;
             ScalePulse = MathHelper.Lerp(ScalePulse, 1f, 0.1f);
             if (CastAura < 0.01f) {
                 CastAura = 0f;
@@ -97,18 +107,41 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         private readonly List<CultistStateIndex> attackBag = [];
         private CultistStateIndex lastAttack = CultistStateIndex.Weave;
 
-        /// <summary>当前阶段攻击池</summary>
+        /// <summary>阶段主场技能：主场加倍进池，其余当伏笔</summary>
+        public static CultistStateIndex HomeSkill(int phase) => phase switch {
+            0 => CultistStateIndex.BoltRite,
+            1 => CultistStateIndex.PhantomRite,
+            2 => CultistStateIndex.StarRite,
+            3 => CultistStateIndex.FlameRite,
+            _ => CultistStateIndex.MoonLaser,
+        };
+
+        /// <summary>
+        /// 当前阶段攻击池：四基础技能全程可见，主场技能三倍权重；<br/>
+        /// 星云阶段追加镜像仪式（幻象主场），月明阶段四技能均权+激光加倍
+        /// </summary>
         private void FillPool(List<CultistStateIndex> pool) {
             pool.Clear();
-            pool.Add(CultistStateIndex.FlameHunt);
-            pool.Add(CultistStateIndex.FrostLattice);
-            pool.Add(CultistStateIndex.StormCadence);
-            pool.Add(CultistStateIndex.AncientRite);
-            if (Phase >= 1) {
+            pool.Add(CultistStateIndex.FlameRite);
+            pool.Add(CultistStateIndex.StarRite);
+            pool.Add(CultistStateIndex.BoltRite);
+            pool.Add(CultistStateIndex.PhantomRite);
+
+            CultistStateIndex home = HomeSkill(Phase);
+            if (home != CultistStateIndex.MoonLaser) {
+                pool.Add(home);
+                pool.Add(home);
+            }
+            else {
+                //月明:一切被强化,激光是节拍器
+                pool.Add(CultistStateIndex.MoonLaser);
+                pool.Add(CultistStateIndex.MoonLaser);
+            }
+            if (Phase == 1) {
+                //星云主场:骗术全开
                 pool.Add(CultistStateIndex.MirrorRite);
             }
-            if (Phase >= 2) {
-                //三阶段镜像加权：骗术是他低血时的求生本能
+            if (Phase >= 4) {
                 pool.Add(CultistStateIndex.MirrorRite);
             }
         }

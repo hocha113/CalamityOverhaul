@@ -52,6 +52,8 @@ namespace CalamityOverhaul
         public static int Item_Terminus => Get();
         public static int Item_Brimlish => Get();
         public static int Item_Lumenyl => Get();
+        public static int Item_DepthCells => Get();
+        public static int Item_PlantyMush => Get();
         public static int Item_Voidstone => Get();
         public static int Item_EssenceofHavoc => Get();
         public static int Item_EffulgentFeather => Get();

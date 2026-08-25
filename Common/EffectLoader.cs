@@ -31,6 +31,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> GolemThruster { get; set; }
         public static Asset<Effect> CultistRuneSigil { get; set; }
         public static Asset<Effect> CultistVeil { get; set; }
+        public static Asset<Effect> CultistPlanet { get; set; }
         public static Asset<Effect> FishronStormSky { get; set; }
         public static Asset<Effect> FishronTornado { get; set; }
         public static Asset<Effect> FishronTsunami { get; set; }
@@ -245,6 +246,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> DragonSlashTrail { get; set; }
         public static Asset<Effect> DawnshatterSlash { get; set; }
         public static Asset<Effect> DragonsWordFX { get; set; }
+        public static Asset<Effect> EverdeepRing { get; set; }
         public static Asset<Effect> DragonSoulSerpent { get; set; }
         public static Asset<Effect> DragonSporeBeam { get; set; }
         public static Asset<Effect> BarrenPulse { get; set; }
@@ -348,5 +350,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KiteSinew { get; set; }
         public static Asset<Effect> KiyumeSky { get; set; }
         public static Asset<Effect> KiyumeFog { get; set; }
+        public static Asset<Effect> Abyssrend { get; set; }
     }
 }

@@ -35,14 +35,17 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         private static readonly Vector2 GripPixel = DivineSourceBladeFX.GripPixel;
         private static readonly Vector2 TipPixel = DivineSourceBladeFX.TipPixel;
         private const float HeldScale = 0.95f;
+        /// <summary>整体攻击范围倍率</summary>
+        private const float RangeMul = 0.8f;
         private static float BaseReach => (TipPixel - GripPixel).Length() * HeldScale;
 
         /// <summary>椭圆拍的回转总角，约 342°，留缺口避免读成量角器圆环</summary>
         private const float LoopSpan = 5.97f;
         /// <summary>椭圆拍起手沿环路反向的预拉角</summary>
         private const float LoopPull = 0.5f;
-        /// <summary>倾斜圆压扁率，读作纵深而非贴纸椭圆</summary>
-        private const float Squash = 0.56f;
+        /// <summary>带外光晕占径向比例，与 DivineSourceTechArc.fx 的 HaloFrac 锁定</summary>
+        private const float HaloFrac = 0.26f;
+        private static float HaloExpand => HaloFrac / (1f - HaloFrac);
 
         //阶段时长与几何，InitStage 按拍号写入(已含攻速缩放)
         private int raiseDur = 6;
@@ -60,6 +63,9 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         private float swingDir = 1f;
         private int facingDir = 1;
         private float tiltSign = 1f;
+        //椭圆拍几何，InitStage 按拍号写入
+        private float ellipseSquash = 0.56f;
+        private float majorStretch = 1f;
         private float mainAngle;
         private float mainReach;
         private float bladeScaleMul = 1f;
@@ -105,7 +111,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             }
         }
 
-        private float FullReach => BaseReach * reachScale;
+        private float FullReach => BaseReach * reachScale * RangeMul;
         private float TotalSweep => raiseBack + follow;
         private float ArcStart => baseAngle - (swingDir * raiseBack);
         private float ArcEnd => baseAngle + (swingDir * follow);
@@ -185,18 +191,22 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                     fanSegments = 64;
                     swingDir = -1f;
                     tiltSign = 1f;
+                    ellipseSquash = 0.56f;
+                    majorStretch = 1f;
                     break;
                 default:
-                    //沿椭圆反斩终结，顺时针，倾斜面翻转
-                    raiseDur = D(11);
-                    holdDur = D(4);
-                    slashDur = D(9);
-                    recoverDur = D(13);
+                    //沿椭圆反斩终结，顺时针，倾斜面翻转；压扁更狠+主轴拉长=更椭圆，节奏更快
+                    raiseDur = D(8);
+                    holdDur = D(3);
+                    slashDur = D(7);
+                    recoverDur = D(10);
                     reachScale = 1.38f;
-                    slashEasePow = 4.2f;
+                    slashEasePow = 3.6f;
                     fanSegments = 64;
                     swingDir = 1f;
                     tiltSign = -1f;
+                    ellipseSquash = 0.46f;
+                    majorStretch = 1.15f;
                     Projectile.damage = (int)(Projectile.damage * 1.35f);
                     break;
             }
@@ -212,10 +222,10 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         /// <summary>倾斜3D圆上 φ 处的投影点，k 为透视系数(近大远小)，zNorm∈[-1,1]</summary>
         private Vector2 EllipsePoint(float phi, out float k, out float zNorm) {
             float R = FullReach;
-            //局部坐标系 x 沿瞄准方向
-            float lx = MathF.Cos(phi) * R;
-            float ly = MathF.Sin(phi) * R * Squash;
-            float z = MathF.Sin(phi) * MathF.Sqrt(1f - (Squash * Squash)) * R * tiltSign;
+            //局部坐标系 x 沿瞄准方向，主轴拉长让轨迹更扁长
+            float lx = MathF.Cos(phi) * R * majorStretch;
+            float ly = MathF.Sin(phi) * R * ellipseSquash;
+            float z = MathF.Sin(phi) * MathF.Sqrt(1f - (ellipseSquash * ellipseSquash)) * R * tiltSign;
             zNorm = z / R;
             k = MathHelper.Clamp(ViewZ / (ViewZ - z), 0.84f, 1.18f);
             Vector2 dir = baseAngle.ToRotationVector2();
@@ -276,7 +286,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
         /// <summary>由 Timer 解算刀角、刀长与扇面进度</summary>
         private void UpdateBladeTransform(int phase) {
-            bladeScaleMul = 1f;
+            //快拍刀身随范围倍率同缩，刀尖不越出刀光带
+            bladeScaleMul = RangeMul;
             bladeDim = 1f;
 
             if (IsEllipse) {
@@ -501,7 +512,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 Hand + (dir * 46f), dir * 21f,
                 ModContent.ProjectileType<DivineSourceWaveProjectile>(),
                 (int)(Projectile.damage * 1.9f), Projectile.knockBack * 1.5f, Owner.whoAmI,
-                ai0: 1.75f, ai1: swingDir, ai2: Empowered ? 1f : 0f);
+                ai0: 1.4f, ai1: swingDir, ai2: Empowered ? 1f : 0f);
         }
 
         private void HandleParticles(int phase) {
@@ -715,25 +726,30 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             var inds = new short[(segs - 1) * 6];
 
             if (IsEllipse) {
-                //椭圆带，外缘骑在倾斜圆投影上，内缘向椭圆心收
+                //椭圆带，刃线骑在倾斜圆投影上，外扩光晕区，内缘向椭圆心收
                 Vector2 center = EllipseCenter;
                 float phiStart = LoopPhi(0f);
+                //内缘比例 0.42，带宽 0.58，网格再向外扩出光晕区
+                float haloMul = 1f + (0.58f * HaloExpand);
                 for (int i = 0; i < segs; i++) {
                     float t = i / (float)(segs - 1);
                     float u = t * sweepT;
                     float phi = MathHelper.Lerp(phiStart, loopPhiNow, t);
                     Vector2 outerPt = EllipsePoint(phi, out float k, out _);
-                    Vector2 inner = center + ((outerPt - center) * 0.42f);
+                    Vector2 spoke = outerPt - center;
+                    Vector2 haloPt = center + (spoke * haloMul);
+                    Vector2 inner = center + (spoke * 0.42f);
                     float dimT = MathHelper.Clamp((k - 0.84f) / 0.34f, 0f, 1f);
                     byte lum = (byte)(148 + (107 * dimT));
                     Color vcol = new(lum, lum, lum, (byte)(190 + (65 * dimT)));
-                    verts[i * 2] = new ColoredVertex(outerPt - Main.screenPosition, vcol, new Vector3(u, 0f, 0f));
+                    verts[i * 2] = new ColoredVertex(haloPt - Main.screenPosition, vcol, new Vector3(u, 0f, 0f));
                     verts[(i * 2) + 1] = new ColoredVertex(inner - Main.screenPosition, vcol, new Vector3(u, 1f, 0f));
                 }
             }
             else {
                 float outerR = mainReach * 1.05f;
                 float innerR = mainReach * 0.34f;
+                float haloW = (outerR - innerR) * HaloExpand;
                 Vector2 center = Hand;
                 //起点补 0.3 弧度，扇根和刀背衔接
                 float arcStart = ArcStart + (swingDir * 0.3f);
@@ -743,7 +759,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                     float ang = arcStart + (swingDir * TotalSweep * u);
                     Vector2 dir = ang.ToRotationVector2();
                     float bulge = 1f + (0.05f * MathF.Pow(t, 3f));
-                    Vector2 outer = center + (dir * outerR * bulge) - Main.screenPosition;
+                    Vector2 outer = center + (dir * ((outerR * bulge) + haloW)) - Main.screenPosition;
                     Vector2 inner = center + (dir * innerR) - Main.screenPosition;
                     verts[i * 2] = new ColoredVertex(outer, Color.White, new Vector3(u, 0f, 0f));
                     verts[(i * 2) + 1] = new ColoredVertex(inner, Color.White, new Vector3(u, 1f, 0f));
@@ -792,6 +808,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             effect.Parameters["LeadColor"]?.SetValue(DivineSourceBladeFX.TechWhite.ToVector4());
             effect.Parameters["CoreColor"]?.SetValue(DivineSourceBladeFX.CyanBright.ToVector4());
             effect.Parameters["BodyColor"]?.SetValue(DivineSourceBladeFX.AzureBlue.ToVector4());
+            effect.Parameters["MidColor"]?.SetValue(DivineSourceBladeFX.ElectricBlue.ToVector4());
             effect.Parameters["DeepColor"]?.SetValue(DivineSourceBladeFX.DeepNavy.ToVector4());
             effect.Parameters["AccentColor"]?.SetValue(DivineSourceBladeFX.AuricGold.ToVector4());
 

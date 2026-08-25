@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
         private ref float EndTimer => ref npc.localAI[1];
 
         public override bool? CanBrutalOverride() {
-            //重制未完成：由 DisabledReworkTypes 拒绝接管
+            //跟随残酷模式世界旗标
             return null;
         }
 

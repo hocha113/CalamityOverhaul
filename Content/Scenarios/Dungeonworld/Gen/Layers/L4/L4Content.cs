@@ -136,6 +136,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
                 }
             }
 
+            //===哑钟沉窖(Wave-2 A1):贴第四组服务井,须在水体写入前登记舱段/气室(R4:随机消耗集中于其接线点)===
+            L4MuteBell.TryBuild(ctx, groups[3].Waterline, groups[3].NextFloor,
+                groups[3].ServiceLeft, groups[3].ServiceRight, rand);
+
             //6) 水体:几何家具已冻结。满水态写入→settle→静定断言→双水线/分带墙
             int wetCells = L4WaterWorks.FillState(high: true);
             L4WaterWorks.SettleBand(band);

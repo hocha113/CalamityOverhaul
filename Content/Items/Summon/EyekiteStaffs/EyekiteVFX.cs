@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Items.Summon.EyekiteStaffs
             float mid = 1f - MathF.Abs(t - 0.5f) * 0.35f;
             float knot = MathHelper.Lerp(1.25f, 1f, MathHelper.Clamp(t / 0.12f, 0f, 1f));
             float attach = MathHelper.Lerp(1f, 1.15f, MathHelper.Clamp((t - 0.88f) / 0.12f, 0f, 1f));
-            float taut = MathHelper.Lerp(7.2f, 4.1f, tension);
+            float taut = MathHelper.Lerp(4.2f, 2.4f, tension);
             float pinch = 1f - twang * 0.28f * MathF.Exp(-MathF.Pow((t - twangPos) * 8f, 2f));
             return taut * mid * knot * attach * pinch;
         }
@@ -95,17 +95,19 @@ namespace CalamityOverhaul.Content.Items.Summon.EyekiteStaffs
             Texture2D tex = TextureAssets.FishingLine.Value;
             Rectangle frame = tex.Frame();
             Vector2 origin = new Vector2(frame.Width / 2f, 2f);
-            float thin = MathHelper.Lerp(1.15f, 0.7f, tension);
+            float thin = MathHelper.Lerp(0.9f, 0.55f, tension);
+            //红底+白芯两层，与 shader 的白芯红缘同一语言
             for (int i = 0; i < points.Length - 1; i++) {
                 Vector2 a = points[i];
                 Vector2 b = points[i + 1];
                 Vector2 diff = b - a;
                 float rot = diff.ToRotation() - MathHelper.PiOver2;
-                float stripe = (i + (int)(Main.GlobalTimeWrappedHourly * 3f)) % 3;
-                Color c = stripe == 0 ? Sinew : Color.Lerp(Blood, Arterial, stripe * 0.5f);
-                c = Color.Lerp(c, light, 0.25f);
-                Vector2 scale = new Vector2(thin, (diff.Length() + 2f) / frame.Height);
-                Main.EntitySpriteDraw(tex, a - Main.screenPosition, frame, c, rot, origin, scale, SpriteEffects.None, 0);
+                Vector2 pos = a - Main.screenPosition;
+                float len = (diff.Length() + 2f) / frame.Height;
+                Color red = Color.Lerp(Blood, light, 0.25f);
+                Color white = Color.Lerp(Sinew, light, 0.2f);
+                Main.EntitySpriteDraw(tex, pos, frame, red, rot, origin, new Vector2(thin, len), SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(tex, pos, frame, white, rot, origin, new Vector2(thin * 0.4f, len), SpriteEffects.None, 0);
             }
         }
 

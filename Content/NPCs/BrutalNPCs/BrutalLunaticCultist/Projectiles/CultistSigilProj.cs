@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
 {
     /// <summary>
     /// 仪式印记：预告即实体，描绘→定形→释放三段<br/>
-    /// ai[0]=元素 ai[1]=模式(0焚焰扇 1挪移标记 2霜晶阵列 3雷律锚 4迸发中心) ai[2]=定形帧数
+    /// ai[0]=阶段(取色) ai[1]=模式(0焚焰扇 1挪移标记 2霜晶阵列 3雷律锚 4迸发中心) ai[2]=定形帧数
     /// </summary>
     internal class CultistSigilProj : ModProjectile
     {
@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item117 with { Volume = 0.35f, Pitch = -0.2f }, Projectile.Center);
             }
 
-            Color core = CultistMotion.ElementCore(Element);
+            Color core = CultistMotion.PhaseCore(Element);
             Lighting.AddLight(Projectile.Center, core.ToVector3() * 0.5f * DrawProgress);
 
             //定形顿音（各非服务端本地演出）
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         /// <summary>释放：按模式出招，权威端裁决</summary>
         private void Fire() {
             //释放闪与震（各端本地）
-            CultistMotion.CastFlash(Projectile.Center, CultistMotion.ElementCore(Element), Mode == 4 ? 1.5f : 1f);
+            CultistMotion.CastFlash(Projectile.Center, CultistMotion.PhaseCore(Element), Mode == 4 ? 1.5f : 1f);
             CultistMotion.Shake(Projectile.Center, 3f, 8);
 
             if (VaultUtils.isClient) {
@@ -175,7 +175,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             }
 
             CultistRenderHelper.DrawSigil(Main.spriteBatch, Projectile.Center, SigilRadius,
-                CultistMotion.ElementCore(Element), DrawProgress, CommitGlow, 0f, alpha);
+                CultistMotion.PhaseCore(Element), DrawProgress, CommitGlow, 0f, alpha);
             return false;
         }
     }

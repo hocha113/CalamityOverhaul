@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         //挥砍弧度:轻拍压椭圆弯月,终结才配巨新月
         private float SwingArc => IsFinisher ? 5.5f : 3.4f;
         //刀尖距持握点长度
-        private float BladeReach => 175f * (IsFinisher ? 1.1f : 1f);
+        private float BladeReach => 150f * (IsFinisher ? 1.08f : 1f);
         //蓄力回拉角:比旧版更深,沉重感的主要来源
         private float PullbackAngle => IsFinisher ? 1.05f : 0.72f;
 
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 float collisionPoint = 0f;
                 //宽刃:线判定加厚,贴脸与擦刃都要咬住
                 if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                    , hand, tip, 60f, ref collisionPoint)) {
+                    , hand, tip, 54f, ref collisionPoint)) {
                     return true;
                 }
             }

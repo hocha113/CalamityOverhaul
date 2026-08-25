@@ -98,8 +98,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + dir * 26f, dir * 7.8f,
                             ModContent.ProjectileType<CultistTrueBolt>(), 34, 0f, Main.myPlayer, context.Element);
                     }
-                    context.PushAura(0.8f, CultistMotion.ElementCore(context.Element));
-                    CultistMotion.CastFlash(npc.Center + dir * 26f, CultistMotion.ElementCore(context.Element), 0.7f);
+                    context.PushAura(0.8f, CultistMotion.PhaseCore(context.Phase));
+                    CultistMotion.CastFlash(npc.Center + dir * 26f, CultistMotion.PhaseCore(context.Phase), 0.7f);
                 }
             }
 

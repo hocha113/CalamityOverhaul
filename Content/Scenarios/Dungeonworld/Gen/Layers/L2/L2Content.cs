@@ -32,6 +32,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L2
         internal static void PlanAndBuild(LayerBuildContext ctx) {
             UnifiedRandom rand = WorldGen.genRand;
             LayerBand band = ctx.Band;
+            //越狱洞候选表回放制重置(镜像L6MachineSlots.Reset纪律)
+            L2EscapeTunnel.Reset();
 
             //挂房地板:脊内膛顶上收5行,含壳+padding后恰好贴住P30预留的脊缓冲带
             int floorA = band.SpineInteriorTop - 5;
@@ -83,6 +85,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L2
 
             int edges = RouteChainEdges(ctx, placed, floorA);
             int drops = RouteSpineDrops(ctx, placed, band);
+            //越狱者的洞:层流末端接线(WAVE2-BUILDINGS §3.3),随机消耗集中于此(R4)
+            L2EscapeTunnel.Build(ctx, rand);
 
             //层撒布装修数据声明,P55统一执行(契约纪律5)
             ctx.Scatter.AddRange(L2Scatter.Entries());

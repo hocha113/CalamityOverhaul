@@ -44,6 +44,54 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
             2 => StormEdge,
             _ => FlameEdge,
         };
+
+        //---- 五阶段天体调色板(与 CultistPlanet.fx 各 technique 的沙盒定稿一致) ----
+        /// <summary>星旋·涡青芯</summary>
+        internal static Color VortexCore => new(102, 199, 220);
+        /// <summary>星旋·墨蓝缘</summary>
+        internal static Color VortexEdge => new(30, 90, 140);
+        /// <summary>星云·魔紫芯</summary>
+        internal static Color NebulaCore => new(242, 133, 217);
+        /// <summary>星云·深紫缘</summary>
+        internal static Color NebulaEdge => new(117, 26, 117);
+        /// <summary>星尘·晶青芯</summary>
+        internal static Color StardustCore => new(158, 230, 242);
+        /// <summary>星尘·冷蓝缘</summary>
+        internal static Color StardustEdge => new(41, 97, 122);
+        /// <summary>日耀·炽橙芯</summary>
+        internal static Color SolarCore => new(255, 184, 64);
+        /// <summary>日耀·熔橙缘</summary>
+        internal static Color SolarEdge => new(217, 82, 13);
+        /// <summary>月明·蚀青芯(月总真眼色系)</summary>
+        internal static Color MoonCore => new(140, 255, 217);
+        /// <summary>月明·灰岩缘</summary>
+        internal static Color MoonEdge => new(82, 102, 97);
+
+        /// <summary>阶段芯色 0星旋 1星云 2星尘 3日耀 4月明</summary>
+        public static Color PhaseCore(int phase) => phase switch {
+            1 => NebulaCore,
+            2 => StardustCore,
+            3 => SolarCore,
+            4 => MoonCore,
+            _ => VortexCore,
+        };
+
+        /// <summary>阶段缘色</summary>
+        public static Color PhaseEdge(int phase) => phase switch {
+            1 => NebulaEdge,
+            2 => StardustEdge,
+            3 => SolarEdge,
+            4 => MoonEdge,
+            _ => VortexEdge,
+        };
+
+        /// <summary>阶段→旧三元素粒子语汇(ImpactBurst 用):星旋/月明走电火花,星云/星尘走晶尘,日耀走余烬</summary>
+        public static int PhaseLegacyElement(int phase) => phase switch {
+            1 => 1,
+            2 => 1,
+            3 => 0,
+            _ => 2,
+        };
         #endregion
 
         #region 运动

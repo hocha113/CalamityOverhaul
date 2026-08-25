@@ -557,6 +557,13 @@ GaolFireBolt.DisplayName: 狱火
 GaolCrossChain.DisplayName: 深牢拉锁
 GaolCageBar.DisplayName: 囚笼链栏
 GaolCuffHitbox.DisplayName: 怨灵铁铐
+UndrownedAnchor.DisplayName: 沉锚
+UndrownedTideWave.DisplayName: 泄洪浪
+UndrownedDepthMine.DisplayName: 狱水沉雷
+UndrownedMineShard.DisplayName: 沉雷爆片
+GaolAnchorProj.DisplayName: 狱锚
+OverseerPressStrike.DisplayName: 压印锤
+OverseerSlagGlob.DisplayName: 熔渣浇包
 // KikasaDreamHound.DisplayName: Kikasa Dream Hound
 // DeerSeizeHandProj.DisplayName: Deer Seize Hand Proj
 // DestroyerCoilRingProj.DisplayName: Destroyer Coil Ring Proj
@@ -624,3 +631,16 @@ CultistTrueBolt.DisplayName: 真言弹
 // BloodshotBombThrown.DisplayName: Bloodshot Bomb Thrown
 // BloodshotFleshChunk.DisplayName: Bloodshot Flesh Chunk
 // EyekiteMinion.DisplayName: Eyekite Minion
+WyrmFlame.DisplayName: 龙焰
+WyrmstrikeRound.DisplayName: 龙击弹
+WyrmSneezeFume.DisplayName: 龙嚏烟云
+AbyssrendUndercurrent.DisplayName: 海洋暗流
+AbyssrendBurst.DisplayName: 高压空化
+EverdeepHeld.DisplayName: 永渊
+EverdeepRing.DisplayName: 渊环水流
+EverdeepMaelstrom.DisplayName: 渊涡水龙卷
+// CultistArenaProj.DisplayName: Cultist Arena Proj
+// CultistBurnPatch.DisplayName: Cultist Burn Patch
+// CultistMoonBeam.DisplayName: Cultist Moon Beam
+// CultistPlanetProj.DisplayName: Cultist Planet Proj
+// CultistStarFall.DisplayName: Cultist Star Fall

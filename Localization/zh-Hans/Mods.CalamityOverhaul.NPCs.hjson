@@ -62,7 +62,44 @@ DeepGaolWraith: {
 	Bestiary: 牢狱层的看守死在自己的岗位上，钥匙锈死在锁眼里。剩下的怨气循着铐链拧成人形，拖着两只空铐在囚室之间巡夜。它不查名册，只查手腕，没上铐的，都算越狱。
 }
 
+Undrowned: {
+	DisplayName: 不溺者
+	Bestiary: 水牢最深处的泄洪堂里，锁着一个淹不死的死刑犯。行刑记录爬满整面墙：沉锚，涨水，排水，验尸，每一轮的末尾都是同一句话，犯人仍在呼吸。后来看守们不再来了，只有水还记得他的耐心。
+	GateSealed: 泄洪堂的闸门落锁了。
+}
+
+UndrownedThrone.DisplayName: 沉锚的死囚
+
+FoundryOverseer: {
+	DisplayName: 铸造监工
+	Bestiary: 铸造场停摆多少年，天轨上的验收机件就跑了多少年空班。它不做工，只验收：压印、浇渣、镖阵三道工序，合格的放行，不合格的回炉。今天送进验收堂的工件，是你。
+	GateSealed: 验收堂的齿轮闸门落锁了。
+}
+
+OverseerDormantRig.DisplayName: 蒙尘的吊臂
 GaolDormantSkull.DisplayName: 深牢枯颅
+
+LanternWarden: {
+	DisplayName: 提灯巡守
+	Bestiary: 牢里最后一名点灯人。它已经不记得在巡什么，只记得灯里的规矩：光照到的就是逃犯，逃犯要摇铃通报。
+}
+
+LampeaterWisp: {
+	DisplayName: 噬灯魂
+	Bestiary: 档案馆的灯不是自己灭的。这缕烟记着每一盏被它吞下的火，吃得越饱，烧得越亮，最后自己成了通缉名单上的那盏灯。
+}
+
+DrownedTurnkey: {
+	DisplayName: 沉波狱吏
+	Bestiary: 水牢放闸那夜他没有上来。如今他在水面下继续点名，涟漪走到谁脚边，谁就该回牢里去。
+}
+
+BoneStitcher: {
+	DisplayName: 拾骨缝匠
+	Bestiary: 万骨窖的骨头不许躺平。它挑拣、比对、缝合，把散了架的囚徒重新拼回岗位，针脚歪斜，忠于职守。
+}
+
+RestitchedBones.DisplayName: 重拼骨
 CybTrainingDummy.DisplayName: 全息训练标靶
 OldNetPatrolICE.DisplayName: 巡逻ICE
 OldNetBlackICE.DisplayName: 黑冰猎杀者

@@ -61,6 +61,19 @@ DivineSourceBlade: {
 		'''
 }
 
+CursedflameBloodfist: {
+	DisplayName: 咒焰血拳
+	Tooltip:
+		'''
+		近战与魔法双系，两边的加成都吃满
+		按住左键左右开弓灌出高速连打，出拳期间照常跑动
+		每一拳结算一次身周范围伤害，击退很小，但打得极密
+		同时顺着准星散出成串的飞行火焰拳，命中者被诅咒之焰点燃
+		连打期间持续吃法力，蓝见底就自动收手
+		"这条手臂原本长在谁身上，已经烧得看不出来了"
+		'''
+}
+
 FoodStallChair: {
 	DisplayName: 大排档塑料椅子
 	Tooltip: I AM THE CHAIR THAT IS APPROACHING!
@@ -4028,5 +4041,116 @@ RustedGaolIrons: {
 		'''
 		召唤深牢怨灵（测试物品）
 		"铐环内侧的狱号已经磨平了"
+		'''
+}
+
+UndrownedShackleCharm: {
+	DisplayName: 沉锚镣环
+	Tooltip:
+		'''
+		水中行动如履平地，获得游泳能力
+		水下呼吸时间大幅延长
+		"锚沉到底，人还在喘"
+		'''
+}
+
+GaolAnchorWeapon: {
+	DisplayName: 狱锚
+	Tooltip:
+		'''
+		掷出巨锚，钉进墙面时短暂绷出一道伤害锁链
+		"行刑工具没有退休一说"
+		'''
+}
+
+SumpPearl: {
+	DisplayName: 狱水明珠
+	Tooltip:
+		'''
+		狱水在死囚骨缝里凝出的哑光珠子
+		亡灵集市认这个
+		'''
+}
+
+FloodGalleryKey: {
+	DisplayName: 泄洪堂之钥
+	Tooltip:
+		'''
+		就地筑起泄洪堂并安放沉锚的死囚（测试物品）
+		"墙上的水位刻度就是他的心跳表"
+		'''
+}
+
+ProofSealCharm: {
+	DisplayName: 验工印章
+	Tooltip:
+		'''
+		陷阱类弹幕伤害降低 25%，且有 15% 概率哑火
+		"盖过章的工件，机关一律放行"
+		'''
+	Misfire: 哑火
+}
+
+OverseerLogger: {
+	DisplayName: 监工的记录仪
+	Tooltip:
+		'''
+		获得危险感知，附近的陷阱与机关无所遁形
+		"每一道镖口的班表它都记着"
+		'''
+}
+
+ProofingHallKey: {
+	DisplayName: 验收堂之钥
+	Tooltip:
+		'''
+		就地筑起验收堂并挂上蒙尘的吊臂（测试物品）
+		"点检台的班铃还能响"
+		'''
+}
+
+WheezingWyrm: {
+	DisplayName: 哮龙杖
+	Tooltip:
+		'''
+		按住持续喷吐龙焰
+		龙首年久失修，点火前总得咳上几声烟
+		持续喷吐会让龙喉越烧越旺，焰色从暗红一路烧到炽蓝
+		火焰越亮越烫，蓝焰造成最高伤害并点燃地狱烈火
+		"它没死透，只是老烟枪清嗓子"
+		'''
+}
+
+Abyssrend: {
+	DisplayName: 裂渊
+	Tooltip:
+		'''
+		左键交替用尖端戳刺与侧面斩击，每一击都会撕出追踪猎物的海洋暗流
+		右键以钳口咬住敌人，持续挤压，最终引爆高压空化
+		"它记得深海把一切压碎时的声音"
+		'''
+}
+
+SneezingWyrm: {
+	DisplayName: 嚏龙铳
+	Tooltip:
+		'''
+		快速射出灼热的龙击弹
+		连续射击让枪膛越烧越烫，弹色随之从橙红烧向蓝白
+		龙鼻被烟气憋得发痒，间歇打个喷嚏，向侧面喷出一团浓烟
+		烟团在空中阴燃，慢慢自燃成一朵龙焰
+		"别站在它打喷嚏的那一侧"
+		'''
+}
+
+Everdeep: {
+	DisplayName: 永渊
+	Tooltip:
+		'''
+		发射一环深渊高压水流
+		水环穿透敌人后飞行一小段，随即折回再度冲击
+		命中攒动深渊共鸣，环绕魔典的水珠即是层数
+		共鸣满溢时，在敌人身上掀起巨大的水龙卷
+		"深渊不为你分开，它在你身后合拢"
 		'''
 }

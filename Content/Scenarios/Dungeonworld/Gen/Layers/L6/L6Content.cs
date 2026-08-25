@@ -130,6 +130,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
             int rightWing = PlaceRightWing(ctx, rand, shaftR, xRight,
                 floors[foldCount / 2], band, caps, placed, ref furnPlaced, ref furnRejected);
 
+            //巨像装配湾:层流末端、RustWash之前接线(WAVE2-BUILDINGS §3.4,湾体吃全带锈橙层染)
+            L6Colossus.TryBuild(ctx, floors, xLeft, xRight, rand);
+
             //墙变体收尾:蓝基约5%的小点缀盘。§0声明的Tiled75/Slab20/Base5三档里,
             //Base那一档此前从来没落地过,墙面只有两种在轮换
             int bandLeft = DungeonworldMetrics.PlayLeft;

@@ -105,6 +105,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Eyetooths
         }
 
         private void FlightAI() {
+            if (Timer == 1f && !Main.dedServ) {
+                //出手脆响跟着镖走，旁观端也能听到
+                SoundEngine.PlaySound(SoundID.Item17 with { Volume = 0.6f, Pitch = 0.25f, MaxInstances = 3 }, Projectile.Center);
+            }
+
             //出膛猛加速，尾段轻微泄劲，不给匀速平飞
             if (Timer < 10f) {
                 Projectile.velocity *= 1.07f;

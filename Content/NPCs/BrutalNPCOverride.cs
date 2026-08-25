@@ -17,8 +17,6 @@ namespace CalamityOverhaul.Content.NPCs
         /// 重制未完成、默认不接管的 NPC 类型。加 ID 即禁用，从集合移除即重新启用。
         /// </summary>
         internal static readonly HashSet<int> DisabledReworkTypes = [
-            NPCID.CultistBoss,
-            NPCID.CultistBossClone,
             NPCID.HallowBoss,
         ];
 

@@ -1,4 +1,5 @@
 EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+MeleeMagicDamageClassTextContent.MeleeMagicDamageClass.DisplayName: melee & magic damage
 
 Biomes: {
 	TungstenBiome: {

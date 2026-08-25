@@ -36,8 +36,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 
             //咏唱声与视觉语调
             context.ChantGlow = 1f;
-            context.PushAura(1f, CultistMotion.ElementCore(context.Element));
-            CultistScreenFX.SetVeil(0.55f, npc.Center, CultistMotion.ElementCore(context.Element), 620f);
+            context.PushAura(1f, CultistMotion.PhaseCore(context.Phase));
+            CultistScreenFX.SetVeil(0.55f, npc.Center, CultistMotion.PhaseCore(context.Phase), 620f);
 
             if (Timer == 6 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Zombie105 with { Volume = 1f, Pitch = -0.3f }, npc.Center);
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             //咏唱符文涌动
             if (Timer % 7 == 0) {
                 CultistMotion.RuneBurst(npc.Center + Main.rand.NextVector2Circular(30f, 40f),
-                    CultistMotion.ElementCore(context.Element), 1, 2.2f);
+                    CultistMotion.PhaseCore(context.Phase), 1, 2.2f);
             }
 
             if (VaultUtils.isClient) {
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 //咏唱走满：环轨收势
                 KillOrbitBolts();
                 context.ChantCooldown = 900;
-                CultistMotion.CastFlash(npc.Center, CultistMotion.ElementCore(context.Element), 1.3f);
+                CultistMotion.CastFlash(npc.Center, CultistMotion.PhaseCore(context.Phase), 1.3f);
                 return new CultistWeaveState();
             }
             return null;

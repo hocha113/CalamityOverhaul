@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 //迸发中心大印记：60 帧定形即全局预告
                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
                     ModContent.ProjectileType<CultistSigilProj>(), 0, 0f, Main.myPlayer,
-                    context.Element, 4f, 60f);
+                    context.Phase, 4f, 60f);
             }
         }
 
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             SetPose(npc, 13);
             npc.velocity *= 0.9f;
 
-            Color core = CultistMotion.ElementCore(context.Element);
+            Color core = CultistMotion.PhaseCore(context.Phase);
             context.ChantGlow = 1f;
             context.PushAura(1f, core);
             context.SigilCommit = MathHelper.Clamp(Timer / (float)Windup, 0f, 1f);
@@ -62,11 +62,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 CultistMotion.RuneBurst(npc.Center, core, 16, 8f);
             }
 
-            //元素弹幕波（权威端）
+            //阶段弹幕波（权威端）:星旋/月明=雷格审判 日耀=焚天螺旋 星云/星尘=晶环潮汐
             if (!VaultUtils.isClient && Timer >= Windup && Timer <= WaveEnd) {
-                switch (context.Element) {
-                    case 0: FireSpiral(context, (int)Timer - Windup); break;
-                    case 1: IceTides(context, (int)Timer - Windup); break;
+                switch (context.Phase) {
+                    case 3: FireSpiral(context, (int)Timer - Windup); break;
+                    case 1:
+                    case 2: IceTides(context, (int)Timer - Windup); break;
                     default: StormJudgment(context, (int)Timer - Windup); break;
                 }
             }
@@ -75,12 +76,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 return null;
             }
             if (Timer >= Duration) {
-                //元素轮转+充能清零：下一轮换一种法术语言
-                context.Element = (context.Element + 1) % 3;
-                npc.ai[1] = context.Element;
+                //充能清零,长喘息（他也累了,比常规连接段多 90 帧）
                 context.RitualCharge = 0f;
                 context.ChantCooldown = System.Math.Max(context.ChantCooldown, 480);
-                //他也累了：长喘息（比常规连接段多 90 帧）
                 return new CultistWeaveState(90);
             }
             return null;

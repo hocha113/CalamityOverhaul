@@ -21,10 +21,10 @@ namespace CalamityOverhaul.Content.Items.Ranged.BloodshotBombs
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "BloodshotBombProj";
 
-        /// <summary>四帧序列各自的引线烧点相对贴图中心的偏移(朝右时)</summary>
+        /// <summary>四帧序列各自的引线烧点相对贴图中心的偏移(朝右时，2倍像素贴图)</summary>
         internal static readonly Vector2[] FuseTipOffset = new Vector2[] {
-            new Vector2(10f, -8.5f), new Vector2(5f, -7.5f),
-            new Vector2(3f, -4.5f), new Vector2(6f, -2.5f) };
+            new Vector2(20f, -17f), new Vector2(10f, -15f),
+            new Vector2(6f, -9f), new Vector2(12f, -5f) };
 
         private ref float FuseTime => ref Projectile.ai[0];
         private ref float RearmTimer => ref Projectile.ai[1];
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.BloodshotBombs
         public override void SetStaticDefaults() => Main.projFrames[Projectile.type] = 4;
 
         public override void SetDefaults() {
-            Projectile.width = Projectile.height = 22;
+            Projectile.width = Projectile.height = 40;
             Projectile.friendly = false;
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.BloodshotBombs
             Owner.heldProj = Projectile.whoAmI;
             float bob = MathF.Sin(Main.GameUpdateCount * 0.06f) * 1.2f;
             Projectile.Center = Owner.MountedCenter
-                + new Vector2(Owner.direction * 11f, (-10f + bob) * Owner.gravDir);
+                + new Vector2(Owner.direction * 13f, (-14f + bob) * Owner.gravDir);
             //前臂托举炸弹
             float holdAngle = Owner.direction == 1 ? -0.62f : -MathHelper.Pi + 0.62f;
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters
@@ -224,7 +224,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.BloodshotBombs
                 Texture2D glow = CWRAsset.SoftGlow.Value;
                 float glowStrength = 0.22f + redness * 0.55f + (warning ? 0.25f : 0f) + pulse * 0.08f;
                 Main.EntitySpriteDraw(glow, drawPos, null, new Color(255, 28, 18, 0) * glowStrength
-                    , 0f, glow.Size() / 2f, 0.5f + redness * 0.3f, SpriteEffects.None, 0);
+                    , 0f, glow.Size() / 2f, 0.9f + redness * 0.5f, SpriteEffects.None, 0);
             }
 
             Main.EntitySpriteDraw(tex, drawPos, rect, body, Projectile.rotation, origin, scale, effects, 0);

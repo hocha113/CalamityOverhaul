@@ -3,30 +3,30 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
 {
-    /// <summary>状态索引，写入 npc.ai[2] 同步</summary>
+    /// <summary>状态索引，写入 npc.ai[2] 同步。五技能=火焰/落星/闪电/幻象/月明激光,各在主场阶段强化</summary>
     internal enum CultistStateIndex : int
     {
-        /// <summary>入场：法阵描绘+真身显形</summary>
+        /// <summary>入场：法阵描绘+限制圈定形+首颗星球降临</summary>
         Intro = 0,
         /// <summary>悬浮压场连接段，慢弹点射+选招</summary>
         Weave = 1,
         /// <summary>帷幕挪移：符文散身+出口印记+重现</summary>
         VeilStep = 2,
-        /// <summary>火：三连印记狩猎，印记定形后喷焰扇</summary>
-        FlameHunt = 3,
-        /// <summary>冰：印记放射晶枪列，占场拒止</summary>
-        FrostLattice = 4,
-        /// <summary>雷：三拍雷律，细弧预告后落雷</summary>
-        StormCadence = 5,
-        /// <summary>古咒唤影：召唤远古厄运/光辉，本体退场露破绽</summary>
-        AncientRite = 6,
+        /// <summary>火焰：印记狩猎喷焰扇+燃地，日耀主场强化</summary>
+        FlameRite = 3,
+        /// <summary>落星：声明角度的坠星雨，星尘主场强化</summary>
+        StarRite = 4,
+        /// <summary>闪电：三拍雷律细弧预告落雷，星旋主场强化</summary>
+        BoltRite = 5,
+        /// <summary>幻象：真假弹幕扇，遮挡即识真线索，星云主场强化</summary>
+        PhantomRite = 6,
         /// <summary>仪式咏唱：法阵快充，环轨法球护体，可被打断</summary>
         Chant = 7,
         /// <summary>镜像仪式：真假身环阵，读线索点真身</summary>
         MirrorRite = 8,
-        /// <summary>仪式迸发：充能满格的元素大招</summary>
+        /// <summary>仪式迸发：充能满格的阶段大招</summary>
         RiteBurst = 9,
-        /// <summary>转阶段演出，P3 唤出幻影龙</summary>
+        /// <summary>转阶段演出：旧星球退场+新星球降临</summary>
         PhaseShift = 10,
         /// <summary>仪式被破的踉跄硬直，受伤加深</summary>
         Stagger = 11,
@@ -34,6 +34,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         Death = 12,
         /// <summary>无目标撤离</summary>
         Despawn = 13,
+        /// <summary>月明激光：月亮睁眼放辐条死光，本体跪祷不出手</summary>
+        MoonLaser = 14,
     }
 
     /// <summary>状态接口</summary>

@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2
                 + MathF.Sin(Life * 0.3f) * 0.16f;
 
-            if (Main.dedServ) {
+               if (Main.dedServ) {
                 return;
             }
             //断口滴血+掉骨渣，断下来的牙还带着血

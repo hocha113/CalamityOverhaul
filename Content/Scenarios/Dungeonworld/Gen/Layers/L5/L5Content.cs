@@ -160,6 +160,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
                 }
             }
 
+            //===沉眠巨兽·龙骨大厅(Wave-2 A1):层流末端地标,随机消耗集中于其接线点(R4),候选全败=Warn缺席===
+            L5Leviathan.TryBuild(ctx, floors, rand);
+
             //===墙变体混斑:主体Slab里成片切出Tiled(原版粉墙三种,此前主体只用一种)===
             int mixedWalls = L5Palette.MixWallVariants(new Rectangle(
                 DungeonworldMetrics.PlayLeft, band.Top,
@@ -267,6 +270,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
                     break;
                 case NodeKind.Market:
                     room.Role = RoomRole.Safe; //中途检查点:Safe清场语义归运行时(§4.5)
+                    //集市刷怪静默区登记(WAVE2-ENEMIES §4):外扩40格精英退让;回放制由Director.ClearWorld重置
+                    NPCs.Elites.DungeonworldEliteDirector.RegisterQuietZone(room.Bounds, 40, "L5集市");
                     node.Info = L5Rooms.BuildMarket(room, rand);
                     break;
                 case NodeKind.PitField:

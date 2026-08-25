@@ -1,7 +1,7 @@
 // ============================================================================
-//KiteSinew.fx 缚瞳风筝 红白螺旋筋腱线
-//材质=血浸筋腱绳：红白螺旋缠绕、圆柱实体、纤维毛口、湿面各向异性窄亮
-//不是光带/鱼线。白=筋腱本色，红=血浸缠绕。绷紧收窄拉直，回弹在 uTwangPos 挤一圈血
+//KiteSinew.fx 缚瞳风筝 白芯红缘筋腱线
+//材质=血浸筋腱绳：中脊白筋、两缘浸血红、圆柱实体、纤维毛口、湿面窄亮
+//不是光带/鱼线。绷紧收窄拉直，回弹在 uTwangPos 挤一圈
 //uv.x 0玩家结→1眼球附着；uv.y 横截。预乘 AlphaBlend
 //噪声固定 s1。无 atan2、无动态分支、无 tex2Dlod
 // ============================================================================
@@ -73,29 +73,28 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float fiber = 0.82 + 0.28 * nC;
     shade *= fiber;
 
-    //红白螺旋缠绕：沿绳推进 + 横截相位，读成绕柱的筋腱
-    float turns = lerp(5.4, 3.6, uTension);
-    float helix = frac(along * turns + y * 0.58 + seed * 0.17 - uTime * 0.04);
-    float sinewBand = smoothstep(0.06, 0.14, helix) * (1.0 - smoothstep(0.40, 0.48, helix));
-    sinewBand *= 0.55 + 0.45 * lam;
+    //白筋芯：贴中轴的窄带，宽度被噪声轻咬避免死直线；绷紧变细时芯占比放大保可读
+    float rel = d / max(bodyEdge, 0.001);   //0中轴→1体缘
+    float coreW = 0.34 + uTension * 0.14 + (nA - 0.5) * 0.10;
+    float core = 1.0 - smoothstep(coreW * 0.55, coreW, rel);
+    core *= 0.80 + 0.20 * nB;
 
+    //两缘浸血：体缘最深红，向芯过渡到动脉红
     float3 col = lerp(ColDeep, ColBlood, shade);
-    col = lerp(col, ColArter, lam * 0.35 * (1.0 - sinewBand));
-    col = lerp(col, ColSinew, sinewBand * (0.72 + 0.28 * lam));
+    col = lerp(col, ColArter, saturate(1.0 - rel) * 0.30);
+    col = lerp(col, ColSinew, core);
 
-    //各向异性湿亮：沿绳窄带，不是圆高光
-    float sheen = pow(saturate(lam), 7.0) * (0.18 + 0.16 * nB);
-    sheen *= 0.55 + 0.45 * sinewBand;
-    col += ColWet * sheen;
+    //各向异性湿亮：沿白筋的窄水光，不是圆高光
+    float sheen = pow(saturate(lam), 7.0) * (0.14 + 0.12 * nB);
+    col += ColWet * sheen * (0.35 + 0.65 * core);
 
-    //回弹挤波：那一圈血被掐亮，筋腱被拉白一点
+    //回弹挤波：那一圈被掐得发白
     float twangD = abs(along - uTwangPos);
     float twangBand = exp(-twangD * twangD * 90.0) * uTwang;
-    col = lerp(col, ColArter, twangBand * 0.55);
-    col = lerp(col, ColSinew, twangBand * sinewBand * 0.35);
+    col = lerp(col, ColSinew, twangBand * 0.45);
 
-    //血珠斑，松弛时更多
-    float speck = smoothstep(0.82, 0.93, nC) * body * (0.22 + 0.35 * (1.0 - uTension));
+    //血珠斑只落在红缘上，松弛时更多
+    float speck = smoothstep(0.82, 0.93, nC) * body * (1.0 - core) * (0.20 + 0.32 * (1.0 - uTension));
     col += ColArter * speck * 0.45;
 
     float alpha = saturate(body) * uFade * input.Color.a;
