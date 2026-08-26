@@ -1,6 +1,9 @@
+using CalamityOverhaul.Content.Industrials.ElectricPowers.ControlVisuals;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.GridSwitches;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.WireInterfaces;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,7 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -132,9 +137,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Sensors
 
         #region 判定
         public override void UpdateMachine() {
-            //判定与发信仅权威端;客户端状态经包同步,只推眼灯表现
+            //判定与发信仅权威端;客户端状态经包同步,表现全在 Draw 的绘制帧推进
             if (VaultUtils.isClient) {
-                UpdateEyeVisual();
                 return;
             }
 
@@ -144,13 +148,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Sensors
                     ConditionActive = false;
                     SendData();
                 }
-                UpdateEyeVisual();
                 return;
             }
 
             if (MachineData.UEvalue < StandbyCost) {
                 //缺电:判定暂停,状态冻结,不产生假边沿
-                UpdateEyeVisual();
                 return;
             }
             MachineData.UEvalue -= StandbyCost;
@@ -164,8 +166,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Sensors
                 }
                 SendData();
             }
-
-            UpdateEyeVisual();
         }
 
         private bool EvaluateCondition() {
@@ -265,10 +265,82 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Sensors
             //多人客户端内它直接返回,权威门已在 UpdateMachine 开头
             Defer(() => Wiring.TripWire(pos.X, pos.Y, 1, 2));
         }
+        #endregion
 
-        private void UpdateEyeVisual() {
-            float target = !Powered ? 0f : (ConditionActive ? 1f : 0.35f);
+        #region 纯客户端表现:绘制帧推进,不入包不存档
+        /// <summary>上一绘制帧所见条件判定,null=尚未见过</summary>
+        private bool? lastConditionVisual;
+        /// <summary>上一绘制帧所见条件模式:UI 换条件会静默复位判定,同帧模式变化不算真边沿</summary>
+        private SensorMode lastModeVisual;
+        /// <summary>上一次绘制帧号,用于陈旧检测</summary>
+        private uint lastVisualFrame;
+        /// <summary>触发爆闪包络</summary>
+        private float eyeFlash;
+        /// <summary>警戒扫描线方位角</summary>
+        private float sweepAngle;
+
+        private Vector2 EyeCenterWorld => PosInWorld + new Vector2(8f, 7f);
+
+        /// <summary>
+        /// 绘制帧表现推进。边沿源:包内 ConditionActive 字段(权威端判定后 SendData,
+        /// 本地单人当帧检出,远端收包后下一绘制帧检出)——上升沿爆闪+火花+沿线流光;
+        /// 下降沿仅电平跟随模式补一记回落闪(那才真的又发了脉冲)。
+        /// Mode 同帧变化=改配置的静默复位而非真脉冲,抑制反馈;
+        /// 屏外错过的变化按陈旧检测静默重同步
+        /// </summary>
+        private void UpdateEyeEnvelope() {
+            uint frame = MachineStandbyFX.DrawFrame;
+            bool fresh = lastConditionVisual != null && frame - lastVisualFrame <= MachineStandbyFX.StaleFrameGap
+                && Mode == lastModeVisual;
+            if (fresh && lastConditionVisual != ConditionActive) {
+                bool rising = ConditionActive;
+                if (rising) {
+                    eyeFlash = 1f;
+                    Vector2 eye = EyeCenterWorld;
+                    SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.38f, Pitch = 0.2f }, eye);
+                    for (int i = 0; i < 4; i++) {
+                        PRTLoader.NewParticle<PRT_Spark>(eye, VaultUtils.RandVr(2.4f), ModeColor(),
+                            Main.rand.NextFloat(0.28f, 0.4f))?.Configure(true, Main.rand.Next(14, 22));
+                    }
+                }
+                else {
+                    eyeFlash = MathF.Max(eyeFlash, 0.45f);
+                }
+                if (rising || LevelOutput) {
+                    CtrlWireFX.EmitWirePulse(this, ModeColor());
+                }
+            }
+            lastConditionVisual = ConditionActive;
+            lastModeVisual = Mode;
+            lastVisualFrame = frame;
+
+            eyeFlash *= 0.88f;
+
+            //眼灯包络:电平跟随成立=常亮 / 单次脉冲成立=中亮慢脉冲(已发过,等退出重臂)
+            //待命=微亮 / 缺电、关闭、待机=熄灭
+            float target;
+            if (!Powered || Disabled) {
+                target = 0f;
+            }
+            else if (ConditionActive) {
+                target = LevelOutput ? 1f : 0.55f + 0.10f * MathF.Sin(Main.GlobalTimeWrappedHourly * 6f);
+            }
+            else {
+                target = 0.35f;
+            }
             EyeGlow = MathHelper.Lerp(EyeGlow, target, 0.12f);
+
+            //警戒扫描角推进:有敌加速;同时把绘制剔除边距扩到警戒半径,杆体出屏时扫描线仍可见
+            if (Powered && !Disabled && Mode == SensorMode.Enemy) {
+                sweepAngle += ConditionActive ? 0.052f : 0.020f;
+                if (sweepAngle > MathHelper.TwoPi) {
+                    sweepAngle -= MathHelper.TwoPi;
+                }
+                DrawExtendMode = EnemyRange + 140;
+            }
+            else {
+                DrawExtendMode = 160;
+            }
         }
         #endregion
 
@@ -302,6 +374,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Sensors
 
         /// <summary>程序化本体:落地感应杆+顶端电子眼;贴图后补,加载零资产</summary>
         public override void Draw(SpriteBatch spriteBatch) {
+            UpdateEyeEnvelope();
+
             Texture2D px = VaultAsset.placeholder2.Value;
             Vector2 drawPos = PosInWorld - Main.screenPosition;
             Color light = Lighting.GetColor(Position.ToPoint());
@@ -311,20 +385,105 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Sensors
 
             //基脚与立杆
             spriteBatch.Draw(px, new Rectangle(x + 1, y + 28, 14, 4), src, new Color(38, 37, 42).MultiplyRGB(light));
+            spriteBatch.Draw(px, new Rectangle(x + 1, y + 28, 14, 1), src, new Color(52, 50, 58).MultiplyRGB(light));
             spriteBatch.Draw(px, new Rectangle(x + 5, y + 12, 6, 16), src, new Color(52, 50, 56).MultiplyRGB(light));
+            //立杆受光棱线与检修螺栓
+            spriteBatch.Draw(px, new Rectangle(x + 5, y + 12, 1, 16), src, new Color(66, 64, 72).MultiplyRGB(light));
+            Color bolt = new Color(72, 70, 80).MultiplyRGB(light);
+            spriteBatch.Draw(px, new Rectangle(x + 6, y + 16, 4, 1), src, bolt);
+            spriteBatch.Draw(px, new Rectangle(x + 6, y + 23, 4, 1), src, bolt);
 
             //感应头外壳与眼窝
             spriteBatch.Draw(px, new Rectangle(x + 2, y + 1, 12, 12), src, new Color(58, 56, 63).MultiplyRGB(light));
+            spriteBatch.Draw(px, new Rectangle(x + 2, y + 1, 12, 1), src, new Color(76, 74, 84).MultiplyRGB(light));
             spriteBatch.Draw(px, new Rectangle(x + 4, y + 3, 8, 8), src, new Color(22, 22, 26).MultiplyRGB(light));
+            //壳角铆钉
+            Color rivet = new Color(84, 82, 92).MultiplyRGB(light);
+            spriteBatch.Draw(px, new Rectangle(x + 3, y + 2, 1, 1), src, rivet);
+            spriteBatch.Draw(px, new Rectangle(x + 12, y + 2, 1, 1), src, rivet);
 
-            //电子眼:模式色,条件成立满亮,缺电熄灭;轻微呼吸
+            //电子眼:模式色;缺电/待机熄灭只剩暗镜面,通电待命微亮,条件成立按输出方式常亮/脉冲
             float flicker = 0.85f + MathF.Sin(Main.GlobalTimeWrappedHourly * 4f + Position.Y * 0.9f) * 0.15f;
-            Color eye = ModeColor() * ((0.18f + EyeGlow * 0.82f) * flicker);
+            float glowFloor = Powered && !Disabled ? 0.18f : 0.05f;
+            Color eye = ModeColor() * ((glowFloor + EyeGlow * (1f - glowFloor)) * flicker + eyeFlash * 0.9f);
             eye.A = 255;
             spriteBatch.Draw(px, new Rectangle(x + 5, y + 4, 6, 6), src, eye);
             //高光点
-            if (EyeGlow > 0.5f) {
-                spriteBatch.Draw(px, new Rectangle(x + 6, y + 5, 2, 2), src, Color.White * (EyeGlow * 0.8f));
+            if (EyeGlow > 0.5f || eyeFlash > 0.35f) {
+                spriteBatch.Draw(px, new Rectangle(x + 6, y + 5, 2, 2), src,
+                    Color.White * MathHelper.Clamp(EyeGlow * 0.8f + eyeFlash * 0.6f, 0f, 1f));
+            }
+            //触发爆闪的加色光晕
+            if (eyeFlash > 0.08f && CWRAsset.SoftGlow?.Value is Texture2D glowTex) {
+                Color c = ModeColor();
+                spriteBatch.Draw(glowTex, drawPos + new Vector2(8f, 7f), null,
+                    new Color(c.R, c.G, c.B, 0) * (eyeFlash * 0.85f), 0f,
+                    glowTex.Size() * 0.5f, 0.3f + eyeFlash * 0.5f, SpriteEffects.None, 0f);
+            }
+
+            //警戒模式:通电才有雷达扫描线;半径示意环只要悬停就给(布放规划要用,不吃电)
+            if (Mode == SensorMode.Enemy) {
+                if (Powered && !Disabled) {
+                    DrawScanSweep(spriteBatch);
+                }
+                if (HoverTP) {
+                    DrawRangeRing(spriteBatch);
+                }
+            }
+        }
+
+        /// <summary>警戒扫描:主针+两道残针的雷达扫掠,半径即真实警戒半径;低调加色,屏外段剔除</summary>
+        private void DrawScanSweep(SpriteBatch spriteBatch) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+            Rectangle src = new(0, 0, 1, 1);
+            Vector2 eyeScreen = EyeCenterWorld - Main.screenPosition;
+            Color c = ModeColor();
+            float baseAlpha = ConditionActive ? 0.20f : 0.10f;
+            const int Segments = 10;
+            float segLen = EnemyRange / (float)Segments;
+            Rectangle screen = new(-80, -80, Main.screenWidth + 160, Main.screenHeight + 160);
+
+            for (int ghost = 0; ghost < 3; ghost++) {
+                float angle = sweepAngle - ghost * 0.075f;
+                float ghostAlpha = baseAlpha * (ghost == 0 ? 1f : ghost == 1 ? 0.45f : 0.2f);
+                Vector2 dir = angle.ToRotationVector2();
+                for (int i = 0; i < Segments; i++) {
+                    Vector2 start = eyeScreen + dir * (segLen * i + 6f);
+                    Vector2 mid = start + dir * segLen * 0.5f;
+                    if (!screen.Contains((int)mid.X, (int)mid.Y)) {
+                        continue;
+                    }
+                    float fall = 1f - i / (float)Segments * 0.85f;
+                    spriteBatch.Draw(px, start, src, new Color(c.R, c.G, c.B, 0) * (ghostAlpha * fall),
+                        angle, new Vector2(0f, 0.5f), new Vector2(segLen + 1f, 1.2f), SpriteEffects.None, 0f);
+                }
+            }
+
+            //扫描针端点亮标
+            Vector2 tip = eyeScreen + sweepAngle.ToRotationVector2() * EnemyRange;
+            if (screen.Contains((int)tip.X, (int)tip.Y)) {
+                spriteBatch.Draw(px, tip, src, new Color(c.R, c.G, c.B, 0) * (baseAlpha * 1.6f),
+                    sweepAngle, new Vector2(0.5f, 0.5f), new Vector2(3f, 3f), SpriteEffects.None, 0f);
+            }
+        }
+
+        /// <summary>悬停时的警戒半径虚线环</summary>
+        private void DrawRangeRing(SpriteBatch spriteBatch) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+            Rectangle src = new(0, 0, 1, 1);
+            Vector2 eyeScreen = EyeCenterWorld - Main.screenPosition;
+            Color c = ModeColor();
+            Rectangle screen = new(-40, -40, Main.screenWidth + 80, Main.screenHeight + 80);
+            const int Dashes = 40;
+            float spin = Main.GlobalTimeWrappedHourly * 0.15f;
+            for (int i = 0; i < Dashes; i++) {
+                float angle = MathHelper.TwoPi * i / Dashes + spin;
+                Vector2 pos = eyeScreen + angle.ToRotationVector2() * EnemyRange;
+                if (!screen.Contains((int)pos.X, (int)pos.Y)) {
+                    continue;
+                }
+                spriteBatch.Draw(px, pos, src, new Color(c.R, c.G, c.B, 0) * 0.24f,
+                    angle + MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(1.2f, 7f), SpriteEffects.None, 0f);
             }
         }
 
