@@ -493,55 +493,28 @@ SHPCSoulSelectUI: {
 	StatusClickToSelect: "[CLIQUE PARA SELECIONAR]"
 }
 
-ElysiumUI: {
-	TitleText: Elisio
-	DiscipleCountText: Discipulos
-	TotalBonusText: Benção Divina
-	DamageText: Dano
-	DefenseText: Defesa
-	CritText: Critico
-	RegenText: Regeneracao
-	EmptySlotText: Vazio
-	JudasWarningText: Aviso: A traicao de Judas espreita aqui
-	BonusLabel: Passivo
-	AbilityLabel: Habilidade
-	DragHintText: Arraste Discipulos para trocar identidades
-	SwapSuccessText: Troca de identidade completa
-	SwapFailText: Falha na troca
-	CannotSwapText: Nao e possivel trocar para esta posicao
-	AbilityBrief_0: Escudo de Rocha
-	AbilityBrief_1: Ligacao da Rede de Pesca
-	AbilityBrief_2: Julgamento do Trovao
-	AbilityBrief_3: Visao da Revelacao
-	AbilityBrief_4: Guia da Luz Sagrada
-	AbilityBrief_5: Revelacao da Verdade
-	AbilityBrief_6: Toque da Duvida
-	AbilityBrief_7: Benção da Riqueza
-	AbilityBrief_8: Cura da Devoção
-	AbilityBrief_9: Manifestacao do Milagre
-	AbilityBrief_10: Forca Zelosa
-	AbilityBrief_11: Pacto da Traicao
+ElysiumRoseWindow: {
+	// TitleText: Elysium
+	// SeatAliveText: In Office
+	// SeatEmptyText: Vacant
+	// SeatMartyredText: Martyred
+	// MartyrdomPowerText: Martyrdom Power {0}/11
+	// DragHintText: Drag a seat to reassign holy offices
+	// AbilityBrief_0: When ready, blocks part of one incoming hit for you
+	// AbilityBrief_1: Casts a net of light that drags foes caught inside
+	// AbilityBrief_2: Chain lightning leaps between up to four foes
+	// AbilityBrief_3: Gazes upon foes, raising all damage they take
+	// AbilityBrief_4: Consecrates your projectiles to bend gently toward foes
+	// AbilityBrief_5: Throws a blade that strips armor and reveals the foe
+	// AbilityBrief_6: Your strikes are guaranteed to crit for a while
+	// AbilityBrief_7: Blesses foes to burst into devoted golden rain on death
+	// AbilityBrief_8: Offers healing when you are wounded
+	// AbilityBrief_9: Bestows a random miracle
+	// AbilityBrief_10: Ignites fervor; nearby foes catch holy fire
+	// AbilityBrief_11: Lavish gifts, and a traitor's blade
 }
 
-MartyrdomBarUI: {
-	SlotLabel_0: Pe
-	SlotLabel_1: An
-	SlotLabel_2: Ja
-	SlotLabel_3: Jo
-	SlotLabel_4: Fi
-	SlotLabel_5: Ba
-	SlotLabel_6: To
-	SlotLabel_7: Ma
-	SlotLabel_8: Tg
-	SlotLabel_9: Td
-	SlotLabel_10: Si
-	SlotLabel_11: Ju
-	RevelationJudgingText: Revelacao dos Tres Ultimos Selos em andamento
-	RevelationStatusText: Cavaleiros da Revelacao {0}/4 Q:Meteoro R:Julgamento
-	RevelationReadyText: Pressione Q — Revelacao pronta
-	MartyrdomPowerText: Martirio {0}/11
-}
-
+// ElysiumFaithHud.MartyrdomPowerText: Martyrdom Power {0}/11
 MenuModify.OverhaulSettingsButtonText: Configuracoes do Overhaul
 
 OverhaulSettingsUI: {
@@ -1424,6 +1397,22 @@ DungeonworldLoadingScreen: {
 	// RevealHold: Lighting the candles
 }
 
+HadalworldLoadingScreen: {
+	// BandName0: Sunlit Zone
+	// BandName1: Twilight Zone
+	// BandName2: Midnight Zone
+	// BandName3: Abyssal Zone
+	// BandName4: Hadal Zone
+	// Tip0: The light stays up there.
+	// Tip1: The deeper you go, the quieter the water.
+	// Tip2: Bubbles only travel one way.
+	// Tip3: The pressure doesn't knock.
+	// Tip4: Something glows below. It is not a lamp.
+	// StatusDescend: Descending
+	// StatusAscend: Surfacing
+	// DepthLabel: Depth {0} m
+}
+
 KiyumeLoadingScreen: {
 	// TitleEnter: Kiyume
 	// TitleExit: Waking
@@ -1567,4 +1556,15 @@ WeaponSkillHud: {
 	// CooldownFormat: Cooldown: {0}s
 	// ActiveLine: Active
 	// ManaCostFormat: Mana cost: {0}
+}
+
+KiyumeHoundHints: {
+	// HintAlert: Stand still. The fog will hide you.
+	// HintChase: Get indoors, or into the deepest fog.
+}
+
+KiyumeDreamWake: {
+	// WakeBitten: The moment the dog's jaws closed, you woke.
+	// WakeDrowned: The lake closed over your head, and you woke.
+	// WakeGeneric: The dream broke.
 }

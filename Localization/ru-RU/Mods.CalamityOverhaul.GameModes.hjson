@@ -2,18 +2,26 @@ GameModeText: {
 	BrutalName: Жестокий мир
 	AsuraName: Ад Асуры
 	AnnihilationName: Вечная жизнь Смерти
+	// GodSmithName: Divine Artifice
 	BrutalOnLine: Этот мир жесток, и всё же ты его любишь.
 	BrutalOffLine: Мир прячет клыки. Его милость лишь передышка.
 	AsuraOnLine: Путь Асуры открыт. Всякая причинённая тобой боль вернётся сполна.
 	AsuraOffLine: Путь Асуры закрыт. Все долги уплачены.
 	AnnihilationOnLine: Всё пройдёт; лишь Смерть живёт вечно.
 	AnnihilationOffLine: Смерть отдыхает мгновение; живые крадут вдох.
+	// GodSmithOnLine: The Godsmith takes up the hammer; every common iron shall be reforged.
+	// GodSmithOffLine: The forge fire wanes; all arms return to their former shape.
 	BrutalDesc: Пробуждает переработанный беспощадный ИИ жестоких боссов; остальные враги получают на 50% больше здоровья и урона, а мелкие враги становятся быстрыми и бешеными
 	AsuraDesc: Усиление возрастает до 100%. Враги приспосабливаются к повторному урону одного типа, а каждый твой удар задаёт нижний предел их ответного
 	AnnihilationDesc: Последняя форма Ада Асуры в зенитном мире. Каждый ужас удваивается вновь: враги приспосабливаются вдвое быстрее, а твоя боль возвращается вдвойне
+	// GodSmithDesc: Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched, and it toggles independently of every other mode
+	// GodSmithRecastTitle: Godsmith Reforged
+	// GodSmithEndowPrefix: "Endowment: "
 	StateOn: Активен
 	StateOff: Дремлет
 	HintEnable: Нажмите, чтобы пробудить
 	HintDisable: Нажмите, чтобы запечатать
 	BossRefuse: Босс ещё жив. Договор сейчас не изменить
 }
+
+// SporeshineAmbience.DazeDeathReason: "{0} drowsed away deep in the spore haze"

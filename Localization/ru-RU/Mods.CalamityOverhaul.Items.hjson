@@ -1180,6 +1180,21 @@ FluidTank: {
 		''' */
 }
 
+LargeFluidTank: {
+	// DisplayName: Large Fluid Tank
+	/* Tooltip:
+		'''
+		Stores up to 128 tiles of fluid; the window shows the fill level
+		Connects to pumps and machines through fluid pipelines
+		Breaking the tank vents its contents
+		''' */
+}
+
+CircuitBoard: {
+	// DisplayName: Circuit Board
+	// Tooltip: Basic electronic component of industrial machines
+}
+
 FluidInjector: {
 	// DisplayName: Fluid Injector
 	/* Tooltip:
@@ -2197,6 +2212,48 @@ Pandemonium: {
 	SkillLeftDesc: Обрушивает столбы серного пламени вокруг курсора
 	SkillRightName: Конец Пандемониума
 	SkillRightDesc: Разворачивает вокруг вас гигантский магический круг, поражающий врагов молниями и огнем
+}
+
+Elysium: {
+	// DisplayName: Elysium
+	/* Tooltip:
+		'''
+		Hold left-click to channel the Serpent Rite
+		Release to send out a wave of holy light, turning lesser foes it touches into sacred serpents that hunt for you
+		Right-click to exalt a nearby town resident, calling them to your side as a disciple
+		Disciples orbit you, each serving in their own office, and grant holy blessings
+		Damage from bosses burns away one disciple, leaving one point of Martyrdom Power
+		With eleven Martyrdom Power and John still in office, a skill button can unveil Revelation
+		Once Revelation descends, right-click instead summons the Four Horsemen
+		The skill buttons then become Celestial Meteor and the Judgement of the Last Seals
+		With all twelve seats filled the blessing peaks, but near death you will meet Judas's blade
+		Hold Shift while held to open the Rose Window; drag seats to reassign holy offices
+		While held, two skill buttons light up at the bottom left of the screen
+		''' */
+	// SkillLeftName: Divine Thunder
+	// SkillLeftDesc: Calls down a holy bolt upon the foe nearest the cursor
+	// SkillRightName: Judgement of the Last Seals
+	// SkillRightDesc: Breaks the fifth, sixth and seventh seals in turn; the finale judges all foes and Revelation ends
+	// SkillRightLockedDesc: Only after Revelation descends may the seals be broken
+	// SkillOpenName: Unveil Revelation
+	// SkillOpenDesc: John shall ascend in martyrdom, and the Kingdom's domain shall descend
+	// SkillMeteorName: Celestial Meteor
+	// SkillMeteorDesc: Calls a celestial body down from the heavens upon the cursor
+	// NoConvertTargetText: No resident nearby can be exalted
+	// SeatsFullText: All twelve holy seats are filled
+	// JudasDeathReasonText: "{0} was sold out by Judas for thirty pieces of silver"
+	// DiscipleName_0: Peter
+	// DiscipleName_1: Andrew
+	// DiscipleName_2: James
+	// DiscipleName_3: John
+	// DiscipleName_4: Philip
+	// DiscipleName_5: Bartholomew
+	// DiscipleName_6: Thomas
+	// DiscipleName_7: Matthew
+	// DiscipleName_8: James the Less
+	// DiscipleName_9: Thaddaeus
+	// DiscipleName_10: Simon the Zealot
+	// DiscipleName_11: Judas
 }
 
 Proverbs: {
@@ -3874,6 +3931,8 @@ CWRItem: {
 	TemperatureText: Температура сгорания
 	InternalStoredEnergy: Запас энергии
 	DeathModeItemText: Режим Смерти
+	// BrutalModeItemText: Drops in Brutal Mode
+	// BrutalRelicSeriesText: Brutal Relic · Exclusive to Brutal Mode
 	LegendItemUpgradeDisable:
 		'''
 		Улучшение этого легендарного оружия отключено в текущем мире
@@ -3885,6 +3944,8 @@ CWRItem: {
 		TemperatureText: Температура сгорания
 		InternalStoredEnergy: Запас энергии
 		DeathModeItemText: Режим Смерти
+		// BrutalModeItemText: Drops in Brutal Mode
+		// BrutalRelicSeriesText: Brutal Relic · Exclusive to Brutal Mode
 		LegendItemUpgradeDisable:
 			'''
 			Улучшение этого легендарного оружия отключено в текущем мире
@@ -4391,16 +4452,20 @@ GaolCellKey: {
 	// DisplayName: Deep Gaol Cell Key
 	/* Tooltip:
 		'''
-		Builds the Deep Gaol cell on the spot and seats the dormant skull (test item)
+		Builds the Deep Gaol cell on the spot and seats a dormant skull on the altar (test item)
+		Approach the altar to wake it; during the fight both doorways are sealed by pale-pink energy bars
+		Defeat the Deep Gaol Wraith to snuff the cell for good; a wraith that escapes goes dormant again after a few seconds
 		"One turn of the key, and the walls remember their shape"
 		''' */
+	// BuiltHint: The cell has been raised. The dormant skull on the altar is waiting for you to come closer.
 }
 
 RustedGaolIrons: {
 	// DisplayName: Rusted Gaol Irons
 	/* Tooltip:
 		'''
-		Summons the Deep Gaol Wraith (test item)
+		3 defense and immunity to knockback
+		Briefly boosts movement speed after taking damage
 		"The cell number inside the cuff has been worn smooth"
 		''' */
 }
@@ -4440,6 +4505,7 @@ FloodGalleryKey: {
 		Builds the flood gallery on the spot and seats the anchored convict (test item)
 		"The depth scale on the wall is his heartbeat chart"
 		''' */
+	// Placed: The Flood Gallery has been raised on the spot. To wake him, stand on the valve dais to the left and hold your ground.
 }
 
 ProofSealCharm: {
@@ -4468,6 +4534,7 @@ ProofingHallKey: {
 		Builds the proofing hall on the spot and hangs the dust-caked rig (test item)
 		"The inspection bell still rings"
 		''' */
+	// Placed: The Proofing Hall has been raised on the spot. To start the inspection, stand on the check-in dais to the left and hold still until the shift bell finishes counting.
 }
 
 WheezingWyrm: {
@@ -4505,6 +4572,18 @@ SneezingWyrm: {
 		''' */
 }
 
+TiroFinale: {
+	// DisplayName: Tiro Finale
+	/* Tooltip:
+		'''
+		Benefits from both ranged and magic damage bonuses
+		Firing consumes ammo and mana, weaving a golden phantom musket into the formation orbiting you with every shot
+		While you hold fire, the formation takes turns aiming at your cursor, each musket ringing once before dissolving into light
+		Right click to condense at least four phantom muskets into a great cannon and play the finale
+		"Mind your manners, and make the curtain call magnificent"
+		''' */
+}
+
 Everdeep: {
 	// DisplayName: Everdeep
 	/* Tooltip:
@@ -4514,5 +4593,312 @@ Everdeep: {
 		Hits build abyssal resonance, counted by the droplets orbiting the tome
 		At full resonance, a giant maelstrom erupts from the ground beneath the victim
 		"The deep does not part for you; it closes behind you"
+		''' */
+}
+
+FallenKingsCrown: {
+	// DisplayName: Fallen King's Crown
+	/* Tooltip:
+		'''
+		Immunity to fall damage
+		Hold DOWN in midair to become a crown dive and plummet
+		Landing unleashes a gel shockwave whose damage grows with fall height, without cap
+		Enemies struck mid-dive are crushed by the crown
+		Falling more than 25 tiles naturally also triggers the dive
+		The impact leaves a gel field that slows enemies inside and drains their health
+		Grappling, mounting or entering liquid cancels the dive
+		"The day the throne fell, weight itself became the verdict"
+		''' */
+}
+
+BloodfogIris: {
+	// DisplayName: Bloodfog Iris
+	/* Tooltip:
+		'''
+		8% increased critical strike chance
+		Double tap LEFT, RIGHT or UP to surge that way as blood fog, immune to damage while surging
+		A surge ends in a 1.5 second ambush state: you sink into the fog and enemies mostly lose interest in you
+		Your next strike during an ambush is a guaranteed critical hit dealing double damage
+		Lethal damage dissolves you into blood fog; you reform toward your cursor, briefly invulnerable and already in ambush
+		The fog rebirth can occur once every 60 seconds
+		"The fog has not settled, and the pupil has not closed"
+		''' */
+}
+
+WorldEatersMaw: {
+	// DisplayName: World-Eater's Maw
+	/* Tooltip:
+		'''
+		All your attacks add a stack of Corrosion: each stack strips 3 defense and sears for 6 acid damage per second
+		Corrosion stacks up to 10 times, lasts 6 seconds and refreshes on every hit
+		When a corroded enemy dies, a devouring wormling bursts from its corpse to fight for you
+		Wormlings burrow and ambush nearby foes, biting for 2 stacks and splashing Corrosion around each breach
+		Up to 6 wormlings at once, each living for 7 seconds
+		"Every edge of the world is a tooth mark it left behind"
+		''' */
+}
+
+MirrorheartParadox: {
+	// DisplayName: Mirrorheart Paradox
+	/* Tooltip:
+		'''
+		A mirrored heart drifts at your side
+		Every projectile you fire is echoed by the mirrorheart at 50% damage
+		Summons, held weapons and explosives are not echoed
+		The moment you take damage, you swap places with the mirrorheart and dodge the hit
+		The swap bursts heartbeat pulses at both positions, dealing 165 damage and confusing enemies for 4 seconds
+		The mirrorheart shatters after a swap and reforms in 6 seconds, doing nothing while broken
+		"In the mirror, it breaks a heartbeat before you do"
+		''' */
+}
+
+SwarmVortexBeacon: {
+	// DisplayName: Swarm Vortex Beacon
+	/* Tooltip:
+		'''
+		Hitting enemies stacks Bee Marks; at 8 stacks the target is caught in a swarm vortex
+		The vortex grinds its victim for 5 seconds, stinging 12 times per second for 16 base damage each
+		Trapped enemies are heavily slowed; bosses are only slightly slowed
+		Landing more hits on the victim extends the grip, up to 10 seconds
+		When the victim dies, the vortex transfers to a nearby enemy
+		Vortex stings deal 25% more damage while you carry a Hive Pack
+		Stand still and the swarm returns to you, crystallizing into a wax ward over your skin
+		The wax ward absorbs up to 60 damage and lingers for 5 seconds once you start moving
+		A shattered ward takes 3 seconds to crystallize again
+		"The Queen's beacon does not summon the swarm - it marks the next prey"
+		''' */
+}
+
+SoulbindingArm: {
+	// DisplayName: Soulbinding Arm
+	/* Tooltip:
+		'''
+		Projects a curse domain around you; enemies inside take 32% increased damage
+		Killing an enemy inside the domain harvests a soul, storing up to 8
+		Souls orbit you; each one blocks an enemy projectile in your place, then expires
+		Once the ring is full it gathers briefly, then a spectral hand lunges at the strongest enemy nearby
+		The seized enemy takes 500 damage ignoring defense and is briefly imprisoned
+		"The severed arm still harvests souls; its five fingers have never let go"
+		''' */
+}
+
+WhiteoutStormCore: {
+	// DisplayName: Whiteout Storm Core
+	/* Tooltip:
+		'''
+		12% damage reduction; immune to Chilled, Frozen, Frostburn and Frostbite
+		Taking damage automatically detonates a whiteout storm; lasts 6 seconds, 20 second cooldown
+		The storm deals 180 damage and blinds nearby enemies: scrambled aggro, heavy slow, 30 frostbite damage per second
+		During the storm you gain 50% damage reduction and knockback immunity, and the snow veil never blocks your sight
+		Boss-class enemies cannot be confused and take a greatly reduced slow
+		While running on the ground, periodically heaves a row of ice spikes from the earth ahead
+		Each spike deals 80 damage and briefly chills enemies
+		"Within the whiteout, the blizzard parts only for you"
+		''' */
+}
+
+GluttonousThroat: {
+	// DisplayName: Gluttonous Throat
+	/* Tooltip:
+		'''
+		12% of all damage you deal flows back to you as blood beads
+		This lifesteal has no cap, skips potion sickness, and Moon Bite cannot stop it
+		Every 6 seconds a tongue of flesh seizes the farthest enemy within 68 tiles and drags it before you
+		Bitten enemies suffer Rotsaw for 5 seconds: defense drops to zero, 180 life torn per second
+		For 2.5 seconds after an enemy is dragged to you, your next strike against it deals double damage
+		Bosses cannot be dragged, but are still bitten, sawed and marked for execution
+		The far end of the throat has no bottom
+		''' */
+}
+
+RefractionWaltz: {
+	// DisplayName: Refraction Waltz
+	/* Tooltip:
+		'''
+		Greatly boosts aerial acceleration and turning
+		Cresting a jump, double-jumping, reversing or dashing midair condenses a refraction crystal behind you
+		Up to 6 crystals may exist at once; the oldest shatters to make room
+		Any two crystals in each other's line of sight link up with a prism beam
+		Enemies touching a beam take heavy continuous damage and are Refracted
+		Refracted enemies take 30% more damage from this relic
+		Crystals shattered by enemies burst into shards toward the attacker
+		When the light-web takes shape, the one dancing to the music owns the ballroom
+		''' */
+}
+
+TwinPupilTether: {
+	// DisplayName: Twin-Pupil Tether
+	/* Tooltip:
+		'''
+		Summons Vision and Pyrepupil, a pair of mini mechanical eyes that orbit you
+		Vision snipes mid-range enemies with precise laser shots
+		Pyrepupil breathes cursed flames at nearby enemies
+		A cutting tether is always strung between the eyes, slicing enemies it sweeps across and tearing wounds open
+		Wounds last 3 seconds, during which that enemy takes 30% more damage from the pair
+		The faster you move, the wider the eyes spread and the longer the tether stretches
+		Double tap Down to order a cross charge: the eyes flank your cursor, dash through each other, and detonate at the crossing point
+		The cross charge has a 6 second cooldown
+		"A stitched gaze, and the thread that cuts everything"
+		''' */
+}
+
+ProbeMatrixCore: {
+	// DisplayName: Probe Matrix Core
+	/* Tooltip:
+		'''
+		Deploys five Destroyer probes as an escort formation that seeks enemies and fires homing lasers
+		Lasers deal 115 base damage; hits on the same target build designation, and 8 stacks call an orbital strike
+		The strike drops a piercing deathray from the sky, dealing 1150 base damage per tick to targets caught in the column
+		Designation resets after each strike with a 3 second cooldown, and the impact site lingers with searing heat
+		Probes shot down by enemies rebuild after about 2.5 seconds; the formation uses no minion slots
+		"The iron serpent has fallen, yet its eyes still patrol the sky for you"
+		''' */
+}
+
+OverloadCommandCore: {
+	// DisplayName: Overload Command Core
+	/* Tooltip:
+		'''
+		Striking enemies builds ion charge: +4 per hit, Ion Overload triggers at 100
+		Stop attacking for over a second and the charge slowly drains
+		Ion Overload lasts 5 seconds, increasing attack speed by 45%
+		While overloaded, your hits arc chain lightning between nearby enemies, jumping up to 3 times
+		Each arc deals 40% of the triggering hit's damage, decaying per jump
+		Four phantom mechanical arms unfold behind you, striking in sync with your attacks
+		With a melee weapon the arms sweep, each blow dealing 35% weapon damage
+		With any other weapon the arms fire ion bolts, each dealing 32% weapon damage
+		When the overload ends, the core overheats for 3 seconds: 8% reduced attack speed and no charge gain
+		"Command authority transferred. Four arms at your service, until meltdown"
+		''' */
+}
+
+BloomNovaBulb: {
+	// DisplayName: Bloom Nova Bulb
+	/* Tooltip:
+		'''
+		+30 max life and +4 life regeneration
+		When struck, lashes thorn vines at your attacker or toward the incoming threat
+		Snared enemies are heavily slowed and torn over time; bosses are only slightly slowed
+		Snared enemies suffer fierce thorn damage when they hit you
+		Fighting builds Growth: more vines that hit harder and snare longer
+		Below 35% life, a Bloom Nova erupts: a petal shockwave sweeps and snares nearby enemies
+		The bloom instantly restores 40% of your life, then greatly boosts regeneration for 6 seconds
+		Spore fog follows you for 6 seconds afterward; enemies in the fog miss 25% of their attacks
+		Bloom Nova occurs at most once every 60 seconds
+		"Every wound waters the next bloom"
+		''' */
+}
+
+SolarCoreFist: {
+	// DisplayName: Solar Core Fist
+	/* Tooltip:
+		'''
+		Stand still for half a second to enter Stone Guard stance
+		While in stance, damage taken is reduced by 75% and you are immune to knockback
+		Each hit taken in stance grants 1 stack of Solar Charge
+		Every 100 raw damage in a single hit grants 1 extra stack, with no stack limit
+		Moving or double-tapping DOWN hurls a Solar Core Fist toward your cursor
+		The fist pierces enemies; its damage scales with stacks, without cap
+		The first enemy struck erupts in a solar nova, chaining lava bursts to both sides
+		At 8 or more stacks, the stance radiates a scorching aura that burns nearby enemies
+		"The temple's sun gem still beats; the stone shell is merely its gauntlet"
+		''' */
+}
+
+TidalFin: {
+	// DisplayName: Tidal Fin
+	/* Tooltip:
+		'''
+		Press [KEY] to dash toward the cursor; press again shortly after to chain, up to three dashes
+		Every dash can be re-aimed, and you are fully invincible while dashing
+		Each dash raises a lingering tsunami wall along its path, dealing 360 damage per hit
+		The wall shoves away and slows small hostile projectiles
+		The final dash raises a stationary tidal tornado at its endpoint, grinding for 520 damage per hit
+		While it rains or you are submerged, the chain gains a fourth dash and all damage is boosted by 50%
+		The full chain has a 5 second cooldown
+		[c/2696A0:"The tide has not forgotten its duke"]
+		''' */
+}
+
+RiteRing: {
+	// DisplayName: Rite Ring
+	/* Tooltip:
+		'''
+		15% increased damage, +40 maximum mana, and each lit rune grants 1% more damage
+		Attacking or casting lights runes around you; at 8 runes the current rite fires automatically
+		Rites rotate in order: Mirror Rite, Moonflame Laser, Star Rite
+		Mirror Rite: conjures 3 pale mirror bodies, each firing 3 volleys of your held weapon's shots
+		Summon, held-style and explosive weapons cannot be mirrored; mirrors fire rune bolts instead
+		Moonflame Laser: a moon eye opens overhead and sweeps the field with a death ray
+		Star Rite: a tiny planetary ring collapses, calling down 16 falling stars upon your foes
+		Double tap Left or Right to spend 3 runes, tearing the veil for a short blink in that direction
+		'The rite began long ago, and you are standing at the circle's heart'
+		''' */
+}
+
+WingsOfInterference: {
+	// DisplayName: Wings of Interference
+	/* Tooltip:
+		'''
+		Become the wings of the Empress of Light: top-tier flight, hold DOWN while flying to hover
+		Day form: your attack projectiles trace interference light-paths as they fly
+		When two light-paths cross, the intersection detonates a prism burst dealing 240 base damage
+		Night form: greatly increased movement speed and longer flight time
+		At night, automatically dodge one hit, once every 8 seconds
+		At night, hostile projectiles closing in on you drag auroral trails, exposing their paths early
+		The instant dawn or dusk arrives, a screen-wide interference burst deals 1350 base damage and clears hostile projectiles
+		"Day and night interfere at the wingtip; light collapses where paths cross"
+		''' */
+	// FormDay: It is day now: the interference weave is deployed
+	// FormNight: It is night now: swift auroral flight is engaged
+}
+
+BlackFlashSigil: {
+	// DisplayName: Black Flash Sigil
+	/* Tooltip:
+		'''
+		Attacking awakens the sigil; a black flash tempo ring lights up on your chest
+		The instant the ring contracts to its smallest, the judgment window opens with a sharp chime
+		Hits landed within the window trigger a Black Flash: that strike deals 8x damage and always crits
+		Each Black Flash adds 1 Flash Chain stack; every stack adds another 2.5x, capped at 12 stacks for 38x
+		Higher chains quicken the tempo; the next window comes ever sooner
+		Letting a window pass empty, or landing hits outside it, clears every stack
+		At 6 stacks you enter Domain Sense; projectiles around you seem to slow
+		Minions act on their own; they neither follow the tempo nor break the chain
+		"When the flash turns black, the instant reigns over eternity"
+		''' */
+}
+
+FrogsparkBoots: {
+	// DisplayName: Frogspark Boots
+	/* Tooltip:
+		'''
+		Allows flight, super fast running, and steady ice skating that won't break thin ice
+		Walk on water, honey and lava, and gain immunity to the Burning debuff
+		Grants 7 seconds of lava immunity, greatly reducing lava damage afterwards
+		Increases jump speed by 48%, enables auto-jump, and greatly increases fall resistance
+		"One frog kick, and flames clear the way"
+		''' */
+}
+
+CthulsparkBoots: {
+	// DisplayName: Cthulspark Boots
+	/* Tooltip:
+		'''
+		Grants all the powers of the Frogspark Boots
+		Gain cloud, blizzard and sandstorm extra jumps, increased jump height, and immunity to fall damage
+		Double tap a direction to charge alongside the great eye, ramming foes out of the way
+		"It floats overhead, watching every step for you"
+		''' */
+}
+
+NinjaCthulsparkBoots: {
+	// DisplayName: Ninja Cthulspark Boots
+	/* Tooltip:
+		'''
+		Grants all the powers of the Cthulspark Boots
+		Grants a 10% chance to dodge attacks, and the ability to climb and slide down walls
+		Your dash is always the great eye's ramming charge
+		"The eye tied on its headband and swore never to blink again"
 		''' */
 }

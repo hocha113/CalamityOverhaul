@@ -24,6 +24,4 @@ GameModeText: {
 	BossRefuse: A boss still lives. The pact cannot be altered now
 }
 
-SporeshineAmbience: {
-	DazeDeathReason: "{0} drowsed away deep in the spore haze"
-}
+SporeshineAmbience.DazeDeathReason: "{0} drowsed away deep in the spore haze"

@@ -202,6 +202,30 @@ PandemoniumBlastWave.DisplayName: Onda de Explosao do Pandemonio
 PandemoniumGroundFlame.DisplayName: Chama Terrestre do Pandemonio
 PandemoniumLightning.DisplayName: Raio do Pandemonio
 PandemoniumRainDrop.DisplayName: Gota de Chuva do Pandemonio
+// ElysiumHeld.DisplayName: Elysium
+// SnakeConversionWave.DisplayName: Serpent Rite Wave
+// HolySerpent.DisplayName: Holy Serpent
+// SimonPeter.DisplayName: Disciple Peter
+// James.DisplayName: Disciple James
+// JamesChainStrike.DisplayName: Thunder Judgement
+// Andrew.DisplayName: Disciple Andrew
+// AndrewNetField.DisplayName: Holy Fishing Net
+// John.DisplayName: Disciple John
+// Philip.DisplayName: Disciple Philip
+// Bartholomew.DisplayName: Disciple Bartholomew
+// Thomas.DisplayName: Disciple Thomas
+// Matthew.DisplayName: Disciple Matthew
+// MatthewCoinBurst.DisplayName: Devoted Golden Rain
+// Lesser.DisplayName: Disciple James the Less
+// Thaddaeus.DisplayName: Disciple Thaddaeus
+// Zealot.DisplayName: Disciple Simon the Zealot
+// JudasIscariot.DisplayName: Disciple Judas
+// DiscipleSigilBolt.DisplayName: Sigil Bolt
+// ElysiumThunder.DisplayName: Divine Thunder
+// RevelationDomain.DisplayName: Kingdom Domain
+// CelestialMeteor.DisplayName: Celestial Meteor
+// RevelationSealJudgment.DisplayName: Judgement of the Last Seals
+// ApocalypseHorseman.DisplayName: Apocalypse Horseman
 PrismiteWaveProjectile.DisplayName: Onda de Prismite
 ObsidianFishOrbit.DisplayName: Peixe de Obsidiana Orbitando
 RockHammerFish.DisplayName: Peixe Martelo de Rocha
@@ -468,6 +492,17 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // BrainTeleportRift.DisplayName: Teleport Rift
 // BrainVeinTelegraph.DisplayName: Engorged Vein
 // DeerFrostPulseProj.DisplayName: Frost Tremor
+// FrmMortarBlastProj.DisplayName: Present Mortar Blast
+// FrmPresentShellProj.DisplayName: Airdropped Present
+// FrmStrafeLaneProj.DisplayName: Strafing Run Lane
+// FrmStrafeBulletProj.DisplayName: Elf Autocannon Round
+// FrmAimLaneOmen.DisplayName: Siege Aim Line
+// FrmNutShellProj.DisplayName: Ricochet Nutshell
+// FrmOrnamentRowOmen.DisplayName: Ornament Battery Omen
+// FrmOrnamentProj.DisplayName: Falling Ornament
+// FrmPineNeedleProj.DisplayName: Pine Needle Round
+// FrmWaltzRingProj.DisplayName: Crystal Waltz
+// FrmBlizzardFrontProj.DisplayName: Blizzard Front
 // DeerIceSpikeProj.DisplayName: Ice Spike
 // WastesSandGeyserProj.DisplayName: Sand Geyser
 // WastesSandConeTelegraph.DisplayName: Sand Spray Omen
@@ -476,9 +511,59 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // WastesIceShatterCore.DisplayName: Crystal Husk
 // WastesIceShardProj.DisplayName: Burial Ice Shard
 // WastesElementRing.DisplayName: Elemental Erosion Ring
+// AshreignMagmaBubbleProj.DisplayName: Seething Magma Bubble
+// AshreignMagmaBeadProj.DisplayName: Spattering Slag Bead
+// AshreignAshStormProj.DisplayName: Passing Ash Tempest
+// RotmireVentProj.DisplayName: Miasma Wellspring
+// RotmireWritheProj.DisplayName: Writhing Vileground
+// MireheartGasPocketProj.DisplayName: Marsh-Gas Pocket
+// MireheartMiasmaProj.DisplayName: Mire Miasma
+// MireheartBeeCloudProj.DisplayName: Sentry Bee Cloud
+// BrinefumeBoilZoneProj.DisplayName: Acid Boil
+// BrinefumeHazeTideProj.DisplayName: Toxic Haze Tide
+// SilkcryptWebPatchProj.DisplayName: Sticky Web Blotch
+// SilkcryptDropShadowProj.DisplayName: Plunging Spider Shade
+// LumindepthVortexProj.DisplayName: Tranquil Vortex
+// AstralveilSpearMarkProj.DisplayName: Astral Starlance
+// AstralveilBloomProj.DisplayName: Astral Bloom
+// FleshfenDewRainProj.DisplayName: Blood Dew Curtain
+// StonewakeResonanceRingProj.DisplayName: Resonance Pulse Ring
+// StonewakeGazePillarProj.DisplayName: Pillar of the Stone Gaze
+// HollowdeepRockfallProj.DisplayName: Startled Rockfall
+// RimehollowIcicleProj.DisplayName: Hanging Icicle
+// RimehollowMistPoolProj.DisplayName: Cold Mist Hollow
+// MournfogGrudgeRingProj.DisplayName: Gathering Grudgefire
+// PrismgladeJudgmentProj.DisplayName: Prismatic Judgment
+// SunkenduneSinkPitProj.DisplayName: Quicksand Sink Pit
+// SunkenduneSandfallProj.DisplayName: Pouring Sandfall
+// CindercragVentProj.DisplayName: Crag-Mouth Flame Tongue
+// CindercragWailWaveProj.DisplayName: Keening Pressure Wave
+// StratosFallingStarProj.DisplayName: Plummeting Star
+// StratosUpdraftProj.DisplayName: Stardust Updraft
+// AetherglimGravityBubbleProj.DisplayName: Shimmering Gravity Bubble
+// NyxdepthSinkColumnProj.DisplayName: Abyssal Downwelling
+// TidecallRipCurrentProj.DisplayName: Rip Current
+// TidecallRogueWaveProj.DisplayName: Rogue Wave
+// StarfallAfterburstProj.DisplayName: Meteoric Afterburst
+// DuneStormGustWaveProj.DisplayName: Windshear Gust
+// DuneStormSandLashOmen.DisplayName: Gathering Sand Lash
+// DuneStormSandLashProj.DisplayName: Sandstorm Lash
+// SporeshineCapSwellProj.DisplayName: Swelling Mushroom Cap
+// SporeshineSporeLobProj.DisplayName: Spore Glob
+// SporeshineSporeFogProj.DisplayName: Bewildering Spore Mist
+// FrostveilGaleWallProj.DisplayName: Frostveil Gale Wall
 // DeerRubbleProj.DisplayName: Icy Rubble
 // DeerShadowHandProj.DisplayName: Shadow Hand
 // FishronGeyserProj.DisplayName: Tidal Geyser
+// PrtRicochetShot.DisplayName: Pirate Ricochet Round
+// PrtVolleyOmen.DisplayName: Captain's Suppression Order
+// PrtFanShot.DisplayName: Suppression Round
+// PrtBoardHookProj.DisplayName: Plunder Grapnel
+// PrtParrotMark.DisplayName: Parrot's Tattle
+// PrtBroadsideOmen.DisplayName: Broadside Omen
+// PrtBroadsideBall.DisplayName: Broadside Cannonball
+// PrtBoardingOmen.DisplayName: Boarding Call
+// PrtBannerMark.DisplayName: Boarding War Banner
 // FishronSharkTornadoProj.DisplayName: Sharknado
 // FishronSkyBoltProj.DisplayName: Storm Bolt
 // FishronTelegraph.DisplayName: Storm Warning Line
@@ -536,6 +621,12 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // MLordOrbProj.DisplayName: Phantasmal Star Orb
 // MLordScanRayProj.DisplayName: Phantasmal Scan Ray
 // MLordStarfireProj.DisplayName: Lingering Starfire
+// MrtTeslaArcProj.DisplayName: Martian Tesla Arc
+// MrtLaserMarkLine.DisplayName: Martian Laser Sightline
+// MrtLaserBoltProj.DisplayName: Martian Guided Bolt
+// MrtScutlixHeavyBolt.DisplayName: Scutlix Overcharge Shell
+// MrtOverheatMarkProj.DisplayName: Overheat Weakpoint Mark
+// MrtSaucerScanProj.DisplayName: Death Ray Scanline
 // PlanteraPetalWave.DisplayName: Withering Bloom
 // PlanteraPoisonSeed.DisplayName: Poison Seed
 // PlanteraSeed.DisplayName: Gatling Seed
@@ -554,6 +645,8 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // JhAmbushOmen.DisplayName: Gathering Cinder
 // JhImpFireBolt.DisplayName: Imp Flare
 // JhBreachOmen.DisplayName: Breach Omen
+// VerdantMireFogProj.DisplayName: Mire Fog Ambush
+// VerdantThornRingProj.DisplayName: Closing Thorn Ring
 // HoneyPuddleZone.DisplayName: Honey Pool
 // QueenBeeTelegraphLine.DisplayName: Amber Warning Line
 // WaxHiveTurret.DisplayName: Wax Hive Turret
@@ -591,6 +684,14 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // ScrapShellFrag.DisplayName: Scrap Shell Frag
 // ScrapSweepBeam.DisplayName: Scrap Sweep Beam
 // EowLungeOmen.DisplayName: Eow Lunge Omen
+// EclStrikeOmen.DisplayName: Execution Omen
+// EclOpeningProj.DisplayName: Exposed Opening
+// EclBloodMarkProj.DisplayName: Bloodhunt Brand
+// EclManFlyFlaskProj.DisplayName: Eclipse Toxin Flask
+// EclEyezorOrbProj.DisplayName: Searing Ocular Bolt
+// EclNailheadNailProj.DisplayName: Execution Spike
+// EclMothronDiveOmen.DisplayName: Mothron Dive Omen
+// EclNestFuryProj.DisplayName: Nest Fury
 // GaolFireBolt.DisplayName: Gaol Fire
 // GaolCrossChain.DisplayName: Deep Gaol Crosschain
 // GaolCageBar.DisplayName: Gaol Cage Bar
@@ -602,6 +703,7 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // GaolAnchorProj.DisplayName: Gaol Anchor
 // OverseerPressStrike.DisplayName: Press Stamp
 // OverseerSlagGlob.DisplayName: Slag Ladle
+// OverseerDartBolt.DisplayName: Proofing Bolt
 // KikasaDreamHound.DisplayName: Kikasa Dream Hound
 // DeerSeizeHandProj.DisplayName: Deer Seize Hand Proj
 // DestroyerCoilRingProj.DisplayName: Destroyer Coil Ring Proj
@@ -616,6 +718,14 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // QueenCrystalPrisonProj.DisplayName: Queen Crystal Prison Proj
 // QueenRoyalChandelierProj.DisplayName: Queen Royal Chandelier Proj
 // SkeletronOrbitSkull.DisplayName: Skeletron Orbit Skull
+// PmkEmberProj.DisplayName: Ritual Ember
+// PmkChargeOmen.DisplayName: Grim Charge Omen
+// PmkRitualWispProj.DisplayName: Pyre Ring Jack
+// PmkMortarShellProj.DisplayName: Pyre Mortar Shell
+// PmkMortarMarkerProj.DisplayName: Pyre Blast
+// PmkRootSpikeProj.DisplayName: Mourning Root
+// PmkScytheBladeProj.DisplayName: Reaper Wheel Scythe
+// PmkClawCrossProj.DisplayName: Pumpking Claw Cross
 // WofGrabTongueProj.DisplayName: Wof Grab Tongue Proj
 // KikasaThrallProj.DisplayName: Kikasa Thrall Proj
 // L6MachineStrike.DisplayName: L6 Machine Strike
@@ -693,4 +803,113 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // CultistPlanetProj.DisplayName: Colossal Celestial Body
 // LegionVolleyOmen.DisplayName: Legion Volley Order
 // LegionVolleyArrow.DisplayName: Legion War Arrow
+// FinaleMusketRound.DisplayName: Gilded Musket Ball
+// FinaleMagicBolt.DisplayName: Phantom Volley Bolt
+// TiroFinaleBlast.DisplayName: Tiro Finale
 // ScapegoatDollWalker.DisplayName: Scapegoat Doll Walker
+// FallenCrownProj.DisplayName: Fallen Crown
+// KingsVerdictWave.DisplayName: King's Verdict
+// RoyalGelField.DisplayName: Royal Gel Pool
+// MawWormProj.DisplayName: World-Eater Grub
+// MirrorheartPulse.DisplayName: Mirrorheart Pulse
+// SwarmVortexProj.DisplayName: Swarm Vortex
+// SoulbindingGhostHand.DisplayName: Grasping Ghost Hand
+// GluttonousTongueProj.DisplayName: Gluttonous Tongue
+// GluttonousLeechOrb.DisplayName: Blood Leech Orb
+// RefractionWaltzCrystalProj.DisplayName: Refraction Crystal
+// RefractionWaltzBeamProj.DisplayName: Prism Beam
+// RefractionWaltzShardProj.DisplayName: Refraction Shard
+// TwinPupilOrbiter.DisplayName: Mini Twin Eye
+// TwinPupilLaser.DisplayName: Twin Pupil Laser
+// TwinPupilFlameJet.DisplayName: Twin Pupil Flame Jet
+// TwinPupilCrossBurst.DisplayName: Cross-Charge Burst
+// TwinPupilTetherBeam.DisplayName: Twin Pupil Tether
+// ProbeDroneProj.DisplayName: Probe Drone
+// ProbeLockBolt.DisplayName: Probe Lock-On Bolt
+// ProbeOrbitalStrike.DisplayName: Orbital Strike
+// OverloadArmProj.DisplayName: Overload Arm
+// OverloadIonBolt.DisplayName: Overload Ion Bolt
+// OverloadArcProj.DisplayName: Overload Arc
+// BloomVineSnare.DisplayName: Snaring Vine
+// BloomNovaBurst.DisplayName: Bloom Nova
+// SolarCoreFistPunch.DisplayName: Solar Core Punch
+// SolarCoreNova.DisplayName: Solar Nova
+// SolarChainBurst.DisplayName: Magma Chain Burst
+// TidalFinTsunamiProj.DisplayName: Tidal Tsunami
+// TidalFinTornadoProj.DisplayName: Tidal Waterspout
+// RiteStarCore.DisplayName: Rite Star Core
+// RiteStarShard.DisplayName: Rite Fallen Star
+// RiteMirrorPhantom.DisplayName: Rite Mirror Phantom
+// RiteRuneBolt.DisplayName: Rite Rune Bolt
+// RiteMoonFlare.DisplayName: Rite Moon Flare
+// InterferencePrismBurst.DisplayName: Interference Prism Burst
+// InterferenceDawnBurst.DisplayName: Interference Dawn Burst
+// GsGoldPearlProj.DisplayName: Gs Gold Pearl Proj
+// GodSmithSwordWave.DisplayName: God Smith Sword Wave
+// GsGunsEarlyBurstProj.DisplayName: Gs Guns Early Burst Proj
+// GsCandySweetMarkProj.DisplayName: Gs Candy Sweet Mark Proj
+// GsGunsHardZoneProj.DisplayName: Gs Guns Hard Zone Proj
+// GsSonarMarkProj.DisplayName: Gs Sonar Mark Proj
+// GsXenoBubbleProj.DisplayName: Gs Xeno Bubble Proj
+// GsCoinBurstProj.DisplayName: Gs Coin Burst Proj
+// GsFlameJetProj.DisplayName: Gs Flame Jet Proj
+// GsFlamePatchProj.DisplayName: Gs Flame Patch Proj
+// GsPresentBombProj.DisplayName: Gs Present Bomb Proj
+// GsToxinCloudProj.DisplayName: Gs Toxin Cloud Proj
+// GsCandleFieldProj.DisplayName: Gs Candle Field Proj
+// GsElectroArcProj.DisplayName: Gs Electro Arc Proj
+// GsJackBatProj.DisplayName: Gs Jack Bat Proj
+// GsNailBurstProj.DisplayName: Gs Nail Burst Proj
+// GsPierceDartProj.DisplayName: Gs Pierce Dart Proj
+// GsSnowMarkProj.DisplayName: Gs Snow Mark Proj
+// GsStarBurstProj.DisplayName: Gs Star Burst Proj
+// GsBubbleVentProj.DisplayName: Gs Bubble Vent Proj
+// GsConduitBurstProj.DisplayName: Gs Conduit Burst Proj
+// GsConduitNovaProj.DisplayName: Gs Conduit Nova Proj
+// GsConduitRayProj.DisplayName: Gs Conduit Ray Proj
+// GsDrainTetherProj.DisplayName: Gs Drain Tether Proj
+// GsGazeBeamProj.DisplayName: Gs Gaze Beam Proj
+// GsHeatBeamProj.DisplayName: Gs Heat Beam Proj
+// GsMachinegunVentProj.DisplayName: Gs Machinegun Vent Proj
+// GsSpecterVentProj.DisplayName: Gs Specter Vent Proj
+// GsTyphoonEyeProj.DisplayName: Gs Typhoon Eye Proj
+// GsClingerWallProj.DisplayName: Gs Clinger Wall Proj
+// GsCrimsonDomainProj.DisplayName: Gs Crimson Domain Proj
+// GsCrystalDomainProj.DisplayName: Gs Crystal Domain Proj
+// GsFrostDustDomainProj.DisplayName: Gs Frost Dust Domain Proj
+// GsFrostTrailDomainProj.DisplayName: Gs Frost Trail Domain Proj
+// GsMorphBurstProj.DisplayName: Gs Morph Burst Proj
+// GsNimbusCorridorProj.DisplayName: Gs Nimbus Corridor Proj
+// GsPoisonFieldProj.DisplayName: Gs Poison Field Proj
+// GsRainbowBridgeProj.DisplayName: Gs Rainbow Bridge Proj
+// GsRainbowPulseProj.DisplayName: Gs Rainbow Pulse Proj
+// GsRiftProj.DisplayName: Gs Rift Proj
+// GsScorchDomainProj.DisplayName: Gs Scorch Domain Proj
+// GsWhipBoneEchoProj.DisplayName: Gs Whip Bone Echo Proj
+// GsWhipBoneSpireProj.DisplayName: Gs Whip Bone Spire Proj
+// GsWhipDurendalArcProj.DisplayName: Gs Whip Durendal Arc Proj
+// GsWhipDurendalVerdictProj.DisplayName: Gs Whip Durendal Verdict Proj
+// GsWhipFirecrackerChainProj.DisplayName: Gs Whip Firecracker Chain Proj
+// GsWhipFrostBloomProj.DisplayName: Gs Whip Frost Bloom Proj
+// GsWhipLeatherCrackProj.DisplayName: Gs Whip Leather Crack Proj
+// GsWhipMaceQuakeProj.DisplayName: Gs Whip Mace Quake Proj
+// GsWhipMorningStarFallProj.DisplayName: Gs Whip Morning Star Fall Proj
+// GsWhipPrismSlashProj.DisplayName: Gs Whip Prism Slash Proj
+// GsWhipReapFlashProj.DisplayName: Gs Whip Reap Flash Proj
+// GsWhipReapSoulProj.DisplayName: Gs Whip Reap Soul Proj
+// GsWhipSealPulseProj.DisplayName: Gs Whip Seal Pulse Proj
+// GsWhipThornBurstProj.DisplayName: Gs Whip Thorn Burst Proj
+// GsWhipThornDartProj.DisplayName: Gs Whip Thorn Dart Proj
+// GsBurstProj.DisplayName: Gs Burst Proj
+// GsRecoveryPickup.DisplayName: Gs Recovery Pickup
+// GsZoneProj.DisplayName: Gs Zone Proj
+// GsFaeOrbiterProj.DisplayName: Gs Fae Orbiter Proj
+// GsIcicleRainProj.DisplayName: Gs Icicle Rain Proj
+// GsPhantomArcherProj.DisplayName: Gs Phantom Archer Proj
+// GsPursuitArrow.DisplayName: Gs Pursuit Arrow
+// GsStakePinProj.DisplayName: Gs Stake Pin Proj
+// GsTideSpoutProj.DisplayName: Gs Tide Spout Proj
+// GsVolleyBurstProj.DisplayName: Gs Volley Burst Proj
+// BloodfogAmbushMark.DisplayName: Bloodfog Ambush Mark
+// BloodfogVeilProj.DisplayName: Bloodfog Veil Proj
+// RiteVeilRift.DisplayName: Rite Veil Rift

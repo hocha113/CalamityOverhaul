@@ -109,3 +109,31 @@ BoneStitcher: {
 // OldNetTaggerICE.DisplayName: Tagger Moth
 // OldNetTracerICE.DisplayName: Tracer Hound
 // OldNetWardenICE.DisplayName: Reclamation Warden
+// KiyumeHound.DisplayName: Feral Hound
+
+LanternGuideYokai: {
+	// DisplayName: Lantern Elder
+	// GripDeathReason: "{0} followed the wrong lantern"
+}
+
+// LanternGuideHungLamp.DisplayName: Hanging Lantern
+// ScarecrowWatcherYokai.DisplayName: Field Keeper
+// WellHandYokai.DisplayName: Well Hand
+// FuneralCortegeYokai.DisplayName: Banner Bearer
+
+FuneralCortegePorter: {
+	// DisplayName: Pallbearer
+	// WraithDeathReason: "{0} stood in the funeral's way"
+}
+
+// FuneralCortegeCoffin.DisplayName: Old Coffin
+// FacelessOneYokai.DisplayName: Faceless One
+
+RidgeWalkerYokai: {
+	// DisplayName: Ridge Walker
+	// RidgeDeathReason: "{0} claimed a ridge that was not theirs"
+}
+
+// ShallowHandsYokai.DisplayName: Hand in the Shallows
+// MinoFisherYokai.DisplayName: Straw-Cloaked Fisherman
+// KiyumeWhiteHound.DisplayName: Homeward-Gazing White Hound

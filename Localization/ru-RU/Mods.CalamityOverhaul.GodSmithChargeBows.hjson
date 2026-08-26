@@ -1,0 +1,110 @@
+/* GsWoodenBow.Desc:
+	'''
+	Reforged: hold to draw, release to loose. A half draw flies faster and hits harder, a full draw becomes a wood-spirit arrow, an overdrawn hit splits into a fan of arrows
+	Rest at overdraw too long and the string destabilizes: the shot falls back to full-draw power with brief fatigue
+	''' */
+/* GsBorealWoodBow.Desc:
+	'''
+	Reforged: three-stage draw, full-draw transmutes, overdraw splits
+	Overdrawn arrows carry rime, chilling and briefly numbing lesser foes
+	''' */
+/* GsPalmWoodBow.Desc:
+	'''
+	Reforged: three-stage draw, full-draw transmutes, overdraw splits
+	Overdrawn arrows fly dry and true, striking vitals more often
+	''' */
+/* GsRichMahoganyBow.Desc:
+	'''
+	Reforged: three-stage draw, full-draw transmutes, overdraw splits
+	Many-stemmed vines: overdrawn hits split into one extra arrow
+	''' */
+/* GsEbonwoodBow.Desc:
+	'''
+	Reforged: three-stage draw, full-draw transmutes, overdraw splits
+	Overdrawn arrows have a chance to ignite shadowflame
+	''' */
+/* GsShadewoodBow.Desc:
+	'''
+	Reforged: three-stage draw, full-draw transmutes, overdraw splits
+	Overdrawn arrows have a chance to open a bleeding wound
+	''' */
+/* GsAshWoodBow.Desc:
+	'''
+	Reforged: three-stage draw, full-draw transmutes, overdraw splits
+	Overdrawn arrows set foes alight, scattering cinders
+	''' */
+/* GsCopperBow.Desc:
+	'''
+	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
+	Overdraw looses one free side arrow
+	''' */
+/* GsTinBow.Desc:
+	'''
+	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
+	Overdraw looses one free side arrow in a denser spark shower
+	''' */
+/* GsIronBow.Desc:
+	'''
+	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
+	Overdrawn press arrows: crushing knockback, briefly pinning lesser foes
+	''' */
+/* GsLeadBow.Desc:
+	'''
+	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
+	Overdrawn press arrows carry lead: the slam pins and poisons
+	''' */
+/* GsSilverBow.Desc:
+	'''
+	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
+	Overdrawn hallowed arrows ricochet once toward a nearby foe
+	''' */
+/* GsTungstenBow.Desc:
+	'''
+	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
+	Overdrawn arrows ricochet twice; the final strike bursts
+	''' */
+/* GsGoldBow.Desc:
+	'''
+	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
+	Overdrawn royal arrows crit more often; critical hits burst into a few copper coins
+	''' */
+/* GsPlatinumBow.Desc:
+	'''
+	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
+	Overdrawn crown arrows always crit, bursting into more copper coins
+	''' */
+/* GsDemonBow.Desc:
+	'''
+	Reforged: three-stage draw. A full draw transmutes the arrow into a piercing unholy bolt
+	An overdrawn hit releases two soul-seeking shadowflame wisps that slowly hunt nearby foes
+	''' */
+/* GsTendonBow.Desc:
+	'''
+	Reforged: three-stage draw. Full-drawn clot arrows open bleeding wounds
+	Overdrawn heartstring slam: a heavier shaft with brutal knockback that spatters blood and sips a little life back
+	''' */
+/* GsBloodRainBow.Desc:
+	'''
+	Reforged: arrows still fall as blood rain. Three-stage draw
+	A full draw calls four extra bolts onto the cursor; an overdrawn flood calls eight, and the main bolt pools blood where it lands, trampling and slowing foes
+	''' */
+/* GsBeesKnees.Desc:
+	'''
+	Reforged: wooden arrows still become bee arrows. Three-stage draw
+	Full-drawn hits release two extra bees; an overdrawn hit leaves a swirling bee vortex. At most twelve bees may serve you at once
+	''' */
+/* GsHellwingBow.Desc:
+	'''
+	Reforged: wooden arrows still become wall-piercing hellwings, and the draw is faster
+	A full draw looses three bats in a V; an overdrawn draw unleashes six in a spiral that scatters, then converges
+	''' */
+/* GsMoltenFury.Desc:
+	'''
+	Reforged: wooden arrows still become flaming arrows. Three-stage draw
+	Full-drawn molten cores spray magma beads on impact; an overdrawn volcanic shot calls five molten rain bolts down on the mark
+	''' */
+
+GsChargeBleedBuff: {
+	// DisplayName: Bloodletting
+	// Description: Bleeding out
+}

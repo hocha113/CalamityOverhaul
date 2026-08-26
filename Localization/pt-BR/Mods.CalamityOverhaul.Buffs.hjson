@@ -3,6 +3,36 @@ SoulBurning: {
 	Description: Fogo do inferno
 }
 
+RevelationMarkDebuff: {
+	// DisplayName: Mark of Revelation
+	// Description: Under John's gaze, all damage taken is increased
+}
+
+TruthRevealDebuff: {
+	// DisplayName: Truth Revealed
+	// Description: Armor stripped away, nowhere to hide
+}
+
+WealthBlessingDebuff: {
+	// DisplayName: Blessing of Wealth
+	// Description: Bursts into a devoted golden rain upon death
+}
+
+VerificationBuff: {
+	// DisplayName: Eye of Verification
+	// Description: Thomas has verified it, your strikes will surely crit
+}
+
+ZealotFervorBuff: {
+	// DisplayName: Fervor
+	// Description: The Zealot's holy fire burns within, attack and movement speed surge
+}
+
+PlagueMarkDebuff: {
+	// DisplayName: Plague Mark
+	// Description: The Plague Horseman's holy pestilence is eating away at life
+}
+
 HellburnBuff: {
 	DisplayName: Explosao de Fogo Infernal
 	Description: Fogo do inferno
@@ -11,6 +41,11 @@ HellburnBuff: {
 KikasaWispBurn: {
 	// DisplayName: Wisp Fire
 	// Description: Golden wisp fire from the lake clings and burns
+}
+
+KikasaInkTag: {
+	// DisplayName: Ink Seal
+	// Description: Stamped by the Kikasa's ink, summons deal bonus damage to this target
 }
 
 DivineSourceChargeBuff: {
@@ -141,6 +176,56 @@ IndustrialShieldBuff: {
 IndustrialRegenBuff: {
 	// DisplayName: Healing Aura
 	// Description: A healing station is restoring your health
+}
+
+RotsawRendDebuff: {
+	// DisplayName: Rotsaw
+	// Description: Defense stripped to zero; flesh is being sawed apart
+}
+
+WaxWardBuff: {
+	// DisplayName: Wax Ward
+	// Description: The swarm's wax ward is absorbing damage in your stead
+}
+
+SwarmVortexDebuff: {
+	// DisplayName: Swarm Vortex
+	// Description: Shredded by the swarm vortex, movements slowed
+}
+
+MawCorrosionBuff: {
+	// DisplayName: Acid Corrosion
+	// Description: Acid is eating through armor
+}
+
+WhiteoutStormBuff: {
+	// DisplayName: Whiteout Storm
+	// Description: 50% damage reduction and knockback immunity; the snow veil does not block your sight
+}
+
+WhiteblindDebuff: {
+	// DisplayName: Whiteblind
+	// Description: Blinded by the blizzard, movements frozen, 30 frostburn damage per second
+}
+
+BloomSnaredDebuff: {
+	// DisplayName: Thorn Snare
+	// Description: Entangled in bramble vines, bound and torn by thorns
+}
+
+SoulbindCurseDebuff: {
+	// DisplayName: Soulbinding Curse
+	// Description: Bound by the curse, damage taken is increased
+}
+
+SoulGripLockDebuff: {
+	// DisplayName: Soul Grip
+	// Description: Clutched in the ghostly hand's grasp, unable to move
+}
+
+RefractionTag: {
+	// DisplayName: Refraction
+	// Description: Taking 30% increased damage from the Refraction Waltz
 }
 
 AbyssalPressure: {

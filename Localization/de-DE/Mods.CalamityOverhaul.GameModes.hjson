@@ -2,18 +2,26 @@ GameModeText: {
 	BrutalName: Grausame Welt
 	AsuraName: Asura-Hölle
 	AnnihilationName: Ewiger Tod
+	// GodSmithName: Divine Artifice
 	BrutalOnLine: Diese Welt ist grausam, und doch liebst du sie noch immer.
 	BrutalOffLine: Die Welt zieht ihre Fänge ein. Ihre Milde ist nur eine Atempause.
 	AsuraOnLine: Der Asura-Pfad öffnet sich. Jeder Schmerz, den du zufügst, wird voll vergolten.
 	AsuraOffLine: Der Asura-Pfad schließt sich. Alle Schulden sind beglichen.
 	AnnihilationOnLine: Alles wird vergehen; nur der Tod lebt ewig.
 	AnnihilationOffLine: Der Tod ruht kurz; die Lebenden stehlen einen Atemzug.
+	// GodSmithOnLine: The Godsmith takes up the hammer; every common iron shall be reforged.
+	// GodSmithOffLine: The forge fire wanes; all arms return to their former shape.
 	BrutalDesc: Entfesselt die überarbeitete, gnadenlose KI der brutalen Bosse; alle übrigen Gegner erhalten 50% mehr Leben und Schaden, kleinere Feinde werden schnell und rasend
 	AsuraDesc: Die Verstärkung steigt auf 100%. Gegner passen sich wiederholtem Schaden derselben Art an, und jeder deiner Treffer setzt die Untergrenze ihres Gegenschlags
 	AnnihilationDesc: Die letzte Gestalt der Asura-Hölle in einer Zenit-Welt. Jeder Schrecken verdoppelt sich erneut: Gegner passen sich doppelt so schnell an, und dein Schmerz wird doppelt vergolten
+	// GodSmithDesc: Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched, and it toggles independently of every other mode
+	// GodSmithRecastTitle: Godsmith Reforged
+	// GodSmithEndowPrefix: "Endowment: "
 	StateOn: Aktiv
 	StateOff: Schlummernd
 	HintEnable: Klicken zum Erwecken
 	HintDisable: Klicken zum Versiegeln
 	BossRefuse: Ein Boss lebt noch. Der Pakt kann jetzt nicht geändert werden
 }
+
+// SporeshineAmbience.DazeDeathReason: "{0} drowsed away deep in the spore haze"

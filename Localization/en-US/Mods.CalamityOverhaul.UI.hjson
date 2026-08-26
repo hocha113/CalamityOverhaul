@@ -515,7 +515,6 @@ ElysiumRoseWindow: {
 }
 
 ElysiumFaithHud.MartyrdomPowerText: Martyrdom Power {0}/11
-
 MenuModify.OverhaulSettingsButtonText: Overhaul Settings
 
 OverhaulSettingsUI: {

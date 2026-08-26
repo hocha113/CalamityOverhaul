@@ -109,7 +109,6 @@ OldNetLurkerICE.DisplayName: 缢影ICE
 OldNetTaggerICE.DisplayName: 灯蛾标记体
 OldNetTracerICE.DisplayName: 循迹猎犬
 OldNetWardenICE.DisplayName: 回收官
-
 KiyumeHound.DisplayName: 恶犬
 
 LanternGuideYokai: {
@@ -119,9 +118,7 @@ LanternGuideYokai: {
 
 LanternGuideHungLamp.DisplayName: 悬灯
 ScarecrowWatcherYokai.DisplayName: 守田人
-
 WellHandYokai.DisplayName: 井手
-
 FuneralCortegeYokai.DisplayName: 执幡者
 
 FuneralCortegePorter: {
@@ -130,7 +127,6 @@ FuneralCortegePorter: {
 }
 
 FuneralCortegeCoffin.DisplayName: 旧棺
-
 FacelessOneYokai.DisplayName: 无面者
 
 RidgeWalkerYokai: {
@@ -139,7 +135,5 @@ RidgeWalkerYokai: {
 }
 
 ShallowHandsYokai.DisplayName: 水中手
-
 MinoFisherYokai.DisplayName: 蓑翁
-
 KiyumeWhiteHound.DisplayName: 白毛望乡犬

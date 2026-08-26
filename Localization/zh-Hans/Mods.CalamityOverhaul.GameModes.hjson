@@ -1,4 +1,4 @@
-﻿GameModeText: {
+GameModeText: {
 	BrutalName: 残酷世界
 	AsuraName: 修罗地狱
 	AnnihilationName: 死神永生
@@ -41,6 +41,4 @@
 	BossRefuse: Boss 仍在世间，此刻无法更改契约
 }
 
-SporeshineAmbience: {
-	DazeDeathReason: "{0}醉倒在孢雾深处"
-}
+SporeshineAmbience.DazeDeathReason: "{0}醉倒在孢雾深处"

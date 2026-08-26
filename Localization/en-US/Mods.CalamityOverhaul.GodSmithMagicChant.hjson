@@ -1,175 +1,107 @@
-GsWandOfSparking: {
-	Desc:
-		'''
-		Reforged: casting on the beat builds resonance, on-beat sparks chain-ignite nearby foes;
-		at full resonance the next cast erupts into a fan of twelve stray sparks
-		'''
-}
-
-GsWandOfFrosting: {
-	Desc:
-		'''
-		Reforged: on-beat frost bolts refract into ice shards on hit, deeper resonance splits more;
-		at full resonance the next cast breathes a wide cone of freezing mist that inflicts frostbite
-		'''
-}
-
-GsThunderZapper: {
-	Desc:
-		'''
-		Reforged: on-beat bolts zigzag like true lightning and may fork at each bend, resonance quickens the trigger;
-		at full resonance the next hit brands the target and calls down a thunder pillar
-		'''
-}
-
-GsAmethystStaff: {
-	Desc:
-		'''
-		Reforged: on-beat bolts shatter into piercing amethyst shards on hit;
-		at full resonance the next cast fires three gem bolts of neighboring hues
-		'''
-}
-
-GsTopazStaff: {
-	Desc:
-		'''
-		Reforged: on-beat bolts shatter into homing topaz shards on hit;
-		at full resonance the next cast fires three gem bolts of neighboring hues
-		'''
-}
-
-GsSapphireStaff: {
-	Desc:
-		'''
-		Reforged: on-beat bolts shatter into swift sapphire lances on hit;
-		at full resonance the next cast fires three gem bolts of neighboring hues
-		'''
-}
-
-GsEmeraldStaff: {
-	Desc:
-		'''
-		Reforged: on-beat bolts burst into one extra emerald shard on hit;
-		at full resonance the next cast fires three gem bolts of neighboring hues
-		'''
-}
-
-GsRubyStaff: {
-	Desc:
-		'''
-		Reforged: on-beat bolts shatter into ruby shards that detonate in a small blast;
-		at full resonance the next cast fires three gem bolts of neighboring hues
-		'''
-}
-
-GsDiamondStaff: {
-	Desc:
-		'''
-		Reforged: on-beat bolts shatter into diamond shards that refract twin light rays;
-		at full resonance the next cast fires three gem bolts of neighboring hues
-		'''
-}
-
-GsAmberStaff: {
-	Desc:
-		'''
-		Reforged: on-beat bolts shatter into amber shards that linger as motes of stinging dust;
-		at full resonance the next cast fires three gem bolts of neighboring hues
-		'''
-}
-
-GsVilethorn: {
-	Desc:
-		'''
-		Reforged: on-beat thorns fork into vile spikes wherever they bite;
-		at full resonance the next cast also erupts a ring of thorns around you
-		'''
-}
-
-GsWaterBolt: {
-	Desc:
-		'''
-		Reforged: on-beat bolts bounce further and ripple on every ricochet;
-		at full resonance the next cast surges into a great tide that pierces through everything
-		'''
-}
-
-GsBookOfSkulls: {
-	Desc:
-		'''
-		Reforged: hits brand foes into the registry, on-beat skulls hunt branded prey;
-		at full resonance the next cast looses three skulls, three brands detonate into a bone burst
-		'''
-}
-
-GsDemonScythe: {
-	Desc:
-		'''
-		Reforged: on-beat scythes wind up faster and may boomerang back at high resonance;
-		at full resonance the next cast crosses two scythes over your cursor
-		'''
-}
-
-GsAquaScepter: {
-	Desc:
-		'''
-		Reforged: sustained spraying swells into a surge window of crushing water pressure;
-		ride three full surges and the next cast breaks into a fan of tidal slams
-		'''
-}
-
-GsFlowerOfFire: {
-	Desc:
-		'''
-		Reforged: on-beat fireballs burst into fans of flame tongues on first landing;
-		at full resonance the next fireball blooms into a burning field where it lands
-		'''
-}
-
-GsBeeGun: {
-	Desc:
-		'''
-		Reforged: on-beat volleys fly in a V formation, resonance breeds bigger bees;
-		at full resonance the next cast releases a queen bee that trails a living swarm
-		'''
-}
-
-GsSpaceGun: {
-	Desc:
-		'''
-		Reforged: every on-beat shot charges the coil, the charge never decays on a miss;
-		every fourth charge discharges as a wide piercing pulse that drags in lesser foes
-		'''
-}
-
-GsGrayZapinator: {
-	Desc:
-		'''
-		Reforged: chaos stays chaos, but on-beat zaps always surge high voltage;
-		at full resonance the next zap overloads into a swollen piercing beam
-		'''
-}
-
-GsLaserRifle: {
-	Desc:
-		'''
-		Reforged: every third on-beat shot splits into twin parallel lasers;
-		at full resonance the next shot ignites a sweeping overdrive burst, then the barrel wilts briefly
-		'''
-}
-
-GsWeatherPain: {
-	Desc:
-		'''
-		Reforged: hits leave a storm eye, on-beat casts surge toward it and swell;
-		high resonance twins the whirlwinds, at full resonance the next cast summons a grand storm chorus
-		'''
-}
-
-GsChantFlameFieldProj: {
-	DisplayName: Blazing Flower Field
-}
-
-GsChantStormChoirProj: {
-	DisplayName: Storm Chorus
-}
+GsWandOfSparking.Desc:
+	'''
+	Reforged: casting on the beat builds resonance, on-beat sparks chain-ignite nearby foes;
+	at full resonance the next cast erupts into a fan of twelve stray sparks
+	'''
+GsWandOfFrosting.Desc:
+	'''
+	Reforged: on-beat frost bolts refract into ice shards on hit, deeper resonance splits more;
+	at full resonance the next cast breathes a wide cone of freezing mist that inflicts frostbite
+	'''
+GsThunderZapper.Desc:
+	'''
+	Reforged: on-beat bolts zigzag like true lightning and may fork at each bend, resonance quickens the trigger;
+	at full resonance the next hit brands the target and calls down a thunder pillar
+	'''
+GsAmethystStaff.Desc:
+	'''
+	Reforged: on-beat bolts shatter into piercing amethyst shards on hit;
+	at full resonance the next cast fires three gem bolts of neighboring hues
+	'''
+GsTopazStaff.Desc:
+	'''
+	Reforged: on-beat bolts shatter into homing topaz shards on hit;
+	at full resonance the next cast fires three gem bolts of neighboring hues
+	'''
+GsSapphireStaff.Desc:
+	'''
+	Reforged: on-beat bolts shatter into swift sapphire lances on hit;
+	at full resonance the next cast fires three gem bolts of neighboring hues
+	'''
+GsEmeraldStaff.Desc:
+	'''
+	Reforged: on-beat bolts burst into one extra emerald shard on hit;
+	at full resonance the next cast fires three gem bolts of neighboring hues
+	'''
+GsRubyStaff.Desc:
+	'''
+	Reforged: on-beat bolts shatter into ruby shards that detonate in a small blast;
+	at full resonance the next cast fires three gem bolts of neighboring hues
+	'''
+GsDiamondStaff.Desc:
+	'''
+	Reforged: on-beat bolts shatter into diamond shards that refract twin light rays;
+	at full resonance the next cast fires three gem bolts of neighboring hues
+	'''
+GsAmberStaff.Desc:
+	'''
+	Reforged: on-beat bolts shatter into amber shards that linger as motes of stinging dust;
+	at full resonance the next cast fires three gem bolts of neighboring hues
+	'''
+GsVilethorn.Desc:
+	'''
+	Reforged: on-beat thorns fork into vile spikes wherever they bite;
+	at full resonance the next cast also erupts a ring of thorns around you
+	'''
+GsWaterBolt.Desc:
+	'''
+	Reforged: on-beat bolts bounce further and ripple on every ricochet;
+	at full resonance the next cast surges into a great tide that pierces through everything
+	'''
+GsBookOfSkulls.Desc:
+	'''
+	Reforged: hits brand foes into the registry, on-beat skulls hunt branded prey;
+	at full resonance the next cast looses three skulls, three brands detonate into a bone burst
+	'''
+GsDemonScythe.Desc:
+	'''
+	Reforged: on-beat scythes wind up faster and may boomerang back at high resonance;
+	at full resonance the next cast crosses two scythes over your cursor
+	'''
+GsAquaScepter.Desc:
+	'''
+	Reforged: sustained spraying swells into a surge window of crushing water pressure;
+	ride three full surges and the next cast breaks into a fan of tidal slams
+	'''
+GsFlowerOfFire.Desc:
+	'''
+	Reforged: on-beat fireballs burst into fans of flame tongues on first landing;
+	at full resonance the next fireball blooms into a burning field where it lands
+	'''
+GsBeeGun.Desc:
+	'''
+	Reforged: on-beat volleys fly in a V formation, resonance breeds bigger bees;
+	at full resonance the next cast releases a queen bee that trails a living swarm
+	'''
+GsSpaceGun.Desc:
+	'''
+	Reforged: every on-beat shot charges the coil, the charge never decays on a miss;
+	every fourth charge discharges as a wide piercing pulse that drags in lesser foes
+	'''
+GsGrayZapinator.Desc:
+	'''
+	Reforged: chaos stays chaos, but on-beat zaps always surge high voltage;
+	at full resonance the next zap overloads into a swollen piercing beam
+	'''
+GsLaserRifle.Desc:
+	'''
+	Reforged: every third on-beat shot splits into twin parallel lasers;
+	at full resonance the next shot ignites a sweeping overdrive burst, then the barrel wilts briefly
+	'''
+GsWeatherPain.Desc:
+	'''
+	Reforged: hits leave a storm eye, on-beat casts surge toward it and swell;
+	high resonance twins the whirlwinds, at full resonance the next cast summons a grand storm chorus
+	'''
+GsChantFlameFieldProj.DisplayName: Blazing Flower Field
+GsChantStormChoirProj.DisplayName: Storm Chorus
