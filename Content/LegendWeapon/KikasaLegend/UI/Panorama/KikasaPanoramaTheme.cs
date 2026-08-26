@@ -152,8 +152,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             float cx = MathHelper.Clamp(strip.X, 40f + half, UIScreenW - 40f - half);
             float cy = strip.Y + TalisStripSize.Y * 0.5f + 54f;
             float rowSpan = (TalisFanRowCount(itemCount) - 1) * TalisFanRowGap;
-            //底钳：末行连同摘下位小注、网格脚注的规则行都收在屏底之上；顶钳后手兜底，保交互优先
-            cy = MathF.Min(cy, UIScreenH - 96f - rowSpan);
+            //底钳：末行连同摘下位小注、换行后的规则衬底块（最高两行）都收在屏底之上；
+            //顶钳后手兜底，保交互优先
+            cy = MathF.Min(cy, UIScreenH - 150f - rowSpan);
             cy = MathF.Max(cy, 56f);
             return new Vector2(cx, cy);
         }

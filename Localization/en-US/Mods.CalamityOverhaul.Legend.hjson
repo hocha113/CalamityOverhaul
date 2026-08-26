@@ -732,18 +732,16 @@ OnikiriOverride: {
 	Tooltip:
 		'''
 		Hold left-click to drive the five-beat Crimson Rend combo; landing hits builds Stance
-		Press [DASH] to spend Vigor on a Kamui Flash Step
-		The Domain Expansion key unfolds or folds the Oni Domain; the Flip Domain key turns it between Omote and Ura
-		In Omote, hold [SAKURA] to cruise as sakura petals (a dash chains into it too); release or run dry to reform on the spot
-		In Ura, aim at a foe and left-click to dismember its true body; the wielder then suffers a 25% max-life backlash
-		In the short window after a dash or Sakura Flight ends, left-click for a Zanshin Strike
-		At half Stance or more, press [DASH] again mid-dash or within a second after it ends to chain a free execution dash
-		After an execution dash, left-click for Annihilating Flash; at full Stance, an execution dash that pierces its target unleashes Finale Slash directly
-		At full Stance, press [EXECUTE] to auto-lock, dash, and unleash Finale Slash; with no target it strikes toward the cursor
-		An execution dash costs no Vigor; one that never converts loses nothing
-		[Lang4]
-		legend_Text
+		Vigor fuels Flash Step and Sakura Flight; half and full Stance each unlock a tier of execution
 		'''
+	KeyLabelFlashStep: Kamui Flash Step
+	KeyLabelSakura: Sakura Flight
+	KeyLabelExecute: Execute
+	KeyLabelDomain: Domain Expansion
+	KeyLabelFlip: Omote/Ura Flip
+	KeyLabelTeleport: Domain Teleport
+	TrialProgressLine: Trial Cuts {0} / {1}
+	TrialDoneLine: Trial Cuts · All Twenty-Two Made
 }
 
 OnikiriTrialQuestLine: {
@@ -916,36 +914,25 @@ KikasaOverride: {
 	DisplayName: Kikasa
 	Tooltip:
 		'''
-		While held, Kikasa trails behind your shoulder and tips over to sprinkle ink at nearby foes when you aren't attacking
 		Hold left click to hover the umbrella overhead, dropping homing ink rain to a steady beat
 		Hold right click to charge ink upside down; release to pour out an ink torrent
-		While held, press Domain Expansion to raise the Blood Lake; press again to close it
-		The real damage lives in the lake: without the domain the rain runs thin, and no shades or arms take the field
-		Once the water reaches your feet, hold an item and press Sink into the Lake to store it; reclaim it in the Lakeheart
-		Press the same key aiming at an enemy to drown it; a drowned boss leaves behind a sunken shade
-		Click the wind chime at the bottom left to open the Lakeheart and seat shades in three slots; they fight for you like minions
-		Hold the wheel key to call shades out or back one by one; the fewer afield, the harder each one hits
-		The gold-flame sector on the wheel lights the ghost fire, which spreads along the shore and scorches foes it touches
-		At full water, tap Flip the Lake (middle mouse by default) to flip between Blood Lake and Ghost Rain
-		Foes slain under the ghost rain rise as umbrella thralls that fight for you
-		In ghost rain at full water, press Self-Restart to wind everything nearby back a few seconds, refilling your life and rinsing off debuffs
-		At full water, hold Flip the Lake to sink into the Ghost Dream: foes there are helpless, and no ranged projectile can exist
-		Items are sealed in the dream; hold left click to loose the hounds instead, and press the same key again to wake
-		Only the hounds' bite counts in the dream — talismans on the rain rope do not apply there
-		Press Domain Teleport to slip through a pool of water to your cursor; swifter within the Blood Lake
-		More minion slots quicken the rain's beat, add more drops, and speed up the charge
-		4 slots: each beat throws one extra drop at a second target
-		7 slots: every fourth beat hurls every drop at once
-		10 slots: heavy drops leave burning ink puddles; a full torrent bursts into three ink geysers
-		[Lang4]
-		legend_Text
-		"No rain under the umbrella, only the sound of water"
+		The real damage lives in the Blood Lake: without the domain the rain runs thin, and no shades or arms take the field
 		'''
 	GhostCountLine: Minion slots {0} · {1}
 	TierName0: Drizzle
 	TierName1: Side Toss
 	TierName2: Volley
 	TierName3: Lake Tilt
+	KeyLabelDomain: Domain Expansion
+	KeyLabelSink: Sink into the Lake
+	KeyLabelMutate: Flip the Lake
+	KeyLabelWheel: Shade Wheel
+	KeyLabelRestart: Self-Restart
+	KeyLabelTeleport: Domain Teleport
+	KeyLabelPanorama: Lakeheart
+	MutateFallback: Middle Mouse
+	TrialProgressLine: Sinking Feast {0} / {1}
+	TrialDoneLine: Sinking Feast · Every Seat Sunk
 }
 
 KikasaTrialQuestLine: {
@@ -1173,7 +1160,7 @@ KikasaText: {
 		OpenTag: Click to open
 		TipWaterFormat: Water {0}%
 		TipVaultFormat: Hoard {0} / {1}
-		TipWispClick: "[Click] Light / draw back the flame"
+		TipWispClick: Click the flame sprout to light or draw back the fire
 		TipCooldownFormat: Cooling down · {0}%
 		TipDrownTitle: Drown
 		TipDrownHintFormat: Aim at an enemy or hold an item and press {0}
@@ -1220,8 +1207,8 @@ KikasaText: {
 		ReflectAsleep: The reflection is still asleep
 		InDreamLine: You are in the Ghost Dream
 		DreamReturnFormat: Press {0} again to return
-		DreamEnterKeyFormat: "[Hold {0}] Enter the Ghost Dream"
-		DreamEnterClick: "[Click] Enter the Ghost Dream"
+		DreamEnterKeyFormat: Hold {0} to enter the Ghost Dream
+		DreamEnterClick: Click the hound to enter the Ghost Dream
 		NeedDomainFormat: Press {0} to open the Blood Lake
 		NeedFullWater: The lake isn't full yet
 		HoundBonusFormat: Hound cap {0} · damage {1}%
@@ -1230,8 +1217,11 @@ KikasaText: {
 		WispBoil: Still burning in the rain
 		WispQuenchedLine: Being put out by Ghost Rain
 		WispBonusFormat: Burn {0}s · flame reach {1}
-		WispIgniteClick: "[Click] Light the flame"
-		WispSnuffClick: "[Click] Draw the fire back"
+		WispIgniteClick: Click the gold flame to light the ghost fire
+		WispSnuffClick: Click the gold flame to draw the fire back
+		ActionDreamTag: Enter the Dream
+		ActionIgniteTag: Ignite
+		ActionSnuffTag: Snuff
 		EdgeDreamFire: Dreamfire
 		EdgeBoilRain: Boiling Rain
 		EdgeRainNightmare: Rain-Nightmare
@@ -1241,8 +1231,6 @@ KikasaText: {
 		SeatPickHint: Click to pick up · right-click to remove
 		SeatPlaceHint: Click to place it here
 		SeatHeldLineFormat: Held back — hold {0} for the wheel to call it out
-		SeatOutLine: On the field
-		SeatAwaitLine: Waiting for the lake
 		RosterTallyFormat: Codex {0} / {1}
 		RosterSeatTallyFormat: Seats {0} / {1}
 		RosterUnknown: Not drowned yet

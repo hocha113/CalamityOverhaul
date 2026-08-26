@@ -27,15 +27,19 @@ namespace CalamityOverhaul.Content.Structures
             }
             progress.Set(0.2f);
 
-            if (CWRRef.Has) {
-                //风蚀发电机组以灾厄实验室全息投影仪为锚点，仍需灾厄在场
-                if (WorldGenDensitySave.GetDensity("WindGrivenGenerator") != StructureDensity.Extinction) {
+            if (WorldGenDensitySave.GetDensity("WindGrivenGenerator") != StructureDensity.Extinction) {
+                if (CWRRef.Has) {
+                    //灾厄在场：以空岛实验室全息投影仪为锚点的原方案
                     SpawnWindGrivenGenerator();
                 }
-                progress.Set(0.4f);
-                if (Main.getGoodWorld && WorldGenDensitySave.GetDensity("WGGCollector") != StructureDensity.Extinction) {
-                    SpawnWGGCollectorTile();
+                else {
+                    //无灾厄回退：程序化生成工业空岛承载风机
+                    IndustrialSkyIslandGen.Generate();
                 }
+            }
+            progress.Set(0.4f);
+            if (CWRRef.Has && Main.getGoodWorld && WorldGenDensitySave.GetDensity("WGGCollector") != StructureDensity.Extinction) {
+                SpawnWGGCollectorTile();
             }
             progress.Set(0.6f);
 

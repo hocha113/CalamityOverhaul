@@ -315,7 +315,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
                 float a1 = a0 + MathHelper.TwoPi / dashes * 0.55f;
                 DrawWaterArc(sb, pos, 15f, a0, a1, 1.1f, dim, time, 0.6f);
             }
-            KikasaVaultRenderer.DrawGlowDot(sb, pos, 8f,
+            //座底暗衬同为暗色：走真 alpha 暗盘
+            KikasaVaultRenderer.DrawDarkDisc(sb, pos, 8f,
                 KikasaHudTheme.Deep(rain) * (0.5f * a));
         }
 
@@ -326,8 +327,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
             int filled = servant.FilledSlotCount;
             int active = servant.ActiveSlotCount;
 
-            //章底暗盘
-            KikasaVaultRenderer.DrawGlowDot(sb, center, KikasaServantWheelController.DeadZoneRadius + 6f,
+            //章底暗盘：真 alpha 暗盘（黑底 SoftGlow 在普通批画暗色曾糊出黑方块）
+            KikasaVaultRenderer.DrawDarkDisc(sb, center, KikasaServantWheelController.DeadZoneRadius + 6f,
                 KikasaHudTheme.Void(rain) * (0.85f * a));
 
             //死区环：有影出战时随水呼吸

@@ -100,15 +100,19 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             if (VaultUtils.isClient) {
                 return;
             }
+            //灾厄缺席时退回原版工业味替代品，与 JunkmanBase 战利品映射一致
+            bool hasCal = CWRID.DubiousCircuitryAvailable;
+            int platingItem = hasCal ? CWRID.Item_DubiousPlating : ItemID.TinPlating;
+            int circuitryItem = hasCal ? CWRID.Item_MysteriousCircuitry : ItemID.Wire;
             int dropNum = Main.rand.Next(2, 5);
             for (int i = 0; i < dropNum; i++) {
-                DropItem(CWRID.Item_DubiousPlating);
+                DropItem(platingItem);
             }
             dropNum = Main.rand.Next(1, 3);
             for (int i = 0; i < dropNum; i++) {
-                DropItem(CWRID.Item_MysteriousCircuitry);
+                DropItem(circuitryItem);
             }
-            if (Main.rand.NextBool(50)) {
+            if (hasCal && Main.rand.NextBool(50)) {
                 DropItem(CWRID.Item_SuspiciousScrap);
             }
         }

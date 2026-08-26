@@ -2,8 +2,10 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameInput;
@@ -66,6 +68,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             ReplaceInputPlaceholders(tooltips);
             OnikiriOverride.SetTooltip(Item, ref tooltips);
         }
+
+        /// <summary>返回 false 接管 tooltip 全绘制(行数据仍来自 ModifyTooltips 管线)</summary>
+        public override bool PreDrawTooltip(ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y)
+            => OniItemTooltipPanel.Draw(Item, lines, x, y);
 
         internal static void ReplaceInputPlaceholders(List<TooltipLine> tooltips) {
             InputMode mode = PlayerInput.UsingGamepad ? InputMode.XBoxGamepad : InputMode.Keyboard;

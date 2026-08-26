@@ -1,4 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI;
+using System.Collections.ObjectModel;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -79,6 +81,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
 
         /// <summary>右键=倒撑蓄力重击</summary>
         public override bool AltFunctionUse(Player player) => true;
+
+        /// <summary>返回 false 接管 tooltip 全绘制(行数据仍来自 ModifyTooltips 管线)</summary>
+        public override bool PreDrawTooltip(ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y)
+            => KikasaItemTooltipPanel.Draw(Item, lines, x, y);
 
         //常驻伞由持有生成,使用只负责指挥,不再以伞在场封锁。
         //鬼梦封禁不在这里:KikasaDreamPlayer.SetControls 按梦界圆全局压 noItems,

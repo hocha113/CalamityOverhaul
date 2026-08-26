@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             TipWaterFormat = this.GetLocalization(nameof(TipWaterFormat), () => "Water {0}%");
             TipVaultFormat = this.GetLocalization(nameof(TipVaultFormat), () => "Hoard {0} / {1}");
             TipWispClick = this.GetLocalization(nameof(TipWispClick),
-                () => "[Click] Light / draw back the flame");
+                () => "Click the flame sprout to light or draw back the fire");
             TipCooldownFormat = this.GetLocalization(nameof(TipCooldownFormat),
                 () => "Cooling down \u00b7 {0}%");
             TipDrownTitle = this.GetLocalization(nameof(TipDrownTitle), () => "The Drowning Hand");
@@ -710,7 +710,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 //常显编额（反馈六·#43）：不悬停也能看到 在场/上限
                 string count = $"{CountHounds()}/{KikasaDreamPlayer.MaxHoundsFor(player)}";
                 Utils.DrawBorderString(sb, count, pos + new Vector2(13f, -9f),
-                    KikasaHudTheme.Text(rain) * ((0.85f + hover * 0.15f) * a), 0.8f);
+                    KikasaHudTheme.Text(rain) * ((0.85f + hover * 0.15f) * a), 0.85f);
             }
         }
 
@@ -751,14 +751,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             }
         }
 
-        /// <summary>伞奴计数：一枚小伞章 + n/cap 数字（0.8，不再眯眼）</summary>
+        /// <summary>伞奴计数：一枚小伞章 + n/cap 数字（0.85，不再眯眼）</summary>
         private void DrawThrallReadout(SpriteBatch sb, Vector2 pos, float a, float rain, float hover) {
             KikasaVaultRenderer.DrawSeal(sb, pos + new Vector2(-6f, 0f), 6.5f,
                 (0.7f + hover * 0.25f) * a, Main.GlobalTimeWrappedHourly, 1f,
                 KikasaHudTheme.TextDim(rain), KikasaHudTheme.Accent(rain), KikasaHudTheme.Glow(rain));
             string text = $"{KikasaThrall.CountActive(player.whoAmI)}/{KikasaEffigyBoard.ThrallCap(player)}";
             Utils.DrawBorderString(sb, text, pos + new Vector2(4f, -8f),
-                KikasaHudTheme.Text(rain) * ((0.85f + hover * 0.15f) * a), 0.8f);
+                KikasaHudTheme.Text(rain) * ((0.85f + hover * 0.15f) * a), 0.85f);
         }
 
         /// <summary>自顶顺时针的分数弧（冷却语义）</summary>

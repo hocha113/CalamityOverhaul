@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
             sb.Draw(ring, center, null, color, 0f, origin, scale, SpriteEffects.None, 0f);
         }
 
-        /// <summary>软光点</summary>
+        /// <summary>软光点（黑底 SoftGlow：只许加色批或 A=0 用色，暗色走 <see cref="DrawDarkDisc"/>）</summary>
         public static void DrawGlowDot(SpriteBatch sb, Vector2 center, float radius, Color color) {
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) {
@@ -282,6 +282,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
             Vector2 origin = glow.Size() * 0.5f;
             float s = radius * 2f / glow.Width;
             sb.Draw(glow, center, null, color, 0f, origin, s, SpriteEffects.None, 0f);
+        }
+
+        /// <summary>
+        /// 暗色软圆盘：真 alpha 的 Extra_98 才压得出暗形。
+        /// 黑底 SoftGlow 在 AlphaBlend 批里画暗色会连黑底一起糊成方块（转盘章底实例）；
+        /// ×2 补偿 Extra_98 相对 SoftGlow 更紧的径向衰减
+        /// </summary>
+        public static void DrawDarkDisc(SpriteBatch sb, Vector2 center, float radius, Color color) {
+            Texture2D disc = CWRAsset.Extra_98?.Value;
+            if (disc == null) {
+                return;
+            }
+            Vector2 origin = disc.Size() * 0.5f;
+            float s = radius * 2f / disc.Width * 2f;
+            sb.Draw(disc, center, null, color, 0f, origin, s, SpriteEffects.None, 0f);
         }
 
         public static void DrawLine(SpriteBatch sb, Vector2 a, Vector2 b, float width, Color color) {

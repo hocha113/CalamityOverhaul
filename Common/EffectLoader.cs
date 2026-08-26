@@ -216,6 +216,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> BrimstoneDialogueBox { get; set; }
         public static Asset<Effect> SeaDialogueBox { get; set; }
         public static Asset<Effect> OniNarrativePanel { get; set; }
+        public static Asset<Effect> OniItemPanel { get; set; }
         public static Asset<Effect> SulfseaPanel { get; set; }
         public static Asset<Effect> TzeentchPanel { get; set; }
         public static Asset<Effect> EntrustGuideCard { get; set; }
@@ -278,6 +279,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaSunkEffigy { get; set; }
         public static Asset<Effect> KikasaHand { get; set; }
         public static Asset<Effect> KikasaNarrativePanel { get; set; }
+        public static Asset<Effect> KikasaItemPanel { get; set; }
         public static Asset<Effect> KikasaMoonRay { get; set; }
         public static Asset<Effect> KikasaEaterRift { get; set; }
         public static Asset<Effect> KikasaDeerclopsFrost { get; set; }
