@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using InnoVault.Concurrent;
 using InnoVault.TileProcessors;
@@ -136,6 +137,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
             internal bool isPipe;
             internal bool linked;
             internal bool canDraw;
+            /// <summary>本帧带符号转移量(正=流出本管),表现用</summary>
+            internal int flowMoved;
+            /// <summary>平滑流动包络 -1..1,符号=方向;无流量自然衰减归零(断电/无液即静)</summary>
+            internal float flowVis;
         }
 
         private FluidSideLink[] sides;
@@ -175,6 +180,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
                 side.isPipe = false;
                 side.linked = false;
                 side.canDraw = false;
+                side.flowMoved = 0;
 
                 Point16 checkPos = Position + side.Offset;
                 Tile tile = Framing.GetTileSafely(checkPos);
@@ -192,7 +198,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
                 }
 
                 if (externalTP is FluidPipelineTP otherPipe) {
-                    FluidHelper.EqualizePair(this, otherPipe, TransferStep);
+                    side.flowMoved = FluidHelper.EqualizePair(this, otherPipe, TransferStep);
                     side.externalTP = otherPipe;
                     side.isPipe = true;
                     side.linked = true;
@@ -200,13 +206,14 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
                 else if (externalTP is IFluidContainer machine) {
                     switch (machine.FluidRole) {
                         case FluidNetRole.Source:
-                            FluidHelper.MoveFluid(machine, this, TransferStep);
+                            //机器→管,记为流入(负)
+                            side.flowMoved = -FluidHelper.MoveFluid(machine, this, TransferStep);
                             break;
                         case FluidNetRole.Consumer:
-                            FluidHelper.MoveFluid(this, machine, TransferStep);
+                            side.flowMoved = FluidHelper.MoveFluid(this, machine, TransferStep);
                             break;
                         case FluidNetRole.Storage:
-                            FluidHelper.EqualizePair(this, machine, TransferStep);
+                            side.flowMoved = FluidHelper.EqualizePair(this, machine, TransferStep);
                             break;
                     }
                     side.externalTP = externalTP;
@@ -214,6 +221,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
                 }
 
                 side.canDraw = side.linked;
+            }
+
+            //流动包络:有流量抬升,断流自然衰减(每侧每帧恰好平滑一次)
+            foreach (var side in sides) {
+                float target = MathHelper.Clamp(side.flowMoved / 18f, -1f, 1f);
+                side.flowVis = MathHelper.Lerp(side.flowVis, target, 0.18f);
             }
         }
 
@@ -274,25 +287,33 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
         }
         #endregion
 
-        #region 绘制:复用 UE 管贴图,液体层按液色平涂(充盈度进 alpha)
-        /// <summary>液体层颜色:rgb=液色,a=充盈度</summary>
-        private Color GetFluidDrawColor() {
+        #region 绘制:外壳走 TP 钩子;载液层走 FluidPipelineFlowDraw 合批着色器(缺着色器回退平涂)
+        /// <summary>液体层颜色:rgb=液色,a=充盈度(合批着色器的顶点色契约)</summary>
+        internal Color GetFluidDrawColor() {
             Color c = FluidHelper.GetColor(FluidType);
             c.A = (byte)(MathHelper.Clamp(FluidAmount / (float)FluidCapacity, 0f, 1f) * 255);
             return c;
         }
 
-        private void DrawArm(SpriteBatch spriteBatch, FluidSideLink side, Color fluidColor) {
+        /// <summary>载液着色器缺失时,外壳钩子内平涂回退</summary>
+        private static bool FlowShaderReady => EffectLoader.FluidPipeFlow?.Value != null;
+
+        private void DrawArmCasing(SpriteBatch spriteBatch, FluidSideLink side) {
             Vector2 drawPos = PosInWorld + side.Offset.ToVector2() * 16 - Main.screenPosition;
             float drawRot = side.Offset.ToVector2().ToRotation();
             Vector2 orig = UEPipelineTP.PipelineChannel.Size() / 2;
             Color lightingColor = Lighting.GetColor(Position.ToPoint());
             spriteBatch.Draw(UEPipelineTP.PipelineChannelSide.Value, drawPos + orig, null, lightingColor
                 , drawRot, orig, 1, SpriteEffects.None, 0);
-            if (fluidColor.A > 0) {
-                spriteBatch.Draw(UEPipelineTP.PipelineChannel.Value, drawPos + orig, null, fluidColor
-                    , drawRot, orig, 1, SpriteEffects.None, 0);
-            }
+        }
+
+        /// <summary>臂内液层;flip=水平翻转让流团反向(方向由 C# 承担,着色器恒 +u 行进)</summary>
+        private void DrawArmFluid(SpriteBatch spriteBatch, FluidSideLink side, Color fluidColor, SpriteEffects flip = SpriteEffects.None) {
+            Vector2 drawPos = PosInWorld + side.Offset.ToVector2() * 16 - Main.screenPosition;
+            float drawRot = side.Offset.ToVector2().ToRotation();
+            Vector2 orig = UEPipelineTP.PipelineChannel.Size() / 2;
+            spriteBatch.Draw(UEPipelineTP.PipelineChannel.Value, drawPos + orig, null, fluidColor
+                , drawRot, orig, 1, flip, 0);
         }
 
         public override void PreTileDraw(SpriteBatch spriteBatch) {
@@ -303,7 +324,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
             foreach (var side in sides) {
                 //非管道臂(通向机器)画在物块层之下
                 if (side.canDraw && !side.isPipe) {
-                    DrawArm(spriteBatch, side, fluidColor);
+                    DrawArmCasing(spriteBatch, side);
+                    if (!FlowShaderReady && fluidColor.A > 0) {
+                        DrawArmFluid(spriteBatch, side, fluidColor);
+                    }
                 }
             }
         }
@@ -311,11 +335,15 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
         public override void Draw(SpriteBatch spriteBatch) {
             Color lightingColor = Lighting.GetColor(Position.ToPoint());
             Color fluidColor = GetFluidDrawColor();
+            bool fluidFallback = !FlowShaderReady && fluidColor.A > 0;
 
             if (Shape != PipelineShape.Cross) {
                 foreach (var side in sides) {
                     if (side.canDraw && side.isPipe) {
-                        DrawArm(spriteBatch, side, fluidColor);
+                        DrawArmCasing(spriteBatch, side);
+                        if (fluidFallback) {
+                            DrawArmFluid(spriteBatch, side, fluidColor);
+                        }
                     }
                 }
             }
@@ -326,7 +354,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
                     Vector2 centerPos = CenterInWorld - Main.screenPosition;
                     spriteBatch.Draw(UEPipelineTP.PipelineCrossSide.Value, centerPos, null, lightingColor
                         , 0, UEPipelineTP.PipelineCrossSide.Size() / 2, 1, SpriteEffects.None, 0);
-                    if (fluidColor.A > 0) {
+                    if (fluidFallback) {
                         spriteBatch.Draw(UEPipelineTP.PipelineCross.Value, centerPos, null, fluidColor
                             , 0, UEPipelineTP.PipelineCross.Size() / 2, 1, SpriteEffects.None, 0);
                     }
@@ -336,7 +364,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
                     Rectangle rectSide = UEPipelineTP.PipelineThreeCrutchesSide.Value.GetRectangle(ShapeRotationID, 4);
                     spriteBatch.Draw(UEPipelineTP.PipelineThreeCrutchesSide.Value, drawPos, rectSide, lightingColor
                         , 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-                    if (fluidColor.A > 0) {
+                    if (fluidFallback) {
                         Rectangle rect = UEPipelineTP.PipelineThreeCrutches.Value.GetRectangle(ShapeRotationID, 4);
                         spriteBatch.Draw(UEPipelineTP.PipelineThreeCrutches.Value, drawPos, rect, fluidColor
                             , 0, Vector2.Zero, 1, SpriteEffects.None, 0);
@@ -347,7 +375,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
                     Rectangle rectSide = UEPipelineTP.PipelineCornerSide.Value.GetRectangle(ShapeRotationID, 4);
                     spriteBatch.Draw(UEPipelineTP.PipelineCornerSide.Value, drawPos, rectSide, lightingColor
                         , 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-                    if (fluidColor.A > 0) {
+                    if (fluidFallback) {
                         Rectangle rect = UEPipelineTP.PipelineCorner.Value.GetRectangle(ShapeRotationID, 4);
                         spriteBatch.Draw(UEPipelineTP.PipelineCorner.Value, drawPos, rect, fluidColor
                             , 0, Vector2.Zero, 1, SpriteEffects.None, 0);
@@ -357,12 +385,90 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
                 case PipelineShape.Endpoint: {
                     if (ShouldDrawEndpointCenter()) {
                         spriteBatch.Draw(UEPipelineTP.PipelineSide.Value, drawPos.GetRectangle(Size), lightingColor);
-                        if (fluidColor.A > 0) {
+                        if (fluidFallback) {
                             spriteBatch.Draw(UEPipelineTP.Pipeline.Value, drawPos.GetRectangle(Size), fluidColor);
                         }
                     }
                     break;
                 }
+            }
+        }
+
+        /// <summary>载液本体层:充盈度进顶点色 a,着色器静态呈现"管里有多少液"</summary>
+        internal void DrawFluidBody(SpriteBatch spriteBatch) {
+            Color vc = GetFluidDrawColor();
+            if (vc.A <= 0) {
+                return;
+            }
+
+            if (Shape != PipelineShape.Cross) {
+                foreach (var side in sides) {
+                    if (side.canDraw) {
+                        DrawArmFluid(spriteBatch, side, vc);
+                    }
+                }
+            }
+
+            Vector2 drawPos = PosInWorld - Main.screenPosition;
+            switch (Shape) {
+                case PipelineShape.Cross: {
+                    Vector2 centerPos = CenterInWorld - Main.screenPosition;
+                    spriteBatch.Draw(UEPipelineTP.PipelineCross.Value, centerPos, null, vc
+                        , 0, UEPipelineTP.PipelineCross.Size() / 2, 1, SpriteEffects.None, 0);
+                    break;
+                }
+                case PipelineShape.ThreeWay: {
+                    Rectangle rect = UEPipelineTP.PipelineThreeCrutches.Value.GetRectangle(ShapeRotationID, 4);
+                    spriteBatch.Draw(UEPipelineTP.PipelineThreeCrutches.Value, drawPos, rect, vc
+                        , 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                    break;
+                }
+                case PipelineShape.Corner: {
+                    Rectangle rect = UEPipelineTP.PipelineCorner.Value.GetRectangle(ShapeRotationID, 4);
+                    spriteBatch.Draw(UEPipelineTP.PipelineCorner.Value, drawPos, rect, vc
+                        , 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                    break;
+                }
+                case PipelineShape.Endpoint: {
+                    if (ShouldDrawEndpointCenter()) {
+                        spriteBatch.Draw(UEPipelineTP.Pipeline.Value, drawPos.GetRectangle(Size), vc);
+                    }
+                    break;
+                }
+            }
+        }
+
+        /// <summary>该管在指定快慢桶里是否有活跃流动臂(流团批的收集谓词)</summary>
+        internal bool HasFlowArm(bool slowBucket) {
+            if (FluidVFX.IsSlowFluid(FluidType) != slowBucket) {
+                return false;
+            }
+            foreach (var side in sides) {
+                if (side.canDraw && System.MathF.Abs(side.flowVis) > 0.06f) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>流团层:顶点色 a=活跃度,流入臂水平翻转让行进方向反向</summary>
+        internal void DrawFluidFlow(SpriteBatch spriteBatch) {
+            if (Shape == PipelineShape.Cross) {
+                return;
+            }
+            Color baseColor = FluidHelper.GetColor(FluidType);
+            foreach (var side in sides) {
+                if (!side.canDraw) {
+                    continue;
+                }
+                float act = System.MathF.Abs(side.flowVis);
+                if (act <= 0.06f) {
+                    continue;
+                }
+                Color vc = baseColor;
+                vc.A = (byte)(MathHelper.Clamp(act, 0f, 1f) * 255);
+                SpriteEffects flip = side.flowVis < 0f ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                DrawArmFluid(spriteBatch, side, vc, flip);
             }
         }
 
@@ -381,5 +487,49 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
             return linkCount != 2 || nonPipeLinkCount == 2 || linkCount == 0;
         }
         #endregion
+    }
+
+    /// <summary>
+    /// 液管载液合批:本体层 + 快液流团 + 慢液流团三批,PreTileDraw 层
+    /// (<see cref="EffectLoader.FluidPipeFlow"/>);缺着色器时各管在外壳钩子里平涂回退。
+    /// 流团方向由臂的水平翻转承担,快慢桶给水/微光与岩浆/蜜不同行进速度(粘度身份)
+    /// </summary>
+    internal class FluidPipelineFlowDraw : GlobalTileProcessor
+    {
+        public override bool PreTileDrawEverything(SpriteBatch spriteBatch) {
+            //本体:充盈度亮度,静止——断电/无液即静是状态语言
+            MachineShaderBatch.DrawBatch(spriteBatch, EffectLoader.FluidPipeFlow, SamplerState.PointClamp,
+                static tp => tp is FluidPipelineTP pipe && pipe.FluidAmount > 0,
+                static effect => {
+                    effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+                    effect.Parameters["uAlpha"]?.SetValue(1f);
+                    effect.Parameters["uFlowMode"]?.SetValue(0f);
+                    effect.Parameters["uSpeed"]?.SetValue(0f);
+                },
+                tp => ((FluidPipelineTP)tp).DrawFluidBody(spriteBatch));
+
+            //快液流团(水/微光)
+            MachineShaderBatch.DrawBatch(spriteBatch, EffectLoader.FluidPipeFlow, SamplerState.PointClamp,
+                static tp => tp is FluidPipelineTP pipe && pipe.HasFlowArm(slowBucket: false),
+                static effect => {
+                    effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+                    effect.Parameters["uAlpha"]?.SetValue(1f);
+                    effect.Parameters["uFlowMode"]?.SetValue(1f);
+                    effect.Parameters["uSpeed"]?.SetValue(0.9f);
+                },
+                tp => ((FluidPipelineTP)tp).DrawFluidFlow(spriteBatch));
+
+            //慢液流团(岩浆/蜜):行进放慢读出粘度
+            MachineShaderBatch.DrawBatch(spriteBatch, EffectLoader.FluidPipeFlow, SamplerState.PointClamp,
+                static tp => tp is FluidPipelineTP pipe && pipe.HasFlowArm(slowBucket: true),
+                static effect => {
+                    effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+                    effect.Parameters["uAlpha"]?.SetValue(1f);
+                    effect.Parameters["uFlowMode"]?.SetValue(1f);
+                    effect.Parameters["uSpeed"]?.SetValue(0.34f);
+                },
+                tp => ((FluidPipelineTP)tp).DrawFluidFlow(spriteBatch));
+            return true;
+        }
     }
 }

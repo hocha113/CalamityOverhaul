@@ -190,6 +190,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> TeslaGuardRing { get; set; }
         public static Asset<Effect> UEPipelineFlow { get; set; }
         public static Asset<Effect> CreativePipelineFlow { get; set; }
+        public static Asset<Effect> FluidPipeFlow { get; set; }
+        public static Asset<Effect> FluidPour { get; set; }
         public static Asset<Effect> ThermalHeatHaze { get; set; }
         public static Asset<Effect> VoidColonySky { get; set; }
         public static Asset<Effect> VoidFog { get; set; }

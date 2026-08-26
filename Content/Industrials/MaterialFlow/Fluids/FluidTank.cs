@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.IO;
 using Terraria;
 using Terraria.DataStructures;
@@ -112,8 +113,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
         private float displayRatio;
         private bool ratioInited;
         //观察窗本地 UV 范围,对齐占位罐体贴图的透明窗
-        private static readonly Vector2 ChamberMin = new(0.21f, 0.20f);
-        private static readonly Vector2 ChamberMax = new(0.71f, 0.82f);
+        internal static readonly Vector2 ChamberMin = new(0.21f, 0.20f);
+        internal static readonly Vector2 ChamberMax = new(0.71f, 0.82f);
+
+        //充放活跃度 0..1(液面涌动与亮线增强),动画时钟(待机冻结)
+        private float activityVis;
+        private float animTime;
+        private int lastFluidAmount = -1;
 
         public override void SetMachine() {
             Efficiency = 0;//无 UE 角色,不参与 UE 均衡
@@ -123,11 +129,21 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
             float ratio = MathHelper.Clamp(FluidAmount / (float)FluidCapacity, 0f, 1f);
             if (!ratioInited) {
                 displayRatio = ratio;
+                lastFluidAmount = FluidAmount;
                 ratioInited = true;
             }
             else {
                 displayRatio = MathHelper.Lerp(displayRatio, ratio, 0.1f);
             }
+
+            //充放活跃度:液量变化抬升,静止衰减
+            int delta = Math.Abs(FluidAmount - lastFluidAmount);
+            lastFluidAmount = FluidAmount;
+            float target = MathHelper.Clamp(delta / 12f, 0f, 1f);
+            activityVis = MathHelper.Lerp(activityVis, target, delta > 0 ? 0.3f : 0.05f);
+
+            //动画时钟:待机(Disabled)时基类跳过 UpdateMachine,波/泡自然冻住——"断电静止"的状态语言
+            animTime += 1f / 60f;
         }
 
         #region 存档与同步:液体字段追加在基类之后
@@ -156,29 +172,29 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
         }
         #endregion
 
-        /// <summary>液面画在物块层之下,从罐体观察窗透出;顶缘亮线示意液面</summary>
+        /// <summary>
+        /// 液面画在物块层之下,从罐体观察窗透出:
+        /// 波列液面+高光线+按液型气泡(水快泡/岩浆熔泡黑壳/蜜懒泡/微光星尘),
+        /// 液面升降平滑插值,充放液时涌动增强
+        /// </summary>
         public override void PreTileDraw(SpriteBatch spriteBatch) {
-            float ratio = MathHelper.Clamp(displayRatio, 0f, 1f);
-            if (ratio <= 0.005f) {
-                return;
-            }
-
             Vector2 basePos = PosInWorld - Main.screenPosition;
-            float chamberLeft = basePos.X + ChamberMin.X * Width;
-            float chamberTop = basePos.Y + ChamberMin.Y * Height;
-            float chamberWidth = (ChamberMax.X - ChamberMin.X) * Width;
-            float chamberHeight = (ChamberMax.Y - ChamberMin.Y) * Height;
+            Rectangle chamber = new(
+                (int)(basePos.X + ChamberMin.X * Width),
+                (int)(basePos.Y + ChamberMin.Y * Height),
+                (int)((ChamberMax.X - ChamberMin.X) * Width),
+                (int)((ChamberMax.Y - ChamberMin.Y) * Height));
 
-            float fluidHeight = chamberHeight * ratio;
-            float fluidTop = chamberTop + chamberHeight - fluidHeight;
+            FluidVFX.DrawLiquidWindow(spriteBatch, chamber, FluidType,
+                MathHelper.Clamp(displayRatio, 0f, 1f), animTime, activityVis, WhoAmI + 7);
 
-            Color body = FluidHelper.GetColor(FluidType);
-            Texture2D px = VaultAsset.placeholder2.Value;
-            //液体本体(微暗)与液面亮线
-            spriteBatch.Draw(px, new Rectangle((int)chamberLeft, (int)fluidTop, (int)chamberWidth, (int)fluidHeight)
-                , new Color((int)(body.R * 0.8f), (int)(body.G * 0.8f), (int)(body.B * 0.8f)));
-            spriteBatch.Draw(px, new Rectangle((int)chamberLeft, (int)fluidTop, (int)chamberWidth, 2)
-                , Color.Lerp(body, Color.White, 0.35f));
+            //岩浆/微光的暗处可读性:液窗对场景补一点点光
+            FluidStyle style = FluidVFX.GetStyle(FluidType);
+            if (style.Glow > 0.3f && displayRatio > 0.02f) {
+                Color c = style.Main;
+                float k = style.Glow * 0.30f * MathHelper.Clamp(displayRatio * 2f, 0f, 1f);
+                Lighting.AddLight(CenterInWorld, c.R / 255f * k, c.G / 255f * k, c.B / 255f * k);
+            }
         }
 
         public override void FrontDraw(SpriteBatch spriteBatch) {

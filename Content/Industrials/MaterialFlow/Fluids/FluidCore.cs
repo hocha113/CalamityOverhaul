@@ -89,11 +89,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
 
         /// <summary>
         /// 两容器成对压差均衡(镜像 UE 管网的成对形状,严格守恒)。
-        /// 类型闸:双方都有液且类型不同则不动;空方从有液方继承类型
+        /// 类型闸:双方都有液且类型不同则不动;空方从有液方继承类型。
+        /// 返回带符号实送量:正=a→b,负=b→a(供流动表现读方向,零副作用)
         /// </summary>
-        public static void EqualizePair(IFluidContainer a, IFluidContainer b, int stepLimit) {
+        public static int EqualizePair(IFluidContainer a, IFluidContainer b, int stepLimit) {
             if (a.FluidAmount > 0 && b.FluidAmount > 0 && a.FluidType != b.FluidType) {
-                return;
+                return 0;
             }
 
             //以充盈比例差定方向,双方容量一致时退化为量差
@@ -101,11 +102,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
             float ratioB = b.FluidCapacity > 0 ? b.FluidAmount / (float)b.FluidCapacity : 0f;
 
             if (ratioA - ratioB > 0.01f) {
-                MoveFluid(a, b, stepLimit);
+                return MoveFluid(a, b, stepLimit);
             }
-            else if (ratioB - ratioA > 0.01f) {
-                MoveFluid(b, a, stepLimit);
+            if (ratioB - ratioA > 0.01f) {
+                return -MoveFluid(b, a, stepLimit);
             }
+            return 0;
         }
 
         /// <summary>从 from 向 to 输送至多 stepLimit 单位,返回实送量</summary>

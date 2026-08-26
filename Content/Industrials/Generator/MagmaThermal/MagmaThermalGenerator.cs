@@ -1,8 +1,11 @@
 using CalamityOverhaul.Content.Industrials.MachineModules;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
@@ -159,7 +162,17 @@ namespace CalamityOverhaul.Content.Industrials.Generator.MagmaThermal
         /// <summary>岩浆消耗的小数累加器</summary>
         private float lavaAcc;
 
+        #region 纯客户端表现状态(炉膛呼吸/烬/烟)
+        private float animTime;
+        private int emberTimer;
+        private int smokeTimer;
+        #endregion
+
         public override void GeneratorUpdate() {
+            if (!Main.dedServ) {
+                UpdateFurnaceVisual();
+            }
+
             //被动接触检测按节拍缓存,扫描只读并行安全
             if (--lavaScanTimer <= 0) {
                 lavaScanTimer = LavaScanInterval;
@@ -197,6 +210,86 @@ namespace CalamityOverhaul.Content.Industrials.Generator.MagmaThermal
                 WorkLevel = MathHelper.Lerp(WorkLevel, 0f, 0.03f);
             }
         }
+
+        #region 表现推进(纯客户端,零网络)
+        /// <summary>
+        /// 烧浆=熔炉全开:烬粒上浮+浓烟;贴浆被动=弱版只余零星烬。
+        /// 全部挂在 WorkLevel/touchingLava/FluidAmount 真实状态字段上
+        /// </summary>
+        private void UpdateFurnaceVisual() {
+            animTime += 1f / 60f;
+            if (WorkLevel <= 0.05f || !FluidVFX.NearLocalPlayer(CenterInWorld)) {
+                return;
+            }
+
+            bool activeBurn = FluidAmount > 0;
+            //烬粒:热浮对流,自炉体上沿冒出
+            int emberInterval = activeBurn ? 9 : 30;
+            if (++emberTimer >= emberInterval) {
+                emberTimer = 0;
+                Vector2 spawn = new(PosInWorld.X + Main.rand.NextFloat(8f, Width - 8f), PosInWorld.Y + 4f);
+                Defer(() => {
+                    var ember = PRTLoader.NewParticle<PRT_SHPCThermalEmber>(spawn,
+                        new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), -Main.rand.NextFloat(0.4f, 1.0f)),
+                        new Color(255, 190, 90), Main.rand.NextFloat(0.5f, 0.9f));
+                    ember?.Configure(new Color(120, 40, 28), Main.rand.Next(30, 50));
+                });
+            }
+            //浓烟:只在烧浆时,机顶缓升的暗烟(Fog 真 alpha 可染暗色)
+            if (activeBurn && ++smokeTimer >= 16) {
+                smokeTimer = 0;
+                Vector2 spawn = new(PosInWorld.X + Main.rand.NextFloat(10f, Width - 10f), PosInWorld.Y + 2f);
+                Defer(() => {
+                    PRTLoader.NewParticle<PRT_FluidSteam>(spawn, new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), -0.5f),
+                        new Color(52, 38, 34) * 0.55f, Main.rand.NextFloat(0.16f, 0.26f))
+                        ?.Configure(Main.rand.Next(50, 80), 0.035f);
+                });
+            }
+        }
+        #endregion
+
+        #region 机面覆层:储浆液窗(物块下)+炉膛熔光呼吸与熔缝(物块上)
+        public override void PreTileDraw(SpriteBatch spriteBatch) {
+            //储浆窗:与储罐同一支液窗笔,岩浆材质(熔泡慢涌+黑壳浮斑)
+            Vector2 basePos = PosInWorld - Main.screenPosition;
+            Rectangle chamber = new(
+                (int)(basePos.X + FluidTankTP.ChamberMin.X * Width),
+                (int)(basePos.Y + FluidTankTP.ChamberMin.Y * Height),
+                (int)((FluidTankTP.ChamberMax.X - FluidTankTP.ChamberMin.X) * Width),
+                (int)((FluidTankTP.ChamberMax.Y - FluidTankTP.ChamberMin.Y) * Height));
+            FluidVFX.DrawLiquidWindow(spriteBatch, chamber, LiquidID.Lava,
+                MathHelper.Clamp(FluidAmount / (float)FluidCapacity, 0f, 1f), animTime,
+                WorkLevel * 0.5f, WhoAmI + 29);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch) {
+            //待机冻结时 WorkLevel 不再衰减,这里显式断掉炉膛光
+            if (WorkLevel <= 0.03f || Disabled) {
+                return;
+            }
+            Texture2D px = VaultAsset.placeholder2.Value;
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            Vector2 basePos = PosInWorld - Main.screenPosition;
+            FluidStyle style = FluidVFX.GetStyle(LiquidID.Lava);
+
+            //炉膛熔光:双层呼吸辉光压在机体下部,烧浆满亮,贴浆被动是弱版
+            float breath = 0.82f + 0.18f * MathF.Sin(animTime * 2.4f + WhoAmI);
+            Vector2 furnace = new(basePos.X + Width / 2f, basePos.Y + Height * 0.72f);
+            spriteBatch.Draw(glow, furnace, null, FluidVFX.Glow(style.Main, 0.55f * WorkLevel * breath),
+                0f, glow.Size() * 0.5f, 1.05f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(glow, furnace, null, FluidVFX.Glow(style.Bright, 0.35f * WorkLevel * breath),
+                0f, glow.Size() * 0.5f, 0.5f, SpriteEffects.None, 0f);
+
+            //底缘熔缝:两道错相闪烁的亮线,读作炉体接缝透光
+            for (int i = 0; i < 2; i++) {
+                float flicker = 0.5f + 0.5f * MathF.Sin(animTime * (3.1f + i * 1.7f) + i * 2.4f + WhoAmI);
+                int seamY = (int)(basePos.Y + Height) - 4 - i * 5;
+                int seamW = (int)(Width * (0.5f - i * 0.14f));
+                spriteBatch.Draw(px, new Rectangle((int)(basePos.X + (Width - seamW) / 2f), seamY, seamW, 1),
+                    FluidVFX.Glow(style.Bright, (0.3f + 0.4f * flicker) * WorkLevel));
+            }
+        }
+        #endregion
 
         /// <summary>机体及外缘一圈是否接触世界岩浆</summary>
         private bool ScanLavaContact() {
