@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph.Project
     /// 雨云魔棒「雨幕走廊」：owner 的两朵雨云之间架起 60px 宽的雨幕连线带。<br/>
     /// 端点各端独立从在场云弹幕（原版同步实体）读取，几何按 X 排序保证稳定；
     /// 带内敌人受 tick 伤害并被温和减速（NPC 位移只在服务端权威写入）；
-    /// 雷雨形态下由 owner 端周期在带内落雷（GsBurstProj 柱形，全端可见）。
+    /// 雷雨形态下由 owner 端周期在带内落雷（GsMorphBurstProj 柱形，全端可见）。
     /// 任一云消失即由 owner 端收束
     /// </summary>
     internal class GsNimbusCorridorProj : ModProjectile
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph.Project
                 && Main.player[Projectile.owner].GetModPlayer<GsMorphPlayer>().NimbusStorm
                 && Projectile.timeLeft % 72 == 0) {
                 Vector2 strike = Vector2.Lerp(endA, endB, Main.rand.NextFloat(0.15f, 0.85f));
-                GsBurstProj.Spawn(Projectile, strike, (int)(Projectile.damage * 4.3f), 40f, 2);
+                GsMorphBurstProj.Spawn(Projectile, strike, (int)(Projectile.damage * 4.3f), 40f, 2);
                 if (!VaultUtils.isServer) {
                     Vector2 cloud = strike.X - endA.X < endB.X - strike.X ? endA : endB;
                     PRTLoader.NewParticle<PRT_SkyBolt>(strike, Vector2.Zero, new Color(150, 200, 255), 1f)

@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
     /// 鬼梦湖雾系统：潮汐推进、模拟驱动、Filter 激活、PostDrawTiles 雾层绘制与 CPU 回退。<br/>
     /// 潮汐钟已服务器权威化：dedServ 分支只推 <see cref="KiyumeFogTide.Update"/>（广播对钟见
     /// <see cref="KiyumeTideAuthority"/>），Sim/Suppression/渲染仍是纯客户端表现，不过线。<br/>
-    /// 层序（PostDrawTiles，顺序即契约）：远带解析雾 → 犬影 → 鸦群 → 近带雾海 → 贴地雾 → 犬目光点，
+    /// 层序（PostDrawTiles，顺序即契约）：远带解析雾 → 犬影 → 鸦群 → 檐上栖鸦 → 近带雾海 → 贴地雾 → 犬目光点，
     /// 全部画在墙/砖/NPC 之后、玩家/弹幕之前；前景瘴气经 Filters.Scene 盖在世界最上层，
     /// 并在那一层把亮点晕开（雾吃光）
     /// </summary>
@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
             }
             Effect fx = EffectLoader.KiyumeFog?.Value;
             bool shaderReady = fx != null && KiyumeFogSim.Ready;
-            //层序即契约：远带 quad → 犬影 → 鸦群 → 近带雾海 → 贴地雾 → 犬目光点（后两层在方法尾）。
+            //层序即契约：远带 quad → 犬影 → 鸦群 → 檐上栖鸦 → 近带雾海 → 贴地雾 → 犬目光点（后两层在方法尾）。
             //犬影/鸦群夹在远近两层之间："在雾墙后面"从此身后真有一层雾，剪影埋进雾的厚度里
             if (shaderReady) {
                 DrawFarLayer(fx);

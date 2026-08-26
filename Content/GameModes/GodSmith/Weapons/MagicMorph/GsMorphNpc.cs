@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
     /// MagicMorph 族 NPC 附着状态（instanced GlobalNPC）。<br/>
     /// 血蚀层与霜蚀易伤都是攻击方本地量：挂层发生在命中钩子（只在攻击方端执行），
     /// 消费（引爆判定/易伤乘区）也在攻击方端的命中管线里，端别自洽、无需过线；
-    /// 引爆产物是真弹幕（GsBurstProj），由 owner 生成后全端可见
+    /// 引爆产物是真弹幕（GsMorphBurstProj），由 owner 生成后全端可见
     /// </summary>
     internal class GsMorphNpc : GlobalNPC
     {

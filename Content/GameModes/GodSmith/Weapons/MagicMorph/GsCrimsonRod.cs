@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
             morphNpc.BloodErodeTimer = 240;
             if (morphNpc.BloodErode >= 3) {
                 morphNpc.BloodErode = 0;
-                GsBurstProj.Spawn(proj, target.Center, proj.damage * 2, 60f, 0);
+                GsMorphBurstProj.Spawn(proj, target.Center, proj.damage * 2, 60f, 0);
             }
         }
     }

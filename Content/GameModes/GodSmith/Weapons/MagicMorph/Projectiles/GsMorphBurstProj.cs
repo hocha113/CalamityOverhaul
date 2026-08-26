@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph.Project
     /// 出生随生成包定型，前 4 帧判定（每目标一次），其余帧只演出；
     /// 视觉是扩张冲击环 + 出生迸溅，与判定半径同源
     /// </summary>
-    internal class GsBurstProj : ModProjectile
+    internal class GsMorphBurstProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph.Project
         internal static void Spawn(Projectile source, Vector2 pos, int damage, float radius, int styleIdx) {
             int dmg = (int)MathHelper.Clamp(damage, 1, 1200);
             Projectile.NewProjectile(source.GetSource_FromAI(), pos, Vector2.Zero,
-                ModContent.ProjectileType<GsBurstProj>(), dmg, 2f, source.owner, radius, styleIdx);
+                ModContent.ProjectileType<GsMorphBurstProj>(), dmg, 2f, source.owner, radius, styleIdx);
         }
     }
 }

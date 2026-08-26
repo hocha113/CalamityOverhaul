@@ -189,6 +189,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
         private void Enrage(int who) {
             StackCount = who;   //ai[3]=触怒者，与转移同包过线
             ChangeState(StateTurn);
+            //闷吼撕开滩涂，挂上听觉地图（协调者裁决：一次性巨响全额，与坠棺/尖啸同阶）
+            Stealth.KiyumeStealthSense.ReportNoise(NPC.Center, KiyumeHoundMetrics.WeaponImpulse);
         }
 
         /// <summary>

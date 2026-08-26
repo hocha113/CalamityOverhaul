@@ -98,8 +98,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
                 PlayStateCue();
             }
             ServerSyncPacer();
-            //触怒序列免打扰：冷视起再打不换目标（镜像无面者）
-            NPC.dontTakeDamage = (int)State >= StateStare;
+            //惩罚序列免打扰：冷视/化雾不换目标（镜像无面者）；退场期仍可打，动手即认账（下方受击检查的 Leave 臂）
+            NPC.dontTakeDamage = (int)State is StateStare or StateDissolve;
 
             //受击即触怒：血线就是证词（镜像无面者），同行与退场期都认账；
             //触怒者=最后动手的人（case 28 服务器已记 lastInteraction，对源 MessageBuffer L1817）
