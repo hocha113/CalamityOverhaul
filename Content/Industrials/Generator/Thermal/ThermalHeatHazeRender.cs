@@ -54,27 +54,38 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Vector2 playerCenter = Main.LocalPlayer?.Center ?? Main.screenPosition;
 
             foreach (var baseTP in TileProcessorLoader.TP_InWorld) {
-                if (baseTP is not ThermalGeneratorTP tp || !tp.Active) {
-                    continue;
-                }
-                if (tp.MachineData is not ThermalData data) {
-                    continue;
-                }
-                if (data.Temperature < MinTemperature && !data.IsBurning) {
+                if (!baseTP.Active) {
                     continue;
                 }
 
-                Rectangle hb = tp.HitBox;
+                //按机型折算热浪强度:燃煤热力机走温度曲线,岩浆热能机走工况(烧浆全开/贴浆弱版)
+                float intensity;
+                if (baseTP is ThermalGeneratorTP tp) {
+                    if (tp.MachineData is not ThermalData data) {
+                        continue;
+                    }
+                    if (data.Temperature < MinTemperature && !data.IsBurning) {
+                        continue;
+                    }
+                    //燃烧时保底强度，防冷却戛止
+                    float maxTemp = data.MaxTemperature > 0 ? data.MaxTemperature : 600f;
+                    float tempRatio = MathHelper.Clamp(data.Temperature / maxTemp, 0f, 1f);
+                    intensity = MathHelper.Clamp((tempRatio - 0.05f) / 0.95f, 0f, 1f);
+                    if (data.IsBurning) {
+                        intensity = MathF.Max(intensity, 0.3f);
+                    }
+                }
+                else if (baseTP is MagmaThermal.MagmaThermalGeneratorTP magma) {
+                    //待机冻结的 WorkLevel 不作数
+                    intensity = magma.Disabled ? 0f : magma.WorkLevel * (magma.FluidAmount > 0 ? 0.85f : 0.4f);
+                }
+                else {
+                    continue;
+                }
+
+                Rectangle hb = baseTP.HitBox;
                 if (!screenRect.Intersects(hb)) {
                     continue;
-                }
-
-                //燃烧时保底强度，防冷却戛止
-                float maxTemp = data.MaxTemperature > 0 ? data.MaxTemperature : 600f;
-                float tempRatio = MathHelper.Clamp(data.Temperature / maxTemp, 0f, 1f);
-                float intensity = MathHelper.Clamp((tempRatio - 0.05f) / 0.95f, 0f, 1f);
-                if (data.IsBurning) {
-                    intensity = MathF.Max(intensity, 0.3f);
                 }
                 if (intensity <= 0.02f) {
                     continue;
