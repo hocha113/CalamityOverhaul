@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sunkendune.Proj
                 }
                 else if (elapsed == LeakFrames) {
                     SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.7f, Pitch = -0.1f, MaxInstances = 5 }, Projectile.Center);
-                    SoundEngine.PlaySound(SoundID.WormDigQuick with { Volume = 0.55f, Pitch = 0.2f, MaxInstances = 5 }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.WormDig with { Volume = 0.55f, Pitch = 0.2f, MaxInstances = 5 }, Projectile.Center);
                 }
                 else if (pouring && elapsed % 18 == 0) {
                     SoundEngine.PlaySound(SoundID.WormDig with { Volume = 0.32f, Pitch = 0.55f, MaxInstances = 5 }, Projectile.Center);

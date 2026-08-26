@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sunkendune.Proj
                     }, Projectile.Center);
                 }
                 else if (elapsed == TelegraphFrames) {
-                    SoundEngine.PlaySound(SoundID.WormDigQuick with { Volume = 0.7f, Pitch = -0.15f, MaxInstances = 5 }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.WormDig with { Volume = 0.7f, Pitch = -0.15f, MaxInstances = 5 }, Projectile.Center);
                 }
                 else if (active && elapsed % 26 == 0) {
                     SoundEngine.PlaySound(SoundID.WormDig with { Volume = 0.3f, Pitch = 0.45f, MaxInstances = 5 }, Projectile.Center);

@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard.Specials
             Vector2 aim = GsAimUnit(player);
             Vector2 vel = aim * speed * (1f + ratio);
             int dmg = (int)(damage * (1f + 0.5f * ratio));
-            Projectile.NewProjectile(player.GetSource_ItemUse_WithAmmo(item, usedAmmoID),
+            Projectile.NewProjectile(player.GetSource_ItemUse_WithPotentialAmmo(item, usedAmmoID),
                 player.Center + aim * 20f, vel, projType, dmg, knockback, player.whoAmI);
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item98 with {

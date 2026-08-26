@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard.Specials
             }
             //巡域鱼有在场上限，满编时这一枪打不出去
             if (player.whoAmI == Main.myPlayer && mode == 1
-                && player.ownedProjectileCounts[ProjectileID.Piranha] >= PatrolCap) {
+                && player.ownedProjectileCounts[ProjectileID.MechanicalPiranha] >= PatrolCap) {
                 return false;
             }
             return null;
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard.Specials
         }
 
         public override bool GsProjPreAI(Projectile proj, GodSmithProjRouter router) {
-            if (proj.type != ProjectileID.Piranha || router.MarkData < 1f) {
+            if (proj.type != ProjectileID.MechanicalPiranha || router.MarkData < 1f) {
                 return true;//咬附档完全原版
             }
 

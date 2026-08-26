@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;

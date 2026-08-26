@@ -590,6 +590,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
         private float Radius => Projectile.ai[0];
         private int Flavor => (int)Projectile.ai[1];
 
+        /// <summary>调色爆配色表，下标由 ai[2] 给出，取值 0 至 6</summary>
+        private static readonly Color[] PaintPalette = [
+            new Color(226, 72, 72), new Color(232, 143, 58), new Color(226, 208, 74),
+            new Color(96, 200, 96), new Color(72, 148, 226), new Color(140, 92, 208),
+            new Color(226, 108, 178)];
+
         public override void SetDefaults() {
             Projectile.width = 8;
             Projectile.height = 8;
@@ -660,7 +666,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
                     }
                     break;
                 case 2: //调色爆
-                    Color paint = GsPaintballGun.PaintPalette[(int)MathHelper.Clamp(Projectile.ai[2], 0f, 6f)];
+                    Color paint = PaintPalette[(int)MathHelper.Clamp(Projectile.ai[2], 0f, 6f)];
                     PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero, paint, 0f)
                         ?.Configure(0.04f, Radius / 100f, 10);
                     for (int i = 0; i < 8; i++) {

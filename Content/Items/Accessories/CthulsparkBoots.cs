@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         //盾放最后,保证冲刺由克苏鲁之盾定型
         internal static readonly int[] FuseSources = [
             ItemID.AmphibianBoots, ItemID.TerrasparkBoots,
-            ItemID.BundleofHorseshoeBalloons, ItemID.EoCShield];
+            ItemID.HorseshoeBundle, ItemID.EoCShield];
 
         public override void SetDefaults() {
             Item.width = 28;
@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.rare = ItemRarityID.LightPurple;
             //穿戴外观:闪耀靴鞋部+马蹄气球束+克苏鲁之盾,交给原版可见饰品管线
             Item.shoeSlot = new Item(ItemID.TerrasparkBoots).shoeSlot;
-            Item.balloonSlot = new Item(ItemID.BundleofHorseshoeBalloons).balloonSlot;
+            Item.balloonSlot = new Item(ItemID.HorseshoeBundle).balloonSlot;
             Item.shieldSlot = new Item(ItemID.EoCShield).shieldSlot;
         }
 
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void AddRecipes() {
             CreateRecipe()
                 .AddIngredient<FrogsparkBoots>()
-                .AddIngredient(ItemID.BundleofHorseshoeBalloons)
+                .AddIngredient(ItemID.HorseshoeBundle)
                 .AddIngredient(ItemID.EoCShield)
                 .AddTile(TileID.TinkerersWorkbench)
                 .Register();

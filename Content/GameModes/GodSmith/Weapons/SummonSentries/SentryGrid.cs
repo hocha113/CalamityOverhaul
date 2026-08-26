@@ -1,4 +1,6 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Schemes;
+using CalamityOverhaul.Content.GameModes.UI;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;

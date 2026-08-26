@@ -216,13 +216,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Launchers
         /// <summary>多米诺连锁调度队列：(弹幕槽位, identity 校验, 延迟)</summary>
         internal readonly List<(int index, int identity, int delay)> dominoQueue = [];
 
-        /// <summary>终场演出剩余拍数（Mk2）</summary>
-        internal int finaleBeats;
-        private int finaleTick;
-        internal Vector2 finaleCenter;
-        internal int finaleDamage;
-        internal float finaleKnockback;
-
         public override void PostUpdate() {
             if (Player.whoAmI != Main.myPlayer) {
                 return;
@@ -240,7 +233,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Launchers
                 mineRecycleBudget = 8;
             }
             UpdateDomino();
-            UpdateFinale();
         }
 
         /// <summary>多米诺连锁推进：延迟到点逐雷引爆，槽位重用由 identity 校验兜底</summary>
@@ -262,22 +254,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Launchers
                 if (proj.active && proj.identity == identity && proj.owner == Player.whoAmI) {
                     GsLauncherScheme.GsDetonate(proj);
                 }
-            }
-        }
-
-        /// <summary>终场演出推进：每 12t 一拍向目标区空投一枚短引信烟花火箭</summary>
-        private void UpdateFinale() {
-            if (finaleBeats <= 0) {
-                return;
-            }
-            if (--finaleTick > 0) {
-                return;
-            }
-            finaleTick = 12;
-            finaleBeats--;
-            if (GodSmithScheme.TryGetScheme(ItemID.Celeb2, out GodSmithScheme scheme)
-                && scheme is GsCelebrationMk2 mk2) {
-                mk2.SpawnFinaleBeat(Player, finaleCenter, finaleDamage, finaleKnockback);
             }
         }
     }

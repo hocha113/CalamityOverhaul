@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         //忍者装备放在靴与盾之前:闪避与爬墙照常生效,冲刺归属在下方统一定型
         internal static readonly int[] FuseSources = [
             ItemID.AmphibianBoots, ItemID.MasterNinjaGear, ItemID.TerrasparkBoots,
-            ItemID.BundleofHorseshoeBalloons, ItemID.EoCShield];
+            ItemID.HorseshoeBundle, ItemID.EoCShield];
 
         public override void SetDefaults() {
             Item.width = 28;
@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.rare = ItemRarityID.Yellow;
             //穿戴外观与克苏鲁闪耀靴一致,忍者装备无可见部件
             Item.shoeSlot = new Item(ItemID.TerrasparkBoots).shoeSlot;
-            Item.balloonSlot = new Item(ItemID.BundleofHorseshoeBalloons).balloonSlot;
+            Item.balloonSlot = new Item(ItemID.HorseshoeBundle).balloonSlot;
             Item.shieldSlot = new Item(ItemID.EoCShield).shieldSlot;
         }
 
