@@ -188,6 +188,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> ThermalBar { get; set; }
         public static Asset<Effect> ThermalBatteryCore { get; set; }
         public static Asset<Effect> TeslaGuardRing { get; set; }
+        public static Asset<Effect> ShieldDome { get; set; }
         public static Asset<Effect> UEPipelineFlow { get; set; }
         public static Asset<Effect> CreativePipelineFlow { get; set; }
         public static Asset<Effect> ThermalHeatHaze { get; set; }
