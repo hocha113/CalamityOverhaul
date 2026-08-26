@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
     /// <summary>
     /// 龙焰团，一串团粒叠成喷流。出膛减速、越慢越受热浮上飘、体积膨胀、沿途冷却变色；
     /// 撞面舔焰留残舌，空中熄灭化烟(烧得越净烟越少)，入水淬熄。<br/>
-    /// 绘制走七层异质叠加：辉光垫层/拖影/暗色外鞘/湍流帧序列/双股火舌/白热芯/化烟膜。<br/>
+    /// 绘制走七层异质叠加：辉光垫层/拖影/暗色外鞘/湍流帧序列/双股火舌/白热芯/化烟膜；
+    /// 另向链上前一口焰补画链桥焰节，直线与扫射都读成整条焰流。<br/>
     /// ai0=出生温度(0~1)，ai1=扰动种子
     /// </summary>
     internal class WyrmFlame : ModProjectile
@@ -30,6 +31,8 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
         private static Asset<Texture2D> FogTex = null;
 
         private const int LifeTime = 42;
+        /// <summary>相邻焰团根距超过此值才补链桥焰节</summary>
+        private const float BridgeStep = 24f;
 
         /// <summary>撞上地形，OnKill 走舔面分支</summary>
         private bool hitSurface;
@@ -171,6 +174,76 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
             }
         }
 
+        /// <summary>链上前一口焰：同型同主人、比自己早喷且不超过5帧。魔力噎住的断口(≥6帧)不该被缝上</summary>
+        private Projectile FindPrevFlame() {
+            Projectile prev = null;
+            foreach (Projectile other in Main.ActiveProjectiles) {
+                if (other.type != Projectile.type || other.owner != Projectile.owner
+                    || other.timeLeft >= Projectile.timeLeft || Projectile.timeLeft - other.timeLeft > 5) {
+                    continue;
+                }
+                if (prev == null || other.timeLeft > prev.timeLeft) {
+                    prev = other;
+                }
+            }
+            return prev;
+        }
+
+        /// <summary>
+        /// 链桥：向链上前一口焰补画鞘/体/芯三层简化焰节，把逐口喷出的团粒缝成整条焰流；
+        /// 直线喷吐填补团间空当，甩杖扫射时焰节沿扇弧铺开，焰流不再断断续续。
+        /// 纯本端表现，不参与判伤，各端各自补画
+        /// </summary>
+        private void DrawFlameBridge(Texture2D flame, float ownFade) {
+            Projectile prevProj = FindPrevFlame();
+            if (prevProj == null || prevProj.ModProjectile is not WyrmFlame prev) {
+                return;
+            }
+
+            Vector2 ownRoot = Projectile.Center - Projectile.velocity * 0.6f;
+            Vector2 prevRoot = prevProj.Center - prevProj.velocity * 0.6f;
+            float gap = Vector2.Distance(ownRoot, prevRoot);
+            //贴得够近本就重叠；离谱远(前团贴墙折返等)不硬拉
+            if (gap < BridgeStep || gap > 130f) {
+                return;
+            }
+
+            float prevLc = prev.LifeCompletion;
+            float prevTemp = prev.CurTemp;
+            float prevFade = MathF.Min(prevProj.timeLeft / 6f, 1f) * MathF.Min((1f - prevLc) * 4f + 0.35f, 1f);
+            float ownTemp = CurTemp;
+            Vector2 dirAlong = (ownRoot - prevRoot) / gap;
+            float rot = dirAlong.ToRotation() + MathHelper.PiOver2;
+            int fillers = Math.Min((int)(gap / BridgeStep), 3);
+            float segLen = gap / (fillers + 1);
+            var origin = new Vector2(flame.Width * 0.5f, flame.Height);
+
+            for (int k = 0; k <= fillers; k++) {
+                float frac = k / (fillers + 1f);
+                float fade = MathHelper.Lerp(prevFade, ownFade, frac) * 0.72f;
+                if (fade < 0.03f) {
+                    continue;
+                }
+                Vector2 pos = Vector2.Lerp(prevRoot, ownRoot, frac) - Main.screenPosition;
+                float temp = MathHelper.Lerp(prevTemp, ownTemp, frac);
+                float scl = MathHelper.Lerp(prevProj.scale, Projectile.scale, frac);
+                float bright = Wyrmfire.Brightness(temp);
+                float jitter = 0.82f + 0.26f * MathF.Sin((Projectile.timeLeft * 2.2f + Seed + k * 2.7f) * 2.9f);
+                float widthScale = 0.5f * 56f / flame.Height * scl;
+                var stretch = new Vector2(widthScale, segLen * 1.7f / flame.Height * jitter);
+
+                Color mantle = Wyrmfire.MantleColor(temp) with { A = 0 };
+                Color body = Wyrmfire.TempColor(temp) with { A = 0 };
+                Color core = Wyrmfire.CoreColor(temp) with { A = 0 };
+                Main.EntitySpriteDraw(flame, pos, null, mantle * (0.42f * fade * bright), rot
+                    , origin, stretch * new Vector2(1.3f, 1.12f), SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(flame, pos, null, body * (0.8f * fade * bright), rot
+                    , origin, stretch, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(flame, pos, null, core * (0.6f * fade * bright), rot
+                    , origin, stretch * new Vector2(0.5f, 0.66f), SpriteEffects.None, 0);
+            }
+        }
+
         public override bool PreDraw(ref Color lightColor) {
             Texture2D flame = FlameTex?.Value;
             Texture2D fireSheet = FireSheet?.Value;
@@ -185,6 +258,9 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
             float bright = Wyrmfire.Brightness(temp);
             //焰团整体透明度：出生快现，尾段随化烟衰减
             float fade = MathF.Min(Projectile.timeLeft / 6f, 1f) * MathF.Min((1f - lc) * 4f + 0.35f, 1f);
+
+            //链桥垫底，团上层次盖在桥上
+            DrawFlameBridge(flame, fade);
 
             Color body = Wyrmfire.TempColor(temp) with { A = 0 };
             Color mantle = Wyrmfire.MantleColor(temp) with { A = 0 };

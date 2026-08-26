@@ -74,6 +74,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 CultistStateIndex.Eclipse => new CultistEclipseState(),
                 CultistStateIndex.Gaze => new CultistGazeState(),
                 CultistStateIndex.PlanetHurl => new CultistPlanetHurlState(),
+                CultistStateIndex.Comet => new CultistCometVolleyState(),
+                CultistStateIndex.ZodiacSeal => new CultistZodiacSealState(),
+                CultistStateIndex.StasisMines => new CultistStasisMinesState(),
                 _ => new CultistOrbitLanceState(),
             };
         }

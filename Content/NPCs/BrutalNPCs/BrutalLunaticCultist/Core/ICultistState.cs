@@ -36,6 +36,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         Death = 11,
         /// <summary>无目标撤离</summary>
         Despawn = 12,
+        /// <summary>彗星潮:自身侧甩出弧线彗星,沿黄道内壁大弧回旋(P1 起)</summary>
+        Comet = 13,
+        /// <summary>十二宫封禁:环上宫位亮起充能,辐条封锁扇区缓慢进动(P2 起)</summary>
+        ZodiacSeal = 14,
+        /// <summary>滞星雷阵:朝玩家所在连撒滞星环,悬停成雷区(P3 起)</summary>
+        StasisMines = 15,
     }
 
     /// <summary>状态接口</summary>

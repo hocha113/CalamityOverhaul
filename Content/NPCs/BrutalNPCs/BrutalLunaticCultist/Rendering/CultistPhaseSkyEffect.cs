@@ -61,14 +61,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
             4 => new(0.02f, 0.06f, 0.05f),
             _ => new(0.02f, 0.08f, 0.11f),
         };
-
-        /// <summary>对应天界塔的原版滤镜名(独眼魔柱四塔)</summary>
-        internal static string MonolithName(int phase) => phase switch {
-            1 => "MonolithNebula",
-            2 => "MonolithStardust",
-            3 => "MonolithSolar",
-            _ => "MonolithVortex",
-        };
     }
 
     internal class CultistSkySystem : ModSystem
@@ -86,7 +78,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
         }
     }
 
-    /// <summary>教徒在场期间启用分相天幕,并联动原版天界塔滤镜(月明相不用原版塔,走自有冷暗)</summary>
+    /// <summary>
+    /// 教徒在场期间启用分相天幕<br/>
+    /// 不再联动原版天界塔滤镜:塔天空自带的动画背景与自绘天幕叠加读作"乱",天幕独占背景
+    /// </summary>
     internal class CultistPhaseSkySceneEffect : ModSceneEffect
     {
         public override int Music => -1;
@@ -96,17 +91,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
 
         public override void SpecialVisuals(Player player, bool isActive) {
             player.ManageSpecialBiomeVisuals(CultistPhaseSkyEffect.Name, isActive);
-            //原版天界塔滤镜按阶段切换,取整后只点亮当前塔(带在场判定)
-            int phase = (int)MathF.Round(CultistSkyDriver.VisualPhase);
-            for (int k = 0; k <= 3; k++) {
-                string name = CultistSkyDriver.MonolithName(k);
-                bool on = isActive && phase <= 3 && CultistSkyDriver.MonolithName(phase) == name
-                    && CultistSkyDriver.Intensity > 0.35f;
-                //缺注册名时跳过,不让 ManageSpecialBiomeVisuals 空引用
-                if (Filters.Scene[name] != null) {
-                    player.ManageSpecialBiomeVisuals(name, on);
-                }
-            }
         }
     }
 
@@ -176,6 +160,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
                 shader.Parameters["uPhase"]?.SetValue(CultistSkyDriver.VisualPhase);
                 shader.Parameters["uStorm"]?.SetValue(CultistScreenFX.StormSurge);
                 shader.Parameters["uAspect"]?.SetValue(vpW / (float)vpH);
+                //相机视差锚:星野/云雾按层系数取用,背景不再糊在镜头上
+                shader.Parameters["uCam"]?.SetValue(Main.screenPosition / vpH);
                 shader.CurrentTechnique.Passes[0].Apply();
                 spriteBatch.Draw(white, new Rectangle(0, 0, vpW, vpH), Color.White);
             }

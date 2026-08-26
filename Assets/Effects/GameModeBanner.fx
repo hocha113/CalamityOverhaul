@@ -1,9 +1,10 @@
 // ============================================================================
 //GameModeBanner.fx 模式切换演出的大字背景横幅
 //横贯屏宽的演出带，逐脸材质：残酷=撕裂血雾带+余烬拉丝 / 修罗=墨浪+描金流线 / 毁灭=苍银冷雾+星灰坠
+// / 神匠=熔金流带+锻炉火星上浮
 //带芯压暗保大字可读；uReveal 自中心横向展开，前沿带一道亮线；两端软收口
 //s1 = PerlinNoise（LinearWrap）；AlphaBlend 预乘；ps_3_0
-//注意：uniform 上禁 if 分支（MojoShader 常量布局教训），三脸全算完按 uMode 链式 lerp
+//注意：uniform 上禁 if 分支（MojoShader 常量布局教训），四脸全算完按 uMode 链式 lerp
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -12,7 +13,7 @@ sampler uNoise : register(s1);
 float uTime;
 float uAlpha;    //CPU 总包络（入出场淡入淡出）
 float uReveal;   //0..1 自中心横向展开
-float uMode;     //0 残酷 / 1 修罗 / 2 毁灭
+float uMode;     //0 残酷 / 1 修罗 / 2 毁灭 / 3 神匠
 float uEnabled;  //1 开启向 / 0 关闭向（关闭压暗脱饱和）
 float3 uAccent;  //表现脸主色
 float3 uEmber;   //表现脸余烬色
@@ -68,19 +69,41 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float3 brightN = uEmber * ashN * 1.6;
     float brightAN = ashN * 0.8;
 
-    //三脸链式混合
+    //——神匠：熔金流带（缓慢粘稠的横向熔流）+ 锻炉火星上浮——
+    float edgeG = 0.35 + (n1 - 0.5) * 0.14;
+    float bandG = smoothstep(edgeG, edgeG - 0.22, abs(p.y));
+    float mistG = bandG * (0.42 + 0.58 * n1);
+    //熔流线：低频横向拉伸噪声阈值取窗（Perlin 中值域），流速慢读得出粘稠
+    float flowN = tex2D(uNoise, float2(uv.x * 1.1 - uTime * 0.055, uv.y * 5.2)).r;
+    float meltG = smoothstep(0.50, 0.30, abs(flowN - 0.56)) * bandG;
+    //火星上浮：采样坐标沿 y 加时间即整体向上漂，双层错速
+    float sparkG = smoothstep(0.60, 0.74, tex2D(uNoise, float2(uv.x * 6.0, uv.y * 2.6 + uTime * 0.16)).r);
+    sparkG += smoothstep(0.64, 0.78, tex2D(uNoise, float2(uv.x * 9.0 + 0.37, uv.y * 3.4 + uTime * 0.26)).r) * 0.7;
+    sparkG *= bandG;
+    float3 colG = uAccent * mistG * 1.05;
+    float aG = mistG * 0.80;
+    float3 brightG = uEmber * (meltG * 1.1 + sparkG * 0.9);
+    float brightAG = meltG * 0.5 + sparkG * 0.45;
+
+    //四脸链式混合
     float wS = saturate(uMode);
     float wN = saturate(uMode - 1.0);
+    float wG = saturate(uMode - 2.0);
     float3 col = lerp(colB, colS, wS);
     col = lerp(col, colN, wN);
+    col = lerp(col, colG, wG);
     float band = lerp(bandB, bandS, wS);
     band = lerp(band, bandN, wN);
+    band = lerp(band, bandG, wG);
     float a = lerp(aB, aS, wS);
     a = lerp(a, aN, wN);
+    a = lerp(a, aG, wG);
     float3 bright = lerp(brightB, brightS, wS);
     bright = lerp(bright, brightN, wN);
+    bright = lerp(bright, brightG, wG);
     float brightA = lerp(brightAB, brightAS, wS);
     brightA = lerp(brightA, brightAN, wN);
+    brightA = lerp(brightA, brightAG, wG);
 
     //带芯压暗：大字落座区往夜色收，抬底 alpha 保可读
     float core = smoothstep(0.26, 0.10, abs(p.y)) * band;

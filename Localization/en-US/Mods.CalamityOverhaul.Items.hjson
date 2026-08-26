@@ -4638,8 +4638,19 @@ SneezingWyrm: {
 		Sustained fire stokes the barrel hotter, pushing the tracers from orange toward blue-white
 		With every gathered breath, the wyrm huffs a weaving, seeking bolt of dragonbreath down the line of fire
 		Smoke tickles the old snout into intermittent sneezes that vent thick fumes to the side
-		The fumes smolder in the air, slowly igniting into blooms of dragonfire
 		"Don't stand on its sneezing side"
+		'''
+}
+
+TiroFinale: {
+	DisplayName: Tiro Finale
+	Tooltip:
+		'''
+		Benefits from both ranged and magic damage bonuses
+		Firing consumes ammo and mana, weaving a golden phantom musket into the formation orbiting you with every shot
+		While you hold fire, the formation takes turns aiming at your cursor, each musket ringing once before dissolving into light
+		Right click to condense at least four phantom muskets into a great cannon and play the finale
+		"Mind your manners, and make the curtain call magnificent"
 		'''
 }
 
@@ -4652,5 +4663,39 @@ Everdeep: {
 		Hits build abyssal resonance, counted by the droplets orbiting the tome
 		At full resonance, a giant maelstrom erupts from the ground beneath the victim
 		"The deep does not part for you; it closes behind you"
+		'''
+}
+
+FrogsparkBoots: {
+	DisplayName: Frogspark Boots
+	Tooltip:
+		'''
+		Allows flight, super fast running, and steady ice skating that won't break thin ice
+		Walk on water, honey and lava, and gain immunity to the Burning debuff
+		Grants 7 seconds of lava immunity, greatly reducing lava damage afterwards
+		Increases jump speed by 48%, enables auto-jump, and greatly increases fall resistance
+		"One frog kick, and flames clear the way"
+		'''
+}
+
+CthulsparkBoots: {
+	DisplayName: Cthulspark Boots
+	Tooltip:
+		'''
+		Grants all the powers of the Frogspark Boots
+		Gain cloud, blizzard and sandstorm extra jumps, increased jump height, and immunity to fall damage
+		Double tap a direction to charge alongside the great eye, ramming foes out of the way
+		"It floats overhead, watching every step for you"
+		'''
+}
+
+NinjaCthulsparkBoots: {
+	DisplayName: Ninja Cthulspark Boots
+	Tooltip:
+		'''
+		Grants all the powers of the Cthulspark Boots
+		Grants a 10% chance to dodge attacks, and the ability to climb and slide down walls
+		Your dash is always the great eye's ramming charge
+		"The eye tied on its headband and swore never to blink again"
 		'''
 }

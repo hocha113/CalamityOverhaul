@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.GameModes
         internal static LocalizedText AsuraName;
         /// <summary>毁灭的文艺名：死神永生</summary>
         internal static LocalizedText AnnihilationName;
+        /// <summary>神匠的文艺名：神工开物</summary>
+        internal static LocalizedText GodSmithName;
 
         /// <summary>残酷开启台词</summary>
         internal static LocalizedText BrutalOnLine;
@@ -31,6 +33,10 @@ namespace CalamityOverhaul.Content.GameModes
         internal static LocalizedText AnnihilationOnLine;
         /// <summary>毁灭关闭台词</summary>
         internal static LocalizedText AnnihilationOffLine;
+        /// <summary>神匠开启台词</summary>
+        internal static LocalizedText GodSmithOnLine;
+        /// <summary>神匠关闭台词</summary>
+        internal static LocalizedText GodSmithOffLine;
 
         /// <summary>残酷悬停说明</summary>
         internal static LocalizedText BrutalDesc;
@@ -38,6 +44,12 @@ namespace CalamityOverhaul.Content.GameModes
         internal static LocalizedText AsuraDesc;
         /// <summary>毁灭悬停说明</summary>
         internal static LocalizedText AnnihilationDesc;
+        /// <summary>神匠悬停说明</summary>
+        internal static LocalizedText GodSmithDesc;
+        /// <summary>神匠重铸的 tooltip 金色标题行</summary>
+        internal static LocalizedText GodSmithRecastTitle;
+        /// <summary>盔甲神赋行前缀（含冒号）</summary>
+        internal static LocalizedText GodSmithEndowPrefix;
 
         /// <summary>状态词：已开启</summary>
         internal static LocalizedText StateOn;
@@ -72,6 +84,15 @@ namespace CalamityOverhaul.Content.GameModes
                 () => "The enhancement rises to 100%. Foes adapt to repeated damage of the same kind, and any blow you deal sets the least they deal back");
             AnnihilationDesc = this.GetLocalization(nameof(AnnihilationDesc),
                 () => "The final form of Asura Hell in a zenith world. Every terror doubles again: foes adapt twice as fast, and your pain is repaid twofold");
+            GodSmithName = this.GetLocalization(nameof(GodSmithName), () => "Divine Artifice");
+            GodSmithOnLine = this.GetLocalization(nameof(GodSmithOnLine),
+                () => "The Godsmith takes up the hammer; every common iron shall be reforged.");
+            GodSmithOffLine = this.GetLocalization(nameof(GodSmithOffLine),
+                () => "The forge fire wanes; all arms return to their former shape.");
+            GodSmithDesc = this.GetLocalization(nameof(GodSmithDesc),
+                () => "Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched; coexists with Asura Hell");
+            GodSmithRecastTitle = this.GetLocalization(nameof(GodSmithRecastTitle), () => "Godsmith Reforged");
+            GodSmithEndowPrefix = this.GetLocalization(nameof(GodSmithEndowPrefix), () => "Endowment: ");
             StateOn = this.GetLocalization(nameof(StateOn), () => "Active");
             StateOff = this.GetLocalization(nameof(StateOff), () => "Dormant");
             HintEnable = this.GetLocalization(nameof(HintEnable), () => "Click to awaken");
@@ -84,6 +105,7 @@ namespace CalamityOverhaul.Content.GameModes
         internal static LocalizedText ToggleLine(GameModeFace face, bool enabled) => face switch {
             GameModeFace.Brutal => enabled ? BrutalOnLine : BrutalOffLine,
             GameModeFace.Annihilation => enabled ? AnnihilationOnLine : AnnihilationOffLine,
+            GameModeFace.GodSmith => enabled ? GodSmithOnLine : GodSmithOffLine,
             _ => enabled ? AsuraOnLine : AsuraOffLine,
         };
 
@@ -91,6 +113,7 @@ namespace CalamityOverhaul.Content.GameModes
         internal static LocalizedText Name(GameModeFace face) => face switch {
             GameModeFace.Brutal => BrutalName,
             GameModeFace.Annihilation => AnnihilationName,
+            GameModeFace.GodSmith => GodSmithName,
             _ => AsuraName,
         };
 
@@ -98,6 +121,7 @@ namespace CalamityOverhaul.Content.GameModes
         internal static LocalizedText Desc(GameModeFace face) => face switch {
             GameModeFace.Brutal => BrutalDesc,
             GameModeFace.Annihilation => AnnihilationDesc,
+            GameModeFace.GodSmith => GodSmithDesc,
             _ => AsuraDesc,
         };
     }

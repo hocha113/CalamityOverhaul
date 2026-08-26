@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
     /// <summary>
     /// 裂渊持握。四拍：戳、侧斩、反斩、重戳。
     /// 斩击时间语法对齐纠缠之怨：回拉蓄力，蠕进后爆发过冲，收势先持停再回护持位。
+    /// 戳刺走收-爆-停：压到死停后一两帧内爆出过冲，重戳到位带枪杆余震，然后真正停帧，收势才放软。
     /// 伤害窗只开在爆发段，碰撞按本帧扫过的弧判定。ai[0] 拍号 ai[1] 斩向
     /// </summary>
     internal class AbyssrendHeld : BaseHeldProj, IPrimitiveDrawable, IOverlayDrawable
@@ -51,6 +52,11 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
         private float StabPull => IsFinisher ? -46f : -34f;
         private float StabReach => IsFinisher ? 128f : 84f;
 
+        //戳刺相位（active 段归一化时刻）：蓄势死停→爆发→余震回坐，其后定格
+        private const float ThrustGatherEnd = 0.08f;
+        private const float ThrustBurstEnd = 0.40f;
+        private const float ThrustSettleEnd = 0.72f;
+
         private float elapsed;
         private float speedMul = 1f;
         private int lockedDirection = 1;
@@ -73,6 +79,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
         private float hitstopFrames;
         private float trailFade;
         private float lastHoldout;
+        //平滑后的刺速，供残影与光带读取：顿帧时定格，运动停止后指数衰减
+        private float stabSpeedVis;
         private Vector2 handPos;
         private Vector2 mainTip;
         private readonly HashSet<int> hitNPCs = [];
@@ -227,15 +235,16 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
         private void ThrustAI(float step) {
             currentRotation = baseAngle;
             float activeEnd = WindupTime + ActiveTime;
-            float leanBack = IsFinisher ? -0.09f : -0.04f;
-            float leanFwd = IsFinisher ? 0.12f : 0.06f;
+            float leanBack = IsFinisher ? -0.11f : -0.05f;
+            float leanFwd = IsFinisher ? 0.15f : 0.08f;
             lastHoldout = holdout;
             if (elapsed < WindupTime) {
-                //从上一拍收势位放平到刺线，同时向后收杆
+                //收：快拉慢定，压到底后只剩呼吸颤——蓄势的死停就是爆发的画框
                 float t = MathHelper.Clamp((elapsed + step) / WindupTime, 0f, 1f);
-                currentRotation = MathHelper.Lerp(EntryAngle, baseAngle, EaseOutCubic(t));
-                holdout = MathHelper.Lerp(10f, StabPull, EaseOutCubic(t));
-                bodyLean = leanBack * EaseOutCubic(t);
+                float ease = IsFinisher ? 1f - MathF.Pow(1f - t, 4f) : EaseOutCubic(t);
+                currentRotation = MathHelper.Lerp(EntryAngle, baseAngle, ease);
+                holdout = MathHelper.Lerp(10f, StabPull, ease) + MathF.Sin(elapsed * 1.4f) * 0.8f * t;
+                bodyLean = leanBack * ease;
                 trailFade = 0f;
             }
             else if (elapsed < activeEnd) {
@@ -243,17 +252,20 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
                 float t = MathHelper.Clamp((elapsed - WindupTime + step) / ActiveTime, 0f, 1f);
                 float burst = GetThrustProgress(t);
                 holdout = MathHelper.Lerp(StabPull, StabReach, burst);
-                bodyLean = MathHelper.Lerp(leanBack, leanFwd, SmoothStep01(burst));
+                //身体跟着爆发帧一起甩出去，而不是全程匀速前倾
+                bodyLean = MathHelper.Lerp(leanBack, leanFwd, MathHelper.Clamp(burst, 0f, 1f));
                 trailFade = 1f;
-                sweepDamageActive = t >= 0.10f && t <= 0.85f;
+                sweepDamageActive = t >= ThrustGatherEnd && t <= 0.92f;
 
-                if (!strikeSoundPlayed && t >= 0.10f) {
+                if (!strikeSoundPlayed && t >= ThrustGatherEnd) {
                     strikeSoundPlayed = true;
                     PlayStrikeSound();
-                    //玩家不动，爆发的冲劲交给镜头
-                    if (IsFinisher && CWRClientConfig.Instance.ScreenVibration) {
+                    SpawnThrustBurstFX();
+                    //玩家不动，爆发的冲劲交给镜头：轻戳小推，重戳重锤
+                    if (CWRClientConfig.Instance.ScreenVibration) {
                         Main.instance.CameraModifiers.Add(new PunchCameraModifier(
-                            handPos, baseAngle.ToRotationVector2(), 3.5f, 5f, 6, 420f, FullName));
+                            handPos, baseAngle.ToRotationVector2(), IsFinisher ? 4.5f : 2f
+                            , 5f, IsFinisher ? 7 : 4, 420f, FullName));
                     }
                 }
                 if (!currentFired && burst >= 0.5f) {
@@ -262,12 +274,16 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
                 }
             }
             else {
+                //收势前段仍握满行程（停帧的后半），过了持停才温柔回收
                 float t = MathHelper.Clamp((elapsed - activeEnd + step) / RecoverTime, 0f, 1f);
-                const float hold = 0.25f;
+                const float hold = 0.30f;
                 float returnT = SmoothStep01((t - hold) / (1f - hold));
                 holdout = MathHelper.Lerp(StabReach, 8f, returnT);
                 bodyLean = MathHelper.Lerp(leanFwd, 0f, returnT);
                 trailFade *= 0.84f;
+            }
+            if (step > 0f) {
+                stabSpeedVis = MathF.Max(MathF.Abs(holdout - lastHoldout), stabSpeedVis * 0.7f);
             }
             mainTip = handPos + currentRotation.ToRotationVector2() * (BladeLen + holdout);
         }
@@ -290,18 +306,25 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
         private float GetSwingRotation(float progress)
             => MathHelper.Lerp(ChamberAngle, endAngle, progress);
 
-        //戳刺进度：先蓄住，前 40% 内爆出并过冲，再回坐。爆得越短越像刺
+        //戳刺进度：蓄势段再压一丝，高次幂爆发首帧吃掉大半行程并过冲，
+        //重戳带衰减余震回坐，之后死停——暴力在出生，不在中途
         private float GetThrustProgress(float t) {
-            const float gather = 0.10f;
-            const float burstEnd = 0.40f;
-            float overshoot = IsFinisher ? 1.15f : 1.10f;
-            if (t < gather) {
-                return 0f;
+            float overshoot = IsFinisher ? 1.16f : 1.09f;
+            if (t < ThrustGatherEnd) {
+                return -0.04f * SmoothStep01(t / ThrustGatherEnd);
             }
-            if (t < burstEnd) {
-                return overshoot * SmoothStep01((t - gather) / (burstEnd - gather));
+            if (t < ThrustBurstEnd) {
+                float burstT = (t - ThrustGatherEnd) / (ThrustBurstEnd - ThrustGatherEnd);
+                float snap = 1f - MathF.Pow(1f - burstT, IsFinisher ? 6f : 4.5f);
+                return MathHelper.Lerp(-0.04f, overshoot, snap);
             }
-            return MathHelper.Lerp(overshoot, 1f, SmoothStep01((t - burstEnd) / (1f - burstEnd)));
+            float settleT = MathHelper.Clamp((t - ThrustBurstEnd) / (ThrustSettleEnd - ThrustBurstEnd), 0f, 1f);
+            if (IsFinisher) {
+                //枪杆余震：两三帧衰减震颤，硬到位的证词
+                float quiver = MathF.Cos(settleT * 7.5f) * MathF.Exp(-3.6f * settleT);
+                return 1f + (overshoot - 1f) * quiver;
+            }
+            return MathHelper.Lerp(overshoot, 1f, SmoothStep01(settleT));
         }
 
         private void PushTrailSamples() {
@@ -430,6 +453,30 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
             }
         }
 
+        //爆发帧的水花激射：枪尖排开深渊海水，沿刺线锥形喷出，落点即刺的终点
+        private void SpawnThrustBurstFX() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            Vector2 dir = baseAngle.ToRotationVector2();
+            Vector2 tip = handPos + dir * (BladeLen + StabReach);
+            int globs = IsFinisher ? 12 : 7;
+            for (int i = 0; i < globs; i++) {
+                PRTLoader.NewParticle<PRT_AbyssGlob>(tip + Main.rand.NextVector2Circular(8f, 8f)
+                    , dir.RotatedByRandom(0.34f) * Main.rand.NextFloat(4f, IsFinisher ? 15f : 11f)
+                    , Color.Lerp(AbyssrendFX.Deep, AbyssrendFX.Body, Main.rand.NextFloat())
+                    , Main.rand.NextFloat(0.4f, 0.7f))
+                    .Configure(Main.rand.Next(10, 18));
+            }
+            int sparks = IsFinisher ? 8 : 5;
+            for (int i = 0; i < sparks; i++) {
+                PRTLoader.NewParticle<PRT_AbyssSpark>(tip
+                    , dir.RotatedByRandom(0.5f) * Main.rand.NextFloat(3f, 9f)
+                    , AbyssrendFX.Cyan, Main.rand.NextFloat(0.8f, 1.3f))
+                    .Configure(Main.rand.Next(8, 14));
+            }
+        }
+
         private void HandleParticles() {
             if (VaultUtils.isServer || !slashVisualActive) {
                 return;
@@ -515,11 +562,12 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
 
             if (!hitstopApplied) {
                 hitstopApplied = true;
-                hitstopFrames = IsFinisher ? 3f : 2f;
+                //顿帧按拍重分级：戳比斩硬，重戳最硬
+                hitstopFrames = IsThrust ? (IsFinisher ? 5f : 3f) : 2f;
             }
 
             if (CWRClientConfig.Instance.ScreenVibration) {
-                float punch = IsFinisher ? 5.5f : (IsThrust ? 2.4f : 3.8f);
+                float punch = IsFinisher ? 6.5f : (IsThrust ? 4.2f : 3.6f);
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                     target.Center, currentRotation.ToRotationVector2(), punch, 6f, IsFinisher ? 8 : 6, 480f, FullName));
             }
@@ -583,15 +631,15 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
             float scale = HeldScale * Projectile.scale;
 
             if (slashVisualActive && IsThrust) {
-                //戳刺纵向残影：间距和亮度都跟着刺速走，越快拖尾越长
-                float stabSpeed = MathF.Abs(holdout - lastHoldout);
-                float smearStrength = MathHelper.Clamp(stabSpeed / 14f, 0f, 1f);
+                //戳刺纵向残影：读平滑刺速，爆发帧拖满、顿帧定格而不是瞬灭
+                float smearStrength = MathHelper.Clamp(stabSpeedVis / 30f, 0f, 1f);
                 if (smearStrength > 0.05f) {
-                    Color trail = AbyssrendFX.Cyan * (0.26f * smearStrength);
+                    Color trail = AbyssrendFX.Cyan * (0.34f * smearStrength);
                     trail.A = 0;
-                    for (int i = 1; i <= 3; i++) {
-                        Vector2 ghostPos = drawPos - baseAngle.ToRotationVector2() * (i * (6f + stabSpeed * 0.9f));
-                        Main.EntitySpriteDraw(tex, ghostPos, null, trail * (1f - i / 4f), rot, origin, scale, flip, 0);
+                    float spacing = MathHelper.Clamp(stabSpeedVis * 0.45f, 8f, 48f);
+                    for (int i = 1; i <= 4; i++) {
+                        Vector2 ghostPos = drawPos - baseAngle.ToRotationVector2() * (i * spacing);
+                        Main.EntitySpriteDraw(tex, ghostPos, null, trail * (1f - i / 5f), rot, origin, scale, flip, 0);
                     }
                 }
             }
@@ -616,9 +664,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
                 path[0] = handPos + dir * MathF.Max(0f, holdout * 0.2f);
                 path[1] = Vector2.Lerp(handPos, mainTip, 0.45f);
                 path[2] = mainTip;
-                //光带宽度随刺速鼓起，爆发帧最粗
-                float stabSpeed = MathF.Abs(holdout - lastHoldout);
-                float width = (IsFinisher ? 26f : 20f) * (0.75f + MathHelper.Clamp(stabSpeed / 12f, 0f, 1f) * 0.6f);
+                //光带宽度随平滑刺速鼓起：爆发帧最粗，停帧期间缓慢消气
+                float width = (IsFinisher ? 26f : 20f) * (0.75f + MathHelper.Clamp(stabSpeedVis / 36f, 0f, 1f) * 0.6f);
                 AbyssrendFX.DrawPathStrip(path, 3, _ => width * trailFade, trailFade);
                 return;
             }

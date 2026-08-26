@@ -331,6 +331,12 @@ RetinazerDeathRay.DisplayName: 激光眼死光
 RetinazerLaser.DisplayName: 激光眼激光
 TwinsSupernovaBlast.DisplayName: 双子超新星爆发
 TwinsTetherArc.DisplayName: 双子束缚电弧
+EMParryStanceProj.DisplayName: 铁壁架势
+EMLeapMarkerProj.DisplayName: 跃袭预兆
+EMPhaseAnchorProj.DisplayName: 相位凝形
+EMDecoyProj.DisplayName: 惑真残影
+EMScatterTelegraphProj.DisplayName: 散射预兆
+EMScatterBoltProj.DisplayName: 精英散射矢
 DestroyerMawBeamProj.DisplayName: 毁灭者巨口光束
 VictorRiftPortalProj.DisplayName: 维克托的赛博裂隙
 // OniDomain.DisplayName: Oni Domain
@@ -461,16 +467,89 @@ BrainShellFragment.DisplayName: 护壳碎片
 BrainTeleportRift.DisplayName: 瞬移裂隙
 BrainVeinTelegraph.DisplayName: 充血脉络
 DeerFrostPulseProj.DisplayName: 霜震波
+FrmMortarBlastProj.DisplayName: 礼盒迫击炮
+FrmPresentShellProj.DisplayName: 空投礼盒
+FrmStrafeLaneProj.DisplayName: 扫射航线
+FrmStrafeBulletProj.DisplayName: 精灵机炮弹
+FrmAimLaneOmen.DisplayName: 攻城瞄准线
+FrmNutShellProj.DisplayName: 硬壳跳弹
+FrmOrnamentRowOmen.DisplayName: 饰品炮列预兆
+FrmOrnamentProj.DisplayName: 坠落饰品
+FrmPineNeedleProj.DisplayName: 松针弹
+FrmWaltzRingProj.DisplayName: 冰晶华尔兹
+FrmBlizzardFrontProj.DisplayName: 暴风雪锋面
 DeerIceSpikeProj.DisplayName: 破土冰刺
+WastesSandGeyserProj.DisplayName: 地涌沙柱
+WastesSandConeTelegraph.DisplayName: 沙息预兆
+WastesSandPelletProj.DisplayName: 蚀骨沙弹
+WastesIceSlickZone.DisplayName: 湿滑冰面
+WastesIceShatterCore.DisplayName: 凝晶残核
+WastesIceShardProj.DisplayName: 冰葬碎晶
+WastesElementRing.DisplayName: 元素侵蚀环
+AshreignMagmaBubbleProj.DisplayName: 鼓沸熔泡
+AshreignMagmaBeadProj.DisplayName: 迸溅熔渣珠
+AshreignAshStormProj.DisplayName: 过境烬暴
+RotmireVentProj.DisplayName: 瘴气涌泉
+RotmireWritheProj.DisplayName: 蠕动邪土
+MireheartGasPocketProj.DisplayName: 沼气袋
+MireheartMiasmaProj.DisplayName: 沼瘴雾团
+MireheartBeeCloudProj.DisplayName: 警戒蜂云
+BrinefumeBoilZoneProj.DisplayName: 酸沸区
+BrinefumeHazeTideProj.DisplayName: 毒霾潮
+SilkcryptWebPatchProj.DisplayName: 黏络网斑
+SilkcryptDropShadowProj.DisplayName: 垂袭蛛影
+LumindepthVortexProj.DisplayName: 静谧涡流
+AstralveilSpearMarkProj.DisplayName: 星辉矛
+AstralveilBloomProj.DisplayName: 星辉绽花
+FleshfenDewRainProj.DisplayName: 血露雨帘
+StonewakeResonanceRingProj.DisplayName: 共振脉冲环
+StonewakeGazePillarProj.DisplayName: 凝视之柱
+HollowdeepRockfallProj.DisplayName: 惊岩落石
+RimehollowIcicleProj.DisplayName: 垂生冰锥
+RimehollowMistPoolProj.DisplayName: 寒雾洼
+MournfogGrudgeRingProj.DisplayName: 怨聚鬼火
+PrismgladeJudgmentProj.DisplayName: 棱光审判
+SunkenduneSinkPitProj.DisplayName: 流沙陷窝
+SunkenduneSandfallProj.DisplayName: 倾泻沙瀑
+CindercragVentProj.DisplayName: 崖口焰舌
+CindercragWailWaveProj.DisplayName: 恸嚎声浪
+StratosFallingStarProj.DisplayName: 坠星
+StratosUpdraftProj.DisplayName: 星屑升流
+AetherglimGravityBubbleProj.DisplayName: 微光引力泡
+NyxdepthSinkColumnProj.DisplayName: 深渊下沉流
+TidecallRipCurrentProj.DisplayName: 离岸暗流
+TidecallRogueWaveProj.DisplayName: 疯狗浪
+StarfallAfterburstProj.DisplayName: 陨地余爆
+DuneStormGustWaveProj.DisplayName: 风堑阵风
+DuneStormSandLashOmen.DisplayName: 沙鞭凝聚
+DuneStormSandLashProj.DisplayName: 沙暴之鞭
+SporeshineCapSwellProj.DisplayName: 菌盖蓄胀
+SporeshineSporeLobProj.DisplayName: 孢子团
+SporeshineSporeFogProj.DisplayName: 迷醉孢雾
+FrostveilGaleWallProj.DisplayName: 风雪墙
 DeerRubbleProj.DisplayName: 冰岩碎块
 DeerShadowHandProj.DisplayName: 暗影之手
 FishronGeyserProj.DisplayName: 潮涌水柱
+PrtRicochetShot.DisplayName: 海盗跳弹
+PrtVolleyOmen.DisplayName: 船长压制令
+PrtFanShot.DisplayName: 压制铅弹
+PrtBoardHookProj.DisplayName: 劫掠钩索
+PrtParrotMark.DisplayName: 鹦鹉盯梢
+PrtBroadsideOmen.DisplayName: 舷炮齐射预兆
+PrtBroadsideBall.DisplayName: 舷炮铁弹
+PrtBoardingOmen.DisplayName: 跳帮号令
+PrtBannerMark.DisplayName: 跳帮战旗
 FishronSharkTornadoProj.DisplayName: 鲨鱼龙卷
 FishronSkyBoltProj.DisplayName: 风暴天雷
 FishronTelegraph.DisplayName: 风暴预警线
 FishronTsunamiWallProj.DisplayName: 海啸浪墙
 EowAcidGlob.DisplayName: 腐蚀酸唾
 EowAcidPool.DisplayName: 腐蚀酸池
+ErosionCloudSeed.DisplayName: 侵蚀孢核
+ErosionCloudProj.DisplayName: 侵蚀瘴云
+SiphonBurstProj.DisplayName: 汲取脉冲
+VileBurstOmen.DisplayName: 邪液凝核
+VileLanceProj.DisplayName: 邪液溅矛
 EowBreachOmen.DisplayName: 破土预兆
 EowGeyserProj.DisplayName: 蚀土间歇泉
 EowHuskMine.DisplayName: 蜕壳酸雷
@@ -502,6 +581,10 @@ BKSNinjaProj.DisplayName: 忍者影身
 BKSRoyalPillarProj.DisplayName: 皇权光柱
 BKSShockwaveProj.DisplayName: 凝胶冲击环
 BKSTideWaveProj.DisplayName: 凝胶潮浪
+SlimeSquashOmen.DisplayName: 凝胶蓄势
+SlimeQuakeWave.DisplayName: 凝胶震波
+SlimeGelBomb.DisplayName: 弹跳凝胶
+SlimeGooPatch.DisplayName: 黏化凝浆
 MLordAnnihilationRayProj.DisplayName: 月明湮灭
 MLordArcRayProj.DisplayName: 幻影弧光死光
 MLordBlackHoleProj.DisplayName: 黑闪奇点
@@ -513,6 +596,12 @@ MLordGravityWellProj.DisplayName: 引力井
 MLordOrbProj.DisplayName: 幻影星球
 MLordScanRayProj.DisplayName: 幻影扫描死光
 MLordStarfireProj.DisplayName: 星火余烬
+MrtTeslaArcProj.DisplayName: 特斯拉电弧链
+MrtLaserMarkLine.DisplayName: 火星激光标线
+MrtLaserBoltProj.DisplayName: 火星制导光矢
+MrtScutlixHeavyBolt.DisplayName: 蜥骑主炮蓄能弹
+MrtOverheatMarkProj.DisplayName: 过热弱点标记
+MrtSaucerScanProj.DisplayName: 死亡射线扫描线
 PlanteraPetalWave.DisplayName: 凋零花瓣环
 PlanteraPoisonSeed.DisplayName: 剧毒种子
 PlanteraSeed.DisplayName: 速射种子
@@ -522,6 +611,17 @@ PlanteraThornBall.DisplayName: 荆棘滚球
 PlanteraVineLattice.DisplayName: 藤蔓格栅
 BrutalBeeStinger.DisplayName: 女王毒刺
 HoneyGlobProj.DisplayName: 蜂蜜团
+JhVineLash.DisplayName: 缠棘藤鞭
+JhVolleyOmen.DisplayName: 齐射预兆
+JhStingerBolt.DisplayName: 蜂群毒刺
+JhScytheBolt.DisplayName: 恶魔镰刃
+JhTridentBolt.DisplayName: 炽狱三叉戟
+JhShellSpike.DisplayName: 龟甲棘刺
+JhAmbushOmen.DisplayName: 凝形火种
+JhImpFireBolt.DisplayName: 小鬼焰弹
+JhBreachOmen.DisplayName: 破土预兆
+VerdantMireFogProj.DisplayName: 沼雾伏影
+VerdantThornRingProj.DisplayName: 荆棘合拢圈
 HoneyPuddleZone.DisplayName: 黏滞蜜洼
 QueenBeeTelegraphLine.DisplayName: 琥珀预警线
 WaxHiveTurret.DisplayName: 蜡巢炮台
@@ -533,6 +633,9 @@ QueenGelPearlProj.DisplayName: 凝胶珍珠
 QueenPrismBeamProj.DisplayName: 折射光束
 QueenSpikeOmenProj.DisplayName: 尖刺预兆
 SkeletronBoneShard.DisplayName: 骸骨碎片
+NightBoneProj.DisplayName: 夜猎掷骨
+NightDiveOmen.DisplayName: 夜猎俯冲预兆
+NightPounceOmen.DisplayName: 夜猎扑袭预兆
 SkeletronBoneSpike.DisplayName: 骨脊尖刺
 SkeletronCursedSkull.DisplayName: 诅咒之颅
 SkeletronCurseWisp.DisplayName: 诅咒烛灵
@@ -556,6 +659,14 @@ WofRotBeamProj.DisplayName: 腐眼断头闸
 // ScrapShellFrag.DisplayName: Scrap Shell Frag
 // ScrapSweepBeam.DisplayName: Scrap Sweep Beam
 // EowLungeOmen.DisplayName: Eow Lunge Omen
+EclStrikeOmen.DisplayName: 处刑预兆
+EclOpeningProj.DisplayName: 处刑破绽
+EclBloodMarkProj.DisplayName: 血狩印
+EclManFlyFlaskProj.DisplayName: 蚀日毒瓶
+EclEyezorOrbProj.DisplayName: 灼目眼弹
+EclNailheadNailProj.DisplayName: 处刑重钉
+EclMothronDiveOmen.DisplayName: 蛾影俯冲预兆
+EclNestFuryProj.DisplayName: 护巢狂怒
 GaolFireBolt.DisplayName: 狱火
 GaolCrossChain.DisplayName: 深牢拉锁
 GaolCageBar.DisplayName: 囚笼链栏
@@ -581,6 +692,14 @@ OverseerSlagGlob.DisplayName: 熔渣浇包
 // QueenCrystalPrisonProj.DisplayName: Queen Crystal Prison Proj
 // QueenRoyalChandelierProj.DisplayName: Queen Royal Chandelier Proj
 // SkeletronOrbitSkull.DisplayName: Skeletron Orbit Skull
+PmkEmberProj.DisplayName: 祭火种
+PmkChargeOmen.DisplayName: 冥猎冲锋预兆
+PmkRitualWispProj.DisplayName: 祭圈灯魂
+PmkMortarShellProj.DisplayName: 祭火炮弹
+PmkMortarMarkerProj.DisplayName: 祭火迸燃
+PmkRootSpikeProj.DisplayName: 哀恸根须
+PmkScytheBladeProj.DisplayName: 轮盘镰刃
+PmkClawCrossProj.DisplayName: 南瓜王爪击
 // WofGrabTongueProj.DisplayName: Wof Grab Tongue Proj
 // KikasaThrallProj.DisplayName: Kikasa Thrall Proj
 // L6MachineStrike.DisplayName: L6 Machine Strike
@@ -620,6 +739,9 @@ CultistUmbraShade.DisplayName: 蚀影
 CultistCoronaLance.DisplayName: 冕矛
 CultistStarChart.DisplayName: 星图审判
 CultistGazeBeam.DisplayName: 月瞳凝视
+CultistPlanetAimLine.DisplayName: 掷星预瞄线
+CultistCometProj.DisplayName: 回旋彗星
+CultistZodiacSpokeProj.DisplayName: 十二宫封条
 // SkeletronBoneWheel.DisplayName: Skeletron Bone Wheel
 // FuFeiMistCloud.DisplayName: Fu Fei Mist Cloud
 // FuHangMiasmaColumn.DisplayName: Fu Hang Miasma Column
@@ -653,3 +775,8 @@ EverdeepHeld.DisplayName: 永渊
 EverdeepRing.DisplayName: 渊环水流
 EverdeepMaelstrom.DisplayName: 渊涡水龙卷
 CultistPlanetProj.DisplayName: 巨型天体
+LegionVolleyOmen.DisplayName: 军团箭令
+LegionVolleyArrow.DisplayName: 军团战矢
+FinaleMusketRound.DisplayName: 金色铅弹
+FinaleMagicBolt.DisplayName: 环阵魔弹
+TiroFinaleBlast.DisplayName: 终焉一击

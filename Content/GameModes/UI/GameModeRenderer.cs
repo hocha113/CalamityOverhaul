@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
                     DrawLine(sb, c + d * r, c + d * (r + s * 0.55f), 2f, iconCol);
                 }
             }
-            else {
+            else if (face == GameModeFace.Annihilation) {
                 //镰月线稿近似：外弧 + 一粒坠星
                 const int seg = 14;
                 float r = s * 0.95f;
@@ -100,6 +100,20 @@ namespace CalamityOverhaul.Content.GameModes.UI
                     prev = next;
                 }
                 sb.Draw(Pixel, new Rectangle((int)(c.X + s * 0.55f) - 2, (int)(c.Y - s * 0.8f) - 2, 4, 4), One, iconCol);
+            }
+            else {
+                //神匠线稿近似：砧台横线 + 砧脚 + 斜握锤（锤柄一线、锤头一短粗线）
+                float aw = s * 1.2f;
+                Vector2 anvilY = new(0f, s * 0.55f);
+                DrawLine(sb, c + anvilY - new Vector2(aw, 0f), c + anvilY + new Vector2(aw, 0f), 3f, iconCol);
+                DrawLine(sb, c + anvilY + new Vector2(-aw * 0.4f, 0f), c + anvilY + new Vector2(-aw * 0.25f, s * 0.5f), 2f, iconCol * 0.8f);
+                DrawLine(sb, c + anvilY + new Vector2(aw * 0.4f, 0f), c + anvilY + new Vector2(aw * 0.25f, s * 0.5f), 2f, iconCol * 0.8f);
+                Vector2 grip = c + new Vector2(s * 0.9f, -s * 0.1f);
+                Vector2 head = c + new Vector2(-s * 0.35f, -s * 0.75f);
+                DrawLine(sb, grip, head, 2f, iconCol);
+                Vector2 headDir = (head - grip).SafeNormalize(Vector2.UnitX);
+                Vector2 headPerp = new(-headDir.Y, headDir.X);
+                DrawLine(sb, head - headPerp * (s * 0.42f), head + headPerp * (s * 0.42f), 4.5f, iconCol);
             }
         }
 

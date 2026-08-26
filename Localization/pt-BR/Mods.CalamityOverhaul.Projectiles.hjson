@@ -331,6 +331,12 @@ RetinazerDeathRay.DisplayName: Raio da Morte do Retinazer
 RetinazerLaser.DisplayName: Laser do Retinazer
 TwinsSupernovaBlast.DisplayName: Supernova dos Gemeos
 TwinsTetherArc.DisplayName: Arco de Ancoragem dos Gemeos
+// EMParryStanceProj.DisplayName: Ironwall Stance
+// EMLeapMarkerProj.DisplayName: Pounce Omen
+// EMPhaseAnchorProj.DisplayName: Phase Coalescence
+// EMDecoyProj.DisplayName: Deceiving Afterimage
+// EMScatterTelegraphProj.DisplayName: Scatter Omen
+// EMScatterBoltProj.DisplayName: Elite Scatter Bolt
 DestroyerMawBeamProj.DisplayName: Raio da Mandibula do Destruidor
 VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // OniDomain.DisplayName: Oni Domain
@@ -462,6 +468,13 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // BrainVeinTelegraph.DisplayName: Engorged Vein
 // DeerFrostPulseProj.DisplayName: Frost Tremor
 // DeerIceSpikeProj.DisplayName: Ice Spike
+// WastesSandGeyserProj.DisplayName: Sand Geyser
+// WastesSandConeTelegraph.DisplayName: Sand Spray Omen
+// WastesSandPelletProj.DisplayName: Scouring Sand Bolt
+// WastesIceSlickZone.DisplayName: Slick Ice Sheet
+// WastesIceShatterCore.DisplayName: Crystal Husk
+// WastesIceShardProj.DisplayName: Burial Ice Shard
+// WastesElementRing.DisplayName: Elemental Erosion Ring
 // DeerRubbleProj.DisplayName: Icy Rubble
 // DeerShadowHandProj.DisplayName: Shadow Hand
 // FishronGeyserProj.DisplayName: Tidal Geyser
@@ -471,6 +484,11 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // FishronTsunamiWallProj.DisplayName: Tsunami Wall
 // EowAcidGlob.DisplayName: Corrosive Spittle
 // EowAcidPool.DisplayName: Corrosive Pool
+// ErosionCloudSeed.DisplayName: Erosion Spore Core
+// ErosionCloudProj.DisplayName: Erosive Miasma
+// SiphonBurstProj.DisplayName: Siphoning Pulse
+// VileBurstOmen.DisplayName: Vile Burst Omen
+// VileLanceProj.DisplayName: Vile Splatter Lance
 // EowBreachOmen.DisplayName: Breach Omen
 // EowGeyserProj.DisplayName: Corrupt Geyser
 // EowHuskMine.DisplayName: Husk Mine
@@ -502,6 +520,10 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // BKSRoyalPillarProj.DisplayName: Royal Beam
 // BKSShockwaveProj.DisplayName: Gel Shockwave
 // BKSTideWaveProj.DisplayName: Gel Tide
+// SlimeSquashOmen.DisplayName: Coiling Gel
+// SlimeQuakeWave.DisplayName: Gel Quake
+// SlimeGelBomb.DisplayName: Bouncing Gel
+// SlimeGooPatch.DisplayName: Clinging Goo
 // MLordAnnihilationRayProj.DisplayName: Moonlight Annihilation Ray
 // MLordArcRayProj.DisplayName: Phantasmal Arc Ray
 // MLordBlackHoleProj.DisplayName: Black Flash Singularity
@@ -522,6 +544,15 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // PlanteraVineLattice.DisplayName: Vine Lattice
 // BrutalBeeStinger.DisplayName: Queen's Stinger
 // HoneyGlobProj.DisplayName: Honey Glob
+// JhVineLash.DisplayName: Barbed Vine Lash
+// JhVolleyOmen.DisplayName: Volley Omen
+// JhStingerBolt.DisplayName: Swarm Stinger
+// JhScytheBolt.DisplayName: Demon Sickle
+// JhTridentBolt.DisplayName: Hellish Trident
+// JhShellSpike.DisplayName: Shell Spike
+// JhAmbushOmen.DisplayName: Gathering Cinder
+// JhImpFireBolt.DisplayName: Imp Flare
+// JhBreachOmen.DisplayName: Breach Omen
 // HoneyPuddleZone.DisplayName: Honey Pool
 // QueenBeeTelegraphLine.DisplayName: Amber Warning Line
 // WaxHiveTurret.DisplayName: Wax Hive Turret
@@ -533,6 +564,9 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // QueenPrismBeamProj.DisplayName: Refraction Beam
 // QueenSpikeOmenProj.DisplayName: Spike Omen
 // SkeletronBoneShard.DisplayName: Bone Shard
+// NightBoneProj.DisplayName: Nighthunt Bone
+// NightDiveOmen.DisplayName: Nighthunt Dive Omen
+// NightPounceOmen.DisplayName: Nighthunt Pounce Omen
 // SkeletronBoneSpike.DisplayName: Bone Spire
 // SkeletronCursedSkull.DisplayName: Cursed Skull
 // SkeletronCurseWisp.DisplayName: Curse Wisp
@@ -620,6 +654,9 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // CultistCoronaLance.DisplayName: Corona Lance
 // CultistStarChart.DisplayName: Star Chart Judgement
 // CultistGazeBeam.DisplayName: Lunar Gaze
+// CultistPlanetAimLine.DisplayName: Planet Hurl Sightline
+// CultistCometProj.DisplayName: Circling Comet
+// CultistZodiacSpokeProj.DisplayName: Zodiac Seal Spoke
 // SkeletronBoneWheel.DisplayName: Skeletron Bone Wheel
 // FuFeiMistCloud.DisplayName: Fu Fei Mist Cloud
 // FuHangMiasmaColumn.DisplayName: Fu Hang Miasma Column
@@ -653,3 +690,5 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // EverdeepRing.DisplayName: Abyssal Ring
 // EverdeepMaelstrom.DisplayName: Abyssal Maelstrom
 // CultistPlanetProj.DisplayName: Colossal Celestial Body
+// LegionVolleyOmen.DisplayName: Legion Volley Order
+// LegionVolleyArrow.DisplayName: Legion War Arrow

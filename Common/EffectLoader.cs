@@ -348,6 +348,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> GraniteArc { get; set; }
         public static Asset<Effect> MarbleSlash { get; set; }
         public static Asset<Effect> BloodAltarRite { get; set; }
+        public static Asset<Effect> TiroFinaleFX { get; set; }
         public static Asset<Effect> UnsungheroChess { get; set; }
         public static Asset<Effect> ScrapForm { get; set; }
         public static Asset<Effect> ScrapBeamLine { get; set; }

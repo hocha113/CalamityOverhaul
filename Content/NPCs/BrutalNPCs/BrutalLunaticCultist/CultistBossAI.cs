@@ -203,7 +203,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             float rate = stateMachine.CurrentState switch {
                 CultistCoilState => 0.24f,
                 CultistOrbitLanceState or CultistRingHurlState or CultistStarChartState
-                    or CultistEclipseState or CultistGazeState or CultistPlanetHurlState => 0.11f,
+                    or CultistEclipseState or CultistGazeState or CultistPlanetHurlState
+                    or CultistCometVolleyState or CultistZodiacSealState or CultistStasisMinesState => 0.11f,
                 _ => 0f,
             };
             if (rate > 0f) {
@@ -311,10 +312,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             int lance = ModContent.ProjectileType<CultistCoronaLance>();
             int chart = ModContent.ProjectileType<CultistStarChart>();
             int gaze = ModContent.ProjectileType<CultistGazeBeam>();
+            int comet = ModContent.ProjectileType<CultistCometProj>();
+            int spoke = ModContent.ProjectileType<CultistZodiacSpokeProj>();
             foreach (Projectile proj in Main.ActiveProjectiles) {
                 if (proj.type == bead || proj.type == orbit || proj.type == ring
                     || proj.type == shade || proj.type == lance || proj.type == chart
-                    || proj.type == gaze) {
+                    || proj.type == gaze || proj.type == comet || proj.type == spoke) {
                     proj.Kill();
                 }
             }

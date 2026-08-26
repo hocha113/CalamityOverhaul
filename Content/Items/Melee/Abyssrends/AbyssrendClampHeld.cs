@@ -17,7 +17,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
 {
     /// <summary>
     /// 裂渊右键钳杀：张口掀起吸流把面前的敌人拽到钳口，高举过顶后狠狠砸向近前地面，
-    /// 落点引爆空化并施加渊压。NPC 位移只在服务端写；Boss、免击退与蠕虫体节不受拖拽，只吃砸击
+    /// 落点引爆空化并施加渊压。NPC 位移只在服务端写；普通敌怪无视击退抗性一路拽到口，
+    /// Boss 与共享血量的蠕虫头只被拖拽不被钳制，蠕虫体节跟头走不单独受力
     /// </summary>
     internal class AbyssrendClampHeld : BaseHeldProj, IOverlayDrawable
     {
@@ -37,7 +38,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
         private const int TotalFrames = ImpactEnd + RecoverDur;
 
         private const float HeldScale = 0.92f;
-        private const float SuckRange = 360f;
+        //吸流半径：覆盖大半个屏幕，远处的敌怪也要拽得到
+        private const float SuckRange = 700f;
         private const float GripRadius = 56f;
         private const int MaxCaught = 6;
         private const float SweepArc = 3.3f;
@@ -108,25 +110,44 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
             }
         }
 
-        //施放瞬间身前是否有可追目标，只影响冷却判定
+        //施放瞬间身前是否有可吸目标，只影响冷却判定
         private bool ZoneHasTarget() {
             Vector2 aimDir = aimLock.ToRotationVector2();
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
-                if (!npc.CanBeChasedBy(Projectile)) {
-                    continue;
+                if (IsSuckable(npc, out _) && InSuckZone(Owner.Center, aimDir, npc)) {
+                    return true;
                 }
-                Vector2 to = npc.Center - Owner.Center;
-                float dist = to.Length();
-                if (dist > SuckRange) {
-                    continue;
-                }
-                if (Vector2.Dot(to.SafeNormalize(Vector2.Zero), aimDir) < 0.3f && dist > 90f) {
-                    continue;
-                }
-                return true;
             }
             return false;
+        }
+
+        //吸流资格。dragOnly=真时只拖不钳：Boss 与共享血量的蠕虫头；蠕虫体节跟头走，不单独吸
+        private bool IsSuckable(NPC npc, out bool dragOnly) {
+            dragOnly = false;
+            if (!npc.CanBeChasedBy(Projectile)) {
+                return false;
+            }
+            if (npc.IsWormBody() || (npc.realLife >= 0 && npc.realLife != npc.whoAmI)) {
+                return false;
+            }
+            if (npc.boss || npc.realLife >= 0) {
+                dragOnly = true;
+            }
+            return true;
+        }
+
+        //锥区判定：限距、限向（贴身豁免）、不隔墙吸
+        private static bool InSuckZone(Vector2 origin, Vector2 aimDir, NPC npc) {
+            Vector2 to = npc.Center - origin;
+            float dist = to.Length();
+            if (dist > SuckRange) {
+                return false;
+            }
+            if (Vector2.Dot(to.SafeNormalize(Vector2.Zero), aimDir) < 0.3f && dist > 90f) {
+                return false;
+            }
+            return Collision.CanHitLine(origin, 1, 1, npc.Center, 1, 1);
         }
 
         public override void AI() {
@@ -197,38 +218,50 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
             tipPos = handPos + currentRotation.ToRotationVector2() * (BladeLenScaled + holdout);
         }
 
-        //吸流：位移只在服务端写。Boss、免击退、蠕虫体节不吸
+        //吸流：位移只在服务端写。普通敌怪按比例步进拽向钳口，窗口内保证到口；
+        //Boss 与蠕虫头只受有界拖拽。步进走碰撞裁剪，不把怪压进地形
         private void HandleSuction() {
             if (Main.netMode == NetmodeID.MultiplayerClient || Timer >= SuckEnd) {
                 return;
             }
             Vector2 aimDir = currentRotation.ToRotationVector2();
             Vector2 jaw = JawPoint;
+            //吸力随吸流推进增强，收口那几帧把远端敌怪一口气拽完
+            float pullK = MathHelper.Lerp(0.07f, 0.24f, Timer / (float)SuckEnd);
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
-                if (!npc.CanBeChasedBy(Projectile)) {
-                    continue;
-                }
-                if (npc.boss || npc.knockBackResist <= 0f || npc.realLife >= 0) {
-                    continue;
-                }
-                Vector2 to = npc.Center - handPos;
-                float dist = to.Length();
-                if (dist > SuckRange) {
-                    continue;
-                }
-                if (Vector2.Dot(to.SafeNormalize(Vector2.Zero), aimDir) < 0.3f && dist > 90f) {
+                if (!IsSuckable(npc, out bool dragOnly) || !InSuckZone(handPos, aimDir, npc)) {
                     continue;
                 }
                 Vector2 pull = jaw - npc.Center;
                 float pd = pull.Length();
-                if (pd > 12f) {
-                    float speed = MathF.Min(pd * 0.22f + 4f, 22f);
-                    npc.velocity = Vector2.Lerp(npc.velocity, pull.SafeNormalize(Vector2.Zero) * speed, 0.35f);
+                if (dragOnly) {
+                    //大家伙拽不到脸上，但拖得动：朝钳口的速度分量封顶注入
+                    Vector2 pullDir = pull.SafeNormalize(Vector2.Zero);
+                    float toward = Vector2.Dot(npc.velocity, pullDir);
+                    if (toward < 10f) {
+                        npc.velocity += pullDir * MathF.Min(3.5f, 10f - toward);
+                        npc.netUpdate = true;
+                    }
+                    continue;
+                }
+                if (pd > 14f) {
+                    Vector2 step = pull * pullK;
+                    float stepLen = step.Length();
+                    if (stepLen > 48f) {
+                        step *= 48f / stepLen;
+                    }
+                    if (!npc.noTileCollide) {
+                        step = Collision.TileCollision(npc.position, step, npc.width, npc.height);
+                    }
+                    npc.position += step;
+                    //让下一帧的自然移动继续朝钳口走，而不是被自身 AI 立刻带跑
+                    npc.velocity = step * 0.4f;
                 }
                 else {
-                    npc.velocity *= 0.4f;
+                    npc.velocity *= 0.3f;
                 }
+                npc.netUpdate = true;
             }
 
             //吸流结束瞬间点名：钳口附近的目标被咬住，随刀举砸
@@ -236,10 +269,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
                 caught.Clear();
                 for (int i = 0; i < Main.maxNPCs && caught.Count < MaxCaught; i++) {
                     NPC npc = Main.npc[i];
-                    if (!npc.CanBeChasedBy(Projectile)) {
-                        continue;
-                    }
-                    if (npc.boss || npc.knockBackResist <= 0f || npc.realLife >= 0) {
+                    if (!IsSuckable(npc, out bool dragOnly) || dragOnly) {
                         continue;
                     }
                     if (npc.Center.Distance(jaw) <= GripRadius * 1.5f) {
@@ -261,11 +291,12 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
             int slot = 0;
             foreach (int idx in caught) {
                 NPC npc = Main.npc[idx];
-                if (!npc.active || npc.dontTakeDamage || npc.friendly) {
+                if (!npc.CanBeChasedBy(Projectile)) {
                     continue;
                 }
                 npc.Center = tipPos - bladeDir * (12f + 16f * slot);
                 npc.velocity = Vector2.Zero;
+                npc.netUpdate = true;
                 slot++;
             }
         }
@@ -282,11 +313,12 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
             if (Main.netMode != NetmodeID.MultiplayerClient) {
                 foreach (int idx in caught) {
                     NPC npc = Main.npc[idx];
-                    if (!npc.active || npc.dontTakeDamage || npc.friendly) {
+                    if (!npc.CanBeChasedBy(Projectile)) {
                         continue;
                     }
                     npc.velocity = new Vector2(facingDir * Main.rand.NextFloat(4f, 7f), 11f);
                     npc.AddBuff(ModContent.BuffType<AbyssalPressure>(), 300);
+                    npc.netUpdate = true;
                 }
             }
 
@@ -366,12 +398,13 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
             if (VaultUtils.isServer || Timer >= SuckEnd || Timer % 2 != 0) {
                 return;
             }
-            //吸流粒子：从锥区各处涌向钳口
+            //吸流粒子：从锥区各处涌向钳口，越远越快，远端也读得出被吸
             Vector2 aimDir = currentRotation.ToRotationVector2();
             Vector2 jaw = JawPoint;
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 3; i++) {
                 Vector2 pos = handPos + aimDir.RotatedByRandom(0.55f) * Main.rand.NextFloat(90f, SuckRange);
-                Vector2 vel = (jaw - pos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(7f, 13f);
+                float dist = pos.Distance(jaw);
+                Vector2 vel = (jaw - pos).SafeNormalize(Vector2.Zero) * (dist * 0.045f + Main.rand.NextFloat(5f, 9f));
                 PRTLoader.NewParticle<PRT_AbyssGlob>(pos, vel
                     , Color.Lerp(AbyssrendFX.Deep, AbyssrendFX.Body, Main.rand.NextFloat())
                     , Main.rand.NextFloat(0.3f, 0.5f))

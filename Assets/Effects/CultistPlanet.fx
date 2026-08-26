@@ -438,8 +438,8 @@ float4 CrackPS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
     float crack = 1.0 - smoothstep(w * 0.4, w, ridge);
     crack *= inDisc * step(0.02, uCrack);
 
-    //熔岩透光:缝里白热橙,随进度增压;外壳同步压暗
-    float3 lava = lerp(float3(1.0, 0.32, 0.05), float3(1.0, 0.85, 0.45), crack * uCrack);
+    //熔核透光:星球自身亮色系向白热增压(硬编码橙色会让每颗星的裂缝都透出日耀色);外壳同步压暗
+    float3 lava = lerp(uColBright, uColStorm * 1.08, crack * uCrack);
     float glow = crack * (0.35 + uCrack * 1.1);
     float darken = inDisc * uCrack * 0.38;
 

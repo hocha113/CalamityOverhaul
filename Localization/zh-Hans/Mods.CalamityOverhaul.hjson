@@ -1,5 +1,6 @@
 EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 MeleeMagicDamageClassTextContent.MeleeMagicDamageClass.DisplayName: 近战魔法伤害
+RangedMagicDamageClassTextContent.RangedMagicDamageClass.DisplayName: 远程魔法伤害
 
 Biomes: {
 	TungstenBiome: {

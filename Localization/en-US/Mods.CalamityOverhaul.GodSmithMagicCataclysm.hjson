@@ -1,0 +1,143 @@
+GsBatScepter: {
+	Desc:
+		'''
+		Reforged: hits build Nightfall; at full charge, right click to call the bat deluge
+		A phantom moon rises, waves of bats dive at your foes, then circle you as a guard ring
+		'''
+}
+
+GsRazorpine: {
+	Desc:
+		'''
+		Reforged: hits build Resin; at full charge, right click to raise the Needle Storm
+		A ring of needles tightens around you, then settles into a needle mat underfoot
+		'''
+}
+
+GsBlizzardStaff: {
+	Desc:
+		'''
+		Reforged: hits build Snowsquall; at full charge, right click to call the Whiteout over your cursor
+		A giant blizzard hammers the area and leaves rime spikes on the ground
+		'''
+}
+
+GsStaffofEarth: {
+	Desc:
+		'''
+		Reforged: hits build Earthwrath; at full charge, right click to raise the Orogeny at your cursor
+		Rock pillars erupt in waves amid flying rubble, leaving a magma vein bed behind
+		'''
+}
+
+GsBetsysWrath: {
+	Desc:
+		'''
+		Reforged: hits build Dragonfire; at full charge, right click to invoke the Dragon's Wrath
+		Betsy's shade dives three times trailing flame curtains, leaving a cursed pyre bed
+		'''
+}
+
+GsNightglow: {
+	Desc:
+		'''
+		Reforged: hits build Dawnlight; at full charge, right click to unfurl an Aurora Curtain over your cursor
+		The curtain sears foes within and rains light lances below
+		'''
+}
+
+GsStellarTune: {
+	Desc:
+		'''
+		Reforged: hits build Melody; at full charge, right click to open the Stellar Finale
+		Star chords play themselves at your foes on the beat while you dance a little faster
+		'''
+}
+
+GsResonanceScepter: {
+	Desc:
+		'''
+		Reforged: hits build Resonance; at full charge, right click to collapse the harmonics at your cursor
+		Five standing waves cross the area and their nodes strike whatever lingers
+		'''
+}
+
+GsNebulaArcanum: {
+	Desc:
+		'''
+		Reforged: hits build Arcanum; at full charge, right click to spin up the Nebula Spiral
+		Three nebula arms orbit you, grinding foes and dragging the lesser ones inward
+		'''
+}
+
+GsNebulaBlaze: {
+	Desc:
+		'''
+		Reforged: hits build Blaze; at full charge, right click to mark a nova on the target near your cursor
+		It detonates in three staggered blast rings around a gravity well
+		'''
+}
+
+GsLunarFlare: {
+	Desc:
+		'''
+		Reforged: hits build Moonphase; at full charge, right click to raise the Lunar Eclipse
+		An eclipse disk pours twelve woven flare falls, every third one backed by a phantom moonbeam
+		'''
+}
+
+GsBatSwarmDirector: {
+	DisplayName: Bat Deluge
+}
+
+GsPineStormDirector: {
+	DisplayName: Needle Storm
+}
+
+GsWhiteoutDirector: {
+	DisplayName: Whiteout
+}
+
+GsOrogenyDirector: {
+	DisplayName: Orogeny
+}
+
+GsEarthPillarProj: {
+	DisplayName: Orogeny Pillar
+}
+
+GsDragonWrathDirector: {
+	DisplayName: Dragon's Wrath
+}
+
+GsAuroraCurtainDirector: {
+	DisplayName: Aurora Curtain
+}
+
+GsAuroraLanceProj: {
+	DisplayName: Aurora Lance
+}
+
+GsStellarFinaleDirector: {
+	DisplayName: Stellar Finale
+}
+
+GsResonanceCollapseDirector: {
+	DisplayName: Harmonic Collapse
+}
+
+GsNebulaSpiralDirector: {
+	DisplayName: Nebula Spiral
+}
+
+GsNovaDetonationDirector: {
+	DisplayName: Nova Detonation
+}
+
+GsLunarEclipseDirector: {
+	DisplayName: Lunar Eclipse
+}
+
+GsMoonPillarProj: {
+	DisplayName: Phantom Moonbeam
+}

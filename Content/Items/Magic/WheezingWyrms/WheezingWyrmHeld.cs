@@ -25,13 +25,14 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
         [VaultLoaden(CWRConstant.Masking + "TearFlame01")]
         private static Asset<Texture2D> FlameTex = null;
 
-        //——贴图锚点(1x像素，手持图已镜像成龙嘴朝右)——
-        private const float HeldScale = 1.25f;
-        /// <summary>持杖前倾：把"握点→龙嘴"轴烘焙到瞄准线上，龙首永远探在最前端(朝左时反号)</summary>
-        private const float LeanRad = MathHelper.PiOver4;
-        private static readonly Vector2 GripPx = new(27, 33);   //握点，绘制原点
-        private static readonly Vector2 MouthPx = new(41, 12);  //龙嘴出焰口
-        private static readonly Vector2 EyePx = new(21, 9);     //龙眼
+        //——贴图锚点(94x106 的 2x 像素图，龙嘴朝右上)——
+        /// <summary>2x 贴图按半尺寸落地，持握大小与 1x 原图一致</summary>
+        private const float HeldScale = 0.625f;
+        private static readonly Vector2 GripPx = new(37, 73);   //握点，绘制原点(杖杆中段)
+        private static readonly Vector2 MouthPx = new(87, 29);  //龙嘴出焰口(上下颌间口腔前缘)
+        private static readonly Vector2 EyePx = new(53, 23);    //龙眼
+        /// <summary>持杖前倾：把"握点→龙嘴"轴精确烘焙到瞄准线上，龙首永远探在最前端(朝左时反号)</summary>
+        private static readonly float LeanRad = MathF.Atan2(GripPx.Y - MouthPx.Y, MouthPx.X - GripPx.X);
 
         /// <summary>贴图像素锚点→(枪口前向,法向)偏移，绘制与 GetMuzzlePos 共用同一变换</summary>
         private static Vector2 AnchorOffset(Vector2 px) => ((px - GripPx) * HeldScale).RotatedBy(LeanRad);
@@ -316,11 +317,14 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
             Vector2 dir = UnitToMouseV;
             float temp = DisplayTemp;
 
-            //主根舌每帧一条，隔拍再补一条错相侧舌，根口始终是一簇活火
+            //主根舌每帧一条并带初速射离嘴口：弹幕 3 帧才喷一口，根舌逐帧沿当前瞄准线补料，
+            //甩杖扫射时扇面被逐帧铺满，嘴口到首团之间不断口
+            float jet = MathHelper.Clamp((heat - 0.08f) / 0.2f, 0.3f, 1f);
             Vector2 od = dir.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
-            PRTLoader.NewParticle<PRT_WyrmTongue>(mouth + Main.rand.NextVector2Circular(3f, 3f), od * 1.4f
+            PRTLoader.NewParticle<PRT_WyrmTongue>(mouth + Main.rand.NextVector2Circular(3f, 3f)
+                , od * (2.5f + 5.5f * jet) + Owner.velocity * 0.45f
                 , default, Main.rand.NextFloat(0.9f, 1.5f))
-                ?.Configure(od, Main.rand.NextFloat(0.8f, 1.3f), Main.rand.Next(3, 6), temp);
+                ?.Configure(od, Main.rand.NextFloat(0.8f, 1.3f), Main.rand.Next(6, 10), temp);
             if ((int)Time % 3 == 0) {
                 Vector2 od2 = dir.RotatedBy(Main.rand.NextFloat(-0.55f, 0.55f));
                 PRTLoader.NewParticle<PRT_WyrmTongue>(mouth, od2 * 1.1f, default, Main.rand.NextFloat(0.6f, 1f))

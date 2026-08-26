@@ -42,10 +42,11 @@ namespace CalamityOverhaul.Content.GameModes
             PlaySound(face, enabled);
 
             if (enabled) {
-                //开启向按档位递增的一记轻震（ScreenVibration 配置门在 GetScreenShake 内部）
+                //开启向按档位递增的一记轻震（ScreenVibration 配置门在 GetScreenShake 内部）；神匠是内容向，取残酷档
                 float shake = face switch {
                     GameModeFace.Brutal => 6f,
                     GameModeFace.Asura => 8f,
+                    GameModeFace.GodSmith => 6f,
                     _ => 10f,
                 };
                 Main.LocalPlayer.CWR()?.GetScreenShake(shake);
@@ -56,12 +57,13 @@ namespace CalamityOverhaul.Content.GameModes
             LineTimer = LineDuration;
         }
 
-        /// <summary>CrueltyOpen 分档变调：残酷原样，修罗降二成，毁灭降四成；关闭再降调减量</summary>
+        /// <summary>CrueltyOpen 分档变调：残酷原样，修罗降二成，毁灭降四成，神匠升调走炉火亮色；关闭再降调减量</summary>
         private static void PlaySound(GameModeFace face, bool enabled) {
             var at = Main.LocalPlayer.Center;
             float pitch = face switch {
                 GameModeFace.Brutal => 0f,
                 GameModeFace.Asura => -0.2f,
+                GameModeFace.GodSmith => 0.15f,
                 _ => -0.4f,
             };
             if (enabled) {
@@ -69,6 +71,11 @@ namespace CalamityOverhaul.Content.GameModes
             }
             else {
                 SoundEngine.PlaySound(CWRSound.CrueltyOpen with { Pitch = pitch - 0.35f, Volume = 0.65f }, at);
+            }
+
+            //神匠开启补一记铁砧脆响，锻炉签名
+            if (face == GameModeFace.GodSmith && enabled) {
+                SoundEngine.PlaySound(Terraria.ID.SoundID.Item37 with { Volume = 0.9f, Pitch = -0.1f }, at);
             }
         }
 

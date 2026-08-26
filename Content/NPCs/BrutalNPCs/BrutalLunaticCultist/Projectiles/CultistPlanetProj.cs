@@ -550,10 +550,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             }
 
             //uniform 全参数重设(共享 shader 的设备全局残留陷阱)
-            //掷星期自转越来越快:蓄势小提速,飞行随时间狂飙
+            //掷星期自转:蓄势小提速,飞行渐加速但饱和封顶 3.2x(无界线性会在反弹时转成陀螺)
             float spinMul = Stage switch {
                 3 => 1.8f,
-                4 => 1.8f + Timer * 0.055f,
+                4 => 1.8f + 1.4f * (1f - MathF.Exp(-Timer / 110f)),
                 6 => MathHelper.Max(0.3f, 1f - Timer / CrackFrames),
                 _ => 1f,
             };
@@ -571,10 +571,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             effect.Parameters["uShear"]?.SetValue(Kind == KindVortex && !moltenCore ? 0.45f : 0f);
             effect.Parameters["uTilt"]?.SetValue(moltenCore ? 0f : TiltOf(Kind));
             effect.Parameters["uLightDir"]?.SetValue(new Vector3(-0.45f, -0.55f, 0.70f));
-            effect.Parameters["uColDeep"]?.SetValue(moltenCore ? new Vector3(0.30f, 0.04f, 0.00f) : PaletteDeep(Kind));
-            effect.Parameters["uColMid"]?.SetValue(moltenCore ? new Vector3(0.92f, 0.26f, 0.03f) : PaletteMid(Kind));
-            effect.Parameters["uColBright"]?.SetValue(moltenCore ? new Vector3(1.0f, 0.62f, 0.16f) : PaletteBright(Kind));
-            effect.Parameters["uColStorm"]?.SetValue(moltenCore ? new Vector3(1.0f, 0.92f, 0.60f) : PaletteStorm(Kind));
+            //熔核走星球自身色系过热化:借 TechSolar 的沸腾几何,不借日耀的脸(旧版硬编码橙色被读成"转阶段冒出日耀球")
+            effect.Parameters["uColDeep"]?.SetValue(moltenCore ? MoltenDeep(Kind) : PaletteDeep(Kind));
+            effect.Parameters["uColMid"]?.SetValue(moltenCore ? MoltenMid(Kind) : PaletteMid(Kind));
+            effect.Parameters["uColBright"]?.SetValue(moltenCore ? MoltenBright(Kind) : PaletteBright(Kind));
+            effect.Parameters["uColStorm"]?.SetValue(moltenCore ? MoltenStorm(Kind) : PaletteStorm(Kind));
             effect.Parameters["uSolidity"]?.SetValue(IsPhantom ? 0.40f : 0.95f);
             effect.Parameters["uPupil"]?.SetValue(pupil);
             effect.Parameters["uCrack"]?.SetValue(0f);
@@ -693,5 +694,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             KindMoon => new(0.55f, 1.0f, 0.85f),
             _ => new(0.72f, 0.94f, 1.0f),
         };
+
+        //---- 熔核过热调色:自身色系压暗底+提亮体+白热芯,任何星球裂解都读作"它自己的内核" ----
+        private static Vector3 MoltenDeep(int kind) => PaletteMid(kind) * 0.35f;
+
+        private static Vector3 MoltenMid(int kind) => Vector3.Lerp(PaletteMid(kind), PaletteBright(kind), 0.65f);
+
+        private static Vector3 MoltenBright(int kind) => Vector3.Lerp(PaletteBright(kind), Vector3.One, 0.45f);
+
+        private static Vector3 MoltenStorm(int kind) => Vector3.Lerp(PaletteBright(kind), Vector3.One, 0.82f);
     }
 }

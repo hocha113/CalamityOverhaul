@@ -1,5 +1,6 @@
 EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endloser Schaden
 MeleeMagicDamageClassTextContent.MeleeMagicDamageClass.DisplayName: Nahkampf- und Magieschaden
+RangedMagicDamageClassTextContent.RangedMagicDamageClass.DisplayName: Fernkampf- und Magieschaden
 
 Biomes: {
 	TungstenBiome: {

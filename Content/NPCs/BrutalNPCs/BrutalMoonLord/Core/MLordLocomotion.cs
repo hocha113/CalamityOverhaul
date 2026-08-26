@@ -506,9 +506,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
                     hand.Center = anchor;
                     hand.velocity = Vector2.Zero;
                     break;
-                default:
+                default: {
+                    //收势：臂链仍超伸时主动向肩部环带回收——过伸松爪后身体
+                    //还在被其他爪拽走，手滞留旧锚点会把臂链拉出脱链星桥
+                    NPC core = MLordFacts.GetCore(hand);
+                    if (core != null) {
+                        Vector2 shoulder = ShoulderOf(core, hand);
+                        Vector2 toHand = hand.Center - shoulder;
+                        if (toHand.Length() > MLordDirector.FormationReachMax) {
+                            Vector2 target = shoulder + toHand.SafeNormalize(Vector2.UnitY)
+                                * (MLordDirector.FormationReachMax * 0.88f);
+                            Vector2 want = (target - hand.Center) * 0.24f;
+                            if (want.Length() > 24f) {
+                                want = want.SafeNormalize(Vector2.Zero) * 24f;
+                            }
+                            hand.velocity = Vector2.Lerp(hand.velocity, want, 0.3f);
+                            break;
+                        }
+                    }
                     hand.velocity *= 0.84f;
                     break;
+                }
             }
         }
 

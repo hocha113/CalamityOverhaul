@@ -15,9 +15,10 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
 {
     /// <summary>
     /// 毁灭者之刃EX 沉重三拍挥砍。拍0/1 正反手重劈,拍2 终结巨新月。
-    /// 节奏走收-压-爆-停:长蓄力回拉、蓄尾回压顿点、约1帧前载爆发带过冲、
-    /// 急坐回后死停驻谷、收势回守。命中顿帧从收势尾巴等量扣回,
-    /// 总帧守恒(轻拍20/终结28,与旧版持平)。ai[0]=拍号 ai[1]=挥向
+    /// 节奏走蓄-加速-巅峰-制动:深蓄力回拉后,重刃从静止拖出加速,
+    /// 巅峰匀速掠过打击区,动量带着刀滑过终点线制动,过冲回坐死停。
+    /// 加减速全程可见,力量感来自质量驱动的挥砍过程。
+    /// 命中顿帧从收势尾巴等量扣回,总帧守恒(轻拍20/终结28)。ai[0]=拍号 ai[1]=挥向
     /// </summary>
     internal class DestroyersBladeEXHeld : BaseHeldProj, IPrimitiveDrawable, IOverlayDrawable
     {
@@ -30,25 +31,28 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         private bool IsFinisher => ComboIndex >= 2f;
         private bool Empowered => Owner.GetModPlayer<DestroyerEXPlayer>().Empowered;
 
-        //阶段时长(逻辑帧,攻速缩放)。轻拍 8+4+8=20,终结 11+5+12=28,总帧与旧版守恒
-        //蓄力更深、爆发窗更窄:行程不变的前提下峰值角速度更高
-        private float WindupTime => IsFinisher ? 11f : 8f;
-        private float SlashTime => IsFinisher ? 5f : 4f;
-        private float RecoverTime => IsFinisher ? 12f : 8f;
+        //阶段时长(逻辑帧,攻速缩放)。轻拍 7+8+5=20,终结 10+11+7=28,总帧与旧版守恒
+        //挥砍窗拉长:加速与制动过程全程可见,蓄力和收势各让出几帧
+        private float WindupTime => IsFinisher ? 10f : 7f;
+        private float SlashTime => IsFinisher ? 11f : 8f;
+        private float RecoverTime => IsFinisher ? 7f : 5f;
         private float TotalTime => WindupTime + SlashTime + RecoverTime;
         //挥砍弧度:轻拍压椭圆弯月,终结才配巨新月
         private float SwingArc => IsFinisher ? 5.5f : 3.4f;
         //刀尖距持握点长度
         private float BladeReach => 150f * (IsFinisher ? 1.08f : 1f);
-        //蓄力回拉角:比旧版更深,沉重感的主要来源
+        //蓄力回拉角:深回拉,沉重感的主要来源
         private float PullbackAngle => IsFinisher ? 1.05f : 0.72f;
 
-        //收-爆-停整形
-        private float SwingGatherEnd => IsFinisher ? 0.34f : 0.30f;
-        private float SwingBurstEnd => IsFinisher ? 0.60f : 0.62f;
+        //挥砍三段整形:加速段终点、巅峰段终点、过冲顶点(前向行程终点)
+        private float SwingAccelEnd => IsFinisher ? 0.32f : 0.30f;
+        private float SwingPeakEnd => 0.58f;
+        private float SwingApexTime => IsFinisher ? 0.85f : 0.84f;
+        //伤害窗起点(挥砍相位),加速段刀一动就开始咬
+        private const float DamageStartT = 0.12f;
 
         //命中顿帧预算(帧),从收势尾巴等量扣回
-        private const float HitStopBudget = 4f;
+        private const float HitStopBudget = 3f;
 
         private float elapsed;
         private float speedMul = 1f;
@@ -61,6 +65,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         private float sweepCollisionEnd;
         private bool sweepDamageActive;
         private bool slashSoundPlayed;
+        private bool peakShakeDone;
         private bool shotsFired;
         private bool stopBeatDone;
         private float trailFade;
@@ -139,22 +144,13 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             //出手打断潜行,各端同拍
             Owner.GetModPlayer<DestroyerEXPlayer>().NoteAttack();
 
+            //蓄力不配音效,安静的回拉衬托挥砍主声(对齐纠缠之怨)
             if (IsFinisher) {
                 Projectile.damage = (int)(Projectile.damage * 1.4f);
                 Projectile.scale = 1.22f;
-                if (!VaultUtils.isServer) {
-                    //终结斩起手:液压蓄能 + 低吼,音量压在挥砍主声之下
-                    SoundEngine.PlaySound(SoundID.Item22 with { Volume = 0.5f, Pitch = -0.5f, MaxInstances = 2, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, Owner.Center);
-                    SoundEngine.PlaySound(SoundID.Item15 with { Volume = 0.35f, Pitch = -0.7f, MaxInstances = 2, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, Owner.Center);
-                }
             }
             else {
                 Projectile.scale = 1.06f;
-                if (!VaultUtils.isServer) {
-                    //轻拍蓄力只留一层轻响,拍1略抬音高做前后手区分
-                    float windPitch = ComboIndex >= 1f ? -0.25f : -0.35f;
-                    SoundEngine.PlaySound(SoundID.Item22 with { Volume = 0.28f, Pitch = windPitch, MaxInstances = 2, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, Owner.Center);
-                }
             }
         }
 
@@ -192,24 +188,30 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 float progress = GetSwingProgress(toT);
                 float slashRotation = GetSwingRotation(progress);
 
-                float damageFrom = MathF.Max(fromT, SwingGatherEnd);
-                float damageTo = MathF.Min(toT, SwingBurstEnd);
+                float damageFrom = MathF.Max(fromT, DamageStartT);
+                float damageTo = MathF.Min(toT, SwingApexTime);
                 if (damageTo > damageFrom) {
                     sweepDamageActive = true;
                     sweepCollisionStart = GetSwingRotation(GetSwingProgress(damageFrom));
                     sweepCollisionEnd = GetSwingRotation(GetSwingProgress(damageTo));
                 }
 
-                if (!slashSoundPlayed && toT >= SwingGatherEnd) {
+                if (!slashSoundPlayed && toT >= SwingAccelEnd * 0.5f) {
                     slashSoundPlayed = true;
                     if (!VaultUtils.isServer) {
-                        //主声只留一把钝重挥杖,按拍号走音高阶梯(正手-反手-终结),金属声退为轻辅助
-                        float swingPitch = (int)ComboIndex switch { 0 => -0.30f, 1 => -0.16f, _ => -0.48f };
-                        SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Volume = 0.85f, Pitch = swingPitch, MaxInstances = 3 }, Owner.Center);
-                        SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.35f, Pitch = swingPitch - 0.25f, MaxInstances = 3 }, Owner.Center);
+                        //音效对齐纠缠之怨:Item1 主挥砍按拍走音高,终结叠 Item71 低啸
+                        float swingPitch = (int)ComboIndex switch { 0 => -0.18f, 1 => -0.12f, _ => -0.45f };
+                        SoundEngine.PlaySound(SoundID.Item1 with { Pitch = swingPitch }, Owner.Center);
                         if (IsFinisher) {
-                            SoundEngine.PlaySound(SoundID.ForceRoar with { Volume = 0.32f, Pitch = -0.6f, MaxInstances = 2, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, Owner.Center);
+                            SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.35f, Volume = 0.9f }, Owner.Center);
                         }
+                    }
+                }
+
+                //震屏留到巅峰段入口,与最大角速度同拍
+                if (!peakShakeDone && toT >= SwingAccelEnd) {
+                    peakShakeDone = true;
+                    if (!VaultUtils.isServer) {
                         Main.LocalPlayer?.CWR()?.GetScreenShake(IsFinisher ? 5f : 2.6f);
                     }
                 }
@@ -222,7 +224,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 }
 
                 //硬停拍:回坐完成的一瞬在刀尖泄能,小环加切向甩出的惯性火花
-                float stopBeatT = SwingBurstEnd + 0.45f * (1f - SwingBurstEnd);
+                float stopBeatT = SwingApexTime + 0.45f * (1f - SwingApexTime);
                 if (!stopBeatDone && toT >= stopBeatT) {
                     stopBeatDone = true;
                     if (!VaultUtils.isServer) {
@@ -252,22 +254,22 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             }
 
             if (frameEnd <= WindupTime) {
-                //深蓄力:重刃缓缓拖向身后,末端近静止(爆发前的憋劲),全拍身体后仰
+                //深蓄力:重刃加速再减速拖向身后,末端沉进枪膛位近静止(爆发前的憋劲),全拍身体后仰
                 float t = frameEnd / WindupTime;
-                currentRotation = MathHelper.Lerp(startAngle, ChamberAngle, EaseOutCubic(t));
+                currentRotation = MathHelper.Lerp(startAngle, ChamberAngle, SmoothStep01(t));
                 trailFade = 0f;
                 slashBirth = 0f;
                 bodyLean = -(IsFinisher ? 0.06f : 0.028f) * SmoothStep01(t);
             }
             else if (frameEnd <= slashEnd) {
-                //泄压爆发:过冲后急坐回死停,身体随爆发前扑
+                //加速-巅峰-制动:重刃从静止拖出、掠过打击区、动量滑进过冲,身体随之前扑
                 float t = (frameEnd - WindupTime) / SlashTime;
                 currentRotation = GetSwingRotation(GetSwingProgress(t));
                 trailFade = 1f;
-                //蓄尾到爆发前沿走完从无到有,刃口先现、黑体后涌
-                slashBirth = SmoothStep01(t / (SwingGatherEnd + 0.18f));
+                //加速段走完从无到有,刃口先现、黑体后涌
+                slashBirth = SmoothStep01(t / SwingAccelEnd);
                 bodyLean = MathHelper.Lerp(IsFinisher ? -0.06f : -0.028f, IsFinisher ? 0.10f : 0.05f
-                    , SmoothStep01((t - SwingGatherEnd) / 0.25f));
+                    , SmoothStep01((t - SwingAccelEnd * 0.5f) / 0.5f));
             }
             else {
                 //收势回守,前段死停驻谷,顿帧扣掉的时长在这里兑现
@@ -293,36 +295,38 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         private float ChamberAngle => startAngle - swingSign * PullbackAngle;
 
         private float GetSwingProgress(float t) {
-            float gatherEnd = SwingGatherEnd;
-            float creep = IsFinisher ? 0.10f : 0.05f;
-            float burstEnd = SwingBurstEnd;
+            float accelEnd = SwingAccelEnd;
+            float peakEnd = SwingPeakEnd;
+            float apex = SwingApexTime;
             float path = SwingArc + PullbackAngle;
-            float overshoot = 1f + (IsFinisher ? 0.22f : 0.17f) / path;
-            if (t < gatherEnd) {
-                //蠕出起跑线前先向后回压最后一口劲(顿点),正弦包络保证两端连续
-                float ct = SmoothStep01(t / gatherEnd);
-                float dip = MathF.Sin(ct * MathHelper.Pi) * (IsFinisher ? 0.022f : 0.018f);
-                return creep * ct - dip;
+            float overshoot = (IsFinisher ? 0.30f : 0.22f) / path;
+
+            //由速度剖面反解行程占比:加速段二次缓入、巅峰段匀速、制动段速度线性衰减到顶点归零,段间C1连续
+            float vPeak = (1f + overshoot) / (peakEnd - accelEnd * 0.5f + (apex - peakEnd) * 0.5f);
+            float accelDist = vPeak * accelEnd * 0.5f;
+
+            if (t < accelEnd) {
+                //惯性起步:重刃从静止拖出,加速过程可见
+                float s = t / accelEnd;
+                return accelDist * s * s;
             }
-            if (t < burstEnd) {
-                //前载爆发:九成行程在爆发窗前半口气吃完,不给减速尾巴
-                float burstT = (t - gatherEnd) / (burstEnd - gatherEnd);
-                float launched = 1f - MathF.Pow(1f - burstT, 3.2f);
-                return MathHelper.Lerp(creep, overshoot, launched);
+            if (t < peakEnd) {
+                //巅峰:最大角速度匀速掠过打击区
+                return accelDist + vPeak * (t - accelEnd);
             }
-            //过冲急坐回:回坐挤进前45%窗口,余下时间死停(挫)
-            float settleT = (t - burstEnd) / (1f - burstEnd);
+            if (t < apex) {
+                //制动:动量带着刀滑过终点线,减速进过冲顶点(顶点瞬时静止)
+                float s = (t - peakEnd) / (apex - peakEnd);
+                return accelDist + vPeak * (peakEnd - accelEnd) + vPeak * (apex - peakEnd) * s * (1f - 0.5f * s);
+            }
+            //过冲回坐:前45%窗口收回,余下死停(挫)
+            float settleT = (t - apex) / (1f - apex);
             float snap = SmoothStep01(MathF.Min(settleT / 0.45f, 1f));
-            return MathHelper.Lerp(overshoot, 1f, snap);
+            return MathHelper.Lerp(1f + overshoot, 1f, snap);
         }
 
         private float GetSwingRotation(float progress)
             => MathHelper.Lerp(ChamberAngle, endAngle, progress);
-
-        private static float EaseOutCubic(float value) {
-            value = MathHelper.Clamp(value, 0f, 1f);
-            return 1f - MathF.Pow(1f - value, 3f);
-        }
 
         private static float SmoothStep01(float value) {
             value = MathHelper.Clamp(value, 0f, 1f);
@@ -335,12 +339,12 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         }
 
         private void PushTrailInterval(float fromT, float toT) {
-            float forwardTo = MathF.Min(toT, SwingBurstEnd);
+            float forwardTo = MathF.Min(toT, SwingApexTime);
             if (forwardTo > fromT) {
                 PushTrailSamples(GetSwingRotation(GetSwingProgress(fromT))
                     , GetSwingRotation(GetSwingProgress(forwardTo)));
             }
-            if (toT > SwingBurstEnd) {
+            if (toT > SwingApexTime) {
                 TrimTrailToRotation(GetSwingRotation(GetSwingProgress(toT)));
             }
         }
@@ -470,8 +474,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             }
 
             if (!VaultUtils.isServer) {
-                //同帧多目标只留一声命中,防止群怪场合叠成噪墙
-                SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.5f, Pitch = -0.3f, MaxInstances = 2, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, target.Center);
+                //命中不配音效(对齐纠缠之怨),受击反馈交给顿帧、粒子与原版受击声
                 for (int i = 0; i < (IsFinisher ? 9 : 5); i++) {
                     PRTLoader.NewParticle<PRT_SparkAlpha>(target.Center, Main.rand.NextVector2Circular(7f, 7f)
                         , Main.rand.NextBool(4) ? Color.White : new Color(255, 40, 30)

@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- 临时隔离编译工程（GodSmith 框架自证用，用毕即删）：BuildMod=false 跳过打包，产物经环境变量注入进 %TEMP% -->
+  <PropertyGroup>
+    <BuildMod>false</BuildMod>
+  </PropertyGroup>
+  <Import Project="..\tModLoader.targets" />
+  <PropertyGroup>
+    <AssemblyName>CalamityOverhaulGsIso</AssemblyName>
+    <TargetFramework>net8.0</TargetFramework>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- obj/bin 重定向后 SDK 默认排除失效，显式移除防止卷入仓库陈旧生成文件 -->
+    <Compile Remove="obj\**" />
+    <Compile Remove="bin\**" />
+    <None Remove="obj\**" />
+    <None Remove="bin\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <EmbeddedResource Remove="bin\**" />
+    <!-- 镜像主工程的编译排除树 -->
+    <Compile Remove="Assets\NPCs\Fatuous\**" />
+    <Compile Remove="Content\Buffs\Summon\**" />
+    <Compile Remove="Content\Items\Typeless\**" />
+    <Compile Remove="Content\NPCs\HeavenEaters\**" />
+    <Compile Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="CalamityMod">
+      <HintPath>..\..\CalamityMod.dll</HintPath>
+    </Reference>
+    <Reference Include="InnoVault">
+      <HintPath>..\InnoVault\bin\Debug\net8.0\InnoVault.dll</HintPath>
+    </Reference>
+    <Reference Include="MagicStorage">
+      <HintPath>..\..\MagicStorage.dll</HintPath>
+    </Reference>
+    <Reference Include="SubworldLibrary">
+      <HintPath>..\..\SubworldLibrary.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

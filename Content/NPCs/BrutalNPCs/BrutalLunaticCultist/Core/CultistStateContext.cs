@@ -120,7 +120,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
 
         /// <summary>
         /// 当前阶段攻击池:四式全程可见,主场技能双倍权重;<br/>
-        /// 蚀祭在星尘相退池(主星绕体公转太快,本影走不稳);月明相凝视入池;掷星全程在池
+        /// 蚀祭在星尘相退池(主星绕体公转太快,本影走不稳);月明相凝视入池;掷星全程在池;<br/>
+        /// 三式后手逐相解锁作战线升级:彗星潮 P1、十二宫封禁 P2、滞星雷阵 P3(压轴留到后半场)
         /// </summary>
         private void FillPool(List<CultistStateIndex> pool) {
             pool.Clear();
@@ -132,6 +133,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
             }
             if (Phase >= 4) {
                 pool.Add(CultistStateIndex.Gaze);
+            }
+            if (Phase >= 1) {
+                pool.Add(CultistStateIndex.Comet);
+            }
+            if (Phase >= 2) {
+                pool.Add(CultistStateIndex.ZodiacSeal);
+            }
+            if (Phase >= 3) {
+                pool.Add(CultistStateIndex.StasisMines);
             }
 
             CultistStateIndex home = HomeSkill(Phase);
