@@ -101,7 +101,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
 
         /// <summary>着色器拉伸线：两端羽化 + 生长前沿 + 退场收拢全在 UV 层完成</summary>
         private void DrawShaderLine(Effect effect, float lineLength, float fadeIn, float grow, float lockT, float collapse) {
-            float width = 96f + lockT * 54f;
+            //细线量宽：锁定微增强，不再是宽鞘能量束
+            float width = 34f + lockT * 14f;
 
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             effect.Parameters["uIntensity"]?.SetValue(fadeIn * (0.66f + lockT * 0.4f));
@@ -153,7 +154,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
                     ? new Color(45, 200, 210, 0) * (0.4f * fadeIn * pulse * envelope)
                     : new Color(170, 245, 245, 0) * (0.8f * (0.7f + 0.3f * (float)Math.Sin(lockT * MathHelper.Pi * 6f)) * envelope);
                 Main.EntitySpriteDraw(tex, segPos, null, c, Projectile.rotation,
-                    new Vector2(0, tex.Height / 2f), new Vector2(segLen / tex.Width * 1.04f, (!Locked ? 0.35f : 0.55f) * widthScale),
+                    new Vector2(0, tex.Height / 2f), new Vector2(segLen / tex.Width * 1.04f, (!Locked ? 0.2f : 0.3f) * widthScale),
                     SpriteEffects.None, 0);
             }
         }

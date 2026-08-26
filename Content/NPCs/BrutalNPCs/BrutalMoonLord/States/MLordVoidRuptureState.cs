@@ -29,11 +29,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 context.Owner.ai[MLordAiSlots.OvUltUsed] = 1f;
                 context.Owner.ai[MLordAiSlots.OvEyeCommand] = MLordEyeCommand.Retreat;
                 context.Owner.ai[MLordAiSlots.OvAttackSeed] = Main.rand.Next(1, 100000);
-                //清自家死光（含真眼链束），让大招独占舞台
+                //清自家死光（含真眼链束与月明湮灭巨束），让大招独占舞台
                 foreach (Projectile p in Main.ActiveProjectiles) {
                     if (p.type == ModContent.ProjectileType<MLordScanRayProj>()
                         || p.type == ModContent.ProjectileType<MLordArcRayProj>()
-                        || p.type == ModContent.ProjectileType<MLordEyeLinkProj>()) {
+                        || p.type == ModContent.ProjectileType<MLordEyeLinkProj>()
+                        || p.type == ModContent.ProjectileType<MLordAnnihilationRayProj>()) {
                         p.Kill();
                     }
                 }
@@ -55,9 +56,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             NPC npc = context.Npc;
             Player target = context.Target;
 
-            //高位定桩；蓄势期锁伤（玩家该走位而非抢血线），出弧后放开
-            HoverTo(npc, target.Center + new Vector2(0f, -430f), 5f, 0.045f);
-            npc.velocity *= 0.94f;
+            //大招发射架：黑臂四爪抓桩定身；蓄势期锁伤（玩家该走位而非抢血线），出弧后放开
+            RequestMove(context, target.Center + new Vector2(0f, -430f), 0.5f, MLordMovePolicy.Brace);
             UpdateLean(context);
             context.EclipseDrive = 1f;
             npc.dontTakeDamage = Timer < ChargeEnd;
@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                     float angle = baseAngle + MathHelper.TwoPi / count * i;
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center,
                         angle.ToRotationVector2() * (5.2f + ring * 1.6f),
-                        ProjectileID.PhantasmalBolt, damage, 0f, Main.myPlayer);
+                        ModContent.ProjectileType<MLordBoltProj>(), damage, 0f, Main.myPlayer);
                 }
             }
         }

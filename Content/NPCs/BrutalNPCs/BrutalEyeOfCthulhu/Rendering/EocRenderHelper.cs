@@ -2,18 +2,50 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.GameContent;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Rendering
 {
     /// <summary>克眼绘制辅助：血带拖尾/残影/谎言残影/本体/虹膜辉光/预警车道</summary>
     internal static class EocRenderHelper
     {
-        internal const int FrameCount = 6;
+        #region 体贴图
+        /// <summary>一阶段体：完整虹膜</summary>
+        [VaultLoaden(CWRConstant.NPC + "BEOC/EyeOfCthulhu")]
+        internal static Asset<Texture2D> BodyAsset = null;
+        /// <summary>二阶段体：虹膜裂成口器</summary>
+        [VaultLoaden(CWRConstant.NPC + "BEOC/EyeOfCthulhuAlt")]
+        internal static Asset<Texture2D> BodyAltAsset = null;
+
+        /// <summary>两张体贴图都是 3 帧竖排</summary>
+        internal const int FrameCount = 3;
+        /// <summary>贴图里眼球本体约 50px 宽，碰撞箱 100px，放大到与体型相称</summary>
+        private const float BodyScale = 1.8f;
+        /// <summary>一阶段帧内的眼球中心，绘制锚点用它对齐碰撞箱中心</summary>
+        private static readonly Vector2 BodyOrigin = new(60.5f, 26.5f);
+        /// <summary>二阶段帧内的眼球中心</summary>
+        private static readonly Vector2 BodyAltOrigin = new(60f, 26f);
+        /// <summary>瞳位相对眼球中心的前向偏移，单位是贴图像素</summary>
+        private const float PupilForward = 22.3f;
+
+        /// <summary>贴图正面朝 +X，而 npc.rotation 以 +Y 为正面，绘制角要补这个差</summary>
+        private static float ToDrawRotation(float npcRotation) => npcRotation + MathHelper.PiOver2;
+
+        /// <summary>按阶段取体贴图与眼球锚点</summary>
+        private static void GetBodySheet(bool secondPhase, out Texture2D tex, out Vector2 origin) {
+            tex = (secondPhase ? BodyAltAsset : BodyAsset).Value;
+            origin = secondPhase ? BodyAltOrigin : BodyOrigin;
+        }
+
+        /// <summary>取帧矩形，越界夹回</summary>
+        private static Rectangle GetFrameRect(Texture2D tex, int frame) {
+            int frameHeight = tex.Height / FrameCount;
+            return new Rectangle(0, frameHeight * Math.Clamp(frame, 0, FrameCount - 1), tex.Width, frameHeight);
+        }
+        #endregion
 
         #region 谎言残影（变轨时沿旧轨道继续飞的假身）
         private struct LiarGhost
@@ -42,7 +74,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Rendering
                 Position = pos,
                 Velocity = vel,
                 Rotation = rotation,
-                Frame = frameIndex + (phase2 ? 3 : 0),
+                Frame = frameIndex,
                 Life = 22,
                 MaxLife = 22,
                 Phase2 = phase2,
@@ -70,18 +102,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Rendering
             if (ghosts.Count == 0) {
                 return;
             }
-            Texture2D tex = TextureAssets.Npc[NPCID.EyeofCthulhu].Value;
-            int frameHeight = tex.Height / FrameCount;
             foreach (LiarGhost g in ghosts) {
+                GetBodySheet(g.Phase2, out Texture2D tex, out Vector2 origin);
+                Rectangle rec = GetFrameRect(tex, g.Frame);
                 float t = g.Life / (float)g.MaxLife;
-                Rectangle rec = new(0, frameHeight * g.Frame, tex.Width, frameHeight);
+                float rot = ToDrawRotation(g.Rotation);
                 //苍白假身，加色叠加读作幻影
                 Color ghostColor = new Color(226, 200, 196, 0) * (0.42f * t);
                 sb.Draw(tex, g.Position - screenPos, rec, ghostColor,
-                    g.Rotation, rec.Size() / 2f, 1f, SpriteEffects.None, 0f);
+                    rot, origin, BodyScale, SpriteEffects.None, 0f);
                 //暗红衬底防纯白幻影飘成塑料
                 sb.Draw(tex, g.Position - screenPos, rec, new Color(120, 22, 30, 0) * (0.3f * t),
-                    g.Rotation, rec.Size() / 2f, 1.03f, SpriteEffects.None, 0f);
+                    rot, origin, BodyScale * 1.03f, SpriteEffects.None, 0f);
             }
         }
         #endregion
@@ -183,13 +215,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Rendering
         #region 本体
         /// <summary>完整本体绘制：拖尾→残影→谎言残影→本体→撕皮缝→虹膜辉光</summary>
         public static void DrawBody(SpriteBatch sb, NPC npc, EocStateContext ctx, Vector2 screenPos, Color drawColor) {
-            Texture2D tex = TextureAssets.Npc[npc.type].Value;
-            int frameHeight = tex.Height / FrameCount;
-            int frame = (int)MathHelper.Clamp(ctx.FrameIndex, 0, 2) + (ctx.IsSecondPhase ? 3 : 0);
-            Rectangle rec = new(0, frameHeight * frame, tex.Width, frameHeight);
-            Vector2 origin = rec.Size() / 2f;
+            GetBodySheet(ctx.IsSecondPhase, out Texture2D tex, out Vector2 origin);
+            Rectangle rec = GetFrameRect(tex, ctx.FrameIndex);
             Vector2 mainPos = npc.Center - screenPos;
-            float scale = npc.scale * ctx.ScalePulse;
+            //worldScale 是体型倍率，drawScale 才是贴图倍率，附着特效按前者定尺寸
+            float worldScale = npc.scale * ctx.ScalePulse;
+            float drawScale = worldScale * BodyScale;
+            float drawRot = ToDrawRotation(npc.rotation);
 
             //拖尾在最底
             float trailIntensity = Math.Max(ctx.TrailHeat,
@@ -207,7 +239,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Rendering
                     float t = 1f - i / (float)npc.oldPos.Length;
                     Vector2 pos = npc.oldPos[i] + npc.Size / 2f - screenPos;
                     Color c = new Color(150, 24, 32, 40) * (ghostAlpha * t * 0.55f);
-                    sb.Draw(tex, pos, rec, c, npc.oldRot[i], origin, scale * (0.96f - i * 0.004f), SpriteEffects.None, 0f);
+                    sb.Draw(tex, pos, rec, c, ToDrawRotation(npc.oldRot[i]), origin,
+                        drawScale * (0.96f - i * 0.004f), SpriteEffects.None, 0f);
                 }
             }
 
@@ -219,32 +252,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Rendering
             if (ctx.FogHide > 0.01f) {
                 bodyColor = Color.Lerp(drawColor, EocMotion.MistWine, ctx.FogHide * 0.6f);
             }
-            sb.Draw(tex, mainPos, rec, bodyColor * bodyOpacity, npc.rotation, origin, scale, SpriteEffects.None, 0f);
+            sb.Draw(tex, mainPos, rec, bodyColor * bodyOpacity, drawRot, origin, drawScale, SpriteEffects.None, 0f);
 
             //撕皮缝：转阶段内压亮缝+溢光
             if (ctx.SkinTear > 0.02f) {
-                DrawTearSeam(sb, npc, ctx, mainPos, scale);
+                DrawTearSeam(sb, npc, ctx, mainPos, worldScale);
             }
 
             //虹膜辉光：雾里也保留微光（公平阀：藏身不隐踪）
             float irisGlow = Math.Max(ctx.IrisGlow, ctx.FogHide * 0.35f);
             if (irisGlow > 0.02f) {
-                DrawIrisGlow(sb, npc, ctx, mainPos, irisGlow, scale);
+                DrawIrisGlow(sb, npc, ctx, mainPos, irisGlow, worldScale, drawScale);
             }
         }
 
         /// <summary>虹膜辉光：定向瞳位光斑+柔光衬底</summary>
-        private static void DrawIrisGlow(SpriteBatch sb, NPC npc, EocStateContext ctx, Vector2 mainPos, float glow, float scale) {
+        private static void DrawIrisGlow(SpriteBatch sb, NPC npc, EocStateContext ctx, Vector2 mainPos
+            , float glow, float worldScale, float drawScale) {
             Texture2D soft = CWRAsset.SoftGlow.Value;
             Texture2D flare = CWRAsset.StarFlare02.Value;
-            //瞳孔位于朝向前端约 34px
+            //瞳位跟着贴图倍率走，光斑尺寸仍按体型倍率
             Vector2 pupilDir = (npc.rotation + MathHelper.PiOver2).ToRotationVector2();
-            Vector2 pupilPos = mainPos + pupilDir * 34f * scale;
+            Vector2 pupilPos = mainPos + pupilDir * (PupilForward * drawScale);
             Color glowColor = ctx.IrisColor with { A = 0 };
             sb.Draw(soft, pupilPos, null, glowColor * (glow * 0.85f), 0f,
-                soft.Size() / 2f, 1.5f * glow * scale, SpriteEffects.None, 0f);
+                soft.Size() / 2f, 1.5f * glow * worldScale, SpriteEffects.None, 0f);
             sb.Draw(flare, pupilPos, null, glowColor * (glow * 0.7f),
-                Main.GlobalTimeWrappedHourly * 1.7f, flare.Size() / 2f, 0.22f * glow * scale, SpriteEffects.None, 0f);
+                Main.GlobalTimeWrappedHourly * 1.7f, flare.Size() / 2f, 0.22f * glow * worldScale, SpriteEffects.None, 0f);
         }
 
         /// <summary>撕皮缝：沿体轴的亮血裂缝，宽度随进度</summary>

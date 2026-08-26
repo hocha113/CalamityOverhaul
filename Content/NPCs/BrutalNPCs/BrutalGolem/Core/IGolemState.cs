@@ -1,6 +1,10 @@
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles;
 using InnoVault.StateMachines;
 using System;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
 {
@@ -139,6 +143,51 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
 
         protected static Vector2 DirectionToTarget(GolemStateContext ctx) {
             return (ctx.Target.Center - ctx.Npc.Center).SafeNormalize(Vector2.UnitY);
+        }
+
+        /// <summary>落地沿检测：上帧腾空本帧踩地返回真（airborne 由状态自持）</summary>
+        protected static bool LandedThisFrame(NPC npc, ref bool airborne) {
+            if (npc.velocity.Y != 0f) {
+                airborne = true;
+                return false;
+            }
+            if (!airborne) {
+                return false;
+            }
+            airborne = false;
+            return true;
+        }
+
+        /// <summary>落地碎石扇：升空灼石压制近身空域（服务端）；扇形稀疏逐枚可躲，公平以稀疏度承载</summary>
+        protected static void SpawnLandingShards(GolemStateContext ctx, int count) {
+            if (VaultUtils.isClient || count <= 0) {
+                return;
+            }
+            NPC npc = ctx.Npc;
+            int damage = ScaleDamage(ctx, GolemDirector.ShrapnelDamage);
+            for (int i = 0; i < count; i++) {
+                float lerp = count == 1 ? 0.5f : i / (count - 1f);
+                Vector2 vel = (-Vector2.UnitY).RotatedBy(MathHelper.Lerp(-0.85f, 0.85f, lerp))
+                    * Main.rand.NextFloat(7.5f, 10.5f);
+                vel.X += npc.velocity.X * 0.2f;
+                Projectile.NewProjectile(npc.GetSource_FromAI(),
+                    npc.Top + new Vector2(Main.rand.NextFloat(-30f, 30f), 8f), vel,
+                    ModContent.ProjectileType<GolemStoneShrapnel>(), damage, 0f, Main.myPlayer);
+            }
+        }
+
+        /// <summary>小跳落地冲击：尘幕音效（本地）+ 碎石扇（服务端）</summary>
+        protected static void LandingImpact(GolemStateContext ctx, int shards) {
+            NPC npc = ctx.Npc;
+            if (!VaultUtils.isServer) {
+                SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.1f, Volume = 0.55f }, npc.Center);
+                for (int i = 0; i < 8; i++) {
+                    Dust dust = Dust.NewDustDirect(new Vector2(npc.position.X - 10f, npc.position.Y + npc.height - 6f),
+                        npc.width + 20, 8, DustID.Smoke, 0f, -0.8f, 100, default, 1.3f);
+                    dust.velocity *= 0.3f;
+                }
+            }
+            SpawnLandingShards(ctx, shards);
         }
 
         /// <summary>难度伤害修正</summary>

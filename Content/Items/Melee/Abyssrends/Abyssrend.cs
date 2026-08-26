@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
 {
     /// <summary>
     /// 裂渊，深渊长兵器。左键交替尖端戳刺与侧面斩击，每一击撕出追踪暗流；
-    /// 右键钳口咬住目标持续挤压，收束后引爆高压空化。连击与钳击冷却存在 <see cref="AbyssrendPlayer"/>
+    /// 右键掀起吸流把面前敌人拽到钳口，高举后砸向近前地面并引爆空化。连击与钳击冷却存在 <see cref="AbyssrendPlayer"/>
     /// </summary>
     internal class Abyssrend : ModItem
     {
@@ -56,10 +56,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
             Vector2 dir = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX);
 
             if (player.altFunctionUse == 2) {
-                int target = AbyssrendClampHeld.FindTarget(player);
                 Projectile.NewProjectile(source, player.Center, dir
                     , ModContent.ProjectileType<AbyssrendClampHeld>()
-                    , damage, knockback, player.whoAmI, ai0: 0f, ai1: target);
+                    , damage, knockback, player.whoAmI);
                 ap.ComboStage = 0;
                 return false;
             }

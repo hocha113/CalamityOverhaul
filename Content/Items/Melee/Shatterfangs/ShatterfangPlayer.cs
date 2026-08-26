@@ -23,7 +23,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
         public int RegenDelay;
 
         /// <summary>每记常规挥砍的稳固度消耗</summary>
-        public const float SwingCost = 0.07f;
+        public const float SwingCost = 0.09f;
+        /// <summary>终结震撼斩的稳固度消耗，一轮合计 0.50，满稳固两轮后第二记终结斩崩坏</summary>
+        public const float FinisherCost = 0.23f;
         /// <summary>闲置自然愈合速率(每帧)</summary>
         public const float RegenRate = 1f / 600f;
         /// <summary>右键修补速率(每帧)</summary>
@@ -56,6 +58,14 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
             }
             Stability = MathHelper.Max(0f, Stability - SwingCost);
             return Stability <= 0f;
+        }
+
+        /// <summary>终结斩记账，返回 true 表示剑身被这一斩耗干、当场崩坏</summary>
+        public bool ConsumeFinisher() {
+            ComboResetTimer = 75;
+            RegenDelay = 55;
+            Stability = MathHelper.Max(0f, Stability - FinisherCost);
+            return Stability <= 0.005f;
         }
 
         /// <summary>终结斩主动崩坏与疲劳碎裂共用的落态</summary>

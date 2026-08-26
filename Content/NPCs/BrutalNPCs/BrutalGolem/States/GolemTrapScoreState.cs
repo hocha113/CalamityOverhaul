@@ -12,7 +12,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
         public override string StateName => "TrapScore";
         public override GolemStateIndex StateIndex => GolemStateIndex.TrapScore;
 
+        /// <summary>追猎布刺间隔拍</summary>
+        private const int ChaseInterval = 17;
+        /// <summary>追猎小节起拍</summary>
+        private const int ChaseStart = 110;
+        /// <summary>追猎预读系数：站桩与直线跑都会被咬中，急转向可甩脱</summary>
+        private const float ChaseLead = 0.6f;
+
         private int hopTimer;
+        private bool airborne;
+        private int chasePlanted;
 
         public override IGolemState OnUpdate(GolemStateContext context) {
             NPC npc = context.Npc;
@@ -20,35 +29,36 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             RestoreTileCollide(context);
             context.VeinGlow = Math.Max(context.VeinGlow, 0.4f);
 
-            //布谱（服务端一次性）
+            //第一小节：开场布谱（服务端一次性），涟漪中心带预读提前量
             if (Timer == 8 && !VaultUtils.isClient) {
                 if (context.Sundered) {
                     PlantMixedScore(context);
                 }
                 else {
-                    PlantSpikeRipple(context, context.Target.Center.X, false);
+                    PlantSpikeRipple(context, RippleCenter(context), false);
                 }
             }
-            //一阶段第二小节：反向涟漪，切分节奏
-            if (Timer == Tempo(context, 120) && !context.Sundered && !VaultUtils.isClient) {
-                PlantSpikeRipple(context, context.Target.Center.X, true);
-            }
-            //二阶段第二小节：追加一列追踪玩家的尖刺
-            if (Timer == Tempo(context, 150) && context.Sundered && !VaultUtils.isClient) {
-                PlantSpikeRipple(context, context.Target.Center.X, Main.rand.NextBool());
+            //第二小节：追猎布设——逐拍在玩家预读位置种刺（预告即承诺：种下即锁位；
+            //每刺恒定 TrapTelegraph 预警；单点危害，缺口=其余全场）
+            int chaseCount = (context.Sundered ? 11 : 9) + (context.DeathMode ? 2 : 0);
+            int chaseStart = Tempo(context, ChaseStart);
+            int chaseStep = Math.Max(Tempo(context, ChaseInterval), 4);
+            if (!VaultUtils.isClient && Timer >= chaseStart && chasePlanted < chaseCount
+                && (Timer - chaseStart) % chaseStep == 0) {
+                chasePlanted++;
+                PlantChaseSpike(context);
             }
 
-            //躯干踏步压近（机关不是让Boss挂机的借口）
+            //躯干踏步节拍：每拍必跳，近身即原地起跳压顶（机关不是让Boss挂机的借口）
             if (OnGround(npc)) {
                 GroundBrake(npc, 0.75f);
+                npc.damage = 0;
                 if (++hopTimer >= Tempo(context, 54)) {
                     hopTimer = 0;
                     float dx = context.Target.Center.X - npc.Center.X;
-                    if (Math.Abs(dx) > 240f) {
-                        LaunchJump(npc, MathHelper.Clamp(dx / 70f, -9f, 9f), -8.5f);
-                        if (!VaultUtils.isClient) {
-                            npc.netUpdate = true;
-                        }
+                    LaunchJump(npc, MathHelper.Clamp(dx / 70f, -9f, 9f), -8.5f);
+                    if (!VaultUtils.isClient) {
+                        npc.netUpdate = true;
                     }
                 }
             }
@@ -57,8 +67,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                 npc.damage = npc.defDamage;
                 AirSteer(context, 0.1f, 9f);
             }
-            if (OnGround(npc)) {
-                npc.damage = 0;
+            if (LandedThisFrame(npc, ref airborne)) {
+                LandingImpact(context, context.Sundered ? 3 : 2);
             }
 
             Timer++;
@@ -67,6 +77,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                 return new GolemConnectorState();
             }
             return null;
+        }
+
+        /// <summary>涟漪中心：带30帧速度预读，抓住直线跑动的目标</summary>
+        private static float RippleCenter(GolemStateContext context) {
+            return context.Target.Center.X + context.Target.velocity.X * 30f;
+        }
+
+        /// <summary>追猎刺：种在玩家预读位置，种下后不再改位</summary>
+        private static void PlantChaseSpike(GolemStateContext context) {
+            Player target = context.Target;
+            float x = target.Center.X + target.velocity.X * (GolemDirector.TrapTelegraph * ChaseLead);
+            int damage = GolemDirector.ScaleDamage(GolemDirector.SpikeDamage, context.DeathMode);
+            GolemTrapUnit.PlantOnGround(context.Npc, x, target.Center.Y,
+                GolemTrapUnit.TrapKind.Spike, GolemDirector.TrapTelegraph, damage);
         }
 
         /// <summary>尖刺涟漪：一排尖刺按序起爆，reverse 反向</summary>
@@ -89,7 +113,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
         private void PlantMixedScore(GolemStateContext context) {
             NPC npc = context.Npc;
             Player target = context.Target;
-            PlantSpikeRipple(context, target.Center.X, false);
+            PlantSpikeRipple(context, RippleCenter(context), false);
 
             int flameDamage = ScaleDamage(context, GolemDirector.FlameJetDamage);
             //左右喷口相位错开：左先右后，形成推挤走位

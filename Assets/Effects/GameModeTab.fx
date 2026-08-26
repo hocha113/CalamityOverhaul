@@ -1,10 +1,11 @@
 // ============================================================================
-//GameModeTab.fx 游戏模式标签（残酷/修罗/毁灭）
+//GameModeTab.fx 游戏模式标签（残酷/修罗/毁灭/神匠）
 //SDF 旗标：暗漆底 + 模式纹样 + 点亮呼吸 + 切换爆发环
 //点亮态逐脸签名动效：残酷=爪尖渗血滴落 / 修罗=环上棱光巡行+芯部脉动 / 毁灭=坠星曳尾+坍缩呼吸变速
+// / 神匠=锤击循环+落点火星+砧面熔光
 //悬停=纹样发烫 + 旗缘火舌；uGuide=首见引导的旗内增辉（旗外光环由 CPU 画）
 //AlphaBlend 预乘；ps_3_0
-//uMode 0=残酷（三道爪痕） 1=修罗（环+三棱+芯） 2=毁灭（坍缩环+镰月+坠星）
+//uMode 0=残酷（三道爪痕） 1=修罗（环+三棱+芯） 2=毁灭（坍缩环+镰月+坠星） 3=神匠（锤与砧）
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -12,7 +13,7 @@ sampler uImage0 : register(s0);
 float uTime;
 float uAlpha;
 float2 uResolution; //quad 尺寸（px），只用于长宽比
-float uMode;        //0 残酷 / 1 修罗 / 2 毁灭
+float uMode;        //0 残酷 / 1 修罗 / 2 毁灭 / 3 神匠
 float uLit;         //0..1 点亮程度（CPU 缓动）
 float uHover;       //0..1 悬停
 float uBurst;       //0..1 切换爆发进度（1=无）
@@ -38,6 +39,15 @@ float clawStroke(float2 p, float2 a, float2 b, float w0, float w1, float seed)
     float w = lerp(w0, w1, h);
     w *= 1.0 + 0.30 * sin(h * 26.0 + seed); //锯齿撕痕
     return smoothstep(w, w * 0.40, d);
+}
+
+//干净胶囊笔画：a→b 定宽，返回 0..1 覆盖
+float capsule(float2 p, float2 a, float2 b, float w)
+{
+    float2 pa = p - a;
+    float2 ba = b - a;
+    float h = saturate(dot(pa, ba) / dot(ba, ba));
+    return smoothstep(w, w * 0.45, length(pa - ba * h));
 }
 
 //修罗棱：自环缘向外的锥形短刃
@@ -71,10 +81,11 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float aspect = uResolution.x / max(uResolution.y, 1.0);
     float2 p = (coords - 0.5) * float2(aspect, 1.0);
 
-    //表现脸权重：算术门取代 uniform 分支（MojoShader 常量布局教训）
+    //表现脸权重：算术门取代 uniform 分支（MojoShader 常量布局教训）；毁灭权重开窗，防止模式 3 继承其签名
     float wBrutal = saturate(1.0 - uMode);
     float wAsura = saturate(1.0 - abs(uMode - 1.0));
-    float wAnnih = saturate(uMode - 1.0);
+    float wAnnih = saturate(uMode - 1.0) * saturate(3.0 - uMode);
+    float wSmith = saturate(uMode - 2.0);
 
     //——旗身：圆角矩形 + 底缘燕尾切口——
     float d = sdRoundBox(p, float2(aspect * 0.86 * 0.5, 0.44), 0.055);
@@ -130,9 +141,29 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 starP = p - float2(0.175, -0.215 + 0.04 * sin(uTime * 1.6));
     annih += smoothstep(0.055, 0.014, length(starP)) * g2;
 
+    //神匠：砧台（顶板+颈+底座）+ 锤（柄+头），锤走 抬起→悬顿→落击 循环；未点亮冻在半抬姿
+    float smithPhase = frac(uTime * 0.5);
+    float strikeT = saturate(1.0 - smoothstep(0.02, 0.50, smithPhase) + smoothstep(0.66, 0.74, smithPhase));
+    strikeT = lerp(0.35, strikeT, uLit);
+    float2 pivot = float2(0.30, 0.05);
+    float2 headRaised = float2(0.20, -0.33);
+    float2 headContact = float2(-0.02, 0.05);
+    float2 headPos = lerp(headRaised, headContact, strikeT);
+    //落锤路径带一点外弧，读得出抡的弧线
+    headPos.x += sin(strikeT * 3.1416) * -0.07;
+    float smith = capsule(p, float2(-0.26, 0.16), float2(0.26, 0.16), 0.052) * g0;
+    smith += capsule(p, float2(0.0, 0.20), float2(0.0, 0.29), 0.050) * g0;
+    smith += capsule(p, float2(-0.11, 0.31), float2(0.11, 0.31), 0.042) * g0;
+    float2 armDir = normalize(headPos - pivot);
+    float2 armPerp = float2(-armDir.y, armDir.x);
+    smith += capsule(p, pivot, headPos, 0.022) * g1;
+    smith += capsule(p, headPos - armPerp * 0.095, headPos + armPerp * 0.095, 0.056) * g1;
+    smith = saturate(smith);
+
     //纹样链式混合：uniform 上禁 if 分支（MojoShader 常量布局教训）
     float icon = lerp(claw, asura, saturate(uMode));
-    icon = saturate(lerp(icon, annih, saturate(uMode - 1.0)));
+    icon = lerp(icon, annih, saturate(uMode - 1.0));
+    icon = saturate(lerp(icon, smith, wSmith));
 
     //未点亮=石上刻痕，点亮=主色+余烬芯；悬停整体发烫
     float hot = icon * icon * icon;
@@ -167,6 +198,28 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
                * (1.0 - tailT) * (1.0 - tailT) * step(tp.y, 0.0);
     col += lerp(uAccent, uEmber, 0.6) * tail * 0.55 * g2 * uLit * wAnnih;
     col += uAccent * smoothstep(0.014, 0.004, abs(r - collR)) * (0.10 + 0.10 * sin(uTime * 9.7)) * g0 * uLit * wAnnih;
+
+    //神匠：落击帧砧点白闪，随后三道火星弹起衰减；砧面常驻熔光随击闪增亮
+    float slamFlash = saturate(1.0 - (smithPhase - 0.72) / 0.08) * step(0.72, smithPhase);
+    float sparkLife = saturate((smithPhase - 0.74) / 0.26) * step(0.74, smithPhase);
+    float2 contactPt = float2(-0.02, 0.10);
+    float sparks = 0.0;
+    float2 sd0 = normalize(float2(-0.55, -0.84));
+    float2 sd1 = normalize(float2(0.12, -1.0));
+    float2 sd2 = normalize(float2(0.62, -0.66));
+    //火星吃一点重力，末段下坠
+    float sag = sparkLife * sparkLife * 0.10;
+    sparks += capsule(p, contactPt + sd0 * (0.04 + sparkLife * 0.20) + float2(0.0, sag)
+                       , contactPt + sd0 * (0.10 + sparkLife * 0.24) + float2(0.0, sag), 0.014);
+    sparks += capsule(p, contactPt + sd1 * (0.04 + sparkLife * 0.26) + float2(0.0, sag * 0.7)
+                       , contactPt + sd1 * (0.09 + sparkLife * 0.30) + float2(0.0, sag * 0.7), 0.012);
+    sparks += capsule(p, contactPt + sd2 * (0.04 + sparkLife * 0.17) + float2(0.0, sag)
+                       , contactPt + sd2 * (0.09 + sparkLife * 0.21) + float2(0.0, sag), 0.012);
+    sparks *= (1.0 - sparkLife) * step(0.74, smithPhase);
+    col += (uEmber * 1.2 + 0.25) * slamFlash * smoothstep(0.10, 0.02, length(p - contactPt)) * g2 * uLit * wSmith;
+    col += lerp(uAccent, uEmber, 0.7) * sparks * 1.1 * g2 * uLit * wSmith;
+    float anvilGlow = smoothstep(0.05, 0.012, abs(p.y - 0.14)) * smoothstep(0.30, 0.10, abs(p.x));
+    col += uAccent * anvilGlow * (0.16 + 0.30 * slamFlash + 0.06 * sin(uTime * 2.8)) * g0 * uLit * wSmith;
 
     //——顶缘受光线 + 悬停缘光 + 引导增辉——
     float edge = smoothstep(0.016, 0.002, abs(d + 0.006));

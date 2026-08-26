@@ -1,0 +1,180 @@
+GsWoodYoyo: {
+	Desc:
+		'''
+		Right click: anchor, the yoyo patrols in place at your cursor
+		Anchored hits on the same target build Heat, up to +40% damage
+		'''
+}
+
+GsRallyYoyo: {
+	Desc:
+		'''
+		Right click: anchor patrol
+		Every 5 anchored hits quicken the strike tempo, up to 3 ranks; ranks reset when the yoyo returns
+		'''
+}
+
+GsMalaiseYoyo: {
+	Desc:
+		'''
+		Right click: anchor patrol
+		A field of malaise around the anchor slows enemies by 8%
+		'''
+}
+
+GsArteryYoyo: {
+	Desc:
+		'''
+		Right click: anchor patrol
+		Anchored hits have a 20% chance to fling a blood bead dealing 15% damage
+		'''
+}
+
+GsAmazonYoyo: {
+	Desc:
+		'''
+		Right click: anchor patrol
+		Anchored hits inflict Poisoned; at full Heat the poison lasts twice as long
+		'''
+}
+
+GsCode1Yoyo: {
+	Desc:
+		'''
+		Right click: single tap to anchor, double tap to lash back through foes (2.2x speed, 135% damage)
+		The lash trail streams with data
+		'''
+}
+
+GsValorYoyo: {
+	Desc:
+		'''
+		Right click: tap to anchor, double tap to lash
+		Lash knockback is doubled; with 3 or more enemies near the anchor, anchored damage gains 15%
+		'''
+}
+
+GsCascadeYoyo: {
+	Desc:
+		'''
+		Right click: tap to anchor, double tap to lash
+		Hits shed cascading sparks; the lash path leaves burning lines behind
+		'''
+}
+
+GsHiveFiveYoyo: {
+	Desc:
+		'''
+		Right click: tap to anchor, double tap to lash
+		While anchored the yoyo becomes a hive, releasing a bee every 0.8s; bees benefit from your bee equipment
+		'''
+}
+
+GsFormatCYoyo: {
+	Desc:
+		'''
+		Right click: tap to anchor, double tap to lash
+		A lash hit formats the target's Heat straight to full; 6s cooldown, a white star marks it ready
+		'''
+}
+
+GsGradientYoyo: {
+	Desc:
+		'''
+		Right click: tap to anchor, double tap to lash
+		Heat cap raised to +60%; the yoyo shifts gold, orange then red as Heat builds
+		'''
+}
+
+GsChikYoyo: {
+	Desc:
+		'''
+		Right click: tap to anchor, double tap to lash
+		The lash flies at 2.6x speed with a sonic ring on launch
+		'''
+}
+
+GsHelFireYoyo: {
+	Desc:
+		'''
+		Right click: tap to anchor, double tap to lash
+		Every 2s the anchor ignites the ground below with a ring of hellfire
+		'''
+}
+
+GsAmarokYoyo: {
+	Desc:
+		'''
+		Right click: tap to anchor, double tap to lash, hold to orbit
+		The orbit trails frost mist, slowing enemies in the domain by 12% (spin time drains faster while orbiting)
+		'''
+}
+
+GsCode2Yoyo: {
+	Desc:
+		'''
+		Right click: tap to anchor, double tap to lash, hold to orbit
+		The lash splits a parallel mirror track 40px aside, dealing 50% damage
+		'''
+}
+
+GsYeletsYoyo: {
+	Desc:
+		'''
+		Right click: tap to anchor, double tap to lash, hold to orbit
+		Every 6 anchored hits fling a ring of 8 spores, each dealing 40% damage
+		'''
+}
+
+GsRedsThrowYoyo: {
+	Desc:
+		'''
+		Right click: tap to anchor, double tap to lash, hold to orbit
+		Lash hits burst into red pixels
+		'''
+}
+
+GsValkyrieYoyo: {
+	Desc:
+		'''
+		Right click: tap to anchor, double tap to lash, hold to orbit
+		The orbit tilts into a valkyrie's gyre, shedding feather light on hits
+		'''
+}
+
+GsKrakenYoyo: {
+	Desc:
+		'''
+		Right click: tap to anchor, double tap to lash, hold to orbit
+		While anchored, inky tendrils lash the two nearest foes for 30% damage per pulse
+		Infinite spin time makes it a true siege core
+		'''
+}
+
+GsEyeOfCthulhuYoyo: {
+	Desc:
+		'''
+		Right click: tap to anchor, double tap to lash, hold to orbit
+		The anchor stares down the nearest foe, spitting 3 blood tears every 2s; the lash becomes a ramming charge dealing 160% damage
+		'''
+}
+
+GsTerrarianYoyo: {
+	Desc:
+		'''
+		Right click taps: chart up to 3 waypoints, the yoyo patrols the bezier route and its beam rate doubles while patrolling
+		Double tap to lash, hold to orbit; click again when the route is full to clear it
+		'''
+}
+
+GsYoyoPelletProj: {
+	DisplayName: Yoyo Pellet
+}
+
+GsYoyoBurnZoneProj: {
+	DisplayName: Scorch Zone
+}
+
+GsYoyoMirrorProj: {
+	DisplayName: Mirror Track
+}

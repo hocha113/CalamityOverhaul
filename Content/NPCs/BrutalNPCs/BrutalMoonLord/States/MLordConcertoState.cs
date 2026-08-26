@@ -2,7 +2,6 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles;
 using System;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
@@ -48,12 +47,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         }
 
         public override IMLordState OnUpdate(MLordContext context) {
-            NPC npc = context.Npc;
             Player target = context.Target;
 
-            //核心慢速横漂：编队时钟驱动的正弦游走
+            //核心横漂意图交给爬行系统：四手轮流抓点把身体拽向游走位
             float drift = (float)Math.Sin(context.FormationClock * 0.017f) * 260f;
-            HoverTo(npc, target.Center + new Vector2(drift, 0f) + MLordDirector.CoreHoverOffset, 7.5f);
+            RequestMove(context, target.Center + new Vector2(drift, 0f) + MLordDirector.CoreHoverOffset, 0.6f);
             UpdateLean(context);
 
             if (!VaultUtils.isClient) {
@@ -134,7 +132,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             for (int i = -1; i <= 1; i++) {
                 Vector2 vel = aim.RotatedBy(i * 0.34f) * speed;
                 Projectile.NewProjectile(origin.GetSource_FromAI(), muzzle, vel,
-                    ProjectileID.PhantasmalBolt, damage, 0f, Main.myPlayer);
+                    ModContent.ProjectileType<MLordBoltProj>(), damage, 0f, Main.myPlayer);
             }
         }
 
@@ -146,14 +144,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             for (int i = 0; i < 8; i++) {
                 float angle = baseAngle + MathHelper.TwoPi / 8f * i;
                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center,
-                    angle.ToRotationVector2() * 5.6f, ProjectileID.PhantasmalBolt, damage, 0f, Main.myPlayer);
+                    angle.ToRotationVector2() * 5.6f, ModContent.ProjectileType<MLordBoltProj>(), damage, 0f, Main.myPlayer);
             }
         }
 
-        /// <summary>下对同拍剪切波：两只下手各向玩家脚下点位掠射短扇，弹道在低位交叉封走位</summary>
+        /// <summary>下对同拍剪切波：两只下手各向玩家脚下点位掠射短扇波矢，弹道在低位交叉封走位（幻影眼已除役）</summary>
         private void SpawnLowShear(MLordContext context) {
             MLordPartsStatus parts = context.Parts;
-            int damage = ScaleDamage(context, MLordDirector.EyeDamage);
+            int damage = ScaleDamage(context, MLordDirector.BoltDamage);
             Vector2 aimPoint = context.Target.Center + new Vector2(0f, 90f);
             for (int slot = 2; slot < MLordPartsStatus.HandSlots; slot++) {
                 if (!parts.HandAlive(slot) || parts.HandIndex(slot) < 0) {
@@ -163,7 +161,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 Vector2 aim = (aimPoint - hand.Center).SafeNormalize(Vector2.UnitY);
                 for (int i = -1; i <= 1; i++) {
                     Projectile.NewProjectile(hand.GetSource_FromAI(), hand.Center + aim * 46f,
-                        aim.RotatedBy(i * 0.16f) * 6.4f, ProjectileID.PhantasmalEye, damage, 0f, Main.myPlayer);
+                        aim.RotatedBy(i * 0.16f) * 6.4f, ModContent.ProjectileType<MLordBoltProj>(), damage, 0f, Main.myPlayer);
                 }
             }
         }

@@ -188,6 +188,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
             return body != null && body.active && body.ai[GolemAiSlots.BodyPhase] == GolemPhase.DeathShow;
         }
 
+        /// <summary>目标离地高度（像素，向下扫50格；无地面视作深空）</summary>
+        public static float HeightAboveGround(Player target) {
+            int tileX = (int)(target.Center.X / 16f);
+            int tileY = (int)(target.Center.Y / 16f);
+            for (int y = tileY; y < tileY + 50 && y < Main.maxTilesY - 10; y++) {
+                if (WorldGen.SolidTile(tileX, y)) {
+                    return y * 16f - target.Bottom.Y;
+                }
+            }
+            return 800f;
+        }
+
+        /// <summary>目标是否悬空（对空火控提频判据）</summary>
+        public static bool TargetAirborne(Player target) {
+            return target != null && target.active
+                && HeightAboveGround(target) > GolemDirector.AirborneHeight;
+        }
+
         /// <summary>拳锚点：肩位 + 躯干速度前馈</summary>
         public static Vector2 FistAnchor(NPC body, int side) {
             float x = side < 0 ? -84f : 78f;

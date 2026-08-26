@@ -15,9 +15,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
 {
     /// <summary>
     /// 崩牙獠刃手持挥砍。相位时间线 举刀→滞帧→斩切→收势<br/>
-    /// 完整态四拍：三记常规挥舞(0/2拍间歇甩碎齿)接终结震撼斩，爆发末端剑身当场崩坏，
-    /// 轰出大牙碎片+小碎齿+崩坏爆点；半刃态三拍轻快循环，无弹幕<br/>
-    /// ai[0]=拍号(0..2常规/3终结) ai[1]=交替符号 ai[2]=状态 0完整 1半刃 2此挥收势时疲劳碎裂
+    /// 完整态四拍：三记常规挥舞(0/2拍间歇甩碎齿)接终结震撼斩；终结斩耗干稳固度时
+    /// 爆发末端剑身当场崩坏，轰出大牙碎片+小碎齿+崩坏爆点，否则只是重斩带两片碎齿<br/>
+    /// ai[0]=拍号(0..2常规/3终结) ai[1]=交替符号 ai[2]=状态 0完整 1半刃 2收势时疲劳碎裂 3终结斩崩坏
     /// </summary>
     internal class ShatterfangHeld : BaseHeldProj
     {
@@ -85,9 +85,11 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
         /// <summary>连段拍号 0/1/2=常规 3=终结震撼斩</summary>
         private int ComboBeat => Math.Clamp((int)Projectile.ai[0], 0, 3);
         private bool IsFinisher => ComboBeat == 3;
-        /// <summary>状态码 0完整 1半刃 2完整但此挥收势时疲劳碎裂</summary>
-        private int StateCode => Math.Clamp((int)Projectile.ai[2], 0, 2);
+        /// <summary>状态码 0完整 1半刃 2收势时疲劳碎裂 3终结斩耗干稳固度当场崩坏</summary>
+        private int StateCode => Math.Clamp((int)Projectile.ai[2], 0, 3);
         private bool IsBrokenBeat => StateCode == 1;
+        /// <summary>这一记终结斩会崩坏剑身</summary>
+        private bool WillShatter => IsFinisher && StateCode == 3;
 
         private int CurrentPhase {
             get {
@@ -166,7 +168,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
                 fanInnerRatio = 0.36f;
                 leanAmp = 0.12f;
                 fanSegments = 56;
-                shardCount = 0;
+                //不崩坏的终结斩也震落两片碎齿
+                shardCount = WillShatter ? 0 : 2;
                 //长蓄势的低鸣起手
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.5f, Pitch = -0.7f }, Owner.Center);
@@ -189,8 +192,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
             }
             totalDur = raiseDur + holdDur + slashDur + recoverDur;
 
-            //剑身不稳的颤抖：疲劳挥最烈，其余按持有者本机稳固度取样
-            if (StateCode == 2) {
+            //剑身不稳的颤抖：疲劳挥与崩坏终结斩最烈，其余按持有者本机稳固度取样
+            if (StateCode is 2 or 3) {
                 instabShiver = 0.022f;
             }
             else if (Projectile.IsOwnedByLocalPlayer() && !IsBrokenBeat) {
@@ -367,10 +370,10 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
         }
 
         private void HandlePhaseEvents(int phase) {
-            //终结拍蓄力完成：刀身一记闪 + 裂纹吱响预告
+            //终结拍蓄力完成：刀身一记闪；裂纹吱响只属于将崩的那一斩
             if (IsFinisher && timer == raiseDur + 1) {
                 flashTimer = 8;
-                if (!VaultUtils.isServer) {
+                if (WillShatter && !VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.28f, Pitch = 0.55f }, Owner.Center);
                 }
             }
@@ -410,8 +413,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
                 FireShards();
             }
 
-            //终结震撼斩的爆发末端：剑身当场崩坏
-            if (IsFinisher && !shatterDone && (phase == PhaseSlash && slashProgress >= 0.92f || phase == PhaseRecover)) {
+            //终结震撼斩耗干稳固度时，爆发末端剑身当场崩坏
+            if (WillShatter && !shatterDone && (phase == PhaseSlash && slashProgress >= 0.92f || phase == PhaseRecover)) {
                 DoShatter();
             }
 
@@ -729,20 +732,20 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
             device.RasterizerState = RasterizerState.CullNone;
             device.DepthStencilState = DepthStencilState.None;
 
-            //骨白亮闪只走爆发头两三帧
-            float hotSpike = MathF.Pow(flashTimer / 8f, 3f) * 1.1f;
+            //米白亮闪只走爆发头两三帧，白是点缀不是常驻
+            float hotSpike = MathF.Pow(flashTimer / 8f, 3f) * 0.65f;
             Trail.CalculateRenderingMatrices(out Matrix view, out Matrix projection);
             effect.Parameters["WorldViewProjection"]?.SetValue(view * projection);
             effect.Parameters["TotalTime"]?.SetValue((float)Main.GameUpdateCount / 60f);
             effect.Parameters["SweepT"]?.SetValue(sweepT);
             effect.Parameters["FadeOut"]?.SetValue(fanFade);
-            effect.Parameters["HeatBoost"]?.SetValue((IsFinisher ? 1.05f : IsBrokenBeat ? 0.6f : 0.82f)
-                + (slashProgress * 0.3f) + hotSpike);
-            effect.Parameters["RimIntensity"]?.SetValue((IsFinisher ? 1.7f : IsBrokenBeat ? 1.1f : 1.35f) + hotSpike * 0.5f);
-            effect.Parameters["LeadColor"]?.SetValue(ShatterfangFX.BoneLead.ToVector4());
-            effect.Parameters["GoldColor"]?.SetValue(ShatterfangFX.ScarletBright.ToVector4());
-            effect.Parameters["AmberColor"]?.SetValue(ShatterfangFX.BloodMain.ToVector4());
-            effect.Parameters["TailColor"]?.SetValue(ShatterfangFX.BloodDeep.ToVector4());
+            effect.Parameters["HeatBoost"]?.SetValue((IsFinisher ? 0.62f : IsBrokenBeat ? 0.38f : 0.5f)
+                + (slashProgress * 0.2f) + hotSpike);
+            effect.Parameters["RimIntensity"]?.SetValue((IsFinisher ? 1.2f : IsBrokenBeat ? 0.8f : 0.95f) + hotSpike * 0.35f);
+            effect.Parameters["LeadColor"]?.SetValue(ShatterfangFX.ArcLead.ToVector4());
+            effect.Parameters["GoldColor"]?.SetValue(ShatterfangFX.ArcBright.ToVector4());
+            effect.Parameters["AmberColor"]?.SetValue(ShatterfangFX.ArcMain.ToVector4());
+            effect.Parameters["TailColor"]?.SetValue(ShatterfangFX.ArcDeep.ToVector4());
             Texture2D noise = CWRAsset.Fog?.Value ?? CWRAsset.PerlinNoise?.Value;
             if (noise != null) {
                 effect.Parameters["NoiseTexture"]?.SetValue(noise);
@@ -770,11 +773,11 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
             }
             float alpha = fanFade * (0.35f + (slashProgress * 0.4f));
             Vector2 arcCenter = Hand + (mainAngle.ToRotationVector2() * mainReach * 0.6f);
-            Color c = ShatterfangFX.BloodMain * alpha;
+            Color c = ShatterfangFX.ArcMain * alpha;
             c.A = 0;
             sb.Draw(wave, arcCenter - Main.screenPosition, null, c,
                 mainAngle + (swingDir * 0.35f), wave.Size() / 2f, new Vector2(0.5f, 0.24f), SpriteEffects.None, 0f);
-            Color c2 = ShatterfangFX.BoneLead * (alpha * 0.6f);
+            Color c2 = ShatterfangFX.ArcLead * (alpha * 0.45f);
             c2.A = 0;
             sb.Draw(wave, arcCenter - Main.screenPosition, null, c2,
                 mainAngle + (swingDir * 0.35f), wave.Size() / 2f, new Vector2(0.45f, 0.11f), SpriteEffects.None, 0f);
@@ -798,7 +801,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
                 float ghostSpacing = IsFinisher ? 0.26f : 0.19f;
                 for (int g = ghostCount; g >= 1; g--) {
                     float ghostAngle = mainAngle - (swingDir * ghostSpacing * g);
-                    float ghostAlpha = g switch { 1 => 0.40f, 2 => 0.22f, 3 => 0.10f, _ => 0.05f };
+                    float ghostAlpha = g switch { 1 => 0.32f, 2 => 0.16f, 3 => 0.07f, _ => 0.04f };
                     Color ghost = ShatterfangFX.BoneLead * ghostAlpha;
                     ghost.A = 0;
                     Vector2 gPos = hand + (ghostAngle.ToRotationVector2() * mainReach * BladePark) - Main.screenPosition;
@@ -818,9 +821,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
 
             sb.Draw(tex, drawPos, null, lightColor, mainAngle + rotOffset, origin, scale, effect, 0);
 
-            //裂纹红光：不稳/疲劳挥常亮，终结蓄力期渐醒
+            //裂纹红光：不稳/疲劳挥常亮，将崩的终结斩蓄力期渐醒
             float crackGlow = instabShiver > 0.001f ? MathHelper.Clamp(instabShiver / 0.022f, 0f, 1f) * 0.4f : 0f;
-            if (IsFinisher && !brokenVisual) {
+            if (WillShatter && !brokenVisual) {
                 float chargeT = MathHelper.Clamp(timer / (float)raiseDur, 0f, 1f);
                 crackGlow = MathF.Max(crackGlow, chargeT * 0.55f);
             }

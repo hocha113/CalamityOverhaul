@@ -14,6 +14,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
         public const int MaxFindDistance = 4600;
         /// <summary>激怒（神庙外/地表上）节奏乘数</summary>
         public const float EnrageTempo = 0.72f;
+        /// <summary>目标悬空判定高度（离地像素），超过即触发对空火控提频</summary>
+        public const float AirborneHeight = 190f;
+        /// <summary>对空火控提频乘数（双眼咬紧悬空目标）</summary>
+        public const float AirborneTempo = 0.62f;
         #endregion
 
         #region 拳

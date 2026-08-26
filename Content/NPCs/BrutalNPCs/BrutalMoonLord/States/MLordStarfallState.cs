@@ -42,11 +42,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         }
 
         public override IMLordState OnUpdate(MLordContext context) {
-            NPC npc = context.Npc;
             Player target = context.Target;
 
-            //头部仰颂，核心压低身位显重量
-            HoverTo(npc, target.Center + MLordDirector.CoreHoverOffset + new Vector2(0f, 70f), 5.5f, 0.045f);
+            //头部仰颂，核心压低身位缓爬跟随（颂唱期潜行的诡异慢步）
+            RequestMove(context, target.Center + MLordDirector.CoreHoverOffset + new Vector2(0f, 70f), 0.55f);
             UpdateLean(context);
 
             if (!VaultUtils.isClient) {

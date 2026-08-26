@@ -33,7 +33,13 @@ namespace CalamityOverhaul.Content.GameModes.UI
             return new Rectangle(x, TabAnchor.Y, TabW, TabH);
         }
 
-        //——色板：残酷=血红族，修罗=黑金紫红族，毁灭=苍银冷白族；shader 背景与 CPU 前景同族取色——
+        /// <summary>神匠模式标签矩形；reveal 0..1 表示滑向第三席位的进度（错帧跟在修罗之后）</summary>
+        public static Rectangle GodSmithTab(float reveal) {
+            int x = TabAnchor.X + (int)((TabW + TabGapX) * 2 * reveal);
+            return new Rectangle(x, TabAnchor.Y, TabW, TabH);
+        }
+
+        //——色板：残酷=血红族，修罗=黑金紫红族，毁灭=苍银冷白族，神匠=熔金鎏金族；shader 背景与 CPU 前景同族取色——
 
         /// <summary>近黑底色</summary>
         public static readonly Color NightBase = new(14, 10, 12);
@@ -49,6 +55,10 @@ namespace CalamityOverhaul.Content.GameModes.UI
         public static readonly Color AnnihilationAccent = new(186, 196, 212);
         /// <summary>毁灭冷白余烬</summary>
         public static readonly Color AnnihilationEmber = new(240, 246, 255);
+        /// <summary>神匠主 accent（熔金橙，出炉铁水色）</summary>
+        public static readonly Color GodSmithAccent = new(232, 146, 38);
+        /// <summary>神匠鎏金余烬（近白的鎏金亮）</summary>
+        public static readonly Color GodSmithEmber = new(255, 226, 142);
         /// <summary>休眠态骨灰色</summary>
         public static readonly Color BoneDim = new(118, 106, 100);
 
@@ -56,6 +66,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
         public static Color Accent(GameModeFace face) => face switch {
             GameModeFace.Brutal => BrutalAccent,
             GameModeFace.Annihilation => AnnihilationAccent,
+            GameModeFace.GodSmith => GodSmithAccent,
             _ => AsuraAccent,
         };
 
@@ -63,6 +74,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
         public static Color Ember(GameModeFace face) => face switch {
             GameModeFace.Brutal => BrutalEmber,
             GameModeFace.Annihilation => AnnihilationEmber,
+            GameModeFace.GodSmith => GodSmithEmber,
             _ => AsuraGold,
         };
     }

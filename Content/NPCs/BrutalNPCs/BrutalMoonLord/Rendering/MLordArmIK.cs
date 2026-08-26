@@ -35,6 +35,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
     /// 小臂永远从肘出发指向手掌真实位置，臂链从肩到腕链尖**不可能断开**。
     /// 手掌超出可达域时钳制其绘制锚到腕链尖（判定位置不动），
     /// 更远则连续混合回真实位置并以星桥续接（强度带下限，可见即有意）。
+    /// 冲刺贴判定只对攻击性高速生效：爬行征用的手是无伤位移，
+    /// 一律走钳制带扣在腕链尖上，步态里不闪星桥。
     /// 贴身时骨段受压缩，保住肘内角不出现反折。
     /// 纯本地确定性求解，只消费已同步的实体位置
     /// </summary>
@@ -128,8 +130,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             Vector2 dN = len < 1f ? Vector2.UnitY : d / len;
             len = Math.Max(len, 1f);
 
-            //冲刺混合：高速窗内视觉必须贴住判定位（快进慢出迟滞，刹车减速时不弹跳）
-            bool strikeNow = hand.velocity.LengthSquared() > StrikeSpeed * StrikeSpeed;
+            //冲刺混合：高速窗内视觉必须贴住判定位（快进慢出迟滞，刹车减速时不弹跳）。
+            //爬行征用豁免：探爪/收势是无伤位移（手 AI 已把 damage 归零），无需伤害诚实，
+            //走常规钳制带让手掌始终扣在腕链尖上——否则探爪冲刺(32)必越阈(20)，
+            //弹簧迟滞的几十像素瞬时超程会让手在每个步态周期里闪断脱链
+            bool strikeNow = hand.velocity.LengthSquared() > StrikeSpeed * StrikeSpeed
+                && !MLordLocomotion.IsClaimed(hand);
             st.StrikeBlend = strikeNow
                 ? Math.Min(st.StrikeBlend + 0.25f, 1f)
                 : Math.Max(st.StrikeBlend - 0.08f, 0f);
@@ -227,11 +233,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                 bridge = Math.Min(0.55f + (over - BlendBand) / 400f * 0.45f, 1f);
             }
 
-            //冲刺窗覆盖：视觉强制贴判定位（伤害窗=视觉窗，契约2.3），超程全交幻影延伸
+            //冲刺窗覆盖：视觉强制贴判定位（伤害窗=视觉窗，契约2.3），超程全交幻影延伸。
+            //桥强自超程 40px 起连续升起再快速到达可见下限：弹簧迟滞造成的
+            //小超程不闪桥，真冲线的深超程依旧亮桥（可见即有意）
             if (st.StrikeBlend > 0.001f) {
                 wristDraw = Vector2.Lerp(wristDraw, wrist, st.StrikeBlend);
-                if (over > 4f) {
-                    float strikeBridge = Math.Min(0.45f + over / 500f * 0.55f, 1f) * st.StrikeBlend;
+                float rise = MathHelper.Clamp((over - 40f) / 70f, 0f, 1f);
+                if (rise > 0f) {
+                    float strikeBridge = rise * Math.Min(0.55f + over / 700f, 1f) * st.StrikeBlend;
                     bridge = Math.Max(bridge, strikeBridge);
                 }
             }

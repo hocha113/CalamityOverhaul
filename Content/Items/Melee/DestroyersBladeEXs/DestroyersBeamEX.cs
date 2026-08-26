@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -87,7 +88,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         }
 
         public override void OnKill(int timeLeft) {
-            Projectile.Explode(Empowered ? 150 : 110, SoundID.Item14 with { Volume = 0.5f, Pitch = 0.1f, MaxInstances = 5 });
+            //爆响压量限流,齐射连爆不叠成噪墙
+            Projectile.Explode(Empowered ? 150 : 110, SoundID.Item14 with { Volume = 0.38f, Pitch = 0.1f, MaxInstances = 3, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew });
             if (Main.dedServ) {
                 return;
             }

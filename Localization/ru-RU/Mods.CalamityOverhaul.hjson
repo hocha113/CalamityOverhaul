@@ -1,5 +1,6 @@
 EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Бесконечный урон
 MeleeMagicDamageClassTextContent.MeleeMagicDamageClass.DisplayName: урон ближнего боя и магии
+RangedMagicDamageClassTextContent.RangedMagicDamageClass.DisplayName: урон дальнего боя и магии
 
 Biomes: {
 	TungstenBiome: {

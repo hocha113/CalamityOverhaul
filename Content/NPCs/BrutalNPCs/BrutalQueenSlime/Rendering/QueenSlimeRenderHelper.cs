@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -93,13 +94,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Rendering
             GameShaders.Misc["QueenSlime"].Apply(bodyData);
             bodyData.Draw(sb);
 
-            //加色层：虹彩泛光/蓄力辉光/翼光痕
+            //加色层：晶面皮肤(着色器)/虹彩泛光/蓄力辉光/翼光痕
             if (!dummy) {
                 sb.End();
+
+                //晶面皮肤：分面镶嵌+折射闪点+色散缘光，蓄力/冲刺时点亮
+                float skinIntensity = MathHelper.Clamp(ctx.PrismShimmer
+                    + (ctx.IsCharging ? ctx.ChargeProgress * 0.5f : 0f), 0f, 1f);
+                bool skinDrawn = TryDrawCrystalSkin(sb, npc, bodyTex, bodyRect, bodyPos, bodyOrigin, squashScale, fx, skinIntensity);
+
                 sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState,
                     DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-                DrawAdditiveOverlays(sb, npc, ctx, bodyTex, bodyRect, bodyPos, bodyOrigin, squashScale, fx);
+                DrawAdditiveOverlays(sb, npc, ctx, bodyTex, bodyRect, bodyPos, bodyOrigin, squashScale, fx, skinDrawn);
 
                 sb.End();
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
@@ -165,13 +172,41 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Rendering
             sb.Draw(crownTex, pos, crownRect, color, npc.rotation, origin, 1f, fx, 0f);
         }
 
+        /// <summary>晶面皮肤(着色器加色层)：以本体帧为画布叠水晶质感；返回是否成功走了着色器</summary>
+        private static bool TryDrawCrystalSkin(SpriteBatch sb, NPC npc, Texture2D bodyTex, Rectangle bodyRect,
+            Vector2 bodyPos, Vector2 bodyOrigin, Vector2 squashScale, SpriteEffects fx, float intensity) {
+            Effect effect = EffectLoader.QueenCrystalSkin?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect == null || noise == null || intensity <= 0.02f) {
+                return effect != null && noise != null;
+            }
+
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uIntensity"]?.SetValue(intensity);
+            effect.Parameters["uHueSeed"]?.SetValue(npc.whoAmI * 0.17f % 1f);
+            effect.Parameters["uUvRect"]?.SetValue(new Vector4(
+                bodyRect.X / (float)bodyTex.Width, bodyRect.Y / (float)bodyTex.Height,
+                bodyRect.Width / (float)bodyTex.Width, bodyRect.Height / (float)bodyTex.Height));
+            effect.Parameters["uTexelSize"]?.SetValue(new Vector2(1f / bodyTex.Width, 1f / bodyTex.Height));
+
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+            //噪声显式绑 s1(shader 内 register(s1))
+            Main.graphics.GraphicsDevice.Textures[1] = noise;
+            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
+            sb.Draw(bodyTex, bodyPos, bodyRect, Color.White, npc.rotation, bodyOrigin, squashScale, fx, 0f);
+            sb.End();
+            return true;
+        }
+
         private static void DrawAdditiveOverlays(SpriteBatch sb, NPC npc, QueenSlimeStateContext ctx,
-            Texture2D bodyTex, Rectangle bodyRect, Vector2 bodyPos, Vector2 bodyOrigin, Vector2 squashScale, SpriteEffects fx) {
+            Texture2D bodyTex, Rectangle bodyRect, Vector2 bodyPos, Vector2 bodyOrigin, Vector2 squashScale, SpriteEffects fx,
+            bool skinDrawn) {
             float time = Main.GlobalTimeWrappedHourly;
 
-            //虹彩泛光：体表色相流转
+            //虹彩泛光：着色器缺席时的体表色相流转回退(晶面皮肤已画则跳过)
             float shimmer = MathHelper.Clamp(ctx.PrismShimmer + (ctx.IsCharging ? ctx.ChargeProgress * 0.5f : 0f), 0f, 1f);
-            if (shimmer > 0.02f) {
+            if (!skinDrawn && shimmer > 0.02f) {
                 Color hue = QueenMotion.PrismHue(time * 0.45f);
                 sb.Draw(bodyTex, bodyPos, bodyRect, hue * (0.42f * shimmer), npc.rotation,
                     bodyOrigin, squashScale * 1.015f, fx, 0f);

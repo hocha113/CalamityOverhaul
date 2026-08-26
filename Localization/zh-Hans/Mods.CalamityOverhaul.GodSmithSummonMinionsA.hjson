@@ -1,0 +1,71 @@
+GsSlimeStaff: {
+	Desc: 凝胶军团：史莱姆结成护卫滚阵；两只史莱姆在一拍之内先后击中同一目标即引发融胶爆，集结令下堆成弹性胶垛
+}
+
+GsFinchStaff: {
+	Desc: 群雀阵：雀鸟列成 V 字雁行；首啄落定后，后续对同一目标的啄击层层加力，集结令下化作盘旋鸟群
+}
+
+GsAbigailsFlower: {
+	Desc: 同伴之魂：阿比盖尔的打击点留下灵慰之环，环内你的仆从更为凶猛；突击令下她会集中怒火于被标记者
+}
+
+GsFlinxStaff: {
+	Desc: 滚雪成崩：雪精灵纵队接力冲撞；短窗之内对同一目标的第四撞威力加半并附霜火，集结令下堆起雪障
+}
+
+GsHornetStaff: {
+	Desc: 蜂巢火网：黄蜂在侧上方结成蜂巢格；三根毒刺钉入同一目标即坠落毒爆孢囊，爆后残留毒雾；突击令下毒刺出膛更疾
+}
+
+GsVampireFrogStaff: {
+	Desc: 血蛙盛宴：血蛙左右护卫；咬击有几率溅出血髓珠飞回为你回血，血月之下蛙群陷入猩红狂热
+}
+
+GsImpStaff: {
+	Desc: 狱火炮列：小恶魔在身后列成炮线；突击令下三发火球聚中同一目标，其脚下便窜起狱炎柱
+}
+
+GsSpiderStaff: {
+	Desc: 织网猎阵：三型蜘蛛成三角驻守；协同叮咬将猎物裹入缚网，网中伤口愈深，且每一咬都注入酸性毒液
+}
+
+GsBladeStaff: {
+	Desc: 八卦剑轮：附魔匕首结成缓转剑轮；单把匕首对同一目标的第六连击破甲深斩，集结令下立起万剑之门
+}
+
+GsLegionBannerProj: {
+	DisplayName: 军团战旗
+	GuardTip: 护卫
+	AssaultTip: 突击！
+	RallyTip: 集结！
+	CommandHint: 右键指挥：点敌突击，点地集结，点自己身旁撤令回防
+}
+
+GsRallyFieldProj: {
+	DisplayName: 集结阵地
+}
+
+GsGelBurstProj: {
+	DisplayName: 融胶爆
+}
+
+GsVenomPodProj: {
+	DisplayName: 毒爆孢囊
+}
+
+GsImpPyreProj: {
+	DisplayName: 狱炎柱
+}
+
+GsBloodSipProj: {
+	DisplayName: 血髓珠
+}
+
+GsWebBindProj: {
+	DisplayName: 缚网
+}
+
+GsSoulSolaceProj: {
+	DisplayName: 灵慰之环
+}

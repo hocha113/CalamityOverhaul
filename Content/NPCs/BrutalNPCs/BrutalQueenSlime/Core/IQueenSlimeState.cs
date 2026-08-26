@@ -8,25 +8,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core
     {
         /// <summary>入场演出，光柱降临+晶茧破碎</summary>
         Intro = 0,
-        /// <summary>一阶段枢纽，芭蕾步跳跃(水晶芭蕾预备段)</summary>
+        /// <summary>一阶段枢纽，迅捷芭蕾步(快节奏矮弧飞扑+急坠落点)</summary>
         BallroomStep = 1,
-        /// <summary>棱镜齐射，光束打在棱晶节点上折射成碎晶弹</summary>
+        /// <summary>棱镜齐射，光束打在棱晶节点上折射成密集尖刺扇</summary>
         PrismVolley = 2,
-        /// <summary>水晶圆舞，闪转腾挪+珍珠环收放</summary>
+        /// <summary>水晶圆舞，闪转腾挪+尖刺环收放</summary>
         CrystalWaltz = 3,
-        /// <summary>凝胶陨雨，扇形三波空中弹幕编排</summary>
-        GelMeteorRain = 4,
+        /// <summary>天穹尖刺瀑：车道预告+尖刺列坠落+翼卫镜像扇(原凝胶陨雨位)</summary>
+        SkySpikeCascade = 4,
         /// <summary>阶段转换演出，升空展翅</summary>
         PhaseTransition = 5,
-        /// <summary>二阶段枢纽，8字空中芭蕾巡航</summary>
+        /// <summary>二阶段枢纽，掠影冲刺链巡场</summary>
         AerialBallet = 6,
-        /// <summary>翼压风场，掠过铺设风道位移压制</summary>
+        /// <summary>翼压风场，掠过铺设风道位移压制+尾向尖刺扇</summary>
         WingGaleWaltz = 7,
-        /// <summary>折射牢笼，棱晶环+跑马灯光束网</summary>
-        RefractionCage = 8,
+        /// <summary>尖刺环阵：可破坏节点环跑马灯轮射(原折射牢笼位)</summary>
+        SpikeRing = 8,
         /// <summary>空降回压，足尖俯冲+尖塔波</summary>
         CrystalDiveStomp = 9,
-        /// <summary>水晶吊灯，空中晶体蓄能坠落</summary>
+        /// <summary>水晶吊灯，空中晶体蓄能坠落，皇后灯间掠影穿梭</summary>
         ChandelierFall = 10,
         /// <summary>低血大招，水晶圣殿</summary>
         CrystalCathedral = 11,
@@ -36,6 +36,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core
         Death = 13,
         /// <summary>水晶囚舞(投技)：御晶吊灯压中→封晶→华尔兹连踢→碎晶掷飞</summary>
         CrystalPrisonWaltz = 14,
+        /// <summary>尖刺回旋曲：连跳跳顶绽放尖刺环(缺口预告同源)</summary>
+        SpikeRondo = 15,
+        /// <summary>凝胶分裂召唤：跃起分裂出仆从+首轮同步齐射</summary>
+        GelSplitSummon = 16,
     }
 
     /// <summary>状态接口</summary>

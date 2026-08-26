@@ -13,11 +13,14 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
 {
     /// <summary>
     /// 蜂涡本体：绑定目标NPC的玩家弹幕。<br/>
-    /// ai[0]=目标槽位 ai[1]=目标类型(槽位复用校验) ai[2]=消散旗，三者全走同步；
+    /// ai[0]=目标槽位 ai[1]=目标类型(槽位复用校验) ai[2]=阶段旗(0成形中/1消散/2已成形)，三者全走同步；
     /// 目标死亡→owner就近转移(改ai+netUpdate)，无处可去→消散。<br/>
+    /// 寿命同步语义：SyncProjectile 载荷不含 timeLeft(NetMessage.cs 739-794)，
+    /// 续时只在 owner 本地生效；非owner端自行维持 timeLeft 高位不自灭，
+    /// 死亡信号唯一来源=owner 到点/消散后的 Kill 包(29)；owner 掉线放手自然到点。<br/>
     /// 伤害每帧按owner加成重算，命中在owner端解算(原版路径)；
     /// 减速走 <see cref="SwarmVortexDebuff"/> 骑原版NPCbuff同步。<br/>
-    /// localAI[0]=本地帧龄(迟到端快进跳过成形拍)，localAI[1]=旋涡累计角(渲染用)
+    /// localAI[0]=本地帧龄(迟到端凭阶段旗快进跳过成形拍)，localAI[1]=旋涡累计角(渲染用)
     /// </summary>
     internal class SwarmVortexProj : ModProjectile
     {
@@ -28,9 +31,17 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
         /// <summary>消散拍</summary>
         internal const int DissolveTicks = 22;
 
+        //ai[2] 阶段旗取值：owner 写、全端读
+        /// <summary>阶段旗：出生成形中</summary>
+        internal const float PhaseForming = 0f;
+        /// <summary>阶段旗：消散中(owner立旗后 ≤DissolveTicks 帧内必发Kill包)</summary>
+        internal const float PhaseDissolving = 1f;
+        /// <summary>阶段旗：已成形(owner在成形沿一次性立旗，迟到端凭此跳过成形拍)</summary>
+        internal const float PhaseFormed = 2f;
+
         private int BoundIndex => (int)Projectile.ai[0];
         private int BoundType => (int)Projectile.ai[1];
-        private bool Dissolving => Projectile.ai[2] == 1f;
+        private bool Dissolving => Projectile.ai[2] == PhaseDissolving;
         private float Age => Projectile.localAI[0];
         private bool Formed => Age > FormTicks && !Dissolving;
 
@@ -38,6 +49,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
         private int lastBound = -1;
         //转移流束视觉拍
         private int transferBeat;
+        //消散本地帧龄：远端 timeLeft 被维持在高位，消散渐隐不能读 timeLeft，各端从旗沿自数
+        private int dissolveAge;
 
         public override LocalizedText DisplayName => this.GetLocalization("DisplayName", () => "蜂涡");
 
@@ -58,14 +71,31 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
         }
 
         public override void AI() {
-            //迟到端(中途入场/晚收包)直接跳过成形拍，不重播收拢
-            if (Projectile.localAI[0] == 0f
-                && Projectile.timeLeft < SwarmVortexBeacon.VortexBaseTicks - FormTicks) {
+            //迟到端(中途入场/晚收包)：远端新建副本 timeLeft 恒为出厂值，拿它判不出迟到；
+            //以同步的阶段旗为准——已成形/已消散的副本首帧直接跳过成形拍，不重播收拢
+            if (Projectile.localAI[0] == 0f && Projectile.ai[2] != PhaseForming) {
                 Projectile.localAI[0] = FormTicks + 1;
             }
             Projectile.localAI[0]++;
             //差速旋转累计角
             Projectile.localAI[1] += 0.085f + (Formed ? 0.035f : 0f);
+
+            //成形沿：owner一次性立旗随包走(此后到达任何端的副本都能凭旗跳成形拍)
+            if (Projectile.owner == Main.myPlayer
+                && Projectile.ai[2] == PhaseForming && Age > FormTicks) {
+                Projectile.ai[2] = PhaseFormed;
+                Projectile.netUpdate = true;
+            }
+
+            //timeLeft 不在 SyncProjectile 载荷里：非owner端(含服务端)自行维持高位不自灭，
+            //死亡只认 owner 的 Kill 包与消散旗；owner 已离场则放手让其自然到点，防孤儿永生
+            if (Projectile.owner != Main.myPlayer && !Dissolving
+                && Main.player[Projectile.owner].active) {
+                Projectile.timeLeft = Math.Max(Projectile.timeLeft, 90);
+            }
+            if (Dissolving) {
+                dissolveAge++;
+            }
 
             NPC target = ValidTarget();
 
@@ -79,7 +109,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
                     target = next;
                 }
                 else {
-                    Projectile.ai[2] = 1f;
+                    //立消散旗：owner 本地钳 timeLeft，≤DissolveTicks 帧后 Kill 包收尸全网
+                    Projectile.ai[2] = PhaseDissolving;
                     Projectile.timeLeft = Math.Min(Projectile.timeLeft, DissolveTicks);
                     Projectile.netUpdate = true;
                 }
@@ -301,9 +332,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
         public override bool PreDraw(ref Color lightColor) {
             float radius = Projectile.width * 0.5f;
             //强度包络：成形爬升→稳态→消散塌落；转移拍轻微失压
+            //消散渐隐读本地旗龄不读 timeLeft(远端 timeLeft 被维持在高位，读它会爆强度)
             float envelope = MathHelper.Clamp(Age / FormTicks, 0f, 1f);
             if (Dissolving) {
-                envelope *= Projectile.timeLeft / (float)DissolveTicks;
+                envelope *= MathHelper.Clamp(1f - dissolveAge / (float)DissolveTicks, 0f, 1f);
             }
             if (transferBeat > 0) {
                 envelope *= 0.72f;

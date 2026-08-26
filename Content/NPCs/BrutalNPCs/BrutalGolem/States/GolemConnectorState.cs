@@ -32,10 +32,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
         ];
 
         private bool hopDone;
+        private bool airborne;
 
         public override void OnEnter(GolemStateContext context) {
             base.OnEnter(context);
             hopDone = false;
+            airborne = false;
         }
 
         public override IGolemState OnUpdate(GolemStateContext context) {
@@ -44,9 +46,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             GroundBrake(npc);
             RestoreTileCollide(context);
 
-            //追近阀：距离过远小跳追击，不干等时钟
+            //追近阀：不再干等时钟，稍有距离就跃向目标（跳跃本身即威胁）
             float dx = context.Target.Center.X - npc.Center.X;
-            if (!hopDone && OnGround(npc) && Math.Abs(dx) > 620f && Timer > 8) {
+            if (!hopDone && OnGround(npc) && Math.Abs(dx) > 240f && Timer > 8) {
                 hopDone = true;
                 float vx = MathHelper.Clamp(dx / 60f, -13f, 13f);
                 LaunchJump(npc, vx, -9.5f);
@@ -57,6 +59,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             if (!OnGround(npc)) {
                 AirSteer(context, 0.12f, 14f);
                 context.FrameMode = 2;
+                npc.damage = npc.defDamage;
+            }
+            else {
+                npc.damage = 0;
+            }
+            if (LandedThisFrame(npc, ref airborne)) {
+                LandingImpact(context, context.Sundered ? 3 : 2);
             }
 
             Timer++;

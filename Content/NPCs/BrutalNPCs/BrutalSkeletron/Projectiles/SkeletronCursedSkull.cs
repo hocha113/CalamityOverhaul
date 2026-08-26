@@ -1,6 +1,7 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -41,6 +42,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
         public override void AI() {
             Age++;
 
+            //出膛聚灵：外围灵息向膛口收束（发射有源可见）
+            if (Age == 1f && !VaultUtils.isServer) {
+                for (int i = 0; i < 5; i++) {
+                    Vector2 off = Main.rand.NextVector2CircularEdge(26f, 26f);
+                    PRTLoader.NewParticle<PRT_SkeleGhostFlame>(Projectile.Center + off,
+                        -off * 0.13f + Projectile.velocity * 0.25f,
+                        SkeletronRenderHelper.GhostCyan, Main.rand.NextFloat(0.9f, 1.3f))?.Configure(Main.rand.Next(12, 18));
+                }
+            }
+
             //初段淡入（公平阀：出膛不打脸）
             Projectile.alpha = (int)MathHelper.Lerp(200f, 0f, MathHelper.Clamp(Age / 10f, 0f, 1f));
 
@@ -77,10 +88,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
             if (VaultUtils.isServer) {
                 return;
             }
-            for (int i = 0; i < 5; i++) {
+            //幽火散环（灵体溃散的方向性余波）+ 心口余焰
+            for (int i = 0; i < 8; i++) {
+                Vector2 vel = (MathHelper.TwoPi * i / 8f).ToRotationVector2() * Main.rand.NextFloat(1.4f, 2.6f)
+                    + Projectile.velocity * 0.18f;
+                PRTLoader.NewParticle<PRT_SkeleGhostFlame>(Projectile.Center, vel,
+                    SkeletronRenderHelper.GhostCyan, Main.rand.NextFloat(0.9f, 1.4f))?.Configure(Main.rand.Next(14, 22));
+            }
+            for (int i = 0; i < 3; i++) {
                 PRTLoader.NewParticle<PRT_SkeleGhostFlame>(Projectile.Center,
-                    Main.rand.NextVector2Circular(2.6f, 2.6f),
-                    SkeletronRenderHelper.GhostDeep, Main.rand.NextFloat(1f, 1.6f))?.Configure(Main.rand.Next(16, 26));
+                    Main.rand.NextVector2Circular(2f, 2f),
+                    SkeletronRenderHelper.GhostDeep, Main.rand.NextFloat(1.1f, 1.7f))?.Configure(Main.rand.Next(18, 28));
+            }
+            //骨壳崩屑（实体感残渣，弹体是骷髅不是纯光团）
+            for (int i = 0; i < 3; i++) {
+                PRTLoader.NewParticle<PRT_SkeleBoneChip>(Projectile.Center,
+                    Main.rand.NextVector2Circular(2.4f, 2.4f) - Vector2.UnitY * 1.4f,
+                    Color.White, Main.rand.NextFloat(0.5f, 0.85f))?.Configure(Main.rand.Next(26, 44));
             }
         }
 
@@ -90,12 +114,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
             Vector2 orig = rect.Size() / 2f;
             float opacity = 1f - Projectile.alpha / 255f;
 
+            //出膛膨缩（灵体挤出膛口）+ 飞行呼吸脉动
+            float pop = 1f + 0.38f * MathF.Pow(1f - MathHelper.Clamp(Age / 9f, 0f, 1f), 2f);
+            float breath = 1f + 0.045f * MathF.Sin(Age * 0.21f + Projectile.whoAmI);
+            float scale = Projectile.scale * pop * breath;
+
             //拖尾残影（预乘批 A=0 加色）
             for (int i = Projectile.oldPos.Length - 1; i > 0; i--) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {
                     continue;
                 }
-                float fade = (1f - i / (float)Projectile.oldPos.Length) * 0.4f * opacity;
+                float fade = (1f - i / (float)Projectile.oldPos.Length) * 0.45f * opacity;
                 Vector2 pos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
                 Main.EntitySpriteDraw(tex, pos, rect,
                     SkeletronRenderHelper.AsAdditive(SkeletronRenderHelper.GhostDeep) * fade,
@@ -105,11 +134,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             //三层幽灵体
             Main.EntitySpriteDraw(tex, drawPos, rect, SkeletronRenderHelper.GhostDeep * (0.85f * opacity),
-                Projectile.rotation, orig, Projectile.scale * 1.18f, SpriteEffects.None, 0);
+                Projectile.rotation, orig, scale * 1.18f, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(tex, drawPos, rect, SkeletronRenderHelper.GhostCyan * (0.85f * opacity),
-                Projectile.rotation, orig, Projectile.scale, SpriteEffects.None, 0);
+                Projectile.rotation, orig, scale, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(tex, drawPos, rect, new Color(230, 255, 250, 0) * (0.6f * opacity),
-                Projectile.rotation, orig, Projectile.scale * 0.82f, SpriteEffects.None, 0);
+                Projectile.rotation, orig, scale * 0.82f, SpriteEffects.None, 0);
             return false;
         }
     }

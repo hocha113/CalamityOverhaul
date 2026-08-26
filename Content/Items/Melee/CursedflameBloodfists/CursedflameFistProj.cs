@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Melee.CursedflameBloodfists
         }
 
         public override void SetDefaults() {
-            Projectile.width = Projectile.height = 26;
+            Projectile.width = Projectile.height = 34;
             Projectile.aiStyle = -1;
             Projectile.friendly = true;
             Projectile.DamageType = MeleeMagicDamageClass.Instance;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Items.Melee.CursedflameBloodfists
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 12;
-            Projectile.scale = 0.95f;
+            Projectile.scale = 1.35f;
         }
 
         public override void AI() {
@@ -72,10 +72,13 @@ namespace CalamityOverhaul.Content.Items.Melee.CursedflameBloodfists
             Projectile.position += Projectile.velocity.SafeNormalize(Vector2.UnitX)
                 .RotatedBy(MathHelper.PiOver2) * (swing * side);
 
-            //出手一瞬间胀一下再落回，末段随淡出一起缩
-            Projectile.scale = age < 3
-                ? MathHelper.Lerp(0.62f, 1.12f, age / 3f)
-                : MathHelper.Lerp(0.95f, 0.62f, 1f - Fade);
+            //出手一瞬间胀过头再回落到巡航体型，末段随淡出一起缩
+            float baseScale = age < 3
+                ? MathHelper.Lerp(0.9f, 1.5f, age / 3f)
+                : age < 6
+                    ? MathHelper.Lerp(1.5f, 1.35f, (age - 3) / 3f)
+                    : 1.35f;
+            Projectile.scale = baseScale * MathHelper.Lerp(0.7f, 1f, Fade);
             Projectile.rotation = Projectile.velocity.ToRotation() + CursedflameFX.FistRotationOffset;
             Projectile.alpha = (int)((1f - Fade) * 210f);
 
@@ -88,12 +91,12 @@ namespace CalamityOverhaul.Content.Items.Melee.CursedflameBloodfists
             if (VaultUtils.isServer) {
                 return;
             }
-            Vector2 stump = Projectile.Center - (Projectile.velocity.SafeNormalize(Vector2.UnitX) * 10f * Projectile.scale);
+            Vector2 stump = Projectile.Center - (Projectile.velocity.SafeNormalize(Vector2.UnitX) * StumpBack * Projectile.scale);
             Vector2 back = -Projectile.velocity.SafeNormalize(Vector2.UnitX);
 
             Vector2 lick = back.RotatedByRandom(0.45);
             PRTLoader.NewParticle<PRT_CursedTongue>(stump, (lick * Main.rand.NextFloat(0.8f, 2.2f)) + (Projectile.velocity * 0.14f)
-                , CursedflameFX.FlameGreen, Main.rand.NextFloat(0.3f, 0.5f) * Fade)
+                , CursedflameFX.FlameGreen, Main.rand.NextFloat(0.36f, 0.58f) * Fade)
                 .Configure(lick, Main.rand.NextFloat(0.75f, 1.3f), Main.rand.Next(4, 8));
 
             if (age % 2 == 0) {
@@ -142,11 +145,17 @@ namespace CalamityOverhaul.Content.Items.Melee.CursedflameBloodfists
             }
         }
 
-        /// <summary>拖尾整体透明度，压得很低才不会盖住拳头本体</summary>
-        private const float TrailAlpha = 0.3f;
+        /// <summary>拖尾整体透明度</summary>
+        private const float TrailAlpha = 0.6f;
+        /// <summary>拖尾锚点相对拳头中心向后退的距离系数，让带子从燃烧断口接出去而不是从拳头肚子里冒出来</summary>
+        private const float StumpBack = 12f;
 
+        /// <summary>
+        /// Trail 的宽度函数是半宽（顶点向两侧各外扩 width），
+        /// 头端压在拳头贴图半宽（14px×scale）以内才贴合本体，不再是一条比拳头还宽的光带
+        /// </summary>
         public float GetWidthFunc(float completionRatio)
-            => Projectile.scale * 26f * Projectile.Opacity * (1f - completionRatio);
+            => Projectile.scale * 13f * Projectile.Opacity * (1f - completionRatio);
 
         public Color GetColorFunc(Vector2 completionRatio) {
             //拖尾只走绿，从亮绿收到深绿，橙色留给火舌与余烬
@@ -161,12 +170,14 @@ namespace CalamityOverhaul.Content.Items.Melee.CursedflameBloodfists
                 return;
             }
 
+            //整条带子沿飞行方向后退到断口位置，头端藏进拳头背面
+            Vector2 stumpShift = -Projectile.velocity.SafeNormalize(Vector2.UnitX) * (StumpBack * Projectile.scale);
             Vector2[] positions = new Vector2[Projectile.oldPos.Length];
             for (int i = 0; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {
                     Projectile.oldPos[i] = Projectile.Center;
                 }
-                positions[i] = Projectile.oldPos[i] + (Projectile.Size * 0.5f);
+                positions[i] = Projectile.oldPos[i] + (Projectile.Size * 0.5f) + stumpShift;
             }
 
             trail ??= new Trail(positions, GetWidthFunc, GetColorFunc);
@@ -205,17 +216,17 @@ namespace CalamityOverhaul.Content.Items.Melee.CursedflameBloodfists
                 Color ghost = Color.Lerp(CursedflameFX.FlameMoss, CursedflameFX.TrailDeep, i / (float)Projectile.oldPos.Length);
                 ghost.A = 0;
                 Vector2 pos = Projectile.oldPos[i] + (Projectile.Size * 0.5f) - Main.screenPosition;
-                Main.EntitySpriteDraw(tex, pos, null, ghost * (f * f * 0.2f * Projectile.Opacity)
+                Main.EntitySpriteDraw(tex, pos, null, ghost * (f * f * 0.3f * Projectile.Opacity)
                     , Projectile.rotation, origin, Projectile.scale * (0.55f + (0.45f * f)), SpriteEffects.None, 0);
             }
 
             //断口的绿焰底光，只做垫层不当主体
             Texture2D glow = CursedflameFX.SoftGlow;
             if (glow != null) {
-                Vector2 stump = Projectile.Center - (Projectile.velocity.SafeNormalize(Vector2.UnitX) * 10f * Projectile.scale);
+                Vector2 stump = Projectile.Center - (Projectile.velocity.SafeNormalize(Vector2.UnitX) * StumpBack * Projectile.scale);
                 Color halo = CursedflameFX.FlameGreen with { A = 0 };
-                Main.EntitySpriteDraw(glow, stump - Main.screenPosition, null, halo * (0.5f * Projectile.Opacity)
-                    , 0f, glow.Size() * 0.5f, 0.34f, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(glow, stump - Main.screenPosition, null, halo * (0.55f * Projectile.Opacity)
+                    , 0f, glow.Size() * 0.5f, 0.3f * Projectile.scale, SpriteEffects.None, 0);
             }
 
             Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, light * Projectile.Opacity

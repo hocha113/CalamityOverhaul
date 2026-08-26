@@ -84,9 +84,12 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
         private readonly List<PendingEcho> pendingEchoes = new(EchoQueueCap);
         private long lastEchoSoundTick;
 
-        public override void ResetEffects() => Equipped = false;
-
-        public override void PreUpdate() => TickTimers();
+        //计时挂 ResetEffects：上游 Player.Update 里它与死亡分支互斥(PreUpdate 则死活都跑，
+        //与 UpdateDead 叠成 2 倍速)，存活/死亡两态各恰好每帧一次；先走计时再清旗，用的是上帧装备态
+        public override void ResetEffects() {
+            TickTimers();
+            Equipped = false;
+        }
 
         public override void UpdateDead() {
             TickTimers();

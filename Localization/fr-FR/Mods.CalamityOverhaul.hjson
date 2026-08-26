@@ -1,5 +1,6 @@
 EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Dégâts sans fin
 MeleeMagicDamageClassTextContent.MeleeMagicDamageClass.DisplayName: dégâts de mêlée et de magie
+RangedMagicDamageClassTextContent.RangedMagicDamageClass.DisplayName: dégâts à distance et de magie
 
 Biomes: {
 	TungstenBiome: {

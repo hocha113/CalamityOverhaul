@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 {
     /// <summary>
     /// 引力坍缩：核心升空开井，引力井牵引玩家并透镜扭曲空间，
-    /// 四手按对角序轮换向井投掷星球、被弹射成椭圆弹道；井崩解放出环形幻影眼
+    /// 四手按对角序轮换向井投掷星球、被弹射成椭圆弹道；井崩解放出环形幻影波矢
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)MLordStateIndex.GravityCollapse, typeof(MLordContext))]
     internal class MLordGravityCollapseState : MLordStateBase
@@ -39,8 +39,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             NPC npc = context.Npc;
             Player target = context.Target;
 
-            //核心升到高位，胸腔缝隙漏光
-            HoverTo(npc, target.Center + new Vector2(0f, -520f), 6.5f, 0.05f);
+            //蓄势期急速爬向高位（胸腔缝隙漏光），开井后四爪抓桩定身供能
+            if (Timer < WindupEnd) {
+                RequestMove(context, target.Center + new Vector2(0f, -520f), 1f);
+            }
+            else {
+                RequestMove(context, target.Center + new Vector2(0f, -520f), 0.4f, MLordMovePolicy.Brace);
+            }
             UpdateLean(context);
             context.HeartExposure = MathHelper.Max(context.HeartExposure, MathHelper.Clamp(Timer / (float)WindupEnd, 0f, 1f) * 0.5f);
 
@@ -75,7 +80,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 npc.netUpdate = true;
                 Projectile.NewProjectile(npc.GetSource_FromAI(), anchor, Vector2.Zero,
                     ModContent.ProjectileType<MLordGravityWellProj>(), 0, 0f, Main.myPlayer,
-                    ScaleDamage(context, MLordDirector.EyeDamage));
+                    ScaleDamage(context, MLordDirector.BoltDamage));
             }
 
             //四波切向星球投入井轨

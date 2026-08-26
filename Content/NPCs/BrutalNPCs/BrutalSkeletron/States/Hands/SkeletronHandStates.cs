@@ -14,12 +14,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
     //掌根朝上，指尖指向 rotation-PiOver2
     //客户端是傀儡：位置以服务端广播为准，状态仅供本地视觉包络
 
-    /// <summary>侧翼护卫浮游，观察头部状态自转移</summary>
+    /// <summary>侧翼护卫浮游：8字懒游+腕部小动作+贴脸缩手，Hub 期间弹指点射颅火；观察头部状态自转移</summary>
     [InnoVault.StateMachines.VaultState((int)SkeletronHandStateIndex.Guard, typeof(SkeletronHandContext))]
     internal class HandGuardState : SkeletronHandStateBase
     {
         public override string StateName => "HandGuard";
         public override SkeletronHandStateIndex StateIndex => SkeletronHandStateIndex.Guard;
+
+        //弹指周期快照（周期首帧锁定；客户端凭同款时钟摆位形，权威端出弹）
+        private bool flickArmed;
+        private Vector2 flickAim;
 
         public override SkeletronHandStateBase OnUpdate(SkeletronHandContext ctx) {
             NPC npc = ctx.Npc;
@@ -27,8 +31,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
             npc.dontTakeDamage = false;
 
             SpringMove(ctx, GuardAnchor(ctx), 0.14f, 0.86f, 22f);
-            //掌心懒散指向玩家
-            AimPalm(npc, ctx.Target.Center, 0.05f);
+
+            //玩家贴脸时本能避让（手会怕：灵动源于反应）
+            if (npc.Center.Distance(ctx.Target.Center) < 150f) {
+                npc.velocity += (npc.Center - ctx.Target.Center).SafeNormalize(Vector2.UnitX * ctx.Side) * 0.55f;
+            }
+
+            //Hub 期间弹指点射；手势窗内手势接管腕部；否则掌心懒散指人
+            if (!UpdateFlick(ctx) && !UpdateIdleGesture(ctx)) {
+                AimPalm(npc, ctx.Target.Center, 0.05f);
+            }
 
             Timer++;
 
@@ -42,6 +54,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
                         return new HandClapState();
                     case SkeletronStateIndex.PalmSnatch:
                         return new HandSnatchState();
+                    case SkeletronStateIndex.Applause:
+                        return new HandApplaudState();
                     case SkeletronStateIndex.SpinBoneStorm:
                     case SkeletronStateIndex.DayEnrage:
                         return new HandOrbitState();
@@ -50,6 +64,119 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
                 }
             }
             return null;
+        }
+
+        /// <summary>Hub 期间的弹指点射：卷腕拉弓→甩腕出弹→后坐收势；共享编队时钟对齐各端姿态，左右手错半拍</summary>
+        private bool UpdateFlick(SkeletronHandContext ctx) {
+            NPC npc = ctx.Npc;
+            if (SkeletronHeadAI.GetStateIndex(ctx.Head) != SkeletronStateIndex.Hub
+                || (int)ctx.Head.ai[SkeletronAiSlots.HeadPhase] != SkeletronPhase.Bound) {
+                return false;
+            }
+
+            int period = SkeletronDirector.FlickPeriod;
+            int windup = SkeletronDirector.FlickWindup;
+            int phase = (int)(FormationClock(ctx) + (ctx.Side < 0 ? 0 : period / 2)) % period;
+
+            //周期首帧锁定本轮意图：远距+视线才拉弓（缺口契约：FlickMinDistance 内不弹指，贴身是安全窗）
+            if (phase == 0) {
+                flickArmed = npc.Center.Distance(ctx.Target.Center) > SkeletronDirector.FlickMinDistance
+                    && Collision.CanHitLine(npc.Center, 1, 1, ctx.Target.position, ctx.Target.width, ctx.Target.height);
+            }
+            if (!flickArmed || phase > windup + 18) {
+                return false;
+            }
+
+            if (phase < windup) {
+                //卷腕拉弓：掌口咬瞄，腕部向后卷，掌心幽火渐燃，末拍反向抽身
+                float t = phase / (float)windup;
+                flickAim = ctx.Target.Center;
+                AimPalmOffset(npc, flickAim, ctx.Side * MathF.Pow(t, 1.6f) * 0.62f, 0.3f);
+                ctx.PalmFlame = Math.Max(ctx.PalmFlame, 0.25f + 0.75f * t);
+                if (t > 0.55f) {
+                    Vector2 back = (npc.Center - flickAim).SafeNormalize(-Vector2.UnitX * ctx.Side);
+                    npc.velocity += back * MathF.Pow((t - 0.55f) / 0.45f, 2f) * 1.4f;
+                }
+            }
+            else if (phase == windup) {
+                //出手帧：掌口甩正，颅火出膛（权威端），后坐+拉伸回弹
+                Vector2 tipDir = (flickAim == Vector2.Zero ? ctx.Target.Center - npc.Center : flickAim - npc.Center)
+                    .SafeNormalize(Vector2.UnitY);
+                npc.rotation = tipDir.ToRotation() + MathHelper.PiOver2;
+                ctx.TriggerSquash(-0.34f);
+                ctx.SpringVelocity -= tipDir * 6.5f;
+                npc.velocity -= tipDir * 6.5f;
+                ctx.PalmFlame = 1f;
+
+                if (!VaultUtils.isClient) {
+                    Vector2 muzzle = npc.Center + tipDir * 30f;
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), muzzle,
+                        tipDir * SkeletronDirector.FlickSkullSpeed(ctx.Death),
+                        ModContent.ProjectileType<SkeletronCursedSkull>(),
+                        SkeletronHeadAI.GetSkullDamage(ctx.Head), 0f, Main.myPlayer, 0f, 0f);
+                    npc.netUpdate = true;
+                }
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.7f, Pitch = -0.15f }, npc.Center);
+                }
+            }
+            else {
+                //收腕
+                AimPalm(npc, ctx.Target.Center, 0.14f);
+                ctx.PalmFlame = Math.Max(ctx.PalmFlame, 0.3f * (1f - (phase - windup) / 18f));
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 闲置小动作轮盘：腕转→摆摆手→挥挥手 轮换（确定性时钟，各端一致）<br/>
+        /// 返回 true = 本帧手势接管腕部姿态（调用方跳过懒散指人）
+        /// </summary>
+        private static bool UpdateIdleGesture(SkeletronHandContext ctx) {
+            NPC npc = ctx.Npc;
+            int period = 300 + npc.whoAmI * 37 % 120;
+            float clock = Main.GameUpdateCount + npc.whoAmI * 71f;
+            float t = clock % period;
+            int kind = (int)(clock / period) % 3;
+
+            switch (kind) {
+                case 0: { //腕转：懒散指人之上叠两摆腕，掌心火苗把玩
+                    if (t >= 44f) {
+                        return false;
+                    }
+                    float w = t / 44f;
+                    float env = (float)Math.Sin(w * MathHelper.Pi);
+                    AimPalm(npc, ctx.Target.Center, 0.05f);
+                    npc.rotation += env * (float)Math.Sin(w * MathHelper.TwoPi * 2f) * 0.2f;
+                    ctx.PalmFlame = Math.Max(ctx.PalmFlame, env * 0.35f);
+                    return true;
+                }
+                case 1: { //摆摆手：掌竖起左右慢摆两拍，身体随摆轻晃
+                    if (t >= 78f) {
+                        return false;
+                    }
+                    float w = t / 78f;
+                    float env = (float)Math.Sin(w * MathHelper.Pi);
+                    float pose = (float)Math.Sin(w * MathHelper.TwoPi * 2f) * 0.34f * ctx.Side;
+                    npc.rotation = npc.rotation.AngleLerp(pose, 0.1f + 0.16f * env);
+                    npc.velocity += Vector2.UnitX * ((float)Math.Cos(w * MathHelper.TwoPi * 2f) * 0.3f * env * ctx.Side);
+                    return true;
+                }
+                default: { //挥挥手：起手轻抬，掌竖起快挥三拍
+                    if (t >= 60f) {
+                        return false;
+                    }
+                    float w = t / 60f;
+                    float env = (float)Math.Sin(w * MathHelper.Pi);
+                    float pose = (float)Math.Sin(w * MathHelper.TwoPi * 3f) * 0.5f;
+                    npc.rotation = npc.rotation.AngleLerp(pose, 0.12f + 0.2f * env);
+                    if (t < 10f) {
+                        npc.velocity -= Vector2.UnitY * 0.45f;
+                    }
+                    ctx.PalmFlame = Math.Max(ctx.PalmFlame, env * 0.3f);
+                    return true;
+                }
+            }
         }
     }
 
@@ -142,13 +269,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
             AimPalm(ctx.Npc, ctx.Target.Center, 0.08f);
         }
 
-        /// <summary>蓄势：抬到玩家侧上方，提前8帧锁定砸点给读秒，末拍反向上抽</summary>
+        /// <summary>蓄势：抬到玩家侧上方卷腕拉弓，提前8帧锁定砸点给读秒，末拍反向上抽</summary>
         private void UpdateWindup(SkeletronHandContext ctx, int duration) {
             NPC npc = ctx.Npc;
+            float t = phaseTimer / (float)duration;
             Vector2 hover = ctx.Target.Center + new Vector2(ctx.Side * 190f, -360f);
             SpringMove(ctx, hover, 0.2f, 0.82f, 34f);
-            ctx.ChainTension = phaseTimer / (float)duration;
-            ctx.PalmFlame = phaseTimer / (float)duration;
+            ctx.ChainTension = t;
+            ctx.PalmFlame = t;
 
             //提前锁定砸点（公平阀：给玩家离开落点的读秒窗口）
             int lockFrame = duration - 8;
@@ -160,8 +288,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
                 }
                 strikeAim = aimPoint;
             }
-            //锁定前掌随人，锁定后掌口盯死落点
-            AimPalm(npc, phaseTimer < lockFrame ? ctx.Target.Center : strikeAim, 0.2f);
+            //锁定前掌随人，锁定后掌口盯死落点；蓄势全程腕部向后卷（力从蓄来的可读前摇）
+            AimPalmOffset(npc, phaseTimer < lockFrame ? ctx.Target.Center : strikeAim,
+                ctx.Side * MathF.Pow(t, 1.4f) * 0.55f, 0.2f);
 
             //锁定期落点预告（地表骨尘涌动）
             if (!VaultUtils.isServer && phaseTimer >= lockFrame && groundY > 0f && phaseTimer % 2 == 0) {
@@ -171,16 +300,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
             }
 
             //末拍反向上抽（力从蓄来）
-            float t = phaseTimer / (float)duration;
             if (t > 0.72f) {
                 npc.velocity -= Vector2.UnitY * MathF.Pow((t - 0.72f) / 0.28f, 2f) * 5f;
             }
 
             if (phaseTimer >= duration) {
-                //一帧内定速：直线读得快
+                //一帧内定速：直线读得快；出手瞬间指轴拉伸（弹性形变）
                 npc.velocity = (strikeAim - npc.Center).SafeNormalize(Vector2.UnitY) * SkeletronDirector.SlamSpeed(ctx.Death);
                 npc.rotation = npc.velocity.ToRotation() - MathHelper.PiOver2;
                 ctx.SpringVelocity = npc.velocity;
+                ctx.TriggerSquash(-0.3f);
 
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.DD2_GhastlyGlaivePierce with { Volume = 0.9f, Pitch = -0.55f }, npc.Center);
@@ -189,12 +318,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
             }
         }
 
-        /// <summary>砸击：只在高速时带接触伤害</summary>
+        /// <summary>砸击：只在高速时带接触伤害，俯冲复利增速（越砸越狠）</summary>
         private void UpdateStrike(SkeletronHandContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = npc.defDamage;
             ctx.ChainTension = 1f;
+            ctx.PalmFlame = 1f;
             npc.rotation = npc.velocity.ToRotation() - MathHelper.PiOver2;
+
+            if (npc.velocity.Length() < SkeletronDirector.SlamSpeed(ctx.Death) * 1.28f) {
+                npc.velocity *= 1.02f;
+            }
 
             //砸击拖影尘
             if (!VaultUtils.isServer && phaseTimer % 2 == 0) {
@@ -218,10 +352,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
             }
         }
 
-        /// <summary>嵌地定格</summary>
+        /// <summary>嵌地定格：落掌一帧回跳（重量=反作用），随后迅速嵌死</summary>
         private void UpdateEmbed(SkeletronHandContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = npc.defDamage;
+            if (phaseTimer == 0 && npc.velocity.Length() < 1f) {
+                npc.velocity = new Vector2(0f, -2.4f);
+            }
             npc.velocity *= 0.55f;
             ctx.ChainTension = 1f;
 
@@ -319,7 +456,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
                 bool reached = ctx.Side < 0 ? npc.Center.X >= clapAnchor.X - 34f : npc.Center.X <= clapAnchor.X + 34f;
                 if (reached || Timer > SnapFrame + 26) {
                     arrived = true;
-                    npc.velocity *= 0.1f;
+                    //撞掌反弹（质量对撞的读法），挤压回弹走冲击广播
+                    npc.velocity *= -0.16f;
+                    ctx.SpringVelocity = npc.velocity;
                     npc.ai[SkeletronAiSlots.HandFree] += 1f;
 
                     //合拍中心迸发（由左手负责，防止双份）
@@ -371,14 +510,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
             npc.velocity = Vector2.Zero;
             ctx.ChainTension = 1f;
 
-            //槽位复用等异常取不到覆写时保持null，下一行已有回退时钟（精确索引缺键会抛出）
-            ctx.Head.TryGetOverride(out SkeletronHeadAI headOverride);
-            float clock = headOverride?.ai[SkeletronAiSlots.OverrideOrbitClock] ?? Main.GameUpdateCount;
+            float clock = FormationClock(ctx);
             float rot = clock * 0.22f + (ctx.Side < 0 ? 0f : MathHelper.Pi);
             Vector2 toPoint = ctx.Head.Center + rot.ToRotationVector2() * ctx.Head.width * 1.5f;
-            npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.5f);
-            //指尖甩向切线（离心读法）
+            //渐入编队（甩入而非贴入），随后咬死轨道
+            float grip = MathHelper.Clamp(0.16f + Timer * 0.017f, 0.16f, 0.5f);
+            npc.Center = Vector2.Lerp(npc.Center, toPoint, grip);
+            //指尖甩向切线（离心读法），离心焰随行
             npc.rotation = rot + MathHelper.Pi;
+            ctx.PalmFlame = Math.Max(ctx.PalmFlame, 0.55f);
 
             Timer++;
             if (!VaultUtils.isClient) {

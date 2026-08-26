@@ -14,20 +14,20 @@ namespace CalamityOverhaul.Content.Items.Ranged.SneezingWyrms
 {
     /// <summary>
     /// 嚏龙铳持握。速射龙击弹，连射令枪膛升温，弹色沿 <see cref="Wyrmfire"/> 黑体色带变亮；
-    /// 每积攒数发，被烟气憋住的龙鼻打一个喷嚏，向枪身上侧喷出浓烟，
-    /// 烟团(<see cref="WyrmSneezeFume"/>)阴燃片刻后自燃成龙焰。松手枪膛缓慢冷却
+    /// 每积攒数发，被烟气憋住的龙鼻打一个喷嚏，向枪身上侧喷出浓烟
+    /// (<see cref="WyrmSneezeFume"/>)。松手枪膛缓慢冷却
     /// </summary>
     internal class SneezingWyrmHeld : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "SneezingWyrm";
         public override int TargetID => ModContent.ItemType<SneezingWyrm>();
 
-        //——贴图锚点(1x像素，炮口朝右)——
+        //——贴图锚点(104x66，炮口朝右)——
         private const float HeldScale = 1f;
         private static readonly Vector2 GripPx = new(25, 28);    //握把，绘制原点
-        private static readonly Vector2 MuzzlePx = new(50, 16);  //炮口
-        private static readonly Vector2 NostrilPx = new(37, 10); //龙鼻喷烟口
-        private static readonly Vector2 EyePx = new(22, 9);      //龙眼
+        private static readonly Vector2 MuzzlePx = new(103, 33); //最右侧黑色枪管尖端
+        private static readonly Vector2 NostrilPx = new(72, 16); //龙鼻喷烟口
+        private static readonly Vector2 EyePx = new(43, 19);     //龙眼
 
         //——温度与喷嚏节奏——
         /// <summary>连射烧满约70发</summary>
@@ -36,9 +36,15 @@ namespace CalamityOverhaul.Content.Items.Ranged.SneezingWyrms
         private const float HeatFall = 1f / 160f;
         /// <summary>每积攒这么多发打一个喷嚏</summary>
         private const int ShotsPerSneeze = 8;
+        /// <summary>每积攒这么多发呵一口龙息弹</summary>
+        private const int ShotsPerBreath = 12;
+        /// <summary>喷嚏呼气持续帧数，烟随枪连续排出而非一次性成团</summary>
+        private const int VentDuration = 10;
 
         private float heat;
         private int sneezeCharge;
+        private int breathCharge;
+        private int ventTimer;
 
         /// <summary>枪膛尚温就别收枪，让余热演完</summary>
         public override bool StayAlive() => heat > 0.03f;
@@ -71,11 +77,15 @@ namespace CalamityOverhaul.Content.Items.Ranged.SneezingWyrms
         public override void NetHeldSend(BinaryWriter writer) {
             writer.Write(heat);
             writer.Write((byte)sneezeCharge);
+            writer.Write((byte)breathCharge);
+            writer.Write((byte)ventTimer);
         }
 
         public override void NetHeldReceive(BinaryReader reader) {
             heat = reader.ReadSingle();
             sneezeCharge = reader.ReadByte();
+            breathCharge = reader.ReadByte();
+            ventTimer = reader.ReadByte();
         }
 
         public override void AI() {
@@ -88,6 +98,10 @@ namespace CalamityOverhaul.Content.Items.Ranged.SneezingWyrms
 
             if (!WantsFireLeft || !HasAmmo) {
                 CoolPhase();
+            }
+            if (ventTimer > 0) {
+                VentStreamFX();
+                ventTimer--;
             }
             HotBodyFX();
 
@@ -122,10 +136,10 @@ namespace CalamityOverhaul.Content.Items.Ranged.SneezingWyrms
 
             if (Projectile.IsOwnedByLocalPlayer()) {
                 //普通子弹转化为龙击弹，特殊弹药保持原样
-                int roundType = ModContent.ProjectileType<WyrmstrikeRound>();
                 Vector2 vel = ShootVelocity.RotatedByRandom(0.032f) * Main.rand.NextFloat(0.96f, 1.04f);
                 if (AmmoTypes == ProjectileID.Bullet) {
-                    Projectile.NewProjectile(Source, muzzle, vel, roundType
+                    //正spawn在枪口；出生tick的驻留由弹幕自己处理，保证首帧绘制就在枪口
+                    Projectile.NewProjectile(Source, muzzle, vel, ModContent.ProjectileType<WyrmstrikeRound>()
                         , WeaponDamage, WeaponKnockback, Owner.whoAmI, temp, Main.rand.NextFloat(9f));
                 }
                 else {
@@ -135,14 +149,51 @@ namespace CalamityOverhaul.Content.Items.Ranged.SneezingWyrms
             }
             ConsumeAmmo();
 
+            if (++breathCharge >= ShotsPerBreath) {
+                breathCharge = 0;
+                BreathShot(muzzle, dir, temp);
+            }
             if (++sneezeCharge >= ShotsPerSneeze) {
                 Sneeze();
             }
         }
 
-        /// <summary>龙鼻憋满打嚏：向枪身上侧喷出浓烟，烟团稍后自燃成龙焰</summary>
+        /// <summary>攒满一口气：附带呵出一发蛇行寻敌的龙息弹</summary>
+        private void BreathShot(Vector2 muzzle, Vector2 dir, float temp) {
+            SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with {
+                Volume = 0.5f,
+                Pitch = -0.25f + heat * 0.35f,
+                MaxInstances = 3,
+            }, Projectile.Center);
+            RecoilPitch = MathF.Min(RecoilPitch + 0.045f, GunPressure * 2f);
+            RecoilOffset -= dir * 2.6f;
+
+            //口焰比常规射击更旺
+            for (int i = 0; i < 3; i++) {
+                Vector2 od = dir.RotatedBy(Main.rand.NextFloat(-0.45f, 0.45f));
+                PRTLoader.NewParticle<PRT_WyrmTongue>(muzzle, od * 2.4f, default, Main.rand.NextFloat(0.8f, 1.2f))
+                    ?.Configure(od, Main.rand.NextFloat(0.8f, 1.2f), Main.rand.Next(5, 8), temp);
+            }
+
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                float breathTemp = 0.55f + 0.45f * heat;
+                Vector2 vel = dir.RotatedByRandom(0.05f) * AmmoState.ShootSpeed * 0.72f;
+                Projectile.NewProjectile(Source, muzzle, vel, ModContent.ProjectileType<WyrmBreathBolt>()
+                    , (int)(WeaponDamage * 1.8f), WeaponKnockback * 1.5f, Owner.whoAmI, breathTemp, Main.rand.NextFloat(9f));
+            }
+        }
+
+        /// <summary>鼻孔位置与喷烟方向(枪身上侧法向掺一点前向)，喷嚏与呼气流共用</summary>
+        private void GetVentGeometry(out Vector2 nostril, out Vector2 sneezeDir) {
+            nostril = GetMuzzlePos((NostrilPx.X - GripPx.X) * HeldScale, (NostrilPx.Y - GripPx.Y) * HeldScale);
+            Vector2 aim = UnitToMouseV;
+            sneezeDir = (aim.RotatedBy(-MathHelper.PiOver2 * DirSign) * 0.9f + aim * 0.3f).SafeNormalize(-Vector2.UnitY);
+        }
+
+        /// <summary>龙鼻憋满打嚏：爆点一拍+开启数帧呼气流，喷出浓烟</summary>
         private void Sneeze() {
             sneezeCharge = 0;
+            ventTimer = VentDuration;
 
             SoundEngine.PlaySound(SoundID.DD2_BetsyWindAttack with {
                 Volume = 0.55f,
@@ -150,41 +201,48 @@ namespace CalamityOverhaul.Content.Items.Ranged.SneezingWyrms
                 MaxInstances = 3,
             }, Projectile.Center);
 
-            Vector2 nostril = GetMuzzlePos((NostrilPx.X - GripPx.X) * HeldScale, (NostrilPx.Y - GripPx.Y) * HeldScale);
-            Vector2 aim = UnitToMouseV;
-            //枪身上侧法向，掺一点前向让烟往弹道前方飘
-            Vector2 sneezeDir = (aim.RotatedBy(-MathHelper.PiOver2 * DirSign) * 0.9f + aim * 0.3f).SafeNormalize(-Vector2.UnitY);
+            GetVentGeometry(out Vector2 nostril, out Vector2 sneezeDir);
 
             //鼻息顿挫
             RecoilPitch = MathF.Min(RecoilPitch + 0.05f, GunPressure * 2f);
-            RecoilOffset -= aim * 2.2f;
+            RecoilOffset -= UnitToMouseV * 2.2f;
 
-            int smokeN = 8 + (int)(heat * 4f);
-            for (int i = 0; i < smokeN; i++) {
-                Vector2 vel = sneezeDir.RotatedBy(Main.rand.NextFloat(-0.4f, 0.4f)) * Main.rand.NextFloat(1.8f, 4.4f);
+            //爆点头团：随后的烟由呼气流逐帧排出，跟着枪走
+            for (int i = 0; i < 4; i++) {
+                Vector2 vel = sneezeDir.RotatedBy(Main.rand.NextFloat(-0.4f, 0.4f)) * Main.rand.NextFloat(2.4f, 4.6f) + Owner.velocity * 0.6f;
                 PRTLoader.NewParticle<PRT_WyrmSmoke>(nostril + Main.rand.NextVector2Circular(3f, 3f), vel
-                    , new Color(92, 84, 76) * Main.rand.NextFloat(0.5f, 0.75f), Main.rand.NextFloat(0.16f, 0.3f))
+                    , new Color(92, 84, 76) * Main.rand.NextFloat(0.55f, 0.75f), Main.rand.NextFloat(0.18f, 0.3f))
                     ?.Configure(Main.rand.Next(34, 56), 0.05f);
             }
-            //压轴一大团慢烟垫在后面
-            PRTLoader.NewParticle<PRT_WyrmSmoke>(nostril, sneezeDir * Main.rand.NextFloat(1f, 1.6f)
-                , new Color(84, 76, 70) * 0.6f, Main.rand.NextFloat(0.3f, 0.38f))
-                ?.Configure(Main.rand.Next(40, 60), 0.06f);
             //热枪打嚏带火星
             if (heat > 0.4f) {
                 for (int i = 0; i < 3; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(nostril, sneezeDir.RotatedBy(Main.rand.NextFloat(-0.4f, 0.4f)) * Main.rand.NextFloat(2f, 5f)
+                    PRTLoader.NewParticle<PRT_Spark>(nostril, sneezeDir.RotatedBy(Main.rand.NextFloat(-0.4f, 0.4f)) * Main.rand.NextFloat(2f, 5f) + Owner.velocity * 0.5f
                         , Wyrmfire.TempColor(0.35f + heat * 0.3f), Main.rand.NextFloat(0.4f, 0.7f))
                         ?.Configure(true, Main.rand.Next(8, 14));
                 }
             }
 
-            //真正会自燃的烟团
+            //浓烟团，继承玩家速度防止跑动时甩在身后
             if (Projectile.IsOwnedByLocalPlayer()) {
                 float fumeTemp = 0.35f + 0.55f * heat;
-                Vector2 vel = sneezeDir.RotatedBy(Main.rand.NextFloat(-0.22f, 0.22f)) * Main.rand.NextFloat(1.8f, 2.6f) + Owner.velocity * 0.2f;
+                Vector2 vel = sneezeDir.RotatedBy(Main.rand.NextFloat(-0.22f, 0.22f)) * Main.rand.NextFloat(1.8f, 2.6f) + Owner.velocity * 0.55f;
                 Projectile.NewProjectile(Source, nostril, vel, ModContent.ProjectileType<WyrmSneezeFume>()
                     , (int)(WeaponDamage * 1.5f), WeaponKnockback, Owner.whoAmI, fumeTemp, Main.rand.NextFloat(9f));
+            }
+        }
+
+        /// <summary>喷嚏后的呼气流：逐帧从当前鼻孔位置排烟，移动时烟带连续不断裂</summary>
+        private void VentStreamFX() {
+            GetVentGeometry(out Vector2 nostril, out Vector2 sneezeDir);
+            float fade = ventTimer / (float)VentDuration;//呼气渐弱
+            for (int i = 0; i < 2; i++) {
+                Vector2 vel = sneezeDir.RotatedBy(Main.rand.NextFloat(-0.35f, 0.35f))
+                    * Main.rand.NextFloat(1.2f, 3f) * (0.5f + 0.5f * fade) + Owner.velocity * 0.6f;
+                PRTLoader.NewParticle<PRT_WyrmSmoke>(nostril + Main.rand.NextVector2Circular(2f, 2f), vel
+                    , new Color(92, 84, 76) * (Main.rand.NextFloat(0.45f, 0.7f) * (0.55f + 0.45f * fade))
+                    , Main.rand.NextFloat(0.14f, 0.26f) * (0.7f + 0.3f * fade))
+                    ?.Configure(Main.rand.Next(30, 50), 0.05f);
             }
         }
 
@@ -197,7 +255,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.SneezingWyrms
 
             Vector2 muzzleDir = Projectile.rotation.ToRotationVector2();
             if (heat > 0.25f && (int)Time % 8 == 0) {
-                PRTLoader.NewParticle<PRT_WyrmSmoke>(ShootPos, -Vector2.UnitY * Main.rand.NextFloat(0.3f, 0.7f) + muzzleDir * 0.3f
+                PRTLoader.NewParticle<PRT_WyrmSmoke>(ShootPos, -Vector2.UnitY * Main.rand.NextFloat(0.3f, 0.7f) + muzzleDir * 0.3f + Owner.velocity * 0.45f
                     , new Color(96, 88, 82) * (0.35f + heat * 0.25f), Main.rand.NextFloat(0.1f, 0.17f))
                     ?.Configure(Main.rand.Next(24, 38), 0.06f);
             }
@@ -208,8 +266,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.SneezingWyrms
             if (heat < 0.55f || (int)Time % 6 != 0) {
                 return;
             }
-            Vector2 barrel = GetMuzzlePos(Main.rand.NextFloat(8f, 22f), (MuzzlePx.Y - GripPx.Y) * HeldScale - 3f);
-            PRTLoader.NewParticle<PRT_WyrmSmoke>(barrel, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 0.5f)
+            Vector2 barrel = GetMuzzlePos(Main.rand.NextFloat(50f, 75f), (MuzzlePx.Y - GripPx.Y) * HeldScale - 3f);
+            PRTLoader.NewParticle<PRT_WyrmSmoke>(barrel, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 0.5f) + Owner.velocity * 0.45f
                 , new Color(90, 82, 76) * ((heat - 0.55f) * 0.7f), Main.rand.NextFloat(0.08f, 0.14f))
                 ?.Configure(Main.rand.Next(16, 26), 0.05f);
         }

@@ -35,7 +35,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
             }
 
             //轻压制：诅咒颅火点射，绝不留空白窗口；近身缺口内停火
-            int fireInterval = p2 ? 26 : 34;
+            //一阶段双手健在时手部弹指分担火力，头侧点射让拍（防总压制过密）
+            int fireInterval = p2 ? 26 : (context.AnyHandAlive ? 46 : 34);
             if (!VaultUtils.isClient && Timer % fireInterval == fireInterval - 1
                 && npc.Distance(context.Target.Center) > MinFireDistancePx
                 && Collision.CanHitLine(npc.Center, 1, 1, context.Target.position, context.Target.width, context.Target.height)) {
@@ -57,19 +58,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
             return null;
         }
 
-        /// <summary>手工节奏表：压迫→机动→区域→迸发交替</summary>
+        /// <summary>手工节奏表：压迫→机动→区域→迸发→人格拍交替</summary>
         private static ISkeletronState DispatchNext(SkeletronStateContext context, bool p2) {
             if (!p2) {
-                int step = context.AttackIndexP1 % 4;
+                int step = context.AttackIndexP1 % 5;
                 context.AttackIndexP1++;
                 return step switch {
                     0 => new SkeletronHandCrushState(),
                     1 => new SkeletronSpinBoneStormState(),
                     2 => new SkeletronGhostArmCircleState(),
                     //合拍槽位的混拍升级：普通钳杀教会几何，投技惩罚松懈
-                    _ => SkeletronPalmSnatchState.CanDispatch(context)
+                    3 => SkeletronPalmSnatchState.CanDispatch(context)
                         ? new SkeletronPalmSnatchState()
                         : new SkeletronClapPincerState(),
+                    //钳杀/投技之后的嘲讽鼓掌：呼吸拍+输出窗+人格（缺手时退回砸击）
+                    _ => context.HandCount >= 2
+                        ? new SkeletronApplauseState()
+                        : new SkeletronHandCrushState(),
                 };
             }
 

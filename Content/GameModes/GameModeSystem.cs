@@ -5,13 +5,15 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.GameModes
 {
-    /// <summary>游戏模式种类（旗标与网络协议层面只有两种，毁灭是修罗的派生态）</summary>
+    /// <summary>游戏模式种类（旗标与网络协议层面三种，毁灭是修罗的派生态）</summary>
     internal enum GameModeKind : byte
     {
         /// <summary>残酷模式：解锁 BrutalNPCs 全部 AI 重制</summary>
         Brutal,
         /// <summary>修罗模式：残酷模式的上位，敌怪自适应免疫 + 伤害下限镜像</summary>
         Asura,
+        /// <summary>神匠模式：内容向模式，重铸原版武器与盔甲；依赖残酷，与修罗互不影响</summary>
+        GodSmith,
     }
 
     /// <summary>
@@ -26,6 +28,8 @@ namespace CalamityOverhaul.Content.GameModes
         Asura,
         /// <summary>死神永生（天顶世界的修罗）</summary>
         Annihilation,
+        /// <summary>神工开物（神匠模式，无天顶变脸）</summary>
+        GodSmith,
     }
 
     /// <summary>
@@ -42,6 +46,9 @@ namespace CalamityOverhaul.Content.GameModes
 
         /// <summary>修罗模式已开启（依赖残酷模式，残酷关闭时强制随关）</summary>
         public static bool AsuraActive { get; internal set; }
+
+        /// <summary>神匠模式已开启（依赖残酷模式，残酷关闭时静默随关；内容向，不进 <see cref="EffectiveTier"/>）</summary>
+        public static bool GodSmithActive { get; internal set; }
 
         /// <summary>毁灭模式：修罗在天顶世界的派生终相（隐藏难度，无独立旗标与网络协议）</summary>
         public static bool AnnihilationActive => AsuraActive && Main.zenithWorld;
@@ -62,6 +69,7 @@ namespace CalamityOverhaul.Content.GameModes
         public override void ClearWorld() {
             BrutalActive = false;
             AsuraActive = false;
+            GodSmithActive = false;
             GameModeCeremony.Reset();
         }
 
@@ -72,30 +80,46 @@ namespace CalamityOverhaul.Content.GameModes
             if (AsuraActive) {
                 tag[nameof(AsuraActive)] = true;
             }
+            if (GodSmithActive) {
+                tag[nameof(GodSmithActive)] = true;
+            }
         }
 
         public override void LoadWorldData(TagCompound tag) {
             BrutalActive = tag.TryGet(nameof(BrutalActive), out bool brutal) && brutal;
             AsuraActive = tag.TryGet(nameof(AsuraActive), out bool asura) && asura;
+            GodSmithActive = tag.TryGet(nameof(GodSmithActive), out bool godSmith) && godSmith;
         }
 
         public override void NetSend(BinaryWriter writer) {
             writer.Write(BrutalActive);
             writer.Write(AsuraActive);
+            writer.Write(GodSmithActive);
         }
 
         public override void NetReceive(BinaryReader reader) {
             BrutalActive = reader.ReadBoolean();
             AsuraActive = reader.ReadBoolean();
+            GodSmithActive = reader.ReadBoolean();
         }
 
         /// <summary>当前是否允许切换模式（Boss 在场时锁定）</summary>
         public static bool CanToggleNow() => !CWRWorld.HasBoss;
 
-        /// <summary>模式种类在本世界的表现脸：天顶世界里修罗恒以毁灭示人（含休眠态）</summary>
+        /// <summary>指定模式旗标的当前值</summary>
+        public static bool FlagOf(GameModeKind kind) => kind switch {
+            GameModeKind.Brutal => BrutalActive,
+            GameModeKind.Asura => AsuraActive,
+            _ => GodSmithActive,
+        };
+
+        /// <summary>模式种类在本世界的表现脸：天顶世界里修罗恒以毁灭示人（含休眠态），神匠无变脸</summary>
         public static GameModeFace FaceOf(GameModeKind kind) {
             if (kind == GameModeKind.Brutal) {
                 return GameModeFace.Brutal;
+            }
+            if (kind == GameModeKind.GodSmith) {
+                return GameModeFace.GodSmith;
             }
             return Main.zenithWorld ? GameModeFace.Annihilation : GameModeFace.Asura;
         }
@@ -115,9 +139,9 @@ namespace CalamityOverhaul.Content.GameModes
             }
             else {
                 if (!BrutalActive) {
-                    return false;//上位模式依赖残酷模式
+                    return false;//上位/派生模式依赖残酷模式
                 }
-                target = !AsuraActive;
+                target = !FlagOf(kind);
             }
 
             if (VaultUtils.isSinglePlayer) {
@@ -134,22 +158,31 @@ namespace CalamityOverhaul.Content.GameModes
             return true;
         }
 
-        /// <summary>落地一次模式变更并播放演出；关残酷时修罗静默随关（只播残酷的谢幕词）</summary>
+        /// <summary>落地一次模式变更并播放演出；关残酷时修罗与神匠静默随关（只播残酷的谢幕词）</summary>
         private static void Apply(GameModeKind kind, bool enabled) {
-            if (kind == GameModeKind.Brutal) {
-                if (BrutalActive == enabled) {
-                    return;
-                }
-                BrutalActive = enabled;
-                if (!enabled) {
-                    AsuraActive = false;
-                }
-            }
-            else {
-                if (AsuraActive == enabled) {
-                    return;
-                }
-                AsuraActive = enabled;
+            switch (kind) {
+                case GameModeKind.Brutal:
+                    if (BrutalActive == enabled) {
+                        return;
+                    }
+                    BrutalActive = enabled;
+                    if (!enabled) {
+                        AsuraActive = false;
+                        GodSmithActive = false;
+                    }
+                    break;
+                case GameModeKind.Asura:
+                    if (AsuraActive == enabled) {
+                        return;
+                    }
+                    AsuraActive = enabled;
+                    break;
+                default:
+                    if (GodSmithActive == enabled) {
+                        return;
+                    }
+                    GodSmithActive = enabled;
+                    break;
             }
             GameModeCeremony.Play(kind, enabled);
         }
@@ -166,15 +199,17 @@ namespace CalamityOverhaul.Content.GameModes
                 if (!VaultUtils.isServer) {
                     return;
                 }
-                //服务端权威校验：Boss 在场、修罗依赖、重复请求一律静默丢弃
+                //服务端权威校验：Boss 在场、上位/派生模式依赖、重复请求一律拒绝；拒因留档便于诊断
                 if (!CanToggleNow()) {
+                    CWRMod.Instance.Logger.Info($"[GameMode] 拒绝切换 {kind}->{enabled}（来自 {whoAmI}）：Boss 在场锁定");
                     return;
                 }
-                if (kind == GameModeKind.Asura && enabled && !BrutalActive) {
+                if (kind != GameModeKind.Brutal && enabled && !BrutalActive) {
+                    CWRMod.Instance.Logger.Info($"[GameMode] 拒绝切换 {kind}->{enabled}（来自 {whoAmI}）：依赖残酷模式未开启");
                     return;
                 }
-                bool current = kind == GameModeKind.Brutal ? BrutalActive : AsuraActive;
-                if (current == enabled) {
+                if (FlagOf(kind) == enabled) {
+                    CWRMod.Instance.Logger.Info($"[GameMode] 拒绝切换 {kind}->{enabled}（来自 {whoAmI}）：与当前状态重复");
                     return;
                 }
 
@@ -187,6 +222,10 @@ namespace CalamityOverhaul.Content.GameModes
                 packet.Send();
             }
             else if (op == OpApply) {
+                //回执只许客户端落地：服务端拒收 OpApply，堵死伪造回执绕过权威校验的通道
+                if (VaultUtils.isServer) {
+                    return;
+                }
                 Apply(kind, enabled);
             }
         }

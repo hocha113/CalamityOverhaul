@@ -20,16 +20,17 @@ namespace CalamityOverhaul.Content.Items.Melee.CursedflameBloodfists
         /// </summary>
         public const float FistRotationOffset = -MathHelper.PiOver2;
 
-        /// <summary>焰心，最热的一档</summary>
-        public static readonly Color FlameCore = new(206, 255, 150);
+        //高饱和取向：焰心不发白、深色段不发灰，整条斜坡都钉在纯色相上
+        /// <summary>焰心，最热的一档，亮而不白</summary>
+        public static readonly Color FlameCore = new(168, 255, 64);
         public static readonly Color FlameGreen = new(120, 255, 0);
-        public static readonly Color FlameMoss = new(131, 205, 8);
-        public static readonly Color FlameOrange = new(196, 99, 0);
-        public static readonly Color FlameRust = new(132, 69, 4);
+        public static readonly Color FlameMoss = new(104, 216, 0);
+        public static readonly Color FlameOrange = new(224, 96, 0);
+        public static readonly Color FlameRust = new(160, 64, 0);
         /// <summary>烧尽的焦棕，火舌末端与余烬落点</summary>
-        public static readonly Color FlameChar = new(43, 23, 1);
+        public static readonly Color FlameChar = new(52, 24, 0);
         /// <summary>拖尾末端的深绿，拖尾整条只在绿系里走</summary>
-        public static readonly Color TrailDeep = new(52, 112, 14);
+        public static readonly Color TrailDeep = new(34, 132, 4);
         /// <summary>手臂本体的血色，命中飞溅用</summary>
         public static readonly Color Blood = new(161, 0, 0);
 

@@ -1,0 +1,71 @@
+GsSlimeStaff: {
+	Desc: "Gel Legion: slimes roll in escort formation; two different slimes striking one foe within a beat triggers a gel burst, and the rally order piles them into a sticky mound"
+}
+
+GsFinchStaff: {
+	Desc: "Finch Phalanx: finches fly a V formation; after the first strike, follow-up pecks on that foe gain stacking power, and the rally order forms a wheeling flock"
+}
+
+GsAbigailsFlower: {
+	Desc: "Companion Soul: Abigail's strikes leave a soothing soul-light ring that empowers your minions inside it; under the assault order she focuses her wrath on the marked foe"
+}
+
+GsFlinxStaff: {
+	Desc: "Snowball Avalanche: flinxes bound in a relay column; the fourth tackle on one foe within the window lands half again harder and frostburns, and the rally order piles a snow drift"
+}
+
+GsHornetStaff: {
+	Desc: "Hive Firenet: hornets hover in a honeycomb lattice; three stingers into one foe burst a venom pod that lingers as poison mist, and the assault order quickens every stinger"
+}
+
+GsVampireFrogStaff: {
+	Desc: "Blood Frog Feast: frogs flank you in twin files; their bites may spill a marrow bead that flies back to heal you, and the blood moon whips them into a crimson frenzy"
+}
+
+GsImpStaff: {
+	Desc: "Hellfire Battery: imps hold a rear artillery line; under the assault order, three fireballs into one foe raise a pyre column beneath it"
+}
+
+GsSpiderStaff: {
+	Desc: "Web Hunt: three spider breeds hold a triangle watch; concerted bites truss the prey in a binding web that deepens every wound, and every bite now envenoms"
+}
+
+GsBladeStaff: {
+	Desc: "Bagua Blade Wheel: daggers orbit as a slow-turning wheel; a dagger's sixth consecutive strike on one foe cuts armor-deep, and the rally order raises a gate of blades"
+}
+
+GsLegionBannerProj: {
+	DisplayName: Legion Banner
+	GuardTip: Guard
+	AssaultTip: Assault!
+	RallyTip: Rally!
+	CommandHint: "Right click: assault a foe, rally at a spot, or point near yourself to recall"
+}
+
+GsRallyFieldProj: {
+	DisplayName: Rally Ground
+}
+
+GsGelBurstProj: {
+	DisplayName: Gel Burst
+}
+
+GsVenomPodProj: {
+	DisplayName: Venom Pod
+}
+
+GsImpPyreProj: {
+	DisplayName: Pyre Column
+}
+
+GsBloodSipProj: {
+	DisplayName: Marrow Bead
+}
+
+GsWebBindProj: {
+	DisplayName: Binding Web
+}
+
+GsSoulSolaceProj: {
+	DisplayName: Soul Solace Ring
+}

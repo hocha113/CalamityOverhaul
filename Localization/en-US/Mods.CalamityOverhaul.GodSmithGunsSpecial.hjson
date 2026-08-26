@@ -1,0 +1,82 @@
+GsFlamethrower: {
+	Desc:
+		'''
+		Reforged: sustained fire stream with two modes. Fan sweeps a wide cone and leaves burning ground; Lance focuses a long piercing jet
+		Right click to switch modes. Sustained spraying drains pressure and shortens the flame; ease off to recover
+		'''
+	Mode0: Fan Blaze
+	Mode1: Lance Jet
+}
+
+GsElfMelter: {
+	Desc:
+		'''
+		Reforged: festive fire stream with two modes. Melt Fan sprays wide red-green flame laced with thaw mist; Gift Toss focuses a lance jet and lobs a burning present every 0.8s, worth 8 gel
+		Right click to switch modes. Pressure rules still apply: long sprays shorten the flame
+		'''
+	Mode0: Melt Fan
+	Mode1: Gift Toss
+}
+
+GsChainGun: {
+	Desc:
+		'''
+		Reforged: hold to spin up Suppression mode, ramping to the fastest fire rate in the land until the barrels glow red-hot after 8s of sustained fire, forcing a slowdown until you let go
+		Right click to switch to Chain Focus: no spin-up, slower but precise and much harder-hitting. Firing slows your movement in Suppression
+		'''
+	Mode0: Suppression
+	Mode1: Chain Focus
+}
+
+GsDartPistol: {
+	Desc:
+		'''
+		Reforged: two firing modes. Twin Sting fires quick two-round bursts, second dart at 70%; Still Fang rewards standing still 0.8s with a +60% double-speed ambush dart
+		Right click to switch modes. Dart ammo effects are fully preserved
+		'''
+	Mode0: Twin Sting
+	Mode1: Still Fang
+}
+
+GsDartRifle: {
+	Desc:
+		'''
+		Reforged: two firing modes. Pierce Draw charges while held with a fading-in aim line and looses on release: a full 1s draw gives x2 dart speed, +2 pierce and +50% damage; Triple Fan spits 3 darts at 60% each for a single dart
+		Right click to switch modes. Dart ammo effects are fully preserved
+		'''
+	Mode0: Pierce Draw
+	Mode1: Triple Fan
+}
+
+GsPiranhaGun: {
+	Desc:
+		'''
+		Reforged: two hunting modes. Latch is the classic bite-and-hold; School Patrol sends the fish circling your cursor for 6s, gnawing anything in the ring, then they swim home
+		Right click to switch modes. Patrol fish deal 85% damage per bite; at most 9 patrol fish at once
+		'''
+	Mode0: Latch
+	Mode1: School Patrol
+}
+
+GsToxikarp: {
+	Desc:
+		'''
+		Reforged: two spit modes. Bubble Stream is the classic rapid fire; Pustule takes about triple the time to charge one bloated bubble at x2.4 damage that bursts into 6 spore bubbles and a lingering toxic cloud
+		Right click to switch modes. No ammo, as always
+		'''
+	Mode0: Bubble Stream
+	Mode1: Pustule
+}
+
+GsCoinGun: {
+	Desc:
+		'''
+		Reforged: right click cycles the denomination, limited to coins you carry. Copper fires 3-coin sprays, Silver pierces one extra target, Gold hits 10% harder, Platinum bursts into golden light on hit
+		Return on Investment: kills refund 1 coin of that denomination, capped at 3 per second
+		'''
+	Denom0: Copper Spray
+	Denom1: Silver Pierce
+	Denom2: Gold Weight
+	Denom3: Platinum Burst
+	NoCoins: No coins to load!
+}

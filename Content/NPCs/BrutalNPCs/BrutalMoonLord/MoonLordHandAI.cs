@@ -68,11 +68,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             bool broken = npc.ai[MLordAiSlots.PartBroken] == MLordAiSlots.BrokenMark;
 
             //速度门控接触伤害（各端同式）；抓捕合掌与掌中处刑期清零，威胁是抓取判定，不叠撞击；
-            //掌击入位划线同样免伤：翼位起手是位移不是攻击（伤害窗只在冲线，契约2.3）
+            //掌击入位划线同样免伤：翼位起手是位移不是攻击（伤害窗只在冲线，契约2.3）；
+            //爬行探爪同理免伤：抓点是移动不是攻击
             bool graspWindow = coreState == MLordStateIndex.PalmExecution
                 || (coreState == MLordStateIndex.MoonBite && MLordMoonBiteState.InClapWindow(stateTimer));
             bool entryDart = coreState == MLordStateIndex.TidalPalms && MLordTidalPalmsState.InBlink(stateTimer);
-            npc.damage = !broken && !graspWindow && !entryDart && npc.velocity.Length() > 24f
+            bool crawlClaimed = MLordLocomotion.IsClaimed(npc);
+            npc.damage = !broken && !graspWindow && !entryDart && !crawlClaimed && npc.velocity.Length() > 24f
                 ? MLordDirector.PalmContactDamage : 0;
 
             if (broken) {
@@ -123,11 +125,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 claimedByState = true;
                 UpdateGripPose(core);
             }
+            //爬行征用：探爪抓点拽动本体（状态直控优先，爬行系统已避让）
+            else if (MLordLocomotion.TryGetClaim(npc, out int crawlPhase, out Vector2 crawlAnchor)) {
+                claimedByState = true;
+                MLordLocomotion.ApplyHandMotion(npc, crawlPhase, crawlAnchor);
+                UpdateCrawlPose(crawlPhase, crawlAnchor);
+            }
 
             if (!claimedByState) {
                 slamTelegraph = 0f;
-                //编队弹簧
-                Vector2 goal = ComputeFormationGoal(core, coreAI, coreState, stateTimer, hold);
+                //编队弹簧（目标钳到肩部可达环带：不拥挤不脱链）；
+                //跛行肢常驻下垂：不出爪的时候那条腿也吊不住
+                Vector2 rawGoal = ComputeFormationGoal(core, coreAI, coreState, stateTimer, hold);
+                if (MLordLocomotion.IsLameLimb(core, npc)) {
+                    rawGoal.Y += 26f;
+                }
+                Vector2 goal = MLordLocomotion.ClampFormationGoal(core, npc, rawGoal);
                 Vector2 want = (goal - npc.Center) * 0.06f;
                 if (want.Length() > 14f) {
                     want = want.SafeNormalize(Vector2.Zero) * 14f;
@@ -252,6 +265,38 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             }
         }
 
+        /// <summary>
+        /// 爬行姿态：探爪张掌盯锚点；抓牢攥拳钉死、瞳孔却回头盯死玩家（诡异感的落点）；
+        /// 松爪半握回收。跛行肢探爪时眼光黯淡——那条腿连眼都是弱的
+        /// </summary>
+        private void UpdateCrawlPose(int crawlPhase, Vector2 anchor) {
+            slamTelegraph = 0f;
+            switch (crawlPhase) {
+                case MLordCrawlPhase.Reach: {
+                    bool lame = MLordLocomotion.IsLameLimb(MLordFacts.GetCore(npc), npc);
+                    gripFrame = MathHelper.Lerp(gripFrame, 0f, 0.35f);
+                    pose.PupilAngle = pose.PupilAngle.AngleLerp((anchor - npc.Center).ToRotation(), 0.4f);
+                    pose.PupilOut = MathHelper.Lerp(pose.PupilOut, 0.95f, 0.2f);
+                    pose.Glow = MathHelper.Lerp(pose.Glow, lame ? 0.42f : 0.7f, 0.18f);
+                    break;
+                }
+                case MLordCrawlPhase.Planted: {
+                    gripFrame = MathHelper.Lerp(gripFrame, 3f, 0.45f);
+                    pose.PupilAngle = pose.PupilAngle.AngleLerp((targetPlayer.Center - npc.Center).ToRotation(), 0.18f);
+                    pose.PupilOut = MathHelper.Lerp(pose.PupilOut, 0.8f, 0.1f);
+                    //收缩发力的那只手亮一拍：与本体被拽动同拍，"是它在拖"一眼可读
+                    float surge = MLordLocomotion.GripSurge(npc);
+                    pose.Glow = Math.Max(MathHelper.Lerp(pose.Glow, 0.4f, 0.08f), 0.4f + 0.55f * surge);
+                    break;
+                }
+                default:
+                    gripFrame = MathHelper.Lerp(gripFrame, 1f, 0.2f);
+                    pose.PupilOut = MathHelper.Lerp(pose.PupilOut, 0.5f, 0.1f);
+                    pose.Glow = MathHelper.Lerp(pose.Glow, 0.25f, 0.1f);
+                    break;
+            }
+        }
+
         /// <summary>掌中处刑攥握姿态：紧握拳型，瞳孔盯死被抓者</summary>
         private void UpdateGripPose(NPC core) {
             gripFrame = MathHelper.Lerp(gripFrame, 3f, 0.4f);
@@ -355,13 +400,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             slamTelegraph = 0f;
             wriggleTimer++;
 
-            //残口挂回巢位漂浮（上下对各归其位）
+            //终局爬行征用：残口原样充当爬行肢（断腕蠕动 + 手壳握型随相位）
+            if (MLordLocomotion.TryGetClaim(npc, out int crawlPhase, out Vector2 crawlAnchor)) {
+                MLordLocomotion.ApplyHandMotion(npc, crawlPhase, crawlAnchor);
+                gripFrame = MathHelper.Lerp(gripFrame,
+                    crawlPhase == MLordCrawlPhase.Planted ? 3f
+                    : crawlPhase == MLordCrawlPhase.Reach ? 0f : 1f, 0.35f);
+                pose.Broken = true;
+                pose.WriggleTimer = wriggleTimer;
+                return;
+            }
+
+            //残口挂回巢位漂浮（上下对各归其位；同样钳到可达环带，断臂不贴身挤压）
             float dir = (int)npc.ai[MLordAiSlots.HandSide] == 0 ? -1f : 1f;
             Vector2 homeOffset = (int)npc.ai[MLordAiSlots.HandRow] == 1
                 ? MLordDirector.LowerHandHomeOffset : MLordDirector.HandHomeOffset;
             float clock = MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvFormationClock);
-            Vector2 home = core.Center + new Vector2(homeOffset.X * dir, homeOffset.Y)
-                + new Vector2((float)Math.Sin(clock * 0.013f + dir * 2f) * 18f, (float)Math.Cos(clock * 0.011f) * 14f);
+            Vector2 home = MLordLocomotion.ClampFormationGoal(core, npc,
+                core.Center + new Vector2(homeOffset.X * dir, homeOffset.Y)
+                + new Vector2((float)Math.Sin(clock * 0.013f + dir * 2f) * 18f, (float)Math.Cos(clock * 0.011f) * 14f));
             Vector2 want = (home - npc.Center) * 0.05f;
             if (want.Length() > 9f) {
                 want = want.SafeNormalize(Vector2.Zero) * 9f;

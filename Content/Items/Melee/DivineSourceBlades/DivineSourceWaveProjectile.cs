@@ -24,10 +24,10 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         private const float ThickRatio = 0.62f;
         private const float ArcHalf = 1.95f;
         private const int Segments = 56;
-        private const float SpeedDecay = 0.985f;
-        /// <summary>沿行进方向压扁，垂直方向展宽，新月骑在椭圆弧上</summary>
-        private const float SquashAlong = 0.62f;
-        private const float StretchPerp = 1.18f;
+        private const float SpeedDecay = 0.992f;
+        /// <summary>沿行进方向拉长，垂直方向压扁，剑气读作贴着飞行方向的扁椭圆</summary>
+        private const float StretchAlong = 1.22f;
+        private const float SquashPerp = 0.6f;
         /// <summary>带外光晕占径向比例，与 DivineSourceTechArc.fx 的 HaloFrac 锁定</summary>
         private const float HaloFrac = 0.26f;
         private static float HaloExpand => HaloFrac / (1f - HaloFrac);
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
         /// <summary>椭圆弧上 theta 处、径向距离 r 的世界点</summary>
         private static Vector2 EllipsePos(Vector2 center, float rot, float theta, float r) {
-            Vector2 local = new(MathF.Cos(theta) * r * SquashAlong, MathF.Sin(theta) * r * StretchPerp);
+            Vector2 local = new(MathF.Cos(theta) * r * StretchAlong, MathF.Sin(theta) * r * SquashPerp);
             return center + local.RotatedBy(rot);
         }
 
@@ -368,8 +368,9 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             effect.Parameters["DeepColor"]?.SetValue(DivineSourceBladeFX.DeepNavy.ToVector4());
             effect.Parameters["AccentColor"]?.SetValue(DivineSourceBladeFX.AuricGold.ToVector4());
 
+            //索引随初速上调后回收，帧距变大时仍保持残影相互重叠，不散成离散重影
             ReadOnlySpan<(int idx, float alpha, float scaleMul)> ghosts =
-                [(9, 0.10f, 0.86f), (6, 0.20f, 0.92f), (3, 0.34f, 0.97f)];
+                [(6, 0.10f, 0.86f), (4, 0.20f, 0.92f), (2, 0.34f, 0.97f)];
 
             foreach ((int idx, float ghostAlpha, float scaleMul) in ghosts) {
                 if (idx >= Projectile.oldPos.Length) {

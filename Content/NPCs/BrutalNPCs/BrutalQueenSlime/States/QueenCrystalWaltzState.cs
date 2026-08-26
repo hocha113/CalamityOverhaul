@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
             return null;
         }
 
-        /// <summary>向心珍珠环(服务端)：外扩→凝滞→向心收拢</summary>
+        /// <summary>向心尖刺环(服务端)：外扩→凝滞(刺尖调转)→向心收拢</summary>
         private void ReleaseConvergeRing(QueenSlimeStateContext context, int step) {
             NPC npc = context.Npc;
             context.PushSquash(0.4f);
@@ -139,14 +139,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
             if (VaultUtils.isClient) {
                 return;
             }
-            int pearls = context.IsDeathMode ? 12 : 10;
+            int spikes = context.IsDeathMode ? 14 : 12;
             float baseAngle = step * 0.35f;
-            for (int i = 0; i < pearls; i++) {
-                float angle = MathHelper.TwoPi * i / pearls + baseAngle;
+            for (int i = 0; i < spikes; i++) {
+                float angle = MathHelper.TwoPi * i / spikes + baseAngle;
                 Vector2 vel = angle.ToRotationVector2() * 7.6f;
                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center - new Vector2(0f, npc.height * 0.35f), vel,
-                    ModContent.ProjectileType<QueenShardProj>(), QueenShardProj.PearlDamage, 0f, Main.myPlayer,
-                    (int)QueenShardProj.Mode.Converge, 0f, i / (float)pearls);
+                    ModContent.ProjectileType<QueenCrystalSpikeProj>(), QueenCrystalSpikeProj.SpikeDamage, 0f, Main.myPlayer,
+                    (int)QueenCrystalSpikeProj.Mode.Converge, 0f, i / (float)spikes);
             }
         }
 

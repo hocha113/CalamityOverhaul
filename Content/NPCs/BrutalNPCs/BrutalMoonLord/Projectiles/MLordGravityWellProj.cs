@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
 {
     /// <summary>
     /// 引力井：牵引玩家 + 引力透镜扭曲 + 环绕星尘吸积。
-    /// 崩解时放出环形幻影眼（服务端，连缺三位留可穿走廊）。本体不接触伤害
+    /// 崩解时放出环形幻影波矢（服务端，连缺三位留可穿走廊）。本体不接触伤害
     /// </summary>
     internal class MLordGravityWellProj : ModProjectile, IWarpDrawable
     {
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
         }
 
         public override void OnKill(int timeLeft) {
-            //崩解爆发：屏效 + 环形幻影眼
+            //崩解爆发：屏效 + 环形波矢（幻影眼已除役）
             if (!VaultUtils.isServer) {
                 MLordScreenEffects.PushStarRing(Projectile.Center, 0.9f, 700f, 30);
                 MLordScreenFX.StarBurst(Projectile.Center, 1.4f, 22);
@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             if (!VaultUtils.isClient) {
                 int damage = (int)Projectile.ai[0];
                 if (damage <= 0) {
-                    damage = MLordDirector.EyeDamage;
+                    damage = MLordDirector.BoltDamage;
                 }
                 int count = 10;
                 float baseAngle = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
                     }
                     float angle = baseAngle + MathHelper.TwoPi / count * i;
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center,
-                        angle.ToRotationVector2() * 7.5f, ProjectileID.PhantasmalEye, damage, 0f, Main.myPlayer);
+                        angle.ToRotationVector2() * 7.5f, ModContent.ProjectileType<MLordBoltProj>(), damage, 0f, Main.myPlayer);
                 }
             }
         }

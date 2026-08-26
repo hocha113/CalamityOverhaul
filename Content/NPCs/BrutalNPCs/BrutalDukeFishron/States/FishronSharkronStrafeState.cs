@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 int t = (int)Timer - DiveStart;
                 for (int i = 0; i < laneOrigins.Length; i++) {
                     if (t == i * 6 || t == i * 6 + 18) {
-                        LaunchSharkron(npc, laneOrigins[i], laneDirs[i]);
+                        TryLaunchSharkron(npc, laneOrigins[i], laneDirs[i], SharkronSpeed);
                     }
                 }
             }
@@ -124,12 +124,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 npc.netUpdate = true;
                 FishronMotionFX.SpawnDashBurst(npc.Center, dir, 1.1f);
                 SoundEngine.PlaySound(SoundID.Zombie20 with { Volume = 1f, Pitch = 0.3f, MaxInstances = 3 }, npc.Center);
-                if (!VaultUtils.isClient) {
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
-                        ModContent.ProjectileType<FishronTideTrailProj>(),
-                        FishronTideTrailProj.TrailDamage, 0f, Main.myPlayer,
-                        npc.whoAmI, 20);
-                }
             }
             if (selfDiveLaunched) {
                 AimBodyAlongVelocity(npc);
@@ -175,8 +169,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             }
         }
 
-        /// <summary>沿航道甩下一条鲨鱼龙</summary>
-        private static void LaunchSharkron(NPC npc, Vector2 origin, Vector2 dir) {
+        /// <summary>全场鲨鱼龙容量：撒鲨的招式频繁，靠这个顶不至于淹屏</summary>
+        internal const int SharkronCap = 9;
+
+        /// <summary>全场鲨鱼龙计数</summary>
+        internal static int CountSharkrons() {
+            int count = 0;
+            foreach (var n in Main.ActiveNPCs) {
+                if (n.type == NPCID.Sharkron || n.type == NPCID.Sharkron2) {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        /// <summary>甩出一条鲨鱼龙（受全场容量约束，服务端调用），撒鲨招式共用</summary>
+        internal static void TryLaunchSharkron(NPC npc, Vector2 origin, Vector2 dir, float speed) {
+            if (CountSharkrons() >= SharkronCap) {
+                return;
+            }
             int idx = NPC.NewNPC(npc.GetSource_FromAI(), (int)origin.X, (int)origin.Y, NPCID.Sharkron);
             if (idx < 0 || idx >= Main.maxNPCs) {
                 return;
@@ -184,7 +195,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             NPC shark = Main.npc[idx];
             shark.ai[0] = 1f;
             shark.ai[1] = 1f;
-            shark.velocity = dir * SharkronSpeed;
+            shark.velocity = dir * speed;
             shark.rotation = shark.velocity.ToRotation();
             shark.direction = Math.Sign(dir.X) >= 0 ? 1 : -1;
             shark.spriteDirection = shark.direction;

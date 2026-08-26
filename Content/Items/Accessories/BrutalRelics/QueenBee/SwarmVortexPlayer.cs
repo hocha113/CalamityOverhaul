@@ -83,18 +83,20 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
                 return;
             }
 
-            //已在蜂涡里：续时而不叠标
+            //已在蜂涡里：续时而不叠标(消散中的不续)
             int vortexType = ModContent.ProjectileType<SwarmVortexProj>();
             foreach (Projectile proj in Main.ActiveProjectiles) {
                 if (proj.owner != Player.whoAmI || proj.type != vortexType) {
                     continue;
                 }
-                if ((int)proj.ai[0] != target.whoAmI || proj.ai[2] != 0f) {
+                if ((int)proj.ai[0] != target.whoAmI
+                    || proj.ai[2] == SwarmVortexProj.PhaseDissolving) {
                     continue;
                 }
+                //timeLeft 不进 SyncProjectile 载荷，续时只需 owner 本地生效即正确：
+                //远端寿命由弹幕自身的高位维持+owner Kill 包收尸，无包可发也无需发
                 proj.timeLeft = Math.Min(proj.timeLeft + SwarmVortexBeacon.VortexExtendPerHit,
                     SwarmVortexBeacon.VortexMaxTicks);
-                proj.netUpdate = true;
                 SpawnExtendFX(target);
                 return;
             }

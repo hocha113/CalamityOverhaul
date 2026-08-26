@@ -332,6 +332,12 @@ RetinazerDeathRay.DisplayName: Смертельный луч Ретиназер�
 RetinazerLaser.DisplayName: Лазер Ретиназера
 TwinsSupernovaBlast.DisplayName: Сверхновая Близнецов
 TwinsTetherArc.DisplayName: Дуга привязки Близнецов
+// EMParryStanceProj.DisplayName: Ironwall Stance
+// EMLeapMarkerProj.DisplayName: Pounce Omen
+// EMPhaseAnchorProj.DisplayName: Phase Coalescence
+// EMDecoyProj.DisplayName: Deceiving Afterimage
+// EMScatterTelegraphProj.DisplayName: Scatter Omen
+// EMScatterBoltProj.DisplayName: Elite Scatter Bolt
 DestroyerMawBeamProj.DisplayName: Луч пасти Уничтожителя
 VictorRiftPortalProj.DisplayName: Кибер-разлом Виктора
 // OniDomain.DisplayName: Oni Domain
@@ -463,16 +469,27 @@ VictorRiftPortalProj.DisplayName: Кибер-разлом Виктора
 // BrainVeinTelegraph.DisplayName: Engorged Vein
 // DeerFrostPulseProj.DisplayName: Frost Tremor
 // DeerIceSpikeProj.DisplayName: Ice Spike
+// WastesSandGeyserProj.DisplayName: Sand Geyser
+// WastesSandConeTelegraph.DisplayName: Sand Spray Omen
+// WastesSandPelletProj.DisplayName: Scouring Sand Bolt
+// WastesIceSlickZone.DisplayName: Slick Ice Sheet
+// WastesIceShatterCore.DisplayName: Crystal Husk
+// WastesIceShardProj.DisplayName: Burial Ice Shard
+// WastesElementRing.DisplayName: Elemental Erosion Ring
 // DeerRubbleProj.DisplayName: Icy Rubble
 // DeerShadowHandProj.DisplayName: Shadow Hand
 // FishronGeyserProj.DisplayName: Tidal Geyser
 // FishronSharkTornadoProj.DisplayName: Sharknado
 // FishronSkyBoltProj.DisplayName: Storm Bolt
 // FishronTelegraph.DisplayName: Storm Warning Line
-// FishronTideTrailProj.DisplayName: Tidal Wake
 // FishronTsunamiWallProj.DisplayName: Tsunami Wall
 // EowAcidGlob.DisplayName: Corrosive Spittle
 // EowAcidPool.DisplayName: Corrosive Pool
+// ErosionCloudSeed.DisplayName: Erosion Spore Core
+// ErosionCloudProj.DisplayName: Erosive Miasma
+// SiphonBurstProj.DisplayName: Siphoning Pulse
+// VileBurstOmen.DisplayName: Vile Burst Omen
+// VileLanceProj.DisplayName: Vile Splatter Lance
 // EowBreachOmen.DisplayName: Breach Omen
 // EowGeyserProj.DisplayName: Corrupt Geyser
 // EowHuskMine.DisplayName: Husk Mine
@@ -504,9 +521,14 @@ VictorRiftPortalProj.DisplayName: Кибер-разлом Виктора
 // BKSRoyalPillarProj.DisplayName: Royal Beam
 // BKSShockwaveProj.DisplayName: Gel Shockwave
 // BKSTideWaveProj.DisplayName: Gel Tide
-// CultistSigilProj.DisplayName: Ritual Sigil
+// SlimeSquashOmen.DisplayName: Coiling Gel
+// SlimeQuakeWave.DisplayName: Gel Quake
+// SlimeGelBomb.DisplayName: Bouncing Gel
+// SlimeGooPatch.DisplayName: Clinging Goo
+// MLordAnnihilationRayProj.DisplayName: Moonlight Annihilation Ray
 // MLordArcRayProj.DisplayName: Phantasmal Arc Ray
 // MLordBlackHoleProj.DisplayName: Black Flash Singularity
+// MLordBoltProj.DisplayName: Phantasmal Bolt
 // MLordCometProj.DisplayName: Starfall Comet
 // MLordConstellationProj.DisplayName: Constellation Omen
 // MLordEyeLinkProj.DisplayName: True Eye Link Ray
@@ -523,16 +545,29 @@ VictorRiftPortalProj.DisplayName: Кибер-разлом Виктора
 // PlanteraVineLattice.DisplayName: Vine Lattice
 // BrutalBeeStinger.DisplayName: Queen's Stinger
 // HoneyGlobProj.DisplayName: Honey Glob
+// JhVineLash.DisplayName: Barbed Vine Lash
+// JhVolleyOmen.DisplayName: Volley Omen
+// JhStingerBolt.DisplayName: Swarm Stinger
+// JhScytheBolt.DisplayName: Demon Sickle
+// JhTridentBolt.DisplayName: Hellish Trident
+// JhShellSpike.DisplayName: Shell Spike
+// JhAmbushOmen.DisplayName: Gathering Cinder
+// JhImpFireBolt.DisplayName: Imp Flare
+// JhBreachOmen.DisplayName: Breach Omen
 // HoneyPuddleZone.DisplayName: Honey Pool
 // QueenBeeTelegraphLine.DisplayName: Amber Warning Line
 // WaxHiveTurret.DisplayName: Wax Hive Turret
 // QueenChandelierProj.DisplayName: Crystal Chandelier
+// QueenCrystalSpikeProj.DisplayName: Crystal Spike
 // QueenCrystalSpireProj.DisplayName: Crystal Spire
 // QueenGaleFieldProj.DisplayName: Wing Gale
-// QueenGelMeteorProj.DisplayName: Gel Meteor
+// QueenGelPearlProj.DisplayName: Gel Pearl
 // QueenPrismBeamProj.DisplayName: Refraction Beam
-// QueenShardProj.DisplayName: Prismatic Shard
+// QueenSpikeOmenProj.DisplayName: Spike Omen
 // SkeletronBoneShard.DisplayName: Bone Shard
+// NightBoneProj.DisplayName: Nighthunt Bone
+// NightDiveOmen.DisplayName: Nighthunt Dive Omen
+// NightPounceOmen.DisplayName: Nighthunt Pounce Omen
 // SkeletronBoneSpike.DisplayName: Bone Spire
 // SkeletronCursedSkull.DisplayName: Cursed Skull
 // SkeletronCurseWisp.DisplayName: Curse Wisp
@@ -612,11 +647,17 @@ VictorRiftPortalProj.DisplayName: Кибер-разлом Виктора
 // KikasaYoyoProj.DisplayName: Lakewater Yoyo
 // KikasaFlailServant.DisplayName: Kikasa Flail Servants
 // KikasaFlailHead.DisplayName: Lakewater Flail Head
-// CultistArcBolt.DisplayName: Storm Cadence Arc
-// CultistFlameBolt.DisplayName: Flame Bolt
-// CultistFrostSpear.DisplayName: Frost Crystal Spear
-// CultistPaleBolt.DisplayName: Pale Bolt
-// CultistTrueBolt.DisplayName: Verity Bolt
+// CultistStarBead.DisplayName: Star Bead
+// CultistZodiacRing.DisplayName: Zodiac Ring
+// CultistOrreryRingProj.DisplayName: Orrery Ring
+// CultistOrbitPath.DisplayName: Orbital Alignment
+// CultistUmbraShade.DisplayName: Eclipse Shade
+// CultistCoronaLance.DisplayName: Corona Lance
+// CultistStarChart.DisplayName: Star Chart Judgement
+// CultistGazeBeam.DisplayName: Lunar Gaze
+// CultistPlanetAimLine.DisplayName: Planet Hurl Sightline
+// CultistCometProj.DisplayName: Circling Comet
+// CultistZodiacSpokeProj.DisplayName: Zodiac Seal Spoke
 // SkeletronBoneWheel.DisplayName: Skeletron Bone Wheel
 // FuFeiMistCloud.DisplayName: Fu Fei Mist Cloud
 // FuHangMiasmaColumn.DisplayName: Fu Hang Miasma Column
@@ -643,14 +684,13 @@ VictorRiftPortalProj.DisplayName: Кибер-разлом Виктора
 // WyrmFlame.DisplayName: Wyrmfire
 // WyrmstrikeRound.DisplayName: Wyrmstrike Round
 // WyrmSneezeFume.DisplayName: Wyrm Sneeze
+// WyrmBreathBolt.DisplayName: Wyrmbreath Bolt
 // AbyssrendUndercurrent.DisplayName: Ocean Undercurrent
 // AbyssrendBurst.DisplayName: Cavitation Burst
 // EverdeepHeld.DisplayName: Everdeep
 // EverdeepRing.DisplayName: Abyssal Ring
 // EverdeepMaelstrom.DisplayName: Abyssal Maelstrom
-// CultistArenaProj.DisplayName: Cultist Arena Proj
-// CultistBurnPatch.DisplayName: Cultist Burn Patch
-// CultistMoonBeam.DisplayName: Cultist Moon Beam
-// CultistPlanetProj.DisplayName: Cultist Planet Proj
-// CultistStarFall.DisplayName: Cultist Star Fall
+// CultistPlanetProj.DisplayName: Colossal Celestial Body
+// LegionVolleyOmen.DisplayName: Legion Volley Order
+// LegionVolleyArrow.DisplayName: Legion War Arrow
 // ScapegoatDollWalker.DisplayName: Scapegoat Doll Walker

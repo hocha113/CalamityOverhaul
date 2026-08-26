@@ -227,3 +227,8 @@ RefractionTag: {
 	DisplayName: 折光
 	Description: 受到折光华尔兹的伤害提高30%
 }
+
+AbyssalPressure: {
+	DisplayName: 渊压
+	Description: 深渊水压裹住全身，行动迟滞
+}

@@ -45,45 +45,45 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
 
         public override void AI() {
             if (Init == 0) {
+                //出膛不响,声音留给挥砍拍
                 Init = 1;
                 WavePhase = Projectile.identity * 1.37f % MathHelper.TwoPi;
                 if (Empowered) {
                     Projectile.penetrate = 2;
                     Projectile.scale = 1.15f;
                 }
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item72 with { Volume = 0.35f, Pitch = -0.6f, MaxInstances = 5 }, Projectile.position);
-                }
             }
 
-            //蛇形游走:速度方向上叠加正弦侧摆,影子不走直线
-            WavePhase += 0.23f;
-            Vector2 side = Projectile.velocity.SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2);
-            Projectile.position += side * MathF.Sin(WavePhase) * 1.7f;
-
-            //追踪:常态缓咬,歼灭协议死咬
+            //追踪:常态缓咬,歼灭协议死咬,速度随飞行缓慢爬升
             float steer = Empowered ? 0.055f : 0.02f;
             float range = Empowered ? 800f : 520f;
             int target = FindTarget(range);
             if (target >= 0) {
                 float speed = Projectile.velocity.Length();
-                if (Empowered) {
-                    speed = MathF.Min(speed + 0.06f, 16f);
-                }
+                speed = MathF.Min(speed + (Empowered ? 0.06f : 0.025f), Empowered ? 16f : 12.5f);
                 Vector2 want = (Main.npc[target].Center - Projectile.Center)
                     .SafeNormalize(Vector2.Zero) * speed;
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, want, steer);
             }
 
+            //蛇形游走:侧向加速度摆动航向后归一回原速,身体真转向而不是贴图横移
+            WavePhase += 0.23f;
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            Vector2 side = forward.RotatedBy(MathHelper.PiOver2);
+            float keepSpeed = Projectile.velocity.Length();
+            Projectile.velocity += side * (MathF.Cos(WavePhase) * 0.45f);
+            Projectile.velocity = Projectile.velocity.SafeNormalize(forward) * keepSpeed;
+
             Projectile.rotation = Projectile.velocity.ToRotation();
 
-            //暗雾脱落:浓密的黑烟行迹,比本体活得久
-            if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
-                PRTLoader.NewParticle<PRT_GhostRainMist>(
-                    Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
-                    -Projectile.velocity * 0.05f + Main.rand.NextVector2Circular(0.4f, 0.4f),
-                    new Color(14, 3, 6) * 0.92f,
-                    Main.rand.NextFloat(0.55f, 0.9f))?.Configure(Main.rand.Next(28, 46));
+            //尾迹排烟:小口黑烟撒在本帧掠过的路径上,出生带弹体冲量、几帧内泄劲悬停
+            if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
+                Vector2 at = Projectile.Center - Projectile.velocity * Main.rand.NextFloat(1.2f)
+                    + side * Main.rand.NextFloat(-4f, 4f);
+                PRTLoader.NewParticle<PRT_KikasaHoundSmoke>(at,
+                    Projectile.velocity * 0.16f + Main.rand.NextVector2Circular(0.5f, 0.5f),
+                    new Color(14, 3, 6) * 0.9f,
+                    Main.rand.NextFloat(0.13f, 0.22f))?.Configure(Main.rand.Next(16, 26), 0.005f);
             }
 
             Lighting.AddLight(Projectile.Center, new Vector3(0.25f, 0.03f, 0.03f));
@@ -111,13 +111,14 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 return;
             }
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.NPCHit54 with { Volume = 0.4f, Pitch = -0.5f, MaxInstances = 4 }, Projectile.Center);
+                //同帧多发齐灭只留一声闷响
+                SoundEngine.PlaySound(SoundID.NPCHit54 with { Volume = 0.26f, Pitch = -0.5f, MaxInstances = 2, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, Projectile.Center);
             }
-            //暗爆:雾向内收拢再散,红火星点缀
-            for (int i = 0; i < 8; i++) {
-                Vector2 at = Projectile.Center + Main.rand.NextVector2Circular(20f, 20f);
-                PRTLoader.NewParticle<PRT_GhostRainMist>(at, (Projectile.Center - at) * 0.05f,
-                    new Color(16, 4, 6) * 0.92f, Main.rand.NextFloat(0.6f, 1f))?.Configure(Main.rand.Next(26, 44));
+            //暗爆:小口黑烟带径向冲量崩出,强阻力下泄劲悬停再散
+            for (int i = 0; i < 6; i++) {
+                Vector2 burst = Main.rand.NextVector2Circular(3.5f, 3.5f);
+                PRTLoader.NewParticle<PRT_KikasaHoundSmoke>(Projectile.Center + burst * 2f, burst,
+                    new Color(16, 4, 6) * 0.9f, Main.rand.NextFloat(0.18f, 0.3f))?.Configure(Main.rand.Next(18, 30), 0.008f);
             }
             for (int i = 0; i < 6; i++) {
                 PRTLoader.NewParticle<PRT_SparkAlpha>(Projectile.Center, Main.rand.NextVector2Circular(5f, 5f),
@@ -128,8 +129,11 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         public override bool PreDraw(ref Color lightColor) {
             Texture2D tex = ShadowTex.Value;
             Vector2 origin = tex.Size() / 2f;
+            float speed = Projectile.velocity.Length();
+            //速度拉伸:越快越长越扁,读作高速掠影
+            Vector2 stretch = new(1f + speed * 0.05f, 0.62f);
 
-            //拖影:旧位置的暗渣逐级缩小,烟迹压得更实
+            //拖影:沿旧航向的暗色纺锤逐级缩小收细,是尾迹不是烟堆
             if (Projectile.oldPos != null) {
                 for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
                     if (Projectile.oldPos[i] == Vector2.Zero) {
@@ -137,26 +141,25 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                     }
                     float t = 1f - i / (float)Projectile.oldPos.Length;
                     Vector2 pos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                    Main.EntitySpriteDraw(tex, pos, null, new Color(8, 2, 4) * (0.72f * t),
-                        Projectile.rotation, origin, Projectile.scale * (0.42f + 0.3f * t), SpriteEffects.None, 0);
+                    Main.EntitySpriteDraw(tex, pos, null, new Color(8, 2, 4) * (0.55f * t * t),
+                        Projectile.oldRot[i], origin, Projectile.scale * (0.16f + 0.28f * t) * stretch, SpriteEffects.None, 0);
                 }
             }
 
-            //本体:吸光暗核(速度向拉伸) + 红缘一圈
+            //本体:红缘勾边 + 吸光暗核,紧贴30px判定体
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            Vector2 stretch = new(1.5f, 0.9f);
-            Color rim = new Color(255, 35, 25) * 0.55f;
+            Color rim = new Color(255, 35, 25) * 0.6f;
             rim.A = 0;
             Main.EntitySpriteDraw(tex, drawPos, null, rim, Projectile.rotation, origin,
-                Projectile.scale * 0.72f * stretch, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(tex, drawPos, null, new Color(6, 1, 3) * 0.95f, Projectile.rotation, origin,
                 Projectile.scale * 0.6f * stretch, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(tex, drawPos, null, new Color(6, 1, 3) * 0.96f, Projectile.rotation, origin,
+                Projectile.scale * 0.5f * stretch, SpriteEffects.None, 0);
             //核心里一点红灯,读作影里的机械眼
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Color eye = new Color(255, 40, 30) * 0.8f;
             eye.A = 0;
             Main.EntitySpriteDraw(glow, drawPos, null, eye, 0f, glow.Size() / 2f,
-                0.16f * Projectile.scale, SpriteEffects.None, 0);
+                0.15f * Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

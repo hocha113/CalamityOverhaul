@@ -221,19 +221,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
             }
         }
 
-        /// <summary>穹顶陨雨(服务端)：自圣殿上缘向内洒落</summary>
+        /// <summary>穹顶尖刺雨(服务端)：自圣殿上缘悬花成形后坠落，波间错列</summary>
         private void FireDomeRain(QueenSlimeStateContext context, int wave) {
             NPC npc = context.Npc;
-            int count = context.IsDeathMode ? 7 : 5;
+            int count = context.IsDeathMode ? 8 : 6;
             float halfSpan = CathedralRadius * 0.82f;
             float stagger = wave % 2 == 1 ? halfSpan / count : 0f;
             for (int i = 0; i < count; i++) {
                 float x = cathedralCenter.X + MathHelper.Lerp(-halfSpan, halfSpan, i / (float)(count - 1)) + stagger;
-                Vector2 spawn = new Vector2(x, cathedralCenter.Y - CathedralRadius - 60f);
-                Vector2 vel = new Vector2(Main.rand.NextFloat(-0.8f, 0.8f), 2.2f);
-                Projectile.NewProjectile(npc.GetSource_FromAI(), spawn, vel,
-                    ModContent.ProjectileType<QueenGelMeteorProj>(), QueenGelMeteorProj.MeteorDamage, 0f, Main.myPlayer,
-                    1f, 0f, (wave * count + i) * 0.11f);
+                //沿穹顶弧线取悬点(中间高两侧低)
+                float archLift = (float)System.Math.Sqrt(System.Math.Max(0f, 1f - System.Math.Pow((x - cathedralCenter.X) / CathedralRadius, 2)));
+                Vector2 spawn = new Vector2(x, cathedralCenter.Y - CathedralRadius * (0.55f + archLift * 0.45f) - 40f);
+                Projectile.NewProjectile(npc.GetSource_FromAI(), spawn, new Vector2(0f, 0.4f),
+                    ModContent.ProjectileType<QueenCrystalSpikeProj>(), QueenCrystalSpikeProj.SpikeDamage, 0f, Main.myPlayer,
+                    (int)QueenCrystalSpikeProj.Mode.Rain, i % 3 * 5f, (wave * count + i) * 0.11f % 1f);
             }
         }
 
@@ -243,13 +244,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
 
             if (!VaultUtils.isClient) {
                 foreach (var node in context.CollectPrismNodes()) {
-                    //每柱放射五枚碎晶
+                    //每柱放射五枚尖刺(向外，不追身)
                     Vector2 outDir = (node.Center - cathedralCenter).SafeNormalize(Vector2.UnitY);
                     for (int i = -2; i <= 2; i++) {
                         Vector2 vel = outDir.RotatedBy(i * 0.3f) * 8.8f;
                         Projectile.NewProjectile(npc.GetSource_FromAI(), node.Center, vel,
-                            ModContent.ProjectileType<QueenShardProj>(), QueenShardProj.ShardDamage, 0f, Main.myPlayer,
-                            (int)QueenShardProj.Mode.Shard, 0f, i * 0.2f + 0.5f);
+                            ModContent.ProjectileType<QueenCrystalSpikeProj>(), QueenCrystalSpikeProj.SpikeDamage, 0f, Main.myPlayer,
+                            (int)QueenCrystalSpikeProj.Mode.Aimed, 0f, (i * 0.2f + 0.5f) % 1f);
                     }
                     QueenMotion.ScriptKill(node);
                 }

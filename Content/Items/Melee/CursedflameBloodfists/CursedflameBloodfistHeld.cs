@@ -254,18 +254,40 @@ namespace CalamityOverhaul.Content.Items.Melee.CursedflameBloodfists
             if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
-            //每三拳多塞一只，成串而不是成排
+            //每三拳一次三连，其余两连
             int count = punchIndex % 3 == 0 ? 3 : 2;
-            Vector2 origin = FistPos;
+            //同一拳打出的一组共享基础速度，编队才不会飞散
+            float speed = Main.rand.NextFloat(15f, 17.5f);
+            Vector2 aim = AimDir;
+            Vector2 perp = PerpDir;
+
             for (int i = 0; i < count; i++) {
-                float ang = aimAngle + Main.rand.NextFloat(-FistSpread, FistSpread);
-                Vector2 vel = ang.ToRotationVector2() * Main.rand.NextFloat(14f, 19f);
-                //沿飞行方向往回错开，读成前后追着走的一串拳
-                Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), origin - (vel * (i * 0.34f)), vel,
+                //散射角按槽位分配：正中打头、两翼对称，槽内只留小抖动，散而不乱
+                float slotFrac = SlotFraction(i, count);
+                float jitter = Main.rand.NextFloat(-0.3f, 0.3f) * (FistSpread / count);
+                float ang = aimAngle + (slotFrac * FistSpread) + jitter;
+                //箭头梯队：打头的骑在拳锋上，后位每发沿瞄准方向退一步、向自己那侧的槽位错开
+                Vector2 pos = FistPos - (aim * (i * 15f)) + (perp * (slotFrac * 9f));
+                Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), pos, ang.ToRotationVector2() * speed,
                     ModContent.ProjectileType<CursedflameFistProj>(),
                     (int)(Projectile.damage * 0.4f), Projectile.knockBack * 0.6f, Owner.whoAmI,
                     ai0: armSide);
             }
+        }
+
+        /// <summary>
+        /// 一组飞拳的槽位系数，乘上 <see cref="FistSpread"/> 得到相对准星的偏角。
+        /// i=0 打头：两连时头拳偏向出拳手那侧、跟拳镜像；三连时头拳居中、两翼对称。
+        /// armSide 参与让左右拳打出的队形互为镜像
+        /// </summary>
+        private float SlotFraction(int i, int count) {
+            if (count == 2) {
+                return (i == 0 ? 0.5f : -0.5f) * armSide;
+            }
+            if (count >= 3) {
+                return i == 0 ? 0f : (i == 1 ? 0.85f : -0.85f) * armSide;
+            }
+            return 0f;
         }
 
         private void SpawnPunchFlame() {

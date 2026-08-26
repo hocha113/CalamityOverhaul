@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
 {
-    /// <summary>水晶吊灯：空中悬晶错帧蓄能坠落，皇后在吊灯间起舞点射</summary>
+    /// <summary>水晶吊灯：空中悬晶错帧蓄能坠落，皇后在灯位间掠影穿梭+尖刺扇点压</summary>
     [InnoVault.StateMachines.VaultState((int)QueenSlimeStateIndex.ChandelierFall, typeof(QueenSlimeStateContext))]
     internal class QueenChandelierFallState : QueenSlimeStateBase
     {
@@ -16,9 +16,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
         public override QueenSlimeStateIndex StateIndex => QueenSlimeStateIndex.ChandelierFall;
 
         private const int TotalTime = 350;
+        /// <summary>灯间穿梭节拍</summary>
+        private const int PerchPeriod = 54;
 
         private Vector2 stageCenter;
         private bool anchored;
+        /// <summary>本拍冲刺方向(发射帧锁定)</summary>
+        private Vector2 dartDir = Vector2.UnitX;
+        private float dartSpeed;
 
         public QueenChandelierFallState() {
         }
@@ -57,20 +62,57 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
                 SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.85f, Pitch = -0.25f }, npc.Center);
             }
 
-            //皇后在灯间穿舞：正弦滑步于灯层上方
-            float t = Timer * 0.021f;
-            Vector2 anchor = stageCenter + new Vector2((float)Math.Sin(t) * 480f, -530f + (float)Math.Cos(t * 1.7f) * 46f);
-            QueenMotion.SpringHover(npc, anchor, 0.015f, 0.1f, 19f);
-            QueenMotion.FlightLean(npc);
+            //皇后在灯位间掠影穿梭：三个高位灯台，跳序 0→2→1 防匀速圆规感
+            int perchBeat = (int)Timer / PerchPeriod;
+            int perchT = (int)Timer % PerchPeriod;
+            int[] perchOrder = [0, 2, 1];
+            int perchIdx = perchOrder[perchBeat % 3];
+            Vector2 perch = stageCenter + new Vector2((perchIdx - 1) * 430f, -560f + perchIdx * 22f);
             context.PoseCommand = 5;
-            FaceTarget(npc, player.Center);
 
-            //间奏点射：单发瞄准珠(服务端)
-            if (Timer % 68 == 34 && Timer < TotalTime - 80 && !VaultUtils.isClient) {
-                Vector2 vel = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY) * 9.4f;
-                Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, vel,
-                    ModContent.ProjectileType<QueenShardProj>(), QueenShardProj.ShardDamage, 0f, Main.myPlayer,
-                    (int)QueenShardProj.Mode.Shard, 0f, Timer * 0.01f % 1f);
+            if (perchT < 22) {
+                //驻灯凝视
+                QueenMotion.SpringHover(npc, perch, 0.018f, 0.12f, 12f);
+                QueenMotion.FlightLean(npc);
+                FaceTarget(npc, player.Center);
+                context.WingFlapBoost = 0.6f;
+                if (perchT == 21) {
+                    //锁定去往下一灯台的冲刺线
+                    int nextIdx = perchOrder[(perchBeat + 1) % 3];
+                    Vector2 next = stageCenter + new Vector2((nextIdx - 1) * 430f, -560f + nextIdx * 22f);
+                    dartDir = (next - npc.Center).SafeNormalize(Vector2.UnitX);
+                    dartSpeed = MathHelper.Clamp(Vector2.Distance(npc.Center, next) / 10f, 15f, 30f);
+                }
+            }
+            else if (perchT < 28) {
+                //蓄势后拉
+                QueenMotion.FlitPullback(npc, dartDir, (perchT - 22) / 6f, 2.2f);
+                context.WingFlapBoost = 1.4f;
+            }
+            else if (perchT == 28) {
+                //一帧全速穿灯
+                QueenMotion.FlitLaunch(npc, dartDir, dartSpeed);
+                context.PushSquash(0.45f);
+                context.AfterimageBoost = 1f;
+                SoundEngine.PlaySound(SoundID.Item160 with { Volume = 0.45f, Pitch = 0.55f, MaxInstances = 3 }, npc.Center);
+            }
+            else if (perchT < 40) {
+                //直线掠行
+                context.AfterimageBoost = Math.Max(context.AfterimageBoost, 0.8f);
+                context.WingFlapBoost = 1.5f;
+                QueenMotion.FlightLean(npc, 0.045f, 0.5f);
+            }
+            else {
+                //硬刹落位
+                QueenMotion.FlitBrake(npc, 0.76f);
+                QueenMotion.FlightLean(npc);
+                FaceTarget(npc, player.Center);
+            }
+
+            //间奏尖刺扇：驻灯期点压(服务端)
+            if (perchT == 12 && Timer < TotalTime - 80 && !VaultUtils.isClient) {
+                QueenMotion.SpawnSpikeFan(npc, npc.Center, player.Center, 3, 0.2f, 9.2f,
+                    QueenCrystalSpikeProj.SpikeDamage, Timer * 0.01f % 1f);
                 SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.55f, Pitch = 0.4f }, npc.Center);
             }
 

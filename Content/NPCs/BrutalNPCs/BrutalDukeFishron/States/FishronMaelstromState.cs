@@ -143,11 +143,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             if ((int)Timer == TsunamiWave && !VaultUtils.isClient) {
                 Projectile.NewProjectile(npc.GetSource_FromAI(),
                     new Vector2(player.Center.X - 1250f, player.Center.Y - 120f),
-                    new Vector2(13f, 0f), ModContent.ProjectileType<FishronTsunamiWallProj>(),
+                    new Vector2(17f, 0f), ModContent.ProjectileType<FishronTsunamiWallProj>(),
                     FishronTsunamiWallProj.WaveDamage, 0f, Main.myPlayer, 1f, 0f);
                 Projectile.NewProjectile(npc.GetSource_FromAI(),
                     new Vector2(player.Center.X + 1250f, player.Center.Y - 120f),
-                    new Vector2(-13f, 0f), ModContent.ProjectileType<FishronTsunamiWallProj>(),
+                    new Vector2(-17f, 0f), ModContent.ProjectileType<FishronTsunamiWallProj>(),
                     FishronTsunamiWallProj.WaveDamage, 0f, Main.myPlayer, -1f, 1f);
             }
 
@@ -209,12 +209,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 npc.netUpdate = true;
                 FishronMotionFX.SpawnDashBurst(npc.Center, dir, 1.4f);
                 SoundEngine.PlaySound(SoundID.Zombie20 with { Volume = 1.2f, Pitch = 0.35f }, npc.Center);
-                if (!VaultUtils.isClient) {
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
-                        ModContent.ProjectileType<FishronTideTrailProj>(),
-                        FishronTideTrailProj.TrailDamage, 0f, Main.myPlayer,
-                        npc.whoAmI, 30);
-                }
             }
             if (megaLaunched && Timer < ExhaleStart) {
                 AimBodyAlongVelocity(npc);

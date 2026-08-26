@@ -36,11 +36,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 
         public override IMLordState OnUpdate(MLordContext context) {
             NPC npc = context.Npc;
-            Player target = context.Target;
 
             context.HoldAllParts = true;
             context.EclipseDrive = MathHelper.Max(context.EclipseDrive, MathHelper.Clamp(Timer / 60f, 0f, 1f));
-            HoverTo(npc, target.Center + new Vector2(0f, -380f), 4.5f, 0.04f);
+            //仪式定格：本体失能悬滞（爬行肢此刻全是断腕，黑臂在仪式结束后才破体接管）
+            npc.velocity *= 0.92f;
 
             if (Timer < CrackTick) {
                 //震颤蓄势

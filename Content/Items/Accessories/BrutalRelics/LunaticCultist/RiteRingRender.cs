@@ -1,5 +1,5 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Rendering;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
             //底层符印：装备时按弧序描绘显形，充能扇区=符文集满度
             float fill = mp.RuneCount / (float)RiteRingPlayer.RuneMax;
             float alpha = MathHelper.Clamp(0.42f * mp.RingReveal + 0.30f * mp.CommitPulse, 0f, 0.8f);
-            CultistRenderHelper.DrawSigil(sb, player.Center, radius, tint,
+            DrawSigil(sb, player.Center, radius, tint,
                 mp.RingReveal, mp.CommitPulse, fill, alpha);
 
             //离散符文刻位（预乘 AlphaBlend 批里 A=0 加色）
@@ -95,6 +95,70 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
                         stroke.Size() * 0.5f, new Vector2(0.08f, 0.22f) * scale, SpriteEffects.None, 0f);
                 }
             }
+        }
+
+        /// <summary>
+        /// 底层符印：整块交给 CultistRuneSigil 着色器画，按弧序描绘显形，充能扇区读符文集满度
+        /// </summary>
+        private static void DrawSigil(SpriteBatch sb, Vector2 worldPos, float radiusPx,
+            Color tint, float progress, float commit, float fill, float alpha) {
+            if (alpha <= 0.01f || progress <= 0.001f || radiusPx < 4f) {
+                return;
+            }
+
+            Effect effect = EffectLoader.CultistRuneSigil?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect == null || canvas == null || noise == null) {
+                DrawSigilFallback(sb, worldPos, radiusPx, tint, alpha * progress);
+                return;
+            }
+
+            //shader 外环位于内容半径 0.84，quad 折算后留护栏余量
+            float halfPx = radiusPx / 0.84f / 0.92f;
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly + worldPos.X * 0.0007f);
+            effect.Parameters["uAlpha"]?.SetValue(MathHelper.Clamp(alpha, 0f, 1f));
+            effect.Parameters["uTint"]?.SetValue(tint.ToVector3());
+            effect.Parameters["uProgress"]?.SetValue(MathHelper.Clamp(progress, 0f, 1f));
+            effect.Parameters["uCommit"]?.SetValue(MathHelper.Clamp(commit, 0f, 1f));
+            effect.Parameters["uFill"]?.SetValue(MathHelper.Clamp(fill, 0f, 1f));
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
+                DepthStencilState.None, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            gd.Textures[1] = noise;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
+            effect.CurrentTechnique.Passes[0].Apply();
+
+            float quadSize = halfPx * 2f;
+            sb.Draw(canvas, worldPos - Main.screenPosition, null, Color.White, 0f, canvas.Size() * 0.5f,
+                quadSize / canvas.Width, SpriteEffects.None, 0f);
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        /// <summary>精灵回退：双扩散环近似，黑底加色安全</summary>
+        private static void DrawSigilFallback(SpriteBatch sb, Vector2 worldPos, float radiusPx, Color tint, float alpha) {
+            Texture2D body = CWRUtils.GetT2DAsset(CWRConstant.Masking + "DiffusionCircle5")?.Value;
+            Texture2D rim = CWRUtils.GetT2DAsset(CWRConstant.Masking + "DiffusionCircle4")?.Value;
+            if (body == null || rim == null) {
+                return;
+            }
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.AnisotropicClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            Vector2 drawPos = worldPos - Main.screenPosition;
+            Color tintA = tint with { A = 255 };
+            float bodyScale = radiusPx / (body.Width * 0.5f * 0.39f);
+            float rimScale = radiusPx / (rim.Width * 0.5f * 0.95f);
+            sb.Draw(body, drawPos, null, tintA * (alpha * 0.7f), 0f, body.Size() * 0.5f, bodyScale, SpriteEffects.None, 0f);
+            sb.Draw(rim, drawPos, null, tintA * (alpha * 0.55f), 0f, rim.Size() * 0.5f, rimScale, SpriteEffects.None, 0f);
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
         }
     }
 }

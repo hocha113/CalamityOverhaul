@@ -39,12 +39,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         }
 
         public override IMLordState OnUpdate(MLordContext context) {
-            NPC npc = context.Npc;
             Player target = context.Target;
 
-            //扫描期收油慢移（可读性阀门）
-            HoverTo(npc, target.Center + MLordDirector.CoreHoverOffset + new Vector2(0f, -60f), 4.2f, 0.035f);
-            npc.velocity *= 0.96f;
+            //扫描仪式抓桩定身（可读性阀门：炮台期本体钉死，四爪张成 X 形抓住虚空）
+            RequestMove(context, target.Center + MLordDirector.CoreHoverOffset + new Vector2(0f, -60f),
+                0.5f, MLordMovePolicy.Brace);
             UpdateLean(context);
             context.SetChargeState(MathHelper.Clamp(Timer / (float)FirstPass, 0f, 1f));
 
@@ -96,23 +95,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 }
             }
 
-            //扫描间隙手部缓速眼弹压位：上对与下对错半拍（四臂持握转向的火力仪式）。
+            //扫描间隙手部缓速波矢压位：上对与下对错半拍（四臂持握转向的火力仪式，幻影眼已除役）。
             //死亡模式压缩后节拍点须仍落在余数域内：拍点钳到 interval-1 兜底任何节奏缩放，
             //下对取相移半周期而非固定余数
             int streamInterval = Frames(context, 46);
             int streamBeat = Math.Min(20, streamInterval - 1);
             if (Timer % streamInterval == streamBeat) {
-                SpawnHandEyeStream(context, row: 0);
+                SpawnHandBoltStream(context, row: 0);
             }
             if ((Timer + streamInterval / 2) % streamInterval == streamBeat) {
-                SpawnHandEyeStream(context, row: 1);
+                SpawnHandBoltStream(context, row: 1);
             }
         }
 
-        /// <summary>指定行位（0上对/1下对）的手放出缓速眼弹</summary>
-        private void SpawnHandEyeStream(MLordContext context, int row) {
+        /// <summary>指定行位（0上对/1下对）的手放出缓速波矢</summary>
+        private void SpawnHandBoltStream(MLordContext context, int row) {
             MLordPartsStatus parts = context.Parts;
-            int damage = ScaleDamage(context, MLordDirector.EyeDamage);
+            int damage = ScaleDamage(context, MLordDirector.BoltDamage);
             for (int side = 0; side < 2; side++) {
                 int slot = row * 2 + side;
                 if (!parts.HandAlive(slot) || parts.HandIndex(slot) < 0) {
@@ -121,7 +120,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 NPC hand = Main.npc[parts.HandIndex(slot)];
                 Vector2 aim = (context.Target.Center - hand.Center).SafeNormalize(Vector2.UnitY);
                 Projectile.NewProjectile(hand.GetSource_FromAI(), hand.Center, aim * 4.6f,
-                    ProjectileID.PhantasmalEye, damage, 0f, Main.myPlayer);
+                    ModContent.ProjectileType<MLordBoltProj>(), damage, 0f, Main.myPlayer);
             }
         }
     }

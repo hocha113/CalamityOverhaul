@@ -1,9 +1,11 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering;
 using CalamityOverhaul.Content.TimeFreezes;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 {
@@ -62,11 +64,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         }
 
         public override IMLordState OnUpdate(MLordContext context) {
-            NPC npc = context.Npc;
             Player target = context.Target;
 
-            //核心贴近压迫（舌区施压）
-            HoverTo(npc, target.Center + MLordDirector.CoreHoverOffset + new Vector2(0f, -40f), 6f, 0.05f);
+            //四掌全被合围阵征用：手阵拖曳携行本体贴近压迫（舌区施压）
+            RequestMove(context, target.Center + MLordDirector.CoreHoverOffset + new Vector2(0f, -40f),
+                0.7f, MLordMovePolicy.Tow);
             UpdateLean(context);
 
             if (!VaultUtils.isClient) {
@@ -120,7 +122,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             if (Timer > MouthOpenEnd && Timer % Frames(context, 64) == 30) {
                 Vector2 aim = (context.Target.Center - head.Center).SafeNormalize(Vector2.UnitY);
                 Projectile.NewProjectile(head.GetSource_FromAI(), head.Center + aim * 44f, aim * 6.8f,
-                    ProjectileID.PhantasmalBolt, ScaleDamage(context, MLordDirector.BoltDamage), 0f, Main.myPlayer);
+                    ModContent.ProjectileType<MLordBoltProj>(), ScaleDamage(context, MLordDirector.BoltDamage), 0f, Main.myPlayer);
             }
         }
 
@@ -156,13 +158,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 NPC hand = Main.npc[context.Parts.HandIndex(slot)];
 
                 if (sub < ClapTrackLen) {
-                    //追踪：散至对角捕位（跟随活目标）
-                    Vector2 post = context.Target.Center + ClapPostDir(slot) * ClapPostRadius;
+                    //追踪：散至对角捕位（跟随活目标）；捕位钳进合法区，
+                    //玩家拉远时手不追着玩家离体（技能不破坏手部限定范围）
+                    Vector2 post = MLordLocomotion.ClampAttackPost(core, hand,
+                        context.Target.Center + ClapPostDir(slot) * ClapPostRadius);
                     SpringHand(hand, post, 20f, 0.09f);
                 }
                 else if (sub < ClapTrackLen + ClapLockLen) {
-                    //锁定停顿：捕位定格在锁点周围，蓄势微退
-                    Vector2 post = anchor + ClapPostDir(slot) * (ClapPostRadius + (sub - ClapTrackLen) * 4f);
+                    //锁定停顿：捕位定格在锁点周围，蓄势微退（同样钳区）
+                    Vector2 post = MLordLocomotion.ClampAttackPost(core, hand,
+                        anchor + ClapPostDir(slot) * (ClapPostRadius + (sub - ClapTrackLen) * 4f));
                     SpringHand(hand, post, 14f, 0.1f);
                 }
                 else if (sub == ClapTrackLen + ClapLockLen) {
@@ -171,7 +176,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                     hand.netUpdate = true;
                 }
                 else if (sub < ClapTrackLen + ClapLockLen + ClapLungeLen + ClapOvershootLen) {
-                    //冲线与过冲：保持全速，判定见下
+                    //冲线与过冲：保持全速，判定见下；过伸即失速——
+                    //抓捕半径受臂展约束，够不着的猎物在全伸展处扑空
+                    if (MLordLocomotion.BeyondReach(core, hand)) {
+                        hand.velocity *= 0.62f;
+                    }
                 }
                 else {
                     //硬刹

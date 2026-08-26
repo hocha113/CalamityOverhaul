@@ -29,6 +29,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> SkeletronCurseFlame { get; set; }
         public static Asset<Effect> SkeletronBoneMatter { get; set; }
         public static Asset<Effect> SkeletronSpecterRibbon { get; set; }
+        public static Asset<Effect> SkeletronEyeFlame { get; set; }
+        public static Asset<Effect> SkeletronSpinBlur { get; set; }
         public static Asset<Effect> StitcherThread { get; set; }
         public static Asset<Effect> StitcherBoneDress { get; set; }
         public static Asset<Effect> GolemSunTelegraph { get; set; }
@@ -40,9 +42,14 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> CultistRuneSigil { get; set; }
         public static Asset<Effect> CultistVeil { get; set; }
         public static Asset<Effect> CultistPlanet { get; set; }
+        public static Asset<Effect> CultistPhaseSky { get; set; }
+        public static Asset<Effect> CultistBoundary { get; set; }
+        public static Asset<Effect> CultistCloudVortex { get; set; }
+        public static Asset<Effect> CultistOrrery { get; set; }
         public static Asset<Effect> FishronStormSky { get; set; }
         public static Asset<Effect> FishronTornado { get; set; }
         public static Asset<Effect> FishronTsunami { get; set; }
+        public static Asset<Effect> FishronBubble { get; set; }
         public static Asset<Effect> FishronTelegraph { get; set; }
         public static Asset<Effect> FishronGrabVeil { get; set; }
         public static Asset<Effect> UndrownedBody { get; set; }
@@ -59,6 +66,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> QueenPrismBeam { get; set; }
         public static Asset<Effect> QueenPrismCrystal { get; set; }
         public static Asset<Effect> QueenGaleField { get; set; }
+        public static Asset<Effect> QueenCrystalSkin { get; set; }
         public static Asset<Effect> BrainHeartbeatPulse { get; set; }
         public static Asset<Effect> BrainMirrorImage { get; set; }
         public static Asset<Effect> BrainRift { get; set; }
@@ -380,6 +388,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> GraniteArc { get; set; }
         public static Asset<Effect> MarbleSlash { get; set; }
         public static Asset<Effect> BloodAltarRite { get; set; }
+        public static Asset<Effect> TiroFinaleFX { get; set; }
         public static Asset<Effect> UnsungheroChess { get; set; }
         public static Asset<Effect> ScrapForm { get; set; }
         public static Asset<Effect> ScrapBeamLine { get; set; }

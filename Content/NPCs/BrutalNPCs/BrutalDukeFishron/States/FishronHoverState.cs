@@ -101,12 +101,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 ring = [
                     new FishronStormChainDashState(),
                     new FishronLightningRainState(),
+                    new FishronVeilHuntState(),
                     new FishronTidalDashPrepareState(),
                     new FishronTsunamiSweepState(),
-                    new FishronStormChainDashState(),
+                    new FishronDiveBreachState(),
+                    new FishronSharkronStrafeState(),
                     new FishronBubbleMazeState(),
+                    new FishronVeilHuntState(),
                     new FishronRingSpinState(),
-                    new FishronLightningRainState(),
                 ];
             }
             else if (context.Phase == 2) {
@@ -114,26 +116,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                     new FishronTidalDashPrepareState(),
                     new FishronRingSpinState(),
                     new FishronTsunamiSweepState(),
-                    new FishronTidalDashPrepareState(),
+                    new FishronDiveBreachState(),
                     new FishronBubbleMazeState(),
-                    new FishronTornadoSummonState(),
-                    new FishronTidalDashPrepareState(),
                     new FishronSharkronStrafeState(),
+                    new FishronTidalDashPrepareState(),
+                    new FishronTornadoSummonState(),
                 ];
             }
             else {
                 ring = [
                     new FishronTidalDashPrepareState(),
                     new FishronBubbleMazeState(),
+                    new FishronDiveBreachState(),
                     new FishronTidalDashPrepareState(),
                     new FishronTornadoSummonState(),
-                    new FishronTidalDashPrepareState(),
                     new FishronSharkronStrafeState(),
                 ];
             }
 
             IFishronState next = ring[context.AttackRingIndex % ring.Length];
             context.AttackRingIndex++;
+
+            //潜浪跃袭吃水位门：脚下没有真海面就退化成潮汐冲刺，不硬演
+            if (next is FishronDiveBreachState && !FishronDiveBreachState.WaterReachable(context)) {
+                next = new FishronTidalDashPrepareState();
+            }
             return next;
         }
     }

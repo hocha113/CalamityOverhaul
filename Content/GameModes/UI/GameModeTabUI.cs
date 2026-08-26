@@ -36,24 +36,31 @@ namespace CalamityOverhaul.Content.GameModes.UI
 
         private float brutalLit;
         private float asuraLit;
+        private float godSmithLit;
         private float asuraReveal;
+        private float godSmithReveal;
         private float brutalHover;
         private float asuraHover;
+        private float godSmithHover;
         private float disabledDim;
         private float brutalBurst = 1f;
         private float asuraBurst = 1f;
+        private float godSmithBurst = 1f;
         private bool brutalBurstOn;
         private bool asuraBurstOn;
+        private bool godSmithBurstOn;
         private int shakeTimer;
         private int shakeTab;
         private bool prevBrutal;
         private bool prevAsura;
+        private bool prevGodSmith;
         private int hoverKind = -1;
         private uint lastUpdateTick;
 
         //入场滑入进度
         private float entranceBrutal = 1f;
         private float entranceAsura = 1f;
+        private float entranceGodSmith = 1f;
         private bool prevTabsVisible;
         //受理点击的按压下沉
         private float pressDip;
@@ -66,14 +73,16 @@ namespace CalamityOverhaul.Content.GameModes.UI
         //本帧动画后的标签矩形：命中与绘制共用一份
         private Rectangle brutalRect;
         private Rectangle asuraRect;
+        private Rectangle godSmithRect;
 
         private static bool TabsVisible => Main.playerInventory && !Main.gameMenu;
 
         public override bool Active =>
             TabsVisible
             || GameModeCeremony.LineActive
-            || brutalBurst < 1f || asuraBurst < 1f
-            || asuraReveal is > 0.01f and < 0.99f;
+            || brutalBurst < 1f || asuraBurst < 1f || godSmithBurst < 1f
+            || asuraReveal is > 0.01f and < 0.99f
+            || godSmithReveal is > 0.01f and < 0.99f;
 
         public override void SaveUIData(TagCompound tag) => tag[Name + ":discovered"] = discovered;
 
@@ -90,6 +99,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
                 //长间隔后的第一帧：静默对齐旗标（进档/换世界不该播切换爆发）
                 prevBrutal = GameModeSystem.BrutalActive;
                 prevAsura = GameModeSystem.AsuraActive;
+                prevGodSmith = GameModeSystem.GodSmithActive;
                 shakeTimer = 0;
                 pressDip = 0f;
                 GameModeRenderer.ClearMotes();
@@ -99,6 +109,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
             if (TabsVisible && (!prevTabsVisible || freshSession)) {
                 entranceBrutal = 0f;
                 entranceAsura = 0f;
+                entranceGodSmith = 0f;
             }
             prevTabsVisible = TabsVisible;
             if (TabsVisible) {
@@ -107,15 +118,20 @@ namespace CalamityOverhaul.Content.GameModes.UI
                     //修罗错帧随后落座
                     entranceAsura = Math.Min(1f, entranceAsura + EntranceStep);
                 }
+                if (entranceAsura > 0.30f) {
+                    //神匠再错一帧组
+                    entranceGodSmith = Math.Min(1f, entranceGodSmith + EntranceStep);
+                }
             }
 
-            //真值差分点火切换爆发（含扩张环与余烬喷洒）
+            //真值差分点火切换爆发（含扩张环与余烬喷洒）；
+            //喷洒锚点用 ComputeRects 产出的动画矩形（上一帧值，至多 1 帧陈旧），入场滑入期不再错位
             if (GameModeSystem.BrutalActive != prevBrutal) {
                 prevBrutal = GameModeSystem.BrutalActive;
                 brutalBurst = 0f;
                 brutalBurstOn = prevBrutal;
                 if (TabsVisible) {
-                    GameModeRenderer.EmitBurst(GameModeTheme.BrutalTab, GameModeFace.Brutal, brutalBurstOn);
+                    GameModeRenderer.EmitBurst(brutalRect, GameModeFace.Brutal, brutalBurstOn);
                 }
             }
             if (GameModeSystem.AsuraActive != prevAsura) {
@@ -123,17 +139,30 @@ namespace CalamityOverhaul.Content.GameModes.UI
                 asuraBurst = 0f;
                 asuraBurstOn = prevAsura;
                 if (TabsVisible) {
-                    GameModeRenderer.EmitBurst(GameModeTheme.AsuraTab(EasedReveal()),
+                    GameModeRenderer.EmitBurst(asuraRect,
                         GameModeSystem.FaceOf(GameModeKind.Asura), asuraBurstOn);
+                }
+            }
+            if (GameModeSystem.GodSmithActive != prevGodSmith) {
+                prevGodSmith = GameModeSystem.GodSmithActive;
+                godSmithBurst = 0f;
+                godSmithBurstOn = prevGodSmith;
+                if (TabsVisible) {
+                    GameModeRenderer.EmitBurst(godSmithRect, GameModeFace.GodSmith, godSmithBurstOn);
                 }
             }
 
             brutalBurst = Math.Min(1f, brutalBurst + BurstStep);
             asuraBurst = Math.Min(1f, asuraBurst + BurstStep);
+            godSmithBurst = Math.Min(1f, godSmithBurst + BurstStep);
 
             brutalLit = Ease(brutalLit, GameModeSystem.BrutalActive ? 1f : 0f, 0.12f);
             asuraLit = Ease(asuraLit, GameModeSystem.AsuraActive ? 1f : 0f, 0.12f);
+            godSmithLit = Ease(godSmithLit, GameModeSystem.GodSmithActive ? 1f : 0f, 0.12f);
             asuraReveal = Ease(asuraReveal, GameModeSystem.BrutalActive ? 1f : 0f, 0.13f);
+            //神匠滑出跟在修罗身位之后，避免两旗在滑轨上交叠
+            godSmithReveal = Ease(godSmithReveal,
+                GameModeSystem.BrutalActive && asuraReveal > 0.45f ? 1f : 0f, 0.11f);
             disabledDim = Ease(disabledDim, GameModeSystem.CanToggleNow() ? 0f : 1f, 0.15f);
 
             if (shakeTimer > 0) {
@@ -170,6 +199,16 @@ namespace CalamityOverhaul.Content.GameModes.UI
                 asura.X += ShakeOffset();
             }
             asuraRect = asura;
+
+            Rectangle godSmith = GameModeTheme.GodSmithTab(EasedGodSmithReveal());
+            godSmith.X += SlideOffset(entranceGodSmith);
+            if (pressDip > 0f && pressTab == 2) {
+                godSmith.Y += (int)MathF.Round(pressDip * 2.5f);
+            }
+            if (shakeTimer > 0 && shakeTab == 2) {
+                godSmith.X += ShakeOffset();
+            }
+            godSmithRect = godSmith;
         }
 
         private void UpdateInteraction() {
@@ -183,6 +222,9 @@ namespace CalamityOverhaul.Content.GameModes.UI
                 else if (asuraReveal > 0.6f && asuraRect.Contains(mouse)) {
                     next = 1;
                 }
+                else if (godSmithReveal > 0.6f && godSmithRect.Contains(mouse)) {
+                    next = 2;
+                }
             }
             if (next != hoverKind && next != -1) {
                 SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.55f });
@@ -190,13 +232,18 @@ namespace CalamityOverhaul.Content.GameModes.UI
             hoverKind = next;
             brutalHover = Ease(brutalHover, hoverKind == 0 ? 1f : 0f, 0.2f);
             asuraHover = Ease(asuraHover, hoverKind == 1 ? 1f : 0f, 0.2f);
+            godSmithHover = Ease(godSmithHover, hoverKind == 2 ? 1f : 0f, 0.2f);
 
             if (hoverKind < 0) {
                 return;
             }
 
             player.mouseInterface = true;
-            GameModeKind kind = hoverKind == 0 ? GameModeKind.Brutal : GameModeKind.Asura;
+            GameModeKind kind = hoverKind switch {
+                0 => GameModeKind.Brutal,
+                1 => GameModeKind.Asura,
+                _ => GameModeKind.GodSmith,
+            };
             Main.hoverItemName = ComposeTip(kind);
 
             if (keyLeftPressState != KeyPressState.Pressed) {
@@ -256,12 +303,15 @@ namespace CalamityOverhaul.Content.GameModes.UI
                 if (GameModeSystem.AsuraActive && asuraLit > 0.8f && asuraReveal > 0.9f && Main.rand.NextBool(24)) {
                     GameModeRenderer.EmitIdleMote(asuraRect, GameModeSystem.FaceOf(GameModeKind.Asura));
                 }
+                if (GameModeSystem.GodSmithActive && godSmithLit > 0.8f && godSmithReveal > 0.9f && Main.rand.NextBool(24)) {
+                    GameModeRenderer.EmitIdleMote(godSmithRect, GameModeFace.GodSmith);
+                }
             }
             GameModeRenderer.UpdateMotes(TabsVisible);
         }
 
         private static string ComposeTip(GameModeKind kind) {
-            bool on = kind == GameModeKind.Brutal ? GameModeSystem.BrutalActive : GameModeSystem.AsuraActive;
+            bool on = GameModeSystem.FlagOf(kind);
             GameModeFace face = GameModeSystem.FaceOf(kind);
             string state = on ? GameModeText.StateOn.Value : GameModeText.StateOff.Value;
             string hint = !GameModeSystem.CanToggleNow() ? GameModeText.BossRefuse.Value
@@ -273,11 +323,19 @@ namespace CalamityOverhaul.Content.GameModes.UI
 
         private float EasedReveal() => MathHelper.SmoothStep(0f, 1f, asuraReveal);
 
+        private float EasedGodSmithReveal() => MathHelper.SmoothStep(0f, 1f, godSmithReveal);
+
         public override void Draw(SpriteBatch spriteBatch) {
             if (TabsVisible) {
-                //修罗先画（从残酷背后滑出），残酷压在上层；天顶世界里修罗恒以毁灭脸示人
+                //神匠最先画（滑向第三席位），修罗次之，残酷压在上层；天顶世界里修罗恒以毁灭脸示人
                 float reveal = EasedReveal();
+                float revealGs = EasedGodSmithReveal();
                 GameModeFace asuraFace = GameModeSystem.FaceOf(GameModeKind.Asura);
+                if (revealGs > 0.01f) {
+                    GameModeRenderer.DrawTab(spriteBatch, godSmithRect, GameModeFace.GodSmith,
+                        godSmithLit, godSmithHover, godSmithBurst, godSmithBurstOn, disabledDim,
+                        0f, revealGs * EntranceAlpha(entranceGodSmith));
+                }
                 if (reveal > 0.01f) {
                     GameModeRenderer.DrawTab(spriteBatch, asuraRect, asuraFace,
                         asuraLit, asuraHover, asuraBurst, asuraBurstOn, disabledDim,
@@ -289,6 +347,9 @@ namespace CalamityOverhaul.Content.GameModes.UI
                     GuideLevel(), EntranceAlpha(entranceBrutal));
 
                 //切换爆发的越身扩张环压在旗身之上
+                if (godSmithBurst < 1f && revealGs > 0.01f) {
+                    GameModeRenderer.DrawBurstRing(spriteBatch, godSmithRect, GameModeFace.GodSmith, godSmithBurst, godSmithBurstOn);
+                }
                 if (asuraBurst < 1f && reveal > 0.01f) {
                     GameModeRenderer.DrawBurstRing(spriteBatch, asuraRect, asuraFace, asuraBurst, asuraBurstOn);
                 }
