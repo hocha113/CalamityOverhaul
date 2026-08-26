@@ -1,12 +1,17 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.Crushers;
 using CalamityOverhaul.Content.Industrials.MachineModules;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.UI;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -78,11 +83,30 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
         internal readonly MachineModuleRack ModuleRack = new(MachineModuleTarget.Recycler);
 
         internal RecyclerData RecData => MachineData as RecyclerData;
-        /// <summary>拆解臂相位,瓦片绘制消费</summary>
-        internal float armPhase;
-        private int sparkTimer;
         /// <summary>自动进料节拍</summary>
         private int autoFeedTimer;
+
+        //===== 表现层字段(纯客户端,零网络),瓦片绘制消费 =====
+        /// <summary>拆解臂横位 0..1(工位编舞,进度确定性驱动)</summary>
+        internal float ArmX01 = 0.5f;
+        /// <summary>拆解臂下压 0..1</summary>
+        internal float ArmDrop01;
+        /// <summary>切割驻留强度 0..1,喂接触点亮斑</summary>
+        internal float CutGlow;
+        /// <summary>稀有度辉光脉冲,工位收尾泵起后衰减</summary>
+        internal float RarityPulse;
+        /// <summary>瓦片状态灯消费的警示状态</summary>
+        internal ProcAlert VisualAlert;
+        //五工位横位表:在被拆装备上跳动作业
+        private static readonly float[] stations = [0.10f, 0.82f, 0.38f, 0.94f, 0.60f];
+        private int sparkTimer;
+        //完成沿检测:上帧进度/出料/入料快照
+        private int lastProgressVis;
+        private int lastOutType;
+        private int lastOutStack;
+        private bool lastInputReady;
+        private int lastInputRare;
+        private int fxCooldown;
 
         public override MachineData GetGeneratorDataInds() => new RecyclerData {
             MaxUE = MaxUEValue,
@@ -93,6 +117,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
             ModuleRack.Refresh();
             //储能扩容模块动上限,数据侧字段每帧对齐
             RecData.MaxUE = MaxUEValue;
+
+            //表现层先行:缺电时下方作业分支早退,警示灯与臂归位仍要走
+            UpdateVisualFX();
 
             //自动进料斗:输入槽空了就从近旁存储抽可拆装备(权威端,主线程经 Defer)
             if (!VaultUtils.isClient && ModuleRack.AutoFeed && ++autoFeedTimer >= 30) {
@@ -114,7 +141,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
 
             //没有电量时停止工作
             if (RecData.UEvalue < RecData.UEPerTick) {
-                armPhase = 0f;
                 return;
             }
 
@@ -126,9 +152,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
             //执行拆解
             if (RecData.RecycleProgress > 0) {
                 ProcessRecycling();
-            }
-            else {
-                armPhase = 0f;
             }
         }
 
@@ -160,21 +183,175 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
 
         private void ProcessRecycling() {
             RecData.UEvalue -= RecData.UEPerTick;
-            armPhase += 0.12f;
-
-            //拆解火花
-            if (!Main.dedServ && ++sparkTimer >= 8) {
-                sparkTimer = 0;
-                Vector2 sparkPos = CenterInWorld + new Vector2(Rand.NextFloat(-12f, 12f), -4f);
-                float velX = Rand.NextFloat(-1.2f, 1.2f);
-                //并行阶段Dust生成延迟到主线程执行(串行阶段立即执行)
-                Defer(() => Dust.NewDust(sparkPos, 4, 4, DustID.Electric, velX, -1f, 100, default, 0.8f));
-            }
 
             RecData.RecycleProgress++;
             if (RecData.RecycleProgress >= RecData.MaxRecycleProgress) {
                 CompleteRecycling();
             }
+        }
+
+        //=========================================================================
+        // 表现层:五工位拆解编舞(移位→下压→切割驻留→抬升)、切割火花与零件碎片、
+        // 稀有度辉光脉冲、完成锭落斗。进度确定性驱动,各端本地自演,零网络
+        //=========================================================================
+        private void UpdateVisualFX() {
+            if (Main.dedServ || RecData == null) {
+                return;
+            }
+
+            bool powered = RecData.UEvalue >= RecData.UEPerTick;
+            bool hasInput = RecData.InputItem != null && !RecData.InputItem.IsAir;
+            bool inputValid = hasInput && RecyclerTables.CanRecycle(RecData.InputItem);
+
+            //警示状态:缺电红呼吸;有装备但开不了工(出料堵/锭种不符)黄呼吸
+            if (!powered) {
+                VisualAlert = ProcAlert.NoPower;
+            }
+            else if (inputValid && RecData.RecycleProgress == 0 && !CanStartRecycling()) {
+                VisualAlert = ProcAlert.Blocked;
+            }
+            else {
+                VisualAlert = ProcAlert.None;
+            }
+
+            bool onScreen = ProcessingChainVFX.OnScreen(CenterInWorld);
+
+            //完成沿:出料增长,或进度自满格跌零(自动出料直送存储时出料槽不增长)
+            bool outNow = RecData.OutputItem != null && !RecData.OutputItem.IsAir;
+            bool outGrew = outNow && (lastOutStack == 0
+                || (RecData.OutputItem.type == lastOutType && RecData.OutputItem.stack > lastOutStack));
+            bool progressFell = lastProgressVis >= RecData.MaxRecycleProgress - 1
+                && RecData.RecycleProgress == 0 && lastInputReady;
+            if (fxCooldown > 0) {
+                fxCooldown--;
+            }
+            if ((outGrew || progressFell) && fxCooldown == 0) {
+                fxCooldown = 10;
+                if (onScreen) {
+                    CompletionFX(outGrew && outNow ? RecData.OutputItem.type : 0);
+                }
+            }
+
+            //工位编舞
+            RarityPulse *= 0.94f;
+            if (RecData.IsWorking) {
+                UpdateArmChoreography(onScreen);
+            }
+            else {
+                //归位:臂回中,压下量放掉
+                ArmX01 = MathHelper.Lerp(ArmX01, 0.5f, 0.08f);
+                ArmDrop01 = MathHelper.Lerp(ArmDrop01, 0f, 0.15f);
+                CutGlow = MathHelper.Lerp(CutGlow, 0f, 0.2f);
+            }
+
+            //上帧快照
+            lastProgressVis = RecData.RecycleProgress;
+            lastOutType = outNow ? RecData.OutputItem.type : 0;
+            lastOutStack = outNow ? RecData.OutputItem.stack : 0;
+            lastInputReady = inputValid;
+            if (inputValid) {
+                lastInputRare = RecData.InputItem.rare;
+            }
+        }
+
+        /// <summary>
+        /// 五工位循环(24tick/工位):移位6→下压4→切割驻留9→抬升4→歇1。
+        /// 驻留期喷金属火花,偶发零件碎片;工位收尾泵稀有度辉光
+        /// </summary>
+        private void UpdateArmChoreography(bool onScreen) {
+            int p = Math.Min(RecData.RecycleProgress, RecData.MaxRecycleProgress - 1);
+            int cycle = Math.Min(p / 24, stations.Length - 1);
+            int t = p % 24;
+            float prevX = cycle == 0 ? 0.5f : stations[cycle - 1];
+            float curX = stations[cycle];
+
+            if (t < 6) {
+                float m = MathHelper.SmoothStep(0f, 1f, t / 6f);
+                ArmX01 = MathHelper.Lerp(prevX, curX, m);
+                ArmDrop01 = MathHelper.Lerp(ArmDrop01, 0f, 0.4f);
+                CutGlow = 0f;
+            }
+            else if (t < 10) {
+                ArmX01 = curX;
+                float q = (t - 6) / 4f;
+                ArmDrop01 = q * q;
+                CutGlow = 0f;
+            }
+            else if (t < 19) {
+                ArmX01 = curX;
+                ArmDrop01 = 1f;
+                CutGlow = 1f;
+                //切割火花:接触点扇形喷出,打台面反弹;低概率蹦出零件碎片
+                if (onScreen && ++sparkTimer >= 2) {
+                    sparkTimer = 0;
+                    SpawnCutSparks(Rand.NextBool(9));
+                }
+            }
+            else if (t < 23) {
+                ArmX01 = curX;
+                float r = (t - 19) / 4f;
+                ArmDrop01 = 1f - r * (2f - r);
+                CutGlow = 0f;
+                if (t == 19) {
+                    //工位收尾:稀有度辉光脉冲
+                    RarityPulse = 1f;
+                    if (onScreen) {
+                        Color rare = ItemRarity.GetColor(lastInputRare);
+                        Vector2 pulsePos = ContactWorldPos();
+                        Defer(() => PRTLoader.NewParticle<PRT_Sparkle>(pulsePos, new Vector2(0f, -0.5f),
+                            rare, 0.34f)?.Configure(rare, 16, 0.08f, 1.1f));
+                    }
+                }
+            }
+            else {
+                ArmDrop01 = 0f;
+                CutGlow = 0f;
+            }
+        }
+
+        /// <summary>拆解臂尖与装备的接触点(世界坐标),瓦片几何同源</summary>
+        private Vector2 ContactWorldPos()
+            => new(Position.X + 17f + ArmX01 * 14f, Position.Y + 23f);
+
+        /// <summary>切割火花+偶发零件碎片</summary>
+        private void SpawnCutSparks(bool withShard) {
+            Vector2 contact = ContactWorldPos();
+            float floorY = Position.Y + 26f;
+            Defer(() => {
+                int count = Rand.Next(1, 3);
+                for (int k = 0; k < count; k++) {
+                    float dir = Rand.NextBool() ? 1f : -1f;
+                    Vector2 vel = new(dir * Rand.NextFloat(1.4f, 3.4f), Rand.NextFloat(-2.4f, -0.4f));
+                    PRTLoader.NewParticle<PRT_ProcSpark>(contact, vel,
+                        new Color(255, 168, 64), Rand.NextFloat(0.8f, 1.3f))
+                        ?.Configure(Rand.Next(14, 26), floorY);
+                }
+                if (withShard) {
+                    Vector2 vel = new(Rand.NextFloat(-1.8f, 1.8f), Rand.NextFloat(-2.8f, -1.4f));
+                    PRTLoader.NewParticle<PRT_ProcChip>(contact, vel,
+                        new Color(96, 104, 100), Rand.NextFloat(0.7f, 1.0f))
+                        ?.Configure(new Color(210, 220, 214), Rand.Next(24, 36), 0.85f);
+                }
+            });
+        }
+
+        /// <summary>完成瞬间:真实锭贴图弧线落入分选斗,触斗叮当</summary>
+        private void CompletionFX(int knownBarType) {
+            //出料直送存储时槽里看不到锭种,按稀有度确定性解析补上
+            int barType = knownBarType > ItemID.None
+                ? knownBarType : RecyclerTables.ResolveByRarity(lastInputRare).BarType;
+            Vector2 spawn = new(Position.X + 26f, Position.Y + 20f);
+            float floorY = Position.Y + 38f;
+            Defer(() => {
+                PRTLoader.NewParticle<PRT_ProcBarDrop>(spawn, new Vector2(1.7f, -2.4f),
+                    Color.White, 1f)?.Configure(barType, floorY, 48);
+                for (int k = 0; k < 3; k++) {
+                    Vector2 vel = new(Rand.NextFloat(-1.6f, 2.2f), Rand.NextFloat(-2.2f, -0.6f));
+                    PRTLoader.NewParticle<PRT_ProcSpark>(spawn + new Vector2(0f, 2f), vel,
+                        new Color(255, 168, 64), Rand.NextFloat(0.7f, 1.0f))
+                        ?.Configure(Rand.Next(12, 20), floorY);
+                }
+            });
         }
 
         private void CompleteRecycling() {
