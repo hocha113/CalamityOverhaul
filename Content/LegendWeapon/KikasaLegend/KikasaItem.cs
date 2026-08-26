@@ -8,53 +8,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
 {
-    /// <summary>
-    /// 传奇武器·鬼伞。第一能力模块：血湖领域，持伞按
-    /// <see cref="Common.CWRKeySystem.Legend_Domain"/> 开阖，
-    /// 输入与状态机在 <see cref="KikasaDomains.KikasaDomainPlayer"/>；
-    /// 领域含鬼雨异化表里形态，按 <see cref="Common.CWRKeySystem.Kikasa_DomainMutate"/>
-    /// （默认中键）血湖沸腾倒转切换血/雨形态。
-    /// 第二能力模块：湖藏，领域中持物按 <see cref="Common.CWRKeySystem.Kikasa_Sink"/>
-    /// 沉物入湖存储，持伞按 <see cref="Common.CWRKeySystem.Legend_UIControl"/>
-    /// 开「湖心景」全屏（<see cref="UI.Panorama.KikasaPanoramaUI"/>）在湖藏区点击提取；
-    /// 数据与输入在 <see cref="KikasaVaults.KikasaVaultPlayer"/>，
-    /// 沉浮演出在 <see cref="KikasaVaults.KikasaLakeFX"/>。
-    /// 第三能力模块：沉影编成，沉溺过的 boss 永久入册，湖心景水线三席拾影点放编成，
-    /// 快捷转盘逐席召/收（<see cref="UI.ServantWheel.KikasaServantWheelController"/>）；
-    /// 记录在 <see cref="KikasaServants.KikasaServantPlayer"/>，
-    /// 穷举条目在 <see cref="KikasaServants.KikasaServantIndex"/>，
-    /// 焰/魇/潦增益与组合边在 <see cref="KikasaServants.KikasaEffigyBoard"/>。
-    /// 第四能力模块：普攻·墨雨。鬼伞持有即常驻，平时悬在玩家背肩上方随行，
-    /// 周围有敌且玩家未主动攻击时自行倾身抛洒墨滴自卫；按住左键悬伞
-    /// <see cref="KikasaRains.KikasaRainUmbrella"/> 飞到头顶自旋，
-    /// 按节拍降下追踪敌人的大墨滴，各动作态实时直入无前后摇。
-    /// 第五能力模块：鬼梦，满水稳态倒影自醒；长按
-    /// <see cref="Common.CWRKeySystem.Kikasa_DomainMutate"/> 拉入鬼梦
-    /// （湖沸腾倒转，红天村落、湖水不见；物品封禁、左键连唤恶犬，重按归返；
-    /// 梦中人人失能，梦界内远程射弹无法存在，本伞左右键亦不可用）；
-    /// 相位与包络在 <see cref="KikasaDomains.KikasaDomainPlayer"/> 与
-    /// <see cref="KikasaDreams.KikasaDreamDirector"/>，玩家锁与唤犬在
-    /// <see cref="KikasaDreams.KikasaDreamPlayer"/>，禁弹辨别在
-    /// <see cref="KikasaDreams.KikasaDreamProjectileBan"/>。
-    /// 第六能力模块：大范围重启，鬼雨形态下持伞按
-    /// <see cref="Common.CWRKeySystem.Legend_Restart"/>（与其余传奇重启共键），屏幕定格成黑白照片、
-    /// 被雨痕冲刷揭开，场内 NPC 与玩家沿位置历史倒退回数秒前，雨滴倒飞，
-    /// 结算时范围内玩家回满、清 debuff，全程无敌；
-    /// 权威与时间轴在 <see cref="KikasaResets.KikasaReset"/>，
-    /// 输入在 <see cref="KikasaResets.KikasaResetPlayer"/>。
-    /// 第七能力模块：鬼域传送，持伞按
-    /// <see cref="Common.CWRKeySystem.Legend_Teleport"/>（与其余传奇传送共键）
-    /// 以水为媒介瞬移到指针处，瞬发无前后摇：双潭当帧砸开，数帧内人已渡到彼岸，
-    /// 此岸水柱吞人、彼岸水柱喷发，常驻悬伞亲自扎水→隐没→破水弹回，
-    /// 全程只有一把伞；不需要领域，血湖稳态里节奏与冷却更短、真湖随之荡波；
-    /// 门面与输入在 <see cref="KikasaTeleports.KikasaTeleport"/> 与
-    /// <see cref="KikasaTeleports.KikasaTeleportPlayer"/>，
-    /// 水舞台在 <see cref="KikasaTeleports.KikasaTeleportProj"/>。
-    /// 召唤师武器：召唤栏位化作栖在伞骨下的鬼，左右键普攻的节拍、滴数、
-    /// 伤害与三档质变全按栏位数走，口径集中在 <see cref="KikasaOverride"/>；
-    /// 传奇成长（伤害等级表+沉宴试炼路线）同在 <see cref="KikasaOverride"/> 与
-    /// <see cref="KikasaData"/>，试炼注册在 <see cref="TrialQuests.KikasaTrialQuestLine"/>
-    /// </summary>
     internal class KikasaItem : ModItem
     {
         public override void SetDefaults() {

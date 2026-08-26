@@ -127,8 +127,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
 
             if (fx != null && noise != null) {
-                //墨痕拖尾:顶点条带层必须画在 SpriteBatch 批之前,伞体随后盖在其上
-                DrawInkTrails(fx, noise, umbrellaType);
+                //墨痕拖尾:顶点条带层必须画在 SpriteBatch 批之前,伞体随后盖在其上。
+                //拖尾必须用独立 Effect,绝不与伞体批共享实例——vs+ps technique 在共享
+                //实例上 Apply 过一次,MojoShader 的 current_vert_raw 就永久残留,之后
+                //每次 ps-only pass 的 CommitChanges 都会把 transformMatrix 写进精灵
+                //顶点着色器的投影寄存器,伞体整批瞬移出屏(2026-08 伞体隐形回归根因)
+                DrawInkTrails(EffectLoader.KikasaUmbrellaTrail?.Value, noise, umbrellaType);
 
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
                     SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone,
@@ -179,10 +183,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         /// <summary>
         /// 逐伞画墨痕条带:自管设备状态的顶点图元层,TriangleStrip 世界坐标经
-        /// transformMatrix 直入(勿减 screenPosition);着色器缺席由调用方挡住,
-        /// 拖尾是纯锦上添花层,无 CPU 回退
+        /// transformMatrix 直入(勿减 screenPosition);fx 为独立的
+        /// KikasaUmbrellaTrail 效果,缺席直接跳过——拖尾是纯锦上添花层,无 CPU 回退
         /// </summary>
         private static void DrawInkTrails(Effect fx, Texture2D noise, int umbrellaType) {
+            if (fx == null) {
+                return;
+            }
             GraphicsDevice gd = Main.instance.GraphicsDevice;
             bool deviceReady = false;
             BlendState origBlend = null;
