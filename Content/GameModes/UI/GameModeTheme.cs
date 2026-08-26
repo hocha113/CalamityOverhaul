@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System;
+using Terraria;
 using Terraria.GameInput;
 
 namespace CalamityOverhaul.Content.GameModes.UI
@@ -21,23 +22,49 @@ namespace CalamityOverhaul.Content.GameModes.UI
         public const int TabH = 58;
         public const int TabGapX = 14;
 
+        /// <summary>标签行最大席位数（残酷/修罗/神匠）</summary>
+        public const int TabSeats = 3;
+
+        /// <summary>行右缘留白</summary>
+        private const int RowMarginX = 10;
+
         /// <summary>标签行锚点（残酷标签左上角）</summary>
         public static readonly Point TabAnchor = new(578, 22);
 
+        /// <summary>满席时的整行宽</summary>
+        public static int RowWidth => TabW * TabSeats + TabGapX * (TabSeats - 1);
+
+        /// <summary>
+        /// 整行水平让位：UI 空间窄到装不下末席时整行左移，右缘留一点余白。
+        /// 引擎把 UIScaleMax 钳到屏宽/800，UI 空间宽恒 ≥ 800，当前锚点下这里恒为 0；
+        /// 它是锚点或席位数日后变动时的兜底，不是眼下能复现的修正
+        /// </summary>
+        public static int RowShiftX {
+            get {
+                float overflow = TabAnchor.X + RowWidth + RowMarginX - UIScreenW;
+                if (overflow <= 0f) {
+                    return 0;
+                }
+                //左移不越过屏幕左缘
+                return -Math.Min((int)MathF.Ceiling(overflow), TabAnchor.X - 8);
+            }
+        }
+
         /// <summary>残酷模式标签矩形</summary>
-        public static Rectangle BrutalTab => new(TabAnchor.X, TabAnchor.Y, TabW, TabH);
+        public static Rectangle BrutalTab => SeatTab(0f);
 
         /// <summary>修罗模式标签矩形；reveal 0..1 表示从残酷标签背后滑出的进度</summary>
-        public static Rectangle AsuraTab(float reveal) {
-            int x = TabAnchor.X + (int)((TabW + TabGapX) * reveal);
-            return new Rectangle(x, TabAnchor.Y, TabW, TabH);
-        }
+        public static Rectangle AsuraTab(float reveal) => SeatTab(reveal);
 
-        /// <summary>神匠模式标签矩形；reveal 0..1 表示滑向第三席位的进度（错帧跟在修罗之后）</summary>
-        public static Rectangle GodSmithTab(float reveal) {
-            int x = TabAnchor.X + (int)((TabW + TabGapX) * 2 * reveal);
-            return new Rectangle(x, TabAnchor.Y, TabW, TabH);
-        }
+        /// <summary>
+        /// 神匠模式标签矩形：独立开关，恒占修罗之后的一席。
+        /// asuraReveal 0..1 是修罗的滑出进度，神匠始终比它靠右一席，两旗在滑轨上不会交叠
+        /// </summary>
+        public static Rectangle GodSmithTab(float asuraReveal) => SeatTab(1f + asuraReveal);
+
+        /// <summary>按席位号（可为小数，滑轨插值）取标签矩形</summary>
+        private static Rectangle SeatTab(float seat)
+            => new(TabAnchor.X + RowShiftX + (int)((TabW + TabGapX) * seat), TabAnchor.Y, TabW, TabH);
 
         //——色板：残酷=血红族，修罗=黑金紫红族，毁灭=苍银冷白族，神匠=熔金鎏金族；shader 背景与 CPU 前景同族取色——
 

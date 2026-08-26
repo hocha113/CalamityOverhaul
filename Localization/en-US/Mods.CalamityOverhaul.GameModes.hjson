@@ -14,7 +14,7 @@ GameModeText: {
 	BrutalDesc: Unleashes the reworked, merciless AI of brutal foes, their stats anchored no lower than Master Mode; all other enemies gain 50% more life and damage, and lesser fiends turn swift and frenzied
 	AsuraDesc: The enhancement rises to 100%. Foes adapt to repeated damage of the same kind, and any blow you deal sets the least they deal back
 	AnnihilationDesc: The final form of Asura Hell in a zenith world. Every terror doubles again: foes adapt twice as fast, and your pain is repaid twofold
-	GodSmithDesc: Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched; coexists with Asura Hell
+	GodSmithDesc: Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched, and it toggles independently of every other mode
 	GodSmithRecastTitle: Godsmith Reforged
 	GodSmithEndowPrefix: "Endowment: "
 	StateOn: Active

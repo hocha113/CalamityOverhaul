@@ -9,7 +9,8 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.GameModes.UI
 {
     /// <summary>
-    /// 背包右缘的游戏模式标签行：残酷模式常驻，修罗模式在残酷开启后从其背后滑出。
+    /// 背包右缘的游戏模式标签行：残酷与神匠常驻，修罗模式在残酷开启后从两者之间滑出，
+    /// 神匠随之让位到第三席（神匠是独立开关，任何时候都能点）。
     /// 标签动画由旗标真值差分点火（本地点击与联机回执走同一条表现路径）；
     /// 切换演出大字也由本 UI 绘制，背包合上时靠 <see cref="GameModeCeremony.LineActive"/> 维持活跃。
     /// 首见引导：光标从未造访过标签时，残酷标签挂信标光效相邀，
@@ -38,7 +39,6 @@ namespace CalamityOverhaul.Content.GameModes.UI
         private float asuraLit;
         private float godSmithLit;
         private float asuraReveal;
-        private float godSmithReveal;
         private float brutalHover;
         private float asuraHover;
         private float godSmithHover;
@@ -81,8 +81,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
             TabsVisible
             || GameModeCeremony.LineActive
             || brutalBurst < 1f || asuraBurst < 1f || godSmithBurst < 1f
-            || asuraReveal is > 0.01f and < 0.99f
-            || godSmithReveal is > 0.01f and < 0.99f;
+            || asuraReveal is > 0.01f and < 0.99f;
 
         public override void SaveUIData(TagCompound tag) => tag[Name + ":discovered"] = discovered;
 
@@ -160,9 +159,6 @@ namespace CalamityOverhaul.Content.GameModes.UI
             asuraLit = Ease(asuraLit, GameModeSystem.AsuraActive ? 1f : 0f, 0.12f);
             godSmithLit = Ease(godSmithLit, GameModeSystem.GodSmithActive ? 1f : 0f, 0.12f);
             asuraReveal = Ease(asuraReveal, GameModeSystem.BrutalActive ? 1f : 0f, 0.13f);
-            //神匠滑出跟在修罗身位之后，避免两旗在滑轨上交叠
-            godSmithReveal = Ease(godSmithReveal,
-                GameModeSystem.BrutalActive && asuraReveal > 0.45f ? 1f : 0f, 0.11f);
             disabledDim = Ease(disabledDim, GameModeSystem.CanToggleNow() ? 0f : 1f, 0.15f);
 
             if (shakeTimer > 0) {
@@ -200,7 +196,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
             }
             asuraRect = asura;
 
-            Rectangle godSmith = GameModeTheme.GodSmithTab(EasedGodSmithReveal());
+            Rectangle godSmith = GameModeTheme.GodSmithTab(EasedReveal());
             godSmith.X += SlideOffset(entranceGodSmith);
             if (pressDip > 0f && pressTab == 2) {
                 godSmith.Y += (int)MathF.Round(pressDip * 2.5f);
@@ -222,7 +218,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
                 else if (asuraReveal > 0.6f && asuraRect.Contains(mouse)) {
                     next = 1;
                 }
-                else if (godSmithReveal > 0.6f && godSmithRect.Contains(mouse)) {
+                else if (godSmithRect.Contains(mouse)) {
                     next = 2;
                 }
             }
@@ -303,7 +299,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
                 if (GameModeSystem.AsuraActive && asuraLit > 0.8f && asuraReveal > 0.9f && Main.rand.NextBool(24)) {
                     GameModeRenderer.EmitIdleMote(asuraRect, GameModeSystem.FaceOf(GameModeKind.Asura));
                 }
-                if (GameModeSystem.GodSmithActive && godSmithLit > 0.8f && godSmithReveal > 0.9f && Main.rand.NextBool(24)) {
+                if (GameModeSystem.GodSmithActive && godSmithLit > 0.8f && Main.rand.NextBool(24)) {
                     GameModeRenderer.EmitIdleMote(godSmithRect, GameModeFace.GodSmith);
                 }
             }
@@ -323,19 +319,14 @@ namespace CalamityOverhaul.Content.GameModes.UI
 
         private float EasedReveal() => MathHelper.SmoothStep(0f, 1f, asuraReveal);
 
-        private float EasedGodSmithReveal() => MathHelper.SmoothStep(0f, 1f, godSmithReveal);
-
         public override void Draw(SpriteBatch spriteBatch) {
             if (TabsVisible) {
-                //神匠最先画（滑向第三席位），修罗次之，残酷压在上层；天顶世界里修罗恒以毁灭脸示人
+                //神匠最先画（常驻末席），修罗次之，残酷压在上层；天顶世界里修罗恒以毁灭脸示人
                 float reveal = EasedReveal();
-                float revealGs = EasedGodSmithReveal();
                 GameModeFace asuraFace = GameModeSystem.FaceOf(GameModeKind.Asura);
-                if (revealGs > 0.01f) {
-                    GameModeRenderer.DrawTab(spriteBatch, godSmithRect, GameModeFace.GodSmith,
-                        godSmithLit, godSmithHover, godSmithBurst, godSmithBurstOn, disabledDim,
-                        0f, revealGs * EntranceAlpha(entranceGodSmith));
-                }
+                GameModeRenderer.DrawTab(spriteBatch, godSmithRect, GameModeFace.GodSmith,
+                    godSmithLit, godSmithHover, godSmithBurst, godSmithBurstOn, disabledDim,
+                    0f, EntranceAlpha(entranceGodSmith));
                 if (reveal > 0.01f) {
                     GameModeRenderer.DrawTab(spriteBatch, asuraRect, asuraFace,
                         asuraLit, asuraHover, asuraBurst, asuraBurstOn, disabledDim,
@@ -347,7 +338,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
                     GuideLevel(), EntranceAlpha(entranceBrutal));
 
                 //切换爆发的越身扩张环压在旗身之上
-                if (godSmithBurst < 1f && revealGs > 0.01f) {
+                if (godSmithBurst < 1f) {
                     GameModeRenderer.DrawBurstRing(spriteBatch, godSmithRect, GameModeFace.GodSmith, godSmithBurst, godSmithBurstOn);
                 }
                 if (asuraBurst < 1f && reveal > 0.01f) {

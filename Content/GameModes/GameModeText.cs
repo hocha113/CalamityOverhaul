@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.GameModes
             GodSmithOffLine = this.GetLocalization(nameof(GodSmithOffLine),
                 () => "The forge fire wanes; all arms return to their former shape.");
             GodSmithDesc = this.GetLocalization(nameof(GodSmithDesc),
-                () => "Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched; coexists with Asura Hell");
+                () => "Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched, and it toggles independently of every other mode");
             GodSmithRecastTitle = this.GetLocalization(nameof(GodSmithRecastTitle), () => "Godsmith Reforged");
             GodSmithEndowPrefix = this.GetLocalization(nameof(GodSmithEndowPrefix), () => "Endowment: ");
             StateOn = this.GetLocalization(nameof(StateOn), () => "Active");

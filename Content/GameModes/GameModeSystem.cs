@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.GameModes
         Brutal,
         /// <summary>修罗模式：残酷模式的上位，敌怪自适应免疫 + 伤害下限镜像</summary>
         Asura,
-        /// <summary>神匠模式：内容向模式，重铸原版武器与盔甲；依赖残酷，与修罗互不影响</summary>
+        /// <summary>神匠模式：内容向模式，重铸原版武器与盔甲；独立开关，不依赖残酷与修罗</summary>
         GodSmith,
     }
 
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.GameModes
     }
 
     /// <summary>
-    /// 游戏模式世界状态（残酷模式/修罗模式）。
+    /// 游戏模式世界状态（残酷模式/修罗模式/神匠模式）。
     /// 世界级旗标：随世界存档持久化，进档由 tML 世界数据同步；
     /// 运行时切换走 <see cref="GameModeToggleNet"/>（客户端请求，服务端校验后广播）。
     /// AI 覆盖在 NPC 生成时绑定（InnoVault <c>NPCOverride.SetDefaults</c>），
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.GameModes
         /// <summary>修罗模式已开启（依赖残酷模式，残酷关闭时强制随关）</summary>
         public static bool AsuraActive { get; internal set; }
 
-        /// <summary>神匠模式已开启（依赖残酷模式，残酷关闭时静默随关；内容向，不进 <see cref="EffectiveTier"/>）</summary>
+        /// <summary>神匠模式已开启（独立世界旗标，不随残酷开关联动；内容向，不进 <see cref="EffectiveTier"/>）</summary>
         public static bool GodSmithActive { get; internal set; }
 
         /// <summary>毁灭模式：修罗在天顶世界的派生终相（隐藏难度，无独立旗标与网络协议）</summary>
@@ -133,16 +133,11 @@ namespace CalamityOverhaul.Content.GameModes
                 return false;
             }
 
-            bool target;
-            if (kind == GameModeKind.Brutal) {
-                target = !BrutalActive;
+            //只有修罗是残酷的上位态，开启前提是残酷已开；残酷与神匠各自独立
+            if (kind == GameModeKind.Asura && !AsuraActive && !BrutalActive) {
+                return false;
             }
-            else {
-                if (!BrutalActive) {
-                    return false;//上位/派生模式依赖残酷模式
-                }
-                target = !FlagOf(kind);
-            }
+            bool target = !FlagOf(kind);
 
             if (VaultUtils.isSinglePlayer) {
                 Apply(kind, target);
@@ -158,7 +153,7 @@ namespace CalamityOverhaul.Content.GameModes
             return true;
         }
 
-        /// <summary>落地一次模式变更并播放演出；关残酷时修罗与神匠静默随关（只播残酷的谢幕词）</summary>
+        /// <summary>落地一次模式变更并播放演出；关残酷时修罗静默随关（只播残酷的谢幕词），神匠独立不受影响</summary>
         private static void Apply(GameModeKind kind, bool enabled) {
             switch (kind) {
                 case GameModeKind.Brutal:
@@ -168,7 +163,6 @@ namespace CalamityOverhaul.Content.GameModes
                     BrutalActive = enabled;
                     if (!enabled) {
                         AsuraActive = false;
-                        GodSmithActive = false;
                     }
                     break;
                 case GameModeKind.Asura:
@@ -199,12 +193,12 @@ namespace CalamityOverhaul.Content.GameModes
                 if (!VaultUtils.isServer) {
                     return;
                 }
-                //服务端权威校验：Boss 在场、上位/派生模式依赖、重复请求一律拒绝；拒因留档便于诊断
+                //服务端权威校验：Boss 在场、修罗的残酷依赖、重复请求一律拒绝；拒因留档便于诊断
                 if (!CanToggleNow()) {
                     CWRMod.Instance.Logger.Info($"[GameMode] 拒绝切换 {kind}->{enabled}（来自 {whoAmI}）：Boss 在场锁定");
                     return;
                 }
-                if (kind != GameModeKind.Brutal && enabled && !BrutalActive) {
+                if (kind == GameModeKind.Asura && enabled && !BrutalActive) {
                     CWRMod.Instance.Logger.Info($"[GameMode] 拒绝切换 {kind}->{enabled}（来自 {whoAmI}）：依赖残酷模式未开启");
                     return;
                 }
