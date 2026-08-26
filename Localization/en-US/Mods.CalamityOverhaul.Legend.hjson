@@ -10,12 +10,14 @@ HalibutOverride: {
 		This fish has been researched.
 		'''
 	DisplayName: Halibut
-	Tooltip:
-		'''
-		Converts Musket balls into a stream of Ocean Current
-		[Lang4]
-		legend_Text
-		'''
+	Tooltip: Converts Musket balls into a stream of Ocean Current
+	KeyLabelDomain: Domain Expansion
+	KeyLabelClone: Past Self Invasion
+	KeyLabelSuperpose: Superposition
+	KeyLabelRestart: Self-Restart
+	KeyLabelTeleport: Domain Teleport
+	KeyLabelWheel: Skill Wheel
+	KeyLabelAtlas: Abyss Atlas
 }
 
 HalibutText: {
@@ -236,9 +238,13 @@ SHPCOverride: {
 		Left-click to fire three laser beams
 		Right-click and hold to charge energy
 		All attacks can be enhanced by the field
-		[Lang4]
-		legend_Text
 		'''
+	KeyLabelDomain: Domain Expansion
+	KeyLabelWheel: Domain Wheel
+	KeyLabelTeleport: Domain Teleport
+	KeyLabelRestart: Self-Restart
+	KeyLabelBanish: Banish
+	KeyLabelFreeze: Freeze
 }
 
 LegendUpgradeManagerSystem: {
@@ -740,8 +746,6 @@ OnikiriOverride: {
 	KeyLabelDomain: Domain Expansion
 	KeyLabelFlip: Omote/Ura Flip
 	KeyLabelTeleport: Domain Teleport
-	TrialProgressLine: Trial Cuts {0} / {1}
-	TrialDoneLine: Trial Cuts · All Twenty-Two Made
 }
 
 OnikiriTrialQuestLine: {
@@ -751,28 +755,28 @@ OnikiriTrialQuestLine: {
 	TrackerBrief: Next cut: {0}
 	BossRushTargetName: Night That Won't Break
 	EventActiveFormat: "{0}: underway"
-	Trial_0: That Business in the Sky
-	Trial_1: Two Wrong Pulls in the Dirt
-	Trial_2: Clumped into One Blob
-	Trial_3: Heard It's a God
-	Trial_4: Whatever's Blocking the Road
-	Trial_5: That Brimstone Smell
-	Trial_6: Fire Pit Still Lit
-	Trial_7: The Big Name
-	Trial_8: Two Dots in a Pair
-	Trial_9: Old and New Mixed Up
-	Trial_10: Walks Too Much Like a Person
-	Trial_11: That One Down Below
-	Trial_12: The One in the Stone House
-	Trial_13: Mutterers at the Door
-	Trial_14: What's Pressing Up There
-	Trial_15: Heat from the Earth's Heart
-	Trial_16: A Clump in the Damp
-	Trial_17: Where It Feels Too Empty
-	Trial_18: Dragon Still Around
-	Trial_19: Where the Booming Hits the Ears
-	Trial_20: Where the Air Goes Heavy
-	Trial_21: Gathering Again
+	Trial_0: Skybound Eye
+	Trial_1: Twain Evils of the Soil
+	Trial_2: Clustered Blight
+	Trial_3: Presumptuous God
+	Trial_4: The Dividing Flesh
+	Trial_5: Rotten Scales of Sulphur
+	Trial_6: Ashes in the Abyss
+	Trial_7: Roaring Metal Serpent
+	Trial_8: Twin Demon Eyes
+	Trial_9: Mingled Remains
+	Trial_10: Mimicked Silhouette
+	Trial_11: Bloom in the Depths
+	Trial_12: Temple Golem
+	Trial_13: Mad Chant at the Gate
+	Trial_14: Looming Pale Moon
+	Trial_15: Corefire Radiance
+	Trial_16: Phantasmal Cluster
+	Trial_17: Void Devourer
+	Trial_18: Lingering Fire Dragon
+	Trial_19: Deafening Exo-Steel
+	Trial_20: Stifling Calamity
+	Trial_21: Recurrent Darkness
 	TrialSummary_0:
 		'''
 		There's something going on up in the sky, and I can't say what
@@ -931,8 +935,6 @@ KikasaOverride: {
 	KeyLabelTeleport: Domain Teleport
 	KeyLabelPanorama: Lakeheart
 	MutateFallback: Middle Mouse
-	TrialProgressLine: Sinking Feast {0} / {1}
-	TrialDoneLine: Sinking Feast · Every Seat Sunk
 }
 
 KikasaTrialQuestLine: {
@@ -942,30 +944,30 @@ KikasaTrialQuestLine: {
 	TrackerBrief: Next course: {0}
 	BossRushTargetName: A Table Full of Guests
 	EventActiveFormat: "{0}: In progress"
-	Trial_0: First Soft Bite
-	Trial_1: The One Still Staring
-	Trial_2: Burrowers in the Rot
-	Trial_3: Gone Bad Underground
-	Trial_4: The Sweet or the Stubborn
+	Trial_0: Soft First Course
+	Trial_1: Night-Staring Eye
+	Trial_2: Foul Soil Morsels
+	Trial_3: Festering Depths
+	Trial_4: Sweet Nectar and Stubborn Hooves
 	Trial_5: Old Bones at the Gate
-	Trial_6: A Puddle Calling Itself God
-	Trial_7: Flesh Walled Across the Road
-	Trial_8: That Pink Smear Up There
-	Trial_9: The Worm Gone Sour
-	Trial_10: Three Pieces of Ironware
-	Trial_11: The Bloom Kept in the Dark
-	Trial_12: The Big One in the Sea
-	Trial_13: Blockhead
-	Trial_14: The Pig That Stirs Waves
-	Trial_15: The One Glowing at Night
-	Trial_16: The Chanter
-	Trial_17: Behind the Moon
-	Trial_18: Kin
-	Trial_19: The Old Thing in Acid
-	Trial_20: The Long Worm in the Sky
-	Trial_21: A Ball of Fire
-	Trial_22: The Iron and the Fire
-	Trial_23: When the Table Is Full
+	Trial_6: Motley God-Gel
+	Trial_7: Flesh Across the Path
+	Trial_8: Winged Pink Gel
+	Trial_9: Sour Worm of Sulphur
+	Trial_10: Three Tastes of Iron
+	Trial_11: Crimson Bloom of the Jungle
+	Trial_12: Ocean Behemoth
+	Trial_13: Temple Boulder
+	Trial_14: Wave-Stirring Winged Boar
+	Trial_15: Nocturnal Radiance
+	Trial_16: Chanting at the Portal
+	Trial_17: Moonback Reflection
+	Trial_18: Kinfolk at the Table
+	Trial_19: Ancient Acid-Bather
+	Trial_20: Void Serpent Beyond
+	Trial_21: Unquenched Blazing Plume
+	Trial_22: Peak Iron and Peak Flame
+	Trial_23: The Full Table Feast
 	TrialSummary_0:
 		'''
 		Something soft wobbles at the foot of the hills, blue and endless

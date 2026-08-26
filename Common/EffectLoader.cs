@@ -134,6 +134,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OceanCurrentTrail { get; set; }
         public static Asset<Effect> OceanWaterBlob { get; set; }
         public static Asset<Effect> HalibutPanel { get; set; }
+        public static Asset<Effect> HalibutItemPanel { get; set; }
+        public static Asset<Effect> SHPCItemPanel { get; set; }
         public static Asset<Effect> HalibutAtlasBg { get; set; }
         public static Asset<Effect> OniGhostScroll { get; set; }
         public static Asset<Effect> OniGhostShadow { get; set; }

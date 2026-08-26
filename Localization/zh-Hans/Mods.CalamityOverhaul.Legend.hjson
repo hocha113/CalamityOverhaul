@@ -10,12 +10,14 @@
 		这条鱼已经研究
 		'''
 	DisplayName: 大比目鱼
-	Tooltip:
-		'''
-		火枪子弹会被转化为海洋射流
-		[Lang4]
-		legend_Text
-		'''
+	Tooltip: 火枪子弹会被转化为海洋射流
+	KeyLabelDomain: 领域展开
+	KeyLabelClone: 过去身入侵
+	KeyLabelSuperpose: 叠加
+	KeyLabelRestart: 重启自身
+	KeyLabelTeleport: 领域传送
+	KeyLabelWheel: 技能盘
+	KeyLabelAtlas: 深渊图鉴
 }
 
 HalibutText: {
@@ -236,9 +238,13 @@ SHPCOverride: {
 		左键发射三道激光束
 		长按右键进行蓄能
 		所有攻击均可受到领域强化
-		[Lang4]
-		legend_Text
 		'''
+	KeyLabelDomain: 领域展开
+	KeyLabelWheel: 领域盘
+	KeyLabelTeleport: 领域传送
+	KeyLabelRestart: 重启自身
+	KeyLabelBanish: 放逐
+	KeyLabelFreeze: 冻结
 }
 
 LegendUpgradeManagerSystem: {
@@ -740,8 +746,6 @@ OnikiriOverride: {
 	KeyLabelDomain: 领域展开
 	KeyLabelFlip: 表里翻转
 	KeyLabelTeleport: 领域传送
-	TrialProgressLine: 试刃 {0} / {1}
-	TrialDoneLine: 试刃 · 廿二刀已过
 }
 
 OnikiriTrialQuestLine: {
@@ -751,28 +755,28 @@ OnikiriTrialQuestLine: {
 	TrackerBrief: 下一刀：{0}
 	BossRushTargetName: 散不掉的夜
 	EventActiveFormat: "{0}: 进行中"
-	Trial_0: 天上那档子
-	Trial_1: 土里两股劲
-	Trial_2: 抱成一坨的
-	Trial_3: 听说是神
-	Trial_4: 堵路的那档
-	Trial_5: 硫海那股味
-	Trial_6: 火坑还亮着
-	Trial_7: 名字很大的
-	Trial_8: 成对的两点
-	Trial_9: 新旧搅一起
-	Trial_10: 走路太像的
-	Trial_11: 底下那朵
-	Trial_12: 石屋那尊
-	Trial_13: 门口念叨的
-	Trial_14: 上面压着的
-	Trial_15: 地心发热
-	Trial_16: 潮里一团
-	Trial_17: 空得慌那边
-	Trial_18: 还在的龙
-	Trial_19: 轰耳朵那边
-	Trial_20: 空气发沉那边
-	Trial_21: 又聚回来的
+	Trial_0: 天穹夜目
+	Trial_1: 秽土双孽
+	Trial_2: 结聚秽巢
+	Trial_3: 妄称神明
+	Trial_4: 截界肉壁
+	Trial_5: 硫海腐鳞
+	Trial_6: 深渊余烬
+	Trial_7: 轰鸣铁蛇
+	Trial_8: 双生魔瞳
+	Trial_9: 新旧残骸
+	Trial_10: 拟形魔影
+	Trial_11: 丛林幽葩
+	Trial_12: 神庙顽尊
+	Trial_13: 古门狂祷
+	Trial_14: 重月倾坠
+	Trial_15: 地心炽辉
+	Trial_16: 阴潮怨簇
+	Trial_17: 虚空噬界
+	Trial_18: 遗世炎龙
+	Trial_19: 星流震鸣
+	Trial_20: 窒息灾岚
+	Trial_21: 残夜重聚
 	TrialSummary_0:
 		'''
 		天上有档子事，我也说不准是什么
@@ -931,8 +935,6 @@ KikasaOverride: {
 	KeyLabelTeleport: 领域传送
 	KeyLabelPanorama: 湖心景
 	MutateFallback: 鼠标中键
-	TrialProgressLine: 沉宴试炼 {0} / {1}
-	TrialDoneLine: 沉宴试炼 · 满席已过
 }
 
 KikasaTrialQuestLine: {
@@ -942,30 +944,30 @@ KikasaTrialQuestLine: {
 	TrackerBrief: 下一席：{0}
 	BossRushTargetName: 满桌的客
 	EventActiveFormat: "{0}: 进行中"
-	Trial_0: 第一口软糯
-	Trial_1: 睁着的那颗
-	Trial_2: 腐土里烘的
-	Trial_3: 烂在地里的
-	Trial_4: 甜的或倔的
-	Trial_5: 守门老骨头
-	Trial_6: 一大滩神胶
-	Trial_7: 横路上的肉
-	Trial_8: 第二口粉糯
-	Trial_9: 酸臭的长虫
-	Trial_10: 有三件铁器
-	Trial_11: 谧毒的朵朵
-	Trial_12: 海里的大只
-	Trial_13: 方榆木脑袋
-	Trial_14: 掀浪的飞猪
-	Trial_15: 黑夜的璀璨
-	Trial_16: 念经的巫师
-	Trial_17: 月亮后的脸
-	Trial_18: 同类窥同类
-	Trial_19: 酸臭老东西
-	Trial_20: 天上的长蛇
-	Trial_21: 不熄的火簇
-	Trial_22: 铁的和火的
-	Trial_23: 满桌的时候
+	Trial_0: 初席软冻
+	Trial_1: 夜穹窥目
+	Trial_2: 腐壤双腥
+	Trial_3: 地底陈馊
+	Trial_4: 甘浆与倔蹄
+	Trial_5: 门前枯骨
+	Trial_6: 驳杂神胶
+	Trial_7: 横途热肉
+	Trial_8: 展翼粉冻
+	Trial_9: 硫海腐身
+	Trial_10: 生铁三味
+	Trial_11: 雨林红蕊
+	Trial_12: 沧海巨客
+	Trial_13: 神庙顽石
+	Trial_14: 弄潮翼彘
+	Trial_15: 夜空流光
+	Trial_16: 门前残诵
+	Trial_17: 月背倒影
+	Trial_18: 同类并桌
+	Trial_19: 酸海老宿
+	Trial_20: 穹外噬神
+	Trial_21: 不熄烈羽
+	Trial_22: 极铁与极火
+	Trial_23: 满席终宴
 	TrialSummary_0:
 		'''
 		山脚摊了软的，蓝汪汪的，抖起来没完

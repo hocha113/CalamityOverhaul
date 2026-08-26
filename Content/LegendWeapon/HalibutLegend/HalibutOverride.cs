@@ -18,11 +18,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public static LocalizedText FishByStudied { get; private set; }
         public static LocalizedText FishOnStudied { get; private set; }
 
+        //==================== 自绘面板文本(HalibutItemTooltipPanel) ====================
+        public static LocalizedText KeyLabelDomain { get; private set; }
+        public static LocalizedText KeyLabelClone { get; private set; }
+        public static LocalizedText KeyLabelSuperpose { get; private set; }
+        public static LocalizedText KeyLabelRestart { get; private set; }
+        public static LocalizedText KeyLabelTeleport { get; private set; }
+        public static LocalizedText KeyLabelWheel { get; private set; }
+        public static LocalizedText KeyLabelAtlas { get; private set; }
+
         #region Data
         /// <summary>HalibutItem 类型 ID</summary>
         public static int ID => ModContent.ItemType<HalibutItem>();
         /// <summary>ItemOverride 目标 ID</summary>
         public override int TargetID => ID;
+
+        /// <summary>改动信息由自绘面板承载,关掉鼠标旁的金色小图标</summary>
+        public override bool DrawingInfo => false;
         /// <summary>武器缩放</summary>
         public static float ItemScale => 0.8f;
         /// <summary>各时期伤害表，请用 <see cref="GetOnDamage"/></summary>
@@ -107,19 +119,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 [i:CalamityOverhaul/HalibutItem]:
                 这条鱼已经研究
                 """);
+            //自绘面板:键位功能名(与键位表动作名对齐)
+            KeyLabelDomain = this.GetLocalization(nameof(KeyLabelDomain), () => "领域展开");
+            KeyLabelClone = this.GetLocalization(nameof(KeyLabelClone), () => "过去身入侵");
+            KeyLabelSuperpose = this.GetLocalization(nameof(KeyLabelSuperpose), () => "叠加");
+            KeyLabelRestart = this.GetLocalization(nameof(KeyLabelRestart), () => "重启自身");
+            KeyLabelTeleport = this.GetLocalization(nameof(KeyLabelTeleport), () => "领域传送");
+            KeyLabelWheel = this.GetLocalization(nameof(KeyLabelWheel), () => "技能盘");
+            KeyLabelAtlas = this.GetLocalization(nameof(KeyLabelAtlas), () => "深渊图鉴");
             LoadWeaponData();
         }
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
-            string keyDisplay = CWRKeySystem.QuestLog_Key?.GetAssignedKeys() is { Count: > 0 } k ? k[0] : CWRKeySystem.Notbound.Value;
-            tooltips.ReplacePlaceholder("legend_Text", LegendUpgradeManagerSystem.QuestManagerHint.Value.Replace("{KEY}", keyDisplay), "");
-            int index = item.CWR()?.LegendData?.TargetLevel ?? 0;
-            string num = (index + 1).ToString();
-            if (index == 14) {
-                num = LegendUpgradeManagerSystem.TrialPassed.Value;
-            }
-            string text = LegendData.GetLevelTrialPreText(item.CWR(), LegendUpgradeManagerSystem.Text_Lang_0, num);
-            tooltips.ReplacePlaceholder("[Lang4]", text, "");
+            //试炼进度与任务书提示已由自绘面板(HalibutItemTooltipPanel)承载,
+            //旧 [Lang4]/legend_Text 占位符随正文裁短一并退役;正文预折行对齐面板宽
+            LegendTooltipPanel.WrapBodyText(tooltips);
         }
 
         public static void SetDefaultsFunc(Item Item) {

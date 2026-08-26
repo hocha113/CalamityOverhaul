@@ -21,6 +21,13 @@ float3 uColMoon;    //亮光(血沫暖光⇄溺月惨白)
 #define PI 3.14159265
 #define TAU 6.28318530
 
+float hash11(float p) {
+    p = frac(p * 0.1031);
+    p *= p + 33.33;
+    p *= p + p;
+    return frac(p);
+}
+
 float hash21(float2 p) {
     float3 p3 = frac(float3(p.xyx) * 0.1031);
     p3 += dot(p3, p3.yzx + 33.33);
@@ -72,20 +79,21 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float t = uTime;
     float u = pixelPos.x / uResolution.x;
 
-    //====面板体:水膜(基材由主题 uniform 推导,随血湖⇄鬼雨浸染)====
-    float3 mist = uColVoid * 1.9 + uColDeep * 0.34; //顶部潮雾
-    float3 voidC = uColVoid * 0.9 + uColDeep * 0.10; //最深处仍有材质
+    //====面板体:湿玻璃(基材由主题 uniform 推导并混入青灰,血湖态也保持湿冷)====
+    float3 coolWet = float3(0.020, 0.032, 0.038); //湿冷青灰,恒定注入
+    float3 mist = uColVoid * 1.6 + uColDeep * 0.28 + coolWet;
+    float3 voidC = uColVoid * 0.8 + uColDeep * 0.08 + coolWet * 0.55;
     float3 bg = lerp(mist, voidC, smoothstep(0.0, 0.38, uv.y));
-    bg += uColDeep * (1.0 - uv.y) * 0.16;
+    bg += uColDeep * (1.0 - uv.y) * 0.14;
     bg += uColRain * pow(uv.y, 3.0) * 0.085; //底部积水泛光
 
-    //护字静默罩:离边框带越深越安静(tooltip 满铺文字,深处去细节去运动,不去光)
+    //护字静默罩:离边框带越深越安静(深处去细节去运动,不去光)
     float calm = 1.0 - smoothstep(-34.0, -10.0, panelSDF);
     float live = lerp(1.0, 0.32, calm);
 
-    //玻璃面凝露颗粒
+    //玻璃面凝露颗粒(加强:湿玻璃身份)
     float grain = valueNoise(pixelPos * 0.9) * 0.55 + valueNoise(pixelPos * 0.23) * 0.45;
-    bg += (grain - 0.5) * 0.040 * live;
+    bg += (grain - 0.5) * 0.052 * live;
 
     //水汽:低频云状明暗,水膜厚薄不均
     float2 vaporUV = uv * float2(2.6, 2.4) + float2(t * 0.006, -t * 0.004);
@@ -97,9 +105,23 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float soak = exp(-innerDist * 0.06);
     bg = lerp(bg, uColDeep * 0.8, soak * 0.30);
 
-    //两翼水痕缓流:高频竖纹极慢下滑,只在边带存活
+    //====真雨层(身份主笔):快速细竖雨丝,错相噪声掐断====
+    //高 x 频×低 y 频拉出竖长条;y 混入 x 分量,防 x 向欠采样读成横向密度条带
+    float2 rainUV = float2(uv.x * 44.0, uv.y * 2.8 + uv.x * 0.42 - t * 2.6);
+    float rainStrand = valueNoise(rainUV);
+    float rainCut = valueNoise(float2(uv.x * 21.0 + 7.7, uv.y * 1.6 - t * 1.3));
+    float rain = smoothstep(0.60, 0.86, rainStrand) * smoothstep(0.34, 0.72, rainCut);
+    //第二层近雨:更稀更快更亮,只剩零星几条
+    float2 rain2UV = float2(uv.x * 23.0 + 3.9, uv.y * 1.7 + uv.x * 0.3 - t * 3.8);
+    float rain2 = smoothstep(0.78, 0.94, valueNoise(rain2UV));
+    float rainLive = lerp(1.0, 0.42, calm); //护字区衰减不熄灭
+    bg += uColRain * rain * 0.30 * rainLive;
+    bg += uColMoon * rain * rain * 0.10 * rainLive;
+    bg += uColMoon * rain2 * 0.16 * rainLive;
+
+    //两翼水痕缓流:雨在玻璃上淌下的痕
     float streak = valueNoise(float2(uv.x * 26.0, uv.y * 2.2 - t * 0.05));
-    bg += uColRain * (streak - 0.5) * 0.13 * live;
+    bg += uColRain * (streak - 0.5) * 0.16 * live;
 
     //暗角 + 凝露微闪
     float2 vig = uv * 2.0 - 1.0;
@@ -156,6 +178,22 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float shimmer = valueNoise(float2(u * 14.0 - t * 0.20, 8.8));
     float3 waterCol = lerp(uColRain, uColMoon, smoothstep(0.60, 0.90, shimmer) * 0.65);
     float waterA = (waterLine * 0.88 + pool * 0.26) * endTaper;
+
+    //落水溅圈:雨点砸进积水,哈希相位错开的透视小环,扩张淡出(无粒子状态)
+    float splash = 0.0;
+    for (int si = 0; si < 5; si++) {
+        float fi = (float)si;
+        float ph = frac(t * 0.85 + hash11(fi * 3.71 + 0.37));
+        //每个溅落周期换一处落点(floor 项按周期跳变)
+        float sx = frac(0.08 + hash11(fi * 7.29 + 1.13) * 0.84
+            + floor(t * 0.85 + hash11(fi * 3.71 + 0.37)) * 0.217);
+        float2 sdev = pixelPos - float2(sx * uResolution.x, innerMax.y + 4.0);
+        sdev.y *= 2.4; //透视压扁
+        float ringR = 1.5 + ph * 6.5;
+        float dRing = abs(length(sdev) - ringR);
+        splash += exp(-dRing * dRing * 1.1) * (1.0 - ph) * (1.0 - ph);
+    }
+    waterA = saturate(waterA + splash * 0.55 * endTaper);
 
     //====预乘 over 合成(后→前:溺月→面板体→框线→伞盖弧→积水线)====
     float bodyA = edgeAlpha * uAlpha;
