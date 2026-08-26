@@ -78,6 +78,7 @@ namespace CalamityOverhaul
             ModGanged.Load();
 
             CWRRef.Load();
+            CWRNetWork.Load(this);
             ILoaders = VaultUtils.GetDerivedInstances<ICWRLoader>();
             foreach (var load in ILoaders) {
                 try {
@@ -100,6 +101,7 @@ namespace CalamityOverhaul
 
             EmptyMod();
             ILoaders?.Clear();
+            CWRNetWork.Unload();
             CWRLoad.UnLoad();
             CWRID.UnLoad();
             CWRRef.UnLoad();

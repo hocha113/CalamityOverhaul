@@ -165,8 +165,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
                 return;
             }
             KikasaDomainPlayer domain = player.GetModPlayer<KikasaDomainPlayer>();
-            if (domain.Phase != KikasaDomainPhase.Open || !domain.IsRainForm
-                || domain.RiseT < 0.999f) {
+            //统一受理门（湖侧可见且稳定）+ 鬼雨形态
+            if (!domain.LakeAbilityReady || !domain.IsRainForm) {
                 Refuse(player);
                 return;
             }
@@ -272,6 +272,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
                     || Vector2.Distance(npc.Center, owner.Center) > ResetRange) {
                     continue;
                 }
+                if (IsSplitWormExcluded(npc)) {
+                    //分裂型蠕虫不倒带：体节槽位随分裂/重链复用，环形历史与现节错位
+                    //会拖出鬼节与断头（反馈六·#61 拍板：点名单排除，其余照常）
+                    continue;
+                }
                 NpcGroupHelper.CollectGroup(npc, groupBuffer);
                 if (groupBuffer.Count == 0) {
                     groupBuffer.Add(npc);
@@ -364,14 +369,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
 
         //==================== 每帧推进 ====================
 
+        /// <summary>分裂型蠕虫黑名单：世吞与神吞战中会分裂重链，槽位复用让回溯历史
+        /// 与现节对不上号；灾厄未装载时 CWRID 取 0，对活跃 NPC 永不误匹配</summary>
+        private static bool IsSplitWormExcluded(NPC npc) {
+            int t = npc.type;
+            return t == NPCID.EaterofWorldsHead || t == NPCID.EaterofWorldsBody
+                || t == NPCID.EaterofWorldsTail
+                || t == CWRID.NPC_DevourerofGodsHead
+                || t == CWRID.NPC_DevourerofGodsBody
+                || t == CWRID.NPC_DevourerofGodsTail;
+        }
+
         /// <summary>由 <see cref="KikasaResetSystem"/> 两端逐帧驱动</summary>
         internal static void Update() {
-            if (Main.netMode != NetmodeID.MultiplayerClient) {
+            //时停期间冷却同步暂停：装备冷却被冻结快照冻住，重启冷却不该独走白拖（反馈四·#119）；
+            //冻结旗在服务器恒假，联机权威节拍不受影响
+            bool frozen = WorldFreezeSystem.IsActive
+                || HackTimes.HackTime.Active || TimeGear.TimeScale <= 0f;
+            if (!frozen && Main.netMode != NetmodeID.MultiplayerClient) {
                 for (int i = 0; i < cooldowns.Length; i++) {
                     if (cooldowns[i] > 0) {
                         cooldowns[i]--;
                     }
                 }
+            }
+            if (frozen && localLockUntil > Main.GameUpdateCount) {
+                //本机锁是绝对帧戳：冻结帧把到期时刻同步后移，等效暂停
+                localLockUntil++;
             }
             UpdateShow();
         }

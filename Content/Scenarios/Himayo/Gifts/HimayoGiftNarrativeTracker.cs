@@ -1,7 +1,9 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Common;
 using CalamityOverhaul.Content.Narrative.Data;
+using CalamityOverhaul.Content.Narrative.Data.Modules;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
 using System;
@@ -49,6 +51,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         private static readonly Dictionary<string, HimayoBossGiftNarrative> scenariosByGiftKey = new(StringComparer.Ordinal);
         private static readonly Dictionary<int, List<HimayoGiftEntry>> byBossId = [];
         private static readonly HashSet<string> spawned = new(StringComparer.Ordinal);
+        //断档补发的会话限额:满包落地捡不起来时防巡检连发成堆
+        private static readonly HashSet<string> repairedGiftKeys = new(StringComparer.Ordinal);
         private static bool wasDownedBossRush;
         private static int lastEvilBossId;
 
@@ -60,6 +64,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 
         public static void ResetWorldState() {
             spawned.Clear();
+            repairedGiftKeys.Clear();
             lastEvilBossId = 0;
             wasDownedBossRush = CWRRef.Has && CWRRef.GetDownedBossRush();
             RegisterAll();
@@ -130,15 +135,39 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             }
 
             bool downed = CWRRef.GetDownedBossRush();
-            if (downed && !wasDownedBossRush) {
-                foreach (HimayoGiftEntry entry in HimayoGiftCatalog.All) {
-                    if (scenariosByGiftKey.TryGetValue(entry.MeiKey, out HimayoBossGiftNarrative gift)
-                        && gift.IsBossRushGift && gift.ShouldSpawn()) {
-                        spawned.Add(entry.MeiKey);
-                    }
+            bool edge = downed && !wasDownedBossRush;
+            wasDownedBossRush = downed;
+
+            Player player = Main.LocalPlayer;
+            if (player?.active != true) {
+                return;
+            }
+            HimayoGiftStoryData giftStory = HimayoStorySync.GetGift(player);
+            if (giftStory == null) {
+                return;
+            }
+            //旗只落一次且永不复位,边沿只活一帧:目击落旗却在演出前退档的,
+            //重进后 ResetWorldState 会把镜像初始化成 true,礼物就此永失。
+            //边沿落持久位,待演状态跨会话认账,演过(完成位)即自清
+            if (edge) {
+                giftStory.BossRushGiftPending = true;
+            }
+            if (!giftStory.BossRushGiftPending) {
+                return;
+            }
+            foreach (HimayoGiftEntry entry in HimayoGiftCatalog.All) {
+                if (!scenariosByGiftKey.TryGetValue(entry.MeiKey, out HimayoBossGiftNarrative gift)
+                    || !gift.IsBossRushGift) {
+                    continue;
+                }
+                if (gift.CheckGiftCompleted()) {
+                    giftStory.BossRushGiftPending = false;
+                    continue;
+                }
+                if (gift.ShouldSpawn()) {
+                    spawned.Add(entry.MeiKey);
                 }
             }
-            wasDownedBossRush = downed;
         }
 
         private static void TickLocalNarrative() {
@@ -149,6 +178,11 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             }
             if (CWRWorld.HasBoss || CWRWorld.BossRush || NarrativeTriggerGate.IsBusy) {
                 return;
+            }
+            //低频补发:完成位开演即写,拓本却在对白中段递出——中途退档/断线的那份就此断档,
+            //而礼物铭没有刀縁回路,等于这只角色永缺一枚铭。补回承诺的拓本(入包即解锁)
+            if (Main.GameUpdateCount % 620 == 310) {
+                RepairLostRubbings(player);
             }
             if (!TryPickNext(player, out HimayoBossGiftNarrative gift, out string giftKey)) {
                 return;
@@ -174,6 +208,31 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             }
             else {
                 storyPlayer.HimayoGiftDelayTicks = 30;
+            }
+        }
+
+        /// <summary>
+        /// 拓本断档补发:场景完成位已写、铭却未持有且身上(含鼠标)无拓本,
+        /// 说明发放步被打断丢件——按名册补发一份,拓本入包即幂等解锁
+        /// </summary>
+        private static void RepairLostRubbings(Player player) {
+            foreach (HimayoGiftEntry entry in HimayoGiftCatalog.All) {
+                if (repairedGiftKeys.Contains(entry.MeiKey)
+                    || !scenariosByGiftKey.TryGetValue(entry.MeiKey, out HimayoBossGiftNarrative gift)
+                    || !gift.CheckGiftCompleted()
+                    || OniMeiOwned.Owns(player, entry.MeiKey)) {
+                    continue;
+                }
+                int itemType = entry.RubbingItemType;
+                if (itemType <= 0 || player.HasItem(itemType)) {
+                    continue;
+                }
+                Item mouse = Main.mouseItem;
+                if (mouse != null && !mouse.IsAir && mouse.type == itemType) {
+                    continue;
+                }
+                repairedGiftKeys.Add(entry.MeiKey);
+                player.QuickSpawnItem(player.GetSource_Misc("CWR_HimayoGiftRepair"), itemType);
             }
         }
 

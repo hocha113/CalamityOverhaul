@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
     /// <summary>永恒燃烧的如今，无比目鱼差分</summary>
     internal sealed class EternalBlazingNowNoHelen : NarrativeScenario, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.SupCal";
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Narrative
 {
     internal abstract class NarrativeDisplayText : VaultType<NarrativeDisplayText>, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public virtual string LocalizationCategory => "ADV";
 
         private readonly Dictionary<string, DialogueOverride> dialogueOverrides = [];
         private readonly Dictionary<string, Func<DialogueOverride>> dynamicDialogueProviders = [];

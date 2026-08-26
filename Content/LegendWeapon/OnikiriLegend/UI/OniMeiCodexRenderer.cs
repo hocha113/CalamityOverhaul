@@ -65,14 +65,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        //和纸正文 / 次级 / 未凿灰：比主题 Ink+黑描边、TextDim 更耐读，且只画一次
+        //和纸正文 / 次级 / 未凿灰：褐墨谱系（与任务书 ChroniclePalette 同路数）。
+        //灰调淡墨在亮纸上读作没墨水，次级与未凿一律偏暖压深
         private static readonly Color PaperBody = new(38, 26, 24);
-        private static readonly Color PaperMute = new(86, 64, 54);
-        private static readonly Color PaperAsh = new(122, 106, 96);
+        private static readonly Color PaperMute = new(70, 50, 38);
+        internal static readonly Color PaperAsh = new(116, 94, 70);
         private static readonly Color PaperBurden = new(148, 48, 40);
 
         /// <summary>
-        /// 和纸墨字：单次绘制。禁止 DrawBorderString：四向黑描边叠在深墨上会糊成一团
+        /// 和纸墨字：同色三笔加重——主笔 + 右偏加厚竖画 + 下偏半墨加厚横画，
+        /// 读作蘸饱墨的笔锋压进纸里（与任务书 ChroniclePen.InkStrike 同手法，偏移随字号收放）。<br/>
+        /// 仍禁 DrawBorderString：四向黑描边叠在深墨上会糊成一团
         /// </summary>
         internal static void DrawPaperInk(SpriteBatch sb, DynamicSpriteFont font, string text,
             Vector2 pos, Color color, float scale, float alpha = 1f,
@@ -82,7 +85,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             Vector2 size = font.MeasureString(text) * scale;
             Vector2 origin = new(size.X * originX / scale, size.Y * originY / scale);
-            sb.DrawString(font, text, pos, color * alpha, 0f, origin, scale, SpriteEffects.None, 0f);
+            Color ink = color * alpha;
+            float d = MathHelper.Clamp(scale * 0.9f, 0.55f, 1.05f);
+            sb.DrawString(font, text, pos + new Vector2(d, 0f), ink * 0.85f,
+                0f, origin, scale, SpriteEffects.None, 0f);
+            sb.DrawString(font, text, pos + new Vector2(0f, d * 0.75f), ink * 0.5f,
+                0f, origin, scale, SpriteEffects.None, 0f);
+            sb.DrawString(font, text, pos, ink, 0f, origin, scale, SpriteEffects.None, 0f);
         }
 
         //====================== 册子本体 ======================
@@ -238,7 +247,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 active ? OnikiriUITheme.GoldInlay : OnikiriUITheme.TextDim,
                 1.3f, alpha * (active ? 0.95f : 0.6f));
 
-            Color ink = active ? OnikiriUITheme.Paper : Color.Lerp(OnikiriUITheme.TextDim, OnikiriUITheme.Paper, 0.35f);
+            Color ink = active ? OnikiriUITheme.Paper : Color.Lerp(OnikiriUITheme.TextDim, OnikiriUITheme.Paper, 0.55f);
             //木牌字：浅色填在深木上，可用描边；字号抬到可读
             Utils.DrawBorderString(sb, label,
                 new Vector2(body.X + 26f, body.Y + lift + 3f), ink * alpha, 0.88f);

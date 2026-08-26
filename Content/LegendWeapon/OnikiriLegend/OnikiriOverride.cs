@@ -1,9 +1,9 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.OtherMods.Wikithis;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
@@ -15,6 +15,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         public static int ID => ModContent.ItemType<OnikiriItem>();
         public override int TargetID => ID;
+
+        /// <summary>改动信息由自绘面板承载,关掉鼠标旁的金色小图标</summary>
+        public override bool DrawingInfo => false;
+
+        //==================== 自绘面板文本(OniItemTooltipPanel) ====================
+        public static LocalizedText KeyLabelFlashStep { get; private set; }
+        public static LocalizedText KeyLabelSakura { get; private set; }
+        public static LocalizedText KeyLabelExecute { get; private set; }
+        public static LocalizedText KeyLabelDomain { get; private set; }
+        public static LocalizedText KeyLabelFlip { get; private set; }
+        public static LocalizedText KeyLabelTeleport { get; private set; }
 
         private static Dictionary<int, int> DamageDictionary = [];
         private static Dictionary<int, int> CritDictionary = [];
@@ -189,7 +200,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             };
         }
 
-        public override void SetStaticDefaults() => LoadWeaponData();
+        public override void SetStaticDefaults() {
+            LoadWeaponData();
+            //自绘面板:键位功能名(与键位表动作名对齐)与试炼进度行
+            KeyLabelFlashStep = this.GetLocalization(nameof(KeyLabelFlashStep), () => "神威疾走");
+            KeyLabelSakura = this.GetLocalization(nameof(KeyLabelSakura), () => "樱流");
+            KeyLabelExecute = this.GetLocalization(nameof(KeyLabelExecute), () => "处决");
+            KeyLabelDomain = this.GetLocalization(nameof(KeyLabelDomain), () => "领域展开");
+            KeyLabelFlip = this.GetLocalization(nameof(KeyLabelFlip), () => "表里翻转");
+            KeyLabelTeleport = this.GetLocalization(nameof(KeyLabelTeleport), () => "领域传送");
+        }
 
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
 
@@ -224,19 +244,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => SetTooltip(item, ref tooltips);
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
-            string keyDisplay = CWRKeySystem.QuestLog_Key?.GetAssignedKeys() is { Count: > 0 } k
-                ? k[0] : CWRKeySystem.Notbound.Value;
-            tooltips.ReplacePlaceholder("legend_Text",
-                LegendUpgradeManagerSystem.QuestManagerHint.Value.Replace("{KEY}", keyDisplay), "");
-            int index = item.CWR()?.LegendData?.TargetLevel ?? 0;
-            string num = (index + 1).ToString();
-            if (index >= 22) {
-                num = LegendUpgradeManagerSystem.TrialPassed.Value;
-            }
-            string text = LegendData.GetLevelTrialPreText(item.CWR(), LegendUpgradeManagerSystem.Text_Lang_0, num);
-            tooltips.ReplacePlaceholder("[Lang4]", text, "");
+            //试炼进度与任务书提示已由自绘面板(OniItemTooltipPanel)承载,
+            //旧 [Lang4]/legend_Text 占位符随正文裁短一并退役;
+            //键位占位符替换保留,正文若引用 [DASH] 等仍可落键名
             AppendMeiSummary(item, tooltips);
             OnikiriItem.ReplaceInputPlaceholders(tooltips);
+            LegendTooltipPanel.WrapBodyText(tooltips);
         }
 
         /// <summary>在铭三槽的短摘要:离开改铭台也看得到赋效/代价(SetTooltip 可能被调两次,按行名去重)</summary>

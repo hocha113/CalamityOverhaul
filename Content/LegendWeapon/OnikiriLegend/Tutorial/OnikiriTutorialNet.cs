@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
     }
 
-    internal static class OnikiriTutorialNet
+    internal class OnikiriTutorialNet : CWRNetChannel
     {
         internal static void RequestEnsureTarget(int session) {
             if (Main.dedServ || Main.gameMenu || session == 0) {
@@ -127,8 +127,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 return;
             }
 
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.OnikiriTutorialTarget);
+            ModPacket packet = CWRNetWork.GetPacket<OnikiriTutorialNet>();
             packet.Write((byte)OnikiriTutorialTargetPacket.Ensure);
             packet.Write(session);
             packet.Send();
@@ -156,8 +155,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 return;
             }
 
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.OnikiriTutorialTarget);
+            ModPacket packet = CWRNetWork.GetPacket<OnikiriTutorialNet>();
             packet.Write((byte)OnikiriTutorialTargetPacket.Release);
             packet.Write(session);
             packet.Send();
@@ -190,11 +188,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             return null;
         }
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type != CWRMessageType.OnikiriTutorialTarget) {
-                return;
-            }
-
+        public override void Receive(BinaryReader reader, int whoAmI) {
             OnikiriTutorialTargetPacket operation = (OnikiriTutorialTargetPacket)reader.ReadByte();
             switch (operation) {
                 case OnikiriTutorialTargetPacket.Ensure:
@@ -306,8 +300,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 return;
             }
 
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.OnikiriTutorialTarget);
+            ModPacket packet = CWRNetWork.GetPacket<OnikiriTutorialNet>();
             packet.Write((byte)OnikiriTutorialTargetPacket.Confirm);
             packet.Write((byte)owner);
             packet.Write(session);
@@ -330,8 +323,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 return;
             }
 
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.OnikiriTutorialTarget);
+            ModPacket packet = CWRNetWork.GetPacket<OnikiriTutorialNet>();
             packet.Write((byte)OnikiriTutorialTargetPacket.Release);
             packet.Write((byte)owner);
             packet.Write(session);

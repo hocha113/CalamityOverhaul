@@ -886,6 +886,16 @@ HandmadeDoll: {
 		'''
 }
 
+ScapegoatDoll: {
+	// DisplayName: Scapegoat Doll
+	/* Tooltip:
+		'''
+		While in your inventory, blocks one death in your place
+		The doll shatters and is lost after taking the blow
+		''' */
+	// ShatterText: The scapegoat doll shattered
+}
+
 Snowblindness: {
 	DisplayName: Cegueira da Neve
 	Tooltip:
@@ -2169,9 +2179,13 @@ Pandemonium: {
 		'''
 		Clique esquerdo para carregar e liberar Magia Transcendente
 		Clique direito para lancar uma Runa de Enxofre no cursor
-		Pressione [PandemoniumQSkill] para desencadear Julgamento de Enxofre
-		Pressione [PandemoniumRSkill] para executar O Fim de Todos os Demonios
+		Ao empunhar, dois botoes de habilidade acendem no canto inferior esquerdo da tela
+		Clique para desencadear Julgamento de Enxofre ou O Fim de Todos os Demonios
 		'''
+	SkillLeftName: Julgamento de Enxofre
+	SkillLeftDesc: Faz cair um campo de pilares de fogo de enxofre ao redor do cursor
+	SkillRightName: O Fim de Todos os Demonios
+	SkillRightDesc: Abre um circulo magico gigante centrado em voce, castigando os inimigos com raios e fogo
 }
 
 Proverbs: {
@@ -2292,9 +2306,13 @@ AriaofTheCosmos: {
 		'''
 		Segure o botao esquerdo para carregar um poderoso quasar, causando dano devastador ao soltar
 		Clique direito para liberar um buraco negro em miniatura que dispara uma saraivada de raios gama uma vez formado
-		Pressione [AriaofTheCosmosQSkill] para invocar um Guardiao do Anel Estelar
-		Pressione [AriaofTheCosmosRSkill] para gerar uma Explosao de Raio Gama
+		Ao empunhar, dois botoes de habilidade acendem no canto inferior esquerdo da tela
+		Clique para invocar um Guardiao do Anel Estelar ou gerar uma Explosao de Raio Gama
 		'''
+	SkillLeftName: Guardiao do Anel Estelar
+	SkillLeftDesc: Invoca um anel estelar orbital cujos nos disparam poeira estelar nos inimigos proximos
+	SkillRightName: Explosao de Raio Gama
+	SkillRightDesc: Apos uma breve carga, dispara nove raios gama em leque na direcao do cursor
 }
 
 Oceanfragments: {

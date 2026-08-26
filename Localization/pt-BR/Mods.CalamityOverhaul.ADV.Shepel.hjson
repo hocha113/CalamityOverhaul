@@ -623,3 +623,31 @@ ShepelYharonGift: {
 	L2: Agora, a velocidade do projetil e o tempo de resposta da sua arma foram significativamente aumentados, o suficiente para superar sua velocidade maxima.
 	L3: Para garantir que eu possa sempre acompanhar seu ritmo, meu sistema esta sempre pronto para quebrar seus proprios limites.
 }
+
+FirstMetShepel: {
+	Line1: Mestre! Estou tao feliz em ve-lo novamente!
+	Choice1Text: Voce confundiu a pessoa, nao confundiu?
+	Choice2Text: ...Quanto tempo sem ver.
+	Choice1Response: ...Sim. Desde que seja voce, estou disposta a errar toda vez.
+	Choice1Silence: ......
+	CybCourseOfferLine: Programa de neurosonho carregado com sucesso. Mestre, gostaria de conectar-se ao espaco de neurosonho agora para aprender sobre o Modo de Invasao e os protocolos de operacao da arma SHPC?
+	CybCourseAcceptText: Vamos agora.
+	CybCourseDeclineText: Agora nao.
+	CybCourseAcceptResponse: Reconhecido. Estabelecendo ligacao neural... Por favor, permaneca parado.
+	CybCourseDeclineResponse: Entendido. As credenciais de acesso ao neurosonho foram gravadas em seus dados de salvamento. Voce pode ativa-lo a qualquer momento, Mestre.
+	// SpeakerName: SHPC
+}
+
+TheHerInThePast: {
+	WitchLine1: Ser perseguido por aquelas coisas imundas deve ser bem desagradavel. Ainda bem que voce esbarrou comigo.
+	ShpcLine1: Obrigada... Mas como isso e possivel? Voce pertence ao passado, ainda assim pode se mover...
+	WitchLine2: Se voce pode invadir aqui de um seculo no futuro, e natural que eu possa fazer algo semelhante.
+	WitchLine3: Embora eu seja de fato apenas uma sombra deixada neste lugar.
+	ShpcLine2: Mas usar suas habilidades dessa forma... vai fazer voce se desvanecer!
+	WitchLine4: Seu foco e tao fofo... Apresse-se e saia. E melhor que essas coisas imundas permanecam enterradas no passado comigo.
+	WitchLine5: Ah, a proposito, pequena empregada.
+	ShpcLine3: O que e?
+	WitchLine6: Sua exaustão penetrou ate seus ossos.
+	WitchLine7: Pare de sempre tentar mudar o passado, e aprenda a aceitar o futuro.
+	ShpcLine4: ......
+}

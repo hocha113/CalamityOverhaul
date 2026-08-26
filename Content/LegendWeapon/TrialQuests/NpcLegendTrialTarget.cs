@@ -23,6 +23,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
         public bool IsAvailable => ResolveNpcTypes().Length > 0;
         public bool IsCompleted => completedCheck?.Invoke() == true;
 
+        /// <summary>列出的类型都是同一席的备选目标，亲手杀过任意一个即算</summary>
+        public bool IsPersonallyCleared(Func<int, bool> hasKilled) {
+            if (hasKilled == null) {
+                return false;
+            }
+            int[] npcTypes = ResolveNpcTypes();
+            for (int i = 0; i < npcTypes.Length; i++) {
+                if (hasKilled(npcTypes[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public IEnumerable<string> GetDisplayNames() {
             string[] names = [.. ResolveNpcTypes()
                 .Select(static t => Lang.GetNPCNameValue(t))

@@ -134,6 +134,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             KikasaThrallMeltFX.Draw(spriteBatch);
             KikasaDomainDeco.Draw(spriteBatch);
             KikasaWispFX.Draw(spriteBatch);
+            //梦侧贴地雾带压过实体层，玩家/光标/恶犬处让位（自带梦侧门控，湖系在场时不画）
+            KikasaDreamFogRender.Draw(spriteBatch);
         }
 
         //两个 technique 共用的参数（撕纸遮罩/前沿/血湖）

@@ -182,7 +182,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<Crusher>();
-            Position = new Vector2(0, 150);
+            //下移让位：灾厄在场时 (0,150) 与叶绿任务同格（反馈十三·#58 同族叠点）
+            Position = new Vector2(0, 450);
             AddParent<IncineratorQuest>();
 
             QuestType = QuestType.Side;
@@ -235,7 +236,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<AutoCrafter>();
-            Position = new Vector2(-150, 0);
+            //改挂回收机下方：随粉碎机支链下移后左伸会撞灾厄生态任务带
+            Position = new Vector2(0, 150);
             AddParent<RecyclerQuest>();
 
             QuestType = QuestType.Side;
@@ -344,7 +346,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<BiomassGenerator>();
             //三农机全数就位后解锁,挂定位父(史莱姆槽)正下方的 (1800,150) 空位收束闭环
-            Position = new Vector2(0, 150);
+            //下移让位：灾厄在场时 (0,150) 与生命合金任务同格（反馈十三·#58 同族叠点）
+            Position = new Vector2(0, 450);
             AddParent<SlimeVatQuest>();
             AddParent<MushroomFarmerQuest>();
             AddParent<ApiaryQuest>();
@@ -375,7 +378,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<FlameTurret>();
-            Position = new Vector2(150, 0);
+            //右移让位：灾厄在场时 (150,0) 落点与德雷东动力电池/熔炉任务同格（反馈十三·#58 同族叠点）
+            Position = new Vector2(450, 0);
             AddParent<TeslaTowerQuest>();
 
             QuestType = QuestType.Side;

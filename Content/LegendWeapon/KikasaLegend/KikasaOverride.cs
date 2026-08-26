@@ -1,4 +1,3 @@
-using CalamityOverhaul.Common;
 using CalamityOverhaul.OtherMods.Wikithis;
 using InnoVault.GameSystem;
 using System;
@@ -21,6 +20,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
         public static int ID => ModContent.ItemType<KikasaItem>();
         public override int TargetID => ID;
 
+        /// <summary>改动信息由自绘面板承载,关掉鼠标旁的金色小图标</summary>
+        public override bool DrawingInfo => false;
+
         private static Dictionary<int, int> DamageDictionary = [];
 
         /// <summary>鬼伞成长等级上限(24 段沉宴试炼)</summary>
@@ -42,6 +44,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
 
         public static LocalizedText GhostCountLine { get; private set; }
         public static LocalizedText[] TierNames { get; private set; }
+
+        //==================== 自绘面板文本(KikasaItemTooltipPanel) ====================
+        public static LocalizedText KeyLabelDomain { get; private set; }
+        public static LocalizedText KeyLabelSink { get; private set; }
+        public static LocalizedText KeyLabelMutate { get; private set; }
+        public static LocalizedText KeyLabelWheel { get; private set; }
+        public static LocalizedText KeyLabelRestart { get; private set; }
+        public static LocalizedText KeyLabelTeleport { get; private set; }
+        public static LocalizedText KeyLabelPanorama { get; private set; }
+        /// <summary>血湖表里键解绑后的输入层回退</summary>
+        public static LocalizedText MutateFallback { get; private set; }
 
         /// <summary>伞下鬼数=召唤栏位,钳 1..12;数值缩放与档位判定共用此口径</summary>
         public static int GetSlotCount(Player player)
@@ -119,6 +132,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
             return GetStartDamage;
         }
 
+        /// <summary>
+        /// 鬼奴基伤表的标定档：18 只鬼奴的常量全部按三机械档（等级 11、表值 92）的手感写死，
+        /// <see cref="KikasaServants.KikasaServantBalanceGlobal"/> 在命中端按"当前表值/92"折算成长
+        /// </summary>
+        public const float ServantTuneAnchor = 92f;
+
+        /// <summary>
+        /// 等级表原始值（不含召唤加成与前缀，别与 <see cref="GetPanelDamage"/> 混用——
+        /// 那份含加成，叠乘会把召唤加成吃两遍）。鬼奴锚点与械奴钳顶的进度读数
+        /// </summary>
+        public static int GetRawLevelDamage(Player player) {
+            if (player == null) {
+                return GetStartDamage;
+            }
+            Item held = player.HeldItem;
+            if (IsKikasa(held)) {
+                return DamageDictionary[GetLevel(held)];
+            }
+            foreach (Item item in player.inventory) {
+                if (IsKikasa(item)) {
+                    return DamageDictionary[GetLevel(item)];
+                }
+            }
+            return GetStartDamage;
+        }
+
         private static bool IsKikasa(Item item)
             => item != null && item.Alives() && item.type == ID;
 
@@ -163,6 +202,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
                 int idx = i;
                 TierNames[i] = this.GetLocalization($"TierName{i}", () => tierDefaults[idx]);
             }
+            //自绘面板:键位功能名(与键位表动作名对齐)与试炼进度行
+            KeyLabelDomain = this.GetLocalization(nameof(KeyLabelDomain), () => "领域展开");
+            KeyLabelSink = this.GetLocalization(nameof(KeyLabelSink), () => "沉物入湖");
+            KeyLabelMutate = this.GetLocalization(nameof(KeyLabelMutate), () => "血湖表里");
+            KeyLabelWheel = this.GetLocalization(nameof(KeyLabelWheel), () => "召影转盘");
+            KeyLabelRestart = this.GetLocalization(nameof(KeyLabelRestart), () => "重启自身");
+            KeyLabelTeleport = this.GetLocalization(nameof(KeyLabelTeleport), () => "领域传送");
+            KeyLabelPanorama = this.GetLocalization(nameof(KeyLabelPanorama), () => "湖心景");
+            MutateFallback = this.GetLocalization(nameof(MutateFallback), () => "鼠标中键");
         }
 
         public override void SetDefaults(Item item) {
@@ -186,18 +234,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => SetTooltip(item, ref tooltips);
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
-            string keyDisplay = CWRKeySystem.QuestLog_Key?.GetAssignedKeys() is { Count: > 0 } k
-                ? k[0] : CWRKeySystem.Notbound.Value;
-            tooltips.ReplacePlaceholder("legend_Text",
-                LegendUpgradeManagerSystem.QuestManagerHint.Value.Replace("{KEY}", keyDisplay), "");
-            int index = item.CWR()?.LegendData?.TargetLevel ?? 0;
-            string num = (index + 1).ToString();
-            if (index >= MaxLevel) {
-                num = LegendUpgradeManagerSystem.TrialPassed.Value;
-            }
-            string text = LegendData.GetLevelTrialPreText(item.CWR(), LegendUpgradeManagerSystem.Text_Lang_0, num);
-            tooltips.ReplacePlaceholder("[Lang4]", text, "");
+            //试炼进度与任务书提示已由自绘面板(KikasaItemTooltipPanel)承载,
+            //这里只补动态的伞下鬼行,旧 [Lang4]/legend_Text 占位符随正文裁短一并退役
             AppendGhostLine(tooltips);
+            LegendTooltipPanel.WrapBodyText(tooltips);
         }
 
         /// <summary>当前伞下鬼数与档位:面板即读,换装立见(SetTooltip 可能被调两次,按行名去重)</summary>

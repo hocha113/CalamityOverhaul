@@ -1,4 +1,7 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI;
+using System.Collections.ObjectModel;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -23,5 +26,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             Item.shootSpeed = 20f;
             Item.rare = CWRID.Rarity_HotPink > 0 ? CWRID.Rarity_HotPink : ItemRarityID.Purple;
         }
+
+        /// <summary>返回 false 接管 tooltip 全绘制(行数据仍来自 ModifyTooltips 管线)</summary>
+        public override bool PreDrawTooltip(ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y)
+            => SHPCItemTooltipPanel.Draw(Item, lines, x, y);
     }
 }

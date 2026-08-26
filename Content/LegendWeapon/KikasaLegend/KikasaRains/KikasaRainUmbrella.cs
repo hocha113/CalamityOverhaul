@@ -104,17 +104,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             or UmbrellaState.Pour or UmbrellaState.AutoRain;
 
         /// <summary>该玩家的常驻伞此刻是否在攻击态:"撑伞期间"语义的对外口径(伞常驻后不能再看在场数)</summary>
-        internal static bool OwnerIsRaining(Player owner) {
+        internal static bool OwnerIsRaining(Player owner)
+            => FindFor(owner.whoAmI)?.IsRaining == true;
+
+        /// <summary>找到该玩家的常驻伞,每人至多一把,无伞返回 null</summary>
+        internal static KikasaRainUmbrella FindFor(int owner) {
             int type = ModContent.ProjectileType<KikasaRainUmbrella>();
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile proj = Main.projectile[i];
-                if (proj.active && proj.owner == owner.whoAmI && proj.type == type
+                if (proj.active && proj.owner == owner && proj.type == type
                     && proj.ModProjectile is KikasaRainUmbrella umbrella) {
-                    return umbrella.IsRaining;
+                    return umbrella;
                 }
             }
-            return false;
+            return null;
         }
+
+        /// <summary>倒撑倾覆进行中:墨瀑源头跟碗口的口径,伞离态即让瀑就地定格</summary>
+        internal bool IsPourBody => State == UmbrellaState.Pour;
+
+        /// <summary>碗口世界坐标:冲刷期墨瀑源头逐帧钉在这里</summary>
+        internal Vector2 PourMouthPos => BowlMouthPos();
 
         private Player Owner => Main.player[Projectile.owner];
 
@@ -263,8 +273,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 Projectile.damage = owner.GetWeaponDamage(owner.HeldItem);
             }
 
-            //唤雨符快照:一帧一解,后续节拍/滴生成/挂钩全部复用
-            talismanProfile = KikasaTalismanCombat.Resolve(owner.HeldItem);
+            //唤雨符快照:一帧一解,后续节拍/滴生成/挂钩全部复用(符位表在玩家身上)
+            talismanProfile = KikasaTalismanCombat.Resolve(owner);
             talismanHooks = KikasaTalismanHooks.For(owner);
 
             bobPhase += 0.07f;
@@ -799,17 +809,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             float tiltPhase = MathHelper.Clamp(StateTimer / (float)PourTiltFrames, 0f, 1f);
             bool shaking = StateTimer > PourTiltFrames + PourHoldFrames;
             if (!shaking) {
-                //猛倾跟瞄准走:出手前跟光标,出手后锁角;侧倾随偏角加大,几乎倒平
+                //猛倾期贴光标,冲刷期与瀑体同速跟手,伞姿态和柱身一体转动;
+                //旁观端从所有者的墨瀑读权威角(追赶稍快吃掉包间隔),瀑包未到前按倾覆朝向保底
                 float tiltWant = 0.62f;
+                bool aimKnown = false;
                 if (Main.myPlayer == Projectile.owner) {
-                    if (StateTimer <= PourTiltFrames) {
-                        pourAim = (Main.MouseWorld - Projectile.Center).ToRotation();
+                    pourAim = StateTimer <= PourTiltFrames
+                        ? (Main.MouseWorld - Projectile.Center).ToRotation()
+                        : KikasaInkPour.TurnTowards(pourAim,
+                            (Main.MouseWorld - Projectile.Center).ToRotation());
+                    aimKnown = true;
+                }
+                else {
+                    Projectile pour = FindOwnerPour();
+                    if (pour != null) {
+                        pourAim = KikasaInkPour.TurnTowards(pourAim, pour.ai[0], 1.4f);
+                        aimKnown = true;
                     }
+                }
+                if (aimKnown) {
                     pourDirSign = MathF.Sign(MathF.Cos(pourAim) + 1e-4f);
                     float fromDown = MathHelper.WrapAngle(pourAim - MathHelper.PiOver2);
                     tiltWant = MathHelper.Clamp(0.32f + MathF.Abs(fromDown) * 0.55f, 0.32f, 1.12f);
                 }
-                pourTilt = MathHelper.Lerp(pourTilt, tiltWant * (1.1f - 0.1f * tiltPhase), 0.4f);
+                //侧倾带符号 lerp:光标扫过正下方时伞体连续翻摆,不随朝向符号跳变
+                pourTilt = MathHelper.Lerp(pourTilt,
+                    pourDirSign * tiltWant * (1.1f - 0.1f * tiltPhase), 0.4f);
             }
             else {
                 //甩干:回正路上抖两下
@@ -886,6 +911,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>倒扣时的碗口位置(蓄墨液面与墨瀑源头)</summary>
         private Vector2 BowlMouthPos()
             => Projectile.Center + new Vector2(0f, -4f * visualScale);
+
+        /// <summary>所有者在场的墨瀑(至多一根),旁观端倾覆姿态从它读权威角</summary>
+        private Projectile FindOwnerPour() {
+            int type = ModContent.ProjectileType<KikasaInkPour>();
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile proj = Main.projectile[i];
+                if (proj.active && proj.owner == Projectile.owner && proj.type == type) {
+                    return proj;
+                }
+            }
+            return null;
+        }
 
         //==================== 鬼域传送:夺伞跟拍 ====================
 
@@ -1275,9 +1312,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             //节拍挤压:蓄势时纵向绷紧、横向微鼓
             scale = new Vector2((0.7f + 0.3f * MathF.Abs(yaw)) * (1f + beatSquash * 0.6f),
                 1f - beatSquash) * visualScale;
-            //倒撑翻转+倾覆侧倾都走旋转,翻到一半的过程本身就是演出
+            //倒撑翻转+倾覆侧倾都走旋转,翻到一半的过程本身就是演出;侧倾自带符号
             rotation = lean + MathF.Sin(bobPhase) * 0.035f
-                + flipT * MathHelper.Pi + pourTilt * pourDirSign;
+                + flipT * MathHelper.Pi + pourTilt;
             //传送隐显:着色器全程乘顶点色,乘光即干净隐身
             light = Lighting.GetColor(Projectile.Center.ToTileCoordinates()) * teleportFade;
             return teleportFade > 0.01f;

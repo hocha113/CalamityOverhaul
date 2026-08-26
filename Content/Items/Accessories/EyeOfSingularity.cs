@@ -130,7 +130,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 if (dist < pullRadius && dist > 16f) {
                     Vector2 dir = (Projectile.Center - npc.Center).SafeNormalize(Vector2.Zero);
                     float factor = 1f - (dist / pullRadius);
-                    npc.velocity += dir * pullStrength * factor;
+                    //拉力乘击退抗性:抗性为零的锚定体(终灾之心、Boss 部件)不受拉扯,不再被拽出场外卡进度
+                    npc.velocity += dir * pullStrength * factor * npc.knockBackResist;
                 }
             }
 

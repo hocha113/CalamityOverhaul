@@ -219,8 +219,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 NetOtherWorkSend = true;
             }
         }
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) => CrabulonNetworking.HandleNetworkMessage(type, reader, whoAmI);
-
         public override void OtherNetWorkSend(ModPacket netMessage) => Networking.WriteData(netMessage);
         public override void OtherNetWorkReceive(BinaryReader reader) => Networking.ReadData(reader);
 

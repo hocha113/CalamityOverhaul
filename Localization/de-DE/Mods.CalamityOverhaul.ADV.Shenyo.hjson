@@ -14,6 +14,13 @@ FirstMetShenyo: {
 	// C2: That umbrella is yours from now on
 }
 
+ShenyoDollGift: {
+	// L0: I just remembered something worth giving you
+	// L1: Keep this doll close. It can save your life once
+	// L2: The one who sewed these was a silly girl. She made a whole pile for the man she secretly loved, though he could never possibly need them
+	// L3: Back then I traded her plenty of ghost money for them. They make fine gifts for the young ones
+}
+
 ShenyoAquaticScourgeGift: {
 	// L0: 水里泡烂的东西，我最看不惯
 	// L1: 那滩脏水，倒是比我的雨还难闻

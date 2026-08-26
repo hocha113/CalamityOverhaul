@@ -16,9 +16,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
     /// Complete（服务器→全体，权威完成帧的沉湖记忆通报，仅所有者本机入账）；
     /// ScourgeApply（服务器→全体，鞭笞/自动鞭击起演令，目标死亡由演出自察无需取消令）；
     /// AmbientRequest（客户端→服务器，自动鞭击索敌上行，载荷同 Request）。
-    /// 链式 handler 共用一条流：所有字段先读满，校验只做丢弃。
+    /// 所有字段先读满，校验只做丢弃。
     /// </summary>
-    internal static class KikasaDrownNet
+    internal class KikasaDrownNet : CWRNetChannel
     {
         private const byte OpRequest = 0;
         private const byte OpApply = 1;
@@ -31,8 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             if (Main.netMode != NetmodeID.MultiplayerClient) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.KikasaDrown);
+            ModPacket packet = CWRNetWork.GetPacket<KikasaDrownNet>();
             packet.Write(OpRequest);
             packet.Write((ushort)npcIndex);
             packet.Write(npcType);
@@ -44,8 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             if (Main.netMode != NetmodeID.Server || activation == null) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.KikasaDrown);
+            ModPacket packet = CWRNetWork.GetPacket<KikasaDrownNet>();
             packet.Write(OpApply);
             packet.Write((byte)activation.OwnerWho);
             packet.Write(activation.DrownId);
@@ -61,8 +59,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             if (Main.netMode != NetmodeID.Server) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.KikasaDrown);
+            ModPacket packet = CWRNetWork.GetPacket<KikasaDrownNet>();
             packet.Write(OpCancel);
             packet.Write(drownId);
             packet.Send();
@@ -72,8 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             if (Main.netMode != NetmodeID.Server) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.KikasaDrown);
+            ModPacket packet = CWRNetWork.GetPacket<KikasaDrownNet>();
             packet.Write(OpComplete);
             packet.Write((byte)ownerWho);
             packet.Write(npcType);
@@ -84,8 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             if (Main.netMode != NetmodeID.Server || activation == null) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.KikasaDrown);
+            ModPacket packet = CWRNetWork.GetPacket<KikasaDrownNet>();
             packet.Write(OpScourgeApply);
             packet.Write((byte)activation.OwnerWho);
             packet.Write(activation.ScourgeId);
@@ -99,8 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             if (Main.netMode != NetmodeID.MultiplayerClient) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.KikasaDrown);
+            ModPacket packet = CWRNetWork.GetPacket<KikasaDrownNet>();
             packet.Write(OpAmbientRequest);
             packet.Write((ushort)npcIndex);
             packet.Write(npcType);
@@ -108,10 +102,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             packet.Send();
         }
 
-        public static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type != CWRMessageType.KikasaDrown) {
-                return;
-            }
+        public override void Receive(BinaryReader reader, int whoAmI) {
             byte op = reader.ReadByte();
             switch (op) {
                 case OpRequest: {

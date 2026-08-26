@@ -51,6 +51,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
             NPC.DeathSound = SoundID.NPCDeath14;
         }
 
+        //二审补修（既有遗留）：一次性吊装的岗哨不参与原版远离despawn，
+        //否则深层房间炮塔在玩家走远后蒸发、重访=无防；门控自杀兜底离场
+        public override bool CheckActive() => false;
+
         public override void AI() {
             if (!OldNetWorld.Active) {
                 NPC.active = false;
@@ -118,6 +122,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
             }
             if (killer?.active == true) {
                 OldNetPlayer.Get(killer).AddNoise(OldNetMetrics.NoiseTurretKill);
+                //评级埋点（2.1）：拔哨破坏幽灵潜行判定
+                OldNetPlayer.Get(killer).TurretKills++;
             }
         }
 

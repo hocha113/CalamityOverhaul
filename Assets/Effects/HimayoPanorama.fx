@@ -5,8 +5,9 @@
 //经度 atan2 直接喂 tex2D 属连续性安全路径（VFX.md 极坐标缝规则：仅限直接采样）
 //底图 3548x1774（2:1），双线性直采放大后发糊
 //改用 Catmull-Rom 双三次（9 次双线性等效 4x4 卷积，负瓣自带锐化）
-//水平投影为柱面等角（垂直保持中心透视）：广角下屏幕边缘不再横向发胖，
-//且与 C# 侧花瓣投影 HimayoMenuCamera.Project 共用同一几何，转头时流速一致
+//投影为标准针孔透视，与 C# 侧花瓣投影 HimayoMenuCamera.Project 共用同一几何，
+//转头时背景与花瓣流速一致（柱面等角试过一版：中央放大+横线弯曲读作凸透镜，
+//2026-08-26 用户毙，回退 pinhole）
 //底图实为伪全景（左右缝差 19.5 对相邻列基线 3.9，非无缝 360°；中央人物按
 //平面构图绘制），uLonScale>1 声明其经度跨度不足 360°，收窄横向防人物拉宽
 // ============================================================================
@@ -19,7 +20,6 @@ float3 uRight;     //视平面右向
 float3 uUp;        //视平面上向
 float uTanHalfFov; //tan(垂直FOV/2)
 float uAspect;     //视口宽高比
-float uHalfHFov;   //水平半FOV（弧度）= atan(uTanHalfFov*uAspect)，C# 算好传入
 float uLonScale;   //经度压缩：>1=底图按不足360°解读，内容横向收窄（校准值 1.30）
 float uLatScale;   //纬度压缩，绕赤道对称，默认 1
 float uFade;       //0~1 入场淡入
@@ -65,10 +65,9 @@ float3 sampleCatmullRom(float2 uv) {
 float4 PSPanorama(float2 coords : TEXCOORD0) : COLOR0 {
     //屏幕 y 向下为正，转相机空间取负
     float2 ndc = (coords - 0.5) * 2.0;
-    //柱面等角：屏幕横向均匀分角，先在水平面内旋出列方向，再叠垂直 tan 分量
-    float theta = ndc.x * uHalfHFov;
-    float3 colDir = uForward * cos(theta) + uRight * sin(theta);
-    float3 dir = normalize(colDir - uUp * (ndc.y * uTanHalfFov));
+    float3 dir = normalize(uForward
+        + uRight * (ndc.x * uTanHalfFov * uAspect)
+        - uUp * (ndc.y * uTanHalfFov));
 
     //方向 → 等距柱状 UV；经纬各按声明跨度缩放；v 因俯仰被 C# 夹角限制，永不触及极点
     float u = atan2(dir.x, dir.z) / TAU * uLonScale + 0.5;

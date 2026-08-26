@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Quest
         internal const string CampsiteKey = "Abyss_FindCampsite";
         internal const string FragmentKey = "Abyss_FindFragment";
 
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.OldDuke";
 
         public static LocalizedText QuestCategory { get; private set; }
         public static LocalizedText CampsiteTitle { get; private set; }

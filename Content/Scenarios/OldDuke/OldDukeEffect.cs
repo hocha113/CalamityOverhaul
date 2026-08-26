@@ -149,6 +149,25 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
         }
     }
 
+    /// <summary>老公爵营地主题认领：叙事场景档，友方老公爵在场才播（战斗态由 Boss 曲接管）；
+    /// 同档权重保序旧同帧写序（SupCal 之下、Torii 之上）</summary>
+    internal sealed class OldDukeMusicClaim : MusicClaim
+    {
+        public override MusicTier Tier => MusicTier.NarrativeScene;
+        public override int SubWeight => 22;
+        public override bool YieldToBossRush => true;
+
+        public override bool ShouldPlay() {
+            if (!OldDukeEffect.IsActive) {
+                return false;
+            }
+            int index = NPC.FindFirstNPC(CWRID.NPC_OldDuke);
+            return index.TryGetNPC(out var npc) && npc.friendly;
+        }
+
+        public override int GetMusicSlot() => MusicLoader.GetMusicSlot("CalamityModMusic/Sounds/Music/AcidRainTier1");
+    }
+
     /// <summary>硫磺海效果，IsActive声明式</summary>
     internal class OldDukeEffect : ModSystem
     {
@@ -194,8 +213,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
             if (VaultUtils.isSinglePlayer) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.OldDukeEffect);
+            ModPacket packet = CWRNetWork.GetPacket<OldDukeEffectNet>();
             packet.Write(IsActive);
             packet.Write(OldDukeCampsite.WannaToFight);
             packet.Write(Main.myPlayer);
@@ -206,25 +224,22 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
             packet.Send();
         }
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type == CWRMessageType.OldDukeEffect) {
-                IsActive = reader.ReadBoolean();
-                OldDukeCampsite.WannaToFight = reader.ReadBoolean();
-                int playerIndex = reader.ReadInt32();
+        internal static void HandleNet(BinaryReader reader, int whoAmI) {
+            IsActive = reader.ReadBoolean();
+            OldDukeCampsite.WannaToFight = reader.ReadBoolean();
+            int playerIndex = reader.ReadInt32();
 
-                OldDukeInteractionState state = (OldDukeInteractionState)reader.ReadByte();
+            OldDukeInteractionState state = (OldDukeInteractionState)reader.ReadByte();
 
-                if (playerIndex.TryGetPlayer(out var player)) { OldDukeStorySync.Get(player).OldDukeState = state; }
+            if (playerIndex.TryGetPlayer(out var player)) { OldDukeStorySync.Get(player).OldDukeState = state; }
 
-                if (VaultUtils.isServer) {
-                    ModPacket packet = CWRMod.Instance.GetPacket();
-                    packet.Write((byte)CWRMessageType.OldDukeEffect);
-                    packet.Write(IsActive);
-                    packet.Write(OldDukeCampsite.WannaToFight);
-                    packet.Write(playerIndex);
-                    packet.Write((byte)state);
-                    packet.Send(-1, whoAmI);
-                }
+            if (VaultUtils.isServer) {
+                ModPacket packet = CWRNetWork.GetPacket<OldDukeEffectNet>();
+                packet.Write(IsActive);
+                packet.Write(OldDukeCampsite.WannaToFight);
+                packet.Write(playerIndex);
+                packet.Write((byte)state);
+                packet.Send(-1, whoAmI);
             }
         }
 
@@ -250,13 +265,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
                 if (ActiveTimer % 150 == 0) {
                     SpawnSulfuricBurst();
                 }
-
-                if (!CWRRef.GetBossRushActive()) {
-                    int index = NPC.FindFirstNPC(CWRID.NPC_OldDuke);
-                    if (index.TryGetNPC(out var npc) && npc.friendly) {
-                        Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityModMusic/Sounds/Music/AcidRainTier1");
-                    }
-                }
+                //音乐覆盖走 OldDukeMusicClaim 认领
             }
             else {
                 ActiveTimer = 0;
@@ -335,5 +344,11 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
             IsActive = false;
             ActiveTimer = 0;
         }
+    }
+
+    /// <summary>硫磺海效果状态同步信道</summary>
+    internal sealed class OldDukeEffectNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => OldDukeEffect.HandleNet(reader, whoAmI);
     }
 }

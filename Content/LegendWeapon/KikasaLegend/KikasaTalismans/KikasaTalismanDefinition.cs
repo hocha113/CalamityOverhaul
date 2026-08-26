@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
 
         //====效果====
         /// <summary>
-        /// 汇入三符位合成战斗档（<see cref="KikasaTalismanCombat.Resolve(Terraria.Item)"/> 逐位调用）。<br/>
+        /// 汇入三符位合成战斗档（<see cref="KikasaTalismanCombat.Resolve(Terraria.Player)"/> 逐位调用）。<br/>
         /// 倍率一律"叠乘/累加"，禁止直接赋值覆盖其他符位
         /// </summary>
         public virtual void ModifyProfile(ref KikasaTalismanProfile profile) { }

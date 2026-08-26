@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal
     {
         public static int Count = -1;
 
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.SupCal";
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }

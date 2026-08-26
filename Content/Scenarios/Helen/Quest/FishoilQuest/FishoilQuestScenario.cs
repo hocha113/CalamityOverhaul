@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest.FishoilQuest
 {
     internal sealed class FishoilQuestScenario : NarrativeScenario, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.Helen";
 
         public static bool Spwand;
         private static bool scenarioStarted;

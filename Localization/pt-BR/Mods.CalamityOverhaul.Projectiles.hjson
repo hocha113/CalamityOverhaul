@@ -1,4 +1,5 @@
 // OldNetTurretBolt.DisplayName: Sentry Bolt
+// OldNetWardenGlyphBolt.DisplayName: Execution Glyph
 RebelBladeFlyAttcke.DisplayName: Lamina Rebelde
 RebelBladeOrb.DisplayName: Orbe Demonico
 RebelBladeBack.DisplayName: Lamina Rebelde
@@ -692,3 +693,4 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // CultistPlanetProj.DisplayName: Colossal Celestial Body
 // LegionVolleyOmen.DisplayName: Legion Volley Order
 // LegionVolleyArrow.DisplayName: Legion War Arrow
+// ScapegoatDollWalker.DisplayName: Scapegoat Doll Walker

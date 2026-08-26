@@ -1,4 +1,4 @@
-SHPCModTooltipDraw: {
+﻿SHPCModTooltipDraw: {
 	InstalledHeader: INSTALLED MODULES
 	NoModules: NONE
 	BonusHeader: TOTAL MODULE BONUSES
@@ -896,6 +896,16 @@ HandmadeDoll: {
 		If the Guide is alive, he will be sacrificed upon use
 		"Handmade, and the Guide doesn't know"
 		'''
+}
+
+ScapegoatDoll: {
+	DisplayName: Scapegoat Doll
+	Tooltip:
+		'''
+		While in your inventory, blocks one death in your place
+		The doll shatters and is lost after taking the blow
+		'''
+	ShatterText: The scapegoat doll shattered
 }
 
 Snowblindness: {
@@ -2187,9 +2197,13 @@ Pandemonium: {
 		'''
 		Left-click to charge and release Transcendent Magic
 		Right-click to cast a Brimstone Rune at the cursor
-		Press [PandemoniumQSkill] to unleash Brimstone Judgement
-		Press [PandemoniumRSkill] to perform The End of All Demons
+		While held, two skill buttons light up at the bottom left of the screen
+		Click them to unleash Brimstone Judgement or The End of All Demons
 		'''
+	SkillLeftName: Brimstone Judgement
+	SkillLeftDesc: Calls down a field of brimstone fire pillars around the cursor
+	SkillRightName: The End of All Demons
+	SkillRightDesc: Unfolds a giant magic circle centered on you, pounding foes inside with lightning and fire
 }
 
 Proverbs: {
@@ -2310,9 +2324,13 @@ AriaofTheCosmos: {
 		'''
 		Hold left-click to charge a powerful quasar, dealing devastating damage upon release
 		Right-click to release a miniature black hole that fires a barrage of gamma rays once formed
-		Press [AriaofTheCosmosQSkill] to summon a Star Ring Guardian
-		Press [AriaofTheCosmosRSkill] to generate a Gamma Ray Burst
+		While held, two skill buttons light up at the bottom left of the screen
+		Click them to summon a Star Ring Guardian or trigger a Gamma Ray Burst
 		'''
+	SkillLeftName: Star Ring Guardian
+	SkillLeftDesc: Summons an orbiting star ring whose nodes volley stardust at nearby enemies
+	SkillRightName: Gamma Ray Burst
+	SkillRightDesc: After a brief charge, unleashes nine gamma rays in a fan toward the cursor
 }
 
 Oceanfragments: {

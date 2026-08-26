@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal
 {
     internal sealed class SupCalDefeat : NarrativeScenario, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.SupCal";
         public static LocalizedText Rolename2 { get; private set; }
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }

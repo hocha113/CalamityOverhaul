@@ -13,3 +13,12 @@ OldNetRelayTile.MapEntry: 中继站
 OldNetAccessTerminalTile.MapEntry: 旧网接入终端
 OldNetEchoNodeTile.MapEntry: 回声节点
 OldNetCacheTile.MapEntry: 深潜缓存
+OldNetTripwireTile.MapEntry: 绊网发射桩
+OldNetSentryMineTile.MapEntry: 哨戒雷
+OldNetBulkheadTile.MapEntry: 竖井封锁闸
+OldNetBreakerTile.MapEntry: 应急泄压杆
+OldNetRelicTile.MapEntry: 旧网遗物
+OldNetLedgerDockTile.MapEntry: 账本扩容坞
+OldNetColdNodeTile.MapEntry: 冷存储节点
+OldNetEscrowTile.MapEntry: 保险契约终端
+OldNetCipherVaultTile.MapEntry: 主控破译矩阵

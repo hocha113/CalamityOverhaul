@@ -27,13 +27,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
         /// <summary>HUD 冷却弧 0~1（1=刚唤出）</summary>
         public float HoundCooldown01 => Math.Clamp(houndCooldown / (float)CooldownFrames, 0f, 1f);
 
-        /// <summary>本人是否身处鬼梦稳态</summary>
-        public bool InDreamSteady
-            => Player.GetModPlayer<KikasaDomainPlayer>().Phase == KikasaDomainPhase.Dreaming;
+        /// <summary>本人是否已身处梦侧（可唤犬）：梦中稳态，或拉入过场里画面已切到梦侧
+        /// （<see cref="KikasaDomainPlayer.DreamWorldVisual"/> 为界）；归返过场全程不算</summary>
+        public bool InDreamSteady {
+            get {
+                KikasaDomainPlayer domain = Player.GetModPlayer<KikasaDomainPlayer>();
+                return domain.Phase == KikasaDomainPhase.Dreaming
+                    || (domain.Phase == KikasaDomainPhase.DreamPull && domain.DreamWorldVisual);
+            }
+        }
 
-        /// <summary>梦里收走双手：物品与建造封禁；拉入/归返的过场里同样按住</summary>
+        /// <summary>
+        /// 梦里收走双手：物品与建造封禁；拉入/归返的过场里同样按住。
+        /// 梦中人人失能：不止梦主（相位判定），任何站进梦界圆（<see cref="KikasaDream.DreamWorldAt"/>，
+        /// 与禁弹同口径）的玩家一并封禁，各端从同步快照自算同一答案
+        /// </summary>
         public override void SetControls() {
-            if (!Player.GetModPlayer<KikasaDomainPlayer>().InDreamPhase) {
+            if (!Player.GetModPlayer<KikasaDomainPlayer>().InDreamPhase
+                && !KikasaDream.DreamWorldAt(Player.Center)) {
                 return;
             }
             Player.noItems = true;

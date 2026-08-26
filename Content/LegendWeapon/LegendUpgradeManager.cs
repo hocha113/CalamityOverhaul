@@ -109,7 +109,8 @@ namespace CalamityOverhaul.Content.LegendWeapon
             current = null;
 
             if (req.IsStillValid()) {
-                req.Data.PerformUpgrade();
+                //本管理器仅本地客户端运行，确认人即物主
+                req.Data.PerformUpgrade(Main.LocalPlayer);
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.7f, Pitch = 0.4f });
             }
 
@@ -142,7 +143,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
             if (req.IsStillValid()) {
                 req.Data.TrustCurrentWorld();
-                req.Data.PerformUpgrade();
+                req.Data.PerformUpgrade(Main.LocalPlayer);
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.7f, Pitch = 0.6f });
             }
 

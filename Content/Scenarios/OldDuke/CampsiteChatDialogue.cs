@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
         public static bool ResearchSimpleMode;
         public static bool HistorySimpleMode;
 
-        public string LocalizationCategory => "ADV.CampsiteInteractionDialogue";
+        public string LocalizationCategory => "ADV.OldDuke.CampsiteInteractionDialogue";
 
         public static LocalizedText GreetingLine { get; private set; }
         public static LocalizedText Choice_PastStory { get; private set; }

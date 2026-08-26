@@ -181,6 +181,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             || (Phase == KikasaDomainPhase.DreamPull && PhaseTimer >= KikasaDream.PullCommitFrame)
             || (Phase == KikasaDomainPhase.DreamReturn && PhaseTimer < KikasaDream.ReturnCommitFrame);
 
+        /// <summary>湖侧能力统一受理门：湖侧世界此刻可见且稳定（满水，非收合/翻转，画面不在梦侧）。
+        /// 沉溺/鞭笞/湖藏/役灵洗礼/鬼火/回溯等湖技入口共用；鬼梦两段过场以
+        /// <see cref="DreamWorldVisual"/> 的切换帧为界：拉入过结算帧即拒、归返过结算帧即复，
+        /// 与湖面物理同口径，各端从同步的相位与计时自算同一答案</summary>
+        public bool LakeAbilityReady =>
+            AnyActive
+            && Phase != KikasaDomainPhase.Closing
+            && Phase != KikasaDomainPhase.Flipping
+            && !DreamWorldVisual
+            && RiseT >= 0.999f;
+
         /// <summary>涨水观感进度：前快后慢，水逼近脚底时减速（与入雨演出同曲线）</summary>
         public float RiseProgress => 1f - MathF.Pow(1f - RiseT, 1.6f);
 
@@ -425,6 +436,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         //==================== 命令 ====================
 
+        /// <summary>
+        /// 湖锚重写到玩家当前脚底。开域只写一次锚是共性根因一:翻转/入梦/归返若不重锚,
+        /// 运镜去追旧水位、归返后水面停在开域高度(反馈四·#9/#70)。
+        /// 各端从同步的玩家位置自算,快照广播随后校正残差
+        /// </summary>
+        private void ReanchorLake() {
+            LakeWorldY = Player.Bottom.Y;
+        }
+
         internal bool OpenDomain() {
             //收域中途反悔，原地续开：撕口从等值覆盖处再撕，锚点保持原样
 
@@ -481,6 +501,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             return true;
         }
 
+        /// <summary>翻转落定后的再受理间隔（约 1.5 秒），单机连点翻转不能无缝续时停</summary>
+        private const int FlipReacceptGapFrames = 90;
+        private uint flipReacceptAt;
+
         /// <summary>开始鬼雨异化翻转。仅 Open 稳态且满水位受理；入雨/深潜全屏演出期间不叠加第二套拷屏翻转</summary>
         internal bool FlipDomain(out bool busy) {
             busy = false;
@@ -488,7 +512,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 busy = Phase != KikasaDomainPhase.Closed;
                 return false;
             }
-            if (RiseT < 0.999f || OniRainWorldTransition.Active || OniRainDescentTransition.Active) {
+            if (RiseT < 0.999f || OniRainWorldTransition.Active || OniRainDescentTransition.Active
+                || Main.GameUpdateCount < flipReacceptAt) {
                 busy = true;
                 return false;
             }
@@ -498,6 +523,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             Phase = KikasaDomainPhase.Flipping;
             PhaseTimer = 0;
             FlipToRain = !IsRainForm;
+            //受理帧重锚:湖面与运镜焦点跟到人当前脚底,传送后翻转不再跳回旧湖位
+            ReanchorLake();
             ZeroFlipEnvelopes();
             //施术者本机才有运镜；运镜失败不致命，演出照走
             if (!Main.dedServ && Player.whoAmI == Main.myPlayer) {
@@ -598,6 +625,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             HoundReflection = true;
             Phase = KikasaDomainPhase.DreamPull;
             PhaseTimer = 0;
+            //受理帧重锚,拉入演出与镜面从人脚下起卷
+            ReanchorLake();
             ZeroDreamEnvelopes();
             //施术者本机才有运镜；运镜失败不致命，演出照走
             if (!Main.dedServ && Player.whoAmI == Main.myPlayer) {
@@ -623,6 +652,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             Phase = KikasaDomainPhase.Open;
             PhaseTimer = 0;
             RiseT = 1f;
+            //结算帧重锚:水面落回人脚底,不再悬在开域高度头顶 25~30 格(反馈四·#70)
+            ReanchorLake();
+            //混合量直接就位:归返闪帧掩护下对齐逻辑形态,不给"雨帘蒸干但形态是雨"的错拍窗口
+            RainBlend = IsRainForm ? 1f : 0f;
             ambienceTimer = Main.rand.Next(240, 480);
             ZeroDreamEnvelopes();
         }
@@ -633,6 +666,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             Phase = KikasaDomainPhase.Open;
             PhaseTimer = 0;
             RiseT = 1f;
+            ReanchorLake();
+            RainBlend = IsRainForm ? 1f : 0f;
             ambienceTimer = Main.rand.Next(240, 480);
             ZeroDreamEnvelopes();
         }
@@ -982,6 +1017,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             IsRainForm = FlipToRain;
             Phase = KikasaDomainPhase.Open;
             PhaseTimer = 0;
+            //落定再锚一次:联机翻转期人未被冻结,可能已走远
+            ReanchorLake();
+            //受理间隔起算:落定后 90 帧内不接下一次翻转,连点不能把全图钉在时停里（反馈四·#119 拍板）
+            flipReacceptAt = Main.GameUpdateCount + FlipReacceptGapFrames;
             ambienceTimer = Main.rand.Next(240, 480);
             ZeroFlipEnvelopes();
         }

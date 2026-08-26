@@ -102,9 +102,30 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         private static void ResetLocalState() {
             ensureCheckTimer = 0;
             placementFailureLogTimer = 0;
+            entryLogged = false;
         }
 
-        public override void PostUpdateEverything() => MaintainAuthoritativeUmbrella();
+        private static bool entryLogged;
+
+        public override void PostUpdateEverything() {
+            LogEntryStateOnce();
+            MaintainAuthoritativeUmbrella();
+        }
+
+        /// <summary>进世界一条状态账:排查"老存档不显示鬼伞"时直接区分
+        /// 未生成/已生成但因已获伞隐藏,不用再猜(反馈一·#44)</summary>
+        private static void LogEntryStateOnce() {
+            if (entryLogged || Main.dedServ || Main.gameMenu) {
+                return;
+            }
+            if (Main.LocalPlayer?.active != true) {
+                return;
+            }
+            entryLogged = true;
+            CWRMod.Instance.Logger.Info(
+                $"[OniUmbrellaWorldSpawn] World entry: generated={IsGenerated}, pos={UmbrellaPosition}, "
+                + $"visibleToLocal={OniRainWorldUmbrella.ShouldShowForLocalPlayer()}");
+        }
 
         /// <summary>
         /// 世界态由服务端/单人统一维护。首个安全更新帧立即恢复Actor，之后进入低频自检。
@@ -164,8 +185,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         }
 
         private static void SyncUmbrellaToClients() {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.OniUmbrellaSync);
+            ModPacket packet = CWRNetWork.GetPacket<OniUmbrellaSyncNet>();
             packet.Write(IsGenerated);
             if (IsGenerated) {
                 packet.WriteVector2(UmbrellaPosition);
@@ -425,5 +445,11 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 GenerateUmbrella(groundPos);
             }
         }
+    }
+
+    /// <summary>世界鬼伞权威世界态下发信道</summary>
+    internal sealed class OniUmbrellaSyncNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => OniUmbrellaWorldSpawn.ReceiveUmbrellaSync(reader);
     }
 }

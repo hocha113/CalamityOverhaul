@@ -23,10 +23,15 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
         //环境声循环槽（镜像 Hydroelectric 的 SlotId+回调惯例）
         private static SlotId wallHumSlot;
         private static SlotId staticWindSlot;
+        private static SlotId deepDroneSlot;
         private static readonly SoundStyle WallHumStyle =
             SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 1 };
         private static readonly SoundStyle StaticWindStyle =
             SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+        //⑧ 深层驻波（第三条环境循环）：音源候选，未确认-待实机试听换源
+        //（DD2_EtherianPortalIdleLoop 已被墙鸣占用 MaxInstances=1，不可复用）
+        private static readonly SoundStyle DeepDroneStyle =
+            SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 1 };
 
         public override void PostUpdateEverything() {
             if (Main.dedServ) {
@@ -54,6 +59,20 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
             if (!SoundEngine.TryGetActiveSound(staticWindSlot, out _)) {
                 staticWindSlot = SoundEngine.PlaySound(StaticWindStyle, null, UpdateStaticWind);
             }
+            if (!SoundEngine.TryGetActiveSound(deepDroneSlot, out _)) {
+                deepDroneSlot = SoundEngine.PlaySound(DeepDroneStyle, null, UpdateDeepDrone);
+            }
+        }
+
+        //⑧ 深层驻波：地表以上无声，下潜越深越可闻的地下低频（协议地层学的耳侧证词）
+        private static bool UpdateDeepDrone(ActiveSound sound) {
+            if (!OldNetWorld.Active || Main.gameMenu) {
+                return false;
+            }
+            sound.Volume = OldNetLinkFX.Depth01 * 0.35f * Presence;
+            sound.Pitch = -0.8f;
+            sound.Position = null;
+            return true;
         }
 
         //黑墙低鸣：离墙 0 列满响，~140 列衰减到近无声；涌动期整体抬一档
@@ -62,8 +81,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
                 return false;
             }
             float dist = MathF.Max(Main.LocalPlayer.Center.X / 16f - OldNetMetrics.WallCols, 0f);
+            //⑥ 大潮：吸气/涨潮期墙鸣涨满（×(1+1.2×tidePhase)），退潮回落
             sound.Volume = MathF.Exp(-dist / 140f) * 0.50f * Presence
-                * (1f + OldNetSkyEvents.Surge * 0.8f);
+                * (1f + OldNetSkyEvents.Surge * 0.8f + OldNetSkyEvents.TidePhase * 1.2f);
             sound.Pitch = -0.55f;
             sound.Position = null;
             return true;
@@ -75,7 +95,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
                 return false;
             }
             float corrupt = OldNetMetrics.CorruptionAt((int)(Main.LocalPlayer.Center.X / 16f));
-            sound.Volume = (0.06f + corrupt * 0.30f) * Presence;
+            //③ 网的注视：T2 起风噪叠加随注视度起伏的缓慢调制（网的呼吸变得可闻，不新增循环槽）
+            float watchMod = MathF.Max(OldNetLinkFX.Watch - 1.8f, 0f) * 0.04f
+                * (0.5f + 0.5f * MathF.Sin((float)Main.timeForVisualEffects / 60f * 0.7f));
+            sound.Volume = (0.06f + corrupt * 0.30f + watchMod) * Presence;
             sound.Pitch = -0.30f + corrupt * 0.18f;
             sound.Position = null;
             return true;

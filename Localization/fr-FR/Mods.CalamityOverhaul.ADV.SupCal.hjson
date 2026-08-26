@@ -1,0 +1,320 @@
+FirstMetSupCal: {
+	Rolename1: ???
+	Rolename2: Sorcière du Soufre
+	Line1: Je ne m'attendais pas à ce que vous tuiez ma « sœur » si tôt.
+	Line2: Vous grandissez… plus vite que prévu.
+	Line3: Je vous reconnais… Vous êtes…
+	Line4: La Sorcière du Soufre ?! Celle qui a incinéré la moitié de l'océan ?!
+	Line5: Ha ?! Heh… qu'un être… ou un *poisson*… me reconnaisse vraiment. Vous êtes amusant, je l'accorde.
+	Line6: …Mais pourquoi êtes-vous en vie ? Je me souviens distinctement — la Sorcière du Soufre est morte… au siècle dernier.
+	Line7: Un poisson intéressant, en effet. Ma conscience fut forgée dans la flamme de soufre il y a longtemps. Ce corps… n'est qu'un cadavre animé par les flammes.
+	Line8: …Un esprit vivant dans un réceptacle inhumain, lié au monde par un médium… Vous êtes devenu… une aberration ?!
+	Line9: Votre niveau de compréhension est trop bas. Vous ne pourriez pas saisir mon état.
+	Line10: D'ailleurs, ce n'est pas pour cela que je suis ici…
+	QuestionLine: Alors… quel est votre choix ?
+	Choice1Text: (Dégainer l'arme)
+	Choice2Text: (Rester silencieux)
+	Choice1Response: Alors laissez-moi mesurer votre valeur.
+	Choice2Response: …Pathétique. Un vrai « petit poisson ». Très bien, prenez ceci en cadeau de bienvenue. Nous nous reverrons.
+	NoFishLine1: Vous avez tué ma « sœur » bien plus tôt que prévu — et vous êtes venu seul ?
+	NoFishLine2: Vous devenez plus fort que je ne le pensais.
+	NoFishLine3: Vous demandez pourquoi je suis encore en vie ? Vous touchez apparemment à des vérités que vous ne devriez pas connaître.
+	NoFishLine4: Ma conscience fut forgée dans la flamme de soufre il y a longtemps. Ce corps… n'est qu'un cadavre animé par les flammes.
+	NoFishLine5: Mais c'est inutile. Votre niveau est trop bas pour saisir mon état.
+	NoFishLine6: Bien sûr, je ne me suis pas manifestée pour expliquer ces futilités.
+}
+
+SupCalMoonLordReward: {
+	Line1: Hahaha…
+	Line2: Voilà jusqu'où il est tombé.
+	Line3: Avez-vous une idée de l'état des sous-sols en ce moment ?
+	Line4: …Alors, pourquoi êtes-vous là cette fois ?
+	Line5: Un petit jouet pour vous. Et une petite commission.
+	Line6: Une petite arbalète. Prenez-la et tuez cette… *chose*… qui pompe pathétiquement l'énergie géothermique là-bas. Et souvenez-vous — vous *devez* utiliser cette arbalète.
+	Line7: Si vous réussissez, notre… « collaboration »… pourra continuer.
+}
+
+SupCalDefeat: {
+	Rolename2: Halibut&[Name]
+	Line1: Déjà à ce niveau… Heh. J'étais surpassée.
+	Line2: Mais vous n'êtes pas les plus forts. Vous êtes bons — mais *lui* ne vous cède certainement pas.
+	Line3: Yharim a parcouru ce chemin jusqu'au bout, a atteint le sommet du Terrarien. Personne n'est plus fort.
+	Line4: Dommage que vous ne puissiez pas vous rencontrer…
+	Line5: Votre niveau est trop bas. Vous ne comprendrez jamais mon état.
+	Line6: …Mon niveau est trop bas ?
+	Line7: (Après si longtemps, c'est la première fois qu'on me dit que mon « niveau » est bas.)
+	Line8: Je suis le seul être « engendré » par une ère. Depuis que j'ai osé rejeter mon identité terrarienne et me proclamer dieu, je suis naturellement tout-puissante.
+	Line9: Yharim pourrait me « peser » ? Il faudrait m'amener un Xylos.
+	Line10: ......
+}
+
+SupCalPlayerDefeat: {
+	Line1: Au moindre contact, vous vous brisez — êtes-vous en papier ?
+	Line2: Je pensais avoir trouvé un jouet qui tiendrait un peu plus longtemps dans le feu.
+	Line3: Je vous ai surestimé. Votre calibre actuel… pas même digne d'un échauffement.
+	Line4: Revenez quand vous serez assez fort pour mériter mon regard.
+	Line5: Cependant… vous avez *un peu* de courage.
+	Line6: Un mortel qui ose me regarder dans les yeux, et encore plus dégainer une lame… vous êtes le premier.
+	Line7: (Disparaît dans un tourbillon de flammes)
+	Line8: Si j'avais ouvert le neuvième œil, conséquences ou non… j'aurais eu une chance. Si ça en était arrivé là…
+	Line9: Soupir…
+}
+
+SupCalVictory: {
+	Line1: Quoi… comment est-ce possible !
+	Line2: Vous… vous m'avez vaincue ?!
+	Line3: Impossible… c'est absolument impossible…
+	Line4: J'ai déjà dépassé les limites d'un Terrarien…
+	Line5: …Il semble que je vous ai vraiment sous-estimé.
+	Line6: Mais ce n'est pas la fin. Je reviendrai.
+	Line7: La prochaine fois… je ne serai pas si négligente !
+	Line8: …Elle s'est enfuie.
+}
+
+PallbearerQuestUI: {
+	QuestTitle: Commission : Chasse à la Déesse profanée
+	QuestDesc: Vaincre la Déesse profanée uniquement avec le Porteur de cercueil.
+	AcceptText: Accepter
+	DeclineText: Refuser
+}
+
+SupCalQuestReward: {
+	Line1: Bien joué.
+	Line2: Cette arbalète vous va bien.
+	Line3: Vous m'avez résolu un problème.
+	Line4: En récompense, c'est à vous.
+	Line5: Et cette lame. Prenez-la et tuez ce… *ver*. Ne vous inquiétez pas, la rémunération sera encore plus généreuse.
+	Line6: J'y ai imprégné une part de ma « présence » de soufre. Cela devrait vous faciliter la tâche.
+	Line7: ......
+}
+
+DoGQuestUI: {
+	QuestTitle: Commission : Le Dévoreur des Dieux
+	QuestDesc: Vaincre le Dévoreur des Dieux avec le Sculpteur de cœur.
+	AcceptText: Accepter
+	DeclineText: Refuser
+}
+
+SupCalDoGQuestReward: {
+	Line1: Proprement fait.
+	Line2: Cette lame… satisfaisante comme toujours.
+	Line3: Quand j'étais encore mortelle, c'est avec cette lame que j'ai arraché le cœur de mon maître de mes propres mains. Elle fonctionne bien, non ?
+	Line4: Prenez-la.
+	Line5: Avez-vous déjà pensé… à ce que vous feriez si, la prochaine fois, ma commission était de me tuer *moi* ?
+	Line6: Dommage. Vous et lui ne vous rencontrerez jamais. Vous auriez eu tant à vous dire.
+	Line7: ……Je ne la supporte vraiment plus.
+}
+
+SupCalYharonQuestReward: {
+	Line1: Ah… c'est enfin fini.
+	Line2: Pour moi… ce dragon… était l'un des rares êtres dignes de respect.
+	Line3: Savoir qu'il allait mourir et tenir bon quand même… Même ressuscité par l'Âme aurique, celui qui revient n'est qu'une copie.
+	Line4: Dommage. Il excellait en obéissance, tandis que vous excellez en… hm, *survie* ?
+	Line5: Prenez ceci. Lingot aurique. Autrefois appelé « or du purgatoire » — la limite du pouvoir qu'un mortel peut toucher.
+	Line6: Et maintenant… c'est mon tour.
+	Line7: Quelle plaisanterie est-ce… ?
+}
+
+YharonQuestUI: {
+	QuestTitle: Commission : Le Dragon de l'incinération
+	QuestDesc: Tuer Yharon, le Dragon de l'incinération, avec la Machette oni.
+	AcceptText: Accepter
+	DeclineText: Refuser
+}
+
+SupCalQuestLine: {
+	QuestCategory: Sorcière du Soufre
+	PallbearerTitle: Commission : Chasse à la Déesse profanée
+	PallbearerSummary: Vaincre la Déesse profanée avec le Porteur de cercueil. Contribution : 80 %
+	DoGTitle: Commission : Chasse au Dévoreur des Dieux
+	DoGSummary: Vaincre le Dévoreur des Dieux avec le Sculpteur de cœur. Contribution : 80 %
+	YharonTitle: Commission : Chasse au Dragon de l'incinération
+	YharonSummary: Tuer Yharon avec la Machette oni. Contribution : 75 %
+	TrackerSummonHint: Cible absente — invoquez {0}
+	TrackerContribution: Contribution d'arme : {0:0%}
+	TrackerRequired: Requis : {0:0%}
+}
+
+EternalBlazingNow: {
+	Rolename2: ???Sorcière du Soufre???
+	Line1: Vous plaisantez…
+	Line2: Les silhouettes du passé ont disparu… ce feu… *scelle*-t-il le passé ?!
+	Line3: Cette sorcière… sa puissance n'est vraiment pas de la magie ordinaire.
+	Line4: Se retenait-elle pendant le combat ? Peu importe. Même face à ce pouvoir, je suis sûr de pouvoir vous tuer à nouveau.
+	Line5: Je ne peux pas mourir… mais… c'est presque suffisant.
+	Line6: Vous avez bien fait… Peut-être… êtes-vous vraiment « l'élu de cette ère » dont il parlait — celui qui vaut la peine d'attendre.
+	Line7: Alors… j'ai une dernière chose à vous demander.
+	Line8: Tant qu'une braise de feu de soufre brûle dans le passé ou le présent de ce monde, « moi » ne péris pas.
+	Line9: Mais ma conscience… dans cette mer de feu sans fin… sera peu à peu érodée.
+	Line10: Au plus trente ans encore.
+	Line11: …Alors, vous voulez que *lui* vous remplace ?
+	Line12: Exactement. C'est le seul chemin.
+	Line13: Quand ma conscience disparaîtra entièrement, le monde entier sera incinéré.
+	Line14: D'ailleurs… pour finir cette ère, un réceptacle mortel est bien trop fragile…
+	Line15: Pas question ! Qu'il devienne un monstre comme vous ?! Sur mon cadavre !
+	QuestionLine: ......
+	Choice1Text: (Arrêter Halibut)
+	Choice2Text: (Rester silencieux)
+	Choice1Line1: …C'est votre choix ?
+	Choice1Line2: Je comprends…
+
+	HelenEpilogue: {
+		EpilogueLine1: J'attends un idiot.
+		EpilogueLine2: …
+		EpilogueLine3: Bon retour…
+	}
+
+	WitchFarewell: {
+		FarewellLine1: Dans cette longue vie, j'ai vu d'innombrables aurores et fins.
+		FarewellLine2: Les flammes dévorent les ères, mais éclairent aussi de nouveaux départs. Je pensais que cette fois ne serait pas différente.
+		FarewellLine3: Je n'aurais pas imaginé avoir un compagnon sur ce dernier chemin.
+		FarewellLine4: Pour moi… une fin comme celle-ci… c'est plus que suffisant.
+		FarewellLine5: Votre existence prouve que cette terre n'est pas vraiment desséchée.
+		FarewellLine6: Je crois que vous irez plus loin que je ne l'ai jamais fait.
+		FarewellLine7: Et moi… je peux enfin me reposer.
+		FarewellLine8: Ne vous retournez pas. Des choses plus importantes vous attendent.
+		FarewellLine9: Pensez simplement… qu'après ce long voyage, j'ai enfin atteint ma destination.
+		FarewellLine10: Avec cela… c'est assez.
+		FarewellLine11: Allez, petit poisson.
+	}
+
+	AchievementTitle: Fin BE : La présent éternellement brûlant
+	AchievementTooltip: Le passé est consumé par le feu ; un corps aberrant touche l'éternité.
+}
+
+SCalAltarScenario: {
+	L1: Ce n'est pas encore le moment. Un autre ennemi bloque encore votre chemin.
+	L2: Allez assembler votre tas de jouets mécaniques, puis vainquez-le.
+	L3: …Quoi ? Faut-il que je me répète ?
+}
+
+SupCalDisplayText: {
+	SummonWithProverbs: Vous… vous êtes vraiment venu avec cet anneau… Très bien. Je ne ferai aucune pitié.
+	SummonWithoutProverbs: Hahaha… Ce moment… je l'attendais depuis si longtemps.
+	SummonRematchWithProverbs: Vous portez encore cet anneau…
+	SummonRematchWithoutProverbs: Encore vous… Votre compréhension de la mort est apparemment encore… insuffisante.
+	StartLowHealth: Vous avez déjà l'air d'être à votre dernier souffle.
+	StartMediumHealth: Votre technique a encore besoin de perfectionnement.
+	StartDefault: Comme c'est étrange. Vous devriez être mort depuis longtemps…
+	StartRematchLowHealth: Vous avez déjà l'air d'être à votre dernier souffle.
+	StartRematchMediumHealth: Blessé ? Comme c'est intéressant.
+	StartRematchDefault: Comme c'est étrange. Vous devriez être mort depuis longtemps…
+	BH3WithHalibut: Manier une telle… aberrante… puissance dans un réceptacle mortel… Arriver jusqu'ici mérite le respect.
+	BH3WithoutHalibut: Vous êtes habile… mais quand comprendrez-vous que vous n'attaquez qu'une flamme en vain ?
+	BrothersWithHalibut: Il est temps que vous rencontriez ma famille. Ils ont échoué sur le chemin pour devenir « autre ». Ne les imitez pas.
+	BrothersWithoutHalibut: Il est temps que vous rencontriez ma famille. Si vous mourez par une autre main, je garderai votre âme ici.
+	Phase2WithHalibut: Êtes-vous sûr de ne pas vouloir implorer la pitié ?
+	Phase2WithoutHalibut: Êtes-vous sûr de ne pas vouloir supplier ?
+	BH4Text: Restez immobile et affrontez-moi !
+	SeekerRingText: Votre force vient de l'extérieur. Sans elle, vous n'êtes rien… Ça me rappelle cet hypocrite.
+	BH5Text: La balance de la victoire est… incertaine. Il suffit d'un instant d'immobilité pour changer cela, compris ?
+	Sepulcher2Text: Si un seul de nous peut vivre aujourd'hui… qui croyez-vous que je *veuille* que ce soit ?
+	Desperation1Text: RESTE… IMMOBILE… PETIT… POISSON !
+	Desperation2Text: Ne soyez pas arrogant — avant, je ne faisais que jouer avec vous !
+	Desperation3Text: *toux*… *toux*… J'admets, je ne suis pas au meilleur de ma forme aujourd'hui.
+	Desperation4Text: Il semble… que j'ai perdu. Vous rencontrer… a vraiment été une bénédiction.
+	Acceptance1Text: C'est… le jour le plus heureux depuis cent ans…
+	Acceptance2Text: Peut-être… pouvez-vous vraiment mettre fin à cette ère maudite.
+	Story1:
+		'''
+		Le bois de cette arbalète est taillé dans un cercueil d'un noir de jais, enterré depuis un siècle.
+		Il pue une odeur de terre qu'on ne peut pas laver.
+		Là-bas, il servait à réprimer une horreur que même moi j'avais du mal à gérer.
+		Contre de telles choses, la pure destruction est vaine. On ne peut pas les tuer.
+		Tirez le pieu. Clouez-les au sol et forcez-les à retomber dans le silence.
+		Pourquoi lancer l'arbalète en premier ?
+		Hah… Si l'invité n'est pas imprégné de l'odeur du cercueil, comment saura-t-il qui aller chercher ?
+		'''
+	Story2:
+		'''
+		Cette lame misérable est émoussée parce qu'elle n'est pas faite pour couper la chair.
+		Quand j'étais encore apprentie, une bouche qui ne se fermait jamais poussa sur le cœur de mon maître.
+		Il mourut plus tard, mais ce cœur battait encore. À chaque battement, la bouche hurlait,
+		et quelqu'un autour de nous disparaissait simplement.
+		Pour survivre, j'ai dû arracher ce cœur avant le prochain battement.
+		Encore aujourd'hui, il a faim d'entendre à nouveau le son d'un cœur arraché.
+		'''
+	Story3:
+		'''
+		Lourde ? Bien. C'est voulu.
+		Elle est traversée d'or en excès et enveloppée de flammes de soufre,
+		pour enchaîner les six mains fantomatiques agitées sur la lame.
+		Ces trois idiots se démembrèrent et se recousirent pour retarder leur « rétablissement »…
+		et devinrent un monstre tordu qui ne sait plus qu'étrangler.
+		Serrez fort. Si la suppression de soufre faiblit, votre cou sera le premier qu'elles briseront.
+		Briser le cou de quiconque touche la lame… c'est leur dernier instinct.
+		'''
+	Story4:
+		'''
+		Les mortels appellent cela magie, moi j'appelle ça… emprunter.
+		Ce n'est pas un grimoire, c'est une cage à haute densité.
+		Chaque page scelle une horreur qui fit autrefois taire des cités-États entières dans la mort.
+		'''
+}
+
+SupCalDisplayTextByBossRush: {
+	SummonBossRush: Heh… Votre aura me rappelle presque celui qui a disparu depuis longtemps.
+	SummonBossRushWithProverbs: Cet anneau… même un simple vestige comme moi sent son tremblement.
+	StartBossRush: Je ne suis qu'un construit anormal né de l'Âme dorée… mais certains devoirs, je dois les accomplir.
+	BH2BossRush: Votre force est impressionnante… et pourtant insuffisante.
+	BH3BossRush: Les ombres du passé… réduites en cendres depuis longtemps, éparpillées sur votre chemin. Heh…
+	BrothersBossRush: Ces âmes… ombres d'ombres. Plus on copie, plus c'est triste, non ?
+	Phase2BossRush: Même une vie fabriquée peut avoir quelque chose pour laquelle se battre.
+	BH4BossRush: Restez immobile !
+	SeekerRingBossRush: Votre force ressemble trop à celle de cette personne dans ses souvenirs… simple coïncidence ?
+	BH5BossRush: Mon existence sert précisément à ce moment.
+	Sepulcher2BossRush: L'épreuve finale commence maintenant.
+	Desperation1BossRush: Même un fragment…
+	Desperation2BossRush: Ne croyez pas la victoire déjà acquise…
+	Desperation3BossRush: Heh… la vie d'une ombre était fragile dès le départ…
+	Desperation4BossRush: Vous avez gagné… mais votre chemin est loin d'être fini.
+	Acceptance1BossRush: Peut-être… c'était toujours ma fin destinée.
+	Acceptance2BossRush: Bonne chance, petit poisson.
+}
+
+SupCalDisplayTextNormal: {
+	SummonText: Cette mer de feu de soufre… même un esprit vengeur en sentirait la brûlure, non ?
+	SummonRematchText: Prouvez-le. Survivez.
+	StartText: Les enveloppes mortelles sont si fragiles dans cette chaleur… ou peut-être me surprendrez-vous ?
+	StartRematchText: Pas encore réduit en cendres ? Alors recommençons — jusqu'à ce que vous soyez forgé en acier… ou en poussière.
+	BH2Text: Vous ne vous êtes pas encore effondré dans les flammes… vous brûlez plus lentement que je ne le pensais.
+	BH2RematchText: Je vous accorde du courage — mais votre habileté est encore loin d'être suffisante.
+	BH3Text: Vous êtes venu si loin pour que cette chair mortelle souffre ?
+	BH3RematchText: La dernière fois que j'ai fait pleuvoir une telle calamité, c'était il y a un siècle. Voulez-vous l'expérimenter aussi ?
+	BrothersText: Ils ont tout brûlé pour ce chemin… Que ces cendres pèsent maintenant votre valeur.
+	BrothersRematchText: Peut-être de vides enveloppes avec un éclat d'âme — mais largement assez pour vous.
+	Phase2Text: D'ici… les flammes ne seront plus retenues. Ne mourez pas trop vite.
+	Phase2RematchText: Encore une fois. Recommençons.
+	BH4Text: Ne pensez pas échapper à ma main !
+	BH4RematchText: Je suis curieuse… avez-vous appris de notre premier combat ?
+	SeekerRingText: Comment avez-vous esquivé ? Ce n'est pas comme ça que ça devrait se passer… Arrêtez !
+	SeekerRingRematchText: Au moins, mon jugement n'était pas faux…
+	BH5Text: J'admets que le combat jusqu'ici n'était qu'un jeu d'enfant. Maintenant, je donne tout !
+	BH5RematchText: …N'est-ce pas excitant ?
+	Sepulcher2Text: Si un seul de nous peut survivre… qui souhaitez-vous que ce soit ?
+	Sepulcher2RematchText: Attention. Le tombeau rampant approche… et il a faim d'un nouvel occupant.
+	Desperation1Text: Arrêtez !
+	Desperation2Text: Si j'échoue ici — à quoi bon tout cela ?!
+	Desperation3Text: Quelqu'un a parcouru votre chemin jusqu'au bout. C'est une impasse… Pourquoi croire que *vous* serez différents ?!
+	Desperation4Text: Si vous ne faites que répéter sa folie, vous ne serez que de la cendre fraîche parmi ces braises !
+	Acceptance1Text: Je me suis brûlée en cette forme inhumaine, uniquement pour trouver une lueur d'espoir…
+	Acceptance2Text: Soupir… je n'ai plus la force de me relever…
+	Acceptance3Text: Devenir une aberration comme moi… peut-être pourrez-vous vraiment… tailler un avenir que je n'ai jamais vu.
+	Desperation1RematchText: Performance impressionnante. Vous avez bien combattu.
+	Desperation2RematchText: Sans aucun doute, votre force grandit à chaque instant.
+	Desperation3RematchText: J'espère vraiment que vous ne répéterez pas nos erreurs.
+	Desperation4RematchText: Si vous forgez un nouveau chemin… il reste de l'espoir pour tout.
+}
+
+EternalBlazingNowNoHelen: {
+	Line1: ……Personne n'était allé aussi loin depuis longtemps.
+	Line2: Je ne mourrai pas… mais c'est presque suffisant.
+	Line3: Vous avez bien fait… peut-être êtes-vous vraiment « l'élu de cette ère » dont il parlait — celui qui vaut la peine d'attendre.
+	Line4: J'ai donc une dernière demande pour vous.
+	Line5: Tant qu'une braise de feu de soufre brûle dans le passé ou le présent de ce monde, « moi » ne péris pas.
+	Line6: Mais ma conscience sera peu à peu érodée dans cette mer de feu sans fin.
+	Line7: Sans vous, j'aurais tenu au plus trente ans encore.
+	Line8: C'est le seul chemin.
+	Line9: Quand ma conscience disparaîtra entièrement, le monde entier sera réduit en cendres.
+	Line10: D'ailleurs — pour finir cette ère, un réceptacle mortel est bien trop fragile.
+}

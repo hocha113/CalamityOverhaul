@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.PallbearerQuest
 {
     internal sealed class SupCalMoonLordReward : NarrativeScenario, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.SupCal";
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }

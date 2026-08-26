@@ -127,8 +127,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
             if (VaultUtils.isSinglePlayer) {
                 return;
             }
-            ModPacket modPacket = CWRMod.Instance.GetPacket();
-            modPacket.Write((byte)CWRMessageType.SignalTowerTargetManager);
+            ModPacket modPacket = CWRNetWork.GetPacket<SignalTowerTargetNet>();
             modPacket.Write(points.Count);
             for (int i = 0; i < points.Count; i++) {
                 modPacket.Write(points[i].X);
@@ -151,19 +150,16 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
             return points;
         }
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type == CWRMessageType.SignalTowerTargetManager) {
-                List<Point> points = ReceiveGeneratedPoints(reader);
-                if (VaultUtils.isServer) {
-                    ModPacket modPacket = CWRMod.Instance.GetPacket();
-                    modPacket.Write((byte)CWRMessageType.SignalTowerTargetManager);
-                    modPacket.Write(points.Count);
-                    for (int i = 0; i < points.Count; i++) {
-                        modPacket.Write(points[i].X);
-                        modPacket.Write(points[i].Y);
-                    }
-                    modPacket.Send(-1, whoAmI);
+        internal static void HandleNet(BinaryReader reader, int whoAmI) {
+            List<Point> points = ReceiveGeneratedPoints(reader);
+            if (VaultUtils.isServer) {
+                ModPacket modPacket = CWRNetWork.GetPacket<SignalTowerTargetNet>();
+                modPacket.Write(points.Count);
+                for (int i = 0; i < points.Count; i++) {
+                    modPacket.Write(points[i].X);
+                    modPacket.Write(points[i].Y);
                 }
+                modPacket.Send(-1, whoAmI);
             }
         }
         #endregion
@@ -438,5 +434,11 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
         }
 
         public override void ClearWorld() => Reset();
+    }
+
+    /// <summary>信号塔目标点位同步信道</summary>
+    internal sealed class SignalTowerTargetNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => SignalTowerTargetManager.HandleNet(reader, whoAmI);
     }
 }

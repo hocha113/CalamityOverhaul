@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OldNetSky { get; set; }
         public static Asset<Effect> OldNetGrade { get; set; }
         public static Asset<Effect> OldNetHud { get; set; }
+        public static Asset<Effect> OldNetVault { get; set; }
+        public static Asset<Effect> OldNetWarden { get; set; }
         public static Asset<Effect> PowerSFShader { get; set; }
         public static Asset<Effect> EowAcid { get; set; }
         public static Asset<Effect> EowGeyser { get; set; }
@@ -139,6 +141,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OceanCurrentTrail { get; set; }
         public static Asset<Effect> OceanWaterBlob { get; set; }
         public static Asset<Effect> HalibutPanel { get; set; }
+        public static Asset<Effect> HalibutItemPanel { get; set; }
+        public static Asset<Effect> SHPCItemPanel { get; set; }
         public static Asset<Effect> HalibutAtlasBg { get; set; }
         public static Asset<Effect> OniGhostScroll { get; set; }
         public static Asset<Effect> OniGhostShadow { get; set; }
@@ -221,6 +225,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> BrimstoneDialogueBox { get; set; }
         public static Asset<Effect> SeaDialogueBox { get; set; }
         public static Asset<Effect> OniNarrativePanel { get; set; }
+        public static Asset<Effect> OniItemPanel { get; set; }
         public static Asset<Effect> SulfseaPanel { get; set; }
         public static Asset<Effect> TzeentchPanel { get; set; }
         public static Asset<Effect> EntrustGuideCard { get; set; }
@@ -283,6 +288,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaSunkEffigy { get; set; }
         public static Asset<Effect> KikasaHand { get; set; }
         public static Asset<Effect> KikasaNarrativePanel { get; set; }
+        public static Asset<Effect> KikasaItemPanel { get; set; }
         public static Asset<Effect> KikasaMoonRay { get; set; }
         public static Asset<Effect> KikasaEaterRift { get; set; }
         public static Asset<Effect> KikasaDeerclopsFrost { get; set; }
@@ -292,6 +298,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaHound { get; set; }
         public static Asset<Effect> KikasaDream { get; set; }
         public static Asset<Effect> KikasaDreamSky { get; set; }
+        public static Asset<Effect> KikasaDreamFog { get; set; }
         public static Asset<Effect> KikasaReset { get; set; }
         public static Asset<Effect> KikasaHourglass { get; set; }
         public static Asset<Effect> KikasaWispFire { get; set; }

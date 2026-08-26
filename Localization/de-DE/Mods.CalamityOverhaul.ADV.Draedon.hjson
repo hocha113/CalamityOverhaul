@@ -1,0 +1,189 @@
+ExoMechdusaSum: {
+	IntroLine1: Sie wissen … auf diesen Moment habe ich lange gewartet.
+	IntroLine2: Alles Unbekannte fasziniert mich – doch nichts so sehr wie Ihre Natur selbst.
+	IntroLine3: Ich werde Ihnen meine gottübertreffenden Schöpfungen zeigen.
+	IntroLine4: Und Sie … werden mir Ihre Natur im Kampf zeigen.
+	IntroLine5: Nun. Treffen Sie Ihre Wahl.
+	SelectionPrompt: Treffen Sie Ihre Wahl.
+	BossRushLine: Treffen Sie Ihre Wahl. Sie haben 20 Sekunden.
+	ChoiceAres: Ares
+	ChoiceThanatos: Thanatos
+	ChoiceTwins: Artemis
+}
+
+ExoMechEndingDialogue: {
+	EndLine1: Eine unbekannte Variable. Sie … sind ein Singularitätspunkt.
+	EndLine2: Für dieses Land und seine Geschichte sind Sie ein Außenstehender – wie ich.
+	EndLine3: …Meine Entschuldigung. Nach einer solchen ‚Demonstration‘ muss ich meine Gedanken ordnen.
+	EndLine4: Das bisher vergossene Blut ließ diesen Kontinent stagnieren und leblos werden.
+	EndLine5: Sie vergossen Ihr eigenes Blut. Vielleicht reicht das, diese Ära der Verzweiflung zu beenden … Wie auch immer, es ist eine Veränderung, die ich sehen wollte.
+	EndLine6: Sie wollen nun den Tyrannen erreichen. Leider kann ich nicht helfen.
+	EndLine7: Das ist kein Groll. Von Anfang an war mein Ziel nur, diesen Kampf zu beobachten.
+	EndLine8: Doch Sie haben es schon einmal geschafft. Irgendwann finden Sie einen Weg.
+	EndLine9: Ich muss Ihren Sieg anerkennen. Jetzt aber kehrt meine Aufmerksamkeit zu meinen Mechanismen zurück.
+	KillAttemptLine: …Ihre Handlung ist … unnötig.
+}
+
+DeploySignaltowerScenario: {
+	IntroLine1: Ich muss ein kritisches Experiment durchführen – und Sie sind derzeit der am besten geeignete Helfer.
+	IntroLine2: Vor hundert terranianischen Jahren fegte ein Energiesturm durch die Galaxie und zerstörte den Großteil meiner Anlagen auf diesem Planeten.
+	IntroLine3: Alles war zu weit entfernt. Als mir klar wurde, dass mein Überwachungsnetz auf Terra ausfiel, war ein Jahrhundert vergangen.
+	IntroLine4: Nach jenem Sturm wurde interstellare Reise extrem instabil. Ich muss daher die Basissysteme auf Terra neu aufbauen.
+	IntroLine5: Ich brauche Ihre Hilfe beim Aufbau des neuesten Quantenverschränkungs-Arrays.
+	IntroLine6: Diese Technologie umgeht Lichtgeschwindigkeitsgrenzen und ermöglicht galaxienweite Sofortkommunikation.
+	IntroLine7: Vor der Anwendung braucht diese Welt genügend Quantenverschränkungsknoten.
+	IntroLine8: Das ist der Quantensignalturm, den ich entworfen habe. Sein Kern nutzt Verschränkungsstabilisatoren und Nullpunkt-Energieverstärker.
+	TechExplainLine1: Jeder Turm kann mit anderen Knoten eine Quantenverschränkungsverbindung aufbauen und ein galaxienweites Kommunikationsnetz bilden.
+	TechExplainLine2: Unter theoretischen Bedingungen kann die Übertragungslatenz gegen null gehen.
+	TaskLine: Ich brauche Sie, um diese Signaltürme weltweit zu errichten und das vollständige Verschränkungsnetz aufzubauen.
+	AcceptPrompt: Nun? Nehmen Sie an?
+	ChoiceAccept: Auftrag annehmen
+	ChoiceDecline: Später
+
+	Choice_Accept: {
+		AcceptResponse: Ausgezeichnet. Hier die Baupläne der Türme. Melden Sie sich, wenn Sie fertig sind.
+		L1: Das ist die erste Materialcharge – begrenzt. Errichten Sie zuerst das Hauptgerüst des Signalturms.
+		L2: Sobald der erste Knoten läuft, stabilisiert sich die Kommunikationsverbindung.
+		L3: Dann kann ich über den Subraum kontinuierlich mehr Ressourcen für den großflächigen Bau liefern.
+	}
+
+	Choice_Decline.DeclineResponse: Verstanden. Kommen Sie zurück, wenn Sie bereit sind.
+}
+
+FirstTowerBuiltScenario: {
+	Line1: Der neue Quantenverschränkungsknoten läuft reibungslos. Das Signal ist stabil.
+	Line2: Gut. Das ist der erste Schritt des Netzes. Setzen Sie die übrigen Signaltürme fort.
+	Line3: Erreicht die Knotenzahl den Standard, kann ich viel weiter gefasst präzise beobachten.
+	Line4: Behalten Sie Ihre Effizienz bei.
+}
+
+QuestCompleteScenario: {
+	Line1: Alle Quantenknoten sind online. Das Netz läuft vollständig.
+	Line2: Die Datenübertragungslatenz entspricht den theoretischen Werten. Keine Abweichungen.
+	Line3: Ihre Leistung übertraf meine Prognosen. Lobenswert.
+	Line4: Als Bezahlung gewähre ich Zugang zu ausgewählter Ausrüstung und Berechtigungen – nach eigenem Ermessen.
+	Line5: Bei Bedarf können Sie mich direkt über das Kommunikationsnetz kontaktieren.
+}
+
+ExoMechHardDefeat: {
+	HardDefeatLine1: Entscheidungen unter extremem Druck. Genau diese Daten wollte ich sehen.
+	HardDefeatLine2: Ihre Fähigkeit, unter Druck rational zu bleiben, ist … zufriedenstellend.
+}
+
+ExoMechQuickDefeat: {
+	QuickDefeatLine1: …Dieser Zeitrahmen liegt deutlich unter meinen Vorhersagemodellen.
+	QuickDefeatLine2: Anscheinend unterschätzte ich Ihre aktuelle Kampfeffizienz.
+	QuickDefeatLine3: Vielleicht ist es Zeit, …aggressivere … Designphilosophien zu erwägen.
+}
+
+ExoMechSecondDefeat: {
+	SecondDefeatLine1: Interessant. Ihre Anpassungsrate übertrifft meine Prognosen.
+	SecondDefeatLine2: Die Daten zeigen gezielte Verbesserungen seit dem letzten Gefecht.
+	SecondDefeatLine3: Ich muss Ihre Lernkurve neu bewerten.
+}
+
+ExoMechThirdDefeat: {
+	ThirdDefeatLine1: Konstante Leistung. Ein Teil der Perfektion, die ich anstrebe.
+	ThirdDefeatLine2: Sie bewiesen, dass Ihre Fähigkeiten keine … statistische Anomalie sind.
+}
+
+DraedonQuestLine: {
+	QuestCategory: Draedon
+	DeployTitle: Quantenverschränkungs-Netzwerk
+	DeploySummary: Errichte 10 Signaltürme an Zielpunkten in der Welt
+	TrackerNearestTarget: Nächstes Ziel
+	TrackerNodeName: Verschränkungsknoten Nr. [NUM]
+	TrackerInRange: In Reichweite
+	TrackerDistance: Distanz
+	TrackerDeployProgress: Bereitstellungsfortschritt
+	TrackerQuestComplete: Quest abgeschlossen!
+}
+
+FirstMetTzeentch: {
+	L1: Pst … schau nicht zurück.
+	L2: Ich habe zugesehen, wie du diese kleinen Apparate baust.
+	L3: Zehn Quantenknoten. Zehn Wege. Zehn mögliche Zukünfte.
+	L4: Ein niedliches kleines Netz. Hast du eine Ahnung, wie viele … *Dinge* … es anziehen wird?
+	L5: Ach ja, ich sollte mich vorstellen.
+	L6: Manche nennen mich den Orakel. Andere die Feder des Schicksals …
+	L7: Aber mich interessiert mehr, wie … *du* … mich jetzt nennen würdest.
+	L8: Los. Lass es mich hören.
+	Choice1Text: Ein … Magier …?
+	Choice2Text: Ein Lügner.
+	Choice3Text: Nein. Ich kenne dich nicht.
+	Choice1_R1: Ha! Was für ein … sanfter Begriff.
+	Choice1_R2: Schade. Ich mache keine Magie. Ich ändere nur Fakten.
+	Choice1_R3: Geh weiter. ‚Magier‘ notieren wir vorerst.
+	Choice2_R1: Ah. Direkt, derb, ehrlich. Kostbare Eigenschaften.
+	Choice2_R2: Aber ich fürchte, ich lüge nie.
+	Choice2_R3: Ich sage euch nur … was gleich geschehen wird.
+	Choice2_R4: Ob ihr es glaubt oder nicht … es ist bereits geschehen.
+	Choice3_R1: Nicht? Ausgezeichnet.
+	Choice3_R2: Alle Geschichten beginnen mit diesen Worten.
+	Choice3_R3: Nur … die meisten Enden sind nicht sehr angenehm.
+	EndLine1: Nun denn. Wir sehen uns wieder.
+	EndLine2: Bald.
+	// Rolename: ?????????????????????
+}
+
+GalacticCrisis: {
+	CrisisIntro1: Da das Quantennetz wieder verbunden ist, müssen Sie einiges selbst sehen.
+	CrisisIntro2: Das ist der Schatten, der gerade die galaktischen Spiralarme verschlingt.
+	CrisisIntro3: Diese Schatten bestehen aus dem Schwarm. Zuvor setzte ich Millionen Exo-Titanen ein, um sie abzufangen.
+	CrisisIntro4: Die Daten zeigen einen verlorenen Abnutzungskrieg. Sie sind endlos, meine Ressourcen erschöpfen sich.
+	CrisisIntro5: Daher formulierte ich den einzigen Plan mit einer Erfolgsrate über 0 %.
+	CrisisIntro6: Die Planetenkerne aller Welten vom äußeren zum mittleren Galaxierand zu detonieren.
+	CrisisIntro7: Zehntausende Lichtjahre zur absoluten Todeszone zu machen, die Versorgungslinien des Schwarms zu kappen und ihn durch extreme Navigationsverluste in Nachbargalaxien zu lenken.
+	CrisisIntro8: Hunger ist der stärkste Antrieb im Universum – und am leichtesten zu berechnen. Sinken die Ressourcen unter die kritische Schwelle, wird diese Galaxie für den Schwarm nur noch ein leerer Sarg.
+	CrisisIntro9: Terra steht ebenfalls auf der Verbrannt-Erde-Liste. Als Singularität sollte Ihre Essenz hier nicht erlöschen. Ich stelle ein Schiff zur Evakuierung bereit.
+	ChoiceRefuse: Es muss einen anderen Weg geben.
+	ChoiceSilence: ……(Schweigen und die Waffe fest umklammern)
+	RebuttalLine1: …Genau.
+	RebuttalLine2: Ich prognostizierte 99 % Wahrscheinlichkeit für Evakuierung – doch ich erwartete jene 1 % irrationales Verhalten.
+	RebuttalLine3: Sie lehnten die Abkürzung zum Überleben ab. Genau das ist die Natur des Singularitäts, den ich beobachte.
+	RebuttalLine4: Dann habe ich einen Ersatzplan – eine Operation, die wegen zu niedriger Erfolgsrate auf Eis lag.
+	MissionBrief1: Das Ziel ist das Corto-System. Es ist gefallen, doch der Schwarm hat es noch nicht vollständig verdaut.
+	MissionBrief2: Im Mantel des dritten Planeten bildet sich eine Ader hochreinen Exo-Materials.
+	MissionBrief3: Der Schwarm darf es nicht erhalten. Nutzen sie Exo-Materie, gerät die galaktische Lage völlig außer Kontrolle.
+	MissionBrief4: Ihre Aufgabe ist einfach: durch die Insektenmeere brechen, zum Planetenkern, die Ader detonieren, den Planeten vollständig zerstören.
+	MissionBrief5: Gelingt die Operation, beweist sie, dass Einzelne im Krieg gegen den Schwarm entscheidend sein können – ich entwerfe eine neue Strategie um Sie.
+	AndroidReveal1: Vor Ihrer Ankunft entsandte ich ein Vorausteam zu diesen Koordinaten.
+	AndroidReveal2: Sie sind taktische Androiden nach meiner neuesten Technologie: Altis und Apollia.
+	AndroidReveal3: Ihre Mobilität und Logik übertrifft alte Mechs bei Weitem – doch kurz nach der Landung auf Corto III verlor ich ihr Signal.
+	AndroidReveal4: Letzte Daten zeigen noch Lebenszeichen, in extremer Gefahr.
+	MissionObjective: Gehen Sie zum Corto-System und prüfen Sie den Status beider Einheiten. Können sie noch kämpfen, lassen Sie sie die Mission unterstützen. Wenn nicht …
+	MissionObjectiveDark: Bringen Sie mindestens ihre Kerndaten zurück. Meine Meisterwerke sollen nicht sinnlos Käferfutter werden.
+	FinalSendOff: Koordinaten eingegeben. Gehen Sie – und zeigen Sie, ob Sie meine Berechnungen wieder übertreffen können.
+}
+
+FirstMetApollia: {
+	Line1: ……Mensch?
+	Line2: Die Abstiegsbahn in der Atmosphäre war zu auffällig. Ich prognostizierte die Landezone und versuchte mein Glück.
+	Line3: Ich bin Apollia. Sie sind hoffentlich der Vorhutführer der Exo-Flotte und sagen mir, die Hauptstreitmacht folge direkt.
+	C1: (Draedons Autorisierungschip übergeben)
+	C2: Woher weiß ich, dass Sie keine Mimik-Falle des Schwarms sind?
+	C2_R1: ……Mimiken legen ihre Position nicht freiwillig offen und rennen nicht auf eine Landekapsel zu.
+	C2_R2: Der Chip. Zeigen Sie mir Ihren Autorisierungschip.
+	Line4: ……(Liest Chipdaten)
+	Line5: Nur Sie?! Was soll das!
+	Line6: Hier brauchen wir eine Titanenlegion und einen Exterminatus! Nicht noch einen, der umsonst stirbt!
+	Line7: (Tief durchatmen) ……Entschuldigung. Die Anordnungen der Quelle sind mir bekannt.
+	Line8: Apollia, ehemals der Neunten Legion, wird Sie bei allen Operationen auf diesem Planeten unterstützen.
+}
+
+GargoyleWarningScenario: {
+	Line1: ……Ein Schwarm-Aufklärertrupp. Die Hauptmasse folgt höchstwahrscheinlich.
+	Line2: Sie haben Sie entdeckt. Folgen Sie mir. Voraus liegt eine verlassene Festung – ihre Befestigungen halten sie eine Weile auf.
+}
+
+DropPodCallScenario: {
+	Line1: Reibungsloser als erwartet. Warp-Transitzeit minus 43 Minuten.
+	Line2: Ihre Konstitution eignet sich außergewöhnlich für Subraumnavigation.
+	Line3: Sie befinden sich in niedriger Umlaufbahn über Corto III.
+	Line4: Meiden Sie die Trümmer jener Exo-Mechs.
+	Line5: Nach dem Apocalypse-Krieg verdoppelte sich die Gesamtmasse dieses Planeten. Daher sehen Sie dies.
+	Line6: Ich brannte die Berechtigungen in Ihren Chip. Treffen Sie überlebende Einheiten, verstehen sie alles.
+	Line7: Sie betreten gleich das Abschirmfeld des Schwarms. Darin bricht jede Verbindung nach außen ab.
+	Line8: Töten Sie das Knotenwesen auf diesem Planeten, sollte das Feld schwinden. Es liegt vermutlich nahe dem Planetenkern.
+	Line9: Zum Schluss: viel Glück.
+}

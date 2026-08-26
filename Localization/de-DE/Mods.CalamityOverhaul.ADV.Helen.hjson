@@ -1,0 +1,316 @@
+FirstMet: {
+	Rolename1: ???
+	Rolename2: Halibut
+	Line0: Herr … Ihre Angelftechnik lässt noch etwas Luft nach oben.
+	Line1: Sie können mich Dr. Halibut nennen.
+	Line2: Oder einfach nur Halibut.
+	Line3: Dank Ihres Hakens wurde ich aus diesen stillen, toten Gewässern gezogen.
+	Line4: Ohne Sie hätte ich wohl ewig geschlafen – bis ich wirklich vergangen wäre.
+	Line5: Dieser Fisch sollte Ihr Fang sein. Jetzt ist er unser Geschenk zum ersten Treffen.
+	Line6: ......
+	Line7: Sie fragen sich, warum ich hier bin, nicht wahr?
+	Line8: Ich war Professor an der Schwefelmeer-Universität, Fachbereich Abgrundforschung.
+	Line9: Vor einigen Jahren planten wir die ‚Abgrund-Ökologie-Beprobung‘.
+	Line10: Zurückgekehrt bin nur ich.
+	Line11: Am Grund des Abgrunds begegneten wir etwas, das sich nicht begreifen lässt.
+	Line12: Es war nichts, das man töten könnte.
+	Line13: Bei meiner Flucht fand ich unter einem Korallenbaum ein Auge.
+	Line14: Aus purem Überlebenswillen schluckte ich es.
+	Line15: Mit der Kraft dieses Auges öffnete ich eine Domäne und riss eine Spalte in den Abgrund, um zu entkommen.
+	Line16: Danach verschwimmt meine Erinnerung … ich schlief, bis Sie mich aus dem Wasser zogen.
+	Line17: Sie sehen aus wie ein Terrarianer.
+	Line18: Wenn Sie wollen, nehmen Sie mich mit.
+	Line19: Ich helfe Ihnen, dieses Land zu erobern.
+	Line20: Im Gegenzug … helfen Sie mir mit den Augen in mir und ihrem ‚Erwachen‘.
+	Line21: Wenn nichts dagegen spricht, beginnen wir mit der Untersuchung dieses Fisches.
+}
+
+EyeOfCthulhuGift: {
+	L0: Ihre Bewegungen wurden von dem Riesenauge in Zeitlupe gezogen … ich dachte, Sie posieren absichtlich.
+	L1: Wir sind in der ‚Stufe des Beobachtetwerdens‘. Das bedeutet … mehr Ärger.
+	L2: Ich fand das in seinem … Schlund. Nehmen Sie es. Ein Cthulhu-Fisch. Wie sein Namensvetter … folgt er keiner Logik.
+	L3: Bewahren Sie es gut auf, aber vorsichtig. Es lässt Sie glauben, Ihr drittes Auge sei geöffnet. In Wahrheit ist es nur ein Stimulans im Blut.
+	L4: Ich bin gespannt, ob Sie bald zum Mond zwinkern.
+}
+
+KingSlimeGift: {
+	L0: Dieser blaue Klumpen … ein ‚Schleim‘, sagen Sie? Wirkte eher wie … verfestigte Emotion.
+	L1: Vielleicht ein holpriger Versuch der Materie, Selbstbewusstsein zu sammeln und zu evolvieren.
+	L2: Bitte nehmen Sie diesen Schleimfisch. Drücken Sie ihn nicht – seine Gefühle explodieren sonst.
+	L3: Haben Sie schon einmal versucht, mit so einem Wesen Suppe zu kochen?
+	L4: Ich meine … ja, am Meeresgrund kann man auch kochen. Unten gibt es sogar … Meer im Meer.
+}
+
+QueenBeeGift: {
+	L0: Da hätte ich beinahe eine Gesichtsmaske aus Honig bekommen.
+	L1: Trotzdem habe ich einen Fisch aus einer Honigpfütze am Boden gezogen.
+	L2: Bitte, frischer … noch warmer Honigfisch.
+	L3: Perfekt für ein süß-saures Gericht, finde ich.
+}
+
+SkeletronGift: {
+	L0: Das war eine beachtliche Menge Kalzium.
+	L1: Seine Schädelstruktur erinnerte mich an ein entlaufenes psionisches Konstrukt.
+	L2: Lasst meinen Lauf erst abkühlen. Inzwischen habe ich hier einen Fisch gefunden.
+	L3: Sehen Sie – ein ‚Skeletron-Fisch‘. Man sagt, das Phosphor darin bringe Nachtangler zum Nachdenken über ihr Dasein.
+	L4: Weiter. Es warten noch … ‚abstraktere‘ Knochen.
+}
+
+AquaticScourgeGift: {
+	L0: Er erinnert mich an die weniger freundlichen Nachbarn aus meiner Heimat. Dieser hier war recht umgänglich – früher Sicherheitschef an der Schwefelmeer-Universität. Grüßte immer.
+	L1: Das Schwefelmeer ist ein merkwürdiger Ort. Jedes Wesen dort stellt dieselbe Frage: ‚Warum lebe ich noch?‘
+	L2: Ein Prismenfisch. Seine Schuppen brechen Farben, die Sie nie gesehen haben – vor allem, weil sie nicht existieren sollten.
+	L3: Hineinstarren startet Ihr Sehsystem neu. Wie ein erzwungenes Update, nur schmerzhafter.
+	L4: Am besten bei gedimmtem Licht. Sonst werden Sie sich … benebelt fühlen.
+}
+
+BrimstoneElementalGift: {
+	L0: Dass sie einfach dastand, war wie eine brennende Rede. Gut, dass wir sie zum Schweigen brachten.
+	L1: Manche Elementare werden nicht erschaffen. Sie sind nur … Merkwürdigkeiten … die aus den Rissen der Welt sickern.
+	L2: Ein Obsidianfisch. Produkt von schlagartig abgekühlter Lava. Seine Schuppen sind härter als Groll, der in der Hölle gärt.
+	L3: Vorsicht, er könnte in Ihrer Hand spontan entzünden. Emotional gesehen.
+	L4: Wut ist schließlich ansteckend.
+}
+
+CalamitasCloneGift: {
+	L0: Ein billiger Schatten. Erinnert mich an die genetischen Monstrositäten, die ich in der Uni in meinem Graben züchtete. Wer das gemacht hat, hat jedenfalls schlechten Geschmack.
+	L1: Ich habe ein schlechtes Gefühl. Der wahre Schrecken wartet noch … tiefer. Und er kommt näher.
+	L2: Zurück zur Arbeit. Ein Schwefelfisch, aus ihrer Glut gepflückt. Hält man ihn nah ans Ohr, hört man noch Gemurmel.
+	L3: Wenn Sie zu verstehen beginnen, was er sagt … gratuliere. Erster Schritt in den Wahnsinn.
+	L4: Keine Sorge. Wahnsinn ist nur eine andere Form von Klarheit – aus einem anderen Winkel betrachtet.
+}
+
+CrabulonGift: {
+	L0: Dieses pilzähnliche … Wesen? Weisheit oder bloß Instinkt unter dem Hut?
+	L1: Wussten Sie, dass Myzel-Netzwerke Informationen übertragen können? Vielleicht rief es um Hilfe.
+	L2: Das ist ein Pilzfisch. Ich habe ihn kaum aus den Sporen herausfangen können, die er verstreute.
+	L3: Keine Sorge, die Sporen verwandeln Menschen nicht in Pilze … wahrscheinlich.
+	L4: Wenn Sie plötzlich Wurzeln in einem dunklen, feuchten Ort schlagen wollen – sagen Sie Bescheid.
+}
+
+CryogenGift: {
+	L0: Eine gefrorene Seele …
+	L1: In den Abgrund-Archiven dient solche Tieftemperatur meist dazu, Verrückte zu ‚konservieren‘.
+	L2: Ein Kryo-Elritze, aus den Eissplittern aufgetaut. Hält noch die Pose, in der er eingefroren wurde.
+	L3: Man sagt, er kühle das Blut und mache die Gedanken außergewöhnlich klar.
+	L4: Zu viele davon – und Sie werden zur Eisskulptur.
+}
+
+DevourerOfGodsGift: {
+	L0: Der Verschlinger der Götter … eine kosmische Schlange, die Götter verspeist. Ihr Appetit ist so grenzenlos wie ihr Ehrgeiz.
+	L1: Man sagt: Wer in den Abgrund blickt, den blickt der Abgrund zurück. Dieses Ding blickt nicht nur – es will Sie als Snack.
+	L2: Ein Neonsalmler. Er schwebte aus einem Riss der Leere. Sein Licht stammt nicht aus dieser Dimension.
+	L3: Hineinschauen zwingt das Gehirn, Farben zu begreifen, die es nicht sollte. Ein … einzigartiges Erlebnis.
+	L4: Sehen Sie neue Farben – gratuliere. Riechen Sie Farben – Sie brauchen Pause.
+}
+
+GolemGift: {
+	L0: Ein Haufen beweglicher Steine. Erbe einer alten Zivilisation … oder vielleicht Beweis ihres Scheiterns.
+	L1: Vielleicht bewacht er etwas. Oder wiederholt ein Programm, das längst seine Bedeutung verlor.
+	L2: Ein Felsfisch, aus dem Fundament des Tempels geborgen. Seine Dichte lässt mich mein eigenes Dasein hinterfragen.
+	L3: Ich habe ihn einmal gekocht. Mein Topf gab zuerst auf.
+	L4: … Manche Dinge existieren nur, damit wir begreifen: Nicht jedes Problem muss gelöst werden.
+}
+
+HiveMindGift: {
+	L0: Ein Kollektivbewusstsein aus Verderbnis … ein ekelhafter Gedanke.
+	L1: Sein Denken muss … einzigartig sein. Unzählige faule Fragmente zu einem verdrehten Ganzen gefügt.
+	L2: Hier, ein Fäulisfisch. Aus dem Aasberg gezogen. Fragen Sie nicht wie.
+	L3: Er riecht nach Meeresfrüchten, die drei Tage in der Sonne lagen.
+	L4: Man sagt, er lässt Sie … mit dem Verderben mitschwingen. Das klingt einfach falsch.
+}
+
+LeviathanGift: {
+	L0: Der Tyrann des Ozeans … und ihr kleiner Begleiter, der ihr immer folgt. Manche Freundschaften überschreiten Art und Logik.
+	L1: Ich glaube, in den tiefsten Gräben wohnt nicht Furcht, sondern Einsamkeit. Sie suchen nur Gesellschaft.
+	L2: Ein Tropen-Barrakuda, aus einem Tiefsee-Wirbel gezogen. Sieht gewöhnlich aus – genau das ist verdächtig.
+	L3: Je alltäglicher die Oberfläche, desto außergewöhnlicher die Vergangenheit.
+	L4: Wie bei uns.
+}
+
+MoonLordGift: {
+	L0: Der Herr des Mondes, ha! Oder *ehemals*. Jetzt nur noch ein schwebender Haufen Augäpfel und Gewebe.
+	L1: Wir retteten nicht nur die Welt – wir schlossen eine Tür, die nie geöffnet werden sollte.
+	L2: Ich fing einen Wolkenfisch. Er glitt durch einen Riss am Himmel. Fühlt sich federleicht in der Hand an.
+	L3: Man sagt, er zeige die Zukunft … aber Sie haben diese Zukunft bereits umgeschrieben.
+	L4: Wir bewiesen gerade, dass selbst Götter bluten können.
+}
+
+PerforatorGift: {
+	L0: Ein Haufen bohrender Fleischwürmer … das Dasein dieses Wesens ist eine Herausforderung für die Biologie.
+	L1: Ihr Blut hat eine merkwürdige Viskosität, wie lebendiges Metall.
+	L2: Ich fand das in den Trümmern. Ein Blutfisch. Er zappelt noch.
+	L3: Lass dich nicht von seinem Aussehen schrecken – auch wenn er wie aus einem Albtraum gekrochen wirkt.
+	L4: Wenigstens kriecht er dir nachts nicht ins Ohr … wahrscheinlich.
+}
+
+PlaguebringerGift: {
+	L0: Die Seuchenbringer-Goliath … eine mechanische Biene mit Biowaffe. Wer hat das entworfen? Ein richtiger Bastard, der es wagt, Bienen zu versklaven.
+	L1: Ein Virus fragt nicht nach Recht oder Unrecht. Es will nur überleben. Wie wir – nur direkter.
+	L2: Ein Juwelenfisch. Infiziert und auf wundersame Weise genesen. Sein Immunsystem ist erfahrener als Sie.
+	L3: Man sagt, er stärke die Widerstandskraft. Klingt nach einer anderen Formulierung von ‚Was dich nicht umbringt, macht dich stärker.‘
+	L4: Nachdem wir gerade aus einem Seuchenstock kamen, sollte dieses kleine Risiko nichts sein.
+}
+
+PlanteraGift: {
+	L0: Eine Blume … wenn man ‚Blume‘ so nennen darf bei diesem menschenfressenden Rankengewirr.
+	L1: Der Zorn des Dschungels, in Pflanzenform gewachsen. Die Rache der Natur ist nie rational.
+	L2: Ein Zwillingsdorsch. Er hat zwei Köpfe. Der Dschungel ist wie ein Landmeer – hier braucht nichts einen Grund, um Extra-Teile zu wachsen.
+	L3: Man sagt, zwei Köpfe bedeuten doppelte Weisheit – sie sehen eher aus, als stritten sie, wohin sie schwimmen sollen.
+	L4: Wie Diät und Appetit. Immer im Streit. Mein Appetit gewinnt aber immer.
+}
+
+ProvidenceGift: {
+	L0: Die geschändete Göttin … ein Widerspruch aus Glauben und Flamme. Ziemlich erbärmlich.
+	L1: Wir löschten nicht nur heiliges Feuer, sondern die Glut einer ganzen Ära.
+	L2: Ein Dämonen-Höllenfisch, aus ihrer Asche wiedergeboren. Seine Temperatur bleibt dauerhaft bei ‚gerade heiß genug, um Sie nicht zu verbrennen‘.
+	L3: Diese präzise Kontrolle lässt mich vermuten … vielleicht wollte sie nur verstanden werden.
+	L4: Doch die Grenze zwischen Verständnis und Krieg ist nur einen Angriff entfernt.
+}
+
+SlimeGodGift: {
+	L0: Drei Schleime … oder eine zersplitterte Göttlichkeit? Diese dualistische Existenz ist … interessant.
+	L1: Verderbnis und Purpur. Der ewige Konflikt dieser Welt. Und wir bewiesen gerade, dass sich Konflikte ‚lösen‘ lassen.
+	L2: Ein Scheckiger Schmalzfisch. Aus dem Schleim geschöpft. Fragen Sie nicht nach dem Namen.
+	L3: Seine Farbe wechselt mit der Stimmung des Betrachters. Vielleicht ahmt er Ihr inneres Chaos nach.
+	L4: Starren Sie zu lange – und Sie fragen sich vielleicht, zu welcher Seite Sie wirklich gehören.
+}
+
+SupremeCalamitasGift: {
+	L0: Die Schwefelfeuer-Hexe … eine Rächerin. Die mächtigste Magiewirkerin des letzten Jahrhunderts.
+	L1: Was wir gerade taten … beendeten wir eine Legende oder schufen einen neuen Anfang?
+	L2: Ein Prinzessinnenfisch, aus ihrer Glut geboren. Er trägt eine widersprüchliche Anmut, wie eine Blume auf Ruinen.
+	L3: Man sagt, er zeige die Person, die man am meisten sein will – doch diese Gestalt gleicht einem selbst am wenigsten.
+	L4: Sie nähern sich dem Höhepunkt terrarianischer Macht. Von hier an … geht es bergab.
+}
+
+WallOfFleshGift: {
+	L0: Eine Mauer aus Fleisch und Knochen … der Schöpfer dieser Welt muss seltsame Ideen gehabt haben.
+	L1: Sie brachen gerade irgendein Gleichgewicht. Spüren Sie das? Der Puls der Welt beschleunigt.
+	L2: In den Überresten fand ich diesen Hungerfisch. Er wirkt ewig ausgehungert.
+	L3: Genau wie jene Mauer. Immer jagend, immer verschlingend.
+	L4: Willkommen im ‚Hard Mode‘ … obwohl ich vorher auch nicht ‚leicht‘ fand.
+}
+
+YharonGift: {
+	L0: Der Dschungeldrache … nein, der Weltverbrenner. Er brennt nicht mit Fleisch, sondern mit Obsession.
+	L1: Eine Loyalität so rein, dass sie sich für ihren Herrn zu Asche verbrennt … erinnert mich an die Fischschwärme, die zu Hause die Korallenriffe bewachen.
+	L2: Ein Scharlach-Tigerfisch. Gerade gefangen. Ich mag seine Streifen.
+	L3: In der Hand spürt man einen brennenden Entschluss. Das ist die Temperatur eines Kriegers.
+	L4: Sie besiegten jenen Drachen – doch ich frage mich … fand er im Moment des Falls endlich … Erlösung?
+}
+
+ResurrectionWarn: {
+	Line0: Warten Sie … haben Sie das gespürt?
+	Line1: Der ‚Wiederbelebungs‘-Zustand nähert sich einem kritischen Schwellenwert.
+	Line2: Ich muss Sie warnen – das ist kein Spiel.
+	Line3: Schließt sich die Wiederbelebung ab … werden die Folgen schwerwiegend sein.
+	Line4: Das Ende … vom Abgrund verschlungen zu werden.
+	Line5: Jedes Auge in mir, das sich öffnet, beschleunigt den Wiederbelebungsprozess.
+	Line6: Je mehr offen sind, desto schneller baut es sich auf – desto größer die Gefahr.
+	Line7: Das ist der Preis für abgrundtiefe Macht. Ohne geöffnete Augen schwächt sich meine Kraft stark ab.
+	Line8: Wir müssen lernen abzuwägen – wie viele Augen im Kampf ‚sicher‘ offen sein dürfen.
+	Line9: Wollen wir diese Kraft ohne Folgen nutzen …
+	Line10: …müssen wir die Augen zum ‚Absturz‘ bringen.
+}
+
+FishoilQuestScenario: {
+	Line0: Sie scheinen in letzter Zeit recht viele gewöhnliche Fische gefangen zu haben.
+	Line1: Geben Sie mir welche für meine Forschung – ich kann daraus eine Flasche frisches Fischöl raffinieren.
+	Line2: Der Prozess ist nicht schwer, nur … mühsam.
+	Line3: Dieses Fischöl hat Potenzial. Nützlicher, als Sie denken.
+	Line4: Interesse?
+	ChoiceAccept: In Ordnung.
+	ChoiceDecline: Kein Interesse.
+}
+
+HelensInterference: {
+	Line0: …Hey, haben Sie Zeit?
+	Line1: Heute … äh … schönes Wetter, oder?
+	Line2: (Halibut scheint etwas zu verstecken.)
+	Question1: ......
+	Choice1_1: Was machen Sie da?
+	Choice1_2: Her damit!
+	Choice1_3: (Schweigen)
+	FinalQuestion: Gehen Sie nicht weiter … bitte. Diese Hexe, ihre Aufträge, was sie will … ich will es nicht sehen. Den Rest des Wegs schaffen wir allein, oder?
+	FinalChoice_Continue: Auftrag fortsetzen
+	FinalChoice_Stop: Auftrag abbrechen
+
+	Branch_Anger: {
+		Line1: …Vertrauen Sie ihr wirklich *so* sehr?
+		Line2: Haben Sie nicht bemerkt? Was diese Hexe Ihnen gibt … nichts davon ist normal.
+		Line3: Es erinnert mich an etwas … im Abgrund … ich … ich berührte es … kalt, furchterregend, beklemmend … Ugh … ich will mich nicht erinnern.
+		Line4: Sie hätten das merken sollen …
+	}
+
+	Branch_Inquiry: {
+		Line1: In letzter Zeit werde ich immer unruhiger.
+		Line2: Diese Klinge … als ich sie berührte, glaubte ich … jemanden *kichern* zu hören.
+		Line3: Sie fühlen sich alle an wie … irgendeine Art ‚Medium‘.
+		Line4: Ich kann Sie damit nicht weitergehen lassen, wenigstens …
+	}
+
+	Branch_Silence: {
+		Line1: …Am furchterregendsten sind Sie, wenn Sie schweigen.
+		Line2: …Gut, ich habe den ‚Herzschnitzer‘ versteckt.
+		Line3: Diese Hexe … gefährlich, aus dem Nichts. Wenn das eine Falle ist – springen Sie dann einfach hinein?
+		Line4: Halt … bitte. Meinetwegen.
+	}
+
+	FinalBranch_Continue: {
+		Line1: …Gut. Ich wusste, dass Sie das wählen würden.
+		Line2: ......
+		Line3: Ich lege es zurück. Aber ich hoffe … wenn Sie es benutzen … sind Sie vorsichtig.
+		Line4: Und mit dieser Hexe auch …
+		Line5: Ich gehe mit Ihnen … bis zum Ende.
+	}
+
+	FinalBranch_Stop: {
+		Line1: …Sie … Sie wollen wirklich aufhören?
+		Line2: ......
+		Line3: Gehen wir. Diese Hexe kann zur Hölle fahren.
+	}
+}
+
+HellGift: {
+	L0: Dieser verdammte Ort … die Hölle wird immer heißer.
+	L1: Ich habe eine Idee. Lassen Sie uns einfach den Meeresboden durchstechen und auch hier ein Stück Ozean machen.
+	L2: Eine geothermische Heißquelle … über den ganzen Kontinent.
+	L3: …Allein daran zu denken ist entspannend.
+	L4: Ach ja, ich habe einen Fisch gefangen.
+	L5: Zuerst dachte ich, er sei ein Führer zu den Höllenquellen – aber er sieht nur so aus.
+}
+
+DyeProtest: {
+	L1: Ehrlich gesagt mag ich diese grellen Farben nicht.
+	L2: Waschen Sie sie ab, ja? In den Farbott, dann mit dem Wassereimer.
+}
+
+FishoilSubmitScenario: {
+	SubmitLine1: Hm, genug Fische gesammelt.
+	SubmitLine2: Gerade genug für eine Flasche Fischöl.
+	QuestionLine: Geben Sie sie mir ab?
+	ChoiceGive: Ja, nehmen Sie sie.
+	ChoiceRefuse: Ich überlege noch.
+	GiveResponse: Gut, einen Moment … Bitte, eine frische Flasche Fischöl.
+	RefuseResponse: In Ordnung, kommen Sie wieder, wenn Sie sich entschieden haben.
+	QuestTitle: Fischölsammlung
+	QuestSummary: Sammle 300 gewöhnliche Fische und gib sie Halibut für eine Flasche Fischöl ab.
+	QuestCategory: Halibut
+	ProgressFormat: "{0}/{1}"
+	TrackerCollecting: Noch {0} Fische nötig
+	TrackerReady: Fische gesammelt. Bitte Quest fokussieren zum Abgeben.
+	StatusSuspended: Ausgesetzt
+	StatusCompleted: Abgeschlossen
+	StatusSubmittable: Abgabebereit
+	StatusCollectingFormat: Sammeln ({0}/{1})
+	NotEnoughResponse: Hm? Nicht genug Fische. Fang noch welche und komm zurück.
+	AlreadyCompletedResponse: Das Fischöl habe ich schon gegeben. Mehr erst beim nächsten Mal.
+	SubmitButtonLabel: Fische abgeben
+	AwaitingSubmitHint: Klicken zum Abgeben an Halibut
+}
+
+GeiGeiEasterEgg: {
+	// L0: That battle was truly perilous.
+	// L1: But the records tell of a warrior from back then called Gei-Gei, who was far more terrifying.
+}

@@ -8,8 +8,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
 {
-    internal partial class CyberBossExecution
+    //信道基类挂在网络分部上
+    internal partial class CyberBossExecution : CWRNetChannel
     {
+        public override void Receive(BinaryReader reader, int whoAmI) => HandleNetStart(reader, whoAmI);
+
         private enum ExecutionPacketKind : byte
         {
             Apply,
@@ -264,8 +267,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             && record.Elapsed >= 0 && record.Elapsed < ExecutionDuration;
 
         private static ModPacket NewExecutionPacket(ExecutionPacketKind kind) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.CyberBossExecutionStart);
+            ModPacket packet = CWRNetWork.GetPacket<CyberBossExecution>();
             packet.Write((byte)kind);
             return packet;
         }

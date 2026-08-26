@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -344,11 +345,22 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon
         #endregion
     }
 
+    /// <summary>德拉多主题认领：叙事场景档，同档权重保序旧同帧写序（四叙事景中最低）；
+    /// 3 分钟守护栏迁自旧 CekTimer</summary>
+    internal sealed class DraedonMusicClaim : MusicClaim
+    {
+        public override MusicTier Tier => MusicTier.NarrativeScene;
+        public override int SubWeight => 20;
+        public override bool YieldToBossRush => true;
+        public override int HardTimeoutFrames => 60 * 60 * 3;
+        public override bool ShouldPlay() => DraedonEffect.IsActive;
+        public override int GetMusicSlot() => MusicLoader.GetMusicSlot("CalamityMod/Sounds/Music/DraedonExoSelect");
+    }
+
     /// <summary>嘉登效果调度</summary>
     internal class DraedonEffect : ModSystem
     {
         public static bool IsActive;
-        public static int CekTimer = 0;
         private int particleTimer = 0;
         private int dataStreamTimer = 0;
 
@@ -356,27 +368,22 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon
             if (VaultUtils.isSinglePlayer) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.DraedonEffect);
+            ModPacket packet = CWRNetWork.GetPacket<DraedonEffectNet>();
             packet.Write(IsActive);
             packet.Send();
         }
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type == CWRMessageType.DraedonEffect) {
-                IsActive = reader.ReadBoolean();
-                if (VaultUtils.isServer) {
-                    ModPacket packet = CWRMod.Instance.GetPacket();
-                    packet.Write((byte)CWRMessageType.DraedonEffect);
-                    packet.Write(IsActive);
-                    packet.Send(-1, whoAmI);
-                }
+        internal static void HandleNet(BinaryReader reader, int whoAmI) {
+            IsActive = reader.ReadBoolean();
+            if (VaultUtils.isServer) {
+                ModPacket packet = CWRNetWork.GetPacket<DraedonEffectNet>();
+                packet.Write(IsActive);
+                packet.Send(-1, whoAmI);
             }
         }
 
         public static bool Cek() {
             if (!IsActive) {
-                CekTimer = 0;
                 return false;
             }
 
@@ -390,12 +397,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon
 
         public override void PostUpdateEverything() {
             if (!Cek()) {
-                return;
-            }
-
-            if (++CekTimer > 60 * 60 * 3)//最多持续3分钟
-            {
-                IsActive = false;
                 return;
             }
 
@@ -417,10 +418,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon
             if (particleTimer % 120 == 0) {
                 SpawnTechBurst();
             }
-
-            if (!CWRRef.GetBossRushActive()) {//BossRush不换音乐
-                Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityMod/Sounds/Music/DraedonExoSelect");
-            }
+            //音乐覆盖走 DraedonMusicClaim 认领（BossRush 让位由旗位表达）
         }
 
         private static void SpawnDataParticles() {
@@ -522,5 +520,11 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon
         public override void Unload() {
             IsActive = false;
         }
+    }
+
+    /// <summary>嘉登效果状态同步信道</summary>
+    internal sealed class DraedonEffectNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => DraedonEffect.HandleNet(reader, whoAmI);
     }
 }

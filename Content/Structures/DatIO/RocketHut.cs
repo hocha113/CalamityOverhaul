@@ -10,8 +10,8 @@ namespace CalamityOverhaul.Content.Structures.DatIO
 {
     internal class RocketHut : SaveStructure
     {
-        public override string SavePath => Path.Combine(StructurePath, "RocketHut_v1.nbt");
-        public override void Load() => Mod.EnsureFileFromMod("Content/Structures/DatIO/RocketHut_v1.nbt", SavePath);
+        public override string SavePath => Path.Combine(StructurePath, "RocketHut_v2.nbt");
+        public override void Load() => Mod.EnsureFileFromMod("Content/Structures/DatIO/RocketHut_v2.nbt", SavePath);
         public override void SaveData(TagCompound tag)
             => SaveRegion(tag, new Point16(4187, 576).GetRectangleFromPoints(new Point16(4202, 586)));
         public override void LoadData(TagCompound tag) {

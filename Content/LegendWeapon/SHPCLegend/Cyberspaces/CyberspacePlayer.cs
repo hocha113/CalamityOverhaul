@@ -25,6 +25,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         Crash,
     }
 
+    /// <summary>赛博领域权威状态下发信道</summary>
+    internal sealed class CyberspaceStateSyncNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => CyberspacePlayer.HandleNetSync(reader, whoAmI);
+    }
+
     /// <summary>赛博领域每玩家状态承载</summary>
     public class CyberspacePlayer : ModPlayer
     {
@@ -846,8 +852,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 || Player?.active != true) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.CyberspaceStateSync);
+            ModPacket packet = CWRNetWork.GetPacket<CyberspaceStateSyncNet>();
             packet.Write((byte)Player.whoAmI);
             packet.Write(AuthorityRevision);
             packet.Write(Active);

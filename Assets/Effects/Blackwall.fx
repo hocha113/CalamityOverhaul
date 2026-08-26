@@ -10,6 +10,8 @@ float uIntensity;      //整体强度 0-1
 float2 uScreenSize;    //视口像素
 float uWallScreenX;    //墙右缘的屏幕x（像素，含缩放）
 float uSurge;          //0~1 涌动脉冲
+float uTideFrontX;     //大潮锋面屏幕x（与 uWallScreenX 同口径；无潮=大负值）
+float uTidePhase;      //大潮总包络 0~1（锋面/洪泛区总闸，平时乘 0）
 
 #define TAU 6.28318530
 
@@ -94,6 +96,33 @@ float4 PSBlackwall(float2 uv : TEXCOORD0) : COLOR0
     float flick = 0.85 + 0.15 * vnoise(float2(px.y * 0.02, t * 0.9));
     col += float3(0.42, 0.045, 0.045) * spill * flick * (1.0 + uSurge * 1.5);
     alpha = max(alpha, spill * 0.55);
+
+    //═══ 大潮锋面（uTidePhase 总闸，平时乘 0；step 门控无动态分支） ═══
+    //洪泛区：墙缘→锋面之间铺半透代码流（墙的先头部队），复用既有 band 噪声
+    float flood = step(uWallScreenX, px.x) * step(px.x, uTideFrontX) * uTidePhase;
+    float3 floodBody = lerp(float3(0.020, 0.001, 0.004),
+                            float3(0.30, 0.020, 0.048), saturate(band));
+    float floodSeam = smoothstep(0.60, 0.92, band);   //阈值放宽=数据流密度加倍读感
+    col += (floodBody * 0.55 + float3(0.85, 0.10, 0.09) * floodSeam * 0.50) * flood;
+    alpha = max(alpha, flood * 0.60);
+
+    //锋面立面：60px 宽的红脊压力锋，vnoise 撕裂缘（不许是干净数学直线）
+    float df = px.x - uTideFrontX;                     //>0 在锋前（旧网侧）
+    float tear = (vnoise(float2(px.y * 0.020, t * 0.8)) - 0.5) * 46.0;
+    float fd = df - tear;
+    float frontBand = exp(-abs(fd) / 26.0) * uTidePhase;
+    col += float3(0.95, 0.105, 0.080) * frontBand
+        * (0.70 + 0.30 * sin(t * 3.1 + px.y * 0.03));
+    alpha = max(alpha, frontBand * 0.85);
+
+    //锋前代码上撩丝：锋面以东 ~60px 内 hash 列选短竖线自下而上撩起（地面数据被掀起）
+    float aheadT = saturate(1.0 - fd / 60.0) * step(0.0, fd);
+    float wispCol = hash21(float2(floor(px.x / 7.0), 91.3));
+    float wispOn = step(0.55, wispCol);
+    float wispDash = step(0.82, frac(px.y * (0.020 + wispCol * 0.020)
+        + t * (2.0 + wispCol * 2.0)));
+    col += float3(0.75, 0.09, 0.07) * wispDash * wispOn * aheadT * uTidePhase * 0.5;
+    alpha = max(alpha, wispDash * wispOn * aheadT * uTidePhase * 0.40);
 
     col = saturate(col) * uIntensity;
     alpha = saturate(alpha) * uIntensity;

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
 {
     internal sealed class HelenEpilogue : NarrativeScenario, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV.EternalBlazingNow";
+        public string LocalizationCategory => "ADV.SupCal.EternalBlazingNow";
 
         public static LocalizedText EpilogueLine1 { get; private set; }
         public static LocalizedText EpilogueLine2 { get; private set; }

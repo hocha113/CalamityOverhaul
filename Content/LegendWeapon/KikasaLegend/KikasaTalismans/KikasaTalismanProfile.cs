@@ -1,4 +1,5 @@
 using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
 {
@@ -52,26 +53,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
     }
 
     /// <summary>
-    /// 唤雨符效果层统一入口：战斗侧一律从"那把伞"的 <see cref="KikasaData.Talismans"/> 解析，
-    /// 不读 UI 的 DisplayStore 缓存；符数据随物品存档/联机同步，各端解析结果一致
+    /// 唤雨符效果层统一入口：战斗侧一律按归属玩家的
+    /// <see cref="KikasaTalismanPlayer.Talismans"/> 解析（持伞时生效）；
+    /// 符位表经玩家快照同步到各端，解析结果一致
     /// </summary>
     internal static class KikasaTalismanCombat
     {
-        /// <summary>按物品解析三符位合成档；非鬼伞/空数据返回 Identity</summary>
-        public static KikasaTalismanProfile Resolve(Item item) {
+        /// <summary>按归属玩家解析三符位合成档；未持伞返回 Identity</summary>
+        public static KikasaTalismanProfile Resolve(Player owner) {
             KikasaTalismanProfile profile = KikasaTalismanProfile.Identity;
-            KikasaData data = KikasaData.TryGet(item);
-            if (data == null) {
+            if (owner == null || owner.HeldItem?.type != ModContent.ItemType<KikasaItem>()
+                || !owner.TryGetModPlayer(out KikasaTalismanPlayer ktp)) {
                 return profile;
             }
             for (int slot = 0; slot < KikasaTalismanStore.SlotCount; slot++) {
-                KikasaTalismanRegistry.GetHung(data.Talismans, slot)?.ModifyProfile(ref profile);
+                KikasaTalismanRegistry.GetHung(ktp.Talismans, slot)?.ModifyProfile(ref profile);
             }
             return profile;
         }
-
-        /// <summary>按玩家手中物品解析（含鼠标项）；未持伞返回 Identity</summary>
-        public static KikasaTalismanProfile ResolveHeld(Player player)
-            => player == null ? KikasaTalismanProfile.Identity : Resolve(player.GetItem());
     }
 }

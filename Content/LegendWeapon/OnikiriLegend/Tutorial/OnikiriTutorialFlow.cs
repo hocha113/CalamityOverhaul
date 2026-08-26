@@ -73,6 +73,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         internal static void HandleAbortAction()
             => Local?.AbortTutorial();
 
+        /// <summary>「跳过教程」:按学过写完成位并收摊,试炼委托门禁即刻放行</summary>
+        internal static void HandleSkipAllAction()
+            => Local?.SkipTutorialEntirely();
+
         internal static bool PollTutorialUiClick(bool mouseDown)
             => Local?.PollTutorialUiClick(mouseDown) == true;
 

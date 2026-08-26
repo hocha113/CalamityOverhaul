@@ -9,6 +9,7 @@ using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -16,6 +17,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 {
+    /// <summary>毁灭者整体撤场广播信道</summary>
+    internal sealed class DespawnDestroyerNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => DestroyerHeadAI.HandleDespawn();
+    }
+
     internal class DestroyerHeadAI : BrutalNPCOverride, ICWRLoader
     {
         #region Data
@@ -173,8 +180,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (VaultUtils.isSinglePlayer) {
                 return;
             }
-            var packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.DespawnDestroyer);
+            var packet = CWRNetWork.GetPacket<DespawnDestroyerNet>();
             packet.Send();
         }
 

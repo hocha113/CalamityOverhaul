@@ -124,50 +124,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
         /// <summary>候选扇行距：符身 40px + 行间留白，末行摘下位的小注也不压行</summary>
         public const float TalisFanRowGap = 62f;
 
-        /// <summary>候选扇每行上限（正常屏 9，窄屏按可用宽自动收行）</summary>
-        public const int TalisFanMaxPerRow = 9;
+        /// <summary>
+        /// 候选扇固定列数：换符/选符两入口共用同一布局。
+        /// 旧版按项数均摊行宽，摘下位那 +1 项会把 9×3 重排成 7×4，肌肉记忆断裂（反馈八·#24）；
+        /// 现在列数恒定、末行不满不重排，同一张符在两入口位置一致。
+        /// 容量按全符 27+摘下位=28 取 7 列（9 列装不下 28）
+        /// </summary>
+        public const int TalisFanCols = 7;
 
-        /// <summary>本屏实际行容量：两侧 40px 钳边内摆得下的中心数</summary>
-        private static int TalisFanCap()
-            => Math.Clamp((int)((UIScreenW - 80f) / TalisFanGap) + 1, 3, TalisFanMaxPerRow);
+        /// <summary>本屏实际列数：极窄屏按可用宽收列（两侧 40px 钳边），正常屏恒为 <see cref="TalisFanCols"/></summary>
+        private static int TalisFanColsFit()
+            => Math.Clamp((int)((UIScreenW - 80f) / TalisFanGap) + 1, 3, TalisFanCols);
 
         /// <summary>候选扇行数：项数超出一行容量后增行</summary>
         public static int TalisFanRowCount(int itemCount) {
-            int cap = TalisFanCap();
-            return itemCount <= 0 ? 0 : (itemCount + cap - 1) / cap;
-        }
-
-        /// <summary>均摊后的每行项数：行间尽量平衡（10 项=5+5 而非 9+1）</summary>
-        public static int TalisFanPerRow(int itemCount) {
-            int rows = TalisFanRowCount(itemCount);
-            return rows <= 0 ? 1 : (itemCount + rows - 1) / rows;
+            int cols = TalisFanColsFit();
+            return itemCount <= 0 ? 0 : (itemCount + cols - 1) / cols;
         }
 
         /// <summary>
-        /// 网格原点（首行中心）：水平锚定被点符位并按首行宽钳回屏内；
+        /// 网格原点（首行中心）：水平锚定被点符位并按行宽钳回屏内；
         /// 垂直先落符身下方，行数多时向上钳、极矮屏保底不顶出题头
         /// </summary>
         private static Vector2 TalisFanOrigin(int slotIndex, int itemCount) {
             Vector2 strip = TalisStripCenter(slotIndex);
-            float half = (TalisFanPerRow(itemCount) - 1) * 0.5f * TalisFanGap;
+            float half = (TalisFanColsFit() - 1) * 0.5f * TalisFanGap;
             float cx = MathHelper.Clamp(strip.X, 40f + half, UIScreenW - 40f - half);
             float cy = strip.Y + TalisStripSize.Y * 0.5f + 54f;
             float rowSpan = (TalisFanRowCount(itemCount) - 1) * TalisFanRowGap;
-            //底钳：末行连同摘下位小注收在屏底之上；顶钳后手兜底，保交互优先
-            cy = MathF.Min(cy, UIScreenH - 80f - rowSpan);
+            //底钳：末行连同摘下位小注、换行后的规则衬底块（最高两行）都收在屏底之上；
+            //顶钳后手兜底，保交互优先
+            cy = MathF.Min(cy, UIScreenH - 150f - rowSpan);
             cy = MathF.Max(cy, 56f);
             return new Vector2(cx, cy);
         }
 
-        /// <summary>候选扇第 item 张的中心：逐行铺开，末行不满时行内居中</summary>
+        /// <summary>候选扇第 item 张的中心：定列铺开，末行不满不重排，同一张符两入口位置一致</summary>
         public static Vector2 TalisFanPos(int slotIndex, int itemIndex, int itemCount) {
-            int perRow = TalisFanPerRow(itemCount);
-            int row = itemIndex / perRow;
-            int rowItems = Math.Min(perRow, itemCount - row * perRow);
+            int cols = TalisFanColsFit();
             Vector2 origin = TalisFanOrigin(slotIndex, itemCount);
             return new Vector2(
-                origin.X + (itemIndex % perRow - (rowItems - 1) * 0.5f) * TalisFanGap,
-                origin.Y + row * TalisFanRowGap);
+                origin.X + (itemIndex % cols - (cols - 1) * 0.5f) * TalisFanGap,
+                origin.Y + itemIndex / cols * TalisFanRowGap);
         }
 
         /// <summary>候选扇命中矩形（几何与 <see cref="TalisFanPos"/> 严格同源）</summary>

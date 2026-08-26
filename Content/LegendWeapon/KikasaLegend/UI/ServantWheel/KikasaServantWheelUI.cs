@@ -64,7 +64,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
             WheelCenterSummonAll = this.GetLocalization(nameof(WheelCenterSummonAll), () => "[Release] Call out all");
             WheelCenterEmpty = this.GetLocalization(nameof(WheelCenterEmpty), () => "No shades seated in the lake");
             WheelDamageFormat = this.GetLocalization(nameof(WheelDamageFormat), () => "Output per shade afield: {0}%");
-            WheelHint = this.GetLocalization(nameof(WheelHint), () => "[{0}] Hold \u00b7 Release to commit \u00b7 RMB cancel");
+            //右键语义要写透：只收转盘、不收沉影（反馈三·#8，文案方案拍板 2026/8/26）
+            WheelHint = this.GetLocalization(nameof(WheelHint), () => "[{0}] Hold \u00b7 Release to commit \u00b7 RMB closes the wheel only, shades stay afield");
             WheelWispName = this.GetLocalization(nameof(WheelWispName), () => "Gold Flame");
             WheelWispDesc = this.GetLocalization(nameof(WheelWispDesc),
                 () => "Once lit, the gold flame spreads along the shore and scorches whatever it reaches");
@@ -314,7 +315,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
                 float a1 = a0 + MathHelper.TwoPi / dashes * 0.55f;
                 DrawWaterArc(sb, pos, 15f, a0, a1, 1.1f, dim, time, 0.6f);
             }
-            KikasaVaultRenderer.DrawGlowDot(sb, pos, 8f,
+            //座底暗衬同为暗色：走真 alpha 暗盘
+            KikasaVaultRenderer.DrawDarkDisc(sb, pos, 8f,
                 KikasaHudTheme.Deep(rain) * (0.5f * a));
         }
 
@@ -325,8 +327,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
             int filled = servant.FilledSlotCount;
             int active = servant.ActiveSlotCount;
 
-            //章底暗盘
-            KikasaVaultRenderer.DrawGlowDot(sb, center, KikasaServantWheelController.DeadZoneRadius + 6f,
+            //章底暗盘：真 alpha 暗盘（黑底 SoftGlow 在普通批画暗色曾糊出黑方块）
+            KikasaVaultRenderer.DrawDarkDisc(sb, center, KikasaServantWheelController.DeadZoneRadius + 6f,
                 KikasaHudTheme.Void(rain) * (0.85f * a));
 
             //死区环：有影出战时随水呼吸

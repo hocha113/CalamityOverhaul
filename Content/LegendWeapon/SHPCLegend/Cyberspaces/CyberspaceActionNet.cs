@@ -32,7 +32,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         ExpiredRequest,
     }
 
-    internal static class CyberspaceActionNet
+    /// <summary>赛博空间动作请求总线，类本身即信道（子操作字节继续内部分发）</summary>
+    internal class CyberspaceActionNet : CWRNetChannel
     {
         private enum PacketKind : byte
         {
@@ -66,9 +67,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             CyberspaceActionKind action, Vector2 target)
             => SendRequest(player, action, 0, target);
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader,
-            int whoAmI) {
-            if (type != CWRMessageType.CyberspaceAction || reader == null) {
+        public override void Receive(BinaryReader reader, int whoAmI) {
+            if (reader == null) {
                 return;
             }
             try {
@@ -426,8 +426,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         private static ModPacket NewPacket(PacketKind kind) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.CyberspaceAction);
+            ModPacket packet = CWRNetWork.GetPacket<CyberspaceActionNet>();
             packet.Write((byte)kind);
             return packet;
         }

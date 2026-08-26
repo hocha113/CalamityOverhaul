@@ -123,10 +123,17 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
                 sky.Parameters["uSeed"]?.SetValue(OldNetMetrics.MacroSeed * 0.001f);
                 sky.Parameters["uWallScreenX"]?.SetValue(wallScreenX);
                 sky.Parameters["uCorrupt"]?.SetValue(corruptSmooth);
-                sky.Parameters["uSurge"]?.SetValue(OldNetSkyEvents.Surge);
+                //涌动合成值：常规涌动与大潮前奏取 max（大潮幕一把天幕拉向墙侧）
+                sky.Parameters["uSurge"]?.SetValue(OldNetSkyEvents.SurgeComposed);
                 sky.Parameters["uGiant"]?.SetValue(new Vector4(
                     OldNetSkyEvents.GiantPos.X, OldNetSkyEvents.GiantPos.Y,
                     OldNetSkyEvents.GiantScale, OldNetSkyEvents.GiantMix));
+                //网的注视：注视度 + 玩家屏幕uv（红眼朝向；与 wallScreenX 同口径含缩放）
+                sky.Parameters["uWatch"]?.SetValue(OldNetLinkFX.Watch);
+                Vector2 playerScreen = Vector2.Transform(
+                    Main.LocalPlayer.Center - Main.screenPosition,
+                    Main.GameViewMatrix.TransformationMatrix);
+                sky.Parameters["uPlayerUv"]?.SetValue(playerScreen / new Vector2(vpW, vpH));
                 sky.CurrentTechnique.Passes[0].Apply();
                 spriteBatch.Draw(px, new Rectangle(0, 0, vpW, vpH), Color.White);
 

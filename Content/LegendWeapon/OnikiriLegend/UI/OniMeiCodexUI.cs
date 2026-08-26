@@ -490,7 +490,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (rows.Count == 0) {
                 OniMeiCodexRenderer.DrawPaperInk(spriteBatch, font, EmptyPage.Value,
                     new Vector2(leftPage.Center.X, leftPage.Center.Y),
-                    new Color(122, 106, 96), 0.95f, contentA, 0.5f, 0.5f);
+                    OniMeiCodexRenderer.PaperAsh, 0.95f, contentA, 0.5f, 0.5f);
             }
             for (int i = 0; i < cellRects.Length; i++) {
                 int index = PageStart + i;

@@ -1,0 +1,320 @@
+FirstMetSupCal: {
+	Rolename1: ???
+	Rolename2: Brimstone Witch
+	Line1: I hadn't expected you to kill my 'sister' so soon.
+	Line2: You are growing... faster than anticipated.
+	Line3: I recognize you... You're...
+	Line4: The Brimstone Witch?! The one who incinerated half the ocean?!
+	Line5: Hah?! Heh... To think someone... or some*fish*... actually recognizes me. You are amusing, I'll give you that.
+	Line6: ...But why are you alive? I distinctly remember the Brimstone Witch died... last century.
+	Line7: An interesting fish, indeed. My consciousness was forged into the brimstone flame long ago. This body... it is merely a corpse, puppeteered by the flames.
+	Line8: ...A living mind in an inhuman vessel, bound to the world by a medium... You've become... an aberration?!
+	Line9: Your comprehension is too limited. You could not possibly understand my state of being.
+	Line10: Besides, that is not why I am here...
+	QuestionLine: Well... what is your choice?
+	Choice1Text: (Draw weapon)
+	Choice2Text: (Remain silent)
+	Choice1Response: Then let me measure your worth.
+	Choice2Response: ...Pathetic. A 'small fry', indeed. Very well, take this as a greeting gift. We will meet again.
+	NoFishLine1: You killed my 'sister' far sooner than I expected. And you came alone?
+	NoFishLine2: You are growing stronger than I anticipated.
+	NoFishLine3: You ask why I am still alive? It seems you have begun to touch upon truths you were not meant to know.
+	NoFishLine4: My consciousness was forged into the brimstone flame long ago. This body... is merely a corpse puppeteered by the flames.
+	NoFishLine5: But it is pointless. Your comprehension is too limited to grasp my state of being.
+	NoFishLine6: Of course, I did not reveal myself merely to explain these trivialities.
+}
+
+SupCalMoonLordReward: {
+	Line1: Hahaha...
+	Line2: So that's how far he's fallen.
+	Line3: Do you have any idea what the underground looks like right now?
+	Line4: ...So, why are you here this time?
+	Line5: A little toy for you. And a small commission.
+	Line6: A small crossbow. I need you to take it and kill that... *thing*... pathetically sucking up geothermal energy down there. And remember, you *must* use this crossbow.
+	Line7: If you succeed, our... 'partnership'... can continue.
+}
+
+SupCalDefeat: {
+	Rolename2: Halibut & [Name]
+	Line1: To think you've already reached this level... Heh. I was outmatched.
+	Line2: But you are not the strongest. You may be good, but *he* is certainly no worse than you.
+	Line3: Yharim has already walked to the end of that path. He has reached the pinnacle of what a Terrarian can be. No one is stronger.
+	Line4: A pity you two cannot meet...
+	Line5: Your level of comprehension is too low. You will never understand my state.
+	Line6: ...My level of comprehension is too low?
+	Line7: (I've lived this long, and this is the first time anyone's told me my 'level' is low.)
+	Line8: I am the sole being 'birthed' by an era. Since I dared to cast off my Terrarian identity and declare myself a god, I am naturally omnipotent.
+	Line9: You say Yharim can 'weigh' me? You'd need to bring me Xeroc.
+	Line10: ......
+}
+
+SupCalPlayerDefeat: {
+	Line1: You shatter at a touch. Are you made of paper?
+	Line2: I thought I'd found a toy that would last a bit longer in the fire.
+	Line3: I overestimated you. Your current caliber... you aren't even worthy of being my warm-up.
+	Line4: Come back when you are strong enough to be worthy of my gaze.
+	Line5: Although... you do have *some* courage.
+	Line6: A mortal who dares to look me in the eye, let alone draw a blade... you are the first.
+	Line7: (Vanishes in a whirlwind of flame)
+	Line8: If I'd opened the ninth eye, consequences be damned... I should have had a chance. If it came to that...
+	Line9: Sigh...
+}
+
+SupCalVictory: {
+	Line1: What... How is this possible!
+	Line2: You... You defeated me?!
+	Line3: Impossible... This is absolutely impossible...
+	Line4: I have already surpassed the limits of a Terrarian...
+	Line5: ...It seems I truly underestimated you.
+	Line6: But this is not the end. I will return.
+	Line7: Next time... Next time, I will not be so careless!
+	Line8: ...She fled.
+}
+
+PallbearerQuestUI: {
+	QuestTitle: Commission: Hunt the Profaned Goddess
+	QuestDesc: Defeat the Profaned Goddess using only the Pallbearer.
+	AcceptText: Accept
+	DeclineText: Decline
+}
+
+SupCalQuestReward: {
+	Line1: Well done.
+	Line2: This crossbow suits you.
+	Line3: You've solved a problem for me.
+	Line4: As a reward, these are yours.
+	Line5: And this blade. I need you to take it and kill that... *worm*. Don't worry, the payment will be even more generous.
+	Line6: I've imbued it with a portion of my Brimstone... 'presence.' It should make things easier for you.
+	Line7: ......
+}
+
+DoGQuestUI: {
+	QuestTitle: Commission: The Devourer of Gods
+	QuestDesc: Defeat The Devourer of Gods using the Heartcarver.
+	AcceptText: Accept
+	DeclineText: Decline
+}
+
+SupCalDoGQuestReward: {
+	Line1: Cleanly done.
+	Line2: This blade... as satisfying as ever.
+	Line3: Back when I was still mortal, this is what I used to gouge out my master's heart. It works well, doesn't it?
+	Line4: Take it.
+	Line5: Have you ever considered... what you would do if, next time, my commission was for you to kill ME?
+	Line6: Such a pity. You and he are fated never to meet. You two would have had... so much to talk about.
+	Line7: ......I really can't stand her.
+}
+
+SupCalYharonQuestReward: {
+	Line1: Ah... it's finally over.
+	Line2: To me... that dragon... was one of the very few beings worthy of respect.
+	Line3: Knowing it would die, yet still choosing to stand its ground... Even if it's revived by the Auric Soul, the one that returns is merely a copy.
+	Line4: A pity. It excelled at obedience, while you excel at... hm, *surviving*?
+	Line5: Take this. Auric Ingot. Once called the 'Gold of Purgatory,' it is the limit of power a mortal can touch.
+	Line6: And now... it's my turn.
+	Line7: What kind of joke is this...?
+}
+
+YharonQuestUI: {
+	QuestTitle: Commission: The Dragon of Incineration
+	QuestDesc: Use the Oni Machete to slay Yharon, the Incineration Dragon.
+	AcceptText: Accept
+	DeclineText: Decline
+}
+
+SupCalQuestLine: {
+	QuestCategory: Brimstone Witch
+	PallbearerTitle: Commission: Hunt the Profaned Goddess
+	PallbearerSummary: Defeat the Profaned Goddess using the Pallbearer. 80% contribution required.
+	DoGTitle: Commission: Hunt the Devourer of Gods
+	DoGSummary: Defeat the Devourer of Gods using the Heartcarver. 80% contribution required.
+	YharonTitle: Commission: Hunt the Incineration Dragon
+	YharonSummary: Slay Yharon using the Oni Machete. 75% contribution required.
+	TrackerSummonHint: Target absent — summon {0}
+	TrackerContribution: Weapon contribution: {0:0%}
+	TrackerRequired: Required: {0:0%}
+}
+
+EternalBlazingNow: {
+	Rolename2: ???Brimstone Witch???
+	Line1: Are you kidding me...
+	Line2: They've vanished... Is this fire... *sealing* the past?!
+	Line3: This witch... her power is truly no ordinary magic.
+	Line4: Was she holding back during the fight? No matter. Even against this kind of power, I'm confident I can kill you all over again.
+	Line5: I cannot die... but... this is close enough.
+	Line6: You have done well... Perhaps... you truly are the "Era's Chosen" he spoke of, the one worth waiting for.
+	Line7: So... I have one last thing to ask of you.
+	Line8: As long as a single ember of brimstone fire exists in this world's past or present, 'I' will not perish.
+	Line9: But my consciousness... in this endless sea of fire... it will eventually be worn down to nothing.
+	Line10: I can last 30 more years, at most.
+	Line11: ...So, you want *him* to replace you?
+	Line12: That's right. It is the only way.
+	Line13: When my consciousness fades completely, the entire world will be incinerated.
+	Line14: Besides... if you wish to end this era, a mortal vessel is far too fragile...
+	Line15: Absolutely not! Let him become a monster like you?! Over my dead body!
+	QuestionLine: ......
+	Choice1Text: (Stop Halibut)
+	Choice2Text: (Remain silent)
+	Choice1Line1: ...Is this your choice?
+	Choice1Line2: I understand...
+
+	HelenEpilogue: {
+		EpilogueLine1: I'm waiting for an idiot.
+		EpilogueLine2: ...
+		EpilogueLine3: Welcome back...
+	}
+
+	WitchFarewell: {
+		FarewellLine1: In this long life, I have seen countless dawns and endings.
+		FarewellLine2: Flames devour eras, but also illuminate new beginnings. I thought this time would be no exception.
+		FarewellLine3: I never expected to have a companion on this final road.
+		FarewellLine4: For me... an ending like this... is more than enough.
+		FarewellLine5: Your existence proves that this land has not truly withered.
+		FarewellLine6: I believe you will walk further than I ever did.
+		FarewellLine7: And I... I can finally rest.
+		FarewellLine8: Don't look back. There are more important things ahead of you.
+		FarewellLine9: Just... think of it as me finally reaching my own destination on this long journey.
+		FarewellLine10: And so... this is enough.
+		FarewellLine11: Go on, small fry.
+	}
+
+	AchievementTitle: "[BE] Ending: The Eternally Burning Present"
+	AchievementTooltip: The past is consumed by fire; an aberrant body touches eternity.
+}
+
+SCalAltarScenario: {
+	L1: It is not yet time. There is still another enemy blocking your path.
+	L2: Go piece together that pile of mechanical toys of yours, then defeat him.
+	L3: ...What? Do I need to repeat myself?
+}
+
+SupCalDisplayText: {
+	SummonWithProverbs: You... you actually came wearing that ring... Very well. I will show no mercy.
+	SummonWithoutProverbs: Hahaha... This moment... I have awaited it for so long.
+	SummonRematchWithProverbs: You're still wearing that ring...
+	SummonRematchWithoutProverbs: You again... It seems your understanding of death is still... insufficient.
+	StartLowHealth: You already look to be on your last breath.
+	StartMediumHealth: Your technique still requires improvement.
+	StartDefault: How strange. You should be dead already...
+	StartRematchLowHealth: You already look to be on your last breath.
+	StartRematchMediumHealth: Wounded? How interesting.
+	StartRematchDefault: How strange. You should be dead already...
+	BH3WithHalibut: Wielding such... aberrant... power in a mortal vessel... To have come this far, you are indeed worthy of respect.
+	BH3WithoutHalibut: You are skilled... but when will you realize you are merely attacking a plume of fire in vain?
+	BrothersWithHalibut: It is time you met my family. They failed on the path to becoming... 'other'. Do not follow their example.
+	BrothersWithoutHalibut: It is time you met my family. Should you die at another's hand, I will keep your soul here.
+	Phase2WithHalibut: Are you certain you do not wish to beg for mercy?
+	Phase2WithoutHalibut: Are you certain you do not wish to beg?
+	BH4Text: Stand still and face me!
+	SeekerRingText: Your power comes from external sources. As you are, you are nothing... It reminds me of that hypocrite.
+	BH5Text: The scales of victory are... uncertain. You only need to stand still for a moment to change this, understood?
+	Sepulcher2Text: If only one of us can live today... who do you think I *want* it to be?
+	Desperation1Text: JUST... STAND... STILL... YOU... SMALL FRY!
+	Desperation2Text: Don't get arrogant—I was merely toying with you before!
+	Desperation3Text: *cough*... *cough*... I admit, I am not in peak condition today.
+	Desperation4Text: It seems... I have lost. Meeting you... has truly been a blessing.
+	Acceptance1Text: This... is the happiest I have been in a hundred years...
+	Acceptance2Text: Perhaps... you truly can end this damned era.
+	Story1:
+		'''
+		The wood of this crossbow is hewn from a pitch-black coffin buried for a century. 
+		It reeks of an earthy stench that simply won't wash off.
+		Down there, it served to suppress a horror that even I found difficult to handle.
+		Against such things, pure destruction is meaningless. They cannot be killed.
+		Fire the wedge. Pin them back to the earth and force them into silence.
+		As for why you throw the crossbow first?
+		Hah... If the guest isn't tainted by the scent of the casket, how will the coffin know who to collect?
+		'''
+	Story2:
+		'''
+		This wretched blade is dull because it is not meant to cut flesh.
+		When I was still an apprentice, a mouth that would never close grew upon my teacher's heart.
+		He died later, yet that heart kept beating. With every beat, the mouth screamed, 
+		and one person around us simply vanished.
+		To survive, I had to gouge that heart out before its next beat.
+		Even now, it hungers to hear the sound of a heart being carved out again.
+		'''
+	Story3:
+		'''
+		Find it heavy? Good. It should be.
+		It is laced with excessive gold and wreathed in Brimstone flames, 
+		all to lock down the six restless ghostly hands upon the blade.
+		Those three idiots tried to dismember and stitch themselves together to delay their own 'recovery'... 
+		but they ended up as a twisted monstrosity that knows only how to strangle.
+		Grip it tight. Once the Brimstone suppression fails, the first neck they will snap is yours.
+		Snapping the neck of whoever touches the blade... that is the only instinct they have left.
+		'''
+	Story4:
+		'''
+		Mortals call this magic, but I call it... borrowing.
+		This is no spellbook; it is a high-density cage.
+		Every page seals a horror that once silenced entire city-states into death.
+		'''
+}
+
+SupCalDisplayTextByBossRush: {
+	SummonBossRush: Heh… The aura on you almost reminds me of the one who has long since perished.
+	SummonBossRushWithProverbs: That ring… even a mere remnant like me can feel its trembling.
+	StartBossRush: I may be nothing more than an anomalous construct born from the Auric Soul… but there are duties even I must fulfill.
+	BH2BossRush: Your strength is impressive… yet still insufficient.
+	BH3BossRush: The shadows of the past… long since reduced to ashes, scattered on the path you walk. Heh…
+	BrothersBossRush: These souls… shadows of shadows. The more you copy something, the sadder it becomes, don’t you think?
+	Phase2BossRush: Even a fabricated life can have something worth fighting for.
+	BH4BossRush: Stand still! Let me see if you can truly bear the weight of an era!
+	SeekerRingBossRush: Your power resembles that person in her memories far too closely… mere coincidence?
+	BH5BossRush: As an anomalous creation, my purpose is to face this very moment.
+	Sepulcher2BossRush: The final trial begins now… show me whether you are worthy of carrying her path forward.
+	Desperation1BossRush: Even a fragment…
+	Desperation2BossRush: Don’t assume victory is yours just yet…
+	Desperation3BossRush: Heh… the life of a shadow was fragile from the start…
+	Desperation4BossRush: You’ve won… but her journey is far from over.
+	Acceptance1BossRush: Perhaps… this is where I was always meant to end.
+	Acceptance2BossRush: Good luck… small fry.
+}
+
+SupCalDisplayTextNormal: {
+	SummonText: This sea of brimstone fire... even a vengeful spirit would feel the scorch, wouldn't they?
+	SummonRematchText: Prove it to me. Survive.
+	StartText: Mortal shells are always so fragile in this heat... or perhaps, you can surprise me?
+	StartRematchText: Not burnt to cinders yet? Then let us begin again, until you are forged into steel... or reduced to ash.
+	BH2Text: You have not yet collapsed within the flames... you burn slower than I imagined.
+	BH2RematchText: I admit you possess some courage, but your skill is still far from sufficient.
+	BH3Text: You traveled all this way, just to subject that mortal frame to pain?
+	BH3RematchText: The last time I rained down such calamity was a century ago. Do you wish to experience it as well?
+	BrothersText: They once burned everything for the sake of that path... Now, let these ashes measure your worth.
+	BrothersRematchText: Perhaps they are merely empty shells with a sliver of soul, but they are more than enough to deal with you.
+	Phase2Text: From here on... the flames will no longer be restrained. Do not die too quickly.
+	Phase2RematchText: Once again, let us begin.
+	BH4Text: Do not think you can escape my grasp!
+	BH4RematchText: I am curious... did you learn anything from our first encounter?
+	SeekerRingText: How did you dodge that? This is not how it should go... Stop!
+	SeekerRingRematchText: At least my judgment was not mistaken...
+	BH5Text: I admit the battle thus far was mere child's play. Now, I will give it my all!
+	BH5RematchText: ...Isn't this exciting?
+	Sepulcher2Text: If only one of us can survive this... who do you think I *wish* it to be?
+	Sepulcher2RematchText: Pay attention. The crawling tomb approaches... and it hungers for a new tenant.
+	Desperation1Text: Just STOP!
+	Desperation2Text: If I fail here, then what was the point of it all?!
+	Desperation3Text: Someone has already walked your path to its end. It is a dead end... What makes you think *you* can be different?!
+	Desperation4Text: If you merely repeat his madness, you will be nothing more than fresh ash among these embers!
+	Acceptance1Text: I burned myself into this inhuman form, solely to find that one glimmer of hope...
+	Acceptance2Text: I have no strength left to stand...
+	Acceptance3Text: An aberration like you... perhaps you truly can carve out... a future even I have never seen.
+	Desperation1RematchText: An impressive performance. You fought well.
+	Desperation2RematchText: Without a doubt, your strength grows with every passing moment.
+	Desperation3RematchText: I truly hope you will not repeat our mistakes.
+	Desperation4RematchText: If you can forge a new path... then there is still hope for everything.
+}
+
+EternalBlazingNowNoHelen: {
+	Line1: ......It has been a long time since anyone has made it this far.
+	Line2: I will not die... but this is close enough.
+	Line3: You have done well... perhaps, you truly are the "only one of this era" he spoke of, the one worth waiting for.
+	Line4: Therefore, I have one final request for you.
+	Line5: As long as a single ember of Brimstone Fire remains in the past and present of this world, "I" shall not perish.
+	Line6: But my consciousness will be gradually eroded away within this endless sea of fire.
+	Line7: Had I not met you, I could have held out for thirty more years at most.
+	Line8: This is the only way.
+	Line9: Once my consciousness completely dissipates, the entire world will be reduced to ashes.
+	Line10: Besides, if you intend to bring an end to this era, a mortal shell is far too fragile.
+}

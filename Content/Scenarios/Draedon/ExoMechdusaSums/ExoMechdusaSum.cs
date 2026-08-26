@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
 {
     internal sealed class ExoMechdusaSum : StoryScenario, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.Draedon";
         public static LocalizedText IntroLine1 { get; private set; }
         public static LocalizedText IntroLine2 { get; private set; }
         public static LocalizedText IntroLine3 { get; private set; }

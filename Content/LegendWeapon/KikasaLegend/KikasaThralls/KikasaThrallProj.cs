@@ -529,8 +529,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 maxSpeed = WalkMaxSpeed;
             }
 
-            //跟丢太远：水化贴回主人脚边（各端同规则，owner 盖章）
-            if (Vector2.Distance(Projectile.Center, owner.Center) > 2600f) {
+            //跟丢阈值按屏距（反馈五·#123 拍板）：约 1.2 屏就贴回，机动跟得上；
+            //屏宽无效端（服务器）退回旧常量口径，owner 盖章语义不变
+            float screenSpan = MathF.Max(Main.screenWidth, Main.screenHeight);
+            float snapDist = screenSpan > 100f ? screenSpan * 1.2f : 2300f;
+            if (Vector2.Distance(Projectile.Center, owner.Center) > snapDist) {
                 SnapToOwner(owner, authority);
                 return;
             }
@@ -739,7 +742,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         private void SnapToOwner(Player owner, bool authority) {
             Vector2 probe = owner.Center + new Vector2(owner.direction * -60f, -80f);
             if (!KasaOniActor.TryFindStandableGround(
-                probe, HitboxWidth, HitboxHeight, out Vector2 feet)) {
+                probe, HitboxWidth, HitboxHeight, out Vector2 feet, acceptPlatforms: true)) {
                 feet = new Vector2(owner.Center.X, owner.Bottom.Y);
             }
             PinFeetTo(feet);

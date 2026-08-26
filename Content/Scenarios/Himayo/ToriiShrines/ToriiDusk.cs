@@ -68,16 +68,25 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         }
     }
 
+    /// <summary>逢魔黄昏主题认领：叙事场景档，Intensity&gt;0 含渐出尾巴（与旧写点口径一致）；
+    /// 同档权重保序旧同帧写序（OldDuke 之下、Draedon 之上）</summary>
+    internal sealed class ToriiDuskMusicClaim : MusicClaim
+    {
+        public override MusicTier Tier => MusicTier.NarrativeScene;
+        public override int SubWeight => 21;
+        public override bool YieldToBossRush => true;
+        public override bool ShouldPlay() => ToriiDusk.Intensity > 0f;
+        public override int GetMusicSlot() => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Future");
+    }
+
     internal class ToriiDuskSystem : ModSystem
     {
         public override void PostUpdateEverything() {
             if (Main.dedServ) {
                 return;
             }
+            //音乐覆盖走 ToriiDuskMusicClaim 认领
             ToriiDusk.Update();
-            if (!CWRRef.GetBossRushActive() && !VaultUtils.isServer && ToriiDusk.Intensity > 0f) {
-                Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Future");
-            }
         }
 
         public override void ClearWorld() {

@@ -68,8 +68,7 @@ namespace CalamityOverhaul.Content
                 return;
             }
 
-            ModPacket modPacket = CWRMod.Instance.GetPacket();
-            modPacket.Write((byte)CWRMessageType.NPCbasicData);
+            ModPacket modPacket = CWRNetWork.GetPacket<NPCBasicDataNet>();
             modPacket.Write((byte)npc.whoAmI);
             modPacket.WriteVector2(npc.position);
             modPacket.Write(npc.rotation);
@@ -305,8 +304,7 @@ namespace CalamityOverhaul.Content
         /// <summary>强制指定 NPC 掉落并死亡</summary>
         public static void SetNPCLoot(int npcID) {
             if (VaultUtils.isClient) {
-                ModPacket modPacket = CWRMod.Instance.GetPacket();
-                modPacket.Write((byte)CWRMessageType.SetNPCLoot);
+                ModPacket modPacket = CWRNetWork.GetPacket<SetNPCLootNet>();
                 modPacket.Write(npcID);
                 modPacket.Send();
                 return;
@@ -329,11 +327,22 @@ namespace CalamityOverhaul.Content
                 }
             }
             if (VaultUtils.isServer) {
-                ModPacket modPacket = CWRMod.Instance.GetPacket();
-                modPacket.Write((byte)CWRMessageType.SetNPCLoot);
+                ModPacket modPacket = CWRNetWork.GetPacket<SetNPCLootNet>();
                 modPacket.Write(npcID);
                 modPacket.Send(-1, whoAmI);
             }
         }
+    }
+
+    /// <summary>NPC 位置/旋转基础同步信道</summary>
+    internal sealed class NPCBasicDataNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => CWRNpc.NPCbasicDataHandler(reader);
+    }
+
+    /// <summary>强制 NPC 掉落并死亡的请求信道</summary>
+    internal sealed class SetNPCLootNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => CWRNpc.HandleSetNPCLoot(reader, whoAmI);
     }
 }

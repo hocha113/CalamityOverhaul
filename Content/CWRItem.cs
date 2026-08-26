@@ -2,7 +2,6 @@
 using CalamityOverhaul.Content.Items.Modifys;
 using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
@@ -106,9 +105,7 @@ namespace CalamityOverhaul.Content
             if (OnikiriData.TryGet(item) is OnikiriData data) {
                 data.RenewIdentity();
             }
-            if (KikasaData.TryGet(item) is KikasaData kikasaData) {
-                kikasaData.RenewIdentity();
-            }
+            //鬼伞无实例身份可换新：符位表已迁玩家侧，物品复制不再携带需去重的数据
         }
 
         internal static void SmiperItemSet(Item item) {
@@ -174,13 +171,7 @@ namespace CalamityOverhaul.Content
                 && receivedOnikiri.EditRevision < currentOnikiri.EditRevision) {
                 receivedOnikiri.PreserveEditedStateFrom(currentOnikiri);
             }
-            //鬼伞同款：迟到的旧修订同步不许吃掉本机更新的挂符
-            if (LegendData is KikasaData currentKikasa
-                && receivedLegend is KikasaData receivedKikasa
-                && currentKikasa.InstanceId == receivedKikasa.InstanceId
-                && receivedKikasa.EditRevision < currentKikasa.EditRevision) {
-                receivedKikasa.PreserveEditedStateFrom(currentKikasa);
-            }
+            //鬼伞不再需要同款回护：符位表已迁玩家侧，物品同步不携带挂符数据
             if (item.type == OnikiriOverride.ID && receivedLegend != null) {
                 receivedLegend.Level = OnikiriOverride.ClampLevel(receivedLegend.Level);
             }

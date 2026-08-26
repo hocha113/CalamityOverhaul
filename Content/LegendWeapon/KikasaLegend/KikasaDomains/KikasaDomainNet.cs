@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
     /// 血湖领域的表现层同步。领域是施术者本机的状态机，这里只把它的形态转播给同场的人，
     /// 让队友能看见别人开的域；服务端不持有也不推进领域，判定不经过这条通道。
     /// </summary>
-    internal static class KikasaDomainNet
+    internal class KikasaDomainNet : CWRNetChannel
     {
         /// <summary>稳态下的重播间隔。中途加入、丢包、漂移都靠它自愈</summary>
         internal const int ResyncInterval = 120;
@@ -26,20 +26,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             domain.WriteNetworkState(stateWriter);
             byte[] state = stream.ToArray();
 
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.KikasaDomain);
+            ModPacket packet = CWRNetWork.GetPacket<KikasaDomainNet>();
             packet.Write((byte)player.whoAmI);
-            //自带长度：链式 handler 共用一条流，读多读少都会把后面全部带偏
+            //自带长度：读端按声明长度读满，坏包只废自己不扩散
             packet.Write((byte)state.Length);
             packet.Write(state);
             packet.Send();
         }
 
-        public static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type != CWRMessageType.KikasaDomain) {
-                return;
-            }
-            //按写入端声明的长度读满再校验：提前 return 会让链上后面的 handler 全部错位
+        public override void Receive(BinaryReader reader, int whoAmI) {
+            //按写入端声明的长度读满再校验
             int declaredOwner = reader.ReadByte();
             int declaredLength = reader.ReadByte();
             byte[] state = reader.ReadBytes(declaredLength);
@@ -50,8 +46,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
             if (Main.netMode == NetmodeID.Server) {
                 //来源以连接为准，不信包里自报的槽位；原样转播给除发送者外的所有人
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.KikasaDomain);
+                ModPacket packet = CWRNetWork.GetPacket<KikasaDomainNet>();
                 packet.Write((byte)whoAmI);
                 packet.Write((byte)state.Length);
                 packet.Write(state);

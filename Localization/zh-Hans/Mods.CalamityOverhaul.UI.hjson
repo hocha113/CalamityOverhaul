@@ -1465,15 +1465,67 @@ OldNetTexts: {
 	GuideDrainBody: 离墙越远，RAM 底噪越贵，HUD 的 DEPTH 读数旁标着当前每秒消耗。RAM 烧干等于弹出，回程的路费要提前算进去。
 	GuideSkip: 知道了
 	EntrustTitle: 越墙深潜
-	EntrustSummary: 坠舱中舱的接入终端还在通电。接入旧网，采回模具碎片，并从登出终端安全断链一次。RAM 耗尽或死亡会弄丢一切未铭刻的收获。
+	EntrustSummary: 旧网的入口在出生点上空的坠毁空岛：顺着岛底垂到地面的锚绳爬上去，中舱里发青光的柱子就是接入终端。右键终端预热链路，5 秒内再右键一次即可入网（仅单人模式）。网内右键青色节点回收模具碎片，收获先记在账本上；想带走就回到黑墙脚下，右键薄荷绿光柱登出。安全登出一次，这单委托就算完成。半路 RAM 耗尽或死亡，未铭刻的收获全部作废。
 	EntrustCategory: 深潜考古
-	TrackerOverworld: 接入坠舱中舱的终端
-	TrackerDive: 从登出终端安全断链
+	TrackerOverworld: 到出生点上空的坠舱中舱，右键青光终端两次
+	TrackerDive: 回黑墙脚下，右键薄荷绿光柱安全登出
 	OldNetSignRuin: 废墟带。主产区，加密节点自此出没，引导破解前，先看好退路。
 	OldNetSignFade: 信号衰减区。底噪自此陡增，链路撑不了多久，深入自负。
 	OldNetEchoHint: 回声节点：只在时停中可触及（零噪音，产出翻倍）
 	OldNetEchoFizzle: 回声太淡，时停中才能触及
 	OldNetCacheHint: 深潜缓存：撬开取一件封存模块（动静不小）
+	OldNetTripwireHint: 光栅绊网：红线亮起时穿过会上报你的位置，按住右键可剪断
+	OldNetTripwireCut: 已剪断，这条路安静了
+	OldNetMineHint: 哨戒雷：快速靠近会引爆，慢速贴近按住右键可拆除
+	OldNetMineDefused: 已拆除，没有惊动任何东西
+	OldNetMineScream: 哨戒雷尖叫，你的位置被广播了
+	OldNetMineDeath: "{0} 踩响了哨戒雷"
+	OldNetBulkheadWarn: 检测到高噪信号，竖井闸门预紧
+	OldNetBulkheadShut: 竖井已封锁，压低噪音等待重开，或找泄压杆强开
+	OldNetBulkheadReopen: 噪音回落，竖井闸门重开
+	OldNetBreakerHint: 应急泄压杆：拉下开闸 8 秒，代价是更多噪音
+	OldNetBreakerPulled: 泄压完成，闸门临时开启 8 秒
+	OldNetSignCheckpoint: 检疫关卡 K-3。东侧信号未消毒，禁止携带活协议出入。本关卡已于第 771 夜失守。
+	TaggerAttached: 信号被标记。它在场时，噪音无法自然消散。
+	TracerHowlWarn: 猎犬正在广播你的坐标，打断它。
+	TracerConfused: 路径交叉，它丢失了线索。
+	WardenDispatch: 回收协议已授权。执行体正在剥离黑墙。
+	WardenSlain: 执行体已归档。全网为你静默 60 秒。
+	WardenGraceHud: 静默余量
+	OldNetDockHint: 右键扩容：本次深潜账本 +8 格，噪音 +15
+	OldNetDockDone: 账本扩容 +8 格
+	OldNetColdHint: 右键提取：耗 2 RAM，无声
+	OldNetColdNoRam: RAM 不足，提取需要 2 点
+	OldNetEscrowHint: 右键投保：收账本三成作保费，上行噪音 +10。烧断或死亡时其余照赔，安全登出不退保费
+	OldNetEscrowEmpty: 账本是空的，无可投保
+	OldNetEscrowTooThin: 账本太薄，保费会吃掉一切，无可投保
+	OldNetEscrowSigned: 已投保 {0} 枚，保费 {1} 枚
+	OldNetEscrowPayout: 保险兑付 {0} 枚模具碎片
+	OldNetVaultHint: 右键开台破译：耗 3 RAM，开台后每秒 +2 噪音。每关赌注升级，脱靶彩池清空
+	OldNetVaultNoRam: RAM 不足，开台需要 3 点
+	OldNetVaultLocked: 主控台正在运行
+	OldNetVaultPayout: 彩池入账 {0} 枚碎片（未铭刻）
+	VaultTitle: 主控破译矩阵
+	VaultGuide: 指针扫进亮弧时，点左键或按跳跃键确认。转动中受击或离台，视同脱靶
+	VaultStage: 第 {0} 关 / 共 5 关
+	VaultPot: 彩池：碎片 ×{0}
+	VaultPotModule: 封存模块 ×{0}
+	VaultPotChip: RAM 扩容芯片 ×1
+	VaultLedgerRoom: 账本余位 {0}
+	VaultCashOut: 收手结算
+	VaultContinue: 下一关
+	VaultBust: 爆仓，彩池清空
+	VaultCounterHack: 主控台反制：骇入注入
+	VaultDiscard: 账本装不下，{0} 枚弃置
+	OldNetEncryptFadeHint: 引导破解：疯域的锁会反咬，完成后必引来追猎
+	OldNetAftershockWarn: 残响暴露，回声正在回溯
+	OldNetAftershockHit: 回溯完成，它们来了
+	OldNetDragnetWarn: 网络正在收束，威胁即将不可逆 // DRAGNET 75%
+	OldNetDragnetOn: 收网开始，封锁不再解除，加密锁已全网离线 // DRAGNET
+	OldNetHotExtractHint: 链路过热：断链需要站桩 10 秒，网络会扑过来
+	OldNetHotExtractStart: 强制断链开始，扛住 // SEVERING
+	OldNetHotExtractAbort: 断链中止，链路保持
+	OldNetHotExtractTooFar: 离终端太远，贴近后再断链
 }
 
 OldNetDebriefPanel: {
@@ -1489,6 +1541,14 @@ OldNetDebriefPanel: {
 	DebriefLost: "{0} 枚未铭刻碎片已烧毁"
 	DebriefContinue: 继续
 	DebriefMechHint: 未铭刻的收获只活在链路里，经中继站或登出终端铭刻后才真正属于你
+	DebriefScore: 评分
+	DebriefGrade: 评级
+	DebriefBest: 历史最佳 {0}
+	DebriefNewRecord: 新纪录
+	StyleGhost: 幽灵潜行
+	StyleHeat: 高热生还
+	StyleHotExtract: 热断链
+	StyleDragnet: 收网撤离
 }
 
 CharacterDockUI: {
@@ -1498,4 +1558,11 @@ CharacterDockUI: {
 	SupCal.Name: 硫火女巫
 	Helen.Name: 海伦
 	Shenyo.Name: 沈幽
+}
+
+WeaponSkillHud: {
+	ReadyHint: 就绪，点击施放
+	CooldownFormat: 冷却剩余 {0} 秒
+	ActiveLine: 施放中
+	ManaCostFormat: 魔力消耗 {0}
 }

@@ -97,7 +97,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         public override bool BlockMouseWhenHovered => true;
         public override bool CanDrag => true;
         public override MouseButtonType DragMouseButton => MouseButtonType.Left;
-        public override Rectangle? DragHandleRect => titleRect;
+        //把手挖掉右上关闭钮区域:基类在子类 Update 之前受理拖拽、按下当帧即置 IsDragging,
+        //HandleClicks 首行让位——关闭钮落在把手内就永远收不到点击,点一下只会拖面板(反馈十三·#110)
+        public override Rectangle? DragHandleRect
+            => new Rectangle(titleRect.X, titleRect.Y, Math.Max(titleRect.Width - 48, 0), titleRect.Height);
         #endregion
 
         #region 本地化

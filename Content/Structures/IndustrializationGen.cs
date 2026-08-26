@@ -27,26 +27,33 @@ namespace CalamityOverhaul.Content.Structures
             }
             progress.Set(0.2f);
 
-            if (CWRRef.Has) {
-                if (WorldGenDensitySave.GetDensity("WindGrivenGenerator") != StructureDensity.Extinction) {
+            if (WorldGenDensitySave.GetDensity("WindGrivenGenerator") != StructureDensity.Extinction) {
+                if (CWRRef.Has) {
+                    //灾厄在场：以空岛实验室全息投影仪为锚点的原方案
                     SpawnWindGrivenGenerator();
                 }
-                progress.Set(0.4f);
-                if (Main.getGoodWorld && WorldGenDensitySave.GetDensity("WGGCollector") != StructureDensity.Extinction) {
-                    SpawnWGGCollectorTile();
+                else {
+                    //无灾厄回退：程序化生成工业空岛承载风机
+                    IndustrialSkyIslandGen.Generate();
                 }
-                progress.Set(0.6f);
-                if (WorldGenDensitySave.GetDensity("JunkmanBase") != StructureDensity.Extinction) {
-                    JunkmanBase.DoLoad<JunkmanBase>();
-                }
-                progress.Set(0.75f);
-                if (WorldGenDensitySave.GetDensity("RocketHut") != StructureDensity.Extinction) {
-                    RocketHut.DoLoad<RocketHut>();
-                }
-                progress.Set(0.9f);
-                if (WorldGenDensitySave.GetDensity("SylvanOutpost") != StructureDensity.Extinction) {
-                    SylvanOutpost.DoLoad<SylvanOutpost>();
-                }
+            }
+            progress.Set(0.4f);
+            if (CWRRef.Has && Main.getGoodWorld && WorldGenDensitySave.GetDensity("WGGCollector") != StructureDensity.Extinction) {
+                SpawnWGGCollectorTile();
+            }
+            progress.Set(0.6f);
+
+            //三座 DatIO 建筑已全原版化（_v2 NBT），不依赖灾厄，常态生成
+            if (WorldGenDensitySave.GetDensity("JunkmanBase") != StructureDensity.Extinction) {
+                JunkmanBase.DoLoad<JunkmanBase>();
+            }
+            progress.Set(0.75f);
+            if (WorldGenDensitySave.GetDensity("RocketHut") != StructureDensity.Extinction) {
+                RocketHut.DoLoad<RocketHut>();
+            }
+            progress.Set(0.9f);
+            if (WorldGenDensitySave.GetDensity("SylvanOutpost") != StructureDensity.Extinction) {
+                SylvanOutpost.DoLoad<SylvanOutpost>();
             }
             progress.Set(1f);
         }

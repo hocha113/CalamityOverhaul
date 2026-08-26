@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Defeats
 {
     internal sealed class ExoMechQuickDefeat : NarrativeScenario, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.Draedon";
         public static LocalizedText QuickDefeatLine1 { get; private set; }
         public static LocalizedText QuickDefeatLine2 { get; private set; }
         public static LocalizedText QuickDefeatLine3 { get; private set; }

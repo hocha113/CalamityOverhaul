@@ -151,7 +151,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Passes
             int plainType = ModContent.TileType<OldNetDataNodeTile>();
             int encryptType = ModContent.TileType<OldNetEncryptedNodeTile>();
             int eventType = ModContent.TileType<OldNetEventNodeTile>();
-            int plain = 0, encrypt = 0, evt = 0;
+            int vaultType = ModContent.TileType<OldNetCipherVaultTile>();
+            int plain = 0, encrypt = 0, evt = 0, vault = 0;
             for (int x = 0; x < Main.maxTilesX; x++) {
                 for (int y = 0; y < Main.maxTilesY; y++) {
                     Tile tile = Main.tile[x, y];
@@ -167,6 +168,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Passes
                     else if (tile.TileType == eventType) {
                         evt++;
                     }
+                    else if (tile.TileType == vaultType) {
+                        vault++;
+                    }
                 }
             }
             OldNetNodeBudget budget = OldNetPlans.Budget;
@@ -175,9 +179,14 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Passes
                 CWRMod.Instance.Logger.Warn(
                     $"[OldNet] 配额审计偏差 plain={plain}/{expectPlain} event={evt}/{budget.EventPlaced}");
             }
+            //主控破译矩阵：旗舰件进硬审计（每潜恒 1 台）
+            if (vault != budget.VaultPlaced) {
+                CWRMod.Instance.Logger.Warn(
+                    $"[OldNet] 配额审计偏差 vault={vault}/{budget.VaultPlaced}");
+            }
             //加密节点世界计数含封锁区盒内（不入 Budget），只报不判
             CWRMod.Instance.Logger.Info(
-                $"[OldNet] 节点审计 plain={plain} encrypt={encrypt}(含盒内) event={evt}");
+                $"[OldNet] 节点审计 plain={plain} encrypt={encrypt}(含盒内) event={evt} vault={vault}");
         }
 
         //DoorSocket 审计：非平台厅房间零开口 = 密闭死房（建造方漏登记或漏凿门）。只报不断

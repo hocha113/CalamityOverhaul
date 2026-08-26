@@ -22,6 +22,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
         private static int timer;
         private static readonly Color EmberRed = new(235, 64, 44);
 
+        /// <summary>弹出演出是否活跃（链路正在烧断，外部交互面板据此收台让位）</summary>
+        public static bool Active => timer > 0;
+
         internal static void Begin() => timer = TotalFrames;
 
         public override void UpdateUI(GameTime gameTime) {

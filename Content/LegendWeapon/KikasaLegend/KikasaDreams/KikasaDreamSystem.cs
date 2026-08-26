@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
@@ -11,37 +10,35 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 {
     /// <summary>
-    /// 鬼梦地雾的驱散场。恶犬/玩家/光标每帧登记为排斥源（x,y=源心 z=半径 w=推力/帧），
-    /// 雾粒子（<see cref="PRT_KikasaDreamFog"/>）在 AI 里读取让位；
-    /// Active=false 时在场雾加速收场，归返后的真实世界不留梦雾
+    /// 鬼梦地雾的驱散场。恶犬/玩家/光标每帧登记为排斥源（x,y=世界源心 z=半径px w=孔强01），
+    /// 雾带着色器（<see cref="KikasaDreamFogRender"/> 喂进 uRepulse[6]）在源处让净、孔缘微堆。
+    /// 槽位超出着色器 6 个上限时按登记序截断：玩家与光标先登记，恒不掉
     /// </summary>
     internal static class KikasaDreamFogField
     {
         internal static readonly List<Vector4> Repulsors = new();
 
-        /// <summary>梦侧是否仍在供雾</summary>
-        internal static bool Active { get; private set; }
-
         internal static void Rebuild(Player viewer) {
             Repulsors.Clear();
-            Active = true;
             //人拨雾、准星处让位：走路与瞄准的可读窗
-            Repulsors.Add(new Vector4(viewer.Center.X, viewer.Center.Y, 120f, 0.085f));
+            Repulsors.Add(new Vector4(viewer.Center.X, viewer.Center.Y, 120f, 0.95f));
             Vector2 mouse = Main.MouseWorld;
-            Repulsors.Add(new Vector4(mouse.X, mouse.Y, 90f, 0.07f));
-            //在场恶犬：狗趟过雾，雾从狗身边分开
+            Repulsors.Add(new Vector4(mouse.X, mouse.Y, 90f, 0.85f));
+            //在场恶犬：狗趟过雾从身边分开，身后拖一个小尾点，冲刺读出雾道
             int houndType = ModContent.ProjectileType<KikasaDreamHound>();
             foreach (Projectile proj in Main.ActiveProjectiles) {
-                if (proj.type == houndType) {
-                    Repulsors.Add(new Vector4(proj.Center.X, proj.Center.Y, 150f, 0.10f));
+                if (proj.type != houndType) {
+                    continue;
+                }
+                Repulsors.Add(new Vector4(proj.Center.X, proj.Center.Y, 150f, 1f));
+                if (proj.velocity.LengthSquared() > 4f) {
+                    Vector2 tail = proj.Center - proj.velocity * 8f;
+                    Repulsors.Add(new Vector4(tail.X, tail.Y, 100f, 0.8f));
                 }
             }
         }
 
-        internal static void Clear() {
-            Repulsors.Clear();
-            Active = false;
-        }
+        internal static void Clear() => Repulsors.Clear();
     }
 
     /// <summary>鬼梦表现泵（延迟雷、梦中氛围：烬灰/贴地雾毯）</summary>
@@ -100,28 +97,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                     ?.Configure(Main.rand.Next(120, 200), isEmber);
             }
 
-            //贴地雾毯：宽扁低雾沿地表连成带、随梦里的死风缓缓爬行。
-            //旧潮雾（%6、色比地面还暗）读不出来；提密提亮后靠驱散场保可读，
-            //主体深红灰，偶有一缕吃到红天光的暖亮缘，亮雾衬暗地才分得出层
-            if (Main.GameUpdateCount % 2 == 0) {
-                float x = player.Center.X + Main.rand.NextFloat(
-                    -Main.screenWidth * 0.6f - 200f, Main.screenWidth * 0.6f + 200f);
-                if (TryFindGround(x, player.Center.Y - 60f, out float groundY)) {
-                    bool lit = Main.rand.NextBool(6);
-                    Color color = lit ? new Color(152, 74, 60) : new Color(92, 42, 40);
-                    float wind = MathF.Sin(Main.worldID % 255 * 0.37f) * 0.8f;
-                    PRTLoader.NewParticle<PRT_KikasaDreamFog>(
-                        new Vector2(x, groundY - Main.rand.NextFloat(2f, 18f)),
-                        new Vector2(wind * Main.rand.NextFloat(0.5f, 1f), 0f),
-                        color * (dream * Main.rand.NextFloat(0.75f, 1f)),
-                        Main.rand.NextFloat(0.55f, 1.0f))
-                        ?.Configure(Main.rand.Next(130, 210), groundY, wind);
-                }
-            }
+            //贴地雾毯本体已改走连续雾场（KikasaDreamFogRender 三角带 + KikasaDreamFog.fx）：
+            //粒子堆叠的生灭错相会读成闪烁，这里只负责重建驱散场，不再撒雾粒
         }
 
-        /// <summary>从起始高度向下探地表</summary>
-        private static bool TryFindGround(float x, float fromY, out float groundY) {
+        /// <summary>从起始高度向下探地表（雾带渲染 KikasaDreamFogRender 逐列复用）</summary>
+        internal static bool TryFindGround(float x, float fromY, out float groundY) {
             int tileX = (int)(x / 16f);
             int tileY = (int)(fromY / 16f);
             for (int i = 0; i < 46; i++) {

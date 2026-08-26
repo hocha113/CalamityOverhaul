@@ -1467,15 +1467,67 @@ OldNetTexts: {
 	// GuideDrainBody: The farther from the wall, the pricier the RAM drain — the DEPTH readout shows your current cost per second. Burning out means ejection, so budget the trip home in advance.
 	// GuideSkip: Got it
 	// EntrustTitle: Dive Beyond the Wall
-	// EntrustSummary: The access terminal in the cradle's mid-hull still hums. Jack into the OldNet, haul back mold shards, and sever safely from the logout terminal once. RAM burnout or death voids everything uninscribed.
+	// EntrustSummary: The OldNet's entrance is the crashed sky-island above spawn: climb the anchor rope hanging down to the ground, and the cyan-lit pillar in the mid-hull is the access terminal. Right-click it to warm the link, then right-click again within 5 seconds to dive in (single-player only). Inside, right-click cyan nodes to recover mold shards; they land in your ledger first. To keep them, return to the foot of the Blackwall and right-click the mint column to log out. One safe logout completes this commission. RAM burnout or death on the way voids everything uninscribed.
 	// EntrustCategory: Deep-Dive Archaeology
-	// TrackerOverworld: Jack into the mid-hull terminal
-	// TrackerDive: Sever safely at the logout terminal
+	// TrackerOverworld: Reach the mid-hull of the crashed pod above spawn; right-click the cyan terminal twice
+	// TrackerDive: Return to the Blackwall's foot; right-click the mint column to log out safely
 	// OldNetSignRuin: Ruinfield. Prime harvest grounds — encrypted nodes from here on. Mind your exit before you channel.
 	// OldNetSignFade: Signal Decay Zone. The drain climbs steeply past this point — the link won't hold long. Proceed at your own risk.
 	// OldNetEchoHint: Echo node — only tangible during time-freeze (zero noise, double yield)
 	// OldNetEchoFizzle: The echo is too faint — only tangible in frozen time
 	// OldNetCacheHint: Deep-dive cache — pry it open for a sealed module (loudly)
+	// OldNetTripwireHint: Raster tripwire: crossing the lit beam reports your position; hold right-click to cut it
+	// OldNetTripwireCut: Cut. This route is quiet now
+	// OldNetMineHint: Sentry mine: rush in and it detonates; approach slowly and hold right-click to defuse
+	// OldNetMineDefused: Defused. Nothing heard it
+	// OldNetMineScream: The sentry mine screams; your position is broadcast
+	// OldNetMineDeath: "{0} set off a sentry mine"
+	// OldNetBulkheadWarn: High-noise signature detected; shaft bulkheads pre-tensioning
+	// OldNetBulkheadShut: Shafts sealed. Quiet down and wait for reopen, or force one open with a pressure breaker
+	// OldNetBulkheadReopen: Noise has settled; shaft bulkheads reopening
+	// OldNetBreakerHint: Emergency breaker: pull to open the gate for 8 seconds, at the cost of more noise
+	// OldNetBreakerPulled: Pressure vented; gate open for 8 seconds
+	// OldNetSignCheckpoint: Quarantine Checkpoint K-3. Signals east of this line are unsanitized; no live protocols may pass. This checkpoint fell on Night 771.
+	// TaggerAttached: Signal tagged. While it lives, your noise will not decay on its own.
+	// TracerHowlWarn: The hound is broadcasting your position. Interrupt it.
+	// TracerConfused: Path crossed. It has lost the scent.
+	// WardenDispatch: Reclamation protocol authorized. An executor is peeling off the blackwall.
+	// WardenSlain: Executor archived. The whole net falls silent for you, 60 seconds.
+	// WardenGraceHud: Silence grace
+	// OldNetDockHint: Right-click to expand: +8 ledger slots this dive, +15 noise
+	// OldNetDockDone: Ledger +8 slots
+	// OldNetColdHint: Right-click to extract: costs 2 RAM, silent
+	// OldNetColdNoRam: Not enough RAM — extraction needs 2
+	// OldNetEscrowHint: Right-click to insure: 30% of the ledger as premium, +10 noise on uplink. Pays out the rest on burnout or death; no refund on safe logout
+	// OldNetEscrowEmpty: Ledger empty — nothing to insure
+	// OldNetEscrowTooThin: Ledger too thin — the premium would eat everything, nothing to insure
+	// OldNetEscrowSigned: Insured {0} shards, premium {1}
+	// OldNetEscrowPayout: Insurance paid out {0} Mold Shards
+	// OldNetVaultHint: Right-click to breach: costs 3 RAM, +2 noise per second while open. Every stage raises the stakes; miss and the pot burns
+	// OldNetVaultNoRam: Not enough RAM — breaching needs 3
+	// OldNetVaultLocked: Console already running
+	// OldNetVaultPayout: Pot banked — {0} shards (uninscribed)
+	// VaultTitle: Cipher Matrix
+	// VaultGuide: Click or press jump as the needle sweeps the lit arc. Getting hit or stepping away mid-spin counts as a miss
+	// VaultStage: Stage {0} / 5
+	// VaultPot: Pot: shards ×{0}
+	// VaultPotModule: Sealed modules ×{0}
+	// VaultPotChip: RAM capacity chip ×1
+	// VaultLedgerRoom: Ledger room: {0}
+	// VaultCashOut: Cash out
+	// VaultContinue: Next stage
+	// VaultBust: Bust — pot cleared
+	// VaultCounterHack: Console counter-hack: injection inbound
+	// VaultDiscard: Ledger full — {0} shards discarded
+	// OldNetEncryptFadeHint: Channel decryption: the mad zone's locks bite back — completing one always draws a hunt
+	// OldNetAftershockWarn: Residual exposure — the echo is tracing back
+	// OldNetAftershockHit: Traceback complete. They are coming
+	// OldNetDragnetWarn: The net is drawing shut — the threat is about to become irreversible // DRAGNET 75%
+	// OldNetDragnetOn: Dragnet engaged: the purge never lifts, every encrypted lock is offline // DRAGNET
+	// OldNetHotExtractHint: Link overheated: severing takes 10 seconds at the terminal, and the net will come for you
+	// OldNetHotExtractStart: Forced severance started — hold the line // SEVERING
+	// OldNetHotExtractAbort: Severance aborted — the link holds
+	// OldNetHotExtractTooFar: Too far from the terminal — get closer to sever
 }
 
 OldNetDebriefPanel: {
@@ -1491,6 +1543,14 @@ OldNetDebriefPanel: {
 	// DebriefLost: "{0} uninscribed shards burned away"
 	// DebriefContinue: Continue
 	// DebriefMechHint: Uninscribed haul lives only in the link — it becomes yours once inscribed at a relay or the logout terminal
+	// DebriefScore: Score
+	// DebriefGrade: Grade
+	// DebriefBest: Personal best {0}
+	// DebriefNewRecord: NEW RECORD
+	// StyleGhost: Ghost run
+	// StyleHeat: Heat survivor
+	// StyleHotExtract: Hot extract
+	// StyleDragnet: Dragnet escape
 }
 
 CharacterDockUI: {
@@ -1500,4 +1560,11 @@ CharacterDockUI: {
 	// SupCal.Name: Brimstone Witch
 	// Helen.Name: Helen
 	// Shenyo.Name: Shenyo
+}
+
+WeaponSkillHud: {
+	// ReadyHint: Ready, click to cast
+	// CooldownFormat: Cooldown: {0}s
+	// ActiveLine: Active
+	// ManaCostFormat: Mana cost: {0}
 }

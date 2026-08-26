@@ -246,9 +246,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 Vector2 gripWorld = show.TargetCenter + gripLocal;
 
                 float reach = Vector2.Distance(root, gripWorld);
-                float segLen = MathHelper.Clamp(
-                    reach * 1.15f / KikasaHandRig.ArmSegmentCount,
-                    26f, MaxHandSegmentLength);
+                float segLen = SegLenFor(reach);
 
                 KikasaHandRig rig = new() {
                     Root = root,
@@ -273,12 +271,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             }
         }
 
-        /// <summary>单节段长上限：6 节解算臂展 240×6×0.98 ≈ 1411px，
+        /// <summary>抓点可达筛选基准（近抓臂展 240×6×0.98 ≈ 1411px 留余量后的旧链），
         /// 与 KikasaDrown.MaxGrabHeight(1200) 构成"资格 ≤ 抓点筛选 ≤ 物理臂展"的安全链</summary>
-        private const float MaxHandSegmentLength = 240f;
-
-        /// <summary>抓点可达筛选上限（对解算臂展留余量）</summary>
         private const float MaxArmReach = 1350f;
+
+        /// <summary>抓点筛选预算随本场目标高差联动拉伸（反馈三·#28）：
+        /// 资格帽动态放宽后，FX 按同一口径抬预算，安全链不变形</summary>
+        private static float ArmReachFor(DrownShow show)
+            => MathHelper.Clamp(MathF.Abs(show.LakeY - show.TargetCenter.Y) + 200f,
+                MaxArmReach, KikasaDrown.MaxGrabHeightHardCap + 200f);
+
+        /// <summary>段长随实际根腕距定标（近抓维持旧手感），远抓上限联动拉伸、硬顶封界（反馈三·#28）</summary>
+        private static float SegLenFor(float reach)
+            => MathF.Max(26f, MathF.Min(reach, KikasaDrown.MaxGrabHeightHardCap + 200f)
+                * 1.15f / KikasaHandRig.ArmSegmentCount);
 
         /// <summary>远抓增幅：臂展超出近抓预算(≈340px)后手掌臂宽随之放大，
         /// 长臂不细成线，极限约 ×2；每只手按自己的根到抓点实距取值</summary>
@@ -294,7 +300,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             foreach (NPC npc in group) {
                 Vector2 pos = npc.Center;
                 //根挂在节位正下方湖面，竖直够不着的节不做抓点
-                if (Vector2.Distance(new Vector2(pos.X, show.LakeY + 2f), pos) > MaxArmReach * 0.95f) {
+                if (Vector2.Distance(new Vector2(pos.X, show.LakeY + 2f), pos) > ArmReachFor(show) * 0.95f) {
                     continue;
                 }
                 candidates.Add((pos, MathF.Sqrt(MathF.Max(npc.width * npc.height, 1f))));
@@ -312,7 +318,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
                 //根向组中心略收拢让臂斜挂，够不着就直挂节位正下
                 Vector2 root = new(MathHelper.Lerp(grip.X, show.TargetCenter.X, 0.18f) + jx, show.LakeY + 2f);
-                if (Vector2.Distance(root, grip) > MaxArmReach) {
+                if (Vector2.Distance(root, grip) > ArmReachFor(show)) {
                     root.X = grip.X + jx * 0.4f;
                 }
 
@@ -323,9 +329,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                     rootSide, i % 2 == 0);
 
                 float reach = Vector2.Distance(root, grip);
-                float segLen = MathHelper.Clamp(
-                    reach * 1.15f / KikasaHandRig.ArmSegmentCount,
-                    26f, MaxHandSegmentLength);
+                float segLen = SegLenFor(reach);
 
                 KikasaHandRig rig = new() {
                     Root = root,
@@ -689,9 +693,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                     rig.Wrist = Vector2.Lerp(a, b, ease);
                     //臂从湖里长出来：段长随当前根腕距动态定标，
                     //远抓甩出途中不在根口堆出巨环松弛
-                    rig.SegmentLength = MathHelper.Clamp(
-                        Vector2.Distance(rig.Root, rig.Wrist) * 1.15f / KikasaHandRig.ArmSegmentCount,
-                        26f, MaxHandSegmentLength);
+                    rig.SegmentLength = SegLenFor(Vector2.Distance(rig.Root, rig.Wrist));
                     rig.Tension = 0.75f;
                     rig.Curl = MathHelper.Lerp(rig.Curl, -0.1f + rt * 0.15f, 0.4f);
                 }

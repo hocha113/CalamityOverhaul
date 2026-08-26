@@ -10,12 +10,14 @@
 		这条鱼已经研究
 		'''
 	DisplayName: 大比目鱼
-	Tooltip:
-		'''
-		火枪子弹会被转化为海洋射流
-		[Lang4]
-		legend_Text
-		'''
+	Tooltip: 火枪子弹会被转化为海洋射流
+	KeyLabelDomain: 领域展开
+	KeyLabelClone: 过去身入侵
+	KeyLabelSuperpose: 叠加
+	KeyLabelRestart: 重启自身
+	KeyLabelTeleport: 领域传送
+	KeyLabelWheel: 技能盘
+	KeyLabelAtlas: 深渊图鉴
 }
 
 HalibutText: {
@@ -236,9 +238,13 @@ SHPCOverride: {
 		左键发射三道激光束
 		长按右键进行蓄能
 		所有攻击均可受到领域强化
-		[Lang4]
-		legend_Text
 		'''
+	KeyLabelDomain: 领域展开
+	KeyLabelWheel: 领域盘
+	KeyLabelTeleport: 领域传送
+	KeyLabelRestart: 重启自身
+	KeyLabelBanish: 放逐
+	KeyLabelFreeze: 冻结
 }
 
 LegendUpgradeManagerSystem: {
@@ -249,6 +255,7 @@ LegendUpgradeManagerSystem: {
 }
 
 TrialBlockedHint: 下一关需要启用相应内容后才能开始
+TrialFrontierHint: 等级按顺序结算，正卡在这一关。后面的先打了也会记下，补完这一关一起入账。
 
 HalibutTrialQuestLine: {
 	QuestCategory: 比目鱼传说
@@ -640,7 +647,7 @@ OnikiriText: {
 	OnikiriTutorialLead: {
 		AskTitle: 要不要先受一遍教习
 		AskBody: 气力与架势、鬼域的表里、肢解的反噬，这三样不讲一遍很难自己摸清。这句话只问这一次
-		AskPrompt: 现在受教；或收下稽古符，改日自己开讲
+		AskPrompt: 现在受教；急着动身可跳过教程，视同学过；或收下稽古符，改日自己开讲
 		RefreshAskTitle: 补一段新的
 		RefreshAskBody: 这一版多了两段讲解：改铭台旁那本铭谱怎么查，以及鬼域之眼在动手前该认的东西。实操你已经练过，这次不重练
 		RefreshAskPrompt: 现在补讲；或收下稽古符，改日自己开讲
@@ -696,6 +703,8 @@ OnikiriText: {
 		SkipBtn: 跳过
 		SkipStepBtn: 跳过本步
 		AbortBtn: 收起教习
+		SkipAllBtn: 跳过教程
+		SkipAllNotice: 教程已视同学过，试炼委托即刻可接
 	}
 
 	OniMeiCodexUI: {
@@ -729,18 +738,14 @@ OnikiriOverride: {
 	Tooltip:
 		'''
 		按住左键驱动绯红裂空斩五段连段，砍中敌人积攒架势
-		按 [DASH] 消耗气力施展神威疾走
-		按「领域展开」键开阖鬼域，按「领域表里翻转」键在表里之间翻转
-		表世界中按住 [SAKURA] 化作樱瓣巡航，疾走途中也能衔接；松开或气尽当场凝回人身
-		里世界中对准敌人按左键施展肢解，重创真身；持刀者承受最大生命 25% 的反噬僵直
-		疾走或樱流收势后的短窗内，按左键接出残心追斩
-		架势过半时，疾走途中或收势后一秒内再按 [DASH]，免费衔出处决疾走
-		处决疾走收势后按左键释放灭世一闪；满架势的处决疾走穿中目标，直接释放终结乱舞
-		满架势按 [EXECUTE]：自动锁敌疾走并释放终结乱舞，无目标时朝光标空放
-		处决疾走不耗气力，没接上后续也不亏
-		[Lang4]
-		legend_Text
+		气力供疾走与樱流消耗，架势过半与攒满各解锁一档处决
 		'''
+	KeyLabelFlashStep: 神威疾走
+	KeyLabelSakura: 樱流
+	KeyLabelExecute: 处决
+	KeyLabelDomain: 领域展开
+	KeyLabelFlip: 表里翻转
+	KeyLabelTeleport: 领域传送
 }
 
 OnikiriTrialQuestLine: {
@@ -750,28 +755,28 @@ OnikiriTrialQuestLine: {
 	TrackerBrief: 下一刀：{0}
 	BossRushTargetName: 散不掉的夜
 	EventActiveFormat: "{0}: 进行中"
-	Trial_0: 天上那档子
-	Trial_1: 土里两股劲
-	Trial_2: 抱成一坨的
-	Trial_3: 听说是神
-	Trial_4: 堵路的那档
-	Trial_5: 硫海那股味
-	Trial_6: 火坑还亮着
-	Trial_7: 名字很大的
-	Trial_8: 成对的两点
-	Trial_9: 新旧搅一起
-	Trial_10: 走路太像的
-	Trial_11: 底下那朵
-	Trial_12: 石屋那尊
-	Trial_13: 门口念叨的
-	Trial_14: 上面压着的
-	Trial_15: 地心发热
-	Trial_16: 潮里一团
-	Trial_17: 空得慌那边
-	Trial_18: 还在的龙
-	Trial_19: 轰耳朵那边
-	Trial_20: 空气发沉那边
-	Trial_21: 又聚回来的
+	Trial_0: 天穹夜目
+	Trial_1: 秽土双孽
+	Trial_2: 结聚秽巢
+	Trial_3: 妄称神明
+	Trial_4: 截界肉壁
+	Trial_5: 硫海腐鳞
+	Trial_6: 深渊余烬
+	Trial_7: 轰鸣铁蛇
+	Trial_8: 双生魔瞳
+	Trial_9: 新旧残骸
+	Trial_10: 拟形魔影
+	Trial_11: 丛林幽葩
+	Trial_12: 神庙顽尊
+	Trial_13: 古门狂祷
+	Trial_14: 重月倾坠
+	Trial_15: 地心炽辉
+	Trial_16: 阴潮怨簇
+	Trial_17: 虚空噬界
+	Trial_18: 遗世炎龙
+	Trial_19: 星流震鸣
+	Trial_20: 窒息灾岚
+	Trial_21: 残夜重聚
 	TrialSummary_0:
 		'''
 		天上有档子事，我也说不准是什么
@@ -808,7 +813,7 @@ OnikiriTrialQuestLine: {
 		'''
 		硫海那边味就不对，有东西在翻
 		别让它靠岸，你去拦一拦
-		回来刀要是一股味，那颗太混蛋了
+		回来刀要是一股味，那可太混蛋了
 		'''
 	TrialSummary_6:
 		'''
@@ -913,34 +918,22 @@ KikasaOverride: {
 	DisplayName: 鬼伞
 	Tooltip:
 		'''
-		持有时鬼伞悬在肩后随行，敌人靠近而你未出手时，会自行倾伞洒墨自卫
 		按住左键把伞悬到头顶，按节拍降下追踪敌人的墨雨
-		按住右键倒撑蓄墨，松手泼出一场墨瀑
-		手持时按「领域展开」键撑开血湖，再按一次收起
-		湖水漫到脚下后，拿着物品按「沉物入湖」键把它存进湖底，可在湖心景取回
-		对着敌人按同一个键则将其沉溺，被沉溺过的 Boss 会留下沉影
-		点左下角风铃打开湖心景，把沉影编进三个影位，它们会像召唤物一样替你作战
-		按住转盘键随时逐只召出或收回沉影；在场的越少，每只的伤害越高
-		转盘上的金焰扇点燃鬼火，金焰沿湖岸蔓延，灼烧碰到的敌人
-		湖水涨满后，短按「血湖表里」键（默认鼠标中键）在血湖与鬼雨之间翻转
-		鬼雨中杀死的敌人会化作伞奴，替你作战
-		鬼雨满水时按「重启自身」键，附近的一切倒回数秒前，你的生命回满、减益洗净
-		湖水涨满后，长按「血湖表里」键沉入鬼梦：梦中敌人失能，远程弹幕无法存在
-		梦里物品封禁，改为按住左键连唤恶犬撕咬，重按同键醒来
-		按「领域传送」键以一滩水为门，瞬移到指针处；在血湖里施展更快
-		召唤栏位越多，墨雨节拍越快、雨滴越多，蓄墨也越快
-		4 栏：每拍多甩一滴，打向第二个目标
-		7 栏：每四拍齐掷一次，甩出全部雨滴
-		10 栏：大滴落地积成灼烧墨洼；蓄满的墨瀑触地喷出三道墨泉
-		[Lang4]
-		legend_Text
-		"伞下无雨，只有水声"
+		按住右键倒撑蓄墨，松手泼出一道墨瀑
 		'''
 	GhostCountLine: 召唤栏 {0} · {1}
 	TierName0: 细雨
 	TierName1: 侧掷
 	TierName2: 齐掷
 	TierName3: 湖倾
+	KeyLabelDomain: 领域展开
+	KeyLabelSink: 沉物入湖
+	KeyLabelMutate: 血湖表里
+	KeyLabelWheel: 召影转盘
+	KeyLabelRestart: 重启自身
+	KeyLabelTeleport: 领域传送
+	KeyLabelPanorama: 湖心景
+	MutateFallback: 鼠标中键
 }
 
 KikasaTrialQuestLine: {
@@ -950,30 +943,30 @@ KikasaTrialQuestLine: {
 	TrackerBrief: 下一席：{0}
 	BossRushTargetName: 满桌的客
 	EventActiveFormat: "{0}: 进行中"
-	Trial_0: 第一口软糯
-	Trial_1: 睁着的那颗
-	Trial_2: 腐土里烘的
-	Trial_3: 烂在地里的
-	Trial_4: 甜的或倔的
-	Trial_5: 守门老骨头
-	Trial_6: 一大滩神胶
-	Trial_7: 横路上的肉
-	Trial_8: 第二口粉糯
-	Trial_9: 酸臭的长虫
-	Trial_10: 有三件铁器
-	Trial_11: 谧毒的朵朵
-	Trial_12: 海里的大只
-	Trial_13: 方榆木脑袋
-	Trial_14: 掀浪的飞猪
-	Trial_15: 黑夜的璀璨
-	Trial_16: 念经的巫师
-	Trial_17: 月亮后的脸
-	Trial_18: 同类窥同类
-	Trial_19: 酸臭老东西
-	Trial_20: 天上的长蛇
-	Trial_21: 不熄的火簇
-	Trial_22: 铁的和火的
-	Trial_23: 满桌的时候
+	Trial_0: 初席软冻
+	Trial_1: 夜穹窥目
+	Trial_2: 腐壤双腥
+	Trial_3: 地底陈馊
+	Trial_4: 甘浆与倔蹄
+	Trial_5: 门前枯骨
+	Trial_6: 驳杂神胶
+	Trial_7: 横途热肉
+	Trial_8: 展翼粉冻
+	Trial_9: 硫海腐身
+	Trial_10: 生铁三味
+	Trial_11: 雨林红蕊
+	Trial_12: 沧海巨客
+	Trial_13: 神庙顽石
+	Trial_14: 弄潮翼彘
+	Trial_15: 夜空流光
+	Trial_16: 门前残诵
+	Trial_17: 月背倒影
+	Trial_18: 同类并桌
+	Trial_19: 酸海老宿
+	Trial_20: 穹外噬神
+	Trial_21: 不熄烈羽
+	Trial_22: 极铁与极火
+	Trial_23: 满席终宴
 	TrialSummary_0:
 		'''
 		山脚摊了软的，蓝汪汪的，抖起来没完
@@ -1144,7 +1137,10 @@ KikasaTrialQuestLine: {
 }
 
 KikasaText: {
-	KikasaServantPlayer.ServantUnknown: 还不能驱使它
+	KikasaServantPlayer: {
+		ServantUnknown: 还不能驱使它
+		AutoEvictFormat: 影位已满，{0} 让席，{1} 落座
+	}
 
 	KikasaUIText: {
 		AffinityFlame: 焰
@@ -1165,7 +1161,7 @@ KikasaText: {
 		OpenTag: 点击打开
 		TipWaterFormat: 水位 {0}%
 		TipVaultFormat: 湖藏 {0} / {1}
-		TipWispClick: "[点击] 点燃 / 收火"
+		TipWispClick: 点击焰苗，点燃或收火
 		TipCooldownFormat: 冷却中 · {0}%
 		TipDrownTitle: 沉溺
 		TipDrownHintFormat: 对着敌人或拿着物品按 {0}
@@ -1176,6 +1172,7 @@ KikasaText: {
 		TipTeleportHintFormat: 按 {0} 借一滩水渡到指针处；在血湖里施展更快、冷却更短
 		TipThrallFormat: 在场伞奴 {0} / {1}
 		TipHoundCountFormat: 在场恶犬 {0} / {1}
+		TipDreamNoTalis: 梦里只算恶犬的撕咬，符文不生效
 		TipSeatsHintFormat: 按住 {0} 打开转盘召出或收回 · 在湖心景里调整编成
 		TipSeatEmpty: 空位
 		TipTalisHint: 点击打开湖心景，在祈雨绳上挂符
@@ -1196,7 +1193,7 @@ KikasaText: {
 		WheelCenterSummonAll: "[松开] 全部召出"
 		WheelCenterEmpty: 还没有编进影位的沉影
 		WheelDamageFormat: 每只在场沉影的伤害 {0}%
-		WheelHint: "[{0}] 按住 · 松开确认 · 右键取消"
+		WheelHint: "[{0}] 按住 · 松开确认 · 右键只收转盘，沉影留场"
 		WheelWispName: 金焰
 		WheelWispDesc: 点燃后金焰沿湖岸蔓延，灼烧碰到的敌人
 		WheelWispIgnite: "[松开] 点燃"
@@ -1211,8 +1208,8 @@ KikasaText: {
 		ReflectAsleep: 倒影还在睡
 		InDreamLine: 你正在鬼梦里
 		DreamReturnFormat: 再按 {0} 回来
-		DreamEnterKeyFormat: "[长按 {0}] 进入鬼梦"
-		DreamEnterClick: "[点击] 进入鬼梦"
+		DreamEnterKeyFormat: 长按 {0} 进入鬼梦
+		DreamEnterClick: 点击恶犬，进入鬼梦
 		NeedDomainFormat: 按 {0} 撑开血湖
 		NeedFullWater: 湖还没涨满
 		HoundBonusFormat: 恶犬上限 {0} · 伤害 {1}%
@@ -1221,8 +1218,11 @@ KikasaText: {
 		WispBoil: 鬼雨里仍在烧
 		WispQuenchedLine: 正在被鬼雨浇灭
 		WispBonusFormat: 灼烧 {0} 秒 · 火舌长度 {1}
-		WispIgniteClick: "[点击] 点燃"
-		WispSnuffClick: "[点击] 收火"
+		WispIgniteClick: 点击金焰，点燃鬼火
+		WispSnuffClick: 点击金焰，收回鬼火
+		ActionDreamTag: 入梦
+		ActionIgniteTag: 点燃
+		ActionSnuffTag: 收火
 		EdgeDreamFire: 梦火
 		EdgeBoilRain: 沸雨
 		EdgeRainNightmare: 雨魇
@@ -1232,9 +1232,8 @@ KikasaText: {
 		SeatPickHint: 点击拿起 · 右键卸下
 		SeatPlaceHint: 点击放到这里
 		SeatHeldLineFormat: 已收起，按住 {0} 打开转盘可以召回
-		SeatOutLine: 正在场上
-		SeatAwaitLine: 等湖水涨起来
-		RosterTallyFormat: 沉影 {0} / {1}
+		RosterTallyFormat: 图鉴 {0} / {1}
+		RosterSeatTallyFormat: 影位 {0} / {1}
 		RosterUnknown: 还没沉过
 		RosterUnknownHintFormat: 开着湖、对着它按 {0} 即可沉溺
 		RosterSeatedTag: 已编入
@@ -1248,11 +1247,14 @@ KikasaText: {
 		TalisEmptyLine: 空绳结，点击展开符箧挑一张
 		TalisNoneOwned: 符箧还是空的，先到水边的工作台做一张符再来
 		TalisNeedUmbrella: 把鬼伞握在手里，符才认主
-		TalisSwapHint: 点击换符 · 右键摘下
+		TalisSwapHint: 点击换符 · 拖到别的绳结换位 · 右键摘下
 		TalisHangHint: 点击挂上
 		TalisTakeDownLabel: 摘下
 		TalisAlreadyHung: 它已经挂在别的绳结上了
 		TalisCurrentTag: 正挂在这里
+		TalisStackRule: 挂着的符都在生效，墨色被盖也不例外；每滴墨只归一张符，靠左的先认，颜色与专属效果随它
+		TalisDragSwapHint: 松手与它互换
+		TalisDragMoveHint: 松手挂到这里
 		NoteFuHungFormat: 「{0}」升上了祈雨绳
 		NoteFuTakenFormat: 「{0}」收回了符箧
 		VaultTitle: 湖 藏
@@ -1280,23 +1282,24 @@ KikasaText: {
 		WheelPrompt: 按住 {0} 打开转盘，对准一个影位松开
 		WheelNoMemory: 湖里还没有沉影。先把一只 Boss 沉进湖里，或者跳过这一步。
 		RainTitle: 异化成鬼雨
-		RainBody: 「血湖表里」键有两种按法：湖水涨满后短按，血湖翻转成鬼雨；长按则沉入鬼梦，留到最后一步。在鬼雨中杀死的敌人会化作伞奴，替你作战。
+		RainBody: 「血湖表里」键（默认鼠标中键）有两种按法：湖水涨满后短按，血湖翻转成鬼雨；长按则沉入鬼梦，留到最后一步。在鬼雨中杀死的敌人会化作伞奴，替你作战。
 		RainPrompt: 湖水涨满后，短按 {0} 翻转血湖
 		RestartTitle: 雨中重启
 		RestartBody: 鬼雨记得几秒前的一切。按下重启键，画面定格成黑白照片，再被雨痕冲开：附近的敌人和你都退回数秒前的位置，你的生命回满、减益洗净，倒带全程无敌。
 		RestartPrompt: 鬼雨满水时，按 {0}
 		DreamTitle: 进入鬼梦
 		DreamBody: 湖水涨满后长按「血湖表里」键，湖里的倒影会把你拽进鬼梦。梦中敌人失能，远程弹幕无法存在；你的物品也被封禁，改为按住左键连续唤出恶犬撕咬。再按一次同键就能醒来。
-		DreamPrompt: 湖水涨满后，长按 {0}（默认鼠标中键）
+		DreamPrompt: 湖水涨满后，长按 {0}
 		SkipBtn: 跳过
 		ConfirmBtn: 明白了
 		AssistBtn: 替我演示
 		OpenPanoramaBtn: 帮我打开
 		DismissBtn: 收起教程
-		KeyUnbound: 这一步的按键还没绑定。先到 设置 > 控制 里绑好，或者点「跳过」。
+		KeyUnbound: 这一步要用的「{0}」还没绑定。先到 设置 > 控制 里绑好，或者点「跳过」。
 		AlreadyDoneNote: 这一步你已经做到了。看完就点「明白了」。
-		WaterRisingNote: 先等血水漫到脚下。
+		WaterRisingNote: 先等血水漫到脚下，水位 {0}%。
 		ResetCooldownFormat: 重启还在冷却：{0}%
 		HelpHover: 重看鬼伞教程
+		MutateFallbackKey: 鼠标中键
 	}
 }

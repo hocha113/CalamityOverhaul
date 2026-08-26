@@ -79,6 +79,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         public static LocalizedText SkipBtn { get; private set; }
         public static LocalizedText SkipStepBtn { get; private set; }
         public static LocalizedText AbortBtn { get; private set; }
+        public static LocalizedText SkipAllBtn { get; private set; }
+        public static LocalizedText SkipAllNotice { get; private set; }
 
         private static OnikiriTutorialLead instance;
 
@@ -105,7 +107,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 
             AskTitle = this.GetLocalization(nameof(AskTitle), () => "要不要先受一遍教习");
             AskBody = this.GetLocalization(nameof(AskBody), () => "鬼切的气力、鬼域与肢解都有讲究");
-            AskPrompt = this.GetLocalization(nameof(AskPrompt), () => "现在受教，或收下稽古符改日再来");
+            AskPrompt = this.GetLocalization(nameof(AskPrompt),
+                () => "现在受教；急着动身可跳过教程，视同学过；或收下稽古符，改日自己开讲");
             RefreshAskTitle = this.GetLocalization(nameof(RefreshAskTitle), () => "补一段新的");
             RefreshAskBody = this.GetLocalization(nameof(RefreshAskBody),
                 () => "这一版多了两段讲解:改铭台旁那本铭谱怎么查,以及鬼域之眼在动手前该认的东西");
@@ -166,6 +169,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             SkipBtn = this.GetLocalization(nameof(SkipBtn), () => "跳过");
             SkipStepBtn = this.GetLocalization(nameof(SkipStepBtn), () => "跳过本步");
             AbortBtn = this.GetLocalization(nameof(AbortBtn), () => "收起教习");
+            SkipAllBtn = this.GetLocalization(nameof(SkipAllBtn), () => "跳过教程");
+            SkipAllNotice = this.GetLocalization(nameof(SkipAllNotice),
+                () => "教程已视同学过，试炼委托即刻可接");
         }
 
         int IGuideLead.GuidePriority => 5;

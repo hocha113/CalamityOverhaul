@@ -7,8 +7,9 @@ using Terraria;
 namespace CalamityOverhaul.Content.MainMenus.Himayo
 {
     /// <summary>樱瓣场：花瓣存在于相机周围的世界空间，经 <see cref="HimayoMenuCamera.Project"/>
-    /// 柱面投影上屏（与全景背景同几何，转头时流速严格一致）；深度连续驱动透视尺寸、
-    /// 对焦中距的景深柔边与远景紫雾。形体走 OniDomainDeco 的 TechMenuPetal；近距瓣可被光标扰动与接住</summary>
+    /// 针孔透视上屏（与全景背景同几何，转头时流速严格一致）；深度连续驱动透视尺寸、
+    /// 对焦近中景的景深柔边与远景紫雾；三成花瓣走贴近摄像机的近景大瓣带。
+    /// 形体走 OniDomainDeco 的 TechMenuPetal；近距瓣可被光标扰动与接住</summary>
     internal static class HimayoPetalField
     {
         private class Petal
@@ -19,28 +20,36 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
             public Vector3 Imp;
             public float Rot, PrevRot, RotSpeed;
             public float SwayPhase;
-            //世界空间基准尺寸；下落速度逐瓣微差
+            //世界空间基准尺寸；下落速度与横摆振幅逐瓣随机，纷飞不整齐
             public float Size;
             public float FallSpeed;
+            public float SwayAmp;
+            //水平距离（spawn 参数，供回收阈值自适应）
+            public float Rho;
             public Color Tint;
             public bool Caught;
             public int CatchSlot = -1;
         }
 
-        private const int PetalCount = 180;
-        //世界分布：方位角 ±100°（可视 ±82° 加余量）、水平距离与高度范围
+        private const int PetalCount = 300;
+        //世界分布：方位角 ±100°（可视 ±82° 加余量）；主场与近景带两段式
         private const float SpawnYawRange = 1.745f;
-        private const float RhoMin = 0.85f, RhoMax = 7f;
+        private const float MainRhoMin = 0.9f, MainRhoMax = 7f;
+        //近景大瓣带：贴近摄像机纷飞掠过，约占三成
+        private const float NearBandChance = 0.30f;
+        private const float NearRhoMin = 0.55f, NearRhoMax = 1.5f;
         private const float TopY = 1.9f, BottomY = -1.7f;
-        //景深对焦距离与前后景深度阈值：近段盖 UI，远段垫底
-        private const float FocusDepth = 1.6f;
+        //景深对焦近中景（近景带基本锐利，远景糊+雾）；前后景深度阈值：近段盖 UI
+        private const float FocusDepth = 1.15f;
         private const float SplitDepth = 1.35f;
         //交互只作用近距瓣；判定在投影后的屏幕空间
         private const float InteractDepth = 1.75f;
         private const float SweepRadius = 92f;
         private const float CatchRadius = 50f;
-        //接住的花瓣锁在光标射线上的固定深度
-        private const float CatchDepth = 1.05f;
+        //接住的花瓣锁在光标射线上的固定视轴深度
+        private const float CatchDepth = 0.95f;
+        //可见锥半角近似（tan 垂直半 FOV + pitch 满偏），供按深度自适应的重生/回收高度
+        private const float ViewConeSlope = 0.905f;
 
         private static readonly List<Petal> petals = new(PetalCount);
         //掌心槽位：按住左键最多托起 4 片；偏移在屏幕空间给出，反投影到掌心深度
@@ -82,7 +91,7 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
             }
         }
 
-        //垂直焦距（像素）：屏幕尺寸 = 世界尺寸 / 深度 * 焦距，与柱面投影的垂直分量一致
+        //垂直焦距（像素）：屏幕尺寸 = 世界尺寸 / 视轴深度 * 焦距
         private static float FocalV => Main.screenHeight / (2f * HimayoMenuCamera.TanHalfFov);
 
         //屏幕速度（px/tick）→ 指定深度处的世界速度；方向落在当前视平面
@@ -104,8 +113,10 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
                 ReleaseCaught(mouseVel);
             }
 
-            //全局缓变横风（世界 +x），叠层内正弦摆；量级为近瓣（深度1）处约 0.2~0.5 px/tick
-            float wind = (0.22f + MathF.Sin(windTime * 0.35f) * 0.18f) / 864f;
+            //双频阵风（世界 +x）：慢波打底 + 中频阵涌，一阵一阵的纷飞感；量级为深度1处像素/tick
+            float wind = (0.30f
+                + MathF.Sin(windTime * 0.35f) * 0.26f
+                + MathF.Sin(windTime * 1.13f + 2.1f) * 0.14f) / 864f;
 
             for (int i = 0; i < petals.Count; i++) {
                 Petal p = petals[i];
@@ -122,37 +133,35 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
 
                 p.SwayPhase += 0.026f + p.Size * 0.35f;
                 float sway = MathF.Sin(p.SwayPhase);
-                //世界运动学：恒定下落 + 横风 + 水平面正弦摆（含小纵深分量，瓣会缓慢穿越景深）
+                //世界运动学：恒定下落 + 阵风 + 逐瓣振幅的水平摆（含纵深摆，瓣会缓慢穿越景深）
                 Vector3 vel = new(
-                    sway * 0.00072f + wind,
+                    sway * p.SwayAmp + wind,
                     -p.FallSpeed,
-                    MathF.Sin(p.SwayPhase * 0.63f + 1.7f) * 0.00024f);
+                    MathF.Sin(p.SwayPhase * 0.63f + 1.7f) * 0.00042f);
 
-                if (interactive) {
+                if (interactive
+                    && HimayoMenuCamera.Project(p.Pos, 1f, out Vector2 screen, out float depth)
+                    && depth < InteractDepth) {
                     //交互按玩家所见判定：投影后的屏幕距离；只有近距瓣响应
-                    float rho = new Vector2(p.Pos.X, p.Pos.Z).Length();
-                    if (rho < InteractDepth
-                        && HimayoMenuCamera.Project(p.Pos, 1f, out Vector2 screen, out float depth)) {
-                        float dist = Vector2.Distance(screen, uiMouse);
-                        if (dist < SweepRadius) {
-                            float falloff = 1f - dist / SweepRadius;
-                            //划过：按光标速度施加世界冲量，先在屏幕空间限幅防甩飞
-                            Vector2 impulse = mouseVel * (0.16f * falloff);
-                            if (impulse.Length() > 6f) {
-                                impulse = impulse.SafeNormalize(Vector2.Zero) * 6f;
-                            }
-                            p.Imp += ScreenVelToWorld(impulse, depth);
-                            p.RotSpeed += (mouseVel.X >= 0f ? 1f : -1f) * 0.004f * falloff;
+                    float dist = Vector2.Distance(screen, uiMouse);
+                    if (dist < SweepRadius) {
+                        float falloff = 1f - dist / SweepRadius;
+                        //划过：按光标速度施加世界冲量，先在屏幕空间限幅防甩飞
+                        Vector2 impulse = mouseVel * (0.16f * falloff);
+                        if (impulse.Length() > 6f) {
+                            impulse = impulse.SafeNormalize(Vector2.Zero) * 6f;
+                        }
+                        p.Imp += ScreenVelToWorld(impulse, depth);
+                        p.RotSpeed += (mouseVel.X >= 0f ? 1f : -1f) * 0.004f * falloff;
 
-                            if (catching && dist < CatchRadius) {
-                                int slot = FindFreeSlot();
-                                if (slot >= 0) {
-                                    p.Caught = true;
-                                    p.CatchSlot = slot;
-                                    catchSlots[slot] = p;
-                                    p.Imp = Vector3.Zero;
-                                    continue;
-                                }
+                        if (catching && dist < CatchRadius) {
+                            int slot = FindFreeSlot();
+                            if (slot >= 0) {
+                                p.Caught = true;
+                                p.CatchSlot = slot;
+                                catchSlots[slot] = p;
+                                p.Imp = Vector3.Zero;
+                                continue;
                             }
                         }
                     }
@@ -160,13 +169,14 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
 
                 p.Imp *= 0.90f;
                 p.Pos += vel + p.Imp;
-                p.RotSpeed = MathHelper.Clamp(p.RotSpeed, -0.06f, 0.06f);
-                p.Rot += p.RotSpeed + sway * 0.010f;
+                p.RotSpeed = MathHelper.Clamp(p.RotSpeed, -0.075f, 0.075f);
+                p.Rot += p.RotSpeed + sway * 0.014f;
                 p.RotSpeed *= 0.995f;
 
-                //回收：落底或横漂出方位余量则回顶部重生；视野外只是不画，转头回来瓣仍在
+                //回收：落出自身深度的可见锥下界（近瓣快速循环）或横漂出方位余量，则回顶部重生
+                float recycleY = MathF.Max(BottomY, -(p.Rho * ViewConeSlope + 0.25f));
                 float yawAng = MathF.Atan2(p.Pos.X, p.Pos.Z);
-                if (p.Pos.Y < BottomY || MathF.Abs(yawAng) > SpawnYawRange * 1.12f) {
+                if (p.Pos.Y < recycleY || MathF.Abs(yawAng) > SpawnYawRange * 1.12f) {
                     Respawn(p, topOnly: true);
                 }
             }
@@ -194,18 +204,28 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
 
         private static void Respawn(Petal p, bool topOnly) {
             float yaw = Main.rand.NextFloat(-SpawnYawRange, SpawnYawRange);
-            float rho = MathHelper.Lerp(RhoMin, RhoMax, Main.rand.NextFloat());
+            //两段式分布：三成走近景大瓣带（贴脸纷飞），其余铺满主场
+            bool nearBand = Main.rand.NextFloat() < NearBandChance;
+            float rho = nearBand
+                ? MathHelper.Lerp(NearRhoMin, NearRhoMax, Main.rand.NextFloat())
+                : MathHelper.Lerp(MainRhoMin, MainRhoMax, Main.rand.NextFloat());
+            //重生高度贴自身深度的可见锥上界：近瓣不必从 1.9 落半天才入画
+            float spawnTop = MathF.Min(TopY, rho * ViewConeSlope + 0.2f);
             float y = topOnly
-                ? TopY + Main.rand.NextFloat(0.35f)
-                : Main.rand.NextFloat(BottomY, TopY);
+                ? spawnTop + Main.rand.NextFloat(0.30f)
+                : Main.rand.NextFloat(MathF.Max(BottomY, -(rho * ViewConeSlope + 0.2f)), spawnTop);
             p.Pos = new Vector3(MathF.Sin(yaw) * rho, y, MathF.Cos(yaw) * rho);
             p.PrevPos = p.Pos;
+            p.Rho = rho;
             p.Rot = Main.rand.NextFloat(MathHelper.TwoPi);
             p.PrevRot = p.Rot;
-            p.RotSpeed = Main.rand.NextFloat(-0.03f, 0.03f);
+            p.RotSpeed = Main.rand.NextFloat(-0.045f, 0.045f);
             p.SwayPhase = Main.rand.NextFloat(MathHelper.TwoPi);
-            p.Size = Main.rand.NextFloat(0.032f, 0.058f);
-            p.FallSpeed = Main.rand.NextFloat(0.0010f, 0.0016f);
+            p.Size = nearBand
+                ? Main.rand.NextFloat(0.040f, 0.062f)
+                : Main.rand.NextFloat(0.030f, 0.056f);
+            p.FallSpeed = Main.rand.NextFloat(0.0008f, 0.0019f);
+            p.SwayAmp = Main.rand.NextFloat(0.0007f, 0.0014f);
             p.Imp = Vector3.Zero;
             p.Caught = false;
             p.CatchSlot = -1;
@@ -218,10 +238,10 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
             p.Tint = baseTint;
         }
 
-        //景深柔边：对焦中距，近侧糊得快、远侧糊得缓且更糊
+        //景深柔边：对焦近中景，近景带基本锐利（还原贴近摄像机的清晰大瓣），远侧糊得缓且更糊
         private static float SoftnessAt(float depth) {
             float d = depth - FocusDepth;
-            float soft = d >= 0f ? 0.055f + d * 0.042f : 0.055f - d * 0.095f;
+            float soft = d >= 0f ? 0.055f + d * 0.042f : 0.055f - d * 0.060f;
             return MathHelper.Clamp(soft, 0.05f, 0.28f);
         }
 
@@ -248,16 +268,14 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
                 return;
             }
 
-            //世界坐标插值后投影（tick 间位移小，直接线性插值再投影足够准）
+            //世界坐标插值后投影（tick 间位移小，直接线性插值再投影足够准）；层归属按视轴深度
             drawList.Clear();
             foreach (Petal p in petals) {
                 Vector3 pos = Vector3.Lerp(p.PrevPos, p.Pos, alpha);
-                float rho = new Vector2(pos.X, pos.Z).Length();
-                bool isNear = rho < SplitDepth;
-                if (isNear != near) {
+                if (!HimayoMenuCamera.Project(pos, alpha, out Vector2 screen, out float depth)) {
                     continue;
                 }
-                if (!HimayoMenuCamera.Project(pos, alpha, out Vector2 screen, out float depth)) {
+                if (depth < SplitDepth != near) {
                     continue;
                 }
                 drawList.Add(new DrawEntry { P = p, Screen = screen, Depth = depth });
@@ -287,7 +305,7 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
                 float rot = MathHelper.Lerp(e.P.PrevRot, e.P.Rot, alpha);
                 Color c = Color.Lerp(e.P.Tint, HimayoMenuTheme.HazePurple, HazeAt(e.Depth))
                     * (AlphaAt(e.Depth) * fade);
-                //透视缩放：世界尺寸 / 深度 * 焦距
+                //透视缩放：世界尺寸 / 视轴深度 * 焦距
                 float px = e.P.Size / e.Depth * focal;
                 Vector2 scale = new(px / white.Width, px * 1.15f / white.Height);
                 spriteBatch.Draw(white, e.Screen, null, c, rot, origin, scale, SpriteEffects.None, 0f);

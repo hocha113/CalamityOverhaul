@@ -30,6 +30,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             => trackerBlockedText ??= Language.GetOrRegister("Mods.CalamityOverhaul.Legend.TrialBlockedHint",
                 static () => "需要启用相应内容后才能开始本试炼");
 
+        private static LocalizedText trialFrontierHintText;
+        /// <summary>断点明示（十三·#116）：等级前缀制卡在首个未完成试炼，越级完成只记账</summary>
+        protected static LocalizedText TrialFrontierHintText
+            => trialFrontierHintText ??= Language.GetOrRegister("Mods.CalamityOverhaul.Legend.TrialFrontierHint",
+                static () => "等级按顺序结算，正卡在这一关。后面的先打了也会记下，补完这一关一起入账。");
+
         public override void PostUpdateEverything() {
             if (Main.dedServ || Main.gameMenu) {
                 return;
@@ -80,14 +86,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             bool isDone = routeIndex < currentLevel || isCompleted(trial);
             if (isDone) {
                 var entry = EnsureTrialEntry(manager, trial, routeIndex, routeCount, completed: true, allowCreate: allowCreate);
-                if (entry != null && entry.Status != QuestEntryStatus.Completed) {
-                    manager.SetEntryStatus(key, QuestEntryStatus.Completed, 1f);
+                if (entry != null) {
+                    entry.FrontierHint = null;
+                    if (entry.Status != QuestEntryStatus.Completed) {
+                        manager.SetEntryStatus(key, QuestEntryStatus.Completed, 1f);
+                    }
                 }
             }
             else {
                 var entry = EnsureTrialEntry(manager, trial, routeIndex, routeCount, allowCreate: allowCreate);
-                if (entry != null && entry.Status == QuestEntryStatus.Completed) {
-                    manager.SetEntryStatus(key, QuestEntryStatus.Active, 0f);
+                if (entry != null) {
+                    //routeIndex == currentLevel 且未完成，即前缀制断点本点，挂明示行
+                    entry.FrontierHint = TrialFrontierHintText;
+                    if (entry.Status == QuestEntryStatus.Completed) {
+                        manager.SetEntryStatus(key, QuestEntryStatus.Active, 0f);
+                    }
                 }
             }
         }
@@ -114,6 +127,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
 
         private static void ApplyBlockedState(LegendTrialQuestEntry entry) {
             entry.Blocked = true;
+            entry.FrontierHint = null;
             LocalizedText hint = TrackerBlockedText;
             entry.BlockedHint = hint;
             if (hint != null) {

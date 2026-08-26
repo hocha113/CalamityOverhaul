@@ -1,4 +1,5 @@
 OldNetTurretBolt.DisplayName: 哨戒弹
+OldNetWardenGlyphBolt.DisplayName: 处决字形
 RebelBladeFlyAttcke.DisplayName: 叛逆之刃
 RebelBladeOrb.DisplayName: 恶魔光球
 RebelBladeBack.DisplayName: 叛逆之刃
@@ -780,3 +781,4 @@ LegionVolleyArrow.DisplayName: 军团战矢
 FinaleMusketRound.DisplayName: 金色铅弹
 FinaleMagicBolt.DisplayName: 环阵魔弹
 TiroFinaleBlast.DisplayName: 终焉一击
+// ScapegoatDollWalker.DisplayName: Scapegoat Doll Walker

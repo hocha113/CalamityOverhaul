@@ -22,13 +22,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private const byte OpRequest = 0;
         private const byte OpApply = 1;
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type == CWRMessageType.IndustrialTimeSkip) {
-                HandleTimeSkip(reader, whoAmI);
-            }
-            else if (type == CWRMessageType.IndustrialWeatherSet) {
-                HandleWeatherSet(reader, whoAmI);
-            }
+        /// <summary>电动日晷时间快进信道</summary>
+        internal sealed class IndustrialTimeSkipNet : CWRNetChannel
+        {
+            public override void Receive(BinaryReader reader, int whoAmI) => HandleTimeSkip(reader, whoAmI);
+        }
+
+        /// <summary>天气控制机求雨/止雨信道</summary>
+        internal sealed class IndustrialWeatherSetNet : CWRNetChannel
+        {
+            public override void Receive(BinaryReader reader, int whoAmI) => HandleWeatherSet(reader, whoAmI);
         }
 
         #region 电动日晷:时间快进到黎明
@@ -39,8 +42,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 ExecuteTimeSkip(tp, Main.myPlayer);
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.IndustrialTimeSkip);
+            ModPacket packet = CWRNetWork.GetPacket<IndustrialTimeSkipNet>();
             packet.Write(OpRequest);
             packet.Write(tp.Position.X);
             packet.Write(tp.Position.Y);
@@ -84,8 +86,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 NetMessage.SendData(MessageID.WorldData);
                 tp.SendData();
 
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.IndustrialTimeSkip);
+                ModPacket packet = CWRNetWork.GetPacket<IndustrialTimeSkipNet>();
                 packet.Write(OpApply);
                 packet.Write(tp.Position.X);
                 packet.Write(tp.Position.Y);
@@ -118,8 +119,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 ExecuteWeatherSet(tp, wantRain, Main.myPlayer);
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.IndustrialWeatherSet);
+            ModPacket packet = CWRNetWork.GetPacket<IndustrialWeatherSetNet>();
             packet.Write(OpRequest);
             packet.Write(tp.Position.X);
             packet.Write(tp.Position.Y);
@@ -170,8 +170,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 NetMessage.SendData(MessageID.WorldData);
                 tp.SendData();
 
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.IndustrialWeatherSet);
+                ModPacket packet = CWRNetWork.GetPacket<IndustrialWeatherSetNet>();
                 packet.Write(OpApply);
                 packet.Write(tp.Position.X);
                 packet.Write(tp.Position.Y);

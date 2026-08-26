@@ -9,8 +9,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
 {
-    internal partial class CyberBanish
+    //信道基类挂在网络分部上：请求/应用/解除共用一条通道
+    internal partial class CyberBanish : CWRNetChannel
     {
+        public override void Receive(BinaryReader reader, int whoAmI) => HandleNetStart(reader, whoAmI);
+
         private enum BanishPacketKind : byte
         {
             Request,
@@ -440,8 +443,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
         }
 
         private static ModPacket NewPacket(BanishPacketKind kind) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.CyberBanishStart);
+            ModPacket packet = CWRNetWork.GetPacket<CyberBanish>();
             packet.Write((byte)kind);
             return packet;
         }

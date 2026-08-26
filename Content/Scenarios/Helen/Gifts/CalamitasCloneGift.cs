@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
 {
     internal sealed class CalamitasCloneGift : HelenBossGiftNarrative, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.Helen";
 
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }

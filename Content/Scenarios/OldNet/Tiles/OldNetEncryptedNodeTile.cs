@@ -43,7 +43,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
             player.noThrow = 2;
             player.cursorItemIconEnabled = true;
             player.cursorItemIconID = 0;
-            player.cursorItemIconText = OldNetTexts.OldNetEncryptHint.Value;
+            //衰减区双态悬停（2.9）：疯域的锁会反咬，决策前就把代价讲清
+            player.cursorItemIconText = i >= OldNetMetrics.FadeLeft
+                ? OldNetTexts.OldNetEncryptFadeHint.Value
+                : OldNetTexts.OldNetEncryptHint.Value;
         }
 
         public override bool RightClick(int i, int j) {
@@ -56,15 +59,16 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
 
         /// <summary>
         /// 引导完成结算（OldNetPlayer.TickChannel 调用，本机）：
-        /// 普通节点同分布 ×3，过容量检查后消散；拒收则节点保留
+        /// 普通节点同分布 ×3，过容量检查后消散；拒收则节点保留。
+        /// 返回是否真正完成（满载拒收 false，衰减区余震据此不触发，失败的破解不该挨打）
         /// </summary>
-        internal static void CompleteHarvest(int i, int j, OldNetPlayer session) {
+        internal static bool CompleteHarvest(int i, int j, OldNetPlayer session) {
             int category = Main.rand.Next(SHPCData.SlotCount);
             int count = Main.rand.Next(OldNetMetrics.NodeShardMin, OldNetMetrics.NodeShardMax + 1)
                 * OldNetMetrics.EncryptValueMul;
             if (!session.TryAddHarvest(category, count)) {
                 session.NotifyLedgerFull(new Vector2(i * 16 + 8, j * 16 + 8));
-                return;
+                return false;
             }
 
             Color color = SHPCModuleItem.SlotCategoryColor((SHPCSlotCategory)category);
@@ -78,6 +82,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
             if (Main.netMode == NetmodeID.MultiplayerClient) {
                 NetMessage.SendTileSquare(-1, i, j, 1);
             }
+            return true;
         }
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) {

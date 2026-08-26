@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
     /// 紧凑条目 Kind（符网络 id+1，同滴标签口径）/Count/Timer，懒分配，无叠层零成本；
     /// 计时各端本地走完（收到广播后自走），归零整类清除。<br/>
     /// <b>联机模型</b>：写入端=效果归属端（命中挂钩在 owner 客户端、死亡传播在服务端），
-    /// 写入即广播绝对量（<see cref="CWRMessageType.KikasaTalismanStack"/> 定长 9 字节）——
+    /// 写入即广播绝对量（<see cref="KikasaTalismanStackNet"/> 定长 9 字节）——
     /// 服务端承载（lifeRegen/OnKill 权威）并转播给旁观端做表现；
     /// 丢包由下一次写入自愈，多写入者按后到覆盖（可接受的表现级近似）。<br/>
     /// 效果语义由定义挂钩解释：ModifyStackLifeRegen / OnStackNPCKill / DrawNPCStack
@@ -178,8 +178,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
                 return;
             }
             //客户端发服务器（承载+转播），服务端起源直接广播全体
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.KikasaTalismanStack);
+            ModPacket packet = CWRNetWork.GetPacket<KikasaTalismanStackNet>();
             packet.Write((byte)npc.whoAmI);
             packet.Write(npc.type);
             packet.Write(kind);
@@ -188,11 +187,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
             packet.Send();
         }
 
-        public static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type != CWRMessageType.KikasaTalismanStack) {
-                return;
-            }
-            //链式 handler 共用一条流：定长负载先读满，校验只做丢弃
+        internal static void HandleNet(BinaryReader reader, int whoAmI) {
+            //定长负载先读满，校验只做丢弃
             int npcWho = reader.ReadByte();
             int npcType = reader.ReadInt32();
             byte kind = reader.ReadByte();
@@ -212,8 +208,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
             }
             if (Main.netMode == NetmodeID.Server) {
                 //服务端校验通过后原样转播给发送者之外的所有端
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.KikasaTalismanStack);
+                ModPacket packet = CWRNetWork.GetPacket<KikasaTalismanStackNet>();
                 packet.Write((byte)npcWho);
                 packet.Write(npcType);
                 packet.Write(kind);
@@ -222,5 +217,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
                 packet.Send(-1, whoAmI);
             }
         }
+    }
+
+    /// <summary>唤雨符 NPC 叠层广播信道（归属端写入，服务端承载并转播旁观端）</summary>
+    internal sealed class KikasaTalismanStackNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => KikasaTalismanStackNPC.HandleNet(reader, whoAmI);
     }
 }

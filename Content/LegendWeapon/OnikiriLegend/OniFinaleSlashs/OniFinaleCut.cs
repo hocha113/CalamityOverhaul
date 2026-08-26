@@ -117,6 +117,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
         public override bool ShouldUpdatePosition() => false;
 
+        //服务器代生成路径（OniSeverStrike 直接模式）里，伤害若只靠原版同步的
+        //short 字段过线，2.5 倍后期武器伤害会超 32767 回绕——重携带 int 伤害
+        public override void SendExtraAI(System.IO.BinaryWriter writer)
+            => writer.Write(Projectile.damage);
+
+        public override void ReceiveExtraAI(System.IO.BinaryReader reader)
+            => Projectile.damage = reader.ReadInt32();
+
         private void Initialize() {
             initialized = true;
             float s = SizeMul;

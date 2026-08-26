@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             Dialogue
         }
 
-        public string LocalizationCategory => "ADV.OldDukeCampsite";
+        public string LocalizationCategory => "ADV.OldDuke.OldDukeCampsite";
         public static LocalizedText InteractHint;
 
         //朝向/相位，纯视觉两端自算

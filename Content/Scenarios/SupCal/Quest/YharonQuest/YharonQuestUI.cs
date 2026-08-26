@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.YharonQuest
     /// <summary>鬼面刀任务UI</summary>
     internal class YharonQuestUI : BaseQuestAcceptUI
     {
-        public override string LocalizationCategory => "ADV";
+        public override string LocalizationCategory => "ADV.SupCal";
         public static YharonQuestUI Instance => UIHandleLoader.GetUIHandleOfType<YharonQuestUI>();
 
         protected override void SetupLocalizedTexts() {

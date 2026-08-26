@@ -6,8 +6,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
 {
-    internal static class EbnState
+    /// <summary>永燃焰狱个人标记同步，类本身即信道</summary>
+    internal class EbnState : CWRNetChannel
     {
+        public override void Receive(BinaryReader reader, int whoAmI) => HandleNetSync(reader, whoAmI);
+
         public static bool OnEbn(Player player)
             => Read(player, d => d.EternalBlazingNow, d => d.EternalBlazingNow);
 
@@ -19,8 +22,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
                 return;
             }
 
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.EbnTag);
+            ModPacket packet = CWRNetWork.GetPacket<EbnState>();
             packet.Write((byte)player.whoAmI);
             packet.Write(OnEbn(player));
             packet.Send(toWho, fromWho);
@@ -37,8 +39,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
             Write(player, d => d.EternalBlazingNow = ebnState, d => d.EternalBlazingNow = ebnState);
 
             if (VaultUtils.isServer) {
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.EbnTag);
+                ModPacket packet = CWRNetWork.GetPacket<EbnState>();
                 packet.Write((byte)playerIndex);
                 packet.Write(ebnState);
                 packet.Send(-1, whoAmI);

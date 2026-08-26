@@ -14,11 +14,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
         public bool Blocked { get; set; }
         /// <summary>受阻提示</summary>
         public LocalizedText BlockedHint { get; set; }
+        /// <summary>断点提示，仅链上首个未完成的试炼持有（十三·#116 断点明示）</summary>
+        public LocalizedText FrontierHint { get; set; }
 
         private LegendTrialTargetSnapshot snapshot = LegendTrialTargetSnapshot.Inactive;
 
         public LegendTrialQuestEntry(string key, LocalizedText title, LocalizedText summary, LocalizedText category)
             : base(key, title, summary, category) { }
+
+        /// <summary>断点节点在描述末尾追加一行明示；受阻态描述已被受阻提示顶替，不再叠加</summary>
+        public override string Summary {
+            get {
+                string baseSummary = base.Summary;
+                string hint = Blocked ? null : FrontierHint?.Value?.Replace("\\n", "\n");
+                if (string.IsNullOrEmpty(hint)) {
+                    return baseSummary;
+                }
+                return string.IsNullOrEmpty(baseSummary) ? hint : baseSummary + "\n" + hint;
+            }
+        }
 
         public override float GetTrackerContentTopPadding() => 5f;
 

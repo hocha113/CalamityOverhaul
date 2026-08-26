@@ -122,38 +122,46 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch
         }
     }
 
+    /// <summary>
+    /// 奸奇灭声认领：叙事场景档最高子权重（灭声必须压过同档曲目类认领）。
+    /// musicVolume 压 0 与还原由仲裁器统一做；3 分钟守护栏迁自旧 CekTimer，
+    /// 超时只解除灭声，天空视觉由 FirstMetTzeentch 演出生命周期收束
+    /// </summary>
+    internal sealed class TzeentchMusicClaim : MusicClaim
+    {
+        public override MusicTier Tier => MusicTier.NarrativeScene;
+        public override int SubWeight => 30;
+        public override bool MuteAll => true;
+        public override int HardTimeoutFrames => 60 * 60 * 3;
+        public override bool ShouldPlay() => TzeentchEffect.IsActive;
+        public override int GetMusicSlot() => -1;
+    }
+
     /// <summary>奸奇效果开关与同步</summary>
     internal class TzeentchEffect : ModSystem
     {
         public static bool IsActive;
-        public static int CekTimer = 0;
-        private static float origMusicVolume = -1f;
 
         internal static void Send() {
             if (VaultUtils.isSinglePlayer) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.TzeentchEffect);
+            ModPacket packet = CWRNetWork.GetPacket<TzeentchEffectNet>();
             packet.Write(IsActive);
             packet.Send();
         }
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type == CWRMessageType.TzeentchEffect) {
-                IsActive = reader.ReadBoolean();
-                if (VaultUtils.isServer) {
-                    ModPacket packet = CWRMod.Instance.GetPacket();
-                    packet.Write((byte)CWRMessageType.TzeentchEffect);
-                    packet.Write(IsActive);
-                    packet.Send(-1, whoAmI);
-                }
+        internal static void HandleNet(BinaryReader reader, int whoAmI) {
+            IsActive = reader.ReadBoolean();
+            if (VaultUtils.isServer) {
+                ModPacket packet = CWRNetWork.GetPacket<TzeentchEffectNet>();
+                packet.Write(IsActive);
+                packet.Send(-1, whoAmI);
             }
         }
 
         public static bool Cek() {
             if (!IsActive) {
-                CekTimer = 0;
                 return false;
             }
 
@@ -165,30 +173,14 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch
             return true;
         }
 
-        public override void PostUpdateEverything() {
-            if (!Cek()) {
-                if (origMusicVolume > 0f) {
-                    Main.musicVolume = origMusicVolume;
-                    origMusicVolume = -1f;
-                }
-                return;
-            }
-
-            if (++CekTimer > 60 * 60 * 3) //最多持续3分钟
-            {
-                IsActive = false;
-                return;
-            }
-
-            Main.newMusic = Main.musicBox2 = -1;
-            if (Main.musicVolume > 0f) {
-                origMusicVolume = Main.musicVolume;
-            }
-            Main.musicVolume = 0f;
-        }
-
         public override void Unload() {
             IsActive = false;
         }
+    }
+
+    /// <summary>奸奇效果状态同步信道</summary>
+    internal sealed class TzeentchEffectNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => TzeentchEffect.HandleNet(reader, whoAmI);
     }
 }

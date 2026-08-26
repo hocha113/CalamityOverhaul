@@ -10,6 +10,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
@@ -32,6 +33,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         /// <summary>武器缩放</summary>
         public static float ItemScale => 0.8f;
         public override int TargetID => ID;
+
+        /// <summary>改动信息由自绘面板承载,关掉鼠标旁的金色小图标</summary>
+        public override bool DrawingInfo => false;
+
+        //==================== 自绘面板文本(SHPCItemTooltipPanel) ====================
+        public static LocalizedText KeyLabelDomain { get; private set; }
+        public static LocalizedText KeyLabelWheel { get; private set; }
+        public static LocalizedText KeyLabelTeleport { get; private set; }
+        public static LocalizedText KeyLabelRestart { get; private set; }
+        public static LocalizedText KeyLabelBanish { get; private set; }
+        public static LocalizedText KeyLabelFreeze { get; private set; }
 
         /// <summary>成长等级</summary>
         public static int GetLevel(Item item) {
@@ -84,6 +96,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             ItemID.Sets.ShimmerTransformToItem[TargetID] = CWRID.Item_PlasmaDriveCore;
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
             HackTimeAccess.Register(player => player.GetItem().type == SHPCOverride.ID, "SmartWeapon:SHPC");
+            //自绘面板:键位功能名(与键位表动作名对齐)
+            KeyLabelDomain = this.GetLocalization(nameof(KeyLabelDomain), () => "领域展开");
+            KeyLabelWheel = this.GetLocalization(nameof(KeyLabelWheel), () => "领域盘");
+            KeyLabelTeleport = this.GetLocalization(nameof(KeyLabelTeleport), () => "领域传送");
+            KeyLabelRestart = this.GetLocalization(nameof(KeyLabelRestart), () => "重启自身");
+            KeyLabelBanish = this.GetLocalization(nameof(KeyLabelBanish), () => "放逐");
+            KeyLabelFreeze = this.GetLocalization(nameof(KeyLabelFreeze), () => "冻结");
         }
 
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
@@ -275,15 +294,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         }
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
-            string keyDisplay = CWRKeySystem.QuestLog_Key?.GetAssignedKeys() is { Count: > 0 } k ? k[0] : CWRKeySystem.Notbound.Value;
-            tooltips.ReplacePlaceholder("legend_Text", LegendUpgradeManagerSystem.QuestManagerHint.Value.Replace("{KEY}", keyDisplay), "");
-            int index = item.CWR()?.LegendData?.TargetLevel ?? 0;
-            string num = (index + 1).ToString();
-            if (index == 22) {
-                num = LegendUpgradeManagerSystem.TrialPassed.Value;
-            }
-            string text = LegendData.GetLevelTrialPreText(item.CWR(), LegendUpgradeManagerSystem.Text_Lang_0, num);
-            tooltips.ReplacePlaceholder("[Lang4]", text, "");
+            //试炼进度与任务书提示已由自绘面板(SHPCItemTooltipPanel)承载,
+            //旧 [Lang4]/legend_Text 占位符随正文裁短一并退役;正文预折行对齐面板宽
+            LegendTooltipPanel.WrapBodyText(tooltips);
         }
     }
 }

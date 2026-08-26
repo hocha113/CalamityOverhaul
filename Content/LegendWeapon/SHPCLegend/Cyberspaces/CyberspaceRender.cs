@@ -126,61 +126,64 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             //保存进入 RT
             RenderTargetBinding[] previousTargets = graphicsDevice.GetRenderTargets();
 
-            graphicsDevice.SetRenderTarget(screenSwap);
-            graphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-            spriteBatch.End();
+            //中途异常必须还原 RT 绑定,防错绑遗留到后续绘制(反馈十四·#64)
+            try {
+                graphicsDevice.SetRenderTarget(screenSwap);
+                graphicsDevice.Clear(Color.Transparent);
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                spriteBatch.End();
 
-            Vector2 zoom = Main.GameViewMatrix.Zoom;
-            Vector2 screenPixels = Main.ScreenSize.ToVector2();
-            Vector2 worldViewSize = screenPixels / zoom;
-            Vector2 worldViewOrigin = Main.screenPosition
-                + screenPixels * (Vector2.One - Vector2.One / zoom) * 0.5f;
+                Vector2 zoom = Main.GameViewMatrix.Zoom;
+                Vector2 screenPixels = Main.ScreenSize.ToVector2();
+                Vector2 worldViewSize = screenPixels / zoom;
+                Vector2 worldViewOrigin = Main.screenPosition
+                    + screenPixels * (Vector2.One - Vector2.One / zoom) * 0.5f;
 
-            //L3 撤墙：边界半径随撤墙进度增幅飞出屏幕
-            float wallDep = primary.WallDeparture;
-            float wallMul = 1f + wallDep * wallDep * 6f;
+                //L3 撤墙：边界半径随撤墙进度增幅飞出屏幕
+                float wallDep = primary.WallDeparture;
+                float wallMul = 1f + wallDep * wallDep * 6f;
 
-            shader.Parameters["uTime"]?.SetValue(primary.EffectTime);
-            shader.Parameters["radius"]?.SetValue(primary.Radius * wallMul);
-            shader.Parameters["intensity"]?.SetValue(primary.Intensity);
-            shader.Parameters["expandProgress"]?.SetValue(primary.ExpandProgress);
-            shader.Parameters["dimStrength"]?.SetValue(Cyberspace.DimStrength);
-            shader.Parameters["motionFade"]?.SetValue(primary.MotionFade);
-            shader.Parameters["tierWeights"]?.SetValue(primary.TierWeights);
-            shader.Parameters["uTakeover"]?.SetValue(primary.TakeoverProgress);
-            shader.Parameters["uSpread"]?.SetValue(primary.TakeoverSpread);
-            shader.Parameters["uSpreadOrigin"]?.SetValue(primary.TakeoverOrigin);
-            shader.Parameters["uFlash"]?.SetValue(primary.TakeoverFlash);
-            shader.Parameters["uBandSpin"]?.SetValue(primary.BandSpin);
-            Vector2 domainCenter = primary.DomainCenter;
-            float effectiveRadius = primary.Radius * primary.ExpandProgress * wallMul;
-            shader.Parameters["setPoint"]?.SetValue(domainCenter);
-            shader.Parameters["screenPosition"]?.SetValue(worldViewOrigin);
-            shader.Parameters["worldViewSize"]?.SetValue(worldViewSize);
-            shader.Parameters["gridSize"]?.SetValue(Cyberspace.GridSize);
+                shader.Parameters["uTime"]?.SetValue(primary.EffectTime);
+                shader.Parameters["radius"]?.SetValue(primary.Radius * wallMul);
+                shader.Parameters["intensity"]?.SetValue(primary.Intensity);
+                shader.Parameters["expandProgress"]?.SetValue(primary.ExpandProgress);
+                shader.Parameters["dimStrength"]?.SetValue(Cyberspace.DimStrength);
+                shader.Parameters["motionFade"]?.SetValue(primary.MotionFade);
+                shader.Parameters["tierWeights"]?.SetValue(primary.TierWeights);
+                shader.Parameters["uTakeover"]?.SetValue(primary.TakeoverProgress);
+                shader.Parameters["uSpread"]?.SetValue(primary.TakeoverSpread);
+                shader.Parameters["uSpreadOrigin"]?.SetValue(primary.TakeoverOrigin);
+                shader.Parameters["uFlash"]?.SetValue(primary.TakeoverFlash);
+                shader.Parameters["uBandSpin"]?.SetValue(primary.BandSpin);
+                Vector2 domainCenter = primary.DomainCenter;
+                float effectiveRadius = primary.Radius * primary.ExpandProgress * wallMul;
+                shader.Parameters["setPoint"]?.SetValue(domainCenter);
+                shader.Parameters["screenPosition"]?.SetValue(worldViewOrigin);
+                shader.Parameters["worldViewSize"]?.SetValue(worldViewSize);
+                shader.Parameters["gridSize"]?.SetValue(Cyberspace.GridSize);
 
-            //域内 NPC→entityBuffer
-            int entityCount = CollectEntitiesInDomain(domainCenter, effectiveRadius);
-            shader.Parameters["entityCount"]?.SetValue(entityCount);
-            if (entityCount > 0) {
-                shader.Parameters["entities"]?.SetValue(entityBuffer);
-            }
+                //域内 NPC→entityBuffer
+                int entityCount = CollectEntitiesInDomain(domainCenter, effectiveRadius);
+                shader.Parameters["entityCount"]?.SetValue(entityCount);
+                if (entityCount > 0) {
+                    shader.Parameters["entities"]?.SetValue(entityBuffer);
+                }
 
-            //回写 screenTarget
-            graphicsDevice.SetRenderTarget(Main.screenTarget);
-            graphicsDevice.Clear(Color.Transparent);
-            graphicsDevice.Textures[1] = noiseTex;
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            shader.CurrentTechnique.Passes[0].Apply();
-            spriteBatch.Draw(screenSwap, Vector2.Zero, Color.White);
-            spriteBatch.End();
-
-            //还原进入 RT
-            if (previousTargets != null && previousTargets.Length > 0
-                && previousTargets[0].RenderTarget != Main.screenTarget) {
-                graphicsDevice.SetRenderTargets(previousTargets);
+                //回写 screenTarget
+                graphicsDevice.SetRenderTarget(Main.screenTarget);
+                graphicsDevice.Clear(Color.Transparent);
+                graphicsDevice.Textures[1] = noiseTex;
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                shader.CurrentTechnique.Passes[0].Apply();
+                spriteBatch.Draw(screenSwap, Vector2.Zero, Color.White);
+                spriteBatch.End();
+            } finally {
+                //还原进入 RT
+                if (previousTargets != null && previousTargets.Length > 0
+                    && previousTargets[0].RenderTarget != Main.screenTarget) {
+                    graphicsDevice.SetRenderTargets(previousTargets);
+                }
             }
         }
 

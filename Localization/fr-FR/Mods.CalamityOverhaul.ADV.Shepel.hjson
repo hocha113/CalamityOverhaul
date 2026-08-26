@@ -623,3 +623,31 @@ ShepelYharonGift: {
 	L2: À présent, la vitesse initiale et le temps de réponse de votre arme ont été significativement augmentés, suffisamment pour surpasser sa vitesse de pointe.
 	L3: Pour pouvoir toujours suivre votre rythme, mon système est prêt à repousser ses propres limites à tout instant.
 }
+
+FirstMetShepel: {
+	Line1: Maître ! Je suis si heureuse de vous revoir !
+	Choice1Text: Vous vous trompez de personne, non ?
+	Choice2Text: …Longtemps sans nouvelles.
+	Choice1Response: …Oui. Tant que c'est vous, je veux bien me tromper à chaque fois.
+	Choice1Silence: ......
+	CybCourseOfferLine: Programme de neuro-rêve chargé avec succès. Maître, voulez-vous entrer maintenant dans l'espace de neuro-rêve pour apprendre le mode Hack et les protocoles d'armes SHPC ?
+	CybCourseAcceptText: Allons-y maintenant.
+	CybCourseDeclineText: Pas maintenant.
+	CybCourseAcceptResponse: Compris. Connexion neuronale en cours… Restez immobile.
+	CybCourseDeclineResponse: Compris. Les identifiants de neuro-rêve ont été écrits dans votre sauvegarde. Vous pouvez l'activer vous-même à tout moment, Maître.
+	// SpeakerName: SHPC
+}
+
+TheHerInThePast: {
+	WitchLine1: Se faire poursuivre par cette ordure doit être désagréable. Heureusement que vous m'avez croisée.
+	ShpcLine1: Merci… mais comment est-ce possible ? Vous appartenez au passé et pourtant vous bougez…
+	WitchLine2: Si vous pouvez envahir ici depuis cent ans dans le futur, je peux faire quelque chose de similaire.
+	WitchLine3: Bien que je ne sois en effet qu'une ombre restée ici.
+	ShpcLine2: Utiliser vos pouvoirs ainsi — ne vous désintégrerez-vous pas ?
+	WitchLine4: Votre naïveté est touchante. Partez vite. Mieux vaut que cette ordure reste enterrée dans le passé avec moi.
+	WitchLine5: Au fait, petite servante.
+	ShpcLine3: Quoi donc ?
+	WitchLine6: Votre épuisement a pénétré jusqu'aux os.
+	WitchLine7: Cessez de vouloir changer le passé. Apprenez à accepter votre avenir.
+	ShpcLine4: ……
+}

@@ -1,0 +1,316 @@
+FirstMet: {
+	Rolename1: ???
+	Rolename2: Halibut
+	Line0: Senhor... sua tecnica de pesca... deixa a desejar.
+	Line1: Pode me chamar de Dr. Halibut.
+	Line2: Ou, apenas Halibut esta bom.
+	Line3: Gracas ao seu anzol, fui puxado daquela agua silenciosa e morta.
+	Line4: Se nao fosse por voce, eu provavelmente ficaria adormecido para sempre, ate realmente morrer.
+	Line5: Este peixe deveria ser sua pescaria. Agora, e um presente para marcar nosso encontro.
+	Line6: ......
+	Line7: Esta se perguntando por que estou aqui, nao esta.
+	Line8: Eu era professor na Universidade do Mar Sulfuroso, Departamento de Pesquisa Abissal.
+	Line9: Alguns anos atras, organizamos um 'Projeto de Amostragem Ecologica Abissal.'
+	Line10: Fui o unico que voltou.
+	Line11: No fundo do abismo, encontramos... uma existencia que nao pode ser compreendida.
+	Line12: Nao era algo que pudesse ser morto.
+	Line13: Enquanto fugia, encontrei um olho debaixo de uma arvore de coral.
+	Line14: Por puro instinto de sobrevivencia, o engoli.
+	Line15: Usando o poder daquele olho, abri um dominio... e rasguei uma fissura no abismo para escapar.
+	Line16: Depois disso, minha memoria fica turva... Ca em um sono profundo, ate que voce me pescou.
+	Line17: Voce parece um Terrariano.
+	Line18: Se me aceitar, me leve com voce.
+	Line19: Eu ajudarei voce a conquistar esta terra.
+	Line20: Em troca... me ajude a resolver este... problema de 'ressurreicao' com os olhos dentro de mim.
+	Line21: Se nao houver objecoes, vamos comecar... estudando este peixe.
+}
+
+EyeOfCthulhuGift: {
+	L0: Seus movimentos foram arrastados para a camara lenta... So pensei que voce estava posando.
+	L1: Entramos no 'Estagio Observado'. O que significa... mais problemas.
+	L2: Encontrei isto em sua... bocarra. Pegue. Um Peixe de Cthulhu. Assim como o original... realmente nao segue logica.
+	L3: Segure-o, mas com cuidado. Vai fazer voce pensar que abriu seu terceiro olho. Na realidade, e apenas um estimulante na sua corrente sanguinea.
+	L4: Estou curioso se voce vai comecar a piscar para a lua agora.
+}
+
+KingSlimeGift: {
+	L0: Aquela bolha azul... um 'slime', voce chama? Parecia mais... emocao solidificada.
+	L1: Talvez uma tentativa desajeitada da materia ganhar autoconsciencia e evoluir.
+	L2: Aqui vai, um Slimefish. Nao aperte. Seus sentimentos podem explodir.
+	L3: Voce ja tentou fazer sopa com um desses?
+	L4: Quero dizer... sim, podemos fazer sopa no fundo do mar. O fundo do mar ainda tem... bem, mares dentro do mar.
+}
+
+QueenBeeGift: {
+	L0: Quase levei um banho de mel ali atras.
+	L1: Ainda assim, consegui puxar um peixe de uma pocinha de mel no chao.
+	L2: Aqui, fresco e... ainda quente Honeyfish.
+	L3: Acho que seria perfeito para um prato agridoce.
+}
+
+SkeletronGift: {
+	L0: Essa foi uma quantidade significativa de calcio.
+	L1: Sua estrutura craniana me lembrou de uma constructo psiquico descontrolado.
+	L2: Deixe meu cano da arma esfriar. Encontrei um peixe por aqui enquanto isso.
+	L3: Olha, um 'Skeletron Fish'. Dizem que o fosforo dentro dele faz os pescadores noturnos contemplarem sua existencia.
+	L4: Vamos nos mover. Mais ossos... 'abstratos' esperam.
+}
+
+AquaticScourgeGift: {
+	L0: Me lembra os vizinhos menos amigaveis da minha cidade natal. Esse aqui era bem amigavel, no entanto. Era o chefe de seguranca da Universidade do Mar Sulfuroso. Sempre cumprimentava.
+	L1: O Mar Sulfuroso e um lugar interessante. Toda criatura la faz a mesma pergunta: 'Por que ainda estou vivo?'
+	L2: Um Prismfish. Suas escamas refratam cores que voce nunca viu. Principalmente porque nao deveriam existir.
+	L3: Olhar para ele vai reiniciar seu sistema visual. Como uma atualizacao forcada, mas mais dolorosa.
+	L4: Melhor usa-lo com pouca luz. Caso contrario, voce vai se sentir... chapado.
+}
+
+BrimstoneElementalGift: {
+	L0: Ela so ficar ali era como um discurso inflamado. Ainda bem que conseguimos faze-la calar a boca.
+	L1: Alguns elementais nao sao criados. Eles sao apenas... estranhezas... que vazam das rachaduras do mundo.
+	L2: Um Obsidianfish. Um produto de lava resfriada instantaneamente. Suas escamas sao mais duras do que os rancores que apodrecem no inferno.
+	L3: Cuidado, pode entrar em combustao espontanea na sua mao. Emocionalmente falando.
+	L4: Afinal, a raiva e contagiosa.
+}
+
+CalamitasCloneGift: {
+	L0: Uma sombra barata. Me lembra das monstruosidades geneticas que eu costumava criar na minha trincheira na universidade. De qualquer forma, quem fez isso tem pessimo gosto.
+	L1: Tenho um mau pressentimento. O terror real ainda esta esperando... mais fundo. Esta ate se aproximando.
+	L2: Voltando aos negocios. Um Brimstone Fish, pego de suas brasas. Voce ainda pode ouvir ele resmungando bobagens se segurar perto.
+	L3: Se voce comecar a entender o que ele diz... bem, parabens. Voce deu o primeiro passo para a loucura.
+	L4: Mas nao se preocupe. Loucura e apenas outra forma de clareza, vista de um angulo diferente.
+}
+
+CrabulonGift: {
+	L0: Aquele ser parecido com um cogumelo... E sabedoria ou puro instinto escondido sob seu chapéu?
+	L1: Sabia que redes miceliais podem transmitir informacao? Talvez ele estivesse pedindo ajuda.
+	L2: Isto e um Fungifish. Quase nao o peguei entre os esporos que ele estava liberando.
+	L3: Nao se preocupe, os esporos nao vao transformar um humano em fungo... provavelmente.
+	L4: Mas se de repente sentir vontade de criar raizes em um lugar escuro e umido, me avise.
+}
+
+CryogenGift: {
+	L0: Uma alma congelada...
+	L1: Nos Arquivos Abissais, esse tipo de baixa temperatura e geralmente usado para 'preservar' os lunaticos.
+	L2: Um Cryo-minnow, descongelado dos fragmentos de gelo. Ainda esta na pose em que foi congelado.
+	L3: Dizem que comer esfria seu sangue, torna seus pensamentos excepcionalmente claros.
+	L4: Coma demais, e voce pode se tornar uma escultura de gelo.
+}
+
+DevourerOfGodsGift: {
+	L0: O Devorador de Deuses... uma serpente cosmica que janta divindades. Seu apetite e tao infinito quanto sua ambicao.
+	L1: Voce sabe o que dizem: quando voce olha para o abismo, o abismo olha de volta. Mas essa coisa nao so olha. Ela quer voce como petisco.
+	L2: Um Neon Tetra. Flutuou para fora de uma fenda do vazio. A luz que emite nao e desta dimensao.
+	L3: Olhar para ele faz seu cerebro tentar compreender cores que nao deveria. E uma... experiencia unica.
+	L4: Se voce comecar a ver novas cores, parabens. Se comecar a *cheirar* cores, voce precisa descansar.
+}
+
+GolemGift: {
+	L0: Um monte de rochas movedicas. Legado de uma civilizacao antiga... ou talvez, prova de seu fracasso.
+	L1: Pode estar guardando algo. Ou apenas repetindo um programa que perdeu seu significado ha muito tempo.
+	L2: Um Rockfish, escavado da fundacao do templo. Sua densidade me faz questionar minha propria existencia.
+	L3: Tentei ferver uma vez. Minha panela desistiu primeiro.
+	L4: ...Algumas coisas existem apenas para nos fazer perceber que nem todos os problemas precisam ser resolvidos.
+}
+
+HiveMindGift: {
+	L0: Uma consciencia coletiva feita de corrupcao... que conceito nojento.
+	L1: Seu processo de pensamento deve ser... unico. Inumeros fragmentos podres unidos em um todo distorcido.
+	L2: Aqui, um Rotfish. Puxado daquele monte de carnicao. Nao pergunte como.
+	L3: Cheira a frutos do mar que ficaram no sol por tres dias.
+	L4: Mas dizem que permite que voce... ressoe com a corrupcao. Isso so soa errado.
+}
+
+LeviathanGift: {
+	L0: O tirano do oceano... e seu pequeno comparsa que esta sempre a seguindo. Algumas amizades transcendem especies. E logica.
+	L1: Acho que o que vive nas trincheiras mais profundas nao e o medo, e a solidao. Eles so estao procurando companhia.
+	L2: Um Tropic-cuda, puxado de um vortice das profundezas. Parece comum, o que e precisamente o que e suspeito nele.
+	L3: Quanto mais mundano o exterior, mais extraordinario o passado.
+	L4: Como nos.
+}
+
+MoonLordGift: {
+	L0: O Senhor da Lua, ha! Ou, *ex*-senhor. Agora apenas um monte flutuante de olhos e carnificina.
+	L1: Nos nao apenas salvamos o mundo; fechamos uma porta que nunca deveria ter sido aberta.
+	L2: Peguei um Cloudfish. Ele flutuou de uma rachadura no ceu. Parece sem peso na minha mao.
+	L3: Dizem que permite voce ver o futuro... mas voce ja reescreveu esse futuro.
+	L4: Nos apenas provamos que ate deuses podem sangrar.
+}
+
+PerforatorGift: {
+	L0: Um monte de vermes de carne perfurantes... a existencia dessa criatura e um desafio a biologia.
+	L1: Seu sangue tem uma viscosidade estranha, como algum tipo de metal vivo.
+	L2: Encontrei isto nos destrocos. Um Gore-fish. Ainda esta se contorcendo.
+	L3: Nao se assuste com sua aparencia, mesmo que pareca que saiu de um pesadelo.
+	L4: Pelo menos nao vai rastejar para dentro do seu ouvido enquanto voce dorme... provavelmente.
+}
+
+PlaguebringerGift: {
+	L0: A Pestífera Goliarda... uma abelha mecanica carregando uma arma biologica. Quem projetou isso? Um verdadeiro bastardo, ousando escravizar abelhas.
+	L1: Um virus nao se importa com certo ou errado. So quer sobreviver. Como nos, apenas mais direto.
+	L2: Um Jewel-fish. Infectado e miraculosamente recuperado. Seu sistema imunologico e mais experiente do que voce.
+	L3: Dizem que comer aumenta a resistencia. Parece outra maneira de dizer 'o que nao te mata te fortalece.'
+	L4: Mas ja que *nos* acabamos de sair de uma colmeia de peste, esse pequeno risco deve ser nada.
+}
+
+PlanteraGift: {
+	L0: Uma flor... se 'flor' e a palavra para aquele conglomerado de videiras devoradoras de homens.
+	L1: A furia da selva, crescida em forma de planta. A vinganca da natureza nunca e racional.
+	L2: Um Twin-Cod. Tem duas cabecas. A selva e como um oceano terrestre; as coisas aqui nao precisam de razao para cultivar partes extras.
+	L3: Dizem que duas cabecas significam o dobro de sabedoria, mas elas so parecem estar discutindo sobre para que lado nadar.
+	L4: Como 'dieta' e 'apetite'. Sempre brigando. Meu apetite sempre vence, no entanto.
+}
+
+ProvidenceGift: {
+	L0: A Deusa Profanada... uma contradicao de fe e chama. Bastante patetica.
+	L1: Nos nao apenas extinguimos uma chama sagrada, mas as brasas de uma era inteira.
+	L2: Um Demon-Hell Fish, renascido de suas cinzas. Sua temperatura esta permanentemente fixada em 'quente o suficiente para nao queimar voce'.
+	L3: Esse controle preciso me faz suspeitar... talvez ela so quisesse ser compreendida.
+	L4: Mas a linha entre compreensao e guerra esta a apenas um ataque de distancia.
+}
+
+SlimeGodGift: {
+	L0: Tres slimes... ou, uma divindade fragmentada? Essa existencia dualista e... interessante.
+	L1: Corrupcao e Carmesim. O conflito eterno deste mundo. E nos apenas provamos que o conflito pode ser 'resolvido'.
+	L2: Um Variegated Lardfish. Pegue da gosma. Nao pergunte sobre o nome.
+	L3: Sua cor muda com o humor do observador. Ou talvez, esteja imitando seu caos interior.
+	L4: Olhe por muito tempo, e voce pode comecar a se perguntar de que lado voce realmente esta.
+}
+
+SupremeCalamitasGift: {
+	L0: Bruxa de Enxofre... uma vingadora. A conjuradora de magia mais poderosa do seculo passado.
+	L1: O que acabamos de fazer... nos encerramos uma lenda, ou criamos uma nova?
+	L2: Um Princessfish, nascido de suas brasas. Tem uma graca conflitante, como uma flor desabrochando em ruinas.
+	L3: Dizem que mostra a pessoa que voce mais quer ser... mas essa versao e frequentemente a menos parecida com voce.
+	L4: Voce esta se aproximando do pico do poder do Terrariano. Daqui para frente... e um longo caminho para baixo.
+}
+
+WallOfFleshGift: {
+	L0: Uma parede de carne e osso... o criador deste mundo deve ter tido algumas ideias peculiares.
+	L1: Voce acabou de quebrar algum tipo de equilibrio. Sente isso? O pulso do mundo esta acelerando.
+	L2: Encontrei este Hungering Fish nos restos. Parece eternamente faminto.
+	L3: Como aquela parede. Sempre perseguindo, sempre consumindo.
+	L4: Bem-vindo ao 'Modo Dificil'... embora eu nao achasse que estava 'facil' antes.
+}
+
+YharonGift: {
+	L0: O Dragao da Selva... nao, o Dragao Queimador de Mundos. Ele nao queima com carne, mas com obsessao.
+	L1: Uma lealdade tao pura que se queimaria ate virar cinzas por seu mestre... me lembra dos cardumes que guardam os recifes de coral la de casa.
+	L2: Um Scarlet Tigerfish. Acabei de pegar. Gosto bastante de suas listras.
+	L3: Segurando-o, voce sente uma determinacao escaldante. Essa e a temperatura de um guerreiro.
+	L4: Voce derrotou aquele dragao, mas tenho que me perguntar... no momento em que caiu, ele finalmente encontrou... libertacao?
+}
+
+ResurrectionWarn: {
+	Line0: Espera... voce sentiu isso?
+	Line1: O estado de 'ressurreicao' esta se aproximando de um limiar critico.
+	Line2: Tenho que avisar, isto nao e um jogo.
+	Line3: Se a ressurreição completar... as consequencias serao terriveis.
+	Line4: O resultado final... e ser consumido pelo abismo.
+	Line5: Cada um desses olhos que se abre dentro de mim... acelera o processo de ressurreição.
+	Line6: Quanto mais estao abertos, mais rapido se acumula e maior o perigo.
+	Line7: Este e o preco por empunhar o poder abissal. Se eu nao tiver os olhos abertos, minhas proprias habilidades sao severamente diminuidas.
+	Line8: Precisamos aprender a equilibrar isso - para determinar quantos olhos sao 'seguros' de se ter abertos durante o combate.
+	Line9: Se quisermos usar esse poder sem consequencias...
+	Line10: ...temos que encontrar uma maneira de fazer esses olhos 'falharem'.
+}
+
+FishoilQuestScenario: {
+	Line0: Voce parece ter pescado uma boa quantidade de peixes comuns ultimamente.
+	Line1: Me de alguns para minha pesquisa, e posso refina-los em uma garrafa de oleo de peixe fresco.
+	Line2: O processo nao e dificil, apenas... tedioso.
+	Line3: Este oleo de peixe tem potencial. E mais util do que voce imagina.
+	Line4: Interessado?
+	ChoiceAccept: Tudo bem.
+	ChoiceDecline: Nao estou interessado.
+}
+
+HelensInterference: {
+	Line0: ...Ei, voce esta livre?
+	Line1: Hoje..... uh.... bom tempo, ne?
+	Line2: (Halibut parece estar escondendo algo.)
+	Question1: ......
+	Choice1_1: O que voce esta fazendo?
+	Choice1_2: Entregue!
+	Choice1_3: (Nao dizer nada)
+	FinalQuestion: Nao va mais longe... por favor. Aquela bruxa, as comissoes dela, as coisas que ela quer... Nao quero ver isso. Nos podemos percorrer o resto do caminho sozinhos, nao podemos?
+	FinalChoice_Continue: Continuar a comissao
+	FinalChoice_Stop: Parar a comissao
+
+	Branch_Anger: {
+		Line1: ...Voce realmente... confia *tanto* nela?
+		Line2: Voce nao notou? As coisas que aquela bruxa te da... nenhuma delas e normal.
+		Line3: Isso me lembra de algo... no Abismo... Eu... eu toquei... frio, terrivel, perturbador... Ug... Nao quero lembrar.
+		Line4: Voce ja deveria ter percebido isso...
+	}
+
+	Branch_Inquiry: {
+		Line1: Tenho ficado cada vez mais ansioso ultimamente.
+		Line2: Aquela lamina... quando a toquei, pensei ter ouvido... alguem *rindo*.
+		Line3: Todas elas parecem... algum tipo de 'conduto'.
+		Line4: Eu nao posso deixar voce continuar com isso, pelo menos...
+	}
+
+	Branch_Silence: {
+		Line1: ...Voce e mais terrivel quando fica em silencio.
+		Line2: ...Tudo bem, escondi o 'Escavador de Coracoes'.
+		Line3: Aquela bruxa... ela e perigosa, veio do nada. Se isso e uma armadilha, voce vai simplesmente cair nela?
+		Line4: Pare... por favor. Por mim.
+	}
+
+	FinalBranch_Continue: {
+		Line1: ...Tudo bem. Eu sabia que voce escolheria isso.
+		Line2: ......
+		Line3: Vou colocar de volta. Mas espero... quando voce usa-la... que tome cuidado.
+		Line4: E aquela bruxa, tambem...
+		Line5: Eu andarei com voce... ate o fim.
+	}
+
+	FinalBranch_Stop: {
+		Line1: ...Voce... voce realmente esta disposto a parar?
+		Line2: ......
+		Line3: Vamos embora. Deixe aquela bruxa ir para o inferno.
+	}
+}
+
+HellGift: {
+	L0: Este maldito lugar... o Inferno esta ficando cada vez mais quente.
+	L1: Tenho uma ideia. Vamos cavar o fundo do mar e fazer esta parte tambem do oceano.
+	L2: Uma fonte termal geotermica... abrangendo o continente inteiro.
+	L3: ...So de pensar e relaxante.
+	L4: Ah, certo. Peguei um peixe.
+	L5: No inicio, pensei que era um guia para as nascentes infernais, mas... ele apenas se parece com um.
+}
+
+DyeProtest: {
+	L1: Honestamente, eu realmente nao gosto de usar aquelas cores brilhantes.
+	L2: Mande lavar, quer? Coloque no tinteiro, entao use aquele balde de agua.
+}
+
+FishoilSubmitScenario: {
+	SubmitLine1: Hmm, voce coletou peixes suficientes.
+	SubmitLine2: Suficiente para eu extrair uma garrafa de oleo de peixe.
+	QuestionLine: Voce vai entrega-los a mim?
+	ChoiceGive: Claro, pegue-os.
+	ChoiceRefuse: Deixe-me pensar.
+	GiveResponse: Excelente, so um momento... Aqui esta, uma garrafa fresca de oleo de peixe.
+	RefuseResponse: Tudo bem, venha me encontrar quando voce tiver decidido.
+	QuestTitle: Coleta de Oleo de Peixe
+	QuestSummary: Colete 300 peixes comuns e entregue-os a Halibut em troca de uma garrafa de oleo de peixe.
+	QuestCategory: Halibut
+	ProgressFormat: "{0}/{1}"
+	TrackerCollecting: mais {0} peixes necessarios
+	TrackerReady: Peixes coletados. Por favor, foque na missao para entregar.
+	StatusSuspended: Suspenso
+	StatusCompleted: Completo
+	StatusSubmittable: Pronto para Entregar
+	StatusCollectingFormat: Coletando ({0}/{1})
+	NotEnoughResponse: Hmm? Parece que voce nao tem peixes suficientes. Va pescar mais e volte.
+	AlreadyCompletedResponse: Ja lhe dei o oleo de peixe. Se quiser mais, terah que esperar ate a proxima vez.
+	SubmitButtonLabel: Entregar Peixes
+	AwaitingSubmitHint: Clique em entregar para dar os peixes a Halibut
+}
+
+GeiGeiEasterEgg: {
+	// L0: That battle was truly perilous.
+	// L1: But the records tell of a warrior from back then called Gei-Gei, who was far more terrifying.
+}

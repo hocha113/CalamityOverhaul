@@ -203,8 +203,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
             OldDukeTriggerService.TriggerCampsiteScenario();
 
             if (VaultUtils.isClient) {
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.StartCampsiteFindMeScenario);
+                ModPacket packet = CWRNetWork.GetPacket<OldDukeTriggerService>();
                 packet.Write(npc.whoAmI);
                 packet.Send();
             }

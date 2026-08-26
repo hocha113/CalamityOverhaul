@@ -17,8 +17,6 @@ Halibut_Superposition.DisplayName: Палтус: Суперпозиция
 // Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
 // Kikasa_Sink.DisplayName: Kikasa: Sink Item into the Lake
 // Kikasa_DomainMutate.DisplayName: Kikasa: Flip the Lake
-WeponSkill_Q.DisplayName: Оружие: Левая кнопка навыка
-WeponSkill_R.DisplayName: Оружие: Правая кнопка навыка
 Accessory_Skills.DisplayName: Навык аксессуара
 
 CWRKeySystem: {

@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal
         /// <summary>玩家选战且正进入战斗场景</summary>
         public static bool ThisIsToFight;
 
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.SupCal";
 
         public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }

@@ -1380,10 +1380,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         crownAlpha = 1f - sinkT * sinkT;
                     }
                     else {
-                        //挂载点骑在凝胶顶上，弹簧滞后 + 原版逐帧微调
+                        //挂载点骑在凝胶顶上，弹簧滞后 + 原版逐帧微调。
+                        //横向只留一丝滞后并封顶:旧值 -1.4×vx 让王冠反着跳跃方向大幅滑出,
+                        //观感即"王冠与跳跃方向相反"(反馈六·#47)
                         float[] frameLift = [2f, -6f, 2f, 10f, 2f, 0f];
                         float mountLift = BodyDrawHeight * visSy - 26f * visSy - frameLift[Math.Clamp(frameIndex, 0, 5)];
-                        crownPos = Projectile.Bottom + new Vector2(Projectile.velocity.X * -1.4f, -mountLift + crownDy);
+                        float lagX = MathHelper.Clamp(Projectile.velocity.X * -0.4f, -6f, 6f);
+                        crownPos = Projectile.Bottom + new Vector2(lagX, -mountLift + crownDy);
                     }
 
                     if (shaderOk) {

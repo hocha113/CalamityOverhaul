@@ -864,6 +864,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     ReverseHops = reader.ReadByte(),
                     Speed = TransportingItem.DefaultSpeed
                 };
+                //脏包/空气物品挡在管外:无效负载按"无在管物品"处理,空传输不再入管(反馈十二·#32)
+                if (wireItem.ItemType <= 0 || wireItem.ItemType >= ItemLoader.ItemCount
+                    || wireItem.Stack <= 0 || !float.IsFinite(wireItem.Progress)) {
+                    hasItem = false;
+                }
             }
             //名单按线上标志位读取，未搭载则保留当前名单
             if (reader.ReadBoolean()) {

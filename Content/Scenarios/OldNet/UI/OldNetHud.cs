@@ -27,8 +27,16 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
         int IBottomLeftHud.HudStackOrder => 2;
         Vector2 IBottomLeftHud.HudStackAnchor => NaturalAnchor;
         float IBottomLeftHud.HudStackTopExtent => 34f;
-        //底沿含深度/底噪读数行（M2c）
-        float IBottomLeftHud.HudStackBottomExtent => 46f;
+        //底沿含深度/底噪读数行（M2c）；限时事件行在场时再让一行（P6）
+        float IBottomLeftHud.HudStackBottomExtent => TimedLineVisible ? 62f : 46f;
+
+        //限时事件行占位判定（只在 HUD 活跃时被查询，LocalPlayer 必有效）
+        private static bool TimedLineVisible {
+            get {
+                OldNetPlayer session = OldNetPlayer.Get(Main.LocalPlayer);
+                return session.HotExtracting || session.WardenGraceTicks > session.DiveTicks;
+            }
+        }
         #endregion
 
         #region 布局与配色
@@ -69,6 +77,19 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
             if (inst != null) {
                 inst.ledgerFlash = 45;
             }
+        }
+
+        /// <summary>
+        /// 统一事件横幅入口（06 §1 预兆铁律的 HUD 通道，P6 首落）：
+        /// 复用跨带横幅的淡入淡出管线，单槽后到覆盖
+        /// </summary>
+        internal static void PushBanner(string text) {
+            OldNetHud inst = Instance;
+            if (inst == null || string.IsNullOrEmpty(text)) {
+                return;
+            }
+            inst.bannerText = text;
+            inst.bannerTimer = 210;
         }
 
         #endregion
@@ -136,8 +157,27 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
             DrawHeader(sb, px, font, barTopLeft, session, noiseCol);
             DrawLedgerLine(sb, font, barTopLeft, session);
             DrawDepthLine(sb, font, barTopLeft);
+            DrawTimedLine(sb, font, barTopLeft, session);
             DrawHunterPips(sb, px, font, barTopLeft);
             DrawBandBanner(sb, font);
+        }
+
+        //限时事件行（DEPTH 行下方共用槽位，优先级热断链 > 静默余量；2.7/2.8 未来倒计时并入）
+        private void DrawTimedLine(SpriteBatch sb, DynamicSpriteFont font, Vector2 tl, OldNetPlayer session) {
+            Vector2 pos = tl + new Vector2(0f, BarH + 44f);
+            if (session.HotExtracting) {
+                //断链倒计时：红色快闪读秒（终曲的心跳）
+                string text = $"SEVERING {session.HotExtractTimer / 60f:0.0}s";
+                float flick = MathF.Sin(timer * 12f) > 0f ? 1f : 0.72f;
+                Utils.DrawBorderString(sb, text, pos, EmberRed * flick, 0.58f);
+                return;
+            }
+            if (session.WardenGraceTicks > session.DiveTicks) {
+                //回收官静默余量：奖励期读秒（P3 备好键，读 WardenGraceTicks > DiveTicks 判生效）
+                int sec = (session.WardenGraceTicks - session.DiveTicks) / 60;
+                string text = $"{OldNetTexts.WardenGraceHud.Value} {sec}s";
+                Utils.DrawBorderString(sb, text, pos, ColdCyan * 0.85f, 0.58f);
+            }
         }
 
         //条下第二行：深度读数 + 回墙方向 + 当前距离底噪（2400 列单锚点世界的定向读数）
@@ -283,15 +323,33 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
             sb.Draw(glow, tip, null, core, 0f, glow.Size() * 0.5f, 0.08f, SpriteEffects.None, 0f);
         }
 
-        //条上方：NOISE 标签 + 当前档位徽记
+        //条上方：NOISE 标签 + 当前评级字母 + 当前档位徽记（收网期换红色快闪 DRAGNET）
         private void DrawHeader(SpriteBatch sb, Texture2D px, DynamicSpriteFont font,
             Vector2 tl, OldNetPlayer session, Color noiseCol) {
             Utils.DrawBorderString(sb, "NOISE", tl + new Vector2(0f, -22f), TextDim * 0.85f, 0.62f);
 
-            if (session.NoiseTier > 0) {
-                string tierTag = "T" + session.NoiseTier;
-                float flick = session.NoiseTier >= 4 && MathF.Sin(timer * 20f) > 0f ? 1f : 0.85f;
-                Color tierCol = Color.Lerp(noiseCol, Color.White, tierFlash) * flick;
+            //评级字母（2.1）：基础分实时映射；风格与弹出结算藏到战报屏（拆礼物节拍）。
+            //规划位在 LEDGER 行旁，该行右侧被被追指示占用，改放表头 NOISE 标签旁避碰撞
+            int grade = OldNetRating.GradeIndexFor(OldNetRating.BaseScore(session));
+            Utils.DrawBorderString(sb, "GRADE " + OldNetRating.Letter(grade),
+                tl + new Vector2(58f, -22f), OldNetRating.GradeColor(grade) * 0.9f, 0.62f);
+
+            bool dragnet = OldNetICEDirector.DragnetActive;
+            if (session.NoiseTier > 0 || dragnet) {
+                string tierTag;
+                float flick;
+                Color tierCol;
+                if (dragnet) {
+                    //收网徽记：T4 快闪分支的升格档，比 T4 更快的红闪
+                    tierTag = "DRAGNET";
+                    flick = MathF.Sin(timer * 26f) > 0f ? 1f : 0.7f;
+                    tierCol = Color.Lerp(EmberRed, Color.White, tierFlash) * flick;
+                }
+                else {
+                    tierTag = "T" + session.NoiseTier;
+                    flick = session.NoiseTier >= 4 && MathF.Sin(timer * 20f) > 0f ? 1f : 0.85f;
+                    tierCol = Color.Lerp(noiseCol, Color.White, tierFlash) * flick;
+                }
                 Vector2 sz = font.MeasureString(tierTag) * 0.72f;
                 Utils.DrawBorderString(sb, tierTag,
                     tl + new Vector2(BarW - sz.X, -24f), tierCol, 0.72f);
@@ -326,8 +384,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
             }
             float pulse = 0.75f + 0.25f * MathF.Sin(timer * 9f);
             Vector2 basePos = tl + new Vector2(BarW - 4f, BarH + 17f);
-            //菱形警示片，一只一枚（上限 5 与清剿波补员对齐）
-            for (int i = 0; i < Math.Min(hunters, OldNetMetrics.T4SustainCount); i++) {
+            //菱形警示片，一只一枚：随实际在场数显示（补员目标天然封顶，收网期最多 7）
+            for (int i = 0; i < hunters; i++) {
                 Vector2 p = basePos - new Vector2(i * 11f, 0f);
                 sb.Draw(px, p, null, EmberRed * pulse, MathHelper.PiOver4,
                     new Vector2(0.5f), new Vector2(6f / px.Width, 6f / px.Height), SpriteEffects.None, 0f);

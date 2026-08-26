@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.GameModes
     /// <summary>
     /// 游戏模式世界状态（残酷模式/修罗模式）。
     /// 世界级旗标：随世界存档持久化，进档由 tML 世界数据同步；
-    /// 运行时切换走 <see cref="CWRMessageType.GameModeToggle"/>（客户端请求，服务端校验后广播）。
+    /// 运行时切换走 <see cref="GameModeToggleNet"/>（客户端请求，服务端校验后广播）。
     /// AI 覆盖在 NPC 生成时绑定（InnoVault <c>NPCOverride.SetDefaults</c>），
     /// 因此 Boss 在场时拒绝切换，避免战中切换无效造成困惑
     /// </summary>
@@ -150,8 +150,7 @@ namespace CalamityOverhaul.Content.GameModes
             }
 
             //联机：客户端只发意图，等服务端广播回执后再落地演出
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.GameModeToggle);
+            ModPacket packet = CWRNetWork.GetPacket<GameModeToggleNet>();
             packet.Write((byte)OpRequest);
             packet.Write((byte)kind);
             packet.Write(target);
@@ -191,11 +190,7 @@ namespace CalamityOverhaul.Content.GameModes
         private const byte OpRequest = 0;
         private const byte OpApply = 1;
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type != CWRMessageType.GameModeToggle) {
-                return;
-            }
-
+        internal static void HandleNet(BinaryReader reader, int whoAmI) {
             byte op = reader.ReadByte();
             GameModeKind kind = (GameModeKind)reader.ReadByte();
             bool enabled = reader.ReadBoolean();
@@ -220,8 +215,7 @@ namespace CalamityOverhaul.Content.GameModes
 
                 Apply(kind, enabled);
 
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.GameModeToggle);
+                ModPacket packet = CWRNetWork.GetPacket<GameModeToggleNet>();
                 packet.Write(OpApply);
                 packet.Write((byte)kind);
                 packet.Write(enabled);
@@ -235,5 +229,11 @@ namespace CalamityOverhaul.Content.GameModes
                 Apply(kind, enabled);
             }
         }
+    }
+
+    /// <summary>游戏模式切换信道：客户端请求，服务端校验落地后广播全端各自演出</summary>
+    internal sealed class GameModeToggleNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => GameModeSystem.HandleNet(reader, whoAmI);
     }
 }

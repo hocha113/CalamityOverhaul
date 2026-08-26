@@ -24,8 +24,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Arbiters
         InventoryFull,
     }
 
-    /// <summary>服务端许可、提交领取，本地播放拔斧(镜像 WGManifestationNet)</summary>
-    internal static class ArbiterManifestationNet
+    /// <summary>服务端许可、提交领取，本地播放拔斧(镜像 WGManifestationNet)，类本身即信道</summary>
+    internal class ArbiterManifestationNet : CWRNetChannel
     {
         private const float ClaimRange = ArbiterManifestationActor.InteractDistance + 48f;
         //主背包槽0-49
@@ -37,8 +37,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Arbiters
         }
 
         private static ModPacket NewPacket(ArbiterManifestationNetOp operation) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.ArbiterManifestation);
+            ModPacket packet = CWRNetWork.GetPacket<ArbiterManifestationNet>();
             packet.Write((byte)operation);
             return packet;
         }
@@ -134,11 +133,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Arbiters
             }
         }
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type != CWRMessageType.ArbiterManifestation) {
-                return;
-            }
-
+        public override void Receive(BinaryReader reader, int whoAmI) {
             ArbiterManifestationNetOp operation
                 = (ArbiterManifestationNetOp)reader.ReadByte();
             switch (operation) {

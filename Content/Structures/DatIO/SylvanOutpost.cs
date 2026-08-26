@@ -11,8 +11,8 @@ namespace CalamityOverhaul.Content.Structures.DatIO
 {
     internal class SylvanOutpost : SaveStructure
     {
-        public override string SavePath => Path.Combine(StructurePath, "SylvanOutpost_v1.nbt");
-        public override void Load() => Mod.EnsureFileFromMod("Content/Structures/DatIO/SylvanOutpost_v1.nbt", SavePath);
+        public override string SavePath => Path.Combine(StructurePath, "SylvanOutpost_v2.nbt");
+        public override void Load() => Mod.EnsureFileFromMod("Content/Structures/DatIO/SylvanOutpost_v2.nbt", SavePath);
         public override void SaveData(TagCompound tag)//测试用的复制代码，不用管
             => SaveRegion(tag, new Point16(4311, 478).GetRectangleFromPoints(new Point16(4407, 450)));
         public override void LoadData(TagCompound tag) {

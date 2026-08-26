@@ -36,6 +36,10 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
         }
 
         /// <summary>沉宴礼物线完成位，随玩家存档</summary>
+        public static bool EvilBiomeDollGift => Story.EvilBiomeDollGift;
+
+        public static void MarkEvilBiomeDollGift() => Story.EvilBiomeDollGift = true;
+
         public static ShenyoGiftStoryData GiftStory
             => Main.LocalPlayer.GetModPlayer<StoryPlayer>().Get<ShenyoGiftStoryData>();
     }

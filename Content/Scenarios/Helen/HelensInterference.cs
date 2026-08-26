@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen
 
         public static int DelayTimer;
 
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.Helen";
         public static LocalizedText Line0 { get; private set; }
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }

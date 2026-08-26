@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.GameSystem;
@@ -160,11 +159,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
     }
 
+    /// <summary>机械场景效果状态同步信道</summary>
+    internal sealed class MachineEffectNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => MachineEffect.HandleNet(reader, whoAmI);
+    }
+
+    /// <summary>
+    /// 机械主题认领：叙事场景档。海妖诅咒让位由档位天然表达（仪式档更高），
+    /// 不再自查 IsCursed；不设硬超时——场景旗随 Boss 在场每帧重算不可能卡死，
+    /// 而旧 3 分钟 CekTimer 被 Cek 重置副作用打断从未真正生效，若迁移后"修通"
+    /// 反而会在长机械战里 3 分钟整掐断专属战斗曲（审查结论 2026/8/26：随场景生命周期）
+    /// </summary>
+    internal sealed class MachineMusicClaim : MusicClaim
+    {
+        public override MusicTier Tier => MusicTier.NarrativeScene;
+        public override int SubWeight => 10;
+        public override bool YieldToBossRush => true;
+        public override bool ShouldPlay() => MachineEffect.IsActive;
+        public override int GetMusicSlot() => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
+    }
+
     /// <summary>机械场景System，天空聚合</summary>
     internal class MachineEffect : ModSystem
     {
         public static bool IsActive;
-        public static int CekTimer = 0;
         [VaultLoaden(CWRConstant.NPC + "Meld")]
         public static Asset<Texture2D> MeldAsset = null!;
 
@@ -172,27 +191,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (VaultUtils.isSinglePlayer) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.MachineEffect);
+            ModPacket packet = CWRNetWork.GetPacket<MachineEffectNet>();
             packet.Write(IsActive);
             packet.Send();
         }
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type == CWRMessageType.MachineEffect) {
-                IsActive = reader.ReadBoolean();
-                if (VaultUtils.isServer) {
-                    ModPacket packet = CWRMod.Instance.GetPacket();
-                    packet.Write((byte)CWRMessageType.MachineEffect);
-                    packet.Write(IsActive);
-                    packet.Send(-1, whoAmI);
-                }
+        internal static void HandleNet(BinaryReader reader, int whoAmI) {
+            IsActive = reader.ReadBoolean();
+            if (VaultUtils.isServer) {
+                ModPacket packet = CWRNetWork.GetPacket<MachineEffectNet>();
+                packet.Write(IsActive);
+                packet.Send(-1, whoAmI);
             }
         }
 
         public static bool Cek() {
             if (!IsActive) {
-                CekTimer = 0;
                 return false;
             }
 
@@ -323,15 +337,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     );
                 }
             }
-
-            if (++CekTimer > 60 * 60 * 3) {
-                IsActive = false;
-                return;
-            }
-
-            if (!CWRRef.GetBossRushActive() && !VaultUtils.isServer && !Main.LocalPlayer.GetModPlayer<SirenMusicalBoxPlayer>().IsCursed) {
-                Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
-            }
+            //音乐覆盖走 MachineMusicClaim 认领，此处不再直写
         }
 
         public override void Unload() {

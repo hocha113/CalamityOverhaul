@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Quest.FindFragments
 {
     internal sealed class FirstCampsiteDialogue : NarrativeScenario, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.OldDuke";
 
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }

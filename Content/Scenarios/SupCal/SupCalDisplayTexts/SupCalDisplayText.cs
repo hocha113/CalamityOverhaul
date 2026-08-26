@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.SupCalDisplayTexts
 {
     internal sealed class SupCalDisplayText : NarrativeDisplayText, ILocalizedModType
     {
+        public override string LocalizationCategory => "ADV.SupCal";
+
         public LocalizedText SummonWithProverbs { get; private set; }
         public LocalizedText SummonWithoutProverbs { get; private set; }
         public LocalizedText SummonRematchWithProverbs { get; private set; }

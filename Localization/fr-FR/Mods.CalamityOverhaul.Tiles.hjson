@@ -13,3 +13,12 @@ BloodAltarTP: {
 // OldNetAccessTerminalTile.MapEntry: OldNet Access Terminal
 // OldNetEchoNodeTile.MapEntry: Echo Node
 // OldNetCacheTile.MapEntry: Deep-Dive Cache
+// OldNetTripwireTile.MapEntry: Tripwire Emitter
+// OldNetSentryMineTile.MapEntry: Sentry Mine
+// OldNetBulkheadTile.MapEntry: Shaft Bulkhead
+// OldNetBreakerTile.MapEntry: Emergency Breaker
+// OldNetRelicTile.MapEntry: OldNet Relic
+// OldNetLedgerDockTile.MapEntry: Ledger Expansion Dock
+// OldNetColdNodeTile.MapEntry: Cold Storage Node
+// OldNetEscrowTile.MapEntry: Escrow Contract Terminal
+// OldNetCipherVaultTile.MapEntry: Cipher Vault Matrix

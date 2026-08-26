@@ -34,7 +34,8 @@ namespace CalamityOverhaul.Content.Cyberwares
         }
     }
 
-    internal static class CyberwareNet
+    /// <summary>义体请求总线，类本身即信道（子操作字节继续内部分发）</summary>
+    internal class CyberwareNet : CWRNetChannel
     {
         private enum CyberwareNetOp : byte
         {
@@ -206,12 +207,7 @@ namespace CalamityOverhaul.Content.Cyberwares
             packet.Send();
         }
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader,
-            int whoAmI) {
-            if (type != CWRMessageType.Cyberware) {
-                return;
-            }
-
+        public override void Receive(BinaryReader reader, int whoAmI) {
             try {
                 CyberwareNetOp operation = (CyberwareNetOp)reader.ReadByte();
                 switch (operation) {
@@ -739,8 +735,7 @@ namespace CalamityOverhaul.Content.Cyberwares
                 state.LoadoutRevision, state.CaptureLoadoutTypes());
 
         private static ModPacket NewPacket(CyberwareNetOp operation) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.Cyberware);
+            ModPacket packet = CWRNetWork.GetPacket<CyberwareNet>();
             packet.Write((byte)operation);
             return packet;
         }

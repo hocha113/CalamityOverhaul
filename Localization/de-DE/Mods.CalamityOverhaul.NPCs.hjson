@@ -104,3 +104,8 @@ BoneStitcher: {
 // OldNetPatrolICE.DisplayName: Patrol ICE
 // OldNetBlackICE.DisplayName: Black ICE Hunter
 // OldNetTurretICE.DisplayName: Sentry Turret ICE
+// OldNetSweepEye.DisplayName: Sweep Eye
+// OldNetLurkerICE.DisplayName: Lurker ICE
+// OldNetTaggerICE.DisplayName: Tagger Moth
+// OldNetTracerICE.DisplayName: Tracer Hound
+// OldNetWardenICE.DisplayName: Reclamation Warden

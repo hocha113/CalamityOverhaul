@@ -242,8 +242,7 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
             pano.Parameters["uUp"]?.SetValue(up);
             pano.Parameters["uTanHalfFov"]?.SetValue(HimayoMenuCamera.TanHalfFov);
             pano.Parameters["uAspect"]?.SetValue(vpW / (float)vpH);
-            //柱面投影与经纬压缩：与花瓣 Project 同几何，详见 HimayoMenuCamera 常量注释
-            pano.Parameters["uHalfHFov"]?.SetValue(HimayoMenuCamera.HalfHFov(vpW / (float)vpH));
+            //经纬压缩：底图伪全景修正，详见 HimayoMenuCamera 常量注释
             pano.Parameters["uLonScale"]?.SetValue(HimayoMenuCamera.PanoLonScale);
             pano.Parameters["uLatScale"]?.SetValue(HimayoMenuCamera.PanoLatScale);
             pano.Parameters["uFade"]?.SetValue(fade);

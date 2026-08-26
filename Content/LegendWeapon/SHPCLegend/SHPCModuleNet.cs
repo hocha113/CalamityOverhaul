@@ -12,8 +12,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
     /// 专用服务器上处决伤害、模块钩子都按服务器侧 <see cref="SHPCPlayer.Modules"/>
     /// 解析，不同步则一律按空模块计算。
     /// </summary>
-    internal static class SHPCModuleNet
+    internal class SHPCModuleNet : CWRNetChannel
     {
+        public override void Receive(BinaryReader reader, int whoAmI) => HandleNet(reader, whoAmI);
+
         /// <summary>客户端上报本机配装</summary>
         internal static void SendLoadout(SHPCPlayer state) {
             if (Main.netMode != NetmodeID.MultiplayerClient || state == null
@@ -39,13 +41,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             packet.Send(toWho, ignoreClient);
         }
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader,
-            int whoAmI) {
-            if (type != CWRMessageType.SHPCModuleSync) {
-                return;
-            }
+        internal static void HandleNet(BinaryReader reader, int whoAmI) {
             try {
-                //先读净载荷再做守卫，链式 NetHandle 共用同一个 reader
+                //先读净载荷再做守卫
                 int playerIndex = reader.ReadByte();
                 Item[] items = ReadLoadout(reader);
                 if (Main.netMode == NetmodeID.Server) {
@@ -102,10 +100,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             return new Item();
         }
 
-        private static ModPacket NewPacket() {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.SHPCModuleSync);
-            return packet;
-        }
+        private static ModPacket NewPacket() => CWRNetWork.GetPacket<SHPCModuleNet>();
     }
 }

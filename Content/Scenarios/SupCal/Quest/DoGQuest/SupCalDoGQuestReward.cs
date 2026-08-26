@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.DoGQuest
     /// <summary>神明吞噬者任务奖励场景</summary>
     internal sealed class SupCalDoGQuestReward : NarrativeScenario, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.SupCal";
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }

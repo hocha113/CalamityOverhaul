@@ -817,6 +817,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         //==================== 绘制 ====================
 
         public override bool PreDraw(ref Color lightColor) {
+            //皮肤与本体对齐（玩家反馈六·#54/#87）：残酷克眼本体（EocRenderHelper）同样画原版
+            //克眼贴图、只叠特效层，无专属皮资产，原版皮在残酷开关两侧都与本体一致，无需分支
             Main.instance.LoadNPC(NPCID.EyeofCthulhu);
             Texture2D tex = TextureAssets.Npc[NPCID.EyeofCthulhu]?.Value;
             if (tex == null) {

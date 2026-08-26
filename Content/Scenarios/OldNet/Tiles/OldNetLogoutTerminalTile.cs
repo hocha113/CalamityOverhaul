@@ -34,14 +34,24 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
             player.noThrow = 2;
             player.cursorItemIconEnabled = true;
             player.cursorItemIconID = 0;
-            player.cursorItemIconText = OldNetTexts.OldNetTerminalHint.Value;
+            //高热双态（2.3）：按下之前就让玩家知道规则变了
+            player.cursorItemIconText = OldNetPlayer.Get(player).HotExtractEligible
+                ? OldNetTexts.OldNetHotExtractHint.Value
+                : OldNetTexts.OldNetTerminalHint.Value;
         }
 
         public override bool RightClick(int i, int j) {
             if (Main.netMode == NetmodeID.Server || !OldNetWorld.Active) {
                 return false;
             }
-            OldNetPlayer.Get(Main.LocalPlayer).SettleAndLogout();
+            OldNetPlayer session = OldNetPlayer.Get(Main.LocalPlayer);
+            //热断链（2.3）：T3+/清剿波下登出改走 10 秒站桩断链；低热保持即点即走
+            if (session.HotExtractEligible) {
+                session.StartHotExtract(i, j);
+            }
+            else {
+                session.SettleAndLogout();
+            }
             return true;
         }
 
@@ -74,6 +84,11 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
             float t = Main.GlobalTimeWrappedHourly;
             float pulse = 0.8f + 0.2f * MathF.Sin(t * 1.6f);
             Color accent = new(120, 255, 170);
+            //高热预兆（2.3）：链路过热时光柱向红渐变，一眼可读"现在走要打的"
+            //（shader 路径的柱色由 OldNetTerminal.fx 内部持有，仅 CPU 回退变色，差异可接受）
+            if (OldNetPlayer.Get(Main.LocalPlayer).HotExtractEligible) {
+                accent = Color.Lerp(accent, new Color(235, 64, 44), 0.75f);
+            }
             //占位纹理尺寸未知，按轴归一化到目标像素尺寸
             Vector2 Size(float w, float h) => new(w / px.Width, h / px.Height);
 

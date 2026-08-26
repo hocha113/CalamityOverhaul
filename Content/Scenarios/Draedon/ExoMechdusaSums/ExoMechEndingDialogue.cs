@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
 {
     internal sealed class ExoMechEndingDialogue : NarrativeScenario, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.Draedon";
         public static LocalizedText EndLine1 { get; private set; }
         public static LocalizedText EndLine2 { get; private set; }
         public static LocalizedText EndLine3 { get; private set; }

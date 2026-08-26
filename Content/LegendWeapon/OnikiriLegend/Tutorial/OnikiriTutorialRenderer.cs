@@ -48,6 +48,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private static Rectangle primaryRect = Rectangle.Empty;
         private static Rectangle secondaryRect = Rectangle.Empty;
         private static Rectangle abortRect = Rectangle.Empty;
+        //「跳过教程」:询问卡上是中缝按钮,进行中是收起左侧的纸片,共用一个热区
+        private static Rectangle skipAllRect = Rectangle.Empty;
         private static ButtonAction primaryAction;
         private static ButtonAction secondaryAction;
 
@@ -90,16 +92,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             bool overPrimary = primaryAction != ButtonAction.None && primaryRect.Contains(mouse);
             bool overSecondary = secondaryAction != ButtonAction.None && secondaryRect.Contains(mouse);
             bool overAbort = !abortRect.IsEmpty && abortRect.Contains(mouse);
-            if (overCard || overPrimary || overSecondary || overAbort) {
+            bool overSkipAll = !skipAllRect.IsEmpty && skipAllRect.Contains(mouse);
+            if (overCard || overPrimary || overSecondary || overAbort || overSkipAll) {
                 Main.LocalPlayer.mouseInterface = true;
             }
-            if (!clicked || !overCard && !overPrimary && !overSecondary && !overAbort) {
+            if (!clicked || !overCard && !overPrimary && !overSecondary && !overAbort && !overSkipAll) {
                 return;
             }
 
             Main.mouseLeft = false;
             Main.mouseLeftRelease = false;
-            if (overAbort) {
+            if (overSkipAll) {
+                OnikiriTutorialFlow.HandleSkipAllAction();
+            }
+            else if (overAbort) {
                 OnikiriTutorialFlow.HandleAbortAction();
             }
             else if (overPrimary) {
@@ -235,7 +241,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             //纸片先落位,标题按剩下的横向空间收缩,长译名不会压上去
             DrawAbortTag(spriteBatch, font, card, step, alpha);
             DrawCardContent(spriteBatch, font, card, title.Value, lines, contentWidth, alpha,
-                abortRect.IsEmpty ? card.Right - ContentPadX : abortRect.X);
+                abortRect.IsEmpty
+                    ? card.Right - ContentPadX
+                    : skipAllRect.IsEmpty ? abortRect.X : skipAllRect.X);
             if (asking) {
                 OniKeikoRuneSigil.Draw(spriteBatch,
                     new Vector2(card.Right - ContentPadX - AskSigilRadius,
@@ -452,34 +460,57 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 DrawPaperButton(spriteBatch, font, secondaryRect, secondaryText,
                     OnikiriUITheme.GhostFire, time, alpha * 0.92f, subScale);
             }
+            //询问卡的第三条路「跳过教程」:不听讲也按学过记账,试炼委托即刻放行;
+            //「不必」只是婉拒,完成位仍空着。中缝摆不下时不出,避免与两侧按钮重叠
+            if (asking) {
+                string skipAllText = OnikiriTutorialLead.SkipAllBtn.Value;
+                int width = Math.Max(84, (int)(font.MeasureString(skipAllText).X * subScale) + 24);
+                int x = card.Center.X - width / 2;
+                if (x > secondaryRect.Right + 8 && x + width < primaryRect.X - 8) {
+                    skipAllRect = new Rectangle(x, card.Bottom - 29 - 11, width, 29);
+                    DrawPaperButton(spriteBatch, font, skipAllRect, skipAllText,
+                        OnikiriUITheme.GoldInlay, time, alpha * 0.92f, subScale);
+                }
+            }
         }
 
         /// <summary>
-        /// 卡头右肩的收起纸片。询问步已有「不必」,其余每一步都靠这枚纸片保证有路可退
-        /// 收起会补一枚稽古符,不至于把人锁在教习里
+        /// 卡头右肩的两枚纸片。「收起教习」= 先放下,记婉拒不写完成;
+        /// 「跳过教程」= 按学过记账,写完成位放行试炼委托。两条路都补稽古符,
+        /// 除询问步外每一步都点得到(询问步的跳过在卡底按钮行)
         /// </summary>
         private static void DrawAbortTag(SpriteBatch spriteBatch, DynamicSpriteFont font,
             Rectangle card, int step, float alpha) {
             abortRect = Rectangle.Empty;
+            skipAllRect = Rectangle.Empty;
             if (step == OnikiriTutorialFlow.Step_Ask) {
                 return;
             }
-            string text = OnikiriTutorialLead.AbortBtn.Value;
+            abortRect = DrawShoulderTag(spriteBatch, font, OnikiriTutorialLead.AbortBtn.Value,
+                card.Right - 8, card.Y + 6, OnikiriUITheme.Seal, alpha);
+            skipAllRect = DrawShoulderTag(spriteBatch, font, OnikiriTutorialLead.SkipAllBtn.Value,
+                abortRect.X - 6, card.Y + 6, OnikiriUITheme.GoldInlay, alpha);
+        }
+
+        /// <summary>右对齐的小纸片通用件,返回热区;rightX 是纸片右缘</summary>
+        private static Rectangle DrawShoulderTag(SpriteBatch spriteBatch, DynamicSpriteFont font,
+            string text, int rightX, int y, Color hotColor, float alpha) {
             int width = (int)(font.MeasureString(text).X * AbortScale) + 14;
-            abortRect = new Rectangle(card.Right - width - 8, card.Y + 6, width, 19);
+            Rectangle rect = new(rightX - width, y, width, 19);
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            bool hovered = abortRect.Contains(OnikiriUITheme.UIMouse.ToPoint());
+            bool hovered = rect.Contains(OnikiriUITheme.UIMouse.ToPoint());
             float highlight = hovered ? 1f : 0f;
-            spriteBatch.Draw(pixel, abortRect, new Rectangle(0, 0, 1, 1),
+            spriteBatch.Draw(pixel, rect, new Rectangle(0, 0, 1, 1),
                 OnikiriUITheme.Dark * (alpha * (0.40f + highlight * 0.30f)));
-            SkinDrawUtil.DrawRectBorder(spriteBatch, abortRect,
+            SkinDrawUtil.DrawRectBorder(spriteBatch, rect,
                 OnikiriUITheme.Deep * ((0.42f + highlight * 0.38f) * alpha), 1);
             Vector2 size = font.MeasureString(text) * AbortScale;
             Utils.DrawBorderString(spriteBatch, text,
-                abortRect.Center.ToVector2() - size * 0.5f + new Vector2(0f, -1f),
-                Color.Lerp(OnikiriUITheme.TextDim, OnikiriUITheme.Seal, 0.2f + highlight * 0.5f) * alpha,
+                rect.Center.ToVector2() - size * 0.5f + new Vector2(0f, -1f),
+                Color.Lerp(OnikiriUITheme.TextDim, hotColor, 0.2f + highlight * 0.5f) * alpha,
                 AbortScale);
+            return rect;
         }
 
         private static Rectangle MakeButtonRect(DynamicSpriteFont font, Rectangle card, string text,
@@ -693,7 +724,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static void ClearHitboxes() {
-            cardRect = primaryRect = secondaryRect = abortRect = Rectangle.Empty;
+            cardRect = primaryRect = secondaryRect = abortRect = skipAllRect = Rectangle.Empty;
             primaryAction = secondaryAction = ButtonAction.None;
             layoutStep = -1;
         }

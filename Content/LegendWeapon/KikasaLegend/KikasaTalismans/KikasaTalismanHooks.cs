@@ -1,4 +1,5 @@
 using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
 {
@@ -155,8 +156,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
     }
 
     /// <summary>
-    /// 唤雨符挂钩派发器：按"那把伞"（owner.HeldItem 的 <see cref="KikasaData"/>）解析三符位，
-    /// 空绳/未持伞 <see cref="IsEmpty"/>，所有派发短路零开销。
+    /// 唤雨符挂钩派发器：按归属玩家的 <see cref="KikasaTalismanPlayer.Talismans"/> 解析三符位
+    /// （持伞时生效），空绳/未持伞 <see cref="IsEmpty"/>，所有派发短路零开销。
     /// 每 AI 帧解析一次快照即可复用；派发次序=符位序（0→2），先到先得
     /// </summary>
     internal readonly struct KikasaTalismanHookRunner
@@ -386,19 +387,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
         //====派发器解析====
 
         /// <summary>
-        /// 解析归属玩家"那把伞"的挂钩派发器；未持伞/空绳返回空派发器。
-        /// 廉价判定（物品级缓存查找+三位判空），可逐帧调用
+        /// 解析归属玩家的挂钩派发器（符位表在玩家身上，持伞时生效）；
+        /// 未持伞/空绳返回空派发器。廉价判定（类型比对+三位判空），可逐帧调用
         /// </summary>
         public static KikasaTalismanHookRunner For(Player owner) {
-            if (owner == null) {
+            if (owner == null || owner.HeldItem?.type != ModContent.ItemType<KikasaItem>()
+                || !owner.TryGetModPlayer(out KikasaTalismanPlayer session)) {
                 return default;
             }
-            KikasaData data = KikasaData.TryGet(owner.HeldItem);
-            KikasaTalismanStore store = data?.Talismans;
-            if (store == null || store.HungCount == 0) {
+            KikasaTalismanStore store = session.Talismans;
+            if (store.HungCount == 0) {
                 return default;
             }
-            owner.TryGetModPlayer(out KikasaTalismanPlayer session);
             return new KikasaTalismanHookRunner(owner, store, session);
         }
 

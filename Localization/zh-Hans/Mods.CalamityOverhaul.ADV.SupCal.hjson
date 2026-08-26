@@ -1,0 +1,315 @@
+FirstMetSupCal: {
+	Rolename1: ???
+	Rolename2: 硫火女巫
+	Line1: 没想到你这么快就杀掉了我的'妹妹'
+	Line2: 你的成长速度确实有些快了
+	Line3: 我对你有印象......你是...
+	Line4: 焚烧了一半海域的硫火女巫？！
+	Line5: 哈?!呵呵，竟然有人...或者鱼认得我，你们倒也算有趣
+	Line6: ......你为什么还活着?我明明记得硫火女巫在上世纪.....就已经死了
+	Line7: 真是一条有趣的鱼。我的意识早已熔铸进硫磺火中，这幅躯体......只不过是被火焰操控的尸体罢了
+	Line8: ......活人的意识，非人的躯体，依靠媒介行走世间，你成为了异类?!
+	Line9: 你的层次太低，理解不了我现在的状态
+	Line10: 况且我来这里也不是为了这事儿的......
+	QuestionLine: 那么，你的选择是？
+	Choice1Text: (拔出武器)
+	Choice2Text: (保持沉默)
+	Choice1Response: 那么便让我来称量称量你吧
+	Choice2Response: ......真是杂鱼，那么给你一个见面礼，我们下次见
+	NoFishLine1: 没想到你这么快就杀掉了我的'妹妹'，独自一人来的？
+	NoFishLine2: 你的成长速度比我预期的要快
+	NoFishLine3: 问我为什么还活着？看来你已经开始触碰那些不该知道的东西
+	NoFishLine4: 我的意识早已熔入硫磺之火，这幅躯体......只不过是被火焰操控的尸体罢了
+	NoFishLine5: 不过说了也无用，你的层次太低，无法理解我现在的状态
+	NoFishLine6: 当然，我现身也不是为了解释这些的
+}
+
+SupCalMoonLordReward: {
+	Line1: 呵呵呵
+	Line2: 那个家伙……竟已落到这种地步
+	Line3: 你知道现在的地底是什么景象吗?
+	Line4: ......所以你这次来是?
+	Line5: 送你点小玩具，顺带有个委托交给你
+	Line6: 一把小巧的弩，我需要你拿它干掉下面的那个苟延残喘吸食地热的家伙，记住只能用这个弩
+	Line7: 如果你做到了，我们的合作还能继续
+}
+
+SupCalDefeat: {
+	Rolename2: 比目鱼&[Name]
+	Line1: 你竟然已经到达这种地步了吗......呵，是我技不如人了
+	Line2: 但你并非最强，你或许很不错，但那个人绝对不会比你差
+	Line3: 亚利姆已经走到了那条道路的尽头，到达了泰拉人的极致，没人会比他强
+	Line4: 可惜，你们不能见面......
+	Line5: 你的层次太低，永远无法理解我现在的状态
+	Line6: ......我层次太低?
+	Line7: (活这么多年，还是第一次被说层次太低)
+	Line8: 我是一个时代孕育出来的唯一，既然敢舍弃泰拉人的身份，自封为神，自然是无所不能
+	Line9: 你说亚利姆可以称量我?得让克希洛克来
+	Line10: ......
+}
+
+SupCalPlayerDefeat: {
+	Line1: 一碰就碎，你是纸做的吗
+	Line2: 我以为遇到了一个耐烧点的玩具
+	Line3: 高估你了，你现在的器量，连让我热身都不配
+	Line4: 等你真正强大到能被我正视时，再来吧
+	Line5: 不过...你确实有几分胆魄
+	Line6: 敢于直视我，甚至对我拔剑的凡人...你是第一个
+	Line7: (在火焰纷飞中消失)
+	Line8: 如果我不顾后果睁开到第九只眼，应该有胜算，大不了......
+	Line9: 唉......
+}
+
+SupCalVictory: {
+	Line1: 什么......怎么可能!
+	Line2: 你竟然......打败了我?!
+	Line3: 不可能，这绝不可能......
+	Line4: 我可是已经超越了泰拉人的极限......
+	Line5: ......看来我确实小看你了
+	Line6: 但这不代表结束，我会回来的
+	Line7: 下次......下次我不会再大意了！
+	Line8: ......她逃走了
+}
+
+PallbearerQuestUI: {
+	QuestTitle: 委托：猎杀亵渎天神
+	QuestDesc: 使用扶柩者击杀亵渎天神
+	AcceptText: 接受
+	DeclineText: 拒绝
+}
+
+SupCalQuestReward: {
+	Line1: 做的不错
+	Line2: 这把弩挺适合你的
+	Line3: 你帮我解决了一个麻烦
+	Line4: 作为奖励，这些就归你了
+	Line5: 还有这把刀，我需要你拿着它去干掉那只虫子，放心，报酬会更丰富
+	Line6: 我施加了一部分硫火灵异在上面，可以让你轻松一些
+	Line7: ......
+}
+
+DoGQuestUI: {
+	QuestTitle: 委托：神明吞噬者
+	QuestDesc: 使用刻心者击杀神明吞噬者
+	AcceptText: 接受
+	DeclineText: 拒绝
+}
+
+SupCalDoGQuestReward: {
+	Line1: 干净利落
+	Line2: 这把刀，一如既往地令人满意
+	Line3: 当年我还是凡人之躯时，就是用它亲手挖出老师的心脏，很好用，不是吗？
+	Line4: 拿好
+	Line5: 你有没有想过，如果下一次，我是委托你来杀我，你会怎么做？
+	Line6: 真遗憾，你和他注定见不了面。不然你们一定聊得很投机
+	Line7: ......我越来越受不了这家伙了
+}
+
+SupCalYharonQuestReward: {
+	Line1: 啊......终于结束了
+	Line2: 对我来说......那条龙，是极少数值得尊敬的生物
+	Line3: 明知自己会死，却仍然选择站在那里......即使借助金源魄来重启，归来的也只是复制体
+	Line4: 可惜，它擅长服从，而你擅长......嗯，活下来？
+	Line5: 拿着。金源锭。曾被叫做‘炼狱之金’，是凡人所能触碰的力量极限
+	Line6: 接下来，轮到我了
+	Line7: 你在开什么玩笑......？
+}
+
+YharonQuestUI: {
+	QuestTitle: 委托：焚世龙
+	QuestDesc: 使用鬼面刀击杀焚世之龙
+	AcceptText: 接受
+	DeclineText: 拒绝
+}
+
+SupCalQuestLine: {
+	QuestCategory: 硫火女巫
+	PallbearerTitle: 委托：猎杀亵渎天神
+	PallbearerSummary: 使用扶柩者击杀亵渎天神，贡献度需达到80%
+	DoGTitle: 委托：猎杀神明吞噬者
+	DoGSummary: 使用刻心者击杀神明吞噬者，贡献度需达到80%
+	YharonTitle: 委托：猎杀焚世龙
+	YharonSummary: 使用鬼面刀击杀焚世之龙，贡献度需达到75%
+	TrackerSummonHint: 目标不在场，请召唤 {0}
+	TrackerContribution: 武器贡献: {0:0%}
+	TrackerRequired: 需求: {0:0%}
+}
+
+EternalBlazingNow: {
+	Rolename2: ???硫火女巫???
+	Line1: 开什么玩笑......
+	Line2: 过去的身影都消失了......这些火......是在封锁过去？！
+	Line3: 这个女巫......她的力量果然不是普通的魔法
+	Line4: 不过就算是这种力量的对抗，我也有信心再让你死一遍
+	Line5: 我不会死......不过，也差不多了
+	Line6: 你们做得很好......或许，你们真的是他口中那个值得等待的“时代唯一”
+	Line7: 所以，我有最后一件事，想拜托你们
+	Line8: 只要这世间的过去与现在，还存有一缕硫磺火，“我”就不会消亡
+	Line9: 可我的意识，却会在这无尽的火海中被逐渐磨灭
+	Line10: 我最多还能撑三十年
+	Line11: ......所以，你想让他接替你？
+	Line12: 没错，这是唯一的办法
+	Line13: 当我的意识彻底消散，整个世界都会被焚尽
+	Line14: 况且，如果你们想终结这个时代，凡人的躯壳太过脆弱......
+	Line15: 我绝对不允许！让他变成你这副鬼样子？！先从我的尸体上跨过去吧！
+	QuestionLine: ......
+	Choice1Text: (阻止比目鱼)
+	Choice2Text: (保持沉默)
+	Choice1Line1: ......这就是你的选择吗？
+	Choice1Line2: 我明白了......
+
+	HelenEpilogue: {
+		EpilogueLine1: 我在等一个笨蛋
+		EpilogueLine2: .....
+		EpilogueLine3: 欢迎回来.....
+	}
+
+	WitchFarewell: {
+		FarewellLine1: 这漫长的一生里，我见过无数次黎明与终焉
+		FarewellLine2: 火焰吞噬时代，也照亮新的开始。我原以为，这次也不会例外
+		FarewellLine3: 没想到，在最后的路上，会有人同行
+		FarewellLine4: 对我来说，这样的结局……已经足够了
+		FarewellLine5: 你的存在，证明这片大地还没有真正枯竭
+		FarewellLine6: 我相信，你会走得比我更远
+		FarewellLine7: 而我，也终于可以停下来了
+		FarewellLine8: 不必回头看。前面还有更重要的事情等着你
+		FarewellLine9: 就当我在这场漫长的旅途中，终于抵达了属于自己的地方
+		FarewellLine10: 那么到这里，就足够了
+		FarewellLine11: 去吧，杂鱼
+	}
+
+	AchievementTitle: BE结局：永恒燃烧的现在
+	AchievementTooltip: 往日被烈火所吞噬，以异类之躯触及永恒
+}
+
+SCalAltarScenario: {
+	L1: 现在还不是时候，你的前方还有另一个挡路的敌人
+	L2: 去把你那堆机械玩具拼好，再把他打倒
+	L3: ……怎么？需要我再说一遍吗？
+}
+
+SupCalDisplayText: {
+	SummonWithProverbs: 你竟然真的戴着那个戒指来了……既然如此，我便不会再留情
+	SummonWithoutProverbs: 哈哈哈……这一刻，我已经期待许久
+	SummonRematchWithProverbs: 你还戴着那个戒指……
+	SummonRematchWithoutProverbs: 又是你……看来你对死亡的理解还不够深刻
+	StartLowHealth: 你看起来已经奄奄一息了
+	StartMediumHealth: 你的技术还有待进步
+	StartDefault: 真奇怪，你应该已经死了才对……
+	StartRematchLowHealth: 你看起来已经奄奄一息了
+	StartRematchMediumHealth: 受伤了？真有意思
+	StartRematchDefault: 真奇怪，你应该已经死了才对……
+	BH3WithHalibut: 以凡人之躯驾驭这种诡异的力量……走到如今，你们确实值得尊敬
+	BH3WithoutHalibut: 你很不错，但你什么时候才能意识到，你只是在徒劳的攻击一团火焰
+	BrothersWithHalibut: 是时候让你们见见我的家人了，他们失败在成为异类的路上，你们今后可别如此
+	BrothersWithoutHalibut: 是时候让你见见我的家人了。若你日后死于某人的手下，我会将你的灵魂收于此处
+	Phase2WithHalibut: 你们真的不打算求饶吗？
+	Phase2WithoutHalibut: 你真的不准备求饶？
+	BH4Text: 给我站在那里别动！
+	SeekerRingText: 你的力量皆非己出。失去外物，你什么都不是……真像极了那个虚伪之人
+	BH5Text: 胜利的天平有些不确定会倒向何方了...你只需站住一会儿就可以改变现状，好吗？
+	Sepulcher2Text: 如果今天只能活一个，你觉得我会希望是谁？
+	Desperation1Text: 给 我 老 老 实 实 站 那 里，杂 鱼
+	Desperation2Text: 别得意，我之前只是在陪你玩罢了
+	Desperation3Text: 咳……咳……我承认，今天的状态不太好
+	Desperation4Text: 看来是我输了……遇见你，真是幸事一件
+	Acceptance1Text: 这是我百年来最开心的一天……
+	Acceptance2Text: 或许，你真的能终结这个该死的时代
+	Story1:
+		'''
+		弩身的木料来自一口埋在地下百年的漆黑棺材，有股洗不掉的土腥味。
+		在那下面，它用于压制我也难以处理的恐怖。
+		面对那些东西，单纯的毁灭毫无意义，它们杀不死。
+		射出楔子，把它们钉死在地上，使其重新沉寂。
+		至于为什么要先把弩扔过去？
+		嗯……不先让棺椁的气息沾染客人，这口棺材怎么知道该收殓谁呢？
+		'''
+	Story2:
+		'''
+		这破刀很钝，因为它不是用来割肉的。
+		在我还是学徒的时候，老师的心脏上长了张怎么也闭不上的嘴。
+		他后来死了，那颗心却还在跳，每跳一次，嘴尖叫一次，周围的人就少一个。
+		为了活命，我必须在他下一次心跳之前，把心脏挖出来。
+		现在的它，相当渴望再听到那剜心的声音。
+		'''
+	Story3:
+		'''
+		刀里面掺了大量的黄金，外面缠着硫火，为了锁住刀刃上那六只不安分的鬼手。
+		这三个蠢货生前把彼此肢解，再拼接在一起，以此来延缓自身的复苏，
+		结果变成了一团只会掐人的鬼物。
+		握紧了哦，一旦硫磺火的压制失效，它们第一个捏断的就是拿刀人的脖子。
+		这是它们所剩不多的本能。
+		'''
+	Story4:
+		'''
+		凡人以为这是魔法，但我称之为借用。
+		这本书里，每一页都封存着曾让整座城邦陷入死寂的恐怖。
+		'''
+}
+
+SupCalDisplayTextByBossRush: {
+	SummonBossRush: ……你身上的气息和记忆，让我想起了早已死去的那个人
+	SummonBossRushWithProverbs: 那枚戒指，连我这样的残影，也感到了它的颤动呢
+	StartBossRush: 我不过是金源魄的灵异产物，但有的事情，我也必须完成
+	BH2BossRush: 你的实力确实不差，但还不够
+	BH3BossRush: 往日之影……早已化作灰烬，随风散在你走过的道路上，呵呵……
+	BrothersBossRush: 这些灵魂……是影子的影子。越是复制，越显得悲哀，不是吗？
+	Phase2BossRush: 即便是被复制的生命，也有需要拼尽全力的理由
+	BH4BossRush: 站住！
+	SeekerRingBossRush: 你的力量，与她记忆中的那个人太相似了，是巧合吗？
+	BH5BossRush: 我的存在，就是为了迎接今日这场战斗
+	Sepulcher2BossRush: 最后的试炼就在此刻
+	Desperation1BossRush: 即使只是残片……
+	Desperation2BossRush: 别以为胜利已定
+	Desperation3BossRush: 呵……影子的寿命，本就脆弱到可笑……
+	Desperation4BossRush: 你赢了……但她的道路，还远远没有结束
+	Acceptance1BossRush: 这大概，就是我的最终归宿吧
+	Acceptance2BossRush: 祝你好运，杂鱼
+}
+
+SupCalDisplayTextNormal: {
+	SummonText: 这硫磺火海……即便是厉鬼也会感到灼痛吧？
+	SummonRematchText: 证明给我看，给我活下去
+	StartText: 凡人的躯壳在高温下总是如此脆弱……或者，你能给我点惊喜？
+	StartRematchText: 还没被烧尽吗？那便再来一次，直到把你锻造成钢，或者化为灰
+	BH2Text: 还没有在烈火中崩溃……你比我想象的要耐烧
+	BH2RematchText: 我承认你有些胆量，但你的水准还差得远着呢
+	BH3Text: 你跨越千里寻来，就为了让这副皮囊感受痛楚？
+	BH3RematchText: 上一次降下这种灾厄，已经是上个世纪的事了，你也要试试么？
+	BrothersText: 他们曾为了那条路燃尽了一切……现在，让这些灰烬来称量你吧
+	BrothersRematchText: 或许只是些许灵魂的空壳罢了，但对付你轻而易举
+	Phase2Text: 接下来……火焰将不再受控。别死得太快
+	Phase2RematchText: 再一次，我们开始吧
+	BH4Text: 别想着逃出我的手心!
+	BH4RematchText: 我很好奇，我们的第一次交手，是否让你长了记性？
+	SeekerRingText: 你是怎么躲开的？情况不应该这样……给我停下!
+	SeekerRingRematchText: 起码我的眼光没有看错……
+	BH5Text: 我承认刚刚的战斗只不过是小打小闹，现在我将全力以赴！
+	BH5RematchText: 这难道不令人激动么？
+	Sepulcher2Text: 如果我们之中只有一个人可以活下来，你觉得我会希望是谁？
+	Sepulcher2RematchText: 注意了，那个会自己爬的坟墓来了……它正渴望着新的住客
+	Desperation1Text: 给我停下！
+	Desperation2Text: 如果我在这里失败，那又有什么意义！
+	Desperation3Text: 你的路已经有人走到了尽头，那是一条死路……你凭什么认为你能不同？！
+	Desperation4Text: 若你只是重复他的疯狂，最终也不过是这些余烬中的一捧新灰罢了！
+	Acceptance1Text: 我把自己烧成了这副非人的模样，只为寻找那一线生机
+	Acceptance2Text: 唉……我已没有余力站起来了……
+	Acceptance3Text: 若你成为我这般异类……或许真的能开辟出……我也未曾见过的未来
+	Desperation1RematchText: 了不起的表现，你发挥的很好
+	Desperation2RematchText: 毫无疑问，你的实力每时每刻都在增长
+	Desperation3RematchText: 我多么希望你不会重蹈我们的覆辙
+	Desperation4RematchText: 如果你能走出一条新的路，一切都还有希望
+}
+
+EternalBlazingNowNoHelen: {
+	Line1: ......能走到这里的人，已经许久没有出现了
+	Line2: 我不会死......不过，也差不多了
+	Line3: 你做得很好......或许，你真的是他口中那个值得等待的“时代唯一”
+	Line4: 所以，我有最后一件事，想拜托你
+	Line5: 只要这世间的过去与现在，还存有一缕硫磺火，“我”就不会消亡
+	Line6: 可我的意识，却会在这无尽的火海中被逐渐磨灭
+	Line7: 如果没有遇到你，我最多还能撑三十年
+	Line8: 这是唯一的办法
+	Line9: 当我的意识彻底消散，整个世界都会被焚尽
+	Line10: 况且，如果你想终结这个时代，凡人的躯壳太过脆弱
+}

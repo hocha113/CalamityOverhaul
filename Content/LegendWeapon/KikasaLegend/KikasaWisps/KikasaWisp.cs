@@ -122,12 +122,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
             kdp.WispRainProof = KikasaEffigyBoard.HasBoilRainEdge(player);
         }
 
-        /// <summary>此刻能否受理点燃：满水稳态 + 形态许可（非鬼雨，沸雨边例外）+ 非梦侧。
-        /// 阈值取 0.98 与在场包络的养火线（lakeHolds）同源，湖面托得住火即点得着</summary>
+        /// <summary>此刻能否受理点燃：统一受理门（湖侧可见且稳定）+ 形态许可（非鬼雨，沸雨边例外）。
+        /// 湖面托得住火即点得着</summary>
         internal static bool IgniteReady(KikasaDomainPlayer kdp)
-            => kdp.Phase == KikasaDomainPhase.Open && kdp.RiseT >= 0.98f
-            && (!kdp.IsRainForm || kdp.WispRainProof)
-            && !kdp.DreamWorldVisual;
+            => kdp.LakeAbilityReady
+            && (!kdp.IsRainForm || kdp.WispRainProof);
 
         /// <summary>
         /// 点燃/收火号令（仅 owner 本机），转盘金焰扇、HUD 焰苗、湖心景金焰共用这一个门。

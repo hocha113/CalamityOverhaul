@@ -230,8 +230,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         }
 
         private static bool Probe(Vector2 from, out Vector2 feet)
+            //平台也算落点:离地平台上的击杀就地成形,不再穿到下方实心块(反馈三·#123)
             => KasaOniActor.TryFindStandableGround(from,
-                KikasaThrallProj.HitboxWidth, KikasaThrallProj.HitboxHeight, out feet);
+                KikasaThrallProj.HitboxWidth, KikasaThrallProj.HitboxHeight, out feet,
+                acceptPlatforms: true);
 
         /// <summary>伞奴伤：鬼伞面板。命中只在 owner 端结算</summary>
         internal static int ResolveDamage(Player owner)
@@ -383,7 +385,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         /// <summary>调试：鼠标处向下吸附地面直接生成一只伞奴（跳过化水，验组装与战斗）</summary>
         internal static void DebugSpawnAt(Vector2 world) {
             if (!KasaOniActor.TryFindStandableGround(world - new Vector2(0f, 60f),
-                KikasaThrallProj.HitboxWidth, KikasaThrallProj.HitboxHeight, out Vector2 feet)) {
+                KikasaThrallProj.HitboxWidth, KikasaThrallProj.HitboxHeight, out Vector2 feet,
+                acceptPlatforms: true)) {
                 Main.NewText("此处探不到可站立地面", Color.IndianRed);
                 return;
             }

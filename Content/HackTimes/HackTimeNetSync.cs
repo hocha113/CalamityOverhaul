@@ -348,9 +348,11 @@ namespace CalamityOverhaul.Content.HackTimes
         int Generation,
         HackNetworkTarget Target);
 
-    /// <summary>骇入请求、队列与效果复制</summary>
-    internal static class HackTimeNetSync
+    /// <summary>骇入请求、队列与效果复制，类本身即信道（子操作字节继续内部分发）</summary>
+    internal class HackTimeNetSync : CWRNetChannel
     {
+        public override void Receive(BinaryReader reader, int whoAmI) => HandleApplyPacket(reader, whoAmI);
+
         internal const ushort RamOperationId = 48;
         //HACK32：WriteTarget 的 kind 升 ushort，线格式变了，快照版本随之 +1
         private const byte SnapshotVersion = 2;
@@ -1410,8 +1412,7 @@ namespace CalamityOverhaul.Content.HackTimes
         }
 
         private static ModPacket NewPacket(HackNetOperation operation) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.HackProtocolApply);
+            ModPacket packet = CWRNetWork.GetPacket<HackTimeNetSync>();
             packet.Write((byte)operation);
             return packet;
         }

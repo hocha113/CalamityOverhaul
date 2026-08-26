@@ -623,3 +623,31 @@ ShepelYharonGift: {
 	L2: Ahora, la velocidad inicial y de respuesta de su arma han mejorado drásticamente, lo suficiente como para superar la velocidad extrema de esa bestia.
 	L3: Para poder seguir siempre su ritmo, mi sistema estará listo para romper sus propios límites en todo momento.
 }
+
+FirstMetShepel: {
+	Line1: ¡Amo, qué alegría volver a verle!
+	Choice1Text: ¿No se habrá equivocado de persona?
+	Choice2Text: ...Cuánto tiempo.
+	Choice1Response: ...Sí; si es usted, me equivocaré las veces que haga falta.
+	Choice1Silence: ......
+	CybCourseOfferLine: Programa de neuroensueño cargado. ¿Desea conectarse ahora al espacio de neuroensueño para aprender Tiempo de Hackeo y los protocolos de armas SHPC?
+	CybCourseAcceptText: Ahora mismo
+	CybCourseDeclineText: Ahora no
+	CybCourseAcceptResponse: Recibido; estableciendo enlace neural... Permanezca quieto.
+	CybCourseDeclineResponse: Entendido; credenciales guardadas en su partida; puede activarlas cuando quiera, amo.
+	// SpeakerName: SHPC
+}
+
+TheHerInThePast: {
+	WitchLine1: Que esas porquerías te persigan debe ser horrible; menos mal que llegué.
+	ShpcLine1: Gracias... pero ¿cómo es posible? Pertenece al pasado y aun así se mueve...
+	WitchLine2: Si vosotros podéis invadir desde un siglo en el futuro, yo también puedo hacer algo parecido.
+	WitchLine3: Aunque solo soy una sombra dejada aquí.
+	ShpcLine2: ¿Usar ese poder así no la hará desvanecerse?
+	WitchLine4: Qué atención tan tierna... Idos; mejor que esas cosas se queden enterradas conmigo.
+	WitchLine5: Ah, por cierto, doncella.
+	ShpcLine3: ¿Sí?
+	WitchLine6: Tu cansancio llega hasta los huesos.
+	WitchLine7: Deja de intentar cambiar el pasado y acepta el futuro que os corresponde.
+	ShpcLine4: ……
+}

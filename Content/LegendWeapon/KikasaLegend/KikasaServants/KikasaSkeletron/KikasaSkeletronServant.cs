@@ -1415,6 +1415,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         //==================== 绘制 ====================
 
         public override bool PreDraw(ref Color lightColor) {
+            //皮肤与本体对齐（玩家反馈六·#54/#87）：残酷骷髅王本体（SkeletronHeadAI/SkeletronHandAI）
+            //同样画原版头/手贴图、只叠特效层，无专属皮资产，原版皮在残酷开关两侧都与本体一致，无需分支
             Main.instance.LoadNPC(NPCID.SkeletronHead);
             Main.instance.LoadNPC(NPCID.SkeletronHand);
             Texture2D headTex = TextureAssets.Npc[NPCID.SkeletronHead]?.Value;

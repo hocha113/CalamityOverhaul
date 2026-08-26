@@ -878,6 +878,16 @@ HandmadeDoll: {
 		'''
 }
 
+ScapegoatDoll: {
+	// DisplayName: Scapegoat Doll
+	/* Tooltip:
+		'''
+		While in your inventory, blocks one death in your place
+		The doll shatters and is lost after taking the blow
+		''' */
+	// ShatterText: The scapegoat doll shattered
+}
+
 Snowblindness: {
 	DisplayName: Aveuglement des Neiges
 	Tooltip:
@@ -2161,9 +2171,13 @@ Pandemonium: {
 		'''
 		Clic gauche pour charger et libérer une magie transcendante
 		Clic droit pour lancer une rune de soufre au curseur
-		Appuyez sur [PandemoniumQSkill] pour déclencher le Jugement de soufre
-		Appuyez sur [PandemoniumRSkill] pour exécuter la Fin de tous les démons
+		En main, deux boutons de compétence s'allument en bas à gauche de l'écran
+		Cliquez pour déclencher le Jugement de soufre ou la Fin de tous les démons
 		'''
+	SkillLeftName: Jugement de soufre
+	SkillLeftDesc: Fait s'abattre un champ de piliers de feu de soufre autour du curseur
+	SkillRightName: Fin de tous les démons
+	SkillRightDesc: Déploie un cercle magique géant centré sur vous, frappant les ennemis de foudre et de feu
 }
 
 Proverbs: {
@@ -2285,9 +2299,13 @@ AriaofTheCosmos: {
 		'''
 		Maintenez le clic gauche pour charger un puissant quasar, infligeant des dégâts dévastateurs à la libération
 		Clic droit pour libérer un mini trou noir qui, une fois formé, tire une salve de rayons gamma
-		Appuyez sur [AriaofTheCosmosQSkill] pour invoquer un gardien de l'anneau stellaire
-		Appuyez sur [AriaofTheCosmosRSkill] pour générer une éruption de rayons gamma
+		En main, deux boutons de compétence s'allument en bas à gauche de l'écran
+		Cliquez pour invoquer un gardien de l'anneau stellaire ou générer une éruption de rayons gamma
 		'''
+	SkillLeftName: Gardien de l'anneau stellaire
+	SkillLeftDesc: Invoque un anneau stellaire orbital dont les nœuds mitraillent de poussière d'étoiles les ennemis proches
+	SkillRightName: Éruption de rayons gamma
+	SkillRightDesc: Après une brève charge, libère neuf rayons gamma en éventail vers le curseur
 }
 
 Oceanfragments: {

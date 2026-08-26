@@ -60,8 +60,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 return;
             }
 
-            ModPacket netMessage = CWRMod.Instance.GetPacket();
-            netMessage.Write((byte)CWRMessageType.CrabulonFeed);
+            ModPacket netMessage = CWRNetWork.GetPacket<CrabulonFeedNet>();
             netMessage.Write((short)owner.npc.whoAmI);
             netMessage.Write((byte)feederWhoAmI);
             netMessage.Write(dyeItemID);
@@ -91,8 +90,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 return;
             }
 
-            ModPacket netMessage = CWRMod.Instance.GetPacket();
-            netMessage.Write((byte)CWRMessageType.CrabulonFeed);
+            ModPacket netMessage = CWRNetWork.GetPacket<CrabulonFeedNet>();
             netMessage.Write((short)npcIndex);
             netMessage.Write((byte)feederIndex);
             netMessage.Write(dyeItemID);
@@ -108,8 +106,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 return;
             }
 
-            ModPacket netMessage = CWRMod.Instance.GetPacket();
-            netMessage.Write((byte)CWRMessageType.CrabulonRecall);
+            ModPacket netMessage = CWRNetWork.GetPacket<CrabulonRecallNet>();
             netMessage.Write((short)owner.npc.whoAmI);
             netMessage.Send();
         }
@@ -133,8 +130,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         //广播传送特效
         internal void BroadcastTeleportEffect() {
             if (VaultUtils.isServer) {
-                ModPacket netMessage = CWRMod.Instance.GetPacket();
-                netMessage.Write((byte)CWRMessageType.CrabulonRecall);
+                ModPacket netMessage = CWRNetWork.GetPacket<CrabulonRecallNet>();
                 netMessage.Write((short)owner.npc.whoAmI);
                 netMessage.Send();
             }
@@ -176,13 +172,17 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        public static void HandleNetworkMessage(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type == CWRMessageType.CrabulonFeed) {
-                ReceiveFeedPacket(reader, whoAmI);
-            }
-            else if (type == CWRMessageType.CrabulonRecall) {
-                ReceiveRecall(reader, whoAmI);
-            }
-        }
+    }
+
+    /// <summary>菌生蟹投喂信道</summary>
+    internal sealed class CrabulonFeedNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => CrabulonNetworking.ReceiveFeedPacket(reader, whoAmI);
+    }
+
+    /// <summary>菌生蟹召回请求与传送特效广播信道</summary>
+    internal sealed class CrabulonRecallNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => CrabulonNetworking.ReceiveRecall(reader, whoAmI);
     }
 }

@@ -22,6 +22,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
     {
         private const int WhiffFrames = 20;
 
+        /// <summary>段长随实际根腕距定标（近抓维持旧 22..240 手感），
+        /// 远抓上限随可及带联动拉伸、硬顶封界（反馈三·#28）</summary>
+        private static float SegLenFor(float reach)
+            => MathF.Max(22f, MathF.Min(reach, KikasaDrown.MaxGrabHeightHardCap + 200f)
+                * 1.15f / KikasaHandRig.ArmSegmentCount);
+
         private sealed class MinionHand
         {
             public KikasaHandRig Rig;
@@ -102,8 +108,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 KikasaHandRig rig = new() {
                     Root = root,
                     Wrist = new Vector2(root.X, lakeY + 12f),
-                    SegmentLength = MathHelper.Clamp(
-                        reach * 1.15f / KikasaHandRig.ArmSegmentCount, 22f, 240f),
+                    SegmentLength = SegLenFor(reach),
                     Tension = 0.75f,
                     BendDir = jx < 0f ? -1 : 1,
                     Curl = -0.1f,
@@ -293,9 +298,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                     Vector2 a = Vector2.Lerp(start, ctrl, ease);
                     Vector2 b = Vector2.Lerp(ctrl, wristGoal, ease);
                     rig.Wrist = Vector2.Lerp(a, b, ease);
-                    rig.SegmentLength = MathHelper.Clamp(
-                        Vector2.Distance(rig.Root, rig.Wrist) * 1.15f / KikasaHandRig.ArmSegmentCount,
-                        22f, 240f);
+                    rig.SegmentLength = SegLenFor(Vector2.Distance(rig.Root, rig.Wrist));
                     rig.Tension = 0.75f;
                     rig.Curl = MathHelper.Lerp(rig.Curl, -0.1f + rt * 0.15f, 0.4f);
                 }

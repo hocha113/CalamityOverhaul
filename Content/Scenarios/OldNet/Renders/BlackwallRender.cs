@@ -33,9 +33,15 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Renders
             Vector2 edgeScreen = Vector2.Transform(
                 new Vector2(wallWorldX, 0f) - Main.screenPosition,
                 Main.GameViewMatrix.TransformationMatrix);
+            //⑥ 大潮锋面世界x → 屏幕x：与 uWallScreenX 完全同口径换算（跨文件契约）；
+            //无潮时锋面 = 大负值，行为与旧早退完全一致
+            Vector2 tideFrontScreen = Vector2.Transform(
+                new Vector2(Backgrounds.OldNetSkyEvents.TideFrontWorldX, 0f) - Main.screenPosition,
+                Main.GameViewMatrix.TransformationMatrix);
             int vpW = graphicsDevice.Viewport.Width;
             int vpH = graphicsDevice.Viewport.Height;
-            if (edgeScreen.X < -SpillMargin) {
+            //早退条件：墙缘或潮锋任一在屏附近才画
+            if (edgeScreen.X < -SpillMargin && tideFrontScreen.X < -SpillMargin) {
                 return;
             }
 
@@ -48,7 +54,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Renders
                 shader.Parameters["uIntensity"]?.SetValue(1f);
                 shader.Parameters["uScreenSize"]?.SetValue(new Vector2(vpW, vpH));
                 shader.Parameters["uWallScreenX"]?.SetValue(edgeScreen.X);
-                shader.Parameters["uSurge"]?.SetValue(Backgrounds.OldNetSkyEvents.Surge);
+                //涌动合成值：常规涌动与大潮前奏取 max
+                shader.Parameters["uSurge"]?.SetValue(Backgrounds.OldNetSkyEvents.SurgeComposed);
+                shader.Parameters["uTideFrontX"]?.SetValue(tideFrontScreen.X);
+                shader.Parameters["uTidePhase"]?.SetValue(Backgrounds.OldNetSkyEvents.TidePhase);
                 shader.CurrentTechnique.Passes[0].Apply();
                 spriteBatch.Draw(px, new Rectangle(0, 0, vpW, vpH), Color.White);
             }
@@ -64,6 +73,21 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Renders
             }
 
             spriteBatch.End();
+
+            //⑥ 过境拍：锋面扫过玩家列的贴地椭圆冲击环（烬红板，克制的一拍）。
+            //ShockRingDraw 契约要求调用方处于实体批（Deferred AlphaBlend + GameViewMatrix）
+            float cross = Backgrounds.OldNetSkyEvents.TideCrossFlash;
+            if (cross > 0.01f) {
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                    Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
+                    null, Main.GameViewMatrix.TransformationMatrix);
+                float grow = 1f - cross;
+                ShockRingDraw.Draw(spriteBatch, Backgrounds.OldNetSkyEvents.TideCrossPos,
+                    30f + grow * 150f, 10f,
+                    new Color(255, 120, 70), new Color(205, 62, 34), new Color(120, 25, 18),
+                    cross * 0.85f, squish: 0.4f, innerGlow: 0.15f, timeSeed: 3.7f);
+                spriteBatch.End();
+            }
         }
     }
 }

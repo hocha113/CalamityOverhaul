@@ -442,7 +442,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             YourLevelIsTooLow.TryAutoActivate(Player);
 
-            if (CWRKeySystem.Legend_UIControl.JustPressed && UI.Atlas.HalibutAtlas.Instance != null) {
+            if (CWRKeySystem.Legend_UIControl.JustPressed && UI.Atlas.HalibutAtlas.Instance != null
+                && (!Main.mapFullscreen || UI.Atlas.HalibutAtlas.Instance.IsOpen)) {
+                //全屏地图下只许合屏不许开屏：默认键 M 与地图同键（反馈十一·#38）
                 UI.Atlas.HalibutAtlas.Instance.Toggle();
             }
 
