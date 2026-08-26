@@ -435,6 +435,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
             int who = reader.ReadByte();
             int count = reader.ReadByte();
             int index = reader.ReadByte();
+            //服务端防伪：所有者以连接号为准，包内声明不符即弃（对齐SolarCoreFistNet）
+            if (VaultUtils.isServer && who != whoAmI) {
+                return;
+            }
             if (who >= Main.maxPlayers) {
                 return;
             }

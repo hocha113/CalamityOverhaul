@@ -5004,6 +5004,8 @@ WingsOfInterference: {
 		The instant dawn or dusk arrives, a screen-wide interference burst deals 1350 base damage and clears hostile projectiles
 		"Day and night interfere at the wingtip; light collapses where paths cross"
 		'''
+	FormDay: "It is day now: the interference weave is deployed"
+	FormNight: "It is night now: swift auroral flight is engaged"
 }
 
 BlackFlashSigil: {
