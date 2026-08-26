@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -38,22 +39,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.GridSwitches
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(CWRID.Item_DubiousPlating, 10).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
-                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 6).
-                AddIngredient(ItemID.Wire, 5).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 10).
-                AddIngredient(ItemID.Wire, 5).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient<CircuitBoard>(10).
+            AddRecipeGroup(CWRCrafted.TungstenBarGroup, 6).
+            AddIngredient(ItemID.Wire, 5).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 }

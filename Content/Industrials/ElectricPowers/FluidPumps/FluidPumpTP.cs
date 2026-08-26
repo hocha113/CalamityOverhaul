@@ -208,33 +208,22 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.FluidPumps
         }
         #endregion
 
-        #region 机面覆层:活塞组件+储液量规+状态灯(占位贴图上的程序化机械感)
+        #region 机面覆层:储液量规+状态灯(机身为贴图,活塞感由呼吸灯与抽液粒子承担)
         public override void Draw(SpriteBatch spriteBatch) {
             Texture2D px = VaultAsset.placeholder2.Value;
             Vector2 basePos = PosInWorld - Main.screenPosition;
             Color lit = Lighting.GetColor(Position.ToPoint());
             FluidStyle style = FluidVFX.GetStyle(FluidType);
-
-            //活塞槽(暗)+活塞头(钢亮)+连杆:往复=运转,减速停摆=断电/无液
-            Color housing = new Color(30, 33, 38).MultiplyRGB(lit);
-            Color steel = new Color(168, 178, 190).MultiplyRGB(lit);
-            Color rod = new Color(110, 118, 128).MultiplyRGB(lit);
-            int cx = (int)(basePos.X + Width / 2f);
             int topY = (int)basePos.Y;
-            spriteBatch.Draw(px, new Rectangle(cx - 4, topY + 3, 8, 13), housing);
-            float stroke = (MathF.Sin(pistonPhase) + 1f) * 0.5f;//0..1
-            int headY = topY + 4 + (int)(stroke * 6f);
-            spriteBatch.Draw(px, new Rectangle(cx - 3, headY, 6, 3), steel);
-            spriteBatch.Draw(px, new Rectangle(cx - 1, headY + 3, 2, topY + 16 - (headY + 3)), rod);
 
-            //左缘储液量规:底暗条+按液色的充盈段
+            //左缘储液量规:底暗条+按液色的充盈段,贴着桶身左壁
             float ratio = MathHelper.Clamp(FluidAmount / (float)FluidCapacity, 0f, 1f);
-            spriteBatch.Draw(px, new Rectangle((int)basePos.X + 3, topY + 6, 3, 20), new Color(18, 20, 24).MultiplyRGB(lit));
+            spriteBatch.Draw(px, new Rectangle((int)basePos.X + 7, topY + 7, 2, 9), new Color(18, 20, 24).MultiplyRGB(lit));
             if (ratio > 0.01f) {
-                int fillH = (int)(20 * ratio);
-                spriteBatch.Draw(px, new Rectangle((int)basePos.X + 3, topY + 6 + 20 - fillH, 3, fillH),
+                int fillH = (int)(9 * ratio);
+                spriteBatch.Draw(px, new Rectangle((int)basePos.X + 7, topY + 7 + 9 - fillH, 2, fillH),
                     style.Main.MultiplyRGB(lit));
-                spriteBatch.Draw(px, new Rectangle((int)basePos.X + 3, topY + 6 + 20 - fillH, 3, 1),
+                spriteBatch.Draw(px, new Rectangle((int)basePos.X + 7, topY + 7 + 9 - fillH, 2, 1),
                     FluidVFX.Glow(style.Bright, 0.35f));
             }
 
@@ -250,7 +239,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.FluidPumps
             else {
                 lamp = FluidVFX.Glow(new Color(255, 180, 60), 0.55f);
             }
-            spriteBatch.Draw(px, new Rectangle((int)(basePos.X + Width) - 6, topY + 4, 3, 3), lamp);
+            spriteBatch.Draw(px, new Rectangle((int)(basePos.X + Width) - 7, topY + 6, 2, 2), lamp);
         }
         #endregion
 

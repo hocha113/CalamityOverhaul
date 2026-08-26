@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -8,7 +9,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.WeatherControllers
     /// <summary>天气控制机,大额耗电求雨或止雨;贴图复用热能电池,靠雨云蓝色调区分</summary>
     internal class WeatherController : ModItem
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBattery";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryLegacy";
 
         /// <summary>系列色调:雨云蓝</summary>
         internal static readonly Color Tint = new(135, 175, 250);
@@ -42,22 +43,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.WeatherControllers
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(ItemID.HallowedBar, 8).
-                AddIngredient(ItemID.Cloud, 30).
-                AddIngredient(CWRID.Item_DubiousPlating, 15).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddIngredient(ItemID.HallowedBar, 8).
-                AddIngredient(ItemID.Cloud, 30).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient(ItemID.HallowedBar, 8).
+            AddIngredient(ItemID.Cloud, 30).
+            AddIngredient<CircuitBoard>(15).
+            AddTile(TileID.MythrilAnvil).
+            Register();
+
         }
     }
 }

@@ -17,6 +17,7 @@
         public const string Item_Ranged = "CalamityOverhaul/Assets/Items/Ranged/";
         public const string Item_Summon = "CalamityOverhaul/Assets/Items/Summon/";
         public const string Item_Accessorie = "CalamityOverhaul/Assets/Items/Accessories/";
+        public const string Item_BrutalRelic = "CalamityOverhaul/Assets/Items/Accessories/BrutalRelics/";
         public const string Item_Placeable = "CalamityOverhaul/Assets/Items/Placeable/";
         public const string Item_Other = "CalamityOverhaul/Assets/Items/Other/";
         public const string Item_Tools = "CalamityOverhaul/Assets/Items/Tools/";

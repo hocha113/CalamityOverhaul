@@ -18,13 +18,13 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.PalmWood, 32 },
             { ItemID.AshWood, 25 },
             { ItemID.Acorn, 15 },
-            
+
             //=== 煤炭和高能燃料 (200-300) ===
             { ItemID.Coal, 200 },
             { ItemID.Torch, 15 },
             { ItemID.Gel, 60 },
             { ItemID.PinkGel, 120 },
-            
+
             //=== 特殊高能燃料 (500-2000+) ===
             { ItemID.LavaBucket, 800 },
             { ItemID.BottomlessLavaBucket, 2500 },
@@ -33,14 +33,14 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.CursedFlame, 200 },
             { ItemID.CursedSapling, 800 },
             { ItemID.RedPotion, 600 },
-            
+
             //=== 基础木制工具 (60-120) ===
             { ItemID.WoodenSword, 90 },
             { ItemID.WoodenHammer, 120 },
             { ItemID.WoodenBow, 120 },
             { ItemID.WoodenBoomerang, 120 },
             { ItemID.BugNet, 60 },
-            
+
             //=== 木制平台和栅栏 (8-12) ===
             { ItemID.WoodPlatform, 8 },
             { ItemID.EbonwoodPlatform, 8 },
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.BorealWoodFence, 6 },
             { ItemID.PalmWoodFence, 6 },
             { ItemID.AshWoodFence, 6 },
-            
+
             //=== 墙壁 (5-15) ===
             { ItemID.WoodWall, 5 },
             { ItemID.EbonwoodWall, 5 },
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.FlowerWall, 10 },
             { ItemID.MushroomWall, 12 },
             { ItemID.SlimeBlockWall, 25 },
-            
+
             //=== 门 (90-120) ===
             { ItemID.WoodenDoor, 90 },
             { ItemID.EbonwoodDoor, 90 },
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.LivingWoodDoor, 100 },
             { ItemID.MushroomDoor, 110 },
             { ItemID.SlimeDoor, 150 },
-            
+
             //=== 桌子 (80-100) ===
             { ItemID.WoodenTable, 80 },
             { ItemID.EbonwoodTable, 80 },
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.AshWoodTable, 75 },
             { ItemID.LivingWoodTable, 90 },
             { ItemID.SlimeTable, 130 },
-            
+
             //=== 椅子 (70-90) ===
             { ItemID.WoodenChair, 70 },
             { ItemID.EbonwoodChair, 70 },
@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.LivingWoodChair, 80 },
             { ItemID.MushroomChair, 85 },
             { ItemID.SlimeChair, 120 },
-            
+
             //=== 工作台 (120-150) ===
             { ItemID.WorkBench, 120 },
             { ItemID.EbonwoodWorkBench, 120 },
@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.LivingWoodWorkBench, 130 },
             { ItemID.MushroomWorkBench, 135 },
             { ItemID.SlimeWorkBench, 180 },
-            
+
             //=== 箱子 (140-180) ===
             { ItemID.Chest, 140 },
             { ItemID.EbonwoodChest, 140 },
@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.WoodenCrate, 150 },
             { ItemID.WoodenCrateHard, 150 },
             { ItemID.Fake_AshWoodChest, 135 },
-            
+
             //=== 床 (220-280) ===
             { ItemID.Bed, 220 },
             { ItemID.EbonwoodBed, 220 },
@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.AshWoodBed, 210 },
             { ItemID.LivingWoodBed, 240 },
             { ItemID.SlimeBed, 320 },
-            
+
             //=== 梳妆台 (180-220) ===
             { ItemID.Dresser, 180 },
             { ItemID.EbonwoodDresser, 180 },
@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.AshWoodDresser, 175 },
             { ItemID.LivingWoodDresser, 190 },
             { ItemID.SlimeDresser, 240 },
-            
+
             //=== 钢琴 (200-240) ===
             { ItemID.Piano, 200 },
             { ItemID.EbonwoodPiano, 200 },
@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.AshWoodPiano, 195 },
             { ItemID.LivingWoodPiano, 210 },
             { ItemID.SlimePiano, 260 },
-            
+
             //=== 沙发 (180-220) ===
             { ItemID.Sofa, 180 },
             { ItemID.EbonwoodSofa, 180 },
@@ -210,7 +210,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.PalmWoodSofa, 180 },
             { ItemID.LivingWoodSofa, 190 },
             { ItemID.SlimeSofa, 240 },
-            
+
             //=== 浴缸 (140-180) ===
             { ItemID.Bathtub, 140 },
             { ItemID.RichMahoganyBathtub, 145 },
@@ -222,11 +222,11 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.BorealWoodBathtub, 135 },
             { ItemID.SlimeBathtub, 200 },
             { ItemID.DynastyBathtub, 145 },
-            
+
             //=== 长凳 (120-160) ===
             { ItemID.Bench, 120 },
             { ItemID.PalmWoodBench, 120 },
-            
+
             //=== 时钟 (240-300) ===
             { ItemID.EbonwoodClock, 240 },
             { ItemID.LivingWoodClock, 250 },
@@ -238,7 +238,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.BorealWoodClock, 235 },
             { ItemID.SlimeClock, 320 },
             { ItemID.DynastyClock, 245 },
-            
+
             //=== 书架 (140-180) ===
             { ItemID.Bookcase, 140 },
             { ItemID.EbonwoodBookcase, 140 },
@@ -250,7 +250,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.BorealWoodBookcase, 135 },
             { ItemID.SlimeBookcase, 200 },
             { ItemID.DynastyBookcase, 145 },
-            
+
             //=== 灯具 (60-90) ===
             { ItemID.EbonwoodLamp, 65 },
             { ItemID.RichMahoganyLamp, 70 },
@@ -262,7 +262,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.PalmWoodLamp, 65 },
             { ItemID.BorealWoodLamp, 60 },
             { ItemID.SlimeLamp, 110 },
-            
+
             //=== 灯笼 (120-150) ===
             { ItemID.RichMahoganyLantern, 125 },
             { ItemID.PearlwoodLantern, 130 },
@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.PalmWoodLantern, 120 },
             { ItemID.BorealWoodLantern, 115 },
             { ItemID.SlimeLantern, 170 },
-            
+
             //=== 蜡烛 (35-45) ===
             { ItemID.EbonwoodCandle, 35 },
             { ItemID.RichMahoganyCandle, 38 },
@@ -285,7 +285,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.PalmWoodCandle, 35 },
             { ItemID.BorealWoodCandle, 33 },
             { ItemID.SlimeCandle, 65 },
-            
+
             //=== 烛台 (50-70) ===
             { ItemID.EbonwoodCandelabra, 50 },
             { ItemID.RichMahoganyCandelabra, 53 },
@@ -297,7 +297,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.PalmWoodCandelabra, 50 },
             { ItemID.BorealWoodCandelabra, 48 },
             { ItemID.SlimeCandelabra, 85 },
-            
+
             //=== 吊灯 (100-130) ===
             { ItemID.EbonwoodChandelier, 100 },
             { ItemID.RichMahoganyChandelier, 105 },
@@ -309,7 +309,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.PalmWoodChandelier, 100 },
             { ItemID.BorealWoodChandelier, 95 },
             { ItemID.SlimeChandelier, 140 },
-            
+
             //=== 水槽 (60-80) ===
             { ItemID.WoodenSink, 60 },
             { ItemID.EbonwoodSink, 60 },
@@ -321,7 +321,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.DynastySink, 63 },
             { ItemID.PalmWoodSink, 60 },
             { ItemID.SlimeSink, 85 },
-            
+
             //=== 厕所 (70-90) ===
             { ItemID.ToiletEbonyWood, 70 },
             { ItemID.ToiletRichMahogany, 73 },
@@ -333,7 +333,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.ToiletPalm, 70 },
             { ItemID.ToiletBoreal, 68 },
             { ItemID.ToiletSlime, 95 },
-            
+
             //=== 火把 (15-40) ===
             { ItemID.BlueTorch, 18 },
             { ItemID.RedTorch, 18 },
@@ -345,7 +345,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.CursedTorch, 25 },
             { ItemID.PinkTorch, 22 },
             { ItemID.RainbowTorch, 40 },
-            
+
             //=== 火把 - 营地 (120-180) ===
             { ItemID.CursedCampfire, 140 },
             { ItemID.DemonCampfire, 140 },
@@ -359,7 +359,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.CrimsonCampfire, 140 },
             { ItemID.HallowedCampfire, 140 },
             { ItemID.JungleCampfire, 140 },
-            
+
             //=== 木制工具和武器 ===
             { ItemID.EbonwoodSword, 90 },
             { ItemID.EbonwoodHammer, 120 },
@@ -380,7 +380,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.PalmWoodHammer, 125 },
             { ItemID.PalmWoodSword, 95 },
             { ItemID.WoodenArrow, 5 },
-            
+
             //=== 盔甲 (120-140) ===
             { ItemID.WoodHelmet, 120 },
             { ItemID.WoodBreastplate, 130 },
@@ -403,7 +403,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.PalmWoodHelmet, 120 },
             { ItemID.PalmWoodBreastplate, 130 },
             { ItemID.PalmWoodGreaves, 125 },
-            
+
             //=== 其他家具和装饰 ===
             { ItemID.Mannequin, 160 },
             { ItemID.Loom, 130 },
@@ -418,14 +418,14 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.WoodShelf, 40 },
             { ItemID.DynastyCup, 15 },
             { ItemID.DynastyBowl, 15 },
-            
+
             //=== 绳索和藤蔓 ===
             { ItemID.Rope, 4 },
             { ItemID.RopeCoil, 40 },
             { ItemID.Vine, 50 },
             { ItemID.VineRope, 30 },
             { ItemID.WoodenSpike, 12 },
-            
+
             //=== 布料和纤维 (25-80) ===
             { ItemID.Hay, 20 },
             { ItemID.Silk, 35 },
@@ -435,15 +435,15 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.Robe, 120 },
             { ItemID.TatteredCloth, 15 },
             { ItemID.AncientCloth, 25 },
-            
+
             //=== 有机材料 ===
             { ItemID.GlowingMushroom, 18 },
             { ItemID.Feather, 12 },
             { ItemID.OldShoe, 8 },
-            
+
             //=== 书籍和纸张 (30-50) ===
             { ItemID.Book, 35 },
-            
+
             //=== 服饰 (60-100) ===
             { ItemID.RainHat, 65 },
             { ItemID.RainCoat, 75 },
@@ -452,11 +452,11 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.EyePatch, 30 },
             { ItemID.SailorShirt, 70 },
             { ItemID.SailorPants, 70 },
-            
+
             //=== 其他 ===
             { ItemID.Confetti, 8 },
             { ItemID.ExplosivePowder, 40 },
-            
+
             //=== 种植盒 (15-25) ===
             { ItemID.DayBloomPlanterBox, 18 },
             { ItemID.MoonglowPlanterBox, 18 },
@@ -466,10 +466,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.WaterleafPlanterBox, 18 },
             { ItemID.ShiverthornPlanterBox, 18 },
             { ItemID.FireBlossomPlanterBox, 18 },
-            
+
             //=== 绘画 (10-40) ===
             { ItemID.PaintingAcorns, 15 },
-            
+
             //=== 活化火焰方块 (80-200) ===
             { ItemID.LivingFireBlock, 80 },
             { ItemID.LivingCursedFireBlock, 180 },
@@ -477,17 +477,17 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.LivingFrostFireBlock, 80 },
             { ItemID.LivingIchorBlock, 80 },
             { ItemID.LivingUltrabrightFireBlock, 150 },
-            
+
             //=== 木桶和容器 ===
             { ItemID.Barrel, 100 },
-            
+
             //=== 更多火把品种 ===
             { ItemID.IceTorch, 20 },
             { ItemID.BoneTorch, 22 },
-            
+
             //=== 更多书籍和纸质品 ===
             { ItemID.SpellTome, 45 },
-            
+
             //=== 旗帜 (20-35) ===
             { ItemID.WorldBanner, 25 },
         };

@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core;
+﻿using CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Skeletron;
+using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States;
 using InnoVault.StateMachines;
@@ -6,7 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
 {
@@ -309,6 +313,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
                 stateMachine.ChangeState(new SkeletronDeathState());
             }
             return false;
+        }
+
+        /// <summary>残酷遗物必掉：条件类自带残酷世界门禁（loot 注册不经 CanOverride）</summary>
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<SoulbindingArm>()));
         }
 
         #endregion

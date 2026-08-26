@@ -1,7 +1,9 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -29,6 +31,26 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
 
         private int patchT;
         private float Seed => Projectile.identity * 0.7391f % 3.7f;
+
+        /// <summary>迟入场对齐：飞行段位置/速度随原生同步走，但已落地的余渣斑
+        /// 在迟入端会因速度归零而永远等不到 OnTileCollide——相位与时间线显式过线（单调闩）</summary>
+        public override void SendExtraAI(BinaryWriter writer) {
+            writer.Write((byte)Phase);
+            writer.Write((short)Life);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            byte serverPhase = reader.ReadByte();
+            short serverLife = reader.ReadInt16();
+            if (serverPhase > (int)Phase) {
+                Phase = serverPhase;
+                Projectile.velocity = Vector2.Zero;
+                Projectile.Resize(40, 14);
+            }
+            if (serverLife > (int)Life) {
+                Life = serverLife;
+            }
+        }
 
         public override void SetDefaults() {
             Projectile.width = 20;
@@ -68,6 +90,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 //落地转余渣相（各端对同步 tile 确定性一致）
                 Phase = 1;
                 Projectile.velocity = Vector2.Zero;
+                //判定对齐余渣斑横摊形（宽扁、且窄于视觉边缘，宽度让利于玩家）
+                Projectile.Resize(40, 14);
                 SoundEngine.PlaySound(SoundID.Item45 with { Volume = 0.35f, Pitch = -0.6f, MaxInstances = 3 }, Projectile.Center);
                 if (!Main.dedServ) {
                     for (int k = 0; k < 4; k++) {
@@ -91,7 +115,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             }
         }
 
-        //==================== 绘制：熔橙→暗红的冷却史 ====================
+        //==================== 绘制：熔渣双形态 shader（黑壳浮板/热芯/颈缩/结皮渐干）====================
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D blob = CWRAsset.Extra_98?.Value;
@@ -100,13 +124,70 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 return false;
             }
             SpriteBatch sb = Main.spriteBatch;
-            Vector2 pos = Projectile.Center - Main.screenPosition;
             float fade = MathHelper.Clamp(Life / 5f, 0f, 1f);
+            if (fade <= 0.02f) {
+                return false;
+            }
 
+            bool shaderOn = EffectLoader.OverseerSlagFlow?.IsLoaded == true
+                && CWRAsset.PerlinNoise?.IsLoaded == true;
+            if (shaderOn) {
+                DrawSlagShader(sb, glow, fade);
+            }
+            else {
+                DrawSlagFallback(sb, blob, glow, fade);
+            }
+            return false;
+        }
+
+        /// <summary>OverseerSlagFlow：TechGlob 空中渣团 / TechPool 贴地余渣斑（预乘 AlphaBlend 批）</summary>
+        private void DrawSlagShader(SpriteBatch sb, Texture2D glow, float fade) {
+            Effect fx = EffectLoader.OverseerSlagFlow.Value;
+            fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            fx.Parameters["uSeed"]?.SetValue(Seed);
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
+
+            if ((int)Phase == 0) {
+                float stretch = MathHelper.Clamp(Projectile.velocity.Length() * 0.09f, 0f, 1f);
+                fx.Parameters["uStretch"]?.SetValue(stretch);
+                fx.Parameters["uCool"]?.SetValue(MathHelper.Clamp(Life / 150f, 0f, 0.5f));
+                fx.Parameters["uDry"]?.SetValue(0f);
+                fx.CurrentTechnique = fx.Techniques["TechGlob"];
+                fx.CurrentTechnique.Passes[0].Apply();
+                //quad +x=飞行向（rotation 对齐速度）
+                sb.Draw(glow, Projectile.Center - Main.screenPosition, null, Color.White * fade,
+                    Projectile.rotation, glow.Size() * 0.5f,
+                    new Vector2(56f / glow.Width, 42f / glow.Height), SpriteEffects.None, 0f);
+            }
+            else {
+                fx.Parameters["uStretch"]?.SetValue(0f);
+                fx.Parameters["uCool"]?.SetValue(0.3f);
+                fx.Parameters["uDry"]?.SetValue(MathHelper.Clamp(patchT / (float)PatchFrames, 0f, 1f));
+                fx.CurrentTechnique = fx.Techniques["TechPool"];
+                fx.CurrentTechnique.Passes[0].Apply();
+                sb.Draw(glow, Projectile.Center + new Vector2(0f, 3f) - Main.screenPosition, null, Color.White,
+                    0f, glow.Size() * 0.5f,
+                    new Vector2(74f / glow.Width, 30f / glow.Height), SpriteEffects.None, 0f);
+            }
+
+            gd.Textures[1] = null;
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        /// <summary>无 shader 降级：旧两层乘色/加色画法</summary>
+        private void DrawSlagFallback(SpriteBatch sb, Texture2D blob, Texture2D glow, float fade) {
+            Vector2 pos = Projectile.Center - Main.screenPosition;
             if ((int)Phase == 0) {
                 float stretch = MathHelper.Clamp(Projectile.velocity.Length() * 0.08f, 0f, 1f);
                 Vector2 shape = new(1f + stretch * 1.4f, 1f - stretch * 0.25f);
-                //渣体（实色）+ 热芯（A=0 加色点缀，预乘批技法）
                 sb.Draw(blob, pos, null, FoundryOverseer.SlagDark * (0.9f * fade), Projectile.rotation,
                     blob.Size() * 0.5f, new Vector2(0.16f, 0.13f) * shape, SpriteEffects.None, 0f);
                 sb.Draw(glow, pos, null, (FoundryOverseer.SlagHot with { A = 0 }) * (0.8f * fade),
@@ -114,7 +195,6 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                     new Vector2(16f * shape.X * 2f / glow.Width, 12f * shape.Y * 2f / glow.Height), SpriteEffects.None, 0f);
             }
             else {
-                //余渣斑：压扁摊平，热度随余寿衰减，尾段只剩暗红壳
                 float heat = 1f - patchT / (float)PatchFrames;
                 float flick = 0.7f + 0.3f * MathF.Sin(patchT * 0.5f + Seed);
                 sb.Draw(blob, pos + new Vector2(0f, 6f), null,
@@ -125,7 +205,6 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                     0f, glow.Size() * 0.5f,
                     new Vector2(22f * 2f / glow.Width, 8f * 2f / glow.Height), SpriteEffects.None, 0f);
             }
-            return false;
         }
     }
 

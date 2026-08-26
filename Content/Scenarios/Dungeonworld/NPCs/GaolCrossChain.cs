@@ -73,16 +73,27 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                     if (Main.LocalPlayer != null && Vector2.Distance(Main.LocalPlayer.Center, Projectile.Center) < 900f) {
                         Main.LocalPlayer.CWR()?.GetScreenShake(3f);
                     }
+                    //绷直的力量写上屏幕：线心一记小冲击环
+                    GaolWraithScreenFX.PushRing(Projectile.Center, 0.45f, 260f, 16);
                 }
             }
 
-            //锈解期：链身簌簌掉屑
+            //锈解期：链身簌簌掉屑 + 自两端向心逐节崩落（与束缚场蚀散同向）
             if (!Main.dedServ && t > TautEnd && t % 3 == 0) {
                 Vector2 pos = Vector2.Lerp(EndA, EndB, Main.rand.NextFloat());
                 PRTLoader.NewParticle<PRT_GhostRainDrop>(pos,
                     new Vector2(0f, Main.rand.NextFloat(0.8f, 1.8f)),
                     DeepGaolWraith.IronDeep * 0.8f, Main.rand.NextFloat(0.3f, 0.5f))
                     ?.Configure(Main.rand.Next(14, 24), 0f);
+            }
+            if (!Main.dedServ && t > TautEnd && t % 4 == 1) {
+                //蚀散前沿位置 er≈decay：把链节从两端剥下来
+                float decay = (t - TautEnd) / (float)(LifeTotal - TautEnd);
+                float u = Main.rand.NextBool() ? decay * 0.5f : 1f - decay * 0.5f;
+                PRTLoader.NewParticle<PRT_GaolChainLink>(Vector2.Lerp(EndA, EndB, MathHelper.Clamp(u, 0f, 1f)),
+                    new Vector2(Main.rand.NextFloat(-0.8f, 0.8f), Main.rand.NextFloat(-0.4f, 0.6f)),
+                    Color.White, Main.rand.NextFloat(0.8f, 1f))
+                    ?.Configure(Main.rand.Next(40, 64), Main.rand.NextFloat(-0.24f, 0.24f));
             }
 
             if (t >= SnapAt) {
@@ -118,6 +129,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             float alpha = t < SnapAt
                 ? 0.4f + 0.12f * MathF.Sin(t * 0.35f + Seed)
                 : MathHelper.Clamp((LifeTotal - t) / 16f, 0f, 1f);
+
+            //束缚场底层：预告弱而飘、绷紧满而稳、锈解自两端蚀散（画在链节 sprite 之下）
+            float taut = MathHelper.Clamp((t - SnapAt) / 3f, 0f, 1f);
+            float snapEnv = t >= SnapAt && t < SnapAt + 10 ? 1f - (t - SnapAt) / 10f : 0f;
+            float snapT = MathHelper.Clamp((t - SnapAt) / 7f, 0f, 1.2f);
+            float bindDecay = t > TautEnd ? (t - TautEnd) / (float)(LifeTotal - TautEnd) : 0f;
+            GaolWraithDraw.DrawBindStrip(EndA, EndB, 44f, alpha * 0.95f, taut, snapEnv, snapT, bindDecay, Seed);
 
             Vector2 a = EndA;
             Vector2 b = EndB;

@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -34,7 +35,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
         private float VisualFade => MathHelper.Clamp(Life / 4f, 0f, 1f);
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
+            //12 点喂条带拖尾与死亡余辉（GaolWraithScreenFX.AfterglowPts 同长）
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 12;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
@@ -102,6 +104,18 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             if (Main.dedServ) {
                 return;
             }
+            //拖尾不随弹亡消失：当前路径交给余辉缓冲，自尾向头蚀散（四相预算的余韵）
+            Vector2[] path = new Vector2[GaolWraithScreenFX.AfterglowPts];
+            int n = 0;
+            for (int k = 0; k < Projectile.oldPos.Length && n < path.Length; k++) {
+                Vector2 c = Projectile.oldPos[k] + Projectile.Size * 0.5f;
+                if (c == Projectile.Size * 0.5f) {
+                    continue;
+                }
+                path[n++] = c;
+            }
+            GaolWraithScreenFX.PushAfterglowPath(path, n, 30f, ironWind: false, hot: 0.2f, life: 15);
+
             //冷粉迸溅：半球余烬 + 扩散环 + 湿噗
             Vector2 normal = -Projectile.velocity.SafeNormalize(Vector2.UnitY);
             for (int i = 0; i < 8; i++) {
@@ -115,13 +129,70 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             SoundEngine.PlaySound(SoundID.DD2_GhastlyGlaiveImpactGhost with { Volume = 0.4f, Pitch = 0.1f, MaxInstances = 3 }, Projectile.Center);
         }
 
-        //==================== 绘制：纯发光鬼焰（速度拉伸 + 残影串尾）====================
+        //==================== 绘制：狱火材质（条带拖尾 + 泪滴焰体；缺 shader 走精灵回退）====================
 
         public override bool PreDraw(ref Color lightColor) {
+            Effect fire = EffectLoader.GaolWraithFire?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            Texture2D canvas = InnoVault.VaultAsset.placeholder2?.Value;
+            if (fire == null || noise == null || canvas == null) {
+                DrawFallback();
+                return false;
+            }
+            SpriteBatch sb = Main.spriteBatch;
+            float fade = VisualFade;
+
+            //---- 条带拖尾：同材质的火焰尾迹，宽度约为焰体的七成 ----
+            Vector2[] pts = trailScratch;
+            int n = 0;
+            pts[n++] = Projectile.Center;
+            for (int k = 1; k < Projectile.oldPos.Length && n < pts.Length; k++) {
+                Vector2 c = Projectile.oldPos[k] + Projectile.Size * 0.5f;
+                if (c == Projectile.Size * 0.5f) {
+                    continue;
+                }
+                pts[n++] = c;
+            }
+            sb.End();
+            GaolWraithDraw.DrawRibbon(pts, n, 32f, fade * 0.95f, hot: 0.3f, decay: 0f,
+                seed: Seed, ironWind: false);
+
+            //---- 泪滴焰体：TechBolt 白像素 quad，+x 对齐飞行向 ----
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            float flick = 0.9f + 0.1f * MathF.Sin(Life * 0.5f + Seed * 4f);
+            fire.CurrentTechnique = fire.Techniques["TechBolt"];
+            fire.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            fire.Parameters["uSeed"]?.SetValue(Seed % 1f);
+            fire.Parameters["uFade"]?.SetValue(fade * flick);
+            fire.Parameters["uHot"]?.SetValue(0.35f);
+            fire.Parameters["uDecay"]?.SetValue(0f);
+            fire.Parameters["uColDeep"]?.SetValue(DeepGaolWraith.GaolPinkDeep.ToVector3());
+            fire.Parameters["uColBody"]?.SetValue(DeepGaolWraith.GaolPink.ToVector3());
+            fire.Parameters["uColCore"]?.SetValue(DeepGaolWraith.GaolWhiteHot.ToVector3());
+            Main.graphics.GraphicsDevice.Textures[1] = noise;
+            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
+            fire.CurrentTechnique.Passes[0].Apply();
+            //quad 尺寸留出焰尾画布（shader 内容在 0.98 半径处自然归零）
+            float stretch = MathHelper.Clamp(Projectile.velocity.Length() * 0.05f, 0f, 0.8f);
+            Vector2 quad = new(96f * (1f + stretch * 0.4f), 62f * (1f - stretch * 0.15f));
+            sb.Draw(canvas, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation,
+                canvas.Size() * 0.5f, quad / canvas.Size(), SpriteEffects.None, 0f);
+            sb.End();
+            Main.graphics.GraphicsDevice.Textures[1] = null;
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            return false;
+        }
+
+        private static readonly Vector2[] trailScratch = new Vector2[12];
+
+        /// <summary>精灵回退：速度拉伸的三层发光焰 + 残影串尾</summary>
+        private void DrawFallback() {
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             Texture2D blob = CWRAsset.Extra_98?.Value;
             if (glow == null || blob == null) {
-                return false;
+                return;
             }
             SpriteBatch sb = Main.spriteBatch;
             Vector2 gOrigin = glow.Size() * 0.5f;
@@ -153,7 +224,6 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 gOrigin, new Vector2(30f * shape.X * 2f / glow.Width, 24f * shape.Y * 2f / glow.Height), SpriteEffects.None, 0f);
             sb.Draw(glow, pos, null, (DeepGaolWraith.GaolWhiteHot with { A = 0 }) * (0.65f * fade * flick), rot,
                 gOrigin, new Vector2(14f * shape.X * 2f / glow.Width, 11f * shape.Y * 2f / glow.Height), SpriteEffects.None, 0f);
-            return false;
         }
     }
 

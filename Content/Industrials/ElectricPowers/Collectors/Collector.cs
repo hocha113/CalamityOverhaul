@@ -1,4 +1,5 @@
 ﻿using InnoVault.TileProcessors;
+using CalamityOverhaul.Content.Items.Materials;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
@@ -41,22 +42,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(CWRID.Item_DubiousPlating, 15).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 20).
-                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 8).
-                AddIngredient(ItemID.Hook, 3).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 8).
-                AddIngredient(ItemID.Hook, 3).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient<CircuitBoard>(20).
+            AddRecipeGroup(CWRCrafted.TungstenBarGroup, 8).
+            AddIngredient(ItemID.Hook, 3).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 

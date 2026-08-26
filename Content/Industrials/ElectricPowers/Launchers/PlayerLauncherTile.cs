@@ -1,12 +1,10 @@
 using CalamityOverhaul.Common;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.GameContent;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -14,13 +12,10 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Launchers
 {
-    /// <summary>弹射平台瓦片,2x2 单帧;复用投掷者瓦片贴图并施加电蓝色调</summary>
+    /// <summary>弹射平台瓦片,2x2 单帧</summary>
     internal class PlayerLauncherTile : ModTile
     {
-        public override string Texture => CWRConstant.Asset + "ElectricPowers/ThrowerTile";
-
-        [VaultLoaden(CWRConstant.Asset + "ElectricPowers/ThrowerTileGlow")]
-        internal static Asset<Texture2D> tileGlowAsset = null;
+        public override string Texture => CWRConstant.Asset + "ElectricPowers/PlayerLauncherTile";
 
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
@@ -34,8 +29,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Launchers
             TileObjectData.newTile.Width = 2;
             TileObjectData.newTile.Height = 2;
             TileObjectData.newTile.Origin = new Point16(0, 1);
-            TileObjectData.newTile.CoordinateHeights = [16, 16];
-            TileObjectData.newTile.StyleWrapLimit = 36;
+            TileObjectData.newTile.CoordinateHeights = [16, 18];
             TileObjectData.newTile.AnchorBottom = new AnchorData(
                 AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide,
                 TileObjectData.newTile.Width, 0);
@@ -99,36 +93,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Launchers
                 return false;
             }
 
-            Tile t = Main.tile[i, j];
-            int frameXPos = t.TileFrameX;
-            int frameYPos = t.TileFrameY;
-            Texture2D tex = TextureAssets.Tile[Type].Value;
-            Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-            Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
-            //共用投掷者贴图,乘上系列色调区分机种
-            Color drawColor = Lighting.GetColor(i, j).MultiplyRGB(PlayerLauncher.Tint);
-
-            if (tp.MachineData.UEvalue < tp.LaunchCost) {
-                drawColor.R /= 2;
-                drawColor.G /= 2;
-                drawColor.B /= 2;
-                drawColor.A = 255;
-            }
-
-            if (!t.IsHalfBlock && t.Slope == 0) {
-                spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16),
-                    drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-
-                if (tp.GlowIntensity > 0.01f && tileGlowAsset != null) {
-                    Color glowColor = PlayerLauncher.Tint * tp.GlowIntensity;
-                    spriteBatch.Draw(tileGlowAsset.Value, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16),
-                        glowColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-                }
-            }
-            else if (t.IsHalfBlock) {
-                spriteBatch.Draw(tex, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16),
-                    drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-            }
+            //电量不足一次弹射时机身压暗,全系"断电减半"状态语言
+            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 2, tp.MachineData.UEvalue < tp.LaunchCost);
             return false;
         }
     }

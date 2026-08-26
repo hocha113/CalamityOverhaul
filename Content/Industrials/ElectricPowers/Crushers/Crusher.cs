@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -27,24 +28,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Crushers
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe()
-                    .AddRecipeGroup(RecipeGroupID.IronBar, 12)
-                    .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
-                    .AddIngredient(ItemID.StoneBlock, 30)
-                    .AddIngredient(CWRID.Item_DubiousPlating, 10)
-                    .AddIngredient(CWRID.Item_MysteriousCircuitry, 10)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
-            else {
-                CreateRecipe()
-                    .AddRecipeGroup(RecipeGroupID.IronBar, 12)
-                    .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
-                    .AddIngredient(ItemID.StoneBlock, 30)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
+                .AddRecipeGroup(RecipeGroupID.IronBar, 12)
+                .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
+                .AddIngredient(ItemID.StoneBlock, 30)
+                .AddIngredient<CircuitBoard>(10)
+                .AddTile(TileID.Anvils)
+                .Register();
+
         }
     }
 }

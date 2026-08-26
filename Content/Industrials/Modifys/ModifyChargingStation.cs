@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using CalamityOverhaul.Content.Items.Materials;
 using InnoVault.GameSystem;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -24,8 +25,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
 
         public override void AddRecipe() {
             CreateRecipe().
-                AddIngredient(CWRID.Item_DubiousPlating, 10).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
+                AddIngredient<CircuitBoard>(10).
                 AddRecipeGroup(CWRCrafted.GoldBarGroup, 4).
                 AddRecipeGroup(CWRCrafted.TinBarGroup, 4).
                 AddTile(TileID.Anvils).

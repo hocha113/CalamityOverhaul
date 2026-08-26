@@ -35,6 +35,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
             /// <summary>当前已写入的水面行（rel；FloorRel=干）</summary>
             internal int SurfaceRel = FloodGalleryRoom.FloorRel;
             internal bool Sealed;
+            /// <summary>落闸时有门格被玩家占位跳过，等人让开后巡检补写（绝不活埋）</summary>
+            internal bool SealPending;
         }
 
         //==================== 参数 ====================
@@ -145,6 +147,12 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
 
             for (int r = 0; r < rooms.Count; r++) {
                 RoomState room = rooms[r];
+                //封门自愈:落闸瞬间被玩家身位占住的门格当时跳过(公平优先),
+                //人一让开就补写,门在几拍内长合;人赖着不走则那格永远留空,战斗照常。
+                //清剿房不补(下面的兜底马上要解封,别做一笔立即作废的事务)
+                if (!room.Cleared && room.Sealed && room.SealPending) {
+                    SealDoors(room.Origin, true);
+                }
                 if (room.Cleared) {
                     //幂等兜底：死亡演出已做过排水+解封，这里只补漏（如超杀跳拍）
                     if (!room.ClearedSwept) {
@@ -279,23 +287,28 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
         }
 
         /// <summary>封门/解封：两个 3×4 门洞写实心绿砖或恢复空（水密语义只是戏剧，
-        /// 冻结水本就不流动）。仅权威端执行 + 帧修 + 回播</summary>
+        /// 冻结水本就不流动）。仅权威端执行 + 帧修 + 回播。
+        /// 玩家保护：落闸不写有玩家身位的格（不活埋、不硬位移），跳过量记进
+        /// SealPending，由巡检自愈补写；解封无条件全清。</summary>
         internal static void SealDoors(Point origin, bool seal) {
             if (VaultUtils.isClient) {
                 return;
             }
-            WriteDoor(origin, FloodGalleryRoom.LeftDoorOffset, seal);
-            WriteDoor(origin, FloodGalleryRoom.RightDoorOffset, seal);
+            int skipped = WriteDoor(origin, FloodGalleryRoom.LeftDoorOffset, seal)
+                + WriteDoor(origin, FloodGalleryRoom.RightDoorOffset, seal);
             foreach (RoomState room in rooms) {
                 if (room.Origin == origin) {
                     room.Sealed = seal;
+                    room.SealPending = seal && skipped > 0;
                     break;
                 }
             }
             BroadcastRoom(origin);
         }
 
-        private static void WriteDoor(Point origin, Point doorOffset, bool seal) {
+        /// <summary>写一个门洞，返回因玩家占位而跳过的格数（解封恒 0）</summary>
+        private static int WriteDoor(Point origin, Point doorOffset, bool seal) {
+            int skipped = 0;
             for (int dx = 0; dx < 3; dx++) {
                 for (int dy = 0; dy < FloodGalleryRoom.DoorHeight; dy++) {
                     int x = origin.X + doorOffset.X + dx;
@@ -305,6 +318,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
                     }
                     Tile tile = Main.tile[x, y];
                     if (seal) {
+                        if (TileOverlapsAlivePlayer(x, y)) {
+                            skipped++;
+                            continue;
+                        }
                         tile.HasTile = true;
                         tile.TileType = TileID.GreenDungeonBrick;
                         tile.Slope = SlopeType.Solid;
@@ -318,9 +335,21 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
             }
             WorldGen.RangeFrame(origin.X + doorOffset.X - 1, origin.Y + doorOffset.Y - 1,
                 origin.X + doorOffset.X + 3, origin.Y + doorOffset.Y + FloodGalleryRoom.DoorHeight);
+            return skipped;
         }
 
-        /// <summary>死亡演出：格栅换裂纹漆（棕漆盖灰漆），一次性小事务</summary>
+        private static bool TileOverlapsAlivePlayer(int x, int y) {
+            Rectangle cell = new(x * 16, y * 16, 16, 16);
+            foreach (Player player in Main.ActivePlayers) {
+                if (!player.dead && player.Hitbox.Intersects(cell)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>死亡演出：格栅刷棕漆锈裂（生成期格栅是未上漆的原铁色，
+        /// 棕漆一盖即读出"整槽泄洪把栅条锈穿了"），一次性小事务</summary>
         internal static void PaintGrateCracked(Point origin) {
             if (VaultUtils.isClient) {
                 return;
@@ -338,17 +367,19 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
             }
         }
 
-        /// <summary>整房分块回播（SendTileSquare 单次矩形有限，按 32 格分块，74×48→6 块）</summary>
-        private static void BroadcastRoom(Point origin) {
+        /// <summary>整房分块回播（SendTileSquare 单次矩形有限，按 32 格分块），
+        /// 外扩 1 格余量把 RangeFrame 波及的边缘邻格帧一并过线。
+        /// 测试钥匙落房共用本口径（回播纪律单一来源）</summary>
+        internal static void BroadcastRoom(Point origin) {
             if (Main.netMode != NetmodeID.Server) {
                 return;
             }
             const int Chunk = 32;
-            for (int x = 0; x < FloodGalleryRoom.Width; x += Chunk) {
-                for (int y = 0; y < FloodGalleryRoom.Height; y += Chunk) {
+            for (int x = -1; x < FloodGalleryRoom.Width + 1; x += Chunk) {
+                for (int y = -1; y < FloodGalleryRoom.Height + 1; y += Chunk) {
                     NetMessage.SendTileSquare(-1, origin.X + x, origin.Y + y,
-                        System.Math.Min(Chunk, FloodGalleryRoom.Width - x),
-                        System.Math.Min(Chunk, FloodGalleryRoom.Height - y));
+                        System.Math.Min(Chunk, FloodGalleryRoom.Width + 1 - x),
+                        System.Math.Min(Chunk, FloodGalleryRoom.Height + 1 - y));
                 }
             }
         }

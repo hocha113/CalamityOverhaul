@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.GoldenKey;
 
-        /// <summary>玩家相对房内的落位列（左门内侧）</summary>
-        private const int PlayerColumn = 8;
+        /// <summary>玩家相对房内的落位列（左门内侧；rx6 全高无障，避开 rx8 柱础斜切）</summary>
+        private const int PlayerColumn = 6;
         /// <summary>室内地板顶行（prefab 第 38 行）</summary>
         private const int FloorRow = 38;
 
@@ -44,6 +44,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
         public override bool? UseItem(Player player) {
             if (player.whoAmI == Main.myPlayer) {
                 SoundEngine.PlaySound(SoundID.Unlock with { Pitch = -0.2f }, player.position);
+                //引导文案只出在使用者端：筑造在权威端总会成功，客户端可即时提示
+                VaultUtils.Text(this.GetLocalization("BuiltHint").Value,
+                    new Color(236, 116, 156));
             }
             //世界改写只在权威端：单人本地执行，联机由服务器执行后整块同步
             if (Main.netMode == NetmodeID.MultiplayerClient) {
@@ -61,6 +64,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
             if (Main.netMode == NetmodeID.Server) {
                 NetMessage.SendTileSquare(-1, originX - 1, originY - 1,
                     GaolBossRoom.Width + 2, GaolBossRoom.Height + 2);
+                //运行期新登记的房间要立刻进客户端镜像，氛围层才有着落
+                GaolRoomNet.SendFullSync(-1);
             }
             return true;
         }

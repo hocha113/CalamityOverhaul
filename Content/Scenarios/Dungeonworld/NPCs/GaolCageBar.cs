@@ -53,13 +53,20 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.35f, Pitch = -0.5f, MaxInstances = 2 }, Projectile.Center);
             }
 
-            //锈解期掉屑
+            //锈解期掉屑 + 偶发整节崩落（合围一圈错相，不齐崩）
             if (!Main.dedServ && t > HoldEnd && t % 4 == 0) {
                 PRTLoader.NewParticle<PRT_GhostRainDrop>(
                     Vector2.Lerp(EndA, EndB, Main.rand.NextFloat()),
                     new Vector2(0f, Main.rand.NextFloat(0.7f, 1.6f)),
                     DeepGaolWraith.IronDeep * 0.8f, Main.rand.NextFloat(0.28f, 0.45f))
                     ?.Configure(Main.rand.Next(12, 22), 0f);
+            }
+            if (!Main.dedServ && t > HoldEnd && (t + Projectile.identity * 3) % 9 == 0) {
+                PRTLoader.NewParticle<PRT_GaolChainLink>(
+                    Vector2.Lerp(EndA, EndB, Main.rand.NextFloat()),
+                    new Vector2(Main.rand.NextFloat(-0.6f, 0.6f), Main.rand.NextFloat(0f, 0.8f)),
+                    Color.White, Main.rand.NextFloat(0.75f, 0.95f))
+                    ?.Configure(Main.rand.Next(36, 56), Main.rand.NextFloat(-0.2f, 0.2f));
             }
 
             if (t >= FadeInFrames && t <= HoldEnd) {
@@ -97,6 +104,12 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 ? MathF.Sin(Main.GlobalTimeWrappedHourly * 22f + Seed * 5f) * 0.8f
                 : 0f;
             Vector2 perp = BarDir.RotatedBy(MathHelper.PiOver2);
+
+            //束缚场底层：淡入随 alpha 涨、锁定满场、锈解蚀散（画在链节 sprite 之下）
+            float taut = MathHelper.Clamp((t - FadeInFrames * 0.5f) / (FadeInFrames * 0.5f), 0f, 1f);
+            float bindDecay = t > HoldEnd ? (t - HoldEnd) / (float)(LifeTotal - HoldEnd) : 0f;
+            GaolWraithDraw.DrawBindStrip(EndA, EndB, 26f, alpha * 0.85f, taut, 0f, 1f, bindDecay,
+                Seed);
 
             float linkStep = MathF.Max(10f, chainTex.Height - 2f);
             int links = Math.Max(2, (int)(BarHalfLen * 2f / linkStep));

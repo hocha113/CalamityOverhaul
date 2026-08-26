@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using CalamityOverhaul.Content.Items.Materials;
 using InnoVault.Concurrent;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -38,36 +39,20 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(CWRID.Item_DubiousPlating, 10).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
-                AddIngredient(ItemID.Lens, 4).
-                AddTile(TileID.Anvils).
-                Register();
+            CreateRecipe().
+            AddIngredient<CircuitBoard>(10).
+            AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
+            AddIngredient(ItemID.Lens, 4).
+            AddTile(TileID.Anvils).
+            Register();
 
-                CreateRecipe().
-                AddIngredient(CWRID.Item_DubiousPlating, 10).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
-                AddIngredient(ItemID.Ruby, 1).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                    AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
-                    AddIngredient(ItemID.Lens, 4).
-                    AddTile(TileID.Anvils).
-                    Register();
+            CreateRecipe().
+            AddIngredient<CircuitBoard>(10).
+            AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
+            AddIngredient(ItemID.Ruby, 1).
+            AddTile(TileID.Anvils).
+            Register();
 
-                CreateRecipe().
-                    AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
-                    AddIngredient(ItemID.Ruby, 1).
-                    AddTile(TileID.Anvils).
-                    Register();
-            }
         }
     }
 

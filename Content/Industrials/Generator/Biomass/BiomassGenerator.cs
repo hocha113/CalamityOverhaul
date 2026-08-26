@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Industrials.MachineModules;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
@@ -48,24 +49,14 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Biomass
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(ItemID.Furnace).
-                AddIngredient(ItemID.Wood, 20).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
-                AddIngredient(CWRID.Item_DubiousPlating, 6).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 4).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddIngredient(ItemID.Furnace).
-                AddIngredient(ItemID.Wood, 20).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 8).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient(ItemID.Furnace).
+            AddIngredient(ItemID.Wood, 20).
+            AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
+            AddIngredient<CircuitBoard>(4).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 

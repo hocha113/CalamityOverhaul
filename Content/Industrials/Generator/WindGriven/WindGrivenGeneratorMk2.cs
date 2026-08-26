@@ -1,4 +1,5 @@
 ﻿using InnoVault.TileProcessors;
+using CalamityOverhaul.Content.Items.Materials;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -57,26 +58,15 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient<WindGrivenGenerator>().
-                AddIngredient(CWRID.Item_DubiousPlating, 20).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 20).
-                AddRecipeGroup(CWRCrafted.MythrilBarGroup, 5).
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 15).
-                AddCondition(WindGrivenRecipeCondition(out var condition), condition).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddIngredient<WindGrivenGenerator>().
-                AddRecipeGroup(CWRCrafted.MythrilBarGroup, 5).
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 15).
-                AddCondition(WindGrivenRecipeCondition(out var condition2), condition2).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient<WindGrivenGenerator>().
+            AddIngredient<CircuitBoard>(20).
+            AddRecipeGroup(CWRCrafted.MythrilBarGroup, 5).
+            AddRecipeGroup(CWRCrafted.GoldBarGroup, 15).
+            AddCondition(WindGrivenRecipeCondition(out var condition), condition).
+            AddTile(TileID.MythrilAnvil).
+            Register();
+
         }
     }
 

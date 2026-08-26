@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Industrials.MachineModules;
+using CalamityOverhaul.Content.Items.Materials;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -50,21 +51,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddRecipeGroup(RecipeGroupID.IronBar, 10).
-                AddIngredient(CWRID.Item_DubiousPlating, 3).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 3).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(RecipeGroupID.IronBar, 10).
-                AddIngredient(ItemID.Cog, 6).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddRecipeGroup(RecipeGroupID.IronBar, 10).
+            AddIngredient<CircuitBoard>(3).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 
@@ -85,21 +77,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
-                AddIngredient(CWRID.Item_DubiousPlating, 5).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 3).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
-                AddIngredient(ItemID.Diamond, 2).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
+            AddIngredient<CircuitBoard>(3).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 
@@ -114,21 +97,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             "M 0.08 -0.58 L -0.22 0.04 L 0.02 0.04 L -0.08 0.58 L 0.26 -0.08 L 0.02 -0.08 Z";
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 8).
-                AddIngredient(CWRID.Item_DubiousPlating, 3).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 3).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 8).
-                AddIngredient(ItemID.Wire, 8).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddRecipeGroup(CWRCrafted.TungstenBarGroup, 8).
+            AddIngredient<CircuitBoard>(3).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 
@@ -144,21 +118,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             + "M 0 0.2 L 0 -0.5 M -0.2 -0.28 L 0 -0.52 L 0.2 -0.28";
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
-                AddIngredient(CWRID.Item_DubiousPlating, 3).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 3).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
-                AddIngredient(ItemID.Diamond, 1).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
+            AddIngredient<CircuitBoard>(3).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 
@@ -179,23 +144,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 5).
-                AddIngredient(ItemID.Ruby, 2).
-                AddIngredient(ItemID.Diamond, 2).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 3).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 5).
-                AddIngredient(ItemID.Ruby, 2).
-                AddIngredient(ItemID.Diamond, 2).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddRecipeGroup(CWRCrafted.GoldBarGroup, 5).
+            AddIngredient(ItemID.Ruby, 2).
+            AddIngredient(ItemID.Diamond, 2).
+            AddIngredient<CircuitBoard>(3).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 
@@ -212,23 +168,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             + "M -0.5 -0.04 Q 0 -0.44 0.5 -0.04";
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 6).
-                AddIngredient(ItemID.Glass, 12).
-                AddIngredient(ItemID.Lens, 2).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 3).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 6).
-                AddIngredient(ItemID.Glass, 12).
-                AddIngredient(ItemID.Lens, 2).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddRecipeGroup(CWRCrafted.TungstenBarGroup, 6).
+            AddIngredient(ItemID.Glass, 12).
+            AddIngredient(ItemID.Lens, 2).
+            AddIngredient<CircuitBoard>(3).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 
@@ -244,21 +191,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             + "M -0.16 0.06 L -0.04 -0.1 L 0.06 0.02 L 0.18 -0.12";
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddRecipeGroup(RecipeGroupID.IronBar, 10).
-                AddIngredient(ItemID.Sapphire, 2).
-                AddIngredient(CWRID.Item_DubiousPlating, 3).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(RecipeGroupID.IronBar, 10).
-                AddIngredient(ItemID.Sapphire, 2).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddRecipeGroup(RecipeGroupID.IronBar, 10).
+            AddIngredient(ItemID.Sapphire, 2).
+            AddIngredient<CircuitBoard>(3).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 
@@ -279,22 +218,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.MythrilBarGroup, 10).
-                AddIngredient(ItemID.SoulofMight, 5).
-                AddIngredient(CWRID.Item_DubiousPlating, 5).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 5).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.MythrilBarGroup, 10).
-                AddIngredient(ItemID.SoulofMight, 5).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-            }
+            CreateRecipe().
+            AddRecipeGroup(CWRCrafted.MythrilBarGroup, 10).
+            AddIngredient(ItemID.SoulofMight, 5).
+            AddIngredient<CircuitBoard>(5).
+            AddTile(TileID.MythrilAnvil).
+            Register();
+
         }
     }
 
@@ -315,20 +245,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(ItemID.HellstoneBar, 8).
-                AddIngredient(CWRID.Item_DubiousPlating, 5).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 3).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddIngredient(ItemID.HellstoneBar, 10).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient(ItemID.HellstoneBar, 8).
+            AddIngredient<CircuitBoard>(3).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 
@@ -345,20 +267,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             + "M 0 -0.5 L 0 0.5 M -0.5 0 L 0.5 0";
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 12).
-                AddIngredient(CWRID.Item_DubiousPlating, 3).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 12).
-                AddIngredient(ItemID.Chain, 5).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddRecipeGroup(CWRCrafted.TinBarGroup, 12).
+            AddIngredient<CircuitBoard>(3).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 
@@ -375,21 +289,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             + "M 0 -0.54 L 0 -0.16 M -0.16 -0.34 L 0 -0.14 L 0.16 -0.34";
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddRecipeGroup(RecipeGroupID.IronBar, 10).
-                AddIngredient(ItemID.Chest, 1).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 3).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(RecipeGroupID.IronBar, 10).
-                AddIngredient(ItemID.Chest, 1).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddRecipeGroup(RecipeGroupID.IronBar, 10).
+            AddIngredient(ItemID.Chest, 1).
+            AddIngredient<CircuitBoard>(3).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 
@@ -411,21 +317,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(ItemID.Furnace, 1).
-                AddIngredient(ItemID.HellstoneBar, 6).
-                AddIngredient(CWRID.Item_DubiousPlating, 5).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddIngredient(ItemID.Furnace, 1).
-                AddIngredient(ItemID.HellstoneBar, 6).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient(ItemID.Furnace, 1).
+            AddIngredient(ItemID.HellstoneBar, 6).
+            AddIngredient<CircuitBoard>(5).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 }

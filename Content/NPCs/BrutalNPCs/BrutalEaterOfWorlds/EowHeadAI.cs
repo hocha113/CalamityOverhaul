@@ -1,4 +1,6 @@
 ﻿using CalamityOverhaul.Content.DamageModify;
+using CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds;
+using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States;
@@ -7,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
@@ -647,6 +650,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
 
         #region 生死
         public override bool CheckActive() => false;
+
+        /// <summary>
+        /// 残酷遗物「蚀界之颚」：残酷世界击杀必掉(条件类自带门禁)。<br/>
+        /// 掉落归属：规则挂头(EaterofWorldsHead)。原版对世吞三段位都不走普通 NPCLoot 而是
+        /// DropEoWLoot——只有场上最后一节死亡时才置 boss=true 并结算一次；本重制死亡演出的
+        /// FinishForReal 按链序放行体节后头最后死，故一次击杀恰好结算一件，
+        /// 体节先死时其余段仍在场、不会重复掉落
+        /// </summary>
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+                ModContent.ItemType<WorldEatersMaw>()));
+        }
 
         /// <summary>演出中锁血；秒杀也先切演出</summary>
         public override bool? CheckDead() {

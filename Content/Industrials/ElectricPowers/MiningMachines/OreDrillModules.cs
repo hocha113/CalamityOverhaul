@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -85,13 +86,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             return false;
         }
 
-        /// <summary>钻头配方共用底:嘉登残料在场则附加</summary>
+        /// <summary>钻头配方共用底:统一附加电路板</summary>
         protected Recipe BeginDrillRecipe() {
             Recipe recipe = CreateRecipe();
-            if (CWRID.DubiousCircuitryAvailable) {
-                recipe.AddIngredient(CWRID.Item_DubiousPlating, 4).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 2);
-            }
+            recipe.AddIngredient<CircuitBoard>(2);
             return recipe;
         }
     }
@@ -355,21 +353,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(ItemID.ChlorophyteBar, 8).
-                AddIngredient(CWRID.Item_DubiousPlating, 10).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 5).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddIngredient(ItemID.ChlorophyteBar, 8).
-                AddIngredient(ItemID.SoulofMight, 5).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient(ItemID.ChlorophyteBar, 8).
+            AddIngredient<CircuitBoard>(5).
+            AddTile(TileID.MythrilAnvil).
+            Register();
+
         }
     }
 

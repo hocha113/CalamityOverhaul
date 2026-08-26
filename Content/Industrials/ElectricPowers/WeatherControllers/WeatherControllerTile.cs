@@ -16,10 +16,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.WeatherControllers
     /// <summary>天气控制机瓦片,3x4;复用热能电池瓦片贴图并施加雨云蓝色调</summary>
     internal class WeatherControllerTile : ModTile
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryTile";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryLegacyTile";
         public const int Height = 4;
         public const int SheetSquare = 18;
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/ThermalBatteryTile")]
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/ThermalBatteryLegacyTile")]
         private static Asset<Texture2D> tileAsset = null;
 
         public override void SetStaticDefaults() {

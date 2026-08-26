@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -42,23 +43,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.LaserTurre
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe()
-                    .AddIngredient(CWRID.Item_DubiousPlating, 15)
-                    .AddIngredient(CWRID.Item_MysteriousCircuitry, 15)
-                    .AddIngredient(ItemID.SoulofMight, 10)
-                    .AddIngredient(ItemID.CrystalShard, 20)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
-            else {
-                CreateRecipe()
-                    .AddRecipeGroup(CWRCrafted.TungstenBarGroup, 15)
-                    .AddIngredient(ItemID.SoulofMight, 10)
-                    .AddIngredient(ItemID.CrystalShard, 20)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
+                .AddIngredient<CircuitBoard>(15)
+                .AddIngredient(ItemID.SoulofMight, 10)
+                .AddIngredient(ItemID.CrystalShard, 20)
+                .AddTile(TileID.Anvils)
+                .Register();
+
         }
     }
 }

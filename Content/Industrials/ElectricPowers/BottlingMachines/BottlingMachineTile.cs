@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.BottlingMachines
 {
     internal class BottlingMachineTile : ModTile
     {
-        public override string Texture => CWRConstant.Asset + "Generator/ThermalGeneratorTile";
+        public override string Texture => CWRConstant.Asset + "ElectricPowers/BottlingMachineTile";
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.BottlingMachines
             TileObjectData.newTile.Origin = new Point16(1, 1);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile
                 | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateHeights = [16, 16];
+            TileObjectData.newTile.CoordinateHeights = [16, 18];
             TileObjectData.newTile.LavaDeath = false;
 
             TileObjectData.addTile(Type);

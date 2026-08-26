@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -42,22 +43,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Sundials
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(ItemID.SunplateBlock, 10).
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
-                AddIngredient(CWRID.Item_DubiousPlating, 10).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddIngredient(ItemID.SunplateBlock, 10).
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient(ItemID.SunplateBlock, 10).
+            AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
+            AddIngredient<CircuitBoard>(10).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 }

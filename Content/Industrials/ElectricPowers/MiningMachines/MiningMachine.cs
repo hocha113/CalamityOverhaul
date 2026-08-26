@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -39,22 +40,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddRecipeGroup(RecipeGroupID.IronBar, 15).
-                AddRecipeGroup(CWRCrafted.IronPickaxeGroup).
-                AddIngredient(CWRID.Item_DubiousPlating, 5).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 5).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(RecipeGroupID.IronBar, 15).
-                AddRecipeGroup(CWRCrafted.IronPickaxeGroup).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddRecipeGroup(RecipeGroupID.IronBar, 15).
+            AddRecipeGroup(CWRCrafted.IronPickaxeGroup).
+            AddIngredient<CircuitBoard>(5).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 

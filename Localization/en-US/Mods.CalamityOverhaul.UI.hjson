@@ -493,54 +493,28 @@ SHPCSoulSelectUI: {
 	StatusClickToSelect: "[CLICK TO SELECT]"
 }
 
-ElysiumUI: {
+ElysiumRoseWindow: {
 	TitleText: Elysium
-	DiscipleCountText: Disciples
-	TotalBonusText: Divine Blessing
-	DamageText: Damage
-	DefenseText: Defense
-	CritText: Crit
-	RegenText: Regen
-	EmptySlotText: Empty
-	JudasWarningText: Warning: Judas's betrayal lurks here
-	BonusLabel: Passive
-	AbilityLabel: Ability
-	DragHintText: Drag Disciples to swap identities
-	SwapSuccessText: Identity swap complete
-	SwapFailText: Swap failed
-	CannotSwapText: Cannot swap to this position
-	AbilityBrief_0: Rock Shield
-	AbilityBrief_1: Fishing Net Bind
-	AbilityBrief_2: Thunder Judgment
-	AbilityBrief_3: Revelation Sight
-	AbilityBrief_4: Holy Light Guide
-	AbilityBrief_5: Truth Revelation
-	AbilityBrief_6: Doubt's Touch
-	AbilityBrief_7: Wealth Blessing
-	AbilityBrief_8: Devotion Healing
-	AbilityBrief_9: Miracle Manifest
-	AbilityBrief_10: Zealous Force
-	AbilityBrief_11: Betrayal Pact
+	SeatAliveText: In Office
+	SeatEmptyText: Vacant
+	SeatMartyredText: Martyred
+	MartyrdomPowerText: Martyrdom Power {0}/11
+	DragHintText: Drag a seat to reassign holy offices
+	AbilityBrief_0: When ready, blocks part of one incoming hit for you
+	AbilityBrief_1: Casts a net of light that drags foes caught inside
+	AbilityBrief_2: Chain lightning leaps between up to four foes
+	AbilityBrief_3: Gazes upon foes, raising all damage they take
+	AbilityBrief_4: Consecrates your projectiles to bend gently toward foes
+	AbilityBrief_5: Throws a blade that strips armor and reveals the foe
+	AbilityBrief_6: Your strikes are guaranteed to crit for a while
+	AbilityBrief_7: Blesses foes to burst into devoted golden rain on death
+	AbilityBrief_8: Offers healing when you are wounded
+	AbilityBrief_9: Bestows a random miracle
+	AbilityBrief_10: Ignites fervor; nearby foes catch holy fire
+	AbilityBrief_11: Lavish gifts, and a traitor's blade
 }
 
-MartyrdomBarUI: {
-	SlotLabel_0: Pe
-	SlotLabel_1: An
-	SlotLabel_2: Ja
-	SlotLabel_3: Jo
-	SlotLabel_4: Ph
-	SlotLabel_5: Ba
-	SlotLabel_6: Th
-	SlotLabel_7: Mt
-	SlotLabel_8: Jl
-	SlotLabel_9: Td
-	SlotLabel_10: Si
-	SlotLabel_11: Ju
-	RevelationJudgingText: Last Three Seals judgment in progress
-	RevelationStatusText: Revelation Horsemen {0}/4 Q:Meteor R:Judgment
-	RevelationReadyText: Press Q — Revelation ready
-	MartyrdomPowerText: Martyrdom {0}/11
-}
+ElysiumFaithHud.MartyrdomPowerText: Martyrdom Power {0}/11
 
 MenuModify.OverhaulSettingsButtonText: Overhaul Settings
 
@@ -1424,6 +1398,22 @@ DungeonworldLoadingScreen: {
 	RevealHold: Lighting the candles
 }
 
+HadalworldLoadingScreen: {
+	BandName0: Sunlit Zone
+	BandName1: Twilight Zone
+	BandName2: Midnight Zone
+	BandName3: Abyssal Zone
+	BandName4: Hadal Zone
+	Tip0: The light stays up there.
+	Tip1: The deeper you go, the quieter the water.
+	Tip2: Bubbles only travel one way.
+	Tip3: The pressure doesn't knock.
+	Tip4: Something glows below. It is not a lamp.
+	StatusDescend: Descending
+	StatusAscend: Surfacing
+	DepthLabel: Depth {0} m
+}
+
 KiyumeLoadingScreen: {
 	TitleEnter: Kiyume
 	TitleExit: Waking
@@ -1567,4 +1557,15 @@ WeaponSkillHud: {
 	CooldownFormat: Cooldown: {0}s
 	ActiveLine: Active
 	ManaCostFormat: Mana cost: {0}
+}
+
+KiyumeHoundHints: {
+	HintAlert: Stand still. The fog will hide you.
+	HintChase: Get indoors, or into the deepest fog.
+}
+
+KiyumeDreamWake: {
+	WakeBitten: The moment the dog's jaws closed, you woke.
+	WakeDrowned: The lake closed over your head, and you woke.
+	WakeGeneric: The dream broke.
 }

@@ -242,9 +242,6 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
             pano.Parameters["uUp"]?.SetValue(up);
             pano.Parameters["uTanHalfFov"]?.SetValue(HimayoMenuCamera.TanHalfFov);
             pano.Parameters["uAspect"]?.SetValue(vpW / (float)vpH);
-            //经纬压缩：底图伪全景修正，详见 HimayoMenuCamera 常量注释
-            pano.Parameters["uLonScale"]?.SetValue(HimayoMenuCamera.PanoLonScale);
-            pano.Parameters["uLatScale"]?.SetValue(HimayoMenuCamera.PanoLatScale);
             pano.Parameters["uFade"]?.SetValue(fade);
             pano.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.016f);
             //Catmull-Rom 采样需要底图像素尺寸

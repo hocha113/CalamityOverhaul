@@ -35,9 +35,10 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
         //世界分布：方位角 ±100°（可视 ±82° 加余量）；主场与近景带两段式
         private const float SpawnYawRange = 1.745f;
         private const float MainRhoMin = 0.9f, MainRhoMax = 7f;
-        //近景大瓣带：贴近摄像机纷飞掠过，约占三成
+        //近景大瓣带：贴近摄像机纷飞掠过，约占三成（0.55 起点+大尺寸试过一版，
+        //贴脸瓣近百像素太大，2026-08-27 调小推远）
         private const float NearBandChance = 0.30f;
-        private const float NearRhoMin = 0.55f, NearRhoMax = 1.5f;
+        private const float NearRhoMin = 0.75f, NearRhoMax = 1.7f;
         private const float TopY = 1.9f, BottomY = -1.7f;
         //景深对焦近中景（近景带基本锐利，远景糊+雾）；前后景深度阈值：近段盖 UI
         private const float FocusDepth = 1.15f;
@@ -222,7 +223,7 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
             p.RotSpeed = Main.rand.NextFloat(-0.045f, 0.045f);
             p.SwayPhase = Main.rand.NextFloat(MathHelper.TwoPi);
             p.Size = nearBand
-                ? Main.rand.NextFloat(0.040f, 0.062f)
+                ? Main.rand.NextFloat(0.032f, 0.050f)
                 : Main.rand.NextFloat(0.030f, 0.056f);
             p.FallSpeed = Main.rand.NextFloat(0.0008f, 0.0019f);
             p.SwayAmp = Main.rand.NextFloat(0.0007f, 0.0014f);

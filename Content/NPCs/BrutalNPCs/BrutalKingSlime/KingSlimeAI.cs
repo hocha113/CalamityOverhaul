@@ -1,3 +1,5 @@
+using CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime;
+using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering;
@@ -6,6 +8,7 @@ using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -445,6 +448,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
             }
 
             return false;
+        }
+
+        #endregion
+
+        #region 掉落
+
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
+            //残酷遗物：残酷模式击杀必掉(条件类自带门禁)
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+                ModContent.ItemType<FallenKingsCrown>()));
         }
 
         #endregion

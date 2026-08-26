@@ -49,6 +49,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen.Passes
             log.Info($"[Kiyume] Terrain lake={KiyumeTileBrush.LiquidWrites}");
 
             KiyumePlans.Report(progress, "岸上的房子还站着...");
+            //村落建造前注入结构预留（出生留白 + C/E 包的段位占位）
+            KiyumeStructures.PlanReservations();
             KiyumeVillage.Build(progress);
             //村子削平过地基，出生行要按回写后的规划重取
             Main.spawnTileY = KiyumePlans.FloorTopAt(KiyumeMetrics.SpawnX);

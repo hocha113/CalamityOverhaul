@@ -13,20 +13,21 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
     /// 联机所有权线（服务器不能写客户端存档面）：
     /// 1) 客户端进世界把自己的记录快照上行（自报值，只用于掉落慷慨度，不构成权限）；
     /// 2) 服务器 OnKill 圈定结算名单（绑定半径内的在场玩家）→ 自增服务器镜像
-    ///    （供连杀时的掉落判据即时读取）→ 逐人掷出沉锚镣环（首杀必掉/复杀 25%）
+    ///    （供连杀时的掉落判据即时读取）→ 逐人掷出该 Boss 的印信饰品（首杀必掉/复杀 25%）
     ///    → 广播击杀包；
     /// 3) 名单内客户端各自自增本地 ModPlayer 并随存档落盘。
     /// 镜像 dict 按 whoAmI 键控并存玩家名做二重校验（槽位复用识别），断线清槽。
     /// </summary>
     internal class DungeonworldBossRecords : UndrownedModPlayer
     {
-        /// <summary>两座 Boss 共用一张记录表：任一门闩开启即加载（覆写基类的单门判定）</summary>
+        /// <summary>三座 Boss 共用一张记录表：任一门闩开启即加载（覆写基类的单门判定）</summary>
         public override bool IsLoadingEnabled(Mod mod) => AnyGateEnabled;
 
-        internal static bool AnyGateEnabled => UndrownedGate.Enabled || FoundryOverseerGate.Enabled;
+        internal static bool AnyGateEnabled => UndrownedGate.Enabled || FoundryOverseerGate.Enabled || DeepGaolWraithGate.Enabled;
 
         internal const byte BossIdUndrowned = 0;
         internal const byte BossIdOverseer = 1;
+        internal const byte BossIdWraith = 2;
 
         //协议子操作：0=进世界快照上行(客户端→服务器) 1=击杀名单下发(服务器→客户端)
         private const byte OpSnapshot = 0;
@@ -36,17 +37,21 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
         internal int undrownedKills;
         /// <summary>铸造监工击杀数（预留）</summary>
         internal int overseerKills;
+        /// <summary>深牢怨灵击杀数（per-player 持久）</summary>
+        internal int wraithKills;
 
         //==================== 存档 ====================
 
         public override void SaveData(TagCompound tag) {
             tag[nameof(undrownedKills)] = undrownedKills;
             tag[nameof(overseerKills)] = overseerKills;
+            tag[nameof(wraithKills)] = wraithKills;
         }
 
         public override void LoadData(TagCompound tag) {
             undrownedKills = tag.TryGet(nameof(undrownedKills), out int a) ? a : 0;
             overseerKills = tag.TryGet(nameof(overseerKills), out int b) ? b : 0;
+            wraithKills = tag.TryGet(nameof(wraithKills), out int c) ? c : 0;
         }
 
         //==================== 服务器镜像（会话态，per-player 按 whoAmI 键控，非 static 单值）====================
@@ -57,6 +62,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
             internal string Name;
             internal int UndrownedKills;
             internal int OverseerKills;
+            internal int WraithKills;
         }
 
         private static readonly MirrorSlot[] serverMirror = new MirrorSlot[Main.maxPlayers + 1];
@@ -74,7 +80,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
             if (!slot.Known || slot.Name != player.name) {
                 return 0;
             }
-            return bossId == BossIdUndrowned ? slot.UndrownedKills : slot.OverseerKills;
+            return bossId switch {
+                BossIdUndrowned => slot.UndrownedKills,
+                BossIdOverseer => slot.OverseerKills,
+                _ => slot.WraithKills,
+            };
         }
 
         private static void MirrorBump(Player player, byte bossId) {
@@ -85,8 +95,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
             if (bossId == BossIdUndrowned) {
                 slot.UndrownedKills++;
             }
-            else {
+            else if (bossId == BossIdOverseer) {
                 slot.OverseerKills++;
+            }
+            else {
+                slot.WraithKills++;
             }
         }
 
@@ -100,6 +113,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
                     Name = Player.name,
                     UndrownedKills = undrownedKills,
                     OverseerKills = overseerKills,
+                    WraithKills = wraithKills,
                 };
                 return;
             }
@@ -109,6 +123,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
                 packet.Write((byte)Player.whoAmI);
                 packet.Write(undrownedKills);
                 packet.Write(overseerKills);
+                packet.Write(wraithKills);
                 packet.Send();
             }
         }
@@ -128,6 +143,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
                 _ = reader.ReadByte();
                 int undrowned = reader.ReadInt32();
                 int overseer = reader.ReadInt32();
+                int wraith = reader.ReadInt32();
                 //字节读净后再校验（门闩关闭端照读照弃）
                 if (!AnyGateEnabled || Main.netMode != NetmodeID.Server) {
                     return;
@@ -141,6 +157,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
                     //自报值只影响掉落慷慨度：钳制到合理域
                     UndrownedKills = Utils.Clamp(undrowned, 0, 100000),
                     OverseerKills = Utils.Clamp(overseer, 0, 100000),
+                    WraithKills = Utils.Clamp(wraith, 0, 100000),
                 };
                 return;
             }
@@ -166,6 +183,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
                 else if (bossId == BossIdOverseer) {
                     records.overseerKills++;
                 }
+                else if (bossId == BossIdWraith) {
+                    records.wraithKills++;
+                }
             }
         }
 
@@ -173,8 +193,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
 
         /// <summary>
         /// 圈定名单 → 逐人掷出该 Boss 的印信饰品（首杀必掉/复杀 25%，掷在 lootPos）→
-        /// 服务器镜像自增 → 广播名单包。单人路径全部就地结算。两座 Boss 共用本口，
-        /// charmType 由各自 OnKill 传入（不溺者=沉锚镣环，监工=验工印章）。
+        /// 服务器镜像自增 → 广播名单包。单人路径全部就地结算。三座 Boss 共用本口，
+        /// charmType 由各自 OnKill 传入（不溺者=沉锚镣环，监工=验工印章，怨灵=锈蚀的镣铐）。
         /// </summary>
         internal static void ServerSettleKill(byte bossId, NPC npc, Vector2 lootPos, int charmType) {
             if (VaultUtils.isClient) {
@@ -217,6 +237,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
                 }
                 else if (bossId == BossIdOverseer) {
                     records.overseerKills++;
+                }
+                else if (bossId == BossIdWraith) {
+                    records.wraithKills++;
                 }
             }
         }

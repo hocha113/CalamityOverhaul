@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen.Passes
             //每次进梦重生成：规划态与计数器全部重置
             //（不能在 OnWorldLoad 清，生成 pass 先于它运行）
             KiyumePlans.Reset();
+            KiyumeStructures.Reset();
             KiyumeTileBrush.ResetForNewGen();
             //SubLib 进 gen 时把 worldSurface 设成 maxY*0.3；必须在第一 pass 就改成玩法层的值
             Main.worldSurface = KiyumeMetrics.WorldSurfaceRow;

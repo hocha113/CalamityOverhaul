@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -42,23 +43,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.HealingStations
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe()
-                    .AddIngredient(CWRID.Item_DubiousPlating, 10)
-                    .AddIngredient(CWRID.Item_MysteriousCircuitry, 8)
-                    .AddIngredient(ItemID.LifeCrystal, 1)
-                    .AddIngredient(ItemID.HealingPotion, 5)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
-            else {
-                CreateRecipe()
-                    .AddRecipeGroup(CWRCrafted.TungstenBarGroup, 12)
-                    .AddIngredient(ItemID.LifeCrystal, 1)
-                    .AddIngredient(ItemID.HealingPotion, 5)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
+                .AddIngredient<CircuitBoard>(8)
+                .AddIngredient(ItemID.LifeCrystal, 1)
+                .AddIngredient(ItemID.HealingPotion, 5)
+                .AddTile(TileID.Anvils)
+                .Register();
+
         }
     }
 }

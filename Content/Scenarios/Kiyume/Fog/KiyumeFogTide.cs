@@ -9,7 +9,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
     /// 主周期三分钟，叠一层不整除的副周期，免得读成节拍器。<br/>
     /// 计时器进世界归零，且从<b>涨满</b>起步，加载屏最后一眼是雾海淹掉村子，
     /// 落地第一眼就该接着那一帧，然后雾退下去把村子还给你。入场演出就是这条潮汐本身。<br/>
-    /// 本轮纯表现，各端各算不发包；将来玩法真去消费浓度时，这条时钟必须换成服务器权威的
+    /// 钟已服务器权威化：服务器在 KiyumeFogSystem 的 dedServ 分支推 Update，
+    /// KiyumeTideNet 周期下行对钟，客户端本地自增间隙里被硬设校正
     /// </summary>
     internal static class KiyumeFogTide
     {
@@ -21,6 +22,12 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
         internal const float WobbleAmp = 0.22f;
 
         private static long ticks;
+
+        /// <summary>
+        /// 潮汐钟（服务器权威化对钟口）：服务器/单人在 Update 内自增，
+        /// 联机客户端收 <see cref="KiyumeTideNet"/> 包硬设本地钟
+        /// </summary>
+        internal static long ClockTicks { get => ticks; set => ticks = value; }
 
         /// <summary>潮位 0=退潮（雾贴地）1=涨潮（村子沉进雾海）</summary>
         internal static float Tide { get; private set; }

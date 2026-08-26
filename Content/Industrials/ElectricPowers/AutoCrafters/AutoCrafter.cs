@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -28,24 +29,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoCrafters
 
         public override void AddRecipes() {
             //困难模式定位:机械零件价位,加工链三台里最强的一台
-            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe()
-                    .AddRecipeGroup(CWRCrafted.MythrilBarGroup, 12)
-                    .AddIngredient(ItemID.SoulofMight, 10)
-                    .AddIngredient(ItemID.Wire, 30)
-                    .AddIngredient(CWRID.Item_DubiousPlating, 15)
-                    .AddIngredient(CWRID.Item_MysteriousCircuitry, 15)
-                    .AddTile(TileID.MythrilAnvil)
-                    .Register();
-            }
-            else {
-                CreateRecipe()
-                    .AddRecipeGroup(CWRCrafted.MythrilBarGroup, 12)
-                    .AddIngredient(ItemID.SoulofMight, 10)
-                    .AddIngredient(ItemID.Wire, 30)
-                    .AddTile(TileID.MythrilAnvil)
-                    .Register();
-            }
+                .AddRecipeGroup(CWRCrafted.MythrilBarGroup, 12)
+                .AddIngredient(ItemID.SoulofMight, 10)
+                .AddIngredient(ItemID.Wire, 30)
+                .AddIngredient<CircuitBoard>(15)
+                .AddTile(TileID.MythrilAnvil)
+                .Register();
+
         }
     }
 }

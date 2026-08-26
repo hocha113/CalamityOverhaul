@@ -20,12 +20,13 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume
         //液体流动/接线定时器/随机 tile 更新停摆，湖水靠构造性铺设定住
         public override bool NormalUpdates => false;
 
-        //P10 骨架 → P30 地表材质与村落 → P55 撒布 → P90 帧修收尾（帧修永远排最后一位）
+        //P10 骨架 → P30 地表材质与村落 → P40 结构 → P55 撒布 → P90 帧修收尾（帧修永远排最后一位）
         //缓存：SubLib 按 current.Tasks[i] 取值，每次 get 都 new 一份会让计时/日志对不上同一实例
         private List<GenPass> _tasks;
         public override List<GenPass> Tasks => _tasks ??= [
             new KiyumeSkeletonPass(),
             new KiyumeTerrainPass(),
+            new KiyumeStructurePass(),
             new KiyumeScatterPass(),
             new KiyumeFinalizePass(),
         ];

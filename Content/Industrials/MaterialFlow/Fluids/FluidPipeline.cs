@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
+using CalamityOverhaul.Content.Items.Materials;
 using InnoVault.Concurrent;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,7 +18,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
     /// <summary>液体管道物品</summary>
     internal class FluidPipeline : BasePipelineItem
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/PipelineItem";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/FluidPipelineItem";
         public override int CreateTileID => ModContent.TileType<FluidPipelineTile>();
         public override void SetDefaults() {
             base.SetDefaults();
@@ -26,22 +27,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
             Item.CWR().ConsumeUseUE = 0;
         }
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe(333).
-                AddIngredient(CWRID.Item_DubiousPlating, 5).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 5).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
-                AddIngredient(ItemID.Gel, 10).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe(333).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
-                AddIngredient(ItemID.Gel, 10).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe(333).
+            AddIngredient<CircuitBoard>(5).
+            AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
+            AddIngredient(ItemID.Gel, 10).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 

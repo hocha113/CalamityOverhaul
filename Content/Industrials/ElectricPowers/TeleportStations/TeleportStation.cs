@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -8,9 +9,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
     /// <summary>传送站,与世界上的同类站点组成传送网络;贴图复用热能电池,靠传送青色调区分</summary>
     internal class TeleportStation : ModItem
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBattery";
+        public override string Texture => CWRConstant.Asset + "ElectricPowers/TeleportStation";
 
-        /// <summary>系列色调:传送青</summary>
+        /// <summary>系列色调:传送青,用于门户环与提示文本</summary>
         internal static readonly Color Tint = new(110, 235, 215);
 
         public static LocalizedText NoEnergyText { get; private set; }
@@ -35,29 +36,19 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
             Item.consumable = true;
             Item.value = Item.buyPrice(0, 1, 20, 0);
             Item.rare = ItemRarityID.Orange;
-            Item.color = Tint;
             Item.createTile = ModContent.TileType<TeleportStationTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 800;
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(ItemID.Sapphire, 5).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 12).
-                AddIngredient(CWRID.Item_DubiousPlating, 10).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 8).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddIngredient(ItemID.Sapphire, 5).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 12).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient(ItemID.Sapphire, 5).
+            AddRecipeGroup(CWRCrafted.TinBarGroup, 12).
+            AddIngredient<CircuitBoard>(8).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 }

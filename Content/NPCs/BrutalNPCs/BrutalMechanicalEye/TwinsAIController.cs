@@ -179,6 +179,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         #region 掉落物
 
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
+            //残酷遗物：双瞳系绳。两眼都挂规则(Retinazer 控制器继承本方法)，
+            //MissingTwin 令最后倒下的那只结算，保证双眼全灭只掉一件
+            LeadingConditionRule twinRelicRule = new LeadingConditionRule(new Conditions.MissingTwin());
+            twinRelicRule.OnSuccess(ItemDropRule.ByCondition(new DropInBrutalMode(),
+                ModContent.ItemType<Items.Accessories.BrutalRelics.Twins.TwinPupilTether>()));
+            npcLoot.Add(twinRelicRule);
             if (thisNPC.type != NPCID.Spazmatism) {
                 return;
             }

@@ -13,10 +13,10 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Apiaries
 {
-    /// <summary>养蜂箱瓦片,2x2;复用生命编织者瓦片贴图并施加蜂蜜金色调</summary>
+    /// <summary>养蜂箱瓦片,2x2</summary>
     internal class ApiaryTile : ModTile
     {
-        public override string Texture => CWRConstant.Asset + "ElectricPowers/LifeWeaverTile";
+        public override string Texture => CWRConstant.Asset + "ElectricPowers/ApiaryTile";
 
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
@@ -30,8 +30,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Apiaries
             TileObjectData.newTile.Width = 2;
             TileObjectData.newTile.Height = 2;
             TileObjectData.newTile.Origin = new Point16(0, 1);
-            TileObjectData.newTile.CoordinateHeights = [16, 16];
-            TileObjectData.newTile.StyleWrapLimit = 36;
+            TileObjectData.newTile.CoordinateHeights = [16, 18];
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile
                 | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.CoordinateWidth = 16;
@@ -85,30 +84,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Apiaries
                 return false;
             }
 
-            Tile t = Main.tile[i, j];
-            int frameXPos = t.TileFrameX;
-            int frameYPos = t.TileFrameY;
-            Texture2D tex = TextureAssets.Tile[Type].Value;
-            Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-            Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
-            //共用生命编织者贴图,乘上系列色调区分机种
-            Color drawColor = Lighting.GetColor(i, j).MultiplyRGB(Apiary.Tint);
-
-            if (tp.MachineData.UEvalue < ApiaryTP.BrewCost) {
-                drawColor.R /= 2;
-                drawColor.G /= 2;
-                drawColor.B /= 2;
-                drawColor.A = 255;
-            }
-
-            if (!t.IsHalfBlock && t.Slope == 0) {
-                spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
-                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-            }
-            else if (t.IsHalfBlock) {
-                spriteBatch.Draw(tex, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
-                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-            }
+            //缺电时机身压暗,全系"断电减半"状态语言
+            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 2, tp.MachineData.UEvalue < ApiaryTP.BrewCost);
             return false;
         }
     }

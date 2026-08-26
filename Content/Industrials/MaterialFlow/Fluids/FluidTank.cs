@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using CalamityOverhaul.Content.Items.Materials;
 using System;
 using System.IO;
 using Terraria;
@@ -11,10 +12,10 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
 {
-    /// <summary>液体储罐:液体网络的储能件(占位贴图沿用热能电池,待专属罐体美术)</summary>
+    /// <summary>液体储罐:液体网络的储能件</summary>
     internal class FluidTank : ModItem
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBattery";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/FluidTank";
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -31,28 +32,19 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(CWRID.Item_DubiousPlating, 12).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 12).
-                AddIngredient(ItemID.Glass, 30).
-                AddRecipeGroup(RecipeGroupID.IronBar, 15).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddIngredient(ItemID.Glass, 30).
-                AddRecipeGroup(RecipeGroupID.IronBar, 15).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient<CircuitBoard>(12).
+            AddIngredient(ItemID.Glass, 30).
+            AddRecipeGroup(RecipeGroupID.IronBar, 15).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 
     internal class FluidTankTile : ModTile
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryTile";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/FluidTankTile";
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
@@ -63,12 +55,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
 
             AddMapEntry(new Color(58, 96, 118), VaultUtils.GetLocalizedItemName<FluidTank>());
 
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
-            TileObjectData.newTile.Width = 3;
-            TileObjectData.newTile.Height = 4;
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.Origin = new Point16(1, 1);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16];
+            TileObjectData.newTile.CoordinateHeights = [16, 18];
             TileObjectData.newTile.LavaDeath = false;
 
             TileObjectData.addTile(Type);
@@ -104,7 +94,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
         #region 液体容器契约
         public int FluidType { get; set; }
         public int FluidAmount { get; set; }
-        public int FluidCapacity => 32 * FluidHelper.UnitsPerTile;
+        public virtual int FluidCapacity => 32 * FluidHelper.UnitsPerTile;
         public FluidNetRole FluidRole => FluidNetRole.Storage;
         public bool CanAcceptFluid(int liquidId) => FluidHelper.DefaultCanAccept(this, liquidId);
         #endregion
@@ -112,9 +102,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
         //液面显示的平滑比例
         private float displayRatio;
         private bool ratioInited;
-        //观察窗本地 UV 范围,对齐占位罐体贴图的透明窗
-        internal static readonly Vector2 ChamberMin = new(0.21f, 0.20f);
-        internal static readonly Vector2 ChamberMax = new(0.71f, 0.82f);
+        //观察窗像素矩形(相对物块左上角),对齐罐体贴图玻璃窗
+        internal virtual Vector2 ChamberMin => new(9f, 5f);
+        internal virtual Vector2 ChamberMax => new(22f, 18f);
 
         //充放活跃度 0..1(液面涌动与亮线增强),动画时钟(待机冻结)
         private float activityVis;
@@ -173,17 +163,17 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
         #endregion
 
         /// <summary>
-        /// 液面画在物块层之下,从罐体观察窗透出:
+        /// 液面画在物块层之上、观察窗矩形之内(罐体玻璃为实绘,液体盖在玻璃上,液线以上的玻璃高光仍可见):
         /// 波列液面+高光线+按液型气泡(水快泡/岩浆熔泡黑壳/蜜懒泡/微光星尘),
         /// 液面升降平滑插值,充放液时涌动增强
         /// </summary>
-        public override void PreTileDraw(SpriteBatch spriteBatch) {
+        public override void Draw(SpriteBatch spriteBatch) {
             Vector2 basePos = PosInWorld - Main.screenPosition;
             Rectangle chamber = new(
-                (int)(basePos.X + ChamberMin.X * Width),
-                (int)(basePos.Y + ChamberMin.Y * Height),
-                (int)((ChamberMax.X - ChamberMin.X) * Width),
-                (int)((ChamberMax.Y - ChamberMin.Y) * Height));
+                (int)(basePos.X + ChamberMin.X),
+                (int)(basePos.Y + ChamberMin.Y),
+                (int)(ChamberMax.X - ChamberMin.X),
+                (int)(ChamberMax.Y - ChamberMin.Y));
 
             FluidVFX.DrawLiquidWindow(spriteBatch, chamber, FluidType,
                 MathHelper.Clamp(displayRatio, 0f, 1f), animTime, activityVis, WhoAmI + 7);

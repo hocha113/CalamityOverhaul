@@ -60,6 +60,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
 
         private Player Owner => Main.player[Projectile.owner];
 
+        /// <summary>本地相位边沿闩：收回起手的挂链声各端只响一次</summary>
+        private int lastSeenPhase = -1;
+
         public override void SetDefaults() {
             Projectile.width = 26;
             Projectile.height = 26;
@@ -81,6 +84,22 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             if (owner == null || !owner.active || owner.dead) {
                 Projectile.Kill();
                 return;
+            }
+
+            //相位边沿：进收回段挂一声链响 + 链根一撮锈屑（各端本地）
+            if ((int)Phase != lastSeenPhase) {
+                lastSeenPhase = (int)Phase;
+                if ((int)Phase == 2) {
+                    SoundEngine.PlaySound(SoundID.Item32 with { Volume = 0.4f, Pitch = -0.3f, MaxInstances = 2 }, Projectile.Center);
+                }
+            }
+
+            //飞行/收回途中甩落锈屑（速度门控，重物过处必掉渣）
+            if (!Main.dedServ && (int)Phase != 1 && Projectile.velocity.Length() > 6f && Main.rand.NextBool(4)) {
+                PRTLoader.NewParticle<PRT_RustFleck>(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
+                    Projectile.velocity * 0.1f + new Vector2(0f, Main.rand.NextFloat(0.2f, 0.8f)),
+                    Color.Lerp(Undrowned.RustOrange, Undrowned.RustDeep, Main.rand.NextFloat()),
+                    Main.rand.NextFloat(0.3f, 0.45f))?.Configure(Main.rand.Next(12, 20));
             }
 
             if ((int)Phase == 0) {
@@ -163,6 +182,23 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             return null;
         }
 
+        public override void OnKill(int timeLeft) {
+            //归手拍：接住的顿挫（一声轻响 + 掌边两粒锈屑）
+            Player owner = Owner;
+            if (owner == null || !owner.active) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.5f, Pitch = -0.2f, MaxInstances = 2 }, owner.Center);
+            if (!Main.dedServ) {
+                for (int k = 0; k < 2; k++) {
+                    PRTLoader.NewParticle<PRT_RustFleck>(owner.Center + new Vector2(owner.direction * 12f, 0f),
+                        new Vector2(owner.direction * Main.rand.NextFloat(0.5f, 1.4f), -Main.rand.NextFloat(0.4f, 1f)),
+                        Color.Lerp(Undrowned.RustOrange, Undrowned.RustDeep, Main.rand.NextFloat()),
+                        Main.rand.NextFloat(0.3f, 0.45f))?.Configure(Main.rand.Next(10, 18));
+                }
+            }
+        }
+
         public override bool PreDraw(ref Color lightColor) {
             Main.instance.LoadItem(ItemID.Anchor);
             Texture2D tex = TextureAssets.Item[ItemID.Anchor]?.Value;
@@ -173,6 +209,17 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             Player owner = Owner;
             if (owner != null && owner.active) {
                 Undrowned.DrawChainLine(Main.spriteBatch, chainTex, owner.Center, Projectile.Center, lightColor, 1f);
+            }
+            //飞行/收回的速度残影：重物的运动涂抹（A=0 加色，AlphaBlend 批内合法）
+            float speed = Projectile.velocity.Length();
+            if ((int)Phase != 1 && speed > 8f) {
+                float smear = MathHelper.Clamp((speed - 8f) / 12f, 0f, 1f);
+                for (int k = 1; k <= 3; k++) {
+                    Undrowned.DrawAnchor(Main.spriteBatch, tex,
+                        Projectile.Center - Projectile.velocity * (k * 0.5f),
+                        Projectile.rotation - MathF.Sign(Projectile.velocity.X + 0.01f) * k * 0.08f,
+                        (Undrowned.RustOrange with { A = 0 }) * (0.2f * smear * (1f - k * 0.28f)), 1f - k * 0.05f);
+                }
             }
             Undrowned.DrawAnchor(Main.spriteBatch, tex, Projectile.Center, Projectile.rotation, lightColor, 1f);
             return false;

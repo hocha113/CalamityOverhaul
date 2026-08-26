@@ -118,8 +118,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                     SoundEngine.PlaySound(SoundID.Mech with { Volume = 0.14f, Pitch = -0.8f, MaxInstances = 2 }, NPC.Center);
                 }
                 if (Main.rand.NextBool(80)) {
+                    //落尘从毂顶边缘剥落（尘从上边缘来，不是从体心冒）
                     PRTLoader.NewParticle<PRT_GhostRainDrop>(
-                        NPC.Center + new Vector2(Main.rand.NextFloat(-16f, 16f), Main.rand.NextFloat(-10f, 16f)),
+                        NPC.Center + new Vector2(Main.rand.NextFloat(-20f, 20f), -Main.rand.NextFloat(14f, 26f)),
                         new Vector2(0f, Main.rand.NextFloat(0.4f, 1f)),
                         FoundryOverseer.IronDeep * 0.6f, Main.rand.NextFloat(0.25f, 0.4f))
                         ?.Configure(Main.rand.Next(18, 30), 0.1f);
@@ -219,10 +220,24 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             }
 
             if (t == IgnitionOkAt && !ignitionOkPlayed) {
-                //第三次通电成功：齿轮由慢到快
+                //第三次通电成功：齿轮由慢到快，积尘一次性抖落 + 齿缝迸热屑
                 ignitionOkPlayed = true;
                 SoundEngine.PlaySound(SoundID.Mech with { Volume = 0.8f, Pitch = -0.15f, MaxInstances = 1 }, NPC.Center);
                 ShakeNearby(1.5f);
+                if (!Main.dedServ) {
+                    for (int k = 0; k < 10; k++) {
+                        PRTLoader.NewParticle<PRT_OverseerIronChip>(
+                            NPC.Center + Main.rand.NextVector2Circular(28f, 28f),
+                            new Vector2(Main.rand.NextFloat(-1.5f, 1.5f), Main.rand.NextFloat(0.5f, 2.5f)),
+                            FoundryOverseer.IronDeep, Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(16, 28));
+                    }
+                    for (int k = 0; k < 6; k++) {
+                        PRTLoader.NewParticle<PRT_Spark>(NPC.Center + Main.rand.NextVector2Circular(20f, 20f),
+                            Main.rand.NextVector2Circular(1.8f, 1.8f),
+                            Color.Lerp(FoundryOverseer.FurnaceOrange, Color.White, Main.rand.NextFloat(0.4f)),
+                            Main.rand.NextFloat(0.3f, 0.5f))?.Configure(true, Main.rand.Next(10, 16));
+                    }
+                }
             }
 
             if (t >= RiteFrames && !VaultUtils.isClient) {
@@ -319,23 +334,26 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 center += new Vector2(MathF.Sin(t * 2.6f + Seed) * 1.4f, 0f);
             }
 
-            //吊链：轨到毂
+            //吊链：轨到毂（蛰伏松垂；通电后受载微颤）
             float railY = HasRoom ? (roomOriginY + ProofingHallRoom.RailRel) * 16f + 8f : center.Y - 60f;
-            Undrowned.DrawChainLine(spriteBatch, chainTex, new Vector2(center.X, railY),
-                center + new Vector2(0f, -16f), drawColor, 1f);
+            float shiver = (int)Phase == 1 && t >= IgnitionOkAt ? 1.2f : 0f;
+            OverseerVfx.DrawChain(spriteBatch, new Vector2(center.X, railY),
+                center + new Vector2(0f, -16f), drawColor, 1f, 1f, shiver);
 
-            //积尘毂体：转速=仪式进度（蛰伏全静止）
+            //积尘毂体：转速=仪式进度（蛰伏全静止）；铸铁材质走重锈蛰伏档
+            //（uRust 0.85 锈透、uHeat 随炉芯将熄未熄→点火攀升，材质自己讲"废弃已久却还通电"）
             float spin = (int)Phase == 1 && t >= IgnitionOkAt ? t * 0.06f
                 : (int)Phase == 1 && t >= LampStartAt ? MathF.Sin(t * 0.2f) * 0.05f : 0f;
             Vector2 cogOrigin = cogTex.Size() * 0.5f;
-            Color dustMul = new(96, 96, 104);
+            float heat = CoreGlowLevel() * 0.55f;
+            bool ironOn = OverseerVfx.BeginIronCast(spriteBatch);
             (float scale, float dir)[] cogs = [(2.1f, 1f), (1.45f, -1.6f), (0.85f, 2.4f)];
             foreach ((float scale, float dir) in cogs) {
-                spriteBatch.Draw(cogTex, center - Main.screenPosition, null,
-                    FoundryOverseer.IronDeep * 0.8f, spin * dir, cogOrigin, scale * 1.08f, SpriteEffects.None, 0f);
-                spriteBatch.Draw(cogTex, center - Main.screenPosition, null,
-                    drawColor.MultiplyRGB(dustMul), spin * dir, cogOrigin, scale, SpriteEffects.None, 0f);
+                OverseerVfx.DrawIronPart(spriteBatch, ironOn, cogTex, center - Main.screenPosition,
+                    cogTex.Bounds, drawColor, spin * dir, cogOrigin, scale, SpriteEffects.None,
+                    heat, 0.85f, Seed + scale, 1f);
             }
+            OverseerVfx.EndIronCast(spriteBatch, ironOn);
 
             DrawGlow(spriteBatch, center);
             return false;

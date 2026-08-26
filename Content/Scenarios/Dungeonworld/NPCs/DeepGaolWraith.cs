@@ -1,6 +1,8 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms;
 using InnoVault.PRT;
+using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -207,6 +209,14 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
         private int trailHead;
         private bool trailInit;
 
+        //铐位轨迹环形缓冲：挥击/链旋/突刺的链风条带用（本地表现）
+        internal const int CuffTrailLen = 10;
+        private readonly Vector2[,] cuffTrail = new Vector2[2, CuffTrailLen];
+        private int cuffTrailHead;
+        private bool cuffTrailInit;
+        /// <summary>本记挥击的链风条带是否已交给余辉（冲击拍一次）</summary>
+        private int lastSwipeRibbonPushed = -1;
+
         //躯体帧动画（原版 Wraith 帧序，本地推进）
         private int bodyFrameTick;
         private int bodyFrameIndex;
@@ -218,6 +228,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
 
         internal static readonly Color EctoBody = new(172, 200, 208);
         internal static readonly Color EctoDeep = new(54, 78, 92);
+        /// <summary>灵质苍白高光（怨魂/魂缘）</summary>
+        internal static readonly Color EctoPale = new(223, 238, 241);
         internal static readonly Color GaolPink = new(236, 116, 156);
         internal static readonly Color GaolPinkDeep = new(118, 34, 66);
         /// <summary>二阶段狱火白热芯</summary>
@@ -274,7 +286,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
         }
 
         public override void ModifyNPCLoot(NPCLoot npcLoot) {
-            //占位掉落：牢狱层主题，专属掉落后续另定
+            //专属饰品不走掉落表：OnKill 经共用记录表逐人结算（首杀必掉/复杀 25%），与另两座 Boss 同权
             npcLoot.Add(ItemDropRule.Common(ItemID.Bone, 1, 20, 40));
             npcLoot.Add(ItemDropRule.Common(ItemID.GoldenKey, 1, 1, 1));
             npcLoot.Add(ItemDropRule.Common(ItemID.HealingPotion, 1, 5, 10));
@@ -368,6 +380,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 lastSeenState = State;
                 lastSwipeLaunched = -1;
                 lastSwipeImpacted = -1;
+                lastSwipeRibbonPushed = -1;
                 lastBoltFired = -1;
                 lastChainCalled = -1;
                 flailRoared = false;
@@ -404,8 +417,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
 
             UpdateCuffs();
             PushTrail();
+            PushCuffTrails();
             UpdateBodyFrame();
             UpdateAmbientWisp();
+            RequestScreenPresence();
             if (attackCooldown > 0) {
                 attackCooldown--;
             }
@@ -529,6 +544,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                     }, cuffPos[i]);
                     if (!Main.dedServ) {
                         BreachDust(new Vector2(cuffPos[i].X, groundY), 9);
+                        GaolWraithScreenFX.PushRing(new Vector2(cuffPos[i].X, groundY), 0.4f, 220f, 18);
                     }
                 }
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.5f, Pitch = -0.6f, MaxInstances = 2 }, NPC.Center);
@@ -943,6 +959,12 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             }
             PRTLoader.NewParticle<PRT_DWave>(palm, Vector2.Zero, GaolPinkDeep, 0.07f)
                 ?.Configure(new Vector2(0.6f, 1f), cuffVel[cuff].ToRotation(), 0.24f, 9);
+
+            //链风余韵：本记挥击的铐轨迹交给余辉缓冲，活过挥击本身
+            if (lastSwipeRibbonPushed < SwipeIndex) {
+                lastSwipeRibbonPushed = SwipeIndex;
+                GaolWraithScreenFX.PushAfterglow(this, cuff, 30f, ironWind: true);
+            }
         }
 
         //==================== 狱火连弹 ====================
@@ -1330,6 +1352,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 NPC.dontTakeDamage = t > veil / 2;
                 if (t == 2) {
                     SoundEngine.PlaySound(SoundID.NPCHit36 with { Volume = 0.5f, Pitch = -0.4f, MaxInstances = 2 }, NPC.Center);
+                    //全屏薄雾拍：雾里藏着要来的东西（全屏效果只给近处的人）
+                    if (!Main.dedServ && Main.LocalPlayer != null
+                        && Vector2.Distance(Main.LocalPlayer.Center, NPC.Center) < 1800f) {
+                        GaolWraithScreenFX.PushMist(0.8f);
+                    }
                 }
                 if (!Main.dedServ && t % 2 == 0) {
                     Vector2 from = NPC.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(40f, 90f);
@@ -1356,6 +1383,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 NPC.velocity = Vector2.Zero;
                 if (t == 2) {
                     SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.45f, Pitch = -0.3f, MaxInstances = 2 }, NPC.Center);
+                    //侧翼预告环：人未至，先在雾里敲一记位置
+                    if (!Main.dedServ) {
+                        GaolWraithScreenFX.PushRing(NPC.Center, 0.5f, 210f, 18);
+                    }
                 }
                 if (!Main.dedServ && t % 2 == 0) {
                     Vector2 from = NPC.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(30f, 70f);
@@ -1448,6 +1479,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                     for (int k = 0; k < 10; k++) {
                         SpawnFireWisp(HeartPos(), Main.rand.NextVector2Circular(2.4f, 2.4f) - new Vector2(0f, 1f), 0.55f);
                     }
+                    //转阶段拍：屏幕层冲击环，狱火白热化的宣告
+                    GaolWraithScreenFX.PushRing(HeartPos(), 0.9f, 470f, 26);
                 }
             }
             //后仰嘶吼姿态
@@ -1484,17 +1517,36 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                                 Color.Lerp(GaolPink, Color.White, 0.4f), Main.rand.NextFloat(0.4f, 0.6f))
                                 ?.Configure(true, Main.rand.Next(8, 14));
                         }
+                        //链节脱落：主链沿弧逐节崩解成带重力的铁节
+                        Vector2 shoulder = NPC.Center + new Vector2(CuffDir(i) * 16f, -6f) * BodyDrawScale;
+                        Vector2 mid = (shoulder + cuffPos[i]) * 0.5f + new Vector2(0f, 26f);
+                        for (int k = 0; k < 6; k++) {
+                            Vector2 p = Bezier(shoulder, mid, cuffPos[i], (k + 0.5f) / 6f);
+                            PRTLoader.NewParticle<PRT_GaolChainLink>(p,
+                                new Vector2(Main.rand.NextFloat(-1.2f, 1.2f), -Main.rand.NextFloat(0.4f, 1.6f)),
+                                Color.White, Main.rand.NextFloat(0.85f, 1.05f))
+                                ?.Configure(Main.rand.Next(50, 80), Main.rand.NextFloat(-0.2f, 0.2f));
+                        }
                     }
                 }
             }
 
-            //怨魂上升：链节化雾、躯体自下而上散去
+            //怨魂上升：链节化雾、躯体自下而上散去，苍白囚魂逐个脱监
             if (!Main.dedServ && t > DeathCuffOpenAt && t % 2 == 0) {
                 Vector2 pos = NPC.Center + new Vector2(Main.rand.NextFloat(-24f, 24f), Main.rand.NextFloat(-10f, 44f));
                 PRTLoader.NewParticle<PRT_GhostRainMist>(pos,
                     new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), -Main.rand.NextFloat(0.7f, 1.4f)),
                     Color.Lerp(MistTint, EctoBody, 0.5f) * 0.7f, Main.rand.NextFloat(0.45f, 0.75f))
                     ?.Configure(Main.rand.Next(40, 70));
+            }
+            if (!Main.dedServ && t > DeathCuffOpenAt + 6 && t < DeathPopAt && t % 9 == 0) {
+                //散监的怨魂：自散躯前沿升起，摆着走远（活得比演出久，谢幕后仍在飘）
+                float dissolveY = NPC.Center.Y + 44f - DeathDissolveT() * 96f;
+                PRTLoader.NewParticle<PRT_GaolSoulShade>(
+                    new Vector2(NPC.Center.X + Main.rand.NextFloat(-26f, 26f), dissolveY),
+                    new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), -Main.rand.NextFloat(1f, 1.7f)),
+                    Color.Lerp(EctoBody, EctoPale, Main.rand.NextFloat()), Main.rand.NextFloat(0.5f, 0.8f))
+                    ?.Configure(Main.rand.Next(70, 110));
             }
 
             if (!firePopped && t >= DeathPopAt) {
@@ -1504,6 +1556,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 SoundEngine.PlaySound(SoundID.DD2_DarkMageDeath with { Volume = 0.6f, Pitch = -0.2f, MaxInstances = 1 }, NPC.Center);
                 ShakeNearby(4f, 1400f);
                 if (!Main.dedServ) {
+                    //全场唯一的冲击帧 + 大环：狱火谢幕（冲击帧是全屏效果，只给看得见的人）
+                    if (Main.LocalPlayer != null && Vector2.Distance(Main.LocalPlayer.Center, NPC.Center) < 1800f) {
+                        GaolWraithScreenFX.PushFlash(1f, 26);
+                    }
+                    GaolWraithScreenFX.PushRing(HeartPos(), 1.1f, 560f, 28);
                     PRTLoader.NewParticle<PRT_DWave>(HeartPos(), Vector2.Zero, FireColor, 0.1f)
                         ?.Configure(new Vector2(1f, 1f), 0f, 0.42f, 14);
                     for (int k = 0; k < 14; k++) {
@@ -1862,6 +1919,49 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 ?.Configure(Main.rand.Next(16, 30));
         }
 
+        /// <summary>铐位轨迹推进（链风条带的路径源）</summary>
+        private void PushCuffTrails() {
+            if (!cuffTrailInit) {
+                cuffTrailInit = true;
+                for (int i = 0; i < 2; i++) {
+                    for (int k = 0; k < CuffTrailLen; k++) {
+                        cuffTrail[i, k] = cuffPos[i];
+                    }
+                }
+            }
+            cuffTrailHead = (cuffTrailHead + 1) % CuffTrailLen;
+            for (int i = 0; i < 2; i++) {
+                cuffTrail[i, cuffTrailHead] = cuffPos[i];
+            }
+        }
+
+        /// <summary>把某铐的轨迹按新→旧展开成点列（头在前）</summary>
+        internal int CopyCuffTrail(int cuff, Vector2[] into) {
+            int n = Math.Min(into.Length, CuffTrailLen);
+            for (int k = 0; k < n; k++) {
+                into[k] = cuffTrail[cuff, ((cuffTrailHead - k) % CuffTrailLen + CuffTrailLen) % CuffTrailLen];
+            }
+            return n;
+        }
+
+        /// <summary>向屏幕层申报本帧狱压（各端本地，按状态与距离衰减）</summary>
+        private void RequestScreenPresence() {
+            if (Main.dedServ || Main.LocalPlayer == null || !Main.LocalPlayer.active) {
+                return;
+            }
+            float baseLevel = State switch {
+                StateEmerge => 0.45f,
+                StateRoar => 0.95f,
+                StateDeath => 0.75f,
+                StateDespawn => 0.2f,
+                StateAmbush => 0.85f,
+                _ => Phase2 ? 0.62f : 0.45f,
+            };
+            float dist = Vector2.Distance(Main.LocalPlayer.Center, NPC.Center);
+            float atten = MathHelper.Clamp(1f - dist / 2400f, 0f, 1f);
+            GaolWraithScreenFX.RequestDomain(baseLevel * atten);
+        }
+
         /// <summary>拖影缓冲推进</summary>
         private void PushTrail() {
             if (!trailInit) {
@@ -2008,6 +2108,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             Rectangle bodyFrame = new(0, frameH * (bodyFrameIndex % frameCount), bodyTex.Width, frameH);
 
             DrawDashGhosts(spriteBatch, bodyTex, bodyFrame);
+            DrawCuffWindRibbons();
             for (int i = 0; i < 2; i++) {
                 DrawArmChain(spriteBatch, chainTex, i, drawColor);
                 DrawWristChain(spriteBatch, chainTex, i, drawColor);
@@ -2141,6 +2242,23 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             }
         }
 
+        /// <summary>链风条带：铐高速运动时沿轨迹拉出的灵质风带（速度门控，
+        /// 挥击/链旋/突刺自动生效；金属拖影仍由 DrawCuffSmears 的残铐承担旋转涂抹）</summary>
+        private void DrawCuffWindRibbons() {
+            Vector2[] pts = GaolWraithScreenFX.SharedRibbonBuffer;
+            for (int i = 0; i < 2; i++) {
+                float speed = cuffVel[i].Length();
+                float alpha = CuffAlpha(i);
+                if (speed < 10f || alpha < 0.1f || !cuffTrailInit) {
+                    continue;
+                }
+                int n = CopyCuffTrail(i, pts);
+                float fade = alpha * MathHelper.Clamp((speed - 10f) / 14f, 0f, 1f) * 0.85f;
+                GaolWraithDraw.DrawRibbon(pts, n, 30f, fade,
+                    hot: 0.25f, decay: 0f, seed: Seed + i * 1.7f, ironWind: true);
+            }
+        }
+
         /// <summary>挥击拖影：按铐速在身后铺残铐，速度门控</summary>
         private void DrawCuffSmears(SpriteBatch sb, Texture2D cuffTex) {
             Vector2 origin = cuffTex.Size() * 0.5f;
@@ -2178,9 +2296,87 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             }
         }
 
-        /// <summary>躯体：暗缘 + 灵质主体，出场自地线裁显、死亡自下而上散去（源矩形裁切免 shader）</summary>
+        /// <summary>隐袭雾化进度（喂 Ecto shader 的 uVeil，几何碎解代替纯透明度）</summary>
+        private float AmbushVeilT() {
+            if (State != StateAmbush) {
+                return 0f;
+            }
+            int t = (int)StateTimer;
+            int veil = AmbushRound == 0 ? AmbushVeilFrames : AmbushReveilFrames;
+            return AmbushPhase switch {
+                0 => MathHelper.Clamp(t / (float)veil, 0f, 0.97f),
+                1 => 0.97f,
+                2 => MathHelper.Clamp(0.97f - t / (float)AmbushFormFrames * 0.97f, 0f, 0.97f),
+                _ => 0f,
+            };
+        }
+
+        /// <summary>躯体：GaolWraithEcto 灵质材质重绘（体内灵流+下摆撕散+缘光+狱火透光；
+        /// 出场地线渗出/死亡蚀散/隐袭雾化全走噪声前沿，无一处平切）。缺 shader 走 CPU 回退</summary>
         private void DrawBody(SpriteBatch sb, Texture2D bodyTex, Rectangle frame, Color lightColor) {
-            float alpha = BodyAlpha();
+            Effect ecto = EffectLoader.GaolWraithEcto?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            float veilT = AmbushVeilT();
+            //隐袭期几何碎解由 shader 承担，顶点透明度只留少量呼吸
+            float alpha = State == StateAmbush && ecto != null ? 0.92f : BodyAlpha();
+            if (alpha < 0.02f) {
+                return;
+            }
+            if (ecto == null || noise == null) {
+                DrawBodyFallback(sb, bodyTex, frame, lightColor, BodyAlpha());
+                return;
+            }
+
+            //帧上下各内缩 1px：双通道防帧表渗色（shader 侧另有半像素钳制）
+            Rectangle src = frame;
+            src.Y += 1;
+            src.Height = Math.Max(2, src.Height - 2);
+            float texW = bodyTex.Width;
+            float texH = bodyTex.Height;
+            Vector2 drawSize = new(src.Width * BodyDrawScale, src.Height * BodyDrawScale);
+            Vector2 topLeft = NPC.Center - drawSize * 0.5f;
+
+            //出场地线折算到帧内 v（未出场/变体地线远置时 >1.5 自动关断）
+            float groundV = 2f;
+            if (State == StateEmerge && emergeGroundLatched) {
+                groundV = MathHelper.Clamp((emergeGroundY - topLeft.Y) / drawSize.Y, 0f, 2f);
+            }
+            Vector2 heartUv = (HeartPos() - topLeft) / drawSize;
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
+            //共享 uniform 全参数重设 + 噪声显式绑 s1（Draw 会覆写 s0）
+            ecto.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            ecto.Parameters["uSeed"]?.SetValue(Seed % 1f);
+            ecto.Parameters["uUvRect"]?.SetValue(new Vector4(src.X / texW, src.Y / texH, src.Width / texW, src.Height / texH));
+            ecto.Parameters["uTexel"]?.SetValue(new Vector2(1f / texW, 1f / texH));
+            ecto.Parameters["uAspect"]?.SetValue(src.Width / (float)src.Height);
+            ecto.Parameters["uFlipH"]?.SetValue(FacingSign > 0f ? 1f : 0f);
+            ecto.Parameters["uGroundV"]?.SetValue(groundV);
+            ecto.Parameters["uDissolve"]?.SetValue(DeathDissolveT());
+            ecto.Parameters["uVeil"]?.SetValue(veilT);
+            ecto.Parameters["uFireLevel"]?.SetValue(HeartFireLevel());
+            ecto.Parameters["uHeartUv"]?.SetValue(heartUv);
+            ecto.Parameters["uFireColor"]?.SetValue(FireColor.ToVector3());
+            Main.graphics.GraphicsDevice.Textures[1] = noise;
+            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
+            ecto.CurrentTechnique.Passes[0].Apply();
+
+            Color tint = Color.Lerp(lightColor, Color.White, 0.55f);
+            tint.A = (byte)(alpha * 255f);
+            sb.Draw(bodyTex, NPC.Center - Main.screenPosition, src, tint, NPC.rotation,
+                new Vector2(src.Width * 0.5f, src.Height * 0.5f), BodyDrawScale, SpriteEffects.None, 0f);
+
+            sb.End();
+            Main.graphics.GraphicsDevice.Textures[1] = null;
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        /// <summary>CPU 回退：暗缘 + 灵质主体三层重染，出场/死亡用源矩形裁切</summary>
+        private void DrawBodyFallback(SpriteBatch sb, Texture2D bodyTex, Rectangle frame, Color lightColor, float alpha) {
             if (alpha < 0.02f) {
                 return;
             }
@@ -2354,9 +2550,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
 
         //==================== 击杀通报 ====================
 
-        /// <summary>服务器钩子：通报禁室看守本次进入熄灯（野外测试召唤找不到房间则无事发生）</summary>
+        /// <summary>服务器钩子：通报禁室看守本次进入熄灯（野外测试召唤找不到房间则无事发生），
+        /// 并经共用记录表逐人结算印信饰品（首杀必掉/复杀 25%）</summary>
         public override void OnKill() {
             GaolBossRoomWatcher.NotifyWraithDefeated(NPC.Center);
+            DungeonworldBossRecords.ServerSettleKill(DungeonworldBossRecords.BossIdWraith, NPC, NPC.Center, ModContent.ItemType<RustedGaolIrons>());
         }
 
         //==================== 受击 ====================
@@ -2386,6 +2584,566 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                         MistTint * 0.7f, Main.rand.NextFloat(0.6f, 0.9f))?.Configure(Main.rand.Next(50, 80));
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// 怨灵条带绘制辅助：GaolWraithFire TechTrail 的统一入口。
+    /// 世界坐标顶点直喂 GetTransfromMatrix（矩阵内已含屏移，勿再减 screenPosition），
+    /// 噪声显式绑 s1，uniform 全参数重设；缺 shader 静默跳过（金属拖影仍由残铐 sprite 承担）
+    /// </summary>
+    internal static class GaolWraithDraw
+    {
+        private const int MaxPts = 24;
+        private static readonly VertexPositionColorTexture[] verts = new VertexPositionColorTexture[MaxPts * 2];
+        private static readonly Vector2[] compact = new Vector2[MaxPts];
+
+        /// <summary>
+        /// 画一条链风/狱火条带（pts[0]=头，向尾展开；世界坐标）。
+        /// ironWind=true 走铁风色板（挥击/链旋），false 走狱火色板（弹尾/余韵）
+        /// </summary>
+        public static void DrawRibbon(Vector2[] pts, int count, float widthPx, float fade,
+            float hot, float decay, float seed, bool ironWind) {
+            if (fade <= 0.02f || count < 3) {
+                return;
+            }
+            Effect effect = EffectLoader.GaolWraithFire?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect == null || noise == null) {
+                return;
+            }
+
+            //压缩重复点：点距过近的顶点会让切向退化打结
+            int n = 0;
+            for (int i = 0; i < count && n < MaxPts; i++) {
+                if (n == 0 || Vector2.DistanceSquared(compact[n - 1], pts[i]) > 9f) {
+                    compact[n++] = pts[i];
+                }
+            }
+            if (n < 3) {
+                return;
+            }
+
+            for (int i = 0; i < n; i++) {
+                float t = i / (float)(n - 1);
+                Vector2 dir = (i == n - 1 ? compact[i] - compact[i - 1] : compact[i + 1] - compact[i]);
+                dir = dir.SafeNormalize(Vector2.UnitX);
+                Vector2 side = dir.RotatedBy(MathHelper.PiOver2) * widthPx * 0.5f;
+                Color col = Color.White;
+                verts[i * 2] = new VertexPositionColorTexture(new Vector3(compact[i].X + side.X, compact[i].Y + side.Y, 0f), col, new Vector2(t, 0f));
+                verts[i * 2 + 1] = new VertexPositionColorTexture(new Vector3(compact[i].X - side.X, compact[i].Y - side.Y, 0f), col, new Vector2(t, 1f));
+            }
+
+            GraphicsDevice device = Main.graphics.GraphicsDevice;
+            BlendState origBlend = device.BlendState;
+            RasterizerState origRaster = device.RasterizerState;
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
+
+            effect.CurrentTechnique = effect.Techniques["TechTrail"];
+            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uSeed"]?.SetValue(seed % 1f);
+            effect.Parameters["uFade"]?.SetValue(MathHelper.Clamp(fade, 0f, 1f));
+            effect.Parameters["uHot"]?.SetValue(hot);
+            effect.Parameters["uDecay"]?.SetValue(MathHelper.Clamp(decay, 0f, 1f));
+            if (ironWind) {
+                effect.Parameters["uColDeep"]?.SetValue(DeepGaolWraith.IronDeep.ToVector3());
+                effect.Parameters["uColBody"]?.SetValue(Color.Lerp(DeepGaolWraith.MistTint, DeepGaolWraith.GaolPink, 0.45f).ToVector3());
+                effect.Parameters["uColCore"]?.SetValue(DeepGaolWraith.GaolWhiteHot.ToVector3());
+            }
+            else {
+                effect.Parameters["uColDeep"]?.SetValue(DeepGaolWraith.GaolPinkDeep.ToVector3());
+                effect.Parameters["uColBody"]?.SetValue(DeepGaolWraith.GaolPink.ToVector3());
+                effect.Parameters["uColCore"]?.SetValue(DeepGaolWraith.GaolWhiteHot.ToVector3());
+            }
+            device.Textures[1] = noise;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, (n - 1) * 2);
+            }
+
+            device.Textures[1] = null;
+            device.BlendState = origBlend;
+            device.RasterizerState = origRaster;
+        }
+
+        private static readonly VertexPositionColorTexture[] bindVerts = new VertexPositionColorTexture[4];
+
+        /// <summary>
+        /// 画一段鬼链束缚场（GaolWraithChain TechBind 的单 quad 入口，世界坐标 A→B）。
+        /// 铁链 sprite 在其上层承担结构；本层负责行波灵流/锚结收口/绷直白闪/锈解蚀散
+        /// </summary>
+        public static void DrawBindStrip(Vector2 a, Vector2 b, float widthPx, float alpha,
+            float taut, float snap, float snapT, float decay, float seed) {
+            if (alpha <= 0.02f) {
+                return;
+            }
+            Effect effect = EffectLoader.GaolWraithChain?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect == null || noise == null) {
+                return;
+            }
+            Vector2 dir = (b - a).SafeNormalize(Vector2.UnitX);
+            Vector2 side = dir.RotatedBy(MathHelper.PiOver2) * widthPx * 0.5f;
+            Color col = Color.White * MathHelper.Clamp(alpha, 0f, 1f);
+            bindVerts[0] = new VertexPositionColorTexture(new Vector3(a.X + side.X, a.Y + side.Y, 0f), col, new Vector2(0f, 0f));
+            bindVerts[1] = new VertexPositionColorTexture(new Vector3(a.X - side.X, a.Y - side.Y, 0f), col, new Vector2(0f, 1f));
+            bindVerts[2] = new VertexPositionColorTexture(new Vector3(b.X + side.X, b.Y + side.Y, 0f), col, new Vector2(1f, 0f));
+            bindVerts[3] = new VertexPositionColorTexture(new Vector3(b.X - side.X, b.Y - side.Y, 0f), col, new Vector2(1f, 1f));
+
+            GraphicsDevice device = Main.graphics.GraphicsDevice;
+            BlendState origBlend = device.BlendState;
+            RasterizerState origRaster = device.RasterizerState;
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
+
+            effect.CurrentTechnique = effect.Techniques["TechBind"];
+            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uSeed"]?.SetValue(seed % 1f);
+            effect.Parameters["uTaut"]?.SetValue(MathHelper.Clamp(taut, 0f, 1f));
+            effect.Parameters["uSnap"]?.SetValue(MathHelper.Clamp(snap, 0f, 1f));
+            effect.Parameters["uSnapT"]?.SetValue(snapT);
+            effect.Parameters["uDecay"]?.SetValue(MathHelper.Clamp(decay, 0f, 1f));
+            effect.Parameters["uColBody"]?.SetValue(DeepGaolWraith.MistTint.ToVector3());
+            effect.Parameters["uColGlow"]?.SetValue(DeepGaolWraith.GaolPink.ToVector3());
+            effect.Parameters["uColHot"]?.SetValue(DeepGaolWraith.GaolWhiteHot.ToVector3());
+            device.Textures[1] = noise;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, bindVerts, 0, 2);
+            }
+
+            device.Textures[1] = null;
+            device.BlendState = origBlend;
+            device.RasterizerState = origRaster;
+        }
+    }
+
+    /// <summary>
+    /// 怨灵屏幕层通道（客户端，Push* 写入，渲染句柄逐帧收敛）：
+    /// 狱压强度 / 冲击环 ×2 / 冷粉冲击帧（死亡一次）/ 隐袭雾拍 / 链风余辉条带。
+    /// 结构承 SkeletronScreenEffects，材质换深牢冷粉
+    /// </summary>
+    internal static class GaolWraithScreenFX
+    {
+        internal const int MaxRings = 2;
+        private const int MaxAfterglows = 8;
+        internal const int AfterglowPts = 12;
+
+        internal struct RingInstance
+        {
+            public Vector2 WorldCenter;
+            public float Intensity;
+            public float MaxRadiusPx;
+            public int Age;
+            public int Life;
+            public bool Active;
+        }
+
+        internal struct AfterglowRibbon
+        {
+            public Vector2[] Pts;
+            public int Count;
+            public float Width;
+            public float Seed;
+            public float Hot;
+            public bool IronWind;
+            public int Age;
+            public int Life;
+            public bool Active;
+        }
+
+        internal static readonly RingInstance[] Rings = new RingInstance[MaxRings];
+        internal static readonly AfterglowRibbon[] Afterglows = new AfterglowRibbon[MaxAfterglows];
+
+        /// <summary>条带临时点列（每帧栈式使用，勿跨帧持有）</summary>
+        internal static readonly Vector2[] SharedRibbonBuffer = new Vector2[DeepGaolWraith.CuffTrailLen];
+
+        internal static float DomainIntensity { get; private set; }
+        private static float domainTarget;
+
+        internal static float MistLevel { get; private set; }
+
+        internal static float FlashIntensity { get; private set; }
+        internal static int FlashAge { get; private set; }
+        internal static int FlashLife { get; private set; }
+        internal static bool FlashActive => FlashAge < FlashLife && FlashIntensity > 0.01f;
+
+        public static bool HasAny {
+            get {
+                if (DomainIntensity > 0.012f || FlashActive || MistLevel > 0.015f) {
+                    return true;
+                }
+                for (int i = 0; i < MaxRings; i++) {
+                    if (Rings[i].Active) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        /// <summary>本帧期望狱压（观察者取最大）</summary>
+        public static void RequestDomain(float intensity) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            if (intensity > domainTarget) {
+                domainTarget = MathHelper.Clamp(intensity, 0f, 1f);
+            }
+        }
+
+        /// <summary>隐袭雾拍：置起然后自然衰减</summary>
+        public static void PushMist(float level) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            MistLevel = MathF.Max(MistLevel, MathHelper.Clamp(level, 0f, 1f));
+        }
+
+        /// <summary>冲击环，超限顶替最老</summary>
+        public static void PushRing(Vector2 worldCenter, float intensity, float maxRadiusPx, int lifeFrames) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            int slot = -1;
+            int oldestAge = -1;
+            for (int i = 0; i < MaxRings; i++) {
+                if (!Rings[i].Active) {
+                    slot = i;
+                    break;
+                }
+                if (Rings[i].Age > oldestAge) {
+                    oldestAge = Rings[i].Age;
+                    slot = i;
+                }
+            }
+            Rings[slot] = new RingInstance {
+                WorldCenter = worldCenter,
+                Intensity = MathHelper.Clamp(intensity, 0f, 1.2f),
+                MaxRadiusPx = maxRadiusPx,
+                Age = 0,
+                Life = Math.Max(lifeFrames, 8),
+                Active = true,
+            };
+        }
+
+        /// <summary>冷粉冲击帧，死亡终爆一次</summary>
+        public static void PushFlash(float intensity, int lifeFrames) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            FlashIntensity = MathHelper.Clamp(intensity, 0f, 1f);
+            FlashAge = 0;
+            FlashLife = Math.Max(lifeFrames, 8);
+        }
+
+        /// <summary>把怨灵某铐的当前轨迹交给余辉（挥击冲击拍：风带活过挥击）</summary>
+        public static void PushAfterglow(DeepGaolWraith boss, int cuff, float width, bool ironWind) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            int slot = FindAfterglowSlot();
+            Afterglows[slot].Pts ??= new Vector2[AfterglowPts];
+            int n = boss.CopyCuffTrail(cuff, Afterglows[slot].Pts);
+            SetAfterglow(slot, n, width, ironWind, 0.35f, 16);
+        }
+
+        /// <summary>把一段现成路径交给余辉（狱火弹谢幕：拖尾不随弹亡消失）</summary>
+        public static void PushAfterglowPath(Vector2[] src, int count, float width, bool ironWind, float hot, int life) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            int slot = FindAfterglowSlot();
+            Afterglows[slot].Pts ??= new Vector2[AfterglowPts];
+            int n = Math.Min(count, AfterglowPts);
+            for (int i = 0; i < n; i++) {
+                Afterglows[slot].Pts[i] = src[i];
+            }
+            SetAfterglow(slot, n, width, ironWind, hot, life);
+        }
+
+        private static int FindAfterglowSlot() {
+            int slot = 0;
+            int oldestAge = -1;
+            for (int i = 0; i < MaxAfterglows; i++) {
+                if (!Afterglows[i].Active) {
+                    return i;
+                }
+                if (Afterglows[i].Age > oldestAge) {
+                    oldestAge = Afterglows[i].Age;
+                    slot = i;
+                }
+            }
+            return slot;
+        }
+
+        private static void SetAfterglow(int slot, int count, float width, bool ironWind, float hot, int life) {
+            Afterglows[slot].Count = count;
+            Afterglows[slot].Width = width;
+            Afterglows[slot].Seed = slot * 0.31f + 0.07f;
+            Afterglows[slot].Hot = hot;
+            Afterglows[slot].IronWind = ironWind;
+            Afterglows[slot].Age = 0;
+            Afterglows[slot].Life = Math.Max(life, 8);
+            Afterglows[slot].Active = count >= 3;
+        }
+
+        /// <summary>每帧收敛（渲染句柄驱动，仅客户端）</summary>
+        public static void Update() {
+            DomainIntensity = MathHelper.Lerp(DomainIntensity, domainTarget, domainTarget > DomainIntensity ? 0.08f : 0.05f);
+            if (DomainIntensity < 0.012f && domainTarget <= 0f) {
+                DomainIntensity = 0f;
+            }
+            domainTarget = 0f;
+
+            MistLevel = MathF.Max(MistLevel - 0.022f, 0f);
+
+            for (int i = 0; i < MaxRings; i++) {
+                if (Rings[i].Active && ++Rings[i].Age >= Rings[i].Life) {
+                    Rings[i].Active = false;
+                }
+            }
+            for (int i = 0; i < MaxAfterglows; i++) {
+                if (Afterglows[i].Active && ++Afterglows[i].Age >= Afterglows[i].Life) {
+                    Afterglows[i].Active = false;
+                }
+            }
+
+            if (FlashAge < FlashLife) {
+                FlashAge++;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 怨灵渲染句柄：实体层画链风余辉条带（EndEntityDraw，无活动批），
+    /// 拷屏层做狱压/冲击环/冲击帧全屏后效（EndCaptureDraw，镜像 SkeletronScreenRender）。
+    /// 随门禁一起进出游戏
+    /// </summary>
+    internal class GaolWraithScreenRender : RenderHandle
+    {
+        public override bool CanLoad() => DeepGaolWraithGate.Enabled;
+
+        /// <summary>A1 频段 1.610–1.619，取 1.612</summary>
+        public override float Weight => 1.612f;
+
+        private static readonly Vector4[] ringBuffer = new Vector4[GaolWraithScreenFX.MaxRings];
+
+        public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
+            GaolWraithScreenFX.Update();
+            for (int i = 0; i < GaolWraithScreenFX.Afterglows.Length; i++) {
+                ref readonly var glow = ref GaolWraithScreenFX.Afterglows[i];
+                if (!glow.Active) {
+                    continue;
+                }
+                float t = glow.Age / (float)glow.Life;
+                GaolWraithDraw.DrawRibbon(glow.Pts, glow.Count, glow.Width,
+                    fade: (1f - t * 0.55f), hot: glow.Hot, decay: t, seed: glow.Seed, ironWind: glow.IronWind);
+            }
+        }
+
+        public override void EndCaptureDraw(SpriteBatch sb, GraphicsDevice gd, RenderTarget2D screenSwap) {
+            if (!GaolWraithScreenFX.HasAny) {
+                return;
+            }
+            if (screenSwap == null || Main.screenTarget == null) {
+                return;
+            }
+            Effect shader = EffectLoader.GaolWraithVeil?.Value;
+            if (shader == null || CWRAsset.PerlinNoise?.Value == null) {
+                return;
+            }
+
+            for (int i = 0; i < GaolWraithScreenFX.MaxRings; i++) {
+                ref readonly var ring = ref GaolWraithScreenFX.Rings[i];
+                if (!ring.Active) {
+                    ringBuffer[i] = Vector4.Zero;
+                    continue;
+                }
+                float t = ring.Age / (float)ring.Life;
+                float radiusPx = ring.MaxRadiusPx * VaultUtils.EaseOutCubic(t);
+                float strength = ring.Intensity * (1f - t) * (1f - t);
+                Vector2 uv = WorldToScreenUV(ring.WorldCenter);
+                ringBuffer[i] = new Vector4(uv.X, uv.Y, PixelsToHeightNorm(radiusPx), strength);
+            }
+
+            float flashProgress = GaolWraithScreenFX.FlashLife > 0
+                ? MathHelper.Clamp(GaolWraithScreenFX.FlashAge / (float)GaolWraithScreenFX.FlashLife, 0f, 1f)
+                : 1f;
+            float flash = GaolWraithScreenFX.FlashActive ? GaolWraithScreenFX.FlashIntensity : 0f;
+            //环辉平时冷粉，冲击帧期偏白热
+            Vector3 ringColor = Vector3.Lerp(DeepGaolWraith.GaolPink.ToVector3(),
+                DeepGaolWraith.GaolWhiteHot.ToVector3(), flash);
+
+            shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.016f);
+            shader.Parameters["uAspect"]?.SetValue(Main.screenWidth / (float)Main.screenHeight);
+            shader.Parameters["uDomain"]?.SetValue(GaolWraithScreenFX.DomainIntensity);
+            shader.Parameters["uMist"]?.SetValue(GaolWraithScreenFX.MistLevel);
+            shader.Parameters["uFlash"]?.SetValue(flash);
+            shader.Parameters["uFlashProgress"]?.SetValue(flashProgress);
+            shader.Parameters["ringData"]?.SetValue(ringBuffer);
+            shader.Parameters["uRingColor"]?.SetValue(ringColor);
+            //噪声显式绑 s1：SpriteBatch.Draw 会把 s0 覆写成拷屏贴图
+            gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
+
+            gd.SetRenderTarget(screenSwap);
+            gd.Clear(Color.Transparent);
+            sb.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
+            sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+            sb.End();
+
+            gd.SetRenderTarget(Main.screenTarget);
+            gd.Clear(Color.Transparent);
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Opaque);
+            shader.CurrentTechnique.Passes[0].Apply();
+            sb.Draw(screenSwap, Vector2.Zero, Color.White);
+            sb.End();
+            gd.Textures[1] = null;
+        }
+
+        private static Vector2 WorldToScreenUV(Vector2 worldPos) {
+            float screenW = Main.screenWidth;
+            float screenH = Main.screenHeight;
+            Vector2 zoom = Main.GameViewMatrix.Zoom;
+            if (zoom.X <= 0f) {
+                zoom.X = 1f;
+            }
+            if (zoom.Y <= 0f) {
+                zoom.Y = 1f;
+            }
+            Vector2 screenCenterPx = new(screenW * 0.5f, screenH * 0.5f);
+            Vector2 viewWorldCenter = Main.screenPosition + screenCenterPx;
+            Vector2 screenPx = screenCenterPx + (worldPos - viewWorldCenter) * zoom;
+            return new Vector2(screenPx.X / screenW, screenPx.Y / screenH);
+        }
+
+        private static float PixelsToHeightNorm(float pixels) {
+            float zoomY = Main.GameViewMatrix.Zoom.Y;
+            if (zoomY <= 0f) {
+                zoomY = 1f;
+            }
+            return pixels * zoomY / Main.screenHeight;
+        }
+    }
+
+    /// <summary>苍白怨魂：散监的囚魂缓缓上升，左右摆着走远，先显后隐（Fog 真 alpha 底）</summary>
+    internal class PRT_GaolSoulShade : BasePRT
+    {
+        public override string Texture => CWRConstant.Masking + "Fog";
+        public override bool CanPool => true;
+        public override int InGame_World_MaxCount => 200;
+
+        private float swayPhase;
+        private bool mirror;
+
+        public PRT_GaolSoulShade Configure(int lifetime) {
+            Lifetime = lifetime;
+            return this;
+        }
+
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
+            if (Lifetime <= 0) {
+                Lifetime = 80;
+            }
+            swayPhase = Main.rand.NextFloat(MathHelper.TwoPi);
+            mirror = Main.rand.NextBool();
+            Rotation = Main.rand.NextFloat(-0.3f, 0.3f);
+        }
+
+        public override void Reset() {
+            base.Reset();
+            swayPhase = 0f;
+            mirror = false;
+        }
+
+        public override void AI() {
+            //魂性上浮 + 左右摆游（出生横速衰减后交给摆动，不吞初速）
+            Velocity.Y = MathF.Max(Velocity.Y - 0.02f, -1.9f);
+            Velocity.X = Velocity.X * 0.95f + MathF.Sin(Time * 0.07f + swayPhase) * 0.055f;
+            Rotation += 0.004f * (mirror ? -1f : 1f);
+            Scale *= 1.0035f;
+            float t = LifetimeCompletion;
+            //先显后隐的钟形包络
+            Opacity = MathF.Pow(MathF.Sin(MathHelper.Clamp(t, 0f, 1f) * MathHelper.Pi), 0.8f);
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
+            Vector2 origin = tex.Size() * 0.5f;
+            Vector2 pos = Position - Main.screenPosition;
+            SpriteEffects fx = mirror ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            //魂体（雾底染灵质色）+ 内芯苍白微光（A=0 加色）
+            spriteBatch.Draw(tex, pos, null, Color * (0.55f * Opacity), Rotation, origin, Scale * 0.5f, fx, 0f);
+            spriteBatch.Draw(tex, pos, null, (DeepGaolWraith.EctoPale with { A = 0 }) * (0.3f * Opacity),
+                Rotation, origin, Scale * 0.26f, fx, 0f);
+            return false;
+        }
+    }
+
+    /// <summary>脱落的链节：带重力翻滚的铁节，落地一声轻响后锈灭（原版 Chain22 单节）</summary>
+    internal class PRT_GaolChainLink : BasePRT
+    {
+        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override bool CanPool => true;
+        public override int InGame_World_MaxCount => 160;
+
+        private float spin;
+        private bool landed;
+
+        public PRT_GaolChainLink Configure(int lifetime, float spinRate) {
+            Lifetime = lifetime;
+            spin = spinRate;
+            return this;
+        }
+
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
+            if (Lifetime <= 0) {
+                Lifetime = 60;
+            }
+            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+        }
+
+        public override void Reset() {
+            base.Reset();
+            spin = 0f;
+            landed = false;
+        }
+
+        public override void AI() {
+            if (!landed) {
+                Velocity.X *= 0.99f;
+                Velocity.Y = MathF.Min(Velocity.Y + 0.34f, 12f);
+                Rotation += spin;
+                if (Collision.SolidCollision(Position - new Vector2(4f, 4f), 8, 8)) {
+                    landed = true;
+                    Velocity = Vector2.Zero;
+                    SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.14f, Pitch = -0.3f, MaxInstances = 3 }, Position);
+                }
+            }
+            //落地后原地锈灭，未落地也随寿命淡出
+            float t = LifetimeCompletion;
+            Opacity = 1f - MathF.Pow(t, 3f);
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D tex = TextureAssets.Chain22?.Value;
+            if (tex == null) {
+                return false;
+            }
+            Vector2 origin = tex.Size() * 0.5f;
+            Vector2 pos = Position - Main.screenPosition;
+            Color light = Lighting.GetColor((int)(Position.X / 16f), (int)(Position.Y / 16f));
+            spriteBatch.Draw(tex, pos, null, DeepGaolWraith.IronDeep * (0.6f * Opacity), Rotation, origin, Scale * 1.08f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, pos, null, light.MultiplyRGB(DeepGaolWraith.IronMul) * Opacity, Rotation, origin, Scale, SpriteEffects.None, 0f);
+            return false;
         }
     }
 }

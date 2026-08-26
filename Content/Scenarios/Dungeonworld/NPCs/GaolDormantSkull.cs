@@ -142,6 +142,16 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                             Color.Lerp(DeepGaolWraith.GaolPink, Color.White, Main.rand.NextFloat(0.4f)),
                             Main.rand.NextFloat(0.35f, 0.55f))?.Configure(true, Main.rand.Next(10, 16));
                     }
+                    //镣链真的断了：两股垂链逐节崩落（对应绘制层从此不再画链）
+                    for (int side = -1; side <= 1; side += 2) {
+                        for (int k = 0; k < 3; k++) {
+                            PRTLoader.NewParticle<PRT_GaolChainLink>(
+                                NPC.Center + new Vector2(side * (7f + k * 2f), 10f + k * 11f),
+                                new Vector2(side * Main.rand.NextFloat(0.4f, 1.2f), Main.rand.NextFloat(-0.6f, 0.4f)),
+                                Color.White, Main.rand.NextFloat(0.75f, 0.9f))
+                                ?.Configure(Main.rand.Next(40, 60), Main.rand.NextFloat(-0.2f, 0.2f));
+                        }
+                    }
                 }
             }
 

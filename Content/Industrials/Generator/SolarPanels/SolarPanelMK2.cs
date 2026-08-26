@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,10 +13,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator.SolarPanels
 {
     internal class SolarPanelMK2 : ModItem
     {
-        /// <summary>贴图复用热能发电机MK2,靠圣辉紫金色调区分;专属贴图见待美术清单</summary>
-        public override string Texture => CWRConstant.Asset + "Generator/ThermalGeneratorMK2";
+        public override string Texture => CWRConstant.Asset + "Generator/SolarPanelMK2";
 
-        /// <summary>系列色调:圣辉紫金</summary>
+        /// <summary>系列色调:圣辉紫金,用于 UI 点缀</summary>
         internal static readonly Color Tint = new(215, 175, 255);
 
         public override void SetDefaults() {
@@ -30,38 +30,26 @@ namespace CalamityOverhaul.Content.Industrials.Generator.SolarPanels
             Item.consumable = true;
             Item.value = Item.buyPrice(0, 3, 0, 0);
             Item.rare = ItemRarityID.Pink;
-            Item.color = Tint;
             Item.createTile = ModContent.TileType<SolarPanelMK2Tile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 4000;
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient<SolarPanel>().
-                AddIngredient(ItemID.HallowedBar, 10).
-                AddIngredient(ItemID.SoulofLight, 5).
-                AddIngredient(CWRID.Item_DubiousPlating, 20).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 20).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddIngredient<SolarPanel>().
-                AddIngredient(ItemID.HallowedBar, 10).
-                AddIngredient(ItemID.SoulofLight, 5).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient<SolarPanel>().
+            AddIngredient(ItemID.HallowedBar, 10).
+            AddIngredient(ItemID.SoulofLight, 5).
+            AddIngredient<CircuitBoard>(20).
+            AddTile(TileID.MythrilAnvil).
+            Register();
+
         }
     }
 
     internal class SolarPanelMK2Tile : BaseGeneratorTile
     {
-        /// <summary>零贴图程序化绘制,占位魔法像素保证加载安全</summary>
-        public override string Texture => CWRConstant.VaultPlaceholder2;
+        public override string Texture => CWRConstant.Asset + "Generator/SolarPanelMK2Tile";
         public override int GeneratorTP => TileProcessorLoader.GetModuleID<SolarPanelMK2TP>();
         public override int GeneratorUI => UIHandleLoader.GetUIHandleID<GeneratorReadoutUI>();
         public override int TargetItem => ModContent.ItemType<SolarPanelMK2>();
@@ -79,8 +67,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.SolarPanels
             TileObjectData.newTile.Width = 4;
             TileObjectData.newTile.Height = 2;
             TileObjectData.newTile.Origin = new Point16(1, 1);
-            TileObjectData.newTile.CoordinateHeights = [16, 16];
-            TileObjectData.newTile.StyleWrapLimit = 36;
+            TileObjectData.newTile.CoordinateHeights = [16, 18];
             TileObjectData.newTile.AnchorBottom = new AnchorData(
                 AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide,
                 TileObjectData.newTile.Width, 0);
@@ -93,15 +80,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator.SolarPanels
             if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 return false;
             }
-            //整机只在左上格画一次
-            if (point.X != i || point.Y != j) {
-                return false;
-            }
             if (!TileProcessorLoader.ByPositionGetTP(point, out SolarPanelMK2TP tp)) {
                 return false;
             }
-            tp.DrawPanelBody(spriteBatch);
-            return false;
+            return BaseSolarPanelTP.DrawDimmablePanelTile(i, j, spriteBatch, tp, Type);
         }
     }
 
@@ -113,9 +95,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.SolarPanels
         public override float PeakOutput => 2.4f;
         public override int ModuleSlotCount => 3;
 
-        //圣辉配色:紫底金格,与初代一眼区分
-        protected override Color PanelColor => new(58, 40, 108);
-        protected override Color CellColor => new(214, 172, 96);
+        //圣辉掠光:金白,与初代冷白一眼区分
         protected override Color GlintColor => new(255, 226, 168);
     }
 }

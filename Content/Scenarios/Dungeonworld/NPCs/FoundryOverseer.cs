@@ -147,6 +147,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
         private const int StunFrames = 90;
         /// <summary>毂心过顶判定横距</summary>
         private const float CounterHubGapX = 48f;
+        //对冲活塞演出时序（本地绘制时间线：坠 6f → 顶住 14f → 收回至 32f）
+        private const int PistonSlamAt = 6;
+        private const int PistonHoldTo = 20;
+        private const int PistonGoneAt = 32;
 
         private const int DeathTotal = 150;
         private const int DespawnTotal = 150;
@@ -189,6 +193,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
         private readonly Vector2[] gearVel = new Vector2[3];
         private readonly float[] gearRot = new float[3];
         private bool gearsBurst;
+        //钟摆弧光轨迹环（本地表现：摆锤近 18 帧位置，oldest→newest）
+        private readonly Vector2[] pendTrail = new Vector2[18];
+        private int pendTrailLen;
         //服务器侧：上一锤落点（PressMinGapX 用，仅权威端有意义）
         private float lastPressX = float.MinValue;
         //齿轮咬合的连续转角（纯绘制）
@@ -306,6 +313,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                         counterUses--;
                         KillOwnedProjectiles();
                         ChangeState(StateStunned);
+                        //活塞侧位乘 StateParam 过线（0=未知/无房降级，1=左位，2=右位），
+                        //各端据此画对冲活塞砸下的演出
+                        StateParam = side + 1;
                         return;
                     }
                 }
@@ -347,9 +357,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             }
             int t1 = ModContent.ProjectileType<OverseerPressStrike>();
             int t2 = ModContent.ProjectileType<OverseerSlagGlob>();
+            int t3 = ModContent.ProjectileType<OverseerDartBolt>();
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile p = Main.projectile[i];
-                if (p.active && (p.type == t1 || p.type == t2)) {
+                if (p.active && (p.type == t1 || p.type == t2 || p.type == t3)) {
                     p.Kill();
                     p.netUpdate = true;
                 }
@@ -381,6 +392,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                     lastPendExtreme = -1;
                     lastPendCross = -1;
                     lastPendVolley = -1;
+                    pendTrailLen = 0;
                 }
                 if (State == StateDeath) {
                     deathLanded = false;
@@ -406,8 +418,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 case StateDeath: UpdateDeath(); break;
             }
 
-            //齿轮咬合转角（转速=状态活跃度，硬直期卡顿）
+            //齿轮咬合转角（转速=状态活跃度：入场由慢到快咬合、硬直期卡顿、死亡渐停）
             float spinRate = State switch {
+                StateEmerge => 0.015f + 0.26f * MathHelper.Clamp(
+                    (int)StateTimer / (float)EmergeTotal, 0f, 1f),
                 StateStunned => 0.01f + 0.06f * MathF.Max(0f, MathF.Sin((int)StateTimer * 0.7f)),
                 StateWheelRoll => 0.3f,
                 StateDeath => MathF.Max(0f, 0.2f - (int)StateTimer * 0.002f),
@@ -518,6 +532,21 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                         SoundID.Roar with { Volume = 0.5f, Pitch = -0.9f }, 0.4f);
                 }
                 ShakeNearby(2f);
+                //咬合初动：积尘抖落 + 齿缝铁屑（换体后的第一口机械呼吸）
+                if (!Main.dedServ) {
+                    for (int k = 0; k < 8; k++) {
+                        PRTLoader.NewParticle<PRT_OverseerIronChip>(
+                            NPC.Center + Main.rand.NextVector2Circular(30f, 30f),
+                            new Vector2(Main.rand.NextFloat(-1.2f, 1.2f), Main.rand.NextFloat(0.5f, 2f)),
+                            IronDeep, Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(14, 24));
+                    }
+                    for (int k = 0; k < 5; k++) {
+                        PRTLoader.NewParticle<PRT_GhostRainMist>(
+                            NPC.Center + Main.rand.NextVector2Circular(24f, 24f),
+                            new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), -Main.rand.NextFloat(0.4f, 1f)),
+                            SteamWhite * 0.5f, Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(20, 34));
+                    }
+                }
             }
 
             if (fromRig && !testPressCued && t >= EmergeTestPressAt) {
@@ -732,9 +761,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 float lx = ProofingHallRoom.DartPortWorldX(RoomOrigin, left: true);
                 float rx = ProofingHallRoom.DartPortWorldX(RoomOrigin, left: false);
                 Projectile.NewProjectile(NPC.GetSource_FromAI(), new Vector2(lx, y),
-                    new Vector2(DartSpeed, 0f), ProjectileID.PoisonDartTrap, damage, 1f, Main.myPlayer);
+                    new Vector2(DartSpeed, 0f), ModContent.ProjectileType<OverseerDartBolt>(), damage, 1f, Main.myPlayer);
                 Projectile.NewProjectile(NPC.GetSource_FromAI(), new Vector2(rx, y),
-                    new Vector2(-DartSpeed, 0f), ProjectileID.PoisonDartTrap, damage, 1f, Main.myPlayer);
+                    new Vector2(-DartSpeed, 0f), ModContent.ProjectileType<OverseerDartBolt>(), damage, 1f, Main.myPlayer);
             }
         }
 
@@ -834,7 +863,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             }
 
             if (!breakFell && t >= BreakFallAt) {
-                //轨段坠落：全场唯一大拍
+                //轨段坠落：全场唯一大拍（冲击帧屏幕层 + 铁屑瀑 + 声压 + 震屏四层合击）
                 breakFell = true;
                 SoundEngine.PlaySound(SoundID.Shatter with { Volume = 1f, Pitch = -0.6f, MaxInstances = 1 }, anchor);
                 SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.9f, Pitch = -0.7f, MaxInstances = 2 }, anchor);
@@ -842,6 +871,22 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 if (!Main.dedServ && Main.LocalPlayer.Alives()
                     && Vector2.Distance(Main.LocalPlayer.Center, NPC.Center) < 1500f) {
                     Ambience.DungeonworldAmbience.PushGradePulse(FurnaceOrange, 0.35f, 40);
+                    //断轨冲击帧：黑白负相 + 高温提边 + 机械震颤（OverseerBreakFrame，全场唯一）
+                    OverseerScreenFX.PushImpact(0.85f, 36);
+                }
+                if (!Main.dedServ) {
+                    for (int k = 0; k < 14; k++) {
+                        PRTLoader.NewParticle<PRT_OverseerIronChip>(
+                            anchor + new Vector2(Main.rand.NextFloat(-26f, 26f), Main.rand.NextFloat(-6f, 8f)),
+                            new Vector2(Main.rand.NextFloat(-3.5f, 3.5f), Main.rand.NextFloat(-1f, 4f)),
+                            IronMul, Main.rand.NextFloat(0.5f, 1f))?.Configure(Main.rand.Next(20, 34));
+                    }
+                    for (int k = 0; k < 10; k++) {
+                        PRTLoader.NewParticle<PRT_Spark>(anchor + Main.rand.NextVector2Circular(24f, 12f),
+                            new Vector2(Main.rand.NextFloat(-2.5f, 2.5f), Main.rand.NextFloat(0.5f, 4f)),
+                            Color.Lerp(FurnaceOrange, Color.White, Main.rand.NextFloat(0.6f)),
+                            Main.rand.NextFloat(0.45f, 0.75f))?.Configure(true, Main.rand.Next(12, 20));
+                    }
                 }
             }
 
@@ -861,14 +906,31 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
 
         //==================== 钟摆（P3 常驻，连续单时间线绝不重置）====================
 
+        /// <summary>摆锤理论最大线速度 θmax·ω·L ≈ 8.86px/f（伤害窗与弧光强度同源）</summary>
+        internal const float PendMaxSpeed = PendMaxAngle * PendOmega * PendLength;
+
+        /// <summary>摆速归一 0..1（供伤害窗/弧光/链颤共用一个口径）</summary>
+        internal float PendSpeedNorm()
+            => MathHelper.Clamp(NPC.velocity.Length() / PendMaxSpeed, 0f, 1f);
+
         private void UpdatePendulum() {
             float t = StateTimer;
             Vector2 bob = PendBobPos(t);
             NPC.velocity = bob - NPC.Center;
 
-            //摆速达速窗=接触伤害（弧中快、弧端慢：弧端安全但吃锤，弧中危险但无锤）
-            if (NPC.velocity.Length() > 10f) {
+            //摆速达速窗=接触伤害（弧中快、弧端慢：弧端安全但吃锤，弧中危险但无锤）。
+            //阈值 68% 峰速：原 10px/f 高于峰速 8.86，伤害窗永远开不了（审计修正）
+            if (NPC.velocity.Length() > PendMaxSpeed * 0.68f) {
                 NPC.damage = ContactDamage;
+            }
+
+            //弧光轨迹环推进（本地表现，oldest→newest）
+            for (int i = 0; i < pendTrail.Length - 1; i++) {
+                pendTrail[i] = pendTrail[i + 1];
+            }
+            pendTrail[^1] = bob;
+            if (pendTrailLen < pendTrail.Length) {
+                pendTrailLen++;
             }
 
             float phaseArg = t * PendOmega;
@@ -913,8 +975,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 }
             }
 
-            //摆行风声（速度门控的呼啸）
-            if (!Main.dedServ && NPC.velocity.Length() > 12f && (int)t % 16 == 0) {
+            //摆行风声（速度门控的呼啸；同伤害窗口径，原 12px/f 永不触发）
+            if (!Main.dedServ && PendSpeedNorm() > 0.72f && (int)t % 16 == 0) {
                 SoundEngine.PlaySound(SoundID.Item32 with { Volume = 0.25f, Pitch = -0.6f, MaxInstances = 2 }, NPC.Center);
             }
         }
@@ -942,17 +1004,27 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
         private void UpdateStunned() {
             int t = (int)StateTimer;
             NPC.defense = 0;
-            if (!stunCued && t >= 1) {
+            if (!stunCued && t >= PistonSlamAt) {
+                //活塞触顶拍（演出时序：先看见活塞砸下 PistonSlamAt 帧，再响这记闷响）
                 stunCued = true;
                 SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 1f, Pitch = -0.8f, MaxInstances = 1 }, NPC.Center);
                 SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.6f, Pitch = -0.3f, MaxInstances = 1 }, NPC.Center);
                 ShakeNearby(3f);
                 if (!Main.dedServ) {
+                    Vector2 hit = NPC.Top;
                     for (int k = 0; k < 12; k++) {
-                        PRTLoader.NewParticle<PRT_Spark>(NPC.Center + Main.rand.NextVector2Circular(26f, 26f),
+                        PRTLoader.NewParticle<PRT_Spark>(hit + Main.rand.NextVector2Circular(24f, 12f),
                             Main.rand.NextVector2Circular(3f, 3f),
                             Color.Lerp(FurnaceOrange, Color.White, Main.rand.NextFloat(0.5f)),
                             Main.rand.NextFloat(0.4f, 0.7f))?.Configure(true, Main.rand.Next(10, 18));
+                    }
+                    //撞点铁屑对开（活塞与毂壳的双向剥落）
+                    for (int k = 0; k < 8; k++) {
+                        float dir = k % 2 == 0 ? 1f : -1f;
+                        PRTLoader.NewParticle<PRT_OverseerIronChip>(
+                            hit + new Vector2(dir * Main.rand.NextFloat(4f, 20f), Main.rand.NextFloat(-6f, 6f)),
+                            new Vector2(dir * Main.rand.NextFloat(1.5f, 3.5f), -Main.rand.NextFloat(1f, 4f)),
+                            IronMul, Main.rand.NextFloat(0.5f, 0.9f))?.Configure(Main.rand.Next(16, 26));
                     }
                 }
             }
@@ -1024,6 +1096,15 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                                 -Main.rand.NextFloat(3f, 6f));
                             gearRot[i] = 0f;
                         }
+                        //坠地铁屑帘 + 触地热印（整机余温烙进地板）
+                        for (int k = 0; k < 10; k++) {
+                            PRTLoader.NewParticle<PRT_OverseerIronChip>(
+                                NPC.Bottom + new Vector2(Main.rand.NextFloat(-30f, 30f), -4f),
+                                new Vector2(Main.rand.NextFloat(-2.8f, 2.8f), -Main.rand.NextFloat(1.5f, 4.5f)),
+                                IronMul, Main.rand.NextFloat(0.5f, 0.9f))?.Configure(Main.rand.Next(18, 30));
+                        }
+                        PRTLoader.NewParticle<PRT_OverseerHeatScar>(NPC.Bottom + new Vector2(0f, -2f),
+                            Vector2.Zero, SlagHot, 1f)?.Configure(110, 84f);
                     }
                 }
             }
@@ -1042,10 +1123,14 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                         SteamWhite * 0.55f, Main.rand.NextFloat(0.5f, 0.9f))?.Configure(Main.rand.Next(24, 40));
                 }
                 if (!deathSteamed && since >= 60) {
-                    //蒸汽柱冲顶（全场第二大拍，衰减版）
+                    //蒸汽柱冲顶（全场第二大拍，衰减版：冲击帧强度减半短寿）
                     deathSteamed = true;
                     SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.9f, Pitch = -0.6f, MaxInstances = 1 }, NPC.Center);
                     ShakeNearby(2.5f);
+                    if (!Main.dedServ && Main.LocalPlayer.Alives()
+                        && Vector2.Distance(Main.LocalPlayer.Center, NPC.Center) < 1500f) {
+                        OverseerScreenFX.PushImpact(0.4f, 20);
+                    }
                     if (!Main.dedServ) {
                         for (int k = 0; k < 14; k++) {
                             PRTLoader.NewParticle<PRT_GhostRainMist>(NPC.Center + new Vector2(Main.rand.NextFloat(-14f, 14f), -8f),
@@ -1108,6 +1193,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                     Color.Lerp(FurnaceOrange, Color.White, Main.rand.NextFloat(0.4f)),
                     Main.rand.NextFloat(0.3f, 0.55f))?.Configure(true, Main.rand.Next(8, 14));
             }
+            if (Main.rand.NextBool(3)) {
+                PRTLoader.NewParticle<PRT_OverseerIronChip>(NPC.Center + Main.rand.NextVector2Circular(24f, 24f),
+                    new Vector2(hit.HitDirection * Main.rand.NextFloat(1.2f, 3f), -Main.rand.NextFloat(1f, 3f)),
+                    IronMul, Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(14, 24));
+            }
             if (Main.rand.NextBool(5)) {
                 PRTLoader.NewParticle<PRT_GhostRainMist>(NPC.Center + Main.rand.NextVector2Circular(18f, 18f),
                     new Vector2(0f, -Main.rand.NextFloat(0.5f, 1.2f)),
@@ -1136,15 +1226,30 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             };
         }
 
+        /// <summary>体内受热度：状态驱动（战斗恒温呼吸/滚碾断轨升温/硬直挣扎明灭/死亡冷却归零）</summary>
+        private float BodyHeat() {
+            int t = (int)StateTimer;
+            return State switch {
+                StateEmerge => MathHelper.Clamp(t / (float)EmergeTotal, 0.12f, 0.6f),
+                StateWheelRoll => 0.85f,
+                StateBreakRail => 0.9f,
+                StatePendulum => 0.45f + 0.5f * PendSpeedNorm(),
+                StateStunned => 0.15f + 0.45f * MathF.Max(0f, MathF.Sin(t * 0.6f)),
+                StateDeath => MathF.Max(0f, 0.7f * (1f - t / (float)DeathTotal)),
+                StateDespawn => MathF.Max(0.08f, 0.5f - t * 0.004f),
+                _ => 0.55f + 0.12f * MathF.Sin(Main.GlobalTimeWrappedHourly * 2.6f + Seed),
+            };
+        }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             Main.instance.LoadItem(ItemID.Cog);
             Main.instance.LoadItem(ItemID.CookingPot);
             Main.instance.LoadNPC(NPCID.BlazingWheel);
+            Main.instance.LoadNPC(NPCID.GolemFistRight);
             Texture2D cogTex = TextureAssets.Item[ItemID.Cog]?.Value;
             Texture2D potTex = TextureAssets.Item[ItemID.CookingPot]?.Value;
             Texture2D wheelTex = TextureAssets.Npc[NPCID.BlazingWheel]?.Value;
-            Texture2D chainTex = TextureAssets.Chain22?.Value;
-            if (cogTex == null || potTex == null || wheelTex == null || chainTex == null) {
+            if (cogTex == null || potTex == null || wheelTex == null) {
                 return false;
             }
 
@@ -1152,53 +1257,135 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             if (alpha <= 0.01f) {
                 return false;
             }
+            float heat = BodyHeat();
 
-            //死亡碎片齿轮
-            if (gearsBurst) {
-                for (int i = 0; i < 3; i++) {
-                    float s = 0.9f - i * 0.2f;
-                    spriteBatch.Draw(cogTex, gearPos[i] - Main.screenPosition, null,
-                        drawColor.MultiplyRGB(IronMul), gearRot[i], cogTex.Size() * 0.5f, s, SpriteEffects.None, 0f);
-                }
+            //钟摆弧光：画在链与毂体之下（弧带追着摆锤，速度门控与伤害窗同源）
+            if (State == StatePendulum && pendTrailLen >= pendTrail.Length) {
+                OverseerVfx.DrawPendArcStrip(spriteBatch, pendTrail, pendTrail.Length,
+                    PendAnchor(), 64f, PendSpeedNorm(), Seed, alpha);
             }
 
-            //吊链：轨巡=竖直链柱；钟摆=锚到摆锤的斜链；硬直=多一段下垂
+            //吊链：轨巡=竖直链柱；钟摆=锚到摆锤的绷直斜链（速度振颤）；
+            //滚碾地滚=链脱毂空荡；硬直=受载下垂
             Vector2 chainTop = State == StatePendulum || State == StateBreakRail && (int)StateTimer >= BreakCatchAt
                 ? PendAnchor()
                 : new Vector2(NPC.Center.X, HasRoom ? (roomOriginY + ProofingHallRoom.RailRel) * 16f + 8f : HubY() - 40f);
-            Undrowned.DrawChainLine(spriteBatch, chainTex, chainTop, NPC.Center + new Vector2(0f, -18f), drawColor, alpha);
+            bool chainDetached = State == StateWheelRoll && RollPhase == 1;
+            if (chainDetached) {
+                //卸链地滚：链从轨上空荡（毂体此刻无链，滚碾的可读性）
+                Vector2 dangle = chainTop + new Vector2(MathF.Sin(Main.GlobalTimeWrappedHourly * 2.2f + Seed) * 16f, 96f);
+                OverseerVfx.DrawChain(spriteBatch, chainTop, dangle, drawColor, alpha * 0.9f, 1f);
+            }
+            else {
+                (float slack, float shiver) = State switch {
+                    StatePendulum => (0.05f, 2.2f * PendSpeedNorm()),
+                    StateStunned => (0.7f, 0f),
+                    StateWheelRoll => (0.05f, 2f),     //回收上挂：链绷直拉振
+                    StatePress => (0.4f, 0.8f),
+                    _ => (0.8f, 0f),
+                };
+                OverseerVfx.DrawChain(spriteBatch, chainTop, NPC.Center + new Vector2(0f, -18f),
+                    drawColor, alpha, slack, shiver);
+            }
+
+            //====== 铸铁材质批：毂体/滚碾形态/浇包/死亡碎片共一次批切 ======
+            bool ironOn = OverseerVfx.BeginIronCast(spriteBatch);
+
+            //死亡碎片齿轮（跟随整机冷却史）
+            if (gearsBurst) {
+                for (int i = 0; i < 3; i++) {
+                    float s = 0.9f - i * 0.2f;
+                    OverseerVfx.DrawIronPart(spriteBatch, ironOn, cogTex, gearPos[i] - Main.screenPosition,
+                        cogTex.Bounds, drawColor, gearRot[i], cogTex.Size() * 0.5f, s, SpriteEffects.None,
+                        heat * 0.7f, 0.6f, Seed + 3.1f + i, 1f);
+                }
+            }
 
             bool wheelForm = State == StateWheelRoll && RollPhase == 1;
             if (wheelForm) {
-                //滚碾形态：去焰重染纯锈铁的火轮
+                //滚碾形态：去焰重染纯锈铁的火轮（高热滚碾）
                 int count = Math.Max(1, Main.npcFrameCount[NPCID.BlazingWheel]);
                 Rectangle frame = new(0, 0, wheelTex.Width, wheelTex.Height / count);
-                Vector2 origin = new(frame.Width * 0.5f, frame.Height * 0.5f);
-                spriteBatch.Draw(wheelTex, NPC.Center - Main.screenPosition, frame,
-                    IronDeep * (0.8f * alpha), cogSpin * 2f, origin, 1.35f, SpriteEffects.None, 0f);
-                spriteBatch.Draw(wheelTex, NPC.Center - Main.screenPosition, frame,
-                    drawColor.MultiplyRGB(IronMul) * alpha, cogSpin * 2f, origin, 1.25f, SpriteEffects.None, 0f);
+                OverseerVfx.DrawIronPart(spriteBatch, ironOn, wheelTex, NPC.Center - Main.screenPosition,
+                    frame, drawColor, cogSpin * 2f, frame.Size() * 0.5f, 1.3f, SpriteEffects.None,
+                    heat, 0.5f, Seed, alpha);
             }
             else {
-                //毂体：大中小三枚齿轮同轴反向咬合（暗缘 + 铸铁乘色）
+                //毂体：大中小三枚齿轮同轴反向咬合（铸铁重染 + 炉芯透火）
                 Vector2 cogOrigin = cogTex.Size() * 0.5f;
-                (float scale, float dir)[] cogs = [(2.1f, 1f), (1.45f, -1.6f), (0.85f, 2.4f)];
-                foreach ((float scale, float dir) in cogs) {
-                    spriteBatch.Draw(cogTex, NPC.Center - Main.screenPosition, null,
-                        IronDeep * (0.75f * alpha), cogSpin * dir, cogOrigin, scale * 1.08f, SpriteEffects.None, 0f);
-                    spriteBatch.Draw(cogTex, NPC.Center - Main.screenPosition, null,
-                        drawColor.MultiplyRGB(IronMul) * alpha, cogSpin * dir, cogOrigin, scale, SpriteEffects.None, 0f);
+                (float scale, float dir, float rust)[] cogs = [(2.1f, 1f, 0.6f), (1.45f, -1.6f, 0.5f), (0.85f, 2.4f, 0.42f)];
+                foreach ((float scale, float dir, float rust) in cogs) {
+                    OverseerVfx.DrawIronPart(spriteBatch, ironOn, cogTex, NPC.Center - Main.screenPosition,
+                        cogTex.Bounds, drawColor, cogSpin * dir, cogOrigin, scale, SpriteEffects.None,
+                        heat, rust, Seed + scale, alpha);
                 }
-                //浇包侧挂（浇渣期倾倒）
+                //浇包侧挂（浇渣期倾倒，包体受热更透）
                 float tilt = State == StateSlagPour
                     ? MathHelper.Clamp((int)StateTimer / (float)SlagTiltFrames, 0f, 1f) * 1.1f
                     : 0.15f;
-                spriteBatch.Draw(potTex, LadlePos() - Main.screenPosition, null,
-                    drawColor.MultiplyRGB(IronMul) * alpha, tilt, potTex.Size() * 0.5f, 0.9f, SpriteEffects.None, 0f);
+                float ladleHeat = State == StateSlagPour ? MathF.Min(1f, heat + 0.35f) : heat;
+                OverseerVfx.DrawIronPart(spriteBatch, ironOn, potTex, LadlePos() - Main.screenPosition,
+                    potTex.Bounds, drawColor, tilt, potTex.Size() * 0.5f, 0.9f, SpriteEffects.None,
+                    ladleHeat, 0.55f, Seed + 7.7f, alpha);
+            }
+
+            //对冲活塞撞头（硬直前 32f：坠→顶住→收回，铸铁拳头面朝下；同批画省一次批切）
+            bool pistonOn = PistonPose(out Vector2 pistonHead, out float pistonCeilY);
+            if (pistonOn) {
+                Texture2D fistTex = TextureAssets.Npc[NPCID.GolemFistRight]?.Value;
+                if (fistTex != null) {
+                    int count = Math.Max(1, Main.npcFrameCount[NPCID.GolemFistRight]);
+                    Rectangle frame = new(0, 0, fistTex.Width, fistTex.Height / count);
+                    OverseerVfx.DrawIronPart(spriteBatch, ironOn, fistTex, pistonHead - Main.screenPosition,
+                        frame, drawColor, MathHelper.PiOver2, frame.Size() * 0.5f, 1.2f, SpriteEffects.None,
+                        0.5f, 0.4f, Seed + 11.3f, 1f);
+                }
+            }
+
+            OverseerVfx.EndIronCast(spriteBatch, ironOn);
+
+            //活塞链柱：回到普通实体批后补（Immediate 材质批内画普通精灵会吃到残留 shader）
+            if (pistonOn) {
+                OverseerVfx.DrawChain(spriteBatch, new Vector2(pistonHead.X, pistonCeilY),
+                    pistonHead + new Vector2(0f, -16f), drawColor, 1f, 0.05f,
+                    (int)StateTimer < PistonHoldTo ? 2.4f : 0.6f);
             }
 
             DrawGlowLayers(spriteBatch, alpha);
             return false;
+        }
+
+        /// <summary>对冲活塞位姿：坠 6f（easeIn 抢拍）→ 顶住微压 → 收回。
+        /// 返回是否处于活塞演出窗（活塞侧位由 StateParam 过线）</summary>
+        private bool PistonPose(out Vector2 head, out float ceilY) {
+            head = default;
+            ceilY = 0f;
+            if (State != StateStunned || (int)StateParam <= 0 || !HasRoom) {
+                return false;
+            }
+            int t = (int)StateTimer;
+            if (t >= PistonGoneAt) {
+                return false;
+            }
+            Rectangle zone = ProofingHallRoom.BayZoneWorld(RoomOrigin, (int)StateParam == 1);
+            float bayX = zone.Center.X;
+            ceilY = (roomOriginY + ProofingHallRoom.RailRel) * 16f + 8f;
+            float hitY = NPC.Top.Y - 6f;
+
+            float headY;
+            if (t < PistonSlamAt) {
+                float k = t / (float)PistonSlamAt;
+                headY = MathHelper.Lerp(ceilY, hitY, k * k);
+            }
+            else if (t < PistonHoldTo) {
+                headY = hitY + MathF.Sin((t - PistonSlamAt) * 0.8f) * 1.5f;
+            }
+            else {
+                float k = MathHelper.Clamp((t - PistonHoldTo) / (float)(PistonGoneAt - PistonHoldTo), 0f, 1f);
+                headY = MathHelper.Lerp(hitY, ceilY, k * k);
+            }
+            head = new Vector2(bayX, headY);
+            return true;
         }
 
         /// <summary>加色层：炉芯 + 轨灯 + 检修位余次灯 + 镖口预警灯（强度写进色乘，永不 A=0 染色）</summary>

@@ -467,6 +467,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             rule.SimpleAdd(ModContent.ItemType<StaffoftheDestroyer>(), 4);
             rule.SimpleAdd(ModContent.ItemType<Observer>(), 4);
             npcLoot.Add(rule);
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<Items.Accessories.BrutalRelics.Destroyer.ProbeMatrixCore>()));
         }
 
         public override bool CheckActive() => false;

@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.FluidPumps
 {
     internal class FluidPumpTile : ModTile
     {
-        public override string Texture => CWRConstant.Asset + "Generator/ThermalGeneratorTile";
+        public override string Texture => CWRConstant.Asset + "ElectricPowers/FluidPumpTile";
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
@@ -21,11 +21,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.FluidPumps
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.Width = 2;
-            TileObjectData.newTile.Height = 2;
-            TileObjectData.newTile.Origin = new Point16(1, 1);
+            TileObjectData.newTile.Height = 1;
+            TileObjectData.newTile.Origin = new Point16(1, 0);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile
                 | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateHeights = [16, 16];
+            TileObjectData.newTile.CoordinateHeights = [18];
             TileObjectData.newTile.LavaDeath = false;
 
             TileObjectData.addTile(Type);

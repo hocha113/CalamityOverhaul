@@ -1,3 +1,5 @@
+using CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EmpressOfLight;
+using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States;
@@ -7,7 +9,9 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
 {
@@ -254,6 +258,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
         internal int DeathTimer => stateMachine?.CurrentState is EmpressDeathState death ? death.Timer : 0;
 
         public override bool CheckActive() => false;
+
+        /// <summary>残酷遗物掉落：AI重制虽在禁用名单，loot注册不经CanOverride，条件类只看世界旗标</summary>
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<WingsOfInterference>()));
+        }
 
         /// <summary>演出中锁血，完后放行；秒杀也先切演出</summary>
         public override bool? CheckDead() {

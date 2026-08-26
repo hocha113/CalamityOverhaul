@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -33,24 +34,14 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(ItemID.Furnace).
-                AddRecipeGroup(RecipeGroupID.IronBar, 5).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
-                AddIngredient(CWRID.Item_DubiousPlating, 10).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddIngredient(ItemID.Furnace).
-                AddRecipeGroup(RecipeGroupID.IronBar, 5).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient(ItemID.Furnace).
+            AddRecipeGroup(RecipeGroupID.IronBar, 5).
+            AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
+            AddIngredient<CircuitBoard>(10).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 

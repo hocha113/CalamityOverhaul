@@ -22,3 +22,4 @@ OldNetLedgerDockTile.MapEntry: 账本扩容坞
 OldNetColdNodeTile.MapEntry: 冷存储节点
 OldNetEscrowTile.MapEntry: 保险契约终端
 OldNetCipherVaultTile.MapEntry: 主控破译矩阵
+GaolRoomSealTile.MapEntry: 禁室封门

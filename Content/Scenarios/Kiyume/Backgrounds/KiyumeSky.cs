@@ -106,6 +106,11 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Backgrounds
             shader.Parameters["uCamX"]?.SetValue(realScreenPos.X);
             shader.Parameters["uCamY"]?.SetValue(realScreenPos.Y);
             shader.Parameters["uHorizon"]?.SetValue(horizon);
+            //天幕事件（KIY-P5-D）：包络由 KiyumeSkyEvents 状态机驱动，这里只上载
+            shader.Parameters["uMoonReveal"]?.SetValue(Ambience.KiyumeSkyEvents.MoonReveal);
+            shader.Parameters["uMoonPos"]?.SetValue(new Vector2(
+                Ambience.KiyumeScore.MoonPosU, horizon - Ambience.KiyumeScore.MoonPosAboveHorizon));
+            shader.Parameters["uTorchLine"]?.SetValue(Ambience.KiyumeSkyEvents.TorchLine);
             shader.CurrentTechnique.Passes[0].Apply();
 
             spriteBatch.Draw(white, new Rectangle(0, 0, vpW, vpH), Color.White);

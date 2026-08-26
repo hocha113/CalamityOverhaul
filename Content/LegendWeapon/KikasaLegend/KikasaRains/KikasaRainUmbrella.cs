@@ -184,6 +184,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private KikasaTalismanProfile talismanProfile = KikasaTalismanProfile.Identity;
         private KikasaTalismanHookRunner talismanHooks;
 
+        //==================== 墨痕拖尾:速度自适应的湿墨水痕(纯表现,各端本地自采零网络) ====================
+
+        /// <summary>拖尾采样步长(px)</summary>
+        private const float TrailSampleStep = 8f;
+        /// <summary>拖尾点数上限,总长约 200px</summary>
+        private const int TrailMaxPoints = 26;
+        /// <summary>拖尾点寿命(tick)</summary>
+        internal const int TrailLifetime = 26;
+        /// <summary>单帧位移超过该值视为传送瞬挪,斩断不拉横跨屏幕的带</summary>
+        private const float TrailTeleportBreak = 130f;
+
+        internal struct InkTrailPoint
+        {
+            public Vector2 Pos;
+            /// <summary>累计弧长(px),喂 shader 的带向坐标</summary>
+            public float Dist;
+            /// <summary>出生时速度强度 0~1,决定该段宽度与浓度</summary>
+            public float Strength;
+            /// <summary>过期时刻(GameUpdateCount)</summary>
+            public long DeathAt;
+        }
+
+        /// <summary>墨痕轨迹点,旧点在前新点在后;由 <see cref="KikasaRainRender"/> 消费</summary>
+        internal readonly List<InkTrailPoint> TrailPoints = new(TrailMaxPoints + 4);
+
+        /// <summary>平滑后的速度强度:帧位移的缓变函数,悬停无痕、俯冲拉满</summary>
+        internal float TrailStrength { get; private set; }
+
+        /// <summary>拖尾头部整体透明度,传送隐没时随伞一起熄灭</summary>
+        internal float TrailHeadFade => teleportFade;
+
+        /// <summary>拖尾宽度缩放,跟伞的视觉体量走</summary>
+        internal float TrailVisualScale => visualScale;
+
+        private Vector2 trailPrevCenter;
+        private bool trailPrevValid;
+
         /// <summary>
         /// 蓄墨满帧:伞下鬼越多蓄得越快(90→56),口径在 <see cref="KikasaOverride"/>；
         /// 沛符再除蓄墨速率倍率,下限护住换挡拍的可读性
@@ -350,6 +387,75 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     break;
             }
             StateTimer++;
+
+            if (!Main.dedServ) {
+                UpdateInkTrail();
+            }
+        }
+
+        /// <summary>
+        /// 墨痕采样:等距重采样(骨架同 UnsungheroPlayer),每点记下出生时的速度强度。
+        /// 停下不加新点、旧点自然过期,墨痕像真墨一样断供即散;
+        /// 高速剥离时低频掉落伴生墨珠
+        /// </summary>
+        private void UpdateInkTrail() {
+            long now = Main.GameUpdateCount;
+            while (TrailPoints.Count > 0 && TrailPoints[0].DeathAt <= now) {
+                TrailPoints.RemoveAt(0);
+            }
+
+            Vector2 anchor = Projectile.Center;
+            Vector2 frameVel = trailPrevValid ? anchor - trailPrevCenter : Vector2.Zero;
+            trailPrevCenter = anchor;
+            trailPrevValid = true;
+            float frameMove = frameVel.Length();
+
+            //速度剥离:强度是帧位移的平滑函数,悬停微浮沉被 2.5px 阈值挡住
+            TrailStrength = MathHelper.Lerp(TrailStrength,
+                MathHelper.Clamp((frameMove - 2.5f) / 9f, 0f, 1f), 0.25f);
+
+            if (frameMove > TrailTeleportBreak) {
+                TrailPoints.Clear();
+                return;
+            }
+
+            long deathAt = now + TrailLifetime;
+            if (TrailPoints.Count == 0) {
+                //强度起来才起头,静止的伞不挂死点
+                if (TrailStrength > 0.04f) {
+                    TrailPoints.Add(new InkTrailPoint {
+                        Pos = anchor, Dist = 0f, Strength = TrailStrength, DeathAt = deathAt,
+                    });
+                }
+                return;
+            }
+
+            InkTrailPoint last = TrailPoints[^1];
+            float gap = Vector2.Distance(last.Pos, anchor);
+            //一帧跨多个步长时补插,带向坐标保持均匀
+            while (gap >= TrailSampleStep) {
+                Vector2 dir = (anchor - last.Pos) / gap;
+                last = new InkTrailPoint {
+                    Pos = last.Pos + dir * TrailSampleStep,
+                    Dist = last.Dist + TrailSampleStep,
+                    Strength = TrailStrength,
+                    DeathAt = deathAt,
+                };
+                TrailPoints.Add(last);
+                gap = Vector2.Distance(last.Pos, anchor);
+            }
+            if (TrailPoints.Count > TrailMaxPoints) {
+                TrailPoints.RemoveRange(0, TrailPoints.Count - TrailMaxPoints);
+            }
+
+            //高速剥离的伴生墨珠:每 3 帧至多 1 粒,继承三成伞速再向下坠
+            if (frameMove > 12f && now % 3 == 0) {
+                Vector2 dir = frameVel / frameMove;
+                PRTLoader.NewParticle<PRT_KikasaInkBead>(
+                    anchor - dir * Main.rand.NextFloat(6f, 22f) + Main.rand.NextVector2Circular(5f, 5f),
+                    frameVel * 0.3f + new Vector2(0f, Main.rand.NextFloat(0.3f, 0.9f)),
+                    KikasaInk.InkBody, Main.rand.NextFloat(0.24f, 0.4f))?.Configure(Main.rand.Next(12, 20));
+            }
         }
 
         //==================== 状态推进 ====================
@@ -1252,6 +1358,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 if (dropCtx.Scale != 1f) {
                     drop.scale = dropCtx.Scale;
                     drop.netUpdate = true;
+                }
+                //墨印:只有按住左键的手动墨雨盖印(含帮衬/齐掷鬼滴),自动交战的自卫滴不盖;
+                //端本地位,命中钩只在归属端跑
+                if (State == UmbrellaState.Hover && drop.ModProjectile is KikasaInkDrop inkDrop) {
+                    inkDrop.AppliesTag = true;
                 }
             }
         }

@@ -36,8 +36,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
         /// <summary>基础生命（普通模式，专家/大师原版自乘）：怨灵 ×1.44，对应两层深度差</summary>
         internal const int BaseLife = 9800;
         internal const int BaseDefense = 14;
-        /// <summary>接触基伤，仅破水滞空/收锚拽行/拖锚突进达速窗内启用</summary>
-        internal const int ContactDamage = 44;
+        /// <summary>接触基伤，仅破水滞空/收锚拽行/拖锚突进达速窗内启用。
+        /// 怨灵 36×1.44≈52，接触窗全部短促达速门控，回调半档取 48（验收再调）</summary>
+        internal const int ContactDamage = 48;
 
         //弹幕基伤（normal/expert，走 GetAttackDamage_ForProjectiles）
         internal static (float Normal, float Expert) AnchorDamage => (46f, 38f);
@@ -131,11 +132,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
         internal const float WaveSpeed = 9f;
         internal const float WaveHeight = 48f;
 
-        //拖锚突进：压低身位拖锚拉火→定向直线→尽头刹车
+        //拖锚突进：压低身位拖锚拉火(末 4f 反向蓄势猛缩)→一帧点火定向直线(复利续力)→尽头犁地刹车
         private const int LungeWindup = 24;
-        private const int LungeDashFrames = 10;
+        private const int LungeDashFrames = 11;
         private const int LungeBrakeFrames = 18;
-        private const float LungeSpeed = 16f;
+        private const float LungeSpeed = 19f;
         internal const float LungeMinRange = 180f;
         private const float LungeMaxRange = 620f;
 
@@ -229,6 +230,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
         /// <summary>本地锚视觉位（入场拖锚/死亡插栅用；战斗中持锚位由状态推导）</summary>
         private Vector2 anchorVisualPos;
         private bool anchorVisualInit;
+        /// <summary>躯体过曝拍（受击/咆哮 ≤2f，本地表现）</summary>
+        private int bodyFlashTimer;
 
         //拖影环形缓冲（本地表现）
         private const int TrailLen = 10;
@@ -427,6 +430,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                     lootCued = false;
                     deathStartPos = NPC.Center;
                     deathSurfaceFrom = -1;
+                    //锚位重播种：不重播则从入场后就没再更新的旧值（王座旁）飘过来
+                    anchorVisualPos = NPC.Center + new Vector2(-FacingSign * 44f, NPC.height * 0.5f - 6f);
                 }
             }
 
@@ -463,6 +468,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
 
             if (attackCooldown > 0) {
                 attackCooldown--;
+            }
+            if (bodyFlashTimer > 0) {
+                bodyFlashTimer--;
             }
 
             float glow = BodyAlpha() * 0.35f;
@@ -617,6 +625,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                         float waterY = HasRoom
                             ? FloodGalleryRoom.SurfaceWorldY(RoomOrigin, FloodGalleryRoom.AnkleSurfaceRel)
                             : NPC.Center.Y + NPC.height * 0.5f;
+                        //踝水整面顶起一层矮水幕（水是他的）
+                        UndrownedVFX.PushVeil(new Vector2(NPC.Center.X, waterY + 4f), 300f, 70f, 30);
                         for (int k = 0; k < 3; k++) {
                             PRTLoader.NewParticle<PRT_DWave>(new Vector2(NPC.Center.X, waterY + 4f),
                                 Vector2.Zero, BogWater, 0.05f + k * 0.02f)
@@ -664,15 +674,34 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             bool waterPhase = PhaseIndex >= 2 && HasRoom;
 
             if (!waterPhase) {
-                //陆刑：拖锚缓行（3px/f 的重物），贴地
+                //陆刑：拖锚不是平移，是"拽一步、滑一段、喘一口"的重物循环（28f 一循环，
+                //各端从同步计时确定性同拍）——重量语言写进步态本身
+                const int TugCycle = 28;
+                int cyc = (int)StateTimer % TugCycle;
                 float groundY = FindGroundY(NPC.Center - new Vector2(0f, 40f));
-                float wantX = MathHelper.Clamp((targetPlayer.Center.X - NPC.Center.X) * 0.03f, -3f, 3f);
-                NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, wantX, 0.08f);
+                float toward = MathHelper.Clamp((targetPlayer.Center.X - NPC.Center.X) * 0.02f, -1f, 1f);
+                if (cyc < 8) {
+                    //拽步：全身前倾发力，速度快速抬到 4.5
+                    NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, toward * 4.5f, 0.28f);
+                    NPC.rotation = NPC.rotation.AngleLerp(toward * 0.14f, 0.22f);
+                    if (cyc == 1) {
+                        SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.22f, Pitch = -0.7f, MaxInstances = 3 }, NPC.Center);
+                    }
+                }
+                else if (cyc < 18) {
+                    //滑段：锚在地上犁，指数刹车
+                    NPC.velocity.X *= 0.90f;
+                    NPC.rotation = NPC.rotation.AngleLerp(toward * 0.05f, 0.12f);
+                }
+                else {
+                    //喘口：近停，肩背起伏交给绘制层
+                    NPC.velocity.X *= 0.84f;
+                    NPC.rotation = NPC.rotation.AngleLerp(0f, 0.1f);
+                }
                 float feetTarget = groundY - NPC.height * 0.5f + 4f;
                 NPC.velocity.Y = MathHelper.Clamp((feetTarget - NPC.Center.Y) * 0.2f, -4f, 6f);
-                NPC.rotation = NPC.rotation.AngleLerp(NPC.velocity.X * 0.02f, 0.1f);
-                //拖锚火花：走动时锚在地上刮
-                if (!Main.dedServ && Math.Abs(NPC.velocity.X) > 0.8f && (int)StateTimer % 9 == 0) {
+                //拖锚火花：拽步与滑段里锚在地上刮，拽步更密
+                if (!Main.dedServ && Math.Abs(NPC.velocity.X) > 0.8f && (int)StateTimer % (cyc < 8 ? 4 : 9) == 0) {
                     PRTLoader.NewParticle<PRT_Spark>(
                         NPC.Center + new Vector2(-FacingSign * 44f, NPC.height * 0.5f - 4f),
                         new Vector2(-NPC.velocity.X * 0.4f, -Main.rand.NextFloat(0.4f, 1.2f)),
@@ -681,14 +710,16 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 }
             }
             else {
-                //半淹/深水：水下巡游（22px/f 的鲨鱼），锚收在背后
+                //半淹/深水：水下巡游改"摆尾冲刺-滑翔"节律（鲨不匀速），锚收在背后
                 Vector2 anchor = targetPlayer.Center + new Vector2(0f, 90f);
                 anchor.Y = MathHelper.Clamp(anchor.Y, surfaceY + 70f, RoomFloorY - 50f);
+                float burst = 0.5f + 0.5f * MathF.Sin(StateTimer * 0.17f + Seed);
+                float speedCap = 10f + 14f * burst * burst;
                 Vector2 desired = (anchor - NPC.Center) * 0.06f;
-                if (desired.Length() > 22f) {
-                    desired = desired.SafeNormalize(Vector2.Zero) * 22f;
+                if (desired.Length() > speedCap) {
+                    desired = desired.SafeNormalize(Vector2.Zero) * speedCap;
                 }
-                NPC.velocity = Vector2.Lerp(NPC.velocity, desired, 0.09f);
+                NPC.velocity = Vector2.Lerp(NPC.velocity, desired, 0.09f + burst * 0.05f);
                 NPC.rotation = NPC.rotation.AngleLerp(
                     MathHelper.Clamp(NPC.velocity.X * 0.03f, -0.4f, 0.4f), 0.12f);
                 SpawnWakeRipples(surfaceY);
@@ -1006,6 +1037,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.8f, Pitch = -0.3f, MaxInstances = 2 }, NPC.Center);
                 ShakeNearby(3f);
                 if (!Main.dedServ) {
+                    //砸点水幕：锚入水/入地激起的一片短命水墙
+                    UndrownedVFX.PushVeil(new Vector2(NPC.Center.X, lineY), 170f, 150f, 36);
                     for (int k = 0; k < 10; k++) {
                         PRTLoader.NewParticle<PRT_SumpSpray>(
                             new Vector2(NPC.Center.X + Main.rand.NextFloat(-20f, 20f), lineY - 4f),
@@ -1047,9 +1080,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             }
 
             if (t <= LungeWindup) {
-                //压低身位，锚拖后拉出火花沟
-                NPC.velocity *= 0.8f;
-                NPC.rotation = NPC.rotation.AngleLerp(lungeDir * 0.12f, 0.2f);
+                //压低身位，锚拖后拉出火花沟；末 4f 反向蓄势猛缩（pow8 后吸=爆发前的吸气）
+                float k = MathF.Pow(MathHelper.Clamp(t / (float)LungeWindup, 0f, 1f), 8f);
+                NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X * 0.8f, -lungeDir * 5f * k, 0.4f);
+                NPC.velocity.Y *= 0.8f;
+                NPC.rotation = NPC.rotation.AngleLerp(lungeDir * (0.12f + k * 0.14f), 0.2f);
                 if (!Main.dedServ && t % 3 == 0) {
                     PRTLoader.NewParticle<PRT_Spark>(
                         NPC.Center + new Vector2(-lungeDir * 48f, NPC.height * 0.5f - 4f),
@@ -1064,23 +1099,48 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             }
 
             if (t <= LungeWindup + LungeDashFrames) {
-                //定向直线：达速窗内接触伤害
+                //一帧点火 + 复利续力（越冲越急），达速窗内接触伤害
                 if (!lungeStarted) {
                     lungeStarted = true;
-                    SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.5f, Pitch = -0.1f, MaxInstances = 2 }, NPC.Center);
+                    //迟入端没跑过 t==1：lungeDir 还是 0，兜底取当前朝向；服务器点火帧补同步
+                    if (lungeDir == 0f) {
+                        lungeDir = FacingSign;
+                    }
+                    NPC.velocity.X = lungeDir * LungeSpeed;
+                    NPC.netUpdate = !VaultUtils.isClient;
+                    SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.55f, Pitch = -0.1f, MaxInstances = 2 }, NPC.Center);
+                    ShakeNearby(1.2f);
                 }
-                NPC.velocity.X = lungeDir * LungeSpeed;
+                NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X * 1.02f, -26f, 26f);
                 NPC.velocity.Y *= 0.8f;
                 if (Math.Abs(NPC.velocity.X) > 14f) {
                     NPC.damage = ContactDamage;
                 }
                 NPC.rotation = lungeDir * 0.1f;
+                //冲刺舷波：身前水沫+锚后犁沟双通道
+                if (!Main.dedServ) {
+                    PRTLoader.NewParticle<PRT_SumpSpray>(
+                        NPC.Center + new Vector2(lungeDir * 34f, NPC.height * 0.5f - 8f),
+                        new Vector2(lungeDir * Main.rand.NextFloat(2f, 4f), -Main.rand.NextFloat(1.5f, 3.5f)),
+                        Color.Lerp(BogWater, FoamWhite, Main.rand.NextFloat(0.4f, 0.8f)),
+                        Main.rand.NextFloat(0.4f, 0.6f))?.Configure(Main.rand.Next(10, 18));
+                    if (t % 2 == 0) {
+                        PRTLoader.NewParticle<PRT_Spark>(
+                            NPC.Center + new Vector2(-lungeDir * 50f, NPC.height * 0.5f - 4f),
+                            new Vector2(-lungeDir * Main.rand.NextFloat(1.5f, 3f), -Main.rand.NextFloat(0.6f, 2f)),
+                            Color.Lerp(RustOrange, Color.White, 0.5f),
+                            Main.rand.NextFloat(0.35f, 0.6f))?.Configure(true, Main.rand.Next(8, 14));
+                    }
+                }
                 return;
             }
 
-            //尽头刹车（重量拍）
-            NPC.velocity.X *= 0.8f;
-            NPC.rotation = NPC.rotation.AngleLerp(0f, 0.12f);
+            //尽头犁地刹车（重量拍：锚咬住地面把人拽停）
+            if (t == LungeWindup + LungeDashFrames + 1) {
+                SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.5f, Pitch = -0.6f, MaxInstances = 2 }, NPC.Center);
+            }
+            NPC.velocity.X *= 0.78f;
+            NPC.rotation = NPC.rotation.AngleLerp(-lungeDir * 0.08f, 0.12f);
             if (t >= LungeWindup + LungeDashFrames + LungeBrakeFrames) {
                 EndAttack(PhaseCooldown());
             }
@@ -1155,12 +1215,20 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 //破水跃出：固定抛物线（起跳点可读后弧顶必然可算），滞空=接触窗
                 if (!breachLeapSet) {
                     breachLeapSet = true;
+                    //迟入端没跑过隆起相：breachAim 还是零向量，兜底为当前预判位；
+                    //服务器起跳后补一发同步包，把跳出速度/位置推正给所有端
+                    if (breachAim == Vector2.Zero) {
+                        breachAim = AimPos(10f);
+                    }
+                    NPC.netUpdate = !VaultUtils.isClient;
                     float dx = breachAim.X - NPC.Center.X;
                     float flightT = MathF.Abs(BreachLaunchVy) * 2f / BreachGravity;
                     NPC.velocity = new Vector2(MathHelper.Clamp(dx / flightT, -14f, 14f), BreachLaunchVy);
                     SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.9f, Pitch = 0.1f, MaxInstances = 2 }, NPC.Center);
                     ShakeNearby(1.6f);
                     if (!Main.dedServ) {
+                        //破水瞬间：整片水幕被他顶起挂在破水点（shader 事件，活得比跃身久）
+                        UndrownedVFX.PushVeil(new Vector2(NPC.Center.X, surfaceY), 190f, 240f, 44);
                         for (int k = 0; k < 12; k++) {
                             PRTLoader.NewParticle<PRT_SumpSpray>(
                                 new Vector2(NPC.Center.X + Main.rand.NextFloat(-20f, 20f), surfaceY),
@@ -1192,6 +1260,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.8f, Pitch = -0.5f, MaxInstances = 2 },
                     new Vector2(NPC.Center.X, surfaceY));
                 if (!Main.dedServ) {
+                    //落水拍：矮宽水幕（比破水那记矮，读作"砸回去"）
+                    UndrownedVFX.PushVeil(new Vector2(NPC.Center.X, surfaceY), 220f, 130f, 34);
                     for (int k = 0; k < 8; k++) {
                         PRTLoader.NewParticle<PRT_SumpSpray>(
                             new Vector2(NPC.Center.X + Main.rand.NextFloat(-18f, 18f), surfaceY),
@@ -1271,14 +1341,20 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 return;
             }
 
+            //涡盘参数各端从同一时间线推导：spin=t*0.09 与涡轨锚同源，可见环半径=锚轨半径
+            float orbitT = MathF.Max(0f, t - WhirlAnchorSpawnAt);
+            float trackPx = MathHelper.Clamp(orbitT * 12f, 0f, WhirlOrbitRadius);
+
             if (t <= WhirlWindupFrames) {
-                //沉底居中收锚绕头，水面出现旋纹
+                //沉底居中收锚绕头，水面旋盘随蓄力浮现（预告即承诺：盘环=锚轨）
                 Vector2 want = new(RoomCenterX, RoomFloorY - 70f);
                 NPC.velocity = Vector2.Lerp(NPC.velocity, (want - NPC.Center) * 0.1f, 0.14f);
                 if (!whirlCued && t > 4) {
                     whirlCued = true;
                     SoundEngine.PlaySound(SoundID.Drown with { Volume = 0.7f, Pitch = -0.7f, MaxInstances = 1 }, NPC.Center);
                 }
+                UndrownedVFX.FeedWhirl(NPC.Center, surfaceY, WhirlOrbitRadius * 1.55f,
+                    trackPx, t * 0.09f, 0.55f * t / WhirlWindupFrames);
                 if (t == WhirlAnchorSpawnAt && !VaultUtils.isClient) {
                     //涡轨锚：服务器生成，轨道参数随 spawn 包过线
                     Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero,
@@ -1289,9 +1365,12 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             }
 
             if (t <= WhirlWindupFrames + WhirlSpinFrames) {
-                //旋涡：拉力只作用于水中玩家且只推本机玩家（受害端本地裁决，服务器不推人）
+                //旋涡：拉力只作用于水中玩家且只推本机玩家（受害端本地裁决，服务器不推人）；
+                //具名空窗：双砖柱顶与 520px 外不吃拉力，锚轨环内侧也是安全带
                 NPC.velocity *= 0.9f;
                 NPC.rotation += 0.05f;
+                UndrownedVFX.FeedWhirl(NPC.Center, surfaceY, WhirlOrbitRadius * 1.55f,
+                    trackPx, t * 0.09f, 1f);
                 if (!Main.dedServ) {
                     Player lp = Main.LocalPlayer;
                     if (lp.active && !lp.dead && lp.wet
@@ -1299,21 +1378,25 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                         Vector2 pull = (NPC.Center - lp.Center).SafeNormalize(Vector2.Zero) * WhirlPull;
                         lp.velocity += pull;
                     }
-                    //水面旋纹（表现）
-                    if (t % 5 == 0) {
+                    //向心吸入的水沫（涡外缘被拽进来，方向与拉力同源）
+                    if (t % 3 == 0) {
                         float ang = t * 0.23f + Seed;
-                        PRTLoader.NewParticle<PRT_SumpSpray>(
-                            new Vector2(NPC.Center.X + MathF.Cos(ang) * 120f, surfaceY + 2f),
-                            new Vector2(-MathF.Sin(ang) * 2.4f, -0.6f),
-                            BogWater * 0.9f, Main.rand.NextFloat(0.35f, 0.6f))?.Configure(Main.rand.Next(12, 20));
+                        Vector2 from = new(NPC.Center.X + MathF.Cos(ang) * Main.rand.NextFloat(200f, 380f),
+                            surfaceY + Main.rand.NextFloat(0f, 30f));
+                        PRTLoader.NewParticle<PRT_SumpSpray>(from,
+                            (new Vector2(NPC.Center.X, surfaceY) - from) * 0.03f - new Vector2(0f, 0.5f),
+                            BogWater * 0.9f, Main.rand.NextFloat(0.35f, 0.6f))?.Configure(Main.rand.Next(14, 22));
                     }
                 }
                 return;
             }
 
-            //收势眩晕（全场最大输出窗）
+            //收势眩晕（全场最大输出窗）：涡盘减速塌掉，身体眩晃
+            float downK = (t - WhirlWindupFrames - WhirlSpinFrames) / (float)WhirlDownFrames;
+            UndrownedVFX.FeedWhirl(NPC.Center, surfaceY, WhirlOrbitRadius * 1.55f,
+                trackPx, t * 0.09f * (1f - downK * 0.6f), MathHelper.Clamp(1f - downK * 1.4f, 0f, 1f));
             NPC.velocity *= 0.9f;
-            NPC.rotation = NPC.rotation.AngleLerp(0f, 0.08f);
+            NPC.rotation = NPC.rotation.AngleLerp(MathF.Sin(t * 0.4f) * 0.12f * (1f - downK), 0.1f);
             if (t >= WhirlWindupFrames + WhirlSpinFrames + WhirlDownFrames) {
                 EndAttack(PhaseCooldown());
             }
@@ -1348,6 +1431,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             if (!riteRoared && t >= RiteRoarAt) {
                 //咆哮定身（撕开立管封链），第二次变调
                 riteRoared = true;
+                bodyFlashTimer = 2;
                 SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.75f, Pitch = rite == 1 ? -0.45f : -0.2f, MaxInstances = 1 }, NPC.Center);
                 SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.7f, Pitch = 0.3f, MaxInstances = 2 }, NPC.Center);
                 //相位切换的短屏幕色倾（IMPL-E 客户端演出口，距离门自守）
@@ -1358,7 +1442,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 ShakeNearby(2.5f);
             }
 
-            //阶梯涨水：服务器一次性 tile 事务 ×4（无逐帧写入），客户端同拍演水声
+            //阶梯涨水：服务器一次性 tile 事务 ×4（无逐帧写入），客户端同拍演水声+立管泄洪柱
             for (int step = 0; step < RiteStepBeats.Length; step++) {
                 if (t == RiteStepBeats[step] && lastRiteStep < step) {
                     lastRiteStep = step;
@@ -1371,7 +1455,21 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                         MaxInstances = 2
                     }, NPC.Center);
                     ShakeNearby(1f + step * 0.3f);
+                    //每步一柱：从管口灌到新水面（水位每涨一档柱子就短一截=涨水的可见进度条）
+                    if (!Main.dedServ && HasRoom) {
+                        PushPipeColumns(RiteStepSurface(rite, step),
+                            step + 1 < RiteStepBeats.Length ? RiteStepBeats[step + 1] - RiteStepBeats[step] + 8 : 30);
+                    }
                 }
+            }
+            //首柱：咆哮拍起灌到仪式前水面
+            if (!Main.dedServ && HasRoom && riteRoared && t == RiteRoarAt) {
+                PushPipeColumns(rite == 1 ? FloodGalleryRoom.AnkleSurfaceRel : FloodGalleryRoom.Scale1SurfaceRel,
+                    RiteStepBeats[0] - RiteRoarAt + 8);
+            }
+            //涨水期持续低鸣（微幅高频，不与步进重拍叠成大震）
+            if (t > RiteRoarAt && t % 6 == 0) {
+                ShakeNearby(0.5f);
             }
             if (!Main.dedServ && HasRoom && t % 2 == 0) {
                 SpawnPipeSpray();
@@ -1383,6 +1481,20 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 if (!VaultUtils.isClient) {
                     ChangeState(StateStalk);
                 }
+            }
+        }
+
+        /// <summary>两根立管各起一柱泄洪（管口顶起灌，落点=指定水面行）</summary>
+        private void PushPipeColumns(int surfaceRel, int frames) {
+            float topY = (roomOriginY + FloodGalleryRoom.PipeTopRel + 1) * 16f;
+            float bottomY = (roomOriginY + surfaceRel) * 16f;
+            if (bottomY - topY < 48f) {
+                return;
+            }
+            for (int side = 0; side < 2; side++) {
+                int col = side == 0 ? FloodGalleryRoom.PipeLeftCol : FloodGalleryRoom.PipeRightCol;
+                float x = (roomOriginX + col + 1f) * 16f;
+                UndrownedVFX.PushColumn(new Vector2(x, topY), bottomY - topY, 30f, frames);
             }
         }
 
@@ -1493,6 +1605,18 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 }
             }
 
+            //泄洪拽流层：整槽水面向格栅口汇流（shader 屏幕层，各端从节拍确定性自演）
+            if (!Main.dedServ && HasRoom && t >= DeathDrainBeats[0] && t < DeathTotal - 6) {
+                float strength = MathHelper.Clamp((t - DeathDrainBeats[0]) / 20f, 0f, 1f)
+                    * MathHelper.Clamp((DeathTotal - 6 - t) / 24f, 0f, 1f);
+                Rectangle water = new(
+                    (roomOriginX + FloodGalleryRoom.InteriorLeft) * 16,
+                    (roomOriginY + FloodGalleryRoom.Scale2SurfaceRel) * 16,
+                    (FloodGalleryRoom.InteriorRight - FloodGalleryRoom.InteriorLeft + 1) * 16,
+                    (FloodGalleryRoom.FloorRel - FloodGalleryRoom.Scale2SurfaceRel) * 16);
+                UndrownedVFX.FeedDrain(water, FloodGalleryRoom.GrateWorldPos(RoomOrigin), strength);
+            }
+
             //阶梯泄洪：五步一次性事务；他被水流拽向格栅
             if (t >= DeathDrainBeats[0] && t < DeathGrabAt) {
                 float k = (t - DeathDrainBeats[0]) / (float)(DeathGrabAt - DeathDrainBeats[0]);
@@ -1579,6 +1703,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             if (Main.dedServ) {
                 return;
             }
+            bodyFlashTimer = 2;
             //受击喷水不喷血（泡胀尸肉的材质回答）
             for (int i = 0; i < 3; i++) {
                 PRTLoader.NewParticle<PRT_GhostRainDrop>(NPC.Center + Main.rand.NextVector2Circular(20f, 30f),
@@ -1696,21 +1821,41 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             Vector2 handPos = NPC.Center + new Vector2(FacingSign * 14f, -20f);
             if (anchorProj != null) {
                 if ((int)anchorProj.ai[2] != UndrownedAnchor.ModeOrbit) {
-                    DrawChainLine(spriteBatch, chainTex, handPos, anchorProj.Center, drawColor, alpha);
+                    //嵌定后链线绷直（sag→0.2）：伤害线的形状变化即预告
+                    float sagMul = (int)anchorProj.ai[0] == 1 ? 0.2f : 1f;
+                    DrawChainLine(spriteBatch, chainTex, handPos, anchorProj.Center, drawColor, alpha, sagMul);
                 }
             }
             else {
                 Vector2 anchorPos = HeldAnchorPos();
                 float anchorRot = HeldAnchorRot();
+                //蓄力末段的抡锚拖影：旋转的重物用旋转残影说话，不是贴图平移
+                if (State == StateAnchorThrow && ThrowPhase == 0) {
+                    float kk = MathF.Pow(MathHelper.Clamp((int)StateTimer / (float)ThrowWindup, 0f, 1f), 6f);
+                    for (int g = 1; g <= 2 && kk > 0.3f; g++) {
+                        Vector2 gpos = ThrowHeldPos(MathF.Max(0f, kk - g * 0.18f));
+                        DrawAnchor(spriteBatch, anchorTex, gpos, anchorRot + FacingSign * g * 0.16f,
+                            drawColor, alpha * bodyFade * (0.34f - g * 0.12f));
+                    }
+                }
                 DrawChainLine(spriteBatch, chainTex, handPos, anchorPos, drawColor, alpha * bodyFade);
                 DrawAnchor(spriteBatch, anchorTex, anchorPos, anchorRot, drawColor, alpha * bodyFade);
             }
 
-            //躯体：暗缘压边 + 尸青主体（借光照色保持房内明暗）
+            //躯体：暗缘压边 → 尸青材质主层
+            //（shader=明度重映射+锈斑+湿亮巡身+水线分割水下扰动；缺编回退旧乘色）
             Color rim = CorpseDeep * (0.75f * alpha * bodyFade);
             DrawBodyAt(spriteBatch, bodyTex, frame, NPC.Center + new Vector2(0f, 2f), rim, 1.07f);
-            Color body = Color.Lerp(drawColor, CorpseTeal, 0.55f) * (alpha * bodyFade);
-            DrawBodyAt(spriteBatch, bodyTex, frame, NPC.Center, body, 1f);
+            SpriteEffects bodyFx = FacingSign >= 0f ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            //shader 自带水下压暗，主层衰减比回退路径浅（0.55 vs 0.4，双重压暗只留一半）
+            float shaderFade = submerged ? 0.55f : 1f;
+            float waterY = HasRoom ? WaterSurfaceY() : float.MaxValue;
+            if (!UndrownedVFX.DrawBody(spriteBatch, bodyTex, frame, NPC.Center + BodyJitter(), NPC.rotation,
+                BodyScale, bodyFx, drawColor, alpha * shaderFade, waterY, Seed,
+                submerged ? 0.2f : 1f, bodyFlashTimer / 2f)) {
+                Color body = Color.Lerp(drawColor, CorpseTeal, 0.55f) * (alpha * bodyFade);
+                DrawBodyAt(spriteBatch, bodyTex, frame, NPC.Center, body, 1f);
+            }
 
             DrawEyeGlow(spriteBatch, alpha);
             return false;
@@ -1735,17 +1880,21 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             return new Rectangle(0, idx * frameH, tex.Width, frameH);
         }
 
-        private void DrawBodyAt(SpriteBatch sb, Texture2D tex, Rectangle frame, Vector2 pos, Color color, float scaleMul) {
-            const float scale = 1.85f;
-            SpriteEffects fx = FacingSign >= 0f ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            //死亡演出的颈椎抖动/入场帧抖动
-            Vector2 jitter = Vector2.Zero;
+        internal const float BodyScale = 1.85f;
+
+        /// <summary>入场直身段的颈椎帧抖动（本地表现）</summary>
+        private Vector2 BodyJitter() {
             int t = (int)StateTimer;
             if (State == StateEmerge && (int)StateParam == EmergeVariantThrone && t >= EmergeStandAt && t < EmergeFaceAt) {
-                jitter = new Vector2(MathF.Sin(t * 3.1f) * 1.4f, 0f);
+                return new Vector2(MathF.Sin(t * 3.1f) * 1.4f, 0f);
             }
-            sb.Draw(tex, pos + jitter - Main.screenPosition, frame, color, NPC.rotation,
-                new Vector2(frame.Width * 0.5f, frame.Height * 0.5f), scale * scaleMul, fx, 0f);
+            return Vector2.Zero;
+        }
+
+        private void DrawBodyAt(SpriteBatch sb, Texture2D tex, Rectangle frame, Vector2 pos, Color color, float scaleMul) {
+            SpriteEffects fx = FacingSign >= 0f ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            sb.Draw(tex, pos + BodyJitter() - Main.screenPosition, frame, color, NPC.rotation,
+                new Vector2(frame.Width * 0.5f, frame.Height * 0.5f), BodyScale * scaleMul, fx, 0f);
         }
 
         /// <summary>持锚位：状态推导（蓄力过顶/拖行在后/涡轨绕头由弹幕接管）</summary>
@@ -1757,7 +1906,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             if (State == StateAnchorThrow && ThrowPhase == 0) {
                 //过顶高举，末段 pow6 向后猛吸
                 float k = MathF.Pow(MathHelper.Clamp(t / (float)ThrowWindup, 0f, 1f), 6f);
-                return NPC.Center + new Vector2(-FacingSign * (10f + k * 30f), -58f - k * 14f);
+                return ThrowHeldPos(k);
             }
             if (State == StateTideSlam && t <= SlamWindup) {
                 return NPC.Center + new Vector2(0f, -60f);
@@ -1769,6 +1918,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             //常态拖在身后
             return NPC.Center + new Vector2(-FacingSign * 44f, NPC.height * 0.5f - 6f);
         }
+
+        /// <summary>蓄力吸锚轨迹的参数式（k=pow6 进度；拖影按更早的 k 复算同一条轨迹）</summary>
+        private Vector2 ThrowHeldPos(float k)
+            => NPC.Center + new Vector2(-FacingSign * (10f + k * 30f), -58f - k * 14f);
 
         private float HeldAnchorRot() {
             if (State == StateAnchorThrow && ThrowPhase == 0) {
@@ -1790,13 +1943,14 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 lightColor.MultiplyRGB(RustOrange) * alpha, rot, origin, scale, SpriteEffects.None, 0f);
         }
 
-        /// <summary>锚链：悬链下垂步进铺 Chain22，重染水藻绿灰</summary>
-        internal static void DrawChainLine(SpriteBatch sb, Texture2D chainTex, Vector2 from, Vector2 to, Color lightColor, float alpha) {
+        /// <summary>锚链：悬链下垂步进铺 Chain22，重染水藻绿灰。
+        /// sagMul：1=自然垂弧，嵌定绷线期传 ~0.2（伤害线绷直=危险的形状变化本身就是预告）</summary>
+        internal static void DrawChainLine(SpriteBatch sb, Texture2D chainTex, Vector2 from, Vector2 to, Color lightColor, float alpha, float sagMul = 1f) {
             Vector2 origin = chainTex.Size() * 0.5f;
             float dist = Vector2.Distance(from, to);
             int links = Math.Clamp((int)(dist / 12f), 2, 90);
             //下垂量随链长（悬链弧近似：中点下坠）
-            float sag = MathHelper.Clamp(dist * 0.14f, 4f, 46f);
+            float sag = MathHelper.Clamp(dist * 0.14f, 4f, 46f) * sagMul;
             Color tint = lightColor.MultiplyRGB(new Color(120, 142, 128)) * (0.9f * alpha);
             Vector2 prev = from;
             for (int i = 1; i <= links; i++) {

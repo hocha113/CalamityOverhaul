@@ -56,6 +56,42 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
         /// <summary>玩家推雾强度：1=身位处全清，0.7=压到三成，贴身留薄雾更有氛围</summary>
         public static float PlayerPushStrength = 0.7f;
 
+        //===贴地残雾与瀑布雾（P1-pkg1）===
+
+        /// <summary>贴地雾带高（px，≈7 tile）。与 KiyumeHoundMetrics.GroundFogBandPx 数值同源，改一处必改两处</summary>
+        public static float GroundFogHeightPx = 110f;
+        /// <summary>地下裙边（px），盖坡坎接缝</summary>
+        public static float GroundFogSkirtPx = 30f;
+        /// <summary>贴地雾带体不透明度系数</summary>
+        public static float GroundFogAlpha = 0.55f;
+        /// <summary>潮汐露出跨度（px）：雾线上方 6 tile 内从 0 长回满强。
+        /// 与 KiyumeHoundMetrics.GroundExposeSpanPx 数值同源，改一处必改两处</summary>
+        public static float GroundFogExposeSpanPx = 96f;
+        /// <summary>贴地雾风相（px/s，正=向东）：雾从湖里上岸往村里渗</summary>
+        public static float GroundWindPxPerSec = 12f;
+        /// <summary>瀑口落差阈值（px，4 tile 覆盖檐口）</summary>
+        public static float FogFallThresholdPx = 64f;
+        /// <summary>每屏雾帘数上限（按落差降序取）</summary>
+        public static int FogFallMax = 6;
+
+        //===雾海质感与体积（P1-pkg2）===
+
+        /// <summary>浪冠撕裂混合：rim 被高频噪声撕成断续浪光，0=旧的连续亮线</summary>
+        public static float CrestBreak = 0.8f;
+        /// <summary>近表半透：雾面下 120px 内主体透明度让出的比例（刚沉的屋顶影影绰绰），0=旧遮蔽。
+        /// 感知差方向偏袒玩家（看着略可见、实际已隐蔽），裁决 2 免侦测联动</summary>
+        public static float NearSurfaceGhost = 0.26f;
+        /// <summary>灯火倒影强度：沉在雾面下的窗火在海面拉竖条反光（仅背景通道）</summary>
+        public static float ReflectGlow = 0.6f;
+        /// <summary>蒸腾柱化幅度：湖上雾墙一柱一柱升腾（仅背景通道）</summary>
+        public static float SteamColumnar = 0.44f;
+        /// <summary>远带体积雾不透明度：0=整层关闭（降级开关，恢复两层现状）</summary>
+        public static float FarLayerAlpha = 0.30f;
+        /// <summary>远带视差系数：相机平移折算比，越小离得越远</summary>
+        public static float FarParallax = 0.85f;
+        /// <summary>斜射天光楔强度：血暮天漏下的烬色光柱（仅滤镜通道），0=无痕关闭</summary>
+        public static float GodrayStrength = 0.7f;
+
         //潮位轮换表：退潮 / 半涨 / 涨满 / 交给真实潮汐
         private static readonly float[] cycleTides = [0f, 0.5f, 1f, -1f];
         private static readonly string[] cycleNames = [

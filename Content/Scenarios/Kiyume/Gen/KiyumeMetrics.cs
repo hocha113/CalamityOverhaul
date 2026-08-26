@@ -189,5 +189,131 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen
         internal static void CacheMacroSeed() {
             MacroSeed = Main.ActiveWorldFileData?.SeedText?.GetHashCode() ?? 0;
         }
+
+        //════════ 结构常量（P3 各包调音位；本节骨架由 A 包立，B/C/D/E 按下方锚行追加各自小节） ════════
+
+        //村西鸟居锚点（裁决7）：620±6，入画即见，不与出生平台（SpawnX±SpawnFlatCols/2）重叠
+        internal const int ToriiWestX = 620;
+        internal const int ToriiWestJitterCols = 6;
+        //出生留白半开区间 [Left,Right)=[602,718)：与 KiyumeVillage 现行 spawnPad 判定同口径，
+        //PlanReservations 以此登记 ReservedSpans（B 包重构村落后统一改读预留表）
+        internal const int SpawnReservePadCols = 24;
+        internal static int SpawnReserveLeft => SpawnX - SpawnFlatCols - SpawnReservePadCols;
+        internal static int SpawnReserveRight => SpawnX + SpawnFlatCols + SpawnReservePadCols;
+        /// <summary>村落木平台统一样式：幽木平台 frameY=16*18（Item.cs 1818 placeStyle=16 对源）</summary>
+        internal const short PlatformFrameY = 288;
+
+        //──结构常量锚：B 村落纵深（组团/户型/高床/地窖）──
+
+        //组团：2-4 栋共享窄巷成组，组团间留大间距保剪影呼吸
+        internal const int VillageClusterMin = 2;
+        internal const int VillageClusterMax = 4;      //含
+        internal const int VillageAlleyMin = 3;        //窄巷山墙间距（含）
+        internal const int VillageAlleyMax = 5;        //含
+        internal const int VillageClusterGapMin = 18;  //组团间距（含）
+        internal const int VillageClusterGapMax = 34;  //含
+        //高床户型：壳体连楼板整体抬起，床下全通
+        //净空取 3：计划书写 2 格，但玩家碰撞盒 42px 进不去 32px，2 格即死规格（B 包报告有账）
+        internal const float StiltHutChance = 0.25f;
+        internal const int StiltClearRows = 3;                        //床下净空行数
+        internal const int StiltLiftRows = StiltClearRows + 1;        //抬升=净空+楼板1厚
+        //地窖户型：竖穴+绳梯+蓝朝墙内膛；墙种与 KiyumeStructures.CellarWall 同源，改一处必改两处
+        internal const float CellarChance = 0.30f;
+        internal const int CellarInnerW = 6;
+        internal const int CellarInnerH = 4;
+        internal const int CellarShaftRows = 3;        //地表行到内膛顶的竖穴行数
+        //内饰：每户按内膛实宽抽件，放不下即跳过
+        internal const int InteriorPieceMin = 2;
+        internal const int InteriorPieceMax = 4;       //含
+        internal const float ButsudanChance = 0.34f;   //佛坛入池率（与旧点灯率同源）
+        //屋顶路线硬约束（B 包建壳时校验）
+        internal const int RoofStepMaxDh = 4;          //组团内相邻檐口高差上限
+        internal const int RoofGapMax = 6;             //山墙间距上限（巷宽 3-5 天然满足）
+
+        //──结构常量锚：C 信仰轴线（鸟居/村社/路祠/石阶/山顶祠）──
+        //东口鸟居 / 送葬道口素鸟居锚点（±抽签列；西口锚 ToriiWestX 见上）
+        internal const int ToriiEastX = 1668;
+        internal const int ToriiEastJitterCols = 4;
+        internal const int ToriiFuneralX = 1712;
+        internal const int ToriiFuneralJitterCols = 4;
+        //村社预留段 [L,R)：compound 靠西落位，东端 ≥12 列后院空地留给 E 包社后井
+        internal const int ShrineSpanL = 1150;
+        internal const int ShrineSpanR = 1210;
+        //村社台基：StoneSlab 44 列 ×3 行，拜殿 26 宽居中（两端各出 9）
+        internal const int ShrineBaseCols = 44;
+        internal const int ShrineBaseRows = 3;
+        //路边祠座数（村缘 1 + 枯林 2-3，避开 E 包墓园窗 [1980,2240]）
+        internal const int WaysideCountMin = 3;
+        internal const int WaysideCountMax = 4;
+        //山道石阶：起点 / 级宽 / 级差硬上限 / 歇脚节奏
+        internal const int StairStartX = 2560;
+        internal const int StairSegColsMin = 6;
+        internal const int StairSegColsMax = 10;
+        internal const int StairDropMax = 3;
+        internal const int StairRestStepsMin = 5;
+        internal const int StairRestStepsMax = 7;
+        internal const int StairRestColsMin = 4;
+        internal const int StairRestColsMax = 6;
+        //山顶平台 [L,R)：行 ~310（基准曲线现值），雾线高潮 402 之上（雾上回望）
+        internal const int SummitL = 3080;
+        internal const int SummitR = 3094;
+        //──结构常量锚：D 水缘（栈桥/船骸/苇塘）──
+
+        //栈桥：东岸端锚点±抖动（列）、向西全长与断口列数；断口以西只剩歪桩残根
+        //锚点 332（W4 定案，原 372）：实际水线在 x≈308（FillLake 右界 360 是灌水上限不是岸线，
+        //湖带 wobble ±7 再摆 ±19 列），断口区间 root-len..root-len+break=[272,308] 才真悬湖；
+        //锚点下限受滩涂带界 320 约束（-8 抖动后 root≥324，岸端永在滩上）
+        internal const int JettyRootX = 332;
+        internal const int JettyRootJitter = 8;
+        internal const int JettyLenMin = 44;
+        internal const int JettyLenMax = 60;
+        internal const int JettyBreakMin = 8;
+        internal const int JettyBreakMax = 12;
+        //桥面行：水面 470 上 6 行、滩涂西缘地板 466 上 2 行；桥面列 FloorTop 不回写
+        internal const int JettyDeckRow = 464;
+        //船骸：滩上艘数（翻扣/侧倾抽签不重复），另水下龙骨肋固定 1 副
+        internal const int WreckShoreMin = 2;
+        internal const int WreckShoreMax = 3;
+        //苇塘窗 [L,R)（裁决17：东缘退到 600，让出生留白 [602,718)）；
+        //与 KiyumeStructures 苇丛签名 ReedWindowL/R 数值同源，改一处必改两处
+        internal const int ReedPondLeft = 560;
+        internal const int ReedPondRight = 600;
+        internal const int ReedPondCellsMin = 2;
+        internal const int ReedPondCellsMax = 4;
+        //苇杆步距（列，含杆宽 1，即间距 1-3 列）
+        internal const int ReedStepMin = 2;
+        internal const int ReedStepMax = 4;
+        //──结构常量锚：E 微区（井/灯道/墓地/旱田/告示）──
+
+        //井：村 2 口（西/东段各一，窗口避开出生留白 [602,718) 与村社段 [1150,1210)）+ 社后 1 口；
+        //筒 3 宽深 10-14、底水 2 格——竖井净空 ≥8 行满足 P4 井手位形，井沿中心入 WellMouths
+        internal const int WellWestL = 740;
+        internal const int WellWestR = 1120;
+        internal const int WellEastL = 1240;
+        internal const int WellEastR = 1590;
+        internal const int WellDepthMin = 10;
+        internal const int WellDepthMax = 14;
+        //灯笼列道：VillageLeft+30 → GroveLeft-30，柱距 26-34 列；双臂(成对)/单臂 6:4
+        internal const int LanternGapMin = 26;
+        internal const int LanternGapMax = 34;
+        internal const float LanternPairChance = 0.6f;
+        //墓地送葬道：枯林 [1980,2240] 抽 60-90 列窗；坟 8-14、三成卒塔婆、沿道石灯 4-6 对
+        internal const int GraveWindowL = 1980;
+        internal const int GraveWindowR = 2240;
+        internal const int GraveSpanMin = 60;
+        internal const int GraveSpanMax = 90;
+        internal const int GraveCountMin = 8;
+        internal const int GraveCountMax = 14;
+        internal const float SotobaChance = 0.3f;
+        internal const int GraveLanternPairsMin = 4;
+        internal const int GraveLanternPairsMax = 6;
+        //旱田（裁决17）：[516,558] 窗内 34 列平整 + 5 桩，注册 ScarecrowPlot（守田人 null 则自探）
+        internal const int FieldWindowL = 516;
+        internal const int FieldWindowR = 558;
+        internal const int FieldCols = 34;
+        internal const int FieldPostCount = 5;
+        //怪谈告示牌：4-5 面（文案池 5 条抽签不重复，计划书 4-6 的上限收到池深）
+        internal const int SignCountMin = 4;
+        internal const int SignCountMax = 5;
     }
 }

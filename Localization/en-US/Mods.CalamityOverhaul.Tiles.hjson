@@ -22,3 +22,4 @@ OldNetLedgerDockTile.MapEntry: Ledger Expansion Dock
 OldNetColdNodeTile.MapEntry: Cold Storage Node
 OldNetEscrowTile.MapEntry: Escrow Contract Terminal
 OldNetCipherVaultTile.MapEntry: Cipher Vault Matrix
+GaolRoomSealTile.MapEntry: Gaol Cell Seal

@@ -17,20 +17,26 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OldNetHud { get; set; }
         public static Asset<Effect> OldNetVault { get; set; }
         public static Asset<Effect> OldNetWarden { get; set; }
+        public static Asset<Effect> LanternWardenCone { get; set; }
+        public static Asset<Effect> LanternWardenLamp { get; set; }
         public static Asset<Effect> PowerSFShader { get; set; }
         public static Asset<Effect> EowAcid { get; set; }
         public static Asset<Effect> EowGeyser { get; set; }
+        public static Asset<Effect> BRelicMawEtch { get; set; }
         public static Asset<Effect> SkeletronCurseVeil { get; set; }
         public static Asset<Effect> SkeletronGhostArm { get; set; }
         public static Asset<Effect> SkeletronSpinStorm { get; set; }
         public static Asset<Effect> SkeletronCurseFlame { get; set; }
         public static Asset<Effect> SkeletronBoneMatter { get; set; }
         public static Asset<Effect> SkeletronSpecterRibbon { get; set; }
+        public static Asset<Effect> StitcherThread { get; set; }
+        public static Asset<Effect> StitcherBoneDress { get; set; }
         public static Asset<Effect> GolemSunTelegraph { get; set; }
         public static Asset<Effect> GolemMagmaVein { get; set; }
         public static Asset<Effect> GolemSolarFlare { get; set; }
         public static Asset<Effect> GolemTrapWork { get; set; }
         public static Asset<Effect> GolemThruster { get; set; }
+        public static Asset<Effect> BRelicStoneGuard { get; set; }
         public static Asset<Effect> CultistRuneSigil { get; set; }
         public static Asset<Effect> CultistVeil { get; set; }
         public static Asset<Effect> CultistPlanet { get; set; }
@@ -39,10 +45,17 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> FishronTsunami { get; set; }
         public static Asset<Effect> FishronTelegraph { get; set; }
         public static Asset<Effect> FishronGrabVeil { get; set; }
+        public static Asset<Effect> UndrownedBody { get; set; }
+        public static Asset<Effect> UndrownedTideWall { get; set; }
+        public static Asset<Effect> UndrownedWhirl { get; set; }
+        public static Asset<Effect> UndrownedBreachVeil { get; set; }
+        public static Asset<Effect> UndrownedFloodFlow { get; set; }
+        public static Asset<Effect> UndrownedMineGlow { get; set; }
         public static Asset<Effect> EmpressLanceBeam { get; set; }
         public static Asset<Effect> EmpressSunbeam { get; set; }
         public static Asset<Effect> EmpressAurora { get; set; }
         public static Asset<Effect> EmpressScreenPrism { get; set; }
+        public static Asset<Effect> BRelicAuroraWing { get; set; }
         public static Asset<Effect> QueenPrismBeam { get; set; }
         public static Asset<Effect> QueenPrismCrystal { get; set; }
         public static Asset<Effect> QueenGaleField { get; set; }
@@ -52,15 +65,20 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> EocBloodFog { get; set; }
         public static Asset<Effect> EocBloodTrail { get; set; }
         public static Asset<Effect> EocTelegraph { get; set; }
+        public static Asset<Effect> BRelicIrisMark { get; set; }
         public static Asset<Effect> DeerBlizzardVeil { get; set; }
         public static Asset<Effect> DeerFrostFissure { get; set; }
+        public static Asset<Effect> BRelicWhiteoutVeil { get; set; }
         public static Asset<Effect> MLordDeathray { get; set; }
         public static Asset<Effect> MLordEclipseSky { get; set; }
         public static Asset<Effect> MLordCelestial { get; set; }
         public static Asset<Effect> MLordBlackFlash { get; set; }
         public static Asset<Effect> MLordBlackFlashScreen { get; set; }
+        public static Asset<Effect> BRelicBlackFlash { get; set; }
         public static Asset<Effect> QueenHoneyPool { get; set; }
         public static Asset<Effect> QueenBeeTelegraph { get; set; }
+        public static Asset<Effect> BRelicBeeVortex { get; set; }
+        public static Asset<Effect> BRelicWaxShell { get; set; }
         public static Asset<Effect> PlanteraVine { get; set; }
         public static Asset<Effect> PlanteraSporeFog { get; set; }
         public static Asset<Effect> PlanteraBloom { get; set; }
@@ -69,6 +87,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> WofRetinaBeam { get; set; }
         public static Asset<Effect> WofBloodCurtain { get; set; }
         public static Asset<Effect> WofBloodSea { get; set; }
+        public static Asset<Effect> BRelicThroatTongue { get; set; }
+        public static Asset<Effect> BRelicRetinaLock { get; set; }
         public static Asset<Effect> BKSGelSurge { get; set; }
         public static Asset<Effect> BKSGelPool { get; set; }
         public static Asset<Effect> WarpShader { get; set; }
@@ -84,6 +104,13 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> PrimeImpactFrame { get; set; }
         public static Asset<Effect> PrimeHeatWake { get; set; }
         public static Asset<Effect> PrimeAfterimage { get; set; }
+        public static Asset<Effect> BRelicIonArm { get; set; }
+        public static Asset<Effect> OverseerIronCast { get; set; }
+        public static Asset<Effect> OverseerPressBeam { get; set; }
+        public static Asset<Effect> OverseerSlagFlow { get; set; }
+        public static Asset<Effect> OverseerPendArc { get; set; }
+        public static Asset<Effect> OverseerBreakFrame { get; set; }
+        public static Asset<Effect> ProofingHallMelt { get; set; }
         public static Asset<Effect> DestroyerThermalOutline { get; set; }
         public static Asset<Effect> DestroyerSlash { get; set; }
         public static Asset<Effect> DestroyerEXSlash { get; set; }
@@ -93,6 +120,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> TwinsEyeOverlay { get; set; }
         public static Asset<Effect> TwinsDeathRayBeam { get; set; }
         public static Asset<Effect> TwinsChargeVortex { get; set; }
+        public static Asset<Effect> BRelicTwinTether { get; set; }
+        public static Asset<Effect> BRelicTwinBurst { get; set; }
         public static Asset<Effect> MechSky { get; set; }
         public static Asset<Effect> SulfurSeaSky { get; set; }
         public static Asset<Effect> TzeentchSky { get; set; }
@@ -159,6 +188,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> EncyclopediaKnowledge { get; set; }
         public static Asset<Effect> ElysiumHalo { get; set; }
         public static Asset<Effect> ElysiumStaff { get; set; }
+        public static Asset<Effect> DiscipleForm { get; set; }
+        public static Asset<Effect> HorsemanForm { get; set; }
         public static Asset<Effect> SerpentTrail { get; set; }
         public static Asset<Effect> CelestialStar { get; set; }
         public static Asset<Effect> BrimstoneDomain { get; set; }
@@ -289,6 +320,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaInkSplat { get; set; }
         public static Asset<Effect> KikasaUmbrella { get; set; }
         public static Asset<Effect> KikasaHound { get; set; }
+        public static Asset<Effect> KiyumeKaidan { get; set; }
         public static Asset<Effect> KikasaDream { get; set; }
         public static Asset<Effect> KikasaDreamSky { get; set; }
         public static Asset<Effect> KikasaDreamFog { get; set; }
@@ -359,9 +391,22 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> DungeonworldEntryReveal { get; set; }
         public static Asset<Effect> DungeonworldSky { get; set; }
         public static Asset<Effect> DungeonworldFog { get; set; }
+        public static Asset<Effect> GaolWraithEcto { get; set; }
+        public static Asset<Effect> GaolWraithFire { get; set; }
+        public static Asset<Effect> GaolWraithChain { get; set; }
+        public static Asset<Effect> GaolWraithVeil { get; set; }
+        public static Asset<Effect> GaolRoom { get; set; }
+        public static Asset<Effect> FloodGalleryAmbience { get; set; }
+        public static Asset<Effect> LampeaterWisp { get; set; }
+        public static Asset<Effect> LampeaterVeil { get; set; }
+        public static Asset<Effect> TurnkeyBody { get; set; }
+        public static Asset<Effect> TurnkeyRipple { get; set; }
         public static Asset<Effect> KiteSinew { get; set; }
         public static Asset<Effect> KiyumeSky { get; set; }
         public static Asset<Effect> KiyumeFog { get; set; }
+        public static Asset<Effect> KiyumeGroundFog { get; set; }
         public static Asset<Effect> Abyssrend { get; set; }
+        public static Asset<Effect> HadalWater { get; set; }
+        public static Asset<Effect> HadalSky { get; set; }
     }
 }

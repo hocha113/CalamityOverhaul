@@ -109,3 +109,37 @@ OldNetLurkerICE.DisplayName: 缢影ICE
 OldNetTaggerICE.DisplayName: 灯蛾标记体
 OldNetTracerICE.DisplayName: 循迹猎犬
 OldNetWardenICE.DisplayName: 回收官
+
+KiyumeHound.DisplayName: 恶犬
+
+LanternGuideYokai: {
+	DisplayName: 提灯翁
+	GripDeathReason: "{0}跟错了灯"
+}
+
+LanternGuideHungLamp.DisplayName: 悬灯
+ScarecrowWatcherYokai.DisplayName: 守田人
+
+WellHandYokai.DisplayName: 井手
+
+FuneralCortegeYokai.DisplayName: 执幡者
+
+FuneralCortegePorter: {
+	DisplayName: 抬棺人
+	WraithDeathReason: "{0}挡了送葬的路"
+}
+
+FuneralCortegeCoffin.DisplayName: 旧棺
+
+FacelessOneYokai.DisplayName: 无面者
+
+RidgeWalkerYokai: {
+	DisplayName: 雾脊行者
+	RidgeDeathReason: "{0}抢了不该抢的屋脊"
+}
+
+ShallowHandsYokai.DisplayName: 水中手
+
+MinoFisherYokai.DisplayName: 蓑翁
+
+KiyumeWhiteHound.DisplayName: 白毛望乡犬

@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -38,24 +39,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(CWRID.Item_DubiousPlating, 10).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 12).
-                AddRecipeGroup(RecipeGroupID.IronBar, 10).
-                AddIngredient(ItemID.Sawmill).
-                AddIngredient(ItemID.Chain, 5).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(RecipeGroupID.IronBar, 10).
-                AddIngredient(ItemID.Sawmill).
-                AddIngredient(ItemID.Chain, 5).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient<CircuitBoard>(12).
+            AddRecipeGroup(RecipeGroupID.IronBar, 10).
+            AddIngredient(ItemID.Sawmill).
+            AddIngredient(ItemID.Chain, 5).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 }

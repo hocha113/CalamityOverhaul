@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Industrials.ElectricPowers.Crushers;
 using CalamityOverhaul.Content.Industrials.MachineModules;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.PRT;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -309,14 +310,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
             }
         }
 
-        /// <summary>拆解臂尖与装备的接触点(世界坐标),瓦片几何同源</summary>
+        /// <summary>拆解头与装备的接触点(世界坐标),锚在拆解舱内、随工位横移</summary>
         private Vector2 ContactWorldPos()
-            => new(Position.X + 17f + ArmX01 * 14f, Position.Y + 23f);
+            => PosInWorld + new Vector2(12f + ArmX01 * 8f, 22f);
 
         /// <summary>切割火花+偶发零件碎片</summary>
         private void SpawnCutSparks(bool withShard) {
             Vector2 contact = ContactWorldPos();
-            float floorY = Position.Y + 26f;
+            float floorY = PosInWorld.Y + 27f;
             Defer(() => {
                 int count = Rand.Next(1, 3);
                 for (int k = 0; k < count; k++) {
@@ -544,6 +545,47 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
             ModuleRack.Load(tag, ModuleSlotCount, GetType().Name);
         }
         #endregion
+
+        /// <summary>拆解舱反馈覆层:被拆装备真实贴图+稀有度底光、切割驻留亮斑、状态灯;机壳为贴图</summary>
+        public override void Draw(SpriteBatch spriteBatch) {
+            if (Main.dedServ) {
+                return;
+            }
+            Vector2 basePos = PosInWorld - Main.screenPosition;
+
+            //舱内被拆装备:真实贴图 + 稀有度色底光(工位收尾泵脉冲)
+            bool hasInput = RecData?.InputItem != null && !RecData.InputItem.IsAir;
+            if (hasInput) {
+                Color rare = ItemRarity.GetColor(RecData.InputItem.rare);
+                SvgPathPen.SoftDot(spriteBatch, basePos + new Vector2(16f, 22f), 10f,
+                    rare, 0.14f + 0.32f * RarityPulse);
+                Main.instance.LoadItem(RecData.InputItem.type);
+                VaultUtils.SimpleDrawItem(spriteBatch, RecData.InputItem.type,
+                    basePos + new Vector2(16f, 22f), 12, 1f, 0f, Color.White);
+            }
+
+            //切割驻留:接触点炽亮闪烁
+            if (CutGlow > 0.05f) {
+                float flicker = 0.35f + 0.22f * MathF.Sin(Main.GlobalTimeWrappedHourly * 43f);
+                SvgPathPen.SoftDot(spriteBatch, ContactWorldPos() - Main.screenPosition, 5.5f,
+                    new Color(255, 214, 150), CutGlow * flicker);
+            }
+
+            //状态灯:统一警示语言(黄呼吸=堵料,红呼吸=缺电),工作=薄荷绿闪,待机=暗
+            Color lamp;
+            if (VisualAlert != ProcAlert.None) {
+                lamp = ProcessingChainVFX.LampColor(VisualAlert, Color.White);
+            }
+            else if (RecData?.IsWorking == true) {
+                float blink = 0.6f + 0.4f * MathF.Sin(Main.GlobalTimeWrappedHourly * 6f);
+                lamp = new Color(120, 230, 170) * blink;
+            }
+            else {
+                lamp = new Color(60, 68, 62);
+            }
+            spriteBatch.Draw(VaultAsset.placeholder2.Value, basePos + new Vector2(23f, 13f),
+                new Rectangle(0, 0, 1, 1), lamp, 0f, Vector2.Zero, new Vector2(2f, 2f), SpriteEffects.None, 0f);
+        }
 
         public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();
     }

@@ -1,3 +1,5 @@
+using CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Deerclops;
+using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States;
@@ -6,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -503,6 +506,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
             }
 
             return false;
+        }
+
+        /// <summary>残酷遗物掉落：独眼巨鹿无宝藏袋，本路径全难度通用，残酷世界必掉</summary>
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+                ModContent.ItemType<WhiteoutStormCore>()));
         }
         #endregion
     }

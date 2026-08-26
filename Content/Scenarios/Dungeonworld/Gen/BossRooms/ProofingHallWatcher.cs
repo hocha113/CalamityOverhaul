@@ -26,6 +26,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
             internal bool Engaged;
             internal int Cooldown;
             internal bool Sealed;
+            /// <summary>P3 断轨疤痕已落（漆层事务）；清剿后留作战场遗迹，复位吊臂时恢复</summary>
+            internal bool RailScarred;
         }
 
         internal const float ArmDistance = 2000f;
@@ -73,6 +75,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
         public override void ClearWorld() {
             rooms.Clear();
             checkTimer = 0;
+            ProofingHallScene.ClearViews();
             //记录镜像复位：两座 Boss 共用一张表，两个看守各自兜一次（幂等）
             DungeonworldBossRecords.ResetServerMirror();
         }
@@ -93,6 +96,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
 
             bool[] hasRig = new bool[rooms.Count];
             bool[] hasBoss = new bool[rooms.Count];
+            bool[] bossRailFell = new bool[rooms.Count];
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
                 if (!npc.active || (npc.type != rigType && npc.type != bossType)) {
@@ -105,6 +109,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
                         }
                         else {
                             hasBoss[r] = true;
+                            //断轨落拍观测：BreakRail 演出 40t 起轨段已坠（对齐 A3 BreakFallAt），
+                            //Pendulum 兜底防 20t 巡检错过窗口
+                            if (npc.ModNPC is FoundryOverseer ov
+                                && (ov.State == FoundryOverseer.StatePendulum
+                                || ov.State == FoundryOverseer.StateBreakRail && npc.ai[1] >= 40f)) {
+                                bossRailFell[r] = true;
+                            }
                         }
                         break;
                     }
@@ -124,6 +135,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
                 }
                 if (hasBoss[r]) {
                     room.Engaged = true;
+                    //断轨疤痕事务：P3 轨段坠落后一次性给断口落焦痕（漆层，不动物块），
+                    //权威端写 + 定点回播；清剿后留作战场遗迹
+                    if (bossRailFell[r] && !room.RailScarred) {
+                        room.RailScarred = true;
+                        ProofingHallRoom.PaintRailScar(room.Origin);
+                        BroadcastRect(ProofingHallRoom.RailScarRect(room.Origin));
+                    }
                     continue;
                 }
                 if (room.Engaged) {
@@ -179,6 +197,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
 
         /// <summary>arm：天轨右端布置蒙尘吊臂（房间坐标字段先写后 SyncNPC，原子过线）</summary>
         private static void ArmRoom(RoomState room) {
+            //复位=机器把轨修好了：断轨疤痕恢复到生成期状态并回播（脱战重蛰伏专用；
+            //清剿房不再走到这里，疤痕永留）
+            if (room.RailScarred) {
+                room.RailScarred = false;
+                ProofingHallRoom.PaintRailRestore(room.Origin);
+                BroadcastRect(ProofingHallRoom.RailScarRect(room.Origin));
+            }
             Vector2 rig = ProofingHallRoom.RigWorldPos(room.Origin);
             int idx = NPC.NewNPC(new EntitySource_WorldEvent(), (int)rig.X, (int)rig.Y,
                 ModContent.NPCType<OverseerDormantRig>());
@@ -238,8 +263,16 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
                 origin.X + doorOffset.X + 3, origin.Y + doorOffset.Y + ProofingHallRoom.DoorHeight);
         }
 
-        /// <summary>整房分块回播（78×36 → 32 格分块 6 块）</summary>
-        private static void BroadcastRoom(Point origin) {
+        /// <summary>定点回播：疤痕这类小事务只发涉及矩形，不整房刷</summary>
+        private static void BroadcastRect(Rectangle tileRect) {
+            if (Main.netMode != NetmodeID.Server) {
+                return;
+            }
+            NetMessage.SendTileSquare(-1, tileRect.X, tileRect.Y, tileRect.Width, tileRect.Height);
+        }
+
+        /// <summary>整房分块回播（78×36 → 32 格分块 6 块；钥匙落房同走此口径，纪律单一来源）</summary>
+        internal static void BroadcastRoom(Point origin) {
             if (Main.netMode != NetmodeID.Server) {
                 return;
             }

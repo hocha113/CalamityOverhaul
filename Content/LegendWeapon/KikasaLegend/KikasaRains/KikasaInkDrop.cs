@@ -97,6 +97,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         //坠落段碰撞武装:首次身处空气后才生效,室内上抛扎进天花板的滴穿回房内再落(反馈七·#74)
         private bool plungeArmed;
 
+        /// <summary>
+        /// 墨印位:亲手指挥的滴(手动墨雨/墨瀑散射)命中给目标盖墨印。
+        /// 生成后由伞/瀑在归属端赋值,命中钩只在归属端跑,端本地即可不需同步(同 penetrate 先例)
+        /// </summary>
+        internal bool AppliesTag;
+
         //本地表现
         private float life;
         /// <summary>弓身:转向角速度的平滑量,笔触随轨迹弯</summary>
@@ -413,9 +419,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 .ModifyRainHitNPC(Projectile, KikasaRainSourceKind.Drop, target, ref modifiers);
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-            => KikasaTalismanHooks.ForOwner(Projectile.owner)
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            //墨印:亲手指挥的滴命中即盖印,AddBuff 骑原版 buff 同步;结算在役从平衡口径
+            if (AppliesTag) {
+                target.AddBuff(ModContent.BuffType<KikasaInkTag>(), KikasaInkTag.TagFrames);
+            }
+            KikasaTalismanHooks.ForOwner(Projectile.owner)
                 .OnRainHitNPC(Projectile, KikasaRainSourceKind.Drop, target, in hit, damageDone);
+        }
 
         //==================== 谢幕 ====================
 

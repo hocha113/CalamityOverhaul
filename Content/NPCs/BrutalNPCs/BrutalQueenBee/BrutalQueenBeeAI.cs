@@ -1,3 +1,5 @@
+using CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee;
+using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Rendering;
@@ -11,6 +13,7 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -507,6 +510,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
             }
 
             return false;
+        }
+        #endregion
+
+        #region 掉落
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
+            //残酷遗物：残酷世界击杀必掉
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+                ModContent.ItemType<SwarmVortexBeacon>()));
         }
         #endregion
     }

@@ -2,7 +2,9 @@
 using CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs;
 using Terraria;
 using Terraria.Audio;
+using Terraria.Chat;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
@@ -54,9 +56,16 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
             originY = Utils.Clamp(originY, 40, Main.maxTilesY - 40 - ProofingHallRoom.Height);
 
             ProofingHallRoom.Place(originX, originY);
-            if (Main.netMode == NetmodeID.Server) {
-                NetMessage.SendTileSquare(-1, originX - 1, originY - 1,
-                    ProofingHallRoom.Width + 2, ProofingHallRoom.Height + 2);
+            //回播走看守的分块口径（纪律单一来源）
+            ProofingHallWatcher.BroadcastRoom(new Point(originX, originY));
+
+            //落成引导：明说下一步动作（点检台在左，站上去等班铃）；反杀教学交给房内告示牌
+            LocalizedText placed = this.GetLocalization("Placed");
+            if (VaultUtils.isServer) {
+                ChatHelper.BroadcastChatMessage(placed.ToNetworkText(), new Color(222, 138, 58));
+            }
+            else {
+                Main.NewText(placed.Value, 222, 138, 58);
             }
             return true;
         }

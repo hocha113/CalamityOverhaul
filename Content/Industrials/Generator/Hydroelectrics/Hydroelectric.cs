@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
@@ -48,23 +49,14 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(ItemID.EmptyBucket, 4).
-                AddRecipeGroup(RecipeGroupID.IronBar, 5).
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 5).
-                AddIngredient(CWRID.Item_DubiousPlating, 10).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddIngredient(ItemID.EmptyBucket, 4).
-                AddRecipeGroup(RecipeGroupID.IronBar, 5).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient(ItemID.EmptyBucket, 4).
+            AddRecipeGroup(RecipeGroupID.IronBar, 5).
+            AddRecipeGroup(CWRCrafted.GoldBarGroup, 5).
+            AddIngredient<CircuitBoard>(10).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 

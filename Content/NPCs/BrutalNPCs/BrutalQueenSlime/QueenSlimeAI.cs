@@ -1,10 +1,14 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core;
+﻿using CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime;
+using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States;
 using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
 {
@@ -328,6 +332,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             return false;
+        }
+        #endregion
+
+        #region 掉落
+        /// <summary>残酷模式击杀必掉专属遗物「折光华尔兹」</summary>
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<RefractionWaltz>()));
         }
         #endregion
 

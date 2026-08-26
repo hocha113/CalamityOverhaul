@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -42,23 +43,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ShieldGenerators
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe()
-                    .AddIngredient(CWRID.Item_DubiousPlating, 12)
-                    .AddIngredient(CWRID.Item_MysteriousCircuitry, 10)
-                    .AddIngredient(ItemID.CrystalShard, 15)
-                    .AddIngredient(ItemID.SoulofLight, 8)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
-            else {
-                CreateRecipe()
-                    .AddRecipeGroup(CWRCrafted.TungstenBarGroup, 15)
-                    .AddIngredient(ItemID.CrystalShard, 15)
-                    .AddIngredient(ItemID.SoulofLight, 8)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
+                .AddIngredient<CircuitBoard>(10)
+                .AddIngredient(ItemID.CrystalShard, 15)
+                .AddIngredient(ItemID.SoulofLight, 8)
+                .AddTile(TileID.Anvils)
+                .Register();
+
         }
     }
 }

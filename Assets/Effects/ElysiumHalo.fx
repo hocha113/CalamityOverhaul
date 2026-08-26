@@ -116,15 +116,13 @@ float4 HaloBackgroundPS(PSInput input) : COLOR0
     float3 rayCol  = lerp(warmGold, holyWhite, volumetricRay * 0.6);
     col += rayCol * volumetricRay * rayPower * 0.65;
 
-    //悬停扇区高亮
-    if (hoverSector >= 0.0)
-    {
-        float hAng   = (hoverSector + 0.5) * TAU / 12.0 - PI * 0.5 + rotationAngle;
-        float hDelta = ang - hAng;
-        hDelta = hDelta - floor((hDelta + PI) / TAU) * TAU;
-        float hGlow  = exp(-hDelta * hDelta * 80.0) * rayRadial * 0.5;
-        col += holyWhite * hGlow;
-    }
+    //悬停扇区高亮(uniform上禁if：hoverSector<0时权重归零)
+    float hoverOn = step(0.0, hoverSector);
+    float hAng   = (hoverSector + 0.5) * TAU / 12.0 - PI * 0.5 + rotationAngle;
+    float hDelta = ang - hAng;
+    hDelta = hDelta - floor((hDelta + PI) / TAU) * TAU;
+    float hGlow  = exp(-hDelta * hDelta * 80.0) * rayRadial * 0.5;
+    col += holyWhite * hGlow * hoverOn;
 
     //=
     //3. 同心光环群 — 环形结构层次
@@ -285,59 +283,44 @@ float4 SlotAuraPS(PSInput input) : COLOR0
 
     float3 col = 0;
 
-    if (slotDragSource > 0.5)
-    {
-        //拖动源：暗淡虚线框
-        float dashedRing  = softRing(dist, 0.34, 3000.0);
-        float dashPattern = step(0.5, frac(ang / TAU * 12.0));
-        col = slotColor * dashedRing * dashPattern * 0.4;
-        col += slotColor * exp(-dist * dist * 10.0) * 0.08;
-    }
-    else if (slotDragTarget > 0.5)
-    {
-        //拖动目标：强烈脉冲高亮
-        float tgtPulse  = 0.6 + 0.4 * sin(uTime * 5.0);
-        float tgtRing   = softRing(dist, 0.32, 300.0);
-        float tgtGlow   = exp(-dist * dist * 8.0);
-        col = lerp(slotColor, holyWhite, 0.3) * (tgtRing + tgtGlow * 0.3) * tgtPulse;
-        float outerFlash = softRing(dist, 0.38, 2000.0) * tgtPulse;
-        col += holyWhite * outerFlash;
-    }
-    else if (slotActive > 0.5)
-    {
-        //已激活槽位
-        float auraRing = softRing(dist, 0.32, 400.0);
-        col += slotColor * auraRing * 0.6;
+    //uniform上禁if：四态全算，权重乘混合(源>目标>在职>空缺互斥)
+    float wSrc = step(0.5, slotDragSource);
+    float wTgt = (1.0 - wSrc) * step(0.5, slotDragTarget);
+    float wAct = (1.0 - wSrc) * (1.0 - wTgt) * step(0.5, slotActive);
+    float wEmpty = (1.0 - wSrc) * (1.0 - wTgt) * (1.0 - wAct);
 
-        float innerFill = exp(-dist * dist * 12.0) * 0.2;
-        col += slotColor * innerFill;
+    //拖动源：暗淡虚线框
+    float dashedRing  = softRing(dist, 0.34, 3000.0);
+    float dashPattern = step(0.5, frac(ang / TAU * 12.0));
+    float3 srcCol = slotColor * dashedRing * dashPattern * 0.4
+                  + slotColor * exp(-dist * dist * 10.0) * 0.08;
 
-        //旋转弧光
-        float arcAng  = ang + uTime * 1.5 + slotPhase;
-        float arc     = sin(arcAng * 3.0) * 0.5 + 0.5;
-        arc = pow(arc, 4.0);
-        float arcRing = softRing(dist, 0.3, 600.0);
-        col += slotColor * arc * arcRing * 0.4;
+    //拖动目标：强烈脉冲高亮
+    float tgtPulse  = 0.6 + 0.4 * sin(uTime * 5.0);
+    float tgtRing   = softRing(dist, 0.32, 300.0);
+    float tgtGlow   = exp(-dist * dist * 8.0);
+    float3 tgtCol = lerp(slotColor, holyWhite, 0.3) * (tgtRing + tgtGlow * 0.3) * tgtPulse
+                  + holyWhite * softRing(dist, 0.38, 2000.0) * tgtPulse;
 
-        //边缘高亮线
-        float edgeLine  = softRing(dist, 0.36, 4000.0);
-        float edgePulse = 0.7 + 0.3 * sin(slotPhase + uTime * 2.0);
-        col += slotColor * edgeLine * edgePulse;
-    }
-    else
-    {
-        //空槽位：微弱轮廓
-        float emptyRing = softRing(dist, 0.34, 3000.0) * 0.25;
-        col += warmGold * emptyRing;
-    }
+    //在职槽位：身份色环 + 旋转弧光 + 边缘脉动线
+    float auraRing = softRing(dist, 0.32, 400.0);
+    float innerFill = exp(-dist * dist * 12.0) * 0.2;
+    float arcAng  = ang + uTime * 1.5 + slotPhase;
+    float arc     = pow(saturate(sin(arcAng * 3.0) * 0.5 + 0.5), 4.0);
+    float arcRing = softRing(dist, 0.3, 600.0);
+    float edgeLine  = softRing(dist, 0.36, 4000.0);
+    float edgePulse = 0.7 + 0.3 * sin(slotPhase + uTime * 2.0);
+    float3 actCol = slotColor * (auraRing * 0.6 + innerFill + arc * arcRing * 0.4 + edgeLine * edgePulse);
 
-    //悬停叠加高亮
-    if (slotHover > 0.5)
-    {
-        float hoverGlow = exp(-dist * dist * 8.0) * 0.3;
-        float hoverRing = softRing(dist, 0.35, 500.0) * 0.5;
-        col += holyWhite * (hoverGlow + hoverRing);
-    }
+    //空槽位：微弱轮廓
+    float3 emptyCol = warmGold * softRing(dist, 0.34, 3000.0) * 0.25;
+
+    col = srcCol * wSrc + tgtCol * wTgt + actCol * wAct + emptyCol * wEmpty;
+
+    //悬停叠加高亮(权重乘)
+    float hoverGlow = exp(-dist * dist * 8.0) * 0.3;
+    float hoverRing = softRing(dist, 0.35, 500.0) * 0.5;
+    col += holyWhite * (hoverGlow + hoverRing) * step(0.5, slotHover);
 
     //圆外裁切
     float clipMask = 1.0 - smoothstep(0.38, 0.46, dist);

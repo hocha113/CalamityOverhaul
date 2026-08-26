@@ -1,7 +1,6 @@
 using CalamityOverhaul.Common;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -13,14 +12,10 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
 {
-    /// <summary>传送站瓦片,3x4;复用热能电池瓦片贴图并施加传送青色调</summary>
+    /// <summary>传送站瓦片,2x3 拱门</summary>
     internal class TeleportStationTile : ModTile
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryTile";
-        public const int Height = 4;
-        public const int SheetSquare = 18;
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/ThermalBatteryTile")]
-        private static Asset<Texture2D> tileAsset = null;
+        public override string Texture => CWRConstant.Asset + "ElectricPowers/TeleportStationTile";
 
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
@@ -30,16 +25,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
             Main.tileWaterDeath[Type] = false;
             Main.tileSolidTop[Type] = true;
 
-            AnimationFrameHeight = 72;
-
             AddMapEntry(new Color(70, 160, 150), VaultUtils.GetLocalizedItemName<TeleportStation>());
 
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
-            TileObjectData.newTile.Width = 3;
-            TileObjectData.newTile.Height = 4;
-            TileObjectData.newTile.Origin = new Point16(1, 1);
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
+            TileObjectData.newTile.Width = 2;
+            TileObjectData.newTile.Height = 3;
+            TileObjectData.newTile.Origin = new Point16(1, 2);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16];
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 18];
             TileObjectData.newTile.LavaDeath = false;
 
             TileObjectData.addTile(Type);
@@ -98,30 +91,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
                 return false;
             }
 
-            Tile t = Main.tile[i, j];
-            int frameXPos = t.TileFrameX;
-            int frameYPos = t.TileFrameY + tp.frame * (Height * SheetSquare);
-            Texture2D tex = tileAsset.Value;
-            Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-            Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
-            //共用热能电池贴图,乘上系列色调区分机种
-            Color drawColor = Lighting.GetColor(i, j).MultiplyRGB(TeleportStation.Tint);
-
-            if (tp.MachineData.UEvalue < TeleportStationTP.BaseCost) {
-                drawColor.R /= 2;
-                drawColor.G /= 2;
-                drawColor.B /= 2;
-                drawColor.A = 255;
-            }
-
-            if (!t.IsHalfBlock && t.Slope == 0) {
-                spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16),
-                    drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-            }
-            else if (t.IsHalfBlock) {
-                spriteBatch.Draw(tex, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16),
-                    drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-            }
+            //电量不足一次传送时机身压暗,全系"断电减半"状态语言
+            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 3, tp.MachineData.UEvalue < TeleportStationTP.BaseCost);
             return false;
         }
     }

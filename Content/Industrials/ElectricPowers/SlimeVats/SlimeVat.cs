@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -44,24 +45,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.SlimeVats
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe()
-                    .AddIngredient(CWRID.Item_DubiousPlating, 8)
-                    .AddIngredient(CWRID.Item_MysteriousCircuitry, 6)
-                    .AddIngredient(ItemID.Gel, 30)
-                    .AddIngredient(ItemID.Glass, 8)
-                    .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
-            else {
-                CreateRecipe()
-                    .AddIngredient(ItemID.Gel, 40)
-                    .AddIngredient(ItemID.Glass, 8)
-                    .AddRecipeGroup(CWRCrafted.TinBarGroup, 12)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
+                .AddIngredient<CircuitBoard>(6)
+                .AddIngredient(ItemID.Gel, 30)
+                .AddIngredient(ItemID.Glass, 8)
+                .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
+                .AddTile(TileID.Anvils)
+                .Register();
+
         }
     }
 }

@@ -1,10 +1,9 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -21,11 +20,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
     /// </summary>
     internal class CapacitorMatrix : ModItem
     {
-        /// <summary>贴图复用热能电池,靠晶紫色调区分;专属贴图见待美术清单</summary>
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBattery";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/CapacitorMatrix";
 
-        /// <summary>系列色调:水晶紫</summary>
-        internal static readonly Color Tint = new(195, 150, 255);
+        /// <summary>系列色调:荧翠绿,取自罐窗熔核配色</summary>
+        internal static readonly Color Tint = new(150, 230, 150);
 
         public override void SetDefaults() {
             Item.width = 32;
@@ -39,43 +37,26 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             Item.consumable = true;
             Item.value = Item.buyPrice(0, 5, 0, 0);
             Item.rare = ItemRarityID.Pink;
-            Item.color = Tint;
             Item.createTile = ModContent.TileType<CapacitorMatrixTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = CapacitorMatrixTP._maxUEValue;
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(ItemID.HallowedBar, 12).
-                AddIngredient(ItemID.CrystalShard, 15).
-                AddIngredient(ItemID.Glass, 50).
-                AddIngredient(CWRID.Item_DubiousPlating, 15).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddIngredient(ItemID.HallowedBar, 12).
-                AddIngredient(ItemID.CrystalShard, 15).
-                AddIngredient(ItemID.Glass, 50).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient(ItemID.HallowedBar, 12).
+            AddIngredient(ItemID.CrystalShard, 15).
+            AddIngredient(ItemID.Glass, 50).
+            AddIngredient<CircuitBoard>(15).
+            AddTile(TileID.MythrilAnvil).
+            Register();
+
         }
     }
 
     internal class CapacitorMatrixTile : ModTile
     {
-        /// <summary>复用热能电池瓦片贴图,绘制时乘系列色调区分;4×5 专属贴图见待美术清单</summary>
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryTile";
-        public const int Width = 3;
-        public const int Height = 4;
-        public const int SheetSquare = 18;
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/ThermalBatteryTile")]
-        private static Asset<Texture2D> tileAsset = null;
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/CapacitorMatrixTile";
 
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
@@ -85,16 +66,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             Main.tileWaterDeath[Type] = false;
             Main.tileSolidTop[Type] = true;
 
-            AnimationFrameHeight = 72;
+            AddMapEntry(new Color(88, 142, 88), VaultUtils.GetLocalizedItemName<CapacitorMatrix>());
 
-            AddMapEntry(new Color(120, 80, 160), VaultUtils.GetLocalizedItemName<CapacitorMatrix>());
-
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
-            TileObjectData.newTile.Width = 3;
-            TileObjectData.newTile.Height = 4;
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.Origin = new Point16(1, 1);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16];
+            TileObjectData.newTile.CoordinateHeights = [16, 18];
             TileObjectData.newTile.LavaDeath = false;
 
             TileObjectData.addTile(Type);
@@ -114,35 +91,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         }
 
         public override bool CanDrop(int i, int j) => false;
-
-        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
-            if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
-                return false;
-            }
-            if (!TileProcessorLoader.ByPositionGetTP(point, out CapacitorMatrixTP capacitor)) {
-                return false;
-            }
-
-            Tile t = Main.tile[i, j];
-            int frameXPos = t.TileFrameX;
-            int frameYPos = t.TileFrameY;
-            frameYPos += capacitor.frame * (Height * SheetSquare);
-            Texture2D tex = tileAsset.Value;
-            Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-            Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
-            //共用热能电池贴图,乘上系列色调区分机种
-            Color drawColor = Lighting.GetColor(i, j).MultiplyRGB(CapacitorMatrix.Tint);
-            //只画外壳;熔核合批在物块层下透出
-            if (!t.IsHalfBlock && t.Slope == 0) {
-                spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, capacitor.fullLoad ? t.TileFrameY : frameYPos, 16, 16)
-                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-            }
-            else if (t.IsHalfBlock) {
-                spriteBatch.Draw(tex, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
-                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-            }
-            return false;
-        }
     }
 
     /// <summary>
@@ -157,7 +105,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
     {
         public override int TargetTileID => ModContent.TileType<CapacitorMatrixTile>();
         public override int TargetItem => ModContent.ItemType<CapacitorMatrix>();
-        internal int frame;
         internal float oldUEValue;
         internal int activeTime;
         internal const float _maxUEValue = 40000;
@@ -166,14 +113,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         //熔核显示比例与初始化标记
         internal float displayRatio;
         private bool ratioInited;
-        //熔核逻辑分辨率 3x4 格,整批共享
-        internal static readonly Vector2 CoreResolution = new(CapacitorMatrixTile.Width * 16, CapacitorMatrixTile.Height * 16);
-        //熔腔本地 UV 范围,与热能电池同一外壳故沿用
-        internal static readonly Vector2 ChamberMin = new(0.21f, 0.20f);
-        internal static readonly Vector2 ChamberMax = new(0.71f, 0.82f);
 
-        /// <summary>晶紫电弧亮色,比系列色调更白热一档</summary>
-        private static readonly Color ArcTint = new(214, 178, 255);
+        /// <summary>电弧亮色,比系列色调更白热一档</summary>
+        private static readonly Color ArcTint = new(222, 255, 222);
         /// <summary>端子电弧计时:充能越满越频</summary>
         private int arcTimer;
         /// <summary>充放方向 -1..1:+1 充入 -1 放出,平滑防抖</summary>
@@ -186,8 +128,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
 
         public override void UpdateMachine() {
             fullLoad = MachineData.UEvalue >= MaxUEValue;
-            if (--activeTime > 0 || fullLoad) {
-                VaultUtils.ClockFrame(ref frame, 5, 5);
+            if (activeTime > 0) {
+                activeTime--;
             }
 
             float ratio = MachineData.UEvalue / MaxUEValue;
@@ -275,7 +217,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
 
         #region 电晕与流光绘制(实体批内)
 
-        /// <summary>满电电晕呼吸 + 充放电方向流光(向心吸入=充,离心呼出=放)</summary>
+        /// <summary>熔核电量辉光 + 满电电晕呼吸 + 充放电方向流光(向心吸入=充,离心呼出=放)</summary>
         public override void Draw(SpriteBatch spriteBatch) {
             if (Main.dedServ) {
                 return;
@@ -283,6 +225,17 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) {
                 return;
+            }
+
+            //熔核窗辉光:贴图已画实心熔核,辉光只做电量反馈
+            float coreRatio = MathHelper.Clamp(displayRatio, 0f, 1f);
+            if (coreRatio > 0.02f) {
+                float coreBreath = 1f + 0.14f * MathHelper.Clamp(activeTime / 60f, 0f, 1f)
+                    * MathF.Sin(Main.GlobalTimeWrappedHourly * 5.2f + Position.X * 0.7f);
+                Vector2 coreP = PosInWorld + ThermalBatteryTP.CoreCenter - Main.screenPosition;
+                float coreSize = 14f + 8f * coreRatio;
+                spriteBatch.Draw(glow, coreP, null, (CapacitorMatrix.Tint with { A = 0 }) * ((0.20f + 0.45f * coreRatio) * coreBreath),
+                    0f, glow.Size() * 0.5f, coreSize / glow.Width, SpriteEffects.None, 0f);
             }
 
             //满电电晕:两只顶端子上的呼吸辉光,A=0 加色不落黑块
@@ -319,37 +272,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
 
         #endregion
 
-        /// <summary>熔核单例绘制,合批调用;顶点色 r=电量 g=活跃度</summary>
-        internal void DrawCore(SpriteBatch spriteBatch) {
-            float ratio = MathHelper.Clamp(displayRatio, 0f, 1f);
-            float activity = MathHelper.Clamp(activeTime / 60f, 0f, 1f);
-            Vector2 drawPos = PosInWorld - Main.screenPosition;
-            drawPos.X += 4;
-            Rectangle dest = new((int)drawPos.X, (int)drawPos.Y, Width - 4, Height);
-            Color data = new((byte)(ratio * 255f), (byte)(activity * 255f), (byte)0, (byte)255);
-            spriteBatch.Draw(VaultAsset.placeholder2.Value, dest, data);
-        }
-
         public override void FrontDraw(SpriteBatch spriteBatch) {
             DrawChargeBar();
-        }
-    }
-
-    /// <summary>电容矩阵熔核合批,复用热能电池核心着色器;专属配色见待美术清单</summary>
-    internal class CapacitorMatrixCoreDraw : GlobalTileProcessor
-    {
-        public override bool PreTileDrawEverything(SpriteBatch spriteBatch) {
-            MachineShaderBatch.DrawBatch(spriteBatch, EffectLoader.ThermalBatteryCore, SamplerState.LinearClamp,
-                static tp => tp is CapacitorMatrixTP,
-                static effect => {
-                    effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-                    effect.Parameters["uAlpha"]?.SetValue(1f);
-                    effect.Parameters["uResolution"]?.SetValue(CapacitorMatrixTP.CoreResolution);
-                    effect.Parameters["uChamberMin"]?.SetValue(CapacitorMatrixTP.ChamberMin);
-                    effect.Parameters["uChamberMax"]?.SetValue(CapacitorMatrixTP.ChamberMax);
-                },
-                tp => ((CapacitorMatrixTP)tp).DrawCore(spriteBatch));
-            return true;
         }
     }
 }

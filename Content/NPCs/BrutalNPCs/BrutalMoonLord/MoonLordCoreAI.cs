@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States;
@@ -6,7 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 {
@@ -458,6 +461,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         }
 
         public override bool CheckActive() => false;
+
+        /// <summary>残酷遗物：黑闪印记，残酷世界必掉（掉落经死亡演出落幕的原版 checkDead 结算，核心是掉落归属）</summary>
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+                ModContent.ItemType<Items.Accessories.BrutalRelics.MoonLord.BlackFlashSigil>()));
+        }
 
         /// <summary>大招硬直惩罚窗受击加伤</summary>
         public override void ModifyHitByItem(Player player, Item item, ref NPC.HitModifiers modifiers) {

@@ -340,7 +340,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             Vector2 anchorPos = center + new Vector2(-26f, 16f);
             Undrowned.DrawAnchor(spriteBatch, anchorTex, anchorPos, -0.55f, drawColor, 1f);
 
-            //坐姿躯体：帧 0，前倾坐相；暗缘压边 + 尸青主体（呼吸缩放）
+            //坐姿躯体：帧 0，前倾坐相；暗缘压边 → 尸青材质主层（与 Boss 同一身皮，呼吸缩放）
             int count = Math.Max(1, Main.npcFrameCount[NPCID.CreatureFromTheDeep]);
             Rectangle frame = new(0, 0, bodyTex.Width, bodyTex.Height / count);
             Vector2 origin = new(frame.Width * 0.5f, frame.Height * 0.5f);
@@ -348,9 +348,17 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
             const float slump = 0.34f;
             spriteBatch.Draw(bodyTex, center + new Vector2(0f, 3f) - Main.screenPosition, frame,
                 Undrowned.CorpseDeep * 0.75f, -slump, origin, DrawScale * 1.07f * breath, SpriteEffects.FlipHorizontally, 0f);
-            Color body = Color.Lerp(drawColor, Undrowned.CorpseTeal, 0.6f);
-            spriteBatch.Draw(bodyTex, center - Main.screenPosition, frame,
-                body, -slump, origin, DrawScale * breath, SpriteEffects.FlipHorizontally, 0f);
+            //蛰伏体常年泡在踝水里：水线喂踝水面，湿亮全开
+            float waterY = HasRoom
+                ? Gen.BossRooms.FloodGalleryRoom.SurfaceWorldY(RoomOrigin, Gen.BossRooms.FloodGalleryRoom.AnkleSurfaceRel)
+                : float.MaxValue;
+            if (!UndrownedVFX.DrawBody(spriteBatch, bodyTex, frame, center, -slump,
+                DrawScale * breath, SpriteEffects.FlipHorizontally, drawColor, 1f,
+                waterY, Seed, 1f, 0f)) {
+                Color body = Color.Lerp(drawColor, Undrowned.CorpseTeal, 0.6f);
+                spriteBatch.Draw(bodyTex, center - Main.screenPosition, frame,
+                    body, -slump, origin, DrawScale * breath, SpriteEffects.FlipHorizontally, 0f);
+            }
 
             //缚身锚链：两股横缠，链爆断拍后不再画（对应迸溅火花）
             if ((int)Phase == 0 || t < ChainBurstAt) {

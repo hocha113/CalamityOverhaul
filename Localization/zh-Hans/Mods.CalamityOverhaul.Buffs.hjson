@@ -3,6 +3,36 @@ SoulBurning: {
 	Description: 来自地狱的火焰
 }
 
+RevelationMarkDebuff: {
+	DisplayName: 启示印
+	Description: 约翰的注视之下，受到的一切伤害提高
+}
+
+TruthRevealDebuff: {
+	DisplayName: 真言揭示
+	Description: 护甲被剥离，无处遁形
+}
+
+WealthBlessingDebuff: {
+	DisplayName: 财富祝福
+	Description: 死亡时将迸出奉献的金雨
+}
+
+VerificationBuff: {
+	DisplayName: 验证之目
+	Description: 多马已验明，你的攻击必然暴击
+}
+
+ZealotFervorBuff: {
+	DisplayName: 狂热
+	Description: 奋锐党的圣火在胸中燃烧，攻速与移速昂扬
+}
+
+PlagueMarkDebuff: {
+	DisplayName: 瘟疫印
+	Description: 瘟疫骑士的圣瘟正在侵蚀生命
+}
+
 HellburnBuff: {
 	DisplayName: 地狱炎爆
 	Description: 来自地狱的火焰
@@ -11,6 +41,11 @@ HellburnBuff: {
 KikasaWispBurn: {
 	DisplayName: 鬼火灼身
 	Description: 湖上的金色鬼火黏在身上烧
+}
+
+KikasaInkTag: {
+	DisplayName: 墨印
+	Description: 盖着鬼伞的墨印，召唤物打这里会追加伤害
 }
 
 DivineSourceChargeBuff: {
@@ -141,4 +176,54 @@ IndustrialShieldBuff: {
 IndustrialRegenBuff: {
 	DisplayName: 治疗光环
 	Description: 治疗站正在为你回复生命
+}
+
+RotsawRendDebuff: {
+	DisplayName: 腐锯
+	Description: 防御归零，血肉正被锯齿撕开
+}
+
+WaxWardBuff: {
+	DisplayName: 蜜蜡甲
+	Description: 蜂群结成的蜜蜡甲正在替你承伤
+}
+
+SwarmVortexDebuff: {
+	DisplayName: 蜂涡缠身
+	Description: 被蜂群旋涡绞杀，行动迟缓
+}
+
+MawCorrosionBuff: {
+	DisplayName: 酸蚀
+	Description: 护甲正在被酸液啃穿
+}
+
+WhiteoutStormBuff: {
+	DisplayName: 白视风暴
+	Description: 获得50%减伤与击退免疫，雪幕不遮挡你的视野
+}
+
+WhiteblindDebuff: {
+	DisplayName: 白盲
+	Description: 风雪蒙眼，行动冻结，每秒30点冻伤
+}
+
+BloomSnaredDebuff: {
+	DisplayName: 荆棘反缠
+	Description: 被荆藤缠住，行动受缚，棘刺撕裂血肉
+}
+
+SoulbindCurseDebuff: {
+	DisplayName: 缚魂咒
+	Description: 诅咒缠身，受到的伤害提高
+}
+
+SoulGripLockDebuff: {
+	DisplayName: 掌攫禁锢
+	Description: 被幽灵巨手攥住，动弹不得
+}
+
+RefractionTag: {
+	DisplayName: 折光
+	Description: 受到折光华尔兹的伤害提高30%
 }

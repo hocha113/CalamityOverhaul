@@ -85,6 +85,8 @@ namespace CalamityOverhaul.Content
         public int RaiderGunDashCooldown;
         /// <summary>弹射平台摔落免伤剩余帧数,期间每帧重置摔落起点</summary>
         public int LauncherGraceTime;
+        /// <summary>残酷遗物双击位移技按方向记录的消费帧戳，下标同原版 doubleTapCardinalTimer(0下1上2右3左)</summary>
+        private readonly int[] relicDoubleTapFrame = new int[4];
         #endregion
 
         public CWRPlayer CloneCWRPlayer(CWRPlayer cwr) {
@@ -130,6 +132,15 @@ namespace CalamityOverhaul.Content
             IsJusticeUnveiled = false;
             DestroyerOwner = false;
             RideElectricMinRocket = false;
+        }
+
+        /// <summary>残酷遗物双击位移技的按方向消费闩，同帧同方向仅首个调用者获得执行权</summary>
+        public bool TryConsumeRelicDoubleTap(int dir) {
+            if (relicDoubleTapFrame[dir] == (int)Main.GameUpdateCount) {
+                return false;
+            }
+            relicDoubleTapFrame[dir] = (int)Main.GameUpdateCount;
+            return true;
         }
 
         public override void SaveData(TagCompound tag) {

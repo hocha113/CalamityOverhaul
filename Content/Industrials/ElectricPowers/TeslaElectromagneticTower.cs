@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -43,12 +44,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable
-                && CWRID.Item_AerialiteBar > 0
-                && CWRID.Item_StormlionMandible > 0) {
+            if (CWRID.Item_AerialiteBar > 0 && CWRID.Item_StormlionMandible > 0) {
                 CreateRecipe().
-                AddIngredient(CWRID.Item_DubiousPlating, 15).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
+                AddIngredient<CircuitBoard>(15).
                 AddIngredient(CWRID.Item_AerialiteBar, 10).
                 AddIngredient(CWRID.Item_StormlionMandible, 4).
                 AddCondition(CWRRef.ConstructRecipeCondition(1, out Func<bool> condition), condition).
@@ -57,6 +55,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
             else {
                 CreateRecipe().
+                AddIngredient<CircuitBoard>(15).
                 AddRecipeGroup(CWRCrafted.TungstenBarGroup, 15).
                 AddTile(TileID.Anvils).
                 Register();
@@ -91,12 +90,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable
-                && CWRID.Item_AerialiteBar > 0
-                && CWRID.Item_StormlionMandible > 0) {
+            if (CWRID.Item_AerialiteBar > 0 && CWRID.Item_StormlionMandible > 0) {
                 CreateRecipe().
-                AddIngredient(CWRID.Item_DubiousPlating, 15).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
+                AddIngredient<CircuitBoard>(15).
                 AddIngredient(CWRID.Item_AerialiteBar, 10).
                 AddIngredient(CWRID.Item_StormlionMandible, 4).
                 AddCondition(CWRRef.ConstructRecipeCondition(1, out Func<bool> condition), condition).
@@ -105,6 +101,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
             else {
                 CreateRecipe().
+                AddIngredient<CircuitBoard>(15).
                 AddRecipeGroup(CWRCrafted.TungstenBarGroup, 15).
                 AddTile(TileID.Anvils).
                 Register();

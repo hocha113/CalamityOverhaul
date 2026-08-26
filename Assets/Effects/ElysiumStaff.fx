@@ -20,6 +20,10 @@ float ringRotation;      //扩散环旋转角
 float burstProgress;     //0刚释放 1完全消散
 float burstIntensity;    //爆发强度(受蓄力影响)
 
+float waveRadius;        //化蛇波前锋半径(UV 0~0.5)，与判定环带同源
+float waveFade;          //化蛇波整体透明度
+float waveGrow;          //化蛇波扩张进度 0~1，控制前锋软化与拖裙加宽
+
 texture uNoiseTex;
 sampler noiseSamp : register(s1) = sampler_state
 {
@@ -374,11 +378,93 @@ float4 DivineBurstPS(PSInput input) : COLOR0
     return float4(col, 1.0);
 }
 
+//ConversionWave 化蛇波潮(世界空间环形波，前锋位置由 waveRadius 精确给出)
+float4 ConversionWavePS(PSInput input) : COLOR0
+{
+    float2 uv  = input.TexCoords;
+    float2 c   = uv - 0.5;
+    float  dist = length(c);
+    float  ang  = atan2(c.y, c.x);
+
+    float3 col = 0;
+    float  r   = waveRadius;
+
+    //绑定噪声实测值域 0.22~0.78，阈值前先归一
+    //噪声取样走刚体旋转笛卡尔坐标，避免极角接缝
+    float  na = uTime * 0.35;
+    float  cs = cos(na);
+    float  sn = sin(na);
+    float2 rc = float2(c.x * cs - c.y * sn, c.x * sn + c.y * cs);
+    float  nRaw = tex2D(noiseSamp, rc * 2.6 + 0.5).g;
+    float  n01  = saturate((nRaw - 0.22) / 0.56);
+
+    //=
+    //1. 前锋主线：扩张中逐渐变软变宽(能量耗散)，内侧贴一道白热伴线
+    //=
+    float sharpMain = lerp(7000.0, 1600.0, waveGrow);
+    float front = softRing(dist, r, sharpMain);
+    col += brightGold * front * 0.9;
+    col += holyWhite  * softRing(dist, r, sharpMain * 3.5) * 0.55;
+    col += holyWhite  * softRing(dist, r - 0.012, sharpMain * 1.6) * 0.3;
+
+    //=
+    //2. 内侧能量拖裙：自前锋向内指数衰减
+    //   径向光芒调制(两组整数倍角谐波错频，跨缝连续)撕出放射丝缕
+    //=
+    float inner = max(r - dist, 0.0);
+    float skirtLen = 0.05 + waveGrow * 0.08;
+    float skirt = exp(-inner / skirtLen * 2.2) * step(0.0001, inner);
+    float rayPat = 0.5 + 0.28 * sin(ang * 24.0 + uTime * 1.7)
+                       + 0.22 * sin(ang * 15.0 - uTime * 1.1);
+    skirt *= 0.4 + 0.6 * saturate(rayPat);
+    skirt *= 0.6 + 0.4 * n01;
+    col += warmGold * skirt * 0.62;
+    col += brightGold * skirt * skirt * 0.3;
+
+    //=
+    //3. 前锋外缘碎光：被抛在波前的能量碎屑，窄带+噪声阈值
+    //=
+    float outer = max(dist - r, 0.0);
+    float debris = exp(-outer * 70.0) * step(0.0001, outer);
+    debris *= smoothstep(0.42, 0.78, n01);
+    col += holyWhite * debris * 0.9 * (1.0 - waveGrow * 0.3);
+
+    //=
+    //4. 前锋十二刻度圣徽点(整数倍角，跨缝连续)
+    //=
+    float s12  = frac((ang + uTime * 0.12) / TAU * 12.0);
+    float s12d = abs(s12 - 0.5) * 2.0;
+    float tick = exp(-s12d * s12d * 300.0);
+    col += brightGold * tick * softRing(dist, r, sharpMain * 0.5) * 0.55;
+
+    //=
+    //5. 盘内残留焦散微光：波扫过的区域短暂留下圣光涟漪
+    //=
+    float caust = n01 * exp(-dist * 5.0) * (1.0 - waveGrow) * 0.12;
+    col += warmGold * caust;
+
+    //=
+    //寿命衰减 + 画布边界保险
+    //=
+    col *= waveFade;
+    col *= 1.0 - smoothstep(0.46, 0.5, dist);
+
+    return float4(col, 1.0);
+}
+
 technique DivineAura
 {
     pass P0
     {
         PixelShader = compile ps_3_0 DivineAuraPS();
+    }
+};
+
+technique ConversionWave
+{
+    pass P0
+    {
+        PixelShader = compile ps_3_0 ConversionWavePS();
     }
 };
 

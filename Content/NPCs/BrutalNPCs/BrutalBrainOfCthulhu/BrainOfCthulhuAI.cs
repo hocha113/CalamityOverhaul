@@ -1,4 +1,6 @@
 using CalamityOverhaul.Content.DamageModify;
+using CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu;
+using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States;
@@ -7,7 +9,9 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
 {
@@ -403,6 +407,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
         }
 
         public override bool CheckActive() => false;
+
+        /// <summary>残酷遗物「镜心悖论」：残酷世界击杀必掉(条件类自带门禁)</summary>
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+                ModContent.ItemType<MirrorheartParadox>()));
+        }
 
         /// <summary>演出中锁血，完后放行；秒杀也先切演出</summary>
         public override bool? CheckDead() {

@@ -491,54 +491,28 @@ SHPCSoulSelectUI: {
 	StatusClickToSelect: "[点击选择]"
 }
 
-ElysiumUI: {
+ElysiumRoseWindow: {
 	TitleText: 天国极乐
-	DiscipleCountText: 门徒
-	TotalBonusText: 圣恩加持
-	DamageText: 伤害
-	DefenseText: 防御
-	CritText: 暴击
-	RegenText: 恢复
-	EmptySlotText: 空缺
-	JudasWarningText: 警告：犹大的背叛潜伏于此
-	BonusLabel: 被动
-	AbilityLabel: 能力
-	DragHintText: 拖动门徒可变换其身份
-	SwapSuccessText: 身份转换完成
-	SwapFailText: 转换失败
-	CannotSwapText: 无法转换至此位置
-	AbilityBrief_0: 磐石之盾
-	AbilityBrief_1: 渔网束缚
-	AbilityBrief_2: 雷霆审判
-	AbilityBrief_3: 启示视野
-	AbilityBrief_4: 圣光引导
-	AbilityBrief_5: 真言揭示
-	AbilityBrief_6: 怀疑之触
-	AbilityBrief_7: 财富祝福
-	AbilityBrief_8: 奉献治愈
-	AbilityBrief_9: 奇迹显现
-	AbilityBrief_10: 狂热之力
-	AbilityBrief_11: 背叛契约
+	SeatAliveText: 在职
+	SeatEmptyText: 空缺
+	SeatMartyredText: 已殉道
+	MartyrdomPowerText: 殉道之力 {0}/11
+	DragHintText: 拖动席位可行圣职调换
+	AbilityBrief_0: 圣盾就绪时替你挡下一击的部分伤害
+	AbilityBrief_1: 向敌群撒下光网，拖缓网中敌人
+	AbilityBrief_2: 连锁圣雷在至多四个敌人间跳跃
+	AbilityBrief_3: 注视敌人，令其受到的一切伤害提高
+	AbilityBrief_4: 祝圣你的弹幕，使其缓缓折向敌人
+	AbilityBrief_5: 掷刃剥离敌人护甲并使其显形
+	AbilityBrief_6: 令你的攻击在一段时间内必然暴击
+	AbilityBrief_7: 祝福敌人，其死亡时迸出奉献金雨
+	AbilityBrief_8: 你带伤时献上治愈
+	AbilityBrief_9: 降下随机的奇迹
+	AbilityBrief_10: 点燃狂热，近旁敌人染上圣焰
+	AbilityBrief_11: 全面的厚礼，与背叛的刀
 }
 
-MartyrdomBarUI: {
-	SlotLabel_0: 彼
-	SlotLabel_1: 安
-	SlotLabel_2: 雅
-	SlotLabel_3: 约
-	SlotLabel_4: 腓
-	SlotLabel_5: 巴
-	SlotLabel_6: 多
-	SlotLabel_7: 马
-	SlotLabel_8: 小
-	SlotLabel_9: 达
-	SlotLabel_10: 西
-	SlotLabel_11: 犹
-	RevelationJudgingText: 启示录 后三印审判进行中
-	RevelationStatusText: 启示录 四骑士 {0}/4 Q陨石 R审判
-	RevelationReadyText: 按 Q：启示录就绪
-	MartyrdomPowerText: 殉道之力 {0}/11
-}
+ElysiumFaithHud.MartyrdomPowerText: 殉道之力 {0}/11
 
 MenuModify.OverhaulSettingsButtonText: 大修设置
 
@@ -1422,6 +1396,22 @@ DungeonworldLoadingScreen: {
 	RevealHold: 正在点亮烛火
 }
 
+HadalworldLoadingScreen: {
+	BandName0: 日光带
+	BandName1: 暮光带
+	BandName2: 午夜带
+	BandName3: 深渊带
+	BandName4: 超深渊带
+	Tip0: 光留在上面了。
+	Tip1: 越深，水越安静。
+	Tip2: 气泡只往一个方向走。
+	Tip3: 水压不敲门。
+	Tip4: 下面有东西亮着，那不是灯。
+	StatusDescend: 正在下潜
+	StatusAscend: 正在上浮
+	DepthLabel: 深度 {0} 米
+}
+
 KiyumeLoadingScreen: {
 	TitleEnter: 鬼梦
 	TitleExit: 梦醒
@@ -1565,4 +1555,15 @@ WeaponSkillHud: {
 	CooldownFormat: 冷却剩余 {0} 秒
 	ActiveLine: 施放中
 	ManaCostFormat: 魔力消耗 {0}
+}
+
+KiyumeHoundHints: {
+	HintAlert: 站住别动，雾会替你藏。
+	HintChase: 进屋，或者进雾最深的地方。
+}
+
+KiyumeDreamWake: {
+	WakeBitten: 狗牙合拢的那一刻，你醒了。
+	WakeDrowned: 湖水漫过头顶，你醒了。
+	WakeGeneric: 梦断了。
 }

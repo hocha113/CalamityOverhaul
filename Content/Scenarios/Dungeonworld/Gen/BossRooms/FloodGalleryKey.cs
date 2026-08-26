@@ -2,7 +2,9 @@
 using CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs;
 using Terraria;
 using Terraria.Audio;
+using Terraria.Chat;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
@@ -58,9 +60,16 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
             originY = Utils.Clamp(originY, 40, Main.maxTilesY - 40 - FloodGalleryRoom.Height);
 
             FloodGalleryRoom.Place(originX, originY);
-            if (Main.netMode == NetmodeID.Server) {
-                NetMessage.SendTileSquare(-1, originX - 1, originY - 1,
-                    FloodGalleryRoom.Width + 2, FloodGalleryRoom.Height + 2);
+            //回播走看守的分块口径（纪律单一来源，含 1 格边缘帧余量）
+            FloodGalleryWatcher.BroadcastRoom(new Point(originX, originY));
+
+            //落成引导：明说下一步动作（阀台在左，站着别动），涨水规则交给房内告示牌
+            LocalizedText placed = this.GetLocalization("Placed");
+            if (VaultUtils.isServer) {
+                ChatHelper.BroadcastChatMessage(placed.ToNetworkText(), new Color(88, 154, 148));
+            }
+            else {
+                Main.NewText(placed.Value, 88, 154, 148);
             }
             return true;
         }

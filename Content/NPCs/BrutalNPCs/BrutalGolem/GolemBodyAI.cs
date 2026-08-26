@@ -1,11 +1,15 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core;
+﻿using CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Golem;
+using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States;
 using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
 {
@@ -302,6 +306,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                 stateMachine.ChangeState(new GolemDeathState());
             }
             return false;
+        }
+
+        /// <summary>残酷遗物：日核拳骨，残酷世界必掉</summary>
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+                ModContent.ItemType<SolarCoreFist>()));
         }
         #endregion
 

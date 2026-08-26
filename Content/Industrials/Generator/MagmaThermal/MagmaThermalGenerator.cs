@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.Industrials.MachineModules;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
@@ -21,7 +22,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.MagmaThermal
     /// <summary>岩浆热能发电机:液体网络的首个耗液发电机(占位贴图沿用热能电池,待专属美术)</summary>
     internal class MagmaThermalGenerator : ModItem
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBattery";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryLegacy";
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -40,30 +41,20 @@ namespace CalamityOverhaul.Content.Industrials.Generator.MagmaThermal
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(ItemID.HellstoneBar, 12).
-                AddIngredient(ItemID.Obsidian, 20).
-                AddRecipeGroup(RecipeGroupID.IronBar, 10).
-                AddIngredient(CWRID.Item_DubiousPlating, 10).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddIngredient(ItemID.HellstoneBar, 12).
-                AddIngredient(ItemID.Obsidian, 20).
-                AddRecipeGroup(RecipeGroupID.IronBar, 10).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient(ItemID.HellstoneBar, 12).
+            AddIngredient(ItemID.Obsidian, 20).
+            AddRecipeGroup(RecipeGroupID.IronBar, 10).
+            AddIngredient<CircuitBoard>(10).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 
     internal class MagmaThermalGeneratorTile : BaseGeneratorTile
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryTile";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryLegacyTile";
         public override int GeneratorTP => TileProcessorLoader.GetModuleID<MagmaThermalGeneratorTP>();
         public override int GeneratorUI => UIHandleLoader.GetUIHandleID<GeneratorReadoutUI>();
         public override int TargetItem => ModContent.ItemType<MagmaThermalGenerator>();
@@ -249,14 +240,19 @@ namespace CalamityOverhaul.Content.Industrials.Generator.MagmaThermal
         #endregion
 
         #region 机面覆层:储浆液窗(物块下)+炉膛熔光呼吸与熔缝(物块上)
+
+        //储浆窗本地 UV,对齐遗留电池贴图的透明窗
+        private static readonly Vector2 ChamberMin = new(0.21f, 0.20f);
+        private static readonly Vector2 ChamberMax = new(0.71f, 0.82f);
+
         public override void PreTileDraw(SpriteBatch spriteBatch) {
             //储浆窗:与储罐同一支液窗笔,岩浆材质(熔泡慢涌+黑壳浮斑)
             Vector2 basePos = PosInWorld - Main.screenPosition;
             Rectangle chamber = new(
-                (int)(basePos.X + FluidTankTP.ChamberMin.X * Width),
-                (int)(basePos.Y + FluidTankTP.ChamberMin.Y * Height),
-                (int)((FluidTankTP.ChamberMax.X - FluidTankTP.ChamberMin.X) * Width),
-                (int)((FluidTankTP.ChamberMax.Y - FluidTankTP.ChamberMin.Y) * Height));
+                (int)(basePos.X + ChamberMin.X * Width),
+                (int)(basePos.Y + ChamberMin.Y * Height),
+                (int)((ChamberMax.X - ChamberMin.X) * Width),
+                (int)((ChamberMax.Y - ChamberMin.Y) * Height));
             FluidVFX.DrawLiquidWindow(spriteBatch, chamber, LiquidID.Lava,
                 MathHelper.Clamp(FluidAmount / (float)FluidCapacity, 0f, 1f), animTime,
                 WorkLevel * 0.5f, WhoAmI + 29);

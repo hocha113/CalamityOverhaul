@@ -52,7 +52,7 @@ PSInput VertexShaderFunction(VSInput v)
 #define PI  3.14159265
 #define TAU 6.28318530
 
-//SerpentBody — 蛇身主体
+//SerpentBody — 蛇身主体(金琉璃圣蛇：发光半实体，鳞格清晰，圣光沿身流转)
 float4 SerpentBodyPS(PSInput input) : COLOR0
 {
     float2 uv = input.TexCoords;
@@ -60,97 +60,69 @@ float4 SerpentBodyPS(PSInput input) : COLOR0
     float cross_ = uv.y;
     float crossDist = abs(cross_ - 0.5) * 2.0; //0=中心 1=边缘
 
-    float3 col = 0;
-
-    //基础色：沿蛇身从暗绿渐变到金色
-    float3 baseColor = lerp(scaleGreen * 0.5, holyGold * 0.7, along * along);
-
     //=
-    //1. 圆柱体底色(明暗立体感)
+    //1. 圆柱体底色：中脊受光，两侧收暗；整体亮度按主体读而非暗带
     //=
-    //模拟圆柱截面光照：中心亮两侧暗
     float cylinder = 1.0 - crossDist * crossDist;
-    float shade = 0.3 + cylinder * 0.7;
-    col = baseColor * shade * 0.3;
+    float shade = 0.42 + cylinder * 0.58;
+    float3 baseColor = lerp(scaleGreen * 0.85, holyGold, smoothstep(0.0, 0.85, along));
+    float3 col = baseColor * shade * 0.75;
 
     //=
-    //2. 鳞片纹理(加大对比度)
+    //2. 鳞片菱格(交错排列)：暗缝分格 + 鳞心亮面 + 上游反光弧
     //=
-    //鳞片密度：适中，让每片鳞清晰可见
-    float scaleU = along * 18.0;
+    float scaleU = along * 20.0;
     float scaleV = cross_ * 3.0;
-
-    //交错排列(奇数行偏移半格)
     float row = floor(scaleV);
-    float offsetU = fmod(row, 2.0) * 0.5;
-    float cellU = frac(scaleU + offsetU);
+    float cellU = frac(scaleU + fmod(row, 2.0) * 0.5);
     float cellV = frac(scaleV);
-
-    //菱形距离场
     float diamond = abs(cellU - 0.5) + abs(cellV - 0.5);
 
-    //鳞片暗缝：鳞片边界处变暗(关键对比度)
-    float scaleGap = smoothstep(0.38, 0.5, diamond);
-    col *= (1.0 - scaleGap * 0.6);
+    float scaleGap = smoothstep(0.36, 0.5, diamond);
+    col *= 1.0 - scaleGap * 0.55;
 
-    //鳞片内部渐变高光：每片中心向边缘递减
-    float scaleBody = saturate(1.0 - diamond * 1.8);
-    float3 scaleFillCol = lerp(scaleGreen * 0.4, holyGold * 0.6, along);
-    //鳞片内有轻微色彩变化
-    float scaleHue = sin(scaleU * 3.0 + row * 1.7) * 0.5 + 0.5;
-    scaleFillCol = lerp(scaleFillCol, holyGold * 0.8, scaleHue * 0.3);
-    col += scaleFillCol * scaleBody * 0.2 * shade;
+    float scaleBody = saturate(1.0 - diamond * 2.0);
+    col += lerp(scaleGreen, holyGold, along) * scaleBody * 0.32 * shade;
 
-    //鳞片亮边：每片鳞的顶部(朝头方向)有反光弧线
-    float scaleTopEdge = smoothstep(0.35, 0.42, diamond) * smoothstep(0.5, 0.43, diamond);
-    float topBias = smoothstep(0.5, 0.3, cellU); //偏向鳞片上游
-    col += holyGold * scaleTopEdge * topBias * 0.35;
+    float scaleTopEdge = smoothstep(0.33, 0.40, diamond) * smoothstep(0.5, 0.42, diamond);
+    col += pureWhite * scaleTopEdge * smoothstep(0.5, 0.25, cellU) * 0.35;
 
     //=
-    //3. 腹部与背部色差
+    //3. 脊线白热 + 边缘轮缘光
     //=
-    //蛇腹(UV.y中心区域)略浅偏金
-    float bellyMask = exp(-crossDist * crossDist * 8.0);
-    col += holyGold * 0.06 * bellyMask;
+    float spine = exp(-crossDist * crossDist * 60.0);
+    col += lerp(holyGold, pureWhite, along) * spine * 0.3;
 
-    //脊背线(中线微亮)
-    float spine = exp(-crossDist * crossDist * 100.0);
-    col += lerp(scaleGreen * 0.3, holyGold * 0.5, along) * spine * 0.15;
-
-    //=
-    //4. 边缘轮廓光(有色，非白)
-    //=
-    float edgeGlow = smoothstep(0.55, 0.92, crossDist);
-    float edgePulse = 0.8 + 0.2 * sin(uTime * 2.0 + along * 6.0);
-    float3 edgeCol = lerp(scaleGreen * 0.5, holyGold * 0.7, along);
-    col += edgeCol * edgeGlow * edgePulse * 0.15;
+    float rim = smoothstep(0.55, 0.92, crossDist);
+    float rimPulse = 0.75 + 0.25 * sin(uTime * 2.0 + along * 6.0);
+    col += holyGold * rim * rimPulse * 0.35;
 
     //=
-    //5. 圣光流转(克制的光波)
+    //4. 圣光行波：两道错相错频的亮波沿身推向头部
     //=
-    float wave1 = sin((along - uTime * 0.35) * TAU * 2.0) * 0.5 + 0.5;
-    wave1 = pow(wave1, 6.0);
-    col += holyGold * wave1 * 0.08 * cylinder;
+    float wave1 = pow(saturate(sin((along - uTime * 0.55) * TAU * 2.0) * 0.5 + 0.5), 5.0);
+    float wave2 = pow(saturate(sin((along - uTime * 0.34) * TAU * 3.0 + 2.1) * 0.5 + 0.5), 7.0);
+    col += pureWhite * wave1 * 0.22 * cylinder;
+    col += holyGold * wave2 * 0.14 * cylinder;
 
     //=
-    //6. 头部渐亮
+    //5. 头部渐亮
     //=
-    float headFactor = smoothstep(0.8, 1.0, along);
-    col += holyGold * headFactor * 0.12 * cylinder;
+    col += holyGold * smoothstep(0.78, 1.0, along) * 0.2 * cylinder;
 
     //=
-    //边缘衰减 + 头尾淡出
+    //端部收口：尾尖淡出、横向羽化
     //=
-    float crossFade = smoothstep(1.0, 0.75, crossDist);
-    float tailFade = smoothstep(0.0, 0.1, along);
+    float crossFade = smoothstep(1.0, 0.8, crossDist);
+    float tailFade = smoothstep(0.0, 0.12, along);
 
     col *= crossFade * tailFade * fadeAlpha * glowIntensity;
 
-    float alpha = crossFade * tailFade * fadeAlpha;
+    float alpha = crossFade * tailFade * fadeAlpha * (0.72 + 0.28 * cylinder);
     return float4(col, alpha);
 }
 
-//SerpentHead — 蛇头(在Trail头端额外覆盖的圆形画布)
+//SerpentHead — 蛇头(俯视长水滴轮廓，鼻吻朝+X；脑后光环 + 吻前十字圣徽)
 float4 SerpentHeadPS(PSInput input) : COLOR0
 {
     float2 uv = input.TexCoords;
@@ -161,68 +133,70 @@ float4 SerpentHeadPS(PSInput input) : COLOR0
     float3 col = 0;
 
     //=
-    //1. 蛇头轮廓(水滴/三角形)
+    //1. 蛇首轮廓：前尖后圆的长水滴，颈侧(cos2θ)微收出眼后轮廓
     //=
-    //用极坐标构造前尖后圆的形状
-    float headShape = 0.18 + 0.08 * cos(ang); //朝右的水滴形
-    float headMask = smoothstep(headShape + 0.02, headShape - 0.01, dist);
-    float headEdge = smoothstep(headShape - 0.03, headShape, dist) * headMask;
+    float headShape = 0.155 + 0.115 * cos(ang) - 0.035 * cos(ang * 2.0);
+    float headMask = smoothstep(headShape + 0.015, headShape - 0.012, dist);
+    float headEdge = smoothstep(headShape - 0.04, headShape - 0.008, dist) * headMask;
 
-    float3 headColor = lerp(holyGold, pureWhite, 0.2);
-    col += headColor * headMask * 0.5;
-    col += pureWhite * headEdge * 0.4;
+    //头体：金琉璃底，圆顶明暗
+    float dome = 1.0 - saturate(dist / max(headShape, 0.001));
+    col += lerp(holyGold * 0.55, holyGold, dome) * headMask * 0.85;
+    //鼻吻白热(朝行进方向)
+    col += pureWhite * smoothstep(0.02, 0.15, c.x) * headMask * 0.3;
+    //轮缘受光
+    col += pureWhite * headEdge * 0.45;
 
     //=
-    //2. 双眼
+    //2. 头面鳞格暗示(细缝，不抢主体)
     //=
-    float2 eyeOffset = float2(0.06, 0.055);
+    float headScaleU = (c.x + 0.2) * 12.0;
+    float headScaleV = c.y * 8.0;
+    float hRow = floor(headScaleV);
+    float hDiamond = abs(frac(headScaleU + fmod(hRow, 2.0) * 0.5) - 0.5) + abs(frac(headScaleV) - 0.5);
+    col -= holyGold * smoothstep(0.42, 0.5, hDiamond) * headMask * 0.18;
+
+    //=
+    //3. 双目(俯视对称)：秘紫眼辉 + 白瞳，眼窝一线压暗
+    //=
+    float2 eyeOffset = float2(0.045, 0.062);
     float eye1Dist = length(c - eyeOffset);
     float eye2Dist = length(c - float2(eyeOffset.x, -eyeOffset.y));
 
-    float eyeGlow = exp(-eye1Dist * eye1Dist * 3000.0) + exp(-eye2Dist * eye2Dist * 3000.0);
+    float socket = exp(-eye1Dist * eye1Dist * 1600.0) + exp(-eye2Dist * eye2Dist * 1600.0);
+    col -= holyGold * socket * 0.25 * headMask;
+
+    float eyeGlow = exp(-eye1Dist * eye1Dist * 2600.0) + exp(-eye2Dist * eye2Dist * 2600.0);
     col += mysticPurple * eyeGlow * 1.5;
-
-    //瞳孔(更亮的核心)
-    float pupil1 = exp(-eye1Dist * eye1Dist * 8000.0);
-    float pupil2 = exp(-eye2Dist * eye2Dist * 8000.0);
-    col += pureWhite * (pupil1 + pupil2) * 0.8;
+    float pupil = exp(-eye1Dist * eye1Dist * 9000.0) + exp(-eye2Dist * eye2Dist * 9000.0);
+    col += pureWhite * pupil * 0.85;
 
     //=
-    //3. 头冠十字架
+    //4. 脑后神性光环：细环托在颈后，呼吸明灭
     //=
-    //旋转坐标用于十字架
-    float2 crownC = c - float2(0.12, 0.0);
-    float crownDist = length(crownC);
-
-    float crossH = exp(-crownC.y * crownC.y * 2000.0);
-    float crossV = exp(-crownC.x * crownC.x * 3000.0);
-    float crownFade = exp(-crownDist * 6.0);
-    col += holyGold * (crossH + crossV * 1.2) * crownFade * 0.5;
+    float2 haloC = c + float2(0.115, 0.0);
+    float haloDelta = length(haloC) - 0.205;
+    float halo = exp(-haloDelta * haloDelta * 2600.0);
+    float haloPulse = 0.7 + 0.3 * sin(uTime * 2.6);
+    col += holyGold * halo * (1.0 - headMask * 0.75) * haloPulse * 0.55;
 
     //=
-    //4. 头部神圣光晕
+    //5. 吻前十字圣徽：悬浮在行进方向前方的小拉丁十字
     //=
-    float halo = exp(-dist * dist * 15.0);
-    float haloPulse = 0.7 + 0.3 * sin(uTime * 3.0);
-    col += holyGold * halo * 0.2 * haloPulse * glowIntensity;
+    float2 crownC = c - float2(0.315, 0.0);
+    float crossH = exp(-crownC.y * crownC.y * 9000.0) * smoothstep(0.075, 0.02, abs(crownC.x));
+    float crossV = exp(-crownC.x * crownC.x * 12000.0) * smoothstep(0.055, 0.012, abs(crownC.y));
+    float crownPulse = 0.75 + 0.25 * sin(uTime * 3.4 + 1.2);
+    float crown = (crossH + crossV * 1.2) * crownPulse;
+    col += lerp(holyGold, pureWhite, 0.4) * crown * 0.65;
 
     //=
-    //5. 鳞片暗示(头部前端)
+    //整体衰减 + 画布边界保险
     //=
-    float headScaleU = (c.x + 0.2) * 10.0;
-    float headScaleV = c.y * 6.0;
-    float hRow = floor(headScaleV);
-    float hOffU = fmod(hRow, 2.0) * 0.5;
-    float hDiamond = abs(frac(headScaleU + hOffU) - 0.5) + abs(frac(headScaleV) - 0.5);
-    float hScaleEdge = smoothstep(0.46, 0.5, hDiamond);
-    col += holyGold * hScaleEdge * headMask * 0.15;
+    col *= fadeAlpha * glowIntensity;
+    col *= 1.0 - smoothstep(0.44, 0.5, dist);
 
-    //=
-    //边缘衰减
-    //=
-    col *= smoothstep(0.3, 0.2, dist) * fadeAlpha * glowIntensity;
-
-    float alpha = smoothstep(0.3, 0.15, dist) * fadeAlpha;
+    float alpha = saturate(headMask * 0.95 + halo * 0.45 + crown * 0.5 + eyeGlow * 0.4) * fadeAlpha;
     return float4(col, alpha);
 }
 

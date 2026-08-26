@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -34,24 +35,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(CWRID.Item_DubiousPlating, 6).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 8).
-                AddRecipeGroup(RecipeGroupID.IronBar, 8).
-                AddIngredient(ItemID.Acorn, 10).
-                AddIngredient(ItemID.Wood, 20).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(RecipeGroupID.IronBar, 8).
-                AddIngredient(ItemID.Acorn, 10).
-                AddIngredient(ItemID.Wood, 20).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient<CircuitBoard>(8).
+            AddRecipeGroup(RecipeGroupID.IronBar, 8).
+            AddIngredient(ItemID.Acorn, 10).
+            AddIngredient(ItemID.Wood, 20).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 }

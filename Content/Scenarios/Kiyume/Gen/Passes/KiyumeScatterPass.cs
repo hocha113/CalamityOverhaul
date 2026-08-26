@@ -29,6 +29,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen.Passes
             ScatterTrees(KiyumeMetrics.VillageLeft, KiyumeMetrics.GroveLeft, 52, 96);
             progress.Set(0.7);
             ScatterShoalRocks();
+            progress.Set(0.85);
+            //微装饰条目（E 包）：檐下罐/柴垛/晾物架/枯草丛/怪谈告示牌，全走禁区过滤
+            KiyumeMicroSites.ScatterDecor();
             progress.Set(1.0);
 
             CWRMod.Instance.Logger.Info($"[Kiyume] Scatter 枯树={trees} 礁石={rocks} 蛛网={webs}");
@@ -37,7 +40,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen.Passes
         private static void ScatterTrees(int left, int right, int gapMin, int gapMax) {
             for (int x = left + 6; x < right - 6; x += WorldGen.genRand.Next(gapMin, gapMax)) {
                 int h = WorldGen.genRand.Next(8, 19);
-                if (!ColumnClear(x, h + 3)) {
+                //禁区让路（井口/墓园/建筑足印等，E 包接线）
+                if (KiyumeStructures.InExclusion(x, KiyumePlans.FloorTopAt(x) - 1) || !ColumnClear(x, h + 3)) {
                     continue;
                 }
                 BuildDeadTree(x, KiyumePlans.FloorTopAt(x), h);
@@ -82,6 +86,10 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen.Passes
                     continue;
                 }
                 int ground = KiyumePlans.FloorTopAt(x);
+                //禁区让路（栈桥/船骸/旱田，E 包接线）
+                if (KiyumeStructures.InExclusion(x, ground - 1)) {
+                    continue;
+                }
                 int w = WorldGen.genRand.Next(2, 6);
                 int h = WorldGen.genRand.Next(1, 4);
                 for (int dx = 0; dx < w; dx++) {

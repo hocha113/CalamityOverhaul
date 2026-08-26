@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -44,21 +45,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.WireInterfaces
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe(2).
-                AddIngredient(CWRID.Item_DubiousPlating, 8).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 8).
-                AddIngredient(ItemID.Wire, 10).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe(2).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
-                AddIngredient(ItemID.Wire, 10).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe(2).
+            AddIngredient<CircuitBoard>(8).
+            AddIngredient(ItemID.Wire, 10).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -42,22 +43,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Suppressors
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe()
-                    .AddIngredient(CWRID.Item_DubiousPlating, 12)
-                    .AddIngredient(CWRID.Item_MysteriousCircuitry, 10)
-                    .AddRecipeGroup(CWRCrafted.TungstenBarGroup, 12)
-                    .AddIngredient(ItemID.PeaceCandle, 3)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
-            else {
-                CreateRecipe()
-                    .AddRecipeGroup(CWRCrafted.TungstenBarGroup, 15)
-                    .AddIngredient(ItemID.PeaceCandle, 3)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
+                .AddIngredient<CircuitBoard>(10)
+                .AddRecipeGroup(CWRCrafted.TungstenBarGroup, 12)
+                .AddIngredient(ItemID.PeaceCandle, 3)
+                .AddTile(TileID.Anvils)
+                .Register();
+
         }
     }
 }

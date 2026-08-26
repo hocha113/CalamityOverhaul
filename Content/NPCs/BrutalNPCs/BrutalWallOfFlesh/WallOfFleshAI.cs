@@ -1,3 +1,5 @@
+using CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh;
+using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States;
@@ -8,6 +10,7 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
@@ -573,6 +576,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
             return wall.GetAttackDamage_ScaledByStrength(baseDamage);
         }
 
+        #endregion
+
+        #region 掉落
+        /// <summary>残酷世界击杀必掉遗物饕餮之喉(条件类自带门禁)</summary>
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+                ModContent.ItemType<GluttonousThroat>()));
+        }
         #endregion
     }
 }

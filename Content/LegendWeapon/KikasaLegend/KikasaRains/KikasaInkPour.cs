@@ -297,6 +297,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                         drop.penetrate = dropCtx.Penetrate;
                     }
                     drop.netUpdate = true;
+                    //墨印:瀑的散射滴同属亲手指挥的攻击,盖印(端本地位,本分支已在归属端)
+                    if (drop.ModProjectile is KikasaInkDrop inkDrop) {
+                        inkDrop.AppliesTag = true;
+                    }
                 }
             }
 
@@ -420,9 +424,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             => KikasaTalismanHooks.ForOwner(Projectile.owner)
                 .ModifyRainHitNPC(Projectile, KikasaRainSourceKind.Pour, target, ref modifiers);
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-            => KikasaTalismanHooks.ForOwner(Projectile.owner)
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            //墨印:墨瀑只能被亲手指挥出来,命中即盖印(归属端,骑原版 buff 同步)
+            target.AddBuff(ModContent.BuffType<KikasaInkTag>(), KikasaInkTag.TagFrames);
+            KikasaTalismanHooks.ForOwner(Projectile.owner)
                 .OnRainHitNPC(Projectile, KikasaRainSourceKind.Pour, target, in hit, damageDone);
+        }
 
         /// <summary>自探针点向下逐格找实心地表,命中返回表面世界坐标</summary>
         private static bool TryFindGroundBelow(Vector2 probe, float maxDown, out Vector2 surface) {

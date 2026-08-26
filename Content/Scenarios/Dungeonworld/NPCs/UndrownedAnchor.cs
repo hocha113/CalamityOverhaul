@@ -87,6 +87,15 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 Projectile.velocity.Y += Mode == ModeUpThrow ? 0.6f : 0.12f;
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
+                //飞行拖水：泡胀锚身甩出的水珠（速度门控，客户端）
+                if (!Main.dedServ && Projectile.velocity.Length() > 8f && (int)Life % 2 == 0) {
+                    PRTLoader.NewParticle<PRT_GhostRainDrop>(
+                        Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
+                        -Projectile.velocity * 0.12f + Main.rand.NextVector2Circular(0.8f, 0.8f),
+                        Undrowned.BogWater * 0.75f, Main.rand.NextFloat(0.3f, 0.5f))
+                        ?.Configure(Main.rand.Next(12, 22), 0.12f);
+                }
+
                 //各端对同步 tile 做确定性嵌定判定
                 Point cell = Projectile.Center.ToTileCoordinates();
                 if (WorldGen.InWorld(cell.X, cell.Y, 5) && WorldGen.SolidTile(cell.X, cell.Y)) {
@@ -182,14 +191,33 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 //嵌墙微颤：链上还挂着一整个人的力
                 pos += new Vector2(MathF.Sin(EmbedTimer * 1.7f) * 1.2f, 0f);
             }
-            //涡轨锚由主人画链，这里补一段短链尾增强"抡起来"的读感
+
             if (Mode == ModeOrbit) {
                 NPC boss = OwnerNpc;
                 if (boss != null && boss.active) {
+                    //旋转拖影：沿轨道回溯重算三帧早位（旋转的重物用旋转残影说话）
+                    float tNow = MathF.Max(0f, boss.ai[1] - Undrowned.WhirlAnchorSpawnAt);
+                    for (int g = 3; g >= 1; g--) {
+                        float tg = MathF.Max(0f, tNow - g * 2.2f);
+                        float rg = MathHelper.Clamp(tg * 12f, 0f, Undrowned.WhirlOrbitRadius);
+                        float ag = tg * 0.09f;
+                        Vector2 gpos = boss.Center + ag.ToRotationVector2() * rg;
+                        Undrowned.DrawAnchor(Main.spriteBatch, tex, gpos, ag + MathHelper.PiOver2,
+                            lightColor, 0.32f - g * 0.09f);
+                    }
+                    //涡轨锚由主人画链，这里补一段短链尾增强"抡起来"的读感
                     Texture2D chainTex = TextureAssets.Chain22?.Value;
                     if (chainTex != null) {
                         Undrowned.DrawChainLine(Main.spriteBatch, chainTex, boss.Center, pos, lightColor, 1f);
                     }
+                }
+            }
+            else if ((int)FlightPhase == 0 && Projectile.velocity.Length() > 8f) {
+                //飞行速度残影：同素材同缩放的锚体重画（拖尾与本体同材质）
+                for (int g = 3; g >= 1; g--) {
+                    Vector2 gpos = pos - Projectile.velocity * (g * 1.6f);
+                    Undrowned.DrawAnchor(Main.spriteBatch, tex, gpos,
+                        Projectile.rotation - g * 0.05f, lightColor, 0.3f - g * 0.08f);
                 }
             }
             Undrowned.DrawAnchor(Main.spriteBatch, tex, pos, Projectile.rotation, lightColor, 1f);

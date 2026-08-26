@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
+using CalamityOverhaul.Content.Items.Materials;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -217,22 +218,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
         #endregion
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddRecipeGroup(RecipeGroupID.IronBar, 5).
-                AddIngredient(ItemID.Chest, 4).
-                AddIngredient(CWRID.Item_DubiousPlating, 2).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 2).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                    AddRecipeGroup(RecipeGroupID.IronBar, 5).
-                    AddIngredient(ItemID.Chest, 4).
-                    AddTile(TileID.Anvils).
-                    Register();
-            }
+            CreateRecipe().
+            AddRecipeGroup(RecipeGroupID.IronBar, 5).
+            AddIngredient(ItemID.Chest, 4).
+            AddIngredient<CircuitBoard>(2).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 

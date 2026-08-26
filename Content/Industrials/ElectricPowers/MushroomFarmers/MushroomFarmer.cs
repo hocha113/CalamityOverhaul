@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -5,12 +6,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
 {
-    /// <summary>蘑菇农场机,在草地与蘑菇草上自动培育并采收蘑菇;贴图复用生命编织者,靠菌蓝紫色调区分</summary>
+    /// <summary>蘑菇农场机,在草地与蘑菇草上自动培育并采收蘑菇</summary>
     internal class MushroomFarmer : ModItem
     {
-        public override string Texture => CWRConstant.Asset + "ElectricPowers/LifeWeaver";
+        public override string Texture => CWRConstant.Asset + "ElectricPowers/MushroomFarmer";
 
-        /// <summary>系列色调:菌蓝紫,同贴图靠它与生命编织者/草药机区分</summary>
+        /// <summary>系列色调:菌蓝紫,用于提示文本与 UI 点缀</summary>
         internal static readonly Color Tint = new(150, 140, 235);
 
         public static LocalizedText NoEnergyText { get; private set; }
@@ -33,31 +34,20 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
             Item.consumable = true;
             Item.value = Item.buyPrice(0, 1, 20, 0);
             Item.rare = ItemRarityID.Orange;
-            Item.color = Tint;
             Item.createTile = ModContent.TileType<MushroomFarmerTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 500;
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe()
-                    .AddIngredient(CWRID.Item_DubiousPlating, 8)
-                    .AddIngredient(CWRID.Item_MysteriousCircuitry, 6)
-                    .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
-                    .AddIngredient(ItemID.Mushroom, 5)
-                    .AddIngredient(ItemID.GlowingMushroom, 5)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
-            else {
-                CreateRecipe()
-                    .AddRecipeGroup(CWRCrafted.TinBarGroup, 12)
-                    .AddIngredient(ItemID.Mushroom, 5)
-                    .AddIngredient(ItemID.GlowingMushroom, 5)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
+                .AddIngredient<CircuitBoard>(6)
+                .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
+                .AddIngredient(ItemID.Mushroom, 5)
+                .AddIngredient(ItemID.GlowingMushroom, 5)
+                .AddTile(TileID.Anvils)
+                .Register();
+
         }
     }
 }

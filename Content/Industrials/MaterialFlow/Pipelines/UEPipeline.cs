@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -39,20 +40,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override string Texture => CWRConstant.Asset + "MaterialFlow/PipelineItem";
         public override int CreateTileID => ModContent.TileType<UEPipelineTile>();
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe(333).
-                AddIngredient(CWRID.Item_DubiousPlating, 5).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 5).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe(333).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe(333).
+            AddIngredient<CircuitBoard>(5).
+            AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 

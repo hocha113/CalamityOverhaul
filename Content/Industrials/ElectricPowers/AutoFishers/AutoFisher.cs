@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -5,12 +6,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
 {
-    /// <summary>自动钓鱼机,消耗鱼饵与电力从水面自动收获渔获;贴图复用收集器,靠湖蓝色调区分</summary>
+    /// <summary>自动钓鱼机,消耗鱼饵与电力从水面自动收获渔获</summary>
     internal class AutoFisher : ModItem
     {
-        public override string Texture => CWRConstant.Asset + "ElectricPowers/Collector";
+        public override string Texture => CWRConstant.Asset + "ElectricPowers/AutoFisher";
 
-        /// <summary>系列色调:湖蓝,同贴图靠它与收集器区分</summary>
+        /// <summary>系列色调:湖蓝,用于提示文本与 UI 点缀</summary>
         internal static readonly Color Tint = new(135, 200, 240);
 
         public static LocalizedText NoEnergyText { get; private set; }
@@ -37,31 +38,20 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
             Item.consumable = true;
             Item.value = Item.buyPrice(0, 2, 40, 0);
             Item.rare = ItemRarityID.LightRed;
-            Item.color = Tint;
             Item.createTile = ModContent.TileType<AutoFisherTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 800;
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe()
-                    .AddIngredient(CWRID.Item_DubiousPlating, 10)
-                    .AddIngredient(CWRID.Item_MysteriousCircuitry, 8)
-                    .AddRecipeGroup(CWRCrafted.TungstenBarGroup, 8)
-                    .AddIngredient(ItemID.WoodFishingPole, 1)
-                    .AddIngredient(ItemID.Cobweb, 20)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
-            else {
-                CreateRecipe()
-                    .AddRecipeGroup(CWRCrafted.TungstenBarGroup, 10)
-                    .AddIngredient(ItemID.WoodFishingPole, 1)
-                    .AddIngredient(ItemID.Cobweb, 20)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
+                .AddIngredient<CircuitBoard>(8)
+                .AddRecipeGroup(CWRCrafted.TungstenBarGroup, 8)
+                .AddIngredient(ItemID.WoodFishingPole, 1)
+                .AddIngredient(ItemID.Cobweb, 20)
+                .AddTile(TileID.Anvils)
+                .Register();
+
         }
     }
 }

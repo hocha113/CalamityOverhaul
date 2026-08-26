@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ShimmerTransmuters
 {
     internal class ShimmerTransmuterTile : ModTile
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryTile";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryLegacyTile";
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;

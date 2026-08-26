@@ -27,6 +27,8 @@ namespace CalamityOverhaul.Content
         public static LocalizedText TemperatureText { get; private set; }
         public static LocalizedText InternalStoredEnergy { get; private set; }
         public static LocalizedText DeathModeItemText { get; private set; }
+        public static LocalizedText BrutalModeItemText { get; private set; }
+        public static LocalizedText BrutalRelicSeriesText { get; private set; }
         public static LocalizedText LegendItemUpgradeDisable { get; private set; }
         public static LocalizedText ItemLegendOnMouseLang { get; private set; }
 
@@ -34,6 +36,8 @@ namespace CalamityOverhaul.Content
             TemperatureText = this.GetLocalization(nameof(TemperatureText), () => "燃烧温度");
             InternalStoredEnergy = this.GetLocalization(nameof(InternalStoredEnergy), () => "能量存储");
             DeathModeItemText = this.GetLocalization(nameof(DeathModeItemText), () => "死亡模式");
+            BrutalModeItemText = this.GetLocalization(nameof(BrutalModeItemText), () => "残酷模式下掉落");
+            BrutalRelicSeriesText = this.GetLocalization(nameof(BrutalRelicSeriesText), () => "残酷遗物 · 残酷模式专属");
             LegendItemUpgradeDisable = this.GetLocalization(nameof(LegendItemUpgradeDisable), () =>
                 """
                 这把传奇武器在当前世界中已被设定为无法升级

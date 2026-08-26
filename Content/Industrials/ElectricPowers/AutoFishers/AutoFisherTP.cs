@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,10 +19,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
     /// <summary>
     /// 自动钓鱼机TP:探测机身下方的水面,消耗鱼饵与电力周期性收获渔获。<br/>
     /// 垂钓判定与库存变更仅权威端执行(主线程经 Defer),
-    /// 收获演出经修订号搭全量包广播;机械臂与钓线为纯客户端表现
+    /// 收获演出经修订号搭全量包广播;钓竿与钓线为纯客户端表现
     /// </summary>
     internal class AutoFisherTP : BaseBattery
     {
+        [VaultLoaden(CWRConstant.Asset + "ElectricPowers/AutoFisherRod")]
+        internal static Asset<Texture2D> rodAsset = null;
+        [VaultLoaden(CWRConstant.Asset + "ElectricPowers/AutoFisherHook")]
+        internal static Asset<Texture2D> hookAsset = null;
+
         public override int TargetTileID => ModContent.TileType<AutoFisherTile>();
         public override int TargetItem => ModContent.ItemType<AutoFisher>();
         public override bool ReceivedEnergy => true;
@@ -88,10 +94,18 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
         private bool netDirty;
         private int netCooldown;
 
-        //---- 客户端表现字段:机械臂摆角与浮标 ----
+        //---- 客户端表现字段:钓竿摆角与浮标 ----
         internal float ArmAngle = -0.5f;
         internal float CatchFlash;
         private float bobPhase;
+
+        //---- 钓竿装配锚点(相对物块左上角,由组合预览图反算) ----
+        //竿底插销枢轴:竿绕它做小幅摆动
+        private static readonly Vector2 RodPivotOffset = new(12f, 18f);
+        //插销在竿贴图内的本地坐标(底部尖头中心)
+        private static readonly Vector2 RodPivotLocal = new(5f, 26f);
+        //出线点在竿贴图内的本地坐标(竿顶红球)
+        private static readonly Vector2 RodTipLocal = new(6.5f, 1.5f);
 
         #endregion
 
@@ -121,8 +135,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
             }
         }
 
-        /// <summary>竿肩世界坐标(机身顶部偏右)</summary>
-        internal Vector2 ShoulderPos => PosInWorld + new Vector2(Width * 0.5f + 6f, 20f);
+        /// <summary>竿底枢轴世界坐标(机身桅杆插座)</summary>
+        internal Vector2 RodPivotPos => PosInWorld + RodPivotOffset;
+
+        /// <summary>竿的当前摆角:表现包络 ArmAngle 折算成小幅倾斜</summary>
+        internal float RodRotation => ArmAngle * 0.16f;
+
+        /// <summary>竿顶出线点世界坐标(随竿摆动旋转)</summary>
+        internal Vector2 RodTipPos => RodPivotPos + (RodTipLocal - RodPivotLocal).RotatedBy(RodRotation);
 
         /// <summary>浮标世界坐标,含沉浮摆动</summary>
         internal Vector2 BobberPos {
@@ -432,7 +452,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
             netDirty = true;
 
             if (!VaultUtils.isServer) {
-                Defer(() => SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -0.2f, Volume = 0.5f }, ShoulderPos));
+                Defer(() => SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -0.2f, Volume = 0.5f }, RodPivotPos));
             }
         }
 
@@ -560,7 +580,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
             SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.7f, Pitch = 0.1f }, splashPos);
         }
 
-        /// <summary>机械臂摆角与浮标沉浮的客户端包络</summary>
+        /// <summary>钓竿摆角与浮标沉浮的客户端包络</summary>
         private void UpdateVisual() {
             if (VaultUtils.isServer) {
                 return;
@@ -624,34 +644,22 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
 
         public override void FrontDraw(SpriteBatch spriteBatch) {
             DrawChargeBar();
-            DrawArmAndLine(spriteBatch);
+            DrawRodAndLine(spriteBatch);
         }
 
-        /// <summary>机械臂挥竿+下垂钓线+浮标:全部程序化拼装,复用收集器机械臂贴图</summary>
-        private void DrawArmAndLine(SpriteBatch spriteBatch) {
-            var armAsset = AutoFisherTile.armAsset;
-            var clampAsset = AutoFisherTile.clampAsset;
-            if (armAsset == null || clampAsset == null) {
+        /// <summary>钓竿贴图立在机身桅杆上,提竿/收竿经竿身小幅摆动传达;鱼线仍为程序化贝塞尔</summary>
+        private void DrawRodAndLine(SpriteBatch spriteBatch) {
+            if (rodAsset == null || hookAsset == null) {
                 return;
             }
 
-            Texture2D armTex = armAsset.Value;
-            Texture2D clampTex = clampAsset.Value;
-            Vector2 shoulderScreen = ShoulderPos - Main.screenPosition;
-            Color lightColor = Lighting.GetColor(ShoulderPos.ToTileCoordinates());
-            Color tinted = lightColor.MultiplyRGB(AutoFisher.Tint);
+            Texture2D rodTex = rodAsset.Value;
+            Vector2 pivotScreen = RodPivotPos - Main.screenPosition;
+            Color lightColor = Lighting.GetColor(RodPivotPos.ToTileCoordinates());
 
-            //机械臂:底端锚在竿肩,绕肩摆动
-            float armLength = armTex.Height * 0.92f;
-            spriteBatch.Draw(armTex, shoulderScreen, null, tinted, ArmAngle,
-                new Vector2(armTex.Width * 0.5f, armTex.Height), 1f, SpriteEffects.None, 0f);
-
-            //竿尖与夹爪
-            Vector2 tipDir = (ArmAngle - MathHelper.PiOver2).ToRotationVector2();
-            Vector2 tipWorld = ShoulderPos + tipDir * armLength;
-            Vector2 tipScreen = tipWorld - Main.screenPosition;
-            spriteBatch.Draw(clampTex, tipScreen, null, tinted, ArmAngle,
-                new Vector2(clampTex.Width * 0.5f, clampTex.Height * 0.7f), 0.8f, SpriteEffects.None, 0f);
+            //竿:底部插销锚在桅杆插座,绕它随包络小幅摆动
+            spriteBatch.Draw(rodTex, pivotScreen, null, lightColor, RodRotation,
+                RodPivotLocal, 1f, SpriteEffects.None, 0f);
 
             //钓线与浮标:只在浮标在水上时画
             if (FishState != 1 || WaterPoint == Point16.Zero) {
@@ -659,15 +667,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
             }
 
             Vector2 bobberWorld = BobberPos;
-            DrawFishingLine(spriteBatch, tipWorld, bobberWorld, lightColor);
+            //线从竿顶红球出,挂到浮标顶端
+            DrawFishingLine(spriteBatch, RodTipPos, bobberWorld - new Vector2(0f, 4f), lightColor);
 
-            //浮标:上白下红的小方点
-            Texture2D px = VaultAsset.placeholder2.Value;
-            Vector2 bobberScreen = bobberWorld - Main.screenPosition;
-            spriteBatch.Draw(px, bobberScreen + new Vector2(-2, -4), new Rectangle(0, 0, 1, 1),
-                Color.White * 0.9f, 0f, Vector2.Zero, new Vector2(4, 3), SpriteEffects.None, 0f);
-            spriteBatch.Draw(px, bobberScreen + new Vector2(-2, -1), new Rectangle(0, 0, 1, 1),
-                new Color(220, 60, 50), 0f, Vector2.Zero, new Vector2(4, 3), SpriteEffects.None, 0f);
+            //浮标贴图:锚点取贴图中上,浮在水面线上
+            Texture2D hookTex = hookAsset.Value;
+            spriteBatch.Draw(hookTex, bobberWorld - Main.screenPosition, null,
+                Lighting.GetColor(bobberWorld.ToTileCoordinates()), 0f,
+                new Vector2(hookTex.Width * 0.5f, 4f), 1f, SpriteEffects.None, 0f);
         }
 
         /// <summary>竿尖到浮标的下垂钓线,二次贝塞尔逐段画</summary>

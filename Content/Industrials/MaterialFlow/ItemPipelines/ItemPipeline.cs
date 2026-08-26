@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -20,24 +21,14 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe(333)
-                .AddIngredient(CWRID.Item_DubiousPlating, 5)
-                .AddIngredient(CWRID.Item_MysteriousCircuitry, 5)
-                .AddRecipeGroup(RecipeGroupID.IronBar, 5)
-                .AddIngredient(ItemID.Chest, 2)
-                .AddIngredient(ItemID.Glass, 5)
-                .AddTile(TileID.Anvils)
-                .Register();
-            }
-            else {
-                CreateRecipe(333)
-                    .AddRecipeGroup(RecipeGroupID.IronBar, 5)
-                    .AddIngredient(ItemID.Chest, 2)
-                    .AddIngredient(ItemID.Glass, 5)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-            }
+            CreateRecipe(333)
+            .AddIngredient<CircuitBoard>(5)
+            .AddRecipeGroup(RecipeGroupID.IronBar, 5)
+            .AddIngredient(ItemID.Chest, 2)
+            .AddIngredient(ItemID.Glass, 5)
+            .AddTile(TileID.Anvils)
+            .Register();
+
         }
     }
 

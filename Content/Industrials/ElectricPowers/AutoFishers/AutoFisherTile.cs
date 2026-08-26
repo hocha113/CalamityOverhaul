@@ -1,7 +1,6 @@
 using CalamityOverhaul.Common;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -14,17 +13,10 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
 {
-    /// <summary>自动钓鱼机瓦片,3x5;复用收集器瓦片贴图(静止帧)并施加湖蓝色调</summary>
+    /// <summary>自动钓鱼机瓦片,2x3;钓竿与鱼线由 TP 在物块层上拼装</summary>
     internal class AutoFisherTile : ModTile
     {
-        public override string Texture => CWRConstant.Asset + "ElectricPowers/CollectorTile";
-
-        [VaultLoaden(CWRConstant.Asset + "ElectricPowers/CollectorTileGlow")]
-        internal static Asset<Texture2D> tileGlowAsset = null;
-        [VaultLoaden(CWRConstant.Asset + "ElectricPowers/MechanicalArm")]
-        internal static Asset<Texture2D> armAsset = null;
-        [VaultLoaden(CWRConstant.Asset + "ElectricPowers/MechanicalClamp")]
-        internal static Asset<Texture2D> clampAsset = null;
+        public override string Texture => CWRConstant.Asset + "ElectricPowers/AutoFisherTile";
 
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
@@ -34,12 +26,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
             Main.tileWaterDeath[Type] = false;
             AddMapEntry(new Color(78, 122, 156), VaultUtils.GetLocalizedItemName<AutoFisher>());
 
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
-            TileObjectData.newTile.Width = 3;
-            TileObjectData.newTile.Height = 5;
-            TileObjectData.newTile.Origin = new Point16(1, 4);
-            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16];
-            TileObjectData.newTile.StyleWrapLimit = 36;
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
+            TileObjectData.newTile.Width = 2;
+            TileObjectData.newTile.Height = 3;
+            TileObjectData.newTile.Origin = new Point16(1, 2);
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 18];
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile
                 | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.CoordinateWidth = 16;
@@ -93,37 +84,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
                 return false;
             }
 
-            Tile t = Main.tile[i, j];
-            int frameXPos = t.TileFrameX;
-            int frameYPos = t.TileFrameY;
-            Texture2D tex = TextureAssets.Tile[Type].Value;
-            Texture2D glow = tileGlowAsset.Value;
-            Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-            Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
-            //共用收集器贴图,乘上系列色调区分机种
-            Color drawColor = Lighting.GetColor(i, j).MultiplyRGB(AutoFisher.Tint);
-
-            if (tp.MachineData.UEvalue < AutoFisherTP.CastCost) {
-                drawColor.R /= 2;
-                drawColor.G /= 2;
-                drawColor.B /= 2;
-                drawColor.A = 255;
-            }
-
-            Color glowColor = AutoFisher.Tint * (0.3f + tp.GlowIntensity * 0.7f);
-
-            if (!t.IsHalfBlock && t.Slope == 0) {
-                spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
-                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-                spriteBatch.Draw(glow, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
-                    , glowColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-            }
-            else if (t.IsHalfBlock) {
-                spriteBatch.Draw(tex, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
-                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-                spriteBatch.Draw(glow, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
-                    , glowColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-            }
+            //电量不足以下一竿时机身压暗,一眼可读的断电状态
+            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 3, tp.MachineData.UEvalue < AutoFisherTP.CastCost);
             return false;
         }
     }

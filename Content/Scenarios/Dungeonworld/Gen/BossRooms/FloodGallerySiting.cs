@@ -30,8 +30,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
             int floorRel = FloodGalleryRoom.LeftDoorOffset.Y + FloodGalleryRoom.DoorHeight;
             int originY = l4.SpineFloorTop - floorRel;
 
-            //放不下=硬错误跳过,不静默偏移出带(层带表若改动这里要响)
+            //放不下=硬错误跳过,不静默偏移出带(层带表若改动这里要响)。
+            //R4:跳过也要把本函数的2次账掷满,否则退化种子上全链路随机流错位
             if (originY < l4.Top + 2 || originY + FloodGalleryRoom.Height > l4.Bottom) {
+                BurnRolls(2);
                 CWRMod.Instance.Logger.Error(
                     $"[Dungeonworld] 泄洪堂垂直放不进L4带[{l4.Top},{l4.Bottom}),originY={originY},本次跳过");
                 return null;
@@ -39,7 +41,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
 
             //左区间:出生列左侧;右区间:主竖井右侧;先扣触井禁带再选侧取点。
             //genRand先选侧再取点(决定论F22),随机消耗恒2次(NextBool+Next),
-            //在LayerPlanPass的R4注释账上登记为"禁室之后第3、4次定点消耗"
+            //在LayerPlanPass的R4注释账上登记为"禁室之后第3、4次定点消耗";
+            //一切退化分支用BurnRolls补掷凑满,恒2次无条件成立
             int leftMin = DungeonworldMetrics.PlayLeft + 4;
             int leftMax = DungeonworldMetrics.SpawnX - SpawnKeepAway - FloodGalleryRoom.Width;
             int rightMin = DungeonworldMetrics.ShaftLeft + DungeonworldMetrics.ShaftWidth + ShaftKeepAway;
@@ -56,8 +59,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
                 CWRMod.Instance.Logger.Warn("[Dungeonworld] 泄洪堂所选侧被井位禁带扣空,换侧落位");
                 side = pickLeft ? rightSegs : leftSegs;
             }
+            //PickFromSegments对空段表零消耗直接返回-1,该分支由下方补掷找平
             int originX = VerticalLinks.PickFromSegments(side);
             if (originX < 0) {
+                BurnRolls(1);
                 CWRMod.Instance.Logger.Error(
                     "[Dungeonworld] 泄洪堂两侧均无合法落位,本次跳过,责任=常量表/井位禁带");
                 return null;
@@ -68,6 +73,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
                 $"[Dungeonworld] 泄洪堂落位 origin=({originX},{originY})"
                 + $" 门槽行={originY + FloodGalleryRoom.LeftDoorOffset.Y}..{originY + floorRel - 1} 脊地板={l4.SpineFloorTop}");
             return LastOrigin;
+        }
+
+        /// <summary>退化分支补掷:把本函数的genRand消耗凑满恒定值(R4账),掷出的数弃用</summary>
+        private static void BurnRolls(int count) {
+            for (int i = 0; i < count; i++) {
+                WorldGen.genRand.Next(100);
+            }
         }
     }
 }

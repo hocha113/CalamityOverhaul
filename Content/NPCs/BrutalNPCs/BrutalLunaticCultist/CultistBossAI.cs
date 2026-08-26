@@ -1,3 +1,5 @@
+using CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist;
+using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States;
@@ -5,6 +7,7 @@ using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -361,6 +364,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 modifiers.FinalDamage *= 1.25f;
             }
             return null;
+        }
+
+        /// <summary>残酷遗物「仪轨集环」：残酷世界击杀必掉（教徒无宝藏袋，此路径全难度通用）</summary>
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<RiteRing>()));
         }
 
         public override bool CheckActive() => false;

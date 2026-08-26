@@ -45,7 +45,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
         /// <summary>玩家起的站名,空串表示未命名;UI 编辑为客户端权威推送</summary>
         internal string StationName = "";
 
-        internal int frame;
         internal float GlowIntensity;
 
         /// <summary>余辉总帧数,传送双端共用</summary>
@@ -165,11 +164,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
             GlowIntensity = powered
                 ? Math.Min(1f, GlowIntensity + 0.03f)
                 : Math.Max(0f, GlowIntensity - 0.03f);
-            if (powered) {
-                //门户待机动画,复用热能电池六帧表
-                VaultUtils.ClockFrame(ref frame, 5, 5);
-            }
-
             //门户功率三档:可出发满亮/仅可接收半暗/断电熄灭,状态一眼可读
             float tier = powered ? 1f : (MachineData.UEvalue >= ArrivalReserveUE ? 0.42f : 0f);
             PortalPower = MathHelper.Lerp(PortalPower, tier, 0.06f);

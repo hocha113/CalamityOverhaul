@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core;
+﻿using CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera;
+using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States;
 using InnoVault.StateMachines;
@@ -6,7 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
 {
@@ -387,6 +391,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             }
 
             return false;
+        }
+        #endregion
+
+        #region 掉落
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
+            //残酷遗物：残酷世界必掉(条件类自带门禁与图鉴显示)
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<BloomNovaBulb>()));
         }
         #endregion
 

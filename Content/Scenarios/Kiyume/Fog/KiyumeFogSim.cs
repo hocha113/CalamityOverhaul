@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
     /// 每 2 tick 一步：按雾线求目标→驱散/回聚（时间不对称）→上传密度纹理（rgb=雾色, a=密度）。<br/>
     /// 工程骨架照搬深牢迷雾，唯一换掉的是那条目标公式：<br/>
     /// 深牢 <c>baseDensity(深度曲线) × (1 - 亮度×驱散)</c>，
-    /// 这里 <c>tideFill(雾线Y - 世界Y) × 离湖衰减(x)</c>：雾是有水位的液体，不是随深度变浓的空气。<br/>
+    /// 这里 <c>tideFill(世界Y - 雾线Y) × 离湖衰减(x)</c>：雾是有水位的液体，不是随深度变浓的空气。<br/>
     /// 数组/纹理/上传缓冲全部持久复用，零逐帧分配；纯客户端，服务器不进
     /// </summary>
     internal static class KiyumeFogSim
@@ -88,7 +88,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
         /// <summary>解析目标浓度：max(雾线填充 × 离湖衰减 × 带表倍率, 贴水蒸腾) × 全局倍率</summary>
         internal static float TargetAt(float worldX, float worldY) {
             KiyumeFogTheme.Sample(worldX / 16f, out _, out float mul);
-            float raw = TideFill(KiyumeFogTide.SurfaceAt(worldX) - worldY)
+            //沉深=世界Y−雾线Y（Y 向下为正）。W4 镜像修正：M 期误写 SurfaceAt−worldY，
+            //把雾海填到雾线上方；正向以加载屏/DESIGN 行文/fx 解析分支为锚（雾线之下为沉没）
+            float raw = TideFill(worldY - KiyumeFogTide.SurfaceAt(worldX))
                 * LakeFalloff(worldX) * mul;
             if (KiyumeWorld.Active) {
                 float steamGate = MathHelper.Clamp(
@@ -100,7 +102,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
             return MathHelper.Clamp(raw * MathHelper.Max(KiyumeFogDebug.DensityMul, 0f), 0f, 1f);
         }
 
-        /// <summary>雾线填充：线下按沉深递增趋近满，线上快速衰减到零</summary>
+        /// <summary>雾线填充：线下按沉深递增趋近满，线上快速衰减到零。
+        /// <paramref name="depthPx"/>=世界Y−雾线Y（Y 向下为正，正=沉在雾线之下）</summary>
         internal static float TideFill(float depthPx) {
             if (depthPx >= 0f) {
                 float k = MathHelper.Clamp(depthPx / SubmergeDepthPx, 0f, 1f);
@@ -270,7 +273,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
                     //亮度只用来染色，不参与驱散，梦里的光穿不过雾
                     lightBuf[i] = Lighting.Brightness(tileX, tileY);
 
-                    float target = TideFill(colSurface[x] - worldY) * colFactor[x];
+                    //沉深=世界Y−雾面Y（W4 镜像修正，与 TargetAt 同向）
+                    float target = TideFill(worldY - colSurface[x]) * colFactor[x];
                     //湖区贴水蒸腾与雾线取大：退潮时湖上雾墙仍锚在水面
                     if (colSteamGate[x] > 0f) {
                         target = MathHelper.Max(target, SteamFill(worldY) * colSteamGate[x]);

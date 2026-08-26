@@ -130,6 +130,7 @@ namespace CalamityOverhaul
         public static int Item_MidasPrime => Get();
         public static int Item_CrackshotColt => Get();
         public static int Item_DivineGeode => Get();
+        public static int Item_Apotheosis => Get();
         public static int Item_StormRuler => Get();
         public static int Item_StormlionMandible => Get();
         public static int Item_Pandemic => Get();

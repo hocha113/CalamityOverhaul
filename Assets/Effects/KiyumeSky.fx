@@ -3,6 +3,8 @@
 //  1) 近排村落删掉，玩家脚下的村子现在是实体 tile，天空再画一排会和地面打架
 //  2) 地平线不再自己猜，由 C# 按真实相机与村落基准行折算成 uHorizon 喂进来
 //远山脊是这个世界的东界剪影；远村是"同一个村子在更远处又出现一次"，梦的逻辑
+//W2 追加（KIY-P5-D）：E4 云后月轮（uMoonReveal 包络）+ E5 远山火把队列（uTorchLine），
+//事件状态机在 KiyumeSkyEvents.cs，这里只消费参数；两层归零时数学全灭，无泄漏
 //直线算术+平 tex2D，无分支；s0=白图 s1=PerlinNoise。全覆盖预乘输出
 
 float uTime;        //秒
@@ -11,6 +13,9 @@ float2 uScreenSize; //视口真实像素
 float uCamX;        //真实相机世界 X（像素）
 float uCamY;        //真实相机世界 Y（像素）
 float uHorizon;     //地平线屏幕纵向比例 0-1，由 C# 按相机与村落基准折算
+float uMoonReveal;  //E4 月轮包络 0-1（=0 时月层各项全乘零）
+float2 uMoonPos;    //E4 月心 uv（C# 定值 (0.62, uHorizon-0.36)：月不动，月只会被看见）
+float4 uTorchLine;  //E5 火把队列：x=队头（近脊噪声域）y=点数(0=层关) z=方向±1 w=相位种子
 
 sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
@@ -26,6 +31,8 @@ static const float3 RIDGE_NEAR = float3(0.062, 0.014, 0.019); //近山脊
 static const float3 SIL_VILL   = float3(0.086, 0.020, 0.024); //远村剪影
 static const float3 EMBER      = float3(0.950, 0.340, 0.140); //窗火
 static const float3 GROUND_FOG = float3(0.150, 0.026, 0.026); //地平雾
+static const float3 MOON_BODY  = float3(0.620, 0.600, 0.550); //月骨白（裁决20 A案：被血雾滤过的月）
+static const float  MOON_R     = 0.045;                       //月盘半径（uv）
 
 float noiseTex(float2 uv) {
     return tex2D(uImage1, uv).r;
@@ -134,11 +141,34 @@ float4 PSKiyumeSky(float2 coords : TEXCOORD0) : COLOR0 {
     float hGlow = exp2(-abs(uv.y - horizon) * 9.5);
     col = lerp(col, HORIZON, hGlow * 0.62);
 
-    //====== 暗云带：两层反向缓涌，云底压着一线烬缘 ======
+    //====== 云噪声场：云带与月缘啃蚀共用同一次采样 ======
     float c0 = noiseTex(float2(ux * 0.33 + uTime * 0.0080, uv.y * 1.35 + 0.13));
     float c1 = noiseTex(float2(ux * 0.71 - uTime * 0.0121, uv.y * 2.10 + 0.57));
-    float cloud = saturate((c0 * 0.62 + c1 * 0.38 - 0.42) * 2.6)
+    float cloudField = c0 * 0.62 + c1 * 0.38;
+
+    //====== E4 云后月轮：红黑世界唯一一次冷色（画在云带前=月在云后）======
+    float2 mpos = float2(uMoonPos.x * aspect, uMoonPos.y);
+    float md = length(float2(ux, uv.y) - mpos);
+    //月缘用云絮场啃蚀：缘口随云涌缓慢变化，像被云咬着
+    float eat = (cloudField - 0.50) * 0.020;
+    float disc = 1.0 - smoothstep(MOON_R - 0.007 + eat, MOON_R + 0.003 + eat, md);
+    float mSurf = noiseTex(float2(ux * 2.9 + 4.7, uv.y * 2.9 + 8.3));  //月面低频斑驳
+    float limb = smoothstep(0.0, MOON_R, md);                          //缘口压暗
+    //──裁决20 A案体色。备案B"黑月"切换点：把下两行换成
+    //  float3 moonBody = SKY_TOP * 0.55;
+    //  col = lerp(col, moonBody, disc * uMoonReveal);
+    //  月盘即变比云更暗的负空间"月蚀"（纯红黑），血晕与云隙全保留──
+    float3 moonBody = MOON_BODY * (0.78 - limb * 0.18) * (0.90 + 0.10 * mSurf);  //峰亮 0.62*0.78≈0.48≤0.5
+    col = lerp(col, moonBody, disc * uMoonReveal);
+    //外圈血晕：EMBER×0.12 包边，"隔着一层脏玻璃看它"
+    float mHalo = exp2(-abs(md - MOON_R) * 30.0) * (1.0 - disc * 0.55);
+    col += EMBER * mHalo * 0.12 * uMoonReveal;
+
+    //====== 暗云带：两层反向缓涌，云底压着一线烬缘 ======
+    float cloud = saturate((cloudField - 0.42) * 2.6)
         * smoothstep(horizon + 0.02, horizon - 0.34, uv.y);
+    //月位半径 0.12 内云遮蔽减弱：云隙感=云自己让开
+    cloud *= 1.0 - uMoonReveal * smoothstep(0.12, 0.035, md) * 0.70;
     col = lerp(col, CLOUD_DK, cloud * 0.72);
     float rim = saturate((c0 - 0.52) * 5.0) * exp2(-abs(uv.y - horizon + 0.10) * 12.0);
     col += CLOUD_RIM * rim * 0.16;
@@ -155,6 +185,27 @@ float4 PSKiyumeSky(float2 coords : TEXCOORD0) : COLOR0 {
     float ridgeNearY = ridgeTop(xRidgeNear, horizon + 0.006, 0.088, 19.0);
     float silRidgeNear = step(ridgeNearY, uv.y);
     col = lerp(col, RIDGE_NEAR, silRidgeNear * 0.92);
+
+    //====== E5 远山火把队列：近脊线上一串烬点缓慢横移，不回头 ======
+    //落点与近脊同一噪声域：队伍钉在山脊地物上，不随镜头横移打滑；
+    //逐像素只算最近一个槽位（半径 0.004 < 半点距 0.006，辉点互不重叠，免循环）；
+    //点距 0.012(uv)×1.05 入域——与 KiyumeScore.TorchSpacingUv 同步改
+    float tSpacing = 0.012 * 1.05;
+    //队体拖在队头行进方向的后侧（槽 0=队头，槽序向后），与 KiyumeSkyEvents 的出入画折算一致；
+    //槽号钳制而非截断：队两端外的像素量到端点火把，晕光自然衰减无接缝
+    float tRel = (uTorchLine.x - xRidgeNear) * uTorchLine.z;
+    float tSlot = clamp(floor(tRel / tSpacing + 0.5), 0.0, uTorchLine.y - 1.0);
+    float tIn = step(0.5, uTorchLine.y);
+    float tx = uTorchLine.x - uTorchLine.z * tSlot * tSpacing;
+    //脊 y 三点平均防跳变（±半点距再采两次），抬 0.006 让火点坐在脊顶（均值削峰的补偿）
+    float ty = (ridgeTop(tx - 0.006, horizon + 0.006, 0.088, 19.0)
+        + ridgeTop(tx, horizon + 0.006, 0.088, 19.0)
+        + ridgeTop(tx + 0.006, horizon + 0.006, 0.088, 19.0)) * (1.0 / 3.0) - 0.006;
+    float td = length(float2((xRidgeNear - tx) / 1.05, uv.y - ty));
+    //辉点半径 0.004：硬芯+微晕，各点异相慢闪烁；EMBER 零新色
+    float tFlick = 0.45 + 0.55 * noiseTex(float2(tSlot * 0.317 + uTorchLine.w, uTime * 0.041 + tSlot * 0.113));
+    float tGlow = exp2(-td * 760.0) + exp2(-td * 210.0) * 0.28;
+    col += EMBER * tGlow * tFlick * tIn;
 
     //====== 远村：地平线上另一座村子的影像。轮廓带记忆般的微颤，整排明度慢呼吸 ======
     float shiver = (noiseTex(float2(uTime * 0.05, 0.71)) - 0.5) * 0.005;

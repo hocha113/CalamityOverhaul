@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -26,24 +27,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.FluidInjectors
         }
 
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(CWRID.Item_DubiousPlating, 8).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 8).
-                AddRecipeGroup(RecipeGroupID.IronBar, 12).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 8).
-                AddIngredient(ItemID.Glass, 10).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddRecipeGroup(RecipeGroupID.IronBar, 12).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 8).
-                AddIngredient(ItemID.Glass, 10).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient<CircuitBoard>(8).
+            AddRecipeGroup(RecipeGroupID.IronBar, 12).
+            AddRecipeGroup(CWRCrafted.TinBarGroup, 8).
+            AddIngredient(ItemID.Glass, 10).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 }

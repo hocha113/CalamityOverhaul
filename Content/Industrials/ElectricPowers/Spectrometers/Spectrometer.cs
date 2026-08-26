@@ -1,4 +1,5 @@
 ﻿using InnoVault.TileProcessors;
+using CalamityOverhaul.Content.Items.Materials;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -35,21 +36,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
             Item.CWR().ConsumeUseUE = 800;
         }
         public override void AddRecipes() {
-            if (CWRID.DubiousCircuitryAvailable) {
-                CreateRecipe().
-                AddIngredient(ItemID.DyeVat).
-                AddIngredient(CWRID.Item_DubiousPlating, 15).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
-                AddTile(TileID.Anvils).
-                Register();
-            }
-            else {
-                CreateRecipe().
-                AddIngredient(ItemID.DyeVat).
-                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 15).
-                AddTile(TileID.Anvils).
-                Register();
-            }
+            CreateRecipe().
+            AddIngredient(ItemID.DyeVat).
+            AddIngredient<CircuitBoard>(15).
+            AddTile(TileID.Anvils).
+            Register();
+
         }
     }
 

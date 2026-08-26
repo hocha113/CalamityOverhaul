@@ -12,7 +12,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
     /// 末尾自框（RangeFrame）。不依赖 Gen\ 其他类型，A 路只需一行注册 + 一处传坐标。
     /// 尺寸推导（像素数值取自 DeepGaolWraith 实装招式）：
     /// 内膛宽 56 格=896px ≥ 囚笼直径 520px + 两侧走位 ≥180px；
-    /// 内膛高 35 格=560px ≥ 囚笼直径 520px（笼心在玩家，落地时笼底咬进地板属预期）；
+    /// 内膛高阶梯拱顶 33~36 格（中央 36 格=576px）≥ 囚笼直径 520px
+    /// （笼心在玩家，落地时笼底咬进地板属预期；两侧收分仅蚀 7 列 x 2 行檐角，
+    /// 低于 RoomShell.CeilingSetback 对常规房的许可量，不侵开阔区）；
     /// 横贯拉锁半长 620px 超出房宽，锚头钉进侧墙正是语义本体；
     /// 隐袭闪现 ±260px 贴墙时可能没入墙体，怨灵为穿墙鬼魂，属人设内行为。
     /// </summary>
@@ -36,50 +38,57 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
 
         internal static Rectangle Bounds(Point origin) => new(origin.X, origin.Y, Width, Height);
 
-        //==================== 字符画（图例见 ParseCell；行长运行期断言，fail loud）====================
+        //==================== 字符画（图例见 Place 的解析 switch；行长运行期断言，fail loud）====================
         //# 实心粉砖  . 空+粉墙  , 空+板岩粉墙(祭坛背景带)  : 空+瓷面粉墙(顶拱带)
         //- 粉砖平台  h 垂链(tile 214)  D 门插槽(空,登记)  A 祭坛槽(空,登记)
         //L 笼式吊灯槽  b 旗帜槽  c 水蜡烛槽（家具槽落墙随左邻几何字符）
+        //1~4 斜切粉砖(SlopeType 同值:1=左下实 2=右下实 3=左上实 4=右上实;
+        //  顶拱角取向对齐 RoomShell.CornerArch 既有用法:左角4右角3,座沿左2右1)
+        //彩玻墙层(仅动墙,不动碰撞): o 红彩玻(玫瑰窗芯) g 红彩玻+粉漆(花瓣)
+        //  e 红彩玻+深粉漆(窗缘) m 板岩+灰漆(铅条/窗棂/垂带)
+        //构图:阶梯拱顶自两侧收分至中央顶窗带,玫瑰窗(rx25-36,ry10-21)悬于祭坛正上,
+        //  铅条垂带(m,rx30-31)把窗光"接"到祭坛背景带;两侧尖拱窄窗(rx17-19/42-44)
+        //  中柱压一根铅条,读作牢窗铁栏;链长参差,锁链母题主导(ROOMS-L2 §主题锚)。
 
         private static readonly string[] Rows = [
             "##############################################################",
             "##############################################################",
-            "##############################################################",
-            "###:::::h:::L::h::::b:::h:::::L::::::h:::b::::h::L:::h:::::###",
+            "#########################4:b::L:::b:3#########################",
+            "#################4:::L::h::::::::::::h::L:::3#################",
+            "#########4:::::h::::::::h::::::::::::h::::::::h:::::3#########",
+            "###4::::h::::::h::::::::h::::::::::::h::::::::h::::::h::::3###",
             "###:::::h::::::h::::::::h::::::::::::h::::::::h::::::h:::::###",
             "###:::::h::::::h::::::::h::::::::::::h::::::::h::::::h:::::###",
             "###:::::h::::::h::::::::h::::::::::::h::::::::h::::::h:::::###",
-            "###:::::h::::::h::::::::h::::::::::::h::::::::h::::::h:::::###",
-            "###:::::h::::::h::::::::h::::::::::::h::::::::h::::::h:::::###",
-            "###............h........h............h........h............###",
-            "###............h........h............h........h............###",
-            "###............h........h............h........h............###",
-            "###............h........h............h........h............###",
-            "###.....................h............h.....................###",
-            "###.....................h............h.....................###",
-            "###.....................h............h.....................###",
-            "###.....................h............h.....................###",
-            "###........................................................###",
-            "###........................................................###",
-            "###........................................................###",
-            "###........................................................###",
-            "###........................................................###",
-            "###........................................................###",
-            "###........................................................###",
-            "###........................................................###",
-            "###........................................................###",
-            "###-------...............,,,,,,,,,,,,...............-------###",
-            "###......................,,,,,,,,,,,,......................###",
-            "###......c...............,,,,,,,,,,,,...............c......###",
-            "###.....####.............,,,,,,,,,,,,.............####.....###",
-            "###......##..............,,,,,,,,,,,,..............##......###",
-            "###......##..............,,,,,,,,,,,,..............##......###",
-            "###----..##..............,,,,,,,,,,,,..............##..----###",
+            "###.....h......h........h............h........h......h.....###",
+            "###.....h......h........h....emme....h...............h.....###",
+            "###.....h......h...........eggmmgge..h...............h.....###",
+            "###.....h......h..........egggmmggge.h...............h.....###",
+            "###............h..........egggmmggge.h...............h.....###",
+            "###............h.........eggggggggggeh.....................###",
+            "###............h.........emmmgoogmmmeh.....................###",
+            "###............h.........emmmgoogmmmeh.....................###",
+            "###......................egggggggggge......................###",
+            "###.......................egggmmggge.......................###",
+            "###.......................egggmmggge.......................###",
+            "###........................eggmmgge........................###",
+            "###..........................emme..........................###",
+            "###...........................mm...........................###",
+            "###...........................mm...........................###",
+            "###...............e...........mm...........e...............###",
+            "###..............ege..........mm..........ege..............###",
+            "###-------.......gmg.....,,,,,,,,,,,,.....gmg.......-------###",
+            "###..............gmg.....,,,,,,,,,,,,.....gmg..............###",
+            "###......c.......gmg.....,,,,,,,,,,,,.....gmg.......c......###",
+            "###.....2##1.....gmg.....,,,,,,,,,,,,.....gmg.....2##1.....###",
+            "###......##......gmg.....,,,,,,,,,,,,.....gmg......##......###",
+            "###......##......gmg.....,,,,,,,,,,,,.....gmg......##......###",
+            "###----..##......eee.....,,,,,,,,,,,,.....eee......##..----###",
             "###......##..............,,,,,A,,,,,,..............##......###",
             "DDD......##..............,,,,,,,,,,,,..............##......DDD",
             "DDD......##..............,,,,,,,,,,,,..............##......DDD",
-            "DDD......##..............,c,######,c,..............##......DDD",
-            "DDD......##..............,##########,..............##......DDD",
+            "DDD......##..............,c2######1c,..............##......DDD",
+            "DDD.....2##1.............2##########1.............2##1.....DDD",
             "##############################################################",
             "##############################################################",
             "##############################################################",
@@ -92,6 +101,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
         private const ushort WallBase = WallID.PinkDungeonUnsafe;
         private const ushort WallSlab = WallID.PinkDungeonSlabUnsafe;
         private const ushort WallTile = WallID.PinkDungeonTileUnsafe;
+        private const ushort WallGlass = WallID.RedStainedGlass;
         /// <summary>粉砖平台 placeStyle=7（原版 Item 1385），平台帧 = style*18</summary>
         private const short PinkPlatformFrameY = 7 * 18;
 
@@ -105,6 +115,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
             ValidatePrefab();
 
             var furniture = new List<(int x, int y, char kind)>();
+            //锈渍种子：链底与吊灯下沿，金属件在墙上淌出的做旧垂痕（L2 签名，纯墙漆零碰撞）
+            var rustSeeds = new List<(int x, int y)>();
+            var chainBottom = new Dictionary<int, int>();
 
             //几何遍（含垂链，链由构造保证顶锚：h 只出现在实心天花或上一节链之下）
             for (int ry = 0; ry < Height; ry++) {
@@ -121,6 +134,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
                         case '#':
                             SetSolid(x, y, Brick, WallSlab);
                             break;
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                            //斜切收边砖，字符即 SlopeType 枚举值（图例注释有对照表）
+                            SetSloped(x, y, Brick, WallSlab, (SlopeType)(ch - '0'));
+                            break;
                         case '.':
                             ClearCell(x, y, WallBase);
                             lastWall = WallBase;
@@ -133,11 +153,28 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
                             ClearCell(x, y, WallTile);
                             lastWall = WallTile;
                             break;
+                        case 'o':
+                            //玫瑰窗芯：未上漆红彩玻，读作最烫的一点
+                            ClearCell(x, y, WallGlass);
+                            break;
+                        case 'g':
+                            //花瓣格：红彩玻上粉漆，压进囚粉主色
+                            ClearCell(x, y, WallGlass, PaintID.PinkPaint);
+                            break;
+                        case 'e':
+                            //窗缘格：深粉漆压暗，圈出窗形
+                            ClearCell(x, y, WallGlass, PaintID.DeepPinkPaint);
+                            break;
+                        case 'm':
+                            //铅条/窗棂：板岩灰漆，尖拱窗中柱读作牢窗铁栏
+                            ClearCell(x, y, WallSlab, PaintID.GrayPaint);
+                            break;
                         case '-':
                             SetPlatform(x, y, lastWall);
                             break;
                         case 'h':
                             SetChain(x, y, lastWall);
+                            chainBottom[x] = y;
                             break;
                         case 'D':
                         case 'A':
@@ -150,6 +187,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
                             //家具槽先清空落墙（随左邻），坐标记下来等几何冻结后统一放置
                             ClearCell(x, y, lastWall);
                             furniture.Add((x, y, ch));
+                            if (ch == 'L') {
+                                rustSeeds.Add((x, y + 2));
+                            }
                             break;
                         default:
                             CWRMod.Instance.Logger.Warn(
@@ -157,6 +197,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
                             break;
                     }
                 }
+            }
+            foreach (KeyValuePair<int, int> kv in chainBottom) {
+                rustSeeds.Add((kv.Key, kv.Value + 1));
             }
 
             //装修遍：几何已冻结，语义槽统一走合法锚定，放不下记日志跳过（防退化纪律）
@@ -179,6 +222,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
                 }
             }
 
+            //做旧遍：锈渍垂痕（坐标哈希定长，零 genRand，只动墙漆不动碰撞）
+            foreach ((int sx, int sy) in rustSeeds) {
+                PaintRustStreak(sx, sy);
+            }
+
             //自框收尾：直写区域全量帧修（生成期 P80 会再跑一遍，重复无害）
             WorldGen.RangeFrame(originX - 1, originY - 1, originX + Width + 1, originY + Height + 1);
 
@@ -195,14 +243,23 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
             tile.TileType = type;
             tile.Slope = SlopeType.Solid;
             tile.IsHalfBlock = false;
+            tile.TileColor = 0;
             tile.WallType = wall;
+            tile.WallColor = 0;
             tile.LiquidAmount = 0;
         }
 
-        private static void ClearCell(int x, int y, ushort wall) {
+        private static void SetSloped(int x, int y, ushort type, ushort wall, SlopeType slope) {
+            SetSolid(x, y, type, wall);
+            Tile tile = Main.tile[x, y];
+            tile.Slope = slope;
+        }
+
+        private static void ClearCell(int x, int y, ushort wall, byte wallPaint = 0) {
             Tile tile = Main.tile[x, y];
             tile.HasTile = false;
             tile.WallType = wall;
+            tile.WallColor = wallPaint;
             tile.LiquidAmount = 0;
         }
 
@@ -213,7 +270,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
             tile.TileFrameY = PinkPlatformFrameY;
             tile.Slope = SlopeType.Solid;
             tile.IsHalfBlock = false;
+            tile.TileColor = 0;
             tile.WallType = wall;
+            tile.WallColor = 0;
             tile.LiquidAmount = 0;
         }
 
@@ -223,8 +282,40 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
             tile.TileType = TileID.Chain;
             tile.Slope = SlopeType.Solid;
             tile.IsHalfBlock = false;
+            tile.TileColor = 0;
             tile.WallType = wall;
+            tile.WallColor = 0;
             tile.LiquidAmount = 0;
+        }
+
+        /// <summary>
+        /// 锈渍垂痕：自种子格向下 3~6 格给裸墙上棕漆（长度取坐标哈希，零 genRand）。
+        /// 只染本 prefab 的三种狱墙，撞到彩玻/铅条/实心砖即停，垂痕不会淌进窗里。
+        /// </summary>
+        private static void PaintRustStreak(int x, int y) {
+            int len = 3 + (Hash(x, y) & 3);
+            for (int dy = 0; dy < len; dy++) {
+                Tile tile = Main.tile[x, y + dy];
+                if (tile.HasTile && tile.TileType == Brick) {
+                    break;
+                }
+                if (tile.WallType is not (WallBase or WallSlab or WallTile)) {
+                    break;
+                }
+                if (tile.WallColor != 0) {
+                    break;
+                }
+                tile.WallColor = PaintID.BrownPaint;
+            }
+        }
+
+        /// <summary>坐标散列（对齐 LayerTint 的确定性做旧思路：装饰随机不进 genRand 账本）</summary>
+        private static int Hash(int x, int y) {
+            unchecked {
+                int h = x * 374761393 + y * 668265263;
+                h = (h ^ (h >> 13)) * 1274126177;
+                return (h ^ (h >> 16)) & int.MaxValue;
+            }
         }
 
         /// <summary>多格挂件锚定放置：原点纵向试两格，成功以场上出现该 tile 为准</summary>

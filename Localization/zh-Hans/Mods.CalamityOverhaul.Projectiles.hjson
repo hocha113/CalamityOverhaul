@@ -202,6 +202,30 @@ PandemoniumBlastWave.DisplayName: 万魔殿冲击波
 PandemoniumGroundFlame.DisplayName: 万魔殿地焰
 PandemoniumLightning.DisplayName: 万魔殿闪电
 PandemoniumRainDrop.DisplayName: 万魔殿邪雨
+ElysiumHeld.DisplayName: 天国极乐
+SnakeConversionWave.DisplayName: 化蛇波潮
+HolySerpent.DisplayName: 圣蛇
+SimonPeter.DisplayName: 门徒·彼得
+James.DisplayName: 门徒·雅各
+JamesChainStrike.DisplayName: 雷霆审判
+Andrew.DisplayName: 门徒·安德鲁
+AndrewNetField.DisplayName: 圣光渔网
+John.DisplayName: 门徒·约翰
+Philip.DisplayName: 门徒·腓力
+Bartholomew.DisplayName: 门徒·巴多罗买
+Thomas.DisplayName: 门徒·多马
+Matthew.DisplayName: 门徒·马太
+MatthewCoinBurst.DisplayName: 奉献金雨
+Lesser.DisplayName: 门徒·小雅各
+Thaddaeus.DisplayName: 门徒·达太
+Zealot.DisplayName: 门徒·奋锐党西门
+JudasIscariot.DisplayName: 门徒·犹大
+DiscipleSigilBolt.DisplayName: 圣徽飞弹
+ElysiumThunder.DisplayName: 神圣天雷
+RevelationDomain.DisplayName: 天国领域
+CelestialMeteor.DisplayName: 天体陨石
+RevelationSealJudgment.DisplayName: 后三印审判
+ApocalypseHorseman.DisplayName: 天启骑士
 PrismiteWaveProjectile.DisplayName: 棱晶波
 ObsidianFishOrbit.DisplayName: 黑曜鱼环
 RockHammerFish.DisplayName: 岩锤鱼
@@ -567,6 +591,7 @@ UndrownedMineShard.DisplayName: 沉雷爆片
 GaolAnchorProj.DisplayName: 狱锚
 OverseerPressStrike.DisplayName: 压印锤
 OverseerSlagGlob.DisplayName: 熔渣浇包
+OverseerDartBolt.DisplayName: 验收铁镖
 // KikasaDreamHound.DisplayName: Kikasa Dream Hound
 // DeerSeizeHandProj.DisplayName: Deer Seize Hand Proj
 // DestroyerCoilRingProj.DisplayName: Destroyer Coil Ring Proj
@@ -654,3 +679,40 @@ EverdeepMaelstrom.DisplayName: 渊涡水龙卷
 // CultistPlanetProj.DisplayName: Cultist Planet Proj
 // CultistStarFall.DisplayName: Cultist Star Fall
 // ScapegoatDollWalker.DisplayName: Scapegoat Doll Walker
+FallenCrownProj.DisplayName: 坠冕
+KingsVerdictWave.DisplayName: 王之裁决
+RoyalGelField.DisplayName: 王室凝胶池
+MawWormProj.DisplayName: 吞世幼虫
+MirrorheartPulse.DisplayName: 镜心脉冲
+SwarmVortexProj.DisplayName: 蜂涡
+SoulbindingGhostHand.DisplayName: 掌攫幽手
+GluttonousTongueProj.DisplayName: 饕餮之舌
+GluttonousLeechOrb.DisplayName: 血髓凝珠
+RefractionWaltzCrystalProj.DisplayName: 折射水晶
+RefractionWaltzBeamProj.DisplayName: 棱镜光束
+RefractionWaltzShardProj.DisplayName: 折光碎晶
+TwinPupilOrbiter.DisplayName: 迷你魔眼
+TwinPupilLaser.DisplayName: 视界激光
+TwinPupilFlameJet.DisplayName: 焚瞳咒焰
+TwinPupilCrossBurst.DisplayName: 交叉冲锋引爆
+TwinPupilTetherBeam.DisplayName: 双瞳系绳
+ProbeDroneProj.DisplayName: 探针无人机
+ProbeLockBolt.DisplayName: 探针锁定激光
+ProbeOrbitalStrike.DisplayName: 轨道死光
+OverloadArmProj.DisplayName: 过载机臂
+OverloadIonBolt.DisplayName: 过载离子弹
+OverloadArcProj.DisplayName: 过载电弧
+BloomVineSnare.DisplayName: 反缠荆藤
+BloomNovaBurst.DisplayName: 绽放新星
+SolarCoreFistPunch.DisplayName: 日核重拳
+SolarCoreNova.DisplayName: 日耀新星
+SolarChainBurst.DisplayName: 熔岩链爆
+TidalFinTsunamiProj.DisplayName: 潮汐海啸
+TidalFinTornadoProj.DisplayName: 潮汐水龙卷
+RiteStarCore.DisplayName: 仪轨星核
+RiteStarShard.DisplayName: 仪轨坠星
+RiteMirrorPhantom.DisplayName: 仪轨镜身
+RiteRuneBolt.DisplayName: 仪轨符文弹
+RiteMoonFlare.DisplayName: 仪轨月焰
+InterferencePrismBurst.DisplayName: 干涉棱爆
+InterferenceDawnBurst.DisplayName: 昼夜干涉爆发

@@ -686,6 +686,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<CommandersClaw>(), 4));
             rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<RaiderGun>(), 4));
             npcLoot.Add(rule);
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<Content.Items.Accessories.BrutalRelics.SkeletronPrime.OverloadCommandCore>()));
         }
 
         public override void BossHeadSlot(ref int index) {
