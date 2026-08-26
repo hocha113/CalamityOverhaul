@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
     {
         private const string DoneLabel = "done";
 
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.OldDuke";
 
         public static LocalizedText B1 { get; private set; }
         public static LocalizedText C1 { get; private set; }

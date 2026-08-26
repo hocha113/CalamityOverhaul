@@ -30,13 +30,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         /// 服务器用同一常量复检，防伪造包跨地图沉任意 NPC</summary>
         public const float MaxRange = 4000f;
 
-        /// <summary>湖上抓握高度上限：与 FX 层臂展预算对齐（段长动态定标 26..240，
+        /// <summary>湖上抓握高度基准：与 FX 层臂展预算对齐（段长动态定标 26..240，
         /// 6 节解算臂展 ≈1411px、抓点筛选 1350px），此界之内手臂真伸得到，
-        /// 不会出现卷指计时驱动下指尖离目标半屏远照样"攥中"的隔空贴手</summary>
+        /// 不会出现卷指计时驱动下指尖离目标半屏远照样"攥中"的隔空贴手。
+        /// 玩家高于水线时经 <see cref="GrabHeightFor"/> 动态放宽，FX 段长与筛选同口径联动拉伸</summary>
         public const float MaxGrabHeight = 1200f;
+
+        /// <summary>动态放宽的硬顶，防高空无限远抓跨图（反馈三·#28）</summary>
+        public const float MaxGrabHeightHardCap = 2800f;
 
         /// <summary>湖面之下的容许深度，再深就是往地里抓</summary>
         public const float MaxGrabDepth = 600f;
+
+        /// <summary>可及高度帽：玩家高于水线多少，帽就抬多少（反馈三·#28 拍板），硬顶封界</summary>
+        public static float GrabHeightFor(Player player) {
+            float rise = LakeYOf(player) - player.Center.Y;
+            return MathHelper.Clamp(MaxGrabHeight + MathF.Max(rise, 0f),
+                MaxGrabHeight, MaxGrabHeightHardCap);
+        }
 
         internal struct DrownTarget
         {
@@ -71,10 +82,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         /// 共享资格谓词：客户端预检与服务器复检同一份（一处真相）。
         /// 这里只留技术性守卫（正被放逐或已在沉溺中的目标不能被第二只手抓）；
         /// BOSS 未击败的门槛不在资格里，在入口分流（<see cref="KikasaBossGate.DrownBlocked"/>，
-        /// 命中者转 <see cref="KikasaScourge"/> 鞭笞），城镇与普通生物照旧全放开
+        /// 命中者转 <see cref="KikasaScourge"/> 鞭笞），城镇与普通生物照旧全放开。
+        /// 不可伤害体与事件核心（撒旦军团传送门/水晶等）除外——拖走事件门整场事件卡死（反馈六·#114）
         /// </summary>
         public static bool IsEligibleTarget(NPC npc)
             => npc?.active == true && npc.lifeMax > 0
+            && !npc.dontTakeDamage
+            && npc.type != NPCID.DD2LanePortal && npc.type != NPCID.DD2EterniaCrystal
             && !CyberBanish.IsBanishing(npc.whoAmI)
             && !IsDrowningAuthority(npc.whoAmI);
 
@@ -126,7 +140,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             }
             float lakeY = LakeYOf(player);
             if (Vector2.Distance(hover.Center, player.Center) > MaxRange
-                || hover.Center.Y < lakeY - MaxGrabHeight
+                || hover.Center.Y < lakeY - GrabHeightFor(player)
                 || hover.Center.Y > lakeY + MaxGrabDepth) {
                 Refuse(player);
                 return true;
@@ -244,7 +258,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             float lakeY = LakeYOf(player);
             bool reachable = hover != null && IsEligibleTarget(hover)
                 && Vector2.Distance(hover.Center, player.Center) <= MaxRange
-                && hover.Center.Y >= lakeY - MaxGrabHeight
+                && hover.Center.Y >= lakeY - GrabHeightFor(player)
                 && hover.Center.Y <= lakeY + MaxGrabDepth;
             if (!reachable) {
                 hoverOmenNpc = -1;

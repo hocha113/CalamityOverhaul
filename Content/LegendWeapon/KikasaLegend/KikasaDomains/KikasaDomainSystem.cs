@@ -84,6 +84,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             KikasaLakeFX.Clear();
             KikasaHoundReflection.Clear();
             KikasaWispFX.Clear();
+            //卸世界后 PostUpdateEverything 不再跑,没人走关闭分支——
+            //血湖/鬼梦天空与滤镜会一路残留到标题界面(反馈四·#16),这里强制收场
+            ForceDeactivateSky(KikasaDomainSky.Name);
+            ForceDeactivateSky(KikasaDreamSky.Name);
+        }
+
+        /// <summary>强关一片天空与同名滤镜:Deactivate 走淡出、Reset 立即断,滤镜透明度一并归零</summary>
+        private static void ForceDeactivateSky(string name) {
+            CustomSky sky = SkyManager.Instance[name];
+            if (sky != null) {
+                if (sky.IsActive()) {
+                    SkyManager.Instance.Deactivate(name);
+                }
+                sky.Reset();
+            }
+            Filter filter = Filters.Scene[name];
+            if (filter != null) {
+                if (filter.IsActive()) {
+                    filter.Deactivate();
+                }
+                filter.GetShader()?.UseOpacity(0f);
+            }
         }
 
         //血暮压光：scale 乘的是逐格衰减率（上游 LightingEngine 把它乘进

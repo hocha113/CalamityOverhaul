@@ -5,8 +5,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
 {
     /// <summary>
     /// 符箧门闩：玩家已录入、可在祈雨绳候选上出现的 Key 集合。<br/>
-    /// 上绳仍走 <see cref="KikasaTalismanStore"/>；本类不写伞位。<br/>
-    /// 无出厂白名单：符纸全靠物品入包 <see cref="Unlock"/> 录入
+    /// 上绳仍走 <see cref="KikasaTalismanStore"/>；本类不写符位。<br/>
+    /// 无出厂白名单：符纸全靠物品入包 <see cref="Unlock"/> 录入。<br/>
+    /// owner 本机数据，无需同步：挂符校验与符箧展示都只发生在本机
+    /// （服务器仲裁挂符的时代需要一份镜像，符位表迁玩家侧后该消费点已不存在）
     /// </summary>
     internal static class KikasaTalismanOwned
     {
@@ -31,25 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
                 return false;
             }
             EnsureInit(ktp);
-            bool added = ktp.OwnedTalismanKeys.Add(key);
-            if (added) {
-                KikasaTalismanNet.SendOwnedSnapshot(player);
-            }
-            return added;
-        }
-
-        internal static void ApplyNetworkSnapshot(Player player, IEnumerable<string> keys) {
-            if (player == null || !player.TryGetModPlayer(out KikasaTalismanPlayer ktp)) {
-                return;
-            }
-            ktp.OwnedTalismanKeys = [];
-            if (keys != null) {
-                foreach (string key in keys) {
-                    if (KikasaTalismanRegistry.TryGet(key, out _)) {
-                        ktp.OwnedTalismanKeys.Add(key);
-                    }
-                }
-            }
+            return ktp.OwnedTalismanKeys.Add(key);
         }
 
         public static void EnsureInit(KikasaTalismanPlayer ktp) {

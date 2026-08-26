@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest
 
 
 
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.SupCal";
 
 
 

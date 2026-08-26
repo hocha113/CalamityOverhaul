@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.HackTimes;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.RAMSystems;
 using InnoVault.Narrative.Runtime;
 using Terraria;
@@ -6,6 +7,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
+    /// <summary>教程子世界环境曲认领：子世界环境档，在场即播</summary>
+    internal sealed class CybCourseMusicClaim : MusicClaim
+    {
+        public override MusicTier Tier => MusicTier.SubworldAmbience;
+        public override bool ShouldPlay() => CybCourse.IsActive;
+        public override int GetMusicSlot() => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/AloneInTheBackalleys");
+    }
+
     //Enter/Exit/Restart入口
     internal class CybCourse : ModSystem
     {
@@ -78,7 +87,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             if (!IsActive) {
                 return;
             }
-            Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/AloneInTheBackalleys");
+            //环境曲走 CybCourseMusicClaim 认领
             AddDeckLight();
         }
 

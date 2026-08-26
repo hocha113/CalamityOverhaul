@@ -45,13 +45,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         //逐席收起标记：true=玩家主动收起（转盘翻转），自动在场只维持未收起的席
         private readonly bool[] slotHeld = new bool[SlotCount];
 
+        //逐席落座顺序戳（越小越早落座），满员自动顶替时用来挑「最早的席」
+        private readonly int[] seatOrder = new int[SlotCount];
+        private int seatOrderStamp;
+
         /// <summary>鬼奴溶解离场后到下一次自动出水的间隔帧</summary>
         private const int RespawnGapFrames = 26;
 
         public static LocalizedText ServantUnknown { get; private set; }
+        public static LocalizedText AutoEvictFormat { get; private set; }
 
         public override void SetStaticDefaults() {
             ServantUnknown = this.GetLocalization(nameof(ServantUnknown), () => "还不能驱使它");
+            AutoEvictFormat = this.GetLocalization(nameof(AutoEvictFormat), () => "影位已满，{0} 让席，{1} 落座");
         }
 
         //==================== 影位读数 ====================
@@ -206,20 +212,40 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             }
         }
 
-        /// <summary>新记忆有空席就自动落座，沉下去当场看见回报（落座默认出战）</summary>
+        /// <summary>新记忆有空席就自动落座，沉下去当场看见回报（落座默认出战）；
+        /// 满员时顶替最早落座的席，被顶者遣返回湖并在聊天栏提示（反馈三·#11，拍板 2026/8/26）</summary>
         private bool TryAutoSlot(int key) {
             if (SlotIndexOf(key) >= 0) {
                 return false;
             }
             for (int i = 0; i < SlotCount; i++) {
                 if (lakeSlots[i] == 0) {
-                    lakeSlots[i] = key;
-                    slotHeld[i] = false;
-                    respawnDelay[i] = 20;
+                    AssignSlot(i, key, 20);
                     return true;
                 }
             }
-            return false;
+            int oldest = 0;
+            for (int i = 1; i < SlotCount; i++) {
+                if (seatOrder[i] < seatOrder[oldest]) {
+                    oldest = i;
+                }
+            }
+            int displaced = lakeSlots[oldest];
+            DismissServantOf(displaced);
+            AssignSlot(oldest, key, 20);
+            if (!Main.dedServ && Player.whoAmI == Main.myPlayer) {
+                Main.NewText(string.Format(AutoEvictFormat.Value,
+                    KeyDisplayName(displaced), KeyDisplayName(key)), 188, 122, 150);
+            }
+            return true;
+        }
+
+        /// <summary>落座写入：驻影、默认出战、盖落座顺序戳</summary>
+        private void AssignSlot(int index, int key, int respawn) {
+            lakeSlots[index] = key;
+            slotHeld[index] = false;
+            respawnDelay[index] = respawn;
+            seatOrder[index] = ++seatOrderStamp;
         }
 
         //==================== 影位编成（湖心景编成区与转盘的写入口，仅本机） ====================
@@ -245,9 +271,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             if (displaced != 0) {
                 DismissServantOf(displaced);
             }
-            lakeSlots[slotIndex] = key;
-            slotHeld[slotIndex] = false;
-            respawnDelay[slotIndex] = 10;
+            AssignSlot(slotIndex, key, 10);
             return true;
         }
 
@@ -400,6 +424,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             }
         }
 
+        /// <summary>湖藏原件被取空时的遣返:在场械奴复制体溶解回湖,席位保留等再沉(反馈三·#37/#53)</summary>
+        internal void DismissArmsIfOutOfStock(int itemType) {
+            if (itemType > 0
+                && CountStoredArms(Player.GetModPlayer<KikasaVaultPlayer>(), itemType) <= 0) {
+                DismissServantOf(-itemType);
+            }
+        }
+
         /// <summary>湖藏里该武器的存量（计堆叠），械奴复制体数量的依据</summary>
         internal static int CountStoredArms(KikasaVaultPlayer vault, int itemType) {
             int count = 0;
@@ -456,6 +488,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 }
             }
             tag["KikasaLakeSlots"] = lakeSlots.ToList();
+            tag["KikasaSeatOrder"] = seatOrder.ToList();
             //驻模组械奴的席位并行存全名，读档按名恢复（int 表里的失效键会被校验丢弃）
             List<string> slotNames = [.. Enumerable.Repeat(string.Empty, SlotCount)];
             bool anySlotName = false;
@@ -552,6 +585,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 for (int i = 0; i < SlotCount && i < held.Count; i++) {
                     //收起标记只对实际驻着影的席有意义
                     slotHeld[i] = held[i] && lakeSlots[i] != 0;
+                }
+            }
+            if (tag.TryGet("KikasaSeatOrder", out List<int> order)) {
+                for (int i = 0; i < SlotCount && i < order.Count; i++) {
+                    seatOrder[i] = order[i];
+                    seatOrderStamp = Math.Max(seatOrderStamp, order[i]);
                 }
             }
             if (!hasCodexTag) {

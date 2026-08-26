@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.GameModes;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaEye;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
@@ -8,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -972,9 +974,51 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //==================== 绘制 ====================
 
+        //贴图与本体对齐（玩家反馈六·#54/#87）：残酷毁灭者有专属 BTD 皮，原版是另一套帧表，
+        //皮肤在 PreDraw 开头按世界残酷开关逐帧裁定，链身整帧统一取材不混皮
+
+        /// <summary>本帧走残酷皮</summary>
+        private bool brutalSkinFrame;
+        /// <summary>本帧贴图旋转补偿：BTD 版式头朝下需 +Pi，原版蠕虫贴图头朝上不补</summary>
+        private float skinRotFix;
+        /// <summary>本帧绘制缩放：残酷皮固定 0.7；原版皮按体节帧高折算，保证节距咬合不留缝</summary>
+        private float skinScale;
+
+        /// <summary>残酷皮资产齐备才允许走残酷分支，缺任意一张整体回退原版</summary>
+        private static bool BrutalSkinReady()
+            => DestroyerHeadAI.Head?.Value != null && DestroyerHeadAI.Head_Glow?.Value != null
+            && DestroyerBodyAI.Body?.Value != null && DestroyerBodyAI.Body_Glow?.Value != null
+            && DestroyerBodyAI.BodyAlt?.Value != null && DestroyerBodyAI.BodyAlt_Glow?.Value != null
+            && DestroyerBodyAI.Tail?.Value != null && DestroyerBodyAI.Tail_Glow?.Value != null;
+
+        /// <summary>原版三节贴图就绪（懒加载，首帧可能未好）</summary>
+        private static bool VanillaSkinReady() {
+            Main.instance.LoadNPC(NPCID.TheDestroyer);
+            Main.instance.LoadNPC(NPCID.TheDestroyerBody);
+            Main.instance.LoadNPC(NPCID.TheDestroyerTail);
+            return TextureAssets.Npc[NPCID.TheDestroyer]?.Value != null
+                && TextureAssets.Npc[NPCID.TheDestroyerBody]?.Value != null
+                && TextureAssets.Npc[NPCID.TheDestroyerTail]?.Value != null;
+        }
+
         public override bool PreDraw(ref Color lightColor) {
             if (!spineInit) {
                 return false;
+            }
+            //逐帧读残酷开关，绘制时现读不缓存到生成期；关残酷或残酷资产缺失都走原版皮
+            brutalSkinFrame = GameModeSystem.BrutalActive && BrutalSkinReady();
+            if (brutalSkinFrame) {
+                skinRotFix = MathHelper.Pi;
+                skinScale = DrawScale;
+            }
+            else {
+                if (!VanillaSkinReady()) {
+                    return false;
+                }
+                skinRotFix = 0f;
+                Texture2D body = TextureAssets.Npc[NPCID.TheDestroyerBody].Value;
+                float frameH = body.Height / (float)Math.Max(Main.npcFrameCount[NPCID.TheDestroyerBody], 1);
+                skinScale = frameH > 0f ? SegSpacing / frameH : DrawScale;
             }
             SpriteBatch sb = Main.spriteBatch;
 
@@ -990,28 +1034,49 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             return false;
         }
 
+        /// <summary>
+        /// 逐节取材，按本帧皮肤各走各的帧映射，不许硬套。
+        /// 残酷皮：BTD 资产，头/体/尾 4 帧纵条 + 单帧交替节，发光层独立贴图；
+        /// 原版皮：头/尾单帧整图，体节恒取第 0 帧（探灯在位），无发光贴图（glow 置 null）
+        /// </summary>
         private void GetSegDraw(int i, out Texture2D tex, out Texture2D glow, out Rectangle frame) {
-            if (i == 0) {
-                tex = DestroyerHeadAI.Head.Value;
-                glow = DestroyerHeadAI.Head_Glow.Value;
-                frame = tex.GetRectangle(frameIndex, 4);
-                return;
-            }
-            if (i == SegCount - 1) {
-                tex = DestroyerBodyAI.Tail.Value;
-                glow = DestroyerBodyAI.Tail_Glow.Value;
+            if (brutalSkinFrame) {
+                if (i == 0) {
+                    tex = DestroyerHeadAI.Head.Value;
+                    glow = DestroyerHeadAI.Head_Glow.Value;
+                    frame = tex.GetRectangle(frameIndex, 4);
+                    return;
+                }
+                if (i == SegCount - 1) {
+                    tex = DestroyerBodyAI.Tail.Value;
+                    glow = DestroyerBodyAI.Tail_Glow.Value;
+                    frame = tex.GetRectangle((frameIndex + i) % 4, 4);
+                    return;
+                }
+                if (i % 2 == 0) {
+                    tex = DestroyerBodyAI.BodyAlt.Value;
+                    glow = DestroyerBodyAI.BodyAlt_Glow.Value;
+                    frame = tex.GetRectangle();
+                    return;
+                }
+                tex = DestroyerBodyAI.Body.Value;
+                glow = DestroyerBodyAI.Body_Glow.Value;
                 frame = tex.GetRectangle((frameIndex + i) % 4, 4);
                 return;
             }
-            if (i % 2 == 0) {
-                tex = DestroyerBodyAI.BodyAlt.Value;
-                glow = DestroyerBodyAI.BodyAlt_Glow.Value;
-                frame = tex.GetRectangle();
+            glow = null;
+            if (i == 0) {
+                tex = TextureAssets.Npc[NPCID.TheDestroyer].Value;
+                frame = tex.GetRectangle(0, Math.Max(Main.npcFrameCount[NPCID.TheDestroyer], 1));
                 return;
             }
-            tex = DestroyerBodyAI.Body.Value;
-            glow = DestroyerBodyAI.Body_Glow.Value;
-            frame = tex.GetRectangle((frameIndex + i) % 4, 4);
+            if (i == SegCount - 1) {
+                tex = TextureAssets.Npc[NPCID.TheDestroyerTail].Value;
+                frame = tex.GetRectangle(0, Math.Max(Main.npcFrameCount[NPCID.TheDestroyerTail], 1));
+                return;
+            }
+            tex = TextureAssets.Npc[NPCID.TheDestroyerBody].Value;
+            frame = tex.GetRectangle(0, Math.Max(Main.npcFrameCount[NPCID.TheDestroyerBody], 1));
         }
 
         private void DrawGhostChains(SpriteBatch sb) {
@@ -1026,10 +1091,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 float alpha = s == 0 ? 0.24f : 0.12f;
                 for (int i = SegCount - 1; i >= 0; i--) {
                     GetSegDraw(i, out Texture2D tex, out _, out Rectangle frame);
-                    float rot = i == 0 ? segRot[0] + MathHelper.Pi
-                        : (snap[i - 1] - snap[i]).ToRotation() + MathHelper.PiOver2 + MathHelper.Pi;
+                    float rot = i == 0 ? segRot[0] + skinRotFix
+                        : (snap[i - 1] - snap[i]).ToRotation() + MathHelper.PiOver2 + skinRotFix;
                     sb.Draw(tex, snap[i] - Main.screenPosition, frame, BloodMain * alpha,
-                        rot, frame.Size() * 0.5f, DrawScale, SpriteEffects.None, 0f);
+                        rot, frame.Size() * 0.5f, skinScale, SpriteEffects.None, 0f);
                 }
             }
         }
@@ -1057,7 +1122,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
                 GetSegDraw(i, out Texture2D tex, out _, out Rectangle frame);
                 Vector2 pos = spine[i] - Main.screenPosition;
-                float rot = segRot[i] + MathHelper.Pi;
+                float rot = segRot[i] + skinRotFix;
 
                 Color color;
                 if (shaderOk) {
@@ -1079,7 +1144,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     color = Color.Lerp(lightColor, BloodMain, 0.55f) * (1f - dissolve);
                 }
 
-                sb.Draw(tex, pos, frame, color, rot, frame.Size() * 0.5f, DrawScale, SpriteEffects.None, 0f);
+                sb.Draw(tex, pos, frame, color, rot, frame.Size() * 0.5f, skinScale, SpriteEffects.None, 0f);
             }
 
             sb.End();
@@ -1093,19 +1158,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            //血灯呼吸：压向深血、低亮度，加色粉光盖贴图是泡沫感主凶
-            Color lampTint = Color.Lerp(BloodMain, KikasaEyeBloodShot.BloodDeep, 0.55f);
-            for (int i = SegCount - 1; i >= 0; i--) {
-                float dissolve = SegDissolve(i);
-                if (dissolve >= 1f) {
-                    continue;
+            //血灯呼吸：压向深血、低亮度，加色粉光盖贴图是泡沫感主凶；
+            //独立发光贴图只有残酷皮带，原版皮无此层
+            if (brutalSkinFrame) {
+                Color lampTint = Color.Lerp(BloodMain, KikasaEyeBloodShot.BloodDeep, 0.55f);
+                for (int i = SegCount - 1; i >= 0; i--) {
+                    float dissolve = SegDissolve(i);
+                    if (dissolve >= 1f) {
+                        continue;
+                    }
+                    GetSegDraw(i, out _, out Texture2D glow, out Rectangle frame);
+                    float pulse = 0.22f + 0.10f * MathF.Sin(Main.GlobalTimeWrappedHourly * 3.4f + i * 0.7f + Seed);
+                    Color c = (lampTint with { A = 0 }) * (pulse * (1f - dissolve));
+                    sb.Draw(glow, spine[i] - Main.screenPosition, frame, c,
+                        segRot[i] + skinRotFix,
+                        frame.Size() * 0.5f, skinScale, SpriteEffects.None, 0f);
                 }
-                GetSegDraw(i, out _, out Texture2D glow, out Rectangle frame);
-                float pulse = 0.22f + 0.10f * MathF.Sin(Main.GlobalTimeWrappedHourly * 3.4f + i * 0.7f + Seed);
-                Color c = (lampTint with { A = 0 }) * (pulse * (1f - dissolve));
-                sb.Draw(glow, spine[i] - Main.screenPosition, frame, c,
-                    segRot[i] + MathHelper.Pi,
-                    frame.Size() * 0.5f, DrawScale, SpriteEffects.None, 0f);
             }
 
             //水下段的行进血光：潜行预兆与水下冲刺时头顶水面拖出光斑

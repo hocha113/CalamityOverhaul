@@ -18,6 +18,14 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z1
                 ctx.Area.Right - 20, 55, 95, Z1Style.FloorBrick);
             int rooms = OldNetZoneCommon.HangRoomsForBand(ctx, 1,
                 Z1Style.RoomBrick, Z1Style.RoomWall, roomsPerLanding: 2, nodeChance: 0.6f);
+            //遗物陈设层（P55 执行）：墙脚带以缆盘/座椅为主，整洁遗留的年代口径
+            ctx.Scatter.Add(new OldNetScatterEntry {
+                Name = "relic-z1",
+                Target = OldNetMetrics.RelicScatterZ1,
+                DedupeDist = 12,
+                SurfaceAnchored = true,
+                TryPlace = static (x, y) => OldNetRelicTile.TryWrite(x, y, OldNetRelicTile.RollStyle(1)),
+            });
             CWRMod.Instance.Logger.Info(
                 $"[OldNet] Z1 rooms={rooms} pods={pods} pylons={pylons} graphConnected={ctx.Graph.IsConnected()}");
         }

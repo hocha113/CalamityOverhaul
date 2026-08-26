@@ -179,6 +179,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniSigilUI.Instance.Close();
                 return;
             }
+            if (Main.mapFullscreen) {
+                //全屏地图下只许上面的合屏分支走，不开新屏：默认键 M 与地图同键（反馈十一·#38）
+                return;
+            }
 
             OniLedgerView view = Instance?.rememberedLedger ?? OniLedgerView.Mei;
             if (view == OniLedgerView.Sigil) {

@@ -27,11 +27,17 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// 伤害按施法者的远程面板算，隐含翻转 IFF；弹尽或效果结束即回落原生弹。<br/>
     /// 每一发的扣弹结算落在拥有者本机（背包归客户端所有，服务端写不动
     /// tml-netcode-pitfalls §6.2）：单人直接扣；联机由服务端校验镜像背包后发
-    /// <see cref="CWRMessageType.MunitionSwapConsume"/> 意图包，喂弹者本机结算，
+    /// <see cref="MunitionSwapConsumeNet"/> 意图包，喂弹者本机结算，
     /// 背包差分每帧自动回同步，无需回执。在途扣弹上限防镜像滞后被连发放大
     /// </summary>
     internal class MunitionSwap : QuickHackDef
     {
+        /// <summary>弹药置换的扣弹意图信道：服务端判定后发给喂弹者本机结算</summary>
+        internal sealed class MunitionSwapConsumeNet : CWRNetChannel
+        {
+            public override void Receive(BinaryReader reader, int whoAmI) => HandleConsume(reader, whoAmI);
+        }
+
         //持续二十秒
         private const int DurationFrames = 1200;
         //炮台导轨的基础加成，叠在弹药自身伤害上
@@ -147,7 +153,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         /// 本机扣弹结算。背包归客户端所有，只在拥有者本机扣，
         /// 无尽类弹药（不可消耗）照打不扣。返回 false 表示这发供不上、覆写该收了。<br/>
         /// 调用方：单人的炮台开火前，以及联机喂弹者收到
-        /// <see cref="CWRMessageType.MunitionSwapConsume"/> 意图包时；
+        /// <see cref="MunitionSwapConsumeNet"/> 意图包时；
         /// 服务端的判定与发包走 <see cref="RequestFeed"/>，不进这里
         /// </summary>
         internal static bool ConsumeFeederAmmo(Player feeder, int ammoType) {
@@ -278,8 +284,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         private static void SendConsumeIntent(CircuitActorKey turretKey, int ammoType,
             int feederIndex) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.MunitionSwapConsume);
+            ModPacket packet = CWRNetWork.GetPacket<MunitionSwapConsumeNet>();
             turretKey.Write(packet);
             packet.Write(ammoType);
             packet.Send(feederIndex);

@@ -23,6 +23,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
         public bool IsAvailable => availableCheck?.Invoke() ?? true;
         public bool IsCompleted => completedCheck?.Invoke() == true;
 
+        /// <summary>
+        /// 事件型目标（BossRush）无个人击杀证据，恒不算亲手达成。
+        /// 拍板取舍（十三·#102，宁少并不多并）：纯事件试炼不再被静默同步并入，
+        /// 玩家在事件旗已倒的世界里仍按当前世界实时旗计入等级，只是不落持久键
+        /// </summary>
+        public bool IsPersonallyCleared(Func<int, bool> hasKilled) => false;
+
         public IEnumerable<string> GetDisplayNames() {
             string name = GetDisplayName();
             if (string.IsNullOrEmpty(name)) {

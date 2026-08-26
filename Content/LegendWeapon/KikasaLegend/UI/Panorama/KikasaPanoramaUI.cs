@@ -72,6 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
         public static LocalizedText SeatOutLine { get; private set; }
         public static LocalizedText SeatAwaitLine { get; private set; }
         public static LocalizedText RosterTallyFormat { get; private set; }
+        public static LocalizedText RosterSeatTallyFormat { get; private set; }
         public static LocalizedText RosterUnknown { get; private set; }
         public static LocalizedText RosterUnknownHintFormat { get; private set; }
         public static LocalizedText RosterSeatedTag { get; private set; }
@@ -90,6 +91,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
         public static LocalizedText TalisTakeDownLabel { get; private set; }
         public static LocalizedText TalisAlreadyHung { get; private set; }
         public static LocalizedText TalisCurrentTag { get; private set; }
+        public static LocalizedText TalisStackRule { get; private set; }
+        public static LocalizedText TalisDragSwapHint { get; private set; }
+        public static LocalizedText TalisDragMoveHint { get; private set; }
         public static LocalizedText NoteFuHungFormat { get; private set; }
         public static LocalizedText NoteFuTakenFormat { get; private set; }
         public static LocalizedText VaultTitle { get; private set; }
@@ -148,8 +152,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 () => "Held back \u2014 recall it on the wheel ({0})");
             SeatOutLine = this.GetLocalization(nameof(SeatOutLine), () => "It fights for you afield");
             SeatAwaitLine = this.GetLocalization(nameof(SeatAwaitLine), () => "Awaiting the lake");
+            //图鉴口径写明，别让玩家把收录进度当同时出战上限（反馈三·#36）
             RosterTallyFormat = this.GetLocalization(nameof(RosterTallyFormat),
-                () => "Sunken shades {0} / {1}");
+                () => "Codex {0} / {1}");
+            RosterSeatTallyFormat = this.GetLocalization(nameof(RosterSeatTallyFormat),
+                () => "Seats {0} / {1}");
             RosterUnknown = this.GetLocalization(nameof(RosterUnknown), () => "An undrowned shade");
             RosterUnknownHintFormat = this.GetLocalization(nameof(RosterUnknownHintFormat),
                 () => "Point at the foe and press {0} while the lake is ready");
@@ -173,12 +180,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             TalisNeedUmbrella = this.GetLocalization(nameof(TalisNeedUmbrella),
                 () => "Hold Kikasa in hand \u2014 the talismans answer only the umbrella");
             TalisSwapHint = this.GetLocalization(nameof(TalisSwapHint),
-                () => "Click to swap \u00b7 right-click to take down");
+                () => "Click to swap \u00b7 drag onto another knot to relocate \u00b7 right-click to take down");
             TalisHangHint = this.GetLocalization(nameof(TalisHangHint), () => "Click to hang it here");
             TalisTakeDownLabel = this.GetLocalization(nameof(TalisTakeDownLabel), () => "Take down");
             TalisAlreadyHung = this.GetLocalization(nameof(TalisAlreadyHung),
                 () => "It already hangs on another knot");
             TalisCurrentTag = this.GetLocalization(nameof(TalisCurrentTag), () => "Hanging here");
+            //牌序真相一行说清（反馈八·#24 审计结论）：数值全生效，滴的墨色与专属滴效只归先认领的那张
+            TalisStackRule = this.GetLocalization(nameof(TalisStackRule),
+                () => "Every hung talisman keeps working, even with its ink hidden; each drop takes one talisman's color and signature effect, leftmost first");
+            TalisDragSwapHint = this.GetLocalization(nameof(TalisDragSwapHint),
+                () => "Release to trade knots");
+            TalisDragMoveHint = this.GetLocalization(nameof(TalisDragMoveHint),
+                () => "Release to move it here");
             NoteFuHungFormat = this.GetLocalization(nameof(NoteFuHungFormat),
                 () => "\u300c{0}\u300d rose onto the raincall rope");
             NoteFuTakenFormat = this.GetLocalization(nameof(NoteFuTakenFormat),
@@ -249,6 +263,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
         //候选扇内容：符 Key，null 项=摘下位
         private readonly List<string> fanKeys = [];
         private readonly List<float> fanHover = [];
+
+        //拖符换位：按下已挂结先记拖候，移过阈值才算真拖；原地松手仍是点击开扇
+        private int talisDragSlot = -1;
+        private bool talisDragActive;
+        private Vector2 talisDragStart;
 
         //被顶掉的沉影掷回册位
         private struct Flyer
@@ -330,6 +349,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             fanSlot = -1;
             fanKeys.Clear();
             fanHover.Clear();
+            talisDragSlot = -1;
+            talisDragActive = false;
             KikasaTalismanStore talisStore = KikasaTalismanRegistry.DisplayStore;
             for (int i = 0; i < KikasaTalismanStore.SlotCount; i++) {
                 lastTalisKeys[i] = talisStore?.Get(i);
@@ -360,6 +381,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 player.mouseInterface = true;
                 UIInputGuard.SuppressWeaponSwitch();
                 PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/KikasaPanorama");
+                //吞掉背包开关键:原版 ToggleInv 在逻辑帧先跑、CloseOnEscape 在界面层后跑,
+                //同帧会先开背包再关湖心景,表现即"ESC 优先呼背包"(反馈八·#3)。
+                //每帧压 releaseInventory,ESC 只负责关本界面,关完下一帧背包键即恢复
+                player.releaseInventory = false;
             }
 
             ResolveHover(mouse, inputAvailable);
@@ -371,6 +396,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             if (inputAvailable && keyRightPressState == KeyPressState.Pressed) {
                 HandleRightClick(mouse);
             }
+            UpdateTalisDrag(mouse, inputAvailable);
 
             //悬停缓动
             houndHover = MathHelper.Lerp(houndHover, hoverKind == HoverKind.Hound ? 1f : 0f, 0.16f);
@@ -734,6 +760,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
         }
 
         private void HandleRightClick(Vector2 mouse) {
+            //拖着符时右键=收手，不落到摘符分支
+            if (talisDragSlot >= 0) {
+                talisDragSlot = -1;
+                talisDragActive = false;
+                SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.35f, Pitch = -0.7f });
+                return;
+            }
             if (fanSlot >= 0) {
                 CloseFan();
                 return;
@@ -908,11 +941,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.5f, Pitch = -0.55f });
         }
 
-        /// <summary>点符位：持伞时开合候选扇；没伞把话说清并拒绝</summary>
+        /// <summary>
+        /// 点符位：持伞时开合候选扇；没伞把话说清并拒绝。
+        /// 已挂结按下先记拖候，开扇挪到松手时结算（拖过阈值走换位，原地松手照旧开扇）
+        /// </summary>
         private void ClickTalisSlot(int slot) {
             if (!HoldingKikasa) {
                 PostNote(TalisNeedUmbrella.Value, KikasaHudTheme.Accent(Rain));
                 DenyTalis(slot);
+                return;
+            }
+            if (KikasaTalismanRegistry.DisplayStore?.Get(slot) != null) {
+                talisDragSlot = slot;
+                talisDragActive = false;
+                talisDragStart = KikasaPanoramaTheme.UIMouse;
                 return;
             }
             if (fanSlot == slot) {
@@ -920,6 +962,67 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 return;
             }
             OpenFan(slot);
+        }
+
+        /// <summary>光标下的符位下标，未命中 -1（拖拽落点用，几何与悬停同源）</summary>
+        private static int TalisSlotAt(Vector2 mouse) {
+            for (int i = 0; i < KikasaTalismanStore.SlotCount; i++) {
+                if (KikasaPanoramaTheme.TalisSlotHit(i).Contains(mouse.ToPoint())) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// 拖符换位推进：按住越过阈值即起拖（合扇+拾音），松手按落点结算——
+        /// 落在别的绳结上互换/挪结（服务器拒绝落红闪），落空或拖回原结收手；
+        /// 原地松手等价旧点击语义（开合候选扇）
+        /// </summary>
+        private void UpdateTalisDrag(Vector2 mouse, bool inputAvailable) {
+            if (talisDragSlot < 0) {
+                return;
+            }
+            //拖候期条件破裂（合屏/失伞/符被外部摘走）直接收手
+            if (!inputAvailable || !HoldingKikasa
+                || KikasaTalismanRegistry.DisplayStore?.Get(talisDragSlot) == null) {
+                talisDragSlot = -1;
+                talisDragActive = false;
+                return;
+            }
+            if (keyLeftPressState is KeyPressState.Pressed or KeyPressState.Held) {
+                if (!talisDragActive && (mouse - talisDragStart).Length() > 10f) {
+                    talisDragActive = true;
+                    CloseFan(playSound: false);
+                    SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.4f, Pitch = -0.45f });
+                }
+                return;
+            }
+
+            //松手结算
+            int source = talisDragSlot;
+            bool dragged = talisDragActive;
+            talisDragSlot = -1;
+            talisDragActive = false;
+            if (!dragged) {
+                if (fanSlot == source) {
+                    CloseFan();
+                }
+                else {
+                    OpenFan(source);
+                }
+                return;
+            }
+            int target = TalisSlotAt(mouse);
+            if (target < 0 || target == source) {
+                //拖空处/拖回原结=收手不折腾，落一声轻响作回应
+                SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.35f, Pitch = -0.7f });
+                return;
+            }
+            if (!KikasaTalismanRegistry.SwapHeld(source, target,
+                ok => { if (!ok) { DenyTalis(target); } })) {
+                DenyTalis(target);
+            }
         }
 
         /// <summary>
@@ -948,7 +1051,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 CloseFan();
                 return;
             }
-            //已挂他位：换位走"先摘后挂"，这里直接把话说清
+            //已挂他位：换位走绳上拖拽，扇内直接把话说清
             if (store != null && store.Contains(key)) {
                 PostNote(TalisAlreadyHung.Value, KikasaHudTheme.Accent(Rain));
                 DenyTalis(slot);
@@ -1051,9 +1154,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             //5.5 候选扇浮层（压在诸区之上）
             DrawTalisFan(sb, font, detailA, rain, time);
 
-            //6 掷回册位的飞影与拾在手上的影
+            //6 掷回册位的飞影与拾在手上的影；拖中的符压最上
             DrawFlyers(sb, detailA, rain, time);
             DrawCarry(sb, detailA, rain, time);
+            DrawTalisDrag(sb, detailA, rain, time);
 
             //7 涟漪 / 批注 / 页脚 / 悬停名牌
             DrawRipples(sb, detailA, rain);
@@ -1130,17 +1234,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 Vector2 size = KikasaPanoramaTheme.TalisStripSize;
                 Vector2 down = (MathHelper.PiOver2 + sway).ToRotationVector2();
                 Vector2 top = ropePoint + down * KikasaPanoramaTheme.TalisCordLen;
-                KikasaPanoramaRenderer.DrawTalisCord(sb, ropePoint, top, rain, zoneA);
+                //拖走的符原结压暗成拓空痕，符身跟着光标走（DrawTalisDrag）
+                float stripA = talisDragActive && talisDragSlot == i ? zoneA * 0.35f : zoneA;
+                KikasaPanoramaRenderer.DrawTalisCord(sb, ropePoint, top, rain, stripA);
 
                 //符纸活着的湿度：底息 + 鬼雨态整体更湿
                 float soak = 0.20f + 0.07f * MathF.Sin(time * 0.9f + i * 2.9f) + rain * 0.28f;
                 KikasaTalismanPaperDraw.DrawUI(sb, top, sway, size,
-                    zoneA * (0.92f + hover * 0.1f), soak, time + i * 1.73f);
+                    stripA * (0.92f + hover * 0.1f), soak, time + i * 1.73f);
 
                 Color accent = KikasaTalismanRegistry.TryGet(key, out KikasaTalismanDefinition def)
                     ? def.InkAccent : KikasaTalismanPaperDraw.Sheen;
                 KikasaTalismanGlyph.DrawInk(sb, key, top + down * (size.Y * 0.40f), size.X * 1.18f,
-                    zoneA, KikasaTalismanPaperDraw.Ink, accent, time, sway);
+                    stripA, KikasaTalismanPaperDraw.Ink, accent, time, sway);
 
                 Vector2 stripMid = top + down * (size.Y * 0.5f);
                 //定妆：挂上当帧一圈白闪
@@ -1211,6 +1317,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                     KikasaVaultRenderer.RestoreUIBatch(sb);
                 }
             }
+
+            //网格脚注：牌序规则一行说明（换符/选符两入口共用本方法，都看得到）
+            string rule = TalisStackRule.Value;
+            Vector2 ruleSize = font.MeasureString(rule) * 0.78f;
+            float ruleY = KikasaPanoramaTheme.TalisFanPos(fanSlot, fanKeys.Count - 1, fanKeys.Count).Y
+                + KikasaPanoramaTheme.TalisFanSize.Y * 0.5f + 26f;
+            float ruleX = MathHelper.Clamp(
+                KikasaPanoramaTheme.TalisFanTopAnchor(fanSlot, fanKeys.Count).X - ruleSize.X * 0.5f,
+                8f, MathF.Max(8f, KikasaPanoramaTheme.UIScreenW - ruleSize.X - 8f));
+            Utils.DrawBorderString(sb, rule, new Vector2(ruleX, ruleY),
+                KikasaHudTheme.TextDim(rain) * (0.85f * a), 0.78f);
+        }
+
+        /// <summary>拖在指下的符：迷你符身随光标走，源结垂一缕细引线交代来处</summary>
+        private void DrawTalisDrag(SpriteBatch sb, float a, float rain, float time) {
+            if (!talisDragActive || talisDragSlot < 0) {
+                return;
+            }
+            string key = KikasaTalismanRegistry.DisplayStore?.Get(talisDragSlot);
+            if (key == null) {
+                return;
+            }
+            Vector2 mouse = KikasaPanoramaTheme.UIMouse;
+            KikasaVaultRenderer.DrawLine(sb, KikasaPanoramaTheme.TalisStripCenter(talisDragSlot),
+                mouse, 1.1f, KikasaHudTheme.TextDim(rain) * (0.35f * a));
+            Vector2 size = KikasaPanoramaTheme.TalisFanSize;
+            float sway = MathF.Sin(time * 1.8f) * 0.05f;
+            Vector2 down = (MathHelper.PiOver2 + sway).ToRotationVector2();
+            Vector2 top = mouse - down * (size.Y * 0.5f);
+            KikasaTalismanPaperDraw.DrawUI(sb, top, sway, size, 0.95f * a,
+                0.2f + rain * 0.2f, time);
+            Color accent = KikasaTalismanRegistry.TryGet(key, out KikasaTalismanDefinition def)
+                ? def.InkAccent : KikasaTalismanPaperDraw.Sheen;
+            KikasaTalismanGlyph.DrawInk(sb, key, top + down * (size.Y * 0.42f), size.X * 1.2f,
+                0.95f * a, KikasaTalismanPaperDraw.Ink, accent, time, sway);
         }
 
         //====== 两鬼 ======
@@ -1528,14 +1669,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
 
         private void DrawRoster(SpriteBatch sb, DynamicSpriteFont font, float a, float rain,
             KikasaServantPlayer servant, float waterPixY, float time) {
-            //册计数
+            //册计数：图鉴收录进度与影位占用并排，两种"满"分开说（反馈三·#36）
             string tally = string.Format(RosterTallyFormat.Value,
                 servant.CollectedServantCount, KikasaServantPlayer.ServantCodexTotal);
             float tallyX = KikasaPanoramaTheme.RosterX(0, Math.Max(rosterKeys.Count, 1))
                 - KikasaPanoramaTheme.RosterHitR;
-            Utils.DrawBorderString(sb, tally,
-                new Vector2(tallyX, KikasaPanoramaTheme.RosterY - KikasaPanoramaTheme.RosterHitR - 26f),
+            float tallyY = KikasaPanoramaTheme.RosterY - KikasaPanoramaTheme.RosterHitR - 26f;
+            Utils.DrawBorderString(sb, tally, new Vector2(tallyX, tallyY),
                 KikasaHudTheme.TextDim(rain) * (0.95f * a), 0.85f);
+            string seatTally = string.Format(RosterSeatTallyFormat.Value,
+                servant.FilledSlotCount, KikasaServantPlayer.SlotCount);
+            float tallyW = font.MeasureString(tally).X * 0.85f;
+            Utils.DrawBorderString(sb, seatTally, new Vector2(tallyX + tallyW + 18f, tallyY),
+                KikasaHudTheme.TextDim(rain) * (0.8f * a), 0.85f);
 
             for (int i = 0; i < rosterKeys.Count; i++) {
                 Vector2 pos = RosterPos(i);
@@ -1845,6 +1991,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
             else if (hoverKind == HoverKind.Talis) {
                 if (!HoldingKikasa) {
                     lines.Add((TalisNeedUmbrella.Value, KikasaHudTheme.Accent(rain), 0.85f));
+                }
+                else if (talisDragActive) {
+                    //拖符悬在落点上：把松手会发生什么说在前头（原结不提示）
+                    if (hoverIndex != talisDragSlot) {
+                        string key = KikasaTalismanRegistry.DisplayStore?.Get(hoverIndex);
+                        lines.Add((key == null ? TalisDragMoveHint.Value : TalisDragSwapHint.Value,
+                            KikasaHudTheme.Glow(rain), 0.85f));
+                    }
                 }
                 else {
                     string key = KikasaTalismanRegistry.DisplayStore?.Get(hoverIndex);

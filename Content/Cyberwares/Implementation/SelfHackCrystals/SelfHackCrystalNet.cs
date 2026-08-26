@@ -18,7 +18,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
         ExpiredRequest,
     }
 
-    internal static class SelfHackCrystalNet
+    /// <summary>自骇水晶请求总线，类本身即信道（子操作字节继续内部分发）</summary>
+    internal class SelfHackCrystalNet : CWRNetChannel
     {
         private enum PacketKind : byte
         {
@@ -57,9 +58,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
             packet.Send(toWho);
         }
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader,
-            int whoAmI) {
-            if (type != CWRMessageType.SelfHackCrystal || reader == null) {
+        public override void Receive(BinaryReader reader, int whoAmI) {
+            if (reader == null) {
                 return;
             }
             try {
@@ -185,8 +185,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
         }
 
         private static ModPacket NewPacket(PacketKind kind) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.SelfHackCrystal);
+            ModPacket packet = CWRNetWork.GetPacket<SelfHackCrystalNet>();
             packet.Write((byte)kind);
             return packet;
         }

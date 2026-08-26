@@ -47,6 +47,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
             Projectile.ignoreWater = true;
         }
 
+        public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac) {
+            //露珠要能停在平台上,实战才捡得到;默认碰撞对平台/半砖穿透
+            fallThrough = false;
+            return true;
+        }
+
         public override void AI() {
             life++;
             //微重力抛物；落定后横向滞干

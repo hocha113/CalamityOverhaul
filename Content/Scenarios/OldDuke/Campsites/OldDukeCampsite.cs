@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
         /// <summary>营地位置</summary>
         public static Vector2 CampsitePosition { get; private set; }
 
-        public string LocalizationCategory => "ADV.OldDukeCampsite";
+        public string LocalizationCategory => "ADV.OldDuke.OldDukeCampsite";
 
         private static int animationFrame;
         private static int animationTimer;
@@ -192,8 +192,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 return;
             }
             pendingGenerationRequest = true;
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.OldDukeCampsiteGenerationRequest);
+            ModPacket packet = CWRNetWork.GetPacket<OldDukeCampsiteGenerationRequestNet>();
             packet.Send();
         }
 
@@ -220,8 +219,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 
         /// <summary>服务端同步营地</summary>
         private static void SyncCampsiteToClients() {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.OldDukeCampsiteSync);
+            ModPacket packet = CWRNetWork.GetPacket<OldDukeCampsiteSyncNet>();
             packet.Write(IsGenerated);
             if (IsGenerated) {
                 packet.WriteVector2(CampsitePosition);
@@ -399,8 +397,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             if (VaultUtils.isServer) {
                 ClearCampsite();
                 OldDukeCampsiteGenerationService.ClearCampsiteActors();
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.OldDukeCampsiteSync);
+                ModPacket packet = CWRNetWork.GetPacket<OldDukeCampsiteSyncNet>();
                 packet.Write(false);
                 packet.Send();
             }
@@ -426,5 +423,17 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
         public override void Unload() {
             ClearCampsite();
         }
+    }
+
+    /// <summary>客户端请求服务端生成营地的信道</summary>
+    internal sealed class OldDukeCampsiteGenerationRequestNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => OldDukeCampsite.TryGenerateCampsite();
+    }
+
+    /// <summary>服务端下发营地状态的信道</summary>
+    internal sealed class OldDukeCampsiteSyncNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => OldDukeCampsite.ReceiveCampsiteSync(reader);
     }
 }

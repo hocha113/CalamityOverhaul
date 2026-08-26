@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.SupCalDisplayTexts
 {
     internal sealed class SupCalDisplayTextByBossRush : NarrativeDisplayText, ILocalizedModType
     {
+        public override string LocalizationCategory => "ADV.SupCal";
+
         public LocalizedText SummonBossRush { get; private set; }
         public LocalizedText SummonBossRushWithProverbs { get; private set; }
         public LocalizedText StartBossRush { get; private set; }

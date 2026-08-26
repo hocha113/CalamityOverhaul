@@ -17,8 +17,6 @@ Halibut_Superposition.DisplayName: Flétan : superposition
 // Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
 // Kikasa_Sink.DisplayName: Kikasa: Sink Item into the Lake
 // Kikasa_DomainMutate.DisplayName: Kikasa: Flip the Lake
-WeponSkill_Q.DisplayName: Arme : compétence gauche
-WeponSkill_R.DisplayName: Arme : compétence droite
 Accessory_Skills.DisplayName: Compétence d'accessoire
 
 CWRKeySystem: {

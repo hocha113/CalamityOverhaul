@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.DoGQuest
     /// <summary>神明吞噬者任务UI</summary>
     internal class DoGQuestUI : BaseQuestAcceptUI
     {
-        public override string LocalizationCategory => "ADV";
+        public override string LocalizationCategory => "ADV.SupCal";
         public static DoGQuestUI Instance => UIHandleLoader.GetUIHandleOfType<DoGQuestUI>();
 
         protected override void SetupLocalizedTexts() {

@@ -34,8 +34,8 @@ namespace CalamityOverhaul.Content.EntrustManager
         public LocalizedText ProgressLabel;
 
         public string Title => TitleText?.Value ?? "";
-        /// <summary>hjson 字面量 \n 规范化为换行</summary>
-        public string Summary => SummaryText?.Value?.Replace("\\n", "\n") ?? "";
+        /// <summary>hjson 字面量 \n 规范化为换行；子类可覆写追加附加行（如试炼断点提示）</summary>
+        public virtual string Summary => SummaryText?.Value?.Replace("\\n", "\n") ?? "";
         public string Category => CategoryText?.Value ?? "";
         public string ProgressText => ProgressLabel?.Value;
 

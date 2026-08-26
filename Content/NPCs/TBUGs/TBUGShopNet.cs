@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
     /// 非 SSC 下服务端写不了客户端自己的背包与钱包（参照 CyberwareLocalSettlement）。
     /// NPC 用裸下标寻址，服务端对解析出的 NPC 复验存活/类型/距离
     /// </summary>
-    internal static class TBUGShopNet
+    internal class TBUGShopNet : CWRNetChannel
     {
         /// <summary>互动最大距离 px，服务端复验</summary>
         private const float MaxInteractDistance = 500f;
@@ -58,8 +58,7 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
         private static readonly Dictionary<int, uint> lastRequestFrame = [];
 
         private static ModPacket NewPacket(TBUGShopOp op) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.TBUGShop);
+            ModPacket packet = CWRNetWork.GetPacket<TBUGShopNet>();
             packet.Write((byte)op);
             return packet;
         }
@@ -384,10 +383,7 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
 
         #endregion
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type != CWRMessageType.TBUGShop) {
-                return;
-            }
+        public override void Receive(BinaryReader reader, int whoAmI) {
             try {
                 TBUGShopOp op = (TBUGShopOp)reader.ReadByte();
                 switch (op) {

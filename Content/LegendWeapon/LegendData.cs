@@ -340,9 +340,9 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// <summary>UI 展示等级 max(Level, TargetLevel)</summary>
         public int GetEffectiveTargetLevel() => Math.Max(Level, TargetLevel);
 
-        /// <summary>升级并记当前世界，Math.Max 只升不降</summary>
-        public void PerformUpgrade() {
-            SyncTrialProgressFromWorld();
+        /// <summary>升级并记当前世界，Math.Max 只升不降；<paramref name="owner"/> 供试炼键按其击杀登记过滤</summary>
+        public void PerformUpgrade(Player owner) {
+            SyncTrialProgressFromWorld(owner);
             UpgradeWorldName = Main.worldName;
             UpgradeWorldFullName = SaveWorld.WorldFullName;
             SkipUpgradeWorldFullName = string.Empty;
@@ -384,7 +384,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
                         return;
                     }
                     //信任/同世界/新物品静默升级
-                    PerformUpgrade();
+                    PerformUpgrade(owner);
                     break;
                 case LegendUpdateContext.StorageOperation:
                 case LegendUpdateContext.WorldItem:
@@ -392,7 +392,8 @@ namespace CalamityOverhaul.Content.LegendWeapon
                     if (NeedCrossWorldConfirm()) {
                         return;
                     }
-                    PerformUpgrade();
+                    //无持有人语境，试炼键无登记可并，仅结算等级与世界 tag
+                    PerformUpgrade(owner);
                     break;
             }
         }
@@ -425,7 +426,14 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// <summary>试炼已完成，键已记录或世界已击杀(委托/tooltip 同源)</summary>
         internal bool IsTrialCompleted(LegendTrialDefinition trial) => IsTrialCompletedInVersionedState(trial);
 
-        public void SyncTrialProgressFromWorld() {
+        /// <summary>
+        /// 静默同步（十三·#102）：只并入「世界旗已倒 且 <paramref name="owner"/> 击杀登记里有」的试炼，
+        /// 世界打过但本玩家没亲手打过的不并入，留给玩家自己触发，保住对话/礼物叙事的触发边沿。<br/>
+        /// 拍板取舍（宁少并不多并，不做迁移猜测）：击杀登记是新设施，老玩家档没有历史登记，
+        /// 信任老世界会从"全并"变"几乎不并"，需重打或在原升级世界续档；owner 为空
+        /// （世界物品/存读档语境）同样无登记可查，一律不并
+        /// </summary>
+        public void SyncTrialProgressFromWorld(Player owner) {
             IReadOnlyList<LegendTrialDefinition> definitions = TrialDefinitions;
             if (definitions == null) {
                 return;
@@ -435,10 +443,15 @@ namespace CalamityOverhaul.Content.LegendWeapon
             TrialSchemaVersion = CurrentTrialSchemaVersion;
             TrialRouteSignature = LegendTrialRouteResolver.GetRouteSignature(definitions);
 
+            LegendTrialKillLedgerPlayer ledger = LegendTrialKillLedgerPlayer.TryGet(owner);
             foreach (LegendTrialDefinition trial in LegendTrialRouteResolver.GetAvailableTrials(definitions)) {
-                if (trial.IsCompleted) {
-                    AddCompletedTrialKey(trial.Key);
+                if (!trial.IsCompleted) {
+                    continue;
                 }
+                if (ledger == null || trial.Target?.IsPersonallyCleared(ledger.HasKilled) != true) {
+                    continue;
+                }
+                AddCompletedTrialKey(trial.Key);
             }
             NormalizeCompletedTrialKeys(definitions);
         }

@@ -9,8 +9,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze
 {
-    internal partial class CyberDomainFreeze
+    //信道基类挂在网络分部上
+    internal partial class CyberDomainFreeze : CWRNetChannel
     {
+        public override void Receive(BinaryReader reader, int whoAmI) => HandleNetStart(reader, whoAmI);
+
         private enum FreezePacketKind : byte
         {
             Request,
@@ -72,8 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             if (Main.netMode != NetmodeID.MultiplayerClient || !request.IsValid) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.CyberDomainFreezeStart);
+            ModPacket packet = CWRNetWork.GetPacket<CyberDomainFreeze>();
             packet.Write((byte)FreezePacketKind.Request);
             packet.Write(request.SessionId);
             packet.Write(request.RequestId);
@@ -1121,8 +1123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         }
 
         private static ModPacket NewPacket(FreezePacketKind kind) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.CyberDomainFreezeStart);
+            ModPacket packet = CWRNetWork.GetPacket<CyberDomainFreeze>();
             packet.Write((byte)kind);
             return packet;
         }

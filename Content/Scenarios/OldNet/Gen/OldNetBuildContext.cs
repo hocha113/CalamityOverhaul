@@ -54,6 +54,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
         internal int EncryptPlaced;
         internal int EventPlaced;
         internal int UnderPlainPlaced;
+        /// <summary>主控破译矩阵台数（每潜恒 1，P2 旗舰件进硬审计）</summary>
+        internal int VaultPlaced;
 
         /// <summary>直写节点tile（自定义节点无TileObjectData，不走PlaceObject）</summary>
         internal static bool WriteNodeTile(int x, int y, int tileType) {

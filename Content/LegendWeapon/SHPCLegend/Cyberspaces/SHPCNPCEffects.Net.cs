@@ -6,6 +6,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
+    /// <summary>SHPC 命中附加效果的上行信道</summary>
+    internal sealed class SHPCNPCEffectNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => SHPCNPCEffects.HandleNet(reader, whoAmI);
+    }
+
     /// <summary>
     /// SHPC 命中附加效果的联机通道。OnHit 只在 owner 客户端跑，
     /// 权威写入必须经服务端，再靠 SendExtraAI / netUpdate 铺给各端
@@ -39,8 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     || !IsValidApplyPayload(kind, duration, valueA, valueB)) {
                     return;
                 }
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.SHPCNPCEffect);
+                ModPacket packet = CWRNetWork.GetPacket<SHPCNPCEffectNet>();
                 packet.Write((ushort)target.whoAmI);
                 packet.Write(target.type);
                 packet.Write((byte)kind);
@@ -53,9 +58,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             ApplyAuthority(owner, target, kind, duration, valueA, valueB);
         }
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader,
-            int whoAmI) {
-            if (type != CWRMessageType.SHPCNPCEffect || reader == null) {
+        internal static void HandleNet(BinaryReader reader, int whoAmI) {
+            if (reader == null) {
                 return;
             }
             try {

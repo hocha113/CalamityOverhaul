@@ -1,4 +1,4 @@
-﻿HalibutOverride: {
+HalibutOverride: {
 	FishByStudied:
 		'''
 		[i:CalamityOverhaul/HalibutItem]:
@@ -249,6 +249,7 @@ LegendUpgradeManagerSystem: {
 }
 
 TrialBlockedHint: 下一关需要启用相应内容后才能开始
+TrialFrontierHint: 等级按顺序结算，正卡在这一关。后面的先打了也会记下，补完这一关一起入账。
 
 HalibutTrialQuestLine: {
 	QuestCategory: 比目鱼传说
@@ -640,7 +641,7 @@ OnikiriText: {
 	OnikiriTutorialLead: {
 		AskTitle: 要不要先受一遍教习
 		AskBody: 气力与架势、鬼域的表里、肢解的反噬，这三样不讲一遍很难自己摸清。这句话只问这一次
-		AskPrompt: 现在受教；或收下稽古符，改日自己开讲
+		AskPrompt: 现在受教；急着动身可跳过教程，视同学过；或收下稽古符，改日自己开讲
 		RefreshAskTitle: 补一段新的
 		RefreshAskBody: 这一版多了两段讲解：改铭台旁那本铭谱怎么查，以及鬼域之眼在动手前该认的东西。实操你已经练过，这次不重练
 		RefreshAskPrompt: 现在补讲；或收下稽古符，改日自己开讲
@@ -696,6 +697,8 @@ OnikiriText: {
 		SkipBtn: 跳过
 		SkipStepBtn: 跳过本步
 		AbortBtn: 收起教习
+		SkipAllBtn: 跳过教程
+		SkipAllNotice: 教程已视同学过，试炼委托即刻可接
 	}
 
 	OniMeiCodexUI: {
@@ -808,7 +811,7 @@ OnikiriTrialQuestLine: {
 		'''
 		硫海那边味就不对，有东西在翻
 		别让它靠岸，你去拦一拦
-		回来刀要是一股味，那颗太混蛋了
+		回来刀要是一股味，那可太混蛋了
 		'''
 	TrialSummary_6:
 		'''
@@ -917,6 +920,7 @@ KikasaOverride: {
 		按住左键把伞悬到头顶，按节拍降下追踪敌人的墨雨
 		按住右键倒撑蓄墨，松手泼出一场墨瀑
 		手持时按「领域展开」键撑开血湖，再按一次收起
+		主输出都在湖里：不开领域时墨雨稀薄，沉影与械奴也不出场
 		湖水漫到脚下后，拿着物品按「沉物入湖」键把它存进湖底，可在湖心景取回
 		对着敌人按同一个键则将其沉溺，被沉溺过的 Boss 会留下沉影
 		点左下角风铃打开湖心景，把沉影编进三个影位，它们会像召唤物一样替你作战
@@ -927,6 +931,7 @@ KikasaOverride: {
 		鬼雨满水时按「重启自身」键，附近的一切倒回数秒前，你的生命回满、减益洗净
 		湖水涨满后，长按「血湖表里」键沉入鬼梦：梦中敌人失能，远程弹幕无法存在
 		梦里物品封禁，改为按住左键连唤恶犬撕咬，重按同键醒来
+		梦里只算恶犬的撕咬，祈雨绳上的符文不生效
 		按「领域传送」键以一滩水为门，瞬移到指针处；在血湖里施展更快
 		召唤栏位越多，墨雨节拍越快、雨滴越多，蓄墨也越快
 		4 栏：每拍多甩一滴，打向第二个目标
@@ -1144,7 +1149,10 @@ KikasaTrialQuestLine: {
 }
 
 KikasaText: {
-	KikasaServantPlayer.ServantUnknown: 还不能驱使它
+	KikasaServantPlayer: {
+		ServantUnknown: 还不能驱使它
+		AutoEvictFormat: 影位已满，{0} 让席，{1} 落座
+	}
 
 	KikasaUIText: {
 		AffinityFlame: 焰
@@ -1176,6 +1184,7 @@ KikasaText: {
 		TipTeleportHintFormat: 按 {0} 借一滩水渡到指针处；在血湖里施展更快、冷却更短
 		TipThrallFormat: 在场伞奴 {0} / {1}
 		TipHoundCountFormat: 在场恶犬 {0} / {1}
+		TipDreamNoTalis: 梦里只算恶犬的撕咬，符文不生效
 		TipSeatsHintFormat: 按住 {0} 打开转盘召出或收回 · 在湖心景里调整编成
 		TipSeatEmpty: 空位
 		TipTalisHint: 点击打开湖心景，在祈雨绳上挂符
@@ -1196,7 +1205,7 @@ KikasaText: {
 		WheelCenterSummonAll: "[松开] 全部召出"
 		WheelCenterEmpty: 还没有编进影位的沉影
 		WheelDamageFormat: 每只在场沉影的伤害 {0}%
-		WheelHint: "[{0}] 按住 · 松开确认 · 右键取消"
+		WheelHint: "[{0}] 按住 · 松开确认 · 右键只收转盘，沉影留场"
 		WheelWispName: 金焰
 		WheelWispDesc: 点燃后金焰沿湖岸蔓延，灼烧碰到的敌人
 		WheelWispIgnite: "[松开] 点燃"
@@ -1234,7 +1243,8 @@ KikasaText: {
 		SeatHeldLineFormat: 已收起，按住 {0} 打开转盘可以召回
 		SeatOutLine: 正在场上
 		SeatAwaitLine: 等湖水涨起来
-		RosterTallyFormat: 沉影 {0} / {1}
+		RosterTallyFormat: 图鉴 {0} / {1}
+		RosterSeatTallyFormat: 影位 {0} / {1}
 		RosterUnknown: 还没沉过
 		RosterUnknownHintFormat: 开着湖、对着它按 {0} 即可沉溺
 		RosterSeatedTag: 已编入
@@ -1248,11 +1258,14 @@ KikasaText: {
 		TalisEmptyLine: 空绳结，点击展开符箧挑一张
 		TalisNoneOwned: 符箧还是空的，先到水边的工作台做一张符再来
 		TalisNeedUmbrella: 把鬼伞握在手里，符才认主
-		TalisSwapHint: 点击换符 · 右键摘下
+		TalisSwapHint: 点击换符 · 拖到别的绳结换位 · 右键摘下
 		TalisHangHint: 点击挂上
 		TalisTakeDownLabel: 摘下
 		TalisAlreadyHung: 它已经挂在别的绳结上了
 		TalisCurrentTag: 正挂在这里
+		TalisStackRule: 挂着的符都在生效，墨色被盖也不例外；每滴墨只归一张符，靠左的先认，颜色与专属效果随它
+		TalisDragSwapHint: 松手与它互换
+		TalisDragMoveHint: 松手挂到这里
 		NoteFuHungFormat: 「{0}」升上了祈雨绳
 		NoteFuTakenFormat: 「{0}」收回了符箧
 		VaultTitle: 湖 藏
@@ -1280,23 +1293,24 @@ KikasaText: {
 		WheelPrompt: 按住 {0} 打开转盘，对准一个影位松开
 		WheelNoMemory: 湖里还没有沉影。先把一只 Boss 沉进湖里，或者跳过这一步。
 		RainTitle: 异化成鬼雨
-		RainBody: 「血湖表里」键有两种按法：湖水涨满后短按，血湖翻转成鬼雨；长按则沉入鬼梦，留到最后一步。在鬼雨中杀死的敌人会化作伞奴，替你作战。
+		RainBody: 「血湖表里」键（默认鼠标中键）有两种按法：湖水涨满后短按，血湖翻转成鬼雨；长按则沉入鬼梦，留到最后一步。在鬼雨中杀死的敌人会化作伞奴，替你作战。
 		RainPrompt: 湖水涨满后，短按 {0} 翻转血湖
 		RestartTitle: 雨中重启
 		RestartBody: 鬼雨记得几秒前的一切。按下重启键，画面定格成黑白照片，再被雨痕冲开：附近的敌人和你都退回数秒前的位置，你的生命回满、减益洗净，倒带全程无敌。
 		RestartPrompt: 鬼雨满水时，按 {0}
 		DreamTitle: 进入鬼梦
 		DreamBody: 湖水涨满后长按「血湖表里」键，湖里的倒影会把你拽进鬼梦。梦中敌人失能，远程弹幕无法存在；你的物品也被封禁，改为按住左键连续唤出恶犬撕咬。再按一次同键就能醒来。
-		DreamPrompt: 湖水涨满后，长按 {0}（默认鼠标中键）
+		DreamPrompt: 湖水涨满后，长按 {0}
 		SkipBtn: 跳过
 		ConfirmBtn: 明白了
 		AssistBtn: 替我演示
 		OpenPanoramaBtn: 帮我打开
 		DismissBtn: 收起教程
-		KeyUnbound: 这一步的按键还没绑定。先到 设置 > 控制 里绑好，或者点「跳过」。
+		KeyUnbound: 这一步要用的「{0}」还没绑定。先到 设置 > 控制 里绑好，或者点「跳过」。
 		AlreadyDoneNote: 这一步你已经做到了。看完就点「明白了」。
-		WaterRisingNote: 先等血水漫到脚下。
+		WaterRisingNote: 先等血水漫到脚下，水位 {0}%。
 		ResetCooldownFormat: 重启还在冷却：{0}%
 		HelpHover: 重看鬼伞教程
+		MutateFallbackKey: 鼠标中键
 	}
 }

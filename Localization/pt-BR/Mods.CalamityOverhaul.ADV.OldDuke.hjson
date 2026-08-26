@@ -1,0 +1,143 @@
+AbyssQuestLine: {
+	QuestCategory: Velho Duque
+	CampsiteTitle: O Abismo Chama
+	CampsiteSummary: Encontre e fale com o Velho Duque
+	CampsiteObjective: Objetivo
+	CampsiteLocation: Va para o acampamento do Velho Duque
+	CampsiteDistance: Distancia
+	CampsiteInteract: Fale com o Velho Duque
+	CampsiteComplete: Missao Completa!
+	CampsiteHoldHint: Segure Fragmentos do Oceano para ver a direcao
+	FragmentTitle: O Abismo Chama
+	FragmentSummary: Colete 777 Fragmentos do Oceano
+	FragmentObjective: Objetivo
+	FragmentCollect: Colete Fragmentos do Oceano
+	FragmentCurrent: Atualmente em maos
+	FragmentReturn: Volte ao acampamento para entregar
+	FragmentComplete: Missao Completa!
+	FragmentHint: Pesque ou cace criaturas do oceano
+}
+
+FirstMetOldDuke: {
+	OldDukeName: Velho Duque
+	L0: ......
+	L1: Embainhe sua sede de sangue, jovem aventureiro. Nao ha necessidade de sacar armas no momento em que nos encontramos.
+	L2: Sou velho. Estou cansado de tais jogos violentos.
+	L3: Podemos cooperar.
+	L4: Estou coletando algo especial: Fragmentos do Oceano.
+	L5: Se voce puder encontrar mais para mim, farei valer a pena.
+	L6: Aqui esta uma amostra.
+	B1: Mudou de ideia?
+	B2: Adeus, entao.
+	HL1: O velho professor...? Embora ele nao pareca me reconhecer.
+	HL2: Suas palavras sao viaveis. Eramos colegas na Universidade do Mar Sulfuroso. Ele e um titan no campo da arqueologia marinha.
+	C1: Aceitar cooperacao
+	C2: Recusar cooperacao
+	C3: Recusar e sacar arma
+	C1Response: Excelente. Espero que tenhamos uma parceria agradavel.
+	C2Response: ...Entao me retirarei. Se pensar melhor, seja bem-vindo a qualquer momento.
+	C3Response: ...Parece que voce insiste. Entao deixe-me medir seu valor.
+}
+
+OldDukeCampsite: {
+	OldDukeWanderingActor.InteractHint: "[Botao Direito] Falar"
+	OldDukeCampsite.TitleText: Acampamento do Velho Duque
+}
+
+CampsiteInteractionDialogue: {
+	GreetingLine: O que precisa?
+	Choice1Text: Estou aqui para negociar.
+	Choice2Text: Trouxe as coisas que voce queria.
+	Choice3Text: So passeando.
+	Choice4Text: Quero treinar com voce.
+	Choice5Text: Conte-me sobre seu passado.
+	Choice2DisabledHint: Fragmentos do Oceano Insuficientes
+	Choice1Response: Veja o que tenho aqui.
+	Choice2Response: Bom. Estes fragmentos sao suficientes. Esta e sua recompensa devida.
+	Choice3Response: ......
+	QuestCompleteLine: Hmm... Voce tem novas descobertas? Estou muito ocupado agora.
+	B1: Passarei os proximos dias decifrando estes fragmentos. Avisarei quando terminar.
+	Choice4_R1: Posso ser velho, mas nao perdi as habilidades da minha juventude.
+	Choice4_R2: Entao vamos ver se voce melhorou recentemente.
+	Choice4_R3: Usar-me como pedra de amolar nao e uma jogada sabia...
+
+	CampsiteChatDialogue: {
+		GreetingLine: Quer conversar?
+		Choice_BackToMain: Mudar de assunto
+		Choice_EndConversation: E so isso
+		Choice_PastStory: Sobre seu estado atual
+		Choice_Research: O que voce esta remontando?
+		Choice_SulfurSeaHistory: A verdade deste mar
+		Choice_AboutFragments: Sobre aqueles fragmentos
+		Choice_PersonalLife: Voce nao parece bem
+		Choice_Farewell: Adeus
+		Past_Intro: Esse e um passado deliberadamente apagado. Ou talvez, hajam poucos peixes restantes que o conhecem.
+		Past_University: Eramos arrogantes entao, pensando que podiamos medir o mundo inteiro com uma regua. Até desenterramos algo... ilogico no fundo do abismo.
+		Past_Prime: Aquela coisa nao podia ser morta, nem destruida. Nao era uma criatura viva.
+		Past_Accident: Nao houve sobreviventes naquele incidente. Quando estava sendo assimilado por aquela frieza, tomei uma decisão maníaca.
+		Past_Mutation: Ja que nao havia escapatória, eu me juntei a ela. Forcei-a para dentro do meu corpo. Desde entao, nao estou verdadeiramente vivo, nem posso morrer.
+		Past_Exile: Está tudo bem. Este corpo e forte o suficiente para suprimir este mar.
+		Past_Reflection: So quero guardar este mar. Se aquelas coisas tentarem sair do abismo, esse sera o momento em que arriscarei a resurreição total e a morte para dete-las.
+		Research_Intro: Estou tentando reconstruir uma historia, ou melhor, recuperar uma forma perdida de experiencia.
+		Research_CurrentWork: Estes fragmentos retêm memorias do passado. Eles registram como aquela civilizacao antiga buscou um caminho para a sobrevivencia em uma situacao desesperadora.
+		Research_Breakthrough: Para lutar contra esse tipo de terror, forca bruta e inutil. Voce deve encontrar suas 'regras de execucao' e explora-las.
+		Research_Difficulties: Mas decifra-los e perigoso. Estes fragmentos sao eles proprios condutos. Olhe para eles por muito tempo, e voce pode ouvir sons que nao deveria.
+		Research_Theory: Se eu conseguir montar todas as pecas, talvez possa encontrar uma maneira de selar permanentemente a fonte do abismo.
+		Choice_Research_Details: O que quer dizer com 'regras de execucao'?
+		Choice_Research_Help: O que preciso fazer?
+		Choice_Research_Back: Parece loucura
+		Research_Details1: Por exemplo, ha coisas que voce nao pode olhar, nomes que nao pode pronunciar. Uma vez que um conduto e ativado, a morte e inevitavel. Aquela civilizacao tentou prender deuses com regras.
+		Research_Details2: Eles ate construiram grandes recipientes, tentando aprisionar aquelas coisas. Infelizmente, os recipientes vazaram.
+		Research_Help: Ajude-me a encontrar mais fragmentos. O resto da minha vida sera gasto pesquisando isso.
+		History_Intro: O Mar Sulfuroso e meramente uma fachada. Este e o residuo deixado apos a invasão do dominio daquela coisa.
+		History_Origin: Isto era uma vez o Mar Safira, ate que a fonte ficou fora de controle.
+		History_Civilization: Aquela civilizacao antiga era poderosa. Eles aprenderam a utilizar aquele poder estranho. Construiram cidades, como dancar em um barril de polvora.
+		History_Cataclysm: Naturalmente, o equilibrio se quebrou. Algum terror reviveu, e todos os seres vivos foram apagados em um instante, tornando-se parte deste silencio morto.
+		History_Ruins: O que voce ve agora e meramente o residuo apos aquele evento. A agua mudou de cor porque morreu. Completamente morta.
+		History_Warning: Se algum dia voce vir os mortos acenando para voce, ou ouvir chamados familiares... lembre-se, isso e apenas este mar de cadaveres imitando os vivos.
+		Choice_History_MoreRuins: Onde e o lugar mais perigoso?
+		Choice_History_Dangers: Ha alguma contra-medida?
+		Choice_History_Back: Inquietante
+		History_MoreRuins1: No fundo daquele mar de cadaveres. Ha uma porta. Nao bata. O que esta trancado atras dela e melhor apodrecer la para sempre.
+		History_MoreRuins2: Ainda ha salas nao abertas naquelas ruinas submersas. Sao camaras secretas fundidas de metais pesados especiais, projetadas para cortar a percepção daquelas coisas.
+		History_Dangers1: Alem dos mortos-vivos mutantes, cuidado com coisas que voce nao pode ver. As vezes, o golpe fatal e invisivel.
+		History_Dangers2: Nao confie em seus olhos. Nao responda a chamados inexplicaveis. Naquele mar de cadaveres, os vivos sao as anomalias.
+		Fragments_Intro: Fragmentos do Oceano... aos meus olhos, sao arquivos manchados de sangue.
+		Fragments_Nature: Sao o residuo de um fenomeno. Como maldicoes comprimidas.
+		Fragments_Power: Cada fragmento e um 'conduto'. Sozinho, pode ser inofensivo, mas quando suficientes se juntam, criam uma colisao de forcas estranhas.
+		Fragments_Collection: Eles estao espalhados por cada canto do mar morto—alguns enterrados sob ruinas, outros crescidos na carne de criaturas.
+		Fragments_Purpose: Ainda estou juntando as pecas, tentando reconstruir a fonte daquele desastre. So descobrindo como aquela coisa matou posso encontrar uma maneira de aprisiona-la.
+		Personal_Intro: Indo vivendo.
+		Personal_Daily: Passo a maior parte do tempo dormindo para reduzir flutuacoes na minha consciencia. Se minhas emocoes ficarem intensas demais, a coisa dentro de mim fica... inquieta.
+		Personal_Loneliness: Solidao e bom. Se ficar muito animado por aqui, deve ser porque 'eles' chegaram. Estou acostumado a ser um peixe solitario. E mais seguro para mim e para o mundo.
+		Personal_Memories: Minha memoria e turva. As vezes nao consigo distinguir quais memorias sao minhas e quais sao... as memorias de outros individuos remanescentes neste corpo.
+		Personal_Hope: Ver voce me lembra de mim mesmo naquela epoca. Ignorante e sem medo. Espero que voce nao acabe como eu, transformando-se nesta forma.
+		Choice_Personal_Tea: O que voce esta bebendo?
+		Choice_Personal_Past: Voce ainda e considerado... um peixe?
+		Choice_Personal_Back: Se cuide
+		Personal_Tea1: Isto e preparado com varias plantas especiais do abismo. O gosto... e como lama podre.
+		Personal_Tea2: Quer uma xícara? Vai acalma-lo como um peixe morto.
+		Personal_Past1: Quem sabe? Talvez o verdadeiro eu tenha morrido ha muito tempo, e eu seja apenas outra coisa... que ainda guarda as memorias dele.
+		Personal_Past2: Mas ainda me lembro da sensacao do sol no rosto, do toque dos livros. Enquanto eu lembrar disso, me considero vivo.
+		Personal_Past3: Se nao fosse aquele acidente... eu provavelmente estaria deitado pacificamente em um tumulo agora. Em vez de estar assim, incapaz de morrer mesmo se quisesse.
+		Farewell_Normal: Vamos deixar assim. Procure-me se precisar de algo.
+		Farewell_Friendly: Cuidado, jovem. Neste mundo, um final pacifico e um luxo.
+	}
+}
+
+FirstCampsiteDialogue: {
+	L0: Voce veio.
+	L1: Tenho coletado estes fragmentos por bastantes anos.
+	L2: Eles sao... peculiares. Nao parecem produtos de evolucao natural, mas sim objetos estranhos que 'invadiram' este mundo.
+	L3: Espero que entenda o que quero dizer. Minha intuição me diz que eles deveriam ser coisas sem forma, meramente escolhendo uma forma que as criaturas Terrarianas pudessem compreender.
+	L4: Independentemente... desejo decifra-los, mas nao tenho quantidade suficiente.
+	L5: Espero que voce possa me ajudar a coletar Fragmentos do Oceano suficientes.
+	L6: Fornecei-lhe a devida compensacao.
+}
+
+ComeCampsiteFindMe: {
+	B1: ...Venha tomar uma xícara de cha quando tiver tempo.
+	C1: Tenho negocios com voce.
+	C2: So estava pescando por diversao...
+	B1_NO: Venha me encontrar primeiro. E melhor que voce aprenda o caminho.
+}

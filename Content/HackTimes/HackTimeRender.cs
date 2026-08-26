@@ -84,32 +84,35 @@ namespace CalamityOverhaul.Content.HackTimes
             //保存/还原 RT 绑定
             RenderTargetBinding[] previousTargets = graphicsDevice.GetRenderTargets();
 
-            //拷屏到交换缓冲
-            graphicsDevice.SetRenderTarget(screenSwap);
-            graphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-            spriteBatch.End();
+            //中途异常必须还原 RT 绑定,防错绑遗留到后续绘制(反馈十四·#64)
+            try {
+                //拷屏到交换缓冲
+                graphicsDevice.SetRenderTarget(screenSwap);
+                graphicsDevice.Clear(Color.Transparent);
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                spriteBatch.End();
 
-            //着色器参数
-            shader.Parameters["intensity"]?.SetValue(HackTime.Intensity);
-            shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-            shader.Parameters["vignetteStrength"]?.SetValue(0.6f);
-            shader.Parameters["tintStrength"]?.SetValue(1.0f);
-            shader.Parameters["uScreenSize"]?.SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+                //着色器参数
+                shader.Parameters["intensity"]?.SetValue(HackTime.Intensity);
+                shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+                shader.Parameters["vignetteStrength"]?.SetValue(0.6f);
+                shader.Parameters["tintStrength"]?.SetValue(1.0f);
+                shader.Parameters["uScreenSize"]?.SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
 
-            //着色器回写主屏
-            graphicsDevice.SetRenderTarget(Main.screenTarget);
-            graphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            shader.CurrentTechnique.Passes[0].Apply();
-            spriteBatch.Draw(screenSwap, Vector2.Zero, Color.White);
-            spriteBatch.End();
-
-            //还原 RT 绑定
-            if (previousTargets != null && previousTargets.Length > 0
-                && previousTargets[0].RenderTarget != Main.screenTarget) {
-                graphicsDevice.SetRenderTargets(previousTargets);
+                //着色器回写主屏
+                graphicsDevice.SetRenderTarget(Main.screenTarget);
+                graphicsDevice.Clear(Color.Transparent);
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                shader.CurrentTechnique.Passes[0].Apply();
+                spriteBatch.Draw(screenSwap, Vector2.Zero, Color.White);
+                spriteBatch.End();
+            } finally {
+                //还原 RT 绑定
+                if (previousTargets != null && previousTargets.Length > 0
+                    && previousTargets[0].RenderTarget != Main.screenTarget) {
+                    graphicsDevice.SetRenderTargets(previousTargets);
+                }
             }
         }
 

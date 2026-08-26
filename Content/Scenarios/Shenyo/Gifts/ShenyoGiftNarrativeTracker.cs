@@ -1,8 +1,10 @@
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Common;
 using CalamityOverhaul.Content.Narrative.Data;
+using CalamityOverhaul.Content.Narrative.Data.Modules;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
 using System;
@@ -57,6 +59,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         private static readonly HashSet<string> spawned = new(StringComparer.Ordinal);
         //二选一分支取词：记录某个多首领礼物最近一次是被哪个NPC id触发的
         private static readonly Dictionary<string, int> lastDefeatedById = new(StringComparer.Ordinal);
+        //断档补发的会话限额:满包落地捡不起来时防巡检连发成堆
+        private static readonly HashSet<string> repairedGiftIds = new(StringComparer.Ordinal);
         private static bool wasFinaleDowned;
 
         public static int LastDefeatedBossId(string giftId)
@@ -65,6 +69,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public static void ResetWorldState() {
             spawned.Clear();
             lastDefeatedById.Clear();
+            repairedGiftIds.Clear();
             wasFinaleDowned = CWRRef.Has && CWRRef.GetDownedBossRush();
             RegisterAll();
         }
@@ -140,11 +145,29 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
             }
 
             bool downed = CWRRef.GetDownedBossRush();
-            //边沿只有一帧，就绪与否留给 TryPickNext 复查，否则这一帧不就绪就永远错过
-            if (downed && !wasFinaleDowned && scenariosById.ContainsKey(FinaleGiftId)) {
-                spawned.Add(FinaleGiftId);
-            }
+            bool edge = downed && !wasFinaleDowned;
             wasFinaleDowned = downed;
+
+            Player player = Main.LocalPlayer;
+            if (player?.active != true
+                || !scenariosById.TryGetValue(FinaleGiftId, out ShenyoBossGiftNarrative finale)) {
+                return;
+            }
+            ShenyoGiftStoryData giftStory = ShenyoStorySync.GiftStory;
+            //旗只落一次且永不复位,边沿只活一帧:目击落旗却在演出前退档的,
+            //重进后镜像初始化成 true,礼物就此永失。边沿落持久位,演过(完成位)即自清
+            if (edge) {
+                giftStory.BossRushGiftPending = true;
+            }
+            if (!giftStory.BossRushGiftPending) {
+                return;
+            }
+            if (finale.CheckGiftCompleted()) {
+                giftStory.BossRushGiftPending = false;
+                return;
+            }
+            //就绪与否留给 TryPickNext 复查，否则这一帧不就绪就永远错过
+            spawned.Add(FinaleGiftId);
         }
 
         private static void TickLocalNarrative() {
@@ -155,6 +178,10 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
             }
             if (CWRWorld.HasBoss || CWRWorld.BossRush || NarrativeTriggerGate.IsBusy) {
                 return;
+            }
+            //低频补发:完成位开演即写,递符与补录符箧都在对白中段——中途退档/断线的那张符就此断档
+            if (Main.GameUpdateCount % 620 == 310) {
+                RepairLostTalismans(player);
             }
             if (!TryPickNext(player, out ShenyoBossGiftNarrative gift, out string giftId)) {
                 return;
@@ -180,6 +207,32 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
             }
             else {
                 storyPlayer.ShenyoGiftDelayTicks = 30;
+            }
+        }
+
+        /// <summary>
+        /// 唤雨符断档补发:场景完成位已写、符箧未录且身上(含鼠标)无符纸,
+        /// 说明发放步被打断丢件——镜像 GiftTalisman 的幂等契约,先补录符箧再补发符纸
+        /// </summary>
+        private static void RepairLostTalismans(Player player) {
+            foreach (ShenyoGiftEntry entry in ShenyoGiftCatalog.All) {
+                if (repairedGiftIds.Contains(entry.Id)
+                    || !scenariosById.TryGetValue(entry.Id, out ShenyoBossGiftNarrative gift)
+                    || !gift.CheckGiftCompleted()
+                    || KikasaTalismanOwned.Owns(player, entry.TalismanKey)) {
+                    continue;
+                }
+                int itemType = KikasaTalismanItem.ItemTypeForKey(entry.TalismanKey);
+                if (itemType <= 0 || player.HasItem(itemType)) {
+                    continue;
+                }
+                Item mouse = Main.mouseItem;
+                if (mouse != null && !mouse.IsAir && mouse.type == itemType) {
+                    continue;
+                }
+                repairedGiftIds.Add(entry.Id);
+                KikasaTalismanOwned.Unlock(player, entry.TalismanKey);
+                player.QuickSpawnItem(player.GetSource_Misc("CWR_ShenyoGiftRepair"), itemType);
             }
         }
 

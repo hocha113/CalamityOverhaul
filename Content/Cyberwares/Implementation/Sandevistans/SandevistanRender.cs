@@ -45,41 +45,44 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             //进前 RT，结束还原
             RenderTargetBinding[] previousTargets = gd.GetRenderTargets();
 
-            //拷屏到 swap
-            gd.SetRenderTarget(screenSwap);
-            gd.Clear(Color.Transparent);
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-            sb.End();
+            //中途异常必须还原 RT 绑定,防错绑遗留到后续绘制(反馈十四·#64)
+            try {
+                //拷屏到 swap
+                gd.SetRenderTarget(screenSwap);
+                gd.Clear(Color.Transparent);
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                sb.End();
 
-            //玩家屏幕 uv
-            Vector2 playerScreen = Main.LocalPlayer.Center - Main.screenPosition;
-            Vector2 playerUV = new Vector2(
-                playerScreen.X / Main.screenWidth,
-                playerScreen.Y / Main.screenHeight
-            );
-            playerUV = Vector2.Clamp(playerUV, Vector2.Zero, Vector2.One);
+                //玩家屏幕 uv
+                Vector2 playerScreen = Main.LocalPlayer.Center - Main.screenPosition;
+                Vector2 playerUV = new Vector2(
+                    playerScreen.X / Main.screenWidth,
+                    playerScreen.Y / Main.screenHeight
+                );
+                playerUV = Vector2.Clamp(playerUV, Vector2.Zero, Vector2.One);
 
-            //着色器内乘 intensity，勿双重缩放
-            shader.Parameters["intensity"]?.SetValue(effectIntensity);
-            shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-            shader.Parameters["chromaticOffset"]?.SetValue(0.005f);
-            shader.Parameters["vignetteStrength"]?.SetValue(0.4f);
-            shader.Parameters["playerCenter"]?.SetValue(playerUV);
-            shader.Parameters["radialBlurStrength"]?.SetValue(0.04f);
+                //着色器内乘 intensity，勿双重缩放
+                shader.Parameters["intensity"]?.SetValue(effectIntensity);
+                shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+                shader.Parameters["chromaticOffset"]?.SetValue(0.005f);
+                shader.Parameters["vignetteStrength"]?.SetValue(0.4f);
+                shader.Parameters["playerCenter"]?.SetValue(playerUV);
+                shader.Parameters["radialBlurStrength"]?.SetValue(0.04f);
 
-            //回写主屏
-            gd.SetRenderTarget(Main.screenTarget);
-            gd.Clear(Color.Transparent);
-            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            shader.CurrentTechnique.Passes[0].Apply();
-            sb.Draw(screenSwap, Vector2.Zero, Color.White);
-            sb.End();
-
-            //还原进前 RT
-            if (previousTargets != null && previousTargets.Length > 0
-                && previousTargets[0].RenderTarget != Main.screenTarget) {
-                gd.SetRenderTargets(previousTargets);
+                //回写主屏
+                gd.SetRenderTarget(Main.screenTarget);
+                gd.Clear(Color.Transparent);
+                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                shader.CurrentTechnique.Passes[0].Apply();
+                sb.Draw(screenSwap, Vector2.Zero, Color.White);
+                sb.End();
+            } finally {
+                //还原进前 RT
+                if (previousTargets != null && previousTargets.Length > 0
+                    && previousTargets[0].RenderTarget != Main.screenTarget) {
+                    gd.SetRenderTargets(previousTargets);
+                }
             }
         }
     }

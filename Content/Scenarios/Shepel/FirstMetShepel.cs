@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel
         private const string CybAcceptLabel = "cyb_accept";
         private const string CybDeclineLabel = "cyb_decline";
 
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.Shepel";
 
         public static LocalizedText SpeakerName { get; private set; }
         public static LocalizedText Line1 { get; private set; }

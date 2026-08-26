@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
         public static InteractionEntryMode EntryMode = InteractionEntryMode.Default;
         public static bool GiveTeaOnStart;
 
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.OldDuke";
 
         public static LocalizedText GreetingLine { get; private set; }
         public static LocalizedText Choice1Text { get; private set; }

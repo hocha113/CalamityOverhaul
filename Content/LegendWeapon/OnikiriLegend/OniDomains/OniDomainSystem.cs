@@ -20,7 +20,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
         //领域是玩家主动能力，不进 ModSceneEffect 场景竞争，不占 boss 的天空/音乐槽位
 
-        //激活期间每帧重激活，SkyManager.OnActivate 把本天空移到活动链表末尾、永远最后绘制压过其他天空
+        //只在上升沿激活:每帧重激活会被 SkyManager.OnActivate 挪到活动链表末尾、永远最后绘制,
+        //把虚无化身黑洞等 Boss 背景全部压掉(反馈十一·#40)。上升沿激活后,晚激活的 Boss 天空
+        //自然排在鬼蜮之后、该赢时能赢;Boss 天空退场后鬼蜮仍在场照常显示
 
         private static void UpdateSkyActivation() {
             CustomSky sky = SkyManager.Instance[OniDomainSky.Name];
@@ -29,7 +31,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
             bool active = OniDomain.Viewed?.AnyActive ?? false;
             if (active) {
-                SkyManager.Instance.Activate(OniDomainSky.Name);
+                if (!sky.IsActive()) {
+                    SkyManager.Instance.Activate(OniDomainSky.Name);
+                }
                 if (!Filters.Scene[OniDomainSky.Name].IsActive()) {
                     Filters.Scene.Activate(OniDomainSky.Name);
                 }
@@ -55,6 +59,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
             OniDomain.RefreshViewed();
             OniDomainDeco.Clear();
+            //与血湖天空同型的卸世界收场:标题界面没人跑关闭分支(同反馈四·#16)
+            CustomSky sky = SkyManager.Instance[OniDomainSky.Name];
+            if (sky != null) {
+                if (sky.IsActive()) {
+                    SkyManager.Instance.Deactivate(OniDomainSky.Name);
+                }
+                sky.Reset();
+            }
+            Filter filter = Filters.Scene[OniDomainSky.Name];
+            if (filter != null) {
+                if (filter.IsActive()) {
+                    filter.Deactivate();
+                }
+                filter.GetShader()?.UseOpacity(0f);
+            }
         }
 
         //里世界压光、氛围级而非致盲级，剪影可读性靠淡色雾空反衬

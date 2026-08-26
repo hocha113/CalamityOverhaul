@@ -623,3 +623,31 @@ ShepelYharonGift: {
 	L2: Now, your weapon's muzzle velocity and response times have been significantly enhanced, enough to outpace its top speed.
 	L3: To always keep up with your pace, my systems are ready to shatter their own limits at any time.
 }
+
+FirstMetShepel: {
+	Line1: Master! I am so glad to see you again!
+	Choice1Text: You've got the wrong person, haven't you?
+	Choice2Text: ...Long time no see.
+	Choice1Response: ...Yes. As long as it is you, I am willing to be wrong every time.
+	Choice1Silence: ......
+	CybCourseOfferLine: Superdream program successfully loaded. Master, would you like to connect to the Superdream space now to learn about Hack Mode and SHPC weapon operating protocols?
+	CybCourseAcceptText: Let's go now.
+	CybCourseDeclineText: Not right now.
+	CybCourseAcceptResponse: Acknowledged. Establishing neural link... Please remain still.
+	CybCourseDeclineResponse: Understood. Superdream access credentials have been written to your save data. You can activate it yourself at any time, Master.
+	SpeakerName: SHPC
+}
+
+TheHerInThePast: {
+	WitchLine1: Being chased by those filthy things must be pretty unpleasant. Luckily you ran into me.
+	ShpcLine1: Thank you... But how is this possible? You belong to the past, yet you can move around...
+	WitchLine2: If you can invade here from a century in the future, it's only natural I can do something similar.
+	WitchLine3: Though I am indeed just a shadow left behind in this place.
+	ShpcLine2: If that is true, using your power like this will make you fade away.
+	WitchLine4: Your focus is so cute... Hurry up and leave. It's better if these filthy things stay buried in the past with me.
+	WitchLine5: Oh, by the way, little maid.
+	ShpcLine3: What is it?
+	WitchLine6: Your exhaustion has seeped right into your bones.
+	WitchLine7: Stop always trying to change the past, and learn to accept the future.
+	ShpcLine4: ......
+}

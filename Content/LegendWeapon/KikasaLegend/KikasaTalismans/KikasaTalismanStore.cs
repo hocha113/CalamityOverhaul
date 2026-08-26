@@ -6,8 +6,9 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
 {
     /// <summary>
-    /// 每伞符位表：符位下标→符 Key，空串即空位；三位同质，同 Key 全表唯一。<br/>
-    /// 宿主无关，存档与联机入口统一消毒；表现层数据缝，效果层后补不改结构
+    /// 祈雨绳符位表：符位下标→符 Key，空串即空位；三位同质，同 Key 全表唯一。<br/>
+    /// 宿主无关（现挂 <see cref="KikasaTalismanPlayer"/>，一名玩家一套配置），
+    /// 存档与联机入口统一消毒；表现层数据缝，效果层后补不改结构
     /// </summary>
     public sealed class KikasaTalismanStore
     {
@@ -76,6 +77,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
                 return false;
             }
             slots[slot] = null;
+            BumpVersion();
+            return true;
+        }
+
+        /// <summary>互换两符位（一方为空即挪结）；越界/同位/双空拒绝。直接换引用，绕开 Hang 的同键去重</summary>
+        public bool Swap(int slotA, int slotB) {
+            if (slotA < 0 || slotA >= SlotCount || slotB < 0 || slotB >= SlotCount || slotA == slotB) {
+                return false;
+            }
+            if (Get(slotA) == null && Get(slotB) == null) {
+                return false;
+            }
+            (slots[slotA], slots[slotB]) = (slots[slotB], slots[slotA]);
             BumpVersion();
             return true;
         }

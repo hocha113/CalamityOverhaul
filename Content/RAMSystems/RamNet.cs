@@ -80,7 +80,8 @@ namespace CalamityOverhaul.Content.RAMSystems
             && (LockRemain > 0 || LockTotal == 0);
     }
 
-    internal static class RamNet
+    /// <summary>RAM 请求总线，类本身即信道（子操作字节继续内部分发）</summary>
+    internal class RamNet : CWRNetChannel
     {
         private enum RamNetOp : byte
         {
@@ -193,11 +194,7 @@ namespace CalamityOverhaul.Content.RAMSystems
             SendRequestResult(player, result, toWho);
         }
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type != CWRMessageType.Ram) {
-                return;
-            }
-
+        public override void Receive(BinaryReader reader, int whoAmI) {
             try {
                 RamNetOp operation = (RamNetOp)reader.ReadByte();
                 switch (operation) {
@@ -387,8 +384,7 @@ namespace CalamityOverhaul.Content.RAMSystems
         }
 
         private static ModPacket NewPacket(RamNetOp operation) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.Ram);
+            ModPacket packet = CWRNetWork.GetPacket<RamNet>();
             packet.Write((byte)operation);
             return packet;
         }

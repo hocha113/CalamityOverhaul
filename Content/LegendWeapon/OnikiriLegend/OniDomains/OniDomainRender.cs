@@ -46,33 +46,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
             RenderTargetBinding[] previousTargets = graphicsDevice.GetRenderTargets();
 
-            //拷屏到交换缓冲
+            //中途异常必须还原 RT 绑定,否则后续所有绘制落进交换缓冲,
+            //表现为整屏内容消失/疯狂闪烁(同装模组冲突的放大器,反馈十四·#64)
+            try {
+                //拷屏到交换缓冲
 
-            graphicsDevice.SetRenderTarget(screenSwap);
-            graphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-            spriteBatch.End();
+                graphicsDevice.SetRenderTarget(screenSwap);
+                graphicsDevice.Clear(Color.Transparent);
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                spriteBatch.End();
 
-            SetSharedGradeParams(grade, odp);
+                SetSharedGradeParams(grade, odp);
 
-            //调色回写主屏
+                //调色回写主屏
 
-            graphicsDevice.SetRenderTarget(Main.screenTarget);
-            graphicsDevice.Clear(Color.Transparent);
-            graphicsDevice.Textures[1] = noise;
-            graphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            grade.CurrentTechnique = grade.Techniques["TechGrade"];
-            grade.CurrentTechnique.Passes[0].Apply();
-            spriteBatch.Draw(screenSwap, Vector2.Zero, Color.White);
-            spriteBatch.End();
+                graphicsDevice.SetRenderTarget(Main.screenTarget);
+                graphicsDevice.Clear(Color.Transparent);
+                graphicsDevice.Textures[1] = noise;
+                graphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                grade.CurrentTechnique = grade.Techniques["TechGrade"];
+                grade.CurrentTechnique.Passes[0].Apply();
+                spriteBatch.Draw(screenSwap, Vector2.Zero, Color.White);
+                spriteBatch.End();
+            } finally {
+                //还原 RT 绑定
 
-            //还原 RT 绑定
-
-            if (previousTargets != null && previousTargets.Length > 0
-                && previousTargets[0].RenderTarget != Main.screenTarget) {
-                graphicsDevice.SetRenderTargets(previousTargets);
+                if (previousTargets != null && previousTargets.Length > 0
+                    && previousTargets[0].RenderTarget != Main.screenTarget) {
+                    graphicsDevice.SetRenderTargets(previousTargets);
+                }
             }
         }
 
@@ -168,57 +172,60 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
             RenderTargetBinding[] previousTargets = graphicsDevice.GetRenderTargets();
 
-            //拷屏到交换缓冲
+            //中途异常必须还原 RT 绑定,防错绑遗留到后续绘制(反馈十四·#64)
+            try {
+                //拷屏到交换缓冲
 
-            graphicsDevice.SetRenderTarget(screenSwap);
-            graphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-            spriteBatch.End();
+                graphicsDevice.SetRenderTarget(screenSwap);
+                graphicsDevice.Clear(Color.Transparent);
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                spriteBatch.End();
 
-            SetSharedGradeParams(grade, odp);
-            grade.Parameters["uAnomalyPulse"]?.SetValue(odp.AnomalyPulse);
-            grade.Parameters["uNegativeFlash"]?.SetValue(odp.NegativeFlash);
+                SetSharedGradeParams(grade, odp);
+                grade.Parameters["uAnomalyPulse"]?.SetValue(odp.AnomalyPulse);
+                grade.Parameters["uNegativeFlash"]?.SetValue(odp.NegativeFlash);
 
-            //统一罩回写主屏
+                //统一罩回写主屏
 
-            graphicsDevice.SetRenderTarget(Main.screenTarget);
-            graphicsDevice.Clear(Color.Transparent);
-            graphicsDevice.Textures[1] = noise;
-            graphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            grade.CurrentTechnique = grade.Techniques["TechUnify"];
-            grade.CurrentTechnique.Passes[0].Apply();
-            spriteBatch.Draw(screenSwap, Vector2.Zero, Color.White);
-            spriteBatch.End();
+                graphicsDevice.SetRenderTarget(Main.screenTarget);
+                graphicsDevice.Clear(Color.Transparent);
+                graphicsDevice.Textures[1] = noise;
+                graphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                grade.CurrentTechnique = grade.Techniques["TechUnify"];
+                grade.CurrentTechnique.Passes[0].Apply();
+                spriteBatch.Draw(screenSwap, Vector2.Zero, Color.White);
+                spriteBatch.End();
 
-            //捕获、此刻主屏已是"调色环境+清晰实体+统一罩"的完整旧世界成品帧，直接存作纸层
+                //捕获、此刻主屏已是"调色环境+清晰实体+统一罩"的完整旧世界成品帧，直接存作纸层
 
-            if (odp.PendingPaperCapture) {
-                RenderTarget2D paper = GetPaperTarget();
-                if (paper != null) {
-                    graphicsDevice.SetRenderTarget(paper);
-                    graphicsDevice.Clear(Color.Transparent);
-                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-                    spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-                    spriteBatch.End();
-                    graphicsDevice.SetRenderTarget(Main.screenTarget);
-                    odp.PaperValid = true;
+                if (odp.PendingPaperCapture) {
+                    RenderTarget2D paper = GetPaperTarget();
+                    if (paper != null) {
+                        graphicsDevice.SetRenderTarget(paper);
+                        graphicsDevice.Clear(Color.Transparent);
+                        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                        spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                        spriteBatch.End();
+                        graphicsDevice.SetRenderTarget(Main.screenTarget);
+                        odp.PaperValid = true;
+                    }
+                    odp.PendingPaperCapture = false;
                 }
-                odp.PendingPaperCapture = false;
-            }
 
-            //纸层剥落
+                //纸层剥落
 
-            if (odp.Phase == OniDomainPhase.Flipping && odp.FlipStage == OniFlipStage.Peel && odp.PaperValid) {
-                DrawPaperPeel(spriteBatch, graphicsDevice, odp);
-            }
+                if (odp.Phase == OniDomainPhase.Flipping && odp.FlipStage == OniFlipStage.Peel && odp.PaperValid) {
+                    DrawPaperPeel(spriteBatch, graphicsDevice, odp);
+                }
+            } finally {
+                //还原 RT 绑定
 
-            //还原 RT 绑定
-
-            if (previousTargets != null && previousTargets.Length > 0
-                && previousTargets[0].RenderTarget != Main.screenTarget) {
-                graphicsDevice.SetRenderTargets(previousTargets);
+                if (previousTargets != null && previousTargets.Length > 0
+                    && previousTargets[0].RenderTarget != Main.screenTarget) {
+                    graphicsDevice.SetRenderTargets(previousTargets);
+                }
             }
         }
 

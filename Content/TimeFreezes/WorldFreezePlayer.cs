@@ -39,6 +39,14 @@ namespace CalamityOverhaul.Content.TimeFreezes
         private float frozenLifeRegenTime;
         private int frozenStatMana;
         private float frozenManaRegenDelay;
+        //面板上限快照:冻结跳过 UpdateEquips 后 ResetEffects 清空无人回填,
+        //血魔上限视觉回落、maxMinions 塌缩连带随从被清(反馈四·#18/#36)
+        private int frozenStatLifeMax2;
+        private int frozenStatManaMax2;
+        private int frozenMaxMinions;
+        private int frozenMaxTurrets;
+        //跳跃进度快照:冻结期按住跳跃松手,原版会把 jump 清零截断跳弧
+        private int frozenJump;
         //buff 时长快照
         private int[] frozenBuffTime;
         private int[] frozenBuffType;
@@ -49,6 +57,12 @@ namespace CalamityOverhaul.Content.TimeFreezes
         private bool snapshotInventoryOpen;
         //手持栏快照
         private int frozenSelectedItem;
+
+        /// <summary>
+        /// 冻结期的"静止"速度:竖向留极小残量而不是正零。原版把"竖速恰为零"当落地,
+        /// 逐帧刷新起跳许可/二段跳/飞行时间——开关冻结（转盘/翻转）就能无限重置跳跃(反馈八·#124)
+        /// </summary>
+        private static readonly Vector2 FrozenRestVelocity = new(0f, 0.0001f);
 
         /// <summary>
         /// 教程等外部系统在冻结期间改选手持时同步快照,
@@ -150,6 +164,11 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 frozenLifeRegenTime = Player.lifeRegenTime;
                 frozenStatMana = Player.statMana;
                 frozenManaRegenDelay = Player.manaRegenDelay;
+                frozenStatLifeMax2 = Player.statLifeMax2;
+                frozenStatManaMax2 = Player.statManaMax2;
+                frozenMaxMinions = Player.maxMinions;
+                frozenMaxTurrets = Player.maxTurrets;
+                frozenJump = Player.jump;
                 frozenBuffTime ??= new int[Player.MaxBuffs];
                 frozenBuffType ??= new int[Player.MaxBuffs];
                 Array.Copy(Player.buffTime, frozenBuffTime, Player.MaxBuffs);
@@ -162,7 +181,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
 
             Player.position = frozenPosition;
-            Player.velocity = Vector2.Zero;
+            Player.velocity = FrozenRestVelocity;
             Player.direction = frozenDirection;
             //防解冻摔伤
             Player.fallStart = (int)(Player.position.Y / 16f);
@@ -191,7 +210,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (!WorldFreezeSystem.IsActive || !positionCaptured) return;
             //PostUpdate 再锁，防他处改位向
             Player.position = frozenPosition;
-            Player.velocity = Vector2.Zero;
+            Player.velocity = FrozenRestVelocity;
             Player.direction = frozenDirection;
             Player.selectedItem = frozenSelectedItem;
             //还原冷却计时
@@ -207,6 +226,12 @@ namespace CalamityOverhaul.Content.TimeFreezes
             //还原怒气/肾上腺素
             CWRRef.RestoreRippers(Player, frozenRage, frozenAdrenaline
                 , frozenRageGainCooldown, frozenRageCombatFrames, frozenAdrenalinePauseTimer);
+            //面板上限写回:ResetEffects 清空、UpdateEquips 被冻结跳过,没人回填就露出裸面板
+            Player.statLifeMax2 = frozenStatLifeMax2;
+            Player.statManaMax2 = frozenStatManaMax2;
+            Player.maxMinions = frozenMaxMinions;
+            Player.maxTurrets = frozenMaxTurrets;
+            Player.jump = frozenJump;
             //阻 HP/魔力自然回
             Player.statLife = frozenStatLife;
             Player.lifeRegenTime = frozenLifeRegenTime;

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
@@ -68,8 +69,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         /// <summary>持伞判定的稳定帧，滚轮扫过鬼伞不触发</summary>
         private const int HoldStableFrames = 6;
 
-        /// <summary>湖面之上的竖直可达带，与手臂解算臂展预算对齐；更高的等它落下来</summary>
+        /// <summary>湖面之上的竖直可达带基准，与手臂解算臂展预算对齐；更高的等它落下来。
+        /// 玩家高于水线时经 <see cref="ReachAboveFor"/> 动态放宽（反馈三·#28）</summary>
         internal const float MaxReachAboveLake = 900f;
+
+        /// <summary>洗礼可及带：玩家高于水线多少，带就抬多少，硬顶与沉溺共用（反馈三·#28 拍板）</summary>
+        internal static float ReachAboveFor(Player owner, float lakeY) {
+            float rise = lakeY - owner.Center.Y;
+            return MathHelper.Clamp(MaxReachAboveLake + MathF.Max(rise, 0f),
+                MaxReachAboveLake, KikasaDrown.MaxGrabHeightHardCap);
+        }
 
         /// <summary>停泊深度基准（湖面之下）</summary>
         private const float ParkDepth = 64f;
@@ -127,6 +136,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         /// <summary>时停租约源标记（静态类不能当泛型实参）</summary>
         internal sealed class LakeGripSource { }
 
+        /// <summary>该玩家是否有同类召唤物正被湖押着（拖入途中或停泊待吐）；
+        /// 在押视为在编，供再召唤闸门查询（反馈三·#14）</summary>
+        internal static bool IsTypeInCustody(int ownerWho, int projType) {
+            if (ownerWho < 0 || ownerWho >= owners.Length || projType <= 0) {
+                return false;
+            }
+            OwnerState state = owners[ownerWho];
+            if (state == null) {
+                return false;
+            }
+            if (state.Wave != null) {
+                foreach (HeldEntry entry in state.Wave.Entries) {
+                    if (!entry.Dropped && entry.ProjType == projType) {
+                        return true;
+                    }
+                }
+            }
+            foreach (HeldEntry entry in state.Parked) {
+                if (!entry.Dropped && entry.ProjType == projType) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         //鬼伞家系判定按类型缓存，命名空间字符串检查只跑一次
         private static readonly Dictionary<int, bool> familyCache = [];
         private static readonly List<Projectile> scanBuffer = [];
@@ -174,11 +208,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 if (state.WaveDelay > 0) {
                     state.WaveDelay--;
                 }
-                //新波门槛与湖藏 LakeReady 同口径：Open 稳态满水；全局时停里手不出水
+                //新波门槛走统一受理门（与湖藏 LakeReady 同口径，梦过场以画面切换帧为界）；
+                //全局时停里手不出水
                 else if (state.Wave == null
                     && state.HoldStable >= HoldStableFrames
-                    && domain.Phase == KikasaDomainPhase.Open
-                    && domain.RiseT >= 0.999f
+                    && domain.LakeAbilityReady
                     && !WorldFreezeSystem.IsActive) {
                     TryStartWave(state, player, domain);
                 }
@@ -228,7 +262,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             if (IsKikasaFamily(proj)) {
                 return false;
             }
-            return proj.Center.Y >= lakeY - MaxReachAboveLake
+            return proj.Center.Y >= lakeY - ReachAboveFor(Main.player[ownerWho], lakeY)
                 && proj.Center.Y <= lakeY + KikasaDrown.MaxGrabDepth;
         }
 
@@ -609,6 +643,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             if (BloodLakeTime > 0) {
                 //浸血外观：向血湖色板压染，鬼雨异化随观看域冷化
                 lightColor = Color.Lerp(lightColor, BloodTint, 0.32f * BloodFade);
+            }
+            return true;
+        }
+    }
+
+    /// <summary>在押期间禁同类再召：拖入/停泊中的召唤物视为在编，堵住半秒复制窗口（反馈三·#14 拍板）</summary>
+    internal sealed class KikasaMinionCustodyGuard : GlobalItem
+    {
+        public override bool CanUseItem(Item item, Player player) {
+            if (item.shoot > 0
+                && ContentSamples.ProjectilesByType.TryGetValue(item.shoot, out Projectile sample)
+                && (sample.minion || sample.sentry)
+                && KikasaMinionDrown.IsTypeInCustody(player.whoAmI, item.shoot)) {
+                return false;
             }
             return true;
         }

@@ -32,8 +32,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         DuplicateIdentity = 8,
     }
 
-    /// <summary>鬼切改铭字段的物品级权威同步。</summary>
-    internal static class OnikiriNet
+    /// <summary>鬼切改铭字段的物品级权威同步，类本身即信道。</summary>
+    internal class OnikiriNet : CWRNetChannel
     {
         private const ushort NoDefinition = ushort.MaxValue;
         private const int MaxPendingOperations = 64;
@@ -77,11 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             authoritativeEdits = [];
         private static ushort nextRequestId;
 
-        public static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type != CWRMessageType.OnikiriItemOperation) {
-                return;
-            }
-
+        public override void Receive(BinaryReader reader, int whoAmI) {
             OnikiriNetOp op = (OnikiriNetOp)reader.ReadByte();
             if (Main.netMode == NetmodeID.Server) {
                 switch (op) {
@@ -348,8 +344,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         private static ModPacket NewPacket(OnikiriNetOp op) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.OnikiriItemOperation);
+            ModPacket packet = CWRNetWork.GetPacket<OnikiriNet>();
             packet.Write((byte)op);
             return packet;
         }

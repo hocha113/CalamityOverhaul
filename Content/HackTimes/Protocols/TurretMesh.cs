@@ -20,6 +20,12 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// </summary>
     internal class TurretMesh : QuickHackDef
     {
+        /// <summary>炮台联网的齐射瞄准上行信道：施法者客户端慢节拍上行光标</summary>
+        internal sealed class TurretMeshAimNet : CWRNetChannel
+        {
+            public override void Receive(BinaryReader reader, int whoAmI) => HandleAim(reader, whoAmI);
+        }
+
         //持续十五秒
         private const int DurationFrames = 900;
         //共享总弹池
@@ -140,8 +146,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             if (!float.IsFinite(aim.X) || !float.IsFinite(aim.Y)) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.TurretMeshAim);
+            ModPacket packet = CWRNetWork.GetPacket<TurretMeshAimNet>();
             rootKey.Write(packet);
             packet.Write(aim.X);
             packet.Write(aim.Y);

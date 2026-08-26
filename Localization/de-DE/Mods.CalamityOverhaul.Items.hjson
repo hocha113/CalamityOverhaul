@@ -877,6 +877,16 @@ HandmadeDoll: {
 		'''
 }
 
+ScapegoatDoll: {
+	// DisplayName: Scapegoat Doll
+	/* Tooltip:
+		'''
+		While in your inventory, blocks one death in your place
+		The doll shatters and is lost after taking the blow
+		''' */
+	// ShatterText: The scapegoat doll shattered
+}
+
 Snowblindness: {
 	DisplayName: Schneeblindheit
 	Tooltip:
@@ -2157,9 +2167,13 @@ Pandemonium: {
 		'''
 		Linksklick aufladen und Transzendente Magie freisetzen
 		Rechtsklick wirkt Schwefelbrand-Rune am Cursor
-		[PandemoniumQSkill] drücken für Schwefelbrand-Himmelsstrafe
-		[PandemoniumRSkill] drücken für Ende aller Dämonen
+		In der Hand leuchten unten links am Bildschirm zwei Fertigkeitsknöpfe auf
+		Anklicken für Schwefelbrand-Himmelsstrafe oder Ende aller Dämonen
 		'''
+	SkillLeftName: Schwefelbrand-Himmelsstrafe
+	SkillLeftDesc: Lässt um den Cursor ein Feld aus Schwefelfeuersäulen niedergehen
+	SkillRightName: Ende aller Dämonen
+	SkillRightDesc: Entfaltet einen riesigen Magiekreis um dich, der Gegner darin mit Blitz und Feuer bombardiert
 }
 
 Proverbs: {
@@ -2276,9 +2290,13 @@ AriaofTheCosmos: {
 		'''
 		Linksklick gedrückt halten, um einen mächtigen Quasar zu formen; bei Loslassen verheerender Schaden an Gegnern
 		Rechtsklick setzt ein Miniatur-Schwarzes Loch frei, das nach der Formung eine Salve Gammastrahlen abfeuert
-		[AriaofTheCosmosQSkill] drücken, um einen Sternenring-Wächter zu beschwören
-		[AriaofTheCosmosRSkill] drücken, um einen Gammastrahlen-Ausbruch zu erzeugen
+		In der Hand leuchten unten links am Bildschirm zwei Fertigkeitsknöpfe auf
+		Anklicken, um einen Sternenring-Wächter zu beschwören oder einen Gammastrahlen-Ausbruch auszulösen
 		'''
+	SkillLeftName: Sternenring-Wächter
+	SkillLeftDesc: Beschwört einen kreisenden Sternenring, dessen Knoten Sternenstaub auf nahe Gegner schleudern
+	SkillRightName: Gammastrahlen-Ausbruch
+	SkillRightDesc: Feuert nach kurzem Aufladen neun Gammastrahlen fächerförmig Richtung Cursor
 }
 
 Oceanfragments: {

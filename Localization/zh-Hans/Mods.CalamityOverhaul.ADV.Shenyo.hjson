@@ -1,4 +1,4 @@
-FirstMetShenyo: {
+﻿FirstMetShenyo: {
 	ShenyoName: 沈幽
 	L1: 很久没看到有活人来了
 	L2: 你是怎么到这里来的？
@@ -12,6 +12,13 @@ FirstMetShenyo: {
 	B2: 现在该出去了
 	C1: 雨会替你把路撑开，回去吧
 	C2: 那把伞往后就是你的了
+}
+
+ShenyoDollGift: {
+	L0: 我想起有个东西值得给你
+	L1: 这个娃娃揣好后可以救你一命
+	L2: 缝制这个东西的人是个傻姑娘，给喜欢的人做了一大堆，但那个人根本不可能用得上
+	L3: 我当年和她换了不少，拿来当礼物送小辈
 }
 
 ShenyoAquaticScourgeGift: {

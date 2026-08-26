@@ -1,4 +1,5 @@
 OldNetTurretBolt.DisplayName: 哨戒弹
+OldNetWardenGlyphBolt.DisplayName: 处决字形
 RebelBladeFlyAttcke.DisplayName: 叛逆之刃
 RebelBladeOrb.DisplayName: 恶魔光球
 RebelBladeBack.DisplayName: 叛逆之刃
@@ -652,3 +653,4 @@ EverdeepMaelstrom.DisplayName: 渊涡水龙卷
 // CultistMoonBeam.DisplayName: Cultist Moon Beam
 // CultistPlanetProj.DisplayName: Cultist Planet Proj
 // CultistStarFall.DisplayName: Cultist Star Fall
+// ScapegoatDollWalker.DisplayName: Scapegoat Doll Walker

@@ -1,0 +1,143 @@
+AbyssQuestLine: {
+	QuestCategory: Alter Herzog
+	CampsiteTitle: Der Abgrund ruft
+	CampsiteSummary: Finde und sprich mit dem Alten Herzog
+	CampsiteObjective: Ziel
+	CampsiteLocation: Gehe zum Lager des Alten Herzogs
+	CampsiteDistance: Entfernung
+	CampsiteInteract: Sprich mit dem Alten Herzog
+	CampsiteComplete: Quest abgeschlossen!
+	CampsiteHoldHint: Halte Ozeanfragmente um die Richtung zu sehen
+	FragmentTitle: Der Abgrund ruft
+	FragmentSummary: Sammle 777 Ozeanfragmente
+	FragmentObjective: Ziel
+	FragmentCollect: Sammle Ozeanfragmente
+	FragmentCurrent: Aktuell besessen
+	FragmentReturn: Kehre zum Lager zurück
+	FragmentComplete: Quest abgeschlossen!
+	FragmentHint: Fische oder jage Ozeankreaturen
+}
+
+FirstMetOldDuke: {
+	OldDukeName: Alter Herzog
+	L0: ......
+	L1: Steck deine Blutgier weg, Junge. Beim ersten Treffen braucht es kein gezücktes Schwert.
+	L2: Ich bin alt. Diese gewalttätigen Spiele habe ich satt.
+	L3: Wir können zusammenarbeiten.
+	L4: Ich sammle etwas Besonderes: Ozeanfragmente.
+	L5: Bringst du mir mehr, wird es sich für dich lohnen.
+	L6: Hier eine Probe.
+	B1: Hast du es dir anders überlegt?
+	B2: Dann leb wohl.
+	HL1: Der alte Professor …? Er scheint mich allerdings nicht zu erkennen.
+	HL2: Seine Worte sind glaubwürdig. Wir waren Kollegen an der Schwefelmeer-Universität. Er ist ein Titan der Meeresarchäologie.
+	C1: Zusammenarbeit annehmen
+	C2: Zusammenarbeit ablehnen
+	C3: Ablehnen und Waffe ziehen
+	C1Response: Ausgezeichnet. Ich hoffe auf eine angenehme Partnerschaft.
+	C2Response: …Dann nehme ich Abschied. Wenn du es dir anders überlegst, bist du willkommen.
+	C3Response: …Du bestehst also darauf. Dann lasse mich deinen Wert abwägen.
+}
+
+OldDukeCampsite: {
+	OldDukeWanderingActor.InteractHint: "[Rechtsklick] Sprechen"
+	OldDukeCampsite.TitleText: Lager des Alten Herzogs
+}
+
+CampsiteInteractionDialogue: {
+	GreetingLine: Was brauchst du?
+	Choice1Text: Ich bin zum Handeln hier.
+	Choice2Text: Ich habe, was du wolltest.
+	Choice3Text: Ich streife nur herum.
+	Choice4Text: Ich will mit dir kämpfen.
+	Choice5Text: Erzähl mir von deiner Vergangenheit.
+	Choice2DisabledHint: Nicht genug Ozeanfragmente
+	Choice1Response: Sieh, was ich hier habe.
+	Choice2Response: Gut. Diese Fragmente reichen. Das ist deine verdiente Belohnung.
+	Choice3Response: ......
+	QuestCompleteLine: Hm … hast du neue Funde? Ich bin gerade sehr beschäftigt.
+	B1: Die nächsten Tage decodiere ich diese Fragmente. Ich melde mich, wenn ich fertig bin.
+	Choice4_R1: Ich bin alt, aber die Künste meiner Jugend habe ich nicht verlernt.
+	Choice4_R2: Dann sehen wir, ob du dich verbessert hast.
+	Choice4_R3: Mich als Wetzstein zu nutzen ist nicht klug …
+
+	CampsiteChatDialogue: {
+		GreetingLine: Willst du plaudern?
+		Choice_BackToMain: Thema wechseln
+		Choice_EndConversation: Das war's
+		Choice_PastStory: Über deinen jetzigen Zustand
+		Choice_Research: Was setzt du zusammen?
+		Choice_SulfurSeaHistory: Die Wahrheit über dieses Meer
+		Choice_AboutFragments: Über diese Fragmente
+		Choice_PersonalLife: Du siehst nicht gut aus
+		Choice_Farewell: Auf Wiedersehen
+		Past_Intro: Das ist eine absichtlich ausgelöschte Vergangenheit. Oder es kennen sie nur noch wenige Fische.
+		Past_University: Damals waren wir arrogant und glaubten, die Welt mit einem Maßstab messen zu können – bis wir am Abgrundboden etwas … Unlogisches ausgruben.
+		Past_Prime: Dieses Ding ließ sich weder töten noch vernichten. Es war kein Lebewesen.
+		Past_Accident: Bei jenem Vorfall gab es keine Überlebenden. Als mich jene Kälte assimilierte, traf ich eine wahnhafte Entscheidung.
+		Past_Mutation: Da es kein Entkommen gab, schloss ich mich an. Ich zwang es in meinen Körper. Seitdem lebe ich nicht wirklich und kann auch nicht sterben.
+		Past_Exile: So ist es gut. Dieser Körper ist stark genug, dieses Meer zu bändigen.
+		Past_Reflection: Ich will nur dieses Meer bewachen. Kriechen jene Dinge aus dem Abgrund, riskiere ich völlige Wiederkehr und Tod, um sie aufzuhalten.
+		Research_Intro: Ich versuche, eine Geschichte zu rekonstruieren – oder eine verlorene Erfahrungsform zurückzugewinnen.
+		Research_CurrentWork: An diesen Fragmenten haften Erinnerungen der Vergangenheit. Sie zeigen, wie jene alte Zivilisation in der Not einen Überlebensweg suchte.
+		Research_Breakthrough: Gegen solchen Schrecken hilft rohe Gewalt nicht. Man muss ihre ‚Jagdregeln‘ finden und ausnutzen.
+		Research_Difficulties: Doch das Entziffern ist gefährlich. Die Fragmente sind selbst Medien. Starrt man zu lange, hört man vielleicht Geräusche, die man nicht hören sollte.
+		Research_Theory: Kann ich alle Stücke zusammenfügen, finde ich vielleicht einen Weg, die Abgrundquelle dauerhaft zu versiegeln.
+		Choice_Research_Details: Was meinst du mit ‚Jagdregeln‘?
+		Choice_Research_Help: Was soll ich tun?
+		Choice_Research_Back: Klingt verrückt
+		Research_Details1: Manches darf man nicht ansehen, manche Namen nicht aussprechen. Wird ein Medium ausgelöst, ist der Tod unvermeidlich. Jene Zivilisation band Götter mit Regeln.
+		Research_Details2: Sie bauten sogar riesige Behälter, um jene Dinge einzusperren. Leider undichten die Behälter.
+		Research_Help: Hilf mir, mehr Fragmente zu finden. Der Rest meines Lebens gehört dieser Forschung.
+		History_Intro: Das Schwefelmeer ist nur Fassade. Das ist der Rückstand nach der Eindringung jenes Reichs.
+		History_Origin: Einst war dies das Saphirmeer, bis die Quelle außer Kontrolle geriet.
+		History_Civilization: Jene alte Zivilisation war mächtig. Sie nutzten jene unheimliche Kraft und bauten Städte – wie Tanzen auf einem Pulverfass.
+		History_Cataclysm: Natürlich brach das Gleichgewicht. Ein Schrecken erwachte, und alles Leben wurde im Augenblick ausgelöscht – Teil dieser Totenstille.
+		History_Ruins: Was du siehst, ist nur der Rückstand jenes Ereignisses. Das Wasser verfärbte sich, weil es starb. Völlig starb.
+		History_Warning: Siehst du Tote winken oder hörst vertraute Rufe … denk daran: Das ist nur dieses Leichenmeer, das Lebende nachahmt.
+		Choice_History_MoreRuins: Wo ist es am gefährlichsten?
+		Choice_History_Dangers: Gibt es Gegenmaßnahmen?
+		Choice_History_Back: Beunruhigend
+		History_MoreRuins1: Ganz unten in diesem Leichenmeer. Dort ist eine Tür. Klopf nicht an. Was hinter ihr liegt, sollte am besten für immer darin verrotten.
+		History_MoreRuins2: In den versunkenen Ruinen gibt es noch ungeöffnete Räume. Geheime Kammern aus schwerem Spezialmetall, um die Wahrnehmung jener Dinge abzuschneiden.
+		History_Dangers1: Neben mutierten Untoten: Hüte dich vor dem Unsichtbaren. Manchmal ist der tödliche Schlag unsichtbar.
+		History_Dangers2: Vertrau deinen Augen nicht. Antworte nicht auf unerklärliche Rufe. In diesem Leichenmeer sind Lebende die Anomalie.
+		Fragments_Intro: Ozeanfragmente … in meinen Augen blutbefleckte Archive.
+		Fragments_Nature: Sie sind Rückstände eines Phänomens. Wie komprimierte Flüche.
+		Fragments_Power: Jedes Fragment ist ein ‚Medium‘. Allein harmlos – genug davon erzeugen eine Kollision unheimlicher Kräfte.
+		Fragments_Collection: Sie liegen überall im toten Meer verstreut – manche unter Ruinen, manche im Fleisch von Kreaturen gewachsen.
+		Fragments_Purpose: Ich setze sie noch zusammen, um die Quelle jener Katastrophe zu rekonstruieren. Nur wenn ich verstehe, wie es tötete, finde ich einen Weg der Einkerkerung.
+		Personal_Intro: So halte ich mich über Wasser.
+		Personal_Daily: Meist schlafe ich, um Schwankungen meines Bewusstseins zu dämpfen. Werden die Gedanken zu heftig, wird das Ding in mir … unruhig.
+		Personal_Loneliness: Einsamkeit ist gut. Wird es hier zu lebhaft, sind ‚sie‘ gekommen. Ich bin ein einsamer Fisch – sicherer für mich und die Welt.
+		Personal_Memories: Meine Erinnerungen sind verschwommen. Manchmal weiß ich nicht, was meins ist und was … Erinnerungen anderer in diesem Körper.
+		Personal_Hope: Dich zu sehen erinnert mich an mich damals. Unwissend und furchtlos. Ich hoffe, du wirst nicht wie ich und wandelst dich in diese Gestalt.
+		Choice_Personal_Tea: Was trinkst du?
+		Choice_Personal_Past: Bist du noch … ein Fisch?
+		Choice_Personal_Back: Pass auf dich auf
+		Personal_Tea1: Gebrüht aus mehreren Spezialpflanzen im Abgrund. Der Geschmack … wie faulender Schlamm.
+		Personal_Tea2: Willst du eine Tasse? Sie beruhigt dich wie ein toter Fisch.
+		Personal_Past1: Wer weiß? Vielleicht ist mein wahres Ich längst gestorben, und was jetzt hier ist, ist nur … etwas anderes mit seinen Erinnerungen.
+		Personal_Past2: Doch ich erinnere mich noch an Sonnenlicht im Gesicht, an Bücher in der Hand. Solange ich das kann, halte ich mich für lebendig.
+		Personal_Past3: Ohne jenen Unfall läge ich wohl friedlich im Grab – statt so zu sein, dass selbst Sterben wollen unmöglich ist.
+		Farewell_Normal: Damit genug. Komm, wenn du etwas brauchst.
+		Farewell_Friendly: Vorsicht, Junge. In dieser Welt ist ein friedliches Ende ein Luxus.
+	}
+}
+
+FirstCampsiteDialogue: {
+	L0: Du bist da.
+	L1: Ich sammle diese Fragmente schon seit Jahren.
+	L2: Sie sind … seltsam. Nicht wie natürliche Evolution, eher wie Fremdkörper, die in diese Welt ‚eindrangen‘.
+	L3: Ich hoffe, du verstehst. Meine Intuition sagt: Sie sollten formlos sein und wählten nur eine Form, die Terrarianer begreifen können.
+	L4: Jedenfalls … will ich sie entziffern, habe aber nicht genug.
+	L5: Hilf mir, genug Ozeanfragmente zu sammeln.
+	L6: Ich werde dich angemessen entlohnen.
+}
+
+ComeCampsiteFindMe: {
+	B1: …Komm auf eine Tasse Tee vorbei, wenn du Zeit hast.
+	C1: Ich habe Geschäftliches mit dir.
+	C2: Ich wollte nur zum Spaß angeln …
+	B1_NO: Komm zuerst zu mir. Lerne den Weg.
+}

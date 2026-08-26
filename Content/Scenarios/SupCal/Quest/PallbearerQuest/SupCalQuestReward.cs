@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.PallbearerQuest
     /// <summary>完成扶柩者任务后的奖励场景</summary>
     internal sealed class SupCalQuestReward : NarrativeScenario, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.SupCal";
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }

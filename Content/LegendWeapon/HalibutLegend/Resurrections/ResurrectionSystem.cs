@@ -6,6 +6,12 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 {
+    /// <summary>复苏速度同步信道</summary>
+    internal sealed class ResurrectionRateNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => ResurrectionSystem.HandleResurrectionRate(reader, whoAmI);
+    }
+
     public class ResurrectionSystem
     {
         #region 核心数据
@@ -168,8 +174,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             if (VaultUtils.isSinglePlayer) {
                 return;
             }
-            ModPacket modPacket = CWRMod.Instance.GetPacket();
-            modPacket.Write((byte)CWRMessageType.ResurrectionRate);
+            ModPacket modPacket = CWRNetWork.GetPacket<ResurrectionRateNet>();
             modPacket.Write((byte)whoAmI);
             modPacket.Write(value);
             modPacket.Send();
@@ -195,8 +200,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 return;
             }
             //服务器转发给其他客户端（排除发送者）
-            ModPacket modPacket = CWRMod.Instance.GetPacket();
-            modPacket.Write((byte)CWRMessageType.ResurrectionRate);
+            ModPacket modPacket = CWRNetWork.GetPacket<ResurrectionRateNet>();
             modPacket.Write((byte)playerIndex);
             modPacket.Write(value);
             modPacket.Send(-1, senderWhoAmI);

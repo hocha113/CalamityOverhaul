@@ -158,6 +158,11 @@ namespace CalamityOverhaul.Content.RAMSystems
             if (Main.netMode == NetmodeID.MultiplayerClient || !ProfileInitialized) {
                 return;
             }
+            //时停期间不回复不倒数:骇客时间/转盘/翻转的冻结里白嫖 RAM 恢复(反馈十二·#88)。
+            //两个旗都是本机量、服务器恒为假,联机权威节拍不受影响
+            if (HackTimes.HackTime.Active || TimeFreezes.TimeGear.TimeScale <= 0f) {
+                return;
+            }
             UpdateAuthorityState();
             FlushDirtySnapshot();
         }

@@ -104,3 +104,8 @@ CybTrainingDummy.DisplayName: 全息训练标靶
 OldNetPatrolICE.DisplayName: 巡逻ICE
 OldNetBlackICE.DisplayName: 黑冰猎杀者
 OldNetTurretICE.DisplayName: 哨戒炮塔ICE
+OldNetSweepEye.DisplayName: 扫描哨眼
+OldNetLurkerICE.DisplayName: 缢影ICE
+OldNetTaggerICE.DisplayName: 灯蛾标记体
+OldNetTracerICE.DisplayName: 循迹猎犬
+OldNetWardenICE.DisplayName: 回收官

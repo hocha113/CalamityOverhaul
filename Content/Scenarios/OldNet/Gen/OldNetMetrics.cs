@@ -231,6 +231,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
         internal const int NodeEventCount = 2;
         //结构内普通节点上限（房间/prefab/桅杆顶/方舱共享配额，建造期机会性放置）
         //本轮结构扩容后上调：方舟/冷却塔/尖塔/掩体新增约 10 个机会性槽位
+        //P1 新增消费点 4 个：金库 p 槽 1（配额耗尽时直写兜底并入账，见 Z2Prefabs.VaultLegend）
+        //+ 坠亡巨物腔内 3（肋腔 1~2 + 头颅核心 1，见 Z3Giant）
         internal const int NodeUnderPlainCount = 32;
         //衰减区地表加密节点（高险高值）
         internal const int NodeFadeEncryptCount = 6;
@@ -307,6 +309,325 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen
         internal const int ScorchedSpireGroupCount = 3;
         //坍塌掩体：半埋的破壳避难所，藏加密节点
         internal const int CollapsedBunkerCount = 2;
+
+        //════════════════ 02 交互经济常量区（P2：扩容坞/冷存储/保险契约/破译矩阵） ════════════════
+
+        //──── 账本扩容坞 ────
+        //一次性容量加成与噪音价签：15 噪 vs 中继 25 噪 + 折返路费，定价教学件
+        internal const int LedgerDockBonus = 8;
+        internal const float LedgerDockNoise = 15f;
+        //撒布：废墟带 1 + 衰减区 1（两段各一）
+
+        //──── 冷存储节点 ────
+        //RAM 换碎片的无声节点：产出 (1-3)×ColdShardMul，连 AddNoise 都不调
+        internal const float ColdNodeRamCost = 2f;
+        internal const int ColdShardMul = 2;
+        internal const int ColdNodeCount = 6;
+        //撒布左界：废墟带深段起（RAM 底噪最贵的地方价签才有分量）
+        internal const int ColdNodeMinCol = 1100;
+
+        //──── 保险契约终端 ────
+        //保费比例（对 PendingTotal 向上取整）与投保上行噪音
+        internal const float EscrowPremium = 0.3f;
+        internal const float EscrowNoise = 10f;
+        internal const int EscrowCount = 2;
+
+        //──── 主控破译矩阵（旗舰：每关翻倍的弃留梯子） ────
+        //开台 RAM 座位费；人已在深层，门票之上的第二道价
+        internal const float VaultRamCost = 3f;
+        //面板开启期每秒噪音（上行链路激活，走 AddNoise 吃时停系数）
+        internal const float VaultNoisePerSecond = 2f;
+        //每关过关机械音 / 爆仓噪音
+        internal const float VaultStageNoise = 3f;
+        internal const float VaultBustNoise = 15f;
+        //扫描指针角速度（度/秒），逐关反向
+        internal const float VaultCursorDegPerSec = 220f;
+        //五关闸弧宽度表（度）：S5 ≈ 5-6 帧判定窗
+        internal static readonly float[] VaultArcDeg = [96f, 72f, 52f, 34f, 20f];
+        //五关彩池碎片增量（S4/S5 的模块实体与 RAM 芯片另行掉落，不走账本）
+        internal static readonly int[] VaultPotShards = [4, 6, 8, 0, 0];
+
+        //════════════════ 03 扩展敌人常量区（猎杀敌人包：缢影/灯蛾/循迹猎犬/回收官）════════════════
+
+        //──── 缢影 ICE（垂落伏击者，一次性布防）────
+        //布防量与房间顶挂载概率（主源房间顶，备选露天悬垂面）
+        internal const int LurkerCount = 10;
+        internal const float LurkerRoomChance = 0.35f;
+        //悬垂面探测：实心上方 + 至少该行数空气下方
+        internal const int LurkerOverhangAirRows = 8;
+        //吊点最小横向间距（列）
+        internal const int LurkerSpacingCols = 20;
+        internal const int LurkerLife = 400;
+        internal const int LurkerDefense = 8;
+        //俯冲接触伤（唯一伤害窗）+ 咬合 RAM
+        internal const int LurkerContactDamage = 25;
+        internal const float LurkerBiteRam = 3f;
+        //猎杀漏斗：水平半宽 / 向下深度（px）；触发另要求玩家速度 ≥ PatrolSneakSpeedGate
+        internal const float LurkerFunnelHalfWidth = 80f;
+        internal const float LurkerFunnelDepth = 220f;
+        //颤抖前摇 / 俯冲速度 / 最大坠程 / 俯冲硬超时 / 回卷速度 / 回卷兜底 / 再触发冷却
+        internal const int LurkerArmTicks = 12;
+        internal const float LurkerDropSpeed = 14f;
+        internal const float LurkerDropMaxDist = 240f;
+        //满坠程 240px÷14px/f≈17t，40t 封顶：任何卡位都收进回卷
+        internal const int LurkerDropTimeoutTicks = 40;
+        internal const float LurkerReelSpeed = 1.2f;
+        internal const int LurkerReelTimeoutTicks = 480;
+        internal const int LurkerCooldownTicks = 300;
+        //本体悬于丝根下方的垂距（px）
+        internal const float LurkerHangOffset = 22f;
+        //击杀噪音（伏击者不报信，代价低于巡逻）
+        internal const float NoiseLurkerKill = 8f;
+
+        //──── 灯蛾标记体（T1 标记者，热度锁）────
+        //附着噪音 ping：间隔须低于 NoiseQuietDelayTicks(150)，兑现"在场时噪音无法自然消散"；
+        //规划稿 240t/+2 平均速率不变（+0.5/s），改细分节拍以真正锁死衰减
+        internal const int TaggerPingTicks = 120;
+        internal const float TaggerPingNoise = 1f;
+        internal const float TaggerApproachSpeed = 6f;
+        //进入附着的距离 / 环绕轨道半径带
+        internal const float TaggerAttachRange = 200f;
+        internal const float TaggerOrbitMid = 160f;
+        internal const float TaggerOrbitSway = 40f;
+        //持械面向且近于此距离 → 折线规避
+        internal const float TaggerThreatRange = 300f;
+        internal const int TaggerSkitterTicks = 24;
+        //断附着：断视线且超此距离持续此时长
+        internal const float TaggerDetachRange = 700f;
+        internal const int TaggerDetachTicks = 300;
+        //重索敌失败离场
+        internal const int TaggerReseekTicks = 300;
+        //T2+ 维持场上 ≥1 的阵亡补员冷却
+        internal const int TaggerRespawnTicks = 45 * 60;
+        internal const float NoiseTaggerKill = 4f;
+
+        //──── 循迹猎犬（T1 循迹者：追脚印不追人）────
+        internal const int TracerLife = 800;
+        internal const int TracerDefense = 16;
+        internal const float TracerTrackSpeed = 5.5f;
+        //足迹环形缓冲：容量 × 采样间隔 = 12s 记忆
+        internal const int TracerTrailCap = 48;
+        internal const int TracerSampleTicks = 15;
+        //相邻采样点低于此距离跳过（防抖）
+        internal const float TracerPointSkipDist = 24f;
+        //新采样点与旧段低于此距离 = 路径自交（回踩反制）
+        internal const float TracerCrossDist = 32f;
+        internal const int TracerConfusedTicks = 90;
+        //嚎叫：触发距离（+通视）/ 充能时长 / 打断累伤 / 甩脱距离 / 硬直 / 成功噪音 / 冷却
+        internal const float TracerHowlRange = 260f;
+        internal const int TracerHowlTicks = 90;
+        internal const int TracerHowlInterruptDamage = 120;
+        internal const float TracerHowlBreakRange = 500f;
+        internal const int TracerStaggerTicks = 60;
+        internal const float TracerHowlNoise = 18f;
+        internal const int TracerHowlCooldownTicks = 300;
+        //失锚嗅探：时长 / 重获半径（缓冲点落入该半径即重上线索）
+        internal const int TracerSniffTicks = 180;
+        internal const float TracerReacquireRange = 400f;
+        //入场：T1 跃迁后延迟（灯蛾先到犬后至）/ 空投在玩家西侧的距离 / 落地嗅探演出
+        internal const int TracerSpawnDelayTicks = 30 * 60;
+        internal const float TracerSpawnWestPx = 600f;
+        internal const int TracerCastTicks = 40;
+        //T2+ 阵亡补员冷却
+        internal const int TracerRespawnTicks = 60 * 60;
+        internal const float NoiseTracerKill = 10f;
+
+        //──── 回收官（T4 升格小 Boss：收束处决）────
+        //清剿波持续该时长后升格派遣（每潜一次）；派遣广播到本体入场的延迟
+        internal const int WardenEscalateTicks = 45 * 60;
+        internal const int WardenSpawnDelayTicks = 180;
+        internal const int WardenLife = 9000;
+        internal const int WardenDefense = 40;
+        //站位纪律：低于 Min 不起手冲锋，高于 Chase 转长距贯穿追近；
+        //各状态悬停环距（MaintainStandoff 钳进 [Min,Max] 带内）与悬停上抬
+        internal const float WardenStandoffMin = 300f;
+        internal const float WardenStandoffMax = 500f;
+        internal const float WardenChaseRange = 2000f;
+        internal const float WardenEntranceStandoff = 400f;
+        internal const float WardenSelectStandoff = 420f;
+        internal const float WardenVolleyStandoff = 460f;
+        internal const float WardenRainStandoff = 480f;
+        internal const float WardenHoverLift = 40f;
+        //追近（长距贯穿）：冲速 / 收刹判距 / 飞行超时 / 独立接触伤（位移工具，低于断言冲锋）
+        internal const float WardenChaseDashSpeed = 30f;
+        internal const float WardenChaseBrakeRange = 600f;
+        internal const int WardenChaseTimeoutTicks = 120;
+        internal const int WardenChaseContactDamage = 30;
+        //断言冲锋：前摇 / 警鸣提前量 / 冲刺时长 / 冲速 / 硬刹 / 接触伤 + RAM
+        internal const int WardenDashAnticipationTicks = 45;
+        internal const int WardenDashBeepLead = 36;
+        internal const int WardenDashTicks = 9;
+        internal const float WardenDashSpeed = 24f;
+        internal const int WardenDashBrakeTicks = 12;
+        internal const int WardenContactDamage = 45;
+        internal const float WardenDashRam = 5f;
+        //协议齐射：连发数与间隔（走 OldNetHostileHack T4 常规池）
+        internal const int WardenVolleyCount = 3;
+        internal const int WardenVolleyIntervalTicks = 90;
+        //字形雨：投放面宽 / 弹数 / 落速 / 弹伤 + RAM / 安全缝宽（格）
+        internal const float WardenRainWidth = 900f;
+        internal const int WardenRainBoltCount = 24;
+        internal const float WardenGlyphFallSpeed = 3.5f;
+        internal const int WardenGlyphDamage = 20;
+        internal const float WardenGlyphRam = 1f;
+        internal const int WardenRainGapTiles = 3;
+        //双缝各掷面心一侧半区、离面心至少此距：间距 ≥2×此值由构造保证
+        internal const float WardenRainGapHalfZoneMin = 80f;
+        //吞噬牵引（P2+）：时长 / 半径 / 每帧加速度 / 贴身弹开伤
+        internal const int WardenPullTicks = 180;
+        internal const float WardenPullRadius = 600f;
+        internal const float WardenPullAccel = 0.22f;
+        internal const int WardenPullTouchDamage = 30;
+        //相位阈值（生命比）与换相硬直
+        internal const float WardenP2LifeFrac = 0.60f;
+        internal const float WardenP3LifeFrac = 0.25f;
+        internal const int WardenPhaseStunTicks = 40;
+        //终末协议（P3）：前摇（最狠的招给最长的读秒）
+        internal const int WardenExecuteTelegraphTicks = 90;
+        //击杀奖励：碎片喷付 / 全网静默地板 / 静默余量时长与增量系数
+        internal const int WardenShardPayout = 16;
+        internal const float WardenSilenceFloor = 30f;
+        internal const int WardenGraceTicks = 60 * 60;
+        internal const float WardenGraceNoiseMul = 0.5f;
+
+        //════════════════ P1 结构与地标常量区（遗物层/语义房/检疫关卡/坠亡巨物） ════════════════
+
+        //──── 遗物陈设层（ctx.Scatter 首批使用者，P55 撒布配额） ────
+        internal const int RelicScatterZ1 = 10;
+        internal const int RelicScatterZ2 = 16;
+        internal const int RelicScatterZ3 = 10;
+
+        //──── 语义房激活包：金库（深井厅左侧，Role=Vault） ────
+        internal const int VaultRoomCount = 1;
+
+        //──── 检疫关卡（疯域规则线上的失守关卡，06 过线事件反查锚） ────
+        internal const int CheckpointCol = FadeLeft;
+        internal const int CheckpointFootW = 34;
+
+        //──── 坠亡巨物（衰减区旗舰地标，05 天幕巨物的坠地呼应） ────
+        internal const int FallenGiantCount = 1;
+        internal const int FallenGiantColMin = 1900;
+        internal const int FallenGiantColMax = 2250;
+        //宽度参数化三档缩比（峰高/腔体随宽度等比换算）
+        internal static readonly int[] FallenGiantWidths = [88, 72, 60];
+
+        //════════════════ 04 固定威胁常量区（OldNetThreatField 系装置，游戏内调参集中地）════════════════
+
+        //──── 公共地基（懒扫描注册表）────
+        //懒扫描间隔与窗口半径（列/行）；出窗装置弃态，回窗重新登记
+        internal const int ThreatScanInterval = 20;
+        internal const int ThreatScanCols = 40;
+        internal const int ThreatScanRows = 30;
+
+        //──── 光栅绊网 ────
+        //每口竖井道数与门洞装网概率
+        internal const int TripwirePerShaftMin = 2;
+        internal const int TripwirePerShaftMax = 3;
+        internal const float TripwireSocketChance = 0.35f;
+        //亮 2.4s / 灭 1.2s；相位=坐标哈希，同屏多线错相成通行序列
+        internal const int TripwireOnTicks = 144;
+        internal const int TripwireOffTicks = 72;
+        //亮相前的起搏预告（虚线加速闪）时长
+        internal const int TripwireBlinkTicks = 18;
+        //过线计费（低于目击 15，高于采集 3）与同线冷却
+        internal const float NoiseTripwire = 8f;
+        internal const int TripwireRearmTicks = 180;
+        //剪断：按住右键站桩时长与代价（为常用路线做开荒保养）
+        internal const int TripwireCutTicks = 30;
+        internal const float NoiseTripwireCut = 3f;
+
+        //──── 静默哨雷 ────
+        internal const int MineCountRuin = 6;
+        internal const int MineCountFade = 4;
+        //贴糖半径（列）：TryPlace 内验证近旁有加密节点/深潜缓存
+        internal const int MineNearLootCols = 12;
+        internal const int MineDedupeDist = 18;
+        //入场武装：半径内快速移动才触发；慢速接近=潜行，与巡逻潜行门同一套身体语言
+        internal const float MineWakeRadius = 90f;
+        internal const float MineArmSpeedGate = 2f;
+        internal const int MineArmTicks = 30;
+        //引爆：HP + RAM + 全网尖叫
+        internal const int MineDamage = 25;
+        internal const float MineRam = 2f;
+        internal const float NoiseMineScream = 14f;
+        //拆除站桩时长（静默移除，0 噪音）与玩家弹幕近点引爆半径（px）
+        internal const int MineDefuseTicks = 40;
+        internal const float MineRemoteDetonateRadius = 30f;
+
+        //──── 扫描哨眼 ────
+        internal const int SweepEyeLife = 700;
+        internal const int SweepEyeDefense = 20;
+        //锥长（px）/ 锥半角（rad）/ 摆动半弧（rad，合 130° 弧）/ 往返周期（tick）
+        internal const float SweepEyeConeLen = 340f;
+        internal const float SweepEyeConeHalfAngle = 0.35f;
+        internal const float SweepEyeArcHalf = 1.134f;
+        internal const int SweepEyePeriodTicks = 360;
+        //充能 36 tick（窗口可预读，容错给在节律不给在时长）；脱锥快速回落
+        internal const int SweepEyeChargeTicks = 36;
+        internal const float SweepEyeDecayPerTick = 3f;
+        //目击后锁定跟随（追光灯态）时长与期间持续曝光计费
+        internal const int SweepEyeLockTicks = 180;
+        internal const float NoiseEyeSpotted = 12f;
+        internal const float NoiseEyeExposurePerSecond = 1f;
+        internal const float NoiseEyeKill = 10f;
+        //浅井井口装设概率
+        internal const float SweepEyeShaftChance = 0.5f;
+
+        //──── 噪音联动封锁闸 ────
+        //激活档位留可写字段：06 导演的区域修饰符可临时改写（规划 §3 集成点）
+        internal static int BulkheadWarnTier = 2;
+        internal static int BulkheadShutTier = 3;
+        //重开条件：档位 ≤1 持续该时长；重开前 1s 薄荷绿脉冲预告
+        internal const int BulkheadReopenHoldTicks = 480;
+        internal const int BulkheadReopenPulseTicks = 60;
+        //与玩家碰撞盒重叠格的延迟落格重试间隔（不夹人）
+        internal const int BulkheadRetryTicks = 10;
+        //应急泄压杆：开闸时长与噪音代价（用更多噪音买一次通行）
+        internal const int BreakerOpenTicks = 480;
+        internal const float NoiseBreaker = 10f;
+
+        //════════════════ 06 导演与评分常量区（P6：余震/收网/热断链/深潜评级）════════════════
+
+        //──── 衰减区余震（2.9）────
+        //破解成功到猎杀落地的读秒；废墟带加密永不触发（分带规则一句话可教）
+        internal const int AftershockDelayTicks = 180;
+        internal const float AftershockNoise = 10f;
+
+        //──── 收网协议（2.2）────
+        //清剿波累计在场时长达标即触发（累计口径，跨波不清、直到弹出不复位）：
+        //50s 标定=干净应对（T4 免疫 20s + 从 95 降到 60 约 23s）不触发，赖场或二进宫才触发
+        internal const int DragnetAfterT4Ticks = 50 * 60;
+        //噪音棘轮地板：高于 T4ReleaseBelow(60)，清剿波解除条件自此永不满足
+        internal const float DragnetNoiseFloor = 70f;
+        //收网期清剿波补员目标加压（5 → 7）
+        internal const int DragnetSustainBonus = 2;
+
+        //──── 热断链（2.3）────
+        //站桩断链时长 / 离台中止半径（px）/ 猎杀波追加间隔（NotifySpotted 补员自动封顶）
+        internal const int HotExtractTicks = 600;
+        internal const float HotExtractRadius = 90f;
+        internal const int HotExtractWaveInterval = 240;
+
+        //──── 深潜评级（2.1；首轮数值必调：标定口径=两次满账铭刻+走到衰减区中段 ≈ A）────
+        //基础分权重：铭刻（唯一硬通货，权重最高）/ 深度（全图 2360 列 ≈ 944 分封顶）/ 采集
+        internal const int RatingSettledWeight = 12;
+        internal const float RatingDepthWeight = 0.4f;
+        internal const int RatingHarvestWeight = 6;
+        //弹出结算：安全登出加成 / 烧断与死亡的总分折损（不清零，深度与已铭刻的意义保留）
+        internal const int RatingSafeExitBonus = 250;
+        internal const float RatingDisasterMul = 0.4f;
+        //风格加成（可叠加，弹出时判定）
+        internal const int RatingStyleGhost = 300;
+        internal const int RatingStyleHeat = 200;
+        internal const int RatingStyleHotExtract = 150;
+        internal const int RatingStyleDragnet = 350;
+        //评级阈值（S≥1800 / A≥1200 / B≥700 / C≥350，其余 D）
+        internal const int RatingGradeS = 1800;
+        internal const int RatingGradeA = 1200;
+        internal const int RatingGradeB = 700;
+        internal const int RatingGradeC = 350;
+        //元奖励：历史最佳 A 级以上，每次进旧网账本容量 +=（与扩容坞同字段叠加，禁覆写）
+        internal const int RatingLedgerBonus = 4;
 
         internal static readonly DistanceBand[] Bands;
 

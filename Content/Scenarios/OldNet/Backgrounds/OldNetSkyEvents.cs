@@ -1,5 +1,10 @@
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RAMSystems;
 using CalamityOverhaul.Content.Scenarios.OldNet.Gen;
+using System;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
@@ -24,6 +29,23 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
         /// <summary>疯域故障脉冲 0~1（OldNetGrade 消费；衰减区带门控）</summary>
         internal static float Glitch { get; private set; }
 
+        //───── ⑥ 黑墙大潮状态（一潜至多一次的敬畏事件，25s 三幕：吸气/涨潮/退潮）─────
+
+        /// <summary>潮汐总包络 0~1（幕一升满、幕三落回；锋面强度/墙鸣加成共用）</summary>
+        internal static float TidePhase { get; private set; }
+        /// <summary>潮锋世界 X（px）；无潮时为大负值，消费端 step 比较自然归零</summary>
+        internal static float TideFrontWorldX { get; private set; } = -1e7f;
+        /// <summary>吸气强度 0~1（幕一/幕二）：竖尘获得西向加速度，被吸向墙</summary>
+        internal static float TideSuck { get; private set; }
+        /// <summary>退潮呼出窗口 0~1（幕三头 3s）：尘以涌动横波姿态自西向东呼出一轮</summary>
+        internal static float TideExhale { get; private set; }
+        /// <summary>锋面过境玩家列的冲击拍 0~1（BlackwallRender 画贴地椭圆环）</summary>
+        internal static float TideCrossFlash { get; private set; }
+        /// <summary>过境拍环心（过境帧的玩家脚底世界坐标）</summary>
+        internal static Vector2 TideCrossPos { get; private set; }
+        /// <summary>天幕/黑墙的涌动合成值：常规涌动与大潮前奏取 max（uSurge 消费端换用此值）</summary>
+        internal static float SurgeComposed => MathF.Max(Surge, tideSurgeBoost);
+
         //───── 涌动：低频随机起搏，一次 8~14s 包络 ─────
         private static int surgeTimer;
         private static int surgeDuration;
@@ -43,6 +65,16 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
         private static int glitchCooldown;
         private static float glitchAmp;
 
+        //───── ⑥ 黑墙大潮：三幕计时与旗标 ─────
+        private static int tideTimer;
+        private static int tideCooldown;
+        private static bool tideDoneThisDive;
+        private static bool tideCrossFired;
+        private static int tideCrossTimer;
+        private static float tideSurgeBoost;
+        private const int TideTotalFrames = 25 * 60;
+        private const int TideCrossFrames = 36;
+
         public override void ClearWorld() => ResetAll();
 
         /// <summary>验收辅助：立刻起一段涌动（TestItem 触发用）</summary>
@@ -58,6 +90,16 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
             glitchTimer = glitchDuration;
             glitchAmp = 0.9f;
             glitchCooldown = 60 * 60;
+        }
+
+        /// <summary>验收辅助：立刻起一次黑墙大潮（TestItem 触发用，无视一潜一次旗标与起潮条件）</summary>
+        internal static void DebugTriggerTide() {
+            tideTimer = TideTotalFrames;
+            tideDoneThisDive = true;
+            tideCrossFired = false;
+            tideCooldown = 60 * 300;
+            SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen
+                with { Volume = 0.5f, Pitch = -0.7f });
         }
 
         /// <summary>验收辅助：立刻放一次巨物横穿（TestItem 触发用）</summary>
@@ -78,10 +120,22 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
             surgeTimer = surgeDuration = 0;
             giantTimer = giantDuration = 0;
             glitchTimer = glitchDuration = 0;
+            //⑥ 大潮：每潜旗标复位，重新可遇
+            TidePhase = 0f;
+            TideFrontWorldX = -1e7f;
+            TideSuck = 0f;
+            TideExhale = 0f;
+            TideCrossFlash = 0f;
+            tideTimer = 0;
+            tideDoneThisDive = false;
+            tideCrossFired = false;
+            tideCrossTimer = 0;
+            tideSurgeBoost = 0f;
             //进世界后先各给一段静默期：氛围事件不抢开场
             surgeCooldown = 60 * 90;
             giantCooldown = 60 * 150;
             glitchCooldown = 60 * 60;
+            tideCooldown = 60 * 240;
         }
 
         public override void PostUpdateEverything() {
@@ -89,7 +143,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
                 return;
             }
             if (!OldNetWorld.Active) {
-                if (Surge > 0f || GiantMix > 0f) {
+                if (Surge > 0f || GiantMix > 0f || TidePhase > 0f) {
                     ResetAll();
                 }
                 return;
@@ -97,6 +151,120 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
             UpdateSurge();
             UpdateGiant();
             UpdateGlitch();
+            UpdateTide();
+        }
+
+        //──── ⑥ 黑墙大潮：三幕导演（吸气 0~6s / 涨潮 6~16s / 退潮 16~25s）────
+        private static void UpdateTide() {
+            //过境拍包络独立走完（潮体结束不掐断余波）
+            if (tideCrossTimer > 0) {
+                tideCrossTimer--;
+                TideCrossFlash = tideCrossTimer / (float)TideCrossFrames;
+            }
+            else {
+                TideCrossFlash = 0f;
+            }
+
+            if (tideTimer > 0) {
+                tideTimer--;
+                float t = (TideTotalFrames - tideTimer) / 60f;
+                float wallX = OldNetMetrics.WallCols * 16f;
+                const float pushPx = 300f * 16f;
+
+                if (t < 6f) {
+                    //幕一·吸气：墙鸣涨满、竖尘倒卷向墙、天幕以既有涌动语汇当前奏（缓升至 0.5）
+                    float k = t / 6f;
+                    TidePhase = k;
+                    TideSuck = k;
+                    TideExhale = 0f;
+                    tideSurgeBoost = k * 0.5f;
+                    TideFrontWorldX = wallX;
+                }
+                else if (t < 16f) {
+                    //幕二·涨潮：锋面 EaseInOut 自西缘推进 300 列
+                    float k = (t - 6f) / 10f;
+                    float ease = k * k * (3f - 2f * k);
+                    TidePhase = 1f;
+                    TideSuck = 1f - k * 0.4f;
+                    TideExhale = 0f;
+                    tideSurgeBoost = 0.5f;
+                    TideFrontWorldX = wallX + pushPx * ease;
+
+                    //过境拍：锋面首次扫过玩家列的那一帧（贴地环+轻屏震+一声故障过渡）
+                    Player lp = Main.LocalPlayer;
+                    if (!tideCrossFired && TideFrontWorldX >= lp.Center.X) {
+                        tideCrossFired = true;
+                        tideCrossTimer = TideCrossFrames;
+                        TideCrossPos = new Vector2(lp.Center.X, lp.Bottom.Y);
+                        SoundEngine.PlaySound(CWRSound.FaultTransition
+                            with { Volume = 0.4f, Pitch = -0.3f });
+                        //克制屏震（低调风格约定，幅度 ≤3）
+                        lp.CWR().GetScreenShake(3f);
+                    }
+                }
+                else {
+                    //幕三·退潮：锋面 EaseIn 缓缓退回墙内；头 3s 尘自西向东呼出一轮
+                    float k = MathHelper.Clamp((t - 16f) / 9f, 0f, 1f);
+                    TidePhase = 1f - k;
+                    TideSuck = 0f;
+                    TideExhale = MathHelper.Clamp(1f - (t - 16f) / 3f, 0f, 1f);
+                    tideSurgeBoost = 0.5f * (1f - k);
+                    TideFrontWorldX = wallX + pushPx * (1f - k * k);
+                }
+
+                if (tideTimer == 0) {
+                    //收潮：状态归位 + 低调收尾声（音量组合未确认-待实机试听）
+                    TidePhase = 0f;
+                    TideSuck = 0f;
+                    TideExhale = 0f;
+                    tideSurgeBoost = 0f;
+                    TideFrontWorldX = -1e7f;
+                    SoundEngine.PlaySound(SoundID.WormDigQuiet
+                        with { Volume = 0.4f, Pitch = -0.6f });
+                }
+                return;
+            }
+
+            //每潜至多一次：错过条件窗口就这一潜无潮（稀有度=敬畏）
+            if (tideDoneThisDive) {
+                return;
+            }
+            if (--tideCooldown > 0) {
+                return;
+            }
+            tideCooldown = 60 * Main.rand.Next(240, 421);
+
+            //起潮条件：在场满 + 非清剿波（不抢 T4 可读性）+ 非烧断边缘 + 玩家列 <1200
+            //（潮是墙侧奇观，衰减区看不见就不放）+ 与涌动/巨物互斥
+            if (OldNetAmbience.Presence <= 0.9f) {
+                return;
+            }
+            Player player = Main.LocalPlayer;
+            if (OldNetPlayer.Get(player).NoiseTier >= 4) {
+                return;
+            }
+            //"非弹出倒数"的同义近似：RAM 余量 <10% 时不起潮（ejectDelay 是 OldNetPlayer 私有态）
+            RAMPlayer ram = player.GetModPlayer<RAMPlayer>();
+            if (ram.ProfileInitialized && ram.MaxRam > 0
+                && ram.CurrentRam / ram.MaxRam < 0.10f) {
+                return;
+            }
+            if (player.Center.X / 16f >= 1200f) {
+                return;
+            }
+            if (Surge > 0.05f || GiantMix > 0.05f) {
+                return;
+            }
+
+            tideTimer = TideTotalFrames;
+            tideDoneThisDive = true;
+            tideCrossFired = false;
+            //敬畏事件不撞车：把涌动/巨物的下一次起搏推后
+            surgeCooldown = Math.Max(surgeCooldown, 60 * Main.rand.Next(40, 80));
+            giantCooldown = Math.Max(giantCooldown, 60 * Main.rand.Next(60, 120));
+            SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen
+                with { Volume = 0.5f, Pitch = -0.7f });
+            CWRMod.Instance.Logger.Info("[OldNet] 黑墙大潮事件起潮");
         }
 
         private static void UpdateGlitch() {

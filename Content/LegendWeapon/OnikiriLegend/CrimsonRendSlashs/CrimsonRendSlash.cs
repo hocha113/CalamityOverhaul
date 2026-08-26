@@ -358,11 +358,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         /// </summary>
         public bool BeginFlashStepInterrupt(Vector2 dashAim, out float startRotation) {
             startRotation = bladeRotation;
-            bool leftHeld = DownLeft || Owner.controlUseItem
-                || (Projectile.IsOwnedByLocalPlayer() && Main.mouseLeft);
+            //攻击窗活着就交接：先 A 后松手再樱闪同样打断，堵"边冲边打"（反馈十一·#45）
             bool attackActive = scheduling || firstWindupTicks > 0
                 || bladePoseInitialized || AnyLiveSlash();
-            if (flashStepInterrupted || !leftHeld || !attackActive) {
+            if (flashStepInterrupted || !attackActive) {
                 return false;
             }
 

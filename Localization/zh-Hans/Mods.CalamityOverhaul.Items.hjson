@@ -1,4 +1,4 @@
-SHPCModTooltipDraw: {
+﻿SHPCModTooltipDraw: {
 	InstalledHeader: 已安装模块
 	NoModules: 无
 	BonusHeader: 当前模块总加成
@@ -879,6 +879,16 @@ HandmadeDoll: {
 		如果向导存活，则使用时会被献祭
 		"纯手工制作，向导并不知情"
 		'''
+}
+
+ScapegoatDoll: {
+	DisplayName: 替死娃娃
+	Tooltip:
+		'''
+		放在背包里，可替你挡下一次死亡
+		挡下后娃娃碎裂消失
+		'''
+	ShatterText: 替死娃娃碎了
 }
 
 Snowblindness: {
@@ -2167,9 +2177,13 @@ Pandemonium: {
 		'''
 		左键蓄力释放超位魔法
 		右键在光标处施放硫火符文
-		按下[PandemoniumQSkill]施展硫磺火天罚
-		按下[PandemoniumRSkill]施展万魔终焉
+		手持时屏幕左下角亮起两枚技能按钮
+		点击施展硫磺火天罚或万魔终焉
 		'''
+	SkillLeftName: 硫磺火天罚
+	SkillLeftDesc: 在准星周围降下成片硫磺火柱
+	SkillRightName: 万魔终焉
+	SkillRightDesc: 以自身为心展开巨型法阵，雷火交加轰击阵内敌人
 }
 
 Proverbs: {
@@ -2286,9 +2300,13 @@ AriaofTheCosmos: {
 		'''
 		左键长按可以凝聚出强大的类星体，释放后对敌人造成毁灭性的伤害
 		右键可以释放出一个微型黑洞，成型后发射出大量伽马射线
-		按下[AriaofTheCosmosQSkill]召唤星环护卫
-		按下[AriaofTheCosmosRSkill]生成伽马射线爆发
+		手持时屏幕左下角亮起两枚技能按钮
+		点击召唤星环护卫或引发伽马射线爆发
 		'''
+	SkillLeftName: 星环护卫
+	SkillLeftDesc: 召唤绕身星环，节点轮转弹射星屑打击周围敌人
+	SkillRightName: 伽马射线爆发
+	SkillRightDesc: 短暂凝聚后朝准星方向扇形轰出九道伽马射线
 }
 
 Oceanfragments: {

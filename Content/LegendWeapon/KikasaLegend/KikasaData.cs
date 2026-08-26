@@ -1,43 +1,28 @@
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
 {
-    /// <summary>鬼伞传奇成长与唤雨符数据:等级由沉宴试炼路线推进,符位表随伞存档/联机</summary>
+    /// <summary>
+    /// 鬼伞传奇成长数据：等级由沉宴试炼路线推进，随伞存档/联机。<br/>
+    /// 符位表 2026-08 迁 <see cref="KikasaTalismanPlayer"/>（他模 SetDefaults 重造物品
+    /// 会清光物品级数据，玩家侧才是可靠宿主），本类只余成长字段与旧档遗产读取
+    /// </summary>
     internal class KikasaData : LegendData
     {
-        private const string InstanceIdTag = "Kikasa:InstanceId";
-        private const string EditRevisionTag = "Kikasa:EditRevision";
-
         internal override IReadOnlyList<LegendTrialDefinition> TrialDefinitions
             => LegendTrialRouteCatalog.KikasaProgression;
 
         public override int TargetLevel => GetVersionedTrialTargetLevel();
 
-        /// <summary>祈雨绳符位表，无出厂符，默认全空</summary>
-        public KikasaTalismanStore Talismans { get; private set; } = new();
+        /// <summary>旧档物品侧符位表（只读遗产，进世界收编用；新档恒 null）</summary>
+        internal KikasaTalismanStore LegacyTalismans { get; private set; }
 
-        /// <summary>物品编辑会话的实例身份</summary>
-        internal long InstanceId { get; private set; }
-
-        /// <summary>挂符字段修订</summary>
-        internal uint EditRevision { get; private set; }
-
-        public KikasaData() {
-            InstanceId = CreateInstanceId();
-        }
-
-        public override LegendData Clone(Item item) {
-            KikasaData clone = (KikasaData)base.Clone(item);
-            clone.Talismans = new KikasaTalismanStore();
-            clone.Talismans.CopyFrom(Talismans);
-            return clone;
-        }
+        /// <summary>旧档物品侧修订号，多把伞收编时取最新</summary>
+        internal uint LegacyEditRevision { get; private set; }
 
         public static KikasaData TryGet(Item item) {
             if (item == null || item.IsAir) {
@@ -46,65 +31,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
             return item.CWR()?.LegendData as KikasaData;
         }
 
-        public override void SaveData(Item item, TagCompound tag) {
-            base.SaveData(item, tag);
-            tag[InstanceIdTag] = InstanceId;
-            tag[EditRevisionTag] = (long)EditRevision;
-            Talismans.SaveData(tag);
-        }
-
+        //SaveData 不覆写：物品侧不再写符位/实例键（Kikasa:InstanceId、Kikasa:EditRevision、
+        //KikasaFu:*），旧档残留键成墓碑，随下一次存档自然消失
         public override void LoadData(Item item, TagCompound tag) {
             base.LoadData(item, tag);
-            InstanceId = tag.TryGet(InstanceIdTag, out long instanceId) && instanceId != 0
-                ? instanceId : CreateInstanceId();
-            EditRevision = tag.TryGet(EditRevisionTag, out long revision)
+            //旧档遗产：只读进收编暂存，修订号供多把伞取舍
+            LegacyEditRevision = tag.TryGet("Kikasa:EditRevision", out long revision)
                 && revision >= 0 && revision <= uint.MaxValue
                 ? (uint)revision : 0u;
-            //旧档无符数据 → LoadData 消毒后即全空，无需出厂折算
-            Talismans.LoadData(tag);
-        }
-
-        public override void SendLegend(Item item, BinaryWriter writer) {
-            writer.Write(InstanceId);
-            writer.Write(EditRevision);
-            Talismans.NetSend(writer);
-        }
-
-        public override void ReceiveLegend(Item item, BinaryReader reader) {
-            long instanceId = reader.ReadInt64();
-            uint editRevision = reader.ReadUInt32();
-            if (instanceId == 0) {
-                throw new IOException("Kikasa instance id cannot be zero");
+            if (tag.ContainsKey("KikasaFu:Slots")) {
+                KikasaTalismanStore store = new();
+                store.LoadData(tag);
+                LegacyTalismans = store.HungCount > 0 ? store : null;
             }
-            Talismans.NetReceive(reader);
-            InstanceId = instanceId;
-            EditRevision = editRevision;
-        }
-
-        internal void AdvanceEditRevision() => EditRevision++;
-
-        internal void ApplyEditRevision(uint editRevision) => EditRevision = editRevision;
-
-        internal void RenewIdentity() {
-            InstanceId = CreateInstanceId();
-            EditRevision = 0;
-        }
-
-        internal void PreserveEditedStateFrom(KikasaData source) {
-            if (source == null || source.InstanceId != InstanceId) {
-                return;
-            }
-            ApplyEditedState(source.Talismans, source.EditRevision);
-        }
-
-        internal void ApplyEditedState(KikasaTalismanStore talismans, uint editRevision) {
-            Talismans.CopyFrom(talismans);
-            EditRevision = editRevision;
-        }
-
-        private static long CreateInstanceId() {
-            long value = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0);
-            return value != 0 ? value : 1;
         }
     }
 }

@@ -383,8 +383,13 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
     internal class CheckShadowOrbByKill : GlobalTile
     {
         public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem) {
+            //只认珠子图集且要真敲碎:任何 Frame(0,0) 物块(小行星矿等)都算敲珠子是误判源
+            if (type != TileID.ShadowOrbs || fail) {
+                return;
+            }
             Tile tile = Framing.GetTileSafely(i, j);
-            if (tile.TileFrameX <= 0 && tile.TileFrameY <= 0) {
+            //2×2 多格物块只数左上角一次;暗影珠左上 frameX=0、猩红之心左上 frameX=36
+            if (tile.TileFrameY == 0 && tile.TileFrameX % 36 == 0) {
                 var node = QuestNode.GetQuest<FindShadowOrb>();
                 if (node is not null && node.IsUnlocked && node.Objectives?.Count > 0) {
                     node.Objectives[0].CurrentProgress = 1;

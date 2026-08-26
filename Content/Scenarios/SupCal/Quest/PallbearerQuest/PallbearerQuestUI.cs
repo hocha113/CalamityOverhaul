@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.PallbearerQuest
     /// <summary>扶柩者任务UI</summary>
     internal class PallbearerQuestUI : BaseQuestAcceptUI
     {
-        public override string LocalizationCategory => "ADV";
+        public override string LocalizationCategory => "ADV.SupCal";
         public static PallbearerQuestUI Instance => UIHandleLoader.GetUIHandleOfType<PallbearerQuestUI>();
 
         protected override void SetupLocalizedTexts() {

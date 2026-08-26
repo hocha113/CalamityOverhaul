@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
     {
         public static bool SpawnPending;
 
-        public string LocalizationCategory => "ADV.EternalBlazingNow";
+        public string LocalizationCategory => "ADV.SupCal.EternalBlazingNow";
 
         public static LocalizedText FarewellLine1 { get; private set; }
         public static LocalizedText FarewellLine2 { get; private set; }

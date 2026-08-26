@@ -92,6 +92,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private float minTargetDist = float.MaxValue;
         private bool homingGaveUp;
         private bool retargeted;
+        //擦身黏滞:第一次擦身不放弃,重置护栏再咬一口(反馈七·#42)
+        private bool stickyRebitten;
+        //坠落段碰撞武装:首次身处空气后才生效,室内上抛扎进天花板的滴穿回房内再落(反馈七·#74)
+        private bool plungeArmed;
 
         //本地表现
         private float life;
@@ -194,12 +198,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 return;
             }
 
-            //坠落段的实心检测(湖线以上才算,湖下地形被湖面盖着)
-            if (Phase == DropPhase.Plunge
-                && (!lakeAlive || Projectile.Center.Y < kdp.LakeWorldY - 2f)
-                && Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height)) {
-                onTileHit = true;
-                Projectile.Kill();
+            //坠落段的实心检测(湖线以上才算,湖下地形被湖面盖着)。
+            //碰撞在坠落段首次身处空气后才武装:室内上抛扎进天花板的滴
+            //先穿回房内再正常落地,不死在顶上(反馈七·#74)
+            if (Phase == DropPhase.Plunge) {
+                bool insideSolid = Collision.SolidCollision(
+                    Projectile.position, Projectile.width, Projectile.height);
+                if (!plungeArmed) {
+                    plungeArmed = !insideSolid;
+                }
+                else if ((!lakeAlive || Projectile.Center.Y < kdp.LakeWorldY - 2f) && insideSolid) {
+                    onTileHit = true;
+                    Projectile.Kill();
+                }
             }
         }
 
@@ -317,11 +328,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             minTargetDist = MathF.Min(minTargetDist, dist);
 
             //防绕圈护栏:追太久,或已擦身而过且渐行渐远,放弃追踪转坠落
-            if (homingT > HomingGiveUpFrames
-                || (minTargetDist < 100f && dist > minTargetDist + 140f)) {
-                homingGaveUp = true;
-                UpdateGravityFall();
-                return;
+            bool flyby = minTargetDist < 100f && dist > minTargetDist + 140f;
+            if (homingT > HomingGiveUpFrames || flyby) {
+                if (flyby && !stickyRebitten && homingT <= HomingGiveUpFrames) {
+                    //第一次擦身不放弃:护栏清零、转向包络直接拉满,圆滑回折再咬一口(反馈七·#42)
+                    stickyRebitten = true;
+                    minTargetDist = float.MaxValue;
+                    homingT = MathF.Max(homingT, 20f);
+                }
+                else {
+                    homingGaveUp = true;
+                    UpdateGravityFall();
+                    return;
+                }
             }
 
             float speed = Projectile.velocity.Length();
@@ -383,9 +402,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         //引擎保证命中钩只在归属端跑,不需再设 owner 门
 
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
-            => KikasaTalismanHooks.ForOwner(Projectile.owner)
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            //击退方向按"玩家→敌人"定,不按滴子落点定:贴脸时墨滴常追到敌人身后,
+            //原生按弹体相对位置算会把敌人怼向玩家(反馈七·#6)
+            Player owner = Main.player[Projectile.owner];
+            if (owner?.active == true) {
+                modifiers.HitDirectionOverride = target.Center.X >= owner.Center.X ? 1 : -1;
+            }
+            KikasaTalismanHooks.ForOwner(Projectile.owner)
                 .ModifyRainHitNPC(Projectile, KikasaRainSourceKind.Drop, target, ref modifiers);
+        }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
             => KikasaTalismanHooks.ForOwner(Projectile.owner)
@@ -414,30 +440,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 //近处已有同主墨洼则只续命,一波齐掷不铺一地重叠洼;
                 //潦符的寿命/半径倍率随生成参数带给洼(ai 通道随生成包同步)
                 if (LeavesPuddle && Main.myPlayer == Projectile.owner) {
-                    KikasaTalismanProfile talismans =
-                        KikasaTalismanCombat.Resolve(Main.player[Projectile.owner].HeldItem);
-                    int puddleLife = (int)(KikasaInkPuddle.LifeFrames * talismans.PuddleLifeMul);
-                    //霜符"不可叠寿":禁合并续命,每滴各起各的洼
-                    Projectile near = talismans.PuddleNoRefresh
-                        ? null : FindNearOwnPuddle(56f * talismans.PuddleRadiusMul);
-                    if (near != null) {
-                        near.timeLeft = Math.Max(near.timeLeft, puddleLife);
-                        near.netUpdate = true;
-                    }
-                    else {
-                        Projectile.NewProjectile(Projectile.GetSource_FromThis(),
-                            Projectile.Center, Vector2.Zero,
-                            ModContent.ProjectileType<KikasaInkPuddle>(),
-                            (int)(Projectile.damage * 0.35f * talismans.PuddleDamageMul),
-                            0f, Projectile.owner,
-                            talismans.PuddleRadiusMul, talismans.PuddleLifeMul);
-                    }
+                    SpawnOrRefreshPuddleAt(Projectile.Center);
                 }
             }
             else {
                 host = FindSplatHost();
                 if (host != null) {
                     KikasaInkFX.AddNpcSplat(host, Projectile.Center, impactVel, splatSize * 0.8f);
+                    //湖倾档也认打在敌人身上:洼起在宿主脚下的地形（平台也算），
+                    //追踪流打空中怪同样吃得到墨洼构筑线（反馈七·#36 拍板）
+                    if (LeavesPuddle && Main.myPlayer == Projectile.owner
+                        && TryFindGroundBelow(host.Bottom, out Vector2 groundAt)) {
+                        SpawnOrRefreshPuddleAt(groundAt);
+                    }
                 }
             }
 
@@ -465,12 +480,54 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         }
 
         /// <summary>死点附近同主的既有墨洼,用于合并续命</summary>
-        private Projectile FindNearOwnPuddle(float radius) {
+        /// <summary>湖倾档起洼/续命共用路径：落点由调用方给（贴地=死点，沾敌=宿主脚下地形）</summary>
+        private void SpawnOrRefreshPuddleAt(Vector2 at) {
+            KikasaTalismanProfile talismans =
+                KikasaTalismanCombat.Resolve(Main.player[Projectile.owner]);
+            int puddleLife = (int)(KikasaInkPuddle.LifeFrames * talismans.PuddleLifeMul);
+            //霜符"不可叠寿":禁合并续命,每滴各起各的洼
+            Projectile near = talismans.PuddleNoRefresh
+                ? null : FindNearOwnPuddle(56f * talismans.PuddleRadiusMul, at);
+            if (near != null) {
+                near.timeLeft = Math.Max(near.timeLeft, puddleLife);
+                near.netUpdate = true;
+            }
+            else {
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(),
+                    at, Vector2.Zero,
+                    ModContent.ProjectileType<KikasaInkPuddle>(),
+                    (int)(Projectile.damage * 0.35f * talismans.PuddleDamageMul),
+                    0f, Projectile.owner,
+                    talismans.PuddleRadiusMul, talismans.PuddleLifeMul);
+            }
+        }
+
+        /// <summary>从起点向下找首个可站立地表（实心或平台，最多 20 格），命中返回贴地点</summary>
+        private static bool TryFindGroundBelow(Vector2 from, out Vector2 ground) {
+            int tx = (int)(from.X / 16f);
+            int ty = (int)(from.Y / 16f);
+            for (int dy = 0; dy < 20; dy++) {
+                int y = ty + dy;
+                if (!WorldGen.InWorld(tx, y, 8)) {
+                    break;
+                }
+                Tile tile = Framing.GetTileSafely(tx, y);
+                if (tile.HasTile
+                    && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType])) {
+                    ground = new Vector2(from.X, y * 16f - 2f);
+                    return true;
+                }
+            }
+            ground = default;
+            return false;
+        }
+
+        private Projectile FindNearOwnPuddle(float radius, Vector2 at) {
             int puddleType = ModContent.ProjectileType<KikasaInkPuddle>();
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile proj = Main.projectile[i];
                 if (proj.active && proj.owner == Projectile.owner && proj.type == puddleType
-                    && Vector2.Distance(proj.Center, Projectile.Center) < radius) {
+                    && Vector2.Distance(proj.Center, at) < radius) {
                     return proj;
                 }
             }

@@ -123,8 +123,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             life++;
             Player owner = Main.player[Projectile.owner];
             slotCount = KikasaOverride.GetSlotCount(owner);
-            //唤雨符快照:一帧一解,宽度/散射/泉齐发全部复用
-            pourProfile = KikasaTalismanCombat.Resolve(owner.HeldItem);
+            //唤雨符快照:一帧一解,宽度/散射/泉齐发全部复用(符位表在玩家身上)
+            pourProfile = KikasaTalismanCombat.Resolve(owner);
             pourHooks = KikasaTalismanHooks.For(owner);
             if ((int)life == 1) {
                 //冲刷时长首帧一次性落定:齐掷档+12,泷符时长倍率再折入;timeLeft 补同一差值

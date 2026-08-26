@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
     /// 幽灵的坐标与水位由各端按所有者当前形态自算（领域形态由 KikasaDomainNet 兜着）；
     /// 湖藏数据是所有者本机私产，不经过这条通道。
     /// </summary>
-    internal static class KikasaLakeNet
+    internal class KikasaLakeNet : CWRNetChannel
     {
         internal const byte KindSink = 0;
         internal const byte KindRaise = 1;
@@ -21,27 +21,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                 || owner.whoAmI != Main.myPlayer) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.KikasaLakeFX);
+            ModPacket packet = CWRNetWork.GetPacket<KikasaLakeNet>();
             packet.Write((byte)owner.whoAmI);
             packet.Write(kind);
             packet.Write(itemType);
             packet.Send();
         }
 
-        public static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type != CWRMessageType.KikasaLakeFX) {
-                return;
-            }
-            //链式 handler 共用一条流：定长负载先读满，校验只做丢弃
+        public override void Receive(BinaryReader reader, int whoAmI) {
+            //定长负载先读满，校验只做丢弃
             int declaredOwner = reader.ReadByte();
             byte kind = reader.ReadByte();
             int itemType = reader.ReadInt32();
 
             if (Main.netMode == NetmodeID.Server) {
                 //来源以连接为准，不信包里自报的槽位；原样转播给除发送者外的所有人
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.KikasaLakeFX);
+                ModPacket packet = CWRNetWork.GetPacket<KikasaLakeNet>();
                 packet.Write((byte)whoAmI);
                 packet.Write(kind);
                 packet.Write(itemType);

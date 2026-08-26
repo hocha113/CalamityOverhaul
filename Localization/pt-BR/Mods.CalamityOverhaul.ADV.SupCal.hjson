@@ -1,0 +1,320 @@
+FirstMetSupCal: {
+	Rolename1: ???
+	Rolename2: Bruxa de Enxofre
+	Line1: Eu nao esperava que voce matasse minha 'irma' tao cedo.
+	Line2: Voce esta crescendo... mais rapido do que o antecipado.
+	Line3: Eu reconheco voce... Voce e...
+	Line4: A Bruxa de Enxofre?! A que incinerou metade do oceano?!
+	Line5: Hah?! Heh... Quem diria que alguem... ou algum*peixe*... realmente me reconhece. Voce e divertido, admito.
+	Line6: ...Mas por que voce esta viva? Eu me lembro distintamente que a Bruxa de Enxofre morreu... no seculo passado.
+	Line7: Um peixe interessante, de fato. Minha consciencia foi forjada na chama de enxofre ha muito tempo. Este corpo... e meramente um cadaver, fantocheado pelas chamas.
+	Line8: ...Uma mente viva em um corpo inumano, ligada ao mundo por um canalizador... Voce se tornou... uma aberracao?!
+	Line9: Sua compreensao e limitada demais. Voce nao poderia entender meu estado de ser.
+	Line10: Alem disso, nao e por isso que estou aqui...
+	QuestionLine: Bem... qual e a sua escolha?
+	Choice1Text: (Sacar arma)
+	Choice2Text: (Permanecer em silencio)
+	Choice1Response: Entao deixe-me medir seu valor.
+	Choice2Response: ...Patetico. Um 'peixe pequeno', de fato. Muito bem, aceite isto como um presente de saudacao. Nos encontraremos novamente.
+	NoFishLine1: Voce matou minha 'irma' muito antes do que eu esperava. E veio sozinho?
+	NoFishLine2: Voce esta ficando mais forte do que eu antecipava.
+	NoFishLine3: Voce pergunta por que ainda estou viva? Parece que voce comecou a tocar em verdades que nao deveria saber.
+	NoFishLine4: Minha consciencia foi forjada na chama de enxofre ha muito tempo. Este corpo... e meramente um cadaver, fantocheado pelas chamas.
+	NoFishLine5: Mas e inutil. Sua compreensao e limitada demais para entender meu estado de ser.
+	NoFishLine6: Claro, nao me revelei meramente para explicar essas trivialidades.
+}
+
+SupCalMoonLordReward: {
+	Line1: Hahaha...
+	Line2: Entao e assim que ele caiu.
+	Line3: Voce tem ideia de como estao as subterraneas agora?
+	Line4: ...Entao, por que voce esta aqui desta vez?
+	Line5: Um pequeno brinquedo para voce. E uma pequena comissao.
+	Line6: Uma besta pequena. Preciso que voce a pegue e mate aquela... *coisa*... que esta sugando energia geotermica lamentavelmente la embaixo. E lembre-se, voce *deve* usar esta besta.
+	Line7: Se voce conseguir, nossa... 'parceria'... pode continuar.
+}
+
+SupCalDefeat: {
+	Rolename2: Halibut & [Nome]
+	Line1: Quem diria que voce ja alcancou este nivel... Heh. Fui superada.
+	Line2: Mas voce nao e o mais forte. Voce pode ser bom, mas *ele* certamente nao e pior do que voce.
+	Line3: Yharim ja caminhou ate o fim desse caminho. Ele alcancou o pico do que um Terrariano pode ser. Ninguem e mais forte.
+	Line4: Pena que voces dois nao podem se encontrar...
+	Line5: Sua dimensao e muito baixa. Voce nunca entendera meu estado.
+	Line6: ...Minha dimensao e muito baixa?
+	Line7: (Vivi tanto tempo, e esta e a primeira vez que alguem me diz que minha 'dimensao' e baixa.)
+	Line8: Eu sou o unico ser 'nascido' de uma era. Desde que ousei me desfazer da minha identidade Terrariana e me declarar uma deusa, sou naturalmente onipotente.
+	Line9: Voce diz que Yharim pode me 'pesar'? Voce precisaria me trazer um Xylos.
+	Line10: ......
+}
+
+SupCalPlayerDefeat: {
+	Line1: Voce se despedaca ao toque. Voce e feito de papel?
+	Line2: Pensei que tinha encontrado um brinquedo que duraria um pouco mais no fogo.
+	Line3: Superestimei voce. Seu calibre atual... voce nem e digno de ser meu aquecimento.
+	Line4: Volte quando voce for forte o suficiente para ser digno do meu olhar.
+	Line5: Embora... voce tenha *alguma* coragem.
+	Line6: Um mortal que ousa olhar nos meus olhos, quanto mais sacar uma arma... voce e o primeiro.
+	Line7: (Desaparece em um redemoinho de chamas)
+	Line8: Se eu tivesse aberto o nono olho, que se danem as consequencias... Eu deveria ter tido uma chance. Se chegasse a isso...
+	Line9: Suspiro...
+}
+
+SupCalVictory: {
+	Line1: O que... Como isso e possivel!
+	Line2: Voce... Voce me derrotou?!
+	Line3: Impossivel... Isso e absolutamente impossivel...
+	Line4: Eu ja superei os limites de um Terrariano...
+	Line5: ...Parece que realmente subestimei voce.
+	Line6: Mas este nao e o fim. Voltarei.
+	Line7: Da proxima vez... Da proxima vez, nao serei tao descuidada!
+	Line8: ...Ela fugiu.
+}
+
+PallbearerQuestUI: {
+	QuestTitle: Comissao: Cace a Deusa Profanada
+	QuestDesc: Derrote a Deusa Profanada usando apenas a Pallbearer.
+	AcceptText: Aceitar
+	DeclineText: Recusar
+}
+
+SupCalQuestReward: {
+	Line1: Bem feito.
+	Line2: Esta besta combina com voce.
+	Line3: Voce resolveu um problema para mim.
+	Line4: Como recompensa, estes sao seus.
+	Line5: E esta lamina. Preciso que voce a pegue e mate aquele... *verme*. Nao se preocupe, o pagamento sera ainda mais generoso.
+	Line6: Imbui nela uma parte da minha... 'presenca' de Enxofre. Deve facilitar as coisas para voce.
+	Line7: ......
+}
+
+DoGQuestUI: {
+	QuestTitle: Comissao: O Devorador de Deuses
+	QuestDesc: Derrote o Devorador de Deuses usando o Escavador de Coracoes.
+	AcceptText: Aceitar
+	DeclineText: Recusar
+}
+
+SupCalDoGQuestReward: {
+	Line1: Feito de forma limpa.
+	Line2: Esta lamina... tao satisfatoria como sempre.
+	Line3: Quando eu ainda era mortal, foi com isso que arranquei o coracao do meu mestre. Funciona bem, nao funciona?
+	Line4: Pegue.
+	Line5: Voce ja considerou... o que faria se, da proxima vez, minha comissao fosse para voce matar A MIM?
+	Line6: Que pena. Voce e ele estao fadados a nunca se encontrar. Voces dois teriam... tanto para conversar.
+	Line7: ......Eu realmente nao suporto ela.
+}
+
+SupCalYharonQuestReward: {
+	Line1: Ah... finalmente acabou.
+	Line2: Para mim... aquele dragao... era um dos pouquissimos seres dignos de respeito.
+	Line3: Sabendo que morreria, ainda assim escolhendo permanecer firme... Mesmo que seja revivido pela Alma Aurica, o que retorna e meramente uma copia.
+	Line4: Uma pena. Ele era excelente em obediencia, enquanto voce e excelente em... hum, *sobreviver*?
+	Line5: Pegue isto. Lingote Aurico. Ja chamado de 'Ouro do Purgatorio', e o limite do poder que um mortal pode tocar.
+	Line6: E agora... e a minha vez.
+	Line7: Que tipo de piada e essa...?
+}
+
+YharonQuestUI: {
+	QuestTitle: Comissao: O Dragao da Incineracao
+	QuestDesc: Use o Machete Oni para matar Yharon, o Dragao da Incineracao.
+	AcceptText: Aceitar
+	DeclineText: Recusar
+}
+
+SupCalQuestLine: {
+	QuestCategory: Bruxa de Enxofre
+	PallbearerTitle: Comissao: Cace a Deusa Profanada
+	PallbearerSummary: Derrote a Deusa Profanada usando a Pallbearer. 80% de contribuicao necessaria.
+	DoGTitle: Comissao: Cace o Devorador de Deuses
+	DoGSummary: Derrote o Devorador de Deuses usando o Escavador de Coracoes. 80% de contribuicao necessaria.
+	YharonTitle: Comissao: Cace o Dragao da Incineracao
+	YharonSummary: Mate Yharon usando o Machete Oni. 75% de contribuicao necessaria.
+	TrackerSummonHint: Alvo ausente — invoque {0}
+	TrackerContribution: Contribuicao da arma: {0:0%}
+	TrackerRequired: Necessario: {0:0%}
+}
+
+EternalBlazingNow: {
+	Rolename2: ???Bruxa de Enxofre???
+	Line1: Voce esta brincando...
+	Line2: Eles desapareceram... Este fogo esta... *selando* o passado?!
+	Line3: Esta bruxa... seu poder realmente nao e magia comum.
+	Line4: Mesmo contra esse tipo de poder, estou confiante de que posso mata-la novamente.
+	Line5: Eu nao posso morrer... mas... isso e perto o suficiente.
+	Line6: Voce se saiu bem... Talvez... voce seja verdadeiramente o 'Escolhido da Era' que ele mencionou, o que vale a pena esperar.
+	Line7: Entao... tenho mais um pedido para voce.
+	Line8: Enquanto uma unica brasa do fogo de enxofre existir no passado ou presente deste mundo, 'eu' nao perecerei.
+	Line9: Mas minha consciencia... neste mar infinito de fogo... eventualmente sera desgastada ate nada.
+	Line10: Eu posso durar mais 30 anos, no maximo.
+	Line11: ...Entao, voce quer que *ele* a substitua?
+	Line12: Esta certo. E o unico caminho.
+	Line13: Quando minha consciencia desaparecer completamente, o mundo inteiro sera incinerado.
+	Line14: Alem disso... se voce deseja acabar com esta era, um invólucro mortal e muito frágil...
+	Line15: Absolutamente nao! Deixa-lo se tornar um monstro como voce?! So por cima do meu cadaver!
+	QuestionLine: ......
+	Choice1Text: (Parar Halibut)
+	Choice2Text: (Permanecer em silencio)
+	Choice1Line1: ...Esta e a sua escolha?
+	Choice1Line2: Eu entendo...
+
+	HelenEpilogue: {
+		EpilogueLine1: Estou esperando por um idiota.
+		EpilogueLine2: ...
+		EpilogueLine3: Bem-vindo de volta...
+	}
+
+	WitchFarewell: {
+		FarewellLine1: Nesta longa vida, vi inumeros amanheceres e fins.
+		FarewellLine2: Chamas devoram eras, mas tambem iluminam novos comecos. Pensei que desta vez nao seria excecao.
+		FarewellLine3: Nunca esperava ter um companheiro nesta estrada final.
+		FarewellLine4: Para mim... um final como este... e mais do que suficiente.
+		FarewellLine5: Sua existencia prova que esta terra nao murchou verdadeiramente.
+		FarewellLine6: Acredito que voce caminhara mais longe do que eu jamais caminhei.
+		FarewellLine7: E eu... finalmente posso descansar.
+		FarewellLine8: Nao olhe para tras. Ha coisas mais importantes adiante de voce.
+		FarewellLine9: Apenas... pense que eu finalmente alcancei meu proprio destino nesta longa jornada.
+		FarewellLine10: E entao... isso e suficiente.
+		FarewellLine11: Va em frente, peixe pequeno.
+	}
+
+	AchievementTitle: "[BE] Final: O Presente Eternamente Ardente"
+	AchievementTooltip: O passado e consumido pelo fogo; um corpo aberrante toca a eternidade.
+}
+
+SCalAltarScenario: {
+	L1: Ainda nao e hora. Ainda ha outro inimigo bloqueando seu caminho.
+	L2: Va montar aquele monte de brinquedos mecanicos seus, entao derrote-o.
+	L3: ...O que? Preciso repetir?
+}
+
+SupCalDisplayText: {
+	SummonWithProverbs: Voce... voce realmente veio usando aquele anel... Muito bem. Nao mostrarei piedade.
+	SummonWithoutProverbs: Hahaha... Este momento... aguardei por tanto tempo.
+	SummonRematchWithProverbs: Voce ainda esta usando aquele anel...
+	SummonRematchWithoutProverbs: Voce de novo... Parece que sua compreensao da morte ainda e... insuficiente.
+	StartLowHealth: Voce ja parece estar no seu ultimo suspiro.
+	StartMediumHealth: Sua tecnica ainda requer melhoria.
+	StartDefault: Que estranho. Voce ja deveria estar morto...
+	StartRematchLowHealth: Voce ja parece estar no seu ultimo suspiro.
+	StartRematchMediumHealth: Ferido? Que interessante.
+	StartRematchDefault: Que estranho. Voce ja deveria estar morto...
+	BH3WithHalibut: Empunhar tal poder... aberrante... em um invólucro mortal... Para ter chegado tao longe, voce e realmente digno de respeito.
+	BH3WithoutHalibut: Voce e habilidoso... mas quando percebera que esta meramente atacando uma pluma de fogo em vao?
+	BrothersWithHalibut: Esta na hora de conhecer minha familia. Eles falharam no caminho para se tornar... 'outro'. Nao siga o exemplo deles.
+	BrothersWithoutHalibut: Esta na hora de conhecer minha familia. Se voce morrer pelas maos de outro, eu manterei sua alma aqui.
+	Phase2WithHalibut: Voce tem certeza de que nao deseja implorar por misericordia?
+	Phase2WithoutHalibut: Voce tem certeza de que nao deseja implorar?
+	BH4Text: Fique parado e me enfrente!
+	SeekerRingText: Seu poder vem de fontes externas. Como voce esta, voce nao e nada... Isso me lembra aquele hipocrita.
+	BH5Text: As escalas da vitoria sao... incertas. Voce so precisa ficar parado por um momento para mudar isso, entendeu?
+	Sepulcher2Text: Se apenas um de nos pode viver hoje... quem voce acha que *eu quero* que seja?
+	Desperation1Text: APENAS... FIQUE... PARADO... SEU... PEIXE PEQUENO!
+	Desperation2Text: Nao fique arrogante - eu estava apenas brincando com voce antes!
+	Desperation3Text: *tosse*... *tosse*... Admito, nao estou em minha melhor forma hoje.
+	Desperation4Text: Parece... que perdi. Encontrar voce... foi realmente uma bencao.
+	Acceptance1Text: Esta... e a mais feliz que estive em cem anos...
+	Acceptance2Text: Talvez... voce realmente possa acabar com esta era amaldicoada.
+	Story1:
+		'''
+		A madeira desta besta e talhada de um caixao negro como breu enterrado por um seculo.
+		Exala um fedor de terra que simplesmente nao sai.
+		La embaixo, servia para suprimir um horror que ate eu achei dificil de lidar.
+		Contra tais coisas, a destruicao pura e sem sentido. Eles nao podem ser mortos.
+		Dispare a cunha. Pregue-os de volta a terra e force-os ao silencio.
+		Quanto a por que voce joga a besta primeiro?
+		Hah... Se o convidado nao estiver contaminado pelo cheiro do caixao, como o caixao sabera quem coletar?
+		'''
+	Story2:
+		'''
+		Esta lamina miseravel e cega porque nao corta carne - ela corta condutos.
+		Quando eu ainda era aprendiz, uma boca que nunca fechava cresceu no coracao do meu mestre.
+		Ele morreu depois, mas aquele coracao continuou batendo. A cada batida, a boca gritava,
+		e uma pessoa ao nosso redor simplesmente desaparecia.
+		Para sobreviver, tive que arrancar aquele coracao antes de sua proxima batida.
+		Ate hoje, ele anseia por ouvir o som de um coracao sendo escavado novamente.
+		'''
+	Story3:
+		'''
+		Acha pesado? Bom. Deveria ser.
+		Esta cheia de ouro excessivo e envolta em chamas de Enxofre,
+		tudo para prender as seis maos fantasmagoricas inquietas na lamina.
+		Aqueles tres idiotas tentaram se desmembrar e costurar para retardar sua propria 'recuperacao'...
+		mas acabaram como uma monstruosidade distorcida que so sabe estrangular.
+		Segure firme. Quando a supressao do Enxofre falhar, o primeiro pescoco que eles vao quebrar sera o seu.
+		Quebrar o pescoco de quem toca a lamina... esse e o unico instinto que lhes resta.
+		'''
+	Story4:
+		'''
+		Os mortais chamam isso de magia, mas eu chamo de... emprestimo.
+		Isto nao e um livro de magias; e uma gaiola de alta densidade.
+		Cada pagina sela um horror que ja silenciou cidades-estado inteiras na morte.
+		'''
+}
+
+SupCalDisplayTextByBossRush: {
+	SummonBossRush: Heh… A aura em voce quase me lembra daquele que ja pereceu ha muito tempo.
+	SummonBossRushWithProverbs: Aquele anel… ate mesmo um mero remanescente como eu pode sentir seu tremor.
+	StartBossRush: Posso ser nada mais do que uma constructo anomalo nascido da Alma Dourada… mas ha deveres que ate eu devo cumprir.
+	BH2BossRush: Sua forca e impressionante… mas ainda insuficiente.
+	BH3BossRush: As sombras do passado… ha muito reduzidas a cinzas, espalhadas no caminho que voce percorre. Heh…
+	BrothersBossRush: Estas almas… sombras de sombras. Quanto mais voce copia algo, mais triste se torna, nao acha?
+	Phase2BossRush: Mesmo uma vida fabricada pode ter algo pelo qual valha a pena lutar.
+	BH4BossRush: Fique parado! Deixe-me ver se voce pode realmente suportar o peso de uma era!
+	SeekerRingBossRush: Seu poder se assemelha demais a pessoa nas memorias dela… mera coincidencia?
+	BH5BossRush: Como uma criacao anomala, meu proposito e enfrentar exatamente este momento.
+	Sepulcher2BossRush: A provacao final comeca agora… mostre-me se voce e digno de carregar o caminho dela adiante.
+	Desperation1BossRush: Mesmo um fragmento…
+	Desperation2BossRush: Nao assuma que a vitoria e sua ainda…
+	Desperation3BossRush: Heh… a vida de uma sombra era fragil desde o comeco…
+	Desperation4BossRush: Voce venceu… mas a jornada dela esta longe de acabar.
+	Acceptance1BossRush: Talvez… era aqui que eu sempre deveria terminar.
+	Acceptance2BossRush: Boa sorte… peixe pequeno.
+}
+
+SupCalDisplayTextNormal: {
+	SummonText: Este mar de fogo de enxofre... ate mesmo um espirito vingativo sentiria a escaldao, nao sentiria?
+	SummonRematchText: Prove para mim. Sobreviva.
+	StartText: Invólucros mortais sao sempre tao frágeis neste calor... ou talvez, voce possa me surpreender?
+	StartRematchText: Ainda nao foi reduzido a cinzas? Entao vamos comecar novamente, ate que voce seja forjado em aco... ou reduzido a cinzas.
+	BH2Text: Voce ainda nao desabou nas chamas... voce queima mais devagar do que eu imaginava.
+	BH2RematchText: Admito que voce possui alguma coragem, mas sua habilidade ainda e muito insuficiente.
+	BH3Text: Voce viajou todo este caminho, apenas para submeter aquela estrutura mortal a dor?
+	BH3RematchText: A ultima vez que desencadeei tamanha calamidade foi ha um seculo. Voce deseja experimenta-la tambem?
+	BrothersText: Eles ja queimaram tudo por causa daquele caminho... Agora, deixe estas cinzas medirem seu valor.
+	BrothersRematchText: Talvez sejam apenas cascas vazias com um fragmento de alma, mas sao mais do que suficientes para lidar com voce.
+	Phase2Text: Daqui para frente... as chamas nao serao mais contidas. Nao morra muito rapido.
+	Phase2RematchText: Mais uma vez, vamos comecar.
+	BH4Text: Nao pense que pode escapar do meu alcance!
+	BH4RematchText: Estou curiosa... voce aprendeu algo com nosso primeiro encontro?
+	SeekerRingText: Como voce desviou disso? Nao era assim que deveria ser... Pare!
+	SeekerRingRematchText: Pelo menos meu julgamento nao estava errado...
+	BH5Text: Admito que a batalha ate agora foi mera crianca brincando. Agora, darei meu melhor!
+	BH5RematchText: ...Nao e emocionante?
+	Sepulcher2Text: Se apenas um de nos pode sobreviver a isto... quem voce acha que *eu desejo* que seja?
+	Sepulcher2RematchText: Preste atencao. O tumulo rastejante se aproxima... e anseia por um novo inquilino.
+	Desperation1Text: APENAS PARE!
+	Desperation2Text: Se eu falhar aqui, entao qual foi o sentido de tudo isso?!
+	Desperation3Text: Alguem ja percorreu seu caminho ate o fim. E um beco sem saida... O que faz voce pensar que *voce* pode ser diferente?!
+	Desperation4Text: Se voce meramente repetir a loucura dele, voce nao passara de cinzas frescas entre estas brasas!
+	Acceptance1Text: Eu me queimei nesta forma inumana, unicamente para encontrar aquele vislumbre de esperanca...
+	Acceptance2Text: Nao tenho mais forcas para ficar de pe...
+	Acceptance3Text: Uma aberracao como voce... talvez voce realmente possa esculpir... um futuro que nem eu jamais vi.
+	Desperation1RematchText: Uma performance impressionante. Voce lutou bem.
+	Desperation2RematchText: Sem duvida, sua forca cresce a cada momento que passa.
+	Desperation3RematchText: Espero verdadeiramente que voce nao repita nossos erros.
+	Desperation4RematchText: Se voce pode forjar um novo caminho... entao ainda ha esperanca para tudo.
+}
+
+EternalBlazingNowNoHelen: {
+	Line1: ......Ha muito tempo que alguem nao chega tao longe.
+	Line2: Nao morrerei... mas isso esta perto o suficiente.
+	Line3: Voce se saiu bem... talvez, voce seja verdadeiramente o "unico desta era" que ele mencionou, o que vale a pena esperar.
+	Line4: Portanto, tenho um ultimo pedido para voce.
+	Line5: Enquanto uma unica brasa do Fogo de Enxofre existir no passado e presente deste mundo, "eu" nao perecerei.
+	Line6: Mas minha consciencia sera gradualmente erodida dentro deste mar infinito de fogo.
+	Line7: Se nao tivesse conhecido voce, eu poderia ter resistido por trinta anos no maximo.
+	Line8: Este e o unico caminho.
+	Line9: Uma vez que minha consciencia se dissipe completamente, o mundo inteiro sera reduzido a cinzas.
+	Line10: Alem disso, se voce pretende dar fim a esta era, um invólucro mortal e muito frágil.
+}

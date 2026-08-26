@@ -103,8 +103,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
                 //搬家跳过箱子
                 if (VaultUtils.isServer) {
                     OldDukeCampsite.GenerateCampsite(PosInWorld, isRelocation: true);
-                    ModPacket packet = CWRMod.Instance.GetPacket();
-                    packet.Write((byte)CWRMessageType.OldDukeCampsiteSync);
+                    ModPacket packet = CWRNetWork.GetPacket<OldDukeCampsiteSyncNet>();
                     packet.Write(true);
                     packet.WriteVector2(PosInWorld);
                     packet.Send();

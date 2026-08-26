@@ -22,11 +22,33 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z2
             int bridges = Z2Rooms.BuildBrokenBridges(ctx, OldNetMetrics.BrokenBridgeCount);
             int arks = Z2Rooms.BuildDataArks(ctx, OldNetMetrics.DataArkCount);
             int stacks = Z2Rooms.BuildCoolantStacks(ctx, OldNetMetrics.CoolantStackCount);
+            //静默哨雷（04 固定威胁，P55 执行）：贴糖检查在 TryPlace 内自查
+            ctx.Scatter.Add(new OldNetScatterEntry {
+                Name = "mine-sentry",
+                Target = OldNetMetrics.MineCountRuin,
+                DedupeDist = OldNetMetrics.MineDedupeDist,
+                SurfaceAnchored = true,
+                TryPlace = OldNetSentryMineTile.TryPlaceNearLoot,
+            });
             OldNetZoneCommon.PlaceFloatingSlabs(ctx.Area.Left + 20, ctx.Area.Right - 20,
                 55, 95, Z2Style.FloorBrick);
             int rooms = OldNetZoneCommon.HangRoomsForBand(ctx, 2,
                 Z2Style.RoomBrick, Z2Style.RoomWall, roomsPerLanding: 4, nodeChance: 0.5f);
+            //金库先于深层挂房抢位（点子7）：深层挂房链 TryPlace 自动绕行缩房
+            BuildDeepVault(ctx);
             rooms += BuildDeepRooms(ctx);
+            //主控破译矩阵（P2 旗舰）：唯一控制台落深井平台厅
+            PlaceCipherVault();
+            //遗物陈设层（P55 执行）：废墟带以屏堆/数据瓮为主，设施残骸的年代口径
+            ctx.Scatter.Add(new OldNetScatterEntry {
+                Name = "relic-z2",
+                Target = OldNetMetrics.RelicScatterZ2,
+                DedupeDist = 12,
+                SurfaceAnchored = true,
+                TryPlace = static (x, y) => OldNetRelicTile.TryWrite(x, y, OldNetRelicTile.RollStyle(2)),
+            });
+            //语义房补边（点子7）：厅节点已全部入图，此刻按最近厅结边防 IsConnected 误报
+            LinkPrefabEdges(ctx);
             //带界立牌：西缘一块告示（引导语义，Dungeonworld PlaceSign 先例）
             OldNetZoneCommon.PlaceBoundarySign(ctx.Area.Left + 4, OldNetTexts.OldNetSignRuin.Value);
             CWRMod.Instance.Logger.Info(
@@ -155,11 +177,46 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z2
                 OldNetRoomBuilder.CarveCorridor(corridor.Left, corridor.Right,
                     shaft.Landing.Bottom, Z2Style.RoomWall);
                 ctx.Grid.MarkUnchecked(corridor);
+                //语义房入图（点子7）：既有两间 prefab 认领 Machine/Archive 身份并登记走廊开口。
+                //厅节点此刻尚未入图（HangRoomsForBand 在后执行），补边统一放 PlanAndBuild 末尾。
+                //注：prefab 壳厚 1 与 RoomShellThick=2 推导差 1 格，SeedTurrets 吊装位因此低 1 格，视觉可接受
+                var roleNode = new OldNetRoomNode {
+                    Bounds = area,
+                    Role = prefab == Z2Prefabs.RackRoom
+                        ? OldNetRoomRole.Machine : OldNetRoomRole.Archive,
+                };
+                roleNode.Sockets.Add(new OldNetDoorSocket(OldNetSocketSide.Left,
+                    new Rectangle(left, shaft.Landing.Bottom - 3, 1, 3)));
+                ctx.Graph.Rooms.Add(roleNode);
                 stamped++;
                 CWRMod.Instance.Logger.Info(
                     $"[OldNet] prefab {prefab.Name}@({left},{top}) slots={placedSlots} rejected={rejected}");
             }
             return stamped;
+        }
+
+        //──────────── 主控破译矩阵（P2）：深井平台厅地板中央，每潜唯一 ────────────
+
+        private static void PlaceCipherVault() {
+            int vaultType = ModContent.TileType<OldNetCipherVaultTile>();
+            foreach (OldNetShaft shaft in OldNetPlans.Shafts) {
+                if (!shaft.Deep) {
+                    continue;
+                }
+                //厅内膛 [Top,Bottom) 半开：Bottom 即地板行，Bottom-1 是地板上第一行空位
+                int y = shaft.Landing.Bottom - 1;
+                for (int k = 0; k < shaft.Landing.Width - 4; k++) {
+                    //自中央向两侧扫位：中央被占就近让位
+                    int x = shaft.Landing.Center.X + (k % 2 == 0 ? k / 2 : -(k / 2 + 1));
+                    if (OldNetNodeBudget.WriteNodeTile(x, y, vaultType)) {
+                        OldNetPlans.Budget.VaultPlaced++;
+                        CWRMod.Instance.Logger.Info($"[OldNet] cipher vault @({x},{y})");
+                        return;
+                    }
+                }
+            }
+            //理论不发生（P20 恒凿 1 口深井）：fail loud 不放置
+            CWRMod.Instance.Logger.Warn("[OldNet] cipher vault 未放置：无可用深井平台厅");
         }
 
         //──────────── 深层机房：深井落点挂大房 ────────────
@@ -175,6 +232,90 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Zones.Z2
                     new Point(10, 6), new Point(18, 8), nodeChance: 0.75f);
             }
             return built;
+        }
+
+        //──────────── 金库（点子7）：深井厅左侧的被搬空冷库，Role=Vault ────────────
+
+        private static void BuildDeepVault(OldNetBuildContext ctx) {
+            OldNetPrefab prefab = Z2Prefabs.VaultRoom;
+            int built = 0;
+            foreach (OldNetShaft shaft in OldNetPlans.Shafts) {
+                if (!shaft.Deep || built >= OldNetMetrics.VaultRoomCount) {
+                    continue;
+                }
+                Rectangle landing = shaft.Landing;
+                //盖章行位使 D 门洞（prefab 行 7-9）对齐走廊行 [Bottom-3,Bottom)，
+                //金库底壳因此比厅地板深 1 行，读作更重的埋深
+                int top = landing.Bottom - 10;
+                for (int attempt = 0; attempt < 8; attempt++) {
+                    int gap = WorldGen.genRand.Next(6, 15);
+                    int left = landing.Left - OldNetMetrics.RoomShellThick - gap - prefab.Width;
+                    Rectangle area = prefab.Area(left, top);
+                    if (!ctx.Grid.TryReserve(area, OldNetMetrics.RoomPadding)) {
+                        continue;
+                    }
+                    prefab.StampGeometry(left, top,
+                        Z2Style.RoomBrick, Z2Style.RoomWall, Z2Style.PlatformFrameY);
+                    (int placedSlots, int rejected) = prefab.PlaceSlots(left, top);
+                    //走廊自金库右壁穿到厅内（挂厅左侧，镜像 HangRoomsOffLanding 左链算式）
+                    var corridor = new Rectangle(left + prefab.Width - 3, landing.Bottom - 3,
+                        landing.Left + 3 - (left + prefab.Width - 3), 3);
+                    OldNetRoomBuilder.CarveCorridor(corridor.Left, corridor.Right,
+                        landing.Bottom, Z2Style.RoomWall);
+                    ctx.Grid.MarkUnchecked(corridor);
+                    //入图：Vault 语义 + 右壁开口 socket。金库壳厚 2 与 RoomShellThick 一致，
+                    //FloorTop=厅地板行(540) ≥ UnderShallowBottom(460)，director 深层判定命中=哨塔必装
+                    var vaultNode = new OldNetRoomNode { Bounds = area, Role = OldNetRoomRole.Vault };
+                    vaultNode.Sockets.Add(new OldNetDoorSocket(OldNetSocketSide.Right,
+                        new Rectangle(left + prefab.Width - 2, landing.Bottom - 3, 2, 3)));
+                    ctx.Graph.Rooms.Add(vaultNode);
+                    built++;
+                    CWRMod.Instance.Logger.Info(
+                        $"[OldNet] 金库@({left},{top}) slots={placedSlots} rejected={rejected}");
+                    break;
+                }
+            }
+            if (built == 0) {
+                CWRMod.Instance.Logger.Warn("[OldNet] 金库落位失败（深井厅左侧无空间或无深井）");
+            }
+        }
+
+        //──────────── 语义房补边：Machine/Archive/Vault 按最近厅节点结边 ────────────
+        //图数据 gen 期专用，运行时唯一消费者是权威端 director（SeedTurrets 豁免先例）。
+        //TODO MP: 未来新增 Role 消费者必须走"权威端裁决+实体同步"路径，客户端无此数据
+
+        private static void LinkPrefabEdges(OldNetBuildContext ctx) {
+            int linked = 0;
+            for (int idx = 0; idx < ctx.Graph.Rooms.Count; idx++) {
+                OldNetRoomNode room = ctx.Graph.Rooms[idx];
+                if (room.Role is not (OldNetRoomRole.Machine
+                    or OldNetRoomRole.Archive or OldNetRoomRole.Vault)) {
+                    continue;
+                }
+                int best = -1;
+                long bestDist = long.MaxValue;
+                for (int k = 0; k < ctx.Graph.Rooms.Count; k++) {
+                    if (ctx.Graph.Rooms[k].Role != OldNetRoomRole.Landing) {
+                        continue;
+                    }
+                    Point a = room.Bounds.Center;
+                    Point b = ctx.Graph.Rooms[k].Bounds.Center;
+                    long dist = (long)(a.X - b.X) * (a.X - b.X) + (long)(a.Y - b.Y) * (a.Y - b.Y);
+                    if (dist < bestDist) {
+                        bestDist = dist;
+                        best = k;
+                    }
+                }
+                if (best >= 0) {
+                    ctx.Graph.AddEdge(best, idx);
+                    linked++;
+                }
+                else {
+                    CWRMod.Instance.Logger.Warn(
+                        $"[OldNet] 语义房无厅可结边 Role={room.Role}@{room.Bounds}");
+                }
+            }
+            CWRMod.Instance.Logger.Info($"[OldNet] 语义房入图补边 linked={linked}");
         }
     }
 }

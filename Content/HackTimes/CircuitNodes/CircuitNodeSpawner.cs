@@ -1,10 +1,15 @@
 using CalamityOverhaul.Content.HackTimes.Protocols;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.Actors;
+using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
 {
@@ -12,7 +17,9 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
     /// 电路节点布设器：Actor 不随世界持久化，每次进世界后由本系统在
     /// <see cref="PostUpdateWorld"/> 里渐进扫描落点并重新布设（刻意不动现有 worldgen 文件）。<br/>
     /// 布点偏好：实验室板材（Calamity 实验室）舱内地板放炮台；
-    /// 地表远离出生点与住区的平地立信号塔，塔侧再配一两台炮台读作机械废墟。<br/>
+    /// 地表远离出生点、住区与玩家建筑的平地立信号塔，塔侧再配一两台炮台读作机械废墟。<br/>
+    /// 可拆规则（#67/#118）：玩家填埋本体或挖空基座即视作拆除，锚列写入世界存档的
+    /// 禁布名单，重扫时跳过，不再重布；名单只在权威端读写。<br/>
     /// 同时兼任电路节点族的本地化文本挂点（HackCircuit 类目）
     /// </summary>
     internal class CircuitNodeSpawner : ModSystem, ILocalizedModType
@@ -84,6 +91,14 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
         private const int PlayerKeepOut = 90;
         private const int TownKeepOut = 60;
         private const int LabTurretSpacing = 40;
+        //玩家建筑避让半径（格）：落点周围此半径内检出住房墙面或家具即放弃该点
+        private const int BuildingKeepOut = 48;
+        //禁布名单命中半径（格）：重扫的候选列受玩家/城镇位置影响会漂移几列，
+        //按邻近匹配而不是精确列号；塔取大半径覆盖整片废墟，炮台取小半径只封本机位
+        private const int TowerBanRadius = 48;
+        private const int TurretBanRadius = 24;
+        //拆除监视的检查间隔（帧）
+        private const int DemolishCheckInterval = 30;
 
         private static int scanCursorX;
         private static int scanStartX;
@@ -94,6 +109,19 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
         private static int lastLabTurretX = int.MinValue;
         private static readonly List<Point> towerSpots = [];
         private static readonly List<int> labTileTypes = [];
+
+        //已拆除布点的禁布名单：按类别记锚列 X，随世界存档持久化（权威端专属）
+        private static readonly List<int> bannedTowerX = [];
+        private static readonly List<int> bannedTurretX = [];
+        private static readonly List<int> bannedLabX = [];
+
+        //本次会话的布点登记：拆除监视据此巡查，命中后回写对应名单
+        private readonly record struct PlacedSpot(List<int> BanList, int AnchorX, Actor ActorRef);
+        private static readonly List<PlacedSpot> placedSpots = [];
+        private static int demolishTimer;
+
+        //住房家具集合（椅/桌/门/光源），懒构建；命中即视作玩家房屋组件
+        private static HashSet<int> housingFurniture;
 
         private static int TowerBudget => Math.Clamp(Main.maxTilesX / 1500, 2, 5);
         private static int LabTurretBudget => 8;
@@ -119,6 +147,10 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
 
         public override void OnWorldUnload() {
             ResetScanState();
+            //禁布名单属上一个世界，此处清空；下个世界由 LoadWorldData 重建（无档则保持空）
+            bannedTowerX.Clear();
+            bannedTurretX.Clear();
+            bannedLabX.Clear();
             //协议的 per-effect 静态账属于上一个世界，清账集中在这里
             TurretMesh.ClearMeshes();
             BeaconForge.ClearBeacons();
@@ -135,11 +167,51 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
             placedLabTurrets = 0;
             lastLabTurretX = int.MinValue;
             towerSpots.Clear();
+            //布点登记只活一个会话；注意禁布名单不能在这里清，
+            //OnWorldLoad 晚于 LoadWorldData，清了会把刚读进来的档抹掉
+            placedSpots.Clear();
+            demolishTimer = 0;
         }
+
+        #region 世界存档：禁布名单
+        public override void SaveWorldData(TagCompound tag) {
+            //写快照副本，避免自动存档线程与拆除登记撞车
+            if (bannedTowerX.Count > 0) {
+                tag["CircuitBanTowerX"] = new List<int>(bannedTowerX);
+            }
+            if (bannedTurretX.Count > 0) {
+                tag["CircuitBanTurretX"] = new List<int>(bannedTurretX);
+            }
+            if (bannedLabX.Count > 0) {
+                tag["CircuitBanLabX"] = new List<int>(bannedLabX);
+            }
+        }
+
+        public override void LoadWorldData(TagCompound tag) {
+            bannedTowerX.Clear();
+            bannedTurretX.Clear();
+            bannedLabX.Clear();
+            if (tag.TryGet("CircuitBanTowerX", out List<int> towers)) {
+                bannedTowerX.AddRange(towers);
+            }
+            if (tag.TryGet("CircuitBanTurretX", out List<int> turrets)) {
+                bannedTurretX.AddRange(turrets);
+            }
+            if (tag.TryGet("CircuitBanLabX", out List<int> labs)) {
+                bannedLabX.AddRange(labs);
+            }
+        }
+        #endregion
 
         public override void PostUpdateWorld() {
             //PostUpdateWorld 只在单机与服务器跑，天然权威侧；客户端等 Actor 同步
-            if (placementDone || Main.gameMenu) {
+            if (Main.gameMenu) {
+                return;
+            }
+
+            WatchDemolition();
+
+            if (placementDone) {
                 return;
             }
 
@@ -186,6 +258,9 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
 
         #region 地表塔位
         private static void TrySurfaceTowerSite(int x) {
+            if (IsBannedColumn(bannedTowerX, x, TowerBanRadius)) {
+                return;
+            }
             if (!TryFindSurfaceGround(x, out int groundY)) {
                 return;
             }
@@ -195,14 +270,20 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
             if (!FarFromEverything(x, groundY, TowerSpacing)) {
                 return;
             }
+            //建筑避让放最后，它是这串校验里最贵的一项
+            if (NearPlayerBuilding(x, groundY)) {
+                return;
+            }
 
             //塔锚点：底边中心落地
             Vector2 towerPos = new(x * 16f + 8f - 15f, groundY * 16f - 96f);
-            if (ActorLoader.NewActor<SignalTowerActor>(towerPos) < 0) {
+            int towerIdx = ActorLoader.NewActor<SignalTowerActor>(towerPos);
+            if (towerIdx < 0) {
                 return;
             }
             placedTowers++;
             towerSpots.Add(new Point(x, groundY));
+            RegisterSpot(bannedTowerX, x, towerIdx);
 
             //塔侧一两台哨戒炮塔，读作一片机械废墟
             TryPlaceGuardTurret(x, -1);
@@ -215,14 +296,23 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
                 if (x < 200 || x >= Main.maxTilesX - 200) {
                     return;
                 }
+                if (IsBannedColumn(bannedTurretX, x, TurretBanRadius)) {
+                    continue;
+                }
                 if (!TryFindSurfaceGround(x, out int groundY)) {
                     continue;
                 }
                 if (!IsFlatSolid(x, groundY, 1) || !IsClearAbove(x - 1, groundY, 3, 5)) {
                     continue;
                 }
+                if (NearPlayerBuilding(x, groundY)) {
+                    continue;
+                }
                 Vector2 pos = new(x * 16f + 8f - 18f, groundY * 16f - 46f);
-                ActorLoader.NewActor<SentryTurretActor>(pos);
+                int idx = ActorLoader.NewActor<SentryTurretActor>(pos);
+                if (idx >= 0) {
+                    RegisterSpot(bannedTurretX, x, idx);
+                }
                 return;
             }
         }
@@ -248,6 +338,10 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
 
         #region 实验室炮位
         private static void TryLabTurretSite(int x) {
+            //实验室炮位不做建筑避让：落点被限死在实验室板材舱内，开档时不会有玩家建筑
+            if (IsBannedColumn(bannedLabX, x, TurretBanRadius)) {
+                return;
+            }
             int yStart = (int)Main.worldSurface;
             int yEnd = (int)(Main.maxTilesY * 0.85f);
             for (int y = yStart; y < yEnd; y += 4) {
@@ -258,9 +352,11 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
                 if (TryDropToLabFloor(x, y, out int floorY)
                     && ActorSpacingOk(x, floorY, 24)) {
                     Vector2 pos = new(x * 16f + 8f - 18f, floorY * 16f - 46f);
-                    if (ActorLoader.NewActor<SentryTurretActor>(pos) >= 0) {
+                    int idx = ActorLoader.NewActor<SentryTurretActor>(pos);
+                    if (idx >= 0) {
                         placedLabTurrets++;
                         lastLabTurretX = x;
+                        RegisterSpot(bannedLabX, x, idx);
                     }
                 }
                 return;
@@ -308,6 +404,113 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
             }
             floorY = yy;
             return true;
+        }
+        #endregion
+
+        #region 拆除监视与禁布名单
+        //Actor 没有生命值也没有受击口（玩家反馈 #67/#118 的"无法拆除"），
+        //拆除交互直接沿用玩家已有的方块动作：填埋本体或挖空基座，不发明新交互
+        private static void WatchDemolition() {
+            if (placedSpots.Count == 0 || ++demolishTimer < DemolishCheckInterval) {
+                return;
+            }
+            demolishTimer = 0;
+
+            for (int i = placedSpots.Count - 1; i >= 0; i--) {
+                PlacedSpot spot = placedSpots[i];
+                Actor actor = spot.ActorRef;
+                if (actor is not { Active: true }) {
+                    //被其他途径销毁（当前没有这种途径，防御性清账），不计入禁布
+                    placedSpots.RemoveAt(i);
+                    continue;
+                }
+                if (!SpotDemolished(actor)) {
+                    continue;
+                }
+                //视作玩家拆除：锚列入禁布名单（随世界存档），销毁实体；
+                //销毁对客户端的广播由 InnoVault Actor 网络层负责，这里不加包
+                spot.BanList.Add(spot.AnchorX);
+                DemolishFeedback(actor);
+                ActorLoader.KillActor(actor.WhoAmI);
+                placedSpots.RemoveAt(i);
+            }
+        }
+
+        /// <summary>本体中下两处采样点都被实心方块占据（填埋），或基座三格支撑全空（挖空），即视作拆除</summary>
+        private static bool SpotDemolished(Actor actor) {
+            int cx = (int)(actor.Center.X / 16f);
+            int midY = (int)(actor.Center.Y / 16f);
+            int lowY = (int)((actor.Position.Y + actor.Height - 8f) / 16f);
+            if (WorldGen.SolidTile(cx, midY) && WorldGen.SolidTile(cx, lowY)) {
+                return true;
+            }
+            //布设时 IsFlatSolid 保证过基座下三格实心，三格全空只能是有意挖除（或陨石级的地形破坏）
+            int underY = (int)((actor.Position.Y + actor.Height + 8f) / 16f);
+            for (int dx = -1; dx <= 1; dx++) {
+                if (WorldGen.SolidTile(cx + dx, underY)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        //拆除反馈：单机与本地主机可见的火花与闷响；远端客户端只看到实体消失，本次不为演出加包
+        private static void DemolishFeedback(Actor actor) {
+            if (Main.dedServ) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.NPCDeath14 with { Volume = 0.5f, Pitch = -0.3f }, actor.Center);
+            for (int i = 0; i < 12; i++) {
+                Vector2 vel = new(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-3.5f, -0.5f));
+                PRTLoader.NewParticle<PRT_Spark>(actor.Center + Main.rand.NextVector2Circular(12f, 16f),
+                    vel, new Color(120, 200, 255), 0.7f)?.Configure(true, 24);
+            }
+        }
+
+        private static void RegisterSpot(List<int> banList, int anchorX, int actorIdx) {
+            Actor actor = ActorLoader.Actors?[actorIdx];
+            if (actor?.Active == true) {
+                placedSpots.Add(new PlacedSpot(banList, anchorX, actor));
+            }
+        }
+
+        private static bool IsBannedColumn(List<int> banList, int x, int radius) {
+            for (int i = 0; i < banList.Count; i++) {
+                if (Math.Abs(banList[i] - x) < radius) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 落点周边 <see cref="BuildingKeepOut"/> 半径内是否存在玩家建筑。<br/>
+        /// 判据取原版住房惯例：计入住房的墙面（<see cref="Main.wallHouse"/>，天然墙的 Unsafe 变体不在其列）
+        /// 或住房家具（椅/桌/门/光源）。天然结构里活树墙、雪原小屋会误中，代价只是少布一两个点，可接受
+        /// </summary>
+        private static bool NearPlayerBuilding(int cx, int cy) {
+            housingFurniture ??= [
+                .. TileID.Sets.RoomNeeds.CountsAsChair,
+                .. TileID.Sets.RoomNeeds.CountsAsTable,
+                .. TileID.Sets.RoomNeeds.CountsAsDoor,
+                .. TileID.Sets.RoomNeeds.CountsAsTorch,
+            ];
+            int x0 = Math.Max(20, cx - BuildingKeepOut);
+            int x1 = Math.Min(Main.maxTilesX - 20, cx + BuildingKeepOut);
+            int y0 = Math.Max(20, cy - BuildingKeepOut);
+            int y1 = Math.Min(Main.maxTilesY - 20, cy + BuildingKeepOut);
+            for (int i = x0; i <= x1; i++) {
+                for (int j = y0; j <= y1; j++) {
+                    Tile tile = Main.tile[i, j];
+                    if (tile.WallType > 0 && Main.wallHouse[tile.WallType]) {
+                        return true;
+                    }
+                    if (tile.HasTile && housingFurniture.Contains(tile.TileType)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
         #endregion
 

@@ -52,7 +52,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
             }
 
             if (head == null) {
-                return false;
+                //分裂期兜底:头节丢失时按"池主"聚合场上全部世吞节段的生命,
+                //血条不再整根消失(反馈十三·#101)。有 realLife 的节只数池主一次,独立节直接计
+                float sumLife = 0f;
+                float sumMax = 0f;
+                foreach (var n in Main.ActiveNPCs) {
+                    if (n.type != NPCID.EaterofWorldsHead && n.type != NPCID.EaterofWorldsBody
+                        && n.type != NPCID.EaterofWorldsTail) {
+                        continue;
+                    }
+                    if (n.realLife >= 0 && n.realLife < Main.maxNPCs && n.realLife != n.whoAmI
+                        && Main.npc[n.realLife].active) {
+                        continue;
+                    }
+                    sumLife += Utils.Clamp(n.life, 0f, n.lifeMax);
+                    sumMax += n.lifeMax;
+                }
+                if (sumMax <= 0f) {
+                    return false;
+                }
+                life = sumLife;
+                lifeMax = sumMax;
+                shield = 0f;
+                shieldMax = 0f;
+                return true;
             }
 
             life = Utils.Clamp(head.life, 0f, head.lifeMax);

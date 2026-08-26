@@ -176,8 +176,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         }
 
         private static void SyncShrineToClients() {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.ToriiShrineSync);
+            ModPacket packet = CWRNetWork.GetPacket<ToriiShrineSyncNet>();
             packet.Write(IsGenerated);
             if (IsGenerated) {
                 packet.WriteVector2(ShrinePosition);
@@ -431,5 +430,11 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 GenerateShrine(groundPos);
             }
         }
+    }
+
+    /// <summary>鸟居神社权威世界态下发信道</summary>
+    internal sealed class ToriiShrineSyncNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => ToriiShrine.ReceiveShrineSync(reader);
     }
 }

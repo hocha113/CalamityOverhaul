@@ -1,0 +1,320 @@
+FirstMetSupCal: {
+	Rolename1: ???
+	Rolename2: Schwefelfeuer-Hexe
+	Line1: Ich hätte nicht erwartet, dass Sie meine ‚Schwester‘ so bald töten.
+	Line2: Sie wachsen … schneller als erwartet.
+	Line3: Ich kenne Sie … Sie sind …
+	Line4: Die Schwefelfeuer-Hexe?! Die, die die Hälfte des Meeres verbrannte?!
+	Line5: Ha?! Heh … dass jemand … oder irgendein*Fisch* … mich erkennt. Ihr seid amüsant, das gebe ich zu.
+	Line6: …Aber warum leben Sie? Ich erinnere mich deutlich – die Schwefelfeuer-Hexe starb … im letzten Jahrhundert.
+	Line7: Ein interessanter Fisch. Mein Bewusstsein wurde längst ins Schwefelfeuer geschmiedet. Dieser Körper … nur eine Leiche, die die Flammen steuern.
+	Line8: …Ein lebendiges Bewusstsein in einem unmenschlichen Gefäß, durch ein Medium an die Welt gebunden … Sie sind zu einer … Anomalie geworden?!
+	Line9: Ihre Ebene ist zu niedrig. Sie können meinen Zustand unmöglich begreifen.
+	Line10: Außerdem bin ich nicht deswegen hier …
+	QuestionLine: Nun … was ist Ihre Wahl?
+	Choice1Text: (Waffe ziehen)
+	Choice2Text: (Schweigen)
+	Choice1Response: Dann lasst mich euren Wert abwägen.
+	Choice2Response: …Echter Kleinfisch. Nun, nehmt dies als Begrüßungsgeschenk. Wir sehen uns wieder.
+	NoFishLine1: Sie töteten meine ‚Schwester‘ viel früher als erwartet – und kamen allein?
+	NoFishLine2: Sie werden stärker, als ich dachte.
+	NoFishLine3: Fragt ihr, warum ich noch lebe? Ihr berührt offenbar Wahrheiten, die ihr nicht kennen solltet.
+	NoFishLine4: Mein Bewusstsein wurde längst ins Schwefelfeuer geschmolzen. Dieser Körper … nur eine Leiche, die die Flammen steuern.
+	NoFishLine5: Doch es ist sinnlos. Eure Ebene ist zu niedrig, um meinen Zustand zu fassen.
+	NoFishLine6: Natürlich erschien ich nicht, um solche Kleinigkeiten zu erklären.
+}
+
+SupCalMoonLordReward: {
+	Line1: Hahaha …
+	Line2: So weit ist er gefallen.
+	Line3: Haben Sie eine Ahnung, wie es gerade im Untergrund aussieht?
+	Line4: …Also, warum sind Sie diesmal hier?
+	Line5: Ein kleines Spielzeug für Sie. Und ein kleiner Auftrag.
+	Line6: Eine kleine Armbrust. Nehmen Sie sie und töten Sie das … *Ding* … das da unten erbärmlich Geothermie absaugt. Und denken Sie daran – Sie *müssen* diese Armbrust benutzen.
+	Line7: Gelingt es, kann unsere … ‚Zusammenarbeit‘ … weitergehen.
+}
+
+SupCalDefeat: {
+	Rolename2: Halibut&[Name]
+	Line1: Schon diese Stufe erreicht … Heh. Ich war unterlegen.
+	Line2: Aber ihr seid nicht die Stärksten. Ihr seid gut – doch *er* ist euch sicher nicht nachstehend.
+	Line3: Yharim ist jenen Weg bis zum Ende gegangen, hat die Grenze des Terrarianers erreicht. Niemand ist stärker.
+	Line4: Schade, dass ihr euch nicht treffen könnt …
+	Line5: Eure Ebene ist zu niedrig. Ihr werdet meinen Zustand nie begreifen.
+	Line6: …Meine Ebene ist zu niedrig?
+	Line7: (So lange gelebt – und zum ersten Mal heißt es, meine ‚Ebene‘ sei niedrig.)
+	Line8: Ich bin das Einzige, das von einer ganzen Ära hervorgebracht wurde. Seit ich es wagte, meine terrarianische Identität abzulegen und mich selbst zum Gott zu erklären, bin ich natürlich allmächtig.
+	Line9: Yharim könne mich ‚wägen‘? Dafür bräuchte es einen Xylos.
+	Line10: ......
+}
+
+SupCalPlayerDefeat: {
+	Line1: Bei Berührung zerbricht ihr – seid ihr aus Papier?
+	Line2: Ich dachte, ich hätte ein Spielzeug gefunden, das im Feuer etwas länger hält.
+	Line3: Ich überschätzte euch. Euer heutiges Kaliber … nicht einmal als Aufwärmen würdig.
+	Line4: Kommt zurück, wenn ihr stark genug seid, meinen Blick zu verdienen.
+	Line5: Allerdings … habt ihr *etwas* Mut.
+	Line6: Ein Sterblicher, der es wagt, mir ins Auge zu blicken, geschweige denn die Klinge zu ziehen … ihr seid der Erste.
+	Line7: (Verschwindet in einem Flammenwirbel)
+	Line8: Hätte ich das neunte Auge geöffnet, Konsequenzen egal … ich hätte eine Chance gehabt. Wenn es darauf ankäme …
+	Line9: Seufz …
+}
+
+SupCalVictory: {
+	Line1: Was … wie ist das möglich!
+	Line2: Ihr … ihr habt mich besiegt?!
+	Line3: Unmöglich … das ist absolut unmöglich …
+	Line4: Ich habe die Grenzen eines Terrarianers längst überschritten …
+	Line5: …Anscheinend habe ich euch wirklich unterschätzt.
+	Line6: Aber das ist nicht das Ende. Ich komme zurück.
+	Line7: Nächstes Mal … nächstes Mal werde ich nicht so nachlässig sein!
+	Line8: …Sie floh.
+}
+
+PallbearerQuestUI: {
+	QuestTitle: Auftrag: Jagd auf die geschändete Göttin
+	QuestDesc: Besiege die geschändete Göttin nur mit dem Sargträger
+	AcceptText: Annehmen
+	DeclineText: Ablehnen
+}
+
+SupCalQuestReward: {
+	Line1: Gut gemacht.
+	Line2: Diese Armbrust steht dir.
+	Line3: Du hast mir ein Problem gelöst.
+	Line4: Als Belohnung gehört das dir.
+	Line5: Und diese Klinge. Nimm sie und töte diesen … *Wurm*. Keine Sorge, die Bezahlung wird noch großzügiger.
+	Line6: Ich habe einen Teil meiner Schwefelfeuer-‚Präsenz‘ darauf gelegt. Es sollte dir leichter fallen.
+	Line7: ......
+}
+
+DoGQuestUI: {
+	QuestTitle: Auftrag: Der Verschlinger der Götter
+	QuestDesc: Besiege den Verschlinger der Götter mit dem Herzschnitzer
+	AcceptText: Annehmen
+	DeclineText: Ablehnen
+}
+
+SupCalDoGQuestReward: {
+	Line1: Sauber erledigt.
+	Line2: Diese Klinge … befriedigend wie immer.
+	Line3: Als ich noch sterblich war, schnitzte ich damit das Herz meines Meisters heraus. Funktioniert gut, nicht wahr?
+	Line4: Nimm sie.
+	Line5: Habt ihr je überlegt … was ihr täte, wenn mein nächster Auftrag wäre, *mich* zu töten?
+	Line6: Schade. Ihr und er werdet euch nie begegnen. Ihr hättet so viel zu besprechen gehabt.
+	Line7: ……Ich ertrage sie wirklich nicht mehr.
+}
+
+SupCalYharonQuestReward: {
+	Line1: Ah … endlich vorbei.
+	Line2: Für mich … war jener Drache … eines der wenigen Wesen, die Respekt verdienen.
+	Line3: Zu wissen, dass man stirbt, und trotzdem zu stehen … Selbst mit Auric-Seele wiederbelebt, ist die Rückkehr nur eine Kopie.
+	Line4: Schade. Er war Meister der Gehorsamkeit – ihr seid Meister des … hm, *Überlebens*?
+	Line5: Nehmt das. Auric-Barren. Einst ‚Gold des Fegefeuers‘ genannt – die Grenze der Macht, die ein Sterblicher berühren kann.
+	Line6: Und jetzt … bin ich dran.
+	Line7: Was für ein Scherz ist das …?
+}
+
+YharonQuestUI: {
+	QuestTitle: Auftrag: Der Weltverbrenner
+	QuestDesc: Töte Yharon, den Weltverbrenner, mit der Oni-Machete
+	AcceptText: Annehmen
+	DeclineText: Ablehnen
+}
+
+SupCalQuestLine: {
+	QuestCategory: Schwefelfeuer-Hexe
+	PallbearerTitle: Auftrag: Jagd auf die geschändete Göttin
+	PallbearerSummary: Besiege die geschändete Göttin mit dem Sargträger. Beitrag: 80 %
+	DoGTitle: Auftrag: Jagd auf den Verschlinger der Götter
+	DoGSummary: Besiege den Verschlinger der Götter mit dem Herzschnitzer. Beitrag: 80 %
+	YharonTitle: Auftrag: Jagd auf den Weltverbrenner
+	YharonSummary: Töte Yharon mit der Oni-Machete. Beitrag: 75 %
+	TrackerSummonHint: Ziel nicht anwesend — beschwöre {0}
+	TrackerContribution: Waffenbeitrag: {0:0%}
+	TrackerRequired: Erforderlich: {0:0%}
+}
+
+EternalBlazingNow: {
+	Rolename2: ???Schwefelfeuer-Hexe???
+	Line1: Sie machen Witze …
+	Line2: Die Gestalten der Vergangenheit sind verschwunden … versiegelt dieses Feuer die Vergangenheit?!
+	Line3: Diese Hexe … ihre Kraft ist wahrlich keine gewöhnliche Magie.
+	Line4: Aber selbst im Kampf gegen eine solche Macht bin ich zuversichtlich, dich noch einmal sterben zu lassen.
+	Line5: Ich kann nicht sterben … aber … es reicht fast.
+	Line6: Ihr habt gut geleistet … Vielleicht seid ihr wirklich das ‚Einzige dieser Ära‘, von dem er sprach und auf das zu warten sich gelohnt hat.
+	Line7: Also … habe ich eine letzte Bitte an euch.
+	Line8: Solange in Vergangenheit und Gegenwart dieser Welt eine Glut Schwefelfeuer glimmt, werde ‚ich‘ nicht untergehen.
+	Line9: Doch mein Bewusstsein … in diesem endlosen Feuermeer … wird allmählich aufgerieben.
+	Line10: Höchstens dreißig Jahre halte ich noch durch.
+	Line11: …Also wollt ihr, dass *er* euch ablöst?
+	Line12: Richtig. Es ist der einzige Weg.
+	Line13: Verschwindet mein Bewusstsein ganz, wird die ganze Welt verbrannt.
+	Line14: Außerdem … wollt ihr diese Ära beenden, ist ein sterbliches Gefäß viel zu zerbrechlich …
+	Line15: Auf keinen Fall! Soll er ein Monster wie du werden?! Nur über meine Leiche!
+	QuestionLine: ......
+	Choice1Text: (Halibut aufhalten)
+	Choice2Text: (Schweigen)
+	Choice1Line1: …Das ist eure Wahl?
+	Choice1Line2: Ich verstehe …
+
+	HelenEpilogue: {
+		EpilogueLine1: Ich warte auf einen Idioten.
+		EpilogueLine2: …
+		EpilogueLine3: Willkommen zurück …
+	}
+
+	WitchFarewell: {
+		FarewellLine1: In diesem langen Leben sah ich unzählige Morgenröten und Enden.
+		FarewellLine2: Flammen verschlingen Ären, erhellen aber auch neue Anfänge. Ich dachte, diesmal wäre es nicht anders.
+		FarewellLine3: Ich hätte nicht erwartet, auf diesem letzten Weg Begleitung zu haben.
+		FarewellLine4: Für mich … ein Ende wie dieses … ist mehr als genug.
+		FarewellLine5: Eure Existenz beweist, dass dieses Land nicht wirklich verdorrt ist.
+		FarewellLine6: Ich glaube, ihr werdet weiter gehen, als ich es je tat.
+		FarewellLine7: Und ich … kann endlich ruhen.
+		FarewellLine8: Schaut nicht zurück. Wichtigeres wartet vor euch.
+		FarewellLine9: Denkt einfach … ich habe auf dieser langen Reise endlich mein Ziel erreicht.
+		FarewellLine10: Damit … ist genug.
+		FarewellLine11: Geht, Kleinfisch.
+	}
+
+	AchievementTitle: BE-Ende: Die ewig brennende Gegenwart
+	AchievementTooltip: Die Vergangenheit wird vom Feuer verschlungen; ein abweichender Körper berührt die Ewigkeit.
+}
+
+SCalAltarScenario: {
+	L1: Es ist noch nicht Zeit. Ein weiterer Feind blockiert euren Weg.
+	L2: Setzt euren Haufen mechanischer Spielzeuge zusammen und besiegt ihn.
+	L3: …Was? Soll ich mich wiederholen?
+}
+
+SupCalDisplayText: {
+	SummonWithProverbs: Ihr … ihr kamt wirklich mit diesem Ring … Gut. Ich werde keine Gnade zeigen.
+	SummonWithoutProverbs: Hahaha … Dieser Moment … ich habe so lange darauf gewartet.
+	SummonRematchWithProverbs: Ihr tragt den Ring noch immer …
+	SummonRematchWithoutProverbs: Schon wieder ihr … Euer Verständnis des Todes ist offenbar noch … unzureichend.
+	StartLowHealth: Ihr seht bereits am Ende aus.
+	StartMediumHealth: Eure Technik braucht noch Verbesserung.
+	StartDefault: Wie seltsam. Ihr solltet längst tot sein …
+	StartRematchLowHealth: Ihr seht bereits am Ende aus.
+	StartRematchMediumHealth: Verwundet? Wie interessant.
+	StartRematchDefault: Wie seltsam. Ihr solltet längst tot sein …
+	BH3WithHalibut: Mit solch … abweichender … Kraft in einem sterblichen Gefäß … Bis hierher zu kommen, verdient Respekt.
+	BH3WithoutHalibut: Ihr seid gut … aber wann begreift ihr, dass ihr nur vergeblich eine Flamme angreift?
+	BrothersWithHalibut: Zeit, dass ihr meine Familie kennenlernt. Sie scheiterten auf dem Weg, ‚anders‘ zu werden. Folgt ihrem Beispiel nicht.
+	BrothersWithoutHalibut: Zeit, dass ihr meine Familie kennenlernt. Sterbt ihr durch fremde Hand, bewahre ich eure Seele hier.
+	Phase2WithHalibut: Wollt ihr wirklich nicht um Gnade bitten?
+	Phase2WithoutHalibut: Wollt ihr wirklich nicht bitten?
+	BH4Text: Steht still und mir gegenüber!
+	SeekerRingText: Eure Kraft stammt von außen. Ohne sie seid ihr nichts … Es erinnert mich an jenen Heuchler.
+	BH5Text: Die Waage des Sieges … ist unsicher. Ihr müsst nur einen Moment stillstehen, um das zu ändern, verstanden?
+	Sepulcher2Text: Wenn heute nur einer leben kann … wen wollt ihr, dass es ist?
+	Desperation1Text: STELL … DICH … EINFACH … DA … KLEIN … FISCH!
+	Desperation2Text: Werdet nicht übermütig – zuvor spielte ich nur mit euch!
+	Desperation3Text: *hust* … *hust* … Ich gebe zu, heute bin ich nicht in Bestform.
+	Desperation4Text: Anscheinend … habe ich verloren. Euch zu begegnen … war wahrlich ein Glück.
+	Acceptance1Text: Das … ist der glücklichste Tag seit hundert Jahren …
+	Acceptance2Text: Vielleicht … könnt ihr diese verfluchte Ära wirklich beenden.
+	Story1:
+		'''
+		Das Holz dieser Armbrust stammt von einem pechschwarzen Sarg, ein Jahrhundert lang begraben.
+		Er stinkt nach Erde, die sich nicht abwaschen lässt.
+		Dort unten diente er, ein Grauen zu unterdrücken, das selbst mir schwerfiel.
+		Gegen solche Dinge ist reine Vernichtung sinnlos. Sie lassen sich nicht töten.
+		Schießt den Keil. Nagelt sie an die Erde und zwingt sie zur Stille.
+		Warum wirft man die Armbrust zuerst?
+		Hah … Wird der Gast nicht vom Sargduft berührt, wie soll der Sarg wissen, wen er holen soll?
+		'''
+	Story2:
+		'''
+		Diese elende Klinge ist stumpf, weil sie kein Fleisch schneidet – sie durchtrennt Medien.
+		Als ich noch Lehrling war, wuchs auf dem Herzen meines Meisters ein Mund, der sich nie schloss.
+		Er starb später, doch das Herz schlug weiter. Mit jedem Schlag schrie der Mund,
+		und einer um uns herum verschwand einfach.
+		Um zu überleben, musste ich das Herz vor dem nächsten Schlag herausschneiden.
+		Noch immer hungert es danach, wieder das Geräusch eines ausgeschnittenen Herzens zu hören.
+		'''
+	Story3:
+		'''
+		Schwer? Gut. So soll es sein.
+		Sie ist mit übermäßig viel Gold durchzogen und in Schwefelfeuer gehüllt,
+		um die sechs ruhelosen Geisterhände auf der Klinge zu fesseln.
+		Jene drei Toren zerstückelten sich gegenseitig und nähten sich wieder zusammen, um ihre ‚Wiederbelebung‘ hinauszuzögern …
+		und wurden ein verdrehtes Ungetüm, das nur noch würgt.
+		Haltet fest. Versagt die Schwefelfeuer-Unterdrückung, ist euer Hals der erste, den sie brechen.
+		Den Hals dessen zu brechen, der die Klinge berührt – das ist ihr letzter Instinkt.
+		'''
+	Story4:
+		'''
+		Sterbliche nennen das Magie, ich nenne es … Ausleihen.
+		Das ist kein Zauberbuch, sondern ein Hochdichtekäfig.
+		Jede Seite versiegelt ein Grauen, das einst ganze Stadtstaaten in den Tod schweigen ließ.
+		'''
+}
+
+SupCalDisplayTextByBossRush: {
+	SummonBossRush: Heh … Eure Aura erinnert mich fast an den, der längst verging.
+	SummonBossRushWithProverbs: Dieser Ring … selbst ein Rest wie ich spürt sein Beben.
+	StartBossRush: Ich bin nur ein anomales Konstrukt aus der Goldenen Seele … doch manches muss auch ich vollbringen.
+	BH2BossRush: Eure Stärke ist beachtlich … und doch nicht genug.
+	BH3BossRush: Schatten der Vergangenheit … längst zu Asche zerfallen, verstreut auf eurem Weg. Heh …
+	BrothersBossRush: Diese Seelen … Schatten von Schatten. Je mehr man kopiert, desto trauriger wird es, findet ihr nicht?
+	Phase2BossRush: Selbst ein künstliches Leben kann etwas haben, wofür es kämpft.
+	BH4BossRush: Steht still!
+	SeekerRingBossRush: Eure Kraft gleicht jenem in ihren Erinnerungen zu sehr … bloßer Zufall?
+	BH5BossRush: Meine Existenz dient genau diesem Augenblick.
+	Sepulcher2BossRush: Die letzte Prüfung beginnt jetzt.
+	Desperation1BossRush: Selbst nur ein Fragment …
+	Desperation2BossRush: Denkt nicht, der Sieg sei schon euer …
+	Desperation3BossRush: Heh … das Leben eines Schattens war von Anfang an zerbrechlich …
+	Desperation4BossRush: Ihr habt gewonnen … doch ihr Weg ist noch lange nicht zu Ende.
+	Acceptance1BossRush: Vielleicht … war das immer mein bestimmtes Ende.
+	Acceptance2BossRush: Viel Glück, Kleinfisch.
+}
+
+SupCalDisplayTextNormal: {
+	SummonText: Dieses Schwefelfeuermeer … selbst ein Rachegeist würde die Glut spüren, nicht wahr?
+	SummonRematchText: Beweist es mir. Überlebt.
+	StartText: Sterbliche Hüllen sind in dieser Hitze so zerbrechlich … oder ihr überrascht mich?
+	StartRematchText: Noch nicht zu Asche verbrannt? Dann noch einmal – bis ihr zu Stahl geschmiedet seid … oder zu Staub.
+	BH2Text: Ihr seid in den Flammen noch nicht zusammengebrochen … ihr brennt langsamer als gedacht.
+	BH2RematchText: Ich gebe euch Mut – doch euer Können reicht noch weit nicht.
+	BH3Text: Ihr kamt so weit, nur damit dieses sterbliche Fleisch Schmerz erfährt?
+	BH3RematchText: Das letzte Mal regnete ich solche Katastrophe – vor einem Jahrhundert. Wollt ihr das auch erleben?
+	BrothersText: Sie verbrannten einst alles für jenen Weg … Nun sollen diese Asche euren Wert abwägen.
+	BrothersRematchText: Vielleicht nur leere Hüllen mit einem Funken Seele – doch mehr als genug für euch.
+	Phase2Text: Von hier an … werden die Flammen nicht mehr gebändigt. Sterbt nicht zu schnell.
+	Phase2RematchText: Noch einmal. Wir beginnen von vorn.
+	BH4Text: Denkt nicht, ihr entkommt meiner Hand!
+	BH4RematchText: Ich bin neugierig … habt ihr aus unserem ersten Kampf gelernt?
+	SeekerRingText: Wie konntet ihr ausweichen? So sollte es nicht laufen … Halt!
+	SeekerRingRematchText: Wenigstens lag mein Urteil nicht falsch …
+	BH5Text: Ich gebe zu, der Kampf bisher war Kinderspiel. Jetzt gebe ich alles!
+	BH5RematchText: …Ist das nicht aufregend?
+	Sepulcher2Text: Wenn nur einer von uns überleben kann … wen wünscht ihr euch?
+	Sepulcher2RematchText: Achtung. Das kriechende Grab naht … und es hungert nach einem neuen Bewohner.
+	Desperation1Text: Halt!
+	Desperation2Text: Scheitere ich hier – wozu war dann alles?!
+	Desperation3Text: Jemand ging euren Weg bis zum Ende. Es ist eine Sackgasse … Warum glaubt *ihr*, anders zu sein?!
+	Desperation4Text: Wiederholt ihr nur seinen Wahnsinn, seid ihr nichts als frische Asche unter diesen Glutresten!
+	Acceptance1Text: Ich verbrannte mich zu dieser unmenschlichen Gestalt, nur um jenen einen Hoffnungsschimmer zu finden …
+	Acceptance2Text: Seufz … ich habe keine Kraft mehr aufzustehen …
+	Acceptance3Text: Werden ihr eine Aberration wie ich … vielleicht könnt ihr wirklich … eine Zukunft schneiden, die ich nie sah.
+	Desperation1RematchText: Beeindruckende Leistung. Ihr habt gut gekämpft.
+	Desperation2RematchText: Zweifellos wächst eure Stärke mit jedem Moment.
+	Desperation3RematchText: Ich hoffe wirklich, ihr wiederholt nicht unsere Fehler.
+	Desperation4RematchText: Schmiedet ihr einen neuen Weg … ist für alles noch Hoffnung.
+}
+
+EternalBlazingNowNoHelen: {
+	Line1: ……Seit langem ist niemand so weit gekommen.
+	Line2: Ich werde nicht sterben … aber es reicht fast.
+	Line3: Ihr habt gut geleistet … vielleicht seid ihr wirklich das ‚Einzige dieser Ära‘, von dem er sprach und auf das zu warten sich gelohnt hat.
+	Line4: Deshalb habe ich eine letzte Bitte an euch.
+	Line5: Solange in Vergangenheit und Gegenwart dieser Welt eine Glut Schwefelfeuer glimmt, werde ‚ich‘ nicht untergehen.
+	Line6: Doch mein Bewusstsein wird in diesem endlosen Feuermeer allmählich aufgerieben.
+	Line7: Ohne euch hätte ich höchstens noch dreißig Jahre durchgehalten.
+	Line8: Das ist der einzige Weg.
+	Line9: Verschwindet mein Bewusstsein ganz, wird die ganze Welt zu Asche.
+	Line10: Außerdem – wollt ihr diese Ära beenden, ist ein sterbliches Gefäß viel zu zerbrechlich.
+}

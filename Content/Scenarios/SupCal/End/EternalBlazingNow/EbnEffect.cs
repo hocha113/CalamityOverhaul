@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.RenderHandles;
@@ -157,6 +158,20 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         }
     }
 
+    /// <summary>
+    /// 永燃当下认领：全屏演出档。音量地板 0.6 由仲裁器统一存取还原
+    /// （旧站点对"用户音量为 0"不还原的缺口顺带修复）。
+    /// 5 分钟收场是编排的一部分（EbnSky 按 CekTimer 走 290s 渐隐），留在站点不迁
+    /// </summary>
+    internal sealed class EbnMusicClaim : MusicClaim
+    {
+        public override MusicTier Tier => MusicTier.Ceremony;
+        public override int SubWeight => 20;
+        public override float VolumeFloor => 0.6f;
+        public override bool ShouldPlay() => EbnEffect.IsActive;
+        public override int GetMusicSlot() => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/SinsWedge");
+    }
+
     internal sealed class EbnEffect : ModSystem
     {
         public static bool IsActive;
@@ -175,7 +190,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         private static int redScreenTimer;
         private static int fadeOutTimer;
         private static int epilogueFadeTimer;
-        private static float origMusicVolume = -1f;
         private int particleTimer;
 
         private const int ContractionDuration = 180;
@@ -268,12 +282,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
             }
 
             CloneFish.Deactivate(Main.LocalPlayer);
-            if (Main.musicVolume < 0.6f) {
-                origMusicVolume = Main.musicVolume;
-                Main.musicVolume = 0.6f;
-            }
-
-            Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/SinsWedge");
+            //音乐覆盖与 0.6 音量地板走 EbnMusicClaim 认领
         }
 
         private static void UpdateState() {
@@ -283,10 +292,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
                 }
             }
             else if (Sengs > 0f) {
-                if (origMusicVolume > 0f) {
-                    Main.musicVolume = origMusicVolume;
-                    origMusicVolume = -1f;
-                }
                 Sengs -= 0.02f;
             }
 

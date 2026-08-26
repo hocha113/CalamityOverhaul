@@ -12,10 +12,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
     /// 领域形态由客户端预检，服务器没有领域状态是既定契约）；
     /// Apply（服务器→全体，owner+resetId+seed+NPC 身份组+玩家组，各端时间轴自此起跑）；
     /// Cancel（服务器→全体，施术者掉线的收场令）。
-    /// 链式 handler 共用一条流：所有字段先读满，校验只做丢弃；
+    /// 所有字段先读满，校验只做丢弃；
     /// 计数一律 byte，maxNPCs=200、maxPlayers=255，天然有界
     /// </summary>
-    internal static class KikasaResetNet
+    internal class KikasaResetNet : CWRNetChannel
     {
         private const byte OpRequest = 0;
         private const byte OpApply = 1;
@@ -25,8 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
             if (Main.netMode != NetmodeID.MultiplayerClient) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.KikasaReset);
+            ModPacket packet = CWRNetWork.GetPacket<KikasaResetNet>();
             packet.Write(OpRequest);
             packet.Send();
         }
@@ -35,8 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
             if (Main.netMode != NetmodeID.Server || show == null) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.KikasaReset);
+            ModPacket packet = CWRNetWork.GetPacket<KikasaResetNet>();
             packet.Write(OpApply);
             packet.Write((byte)show.OwnerWho);
             packet.Write(show.ResetId);
@@ -56,17 +54,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
             if (Main.netMode != NetmodeID.Server) {
                 return;
             }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.KikasaReset);
+            ModPacket packet = CWRNetWork.GetPacket<KikasaResetNet>();
             packet.Write(OpCancel);
             packet.Write(resetId);
             packet.Send();
         }
 
-        public static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type != CWRMessageType.KikasaReset) {
-                return;
-            }
+        public override void Receive(BinaryReader reader, int whoAmI) {
             byte op = reader.ReadByte();
             switch (op) {
                 case OpRequest: {

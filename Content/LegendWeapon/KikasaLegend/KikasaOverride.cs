@@ -119,6 +119,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
             return GetStartDamage;
         }
 
+        /// <summary>
+        /// 鬼奴基伤表的标定档：18 只鬼奴的常量全部按三机械档（等级 11、表值 92）的手感写死，
+        /// <see cref="KikasaServants.KikasaServantBalanceGlobal"/> 在命中端按"当前表值/92"折算成长
+        /// </summary>
+        public const float ServantTuneAnchor = 92f;
+
+        /// <summary>
+        /// 等级表原始值（不含召唤加成与前缀，别与 <see cref="GetPanelDamage"/> 混用——
+        /// 那份含加成，叠乘会把召唤加成吃两遍）。鬼奴锚点与械奴钳顶的进度读数
+        /// </summary>
+        public static int GetRawLevelDamage(Player player) {
+            if (player == null) {
+                return GetStartDamage;
+            }
+            Item held = player.HeldItem;
+            if (IsKikasa(held)) {
+                return DamageDictionary[GetLevel(held)];
+            }
+            foreach (Item item in player.inventory) {
+                if (IsKikasa(item)) {
+                    return DamageDictionary[GetLevel(item)];
+                }
+            }
+            return GetStartDamage;
+        }
+
         private static bool IsKikasa(Item item)
             => item != null && item.Alives() && item.type == ID;
 

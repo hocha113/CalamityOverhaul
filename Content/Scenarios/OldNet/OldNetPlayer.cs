@@ -24,6 +24,11 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
         internal int[] PendingShards = new int[SHPCData.SlotCount];
         /// <summary>本次深潜采集节点数</summary>
         internal int HarvestCount;
+        /// <summary>
+        /// 已投保的六类碎片快照（保险契约终端写入）：烧断/死亡时按 min(投保,在账) 兑付。
+        /// TODO MP: 投保快照与兑付写库是本机 per-player 语义，服务器权威化时随结算整体重排
+        /// </summary>
+        internal int[] InsuredShards = new int[SHPCData.SlotCount];
 
         //════════ 噪音状态（per-player，刻意不落存档；MP 时服务器权威后置）════════
 
@@ -35,6 +40,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
         private int quietTimer;
         //T4 触发后的衰减免疫倒数
         private int t4DecayImmuneTimer;
+        /// <summary>回收官静默余量：噪音增量减半的会话截止拍（DiveTicks 口径，0=无余量）</summary>
+        internal int WardenGraceTicks;
 
         //════════ 账本容量（成长钩子留缝：进世界时由 RAM build/义体/模块写入，M1 恒 0）════════
 
@@ -61,6 +68,14 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
         internal int HuntedCount;
         /// <summary>深潜用时（tick）</summary>
         internal int DiveTicks;
+        /// <summary>被目击次数（评级幽灵潜行判据；余震/热断链的自招响应不计）</summary>
+        internal int SpottedCount;
+        /// <summary>击杀巡逻 ICE 数（评级判据）</summary>
+        internal int PatrolKills;
+        /// <summary>击毁哨戒炮塔数（评级判据）</summary>
+        internal int TurretKills;
+        /// <summary>本潜到达过的最高噪音档位（评级判据）</summary>
+        internal int MaxTierReached;
 
         //════════ 加密节点引导会话（站桩破解，本机语义）════════
 
@@ -74,6 +89,25 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
         /// <summary>引导进度 0..1（节点绘制读取）</summary>
         internal float ChannelProgress => Channeling
             ? MathHelper.Clamp(ChannelTimer / (float)OldNetMetrics.EncryptChannelTicks, 0f, 1f) : 0f;
+
+        //════════ 衰减区余震（2.9：疯域的加密锁反咬，破解完成 3s 后必引猎杀）════════
+
+        /// <summary>余震倒数（tick），0=无。TODO MP: 本机会话字段，联机化随归属端仲裁</summary>
+        internal int AftershockTimer;
+
+        //════════ 热断链（2.3：高热撤离的 10 秒站桩终曲）════════
+
+        /// <summary>断链中的终端坐标；(-1,-1)=无</summary>
+        internal Point HotExtractNode = new(-1, -1);
+        /// <summary>断链剩余帧。TODO MP: 完成判定需服务器仲裁</summary>
+        internal int HotExtractTimer;
+        /// <summary>本潜完成过热断链（评级风格旗标）</summary>
+        internal bool HotExtractDone;
+
+        internal bool HotExtracting => HotExtractNode.X >= 0;
+
+        /// <summary>热断链门槛：T3+ 或清剿波在场时，登出改走 10 秒站桩断链（终端悬停/配色共用）</summary>
+        internal bool HotExtractEligible => NoiseTier >= 3 || OldNetICEDirector.CleanupWaveActive;
 
         //弹出去抖：ExitWorld 到真正离开有延迟，防重复触发
         private bool ejecting;
@@ -100,11 +134,21 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             NoiseTier = 0;
             quietTimer = 0;
             t4DecayImmuneTimer = 0;
+            WardenGraceTicks = 0;
             LedgerCapacityBonus = 0;
+            Array.Clear(InsuredShards, 0, InsuredShards.Length);
             MaxDepthCols = 0;
             SettledTotal = 0;
             HuntedCount = 0;
             DiveTicks = 0;
+            SpottedCount = 0;
+            PatrolKills = 0;
+            TurretKills = 0;
+            MaxTierReached = 0;
+            AftershockTimer = 0;
+            HotExtractNode = new Point(-1, -1);
+            HotExtractTimer = 0;
+            HotExtractDone = false;
             ChannelNode = new Point(-1, -1);
             ChannelTimer = 0;
         }
@@ -122,6 +166,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             if (WorldFreezeSystem.IsActive) {
                 amount *= OldNetMetrics.NoiseFreezeMul;
             }
+            //回收官静默余量：奖励期内一切增量减半（截止拍语义，见 SilenceNoise）
+            amount *= WardenGraceTicks > DiveTicks ? OldNetMetrics.WardenGraceNoiseMul : 1f;
             Noise = MathHelper.Clamp(Noise + amount, 0f, 100f);
             quietTimer = 0;
         }
@@ -133,6 +179,22 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             }
             Noise = MathHelper.Clamp(MathF.Max(Noise, floor), 0f, 100f);
             quietTimer = 0;
+        }
+
+        /// <summary>
+        /// 全网静默（回收官击杀奖励，与 SetNoiseFloor 反向：只降不升）：
+        /// 噪音直落到 cap，同时清 T4 衰减免疫不留幽灵计时，
+        /// 并开启静默余量（WardenGraceTicks 内噪音增量减半）。
+        /// TODO MP: per-player 语义，联机化归属端裁决
+        /// </summary>
+        internal void SilenceNoise(float cap) {
+            if (!OldNetWorld.Active) {
+                return;
+            }
+            Noise = MathHelper.Clamp(MathF.Min(Noise, cap), 0f, 100f);
+            t4DecayImmuneTimer = 0;
+            quietTimer = 0;
+            WardenGraceTicks = DiveTicks + OldNetMetrics.WardenGraceTicks;
         }
 
         //带迟滞的档位推进：升档达到阈值即升，跌档需再低 Hysteresis 点
@@ -148,6 +210,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
                 tier--;
             }
             NoiseTier = tier;
+            //评级埋点：本潜档位高水位
+            MaxTierReached = Math.Max(MaxTierReached, tier);
         }
 
         internal static float TierThreshold(int tier) => tier switch {
@@ -241,14 +305,46 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             }
 
             AddNoise(OldNetMetrics.NoiseChannelPerSecond / 60f);
-            if (++ChannelTimer < OldNetMetrics.EncryptChannelTicks) {
+            ChannelTimer += ChannelStepNow();
+            if (ChannelTimer < OldNetMetrics.EncryptChannelTicks) {
                 return;
             }
 
-            //引导完成：普通节点同分布 ×3
+            //引导完成：普通节点同分布 ×3；衰减区成功破解 → 余震（满载拒收不触发，失败的破解不挨打）
             ChannelNode = new Point(-1, -1);
             ChannelTimer = 0;
-            Tiles.OldNetEncryptedNodeTile.CompleteHarvest(node.X, node.Y, this);
+            if (Tiles.OldNetEncryptedNodeTile.CompleteHarvest(node.X, node.Y, this)
+                && node.X >= OldNetMetrics.FadeLeft) {
+                AftershockTimer = OldNetMetrics.AftershockDelayTicks;
+                CombatText.NewText(Player.getRect(), new Color(235, 64, 44),
+                    OldNetTexts.OldNetAftershockWarn.Value, dramatic: true);
+            }
+        }
+
+        /// <summary>
+        /// 加密引导步进（共享聚合口，06 §1 修饰符纪律）：多来源取最强档、不叠乘。
+        /// 收网协议激活 → 2；带宽跌落/解封冲刺等未来来源并入此处判定
+        /// </summary>
+        private static int ChannelStepNow()
+            => OldNetICEDirector.DragnetActive ? 2 : 1;
+
+        //余震倒数：疯域的锁反咬，读秒结束引来一次猎杀响应
+        private void TickAftershock() {
+            if (AftershockTimer <= 0) {
+                return;
+            }
+            //每秒一记低鸣：回溯的读秒
+            if (AftershockTimer % 60 == 0) {
+                SoundEngine.PlaySound(CWRSound.Fault with { Volume = 0.4f, Pitch = -0.5f }, Player.Center);
+            }
+            if (--AftershockTimer > 0) {
+                return;
+            }
+            //回溯完成：一次性噪音 + 猎杀响应（幽灵豁免：余震是系统回礼，不计目击）
+            AddNoise(OldNetMetrics.AftershockNoise);
+            OldNetICEDirector.NotifySpotted(Player, countAsSpotted: false);
+            CombatText.NewText(Player.getRect(), new Color(235, 64, 44),
+                OldNetTexts.OldNetAftershockHit.Value, dramatic: true);
         }
 
         public override void OnHurt(Player.HurtInfo info) {
@@ -287,6 +383,105 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             return total;
         }
 
+        /// <summary>
+        /// 保险兑付（灾难弹出专用，Kill/ForceEject 在 CacheReport 之前调用）：
+        /// 逐类 min(投保, 在账) 写进 MoldShards 并从账本移除（兑付即铭刻，计入 SettledTotal），
+        /// min 防"投保后已在中继结算过"的双赔；安全登出不走这里，保费沉没。
+        /// 顺序契约：先兑付再 CacheReport，战报 LostPending 只计未投保的净损失
+        /// </summary>
+        private void PayoutInsurance() {
+            int total = 0;
+            SHPCPlayer shpc = SHPCPlayer.Get(Player);
+            if (shpc?.MoldShards != null) {
+                for (int i = 0; i < InsuredShards.Length && i < shpc.MoldShards.Length; i++) {
+                    int pay = Math.Min(InsuredShards[i], PendingShards[i]);
+                    if (pay <= 0) {
+                        continue;
+                    }
+                    shpc.MoldShards[i] += pay;
+                    PendingShards[i] -= pay;
+                    total += pay;
+                }
+            }
+            Array.Clear(InsuredShards, 0, InsuredShards.Length);
+            if (total <= 0) {
+                return;
+            }
+            SettledTotal += total;
+            if (Player.whoAmI == Main.myPlayer) {
+                CombatText.NewText(Player.getRect(), new Color(190, 150, 60),
+                    OldNetTexts.OldNetEscrowPayout.Format(total), dramatic: true);
+                SoundEngine.PlaySound(SoundID.CoinPickup with { Pitch = -0.3f, Volume = 0.7f },
+                    Player.Center);
+            }
+        }
+
+        /// <summary>
+        /// 热断链启动（登出终端高热分支）：10 秒站桩换立即离场。
+        /// 噪音直抬 T4（终曲必须响，档位跃迁自带 HUD 白闪与派遣音），
+        /// 受击不打断（门已开，扛住就行）；离台超 90px 中止
+        /// </summary>
+        internal void StartHotExtract(int i, int j) {
+            if (ejecting || HotExtracting) {
+                return;
+            }
+            //先校验后收价（二审修复）：交互触达可超中止半径，太远启动会在下一帧
+            //立即中止=白吃 T4 地板与猎杀波，此处拒绝启动且不收任何代价
+            Vector2 termCenter = new(i * 16 + 8, j * 16 + 8);
+            if (Vector2.Distance(Player.Center, termCenter) > OldNetMetrics.HotExtractRadius) {
+                if (Player.whoAmI == Main.myPlayer) {
+                    CombatText.NewText(Player.getRect(), new Color(255, 150, 50),
+                        OldNetTexts.OldNetHotExtractTooFar.Value);
+                }
+                return;
+            }
+            HotExtractNode = new Point(i, j);
+            HotExtractTimer = OldNetMetrics.HotExtractTicks;
+            SetNoiseFloor(OldNetMetrics.NoiseT4);
+            if (Player.whoAmI == Main.myPlayer) {
+                UI.OldNetHud.PushBanner(OldNetTexts.OldNetHotExtractStart.Value);
+                SoundEngine.PlaySound(CWRSound.FaultOccurred with { Volume = 0.7f, Pitch = -0.3f },
+                    Player.Center);
+            }
+            //启动瞬间先来一波（自招的响应，不计目击）
+            OldNetICEDirector.NotifySpotted(Player, countAsSpotted: false);
+        }
+
+        //热断链静默清态（烧断/死亡竞态用）：弹出演出期间 HUD 的 SEVERING 行不得残留冻结
+        private void CancelHotExtract() {
+            HotExtractNode = new Point(-1, -1);
+            HotExtractTimer = 0;
+        }
+
+        //热断链泵：站桩计时，离台中止（走开=放弃，无额外惩罚），完成走 SettleAndLogout 原路径
+        private void TickHotExtract() {
+            if (!HotExtracting) {
+                return;
+            }
+            Vector2 center = new(HotExtractNode.X * 16 + 8, HotExtractNode.Y * 16 + 8);
+            if (Vector2.Distance(Player.Center, center) > OldNetMetrics.HotExtractRadius) {
+                HotExtractNode = new Point(-1, -1);
+                HotExtractTimer = 0;
+                CombatText.NewText(Player.getRect(), new Color(255, 150, 50),
+                    OldNetTexts.OldNetHotExtractAbort.Value);
+                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.5f, Pitch = -0.6f },
+                    Player.Center);
+                return;
+            }
+            //压力供给：每 4s 追加一只猎杀（NotifySpotted 受清剿波补员上限封顶，不会堆屏）
+            int elapsed = OldNetMetrics.HotExtractTicks - HotExtractTimer;
+            if (elapsed > 0 && elapsed % OldNetMetrics.HotExtractWaveInterval == 0) {
+                OldNetICEDirector.NotifySpotted(Player, countAsSpotted: false);
+            }
+            if (--HotExtractTimer > 0) {
+                return;
+            }
+            //完成：置风格旗标后走既有结算原路径（零复制，DiveCompleted 等语义天然兼容）
+            HotExtractNode = new Point(-1, -1);
+            HotExtractDone = true;
+            SettleAndLogout();
+        }
+
         /// <summary>登出终端：结算账本后安全断链回主世界</summary>
         internal void SettleAndLogout() {
             //烧断倒数期间不再接受安全登出（弹出已成事实）
@@ -320,10 +515,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
                 return;
             }
             ejecting = true;
+            //保险兑付先于战报快照：LostPending 只计未投保的净损失
+            PayoutInsurance();
             //战报缓存先于清账（HarvestCount/PendingTotal 随 ResetLedger 归零）
             UI.OldNetDebriefPanel.CacheReport(this, UI.OldNetExitKind.RamBurnout);
             ResetLedger();
             CancelChannel();
+            CancelHotExtract();
             if (Player.whoAmI == Main.myPlayer) {
                 CombatText.NewText(Player.getRect(), Color.OrangeRed, reason, dramatic: true);
                 SoundEngine.PlaySound(CWRSound.Fault, Player.Center);
@@ -343,6 +541,15 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
                 OldNetGuard.RestoreOnReturn();
                 if (Player.whoAmI == Main.myPlayer) {
                     UI.OldNetDebriefPanel.ConsumePending();
+                }
+            }
+            else if (Player.whoAmI == Main.myPlayer) {
+                //评级元奖励（2.1）：历史最佳 A 级以上，每次进旧网账本容量 +4。
+                //+= 与扩容坞同字段叠加（覆写=毁掉会话内扩容）。TODO MP: per-player 奖励随进场同步
+                var record = Player.GetModPlayer<Narrative.Data.StoryPlayer>()
+                    .Get<Narrative.Data.Modules.OldNetRecordData>();
+                if (record.BestGradeIndex >= OldNetRating.GradeA) {
+                    LedgerCapacityBonus += OldNetMetrics.RatingLedgerBonus;
                 }
             }
         }
@@ -366,6 +573,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
                 return;
             }
 
+            //──── 热断链泵：紧跟 ejecting 块，烧断/死亡弹出天然短路它 ────
+            TickHotExtract();
+
             //──── 会话统计 ────
             DiveTicks++;
             int depthCols = (int)(Player.Center.X / 16f) - OldNetMetrics.WallCols;
@@ -381,6 +591,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             //──── 加密节点引导推进 ────
             TickChannel();
 
+            //──── 衰减区余震倒数（2.9）────
+            TickAftershock();
+
             //──── 噪音消散与档位 ────
             if (t4DecayImmuneTimer > 0) {
                 t4DecayImmuneTimer--;
@@ -392,7 +605,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
                 float rate = Noise >= OldNetMetrics.NoiseDecayHighThreshold
                     ? OldNetMetrics.NoiseDecayHighPerSecond
                     : OldNetMetrics.NoiseDecayLowPerSecond;
+                float before = Noise;
                 Noise = MathF.Max(0f, Noise - rate / 60f);
+                //收网棘轮（2.2）：衰减不得自上方跌破地板 70；
+                //地板以下的唯一入口是回收官全网静默（SilenceNoise），不回填、任其自由衰减
+                if (OldNetICEDirector.DragnetActive && before >= OldNetMetrics.DragnetNoiseFloor) {
+                    Noise = MathF.Max(Noise, OldNetMetrics.DragnetNoiseFloor);
+                }
             }
             UpdateNoiseTier();
 
@@ -460,9 +679,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
                 return;
             }
             //死亡即链路烧断：账本立即作废，复活后弹出（战报先于清账快照）
+            //保险兑付先于战报快照：LostPending 只计未投保的净损失
+            PayoutInsurance();
             UI.OldNetDebriefPanel.CacheReport(this, UI.OldNetExitKind.Death);
             ResetLedger();
             CancelChannel();
+            CancelHotExtract();
             ejectOnRespawn = true;
             if (Player.whoAmI == Main.myPlayer) {
                 CombatText.NewText(Player.getRect(), Color.OrangeRed, OldNetTexts.OldNetEjectDeath.Value, dramatic: true);

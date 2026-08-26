@@ -27,17 +27,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
         /// <summary>提取演出在途的物品；交付背包前的暂存，存档时折返湖藏</summary>
         internal readonly List<Item> inFlight = [];
 
-        /// <summary>血湖是否可收发物品：本人领域非收合/翻转/鬼梦阶段且水位已及脚，梦里没有那面湖</summary>
-        public bool LakeReady {
-            get {
-                KikasaDomainPlayer domain = Player.GetModPlayer<KikasaDomainPlayer>();
-                return domain.AnyActive
-                    && domain.Phase != KikasaDomainPhase.Closing
-                    && domain.Phase != KikasaDomainPhase.Flipping
-                    && !domain.InDreamPhase
-                    && domain.RiseT >= 0.999f;
-            }
-        }
+        /// <summary>血湖是否可收发物品：直读统一受理门 <see cref="KikasaDomainPlayer.LakeAbilityReady"/>。
+        /// 鬼梦两段过场以梦侧画面切换帧为界（拉入过结算帧即拒、归返过结算帧即复），梦里没有那面湖</summary>
+        public bool LakeReady
+            => Player.GetModPlayer<KikasaDomainPlayer>().LakeAbilityReady;
 
         //==================== 输入 ====================
 
@@ -63,6 +56,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                 }
                 if (pano.IsOpen) {
                     pano.Close();
+                }
+                else if (Main.mapFullscreen) {
+                    //全屏地图下不开新屏：默认键 M 与地图同键，别把"看地图"变成误开湖心景（反馈十一·#38）
+                    return;
                 }
                 else if (HoldingUmbrella()) {
                     pano.Open();
@@ -134,6 +131,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                 return false;
             }
             inFlight.Add(item);
+            //原件取空即遣返在场械奴:存量只在出水时校验,不补这一手,取下的武器仍在场上打(反馈三·#37/#53)
+            Player.GetModPlayer<KikasaServants.KikasaServantPlayer>().DismissArmsIfOutOfStock(item.type);
             KikasaLakeFX.SpawnRaise(Player, item);
             KikasaLakeNet.SendFX(Player, KikasaLakeNet.KindRaise, item.type);
             return true;

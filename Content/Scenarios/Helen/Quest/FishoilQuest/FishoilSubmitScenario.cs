@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest.FishoilQuest
 
         private static bool giveSucceeded;
 
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.Helen";
         public static LocalizedText SubmitLine1 { get; private set; }
         public static LocalizedText SubmitLine2 { get; private set; }
         public static LocalizedText QuestionLine { get; private set; }

@@ -138,8 +138,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             if (VaultUtils.isSinglePlayer) {
                 return;
             }
-            ModPacket modPacket = CWRMod.Instance.GetPacket();
-            modPacket.Write((byte)CWRMessageType.TruffleSleep);
+            ModPacket modPacket = CWRNetWork.GetPacket<TruffleSleepNet>();
             modPacket.Write(npc.whoAmI);
             OtherNetWorkSend(modPacket);
             modPacket.Send();
@@ -149,8 +148,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             int npcIndex = reader.ReadInt32();
             Main.npc[npcIndex].GetOverride<ModifyTruffle>().OtherNetWorkReceive(reader);
             if (VaultUtils.isServer) {
-                ModPacket modPacket = CWRMod.Instance.GetPacket();
-                modPacket.Write((byte)CWRMessageType.TruffleSleep);
+                ModPacket modPacket = CWRNetWork.GetPacket<TruffleSleepNet>();
                 modPacket.Write(npcIndex);
                 Main.npc[npcIndex].GetOverride<ModifyTruffle>().OtherNetWorkSend(modPacket);
                 modPacket.Send(-1, whoAmI);
@@ -161,8 +159,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             if (VaultUtils.isSinglePlayer) {
                 return;
             }
-            ModPacket modPacket = CWRMod.Instance.GetPacket();
-            modPacket.Write((byte)CWRMessageType.GlobalSleep);
+            ModPacket modPacket = CWRNetWork.GetPacket<GlobalSleepNet>();
             modPacket.Write(GlobalSleep);
             modPacket.Send();
         }
@@ -358,5 +355,17 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             chat = randomChat;
         }
+    }
+
+    /// <summary>沉睡松露人的个体状态同步信道</summary>
+    internal sealed class TruffleSleepNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => ModifyTruffle.HandleNetwork(reader, whoAmI);
+    }
+
+    /// <summary>松露人全局沉睡旗标同步信道</summary>
+    internal sealed class GlobalSleepNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => ModifyTruffle.HandleGlobalSleep(reader);
     }
 }

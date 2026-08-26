@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
@@ -38,6 +39,15 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
         internal int DiveTicks;
         /// <summary>弹出时未铭刻而作废的碎片数（损失要被看见）</summary>
         internal int LostPending;
+        //──── 深潜评级（2.1）────
+        internal int Score;
+        internal int GradeIndex;
+        internal OldNetStyleFlags Styles;
+        /// <summary>本潜刷新了历史最佳</summary>
+        internal bool NewRecord;
+        /// <summary>快照时点的历史最佳（含本潜刷新）</summary>
+        internal int BestScore;
+        internal int BestGradeIndex;
     }
 
     /// <summary>
@@ -60,6 +70,15 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
         public static LocalizedText DebriefLost { get; private set; }
         public static LocalizedText DebriefContinue { get; private set; }
         public static LocalizedText DebriefMechHint { get; private set; }
+        //深潜评级（2.1）
+        public static LocalizedText DebriefScore { get; private set; }
+        public static LocalizedText DebriefGrade { get; private set; }
+        public static LocalizedText DebriefBest { get; private set; }
+        public static LocalizedText DebriefNewRecord { get; private set; }
+        public static LocalizedText StyleGhost { get; private set; }
+        public static LocalizedText StyleHeat { get; private set; }
+        public static LocalizedText StyleHotExtract { get; private set; }
+        public static LocalizedText StyleDragnet { get; private set; }
 
         public override void SetStaticDefaults() {
             DebriefSubtitle = this.GetLocalization(nameof(DebriefSubtitle), () => "链路战报");
@@ -75,16 +94,38 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
             DebriefContinue = this.GetLocalization(nameof(DebriefContinue), () => "继续");
             DebriefMechHint = this.GetLocalization(nameof(DebriefMechHint),
                 () => "未铭刻的收获只活在链路里，经中继站或登出终端铭刻后才真正属于你");
+            DebriefScore = this.GetLocalization(nameof(DebriefScore), () => "评分");
+            DebriefGrade = this.GetLocalization(nameof(DebriefGrade), () => "评级");
+            DebriefBest = this.GetLocalization(nameof(DebriefBest), () => "历史最佳 {0}");
+            DebriefNewRecord = this.GetLocalization(nameof(DebriefNewRecord), () => "新纪录");
+            StyleGhost = this.GetLocalization(nameof(StyleGhost), () => "幽灵潜行");
+            StyleHeat = this.GetLocalization(nameof(StyleHeat), () => "高热生还");
+            StyleHotExtract = this.GetLocalization(nameof(StyleHotExtract), () => "热断链");
+            StyleDragnet = this.GetLocalization(nameof(StyleDragnet), () => "收网撤离");
         }
 
         //════════ 静态战报缓存 ════════
 
         private static OldNetDebriefReport pending;
 
-        /// <summary>弹出时写入（先于清账快照）。同一次深潜首个弹出原因为准，不被覆盖</summary>
+        /// <summary>
+        /// 弹出时写入（先于清账快照）。同一次深潜首个弹出原因为准，不被覆盖。
+        /// 评级在此结算并写跨潜战绩（与快照同守卫=每潜恰记一次；快照先于离世，director 会话仍有效）
+        /// </summary>
         internal static void CacheReport(OldNetPlayer session, OldNetExitKind kind) {
             if (pending != null) {
                 return;
+            }
+            (int score, int gradeIndex, OldNetStyleFlags styles) = OldNetRating.Compute(session, kind);
+            //跨潜战绩持久化（随玩家存档；session.Player 即归属端，per-player 语义天然正确）
+            var record = session.Player.GetModPlayer<Narrative.Data.StoryPlayer>()
+                .Get<Narrative.Data.Modules.OldNetRecordData>();
+            record.TotalDives++;
+            record.TotalSettledShards += session.SettledTotal;
+            bool newRecord = score > record.BestScore;
+            if (newRecord) {
+                record.BestScore = score;
+                record.BestGradeIndex = gradeIndex;
             }
             pending = new OldNetDebriefReport {
                 Kind = kind,
@@ -94,6 +135,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
                 HuntedCount = session.HuntedCount,
                 DiveTicks = session.DiveTicks,
                 LostPending = session.PendingTotal,
+                Score = score,
+                GradeIndex = gradeIndex,
+                Styles = styles,
+                NewRecord = newRecord,
+                BestScore = record.BestScore,
+                BestGradeIndex = record.BestGradeIndex,
             };
         }
 
@@ -111,7 +158,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
         private enum Phase { Hidden, FadeIn, Idle, FadeOut }
 
         private const int PanelW = 470;
-        private const int PanelH = 348;
+        //2.1 评级章改版：容纳评级徽章 + 评分/最佳两行 + 风格加成行
+        private const int PanelH = 452;
 
         private static readonly Color ColdCyan = new(140, 200, 210);
         private static readonly Color EmberRed = new(235, 64, 44);
@@ -281,8 +329,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
             int seconds = report.DiveTicks / 60;
             DrawStatRow(sb, body, rowY + rowH * 4, DebriefTime.Value, $"{seconds / 60:D2}:{seconds % 60:D2}", false);
 
+            //评级章分区（2.1）：分隔线 + 徽章 + 评分/最佳 + 风格加成行
+            int divY2 = (int)(rowY + rowH * 5 + 6f);
+            sb.Draw(px, new Rectangle(x0 + 34, divY2, PanelW - 68, 1), accent * (0.4f * alpha));
+            DrawGradeSection(sb, px, body, divY2);
+
             //弹出方式行 + 损失行
-            float exitY = rowY + rowH * 5 + 8f;
+            float exitY = divY2 + 98f;
             string exitText = report.Kind switch {
                 OldNetExitKind.RamBurnout => DebriefExitBurnout.Value,
                 OldNetExitKind.Death => DebriefExitDeath.Value,
@@ -295,7 +348,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
             if (burned && report.LostPending > 0) {
                 string lost = DebriefLost.Format(report.LostPending);
                 Vector2 lostSz = body.MeasureString(lost) * 0.62f;
-                Utils.DrawBorderString(sb, lost, new Vector2(x0 + (PanelW - lostSz.X) * 0.5f, exitY + 24f),
+                Utils.DrawBorderString(sb, lost, new Vector2(x0 + (PanelW - lostSz.X) * 0.5f, exitY + 22f),
                     Color.Lerp(EmberRed, TextDim, 0.45f) * alpha, 0.62f);
             }
 
@@ -303,7 +356,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
             string hint = DebriefMechHint.Value;
             Vector2 hintSz = body.MeasureString(hint) * 0.56f;
             Utils.DrawBorderString(sb, hint,
-                new Vector2(x0 + (PanelW - hintSz.X) * 0.5f, panelRect.Bottom - 76f),
+                new Vector2(x0 + (PanelW - hintSz.X) * 0.5f, panelRect.Bottom - 70f),
                 TextDim * (0.7f * alpha), 0.56f);
 
             //CONTINUE 键
@@ -319,6 +372,88 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
             Utils.DrawBorderString(sb, btn,
                 new Vector2(continueRect.X + (btnW - btnSz.X) * 0.5f, continueRect.Y + (btnH - btnSz.Y) * 0.5f + 2f),
                 (hover ? Color.White : TextDim) * alpha, 0.85f);
+        }
+
+        //评级章分区（2.1）：徽章（右）+ 评分与历史最佳（左）+ 风格加成行（下），零新贴图
+        private static void DrawGradeSection(SpriteBatch sb, Texture2D px, DynamicSpriteFont body, int top) {
+            DynamicSpriteFont big = FontAssets.DeathText.Value;
+            int x0 = panelRect.X;
+            float xLeft = x0 + 46f;
+            Color gradeCol = OldNetRating.GradeColor(report.GradeIndex);
+
+            //评分行：本区主角，数值放大
+            Utils.DrawBorderString(sb, DebriefScore.Value, new Vector2(xLeft, top + 16f),
+                TextDim * alpha, 0.78f);
+            Utils.DrawBorderString(sb, $"{report.Score}", new Vector2(xLeft + 84f, top + 10f),
+                Color.White * (0.95f * alpha), 1.05f);
+
+            //历史最佳行 + 新纪录闪
+            string best = DebriefBest.Format(
+                $"{OldNetRating.Letter(report.BestGradeIndex)} {report.BestScore}");
+            Utils.DrawBorderString(sb, best, new Vector2(xLeft, top + 46f),
+                TextDim * (0.9f * alpha), 0.62f);
+            if (report.NewRecord) {
+                float flash = 0.6f + 0.4f * MathF.Sin(idleTimer * 7f);
+                Vector2 bestSz = body.MeasureString(best) * 0.62f;
+                Utils.DrawBorderString(sb, DebriefNewRecord.Value,
+                    new Vector2(xLeft + bestSz.X + 10f, top + 46f), EmberRed * (flash * alpha), 0.62f);
+            }
+
+            //评级徽章：DeathText 大字母 + 评级色 + 细框角标
+            var box = new Rectangle(x0 + PanelW - 46 - 72, top + 8, 72, 56);
+            string letter = OldNetRating.Letter(report.GradeIndex);
+            Vector2 lsz = big.MeasureString(letter) * 0.9f;
+            Vector2 lpos = new(box.X + (box.Width - lsz.X) * 0.5f, box.Y + (box.Height - lsz.Y) * 0.5f);
+            sb.DrawString(big, letter, lpos + new Vector2(2f, 2f), Color.Black * (0.6f * alpha),
+                0f, Vector2.Zero, 0.9f, SpriteEffects.None, 0f);
+            sb.DrawString(big, letter, lpos, gradeCol * alpha,
+                0f, Vector2.Zero, 0.9f, SpriteEffects.None, 0f);
+            DrawCornerBrackets(sb, px, box, gradeCol * (0.7f * alpha));
+            string gradeLabel = DebriefGrade.Value;
+            Vector2 glSz = body.MeasureString(gradeLabel) * 0.5f;
+            Utils.DrawBorderString(sb, gradeLabel,
+                new Vector2(box.X + (box.Width - glSz.X) * 0.5f, box.Bottom + 2f),
+                TextDim * (0.7f * alpha), 0.5f);
+
+            //风格加成行：刻意藏到战报屏才揭晓（拆礼物节拍）；无风格整行留白
+            string styleLine = BuildStyleLine();
+            if (styleLine != null) {
+                Vector2 ssz = body.MeasureString(styleLine) * 0.58f;
+                Utils.DrawBorderString(sb, styleLine,
+                    new Vector2(x0 + (PanelW - ssz.X) * 0.5f, top + 78f),
+                    new Color(255, 170, 60) * (0.92f * alpha), 0.58f);
+            }
+        }
+
+        //已达成风格的展示串："幽灵潜行 +300 // 高热生还 +200"；无风格给 null
+        private static string BuildStyleLine() {
+            if (report.Styles == OldNetStyleFlags.None) {
+                return null;
+            }
+            List<string> parts = [];
+            void Add(OldNetStyleFlags flag, LocalizedText name) {
+                if ((report.Styles & flag) != 0) {
+                    parts.Add($"{name.Value} +{OldNetRating.StyleBonus(flag)}");
+                }
+            }
+            Add(OldNetStyleFlags.Ghost, StyleGhost);
+            Add(OldNetStyleFlags.HeatSurvivor, StyleHeat);
+            Add(OldNetStyleFlags.HotExtract, StyleHotExtract);
+            Add(OldNetStyleFlags.DragnetEscape, StyleDragnet);
+            return string.Join(" // ", parts);
+        }
+
+        //四角 L 形细框角标（placeholder2 直线拼绘）
+        private static void DrawCornerBrackets(SpriteBatch sb, Texture2D px, Rectangle rect, Color color) {
+            const int len = 10;
+            sb.Draw(px, new Rectangle(rect.X, rect.Y, len, 1), color);
+            sb.Draw(px, new Rectangle(rect.X, rect.Y, 1, len), color);
+            sb.Draw(px, new Rectangle(rect.Right - len, rect.Y, len, 1), color);
+            sb.Draw(px, new Rectangle(rect.Right - 1, rect.Y, 1, len), color);
+            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 1, len, 1), color);
+            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - len, 1, len), color);
+            sb.Draw(px, new Rectangle(rect.Right - len, rect.Bottom - 1, len, 1), color);
+            sb.Draw(px, new Rectangle(rect.Right - 1, rect.Bottom - len, 1, len), color);
         }
 
         private static void DrawStatRow(SpriteBatch sb, DynamicSpriteFont font, float y,

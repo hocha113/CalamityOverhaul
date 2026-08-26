@@ -25,8 +25,8 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
         InventoryFull,
     }
 
-    /// <summary>服务端许可、提交领取，本地播放拔刀</summary>
-    internal static class WGManifestationNet
+    /// <summary>服务端许可、提交领取，本地播放拔刀，类本身即信道</summary>
+    internal class WGManifestationNet : CWRNetChannel
     {
         private const float ClaimRange = WGManifestationActor.InteractDistance + 48f;
         //主背包槽0-49
@@ -38,8 +38,7 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
         }
 
         private static ModPacket NewPacket(WeaverGrievancesManifestationNetOp operation) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.WeaverGrievancesManifestation);
+            ModPacket packet = CWRNetWork.GetPacket<WGManifestationNet>();
             packet.Write((byte)operation);
             return packet;
         }
@@ -135,11 +134,7 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
             }
         }
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type != CWRMessageType.WeaverGrievancesManifestation) {
-                return;
-            }
-
+        public override void Receive(BinaryReader reader, int whoAmI) {
             WeaverGrievancesManifestationNetOp operation
                 = (WeaverGrievancesManifestationNetOp)reader.ReadByte();
             switch (operation) {

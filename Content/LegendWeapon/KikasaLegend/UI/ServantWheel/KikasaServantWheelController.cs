@@ -278,7 +278,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
                 if (servant.SlotKeyAt(i) == 0) {
                     continue;
                 }
-                if (servant.SlotHeldAt(i) == anyOut) {
+                //有械奴在场（anyOut）时全收：只拨未收起的席；全部收起时全召：只拨已收起的席
+                if (servant.SlotHeldAt(i) != anyOut) {
                     changed |= servant.ToggleSlotHeld(i, out _);
                 }
             }

@@ -1,8 +1,10 @@
 ﻿using CalamityOverhaul.Content.UIs.RadialWheels;
 using InnoVault.UIHandles;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs
 {
@@ -81,6 +83,16 @@ namespace CalamityOverhaul.Content.UIs
             return false;
         }
 
+        /// <summary>指定域内是否有全屏界面开着（含开合过渡）</summary>
+        public static bool AnyOpenIn(FullScreenUIDomain domain) {
+            foreach (UIHandle handle in Members) {
+                if (((IFullScreenUIHandle)handle).FullScreenDomain == domain && Occupying(handle)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /// <summary>指定域之外是否有全屏界面开着；HUD 的交互闸用它当帧断电</summary>
         public static bool AnyForeignOpen(FullScreenUIDomain domain) {
             foreach (UIHandle handle in Members) {
@@ -134,5 +146,23 @@ namespace CalamityOverhaul.Content.UIs
     internal sealed class FullScreenUIHubLoader : ICWRLoader
     {
         void ICWRLoader.UnLoadData() => FullScreenUIHub.Clear();
+    }
+
+    /// <summary>
+    /// 鬼切域全屏界面（改铭台/结印盘/点鬼簿/铭谱）持屏期间的背包卫生：
+    /// 这族界面都画高不透明整屏黑幕，背包在幕下开着就只剩 tooltip 浮在黑幕上
+    /// （反馈十一·#65）；持屏时强制合拢背包，背包开关键让位给界面关闭。
+    /// 公共屏（任务书等）不收编——它们可能需要背包交互
+    /// </summary>
+    internal sealed class FullScreenUIInventoryGuard : ModPlayer
+    {
+        public override void SetControls() {
+            if (Player.whoAmI != Main.myPlayer
+                || !FullScreenUIHub.AnyOpenIn(FullScreenUIDomain.Onikiri)) {
+                return;
+            }
+            Main.playerInventory = false;
+            Player.releaseInventory = false;
+        }
     }
 }

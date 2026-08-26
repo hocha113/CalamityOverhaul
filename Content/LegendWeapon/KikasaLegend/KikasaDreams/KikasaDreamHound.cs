@@ -190,11 +190,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             //面板伤逐帧刷新；魇倍率只有 owner 端读得到盘，远端保持面板基数
             Projectile.damage = ResolveBiteDamage(owner, Main.myPlayer == Projectile.owner);
 
-            //梦境绑定：owner 端判定离梦即散，其余端跟同步包
+            //梦境绑定：owner 端判定离梦即散，其余端跟同步包；
+            //口径与唤犬门一致（拉入过场画面已切梦侧即算在梦），过场唤出的犬不至当帧自散
             bool authority = Main.myPlayer == Projectile.owner;
-            KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
             if (authority && State != StateDissolve
-                && (owner.dead || domain.Phase != KikasaDomainPhase.Dreaming)) {
+                && (owner.dead || !owner.GetModPlayer<KikasaDreamPlayer>().InDreamSteady)) {
                 BeginDissolve();
             }
 
@@ -1020,6 +1020,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             }
 
             sb.End();
+            //交还纹理槽:留着噪声会让后续不自绑 s1 的着色器错采样,Boss 贴图偶发花屏的嫌疑点(反馈五·#63)
+            if (shaderOk) {
+                Main.instance.GraphicsDevice.Textures[1] = null;
+            }
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
                 DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
         }

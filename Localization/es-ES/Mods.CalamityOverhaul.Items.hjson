@@ -890,6 +890,16 @@ HandmadeDoll: {
 		'''
 }
 
+ScapegoatDoll: {
+	// DisplayName: Scapegoat Doll
+	/* Tooltip:
+		'''
+		While in your inventory, blocks one death in your place
+		The doll shatters and is lost after taking the blow
+		''' */
+	// ShatterText: The scapegoat doll shattered
+}
+
 Snowblindness: {
 	DisplayName: Ceguera por Nieve
 	Tooltip:
@@ -2173,9 +2183,13 @@ Pandemonium: {
 		'''
 		Clic izquierdo para cargar y liberar magia trascendente
 		Clic derecho para lanzar una runa de azufre en el cursor
-		Pulsa [PandemoniumQSkill] para desatar el Juicio de azufre
-		Pulsa [PandemoniumRSkill] para ejecutar El fin de todos los demonios
+		Al empuñarla, dos botones de habilidad se encienden abajo a la izquierda de la pantalla
+		Haz clic para desatar el Juicio de azufre o El fin de todos los demonios
 		'''
+	SkillLeftName: Juicio de azufre
+	SkillLeftDesc: Hace caer un campo de pilares de fuego de azufre alrededor del cursor
+	SkillRightName: El fin de todos los demonios
+	SkillRightDesc: Despliega un círculo mágico gigante centrado en ti que castiga a los enemigos con rayos y fuego
 }
 
 Proverbs: {
@@ -2297,9 +2311,13 @@ AriaofTheCosmos: {
 		'''
 		Mantén clic izquierdo para cargar un cuásar poderoso que al soltar inflige daño devastador
 		Clic derecho para liberar un miniagujero negro que, al formarse, dispara una andanada de rayos gamma
-		Pulsa [AriaofTheCosmosQSkill] para invocar un guardián del anillo estelar
-		Pulsa [AriaofTheCosmosRSkill] para generar una ráfaga de rayos gamma
+		Al empuñarla, dos botones de habilidad se encienden abajo a la izquierda de la pantalla
+		Haz clic para invocar un guardián del anillo estelar o generar una ráfaga de rayos gamma
 		'''
+	SkillLeftName: Guardián del anillo estelar
+	SkillLeftDesc: Invoca un anillo estelar orbitante cuyos nodos disparan polvo estelar a los enemigos cercanos
+	SkillRightName: Ráfaga de rayos gamma
+	SkillRightDesc: Tras una breve carga, desata nueve rayos gamma en abanico hacia el cursor
 }
 
 Oceanfragments: {

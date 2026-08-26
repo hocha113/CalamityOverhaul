@@ -249,6 +249,7 @@ LegendUpgradeManagerSystem: {
 }
 
 TrialBlockedHint: The next trial requires the relevant content to be enabled before it can begin.
+TrialFrontierHint: Levels settle in order, and this trial is the current stop. Later trials cleared early are recorded first, then counted together once this one is done.
 
 HalibutTrialQuestLine: {
 	QuestCategory: Halibut Legend
@@ -640,7 +641,7 @@ OnikiriText: {
 	OnikiriTutorialLead: {
 		AskTitle: Take the Lesson First?
 		AskBody: Vigor and Stance, the Omote and Ura of the domain, the backlash of dismemberment. These three are hard to work out alone without hearing them once. You will only be asked this once
-		AskPrompt: Take the lesson now, or accept the Keiko Rune and open it yourself later
+		AskPrompt: Take the lesson now; skip it if you're in a hurry — it will count as completed; or accept the Keiko Rune and open it yourself later
 		RefreshAskTitle: A Couple of New Pages
 		RefreshAskBody: This version adds two lessons: how to read the codex beside the Inscription Stand, and what to know about the Eye of the Oni Domain before you act. You have already done the practice, so it won't be repeated
 		RefreshAskPrompt: Take the additions now, or accept the Keiko Rune and open them later
@@ -696,6 +697,8 @@ OnikiriText: {
 		SkipBtn: Skip
 		SkipStepBtn: Skip Step
 		AbortBtn: Dismiss
+		SkipAllBtn: Skip Tutorial
+		SkipAllNotice: The tutorial now counts as completed; trial commissions are open to you
 	}
 
 	OniMeiCodexUI: {
@@ -917,6 +920,7 @@ KikasaOverride: {
 		Hold left click to hover the umbrella overhead, dropping homing ink rain to a steady beat
 		Hold right click to charge ink upside down; release to pour out an ink torrent
 		While held, press Domain Expansion to raise the Blood Lake; press again to close it
+		The real damage lives in the lake: without the domain the rain runs thin, and no shades or arms take the field
 		Once the water reaches your feet, hold an item and press Sink into the Lake to store it; reclaim it in the Lakeheart
 		Press the same key aiming at an enemy to drown it; a drowned boss leaves behind a sunken shade
 		Click the wind chime at the bottom left to open the Lakeheart and seat shades in three slots; they fight for you like minions
@@ -927,6 +931,7 @@ KikasaOverride: {
 		In ghost rain at full water, press Self-Restart to wind everything nearby back a few seconds, refilling your life and rinsing off debuffs
 		At full water, hold Flip the Lake to sink into the Ghost Dream: foes there are helpless, and no ranged projectile can exist
 		Items are sealed in the dream; hold left click to loose the hounds instead, and press the same key again to wake
+		Only the hounds' bite counts in the dream — talismans on the rain rope do not apply there
 		Press Domain Teleport to slip through a pool of water to your cursor; swifter within the Blood Lake
 		More minion slots quicken the rain's beat, add more drops, and speed up the charge
 		4 slots: each beat throws one extra drop at a second target
@@ -1144,7 +1149,10 @@ KikasaTrialQuestLine: {
 }
 
 KikasaText: {
-	KikasaServantPlayer.ServantUnknown: You can't command it yet
+	KikasaServantPlayer: {
+		ServantUnknown: You can't command it yet
+		AutoEvictFormat: Seats full — {0} steps down, {1} takes the seat
+	}
 
 	KikasaUIText: {
 		AffinityFlame: Flame
@@ -1176,6 +1184,7 @@ KikasaText: {
 		TipTeleportHintFormat: Press {0} to slip through a pool of water to the cursor; swifter within the lake, with a shorter cooldown
 		TipThrallFormat: Thralls out {0} / {1}
 		TipHoundCountFormat: Hounds out {0} / {1}
+		TipDreamNoTalis: Only the hounds' bite counts here — talismans do not apply
 		TipSeatsHintFormat: Hold {0} for the wheel · change the lineup in the Lakeheart
 		TipSeatEmpty: Empty
 		TipTalisHint: Click to open the Lakeheart and hang talismans on the rope
@@ -1196,7 +1205,7 @@ KikasaText: {
 		WheelCenterSummonAll: "[Release] Call all out"
 		WheelCenterEmpty: No shades seated yet
 		WheelDamageFormat: Damage per shade out {0}%
-		WheelHint: "[{0}] Hold · Release to confirm · Right-click to cancel"
+		WheelHint: "[{0}] Hold · Release to confirm · Right-click closes the wheel only, shades stay afield"
 		WheelWispName: Gold Flame
 		WheelWispDesc: Once lit, the gold flame spreads along the shore and scorches whatever it reaches
 		WheelWispIgnite: "[Release] Light it"
@@ -1234,7 +1243,8 @@ KikasaText: {
 		SeatHeldLineFormat: Held back — hold {0} for the wheel to call it out
 		SeatOutLine: On the field
 		SeatAwaitLine: Waiting for the lake
-		RosterTallyFormat: Shades {0} / {1}
+		RosterTallyFormat: Codex {0} / {1}
+		RosterSeatTallyFormat: Seats {0} / {1}
 		RosterUnknown: Not drowned yet
 		RosterUnknownHintFormat: With the lake open, aim at it and press {0}
 		RosterSeatedTag: Seated
@@ -1248,11 +1258,14 @@ KikasaText: {
 		TalisEmptyLine: An empty knot — click to open the talisman case
 		TalisNoneOwned: The talisman case is empty; craft a talisman at a workbench by the water first
 		TalisNeedUmbrella: Hold Kikasa in hand — the talismans answer only the umbrella
-		TalisSwapHint: Click to swap · right-click to take down
+		TalisSwapHint: Click to swap · drag onto another knot to relocate · right-click to take down
 		TalisHangHint: Click to hang it here
 		TalisTakeDownLabel: Take down
 		TalisAlreadyHung: It already hangs on another knot
 		TalisCurrentTag: Hanging here
+		TalisStackRule: Every hung talisman keeps working, even with its ink hidden; each drop takes one talisman's color and signature effect, leftmost first
+		TalisDragSwapHint: Release to trade knots
+		TalisDragMoveHint: Release to move it here
 		NoteFuHungFormat: 「{0}」rose onto the raincall rope
 		NoteFuTakenFormat: 「{0}」returned to the talisman case
 		VaultTitle: Lake Hoard
@@ -1280,23 +1293,24 @@ KikasaText: {
 		WheelPrompt: Hold {0} to open the wheel, then release on a seat
 		WheelNoMemory: No shades in the lake yet. Drown a boss first, or skip this step.
 		RainTitle: Mutate into Ghost Rain
-		RainBody: The Flip the Lake key works two ways: at full water, tap it to flip the Blood Lake into ghost rain; hold it to sink into the Ghost Dream, saved for the last step. Foes slain under the ghost rain rise as umbrella thralls that fight for you.
+		RainBody: The Flip the Lake key (middle mouse by default) works two ways: at full water, tap it to flip the Blood Lake into ghost rain; hold it to sink into the Ghost Dream, saved for the last step. Foes slain under the ghost rain rise as umbrella thralls that fight for you.
 		RainPrompt: At full water, tap {0} to flip the lake
 		RestartTitle: Rewind in the Rain
 		RestartBody: The ghost rain remembers the last few seconds. Press the restart key and the scene freezes into a photograph, then washes open: nearby foes and you slide back to where you stood, your life refills, debuffs rinse off, and nothing can touch you while it rewinds.
 		RestartPrompt: In ghost rain at full water, press {0}
 		DreamTitle: Enter the Ghost Dream
 		DreamBody: At full water, hold the Flip the Lake key and the reflection in the lake pulls you into the dream. Foes there are helpless and no ranged projectile can exist; your items are sealed too, so hold left click to loose the hounds instead. Press the same key again to wake.
-		DreamPrompt: At full water, hold {0} (middle mouse by default)
+		DreamPrompt: At full water, hold {0}
 		SkipBtn: Skip
 		ConfirmBtn: Got it
 		AssistBtn: Show me
 		OpenPanoramaBtn: Open it for me
 		DismissBtn: Put away
-		KeyUnbound: This step's key isn't bound. Bind it in Settings > Controls, or click Skip.
+		KeyUnbound: This step's key "{0}" isn't bound. Bind it in Settings > Controls, or click Skip.
 		AlreadyDoneNote: You've already done this one. Read on, then press Got it.
-		WaterRisingNote: Wait for the blood water to reach your feet first.
+		WaterRisingNote: Wait for the blood water to reach your feet. Water level: {0}%.
 		ResetCooldownFormat: Restart still cooling down: {0}%
 		HelpHover: Replay the umbrella tutorial
+		MutateFallbackKey: middle mouse
 	}
 }

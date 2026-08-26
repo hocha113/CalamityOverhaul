@@ -732,9 +732,11 @@ namespace CalamityOverhaul
             return acidRain_Ongoing_M != null && (bool)GetMember(acidRain_Ongoing_M, null);
         }
 
-        public static DamageClass GetTrueMeleeDamageClass() => trueMeleeDamageClass ?? DamageClass.Default;
+        //回退用近战类而不是 Default:Default 不算近战,无灾厄时鬼切全系吃不到近战加成、
+        //近战饰品挂点(火焰手套等)也不触发(反馈十一·#112)
+        public static DamageClass GetTrueMeleeDamageClass() => trueMeleeDamageClass ?? DamageClass.Melee;
 
-        public static DamageClass GetTrueMeleeNoSpeedDamageClass() => trueMeleeNoSpeedDamageClass ?? DamageClass.Default;
+        public static DamageClass GetTrueMeleeNoSpeedDamageClass() => trueMeleeNoSpeedDamageClass ?? DamageClass.MeleeNoSpeed;
 
         public static float ChargeRatio(Item item) {
             GlobalItem cgi = GetCalItem(item);

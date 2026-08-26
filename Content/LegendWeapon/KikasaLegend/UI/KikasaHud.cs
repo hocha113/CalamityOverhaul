@@ -56,6 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         public static LocalizedText TipTeleportHintFormat { get; private set; }
         public static LocalizedText TipThrallFormat { get; private set; }
         public static LocalizedText TipHoundCountFormat { get; private set; }
+        public static LocalizedText TipDreamNoTalis { get; private set; }
         public static LocalizedText TipSeatsHintFormat { get; private set; }
         public static LocalizedText TipSeatEmpty { get; private set; }
         public static LocalizedText TipTalisHint { get; private set; }
@@ -84,6 +85,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 () => "Umbrella thralls afield {0} / {1}");
             TipHoundCountFormat = this.GetLocalization(nameof(TipHoundCountFormat),
                 () => "Hounds afield {0} / {1}");
+            //梦不吃符要说破，别让构筑玩家在梦里等一个不存在的加成（反馈二·#36，拍板走文案）
+            TipDreamNoTalis = this.GetLocalization(nameof(TipDreamNoTalis),
+                () => "Only the hounds' bite counts here — talismans do not apply");
             TipSeatsHintFormat = this.GetLocalization(nameof(TipSeatsHintFormat),
                 () => "{0} wheel calls/recalls \u00b7 manage seats in the Lakeheart");
             TipSeatEmpty = this.GetLocalization(nameof(TipSeatEmpty), () => "Vacant seat");
@@ -703,6 +707,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 if (cd > 0.005f) {
                     DrawArcFraction(sb, pos, 10.5f, cd, ember * (0.7f * a));
                 }
+                //常显编额（反馈六·#43）：不悬停也能看到 在场/上限
+                string count = $"{CountHounds()}/{KikasaDreamPlayer.MaxHoundsFor(player)}";
+                Utils.DrawBorderString(sb, count, pos + new Vector2(13f, -9f),
+                    KikasaHudTheme.Text(rain) * ((0.85f + hover * 0.15f) * a), 0.8f);
             }
         }
 
@@ -817,6 +825,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                             new Color(230, 96, 40)));
                         lines.Add(new KikasaTipLine(string.Format(TipHoundCountFormat.Value,
                             CountHounds(), KikasaDreamPlayer.MaxHoundsFor(player)), dimC));
+                        lines.Add(new KikasaTipLine(TipDreamNoTalis.Value, dimC, 0.85f));
                         lines.Add(new KikasaTipLine(string.Format(
                             KikasaPanoramaUI.DreamReturnFormat.Value, mutateKey), dimC));
                     }

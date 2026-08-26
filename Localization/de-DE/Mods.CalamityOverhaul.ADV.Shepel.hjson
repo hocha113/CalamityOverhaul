@@ -623,3 +623,31 @@ ShepelYharonGift: {
 	L2: Mündungsgeschwindigkeit und Reaktionszeit Ihrer Waffe sind deutlich gestiegen — genug, um seine Höchstgeschwindigkeit zu übertreffen.
 	L3: Um Ihrem Tempo zu folgen, sind meine Systeme jederzeit bereit, ihre eigenen Grenzen zu sprengen.
 }
+
+FirstMetShepel: {
+	Line1: Meister! So schön, Sie wiederzusehen!
+	Choice1Text: Sie haben sich geirrt, oder?
+	Choice2Text: …Lange nicht gesehen.
+	Choice1Response: …Ja. Solange es Sie sind, irre ich mich jedes Mal gern.
+	Choice1Silence: ......
+	CybCourseOfferLine: Superdream-Programm erfolgreich geladen. Meister, möchten Sie jetzt den Superdream-Raum betreten, um Hack Time und SHPC-Waffenprotokolle zu lernen?
+	CybCourseAcceptText: Jetzt gleich.
+	CybCourseDeclineText: Nicht jetzt.
+	CybCourseAcceptResponse: Verstanden. Neuronale Verbindung wird aufgebaut … Bitte ruhig bleiben.
+	CybCourseDeclineResponse: Verstanden. Superdream-Zugangsdaten wurden in Ihren Spielstand geschrieben. Sie können ihn jederzeit selbst aktivieren, Meister.
+	// SpeakerName: SHPC
+}
+
+TheHerInThePast: {
+	WitchLine1: Von diesem Dreck verfolgt zu werden ist unangenehm. Gut, dass ich Sie erwischt habe.
+	ShpcLine1: Danke … aber wie ist das möglich? Sie gehören der Vergangenheit an und können sich doch bewegen …
+	WitchLine2: Wenn ihr aus hundert Jahren Zukunft hier eindringen könnt, kann ich natürlich etwas Ähnliches tun.
+	WitchLine3: Allerdings habt ihr recht – ich bin nur ein Schatten, der hier zurückblieb.
+	ShpcLine2: Nutzen Sie Ihre Kräfte so – werden Sie nicht zerfallen?
+	WitchLine4: Euer Fokus ist lieblich naiv. Geht schnell. Dieser Dreck soll mit mir in der Vergangenheit begraben bleiben.
+	WitchLine5: Übrigens, kleine Maid.
+	ShpcLine3: Was ist?
+	WitchLine6: Eure Erschöpfung dringt bis in die Knochen.
+	WitchLine7: Hört auf, die Vergangenheit ändern zu wollen. Lernt, eure Zukunft anzunehmen.
+	ShpcLine4: ……
+}

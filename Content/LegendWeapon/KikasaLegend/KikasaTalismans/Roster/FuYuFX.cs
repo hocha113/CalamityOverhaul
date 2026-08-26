@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
             if (damage <= 0) {
                 return;
             }
-            KikasaTalismanProfile profile = KikasaTalismanCombat.Resolve(owner.HeldItem);
+            KikasaTalismanProfile profile = KikasaTalismanCombat.Resolve(owner);
             float mul = 0.9f * profile.GeyserDamageMul
                 * KikasaOverride.GetSlotDamageMul(KikasaOverride.GetSlotCount(owner));
             float ai1 = KikasaTalismanHooks.PackTag(KikasaTalismanHooks.TagIdFor(definition), 2);

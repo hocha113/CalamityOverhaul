@@ -104,8 +104,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
                 return;
             }
             if (Main.netMode == NetmodeID.MultiplayerClient) {
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.DungeonworldBossKill);
+                ModPacket packet = CWRNetWork.GetPacket<DungeonworldBossKillNet>();
                 packet.Write(OpSnapshot);
                 packet.Write((byte)Player.whoAmI);
                 packet.Write(undrownedKills);
@@ -201,8 +200,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
             }
 
             if (Main.netMode == NetmodeID.Server && rosterCount > 0) {
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.DungeonworldBossKill);
+                ModPacket packet = CWRNetWork.GetPacket<DungeonworldBossKillNet>();
                 packet.Write(OpKillAward);
                 packet.Write(bossId);
                 packet.Write((byte)rosterCount);
@@ -226,5 +224,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
         /// <summary>结算绑定半径（沿看守口径；避免直接引用生成类型形成环）</summary>
         private static float FloodGalleryWatcherBind()
             => Gen.BossRooms.FloodGalleryWatcher.RoomBindDistance;
+    }
+
+    /// <summary>地牢子世界 Boss 击杀记录信道：快照上行与名单下发共用一条通道</summary>
+    internal sealed class DungeonworldBossKillNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => DungeonworldBossRecords.HandlePacket(reader, whoAmI);
     }
 }

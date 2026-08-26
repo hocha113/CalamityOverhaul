@@ -226,6 +226,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
             }
             if (killer?.active == true) {
                 OldNetPlayer.Get(killer).AddNoise(OldNetMetrics.NoisePatrolKill);
+                //评级埋点（2.1）：巡逻击杀破坏幽灵潜行判定
+                OldNetPlayer.Get(killer).PatrolKills++;
             }
         }
 

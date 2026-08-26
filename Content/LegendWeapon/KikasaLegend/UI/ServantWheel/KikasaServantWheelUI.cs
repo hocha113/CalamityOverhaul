@@ -64,7 +64,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.ServantWheel
             WheelCenterSummonAll = this.GetLocalization(nameof(WheelCenterSummonAll), () => "[Release] Call out all");
             WheelCenterEmpty = this.GetLocalization(nameof(WheelCenterEmpty), () => "No shades seated in the lake");
             WheelDamageFormat = this.GetLocalization(nameof(WheelDamageFormat), () => "Output per shade afield: {0}%");
-            WheelHint = this.GetLocalization(nameof(WheelHint), () => "[{0}] Hold \u00b7 Release to commit \u00b7 RMB cancel");
+            //右键语义要写透：只收转盘、不收沉影（反馈三·#8，文案方案拍板 2026/8/26）
+            WheelHint = this.GetLocalization(nameof(WheelHint), () => "[{0}] Hold \u00b7 Release to commit \u00b7 RMB closes the wheel only, shades stay afield");
             WheelWispName = this.GetLocalization(nameof(WheelWispName), () => "Gold Flame");
             WheelWispDesc = this.GetLocalization(nameof(WheelWispDesc),
                 () => "Once lit, the gold flame spreads along the shore and scorches whatever it reaches");

@@ -623,3 +623,31 @@ ShepelYharonGift: {
 	L2: 现在，您的武器初速和响应速度已经得到了显著提升，足以超越它的极速
 	L3: 为了能一直跟上您的脚步，我的系统随时准备突破自身的上限
 }
+
+FirstMetShepel: {
+	Line1: 主人！很高兴再见到您！
+	Choice1Text: 你认错人了吧？
+	Choice2Text: ...好久不见
+	Choice1Response: ...是的，只要是您，我每次都愿意认错
+	Choice1Silence: ......
+	CybCourseOfferLine: 超梦程序已成功录入。主人，是否现在接入超梦空间，学习骇客模式及SHPC武器操作规范？
+	CybCourseAcceptText: 现在就去
+	CybCourseDeclineText: 暂时不去
+	CybCourseAcceptResponse: 收到，正在建立神经链路……请保持稳定。
+	CybCourseDeclineResponse: 了解。超梦接入凭证已写入您的存档，主人随时可以自行激活。
+	// SpeakerName: SHPC
+}
+
+TheHerInThePast: {
+	WitchLine1: 被这种脏东西追挺不好受的吧，幸好我赶上了
+	ShpcLine1: 谢谢……但怎么可能，你属于过去，却可以动起来……
+	WitchLine2: 你们可以从百年后入侵到这里，我自然也能做到类似的事情
+	WitchLine3: 不过，你说的对，我确实只是一道留在这里的残影
+	ShpcLine2: 这样的话，你这么使用能力，会让你消散掉的啊
+	WitchLine4: 你的关注点真是温柔的可爱。快点离开吧，这些脏东西，还是和我一起葬在过去比较好
+	WitchLine5: 对了，那位小女仆
+	ShpcLine3: 什么？
+	WitchLine6: 你的疲惫简直透彻骨髓呢
+	WitchLine7: 别总是想着改变过去，学会接受属于你们的未来
+	ShpcLine4: ……
+}

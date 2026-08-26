@@ -12,8 +12,8 @@ namespace CalamityOverhaul.Content.Structures.DatIO
 {
     internal class JunkmanBase : SaveStructure
     {
-        public override string SavePath => Path.Combine(StructurePath, "JunkmanBase_v1.nbt");
-        public override void Load() => Mod.EnsureFileFromMod("Content/Structures/DatIO/JunkmanBase_v1.nbt", SavePath);
+        public override string SavePath => Path.Combine(StructurePath, "JunkmanBase_v2.nbt");
+        public override void Load() => Mod.EnsureFileFromMod("Content/Structures/DatIO/JunkmanBase_v2.nbt", SavePath);
         public override void SaveData(TagCompound tag)
             => SaveRegion(tag, new Point16(4202, 989).GetRectangleFromPoints(new Point16(4392, 1024)));
         public override void LoadData(TagCompound tag) {
@@ -51,11 +51,13 @@ namespace CalamityOverhaul.Content.Structures.DatIO
         }
 
         private static void LoadChest(RegionSaveData regionSaveData, Point16 orig) {
+            //灾厄在场用嘉登残料，缺席时退回原版工业味替代品
+            int platingItem = CWRID.DubiousCircuitryAvailable ? CWRID.Item_DubiousPlating : ItemID.TinPlating;
+            int circuitryItem = CWRID.DubiousCircuitryAvailable ? CWRID.Item_MysteriousCircuitry : ItemID.Wire;
             int[] mineralItems = [
                 ItemID.CopperOre, ItemID.TinOre, ItemID.IronOre, ItemID.LeadOre,
                 ItemID.SilverOre, ItemID.TungstenOre, ItemID.GoldOre, ItemID.PlatinumOre,
-                ItemID.JungleSpores, ItemID.Moonglow, CWRID.Item_DubiousPlating
-                , CWRID.Item_MysteriousCircuitry
+                ItemID.JungleSpores, ItemID.Moonglow, platingItem, circuitryItem
             ];
 
             int[] junkItems = [

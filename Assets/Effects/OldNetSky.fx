@@ -28,6 +28,8 @@ float uWallScreenX;   //黑墙右缘屏幕x（远离墙时大负值，余晖自�
 float uCorrupt;       //0~1 带内腐化（墙脚0→衰减区1）
 float uSurge;         //0~1 黑墙涌动脉冲
 float4 uGiant;        //xy=剪影中心uv z=尺度 w=在场强度
+float uWatch;         //网的注视 0~4：余烬里睁开的红眼，密度随档位（0.8 起零星睁眼）
+float2 uPlayerUv;     //玩家屏幕uv：红眼成对短横杠缓慢面向玩家方位
 
 float hash21(float2 p)
 {
@@ -177,7 +179,25 @@ float4 PSSky(float2 coords : TEXCOORD0) : COLOR0
     float survivor = step(0.985, hash21(sId + 4.2));
     emberCol = lerp(emberCol, float3(0.22, 0.50, 0.55), survivor);
     float skyZone = 1.0 - smoothstep(0.40, 0.60, coords.y);
-    col += emberCol * star * amp * skyZone * 0.55;
+
+    //═══ 网的注视：按 hash 选中的余烬睁开成"成对短横杠"红眼，面朝玩家方位 ═══
+    //T1 零星睁眼 → T4 满天注视（选中阈 1-0.06×watch，档位越高越多余烬变眼）
+    float eyeSel = step(1.0 - 0.06 * uWatch, sH) * step(0.8, uWatch);
+    float2 pcell = frac(sUV) - 0.5 - sOff * 0.55;      //格内局部坐标（星体中心为原点）
+    float2 pSUV = uPlayerUv * float2(aspect, 1.0) * 5.0 + float2(uCamX * 0.00001, camYFar * 0.5);
+    float2 toPl = pSUV - (sUV - pcell);
+    float2 gaze = toPl * rsqrt(max(dot(toPl, toPl), 0.0001));
+    float2 gperp = float2(-gaze.y, gaze.x);
+    //双眼沿视线垂直方向对称分布（间距 0.12），每只是沿垂直向拉长的短杠
+    float du = abs(abs(dot(pcell, gperp)) - 0.12);
+    float dv = abs(dot(pcell, gaze));
+    float slit = (1.0 - smoothstep(0.024, 0.065, du)) * (1.0 - smoothstep(0.012, 0.030, dv));
+    //不眨的凝视比明灭更瘆人：常亮 + 偶发瞬目；颜色从烬红推向警示红
+    float eyeBlink = step(0.06, frac(t * 0.11 + sH * 13.0));
+    float3 eyeCol = lerp(float3(0.72, 0.16, 0.09), float3(1.0, 0.14, 0.08), saturate(uWatch * 0.25));
+
+    col += (emberCol * star * amp * (1.0 - eyeSel) * 0.55
+        + eyeCol * slit * eyeBlink * eyeSel * 0.75) * skyZone;
 
     //═══ 地平辉光（窄） + 西缘余晖锚（uSurge 涌动增幅） ═══
     float hgl = 1.0 - smoothstep(0.0, 0.030, abs(coords.y - horizon));

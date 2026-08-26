@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest
     {
         private const string DeployKey = "Draedon_DeploySignaltower";
 
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.Draedon";
 
         public static LocalizedText QuestCategory { get; private set; }
         public static LocalizedText DeployTitle { get; private set; }

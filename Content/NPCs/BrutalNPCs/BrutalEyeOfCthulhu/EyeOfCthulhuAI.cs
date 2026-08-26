@@ -24,6 +24,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
         private Player targetPlayer;
         /// <summary>远距滞留帧，达上限触发雾步回归</summary>
         private int farTimer;
+        /// <summary>残影缓存已预填（首个 AI 帧一次性）</summary>
+        private bool trailPrimed;
         #endregion
 
         #region 加载与初始化
@@ -73,6 +75,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
             //延迟初始化
             if (stateContext == null || stateMachine == null) {
                 InitializeStateContext();
+            }
+
+            //首个 AI 帧把残影缓存预填到当前位:槽位复用的旧轨迹或未填的零点
+            //都会在开场画出一串克眼(反馈十一·#98);预填后残影从本体处自然生长
+            if (!trailPrimed) {
+                trailPrimed = true;
+                for (int i = 0; i < npc.oldPos.Length; i++) {
+                    npc.oldPos[i] = npc.position;
+                }
+                for (int i = 0; i < npc.oldRot.Length; i++) {
+                    npc.oldRot[i] = npc.rotation;
+                }
             }
 
             FindTarget();

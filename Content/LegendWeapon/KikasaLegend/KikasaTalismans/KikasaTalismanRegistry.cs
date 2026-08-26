@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
 {
     /// <summary>
     /// 唤雨符定义目录（Mod.Load 反射注册，键冲突注册期报错）+ 祈雨绳数据缝：<br/>
-    /// 展示读取缓存上一份（未持伞不跳零），写入仅认手中伞并走字段级确认
+    /// 符位表挂玩家（<see cref="KikasaTalismanPlayer.Talismans"/>），展示直读本地玩家，
+    /// 写入仅认手中伞、本机落位后推快照；挂/摘/换入口签名对 UI 保持不变
     /// </summary>
     internal sealed class KikasaTalismanRegistry : ICWRLoader
     {
@@ -87,30 +89,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
             byKey.Clear();
             networkIdByKey.Clear();
             KikasaTalismanGlyph.ClearRegistry();
-            displayStore = null;
         }
 
         //====展示读取====
 
-        //未持伞保留上一份：湖心景淡出期间读数不跳零
-        private static KikasaTalismanStore displayStore;
-
-        /// <summary>本地持伞数据，服务器/菜单/未持 null</summary>
-        private static KikasaData ResolveLocalData() {
-            if (Main.dedServ || Main.gameMenu) {
-                return null;
-            }
-            return KikasaData.TryGet(Main.LocalPlayer?.GetItem());
-        }
-
-        /// <summary>展示用符位表，未持伞回落上一份，可为 null（从未持过伞）</summary>
+        /// <summary>
+        /// 展示用符位表（UI 兼容入口，签名不变）：直读本地玩家的玩家侧存储，
+        /// 不再随持伞跳变；服务器/菜单 null
+        /// </summary>
         public static KikasaTalismanStore DisplayStore {
             get {
-                KikasaData data = ResolveLocalData();
-                if (data != null) {
-                    displayStore = data.Talismans;
+                if (Main.dedServ || Main.gameMenu) {
+                    return null;
                 }
-                return displayStore;
+                Player player = Main.LocalPlayer;
+                return player != null && player.TryGetModPlayer(out KikasaTalismanPlayer ktp)
+                    ? ktp.Talismans : null;
             }
         }
 
@@ -120,20 +114,51 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
             return key != null && byKey.TryGetValue(key, out KikasaTalismanDefinition definition) ? definition : null;
         }
 
-        //====写入（仅认手中伞）====
+        //====写入（仅认手中伞；数据落玩家身上）====
 
-        /// <summary>挂符/换符到手中伞，成功推物品同步；须所持</summary>
-        public static bool HangHeld(int slot, string key, Action<bool> completed = null) {
+        //回调契约与请求-回执时代一致：校验失败只返回 false 不进回调，
+        //成功才回调 true——UI 的"返回值拒绝"与"回调拒绝"两条提示路径不会双触发。
+        //迁玩家侧后写入即时落位，回调不再有异步 false
+
+        /// <summary>本机校验并写入玩家侧符位表；须持伞（含鼠标项），成功推快照广播</summary>
+        private static bool TryEditRope(Func<KikasaTalismanStore, bool> edit) {
             Player player = Main.LocalPlayer;
-            Item item = player?.GetItem();
-            return KikasaTalismanNet.TryChangeTalisman(player, item, slot, key, completed);
+            if (Main.dedServ || Main.gameMenu || player == null
+                || KikasaData.TryGet(player.GetItem()) == null
+                || !player.TryGetModPlayer(out KikasaTalismanPlayer ktp)
+                || !edit(ktp.Talismans)) {
+                return false;
+            }
+            KikasaTalismanNet.SendRopeSnapshot(player);
+            return true;
         }
 
-        /// <summary>摘符手中伞，成功推物品同步</summary>
+        /// <summary>挂符/换符（UI 兼容入口，签名不变）；Key 须已录入符箧。须所持</summary>
+        public static bool HangHeld(int slot, string key, Action<bool> completed = null) {
+            if (!KikasaTalismanOwned.Owns(Main.LocalPlayer, key)
+                || !TryEditRope(store => store.Hang(slot, key))) {
+                return false;
+            }
+            completed?.Invoke(true);
+            return true;
+        }
+
+        /// <summary>摘符（UI 兼容入口，签名不变）</summary>
         public static bool TakeDownHeld(int slot, Action<bool> completed = null) {
-            Player player = Main.LocalPlayer;
-            Item item = player?.GetItem();
-            return KikasaTalismanNet.TryChangeTalisman(player, item, slot, null, completed);
+            if (!TryEditRope(store => store.TakeDown(slot))) {
+                return false;
+            }
+            completed?.Invoke(true);
+            return true;
+        }
+
+        /// <summary>互换两符位（一方为空即挪结；UI 兼容入口，签名不变）。须所持</summary>
+        public static bool SwapHeld(int slotA, int slotB, Action<bool> completed = null) {
+            if (!TryEditRope(store => store.Swap(slotA, slotB))) {
+                return false;
+            }
+            completed?.Invoke(true);
+            return true;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -95,15 +96,24 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal
         }
     }
 
+    /// <summary>终灾叙事主题认领：叙事场景档，同档最高（保序旧同帧写点后写者胜：SupCal&gt;OldDuke&gt;Torii&gt;Draedon）；
+    /// 沿旧语义不给 BossRush 让位；3 分钟守护栏迁自旧 CekTimer</summary>
+    internal sealed class SupCalMusicClaim : MusicClaim
+    {
+        public override MusicTier Tier => MusicTier.NarrativeScene;
+        public override int SubWeight => 23;
+        public override int HardTimeoutFrames => 60 * 60 * 3;
+        public override bool ShouldPlay() => SupCalEffect.IsActive;
+        public override int GetMusicSlot() => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Crisis");
+    }
+
     internal sealed class SupCalEffect : ModSystem
     {
         public static bool IsActive;
-        public static int CekTimer;
         private int particleTimer;
 
         public static bool Cek() {
             if (!IsActive) {
-                CekTimer = 0;
                 return false;
             }
 
@@ -124,11 +134,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal
                 return;
             }
 
-            if (++CekTimer > 60 * 60 * 3) {
-                IsActive = false;
-                return;
-            }
-
             particleTimer++;
 
             SpawnBrimstoneFlameParticles();
@@ -140,8 +145,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal
             if (particleTimer % 30 == 0) {
                 SpawnLargeFlameBurst();
             }
-
-            Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Crisis");
+            //音乐覆盖走 SupCalMusicClaim 认领
         }
 
         private static void SpawnBrimstoneFlameParticles() {
@@ -225,7 +229,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal
 
         public override void OnWorldLoad() {
             IsActive = false;
-            CekTimer = 0;
             particleTimer = 0;
         }
 

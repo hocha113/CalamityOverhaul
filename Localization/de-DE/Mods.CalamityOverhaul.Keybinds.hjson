@@ -17,8 +17,6 @@ Halibut_Superposition.DisplayName: Heilbutt: Superposition
 // Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
 // Kikasa_Sink.DisplayName: Kikasa: Sink Item into the Lake
 // Kikasa_DomainMutate.DisplayName: Kikasa: Flip the Lake
-WeponSkill_Q.DisplayName: Waffe: Linke Fähigkeitstaste
-WeponSkill_R.DisplayName: Waffe: Rechte Fähigkeitstaste
 Accessory_Skills.DisplayName: Accessoire-Fähigkeit
 
 CWRKeySystem: {

@@ -120,6 +120,7 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool DevourerOfGodsGift;
         public bool YharonGift;
         public bool SupremeCalamitasGift;
+        public bool GeiGeiEasterEgg;
     }
 
     public sealed class ShepelStoryData : DataModule
@@ -158,11 +159,15 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool ArrivedByDeath;
         /// <summary>鬼伞已发放，防重复发放</summary>
         public bool KikasaGranted;
+        /// <summary>邪恶地形替死娃娃赠礼已演，开演即写防重领</summary>
+        public bool EvilBiomeDollGift;
     }
 
     /// <summary>鬼伞沉宴试炼节点礼物完成位，顺序对应 KikasaTrialQuestLine 的24关</summary>
     public sealed class ShenyoGiftStoryData : DataModule
     {
+        /// <summary>终章 BossRush 礼物已武装待演（事件落旗时在场）；防事件后退档错过一帧边沿而永失</summary>
+        public bool BossRushGiftPending;
         public bool KingSlimeGift;
         public bool EyeOfCthulhuGift;
         public bool EvilBossGift;
@@ -194,6 +199,8 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
     {
         public override int Version => 2;
 
+        /// <summary>BossRush 礼物已武装待演（事件落旗时在场）；防事件后退档错过一帧边沿而永失</summary>
+        public bool BossRushGiftPending;
         public bool EyeOfCthulhuGift;
         public bool EvilBossGift;
         public bool CalamityEvilGift;
@@ -314,6 +321,19 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool DiveCompleted;
         /// <summary>首潜委托已首次派发过（跨会话去重，避免每次进世界都重新弹"新任务"提示）</summary>
         public bool EntrustIntroduced;
+    }
+
+    /// <summary>旧网深潜跨潜战绩（深潜评级的持久层）；随玩家存档</summary>
+    public sealed class OldNetRecordData : DataModule
+    {
+        /// <summary>历史最佳评分</summary>
+        public int BestScore;
+        /// <summary>历史最佳评级序（0=D..4=S，与 OldNetRating 常量同序）</summary>
+        public int BestGradeIndex;
+        /// <summary>累计深潜次数（只计出过战报的潜；Return 按钮绕行的不计）</summary>
+        public int TotalDives;
+        /// <summary>累计铭刻碎片总数</summary>
+        public int TotalSettledShards;
     }
 
     /// <summary>鬼切教程进度；随玩家存档</summary>

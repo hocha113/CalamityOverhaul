@@ -131,6 +131,24 @@ namespace CalamityOverhaul.Content.Items.Tools
         SyncPlayerCurse,
     }
 
+    /// <summary>海妖八音盒信道：切换/强停请求上行与会话/诅咒同步共用一条通道</summary>
+    internal sealed class SirenMusicalBoxToggleNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => SirenMusicalSystem.HandlePacket(reader, whoAmI);
+    }
+
+    /// <summary>
+    /// 海妖曲认领：仪式档。会话期全员可闻，会话结束后诅咒随身续闻；
+    /// 机械主题旧有的 IsCursed 自查特判已删，让位由档位天然表达
+    /// </summary>
+    internal sealed class SirenMusicClaim : MusicClaim
+    {
+        public override MusicTier Tier => MusicTier.Ceremony;
+        public override int SubWeight => 10;
+        public override bool ShouldPlay() => SirenMusicalSystem.Active || SirenMusicalSystem.IsPlayerCursed(Main.LocalPlayer);
+        public override int GetMusicSlot() => SirenMusicalSystem.GetSirenMusicSlot();
+    }
+
     /// <summary>海妖八音盒会话真源，幽灵视觉纯客户端不进Actor同步</summary>
     internal class SirenMusicalSystem : ModSystem
     {
@@ -171,7 +189,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
 
             if (active) {
-                Main.newMusic = Main.musicBox2 = GetSirenMusicSlot();
+                //音乐覆盖走 SirenMusicClaim 认领
                 SirenGhostVisual.Update(boxCenter);
             }
             else {
@@ -214,8 +232,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.SirenMusicalBoxToggle);
+            ModPacket packet = CWRNetWork.GetPacket<SirenMusicalBoxToggleNet>();
             packet.Write((byte)SirenMusicalBoxPacket.ToggleRequest);
             packet.Write(position.X);
             packet.Write(position.Y);
@@ -228,8 +245,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.SirenMusicalBoxToggle);
+            ModPacket packet = CWRNetWork.GetPacket<SirenMusicalBoxToggleNet>();
             packet.Write((byte)SirenMusicalBoxPacket.ForceStopRequest);
             packet.Send();
         }
@@ -386,17 +402,11 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
-        private static int GetSirenMusicSlot() {
+        internal static int GetSirenMusicSlot() {
             if (sirenMusicSlot < 0) {
                 sirenMusicSlot = MusicLoader.GetMusicSlot(MusicPath);
             }
             return sirenMusicSlot;
-        }
-
-        internal static void ApplySirenMusic() {
-            if (!Main.dedServ) {
-                Main.newMusic = Main.musicBox2 = GetSirenMusicSlot();
-            }
         }
 
         private static void SyncSession(bool playStopEffects = false, Vector2 stopEffectCenter = default, int toClient = -1, int ignoreClient = -1) {
@@ -404,8 +414,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.SirenMusicalBoxToggle);
+            ModPacket packet = CWRNetWork.GetPacket<SirenMusicalBoxToggleNet>();
             packet.Write((byte)SirenMusicalBoxPacket.SyncSession);
             packet.Write(active);
             packet.Write(resolvingDeath);
@@ -496,9 +505,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            if (Player.whoAmI == Main.myPlayer) {
-                SirenMusicalSystem.ApplySirenMusic();
-            }
+            //诅咒随身的音乐续闻并入 SirenMusicClaim 认领
 
             particleTimer++;
             if (particleTimer % 5 == 0) {
@@ -740,8 +747,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
 
             SirenMusicalBoxPlayer sirenPlayer = player.GetModPlayer<SirenMusicalBoxPlayer>();
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.SirenMusicalBoxToggle);
+            ModPacket packet = CWRNetWork.GetPacket<SirenMusicalBoxToggleNet>();
             packet.Write((byte)SirenMusicalBoxPacket.SyncPlayerCurse);
             packet.Write((byte)player.whoAmI);
             packet.Write(sirenPlayer.curseActive);

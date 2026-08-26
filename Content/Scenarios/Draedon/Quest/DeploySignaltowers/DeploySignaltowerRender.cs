@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 {
     internal class DeploySignaltowerRender : UIHandle, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.Draedon";
         [VaultLoaden(CWRConstant.ADV + "Draedon/")]
         public static Texture2D DeploySignaltowerShow = null!;//512×768 ADV展示图
 

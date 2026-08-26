@@ -28,6 +28,7 @@ namespace CalamityOverhaul.Content.Structures
             progress.Set(0.2f);
 
             if (CWRRef.Has) {
+                //风蚀发电机组以灾厄实验室全息投影仪为锚点，仍需灾厄在场
                 if (WorldGenDensitySave.GetDensity("WindGrivenGenerator") != StructureDensity.Extinction) {
                     SpawnWindGrivenGenerator();
                 }
@@ -35,18 +36,20 @@ namespace CalamityOverhaul.Content.Structures
                 if (Main.getGoodWorld && WorldGenDensitySave.GetDensity("WGGCollector") != StructureDensity.Extinction) {
                     SpawnWGGCollectorTile();
                 }
-                progress.Set(0.6f);
-                if (WorldGenDensitySave.GetDensity("JunkmanBase") != StructureDensity.Extinction) {
-                    JunkmanBase.DoLoad<JunkmanBase>();
-                }
-                progress.Set(0.75f);
-                if (WorldGenDensitySave.GetDensity("RocketHut") != StructureDensity.Extinction) {
-                    RocketHut.DoLoad<RocketHut>();
-                }
-                progress.Set(0.9f);
-                if (WorldGenDensitySave.GetDensity("SylvanOutpost") != StructureDensity.Extinction) {
-                    SylvanOutpost.DoLoad<SylvanOutpost>();
-                }
+            }
+            progress.Set(0.6f);
+
+            //三座 DatIO 建筑已全原版化（_v2 NBT），不依赖灾厄，常态生成
+            if (WorldGenDensitySave.GetDensity("JunkmanBase") != StructureDensity.Extinction) {
+                JunkmanBase.DoLoad<JunkmanBase>();
+            }
+            progress.Set(0.75f);
+            if (WorldGenDensitySave.GetDensity("RocketHut") != StructureDensity.Extinction) {
+                RocketHut.DoLoad<RocketHut>();
+            }
+            progress.Set(0.9f);
+            if (WorldGenDensitySave.GetDensity("SylvanOutpost") != StructureDensity.Extinction) {
+                SylvanOutpost.DoLoad<SylvanOutpost>();
             }
             progress.Set(1f);
         }

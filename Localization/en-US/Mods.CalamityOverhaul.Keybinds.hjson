@@ -17,8 +17,6 @@ Onikiri_SakuraFlight.DisplayName: Onikiri: Sakura Flight
 Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
 Kikasa_Sink.DisplayName: Kikasa: Sink Item into the Lake
 Kikasa_DomainMutate.DisplayName: Kikasa: Flip the Lake
-WeponSkill_Q.DisplayName: Weapon: Left Skill Key
-WeponSkill_R.DisplayName: Weapon: Right Skill Key
 Accessory_Skills.DisplayName: Accessory Skill
 
 CWRKeySystem: {

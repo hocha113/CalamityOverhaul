@@ -1,4 +1,4 @@
-﻿using InnoVault.GameSystem;
+﻿using CalamityOverhaul.Common;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -12,10 +12,33 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.MainMenus.Overs
 {
+    /// <summary>致谢 ED 音乐认领：菜单档，仲裁器硬门在 gameMenu，游戏内绝不参选</summary>
+    internal sealed class AcknowledgmentMusicClaim : MusicClaim
+    {
+        public override MusicTier Tier => MusicTier.MenuOverlay;
+        public override bool ShouldPlay() => AcknowledgmentUI.OnActive();
+        public override int GetMusicSlot() => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Future");
+
+        public override void OnWinFrame() {
+            AcknowledgmentUI ui = AcknowledgmentUI.InstanceOrNull;
+            if (ui == null) {
+                return;
+            }
+            //ED 内其余音轨随 MusicFade50 读条交叉淡出
+            int targetID = GetMusicSlot();
+            for (int i = 0; i < Main.musicFade.Length; i++) {
+                if (i == targetID) {
+                    continue;
+                }
+                Main.musicFade[i] = ui.MusicFade50 / 120f;
+            }
+        }
+    }
+
     /// <summary>
     /// 致谢 ED，Title→Roll→Finale；背景 AckBackdrop/AckFinale，缺则 CPU 回退
     /// </summary>
-    internal class AcknowledgmentUI : UIHandle<AcknowledgmentUI>, IUpdateAudio, ILocalizedModType
+    internal class AcknowledgmentUI : UIHandle<AcknowledgmentUI>, ILocalizedModType
     {
         public string LocalizationCategory => "UI";
 
@@ -56,24 +79,6 @@ namespace CalamityOverhaul.Content.MainMenus.Overs
         public override bool Active => VaultLoad.LoadenContent;
         public override float RenderPriority => 1.2f;
         public override SoundStyle? CloseSound => SoundID.MenuClose;
-
-        void IUpdateAudio.DecideMusic() {
-            if (!Main.gameMenu || !OnActive()) {
-                return;
-            }
-            AcknowledgmentUI ui = InstanceOrNull;
-            if (ui == null) {
-                return;
-            }
-            int targetID = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Future");
-            for (int i = 0; i < Main.musicFade.Length; i++) {
-                if (i == targetID) {
-                    continue;
-                }
-                Main.musicFade[i] = ui.MusicFade50 / 120f;
-            }
-            Main.newMusic = targetID;
-        }
 
         public static bool OnActive() {
             AcknowledgmentUI ui = InstanceOrNull;

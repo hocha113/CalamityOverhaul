@@ -108,8 +108,7 @@ namespace CalamityOverhaul.Content
             }
 
             SendDyeItemID = true;
-            ModPacket modPacket = CWRMod.Instance.GetPacket();
-            modPacket.Write((byte)CWRMessageType.ProjectileDyeItemID);
+            ModPacket modPacket = CWRNetWork.GetPacket<ProjectileDyeNet>();
             //identity/type/dye 用 ushort 省带宽
             modPacket.Write((ushort)projectile.identity);
             modPacket.Write((ushort)projectile.type);
@@ -129,8 +128,7 @@ namespace CalamityOverhaul.Content
             if (!VaultUtils.isServer) {
                 return;
             }
-            ModPacket modPacket = CWRMod.Instance.GetPacket();
-            modPacket.Write((byte)CWRMessageType.ProjectileDyeItemID);
+            ModPacket modPacket = CWRNetWork.GetPacket<ProjectileDyeNet>();
             modPacket.Write(identity);
             modPacket.Write(projID);
             modPacket.Write(dyeItemID);
@@ -261,5 +259,11 @@ namespace CalamityOverhaul.Content
         public override void PostDraw(Projectile projectile, Color lightColor) {
             projectile.EndDyeEffectForWorld();
         }
+    }
+
+    /// <summary>弹幕染色 ID 同步信道</summary>
+    internal sealed class ProjectileDyeNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) => CWRProjectile.HandleProjectileDyeItemID(reader, whoAmI);
     }
 }

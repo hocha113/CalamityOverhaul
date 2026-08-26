@@ -87,8 +87,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         }
     }
 
-    /// <summary>玩家役鬼状态、资源事件与替死演出的权威网络通道。</summary>
-    internal static class WraithNet
+    /// <summary>玩家役鬼状态、资源事件与替死演出的权威网络通道，类本身即信道。</summary>
+    internal class WraithNet : CWRNetChannel
     {
         private const ushort NoWraith = ushort.MaxValue;
         private const int MaxPendingEquipRequests = 16;
@@ -140,8 +140,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         }
 
         private static ModPacket NewPacket(WraithNetOp op) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.Wraith);
+            ModPacket packet = CWRNetWork.GetPacket<WraithNet>();
             packet.Write((byte)op);
             return packet;
         }
@@ -391,10 +390,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Send();
         }
 
-        public static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type != CWRMessageType.Wraith) {
-                return;
-            }
+        public override void Receive(BinaryReader reader, int whoAmI) {
             WraithNetOp op = (WraithNetOp)reader.ReadByte();
             if (Main.netMode == NetmodeID.Server) {
                 switch (op) {

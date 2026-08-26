@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
 
         private static bool declineWasRepeat;
 
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.OldDuke";
 
         public static LocalizedText OldDukeName { get; private set; }
 

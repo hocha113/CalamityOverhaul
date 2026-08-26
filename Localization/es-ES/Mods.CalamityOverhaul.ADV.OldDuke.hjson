@@ -1,0 +1,143 @@
+AbyssQuestLine: {
+	QuestCategory: El Viejo Duque
+	CampsiteTitle: El Abismo Llama
+	CampsiteSummary: Encuentra y habla con El Viejo Duque
+	CampsiteObjective: Objetivo
+	CampsiteLocation: Ir al campamento de El Viejo Duque
+	CampsiteDistance: Distancia
+	CampsiteInteract: Hablar con El Viejo Duque
+	CampsiteComplete: ¡Misión completada!
+	CampsiteHoldHint: Sostén Fragmentos Oceánicos para ver la dirección
+	FragmentTitle: El Abismo Llama
+	FragmentSummary: Recolecta 777 Fragmentos Oceánicos
+	FragmentObjective: Objetivo
+	FragmentCollect: Recolectar Fragmentos Oceánicos
+	FragmentCurrent: Actualmente poseído
+	FragmentReturn: Regresar al campamento
+	FragmentComplete: ¡Misión completada!
+	FragmentHint: Pesca o caza criaturas oceánicas
+}
+
+FirstMetOldDuke: {
+	OldDukeName: El Viejo Duque
+	L0: ......
+	L1: Guarda el filo, muchacho; no hace falta desenvainar al primer encuentro.
+	L2: Soy viejo y estoy cansado de esos juegos violentos.
+	L3: Podemos cooperar.
+	L4: Recolecto algo especial: fragmentos oceánicos.
+	L5: Si me traes más, te compensaré generosamente.
+	L6: Aquí tienes una muestra.
+	B1: ¿Has cambiado de idea?
+	B2: Entonces hasta luego.
+	HL1: ¿El viejo profesor...? Aunque parece no reconocerme.
+	HL2: Sus palabras son creíbles; éramos colegas en la Universidad del Mar de Azufre, un titán de la arqueología marina.
+	C1: Aceptar cooperación
+	C2: Rechazar cooperación
+	C3: Rechazar y desenvainar
+	C1Response: Excelente; espero una colaboración fructífera.
+	C2Response: ...Me retiro; si lo reconsideras, serás bienvenido.
+	C3Response: ...Insistes; entonces déjame pesar tu valía.
+}
+
+OldDukeCampsite: {
+	OldDukeWanderingActor.InteractHint: "[Clic derecho] Hablar"
+	OldDukeCampsite.TitleText: Campamento de El Viejo Duque
+}
+
+CampsiteInteractionDialogue: {
+	GreetingLine: ¿Qué necesitas?
+	Choice1Text: Vine a comerciar
+	Choice2Text: Traje lo que pediste
+	Choice3Text: Solo paseo
+	Choice4Text: Quiero entrenar contigo
+	Choice5Text: Cuéntame tu pasado
+	Choice2DisabledHint: Fragmentos oceánicos insuficientes
+	Choice1Response: Mira lo que tengo
+	Choice2Response: Bien, bastan estos fragmentos; esta es tu recompensa
+	Choice3Response: ......
+	QuestCompleteLine: Hmm... ¿algún hallazgo nuevo? Estoy muy ocupado.
+	B1: Pasaré los próximos días descifrando estos fragmentos; te avisaré al terminar.
+	Choice4_R1: Puede que sea viejo, pero no he perdido la técnica de juventud.
+	Choice4_R2: Veamos si has mejorado últimamente.
+	Choice4_R3: Usarme de piedra de afilar no es sabio...
+
+	CampsiteChatDialogue: {
+		GreetingLine: ¿De qué quieres hablar?
+		Choice_BackToMain: Cambiar de tema
+		Choice_EndConversation: Eso es todo
+		Choice_PastStory: Sobre tu estado actual
+		Choice_Research: ¿Qué estás reconstruyendo?
+		Choice_SulfurSeaHistory: La verdad de este mar
+		Choice_AboutFragments: Sobre esos fragmentos
+		Choice_PersonalLife: No te ves bien
+		Choice_Farewell: Hasta luego
+		Past_Intro: Es un pasado borrado a propósito; quedan pocos peces que lo recuerden.
+		Past_University: Éramos arrogantes, creíamos medir el mundo con una regla, hasta que en el fondo del abismo desenterramos algo ilógico.
+		Past_Prime: Esa cosa no se podía matar ni destruir; no era un ser vivo.
+		Past_Accident: No hubo supervivientes; al ser asimilado por ese frío tomé una decisión frenética.
+		Past_Mutation: Sin escapatoria, me uní a ello y lo tragué a la fuerza; desde entonces no vivo del todo ni puedo morir.
+		Past_Exile: Me viene bien: este cuerpo basta para contener este mar.
+		Past_Reflection: Solo quiero guardar este mar; si esas cosas salen del abismo, será cuando arriesgue todo para detenerlas.
+		Research_Intro: Intento reconstruir una historia, o recuperar una experiencia perdida.
+		Research_CurrentWork: Los fragmentos guardan memorias del pasado; registran cómo esa civilización buscó salida en la desesperación.
+		Research_Breakthrough: Contra ese terror la fuerza bruta no sirve; hay que hallar sus «reglas de caza» y usarlas.
+		Research_Difficulties: Descifrarlos es peligroso: son medios; mirarlos demasiado y oirás lo que no debes.
+		Research_Theory: Si junto todos los fragmentos, quizá pueda sellar para siempre la fuente del abismo.
+		Choice_Research_Details: ¿Qué son las «reglas de caza»?
+		Choice_Research_Help: ¿Qué necesitas que haga?
+		Choice_Research_Back: Suena a locura
+		Research_Details1: Hay cosas que no debes mirar ni nombres que no debes pronunciar; al activar un medio, la muerte es segura; intentaron atar dioses con reglas.
+		Research_Details2: Construyeron enormes recipientes para encerrarlos, pero se filtraron.
+		Research_Help: Ayúdame a encontrar más fragmentos; el resto de mi vida lo dedicaré a esto.
+		History_Intro: El Mar de Azufre es solo la fachada; es el residuo de la invasión de aquel dominio.
+		History_Origin: Antes era el Mar Zafiro, hasta que la fuente se descontroló.
+		History_Civilization: Esa civilización era poderosa y aprendió a usar aquel poder inquietante; edificaron ciudades sobre un barril de pólvora.
+		History_Cataclysm: El equilibrio se rompió; un terror resurgió y todo ser vivo fue borrado al instante.
+		History_Ruins: Lo que ves es el residuo; el agua cambió de color porque murió, murió del todo.
+		History_Warning: Si ves a muertos saludarte o oyes voces conocidas, recuerda: es el mar de cadáveres imitando a los vivos.
+		Choice_History_MoreRuins: ¿Dónde es más peligroso?
+		Choice_History_Dangers: ¿Hay contramedidas?
+		Choice_History_Back: Inquietante
+		History_MoreRuins1: En el fondo de ese mar de cadáveres hay una puerta; no llames; lo de detrás debe pudrirse para siempre.
+		History_MoreRuins2: En las ruinas hundidas quedan cámaras de metal pesado para cortar la percepción de esas cosas.
+		History_Dangers1: Además de los muertos vivientes, cuidado con lo invisible; a veces el golpe mortal no se ve.
+		History_Dangers2: No confíes en tus ojos ni respondas a llamadas extrañas; en ese mar, los vivos son la anomalía.
+		Fragments_Intro: Para mí los fragmentos oceánicos son archivos manchados de sangre.
+		Fragments_Nature: Son residuos de un fenómeno, como maldiciones comprimidas.
+		Fragments_Power: Cada fragmento es un «medio»; solo puede ser inofensivo, pero juntos chocan fuerzas inquietantes.
+		Fragments_Collection: Están dispersos en el mar muerto, bajo ruinas o crecidos en la carne de criaturas.
+		Fragments_Purpose: Sigo uniéndolos para reconstruir el origen del desastre; solo así sabré cómo encerrarlo.
+		Personal_Intro: Tirando.
+		Personal_Daily: Duermo la mayor parte del tiempo para no agitar la mente; pensar demasiado trae problemas.
+		Personal_Loneliness: La soledad es buena; si hay bullicio, es que «ellos» han llegado; estar solo me conviene a mí y al mundo.
+		Personal_Memories: La memoria está borrosa; a veces no distingo lo mío de lo que queda de otros en este cuerpo.
+		Personal_Hope: Al verte recuerdo mi yo de entonces, ignorante y sin miedo; espero que no acabes como yo.
+		Choice_Personal_Tea: ¿Qué bebes?
+		Choice_Personal_Past: ¿Sigues siendo un pez?
+		Choice_Personal_Back: Cuídate
+		Personal_Tea1: Infusión de plantas del abismo; sabe a tierra podrida.
+		Personal_Tea2: ¿Una taza? Te dejará frío como un pez muerto.
+		Personal_Past1: Quizá el verdadero yo murió hace tiempo y solo queda otra cosa con sus recuerdos.
+		Personal_Past2: Pero recuerdo el sol en la cara y el tacto de los libros; mientras recuerde eso, me considero vivo.
+		Personal_Past3: Sin aquel accidente, estaría en una tumba tranquila, no así, sin poder morir aunque lo quiera.
+		Farewell_Normal: Dejémoslo aquí; ven si necesitas algo.
+		Farewell_Friendly: Cuídate, muchacho; en este mundo, morir en paz es un lujo.
+	}
+}
+
+FirstCampsiteDialogue: {
+	L0: Has venido.
+	L1: Llevo años recolectando estos fragmentos.
+	L2: Son peculiares; no parecen evolución natural, sino algo que «invadió» este mundo.
+	L3: Deberían ser informes y solo eligieron una forma que los terrarianos entienden.
+	L4: Quiero descifrarlos, pero no tengo cantidad suficiente.
+	L5: Necesito que reunas más fragmentos oceánicos.
+	L6: Te daré la compensación correspondiente.
+}
+
+ComeCampsiteFindMe: {
+	B1: ...Pasa a tomar té cuando puedas.
+	C1: Tengo un asunto contigo
+	C2: Solo pescaba por diversión...
+	B1_NO: Primero ven a verme y memoriza el camino.
+}

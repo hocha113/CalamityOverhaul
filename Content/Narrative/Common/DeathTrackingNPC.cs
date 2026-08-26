@@ -25,6 +25,11 @@ namespace CalamityOverhaul.Content.Narrative.Common
             }
 
             NPC deathNpc = ResolveDeathNpc(npc);
+            //体节先没、共享血池的头还活着(单节被沉溺清体/处决等):不登记,
+            //等头真死那一击再记,礼物结算不再插进战斗中(反馈十一·#30)
+            if (deathNpc.whoAmI != npc.whoAmI && deathNpc.active && deathNpc.life > 0) {
+                return;
+            }
             DeathTrackingNPC tracker = this;
             if (deathNpc.whoAmI != npc.whoAmI
                 && deathNpc.TryGetGlobalNPC(this, out DeathTrackingNPC headTracker)) {

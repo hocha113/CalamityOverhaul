@@ -82,6 +82,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         public static LocalizedText WaterRisingNote { get; private set; }
         public static LocalizedText ResetCooldownFormat { get; private set; }
         public static LocalizedText HelpHover { get; private set; }
+        public static LocalizedText MutateFallbackKey { get; private set; }
 
         public override void SetStaticDefaults() {
             GuideLeadQueue.Register(this);
@@ -114,7 +115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
             RainTitle = this.GetLocalization(nameof(RainTitle), () => "Mutate into Ghost Rain");
             RainBody = this.GetLocalization(nameof(RainBody),
-                () => "The mutate key speaks twice: a tap flips the full lake into ghost rain, a long hold pulls you into the dream. Under the rain, slain foes rise as umbrella thralls that fight for you.");
+                () => "The mutate key (middle mouse by default) speaks twice: a tap flips the full lake into ghost rain, a long hold pulls you into the dream. Under the rain, slain foes rise as umbrella thralls that fight for you.");
             RainPrompt = this.GetLocalization(nameof(RainPrompt),
                 () => "At full water, tap {0} to flip the lake");
 
@@ -128,7 +129,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             DreamBody = this.GetLocalization(nameof(DreamBody),
                 () => "Once the lake is full, hold the mutate key and the reflection pulls you under — hold left-click in the dream to call hounds, press the same key again to return.");
             DreamPrompt = this.GetLocalization(nameof(DreamPrompt),
-                () => "At full water, hold {0} (middle mouse by default)");
+                () => "At full water, hold {0}");
 
             SkipBtn = this.GetLocalization(nameof(SkipBtn), () => "Skip");
             ConfirmBtn = this.GetLocalization(nameof(ConfirmBtn), () => "Got it");
@@ -136,15 +137,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             OpenPanoramaBtn = this.GetLocalization(nameof(OpenPanoramaBtn), () => "Open it for me");
             DismissBtn = this.GetLocalization(nameof(DismissBtn), () => "Put away");
             KeyUnbound = this.GetLocalization(nameof(KeyUnbound),
-                () => "The key for this step is unbound; bind it in Settings > Controls, or click skip.");
+                () => "This step's key \"{0}\" isn't bound. Bind it in Settings > Controls, or click Skip.");
             AlreadyDoneNote = this.GetLocalization(nameof(AlreadyDoneNote),
                 () => "This one is already done — read on, then press Got it.");
             WaterRisingNote = this.GetLocalization(nameof(WaterRisingNote),
-                () => "Wait for the blood water to reach your feet first.");
+                () => "Wait for the blood water to reach your feet. Water level: {0}%.");
             ResetCooldownFormat = this.GetLocalization(nameof(ResetCooldownFormat),
                 () => "The rewind ink is still coiling back: {0}%");
             HelpHover = this.GetLocalization(nameof(HelpHover),
                 () => "Replay the umbrella tutorial");
+            MutateFallbackKey = this.GetLocalization(nameof(MutateFallbackKey),
+                () => "middle mouse");
         }
         #endregion
 
@@ -420,8 +423,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                         || domain.Phase == KikasaDomainPhase.Closing)
                     && !Main.LocalPlayer.GetModPlayer<OniDomainPlayer>().AnyActive,
                 Phase.Rain => domain.Phase == KikasaDomainPhase.Open && domain.RiseT >= 0.999f,
-                Phase.Restart => domain.Phase == KikasaDomainPhase.Open && domain.IsRainForm
-                    && domain.RiseT >= 0.999f && KikasaReset.LocalCooldown01 <= 0f,
+                //与 KikasaReset.TryReset 的受理门同口径
+                Phase.Restart => domain.LakeAbilityReady && domain.IsRainForm
+                    && KikasaReset.LocalCooldown01 <= 0f,
                 Phase.Dream => domain.DreamPullReady,
                 _ => false,
             };
@@ -504,9 +508,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             bool keyBound = actionKey == null
                 || currentPhase is Phase.Rain or Phase.Dream
                 || !CWRKeySystem.IsKeybindUnbound(actionKey);
+            //雨/梦步的异化键被清空绑定时游戏逻辑回退原生中键，提示跟着显示中键而不是「未绑定」
+            bool mutateFallback = currentPhase is Phase.Rain or Phase.Dream
+                && CWRKeySystem.IsKeybindUnbound(actionKey);
             string keyText = actionKey == null
                 ? string.Empty
-                : actionKey.ToTooltipString(CWRKeySystem.Notbound.Value);
+                : mutateFallback
+                    ? MutateFallbackKey.Value
+                    : actionKey.ToTooltipString(CWRKeySystem.Notbound.Value);
 
             (string title, string body, string promptFmt) = currentPhase switch {
                 Phase.Domain => (DomainTitle.Value, DomainBody.Value, DomainPrompt.Value),
@@ -524,7 +533,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             //转盘步死路：册里还没有沉影，开盘也只有空席可看
             bool wheelDeadEnd = currentPhase == Phase.Wheel
                 && Main.LocalPlayer.GetModPlayer<KikasaServantPlayer>().BuildCodexKeys().Count == 0;
-            string subText = ResolveSubText(domain, keyBound, wheelDeadEnd);
+            string subText = ResolveSubText(domain, actionKey, keyBound, wheelDeadEnd);
 
             //====== 量高排版（字号跟全域字体规范：正文 ≥0.8） ======
             DynamicSpriteFont font = FontAssets.MouseText.Value;
@@ -623,9 +632,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         /// 防呆读数：紧急的先说。键未绑定 > 转盘死路 > 已完成提示 > 步内条件差什么
         /// </summary>
         private static string ResolveSubText(KikasaDomainPlayer domain,
-            bool keyBound, bool wheelDeadEnd) {
+            ModKeybind actionKey, bool keyBound, bool wheelDeadEnd) {
             if (!keyBound) {
-                return KeyUnbound.Value;
+                //报键位表真名，玩家去设置里才找得到要绑哪一把
+                return string.Format(KeyUnbound.Value, actionKey.DisplayName.Value);
             }
             if (wheelDeadEnd) {
                 return WheelNoMemory.Value;
@@ -634,16 +644,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 return AlreadyDoneNote.Value;
             }
             switch (currentPhase) {
-                //沉与翻与梦都吃满水：域开着水没到脚，先安抚这一小段等待
+                //沉与翻与梦都吃满水：域开着水没到脚，给出水位读数让人知道在等什么
                 case Phase.Sink:
                     if (domain.AnyActive && domain.RiseT < 0.999f) {
-                        return WaterRisingNote.Value;
+                        return WaterNote(domain);
                     }
                     break;
                 case Phase.Rain:
                 case Phase.Dream:
                     if (domain.Phase == KikasaDomainPhase.Open && domain.RiseT < 0.999f) {
-                        return WaterRisingNote.Value;
+                        return WaterNote(domain);
                     }
                     break;
                 case Phase.Restart: {
@@ -654,13 +664,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                     }
                     if (domain.Phase == KikasaDomainPhase.Open && domain.IsRainForm
                         && domain.RiseT < 0.999f) {
-                        return WaterRisingNote.Value;
+                        return WaterNote(domain);
                     }
                     break;
                 }
             }
             return null;
         }
+
+        /// <summary>等水提示带当前水位；向下取整，没真满就不显示 100%</summary>
+        private static string WaterNote(KikasaDomainPlayer domain)
+            => string.Format(WaterRisingNote.Value,
+                (int)(MathHelper.Clamp(domain.RiseT, 0f, 1f) * 100f));
 
         //==================== 按钮行 ====================
 

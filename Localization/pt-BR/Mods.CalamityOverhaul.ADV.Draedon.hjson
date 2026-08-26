@@ -1,0 +1,189 @@
+ExoMechdusaSum: {
+	IntroLine1: Voce entende... este momento foi longamente antecipado.
+	IntroLine2: Sou fascinado por todos os aspectos do desconhecido, mas nada me fascina mais do que sua propria natureza.
+	IntroLine3: Mostrarei a voce minhas criacoes que superam deuses.
+	IntroLine4: E voce... voce me mostrara sua natureza em combate.
+	IntroLine5: Agora. Faca sua selecao.
+	SelectionPrompt: Faca sua escolha.
+	BossRushLine: Faca sua escolha. Voce tem 20 segundos.
+	ChoiceAres: Ares
+	ChoiceThanatos: Thanatos
+	ChoiceTwins: Artemis
+}
+
+ExoMechEndingDialogue: {
+	EndLine1: Uma variavel desconhecida. Voce... e uma singularidade.
+	EndLine2: Voce e um estranho a esta terra e sua historia, assim como eu.
+	EndLine3: ...Minhas desculpas. Mas apos uma 'demonstracao' como essa, devo tomar um momento para organizar meus pensamentos.
+	EndLine4: O sangue derramado ate agora tornou este continente estagnado e sem vida.
+	EndLine5: Voce derramou seu proprio sangue. Talvez seja suficiente para acabar com esta era de desespero... Independentemente, e uma mudanca que eu desejava ver.
+	EndLine6: Voce agora deseja alcancar o tirano. Infelizmente, nao posso ajuda-lo.
+	EndLine7: Isso nao nasce de despeito. Meu unico objetivo desde o comeco era observar esta batalha.
+	EndLine8: Mas voce teve sucesso no passado. Voce encontrara um caminho, eventualmente.
+	EndLine9: Devo respeitar e reconhecer sua vitoria. Mas por enquanto, minha atencao deve retornar aos meus mecanismos.
+	KillAttemptLine: ...Suas acoes sao... desnecessarias.
+}
+
+DeploySignaltowerScenario: {
+	IntroLine1: Devo conduzir um experimento critico, e voce e o individuo mais adequado atualmente disponivel para me ajudar.
+	IntroLine2: Cem anos terrestres atras, uma tempestade de energia varreu a galaxia, destruindo a maioria das minhas instalacoes neste planeta.
+	IntroLine3: Tudo estava muito distante. Quando percebi que minha rede de monitoramento em Terra havia ficado offline, um seculo ja havia passado.
+	IntroLine4: Apos aquela tempestade, as viagens interestelares se tornaram extremamente instaveis. Portanto, devo reconstruir meus sistemas fundamentais em Terra.
+	IntroLine5: Eu preciso da sua ajuda para implantar o mais recente conjunto de entrelacamento quantico.
+	IntroLine6: Esta tecnologia contorna as limitacoes da velocidade da luz, alcancando comunicacao instantanea em toda a galaxia.
+	IntroLine7: Mas antes que possa ser aplicada, este mundo requer um numero suficiente de nos de entrelacamento quantico.
+	IntroLine8: Esta e a torre de sinal quantica que projetei. Seu nucleo utiliza estabilizadores de entrelacamento e amplificadores de energia de ponto zero.
+	TechExplainLine1: Cada torre pode estabelecer um link de entrelacamento quantico com outros nos, formando uma rede de comunicacao que abrange a galaxia.
+	TechExplainLine2: Sob condicoes teoricas, sua latencia de transmissao pode se aproximar de zero.
+	TaskLine: Preciso que voce implante estas torres de sinal pelo mundo para estabelecer a rede de entrelacamento completa.
+	AcceptPrompt: Bem? Aceita?
+	ChoiceAccept: Aceitar comissao
+	ChoiceDecline: Mais tarde
+
+	Choice_Accept: {
+		AcceptResponse: Excelente. Aqui estao os esquemas das torres. Reporte-me sobre seu progresso quando terminar.
+		L1: Este e o primeiro lote de materiais. E limitado. Construa a estrutura principal da torre de sinal primeiro.
+		L2: Assim que o primeiro no estiver operacional, o link de comunicacao comecara a se estabilizar.
+		L3: Nesse ponto, serei capaz de transportar mais recursos continuamente pelo sub-espaco para construcao em maior escala.
+	}
+
+	Choice_Decline.DeclineResponse: Entendido. Voce pode retornar a mim quando estiver preparado.
+}
+
+FirstTowerBuiltScenario: {
+	Line1: O novo no de entrelacamento quantico esta funcionando sem problemas. O sinal esta estavel.
+	Line2: Bom. Este e o primeiro passo para a rede. Continue implantando as torres de sinal restantes.
+	Line3: Quando o numero de nos atingir o padrao, poderei conduzir observacoes precisas em uma area muito maior.
+	Line4: Continue mantendo sua eficiencia.
+}
+
+QuestCompleteScenario: {
+	Line1: Todos os nos quanticos estao online. A rede esta totalmente operacional.
+	Line2: A latencia de transmissao de dados e consistente com os valores teoricos. Sem desvios.
+	Line3: Seu desempenho foi mais rapido do que minhas projecoes. Louvavel.
+	Line4: Como pagamento, estou concedendo a voce acesso a uma selecao do meu equipamento e autorizacoes. Voce pode usa-los como achar melhor.
+	Line5: Se precisar de assistencia, pode me contatar diretamente atraves da rede de comunicacoes.
+}
+
+ExoMechHardDefeat: {
+	HardDefeatLine1: Tomada de decisao sob estresse extremo. Estes sao os dados que eu desejava ver.
+	HardDefeatLine2: Sua capacidade de manter a racionalidade sob pressao e... satisfatoria.
+}
+
+ExoMechQuickDefeat: {
+	QuickDefeatLine1: ...Este periodo de tempo esta significativamente abaixo dos meus modelos preditivos.
+	QuickDefeatLine2: Parece que subestimei sua eficiencia de combate atual.
+	QuickDefeatLine3: Talvez seja hora de considerar... filosofias de design... mais agressivas.
+}
+
+ExoMechSecondDefeat: {
+	SecondDefeatLine1: Interessante. Sua taxa de adaptacao excede minhas projecoes.
+	SecondDefeatLine2: Os dados indicam que voce ja fez melhorias direcionadas desde o ultimo engajamento.
+	SecondDefeatLine3: Parece que devo reavaliar sua curva de aprendizado.
+}
+
+ExoMechThirdDefeat: {
+	ThirdDefeatLine1: Desempenho consistente. Um componente da perfeicao que almejo.
+	ThirdDefeatLine2: Voce provou que suas capacidades nao sao... uma anomalia estatistica.
+}
+
+DraedonQuestLine: {
+	QuestCategory: Draedon
+	DeployTitle: Implantacao da Rede de Entrelacamento Quantico
+	DeploySummary: Implante 10 torres de sinal em pontos alvo pelo mundo
+	TrackerNearestTarget: Ponto Alvo Mais Proximo
+	TrackerNodeName: No de Entrelacamento #[NUM]
+	TrackerInRange: No Alcance
+	TrackerDistance: Distancia
+	TrackerDeployProgress: Progresso da Implantacao
+	TrackerQuestComplete: Missao Completa!
+}
+
+FirstMetTzeentch: {
+	L1: Psiu... nao olhe para tras.
+	L2: Estou observando voce construir essas pequenas engenhocas.
+	L3: Dez nos quanticos. Dez caminhos. Dez futuros possiveis.
+	L4: Uma pequena rede fofa. Voce tem alguma ideia de quantas... *coisas*... isso vai atrair?
+	L5: Ah, certo. Devo me apresentar.
+	L6: Alguns me chamam de Oráculo. Outros, a Pena do Destino...
+	L7: Mas estou mais interessado no que... *voce*... me chamaria, agora mesmo.
+	L8: Vamos la. Deixe-me ouvir.
+	Choice1Text: Um... Mago...?
+	Choice2Text: Um Mentiroso.
+	Choice3Text: Nao. Nao te conheco.
+	Choice1_R1: Hah! Um termo tao... gentil.
+	Choice1_R2: Uma pena. Eu nao faco magia. Eu apenas mudo fatos.
+	Choice1_R3: Continue. Vamos colocar 'Mago' na conta por enquanto.
+	Choice2_R1: Ah. Direto, bruto, honesto. Qualidades tao preciosas.
+	Choice2_R2: Mas receio que eu nunca minto.
+	Choice2_R3: Apenas conto a voce... o que esta prestes a acontecer.
+	Choice2_R4: Se voce acredita ou nao... isso ja ocorreu.
+	Choice3_R1: Nao conhece? Excelente.
+	Choice3_R2: Todas as historias comecam com essas palavras.
+	Choice3_R3: Apenas... a maioria dos finais nao sao muito agradaveis.
+	EndLine1: Bem, entao. Nos encontraremos novamente.
+	EndLine2: Em breve.
+	// Rolename: ?????????????????????
+}
+
+GalacticCrisis: {
+	CrisisIntro1: Agora que a rede quantica esta reconectada, ha algumas coisas que voce deve ver por si mesmo.
+	CrisisIntro2: Esta e a sombra que atualmente devora os braços espirais da galaxia.
+	CrisisIntro3: Estas sombras sao compostas pela Colmeia. Antes disso, implantei milhoes de Titãs Exo na tentativa de intercepta-los.
+	CrisisIntro4: Os dados indicam que esta e uma guerra de desgaste perdida. Eles sao infinitos, e meus recursos eventualmente se esgotarao.
+	CrisisIntro5: Portanto, formulei o unico plano com uma taxa de sucesso maior que 0%.
+	CrisisIntro6: Detonar os nucleos planetarios de cada mundo do Bordo Exterior ao Bordo Medio da galaxia.
+	CrisisIntro7: Ao reduzir dezenas de milhares de anos-luz em uma zona morta absoluta, posso cortar as linhas de suprimento da Colmeia, forçando-os a se desviar para galaxias vizinhas devido a desgaste extremo de navegacao.
+	CrisisIntro8: A fome e a forca motriz mais poderosa do universo, e a mais facil de calcular. Se eu reduzir os recursos da galaxia abaixo do limiar critico, esta galaxia se tornara nada mais do que um caixao vazio para a Colmeia.
+	CrisisIntro9: Terra tambem esta na lista de terra arrasada. Mas como uma singularidade, sua essencia nao deve ser extinta aqui. Fornecei-lhe uma nave estelar para evacuacao.
+	ChoiceRefuse: Deve haver outra maneira.
+	ChoiceSilence: ......(Permanecer em silencio e empunhar sua arma)
+	RebuttalLine1: ...Exatamente.
+	RebuttalLine2: Previ 99% de probabilidade de que voce aceitasse a evacuacao, mas estava ansioso por aqueles 1% de comportamento irracional.
+	RebuttalLine3: Voce rejeitou o atalho para a sobrevivencia. Esta e precisamente a natureza da singularidade que observei.
+	RebuttalLine4: Nesse caso, tenho um plano de reserva—uma operacao que engavei devido a sua taxa de sucesso excessivamente baixa.
+	MissionBrief1: O alvo e o sistema Corto. Ja caiu, mas a Colmeia ainda nao o digeriu completamente.
+	MissionBrief2: Dentro do manto de seu terceiro planeta, uma veia de material Exo de altissima pureza esta se formando.
+	MissionBrief3: A Colmeia nao deve adquiri-la. Uma vez que evoluam a capacidade de utilizar materia Exo, a situacao na galaxia saira completamente do controle.
+	MissionBrief4: Sua tarefa e simples: romper o mar de insetos, chegar ao nucleo planetario, detonar a veia e destruir completamente aquele planeta.
+	MissionBrief5: Se esta operacao for bem-sucedida, provara que individuos podem desempenhar um papel decisivo na guerra contra a Colmeia, e eu elaborarei uma nova estrategia centrada em voce.
+	AndroidReveal1: Antes da sua chegada, enviei uma equipe avancada para aquelas coordenadas.
+	AndroidReveal2: Eles sao androides taticos construidos com minha tecnologia mais recente: Altis e Apollia.
+	AndroidReveal3: Eles possuem mobilidade e capacidades de processamento logico muito superiores aos mechs antigos, mas perdi seus sinais logo apos aterrissarem em Corto III.
+	AndroidReveal4: As transmissoes de dados finais indicam que eles ainda tem sinais vitais, mas estao em perigo extremo.
+	MissionObjective: Va para o sistema Corto e confirme o status daquelas duas unidades. Se ainda puderem lutar, peca-lhes que o ajudem a completar a missao. Se nao puderem...
+	MissionObjectiveDark: No minimo, recupere seus dados de nucleo. Nao desejo que minhas obras-primas se tornem racao para os insetos sem significado.
+	FinalSendOff: Coordenadas inseridas. Va, e mostre-me se voce pode transcender meus calculos mais uma vez.
+}
+
+FirstMetApollia: {
+	Line1: ......Humano?
+	Line2: Aquela trajetoria de queda atmosferica era obvia demais. Previ a zona de pouso e vim tentar a sorte.
+	Line3: Sou Apollia. E melhor que voce seja o guia de vanguarda da Frota Exo, aqui para me dizer que a forca principal esta bem atras de voce.
+	C1: (Entregar o chip de autorizacao de Draedon)
+	C2: Como sei que voce nao e uma armadilha de imitador da Colmeia?
+	C2_R1: ......Imitadores nao expoem ativamente suas posicoes, nem correm em direcao a uma capsula de pouso.
+	C2_R2: O chip. Mostre-me seu chip de autorizacao.
+	Line4: ......(Lendo dados do chip)
+	Line5: So voce?! Mas que inferno!
+	Line6: O que precisamos aqui e de uma Legião de Titãs, e um Exterminatus! Nao apenas enviar outra pessoa para morrer!
+	Line7: (Respira fundo)......Minhas desculpas. Agora estou ciente dos arranjos da Fonte.
+	Line8: Apollia, anteriormente da Nona Legião, agora o ajudara em todas as suas operacoes neste planeta.
+}
+
+GargoyleWarningScenario: {
+	Line1: ......Um enxame de reconhecimento da Colmeia. E altamente provavel que o enxame principal esteja bem atras deles.
+	Line2: Eles definitivamente o avistaram. Siga-me. Ha uma fortaleza abandonada adiante; podemos usar suas fortificacoes para mante-los afastados por um tempo.
+}
+
+DropPodCallScenario: {
+	Line1: Mais suave do que eu antecipava. O tempo de transito pelo sub-espaco foi de 43 minutos negativos.
+	Line2: Sua constituicao e excepcionalmente adequada para navegacao no sub-espaco.
+	Line3: Voce esta agora em orbita baixa sobre Corto III.
+	Line4: Cuidado para evitar os destrocos daqueles Exo Mechs.
+	Line5: Apos a guerra de classe Apocalipse, a massa total deste planeta dobrou. Portanto, o que voce ve aqui.
+	Line6: Gravei as permissoes em seu chip. Se encontrar quaisquer unidades sobreviventes, elas entenderao tudo.
+	Line7: Voce esta prestes a entrar no campo de protecao estabelecido pela Colmeia. Uma vez dentro, toda comunicacao com o exterior sera cortada.
+	Line8: Se voce conseguir matar a criatura no estacionada neste planeta, o campo deve se dissipar. Ela provavelmente esta localizada perto do nucleo planetario.
+	Line9: Por ultimo, boa sorte.
+}

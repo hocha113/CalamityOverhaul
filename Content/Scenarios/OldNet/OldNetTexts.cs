@@ -56,6 +56,68 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
         public static LocalizedText OldNetEchoHint { get; private set; }
         public static LocalizedText OldNetEchoFizzle { get; private set; }
         public static LocalizedText OldNetCacheHint { get; private set; }
+        //04 固定威胁（绊网/哨雷/封锁闸；哨眼无交互文本）
+        public static LocalizedText OldNetTripwireHint { get; private set; }
+        public static LocalizedText OldNetTripwireCut { get; private set; }
+        public static LocalizedText OldNetMineHint { get; private set; }
+        public static LocalizedText OldNetMineDefused { get; private set; }
+        public static LocalizedText OldNetMineScream { get; private set; }
+        public static LocalizedText OldNetMineDeath { get; private set; }
+        public static LocalizedText OldNetBulkheadWarn { get; private set; }
+        public static LocalizedText OldNetBulkheadShut { get; private set; }
+        public static LocalizedText OldNetBulkheadReopen { get; private set; }
+        public static LocalizedText OldNetBreakerHint { get; private set; }
+        public static LocalizedText OldNetBreakerPulled { get; private set; }
+        //P1 结构扩容：检疫关卡告示
+        public static LocalizedText OldNetSignCheckpoint { get; private set; }
+        //03 猎杀敌人包（灯蛾/循迹猎犬/回收官）
+        public static LocalizedText TaggerAttached { get; private set; }
+        public static LocalizedText TracerHowlWarn { get; private set; }
+        public static LocalizedText TracerConfused { get; private set; }
+        public static LocalizedText WardenDispatch { get; private set; }
+        public static LocalizedText WardenSlain { get; private set; }
+        public static LocalizedText WardenGraceHud { get; private set; }
+        //02 交互经济（P2）：账本扩容坞
+        public static LocalizedText OldNetDockHint { get; private set; }
+        public static LocalizedText OldNetDockDone { get; private set; }
+        //02 交互经济（P2）：冷存储节点
+        public static LocalizedText OldNetColdHint { get; private set; }
+        public static LocalizedText OldNetColdNoRam { get; private set; }
+        //02 交互经济（P2）：保险契约终端
+        public static LocalizedText OldNetEscrowHint { get; private set; }
+        public static LocalizedText OldNetEscrowEmpty { get; private set; }
+        public static LocalizedText OldNetEscrowTooThin { get; private set; }
+        public static LocalizedText OldNetEscrowSigned { get; private set; }
+        public static LocalizedText OldNetEscrowPayout { get; private set; }
+        //02 交互经济（P2）：主控破译矩阵（台体 + 面板）
+        public static LocalizedText OldNetVaultHint { get; private set; }
+        public static LocalizedText OldNetVaultNoRam { get; private set; }
+        public static LocalizedText OldNetVaultLocked { get; private set; }
+        public static LocalizedText OldNetVaultPayout { get; private set; }
+        public static LocalizedText VaultTitle { get; private set; }
+        public static LocalizedText VaultGuide { get; private set; }
+        public static LocalizedText VaultStage { get; private set; }
+        public static LocalizedText VaultPot { get; private set; }
+        public static LocalizedText VaultPotModule { get; private set; }
+        public static LocalizedText VaultPotChip { get; private set; }
+        public static LocalizedText VaultLedgerRoom { get; private set; }
+        public static LocalizedText VaultCashOut { get; private set; }
+        public static LocalizedText VaultContinue { get; private set; }
+        public static LocalizedText VaultBust { get; private set; }
+        public static LocalizedText VaultCounterHack { get; private set; }
+        public static LocalizedText VaultDiscard { get; private set; }
+        //06 导演与评分（P6）：衰减区余震
+        public static LocalizedText OldNetEncryptFadeHint { get; private set; }
+        public static LocalizedText OldNetAftershockWarn { get; private set; }
+        public static LocalizedText OldNetAftershockHit { get; private set; }
+        //06 导演与评分（P6）：收网协议
+        public static LocalizedText OldNetDragnetWarn { get; private set; }
+        public static LocalizedText OldNetDragnetOn { get; private set; }
+        //06 导演与评分（P6）：热断链
+        public static LocalizedText OldNetHotExtractHint { get; private set; }
+        public static LocalizedText OldNetHotExtractStart { get; private set; }
+        public static LocalizedText OldNetHotExtractAbort { get; private set; }
+        public static LocalizedText OldNetHotExtractTooFar { get; private set; }
 
         public override void SetStaticDefaults() {
             OldNetHarvest = this.GetLocalization(nameof(OldNetHarvest), () => "+{0} 模具碎片（未铭刻）");
@@ -101,10 +163,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
 
             EntrustTitle = this.GetLocalization(nameof(EntrustTitle), () => "越墙深潜");
             EntrustSummary = this.GetLocalization(nameof(EntrustSummary),
-                () => "坠舱中舱的接入终端还在通电。接入旧网，采回模具碎片，并从登出终端安全断链一次。RAM 耗尽或死亡会弄丢一切未铭刻的收获。");
+                () => "旧网的入口在出生点上空的坠毁空岛：顺着岛底垂到地面的锚绳爬上去，中舱里发青光的柱子就是接入终端。右键终端预热链路，5 秒内再右键一次即可入网（仅单人模式）。网内右键青色节点回收模具碎片，收获先记在账本上；想带走就回到黑墙脚下，右键薄荷绿光柱登出。安全登出一次，这单委托就算完成。半路 RAM 耗尽或死亡，未铭刻的收获全部作废。");
             EntrustCategory = this.GetLocalization(nameof(EntrustCategory), () => "深潜考古");
-            TrackerOverworld = this.GetLocalization(nameof(TrackerOverworld), () => "接入坠舱中舱的终端");
-            TrackerDive = this.GetLocalization(nameof(TrackerDive), () => "从登出终端安全断链");
+            TrackerOverworld = this.GetLocalization(nameof(TrackerOverworld), () => "到出生点上空的坠舱中舱，右键青光终端两次");
+            TrackerDive = this.GetLocalization(nameof(TrackerDive), () => "回黑墙脚下，右键薄荷绿光柱安全登出");
 
             OldNetSignRuin = this.GetLocalization(nameof(OldNetSignRuin),
                 () => "废墟带。主产区，加密节点自此出没，引导破解前，先看好退路。");
@@ -117,6 +179,102 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
                 () => "回声太淡，时停中才能触及");
             OldNetCacheHint = this.GetLocalization(nameof(OldNetCacheHint),
                 () => "深潜缓存：撬开取一件封存模块（动静不小）");
+
+            OldNetTripwireHint = this.GetLocalization(nameof(OldNetTripwireHint),
+                () => "光栅绊网：红线亮起时穿过会上报你的位置，按住右键可剪断");
+            OldNetTripwireCut = this.GetLocalization(nameof(OldNetTripwireCut),
+                () => "已剪断，这条路安静了");
+            OldNetMineHint = this.GetLocalization(nameof(OldNetMineHint),
+                () => "哨戒雷：快速靠近会引爆，慢速贴近按住右键可拆除");
+            OldNetMineDefused = this.GetLocalization(nameof(OldNetMineDefused),
+                () => "已拆除，没有惊动任何东西");
+            OldNetMineScream = this.GetLocalization(nameof(OldNetMineScream),
+                () => "哨戒雷尖叫，你的位置被广播了");
+            OldNetMineDeath = this.GetLocalization(nameof(OldNetMineDeath),
+                () => "{0} 踩响了哨戒雷");
+            OldNetBulkheadWarn = this.GetLocalization(nameof(OldNetBulkheadWarn),
+                () => "检测到高噪信号，竖井闸门预紧");
+            OldNetBulkheadShut = this.GetLocalization(nameof(OldNetBulkheadShut),
+                () => "竖井已封锁，压低噪音等待重开，或找泄压杆强开");
+            OldNetBulkheadReopen = this.GetLocalization(nameof(OldNetBulkheadReopen),
+                () => "噪音回落，竖井闸门重开");
+            OldNetBreakerHint = this.GetLocalization(nameof(OldNetBreakerHint),
+                () => "应急泄压杆：拉下开闸 8 秒，代价是更多噪音");
+            OldNetBreakerPulled = this.GetLocalization(nameof(OldNetBreakerPulled),
+                () => "泄压完成，闸门临时开启 8 秒");
+
+            OldNetSignCheckpoint = this.GetLocalization(nameof(OldNetSignCheckpoint),
+                () => "检疫关卡 K-3。东侧信号未消毒，禁止携带活协议出入。本关卡已于第 771 夜失守。");
+
+            TaggerAttached = this.GetLocalization(nameof(TaggerAttached),
+                () => "信号被标记。它在场时，噪音无法自然消散。");
+            TracerHowlWarn = this.GetLocalization(nameof(TracerHowlWarn),
+                () => "猎犬正在广播你的坐标，打断它。");
+            TracerConfused = this.GetLocalization(nameof(TracerConfused),
+                () => "路径交叉，它丢失了线索。");
+            WardenDispatch = this.GetLocalization(nameof(WardenDispatch),
+                () => "回收协议已授权。执行体正在剥离黑墙。");
+            WardenSlain = this.GetLocalization(nameof(WardenSlain),
+                () => "执行体已归档。全网为你静默 60 秒。");
+            WardenGraceHud = this.GetLocalization(nameof(WardenGraceHud),
+                () => "静默余量");
+
+            OldNetDockHint = this.GetLocalization(nameof(OldNetDockHint),
+                () => "右键扩容：本次深潜账本 +8 格，噪音 +15");
+            OldNetDockDone = this.GetLocalization(nameof(OldNetDockDone), () => "账本扩容 +8 格");
+
+            OldNetColdHint = this.GetLocalization(nameof(OldNetColdHint),
+                () => "右键提取：耗 2 RAM，无声");
+            OldNetColdNoRam = this.GetLocalization(nameof(OldNetColdNoRam), () => "RAM 不足，提取需要 2 点");
+
+            OldNetEscrowHint = this.GetLocalization(nameof(OldNetEscrowHint),
+                () => "右键投保：收账本三成作保费，上行噪音 +10。烧断或死亡时其余照赔，安全登出不退保费");
+            OldNetEscrowEmpty = this.GetLocalization(nameof(OldNetEscrowEmpty), () => "账本是空的，无可投保");
+            OldNetEscrowTooThin = this.GetLocalization(nameof(OldNetEscrowTooThin),
+                () => "账本太薄，保费会吃掉一切，无可投保");
+            OldNetEscrowSigned = this.GetLocalization(nameof(OldNetEscrowSigned),
+                () => "已投保 {0} 枚，保费 {1} 枚");
+            OldNetEscrowPayout = this.GetLocalization(nameof(OldNetEscrowPayout),
+                () => "保险兑付 {0} 枚模具碎片");
+
+            OldNetVaultHint = this.GetLocalization(nameof(OldNetVaultHint),
+                () => "右键开台破译：耗 3 RAM，开台后每秒 +2 噪音。每关赌注升级，脱靶彩池清空");
+            OldNetVaultNoRam = this.GetLocalization(nameof(OldNetVaultNoRam), () => "RAM 不足，开台需要 3 点");
+            OldNetVaultLocked = this.GetLocalization(nameof(OldNetVaultLocked), () => "主控台正在运行");
+            OldNetVaultPayout = this.GetLocalization(nameof(OldNetVaultPayout),
+                () => "彩池入账 {0} 枚碎片（未铭刻）");
+            VaultTitle = this.GetLocalization(nameof(VaultTitle), () => "主控破译矩阵");
+            VaultGuide = this.GetLocalization(nameof(VaultGuide),
+                () => "指针扫进亮弧时，点左键或按跳跃键确认。转动中受击或离台，视同脱靶");
+            VaultStage = this.GetLocalization(nameof(VaultStage), () => "第 {0} 关 / 共 5 关");
+            VaultPot = this.GetLocalization(nameof(VaultPot), () => "彩池：碎片 ×{0}");
+            VaultPotModule = this.GetLocalization(nameof(VaultPotModule), () => "封存模块 ×{0}");
+            VaultPotChip = this.GetLocalization(nameof(VaultPotChip), () => "RAM 扩容芯片 ×1");
+            VaultLedgerRoom = this.GetLocalization(nameof(VaultLedgerRoom), () => "账本余位 {0}");
+            VaultCashOut = this.GetLocalization(nameof(VaultCashOut), () => "收手结算");
+            VaultContinue = this.GetLocalization(nameof(VaultContinue), () => "下一关");
+            VaultBust = this.GetLocalization(nameof(VaultBust), () => "爆仓，彩池清空");
+            VaultCounterHack = this.GetLocalization(nameof(VaultCounterHack), () => "主控台反制：骇入注入");
+            VaultDiscard = this.GetLocalization(nameof(VaultDiscard), () => "账本装不下，{0} 枚弃置");
+
+            OldNetEncryptFadeHint = this.GetLocalization(nameof(OldNetEncryptFadeHint),
+                () => "引导破解：疯域的锁会反咬，完成后必引来追猎");
+            OldNetAftershockWarn = this.GetLocalization(nameof(OldNetAftershockWarn),
+                () => "残响暴露，回声正在回溯");
+            OldNetAftershockHit = this.GetLocalization(nameof(OldNetAftershockHit),
+                () => "回溯完成，它们来了");
+            OldNetDragnetWarn = this.GetLocalization(nameof(OldNetDragnetWarn),
+                () => "网络正在收束，威胁即将不可逆 // DRAGNET 75%");
+            OldNetDragnetOn = this.GetLocalization(nameof(OldNetDragnetOn),
+                () => "收网开始，封锁不再解除，加密锁已全网离线 // DRAGNET");
+            OldNetHotExtractHint = this.GetLocalization(nameof(OldNetHotExtractHint),
+                () => "链路过热：断链需要站桩 10 秒，网络会扑过来");
+            OldNetHotExtractStart = this.GetLocalization(nameof(OldNetHotExtractStart),
+                () => "强制断链开始，扛住 // SEVERING");
+            OldNetHotExtractAbort = this.GetLocalization(nameof(OldNetHotExtractAbort),
+                () => "断链中止，链路保持");
+            OldNetHotExtractTooFar = this.GetLocalization(nameof(OldNetHotExtractTooFar),
+                () => "离终端太远，贴近后再断链");
         }
     }
 }

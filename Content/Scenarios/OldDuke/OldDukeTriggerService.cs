@@ -6,8 +6,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke
 {
-    internal static class OldDukeTriggerService
+    /// <summary>营地寻我剧情触发信道，客户端上行请求，服务端转播其余端</summary>
+    internal class OldDukeTriggerService : CWRNetChannel
     {
+        public override void Receive(BinaryReader reader, int whoAmI) => HandleStartCampsiteFindMeScenario(reader, whoAmI);
+
         public static void HandleStartCampsiteFindMeScenario(BinaryReader reader, int whoAmI) {
             int npcIndex = reader.ReadInt32();
             if (!npcIndex.TryGetNPC(out NPC npc)) {
@@ -22,8 +25,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
             npc.netUpdate = true;
 
             if (VaultUtils.isServer) {
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.StartCampsiteFindMeScenario);
+                ModPacket packet = CWRNetWork.GetPacket<OldDukeTriggerService>();
                 packet.Write(npc.whoAmI);
                 packet.Send(-1, whoAmI);
             }

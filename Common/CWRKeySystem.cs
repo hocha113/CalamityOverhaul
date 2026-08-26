@@ -34,8 +34,6 @@ namespace CalamityOverhaul.Common
         public static ModKeybind Onikiri_DomainFlip { get; private set; }
         public static ModKeybind Kikasa_Sink { get; private set; }
         public static ModKeybind Kikasa_DomainMutate { get; private set; }
-        public static ModKeybind WeponSkill_Q { get; private set; }
-        public static ModKeybind WeponSkill_R { get; private set; }
         public static ModKeybind Accessory_Skills { get; private set; }
 
         public override void SetStaticDefaults() {
@@ -71,8 +69,7 @@ namespace CalamityOverhaul.Common
             //旧 Kikasa_Summon/DreamReflect/DreamPull/WispFire 四键已随编成制删除
             Kikasa_DomainMutate = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_DomainMutate), "Mouse3");
             //鬼伞大范围重启复用 Legend_Restart，与比目鱼/赛博/绯嫁同键、按各自形态门互斥
-            WeponSkill_Q = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_Q), "Q");
-            WeponSkill_R = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_R), "R");
+            //旧 WeponSkill_Q/R 两键已删:武器技能改走手持技能按钮 HUD(WeaponSkillHud)
             Accessory_Skills = KeybindLoader.RegisterKeybind(mod, nameof(Accessory_Skills), "V");
         }
 
@@ -108,8 +105,6 @@ namespace CalamityOverhaul.Common
             Halibut_Superposition = null;
             Legend_Teleport = null;
             Legend_UIControl = null;
-            WeponSkill_Q = null;
-            WeponSkill_R = null;
             Accessory_Skills = null;
             HackTime_Toggle = null;
             CyberBanish_Key = null;

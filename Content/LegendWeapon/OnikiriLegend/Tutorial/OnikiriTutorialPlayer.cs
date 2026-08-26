@@ -90,6 +90,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private OniMeiSnapshot meiSnapshot;
         /// <summary>教程锁刀槽(-1 未锁)。HUD/改铭台/点鬼簿都要求手持鬼切</summary>
         private int lockedOnikiriSlot = -1;
+        /// <summary>稽古符本次进世界已补发过;满包落地捡不起来时防巡检连发成堆</summary>
+        private bool runeReissued;
 
         internal bool ReservationDeferred
             => Main.GameUpdateCount < ReservationDeferredUntil;
@@ -176,6 +178,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             if (IsRunning) {
                 MaintainOnikiriHoldLock();
             }
+            TickRuneReissue();
             if (healthGuardActive) {
                 SetPlayerLifeAtLeast(GetTutorialLifeFloor(), showEffect: false);
             }
@@ -290,6 +293,62 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.4f, Volume = 0.35f });
             OniKeikoRune.GrantTo(Player);
             ResetAllRuntime();
+        }
+
+        /// <summary>
+        /// 「跳过教程」:与收起不同,这条按学过记账——写完成位,试炼委托门禁即刻放行;
+        /// 同样补稽古符,跳过的人想补课随时开讲。询问卡与进行中的卡都能点到。
+        /// 若人还留在鬼域里先收域,他可能正是还没学会怎么出来
+        /// </summary>
+        internal void SkipTutorialEntirely() {
+            if (!IsRunning) {
+                return;
+            }
+            OnikiriTutorialLead.MarkComplete();
+            SoundEngine.PlaySound(SoundID.Unlock with { Pitch = -0.1f, Volume = 0.4f });
+            VaultUtils.Text(OnikiriTutorialLead.SkipAllNotice.Value, OnikiriUITheme.GoldInlay);
+            OniKeikoRune.GrantTo(Player);
+            ResetAllRuntime();
+            if (OniDomain.GetPhase(Player) != OniDomainPhase.Closed) {
+                OniDomain.Close(Player);
+            }
+        }
+
+        /// <summary>
+        /// 稽古符补发巡检:婉拒且从未完成的档,符是教程唯一重开入口,
+        /// 而试炼委托门禁又押在教程完成位上——符意外丢失(丢弃/销毁/掉落)会把委托链永久锁死。
+        /// 低频检查,已持有(含鼠标上)不重发;GrantTo 自带在场去重与播报
+        /// </summary>
+        private void TickRuneReissue() {
+            if (runeReissued || IsRunning || Main.dedServ
+                || Player.whoAmI != Main.myPlayer || Player.dead) {
+                return;
+            }
+            if (Main.GameUpdateCount % 300 != 150) {
+                return;
+            }
+            OnikiriGuideData guide = GuideData;
+            if (!guide.Declined || guide.CompletedVersion >= 1) {
+                return;
+            }
+            if (!HasOnikiriAnywhere()) {
+                return;
+            }
+            int runeType = ModContent.ItemType<OniKeikoRune>();
+            if (Player.HasItem(runeType)) {
+                return;
+            }
+            Item mouse = Main.mouseItem;
+            if (mouse != null && !mouse.IsAir && mouse.type == runeType) {
+                return;
+            }
+            runeReissued = true;
+            OniKeikoRune.GrantTo(Player);
+        }
+
+        public override void OnEnterWorld() {
+            //补发限额按世界会话计,重进世界允许再试一次
+            runeReissued = false;
         }
 
         /// <summary>
@@ -823,6 +882,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             guide.Declined = false;
             guide.RefresherAskedVersion = OnikiriTutorialLead.TutorialVersion;
             SoundEngine.PlaySound(SoundID.Unlock with { Pitch = 0.25f, Volume = 0.45f });
+            //受教也发符:文案承诺两条路都能重看,别让"受教"成了永远拿不到符的那条路
+            OniKeikoRune.GrantTo(Player);
             //补讲只接上旧档读到的地方,不把已经会的再讲一遍
             SetStep(refresher ? ResolveExplainStep() : OnikiriTutorialFlow.Step_HudIntro);
         }

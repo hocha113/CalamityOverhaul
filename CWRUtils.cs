@@ -202,8 +202,7 @@ namespace CalamityOverhaul
 
         /// <summary>同步 NPC position/rotation</summary>
         public static void SendNPCbasicData(this NPC npc, int player = -1) {
-            ModPacket modPacket = CWRMod.Instance.GetPacket();
-            modPacket.Write((byte)CWRMessageType.NPCbasicData);
+            ModPacket modPacket = CWRNetWork.GetPacket<Content.NPCBasicDataNet>();
             modPacket.Write((byte)npc.whoAmI);
             modPacket.WriteVector2(npc.position);
             modPacket.Write(npc.rotation);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
@@ -32,6 +33,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
                     ? availableTargets.Any(static t => t.IsCompleted)
                     : availableTargets.All(static t => t.IsCompleted);
             }
+        }
+
+        /// <summary>与 <see cref="IsCompleted"/> 同构：Any 任一子目标亲手达成，All 须全部亲手达成</summary>
+        public bool IsPersonallyCleared(Func<int, bool> hasKilled) {
+            ILegendTrialTarget[] availableTargets = AvailableTargets();
+            if (availableTargets.Length == 0) {
+                return false;
+            }
+            return mode == LegendTrialCompositeMode.Any
+                ? availableTargets.Any(t => t.IsPersonallyCleared(hasKilled))
+                : availableTargets.All(t => t.IsPersonallyCleared(hasKilled));
         }
 
         public IEnumerable<string> GetDisplayNames() {

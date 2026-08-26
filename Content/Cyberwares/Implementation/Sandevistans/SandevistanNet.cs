@@ -69,7 +69,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         NoCharge,
     }
 
-    internal static class SandevistanNet
+    /// <summary>三点式请求总线，类本身即信道（子操作字节继续内部分发）</summary>
+    internal class SandevistanNet : CWRNetChannel
     {
         private enum NetOperation : byte
         {
@@ -154,12 +155,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             packet.Send(toWho, ignoreClient);
         }
 
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader,
-            int whoAmI) {
-            if (type != CWRMessageType.Sandevistan) {
-                return;
-            }
-
+        public override void Receive(BinaryReader reader, int whoAmI) {
             try {
                 NetOperation operation = (NetOperation)reader.ReadByte();
                 switch (operation) {
@@ -330,8 +326,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 reader.ReadSingle(), reader.ReadUInt16());
 
         private static ModPacket NewPacket(NetOperation operation) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.Sandevistan);
+            ModPacket packet = CWRNetWork.GetPacket<SandevistanNet>();
             packet.Write((byte)operation);
             return packet;
         }

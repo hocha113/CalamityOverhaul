@@ -816,17 +816,15 @@ namespace CalamityOverhaul.Content.HackTimes.PvP
     /// <summary>
     /// PvP 骇入的收发集中地。<see cref="Handle"/> 由 <c>HackTimeNetSync.HandleApplyPacket</c>
     /// 的分发接线调进来（共用文件那侧只有一行）。<br/>
-    /// 读包纪律：<b>先把负载吃干净再守卫</b>，CWRNetWork 全家共用一个 reader，
-    /// 提前 return 会把字节留在流里错位后续分支（tml-netcode-pitfalls §1.1）。
-    /// 变长载荷一律带 1 字节长度前缀进子流
+    /// 读包纪律：<b>先把负载吃干净再守卫</b>，提前 return 会让同包后续分支读到
+    /// 错位字节（tml-netcode-pitfalls §1.1）。变长载荷一律带 1 字节长度前缀进子流
     /// </summary>
     internal static class PlayerHackNet
     {
         private const int MaxPayloadBytes = 255;
 
         private static ModPacket NewPacket(HackNetOperation operation) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.HackProtocolApply);
+            ModPacket packet = CWRNetWork.GetPacket<HackTimeNetSync>();
             packet.Write((byte)operation);
             return packet;
         }

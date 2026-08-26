@@ -74,6 +74,11 @@ namespace CalamityOverhaul.Content.RAMSystems
             int chipType = RamNet.GetUpgradeChipType(kind);
             int slot = FindChipSlot(player, preferredSlot, chipType);
             if (slot < 0) {
+                //开箱左键拿起后直接使用:芯片挂在鼠标上(槽位 58),
+                //背包扫描(0~57)永远找不到,不扣即无限使用(反馈十二·#45/#86)
+                if (TryConsumeMouseChip(player, chipType)) {
+                    return;
+                }
                 //一个 RTT 内芯片被丢弃或存走：升级已在权威端落账，无法回滚，只留痕
                 CWRMod.Instance.Logger.Warn(
                     $"RAM upgrade settled without chip (type {chipType})");
@@ -85,6 +90,31 @@ namespace CalamityOverhaul.Content.RAMSystems
             if (chip.stack <= 0) {
                 chip.TurnToAir();
             }
+        }
+
+        /// <summary>从鼠标物品上扣一张芯片；槽位 58 与 Main.mouseItem 可能是两个引用，两边都要对齐</summary>
+        private static bool TryConsumeMouseChip(Player player, int chipType) {
+            const int MouseSlot = 58;
+            Item mouse = Main.mouseItem;
+            Item mirror = player.inventory.Length > MouseSlot ? player.inventory[MouseSlot] : null;
+            Item target = IsChipStack(mouse, chipType) ? mouse
+                : IsChipStack(mirror, chipType) ? mirror : null;
+            if (target == null) {
+                return false;
+            }
+            target.stack--;
+            if (target.stack <= 0) {
+                target.TurnToAir();
+            }
+            //另一份引用若不是同一实例则同步数量,防双扣或残影
+            Item other = ReferenceEquals(target, mouse) ? mirror : mouse;
+            if (other != null && !ReferenceEquals(other, target) && IsChipStack(other, chipType)) {
+                other.stack = target.stack > 0 ? target.stack : 0;
+                if (other.stack <= 0) {
+                    other.TurnToAir();
+                }
+            }
+            return true;
         }
 
         /// <summary>优先请求时的原格，被挪动过则按类型全背包找一遍</summary>

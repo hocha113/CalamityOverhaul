@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen
 {
     internal sealed class FirstMet : NarrativeScenario, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.Helen";
 
         public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }

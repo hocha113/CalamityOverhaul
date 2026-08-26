@@ -23,8 +23,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Machines
     //3.哪根杆算阀门:没接线的那些。堰闸走廊的拉杆有红线、管着自己的闸门(原版语义,
     //  不能抢);阀室与泵房的拉杆生成时就没接任何线,本来就是留给水位的。
     //====================================================================
-    internal static class DungeonworldWaterGate
+    internal class DungeonworldWaterGate : CWRNetChannel
     {
+        public override void Receive(BinaryReader reader, int whoAmI) => HandleValveRequest(reader, whoAmI);
+
         //一次切换要重写上万格并回播几十个区块,给个冷却别让人按住右键刷
         private const int CooldownFrames = 150;
 
@@ -69,8 +71,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Machines
             if (Main.netMode == NetmodeID.MultiplayerClient) {
                 //客户端这一份只防自己手抖连点;真正的节流在裁决方的 Queue 里
                 _cooldown = CooldownFrames;
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.DungeonworldWaterValve);
+                ModPacket packet = CWRNetWork.GetPacket<DungeonworldWaterGate>();
                 packet.Write(MsgRequest);
                 packet.Write((short)leverX);
                 packet.Write((short)leverY);
@@ -131,8 +132,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Machines
             Broadcast();
             //单机就地演;联机由服务端点名让各客户端自己演(服务端没有本地玩家可演)
             if (Main.netMode == NetmodeID.Server) {
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.DungeonworldWaterValve);
+                ModPacket packet = CWRNetWork.GetPacket<DungeonworldWaterGate>();
                 packet.Write(MsgResult);
                 packet.Write(high);
                 packet.Send();

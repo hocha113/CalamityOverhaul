@@ -47,6 +47,20 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Passes
                 OldNetMetrics.FadeLeft + 40, OldNetMetrics.PlayRight - 20,
                 ModContent.TileType<OldNetCacheTile>());
             CWRMod.Instance.Logger.Info($"[OldNet] scatter echo={echo} caches={caches}");
+            progress.Set(0.85);
+
+            //02 交互经济（P2）：扩容坞废墟 1 + 衰减 1 / 冷存储深段 / 保险契约废墟带
+            //计数走日志轻先例（不入 Budget 硬审计）
+            int dockType = ModContent.TileType<OldNetLedgerDockTile>();
+            int docks = PlaceBatch(1, ruinLeft, OldNetMetrics.FadeLeft - 20, dockType);
+            docks += PlaceBatch(1, OldNetMetrics.FadeLeft + 40,
+                OldNetMetrics.PlayRight - 20, dockType);
+            int colds = PlaceBatch(OldNetMetrics.ColdNodeCount, OldNetMetrics.ColdNodeMinCol,
+                OldNetMetrics.PlayRight - 20, ModContent.TileType<OldNetColdNodeTile>());
+            int escrows = PlaceBatch(OldNetMetrics.EscrowCount, ruinLeft,
+                OldNetMetrics.FadeLeft - 20, ModContent.TileType<OldNetEscrowTile>());
+            CWRMod.Instance.Logger.Info(
+                $"[OldNet] scatter docks={docks} colds={colds} escrows={escrows}");
             progress.Set(0.9);
 
             //带声明的撒布条目（M3 装饰扩容的入口）
@@ -78,18 +92,26 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Gen.Passes
             return surfaceY - 1;
         }
 
-        //同位置去重：左右 range 格内已有任何节点/回声/缓存则拒绝
+        //同位置去重：左右 range 格内已有任何节点/回声/缓存/交互设施则拒绝
+        //（新节点 tile 必须进此表，漏加 = 新旧节点贴脸堆叠）
         private static bool IsCrowded(int x, int y, int range) {
             int plainType = ModContent.TileType<OldNetDataNodeTile>();
             int encryptType = ModContent.TileType<OldNetEncryptedNodeTile>();
             int eventType = ModContent.TileType<OldNetEventNodeTile>();
             int echoType = ModContent.TileType<OldNetEchoNodeTile>();
             int cacheType = ModContent.TileType<OldNetCacheTile>();
+            //02 交互经济族（P2）
+            int dockType = ModContent.TileType<OldNetLedgerDockTile>();
+            int coldType = ModContent.TileType<OldNetColdNodeTile>();
+            int escrowType = ModContent.TileType<OldNetEscrowTile>();
+            int vaultType = ModContent.TileType<OldNetCipherVaultTile>();
             for (int dx = -range; dx <= range; dx++) {
                 Tile near = Main.tile[x + dx, y];
                 if (near.HasTile && (near.TileType == plainType
                     || near.TileType == encryptType || near.TileType == eventType
-                    || near.TileType == echoType || near.TileType == cacheType)) {
+                    || near.TileType == echoType || near.TileType == cacheType
+                    || near.TileType == dockType || near.TileType == coldType
+                    || near.TileType == escrowType || near.TileType == vaultType)) {
                     return true;
                 }
             }

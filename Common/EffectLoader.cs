@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OldNetSky { get; set; }
         public static Asset<Effect> OldNetGrade { get; set; }
         public static Asset<Effect> OldNetHud { get; set; }
+        public static Asset<Effect> OldNetVault { get; set; }
+        public static Asset<Effect> OldNetWarden { get; set; }
         public static Asset<Effect> PowerSFShader { get; set; }
         public static Asset<Effect> EowAcid { get; set; }
         public static Asset<Effect> EowGeyser { get; set; }
@@ -285,6 +287,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaHound { get; set; }
         public static Asset<Effect> KikasaDream { get; set; }
         public static Asset<Effect> KikasaDreamSky { get; set; }
+        public static Asset<Effect> KikasaDreamFog { get; set; }
         public static Asset<Effect> KikasaReset { get; set; }
         public static Asset<Effect> KikasaHourglass { get; set; }
         public static Asset<Effect> KikasaWispFire { get; set; }

@@ -802,9 +802,11 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
         #endregion
 
         #region 地面探测
-        /// <summary>自起点向下探可站立地面（实心非平台 + 身位净空），feet 为脚底中心</summary>
+        /// <summary>自起点向下探可站立地面（实心 + 身位净空），feet 为脚底中心。
+        /// acceptPlatforms=true 时平台也算可站立：伞奴在离地平台击杀点就地成形，
+        /// 不再穿到下方实心块（反馈三·#123）；役鬼场景 Actor 维持默认只认实心</summary>
         internal static bool TryFindStandableGround(Vector2 from, int width, int height,
-            out Vector2 feet) {
+            out Vector2 feet, bool acceptPlatforms = false) {
             int tileX = (int)(from.X / 16f);
             int tileY = (int)(from.Y / 16f);
             int columns = Math.Max(width / 16 + 1, 2);
@@ -817,7 +819,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
                 }
                 Tile tile = Framing.GetTileSafely(tileX, y);
                 if (!tile.HasTile || !Main.tileSolid[tile.TileType]
-                    || Main.tileSolidTop[tile.TileType]) {
+                    || (!acceptPlatforms && Main.tileSolidTop[tile.TileType])) {
                     continue;
                 }
 

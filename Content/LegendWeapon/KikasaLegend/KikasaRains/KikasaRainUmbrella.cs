@@ -263,8 +263,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 Projectile.damage = owner.GetWeaponDamage(owner.HeldItem);
             }
 
-            //唤雨符快照:一帧一解,后续节拍/滴生成/挂钩全部复用
-            talismanProfile = KikasaTalismanCombat.Resolve(owner.HeldItem);
+            //唤雨符快照:一帧一解,后续节拍/滴生成/挂钩全部复用(符位表在玩家身上)
+            talismanProfile = KikasaTalismanCombat.Resolve(owner);
             talismanHooks = KikasaTalismanHooks.For(owner);
 
             bobPhase += 0.07f;
