@@ -1,7 +1,11 @@
+using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Industrials.MachineModules;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -102,6 +106,21 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Biomass
             Main.LocalPlayer.SetMouseOverByTile(type);
         }
 
+        public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) {
+            if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
+                return;
+            }
+            if (!TileProcessorLoader.ByPositionGetTP(point, out BiomassGeneratorTP generator)) {
+                return;
+            }
+            //有机燃烧的暖橙光,亮度跟客户端的燃烧包络走
+            if (generator.burnGlow > 0.05f) {
+                r = 0.42f * generator.burnGlow;
+                g = 0.26f * generator.burnGlow;
+                b = 0.09f * generator.burnGlow;
+            }
+        }
+
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 return false;
@@ -145,6 +164,23 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Biomass
         public int MaxFrame = 4;
         /// <summary>自动进料节拍</summary>
         private int autoFeedTimer;
+
+        #region 客户端视觉字段(不入存档不入网络包)
+
+        /// <summary>平滑燃烧强度 0~1,驱动炉口火光与瓦片照明;各端本地模拟</summary>
+        internal float burnGlow;
+        private bool lastBurning;
+        private bool visualInit;
+        /// <summary>投料点火拍剩余帧,给火光一记过冲</summary>
+        private int igniteTimer;
+        private int smokeTimer;
+
+        /// <summary>炉口:借热电机贴图,取机身中下部;真机贴图对位列在游戏内查验项</summary>
+        private Vector2 MouthPos => PosInWorld + new Vector2(Width * 0.5f, Height * 0.66f);
+        /// <summary>烟囱口:机身顶面偏左</summary>
+        private Vector2 StackPos => PosInWorld + new Vector2(Width * 0.32f, -2f);
+
+        #endregion
 
         public override MachineData GetGeneratorDataInds() {
             var data = new BiomassData();
@@ -259,7 +295,137 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Biomass
                     });
                 }
             }
+
+            //客户端视觉:炉口火光/烟囱烟/投料拍,由本地模拟的燃烧状态驱动,零网络
+            if (!VaultUtils.isServer) {
+                UpdateClientVisual();
+            }
         }
+
+        #region 客户端视觉
+
+        /// <summary>
+        /// 客户端视觉总更新。燃烧倒计时各端同规则本地推进,
+        /// 所以"熄→燃"的翻转在每个客户端各自发生,投料拍不用发包
+        /// </summary>
+        private void UpdateClientVisual() {
+            bool burning = BiomassData.IsBurning;
+
+            //入世首帧对齐快照:存档里烧着的炉子直接热态呈现,不补播点火拍
+            if (!visualInit) {
+                visualInit = true;
+                lastBurning = burning;
+                burnGlow = burning ? 1f : 0f;
+            }
+
+            //投料点火拍只认"冷炉起火":生物质单份燃烧只有一两百tick,
+            //链式续料的熄→燃翻转每两秒就有一次,炉膛既然还热就不该再敲锣
+            if (burning && !lastBurning && burnGlow < 0.55f) {
+                igniteTimer = 22;
+                Defer(PlayIgniteEffect);
+            }
+            lastBurning = burning;
+
+            burnGlow = MathHelper.Lerp(burnGlow, burning ? 1f : 0f, burning ? 0.05f : 0.02f);
+            if (igniteTimer > 0) {
+                igniteTimer--;
+            }
+
+            if (!InScreen) {
+                return;
+            }
+
+            if (burning) {
+                //烟囱烟:湿生物质烧出来的绿灰烟,慢升受风
+                if (--smokeTimer <= 0) {
+                    smokeTimer = Rand.Next(14, 26);
+                    Vector2 stack = StackPos + new Vector2(Rand.NextFloat(-2f, 2f), 0f);
+                    Vector2 vel = new(Main.windSpeedCurrent * 0.4f, -Rand.NextFloat(0.5f, 0.9f));
+                    Color smokeColor = Color.Lerp(new Color(122, 130, 112), new Color(94, 114, 86), Rand.NextFloat());
+                    float scale = Rand.NextFloat(0.16f, 0.26f);
+                    int life = Rand.Next(100, 160);
+                    Defer(() => PRTLoader.NewParticle<PRT_FarmSmoke>(stack, vel, smokeColor, scale).Configure(life));
+                }
+                //炉口零星火粒上飘
+                if (Rand.NextBool(9)) {
+                    Vector2 mouth = MouthPos + new Vector2(Rand.NextFloat(-5f, 5f), Rand.NextFloat(-2f, 2f));
+                    Vector2 vel = new(Rand.NextFloat(-0.3f, 0.3f), -Rand.NextFloat(0.4f, 1.1f));
+                    float scale = Rand.NextFloat(0.22f, 0.38f);
+                    Defer(() => PRTLoader.NewParticle<PRT_LavaFire>(mouth, vel, Color.White, scale)
+                        .SetLifetime(36, 66));
+                }
+            }
+            else if (burnGlow > 0.25f && Rand.NextBool(30)) {
+                //刚熄火的余烟,几团即散
+                Vector2 stack = StackPos;
+                Defer(() => PRTLoader.NewParticle<PRT_FarmSmoke>(stack, new Vector2(0f, -0.4f),
+                    new Color(110, 116, 104), Rand.NextFloat(0.12f, 0.2f)).Configure(Rand.Next(70, 110)));
+            }
+        }
+
+        /// <summary>投料点火拍:炉口火星腾起+短促燃点声;主线程调用</summary>
+        private void PlayIgniteEffect() {
+            if (!InScreen) {
+                return;
+            }
+            Vector2 mouth = MouthPos;
+            for (int i = 0; i < 8; i++) {
+                PRTLoader.NewParticle<PRT_LavaFire>(mouth + Main.rand.NextVector2Circular(5f, 3f),
+                    new Vector2(Main.rand.NextFloat(-1.2f, 1.2f), -Main.rand.NextFloat(1.2f, 2.8f)),
+                    Color.White, Main.rand.NextFloat(0.28f, 0.5f)).SetLifetime(26, 46);
+            }
+            for (int i = 0; i < 6; i++) {
+                Dust dust = Dust.NewDustDirect(mouth - new Vector2(4f, 4f), 8, 8, DustID.Torch, 0f, -2f, 100, default, 1.3f);
+                dust.noGravity = true;
+            }
+            SoundEngine.PlaySound(SoundID.Item20 with { Volume = 0.25f, Pitch = -0.5f }, mouth);
+        }
+
+        /// <summary>
+        /// 炉口火光呼吸:两个不可通约频率叠加+高频微颤,有机燃烧偏暖橙,
+        /// 外圈一层苔绿缘光与热电机的火划清;点火拍带一记过冲
+        /// </summary>
+        private void DrawFurnaceGlow(SpriteBatch spriteBatch) {
+            if (burnGlow <= 0.03f) {
+                return;
+            }
+            Texture2D glowTex = CWRAsset.SoftGlow.Value;
+            float t = Main.GameUpdateCount + WhoAmI * 61;
+            float breath = 0.72f + 0.17f * MathF.Sin(t * 0.094f) + 0.11f * MathF.Sin(t * 0.0417f);
+            //两条高频正弦相乘近似炉膛低频颤
+            float flick = 1f + 0.06f * MathF.Sin(t * 0.51f) * MathF.Sin(t * 0.173f);
+            float ignite = igniteTimer > 0 ? 1f + igniteTimer / 22f * 0.8f : 1f;
+            float k = burnGlow * breath * flick * ignite;
+
+            Vector2 drawPos = MouthPos - Main.screenPosition;
+            Vector2 origin = glowTex.Size() * 0.5f;
+            //苔绿有机缘光在最外,是与热电机的分野色
+            spriteBatch.Draw(glowTex, drawPos, null, new Color(150, 205, 110, 0) * (k * 0.2f), 0f, origin, 0.62f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(glowTex, drawPos, null, new Color(230, 130, 42, 0) * (k * 0.55f), 0f, origin, 0.4f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(glowTex, drawPos, null, new Color(255, 205, 110, 0) * (k * 0.8f), 0f, origin, 0.18f, SpriteEffects.None, 0f);
+        }
+
+        /// <summary>状态灯:烧着=呼吸,断料=琥珀双闪,有料待烧(电将满)=昏暗常亮</summary>
+        private void DrawStatusLamp(SpriteBatch spriteBatch) {
+            FarmLampState state;
+            bool hasFuel = BiomassData.FuelItem != null && !BiomassData.FuelItem.IsAir;
+            if (Disabled) {
+                state = FarmLampState.Off;
+            }
+            else if (BiomassData.IsBurning || burnGlow > 0.5f) {
+                //燃尽与续料之间隔着 1 tick 的空档,用平滑量兜住,灯不抖帧
+                state = FarmLampState.Working;
+            }
+            else if (!hasFuel) {
+                state = FarmLampState.MissingResource;
+            }
+            else {
+                state = FarmLampState.Idle;
+            }
+            FarmStatusLamp.Draw(spriteBatch, PosInWorld + new Vector2(Width - 5f, 5f), state, BiomassGenerator.Tint, WhoAmI);
+        }
+
+        #endregion
 
         public override void GeneratorKill() {
             if (!VaultUtils.isClient && BiomassData.FuelItem != null && !BiomassData.FuelItem.IsAir) {
@@ -318,6 +484,15 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Biomass
 
             SendData();
             SoundEngine.PlaySound(SoundID.Grab);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch) {
+            //待机冻结时燃烧被挂起,火光不呼吸
+            if (Disabled) {
+                return;
+            }
+            DrawFurnaceGlow(spriteBatch);
+            DrawStatusLamp(spriteBatch);
         }
 
         public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();
