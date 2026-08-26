@@ -16,6 +16,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
     /// 空中散逸成股;宽度走全生命周期包络(展开铺满→排空收窄断流,判定同源);
     /// 刚性摆压到极小,流体甩尾由 shader 行波承担。
     /// 射线逐帧找落点(实心或域内湖面),落点持续搅浊留渍;前 12 帧沿瀑缘散射特大墨滴。
+    /// 冲刷期方向持续跟手:所有者端限速转向光标(ai[0] 为权威角,节流补包),
+    /// 旁观端向权威角平滑追赶;源头逐帧钉回伞碗口,排空断流后方向与源头就地定格。
     /// 判定为线碰撞,排空过半即失能;绘制走 KikasaInkDrop.fx 的 TechPour
     /// </summary>
     internal class KikasaInkPour : ModProjectile
@@ -36,7 +38,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>瀑缘散射沿柱的最大距离,不跟空射射程一起拉长</summary>
         private const float ScatterAlongMax = 480f;
 
-        /// <summary>倾泻角(弧度,跟光标,由生成包写入)</summary>
+        /// <summary>跟手转向:每帧最大角步进(弧度)与比例平滑系数,伞姿态与瀑体共用同一速率</summary>
+        internal const float TrackTurnStep = 0.15f;
+        internal const float TrackTurnLerp = 0.3f;
+
+        /// <summary>倾泻角(弧度,生成包写入初值,冲刷期由所有者端持续转向光标)</summary>
         private ref float BaseAngle => ref Projectile.ai[0];
 
         //ai[1] 量化编码:无符为裸蓄力档(0~1),带符为 1024*标签+蓄力档*1000,
@@ -60,6 +66,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private bool hitGround;
         private bool hitLake;
         private int scatterCount;
+        //跟手角的端本地量:旁观端对权威角的平滑镜像(NaN=未初始化,首个 AI 帧对齐);
+        //lastSentAngle 是所有者端上次补包时的角,节流判据
+        private float smoothAngle = float.NaN;
+        private float lastSentAngle;
         //伞下鬼接线:栏位数每帧自所有者装备读取,各端一致;冲刷延时在首帧一次性落定
         private int slotCount = 1;
         private int sustainFrames = SustainFrames;
@@ -78,9 +88,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>本帧是否触地(含湖面)</summary>
         internal bool HitGroundNow => hitGround;
 
-        //刚性摆压到极小(判定线跟随),流体甩尾由 shader 内行波承担，源头钉死碗口
+        //刚性摆压到极小(判定线跟随),流体甩尾由 shader 内行波承担，源头钉死碗口;
+        //本体角用端本地平滑量,绘制可能先于首个 AI 帧,未初始化时退回权威角
         private float DirAngle
-            => BaseAngle + MathF.Sin(life * 0.16f + Projectile.identity * 0.71f) * 0.03f;
+            => (float.IsNaN(smoothAngle) ? BaseAngle : smoothAngle)
+                + MathF.Sin(life * 0.16f + Projectile.identity * 0.71f) * 0.03f;
+
+        /// <summary>限速转向:小偏差按比例收尾,大偏差吃步进上限,快而带墨的惯性</summary>
+        internal static float TurnTowards(float cur, float target, float rateMul = 1f) {
+            float diff = MathHelper.WrapAngle(target - cur);
+            float step = MathHelper.Clamp(diff * TrackTurnLerp,
+                -TrackTurnStep * rateMul, TrackTurnStep * rateMul);
+            return MathHelper.WrapAngle(cur + step);
+        }
 
         private float WidthPx => (54f + Fill * 36f + KikasaOverride.GetPourWidthBonus(slotCount))
             * pourProfile.PourWidthMul * TalismanWidthMul;
@@ -135,6 +155,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 Projectile.timeLeft += sustainFrames - SustainFrames;
                 //墨瀑首帧挂钩(泷推移伴生/霸月瀑材质旋钮),各端同拍
                 pourHooks.OnPourStart(Projectile);
+            }
+
+            if (float.IsNaN(smoothAngle)) {
+                smoothAngle = BaseAngle;
+                lastSentAngle = BaseAngle;
+            }
+            //冲刷期跟手:所有者端限速追光标并节流补包,旁观端/服务器向权威角平滑追赶
+            //(追赶速率稍快,吃掉包间隔的滞后);排空断流后方向就地定格
+            if (DrainT <= 0f) {
+                if (Main.myPlayer == Projectile.owner) {
+                    BaseAngle = TurnTowards(BaseAngle,
+                        (Main.MouseWorld - Projectile.Center).ToRotation());
+                    smoothAngle = BaseAngle;
+                    //一次只有一根瀑,5 帧一发不淹链路;光标没动就不发
+                    if ((int)life % 5 == 0
+                        && MathF.Abs(MathHelper.WrapAngle(BaseAngle - lastSentAngle)) > 0.01f) {
+                        lastSentAngle = BaseAngle;
+                        Projectile.netUpdate = true;
+                    }
+                }
+                else {
+                    smoothAngle = TurnTowards(smoothAngle, BaseAngle, 1.4f);
+                }
+                //源头逐帧钉回碗口:伞跟着玩家走,瀑不脱手;伞离开倾覆态(传送/续蓄)就地定格
+                KikasaRainUmbrella umbrella = KikasaRainUmbrella.FindFor(Projectile.owner);
+                if (umbrella != null && umbrella.IsPourBody) {
+                    Projectile.Center = umbrella.PourMouthPos;
+                }
             }
             Vector2 dir = DirAngle.ToRotationVector2();
 
