@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -240,7 +240,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs.Elites
             for (int i = 0; i < 3; i++) {
                 if (t >= 15 + i * 30 && BeatForward(i + 1)) {
                     SoundEngine.PlaySound(SoundID.Item37 with {
-                        Volume = 0.45f, Pitch = -0.3f + i * 0.25f, MaxInstances = 3,
+                        Volume = 0.45f,
+                        Pitch = -0.3f + i * 0.25f,
+                        MaxInstances = 3,
                     }, NPC.Center);
                 }
             }

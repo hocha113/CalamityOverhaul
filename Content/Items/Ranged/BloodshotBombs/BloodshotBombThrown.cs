@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -101,9 +101,13 @@ namespace CalamityOverhaul.Content.Items.Ranged.BloodshotBombs
 
             //爆响随档位加深，叠一层血肉溅裂
             SoundEngine.PlaySound(SoundID.Item14 with {
-                Volume = 0.7f + tier * 0.15f, Pitch = 0.2f - tier * 0.22f }, Projectile.Center);
+                Volume = 0.7f + tier * 0.15f,
+                Pitch = 0.2f - tier * 0.22f
+            }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.NPCDeath1 with {
-                Volume = 0.55f + tier * 0.15f, Pitch = -0.1f }, Projectile.Center);
+                Volume = 0.55f + tier * 0.15f,
+                Pitch = -0.1f
+            }, Projectile.Center);
 
             if (tier >= 1 && CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(

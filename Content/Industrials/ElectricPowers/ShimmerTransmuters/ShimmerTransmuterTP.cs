@@ -1,6 +1,8 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -218,6 +220,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ShimmerTransmuters
         /// <summary>本帧工况(喂给物块发光与UI状态灯)</summary>
         internal bool IsWorking => Progress > 0;
 
+        #region 纯客户端表现状态(转化辉光/星尘/完成爆点)
+        private float animTime;
+        /// <summary>转化辉光强度,随镜像进度抬升</summary>
+        private float auraVis;
+        /// <summary>完成闪光,指数退潮</summary>
+        private float flashT;
+        private int lastOutputTotal = -1;
+        private int sparkleTimer;
+        #endregion
+
         public override void SetBattery() {
             for (int i = 0; i < OutputSlotCount; i++) {
                 OutputItems[i] ??= new Item();
@@ -225,6 +237,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ShimmerTransmuters
         }
 
         public override void UpdateMachine() {
+            if (!Main.dedServ) {
+                UpdateTransmuteVisual();
+            }
+
             if (!CanRunJob()) {
                 Progress = 0;
                 return;
@@ -352,6 +368,146 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ShimmerTransmuters
             }
             return true;
         }
+
+        #region 表现推进(纯客户端,零网络)
+        /// <summary>输出四槽的总件数,变化=一次转化结算到达</summary>
+        private int OutputTotal() {
+            int total = 0;
+            for (int i = 0; i < OutputSlotCount; i++) {
+                Item slot = OutputItems[i];
+                if (slot != null && !slot.IsAir) {
+                    total += slot.stack;
+                }
+            }
+            return total;
+        }
+
+        /// <summary>
+        /// 转化辉光挂在两端镜像的 <see cref="Progress"/> 上(真实进度),
+        /// 完成爆点由输出槽变化(结算事件包)触发,与原版 ShimmerEffect 同拍
+        /// </summary>
+        private void UpdateTransmuteVisual() {
+            animTime += 1f / 60f;
+            float progressT = MathHelper.Clamp(Progress / (float)BeatTicks, 0f, 1f);
+            auraVis = MathHelper.Lerp(auraVis, progressT, 0.15f);
+            flashT *= 0.9f;
+
+            bool near = FluidVFX.NearLocalPlayer(CenterInWorld);
+            FluidStyle style = FluidVFX.GetStyle(LiquidID.Shimmer);
+
+            //作业中:星尘自槽体上浮,越接近完成越密
+            if (IsWorking && near) {
+                int interval = 20 - (int)(progressT * 13f);
+                if (++sparkleTimer >= interval) {
+                    sparkleTimer = 0;
+                    Vector2 spawn = new(PosInWorld.X + Main.rand.NextFloat(6f, Width - 6f), PosInWorld.Y + Height - 8f);
+                    Color tint = Color.Lerp(style.Main, style.Bright, Main.rand.NextFloat());
+                    Defer(() => {
+                        PRTLoader.NewParticle<PRT_Sparkle>(spawn, new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), -Main.rand.NextFloat(0.5f, 1.2f)),
+                            tint, Main.rand.NextFloat(0.2f, 0.32f))?.Configure(tint * 0.8f, Main.rand.Next(26, 40), 0.04f, 0.9f);
+                    });
+                }
+            }
+
+            //完成:输出总件数上升=结算到达(原版 ShimmerEffect 由结算端广播,这里补机器自己的爆点)
+            int total = OutputTotal();
+            if (lastOutputTotal < 0) {
+                lastOutputTotal = total;
+            }
+            bool completed = total > lastOutputTotal;
+            lastOutputTotal = total;
+            if (!completed) {
+                return;
+            }
+            flashT = 1f;
+            if (!near) {
+                return;
+            }
+            Vector2 center = CenterInWorld;
+            Defer(() => {
+                PRTLoader.NewParticle<PRT_HeartcarverPulseRing>(center, Vector2.Zero, style.Bright * 0.8f, 1f)
+                    ?.Configure(0.06f, 0.24f, 24);
+                for (int i = 0; i < 6; i++) {
+                    Vector2 vel = Main.rand.NextVector2Circular(1.6f, 1.6f) - new Vector2(0f, 0.8f);
+                    Color tint = Color.Lerp(style.Main, style.Bright, Main.rand.NextFloat());
+                    PRTLoader.NewParticle<PRT_Sparkle>(center + Main.rand.NextVector2Circular(8f, 8f), vel,
+                        tint, Main.rand.NextFloat(0.24f, 0.4f))?.Configure(tint * 0.85f, 30, 0.06f, 1f);
+                }
+            });
+        }
+        #endregion
+
+        #region 机面覆层:槽体微光液窗(物块下)+悬浮物影+虹彩辉光+状态灯(物块上)
+        public override void PreTileDraw(SpriteBatch spriteBatch) {
+            //微光液窗:3x3 机体沿用 3x4 占位贴图的上三行,窗区按 48px 高折算
+            Vector2 basePos = PosInWorld - Main.screenPosition;
+            Rectangle chamber = new(
+                (int)(basePos.X + 0.21f * Width), (int)(basePos.Y + 0.27f * Height),
+                (int)(0.50f * Width), (int)(0.62f * Height));
+            FluidVFX.DrawLiquidWindow(spriteBatch, chamber, LiquidID.Shimmer,
+                MathHelper.Clamp(FluidAmount / (float)FluidCapacity, 0f, 1f), animTime,
+                auraVis * 0.8f, WhoAmI + 13);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+            Vector2 basePos = PosInWorld - Main.screenPosition;
+            FluidStyle style = FluidVFX.GetStyle(LiquidID.Shimmer);
+            bool hasInput = InputItem != null && !InputItem.IsAir;
+
+            //状态灯:作业=虹彩呼吸,有输入但阻塞(缺电/缺微光/输出满)=琥珀慢闪,空闲=熄灭
+            Color lamp;
+            if (Disabled || (!IsWorking && !hasInput)) {
+                lamp = new Color(30, 26, 24);
+            }
+            else if (IsWorking) {
+                //虹彩:色相随时间游移,呼应原版 shimmer 视觉语言
+                float hue = (0.72f + 0.08f * MathF.Sin(animTime * 2.1f)) % 1f;
+                Color iri = Main.hslToRgb(hue, 0.8f, 0.68f);
+                lamp = FluidVFX.Glow(iri, 0.6f + 0.4f * MathF.Sin(animTime * 4.2f));
+            }
+            else {
+                lamp = FluidVFX.Glow(new Color(255, 170, 50), 0.4f + 0.25f * MathF.Sin(animTime * 2.2f));
+            }
+            spriteBatch.Draw(px, new Rectangle((int)(basePos.X + Width) - 7, (int)basePos.Y + 5, 3, 3), lamp);
+
+            if (!hasInput) {
+                return;
+            }
+
+            //悬浮物影:待转物悬在槽口上方,作业中被虹彩包裹并轻浮
+            Main.instance.LoadItem(InputItem.type);
+            Texture2D itemTex = TextureAssets.Item[InputItem.type].Value;
+            float fit = MathF.Min(18f / itemTex.Width, 18f / itemTex.Height);
+            float bob = IsWorking ? MathF.Sin(animTime * 2.6f) * 2.2f : 0f;
+            Vector2 ghostPos = new(basePos.X + Width / 2f, basePos.Y - 10f + bob);
+            Vector2 origin = itemTex.Size() * 0.5f;
+
+            //虹彩辉光垫底(随进度增强)
+            if (auraVis > 0.03f) {
+                Texture2D glow = CWRAsset.SoftGlow.Value;
+                float hue = (0.78f + 0.10f * MathF.Sin(animTime * 1.7f)) % 1f;
+                Color iri = Main.hslToRgb(hue, 0.85f, 0.7f);
+                spriteBatch.Draw(glow, ghostPos, null, FluidVFX.Glow(iri, 0.55f * auraVis),
+                    0f, glow.Size() * 0.5f, 0.55f + 0.1f * MathF.Sin(animTime * 3.3f), SpriteEffects.None, 0f);
+                spriteBatch.Draw(glow, ghostPos, null, FluidVFX.Glow(style.Bright, 0.35f * auraVis),
+                    0f, glow.Size() * 0.5f, 0.3f, SpriteEffects.None, 0f);
+            }
+
+            //物影:作业中带一点微光染色,阻塞时压暗
+            Color ghostTint = IsWorking
+                ? Color.Lerp(Color.White, style.Main, 0.25f + 0.2f * auraVis)
+                : new Color(120, 115, 130);
+            spriteBatch.Draw(itemTex, ghostPos, null, ghostTint * (IsWorking ? 0.95f : 0.7f),
+                0f, origin, fit, SpriteEffects.None, 0f);
+
+            //完成闪光
+            if (flashT > 0.03f) {
+                spriteBatch.Draw(itemTex, ghostPos, null, FluidVFX.Glow(Color.White, flashT * 0.9f),
+                    0f, origin, fit, SpriteEffects.None, 0f);
+            }
+        }
+        #endregion
 
         #region 交互
         /// <summary>右键交互(交互客户端执行):Shift 全取;手持可转物快放;否则开UI</summary>

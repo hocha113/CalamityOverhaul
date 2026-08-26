@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -99,12 +100,29 @@ namespace CalamityOverhaul.Content.Industrials.Generator.SolarPanels
         protected virtual Color CellColor => new(58, 112, 205);
         /// <summary>边框金属色</summary>
         protected virtual Color FrameColor => new(148, 118, 62);
+        /// <summary>镜面高光带色(初代冷白,MK2 覆写成圣辉金白)</summary>
+        protected virtual Color GlintColor => new(214, 236, 255);
 
-        /// <summary>整机自绘,由瓦片 PreDraw 在左上格调用一次</summary>
+        /// <summary>
+        /// 整机自绘,由瓦片 PreDraw 在左上格调用一次。<br/>
+        /// 镀膜光伏玻璃的三条签名:高光带随 <see cref="Main.time"/> 太阳角自东向西扫、
+        /// 正午满功率边框辉光、失效(夜/日食/遮挡)转哑光并入全系暗化语言;
+        /// 雨天按天气系数退成微光。遮挡时亮红色警示灯,阻塞可读
+        /// </summary>
         internal void DrawPanelBody(SpriteBatch spriteBatch) {
             Texture2D px = VaultAsset.placeholder2.Value;
             Vector2 origin = PosInWorld - Main.screenPosition;
             Color light = Lighting.GetColor(Position.X + 1, Position.Y);
+
+            float env = EnvFactor;
+            float weather = SampleWeatherFactor();
+            bool producing = env > 0.01f;
+            //失效哑光:全系"断电减半"暗化语言;只压 RGB 保 alpha,乘 float 会把面板变半透
+            float dim = producing ? 1f : 0.5f;
+            static Color DimRGB(Color c, float f)
+                => new((byte)(c.R * f), (byte)(c.G * f), (byte)(c.B * f), c.A);
+            //雨天/日食去饱和:板面失去镜面感
+            float matte = producing ? 1f - weather : 1f;
 
             //支腿:左右两根,撑起面板
             Color legColor = new Color(52, 44, 38).MultiplyRGB(light);
@@ -113,28 +131,73 @@ namespace CalamityOverhaul.Content.Industrials.Generator.SolarPanels
 
             //面板体:上半的平板
             Rectangle body = new((int)origin.X, (int)origin.Y, Width, 18);
-            spriteBatch.Draw(px, body, PanelColor.MultiplyRGB(light));
+            spriteBatch.Draw(px, body, DimRGB(PanelColor.MultiplyRGB(light), dim));
 
-            //电池格:2 行 × 6 列
-            Color cell = CellColor.MultiplyRGB(light);
+            //太阳角驱动的高光带中心:清晨在东缘,正午居中,黄昏在西缘
+            float dayProg = Main.dayTime ? (float)(Main.time / Main.dayLength) : 0f;
+            float bandX = MathHelper.Lerp(body.Left + 5, body.Right - 5, dayProg);
+            bool glintOn = producing && Main.dayTime && skyExposed;
+
+            //电池格:2 行 × 6 列;靠近高光带的格子被点亮,雨天整排转灰哑
             for (int row = 0; row < 2; row++) {
                 for (int col = 0; col < 6; col++) {
                     Rectangle cellRect = new(body.X + 3 + col * 10, body.Y + 3 + row * 7, 8, 5);
+                    Color cell = CellColor;
+                    if (matte > 0.01f) {
+                        //哑光:向灰收拢,镜面身份让位给"湿玻璃"
+                        float gray = (cell.R + cell.G + cell.B) / 3f / 255f;
+                        cell = Color.Lerp(cell, new Color(gray * 0.75f, gray * 0.78f, gray * 0.82f), matte * 0.8f);
+                    }
+                    cell = DimRGB(cell.MultiplyRGB(light), dim);
                     spriteBatch.Draw(px, cellRect, cell);
+
+                    if (glintOn) {
+                        float dist = MathF.Abs(cellRect.Center.X - bandX);
+                        float boost = MathF.Exp(-dist * dist / 260f) * env;
+                        if (boost > 0.03f) {
+                            spriteBatch.Draw(px, cellRect, GlintColor with { A = 0 } * (boost * 0.5f));
+                        }
+                    }
                 }
             }
 
-            //边框
-            Color frame = FrameColor.MultiplyRGB(light);
+            //镜面高光带:三段错位读作斜向掠光,入射角随日头翻转
+            if (glintOn) {
+                float slant = MathHelper.Lerp(2.6f, -2.6f, dayProg);
+                for (int seg = 0; seg < 3; seg++) {
+                    int segY = body.Y + seg * 6;
+                    //钳进面板内,晨昏两端掠光不越出边框
+                    int segX = Math.Clamp((int)(bandX + slant * (seg - 1)), body.Left + 6, body.Right - 7);
+                    Color glint = GlintColor with { A = 0 };
+                    spriteBatch.Draw(px, new Rectangle(segX - 1, segY, 3, 6), glint * (env * 0.75f));
+                    spriteBatch.Draw(px, new Rectangle(segX - 4, segY, 2, 6), glint * (env * 0.3f));
+                    spriteBatch.Draw(px, new Rectangle(segX + 3, segY, 2, 6), glint * (env * 0.3f));
+                }
+            }
+
+            //边框:正午满功率时通体镀亮,顶缘再压一道日光线
+            Color frame = FrameColor;
+            if (env > 0.8f) {
+                float noon = (env - 0.8f) / 0.2f;
+                float pulse = 0.8f + 0.2f * MathF.Sin(Main.GlobalTimeWrappedHourly * 2.2f + Position.X * 0.7f);
+                frame = Color.Lerp(frame, new Color(255, 222, 150), noon * pulse);
+            }
+            frame = DimRGB(frame.MultiplyRGB(light), dim);
             spriteBatch.Draw(px, new Rectangle(body.X, body.Y, body.Width, 2), frame);
             spriteBatch.Draw(px, new Rectangle(body.X, body.Bottom - 2, body.Width, 2), frame);
             spriteBatch.Draw(px, new Rectangle(body.X, body.Y, 2, body.Height), frame);
             spriteBatch.Draw(px, new Rectangle(body.Right - 2, body.Y, 2, body.Height), frame);
+            if (env > 0.8f) {
+                spriteBatch.Draw(px, new Rectangle(body.X + 2, body.Y - 1, body.Width - 4, 1),
+                    new Color(255, 240, 190, 0) * ((env - 0.8f) / 0.2f * 0.8f));
+            }
 
-            //反光:环境系数越高越亮,发电状态一眼可读
-            float env = EnvFactor;
-            if (env > 0.01f) {
-                spriteBatch.Draw(px, body, Color.White * (env * 0.28f));
+            //遮挡警示灯:头顶被封死时红灯慢闪,阻塞状态一眼可读
+            if (!skyExposed) {
+                float blink = MathF.Sin(Main.GlobalTimeWrappedHourly * 4.4f) > 0f ? 1f : 0.25f;
+                Rectangle lamp = new(body.Right - 6, body.Y + 3, 2, 2);
+                spriteBatch.Draw(px, lamp, new Color(220, 40, 40) * blink);
+                spriteBatch.Draw(px, lamp, new Color(255, 90, 90, 0) * (blink * 0.6f));
             }
         }
 

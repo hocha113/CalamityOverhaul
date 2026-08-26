@@ -26,6 +26,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ShieldGenerators
         internal bool ShieldAuraActive;
         /// <summary>当前护盾池</summary>
         internal float ShieldCharge;
+        /// <summary>吸收闪光包络 0~1,纯表现:贴身光晕在吸收瞬间闪亮后消退</summary>
+        internal float AbsorbFlash;
 
         public override void ResetEffects() {
             ShieldAuraActive = false;
@@ -37,6 +39,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ShieldGenerators
             }
             else {
                 ShieldCharge = Math.Max(0f, ShieldCharge - DecayPerTick);
+            }
+            if (AbsorbFlash > 0f) {
+                AbsorbFlash = Math.Max(0f, AbsorbFlash - 0.07f);
             }
         }
 
@@ -62,13 +67,34 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ShieldGenerators
                     dust.noGravity = true;
                     dust.velocity = VaultUtils.RandVr(3f);
                 }
+                //真实吸收事件:膜涟漪+贴身闪光
+                ShieldDomeFX.OnAbsorb(Player, absorb);
             };
+        }
+
+        public override void OnHurt(Player.HurtInfo info) {
+            //远端玩家的吸收在本端不可见(池扣减仅owner端),按本地模拟池近似还原膜涟漪:
+            //buff是各端本地挂的,池充能模拟同样各端在跑,只有扣减漂移,纯表现可接受
+            if (Main.dedServ || Player.whoAmI == Main.myPlayer) {
+                return;
+            }
+            if (!ShieldAuraActive || ShieldCharge < 1f) {
+                return;
+            }
+            //由到手伤害反推吸收量:absorb = final × ratio/(1-ratio),受池上限约束
+            float absorb = Math.Min(ShieldCharge, info.Damage * (AbsorbRatio / (1f - AbsorbRatio)));
+            if (absorb < 1f) {
+                return;
+            }
+            ShieldCharge -= absorb;
+            ShieldDomeFX.OnAbsorb(Player, absorb);
         }
 
         public override void UpdateDead() {
             //死亡清池,复活不带残盾
             ShieldCharge = 0f;
             ShieldAuraActive = false;
+            AbsorbFlash = 0f;
         }
     }
 }

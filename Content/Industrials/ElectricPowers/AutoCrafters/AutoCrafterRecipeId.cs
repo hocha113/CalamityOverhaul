@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -143,8 +142,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoCrafters
                 bool met;
                 try {
                     met = condition.IsMet();
-                }
-                catch {
+                } catch {
                     met = false;
                 }
                 if (!met) {

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.UIs.RadialWheels;
+﻿using CalamityOverhaul.Content.UIs.RadialWheels;
 using InnoVault.UIHandles;
 using System.Collections.Generic;
 using Terraria.Audio;
@@ -119,7 +119,9 @@ namespace CalamityOverhaul.Content.UIs
                 return true;
             }
             SoundEngine.PlaySound(SoundID.MenuTick with {
-                Volume = 0.55f, Pitch = -0.7f, MaxInstances = 2,
+                Volume = 0.55f,
+                Pitch = -0.7f,
+                MaxInstances = 2,
             });
             return false;
         }

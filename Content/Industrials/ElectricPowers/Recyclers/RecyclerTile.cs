@@ -1,9 +1,12 @@
+using CalamityOverhaul.Content.Industrials.ElectricPowers.Crushers;
+using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent.UI;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -122,31 +125,45 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
             Box(3, 8, 42, 36, Mul(new Color(62, 72, 66)));
             Box(5, 10, 38, 32, Mul(new Color(48, 56, 52)));
 
-            //拆解台面:中部平台 + 台上装备剪影(有料时)
+            //拆解台面
             Box(10, 26, 28, 3, Mul(new Color(84, 94, 88)));
+
+            //台上被拆装备:真实贴图躺台 + 稀有度色底光(工位收尾泵脉冲)
             bool hasInput = tp.RecData?.InputItem != null && !tp.RecData.InputItem.IsAir;
             if (hasInput) {
-                Box(20, 21, 8, 5, Mul(new Color(120, 126, 116)));
+                Color rare = ItemRarity.GetColor(tp.RecData.InputItem.rare);
+                SvgPathPen.SoftDot(spriteBatch, basePos + new Vector2(24f, 24f), 11f,
+                    rare, 0.14f + 0.32f * tp.RarityPulse);
+                Main.instance.LoadItem(tp.RecData.InputItem.type);
+                VaultUtils.SimpleDrawItem(spriteBatch, tp.RecData.InputItem.type,
+                    basePos + new Vector2(24f, 21.5f), 12, 1f, 0f, Mul(new Color(235, 235, 235)));
             }
 
-            //拆解臂:门架 + 往复下压的臂头
+            //拆解臂:门架 + 工位编舞(移位→下压→切割驻留→抬升)
             bool working = tp.RecData?.IsWorking == true;
-            float armDrop = working ? MathF.Abs(MathF.Sin(tp.armPhase)) * 7f : 0f;
+            float headX = 14f + tp.ArmX01 * 14f;
+            float armDrop = tp.ArmDrop01 * 5f;
             Box(12, 12, 3, 14, Mul(new Color(74, 84, 78)));
             Box(33, 12, 3, 14, Mul(new Color(74, 84, 78)));
             Box(12, 12, 24, 3, Mul(new Color(88, 98, 90)));
-            Box(21, 13 + armDrop, 6, 6, Mul(new Color(130, 140, 126)));
+            Box(headX, 13 + armDrop, 6, 6, Mul(new Color(130, 140, 126)));
             //臂尖
-            Box(23, 19 + armDrop, 2, 3, Mul(new Color(150, 158, 142)));
+            Box(headX + 2, 19 + armDrop, 2, 3, Mul(new Color(150, 158, 142)));
+            //切割驻留:接触点炽亮闪烁
+            if (tp.CutGlow > 0.05f) {
+                float flicker = 0.35f + 0.22f * MathF.Sin(Main.GlobalTimeWrappedHourly * 43f);
+                SvgPathPen.SoftDot(spriteBatch, basePos + new Vector2(headX + 3f, 23f), 5.5f,
+                    new Color(255, 214, 150), tp.CutGlow * flicker);
+            }
 
             //分选斗:右下出锭口
             Box(36, 34, 8, 8, Mul(new Color(42, 48, 44)));
             Box(37, 35, 6, 2, Mul(new Color(96, 104, 92)));
 
-            //状态灯:工作=薄荷绿呼吸,缺电=红,待机=暗
+            //状态灯:统一警示语言(黄呼吸=堵料,红呼吸=缺电),工作=薄荷绿闪,待机=暗
             Color lamp;
-            if (!powered) {
-                lamp = new Color(150, 40, 30);
+            if (tp.VisualAlert != ProcAlert.None) {
+                lamp = ProcessingChainVFX.LampColor(tp.VisualAlert, Color.White);
             }
             else if (working) {
                 float blink = 0.6f + 0.4f * MathF.Sin(Main.GlobalTimeWrappedHourly * 6f);

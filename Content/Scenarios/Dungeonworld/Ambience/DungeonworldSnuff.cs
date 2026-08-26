@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Scenarios.Dungeonworld.Fog;
+﻿using CalamityOverhaul.Content.Scenarios.Dungeonworld.Fog;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -351,7 +351,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Ambience
             }
             else {
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                    Volume = vol, Pitch = -0.8f, MaxInstances = 2
+                    Volume = vol,
+                    Pitch = -0.8f,
+                    MaxInstances = 2
                 }, pos);
             }
         }

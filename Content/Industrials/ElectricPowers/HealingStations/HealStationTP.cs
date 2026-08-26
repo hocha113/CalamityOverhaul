@@ -1,5 +1,7 @@
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -36,6 +38,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.HealingStations
         private int applyTimer;
         private int textIdleTime;
         private int ambienceTimer;
+        private int moteTimer;
 
         public override void SetBattery() {
             IdleDistance = 4000;//玩家远离后停止运行
@@ -92,6 +95,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.HealingStations
                     dust.noGravity = true;
                     dust.fadeIn = 0.5f;
                 });
+            }
+
+            //上升治愈光点:自塔基缓升,屏外不发
+            if (running && !VaultUtils.isServer && ++moteTimer >= 14
+                && VaultUtils.IsPointOnScreen(CenterInWorld - Main.screenPosition, 300)) {
+                moteTimer = 0;
+                Vector2 motePos = PosInWorld + new Vector2(Rand.NextFloat(-14f, Width + 14f), Height - Rand.NextFloat(30f));
+                Defer(() => PRTLoader.NewParticle<PRT_DefHealMote>(motePos, new Vector2(0, -0.3f),
+                    HealStation.Tint, Main.rand.NextFloat(0.5f, 0.95f))
+                    ?.Configure(Main.rand.Next(50, 80)));
             }
         }
 

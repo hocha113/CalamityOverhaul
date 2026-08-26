@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.NPCs.ScrapCommanders.Core;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Projectiles
 {

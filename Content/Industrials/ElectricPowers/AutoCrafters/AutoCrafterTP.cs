@@ -1,10 +1,13 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.Crushers;
 using CalamityOverhaul.Content.Industrials.MachineModules;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using InnoVault.Storages;
-using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -119,6 +122,21 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoCrafters
         internal int MissingIngredientType { get; private set; }
         private int materialTimer;
 
+        //===== 表现层字段(纯客户端,零网络),瓦片绘制消费 =====
+        /// <summary>装配头横位 0..1:作业时随进度双往返,阻塞冻在半路,待机缓回中位</summary>
+        internal float HeadX01 = 0.5f;
+        /// <summary>进度推进包络:打印线/头尖微光的强度</summary>
+        internal float AdvanceGlow;
+        /// <summary>完成闪光余量(tick),瓦片画全彩定格与亮闪</summary>
+        internal int CompleteFlash;
+        /// <summary>瓦片状态灯消费的警示状态</summary>
+        internal ProcAlert VisualAlert;
+        //完成沿与开工沿检测:上帧进度/出料快照
+        private int lastProgressVis;
+        private int lastOutType;
+        private int lastOutStack;
+        private int fxCooldown;
+
         internal Recipe ResolvedRecipe {
             get {
                 RefreshResolve();
@@ -158,6 +176,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoCrafters
 
         public override void UpdateMachine() {
             RefreshResolve();
+
+            //表现层先行:下方按解析结果早退,警示灯与装配头动态仍要走
+            UpdateVisualFX();
 
             //站台快照:只读 tile,并行阶段可直扫,按 WhoAmI 错峰
             if (stationSnap == null || ++stationTimer >= 60) {
@@ -296,10 +317,116 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoCrafters
                 }
             }
 
-            if (!Main.dedServ) {
-                SoundEngine.PlaySound(SoundID.Research with { Volume = 0.5f, Pitch = 0.2f }, CenterInWorld);
-            }
+            //完成音效移交客户端完成沿检测(CompletionFX),联机下远端也听得到
             SendData();
+        }
+
+        //=========================================================================
+        // 表现层:警示状态、装配头双往返、开工入料流光、完成闪光环。
+        // 全部由同步字段与本地确定性节拍驱动,各端自演,零网络
+        //=========================================================================
+        private void UpdateVisualFX() {
+            if (Main.dedServ || CrafterData == null) {
+                return;
+            }
+
+            bool powered = CrafterData.UEvalue >= CrafterData.CraftCost;
+            bool pinned = CrafterData.PinnedResultType > 0;
+            Recipe recipe = resolvedRecipe;
+
+            //警示状态:缺电红呼吸;钉着但走不动(配方失踪/缺站台/缺料/成品堵)黄呼吸
+            if (!powered) {
+                VisualAlert = ProcAlert.NoPower;
+            }
+            else if (pinned && (PinMissing || recipe == null || !StationOk || !ConditionsOk
+                || !MaterialsOk || !OutputSlotAcceptable(recipe))) {
+                VisualAlert = ProcAlert.Blocked;
+            }
+            else {
+                VisualAlert = ProcAlert.None;
+            }
+
+            int progress = CrafterData.CraftProgress;
+            bool working = progress > 0;
+            bool advancing = working && progress != lastProgressVis;
+            AdvanceGlow = MathHelper.Lerp(AdvanceGlow, advancing ? 1f : 0f, advancing ? 0.3f : 0.06f);
+
+            //装配头:作业时随进度双往返(阻塞进度冻结,头就冻在半路),待机缓回中位
+            if (working) {
+                float u = progress / (float)CrafterData.MaxCraftProgress * 2f;
+                float frac = u - MathF.Floor(u);
+                HeadX01 = 1f - MathF.Abs(1f - 2f * frac);
+            }
+            else {
+                HeadX01 = MathHelper.Lerp(HeadX01, 0.5f, 0.06f);
+            }
+
+            bool onScreen = ProcessingChainVFX.OnScreen(CenterInWorld);
+
+            //开工沿:原料聚拢,入料流光滑入台面
+            if (lastProgressVis == 0 && working && onScreen) {
+                IntakeFX();
+            }
+
+            //完成沿:成品增长,或进度自满格跌零(成品常直送近旁存储,槽不增长)
+            bool outNow = CrafterData.OutputItem != null && !CrafterData.OutputItem.IsAir;
+            bool outGrew = outNow && (lastOutStack == 0
+                || (CrafterData.OutputItem.type == lastOutType && CrafterData.OutputItem.stack > lastOutStack));
+            bool progressFell = lastProgressVis >= CrafterData.MaxCraftProgress - 1 && progress == 0;
+            if (fxCooldown > 0) {
+                fxCooldown--;
+            }
+            if ((outGrew || progressFell) && fxCooldown == 0) {
+                fxCooldown = 10;
+                CompletionFX(onScreen);
+            }
+
+            if (CompleteFlash > 0) {
+                CompleteFlash--;
+            }
+
+            //上帧快照
+            lastProgressVis = progress;
+            lastOutType = outNow ? CrafterData.OutputItem.type : 0;
+            lastOutStack = outNow ? CrafterData.OutputItem.stack : 0;
+        }
+
+        /// <summary>开工瞬间:入料流光自机体两侧滑入台面</summary>
+        private void IntakeFX() {
+            Vector2 table = new(Position.X + 24f, Position.Y + 26f);
+            Defer(() => {
+                for (int k = 0; k < 3; k++) {
+                    float side = k % 2 == 0 ? -1f : 1f;
+                    Vector2 spawn = table + new Vector2(side * Rand.NextFloat(34f, 52f),
+                        Rand.NextFloat(-18f, -2f));
+                    Vector2 vel = new(-side * 2.4f, Rand.NextFloat(0.2f, 1.2f));
+                    PRTLoader.NewParticle<PRT_ProcIntake>(spawn, vel,
+                        new Color(140, 210, 255), Rand.NextFloat(0.8f, 1.2f))
+                        ?.Configure(table + new Vector2(Rand.NextFloat(-6f, 6f), 0f), 30);
+                }
+            });
+        }
+
+        /// <summary>完成瞬间:闪光环+星芒+上飘蓝尘,全彩定格由瓦片按 CompleteFlash 画</summary>
+        private void CompletionFX(bool onScreen) {
+            CompleteFlash = 18;
+            Vector2 holo = new(Position.X + 24f, Position.Y + 15f);
+            Defer(() => {
+                SoundEngine.PlaySound(SoundID.Research with { Volume = 0.5f, Pitch = 0.2f }, CenterInWorld);
+                if (!onScreen) {
+                    return;
+                }
+                PRTLoader.NewParticle<PRT_ProcRing>(holo, Vector2.Zero,
+                    new Color(120, 200, 255), 1f)?.Configure(6f, 26f, 16);
+                PRTLoader.NewParticle<PRT_Sparkle>(holo, new Vector2(0f, -0.4f),
+                    new Color(200, 240, 255), 0.4f)?.Configure(new Color(120, 200, 255), 16, 0.1f, 1.2f);
+                for (int k = 0; k < 4; k++) {
+                    Vector2 vel = new(Rand.NextFloat(-0.8f, 0.8f), Rand.NextFloat(-1.6f, -0.6f));
+                    PRTLoader.NewParticle<PRT_ProcIntake>(holo + new Vector2(Rand.NextFloat(-8f, 8f), 4f), vel,
+                        new Color(120, 200, 255), Rand.NextFloat(0.6f, 0.9f))
+                        ?.Configure(holo + new Vector2(Rand.NextFloat(-14f, 14f), -22f), 24);
+                }
+            });
         }
 
         /// <summary>

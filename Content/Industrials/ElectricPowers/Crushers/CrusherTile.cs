@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -128,12 +129,20 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Crushers
             Box(12, 4, 24, 4, Mul(new Color(80, 75, 70)));
             Box(16, 8, 16, 4, Mul(new Color(72, 68, 64)));
 
-            //破碎腔:凹腔 + 上颚(工作时循环咬合)+ 下颚固定
+            //斗喉可见矿料:进料看得见
+            bool hasInput = tp.CruData?.InputItem != null && !tp.CruData.InputItem.IsAir;
+            if (hasInput) {
+                Main.instance.LoadItem(tp.CruData.InputItem.type);
+                VaultUtils.SimpleDrawItem(spriteBatch, tp.CruData.InputItem.type,
+                    basePos + new Vector2(24f, 8f), 11, 1f, 0f, Mul(new Color(225, 225, 225)));
+            }
+
+            //破碎腔:凹腔 + 上颚(蓄压慢合→破碎快咬→回程)+ 下颚固定
             Box(12, 18, 24, 20, Mul(new Color(30, 28, 26)));
             bool working = tp.CruData?.IsWorking == true;
-            float jawPhase = working
-                ? MathF.Abs(MathF.Sin(tp.CruData.CrushProgress * (MathHelper.Pi / 15f))) : 0f;
-            float jawDrop = jawPhase * 6f;
+            float closure = working
+                ? ProcessingChainVFX.JawCurve(tp.CruData.CrushProgress, out _) : 0f;
+            float jawDrop = closure * 6f;
             Box(14, 20 + jawDrop, 20, 5, Mul(new Color(120, 112, 100)));
             Box(14, 32, 20, 5, Mul(new Color(104, 98, 88)));
             //颚齿:上下各三粒
@@ -141,14 +150,20 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Crushers
                 Box(16 + k * 7, 25 + jawDrop, 3, 2, Mul(new Color(140, 130, 116)));
                 Box(19 + k * 7, 30, 3, 2, Mul(new Color(126, 118, 104)));
             }
+            //破碎瞬间腔心迸亮
+            if (closure > 0.88f) {
+                float f = (closure - 0.88f) / 0.12f;
+                SvgPathPen.SoftDot(spriteBatch, basePos + new Vector2(24f, 29f), 14f,
+                    new Color(255, 205, 130), 0.5f * f);
+            }
 
             //出料口:底沿右侧
             Box(34, 38, 10, 4, Mul(new Color(46, 44, 42)));
 
-            //状态灯:工作=琥珀呼吸,缺电=红,待机=暗
+            //状态灯:统一警示语言(黄呼吸=堵料,红呼吸=缺电),工作=琥珀闪,待机=暗
             Color lamp;
-            if (!powered) {
-                lamp = new Color(150, 40, 30);
+            if (tp.VisualAlert != ProcAlert.None) {
+                lamp = ProcessingChainVFX.LampColor(tp.VisualAlert, Color.White);
             }
             else if (working) {
                 float blink = 0.6f + 0.4f * MathF.Sin(Main.GlobalTimeWrappedHourly * 6f);

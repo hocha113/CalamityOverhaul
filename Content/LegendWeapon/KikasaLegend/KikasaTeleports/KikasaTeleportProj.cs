@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -259,7 +259,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTeleports
             }
             KikasaInk.Play(KikasaInk.InkSplash, originPool, 0.7f, -0.2f);
             SoundEngine.PlaySound(SoundID.Splash with {
-                Volume = 0.65f, Pitch = -0.05f, MaxInstances = 3,
+                Volume = 0.65f,
+                Pitch = -0.05f,
+                MaxInstances = 3,
             }, originPool);
         }
 
@@ -322,7 +324,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTeleports
             KikasaInk.Play(KikasaInk.InkSplash, destPool, 0.9f, 0.1f);
             KikasaInk.Play(KikasaInk.InkSpray, destPool, 0.5f, -0.25f);
             SoundEngine.PlaySound(SoundID.Splash with {
-                Volume = 0.85f, Pitch = 0.18f, MaxInstances = 3,
+                Volume = 0.85f,
+                Pitch = 0.18f,
+                MaxInstances = 3,
             }, destPool);
             //冲击拍屏震只震看得见的人
             if (Main.LocalPlayer?.active == true

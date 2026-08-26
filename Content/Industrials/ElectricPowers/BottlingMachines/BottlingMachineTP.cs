@@ -1,12 +1,16 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -82,7 +86,26 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.BottlingMachines
 
         private int jobTimer;
 
+        #region 纯客户端表现状态(灌装动画/完成闪光/状态灯)
+        /// <summary>灌装进度 0..1,条件齐备时按节拍推进,结算事件到达即闪光归零</summary>
+        private float fillT;
+        /// <summary>完成闪光 0..1,指数退潮</summary>
+        private float flashT;
+        /// <summary>本轮是倒空(液面下降)还是装瓶(液面上升)</summary>
+        private bool visualIsDrain;
+        /// <summary>工作可行(镜像结算前置条件),喂状态灯与软管脉动</summary>
+        private bool visualWorking;
+        private bool outputSnapshotInited;
+        private int lastOutputType;
+        private int lastOutputStack;
+        private float animTime;
+        #endregion
+
         public override void UpdateMachine() {
+            if (!Main.dedServ) {
+                UpdateBottlingVisual();
+            }
+
             //作业仅权威端推进,客户端槽位与液量等事件包
             if (VaultUtils.isClient) {
                 return;
@@ -171,6 +194,157 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.BottlingMachines
                 return;
             }
         }
+
+        #region 表现推进(纯客户端,零网络)
+        /// <summary>镜像结算前置条件:电够+有可处理输入+液路成立+输出有位</summary>
+        private bool CanWorkVisual() {
+            if (Disabled || MachineData.UEvalue < JobCostUE || InputItem == null || InputItem.IsAir) {
+                return false;
+            }
+            if (BottlingRecipes.DrainTable.TryGetValue(InputItem.type, out var drain)) {
+                visualIsDrain = true;
+                return CanAcceptFluid(drain.LiquidType)
+                    && FluidCapacity - FluidAmount >= drain.Units
+                    && OutputCanTake(drain.ReturnType);
+            }
+            if (BottlingRecipes.FillTable.TryGetValue(InputItem.type, out var fills)) {
+                visualIsDrain = false;
+                if (FluidAmount <= 0) {
+                    return false;
+                }
+                foreach (var fill in fills) {
+                    if (fill.LiquidType == FluidType && FluidAmount >= fill.Units && OutputCanTake(fill.ResultType)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 灌装动画按节拍本地推进,推到满停格;成品槽变化(结算事件包)才闪光归零——
+        /// 完成瞬间以服务器结算为准,不靠本地计时猜
+        /// </summary>
+        private void UpdateBottlingVisual() {
+            animTime += 1f / 60f;
+            visualWorking = CanWorkVisual();
+
+            if (visualWorking) {
+                fillT = MathHelper.Clamp(fillT + 1f / BeatTicks, 0f, 1f);
+            }
+            else {
+                fillT = MathHelper.Lerp(fillT, 0f, 0.12f);
+            }
+            flashT *= 0.88f;
+
+            //成品槽变化=一次结算完成;首帧只记快照,防入世/放置时的存量误判成完成
+            int outType = OutputItem == null || OutputItem.IsAir ? 0 : OutputItem.type;
+            int outStack = OutputItem == null || OutputItem.IsAir ? 0 : OutputItem.stack;
+            bool completed = outputSnapshotInited && outType != 0
+                && (outType != lastOutputType || outStack > lastOutputStack);
+            outputSnapshotInited = true;
+            lastOutputType = outType;
+            lastOutputStack = outStack;
+            if (!completed) {
+                return;
+            }
+
+            flashT = 1f;
+            fillT = 0f;
+            if (!FluidVFX.NearLocalPlayer(CenterInWorld)) {
+                return;
+            }
+            FluidStyle style = FluidVFX.GetStyle(FluidType);
+            Vector2 bottlePos = new(CenterInWorld.X, PosInWorld.Y + Height - 10f);
+            Defer(() => {
+                for (int i = 0; i < 3; i++) {
+                    PRTLoader.NewParticle<PRT_Sparkle>(bottlePos + Main.rand.NextVector2Circular(6f, 6f),
+                        new Vector2(0f, -Main.rand.NextFloat(0.3f, 0.8f)), style.Bright, Main.rand.NextFloat(0.22f, 0.34f))
+                        ?.Configure(style.Bright * 0.8f, 22, 0.05f, 0.8f);
+                }
+            });
+        }
+        #endregion
+
+        #region 机面覆层:灌装窗(容器剪影+液面升降)+软管脉动+完成闪光+状态灯
+        public override void Draw(SpriteBatch spriteBatch) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+            Vector2 basePos = PosInWorld - Main.screenPosition;
+            Color lit = Lighting.GetColor(Position.ToPoint());
+            FluidStyle style = FluidVFX.GetStyle(FluidType);
+
+            //状态灯:作业=青绿呼吸,有输入但阻塞=琥珀,空闲=熄灭
+            Color lamp;
+            bool hasInput = InputItem != null && !InputItem.IsAir;
+            if (Disabled || (!visualWorking && !hasInput)) {
+                lamp = new Color(30, 26, 24);
+            }
+            else if (visualWorking) {
+                lamp = FluidVFX.Glow(new Color(90, 255, 170), 0.55f + 0.45f * MathF.Sin(animTime * 5f));
+            }
+            else {
+                lamp = FluidVFX.Glow(new Color(255, 170, 50), 0.4f + 0.25f * MathF.Sin(animTime * 2.2f));
+            }
+            spriteBatch.Draw(px, new Rectangle((int)(basePos.X + Width) - 6, (int)basePos.Y + 4, 3, 3), lamp);
+
+            if (!hasInput) {
+                //最后一件输入被消耗的那次完成:借成品贴图把闪光打完
+                if (flashT > 0.03f && lastOutputType > 0) {
+                    Main.instance.LoadItem(lastOutputType);
+                    Texture2D outTex = TextureAssets.Item[lastOutputType].Value;
+                    float outFit = MathF.Min(15f / outTex.Width, 15f / outTex.Height);
+                    Vector2 outPos = new(basePos.X + Width / 2f, basePos.Y + Height - 10f);
+                    spriteBatch.Draw(outTex, outPos, null, FluidVFX.Glow(Color.White, flashT * 0.85f),
+                        0f, outTex.Size() * 0.5f, outFit, SpriteEffects.None, 0f);
+                }
+                return;
+            }
+
+            //容器剪影:输入物品缩进机面下部
+            Main.instance.LoadItem(InputItem.type);
+            Texture2D itemTex = TextureAssets.Item[InputItem.type].Value;
+            float fit = MathF.Min(15f / itemTex.Width, 15f / itemTex.Height);
+            Vector2 bottleCenter = new(basePos.X + Width / 2f, basePos.Y + Height - 10f);
+            Vector2 origin = itemTex.Size() * 0.5f;
+            spriteBatch.Draw(itemTex, bottleCenter, null, new Color(120, 126, 138).MultiplyRGB(lit),
+                0f, origin, fit, SpriteEffects.None, 0f);
+
+            //瓶内液面:装瓶自下而上升,倒空自上而下降
+            float frac = visualIsDrain ? 1f - fillT : fillT;
+            if (frac > 0.02f && (visualWorking || fillT > 0.02f)) {
+                int sliceH = (int)(itemTex.Height * MathHelper.Clamp(frac, 0f, 1f));
+                if (sliceH > 0) {
+                    Rectangle slice = new(0, itemTex.Height - sliceH, itemTex.Width, sliceH);
+                    Vector2 slicePos = bottleCenter + new Vector2(0f, (itemTex.Height * 0.5f - sliceH) * fit);
+                    spriteBatch.Draw(itemTex, slicePos, slice, style.Main * 0.9f,
+                        0f, new Vector2(itemTex.Width * 0.5f, 0f), fit, SpriteEffects.None, 0f);
+                    //液面亮线
+                    spriteBatch.Draw(px, new Rectangle((int)(bottleCenter.X - itemTex.Width * fit * 0.4f),
+                        (int)slicePos.Y, (int)(itemTex.Width * fit * 0.8f), 1),
+                        FluidVFX.Glow(style.Bright, 0.4f));
+                }
+            }
+
+            //软管脉动:作业中两粒液色辉点自机顶滑向瓶口
+            if (visualWorking) {
+                Texture2D glow = CWRAsset.SoftGlow.Value;
+                Vector2 hoseTop = new(basePos.X + Width / 2f, basePos.Y + 4f);
+                Vector2 hoseBottom = bottleCenter - new Vector2(0f, itemTex.Height * fit * 0.5f + 1f);
+                for (int i = 0; i < 2; i++) {
+                    float t = (animTime * 0.9f + i * 0.5f) % 1f;
+                    Vector2 dotPos = Vector2.Lerp(hoseTop, hoseBottom, t);
+                    spriteBatch.Draw(glow, dotPos, null, FluidVFX.Glow(style.Bright, 0.4f * MathF.Sin(t * MathHelper.Pi)),
+                        0f, glow.Size() * 0.5f, 0.07f, SpriteEffects.None, 0f);
+                }
+            }
+
+            //完成闪光:整瓶过曝一拍
+            if (flashT > 0.03f) {
+                spriteBatch.Draw(itemTex, bottleCenter, null, FluidVFX.Glow(Color.White, flashT * 0.85f),
+                    0f, origin, fit, SpriteEffects.None, 0f);
+            }
+        }
+        #endregion
 
         /// <summary>右键交互(交互客户端执行):放入可处理容器/空手取成品/Shift 全取</summary>
         public void RightClickByTile() {

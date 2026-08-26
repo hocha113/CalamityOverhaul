@@ -1,3 +1,4 @@
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -27,6 +28,26 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.LaserTurre
 
         internal float GlowIntensity;
         private int textIdleTime;
+
+        //---- 蓄能预警视觉状态:纯客户端表现,零网络 ----
+        /// <summary>蓄能进度0~1:权威端=真实冷却;客户端=观测弹幕生成重置的伪冷却(误差=包延迟)</summary>
+        internal float VisualCharge { get; private set; }
+        /// <summary>预警是否活跃:蓄能末段且本地索敌有候选,给敌人反应窗</summary>
+        internal bool TelegraphActive { get; private set; }
+        /// <summary>开火闪光包络,光束弹首帧回调点亮</summary>
+        internal float MuzzleFlash;
+        private int clientCoolden;
+        private int telegraphScanTimer;
+        private bool oldTelegraph;
+
+        /// <summary>预警进入蓄能末段的进度阈值</summary>
+        internal const float TelegraphStart = 0.72f;
+
+        /// <summary>光束弹首帧回调(全端):重置伪冷却+点亮炮口闪光</summary>
+        internal void NotifyFired() {
+            clientCoolden = 0;
+            MuzzleFlash = 1f;
+        }
 
         public override void SetBattery() {
             IdleDistance = 4000;//玩家远离后停止运行
@@ -59,6 +80,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.LaserTurre
             }
 
             UpdateGlow();
+
+            //蓄能进度:权威端直读真实冷却
+            bool armed = AttackPattern && MachineData.UEvalue >= EffectiveShotCost;
+            VisualCharge = armed
+                ? MathHelper.Clamp(FireCoolden / (float)EffectiveFireInterval, 0f, 1f)
+                : Math.Max(0f, VisualCharge - 0.06f);
+            UpdateTelegraph(armed);
         }
 
         /// <summary>生成一发光束弹:普通 ModProjectile,权威端生成,owner 取默认(服务器即255)</summary>
@@ -86,6 +114,98 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.LaserTurre
             GlowIntensity = MathHelper.Lerp(GlowIntensity, lit ? 0.8f : 0f, 0.05f);
             if (GlowIntensity < 0.015f) {
                 GlowIntensity = 0f;
+            }
+
+            //伪冷却:自上次观测到出膛起计帧,包延迟带来的数帧误差可接受
+            if (lit) {
+                if (clientCoolden < EffectiveFireInterval) {
+                    clientCoolden++;
+                }
+                VisualCharge = MathHelper.Clamp(clientCoolden / (float)EffectiveFireInterval, 0f, 1f);
+            }
+            else {
+                VisualCharge = Math.Max(0f, VisualCharge - 0.06f);
+            }
+            UpdateTelegraph(lit);
+        }
+
+        /// <summary>
+        /// 预警活跃判定:蓄能末段每10帧扫一次本地索敌(NPC全端同步,客户端可自查),
+        /// 有候选才亮收束线;预警起始边沿给一声低音蓄能提示音。
+        /// 两端共用,炮口闪光包络也在此消退
+        /// </summary>
+        private void UpdateTelegraph(bool armed) {
+            if (MuzzleFlash > 0f) {
+                MuzzleFlash = Math.Max(0f, MuzzleFlash - 0.08f);
+            }
+
+            if (armed && VisualCharge >= TelegraphStart) {
+                if (--telegraphScanTimer <= 0) {
+                    telegraphScanTimer = 10;
+                    TelegraphActive = AcquireTarget() != null;
+                }
+            }
+            else {
+                TelegraphActive = false;
+                telegraphScanTimer = 0;
+            }
+
+            //预警起始边沿:低音蓄能提示(仅游戏端)
+            if (TelegraphActive && !oldTelegraph && !VaultUtils.isServer) {
+                Defer(() => SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.32f, Pitch = -0.35f }, MuzzlePosition));
+            }
+            oldTelegraph = TelegraphActive;
+        }
+
+        /// <summary>蓄能预警绘制:收束线+核点增亮,开火拍过曝闪;画在充能条同层</summary>
+        public override void FrontDraw(SpriteBatch spriteBatch) {
+            DrawChargeBar();
+
+            float charge = VisualCharge;
+            float flash = MuzzleFlash;
+            bool telegraphOn = TelegraphActive && charge >= TelegraphStart;
+            if (!telegraphOn && flash < 0.02f) {
+                return;
+            }
+
+            var star = CWRAsset.StarTexture?.Value;
+            var glowTex = CWRAsset.SoftGlow?.Value;
+            if (star == null || glowTex == null) {
+                return;
+            }
+            Vector2 muzzle = MuzzlePosition - Main.screenPosition;
+            Color red = LaserTurretBolt.LaserRed;
+            red.A = 0;
+            Color white = Color.White;
+            white.A = 0;
+
+            if (telegraphOn) {
+                //预警窗内进度:收束线自外滑向炮口,越近越亮
+                float t = (charge - TelegraphStart) / (1f - TelegraphStart);
+                float baseAng = Main.GlobalTimeWrappedHourly * 1.2f + Position.X * 0.7f;
+                float dist = MathHelper.Lerp(27f, 7f, t);
+                for (int i = 0; i < 5; i++) {
+                    float ang = baseAng + MathHelper.TwoPi * i / 5f;
+                    Vector2 dir = ang.ToRotationVector2();
+                    Vector2 pos = muzzle + dir * dist;
+                    //细梭沿半径指向炮口
+                    spriteBatch.Draw(star, pos, null, red * (0.35f + 0.5f * t), ang + MathHelper.PiOver2,
+                        star.Size() * 0.5f, new Vector2(0.016f, 0.05f + 0.035f * t), SpriteEffects.None, 0f);
+                }
+                //核点增亮:红核+末段白心
+                spriteBatch.Draw(glowTex, muzzle, null, red * (0.30f + 0.55f * t), 0f,
+                    glowTex.Size() * 0.5f, 0.36f + 0.24f * t, SpriteEffects.None, 0f);
+                spriteBatch.Draw(glowTex, muzzle, null, white * (0.30f * t * t), 0f,
+                    glowTex.Size() * 0.5f, 0.16f + 0.12f * t, SpriteEffects.None, 0f);
+            }
+
+            if (flash > 0.02f) {
+                //开火拍:炮口过曝闪快速退潮
+                float grow = 0.8f + 0.4f * (1f - flash);
+                spriteBatch.Draw(glowTex, muzzle, null, white * (0.55f * flash), 0f,
+                    glowTex.Size() * 0.5f, 0.5f + 0.3f * (1f - flash), SpriteEffects.None, 0f);
+                spriteBatch.Draw(star, muzzle, null, red * (0.75f * flash), 0f,
+                    star.Size() * 0.5f, new Vector2(0.11f, 0.05f) * grow, SpriteEffects.None, 0f);
             }
         }
 
