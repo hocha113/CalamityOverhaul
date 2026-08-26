@@ -142,3 +142,8 @@ IndustrialRegenBuff: {
 	// DisplayName: Healing Aura
 	// Description: A healing station is restoring your health
 }
+
+AbyssalPressure: {
+	// DisplayName: Abyssal Pressure
+	// Description: Wrapped in crushing deep-sea pressure, movement is severely impeded
+}

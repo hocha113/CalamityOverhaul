@@ -38,6 +38,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core
         PalmSnatch = 14,
         /// <summary>旋骨罗盘（二阶段签名：旋骨轮钳杀）</summary>
         BoneWheel = 15,
+        /// <summary>嘲讽鼓掌（一阶段人格拍：三连击掌迸骨屑环）</summary>
+        Applause = 16,
     }
 
     /// <summary>头部状态接口</summary>

@@ -195,13 +195,14 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                     majorStretch = 1f;
                     break;
                 default:
-                    //沿椭圆反斩终结，顺时针，倾斜面翻转；压扁更狠+主轴拉长=更椭圆，节奏更快
+                    //沿椭圆反斩终结，顺时针，倾斜面翻转；压扁更狠+主轴拉长=更椭圆
+                    //斩击相多给两帧、收势扣回，总时长不变但环扫过程读得出来
                     raiseDur = D(8);
                     holdDur = D(3);
-                    slashDur = D(7);
-                    recoverDur = D(10);
+                    slashDur = D(9);
+                    recoverDur = D(8);
                     reachScale = 1.38f;
-                    slashEasePow = 3.6f;
+                    slashEasePow = 2.8f;
                     fanSegments = 64;
                     swingDir = 1f;
                     tiltSign = -1f;
@@ -394,7 +395,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
             //刀尖钉在椭圆带上，刀长随投影距离呼吸，轴向缩短=最强纵深线索
             bladeScaleMul = MathHelper.Clamp(mainReach / BaseReach, 0.55f, 2.2f);
-            bladeDim = MathHelper.Lerp(0.62f, 1f, MathHelper.Clamp((k - 0.84f) / 0.34f, 0f, 1f));
+            //远半只轻压，保住刀刃发光的可读性
+            bladeDim = MathHelper.Lerp(0.74f, 1f, MathHelper.Clamp((k - 0.84f) / 0.34f, 0f, 1f));
 
             //起手把刀长收短一些，读作提刀
             if (phase == PhaseRaise) {
@@ -456,6 +458,12 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                         Owner.Center, punchDir, strength, 8f, frames, 1100f, FullName));
                 }
+
+                //充能期每次出刀在手上炸开一圈金环
+                if (Empowered && !VaultUtils.isServer) {
+                    PRTLoader.NewParticle<PRT_StarPulseRing>(Owner.Center, Vector2.Zero,
+                        DivineSourceBladeFX.AuricGold, 0f).Configure(0.05f, IsEllipse ? 0.7f : 0.45f, 14);
+                }
             }
 
             //光矢在斩击中段离手，沿出手瞄准方向扇形散开；高攻速下收势兜底防漏发
@@ -482,7 +490,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 return;
             }
             int count = BoltCount;
-            float spread = 0.2f + (count * 0.055f);
+            //散射收窄，弹群更聚拢
+            float spread = 0.1f + (count * 0.03f);
             Vector2 origin = Vector2.Lerp(Hand, mainTip, 0.55f);
             for (int i = 0; i < count; i++) {
                 float t = count == 1 ? 0.5f : i / (float)(count - 1);
@@ -509,7 +518,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 return;
             }
             Projectile.NewProjectile(Owner.GetSource_ItemUse(Item),
-                Hand + (dir * 46f), dir * 21f,
+                Hand + (dir * 46f), dir * 33f,
                 ModContent.ProjectileType<DivineSourceWaveProjectile>(),
                 (int)(Projectile.damage * 1.9f), Projectile.knockBack * 1.5f, Owner.whoAmI,
                 ai0: 1.4f, ai1: swingDir, ai2: Empowered ? 1f : 0f);
@@ -570,6 +579,18 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                             Empowered && Main.rand.NextBool(3) ? DivineSourceBladeFX.AuricGold : cyan,
                             Main.rand.NextFloat(0.06f, 0.12f))
                             .Configure(azure, Main.rand.Next(14, 22));
+                    }
+                    //充能期刃口再铺一层金色: 微型脉冲环沿刃线炸开+金三角随刃甩出
+                    if (Empowered) {
+                        if (Main.rand.NextBool(3)) {
+                            PRTLoader.NewParticle<PRT_StarPulseRing>(
+                                Vector2.Lerp(hand, mainTip, Main.rand.NextFloat(0.75f, 1.02f)), Vector2.Zero,
+                                DivineSourceBladeFX.AuricGold, 0f).Configure(0.02f, 0.2f, 10);
+                        }
+                        PRTLoader.NewParticle<PRT_DivineTechTriangle>(mainTip,
+                            sweepVel * Main.rand.NextFloat(5f, 10f),
+                            DivineSourceBladeFX.AuricGold, Main.rand.NextFloat(0.07f, 0.12f))
+                            .Configure(DivineSourceBladeFX.AuricAmber, Main.rand.Next(16, 24));
                     }
                     break;
                 }
@@ -845,16 +866,25 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
         private void ComputeBladeDrawXform(Texture2D tex, float angle,
             out Vector2 origin, out float bladeRot, out SpriteEffects flip) {
-            bool facingLeft = Owner.direction == -1;
-            flip = facingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            origin = facingLeft
-                ? new Vector2(tex.Width - GripPixel.X, GripPixel.Y)
-                : GripPixel;
+            bool facingLeft = facingDir == -1;
+            //刃口必须领先扫掠方向，逆势拍绕刀轴翻面(手腕翻转)，否则读作拿刀背砍人
+            //贴图刃口朝右时领先顺时针扫，故 swingDir 与朝向异号时翻
+            bool edgeFlip = swingDir * facingDir < 0f;
 
+            flip = SpriteEffects.None;
+            Vector2 grip = GripPixel;
             Vector2 tipVec = TipPixel - GripPixel;
             if (facingLeft) {
+                flip |= SpriteEffects.FlipHorizontally;
+                grip.X = tex.Width - GripPixel.X;
                 tipVec.X *= -1f;
             }
+            if (edgeFlip) {
+                flip |= SpriteEffects.FlipVertically;
+                grip.Y = tex.Height - GripPixel.Y;
+                tipVec.Y *= -1f;
+            }
+            origin = grip;
             bladeRot = angle - tipVec.ToRotation();
         }
 
@@ -872,7 +902,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             float glowStrength = phase switch {
                 PhaseRaise => IsEllipse ? 0.35f + (0.6f * (Timer / (float)raiseDur)) : 0.55f,
                 PhaseHold => IsEllipse ? 1f + (0.1f * MathF.Sin(Timer * 0.6f)) : 0.7f,
-                PhaseSlash => IsEllipse ? 1.15f : 0.95f,
+                PhaseSlash => IsEllipse ? 1.4f : 0.95f,
                 _ => MathHelper.Lerp(0.25f, 0.9f, fanFade),
             };
             glowStrength += goldMix * 0.25f;
@@ -901,6 +931,9 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 Texture2D noise = DivineSourceBladeFX.Noise;
                 if (noise != null) {
                     effect.Parameters["NoiseTexture"]?.SetValue(noise);
+                    //BladeGlow 的噪声采样器落在 s1，显式绑定防止 TechArc 批留下的 PerlinNoise 串台
+                    Main.instance.GraphicsDevice.Textures[1] = noise;
+                    Main.instance.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
                 }
 
                 sb.End();
@@ -922,18 +955,84 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                     sb.Draw(tex, handPos - Main.screenPosition, null, silhouette, r, o, scale, f, 0f);
                 }
             }
+
+            //发光镀层画在常规批(A=0 加色)，BladeGlow 批里 A=0 会被预乘成零
+            DrawGlowOverlays(sb, tex, handPos, scale, phase, glowStrength);
+        }
+
+        /// <summary>椭圆拍能量镀层保底发光，充能期金色镀层+刃尖星芒</summary>
+        private void DrawGlowOverlays(SpriteBatch sb, Texture2D tex, Vector2 handPos, float scale,
+            int phase, float glowStrength) {
+
+            ComputeBladeDrawXform(tex, mainAngle, out Vector2 origin, out float rot, out SpriteEffects flip);
+            Vector2 drawPos = handPos - Main.screenPosition;
+            float phaseMul = phase == PhaseRecover ? fanFade : 1f;
+
+            if (IsEllipse) {
+                Color sheath = DivineSourceBladeFX.Blend(
+                    DivineSourceBladeFX.CyanBright, DivineSourceBladeFX.AuricGold, GoldMix)
+                    * (0.34f * glowStrength * phaseMul);
+                sheath.A = 0;
+                sb.Draw(tex, drawPos, null, sheath, rot, origin, scale * 1.03f, flip, 0f);
+                Color outerSheath = DivineSourceBladeFX.Blend(
+                    DivineSourceBladeFX.AzureBlue, DivineSourceBladeFX.AuricAmber, GoldMix)
+                    * (0.16f * glowStrength * phaseMul);
+                outerSheath.A = 0;
+                sb.Draw(tex, drawPos, null, outerSheath, rot, origin, scale * 1.08f, flip, 0f);
+            }
+
+            if (!Empowered) {
+                return;
+            }
+
+            //充能期金色能量镀层
+            Color gold = DivineSourceBladeFX.AuricGold * (0.3f * phaseMul);
+            gold.A = 0;
+            sb.Draw(tex, drawPos, null, gold, rot, origin, scale * 1.05f, flip, 0f);
+
+            //刃尖双层反向旋转星芒
+            Texture2D star = DivineSourceBladeFX.BlankStar;
+            if (star != null) {
+                float time = (float)Main.timeForVisualEffects * 0.05f;
+                float pulse = 0.8f + 0.2f * MathF.Sin(time * 3.1f);
+                Vector2 tipPos = mainTip - Main.screenPosition;
+                Color starGold = DivineSourceBladeFX.AuricGold * (0.55f * pulse * phaseMul);
+                starGold.A = 0;
+                Color starCream = DivineSourceBladeFX.AuricCream * (0.4f * pulse * phaseMul);
+                starCream.A = 0;
+                sb.Draw(star, tipPos, null, starGold, time * 1.6f,
+                    star.Size() * 0.5f, 0.16f * pulse, SpriteEffects.None, 0f);
+                sb.Draw(star, tipPos, null, starCream, -time * 1.1f + MathHelper.PiOver4,
+                    star.Size() * 0.5f, 0.1f * pulse, SpriteEffects.None, 0f);
+            }
         }
 
         private void DrawBladeInstances(SpriteBatch sb, Texture2D tex, int phase,
             Vector2 handPos, Color bladeCol, float scale) {
 
-            if (phase == PhaseSlash && slashProgress > 0.1f) {
-                int ghostCount = IsEllipse ? 3 : 2;
-                float ghostSpacing = IsEllipse ? 0.26f : 0.19f;
-                for (int g = ghostCount; g >= 1; g--) {
-                    float ghostAngle = mainAngle - (swingDir * ghostSpacing * g);
+            if (phase == PhaseSlash && slashProgress > 0.02f && IsEllipse) {
+                //椭圆拍单帧扫过量很大，残影沿本帧真实路径回溯插值，位置/角度/刀长逐影重算
+                //高速环扫的运动过程全靠这一排路径拖影承载
+                float gap = loopPhiNow - loopPhiPrev;
+                int steps = Math.Clamp((int)(MathF.Abs(gap) / 0.16f), 2, 7);
+                for (int g = steps; g >= 1; g--) {
+                    float f = g / (float)(steps + 1);
+                    float phi = loopPhiNow - (gap * f);
+                    Vector2 tip = EllipsePoint(phi, out _, out _);
+                    Vector2 toTip = tip - handPos;
+                    float gAngle = toTip.ToRotation();
+                    float gScale = HeldScale * MathHelper.Clamp(toTip.Length() / BaseReach, 0.55f, 2.2f);
+                    ComputeBladeDrawXform(tex, gAngle, out Vector2 gOrigin, out float gRot, out SpriteEffects gFlip);
+                    float ghostAlpha = (1f - f) * 0.42f;
+                    sb.Draw(tex, handPos - Main.screenPosition, null, bladeCol * ghostAlpha,
+                        gRot, gOrigin, gScale, gFlip, 0f);
+                }
+            }
+            else if (phase == PhaseSlash && slashProgress > 0.1f) {
+                for (int g = 2; g >= 1; g--) {
+                    float ghostAngle = mainAngle - (swingDir * 0.19f * g);
                     ComputeBladeDrawXform(tex, ghostAngle, out Vector2 gOrigin, out float gRot, out SpriteEffects gFlip);
-                    float ghostAlpha = g switch { 1 => 0.4f, 2 => 0.18f, _ => 0.08f };
+                    float ghostAlpha = g == 1 ? 0.4f : 0.18f;
                     sb.Draw(tex, handPos - Main.screenPosition, null, bladeCol * ghostAlpha,
                         gRot, gOrigin, scale, gFlip, 0f);
                 }

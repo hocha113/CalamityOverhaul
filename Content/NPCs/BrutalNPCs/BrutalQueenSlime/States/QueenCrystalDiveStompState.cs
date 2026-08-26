@@ -15,10 +15,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
         public override string StateName => "CrystalDiveStomp";
         public override QueenSlimeStateIndex StateIndex => QueenSlimeStateIndex.CrystalDiveStomp;
 
-        private const int RiseTime = 42;
-        private const int PoiseTime = 16;
+        private const int RiseTime = 38;
+        private const int PoiseTime = 13;
         private const int MaxDiveTime = 90;
-        private const int RecoverTime = 30;
+        private const int RecoverTime = 24;
 
         /// <summary>0上提 1顶点定身 2俯冲 3落地收势</summary>
         private int stage;
@@ -161,8 +161,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
             for (int i = 0; i < 5; i++) {
                 Vector2 vel = new Vector2(Main.rand.NextFloat(-2.6f, 2.6f), -Main.rand.NextFloat(9f, 13f));
                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Top, vel,
-                    ModContent.ProjectileType<QueenShardProj>(), QueenShardProj.PearlDamage, 0f, Main.myPlayer,
-                    (int)QueenShardProj.Mode.Pearl, 0f, i * 0.2f);
+                    ModContent.ProjectileType<QueenGelPearlProj>(), QueenGelPearlProj.PearlDamage, 0f, Main.myPlayer,
+                    0f, 0f, i * 0.2f);
             }
         }
 

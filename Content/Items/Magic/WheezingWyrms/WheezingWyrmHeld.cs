@@ -26,10 +26,15 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
         private static Asset<Texture2D> FlameTex = null;
 
         //——贴图锚点(1x像素，手持图已镜像成龙嘴朝右)——
-        private const float HeldScale = 1.15f;
+        private const float HeldScale = 1.25f;
+        /// <summary>持杖前倾：把"握点→龙嘴"轴烘焙到瞄准线上，龙首永远探在最前端(朝左时反号)</summary>
+        private const float LeanRad = MathHelper.PiOver4;
         private static readonly Vector2 GripPx = new(27, 33);   //握点，绘制原点
         private static readonly Vector2 MouthPx = new(41, 12);  //龙嘴出焰口
         private static readonly Vector2 EyePx = new(21, 9);     //龙眼
+
+        /// <summary>贴图像素锚点→(枪口前向,法向)偏移，绘制与 GetMuzzlePos 共用同一变换</summary>
+        private static Vector2 AnchorOffset(Vector2 px) => ((px - GripPx) * HeldScale).RotatedBy(LeanRad);
 
         //——节奏参数——
         /// <summary>咳嗽起动总帧数</summary>
@@ -68,12 +73,13 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
 
         public override void SetGunProperty() {
             Projectile.DamageType = DamageClass.Magic;
-            HandIdleDistanceX = 10;
+            HandIdleDistanceX = 12;
             HandIdleDistanceY = 0;
-            HandFireDistanceX = 6;
+            HandFireDistanceX = 14;
             HandFireDistanceY = -2;
-            MuzzleForwardOffset = (MouthPx.X - GripPx.X) * HeldScale;
-            MuzzleNormalOffset = (MouthPx.Y - GripPx.Y) * HeldScale;
+            Vector2 mouth = AnchorOffset(MouthPx);
+            MuzzleForwardOffset = mouth.X;
+            MuzzleNormalOffset = mouth.Y;
             GunPressure = 0.09f;            //咳嗽顿挫的上抬上限
             ControlForce = 0.015f;
             RecoilOffsetRecoverValue = 0.72f;
@@ -274,7 +280,7 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Vector2 vel = UnitToMouseV.RotatedByRandom(0.11f)
                     * (AmmoState.ShootSpeed * (0.5f + 0.5f * jet) * (0.86f + 0.26f * heat))
-                    + Owner.velocity * 0.3f;
+                    + Owner.velocity * 0.45f;
                 int damage = (int)(WeaponDamage * (0.85f + 0.75f * heat));
                 Projectile.NewProjectile(Source, ShootPos, vel, ModContent.ProjectileType<WyrmFlame>()
                     , damage, WeaponKnockback, Owner.whoAmI, heat, Main.rand.NextFloat(9f));
@@ -374,7 +380,8 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
             Texture2D tex = TextureValue;
             bool facingRight = DirSign > 0;
             Vector2 origin = facingRight ? GripPx : new Vector2(GripPx.X, tex.Height - GripPx.Y);
-            Main.EntitySpriteDraw(tex, drawPos, null, lightColor, Projectile.rotation
+            float lean = facingRight ? LeanRad : -LeanRad;
+            Main.EntitySpriteDraw(tex, drawPos, null, lightColor, Projectile.rotation + lean
                 , origin, HeldScale * Projectile.scale
                 , facingRight ? SpriteEffects.None : SpriteEffects.FlipVertically);
 
@@ -399,7 +406,8 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
             }
 
             //龙眼随温度亮起
-            Vector2 eyeWorld = GetMuzzlePos((EyePx.X - GripPx.X) * HeldScale, (EyePx.Y - GripPx.Y) * HeldScale);
+            Vector2 eyeAnchor = AnchorOffset(EyePx);
+            Vector2 eyeWorld = GetMuzzlePos(eyeAnchor.X, eyeAnchor.Y);
             Main.EntitySpriteDraw(glow, drawPos + (eyeWorld - Projectile.Center), null, glowCol * (alpha * 0.85f), 0f
                 , glow.Size() * 0.5f, 0.13f + heat * 0.07f, SpriteEffects.None, 0);
 

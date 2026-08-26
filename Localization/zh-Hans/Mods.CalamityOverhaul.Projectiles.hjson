@@ -468,7 +468,6 @@ FishronGeyserProj.DisplayName: 潮涌水柱
 FishronSharkTornadoProj.DisplayName: 鲨鱼龙卷
 FishronSkyBoltProj.DisplayName: 风暴天雷
 FishronTelegraph.DisplayName: 风暴预警线
-FishronTideTrailProj.DisplayName: 潮汐余痕
 FishronTsunamiWallProj.DisplayName: 海啸浪墙
 EowAcidGlob.DisplayName: 腐蚀酸唾
 EowAcidPool.DisplayName: 腐蚀酸池
@@ -503,9 +502,10 @@ BKSNinjaProj.DisplayName: 忍者影身
 BKSRoyalPillarProj.DisplayName: 皇权光柱
 BKSShockwaveProj.DisplayName: 凝胶冲击环
 BKSTideWaveProj.DisplayName: 凝胶潮浪
-CultistSigilProj.DisplayName: 仪式法印
+MLordAnnihilationRayProj.DisplayName: 月明湮灭
 MLordArcRayProj.DisplayName: 幻影弧光死光
 MLordBlackHoleProj.DisplayName: 黑闪奇点
+MLordBoltProj.DisplayName: 幻影波矢
 MLordCometProj.DisplayName: 星陨彗星
 MLordConstellationProj.DisplayName: 星图预兆
 MLordEyeLinkProj.DisplayName: 真眼链式死光
@@ -526,11 +526,12 @@ HoneyPuddleZone.DisplayName: 黏滞蜜洼
 QueenBeeTelegraphLine.DisplayName: 琥珀预警线
 WaxHiveTurret.DisplayName: 蜡巢炮台
 QueenChandelierProj.DisplayName: 水晶吊灯
+QueenCrystalSpikeProj.DisplayName: 水晶尖刺
 QueenCrystalSpireProj.DisplayName: 水晶尖塔
 QueenGaleFieldProj.DisplayName: 翼压风道
-QueenGelMeteorProj.DisplayName: 凝胶陨星
+QueenGelPearlProj.DisplayName: 凝胶珍珠
 QueenPrismBeamProj.DisplayName: 折射光束
-QueenShardProj.DisplayName: 棱彩碎晶
+QueenSpikeOmenProj.DisplayName: 尖刺预兆
 SkeletronBoneShard.DisplayName: 骸骨碎片
 SkeletronBoneSpike.DisplayName: 骨脊尖刺
 SkeletronCursedSkull.DisplayName: 诅咒之颅
@@ -611,11 +612,14 @@ KikasaYoyoServant.DisplayName: 械奴·湖水球手
 KikasaYoyoProj.DisplayName: 湖水悠悠球
 KikasaFlailServant.DisplayName: 械奴·湖水链锤
 KikasaFlailHead.DisplayName: 湖水锤头
-CultistArcBolt.DisplayName: 雷律弧闪
-CultistFlameBolt.DisplayName: 焚焰弹
-CultistFrostSpear.DisplayName: 霜晶枪
-CultistPaleBolt.DisplayName: 苍白幻弹
-CultistTrueBolt.DisplayName: 真言弹
+CultistStarBead.DisplayName: 星珠
+CultistZodiacRing.DisplayName: 黄道环
+CultistOrreryRingProj.DisplayName: 离体仪环
+CultistOrbitPath.DisplayName: 星轨连珠
+CultistUmbraShade.DisplayName: 蚀影
+CultistCoronaLance.DisplayName: 冕矛
+CultistStarChart.DisplayName: 星图审判
+CultistGazeBeam.DisplayName: 月瞳凝视
 // SkeletronBoneWheel.DisplayName: Skeletron Bone Wheel
 // FuFeiMistCloud.DisplayName: Fu Fei Mist Cloud
 // FuHangMiasmaColumn.DisplayName: Fu Hang Miasma Column
@@ -642,13 +646,10 @@ CultistTrueBolt.DisplayName: 真言弹
 WyrmFlame.DisplayName: 龙焰
 WyrmstrikeRound.DisplayName: 龙击弹
 WyrmSneezeFume.DisplayName: 龙嚏烟云
+WyrmBreathBolt.DisplayName: 龙息弹
 AbyssrendUndercurrent.DisplayName: 海洋暗流
 AbyssrendBurst.DisplayName: 高压空化
 EverdeepHeld.DisplayName: 永渊
 EverdeepRing.DisplayName: 渊环水流
 EverdeepMaelstrom.DisplayName: 渊涡水龙卷
-// CultistArenaProj.DisplayName: Cultist Arena Proj
-// CultistBurnPatch.DisplayName: Cultist Burn Patch
-// CultistMoonBeam.DisplayName: Cultist Moon Beam
-// CultistPlanetProj.DisplayName: Cultist Planet Proj
-// CultistStarFall.DisplayName: Cultist Star Fall
+CultistPlanetProj.DisplayName: 巨型天体

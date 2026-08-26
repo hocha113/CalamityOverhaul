@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projectiles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -6,8 +7,8 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
-    /// 死亡演出：仪式反噬，法阵碎裂声起，符文从身上剥落回天，帷幕褪色，最后一声与本体一同散场<br/>
-    /// 演出毕由权威端补刀走 vanilla 死亡（掉落与进度旗照常）
+    /// 死亡演出:主星裂解内爆(全场唯一的大震拍)→浑天仪三环逆序崩碎(节奏渐急)→帷幕褪色终散<br/>
+    /// 演出毕由权威端补刀走 vanilla 死亡(掉落与进度旗照常)
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.Death, typeof(CultistStateContext))]
     internal class CultistDeathState : CultistStateBase
@@ -15,7 +16,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         public override string StateName => "CultistDeath";
         public override CultistStateIndex StateIndex => CultistStateIndex.Death;
 
-        private const int Duration = 150;
+        private const int Duration = 300;
+        /// <summary>三环崩碎拍(渐急)</summary>
+        private static readonly int[] BreakBeats = [168, 208, 238];
 
         public override void OnEnter(CultistStateContext context) {
             base.OnEnter(context);
@@ -29,28 +32,40 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             Timer++;
 
             float t = Timer / (float)Duration;
-            SetPose(npc, Timer < 100 ? 13 : 0);
-            npc.velocity = new Vector2(0f, -0.3f + t * 0.8f);
+            SetPose(npc, Timer < 200 ? 13 : 0);
+            npc.velocity = new Vector2(0f, -0.3f + t * 0.9f);
 
             Color core = CultistMotion.PhaseCore(context.Phase);
             CultistScreenFX.SetVeil(0.85f * (1f - t * 0.5f), npc.Center, core, 540f);
             CultistScreenFX.BreakDesat = MathHelper.Clamp(t * 1.3f, 0f, 0.85f);
+            context.StaggerWobble = MathHelper.Max(context.StaggerWobble, 0.5f * t);
 
-            //清场：他召的东西随他而散,星球退场,他画的墙塌了（权威端）
+            //清场+主星裂解:他召的一切随他而散(权威端)
             if (Timer == 10 && !VaultUtils.isClient) {
-                CultistBossAI.ClearMinionsAndProjectiles(npc);
-                Projectiles.CultistPlanetProj.BeginDeparture(npc.whoAmI);
-                Projectiles.CultistArenaProj.BeginCollapse(npc.whoAmI);
+                CultistBossAI.ClearHostileKit(npc);
+                CultistPlanetProj.CommandExplode(npc.whoAmI);
+                CultistZodiacRing.BeginCollapse(npc.whoAmI);
             }
 
-            //法阵碎裂顿点
-            if (Timer == 42) {
-                context.SigilCommit = 1f;
-                CultistMotion.Shake(npc.Center, 6f, 14);
-                CultistScreenFX.PushFlash(0.4f);
+            //主星内核引爆的大震拍(裂解序列 ~100 帧后落拍,全场唯一一次拉满)
+            if (Timer == 118) {
+                CultistMotion.Shake(npc.Center, 15f, 24);
+                CultistScreenFX.PushFlash(0.75f);
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Shatter with { Volume = 1f, Pitch = -0.3f }, npc.Center);
-                    SoundEngine.PlaySound(SoundID.Zombie105 with { Volume = 0.9f, Pitch = -0.7f }, npc.Center);
+                    SoundEngine.PlaySound(SoundID.Zombie105 with { Volume = 1.2f, Pitch = -0.8f }, npc.Center);
+                }
+            }
+
+            //三环逆序崩碎:法器随主人死去
+            for (int i = 0; i < BreakBeats.Length; i++) {
+                if (Timer == BreakBeats[i]) {
+                    context.OrreryReveal = 2f - i;
+                    CultistMotion.RuneBurst(npc.Center, CultistMotion.RuneGold, 14 + i * 5, 8f);
+                    CultistMotion.Shake(npc.Center, 5f + i * 1.5f, 12);
+                    CultistScreenFX.PushFlash(0.25f + i * 0.1f);
+                    if (!VaultUtils.isServer) {
+                        SoundEngine.PlaySound(SoundID.Shatter with { Volume = 0.9f, Pitch = -0.4f + i * 0.25f }, npc.Center);
+                    }
                 }
             }
 
@@ -72,7 +87,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 return null;
             }
             if (Timer >= Duration && !context.DeathPerformanceFinished) {
-                //放行 CheckDead 并补刀：走 vanilla 死亡结算（掉落与进度旗照常）
+                //放行 CheckDead 并补刀:走 vanilla 死亡结算(掉落与进度旗照常)
                 context.DeathPerformanceFinished = true;
                 npc.dontTakeDamage = false;
                 npc.life = 0;

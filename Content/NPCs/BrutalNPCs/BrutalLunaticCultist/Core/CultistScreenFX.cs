@@ -20,6 +20,8 @@
         public static float Flash { get; private set; }
         /// <summary>死亡去饱和 0~1</summary>
         public static float BreakDesat { get; set; }
+        /// <summary>风暴涌激 0~1(星旋出场拉满),喂给分相天幕,缓衰减</summary>
+        public static float StormSurge { get; set; }
 
         public static bool HasAny => VeilIntensity > 0.012f || Flash > 0.012f || BreakDesat > 0.012f;
 
@@ -45,6 +47,10 @@
             VeilIntensity = MathHelper.Lerp(VeilIntensity, veilGoal, 0.08f);
             veilGoal *= 0.93f;
             Flash *= 0.86f;
+            StormSurge *= 0.988f;
+            if (StormSurge < 0.004f) {
+                StormSurge = 0f;
+            }
             BreakDesat *= 0.975f;
             if (BreakDesat < 0.004f) {
                 BreakDesat = 0f;
@@ -63,6 +69,7 @@
             veilGoal = 0f;
             Flash = 0f;
             BreakDesat = 0f;
+            StormSurge = 0f;
         }
     }
 }

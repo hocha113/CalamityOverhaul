@@ -70,11 +70,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
                 PlayImpactFeedback(npc);
             }
 
-            //脱战跟随退场
+            //脱战跟随退场：掌竖起挥手告别，渐隐上飘
             SkeletronStateIndex headState = SkeletronHeadAI.GetStateIndex(head);
             if (headState == SkeletronStateIndex.Despawn) {
                 npc.velocity *= 0.94f;
                 npc.velocity -= Vector2.UnitY * 0.12f;
+                float wave = (Main.GameUpdateCount + npc.whoAmI * 53) * 0.14f;
+                npc.rotation = npc.rotation.AngleLerp((float)Math.Sin(wave) * 0.55f, 0.16f);
                 npc.alpha = Math.Min(npc.alpha + 4, 255);
                 if (npc.timeLeft > 10) {
                     npc.timeLeft = 10;
@@ -114,6 +116,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
             //张紧度自然回落，状态内主动抬升
             handContext.ChainTension = MathHelper.Clamp(handContext.ChainTension - 0.02f, 0f, 1f);
             handContext.PalmFlame = MathHelper.Clamp(handContext.PalmFlame - 0.03f, 0f, 1f);
+
+            //轴向挤压阻尼弹簧（渲染层弹性，各端本地推演）
+            handContext.SquashVel -= handContext.SquashOff * 0.22f;
+            handContext.SquashVel *= 0.82f;
+            handContext.SquashOff = MathHelper.Clamp(handContext.SquashOff + handContext.SquashVel, -0.45f, 0.45f);
 
             return false;
         }
@@ -162,8 +169,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
             npc.netUpdate = true;
         }
 
-        /// <summary>落掌冲击反馈：钝响+骨屑+幽火+震屏（各端本地，服务端静默）</summary>
+        /// <summary>落掌冲击反馈：钝响+骨屑+幽火+震屏+掌骨挤压回弹（各端本地，服务端静默）</summary>
         internal static void PlayImpactFeedback(NPC hand) {
+            //挤压回弹在服务端也推演（画面无关但保持上下文一致性开销可忽略）
+            if (hand.TryGetOverride(out SkeletronHandAI handOverride)) {
+                handOverride?.handContext?.TriggerSquash(0.5f);
+            }
             if (VaultUtils.isServer) {
                 return;
             }
@@ -241,8 +252,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
                 }
             }
 
-            //本体
-            spriteBatch.Draw(tex, drawPos, rect, drawColor * alphaFade, npc.rotation, orig, npc.scale, fx, 0f);
+            //本体（轴向挤压回弹：Y=指轴压扁，X=横向补偿鼓起）
+            float squash = handContext?.SquashOff ?? 0f;
+            Vector2 bodyScale = new Vector2(npc.scale * (1f + squash * 0.55f), npc.scale * (1f - squash * 0.8f));
+            spriteBatch.Draw(tex, drawPos, rect, drawColor * alphaFade, npc.rotation, orig, bodyScale, fx, 0f);
 
             //掌心幽火（蓄力/预警读数，冷焰顶点批：焰轴沿掌口法线）
             float palm = handContext?.PalmFlame ?? 0f;

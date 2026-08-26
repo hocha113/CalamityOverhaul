@@ -366,7 +366,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                     Vector2 aim = (targetPlayer.Center - eye.Center).SafeNormalize(Vector2.UnitY);
                     for (int j = -1; j <= 1; j += 2) {
                         Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center + aim * 30f,
-                            aim.RotatedBy(j * 0.12f) * 7.4f, ProjectileID.PhantasmalBolt,
+                            aim.RotatedBy(j * 0.12f) * 7.4f, ModContent.ProjectileType<MLordBoltProj>(),
                             MLordDirector.BoltDamage, 0f, Main.myPlayer);
                     }
                 }
@@ -381,7 +381,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             if (!VaultUtils.isClient && (strikePhase == 52 || strikePhase == 72 || strikePhase == 92)) {
                 Vector2 aim = (targetPlayer.Center + targetPlayer.velocity * 14f - npc.Center).SafeNormalize(Vector2.UnitY);
                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + aim * 26f, aim * 8.2f,
-                    ProjectileID.PhantasmalBolt, MLordDirector.BoltDamage, 0f, Main.myPlayer);
+                    ModContent.ProjectileType<MLordBoltProj>(), MLordDirector.BoltDamage, 0f, Main.myPlayer);
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item125 with { Volume = 0.5f, Pitch = 0.4f, MaxInstances = 5 }, npc.Center);
                 }

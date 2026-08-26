@@ -16,6 +16,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
         public override GolemStateIndex StateIndex => GolemStateIndex.SunBarrage;
 
         internal static int ChargeTime => 64;
+        /// <summary>连发间隔拍</summary>
+        internal static int VolleyInterval => 40;
+        /// <summary>臼炮弹重力，与 GolemSunMortar.AI 的加速度一致（弧顶解算依赖）</summary>
+        private const float MortarGravity = 0.32f;
 
         private int volleyTimer;
 
@@ -50,7 +54,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
 
                 //连发段
                 int volleys = context.DeathMode ? 4 : 3;
-                int volleyInterval = Tempo(context, 46);
+                int volleyInterval = Tempo(context, VolleyInterval);
                 if (!VaultUtils.isClient && Counter < volleys) {
                     if (++volleyTimer >= volleyInterval) {
                         volleyTimer = 0;
@@ -61,20 +65,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             }
 
             Timer++;
-            int endTime = charge + Tempo(context, 46) * (context.DeathMode ? 4 : 3) + 70;
+            int endTime = charge + Tempo(context, VolleyInterval) * (context.DeathMode ? 4 : 3) + 70;
             if (Timer >= endTime && !VaultUtils.isClient) {
                 return new GolemConnectorState();
             }
             return null;
         }
 
-        /// <summary>一轮臼炮：多发不同弧度覆盖玩家活动带（服务端）</summary>
+        /// <summary>一轮臼炮：横向按预读位置散布，弧顶解算到目标高度上方空爆（高飞也被余烬雨罩住）</summary>
         private void FireVolley(GolemStateContext context) {
             NPC npc = context.Npc;
             Player target = context.Target;
             Vector2 gem = npc.Center + new Vector2(0f, -6f);
 
-            int shots = (context.Sundered ? 3 : 2) + (context.DeathMode ? 1 : 0);
+            int shots = (context.Sundered ? 4 : 3) + (context.DeathMode ? 1 : 0);
             int damage = ScaleDamage(context, GolemDirector.MortarDamage);
 
             for (int i = 0; i < shots; i++) {
@@ -83,7 +87,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                 Vector2 aimPoint = target.Center + target.velocity * 20f + new Vector2(spread, 0f);
                 float dx = aimPoint.X - gem.X;
                 float vx = MathHelper.Clamp(dx / 52f, -13f, 13f);
-                float vy = Main.rand.NextFloat(-15.5f, -13.5f);
+                //弧顶解算：空爆点压在目标上方约140px，余烬自上而下罩落
+                float apexRise = gem.Y - (aimPoint.Y - 140f);
+                float vy = apexRise > 60f
+                    ? -MathF.Sqrt(2f * MortarGravity * apexRise)
+                    : Main.rand.NextFloat(-15.5f, -13.5f);
+                vy = MathHelper.Clamp(vy + Main.rand.NextFloat(-0.6f, 0.6f), -27f, -12.5f);
                 Projectile.NewProjectile(npc.GetSource_FromAI(), gem, new Vector2(vx, vy),
                     ModContent.ProjectileType<GolemSunMortar>(), damage, 0f, Main.myPlayer, 0f, 0f);
             }

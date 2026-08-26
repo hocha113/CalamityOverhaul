@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             int slamIndex = Timer / CycleLen;
             int sub = Timer % CycleLen;
 
-            //核心随节拍俯仰：蓄势缓缓吸气上提，冲线一口气下压把拳送出去（全身参与）
+            //核心随节拍俯仰意图：蓄势上提冲线下压，由空闲的两掌爬行代步（全身参与出拳）
             float bodyBob = 0f;
             if (slamIndex < SlamCount) {
                 if (InWindup(sub)) {
@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                     bodyBob = 58f;
                 }
             }
-            HoverTo(npc, target.Center + new Vector2(0f, -300f + bodyBob), 6f, 0.04f);
+            RequestMove(context, target.Center + new Vector2(0f, -300f + bodyBob), 0.7f);
             UpdateLean(context);
 
             if (slamIndex < SlamCount) {
@@ -179,9 +179,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 if (performer.type == NPCID.MoonLordFreeEye) {
                     KillLinksTouching(performer.whoAmI);
                 }
-                //翼位锁定：入位期恒定终点
+                //翼位锁定：入位期恒定终点；手执行者的翼位钳进合法区
+                //（玩家拉远时翼位不再跟着玩家跑出臂展，技能不破坏手部限定范围）
                 Vector2 flankPos = target.Center + new Vector2(side * 560f,
                     flankY + MLordConstellationProj.Hash01(seed, slamIndex + 40 + ordinal * 13) * 120f - 60f);
+                if (isHand) {
+                    flankPos = MLordLocomotion.ClampAttackPost(context.Npc, performer, flankPos);
+                }
                 lockedFlankPos[ordinal] = flankPos;
                 if (performer.Distance(flankPos) > FlankSnapDistance) {
                     //超远兜底：瞬移入位（臂链 IK 自带 snap 硬重建）
@@ -226,8 +230,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 }
             }
             else if (sub < BlinkLen + WindupLen + DashLen) {
-                //冲线复合加速
-                performer.velocity *= 1.02f;
+                //冲线复合加速；手执行者过伸即失速（够不着就是够不着，臂不出格；
+                //速度跌破接触伤门控 24 后伤害窗随之关闭，视觉=判定）
+                bool overreach = isHand && MLordLocomotion.BeyondReach(context.Npc, performer);
+                performer.velocity *= overreach ? 0.62f : 1.02f;
             }
             else if (sub < BlinkLen + WindupLen + DashLen + SkidLen) {
                 //硬刹
@@ -268,7 +274,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 ? Main.npc[context.Parts.Head] : context.Npc;
             Vector2 aim = (context.Target.Center - origin.Center).SafeNormalize(Vector2.UnitY);
             Projectile.NewProjectile(origin.GetSource_FromAI(), origin.Center + aim * 40f, aim * 7.5f,
-                ProjectileID.PhantasmalBolt, ScaleDamage(context, MLordDirector.BoltDamage), 0f, Main.myPlayer);
+                ModContent.ProjectileType<MLordBoltProj>(), ScaleDamage(context, MLordDirector.BoltDamage), 0f, Main.myPlayer);
         }
 
         #region 部件侧只读节拍查询（部件 AI 姿态/预警共用）

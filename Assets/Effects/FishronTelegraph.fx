@@ -68,32 +68,30 @@ float4 TelegraphPS(float2 uv : TEXCOORD0) : COLOR0
     float growEdge = smoothstep(uGrow + 0.02, uGrow - 0.10, x - frontN * 0.05);
     float endFade = rootFade * tipFade * growEdge;
 
-    // ---- 横截面：核心 + 水汽晕 ----
-    float coreSharp = lerp(42.0, 15.0, uLockProgress);
+    // ---- 横截面：细锐核心 + 一层贴身薄雾（2026-08 简化：删宽鞘删奔涌脉冲）----
+    float coreSharp = lerp(78.0, 40.0, uLockProgress);
     float core = exp(-lat * lat * coreSharp);
-    float haze = exp(-lat * lat * 4.2) * 0.4;
+    float haze = exp(-lat * lat * 9.0) * 0.16;
 
-    // ---- 水汽流：雾沫沿线向末端流去（指向冲刺方向） ----
+    // ---- 水汽流：只留一股顺线流动的疏密呼吸，指明冲刺方向 ----
     float flowSpeed = 2.0 + uLockProgress * 3.2;
     float n = fbm2(float2(x * uAspect * 0.5 - uTime * flowSpeed, lat * 1.6));
-    //水珠闪点：高频噪声窄阈值，顺流漂移
+    float flow = 0.84 + 0.16 * sin(x * uAspect * 1.1 - uTime * (6.0 + uLockProgress * 12.0) + n * 3.0);
+
+    //零星水珠闪点（阈值收窄，寥寥几粒）
     float sparkleN = valueNoise(float2(x * uAspect * 1.7 - uTime * (flowSpeed * 1.7), lat * 5.0));
-    float sparkle = smoothstep(0.78, 0.94, sparkleN) * (1.0 - abs(lat)) * 0.8;
+    float sparkle = smoothstep(0.86, 0.96, sparkleN) * (1.0 - abs(lat)) * 0.3;
 
-    //向末端奔涌的脉冲段
-    float pulse = 0.55 + 0.45 * sin(x * uAspect * 1.3 - uTime * (7.0 + uLockProgress * 15.0) + n * 4.5);
-    pulse = pow(pulse, 1.5);
-
-    //锁定白闪振荡
-    float flash = 1.0 + uLockProgress * 0.5 * sin(uTime * 44.0);
+    //锁定白闪振荡（承诺信号保留，幅度收敛）
+    float flash = 1.0 + uLockProgress * 0.35 * sin(uTime * 44.0);
 
     // ---- 合成 ----
-    float lum = (core * (1.0 + uLockProgress * 1.5) + haze * (0.7 + n * 0.6) + sparkle)
-        * pulse * endFade * flash;
+    float lum = (core * (1.0 + uLockProgress * 1.3) + haze * (0.7 + n * 0.5) + sparkle)
+        * flow * endFade * flash;
 
     float3 col = uColor * lum;
     //锁定期核心煮成白沫色（冷白，不是纯白常驻，只随 flash 波动）
-    col += float3(0.88, 1.0, 0.98) * core * uLockProgress * lum * 1.1;
+    col += float3(0.88, 1.0, 0.98) * core * uLockProgress * lum * 0.8;
 
     //退场时总量略降，让收拢读作"绷紧"而不是变暗消失
     float exitDim = 1.0 - uCollapse * 0.25;

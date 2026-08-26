@@ -21,6 +21,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         //服务端运动/火控计时（客户端仅表现）
         private float orbitAngle;
         private int fireTimer;
+        //编织散布换边符号（服务端）
+        private int weaveSign = -1;
         //死亡坠毁本地表现
         private bool crashed;
 
@@ -193,39 +195,45 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             bool death = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
             bool enraged = GolemBodyAI.ComputeEnrage(player, CWRRef.GetBossRushActive());
 
+            int interval;
+            float boltSpeed;
             switch (bodyState) {
-                case GolemStateIndex.Crossfire: {
-                    //交叉射线由 GolemCrossfireState 统一编谱，飞头只在此提供节奏外的散射压制
-                    int interval = GolemDirector.Tempo(120, death, enraged);
-                    if (++fireTimer >= interval) {
-                        fireTimer = 0;
-                        FireEyeBolt(9.5f);
-                    }
+                case GolemStateIndex.Crossfire:
+                    //交叉射线由 GolemCrossfireState 统一编谱，飞头在此提供节奏外的散射压制
+                    interval = GolemDirector.Tempo(84, death, enraged);
+                    boltSpeed = 9.5f;
                     break;
-                }
                 case GolemStateIndex.PunchCombo:
                 case GolemStateIndex.HookSwing:
                 case GolemStateIndex.StompCombo:
                 case GolemStateIndex.TrapScore:
-                case GolemStateIndex.SunBarrage: {
-                    //常态低频压制
-                    int interval = GolemDirector.Tempo(140, death, enraged);
-                    if (++fireTimer >= interval) {
-                        fireTimer = 0;
-                        FireEyeBolt(8.5f);
-                    }
+                case GolemStateIndex.SunBarrage:
+                case GolemStateIndex.Connector:
+                    //常态压制：环场平台持续输出，弹幕线不断档
+                    interval = GolemDirector.Tempo(92, death, enraged);
+                    boltSpeed = 8.5f;
                     break;
-                }
                 default:
                     fireTimer = 0;
-                    break;
+                    return;
+            }
+            //对空提频：悬空目标被飞头咬得更紧
+            if (GolemFacts.TargetAirborne(player)) {
+                interval = Math.Max((int)(interval * GolemDirector.AirborneTempo), 12);
+            }
+            if (++fireTimer >= interval) {
+                fireTimer = 0;
+                FireEyeBolt(boltSpeed);
             }
         }
 
+        /// <summary>散射压制弹：半额预读 + 编织散布，与一阶段附着头同一套公平语言</summary>
         private void FireEyeBolt(float speed) {
             Vector2 muzzle = npc.Center + new Vector2(npc.localAI[1] * 14f, 6f);
-            Vector2 lead = player.Center + player.velocity * 12f;
-            Vector2 vel = (lead - muzzle).SafeNormalize(Vector2.UnitY) * speed;
+            Vector2 lead = player.Center + player.velocity * 7f;
+            weaveSign = -weaveSign;
+            float weave = weaveSign * Main.rand.NextFloat(0.1f, 0.16f);
+            Vector2 vel = (lead - muzzle).SafeNormalize(Vector2.UnitY).RotatedBy(weave) * speed;
             int damage = GolemDirector.ScaleDamage(GolemDirector.SunBoltDamage, CWRRef.GetDeathMode());
             Projectile.NewProjectile(npc.GetSource_FromAI(), muzzle, vel,
                 ModContent.ProjectileType<GolemSunBolt>(), damage, 0f, Main.myPlayer);

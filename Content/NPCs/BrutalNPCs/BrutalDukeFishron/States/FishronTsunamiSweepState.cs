@@ -23,7 +23,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
         private const int RepositionEnd = 46;
         private const int TelegraphTime = 46;
         private const float SweepSpeed = 30f;
-        private const float WaveSpeed = 14f;
+        /// <summary>浪墙出膛速度：入场即迅猛，弹幕自身还会一路增速到上限</summary>
+        private const float WaveSpeed = 18f;
 
         private int sweepDir;
         private int passIndex;

@@ -49,9 +49,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             NPC npc = context.Npc;
             Player target = context.Target;
 
-            //核心稳住高位做支点
-            HoverTo(npc, target.Center + new Vector2(0f, -150f), 5f, 0.04f);
-            npc.velocity *= 0.95f;
+            //弧光支点仪式：四爪抓桩，核心钉死做几何轴（弧原点稳定）
+            RequestMove(context, target.Center + new Vector2(0f, -150f), 0.5f, MLordMovePolicy.Brace);
             UpdateLean(context);
 
             if (Timer < WindupEnd) {
@@ -77,7 +76,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 NPC origin = context.Parts.Head >= 0 ? Main.npc[context.Parts.Head] : npc;
                 Vector2 aim = (target.Center - origin.Center).SafeNormalize(Vector2.UnitY);
                 Projectile.NewProjectile(origin.GetSource_FromAI(), origin.Center + aim * 40f, aim * 6.2f,
-                    ProjectileID.PhantasmalBolt, ScaleDamage(context, MLordDirector.BoltDamage), 0f, Main.myPlayer);
+                    ModContent.ProjectileType<MLordBoltProj>(), ScaleDamage(context, MLordDirector.BoltDamage), 0f, Main.myPlayer);
             }
 
             Timer++;

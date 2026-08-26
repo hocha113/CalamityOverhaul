@@ -21,8 +21,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
         private ref float Param => ref npc.ai[1];
         private ref float PopTimer => ref npc.ai[2];
 
+        #region 水膜泡渲染参数（FishronBubbleRender 消费）
+        /// <summary>变形幅度：驻停轻漾，飞行时被气流揉得更凶</summary>
+        internal float RenderWobble => MathHelper.Clamp(0.45f + npc.velocity.Length() * 0.08f, 0.45f, 1f);
+        /// <summary>环阵待发末段的绷紧量</summary>
+        internal float RenderArm {
+            get {
+                if (Mode != 2 || Param <= 0f) {
+                    return 0f;
+                }
+                return Param < 16f ? 1f - Param / 16f : 0.15f;
+            }
+        }
+        /// <summary>破膜进度：PopTimer 4→0 映射 0→1</summary>
+        internal float RenderBurst => PopTimer > 0f ? MathHelper.Clamp((4f - PopTimer) / 3.2f, 0f, 1f) : 0f;
+        /// <summary>渐显包络</summary>
+        internal float RenderFade => MathHelper.Clamp((255 - npc.alpha) / 205f, 0f, 1f);
+        #endregion
+
         public override bool? CanBrutalOverride() {
             return null;
+        }
+
+        /// <summary>着色器可用时本体交给 <see cref="Rendering.FishronBubbleRender"/> 单批绘制，缺失则回退原版</summary>
+        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            return Rendering.FishronBubbleRender.PathReady ? false : null;
         }
 
         public override bool AI() {
@@ -94,7 +117,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             }
         }
 
-        /// <summary>模式1：按出膛速度飞行 ai[1] 帧，随后驻停成迷宫栅栏，只剩摆动与风漂</summary>
+        /// <summary>
+        /// 模式1：按出膛速度飞行 ai[1] 帧，随后驻停成迷宫栅栏——
+        /// 驻停不再钉死：洋流整阵缓摆（全体同相，走廊几何随阵平移不变形）
+        /// 叠逐泡小环游。速度由服务端权威书写，客户端只积分同步值，
+        /// 周期 netUpdate 校正漂差
+        /// </summary>
         private void UpdateMazeHold() {
             if (Param > 0f) {
                 Param--;
@@ -104,11 +132,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
                 }
             }
             else {
-                //驻停：本地帧计驱动的有界轻漾（正弦积分有界，各端偏差不发散）
                 npc.localAI[0]++;
-                float phase = npc.localAI[0] * 0.03f + npc.whoAmI * 0.7f;
-                npc.velocity *= 0.9f;
-                npc.position.Y += (float)Math.Sin(phase) * 0.3f;
+                if (!VaultUtils.isClient) {
+                    float t = Main.GameUpdateCount;
+                    //洋流：低频正弦摆，积分有界（±60px 级），全泡共用一股
+                    Vector2 current = new(
+                        (float)Math.Sin(t * 0.006f) * 0.55f,
+                        (float)Math.Sin(t * 0.0043f + 1.3f) * 0.38f);
+                    //小环游：逐泡错相的缓慢绕圈（半径 10px 级）
+                    Vector2 loop = (t * 0.055f + npc.whoAmI * 1.7f).ToRotationVector2() * 0.6f;
+                    npc.velocity = Vector2.Lerp(npc.velocity, current + loop, 0.1f);
+                }
 
                 //超时自爆（服务端）
                 if (npc.localAI[0] >= 640f && !VaultUtils.isClient) {
@@ -117,12 +151,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             }
         }
 
-        /// <summary>模式2：环阵定身待发；发射由 RingSpin 状态服务端统一点火</summary>
+        /// <summary>模式2：环阵待发漂浮（小环游代替定身）；发射由 RingSpin 状态服务端统一点火</summary>
         private void UpdateRingArmed() {
             if (Param > 0f) {
-                //待发期定身，微微收缩蓄势
                 Param--;
-                npc.velocity *= 0.82f;
+                //待发漂浮：服务端写小环游速度，环位轻轻游动仍保阵形
+                if (!VaultUtils.isClient) {
+                    Vector2 loop = (Main.GameUpdateCount * 0.09f + npc.whoAmI * 1.3f).ToRotationVector2() * 0.8f;
+                    npc.velocity = Vector2.Lerp(npc.velocity, loop, 0.15f);
+                }
                 float pulse = 1f + 0.06f * (float)Math.Sin(Main.GameUpdateCount * 0.35f + npc.whoAmI);
                 npc.scale = npc.ai[3] * pulse;
             }
@@ -165,6 +202,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item54 with { Volume = 0.7f, Pitch = 0.2f, MaxInstances = 5 }, npc.Center);
                     FishronMotionFX.SpawnSprayCone(npc.Center, -Vector2.UnitY, 5, 2f, 6f, MathHelper.Pi, 0.8f);
+                    //破膜水珠环：膜化成一圈水屑弹开
+                    for (int i = 0; i < 9; i++) {
+                        Vector2 dir = (MathHelper.TwoPi * i / 9f + npc.whoAmI * 0.7f).ToRotationVector2();
+                        InnoVault.PRT.PRTLoader.NewParticle<Rendering.PRT_FishronSpray>(
+                            npc.Center + dir * 12f * npc.scale, dir * Main.rand.NextFloat(3f, 6.5f),
+                            Color.Lerp(FishronMotionFX.SeaGreen, FishronMotionFX.FoamWhite, Main.rand.NextFloat()),
+                            Main.rand.NextFloat(0.6f, 1f))?.Configure(Main.rand.Next(16, 26), 0.2f);
+                    }
                 }
                 //胀大判定窗
                 npc.position = npc.Center;
@@ -197,9 +242,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             }
         }
 
-        /// <summary>环阵待发末段的临爆闪烁</summary>
+        /// <summary>环阵待发末段的临爆闪烁：仅着色器缺失的回退路径需要，膜体自带 uArm 灼光</summary>
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (Mode == 2 && Param > 0f && Param < 14f) {
+            if (!Rendering.FishronBubbleRender.PathReady && Mode == 2 && Param > 0f && Param < 14f) {
                 Texture2D tex = TextureAssets.Npc[npc.type].Value;
                 float flash = 0.5f + 0.5f * (float)Math.Sin(Param * 1.4f);
                 Color glint = new Color(FishronMotionFX.FoamWhite.R, FishronMotionFX.FoamWhite.G,

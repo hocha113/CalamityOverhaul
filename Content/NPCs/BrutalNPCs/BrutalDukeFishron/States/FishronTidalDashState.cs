@@ -106,15 +106,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 FishronMotionFX.SpawnDashBurst(npc.Center, dashDirection, 1f);
                 SoundEngine.PlaySound(SoundID.Zombie20 with { Volume = 0.95f, Pitch = 0.15f, MaxInstances = 3 }, npc.Center);
 
-                //水迹残响：冲刺路径的持留判定（服务端）
-                if (!VaultUtils.isClient) {
-                    int extend = FishronTidalDashingState.DashDuration + 6;
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
-                        ModContent.ProjectileType<FishronTideTrailProj>(),
-                        FishronTideTrailProj.TrailDamage, 0f, Main.myPlayer,
-                        npc.whoAmI, extend);
-                }
-
                 return new FishronTidalDashingState(currentDashCount, MaxDashCount(context));
             }
 
@@ -241,6 +232,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             if (curlSign == 0) {
                 float cross = Vector2.Dot(npc.velocity.RotatedBy(MathHelper.PiOver2), player.Center - npc.Center);
                 curlSign = cross >= 0f ? 1 : -1;
+            }
+
+            //甩尾放鲨：二阶段起，收势瞬间从尾后甩出鲨鱼龙咬向玩家落位，
+            //逼走位不逼脸——比冲刺慢得多，且吃全场容量顶
+            if ((int)Timer == 2 && context.Phase >= 2) {
+                SoundEngine.PlaySound(SoundID.Zombie9 with { Volume = 0.7f, Pitch = 0.2f, MaxInstances = 3 }, npc.Center);
+                if (!VaultUtils.isClient) {
+                    int count = context.Phase >= 3 ? 2 : 1;
+                    for (int i = 0; i < count; i++) {
+                        Vector2 aim = (player.Center + player.velocity * 14f - npc.Center)
+                            .SafeNormalize(Vector2.UnitY).RotatedBy((i - (count - 1) * 0.5f) * 0.3f);
+                        FishronSharkronStrafeState.TryLaunchSharkron(npc, npc.Center, aim, 15f);
+                    }
+                }
             }
 
             if (Timer < BrakeTime) {

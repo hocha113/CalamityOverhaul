@@ -11,7 +11,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
 {
     /// <summary>
-    /// 海啸浪墙：贴地横扫的水墙，浪冠可越，压过处留湿沫。
+    /// 海啸浪墙：贴地横扫的水墙，出生后一路增速，浪冠可越，压过处留湿沫。
+    /// 流体感核心在着色器的世界锚定噪声域：浪形在跑，水体留在世界里。
     /// ai[0]=方向符号 ai[1]=浪级(0常规/1高浪) localAI[0]=寿命计时
     /// </summary>
     internal class FishronTsunamiWallProj : ModProjectile
@@ -22,6 +23,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
         private const int RiseTime = 26;
         private const int FadeTime = 30;
         private const int BaseLife = 360;
+        /// <summary>速度基准：uSpeedRatio=1 的刻度</summary>
+        internal const float BaseSpeed = 18f;
+        /// <summary>推进速度上限：迅猛但可被越顶/拉开</summary>
+        private const float MaxSpeed = 26f;
 
         [VaultLoaden(CWRConstant.Masking + "PerlinNoise")]
         private static Asset<Texture2D> noiseTex = null;
@@ -32,6 +37,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
 
         private float WallHeight => Tall ? 470f : 380f;
         private const float WallWidth = 130f;
+
+        private float SpeedRatio => Math.Abs(Projectile.velocity.X) / BaseSpeed;
 
         private float Envelope {
             get {
@@ -75,6 +82,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             //起浪/退浪期无判定
             Projectile.damage = HitWindowOpen ? WaveDamage : 0;
 
+            //一路增速：起浪站稳后复合加速到上限，海啸是追人的
+            if (LifeTimer > RiseTime && Projectile.timeLeft > FadeTime
+                && Math.Abs(Projectile.velocity.X) < MaxSpeed) {
+                Projectile.velocity.X *= 1.011f;
+            }
+
             //贴地推进：velocity.X 为推进速度，Y 由地形吸附
             Vector2 ground = FishronMotionFX.FindSurfaceBelow(
                 new Vector2(Projectile.Center.X, Projectile.position.Y + Projectile.height * 0.4f), out _);
@@ -86,10 +99,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             if (!VaultUtils.isServer) {
                 float env = Envelope;
                 Vector2 crest = new(Projectile.Center.X + Dir * WallWidth * 0.2f, Projectile.position.Y + 16f);
-                //浪冠喷雾：前甩为主，带重力弧线的断裂抛沫
+                //浪冠喷雾：前甩为主，带重力弧线的断裂抛沫；越快甩得越猛
                 if (Main.rand.NextBool(2)) {
+                    int sprayCount = 2 + (int)SpeedRatio;
                     FishronMotionFX.SpawnSprayCone(crest + Main.rand.NextVector2Circular(30f, 16f),
-                        new Vector2(Dir * 1.4f, -0.9f).SafeNormalize(-Vector2.UnitY), 2, 3f, 9f, 0.5f, env);
+                        new Vector2(Dir * 1.4f, -0.9f).SafeNormalize(-Vector2.UnitY),
+                        sprayCount, 3f, 8f + SpeedRatio * 3f, 0.5f, env);
                 }
                 //溃散期：冠线崩解成一阵密集碎沫，浪"塌"下去而不是淡出去
                 if (Projectile.timeLeft <= FadeTime && Main.rand.NextBool(2)) {
@@ -146,6 +161,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             effect.Parameters["uCollapse"]?.SetValue(collapse);
             effect.Parameters["uDir"]?.SetValue((float)Dir);
             effect.Parameters["uSeed"]?.SetValue(Projectile.whoAmI * 0.313f);
+            //流体域世界锚定：浪形平移时水体纹理钉在世界里，水从浪身里流过
+            effect.Parameters["uWorldX"]?.SetValue(Projectile.Center.X);
+            effect.Parameters["uCanvasPx"]?.SetValue(drawW);
+            effect.Parameters["uSpeedRatio"]?.SetValue(SpeedRatio);
             effect.Parameters["uDeepColor"]?.SetValue(FishronMotionFX.DeepSea.ToVector3());
             effect.Parameters["uFoamColor"]?.SetValue(FishronMotionFX.FoamWhite.ToVector3());
             effect.Parameters["uSeaColor"]?.SetValue(FishronMotionFX.SeaGreen.ToVector3());

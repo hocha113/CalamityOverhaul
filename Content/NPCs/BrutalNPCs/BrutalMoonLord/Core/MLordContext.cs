@@ -54,6 +54,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         public bool StaggerVulnerable { get; set; }
         #endregion
 
+        #region 移动申报（状态每帧写，爬行系统消费——本体无自走）
+        /// <summary>本体想去的位置（世界坐标）</summary>
+        public Vector2 MoveGoal { get; set; }
+        /// <summary>移动紧迫度 0~1（步频与拽力）</summary>
+        public float MoveUrgency { get; set; }
+        /// <summary>移动策略，核心 AI 帧首重置为 Off，状态不申报即自管</summary>
+        public MLordMovePolicy MovePolicy { get; set; }
+        #endregion
+
         #region 死亡演出数据（运镜与玩家侧读取）
         public int DeathTimer { get; set; }
         public MLordDeathPhase DeathPhase { get; set; }
@@ -108,6 +117,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
                 int cursor = ExposedCursor;
                 MLordStateIndex next = AdvanceCycle(ExposedCycle, ref cursor, allowSkip: false);
                 ExposedCursor = cursor;
+                //残血席位升级：死光扫描让位给月明湮灭（每轮循环一次的压轴巨束）
+                if (next == MLordStateIndex.DeathrayScan
+                    && Npc.life < Npc.lifeMax * MLordDirector.AnnihilationLifeRatio) {
+                    return MLordStateIndex.LunarAnnihilation;
+                }
                 return next;
             }
             int trinityCursor = TrinityCursor;

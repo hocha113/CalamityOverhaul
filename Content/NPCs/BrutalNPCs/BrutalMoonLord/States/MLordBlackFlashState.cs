@@ -55,8 +55,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             }
         }
 
-        /// <summary>演出级大招开场清场：撤掉全部己方敌对弹幕，舞台只留黑闪（契约3.5）</summary>
-        private static void ClearHostileStage() {
+        /// <summary>演出级大招开场清场：撤掉全部己方敌对弹幕，独占舞台（契约3.5，月明湮灭复用）</summary>
+        internal static void ClearHostileStage() {
             foreach (Projectile p in Main.ActiveProjectiles) {
                 bool mine = p.type == ModContent.ProjectileType<MLordScanRayProj>()
                     || p.type == ModContent.ProjectileType<MLordArcRayProj>()
@@ -65,6 +65,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                     || p.type == ModContent.ProjectileType<MLordOrbProj>()
                     || p.type == ModContent.ProjectileType<MLordStarfireProj>()
                     || p.type == ModContent.ProjectileType<MLordGravityWellProj>()
+                    || p.type == ModContent.ProjectileType<MLordBoltProj>()
+                    || p.type == ModContent.ProjectileType<MLordAnnihilationRayProj>()
                     || p.type == ProjectileID.PhantasmalBolt
                     || p.type == ProjectileID.PhantasmalEye
                     || p.type == ProjectileID.PhantasmalSphere;
@@ -138,9 +140,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         /// <summary>物化+环抱+揉搓：定桩蓄势，打断窗审计，蓄力语法全套</summary>
         private void UpdateWindup(MLordContext context, Player target) {
             NPC npc = context.Npc;
-            //高位定桩：揉搓期缓慢逼近（压迫感），寂静前不再移动
-            float drift = Timer < EmbraceEnd ? 4.2f : 2.2f;
-            HoverTo(npc, target.Center + new Vector2(0f, -420f), drift, 0.04f);
+            //仪式悬滞：四条黑臂全数征去搓球，本体没有肢体可移动，只是渐渐停死
             npc.velocity *= 0.93f;
             UpdateLean(context);
             context.SetChargeState(Timer / (float)KneadEnd);

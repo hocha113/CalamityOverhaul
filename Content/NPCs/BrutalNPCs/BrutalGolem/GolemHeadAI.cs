@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         private Player player;
         //服务端开火节拍
         private int fireTimer;
+        //编织散布换边符号（服务端）
+        private int weaveSign = 1;
         //分离仪式本地表现计时
         private int detachTimer;
 
@@ -100,45 +102,61 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             bool death = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
             bool enraged = GolemBodyAI.ComputeEnrage(player, CWRRef.GetBossRushActive());
 
-            //眼部炽热提示：进入开火窗口前后发亮
-            bool inFireWindow = bodyState is GolemStateIndex.SunBarrage or GolemStateIndex.TrapScore;
+            //眼部炽热提示：任何压制射击窗口发亮
+            bool inFireWindow = bodyState is GolemStateIndex.SunBarrage or GolemStateIndex.TrapScore
+                or GolemStateIndex.PunchCombo or GolemStateIndex.HookSwing
+                or GolemStateIndex.StompCombo or GolemStateIndex.Connector;
             npc.localAI[0] = inFireWindow ? 1f : 0f;
 
             if (VaultUtils.isClient || !player.Alives()) {
                 return;
             }
 
+            //全攻击状态持续压制：弹幕线不断档，密度按窗口分级
+            int interval;
+            bool alternate;
             switch (bodyState) {
-                case GolemStateIndex.SunBarrage: {
+                case GolemStateIndex.SunBarrage:
                     //双眼交替直射弹，与躯干宝石臼炮互补
-                    int interval = GolemDirector.Tempo(52, death, enraged);
-                    if (++fireTimer >= interval) {
-                        fireTimer = 0;
-                        FireEyeBolt(alternate: true);
-                    }
+                    interval = GolemDirector.Tempo(40, death, enraged);
+                    alternate = true;
                     break;
-                }
-                case GolemStateIndex.TrapScore: {
-                    //机关演奏时低频点射，维持压力
-                    int interval = GolemDirector.Tempo(96, death, enraged);
-                    if (++fireTimer >= interval) {
-                        fireTimer = 0;
-                        FireEyeBolt(alternate: false);
-                    }
+                case GolemStateIndex.TrapScore:
+                    //机关演奏时点射，把走位逼进刺谱
+                    interval = GolemDirector.Tempo(62, death, enraged);
+                    alternate = false;
                     break;
-                }
+                case GolemStateIndex.PunchCombo:
+                case GolemStateIndex.HookSwing:
+                case GolemStateIndex.StompCombo:
+                case GolemStateIndex.Connector:
+                    //近战窗口保底压制
+                    interval = GolemDirector.Tempo(84, death, enraged);
+                    alternate = true;
+                    break;
                 default:
                     fireTimer = 0;
-                    break;
+                    return;
+            }
+            //对空提频：目标悬空时双眼咬得更紧
+            if (GolemFacts.TargetAirborne(player)) {
+                interval = System.Math.Max((int)(interval * GolemDirector.AirborneTempo), 12);
+            }
+            if (++fireTimer >= interval) {
+                fireTimer = 0;
+                FireEyeBolt(alternate);
             }
         }
 
-        /// <summary>眼位直射太阳弹（带预读提前量）</summary>
+        /// <summary>眼位直射太阳弹：半额预读 + 编织散布——弹着点逐发交替夹住目标动向两侧，
+        /// 不全数收束于预读点（方向层公平缺口：匀速漂移可从弹缝穿过，急转向令预读落空）</summary>
         private void FireEyeBolt(bool alternate) {
             int eye = alternate ? (int)(npc.localAI[2] = 1f - npc.localAI[2]) : 1;
             Vector2 muzzle = npc.Center + new Vector2((eye == 0 ? -18f : 18f) * npc.scale, -6f * npc.scale);
-            Vector2 lead = player.Center + player.velocity * 14f;
-            Vector2 vel = (lead - muzzle).SafeNormalize(Vector2.UnitY) * 9.5f;
+            Vector2 lead = player.Center + player.velocity * 8f;
+            weaveSign = -weaveSign;
+            float weave = weaveSign * Main.rand.NextFloat(0.09f, 0.15f);
+            Vector2 vel = (lead - muzzle).SafeNormalize(Vector2.UnitY).RotatedBy(weave) * 9.5f;
 
             int damage = GolemDirector.ScaleDamage(GolemDirector.SunBoltDamage, CWRRef.GetDeathMode());
             Projectile.NewProjectile(npc.GetSource_FromAI(), muzzle, vel,

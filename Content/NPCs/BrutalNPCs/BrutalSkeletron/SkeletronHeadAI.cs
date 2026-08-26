@@ -360,8 +360,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
                 SkeletronRenderHelper.AsAdditive(SkeletronRenderHelper.GhostDeep) * (0.13f * breath * alphaFade),
                 npc.rotation, orig, npc.scale * 1.045f, SpriteEffects.None, 0f);
 
-            //眼火（贴图方案，用户定向回退基线）；冠火走 SkeletronCurseFlame.fx 冷焰批
-            SkeletronRenderHelper.DrawEyeFlames(spriteBatch, npc, stateContext.EyeFlame, alphaFade);
+            //眼火走 SkeletronEyeFlame.fx 怨火瞳（二阶段冠火包络借作诅咒紫化）；冠火走 SkeletronCurseFlame.fx 冷焰批
+            SkeletronRenderHelper.DrawEyeFlames(spriteBatch, npc, stateContext.EyeFlame, alphaFade,
+                MathHelper.Clamp(stateContext.CrownFlame, 0f, 1f));
             SkeletronRenderHelper.DrawCrownFlames(npc, stateContext.CrownFlame, alphaFade);
 
             return false;
@@ -380,13 +381,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
             SkeletronRenderHelper.DrawMotionRibbon(npc, ribbonHeat, 40f * npc.scale, 0.6f * alphaFade);
 
             if (spinning) {
-                //旋转涂抹：角度错相三重影（A=0 加色）
-                for (int i = 1; i <= 3; i++) {
-                    float back = i * 0.24f;
-                    Color col = SkeletronRenderHelper.AsAdditive(SkeletronRenderHelper.GhostCyan)
-                        * (0.16f * (1f - i / 4f) * alphaFade);
-                    spriteBatch.Draw(tex, npc.Center - Main.screenPosition, rect, col,
-                        npc.rotation - back * Math.Sign(npc.velocity.X == 0 ? 1 : npc.velocity.X), orig, npc.scale, SpriteEffects.None, 0f);
+                //旋转涂抹：着色器对颅骨贴图做逐角回溯残像+颅外风环；缺失回退角度错相三重影
+                float spinStrength = MathHelper.Clamp(stateContext.SpinVortex, 0f, 1f);
+                float smear = MathHelper.Lerp(0.7f, 1.8f, spinStrength);
+                if (!SkeletronRenderHelper.DrawSpinBlur(spriteBatch, npc, tex, rect, smear, spinStrength, alphaFade)) {
+                    for (int i = 1; i <= 3; i++) {
+                        float back = i * 0.24f;
+                        Color col = SkeletronRenderHelper.AsAdditive(SkeletronRenderHelper.GhostCyan)
+                            * (0.16f * (1f - i / 4f) * alphaFade);
+                        spriteBatch.Draw(tex, npc.Center - Main.screenPosition, rect, col,
+                            npc.rotation - back * Math.Sign(npc.velocity.X == 0 ? 1 : npc.velocity.X), orig, npc.scale, SpriteEffects.None, 0f);
+                    }
                 }
             }
 

@@ -40,6 +40,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core
         public bool DeathPerformanceFinished { get; set; }
         /// <summary>投技冷却(服务端计数)，二阶段展开后才开始走表；初值即首抓延迟</summary>
         public int GrabCooldown { get; set; } = 900;
+        /// <summary>分裂召唤冷却(服务端计数)，防止仆从被清后立刻重召</summary>
+        public int SummonCooldown { get; set; } = 240;
         #endregion
 
         #region 蓄力/视觉数据(每帧本地驱动)

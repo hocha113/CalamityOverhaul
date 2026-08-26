@@ -85,16 +85,16 @@ namespace CalamityOverhaul.Content.Items.Ranged.SneezingWyrms
                 }
                 float burnTemp = BurnTemp;
                 if (!VaultUtils.isServer) {
-                    //火舌上舔+甩烬
+                    //脱焰：火舌从云顶剥离上蹿，断尾化烬
                     if (elapsed % 2 == 0) {
-                        Vector2 od = (-Vector2.UnitY).RotatedBy(Main.rand.NextFloat(-0.55f, 0.55f));
-                        PRTLoader.NewParticle<PRT_WyrmTongue>(Projectile.Center + Main.rand.NextVector2Circular(12f, 8f)
-                            , od * 1.2f, default, Main.rand.NextFloat(0.8f, 1.3f))
-                            ?.Configure(od, Main.rand.NextFloat(0.9f, 1.5f), Main.rand.Next(4, 8), burnTemp);
+                        Vector2 od = (-Vector2.UnitY).RotatedBy(Main.rand.NextFloat(-0.4f, 0.4f));
+                        PRTLoader.NewParticle<PRT_WyrmTongue>(Projectile.Center + new Vector2(Main.rand.NextFloat(-14f, 14f), -Main.rand.NextFloat(6f, 16f)) * Projectile.scale
+                            , od * Main.rand.NextFloat(1.2f, 2f), default, Main.rand.NextFloat(0.85f, 1.35f))
+                            ?.Configure(od, Main.rand.NextFloat(0.9f, 1.5f), Main.rand.Next(5, 9), burnTemp);
                     }
                     if (Main.rand.NextBool(3)) {
                         PRTLoader.NewParticle<PRT_WyrmEmber>(Projectile.Center + Main.rand.NextVector2Circular(12f, 12f)
-                            , Main.rand.NextVector2Circular(0.9f, 0.9f) - Vector2.UnitY * 0.7f
+                            , Main.rand.NextVector2Circular(0.9f, 0.9f) - Vector2.UnitY * Main.rand.NextFloat(0.6f, 1.3f)
                             , default, Main.rand.NextFloat(0.6f, 1.1f))
                             ?.Configure(Main.rand.Next(14, 26), burnTemp);
                     }
@@ -250,26 +250,40 @@ namespace CalamityOverhaul.Content.Items.Ranged.SneezingWyrms
                     , glow.Size() * 0.5f, Projectile.scale * 0.34f, SpriteEffects.None, 0);
             }
 
-            //燃相火舌：根锚烟心向上舔，五外舌+双热芯，逐帧长度抖动是火的时域签名
+            //燃相火焰：后层暗焰托体积，前层四舌独立闪烁+偶发暴闪，根部缓慢游移，热芯双层收顶
             if (Ignited) {
                 float bright = Wyrmfire.Brightness(burnTemp);
                 float flameA = MathF.Min((elapsed - IgniteTick) / 4f, 1f) * (1f - burnLc * burnLc) * bright;
-                Color body = Wyrmfire.TempColor(burnTemp) with { A = 0 };
-                Color hotCore = Wyrmfire.TempColor(burnTemp + 0.3f) with { A = 0 };
                 var origin = new Vector2(flame.Width * 0.5f, flame.Height);
                 float baseScale = 92f / flame.Height * Projectile.scale;
 
-                for (int i = 0; i < 5; i++) {
-                    float ph = Seed + i * 1.7f;
-                    float sway = MathF.Sin(elapsed * 0.21f + ph) * 0.34f;
-                    float jitter = 0.78f + 0.34f * MathF.Sin((elapsed * 2.1f + ph) * 3.3f);
-                    float lobe = 0.62f + 0.38f * MathF.Sin(ph * 2.3f);
-                    var stretch = new Vector2(0.42f, lobe * jitter) * baseScale;
-                    Vector2 root = pos + new Vector2(MathF.Sin(ph * 1.9f) * 14f * Projectile.scale, 8f);
-                    Main.EntitySpriteDraw(flame, root, null, body * (flameA * 0.75f), sway
-                        , origin, stretch, SpriteEffects.None, 0);
+                //后层：更宽更慢的暗焰
+                Color backCol = Wyrmfire.TempColor(MathF.Max(burnTemp - 0.18f, 0.05f)) with { A = 0 };
+                for (int i = 0; i < 3; i++) {
+                    float ph = Seed + i * 2.4f;
+                    float sway = MathF.Sin(elapsed * 0.13f + ph) * 0.28f;
+                    float flick = 0.7f + 0.3f * MathF.Sin(elapsed * 0.9f + ph * 5f);
+                    float len = (0.72f + 0.22f * MathF.Sin(elapsed * 0.17f + ph * 3.1f)) * (0.9f + 0.2f * MathF.Sin(ph));
+                    Vector2 root = pos + new Vector2(MathF.Sin(elapsed * 0.05f + ph * 2f) * 16f * Projectile.scale, 10f);
+                    Main.EntitySpriteDraw(flame, root, null, backCol * (flameA * 0.45f * flick), sway
+                        , origin, new Vector2(0.62f, len) * baseScale, SpriteEffects.None, 0);
                 }
+
+                //前层：四舌独立闪烁，窄脉冲暴闪偶尔把某根舌头猛拉长
+                Color body = Wyrmfire.TempColor(burnTemp) with { A = 0 };
+                for (int i = 0; i < 4; i++) {
+                    float ph = Seed * 1.7f + i * 1.9f;
+                    float sway = MathF.Sin(elapsed * 0.23f + ph) * 0.36f;
+                    float flick = 0.68f + 0.32f * MathF.Sin(elapsed * 1.7f + ph * 7f);
+                    float flare = MathF.Pow(MathF.Max(MathF.Sin(elapsed * 0.11f + ph * 4f), 0f), 6f) * 0.5f;
+                    float len = 0.55f + 0.28f * MathF.Sin(elapsed * 0.19f + ph * 2.7f) + flare;
+                    Vector2 root = pos + new Vector2(MathF.Sin(elapsed * 0.07f + ph * 1.9f) * 12f * Projectile.scale, 8f);
+                    Main.EntitySpriteDraw(flame, root, null, body * (flameA * 0.78f * flick), sway
+                        , origin, new Vector2(0.4f, len) * baseScale, SpriteEffects.None, 0);
+                }
+
                 //热芯双层窄舌
+                Color hotCore = Wyrmfire.TempColor(burnTemp + 0.3f) with { A = 0 };
                 float coreJit = 0.85f + 0.25f * MathF.Sin(elapsed * 2.6f + Seed);
                 float coreSway = MathF.Sin(elapsed * 0.3f + Seed) * 0.18f;
                 Vector2 coreRoot = pos + new Vector2(0f, 8f);

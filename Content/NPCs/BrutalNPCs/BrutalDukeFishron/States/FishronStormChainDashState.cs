@@ -103,12 +103,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 npc.netUpdate = true;
                 FishronMotionFX.SpawnDashBurst(npc.Center, dir, 0.95f);
                 SoundEngine.PlaySound(SoundID.Zombie20 with { Volume = 0.85f, Pitch = 0.3f, MaxInstances = 4 }, npc.Center);
-                if (!VaultUtils.isClient) {
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
-                        ModContent.ProjectileType<FishronTideTrailProj>(),
-                        FishronTideTrailProj.TrailDamage, 0f, Main.myPlayer,
-                        npc.whoAmI, DashEnd - TelegraphEnd + 4);
-                }
             }
 
             //相位c：直线贯穿

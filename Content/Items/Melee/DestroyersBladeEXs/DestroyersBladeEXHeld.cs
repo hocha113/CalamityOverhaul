@@ -15,9 +15,9 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
 {
     /// <summary>
     /// 毁灭者之刃EX 沉重三拍挥砍。拍0/1 正反手重劈,拍2 终结巨新月。
-    /// 节奏走收-爆-停:长蓄力回拉、2~3帧泄压爆发带过冲、硬停驻谷、收势回守。
-    /// 命中顿帧从收势尾巴等量扣回,总帧守恒(轻拍20/终结28,与旧版持平)。
-    /// ai[0]=拍号 ai[1]=挥向
+    /// 节奏走收-压-爆-停:长蓄力回拉、蓄尾回压顿点、约1帧前载爆发带过冲、
+    /// 急坐回后死停驻谷、收势回守。命中顿帧从收势尾巴等量扣回,
+    /// 总帧守恒(轻拍20/终结28,与旧版持平)。ai[0]=拍号 ai[1]=挥向
     /// </summary>
     internal class DestroyersBladeEXHeld : BaseHeldProj, IPrimitiveDrawable, IOverlayDrawable
     {
@@ -30,9 +30,10 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         private bool IsFinisher => ComboIndex >= 2f;
         private bool Empowered => Owner.GetModPlayer<DestroyerEXPlayer>().Empowered;
 
-        //阶段时长(逻辑帧,攻速缩放)。轻拍 7+5+8=20,终结 10+6+12=28,总帧与旧版守恒
-        private float WindupTime => IsFinisher ? 10f : 7f;
-        private float SlashTime => IsFinisher ? 6f : 5f;
+        //阶段时长(逻辑帧,攻速缩放)。轻拍 8+4+8=20,终结 11+5+12=28,总帧与旧版守恒
+        //蓄力更深、爆发窗更窄:行程不变的前提下峰值角速度更高
+        private float WindupTime => IsFinisher ? 11f : 8f;
+        private float SlashTime => IsFinisher ? 5f : 4f;
         private float RecoverTime => IsFinisher ? 12f : 8f;
         private float TotalTime => WindupTime + SlashTime + RecoverTime;
         //挥砍弧度:轻拍压椭圆弯月,终结才配巨新月
@@ -56,14 +57,15 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         private float startAngle;
         private float endAngle;
         private float currentRotation;
-        private float lastRotation;
         private float sweepCollisionStart;
         private float sweepCollisionEnd;
-        private bool slashVisualActive;
         private bool sweepDamageActive;
         private bool slashSoundPlayed;
         private bool shotsFired;
+        private bool stopBeatDone;
         private float trailFade;
+        //出鞘成形度 0~1,刀光刃口先现、黑体后涌,消灭亮相的突兀感
+        private float slashBirth;
         private float hitStopFrames;
         private float hitStopSpent;
         private float bodyLean;
@@ -131,7 +133,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             float baseAngle = Projectile.velocity.ToRotation();
             startAngle = baseAngle - swingSign * SwingArc * 0.5f;
             endAngle = baseAngle + swingSign * SwingArc * 0.5f;
-            currentRotation = lastRotation = startAngle;
+            currentRotation = startAngle;
             sweepCollisionStart = sweepCollisionEnd = startAngle;
 
             //出手打断潜行,各端同拍
@@ -141,21 +143,22 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 Projectile.damage = (int)(Projectile.damage * 1.4f);
                 Projectile.scale = 1.22f;
                 if (!VaultUtils.isServer) {
-                    //终结斩起手:液压蓄能 + 低吼
-                    SoundEngine.PlaySound(SoundID.Item22 with { Volume = 0.7f, Pitch = -0.5f, MaxInstances = 3 }, Owner.Center);
-                    SoundEngine.PlaySound(SoundID.Item15 with { Volume = 0.5f, Pitch = -0.7f, MaxInstances = 2 }, Owner.Center);
+                    //终结斩起手:液压蓄能 + 低吼,音量压在挥砍主声之下
+                    SoundEngine.PlaySound(SoundID.Item22 with { Volume = 0.5f, Pitch = -0.5f, MaxInstances = 2, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, Owner.Center);
+                    SoundEngine.PlaySound(SoundID.Item15 with { Volume = 0.35f, Pitch = -0.7f, MaxInstances = 2, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, Owner.Center);
                 }
             }
             else {
                 Projectile.scale = 1.06f;
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item22 with { Volume = 0.4f, Pitch = -0.35f, MaxInstances = 3 }, Owner.Center);
+                    //轻拍蓄力只留一层轻响,拍1略抬音高做前后手区分
+                    float windPitch = ComboIndex >= 1f ? -0.25f : -0.35f;
+                    SoundEngine.PlaySound(SoundID.Item22 with { Volume = 0.28f, Pitch = windPitch, MaxInstances = 2, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, Owner.Center);
                 }
             }
         }
 
         public override void AI() {
-            slashVisualActive = false;
             sweepDamageActive = false;
             sweepCollisionStart = sweepCollisionEnd = currentRotation;
             if (Item.type != ModContent.ItemType<DestroyersBladeEX>()) {
@@ -177,7 +180,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 return;
             }
 
-            lastRotation = currentRotation;
             float frameEnd = MathF.Min(elapsed + speedMul, effectiveTotal);
             float slashEnd = WindupTime + SlashTime;
             float slashFromTime = MathF.Max(elapsed, WindupTime);
@@ -185,7 +187,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
 
             if (slashToTime > slashFromTime) {
                 //消费本帧与挥砍阶段的交集,高攻速跨阶段不漏刀
-                slashVisualActive = true;
                 float fromT = (slashFromTime - WindupTime) / SlashTime;
                 float toT = (slashToTime - WindupTime) / SlashTime;
                 float progress = GetSwingProgress(toT);
@@ -202,13 +203,14 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 if (!slashSoundPlayed && toT >= SwingGatherEnd) {
                     slashSoundPlayed = true;
                     if (!VaultUtils.isServer) {
-                        //沉重泄压:钝重挥杖声压底,金属破空跟上
-                        SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Volume = 0.9f, Pitch = -0.25f, MaxInstances = 3 }, Owner.Center);
-                        SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.8f, Pitch = -0.65f, MaxInstances = 3 }, Owner.Center);
+                        //主声只留一把钝重挥杖,按拍号走音高阶梯(正手-反手-终结),金属声退为轻辅助
+                        float swingPitch = (int)ComboIndex switch { 0 => -0.30f, 1 => -0.16f, _ => -0.48f };
+                        SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Volume = 0.85f, Pitch = swingPitch, MaxInstances = 3 }, Owner.Center);
+                        SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.35f, Pitch = swingPitch - 0.25f, MaxInstances = 3 }, Owner.Center);
                         if (IsFinisher) {
-                            SoundEngine.PlaySound(SoundID.ForceRoar with { Volume = 0.4f, Pitch = -0.6f, MaxInstances = 2 }, Owner.Center);
+                            SoundEngine.PlaySound(SoundID.ForceRoar with { Volume = 0.32f, Pitch = -0.6f, MaxInstances = 2, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, Owner.Center);
                         }
-                        Main.LocalPlayer?.CWR()?.GetScreenShake(IsFinisher ? 4f : 2f);
+                        Main.LocalPlayer?.CWR()?.GetScreenShake(IsFinisher ? 5f : 2.6f);
                     }
                 }
 
@@ -217,6 +219,25 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 if (!shotsFired && progress >= 0.58f) {
                     shotsFired = true;
                     FireShots(slashRotation);
+                }
+
+                //硬停拍:回坐完成的一瞬在刀尖泄能,小环加切向甩出的惯性火花
+                float stopBeatT = SwingBurstEnd + 0.45f * (1f - SwingBurstEnd);
+                if (!stopBeatDone && toT >= stopBeatT) {
+                    stopBeatDone = true;
+                    if (!VaultUtils.isServer) {
+                        Vector2 tip = Owner.GetPlayerStabilityCenter()
+                            + endAngle.ToRotationVector2() * BladeReach * Projectile.scale;
+                        Vector2 tangent = endAngle.ToRotationVector2().RotatedBy(swingSign * MathHelper.PiOver2);
+                        PRTLoader.NewParticle<PRT_StarPulseRing>(tip, Vector2.Zero, new Color(255, 70, 45), 0f)
+                            ?.Configure(0.03f, IsFinisher ? 0.5f : 0.3f, IsFinisher ? 12 : 9);
+                        for (int i = 0; i < (IsFinisher ? 6 : 4); i++) {
+                            PRTLoader.NewParticle<PRT_SparkAlpha>(tip + Main.rand.NextVector2Circular(8f, 8f)
+                                , tangent * Main.rand.NextFloat(4f, 9f) + Main.rand.NextVector2Circular(1.5f, 1.5f)
+                                , Main.rand.NextBool(3) ? Color.White : new Color(255, 60, 35)
+                                , Main.rand.NextFloat(0.7f, 1.2f))?.Configure(false, Main.rand.Next(8, 14));
+                        }
+                    }
                 }
 
                 //刃缘熔渣火花
@@ -231,31 +252,34 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             }
 
             if (frameEnd <= WindupTime) {
-                //深蓄力:重刃缓缓拖向身后,末端近静止(爆发前的憋劲)
+                //深蓄力:重刃缓缓拖向身后,末端近静止(爆发前的憋劲),全拍身体后仰
                 float t = frameEnd / WindupTime;
                 currentRotation = MathHelper.Lerp(startAngle, ChamberAngle, EaseOutCubic(t));
                 trailFade = 0f;
-                bodyLean = IsFinisher ? -0.06f * SmoothStep01(t) : 0f;
+                slashBirth = 0f;
+                bodyLean = -(IsFinisher ? 0.06f : 0.028f) * SmoothStep01(t);
             }
             else if (frameEnd <= slashEnd) {
-                //泄压爆发:过冲后硬停回坐
+                //泄压爆发:过冲后急坐回死停,身体随爆发前扑
                 float t = (frameEnd - WindupTime) / SlashTime;
                 currentRotation = GetSwingRotation(GetSwingProgress(t));
                 trailFade = 1f;
-                if (IsFinisher) {
-                    bodyLean = MathHelper.Lerp(-0.06f, 0.09f, SmoothStep01((t - SwingGatherEnd) / 0.3f));
-                }
+                //蓄尾到爆发前沿走完从无到有,刃口先现、黑体后涌
+                slashBirth = SmoothStep01(t / (SwingGatherEnd + 0.18f));
+                bodyLean = MathHelper.Lerp(IsFinisher ? -0.06f : -0.028f, IsFinisher ? 0.10f : 0.05f
+                    , SmoothStep01((t - SwingGatherEnd) / 0.25f));
             }
             else {
-                //收势回守,顿帧扣掉的时长在这里兑现
+                //收势回守,前段死停驻谷,顿帧扣掉的时长在这里兑现
                 float t = (frameEnd - slashEnd) / RecoverTime;
-                float hold = IsFinisher ? 0.30f : 0.24f;
+                float hold = IsFinisher ? 0.42f : 0.34f;
                 float returnT = SmoothStep01((t - hold) / (1f - hold));
                 float baseAngle = (startAngle + endAngle) * 0.5f;
                 float guardAngle = baseAngle + swingSign * (IsFinisher ? 1.1f : 0.9f);
                 currentRotation = MathHelper.Lerp(endAngle, guardAngle, returnT);
                 trailFade = 1f - SmoothStep01(t);
-                bodyLean = IsFinisher ? MathHelper.Lerp(0.09f, 0f, SmoothStep01(t * 1.6f)) : 0f;
+                slashBirth = 1f;
+                bodyLean = MathHelper.Lerp(IsFinisher ? 0.10f : 0.05f, 0f, SmoothStep01(t * 1.5f));
                 TrimTrailToRotation(currentRotation);
             }
 
@@ -273,15 +297,23 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             float creep = IsFinisher ? 0.10f : 0.05f;
             float burstEnd = SwingBurstEnd;
             float path = SwingArc + PullbackAngle;
-            float overshoot = 1f + (IsFinisher ? 0.16f : 0.12f) / path;
+            float overshoot = 1f + (IsFinisher ? 0.22f : 0.17f) / path;
             if (t < gatherEnd) {
-                return creep * SmoothStep01(t / gatherEnd);
+                //蠕出起跑线前先向后回压最后一口劲(顿点),正弦包络保证两端连续
+                float ct = SmoothStep01(t / gatherEnd);
+                float dip = MathF.Sin(ct * MathHelper.Pi) * (IsFinisher ? 0.022f : 0.018f);
+                return creep * ct - dip;
             }
             if (t < burstEnd) {
+                //前载爆发:九成行程在爆发窗前半口气吃完,不给减速尾巴
                 float burstT = (t - gatherEnd) / (burstEnd - gatherEnd);
-                return MathHelper.Lerp(creep, overshoot, SmoothStep01(burstT));
+                float launched = 1f - MathF.Pow(1f - burstT, 3.2f);
+                return MathHelper.Lerp(creep, overshoot, launched);
             }
-            return MathHelper.Lerp(overshoot, 1f, SmoothStep01((t - burstEnd) / (1f - burstEnd)));
+            //过冲急坐回:回坐挤进前45%窗口,余下时间死停(挫)
+            float settleT = (t - burstEnd) / (1f - burstEnd);
+            float snap = SmoothStep01(MathF.Min(settleT / 0.45f, 1f));
+            return MathHelper.Lerp(overshoot, 1f, snap);
         }
 
         private float GetSwingRotation(float progress)
@@ -418,24 +450,19 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             Projectile.timeLeft = 90;
         }
 
-        /// <summary>终结斩全身参与:蓄力后仰、爆发前扑,支点钉在脚底</summary>
+        /// <summary>全身参与:蓄力后仰、爆发前扑,支点钉在脚底,轻拍小幅终结拍大幅</summary>
         private void ApplyBodyLean() {
-            if (!IsFinisher) {
-                return;
-            }
             Owner.fullRotation = bodyLean * lockedDirection;
             Owner.fullRotationOrigin = new Vector2(Owner.width * 0.5f, Owner.height);
         }
 
         public override void OnKill(int timeLeft) {
-            if (IsFinisher) {
-                Owner.fullRotation = 0f;
-            }
+            Owner.fullRotation = 0f;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //顿帧记账:预算内冻结几何,时长由收势扣回
-            float want = IsFinisher ? 3f : 2f;
+            float want = IsFinisher ? 3.5f : 2.5f;
             float grant = MathF.Min(want, HitStopBudget - hitStopSpent);
             if (grant > 0f) {
                 hitStopFrames += grant;
@@ -443,17 +470,19 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             }
 
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.6f, Pitch = -0.3f, MaxInstances = 3 }, target.Center);
+                //同帧多目标只留一声命中,防止群怪场合叠成噪墙
+                SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.5f, Pitch = -0.3f, MaxInstances = 2, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, target.Center);
                 for (int i = 0; i < (IsFinisher ? 9 : 5); i++) {
                     PRTLoader.NewParticle<PRT_SparkAlpha>(target.Center, Main.rand.NextVector2Circular(7f, 7f)
                         , Main.rand.NextBool(4) ? Color.White : new Color(255, 40, 30)
                         , Main.rand.NextFloat(1f, 2f)).Configure(false, Main.rand.Next(10, 18));
                 }
-                //暗渣崩出:黑体材质的命中残料
+                //暗渣崩出:小口黑烟带挥砍冲量甩出,几帧内泄劲悬停
+                Vector2 sweepDir = (currentRotation + swingSign * MathHelper.PiOver2).ToRotationVector2();
                 for (int i = 0; i < 3; i++) {
-                    PRTLoader.NewParticle<PRT_GhostRainMist>(target.Center + Main.rand.NextVector2Circular(10f, 10f)
-                        , Main.rand.NextVector2Circular(2.5f, 2f) - Vector2.UnitY * 0.6f
-                        , new Color(14, 3, 5) * 0.8f, Main.rand.NextFloat(0.5f, 0.8f))?.Configure(Main.rand.Next(24, 40));
+                    PRTLoader.NewParticle<PRT_KikasaHoundSmoke>(target.Center + Main.rand.NextVector2Circular(10f, 10f)
+                        , sweepDir * Main.rand.NextFloat(2f, 4.5f) + Main.rand.NextVector2Circular(1f, 1f)
+                        , new Color(14, 3, 5) * 0.85f, Main.rand.NextFloat(0.18f, 0.3f))?.Configure(Main.rand.Next(16, 26), 0.008f);
                 }
                 if (IsFinisher) {
                     Color warm = new Color(255, 70, 40);
@@ -469,35 +498,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             }
         }
 
-        public override bool PreDraw(ref Color lightColor) {
-            if (!slashVisualActive) {
-                return false;
-            }
-
-            Texture2D tex = TextureValue;
-            Vector2 origin = tex.Size() / 2f;
-            Vector2 hand = Owner.GetPlayerStabilityCenter();
-            float dist = BladeReach * 0.5f * Projectile.scale;
-            GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset);
-
-            //挥砍残影:黑红双层,靠后的残影沉黑
-            float angleDelta = MathF.Abs(currentRotation - lastRotation);
-            float strength = MathHelper.Clamp((angleDelta - 0.04f) / 0.72f, 0f, 1f);
-            int smearCount = Math.Min(6, Math.Max(1, (int)MathF.Ceiling(angleDelta / 0.18f)));
-            for (int i = 1; i <= smearCount && strength > 0f; i++) {
-                float amount = i / (float)(smearCount + 1);
-                float rot = MathHelper.Lerp(currentRotation, lastRotation, amount);
-                Vector2 pos = hand + rot.ToRotationVector2() * dist - Main.screenPosition;
-                //前段残影泄红,后段沉入黑
-                Color trailColor = amount < 0.45f
-                    ? new Color(255, 45, 30) * (0.42f * strength * (1f - amount))
-                    : new Color(30, 6, 10) * (0.55f * strength * (1f - amount));
-                trailColor.A = 0;
-                Main.EntitySpriteDraw(tex, pos, null, trailColor, rot + rotOffset, origin
-                    , Projectile.scale, effect, 0);
-            }
-            return false;
-        }
+        //残影不画在这层:实体层会被刀光黑体盖住,全部改画在 Overlay 层
+        public override bool PreDraw(ref Color lightColor) => false;
 
         private void GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset) {
             bool edgeFlip = swingSign * lockedDirection < 0;
@@ -513,6 +515,9 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             float dist = BladeReach * 0.5f * Projectile.scale;
             GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset);
 
+            //刀身残影:压在刀光带之上、真刀之下,快速运动的滞留视像
+            DrawBladeGhosts(tex, origin, hand, dist, effect, rotOffset);
+
             //刀身本体 + 辉光层
             Color lightColor = Lighting.GetColor((int)(hand.X / 16f), (int)(hand.Y / 16f));
             Vector2 drawPos = hand + currentRotation.ToRotationVector2() * dist - Main.screenPosition;
@@ -521,6 +526,56 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             Texture2D glow = DestroyersBladeEX.Glow.Value;
             Main.EntitySpriteDraw(glow, drawPos, null, Color.White, currentRotation + rotOffset, glow.Size() / 2f
                 , Projectile.scale, effect, 0);
+        }
+
+        /// <summary>
+        /// 沿刀光弧线按角距取样重画刀身:近刃两影泄红热(加色),旧影真 alpha 黑剪影沉进刀光,
+        /// 随刀光淡出一起消散,收势期跟着裁剪回拢
+        /// </summary>
+        private void DrawBladeGhosts(Texture2D tex, Vector2 origin, Vector2 hand, float dist
+            , SpriteEffects effect, float rotOffset) {
+            float strength = trailFade * slashBirth;
+            if (trailCount < 2 || strength <= 0.03f) {
+                return;
+            }
+
+            const float GhostHeadGap = 0.20f;   //贴着真刀的一段不画,免得糊住本体
+            const float GhostSpacing = 0.30f;   //相邻残影角距
+            const int GhostMax = 7;
+            Span<float> ghostRot = stackalloc float[GhostMax];
+            Span<float> ghostAge = stackalloc float[GhostMax];
+            int count = 0;
+            float arc = 0f;
+            float nextEmit = GhostHeadGap;
+            float maxArc = GhostHeadGap + GhostSpacing * GhostMax;
+            for (int i = 1; i < trailCount && count < GhostMax; i++) {
+                arc += MathF.Abs(trailRot[i - 1] - trailRot[i]);
+                if (arc < nextEmit) {
+                    continue;
+                }
+                ghostRot[count] = trailRot[i];
+                ghostAge[count] = MathHelper.Clamp((arc - GhostHeadGap) / (maxArc - GhostHeadGap), 0f, 1f);
+                count++;
+                nextEmit += GhostSpacing;
+            }
+
+            //旧影先画,新影压上
+            for (int k = count - 1; k >= 0; k--) {
+                float fall = 1f - ghostAge[k];
+                Vector2 pos = hand + ghostRot[k].ToRotationVector2() * dist - Main.screenPosition;
+                Color ghostColor;
+                if (ghostAge[k] < 0.3f) {
+                    //新影:炽红余温
+                    ghostColor = new Color(255, 58, 34) * (0.5f * fall * strength);
+                    ghostColor.A = 0;
+                }
+                else {
+                    //旧影:黑剪影,真 alpha 才能在红光里压出暗形
+                    ghostColor = new Color(20, 5, 9) * (0.6f * fall * strength);
+                }
+                Main.EntitySpriteDraw(tex, pos, null, ghostColor, ghostRot[k] + rotOffset, origin
+                    , Projectile.scale, effect, 0);
+            }
         }
 
         void IPrimitiveDrawable.DrawPrimitives() {
@@ -570,6 +625,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             effect.Parameters["fadeAlpha"]?.SetValue(trailFade);
             effect.Parameters["empowerMix"]?.SetValue(Empowered ? 1f : 0f);
             effect.Parameters["segCount"]?.SetValue(MathF.Max(5f, SwingArc * 2.0f));
+            effect.Parameters["birthProgress"]?.SetValue(slashBirth);
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                 pass.Apply();
                 device.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars, 0, bars.Length - 2);

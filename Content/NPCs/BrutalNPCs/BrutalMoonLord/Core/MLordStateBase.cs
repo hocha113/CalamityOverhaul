@@ -36,6 +36,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         PalmExecution = 13,
         /// <summary>黑闪（终局大招：四臂合搓黑洞掷出）</summary>
         BlackFlash = 14,
+        /// <summary>月明湮灭（残血循环大招：黑臂四锚定桩，心口喷发巨幅横扫死光）</summary>
+        LunarAnnihilation = 15,
     }
 
     /// <summary>核心状态接口</summary>
@@ -95,7 +97,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
             return state as IMLordState ?? new States.MLordConcertoState();
         }
 
-        /// <summary>核心弹簧悬停：目标点 + 平滑速度进给</summary>
+        /// <summary>
+        /// 核心弹簧悬停：目标点 + 平滑速度进给。
+        /// 仅供演出自管状态（登场/死亡/月退）使用；战斗状态一律走 <see cref="RequestMove"/>，
+        /// 本体不再自走，由四手爬行系统拖动（<see cref="MLordLocomotion"/>）
+        /// </summary>
         protected static void HoverTo(NPC npc, Vector2 toPoint, float maxSpeed, float gain = 0.055f) {
             Vector2 want = (toPoint - npc.Center) * gain;
             if (want.Length() > maxSpeed) {
@@ -104,10 +110,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
             npc.velocity = Vector2.Lerp(npc.velocity, want, 0.14f);
         }
 
-        /// <summary>核心随速倾斜</summary>
+        /// <summary>向爬行系统申报本帧移动意图（状态每帧重申，核心 AI 帧首清默认）</summary>
+        protected static void RequestMove(MLordContext context, Vector2 goal, float urgency,
+            MLordMovePolicy policy = MLordMovePolicy.Travel) {
+            context.MoveGoal = goal;
+            context.MoveUrgency = MathHelper.Clamp(urgency, 0f, 1f);
+            context.MovePolicy = policy;
+        }
+
+        /// <summary>核心随速倾斜：被手阵拽动时身体向行进方向压出可读的倾角</summary>
         protected static void UpdateLean(MLordContext context) {
             NPC npc = context.Npc;
-            context.LeanAngle = MathHelper.Clamp(npc.velocity.X * 0.012f, -0.09f, 0.09f);
+            context.LeanAngle = MathHelper.Clamp(npc.velocity.X * 0.015f, -0.11f, 0.11f);
             npc.rotation = npc.rotation.AngleLerp(context.LeanAngle, 0.1f);
         }
 

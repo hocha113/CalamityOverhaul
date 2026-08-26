@@ -25,6 +25,7 @@ float3 uColBright;   //亮带冰青
 float3 uColStorm;    //电光白青,闪电与风暴眼芯
 float uSolidity;     //星云实体度:真身约 0.62,幻象约 0.25,识真线索=遮挡程度
 float uPupil;        //月明竖瞳开度 0~1
+float uCrack;        //裂解进度 0~1(TechCrack 覆层用)
 
 //球盘画布半径,C# 侧同名常量必须同步
 static const float DiscR = 0.42;
@@ -160,39 +161,39 @@ float4 NebulaPS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
     }
 
     float t = uTime;
-    //三层云絮:中频为主,层间异速反向,读作纵深
-    float n1 = noise(q * 0.90 + float2(t * 0.012, -t * 0.008));
-    float n2 = noise(q * 1.70 + float2(-t * 0.020, t * 0.014) + 3.7);
-    float n3 = noise(q * 3.10 + float2(t * 0.031, t * 0.022) + 7.1);
-    float cloud = n1 * 0.50 + n2 * 0.32 + n3 * 0.18;
-    //对比拉开:云絮成块,不糊成球
-    float wisp = smoothstep(0.32, 0.78, cloud);
-
-    float envelope = smoothstep(1.42, 0.50, rq);
-    float density = envelope * (0.18 + wisp * 1.05);
-
-    //神经触须:径向拉丝
+    //星云球:差速旋转把云絮搅成旋臂,有亮核有盘缘,读作"一颗由星云构成的行星"
     float2 unit = rq > 0.001 ? q / rq : float2(0.0, 1.0);
-    float tendril = noise(unit * 1.1 + rq * 2.2 - t * 0.035);
-    float tendrilMask = smoothstep(0.52, 0.88, tendril)
-        * smoothstep(0.30, 0.80, rq) * smoothstep(1.45, 0.95, rq);
-    density += tendrilMask * 0.55;
+    float swirlAng = (1.35 - rq) * 2.2 + t * 0.16;
+    float cs2 = cos(swirlAng);
+    float sn2 = sin(swirlAng);
+    float2 v = float2(q.x * cs2 - q.y * sn2, q.x * sn2 + q.y * cs2);
+    float2 unitV = rq > 0.001 ? v / rq : float2(0.0, 1.0);
+    //旋臂:径向条纹被差速拧成螺旋
+    float arm = noise(unitV * 1.3 + rq * 1.6);
+    float armMask = smoothstep(0.38, 0.80, arm);
+    float puff = noise(v * 1.6 + t * float2(0.018, 0.012) + 3.7);
 
-    //色阶:外紫内亮,芯白热
-    float3 col = lerp(uColDeep, uColMid, saturate(wisp * 1.2 + 0.15));
-    col = lerp(col, uColBright, smoothstep(0.55, 0.90, wisp) * 0.8);
-    float core = exp(-rq * rq * 2.2);
-    col += uColStorm * core * (0.50 + 0.30 * n2);
-    col += uColMid * tendrilMask * 0.6;
+    //盘体:软缘但有明确边界
+    float body = 1.0 - smoothstep(0.88, 1.06, rq);
+    float density = body * (0.42 + armMask * 0.55 + puff * 0.25);
+
+    //色阶:臂间深紫,旋臂魔紫,芯白热
+    float3 col = lerp(uColDeep, uColMid, saturate(armMask * 1.1 + puff * 0.25));
+    col = lerp(col, uColBright, pow(armMask, 2.0) * 0.75);
+    float core = exp(-rq * rq * 3.0);
+    col += uColStorm * core * (0.85 + 0.30 * puff);
+    //缘辉:盘缘一圈魔紫气光,球的轮廓
+    float rim = exp(-abs(rq - 0.97) * 9.0);
+    col += uColBright * rim * 0.55;
 
     float A = saturate(density) * uSolidity;
     float3 C = col * A;
-    //星点从稀薄处透出:它是气,不是石头(Perlin 中值聚集,阈值放低配 pow 锐化)
+    C += uColMid * rim * 0.30;
+    A = saturate(A + rim * 0.18);
+    //外围散逸星点
     float starN = noise(q * 4.7 + 11.3);
     float star = pow(smoothstep(0.72, 0.92, starN), 2.0);
-    float twinkle = 0.5 + 0.5 * noise(float2(t * 0.13, dot(q, float2(3.7, 1.3))));
-    C += uColStorm * star * twinkle * saturate(1.0 - density * 0.85)
-        * smoothstep(1.35, 0.50, rq) * 0.9;
+    C += uColStorm * star * saturate(rq - 0.9) * smoothstep(1.45, 1.0, rq) * 0.7;
 
     return float4(C, A) * uAlpha * vertexColor;
 }
@@ -255,12 +256,17 @@ float4 StardustPS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLO
     float fres = pow(1.0 - N.z, 3.0);
     body += uColBright * fres * (0.2 + 0.8 * lit) * 0.5;
 
-    //环系:压扁椭圆带,盘内只画前半(q.y>0)
+    //环系:压扁椭圆带,环面波动+环向流转(单位向量坐标,无极角无缝),盘内只画前半(q.y>0)
     float2 e = float2(q.x, q.y / 0.24);
     float re = length(e);
-    float ringBand = smoothstep(1.45, 1.70, re) * (1.0 - smoothstep(2.00, 2.20, re));
-    float ringGrain = noise(float2(re * 3.4 + t * 0.015, q.x * 0.9 + 5.0));
-    ringBand *= 0.45 + 0.80 * ringGrain;
+    float2 unitE = re > 0.001 ? e / re : float2(0.0, 1.0);
+    //环半径低频起伏:环在呼吸
+    float wobble = (noise(unitE * 0.9 + t * 0.05) - 0.5) * 0.16;
+    float reW = re + wobble;
+    float ringBand = smoothstep(1.45, 1.70, reW) * (1.0 - smoothstep(2.00, 2.20, reW));
+    //环纹沿环向流动=晶屑公转
+    float ringGrain = noise(unitE * 1.6 + float2(t * 0.14, -t * 0.11) + reW * 2.2);
+    ringBand *= 0.40 + 0.85 * ringGrain;
     float ringVis = rq > 1.0 ? 1.0 : step(0.0, q.y);
     float2 unitQ = rq > 0.001 ? q / rq : float2(0.0, 1.0);
     float ringLit = 0.5 + 0.5 * saturate(dot(float3(unitQ, 0.0), L));
@@ -403,5 +409,50 @@ technique TechMoon
     pass MoonPass
     {
         PixelShader = compile ps_3_0 MoonPS();
+    }
+}
+
+//===========================================================================
+//TechCrack 星球裂解覆层:转阶段爆炸前叠画在星球上——裂纹沿球面生长,
+//缝里透出内核熔岩光;uCrack 0~1 = 裂解进度(宽度+亮度+暗化外壳)
+//===========================================================================
+float4 CrackPS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
+{
+    float2 p = (coords - 0.5) * 2.0;
+    float2 q = p / DiscR;
+    float r2 = dot(q, q);
+    float rq = length(q);
+    if (rq > 1.02) {
+        return float4(0, 0, 0, 0);
+    }
+    float inDisc = 1.0 - smoothstep(0.99, 1.01, rq);
+    float3 N = float3(q.x, q.y, sqrt(saturate(1.0 - r2)));
+    float lon = atan2(N.x, N.z) * 0.15915494;
+    float latV = asin(clamp(N.y, -1.0, 1.0)) * 0.31830989 + 0.5;
+
+    //脊线裂纹:|噪声-0.5| 低谷即缝,进度加宽
+    float cn = noise(float2(lon * 2.6 + 3.3, latV * 2.6));
+    float cn2 = noise(float2(lon * 5.1 + 8.8, latV * 5.1 + 2.2));
+    float ridge = abs(cn - 0.5) * 0.7 + abs(cn2 - 0.5) * 0.3;
+    float w = 0.020 + uCrack * 0.11;
+    float crack = 1.0 - smoothstep(w * 0.4, w, ridge);
+    crack *= inDisc * step(0.02, uCrack);
+
+    //熔岩透光:缝里白热橙,随进度增压;外壳同步压暗
+    float3 lava = lerp(float3(1.0, 0.32, 0.05), float3(1.0, 0.85, 0.45), crack * uCrack);
+    float glow = crack * (0.35 + uCrack * 1.1);
+    float darken = inDisc * uCrack * 0.38;
+
+    //预乘:缝加光,壳减光(暗化用 A 载,颜色趋黑)
+    float3 C = lava * glow;
+    float A = darken + crack * uCrack * 0.25;
+    return float4(C, saturate(A)) * uAlpha * vertexColor;
+}
+
+technique TechCrack
+{
+    pass CrackPass
+    {
+        PixelShader = compile ps_3_0 CrackPS();
     }
 }

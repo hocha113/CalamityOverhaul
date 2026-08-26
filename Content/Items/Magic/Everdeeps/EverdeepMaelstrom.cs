@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Rendering;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -12,9 +13,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Magic.Everdeeps
 {
     /// <summary>
-    /// 渊涡水龙卷:共鸣满溢的结算物。在触发点起身成巨柱,
-    /// 缓慢漂向最近的敌人,把非 Boss 敌人卷向柱轴,持续打击柱内目标;
-    /// 柱身悬浮不贴地,水龙卷里有深渊生物的剪影在游。
+    /// 渊涡水龙卷:共鸣满溢的结算物。在触发目标脚下的地面喷发起柱,
+    /// 足底吸附地形、贴地缓步压向最近的敌人,把非 Boss 敌人卷向柱轴;
+    /// 柱脚持续向两侧踢水,液滴落地贴面成膜,水龙卷里有深渊生物的剪影在游。
     /// 绘制复用 FishronTornado.fx 换深渊色板
     /// </summary>
     internal class EverdeepMaelstrom : ModProjectile
@@ -30,15 +31,21 @@ namespace CalamityOverhaul.Content.Items.Magic.Everdeeps
         private const int FadeTime = 44;
         /// <summary>总寿命</summary>
         private const int TotalLife = 380;
+        /// <summary>出生地面冲击环演出帧数</summary>
+        private const float GroundRingTime = 30f;
 
         private const float ColumnWidth = 210f;
         private const float ColumnHeight = 640f;
+        /// <summary>贴地行走速度</summary>
+        private const float WalkSpeed = 2.4f;
 
         private ref float LifeTimer => ref Projectile.localAI[0];
 
         private float seed;
-        /// <summary>漂移速度,缓进缓出</summary>
-        private Vector2 driftVel;
+        /// <summary>当前行走方向(纯视觉,喂给基座泡沫)</summary>
+        private float walkDir;
+        /// <summary>出生地环演出计时(纯视觉)</summary>
+        private float groundRingTimer;
 
         /// <summary>起身/消散包络</summary>
         private float Envelope {
@@ -85,23 +92,33 @@ namespace CalamityOverhaul.Content.Items.Magic.Everdeeps
             seed = Projectile.whoAmI * 0.617f;
             float env = Envelope;
 
-            //出生拍:各端按 LifeTimer 自播,不依赖生成端
+            //足底吸附地表:出生帧直落到地,之后限速攀爬贴合起伏地形
+            Vector2 ground = FishronMotionFX.FindSurfaceBelow(
+                new Vector2(Projectile.Center.X, Projectile.Center.Y - ColumnHeight * 0.2f), out _);
+            float targetBottom = ground.Y + 8f;
+            float currentBottom = Projectile.position.Y + Projectile.height;
+            if (LifeTimer <= 1f) {
+                Projectile.position.Y += targetBottom - currentBottom;
+            }
+            else {
+                Projectile.position.Y += MathHelper.Clamp(targetBottom - currentBottom, -9f, 9f);
+            }
+
+            //出生拍:落地之后再演,水从地面喷出来;各端按 LifeTimer 自播
             if (LifeTimer == 1f && !VaultUtils.isServer) {
                 SpawnBeat();
             }
 
-            //缓慢漂向最近的敌人,无目标时原地悬浮微沉浮
+            //贴地行走:缓步压向最近的敌人,只走横向,纵向交给地形吸附
             NPC quarry = FindQuarry();
-            Vector2 want = Vector2.Zero;
+            walkDir = 0f;
             if (quarry != null && LifeTimer > RiseTime) {
-                Vector2 to = quarry.Center - Projectile.Center;
-                if (to.Length() > 40f) {
-                    want = to.SafeNormalize(Vector2.Zero) * 2.3f;
+                float dx = quarry.Center.X - Projectile.Center.X;
+                if (Math.Abs(dx) > 60f) {
+                    walkDir = Math.Sign(dx);
+                    Projectile.position.X += walkDir * WalkSpeed * env;
                 }
             }
-            driftVel = Vector2.Lerp(driftVel, want, 0.03f);
-            Projectile.position += driftVel * env;
-            Projectile.position.Y += MathF.Sin(LifeTimer * 0.035f + seed) * 0.35f;
 
             //卷吸:柱域内非 Boss 敌人被拽向柱轴并卷起(服务端/单人裁决)
             if (!VaultUtils.isClient && HitWindowOpen) {
@@ -111,6 +128,9 @@ namespace CalamityOverhaul.Content.Items.Magic.Everdeeps
                 }
             }
 
+            if (groundRingTimer > 0f) {
+                groundRingTimer--;
+            }
             UpdateVisuals(env);
         }
 
@@ -161,43 +181,67 @@ namespace CalamityOverhaul.Content.Items.Magic.Everdeeps
             EverdeepVFX.SplashBurst(target.Center, new Vector2(0, -6f), 0.5f);
         }
 
-        /// <summary>出生拍:巨柱破水而起,一圈冲击水环+水花+屏震</summary>
+        /// <summary>出生拍:水从地面喷发起柱,地面冲击环+贴地水花+屏震</summary>
         private void SpawnBeat() {
-            SoundEngine.PlaySound(SoundID.Item96 with { Volume = 0.75f, Pitch = -0.35f }, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.9f, Pitch = -0.3f }, Projectile.Center);
+            groundRingTimer = GroundRingTime;
+            Vector2 bottom = new(Projectile.Center.X, Projectile.position.Y + Projectile.height);
+
+            SoundEngine.PlaySound(SoundID.Item96 with { Volume = 0.75f, Pitch = -0.35f }, bottom);
+            SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.9f, Pitch = -0.3f }, bottom);
             SoundEngine.PlaySound(SoundID.DD2_BookStaffTwisterLoop with {
                 Volume = 0.8f,
                 Pitch = -0.2f,
-            }, Projectile.Center);
+            }, bottom);
 
-            if (Main.LocalPlayer.Distance(Projectile.Center) < 1300f) {
+            if (Main.LocalPlayer.Distance(bottom) < 1300f) {
                 Main.LocalPlayer.CWR().GetScreenShake(5f);
             }
 
-            //破水拍:向四周甩水
-            for (int i = 0; i < 22; i++) {
-                float ang = MathHelper.TwoPi * i / 22f;
-                Vector2 dir = ang.ToRotationVector2();
-                EverdeepVFX.ShedDroplet(Projectile.Center + dir * Main.rand.NextFloat(10f, 50f)
-                    , dir * Main.rand.NextFloat(3f, 9f) - Vector2.UnitY * Main.rand.NextFloat(1f, 4f)
+            //喷发芯:柱脚整段向上喷水
+            for (int i = 0; i < 24; i++) {
+                float lx = Main.rand.NextFloat(-0.5f, 0.5f) * ColumnWidth;
+                EverdeepVFX.ShedDroplet(bottom + new Vector2(lx, -Main.rand.NextFloat(0f, 16f))
+                    , new Vector2(lx * 0.02f + Main.rand.NextFloat(-1.2f, 1.2f), -Main.rand.NextFloat(4f, 11f))
                     , Main.rand.NextFloat(0.9f, 1.4f));
+            }
+            //沿地面向两侧压出去的低角水花:液滴落地贴面成膜,水迹留在地上
+            for (int i = 0; i < 12; i++) {
+                float sign = i % 2 == 0 ? 1f : -1f;
+                EverdeepVFX.ShedDroplet(
+                    bottom + new Vector2(sign * ColumnWidth * Main.rand.NextFloat(0.25f, 0.55f), -Main.rand.NextFloat(2f, 10f))
+                    , new Vector2(sign * Main.rand.NextFloat(3f, 7.5f), -Main.rand.NextFloat(0.5f, 2f))
+                    , Main.rand.NextFloat(0.7f, 1.1f));
             }
         }
 
-        /// <summary>柱身常驻演出:基座泡沫/柱身甩滴/顶冠散逸/游动的深渊剪影</summary>
+        /// <summary>柱身常驻演出:基座泡沫/柱脚踢水/地面水压环/柱身甩滴/顶冠散逸/深渊剪影</summary>
         private void UpdateVisuals(float env) {
             if (VaultUtils.isServer) {
                 return;
             }
             Vector2 bottom = new(Projectile.Center.X, Projectile.position.Y + Projectile.height);
 
-            //基座泡沫翻涌
+            //基座泡沫翻涌,随行走方向拖尾
             if (Main.rand.NextBool(3)) {
                 PRTLoader.NewParticle<PRT_OceanCurrentFoam>(
                     bottom + new Vector2(Main.rand.NextFloat(-ColumnWidth * 0.55f, ColumnWidth * 0.55f), -10f)
-                    , new Vector2(driftVel.X * 0.8f, -Main.rand.NextFloat(0.5f, 1.4f))
+                    , new Vector2(walkDir * 1.2f, -Main.rand.NextFloat(0.5f, 1.4f))
                     , EverdeepVFX.AbyssFoam * (0.55f * env), Main.rand.NextFloat(0.08f, 0.14f))
                     ?.Configure(Main.rand.Next(24, 40), Main.rand.NextFloat(0.02f, 0.05f));
+            }
+            //柱脚沿地踢水:低角水花落地贴面成膜,走过的地面留下水迹
+            if ((int)LifeTimer % 3 == 0) {
+                float sign = Main.rand.NextBool() ? 1f : -1f;
+                EverdeepVFX.ShedDroplet(
+                    bottom + new Vector2(sign * ColumnWidth * Main.rand.NextFloat(0.25f, 0.5f), -Main.rand.NextFloat(2f, 8f))
+                    , new Vector2(sign * Main.rand.NextFloat(2.5f, 5.5f) + walkDir * 0.8f, -Main.rand.NextFloat(0.8f, 2.4f))
+                    , Main.rand.NextFloat(0.6f, 1f) * env);
+            }
+            //地面水压环:贴地椭圆自柱脚一圈圈荡开
+            if ((int)LifeTimer % 26 == 0 && env > 0.5f) {
+                PRTLoader.NewParticle<PRT_OceanCurrentWake>(bottom - new Vector2(0, 4f), Vector2.Zero
+                    , EverdeepVFX.AbyssGlow * 0.75f, 0.06f)
+                    ?.Configure(Vector2.UnitX, new Vector2(1f, 0.30f), 0.55f, Main.rand.Next(13, 18));
             }
             //柱身离心甩滴
             if (Main.rand.NextBool(2)) {
@@ -247,11 +291,25 @@ namespace CalamityOverhaul.Content.Items.Magic.Everdeeps
                 return false;
             }
 
-            Effect effect = EffectLoader.FishronTornado?.Value;
             Vector2 bottom = new(Projectile.Center.X, Projectile.position.Y + Projectile.height);
-            //quad 大幅宽于名义柱径:撕裂轮廓与离体飞沫全留在画布内侧(合同同鲨鱼龙卷)
+
+            //出生地面冲击环:贴地椭圆自柱脚荡开(共享 ShockRing,调用方须处于实体批)
+            if (groundRingTimer > 0f) {
+                float t = 1f - groundRingTimer / GroundRingTime;
+                float ease = 1f - (1f - t) * (1f - t);
+                ShockRingDraw.Draw(Main.spriteBatch, bottom - new Vector2(0, 6f)
+                    , MathHelper.Lerp(46f, 235f, ease), 15f
+                    , EverdeepVFX.AbyssFoam, EverdeepVFX.AbyssGlow, EverdeepVFX.AbyssDeep
+                    , (1f - t) * 0.85f, tearPx: 13f, squish: 0.34f, innerGlow: 0.25f, timeSeed: seed);
+            }
+
+            Effect effect = EffectLoader.FishronTornado?.Value;
+            //quad 大幅宽于名义柱径:撕裂轮廓与离体飞沫全留在画布内侧(合同同鲨鱼龙卷);
+            //柱高吃起身缓动,底锚地面 → 水柱从地里长出来,不是凭空淡入
+            float riseT = MathHelper.Clamp(LifeTimer / RiseTime, 0f, 1f);
+            riseT = 1f - (1f - riseT) * (1f - riseT);
             float drawW = ColumnWidth * 3.0f;
-            float drawH = ColumnHeight * 1.30f;
+            float drawH = ColumnHeight * 1.30f * MathHelper.Lerp(0.30f, 1f, riseT);
             Vector2 drawCenter = bottom - new Vector2(0, drawH * 0.5f);
 
             if (effect == null || noiseTex == null) {

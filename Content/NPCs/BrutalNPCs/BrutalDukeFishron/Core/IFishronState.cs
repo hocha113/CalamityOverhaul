@@ -36,6 +36,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Core
         VortexSnare = 17,
         /// <summary>投技·涡底猎杀：抓取连段演出</summary>
         VortexGrab = 18,
+        /// <summary>潜浪跃袭：入水掠行，破水腾空翻滚甩鲨</summary>
+        DiveBreach = 19,
+        /// <summary>雨隐猎杀：残血隐入雨幕，预告线引出隐身突击</summary>
+        VeilHunt = 20,
     }
 
     /// <summary>状态接口</summary>

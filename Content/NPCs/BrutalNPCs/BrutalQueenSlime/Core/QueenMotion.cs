@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -6,6 +7,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core
 {
@@ -71,6 +73,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core
         public static void LaunchHop(NPC npc, float vx, float vy) {
             npc.velocity = new Vector2(vx, vy);
             npc.netUpdate = true;
+        }
+
+        /// <summary>掠影冲刺·蓄势后拉：前段几乎不动，末段猛地向反方向收(读作吸气)</summary>
+        public static void FlitPullback(NPC npc, Vector2 dir, float t01, float strength = 2.4f) {
+            npc.velocity *= 0.82f;
+            npc.velocity -= dir * LateSnap(t01, 6) * strength;
+        }
+
+        /// <summary>掠影冲刺·一帧全速释放</summary>
+        public static void FlitLaunch(NPC npc, Vector2 dir, float speed) {
+            npc.velocity = dir * speed;
+            npc.netUpdate = true;
+        }
+
+        /// <summary>掠影冲刺·硬刹(读作"钉在位置上")</summary>
+        public static void FlitBrake(NPC npc, float factor = 0.72f) {
+            npc.velocity *= factor;
         }
 
         /// <summary>底边锚定改缩放，防位置漂移</summary>
@@ -185,8 +204,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core
         #endregion
 
         #region 随从生成(服务端)
-        /// <summary>生成随从并写角色/槽位/属主，服务端调用</summary>
-        public static NPC SpawnMinion(NPC queen, int npcType, int role, int slot, Vector2 pos, int lifeOverride = 0) {
+        /// <summary>生成随从并写角色/槽位/属主，服务端调用；fling=出生甩出速度(分裂演出用)</summary>
+        public static NPC SpawnMinion(NPC queen, int npcType, int role, int slot, Vector2 pos, int lifeOverride = 0, Vector2? fling = null) {
             if (VaultUtils.isClient) {
                 return null;
             }
@@ -199,6 +218,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core
             if (lifeOverride > 0) {
                 minion.lifeMax = lifeOverride;
                 minion.life = lifeOverride;
+            }
+            if (fling.HasValue) {
+                minion.velocity = fling.Value;
             }
             minion.netUpdate = true;
             if (Main.dedServ) {
@@ -218,6 +240,66 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core
                 NetMessage.SendStrikeNPC(n, in hit);
             }
         }
+
+        #region 尖刺发射(服务端)
+        /// <summary>
+        /// 绽放尖刺环(服务端)：环形悬停成花→齐射外扩。缺口由 gapCenter/gapHalf 声明，
+        /// 发射循环与 <see cref="QueenSpikeOmenProj"/> 环预告读同一常量——缺口可见即安全。
+        /// </summary>
+        public static void SpawnSpikeBurst(NPC npc, Vector2 center, int count, float gapCenter, float gapHalf,
+            int hangExtra, int damage, float hueBase, float ringRadius = 30f) {
+            if (VaultUtils.isClient) {
+                return;
+            }
+            for (int i = 0; i < count; i++) {
+                float ang = MathHelper.TwoPi * i / count + 0.5f / count * MathHelper.TwoPi;
+                //缺口声明：跳过安全角内的刺
+                if (Math.Abs(MathHelper.WrapAngle(ang - gapCenter)) < gapHalf) {
+                    continue;
+                }
+                Vector2 dir = ang.ToRotationVector2();
+                Projectile.NewProjectile(npc.GetSource_FromAI(), center + dir * ringRadius, dir * 2f,
+                    ModContent.ProjectileType<QueenCrystalSpikeProj>(), damage, 0f, Main.myPlayer,
+                    (int)QueenCrystalSpikeProj.Mode.Burst, hangExtra, (hueBase + i / (float)count * 0.4f) % 1f);
+            }
+        }
+
+        /// <summary>瞄准尖刺扇(服务端)：向 aim 方向的扇形直刺，出生锁向(预告即承诺)</summary>
+        public static void SpawnSpikeFan(NPC source, Vector2 from, Vector2 aim, int count, float spreadHalf,
+            float speed, int damage, float hueBase) {
+            if (VaultUtils.isClient) {
+                return;
+            }
+            Vector2 baseDir = (aim - from).SafeNormalize(Vector2.UnitY);
+            for (int i = 0; i < count; i++) {
+                float spread = count == 1 ? 0f : MathHelper.Lerp(-spreadHalf, spreadHalf, i / (float)(count - 1));
+                Vector2 vel = baseDir.RotatedBy(spread) * speed;
+                Projectile.NewProjectile(source.GetSource_FromAI(), from, vel,
+                    ModContent.ProjectileType<QueenCrystalSpikeProj>(), damage, 0f, Main.myPlayer,
+                    (int)QueenCrystalSpikeProj.Mode.Aimed, 0f, (hueBase + i * 0.11f) % 1f);
+            }
+        }
+
+        /// <summary>环形缺口预告(服务端)：与绽放环同源常量</summary>
+        public static void SpawnBurstRingOmen(NPC npc, Vector2 center, float radius, float gapCenter, int life) {
+            if (VaultUtils.isClient) {
+                return;
+            }
+            Projectile.NewProjectile(npc.GetSource_FromAI(), center, Vector2.Zero,
+                ModContent.ProjectileType<QueenSpikeOmenProj>(), 0, 0f, Main.myPlayer,
+                (int)QueenSpikeOmenProj.OmenMode.BurstRing, radius, QueenSpikeOmenProj.PackRing(gapCenter, life));
+        }
+
+        /// <summary>竖直车道预告(服务端)：自顶点向下 length 像素的虚线走廊</summary>
+        public static void SpawnLaneOmen(NPC npc, Vector2 top, float length, int life) {
+            if (VaultUtils.isClient) {
+                return;
+            }
+            Projectile.NewProjectile(npc.GetSource_FromAI(), top, Vector2.Zero,
+                ModContent.ProjectileType<QueenSpikeOmenProj>(), 0, 0f, Main.myPlayer,
+                (int)QueenSpikeOmenProj.OmenMode.Lane, length, life);
+        }
+        #endregion
 
         /// <summary>清场：击碎本皇后麾下全部随从，服务端调用</summary>
         public static void ShatterAllMinions(NPC queen) {

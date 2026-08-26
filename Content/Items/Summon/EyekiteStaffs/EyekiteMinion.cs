@@ -48,6 +48,8 @@ namespace CalamityOverhaul.Content.Items.Summon.EyekiteStaffs
         private float visualTwangPos;
         private float dashHeat;
         private float appear;
+        /// <summary>朝左时垂直翻转采样，带滞回防正上正下抖</summary>
+        private bool faceFlipped;
         private Color cordLight = Color.White;
 
         private Player Owner => Main.player[Projectile.owner];
@@ -348,17 +350,39 @@ namespace CalamityOverhaul.Content.Items.Summon.EyekiteStaffs
                 visualTwang *= 0.9f;
             }
 
-            float speed = Projectile.velocity.Length();
-            if (speed > 1.1f) {
-                Projectile.rotation = Projectile.velocity.ToRotation();
+            //期望朝向按状态取，再做最短路角度平滑，杜绝参考系硬切的帧间跳变
+            Vector2 face;
+            float turn;
+            switch ((int)State) {
+                case StWindup: {
+                    NPC target = ResolveTarget();
+                    face = target != null ? target.Center - Projectile.Center : Projectile.rotation.ToRotationVector2();
+                    turn = 0.3f;
+                    break;
+                }
+                case StCharge:
+                    face = Projectile.velocity;
+                    turn = 0.4f;
+                    break;
+                case StYank:
+                    //被拽回时仍瞪着扑出去的方向，尾巴先行
+                    face = -Projectile.velocity;
+                    turn = 0.25f;
+                    break;
+                default:
+                    face = Projectile.velocity.LengthSquared() > 2.2f
+                        ? Projectile.velocity
+                        : Projectile.Center - Owner.Center;
+                    turn = 0.1f;
+                    break;
             }
-            else {
-                Projectile.rotation = (Projectile.Center - Owner.Center).ToRotation();
+
+            float desired = face.SafeNormalize(Vector2.UnitX).ToRotation();
+            if (State == StIdle && InStruggleWindow()) {
+                //挣扎期慢频小幅摆头，不是高频振动
+                desired += MathF.Sin(Main.GameUpdateCount * 0.31f + Projectile.identity * 1.7f) * 0.3f;
             }
-            if (InStruggleWindow() && State == StIdle) {
-                Projectile.rotation += MathF.Sin(Main.GameUpdateCount * 0.9f + Projectile.identity) * 0.42f;
-            }
-            Projectile.spriteDirection = Projectile.velocity.X >= 0f ? 1 : -1;
+            Projectile.rotation += MathHelper.WrapAngle(desired - Projectile.rotation) * turn;
         }
 
         private float CordWidthFunc(float t)
@@ -401,8 +425,15 @@ namespace CalamityOverhaul.Content.Items.Summon.EyekiteStaffs
             float stretch = MathHelper.Clamp((speed - 4.5f) * 0.042f, 0f, 0.4f);
             Vector2 scale = new Vector2(1f + stretch, 1f - stretch * 0.32f) * Projectile.scale * MathHelper.Lerp(0.4f, 1f, appear);
             Color color = lightColor * appear;
-            SpriteEffects fx = SpriteEffects.None;
-            //贴图朝右，旋转吃速度角
+            //贴图朝右：朝左半平面时垂直翻转采样防倒栽，±0.22 滞回防正上正下逐帧闪
+            float cosr = MathF.Cos(Projectile.rotation);
+            if (cosr < -0.22f) {
+                faceFlipped = true;
+            }
+            else if (cosr > 0.22f) {
+                faceFlipped = false;
+            }
+            SpriteEffects fx = faceFlipped ? SpriteEffects.FlipVertically : SpriteEffects.None;
             Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, color
                 , Projectile.rotation, origin, scale, fx, 0);
             return false;

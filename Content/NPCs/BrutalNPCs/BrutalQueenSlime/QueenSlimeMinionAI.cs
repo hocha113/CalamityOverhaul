@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
         }
     }
 
-    /// <summary>凝胶伴舞(粉·弹性史莱姆)：绕皇后编队巡舞，低频珠滴</summary>
+    /// <summary>凝胶伴舞(粉·弹性史莱姆)：绕皇后编队巡舞，低频珠滴；协同招式期让拍</summary>
     internal class QueenGelDancerAI : QueenMinionOverrideBase
     {
         public override int TargetID => NPCID.QueenSlimeMinionPink;
@@ -175,6 +175,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
 
         protected override int ManagedLifeMax() => DancerLife();
 
+        /// <summary>皇后正处协同招式(由状态直接指挥仆从开火)，自主火力让拍防叠压</summary>
+        internal static bool QueenCommandingVolley(NPC queen) {
+            int state = (int)queen.ai[2];
+            return state == (int)Core.QueenSlimeStateIndex.SkySpikeCascade
+                || state == (int)Core.QueenSlimeStateIndex.SpikeRing
+                || state == (int)Core.QueenSlimeStateIndex.GelSplitSummon;
+        }
+
         protected override void MinionAI() {
             NPC queen = Queen;
             npc.noGravity = true;
@@ -192,15 +200,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
             npc.rotation = npc.velocity.X * 0.05f;
             npc.spriteDirection = npc.velocity.X > 0f ? 1 : -1;
 
-            //低频珠滴(服务端，槽位错帧)
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 150 == (uint)(slot * 60 % 150)) {
+            //低频珠滴(服务端，槽位错帧；协同期让拍)
+            if (!VaultUtils.isClient && !QueenCommandingVolley(queen)
+                && Main.GameUpdateCount % 132 == (uint)(slot * 60 % 132)) {
                 Player target = Main.player[queen.target];
                 if (target.Alives()) {
                     Vector2 vel = (target.Center - npc.Center).SafeNormalize(Vector2.UnitY) * 6.8f;
                     vel.Y -= 2.2f;
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, vel,
-                        ModContent.ProjectileType<QueenShardProj>(), QueenShardProj.PearlDamage, 0f, Main.myPlayer,
-                        (int)QueenShardProj.Mode.Pearl, 0f, slot * 0.4f);
+                        ModContent.ProjectileType<QueenGelPearlProj>(), QueenGelPearlProj.PearlDamage, 0f, Main.myPlayer,
+                        0f, 0f, slot * 0.4f);
                     if (!VaultUtils.isServer) {
                         QueenMotion.GelSplashBurst(npc.Center, 0.5f, 3);
                     }
@@ -209,7 +218,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
         }
     }
 
-    /// <summary>翼卫(紫·天堂史莱姆)：镜像护航编队，俯冲扫掠时并翼</summary>
+    /// <summary>翼卫(紫·天堂史莱姆)：镜像护航编队，低频瞄准尖刺；协同招式期让拍</summary>
     internal class QueenWingedEscortAI : QueenMinionOverrideBase
     {
         public override int TargetID => NPCID.QueenSlimeMinionPurple;
@@ -244,14 +253,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
             npc.rotation = MathHelper.Clamp(npc.velocity.X * 0.04f, -0.4f, 0.4f);
             npc.spriteDirection = queen.Center.X > npc.Center.X ? 1 : -1;
 
-            //低频瞄准珠(服务端，槽位错帧)
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 170 == (uint)(slot * 85 % 170)) {
+            //低频瞄准尖刺(服务端，槽位错帧；协同期让拍——协同齐射由状态直接指挥)
+            if (!VaultUtils.isClient && !QueenGelDancerAI.QueenCommandingVolley(queen)
+                && Main.GameUpdateCount % 150 == (uint)(slot * 75 % 150)) {
                 Player target = Main.player[queen.target];
                 if (target.Alives()) {
-                    Vector2 vel = (target.Center - npc.Center).SafeNormalize(Vector2.UnitY) * 8.2f;
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, vel,
-                        ModContent.ProjectileType<QueenShardProj>(), QueenShardProj.ShardDamage, 0f, Main.myPlayer,
-                        (int)QueenShardProj.Mode.Shard, 0f, 0.6f + slot * 0.2f);
+                    QueenMotion.SpawnSpikeFan(npc, npc.Center, target.Center, 1, 0f, 8.4f,
+                        Projectiles.QueenCrystalSpikeProj.SpikeDamage, 0.6f + slot * 0.2f);
                     SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.4f, Pitch = 0.55f, MaxInstances = 3 }, npc.Center);
                 }
             }

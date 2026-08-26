@@ -65,5 +65,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core
         /// <summary>释放后无敌帧</summary>
         public static int SnatchReleaseImmune => 90;
         #endregion
+
+        #region 骨臂弹指（Hub 期间手部支援火力）
+        /// <summary>弹指周期帧（左右手错半拍）</summary>
+        public static int FlickPeriod => 96;
+        /// <summary>弹指蓄势帧（卷腕拉弓）</summary>
+        public static int FlickWindup => 16;
+        /// <summary>弹指颅火速度（直线弹，不追踪）</summary>
+        public static float FlickSkullSpeed(bool death) => death ? 7.6f : 6.8f;
+        /// <summary>缺口（契约3）：贴身不弹指，近身是安全窗，弹指判定直接读取</summary>
+        public static float FlickMinDistance => 300f;
+        #endregion
+
+        #region 嘲讽鼓掌
+        /// <summary>缺口（契约3）：骨屑环朝玩家的扇区 ±该角永不发射（鼓掌不瞄人），发射循环直接读取</summary>
+        public static float ApplauseGapHalfAngle => 0.55f;
+        /// <summary>击掌骨屑环基数（第N击 +3N）</summary>
+        public static int ApplauseRingCount => 10;
+        /// <summary>击掌骨屑环速度（第N击 +0.5N）</summary>
+        public static float ApplauseRingSpeed(bool death) => death ? 4.4f : 3.8f;
+        #endregion
     }
 }

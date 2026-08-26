@@ -102,18 +102,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
         public override bool PreDraw(ref Color lightColor) {
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Texture2D star = CWRAsset.StarGlow01.Value;
+            Texture2D rim = CWRAsset.Extra_98.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float scale = IsEmber ? 0.6f : 1f;
+            //暗层用真alpha衬底：亮背景下的岩弹剪影
+            Color rimDark = new(80, 28, 6);
+            float stretch = 1f + MathHelper.Clamp(Projectile.velocity.Length() * 0.02f, 0f, 0.5f);
 
-            //拖尾
+            //拖尾：暗缘衬底 + 热光（同材质缩淡）
             for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
                 float fade = 1f - i / (float)Projectile.oldPos.Length;
                 Vector2 oldPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                Main.EntitySpriteDraw(rim, oldPos, null, rimDark * (0.45f * fade * scale),
+                    Projectile.rotation, rim.Size() / 2f, 0.5f * fade * scale, SpriteEffects.None, 0);
                 Main.EntitySpriteDraw(glow, oldPos, null, new Color(200, 90, 25, 0) * (0.35f * fade * scale),
                     0f, glow.Size() / 2f, 0.4f * fade * scale, SpriteEffects.None, 0);
             }
 
-            //体：热核 + 四芒
+            //体：暗缘岩壳 → 热核 + 四芒
+            Main.EntitySpriteDraw(rim, drawPos, null, rimDark * 0.9f,
+                Projectile.rotation, rim.Size() / 2f,
+                new Vector2(0.66f * scale * stretch, 0.6f * scale), SpriteEffects.None, 0);
             Main.EntitySpriteDraw(glow, drawPos, null, new Color(255, 150, 45, 0) * 0.9f,
                 0f, glow.Size() / 2f, 0.55f * scale, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(star, drawPos, null, new Color(255, 225, 150, 0),

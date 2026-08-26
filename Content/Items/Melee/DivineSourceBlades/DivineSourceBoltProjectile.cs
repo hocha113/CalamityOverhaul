@@ -10,18 +10,22 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 {
     /// <summary>
     /// 金源科技光矢，挥砍时按拍数递增发射。
-    /// ai[0] 充能标记(0/1)，充能弹更快、追踪更强、带金色
+    /// ai[0] 充能标记(0/1)，充能弹更大、更快、追踪更强、带金色
     /// </summary>
     internal class DivineSourceBoltProjectile : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        private const int HomingDelay = 10;
+        private const int HomingDelay = 8;
+        /// <summary>常规判定箱边长，充能态按 SizeMul 首帧 Resize</summary>
+        private const int BaseHitbox = 20;
 
         private bool Empowered => Projectile.ai[0] > 0.5f;
+        /// <summary>充能态整体放大一档，判定与各绘制层同源</summary>
+        private float SizeMul => Empowered ? 1.5f : 1f;
         private float MaxSpeed => Empowered ? 22f : 18f;
-        private float TurnRate => Empowered ? 0.085f : 0.035f;
-        private float SeekRange => Empowered ? 900f : 620f;
+        private float TurnRate => Empowered ? 0.13f : 0.06f;
+        private float SeekRange => Empowered ? 1100f : 800f;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
@@ -29,8 +33,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         }
 
         public override void SetDefaults() {
-            Projectile.width = 14;
-            Projectile.height = 14;
+            Projectile.width = BaseHitbox;
+            Projectile.height = BaseHitbox;
             Projectile.aiStyle = -1;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Melee;
@@ -41,6 +45,15 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         }
 
         public override void AI() {
+            //首帧按充能标记撑大判定箱(Resize 保持中心)，ai[0] 在 SetDefaults 时还没写入
+            if (Projectile.localAI[0] == 0f) {
+                Projectile.localAI[0] = 1f;
+                if (Empowered) {
+                    int size = (int)(BaseHitbox * SizeMul);
+                    Projectile.Resize(size, size);
+                }
+            }
+
             Projectile.rotation = Projectile.velocity.ToRotation();
 
             //复利续力，飞行期速度持续攀升
@@ -67,12 +80,24 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 if (Projectile.timeLeft % shedGap == 0) {
                     bool gold = Empowered && Main.rand.NextBool(3);
                     PRTLoader.NewParticle<PRT_CyberSquare>(
-                        Projectile.Center + Main.rand.NextVector2Circular(4f, 4f),
+                        Projectile.Center + Main.rand.NextVector2Circular(5f, 5f) * SizeMul,
                         -Projectile.velocity * 0.06f,
                         gold ? DivineSourceBladeFX.AuricGold : DivineSourceBladeFX.CyanBright,
-                        Main.rand.NextFloat(0.42f, 0.7f))
+                        Main.rand.NextFloat(0.55f, 0.9f) * SizeMul)
                         .Configure(gold ? DivineSourceBladeFX.AuricAmber : DivineSourceBladeFX.AzureBlue,
                             Main.rand.Next(12, 18));
+                }
+                //充能期两粒金屑绕弹体螺旋伴飞，半径随弹体放大
+                if (Empowered && Projectile.timeLeft % 4 == 0) {
+                    float orbit = Projectile.timeLeft * 0.55f;
+                    for (int s = 0; s < 2; s++) {
+                        Vector2 at = Projectile.Center
+                            + (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2()
+                            * MathF.Sin(orbit + s * MathHelper.Pi) * 15f * SizeMul;
+                        PRTLoader.NewParticle<PRT_CyberSquare>(at, Projectile.velocity * 0.85f,
+                            DivineSourceBladeFX.AuricGold, Main.rand.NextFloat(0.4f, 0.6f) * SizeMul)
+                            .Configure(DivineSourceBladeFX.AuricAmber, Main.rand.Next(8, 13));
+                    }
                 }
             }
         }
@@ -122,7 +147,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             }
             PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
                 Empowered ? DivineSourceBladeFX.AuricGold : DivineSourceBladeFX.CyanBright, 0f)
-                .Configure(0.03f, 0.24f, 10);
+                .Configure(Empowered ? 0.05f : 0.03f, Empowered ? 0.42f : 0.28f, Empowered ? 14 : 10);
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -134,7 +159,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float speed = Projectile.velocity.Length();
-            float bodyLen = MathHelper.Clamp(speed * 3.4f, 34f, 74f);
+            float sizeMul = SizeMul;
+            float bodyLen = MathHelper.Clamp(speed * 5.1f, 51f, 111f) * sizeMul;
             Color core = Empowered ? DivineSourceBladeFX.AuricCream : DivineSourceBladeFX.TechWhite;
             Color body = Empowered
                 ? DivineSourceBladeFX.Blend(DivineSourceBladeFX.CyanBright, DivineSourceBladeFX.AuricGold, 0.55f)
@@ -157,7 +183,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 Color ghost = halo * (0.32f * t);
                 ghost.A = 0;
                 Main.EntitySpriteDraw(shot, oldCenter, null, ghost, Projectile.rotation,
-                    shot.Size() * 0.5f, new Vector2(bodyLen * (0.5f + 0.4f * t) / shot.Width, 9f * t / shot.Height),
+                    shot.Size() * 0.5f,
+                    new Vector2(bodyLen * (0.5f + 0.4f * t) / shot.Width, 13f * t * sizeMul / shot.Height),
                     SpriteEffects.None, 0);
             }
 
@@ -165,17 +192,36 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             Color haloCol = halo * 0.5f;
             haloCol.A = 0;
             Main.EntitySpriteDraw(glow, drawPos, null, haloCol, 0f,
-                glow.Size() * 0.5f, 0.5f, SpriteEffects.None, 0);
+                glow.Size() * 0.5f, 0.75f * sizeMul, SpriteEffects.None, 0);
 
             //主体与白热芯
             Color bodyCol = body * 0.95f;
             bodyCol.A = 0;
             Main.EntitySpriteDraw(shot, drawPos, null, bodyCol, Projectile.rotation,
-                shot.Size() * 0.5f, new Vector2(bodyLen / shot.Width, 15f / shot.Height), SpriteEffects.None, 0);
+                shot.Size() * 0.5f, new Vector2(bodyLen / shot.Width, 22f * sizeMul / shot.Height),
+                SpriteEffects.None, 0);
             Color coreCol = core * 0.95f;
             coreCol.A = 0;
             Main.EntitySpriteDraw(shot, drawPos, null, coreCol, Projectile.rotation,
-                shot.Size() * 0.5f, new Vector2(bodyLen * 0.62f / shot.Width, 6f / shot.Height), SpriteEffects.None, 0);
+                shot.Size() * 0.5f, new Vector2(bodyLen * 0.62f / shot.Width, 9f * sizeMul / shot.Height),
+                SpriteEffects.None, 0);
+
+            //充能期弹头挂一枚旋转星芒
+            if (Empowered) {
+                Texture2D star = DivineSourceBladeFX.BlankStar;
+                if (star != null) {
+                    float time = (float)Main.timeForVisualEffects * 0.05f;
+                    Vector2 headPos = drawPos + Projectile.velocity.SafeNormalize(Vector2.UnitX) * (bodyLen * 0.32f);
+                    Color starCol = DivineSourceBladeFX.AuricGold * 0.6f;
+                    starCol.A = 0;
+                    Main.EntitySpriteDraw(star, headPos, null, starCol, time * 2.2f,
+                        star.Size() * 0.5f, 0.1f * sizeMul, SpriteEffects.None, 0);
+                    Color starCore = DivineSourceBladeFX.AuricCream * 0.45f;
+                    starCore.A = 0;
+                    Main.EntitySpriteDraw(star, headPos, null, starCore, -time * 1.5f,
+                        star.Size() * 0.5f, 0.06f * sizeMul, SpriteEffects.None, 0);
+                }
+            }
             return false;
         }
     }

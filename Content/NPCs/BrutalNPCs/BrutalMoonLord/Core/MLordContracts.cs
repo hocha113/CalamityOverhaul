@@ -34,6 +34,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         /// <summary>核心 ai[2] 状态机槽 <see cref="MLordStateIndex"/></summary>
         public const int CoreStateSlot = 2;
 
+        //―――― 手 Override ai（12 槽，随 npc.netUpdate 同步）：爬行步态通道 ――――
+        /// <summary>手 Override ai[0] 爬行相位 <see cref="MLordCrawlPhase"/>（服务端裁定转移）</summary>
+        public const int HandOvCrawlPhase = 0;
+        /// <summary>手 Override ai[1] 抓取锚点 X（世界坐标，服务端骰点写入）</summary>
+        public const int HandOvAnchorX = 1;
+        /// <summary>手 Override ai[2] 抓取锚点 Y</summary>
+        public const int HandOvAnchorY = 2;
+        /// <summary>手 Override ai[3] 相位内计时（各端镜像自增，同步矫偏）</summary>
+        public const int HandOvPhaseTick = 3;
+
         //―――― 手 (MoonLordHand) ――――
         /// <summary>
         /// 手/头 ai[0] 破坏标记：-2=已破。原版 checkDead 对 396/397 的特判
@@ -93,6 +103,32 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         public const int Anchor = 1;
         /// <summary>退避收拢：演出/转换期贴核心待机</summary>
         public const int Retreat = 2;
+    }
+
+    /// <summary>爬行相位（写手 Override ai[0]）</summary>
+    internal static class MLordCrawlPhase
+    {
+        /// <summary>空闲：走编队/巢位</summary>
+        public const int Free = 0;
+        /// <summary>探爪：冲向抓取锚点</summary>
+        public const int Reach = 1;
+        /// <summary>抓牢：钉死在锚点，向本体供力</summary>
+        public const int Planted = 2;
+        /// <summary>松爪：短暂收势后回到空闲</summary>
+        public const int Recover = 3;
+    }
+
+    /// <summary>本体移动策略（状态每帧向上下文重申）</summary>
+    internal enum MLordMovePolicy
+    {
+        /// <summary>状态自管（演出/投技），爬行系统整体停摆</summary>
+        Off = 0,
+        /// <summary>爬行赶路：手轮流抓点，把本体拽向 MoveGoal</summary>
+        Travel = 1,
+        /// <summary>编队拖曳：手阵携行本体缓移（月蚀噬咬合围等手全被征用的状态）</summary>
+        Tow = 2,
+        /// <summary>抓桩定身：四爪张成 X 形钉死，本体锁位（射击仪式/大招发射架）</summary>
+        Brace = 3,
     }
 
     /// <summary>部件存活快照：四手 + 头。手槽序 = 行*2+边（0上左/1上右/2下左/3下右）</summary>
@@ -258,6 +294,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
                 return fallback;
             }
             return overrideAI.ai[slot];
+        }
+
+        /// <summary>取手部覆写实例（爬行通道读写），失效返回 null</summary>
+        public static MoonLordHandAI GetHandOverride(NPC hand) {
+            if (hand == null || !hand.active || hand.type != NPCID.MoonLordHand) {
+                return null;
+            }
+            return hand.TryGetOverride(out MoonLordHandAI overrideAI) ? overrideAI : null;
         }
     }
 }

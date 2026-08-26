@@ -110,15 +110,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles
                 return;
             }
 
-            //触地绽裂：放射碎晶(服务端)+演出(客户端)
+            //触地绽裂：放射尖刺(服务端)+演出(客户端)
             if (!VaultUtils.isClient) {
                 for (int i = 0; i < 6; i++) {
                     float angle = MathHelper.Pi + MathHelper.Pi * i / 5f;
                     Vector2 vel = angle.ToRotationVector2() * 8.4f;
                     vel.Y = -Math.Abs(vel.Y) * 0.8f - 1.5f;
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, vel,
-                        ModContent.ProjectileType<QueenShardProj>(), QueenShardProj.ShardDamage, 0f, Main.myPlayer,
-                        (int)QueenShardProj.Mode.Shard, 0f, HueSeed + i * 0.14f);
+                        ModContent.ProjectileType<QueenCrystalSpikeProj>(), QueenCrystalSpikeProj.SpikeDamage, 0f, Main.myPlayer,
+                        (int)QueenCrystalSpikeProj.Mode.Aimed, 0f, (HueSeed + i * 0.14f) % 1f);
                 }
             }
             if (!VaultUtils.isServer) {

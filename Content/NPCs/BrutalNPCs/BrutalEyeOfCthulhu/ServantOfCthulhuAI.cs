@@ -2,10 +2,10 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
@@ -26,6 +26,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
         /// <summary>阵型：0=枪列(主眼后方纵队)，1=血环(绕目标玩家)</summary>
         internal const int FormationLance = 0;
         internal const int FormationRing = 1;
+
+        #region 换皮资源
+        /// <summary>主眼一阶段的仆从：虹膜还活着</summary>
+        [VaultLoaden(CWRConstant.NPC + "BEOC/ServantOfCthulhu")]
+        internal static Asset<Texture2D> BodyAsset = null;
+        /// <summary>主眼二阶段的仆从：瞳孔烧成死眶</summary>
+        [VaultLoaden(CWRConstant.NPC + "BEOC/ServantOfCthulhuAlt")]
+        internal static Asset<Texture2D> BodyAltAsset = null;
+
+        /// <summary>两张贴图都是 4 帧竖排</summary>
+        private const int FrameCount = 4;
+        /// <summary>贴图里眼球本体约 10px 宽，碰撞箱 20px，放大到与体型相称</summary>
+        private const float BodyScale = 1.8f;
+        /// <summary>帧内的眼球中心，绘制锚点用它对齐碰撞箱中心</summary>
+        private static readonly Vector2 BodyOrigin = new(12.5f, 6.5f);
+        /// <summary>插值过的绘制朝向，纯客户端表现</summary>
+        private float drawFacing;
+        private bool facingReady;
+        #endregion
 
         public override bool? CanBrutalOverride() {
             return null;
@@ -108,7 +127,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
             float speed = MathHelper.Clamp(dist * 0.08f, 4f, 26f);
             Vector2 desired = toSlot.SafeNormalize(Vector2.Zero) * speed;
             npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.16f);
-            npc.rotation = npc.velocity.X * 0.06f;
+            //贴图有明确朝向：赶路时看向槽位，贴位后转成待发指向
+            Vector2 facing = dist > 40f ? toSlot : AimDirection(director);
+            npc.rotation = facing.ToRotation() - MathHelper.PiOver2;
 
             //就位后贴位微颤，蓄势读法
             if (dist < 26f) {
@@ -121,6 +142,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
             }
 
             Lighting.AddLight(npc.Center, EocMotion.Arterial.ToVector3() * 0.35f);
+        }
+
+        /// <summary>待发指向：枪列跟着主眼的正面，血环盯住目标玩家</summary>
+        private Vector2 AimDirection(NPC director) {
+            if (Formation == FormationRing) {
+                Player target = Main.player[director.target];
+                if (target.Alives()) {
+                    return target.Center - npc.Center;
+                }
+            }
+            return (director.rotation + MathHelper.PiOver2).ToRotationVector2();
         }
 
         /// <summary>槽位坐标：枪列在主眼后方纵队；血环绕主眼目标玩家</summary>
@@ -187,7 +219,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
             float angle = npc.ai[3] + MathHelper.TwoPi * SlotIndex / 3f;
             Vector2 orbitPos = director.Center + angle.ToRotationVector2() * 205f;
             npc.velocity = (orbitPos - npc.Center) * 0.2f;
-            npc.rotation = (angle + MathHelper.PiOver2) * 0.4f;
+            //沿环切线朝向，读作绕着主眼盘旋而不是被拖着走
+            npc.rotation = angle;
             Lighting.AddLight(npc.Center, EocMotion.Arterial.ToVector3() * 0.3f);
         }
 
@@ -221,15 +254,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
         #endregion
 
         #region 绘制
-        /// <summary>编队态在原版绘制上叠加血光内衬</summary>
-        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (Mode == ModeVanilla) {
-                return false;
-            }
-            Texture2D tex = TextureAssets.Npc[npc.type].Value;
-            int frameHeight = tex.Height / Main.npcFrameCount[npc.type];
-            Rectangle rec = new(0, npc.frame.Y, tex.Width, frameHeight);
+        /// <summary>整体换皮：随主眼阶段切死瞳版本，编队态再叠血光内衬</summary>
+        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            Texture2D tex = (IsDirectorSecondPhase() ? BodyAltAsset : BodyAsset).Value;
+            int frameHeight = tex.Height / FrameCount;
+            Rectangle rec = new(0, frameHeight * ResolveFrame(), tex.Width, frameHeight);
             Vector2 pos = npc.Center - screenPos;
+            float rot = ResolveDrawRotation();
+            float scale = npc.scale * BodyScale;
 
             //出击态额外速度残影
             if (Mode == ModeLaunched) {
@@ -240,14 +272,52 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
                     float t = 1f - i / (float)npc.oldPos.Length;
                     Vector2 ghostPos = npc.oldPos[i] + npc.Size / 2f - screenPos;
                     spriteBatch.Draw(tex, ghostPos, rec, new Color(150, 26, 34, 30) * (0.4f * t),
-                        npc.rotation, rec.Size() / 2f, npc.scale, SpriteEffects.None, 0f);
+                        rot, BodyOrigin, scale, SpriteEffects.None, 0f);
                 }
             }
 
-            float glow = Mode == ModeLaunched ? 0.55f : 0.3f;
-            spriteBatch.Draw(tex, pos, rec, (EocMotion.Arterial with { A = 0 }) * glow,
-                npc.rotation, rec.Size() / 2f, npc.scale * 1.04f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, pos, rec, drawColor, rot, BodyOrigin, scale, SpriteEffects.None, 0f);
+
+            if (Mode != ModeVanilla) {
+                float glow = Mode == ModeLaunched ? 0.55f : 0.3f;
+                spriteBatch.Draw(tex, pos, rec, (EocMotion.Arterial with { A = 0 }) * glow,
+                    rot, BodyOrigin, scale * 1.04f, SpriteEffects.None, 0f);
+            }
             return false;
+        }
+
+        /// <summary>贴图正面朝 +X；原版态的 rotation 只是倾角，所以有速度时以速度定朝向</summary>
+        private float ResolveDrawRotation() {
+            float aim = npc.velocity.LengthSquared() > 0.36f
+                ? npc.velocity.ToRotation()
+                : npc.rotation + MathHelper.PiOver2;
+            if (!facingReady) {
+                facingReady = true;
+                drawFacing = aim;
+            }
+            else {
+                drawFacing = drawFacing.AngleLerp(aim, 0.25f);
+            }
+            return drawFacing;
+        }
+
+        /// <summary>帧序跟着原版动画走，原版帧数不够时退回本地时钟</summary>
+        private int ResolveFrame() {
+            if (Main.npcFrameCount[npc.type] >= FrameCount && npc.frame.Height > 0) {
+                return (npc.frame.Y / npc.frame.Height) % FrameCount;
+            }
+            return (int)((Main.GameUpdateCount / 6 + (uint)npc.whoAmI) % FrameCount);
+        }
+
+        /// <summary>随主眼阶段换皮；主眼失联时扫场上克眼兜底</summary>
+        private bool IsDirectorSecondPhase() {
+            NPC director = Director ?? FindAnyEye();
+            return director != null && director.ai[0] >= 2f;
+        }
+
+        private static NPC FindAnyEye() {
+            int index = NPC.FindFirstNPC(NPCID.EyeofCthulhu);
+            return index >= 0 ? Main.npc[index] : null;
         }
         #endregion
     }

@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
 {
-    /// <summary>太阳能量弹：直线快弹，速度拉伸体 + 三层拖尾</summary>
+    /// <summary>太阳能量弹：直线快弹，真alpha暗缘剪影 + 速度拉伸光体 + 同材拖尾</summary>
     internal class GolemSunBolt : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
@@ -42,8 +42,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
             }
 
             Projectile.rotation = Projectile.velocity.ToRotation();
-            //飞行中缓慢增速，不是匀速贴图平移
-            if (Projectile.velocity.Length() < 22f) {
+            //飞行中缓慢增速，不是匀速贴图平移；上限压在可反应区间
+            //（extraUpdates=1 实际位移翻倍，18≈每帧36px，再高近距离读作类瞬发）
+            if (Projectile.velocity.Length() < 18f) {
                 Projectile.velocity *= 1.012f;
             }
             Lighting.AddLight(Projectile.Center, new Vector3(0.7f, 0.5f, 0.16f));
@@ -70,19 +71,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
         public override bool PreDraw(ref Color lightColor) {
             Texture2D streak = CWRAsset.LightShot.Value;
             Texture2D glow = CWRAsset.SoftGlow.Value;
+            Texture2D rim = CWRAsset.Extra_98.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Vector2 rimOrigin = rim.Size() / 2f;
             float speed = Projectile.velocity.Length();
             float stretch = MathHelper.Clamp(0.5f + speed * 0.045f, 0.6f, 1.7f);
+            //暗层用真alpha衬底：加法层物理上无法变暗，剪影由本层承担
+            Color rimDark = new(88, 30, 6);
 
-            //拖尾三层：暗橙外→饱和中→白热芯
+            //拖尾：暗缘同材质衬底 + 饱和光条（同层材，亮背景下仍有轮廓）
             for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
                 float fade = 1f - i / (float)Projectile.oldPos.Length;
                 Vector2 oldPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                Main.EntitySpriteDraw(rim, oldPos, null, rimDark * (0.5f * fade),
+                    Projectile.rotation, rimOrigin,
+                    new Vector2(1.3f * stretch * fade, 0.26f * fade), SpriteEffects.None, 0);
                 Main.EntitySpriteDraw(streak, oldPos, null, new Color(190, 80, 20, 0) * (0.3f * fade),
                     Projectile.rotation, new Vector2(streak.Width * 0.8f, streak.Height / 2f),
                     new Vector2(0.3f * stretch * fade, 0.1f), SpriteEffects.None, 0);
             }
 
+            //体：暗橙真alpha外缘→饱和中→白热芯
+            Main.EntitySpriteDraw(rim, drawPos, null, rimDark * 0.85f,
+                Projectile.rotation, rimOrigin, new Vector2(1.7f * stretch, 0.34f), SpriteEffects.None, 0);
             Main.EntitySpriteDraw(streak, drawPos, null, new Color(255, 170, 60, 0) * 0.95f,
                 Projectile.rotation, new Vector2(streak.Width * 0.8f, streak.Height / 2f),
                 new Vector2(0.42f * stretch, 0.13f), SpriteEffects.None, 0);

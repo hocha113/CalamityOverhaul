@@ -116,13 +116,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
                         ModContent.ProjectileType<QueenGaleFieldProj>(), 0, 0f, Main.myPlayer,
                         glideDir.ToRotation(), 0f, currentPass * 0.31f);
 
-                    //尾向羽晶扇(4发朝身后扩散)
-                    for (int i = 0; i < 4; i++) {
-                        float spread = MathHelper.Lerp(-0.5f, 0.5f, i / 3f);
-                        Vector2 vel = (-glideDir).RotatedBy(spread) * 7.5f;
+                    //尾向尖刺扇(6发朝身后扩散，材质化出生自带前摇)
+                    for (int i = 0; i < 6; i++) {
+                        float spread = MathHelper.Lerp(-0.55f, 0.55f, i / 5f);
+                        Vector2 vel = (-glideDir).RotatedBy(spread) * 7.8f;
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, vel,
-                            ModContent.ProjectileType<QueenShardProj>(), QueenShardProj.ShardDamage, 0f, Main.myPlayer,
-                            (int)QueenShardProj.Mode.Shard, 0f, i * 0.22f);
+                            ModContent.ProjectileType<QueenCrystalSpikeProj>(), QueenCrystalSpikeProj.SpikeDamage, 0f, Main.myPlayer,
+                            (int)QueenCrystalSpikeProj.Mode.Aimed, 0f, i * 0.15f);
                     }
                 }
 

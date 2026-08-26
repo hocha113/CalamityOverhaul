@@ -39,6 +39,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             MLordArmIK.Reset();
             MLordUltArms.Reset();
             MLordBlackFlashFX.Clear();
+            MLordLocomotion.Reset();
         }
 
         public override bool? CanBrutalOverride() {
@@ -105,8 +106,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             stateContext.HeartExposure = stateContext.CoreExposed ? 1f : Math.Max(0f, stateContext.HeartExposure - 0.02f);
             stateContext.HoldAllParts = false;
             stateContext.StaggerVulnerable = false;
+            //移动申报帧首清默认：状态不重申即视作自管（演出态）
+            stateContext.MovePolicy = MLordMovePolicy.Off;
+            stateContext.MoveGoal = npc.Center;
+            stateContext.MoveUrgency = 0f;
 
             stateMachine.Update();
+
+            //节肢爬行：消费本帧移动申报，手抓点拽动本体（本体无自走）
+            MLordLocomotion.Update(stateContext);
 
             UpdateFarReturnValve();
             UpdateHeartFrames();
@@ -201,15 +209,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             }
             if (stateContext.CoreExposed && ai[MLordAiSlots.OvBlackFlashUsed] == 0f
                 && npc.life < blackFlashGate
-                && current is not MLordBlackFlashState and not MLordVoidRuptureState) {
+                && current is not MLordBlackFlashState and not MLordVoidRuptureState
+                and not MLordLunarAnnihilationState) {
                 stateMachine.ChangeState(new MLordBlackFlashState());
                 return;
             }
 
-            //低血大招（一场一次，裸露期解锁）
+            //低血大招（一场一次，裸露期解锁；进行中的月明湮灭同样不被打断）
             if (stateContext.CoreExposed && ai[MLordAiSlots.OvUltUsed] == 0f
                 && npc.life < npc.lifeMax * MLordDirector.UltLifeRatio
-                && current is not MLordVoidRuptureState and not MLordBlackFlashState) {
+                && current is not MLordVoidRuptureState and not MLordBlackFlashState
+                and not MLordLunarAnnihilationState) {
                 stateMachine.ChangeState(new MLordVoidRuptureState());
             }
         }
@@ -282,6 +292,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 other.position += shift;
                 other.netUpdate = true;
             }
+            //已抓的爬行锚点一并平移，否则钉死的手下一帧被拽回旧坐标
+            MLordLocomotion.ShiftAnchors(npc, shift);
         }
 
         /// <summary>是否本核心的从属实体（手/头/真眼按 ai[3] 归属，凝滴一律算）</summary>
@@ -509,6 +521,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             MLordDrawHelper.DrawCoreAssembly(spriteBatch, npc, screenPos, stateContext);
             //黑闪四臂：仅大招期激活，模块自带渐出
             MLordUltArms.Draw(spriteBatch, npc, screenPos);
+            //月明湮灭引导线：锁定承诺的可视化（状态窗内自判定）
+            MLordLunarAnnihilationState.DrawAimGuide(npc, this);
             return false;
         }
 

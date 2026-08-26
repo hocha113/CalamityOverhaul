@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
         [VaultLoaden(CWRConstant.Masking + "Fog")]
         private static Asset<Texture2D> FogTex = null;
 
-        private const int LifeTime = 32;
+        private const int LifeTime = 42;
 
         /// <summary>撞上地形，OnKill 走舔面分支</summary>
         private bool hitSurface;
@@ -55,12 +55,12 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
 
         public override void AI() {
             float lc = LifeCompletion;
-            //减速+热浮：气团慢下来后上飘，同时轻微湍流摆动，不给匀速平飞
-            Projectile.velocity *= 0.952f;
-            Projectile.velocity.Y -= 0.028f + 0.085f * lc;
+            //缓减速+热浮：气团慢下来后上飘，同时轻微湍流摆动，不给匀速平飞
+            Projectile.velocity *= 0.972f;
+            Projectile.velocity.Y -= 0.02f + 0.055f * lc;
             Projectile.velocity = Projectile.velocity.RotatedBy(MathF.Sin(Projectile.timeLeft * 0.53f + Seed) * 0.016f);
             Projectile.rotation = Projectile.velocity.ToRotation();
-            Projectile.scale = 0.8f + lc * 1.15f;
+            Projectile.scale = 0.85f + lc * 1.25f;
 
             float temp = CurTemp;
             Lighting.AddLight(Projectile.Center, Wyrmfire.TempColor(temp).ToVector3() * (0.3f + 0.6f * Temp0));

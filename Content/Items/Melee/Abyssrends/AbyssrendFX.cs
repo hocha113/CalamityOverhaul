@@ -53,8 +53,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
         public static float BladeLength => (TipPixel - GripPixel).Length();
 
         /// <summary>
-        /// 弧带。rots[0] 最旧(尾 u=0) → rots[n-1] 最新(刃口 u=1)。
-        /// 追加顺序的轨迹必须这样喂，倒过来会把刃口画在挥砍起点
+        /// 弧带。rots[0] 最新(刃口 u=1) → rots[n-1] 最旧(尾 u=0)。
+        /// 纠缠之怨式轨迹在头部插补新样本，倒着喂会把刃口画在挥砍起点
         /// </summary>
         public static void DrawArcStrip(Vector2 center, float[] rots, int count,
             float inner, float outer, float fade) {
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
             var bars = new VertexPositionColorTexture[count * 2];
             float denom = Math.Max(count - 1, 1);
             for (int i = 0; i < count; i++) {
-                float factor = i / denom;
+                float factor = 1f - i / denom;
                 Vector2 dir = rots[i].ToRotationVector2();
                 bars[i * 2] = new VertexPositionColorTexture((center + dir * outer).ToVector3()
                     , Color.White, new Vector2(factor, 0f));

@@ -142,3 +142,8 @@ IndustrialRegenBuff: {
 	DisplayName: 治疗光环
 	Description: 治疗站正在为你回复生命
 }
+
+AbyssalPressure: {
+	DisplayName: 渊压
+	Description: 深渊水压裹住全身，行动迟滞
+}

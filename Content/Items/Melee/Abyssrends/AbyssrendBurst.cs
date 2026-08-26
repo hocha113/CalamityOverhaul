@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Buffs;
 using InnoVault.PRT;
 using System;
 using Terraria;
@@ -78,6 +79,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.Wet, 240);
+            //空化波及的敌人也短暂陷入渊压
+            target.AddBuff(ModContent.BuffType<AbyssalPressure>(), 180);
         }
 
         public override bool PreDraw(ref Color lightColor) {

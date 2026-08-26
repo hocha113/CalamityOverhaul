@@ -468,7 +468,6 @@ VictorRiftPortalProj.DisplayName: Fissure cyber de Victor
 // FishronSharkTornadoProj.DisplayName: Sharknado
 // FishronSkyBoltProj.DisplayName: Storm Bolt
 // FishronTelegraph.DisplayName: Storm Warning Line
-// FishronTideTrailProj.DisplayName: Tidal Wake
 // FishronTsunamiWallProj.DisplayName: Tsunami Wall
 // EowAcidGlob.DisplayName: Corrosive Spittle
 // EowAcidPool.DisplayName: Corrosive Pool
@@ -503,9 +502,10 @@ VictorRiftPortalProj.DisplayName: Fissure cyber de Victor
 // BKSRoyalPillarProj.DisplayName: Royal Beam
 // BKSShockwaveProj.DisplayName: Gel Shockwave
 // BKSTideWaveProj.DisplayName: Gel Tide
-// CultistSigilProj.DisplayName: Ritual Sigil
+// MLordAnnihilationRayProj.DisplayName: Moonlight Annihilation Ray
 // MLordArcRayProj.DisplayName: Phantasmal Arc Ray
 // MLordBlackHoleProj.DisplayName: Black Flash Singularity
+// MLordBoltProj.DisplayName: Phantasmal Bolt
 // MLordCometProj.DisplayName: Starfall Comet
 // MLordConstellationProj.DisplayName: Constellation Omen
 // MLordEyeLinkProj.DisplayName: True Eye Link Ray
@@ -526,11 +526,12 @@ VictorRiftPortalProj.DisplayName: Fissure cyber de Victor
 // QueenBeeTelegraphLine.DisplayName: Amber Warning Line
 // WaxHiveTurret.DisplayName: Wax Hive Turret
 // QueenChandelierProj.DisplayName: Crystal Chandelier
+// QueenCrystalSpikeProj.DisplayName: Crystal Spike
 // QueenCrystalSpireProj.DisplayName: Crystal Spire
 // QueenGaleFieldProj.DisplayName: Wing Gale
-// QueenGelMeteorProj.DisplayName: Gel Meteor
+// QueenGelPearlProj.DisplayName: Gel Pearl
 // QueenPrismBeamProj.DisplayName: Refraction Beam
-// QueenShardProj.DisplayName: Prismatic Shard
+// QueenSpikeOmenProj.DisplayName: Spike Omen
 // SkeletronBoneShard.DisplayName: Bone Shard
 // SkeletronBoneSpike.DisplayName: Bone Spire
 // SkeletronCursedSkull.DisplayName: Cursed Skull
@@ -611,11 +612,14 @@ VictorRiftPortalProj.DisplayName: Fissure cyber de Victor
 // KikasaYoyoProj.DisplayName: Lakewater Yoyo
 // KikasaFlailServant.DisplayName: Kikasa Flail Servants
 // KikasaFlailHead.DisplayName: Lakewater Flail Head
-// CultistArcBolt.DisplayName: Storm Cadence Arc
-// CultistFlameBolt.DisplayName: Flame Bolt
-// CultistFrostSpear.DisplayName: Frost Crystal Spear
-// CultistPaleBolt.DisplayName: Pale Bolt
-// CultistTrueBolt.DisplayName: Verity Bolt
+// CultistStarBead.DisplayName: Star Bead
+// CultistZodiacRing.DisplayName: Zodiac Ring
+// CultistOrreryRingProj.DisplayName: Orrery Ring
+// CultistOrbitPath.DisplayName: Orbital Alignment
+// CultistUmbraShade.DisplayName: Eclipse Shade
+// CultistCoronaLance.DisplayName: Corona Lance
+// CultistStarChart.DisplayName: Star Chart Judgement
+// CultistGazeBeam.DisplayName: Lunar Gaze
 // SkeletronBoneWheel.DisplayName: Skeletron Bone Wheel
 // FuFeiMistCloud.DisplayName: Fu Fei Mist Cloud
 // FuHangMiasmaColumn.DisplayName: Fu Hang Miasma Column
@@ -642,13 +646,10 @@ VictorRiftPortalProj.DisplayName: Fissure cyber de Victor
 // WyrmFlame.DisplayName: Wyrmfire
 // WyrmstrikeRound.DisplayName: Wyrmstrike Round
 // WyrmSneezeFume.DisplayName: Wyrm Sneeze
+// WyrmBreathBolt.DisplayName: Wyrmbreath Bolt
 // AbyssrendUndercurrent.DisplayName: Ocean Undercurrent
 // AbyssrendBurst.DisplayName: Cavitation Burst
 // EverdeepHeld.DisplayName: Everdeep
 // EverdeepRing.DisplayName: Abyssal Ring
 // EverdeepMaelstrom.DisplayName: Abyssal Maelstrom
-// CultistArenaProj.DisplayName: Cultist Arena Proj
-// CultistBurnPatch.DisplayName: Cultist Burn Patch
-// CultistMoonBeam.DisplayName: Cultist Moon Beam
-// CultistPlanetProj.DisplayName: Cultist Planet Proj
-// CultistStarFall.DisplayName: Cultist Star Fall
+// CultistPlanetProj.DisplayName: Colossal Celestial Body

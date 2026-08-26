@@ -41,6 +41,13 @@ namespace CalamityOverhaul.Content.Items.Ranged.SneezingWyrms
         }
 
         public override void AI() {
+            //出生tick驻留：新弹槽位在持握弹幕之前/之后决定当帧跑不跑更新步，
+            //逐步抵消位移让首帧绘制无论槽位顺序都正在枪口
+            if (Projectile.localAI[0] < 1f) {
+                Projectile.localAI[0] += 1f / (Projectile.extraUpdates + 1);
+                Projectile.position -= Projectile.velocity;
+            }
+
             Projectile.rotation = Projectile.velocity.ToRotation();
             Lighting.AddLight(Projectile.Center, Wyrmfire.TempColor(Temp0).ToVector3() * 0.3f);
 

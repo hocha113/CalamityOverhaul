@@ -108,8 +108,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles
                 int state = (int)queen.ai[2];
                 return Mode switch {
                     BeamMode.FeederVolley => state == (int)QueenSlimeStateIndex.PrismVolley,
-                    BeamMode.Feeder or BeamMode.WebMarquee => state == (int)QueenSlimeStateIndex.RefractionCage
-                        || state == (int)QueenSlimeStateIndex.CrystalCathedral,
+                    BeamMode.Feeder or BeamMode.WebMarquee => state == (int)QueenSlimeStateIndex.CrystalCathedral,
                     BeamMode.CathedralSpoke => state == (int)QueenSlimeStateIndex.CrystalCathedral,
                     _ => false,
                 };
@@ -206,7 +205,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles
             }
         }
 
-        /// <summary>折射：自节点向其最近玩家散射碎晶(服务端)</summary>
+        /// <summary>折射：自节点向其最近玩家散射密集尖刺扇(服务端)，材质化出生自带前摇</summary>
         private void EmitRefraction() {
             NPC node = TargetNpc;
             if (!node.Alives()) {
@@ -218,13 +217,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles
             }
             Player target = Main.player[closest];
             Vector2 baseDir = (target.Center - node.Center).SafeNormalize(Vector2.UnitY);
-            int count = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive() ? 4 : 3;
+            int count = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive() ? 6 : 5;
             for (int i = 0; i < count; i++) {
-                float spread = MathHelper.Lerp(-0.34f, 0.34f, count == 1 ? 0.5f : i / (float)(count - 1));
-                Vector2 vel = baseDir.RotatedBy(spread) * 8.8f;
+                float spread = MathHelper.Lerp(-0.4f, 0.4f, count == 1 ? 0.5f : i / (float)(count - 1));
+                Vector2 vel = baseDir.RotatedBy(spread) * 9.2f;
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), node.Center, vel,
-                    ModContent.ProjectileType<QueenShardProj>(), QueenShardProj.ShardDamage, 0f, Main.myPlayer,
-                    (int)QueenShardProj.Mode.Shard, 0f, Phase * 0.2f + i * 0.13f);
+                    ModContent.ProjectileType<QueenCrystalSpikeProj>(), QueenCrystalSpikeProj.SpikeDamage, 0f, Main.myPlayer,
+                    (int)QueenCrystalSpikeProj.Mode.Aimed, 0f, (Phase * 0.2f + i * 0.13f) % 1f);
             }
         }
 

@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
                 return false;
             }
 
-            //拍号与状态码：state 0=完整 1=半刃 2=完整但此挥收势时疲劳碎裂
+            //拍号与状态码：state 0=完整 1=半刃 2=此挥收势时疲劳碎裂 3=终结斩耗干稳固度当场崩坏
             int beat;
             float state;
             if (sp.Broken) {
@@ -73,10 +73,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
             else {
                 beat = sp.ComboCounter % 4;
                 if (beat == 3) {
-                    //终结拍不吃稳固度，崩坏由挥砍模组在爆发末端接管
-                    state = 0f;
-                    sp.ComboResetTimer = 75;
-                    sp.RegenDelay = 55;
+                    //终结斩吃一大截稳固度，耗干才崩坏；满稳固要打满两轮
+                    state = sp.ConsumeFinisher() ? 3f : 0f;
                 }
                 else {
                     state = sp.ConsumeSwing() ? 2f : 0f;

@@ -12,11 +12,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
         public override GolemStateIndex StateIndex => GolemStateIndex.PunchCombo;
 
         private int punchTimer;
+        private int hopTimer;
         private int nextFistSign;
+        private bool airborne;
 
         public override void OnEnter(GolemStateContext context) {
             base.OnEnter(context);
             punchTimer = 0;
+            hopTimer = 0;
+            airborne = false;
             //首拳用目标同侧的拳，出手路径最短
             nextFistSign = Math.Sign(context.Target.Center.X - context.Npc.Center.X);
             if (nextFistSign == 0) {
@@ -27,11 +31,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
         public override IGolemState OnUpdate(GolemStateContext context) {
             NPC npc = context.Npc;
             context.FrameMode = 0;
-            GroundBrake(npc);
-            //站桩状态强制恢复地形碰撞，防止承接跳跃状态时坠穿
-            npc.noTileCollide = false;
+            RestoreTileCollide(context);
             //连段期宝石随节奏发亮
             context.VeinGlow = Math.Max(context.VeinGlow, 0.35f);
+
+            //拳浪间穿插压近小跳：出拳不站桩，拳与躯干双线压迫
+            if (OnGround(npc)) {
+                GroundBrake(npc);
+                npc.damage = 0;
+                if (++hopTimer >= Tempo(context, 66)) {
+                    hopTimer = 0;
+                    float dx = context.Target.Center.X - npc.Center.X;
+                    if (Math.Abs(dx) > 150f) {
+                        LaunchJump(npc, MathHelper.Clamp(dx / 65f, -10f, 10f), -9f);
+                        if (!VaultUtils.isClient) {
+                            npc.netUpdate = true;
+                        }
+                    }
+                }
+            }
+            else {
+                context.FrameMode = 2;
+                npc.damage = npc.defDamage;
+                AirSteer(context, 0.1f, 10f);
+            }
+            if (LandedThisFrame(npc, ref airborne)) {
+                LandingImpact(context, context.Sundered ? 3 : 2);
+            }
 
             int totalPunches = (context.Sundered ? 5 : 4) + (context.DeathMode ? 1 : 0);
             int windup = context.Sundered ? GolemDirector.PunchWindupP2 : GolemDirector.PunchWindupP1;

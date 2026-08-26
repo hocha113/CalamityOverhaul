@@ -17,10 +17,10 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
         public override void SetDefaults() {
             Item.width = 47;
             Item.height = 53;
-            Item.damage = 54;
+            Item.damage = 40;
             Item.DamageType = DamageClass.Magic;
-            Item.mana = 3;
-            Item.useTime = Item.useAnimation = 5;//单口龙焰的间隔
+            Item.mana = 2;
+            Item.useTime = Item.useAnimation = 3;//单口龙焰的间隔，密喷成连续焰流
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 1.6f;
             Item.UseSound = null;//音效全在持握弹幕，按咳嗽/点燃/喷焰状态走
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
             Item.noUseGraphic = true;
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<WyrmFlame>();
-            Item.shootSpeed = 11.5f;
+            Item.shootSpeed = 14f;
             Item.rare = ItemRarityID.Lime;
             Item.value = Item.sellPrice(0, 10);
         }

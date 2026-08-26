@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States;
 using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.GameContent;
@@ -17,6 +18,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
     {
         #region 数据
         public override int TargetID => NPCID.DukeFishron;
+
+        /// <summary>残血形态体贴图：替换原版黄眼二阶段帧，帧尺寸与原版一致（196×144×6 帧）</summary>
+        [VaultLoaden(CWRConstant.NPC + "BDF/DukeFishronAlt")]
+        internal static Asset<Texture2D> AltBodyAsset = null;
+        /// <summary>残血形态辉光罩：只含眼芒与鳍缘荧光的加色层，隐身期的公平踪迹</summary>
+        [VaultLoaden(CWRConstant.NPC + "BDF/DukeFishronAltGlow")]
+        internal static Asset<Texture2D> AltGlowAsset = null;
+
+        /// <summary>原版帧表游动循环只取前 6 帧：其余是黄眼二形态帧与吼叫帧，绝不混入</summary>
+        private const int SwimFrames = 6;
 
         /// <summary>life 低于此值进死亡演出</summary>
         internal const int DeathPerformanceTriggerLife = 10;
@@ -43,7 +54,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
 
         #region 加载与初始化
         void ICWRLoader.UnLoadData() {
-            FishronTideTrailProj.UnloadTrails();
             FishronStormSky.Clear();
             FishronGrabVeilFX.Clear();
             ActivePerformanceBoss = -1;
@@ -286,8 +296,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             if (stateContext == null) {
                 return true;
             }
-            int count = Main.npcFrameCount[npc.type];
-            int cycleFrames = Math.Max(count - 1, 1);
+            //原版帧表 14 帧：0..5 一形态游动，其后是黄眼二形态与吼叫帧——
+            //游动循环只取前 6 帧，黄眼帧永不混入（残血形态由自绘贴图接管）
+            int cycleFrames = Math.Min(SwimFrames, Math.Max(Main.npcFrameCount[npc.type] - 1, 1));
 
             if (stateContext.FrameCommand == 1) {
                 //咆哮/蓄力定帧
@@ -335,8 +346,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
                 return true;
             }
 
-            Texture2D texture = TextureAssets.Npc[npc.type].Value;
+            //残血形态换用自绘体贴图（6 帧竖排）：帧号沿用原版 FindFrame 结果，
+            //矩形按自绘表自身推导，不依赖原版帧宽高
+            bool altForm = stateContext.PhaseThreeStarted && AltBodyAsset?.Value != null;
+            Texture2D texture = altForm ? AltBodyAsset.Value : TextureAssets.Npc[npc.type].Value;
             Rectangle frameRec = npc.frame;
+            if (altForm) {
+                int frameIdx = npc.frame.Height > 0 ? npc.frame.Y / npc.frame.Height : 0;
+                int altFrameH = texture.Height / SwimFrames;
+                frameRec = new Rectangle(0, Math.Min(frameIdx, SwimFrames - 1) * altFrameH,
+                    texture.Width, altFrameH);
+            }
             Vector2 origin = frameRec.Size() / 2f;
             SpriteEffects effects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             float visible = 1f - npc.alpha / 255f;
@@ -386,6 +406,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
                     npc.rotation, origin, npc.scale * 1.03f, effects, 0f);
             }
 
+            //残血形态眼芒罩：加色层不吃 npc.alpha——身体隐得越深眼睛越亮，
+            //雨隐期这双眼就是猎踪与反打的公平线索（辉光表与体表同布局，矩形直接复用）
+            if (altForm && AltGlowAsset?.Value != null) {
+                Texture2D glowTex = AltGlowAsset.Value;
+                float hidden = npc.alpha / 255f;
+                float pulse = 0.82f + 0.18f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6.2f);
+                float eyeGlow = (0.55f + hidden * 0.65f) * pulse;
+                Color eyeColor = Color.White with { A = 0 };
+                spriteBatch.Draw(glowTex, npc.Center - screenPos, frameRec, eyeColor * eyeGlow,
+                    npc.rotation, origin, npc.scale, effects, 0f);
+                //外圈软晕
+                spriteBatch.Draw(glowTex, npc.Center - screenPos, frameRec, eyeColor * (eyeGlow * 0.4f),
+                    npc.rotation, origin, npc.scale * 1.07f, effects, 0f);
+            }
+
             return false;
         }
 
@@ -414,7 +449,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
         }
 
         /// <summary>
-        /// 清场（服务端）：气泡/鲨鱼龙必清；fullSweep 时连同龙卷、水迹、
+        /// 清场（服务端）：气泡/鲨鱼龙必清；fullSweep 时连同龙卷、
         /// 海啸、间歇泉与预告线一并撤走，死亡/退场/入夜演出期间不留残余判定
         /// </summary>
         internal static void ClearMinions(bool alsoTornado) {
@@ -435,7 +470,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             }
             foreach (var proj in Main.ActiveProjectiles) {
                 if (proj.type == ModContent.ProjectileType<FishronSharkTornadoProj>()
-                    || proj.type == ModContent.ProjectileType<FishronTideTrailProj>()
                     || proj.type == ModContent.ProjectileType<FishronTsunamiWallProj>()
                     || proj.type == ModContent.ProjectileType<FishronGeyserProj>()
                     || proj.type == ModContent.ProjectileType<FishronTelegraph>()) {

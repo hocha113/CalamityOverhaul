@@ -131,6 +131,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                 }
             }
 
+            //落地碎石扇：快跳小扇、重踏大扇，压制头顶空域（服务端）
+            if (!VaultUtils.isClient) {
+                int shards = isHeavy ? 5 : (context.Sundered ? 3 : 2);
+                if (context.DeathMode) {
+                    shards++;
+                }
+                SpawnLandingShards(context, shards);
+            }
+
             //重踏：双向地行冲击波（服务端）
             if (isHeavy && !VaultUtils.isClient) {
                 int damage = ScaleDamage(context, GolemDirector.ShockwaveDamage);

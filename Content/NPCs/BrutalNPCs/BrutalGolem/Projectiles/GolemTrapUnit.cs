@@ -121,18 +121,36 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
                     if (ActiveTime == 0 && !Main.dedServ) {
                         SoundEngine.PlaySound(SoundID.Item69 with { Pitch = -0.25f, Volume = 1f }, Projectile.Center);
                         Core.GolemScreenEffects.Shake(1.6f);
-                        //破土碎屑
+                        //破土碎屑 + 熔火迸溅（喷发瞬间要有爆点，不只有柱体本身）
                         for (int i = 0; i < 8; i++) {
                             PRTLoader.NewParticle<PRT_MarbleChip>(Projectile.Center + Dir * 10f,
                                 Dir.RotatedByRandom(0.7f) * Main.rand.NextFloat(3f, 7f),
                                 new Color(122, 104, 78), Main.rand.NextFloat(0.7f, 1.2f)).Configure(40);
                         }
+                        for (int i = 0; i < 6; i++) {
+                            PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Dir * 14f,
+                                Dir.RotatedByRandom(0.55f) * Main.rand.NextFloat(4f, 9f),
+                                new Color(255, 190, 80), Main.rand.NextFloat(0.8f, 1.2f)).Configure(true, 18);
+                        }
+                    }
+                    //缩回余韵：熔缝冷却余烬沿柱身逸散（贴图消失了热还在）
+                    if (ActiveTime >= 22 && ActiveTime % 3 == 0 && !Main.dedServ) {
+                        PRTLoader.NewParticle<PRT_Spark>(
+                            Projectile.Center + Dir * Main.rand.NextFloat(8f, SpikeLength * 0.6f),
+                            -Dir * Main.rand.NextFloat(0.4f, 1.2f) + Main.rand.NextVector2Circular(0.7f, 0.7f),
+                            new Color(255, 140, 50), Main.rand.NextFloat(0.5f, 0.8f)).Configure(true, 26);
                     }
                     break;
                 }
                 case TrapKind.FlameVent: {
                     if (ActiveTime == 0 && !Main.dedServ) {
                         SoundEngine.PlaySound(SoundID.Item34 with { Pitch = -0.2f, Volume = 0.9f }, Projectile.Center);
+                        //点火环：喷口先炸开一圈火星再成柱
+                        for (int i = 0; i < 10; i++) {
+                            Dust ignite = Dust.NewDustPerfect(Projectile.Center + Dir * 12f, DustID.Torch,
+                                Dir.RotatedByRandom(0.9f) * Main.rand.NextFloat(3f, 8f), 0, default, 1.8f);
+                            ignite.noGravity = true;
+                        }
                     }
                     //喷焰粒子流
                     if (!Main.dedServ && ActiveTime % 2 == 0) {
@@ -216,11 +234,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
             if (Main.dedServ) {
                 return;
             }
-            //归寂碎屑
+            //归寂碎屑 + 余温火星（机关沉回地里，热气比贴图多活一拍）
             for (int i = 0; i < 6; i++) {
                 Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height,
                     DustID.Stone, 0f, -0.5f, 80, default, 1f);
                 dust.velocity *= 0.4f;
+            }
+            for (int i = 0; i < 3; i++) {
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(14f, 8f),
+                    -Dir * Main.rand.NextFloat(0.3f, 1f) + Main.rand.NextVector2Circular(0.5f, 0.5f),
+                    new Color(255, 150, 60), Main.rand.NextFloat(0.4f, 0.7f)).Configure(true, 30);
             }
         }
 
@@ -255,32 +278,47 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
             gd.Textures[1] = CWRAsset.PerlinNoise.Value;
             gd.SamplerStates[1] = SamplerState.LinearWrap;
 
+            float seed = Projectile.whoAmI * 0.137f % 1f;
+            float columnRot = Dir.ToRotation() + MathHelper.PiOver2;
+            Vector2 columnOrigin = new(quad.Width / 2f, quad.Height);
+
             //机关基座
             shader.CurrentTechnique = shader.Techniques["PlateTech"];
             shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             shader.Parameters["uProgress"]?.SetValue(ArmProgress);
             shader.Parameters["uIntensity"]?.SetValue(retractFade);
             shader.Parameters["uKind"]?.SetValue((float)(int)Kind);
+            shader.Parameters["uSeed"]?.SetValue(seed);
             shader.CurrentTechnique.Passes[0].Apply();
             float plateSize = 64f;
             sb.Draw(quad, drawPos, null, Color.White, plateRot, quad.Size() / 2f,
                 new Vector2(plateSize / quad.Width, plateSize * 0.5f / quad.Height), SpriteEffects.None, 0f);
+
+            //待命预警柱：淡轮廓画满最终喷发footprint，热浪填充随进度升起（危险区先可读，再喷发）
+            if (Armed && Kind != TrapKind.RayPort) {
+                float warnLen = Kind == TrapKind.Spike ? SpikeLength : FlameLength;
+                shader.CurrentTechnique = shader.Techniques["WarnTech"];
+                shader.Parameters["uProgress"]?.SetValue(ArmProgress);
+                shader.Parameters["uIntensity"]?.SetValue(1f);
+                shader.CurrentTechnique.Passes[0].Apply();
+                Vector2 warnScale = new(ColumnWidth * 1.5f / quad.Width, warnLen / quad.Height);
+                sb.Draw(quad, drawPos, null, Color.White, columnRot,
+                    columnOrigin, warnScale, SpriteEffects.None, 0f);
+            }
 
             //柱体（尖刺/火焰）
             if (Active && Kind != TrapKind.RayPort) {
                 float length = Kind == TrapKind.Spike ? SpikeLength * SpikeProgress() : FlameLength * JetProgress();
                 if (length > 6f) {
                     shader.CurrentTechnique = shader.Techniques[Kind == TrapKind.Spike ? "SpikeTech" : "FlameTech"];
-                    shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
                     shader.Parameters["uProgress"]?.SetValue(Kind == TrapKind.Spike ? SpikeProgress() : JetProgress());
                     shader.Parameters["uIntensity"]?.SetValue(1f);
                     shader.CurrentTechnique.Passes[0].Apply();
 
                     //柱体 quad：origin 在底边中点，沿 Dir 延伸（局部上方向旋到 Dir）
-                    float columnRot = Dir.ToRotation() + MathHelper.PiOver2;
                     Vector2 columnScale = new(ColumnWidth * 1.5f / quad.Width, length / quad.Height);
                     sb.Draw(quad, drawPos, null, Color.White, columnRot,
-                        new Vector2(quad.Width / 2f, quad.Height), columnScale, SpriteEffects.None, 0f);
+                        columnOrigin, columnScale, SpriteEffects.None, 0f);
                 }
             }
 

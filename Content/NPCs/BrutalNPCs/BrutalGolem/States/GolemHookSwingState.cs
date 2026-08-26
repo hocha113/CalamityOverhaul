@@ -12,16 +12,43 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
         public override GolemStateIndex StateIndex => GolemStateIndex.HookSwing;
 
         internal static int HookTick => 12;    //双弧勾拳
+        internal static int HopTick => 58;     //拍间压近跳
         internal static int SweepTick => 106;  //贴地横扫
         internal static int EndTime => 220;
+
+        private bool airborne;
+
+        public override void OnEnter(GolemStateContext context) {
+            base.OnEnter(context);
+            airborne = false;
+        }
 
         public override IGolemState OnUpdate(GolemStateContext context) {
             NPC npc = context.Npc;
             context.FrameMode = 0;
-            GroundBrake(npc);
-            //站桩状态强制恢复地形碰撞
-            npc.noTileCollide = false;
+            RestoreTileCollide(context);
             context.VeinGlow = Math.Max(context.VeinGlow, 0.3f);
+
+            //拍间压近跳：勾拳交汇后、横扫之前躯干跃向目标，双线威胁不断档
+            if (Timer == Tempo(context, HopTick) && OnGround(npc)) {
+                float dx = context.Target.Center.X - npc.Center.X;
+                LaunchJump(npc, MathHelper.Clamp(dx / 55f, -11f, 11f), -9.5f);
+                if (!VaultUtils.isClient) {
+                    npc.netUpdate = true;
+                }
+            }
+            if (OnGround(npc)) {
+                GroundBrake(npc);
+                npc.damage = 0;
+            }
+            else {
+                context.FrameMode = 2;
+                npc.damage = npc.defDamage;
+                AirSteer(context, 0.12f, 10f);
+            }
+            if (LandedThisFrame(npc, ref airborne)) {
+                LandingImpact(context, context.Sundered ? 3 : 2);
+            }
 
             if (!VaultUtils.isClient) {
                 //第一拍：双弧勾拳交汇

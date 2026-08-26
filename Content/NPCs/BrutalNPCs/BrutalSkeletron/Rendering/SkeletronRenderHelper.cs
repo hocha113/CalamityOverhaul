@@ -11,10 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
     /// <summary>灵骨材质绘制辅助：幽灵臂条带、眼火、冠火、预警线、旋杀涡流</summary>
     internal static class SkeletronRenderHelper
     {
-        #region 自持资源（眼火贴图方案专用，用户定向回退保留）
-        [VaultLoaden(CWRConstant.Other + "SoulFire")]
-        internal static Asset<Texture2D> SoulFire = null;
-        #endregion
+        //眼火自 2026-08 起走 SkeletronEyeFlame.fx（旧 SoulFire 贴图方案已按用户指示移除）
 
         #region 色板（枯骨+阴魂火+诅咒暗）
         /// <summary>骨白</summary>
@@ -166,34 +163,70 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
 
         #endregion
 
-        #region 眼火 / 冠火（贴图方案，用户定向回退基线）
+        #region 眼火（SkeletronEyeFlame.fx 怨火瞳）/ 冠火（冷焰顶点批）
 
-        /// <summary>双眼窝阴魂火，随头旋转，intensity 支持 >1 过曝帧</summary>
-        public static void DrawEyeFlames(SpriteBatch spriteBatch, NPC head, float intensity, float alphaFade = 1f) {
+        /// <summary>
+        /// 双眼窝怨火瞳（SkeletronEyeFlame.fx，Immediate+Additive quad）：
+        /// 幽青焰体撕舌上舔 + 根部炽亮眼球带竖瞳暗缝，瞳孔追视目标；<br/>
+        /// intensity 支持 &gt;1 过曝帧（焰更高更亮）；curse=诅咒紫混比（二阶段/白昼狂暴发紫）
+        /// </summary>
+        public static void DrawEyeFlames(SpriteBatch spriteBatch, NPC head, float intensity, float alphaFade = 1f, float curse = 0f) {
             if (intensity <= 0.02f || alphaFade <= 0.02f) {
                 return;
             }
-            Texture2D soul = SoulFireTex;
-            if (soul == null) {
+            Effect fx = EffectLoader.SkeletronEyeFlame?.Value;
+            if (fx == null || CWRAsset.PerlinNoise?.Value == null) {
+                //着色器缺失静默：眼火是情绪读数，不承担公平预警
                 return;
             }
-            int frame = (int)(Main.GameUpdateCount / 5 + head.whoAmI) % 5;
-            Rectangle rect = new Rectangle(0, soul.Height / 5 * frame, soul.Width, soul.Height / 5);
-            Vector2 orig = new Vector2(rect.Width / 2f, rect.Height * 0.72f);
-            Texture2D glow = CWRAsset.SoftGlow.Value;
+            float inten = MathHelper.Clamp(intensity, 0f, 1.6f);
+
+            //瞳孔追视：世界向量旋回头局部（quad 随头旋转）
+            Vector2 lookLocal = Vector2.Zero;
+            if (head.target >= 0 && head.target < Main.maxPlayers) {
+                Player target = Main.player[head.target];
+                if (target != null && target.active) {
+                    lookLocal = (target.Center - head.Center).SafeNormalize(Vector2.Zero).RotatedBy(-head.rotation);
+                }
+            }
+
+            Texture2D quad = VaultAsset.placeholder2.Value;
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+
+            //全参数上载（uniform reset 硬规），逐眼只改 uSeed/uLook
+            fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            fx.Parameters["uIntensity"]?.SetValue(inten);
+            fx.Parameters["uCurse"]?.SetValue(MathHelper.Clamp(curse, 0f, 1f));
+            fx.Parameters["uCoreColor"]?.SetValue(BonePale.ToVector3());
+            fx.Parameters["uBodyColor"]?.SetValue(GhostCyan.ToVector3());
+            fx.Parameters["uEdgeColor"]?.SetValue(GhostDeep.ToVector3());
+            fx.Parameters["uCurseColor"]?.SetValue(CurseViolet.ToVector3());
+
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
+
+            //焰幅画布：瞳球在 quad 高 16% 处，焰根锚窝下沿使瞳球正落眼窝
+            float baseH = 66f * (0.85f + 0.25f * inten);
+            float quadW = 40f * head.scale;
+            float quadH = baseH * head.scale;
+            Vector2 scale = new Vector2(quadW / quad.Width, quadH / quad.Height);
 
             for (int side = -1; side <= 1; side += 2) {
-                //眼窝局部偏移随头旋转
-                Vector2 local = new Vector2(side * 15f, -8f) * head.scale;
+                Vector2 local = new Vector2(side * 15f, -8f + baseH * 0.16f) * head.scale;
                 Vector2 pos = head.Center + local.RotatedBy(head.rotation) - Main.screenPosition;
-                float flick = 0.9f + 0.18f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 11f + side * 2.1f + head.whoAmI);
-                float s = MathHelper.Clamp(intensity, 0f, 1.6f) * flick;
-
-                //光晕走预乘批 A=0 加色
-                spriteBatch.Draw(glow, pos, null, AsAdditive(GhostDeep) * (0.5f * s * alphaFade), 0f, glow.Size() / 2f, 0.62f * s, SpriteEffects.None, 0f);
-                spriteBatch.Draw(soul, pos, rect, Color.White * (0.9f * MathHelper.Clamp(s, 0f, 1f) * alphaFade),
-                    head.rotation, orig, 0.62f * s, SpriteEffects.None, 0f);
+                fx.Parameters["uSeed"]?.SetValue(side < 0 ? 0.13f : 0.57f);
+                fx.Parameters["uLook"]?.SetValue(lookLocal);
+                fx.CurrentTechnique.Passes[0].Apply();
+                spriteBatch.Draw(quad, pos, null, Color.White * alphaFade, head.rotation,
+                    new Vector2(quad.Width / 2f, quad.Height), scale, SpriteEffects.None, 0f);
             }
+
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         /// <summary>
@@ -235,8 +268,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
                     0.3f, (over - 1f) * 1.2f * alphaFade);
             }
         }
-
-        private static Texture2D SoulFireTex => SoulFire?.Value;
 
         #endregion
 
@@ -355,6 +386,57 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
             }
             DrawSpecterRibbon(trailPts, valid, halfWidth * 0.25f, halfWidth,
                 opacity * heat, 0.55f, npc.whoAmI * 0.137f, 0.4f, 0.1f, 1.8f);
+        }
+
+        #endregion
+
+        #region 旋杀转体涂抹（SkeletronSpinBlur.fx，对颅骨贴图做真旋转模糊）
+
+        /// <summary>画布外扩系数（quad scale 同乘，与 shader uInflate 契约一致）</summary>
+        private const float SpinBlurInflate = 1.8f;
+
+        /// <summary>
+        /// 旋杀转体涂抹：逐角回溯的幽灵残像 + 颅外角向风环速度线（Immediate+Additive）<br/>
+        /// smear=回溯总角（∝转速），intensity 0~1；返回 false=着色器缺失，调用方走精灵残影回退
+        /// </summary>
+        public static bool DrawSpinBlur(SpriteBatch spriteBatch, NPC head, Texture2D tex, Rectangle rect,
+            float smear, float intensity, float alphaFade) {
+            if (intensity <= 0.02f || alphaFade <= 0.02f) {
+                return true;
+            }
+            Effect fx = EffectLoader.SkeletronSpinBlur?.Value;
+            if (fx == null || CWRAsset.PerlinNoise?.Value == null) {
+                return false;
+            }
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+
+            //全参数上载（uniform reset 硬规）
+            fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            fx.Parameters["uSeed"]?.SetValue(head.whoAmI * 0.173f % 1f);
+            fx.Parameters["uSmear"]?.SetValue(smear);
+            fx.Parameters["uSpinDir"]?.SetValue((float)(head.direction == 0 ? 1 : head.direction));
+            fx.Parameters["uIntensity"]?.SetValue(MathHelper.Clamp(intensity, 0f, 1f));
+            fx.Parameters["uInflate"]?.SetValue(SpinBlurInflate);
+            fx.Parameters["uTexSize"]?.SetValue(new Vector2(rect.Width, rect.Height));
+            fx.Parameters["uGhostA"]?.SetValue(GhostCyan.ToVector3());
+            fx.Parameters["uGhostB"]?.SetValue(GhostDeep.ToVector3());
+            fx.Parameters["uBone"]?.SetValue(BonePale.ToVector3());
+
+            //LinearClamp：回溯采样出贴图界时取到透明缘，残像不会平铺复制
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
+            fx.CurrentTechnique.Passes[0].Apply();
+
+            spriteBatch.Draw(tex, head.Center - Main.screenPosition, rect, Color.White * alphaFade,
+                head.rotation, rect.Size() / 2f, head.scale * SpinBlurInflate, SpriteEffects.None, 0f);
+
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            return true;
         }
 
         #endregion

@@ -50,6 +50,16 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
         /// <summary>牙体暗面</summary>
         public static readonly Color IvoryDark = new(178, 152, 130);
 
+        //刀光专用色板，白压成米白、红整体加深(2026-08-26 实机反馈：白太亮红太浅)
+        /// <summary>刀光前沿米白</summary>
+        public static readonly Color ArcLead = new(250, 234, 218);
+        /// <summary>刀光高亮暗猩红</summary>
+        public static readonly Color ArcBright = new(186, 38, 40);
+        /// <summary>刀光主体深血红</summary>
+        public static readonly Color ArcMain = new(112, 14, 24);
+        /// <summary>刀光拖尾近黑</summary>
+        public static readonly Color ArcDeep = new(40, 6, 12);
+
         /// <summary>
         /// 刃轴相对贴图水平线的对角偏移。刃沿左下柄→右上尖的对角走，
         /// 48×64 画布的对角是 53° 不是 45°，按真实宽高算才贴合刀光

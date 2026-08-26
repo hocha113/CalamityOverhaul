@@ -9,8 +9,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles
         /// <summary>清空皇后所有在场弹幕(服务端)，阶段转换/大招/死亡的公平阀</summary>
         public static void ClearQueenProjectiles() {
             int beam = ModContent.ProjectileType<QueenPrismBeamProj>();
-            int shard = ModContent.ProjectileType<QueenShardProj>();
-            int meteor = ModContent.ProjectileType<QueenGelMeteorProj>();
+            int spike = ModContent.ProjectileType<QueenCrystalSpikeProj>();
+            int pearl = ModContent.ProjectileType<QueenGelPearlProj>();
+            int omen = ModContent.ProjectileType<QueenSpikeOmenProj>();
             int spire = ModContent.ProjectileType<QueenCrystalSpireProj>();
             int chandelier = ModContent.ProjectileType<QueenChandelierProj>();
             int gale = ModContent.ProjectileType<QueenGaleFieldProj>();
@@ -18,9 +19,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles
             int prison = ModContent.ProjectileType<QueenCrystalPrisonProj>();
 
             foreach (var p in Main.ActiveProjectiles) {
-                if (p.type == beam || p.type == shard || p.type == meteor
-                    || p.type == spire || p.type == chandelier || p.type == gale
-                    || p.type == royal || p.type == prison) {
+                if (p.type == beam || p.type == spike || p.type == pearl
+                    || p.type == omen || p.type == spire || p.type == chandelier
+                    || p.type == gale || p.type == royal || p.type == prison) {
                     p.Kill();
                 }
             }
