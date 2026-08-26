@@ -116,5 +116,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.SolarPanels
         //圣辉配色:紫底金格,与初代一眼区分
         protected override Color PanelColor => new(58, 40, 108);
         protected override Color CellColor => new(214, 172, 96);
+        protected override Color GlintColor => new(255, 226, 168);
     }
 }

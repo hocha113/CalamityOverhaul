@@ -84,7 +84,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Sundials
             if (!TileProcessorLoader.ByPositionGetTP(point, out ElectricSundialTP tp)) {
                 return;
             }
-            float strength = tp.GlowIntensity + (tp.CeremonyFlash > 0 ? tp.CeremonyFlash / 90f : 0f);
+            //综合亮度含快进呼吸:快进期间机身持续微光
+            float strength = tp.EffectiveGlow;
             if (strength > 0.05f) {
                 r = 0.42f * strength;
                 g = 0.32f * strength;
@@ -120,7 +121,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Sundials
                 spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16),
                     drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
 
-                float glow = tp.GlowIntensity + (tp.CeremonyFlash > 0 ? tp.CeremonyFlash / 90f * 0.6f : 0f);
+                float glow = tp.EffectiveGlow;
                 if (glow > 0.01f && tileGlowAsset != null) {
                     Color glowColor = ElectricSundial.Tint * MathHelper.Clamp(glow, 0f, 1f);
                     spriteBatch.Draw(tileGlowAsset.Value, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16),
