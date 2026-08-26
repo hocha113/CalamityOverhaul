@@ -1,6 +1,9 @@
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.IO;
 using Terraria;
 using Terraria.ID;
@@ -38,7 +41,24 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.FluidPumps
 
         private int beatTimer;
 
+        #region 纯客户端表现状态(活塞/状态灯/入水口)
+        /// <summary>运转程度 0..1:条件齐备缓升,缺一缓停(活塞减速停摆)</summary>
+        private float runLevel;
+        /// <summary>活塞相位(弧度),速度随 runLevel</summary>
+        private float pistonPhase;
+        /// <summary>抽液瞬间脉冲(活塞猛推一拍)</summary>
+        private float gulpPulse;
+        /// <summary>入水口(被抽液面)世界坐标,x<0=没找到</summary>
+        private Vector2 intakePos = new(-1f, -1f);
+        private int lastFluidAmountVis = -1;
+        private int intakeScanTimer;
+        #endregion
+
         public override void UpdateMachine() {
+            if (!Main.dedServ) {
+                UpdatePumpVisual();
+            }
+
             //作业与世界改动仅权威端;客户端液量靠事件包与管网均衡自愈
             if (VaultUtils.isClient) {
                 return;
@@ -109,6 +129,130 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.FluidPumps
                 }
             });
         }
+
+        #region 表现推进(纯客户端,零网络)
+        /// <summary>
+        /// 运转状态由真实条件推导(电够+未满+下方有可抽液+未待机),
+        /// 抽液瞬间由"观测到液量上升"触发猛推与入水口涟漪——事件包是各端的真实作业信号
+        /// </summary>
+        private void UpdatePumpVisual() {
+            //入水口节流扫描(只读,并行安全):自上而下第一格可抽液体的液面
+            if (--intakeScanTimer <= 0) {
+                intakeScanTimer = 30;
+                ScanIntakeSurface();
+            }
+
+            bool working = !Disabled && MachineData.UEvalue >= PumpCostPerTile
+                && FluidAmount < FluidCapacity && intakePos.X > 0f;
+            runLevel = MathHelper.Lerp(runLevel, working ? 1f : 0f, working ? 0.10f : 0.05f);
+
+            //观测抽液:液量上升=一次入腹
+            if (lastFluidAmountVis < 0) {
+                lastFluidAmountVis = FluidAmount;
+            }
+            bool gulped = FluidAmount > lastFluidAmountVis;
+            lastFluidAmountVis = FluidAmount;
+            if (gulped) {
+                gulpPulse = 1f;
+            }
+            gulpPulse *= 0.9f;
+
+            //活塞:速度=运转程度,入腹瞬间猛推一拍
+            pistonPhase += runLevel * 0.16f + gulpPulse * 0.22f;
+
+            //入水口反馈:涟漪+被吸向机底的水珠
+            if (gulped && intakePos.X > 0f && FluidVFX.NearLocalPlayer(CenterInWorld)) {
+                FluidStyle style = FluidVFX.GetStyle(FluidType);
+                Vector2 surface = intakePos;
+                Vector2 inletDir = (new Vector2(CenterInWorld.X, PosInWorld.Y + Height) - surface).SafeNormalize(-Vector2.UnitY);
+                Defer(() => {
+                    PRTLoader.NewParticle<PRT_HeartcarverPulseRing>(surface, Vector2.Zero,
+                        style.Bright * 0.7f, 1f)?.Configure(0.04f, 0.14f, 18);
+                    for (int i = 0; i < 3; i++) {
+                        Vector2 vel = inletDir * Main.rand.NextFloat(1.6f, 2.6f)
+                            + new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), 0f);
+                        PRTLoader.NewParticle<PRT_HeartcarverDroplet>(surface + new Vector2(Main.rand.NextFloat(-4f, 4f), -1f),
+                            vel, Color.Lerp(style.Main, style.Bright, Main.rand.NextFloat(0.4f)), Main.rand.NextFloat(0.45f, 0.7f))
+                            ?.Configure(Main.rand.Next(12, 18), 0.04f);
+                    }
+                });
+            }
+        }
+
+        /// <summary>扫描区内自上而下找第一格可抽液体,记其液面为入水口</summary>
+        private void ScanIntakeSurface() {
+            int tileWidth = Width / 16;
+            int tileHeight = Height / 16;
+            int left = Position.X - 1;
+            int right = Position.X + tileWidth;
+            int top = Position.Y;
+            int bottom = Position.Y + tileHeight + 8 - 1;
+
+            for (int y = top; y <= bottom; y++) {
+                for (int x = left; x <= right; x++) {
+                    if (!WorldGen.InWorld(x, y, 40)) {
+                        continue;
+                    }
+                    Tile tile = Framing.GetTileSafely(x, y);
+                    if (tile.LiquidAmount <= 0) {
+                        continue;
+                    }
+                    if (FluidAmount > 0 && tile.LiquidType != FluidType) {
+                        continue;
+                    }
+                    intakePos = new Vector2(x * 16f + 8f, y * 16f + (16f - tile.LiquidAmount / 255f * 16f));
+                    return;
+                }
+            }
+            intakePos = new Vector2(-1f, -1f);
+        }
+        #endregion
+
+        #region 机面覆层:活塞组件+储液量规+状态灯(占位贴图上的程序化机械感)
+        public override void Draw(SpriteBatch spriteBatch) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+            Vector2 basePos = PosInWorld - Main.screenPosition;
+            Color lit = Lighting.GetColor(Position.ToPoint());
+            FluidStyle style = FluidVFX.GetStyle(FluidType);
+
+            //活塞槽(暗)+活塞头(钢亮)+连杆:往复=运转,减速停摆=断电/无液
+            Color housing = new Color(30, 33, 38).MultiplyRGB(lit);
+            Color steel = new Color(168, 178, 190).MultiplyRGB(lit);
+            Color rod = new Color(110, 118, 128).MultiplyRGB(lit);
+            int cx = (int)(basePos.X + Width / 2f);
+            int topY = (int)basePos.Y;
+            spriteBatch.Draw(px, new Rectangle(cx - 4, topY + 3, 8, 13), housing);
+            float stroke = (MathF.Sin(pistonPhase) + 1f) * 0.5f;//0..1
+            int headY = topY + 4 + (int)(stroke * 6f);
+            spriteBatch.Draw(px, new Rectangle(cx - 3, headY, 6, 3), steel);
+            spriteBatch.Draw(px, new Rectangle(cx - 1, headY + 3, 2, topY + 16 - (headY + 3)), rod);
+
+            //左缘储液量规:底暗条+按液色的充盈段
+            float ratio = MathHelper.Clamp(FluidAmount / (float)FluidCapacity, 0f, 1f);
+            spriteBatch.Draw(px, new Rectangle((int)basePos.X + 3, topY + 6, 3, 20), new Color(18, 20, 24).MultiplyRGB(lit));
+            if (ratio > 0.01f) {
+                int fillH = (int)(20 * ratio);
+                spriteBatch.Draw(px, new Rectangle((int)basePos.X + 3, topY + 6 + 20 - fillH, 3, fillH),
+                    style.Main.MultiplyRGB(lit));
+                spriteBatch.Draw(px, new Rectangle((int)basePos.X + 3, topY + 6 + 20 - fillH, 3, 1),
+                    FluidVFX.Glow(style.Bright, 0.35f));
+            }
+
+            //状态灯:运转=青绿呼吸,通电待机=琥珀,断电/待机=熄灭
+            Color lamp;
+            if (Disabled || MachineData.UEvalue < PumpCostPerTile) {
+                lamp = new Color(30, 26, 24);
+            }
+            else if (runLevel > 0.3f) {
+                float breath = 0.6f + 0.4f * MathF.Sin(pistonPhase * 0.5f);
+                lamp = FluidVFX.Glow(new Color(90, 255, 170), 0.5f + 0.5f * breath);
+            }
+            else {
+                lamp = FluidVFX.Glow(new Color(255, 180, 60), 0.55f);
+            }
+            spriteBatch.Draw(px, new Rectangle((int)(basePos.X + Width) - 6, topY + 4, 3, 3), lamp);
+        }
+        #endregion
 
         #region 存档与同步:液体字段追加在基类之后
         public override void SendData(ModPacket data) {

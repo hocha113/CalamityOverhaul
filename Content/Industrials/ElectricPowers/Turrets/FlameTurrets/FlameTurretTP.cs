@@ -1,4 +1,7 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
 using Terraria;
@@ -44,6 +47,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.FlameTurre
         /// <summary>本 tick 是否处于喷火状态</summary>
         internal bool Firing { get; private set; }
         internal float GlowIntensity;
+
+        //---- 炮口余温:纯客户端表现,升温快冷却慢,停火后辉光渐熄+热气残余 ----
+        /// <summary>炮口热度0~1:权威端跟喷火状态,客户端观测喷口附近的火焰弹</summary>
+        internal float MuzzleHeat { get; private set; }
+        private int heatScanTimer;
+        private int heatSmokeTimer;
 
         private int fuelBurnTimer;
         private int retargetTimer;
@@ -118,6 +127,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.FlameTurre
             }
 
             UpdateGlow();
+            UpdateMuzzleHeat(Firing);
         }
 
         /// <summary>索敌与持续喷火:目标锁定期每帧耗电,每 FireInterval 帧一发火焰弹</summary>
@@ -155,7 +165,33 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.FlameTurre
         }
 
         /// <summary>塔顶喷口</summary>
-        private Vector2 MuzzlePosition => PosInWorld + new Vector2(Width * 0.5f, 10f);
+        internal Vector2 MuzzlePosition => PosInWorld + new Vector2(Width * 0.5f, 10f);
+
+        /// <summary>
+        /// 炮口余温包络:升温一拍到顶,冷却慢(约2秒读作金属余温);
+        /// 余温期低频冒热气,读作刚喷完火的炮管
+        /// </summary>
+        private void UpdateMuzzleHeat(bool heating) {
+            MuzzleHeat = heating
+                ? Math.Min(1f, MuzzleHeat + 0.12f)
+                : Math.Max(0f, MuzzleHeat - 0.008f);
+
+            if (VaultUtils.isServer || MuzzleHeat < 0.4f || heating) {
+                return;
+            }
+            //停火余温期:炮口偶发热气
+            if (++heatSmokeTimer >= 22) {
+                heatSmokeTimer = 0;
+                Vector2 muzzle = MuzzlePosition;
+                if (VaultUtils.IsPointOnScreen(muzzle - Main.screenPosition, 100)) {
+                    float heat = MuzzleHeat;
+                    Defer(() => PRTLoader.NewParticle<PRT_DefSmoke>(
+                        muzzle + VaultUtils.RandVr(5f), new Vector2(0, -0.6f),
+                        new Color(70, 58, 52) * (0.32f * heat), Main.rand.NextFloat(0.18f, 0.3f))
+                        ?.Configure(Main.rand.Next(34, 50)));
+                }
+            }
+        }
 
         /// <summary>生成一发火焰弹:普通 ModProjectile,权威端生成,owner 取默认(服务器即255)</summary>
         protected override void Fire(NPC target) {
@@ -177,9 +213,51 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.FlameTurre
                 : Math.Max(0f, GlowIntensity - 0.03f);
         }
 
-        /// <summary>权威 gate 下客户端的表现帧:辉光按模式与电量近似推进</summary>
+        /// <summary>权威 gate 下客户端的表现帧:辉光近似推进+观测喷口火焰弹还原余温</summary>
         protected override void UpdateTurretClient() {
             UpdateGlow();
+
+            //客户端不知 Firing:每5帧扫一次喷口附近的火焰弹当在喷火
+            bool firingObserved = false;
+            if (++heatScanTimer >= 5) {
+                heatScanTimer = 0;
+                Vector2 muzzle = MuzzlePosition;
+                int fireType = ModContent.ProjectileType<FlameTurretFire>();
+                foreach (Projectile proj in Main.ActiveProjectiles) {
+                    if (proj.type == fireType && proj.Center.DistanceSQ(muzzle) < 90f * 90f) {
+                        firingObserved = true;
+                        break;
+                    }
+                }
+                if (firingObserved) {
+                    //扫描间隔内保持在顶
+                    MuzzleHeat = 1f;
+                }
+            }
+            UpdateMuzzleHeat(firingObserved);
+        }
+
+        /// <summary>炮口余温辉光:热度驱动的暖光呼吸,画在充能条同层</summary>
+        public override void FrontDraw(SpriteBatch spriteBatch) {
+            DrawChargeBar();
+
+            if (MuzzleHeat < 0.03f) {
+                return;
+            }
+            var glowTex = CWRAsset.SoftGlow?.Value;
+            if (glowTex == null) {
+                return;
+            }
+            Vector2 muzzle = MuzzlePosition - Main.screenPosition;
+            //高热偏白金,余温沉向橙红;A=0 加色
+            Color warm = Color.Lerp(new Color(255, 96, 30), new Color(255, 196, 110), MuzzleHeat);
+            warm.A = 0;
+            float flicker = 0.9f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 11f + Position.X);
+            float a = MuzzleHeat * flicker;
+            spriteBatch.Draw(glowTex, muzzle, null, warm * (0.42f * a), 0f,
+                glowTex.Size() * 0.5f, 0.55f + 0.15f * MuzzleHeat, SpriteEffects.None, 0f);
+            spriteBatch.Draw(glowTex, muzzle, null, warm * (0.30f * a), 0f,
+                glowTex.Size() * 0.5f, 0.28f, SpriteEffects.None, 0f);
         }
 
         /// <summary>模式翻转的本地反馈</summary>

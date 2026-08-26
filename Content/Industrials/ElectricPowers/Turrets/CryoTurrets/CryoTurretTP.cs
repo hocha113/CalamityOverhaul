@@ -1,3 +1,5 @@
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -32,6 +34,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.CryoTurret
 
         internal float GlowIntensity;
 
+        //---- 寒场视觉状态:纯客户端表现 ----
+        /// <summary>脉冲霜环进度 0~1,1=已完成;脉冲拍且场内有敌时归零重放</summary>
+        internal float FrostRingT { get; private set; } = 1f;
+        private int mistTimer;
+        private int glintTimer;
+
         private int pulseTimer;
         private int clientPulseTimer;
         private int textIdleTime;
@@ -42,6 +50,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.CryoTurret
 
         public override void SetBattery() {
             IdleDistance = 4000;//玩家远离后停止运行
+            DrawExtendMode = 900;//霜环最大半径500×射程模块(1.25²≈781)+撕裂余量,塔出屏后环仍需绘制
         }
 
         /// <summary>模块生效的持续耗电(节能模块作用点)</summary>
@@ -70,9 +79,45 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.CryoTurret
                 ? Math.Min(1f, GlowIntensity + 0.03f)
                 : Math.Max(0f, GlowIntensity - 0.03f);
 
+            UpdateFieldVisual(running);
+
             //权威端同为游戏端时(单人)的脉冲霜雾
             if (running && !VaultUtils.isServer) {
                 SpawnAmbientFrost();
+            }
+        }
+
+        /// <summary>
+        /// 寒场氛围推进(两端共用):霜环进度、绕塔寒雾、塔身挂霜闪点。
+        /// 雾与闪点只在屏内生成,屏外不发
+        /// </summary>
+        private void UpdateFieldVisual(bool running) {
+            if (FrostRingT < 1f) {
+                FrostRingT = Math.Min(1f, FrostRingT + 1f / 26f);
+            }
+            if (!running || VaultUtils.isServer) {
+                return;
+            }
+            if (!VaultUtils.IsPointOnScreen(CenterInWorld - Main.screenPosition, (int)(EffectiveRange + 220f))) {
+                return;
+            }
+
+            //绕塔寒雾:缓慢旋绕的冷雾层
+            if (++mistTimer >= 9) {
+                mistTimer = 0;
+                float orbitRadius = EffectiveRange * Rand.NextFloat(0.30f, 0.95f);
+                Defer(() => PRTLoader.NewParticle<PRT_DefCryoMist>(CenterInWorld, Vector2.Zero,
+                    new Color(185, 222, 252) * 0.30f, Main.rand.NextFloat(0.30f, 0.55f))
+                    ?.Configure(Main.rand.Next(100, 150), CenterInWorld, orbitRadius));
+            }
+
+            //塔身挂霜:偶发晶面反光
+            if (++glintTimer >= 26) {
+                glintTimer = 0;
+                Vector2 pos = PosInWorld + new Vector2(Rand.Next(Width), Rand.Next(Height));
+                Defer(() => PRTLoader.NewParticle<PRT_DefFrostGlint>(pos, Vector2.Zero,
+                    new Color(210, 240, 255), Main.rand.NextFloat(0.4f, 0.75f))
+                    ?.Configure(Main.rand.Next(14, 24)));
             }
         }
 
@@ -147,6 +192,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.CryoTurret
 
             if (anyTarget) {
                 MachineData.UEvalue -= EffectiveConsumePerTick;
+                //脉冲拍且场内有敌:重放霜环,读作这一拍寒气扫过全场
+                if (pulse) {
+                    FrostRingT = 0f;
+                }
             }
             return anyTarget;
         }
@@ -172,17 +221,31 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.CryoTurret
             }
         }
 
-        /// <summary>权威 gate 下客户端的表现帧:辉光近似推进+同节奏霜雾</summary>
+        /// <summary>权威 gate 下客户端的表现帧:辉光近似推进+同节奏霜雾+本地判敌重放霜环</summary>
         protected override void UpdateTurretClient() {
             bool lit = AttackPattern && MachineData.UEvalue >= EffectiveConsumePerTick;
             GlowIntensity = lit
                 ? Math.Min(1f, GlowIntensity + 0.03f)
                 : Math.Max(0f, GlowIntensity - 0.03f);
 
+            //客户端不知权威脉冲相位,按同节拍自走;NPC全端同步,范围判敌本地可查
+            bool anyTarget = false;
             if (lit && GlowIntensity > 0.5f && ++clientPulseTimer >= EffectivePulseInterval) {
                 clientPulseTimer = 0;
                 SpawnAmbientFrost();
+                foreach (var npc in Main.ActiveNPCs) {
+                    if (!npc.friendly && !npc.dontTakeDamage
+                        && npc.Distance(CenterInWorld) <= EffectiveRange) {
+                        anyTarget = true;
+                        break;
+                    }
+                }
+                if (anyTarget) {
+                    FrostRingT = 0f;
+                }
             }
+
+            UpdateFieldVisual(lit && GlowIntensity > 0.4f);
         }
 
         /// <summary>模式翻转的本地反馈</summary>

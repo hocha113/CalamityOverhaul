@@ -1,5 +1,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -77,6 +79,20 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
 
         private bool netDirty;
         private int netCooldown;
+
+        #endregion
+
+        #region 客户端视觉字段(不入存档不入网络包)
+
+        //田间株位视觉缓存:物块各端已同步,客户端自行扫描,孢子云密度由株数驱动
+        private readonly List<Point16> visualShroomSpots = [];
+        private readonly List<Point16> visualGlowShroomSpots = [];
+        private int visualEmptySpots;
+        private int visualScanTimer;
+        /// <summary>派生作业强度 0~1,由已同步字段(电量/田况)推出,MP 客户端也成立</summary>
+        private float visualWork;
+        /// <summary>视觉活跃半径:本地玩家超出此距离不扫描不发粒子</summary>
+        private const float VisualRange = WorkRadius + 1000f;
 
         #endregion
 
@@ -235,9 +251,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
                 textIdleTime--;
             }
 
-            GlowIntensity = IsWorking
+            //MP 客户端上 IsWorking 不入包恒为 false,机身辉光改由派生的视觉作业强度驱动
+            bool glowWorking = VaultUtils.isClient ? visualWork > 0.5f : IsWorking;
+            GlowIntensity = glowWorking
                 ? Math.Min(1f, GlowIntensity + 0.04f)
                 : Math.Max(0f, GlowIntensity - 0.02f);
+
+            //客户端视觉:田间扫描与孢子云,状态全部由已同步数据派生,零网络
+            if (!VaultUtils.isServer) {
+                UpdateClientVisual();
+            }
 
             if (!Enabled) {
                 IsWorking = false;
@@ -376,6 +399,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
                     return;
                 }
 
+                //记录本轮第一株空手清掉的位置:若整轮无产出,给它一拍清株反馈
+                Point16 clearedEmpty = Point16.Zero;
+
                 while (harvestSpots.Count > 0) {
                     Point16 spot = harvestSpots[0];
                     harvestSpots.RemoveAt(0);
@@ -414,6 +440,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
 
                     if (produceType == ItemID.None) {
                         netDirty = true;
+                        if (clearedEmpty == Point16.Zero) {
+                            clearedEmpty = spot;
+                        }
                         continue;
                     }
 
@@ -425,6 +454,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
                     MachineData.UEvalue -= HarvestCost;
                     CommitAction(2, spot);
                     return;
+                }
+
+                //整轮都掷了空手:植株不能无声消失,补一拍轻量清株演出
+                if (clearedEmpty != Point16.Zero) {
+                    CommitAction(3, clearedEmpty);
                 }
             });
             return true;
@@ -485,7 +519,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
             PlayActionEffect(kind, pos);
         }
 
-        /// <summary>动作演出:机器到落点的孢子飞线 + 落点菌尘迸发;主线程调用</summary>
+        /// <summary>动作演出:机器到落点的孢子飞线 + 落点反馈;kind 1=播种 2=采收 3=空手清株;主线程调用</summary>
         internal void PlayActionEffect(byte kind, Point16 pos) {
             if (VaultUtils.isServer) {
                 return;
@@ -494,26 +528,201 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
             Vector2 target = pos.ToWorldCoordinates(8, 8);
             Vector2 source = CenterInWorld + new Vector2(0, -10);
             float distance = source.Distance(target);
-            int beamPoints = (int)MathHelper.Clamp(distance / 14f, 6f, 42f);
-
-            for (int i = 0; i < beamPoints; i++) {
-                float t = i / (float)beamPoints;
-                Vector2 dustPos = Vector2.Lerp(source, target, t);
-                //轻微下垂弧线,像被抛出的孢子束
-                dustPos.Y += MathF.Sin(t * MathHelper.Pi) * distance * 0.06f;
-                Dust dust = Dust.NewDustPerfect(dustPos, DustID.BlueFairy,
-                    Main.rand.NextVector2Circular(0.3f, 0.3f), 120, default, 0.8f);
-                dust.noGravity = true;
+            if (distance < 1f) {
+                return;
             }
 
-            int burstType = kind == 1 ? DustID.BlueFairy : DustID.GlowingMushroom;
-            for (int i = 0; i < 8; i++) {
-                Dust dust = Dust.NewDustPerfect(target, burstType,
-                    Main.rand.NextVector2Circular(1.6f, 1.6f) - new Vector2(0, 1f), 80, default, 1.0f);
-                dust.noGravity = kind == 1;
+            //株本体可能已被清掉(采收),读地基判菇种最可靠:蘑菇草=发光蘑菇的蓝辉
+            Tile below = Framing.GetTileSafely(pos.X, pos.Y + 1);
+            bool glowKind = below.HasTile && below.TileType == TileID.MushroomGrass;
+            Color sporeColor = glowKind ? new Color(95, 160, 255) : new Color(226, 220, 205);
+
+            //孢子飞线:沿下垂弧线洒一串孢子,初速取弧线切向;
+            //寿命从机器端向落点递增,整条线读作"孢子被送达"
+            int points = (int)MathHelper.Clamp(distance / 22f, 6f, 26f);
+            Vector2 dir = (target - source) / distance;
+            for (int i = 0; i < points; i++) {
+                float t = (i + Main.rand.NextFloat(0.9f)) / points;
+                Vector2 dropPos = Vector2.Lerp(source, target, t);
+                dropPos.Y += MathF.Sin(t * MathHelper.Pi) * distance * 0.07f;
+                Vector2 vel = dir * 2.2f;
+                vel.Y += MathF.Cos(t * MathHelper.Pi) * 1.1f;
+                PRTLoader.NewParticle<PRT_FarmSpore>(dropPos, vel.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1.15f),
+                    sporeColor, Main.rand.NextFloat(0.35f, 0.6f))
+                    .Configure(16 + (int)(t * 26f), glowKind, 0.96f);
             }
 
-            SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.5f, Pitch = kind == 1 ? 0.3f : 0f }, target);
+            if (kind == 1) {
+                //播种:落点拱起一小捧孢子
+                for (int i = 0; i < 7; i++) {
+                    PRTLoader.NewParticle<PRT_FarmSpore>(target + Main.rand.NextVector2Circular(6f, 3f),
+                        new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), -Main.rand.NextFloat(0.4f, 1.1f)),
+                        sporeColor, Main.rand.NextFloat(0.3f, 0.55f)).Configure(Main.rand.Next(40, 70), glowKind);
+                }
+                SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.5f, Pitch = 0.3f }, target);
+            }
+            else if (kind == 3) {
+                //空手清株:只有孢子散掉,没有菌伞,声音也更轻
+                for (int i = 0; i < 6; i++) {
+                    PRTLoader.NewParticle<PRT_FarmSpore>(target + Main.rand.NextVector2Circular(6f, 4f),
+                        new Vector2(Main.rand.NextFloat(-0.7f, 0.7f), -Main.rand.NextFloat(0.2f, 0.7f)),
+                        sporeColor, Main.rand.NextFloat(0.3f, 0.55f)).Configure(Main.rand.Next(40, 70), glowKind);
+                }
+                SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.35f, Pitch = -0.2f }, target);
+            }
+            else {
+                //采收:菌伞碎块弧线飞散 + 孢子扑腾 + 原版菌尘打底
+                int capItem = glowKind ? ItemID.GlowingMushroom : ItemID.Mushroom;
+                int caps = Main.rand.Next(3, 5);
+                for (int i = 0; i < caps; i++) {
+                    PRTLoader.NewParticle<PRT_FarmMushroomCap>(target + Main.rand.NextVector2Circular(5f, 4f),
+                        new Vector2(Main.rand.NextFloat(-2.4f, 2.4f), -Main.rand.NextFloat(2.2f, 4.2f)),
+                        Color.White, Main.rand.NextFloat(0.8f, 1.15f)).Configure(capItem);
+                }
+                for (int i = 0; i < 9; i++) {
+                    PRTLoader.NewParticle<PRT_FarmSpore>(target + Main.rand.NextVector2Circular(7f, 5f),
+                        new Vector2(Main.rand.NextFloat(-0.9f, 0.9f), -Main.rand.NextFloat(0.2f, 0.9f)),
+                        sporeColor, Main.rand.NextFloat(0.3f, 0.6f)).Configure(Main.rand.Next(50, 90), glowKind);
+                }
+                for (int i = 0; i < 5; i++) {
+                    Dust dust = Dust.NewDustPerfect(target, glowKind ? DustID.GlowingMushroom : DustID.Grass,
+                        Main.rand.NextVector2Circular(1.4f, 1.2f) - new Vector2(0, 0.8f), 80, default, 1.0f);
+                    dust.noGravity = false;
+                }
+                SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.55f }, target);
+            }
+        }
+
+        #endregion
+
+        #region 客户端视觉
+
+        /// <summary>
+        /// 客户端视觉总更新:节流扫描田间株位,派生作业强度,发射孢子云。
+        /// 运行在并行更新阶段:只读物块,粒子生成经 Defer,随机数走 Rand
+        /// </summary>
+        private void UpdateClientVisual() {
+            //本地玩家远离时不扫不发,省客户端开销
+            if (Main.LocalPlayer.Center.DistanceSQ(CenterInWorld) > VisualRange * VisualRange) {
+                visualWork = 0f;
+                return;
+            }
+
+            if (--visualScanTimer <= 0) {
+                visualScanTimer = 84 + WhoAmI % 13;
+                VisualScanField();
+            }
+
+            bool able = Enabled && MachineData.UEvalue >= PlantCost;
+            bool hasField = visualShroomSpots.Count + visualGlowShroomSpots.Count + visualEmptySpots > 0;
+            visualWork = MathHelper.Lerp(visualWork, able && hasField ? 1f : 0f, 0.03f);
+
+            if (visualWork < 0.2f) {
+                return;
+            }
+
+            //田间常驻孢子云:密度自然随株数
+            EmitSporesFrom(visualShroomSpots, false);
+            EmitSporesFrom(visualGlowShroomSpots, true);
+
+            //机身顶部微量孢子逸出,作业感的常驻锚点
+            if (visualWork > 0.4f && InScreen && Rand.NextBool(26)) {
+                Vector2 ventPos = PosInWorld + new Vector2(Rand.NextFloat(6f, Width - 6f), 2f);
+                Defer(() => PRTLoader.NewParticle<PRT_FarmSpore>(ventPos, new Vector2(0f, -0.3f),
+                    new Color(150, 165, 255), Rand.NextFloat(0.3f, 0.5f)).Configure(Rand.Next(70, 110), true));
+            }
+        }
+
+        /// <summary>客户端株位扫描:分菇种缓存成熟株位并统计可播空位;只读物块,并行阶段安全</summary>
+        private void VisualScanField() {
+            visualShroomSpots.Clear();
+            visualGlowShroomSpots.Clear();
+            visualEmptySpots = 0;
+
+            int radiusTiles = (int)(WorkRadius / 16f);
+            int centerX = Position.X + 1;
+            int centerY = Position.Y + 1;
+            float radiusSQ = WorkRadius * WorkRadius;
+
+            for (int x = centerX - radiusTiles; x <= centerX + radiusTiles; x++) {
+                for (int y = centerY - radiusTiles; y <= centerY + radiusTiles; y++) {
+                    if (!WorldGen.InWorld(x, y, 5)) {
+                        continue;
+                    }
+                    if (Vector2.DistanceSquared(CenterInWorld, new Vector2(x * 16 + 8, y * 16 + 8)) > radiusSQ) {
+                        continue;
+                    }
+
+                    Tile tile = Main.tile[x, y];
+                    if (tile.HasTile) {
+                        if (tile.TileType == TileID.Plants && tile.TileFrameX == MushroomFrameX) {
+                            if (visualShroomSpots.Count < 60) {
+                                visualShroomSpots.Add(new Point16(x, y));
+                            }
+                        }
+                        else if (tile.TileType == TileID.MushroomPlants) {
+                            if (visualGlowShroomSpots.Count < 60) {
+                                visualGlowShroomSpots.Add(new Point16(x, y));
+                            }
+                        }
+                        continue;
+                    }
+
+                    Tile below = Main.tile[x, y + 1];
+                    if (!below.HasTile || below.IsHalfBlock || below.Slope != 0) {
+                        continue;
+                    }
+                    if (below.TileType == TileID.Grass || below.TileType == TileID.GolfGrass
+                        || below.TileType == TileID.MushroomGrass) {
+                        visualEmptySpots++;
+                    }
+                }
+            }
+        }
+
+        /// <summary>孢子云发射:每株低概率起尘,密度随株数;逐点屏内过滤,屏外株不发</summary>
+        private void EmitSporesFrom(List<Point16> spots, bool glowMode) {
+            if (spots.Count == 0) {
+                return;
+            }
+            //期望发射率约 株数/8 次尝试 × 1/18,60 株时 ≈ 0.33 粒/tick,粒子池上限兜底
+            int tries = Math.Min((spots.Count + 7) / 8, 6);
+            for (int i = 0; i < tries; i++) {
+                if (!Rand.NextBool(18)) {
+                    continue;
+                }
+                Point16 spot = spots[Rand.Next(spots.Count)];
+                Vector2 world = spot.ToWorldCoordinates(8, 4) + new Vector2(Rand.NextFloat(-8f, 8f), Rand.NextFloat(-10f, 4f));
+                if (!VaultUtils.IsPointOnScreen(world - Main.screenPosition, 40)) {
+                    continue;
+                }
+                Color color = glowMode ? new Color(95, 160, 255) : new Color(226, 220, 205);
+                float scale = Rand.NextFloat(0.3f, glowMode ? 0.55f : 0.7f);
+                Vector2 vel = new(Rand.NextFloat(-0.2f, 0.2f), Rand.NextFloat(-0.25f, 0.05f));
+                int life = Rand.Next(100, 170);
+                Defer(() => PRTLoader.NewParticle<PRT_FarmSpore>(world, vel, color, scale).Configure(life, glowMode));
+            }
+        }
+
+        /// <summary>状态灯:与既有"缺电贴图变暗"互补的原因编码</summary>
+        private void DrawStatusLamp(SpriteBatch spriteBatch) {
+            FarmLampState state;
+            if (Disabled || !Enabled) {
+                state = FarmLampState.Off;
+            }
+            else if (MachineData.UEvalue < PlantCost) {
+                state = FarmLampState.NoPower;
+            }
+            else if (!HasAnySpace()) {
+                state = FarmLampState.MissingResource;
+            }
+            else if (visualWork > 0.35f) {
+                state = FarmLampState.Working;
+            }
+            else {
+                state = FarmLampState.Idle;
+            }
+            FarmStatusLamp.Draw(spriteBatch, PosInWorld + new Vector2(Width - 5f, 5f), state, MushroomFarmer.Tint, WhoAmI);
         }
 
         #endregion
@@ -545,6 +754,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
             if (VaultUtils.isServer) {
                 NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type);
             }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch) {
+            DrawStatusLamp(spriteBatch);
         }
 
         public override void FrontDraw(SpriteBatch spriteBatch) {

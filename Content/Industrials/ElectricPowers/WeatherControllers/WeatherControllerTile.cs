@@ -85,9 +85,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.WeatherControllers
             }
             float strength = tp.GlowIntensity + (tp.CeremonyFlash > 0 ? tp.CeremonyFlash / 90f : 0f);
             if (strength > 0.05f) {
-                r = 0.12f * strength;
-                g = 0.2f * strength;
-                b = 0.42f * strength;
+                //演出余辉窗口分语言:求雨冷蓝,止雨暖白
+                if (tp.CeremonyFlash > 0 && !tp.LastWantRain) {
+                    r = 0.4f * strength;
+                    g = 0.34f * strength;
+                    b = 0.2f * strength;
+                }
+                else {
+                    r = 0.12f * strength;
+                    g = 0.2f * strength;
+                    b = 0.42f * strength;
+                }
             }
         }
 
