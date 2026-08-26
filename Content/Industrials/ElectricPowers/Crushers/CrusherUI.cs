@@ -359,9 +359,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Crushers
 
             IndustrialTerminalRenderer.DrawRecess(sb, chamberRect, alpha, 0.8f);
 
-            //双颚:上颚随进度往复咬合,下颚固定;颚面带齿
+            //双颚:上颚随进度往复咬合,下颚固定;颚面带齿(冲程曲线与瓦片同源)
             float jawPhase = CruData.IsWorking
-                ? MathF.Abs(MathF.Sin(CruData.CrushProgress * (MathHelper.Pi / 15f))) : 0f;
+                ? ProcessingChainVFX.JawCurve(CruData.CrushProgress, out _) : 0f;
             int jawGapTop = chamberRect.Y + 18 + (int)(jawPhase * 16f);
             int jawBottom = chamberRect.Bottom - 26;
 
