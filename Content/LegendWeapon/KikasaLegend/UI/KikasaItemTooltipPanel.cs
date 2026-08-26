@@ -1,5 +1,4 @@
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.TrialQuests;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,11 +10,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 {
-    /// <summary>鬼伞自绘物品面板皮肤:血湖⇄鬼雨浸染,布局归 <see cref="LegendTooltipPanel"/></summary>
+    /// <summary>
+    /// 鬼伞自绘物品面板皮肤:主题恒定鬼雨冷灰青(用户裁定 2026-08——物品面板的主题
+    /// 是鬼雨不是血湖,禁红),不随领域形态浸染;布局归 <see cref="LegendTooltipPanel"/>
+    /// </summary>
     internal sealed class KikasaTooltipSkin : LegendTooltipSkin
     {
-        /// <summary>当前浸染比,入口每帧刷新</summary>
-        public float Rain;
+        /// <summary>色板恒取鬼雨端</summary>
+        private const float Rain = 1f;
 
         /// <summary>shader 蚀边外扩量(px)</summary>
         private const int EdgePad = 12;
@@ -31,11 +33,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         public override void DrawPanel(SpriteBatch sb, Rectangle panel, float time) {
             Effect effect = EffectLoader.KikasaItemPanel?.Value;
-            if (effect == null) {
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect == null || noise == null) {
+                //缺噪声不能进 shader:s1 残留脏纹理会让雨层采出错值
                 DrawFallbackPanel(sb, panel, time);
                 return;
             }
-            //伞下水鏡 shader 面板:水膜体+伞盖弧+溺月+底沿积水线,色板随血湖⇄鬼雨浸染
+            //伞下水鏡 shader 面板:湿墨静场+淅沥小雨+伞盖弧+溺月+底沿积水线
             Rectangle extRect = panel;
             extRect.Inflate(EdgePad, EdgePad);
             effect.Parameters["uTime"]?.SetValue(time);
@@ -51,6 +55,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
                 SamplerState.AnisotropicClamp, DepthStencilState.None,
                 RasterizerState.CullNone, effect, Main.UIScaleMatrix);
+            GraphicsDevice device = Main.instance.GraphicsDevice;
+            device.Textures[1] = noise;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
             sb.Draw(Pixel, extRect, Color.White);
             sb.End();
             //还原 tooltip 层原批次(Deferred + null 默认参数)
@@ -133,7 +140,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             if (Main.gameMenu || Main.LocalPlayer == null || !Main.LocalPlayer.active) {
                 return true;
             }
-            skin.Rain = KikasaHudTheme.EffectiveRain(Main.LocalPlayer.GetModPlayer<KikasaDomainPlayer>());
 
             List<LegendKeybindRow> keyRows = [
                 LegendTooltipPanel.BuildKeyRow(KikasaOverride.KeyLabelDomain, CWRKeySystem.Legend_Domain),

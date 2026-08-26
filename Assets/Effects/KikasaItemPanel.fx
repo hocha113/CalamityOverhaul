@@ -1,13 +1,16 @@
 // ============================================================================
-//KikasaItemPanel.fx 鬼伞介绍面板背景，伞下水鏡:整面落雨的湿玻璃 + 伞盖弧 + 溺月 + 底沿积水
-//AlphaBlend 预乘 alpha 输出;uCol* 由 CPU 传 KikasaHudTheme 血湖⇄鬼雨插值色,
-//面板随领域形态整体浸染(血湖暖红/鬼雨冷青),基材混入青灰保持湿冷(与鬼切纸面暖红拉开)
-//身份主笔=雨:快速细竖雨丝(ShenyoMenuLake TechRain 已验形态——当年被否的是慢宽飘带,
-//快速细雨是主菜单接受过的;y 坐标混入 x 分量防横向条带)+ 底沿落水溅圈
+//KikasaItemPanel.fx 鬼伞介绍面板背景，伞下水鏡:阴冷平静的湿墨静场 + 淅沥小雨
+//AlphaBlend 预乘 alpha 输出;uCol* 由 CPU 传 KikasaHudTheme 鬼雨端色板——
+//主题恒定鬼雨冷灰青(用户裁定 2026-08:物品面板的主题是鬼雨不是血湖,禁红)
+//小雨=s1 Perlin 纹理噪声双层细丝(数学对齐 ShenyoMenuLake TechRain:高x频细丝+
+//低频错相掐成短段+y混x防条带;程序 value noise 高频出宽块条,曾被判"刷漆" 2026-08)
+//+ 伞盖弧 + 溺月 + 底沿积水线与落水溅圈
 //构图纪律:tooltip 满铺文字,护字罩内雨衰减不熄灭,其余细节深处全静默
+//s1=PerlinNoise(LinearWrap),绑定噪声实测值域 0.227~0.776,高阈值一律先过 nrm 归一
 // ============================================================================
 
 sampler uImage0 : register(s0);
+sampler uImage1 : register(s1);
 
 float uTime;
 float uAlpha;       //面板体不透明度(近 1,要盖得住原生蓝框)
@@ -20,6 +23,15 @@ float3 uColMoon;    //亮光(血沫暖光⇄溺月惨白)
 
 #define PI 3.14159265
 #define TAU 6.28318530
+
+float noiseTex(float2 uv) {
+    return tex2D(uImage1, uv).r;
+}
+
+//绑定噪声实测值域 0.227~0.776
+float nrm(float v) {
+    return saturate((v - 0.227) / 0.549);
+}
 
 float hash11(float p) {
     p = frac(p * 0.1031);
@@ -79,49 +91,52 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float t = uTime;
     float u = pixelPos.x / uResolution.x;
 
-    //====面板体:湿玻璃(基材由主题 uniform 推导并混入青灰,血湖态也保持湿冷)====
-    float3 coolWet = float3(0.020, 0.032, 0.038); //湿冷青灰,恒定注入
-    float3 mist = uColVoid * 1.6 + uColDeep * 0.28 + coolWet;
-    float3 voidC = uColVoid * 0.8 + uColDeep * 0.08 + coolWet * 0.55;
+    //====面板体:湿墨静场(基材重注青灰,血湖态也恒阴冷;主题色只余低语)====
+    float3 coolWet = float3(0.027, 0.038, 0.044); //湿冷青灰,恒定注入
+    float3 mist = uColVoid * 1.2 + uColDeep * 0.22 + coolWet;
+    float3 voidC = uColVoid * 0.65 + uColDeep * 0.06 + coolWet * 0.6;
     float3 bg = lerp(mist, voidC, smoothstep(0.0, 0.38, uv.y));
-    bg += uColDeep * (1.0 - uv.y) * 0.14;
-    bg += uColRain * pow(uv.y, 3.0) * 0.085; //底部积水泛光
+    bg += uColDeep * (1.0 - uv.y) * 0.10;
+    bg += uColRain * pow(uv.y, 3.0) * 0.07; //底部积水泛光(湖水随主题)
 
     //护字静默罩:离边框带越深越安静(深处去细节去运动,不去光)
     float calm = 1.0 - smoothstep(-34.0, -10.0, panelSDF);
     float live = lerp(1.0, 0.32, calm);
 
-    //玻璃面凝露颗粒(加强:湿玻璃身份)
+    //玻璃面凝露颗粒
     float grain = valueNoise(pixelPos * 0.9) * 0.55 + valueNoise(pixelPos * 0.23) * 0.45;
-    bg += (grain - 0.5) * 0.052 * live;
+    bg += (grain - 0.5) * 0.042 * live;
 
-    //水汽:低频云状明暗,水膜厚薄不均
+    //水汽:低频云状明暗,水膜厚薄不均(平静的呼吸,主题色低语)
     float2 vaporUV = uv * float2(2.6, 2.4) + float2(t * 0.006, -t * 0.004);
     float vapor = valueNoise(vaporUV) * 0.62 + valueNoise(vaporUV * 2.3 + 5.1) * 0.38;
-    bg += uColRain * (vapor - 0.42) * 0.12 * live;
+    bg += uColRain * (vapor - 0.42) * 0.10 * live;
 
     //边缘吸水:靠近边框处水膜向深水晕开
     float innerDist = max(-panelSDF, 0.0);
     float soak = exp(-innerDist * 0.06);
     bg = lerp(bg, uColDeep * 0.8, soak * 0.30);
 
-    //====真雨层(身份主笔):快速细竖雨丝,错相噪声掐断====
-    //高 x 频×低 y 频拉出竖长条;y 混入 x 分量,防 x 向欠采样读成横向密度条带
-    float2 rainUV = float2(uv.x * 44.0, uv.y * 2.8 + uv.x * 0.42 - t * 2.6);
-    float rainStrand = valueNoise(rainUV);
-    float rainCut = valueNoise(float2(uv.x * 21.0 + 7.7, uv.y * 1.6 - t * 1.3));
-    float rain = smoothstep(0.60, 0.86, rainStrand) * smoothstep(0.34, 0.72, rainCut);
-    //第二层近雨:更稀更快更亮,只剩零星几条
-    float2 rain2UV = float2(uv.x * 23.0 + 3.9, uv.y * 1.7 + uv.x * 0.3 - t * 3.8);
-    float rain2 = smoothstep(0.78, 0.94, valueNoise(rain2UV));
-    float rainLive = lerp(1.0, 0.42, calm); //护字区衰减不熄灭
-    bg += uColRain * rain * 0.30 * rainLive;
-    bg += uColMoon * rain * rain * 0.10 * rainLive;
-    bg += uColMoon * rain2 * 0.16 * rainLive;
+    //====淅沥小雨(身份主笔):s1 纹理细丝双层,冷灰青,细/短/疏/暗====
+    //数学对齐 ShenyoMenuLake TechRain:高x频细丝×低频错相掐短段,y混x防条带
+    float3 rainPale = float3(0.470, 0.530, 0.548); //冷灰青,雨不随主题染色
+    float rainLive = lerp(1.0, 0.55, calm); //护字罩内衰减不熄灭
+    //中层:细,稍缓
+    float rx1 = (uv.x + uv.y * 0.055) * 30.0;
+    float ry1 = uv.y * 2.2 + uv.x * 0.31 - t * 1.9;
+    float st1 = smoothstep(0.62, 0.88, nrm(noiseTex(float2(rx1, ry1))));
+    st1 *= smoothstep(0.44, 0.74, nrm(noiseTex(float2(rx1 * 0.113 + 7.7, uv.y * 0.55 - t * 1.4))));
+    //近层:略粗,更疏更快
+    float rx2 = (uv.x + uv.y * 0.09) * 18.0 + 5.7;
+    float ry2 = uv.y * 1.2 + uv.x * 0.23 - t * 2.6;
+    float st2 = smoothstep(0.68, 0.92, nrm(noiseTex(float2(rx2, ry2))));
+    st2 *= smoothstep(0.48, 0.76, nrm(noiseTex(float2(rx2 * 0.147 + 3.1, uv.y * 0.40 - t * 1.9))));
+    float rain = st1 * 0.34 + st2 * 0.46;
+    bg += rainPale * rain * 0.95 * rainLive;
 
-    //两翼水痕缓流:雨在玻璃上淌下的痕
+    //两翼水痕缓流:雨在玻璃上淌下的痕(雨系冷灰,极缓)
     float streak = valueNoise(float2(uv.x * 26.0, uv.y * 2.2 - t * 0.05));
-    bg += uColRain * (streak - 0.5) * 0.16 * live;
+    bg += rainPale * (streak - 0.5) * 0.10 * live;
 
     //暗角 + 凝露微闪
     float2 vig = uv * 2.0 - 1.0;
