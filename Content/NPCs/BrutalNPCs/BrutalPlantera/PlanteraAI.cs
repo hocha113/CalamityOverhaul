@@ -7,6 +7,7 @@ using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -23,6 +24,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         private VaultStateMachine<PlanteraStateContext> stateMachine;
         private PlanteraStateContext stateContext;
         private Player targetPlayer;
+        /// <summary>激怒持续帧计数：滞回消抖，防丛林边界横跳时数值抖动</summary>
+        private int enrageArmTimer;
+        /// <summary>激怒宣告冷却，防边界反复横跳时吼声刷屏</summary>
+        private int enrageRoarCooldown;
 
         /// <summary>供部件/弹幕读主控状态索引</summary>
         internal static PlanteraStateIndex GetStateIndex(NPC plantera) => (PlanteraStateIndex)(int)plantera.ai[2];
@@ -92,6 +97,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             stateContext.BodyScalePulse = 0.012f * (float)Math.Sin(stateContext.SwayPhase * 1.7f);
             stateContext.RotationMode = 0;
 
+            //激怒红辉平滑趋近，回丛林缓缓熄灭
+            stateContext.RageGlow = MathHelper.Lerp(stateContext.RageGlow, stateContext.IsEnraged ? 1f : 0f, 0.06f);
+            if (!stateContext.IsEnraged && stateContext.RageGlow < 0.02f) {
+                stateContext.RageGlow = 0f;
+            }
+
             //每帧基线，状态在Update里覆盖
             ApplyBaselineStats();
 
@@ -130,10 +141,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
             stateContext.IsLowLife = npc.life < npc.lifeMax * PlanteraDirector.NovaLifeRatio;
 
-            //激怒：目标出丛林或上地表(原版规则)
+            //激怒：目标出丛林或上地表(原版规则)；滞回消抖：连续30帧在外才落怒，一回丛林立即解除
             bool surface = targetPlayer.position.Y < Main.worldSurface * 16.0;
             bool underworld = targetPlayer.position.Y > Main.UnderworldLayer * 16;
-            stateContext.IsEnraged = !CWRRef.GetBossRushActive() && (!targetPlayer.ZoneJungle || surface || underworld);
+            bool enrageRaw = !CWRRef.GetBossRushActive() && (!targetPlayer.ZoneJungle || surface || underworld);
+            enrageArmTimer = enrageRaw ? enrageArmTimer + 1 : 0;
+            bool enragedNow = enrageArmTimer >= 30;
+            if (enragedNow && !stateContext.IsEnraged) {
+                AnnounceEnrage();
+            }
+            stateContext.IsEnraged = enragedNow;
+            if (enrageRoarCooldown > 0) {
+                enrageRoarCooldown--;
+            }
 
             //阶段标记：权威端 context→ai[3]；客户端从 ai[3] 单向收养(中途加入/重建也能对上阶段)
             if (VaultUtils.isClient) {
@@ -152,6 +172,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             //投技冷却权威端递减
             if (!VaultUtils.isClient && stateContext.VineFeastCooldown > 0) {
                 stateContext.VineFeastCooldown--;
+            }
+        }
+
+        /// <summary>激怒落怒瞬间的宣告：怒吼+震屏+血红花瓣爆，演出态不抢戏</summary>
+        private void AnnounceEnrage() {
+            if (enrageRoarCooldown > 0
+                || stateMachine?.CurrentState is PlanteraIntroState or PlanteraDeathState or PlanteraDespawnState) {
+                return;
+            }
+            enrageRoarCooldown = 150;
+            stateContext.RageGlow = 1f;
+            SoundEngine.PlaySound(SoundID.Roar with { Volume = 1.2f, Pitch = 0.3f }, npc.Center);
+            PlanteraScreenFX.CameraPunch(npc.Center, 9f, 22, "PlanteraEnrage");
+            if (!VaultUtils.isServer) {
+                PlanteraRenderHelper.SpawnPetalBurst(npc.Center, 24, 8.5f, true);
             }
         }
 
@@ -194,6 +229,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             stateContext.SkipDefaultMovement = false;
             npc.dontTakeDamage = false;
 
+            //激怒惩罚(出丛林/上地表)：伤防翻倍+攻速移速翻倍，视觉由 RageGlow 宣告，豁免公平契约
             float damageMult = stateContext.IsPhase2 ? 1.4f : 1f;
             if (stateContext.IsEnraged) {
                 damageMult *= 2f;
@@ -223,9 +259,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
 
             float speed = stateContext.MoveSpeed;
             float accel = stateContext.AccelRate;
+            //二阶段狂化：移速+35%但加速率压低，动得快却带着刹不住的惯性
+            if (stateContext.IsPhase2) {
+                speed *= PlanteraDirector.Phase2SpeedMult;
+                accel *= PlanteraDirector.Phase2InertiaMult;
+            }
+            //激怒惩罚：移速翻倍，加速率同步跟上防"高目标速度却追不动"
             if (stateContext.IsEnraged) {
-                speed += PlanteraDirector.EnrageSpeedBonus;
-                accel = Math.Max(accel, 0.12f);
+                speed *= 2f;
+                accel = Math.Max(accel * 2f, 0.12f);
             }
             if (stateContext.IsDeathMode) {
                 speed *= 1.2f;
@@ -270,11 +312,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
 
         #region 环境装点
         private void UpdateAmbientDressing() {
-            //生物荧光照明，二阶段偏品红
+            //生物荧光照明，二阶段偏品红；激怒时被血红压过
             Vector3 lightColor = stateContext.IsPhase2
                 ? new Vector3(0.85f, 0.3f, 0.6f)
                 : new Vector3(0.5f, 0.75f, 0.3f);
-            Lighting.AddLight(npc.Center, lightColor * (0.6f + stateContext.GlowPulse));
+            if (stateContext.RageGlow > 0.02f) {
+                lightColor = Vector3.Lerp(lightColor, new Vector3(1f, 0.22f, 0.1f), stateContext.RageGlow * 0.75f);
+            }
+            Lighting.AddLight(npc.Center, lightColor * (0.6f + stateContext.GlowPulse + stateContext.RageGlow * 0.25f));
 
             //孢子微光缓升，客户端稀疏
             if (!VaultUtils.isServer && Main.rand.NextBool(9)) {
@@ -368,6 +413,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
                     : new Color(170, 255, 120, 0);
                 spriteBatch.Draw(texture, mainPos, frameRec, glowColor * glow,
                     npc.rotation, origin, scale * 1.015f, SpriteEffects.None, 0f);
+            }
+
+            //激怒血红描边：双层加色错相呼吸(镜像蜂后怒辉配方)
+            float rage = stateContext.RageGlow * npc.Opacity;
+            if (rage > 0.03f) {
+                float pulse = 0.75f + 0.25f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 7.5f);
+                Color rim = new Color(255, 60, 35, 0) * (rage * 0.5f * pulse);
+                spriteBatch.Draw(texture, mainPos, frameRec, rim,
+                    npc.rotation, origin, scale * 1.05f, SpriteEffects.None, 0f);
+                Color rimHot = new Color(255, 175, 80, 0) * (rage * 0.25f * pulse);
+                spriteBatch.Draw(texture, mainPos, frameRec, rimHot,
+                    npc.rotation, origin, scale * 1.02f, SpriteEffects.None, 0f);
             }
 
             return false;

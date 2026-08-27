@@ -53,6 +53,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
 
         /// <summary>当前状态实例，投技玩家侧/舞台弹幕据此读本地节拍</summary>
         internal IVaultState<FishronStateContext> CurrentState => stateMachine?.CurrentState;
+
+        /// <summary>三阶段旗标（气泡/鲨鱼龙等仆从查询用）</summary>
+        internal bool PhaseThreeLive => stateContext != null && stateContext.PhaseThreeStarted;
+
+        private static uint phaseThreeCacheStamp = uint.MaxValue;
+        private static bool phaseThreeCache;
+        /// <summary>全场是否有三阶段公爵：气泡逼近/鲨眼冒光等末相强化共用，逐帧缓存</summary>
+        internal static bool AnyPhaseThreeActive() {
+            if (Main.GameUpdateCount == phaseThreeCacheStamp) {
+                return phaseThreeCache;
+            }
+            phaseThreeCacheStamp = Main.GameUpdateCount;
+            phaseThreeCache = false;
+            foreach (var n in Main.ActiveNPCs) {
+                if (n.type == NPCID.DukeFishron && n.TryGetOverride(out DukeFishronAI ov) && ov.PhaseThreeLive) {
+                    phaseThreeCache = true;
+                    break;
+                }
+            }
+            return phaseThreeCache;
+        }
         #endregion
 
         #region 加载与初始化
@@ -60,6 +81,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             FishronStormSky.Clear();
             FishronGrabVeilFX.Clear();
             ActivePerformanceBoss = -1;
+            phaseThreeCacheStamp = uint.MaxValue;
+            phaseThreeCache = false;
         }
 
         public override void SetProperty() {
@@ -181,7 +204,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
                 if (ratio < 0.60f) {
                     stateContext.PhaseTwoStarted = true;
                 }
-                if (ratio < 0.27f) {
+                //三阶开幕回填 20% 血，血线不再是可靠信号——同步到三阶段专属状态时也落旗
+                if (ratio < 0.27f || stateMachine?.CurrentState
+                    is FishronLightningRainState or FishronStormChainDashState or FishronVeilHuntState
+                    or FishronMaelstromState or FishronPhaseThreeTransitionState) {
                     stateContext.PhaseThreeStarted = true;
                 }
             }

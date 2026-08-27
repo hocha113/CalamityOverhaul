@@ -23,9 +23,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             restFrames = extraRest;
         }
 
-        /// <summary>基础时长随阶段收紧</summary>
+        /// <summary>基础时长随阶段收紧(2026-08-28 二次提速:技能间隔全段较上版再收短 30%)</summary>
         private static int BaseDuration(CultistStateContext context) {
-            int frames = context.Phase switch { >= 4 => 26, 3 => 30, 2 => 34, 1 => 40, _ => 46 };
+            int frames = context.Phase switch { >= 4 => 13, 3 => 15, 2 => 17, 1 => 20, _ => 22 };
             if (context.IsDeathMode) {
                 frames = (int)(frames * 0.85f);
             }
@@ -54,13 +54,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 return null;
             }
 
-            //充能满格:合相祭仪压过一切
-            if (context.AlignFull && Timer > 22) {
+            //充能满格:合相祭仪压过一切(最短停留闸随间隔提速同步收短)
+            if (context.AlignFull && Timer > 11) {
                 return new CultistConjunctionState();
             }
 
             if (Timer >= BaseDuration(context) + restFrames) {
-                return CreateAttackState(context.NextAttack());
+                CultistStateIndex next = context.NextAttack();
+                //掷环收势解耦后旧环可能仍在场:此时再抽到掷环就换下一张,防同环序重复离体(P0 主场双倍权重下会连抽)
+                for (int reroll = 0; reroll < 2 && next == CultistStateIndex.RingHurl
+                    && CultistRingHurlState.AnyRingAlive(npc.whoAmI); reroll++) {
+                    next = context.NextAttack();
+                }
+                return CreateAttackState(next);
             }
             return null;
         }
@@ -77,6 +83,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 CultistStateIndex.Comet => new CultistCometVolleyState(),
                 CultistStateIndex.ZodiacSeal => new CultistZodiacSealState(),
                 CultistStateIndex.StasisMines => new CultistStasisMinesState(),
+                CultistStateIndex.ArcaneNova => new CultistArcaneNovaState(),
+                CultistStateIndex.Starfall => new CultistStarfallState(),
+                CultistStateIndex.SeekerStars => new CultistSeekerStarsState(),
+                CultistStateIndex.RingPrison => new CultistRingPrisonState(),
                 _ => new CultistOrbitLanceState(),
             };
         }

@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
             if (ctx.IsLowLife) {
                 baseTime -= 12;
             }
-            return (int)(baseTime * PlanteraDirector.DeathTimeScale(ctx));
+            return (int)(baseTime * PlanteraDirector.TimeScale(ctx));
         }
 
         public PlanteraCanopyState() {

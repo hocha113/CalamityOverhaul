@@ -1,6 +1,7 @@
 // ============================================================================
 //GolemMagmaVein.fx 石巨人岩浆脉络 / 崩解侵蚀
-//VeinTech：Additive 批，贴体发光脉络（采身体贴图 alpha 作蒙版）
+//VeinTech：Additive 批，贴体发光脉络（采身体贴图 alpha 作蒙版）——
+//  域扭曲单脊线成连贯裂缝网，涌动=以太阳宝石为源的外推亮波（能量从胸口泵向全身）
 //CrumbleTech：AlphaBlend 预乘批，自上而下噪声侵蚀 + 蚀线炽边
 //uFrame = (x,y,w,h) 帧区域归一，防串帧
 //无动态分支，噪声全走贴图采样（s1）
@@ -24,7 +25,7 @@ float2 LocalUV(float2 coords)
 }
 
 //------------------------------------------------------------------
-//岩浆脉络：噪声脊线成缝，缝内熔金流动
+//岩浆脉络：域扭曲单脊线成连贯裂缝网，宝石为源的涌动波外推
 //------------------------------------------------------------------
 float4 VeinPS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
@@ -36,26 +37,38 @@ float4 VeinPS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
     float eatLine = uCrumble * 1.18 - 0.09 + (edgeNoiseK - 0.5) * 0.16;
     float keepMask = 1.0 - step(local.y, eatLine);
 
-    //双频噪声脊线：|n-0.5| 越小越接近缝心
-    float n1 = tex2D(noiseSampler, local * 2.6 + float2(0.0, uTime * 0.03)).r;
-    float n2 = tex2D(noiseSampler, local * 5.2 - float2(uTime * 0.02, 0.0)).r;
-    float ridge = abs(n1 - 0.5) * 1.6 + abs(n2 - 0.5) * 0.7;
-    float vein = 1.0 - smoothstep(0.05, 0.16, ridge);
+    //域扭曲单脊线：低频扭曲场让裂缝蜿蜒但不断线
+    //（旧版双频脊线相加通带过窄=散点碎斑，判词"碎"的来源）
+    float wx = tex2D(noiseSampler, local * 1.15 + float2(uTime * 0.012, 0.0)).r;
+    float wy = tex2D(noiseSampler, local * 1.15 + float2(0.37, 0.61) - float2(0.0, uTime * 0.009)).r;
+    float2 warp = float2(wx, wy) - 0.5;
+    float n1 = tex2D(noiseSampler, local * 2.3 + warp * 0.42).r;
+    float ridge = abs(n1 - 0.5);
+    //缝体窄带+缝心白热双层：石壳大面积留黑，缝内有深度
+    float crackBody = 1.0 - smoothstep(0.022, 0.085, ridge);
+    float crackCore = 1.0 - smoothstep(0.0, 0.028, ridge);
+    //第二八度只调制缝宽亮度，不参与拓扑（缝保持连贯）
+    float n2 = tex2D(noiseSampler, local * 4.4 - float2(uTime * 0.02, 0.0)).r;
+    float vein = (crackBody * 0.65 + crackCore * 0.55) * (0.62 + 0.38 * n2);
 
-    //缝内流动：沿缝相位滚动的亮波
-    float flow = sin(n1 * 14.0 + n2 * 9.0 - uTime * 3.2) * 0.5 + 0.5;
-    flow = 0.55 + 0.45 * flow;
+    //涌动主体：以太阳宝石为源的外推亮波，岩浆一股股泵向全身
+    float2 gemVec = local - float2(0.5, 0.42);
+    gemVec.y *= 1.35;   //补偿身体纵横比，波前近似同心
+    float gemDist = length(gemVec);
+    float wave = sin(gemDist * 11.5 - uTime * 4.0);
+    float surge = 0.34 + 0.66 * smoothstep(0.12, 0.88, wave);
 
-    //色阶：深红→橙→熔金
-    float heat = vein * flow * uGlow;
+    //色阶：深红→橙→熔金（波峰推到熔金）
+    float heat = vein * surge * uGlow;
     float3 deepRed = float3(0.55, 0.08, 0.02);
     float3 orange  = float3(1.00, 0.45, 0.08);
     float3 gold    = float3(1.00, 0.85, 0.40);
     float3 col = lerp(deepRed, orange, saturate(heat * 1.6));
     col = lerp(col, gold, saturate(heat * heat * 2.2));
 
-    //宝石位常亮（胸口中带）
-    float gem = exp(-dot(local - float2(0.5, 0.42), local - float2(0.5, 0.42)) * 90.0) * uGlow * 0.8;
+    //宝石位常亮，与涌波同相呼吸（波从这里泵出）
+    float gemPulse = 0.78 + 0.22 * sin(-uTime * 4.0);
+    float gem = exp(-dot(local - float2(0.5, 0.42), local - float2(0.5, 0.42)) * 90.0) * uGlow * 0.8 * gemPulse;
     col += float3(1.0, 0.8, 0.35) * gem;
 
     float a = saturate((heat + gem) * body.a) * keepMask;

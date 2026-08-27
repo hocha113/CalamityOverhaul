@@ -106,8 +106,6 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
         //r 空+瓷面墙+灰漆(导轨带)  p 空+瓷面墙+红漆(镖口)  D 门插槽
         //H 实心齿轮块(吊架/托座,层染刷亮橙)  k 实心裂纹砖(断轨点失效托架)  C 实心齿轮块+板岩墙(基座/过梁)
 
-        private static readonly string[] Rows = BuildRows();
-
         //顶拱吊架布点(rows 3..5 同列贯通,底沿贴住 rel6 导轨带,读作"轨挂在架上"):
         //单列齿=8+9i 八根,对齐 A3 轨灯画点(FoundryOverseer.DrawGlowLayers 的 8+i*9,灯装在架上);
         //三宽托座=14..16 与 61..63(检修位活塞承座)、67..69(吊臂泊位);断轨点 38..39 裂纹砖=正在失效的托架
@@ -117,6 +115,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
 
         //黄铜灯笼吊点(顶拱空档,列距均匀照亮全厅;炉光为主灯"低"档)
         private static readonly int[] LanternCols = [11, 27, 42, 57];
+
+        //静态字段按文本顺序初始化:BuildRows 读上面两张布点表,Rows 必须声明在它们之后,
+        //否则表还是 null,首次触及本类即 TypeInitializationException
+        private static readonly string[] Rows = BuildRows();
 
         /// <summary>
         /// 布局（rel 行）：0~2 壳顶 / 3~5 顶拱+吊架托座 / 6 导轨带 / 14~15 与 24~25 镖口横巷 /

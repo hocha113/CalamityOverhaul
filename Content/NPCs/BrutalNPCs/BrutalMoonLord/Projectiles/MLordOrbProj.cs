@@ -21,6 +21,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
 
         private const float LaunchSpeed = 12.5f;
         private const float MaxSpeed = 19f;
+        /// <summary>移速统一倍率：齐射/环绕两模式一并翻倍（生成侧速度数值不改口径）</summary>
+        private const float SpeedBoost = 2f;
 
         private ref float Timer => ref Projectile.localAI[0];
         private ref float Launched => ref Projectile.localAI[1];
@@ -88,7 +90,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
                 if (!host.Alives()) {
                     //宿主没了：权威端就地放飞
                     if (!VaultUtils.isClient) {
-                        Projectile.velocity = Vector2.UnitY * LaunchSpeed;
+                        Projectile.velocity = Vector2.UnitY * (LaunchSpeed * SpeedBoost);
                         Projectile.netUpdate = true;
                     }
                     return;
@@ -115,7 +117,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
                             aim = (target.Center + target.velocity * 11f - Projectile.Center).SafeNormalize(Vector2.UnitY);
                         }
                     }
-                    Projectile.velocity = aim * LaunchSpeed;
+                    Projectile.velocity = aim * (LaunchSpeed * SpeedBoost);
                     Projectile.netUpdate = true;
                     if (!VaultUtils.isServer) {
                         SoundEngine.PlaySound(SoundID.Item125 with { Volume = 0.55f, Pitch = 0.2f, MaxInstances = 6 }, Projectile.Center);
@@ -125,22 +127,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             }
 
             //飞行段复合加速，绝不匀速
-            if (Projectile.velocity.Length() < MaxSpeed) {
+            if (Projectile.velocity.Length() < MaxSpeed * SpeedBoost) {
                 Projectile.velocity *= 1.013f;
             }
         }
 
         /// <summary>引力井环绕：向最近引力井加速，井灭后直线甩出。轨道对初值敏感，权威端周期广播矫偏</summary>
         private void WellOrbitAI() {
+            //点火倍率：首帧按生成包初速翻倍（各端确定性同步）
+            if (Timer == 1f) {
+                Projectile.velocity *= SpeedBoost;
+            }
             Projectile wellProj = FindNearestWell();
             if (wellProj != null) {
                 Vector2 toWell = wellProj.Center - Projectile.Center;
                 float dist = Math.Max(toWell.Length(), 60f);
-                //平方衰减向心力，近处收紧
-                float gravity = MathHelper.Clamp(9000f / (dist * dist) * 6f, 0.08f, 0.8f);
+                //平方衰减向心力，近处收紧——向心力按倍率平方缩放：轨道半径不变，角速度翻倍
+                float gravity = MathHelper.Clamp(9000f / (dist * dist) * 6f, 0.08f, 0.8f) * (SpeedBoost * SpeedBoost);
                 Projectile.velocity += toWell.SafeNormalize(Vector2.Zero) * gravity;
-                if (Projectile.velocity.Length() > 17f) {
-                    Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 17f;
+                if (Projectile.velocity.Length() > 17f * SpeedBoost) {
+                    Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * (17f * SpeedBoost);
                 }
                 //椭圆轨道混沌敏感：权威端 30 帧一次位置矫偏
                 if (!VaultUtils.isClient && (int)Timer % 30 == 0) {

@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             if (!fired) {
                 fired = true;
                 if (!VaultUtils.isClient) {
-                    FireRing(npc);
+                    FireRing(context, npc);
                 }
                 FishronMotionFX.CameraPunch(npc.Center, 6f, 12, "FishronRingFire");
                 SoundEngine.PlaySound(SoundID.Item96 with { Volume = 1f, Pitch = -0.3f, MaxInstances = 3 }, npc.Center);
@@ -122,12 +122,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             return null;
         }
 
-        /// <summary>点火：以当前绕环圆心为极心，所有待发气泡向外直射</summary>
-        private void FireRing(NPC npc) {
+        /// <summary>点火：以当前绕环圆心为极心，所有待发气泡向外直射；末相射速 ×1.5</summary>
+        private void FireRing(FishronStateContext context, NPC npc) {
             //圆心 = 本体位置 + 指向环心的半径向量（速度的旋向法线）
             float radius = SpinSpeed / AngularStep;
             Vector2 toCenter = npc.velocity.SafeNormalize(Vector2.UnitX).RotatedBy(-spinSign * MathHelper.PiOver2);
             Vector2 ringCenter = npc.Center + toCenter * radius;
+            float burstSpeed = context.Phase >= 3 ? BurstSpeed * 1.5f : BurstSpeed;
 
             foreach (var n in Main.ActiveNPCs) {
                 if (n.type != NPCID.DetonatingBubble || (int)n.ai[0] != 2) {
@@ -138,7 +139,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 }
                 Vector2 dir = (n.Center - ringCenter).SafeNormalize(Vector2.UnitY);
                 n.ai[1] = 0f;
-                n.velocity = dir * BurstSpeed;
+                n.velocity = dir * burstSpeed;
                 n.netUpdate = true;
             }
         }

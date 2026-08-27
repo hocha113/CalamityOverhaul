@@ -132,9 +132,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles
 
         public override bool PreDraw(ref Color lightColor) => false;
 
-        /// <summary>棱晶茧本体(六面宝石quad，罩在玩家绘制层之上呈半透明封晶感)</summary>
+        /// <summary>棱晶茧本体(分面宝石quad，罩在玩家绘制层之上呈半透明封晶感)</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
-            Effect effect = EffectLoader.QueenPrismCrystal?.Value;
+            Effect effect = EffectLoader.QueenPrismGem?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
             NPC queen = ResolveQueen();
             if (effect == null || noise == null || queen == null) {
@@ -172,7 +172,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles
 
             effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-            effect.Parameters["uMode"]?.SetValue(0f);
             effect.Parameters["uGrow"]?.SetValue(grow);
             //踢击瞬间借碎裂裂纹当受击白线
             effect.Parameters["uShatter"]?.SetValue(hitFlash * 0.3f);

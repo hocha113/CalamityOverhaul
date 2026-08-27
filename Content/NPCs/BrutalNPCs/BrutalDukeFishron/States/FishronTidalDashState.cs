@@ -16,13 +16,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
         public override string StateName => "TidalDashPrepare";
         public override FishronStateIndex StateIndex => FishronStateIndex.TidalDashPrepare;
 
+        //末相预警线 -30%：三阶段蓄力（=预告线时长）24→17 帧
         private static int ChargeTime(FishronStateContext ctx) {
-            int t = ctx.Phase == 3 ? 24 : ctx.Phase == 2 ? 28 : 34;
+            int t = ctx.Phase == 3 ? 17 : ctx.Phase == 2 ? 28 : 34;
             return t - (ctx.IsDeathMode ? 4 : 0);
         }
 
+        //末相冲刺 +15%：三阶段巡航 58→67
         internal static float DashSpeed(FishronStateContext ctx) {
-            float s = ctx.Phase == 3 ? 58f : ctx.Phase == 2 ? 52f : 45f;
+            float s = ctx.Phase == 3 ? 67f : ctx.Phase == 2 ? 52f : 45f;
             if (ctx.IsDeathMode) {
                 s += 4f;
             }
@@ -235,15 +237,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             }
 
             //甩尾放鲨：二阶段起，收势瞬间从尾后甩出鲨鱼龙咬向玩家落位，
-            //逼走位不逼脸——比冲刺慢得多，且吃全场容量顶
+            //逼走位不逼脸——比冲刺慢得多，且吃全场容量顶；末相数量与出膛速度翻倍
             if ((int)Timer == 2 && context.Phase >= 2) {
                 SoundEngine.PlaySound(SoundID.Zombie9 with { Volume = 0.7f, Pitch = 0.2f, MaxInstances = 3 }, npc.Center);
                 if (!VaultUtils.isClient) {
-                    int count = context.Phase >= 3 ? 2 : 1;
+                    int count = context.Phase >= 3 ? 4 : 1;
+                    float speed = context.Phase >= 3 ? 30f : 15f;
                     for (int i = 0; i < count; i++) {
                         Vector2 aim = (player.Center + player.velocity * 14f - npc.Center)
                             .SafeNormalize(Vector2.UnitY).RotatedBy((i - (count - 1) * 0.5f) * 0.3f);
-                        FishronSharkronStrafeState.TryLaunchSharkron(npc, npc.Center, aim, 15f);
+                        FishronSharkronStrafeState.TryLaunchSharkron(npc, npc.Center, aim, speed);
                     }
                 }
             }
@@ -264,7 +267,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 SetMovement(context, player.Center + new Vector2(0, -320f), 8f, 0.4f);
             }
 
-            int cooldown = (context.Phase >= 2 ? 26 : 34) - (context.IsDeathMode ? 5 : 0);
+            //末相连撞收势 26→16 帧：初版 10 帧被实测读作零间隔，回填到刚好刹满
+            //14 帧硬刹再留 2 帧摆位，链感仍远快于一二阶段
+            int cooldown = context.Phase >= 3
+                ? 16 : (context.Phase >= 2 ? 26 : 34) - (context.IsDeathMode ? 5 : 0);
             Timer++;
 
             if (Timer >= cooldown) {

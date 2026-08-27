@@ -12,8 +12,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
         public const int DeathTriggerLife = 10;
         /// <summary>目标失效判定距离</summary>
         public const int MaxFindDistance = 4600;
-        /// <summary>激怒（神庙外/地表上）节奏乘数</summary>
-        public const float EnrageTempo = 0.72f;
+        /// <summary>激怒（神庙外/地表上）节奏乘数：间隔减半=攻速翻倍</summary>
+        public const float EnrageTempo = 0.5f;
         /// <summary>目标悬空判定高度（离地像素），超过即触发对空火控提频</summary>
         public const float AirborneHeight = 190f;
         /// <summary>对空火控提频乘数（双眼咬紧悬空目标）</summary>
@@ -87,9 +87,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
         public const int UltBurstDamage = 40;
         #endregion
 
-        /// <summary>死亡模式伤害/密度增压</summary>
-        public static int ScaleDamage(int baseDamage, bool death) {
-            return death ? (int)(baseDamage * 1.15f) : baseDamage;
+        /// <summary>死亡模式/激怒伤害增压</summary>
+        public static int ScaleDamage(int baseDamage, bool death, bool enraged = false) {
+            float f = death ? 1.15f : 1f;
+            if (enraged) {
+                f *= 1.3f;
+            }
+            return (int)(baseDamage * f);
         }
 
         /// <summary>节奏帧数缩放：死亡模式与激怒压缩间隔</summary>

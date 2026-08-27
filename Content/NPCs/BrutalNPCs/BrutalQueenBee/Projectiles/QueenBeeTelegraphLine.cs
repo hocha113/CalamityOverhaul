@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Projectiles
             }
 
             Projectile.velocity = Projectile.rotation.ToRotationVector2();
-            Lighting.AddLight(Projectile.Center, new Vector3(0.55f, 0.4f, 0.1f));
+            Lighting.AddLight(Projectile.Center, new Vector3(0.3f, 0.22f, 0.06f));
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -86,10 +86,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Projectiles
         /// <summary>着色器蜂舞信号线</summary>
         private void DrawShaderLine(Effect effect, float fadeIn, float lockT) {
             const float LineLength = 4200f;
-            float width = 104f + lockT * 54f;
+            //细线量宽：预警读作导引线，锁定微增强，不做宽鞘能量束
+            float width = 46f + lockT * 22f;
 
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-            effect.Parameters["uIntensity"]?.SetValue(fadeIn * (0.7f + lockT * 0.4f));
+            effect.Parameters["uIntensity"]?.SetValue(fadeIn * (0.45f + lockT * 0.4f));
             effect.Parameters["uLockProgress"]?.SetValue(lockT);
             effect.Parameters["uAspect"]?.SetValue(LineLength / width);
             effect.Parameters["uColor"]?.SetValue(new Vector3(1f, 0.72f, 0.22f));
@@ -118,20 +119,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Projectiles
             Vector2 origin = new Vector2(0, tex.Height / 2f);
 
             if (!Locked) {
-                Color warn = new Color(255, 175, 60, 0) * (0.42f * fadeIn * pulse);
+                Color warn = new Color(255, 175, 60, 0) * (0.28f * fadeIn * pulse);
                 Main.EntitySpriteDraw(tex, drawPos, null, warn, Projectile.rotation,
-                    origin, new Vector2(1050f, 0.42f + 0.22f * pulse), SpriteEffects.None, 0);
+                    origin, new Vector2(1050f, 0.2f + 0.1f * pulse), SpriteEffects.None, 0);
                 Main.EntitySpriteDraw(tex, drawPos, null, warn * 0.7f, Projectile.rotation,
-                    origin, new Vector2(1050f, 1.05f), SpriteEffects.None, 0);
+                    origin, new Vector2(1050f, 0.46f), SpriteEffects.None, 0);
             }
             else {
                 float flash = 0.7f + 0.3f * (float)Math.Sin(lockT * MathHelper.Pi * 6f);
-                Color core = new Color(255, 240, 200, 0) * (0.9f * flash);
-                Color glow = new Color(255, 165, 55, 0) * (0.72f * flash);
+                Color core = new Color(255, 240, 200, 0) * (0.72f * flash);
+                Color glow = new Color(255, 165, 55, 0) * (0.5f * flash);
                 Main.EntitySpriteDraw(tex, drawPos, null, glow, Projectile.rotation,
-                    origin, new Vector2(1050f, 2f), SpriteEffects.None, 0);
+                    origin, new Vector2(1050f, 0.9f), SpriteEffects.None, 0);
                 Main.EntitySpriteDraw(tex, drawPos, null, core, Projectile.rotation,
-                    origin, new Vector2(1050f, 0.75f), SpriteEffects.None, 0);
+                    origin, new Vector2(1050f, 0.34f), SpriteEffects.None, 0);
             }
         }
 

@@ -75,14 +75,18 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Eclipse
         /// 把原版 AI 在执行窗内的残余转向与提速层的取整误差包进警示带
         /// </summary>
         internal static readonly Dictionary<int, EclProfile> Profiles = new() {
-            //——处刑冲锋家族（地面直线重冲）——
+            //——处刑冲锋家族（地面直线重冲；M6 签名分支逻辑在 EclipseNPC，每型一句签名注释在此登记）——
+            //签名：重击执行窗命中挂血狩印（双形态共享，见 OnHitPlayer）
             [NPCID.Vampire] = new(EclFamily.Rush, 34, 12, 22, 9.5f, 280f, 90f, 340f, 320, new Color(212, 40, 66)),
+            //签名：突进落点滞留 8 帧电火花判定（EclFrankSparkProj）
             [NPCID.Frankenstein] = new(EclFamily.Rush, 38, 14, 24, 8.5f, 270f, 90f, 360f, 360, RushTint),
-            [NPCID.SwampThing] = new(EclFamily.Rush, 40, 14, 26, 8.0f, 275f, 90f, 380f, 380, new Color(120, 190, 70)),
+            //签名：两段蹒跚小跳接扑（LaneLength 加长覆盖跳程行进）
+            [NPCID.SwampThing] = new(EclFamily.Rush, 40, 14, 26, 8.0f, 450f, 90f, 380f, 380, new Color(120, 190, 70)),
             [NPCID.Fritz] = new(EclFamily.Rush, 30, 10, 18, 10.5f, 250f, 80f, 300f, 300, RushTint),
             [NPCID.Psycho] = new(EclFamily.Rush, 30, 10, 16, 12.0f, 255f, 100f, 380f, 340, new Color(220, 226, 236)),
             [NPCID.Butcher] = new(EclFamily.Rush, 42, 16, 30, 12.5f, 450f, 120f, 460f, 400, new Color(255, 120, 40)),
-            [NPCID.CreatureFromTheDeep] = new(EclFamily.Rush, 34, 12, 22, 9.0f, 265f, 90f, 340f, 330, new Color(90, 200, 190)),
+            //签名：收势不急停，改力竭长滑行+水花（LaneLength 加长覆盖滑程）
+            [NPCID.CreatureFromTheDeep] = new(EclFamily.Rush, 34, 12, 22, 9.0f, 380f, 90f, 340f, 330, new Color(90, 200, 190)),
             //——掠空斩家族（空中穿越俯冲）——
             [NPCID.VampireBat] = new(EclFamily.Dive, 34, 12, 24, 11.0f, 370f, 140f, 360f, 320, new Color(212, 40, 66)),
             [NPCID.Reaper] = new(EclFamily.Dive, 38, 14, 28, 10.5f, 420f, 160f, 400f, 380, new Color(178, 120, 255)),

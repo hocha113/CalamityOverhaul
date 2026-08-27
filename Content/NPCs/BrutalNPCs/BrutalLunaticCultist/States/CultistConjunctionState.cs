@@ -9,9 +9,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
-    /// 合相祭仪:黄道环信标连珠,浑天仪三环共面,140 帧蓄力(重创可打断=拆台抉择)后放阶段大祭<br/>
-    /// P0 风暴螺旋(走廊缺口旋转) P1 幻星降世(真伪三星) P2 环系崩落(天降星雨留巷)<br/>
-    /// P3 冕暴轮转(缺口扇区旋转) P4 月瞳双凝视(先后两束对向扫天)<br/>
+    /// 合相祭仪:黄道环信标连珠,浑天仪三环共面,98 帧蓄力(重创可打断=拆台抉择)后放阶段大祭<br/>
+    /// P0 风暴螺旋(走廊缺口旋转) P1 幻星降世(主星裂化真伪三星→聚阵品字→逐星预瞄轮掷,锁定拍实体度识真,唯真身咬人)<br/>
+    /// P2 环系崩落(晶流沿环+坠星带预告柱滚落留巷) P3 冕暴轮转(缺口扇区旋转) P4 月瞳双凝视(先后两束对向扫天)<br/>
     /// 公平阀:放招前 12 帧纯静默;各脚本缺口均为具名常量;结束长喘息
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.Conjunction, typeof(CultistStateContext))]
@@ -20,26 +20,45 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         public override string StateName => "CultistConjunction";
         public override CultistStateIndex StateIndex => CultistStateIndex.Conjunction;
 
-        private const int ChargeFrames = 140;
+        private const int ChargeFrames = 98;
         /// <summary>P0 风暴螺旋走廊半角(rad)与转速</summary>
         private const float SpiralCorridorHalf = 0.52f;
         private const float SpiralCorridorDrift = 0.0055f;
-        /// <summary>P2 天降星雨:7 巷,连空 2 巷,巷距 px</summary>
+        /// <summary>P1 幻星三相:裂化拍/首掷拍/掷波间隔(帧);波与波错开=同刻至多一条走廊压人(公平阀)</summary>
+        private const int TrioSplitBeat = 12;
+        private const int TrioFirstLaunch = 128;
+        private const int TrioWaveGap = 38;
+        /// <summary>P2 坠星雨:7 巷连空 2 巷轮转,巷距 px;梳锚玩家出手拍锁定,预告柱由 CultistFallingStar 自带</summary>
         private const int RainLanes = 7;
         private const int RainGapLanes = 2;
         private const float RainLaneSpacing = 250f;
+        /// <summary>P2 坠星节拍(帧):滚动落梳,连绵成星暴</summary>
+        private const int RainBeat = 32;
+        /// <summary>P2 巷内落点抖动上限(px):最窄走廊=巷距-2*抖动-2*坠星判定半宽(20)≈138px 恒可穿行</summary>
+        private const float RainJitterX = 36f;
+        /// <summary>P2 标高散排(px):纯纵向,不改巷几何</summary>
+        private const float RainSkyJitterY = 64f;
+        /// <summary>P2 落点高度(玩家上方 px)</summary>
+        private const float RainSkyHeight = 760f;
         /// <summary>P3 冕暴:轮转缺口半角(rad)与每轮进角</summary>
         private const float CoronaGapHalf = 0.55f;
         private const float CoronaGapStep = 0.30f;
 
-        private int ReleaseEnd => 140 + (StatePhase(ctxCache) == 4 ? 396 : 300);
+        private int ReleaseEnd => ChargeFrames + (StatePhase(ctxCache) == 4 ? 396 : 300);
         private CultistStateContext ctxCache;
+
+        /// <summary>真伪三星的出手次序(权威端裂化拍洗出);-1=空位</summary>
+        private readonly int[] trioOrder = [-1, -1, -1];
+        /// <summary>裂化成功(权威端置位),失手时退回星珠垫压</summary>
+        private bool trioActive;
 
         private static int StatePhase(CultistStateContext context) => context?.Phase ?? 0;
 
         public override void OnEnter(CultistStateContext context) {
             base.OnEnter(context);
             ctxCache = context;
+            trioActive = false;
+            trioOrder[0] = trioOrder[1] = trioOrder[2] = -1;
             NPC npc = context.Npc;
             context.ConjunctionLifeStart = npc.life;
             npc.velocity = Vector2.Zero;
@@ -86,7 +105,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             }
             if (Timer >= ReleaseEnd) {
                 context.AlignCharge = 0f;
-                return new CultistCoilState(90);
+                return new CultistCoilState(43);
             }
             return null;
         }
@@ -103,7 +122,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 Vector2 pos = npc.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(160f, 300f);
                 CultistMotion.RuneBurst(pos, core, 1, -6f);
             }
-            if ((Timer == 24 || Timer == 74 || Timer == 116) && !VaultUtils.isServer) {
+            if ((Timer == 18 || Timer == 52 || Timer == 82) && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item117 with {
                     Volume = 0.6f,
                     Pitch = -0.4f + Timer / (float)ChargeFrames * 0.9f
@@ -153,30 +172,87 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                     break;
                 }
                 case 1: {
-                    //幻星降世:两颗幻象星与真身同台漂移,唯真身咬人(实体度=识真线索)
-                    if (!VaultUtils.isClient && (int)t == 14) {
-                        for (int i = 1; i <= 2; i++) {
-                            Projectile.NewProjectile(npc.GetSource_FromAI(),
-                                context.ArenaCenter + new Vector2(i == 1 ? -560f : 560f, -240f), Vector2.Zero,
-                                ModContent.ProjectileType<CultistPlanetProj>(), 60, 0f, Main.myPlayer,
-                                CultistPlanetProj.KindNebula, npc.whoAmI, i * 10f);
+                    //幻星降世:主星裂化真伪三星→聚阵品字→逐星预瞄轮掷;唯真身咬人,锁定拍实体度识真
+                    int it = (int)t;
+                    //裂化令(权威端):真身入阵,两颗幻象自星心分娩,槽位与出手次序各洗一遍
+                    if (!VaultUtils.isClient && it == TrioSplitBeat) {
+                        Projectile real = FindSplitCandidate(npc.whoAmI);
+                        if (real != null) {
+                            trioActive = true;
+                            float baseAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+                            int[] slots = [0, 1, 2];
+                            for (int i = slots.Length - 1; i > 0; i--) {
+                                int j = Main.rand.Next(i + 1);
+                                (slots[i], slots[j]) = (slots[j], slots[i]);
+                            }
+                            CultistPlanetProj.CommandMuster(real, baseAngle + slots[0] * MathHelper.TwoPi / 3f);
+                            trioOrder[0] = real.whoAmI;
+                            for (int i = 1; i <= 2; i++) {
+                                int who = Projectile.NewProjectile(npc.GetSource_FromAI(),
+                                    real.Center + Main.rand.NextVector2Circular(40f, 40f), Vector2.Zero,
+                                    ModContent.ProjectileType<CultistPlanetProj>(), 60, 0f, Main.myPlayer,
+                                    CultistPlanetProj.KindNebula, npc.whoAmI, i * 10 + 7);
+                                if (who >= 0 && who < Main.maxProjectiles) {
+                                    Main.projectile[who].localAI[1] = baseAngle + slots[i] * MathHelper.TwoPi / 3f;
+                                    trioOrder[i] = who;
+                                }
+                            }
+                            for (int i = trioOrder.Length - 1; i > 0; i--) {
+                                int j = Main.rand.Next(i + 1);
+                                (trioOrder[i], trioOrder[j]) = (trioOrder[j], trioOrder[i]);
+                            }
                         }
                     }
-                    //稀疏星珠垫压
-                    if (!VaultUtils.isClient && Timer % 46 == 0) {
+                    //裂化演出拍(各端)
+                    if (it == TrioSplitBeat) {
+                        CultistMotion.SigilCommitFX(origin, core, 1.6f);
+                        CultistMotion.RuneBurst(origin, core, 16, 9f);
+                        CultistMotion.Shake(origin, 8f, 14);
+                        CultistScreenFX.PushFlash(0.4f);
+                        if (!VaultUtils.isServer) {
+                            SoundEngine.PlaySound(SoundID.Item103 with { Volume = 1f, Pitch = -0.35f }, origin);
+                            SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 0.9f, Pitch = -0.2f }, origin);
+                        }
+                    }
+                    //三波轮掷:预瞄线追瞄→锁定(识真窗)→线灭即出手,波距错开=同刻至多一条走廊
+                    for (int wave = 0; wave < 3; wave++) {
+                        int launchBeat = TrioFirstLaunch + wave * TrioWaveGap;
+                        if (!VaultUtils.isClient) {
+                            Projectile member = TrioMember(wave);
+                            //+1:弹寿在弹相递减,晚一帧上桩才保证出手帧主相仍读得到锁定点
+                            if (member != null && it == launchBeat - CultistPlanetAimLine.Lifetime + 1) {
+                                Vector2 aim = CultistMotion.PredictTarget(player, member.Center, 9f, 0.55f);
+                                Projectile.NewProjectile(npc.GetSource_FromAI(), member.Center, Vector2.Zero,
+                                    ModContent.ProjectileType<CultistPlanetAimLine>(), 0, 0f, Main.myPlayer,
+                                    member.whoAmI, aim.X, aim.Y);
+                            }
+                            if (member != null && it == launchBeat) {
+                                Vector2 aim = CultistPlanetAimLine.GetLockedAimFor(member.whoAmI)
+                                    ?? CultistMotion.PredictTarget(player, member.Center, 9f, 0.55f);
+                                CultistPlanetProj.CommandLaunchPlanet(member, aim);
+                            }
+                        }
+                        //出手拍演出(各端,与投掷态同语调)
+                        if (it == launchBeat) {
+                            CultistMotion.Shake(npc.Center, 5f, 10);
+                            CultistScreenFX.PushFlash(0.18f);
+                            context.ScalePulse = 1.1f;
+                            if (!VaultUtils.isServer) {
+                                SoundEngine.PlaySound(SoundID.Zombie105 with { Volume = 1f, Pitch = -0.45f }, npc.Center);
+                            }
+                        }
+                    }
+                    //裂化失手(主星不在常驻位):退回稀疏星珠垫压,祭仪不空转
+                    if (!VaultUtils.isClient && !trioActive && it > TrioSplitBeat && Timer % 46 == 0) {
                         Vector2 dir = (player.Center - origin).SafeNormalize(Vector2.UnitY);
                         Projectile.NewProjectile(npc.GetSource_FromAI(), origin + dir * planetR * 0.9f,
                             dir * 6f, ModContent.ProjectileType<CultistStarBead>(), 40, 0f,
                             Main.myPlayer, context.Phase);
                     }
-                    //收场:幻象散场(真身留任)
-                    if (!VaultUtils.isClient && Timer == ReleaseEnd - 24) {
-                        CultistPlanetProj.DismissPhantoms(npc.whoAmI);
-                    }
                     break;
                 }
                 case 2: {
-                    //环系崩落:晶珠沿环面双向流出+天降星雨留巷(巷缺口具名声明)
+                    //环系崩落:晶珠沿环面双向流出+坠星带预告柱滚落留巷
                     if (!VaultUtils.isClient && Timer % 5 == 0) {
                         float tilt = -0.35f;   //与 TechStardust uTilt 同源:环面即弹道
                         Vector2 dir = tilt.ToRotationVector2() * ((int)(t / 5f) % 2 == 0 ? 1f : -1f);
@@ -184,19 +260,34 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                             dir * 6.5f, ModContent.ProjectileType<CultistStarBead>(), 40, 0f,
                             Main.myPlayer, context.Phase);
                     }
-                    if (!VaultUtils.isClient && Timer % 32 == 0) {
-                        int volley = (int)(t / 32f);
-                        int gapStart = volley % RainLanes;
-                        for (int lane = 0; lane < RainLanes; lane++) {
-                            int d = ((lane - gapStart) % RainLanes + RainLanes) % RainLanes;
-                            if (d < RainGapLanes) {
-                                continue;
+                    //滚动坠星:梳锚玩家出手拍锁定不追踪;奇数波错半巷+整梳随机相移+巷内抖动,
+                    //每星种子错拍(预告延展/落速/体型),不落成方阵;缺口 2 巷逐波轮转
+                    if (Timer % RainBeat == 0) {
+                        CultistScreenFX.PushFlash(0.14f);
+                        CultistMotion.Shake(player.Center, 2.5f, 6);
+                        if (!VaultUtils.isServer) {
+                            SoundEngine.PlaySound(SoundID.Item117 with { Volume = 0.7f, Pitch = 0.1f },
+                                player.Center - new Vector2(0f, 200f));
+                        }
+                        if (!VaultUtils.isClient) {
+                            int volley = (int)(t / RainBeat);
+                            int gapStart = volley % RainLanes;
+                            float combShift = (volley % 2 == 1 ? RainLaneSpacing * 0.5f : 0f)
+                                + Main.rand.NextFloat(-0.25f, 0.25f) * RainLaneSpacing;
+                            for (int lane = 0; lane < RainLanes; lane++) {
+                                int d = ((lane - gapStart) % RainLanes + RainLanes) % RainLanes;
+                                if (d < RainGapLanes) {
+                                    continue;
+                                }
+                                float offsetX = (lane - RainLanes / 2) * RainLaneSpacing + combShift
+                                    + Main.rand.NextFloat(-RainJitterX, RainJitterX);
+                                Vector2 pos = new(player.Center.X + offsetX,
+                                    player.Center.Y - RainSkyHeight + Main.rand.NextFloat(-RainSkyJitterY, RainSkyJitterY));
+                                Projectile.NewProjectile(npc.GetSource_FromAI(), pos, Vector2.Zero,
+                                    ModContent.ProjectileType<CultistFallingStar>(), 40, 0f, Main.myPlayer,
+                                    npc.whoAmI, context.Phase, Main.rand.NextFloat());
                             }
-                            Vector2 pos = new(context.ArenaCenter.X + (lane - RainLanes / 2) * RainLaneSpacing,
-                                context.ArenaCenter.Y - 940f);
-                            Projectile.NewProjectile(npc.GetSource_FromAI(), pos, new Vector2(0f, 5f),
-                                ModContent.ProjectileType<CultistStarBead>(), 40, 0f,
-                                Main.myPlayer, context.Phase);
+                            npc.netUpdate = true;
                         }
                     }
                     break;
@@ -220,20 +311,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                     break;
                 }
                 default: {
-                    //月瞳双凝视:先后两束对向扫天,睁眼全程
+                    //月瞳双凝视:先后两束对向扫天,睁眼全程;
+                    //巡航扫速 0.010=基础凝视(0.006)的合相高压版,仍靠束内 30f 缓起给反应窗
                     context.PupilOpen = 1f;
                     if (!VaultUtils.isClient && planet != null) {
                         if ((int)t == 14) {
                             float playerAngle = (player.Center - origin).ToRotation();
                             Projectile.NewProjectile(npc.GetSource_FromAI(), origin, Vector2.Zero,
                                 ModContent.ProjectileType<CultistGazeBeam>(), 52, 0f, Main.myPlayer,
-                                playerAngle - 0.7f, 0.021f, planet.whoAmI);
+                                playerAngle - 0.5f, 0.010f, planet.whoAmI);
                         }
                         if ((int)t == 206) {
                             float playerAngle = (player.Center - origin).ToRotation();
                             Projectile.NewProjectile(npc.GetSource_FromAI(), origin, Vector2.Zero,
                                 ModContent.ProjectileType<CultistGazeBeam>(), 52, 0f, Main.myPlayer,
-                                playerAngle + 0.7f, -0.021f, planet.whoAmI);
+                                playerAngle + 0.5f, -0.010f, planet.whoAmI);
                         }
                     }
                     break;
@@ -241,8 +333,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             }
         }
 
+        /// <summary>裂化取材(权威端):抓非幻象主星,常驻/掷出/归位段皆可征用(上一记掷星未归也不落空)</summary>
+        private static Projectile FindSplitCandidate(int ownerWho) {
+            int type = ModContent.ProjectileType<CultistPlanetProj>();
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (proj.type == type && (int)proj.ai[1] == ownerWho
+                    && (int)proj.ai[2] / 10 == 0 && (int)proj.ai[2] % 10 is 1 or 4 or 5) {
+                    return proj;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>取第 wave 位出手星(权威端):散佚或已离聚阵段返回 null,该波跳过</summary>
+        private Projectile TrioMember(int wave) {
+            int who = trioOrder[wave];
+            if (who < 0 || who >= Main.maxProjectiles) {
+                return null;
+            }
+            Projectile proj = Main.projectile[who];
+            return proj.active && proj.type == ModContent.ProjectileType<CultistPlanetProj>()
+                && (int)proj.ai[2] % 10 == 7 ? proj : null;
+        }
+
         public override void OnExit(CultistStateContext context) {
-            //收势清幻象兜底(P1 提前散场已做,这里防打断残留)
+            //收势清幻象(真身留任):掷完在飞的幻象也在此散场,不留残星
             if (!VaultUtils.isClient) {
                 CultistPlanetProj.DismissPhantoms(context.Npc.whoAmI);
             }

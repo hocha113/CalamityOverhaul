@@ -97,15 +97,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
             }
         }
 
-        /// <summary>起跳：给定水平速度与竖直初速，穿地形直至越过目标头顶</summary>
-        protected static void LaunchJump(NPC npc, float vx, float vy) {
+        /// <summary>起跳：给定水平速度与竖直初速，穿地形直至越过目标头顶；激怒时水平速度翻倍(移速惩罚，垂直不变保弧线节拍)</summary>
+        protected static void LaunchJump(GolemStateContext ctx, float vx, float vy) {
+            NPC npc = ctx.Npc;
+            if (ctx.Enraged) {
+                vx *= 2f;
+            }
             npc.velocity.X = vx;
             npc.velocity.Y = vy;
             npc.noTileCollide = true;
         }
 
-        /// <summary>空中操舵：横向追踪目标，越过头顶后恢复碰撞下砸</summary>
+        /// <summary>空中操舵：横向追踪目标，越过头顶后恢复碰撞下砸；激怒时横向机动翻倍(与起跳翻倍配套，防上限钳回)</summary>
         protected static void AirSteer(GolemStateContext ctx, float accel, float maxSpeed) {
+            if (ctx.Enraged) {
+                accel *= 2f;
+                maxSpeed *= 2f;
+            }
             NPC npc = ctx.Npc;
             Player target = ctx.Target;
 
@@ -190,9 +198,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
             SpawnLandingShards(ctx, shards);
         }
 
-        /// <summary>难度伤害修正</summary>
+        /// <summary>难度伤害修正（死亡模式/激怒）</summary>
         protected static int ScaleDamage(GolemStateContext ctx, int damage) {
-            return GolemDirector.ScaleDamage(damage, ctx.DeathMode);
+            return GolemDirector.ScaleDamage(damage, ctx.DeathMode, ctx.Enraged);
         }
 
         /// <summary>节奏帧压缩</summary>

@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
     /// </summary>
     internal class MrtTeslaArcProj : ModProjectile
     {
+        //豁免声明：闪电弧属「本身是光」的豁免类（镜像 BOSS-REWORK 契约 4.1 的信徒裁定），加色纯光合法，弹体遮挡像素要求不适用，实体感由两端 NPC 本体承载
         public override string Texture => CWRConstant.VaultPlaceholder2;
 
         [VaultLoaden(CWRConstant.Masking + "ThunderTrail")]

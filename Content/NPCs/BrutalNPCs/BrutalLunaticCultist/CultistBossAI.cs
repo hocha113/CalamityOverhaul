@@ -137,6 +137,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             stateContext.PlanetVolleyGate = stateMachine?.CurrentState
                 is CultistCoilState or CultistStaggerState;
 
+            //浑天仪收形帧检(权威端):掷环态掷完即走不等环返,离体环全数归位才重新显形
+            if (!VaultUtils.isClient && stateContext.OrreryMode == 1
+                && !CultistRingHurlState.AnyRingAlive(npc.whoAmI)) {
+                stateContext.OrreryMode = 0;
+                npc.ai[1] = 0;
+                npc.netUpdate = true;
+            }
+
             //浑天仪显形兜底:晚入场端跳过了入场演出,战斗中环应恒在(入场/死亡/撤离自管)
             if (stateMachine?.CurrentState is not CultistIntroState and not CultistDeathState
                 and not CultistDespawnState && stateContext.OrreryReveal < 3f) {
@@ -203,11 +211,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 return;
             }
 
+            //提速版补偿:出招与间隔更短,单位时间充能率同步上调,大祭频率大体不变
+            //(2026-08-28 间隔再缩 30%,盘转段充能率 0.32→0.46 同步补偿)
             float rate = stateMachine.CurrentState switch {
-                CultistCoilState => 0.24f,
+                CultistCoilState => 0.46f,
                 CultistOrbitLanceState or CultistRingHurlState or CultistStarChartState
                     or CultistEclipseState or CultistGazeState or CultistPlanetHurlState
-                    or CultistCometVolleyState or CultistZodiacSealState or CultistStasisMinesState => 0.11f,
+                    or CultistCometVolleyState or CultistZodiacSealState or CultistStasisMinesState
+                    or CultistArcaneNovaState or CultistStarfallState or CultistSeekerStarsState
+                    or CultistRingPrisonState => 0.15f,
                 _ => 0f,
             };
             if (rate > 0f) {
@@ -317,10 +329,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             int gaze = ModContent.ProjectileType<CultistGazeBeam>();
             int comet = ModContent.ProjectileType<CultistCometProj>();
             int spoke = ModContent.ProjectileType<CultistZodiacSpokeProj>();
+            int pulse = ModContent.ProjectileType<CultistArcanePulse>();
+            int fall = ModContent.ProjectileType<CultistFallingStar>();
+            int seeker = ModContent.ProjectileType<CultistSeekerStar>();
+            int seal = ModContent.ProjectileType<CultistGoldRingSeal>();
+            int dragon = ModContent.ProjectileType<CultistEclipseDragon>();
             foreach (Projectile proj in Main.ActiveProjectiles) {
                 if (proj.type == bead || proj.type == orbit || proj.type == ring
                     || proj.type == shade || proj.type == lance || proj.type == chart
-                    || proj.type == gaze || proj.type == comet || proj.type == spoke) {
+                    || proj.type == gaze || proj.type == comet || proj.type == spoke
+                    || proj.type == pulse || proj.type == fall || proj.type == seeker
+                    || proj.type == seal || proj.type == dragon) {
                     proj.Kill();
                 }
             }

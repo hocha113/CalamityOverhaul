@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         Eclipse = 5,
         /// <summary>合相祭仪:充能满格的阶段大招,蓄力窗可被打断</summary>
         Conjunction = 6,
-        /// <summary>掷星:主星收势远平面→锁向掷出→自行归位</summary>
+        /// <summary>举星砸掷:主星拽到头顶举起(承重/举升/反倾的身体语言)→爆发砸向玩家→自行归位</summary>
         PlanetHurl = 7,
         /// <summary>月瞳凝视:月面竖瞳睁开,扫射凝视光束(月明专属)</summary>
         Gaze = 8,
@@ -42,6 +42,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         ZodiacSeal = 14,
         /// <summary>滞星雷阵:朝玩家所在连撒滞星环,悬停成雷区(P3 起)</summary>
         StasisMines = 15,
+        /// <summary>奥术新星:自身连放扩散符环脉冲,缺口弧逐环转步(全阶段)</summary>
+        ArcaneNova = 16,
+        /// <summary>坠星祷:仰祷标定天穹落点,星矢逐列坠下(P1 起)</summary>
+        Starfall = 17,
+        /// <summary>追星矢:身周凝五芒奥星,逐颗锁向掷出(P2 起)</summary>
+        SeekerStars = 18,
+        /// <summary>金环封阵:铸金环钉在玩家预判位,环缘点燃,缺口缓行(P1 起)</summary>
+        RingPrison = 19,
     }
 
     /// <summary>状态接口</summary>

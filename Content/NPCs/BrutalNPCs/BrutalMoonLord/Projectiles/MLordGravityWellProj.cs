@@ -27,6 +27,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
 
         private const float PullRadius = 920f;
         private const float HardPullRadius = 320f;
+        /// <summary>远端牵引加速度 px/帧²（作用域边缘）</summary>
+        private const float PullFarAccel = 0.07f;
+        /// <summary>
+        /// 井心牵引加速度 px/帧²。公平阀：此值必须明显低于玩家自身的移动加速度，
+        /// 否则井里的人连方向都拧不过来，只能眼看着被钉进去
+        /// </summary>
+        private const float PullNearAccel = 0.294f;
         /// <summary>公平阀：向井分速度达此值后不再施力，全程保留主动挣脱手段（契约3）</summary>
         internal const float EscapeTowardSpeedCap = 8.5f;
         /// <summary>公平阀（契约3）：崩解环连缺位数——玩家刚被井吸向中心，满环即近乎必中</summary>
@@ -71,7 +78,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
                 Vector2 toWell = Projectile.Center - local.Center;
                 float dist = toWell.Length();
                 if (dist < PullRadius && dist > 40f) {
-                    float strength = MathHelper.Lerp(0.1f, 0.42f,
+                    float strength = MathHelper.Lerp(PullFarAccel, PullNearAccel,
                         MathHelper.Clamp(1f - (dist - HardPullRadius) / (PullRadius - HardPullRadius), 0f, 1f));
                     Vector2 pull = toWell.SafeNormalize(Vector2.Zero) * strength;
                     //只在被拉向井的分速度低于逃逸阀时施力，保留挣脱空间

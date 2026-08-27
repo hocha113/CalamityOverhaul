@@ -79,8 +79,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                 for (int i = 0; i < count; i++) {
                     float spread = MathHelper.Lerp(-1.1f, 1.1f, count <= 1 ? 0.5f : i / (float)(count - 1))
                         + Main.rand.NextFloat(-0.12f, 0.12f);
-                    Vector2 vel = baseDir.RotatedBy(spread) * Main.rand.NextFloat(5f, 8.5f);
-                    PlanteraSporeAI.SpawnSpore(npc, npc.Center + vel * 6f, vel);
+                    //喷得更猛出膛更远，雷场覆盖圈约翻倍
+                    Vector2 vel = baseDir.RotatedBy(spread) * Main.rand.NextFloat(9f, 14f);
+                    PlanteraSporeAI.SpawnSpore(npc, npc.Center + vel * 8f, vel);
                 }
                 npc.netUpdate = true;
             }

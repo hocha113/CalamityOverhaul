@@ -2,15 +2,14 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projectiles;
 using System;
 using Terraria;
-using Terraria.Audio;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
-    /// 掷星:他把神器当武器。主星收势退向远平面(56 帧全程可见=预告)→预瞄线追瞄锁死→沿线掷出→自行归位<br/>
-    /// 蓄势期本体反向后撤(拉弓的身体语言);预瞄线末 14 帧冻结=预告即承诺;星球只在近平面咬人,撞黄道环反弹
+    /// 举星砸掷:他把神器当武器。主星被拽到头顶(举手姿态)→承重下沉→缓慢举升→反倾蓄势→顺势砸向玩家<br/>
+    /// 预警线与咏唱音效按令删除:整段举星动作本身就是预告(动画即预警的豁免);<br/>
+    /// 瞄准在反倾拍起锁死(预告即承诺,身体后倾=承诺拍),砸出后星球自行归位
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.PlanetHurl, typeof(CultistStateContext))]
     internal class CultistPlanetHurlState : CultistStateBase
@@ -18,19 +17,38 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         public override string StateName => "CultistPlanetHurl";
         public override CultistStateIndex StateIndex => CultistStateIndex.PlanetHurl;
 
-        private const int Windup = 56;
-        private const int Duration = 156;
-        /// <summary>预瞄线生成拍:寿命定值使其归零帧恰为出手帧</summary>
-        private const int AimLineBeat = Windup - CultistPlanetAimLine.Lifetime;
+        /// <summary>拽星入手:主星飞向头顶举持位</summary>
+        private const int GrabFrames = 44;
+        /// <summary>承重拍止:星到手,整个人被压下去</summary>
+        private const int SettleEnd = GrabFrames + 12;
+        /// <summary>举升拍止:扛着世界往上顶,臂在抖</summary>
+        private const int HoistEnd = SettleEnd + 26;
+        /// <summary>砸出帧:反倾蓄势后的爆发</summary>
+        private const int SmashBeat = HoistEnd + 14;
+        private const int Duration = SmashBeat + 36;
 
         /// <summary>没抓到可掷的星球时直接放弃(权威端置位)</summary>
         private bool aborted;
+        /// <summary>举持桩位(各端入态自捕,身体语言都相对它演)</summary>
+        private Vector2 holdPos;
+        /// <summary>锁定瞄点(权威端,反倾拍捕获后不再追瞄)</summary>
+        private Vector2 lockedAim;
 
         public override void OnEnter(CultistStateContext context) {
             base.OnEnter(context);
             aborted = false;
+            holdPos = context.Npc.Center;
+            //桩位收进穹内:头顶还要举着最大 700+px 的星球,别把它顶出结界
+            if (context.ArenaSpawned) {
+                Vector2 delta = holdPos - context.ArenaCenter;
+                float maxR = CultistStateContext.ArenaRadius - 850f;
+                if (delta.Length() > maxR) {
+                    holdPos = context.ArenaCenter + delta.SafeNormalize(Vector2.UnitY) * maxR;
+                }
+            }
+            lockedAim = context.Target?.Center ?? holdPos;
             if (!VaultUtils.isClient) {
-                //收势令:主星拉到头顶远平面
+                //举星令:主星拽向头顶举持位
                 aborted = !CultistPlanetProj.CommandRecede(context.Npc.whoAmI);
             }
         }
@@ -40,60 +58,66 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             Player player = context.Target;
             Timer++;
 
-            SetPose(npc, 11);
+            //举手托举全程,砸出瞬切施法(掷出的跟随手势)
+            SetPose(npc, Timer < SmashBeat ? 11 : 12);
             FaceTarget(npc, player.Center);
             context.PushAura(0.85f, CultistMotion.PhaseCore(context.Phase));
             context.OrreryGlow = 1f;
 
-            //拉弓身体语言:蓄势期反向后撤(pow2 渐深),掷出瞬反冲
-            if (Timer < Windup) {
-                float t = Timer / (float)Windup;
-                Vector2 away = (npc.Center - player.Center).SafeNormalize(Vector2.UnitX);
-                Vector2 hover = player.Center
-                    + away * (420f + t * t * 180f)
-                    + new Vector2(0f, -260f)
-                    + CultistMotion.BreathingOffset(seed: 7.7f, 10f);
-                CultistMotion.SpringHover(npc, hover, 0.014f, 0.09f, 17f);
+            Vector2 away = (holdPos - player.Center).SafeNormalize(Vector2.UnitX);
+
+            //举星身体语言:站桩拽星→被星压沉→颤着举起→向后反倾→砸出前扑
+            if (Timer <= GrabFrames) {
+                Vector2 hover = holdPos + CultistMotion.BreathingOffset(seed: 7.7f, 8f);
+                CultistMotion.SpringHover(npc, hover, 0.020f, 0.12f, 14f);
+                //拽引符文:手上有力在收
+                if (Timer % 12 == 0) {
+                    CultistMotion.RuneBurst(npc.Center + new Vector2(0f, -40f),
+                        CultistMotion.PhaseCore(context.Phase), 2, 3.5f);
+                }
+            }
+            else if (Timer <= SettleEnd) {
+                CultistMotion.SpringHover(npc, holdPos + new Vector2(0f, 40f), 0.060f, 0.18f, 18f);
+            }
+            else if (Timer <= HoistEnd) {
+                float tremble = (float)Math.Sin(Timer * 1.9f) * 2.6f;
+                CultistMotion.SpringHover(npc, holdPos + new Vector2(tremble, -58f), 0.016f, 0.10f, 9f);
+                context.ScalePulse = 1.04f;
+            }
+            else if (Timer < SmashBeat) {
+                CultistMotion.SpringHover(npc, holdPos + away * 52f + new Vector2(0f, 14f), 0.050f, 0.14f, 16f);
             }
             else {
-                npc.velocity *= 0.94f;
+                npc.velocity *= 0.90f;
             }
 
-            //蓄势语调
-            if (Timer == 8 && !VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 0.9f, Pitch = -0.3f }, npc.Center);
-            }
-            if (Timer % 10 == 0 && Timer < Windup) {
-                CultistMotion.RuneBurst(npc.Center + new Vector2(0f, -30f),
-                    CultistMotion.PhaseCore(context.Phase), 2, 3.5f);
-                context.ScalePulse = 1.05f;
+            //承重拍:重量落在肩上
+            if (Timer == GrabFrames + 1) {
+                CultistMotion.Shake(npc.Center, 3f, 9);
+                CultistMotion.RuneBurst(npc.Center + new Vector2(0f, -70f),
+                    CultistMotion.PhaseCore(context.Phase), 6, 5f);
+                context.ScalePulse = 0.94f;
             }
 
-            //预瞄线上桩(权威端):挂在收势主星上,追瞄期跟人,末 14 帧冻结
-            if (Timer == AimLineBeat && !VaultUtils.isClient && !aborted) {
-                Projectile planet = FindRecedingPlanet(npc.whoAmI);
-                if (planet != null) {
-                    Vector2 aim = CultistMotion.PredictTarget(player, planet.Center, 9f, 0.55f);
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), planet.Center, Vector2.Zero,
-                        ModContent.ProjectileType<CultistPlanetAimLine>(), 0, 0f, Main.myPlayer,
-                        planet.whoAmI, aim.X, aim.Y);
-                }
+            //反倾拍起锁瞄(权威端):预告即承诺,身体后倾后不再追人;
+            //预判速度与砸出爆发同参,提前量 0.5=站桩/慢挪必中,全速跑位仍有欠预判的活路
+            if (Timer == HoistEnd && !VaultUtils.isClient && !aborted) {
+                Projectile planet = FindHeldPlanet(npc.whoAmI);
+                Vector2 from = planet?.Center ?? npc.Center;
+                lockedAim = CultistMotion.PredictTarget(player, from, 26f, 0.5f);
             }
 
-            //掷出:沿预瞄线锁定点出手(预告即承诺);预瞄线缺席时回退现算预判
-            if (Timer == Windup && !VaultUtils.isClient) {
-                Vector2 aim = CultistPlanetAimLine.GetLockedAim(npc.whoAmI)
-                    ?? CultistMotion.PredictTarget(player, npc.Center, 9f, 0.55f);
-                CultistPlanetProj.CommandLaunch(npc.whoAmI, aim);
-                npc.velocity -= (aim - npc.Center).SafeNormalize(Vector2.UnitY) * 7f;
+            //砸出(权威端):沿锁定点爆发掷下,本体顺势前扑
+            if (Timer == SmashBeat && !VaultUtils.isClient && !aborted) {
+                CultistPlanetProj.CommandSmash(npc.whoAmI, lockedAim);
+                npc.velocity += (lockedAim - npc.Center).SafeNormalize(Vector2.UnitY) * 12f;
                 npc.netUpdate = true;
             }
-            if (Timer == Windup) {
-                CultistMotion.Shake(npc.Center, 7f, 13);
-                CultistScreenFX.PushFlash(0.22f);
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Zombie105 with { Volume = 1.1f, Pitch = -0.4f }, npc.Center);
-                }
+            //砸出演出(各端,按令无音效):身体的爆发靠震屏与白闪落地
+            if (Timer == SmashBeat) {
+                CultistMotion.Shake(npc.Center, 8f, 14);
+                CultistScreenFX.PushFlash(0.25f);
+                context.ScalePulse = 1.12f;
             }
 
             if (VaultUtils.isClient) {
@@ -105,8 +129,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             return null;
         }
 
-        /// <summary>找收势待掷段的非幻象主星(预瞄线挂点)</summary>
-        private static Projectile FindRecedingPlanet(int ownerWho) {
+        /// <summary>找被举起待掷的非幻象主星(锁瞄起点)</summary>
+        private static Projectile FindHeldPlanet(int ownerWho) {
             int type = ModContent.ProjectileType<CultistPlanetProj>();
             foreach (Projectile proj in Main.ActiveProjectiles) {
                 if (proj.type == type && (int)proj.ai[1] == ownerWho

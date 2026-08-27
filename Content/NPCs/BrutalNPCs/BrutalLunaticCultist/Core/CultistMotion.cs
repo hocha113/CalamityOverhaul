@@ -186,14 +186,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         #endregion
 
         #region 通用
-        /// <summary>屏幕震动，方向可选，距离衰减</summary>
-        public static void Shake(Vector2 pos, float strength, int frames, Vector2? direction = null) {
+        /// <summary>屏幕震动，方向可选，距离衰减;falloff 给到百万级即全屏等强(撞穹这类全场事件用)</summary>
+        public static void Shake(Vector2 pos, float strength, int frames, Vector2? direction = null, float falloff = 2300f) {
             if (VaultUtils.isServer || !CWRClientConfig.Instance.ScreenVibration) {
                 return;
             }
             Vector2 dir = direction.HasValue && direction.Value != Vector2.Zero
                 ? direction.Value.SafeNormalize(Vector2.UnitY) : Main.rand.NextVector2Unit();
-            PunchCameraModifier modifier = new PunchCameraModifier(pos, dir, strength, 7f, frames, 2300f, "CultistMotion");
+            PunchCameraModifier modifier = new PunchCameraModifier(pos, dir, strength, 7f, frames, falloff, "CultistMotion");
             Main.instance.CameraModifiers.Add(modifier);
         }
 

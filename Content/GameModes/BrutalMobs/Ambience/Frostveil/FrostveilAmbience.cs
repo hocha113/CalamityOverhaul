@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -191,7 +192,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil
 
             float perSec = 6f + 13f * windAbs + (snowing ? 9f : 0f) + (blizzard ? 7f : 0f);
             perSec *= 1f + 0.12f * (tier - 1);
-            perSec = Math.Min(perSec, FlakePerSecCap) * Presence;
+            //氛围性能总闸：只缩常态雪尘密度，不碰风雪墙/白毛风等机制与预告路径
+            perSec = Math.Min(perSec, FlakePerSecCap) * Presence * CWRClientConfig.Instance.AmbienceDensity;
 
             flakeAcc += perSec / 60f;
             while (flakeAcc >= 1f) {

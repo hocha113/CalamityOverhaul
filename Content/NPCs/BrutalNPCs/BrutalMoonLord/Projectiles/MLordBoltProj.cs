@@ -26,8 +26,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
         internal const int MaterializeTime = 7;
         /// <summary>点火后复合加速上限（相对初速倍率）</summary>
         private const float AccelCap = 1.5f;
-        /// <summary>点火速度统一增幅：所有生成点的波矢一并提速（生成侧速度数值不改口径）</summary>
-        private const float LaunchBoost = 1.75f;
+        /// <summary>点火速度统一增幅：所有生成点的波矢一并提速（生成侧速度数值不改口径；含移速翻倍 1.75→3.5）</summary>
+        private const float LaunchBoost = 3.5f;
 
         private ref float Timer => ref Projectile.localAI[0];
         private ref float FullSpeed => ref Projectile.localAI[1];

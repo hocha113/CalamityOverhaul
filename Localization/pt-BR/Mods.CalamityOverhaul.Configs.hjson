@@ -54,4 +54,9 @@ CWRClientConfig: {
 		Label: Suavizacao da Camera
 		Tooltip: Quando ativado, deslocamentos rapidos de longa distancia suavizarao a camera, o que evita a sensacao de ser movido muito rapido
 	}
+
+	AmbienceDensity: {
+		// Label: Ambience Density
+		// Tooltip: Scales decorative ambience particle density only; telegraphs and hazards are never reduced.
+	}
 }

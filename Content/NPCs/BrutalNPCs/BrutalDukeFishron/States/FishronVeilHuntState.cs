@@ -22,20 +22,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
         public override bool AllowFarSnap => false;
 
         #region 节奏常量
+        //三阶段提速：隐身/绕位/收势空拍已压短，末相令又把预告砍三成、突进加一成半
         /// <summary>溶进雨里</summary>
-        private const int FadeTime = 26;
+        private const int FadeTime = 18;
         /// <summary>每轮潜行绕位</summary>
-        private const int StalkTime = 36;
-        /// <summary>隐身突击预告：比常规冲刺短，比风暴连突长</summary>
-        internal const int StrikeTelegraph = 26;
+        private const int StalkTime = 25;
+        /// <summary>隐身突击预告：比常规冲刺短，比风暴连突长（末相预警线 -30%：26→18 帧）</summary>
+        internal const int StrikeTelegraph = 18;
         /// <summary>突进直线帧数</summary>
         private const int StrikeTime = 16;
         /// <summary>突进后回隐缓冲</summary>
-        private const int SettleTime = 12;
+        private const int SettleTime = 8;
         /// <summary>显形收势</summary>
-        private const int RevealTime = 20;
+        private const int RevealTime = 14;
         private const int StrikeLoops = 2;
-        private const float StrikeSpeed = 56f;
+        /// <summary>末相冲刺 +15%：56→64.4</summary>
+        private const float StrikeSpeed = 64.4f;
         /// <summary>完全隐身阈值：alpha 高于此值时接触伤害关闭（公平阀）</summary>
         internal const int HiddenAlpha = 200;
         #endregion
@@ -233,7 +235,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
 
         /// <summary>相位5：从雨里重新凝出身体，收势交还悬停</summary>
         private bool UpdateReveal(FishronStateContext context, NPC npc, int t) {
-            //不再补 alpha，主控逐帧衰减即显形
+            //主控每帧衰减 12，收势压短后再补一手，保证本相位内显形干净不跳变
+            npc.alpha = Math.Max(npc.alpha - 8, 0);
             npc.velocity *= 0.93f;
             context.FrameCommand = 1;
             if (!VaultUtils.isServer && t % 3 == 0) {

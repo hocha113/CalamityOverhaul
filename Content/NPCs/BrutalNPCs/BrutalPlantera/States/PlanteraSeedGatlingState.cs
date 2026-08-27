@@ -19,11 +19,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         public override string StateName => "SeedGatling";
         public override PlanteraStateIndex StateIndex => PlanteraStateIndex.SeedGatling;
 
-        private int WindupTime(PlanteraStateContext ctx) => ctx.IsDeathMode ? 36 : 46;
+        private int WindupTime(PlanteraStateContext ctx) => (int)(46 * PlanteraDirector.TimeScale(ctx));
         private const int FireTime = 75;
         private const int GapTime = 30;
         private const int VolleyCount = 2;
-        private int FireInterval(PlanteraStateContext ctx) => ctx.IsDeathMode ? 2 : 3;
+        //激怒射速翻倍：3→2 / 死亡模式 2→1
+        private int FireInterval(PlanteraStateContext ctx) {
+            int interval = ctx.IsDeathMode ? 2 : 3;
+            return ctx.IsEnraged ? Math.Max(interval / 2, 1) : interval;
+        }
 
         private Vector2 lockPoint;
         private Vector2 recoilOffset;

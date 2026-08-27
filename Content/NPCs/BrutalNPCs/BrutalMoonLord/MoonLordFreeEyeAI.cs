@@ -13,10 +13,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
     /// <summary>
     /// 脱出真眼：部件破坏后的独立威胁集群，协同技随集群规模进化
     /// 1 眼：三技轮转（波弹连射/星球短扇/预兆冲撞）；
-    /// 2 眼：剪式弧光对扫（两束自两翼相向合拢，交叉推进留移动安全区）；
+    /// 2 眼：剪式弧光合拢（封存拍冻结锚点，高位浅角交叉起手后向内收拢，脚下口袋恒安全）；
     /// 3 眼：三角闭环（缓旋三角阵 + 链式死光沿边接力传递）；
     /// 4~5 眼：星芒大阵（环阵驻位→星芒弦依次贯通→环阵收缩+中心交叉爆）。
-    /// 全部编排由核心编队时钟确定性推导，核心指令可召其锚定或退避。
+    /// 全部编排由核心编队时钟确定性推导，核心指令可召其锚定或退避
+    /// （弦月重演的锚定窗见 <see cref="UpdateAnchorFormation"/>）。
     /// 保持原版不可伤身份，随核心死亡消散
     /// </summary>
     internal class MoonLordFreeEyeAI : BrutalNPCOverride
@@ -32,10 +33,36 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         internal const float ContactDamageSpeedGate = 22f;
         /// <summary>剪式对扫周期（2 眼）</summary>
         internal const int ScissorPeriod = 430;
+        /// <summary>剪式封存拍：此帧冻结锚点与全套束几何，此后眼与束不再回应玩家走位——
+        /// 追踪发射器会作废一切涌现缺口（契约3），锁死缺口才真实存在</summary>
+        internal const int ScissorCommitBeat = 54;
+        /// <summary>剪式出束拍：封存到出束 70 帧引导 + 束自身 20 帧成束，
+        /// 合计超出光束类预警预算 <see cref="MLordDirector.BeamTelegraphFrames"/></summary>
+        internal const int ScissorFireBeat = 124;
+        /// <summary>剪式驻位终拍（束燃尽即散阵回巡游）</summary>
+        internal const int ScissorStationEnd = ScissorFireBeat + MLordArcRayProj.TotalLife + 6;
+        /// <summary>剪式高位栖角：相对封存点的驻位偏移（水平半距/垂直高度）</summary>
+        internal const float ScissorPerchX = 300f;
+        internal const float ScissorPerchY = -560f;
+        /// <summary>剪式收针陡角：收拢的终点角。终拍两交叉落点收至封存点两侧
+        /// ±(|PerchY|/tan(角)−PerchX) ≈ 192px，落点之间的地面口袋（扣除束斜切半宽 ≈83px 后
+        /// 净空半宽 ≈109px、口袋顶高 ≈124px）全程无束——束只收不进，所见楔口即安全区</summary>
+        internal const float ScissorSteepAngle = 0.85f;
+        /// <summary>
+        /// 剪式收拢扫角（公平阀，契约3）：两束自浅角（0.30 rad，落点 ±1510px）向内收拢此弧度，
+        /// 收针于陡角。旧开扇版自 ±192px 向外加速逃逸，口袋起步的玩家永远追不上束，
+        /// 整招对锚点高度及以下零威胁，被判"完全打不到下面的玩家"（2026-08-28 反转扫向）——
+        /// 现口袋外的低空与地面各承受一次向心收扫（落点峰值速 ≈13px/f），退入口袋或
+        /// 提前穿越已扫区即解；高空 X 交叉自 467px 压至 219px，悬空玩家被向下逼角
+        /// </summary>
+        internal const float ScissorCloseSweep = 0.55f;
         /// <summary>三角闭环周期（3 眼）</summary>
         internal const int TrianglePeriod = 440;
         /// <summary>星芒大阵周期（4~5 眼）</summary>
         internal const int StarPeriod = 560;
+        /// <summary>锚定阵位横向席距与垂直栖高（弦月重演底部声部的交叉角表据此反推）</summary>
+        internal const float AnchorSpreadX = 240f;
+        internal const float AnchorPerchY = -430f;
 
         private MLordEyePose pose;
         private int bodyFrameTick;
@@ -44,6 +71,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         private Player targetPlayer;
         /// <summary>冲撞锁定方向（出手窗内各端确定性推导）</summary>
         private Vector2 ramDir;
+        /// <summary>剪式封存锚：封存拍那一帧的玩家位置（各端确定性推导，眼位由服务端同步兜底）</summary>
+        private Vector2 scissorAnchor;
+        /// <summary>已封存的剪式轮次（-1=未封存），防跨轮沿用陈旧锚点</summary>
+        private int scissorRound = -1;
+        /// <summary>剪式引导线亮度（仅绘制消费，出束或离开剪式即归零）</summary>
+        private float scissorGuideStrength;
+        /// <summary>剪式当前束向（引导线与瞳孔姿态共用，与束的缓动扫角同式推导）</summary>
+        private float scissorBeamAngle;
+        /// <summary>剪式收针终角（引导暗线消费：预告束将收到哪，两暗线之间即口袋）</summary>
+        private float scissorGuideEndAngle;
+        /// <summary>弦月重演引导线亮度与角组（仅绘制消费，蓄势窗外逐帧归零）</summary>
+        private float crescentGuideStrength;
+        private int crescentGuideCount;
+        private float crescentGuideAngleA;
+        private float crescentGuideAngleB;
 
         public override bool? CanBrutalOverride() {
             return null;
@@ -94,6 +136,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             bool contactHot = npc.velocity.LengthSquared() > ContactDamageSpeedGate * ContactDamageSpeedGate;
             npc.damage = command == MLordEyeCommand.Retreat || hold || !contactHot ? 0 : 60;
 
+            //剪式/弦月引导线逐帧重申：只有对应蓄势窗把它点亮，离开立即熄灭
+            scissorGuideStrength = 0f;
+            crescentGuideStrength = 0f;
+            crescentGuideCount = 0;
+
             if (hold || command == MLordEyeCommand.Retreat) {
                 //退避收拢：贴核心哀鸣漂浮
                 Vector2 tuck = core.Center + new Vector2(
@@ -102,20 +149,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 SpringTo(tuck, 0.07f, 16f);
             }
             else if (command == MLordEyeCommand.Anchor) {
-                //锚定阵位：为核心攻击站桩（弦月第三弧等），按扫描席位横向散开防叠站
-                int[] anchorEyes = new int[MLordFacts.MaxFreeEyes];
-                int anchorCount = MLordFacts.ScanFreeEyes(core, anchorEyes);
-                int anchorOrdinal = 0;
-                for (int i = 0; i < anchorCount; i++) {
-                    if (anchorEyes[i] == npc.whoAmI) {
-                        anchorOrdinal = i;
-                        break;
-                    }
-                }
-                Vector2 anchorBase = targetPlayer.Alives() ? targetPlayer.Center : core.Center;
-                Vector2 anchorPos = anchorBase + new Vector2((anchorOrdinal - (anchorCount - 1) * 0.5f) * 240f, -430f);
-                SpringTo(anchorPos, 0.08f, 18f);
-                pose.PupilAngle = pose.PupilAngle.AngleLerp((anchorBase - npc.Center).ToRotation(), 0.25f);
+                UpdateAnchorFormation(core, coreAI);
             }
             else if (IsClaimedByTidal(core, npc.whoAmI)) {
                 //掌击态被征作冲撞执行者：速度由核心状态服务端直控，本地只随动姿态
@@ -154,6 +188,86 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// 锚定阵位：为核心攻击站桩（弦月重演等），按扫描席位横向散开防叠站。
+        /// 弦月核心裸露版自冻结拍起改钉服务端封存的锚点槽——移动中的发射器会作废
+        /// 一切涌现缺口（契约3），底部声部的交叉落点必须与玩家走位解耦才可读
+        /// </summary>
+        private void UpdateAnchorFormation(NPC core, MoonLordCoreAI coreAI) {
+            int[] anchorEyes = new int[MLordFacts.MaxFreeEyes];
+            int anchorCount = MLordFacts.ScanFreeEyes(core, anchorEyes);
+            int anchorOrdinal = 0;
+            for (int i = 0; i < anchorCount; i++) {
+                if (anchorEyes[i] == npc.whoAmI) {
+                    anchorOrdinal = i;
+                    break;
+                }
+            }
+            Vector2 anchorBase = targetPlayer.Alives() ? targetPlayer.Center : core.Center;
+
+            bool crescentReplay = MLordFacts.GetCoreState(core) == MLordStateIndex.CrescentClose
+                && coreAI?.Context?.CoreExposed == true;
+            if (crescentReplay && coreAI.StateTimer >= States.MLordCrescentCloseState.EyeFreezeBeat) {
+                //冻结窗：钉死在封存拍写入的锚点槽上（各端共读，远端封存包未到的一两帧
+                //沿用旧槽值，由弹簧进给自然抹平）
+                anchorBase = new Vector2(
+                    MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvAnchorX, anchorBase.X),
+                    MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvAnchorY, anchorBase.Y));
+            }
+
+            Vector2 anchorPos = anchorBase + new Vector2(
+                (anchorOrdinal - (anchorCount - 1) * 0.5f) * AnchorSpreadX, AnchorPerchY);
+            SpringTo(anchorPos, 0.08f, 18f);
+            pose.PupilAngle = pose.PupilAngle.AngleLerp((anchorBase - npc.Center).ToRotation(), 0.25f);
+
+            if (crescentReplay) {
+                UpdateCrescentPose(coreAI.StateTimer, anchorOrdinal, anchorCount);
+            }
+        }
+
+        /// <summary>
+        /// 弦月重演的蓄势与出束姿态：整个蓄势窗瞳孔盯死本眼首道弧的起始扫向
+        /// （角度自进态即由角表锁死，罗盘预告 70f+成束 20f 满足光束预警预算），
+        /// 冻结拍后亮起本眼弧组的引导线（线在哪、束就在哪，落点几何 42f 读秒），
+        /// 出束期眼随刃转
+        /// </summary>
+        private void UpdateCrescentPose(int stateTimer, int ordinal, int eyeCount) {
+            Span<float> starts = stackalloc float[2];
+            Span<float> sweeps = stackalloc float[2];
+            int arcCount = States.MLordCrescentCloseState.GetEyeReplayArcs(ordinal, eyeCount, starts, sweeps);
+            if (arcCount <= 0) {
+                return;
+            }
+            int fireBeat = States.MLordCrescentCloseState.WindupEnd;
+            if (stateTimer < fireBeat) {
+                pose.PupilAngle = pose.PupilAngle.AngleLerp(starts[0], 0.3f);
+                if (stateTimer < States.MLordCrescentCloseState.EyeFreezeBeat) {
+                    return;
+                }
+                pose.Glow = 1f;
+                pose.PupilOut = 1f;
+                crescentGuideStrength = MathHelper.Clamp(
+                    (stateTimer - States.MLordCrescentCloseState.EyeFreezeBeat - 6) / 16f, 0f, 1f);
+                if (stateTimer >= fireBeat - 10) {
+                    //末拍收细定格（出束前不熄灭），与剪式/虚空撕裂引导同式
+                    crescentGuideStrength = 0.6f;
+                }
+                crescentGuideCount = arcCount;
+                crescentGuideAngleA = starts[0];
+                crescentGuideAngleB = arcCount > 1 ? starts[1] : 0f;
+                return;
+            }
+            if (stateTimer < fireBeat + MLordArcRayProj.TotalLife) {
+                //出束驻位：眼随首道弧的缓动扫角转（与束的角进给同式推导）
+                float sweepT = MathHelper.Clamp(
+                    (stateTimer - fireBeat - MLordArcRayProj.ExpandTime) / (float)MLordArcRayProj.SweepFrames, 0f, 1f);
+                pose.PupilAngle = pose.PupilAngle.AngleLerp(
+                    starts[0] + sweeps[0] * VaultUtils.EaseInOutCubic(sweepT), 0.25f);
+                pose.Glow = 1f;
+                pose.PupilOut = 1f;
+            }
         }
 
         #region 集群自主循环
@@ -230,39 +344,78 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         }
 
         /// <summary>
-        /// 2 眼·剪式弧光对扫：两眼分踞玩家两翼高位站桩，同拍各放一道弧光死光
-        /// 相向合拢，两束在玩家轴线处交叉推进，安全区是随扫角移动的菱形楔口
+        /// 2 眼·剪式弧光合拢：封存拍冻结锚点，两眼锁上封存点头顶两翼的高位栖角，
+        /// 远端浅角交叉起手（亮引导线即起手承诺，暗线预告收针终点），随后向内收拢——
+        /// 把口袋外的低空与地面逐段扫净，收针于口袋两缘 ±192px。
+        /// 封存点脚下的地面口袋全程无束（束只收不进，缺口即所见），退入口袋即解。
+        /// 旧开扇版（陡角起手向外张开）落点自 ±192px 向外加速逃逸，追不上任何口袋
+        /// 起步的玩家，对锚点高度以下零威胁，2026-08-28 反转为收拢；更旧的追踪合拢版
+        /// （束随眼追玩家）仍然禁止——追踪发射器作废一切涌现缺口（契约3）
         /// </summary>
         private void UpdateScissorSweep(float clock, int ordinal) {
             int phase = (int)(clock % ScissorPeriod);
             float side = ordinal == 0 ? -1f : 1f;
 
-            if (phase < 290) {
-                //翼位站桩（弧光宿主，束随眼锚）
-                Vector2 flank = targetPlayer.Center + new Vector2(side * 640f, -260f);
-                SpringTo(flank, 0.085f, 19f);
-                pose.PupilAngle = pose.PupilAngle.AngleLerp((targetPlayer.Center - npc.Center).ToRotation(), 0.3f);
-
-                //蓄势窗：提亮 + 向心星流（预告语言：双翼同时聚光=剪式将至）
-                if (phase >= 58 && phase < 96) {
-                    pose.Glow = 1f;
-                    pose.PupilOut = 1f;
-                    if (!VaultUtils.isServer) {
-                        MLordScreenFX.ConvergeStreak(npc.Center, 210f, (phase - 58) / 38f);
-                    }
-                }
-
-                //出手：起始角偏离玩家轴 ±0.9，相向扫 1.8 弧度（交叉推进）
-                if (phase == 96 && !VaultUtils.isClient) {
-                    float toPlayer = (targetPlayer.Center - npc.Center).ToRotation();
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
-                        ModContent.ProjectileType<MLordArcRayProj>(), MLordDirector.EyeScissorDamage, 0f, Main.myPlayer,
-                        npc.whoAmI, toPlayer + side * 0.9f, -side * 1.8f);
-                }
-            }
-            else {
+            if (phase >= ScissorStationEnd) {
+                scissorRound = -1;
                 OrbitRest(clock, ordinal, 2);
+                return;
             }
+
+            //封存拍：冻结锚点（预告即承诺，契约2.2）。此后眼与束的几何与玩家走位彻底解耦
+            int round = (int)(clock / ScissorPeriod);
+            bool committed = phase >= ScissorCommitBeat;
+            if (committed && scissorRound != round) {
+                scissorRound = round;
+                scissorAnchor = targetPlayer.Center;
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item15 with { Volume = 0.6f, Pitch = 0.15f, MaxInstances = 3 }, npc.Center);
+                }
+            }
+
+            //栖位：封存前追随玩家头顶两翼（束未承诺，允许跟位），封存后钉死在冻结锚上
+            Vector2 anchorBase = committed ? scissorAnchor : targetPlayer.Center;
+            SpringTo(anchorBase + new Vector2(side * ScissorPerchX, ScissorPerchY), 0.085f, 19f);
+
+            //束角表：绝对角，与玩家无关。左眼 0.30→0.85 rad（向内收拢），右眼镜像
+            float shallowAngle = ScissorSteepAngle - ScissorCloseSweep;
+            float startAngle = side < 0f ? shallowAngle : MathHelper.Pi - shallowAngle;
+            float sweep = -side * ScissorCloseSweep;
+            float sweepT = MathHelper.Clamp(
+                (phase - ScissorFireBeat - MLordArcRayProj.ExpandTime) / (float)MLordArcRayProj.SweepFrames, 0f, 1f);
+            scissorBeamAngle = startAngle + sweep * VaultUtils.EaseInOutCubic(sweepT);
+            scissorGuideEndAngle = startAngle + sweep;
+
+            if (!committed) {
+                pose.PupilAngle = pose.PupilAngle.AngleLerp((targetPlayer.Center - npc.Center).ToRotation(), 0.3f);
+                return;
+            }
+
+            if (phase < ScissorFireBeat) {
+                //蓄势窗：提亮 + 向心星流 + 引导 X 渐亮（线在哪、束就在哪）
+                pose.Glow = 1f;
+                pose.PupilOut = 1f;
+                pose.PupilAngle = pose.PupilAngle.AngleLerp(scissorBeamAngle, 0.3f);
+                if (!VaultUtils.isServer) {
+                    MLordScreenFX.ConvergeStreak(npc.Center, 210f,
+                        (phase - ScissorCommitBeat) / (float)(ScissorFireBeat - ScissorCommitBeat));
+                }
+                scissorGuideStrength = MathHelper.Clamp((phase - ScissorCommitBeat - 28) / 18f, 0f, 1f);
+                if (phase >= ScissorFireBeat - 10) {
+                    //末拍收细定格（出束前不熄灭），与虚空撕裂引导同式
+                    scissorGuideStrength = 0.6f;
+                }
+                return;
+            }
+
+            if (phase == ScissorFireBeat && !VaultUtils.isClient) {
+                Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
+                    ModContent.ProjectileType<MLordArcRayProj>(), MLordDirector.EyeScissorDamage, 0f, Main.myPlayer,
+                    npc.whoAmI, startAngle, sweep);
+            }
+
+            //出束驻位：眼随刃转
+            pose.PupilAngle = pose.PupilAngle.AngleLerp(scissorBeamAngle, 0.25f);
         }
 
         /// <summary>
@@ -483,6 +636,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             MLordDrawHelper.DrawFreeEyeAssembly(spriteBatch, npc, screenPos, in pose, bodyFrame, scalePulse);
+            //剪式引导：亮线=起手位（与虚空撕裂引导同式，NPC 默认批次，内部走 A=0 加色），
+            //暗线=收针终点，两眼的暗线之间即口袋
+            if (scissorGuideStrength > 0.01f) {
+                MLordRayRender.DrawGuideLine(npc.Center, scissorBeamAngle, MLordArcRayProj.BeamLength, scissorGuideStrength);
+                MLordRayRender.DrawGuideLine(npc.Center, scissorGuideEndAngle, MLordArcRayProj.BeamLength, scissorGuideStrength * 0.35f);
+            }
+            //弦月重演引导：本眼弧组的起始扫向（至多两道：天穹/底部声部）
+            if (crescentGuideCount > 0 && crescentGuideStrength > 0.01f) {
+                MLordRayRender.DrawGuideLine(npc.Center, crescentGuideAngleA, MLordArcRayProj.BeamLength, crescentGuideStrength);
+                if (crescentGuideCount > 1) {
+                    MLordRayRender.DrawGuideLine(npc.Center, crescentGuideAngleB, MLordArcRayProj.BeamLength, crescentGuideStrength);
+                }
+            }
             return false;
         }
 

@@ -920,7 +920,7 @@ KikasaOverride: {
 		'''
 		Hold left click to hover the umbrella overhead, dropping homing ink rain to a steady beat
 		Hold right click to charge ink upside down; release to pour out an ink torrent
-		The real damage lives in the Blood Lake: without the domain the rain runs thin, and no shades or arms take the field
+		Rain and torrents you command by hand stamp an Ink Seal; your summons deal bonus damage to sealed targets
 		''' */
 	// GhostCountLine: Minion slots {0} · {1}
 	// TierName0: Drizzle

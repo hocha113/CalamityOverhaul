@@ -7,6 +7,7 @@ using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -27,6 +28,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         private Player targetPlayer;
         private int frame;
         private int frameCount;
+        /// <summary>激怒持续帧计数：滞回消抖，防神庙门口横跳时数值抖动</summary>
+        private int enrageArmTimer;
+        /// <summary>激怒宣告冷却，防门口反复横跳时吼声刷屏</summary>
+        private int enrageRoarCooldown;
 
         /// <summary>状态上下文只读入口（渲染/部件观察用）</summary>
         internal GolemStateContext Context => stateContext;
@@ -110,6 +115,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             //岩浆脉络余温衰减
             stateContext.VeinGlow = Math.Max(stateContext.VeinGlow - 0.012f, BaseVeinGlow());
 
+            //激怒岩浆照明，随脉络亮度呼吸
+            if (stateContext.Enraged) {
+                Lighting.AddLight(npc.Center, new Vector3(0.95f, 0.4f, 0.12f) * (0.45f + stateContext.VeinGlow * 0.4f));
+            }
+
             //演出通用时钟（仅表现，本地推进）
             ai[GolemAiSlots.OverrideShowClock]++;
 
@@ -126,11 +136,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             if (phase >= GolemPhase.DeathShow) {
                 return 1f;
             }
+
+            float baseline;
             if (phase >= GolemPhase.Sundered) {
-                return stateContext.PostUltRage ? 0.72f : 0.45f;
+                baseline = stateContext.PostUltRage ? 0.72f : 0.45f;
             }
-            //登场点火前石壳全暗
-            return phase >= GolemPhase.Armed ? 0.18f : 0f;
+            else {
+                //登场点火前石壳全暗
+                baseline = phase >= GolemPhase.Armed ? 0.18f : 0f;
+            }
+
+            //激怒(神庙外)：岩浆脉络轰至满亮，回庙靠既有衰减凉下来
+            if (stateContext.Enraged && phase >= GolemPhase.Armed) {
+                baseline = Math.Max(baseline, 0.92f);
+            }
+            return baseline;
         }
 
         private void FindTarget() {
@@ -164,8 +184,35 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             stateContext.BossRush = CWRRef.GetBossRushActive();
             stateContext.DeathMode = CWRRef.GetDeathMode() || stateContext.BossRush;
             stateContext.MasterMode = Main.masterMode || stateContext.BossRush;
-            stateContext.Enraged = ComputeEnrage(targetPlayer, stateContext.BossRush);
+
+            //滞回消抖：连续30帧在庙外才落怒，一回神庙立即解除
+            enrageArmTimer = ComputeEnrage(targetPlayer, stateContext.BossRush) ? enrageArmTimer + 1 : 0;
+            bool enragedNow = enrageArmTimer >= 30;
+            if (enragedNow && !stateContext.Enraged) {
+                AnnounceEnrage();
+            }
+            stateContext.Enraged = enragedNow;
+            if (enrageRoarCooldown > 0) {
+                enrageRoarCooldown--;
+            }
+
+            //激怒惩罚(神庙外/地表)：防御翻倍，节奏由 Tempo 压缩、弹伤由 ScaleDamage 增压，豁免公平契约
+            npc.defense = enragedNow ? npc.defDefense * 2 : npc.defDefense;
+
             stateContext.Limbs = GolemFacts.ScanLimbs(npc.whoAmI);
+        }
+
+        /// <summary>激怒落怒瞬间的宣告：低吼+震屏+冲击环+脉络轰燃，演出期不抢戏</summary>
+        private void AnnounceEnrage() {
+            int phase = (int)npc.ai[GolemAiSlots.BodyPhase];
+            if (enrageRoarCooldown > 0 || phase < GolemPhase.Armed || phase >= GolemPhase.DeathShow) {
+                return;
+            }
+            enrageRoarCooldown = 150;
+            stateContext.VeinGlow = 1f;
+            SoundEngine.PlaySound(SoundID.Roar with { Volume = 1.15f, Pitch = -0.45f }, npc.Center);
+            GolemScreenEffects.Shake(7f);
+            GolemScreenEffects.PushShockRing(npc.Center, 0.75f, 460f, 22);
         }
 
         /// <summary>神庙外激怒：目标在地表上，或身后墙不是神庙砖墙</summary>
@@ -178,6 +225,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             }
             Tile tile = Framing.GetTileSafely((int)target.Center.X / 16, (int)target.Center.Y / 16);
             return tile.WallType != WallID.LihzahrdBrickUnsafe;
+        }
+
+        /// <summary>部件读激怒的统一入口：优先取躯干滞回后的旗标，躯干缺位回退原始判定</summary>
+        internal static bool SharedEnrage(NPC body, Player fallbackTarget) {
+            GolemStateContext bodyContext = GolemFacts.FindOverride<GolemBodyAI>(body)?.Context;
+            if (bodyContext != null) {
+                return bodyContext.Enraged;
+            }
+            return ComputeEnrage(fallbackTarget, CWRRef.GetBossRushActive());
         }
 
         /// <summary>全局转移，服务端驱动，优先级 死亡>转阶段>大招</summary>

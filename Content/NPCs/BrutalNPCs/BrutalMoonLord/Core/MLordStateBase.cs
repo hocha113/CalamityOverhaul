@@ -118,11 +118,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
             context.MovePolicy = policy;
         }
 
-        /// <summary>核心随速倾斜：被手阵拽动时身体向行进方向压出可读的倾角</summary>
+        /// <summary>核心随速倾斜：被手阵拽动时身体向行进方向压出可读的倾角，
+        /// 叠加爬行系统的发力侧倾（被哪只手猛拽就向哪侧拧）</summary>
         protected static void UpdateLean(MLordContext context) {
             NPC npc = context.Npc;
             context.LeanAngle = MathHelper.Clamp(npc.velocity.X * 0.015f, -0.11f, 0.11f);
-            npc.rotation = npc.rotation.AngleLerp(context.LeanAngle, 0.1f);
+            npc.rotation = npc.rotation.AngleLerp(context.LeanAngle + MLordLocomotion.BodyRoll, 0.1f);
         }
 
         /// <summary>到玩家方向</summary>

@@ -54,4 +54,9 @@ CWRClientConfig: {
 		Label: Adoucissement de la caméra
 		Tooltip: Lorsqu'activé, les déplacements rapides à longue distance adoucissent la caméra, évitant ainsi toute sensation de malaise due à un déplacement trop rapide
 	}
+
+	AmbienceDensity: {
+		// Label: Ambience Density
+		// Tooltip: Scales decorative ambience particle density only; telegraphs and hazards are never reduced.
+	}
 }

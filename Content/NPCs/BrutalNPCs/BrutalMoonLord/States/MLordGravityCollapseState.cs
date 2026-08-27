@@ -21,6 +21,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 
         internal const int WindupEnd = 60;
         internal const int WellLife = MLordGravityWellProj.TotalLife;
+
+        /// <summary>
+        /// 当前引力井视线焦点：开井前为预定井位（与开井骰点同式的活投影），开井后为井锚。
+        /// 部件姿态消费——五眼共盯此点，视线汇聚处即危险处
+        /// </summary>
+        internal static Vector2 WellFocusPoint(MLordContext context, int stateTimer) {
+            if (stateTimer >= WindupEnd) {
+                return new Vector2(context.Owner.ai[MLordAiSlots.OvAnchorX],
+                    context.Owner.ai[MLordAiSlots.OvAnchorY]);
+            }
+            return context.Npc.Center + (context.Target.Center - context.Npc.Center) * 0.62f;
+        }
         /// <summary>公平阀（契约3）：波间歇，四波之间只剩井的牵引无新弹幕；
         /// 牵引本身受 <see cref="MLordGravityWellProj.EscapeTowardSpeedCap"/> 逃逸阀约束</summary>
         internal const int VolleyRestFrames = 46;
@@ -94,7 +106,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             }
         }
 
-        /// <summary>自存活手向井掷出切向星球：四波按对角序轮换投手（上左→下右→上右→下左），缺手就近补位、全缺退核心</summary>
+        /// <summary>自存活手向井掷出切向星球：四波按对角序轮换投手（上左→下右→上右→下左），
+        /// 缺手就近补位、全缺由真眼轮席代掷（心脏不当投手），连真眼都没有则该波静默</summary>
         private void SpawnOrbitVolley(MLordContext context, Vector2 well, int wave) {
             MLordPartsStatus parts = context.Parts;
             int damage = ScaleDamage(context, MLordDirector.OrbDamage);
@@ -103,7 +116,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 
             Span<int> throwOrder = stackalloc int[] { 0, 3, 1, 2 };
             int handIndex = parts.FirstAliveHand(throwOrder[wave % throwOrder.Length]);
-            NPC origin = handIndex >= 0 ? Main.npc[handIndex] : context.Npc;
+            NPC origin = handIndex >= 0 ? Main.npc[handIndex]
+                : MLordFacts.GetFreeEye(context.Npc, throwOrder[wave % throwOrder.Length]);
+            if (origin == null) {
+                return;
+            }
 
             Vector2 toWell = (well - origin.Center).SafeNormalize(Vector2.UnitY);
             Vector2 tangent = toWell.RotatedBy(MathHelper.PiOver2);

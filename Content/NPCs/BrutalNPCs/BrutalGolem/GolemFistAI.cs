@@ -70,6 +70,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             EnsureStateMachine();
             UpdateContext();
 
+            //激怒惩罚与躯干同拍：防御翻倍(拳是独立子目标)
+            npc.defense = fistContext.Enraged ? npc.defDefense * 2 : npc.defDefense;
+
             //服务端广播位置，客户端傀儡
             if (!VaultUtils.isClient) {
                 npc.netUpdate = true;
@@ -203,7 +206,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             fistContext.Owner = this;
             fistContext.Side = Side;
             fistContext.DeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
-            fistContext.Enraged = GolemBodyAI.ComputeEnrage(player, CWRRef.GetBossRushActive());
+            //读躯干滞回后的激怒旗标，与本体同拍落怒/解除
+            fistContext.Enraged = GolemBodyAI.SharedEnrage(body, player);
         }
 
         private void KillSelfOnServer() {

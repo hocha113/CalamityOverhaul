@@ -708,3 +708,405 @@ OniRainWorld: {
 		OniDeathReason: "{0}被伞下的东西拖进了雨里"
 	}
 }
+
+GodSmithGunsEarly: {
+	GsFlintlockPistol.Desc:
+		'''
+		Reforged: two chambers, the second shot comes 40% faster;
+		the last chamber fires a V-shaped double ball from a single bullet with doubled knockback.
+		Right-click to reload early; hit the sweet spot for +25% on the next shot
+		'''
+
+	GsGunsEarlyPlayer: {
+		Perfect: Perfect reload!
+		HighNoon: High Noon!
+	}
+
+	GsMusket.Desc:
+		'''
+		Reforged: a true muzzle-loader; every ball is a stone-piercer that flies faster and punches through one more foe.
+		Reload in three beats: pour, ram, prime. Right-click on the ram beat for +30% damage and extra pierce
+		'''
+	GsQuadBarrelShotgun.Desc:
+		'''
+		Reforged: fire one barrel at a time in a rapid four-count;
+		the fourth barrel roars all at once with 8 pellets and hurls you backward.
+		Aim down to rocket-jump. Right-click to break open and reload; nail the sweet spot for +2 pellets
+		'''
+	GsRevolver.Desc:
+		'''
+		Reforged: a six-round cylinder; the final chamber always hits +40% harder.
+		Hold right-click to spin the wheel: instantly reload a random 1 to 6 rounds.
+		Roll exactly six and the next shot is High Noon: double damage, double knockback
+		'''
+}
+
+GodSmithGunsHard: {
+	GsCandyCornRifle: {
+		Desc:
+			'''
+			Reforged: right click to switch coating
+			Candy Rain adds a sweet drooping arc to the classic spray
+			Sticky Burst fires three gummy rounds; hits stack Sugar Coat, slowing the target and sweetening your shots
+			'''
+		ModeCandyRain: Candy Rain
+		ModeStickyBurst: Sticky Burst
+	}
+
+	GsClockworkAssaultRifle: {
+		Desc:
+			'''
+			Reforged: right click to switch fire mode
+			Gear Burst keeps the classic three round burst, the third round bites 30% harder
+			Overclock trades heat for 40% more speed; run it too hot and the gears jam
+			'''
+		ModeGearBurst: Gear Burst
+		ModeOverclock: Overclock
+	}
+
+	GsGatligator: {
+		Desc:
+			'''
+			Reforged: right click to switch temper
+			Swamp Riot keeps the wild spray but every round skips once off blocks
+			Death Roll fires tight four round strings; the last bite tears a bleeding wound
+			'''
+		ModeSwampRiot: Swamp Riot
+		ModeDeathRoll: Death Roll
+	}
+
+	GsMegashark: {
+		Desc:
+			'''
+			Reforged: right click to switch jaw
+			Feeding Frenzy ramps fire rate the longer you hold the trigger; Shark Bite tightens the spread and bites 15% harder
+			Land 50 hits to draw blood: for 3 seconds every hit leaves a bleeding wound
+			'''
+		ModeFrenzy: Feeding Frenzy
+		ModeSharkBite: Shark Bite
+	}
+
+	GsOnyxBlaster: {
+		Desc:
+			'''
+			Reforged: right click to switch charge
+			Onyx Volley leaves a lingering dark stain at the blast that drags foes inward
+			Singularity Charge fires slower but hurls one huge onyx orb: its blast pulls everything toward the core and sprays your bullets in a ring
+			'''
+		ModeVolley: Onyx Volley
+		ModeSingularity: Singularity Charge
+	}
+
+	GsSDMG: {
+		Desc:
+			'''
+			Reforged: right click to cycle three fire modes
+			Dolphin Tide keeps the legendary speed; Sonar Burst tags the third hit so the whole team's ranged shots dig 8% deeper
+			Orbital Guide gently homes for 10% less punch
+			'''
+		ModeDolphinTide: Dolphin Tide
+		ModeSonarBurst: Sonar Burst
+		ModeOrbitalGuide: Orbital Guide
+	}
+
+	GsShotgun: {
+		Desc:
+			'''
+			Reforged: right click to switch choke
+			Wide Bore throws six pellets in a broad fan; Tight Choke fires three heavy pellets dead straight
+			Every trigger pull still costs one shell
+			'''
+		ModeWideBore: Wide Bore
+		ModeTightChoke: Tight Choke
+	}
+
+	GsSniperRifle: {
+		Desc:
+			'''
+			Reforged: tap right click to switch fire mode, hold to scope
+			Snipe mode paints a piercing aim line; stand still to steady your breath, a steadied shot always crits
+			Rapid mode trades power for speed
+			'''
+		ModeSnipe: Snipe
+		ModeRapid: Rapid Fire
+	}
+
+	GsTacticalShotgun: {
+		Desc:
+			'''
+			Reforged: right click to switch stance
+			Tactical Fan paints the spread cone so you know exactly what the six pellets cover
+			Triple Pump racks three fast shells then forces a rest; each pump still costs one shell
+			'''
+		ModeFan: Tactical Fan
+		ModeTriplePump: Triple Pump
+	}
+
+	GsUzi: {
+		Desc:
+			'''
+			Reforged: right click to switch grip
+			Akimbo sprays 30% faster with a loose pattern; Burst fires tight three round strings dead on target
+			High velocity rounds stay in both grips
+			'''
+		ModeAkimbo: Akimbo
+		ModeBurst: Burst
+	}
+
+	GsVenusMagnum: {
+		Desc:
+			'''
+			Reforged: right click to switch bloom
+			Magnum Focus: after a crit the next round pierces one extra foe, the aim line lights up for the window
+			Petal Triplet fires three petals in a fan for one bullet
+			'''
+		ModeFocus: Magnum Focus
+		ModeTriplet: Petal Triplet
+	}
+
+	GsVortexBeater: {
+		Desc:
+			'''
+			Reforged: right click to switch flow
+			Vortex Sweep keeps the classic storm, rockets gently home in
+			Vortex Cannon fires slow charged rounds hitting 2.6 times harder; heavy impacts tear open a pulling vortex
+			'''
+		ModeSweep: Vortex Sweep
+		ModeCannon: Vortex Cannon
+	}
+
+	GsXenopopper: {
+		Desc:
+			'''
+			Reforged: right click to switch bubble
+			Cluster pops five bubbles that converge and burst in a crossfire on your cursor
+			Vacuum floats one big bubble to the cursor, holds, then vents all five rounds at once
+			'''
+		ModeCluster: Cluster Pop
+		ModeVacuum: Vacuum Bubble
+	}
+}
+
+GodSmithLaunchers: {
+	GsElectrosphereLauncher: {
+		Desc: Reforged: two or more of your spheres link up with tesla arcs (up to 3, half sphere damage); right click overloads them all: +40% radius, discharged in 2 seconds
+		TipOverload: Overload!
+	}
+
+	GsGrenadeLauncher: {
+		Desc: Reforged: grenades stick to walls and foes (+25% damage when stuck on flesh), no more self-fuse; right click to detonate all, up to 6 planted
+		TipDetonate: Blast them all!
+	}
+
+	GsJackOLanternLauncher: {
+		Desc: Reforged: right click makes every rolling pumpkin grin and burst, each releasing 3 homing flame wisps; every blast leaves a candle field that scorches whoever stands in it
+		TipGrin: Grin in unison!
+	}
+
+	GsNailGun: {
+		Desc: Reforged: nails embed into flesh (up to 5 per victim), each making the victim take +3% damage from all sources; right click rips every nail out in a burst of shrapnel
+		TipExtract: Rip them out!
+	}
+
+	GsProximityMineLauncher: {
+		Desc: Reforged: mines show their trigger radius to you; right click chains them in placement order; mines idle for 60s refund a rocket and self-clear
+		TipChain: Domino!
+		TipRecycle: Mine reclaimed
+	}
+
+	GsRocketLauncher: {
+		Desc: Reforged: right click to detonate every rocket in flight; each airburst hurls 3 piercing darts toward your cursor
+		TipDetonate: Airburst!
+	}
+
+	GsSnowmanCannon: {
+		Desc: Reforged: right click swaps carriers. Homing swarm brands victims with a snowflake (+8% from this weapon); Blizzard orbit lofts rockets skyward to dive from above your cursor
+		ModeHoming: Carrier: homing swarm
+		ModeOrbital: Carrier: blizzard orbit
+	}
+
+	GsStarCannon: {
+		Desc: Reforged: right click swaps trajectory. Direct fire, or Starfall: stars loft skyward and rain down around your cursor, splashing stardust on hit
+		ModeDirect: Trajectory: direct
+		ModeStarfall: Trajectory: starfall
+	}
+
+	GsStynger: {
+		Desc: Reforged: right click cycles the fuze. Impact detonates on hit; Range airbursts at your cursor's distance with a focused shrapnel cone; Ricochet bounces off blocks once before arming
+		ModeImpact: Fuze: impact
+		ModeRange: Fuze: range airburst
+		ModeRicochet: Fuze: ricochet
+	}
+}
+
+GodSmithMagicConduit: {
+	GsHeatRay.Desc:
+		'''
+		Reforged: hold to sustain a scorching ray; white heat widens the beam and molten stacks detonate on the fifth
+		Right click to vent all heat as a corona flash lance
+		'''
+	GsMedusaHead.Desc:
+		'''
+		Reforged: hold to unleash a petrifying gaze cone; stone-mark stacks briefly petrify, white heat narrows the gaze into a focused glare
+		Right click to vent all heat as an eight-way stone glare
+		'''
+
+	GsSoulDrain: {
+		Desc:
+			'''
+			Reforged: a leech conduit that tethers up to three foes and drains them together; white heat grants true life recovery
+			Right click to detonate the stored blood at your cursor; overload backfires for 10 life
+			'''
+		BloodPriceDeath: "{0} was drained by their own leech conduit"
+	}
+}
+
+GodSmithMagicMorph: {
+	GsClingerStaff.Desc:
+		'''
+		Reforged: hold right click briefly to lay a 260px cursed vine wall along your aim, at any angle.
+		Overcharge it and both ends sprout vertical skirt walls
+		'''
+	GsCrimsonRod.Desc:
+		'''
+		Reforged: the blood cloud becomes a sacrificial rain field.
+		Raindrops stack Blood Erosion, three stacks burst; allies inside slowly mend.
+		Right click migrates the field to your cursor for a sliver of mana
+		'''
+	GsCrystalSerpent.Desc:
+		'''
+		Reforged: burst shards bounce once more.
+		Hold right click to charge; release a great crystal python that slithers in a sine wave and bursts into a richer shard shower
+		'''
+	GsCrystalStorm.Desc:
+		'''
+		Reforged: hold right click to charge a refraction vortex at the cursor.
+		Your crystal shards passing through it refract, gaining speed and one extra pierce
+		'''
+	GsFlamelash.Desc:
+		'''
+		Reforged: guided flight steers 25% faster.
+		Hold right click to charge; release a serpent of flame whose coils trail your guidance and set foes ablaze
+		'''
+	GsMagicMissile.Desc:
+		'''
+		Reforged: guided flight steers 25% faster.
+		Hold right click to charge; release a triple volley that escorts your cursor in formation
+		'''
+	GsMeteorStaff.Desc:
+		'''
+		Reforged: meteors leave a scorching crater where they land.
+		Hold right click to charge; release to call a five-meteor barrage across the cursor
+		'''
+	GsNimbusRod.Desc:
+		'''
+		Reforged: with both clouds afield, a rain corridor bridges them, soaking and slowing foes inside.
+		Right click toggles warm rain or thunderstorm; the storm calls down bolts along the corridor
+		'''
+	GsRainbowGun.Desc:
+		'''
+		Reforged: while the rainbow stands, your projectiles inside the band above the arc deal 8% more damage, and the arc sheds homing prism pulses.
+		Right click recalls the rainbow and refunds half its mana
+		'''
+	GsRainbowRod.Desc:
+		'''
+		Reforged: guided bolts burst into prismatic shards on hit.
+		Hold right click to charge; release to raise a rainbow bridge that hurts foes crossing it and hastens allies standing on it
+		'''
+	GsSkyFracture.Desc:
+		'''
+		Reforged: blades tear a flash of fracture as they launch.
+		Hold right click to charge; release to open three rifts around the cursor that loose converging blades
+		'''
+}
+
+GodSmithSummonWhips: {
+	GsCoolWhip.Desc: Reforged: snowflakes born from on-beat lashes grow larger and pierce one more foe; 4 frost scars seal the mark, and the next on-beat hit blooms it into a frost burst that inflicts Frostbite
+	GsDarkHarvest.Desc: Reforged: dark energy leaps spread to nearby foes for each reap scar on the victim; 4 scars seal the mark, and the next on-beat hit reaps its soul, flash-scything every scarred enemy on the field
+	GsDurendal.Desc: Reforged: after three on-beat lashes, every further on-beat swing looses a golden sword-wave from the whip tip; 5 scars seal the mark, and the next on-beat hit calls down a holy verdict blade
+	GsFirecracker.Desc: Reforged: keeps the classic minion-detonated blast; on-beat lashes load fuses into the target, and at 3 fuses the next blast chains into 3 extra staggered explosions
+	GsKaleidoscope.Desc: Reforged: the tightest beat window, and a missed swing resets all tempo; each scar lights one prism color, and at five colors the next on-beat hit unfolds a kaleidoscope of five prismatic slashes, exposing the victim to guaranteed-crit chances for 5 seconds
+	GsLeatherWhip.Desc: Reforged: chain swings on the beat to build tempo and lash speed; 3 lash scars seal the mark, and the next on-beat hit cracks it for 200% damage, then your minions maul the target for 2 seconds
+	GsMorningStar.Desc: Reforged: every on-beat swing slams a quake at the whip tip; 3 scars seal the mark, and the next on-beat hit calls a falling star mace down on the target's head
+	GsSnapthorn.Desc: Reforged: on-beat lashes grow thorn scars on the prey; 4 scars seal the mark, and the next on-beat hit bursts it into a thorn explosion plus 4 homing venom barbs
+	GsSpinalTap.Desc: Reforged: an on-beat sweep that tags 3 foes cracks a bone echo into everything it missed; 4 scars seal the mark, and the next on-beat hit erupts a bone spire from below
+}
+
+GodSmithVolleyBows: {
+	GsAdamantiteRepeater.Desc: Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon at x1.5 knockback, one ammo per volley
+	GsChlorophyteShotbow.Desc:
+		'''
+		Reforged: every 6th shot triple-taps; volley charge looses a 6-arrow spore cone, one ammo per volley
+		Branded foes take +10% from this bow; execution bursts a spore cloud
+		'''
+	GsCobaltRepeater.Desc:
+		'''
+		Reforged: every 6th bolt triple-taps; volley charge looses a 3-bolt line at +15% speed, one ammo per volley
+		Volley hits brand prey; branded foes draw pursuit bolts
+		'''
+	GsHallowedRepeater.Desc:
+		'''
+		Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt cross, one ammo per volley
+		Executing a fully branded foe calls down a hallowed star
+		'''
+	GsIceBow.Desc:
+		'''
+		Reforged: volley charge hurls 6 icicles skyward to rain on the cursor, one ammo per volley
+		Icicle hits stack frostbrand; at 3 stacks the next icicle shatters into a frost burst
+		'''
+	GsMarrow.Desc:
+		'''
+		Reforged: volley charge looses a 5-bone-arrow cross with +1 pierce, one ammo per volley
+		Executing a fully branded foe cages it with 4 converging bone arrows
+		'''
+	GsMythrilRepeater.Desc: Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge with +8% crit, one ammo per volley
+	GsOrichalcumRepeater.Desc:
+		'''
+		Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge trailing petals, one ammo per volley
+		Volley hits burst into a small petal blast
+		'''
+	GsPalladiumRepeater.Desc:
+		'''
+		Reforged: every 6th bolt triple-taps; volley charge looses a 3-bolt line, one ammo per volley
+		Branded foes slain restore 2 life
+		'''
+	GsPearlwoodBow.Desc:
+		'''
+		Reforged: every 5 shots charge a 5-arrow pearlescent line volley, one ammo per volley
+		Right click releases the volley early at 60%+ charge
+		'''
+	GsPulseBow.Desc:
+		'''
+		Reforged: each wall bounce now grants +10% damage (up to 5); volley charge looses 3 parallel pulse tracks, one ammo per volley
+		Branded foes bend passing pulses toward them; execution chains a surge to 2 nearby foes
+		'''
+	GsShadowflameBow.Desc:
+		'''
+		Reforged: volley charge looses 3 shadowflame arrows crossing at the cursor, one ammo per volley
+		Branded foes struck by any arrow draw a homing shadowflame wisp; execution erupts in shadow
+		'''
+	GsStakeLauncher.Desc:
+		'''
+		Reforged: every 6th stake triple-taps; volley charge looses a 3-stake wedge, one ammo per volley
+		Stakes pin and brand prey; the executing stake crucifies at x2.3, undead take a further +25%
+		'''
+	GsTitaniumRepeater.Desc: Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon with +4 armor penetration, one ammo per volley
+}
+
+GodSmithAcc.GodSmithSharkToothNecklace.EffectDesc:
+	'''
+	+4% damage
+	Strikes tear the target's hide, granting Rend: +1 armor penetration per stack, up to 8 stacks, lasts 3s
+	'''
+
+GodSmithEndow: {
+	GodSmithLegendaryEndow: {
+		EndowName: Sword Saint's Echo
+		EndowDesc: Swings have a {0}% chance to loose a golden sword wave dealing {1}% weapon damage
+	}
+
+	GodSmithWardingEndow: {
+		EndowName: Bulwark Oath
+		EndowDesc: Reduces damage taken by {0}%
+	}
+}

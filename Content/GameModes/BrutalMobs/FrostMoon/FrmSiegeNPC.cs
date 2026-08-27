@@ -10,7 +10,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.FrostMoon
     /// 霜月小怪「攻城矩阵」行为层：礼盒迫击炮（礼物拟怪/精灵弓手/坎卜斯）、
     /// 精灵直升机扫射航线、胡桃夹子跳弹瞄准。只叠加行为不动数值，原版 AI 全程继续跑；
     /// 决策全在权威端（客户端 PostAI 早退），客户端可见状态一律来自已同步的弹幕实体。
-    /// 纯近战填充怪（僵尸精灵三型/姜饼人/雪人怪/雪花怪）不入类型表，理由见组报告
+    /// 纯近战填充怪（僵尸精灵三型/姜饼人/雪怪/雪花怪）不入本表，
+    /// 其招式层由同目录 <see cref="FrmMeleeNPC"/> 承载（两表类型互斥）
     /// </summary>
     internal class FrmSiegeNPC : GlobalNPC
     {
@@ -32,9 +33,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.FrostMoon
         private const int RetryDelay = 30;
         /// <summary>资格不符（雕像怪等）的复查间隔</summary>
         private const int IneligibleDelay = 120;
-        /// <summary>出生首攻等待窗（随机错开避免同屏齐射）</summary>
-        private const int FirstCooldownMin = 90;
-        private const int FirstCooldownMax = 240;
+        /// <summary>出生首攻等待窗（60~180 帧，随机错开避免同屏齐射）</summary>
+        private const int FirstCooldownMin = 60;
+        private const int FirstCooldownMax = 180;
         private const int CooldownJitter = 60;
 
         //==== 礼盒迫击炮 ====

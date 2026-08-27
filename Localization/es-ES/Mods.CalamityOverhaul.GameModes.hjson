@@ -2,18 +2,26 @@ GameModeText: {
 	BrutalName: Mundo Cruel
 	AsuraName: Infierno Asura
 	AnnihilationName: El Fin de la Muerte
+	// GodSmithName: Divine Artifice
 	BrutalOnLine: Este mundo es cruel, y aun así lo sigues amando.
 	BrutalOffLine: El mundo envaina sus colmillos. Su clemencia es solo una pausa.
 	AsuraOnLine: La senda Asura se abre. Todo dolor que inflijas será devuelto por completo.
 	AsuraOffLine: La senda Asura se cierra. Todas las deudas quedan saldadas.
 	AnnihilationOnLine: Todo pasará; solo la Muerte vive para siempre.
 	AnnihilationOffLine: La Muerte descansa un instante; los vivos roban un respiro.
+	// GodSmithOnLine: The Godsmith takes up the hammer; every common iron shall be reforged.
+	// GodSmithOffLine: The forge fire wanes; all arms return to their former shape.
 	BrutalDesc: Libera la IA rediseñada y despiadada de los jefes brutales; el resto de enemigos gana un 50% más de vida y daño, y los enemigos menores se vuelven veloces y frenéticos
 	AsuraDesc: La mejora sube al 100%. Los enemigos se adaptan al daño repetido del mismo tipo, y cada golpe tuyo fija el mínimo del suyo
 	AnnihilationDesc: La forma final del Infierno Asura en un mundo cénit. Todo terror se duplica de nuevo: los enemigos se adaptan el doble de rápido y tu dolor se devuelve por partida doble
+	// GodSmithDesc: Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched, and it toggles independently of every other mode
+	// GodSmithRecastTitle: Godsmith Reforged
+	// GodSmithEndowPrefix: "Endowment: "
 	StateOn: Activo
 	StateOff: Latente
 	HintEnable: Clic para despertar
 	HintDisable: Clic para sellar
 	BossRefuse: Un jefe sigue vivo. El pacto no puede alterarse ahora
 }
+
+// SporeshineAmbience.DazeDeathReason: "{0} drowsed away deep in the spore haze"

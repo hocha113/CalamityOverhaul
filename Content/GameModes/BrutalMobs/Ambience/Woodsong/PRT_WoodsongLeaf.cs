@@ -16,10 +16,15 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
         public override bool CanPool => true;
         public override int InGame_World_MaxCount => 160;
 
+        //原版落叶 Gore 是 32列(染色变体)×8行(翻飞帧)的变体总表，必须裁帧，整张画会铺出全表
+        private const int SheetColumns = 32;
+        private const int SheetRows = 8;
+
         private float spin;
         private float phase;
         private float windPush;
         private bool grounded;
+        private int flutterFrame;
 
         /// <param name="windDrive">横向巡航速度（px/tick，带符号，随风向）</param>
         public PRT_WoodsongLeaf Configure(float windDrive, int lifetime) {
@@ -34,6 +39,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             phase = 0f;
             windPush = 0f;
             grounded = false;
+            flutterFrame = 0;
         }
 
         public override void SetProperty() {
@@ -41,6 +47,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             phase = Main.rand.NextFloat(100f);
             spin = Main.rand.NextFloat(0.05f, 0.13f) * (Main.rand.NextBool() ? 1f : -1f);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+            flutterFrame = Main.rand.Next(SheetRows);
             if (Lifetime <= 0) {
                 Lifetime = Main.rand.Next(130, 210);
             }
@@ -55,9 +62,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                     0.55f + MathF.Sin((Time + phase * 1.7f) * 0.11f) * 0.40f, 0.05f);
                 Rotation += spin * (0.6f + Math.Abs(Velocity.X) * 0.25f);
 
-                //触地：贴停并提前谢幕
+                //触地：贴停并提前谢幕，翻飞帧冻结在触地瞬间
                 if (Time % 4 == 0 && WorldGen.SolidTile((int)(Position.X / 16f), (int)((Position.Y + 4f) / 16f))) {
                     grounded = true;
+                    flutterFrame = (flutterFrame + Time / 5) % SheetRows;
                     Velocity *= 0.05f;
                     Lifetime = Math.Min(Lifetime, Time + 26);
                 }
@@ -75,11 +83,14 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                 return false;
             }
             Texture2D tex = TexValue;
+            //列0=未染色自然叶；行随时间翻页读作叶片翻飞(-2 修掉格间留白)
+            int row = grounded ? flutterFrame : (flutterFrame + Time / 5) % SheetRows;
+            Rectangle src = tex.Frame(SheetColumns, SheetRows, 0, row, -2, -2);
             //乘环境光：叶片属于世界而非发光体
             Color lit = Lighting.GetColor((int)(Position.X / 16f), (int)(Position.Y / 16f));
             SpriteEffects flip = spin > 0f ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            spriteBatch.Draw(tex, Position - Main.screenPosition, null, lit * Opacity,
-                Rotation, tex.Size() * 0.5f, Scale, flip, 0f);
+            spriteBatch.Draw(tex, Position - Main.screenPosition, src, lit * Opacity,
+                Rotation, src.Size() / 2f, Scale, flip, 0f);
             return false;
         }
     }

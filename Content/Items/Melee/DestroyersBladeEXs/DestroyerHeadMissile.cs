@@ -13,14 +13,13 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
 {
     /// <summary>
     /// 毁灭者头颅弹幕:歼灭协议的终结斩额外吐出的小型头颅,
-    /// 起步迟缓、随后咆哮加速死咬目标,通体缠绕白红电流。
-    /// ai[0]=初始化闩 ai[1]=飞行计时
+    /// 起步迟缓、随后加速死咬目标,通体缠绕白红电流。
+    /// ai[1]=飞行计时
     /// </summary>
     internal class DestroyerHeadMissile : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "DestroyerHeadShot";
 
-        private ref float Init => ref Projectile.ai[0];
         private ref float FlightTime => ref Projectile.ai[1];
 
         /// <summary>点火前的滞空帧:先醒后咬</summary>
@@ -34,8 +33,10 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         public override void SetDefaults() {
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 2;
-            Projectile.width = 30;
-            Projectile.height = 30;
+            //贴图仅 28x32,按 2 倍出膛才压得住场
+            Projectile.scale = 2f;
+            Projectile.width = 52;
+            Projectile.height = 52;
             Projectile.timeLeft = 240;
             Projectile.friendly = true;
             Projectile.ignoreWater = true;
@@ -44,12 +45,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         }
 
         public override void AI() {
-            if (Init == 0) {
-                Init = 1;
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.5f, Pitch = -0.2f, MaxInstances = 3 }, Projectile.Center);
-                }
-            }
             FlightTime++;
 
             if (FlightTime <= ArmFrames) {
@@ -57,10 +52,10 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 Projectile.velocity *= 0.94f;
                 if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
                     PRTLoader.NewParticle<PRT_SparkAlpha>(
-                        Projectile.Center + Main.rand.NextVector2Circular(12f, 12f),
+                        Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
                         Main.rand.NextVector2Circular(1.5f, 1.5f),
                         Main.rand.NextBool(3) ? Color.White : new Color(255, 90, 70),
-                        Main.rand.NextFloat(0.7f, 1.2f))?.Configure(false, 8);
+                        Main.rand.NextFloat(1.1f, 1.9f))?.Configure(false, 8);
                 }
             }
             else {
@@ -84,11 +79,11 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                     Vector2 perp = dir.RotatedBy(MathHelper.PiOver2) * (Main.rand.NextBool() ? 1f : -1f);
                     Vector2[] path = new Vector2[4];
                     for (int k = 0; k < 4; k++) {
-                        path[k] = Projectile.Center - dir * (k * 20f)
-                            + perp * MathF.Sin(k * 1.3f) * Main.rand.NextFloat(8f, 16f);
+                        path[k] = Projectile.Center - dir * (k * 34f)
+                            + perp * MathF.Sin(k * 1.3f) * Main.rand.NextFloat(14f, 27f);
                     }
                     PRTLoader.NewParticle<PRT_TeslaArc>(Projectile.Center, Vector2.Zero,
-                        new Color(255, 130, 110), 1f)?.Configure(path, Main.rand.Next(8, 13), 8f, (0f, 7f), 4f);
+                        new Color(255, 130, 110), 1f)?.Configure(path, Main.rand.Next(8, 13), 13f, (0f, 7f), 4f);
                 }
                 if (!VaultUtils.isServer && FlightTime % 26 == 0) {
                     SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with { Volume = 0.35f, Pitch = -0.2f, MaxInstances = 3 }, Projectile.Center);
@@ -129,26 +124,26 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             }
             SoundEngine.PlaySound(SoundID.Item93 with { Volume = 0.6f, Pitch = -0.25f, MaxInstances = 3 }, Projectile.Center);
             //电爆:放射状白红电弧 + 冲击环 + 火花,余波比本体活得久
-            for (int i = 0; i < 4; i++) {
-                float ang = MathHelper.TwoPi * i / 4f + Main.rand.NextFloat(0.7f);
+            for (int i = 0; i < 5; i++) {
+                float ang = MathHelper.TwoPi * i / 5f + Main.rand.NextFloat(0.7f);
                 Vector2 dir = ang.ToRotationVector2();
                 Vector2[] path = new Vector2[4];
                 for (int k = 0; k < 4; k++) {
-                    path[k] = Projectile.Center + dir * (k * Main.rand.NextFloat(22f, 34f));
+                    path[k] = Projectile.Center + dir * (k * Main.rand.NextFloat(38f, 58f));
                 }
                 PRTLoader.NewParticle<PRT_TeslaArc>(Projectile.Center, Vector2.Zero,
-                    new Color(255, 120, 100), 1f)?.Configure(path, Main.rand.Next(12, 18), 10f, (0f, 8f), 5f);
+                    new Color(255, 120, 100), 1f)?.Configure(path, Main.rand.Next(12, 18), 16f, (0f, 8f), 5f);
             }
             PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
-                new Color(255, 80, 60), 0f)?.Configure(0.08f, 0.9f, 14);
-            for (int i = 0; i < 10; i++) {
-                PRTLoader.NewParticle<PRT_SparkAlpha>(Projectile.Center, Main.rand.NextVector2Circular(8f, 8f),
+                new Color(255, 80, 60), 0f)?.Configure(0.08f, 1.6f, 16);
+            for (int i = 0; i < 13; i++) {
+                PRTLoader.NewParticle<PRT_SparkAlpha>(Projectile.Center, Main.rand.NextVector2Circular(11f, 11f),
                     Main.rand.NextBool(3) ? Color.White : new Color(255, 70, 50),
-                    Main.rand.NextFloat(1f, 1.9f))?.Configure(false, Main.rand.Next(10, 18));
+                    Main.rand.NextFloat(1.4f, 2.6f))?.Configure(false, Main.rand.Next(10, 18));
             }
             Color warm = new Color(255, 90, 60);
             PRTLoader.NewParticle<PRT_MechExplosion>(Projectile.Center, Vector2.Zero,
-                warm, 0.7f)?.Configure(Main.rand.Next(16, 24), warm);
+                warm, 1.2f)?.Configure(Main.rand.Next(16, 24), warm);
         }
 
         public override bool PreDraw(ref Color lightColor) {

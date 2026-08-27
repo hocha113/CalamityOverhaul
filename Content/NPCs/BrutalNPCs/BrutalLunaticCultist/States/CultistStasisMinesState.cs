@@ -10,9 +10,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
     /// 滞星雷阵(P3 起):司祭连挥三拍,每拍朝玩家当下位置撒一环滞星(星珠模式1),
-    /// 珠向心缓滑后悬停成短命雷区,逼迫持续走位<br/>
+    /// 珠向心缓滑悬停成雷,驻留一拍后按槽位错拍逐颗锁向扑袭玩家<br/>
     /// 公平阀:落点锁定出手拍不追踪;SpawnRadius 声明(不贴脸);
-    /// 沿玩家动向留 EscapeHalf 逃生扇(发射循环直读);滞星自带 150 帧短命自清
+    /// 沿玩家动向留 EscapeHalf 逃生扇(发射循环直读);扑袭错拍常量声明于
+    /// CultistStarBead(PounceFirstBeat/PounceGap,节奏可学),预瞄线末段冻结=承诺,扑出纯直线
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.StasisMines, typeof(CultistStateContext))]
     internal class CultistStasisMinesState : CultistStateBase
@@ -21,13 +22,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         public override CultistStateIndex StateIndex => CultistStateIndex.StasisMines;
 
         /// <summary>三拍撒环</summary>
-        private static readonly int[] WaveBeats = [26, 56, 86];
+        private static readonly int[] WaveBeats = [18, 40, 62];
         /// <summary>环半径(px):不在玩家身上生成</summary>
         private const float SpawnRadius = 250f;
         private const int MineSlots = 8;
         /// <summary>逃生扇半宽(槽):沿玩家动向连空 2*EscapeHalf+1 槽</summary>
         private const int EscapeHalf = 1;
-        private const int Timeout = 180;
+        private const int Timeout = 140;
 
         public override ICultistState OnUpdate(CultistStateContext context) {
             NPC npc = context.Npc;
@@ -68,6 +69,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                     : (context.ArenaCenter - player.Center).SafeNormalize(Vector2.UnitX);
                 float escapeAngle = escapeDir.ToRotation();
                 int escapeSlot = (int)MathF.Round(escapeAngle / MathHelper.TwoPi * MineSlots);
+                int pounceIndex = 0;
                 for (int slot = 0; slot < MineSlots; slot++) {
                     int delta = Math.Abs(((slot - escapeSlot) % MineSlots + MineSlots + MineSlots / 2)
                         % MineSlots - MineSlots / 2);
@@ -75,9 +77,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                         continue;
                     }
                     Vector2 dir = (slot / (float)MineSlots * MathHelper.TwoPi).ToRotationVector2();
+                    //扑袭槽位按环序递增:出手沿环扫一圈,逐颗可读
                     Projectile.NewProjectile(npc.GetSource_FromAI(), anchor + dir * SpawnRadius,
                         -dir * 2.2f, ModContent.ProjectileType<CultistStarBead>(), 38, 0f,
-                        Main.myPlayer, context.Phase, 1f);
+                        Main.myPlayer, context.Phase, 1f, pounceIndex);
+                    pounceIndex++;
                 }
                 npc.netUpdate = true;
             }
@@ -86,8 +90,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 return null;
             }
 
-            //双出口:三拍撒完收势(滞星自灭),或超时兜底
-            if (Timer >= WaveBeats[^1] + 40) {
+            //双出口:三拍撒完收势(滞星自巡自灭,扑袭不占司祭的手),或超时兜底
+            if (Timer >= WaveBeats[^1] + 28) {
                 return new CultistCoilState();
             }
             if (Timer >= Timeout) {

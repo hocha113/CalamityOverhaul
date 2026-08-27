@@ -23,6 +23,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         private const int LaunchTime = 12;  //分波出镖
         private const int RecoverTime = 26; //回巢重整
         private const int CycleTime = TrackTime + FreezeTime + LaunchTime + RecoverTime;
+        //冲刺预警提前量：跟踪拍末尾即起黄描边，与定格拍连成24帧读秒
+        private const int DartWarnLead = 10;
         /// <summary>公平阀：定格帧后弹道锁死；镖仅出手初段微弧修正(≤该帧数×0.03rad/帧)，持续横移即可甩脱</summary>
         private const int MaxDartSteerFrames = 12;
         #endregion
@@ -57,6 +59,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                     context.Swarm.PushSnap(1.9f);
                     QueenBeeMotion.WingHum(npc.Center, 0.4f, -0.1f);
                 }
+                //末尾起黄描边预警(与定格拍连续读秒)
+                if (cycleT >= TrackTime - DartWarnLead) {
+                    context.Swarm.WarnDarts(0, SwarmDirector.MaxBees - 1,
+                        (cycleT - (TrackTime - DartWarnLead)) / (float)(DartWarnLead + FreezeTime));
+                }
                 return null;
             }
 
@@ -77,6 +84,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             if (cycleT < TrackTime + FreezeTime) {
                 context.Swarm.Declare(SwarmFormation.Arrow, npc.Center + lockedAim * 130f, lockedAim);
                 context.Swarm.PushSignal(1f);
+                context.Swarm.WarnDarts(0, SwarmDirector.MaxBees - 1,
+                    (cycleT - (TrackTime - DartWarnLead)) / (float)(DartWarnLead + FreezeTime));
                 context.SetChargeState(4, (cycleT - TrackTime) / (float)FreezeTime);
                 return null;
             }
@@ -87,6 +96,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                 context.Swarm.PushSignal(0.9f);
                 int launchT = cycleT - TrackTime - FreezeTime;
                 float dartSpeed = 30f + (context.IsDeathMode ? 4f : 0f) + context.EnrageScale * 1.5f;
+                //未出手的波次维持满亮预警，出手即熄
+                if (launchT < 3) {
+                    context.Swarm.WarnDarts(1, SwarmDirector.MaxBees - 1, 1f);
+                }
+                else if (launchT < 6) {
+                    context.Swarm.WarnDarts(5, SwarmDirector.MaxBees - 1, 1f);
+                }
+                else if (launchT < 9) {
+                    context.Swarm.WarnDarts(9, SwarmDirector.MaxBees - 1, 1f);
+                }
                 //波次：尖(0)→前两对→中两对→尾
                 if (launchT == 0) {
                     context.Swarm.LaunchDarts(0, 0, lockedAim, dartSpeed, MaxDartSteerFrames);

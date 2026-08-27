@@ -17,7 +17,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
         }
 
         private static int HoverDuration(FishronStateContext ctx) {
-            int t = ctx.Phase == 3 ? 30 : ctx.Phase == 2 ? 38 : 46;
+            //三阶段的呼吸口再压三成：白眼形态几乎不给喘息
+            int t = ctx.Phase == 3 ? 21 : ctx.Phase == 2 ? 38 : 46;
             if (ctx.IsDeathMode) {
                 t -= 6;
             }

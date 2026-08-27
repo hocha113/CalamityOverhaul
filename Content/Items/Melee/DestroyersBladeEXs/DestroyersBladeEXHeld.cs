@@ -14,11 +14,12 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
 {
     /// <summary>
-    /// 毁灭者之刃EX 沉重三拍挥砍。拍0/1 正反手重劈,拍2 终结巨新月。
-    /// 节奏走蓄-加速-巅峰-制动:深蓄力回拉后,重刃从静止拖出加速,
-    /// 巅峰匀速掠过打击区,动量带着刀滑过终点线制动,过冲回坐死停。
-    /// 加减速全程可见,力量感来自质量驱动的挥砍过程。
-    /// 命中顿帧从收势尾巴等量扣回,总帧守恒(轻拍20/终结28)。ai[0]=拍号 ai[1]=挥向
+    /// 毁灭者之刃EX 沉重三拍挥砍,节奏走收-爆-停(对齐金源灭却刃的挥舞文法)。
+    /// 拍0 正手重劈,拍1 椭圆立体环斩(倾斜3D圆投影,近大远小),拍2 终结巨新月。
+    /// 每拍四相:提刀蓄势(快拉慢定)→死寂驻谷(蓄满憋劲,只留微颤)→
+    /// 前载爆发(爆发帧一口气掠过大半打击区,余下几帧动量制动)→
+    /// 过冲硬停(动量带着刀滑过终点线,前冲一小段后死停)。
+    /// 命中顿帧从收势尾巴等量扣回,总帧守恒。ai[0]=拍号 ai[1]=挥向
     /// </summary>
     internal class DestroyersBladeEXHeld : BaseHeldProj, IPrimitiveDrawable, IOverlayDrawable
     {
@@ -28,29 +29,40 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         private ref float ComboIndex => ref Projectile.ai[0];
         private ref float SwingDirAi => ref Projectile.ai[1];
 
+        private bool IsEllipse => (int)ComboIndex == 1;
         private bool IsFinisher => ComboIndex >= 2f;
         private bool Empowered => Owner.GetModPlayer<DestroyerEXPlayer>().Empowered;
 
-        //阶段时长(逻辑帧,攻速缩放)。轻拍 7+8+5=20,终结 10+11+7=28,总帧与旧版守恒
-        //挥砍窗拉长:加速与制动过程全程可见,蓄力和收势各让出几帧
-        private float WindupTime => IsFinisher ? 10f : 7f;
-        private float SlashTime => IsFinisher ? 11f : 8f;
-        private float RecoverTime => IsFinisher ? 7f : 5f;
-        private float TotalTime => WindupTime + SlashTime + RecoverTime;
-        //挥砍弧度:轻拍压椭圆弯月,终结才配巨新月
-        private float SwingArc => IsFinisher ? 5.5f : 3.4f;
+        //阶段时长(逻辑帧,攻速缩放)与挥砍几何,Initialize 按拍号写入
+        private float windupTime = 6f;
+        private float holdTime = 2f;
+        private float slashTime = 5f;
+        private float recoverTime = 7f;
+        private float swingArc = 3.4f;      //圆弧拍的挥砍弧度
+        private float pullbackAngle = 0.72f;//蓄力回拉角,沉重感的主要来源
+        private float slashEasePow = 2.7f;  //爆发缓动指数:越大越前载
+        private float overdrift = 0.16f;    //收势前冲角,动量滑过终点线
+        private float leanAmp = 0.05f;      //身体编舞幅度
+
+        private float TotalTime => windupTime + holdTime + slashTime + recoverTime;
+
+        //椭圆拍(拍1):倾斜3D圆投影,主轴沿瞄准方向拉长
+        private const float LoopSpan = 5.9f;   //环斩总角,留缺口避免读成量角器圆环
+        private const float LoopPull = 0.5f;   //起手沿环路反向的预拉角
+        private const float EllipseSquash = 0.52f;
+        private const float MajorStretch = 1.12f;
+        private float tiltSign = 1f;
+        private float loopPhiNow;
+
         //刀尖距持握点长度
-        private float BladeReach => 150f * (IsFinisher ? 1.08f : 1f);
-        //蓄力回拉角:深回拉,沉重感的主要来源
-        private float PullbackAngle => IsFinisher ? 1.05f : 0.72f;
+        private float BladeReach => 150f * (IsFinisher ? 1.08f : IsEllipse ? 1.05f : 1f);
+        private float FullReach => BladeReach * Projectile.scale;
+        private Vector2 Hand => Owner.GetPlayerStabilityCenter();
+        private Vector2 EllipseCenter => Hand + baseAngle.ToRotationVector2() * (FullReach * 0.22f);
+        private float ViewZ => MathF.Max(900f, FullReach * 2.6f);
 
-        //挥砍三段整形:加速段终点、巅峰段终点、过冲顶点(前向行程终点)
-        private float SwingAccelEnd => IsFinisher ? 0.32f : 0.30f;
-        private float SwingPeakEnd => 0.58f;
-        private float SwingApexTime => IsFinisher ? 0.85f : 0.84f;
-        //伤害窗起点(挥砍相位),加速段刀一动就开始咬
-        private const float DamageStartT = 0.12f;
-
+        //伤害窗起点(爆发相位),刀一动就开始咬
+        private const float DamageStartT = 0.02f;
         //命中顿帧预算(帧),从收势尾巴等量扣回
         private const float HitStopBudget = 3f;
 
@@ -58,24 +70,28 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         private float speedMul = 1f;
         private int lockedDirection = 1;
         private int swingSign = 1;
+        private float baseAngle;
         private float startAngle;
         private float endAngle;
-        private float currentRotation;
-        private float sweepCollisionStart;
+        private float currentRotation;  //手→刀尖方向角,姿态与绘制共用
+        private Vector2 bladeTip;
+        private float reachMul = 1f;    //刀身收放比例,提刀读感(仅影响本体绘制)
+        private float bladeDim = 1f;    //椭圆拍远半纵深压暗
+        private float sweepCollisionStart;  //本帧伤害扫掠界(圆弧拍=角度,椭圆拍=φ)
         private float sweepCollisionEnd;
         private bool sweepDamageActive;
-        private bool slashSoundPlayed;
-        private bool peakShakeDone;
+        private bool slashKicked;
         private bool shotsFired;
         private bool stopBeatDone;
         private float trailFade;
-        //出鞘成形度 0~1,刀光刃口先现、黑体后涌,消灭亮相的突兀感
+        //出鞘成形度 0~1,刀光刃口先现、黑体后涌
         private float slashBirth;
         private float hitStopFrames;
         private float hitStopSpent;
         private float bodyLean;
+        private float prevTrailValue;
 
-        //刀光按外缘弧长补点
+        //刀光按外缘弧长补点(圆弧拍存角度,椭圆拍存φ)
         private const int TrailMax = 96;
         private const float TrailSampleSpacing = 18f;
         private readonly float[] trailRot = new float[TrailMax];
@@ -102,13 +118,30 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             if (CanDamage() != true) {
                 return false;
             }
-            Vector2 hand = Owner.GetPlayerStabilityCenter();
-            float reach = BladeReach * Projectile.scale;
+            Vector2 hand = Hand;
+            float collisionPoint = 0f;
+
+            if (IsEllipse) {
+                //椭圆拍按本帧扫过的环路分步采样,快扫不漏判
+                float delta = sweepCollisionEnd - sweepCollisionStart;
+                int phiSteps = Math.Clamp((int)(MathF.Abs(delta) / 0.18f) + 1, 1, 64);
+                for (int i = 0; i <= phiSteps; i++) {
+                    float phi = MathHelper.Lerp(sweepCollisionStart, sweepCollisionEnd, i / (float)phiSteps);
+                    Vector2 point = EllipsePoint(phi, out _, out _);
+                    point += (point - hand).SafeNormalize(Vector2.Zero) * 12f;
+                    if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
+                        , hand, point, 54f, ref collisionPoint)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            float reach = FullReach;
             int steps = GetAngularSteps(sweepCollisionEnd - sweepCollisionStart, reach, 24f, 64);
             for (int i = 0; i <= steps; i++) {
                 float rotation = MathHelper.Lerp(sweepCollisionStart, sweepCollisionEnd, i / (float)steps);
                 Vector2 tip = hand + rotation.ToRotationVector2() * reach;
-                float collisionPoint = 0f;
                 //宽刃:线判定加厚,贴脸与擦刃都要咬住
                 if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
                     , hand, tip, 54f, ref collisionPoint)) {
@@ -116,6 +149,13 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 }
             }
             return false;
+        }
+
+        public override void CutTiles() {
+            if (!sweepDamageActive) {
+                return;
+            }
+            Utils.PlotTileLine(Hand, bladeTip, 46f, DelegateMethods.CutTiles);
         }
 
         public override void Initialize() {
@@ -135,28 +175,112 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 speedMul = 1f;
             }
 
-            float baseAngle = Projectile.velocity.ToRotation();
-            startAngle = baseAngle - swingSign * SwingArc * 0.5f;
-            endAngle = baseAngle + swingSign * SwingArc * 0.5f;
-            currentRotation = startAngle;
-            sweepCollisionStart = sweepCollisionEnd = startAngle;
+            baseAngle = Projectile.velocity.ToRotation();
 
             //出手打断潜行,各端同拍
             Owner.GetModPlayer<DestroyerEXPlayer>().NoteAttack();
 
-            //蓄力不配音效,安静的回拉衬托挥砍主声(对齐纠缠之怨)
-            if (IsFinisher) {
-                Projectile.damage = (int)(Projectile.damage * 1.4f);
-                Projectile.scale = 1.22f;
+            //蓄力不配音效,安静的回拉与驻谷衬托爆发主声(对齐纠缠之怨)
+            switch ((int)ComboIndex) {
+                case 0:
+                    //正手重劈
+                    windupTime = 6f;
+                    holdTime = 2f;
+                    slashTime = 5f;
+                    recoverTime = 7f;
+                    swingArc = 3.4f;
+                    pullbackAngle = 0.72f;
+                    slashEasePow = 2.7f;
+                    overdrift = 0.16f;
+                    leanAmp = 0.05f;
+                    Projectile.scale = 1.06f;
+                    break;
+                case 1:
+                    //椭圆立体环斩,中量拍
+                    windupTime = 8f;
+                    holdTime = 2f;
+                    slashTime = 8f;
+                    recoverTime = 8f;
+                    slashEasePow = 3.0f;
+                    overdrift = 0.14f;
+                    leanAmp = 0.10f;
+                    tiltSign = swingSign;
+                    Projectile.scale = 1.10f;
+                    Projectile.damage = (int)(Projectile.damage * 1.15f);
+                    break;
+                default:
+                    //终结巨新月
+                    windupTime = 9f;
+                    holdTime = 3f;
+                    slashTime = 7f;
+                    recoverTime = 9f;
+                    swingArc = 5.5f;
+                    pullbackAngle = 1.05f;
+                    slashEasePow = 2.5f;
+                    overdrift = 0.22f;
+                    leanAmp = 0.12f;
+                    Projectile.scale = 1.22f;
+                    Projectile.damage = (int)(Projectile.damage * 1.4f);
+                    break;
             }
-            else {
-                Projectile.scale = 1.06f;
+
+            startAngle = baseAngle - swingSign * swingArc * 0.5f;
+            endAngle = baseAngle + swingSign * swingArc * 0.5f;
+
+            SetSweepPose(LiftValue);
+            prevTrailValue = SweepNow;
+            sweepCollisionStart = sweepCollisionEnd = SweepNow;
+        }
+
+        //起手位:刀在身前略入弧内,提刀拉向蓄势位
+        private float LiftValue => IsEllipse ? swingSign * 0.35f : startAngle + swingSign * 0.35f;
+        //蓄势位:圆弧拍回拉到枪膛角,椭圆拍沿环路反向预拉
+        private float ChamberValue => IsEllipse ? -swingSign * LoopPull : startAngle - swingSign * pullbackAngle;
+        //终点位
+        private float EndValue => IsEllipse ? LoopPhi(1f) : endAngle;
+        //当前扫掠参数(圆弧拍=刀角,椭圆拍=φ)
+        private float SweepNow => IsEllipse ? loopPhiNow : currentRotation;
+
+        /// <summary>椭圆拍的环路参数角,swingSign 决定行进方向</summary>
+        private float LoopPhi(float t) => swingSign * (t * (LoopSpan + LoopPull) - LoopPull);
+
+        /// <summary>爆发缓动:前载爆发+动量制动尾</summary>
+        private float EasedSlash(float t) => 1f - MathF.Pow(1f - MathHelper.Clamp(t, 0f, 1f), slashEasePow);
+
+        /// <summary>由扫掠参数求扫掠插值位(圆弧拍=角度,椭圆拍=φ)</summary>
+        private float SweepValue(float eased)
+            => IsEllipse ? LoopPhi(eased) : MathHelper.Lerp(ChamberValue, endAngle, eased);
+
+        /// <summary>倾斜3D圆上 φ 处的投影点,k 为透视系数(近大远小),zNorm∈[-1,1]</summary>
+        private Vector2 EllipsePoint(float phi, out float k, out float zNorm) {
+            float R = FullReach;
+            float lx = MathF.Cos(phi) * R * MajorStretch;
+            float ly = MathF.Sin(phi) * R * EllipseSquash;
+            float z = MathF.Sin(phi) * MathF.Sqrt(1f - EllipseSquash * EllipseSquash) * R * tiltSign;
+            zNorm = z / R;
+            k = MathHelper.Clamp(ViewZ / (ViewZ - z), 0.84f, 1.18f);
+            Vector2 dir = baseAngle.ToRotationVector2();
+            Vector2 perp = new(-dir.Y, dir.X);
+            return EllipseCenter + (dir * lx + perp * ly) * k;
+        }
+
+        /// <summary>写入本帧扫掠位,统一解算刀尖、刀角与纵深明暗</summary>
+        private void SetSweepPose(float value) {
+            if (IsEllipse) {
+                loopPhiNow = value;
+                bladeTip = EllipsePoint(value, out float k, out _);
+                currentRotation = (bladeTip - Hand).ToRotation();
+                //远半只轻压,保住刃口发光的可读性
+                bladeDim = MathHelper.Lerp(0.74f, 1f, MathHelper.Clamp((k - 0.84f) / 0.34f, 0f, 1f));
+                return;
             }
+            currentRotation = value;
+            bladeTip = Hand + value.ToRotationVector2() * FullReach;
+            bladeDim = 1f;
         }
 
         public override void AI() {
             sweepDamageActive = false;
-            sweepCollisionStart = sweepCollisionEnd = currentRotation;
             if (Item.type != ModContent.ItemType<DestroyersBladeEX>()) {
                 Projectile.Kill();
                 return;
@@ -177,226 +301,193 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             }
 
             float frameEnd = MathF.Min(elapsed + speedMul, effectiveTotal);
-            float slashEnd = WindupTime + SlashTime;
-            float slashFromTime = MathF.Max(elapsed, WindupTime);
-            float slashToTime = MathF.Min(frameEnd, slashEnd);
+            UpdateMotion(frameEnd);
+            ConsumeSlashInterval(frameEnd);
 
-            if (slashToTime > slashFromTime) {
-                //消费本帧与挥砍阶段的交集,高攻速跨阶段不漏刀
-                float fromT = (slashFromTime - WindupTime) / SlashTime;
-                float toT = (slashToTime - WindupTime) / SlashTime;
-                float progress = GetSwingProgress(toT);
-                float slashRotation = GetSwingRotation(progress);
-
-                float damageFrom = MathF.Max(fromT, DamageStartT);
-                float damageTo = MathF.Min(toT, SwingApexTime);
-                if (damageTo > damageFrom) {
-                    sweepDamageActive = true;
-                    sweepCollisionStart = GetSwingRotation(GetSwingProgress(damageFrom));
-                    sweepCollisionEnd = GetSwingRotation(GetSwingProgress(damageTo));
-                }
-
-                if (!slashSoundPlayed && toT >= SwingAccelEnd * 0.5f) {
-                    slashSoundPlayed = true;
-                    if (!VaultUtils.isServer) {
-                        //音效对齐纠缠之怨:Item1 主挥砍按拍走音高,终结叠 Item71 低啸
-                        float swingPitch = (int)ComboIndex switch { 0 => -0.18f, 1 => -0.12f, _ => -0.45f };
-                        SoundEngine.PlaySound(SoundID.Item1 with { Pitch = swingPitch }, Owner.Center);
-                        if (IsFinisher) {
-                            SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.35f, Volume = 0.9f }, Owner.Center);
-                        }
-                    }
-                }
-
-                //震屏留到巅峰段入口,与最大角速度同拍
-                if (!peakShakeDone && toT >= SwingAccelEnd) {
-                    peakShakeDone = true;
-                    if (!VaultUtils.isServer) {
-                        Main.LocalPlayer?.CWR()?.GetScreenShake(IsFinisher ? 5f : 2.6f);
-                    }
-                }
-
-                PushTrailInterval(fromT, toT);
-
-                if (!shotsFired && progress >= 0.58f) {
-                    shotsFired = true;
-                    FireShots(slashRotation);
-                }
-
-                //硬停拍:回坐完成的一瞬在刀尖泄能,小环加切向甩出的惯性火花
-                float stopBeatT = SwingApexTime + 0.45f * (1f - SwingApexTime);
-                if (!stopBeatDone && toT >= stopBeatT) {
-                    stopBeatDone = true;
-                    if (!VaultUtils.isServer) {
-                        Vector2 tip = Owner.GetPlayerStabilityCenter()
-                            + endAngle.ToRotationVector2() * BladeReach * Projectile.scale;
-                        Vector2 tangent = endAngle.ToRotationVector2().RotatedBy(swingSign * MathHelper.PiOver2);
-                        PRTLoader.NewParticle<PRT_StarPulseRing>(tip, Vector2.Zero, new Color(255, 70, 45), 0f)
-                            ?.Configure(0.03f, IsFinisher ? 0.5f : 0.3f, IsFinisher ? 12 : 9);
-                        for (int i = 0; i < (IsFinisher ? 6 : 4); i++) {
-                            PRTLoader.NewParticle<PRT_SparkAlpha>(tip + Main.rand.NextVector2Circular(8f, 8f)
-                                , tangent * Main.rand.NextFloat(4f, 9f) + Main.rand.NextVector2Circular(1.5f, 1.5f)
-                                , Main.rand.NextBool(3) ? Color.White : new Color(255, 60, 35)
-                                , Main.rand.NextFloat(0.7f, 1.2f))?.Configure(false, Main.rand.Next(8, 14));
-                        }
-                    }
-                }
-
-                //刃缘熔渣火花
-                if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
-                    Vector2 along = Owner.GetPlayerStabilityCenter()
-                        + slashRotation.ToRotationVector2() * Main.rand.NextFloat(BladeReach * 0.5f, BladeReach);
-                    Vector2 tangent = slashRotation.ToRotationVector2().RotatedBy(swingSign * MathHelper.PiOver2);
-                    PRTLoader.NewParticle<PRT_Spark>(along, tangent * Main.rand.NextFloat(3f, 7f)
-                        , Main.rand.NextBool(4) ? Color.White : new Color(255, 40, 30)
-                        , Main.rand.NextFloat(0.6f, 1.1f)).Configure(false, 9);
-                }
+            //硬停拍:前冲收尽的一瞬在刀尖泄能,小环加切向甩出的惯性火花
+            float stopBeatTime = windupTime + holdTime + slashTime + recoverTime * 0.5f;
+            if (!stopBeatDone && frameEnd >= stopBeatTime) {
+                stopBeatDone = true;
+                DoStopBeat();
             }
 
-            if (frameEnd <= WindupTime) {
-                //深蓄力:重刃加速再减速拖向身后,末端沉进枪膛位近静止(爆发前的憋劲),全拍身体后仰
-                float t = frameEnd / WindupTime;
-                currentRotation = MathHelper.Lerp(startAngle, ChamberAngle, SmoothStep01(t));
-                trailFade = 0f;
-                slashBirth = 0f;
-                bodyLean = -(IsFinisher ? 0.06f : 0.028f) * SmoothStep01(t);
+            //刀光跟着实际扫掠推进(爆发与前冲共用),刀头永远贴着带头
+            float sweepNow = SweepNow;
+            if (trailFade > 0.01f && (sweepNow - prevTrailValue) * swingSign > 0.0001f) {
+                PushTrailSamples(prevTrailValue, sweepNow);
             }
-            else if (frameEnd <= slashEnd) {
-                //加速-巅峰-制动:重刃从静止拖出、掠过打击区、动量滑进过冲,身体随之前扑
-                float t = (frameEnd - WindupTime) / SlashTime;
-                currentRotation = GetSwingRotation(GetSwingProgress(t));
-                trailFade = 1f;
-                //加速段走完从无到有,刃口先现、黑体后涌
-                slashBirth = SmoothStep01(t / SwingAccelEnd);
-                bodyLean = MathHelper.Lerp(IsFinisher ? -0.06f : -0.028f, IsFinisher ? 0.10f : 0.05f
-                    , SmoothStep01((t - SwingAccelEnd * 0.5f) / 0.5f));
-            }
-            else {
-                //收势回守,前段死停驻谷,顿帧扣掉的时长在这里兑现
-                float t = (frameEnd - slashEnd) / RecoverTime;
-                float hold = IsFinisher ? 0.42f : 0.34f;
-                float returnT = SmoothStep01((t - hold) / (1f - hold));
-                float baseAngle = (startAngle + endAngle) * 0.5f;
-                float guardAngle = baseAngle + swingSign * (IsFinisher ? 1.1f : 0.9f);
-                currentRotation = MathHelper.Lerp(endAngle, guardAngle, returnT);
-                trailFade = 1f - SmoothStep01(t);
-                slashBirth = 1f;
-                bodyLean = MathHelper.Lerp(IsFinisher ? 0.10f : 0.05f, 0f, SmoothStep01(t * 1.5f));
-                TrimTrailToRotation(currentRotation);
-            }
+            prevTrailValue = sweepNow;
 
             UpdatePlayerPose();
             ApplyBodyLean();
-            Lighting.AddLight(Owner.GetPlayerStabilityCenter() + currentRotation.ToRotationVector2() * BladeReach * 0.7f
-                , new Vector3(0.9f, 0.12f, 0.08f));
+            Lighting.AddLight(Vector2.Lerp(Hand, bladeTip, 0.7f), new Vector3(0.9f, 0.12f, 0.08f));
             elapsed = frameEnd;
         }
 
-        private float ChamberAngle => startAngle - swingSign * PullbackAngle;
+        /// <summary>由时间解算本帧姿态:四相收-爆-停</summary>
+        private void UpdateMotion(float t) {
+            float slashStart = windupTime + holdTime;
+            float slashEnd = slashStart + slashTime;
 
-        private float GetSwingProgress(float t) {
-            float accelEnd = SwingAccelEnd;
-            float peakEnd = SwingPeakEnd;
-            float apex = SwingApexTime;
-            float path = SwingArc + PullbackAngle;
-            float overshoot = (IsFinisher ? 0.30f : 0.22f) / path;
-
-            //由速度剖面反解行程占比:加速段二次缓入、巅峰段匀速、制动段速度线性衰减到顶点归零,段间C1连续
-            float vPeak = (1f + overshoot) / (peakEnd - accelEnd * 0.5f + (apex - peakEnd) * 0.5f);
-            float accelDist = vPeak * accelEnd * 0.5f;
-
-            if (t < accelEnd) {
-                //惯性起步:重刃从静止拖出,加速过程可见
-                float s = t / accelEnd;
-                return accelDist * s * s;
+            if (t <= windupTime) {
+                //提刀蓄势:快拉慢定,刀身收短读作提刀,身体渐次后仰
+                float p = t / windupTime;
+                float eased = EaseOutCubic(p);
+                SetSweepPose(MathHelper.Lerp(LiftValue, ChamberValue, eased));
+                reachMul = MathHelper.Lerp(0.62f, 0.95f, eased);
+                trailFade = 0f;
+                slashBirth = 0f;
+                bodyLean = -leanAmp * 0.62f * eased;
             }
-            if (t < peakEnd) {
-                //巅峰:最大角速度匀速掠过打击区
-                return accelDist + vPeak * (t - accelEnd);
+            else if (t <= slashStart) {
+                //死寂驻谷:蓄满憋劲只留微颤,这一拍静止是爆发的画框
+                float tremble = 0.015f * MathF.Sin(t * 1.9f);
+                SetSweepPose(ChamberValue + swingSign * tremble);
+                reachMul = MathHelper.Lerp(0.95f, 1f, (t - windupTime) / holdTime);
+                trailFade = 0f;
+                slashBirth = 0f;
+                bodyLean = -leanAmp * 0.62f;
             }
-            if (t < apex) {
-                //制动:动量带着刀滑过终点线,减速进过冲顶点(顶点瞬时静止)
-                float s = (t - peakEnd) / (apex - peakEnd);
-                return accelDist + vPeak * (peakEnd - accelEnd) + vPeak * (apex - peakEnd) * s * (1f - 0.5f * s);
+            else if (t <= slashEnd) {
+                //前载爆发:爆发帧一口气掠过大半打击区,余下几帧动量制动,身体前扑
+                float p = (t - slashStart) / slashTime;
+                float eased = EasedSlash(p);
+                SetSweepPose(SweepValue(eased));
+                reachMul = 1f;
+                trailFade = 1f;
+                slashBirth = SmoothStep01(p / 0.22f);
+                bodyLean = MathHelper.Lerp(-leanAmp * 0.62f, leanAmp, eased);
             }
-            //过冲回坐:前45%窗口收回,余下死停(挫)
-            float settleT = (t - apex) / (1f - apex);
-            float snap = SmoothStep01(MathF.Min(settleT / 0.45f, 1f));
-            return MathHelper.Lerp(1f + overshoot, 1f, snap);
+            else {
+                //过冲硬停:动量带着刀前冲一小段后死停,刀光原地散场
+                float q = (t - slashEnd) / recoverTime;
+                float settle = EaseOutQuad(MathF.Min(1f, q * 1.8f));
+                SetSweepPose(EndValue + swingSign * overdrift * settle);
+                reachMul = MathHelper.Lerp(1f, 0.88f, SmoothStep01(q));
+                trailFade = 1f - SmoothStep01(q / 0.75f);
+                slashBirth = 1f;
+                bodyLean = MathHelper.Lerp(leanAmp, 0f, EaseOutQuad(MathF.Min(1f, q * 1.4f)));
+            }
         }
 
-        private float GetSwingRotation(float progress)
-            => MathHelper.Lerp(ChamberAngle, endAngle, progress);
+        /// <summary>消费本帧与爆发阶段的交集:伤害窗、爆发事件、弹幕齐射与刃缘火花</summary>
+        private void ConsumeSlashInterval(float frameEnd) {
+            float slashStart = windupTime + holdTime;
+            float slashEnd = slashStart + slashTime;
+            float fromTime = MathF.Max(elapsed, slashStart);
+            float toTime = MathF.Min(frameEnd, slashEnd);
+            if (toTime <= fromTime) {
+                return;
+            }
+
+            float fromT = (fromTime - slashStart) / slashTime;
+            float toT = (toTime - slashStart) / slashTime;
+
+            //高攻速跨阶段不漏刀:伤害扫掠界取本帧实际掠过的区间
+            float damageFrom = MathF.Max(fromT, DamageStartT);
+            if (toT > damageFrom) {
+                sweepDamageActive = true;
+                sweepCollisionStart = SweepValue(EasedSlash(damageFrom));
+                sweepCollisionEnd = SweepValue(EasedSlash(toT));
+            }
+
+            //爆发帧事件:主挥砍音效+切向震屏,与最大角速度同拍
+            if (!slashKicked) {
+                slashKicked = true;
+                KickSlash();
+            }
+
+            if (!shotsFired && EasedSlash(toT) >= 0.5f) {
+                shotsFired = true;
+                FireShots(currentRotation);
+            }
+
+            //刃缘熔渣火花
+            if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
+                Vector2 along = Vector2.Lerp(Hand, bladeTip, Main.rand.NextFloat(0.5f, 1f));
+                Vector2 tangent = currentRotation.ToRotationVector2().RotatedBy(swingSign * MathHelper.PiOver2);
+                PRTLoader.NewParticle<PRT_Spark>(along, tangent * Main.rand.NextFloat(3f, 7f)
+                    , Main.rand.NextBool(4) ? Color.White : new Color(255, 40, 30)
+                    , Main.rand.NextFloat(0.6f, 1.1f)).Configure(false, 9);
+            }
+        }
+
+        /// <summary>爆发帧的声音与震屏:轻-中-重逐拍加码</summary>
+        private void KickSlash() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            //音效对齐纠缠之怨:Item1 主挥砍按拍走音高,重拍叠 Item71 低啸
+            float swingPitch = (int)ComboIndex switch { 0 => -0.18f, 1 => -0.3f, _ => -0.45f };
+            SoundEngine.PlaySound(SoundID.Item1 with { Pitch = swingPitch }, Owner.Center);
+            if (IsEllipse) {
+                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.2f, Volume = 0.7f }, Owner.Center);
+            }
+            else if (IsFinisher) {
+                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.35f, Volume = 0.9f }, Owner.Center);
+            }
+
+            Main.LocalPlayer?.CWR()?.GetScreenShake(IsFinisher ? 5f : IsEllipse ? 4f : 2.6f);
+            if (CWRClientConfig.Instance.ScreenVibration) {
+                Vector2 punchDir = (baseAngle + swingSign * MathHelper.PiOver2).ToRotationVector2();
+                float strength = IsFinisher ? 7f : IsEllipse ? 5f : 3f;
+                int frames = IsFinisher ? 10 : IsEllipse ? 8 : 6;
+                Main.instance.CameraModifiers.Add(new PunchCameraModifier(
+                    Owner.Center, punchDir, strength, 7f, frames, 1000f, FullName));
+            }
+        }
+
+        /// <summary>硬停拍演出:刀尖泄能小环 + 切向甩出的惯性火花</summary>
+        private void DoStopBeat() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            Vector2 tip = bladeTip;
+            Vector2 tangent = currentRotation.ToRotationVector2().RotatedBy(swingSign * MathHelper.PiOver2);
+            PRTLoader.NewParticle<PRT_StarPulseRing>(tip, Vector2.Zero, new Color(255, 70, 45), 0f)
+                ?.Configure(0.03f, IsFinisher ? 0.5f : 0.3f, IsFinisher ? 12 : 9);
+            for (int i = 0; i < (IsFinisher ? 6 : 4); i++) {
+                PRTLoader.NewParticle<PRT_SparkAlpha>(tip + Main.rand.NextVector2Circular(8f, 8f)
+                    , tangent * Main.rand.NextFloat(4f, 9f) + Main.rand.NextVector2Circular(1.5f, 1.5f)
+                    , Main.rand.NextBool(3) ? Color.White : new Color(255, 60, 35)
+                    , Main.rand.NextFloat(0.7f, 1.2f))?.Configure(false, Main.rand.Next(8, 14));
+            }
+        }
 
         private static float SmoothStep01(float value) {
             value = MathHelper.Clamp(value, 0f, 1f);
             return value * value * (3f - 2f * value);
         }
 
+        private static float EaseOutCubic(float t) => 1f - MathF.Pow(1f - MathHelper.Clamp(t, 0f, 1f), 3f);
+        private static float EaseOutQuad(float t) => 1f - (1f - t) * (1f - t);
+
         private static int GetAngularSteps(float delta, float radius, float targetSpacing, int maxSteps) {
             float arcLength = MathF.Abs(delta) * MathF.Max(radius, 1f);
             return Math.Clamp((int)MathF.Ceiling(arcLength / targetSpacing), 1, maxSteps);
         }
 
-        private void PushTrailInterval(float fromT, float toT) {
-            float forwardTo = MathF.Min(toT, SwingApexTime);
-            if (forwardTo > fromT) {
-                PushTrailSamples(GetSwingRotation(GetSwingProgress(fromT))
-                    , GetSwingRotation(GetSwingProgress(forwardTo)));
-            }
-            if (toT > SwingApexTime) {
-                TrimTrailToRotation(GetSwingRotation(GetSwingProgress(toT)));
-            }
-        }
-
-        private void PushTrailSamples(float fromRotation, float toRotation) {
-            //终结斩跨过 PI,保留未包裹角度
-            float delta = toRotation - fromRotation;
+        private void PushTrailSamples(float fromValue, float toValue) {
+            float delta = toValue - fromValue;
             if (delta * swingSign <= 0.0001f) {
-                TrimTrailToRotation(toRotation);
                 return;
             }
 
-            float outerRadius = (BladeReach + 22f) * Projectile.scale;
+            float sampleRadius = IsEllipse ? FullReach * MajorStretch : (BladeReach + 22f) * Projectile.scale;
             bool appendStart = trailCount == 0;
-            int steps = GetAngularSteps(delta, outerRadius, TrailSampleSpacing, TrailMax - 1);
+            int steps = GetAngularSteps(delta, sampleRadius, TrailSampleSpacing, TrailMax - 1);
             int retained = Math.Min(trailCount, TrailMax - steps);
             if (retained > 0) {
                 Array.Copy(trailRot, 0, trailRot, steps, retained);
             }
             for (int i = 0; i < steps; i++) {
                 float amount = 1f - i / (float)steps;
-                trailRot[i] = MathHelper.Lerp(fromRotation, toRotation, amount);
+                trailRot[i] = MathHelper.Lerp(fromValue, toValue, amount);
             }
             trailCount = steps + retained;
             if (appendStart && trailCount < TrailMax) {
-                trailRot[trailCount++] = fromRotation;
+                trailRot[trailCount++] = fromValue;
             }
-        }
-
-        private void TrimTrailToRotation(float rotation) {
-            if (trailCount == 0) {
-                return;
-            }
-
-            const float angleEpsilon = 0.0001f;
-            int firstRetained = 0;
-            while (firstRetained < trailCount
-                && (trailRot[firstRetained] - rotation) * swingSign > angleEpsilon) {
-                firstRetained++;
-            }
-
-            int retained = trailCount - firstRetained;
-            bool headAlreadySampled = retained > 0
-                && MathF.Abs(trailRot[firstRetained] - rotation) <= angleEpsilon;
-            int targetOffset = headAlreadySampled ? 0 : 1;
-            int copied = Math.Min(retained, TrailMax - targetOffset);
-            if (copied > 0 && (firstRetained != targetOffset || firstRetained > 0)) {
-                Array.Copy(trailRot, firstRetained, trailRot, targetOffset, copied);
-            }
-
-            trailRot[0] = rotation;
-            trailCount = copied + targetOffset;
         }
 
         /// <summary>爆发帧的弹幕齐射:红白光束 + 影子弹幕,终结加量,歼灭态另出头颅</summary>
@@ -417,7 +508,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 _ => emp ? 5 : 3,
             };
 
-            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            Vector2 hand = Hand;
             Vector2 spawnPos = hand + slashRotation.ToRotationVector2() * BladeReach * 0.5f;
             float empFlag = emp ? 1f : 0f;
 
@@ -449,12 +540,17 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             Owner.direction = lockedDirection;
             Owner.itemTime = Owner.itemAnimation = 2;
             Owner.itemRotation = currentRotation;
-            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, currentRotation - MathHelper.PiOver2);
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + currentRotation.ToRotationVector2() * BladeReach * 0.55f;
+            //蓄势与收势手臂放松,爆发全伸
+            bool relaxed = elapsed < windupTime || elapsed > windupTime + holdTime + slashTime;
+            Player.CompositeArmStretchAmount stretch = relaxed
+                ? Player.CompositeArmStretchAmount.ThreeQuarters
+                : Player.CompositeArmStretchAmount.Full;
+            Owner.SetCompositeArmFront(true, stretch, currentRotation - MathHelper.PiOver2);
+            Projectile.Center = Vector2.Lerp(Hand, bladeTip, 0.55f);
             Projectile.timeLeft = 90;
         }
 
-        /// <summary>全身参与:蓄力后仰、爆发前扑,支点钉在脚底,轻拍小幅终结拍大幅</summary>
+        /// <summary>全身参与:蓄力后仰、爆发前扑,支点钉在脚底,轻拍小幅重拍大幅</summary>
         private void ApplyBodyLean() {
             Owner.fullRotation = bodyLean * lockedDirection;
             Owner.fullRotationOrigin = new Vector2(Owner.width * 0.5f, Owner.height);
@@ -494,9 +590,12 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 }
             }
 
-            if (IsFinisher && CWRClientConfig.Instance.ScreenVibration) {
+            if (!IsEllipse && !IsFinisher) {
+                return;
+            }
+            if (CWRClientConfig.Instance.ScreenVibration) {
                 var modifier = new PunchCameraModifier(target.Center
-                    , currentRotation.ToRotationVector2(), 5f, 5f, 9, 800f, FullName);
+                    , currentRotation.ToRotationVector2(), IsFinisher ? 5f : 4f, 5f, IsFinisher ? 9 : 7, 800f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
             }
         }
@@ -511,32 +610,50 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             rotOffset = flipVertically ? -MathHelper.PiOver4 : MathHelper.PiOver4;
         }
 
+        /// <summary>解算某扫掠位上的刀身绘制参数(椭圆拍刀长随投影距离呼吸,轴向缩短=最强纵深线索)</summary>
+        private void GetBladePose(float sweepValue, out Vector2 drawPos, out float rotation, out float scale) {
+            Vector2 hand = Hand;
+            if (IsEllipse) {
+                Vector2 tip = EllipsePoint(sweepValue, out _, out _);
+                Vector2 toTip = tip - hand;
+                float len = MathF.Max(toTip.Length(), 1f);
+                rotation = toTip.ToRotation();
+                scale = Projectile.scale * MathHelper.Clamp(len / FullReach, 0.55f, 2f) * reachMul;
+                drawPos = hand + toTip * (0.55f * reachMul);
+                return;
+            }
+            rotation = sweepValue;
+            scale = Projectile.scale;
+            drawPos = hand + sweepValue.ToRotationVector2() * (FullReach * 0.55f * reachMul);
+        }
+
         void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
             Texture2D tex = TextureValue;
             Vector2 origin = tex.Size() / 2f;
-            Vector2 hand = Owner.GetPlayerStabilityCenter();
-            float dist = BladeReach * 0.5f * Projectile.scale;
             GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset);
 
             //刀身残影:压在刀光带之上、真刀之下,快速运动的滞留视像
-            DrawBladeGhosts(tex, origin, hand, dist, effect, rotOffset);
+            DrawBladeGhosts(tex, origin, effect, rotOffset);
 
-            //刀身本体 + 辉光层
-            Color lightColor = Lighting.GetColor((int)(hand.X / 16f), (int)(hand.Y / 16f));
-            Vector2 drawPos = hand + currentRotation.ToRotationVector2() * dist - Main.screenPosition;
-            Main.EntitySpriteDraw(tex, drawPos, null, lightColor, currentRotation + rotOffset, origin
-                , Projectile.scale, effect, 0);
+            //刀身本体 + 辉光层,椭圆拍远半按纵深压暗
+            Vector2 hand = Hand;
+            GetBladePose(SweepNow, out Vector2 drawPos, out float rotation, out float scale);
+            Color lightColor = Lighting.GetColor((int)(hand.X / 16f), (int)(hand.Y / 16f)) * bladeDim;
+            lightColor.A = 255;
+            Main.EntitySpriteDraw(tex, drawPos - Main.screenPosition, null, lightColor, rotation + rotOffset, origin
+                , scale, effect, 0);
             Texture2D glow = DestroyersBladeEX.Glow.Value;
-            Main.EntitySpriteDraw(glow, drawPos, null, Color.White, currentRotation + rotOffset, glow.Size() / 2f
-                , Projectile.scale, effect, 0);
+            Color glowColor = Color.White * bladeDim;
+            glowColor.A = 255;
+            Main.EntitySpriteDraw(glow, drawPos - Main.screenPosition, null, glowColor, rotation + rotOffset, glow.Size() / 2f
+                , scale, effect, 0);
         }
 
         /// <summary>
-        /// 沿刀光弧线按角距取样重画刀身:近刃两影泄红热(加色),旧影真 alpha 黑剪影沉进刀光,
-        /// 随刀光淡出一起消散,收势期跟着裁剪回拢
+        /// 沿刀光路径按角距取样重画刀身:近刃两影泄红热(加色),旧影真 alpha 黑剪影沉进刀光,
+        /// 随刀光淡出一起消散;椭圆拍残影骑在投影环上,位置/角度/刀长逐影重算
         /// </summary>
-        private void DrawBladeGhosts(Texture2D tex, Vector2 origin, Vector2 hand, float dist
-            , SpriteEffects effect, float rotOffset) {
+        private void DrawBladeGhosts(Texture2D tex, Vector2 origin, SpriteEffects effect, float rotOffset) {
             float strength = trailFade * slashBirth;
             if (trailCount < 2 || strength <= 0.03f) {
                 return;
@@ -545,7 +662,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             const float GhostHeadGap = 0.20f;   //贴着真刀的一段不画,免得糊住本体
             const float GhostSpacing = 0.30f;   //相邻残影角距
             const int GhostMax = 7;
-            Span<float> ghostRot = stackalloc float[GhostMax];
+            Span<float> ghostVal = stackalloc float[GhostMax];
             Span<float> ghostAge = stackalloc float[GhostMax];
             int count = 0;
             float arc = 0f;
@@ -556,7 +673,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 if (arc < nextEmit) {
                     continue;
                 }
-                ghostRot[count] = trailRot[i];
+                ghostVal[count] = trailRot[i];
                 ghostAge[count] = MathHelper.Clamp((arc - GhostHeadGap) / (maxArc - GhostHeadGap), 0f, 1f);
                 count++;
                 nextEmit += GhostSpacing;
@@ -565,7 +682,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             //旧影先画,新影压上
             for (int k = count - 1; k >= 0; k--) {
                 float fall = 1f - ghostAge[k];
-                Vector2 pos = hand + ghostRot[k].ToRotationVector2() * dist - Main.screenPosition;
+                GetBladePose(ghostVal[k], out Vector2 pos, out float rotation, out float scale);
                 Color ghostColor;
                 if (ghostAge[k] < 0.3f) {
                     //新影:炽红余温
@@ -576,8 +693,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                     //旧影:黑剪影,真 alpha 才能在红光里压出暗形
                     ghostColor = new Color(20, 5, 9) * (0.6f * fall * strength);
                 }
-                Main.EntitySpriteDraw(tex, pos, null, ghostColor, ghostRot[k] + rotOffset, origin
-                    , Projectile.scale, effect, 0);
+                Main.EntitySpriteDraw(tex, pos - Main.screenPosition, null, ghostColor, rotation + rotOffset, origin
+                    , scale, effect, 0);
             }
         }
 
@@ -592,7 +709,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             }
 
             var bars = new VertexPositionColorTexture[trailCount * 2];
-            Vector2 center = Owner.GetPlayerStabilityCenter();
+            Vector2 center = Hand;
+            Vector2 ellipseCenter = EllipseCenter;
             float outer = (BladeReach + 22f) * Projectile.scale;
             float inner = BladeReach * 0.14f;
             float totalArc = 0f;
@@ -607,11 +725,26 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 float factor = totalArc > 0.0001f
                     ? 1f - traveledArc / totalArc
                     : 1f - i / (float)Math.Max(trailCount - 1, 1);
-                Vector2 dir = trailRot[i].ToRotationVector2();
-                bars[i * 2] = new VertexPositionColorTexture((center + dir * outer).ToVector3()
-                    , Color.White, new Vector2(factor, 0f));
-                bars[i * 2 + 1] = new VertexPositionColorTexture((center + dir * inner).ToVector3()
-                    , Color.White, new Vector2(factor, 1f));
+                Vector2 outerPos;
+                Vector2 innerPos;
+                Color vcol = Color.White;
+                if (IsEllipse) {
+                    //椭圆带:刃线骑在倾斜圆投影上,外扩光晕区,内缘向椭圆心收,远半按纵深压暗
+                    Vector2 pt = EllipsePoint(trailRot[i], out float k, out _);
+                    Vector2 spoke = pt - ellipseCenter;
+                    outerPos = ellipseCenter + spoke * 1.13f;
+                    innerPos = ellipseCenter + spoke * 0.30f;
+                    float dimT = MathHelper.Clamp((k - 0.84f) / 0.34f, 0f, 1f);
+                    byte lum = (byte)(150 + 105 * dimT);
+                    vcol = new Color(lum, lum, lum, (byte)(200 + 55 * dimT));
+                }
+                else {
+                    Vector2 dir = trailRot[i].ToRotationVector2();
+                    outerPos = center + dir * outer;
+                    innerPos = center + dir * inner;
+                }
+                bars[i * 2] = new VertexPositionColorTexture(outerPos.ToVector3(), vcol, new Vector2(factor, 0f));
+                bars[i * 2 + 1] = new VertexPositionColorTexture(innerPos.ToVector3(), vcol, new Vector2(factor, 1f));
             }
 
             GraphicsDevice device = Main.graphics.GraphicsDevice;
@@ -627,7 +760,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             effect.Parameters["fadeAlpha"]?.SetValue(trailFade);
             effect.Parameters["empowerMix"]?.SetValue(Empowered ? 1f : 0f);
-            effect.Parameters["segCount"]?.SetValue(MathF.Max(5f, SwingArc * 2.0f));
+            effect.Parameters["segCount"]?.SetValue(IsEllipse ? 13f : MathF.Max(5f, swingArc * 2.0f));
             effect.Parameters["birthProgress"]?.SetValue(slashBirth);
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                 pass.Apply();

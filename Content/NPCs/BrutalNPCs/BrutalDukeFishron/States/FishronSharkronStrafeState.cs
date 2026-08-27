@@ -22,11 +22,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
 
         private const int AscendEnd = 40;
         private const int LaneTelegraphTime = 52;
-        private const int DiveStart = 92;
-        private const int SelfTelegraphStart = 128;
         private const int SelfDiveStart = 150;
         private const int TotalTime = 192;
         private const float SharkronSpeed = 24f;
+
+        /// <summary>鲨群俯冲起帧：末相航道预警 -30%（48→34 帧）</summary>
+        private static int LaneDiveStart(FishronStateContext ctx) => ctx.Phase >= 3 ? 78 : 92;
+        /// <summary>压轴预告起帧：末相 -30%（22→15 帧）</summary>
+        private static int SelfAimStart(FishronStateContext ctx) => ctx.Phase >= 3 ? 135 : 128;
 
         //服务端专用航道表
         private Vector2[] laneOrigins;
@@ -74,7 +77,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             //起冲后整段悬停控制让位俯冲段，免得阻尼把冲刺拖死
             if (!selfDiveLaunched) {
                 npc.velocity *= 0.9f;
-                if (Timer < SelfTelegraphStart) {
+                if (Timer < SelfAimStart(context)) {
                     npc.position.X += MathHelper.Clamp(player.Center.X - npc.Center.X, -3.2f, 3.2f);
                 }
                 FaceBody(npc, player.Center, 0.08f);
@@ -86,29 +89,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 for (int i = 0; i < laneOrigins.Length; i++) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(), laneOrigins[i], laneDirs[i],
                         ModContent.ProjectileType<FishronTelegraph>(), 0, 0f, Main.myPlayer,
-                        -1, -1, FishronTelegraph.PackParams(2, LaneTelegraphTime + (int)(DiveStart - AscendEnd - 4)));
+                        -1, -1, FishronTelegraph.PackParams(2, LaneTelegraphTime + (int)(LaneDiveStart(context) - AscendEnd - 4)));
                 }
             }
 
-            //幕三：鲨群沿航道俯冲（每道两条，错帧）
-            if (!VaultUtils.isClient && laneOrigins != null && Timer >= DiveStart && Timer < SelfTelegraphStart) {
-                int t = (int)Timer - DiveStart;
+            //幕三：鲨群沿航道俯冲（每道两条错帧；末相翻倍成四条，出膛速度也翻倍）
+            if (!VaultUtils.isClient && laneOrigins != null && Timer >= LaneDiveStart(context) && Timer < SelfAimStart(context)) {
+                int t = (int)Timer - LaneDiveStart(context);
+                bool lastStand = context.Phase >= 3;
+                float sharkSpeed = lastStand ? SharkronSpeed * 2f : SharkronSpeed;
                 for (int i = 0; i < laneOrigins.Length; i++) {
-                    if (t == i * 6 || t == i * 6 + 18) {
-                        TryLaunchSharkron(npc, laneOrigins[i], laneDirs[i], SharkronSpeed);
+                    int rel = t - i * 6;
+                    bool fire = lastStand ? rel is 0 or 9 or 18 or 27 : rel is 0 or 18;
+                    if (fire) {
+                        TryLaunchSharkron(npc, laneOrigins[i], laneDirs[i], sharkSpeed);
                     }
                 }
             }
 
             //幕四：公爵压轴俯冲，先亮短预告再走直线
-            if (Timer == SelfTelegraphStart && !VaultUtils.isClient) {
+            if (Timer == SelfAimStart(context) && !VaultUtils.isClient) {
                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center,
                     (player.Center - npc.Center).SafeNormalize(Vector2.UnitY),
                     ModContent.ProjectileType<FishronTelegraph>(), 0, 0f, Main.myPlayer,
-                    npc.whoAmI, player.whoAmI, FishronTelegraph.PackParams(0, SelfDiveStart - SelfTelegraphStart));
+                    npc.whoAmI, player.whoAmI, FishronTelegraph.PackParams(0, SelfDiveStart - SelfAimStart(context)));
             }
-            if (Timer >= SelfTelegraphStart && Timer < SelfDiveStart) {
-                context.SetChargeState(1, (Timer - SelfTelegraphStart) / (float)(SelfDiveStart - SelfTelegraphStart));
+            if (Timer >= SelfAimStart(context) && Timer < SelfDiveStart) {
+                context.SetChargeState(1, (Timer - SelfAimStart(context)) / (float)(SelfDiveStart - SelfAimStart(context)));
                 //预告锁定帧同步冻结俯冲方向
                 if (Timer < SelfDiveStart - FishronTelegraph.LockTime || selfDiveDir == Vector2.Zero) {
                     selfDiveDir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
@@ -120,7 +127,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 selfDiveLaunched = true;
                 Vector2 dir = selfDiveDir == Vector2.Zero
                     ? (player.Center - npc.Center).SafeNormalize(Vector2.UnitY) : selfDiveDir;
-                npc.velocity = dir * 46f;
+                //末相压轴俯冲 +15%：46→53
+                npc.velocity = dir * (context.Phase >= 3 ? 53f : 46f);
                 npc.netUpdate = true;
                 FishronMotionFX.SpawnDashBurst(npc.Center, dir, 1.1f);
                 SoundEngine.PlaySound(SoundID.Zombie20 with { Volume = 1f, Pitch = 0.3f, MaxInstances = 3 }, npc.Center);
@@ -183,9 +191,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             return count;
         }
 
-        /// <summary>甩出一条鲨鱼龙（受全场容量约束，服务端调用），撒鲨招式共用</summary>
+        /// <summary>甩出一条鲨鱼龙（受全场容量约束，服务端调用），撒鲨招式共用；末相容量顶随数量翻倍</summary>
         internal static void TryLaunchSharkron(NPC npc, Vector2 origin, Vector2 dir, float speed) {
-            if (CountSharkrons() >= SharkronCap) {
+            int cap = npc.TryGetOverride(out DukeFishronAI ov) && ov.PhaseThreeLive
+                ? SharkronCap * 2 : SharkronCap;
+            if (CountSharkrons() >= cap) {
                 return;
             }
             int idx = NPC.NewNPC(npc.GetSource_FromAI(), (int)origin.X, (int)origin.Y, NPCID.Sharkron);

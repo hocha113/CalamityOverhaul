@@ -11,10 +11,11 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 {
     /// <summary>
-    /// 黑闪（终局大招，一场一次，比虚空撕裂更迟解锁）：
+    /// 黑闪（终局大招，一场两拍：全眼破碎进二阶段的开幕宣言拍 + 残血底牌拍）：
     /// 四条幻影臂物化→合拢环抱→揉搓压缩黑球（打断窗：集火核心可令其失手）→
     /// 一拍寂静锁定掷向→掷出黑洞→长硬直余波。
     /// 全程清场先行、预告超长、掷向锁定即承诺。
+    /// 残血底牌拍附加重震屏：蓄力全程中幅持续撼动，黑洞爆点大幅震撼；开幕拍保持正常演出。
     /// Timer 各端本地推进；打断分支经 OvBlackFlashBeat 槽广播，各端跳至失手段
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)MLordStateIndex.BlackFlash, typeof(MLordContext))]
@@ -38,11 +39,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         /// <summary>揉搓打断窗起点的核心生命（服务端失血审计基线）</summary>
         private int kneadStartLife;
 
+        /// <summary>本拍是否残血底牌版：开幕拍在满血裸露帧触发、底牌拍在残血门线下触发，
+        /// 半血分界各端可确定性复判（状态槽与生命值同包同步）。
+        /// 底牌版附加重震屏 + 失控膨胀巨球（2.5 倍体量）+ 更快掷速</summary>
+        private bool desperate;
+
+        /// <summary>本拍出手初速（残血底牌拍更快，预告即承诺的锁定语法不变）</summary>
+        private float LaunchSpeedNow => desperate
+            ? MLordBlackHoleProj.DesperateLaunchSpeed : MLordBlackHoleProj.LaunchSpeed;
+
         public override void OnEnter(MLordContext context) {
             base.OnEnter(context);
             kneadStartLife = 0;
+            desperate = context.Npc.life < context.Npc.lifeMax * 0.5f;
             if (!VaultUtils.isClient) {
-                context.Owner.ai[MLordAiSlots.OvBlackFlashUsed] = 1f;
+                context.Owner.ai[MLordAiSlots.OvBlackFlashUsed] = MLordBlackFlashFlags.With(
+                    context.Owner.ai[MLordAiSlots.OvBlackFlashUsed],
+                    desperate ? MLordBlackFlashFlags.Desperate : MLordBlackFlashFlags.Opener);
                 context.Owner.ai[MLordAiSlots.OvBlackFlashBeat] = 0f;
                 context.Owner.ai[MLordAiSlots.OvEyeCommand] = MLordEyeCommand.Retreat;
                 context.Owner.ai[MLordAiSlots.OvAttackSeed] = Main.rand.Next(1, 100000);
@@ -79,9 +92,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         public override void OnExit(MLordContext context) {
             base.OnExit(context);
             if (!VaultUtils.isClient) {
-                //失手不消耗底牌：清回未用标记，重试门线（OvBlackFlashRearm）已在打断帧写入
-                if (Timer >= FumbleStart) {
-                    context.Owner.ai[MLordAiSlots.OvBlackFlashUsed] = 0f;
+                //残血拍失手不消耗底牌：清回未用位，重试门线（OvBlackFlashRearm）已在打断帧写入；
+                //开幕拍失手即算放过——重试会循环成打断刷子，残血底牌拍照旧会来
+                if (Timer >= FumbleStart && desperate) {
+                    context.Owner.ai[MLordAiSlots.OvBlackFlashUsed] = MLordBlackFlashFlags.Without(
+                        context.Owner.ai[MLordAiSlots.OvBlackFlashUsed], MLordBlackFlashFlags.Desperate);
                 }
                 context.Owner.ai[MLordAiSlots.OvEyeCommand] = MLordEyeCommand.Solo;
                 context.Owner.ai[MLordAiSlots.OvBlackFlashBeat] = 0f;
@@ -150,12 +165,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 kneadStartLife = npc.life;
             }
             //揉搓打断窗（服务端裁定）：窗内核心失血超阈值→失手；
-            //同时写重试门线=当前血线再降一档（底牌被打断→更低血量孤注一掷）
+            //残血拍同时写重试门线=当前血线再降一档（底牌被打断→更低血量孤注一掷）
             if (!VaultUtils.isClient && Timer > EmbraceEnd && kneadStartLife > 0
                 && kneadStartLife - npc.life >= npc.lifeMax * MLordDirector.BlackFlashBreakRatio) {
                 context.Owner.ai[MLordAiSlots.OvBlackFlashBeat] = 1f;
-                context.Owner.ai[MLordAiSlots.OvBlackFlashRearm] = MathHelper.Clamp(
-                    npc.life / (float)npc.lifeMax - MLordDirector.BlackFlashRearmStep, 0.02f, 1f);
+                if (desperate) {
+                    context.Owner.ai[MLordAiSlots.OvBlackFlashRearm] = MathHelper.Clamp(
+                        npc.life / (float)npc.lifeMax - MLordDirector.BlackFlashRearmStep, 0.02f, 1f);
+                }
                 npc.netUpdate = true;
             }
 
@@ -172,6 +189,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             //―――― 以下客户端表现 ――――
             float charge = Timer / (float)KneadEnd;
             MLordScreenEffects.PushGravityDim(BallCenter(npc), charge * 0.9f);
+            //残血底牌拍：蓄力全程中幅持续震屏随蓄力渐强（寂静拍骤停，反差压出爆发）
+            if (desperate) {
+                Main.LocalPlayer.CWR()?.GetScreenShake(2.5f + charge * 3.5f);
+            }
 
             if (Timer == ManifestEnd) {
                 //合拢启动的低吼
@@ -220,16 +241,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(CWRSound.BlackHole with { Volume = 1.1f, Pitch = 0.25f }, ballPos);
                     SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 1f, Pitch = -0.3f }, ballPos);
-                    MLordScreenFX.Punch(ballPos, 11f, 16, dir);
+                    //残血底牌拍掷出更重：方向冲击加深并叠一记余震
+                    MLordScreenFX.Punch(ballPos, desperate ? 14f : 11f, 16, dir);
+                    if (desperate) {
+                        Main.LocalPlayer.CWR()?.GetScreenShake(8f);
+                    }
                     //掷出反冲的红黑星尘
                     MLordScreenFX.StarBurst(ballPos, 1.2f, 10);
                 }
                 if (!VaultUtils.isClient) {
                     int damage = ScaleDamage(context, MLordDirector.BlackHoleContactDamage);
                     Projectile.NewProjectile(npc.GetSource_FromAI(), ballPos,
-                        dir * MLordBlackHoleProj.LaunchSpeed,
+                        dir * LaunchSpeedNow,
                         ModContent.ProjectileType<MLordBlackHoleProj>(), damage, 0f, Main.myPlayer,
-                        anchor.X, anchor.Y);
+                        anchor.X, anchor.Y, desperate ? 1f : 0f);
                 }
             }
         }
@@ -307,9 +332,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 float t = (Timer - EmbraceEnd) / (float)(KneadEnd - EmbraceEnd);
                 d.Phase = MLordUltArmPhase.Knead;
                 d.PhaseT = t;
-                //压缩中带阻抗脉动：球在抵抗，越压越小、脉动越弱
-                float pulse = 7f * (1f - t) * (float)Math.Sin(Timer * 0.37f);
-                d.BallRadius = MathHelper.Lerp(124f, 64f, t) + pulse;
+                if (desperate) {
+                    //残血底牌拍：失控膨胀，越搓越大、脉动越强（孤注一掷把一切灌进球里）
+                    float swell = 9f * t * (float)Math.Sin(Timer * 0.37f);
+                    d.BallRadius = MathHelper.Lerp(124f, 168f, t) + swell;
+                }
+                else {
+                    //开幕拍：压缩中带阻抗脉动，球在抵抗，越压越小、脉动越弱
+                    float pulse = 7f * (1f - t) * (float)Math.Sin(Timer * 0.37f);
+                    d.BallRadius = MathHelper.Lerp(124f, 64f, t) + pulse;
+                }
                 d.BallVisible = 1f;
                 d.Collapse = t * 0.85f;
                 //打断进度：失血占阈值比例，红纹随之加剧（把打断博弈做成可见的语言）
@@ -323,7 +355,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 float t = (Timer - KneadEnd) / (float)(SilenceEnd - KneadEnd);
                 d.Phase = MLordUltArmPhase.Silence;
                 d.PhaseT = t;
-                d.BallRadius = MathHelper.Lerp(64f, 56f, t);
+                //残血巨球寂静拍轻收一档锁定，开幕拍延续压缩收束
+                d.BallRadius = desperate ? MathHelper.Lerp(168f, 160f, t) : MathHelper.Lerp(64f, 56f, t);
                 d.BallVisible = 1f;
                 d.Collapse = 0.85f + 0.15f * t;
                 return d;
@@ -332,9 +365,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 float t = (Timer - SilenceEnd) / (float)(ThrowEnd - SilenceEnd);
                 d.Phase = MLordUltArmPhase.Throw;
                 d.PhaseT = t;
-                d.BallRadius = 56f;
+                d.BallRadius = desperate ? 160f : 56f;
                 //交棒：弹体已生成，手中球沿掷向外推并快速隐去（覆盖生成包延迟的几帧）
-                d.BallCenter += d.ThrowDir * (MLordBlackHoleProj.LaunchSpeed * (Timer - SilenceEnd));
+                d.BallCenter += d.ThrowDir * (LaunchSpeedNow * (Timer - SilenceEnd));
                 d.BallVisible = MathHelper.Clamp(1f - t * 2.4f, 0f, 1f);
                 d.Collapse = 1f;
                 return d;

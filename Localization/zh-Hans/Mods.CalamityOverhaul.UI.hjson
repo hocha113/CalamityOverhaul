@@ -513,7 +513,6 @@ ElysiumRoseWindow: {
 }
 
 ElysiumFaithHud.MartyrdomPowerText: 殉道之力 {0}/11
-
 MenuModify.OverhaulSettingsButtonText: 大修设置
 
 OverhaulSettingsUI: {

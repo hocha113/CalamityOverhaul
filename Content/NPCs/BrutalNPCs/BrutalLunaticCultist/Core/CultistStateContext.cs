@@ -120,40 +120,55 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
 
         /// <summary>
         /// 当前阶段攻击池:四式全程可见,主场技能双倍权重;<br/>
-        /// 蚀祭在星尘相退池(主星绕体公转太快,本影走不稳);月明相凝视入池;掷星全程在池;<br/>
-        /// 三式后手逐相解锁作战线升级:彗星潮 P1、十二宫封禁 P2、滞星雷阵 P3(压轴留到后半场)
+        /// 蚀祭全相在池(星尘相蚀祭期主星公转冻结保本影稳,幻影龙登场,见 UmbraShade/星球);月明相凝视入池;掷星与奥术新星全程在池;<br/>
+        /// 追星矢全相恒在且三倍权重,掷星/蚀祭/星图收势后另有固定跟手(见 NextAttack);<br/>
+        /// 后手逐相解锁作战线升级:彗星潮/金环封阵 P1、十二宫封禁/坠星祷 P2、滞星雷阵 P3
         /// </summary>
         private void FillPool(List<CultistStateIndex> pool) {
             pool.Clear();
             pool.Add(CultistStateIndex.OrbitLance);
             pool.Add(CultistStateIndex.RingHurl);
             pool.Add(CultistStateIndex.StarChart);
-            if (Phase != 2) {
-                pool.Add(CultistStateIndex.Eclipse);
-            }
+            pool.Add(CultistStateIndex.ArcaneNova);
+            pool.Add(CultistStateIndex.SeekerStars);
+            pool.Add(CultistStateIndex.SeekerStars);
+            pool.Add(CultistStateIndex.SeekerStars);
+            pool.Add(CultistStateIndex.Eclipse);
             if (Phase >= 4) {
                 pool.Add(CultistStateIndex.Gaze);
             }
             if (Phase >= 1) {
                 pool.Add(CultistStateIndex.Comet);
+                pool.Add(CultistStateIndex.RingPrison);
             }
             if (Phase >= 2) {
                 pool.Add(CultistStateIndex.ZodiacSeal);
+                pool.Add(CultistStateIndex.Starfall);
             }
             if (Phase >= 3) {
                 pool.Add(CultistStateIndex.StasisMines);
             }
 
-            CultistStateIndex home = HomeSkill(Phase);
-            if (home != CultistStateIndex.Eclipse || Phase != 2) {
-                pool.Add(home);
-            }
+            pool.Add(HomeSkill(Phase));
             //掷星:他的神器就是武器
             pool.Add(CultistStateIndex.PlanetHurl);
         }
 
-        /// <summary>抽下一招:洗牌袋防复读</summary>
+        /// <summary>这些技能收势后固定跟手追星矢(2026-08 用户裁定:掷星/蚀祭/星图审判)</summary>
+        private static bool ForcesSeekerFollowup(CultistStateIndex index) => index
+            is CultistStateIndex.PlanetHurl
+            or CultistStateIndex.Eclipse
+            or CultistStateIndex.StarChart;
+
+        /// <summary>抽下一招:大招收势固定跟手追星矢,其余走洗牌袋防复读</summary>
         public CultistStateIndex NextAttack() {
+            //固定跟手:优先耗掉袋内存货,总频率不因跟手叠加失控;跟手自身非触发项,不会连环
+            if (ForcesSeekerFollowup(lastAttack)) {
+                attackBag.Remove(CultistStateIndex.SeekerStars);
+                lastAttack = CultistStateIndex.SeekerStars;
+                return CultistStateIndex.SeekerStars;
+            }
+
             if (attackBag.Count == 0) {
                 FillPool(attackBag);
                 for (int i = attackBag.Count - 1; i > 0; i--) {

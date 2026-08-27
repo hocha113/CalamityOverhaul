@@ -232,7 +232,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             return null;
         }
 
-        /// <summary>相位3：弹道腾空+整周翻滚，顶点甩鲨，鳍梢甩出螺旋水珠</summary>
+        /// <summary>相位3：弹道腾空+整周翻滚，顶点甩鲨</summary>
         private IFishronState UpdateAirRoll(FishronStateContext context, NPC npc, Player player, int t) {
             //弹道重力
             npc.velocity.Y += AirGravity;
@@ -247,30 +247,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             airBaseRot = airBaseRot.AngleTowards(flightRot, 0.05f);
             npc.rotation = airBaseRot + spinSign * RollTurns * MathHelper.TwoPi * ease;
 
-            //鳍梢螺旋水珠：切向甩离，旋速越快甩得越急
-            if (!VaultUtils.isServer) {
-                float spinRate = RollTurns * MathHelper.TwoPi * 6f * airT * (1f - airT) / AirTime;
-                for (int i = 0; i < 2; i++) {
-                    float armAngle = npc.rotation + i * MathHelper.Pi;
-                    Vector2 edge = npc.Center + armAngle.ToRotationVector2() * 52f;
-                    Vector2 tangent = (armAngle + spinSign * MathHelper.PiOver2).ToRotationVector2();
-                    InnoVault.PRT.PRTLoader.NewParticle<PRT_FishronSpray>(edge,
-                        tangent * (4f + spinRate * 700f) + npc.velocity * 0.25f,
-                        Color.Lerp(FishronMotionFX.SeaGreen, FishronMotionFX.FoamWhite, Main.rand.NextFloat()),
-                        Main.rand.NextFloat(0.7f, 1.1f))?.Configure(Main.rand.Next(20, 32), 0.24f);
-                }
-            }
-
-            //顶点甩鲨：升转降的一帧（服务端裁决，帧判据各端一致）
+            //顶点甩鲨：升转降的一帧（服务端裁决，帧判据各端一致）；末相数量与出膛速度翻倍
             if (!sharkTossed && npc.velocity.Y >= 0f) {
                 sharkTossed = true;
                 SoundEngine.PlaySound(SoundID.Zombie9 with { Volume = 0.85f, Pitch = 0.1f, MaxInstances = 3 }, npc.Center);
                 if (!VaultUtils.isClient) {
-                    int count = context.Phase >= 3 ? 3 : 2;
+                    bool lastStand = context.Phase >= 3;
+                    int count = lastStand ? 6 : 2;
+                    float speed = lastStand ? 34f : 17f;
+                    //六条收窄扇距，威胁面拓宽但中路仍是主刀
+                    float spreadStep = lastStand ? 0.22f : 0.34f;
                     for (int i = 0; i < count; i++) {
-                        float spread = (i - (count - 1) * 0.5f) * 0.34f;
+                        float spread = (i - (count - 1) * 0.5f) * spreadStep;
                         Vector2 aim = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY).RotatedBy(spread);
-                        FishronSharkronStrafeState.TryLaunchSharkron(npc, npc.Center, aim, 17f);
+                        FishronSharkronStrafeState.TryLaunchSharkron(npc, npc.Center, aim, speed);
                     }
                 }
             }

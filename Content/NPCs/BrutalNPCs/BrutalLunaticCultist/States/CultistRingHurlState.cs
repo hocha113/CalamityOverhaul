@@ -9,8 +9,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
-    /// 掷环:浑天仪空转蓄势(后撤反向蓄力)→三环逐一离体,侧立刃线锁向(预告即承诺)→掷出回旋归位<br/>
-    /// 环全数归位才收势;离体期他没有法器,姿态防御性漂移(可读的承诺)
+    /// 掷环:浑天仪空转蓄势(后撤反向蓄力)→三环逐一离体,侧立刃线锁向(预告即承诺)→掷完末环即交棒下一手,环自行回旋归位<br/>
+    /// 浑天仪显形不归本态管:环全数归位后由 CultistBossAI 帧检复位 OrreryMode,离体期(可能横跨后续状态)法器恒隐
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.RingHurl, typeof(CultistStateContext))]
     internal class CultistRingHurlState : CultistStateBase
@@ -18,10 +18,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         public override string StateName => "CultistRingHurl";
         public override CultistStateIndex StateIndex => CultistStateIndex.RingHurl;
 
-        private const int SpinUp = 44;
-        /// <summary>各环离体拍(掷出间隔 20f)</summary>
-        private static readonly int[] DetachBeats = [44, 64, 84];
-        private const int Timeout = 320;
+        private const int SpinUp = 30;
+        /// <summary>各环离体拍(掷出间隔 14f)</summary>
+        private static readonly int[] DetachBeats = [30, 44, 58];
+        /// <summary>末环离体后的短收势拍,收完立刻交棒</summary>
+        private const int RecoveryBeat = 12;
 
         public override ICultistState OnUpdate(CultistStateContext context) {
             NPC npc = context.Npc;
@@ -39,7 +40,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 npc.velocity = away * MathF.Pow(t, 8f) * 9f;
                 context.PushAura(0.5f + t * 0.5f, CultistMotion.PhaseCore(context.Phase));
                 //爬调链音
-                if ((Timer == 12 || Timer == 26 || Timer == 38) && !VaultUtils.isServer) {
+                if ((Timer == 8 || Timer == 17 || Timer == 26) && !VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item101 with {
                         Volume = 0.6f,
                         Pitch = -0.3f + Timer / (float)SpinUp * 0.8f
@@ -77,26 +78,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 return null;
             }
 
-            //双出口:环全归位即收,或超时兜底
-            if (Timer > DetachBeats[^1] + 40 && !AnyRingAlive(npc.whoAmI)) {
-                context.OrreryMode = 0;
-                npc.ai[1] = 0;
-                return new CultistCoilState();
-            }
-            if (Timer >= Timeout) {
-                context.OrreryMode = 0;
-                npc.ai[1] = 0;
+            //掷完即走:末环离体+短收势拍就回连接态选下一招,不等环返(环的往返与显形恢复由弹幕/AI 帧检自理)
+            if (Timer >= DetachBeats[^1] + RecoveryBeat) {
                 return new CultistCoilState();
             }
             return null;
         }
 
-        public override void OnExit(CultistStateContext context) {
-            context.OrreryMode = 0;
-            context.Npc.ai[1] = 0;
-        }
-
-        private static bool AnyRingAlive(int ownerWho) {
+        /// <summary>本 BOSS 的离体环是否仍在场(AI 帧检与选招守卫共用)</summary>
+        internal static bool AnyRingAlive(int ownerWho) {
             int type = ModContent.ProjectileType<CultistOrreryRingProj>();
             foreach (Projectile proj in Main.ActiveProjectiles) {
                 if (proj.type == type && (int)proj.ai[1] == ownerWho) {

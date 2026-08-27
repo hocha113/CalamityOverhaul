@@ -27,6 +27,15 @@ namespace CalamityOverhaul.Common
         [DefaultValue(true)]
         public bool LensEasing { get; set; }//镜头缓动
 
+        /// <summary>
+        /// 氛围密度总闸：只缩放装饰性氛围粒子与音景的生成密度；
+        /// 预告体、危害实体及其可见性绝不随之缩减（否则等于降画质换公平劣势）
+        /// </summary>
+        [BackgroundColor(192, 54, 94, 255)]
+        [Range(0.25f, 1f)]
+        [DefaultValue(1f)]
+        public float AmbienceDensity { get; set; }
+
         public override void OnLoaded() {
             Instance = this;
         }

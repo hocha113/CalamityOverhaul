@@ -30,19 +30,24 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     }
     float2 unit = r > 0.001 ? p / r : float2(0.0, 1.0);
 
-    //穹膜:靠缘渐亮的护盾膜,噪声流光缓走(护盾玻璃感)
-    float mem = smoothstep(RimR - 0.34, RimR, r) * step(r, RimR);
+    //穹膜:整个界内都有微弱膜感(场中央也读得出"身在界内"),向缘急剧增亮
+    //旧版膜从 0.54R 才起步,玩家离缘远时全屏无一像素属于界,读成"限制圈消失"
+    //近缘带收窄压暗(0.30R/1.0→0.16R/0.72):贴墙时它就是整个屏幕,
+    //太宽太亮会把界内弹幕全部糊进金幕里读成"弹幕消失"
+    float memFar = smoothstep(0.04, RimR, r) * 0.30;
+    float memNear = smoothstep(RimR - 0.16, RimR, r) * 0.72;
+    float mem = (memFar + memNear) * step(r, RimR);
     float flow = noise(unit * 1.2 + r * 3.0 + uTime * float2(0.06, 0.04));
     float flow2 = noise(unit * 2.3 - uTime * float2(0.04, 0.07) + 5.1);
     float sheen = 0.30 + 0.40 * flow + 0.20 * flow2;
     float3 dome = uColMain * mem * sheen;
     float aDome = mem * (0.26 + 0.22 * flow);
 
-    //主环:硬边双线,内伴线
-    float ring = 1.0 - smoothstep(0.0, 0.014, abs(r - RimR));
-    float ring2 = (1.0 - smoothstep(0.0, 0.030, abs(r - (RimR - 0.030)))) * 0.45;
-    //缘外辉:护盾外溢光
-    float halo = exp(-max(r - RimR, 0.0) * 26.0) * step(RimR, r);
+    //主环:硬边双线,内伴线(加厚:远观也是一道明确的界)
+    float ring = 1.0 - smoothstep(0.0, 0.026, abs(r - RimR));
+    float ring2 = (1.0 - smoothstep(0.0, 0.050, abs(r - (RimR - 0.048)))) * 0.45;
+    //缘外辉:护盾外溢光(拉长衰减,缘外一段仍有光晕)
+    float halo = exp(-max(r - RimR, 0.0) * 13.0) * step(RimR, r);
 
     //充能弧:符金,自缝处顺角生长(缝=弧起点,不可见)
     float norm = (atan2(p.x, -p.y) + 3.14159265) / 6.2831853;
@@ -50,11 +55,15 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float fillBand = 1.0 - smoothstep(0.0, 0.022, abs(r - RimR));
     float3 fillGold = float3(1.0, 0.84, 0.50);
 
+    //撞墙脉冲只点亮环线邻域:乘 mem 会把增亮摊满整张膜,
+    //贴墙推挤时 uPulse 常驻 0.8,等于给全屏叠白金幕
+    float pulseBand = exp(-abs(r - RimR) * 7.0);
+
     float3 C = dome
         + uColRim * (ring * 1.1 + ring2)
         + uColMain * halo * 0.9
         + fillGold * fillArc * fillBand * 1.15
-        + uColRim * uPulse * mem * 0.8;
+        + uColRim * uPulse * pulseBand * 0.9;
     float A = aDome + ring * 0.85 + ring2 * 0.35 + halo * 0.30 + fillArc * fillBand * 0.55;
 
     return float4(C, saturate(A)) * uAlpha * vertexColor;

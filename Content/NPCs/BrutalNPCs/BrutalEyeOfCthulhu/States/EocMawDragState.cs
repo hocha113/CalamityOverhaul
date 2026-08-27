@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 {
     /// <summary>
     /// 撕咬拖曳投技（二阶段）：佯攻假冲刺故意擦身而过→急停回首裂口大张（专属前摇+咬程车道）→<br/>
-    /// 第二段真冲刺以口器判定咬人（无接触伤，咬中即投技）；咬中后贴地高速拖行横穿战场，<br/>
+    /// 第二段真冲刺以口器判定咬人（咬中即投技，体撞算普通擦伤，高速碾过不白穿）；咬中后贴地高速拖行横穿战场，<br/>
     /// 沿途血雾迸溅，终以甩头把玩家砸进地面，力竭长喘收场。落空则长收招惩罚窗<br/>
     /// 网络：抓取目标经 ai[3]=±(whoAmI+1) 同步，符号即拖行方向；被抓者位移/锁控/运镜/分段结算
     /// 全部由 <see cref="EocGrabPerformancePlayer"/> 在其本机由同步态推导，本状态只管 NPC 权威与全端演出
@@ -313,8 +313,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             context.PushDashVisuals(1f, 1f);
             context.FrameRate = 2;
             FaceVelocity(npc);
-            //真冲刺无接触伤：咬中即投技，擦过不算，与普通冲撞的本质区别
-            DisableContactDamage(npc);
+            //真冲刺体撞算普通擦伤：满速碾过不该白穿（伤害窗=视觉窗）；
+            //口器咬中则升级为投技，口器前伸量大于体撞半径，正中时抓取先于擦伤结算
+            EnableContactDamageIfFast(npc, 26f, 0.85f);
             dashTraveled += npc.velocity.Length();
 
             //口器判定与抓取，仅权威端
@@ -354,6 +355,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private IEocState UpdateWhiff(NPC npc, Player player, EocStateContext context) {
             //咬空长收招：明确的惩罚窗
             npc.velocity *= 0.82f;
+            //落空滑行仍是实体冲撞，残速期体撞有效，掉出阈值自然收窗
+            EnableContactDamageIfFast(npc, 26f, 0.85f);
             EocMotion.BrakeDroplets(npc);
             FaceTarget(npc, player.Center, 0.1f);
             context.FrameRate = 4;
@@ -385,6 +388,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         /// <summary>咬合入场：顿帧+爆点，全端各自演出</summary>
         private void EnterSeize(NPC npc, EocStateContext context) {
             SwitchPhase(DragPhase.Seize);
+            //咬合即锁定：立即关体撞，防抓取确认相邻帧擦伤与咬合双结算
+            DisableContactDamage(npc);
             context.FrameRate = 2;
             context.ScalePulse = 1.14f;
             Vector2 mawPos = MawWorldPos(npc);

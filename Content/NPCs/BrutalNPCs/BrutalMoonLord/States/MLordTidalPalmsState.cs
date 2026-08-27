@@ -84,12 +84,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                         DriveSlamServer(context, Main.npc[performers[i]], i, slamIndex, sub);
                     }
                 }
-                //掩护弹预闪：出弹前头口聚星（契约2：瞬发弹的可见化）
+                //掩护弹预闪：出弹前炮口聚星（契约2：瞬发弹的可见化），口径与 SpawnCoverBolt 同源
                 if (!VaultUtils.isServer && sub >= CoverBoltTick - CoverBoltLead && sub < CoverBoltTick) {
                     NPC muzzle = context.Parts.Head >= 0 && context.Parts.HeadAlive
-                        ? Main.npc[context.Parts.Head] : npc;
-                    MLordScreenFX.ConvergeStreak(muzzle.Center + new Vector2(0f, 30f), 150f,
-                        (sub - (CoverBoltTick - CoverBoltLead)) / (float)CoverBoltLead * 0.7f);
+                        ? Main.npc[context.Parts.Head] : MLordFacts.GetFreeEye(npc, 0);
+                    if (muzzle != null) {
+                        MLordScreenFX.ConvergeStreak(muzzle.Center + new Vector2(0f, 30f), 150f,
+                            (sub - (CoverBoltTick - CoverBoltLead)) / (float)CoverBoltLead * 0.7f);
+                    }
                 }
                 //头部掩护弹：蓄势中拍点一发直射
                 if (sub == CoverBoltTick && !VaultUtils.isClient) {
@@ -268,10 +270,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             }
         }
 
-        /// <summary>头部（或核心）掩护直射弹</summary>
+        /// <summary>掩护直射弹：活头自射，头破由真眼代射（心脏与残口不当炮口）</summary>
         private void SpawnCoverBolt(MLordContext context) {
             NPC origin = context.Parts.Head >= 0 && context.Parts.HeadAlive
-                ? Main.npc[context.Parts.Head] : context.Npc;
+                ? Main.npc[context.Parts.Head] : MLordFacts.GetFreeEye(context.Npc, 0);
+            if (origin == null) {
+                return;
+            }
             Vector2 aim = (context.Target.Center - origin.Center).SafeNormalize(Vector2.UnitY);
             Projectile.NewProjectile(origin.GetSource_FromAI(), origin.Center + aim * 40f, aim * 7.5f,
                 ModContent.ProjectileType<MLordBoltProj>(), ScaleDamage(context, MLordDirector.BoltDamage), 0f, Main.myPlayer);

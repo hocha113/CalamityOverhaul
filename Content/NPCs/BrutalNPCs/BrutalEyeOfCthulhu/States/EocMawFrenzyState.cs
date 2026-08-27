@@ -162,6 +162,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 
         private void UpdateGap(NPC npc, EocStateContext context) {
             npc.velocity *= 0.86f;
+            //收咬后仍在高速穿行，残速期体撞继续有效，慢下来自然收窗
+            EnableContactDamageIfFast(npc, 14f, 1.35f);
             EocMotion.BrakeDroplets(npc);
             FaceTarget(npc, context.Target.Center, 0.4f);
 

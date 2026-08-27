@@ -22,7 +22,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
     /// 毁灭者之撕咬。玩家化身黑红毁灭者的头颅(带短链体)扑向猎物:
     /// 盘绕蓄势→高速突袭→合颚重咬→散解归位。撕咬期间玩家本体隐藏、
     /// 位置随头颅拖行(仅主人端做位移权威,远端凭弹幕同步观演)。
-    /// 咬中造成巨额伤害并进入歼灭协议。ai[0]=目标NPC索引
+    /// 咬中造成巨额伤害并进入歼灭协议。
+    /// ai[0]=目标NPC索引,-1为空放:朝出手方向(鼠标)定距突进
     /// </summary>
     internal class DestroyerBiteProj : BaseHeldProj
     {
@@ -38,6 +39,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         private const int SegCount = 5;
         private const float DrawScale = 0.85f;
         private const float SegSpacing = 64f * DrawScale;
+        /// <summary>空放的突进距离(px)</summary>
+        private const float EmptyDashRange = 540f;
 
         private const int PhaseCoil = 0;
         private const int PhaseLunge = 1;
@@ -98,7 +101,9 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             DestroyerEXPlayer mp = Owner.GetModPlayer<DestroyerEXPlayer>();
             mp.NoteAttack();
 
-            Vector2 toTarget = TargetValid() ? Main.npc[TargetIndex].Center - Owner.Center : Projectile.velocity;
+            //有目标扑向目标,空放沿出手方向(鼠标)定距突进
+            Vector2 toTarget = TargetValid() ? Main.npc[TargetIndex].Center - Owner.Center
+                : Projectile.velocity.SafeNormalize(Vector2.UnitX) * EmptyDashRange;
             headRot = toTarget.SafeNormalize(Vector2.UnitX).ToRotation();
             aimPoint = Owner.Center + toTarget;
 
@@ -193,7 +198,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 NPC npc = Main.npc[TargetIndex];
                 aimPoint = npc.Center + npc.velocity * 4f;
             }
-            float speed = MathHelper.Lerp(16f, 46f, MathF.Min(phaseTimer / 7f, 1f));
+            float speed = MathHelper.Lerp(21f, 60f, MathF.Min(phaseTimer / 7f, 1f));
             float wantRot = (aimPoint - spine[0]).ToRotation();
             headRot = headRot.AngleTowards(wantRot, 0.22f);
             Vector2 step = headRot.ToRotationVector2() * speed;
@@ -382,6 +387,14 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 bitConnected = true;
                 //咬中:主人端进歼灭协议,buff 经原版同步各端
                 Owner.GetModPlayer<DestroyerEXPlayer>().GrantFrenzy();
+                //咬中追加震撼:首个受害者结算一次,沿咬合方向重锤镜头
+                if (!VaultUtils.isServer) {
+                    ShakeLocal(6f, target.Center);
+                    if (CWRClientConfig.Instance.ScreenVibration) {
+                        Main.instance.CameraModifiers.Add(new PunchCameraModifier(target.Center,
+                            headRot.ToRotationVector2(), 9f, 6f, 12, 1000f, FullName));
+                    }
+                }
             }
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 8; i++) {

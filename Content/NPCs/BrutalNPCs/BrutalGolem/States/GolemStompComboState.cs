@@ -96,11 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             float dx = context.Target.Center.X - npc.Center.X;
             float vx = MathHelper.Clamp(dx / (isHeavy ? 34f : 44f), -14f, 14f);
             float vy = isHeavy ? -16.5f : -10.5f;
-            if (context.Enraged) {
-                vx *= 1.3f;
-                vy *= 1.12f;
-            }
-            LaunchJump(npc, vx, vy);
+            LaunchJump(context, vx, vy);
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.WormDig with { Pitch = -0.3f, Volume = 0.7f }, npc.Center);
             }

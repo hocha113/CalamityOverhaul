@@ -17,8 +17,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         public override CultistStateIndex StateIndex => CultistStateIndex.Death;
 
         private const int Duration = 300;
-        /// <summary>三环崩碎拍(渐急)</summary>
-        private static readonly int[] BreakBeats = [168, 208, 238];
+        /// <summary>三环崩碎拍(渐急);主星引爆(清场令 10+裂纹 40+坍缩 14=64 拍)后接手节奏</summary>
+        private static readonly int[] BreakBeats = [128, 168, 198];
 
         public override void OnEnter(CultistStateContext context) {
             base.OnEnter(context);
@@ -47,13 +47,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 CultistZodiacRing.BeginCollapse(npc.whoAmI);
             }
 
-            //主星内核引爆的大震拍(裂解序列 ~100 帧后落拍,全场唯一一次拉满)
-            if (Timer == 118) {
-                CultistMotion.Shake(npc.Center, 15f, 24);
-                CultistScreenFX.PushFlash(0.75f);
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Zombie105 with { Volume = 1.2f, Pitch = -0.8f }, npc.Center);
-                }
+            //主星引爆拍由星球自身的 DetonationBurst 演出(64 拍),这里只补一记司祭的哀鸣呼应
+            if (Timer == 70 && !VaultUtils.isServer) {
+                SoundEngine.PlaySound(SoundID.Zombie105 with { Volume = 1.2f, Pitch = -0.8f }, npc.Center);
             }
 
             //三环逆序崩碎:法器随主人死去

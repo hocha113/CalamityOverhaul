@@ -11,12 +11,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
         public override string StateName => "Connector";
         public override GolemStateIndex StateIndex => GolemStateIndex.Connector;
 
-        /// <summary>一阶段手作序列：压迫→区域→机动→远程→大开大合</summary>
+        /// <summary>一阶段手作序列：压迫→区域→机动→远程→大开大合起头，
+        /// 后续小节拳位加密、弹幕位稀释——飞拳 4/15（较均分 +33%），太阳弹幕 2/15（-33%），其余各 3/15</summary>
         private static readonly Func<IGolemState>[] SequenceP1 = [
             () => new GolemPunchComboState(),
             () => new GolemTrapScoreState(),
             () => new GolemStompComboState(),
             () => new GolemSunBarrageState(),
+            () => new GolemHookSwingState(),
+            () => new GolemPunchComboState(),
+            () => new GolemStompComboState(),
+            () => new GolemTrapScoreState(),
+            () => new GolemPunchComboState(),
+            () => new GolemHookSwingState(),
+            () => new GolemStompComboState(),
+            () => new GolemSunBarrageState(),
+            () => new GolemPunchComboState(),
+            () => new GolemTrapScoreState(),
             () => new GolemHookSwingState(),
         ];
 
@@ -51,7 +62,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             if (!hopDone && OnGround(npc) && Math.Abs(dx) > 240f && Timer > 8) {
                 hopDone = true;
                 float vx = MathHelper.Clamp(dx / 60f, -13f, 13f);
-                LaunchJump(npc, vx, -9.5f);
+                LaunchJump(context, vx, -9.5f);
                 if (!VaultUtils.isClient) {
                     npc.netUpdate = true;
                 }

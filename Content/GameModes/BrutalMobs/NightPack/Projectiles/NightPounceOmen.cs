@@ -112,6 +112,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.NightPack.Projectiles
             float strength = InStrike
                 ? MathHelper.Clamp(1f - (Elapsed - TelegraphFrames) / 16f, 0f, 1f) * 0.25f
                 : fadeIn * (0.5f + 0.5f * pulse);
+            //暮雾联动（只读 Woodsong 信号）：浓雾夜预告反而更醒目，萤火替猎物照出落点
+            float fog = Ambience.Woodsong.WoodsongAmbience.FogStrength;
+            if (!InStrike && fog > 0.15f) {
+                strength = Math.Min(1f, strength * (1f + fog * 0.45f));
+            }
             if (strength <= 0.01f) {
                 return false;
             }
@@ -127,6 +132,19 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.NightPack.Projectiles
             Vector2 coreScale = new Vector2(MarkerWidth / glow.Width, MarkerHeight / glow.Height);
             Main.EntitySpriteDraw(glow, markerPos, null, CoreGreen * strength, 0f,
                 glow.Size() / 2f, coreScale, SpriteEffects.None, 0);
+
+            //雾夜萤火环：绕落点缓旋的冷绿光点（纯表现，各端本地按自身雾浓度绘制）
+            if (!InStrike && fog > 0.15f) {
+                Color firefly = new Color(186, 240, 120, 0);
+                for (int i = 0; i < 5; i++) {
+                    float a = Main.GlobalTimeWrappedHourly * 1.6f + i * MathHelper.TwoPi / 5f + Projectile.identity * 0.7f;
+                    Vector2 p = markerPos + new Vector2(MathF.Cos(a) * MarkerWidth * 0.52f,
+                        MathF.Sin(a * 1.4f) * 12f - 8f);
+                    float twinkle = 0.55f + 0.45f * MathF.Sin(a * 3.1f);
+                    Main.EntitySpriteDraw(glow, p, null, firefly * (fog * 0.7f * twinkle * strength), 0f,
+                        glow.Size() / 2f, 0.05f, SpriteEffects.None, 0);
+                }
+            }
 
             //预告期跳弧：从僵尸到落点的点列随预告进度逐个亮起
             if (!InStrike && AnchorIndex.TryGetNPC(out NPC anchor) && anchor.Alives()) {

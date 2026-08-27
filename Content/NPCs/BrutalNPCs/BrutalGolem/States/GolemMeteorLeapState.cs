@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                     if (++stepTimer >= Tempo(context, 22)) {
                         stepTimer = 0;
                         step = Step.Rise;
-                        LaunchJump(npc, MathHelper.Clamp((context.Target.Center.X - npc.Center.X) / 40f, -10f, 10f), -27f);
+                        LaunchJump(context, MathHelper.Clamp((context.Target.Center.X - npc.Center.X) / 40f, -10f, 10f), -27f);
                         if (!VaultUtils.isServer) {
                             SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.3f }, npc.Center);
                             GolemScreenEffects.Shake(4f);

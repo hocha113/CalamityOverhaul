@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
 {
     /// <summary>
     /// 黑暗闪电雨：公爵隐入雨幕成剪影，唯有闪电照亮他。
-    /// 三段落雷：包夹三连→行进弹幕线→预判双雷；预告线恒定 36 帧
+    /// 四波落雷：包夹三连→行进五连→反向回推→预判三雷，波距 40 帧；预告线恒定 25 帧
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)FishronStateIndex.LightningRain, typeof(FishronStateContext))]
     internal class FishronLightningRainState : FishronStateBase
@@ -19,12 +19,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
         public override string StateName => "LightningRain";
         public override FishronStateIndex StateIndex => FishronStateIndex.LightningRain;
 
-        /// <summary>预告→落雷的恒定提前量（危险等级常数，玩家可背）</summary>
-        internal const int BoltTelegraphTime = 36;
-        private const int TotalTime = 258;
+        /// <summary>预告→落雷的恒定提前量（危险等级常数，玩家可背；末相令 36→25 帧）</summary>
+        internal const int BoltTelegraphTime = 25;
+        private const int TotalTime = 186;
 
         //服务端专用落雷计划（帧, 地面点）
         private readonly List<(int frame, Vector2 ground)> plan = [];
+        //波二行进方向，波三反向回推复用（仅服务端排程读写）
+        private int marchDir;
 
         public FishronLightningRainState() {
         }
@@ -64,7 +66,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             }
 
             //偶发天光，让剪影闪现（纯本地视觉）
-            if (!VaultUtils.isServer && Timer % 46 == 0) {
+            if (!VaultUtils.isServer && Timer % 32 == 0) {
                 FishronStormSky.PushFlash(0.3f, npc.Center);
             }
 
@@ -74,31 +76,38 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             return null;
         }
 
-        /// <summary>Timer 到点时铺预告与落雷</summary>
+        /// <summary>Timer 到点时铺预告与落雷（四波，波距 40 帧）</summary>
         private void SchedulePlan(FishronStateContext context) {
             Player player = context.Target;
 
-            //段A（t=20）：包夹三连，中央预判
-            if (Timer == 20) {
-                Push(20, player.Center.X - 260f, player);
-                Push(26, player.Center.X + player.velocity.X * 26f, player);
-                Push(32, player.Center.X + 260f, player);
+            //波一（t=14）：包夹三连，中央预判
+            if (Timer == 14) {
+                Push(14, player.Center.X - 260f, player);
+                Push(19, player.Center.X + player.velocity.X * 26f, player);
+                Push(24, player.Center.X + 260f, player);
             }
-            //段B（t=112）：行进弹幕线，五雷推移
-            if (Timer == 112) {
-                int dir = Main.rand.NextBool() ? 1 : -1;
+            //波二（t=54）：行进弹幕线，五雷推移
+            if (Timer == 54) {
+                marchDir = Main.rand.NextBool() ? 1 : -1;
                 for (int i = 0; i < 5; i++) {
-                    Push(112 + i * 12, player.Center.X + dir * (-400f + i * 200f), player);
+                    Push(54 + i * 7, player.Center.X + marchDir * (-400f + i * 200f), player);
                 }
             }
-            //段C（t=196）：预判双雷
-            if (Timer == 196) {
-                Push(196, player.Center.X + player.velocity.X * 30f, player);
-                Push(206, player.Center.X + player.velocity.X * 52f, player);
+            //波三（t=94）：反向回推，刚学会的节奏倒着再考一遍
+            if (Timer == 94) {
+                for (int i = 0; i < 5; i++) {
+                    Push(94 + i * 7, player.Center.X - marchDir * (-400f + i * 200f), player);
+                }
+            }
+            //波四（t=134）：预判三雷，越跑越往前堵
+            if (Timer == 134) {
+                Push(134, player.Center.X + player.velocity.X * 30f, player);
+                Push(141, player.Center.X + player.velocity.X * 52f, player);
+                Push(148, player.Center.X + player.velocity.X * 74f, player);
             }
         }
 
-        /// <summary>登记一处落点：立即亮预告，36 帧后落雷</summary>
+        /// <summary>登记一处落点：立即亮预告，25 帧后落雷</summary>
         private void Push(int frame, float x, Player player) {
             Vector2 ground = FishronMotionFX.FindSurfaceBelow(new Vector2(x, player.Center.Y - 40f), out _);
             plan.Add((frame, ground));
@@ -118,7 +127,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                         new Vector2(ground.X, ground.Y - 980f), Vector2.Zero,
                         ModContent.ProjectileType<FishronSkyBoltProj>(),
                         FishronSkyBoltProj.BoltDamage, 0f, Main.myPlayer,
-                        ground.Y);
+                        0f, 0f, ground.Y);
                     plan.RemoveAt(i);
                 }
             }

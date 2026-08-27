@@ -1,7 +1,7 @@
 // ============================================================================
 //CultistPhaseSky.fx 教徒五阶段沉浸天幕(第二版:干净的仪式夜穹)
 //一版五套全屏噪声互叠读作"乱",二版收敛:共享深空底+双层视差星野(全相统一秩序),
-//每相只保留一个主宰元素:星旋=顶部风暴云盖 星云=大尺度柔雾 星尘=坠落光痕
+//每相只保留一个主宰元素:星旋=顶部风暴云盖 星云=大尺度柔雾 星尘=流星细痕
 //日耀=灼烧地平辉光 月明=死寂冷穹;uPhase 相邻线性交叉渐变;uStorm=星旋涌激
 //uCam=相机视差锚(screenPosition/屏高),星野 3%/6.5%、云雾 5%~9% 层间差速给纵深
 //预乘 AlphaBlend;s1=平铺 Perlin(消费端 Textures[1]+LinearWrap,实测值域 0.227~0.776 过 nrm)
@@ -25,6 +25,27 @@ float noise(float2 uv) {
 //绑定 Perlin 实测值域 0.227~0.776 归一(阈值必须过这里,否则高分位层是死代码)
 float nrm(float x) {
     return saturate((x - 0.227) / 0.549);
+}
+
+//星尘流星痕:斜置轨道上坠落的细光线;列哈希定横位/速度/长短,
+//截面高斯细线(平方代 pow 防负底),头部加宽增亮成泪滴,tip 把 frac 断口收圆
+float3 dustLayer(float2 base, float cells, float seedOfs, float gate, float fall, float skew) {
+    float x = (base.x + base.y * skew) * cells;
+    float id = floor(x);
+    float fx = x - id;
+    float h1 = nrm(noise(float2(id * 0.0371 + seedOfs, 0.517)));
+    float h2 = nrm(noise(float2(id * 0.0593 + seedOfs, 5.113)));
+    float sel = step(gate, nrm(noise(float2(id * 0.0731 + seedOfs, 2.713))));
+    float dxr = (fx - (0.28 + h1 * 0.44)) * (10.0 + h2 * 5.0);
+    float latT = exp(-dxr * dxr);          //尾:细截面
+    float latH = exp(-dxr * dxr * 0.30);   //头:约1.8倍宽的柔光
+    float ph = frac(base.y * (0.85 + h1 * 0.75) - uTime * fall * (0.6 + h1 * 0.8) + h2 * 9.0);
+    float tip = smoothstep(1.0, 0.95, ph);
+    float tw = 0.85 + 0.15 * sin(uTime * (2.6 + h1 * 3.5) + h2 * 17.0);
+    float tail = pow(ph, 6.0) * tip * latT;
+    float head = pow(ph, 24.0) * tip * latH;
+    float3 c = float3(0.38, 0.68, 0.95) * tail * 0.55 + float3(0.80, 0.93, 1.05) * head * 1.2;
+    return c * sel * (0.55 + 0.45 * h2) * tw;
 }
 
 //星野层:哈希格稀疏星点,各自明灭;gate 越高星越稀
@@ -92,14 +113,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float3 nb = lerp(float3(0.10, 0.020, 0.115), float3(0.28, 0.065, 0.28), fog2) * neb;
     nb += float3(0.85, 0.45, 0.80) * pow(neb, 3.0) * 0.16;
 
-    //---- 星尘:哈希列坠落光痕(头亮尾淡),垫一层薄冷雾 ----
-    float2 duv = sq + uCam * 0.055;
-    float dcol = floor(duv.x * 34.0);
-    float dh = nrm(noise(float2(dcol * 0.0371, 0.517)));
-    float dgate = step(0.60, nrm(noise(float2(dcol * 0.0593, 5.113))));
-    float dphase = frac(duv.y * (1.1 + dh * 0.8) - uTime * (0.10 + dh * 0.08) + dh * 9.0);
-    float streak = pow(dphase, 7.0) * dgate;
-    float3 sd = float3(0.55, 0.85, 0.95) * streak * 0.42;
+    //---- 星尘:双层视差流星细痕(远层慢淡近层快亮),垫一层薄冷雾 ----
+    float3 sd = dustLayer(sq + uCam * 0.035, 30.0, 0.0, 0.72, 0.09, 0.045) * 0.5
+              + dustLayer(sq + uCam * 0.080, 19.0, 6.29, 0.68, 0.17, 0.075);
     sd += float3(0.030, 0.075, 0.110) * fog2 * 0.8;
 
     //---- 日耀:地平被地面烈焰烤亮+升腾热斑,天顶仍是暗空 ----

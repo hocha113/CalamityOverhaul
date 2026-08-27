@@ -110,7 +110,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                 sporeDropAccum = 0f;
                 context.ResetChargeState();
 
-                npc.velocity = pounceDir * PlanteraDirector.PounceSpeedP2 * 1.12f;
+                float speed = PlanteraDirector.PounceSpeedP2 * 1.12f;
+                //激怒惩罚：扑速翻倍(预警线已锁向，公平锚在预告期)
+                if (context.IsEnraged) {
+                    speed *= 2f;
+                }
+                npc.velocity = pounceDir * speed;
                 if (!VaultUtils.isClient) {
                     npc.netUpdate = true;
                 }

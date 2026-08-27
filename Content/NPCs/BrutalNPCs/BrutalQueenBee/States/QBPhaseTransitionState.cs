@@ -23,6 +23,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         private const int MoltTime = 132;     //蜕甲蓄力(升调+静默弧线不变，整体提速)
         private const int ReleaseFrame = GatherTime + MoltTime;   //176 炸散帧
         private const int TotalTime = ReleaseFrame + 52;
+        //炸散前蜂盾黄描边预警窗
+        private const int DartWarnLead = 30;
         #endregion
 
         public override void OnEnter(QueenBeeStateContext context) {
@@ -69,6 +71,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                 //升调蜂鸣，末28%静默(尖叫前的吸气)
                 if (p < 0.72f && Timer % 24 == 0) {
                     QueenBeeMotion.WingHum(npc.Center, 0.35f + p * 0.3f, -0.4f + p * 0.8f);
+                }
+                //炸散读秒：蜂盾整环黄描边渐亮
+                int burstIn = ReleaseFrame - Timer;
+                if (burstIn <= DartWarnLead) {
+                    context.Swarm.WarnDarts(0, SwarmDirector.MaxBees - 1, 1f - burstIn / (float)DartWarnLead);
                 }
                 //蜕甲蜡屑
                 if (!VaultUtils.isServer && p > 0.3f && Main.rand.NextBool(5)) {

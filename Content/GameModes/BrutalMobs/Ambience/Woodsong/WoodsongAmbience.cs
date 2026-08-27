@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using InnoVault.PRT;
 using ReLogic.Utilities;
 using System;
@@ -57,6 +58,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
         private static int ravenIn = 3200;
         private static int ravenBurstIn;
         private static Vector2 ravenBurstPos;
+        /// <summary>惊飞方向偏置：0=随机（雾夜惊吓），±1=威胁预警（鸟群背离来敌）</summary>
+        private static int ravenBurstDir;
+        /// <summary>威胁预警冷却（独立于雾夜惊鸦的日程）</summary>
+        private static int warnIn = 600;
         private static int wispIn = 1800;
         private static float moteAcc;
         private static float fireflyAcc;
@@ -89,6 +94,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             gustLen = 1;
             ravenIn = 3200;
             ravenBurstIn = 0;
+            ravenBurstDir = 0;
+            warnIn = 600;
             wispIn = 1800;
             moteAcc = fireflyAcc = leafAcc = 0f;
             for (int i = 0; i < pending.Length; i++) {
@@ -175,6 +182,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             UpdateSoundSchedulers(player);
             SpawnAmbientVisuals(player);
             UpdateRavenScare(player);
+            UpdateThreatWarning(player);
             UpdateWispScheduler(player);
             PumpPending();
         }
@@ -300,9 +308,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
         //==================== 「林语」常态视觉粒子 ====================
 
         private static void SpawnAmbientVisuals(Player player) {
+            //氛围性能总闸：只缩装饰粒子密度，不碰任何机制/预告/危害路径
+            float density = CWRClientConfig.Instance.AmbienceDensity;
             //白日光尘：花粉/柳絮/蝶尘（雨天停）
             if (Main.dayTime && !Main.raining) {
-                moteAcc += 0.10f * Presence;
+                moteAcc += 0.10f * Presence * density;
                 while (moteAcc >= 1f) {
                     moteAcc -= 1f;
                     SpawnAirMote();
@@ -310,7 +320,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             }
             //黄昏萤火渐起
             if (DuskGlow > 0.05f && !Main.raining) {
-                fireflyAcc += 0.05f * DuskGlow * Presence;
+                fireflyAcc += 0.05f * DuskGlow * Presence * density;
                 while (fireflyAcc >= 1f) {
                     fireflyAcc -= 1f;
                     SpawnFirefly(player);
@@ -318,7 +328,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             }
             //叶浪波次：只在阵风包络内成波成浪
             if (GustEnv > 0.1f) {
-                leafAcc += 0.15f * GustEnv * Presence;
+                leafAcc += 0.15f * GustEnv * Presence * density;
                 while (leafAcc >= 1f) {
                     leafAcc -= 1f;
                     SpawnGustLeaf();
@@ -390,13 +400,16 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                 Main.instance.LoadNPC(NPCID.Raven);
                 int birds = Main.rand.Next(3, 6);
                 for (int i = 0; i < birds; i++) {
+                    //预警态鸟群整齐背离来敌（逃向=安全向的读法）；雾夜惊吓保持随机四散
+                    float side = ravenBurstDir != 0 ? ravenBurstDir : Main.rand.NextBool() ? 1f : -1f;
                     PRTLoader.NewParticle<PRT_WoodsongRaven>(
                         ravenBurstPos + Main.rand.NextVector2Circular(26f, 14f),
-                        new Vector2((Main.rand.NextBool() ? 1f : -1f) * Main.rand.NextFloat(1.0f, 2.2f),
+                        new Vector2(side * Main.rand.NextFloat(1.0f, 2.2f),
                             -Main.rand.NextFloat(1.6f, 2.6f)),
                         Color.White, Main.rand.NextFloat(0.72f, 1.02f))
                         ?.Configure(PRT_WoodsongRaven.ModeBird, Main.rand.Next(88, 132));
                 }
+                ravenBurstDir = 0;
                 int shed = Main.rand.Next(7, 12);
                 for (int i = 0; i < shed; i++) {
                     PRTLoader.NewParticle<PRT_WoodsongLeaf>(
@@ -436,6 +449,60 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                 ?.Configure(PRT_WoodsongRaven.ModeShade, 26);
             SoundEngine.PlaySound(SoundID.Grass with {
                 Volume = 0.22f, Pitch = -0.35f, MaxInstances = 3
+            }, top);
+        }
+
+        //==================== 「惊鸦预警」（威胁方向情报） ====================
+
+        /// <summary>预警感知半径（像素）</summary>
+        private const float WarnRange = 1100f;
+        /// <summary>预警触发后的冷却（帧）</summary>
+        private const int WarnCooldown = 1080;
+
+        /// <summary>
+        /// 敌讯惊鸦：有敌对个体锁定本地玩家并进入感知圈时，黑影自敌向掠入、
+        /// 鸦群整齐背离来敌惊飞——鸟群逃离的反方向就是敌人来向。
+        /// 纯本地情报演出（读的都是已同步的 NPC 状态），不做任何判定改动
+        /// </summary>
+        private static void UpdateThreatWarning(Player player) {
+            if (--warnIn > 0) {
+                return;
+            }
+            warnIn = 90;//未触发时低频重扫
+
+            NPC threat = null;
+            float best = WarnRange;
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (npc.friendly || npc.damage <= 0 || npc.lifeMax <= 5 || npc.SpawnedFromStatue) {
+                    continue;
+                }
+                if (!npc.HasValidTarget || npc.target != player.whoAmI) {
+                    continue;
+                }
+                float dist = npc.Distance(player.Center);
+                if (dist < best) {
+                    best = dist;
+                    threat = npc;
+                }
+            }
+            if (threat == null) {
+                return;
+            }
+
+            float threatSide = threat.Center.X >= player.Center.X ? 1f : -1f;
+            if (!TryFindTreetop(player, out Vector2 top)) {
+                top = player.Center + new Vector2(threatSide * 140f, -170f);
+            }
+            ravenBurstPos = top;
+            ravenBurstDir = (int)-threatSide;
+            ravenBurstIn = 14;
+            warnIn = WarnCooldown;
+            //第一拍：黑影自敌向掠入 + 一声短促枝响
+            PRTLoader.NewParticle<PRT_WoodsongRaven>(top + new Vector2(threatSide * 52f, -6f),
+                new Vector2(-threatSide * 3.2f, 0.1f), Color.White, 1f)
+                ?.Configure(PRT_WoodsongRaven.ModeShade, 22);
+            SoundEngine.PlaySound(SoundID.Grass with {
+                Volume = 0.30f, Pitch = -0.2f, MaxInstances = 3
             }, top);
         }
 
@@ -548,13 +615,16 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
         /// 找露天地表：自玩家高度向下走到首个实心格；上方那格必须无墙、无深液体。
         /// 供雾团锚定、萤火与鬼火落位、树冠扫描共用
         /// </summary>
-        internal static bool TryFindOutdoorSurface(int tileX, out int surfaceY) {
+        internal static bool TryFindOutdoorSurface(int tileX, out int surfaceY)
+            => TryFindOutdoorSurfaceFor(Main.LocalPlayer, tileX, out surfaceY);
+
+        /// <summary>锚定指定玩家的露天地表扫描：服务端荆棘布点复用，不读 LocalPlayer</summary>
+        internal static bool TryFindOutdoorSurfaceFor(Player anchor, int tileX, out int surfaceY) {
             surfaceY = 0;
             if (tileX < 20 || tileX >= Main.maxTilesX - 20) {
                 return false;
             }
-            Player player = Main.LocalPlayer;
-            int yStart = Math.Max((int)(player.Center.Y / 16f) - 64, 24);
+            int yStart = Math.Max((int)(anchor.Center.Y / 16f) - 64, 24);
             int yEnd = Math.Min((int)Main.worldSurface + 26, Main.maxTilesY - 20);
             for (int y = yStart; y < yEnd; y++) {
                 if (!WorldGen.SolidTile(tileX, y)) {

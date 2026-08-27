@@ -7,23 +7,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
 {
     /// <summary>
     /// 黑闪爆点全屏缓冲：客户端 Push 写入，渲染句柄消费衰减。
-    /// 距离门控：爆心离本地玩家过远只留弱波，不打满帧冲击
+    /// 距离门控：爆心离本地玩家过远只留弱波，不打满帧冲击。
+    /// 强度可超 1（残血底牌拍推 2.2）：shader 侧主波加宽并显形尾随涟漪列
     /// </summary>
     internal static class MLordBlackFlashFX
     {
         /// <summary>冲击帧持续（前 2 帧全屏黑白反转，其后红波衰减）</summary>
         internal const int ImpactFrames = 2;
-        internal const int TotalLife = 26;
+        /// <summary>默认寿命（开幕拍/失手引爆）</summary>
+        internal const int BaseLife = 26;
         /// <summary>全效距离；超过打折，超过两倍不推</summary>
         private const float FullRange = 1500f;
 
         internal static Vector2 WorldCenter { get; private set; }
         internal static int Age { get; private set; }
+        internal static int Life { get; private set; } = BaseLife;
         internal static float Strength { get; private set; }
-        internal static bool Active => Age < TotalLife && Strength > 0.02f;
+        internal static bool Active => Age < Life && Strength > 0.02f;
 
-        /// <summary>推入一次黑闪爆点（仅绘制端）</summary>
-        public static void PushFlash(Vector2 worldCenter) {
+        /// <summary>推入一次黑闪爆点（仅绘制端）。strength 超 1 = 残血大爆，life 拉长扩散窗</summary>
+        public static void PushFlash(Vector2 worldCenter, float strength = 1f, int life = BaseLife) {
             if (VaultUtils.isServer) {
                 return;
             }
@@ -32,18 +35,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                 return;
             }
             WorldCenter = worldCenter;
-            Strength = dist < FullRange ? 1f : 1f - (dist - FullRange) / FullRange;
+            Strength = (dist < FullRange ? 1f : 1f - (dist - FullRange) / FullRange) * strength;
+            Life = life;
             Age = 0;
         }
 
         internal static void Update() {
-            if (Age < TotalLife) {
+            if (Age < Life) {
                 Age++;
             }
         }
 
         public static void Clear() {
-            Age = TotalLife;
+            Age = Life;
             Strength = 0f;
         }
     }
@@ -70,10 +74,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                 return;
             }
 
-            float t = MLordBlackFlashFX.Age / (float)MLordBlackFlashFX.TotalLife;
+            float t = MLordBlackFlashFX.Age / (float)MLordBlackFlashFX.Life;
             float impact = MLordBlackFlashFX.Age < MLordBlackFlashFX.ImpactFrames ? 1f : 0f;
-            //红波：快速外扩，尾段平方衰减
-            float waveR = VaultUtils.EaseOutCubic(t) * 1.1f;
+            //红波：快速外扩，尾段平方衰减；加长寿命的大爆把波扫到 1.7 屏高外（涟漪列跟着出画）
+            float span = 1.1f + 0.6f * MathHelper.Clamp(
+                (MLordBlackFlashFX.Life - MLordBlackFlashFX.BaseLife) / 32f, 0f, 1f);
+            float waveR = VaultUtils.EaseOutCubic(t) * span;
             float waveStrength = (1f - t) * (1f - t) * MLordBlackFlashFX.Strength;
 
             Vector2 centerUV = WorldToScreenUV(MLordBlackFlashFX.WorldCenter);

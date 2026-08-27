@@ -22,9 +22,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Pirates
         private const int RetryDelay = 30;
         /// <summary>资格不符（雕像怪等）的复查间隔</summary>
         private const int IneligibleDelay = 120;
-        /// <summary>出生后首攻等待窗，随机错开避免同屏齐动</summary>
-        private const int FirstCooldownMin = 110;
-        private const int FirstCooldownMax = 280;
+        /// <summary>出生后首攻等待窗，随机错开避免同屏齐动（M7 密度预算：遭遇 ≤3 秒可见首个机制）</summary>
+        private const int FirstCooldownMin = 60;
+        private const int FirstCooldownMax = 180;
         /// <summary>冷却随机抖动</summary>
         private const int CooldownJitter = 50;
 

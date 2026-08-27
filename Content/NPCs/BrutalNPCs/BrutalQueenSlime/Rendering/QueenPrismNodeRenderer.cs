@@ -7,7 +7,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Rendering
 {
-    /// <summary>棱晶节点绘制：着色器晶壳+凝胶核+光冕，血量映射裂纹</summary>
+    /// <summary>棱晶节点绘制：分面宝石晶壳+凝胶核+光冕，血量映射裂纹，馈能点亮</summary>
     internal static class QueenPrismNodeRenderer
     {
         private const float ShellHalfSize = 96f;
@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Rendering
             Vector2 center = npc.Center + bob;
 
             //晶壳(着色器quad)，需要暂停批次
-            Effect effect = EffectLoader.QueenPrismCrystal?.Value;
+            Effect effect = EffectLoader.QueenPrismGem?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
             bool dummy = npc.IsABestiaryIconDummy;
             if (effect != null && noise != null && !dummy) {
@@ -66,10 +66,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Rendering
 
             effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-            effect.Parameters["uMode"]?.SetValue(0f);
             effect.Parameters["uGrow"]?.SetValue(grow);
             effect.Parameters["uShatter"]?.SetValue(hurt);
-            effect.Parameters["uCharge"]?.SetValue(0f);
+            //馈线供能视觉信号(光束逐帧写入,节点AI衰减)
+            effect.Parameters["uCharge"]?.SetValue(MathHelper.Clamp(npc.localAI[3], 0f, 1.2f));
             effect.Parameters["uHueSeed"]?.SetValue(hueSeed);
             effect.Parameters["seed"]?.SetValue(npc.whoAmI * 0.173f % 1f);
             //噪声显式绑到 s1（shader 内 register(s1)），参数式绑定废弃

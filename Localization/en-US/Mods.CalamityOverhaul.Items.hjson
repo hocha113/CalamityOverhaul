@@ -1,4 +1,4 @@
-﻿SHPCModTooltipDraw: {
+SHPCModTooltipDraw: {
 	InstalledHeader: INSTALLED MODULES
 	NoModules: NONE
 	BonusHeader: TOTAL MODULE BONUSES
@@ -1139,7 +1139,7 @@ DestroyersBladeEX: {
 		'''
 		Heavy swings unleash black-crimson slashes, energy beams and shadow bolts
 		Sheathing the blade briefly engages the Stalk Protocol: increased movement speed
-		While stalking near a target, right click to become the Destroyer's maw and bite it
+		While stalking, right click to become the Destroyer's maw and bite prey; with no target it lunges toward the cursor
 		A successful bite deals massive damage and engages the Annihilation Protocol:
 		all projectiles are empowered with homing, and finishers launch Destroyer heads
 		"It's always easier to destroy than to build"
@@ -5004,8 +5004,8 @@ WingsOfInterference: {
 		The instant dawn or dusk arrives, a screen-wide interference burst deals 1350 base damage and clears hostile projectiles
 		"Day and night interfere at the wingtip; light collapses where paths cross"
 		'''
-	FormDay: "It is day now: the interference weave is deployed"
-	FormNight: "It is night now: swift auroral flight is engaged"
+	FormDay: It is day now: the interference weave is deployed
+	FormNight: It is night now: swift auroral flight is engaged
 }
 
 BlackFlashSigil: {
@@ -5053,7 +5053,17 @@ NinjaCthulsparkBoots: {
 		'''
 		Grants all the powers of the Cthulspark Boots
 		Grants a 10% chance to dodge attacks, and the ability to climb and slide down walls
-		Your dash is always the great eye's ramming charge
+		Double tap a direction to perform a crimson shadow dash, faster and farther, trailing scarlet afterimages
+		The charge bashes enemies aside like the Shield of Cthulhu, granting a moment of immunity on impact
 		"The eye tied on its headband and swore never to blink again"
+		'''
+}
+
+BssBloomBud: {
+	DisplayName: Thorned Bloombud
+	Tooltip:
+		'''
+		Summons the Bloomsand Serpent when used on the desert surface
+		"The root of the dunes grows hungry when it blooms"
 		'''
 }

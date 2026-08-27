@@ -25,7 +25,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
         private const int SilenceEnd = 116;
         private const int TsunamiWave = 152;
         private const int BoltWaveStart = 205;
-        private const int MegaTelegraph = 240;
+        //末相预警线 -30%：巨冲预告 28→20 帧（预告晚亮，起冲帧不动）
+        private const int MegaTelegraph = 248;
         private const int MegaDash = 268;
         private const int ExhaleStart = 306;
         private const int TotalTime = 392;
@@ -151,7 +152,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                     FishronTsunamiWallProj.WaveDamage, 0f, Main.myPlayer, -1f, 1f);
             }
 
-            //第三波：预判落雷四连（服务端排程：先亮 36 帧预告，到点落雷）
+            //第三波：预判落雷三连（服务端排程：先亮预告，到点落雷；提前量同闪电雨常数）
             if (!VaultUtils.isClient) {
                 if (Timer >= BoltWaveStart && Timer < MegaTelegraph && (int)(Timer - BoltWaveStart) % 16 == 0) {
                     Vector2 ground = FishronMotionFX.FindSurfaceBelow(
@@ -168,7 +169,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                             new Vector2(ground.X, ground.Y - 980f), Vector2.Zero,
                             ModContent.ProjectileType<FishronSkyBoltProj>(),
                             FishronSkyBoltProj.BoltDamage, 0f, Main.myPlayer,
-                            ground.Y);
+                            0f, 0f, ground.Y);
                         boltPlan.RemoveAt(i);
                     }
                 }
@@ -205,7 +206,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                 megaLaunched = true;
                 Vector2 dir = megaDashDir == Vector2.Zero
                     ? (player.Center - npc.Center).SafeNormalize(Vector2.UnitY) : megaDashDir;
-                npc.velocity = dir * 62f;
+                //末相冲刺 +15%：62→71
+                npc.velocity = dir * 71f;
                 npc.netUpdate = true;
                 FishronMotionFX.SpawnDashBurst(npc.Center, dir, 1.4f);
                 SoundEngine.PlaySound(SoundID.Zombie20 with { Volume = 1.2f, Pitch = 0.35f }, npc.Center);

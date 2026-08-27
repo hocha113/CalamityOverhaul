@@ -21,6 +21,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
 
         private ref float Timer => ref Projectile.localAI[0];
 
+        /// <summary>移速统一倍率：初速×2、加速度×4、封顶×2——同一条弹道加倍速穿行，
+        /// 弧形与落点不变，走完只用一半时间（生成侧速度数值不改口径）</summary>
+        private const float SpeedBoost = 2f;
+
+        /// <summary>体积统一倍率：本体/拖尾/星芯画幅与碰撞箱一并缩至原大小 75%（原型遮屏过大）</summary>
+        private const float SizeScale = 0.75f;
+
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 12;
             ProjectileID.Sets.TrailingMode[Type] = 2;
@@ -28,7 +35,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
         }
 
         public override void SetDefaults() {
-            Projectile.width = Projectile.height = 30;
+            Projectile.width = Projectile.height = (int)(30 * SizeScale);
             Projectile.hostile = true;
             Projectile.friendly = false;
             Projectile.tileCollide = false;
@@ -40,17 +47,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
 
         public override void AI() {
             Timer++;
+            //点火倍率：首帧按生成包初速翻倍（各端确定性同步）
+            if (Timer == 1f) {
+                Projectile.velocity *= SpeedBoost;
+            }
 
-            //重力 + 横向弯折（天体弧线轨迹，绝不匀速直线）
-            Projectile.velocity.Y += 0.11f;
-            Projectile.velocity.X += Projectile.ai[0];
-            if (Projectile.velocity.Length() > 23f) {
-                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitY) * 23f;
+            //重力 + 横向弯折（天体弧线轨迹，绝不匀速直线）——加速度按倍率平方缩放，弧形不变
+            Projectile.velocity.Y += 0.11f * SpeedBoost * SpeedBoost;
+            Projectile.velocity.X += Projectile.ai[0] * SpeedBoost * SpeedBoost;
+            if (Projectile.velocity.Length() > 23f * SpeedBoost) {
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitY) * (23f * SpeedBoost);
             }
             Projectile.rotation = Projectile.velocity.ToRotation();
 
-            //出生 24 帧后允许撞地
-            if (Timer > 24f) {
+            //出生短程后允许撞地（帧数随倍率缩短，放行深度不变）
+            if (Timer > 24f / SpeedBoost) {
                 Projectile.tileCollide = true;
             }
             //到达引爆深度
@@ -100,7 +111,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             Main.EntitySpriteDraw(glow, screenPos, null, MLordDirector.Phantasmal with { A = 0 } * alpha,
                 rotation, glow.Size() / 2f, bodyScale, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(star, screenPos, null, MLordDirector.MoonWhite with { A = 0 } * (0.9f * alpha),
-                starRot, star.Size() / 2f, 0.3f * alpha, SpriteEffects.None, 0);
+                starRot, star.Size() / 2f, 0.3f * SizeScale * alpha, SpriteEffects.None, 0);
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -111,7 +122,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             }
 
             float stretch = MathHelper.Clamp(Projectile.velocity.Length() * 0.03f, 0.2f, 0.8f);
-            Vector2 bodyScale = new(0.4f * (1f + stretch), 0.4f * (1f - stretch * 0.35f));
+            Vector2 bodyScale = new(0.4f * SizeScale * (1f + stretch), 0.4f * SizeScale * (1f - stretch * 0.35f));
             float flicker = 0.85f + 0.15f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 21f + Projectile.whoAmI);
 
             //拖尾 = 本体同材质重绘（契约5）：双层彗体沿轨迹衰减，横轴比 0.85→0.5

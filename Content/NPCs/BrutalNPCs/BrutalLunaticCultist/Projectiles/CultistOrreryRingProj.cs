@@ -12,8 +12,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
 {
     /// <summary>
     /// 离体仪环:浑天仪环拆下当回旋刃掷出<br/>
-    /// ai[0]=环序 0~2 ai[1]=宿主npc ai[2]=段 0瞄准(侧立刃线=预告) 1掷出 2悬停泄劲 3回收<br/>
-    /// 预告即承诺:瞄准段末锁死方向;伤害窗=速度窗(|v|&gt;7),悬停无害
+    /// ai[0]=环序 0~2 ai[1]=宿主npc ai[2]=段(取绝对值) 0瞄准(侧立刃线=预告) 1掷出 ±2回旋(符号=旋向) 3回收<br/>
+    /// 回旋段绕定圆扫一轮,扫满 2π 断环回收<br/>
+    /// 预告即承诺:瞄准段末锁死方向;伤害窗=速度窗(|v|&gt;7),仅瞄准段无害<br/>
+    /// 公平阀:回旋圆心即安全眼(眼半径≈回旋半径-刃宽);回收限转率导引+捕获扩张+超时自散,不存在永旋
     /// </summary>
     internal class CultistOrreryRingProj : ModProjectile
     {
@@ -23,10 +25,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         private const float LaunchSpeed = 25f;
         /// <summary>伤害速度阈:低于此速读作收势,无害</summary>
         private const float DamageSpeed = 7f;
+        /// <summary>回旋巡航速度(px/f);圆半径=速度/角速度,半径由下方常量单独声明(19→23.75,+25% 调参)</summary>
+        private const float LoopSpeed = 23.75f;
+        /// <summary>回旋半径基准(px),按环序加档错圈</summary>
+        private const float LoopRadiusBase = 240f;
+        private const float LoopRadiusStep = 25f;
+        /// <summary>回旋总角程(一轮 2π),扫满即断环回收</summary>
+        private const float LoopTotalSweep = MathHelper.TwoPi;
 
         private int RingIndex => (int)Projectile.ai[0];
         private int OwnerWho => (int)Projectile.ai[1];
-        private int Stage => (int)Projectile.ai[2];
+        /// <summary>段号(ai[2] 绝对值;回旋段用符号载旋向)</summary>
+        private int Stage => Math.Abs((int)Projectile.ai[2]);
         private ref float Timer => ref Projectile.localAI[0];
         /// <summary>进动相位(本地演出量)</summary>
         private ref float Precession => ref Projectile.localAI[1];
@@ -34,6 +44,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         private float RingRadius => CultistOrreryRig.RingRadius[Math.Clamp(RingIndex, 0, 2)];
 
         private int lastSeenStage = -1;
+        /// <summary>回旋累计角程(各端本地,段拍清零)</summary>
+        private float loopSwept;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
@@ -62,8 +74,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 return;
             }
 
-            //段切换的各端本地拍点(ai[2] 已同步)
+            //段切换的各端本地拍点(ai[2] 已同步);计时/角程是本地量,在此对齐,不依赖权威端的 localAI
             if (Stage != lastSeenStage) {
+                Timer = 0f;
+                loopSwept = 0f;
                 OnStageBeat(owner);
                 lastSeenStage = Stage;
             }
@@ -78,7 +92,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                         //掷出:一帧满速,方向即锁死的瞄准向
                         Projectile.ai[2] = 1;
                         Projectile.velocity = aim * LaunchSpeed;
-                        Timer = 0;
                         Projectile.netUpdate = true;
                     }
                     break;
@@ -90,32 +103,36 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                         Projectile.velocity *= 1.012f;
                     }
                     if (!VaultUtils.isClient && (Timer >= 30 || Projectile.Center.Distance(owner.Center) > 760f)) {
-                        Projectile.ai[2] = 2;
-                        Timer = 0;
+                        //旋向抉择(权威端一次定死,符号随 ai[2] 同步):朝目标所在侧盘旋,圆带扫回玩家区
+                        Player target = owner.HasValidTarget ? Main.player[owner.target] : null;
+                        Vector2 toRef = (target != null && target.Alives() ? target.Center : owner.Center) - Projectile.Center;
+                        float crossZ = Projectile.velocity.X * toRef.Y - Projectile.velocity.Y * toRef.X;
+                        Projectile.ai[2] = crossZ >= 0f ? 2f : -2f;
                         Projectile.netUpdate = true;
                     }
                     break;
                 }
                 case 2: {
-                    //悬停泄劲:硬刹+空转flourish,无害窗
-                    Precession += 0.30f;
-                    Projectile.velocity *= 0.72f;
-                    if (!VaultUtils.isClient && Timer >= 26) {
-                        Projectile.ai[2] = 3;
-                        Timer = 0;
+                    //回旋一轮:每帧按 角速度=速度/目标半径 旋进速度向,路径即定半径圆(各端由同步速度确定性重演)
+                    Precession += 0.20f;
+                    float radius = LoopRadiusBase + RingIndex * LoopRadiusStep;
+                    float speed = MathHelper.Lerp(Projectile.velocity.Length(), LoopSpeed, 0.16f);
+                    float omega = speed / radius;
+                    float sign = Projectile.ai[2] < 0f ? -1f : 1f;
+                    Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitX).RotatedBy(omega * sign) * speed;
+                    loopSwept += omega;
+                    //扫满一轮断环回收,计时仅作兜底
+                    if (!VaultUtils.isClient && (loopSwept >= LoopTotalSweep || Timer >= 120f)) {
+                        Projectile.ai[2] = 3f;
                         Projectile.netUpdate = true;
                     }
                     break;
                 }
                 default: {
-                    //回收:向宿主复利扑回
+                    //回收:限转率导引扑回;转率/速度随时爬升+捕获半径扩张+超时自散,杜绝绕宿主永旋
                     Precession += 0.22f;
-                    Vector2 toOwner = (owner.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
-                    Projectile.velocity = (Projectile.velocity + toOwner * 1.1f);
-                    if (Projectile.velocity.Length() > 30f) {
-                        Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 30f;
-                    }
-                    if (Projectile.Center.Distance(owner.Center) < 70f) {
+                    Vector2 toOwner = owner.Center - Projectile.Center;
+                    if (toOwner.Length() < 70f + Timer * 1.2f) {
                         //归位:接环拍
                         if (!VaultUtils.isServer) {
                             SoundEngine.PlaySound(SoundID.Item101 with { Volume = 0.5f, Pitch = 0.4f + RingIndex * 0.15f }, owner.Center);
@@ -124,6 +141,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                         Projectile.Kill();
                         return;
                     }
+                    if (Timer >= 140f) {
+                        //兜底:导引超时就地散成符文,不许赖场
+                        CultistMotion.RuneBurst(Projectile.Center, CultistMotion.PhaseCore(PaletteOf(owner)), 8, 5f);
+                        Projectile.Kill();
+                        return;
+                    }
+                    float speed = MathHelper.Min(16f + Timer * 0.5f, 30f);
+                    float maxTurn = 0.06f + Timer * 0.004f;
+                    float heading = Projectile.velocity.ToRotation().AngleTowards(toOwner.ToRotation(), maxTurn);
+                    Projectile.velocity = heading.ToRotationVector2() * speed;
                     break;
                 }
             }
@@ -144,6 +171,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                     }
                     break;
                 case 2:
+                    //入圈拍:回旋开始的清音
                     if (!VaultUtils.isServer) {
                         SoundEngine.PlaySound(SoundID.Item118 with { Volume = 0.4f, Pitch = 0.3f }, Projectile.Center);
                     }
@@ -153,14 +181,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
 
         private static int PaletteOf(NPC owner) => owner != null && owner.active ? (int)owner.ai[0] : 0;
 
-        /// <summary>速度窗:飞行与回收咬人,瞄准/悬停无害</summary>
+        /// <summary>速度窗:掷出/回旋/回收咬人,仅瞄准段无害</summary>
         public override bool CanHitPlayer(Player target) {
-            return Stage is 1 or 3 && Projectile.velocity.Length() > DamageSpeed;
+            return Stage >= 1 && Projectile.velocity.Length() > DamageSpeed;
         }
 
         /// <summary>胶囊判定:沿投影主轴(=飞行向)的刃线</summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            if (Stage is not 1 and not 3) {
+            if (Stage < 1) {
                 return false;
             }
             Vector2 axis = Projectile.velocity.SafeNormalize(Vector2.UnitX) * RingRadius * 0.92f;
@@ -176,13 +204,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             Color bright = Color.Lerp(mid, Color.White, 0.5f);
             Vector2 flightDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             float spin = Main.GlobalTimeWrappedHourly * 1.6f + RingIndex * 0.7f;
-            float charge = Stage is 1 or 3 ? 1f : 0.55f;
+            float charge = Stage >= 1 ? 1f : 0.55f;
 
             SpriteBatch sb = Main.spriteBatch;
             sb.End();
 
             //旋转涂抹:回溯位置重画残环(自转的表达=转体残影)
-            if (Stage is 1 or 3) {
+            if (Stage >= 1) {
                 for (int i = 4; i >= 2; i -= 2) {
                     if (Projectile.oldPos[i] == Vector2.Zero) {
                         continue;

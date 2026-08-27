@@ -18,10 +18,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         public override string StateName => "CultistCometVolley";
         public override CultistStateIndex StateIndex => CultistStateIndex.Comet;
 
-        private const int Windup = 40;
+        private const int Windup = 28;
         /// <summary>彗星错拍间隔(帧)</summary>
-        private const int BeatGap = 14;
-        private const int Timeout = 170;
+        private const int BeatGap = 10;
+        private const int Timeout = 130;
 
         /// <summary>绕向(权威端定,只有权威端发射用得到)</summary>
         private float orbitDir = 1f;
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             CultistMotion.SpringHover(npc, hover, 0.013f, 0.09f, 17f);
 
             //蓄势语调:链音爬调+向心符文
-            if ((Timer == 8 || Timer == 22 || Timer == 34) && !VaultUtils.isServer) {
+            if ((Timer == 6 || Timer == 15 || Timer == 24) && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item101 with {
                     Volume = 0.6f,
                     Pitch = -0.4f + Timer / (float)Windup * 0.9f
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             }
 
             //双出口:甩完收势(彗星自巡自灭),或超时兜底
-            if (Timer >= Windup + count * BeatGap + 26) {
+            if (Timer >= Windup + count * BeatGap + 18) {
                 return new CultistCoilState();
             }
             if (Timer >= Timeout) {

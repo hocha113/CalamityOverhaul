@@ -27,6 +27,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         /// <summary>掌击预警线强度（蓄势后半段亮起，各端本地推导）</summary>
         private float slamTelegraph;
 
+        //―――― 瘫臂（眼被打爆，手臂本身完好）――――
+        /// <summary>吊臂链长 px：近乎伸直的自然下垂，仍在肩部可达环带内</summary>
+        private const float LimpChainLength = 570f;
+        /// <summary>静止吊角相对正下方的外偏 rad：臂挂在躯干外侧，不折进剪影</summary>
+        private const float LimpRestTilt = 0.6f;
+        /// <summary>重力回正刚度（摆周期约 0.7 秒，读作沉重的大臂）</summary>
+        private const float LimpGravityGain = 0.02f;
+        /// <summary>阻力驱动系数：本体越快，瘫臂拖得越靠后</summary>
+        private const float LimpDragGain = 0.000636f;
+        /// <summary>摆幅上限 rad：完好的手臂不会甩过肩线</summary>
+        private const float LimpMaxSwing = 1.2f;
+        /// <summary>痉挛周期与单次发作帧长（抽一阵、僵一阵）</summary>
+        private const float SpasmPeriod = 110f;
+        private const float SpasmBurst = 22f;
+
+        /// <summary>吊臂角（肩→手方向），绕肩定长角摆的唯一自由度</summary>
+        private float limpAngle;
+        private float limpAngleVel;
+        private bool limpInit;
+
         public override bool? CanBrutalOverride() {
             return null;
         }
@@ -78,7 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 ? MLordDirector.PalmContactDamage : 0;
 
             if (broken) {
-                UpdateBroken(core);
+                UpdateBroken(core, stateTimer);
             }
             else {
                 UpdateAlive(core, coreAI, coreState, stateTimer, hold);
@@ -147,12 +167,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 }
                 npc.velocity = Vector2.Lerp(npc.velocity, want, 0.16f);
 
-                //常态姿态
-                float targetGrip = coreState == MLordStateIndex.MoonBite ? 2.6f : 0.6f;
-                gripFrame = MathHelper.Lerp(gripFrame, targetGrip, 0.1f);
-                pose.PupilAngle = pose.PupilAngle.AngleLerp((targetPlayer.Center - npc.Center).ToRotation(), 0.25f);
-                pose.PupilOut = MathHelper.Lerp(pose.PupilOut, eyeOpen ? 0.75f : 0.3f, 0.08f);
-                pose.Glow = MathHelper.Lerp(pose.Glow, eyeOpen ? 0.65f : 0.1f, 0.1f);
+                //每技能一种眼相（看眼即知下一拍），协奏预备窗在其上叠加
+                ApplyIdleEyeCue(core, coreAI, coreState, stateTimer, eyeOpen);
 
                 //协奏声部预备：出弹前抬手亮眼张掌（预备动作即弹幕预告，契约2）
                 if (coreState == MLordStateIndex.Concerto && coreAI?.Context != null) {
@@ -172,6 +188,114 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 
             pose.Broken = false;
             Lighting.AddLight(npc.Center, MLordDirector.Phantasmal.ToVector3() * (0.25f + pose.Glow * 0.4f));
+        }
+
+        /// <summary>
+        /// 编队待机的掌眼预备语言：每门技能一种眼相——扫描入定望头、弦月各盯本弧扫向、
+        /// 坍缩五目共盯井位、星陨仰望星图、噬咬饿相明灭、掌击旁观追执行者。
+        /// 弱点开阖仍主导亮度（睁眼亮、闭眼暗），技能语言只在各自区间内做文章
+        /// </summary>
+        private void ApplyIdleEyeCue(NPC core, MoonLordCoreAI coreAI, MLordStateIndex coreState,
+            int stateTimer, bool eyeOpen) {
+            int slot = ((int)npc.ai[MLordAiSlots.HandRow] == 1 ? 2 : 0)
+                + ((int)npc.ai[MLordAiSlots.HandSide] == 0 ? 0 : 1);
+            float clock = MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvFormationClock);
+
+            float wantAngle = (targetPlayer.Center - npc.Center).ToRotation();
+            float wantOut = eyeOpen ? 0.75f : 0.3f;
+            float wantGlow = eyeOpen ? 0.65f : 0.1f;
+            float targetGrip = 0.6f;
+            float angleGain = 0.25f;
+
+            switch (coreState) {
+                case MLordStateIndex.DeathrayScan: {
+                    //扫描仪式：火力让渡给头颅——四掌半合入定，瞳孔黯淡地齐望焊接位上的头，
+                    //眼暗即打不动（本态弱点全程在头上）
+                    wantAngle = (core.Center + MLordDirector.HeadWeldOffset - npc.Center).ToRotation();
+                    wantOut = 0.55f;
+                    wantGlow = 0.15f + 0.05f * (float)Math.Sin(clock * 0.05f + slot * 1.7f);
+                    targetGrip = 1.4f;
+                    angleGain = 0.1f;
+                    break;
+                }
+                case MLordStateIndex.CrescentClose: {
+                    //弧光支点：出弧前各掌眼盯死自己那道弧的起始扫向（四眼四向的罗盘预告），
+                    //蓄力渐亮；出弧后眼随刃转
+                    wantAngle = MLordCrescentCloseState.ArcAimAngle(slot, stateTimer);
+                    wantOut = 0.95f;
+                    float charge = MathHelper.Clamp(stateTimer / (float)MLordCrescentCloseState.WindupEnd, 0f, 1f);
+                    wantGlow = 0.3f + 0.6f * charge;
+                    targetGrip = 0f;
+                    angleGain = 0.3f;
+                    break;
+                }
+                case MLordStateIndex.GravityCollapse: {
+                    //引力坍缩：五目共盯一点——井还没开就盯着它将要出现的位置，视线汇聚处即危险处
+                    if (coreAI?.Context != null) {
+                        Vector2 focus = MLordGravityCollapseState.WellFocusPoint(coreAI.Context, stateTimer);
+                        wantAngle = (focus - npc.Center).ToRotation();
+                    }
+                    wantOut = 0.9f;
+                    wantGlow = 0.5f + 0.3f * (float)Math.Sin(clock * 0.09f);
+                    targetGrip = 0.3f;
+                    angleGain = 0.3f;
+                    break;
+                }
+                case MLordStateIndex.Starfall: {
+                    //星陨颂唱：随头仰望天穹星图（全体抬眼=玩家该抬头了），辉光随颂唱轻微明灭
+                    Vector2 sky = npc.Center - Vector2.UnitY;
+                    if (stateTimer >= MLordStarfallState.WaveOneReveal) {
+                        sky = new Vector2(
+                            MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvAnchorX, npc.Center.X),
+                            MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvAnchorY, npc.Center.Y - 600f));
+                    }
+                    wantAngle = (sky - npc.Center).ToRotation();
+                    wantOut = 0.85f;
+                    wantGlow = 0.14f + 0.1f * (float)Math.Sin(clock * 0.11f + slot * 0.8f);
+                    targetGrip = 1.6f;
+                    angleGain = 0.16f;
+                    break;
+                }
+                case MLordStateIndex.MoonBite: {
+                    //噬咬合围：饿相——瞳孔全张死盯猎物，高频明灭像咽口水
+                    wantOut = 0.95f;
+                    wantGlow = 0.55f + 0.3f * (float)Math.Sin(clock * 0.37f + slot * 1.3f);
+                    targetGrip = 2.6f;
+                    angleGain = 0.35f;
+                    break;
+                }
+                case MLordStateIndex.TidalPalms: {
+                    //掌击非执行位：收拳戒备压暗——出手的那两只才是亮的，明暗即分工；
+                    //旁观眼追当前执行者，看眼即知这拍谁在打
+                    wantOut = 0.6f;
+                    wantGlow = 0.3f;
+                    targetGrip = 1.8f;
+                    if (coreAI?.Context != null
+                        && MLordTidalPalmsState.TryGetBeat(coreAI.Context, stateTimer, out int slamIndex, out _)) {
+                        Span<int> performers = stackalloc int[MLordTidalPalmsState.MaxPerformers];
+                        int count = MLordTidalPalmsState.ResolvePerformers(coreAI.Context, slamIndex, performers);
+                        if (count > 0) {
+                            wantAngle = (Main.npc[performers[0]].Center - npc.Center).ToRotation();
+                        }
+                    }
+                    break;
+                }
+                case MLordStateIndex.PalmExecution: {
+                    //处刑旁观位：全暴露地盯着掌中猎物（救援窗口，眼亮可打）
+                    int victimIndex = (int)MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvGrabTarget) - 1;
+                    if (victimIndex >= 0 && victimIndex < Main.maxPlayers && Main.player[victimIndex].active) {
+                        wantAngle = (Main.player[victimIndex].Center - npc.Center).ToRotation();
+                    }
+                    wantOut = 0.85f;
+                    wantGlow = 0.75f;
+                    break;
+                }
+            }
+
+            gripFrame = MathHelper.Lerp(gripFrame, targetGrip, 0.1f);
+            pose.PupilAngle = pose.PupilAngle.AngleLerp(wantAngle, angleGain);
+            pose.PupilOut = MathHelper.Lerp(pose.PupilOut, wantOut, 0.08f);
+            pose.Glow = MathHelper.Lerp(pose.Glow, wantGlow, 0.1f);
         }
 
         /// <summary>掌击子相位姿态（入位划线/预警张掌/冲线握拳/硬直摊开）</summary>
@@ -392,42 +516,98 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 
         #endregion
 
-        #region 破坏残口行为
+        #region 瘫臂行为（眼窝已爆，手臂完好）
 
-        private void UpdateBroken(NPC core) {
+        private void UpdateBroken(NPC core, int stateTimer) {
             npc.dontTakeDamage = true;
             npc.damage = 0;
             slamTelegraph = 0f;
-            wriggleTimer++;
+            float reanimate = MLordCoreExposureState.ReanimateProgress(core, stateTimer);
+            TickWriggle(core, reanimate);
+            pose.Broken = true;
 
-            //终局爬行征用：残口原样充当爬行肢（断腕蠕动 + 手壳握型随相位）
+            //终局爬行征用：眼窝已爆的手臂原样充当爬行肢（手壳握型随相位）
             if (MLordLocomotion.TryGetClaim(npc, out int crawlPhase, out Vector2 crawlAnchor)) {
                 MLordLocomotion.ApplyHandMotion(npc, crawlPhase, crawlAnchor);
                 gripFrame = MathHelper.Lerp(gripFrame,
                     crawlPhase == MLordCrawlPhase.Planted ? 3f
                     : crawlPhase == MLordCrawlPhase.Reach ? 0f : 1f, 0.35f);
-                pose.Broken = true;
                 pose.WriggleTimer = wriggleTimer;
+                //下次回到吊态时按当时的实际位形重新起摆
+                limpInit = false;
                 return;
             }
 
-            //残口挂回巢位漂浮（上下对各归其位；同样钳到可达环带，断臂不贴身挤压）
-            float dir = (int)npc.ai[MLordAiSlots.HandSide] == 0 ? -1f : 1f;
-            Vector2 homeOffset = (int)npc.ai[MLordAiSlots.HandRow] == 1
-                ? MLordDirector.LowerHandHomeOffset : MLordDirector.HandHomeOffset;
-            float clock = MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvFormationClock);
-            Vector2 home = MLordLocomotion.ClampFormationGoal(core, npc,
-                core.Center + new Vector2(homeOffset.X * dir, homeOffset.Y)
-                + new Vector2((float)Math.Sin(clock * 0.013f + dir * 2f) * 18f, (float)Math.Cos(clock * 0.011f) * 14f));
-            Vector2 want = (home - npc.Center) * 0.05f;
-            if (want.Length() > 9f) {
-                want = want.SafeNormalize(Vector2.Zero) * 9f;
-            }
-            npc.velocity = Vector2.Lerp(npc.velocity, want, 0.12f);
-
-            pose.Broken = true;
+            UpdateLimpHang(core, reanimate);
             pose.WriggleTimer = wriggleTimer;
-            gripFrame = MathHelper.Lerp(gripFrame, 2f, 0.05f);
+            //松弛半握；复活期收紧成待抓的张掌
+            gripFrame = MathHelper.Lerp(gripFrame, MathHelper.Lerp(2f, 0f, reanimate), 0.08f);
+        }
+
+        /// <summary>
+        /// 瘫臂垂挂：眼是这条手臂的控制器官，眼被打爆手就失去指挥垂下来——
+        /// 但手臂本身完好，骨长一点没变，所以走的是绕肩定长角摆而不是自由拖尾：
+        /// 手只能沿以肩为心、链长为半径的圆弧荡，天然不可能过伸脱链。
+        /// 阻力项让它随本体速度往后飘（奔袭时几条瘫臂在身后拖成一串），
+        /// 重力项把它拉回外下方的静止吊位，欠阻尼所以急停后还会晃两下
+        /// </summary>
+        private void UpdateLimpHang(NPC core, float reanimate) {
+            float dir = (int)npc.ai[MLordAiSlots.HandSide] == 0 ? -1f : 1f;
+            Vector2 shoulder = MLordLocomotion.ShoulderOf(core, npc);
+            float restAngle = new Vector2(dir * (float)Math.Sin(LimpRestTilt),
+                (float)Math.Cos(LimpRestTilt)).ToRotation();
+
+            if (!limpInit) {
+                limpAngle = (npc.Center - shoulder).SafeNormalize(Vector2.UnitY).ToRotation();
+                limpAngleVel = 0f;
+                limpInit = true;
+            }
+
+            Vector2 tangent = (limpAngle + MathHelper.PiOver2).ToRotationVector2();
+            limpAngleVel += Vector2.Dot(-core.velocity, tangent) * LimpDragGain;
+            limpAngleVel -= MathHelper.WrapAngle(limpAngle - restAngle) * LimpGravityGain;
+            limpAngleVel = MathHelper.Clamp(limpAngleVel * 0.93f, -0.14f, 0.14f);
+            limpAngle = MathHelper.WrapAngle(limpAngle + limpAngleVel);
+            float swing = MathHelper.WrapAngle(limpAngle - restAngle);
+            if (Math.Abs(swing) > LimpMaxSwing) {
+                limpAngle = MathHelper.WrapAngle(restAngle + LimpMaxSwing * Math.Sign(swing));
+                limpAngleVel *= 0.4f;
+            }
+
+            Vector2 hang = shoulder + limpAngle.ToRotationVector2() * LimpChainLength;
+            //复活：中枢越过坏掉的眼亲自接管，手臂被强行自吊位提回待抓巢位
+            if (reanimate > 0f) {
+                Vector2 homeOffset = (int)npc.ai[MLordAiSlots.HandRow] == 1
+                    ? MLordDirector.LowerHandHomeOffset : MLordDirector.HandHomeOffset;
+                Vector2 home = core.Center + new Vector2(homeOffset.X * dir, homeOffset.Y);
+                hang = Vector2.Lerp(hang, home, VaultUtils.EaseOutCubic(reanimate));
+            }
+
+            Vector2 goal = MLordLocomotion.ClampFormationGoal(core, npc, hang);
+            //角摆本身已给出平滑，这里只做贴合；复活期跟得更紧（抽起来要有劲）
+            Vector2 want = (goal - npc.Center) * MathHelper.Lerp(0.12f, 0.3f, reanimate);
+            float capSpeed = MathHelper.Lerp(16f, 30f, reanimate);
+            if (want.Length() > capSpeed) {
+                want = want.SafeNormalize(Vector2.Zero) * capSpeed;
+            }
+            npc.velocity = Vector2.Lerp(npc.velocity, want, 0.2f);
+        }
+
+        /// <summary>
+        /// 残口抽搐：不做匀速循环（那是待机动画的节奏），改成偶发痉挛——
+        /// 抽一阵、僵一阵，读作神经乱放电。相位取共享编队时钟并按 whoAmI 错开，
+        /// 各端一致且四臂不同时抽；复活拍全程剧抖（中枢在强行接线）
+        /// </summary>
+        private void TickWriggle(NPC core, float reanimate) {
+            if (reanimate > 0f) {
+                wriggleTimer += 3f;
+                return;
+            }
+            float clock = MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvFormationClock);
+            float phase = (clock + npc.whoAmI * 37f) % SpasmPeriod;
+            if (phase < SpasmBurst) {
+                wriggleTimer += 2f;
+            }
         }
 
         #endregion

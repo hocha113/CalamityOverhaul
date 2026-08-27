@@ -38,6 +38,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             Projectile.penetrate = -1;
             Projectile.timeLeft = Lifetime;
             Projectile.netImportant = true;
+            //配合 DrawBehind 设 hide,免得普通弹幕层重复画一遍预瞄线
+            Projectile.hide = true;
         }
 
         private Projectile Planet {
@@ -52,8 +54,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
 
         public override void AI() {
             Projectile planet = Planet;
-            //主星没了或已出手(段离开收势待掷)即散
-            if (planet == null || (int)planet.ai[2] % 10 != 3) {
+            //主星没了或已出手(段离开收势待掷/聚阵)即散
+            if (planet == null || (int)planet.ai[2] % 10 is not (3 or 7)) {
                 Projectile.Kill();
                 return;
             }
@@ -76,13 +78,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 }
             }
 
-            //锁定拍(各端由 timeLeft 本地推,一次)
+            //锁定拍(各端由 timeLeft 本地推,一次);幻星祭仪:锁定即揭示挂点星的真容(识真窗)
             if (Locked && !lockBeatDone) {
                 lockBeatDone = true;
                 int palette = PaletteOf(planet);
                 CultistMotion.SigilCommitFX(planet.Center, CultistMotion.PhaseCore(palette), 1.1f);
                 CultistMotion.Shake(planet.Center, 2.5f, 8);
+                if (planet.ModProjectile is CultistPlanetProj planetBody) {
+                    planetBody.RevealIdentity();
+                }
             }
+        }
+
+        /// <summary>读指定星球预瞄线的瞄准点(权威端,幻星祭仪逐星出手);没找到返回 null</summary>
+        internal static Vector2? GetLockedAimFor(int planetWho) {
+            int type = ModContent.ProjectileType<CultistPlanetAimLine>();
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (proj.type == type && (int)proj.ai[0] == planetWho) {
+                    return new Vector2(proj.ai[1], proj.ai[2]);
+                }
+            }
+            return null;
         }
 
         /// <summary>读锁定的瞄准点(权威端,投掷态出手时调用);没找到返回 null</summary>

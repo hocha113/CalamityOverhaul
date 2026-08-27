@@ -31,7 +31,8 @@ float4 BeeTelegraphPS(float2 uv : TEXCOORD0) : COLOR0
     float endFade = smoothstep(0.0, 0.05, uv.x) * smoothstep(1.0, 0.985, uv.x);
 
     //蜂房节流：沿线量化成房格，向打击方向行进；锁定时格距压缩(并拢成实线感)
-    float cellFreq = lerp(0.55, 1.5, uLockProgress);
+    //格距按细线宽折算(缩宽后 cellFreq 同步减半保持约170px格长)
+    float cellFreq = lerp(0.3, 0.8, uLockProgress);
     float march = x * cellFreq - uTime * (5.0 + uLockProgress * 9.0);
     float cellId = floor(march);
     float cellT = frac(march);
@@ -40,22 +41,22 @@ float4 BeeTelegraphPS(float2 uv : TEXCOORD0) : COLOR0
     float cellSeed = hash11(cellId * 13.7);
     cellPulse *= 0.55 + 0.45 * sin(uTime * 4.0 + cellSeed * 6.2831);
 
-    //横向核心+光晕，锁定加粗白热
+    //横向核心+光晕，锁定加粗白热；光晕收窄压暗，预警读作细导引线而非能量束
     float coreSharp = lerp(52.0, 18.0, uLockProgress);
     float core = exp(-lat * lat * coreSharp);
-    float glow = exp(-lat * lat * 5.0) * 0.4;
+    float glow = exp(-lat * lat * 9.0) * 0.22;
 
     //锁定白闪振荡
-    float flash = 1.0 + uLockProgress * 0.5 * sin(uTime * 42.0);
+    float flash = 1.0 + uLockProgress * 0.4 * sin(uTime * 42.0);
 
     //亮度合成：追踪期以行进房格为主体，锁定期核心接管
-    float lum = core * (0.35 + cellPulse * 0.9 + uLockProgress * 1.3)
-              + glow * (0.5 + cellPulse * 0.7);
+    float lum = core * (0.22 + cellPulse * 0.6 + uLockProgress * 1.15)
+              + glow * (0.4 + cellPulse * 0.5);
     lum *= endFade * flash;
 
     float3 col = uColor * lum;
     //锁定期核心暖白热
-    col += float3(1.0, 0.9, 0.7) * core * uLockProgress * lum * 1.05;
+    col += float3(1.0, 0.9, 0.7) * core * uLockProgress * lum * 0.8;
 
     return float4(col * uIntensity, 1.0);
 }

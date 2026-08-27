@@ -24,6 +24,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         private const int SegTime = SwoopTime + PlantPad;
         //护航箭中段顺势甩镖帧：掠位途中不再是零威胁真空
         private const int EscortDartFrame = 30;
+        //甩镖前黄描边预警窗(只标即将出手的两只)
+        private const int DartWarnLead = 18;
         #endregion
 
         /// <summary>公平阀：场上同源炮台上限，超限不再布设，定点威胁总量有顶</summary>
@@ -62,6 +64,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                     : Vector2.UnitX * side;
                 context.Swarm.Declare(SwarmFormation.Arrow, npc.Center - vel * 60f, vel);
                 context.Swarm.PushSignal(0.5f);
+                //出手前两只预警读秒
+                int dartIn = EscortDartFrame - segT;
+                if (dartIn > 0 && dartIn <= DartWarnLead) {
+                    context.Swarm.WarnDarts(1, 2, 1f - dartIn / (float)DartWarnLead);
+                }
                 //护航箭中段顺势甩两镖(沿飞行向直射，不追踪)
                 if (segT == EscortDartFrame) {
                     context.Swarm.LaunchDarts(1, 2, vel, 22f, 0);

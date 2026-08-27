@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
 
             if (npc.WithinRange(highAnchor, 150f) || Timer > ClimbMaxTime) {
                 SwitchPhase(Phase.Pass);
-                SoundEngine.PlaySound(SoundID.Zombie13 with { Pitch = 0.1f, Volume = 0.9f }, npc.Center);
+                SoundEngine.PlaySound(SoundID.Zombie7 with { Pitch = 0.1f, Volume = 0.9f }, npc.Center);
             }
         }
         #endregion
