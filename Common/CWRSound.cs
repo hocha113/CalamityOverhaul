@@ -111,5 +111,6 @@ namespace CalamityOverhaul.Common
         public static SoundStyle DogWuff;
         public static SoundStyle DogWorry;
         public static SoundStyle CrueltyOpen;
+        public static SoundStyle SendRoar;
     }
 }
