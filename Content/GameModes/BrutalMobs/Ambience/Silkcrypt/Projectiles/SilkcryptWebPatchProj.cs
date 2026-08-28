@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -65,7 +65,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Silkcrypt.Proje
             if (elapsed == 0 && !Main.dedServ) {
                 //织网起手：很轻的丝声，新网不该敲锣打鼓
                 SoundEngine.PlaySound(SoundID.Item17 with {
-                    Volume = 0.16f, Pitch = 0.1f, MaxInstances = 4,
+                    Volume = 0.16f,
+                    Pitch = 0.1f,
+                    MaxInstances = 4,
                 }, Projectile.Center);
             }
 
@@ -129,7 +131,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Silkcrypt.Proje
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item17 with {
-                Volume = 0.32f, Pitch = -0.2f, MaxInstances = 4,
+                Volume = 0.32f,
+                Pitch = -0.2f,
+                MaxInstances = 4,
             }, Projectile.Center);
             for (int i = 0; i < 12; i++) {
                 Dust dust = Dust.NewDustPerfect(

@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
 using CalamityOverhaul.Content.Scenarios.Shenyo;
 using InnoVault.Actors;
 using InnoVault.Cinematics;
@@ -14,8 +15,6 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-
-using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
 
 namespace CalamityOverhaul.Content.Scenarios.Kiame.KasaOnis
 {

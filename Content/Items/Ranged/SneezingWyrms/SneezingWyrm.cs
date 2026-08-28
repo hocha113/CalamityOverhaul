@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Projectiles;
+﻿using CalamityOverhaul.Content.Projectiles;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -7,9 +7,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Ranged.SneezingWyrms
 {
     /// <summary>
-        /// 嚏龙铳，世纪之花后速射龙炮，与哮龙杖同窑出炉。快速射出龙击弹，
-        /// 连射令枪膛升温、弹色沿黑体色带变亮；憋压的龙鼻间歇打嚏向侧面喷烟。
-        /// 节奏与温度逻辑在 <see cref="SneezingWyrmHeld"/>
+    /// 嚏龙铳，世纪之花后速射龙炮，与哮龙杖同窑出炉。快速射出龙击弹，
+    /// 连射令枪膛升温、弹色沿黑体色带变亮；憋压的龙鼻间歇打嚏向侧面喷烟。
+    /// 节奏与温度逻辑在 <see cref="SneezingWyrmHeld"/>
     /// </summary>
     internal class SneezingWyrm : ModItem
     {

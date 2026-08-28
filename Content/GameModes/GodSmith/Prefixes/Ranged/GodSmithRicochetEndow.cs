@@ -1,6 +1,6 @@
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using CalamityOverhaul.Content.GameModes.GodSmith.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;

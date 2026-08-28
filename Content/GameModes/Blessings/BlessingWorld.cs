@@ -1,9 +1,9 @@
+﻿using CalamityOverhaul.Content.GameModes.UI;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using CalamityOverhaul.Content.GameModes.UI;
 
 namespace CalamityOverhaul.Content.GameModes.Blessings
 {

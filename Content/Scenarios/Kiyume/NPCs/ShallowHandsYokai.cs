@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Scenarios.Kiyume.Gen;
 using InnoVault.PRT;
@@ -237,14 +237,18 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
                 case StateRise:
                     //立起（出生首帧也吃到一次沿）：湿泥翻涌的一声轻响
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
-                        Volume = 0.5f, Pitch = -0.7f, MaxInstances = 3
+                        Volume = 0.5f,
+                        Pitch = -0.7f,
+                        MaxInstances = 3
                     }, NPC.Center);
                     EmitMist(2, 0.45f);
                     break;
                 case StateSnap:
                     //扬起：出水急响 + 泥点（可读拍的声画都在这）
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
-                        Volume = 0.9f, Pitch = -0.1f, MaxInstances = 3
+                        Volume = 0.9f,
+                        Pitch = -0.1f,
+                        MaxInstances = 3
                     }, NPC.Center);
                     for (int i = 0; i < 5; i++) {
                         Dust dust = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height,
@@ -255,14 +259,18 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
                 case StateRetract:
                     //合口拍（命中与落空同声：钳口拍上就是这一响）
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
-                        Volume = 0.8f, Pitch = -0.45f, MaxInstances = 3
+                        Volume = 0.8f,
+                        Pitch = -0.45f,
+                        MaxInstances = 3
                     }, NPC.Center);
                     EmitMist(3, 0.6f);
                     break;
                 case StateSink:
                     //沉泥：一声很低的闷咕
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
-                        Volume = 0.4f, Pitch = -0.8f, MaxInstances = 3
+                        Volume = 0.4f,
+                        Pitch = -0.8f,
+                        MaxInstances = 3
                     }, NPC.Center);
                     EmitMist(2, 0.5f);
                     break;

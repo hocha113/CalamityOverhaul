@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Cindercrag.Projectiles;
+﻿using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Cindercrag.Projectiles;
 using InnoVault.PRT;
 using ReLogic.Utilities;
 using System;
@@ -173,7 +173,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Cindercrag
                 Vector2 pos = Main.LocalPlayer.Center
                     + Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(300f, 700f);
                 SoundEngine.PlaySound(SoundID.WormDig with {
-                    Volume = 0.32f * (boss ? 0.6f : 1f), Pitch = -0.85f, MaxInstances = 2,
+                    Volume = 0.32f * (boss ? 0.6f : 1f),
+                    Pitch = -0.85f,
+                    MaxInstances = 2,
                 }, pos);
             }
         }

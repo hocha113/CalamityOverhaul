@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -153,10 +153,14 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mireheart.Proje
             }
             //破裂：水花 + 毒沫上喷
             SoundEngine.PlaySound(SoundID.Splash with {
-                Volume = 0.6f, Pitch = -0.2f, MaxInstances = 3
+                Volume = 0.6f,
+                Pitch = -0.2f,
+                MaxInstances = 3
             }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item34 with {
-                Volume = 0.4f, Pitch = 0.3f, MaxInstances = 3
+                Volume = 0.4f,
+                Pitch = 0.3f,
+                MaxInstances = 3
             }, Projectile.Center);
             for (int i = 0; i < 8; i++) {
                 Dust splash = Dust.NewDustPerfect(Projectile.Center, DustID.Water_Jungle,

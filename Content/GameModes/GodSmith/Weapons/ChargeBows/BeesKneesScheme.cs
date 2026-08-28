@@ -1,6 +1,5 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.ChargeBows.Projectiles;
-using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;

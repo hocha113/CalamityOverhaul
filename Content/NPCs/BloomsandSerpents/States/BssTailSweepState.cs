@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
+﻿using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles;
 using System;
 using Terraria;

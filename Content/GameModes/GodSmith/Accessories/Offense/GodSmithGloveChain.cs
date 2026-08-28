@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using CalamityOverhaul.Content.GameModes.GodSmith.Core;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

@@ -1,6 +1,5 @@
-using InnoVault.StateMachines;
+﻿using InnoVault.StateMachines;
 using System;
-using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
 {

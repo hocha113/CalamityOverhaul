@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,7 +6,6 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -58,7 +57,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             //起手蜂鸣：音高随共鸣层（共鸣是 owner 本地量，远端听基准音即可）
             int resonance = player.whoAmI == Main.myPlayer ? Chant(player).Resonance : 0;
             SoundEngine.PlaySound(SoundID.Item32 with {
-                Volume = 0.4f, Pitch = 0.05f * Math.Min(resonance, 6), MaxInstances = 3
+                Volume = 0.4f,
+                Pitch = 0.05f * Math.Min(resonance, 6),
+                MaxInstances = 3
             }, player.Center);
             Vector2 tip = player.MountedCenter + new Vector2(player.direction * 18f, -4f);
             PRTLoader.NewParticle<PRT_Spark>(tip, new Vector2(player.direction * 1.2f, -0.4f),

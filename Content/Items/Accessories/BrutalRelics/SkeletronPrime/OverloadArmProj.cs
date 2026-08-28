@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -98,7 +98,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
                 dissolveTimer++;
                 if (dissolveTimer == 1 && !VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item93 with {
-                        Volume = 0.25f, Pitch = -0.4f + ArmIndex * 0.08f, MaxInstances = 4
+                        Volume = 0.25f,
+                        Pitch = -0.4f + ArmIndex * 0.08f,
+                        MaxInstances = 4
                     }, Projectile.Center);
                 }
                 if (dissolveTimer > DissolveFrames && Projectile.IsOwnedByLocalPlayer()) {
@@ -215,7 +217,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
 
             if (!VaultUtils.isServer && strikeIsMelee) {
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
-                    Volume = 0.4f, Pitch = 0.1f + ArmIndex * 0.07f, MaxInstances = 4
+                    Volume = 0.4f,
+                    Pitch = 0.1f + ArmIndex * 0.07f,
+                    MaxInstances = 4
                 }, Projectile.Center);
             }
         }
@@ -302,7 +306,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
             //出膛口感各端都播；弹幕只在 owner 端生成（netcode 契约）
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound((ArmIndex % 2 == 0 ? SoundID.Item11 : SoundID.Item12) with {
-                    Volume = 0.35f, Pitch = 0.3f + ArmIndex * 0.05f, MaxInstances = 4
+                    Volume = 0.35f,
+                    Pitch = 0.3f + ArmIndex * 0.05f,
+                    MaxInstances = 4
                 }, handPos);
                 PRTLoader.NewParticle<PRT_Light>(handPos + aimDir * 12f, aimDir * 2f,
                     OverloadCommandCore.IonCyan, 0.3f)
@@ -514,7 +520,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
                 return;
             }
             SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with {
-                Volume = 0.3f, Pitch = 0.5f, MaxInstances = 3
+                Volume = 0.3f,
+                Pitch = 0.5f,
+                MaxInstances = 3
             }, target.Center);
         }
 

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.BrutalMobs.EvilBiome;
+﻿using CalamityOverhaul.Content.GameModes.BrutalMobs.EvilBiome;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -170,7 +170,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rotmire.Project
                 int interval = 16 - (int)(SwellT * 10f);
                 if (t % Math.Max(interval, 5) == 0) {
                     SoundEngine.PlaySound(SoundID.NPCHit1 with {
-                        Volume = 0.2f + 0.12f * SwellT, Pitch = -0.5f + 0.2f * SwellT, MaxInstances = 4
+                        Volume = 0.2f + 0.12f * SwellT,
+                        Pitch = -0.5f + 0.2f * SwellT,
+                        MaxInstances = 4
                     }, Projectile.Center);
                 }
                 if (Main.rand.NextBool(2)) {

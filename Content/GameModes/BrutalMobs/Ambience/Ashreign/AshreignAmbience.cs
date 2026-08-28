@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Ashreign.Projectiles;
+﻿using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Ashreign.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using ReLogic.Utilities;
@@ -316,7 +316,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Ashreign
         private static void UpdateHorn(Player player) {
             if (hornEchoTimer > 0 && --hornEchoTimer == 0) {
                 SoundEngine.PlaySound(SoundID.Roar with {
-                    Volume = 0.12f, Pitch = -0.98f, MaxInstances = 2,
+                    Volume = 0.12f,
+                    Pitch = -0.98f,
+                    MaxInstances = 2,
                 }, hornEchoPos);
             }
 
@@ -333,7 +335,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Ashreign
                 Main.rand.NextFloat(900f, 1500f) * (Main.rand.NextBool() ? 1f : -1f),
                 -Main.rand.NextFloat(180f, 480f));
             SoundEngine.PlaySound(SoundID.Roar with {
-                Volume = 0.26f, Pitch = -0.92f, MaxInstances = 2,
+                Volume = 0.26f,
+                Pitch = -0.92f,
+                MaxInstances = 2,
             }, far);
             player.CWR()?.GetScreenShake(1.3f);
             hornEchoTimer = 26;

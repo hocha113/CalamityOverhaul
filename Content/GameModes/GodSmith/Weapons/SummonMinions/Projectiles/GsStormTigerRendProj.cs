@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -84,7 +84,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Proj
             if (Rending && Elapsed % TearGap == 0) {
                 int idx = Elapsed / TearGap;
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
-                    Volume = 0.7f, Pitch = -0.2f + idx * 0.15f
+                    Volume = 0.7f,
+                    Pitch = -0.2f + idx * 0.15f
                 }, Projectile.Center);
                 float tearAng = TearAngle(idx);
                 for (int i = 0; i < 6; i++) {

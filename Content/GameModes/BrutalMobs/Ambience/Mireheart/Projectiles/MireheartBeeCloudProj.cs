@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -110,7 +110,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mireheart.Proje
                 }
                 else if (InSweep && Elapsed % 14 == 0) {
                     SoundEngine.PlaySound(SoundID.Item97 with {
-                        Volume = 0.16f, Pitch = 0.3f, MaxInstances = 3
+                        Volume = 0.16f,
+                        Pitch = 0.3f,
+                        MaxInstances = 3
                     }, Projectile.Center);
                 }
             }

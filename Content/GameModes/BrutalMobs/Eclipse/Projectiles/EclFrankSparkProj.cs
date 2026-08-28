@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -55,7 +55,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Eclipse.Projectiles
                 Projectile.localAI[0] = 1f;
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with {
-                        Volume = 0.5f, Pitch = -0.1f, MaxInstances = 5
+                        Volume = 0.5f,
+                        Pitch = -0.1f,
+                        MaxInstances = 5
                     }, Projectile.Center);
                 }
             }

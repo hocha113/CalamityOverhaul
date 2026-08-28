@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -81,7 +81,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
             }
             //水压蓄旋音 + 出手瞬间离心水花甩一圈
             SoundEngine.PlaySound(SoundID.SplashWeak with {
-                Volume = 0.85f, Pitch = 0.15f + charge * 0.2f
+                Volume = 0.85f,
+                Pitch = 0.15f + charge * 0.2f
             }, Owner.Center);
             for (int i = 0; i < 8; i++) {
                 Dust d = Dust.NewDustPerfect(Projectile.Center,
@@ -149,7 +150,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
                 }
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Splash with {
-                        Volume = 0.7f, Pitch = 0.35f, MaxInstances = 3
+                        Volume = 0.7f,
+                        Pitch = 0.35f,
+                        MaxInstances = 3
                     }, target.Center);
                 }
             }
@@ -158,7 +161,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
         /// <summary>水爆命中：闷水声+水花锥+青波纹环+泡沫火花，满转波纹升级；替换族默认铁感反馈</summary>
         protected override void SpawnHitBurst(NPC target, NPC.HitInfo hit, float charge) {
             SoundEngine.PlaySound(SoundID.Splash with {
-                Volume = 0.6f, Pitch = -0.35f, MaxInstances = 3
+                Volume = 0.6f,
+                Pitch = -0.35f,
+                MaxInstances = 3
             }, target.Center);
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             int drops = 6 + (int)(charge * 5f);
@@ -319,7 +324,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
                 return;
             }
             SoundEngine.PlaySound(SoundID.SplashWeak with {
-                Volume = 0.4f, Pitch = 0.55f, MaxInstances = 5
+                Volume = 0.4f,
+                Pitch = 0.55f,
+                MaxInstances = 5
             }, Projectile.Center);
             for (int i = 0; i < 6; i++) {
                 Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Water,

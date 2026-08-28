@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
 using CalamityOverhaul.Content.RAMSystems;
@@ -480,7 +480,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
                     gapDrift[1] = 0f;
                     if (!Main.dedServ) {
                         SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with {
-                            Volume = 0.5f, Pitch = 0.4f
+                            Volume = 0.5f,
+                            Pitch = 0.4f
                         }, player.Center);
                     }
                 }
@@ -547,7 +548,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
                 RenderCharge = StateTimer / 30f;
                 if (StateTimer == 1f && !Main.dedServ) {
                     SoundEngine.PlaySound(SoundID.DD2_EtherianPortalIdleLoop with {
-                        Volume = 0.7f, Pitch = -0.6f
+                        Volume = 0.7f,
+                        Pitch = -0.6f
                     }, NPC.Center);
                 }
                 return;
@@ -592,7 +594,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
             int beepGap = (int)MathHelper.Lerp(24f, 6f, frac);
             if ((int)StateTimer % Math.Max(beepGap, 1) == 0 && !Main.dedServ) {
                 SoundEngine.PlaySound(SoundID.MenuTick with {
-                    Volume = 0.6f, Pitch = -0.3f + frac * 0.9f
+                    Volume = 0.6f,
+                    Pitch = -0.3f + frac * 0.9f
                 }, NPC.Center);
             }
 
@@ -714,7 +717,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.NPCs
                     deathBeepTimer = 36f * MathF.Pow(5f / 36f, t);
                     if (!Main.dedServ) {
                         SoundEngine.PlaySound(SoundID.MenuTick with {
-                            Volume = 0.9f, Pitch = -0.4f + t * 1.1f
+                            Volume = 0.9f,
+                            Pitch = -0.4f + t * 1.1f
                         }, NPC.Center);
                     }
                     EjectPlate(deathBeepIndex);

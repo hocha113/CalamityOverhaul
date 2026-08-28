@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Melee.Abyssrends;
+﻿using CalamityOverhaul.Content.Items.Melee.Abyssrends;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;

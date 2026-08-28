@@ -1,4 +1,4 @@
-using ReLogic.Utilities;
+﻿using ReLogic.Utilities;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -234,7 +234,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Hollowdeep
                 groanTimer = Main.rand.Next(1400, 3200);
                 Vector2 offset = Main.rand.NextVector2Unit() * Main.rand.NextFloat(500f, 900f);
                 SoundEngine.PlaySound(SoundID.WormDig with {
-                    Volume = 0.22f, Pitch = -0.85f, MaxInstances = 2,
+                    Volume = 0.22f,
+                    Pitch = -0.85f,
+                    MaxInstances = 2,
                 }, player.Center + offset);
             }
 

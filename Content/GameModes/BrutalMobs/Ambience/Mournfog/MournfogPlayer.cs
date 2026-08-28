@@ -1,7 +1,6 @@
-using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mournfog.Projectiles;
+﻿using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mournfog.Projectiles;
 using System;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 

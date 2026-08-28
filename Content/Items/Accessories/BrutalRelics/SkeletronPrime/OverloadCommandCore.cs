@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -301,7 +301,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
             if (stage > milestoneLatch && stage < 4) {
                 milestoneLatch = stage;
                 SoundEngine.PlaySound(SoundID.Item93 with {
-                    Volume = 0.3f, Pitch = -0.2f + stage * 0.25f, MaxInstances = 2
+                    Volume = 0.3f,
+                    Pitch = -0.2f + stage * 0.25f,
+                    MaxInstances = 2
                 }, Player.Center);
             }
         }

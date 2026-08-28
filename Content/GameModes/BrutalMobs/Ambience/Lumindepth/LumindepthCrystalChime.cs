@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -135,7 +135,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Lumindepth
 
             //清铃：钟音提亮随机音高，垫一层晶体微光声
             SoundEngine.PlaySound(SoundID.Item35 with {
-                Volume = 0.32f, Pitch = 0.25f + Main.rand.NextFloat(0.4f), MaxInstances = 3
+                Volume = 0.32f,
+                Pitch = 0.25f + Main.rand.NextFloat(0.4f),
+                MaxInstances = 3
             }, wpos);
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.14f, Pitch = 0.5f, MaxInstances = 3 }, wpos);
 

@@ -1,4 +1,4 @@
-using ReLogic.Utilities;
+﻿using ReLogic.Utilities;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -131,7 +131,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Lumindepth
             }
             else {
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Volume = 0.22f, Pitch = -0.55f + Main.rand.NextFloat(0.35f), MaxInstances = 3
+                    Volume = 0.22f,
+                    Pitch = -0.55f + Main.rand.NextFloat(0.35f),
+                    MaxInstances = 3
                 }, pos);
             }
         }

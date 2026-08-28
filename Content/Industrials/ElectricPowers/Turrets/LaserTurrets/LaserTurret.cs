@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -43,12 +43,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.LaserTurre
         }
 
         public override void AddRecipes() {
-                CreateRecipe()
-                .AddIngredient<CircuitBoard>(15)
-                .AddIngredient(ItemID.SoulofMight, 10)
-                .AddIngredient(ItemID.CrystalShard, 20)
-                .AddTile(TileID.Anvils)
-                .Register();
+            CreateRecipe()
+            .AddIngredient<CircuitBoard>(15)
+            .AddIngredient(ItemID.SoulofMight, 10)
+            .AddIngredient(ItemID.CrystalShard, 20)
+            .AddTile(TileID.Anvils)
+            .Register();
 
         }
     }

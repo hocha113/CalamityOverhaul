@@ -1,8 +1,6 @@
-using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.DuneStorm.Projectiles;
-using System;
+﻿using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.DuneStorm.Projectiles;
 using Terraria;
 using Terraria.GameContent.Events;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.DuneStorm

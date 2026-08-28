@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -108,7 +108,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil.Proje
                 if (!Main.dedServ) {
                     //成墙远音：位置衰减天然给出"远处有什么起来了"
                     SoundEngine.PlaySound(SoundID.DeerclopsIceAttack with {
-                        Volume = 0.9f, Pitch = -0.42f, MaxInstances = 3
+                        Volume = 0.9f,
+                        Pitch = -0.42f,
+                        MaxInstances = 3
                     }, Projectile.Center);
                 }
             }
@@ -239,7 +241,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil.Proje
             if (!contactPlayed) {
                 contactPlayed = true;
                 SoundEngine.PlaySound(SoundID.DeerclopsIceAttack with {
-                    Volume = 0.7f, Pitch = 0.1f, MaxInstances = 3
+                    Volume = 0.7f,
+                    Pitch = 0.1f,
+                    MaxInstances = 3
                 }, player.Center);
             }
 

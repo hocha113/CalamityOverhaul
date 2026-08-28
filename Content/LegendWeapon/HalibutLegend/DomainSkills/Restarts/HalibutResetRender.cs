@@ -74,8 +74,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills.Resta
                 spriteBatch.End();
 
                 DrawFlashOverlay(spriteBatch, show);
-            }
-            finally {
+            } finally {
                 RestoreTargets(graphicsDevice, previousTargets);
             }
         }

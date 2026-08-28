@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.PRT;
 using ReLogic.Utilities;
 using System;
@@ -252,10 +252,14 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             //叶浪起势：两层草叶婆娑声自上风处压来
             Vector2 pos = player.Center + new Vector2(Main.windSpeedCurrent > 0f ? -300f : 300f, -140f);
             SoundEngine.PlaySound(SoundID.Grass with {
-                Volume = 0.30f + WindAbs * 0.22f, Pitch = -0.28f, MaxInstances = 3
+                Volume = 0.30f + WindAbs * 0.22f,
+                Pitch = -0.28f,
+                MaxInstances = 3
             }, pos);
             Enqueue(12, SoundID.Grass with {
-                Volume = 0.24f + WindAbs * 0.16f, Pitch = 0.02f, MaxInstances = 3
+                Volume = 0.24f + WindAbs * 0.16f,
+                Pitch = 0.02f,
+                MaxInstances = 3
             }, pos + new Vector2(120f, 30f));
         }
 
@@ -312,12 +316,16 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                     (Main.rand.NextBool() ? 1f : -1f) * Main.rand.NextFloat(380f, 880f),
                     Main.rand.NextFloat(-80f, 40f));
                 SoundEngine.PlaySound(SoundID.Dig with {
-                    Volume = 0.30f, Pitch = -0.55f + Main.rand.NextFloat(0.1f), MaxInstances = 2
+                    Volume = 0.30f,
+                    Pitch = -0.55f + Main.rand.NextFloat(0.1f),
+                    MaxInstances = 2
                 }, pos);
                 //六成概率补一声枝叶簌簌的余响
                 if (Main.rand.Next(5) < 3) {
                     Enqueue(Main.rand.Next(5, 12), SoundID.Grass with {
-                        Volume = 0.20f, Pitch = -0.2f, MaxInstances = 3
+                        Volume = 0.20f,
+                        Pitch = -0.2f,
+                        MaxInstances = 3
                     }, pos);
                 }
             }
@@ -437,11 +445,15 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                         ?.Configure(Main.windSpeedCurrent * 1.5f, Main.rand.Next(110, 170));
                 }
                 SoundEngine.PlaySound(SoundID.Grass with {
-                    Volume = 0.40f, Pitch = -0.08f, MaxInstances = 3
+                    Volume = 0.40f,
+                    Pitch = -0.08f,
+                    MaxInstances = 3
                 }, ravenBurstPos);
                 for (int k = 0; k < 3; k++) {
                     Enqueue(6 + k * 9, SoundID.Item32 with {
-                        Volume = 0.30f, Pitch = 0.22f + k * 0.14f, MaxInstances = 4
+                        Volume = 0.30f,
+                        Pitch = 0.22f + k * 0.14f,
+                        MaxInstances = 4
                     }, ravenBurstPos + new Vector2(k * 22f - 22f, -k * 16f));
                 }
             }
@@ -466,7 +478,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                 new Vector2(dir * 2.8f, 0.2f), Color.White, 1f)
                 ?.Configure(PRT_WoodsongRaven.ModeShade, 26);
             SoundEngine.PlaySound(SoundID.Grass with {
-                Volume = 0.22f, Pitch = -0.35f, MaxInstances = 3
+                Volume = 0.22f,
+                Pitch = -0.35f,
+                MaxInstances = 3
             }, top);
         }
 
@@ -538,7 +552,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                 new Vector2(-threatSide * 3.2f, 0.1f), Color.White, 1f)
                 ?.Configure(PRT_WoodsongRaven.ModeShade, 22);
             SoundEngine.PlaySound(SoundID.Grass with {
-                Volume = 0.30f, Pitch = -0.2f, MaxInstances = 3
+                Volume = 0.30f,
+                Pitch = -0.2f,
+                MaxInstances = 3
             }, top);
         }
 

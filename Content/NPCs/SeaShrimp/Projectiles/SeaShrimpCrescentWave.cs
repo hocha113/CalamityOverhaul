@@ -1,10 +1,9 @@
-using CalamityOverhaul.Content.Items.Magic.Everdeeps;
+﻿using CalamityOverhaul.Content.Items.Magic.Everdeeps;
 using CalamityOverhaul.Content.Items.Melee.Abyssrends;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System;
 using Terraria;
 using Terraria.ID;
 

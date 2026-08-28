@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -305,7 +305,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
                 Projectile.netUpdate = true;
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item1 with {
-                        Volume = 0.9f, Pitch = -0.3f + spinCharge * 0.3f
+                        Volume = 0.9f,
+                        Pitch = -0.3f + spinCharge * 0.3f
                     }, Owner.Center);
                 }
                 OnLaunch(spinCharge);

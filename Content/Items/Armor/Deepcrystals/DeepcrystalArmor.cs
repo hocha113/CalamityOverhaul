@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.NPCs.SeaShrimp;
 using Terraria;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals

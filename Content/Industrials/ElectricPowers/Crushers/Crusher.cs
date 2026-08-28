@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -28,13 +28,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Crushers
         }
 
         public override void AddRecipes() {
-                CreateRecipe()
-                .AddRecipeGroup(RecipeGroupID.IronBar, 12)
-                .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
-                .AddIngredient(ItemID.StoneBlock, 30)
-                .AddIngredient<CircuitBoard>(10)
-                .AddTile(TileID.Anvils)
-                .Register();
+            CreateRecipe()
+            .AddRecipeGroup(RecipeGroupID.IronBar, 12)
+            .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
+            .AddIngredient(ItemID.StoneBlock, 30)
+            .AddIngredient<CircuitBoard>(10)
+            .AddTile(TileID.Anvils)
+            .Register();
 
         }
     }

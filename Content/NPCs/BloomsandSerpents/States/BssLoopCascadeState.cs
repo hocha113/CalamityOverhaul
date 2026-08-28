@@ -1,8 +1,7 @@
-using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
+﻿using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles;
 using System;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States

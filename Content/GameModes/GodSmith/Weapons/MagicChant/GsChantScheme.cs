@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -134,7 +134,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                 }
                 //正拍确认音随层数升调，读数不看 UI 听杖尖
                 SoundEngine.PlaySound(SoundID.Item4 with {
-                    Volume = 0.35f, Pitch = 0.15f + 0.08f * chant.Resonance, MaxInstances = 3
+                    Volume = 0.35f,
+                    Pitch = 0.15f + 0.08f * chant.Resonance,
+                    MaxInstances = 3
                 }, player.Center);
             }
             else {

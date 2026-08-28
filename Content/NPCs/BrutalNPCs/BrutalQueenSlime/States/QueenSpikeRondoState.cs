@@ -1,5 +1,5 @@
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;

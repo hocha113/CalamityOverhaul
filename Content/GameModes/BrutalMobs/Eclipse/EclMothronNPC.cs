@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.BrutalMobs.Common;
+﻿using CalamityOverhaul.Content.GameModes.BrutalMobs.Common;
 using CalamityOverhaul.Content.GameModes.BrutalMobs.Eclipse.Projectiles;
 using System.IO;
 using Terraria;
@@ -376,12 +376,16 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Eclipse
                 if (!Main.dedServ) {
                     if (phase == PhaseSpawnCurl) {
                         SoundEngine.PlaySound(SoundID.MaxMana with {
-                            Volume = 0.35f, Pitch = 0.45f, MaxInstances = 4
+                            Volume = 0.35f,
+                            Pitch = 0.45f,
+                            MaxInstances = 4
                         }, npc.Center);
                     }
                     else if (phase == PhaseSpawnPounce && lastVisualPhase == PhaseSpawnCurl) {
                         SoundEngine.PlaySound(SoundID.Item1 with {
-                            Volume = 0.5f, Pitch = 0.5f, MaxInstances = 4
+                            Volume = 0.5f,
+                            Pitch = 0.5f,
+                            MaxInstances = 4
                         }, npc.Center);
                         for (int i = 0; i < 10; i++) {
                             Dust burst = Dust.NewDustPerfect(npc.Center, DustID.Torch,

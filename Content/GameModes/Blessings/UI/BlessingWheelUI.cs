@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.TimeFreezes;
 using CalamityOverhaul.Content.UIs;
 using InnoVault.UIHandles;
@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ID;
 

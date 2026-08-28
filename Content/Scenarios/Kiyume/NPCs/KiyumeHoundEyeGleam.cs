@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Scenarios.Kiyume.Fog;
+﻿using CalamityOverhaul.Content.Scenarios.Kiyume.Fog;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

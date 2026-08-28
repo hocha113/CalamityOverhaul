@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Scenarios.OldNet.Gen;
+﻿using CalamityOverhaul.Content.Scenarios.OldNet.Gen;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

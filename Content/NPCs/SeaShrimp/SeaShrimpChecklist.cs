@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -20,8 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
                         ["spawnItems"] = ModContent.ItemType<SeaShrimpSummonItem>(),
                         ["spawnInfo"] = Language.GetText("Mods.CalamityOverhaul.NPCs.SeaShrimpBoss.ChecklistSpawnInfo"),
                     });
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 //弱引用容错：BossChecklist 签名漂移只记日志，不拦加载
                 Mod.Logger.Warn($"BossChecklist 注册失败: {e.Message}");
             }

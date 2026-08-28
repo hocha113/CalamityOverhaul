@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using ReLogic.Utilities;
 using System;
@@ -136,7 +136,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mournfog
                 Vector2 far = lp.Center + new Vector2(
                     Main.rand.NextFloat(700f, 1000f) * (Main.rand.NextBool() ? 1f : -1f), -300f);
                 SoundEngine.PlaySound(SoundID.Item35 with {
-                    Volume = 0.28f * Presence, Pitch = -0.4f, MaxInstances = 2,
+                    Volume = 0.28f * Presence,
+                    Pitch = -0.4f,
+                    MaxInstances = 2,
                 }, far);
             }
 
@@ -212,7 +214,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mournfog
                 //抓挠节拍：两记闷刨
                 if (scratchTick == 18 || scratchTick == 36) {
                     SoundEngine.PlaySound(SoundID.Dig with {
-                        Volume = 0.3f, Pitch = -0.35f, MaxInstances = 3,
+                        Volume = 0.3f,
+                        Pitch = -0.35f,
+                        MaxInstances = 3,
                     }, scratchPos);
                 }
                 return;
@@ -227,7 +231,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mournfog
                 scratchPos = spot;
                 scratchTick = 0;
                 SoundEngine.PlaySound(SoundID.WormDigQuiet with {
-                    Volume = 0.55f, Pitch = -0.45f, MaxInstances = 2,
+                    Volume = 0.55f,
+                    Pitch = -0.45f,
+                    MaxInstances = 2,
                 }, spot);
             }
         }
@@ -277,7 +283,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mournfog
             PRTLoader.NewParticle<PRT_MournfogStoneGlow>(center, Vector2.Zero,
                 Color.White, Main.rand.NextFloat(0.9f, 1.2f))?.Configure(140);
             SoundEngine.PlaySound(SoundID.NPCHit36 with {
-                Volume = 0.3f, Pitch = -0.32f, MaxInstances = 2,
+                Volume = 0.3f,
+                Pitch = -0.32f,
+                MaxInstances = 2,
             }, center);
         }
 

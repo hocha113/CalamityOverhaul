@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -108,7 +108,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sunkendune.Proj
                 else if (elapsed < LeakFrames && elapsed % 20 == 0) {
                     float progress = elapsed / (float)LeakFrames;
                     SoundEngine.PlaySound(SoundID.Dig with {
-                        Volume = 0.16f + 0.22f * progress, Pitch = 0.5f, MaxInstances = 5
+                        Volume = 0.16f + 0.22f * progress,
+                        Pitch = 0.5f,
+                        MaxInstances = 5
                     }, Projectile.Center);
                 }
                 else if (elapsed == LeakFrames) {

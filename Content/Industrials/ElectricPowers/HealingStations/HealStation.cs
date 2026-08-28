@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -43,12 +43,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.HealingStations
         }
 
         public override void AddRecipes() {
-                CreateRecipe()
-                .AddIngredient<CircuitBoard>(8)
-                .AddIngredient(ItemID.LifeCrystal, 1)
-                .AddIngredient(ItemID.HealingPotion, 5)
-                .AddTile(TileID.Anvils)
-                .Register();
+            CreateRecipe()
+            .AddIngredient<CircuitBoard>(8)
+            .AddIngredient(ItemID.LifeCrystal, 1)
+            .AddIngredient(ItemID.HealingPotion, 5)
+            .AddTile(TileID.Anvils)
+            .Register();
 
         }
     }

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Scenarios.Kiyume.Gen;
 using InnoVault.PRT;
@@ -354,10 +354,14 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
                 case CortegeShared.StateTurn:
                     //全列停步那一拍：纸衣摩擦 + 帽下很低的一声
                     SoundEngine.PlaySound(SoundID.Grass with {
-                        Volume = 0.55f, Pitch = -0.5f, MaxInstances = 2
+                        Volume = 0.55f,
+                        Pitch = -0.5f,
+                        MaxInstances = 2
                     }, NPC.Center);
                     SoundEngine.PlaySound(SoundID.ZombieMoan with {
-                        Volume = 0.4f, Pitch = -0.8f, MaxInstances = 2
+                        Volume = 0.4f,
+                        Pitch = -0.8f,
+                        MaxInstances = 2
                     }, NPC.Center);
                     break;
                 case CortegeShared.StateRage:
@@ -366,7 +370,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
                     break;
                 case CortegeShared.StateSink:
                     SoundEngine.PlaySound(SoundID.NPCDeath6 with {
-                        Volume = 0.4f, Pitch = -0.35f, MaxInstances = 2
+                        Volume = 0.4f,
+                        Pitch = -0.35f,
+                        MaxInstances = 2
                     }, NPC.Center);
                     CortegeShared.EmitDissolveMist(NPC.Center, 6);
                     if (prev == CortegeShared.StateBow) {
@@ -383,7 +389,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
             }
             Vector2 at = CortegeShared.CarriedCoffinPos(NPC, marchDir);
             SoundEngine.PlaySound(SoundID.Dig with {
-                Volume = 1f, Pitch = -0.85f, MaxInstances = 2
+                Volume = 1f,
+                Pitch = -0.85f,
+                MaxInstances = 2
             }, at);
             for (int i = 0; i < 10; i++) {
                 PRTLoader.NewParticle<PRT_Smoke>(
@@ -401,7 +409,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item35 with {
-                Volume = 0.3f, Pitch = 0.6f, MaxInstances = 2
+                Volume = 0.3f,
+                Pitch = 0.6f,
+                MaxInstances = 2
             }, NPC.Center);
             for (int i = 0; i < 12; i++) {
                 PRTLoader.NewParticle<PRT_Spark>(
@@ -417,7 +427,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
         private void RingBell() {
             if (!Main.dedServ) {
                 SoundEngine.PlaySound(SoundID.Item35 with {
-                    Volume = 0.8f, Pitch = 0.3f, MaxInstances = 2
+                    Volume = 0.8f,
+                    Pitch = 0.3f,
+                    MaxInstances = 2
                 }, NPC.Center);
                 for (int i = 0; i < 6; i++) {
                     PRTLoader.NewParticle<PRT_Spark>(
@@ -830,7 +842,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
                 case CortegeShared.StateSink:
                     //音量收敛：五体齐沉靠 MaxInstances 封顶，主响在队首
                     SoundEngine.PlaySound(SoundID.NPCDeath6 with {
-                        Volume = 0.3f, Pitch = -0.35f, MaxInstances = 2
+                        Volume = 0.3f,
+                        Pitch = -0.35f,
+                        MaxInstances = 2
                     }, NPC.Center);
                     CortegeShared.EmitDissolveMist(NPC.Center, 4);
                     break;
@@ -1007,7 +1021,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
             if (fallingSeen && BeatForward(1) && !Main.dedServ) {
                 //落定轻响 + 几缕尘（坠地主响在回头拍序列里，这里只补落定）
                 SoundEngine.PlaySound(SoundID.Dig with {
-                    Volume = 0.45f, Pitch = -0.7f, MaxInstances = 2
+                    Volume = 0.45f,
+                    Pitch = -0.7f,
+                    MaxInstances = 2
                 }, NPC.Center);
                 for (int i = 0; i < 4; i++) {
                     PRTLoader.NewParticle<PRT_Smoke>(

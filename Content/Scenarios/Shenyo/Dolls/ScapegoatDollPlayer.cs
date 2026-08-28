@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.Narrative;
-using Microsoft.Xna.Framework;
+﻿using CalamityOverhaul.Content.Narrative;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;

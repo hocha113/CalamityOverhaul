@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.Trails;
@@ -70,7 +70,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
 
             if (Timer == 0 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with {
-                    Volume = 0.5f, Pitch = 0.45f, MaxInstances = 4
+                    Volume = 0.5f,
+                    Pitch = 0.45f,
+                    MaxInstances = 4
                 }, endPos);
                 for (int i = 0; i < 3; i++) {
                     PRTLoader.NewParticle<PRT_Spark>(endPos + Main.rand.NextVector2Circular(9f, 9f),

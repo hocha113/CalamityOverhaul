@@ -1,6 +1,5 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -81,7 +81,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rainveil.Projec
             if (elapsed == 0) {
                 //预告起手：低鸣蓄能（听觉通道①）
                 SoundEngine.PlaySound(SoundID.Item93 with {
-                    Volume = 0.35f, Pitch = -0.5f, MaxInstances = 3
+                    Volume = 0.35f,
+                    Pitch = -0.5f,
+                    MaxInstances = 3
                 }, Projectile.Center);
             }
 
@@ -116,10 +118,14 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rainveil.Projec
                 bolt?.Configure(Projectile.Center - new Vector2(0f, SkySourceHeight * Scale),
                     Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Thunder with {
-                    Volume = 0.8f, Pitch = Main.rand.NextFloat(-0.1f, 0.15f), MaxInstances = 3
+                    Volume = 0.8f,
+                    Pitch = Main.rand.NextFloat(-0.1f, 0.15f),
+                    MaxInstances = 3
                 }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Item122 with {
-                    Volume = 0.45f, Pitch = -0.1f, MaxInstances = 3
+                    Volume = 0.45f,
+                    Pitch = -0.1f,
+                    MaxInstances = 3
                 }, Projectile.Center);
                 for (int i = 0; i < 16; i++) {
                     Dust burst = Dust.NewDustPerfect(Projectile.Center,

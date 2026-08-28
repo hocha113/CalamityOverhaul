@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -101,41 +101,41 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Pro
             Vector2 pos = Projectile.Center - Main.screenPosition;
             switch ((int)Style) {
                 case StyleCrossSpike: {
-                        Texture2D cross = CWRAsset.RayCross01?.Value;
-                        if (cross == null) {
-                            return false;
-                        }
-                        //十字钉光：出生急胀后收，identity 定摆角
-                        float t = MathHelper.Clamp(Age / 6f, 0f, 1f);
-                        float scale = (0.28f + 0.22f * t) * (Radius / 80f + 0.6f);
-                        Color c = new Color(255, 232, 160) * (0.9f * fade);
-                        c.A = 0;
-                        float rot = Projectile.identity * 0.51f;
-                        Main.EntitySpriteDraw(cross, pos, null, c, rot, cross.Size() * 0.5f, scale, SpriteEffects.None, 0);
-                        Main.EntitySpriteDraw(cross, pos, null, c * 0.6f, rot + MathHelper.PiOver4, cross.Size() * 0.5f, scale * 0.7f, SpriteEffects.None, 0);
-                        break;
+                    Texture2D cross = CWRAsset.RayCross01?.Value;
+                    if (cross == null) {
+                        return false;
                     }
+                    //十字钉光：出生急胀后收，identity 定摆角
+                    float t = MathHelper.Clamp(Age / 6f, 0f, 1f);
+                    float scale = (0.28f + 0.22f * t) * (Radius / 80f + 0.6f);
+                    Color c = new Color(255, 232, 160) * (0.9f * fade);
+                    c.A = 0;
+                    float rot = Projectile.identity * 0.51f;
+                    Main.EntitySpriteDraw(cross, pos, null, c, rot, cross.Size() * 0.5f, scale, SpriteEffects.None, 0);
+                    Main.EntitySpriteDraw(cross, pos, null, c * 0.6f, rot + MathHelper.PiOver4, cross.Size() * 0.5f, scale * 0.7f, SpriteEffects.None, 0);
+                    break;
+                }
                 case StyleHighExplosive: {
-                        //爆芯冲击环 + 白闪
-                        float t = MathHelper.Clamp(Age / 14f, 0f, 1f);
-                        ShockRingDraw.Draw(Main.spriteBatch, Projectile.Center,
-                            Radius * (0.3f + 0.7f * t), 9f,
-                            new Color(255, 236, 190), new Color(255, 140, 46), new Color(120, 46, 16),
-                            (1f - t) * 0.8f, timeSeed: Projectile.identity * 0.7f);
-                        break;
-                    }
+                    //爆芯冲击环 + 白闪
+                    float t = MathHelper.Clamp(Age / 14f, 0f, 1f);
+                    ShockRingDraw.Draw(Main.spriteBatch, Projectile.Center,
+                        Radius * (0.3f + 0.7f * t), 9f,
+                        new Color(255, 236, 190), new Color(255, 140, 46), new Color(120, 46, 16),
+                        (1f - t) * 0.8f, timeSeed: Projectile.identity * 0.7f);
+                    break;
+                }
                 case StyleFlameSplash: {
-                        Texture2D glow = CWRAsset.SoftGlow?.Value;
-                        if (glow == null) {
-                            return false;
-                        }
-                        //环带热浪：贴地压扁光环
-                        Color c = new Color(255, 120, 40) * (0.35f * fade);
-                        c.A = 0;
-                        Main.EntitySpriteDraw(glow, pos, null, c, 0f, glow.Size() * 0.5f,
-                            new Vector2(Radius / 26f, Radius / 42f), SpriteEffects.None, 0);
-                        break;
+                    Texture2D glow = CWRAsset.SoftGlow?.Value;
+                    if (glow == null) {
+                        return false;
                     }
+                    //环带热浪：贴地压扁光环
+                    Color c = new Color(255, 120, 40) * (0.35f * fade);
+                    c.A = 0;
+                    Main.EntitySpriteDraw(glow, pos, null, c, 0f, glow.Size() * 0.5f,
+                        new Vector2(Radius / 26f, Radius / 42f), SpriteEffects.None, 0);
+                    break;
+                }
             }
             return false;
         }

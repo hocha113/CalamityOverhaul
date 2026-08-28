@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -128,24 +128,32 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Silkcrypt.Proje
             //预告：两声丝弦 + 线上反光（绘制层），听觉通道在这
             if (elapsed == 0) {
                 SoundEngine.PlaySound(SoundID.Item17 with {
-                    Volume = 0.24f, Pitch = -0.4f, MaxInstances = 4,
+                    Volume = 0.24f,
+                    Pitch = -0.4f,
+                    MaxInstances = 4,
                 }, Projectile.Center);
             }
             else if (elapsed == 28) {
                 SoundEngine.PlaySound(SoundID.Item17 with {
-                    Volume = 0.18f, Pitch = -0.1f, MaxInstances = 4,
+                    Volume = 0.18f,
+                    Pitch = -0.1f,
+                    MaxInstances = 4,
                 }, Projectile.Center);
             }
             else if (elapsed == TelegraphFrames) {
                 //落影：翼风般的一声急掠
                 SoundEngine.PlaySound(SoundID.Item32 with {
-                    Volume = 0.4f, Pitch = -0.3f, MaxInstances = 4,
+                    Volume = 0.4f,
+                    Pitch = -0.3f,
+                    MaxInstances = 4,
                 }, Projectile.Center + new Vector2(0f, DropLen * 0.5f));
             }
             else if (elapsed == TelegraphFrames + DescPhaseFrames + DwellFrames) {
                 //收回起手：丝线回卷的轻响
                 SoundEngine.PlaySound(SoundID.Item17 with {
-                    Volume = 0.14f, Pitch = 0.2f, MaxInstances = 4,
+                    Volume = 0.14f,
+                    Pitch = 0.2f,
+                    MaxInstances = 4,
                 }, Projectile.Center);
             }
 

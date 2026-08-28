@@ -1,8 +1,7 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
 {

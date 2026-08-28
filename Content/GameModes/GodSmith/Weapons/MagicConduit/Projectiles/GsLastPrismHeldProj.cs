@@ -1,11 +1,10 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -101,7 +100,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
             //聚焦升调滴答：随聚焦度升高的棱鸣（施法者本地即可感的读数）
             if (!VaultUtils.isServer && Projectile.localAI[1] % 32 == 0 && collapse01 <= 0f) {
                 SoundEngine.PlaySound(SoundID.Item101 with {
-                    Volume = 0.28f + 0.2f * focus, Pitch = -0.4f + 0.9f * focus, MaxInstances = 2
+                    Volume = 0.28f + 0.2f * focus,
+                    Pitch = -0.4f + 0.9f * focus,
+                    MaxInstances = 2
                 }, muzzle);
             }
 

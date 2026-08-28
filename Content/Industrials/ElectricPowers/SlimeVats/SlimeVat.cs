@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -45,13 +45,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.SlimeVats
         }
 
         public override void AddRecipes() {
-                CreateRecipe()
-                .AddIngredient<CircuitBoard>(6)
-                .AddIngredient(ItemID.Gel, 30)
-                .AddIngredient(ItemID.Glass, 8)
-                .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
-                .AddTile(TileID.Anvils)
-                .Register();
+            CreateRecipe()
+            .AddIngredient<CircuitBoard>(6)
+            .AddIngredient(ItemID.Gel, 30)
+            .AddIngredient(ItemID.Glass, 8)
+            .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
+            .AddTile(TileID.Anvils)
+            .Register();
 
         }
     }

@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -163,7 +163,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Nyxdepth
             phase = Phase.Disperse;
             timer = DisperseFrames;
             SoundEngine.PlaySound(SoundID.SplashWeak with {
-                Volume = 0.28f, Pitch = -0.7f, MaxInstances = 2
+                Volume = 0.28f,
+                Pitch = -0.7f,
+                MaxInstances = 2
             }, anchor);
             for (int i = 0; i < 8; i++) {
                 Dust dust = Dust.NewDustPerfect(anchor + Main.rand.NextVector2Circular(14f, 8f),

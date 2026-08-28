@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -185,7 +185,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
             base.OnHitFX(target, hit, damageDone);
             SoundEngine.PlaySound(SoundID.Item9 with {
-                Volume = 0.28f, Pitch = Main.rand.NextFloat(-0.2f, 0.1f), MaxInstances = 3
+                Volume = 0.28f,
+                Pitch = Main.rand.NextFloat(-0.2f, 0.1f),
+                MaxInstances = 3
             }, target.Center);
             int shards = IsFinisher ? 5 : 3;
             for (int i = 0; i < shards; i++) {
@@ -354,7 +356,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             }
             //命中相：落点星爆，体量定强度
             SoundEngine.PlaySound(SoundID.Item88 with {
-                Volume = Mode == 2 ? 0.55f : 0.35f, Pitch = Mode == 2 ? -0.35f : -0.1f, MaxInstances = 5,
+                Volume = Mode == 2 ? 0.55f : 0.35f,
+                Pitch = Mode == 2 ? -0.35f : -0.1f,
+                MaxInstances = 5,
             }, Projectile.Center);
             PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Vector2.Zero,
                 GsStarWrath.NightHot, 0.22f * SizeMul)?.Configure(12, 0.85f);

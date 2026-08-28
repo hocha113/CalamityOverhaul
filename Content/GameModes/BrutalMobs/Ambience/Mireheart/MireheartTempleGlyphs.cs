@@ -1,4 +1,4 @@
-using InnoVault.RenderHandles;
+﻿using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -127,7 +127,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mireheart
             }
             if (i % 3 == 0) {
                 SoundEngine.PlaySound(SoundID.Item4 with {
-                    Volume = 0.14f, Pitch = 0.35f + i * 0.03f, MaxInstances = 2
+                    Volume = 0.14f,
+                    Pitch = 0.35f + i * 0.03f,
+                    MaxInstances = 2
                 }, pos);
             }
         }
@@ -196,7 +198,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mireheart
             chainAge = 0;
             //古老石声：链首低沉滚石，苏醒的开场白
             SoundEngine.PlaySound(SoundID.WormDig with {
-                Volume = 0.34f, Pitch = -0.78f, MaxInstances = 2
+                Volume = 0.34f,
+                Pitch = -0.78f,
+                MaxInstances = 2
             }, glyphs[0].Pos);
             return true;
         }

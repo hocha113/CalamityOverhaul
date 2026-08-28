@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -136,7 +136,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
             base.OnHitFX(target, hit, damageDone);
             SoundEngine.PlaySound(SoundID.Item35 with {
-                Volume = 0.26f, Pitch = Main.rand.NextFloat(0.4f, 0.7f), MaxInstances = 3
+                Volume = 0.26f,
+                Pitch = Main.rand.NextFloat(0.4f, 0.7f),
+                MaxInstances = 3
             }, target.Center);
             int bits = IsFinisher ? 8 : 5;
             for (int i = 0; i < bits; i++) {
@@ -522,7 +524,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 && !VaultUtils.isServer) {
                 int tickIdx = (int)((ra - FirstTick) / TickInterval);
                 SoundEngine.PlaySound(SoundID.Item35 with {
-                    Volume = 0.3f, Pitch = 0.2f + 0.15f * (tickIdx % 3), MaxInstances = 3
+                    Volume = 0.3f,
+                    Pitch = 0.2f + 0.15f * (tickIdx % 3),
+                    MaxInstances = 3
                 }, Projectile.Center);
                 PRTLoader.NewParticle<PRT_StarPulseRing>(CanopyCenter, Vector2.Zero,
                     GsChristmasTreeSword.FestGold, 0.05f)?.Configure(0.07f, CanopyRadius / 380f, 16);

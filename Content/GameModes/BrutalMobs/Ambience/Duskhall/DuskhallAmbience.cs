@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Scenarios.Dungeonworld;
+﻿using CalamityOverhaul.Content.Scenarios.Dungeonworld;
 using ReLogic.Utilities;
 using System;
 using Terraria;
@@ -476,7 +476,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Duskhall
                 pos = player.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(420f, 720f);
             }
             SoundEngine.PlaySound(SoundID.DoorOpen with {
-                Volume = 0.2f, Pitch = -0.5f + Main.rand.NextFloat(0.15f), MaxInstances = 2
+                Volume = 0.2f,
+                Pitch = -0.5f + Main.rand.NextFloat(0.15f),
+                MaxInstances = 2
             }, pos);
             if (found) {
                 //吊具轻晃的两点火星，给声音一个可见锚
@@ -493,7 +495,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Duskhall
         private static void DoorThud(Player player) {
             Vector2 pos = player.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(750f, 1150f);
             SoundEngine.PlaySound(SoundID.DoorClosed with {
-                Volume = 0.34f, Pitch = -0.72f, MaxInstances = 2
+                Volume = 0.34f,
+                Pitch = -0.72f,
+                MaxInstances = 2
             }, pos);
             QueueCue(SoundID.DoorClosed with { Volume = 0.14f, Pitch = -0.9f, MaxInstances = 2 }, pos, 16);
         }
@@ -502,7 +506,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Duskhall
         private static void GhostMoan(Player player) {
             Vector2 pos = player.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(600f, 1000f);
             SoundEngine.PlaySound(SoundID.ZombieMoan with {
-                Volume = 0.2f, Pitch = -0.55f, MaxInstances = 2
+                Volume = 0.2f,
+                Pitch = -0.55f,
+                MaxInstances = 2
             }, pos);
         }
 
@@ -511,7 +517,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Duskhall
             int dir = Main.rand.NextBool() ? 1 : -1;
             Vector2 pos = player.Center + new Vector2(dir * Main.rand.NextFloat(520f, 900f), Main.rand.NextFloat(-90f, 90f));
             SoundEngine.PlaySound(SoundID.WormDigQuiet with {
-                Volume = 0.34f, Pitch = -0.55f, MaxInstances = 2
+                Volume = 0.34f,
+                Pitch = -0.55f,
+                MaxInstances = 2
             }, pos);
             QueueCue(SoundID.WormDigQuiet with { Volume = 0.28f, Pitch = -0.5f, MaxInstances = 2 },
                 pos + new Vector2(dir * 40f, 0f), 30);

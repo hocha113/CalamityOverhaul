@@ -1,9 +1,7 @@
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-
-using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
 
 namespace CalamityOverhaul.Content.Scenarios.Kiame.KasaOnis
 {

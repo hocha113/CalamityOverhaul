@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -147,7 +147,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow.Proj
                 Projectile.localAI[2] = stage;
                 if (!Main.dedServ) {
                     SoundEngine.PlaySound(SoundID.Item27 with {
-                        Volume = 0.16f, Pitch = 0.55f, MaxInstances = 4
+                        Volume = 0.16f,
+                        Pitch = 0.55f,
+                        MaxInstances = 4
                     }, Projectile.Center);
                     for (int i = 0; i < 3; i++) {
                         Dust dust = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6f, 3f),
@@ -231,7 +233,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow.Proj
                 }
                 if ((int)Timer == ShakeFrames * 3 / 5) {
                     SoundEngine.PlaySound(SoundID.Item27 with {
-                        Volume = 0.5f, Pitch = -0.05f, MaxInstances = 4
+                        Volume = 0.5f,
+                        Pitch = -0.05f,
+                        MaxInstances = 4
                     }, Projectile.Center);
                 }
             }
@@ -355,13 +359,17 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow.Proj
             switch (phase) {
                 case PhaseMature:
                     SoundEngine.PlaySound(SoundID.Item27 with {
-                        Volume = 0.2f, Pitch = 0.4f, MaxInstances = 4
+                        Volume = 0.2f,
+                        Pitch = 0.4f,
+                        MaxInstances = 4
                     }, Projectile.Center);
                     break;
                 case PhaseShake:
                     //碎冰声预告：抖动的听觉通道
                     SoundEngine.PlaySound(SoundID.Item27 with {
-                        Volume = 0.62f, Pitch = -0.18f, MaxInstances = 4
+                        Volume = 0.62f,
+                        Pitch = -0.18f,
+                        MaxInstances = 4
                     }, Projectile.Center);
                     for (int i = 0; i < 5; i++) {
                         Dust dust = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8f, 4f),
@@ -373,7 +381,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow.Proj
                 case PhaseFall:
                     //断根脆响
                     SoundEngine.PlaySound(SoundID.Item27 with {
-                        Volume = 0.5f, Pitch = 0.12f, MaxInstances = 4
+                        Volume = 0.5f,
+                        Pitch = 0.12f,
+                        MaxInstances = 4
                     }, Projectile.Center);
                     for (int i = 0; i < 4; i++) {
                         Dust dust = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6f, 3f),
@@ -473,10 +483,14 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow.Proj
                 //坠地碎裂：脆响+径向冰屑，随后是慢漂的冰雾余韵（活得比弹幕久）
                 Vector2 tip = TipPos;
                 SoundEngine.PlaySound(SoundID.Item27 with {
-                    Volume = 0.85f, Pitch = -0.2f, MaxInstances = 4
+                    Volume = 0.85f,
+                    Pitch = -0.2f,
+                    MaxInstances = 4
                 }, tip);
                 SoundEngine.PlaySound(SoundID.Shatter with {
-                    Volume = 0.3f, Pitch = 0.25f, MaxInstances = 3
+                    Volume = 0.3f,
+                    Pitch = 0.25f,
+                    MaxInstances = 3
                 }, tip);
                 for (int i = 0; i < 12; i++) {
                     Dust shard = Dust.NewDustPerfect(tip + Main.rand.NextVector2Circular(10f, 4f),
@@ -502,7 +516,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow.Proj
             else {
                 //断根碎散（未成熟）：轻响+少量冰屑，不构成威胁
                 SoundEngine.PlaySound(SoundID.Tink with {
-                    Volume = 0.3f, Pitch = 0.2f, MaxInstances = 4
+                    Volume = 0.3f,
+                    Pitch = 0.2f,
+                    MaxInstances = 4
                 }, Projectile.Center);
                 for (int i = 0; i < 6; i++) {
                     Dust dust = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6f, 4f),

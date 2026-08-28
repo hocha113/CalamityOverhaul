@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
@@ -161,7 +161,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 KikasaDomainDeco.SplashAt(hit, (int)(4f * MathF.Min(size, 1.4f)));
                 KikasaDomainDeco.RippleAt(hit, 0.5f * MathF.Min(size, 1.4f));
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Volume = 0.28f, Pitch = 0.05f, MaxInstances = 3,
+                    Volume = 0.28f,
+                    Pitch = 0.05f,
+                    MaxInstances = 3,
                 }, hit);
             }
 

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -97,7 +97,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Proj
             if (Plunging && (Elapsed - FanFrames) % PlungeGap == 0) {
                 int idx = (Elapsed - FanFrames) / PlungeGap;
                 SoundEngine.PlaySound(SoundID.Item163 with {
-                    Volume = 0.4f, Pitch = -0.3f + idx * 0.12f
+                    Volume = 0.4f,
+                    Pitch = -0.3f + idx * 0.12f
                 }, Projectile.Center);
             }
             //碎光首帧：棱镜炸裂

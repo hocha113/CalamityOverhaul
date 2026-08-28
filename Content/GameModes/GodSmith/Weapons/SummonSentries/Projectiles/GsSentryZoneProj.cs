@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -145,69 +145,69 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Pro
             float phase = Projectile.identity * 0.83f;
             switch ((int)Style) {
                 case StyleFireRing: {
-                        if (glow == null) {
-                            break;
-                        }
-                        Color c = new Color(255, 110, 30) * (0.30f * env);
-                        c.A = 0;
-                        //贴地热光，压扁椭圆
-                        Main.EntitySpriteDraw(glow, pos, null, c, 0f, glow.Size() * 0.5f,
-                            new Vector2(Radius / 24f, Radius / 52f), SpriteEffects.None, 0);
+                    if (glow == null) {
                         break;
                     }
+                    Color c = new Color(255, 110, 30) * (0.30f * env);
+                    c.A = 0;
+                    //贴地热光，压扁椭圆
+                    Main.EntitySpriteDraw(glow, pos, null, c, 0f, glow.Size() * 0.5f,
+                        new Vector2(Radius / 24f, Radius / 52f), SpriteEffects.None, 0);
+                    break;
+                }
                 case StyleWebPatch: {
-                        Texture2D dark = CWRAsset.Extra_98?.Value;
-                        Texture2D line = CWRAsset.Line?.Value;
-                        if (dark == null || line == null) {
-                            break;
-                        }
-                        //真 alpha 暗底 + 三根白丝交叉（identity 定角）
-                        Main.EntitySpriteDraw(dark, pos, null, new Color(30, 28, 36) * (0.5f * env), 0f,
-                            dark.Size() * 0.5f, new Vector2(Radius / 60f, Radius / 90f), SpriteEffects.None, 0);
-                        for (int i = 0; i < 3; i++) {
-                            float rot = phase + i * 1.05f;
-                            Color silk = new Color(220, 220, 230) * (0.28f * env);
-                            Main.EntitySpriteDraw(line, pos, null, silk, rot, line.Size() * 0.5f,
-                                new Vector2(Radius / line.Width * 1.7f, 0.6f), SpriteEffects.None, 0);
-                        }
+                    Texture2D dark = CWRAsset.Extra_98?.Value;
+                    Texture2D line = CWRAsset.Line?.Value;
+                    if (dark == null || line == null) {
                         break;
                     }
+                    //真 alpha 暗底 + 三根白丝交叉（identity 定角）
+                    Main.EntitySpriteDraw(dark, pos, null, new Color(30, 28, 36) * (0.5f * env), 0f,
+                        dark.Size() * 0.5f, new Vector2(Radius / 60f, Radius / 90f), SpriteEffects.None, 0);
+                    for (int i = 0; i < 3; i++) {
+                        float rot = phase + i * 1.05f;
+                        Color silk = new Color(220, 220, 230) * (0.28f * env);
+                        Main.EntitySpriteDraw(line, pos, null, silk, rot, line.Size() * 0.5f,
+                            new Vector2(Radius / line.Width * 1.7f, 0.6f), SpriteEffects.None, 0);
+                    }
+                    break;
+                }
                 case StyleOverloadRing: {
-                        Texture2D arc = CWRAsset.ThunderTrail?.Value;
-                        if (arc == null) {
-                            break;
-                        }
-                        //环缘三段电弧缓旋（去同相）
-                        float spin = Main.GlobalTimeWrappedHourly * 1.7f + phase;
-                        for (int i = 0; i < 3; i++) {
-                            float ang = spin + MathHelper.TwoPi * i / 3f;
-                            Vector2 at = pos + ang.ToRotationVector2() * Radius * 0.86f;
-                            Color c = new Color(150, 205, 255) * (0.5f * env);
-                            c.A = 0;
-                            Main.EntitySpriteDraw(arc, at, null, c, ang + MathHelper.PiOver2,
-                                arc.Size() * 0.5f, new Vector2(0.5f, 0.24f), SpriteEffects.None, 0);
-                        }
+                    Texture2D arc = CWRAsset.ThunderTrail?.Value;
+                    if (arc == null) {
                         break;
                     }
+                    //环缘三段电弧缓旋（去同相）
+                    float spin = Main.GlobalTimeWrappedHourly * 1.7f + phase;
+                    for (int i = 0; i < 3; i++) {
+                        float ang = spin + MathHelper.TwoPi * i / 3f;
+                        Vector2 at = pos + ang.ToRotationVector2() * Radius * 0.86f;
+                        Color c = new Color(150, 205, 255) * (0.5f * env);
+                        c.A = 0;
+                        Main.EntitySpriteDraw(arc, at, null, c, ang + MathHelper.PiOver2,
+                            arc.Size() * 0.5f, new Vector2(0.5f, 0.24f), SpriteEffects.None, 0);
+                    }
+                    break;
+                }
                 case StyleAurora: {
-                        Texture2D band = CWRAsset.LightShot?.Value;
-                        if (band == null) {
-                            break;
-                        }
-                        //五条竖幕彩带缓摆，identity 相位五色错离
-                        for (int i = 0; i < 5; i++) {
-                            float fx = (i / 4f - 0.5f) * 2f;
-                            float sway = MathF.Sin(Main.GlobalTimeWrappedHourly * 1.1f + phase + i * 1.3f) * 14f;
-                            float hue = (i * 0.18f + Main.GlobalTimeWrappedHourly * 0.07f) % 1f;
-                            Color c = Main.hslToRgb(hue, 0.75f, 0.6f) * (0.30f * env);
-                            c.A = 0;
-                            Vector2 at = pos + new Vector2(fx * Radius * 0.8f + sway, 0f);
-                            Main.EntitySpriteDraw(band, at, null, c, -MathHelper.PiOver2,
-                                new Vector2(0f, band.Height * 0.5f),
-                                new Vector2(AuroraHeight / band.Width, 30f / band.Height), SpriteEffects.None, 0);
-                        }
+                    Texture2D band = CWRAsset.LightShot?.Value;
+                    if (band == null) {
                         break;
                     }
+                    //五条竖幕彩带缓摆，identity 相位五色错离
+                    for (int i = 0; i < 5; i++) {
+                        float fx = (i / 4f - 0.5f) * 2f;
+                        float sway = MathF.Sin(Main.GlobalTimeWrappedHourly * 1.1f + phase + i * 1.3f) * 14f;
+                        float hue = (i * 0.18f + Main.GlobalTimeWrappedHourly * 0.07f) % 1f;
+                        Color c = Main.hslToRgb(hue, 0.75f, 0.6f) * (0.30f * env);
+                        c.A = 0;
+                        Vector2 at = pos + new Vector2(fx * Radius * 0.8f + sway, 0f);
+                        Main.EntitySpriteDraw(band, at, null, c, -MathHelper.PiOver2,
+                            new Vector2(0f, band.Height * 0.5f),
+                            new Vector2(AuroraHeight / band.Width, 30f / band.Height), SpriteEffects.None, 0);
+                    }
+                    break;
+                }
             }
             return false;
         }

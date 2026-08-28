@@ -1,4 +1,4 @@
-using InnoVault.RenderHandles;
+﻿using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -124,7 +124,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Brinefume
             }
             if (Main.rand.NextBool(4)) {
                 SoundEngine.PlaySound(SoundID.Drip with {
-                    Volume = 0.16f, Pitch = 0.55f, MaxInstances = 3,
+                    Volume = 0.16f,
+                    Pitch = 0.55f,
+                    MaxInstances = 3,
                 }, pos);
             }
         }

@@ -421,7 +421,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 //受理拍:水线荡一圈,潮听见了
                 KikasaDomainDeco.RippleAt(new Vector2(Player.Center.X, LakeWorldY), 0.8f);
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Volume = 0.4f, Pitch = -0.5f, MaxInstances = 2,
+                    Volume = 0.4f,
+                    Pitch = -0.5f,
+                    MaxInstances = 2,
                 }, Player.Center);
             }
             //目标真动了才转播,10 帧一发不淹链路
@@ -1514,7 +1516,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                     KikasaDomainDeco.RippleAt(lipL, 0.8f + 0.5f * k);
                     KikasaDomainDeco.RippleAt(lipR, 0.8f + 0.5f * k);
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
-                        Volume = 0.3f + 0.15f * k, Pitch = -0.6f, MaxInstances = 2,
+                        Volume = 0.3f + 0.15f * k,
+                        Pitch = -0.6f,
+                        MaxInstances = 2,
                     }, center);
                 }
             }
@@ -1525,7 +1529,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             Vector2 at = new(Player.Center.X, LakeWorldY);
             float k = MathHelper.Clamp(tideTravelMax / 300f, 0.3f, 1f);
             SoundEngine.PlaySound(SoundID.SplashWeak with {
-                Volume = 0.45f + 0.25f * k, Pitch = -0.2f, MaxInstances = 2,
+                Volume = 0.45f + 0.25f * k,
+                Pitch = -0.2f,
+                MaxInstances = 2,
             }, at);
             KikasaDomainDeco.SplashAt(at, 5 + (int)(7f * k));
             KikasaDomainDeco.RippleAt(at, 0.9f + 0.5f * k);

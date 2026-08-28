@@ -1,7 +1,6 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

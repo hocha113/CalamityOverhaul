@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RAMSystems;
+﻿using CalamityOverhaul.Content.RAMSystems;
 using CalamityOverhaul.Content.Scenarios.OldNet.Gen;
 using Microsoft.Xna.Framework.Graphics;
 using System;

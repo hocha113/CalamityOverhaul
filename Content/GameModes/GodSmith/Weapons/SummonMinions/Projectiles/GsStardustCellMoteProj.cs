@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Proj
                         CellPale * 0.55f, 0f, soft.Size() / 2f,
                         new Vector2(11f / soft.Width, 10f / soft.Height), SpriteEffects.None, 0);
                 }
-                Main.EntitySpriteDraw(soft, pos, null, CellCyan * (0.5f * (1f - t)), 
+                Main.EntitySpriteDraw(soft, pos, null, CellCyan * (0.5f * (1f - t)),
                     axis.ToRotation(), soft.Size() / 2f,
                     new Vector2(apart * 2.2f / soft.Width, 3f / soft.Height), SpriteEffects.None, 0);
                 return false;

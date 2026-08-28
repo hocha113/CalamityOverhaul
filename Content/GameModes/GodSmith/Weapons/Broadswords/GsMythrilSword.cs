@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -81,7 +81,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override void PlaySwingSound() {
             SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.8f, Pitch = Beat.SwingPitch }, Owner.Center);
             SoundEngine.PlaySound(SoundID.Item29 with {
-                Volume = 0.2f, Pitch = -0.1f + 0.25f * ComboStage, MaxInstances = 3
+                Volume = 0.2f,
+                Pitch = -0.1f + 0.25f * ComboStage,
+                MaxInstances = 3
             }, Owner.Center);
             if (IsFinisher) {
                 SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.3f, Pitch = -0.3f }, Owner.Center);
@@ -108,7 +110,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             //印记递升音阶 + 印数颗翠星贴在伤口上方
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item29 with {
-                    Volume = 0.3f, Pitch = 0.2f + 0.25f * brands, MaxInstances = 3
+                    Volume = 0.3f,
+                    Pitch = 0.2f + 0.25f * brands,
+                    MaxInstances = 3
                 }, target.Center);
                 for (int i = 0; i < brands; i++) {
                     PRTLoader.NewParticle<PRT_Sparkle>(

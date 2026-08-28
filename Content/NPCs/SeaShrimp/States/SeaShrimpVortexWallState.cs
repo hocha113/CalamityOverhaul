@@ -1,7 +1,6 @@
-using CalamityOverhaul.Content.Items.Magic.Everdeeps;
+﻿using CalamityOverhaul.Content.Items.Magic.Everdeeps;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles;
-using CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering;
 using System;
 using Terraria;
 using Terraria.Audio;

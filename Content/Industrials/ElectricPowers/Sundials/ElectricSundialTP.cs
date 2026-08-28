@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations;
+﻿using CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.PRT;
 using System;
 using Terraria;
@@ -121,7 +121,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Duskwatch
                 Vector2 pos = player.Center + new Vector2(
                     side * Main.rand.NextFloat(900f, 1400f), -Main.rand.NextFloat(80f, 320f));
                 SoundEngine.PlaySound(SoundID.NPCDeath2 with {
-                    Volume = 0.22f, Pitch = -0.45f + Main.rand.NextFloat(0.15f), MaxInstances = 2
+                    Volume = 0.22f,
+                    Pitch = -0.45f + Main.rand.NextFloat(0.15f),
+                    MaxInstances = 2
                 }, pos);
                 //错拍：尖啸落地后短时间内不许吱呀撞声
                 if (creakIn < SoundStaggerGap) {

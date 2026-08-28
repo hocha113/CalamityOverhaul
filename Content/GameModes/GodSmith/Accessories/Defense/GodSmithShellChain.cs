@@ -1,7 +1,7 @@
-using System;
-using CalamityOverhaul.Content.GameModes.GodSmith.Core;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -237,7 +237,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
                         PRTLoader.NewParticle<PRT_Spark>(player.Center,
                             Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 3.5f),
                             Main.rand.NextBool() ? new Color(90, 220, 130) : new Color(190, 255, 200),
-                            Main.rand.NextFloat(0.26f, 0.42f))?.Configure(false, Main.rand.Next(16, 26)); 
+                            Main.rand.NextFloat(0.26f, 0.42f))?.Configure(false, Main.rand.Next(16, 26));
                     }
                 }
             }

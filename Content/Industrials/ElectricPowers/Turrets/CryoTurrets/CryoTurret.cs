@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -43,12 +43,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.CryoTurret
         }
 
         public override void AddRecipes() {
-                CreateRecipe()
-                .AddIngredient<CircuitBoard>(10)
-                .AddIngredient(ItemID.FrostCore, 1)
-                .AddIngredient(ItemID.IceBlock, 50)
-                .AddTile(TileID.Anvils)
-                .Register();
+            CreateRecipe()
+            .AddIngredient<CircuitBoard>(10)
+            .AddIngredient(ItemID.FrostCore, 1)
+            .AddIngredient(ItemID.IceBlock, 50)
+            .AddTile(TileID.Anvils)
+            .Register();
 
         }
     }

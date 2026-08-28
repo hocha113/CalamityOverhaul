@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -27,13 +27,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
         }
 
         public override void AddRecipes() {
-                CreateRecipe()
-                .AddRecipeGroup(RecipeGroupID.IronBar, 12)
-                .AddRecipeGroup(CWRCrafted.GoldBarGroup, 8)
-                .AddIngredient(ItemID.Chain, 6)
-                .AddIngredient<CircuitBoard>(12)
-                .AddTile(TileID.Anvils)
-                .Register();
+            CreateRecipe()
+            .AddRecipeGroup(RecipeGroupID.IronBar, 12)
+            .AddRecipeGroup(CWRCrafted.GoldBarGroup, 8)
+            .AddIngredient(ItemID.Chain, 6)
+            .AddIngredient<CircuitBoard>(12)
+            .AddTile(TileID.Anvils)
+            .Register();
 
         }
     }

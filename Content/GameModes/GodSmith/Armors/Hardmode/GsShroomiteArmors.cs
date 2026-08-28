@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -409,7 +409,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Hardmode
             if (Life == SwellFrames && !Main.dedServ) {
                 //顶相：爆响 + 荧孢四散
                 SoundEngine.PlaySound(SoundID.Item14 with {
-                    Volume = 0.4f + 0.12f * JumpIndex, Pitch = 0.4f - 0.25f * JumpIndex, MaxInstances = 3
+                    Volume = 0.4f + 0.12f * JumpIndex,
+                    Pitch = 0.4f - 0.25f * JumpIndex,
+                    MaxInstances = 3
                 }, Projectile.Center);
                 for (int i = 0; i < 8 + (int)JumpIndex * 3; i++) {
                     PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,

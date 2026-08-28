@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -38,12 +38,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.PotionBeacons
         }
 
         public override void AddRecipes() {
-                CreateRecipe()
-                .AddIngredient<CircuitBoard>(8)
-                .AddRecipeGroup(CWRCrafted.TungstenBarGroup, 10)
-                .AddIngredient(ItemID.Bottle, 10)
-                .AddTile(TileID.Anvils)
-                .Register();
+            CreateRecipe()
+            .AddIngredient<CircuitBoard>(8)
+            .AddRecipeGroup(CWRCrafted.TungstenBarGroup, 10)
+            .AddIngredient(ItemID.Bottle, 10)
+            .AddTile(TileID.Anvils)
+            .Register();
 
         }
     }

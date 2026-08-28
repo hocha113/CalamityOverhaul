@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -166,7 +166,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
             //起振一瞬：各环错拍轻鸣，音高逐环抬升
             if (!Main.dedServ && (int)Life == Delay + 1) {
                 SoundEngine.PlaySound(SoundID.Item35 with {
-                    Volume = 0.3f, Pitch = 0.5f + Projectile.ai[1] * 0.15f, MaxInstances = 3
+                    Volume = 0.3f,
+                    Pitch = 0.5f + Projectile.ai[1] * 0.15f,
+                    MaxInstances = 3
                 }, Projectile.Center);
             }
             Lighting.AddLight(Projectile.Center, GsTinArmor.PaleCyan.ToVector3() * (0.2f * (1f - ExpandT) * VisualFade));

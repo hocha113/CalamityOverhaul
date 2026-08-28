@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Brinefume.Projectiles;
+﻿using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Brinefume.Projectiles;
 using ReLogic.Utilities;
 using System;
 using Terraria;
@@ -218,14 +218,18 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Brinefume
                         Main.rand.NextFloat(500f, 1100f) * (Main.rand.NextBool() ? 1f : -1f),
                         700f + Main.rand.NextFloat(500f));
                     SoundEngine.PlaySound(SoundID.Roar with {
-                        Volume = 0.20f * EffectDensity, Pitch = -0.92f, MaxInstances = 1,
+                        Volume = 0.20f * EffectDensity,
+                        Pitch = -0.92f,
+                        MaxInstances = 1,
                     }, moanPos);
                     moanEchoIn = 42;
                 }
             }
             if (moanEchoIn > 0 && --moanEchoIn == 0 && Presence > 0.3f) {
                 SoundEngine.PlaySound(SoundID.Roar with {
-                    Volume = 0.11f * EffectDensity, Pitch = -0.98f, MaxInstances = 1,
+                    Volume = 0.11f * EffectDensity,
+                    Pitch = -0.98f,
+                    MaxInstances = 1,
                 }, moanPos + new Vector2(Main.rand.NextFloat(-220f, 220f), 120f));
             }
         }

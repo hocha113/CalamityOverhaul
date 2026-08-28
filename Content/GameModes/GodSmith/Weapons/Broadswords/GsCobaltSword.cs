@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -125,7 +125,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         /// <summary>动量越高挥砍音越锐</summary>
         protected override void PlaySwingSound() {
             SoundEngine.PlaySound(SoundID.Item1 with {
-                Volume = 0.8f, Pitch = Beat.SwingPitch + 0.05f * momentumStacks
+                Volume = 0.8f,
+                Pitch = Beat.SwingPitch + 0.05f * momentumStacks
             }, Owner.Center);
             if (IsFinisher) {
                 SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.32f, Pitch = -0.2f }, Owner.Center);

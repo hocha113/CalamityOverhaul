@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -98,7 +98,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Cindercrag.Proj
                 local.AddBuff(BuffID.Weak, WeakTicks);
                 local.CWR().GetScreenShake(3.2f);
                 SoundEngine.PlaySound(SoundID.Zombie103 with {
-                    Volume = 0.62f, Pitch = -0.6f, MaxInstances = 2,
+                    Volume = 0.62f,
+                    Pitch = -0.6f,
+                    MaxInstances = 2,
                 }, local.Center);
             }
         }

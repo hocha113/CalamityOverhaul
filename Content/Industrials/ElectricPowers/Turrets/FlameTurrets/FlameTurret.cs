@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -47,12 +47,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.FlameTurre
         }
 
         public override void AddRecipes() {
-                CreateRecipe()
-                .AddIngredient<CircuitBoard>(10)
-                .AddIngredient(ItemID.HellstoneBar, 10)
-                .AddIngredient(ItemID.Gel, 30)
-                .AddTile(TileID.Anvils)
-                .Register();
+            CreateRecipe()
+            .AddIngredient<CircuitBoard>(10)
+            .AddIngredient(ItemID.HellstoneBar, 10)
+            .AddIngredient(ItemID.Gel, 30)
+            .AddTile(TileID.Anvils)
+            .Register();
 
         }
     }

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using Terraria;
@@ -250,7 +250,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil
                 return;
             }
             SoundEngine.PlaySound(SoundID.DeerclopsIceAttack with {
-                Volume = 0.55f, Pitch = 0.3f, MaxInstances = 3
+                Volume = 0.55f,
+                Pitch = 0.3f,
+                MaxInstances = 3
             }, Player.Center);
             for (int i = 0; i < 8; i++) {
                 Vector2 pos = Player.Center + Main.rand.NextVector2Circular(26f, 34f);

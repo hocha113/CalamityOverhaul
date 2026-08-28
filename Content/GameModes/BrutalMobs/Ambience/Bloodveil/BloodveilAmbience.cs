@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.PRT;
 using System;
 using Terraria;
@@ -105,13 +105,17 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Bloodveil
             //心跳双拍：无方位低频闷响（咚-咚），血月压在心口的听感
             if (heartSecondIn > 0 && --heartSecondIn == 0) {
                 SoundEngine.PlaySound(SoundID.NPCHit1 with {
-                    Volume = 0.24f, Pitch = -0.95f, MaxInstances = 2
+                    Volume = 0.24f,
+                    Pitch = -0.95f,
+                    MaxInstances = 2
                 });
             }
             if (--heartIn <= 0) {
                 heartIn = (int)(Main.rand.Next(900, 1600) / density);
                 SoundEngine.PlaySound(SoundID.NPCHit1 with {
-                    Volume = 0.30f, Pitch = -0.85f, MaxInstances = 2
+                    Volume = 0.30f,
+                    Pitch = -0.85f,
+                    MaxInstances = 2
                 });
                 heartSecondIn = HeartSecondBeatDelay;
             }
@@ -123,11 +127,15 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Bloodveil
                 Vector2 pos = player.Center + new Vector2(
                     side * Main.rand.NextFloat(850f, 1350f), Main.rand.NextFloat(-220f, 40f));
                 SoundEngine.PlaySound(SoundID.ZombieMoan with {
-                    Volume = 0.30f, Pitch = -0.55f + Main.rand.NextFloat(0.12f), MaxInstances = 2
+                    Volume = 0.30f,
+                    Pitch = -0.55f + Main.rand.NextFloat(0.12f),
+                    MaxInstances = 2
                 }, pos);
                 if (Main.rand.NextBool(4)) {
                     SoundEngine.PlaySound(SoundID.Roar with {
-                        Volume = 0.18f, Pitch = -0.72f, MaxInstances = 2
+                        Volume = 0.18f,
+                        Pitch = -0.72f,
+                        MaxInstances = 2
                     }, pos + new Vector2(side * 320f, -60f));
                 }
             }

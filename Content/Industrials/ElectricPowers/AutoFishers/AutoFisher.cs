@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -44,13 +44,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
         }
 
         public override void AddRecipes() {
-                CreateRecipe()
-                .AddIngredient<CircuitBoard>(8)
-                .AddRecipeGroup(CWRCrafted.TungstenBarGroup, 8)
-                .AddIngredient(ItemID.WoodFishingPole, 1)
-                .AddIngredient(ItemID.Cobweb, 20)
-                .AddTile(TileID.Anvils)
-                .Register();
+            CreateRecipe()
+            .AddIngredient<CircuitBoard>(8)
+            .AddRecipeGroup(CWRCrafted.TungstenBarGroup, 8)
+            .AddIngredient(ItemID.WoodFishingPole, 1)
+            .AddIngredient(ItemID.Cobweb, 20)
+            .AddTile(TileID.Anvils)
+            .Register();
 
         }
     }

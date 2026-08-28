@@ -1,5 +1,4 @@
-using System.IO;
-using Terraria.ModLoader;
+﻿using System.IO;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.NPCs.SeaShrimp

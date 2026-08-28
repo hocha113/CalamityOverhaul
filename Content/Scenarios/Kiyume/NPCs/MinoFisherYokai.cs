@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Scenarios.Kiyume.Gen;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -279,14 +279,18 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
                 case StateTurn:
                     //转身拍：一声闷吼（很沉，像从蓑衣底下滚出来）+ 惊起的干草
                     SoundEngine.PlaySound(SoundID.DD2_OgreRoar with {
-                        Volume = 0.6f, Pitch = -0.4f, MaxInstances = 2
+                        Volume = 0.6f,
+                        Pitch = -0.4f,
+                        MaxInstances = 2
                     }, NPC.Center);
                     EmitHay(8, 1.6f);
                     break;
                 case StateDissolve:
                     //拍击挥出的一声风响（命中与落空同声），人随即散进雾里
                     SoundEngine.PlaySound(SoundID.Item1 with {
-                        Volume = 0.85f, Pitch = -0.5f, MaxInstances = 2
+                        Volume = 0.85f,
+                        Pitch = -0.5f,
+                        MaxInstances = 2
                     }, NPC.Center);
                     EmitHay(12, 2.4f);
                     for (int i = 0; i < 10; i++) {

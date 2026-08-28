@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard
 
         public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
             //沼泽乱舞档：砖面跳弹一次。PostAI 先于本帧位移判定，预测撞砖提前反弹，
-        //原版子弹不会触发 tileCollide 自灭；跳弹次数放本地状态包，各端按同步的位置速度同源模拟
+            //原版子弹不会触发 tileCollide 自灭；跳弹次数放本地状态包，各端按同步的位置速度同源模拟
             if (MarkModeOf(router.MarkData) != 0) {
                 return;
             }

@@ -1,5 +1,4 @@
-using Microsoft.Xna.Framework;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.GameModes.Blessings.Types

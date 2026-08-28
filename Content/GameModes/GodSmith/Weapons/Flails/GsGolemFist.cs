@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -151,7 +151,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
             }
             //拳风音 + 蓄压岩尘爆（沿出手向喷）
             SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
-                Volume = 0.9f, Pitch = -0.3f + charge * 0.25f
+                Volume = 0.9f,
+                Pitch = -0.3f + charge * 0.25f
             }, Owner.Center);
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction);
             for (int i = 0; i < 10; i++) {
@@ -318,7 +319,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
                 Projectile.localAI[0] = 1f;
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item14 with {
-                        Volume = 0.5f, Pitch = -0.55f, MaxInstances = 3
+                        Volume = 0.5f,
+                        Pitch = -0.55f,
+                        MaxInstances = 3
                     }, Projectile.Center);
                     //距离衰减屏震：各客户端按自己与落点的距离结算
                     if (CWRClientConfig.Instance.ScreenVibration) {
@@ -451,7 +454,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item14 with {
-                Volume = 0.32f, Pitch = -0.2f, MaxInstances = 3
+                Volume = 0.32f,
+                Pitch = -0.2f,
+                MaxInstances = 3
             }, Projectile.Center);
             for (int i = 0; i < 8; i++) {
                 Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Lava,

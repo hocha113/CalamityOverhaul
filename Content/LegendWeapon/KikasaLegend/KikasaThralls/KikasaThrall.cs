@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.Scenarios.Kiame.KasaOnis;
 using System;
 using System.Collections.Generic;

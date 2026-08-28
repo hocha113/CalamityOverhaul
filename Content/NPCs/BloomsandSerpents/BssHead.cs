@@ -1,9 +1,8 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Magic;
+﻿using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Magic.BloomTomes;
 using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Content.Items.Melee.BudPiercers;
 using CalamityOverhaul.Content.Items.Melee.Budcrowns;
+using CalamityOverhaul.Content.Items.Melee.BudPiercers;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Ranged.Thornstrings;
 using CalamityOverhaul.Content.Items.Summon.BloomCallers;

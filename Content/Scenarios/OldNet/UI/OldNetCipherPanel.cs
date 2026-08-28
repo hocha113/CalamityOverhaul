@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.HackTimes.PvP;
 using CalamityOverhaul.Content.HackTimes.PvP.Protocols;
@@ -302,7 +302,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.UI
             //每关机械音：过关的代价挂在声音上
             session.AddNoise(OldNetMetrics.VaultStageNoise);
             SoundEngine.PlaySound(SoundID.Unlock with {
-                Volume = 0.7f, Pitch = -0.3f + stage * 0.15f
+                Volume = 0.7f,
+                Pitch = -0.3f + stage * 0.15f
             }, player.Center);
 
             if (stage >= StageCount - 1) {

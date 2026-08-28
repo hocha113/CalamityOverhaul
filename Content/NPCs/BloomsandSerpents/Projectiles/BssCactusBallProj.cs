@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
+﻿using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

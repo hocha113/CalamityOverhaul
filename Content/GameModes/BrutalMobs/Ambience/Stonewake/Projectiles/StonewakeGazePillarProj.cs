@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -111,13 +111,17 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake.Proje
                 if (elapsed > 0 && elapsed % StoneBeat == 0) {
                     int beat = elapsed / StoneBeat;
                     SoundEngine.PlaySound(SoundID.Tink with {
-                        Volume = 0.4f, Pitch = -0.15f - 0.1f * beat, MaxInstances = 4,
+                        Volume = 0.4f,
+                        Pitch = -0.15f - 0.1f * beat,
+                        MaxInstances = 4,
                     }, Projectile.Center);
                 }
                 //末段亮起：两记升调水晶鸣
                 if (elapsed == EngraveFrames - 12 || elapsed == EngraveFrames - 5) {
                     SoundEngine.PlaySound(SoundID.MaxMana with {
-                        Volume = 0.6f, Pitch = elapsed == EngraveFrames - 5 ? 0.35f : 0.05f, MaxInstances = 4,
+                        Volume = 0.6f,
+                        Pitch = elapsed == EngraveFrames - 5 ? 0.35f : 0.05f,
+                        MaxInstances = 4,
                     }, Projectile.Center);
                 }
                 //刻纹上方的鎏金浮尘（≤1 粒/帧）
@@ -284,7 +288,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake.Proje
                 }
                 //白热芯线与基座辉光
                 Main.EntitySpriteDraw(line, basePos, null, core * (0.75f * bodyK), 0f,
-                    new Vector2(line.Width / 2f, line.Height), 
+                    new Vector2(line.Width / 2f, line.Height),
                     new Vector2(0.06f, height / line.Height), SpriteEffects.None, 0);
                 Main.EntitySpriteDraw(glow, basePos - new Vector2(0f, 4f), null, gold * (0.6f * bodyK), 0f,
                     glow.Size() / 2f, new Vector2(1.4f, 0.6f), SpriteEffects.None, 0);

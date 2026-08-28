@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -38,12 +38,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.HerbFarmers
         }
 
         public override void AddRecipes() {
-                CreateRecipe()
-                .AddIngredient<CircuitBoard>(6)
-                .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
-                .AddIngredient(ItemID.Sunflower, 2)
-                .AddTile(TileID.Anvils)
-                .Register();
+            CreateRecipe()
+            .AddIngredient<CircuitBoard>(6)
+            .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
+            .AddIngredient(ItemID.Sunflower, 2)
+            .AddTile(TileID.Anvils)
+            .Register();
 
         }
     }

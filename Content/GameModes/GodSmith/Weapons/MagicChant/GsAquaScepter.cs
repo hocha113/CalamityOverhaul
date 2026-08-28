@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -85,7 +85,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                         SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.85f, Pitch = 0.1f }, player.Center);
                     }
                     SoundEngine.PlaySound(SoundID.Item4 with {
-                        Volume = 0.35f, Pitch = 0.1f + 0.1f * chant.Resonance
+                        Volume = 0.35f,
+                        Pitch = 0.1f + 0.1f * chant.Resonance
                     }, player.Center);
                 }
                 chant.TimerA = 0;

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Buffs;
+﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Melee.Abyssrends;
 using CalamityOverhaul.Content.NPCs.SeaShrimp;
 using InnoVault.GameContent.BaseEntity;
@@ -8,7 +8,6 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;

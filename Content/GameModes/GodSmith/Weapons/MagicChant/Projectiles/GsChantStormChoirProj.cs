@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -77,7 +77,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant.Project
                 Projectile.localAI[0] = 1f;
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.DD2_BookStaffTwisterLoop with {
-                        Volume = 0.8f, Pitch = -0.2f, MaxInstances = 2
+                        Volume = 0.8f,
+                        Pitch = -0.2f,
+                        MaxInstances = 2
                     }, Projectile.Center);
                 }
             }

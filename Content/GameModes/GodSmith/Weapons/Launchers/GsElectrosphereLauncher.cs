@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.Trails;
@@ -220,7 +220,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Launchers
                 Projectile.localAI[1] = 1f;
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with {
-                        Volume = 0.45f, Pitch = 0.1f, MaxInstances = 5
+                        Volume = 0.45f,
+                        Pitch = 0.1f,
+                        MaxInstances = 5
                     }, Projectile.Center);
                 }
             }

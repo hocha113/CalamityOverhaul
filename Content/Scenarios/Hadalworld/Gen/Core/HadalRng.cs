@@ -1,6 +1,4 @@
-using System;
-
-namespace CalamityOverhaul.Content.Scenarios.Hadalworld.Gen.Core
+﻿namespace CalamityOverhaul.Content.Scenarios.Hadalworld.Gen.Core
 {
     //决定论RNG:splitmix64播种+xoshiro256**主流
     //核心层与Terraria无关,种子由生成期自genRand一次性抽取(蓝图H6)

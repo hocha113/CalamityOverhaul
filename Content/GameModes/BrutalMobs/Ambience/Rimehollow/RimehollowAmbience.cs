@@ -1,4 +1,4 @@
-using ReLogic.Utilities;
+﻿using ReLogic.Utilities;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -179,7 +179,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow
             Vector2 pos = Main.LocalPlayer.Center
                 + Main.rand.NextVector2Unit() * Main.rand.NextFloat(520f, 940f);
             SoundEngine.PlaySound(SoundID.DeerclopsIceAttack with {
-                Volume = 0.32f * Presence, Pitch = -0.72f, MaxInstances = 3
+                Volume = 0.32f * Presence,
+                Pitch = -0.72f,
+                MaxInstances = 3
             }, pos);
             //先脆响后低鸣：洞体在替冰层收尾
             EnqueueEcho(EchoRumble, 8, pos, 0.5f * Presence, -0.55f);
@@ -201,7 +203,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow
                     _ => SoundID.Tink,
                 };
                 SoundEngine.PlaySound(style with {
-                    Volume = echoes[i].Volume, Pitch = echoes[i].Pitch, MaxInstances = 4
+                    Volume = echoes[i].Volume,
+                    Pitch = echoes[i].Pitch,
+                    MaxInstances = 4
                 }, echoes[i].Pos);
             }
         }

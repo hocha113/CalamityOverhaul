@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -59,7 +59,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Nyxdepth.Projec
                 if (!Main.dedServ) {
                     //预告听觉通道其一：低鸣起势
                     SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with {
-                        Volume = 0.6f, Pitch = -0.55f, MaxInstances = 3
+                        Volume = 0.6f,
+                        Pitch = -0.55f,
+                        MaxInstances = 3
                     }, Projectile.Center);
                 }
             }
@@ -74,10 +76,14 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Nyxdepth.Projec
             if (elapsed == TelegraphFrames && !Main.dedServ) {
                 //落地拍：水流咬合的深部闷响+重水声
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Volume = 0.85f, Pitch = -0.8f, MaxInstances = 3
+                    Volume = 0.85f,
+                    Pitch = -0.8f,
+                    MaxInstances = 3
                 }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.DD2_OgreGroundPound with {
-                    Volume = 0.5f, Pitch = -0.95f, MaxInstances = 2
+                    Volume = 0.5f,
+                    Pitch = -0.95f,
+                    MaxInstances = 2
                 }, Projectile.Center);
             }
             if (!pulling) {
@@ -120,7 +126,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Nyxdepth.Projec
             //拖拽期的持续水涌低音
             if (elapsed % 34 == 0) {
                 SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with {
-                    Volume = 0.22f, Pitch = -0.8f, MaxInstances = 2
+                    Volume = 0.22f,
+                    Pitch = -0.8f,
+                    MaxInstances = 2
                 }, Projectile.Center);
             }
         }
@@ -146,13 +154,17 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Nyxdepth.Projec
             }
             if (elapsed % 16 == 0) {
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Volume = 0.13f, Pitch = Main.rand.NextFloat(0.2f, 0.5f), MaxInstances = 4
+                    Volume = 0.13f,
+                    Pitch = Main.rand.NextFloat(0.2f, 0.5f),
+                    MaxInstances = 4
                 }, Projectile.Center + new Vector2(Main.rand.NextFloat(-HalfWidth, HalfWidth), Main.rand.NextFloat(-60f, 60f)));
             }
             if (elapsed == 42) {
                 //中段低鸣补一拍，预告全程听觉不断档
                 SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with {
-                    Volume = 0.4f, Pitch = -0.65f, MaxInstances = 3
+                    Volume = 0.4f,
+                    Pitch = -0.65f,
+                    MaxInstances = 3
                 }, Projectile.Center);
             }
         }
@@ -227,7 +239,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Nyxdepth.Projec
             }
             //收场轻叹：残余气泡缓缓归位
             SoundEngine.PlaySound(SoundID.SplashWeak with {
-                Volume = 0.4f, Pitch = -0.25f, MaxInstances = 2
+                Volume = 0.4f,
+                Pitch = -0.25f,
+                MaxInstances = 2
             }, Projectile.Center);
             for (int i = 0; i < 6; i++) {
                 Dust bubble = Dust.NewDustPerfect(

@@ -1,5 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

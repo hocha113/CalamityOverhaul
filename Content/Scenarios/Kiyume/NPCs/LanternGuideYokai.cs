@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Scenarios.Kiyume.Fog;
 using CalamityOverhaul.Content.Scenarios.Kiyume.Gen;
@@ -172,7 +172,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
                 if ((int)StateTimer >= ArriveHangBeatTick && BeatForward(1)) {
                     lampHanded = true;
                     SoundEngine.PlaySound(SoundID.Item20 with {
-                        Volume = 0.5f, Pitch = 0.25f, MaxInstances = 2
+                        Volume = 0.5f,
+                        Pitch = 0.25f,
+                        MaxInstances = 2
                     }, LampWorldPos());
                     if (!VaultUtils.isClient) {
                         //NewNPC 以底中定位：挂点上方一点，灯浮在他头前的空里
@@ -397,17 +399,23 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
                 case StateTurn:
                     //停步回头：帽檐下一声很低的呻吟
                     SoundEngine.PlaySound(SoundID.ZombieMoan with {
-                        Volume = 0.45f, Pitch = -0.72f, MaxInstances = 2
+                        Volume = 0.45f,
+                        Pitch = -0.72f,
+                        MaxInstances = 2
                     }, NPC.Center);
                     break;
                 case StateDissolve:
                     SoundEngine.PlaySound(SoundID.NPCDeath6 with {
-                        Volume = 0.4f, Pitch = -0.35f, MaxInstances = 2
+                        Volume = 0.4f,
+                        Pitch = -0.35f,
+                        MaxInstances = 2
                     }, NPC.Center);
                     if ((int)StateParam == 1) {
                         //冷握拍：很冷的手，摸过就收
                         SoundEngine.PlaySound(SoundID.NPCHit54 with {
-                            Volume = 0.55f, Pitch = -0.5f, MaxInstances = 2
+                            Volume = 0.55f,
+                            Pitch = -0.5f,
+                            MaxInstances = 2
                         }, NPC.Center);
                     }
                     EmitDissolveMist((int)StateParam == 1 ? 12 : 8);

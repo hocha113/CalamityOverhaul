@@ -1,13 +1,11 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic.Everdeeps;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles
 {

@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Melee.CursedflameBloodfists;
+﻿using CalamityOverhaul.Content.Items.Melee.CursedflameBloodfists;
 using CalamityOverhaul.Content.NPCs.FestersandSerpents.Core;
 using CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering;
 using CalamityOverhaul.Content.NPCs.FestersandSerpents.States;

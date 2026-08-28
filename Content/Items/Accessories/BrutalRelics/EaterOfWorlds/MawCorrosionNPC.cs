@@ -1,7 +1,6 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Rendering;
 using CalamityOverhaul.Content.PRTTypes;
-using CWRNpcGlobal = CalamityOverhaul.Content.CWRNpc;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -11,6 +10,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using CWRNpcGlobal = CalamityOverhaul.Content.CWRNpc;
 
 namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
 {

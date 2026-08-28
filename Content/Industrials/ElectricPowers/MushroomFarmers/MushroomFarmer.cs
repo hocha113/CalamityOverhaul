@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -40,13 +40,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
         }
 
         public override void AddRecipes() {
-                CreateRecipe()
-                .AddIngredient<CircuitBoard>(6)
-                .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
-                .AddIngredient(ItemID.Mushroom, 5)
-                .AddIngredient(ItemID.GlowingMushroom, 5)
-                .AddTile(TileID.Anvils)
-                .Register();
+            CreateRecipe()
+            .AddIngredient<CircuitBoard>(6)
+            .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
+            .AddIngredient(ItemID.Mushroom, 5)
+            .AddIngredient(ItemID.GlowingMushroom, 5)
+            .AddTile(TileID.Anvils)
+            .Register();
 
         }
     }

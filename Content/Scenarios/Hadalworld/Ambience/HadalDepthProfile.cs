@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.Scenarios.Hadalworld.Gen;
-using Microsoft.Xna.Framework;
+﻿using CalamityOverhaul.Content.Scenarios.Hadalworld.Gen;
 
 namespace CalamityOverhaul.Content.Scenarios.Hadalworld.Ambience
 {

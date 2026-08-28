@@ -1,6 +1,5 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Projectiles;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Projectiles;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
-using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using Terraria;

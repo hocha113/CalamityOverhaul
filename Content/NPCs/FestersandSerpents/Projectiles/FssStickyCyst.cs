@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.NPCs.FestersandSerpents.Core;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;

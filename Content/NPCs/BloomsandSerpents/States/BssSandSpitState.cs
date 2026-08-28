@@ -1,6 +1,5 @@
-using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
+﻿using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

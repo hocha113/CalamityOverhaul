@@ -1,4 +1,4 @@
-using InnoVault.Cinematics;
+﻿using InnoVault.Cinematics;
 using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills.Restarts

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake.Projectiles;
+﻿using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using ReLogic.Utilities;
@@ -193,7 +193,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake
             PRTLoader.NewParticle<PRT_Light>(to, Vector2.Zero, StonewakeFX.GraniteCore, 0.08f).Configure(8, 0.55f);
             Lighting.AddLight(Vector2.Lerp(from, to, 0.5f), StonewakeFX.GraniteCore.ToVector3() * 0.5f);
             SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with {
-                Volume = 0.22f * GraniteEnv, Pitch = Main.rand.NextFloat(0.2f, 0.55f), MaxInstances = 3,
+                Volume = 0.22f * GraniteEnv,
+                Pitch = Main.rand.NextFloat(0.2f, 0.55f),
+                MaxInstances = 3,
             }, Vector2.Lerp(from, to, 0.5f));
         }
 
@@ -221,7 +223,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake
             //第二拍：磨石后 9 帧的落定咔哒
             if (grindEchoTimer > 0 && --grindEchoTimer == 0 && MarbleEnv > 0.1f) {
                 SoundEngine.PlaySound(SoundID.Tink with {
-                    Volume = 0.24f * MarbleEnv, Pitch = -0.5f, MaxInstances = 2,
+                    Volume = 0.24f * MarbleEnv,
+                    Pitch = -0.5f,
+                    MaxInstances = 2,
                 }, grindPos);
             }
             if (--grindTimer > 0) {
@@ -234,7 +238,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake
             grindPos = Main.LocalPlayer.Center
                 + Main.rand.NextVector2Unit() * Main.rand.NextFloat(480f, 880f);
             SoundEngine.PlaySound(SoundID.Dig with {
-                Volume = 0.34f * MarbleEnv, Pitch = -0.75f, MaxInstances = 2,
+                Volume = 0.34f * MarbleEnv,
+                Pitch = -0.75f,
+                MaxInstances = 2,
             }, grindPos);
             grindEchoTimer = 9;
         }

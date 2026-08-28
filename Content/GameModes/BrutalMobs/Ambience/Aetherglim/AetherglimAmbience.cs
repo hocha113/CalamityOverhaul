@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Aetherglim.Projectiles;
+﻿using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Aetherglim.Projectiles;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
@@ -136,7 +136,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Aetherglim
             //回响落拍
             if (echoDelay > 0 && --echoDelay == 0) {
                 SoundEngine.PlaySound(SoundID.Item26 with {
-                    Volume = echoVolume * Presence, Pitch = echoPitch, MaxInstances = 3
+                    Volume = echoVolume * Presence,
+                    Pitch = echoPitch,
+                    MaxInstances = 3
                 }, echoPos);
             }
 
@@ -147,7 +149,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Aetherglim
                     Vector2 bellPos = player.Center + new Vector2(
                         Main.rand.NextFloat(-520f, 520f), Main.rand.NextFloat(-260f, 120f));
                     SoundEngine.PlaySound(SoundID.Item35 with {
-                        Volume = 0.13f * Presence, Pitch = 0.42f, MaxInstances = 2
+                        Volume = 0.13f * Presence,
+                        Pitch = 0.42f,
+                        MaxInstances = 2
                     }, bellPos);
                 }
                 return;
@@ -161,7 +165,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Aetherglim
             if (reversedFeel) {
                 //倒放感：先来一声低哑的"尾巴"，亮音随后才落
                 SoundEngine.PlaySound(SoundID.Item26 with {
-                    Volume = 0.10f * Presence, Pitch = note - 0.9f, MaxInstances = 3
+                    Volume = 0.10f * Presence,
+                    Pitch = note - 0.9f,
+                    MaxInstances = 3
                 }, pos);
                 echoDelay = 13;
                 echoPitch = note;
@@ -169,7 +175,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Aetherglim
             }
             else {
                 SoundEngine.PlaySound(SoundID.Item26 with {
-                    Volume = 0.22f * Presence, Pitch = note, MaxInstances = 3
+                    Volume = 0.22f * Presence,
+                    Pitch = note,
+                    MaxInstances = 3
                 }, pos);
                 echoDelay = 13;
                 echoPitch = note - 0.9f;

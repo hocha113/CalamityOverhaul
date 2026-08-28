@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Rendering;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -124,7 +124,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
             }
             if (age % 7 == 0) {
                 SoundEngine.PlaySound(SoundID.Grass with {
-                    Pitch = -0.5f + swellT * 0.9f, Volume = 0.55f + swellT * 0.35f, MaxInstances = 5
+                    Pitch = -0.5f + swellT * 0.9f,
+                    Volume = 0.55f + swellT * 0.35f,
+                    MaxInstances = 5
                 }, Projectile.Center);
             }
             //向心汇聚的荧光孢子

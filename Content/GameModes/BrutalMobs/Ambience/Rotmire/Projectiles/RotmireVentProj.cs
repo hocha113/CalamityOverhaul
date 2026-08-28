@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.BrutalMobs.EvilBiome;
+﻿using CalamityOverhaul.Content.GameModes.BrutalMobs.EvilBiome;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -105,7 +105,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rotmire.Project
                 //预告期：紫泡聚集（视觉通道）+ 断续气泡声（听觉通道②）
                 if (elapsed % 13 == 0 && elapsed > 0) {
                     SoundEngine.PlaySound(SoundID.NPCHit1 with {
-                        Volume = 0.22f, Pitch = -0.6f + Main.rand.NextFloat(0.12f), MaxInstances = 4
+                        Volume = 0.22f,
+                        Pitch = -0.6f + Main.rand.NextFloat(0.12f),
+                        MaxInstances = 4
                     }, Projectile.Center);
                 }
                 if (Main.rand.NextBool(2)) {
@@ -151,7 +153,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rotmire.Project
             //滞留期偶发气泡声
             if (elapsed % 26 == 0 && fade <= 0f) {
                 SoundEngine.PlaySound(SoundID.NPCHit1 with {
-                    Volume = 0.14f, Pitch = -0.68f, MaxInstances = 3
+                    Volume = 0.14f,
+                    Pitch = -0.68f,
+                    MaxInstances = 3
                 }, Projectile.Center);
             }
 

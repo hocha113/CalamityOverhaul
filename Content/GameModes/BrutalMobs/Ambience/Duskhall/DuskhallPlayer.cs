@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Scenarios.Dungeonworld;
+﻿using CalamityOverhaul.Content.Scenarios.Dungeonworld;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -166,7 +166,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Duskhall
                         Phase = EyePhase.Rush;
                         PhaseTimer = 0;
                         SoundEngine.PlaySound(SoundID.NPCHit36 with {
-                            Volume = 0.5f, Pitch = -0.3f, MaxInstances = 2
+                            Volume = 0.5f,
+                            Pitch = -0.3f,
+                            MaxInstances = 2
                         }, EyePos);
                     }
                     break;
@@ -218,7 +220,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Duskhall
             EyeAlpha = 0f;
             EyeVel = Vector2.Zero;
             SoundEngine.PlaySound(SoundID.ZombieMoan with {
-                Volume = 0.3f, Pitch = -0.35f, MaxInstances = 2
+                Volume = 0.3f,
+                Pitch = -0.35f,
+                MaxInstances = 2
             }, chosen);
         }
 
@@ -227,7 +231,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Duskhall
             preHinted = true;
             Vector2 pos = Player.Center + Main.rand.NextVector2Unit() * 460f;
             SoundEngine.PlaySound(SoundID.ZombieMoan with {
-                Volume = 0.2f, Pitch = -0.2f, MaxInstances = 2
+                Volume = 0.2f,
+                Pitch = -0.2f,
+                MaxInstances = 2
             }, pos);
             for (int i = 0; i < 4; i++) {
                 Dust shade = Dust.NewDustPerfect(pos + Main.rand.NextVector2Circular(18f, 12f),
@@ -255,10 +261,14 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Duskhall
             }
             Player.CWR().GetScreenShake(3f);
             SoundEngine.PlaySound(SoundID.NPCDeath39 with {
-                Volume = 0.5f, Pitch = -0.15f, MaxInstances = 2
+                Volume = 0.5f,
+                Pitch = -0.15f,
+                MaxInstances = 2
             }, EyePos);
             SoundEngine.PlaySound(SoundID.ZombieMoan with {
-                Volume = 0.38f, Pitch = 0.5f, MaxInstances = 2
+                Volume = 0.38f,
+                Pitch = 0.5f,
+                MaxInstances = 2
             }, EyePos);
             Gaze = 0f;
             refractory = RefractoryTicks;

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Scenarios.Kiyume.Gen;
 using CalamityOverhaul.Content.Scenarios.Kiyume.Stealth;
@@ -312,7 +312,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
                     }
                     //尖啸：NPCDeath6 +0.8 试听基准（§2.5）
                     SoundEngine.PlaySound(SoundID.NPCDeath6 with {
-                        Volume = 0.75f, Pitch = 0.8f, MaxInstances = 2
+                        Volume = 0.75f,
+                        Pitch = 0.8f,
+                        MaxInstances = 2
                     }, NPC.Center);
                     EmitRevealBurst();
                     if (!Main.dedServ && (int)StateParam == 1
@@ -327,7 +329,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
                 case StateDissolve:
                     //散尽的一声低息（尖啸的余韵）
                     SoundEngine.PlaySound(SoundID.NPCDeath6 with {
-                        Volume = 0.35f, Pitch = -0.35f, MaxInstances = 2
+                        Volume = 0.35f,
+                        Pitch = -0.35f,
+                        MaxInstances = 2
                     }, NPC.Center);
                     EmitDissolveMist();
                     break;

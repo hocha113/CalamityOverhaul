@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -88,7 +88,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Hardmode
 
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item14 with {
-                    Volume = 0.25f + 0.15f * rank, Pitch = 0.5f - 0.35f * rank, MaxInstances = 3
+                    Volume = 0.25f + 0.15f * rank,
+                    Pitch = 0.5f - 0.35f * rank,
+                    MaxInstances = 3
                 }, player.Center);
                 //背甲开壳喷息
                 for (int i = 0; i < 3 + rank * 2; i++) {
@@ -217,7 +219,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Hardmode
             }
             //撞击：甲壳崩裂
             SoundEngine.PlaySound(SoundID.Item14 with {
-                Volume = 0.35f + 0.1f * Rank, Pitch = -0.2f - 0.15f * Rank, MaxInstances = 3
+                Volume = 0.35f + 0.1f * Rank,
+                Pitch = -0.2f - 0.15f * Rank,
+                MaxInstances = 3
             }, target.Center);
             PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero,
                 GsBeetleScaleArmor.BeetleShine, 0.1f + 0.05f * Rank)?.Configure(8, 0.8f);

@@ -1,12 +1,8 @@
-using CalamityOverhaul.Content.Industrials.ElectricPowers.Crushers;
-using CalamityOverhaul.Content.UIs.UIEffect;
-using InnoVault.TileProcessors;
+﻿using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.GameContent.UI;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;

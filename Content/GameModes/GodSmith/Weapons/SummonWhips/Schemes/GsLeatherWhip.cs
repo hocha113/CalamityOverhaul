@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -49,7 +49,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Scheme
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item152 with {
-                Volume = 0.28f + 0.05f * mp.BeatCombo, Pitch = -0.3f + 0.12f * mp.BeatCombo
+                Volume = 0.28f + 0.05f * mp.BeatCombo,
+                Pitch = -0.3f + 0.12f * mp.BeatCombo
             }, player.Center);
             for (int i = 0; i < 2; i++) {
                 Dust d = Dust.NewDustPerfect(player.MountedCenter + new Vector2(player.direction * 12f, -4f),

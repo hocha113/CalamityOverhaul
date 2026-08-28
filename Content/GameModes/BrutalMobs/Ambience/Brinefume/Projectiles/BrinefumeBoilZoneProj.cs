@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -74,16 +74,22 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Brinefume.Proje
             if (elapsed == 0) {
                 //嘶嘶声起：预告的听觉通道
                 SoundEngine.PlaySound(SoundID.LiquidsWaterLava with {
-                    Volume = 0.38f, Pitch = 0.3f, MaxInstances = 4,
+                    Volume = 0.38f,
+                    Pitch = 0.3f,
+                    MaxInstances = 4,
                 }, Projectile.Center);
             }
             else if (elapsed == TelegraphFrames) {
                 //沸腾拍
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Volume = 0.75f, Pitch = -0.35f, MaxInstances = 4,
+                    Volume = 0.75f,
+                    Pitch = -0.35f,
+                    MaxInstances = 4,
                 }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.LiquidsWaterLava with {
-                    Volume = 0.8f, Pitch = -0.12f, MaxInstances = 4,
+                    Volume = 0.8f,
+                    Pitch = -0.12f,
+                    MaxInstances = 4,
                 }, Projectile.Center);
                 for (int i = 0; i < 8; i++) {
                     Dust.NewDustPerfect(
@@ -95,7 +101,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Brinefume.Proje
             else if (elapsed > TelegraphFrames && elapsed < TelegraphFrames + BoilFrames && elapsed % 54 == 0) {
                 //沸腾持续底响
                 SoundEngine.PlaySound(SoundID.LiquidsWaterLava with {
-                    Volume = 0.22f, Pitch = Main.rand.NextFloat(-0.2f, 0.1f), MaxInstances = 4,
+                    Volume = 0.22f,
+                    Pitch = Main.rand.NextFloat(-0.2f, 0.1f),
+                    MaxInstances = 4,
                 }, Projectile.Center);
             }
 

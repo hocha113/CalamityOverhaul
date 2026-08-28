@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -88,7 +88,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Hardmode
             if (!VaultUtils.isServer) {
                 //锁定节拍音，随计数升调
                 SoundEngine.PlaySound(SoundID.Item29 with {
-                    Volume = 0.4f, Pitch = 0.1f + 0.25f * blade.ai[2], MaxInstances = 3
+                    Volume = 0.4f,
+                    Pitch = 0.1f + 0.25f * blade.ai[2],
+                    MaxInstances = 3
                 }, target.Center);
             }
             if (blade.ai[2] >= LockHits) {

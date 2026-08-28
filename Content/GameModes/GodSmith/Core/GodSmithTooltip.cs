@@ -1,5 +1,5 @@
+﻿using CalamityOverhaul.Content.GameModes.UI;
 using System.Collections.Generic;
-using CalamityOverhaul.Content.GameModes.UI;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Core

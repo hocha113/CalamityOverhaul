@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine.Projectiles;
-using System;
+﻿using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine.Projectiles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;

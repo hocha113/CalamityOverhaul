@@ -1,4 +1,4 @@
-using ReLogic.Utilities;
+﻿using ReLogic.Utilities;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -41,10 +41,12 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Nyxdepth
 
         //心跳双响（lub-dub 拆两帧，与克脑的同帧双响区分节奏感）
         private static readonly SoundStyle LubStyle = SoundID.DD2_OgreGroundPound with {
-            MaxInstances = 3, SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest
+            MaxInstances = 3,
+            SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest
         };
         private static readonly SoundStyle DubStyle = SoundID.DD2_MonkStaffGroundImpact with {
-            MaxInstances = 3, SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest
+            MaxInstances = 3,
+            SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest
         };
 
         private static float depthSmooth;
@@ -209,14 +211,20 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Nyxdepth
         private static void PlayCrack(Vector2 pos, float mul, bool echo) {
             float vol = (0.40f + 0.30f * Pressure) * mul;
             SoundEngine.PlaySound(SoundID.Item27 with {
-                Volume = vol, Pitch = Main.rand.NextFloat(-0.75f, -0.5f), MaxInstances = 3
+                Volume = vol,
+                Pitch = Main.rand.NextFloat(-0.75f, -0.5f),
+                MaxInstances = 3
             }, pos);
             SoundEngine.PlaySound(SoundID.Item50 with {
-                Volume = vol * 0.7f, Pitch = -0.3f, MaxInstances = 3
+                Volume = vol * 0.7f,
+                Pitch = -0.3f,
+                MaxInstances = 3
             }, pos);
             if (!echo) {
                 SoundEngine.PlaySound(SoundID.DD2_OgreGroundPound with {
-                    Volume = 0.20f + 0.14f * Pressure, Pitch = -0.95f, MaxInstances = 2
+                    Volume = 0.20f + 0.14f * Pressure,
+                    Pitch = -0.95f,
+                    MaxInstances = 2
                 }, pos);
                 //极轻：常规命中震感在 5 以上，这里只给 1~2
                 Main.LocalPlayer.CWR()?.GetScreenShake(1.0f + Pressure);

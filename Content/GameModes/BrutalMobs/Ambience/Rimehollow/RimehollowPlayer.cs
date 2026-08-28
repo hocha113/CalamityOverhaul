@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -136,7 +136,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow
                 Player.AddBuff(BuffID.Chilled, ChillFrames);
                 MistExposure = 0.35f;
                 SoundEngine.PlaySound(SoundID.DeerclopsIceAttack with {
-                    Volume = 0.4f, Pitch = 0.45f, MaxInstances = 2
+                    Volume = 0.4f,
+                    Pitch = 0.45f,
+                    MaxInstances = 2
                 }, Player.Center);
                 for (int i = 0; i < 8; i++) {
                     Dust frost = Dust.NewDustPerfect(Player.Center + Main.rand.NextVector2Circular(14f, 20f),

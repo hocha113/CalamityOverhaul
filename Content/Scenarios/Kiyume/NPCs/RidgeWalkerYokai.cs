@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Scenarios.Kiyume.Fog;
 using CalamityOverhaul.Content.Scenarios.Kiyume.Gen;
@@ -463,7 +463,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
                         facing = Main.player[who].Center.X > NPC.Center.X ? 1 : -1;
                     }
                     SoundEngine.PlaySound(SoundID.Zombie3 with {
-                        Volume = 0.7f, Pitch = -0.55f, MaxInstances = 2
+                        Volume = 0.7f,
+                        Pitch = -0.55f,
+                        MaxInstances = 2
                     }, NPC.Center);
                     break;
                 case StateDissolve:
@@ -471,7 +473,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.NPCs
                     if ((int)StateParam >= 1) {
                         //坠雾拍：闷响（雾面如水面，SplashWeak 压低）
                         SoundEngine.PlaySound(SoundID.SplashWeak with {
-                            Volume = 0.9f, Pitch = -0.7f, MaxInstances = 2
+                            Volume = 0.9f,
+                            Pitch = -0.7f,
+                            MaxInstances = 2
                         }, NPC.Center);
                         int victim = (int)StateParam - 1;
                         if (!Main.dedServ && victim == Main.myPlayer) {

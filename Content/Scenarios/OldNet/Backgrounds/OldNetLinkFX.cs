@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RAMSystems;
 using CalamityOverhaul.Content.Scenarios.OldNet.Gen;
 using CalamityOverhaul.Content.Scenarios.OldNet.NPCs;
@@ -152,7 +152,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Backgrounds
                     watchPulseTimer = 6;
                     if (tier == 4 && lastTier < 4) {
                         SoundEngine.PlaySound(CWRSound.FaultOccurred with {
-                            Pitch = -0.5f, Volume = 0.55f });
+                            Pitch = -0.5f,
+                            Volume = 0.55f
+                        });
                     }
                     lastTier = tier;
                 }

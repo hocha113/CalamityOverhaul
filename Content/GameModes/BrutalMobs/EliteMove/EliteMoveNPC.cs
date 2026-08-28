@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.BrutalMobs.EliteMove.Projectiles;
+﻿using CalamityOverhaul.Content.GameModes.BrutalMobs.EliteMove.Projectiles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -330,8 +330,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.EliteMove
                     if (CountActive(ModContent.ProjectileType<EMLeapMarkerProj>()) >= FamilyConcurrentCap) {
                         cooldown = 45;
                         return;
-                    }
-                    {
+                    } {
                         //一段跃：朝向目标的小前扑，量级同原版跳跃，属机动不属攻击
                         float dirX = Main.player[npc.target].Center.X > npc.Center.X ? 1f : -1f;
                         float gain = MoveGain;
@@ -489,8 +488,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.EliteMove
                     cooldown = 0;
                     if (!MechanicEligible(npc) || !TargetWithin(npc, 240f, profile.Range)) {
                         return;
-                    }
-                    {
+                    } {
                         Player target = Main.player[npc.target];
                         if (!Collision.CanHitLine(npc.Center, 1, 1, target.Center, 1, 1)) {
                             cooldown = 30;

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Items.Stones;
+﻿using CalamityOverhaul.Content.Items.Stones;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -97,7 +97,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake.Proje
                     if (SlowFxGate <= 0f) {
                         SlowFxGate = 30f;
                         SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with {
-                            Volume = 0.55f, Pitch = -0.1f, MaxInstances = 3,
+                            Volume = 0.55f,
+                            Pitch = -0.1f,
+                            MaxInstances = 3,
                         }, local.Center);
                         for (int i = 0; i < 3; i++) {
                             PRTLoader.NewParticle<PRT_GraniteVolt>(local.Bottom + new Vector2(Main.rand.NextFloat(-12f, 12f), -4f),
@@ -118,7 +120,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake.Proje
                 if (elapsed % ZapBeat == 0) {
                     int beat = elapsed / ZapBeat;
                     SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with {
-                        Volume = 0.30f + 0.09f * beat, Pitch = -0.45f + 0.28f * beat, MaxInstances = 4,
+                        Volume = 0.30f + 0.09f * beat,
+                        Pitch = -0.45f + 0.28f * beat,
+                        MaxInstances = 4,
                     }, Projectile.Center);
                 }
                 //晶簇周身电火花（≤1 粒/帧）
@@ -168,7 +172,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake.Proje
                 if (elapsed % 16 == 0) {
                     float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                     SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with {
-                        Volume = 0.26f, Pitch = Main.rand.NextFloat(-0.1f, 0.3f), MaxInstances = 3,
+                        Volume = 0.26f,
+                        Pitch = Main.rand.NextFloat(-0.1f, 0.3f),
+                        MaxInstances = 3,
                     }, Projectile.Center + ang.ToRotationVector2() * Radius);
                 }
             }

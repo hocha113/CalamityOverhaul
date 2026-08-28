@@ -1,6 +1,4 @@
-using Microsoft.Xna.Framework;
-
-namespace CalamityOverhaul.Content.Scenarios.Hadalworld.Gen
+﻿namespace CalamityOverhaul.Content.Scenarios.Hadalworld.Gen
 {
     //垂直分带,自上而下镜像真实大洋分带命名
     internal enum HadalZone

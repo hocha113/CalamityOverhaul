@@ -1,3 +1,4 @@
+﻿using CalamityOverhaul.Content.GameModes.UI;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -7,7 +8,6 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using CalamityOverhaul.Content.GameModes.UI;
 
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Framework
 {

@@ -1,7 +1,6 @@
-﻿using InnoVault.Actors;
+﻿using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
+using InnoVault.Actors;
 using Terraria;
-
-using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
 
 namespace CalamityOverhaul.Content.Scenarios.Kiame.KasaOnis
 {

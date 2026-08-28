@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MachineModules;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.PRTTypes;
@@ -283,7 +283,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Crushers
                 }
                 Dust.NewDust(mouth + new Vector2(-10f, -4f), 20, 6, DustID.Stone, 0f, -1.2f, 120, default, 1.0f);
                 SoundEngine.PlaySound(SoundID.Dig with {
-                    Volume = 0.24f, Pitch = -0.5f + Rand.NextFloat(0.12f)
+                    Volume = 0.24f,
+                    Pitch = -0.5f + Rand.NextFloat(0.12f)
                 }, CenterInWorld);
             });
         }

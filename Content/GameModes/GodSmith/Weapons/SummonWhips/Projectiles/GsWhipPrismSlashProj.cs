@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Schemes;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Schemes;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -86,7 +86,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
             if (lt == 0 && !VaultUtils.isServer) {
                 //五色琶音：音高随色相爬升
                 SoundEngine.PlaySound(SoundID.Item9 with {
-                    Volume = 0.55f, Pitch = -0.2f + 0.15f * (int)Projectile.ai[0]
+                    Volume = 0.55f,
+                    Pitch = -0.2f + 0.15f * (int)Projectile.ai[0]
                 }, anchor);
             }
             //渐隐期沿线飘色屑余痕

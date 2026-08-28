@@ -1,8 +1,8 @@
+﻿using CalamityOverhaul.Content.Scenarios.Kiyume.Gen.Prefabs;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
-using CalamityOverhaul.Content.Scenarios.Kiyume.Gen.Prefabs;
 
 namespace CalamityOverhaul.Content.Scenarios.Kiyume.Gen
 {

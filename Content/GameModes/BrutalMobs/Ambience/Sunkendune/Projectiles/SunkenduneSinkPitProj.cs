@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -81,7 +81,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sunkendune.Proj
                 else if (elapsed < TelegraphFrames && elapsed % 16 == 0) {
                     float progress = elapsed / (float)TelegraphFrames;
                     SoundEngine.PlaySound(SoundID.WormDig with {
-                        Volume = 0.22f + 0.4f * progress, Pitch = 0.25f + 0.25f * progress, MaxInstances = 5
+                        Volume = 0.22f + 0.4f * progress,
+                        Pitch = 0.25f + 0.25f * progress,
+                        MaxInstances = 5
                     }, Projectile.Center);
                 }
                 else if (elapsed == TelegraphFrames) {

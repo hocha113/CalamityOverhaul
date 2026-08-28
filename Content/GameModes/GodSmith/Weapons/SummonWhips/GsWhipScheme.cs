@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -110,10 +110,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
                 if (!VaultUtils.isServer) {
                     //踩拍层音：鞭响 tick 叠魔力泛音，音高随层数爬升
                     SoundEngine.PlaySound(SoundID.Item153 with {
-                        Volume = 0.3f, Pitch = -0.15f + 0.1f * mp.BeatCombo
+                        Volume = 0.3f,
+                        Pitch = -0.15f + 0.1f * mp.BeatCombo
                     }, player.Center);
                     SoundEngine.PlaySound(SoundID.MaxMana with {
-                        Volume = 0.22f, Pitch = 0.25f + 0.12f * mp.BeatCombo
+                        Volume = 0.22f,
+                        Pitch = 0.25f + 0.12f * mp.BeatCombo
                     }, player.Center);
                 }
             }
