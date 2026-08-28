@@ -14,6 +14,8 @@ namespace CalamityOverhaul.Content.GameModes.Blessings.UI
         public float Seed;
         public float Lit;
         public float Alpha;
+        /// <summary>受风倾斜 -1..1，焰尖权重（0=无风，往生轮珠焰不吹风）</summary>
+        public float Lean;
     }
 
     /// <summary>
@@ -103,6 +105,7 @@ namespace CalamityOverhaul.Content.GameModes.Blessings.UI
                 effect.Parameters["uAlpha"]?.SetValue(cell.Alpha);
                 effect.Parameters["uSeed"]?.SetValue(cell.Seed);
                 effect.Parameters["uLit"]?.SetValue(cell.Lit);
+                effect.Parameters["uLean"]?.SetValue(cell.Lean);
                 effect.Parameters["uAccent"]?.SetValue(accentV);
                 effect.Parameters["uEmber"]?.SetValue(emberV);
                 sb.Draw(Pixel, cell.Rect, One, Color.White);
@@ -133,6 +136,17 @@ namespace CalamityOverhaul.Content.GameModes.Blessings.UI
         internal static void DrawSigil(SpriteBatch sb, Blessing blessing, Vector2 center, float halfSize,
             Color color, float thickness, float alpha, Color? core = null)
             => StrokePath100(sb, SvgPathPen.Path(blessing.SigilPath), center, halfSize, color, thickness, alpha, core);
+
+        /// <summary>0..100 画布路径上的循环巡行亮笔（换算同 <see cref="StrokePath100"/>）</summary>
+        internal static void RunnerPath100(SpriteBatch sb, SvgPath path, Vector2 center, float halfSize,
+            Color color, float thickness, float alpha, float head, float span, Color? core = null) {
+            if (path == null) {
+                return;
+            }
+            float unit = halfSize / 50f;
+            Vector2 origin = center - new Vector2(50f, 50f) * unit;
+            SvgPathPen.StrokeRunner(sb, path, origin, unit, 0f, color, thickness, alpha, head, span, core);
+        }
 
         //——通用矢量件（镜像 GameModeRenderer 的亮色配方；暗层禁假羽化）——
 
@@ -186,17 +200,97 @@ namespace CalamityOverhaul.Content.GameModes.Blessings.UI
                 DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
         }
 
-        //——引魂灯线稿——
+        //——引魂灯线稿（0..100 画布，多子路径分层描）——
 
-        /// <summary>灯body：吊环 + 灯笼罩 + 底座，SvgPathPen 归一路径</summary>
+        /// <summary>
+        /// 主骨架：宝顶→顶柱→翘檐（右檐尾带挂钩）→垂柱→八角灯身→托盘→三足。
+        /// StrokeRunner 巡行走的也是这条
+        /// </summary>
         internal const string LanternPath =
-            "M50,6 Q42,12 50,18 Q58,12 50,6 Z M50,18 L50,26 M34,32 Q50,20 66,32 L69,66 Q50,80 31,66 Z M40,88 L60,88 M44,80 L44,88 M56,80 L56,88";
+            "M50,3 Q45,8 50,13 Q55,8 50,3 Z" +
+            " M50,13 L50,18" +
+            " M24,30 Q30,19 50,17 Q70,19 76,30" +
+            " M24,30 Q21,27 20,22" +
+            " M76,30 Q79,27 80,22 Q82,25 80,27" +
+            " M34,29 L36,35 M66,29 L64,35" +
+            " M36,35 L30,44 L30,58 L36,68 L64,68 L70,58 L70,44 L64,35 Z" +
+            " M44,68 L44,72 M56,68 L56,72 M40,72 L60,72" +
+            " M42,72 L37,82 M58,72 L63,82 M50,72 L50,84" +
+            " M34,82 L40,82 M60,82 L66,82 M47,84 L53,84";
 
-        /// <summary>灯罩内焰室矩形（相对灯身矩形）</summary>
+        /// <summary>焰室窗拱（单独描，取更亮的 accent 调）</summary>
+        internal const string LanternWindowPath =
+            "M35,41 Q35,37 50,37 Q65,37 65,41 L65,59 Q65,63 50,63 Q35,63 35,59 Z";
+
+        /// <summary>细部次笔：内檐线 / 骨条 / 腰箍 / 铆点（单点子路径作点凿）</summary>
+        internal const string LanternDetailPath =
+            "M28,31 Q50,24 72,31" +
+            " M33,40 L33,62 M67,40 L67,62" +
+            " M30,51 L35,51 M65,51 L70,51" +
+            " M30,44 M70,44 M30,58 M70,58 M36,35 M64,35 M36,68 M64,68";
+
+        /// <summary>檐角吊铃（局部坐标，挂点在原点向下垂，配合旋转作摆动）</summary>
+        internal const string LanternBellPath =
+            "M0,0 L0,6 M-4,12 Q-4,6 0,6 Q4,6 4,12 L5.5,15 L-5.5,15 Z M0,15 L0,19";
+
+        /// <summary>吊铃挂点（相对灯身矩形，右檐尾挂钩下缘）</summary>
+        internal static Vector2 LanternBellHook(Rectangle lantern)
+            => new(lantern.X + lantern.Width * 0.80f, lantern.Y + lantern.Height * 0.27f);
+
+        /// <summary>灯罩内焰室矩形（相对灯身矩形）：焰根落在窗拱下缘，焰尖舔到拱顶</summary>
         internal static Rectangle LanternFlameRect(Rectangle lantern) {
-            int w = (int)(lantern.Width * 0.62f);
-            int h = (int)(lantern.Height * 0.52f);
+            int w = (int)(lantern.Width * 0.60f);
+            int h = (int)(lantern.Height * 0.50f);
             return new Rectangle(lantern.Center.X - w / 2, (int)(lantern.Y + lantern.Height * 0.26f), w, h);
+        }
+
+        /// <summary>
+        /// 氛围层画布契约（改此处必须同步改 BlessingLantern.fx 顶部常量）：
+        /// 宽 2.6×灯宽、高 2.05×灯高，焰室中心落在画布 UV(0.5, 0.62)
+        /// </summary>
+        internal static Rectangle LanternAmbientRect(Rectangle lantern) {
+            Vector2 fc = LanternFlameRect(lantern).Center.ToVector2();
+            int w = (int)(lantern.Width * 2.6f);
+            int h = (int)(lantern.Height * 2.05f);
+            return new Rectangle((int)(fc.X - w / 2f), (int)(fc.Y - h * 0.62f), w, h);
+        }
+
+        /// <summary>
+        /// 引魂灯氛围层：焰室光晕 / 灯窗漏光 / 地面光池 / 升腾魂雾 / 上浮余烬。
+        /// shader 缺编时回退为焰室软辉 + 压扁地光两笔
+        /// </summary>
+        internal static void DrawLanternAmbient(SpriteBatch sb, Rectangle lantern, float seed,
+            float lit, float hover, float pulse, float alpha) {
+            if (alpha <= 0.01f) {
+                return;
+            }
+            Effect effect = EffectLoader.BlessingLantern?.Value;
+            if (effect == null) {
+                Vector2 fc = LanternFlameRect(lantern).Center.ToVector2();
+                float g = 0.28f + 0.72f * lit;
+                DrawGlow(sb, fc, lantern.Width * (1.7f + pulse * 0.8f), BlessingTheme.Ember, 0.32f * g * alpha);
+                DrawGlow(sb, fc, lantern.Width * (3.0f + pulse * 1.4f), BlessingTheme.Accent, 0.16f * g * alpha);
+                Texture2D glowTex = CWRAsset.SoftGlow?.Value;
+                if (glowTex != null) {
+                    Vector2 gp = new(fc.X, lantern.Bottom + 6f);
+                    Color c = BlessingTheme.Ember;
+                    sb.Draw(glowTex, gp, null, new Color(c.R, c.G, c.B, (byte)0) * (0.28f * g * alpha),
+                        0f, glowTex.Size() / 2f,
+                        new Vector2(lantern.Width * 1.8f, lantern.Width * 0.45f) / glowTex.Width,
+                        SpriteEffects.None, 0f);
+                }
+                return;
+            }
+
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uAlpha"]?.SetValue(alpha);
+            effect.Parameters["uSeed"]?.SetValue(seed);
+            effect.Parameters["uLit"]?.SetValue(lit);
+            effect.Parameters["uHover"]?.SetValue(hover);
+            effect.Parameters["uPulse"]?.SetValue(pulse);
+            effect.Parameters["uAccent"]?.SetValue(BlessingTheme.Accent.ToVector3());
+            effect.Parameters["uEmber"]?.SetValue(BlessingTheme.Ember.ToVector3());
+            ShaderQuad(sb, effect, LanternAmbientRect(lantern));
         }
     }
 }

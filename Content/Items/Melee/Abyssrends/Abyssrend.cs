@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.NPCs.SeaShrimp;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -82,6 +83,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
         public override void AddRecipes() {
             if (CWRID.Item_Lumenyl > 0 && CWRID.Item_Voidstone > 0 && CWRID.Item_DepthCells > 0) {
                 CreateRecipe().
+                    AddIngredient<SeaShrimpShell>(8).
                     AddIngredient(CWRID.Item_Lumenyl, 8).
                     AddIngredient(CWRID.Item_DepthCells, 12).
                     AddIngredient(CWRID.Item_Voidstone, 16).
@@ -91,6 +93,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
                 return;
             }
             CreateRecipe().
+                AddIngredient<SeaShrimpShell>(8).
                 AddIngredient(ItemID.ChlorophyteBar, 12).
                 AddIngredient(ItemID.SharkFin, 8).
                 AddIngredient(ItemID.SoulofMight, 8).

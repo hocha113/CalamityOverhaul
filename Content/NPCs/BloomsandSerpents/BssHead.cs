@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
+using CalamityOverhaul.Content.Items.Magic.BloomTomes;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Melee.BudPiercers;
 using CalamityOverhaul.Content.Items.Melee.Budcrowns;
@@ -161,12 +162,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         }
 
         public override void ModifyNPCLoot(NPCLoot npcLoot) {
-            //荒花兵装四件套：沙蟒的签名武器，每次必出一把
+            //荒花兵装五件套：沙蟒的签名武器，每次必出一把
             npcLoot.Add(ItemDropRule.OneFromOptions(1,
                 ModContent.ItemType<BudPiercer>(),
                 ModContent.ItemType<Thornstring>(),
                 ModContent.ItemType<BloomCaller>(),
-                ModContent.ItemType<Budcrown>()));
+                ModContent.ItemType<Budcrown>(),
+                ModContent.ItemType<BloomTome>()));
             //荒漠沙器四件套：每次必出一把。这四把原本只在灾厄荒漠灾虫身上，
             //挂到这里之后无灾厄环境也有正经来源（原有的无灾厄合成配方仍留作保底）
             npcLoot.Add(ItemDropRule.OneFromOptions(1,

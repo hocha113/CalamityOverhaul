@@ -88,8 +88,11 @@ namespace CalamityOverhaul.Content.Items.Summon.BloomCallers
                 Projectile.Kill();
                 return;
             }
-            Owner.AddBuff(ModContent.BuffType<BloomCallerBuff>(), 2);
-            Projectile.timeLeft = 2;
+            //增益在场才续命：取消增益后寿命自然耗尽即解散。
+            //禁止在这里反向 AddBuff，否则玩家永远取消不掉召唤
+            if (Owner.HasBuff(ModContent.BuffType<BloomCallerBuff>())) {
+                Projectile.timeLeft = 2;
+            }
 
             if (appear < 1f) {
                 appear = MathHelper.Clamp(appear + 0.07f, 0f, 1f);

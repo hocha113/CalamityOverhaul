@@ -5023,3 +5023,14 @@ Budcrown: {
 		"The heaviest bud blooms the loudest"
 		''' */
 }
+
+BloomTome: {
+	// DisplayName: Bloomtome
+	/* Tooltip:
+		'''
+		Fires a budding bolt
+		The bolt blooms into a ring of petals when it strikes an enemy or the ground
+		Every fourth cast becomes a full bloom with more petals, bursting two needles upward
+		"Whichever page you open, that page blooms"
+		''' */
+}

@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.Items
         public static DamageClass DamageClassOf(float flag) => flag switch {
             1f => DamageClass.Ranged,
             2f => DamageClass.Summon,
+            3f => DamageClass.Magic,
             _ => DamageClass.Melee,
         };
 
@@ -62,6 +63,8 @@ namespace CalamityOverhaul.Content.Items
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.FlowerPetal;
 
         public override void SetStaticDefaults() {
+            //原版花瓣贴图是竖排三帧，必须切帧绘制
+            Main.projFrames[Type] = 3;
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 4;
         }
@@ -80,6 +83,11 @@ namespace CalamityOverhaul.Content.Items
         public override void AI() {
             Projectile.DamageType = BloomArsenal.DamageClassOf(Projectile.ai[2]);
             float age = ++Projectile.localAI[0];
+
+            if (++Projectile.frameCounter >= 6) {
+                Projectile.frameCounter = 0;
+                Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Type];
+            }
 
             //冲出去的劲逐渐让位给飘
             Projectile.velocity *= 0.965f;
@@ -103,7 +111,8 @@ namespace CalamityOverhaul.Content.Items
         public override bool PreDraw(ref Color lightColor) {
             Main.instance.LoadProjectile(Type);
             Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
+            Rectangle frameRect = tex.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
+            Vector2 origin = frameRect.Size() * 0.5f;
             //末段淡出
             float fade = MathHelper.Clamp(Projectile.timeLeft / 12f, 0f, 1f);
             Color body = lightColor.MultiplyRGB(BloomArsenal.Bloom) * fade;
@@ -114,14 +123,14 @@ namespace CalamityOverhaul.Content.Items
                 }
                 float t = 1f - i / (float)Projectile.oldPos.Length;
                 Vector2 pos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                Main.EntitySpriteDraw(tex, pos, null, body * (0.3f * t), Projectile.rotation,
+                Main.EntitySpriteDraw(tex, pos, frameRect, body * (0.3f * t), Projectile.rotation,
                     origin, Projectile.scale * 0.9f, SpriteEffects.None, 0);
             }
 
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frameRect,
                 body, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
             //瓣心薄薄一层暖光
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frameRect,
                 new Color(255, 60, 66, 0) * (0.3f * fade), Projectile.rotation, origin,
                 Projectile.scale * 1.1f, SpriteEffects.None, 0);
             return false;

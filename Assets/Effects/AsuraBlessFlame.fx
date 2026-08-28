@@ -11,6 +11,7 @@ float uSeed;        //每盏灯的相位种子
 float3 uAccent;     //冷缘色
 float3 uEmber;      //热核色
 float uLit;         //点燃进度 0..1（熄灭态归零）
+float uLean;        //受风倾斜 -1..1，焰尖权重（悬停气流/解锁涌动用，0=无风）
 
 #define PI 3.14159265
 
@@ -67,6 +68,8 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float sway = (fbm2(float2(h * 2.6 + t * 2.8, seed)) - 0.5) * 0.9;
     p.x += sway * h * h * 0.42;
     p.x += sin(t * 3.1 + seed) * 0.06 * h;
+    //受风倾斜：焰尖权重的整体偏移，根部钉在灯芯上
+    p.x += uLean * h * h * 0.5;
 
     //焰形宽度谱：三成高最宽，向尖端收拢归零，根部微收
     float width = 0.34 * pow(saturate(1.0 - h), 0.85) * smoothstep(-0.06, 0.24, h);

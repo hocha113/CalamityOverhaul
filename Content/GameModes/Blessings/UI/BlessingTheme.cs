@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.GameModes.Blessings.UI
         //——引魂灯 HUD 布局——
 
         /// <summary>引魂灯占位尺寸</summary>
-        public static readonly Point LanternSize = new(46, 62);
+        public static readonly Point LanternSize = new(52, 74);
 
         /// <summary>堆叠自然锚点（灯座底缘）</summary>
         public static Vector2 LanternAnchor => new(30f, UIScreenH - 32f);

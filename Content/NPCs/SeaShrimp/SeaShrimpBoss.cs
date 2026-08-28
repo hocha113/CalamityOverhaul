@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
     internal class SeaShrimpBoss : SeaShrimpModNPC
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string BossHeadTexture => CWRConstant.NPC + "SeaShrimp/SeaShrimpBoss_Head_Boss";
 
         private NpcStateMachine<SeaShrimpStateContext> stateMachine;
         internal SeaShrimpStateContext Context { get; private set; }
@@ -81,14 +82,11 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
             ]);
         }
 
-        public override void BossHeadSlot(ref int index) {
-            //暂借猪龙鱼公爵的地图头像，纪念品贴图到位后换自绘
-            index = NPCID.Sets.BossHeadTextures[NPCID.DukeFishron];
-        }
-
         public override void ModifyNPCLoot(NPCLoot npcLoot) {
             //专家：宝藏袋；普通：同池直掉（与袋共享一张掉落表，袋内量更足）
             npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<SeaShrimpTreasureBag>()));
+            //大师：圣物直掉，照原版不进袋
+            npcLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<SeaShrimpRelic>()));
             LeadingConditionRule notExpert = new(new Conditions.NotExpert());
             RegisterSharedLoot(rule => notExpert.OnSuccess(rule), expert: false);
             npcLoot.Add(notExpert);
@@ -96,8 +94,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
 
         /// <summary>
         /// 共享掉落池（普通直掉与专家袋同表）：签名深渊武器永渊/裂渊/钳渊/潮渊/镰渊五取一保底 +
-        /// 渊晶碎片；灾厄在场换深渊系材料（荧光藻/虚空石/深渊细胞——正是这套武器的
-        /// 合成料，击杀反哺成套），缺席回退后石巨人期原版材料
+        /// 渊晶虾壳（五武器配方的必需材料）+ 渊晶碎片；灾厄在场换深渊系材料
+        /// （荧光藻/虚空石/深渊细胞——同为配方料，击杀反哺成套），缺席回退后石巨人期原版材料
         /// </summary>
         internal static void RegisterSharedLoot(Action<IItemDropRule> add, bool expert) {
             add(ItemDropRule.OneFromOptions(1,
@@ -106,6 +104,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
                 ModContent.ItemType<Content.Items.Summon.Deepclaws.Deepclaw>(),
                 ModContent.ItemType<Content.Items.Ranged.Undertows.Undertow>(),
                 ModContent.ItemType<Content.Items.Melee.TideReapers.TideReaper>()));
+            add(ItemDropRule.Common(ModContent.ItemType<SeaShrimpShell>(), 1
+                , expert ? 16 : 12, expert ? 24 : 18));
             add(ItemDropRule.Common(ItemID.CrystalShard, 1, expert ? 24 : 18, expert ? 40 : 30));
             if (CWRID.Item_Lumenyl > 0 && CWRID.Item_Voidstone > 0 && CWRID.Item_DepthCells > 0) {
                 add(ItemDropRule.Common(CWRID.Item_Lumenyl, 1, expert ? 14 : 10, expert ? 22 : 16));

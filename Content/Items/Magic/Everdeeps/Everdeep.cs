@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.NPCs.SeaShrimp;
 using CalamityOverhaul.Content.Projectiles;
 using Terraria;
 using Terraria.DataStructures;
@@ -45,6 +46,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Everdeeps
             if (CWRID.Item_Lumenyl > 0 && CWRID.Item_Voidstone > 0) {
                 CreateRecipe().
                     AddIngredient(ItemID.WaterBolt).
+                    AddIngredient<SeaShrimpShell>(8).
                     AddIngredient(CWRID.Item_Lumenyl, 12).
                     AddIngredient(CWRID.Item_Voidstone, 20).
                     AddTile(TileID.MythrilAnvil).
@@ -53,6 +55,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Everdeeps
             else {
                 CreateRecipe().
                     AddIngredient(ItemID.WaterBolt).
+                    AddIngredient<SeaShrimpShell>(8).
                     AddIngredient(ItemID.Ectoplasm, 8).
                     AddIngredient(ItemID.SoulofNight, 12).
                     AddTile(TileID.MythrilAnvil).

@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> GameModeBanner { get; set; }
         public static Asset<Effect> AsuraBlessWheel { get; set; }
         public static Asset<Effect> AsuraBlessFlame { get; set; }
+        public static Asset<Effect> BlessingLantern { get; set; }
         public static Asset<Effect> OldNetNode { get; set; }
         public static Asset<Effect> OldNetTerminal { get; set; }
         public static Asset<Effect> OldNetSky { get; set; }

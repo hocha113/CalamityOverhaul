@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.NPCs.SeaShrimp;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -44,6 +45,7 @@ namespace CalamityOverhaul.Content.Items.Summon.Deepclaws
         public override void AddRecipes() {
             if (CWRID.Item_Lumenyl > 0 && CWRID.Item_Voidstone > 0 && CWRID.Item_DepthCells > 0) {
                 CreateRecipe().
+                    AddIngredient<SeaShrimpShell>(8).
                     AddIngredient(CWRID.Item_Lumenyl, 10).
                     AddIngredient(CWRID.Item_DepthCells, 10).
                     AddIngredient(CWRID.Item_Voidstone, 14).
@@ -53,6 +55,7 @@ namespace CalamityOverhaul.Content.Items.Summon.Deepclaws
                 return;
             }
             CreateRecipe().
+                AddIngredient<SeaShrimpShell>(8).
                 AddIngredient(ItemID.ChlorophyteBar, 10).
                 AddIngredient(ItemID.SharkFin, 6).
                 AddIngredient(ItemID.SoulofNight, 10).

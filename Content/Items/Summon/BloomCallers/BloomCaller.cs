@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Summon.BloomCallers
 
         public override void SetDefaults() {
             Item.width = 42;
-            Item.height = 44;
+            Item.height = 42;
             Item.damage = 13;
             Item.mana = 10;
             Item.knockBack = 3f;

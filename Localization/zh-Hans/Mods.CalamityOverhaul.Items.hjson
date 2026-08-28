@@ -4722,6 +4722,21 @@ TideReaper: {
 		'''
 }
 
+SeaShrimpShell: {
+	DisplayName: 渊晶虾壳
+	Tooltip:
+		'''
+		渊晶海虾蜕落的坚硬甲壳
+		深渊系列武器的必需合成材料
+		"贴近耳朵，还能听见海沟的水声"
+		'''
+}
+
+SeaShrimpRelic: {
+	DisplayName: 渊晶海虾圣物
+	Tooltip: ""
+}
+
 FallenKingsCrown: {
 	DisplayName: 坠王之冕
 	Tooltip:
@@ -5110,5 +5125,16 @@ Budcrown: {
 		锤头命中敌人时抖落荒针
 		每攒满三次命中，锤头怒放，炸出一圈花瓣并猛烈击退
 		"最重的花苞，开得最响"
+		'''
+}
+
+BloomTome: {
+	DisplayName: 蕾典
+	Tooltip:
+		'''
+		发射一枚会开花的蕾弹
+		蕾弹命中敌人或落地时，绽放一圈花瓣
+		每第四发化为盛放弹，花瓣更多，并向上崩出两根荒针
+		"翻到哪页，哪页就开花"
 		'''
 }

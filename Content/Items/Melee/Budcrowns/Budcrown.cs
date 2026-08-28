@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -54,11 +55,17 @@ namespace CalamityOverhaul.Content.Items.Melee.Budcrowns
     /// <summary>
     /// 蕾冠锤头。ai0 状态（0 悬旋 1 掷出 2 收回），ai1 悬旋起始角。
     /// 悬旋期贴玩家绕圈，松开攻击键朝准星掷出；到程、撞地后收回。
-    /// 命中抖落荒针，第三次命中怒放花瓣圈
+    /// 锤头是一张有前后的花嘴（贴图开口朝下），不自转：
+    /// 悬旋与收回时嘴朝外，掷出时嘴朝飞行方向。
+    /// 命中抖落荒针，第三次命中怒放花瓣圈。链条用体节贴图铺
     /// </summary>
     internal class BudcrownBall : BssModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "BudcrownBall";
+
+        //客户端 PostSetupContent 加载，服务端为空，绘制侧判空
+        [VaultLoaden(CWRConstant.Projectile_Melee + "BudcrownLink")]
+        public static Asset<Texture2D> LinkTex = null;
 
         private const int StSpin = 0;
         private const int StLaunch = 1;
@@ -131,6 +138,11 @@ namespace CalamityOverhaul.Content.Items.Melee.Budcrowns
         }
 
         #region 状态
+        /// <summary>贴图开口朝下（+Y），让嘴对准 dir</summary>
+        private void FaceMouth(Vector2 dir) {
+            Projectile.rotation = dir.ToRotation() - MathHelper.PiOver2;
+        }
+
         /// <summary>悬旋：贴玩家绕圈提速，松开攻击键掷出</summary>
         private void SpinAI() {
             Projectile.timeLeft = 300;
@@ -139,7 +151,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Budcrowns
             float radius = SpinRadius + MathF.Sin(spinAngle * 0.5f) * 5f;
             Projectile.Center = Owner.MountedCenter + ang.ToRotationVector2() * radius;
             Projectile.velocity = Vector2.Zero;
-            Projectile.rotation += 0.3f * Owner.direction;
+            //嘴朝外甩，链条自然指回手上
+            FaceMouth(ang.ToRotationVector2());
 
             //维持使用动作与手臂朝向
             Owner.itemTime = 2;
@@ -160,13 +173,13 @@ namespace CalamityOverhaul.Content.Items.Melee.Budcrowns
             }
         }
 
-        /// <summary>掷出：直飞后段微坠，到程折返</summary>
+        /// <summary>掷出：直飞后段微坠，到程折返，嘴咬向飞行方向</summary>
         private void LaunchAI() {
             mileage += Projectile.velocity.Length();
             if (mileage > 130f) {
                 Projectile.velocity.Y += 0.18f;
             }
-            Projectile.rotation += 0.32f * (Projectile.velocity.X >= 0f ? 1f : -1f);
+            FaceMouth(Projectile.velocity);
 
             if (mileage >= MaxReach) {
                 EnterRetract();
@@ -186,7 +199,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Budcrowns
             float speed = MathF.Min(15f + retractTimer * 0.6f, 28f);
             float steer = dist < 110f ? 0.32f : 0.16f;
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, to.SafeNormalize(Vector2.UnitX) * speed, steer);
-            Projectile.rotation += 0.24f * (Projectile.velocity.X >= 0f ? 1f : -1f);
+            //被链拽回，嘴仍朝外
+            FaceMouth(Projectile.Center - Owner.MountedCenter);
         }
 
         private void EnterRetract() {
@@ -252,41 +266,27 @@ namespace CalamityOverhaul.Content.Items.Melee.Budcrowns
         #endregion
 
         #region 绘制
-        private static void DrawLine(Vector2 start, Vector2 end, Color color, float thickness) {
-            Vector2 toEnd = end - start;
-            float length = toEnd.Length();
-            if (length < 1f) {
-                return;
-            }
-            Main.EntitySpriteDraw(VaultAsset.placeholder2.Value, start - Main.screenPosition, new Rectangle(0, 0, 1, 1)
-                , color, toEnd.ToRotation(), new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0);
-        }
-
         public override bool PreDraw(ref Color lightColor) {
             Vector2 hand = Owner.MountedCenter + new Vector2(Owner.direction * 4f, -2f);
             Vector2 ball = Projectile.Center;
 
-            //藤链：暗色藤底 + 亮绿芯，锤侧缀叶珠
-            Color vineDark = new Color(46, 54, 24) * 0.95f;
-            Color leaf = BloomArsenal.Leaf;
-            DrawLine(hand, ball, vineDark, 4f);
-            DrawLine(hand, ball, leaf * 0.75f, 2f);
-
-            float dist = Vector2.Distance(hand, ball);
-            if (dist > 30f) {
-                Texture2D glow = CWRAsset.SoftGlow.Value;
-                int beads = Math.Clamp((int)(dist / 26f), 2, 16);
-                for (int k = 1; k < beads; k++) {
-                    float t = k / (float)beads;
-                    Vector2 at = Vector2.Lerp(hand, ball, t);
-                    //AlphaBlend 下 A=0 呈加色
-                    Main.EntitySpriteDraw(glow, at - Main.screenPosition, null,
-                        new Color(leaf.R, leaf.G, leaf.B, 0) * 0.35f, 0f, glow.Size() * 0.5f,
-                        0.05f, SpriteEffects.None);
+            //链条：素材自带的体节沿链铺开，节距略小于节高保证连续
+            Texture2D link = LinkTex?.Value;
+            Vector2 span = ball - hand;
+            float len = span.Length();
+            if (link != null && len > 12f) {
+                Vector2 dir = span / len;
+                float rot = span.ToRotation() + MathHelper.PiOver2;
+                float step = link.Height * 0.8f;
+                for (float d = 8f; d < len - 12f; d += step) {
+                    Vector2 at = hand + dir * d;
+                    Color c = Lighting.GetColor(at.ToTileCoordinates());
+                    Main.EntitySpriteDraw(link, at - Main.screenPosition, null, c, rot,
+                        link.Size() * 0.5f, 1f, SpriteEffects.None, 0);
                 }
             }
 
-            //锤体
+            //锤体（嘴壳），方向由状态机喂
             Texture2D tex = TextureAssets.Projectile[Type].Value;
             Main.EntitySpriteDraw(tex, ball - Main.screenPosition, null, lightColor,
                 Projectile.rotation, tex.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);

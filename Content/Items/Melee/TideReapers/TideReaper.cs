@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Melee.Abyssrends;
+using CalamityOverhaul.Content.NPCs.SeaShrimp;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -75,6 +76,7 @@ namespace CalamityOverhaul.Content.Items.Melee.TideReapers
         public override void AddRecipes() {
             if (CWRID.Item_Lumenyl > 0 && CWRID.Item_Voidstone > 0 && CWRID.Item_DepthCells > 0) {
                 CreateRecipe().
+                    AddIngredient<SeaShrimpShell>(8).
                     AddIngredient(CWRID.Item_Lumenyl, 9).
                     AddIngredient(CWRID.Item_DepthCells, 11).
                     AddIngredient(CWRID.Item_Voidstone, 15).
@@ -84,6 +86,7 @@ namespace CalamityOverhaul.Content.Items.Melee.TideReapers
                 return;
             }
             CreateRecipe().
+                AddIngredient<SeaShrimpShell>(8).
                 AddIngredient(ItemID.ChlorophyteBar, 12).
                 AddIngredient(ItemID.SharkFin, 7).
                 AddIngredient(ItemID.SoulofFright, 8).
