@@ -216,7 +216,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                 }
             }
             if (t == QuickEnd + 6 && !Main.dedServ) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.7f, Pitch = -0.55f }, npc.Center);
+                //大聚能起手：深沉泡泡流（原 Item29 是魔力水晶使用音，材质相悖）
+                SoundEngine.PlaySound(SoundID.Item85 with { Volume = 0.7f, Pitch = -0.55f }, npc.Center);
             }
 
             float aimAlpha = MathHelper.Clamp((ct - 16) / 26f, 0f, 1f) * (t >= GrandLockFrame ? 0.7f : 0.32f);

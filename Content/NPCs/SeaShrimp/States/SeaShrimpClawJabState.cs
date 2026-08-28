@@ -57,7 +57,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                     t >= LockFrame ? 0.85f : 0.5f);
 
                 if (t == 2 && !Main.dedServ) {
-                    SoundEngine.PlaySound(SoundID.Item32 with { Volume = 0.45f, Pitch = -0.2f, MaxInstances = 2 }, shoulder);
+                    //收臂蓄势：轻水涌（原 Item32 是吹叶机气流，水下违和）
+                    SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.45f, Pitch = -0.2f, MaxInstances = 2 }, shoulder);
                 }
                 return null;
             }

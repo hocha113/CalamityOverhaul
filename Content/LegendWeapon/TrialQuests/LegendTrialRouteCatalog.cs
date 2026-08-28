@@ -1,9 +1,11 @@
-﻿using System;
+﻿using CalamityOverhaul.Content.NPCs.SeaShrimp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
 {
@@ -82,7 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
 
         /// <summary>
         /// 鬼伞沉宴试炼,24 段。相对鬼切线的取舍:偏爱"能淹的猎物"
-        /// 加入史莱姆王/王后史莱姆/利维坦/猪鲨/光女/老公爵五个水与夜的席位,
+        /// 加入史莱姆王/王后史莱姆/渊晶海虾/猪鲨/光女/老公爵五个水与夜的席位,
         /// 蜂后与巨鹿二选一(均有对应鬼奴);三机械并成一关(铁的不好淹),
         /// 砍掉硫磺火元素/灾厄之影/普罗维登斯这类火与光的席位;
         /// 末双关走复合目标:星流且至尊、BossRush 或始源妖龙
@@ -106,8 +108,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
                 Npc(() => [NPCID.Retinazer, NPCID.Spazmatism], () => NPC.downedMechBoss2),
                 Npc(() => [NPCID.SkeletronPrime], () => NPC.downedMechBoss3)), titles, summaries, 10),
             Trial("kikasa.011.plantera", Npc(() => [NPCID.Plantera], InWorldBossPhase.VDownedV7), titles, summaries, 11),
-            Trial("kikasa.012.leviathan", Npc(() => [CWRID.NPC_Leviathan, CWRID.NPC_Anahita], InWorldBossPhase.Downed12), titles, summaries, 12),
-            Trial("kikasa.013.golem", Npc(() => [NPCID.Golem, NPCID.GolemHead], InWorldBossPhase.DownedV7), titles, summaries, 13),
+            //渊晶海虾接掉利维坦的席位并顺移到石巨人后(召唤材料含甲虫外壳、图鉴档位皆为石巨人后),
+            //文案下标不随席位顺序走:石巨人保持 13,海虾沿用利维坦旧文案位 12;旧键迁移见 LegendData 别名表
+            Trial("kikasa.012.golem", Npc(() => [NPCID.Golem, NPCID.GolemHead], InWorldBossPhase.DownedV7), titles, summaries, 13),
+            Trial("kikasa.013.sea_shrimp", Npc(() => [ModContent.NPCType<SeaShrimpBoss>()], () => SeaShrimpWorldFlag.DownedSeaShrimp), titles, summaries, 12),
             Trial("kikasa.014.duke_fishron", Npc(() => [NPCID.DukeFishron], () => NPC.downedFishron), titles, summaries, 14),
             Trial("kikasa.015.empress", Npc(() => [NPCID.HallowBoss], () => NPC.downedEmpressOfLight), titles, summaries, 15),
             Trial("kikasa.016.cultist", Npc(() => [NPCID.CultistBoss], InWorldBossPhase.DownedV8), titles, summaries, 16),

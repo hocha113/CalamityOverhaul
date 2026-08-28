@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -39,7 +40,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
         public override bool? UseItem(Player player) {
             if (player.whoAmI == Main.myPlayer) {
-                SoundEngine.PlaySound(SoundID.Roar with { Pitch = -0.2f }, player.position);
+                //召唤即沙蟒自己的吼声（与 BssVfx.Roar 同声线）
+                SoundEngine.PlaySound(CWRSound.SendRoar with { Pitch = -0.2f }, player.position);
                 int type = ModContent.NPCType<BssHead>();
                 if (Main.netMode != NetmodeID.MultiplayerClient) {
                     NPC.SpawnOnPlayer(player.whoAmI, type);

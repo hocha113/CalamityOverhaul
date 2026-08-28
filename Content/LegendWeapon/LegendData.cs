@@ -500,6 +500,16 @@ namespace CalamityOverhaul.Content.LegendWeapon
             }
         }
 
+        /// <summary>
+        /// 已发布试炼键的改名迁移表:归一化时旧键先重写再过滤,老玩家已过的席位不重打。
+        /// 目标键写当前目录里的现行键,禁止链式映射(映射值不得再作映射键)
+        /// </summary>
+        private static readonly Dictionary<string, string> TrialKeyAliases = new() {
+            //0.9202:鬼伞线利维坦席换渊晶海虾并顺移到石巨人后,石巨人席序号随之前移
+            ["kikasa.012.leviathan"] = "kikasa.013.sea_shrimp",
+            ["kikasa.013.golem"] = "kikasa.012.golem",
+        };
+
         private void NormalizeCompletedTrialKeys(IReadOnlyList<LegendTrialDefinition> definitions) {
             if (CompletedTrialKeys == null || CompletedTrialKeys.Count == 0 || definitions == null) {
                 return;
@@ -510,6 +520,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 .Select(static d => d.Key)];
 
             CompletedTrialKeys = [.. CompletedTrialKeys
+                .Select(static key => key != null && TrialKeyAliases.TryGetValue(key, out string alias) ? alias : key)
                 .Where(key => !string.IsNullOrEmpty(key) && knownKeys.Contains(key))
                 .Distinct()];
         }

@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
             int phase = Context.Phase;
             if (phase == 2 && lastSeenPhase == 1) {
                 //P2 涨压破甲拍：怒吼 + 甲壳缝隙高压水线喷射 + 冲击环 + 滤镜微脉冲
-                SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.8f, Pitch = -0.1f }, NPC.Center);
+                SoundEngine.PlaySound(CWRSound.SendRoar with { Volume = 0.8f, Pitch = -0.1f }, NPC.Center);
                 SoundEngine.PlaySound(SoundID.Item94 with { Volume = 0.6f, Pitch = 0.1f }, NPC.Center);
                 SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.8f, Pitch = -0.35f }, NPC.Center);
                 Context.CrystalGlow = 1f;

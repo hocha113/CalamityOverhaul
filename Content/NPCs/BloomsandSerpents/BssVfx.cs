@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             if (VaultUtils.isServer) {
                 return;
             }
-            SoundEngine.PlaySound(SoundID.Roar with { Pitch = pitch, Volume = volume, MaxInstances = 3 }, pos);
+            SoundEngine.PlaySound(CWRSound.SendRoar with { Pitch = pitch, Volume = volume, MaxInstances = 3 }, pos);
         }
 
         /// <summary>就近震屏：只震看得见战斗的本地玩家</summary>

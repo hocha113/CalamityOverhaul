@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic.Everdeeps;
 using CalamityOverhaul.Content.Items.Melee.Abyssrends;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
@@ -97,7 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                 ctx.Owner.Locomotion.LaunchBallistic(new Vector2(0f, -11f), 8, 0.86f);
                 if (!Main.dedServ) {
                     SoundEngine.PlaySound(SoundID.Shatter with { Volume = 1f, Pitch = -0.2f }, npc.Center);
-                    SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.9f, Pitch = 0.3f }, npc.Center);
+                    SoundEngine.PlaySound(CWRSound.SendRoar with { Volume = 0.9f, Pitch = 0.3f }, npc.Center);
                     SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.8f, Pitch = -0.2f }, npc.Center);
                     ShakeNearby(npc.Center, 7f);
                     //全场大冲击环 + 滤镜脉冲(0.25 档,层级低于超空化 0.4,满档独留死亡)

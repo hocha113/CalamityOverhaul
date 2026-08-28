@@ -66,7 +66,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                         Main.rand.NextFloat(0.4f, 0.75f))?.Configure(false, Main.rand.Next(9, 14));
                 }
                 if (t == 4 && !Main.dedServ) {
-                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.55f, Pitch = -0.4f, MaxInstances = 2 }, shoulder);
+                    //聚能起手：低调泡泡流 = 水压聚拢（原 Item29 是魔力水晶使用音，材质相悖）
+                    SoundEngine.PlaySound(SoundID.Item85 with { Volume = 0.55f, Pitch = -0.4f, MaxInstances = 2 }, shoulder);
                 }
 
                 float aimAlpha = MathHelper.Clamp((t - 14) / 22f, 0f, 1f) * (t >= LockFrame ? 0.6f : 0.28f);

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
+﻿using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics;
 using System;
 using Terraria;
@@ -52,7 +52,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                     t >= LockFrame ? 0.85f : 0.5f);
 
                 if (t == 2 && !Main.dedServ) {
-                    SoundEngine.PlaySound(SoundID.Item32 with { Volume = 0.55f, Pitch = -0.5f, MaxInstances = 2 }, npc.Center);
+                    //蜷尾蓄势：低调水涌（原 Item32 是吹叶机气流，水下违和）
+                    SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.55f, Pitch = -0.5f, MaxInstances = 2 }, npc.Center);
                 }
 
                 if (t >= windup) {
@@ -61,7 +62,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                         SeaShrimpDirector.TailFlipFrames, SeaShrimpDirector.TailFlipBrake);
                     ctx.TailFlare = 1f;
                     if (!Main.dedServ) {
-                        SoundEngine.PlaySound(SoundID.Item86 with { Volume = 0.85f, Pitch = -0.1f, MaxInstances = 2 }, npc.Center);
+                        //甩尾出手：重挥低啸（原 Item86 在原版全源码零调用，听感无人能作保）
+                        SoundEngine.PlaySound(SoundID.Item102 with { Volume = 0.85f, Pitch = -0.5f, MaxInstances = 2 }, npc.Center);
                         SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.8f, Pitch = -0.3f, MaxInstances = 2 }, npc.Center);
                         ShakeNearby(npc.Center, 5.5f);
                     }

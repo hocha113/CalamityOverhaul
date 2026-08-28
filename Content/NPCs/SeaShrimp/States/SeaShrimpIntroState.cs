@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic.Everdeeps;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics;
@@ -95,7 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                 ctx.SpineCurl = -0.8f;
                 ctx.CrystalGlow = 1f;
                 if (!Main.dedServ) {
-                    SoundEngine.PlaySound(SoundID.Roar with { Volume = 1f, Pitch = 0.15f }, npc.Center);
+                    SoundEngine.PlaySound(CWRSound.SendRoar with { Volume = 1f, Pitch = 0.15f }, npc.Center);
                     SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.9f, Pitch = -0.3f }, npc.Center);
                     SoundEngine.PlaySound(SoundID.Item94 with { Volume = 0.6f, Pitch = -0.5f }, npc.Center);
                     ShakeNearby(npc.Center, 9f);
