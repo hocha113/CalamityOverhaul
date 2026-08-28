@@ -4796,6 +4796,35 @@ SeaShrimpShell: {
 		'''
 }
 
+DeepcrystalHelmet: {
+	DisplayName: Deepcrystal Helmet
+	Tooltip:
+		'''
+		6% increased damage
+		"The trench hums against your ears"
+		'''
+	SetBonus: Taking a hit unleashes a cavitation counter-burst that wounds and knocks back nearby foes, at most once every 4 seconds
+}
+
+DeepcrystalBreastplate: {
+	DisplayName: Deepcrystal Breastplate
+	Tooltip:
+		'''
+		Reduces damage taken by 6%
+		"The shell remembers the weight of every trench"
+		'''
+}
+
+DeepcrystalGreaves: {
+	DisplayName: Deepcrystal Greaves
+	Tooltip:
+		'''
+		12% increased movement speed
+		Move freely through water
+		"Tread the waves like solid ground"
+		'''
+}
+
 SeaShrimpRelic: {
 	DisplayName: Abyssal Crystal Shrimp Relic
 	Tooltip: ""

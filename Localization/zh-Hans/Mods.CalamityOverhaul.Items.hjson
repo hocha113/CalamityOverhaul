@@ -4732,6 +4732,35 @@ SeaShrimpShell: {
 		'''
 }
 
+DeepcrystalHelmet: {
+	DisplayName: 渊晶头盔
+	Tooltip:
+		'''
+		所有伤害提高6%
+		"渊底的低鸣贴着耳廓"
+		'''
+	SetBonus: 受击时迸发空化反震，重创并击退周围敌人，4秒内至多触发一次
+}
+
+DeepcrystalBreastplate: {
+	DisplayName: 渊晶胸甲
+	Tooltip:
+		'''
+		受到的伤害降低6%
+		"甲壳记得每一道海沟的重量"
+		'''
+}
+
+DeepcrystalGreaves: {
+	DisplayName: 渊晶护腿
+	Tooltip:
+		'''
+		移动速度提高12%
+		在水中行动自如
+		"踏浪如履平地"
+		'''
+}
+
 SeaShrimpRelic: {
 	DisplayName: 渊晶海虾圣物
 	Tooltip: ""

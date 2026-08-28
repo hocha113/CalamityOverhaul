@@ -16,7 +16,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
     /// 「引路鬼火」夜雾中低频亮起的中性冷白鬼火，缓缓飘向最近洞口或开阔地（<see cref="PRT_WoodsongWisp"/>）；<br/>
     /// 「惊鸦」浓雾夜树冠黑影掠动+鸦群惊飞（<see cref="PRT_WoodsongRaven"/>）。<br/>
     /// 全部为本地客户端演出量（镜像 GhostRainAmbience/OldNetAmbience 的生命周期管理），
-    /// 无伤害机制、无网络包；档位（EffectiveTier）只调雾浓度上限与鬼火频率。
+    /// 无伤害机制、无网络包；档位（EffectiveTier）只调雾浓度上限与鬼火频率。<br/>
+    /// Boss 战中视觉氛围以低 Presence 弱化保留，一次性环境声与新排演出全部冻结，
+    /// 只留开场一次「惊鸦报敌」（见 <see cref="UpdateThreatWarning"/>）。
     /// </summary>
     internal static class WoodsongAmbience
     {
@@ -62,6 +64,12 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
         private static int ravenBurstDir;
         /// <summary>威胁预警冷却（独立于雾夜惊鸦的日程）</summary>
         private static int warnIn = 600;
+        /// <summary>Boss 开场预警窗（帧）：惊鸦报敌只许落在开场这一小段内</summary>
+        private const int BossWarnWindowFrames = 240;
+        /// <summary>上一帧 Boss 是否在场（取上升沿用）</summary>
+        private static bool bossWasUp;
+        /// <summary>Boss 开场预警窗余量；归零后整场不再放送任何惊鸦</summary>
+        private static int bossWarnGrace;
         private static int wispIn = 1800;
         private static float moteAcc;
         private static float fireflyAcc;
@@ -96,6 +104,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             ravenBurstIn = 0;
             ravenBurstDir = 0;
             warnIn = 600;
+            bossWasUp = false;
+            bossWarnGrace = 0;
             wispIn = 1800;
             moteAcc = fireflyAcc = leafAcc = 0f;
             for (int i = 0; i < pending.Length; i++) {
@@ -145,8 +155,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             Player player = Main.LocalPlayer;
             bool inZone = player != null && player.active
                 && GameModeSystem.BrutalActive && LocalInPureForest(player);
+            bool bossUp = CWRWorld.HasBoss;
             //Boss 在场：纯视觉氛围保留但减弱
-            float target = inZone ? (CWRWorld.HasBoss ? 0.3f : 1f) : 0f;
+            float target = inZone ? (bossUp ? 0.3f : 1f) : 0f;
             Presence = Math.Abs(target - Presence) < 0.004f
                 ? target : MathHelper.Lerp(Presence, target, 0.03f);
             WindAbs = Math.Min(Math.Abs(Main.windSpeedCurrent), 1f);
@@ -178,12 +189,15 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             }
 
             UpdateWindBedLoop();
-            UpdateGust(player);
-            UpdateSoundSchedulers(player);
+            UpdateGust(player, bossUp);
+            if (!bossUp) {
+                //Boss 战中冻结鸟鸣/虫吟/枭鸣/远嚎/枝裂的排程：计时器停摆，战后原地续拍
+                UpdateSoundSchedulers(player);
+            }
             SpawnAmbientVisuals(player);
-            UpdateRavenScare(player);
-            UpdateThreatWarning(player);
-            UpdateWispScheduler(player);
+            UpdateRavenScare(player, bossUp);
+            UpdateThreatWarning(player, bossUp);
+            UpdateWispScheduler(player, bossUp);
             PumpPending();
         }
 
@@ -210,7 +224,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
 
         //==================== 「林语」叶浪阵风 ====================
 
-        private static void UpdateGust(Player player) {
+        private static void UpdateGust(Player player, bool bossUp) {
             if (gustTimer > 0) {
                 gustTimer--;
                 GustEnv = MathF.Sin(MathHelper.Pi * (1f - gustTimer / (float)gustLen));
@@ -231,6 +245,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             }
             gustIn = Main.rand.Next(330, 620);
             gustLen = gustTimer = Main.rand.Next(120, 190);
+            if (bossUp) {
+                //Boss 战中叶浪只留画面，不出声
+                return;
+            }
             //叶浪起势：两层草叶婆娑声自上风处压来
             Vector2 pos = player.Center + new Vector2(Main.windSpeedCurrent > 0f ? -300f : 300f, -140f);
             SoundEngine.PlaySound(SoundID.Grass with {
@@ -394,7 +412,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
 
         //==================== 「惊鸦」====================
 
-        private static void UpdateRavenScare(Player player) {
+        private static void UpdateRavenScare(Player player, bool bossUp) {
             //第二拍：黑影掠过 20 tick 后鸦群自树冠惊飞
             if (ravenBurstIn > 0 && --ravenBurstIn == 0) {
                 Main.instance.LoadNPC(NPCID.Raven);
@@ -428,8 +446,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                 }
             }
 
-            //触发门：夜里雾浓才有惊鸦
-            if (Main.dayTime || FogStrength < 0.5f) {
+            //触发门：夜里雾浓才有惊鸦；Boss 战中不排新惊吓（已起拍的两拍演出照常走完）
+            if (Main.dayTime || bossUp || FogStrength < 0.5f) {
                 return;
             }
             if (--ravenIn > 0) {
@@ -462,9 +480,23 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
         /// <summary>
         /// 敌讯惊鸦：有敌对个体锁定本地玩家并进入感知圈时，黑影自敌向掠入、
         /// 鸦群整齐背离来敌惊飞——鸟群逃离的反方向就是敌人来向。
-        /// 纯本地情报演出（读的都是已同步的 NPC 状态），不做任何判定改动
+        /// 纯本地情报演出（读的都是已同步的 NPC 状态），不做任何判定改动。<br/>
+        /// Boss 战只在开场预警窗内放送一次（<see cref="BossWarnWindowFrames"/>），战中不复读
         /// </summary>
-        private static void UpdateThreatWarning(Player player) {
+        private static void UpdateThreatWarning(Player player, bool bossUp) {
+            if (bossUp && !bossWasUp) {
+                //Boss 刚出场：压掉残余冷却，让报敌落在开场几拍内，而不是战中某个随机时刻
+                warnIn = Math.Min(warnIn, 20);
+                bossWarnGrace = BossWarnWindowFrames;
+            }
+            bossWasUp = bossUp;
+            if (bossUp) {
+                //开场窗耗尽或已警过一次：整场 Boss 战不再有任何鸦群惊飞
+                if (bossWarnGrace <= 0) {
+                    return;
+                }
+                bossWarnGrace--;
+            }
             if (--warnIn > 0) {
                 return;
             }
@@ -488,6 +520,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             if (threat == null) {
                 return;
             }
+            if (bossUp) {
+                //开场只警这一次
+                bossWarnGrace = 0;
+            }
 
             float threatSide = threat.Center.X >= player.Center.X ? 1f : -1f;
             if (!TryFindTreetop(player, out Vector2 top)) {
@@ -508,8 +544,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
 
         //==================== 「引路鬼火」====================
 
-        private static void UpdateWispScheduler(Player player) {
-            if (Main.dayTime || FogStrength < 0.32f) {
+        private static void UpdateWispScheduler(Player player, bool bossUp) {
+            //Boss 战中不排新鬼火（连带亮起的软吟一起静默）
+            if (Main.dayTime || bossUp || FogStrength < 0.32f) {
                 return;
             }
             int tier = GameModeSystem.EffectiveTier;
