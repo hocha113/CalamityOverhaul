@@ -16,8 +16,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         public override string StateName => "SpazmatismHoverShoot";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismHoverShoot;
 
-        private int ShootRate => Context.IsDeathMode ? 60 : 80;
-        private int MaxShootCount => Context.IsDeathMode ? 2 : 3;
+        private int ShootRate => Context.IsAsuraMode ? 60 : 80;
+        private int MaxShootCount => Context.IsAsuraMode ? 2 : 3;
 
         private TwinsStateContext Context;
         private int comboStep;
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             Timer++;
             if (Timer >= ShootRate) {
                 //预判射击火球
-                float shootSpeed = Context.IsDeathMode ? 14f : 12f;
+                float shootSpeed = Context.IsAsuraMode ? 14f : 12f;
                 Vector2 predicted = TwinsMotion.PredictTarget(player, npc.Center, shootSpeed * 2f, 0.5f);
                 Vector2 shootDir = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
 

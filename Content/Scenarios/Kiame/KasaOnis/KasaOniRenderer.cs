@@ -3,7 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 
-namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
+using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
+
+namespace CalamityOverhaul.Content.Scenarios.Kiame.KasaOnis
 {
     /// <summary>
     /// 伞鬼绘制：与鬼伞伞奴同根同源的换装，贴图/凝聚着色器/污潭全走

@@ -1,3 +1,4 @@
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -52,7 +53,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles
                 float p = 1f - Fuse / BssDirector.BallFuseFrames;
                 int tickGap = p > 0.66f ? 4 : 8;
                 if ((int)Fuse % tickGap == 0 && !Main.dedServ) {
-                    SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.35f, Pitch = -0.2f + 0.8f * p, MaxInstances = 4 },
+                    //干木咔嗒升调引信
+                    SoundEngine.PlaySound(SoundID.Item102 with { Volume = 0.45f, Pitch = -0.2f + 0.8f * p, MaxInstances = 4 },
                         Projectile.Center);
                 }
                 if (Fuse <= 0f) {

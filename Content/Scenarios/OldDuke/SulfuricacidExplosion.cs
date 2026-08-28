@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
         }
 
         public override void AI() {
-            if (Projectile.timeLeft < 30 && (CWRWorld.Death || CWRWorld.MasterMode)) {
+            if (Projectile.timeLeft < 30 && (CWRWorld.Asura || CWRWorld.MasterMode)) {
                 int index = NPC.FindFirstNPC(CWRID.NPC_OldDuke);
                 if (index.TryGetNPC(out var boss) && boss.type == CWRID.NPC_OldDuke && !boss.friendly) {
                     Projectile.friendly = false;

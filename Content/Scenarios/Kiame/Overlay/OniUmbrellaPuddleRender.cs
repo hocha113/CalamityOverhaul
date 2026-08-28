@@ -4,7 +4,7 @@ using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
-namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
+namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
 {
     /// <summary>
     /// 立伞水洼的屏幕空间倒影：拷屏后在水洼椭圆内绕水面线垂直镜像

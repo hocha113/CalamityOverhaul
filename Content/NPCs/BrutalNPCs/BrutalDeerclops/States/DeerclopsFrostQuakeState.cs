@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                 return;
             }
             NPC npc = context.Npc;
-            int damage = context.IsDeathMode ? 22 : 18;
+            int damage = context.IsAsuraMode ? 22 : 18;
             Vector2 spawnPos = npc.Bottom - new Vector2(0f, 20f);
             for (int dir = -1; dir <= 1; dir += 2) {
                 Projectile.NewProjectile(npc.GetSource_FromAI(), spawnPos, Vector2.Zero,

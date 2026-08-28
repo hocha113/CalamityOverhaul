@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
             NPC npc = context.Npc;
             int count = AdoptExistingCreepers();
 
-            int need = CreeperCount + (context.IsDeathMode ? 2 : 0);
+            int need = CreeperCount + (context.IsAsuraMode ? 2 : 0);
             for (int i = count; i < need; i++) {
                 //自脑周围环形远点入场
                 float angle = MathHelper.TwoPi * i / need;

@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shootSpeed = 15f;
             Item.rare = ItemRarityID.Purple;
             Item.value = Item.buyPrice(0, 1, 60, 5);
-            Item.CWR().DeathModeItem = true;
+            Item.CWR().BrutalWorldItem = true;
         }
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor

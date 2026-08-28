@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
             stateContext = new BrainStateContext {
                 Npc = npc,
                 Master = this,
-                IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()
+                IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<BrainStateContext>(stateContext, aiSlot: 2);
 
@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
             stateContext.LifeRatio = npc.life / (float)npc.lifeMax;
             stateContext.IsPhase2 = npc.ai[0] < 0f;
             stateContext.IsLowLife = stateContext.LifeRatio <= LowLifeRatio;
-            stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            stateContext.IsAsuraMode = CWRWorld.Asura;
 
             //客户端从同步槽回读狂暴强度
             if (VaultUtils.isClient) {
@@ -410,7 +410,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
 
         /// <summary>残酷遗物「镜心悖论」：残酷世界击杀必掉(条件类自带门禁)</summary>
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(),
                 ModContent.ItemType<MirrorheartParadox>()));
         }
 

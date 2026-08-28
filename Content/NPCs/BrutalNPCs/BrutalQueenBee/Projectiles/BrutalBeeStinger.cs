@@ -57,9 +57,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Projectiles
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            //中毒，死亡模式更久
-            bool death = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
-            target.AddBuff(BuffID.Poisoned, death ? 360 : 210);
+            //中毒，修罗模式更久
+            bool asura = CWRWorld.Asura;
+            target.AddBuff(BuffID.Poisoned, asura ? 360 : 210);
         }
 
         public override void OnKill(int timeLeft) {

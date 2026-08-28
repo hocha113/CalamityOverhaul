@@ -177,7 +177,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             }
             //海啸波沿倒向推进(行程常量=公平阀：范围有限渐衰)
             Projectile.NewProjectile(npc.GetSource_FromAI(), slamPoint - new Vector2(0f, 20f),
-                new Vector2(toppleDir * (context.IsDeathMode ? 13f : 11f), 0f),
+                new Vector2(toppleDir * (context.IsAsuraMode ? 13f : 11f), 0f),
                 ModContent.ProjectileType<BKSTideWaveProj>(), (int)(npc.defDamage * 0.55f), 0f, Main.myPlayer,
                 -1f, 1f, TsunamiTravelFrames);
             //大冲击环

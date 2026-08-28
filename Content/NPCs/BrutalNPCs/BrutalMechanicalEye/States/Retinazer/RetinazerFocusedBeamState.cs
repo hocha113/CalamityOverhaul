@@ -16,15 +16,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         public override string StateName => "RetinazerFocusedBeam";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerFocusedBeam;
 
-        private int ApproachPhase => Context.IsDeathMode ? 26 : 32;
-        private int ChargePhase => Context.IsDeathMode ? 48 : 58;
-        private int BeamPhase => Context.IsDeathMode ? 105 : 95;
+        private int ApproachPhase => Context.IsAsuraMode ? 26 : 32;
+        private int ChargePhase => Context.IsAsuraMode ? 48 : 58;
+        private int BeamPhase => Context.IsAsuraMode ? 105 : 95;
         private const int RecoveryPhase = 38;
 
         private int TotalDuration => ApproachPhase + ChargePhase + BeamPhase + RecoveryPhase;
 
         /// <summary>射线追踪角速度(弧度/帧)，刻意压低(公平阀，可跑动摆脱)</summary>
-        private float TrackTurnRate => Context.IsDeathMode ? 0.006f : 0.005f;
+        private float TrackTurnRate => Context.IsAsuraMode ? 0.006f : 0.005f;
 
         private TwinsStateContext Context;
         private int comboStep;
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             if (!beamFired) {
                 beamFired = true;
                 if (!VaultUtils.isClient) {
-                    int damage = Context.IsDeathMode ? 40 : 36;
+                    int damage = Context.IsAsuraMode ? 40 : 36;
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
                         ModContent.ProjectileType<RetinazerDeathRay>(), damage, 0f, Main.myPlayer,
                         npc.whoAmI, BeamPhase + 4, 0f);

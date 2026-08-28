@@ -133,11 +133,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
 
         /// <summary>难度伤害修正</summary>
         protected static int ScaleDamage(MLordContext context, int damage)
-            => MLordDirector.ScaleDamage(damage, context.DeathMode);
+            => MLordDirector.ScaleDamage(damage, context.AsuraMode);
 
         /// <summary>节奏帧数压缩</summary>
         protected static int Frames(MLordContext context, int baseFrames)
-            => MLordDirector.Frames(baseFrames, context.DeathMode);
+            => MLordDirector.Frames(baseFrames, context.AsuraMode);
 
         #endregion
     }

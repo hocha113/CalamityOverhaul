@@ -12,9 +12,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         public override string StateName => "SpazmatismPhase2DashPrepare";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismPhase2DashPrepare;
 
-        private int ChargeTime => Context.IsDeathMode ? 36 : 42;
-        private int DashCountMax => Context.IsDeathMode ? 4 : 3;
-        private float DashSpeed => Context.IsDeathMode ? 44f : 40f;
+        private int ChargeTime => Context.IsAsuraMode ? 36 : 42;
+        private int DashCountMax => Context.IsAsuraMode ? 4 : 3;
+        private float DashSpeed => Context.IsAsuraMode ? 44f : 40f;
 
         private TwinsStateContext Context;
         private int dashCount;

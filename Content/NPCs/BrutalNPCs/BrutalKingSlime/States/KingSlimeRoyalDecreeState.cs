@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
 
             //光柱行军：从战场一侧行军到另一侧，跨过玩家；
             //方向在首柱锁定(修复：原实现每柱重读玩家方位，玩家横穿锚点会让柱列瞬移换边)
-            int maxPillars = context.IsDeathMode ? 8 : 7;
+            int maxPillars = context.IsAsuraMode ? 8 : 7;
             if (pillarsFired < maxPillars && (int)Timer % PillarIntervalFrames == 10 && !VaultUtils.isClient) {
                 if (marchSide == 0) {
                     marchSide = player.Center.X >= anchor.X ? 1 : -1;

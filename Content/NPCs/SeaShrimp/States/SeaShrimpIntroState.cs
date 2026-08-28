@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Magic.Everdeeps;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering;
@@ -86,7 +87,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
             }
 
             if (t == BurstFrame) {
-                //炸沙跃出：一帧位移到地表 + 上抛，怒吼与沙暴同拍
+                //炸沙跃出：一帧位移到地表 + 上抛，怒吼、沙暴、水柱、贴地冲击环同拍
                 loco.RequestScripted();
                 npc.Center = surface + new Vector2(0f, -30f);
                 npc.velocity = new Vector2(0f, -15f);
@@ -96,7 +97,17 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                 if (!Main.dedServ) {
                     SoundEngine.PlaySound(SoundID.Roar with { Volume = 1f, Pitch = 0.15f }, npc.Center);
                     SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.9f, Pitch = -0.3f }, npc.Center);
+                    SoundEngine.PlaySound(SoundID.Item94 with { Volume = 0.6f, Pitch = -0.5f }, npc.Center);
                     ShakeNearby(npc.Center, 9f);
+                    //破土水柱 + 贴地冲击环：登场即两拍(柱起、环开)
+                    ctx.AddColumn(surface + new Vector2(0f, 6f), 150f, 380f, 46);
+                    ctx.AddRing(surface + new Vector2(0f, -4f), 340f, 30, 0.38f);
+                    //抛物线水雨：炸点向两侧甩出
+                    EverdeepVFX.SplashBurst(surface, Vector2.UnitY * 14f, 1.35f);
+                    for (int i = 0; i < 10; i++) {
+                        EverdeepVFX.ShedDroplet(surface + new Vector2(Main.rand.NextFloat(-40f, 40f), 0f),
+                            new Vector2(Main.rand.NextFloat(-4.5f, 4.5f), -Main.rand.NextFloat(4f, 10f)), 1.1f);
+                    }
                     for (int i = 0; i < 34; i++) {
                         PRTLoader.NewParticle<PRT_Smoke>(surface + new Vector2(Main.rand.NextFloat(-60f, 60f), 0f),
                             new Vector2(Main.rand.NextFloat(-4f, 4f), -Main.rand.NextFloat(2f, 9f)),

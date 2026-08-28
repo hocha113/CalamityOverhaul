@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.GameModes;
 using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using CalamityOverhaul.Content.TimeFreezes;
 using System.Collections.Generic;
@@ -15,8 +16,10 @@ namespace CalamityOverhaul.Content
         internal static bool BossRush => CWRRef.GetBossRushActive();
         internal static bool MasterMode => Main.masterMode || BossRush;
         internal static bool ExpertMode => Main.expertMode || BossRush;
-        internal static bool Death => CWRRef.GetDeathMode() || BossRush;
-        internal static bool Revenge => CWRRef.GetRevengeMode() || BossRush;
+        /// <summary>残酷世界(终焉之战期间视同开启)</summary>
+        internal static bool Brutal => GameModeSystem.BrutalActive || BossRush;
+        /// <summary>修罗地狱(终焉之战期间视同开启)</summary>
+        internal static bool Asura => GameModeSystem.AsuraActive || BossRush;
 
         internal static int primeLaser = -1;
         internal static int primeCannon = -1;

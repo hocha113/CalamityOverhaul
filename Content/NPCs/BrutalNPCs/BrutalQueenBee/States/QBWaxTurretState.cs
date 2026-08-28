@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                     Projectile.NewProjectile(npc.GetSource_FromAI(),
                         npc.Center + new Vector2(0f, npc.height * 0.4f), Vector2.Zero,
                         ModContent.ProjectileType<WaxHiveTurret>(), 0, 0f, Main.myPlayer,
-                        context.IsDeathMode ? 1f : 0f);
+                        context.IsAsuraMode ? 1f : 0f);
                 }
                 return null;
             }

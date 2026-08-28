@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
         private const float PassAltitude = 560f;
         #endregion
 
-        private float PassSpeed(EowStateContext ctx) => 33f + (ctx.IsDeathMode ? 4f : 0f);
+        private float PassSpeed(EowStateContext ctx) => 33f + (ctx.IsAsuraMode ? 4f : 0f);
 
         private enum Phase
         {
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
             context.MawGlow = 0.7f;
 
             //全身向上喷酸→酸雨(服务端)；喷口沿身错开
-            int cadence = context.IsDeathMode ? 2 : 3;
+            int cadence = context.IsAsuraMode ? 2 : 3;
             if (!VaultUtils.isClient && Timer % cadence == 0 && context.Segments.Count > 10) {
                 int ordinal = Main.rand.Next(4, context.Segments.Count - 4);
                 NPC seg = context.Segments[ordinal];

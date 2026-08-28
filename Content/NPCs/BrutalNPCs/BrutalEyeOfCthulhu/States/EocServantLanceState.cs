@@ -30,8 +30,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private const int PunctuateFlight = 26;
         private const int PunctuateBrake = 12;
 
-        private int ServantCount => Context.IsDeathMode ? 5 : 4;
-        private float LanceSpeed => Context.IsDeathMode ? 33f : 29f;
+        private int ServantCount => Context.IsAsuraMode ? 5 : 4;
+        private float LanceSpeed => Context.IsAsuraMode ? 33f : 29f;
 
         private EocStateContext Context;
         private LancePhase phase;
@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                 if (VaultUtils.isClient) {
                     return null;
                 }
-                return new EocVeilHoverState(context.IsDeathMode ? 44 : 60);
+                return new EocVeilHoverState(context.IsAsuraMode ? 44 : 60);
             }
             return null;
         }

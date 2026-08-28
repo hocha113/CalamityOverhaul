@@ -49,8 +49,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         public override bool AllowFarSnap => !suppressFarSnap;
 
-        private int BarrageSweep(DestroyerStateContext ctx) => ctx.IsDeathMode ? 60 : 70;
-        private float BoltSpeed(DestroyerStateContext ctx) => ctx.IsDeathMode ? 7.5f : 5.5f;
+        private int BarrageSweep(DestroyerStateContext ctx) => ctx.IsAsuraMode ? 60 : 70;
+        private float BoltSpeed(DestroyerStateContext ctx) => ctx.IsAsuraMode ? 7.5f : 5.5f;
 
         /// <summary>横扫半弧=总扫角一半</summary>
         private float ArcHalf(DestroyerStateContext ctx) {
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             if (ctx.IsEnraged) {
                 a += 0.2f;
             }
-            if (ctx.IsDeathMode) {
+            if (ctx.IsAsuraMode) {
                 a += 0.1f;
             }
             return a;

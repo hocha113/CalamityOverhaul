@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
         }
 
         private int EruptionCount(EowStateContext ctx) => ctx.IsPhase2 ? 3 : 2;
-        private float EruptSpeed(EowStateContext ctx) => (ctx.IsPhase2 ? 56f : 51f) + (ctx.IsDeathMode ? 4f : 0f);
+        private float EruptSpeed(EowStateContext ctx) => (ctx.IsPhase2 ? 56f : 51f) + (ctx.IsAsuraMode ? 4f : 0f);
 
         private Phase phase;
         private int eruptionsDone;
@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
             npc.damage = 0;
             context.SlitherStrength = 0.55f;
             SetMovement(context, new Vector2(player.Center.X, groundY + 380f),
-                (context.IsPhase2 ? 38f : 33f) + (context.IsDeathMode ? 4f : 0f), 1.3f);
+                (context.IsPhase2 ? 38f : 33f) + (context.IsAsuraMode ? 4f : 0f), 1.3f);
 
             //地表尘迹跟随头X(猎物视角的"它来了")
             if (!VaultUtils.isServer) {

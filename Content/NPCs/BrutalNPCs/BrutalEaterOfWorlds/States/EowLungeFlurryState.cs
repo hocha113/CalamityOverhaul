@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
         #endregion
 
         private int LungeCount(EowStateContext ctx) => ctx.IsPhase2 ? 4 : 3;
-        private float LungeSpeed(EowStateContext ctx) => (ctx.IsPhase2 ? 62f : 55f) + (ctx.IsDeathMode ? 5f : 0f);
+        private float LungeSpeed(EowStateContext ctx) => (ctx.IsPhase2 ? 62f : 55f) + (ctx.IsAsuraMode ? 5f : 0f);
 
         private Vector2 lungeDir;
 

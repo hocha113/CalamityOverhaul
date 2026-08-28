@@ -87,7 +87,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Gen
                 return false;
             }
 
-            //平整：高处削掉、低处用土补，然后整段压一行灰砖基座
+            //平整：高处削掉、低处用土补（补的格子背景墙同步补上，防漏光），
+            //然后整段压一行灰砖基座
             for (int x = left; x < right; x++) {
                 int top = KiamePlans.FloorTop[x];
                 if (top < baseRow) {
@@ -97,7 +98,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Gen
                 }
                 else if (top > baseRow) {
                     for (int y = baseRow; y < top; y++) {
-                        KiameTileBrush.SetSolid(x, y, TileID.Dirt);
+                        KiameTileBrush.SetSolid(x, y, TileID.Mud);
+                        KiameTileBrush.SetWall(x, y, WallID.MudUnsafe);
                     }
                 }
                 KiamePlans.FloorTop[x] = baseRow;

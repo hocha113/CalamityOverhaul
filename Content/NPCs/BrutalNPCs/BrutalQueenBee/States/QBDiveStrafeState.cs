@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         private bool boomFired;
 
         private int SegmentCount(QueenBeeStateContext context) =>
-            context.IsPhase2 || context.IsDeathMode ? 3 : 2;
+            context.IsPhase2 || context.IsAsuraMode ? 3 : 2;
 
         public override IQueenBeeState OnUpdate(QueenBeeStateContext context) {
             NPC npc = context.Npc;
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
 
             //俯冲发射帧
             if (segT == TelegraphTime) {
-                float speed = 34f + context.EnrageScale * 2f + (context.IsDeathMode ? 4f : 0f);
+                float speed = 34f + context.EnrageScale * 2f + (context.IsAsuraMode ? 4f : 0f);
                 QueenBeeMotion.DashLaunch(npc, diveDir, speed, 1.15f);
                 QueenBeeMotion.RoarBurst(npc.Center, 0.7f);
             }

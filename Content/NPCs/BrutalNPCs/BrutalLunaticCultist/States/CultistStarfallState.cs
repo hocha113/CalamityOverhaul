@@ -34,11 +34,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         private const int Timeout = 320;
 
         private static int LaneCount(CultistStateContext context) =>
-            context.Phase >= 4 || context.IsDeathMode ? 6 : 5;
+            context.Phase >= 4 || context.IsAsuraMode ? 6 : 5;
 
-        /// <summary>波数:后期/死亡模式加一波</summary>
+        /// <summary>波数:后期/修罗模式加一波</summary>
         private static int WaveCount(CultistStateContext context) =>
-            context.Phase >= 4 || context.IsDeathMode ? 5 : 4;
+            context.Phase >= 4 || context.IsAsuraMode ? 5 : 4;
 
         public override ICultistState OnUpdate(CultistStateContext context) {
             NPC npc = context.Npc;

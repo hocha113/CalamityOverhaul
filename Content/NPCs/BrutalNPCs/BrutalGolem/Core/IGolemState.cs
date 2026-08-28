@@ -198,14 +198,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
             SpawnLandingShards(ctx, shards);
         }
 
-        /// <summary>难度伤害修正（死亡模式/激怒）</summary>
+        /// <summary>难度伤害修正（修罗模式/激怒）</summary>
         protected static int ScaleDamage(GolemStateContext ctx, int damage) {
-            return GolemDirector.ScaleDamage(damage, ctx.DeathMode, ctx.Enraged);
+            return GolemDirector.ScaleDamage(damage, ctx.AsuraMode, ctx.Enraged);
         }
 
         /// <summary>节奏帧压缩</summary>
         protected static int Tempo(GolemStateContext ctx, int frames) {
-            return GolemDirector.Tempo(frames, ctx.DeathMode, ctx.Enraged);
+            return GolemDirector.Tempo(frames, ctx.AsuraMode, ctx.Enraged);
         }
 
         #endregion

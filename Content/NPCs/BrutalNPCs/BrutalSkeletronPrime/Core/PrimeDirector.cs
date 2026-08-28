@@ -26,17 +26,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         public static float MissingLimbChargeBonus => 0.5f;
         /// <summary>重炮/激光缺臂额外加速</summary>
         public static float MissingHeavyLimbChargeBonus => 1f;
-        /// <summary>死亡模式充能倍率</summary>
+        /// <summary>修罗模式充能倍率</summary>
         public static float DeathChargeMultiplier => 2f;
         /// <summary>普通/专家臂充能阈值，帧</summary>
         public static int NormalArmChargeThreshold => 180;
         /// <summary>大师臂充能阈值，帧</summary>
         public static int MasterArmChargeThreshold => 120;
-        /// <summary>死亡模式臂充能阈值，帧</summary>
+        /// <summary>修罗模式臂充能阈值，帧</summary>
         public static int DeathArmChargeThreshold => 60;
 
-        public static int GetArmChargeThreshold(bool masterMode, bool death) {
-            if (death) {
+        public static int GetArmChargeThreshold(bool masterMode, bool asura) {
+            if (asura) {
                 return DeathArmChargeThreshold;
             }
 

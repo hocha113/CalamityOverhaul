@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
         public bool IsPhase2 { get; set; }
         /// <summary>低于30%血</summary>
         public bool IsLowHP { get; set; }
-        public bool IsDeathMode { get; set; }
+        public bool IsAsuraMode { get; set; }
         /// <summary>阶段转换演出已完成</summary>
         public bool Phase2Started { get; set; }
         /// <summary>低血大招已放过</summary>

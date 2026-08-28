@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core
         public bool Phase2Unfolded { get; set; }
         /// <summary>低血大招已释放</summary>
         public bool UltFired { get; set; }
-        public bool IsDeathMode { get; set; }
+        public bool IsAsuraMode { get; set; }
         /// <summary>出招环索引</summary>
         public int AttackPhaseIndex { get; set; }
         /// <summary>死亡演出完，CheckDead 放行真死</summary>

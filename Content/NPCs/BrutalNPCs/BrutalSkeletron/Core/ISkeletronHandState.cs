@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core
 
         public bool BossRush { get; set; }
         public bool MasterMode { get; set; }
-        public bool Death { get; set; }
+        public bool Asura { get; set; }
         /// <summary>-1 左 / 1 右</summary>
         public int Side { get; set; }
 

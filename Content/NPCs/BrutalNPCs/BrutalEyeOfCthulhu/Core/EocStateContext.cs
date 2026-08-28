@@ -14,11 +14,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core
 
         #region 阶段与模式
         /// <summary>转阶段血量阈值</summary>
-        public float Phase2Ratio => IsDeathMode ? 0.62f : 0.55f;
+        public float Phase2Ratio => IsAsuraMode ? 0.62f : 0.55f;
         /// <summary>低血大招阈值</summary>
         public float LowPhaseRatio => 0.25f;
 
-        public bool IsDeathMode { get; set; }
+        public bool IsAsuraMode { get; set; }
         /// <summary>口器阶段</summary>
         public bool IsSecondPhase { get; set; }
         /// <summary>低血段</summary>

@@ -25,8 +25,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         #endregion
 
         private int LoopTime(DestroyerStateContext ctx) => ctx.IsEnraged ? 46 : 52;
-        private float LungeSpeed(DestroyerStateContext ctx) => (ctx.IsEnraged ? 64f : 58f) + (ctx.IsDeathMode ? 4f : 0f);
-        private float ExitSpeed(DestroyerStateContext ctx) => (ctx.IsEnraged ? 70f : 64f) + (ctx.IsDeathMode ? 4f : 0f);
+        private float LungeSpeed(DestroyerStateContext ctx) => (ctx.IsEnraged ? 64f : 58f) + (ctx.IsAsuraMode ? 4f : 0f);
+        private float ExitSpeed(DestroyerStateContext ctx) => (ctx.IsEnraged ? 70f : 64f) + (ctx.IsAsuraMode ? 4f : 0f);
 
         private int side;
         private int loopDir;

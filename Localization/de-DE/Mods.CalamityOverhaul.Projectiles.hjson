@@ -1107,6 +1107,7 @@ VictorRiftPortalProj.DisplayName: Victors Kyber-Riss
 // SeaShrimpCavitationBubble.DisplayName: Sea Shrimp Cavitation Bubble
 // SeaShrimpClawHitbox.DisplayName: Sea Shrimp Claw Hitbox
 // SeaShrimpCrystalSpike.DisplayName: Sea Shrimp Crystal Spike
+// SeaShrimpLaneOmen.DisplayName: Sea Shrimp Lane Omen
 // SeaShrimpShellFrag.DisplayName: Sea Shrimp Shell Frag
 // SeaShrimpWaterBolt.DisplayName: Sea Shrimp Water Bolt
 // CultistArcanePulse.DisplayName: Cultist Arcane Pulse
@@ -1195,3 +1196,4 @@ VictorRiftPortalProj.DisplayName: Victors Kyber-Riss
 // BssNeedleProj.DisplayName: Bss Needle Proj
 // BssPetalProj.DisplayName: Bss Petal Proj
 // BssSandGlob.DisplayName: Bss Sand Glob
+// BssSandVortexProj.DisplayName: Bss Sand Vortex Proj

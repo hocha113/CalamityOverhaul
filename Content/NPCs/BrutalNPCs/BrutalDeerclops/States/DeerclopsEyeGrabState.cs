@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
         /// <summary>状态总长(=运镜时长)</summary>
         internal const int TotalTime = 232;
 
-        /// <summary>三段伤害占最大生命比例(死亡模式×1.25)，逐段留命钳制，满血必不致死</summary>
+        /// <summary>三段伤害占最大生命比例(修罗模式×1.25)，逐段留命钳制，满血必不致死</summary>
         internal const float GripDamageFrac = 0.08f;
         internal const float BreathDamageFrac = 0.12f;
         internal const float SlamDamageFrac = 0.16f;

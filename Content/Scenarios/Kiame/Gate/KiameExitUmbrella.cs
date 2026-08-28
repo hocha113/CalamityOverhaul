@@ -1,5 +1,5 @@
 using CalamityOverhaul.Content.Scenarios.Kiame.Gen;
-using CalamityOverhaul.Content.Scenarios.OniRainWorlds;
+using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
 using InnoVault.Actors;
 using InnoVault.Cinematics;
 using System.Collections.Generic;

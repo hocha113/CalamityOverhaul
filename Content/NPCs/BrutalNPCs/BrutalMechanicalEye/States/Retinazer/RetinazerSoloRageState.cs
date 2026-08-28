@@ -41,13 +41,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         /// <summary>换招连接节拍剩余帧，让段落间隔被看见</summary>
         private int modeTransitionTimer;
 
-        private int ModeTransitionTime => Context.IsDeathMode ? 14 : 18;
+        private int ModeTransitionTime => Context.IsAsuraMode ? 14 : 18;
 
-        private int LaserStormFireRate => Context.IsDeathMode ? 6 : 8;
-        private int LaserStormDuration => Context.IsDeathMode ? 90 : 75;
-        private float LaserSpeed => Context.IsDeathMode ? 16f : 14f;
-        private int CrossBeamCount => Context.IsDeathMode ? 5 : 4;
-        private int MatrixPointCount => Context.IsDeathMode ? 5 : 4;
+        private int LaserStormFireRate => Context.IsAsuraMode ? 6 : 8;
+        private int LaserStormDuration => Context.IsAsuraMode ? 90 : 75;
+        private float LaserSpeed => Context.IsAsuraMode ? 16f : 14f;
+        private int CrossBeamCount => Context.IsAsuraMode ? 5 : 4;
+        private int MatrixPointCount => Context.IsAsuraMode ? 5 : 4;
 
         public RetinazerSoloRageState() {
         }
@@ -328,7 +328,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
         /// <summary>追踪激光，持续跟踪射击</summary>
         private void ExecuteHomingLaser(NPC npc, Player player) {
-            int homingDuration = Context.IsDeathMode ? 120 : 100;
+            int homingDuration = Context.IsAsuraMode ? 120 : 100;
 
             if (!hasPlayedModeSound) {
                 hasPlayedModeSound = true;
@@ -338,7 +338,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
 
             //围绕玩家移动，保持一定距离
-            sweepAngle += Context.IsDeathMode ? 0.04f : 0.03f;
+            sweepAngle += Context.IsAsuraMode ? 0.04f : 0.03f;
             float radius = 350f + (float)Math.Sin(modeTimer * 0.03f) * 50f;
             Vector2 targetPos = player.Center + sweepAngle.ToRotationVector2() * radius;
 
@@ -346,7 +346,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             FaceTarget(npc, player.Center);
 
             //持续发射预判激光
-            int fireRate = Context.IsDeathMode ? 13 : 15;
+            int fireRate = Context.IsAsuraMode ? 13 : 15;
             if (modeTimer % fireRate == 0) {
                 Vector2 predicted = TwinsMotion.PredictTarget(player, npc.Center, LaserSpeed * 3f, 0.45f);
                 Vector2 shootDir = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
@@ -418,7 +418,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             if (modeTimer < deployTime) {
                 float progress = modeTimer / (float)deployTime;
-                float value = Context.IsDeathMode ? 0.8f : 0.65f;
+                float value = Context.IsAsuraMode ? 0.8f : 0.65f;
                 if (progress < value) {
                     //计算矩阵点位置
                     for (int i = 0; i < MatrixPointCount; i++) {

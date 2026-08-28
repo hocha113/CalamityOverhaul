@@ -467,10 +467,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             BssVfx.SandBurst(ground + new Vector2(side * 640f, 0f), 1.2f);
         }
 
+        //漩涡/回环不进回归阀：远距瞬移会把蛇从自己的漩涡/环上拽走造成演出脱节，
+        //两招自带超时兜底，收招回 hub 后自然触发回归
         private static bool AllowFarSnap(BssStateBase state) {
             return state is BssHubState or BssBurrowLungeState or BssSandSpitState
                 or BssCactusBallState or BssNeedleRippleState or BssPetalShakeState
-                or BssSandDashState or BssSkyWeaveState or BssCoilOrbitState;
+                or BssSandDashState or BssSkyWeaveState or BssCoilOrbitState
+                or BssGeyserMarchState or BssTailSweepState;
         }
         #endregion
 

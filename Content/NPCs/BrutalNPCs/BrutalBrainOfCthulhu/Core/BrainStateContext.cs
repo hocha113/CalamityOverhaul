@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core
         #region 战斗状态
         /// <summary>二阶段裸脑（镜像 npc.ai[0] 的符号约定）</summary>
         public bool IsPhase2 { get; set; }
-        public bool IsDeathMode { get; set; }
+        public bool IsAsuraMode { get; set; }
         /// <summary>低血狂化（≤28%），解锁心搏骤停</summary>
         public bool IsLowLife { get; set; }
         public float LifeRatio { get; set; } = 1f;

@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
         public override string StateName => "MawVortex";
         public override WofStateIndex StateIndex => WofStateIndex.MawVortex;
 
-        private int PullDuration(WofStateContext ctx) => ctx.IsDeathMode ? WofDirector.VortexDuration + 40 : WofDirector.VortexDuration;
+        private int PullDuration(WofStateContext ctx) => ctx.IsAsuraMode ? WofDirector.VortexDuration + 40 : WofDirector.VortexDuration;
         private const int ReleaseFrames = 34;
 
         public override void OnEnter(WofStateContext context) {
@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
 
             //咳出血凝块(服务端)：小口径压制弹幕，逼玩家边抗吸边躲
             if (!VaultUtils.isClient && context.Target.Alives()) {
-                int clotInterval = context.IsDeathMode ? 22 : 28;
+                int clotInterval = context.IsAsuraMode ? 22 : 28;
                 if ((Timer - windup) % clotInterval == 0) {
                     int clots = context.Phase >= 3 ? 3 : 2;
                     for (int i = 0; i < clots; i++) {

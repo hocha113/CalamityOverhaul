@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 }
                 Vector2 toDest = dest - npc.Center;
                 float lerpValue = Utils.GetLerpValue(100f, 600f, toDest.Length(), clamped: true);
-                float speed = System.Math.Min(toDest.Length(), context.IsDeathMode ? 24f : 21f);
+                float speed = System.Math.Min(toDest.Length(), context.IsAsuraMode ? 24f : 21f);
                 Vector2 desired = Vector2.Lerp(toDest.SafeNormalize(Vector2.Zero) * speed, toDest / 6f, lerpValue);
                 npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.2f);
             }
@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             }
 
             //低血大招，一场一次
-            float overdriveGate = context.IsDeathMode ? 0.3f : 0.25f;
+            float overdriveGate = context.IsAsuraMode ? 0.3f : 0.25f;
             if (context.IsSecondPhase && !context.OverdriveUsed && npc.life <= npc.lifeMax * overdriveGate) {
                 return new EmpressPrismOverdriveState();
             }

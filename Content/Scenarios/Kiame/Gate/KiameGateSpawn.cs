@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Scenarios.OniRainWorlds;
+using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.Actors;
 using System;

@@ -116,8 +116,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                 return null;
             }
 
-            //死亡模式回马枪：反向再扫一趟(更快)
-            if (context.IsDeathMode && Counter == 0) {
+            //修罗模式回马枪：反向再扫一趟(更快)
+            if (context.IsAsuraMode && Counter == 0) {
                 Counter = 1;
                 //重置到定格拍末，方向取反
                 if (!VaultUtils.isClient) {

@@ -52,9 +52,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core
         /// <summary>投技点名最远距离(超出必然空挥)</summary>
         public static float FeastMaxRange => 980f;
 
-        /// <summary>时间压缩系数(蓄力/间隔乘它)：死亡模式0.8×，激怒再0.5×(间隔减半=攻速翻倍)，可叠加</summary>
+        /// <summary>时间压缩系数(蓄力/间隔乘它)：修罗模式0.8×，激怒再0.5×(间隔减半=攻速翻倍)，可叠加</summary>
         public static float TimeScale(PlanteraStateContext ctx) {
-            float scale = ctx.IsDeathMode ? 0.8f : 1f;
+            float scale = ctx.IsAsuraMode ? 0.8f : 1f;
             if (ctx.IsEnraged) {
                 scale *= 0.5f;
             }

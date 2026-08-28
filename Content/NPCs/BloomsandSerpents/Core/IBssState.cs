@@ -35,6 +35,14 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         SkyWeave = 12,
         /// <summary>盘天环猎：绕玩家成环收紧 + 穿心突刺</summary>
         CoilOrbit = 13,
+        /// <summary>沙爆漩涡冲刺：盘旋搓涡 + 弃涡爆冲，漩涡在身后爆</summary>
+        VortexDash = 14,
+        /// <summary>回环沙瀑：天上画正圆泻沙成帘 + 离心俯冲</summary>
+        LoopCascade = 15,
+        /// <summary>沙泉行军：立起砸地 + 冲击波沿地行军喷发</summary>
+        GeyserMarch = 16,
+        /// <summary>回马甩尾：擦身而过 + 急转离心甩针 + 回马枪连段</summary>
+        TailSweep = 17,
     }
 
     /// <summary>荒花沙蟒状态接口</summary>

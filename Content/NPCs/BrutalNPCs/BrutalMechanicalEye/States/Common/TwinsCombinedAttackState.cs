@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
 
         private const int GatherPhase = 50;
         private const int AlignPhase = 36;
-        private int ChargePhase => Context.IsDeathMode ? 52 : 62;
+        private int ChargePhase => Context.IsAsuraMode ? 52 : 62;
         private const int CollisionPhase = 30;
         private const int BurstPhase = 42;
         private const int RecoveryPhase = 35;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             Context = context;
             hasCollided = false;
             hasBurst = false;
-            chargeSpeed = context.IsDeathMode ? 26f : 23f;
+            chargeSpeed = context.IsAsuraMode ? 26f : 23f;
             partnerWait = 0;
 
             //寻找另一只眼睛

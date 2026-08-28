@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             NPC head = ctx.Head;
 
             float acceleration = ctx.BossRush ? 0.6f
-                : ctx.Death ? (ctx.MasterMode ? 0.375f : 0.3f)
+                : ctx.Asura ? (ctx.MasterMode ? 0.375f : 0.3f)
                 : (ctx.MasterMode ? 0.3125f : 0.25f);
             float accelerationMult = 1f;
             int missing = ctx.MissingPartnerCount;

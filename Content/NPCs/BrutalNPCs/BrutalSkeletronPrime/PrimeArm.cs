@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool crossAnchorLatched;
         internal bool bossRush;
         internal bool masterMode;
-        internal bool death;
+        internal bool asura;
         internal bool viceAlive;
         internal bool cannonAlive;
         internal bool sawAlive;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             bossRush = CWRRef.GetBossRushActive();
             masterMode = Main.masterMode || bossRush;
-            death = CWRRef.GetDeathMode() || bossRush;
+            asura = CWRWorld.Asura;
             head = Main.npc[(int)npc.ai[PrimeAiSlots.ArmHeadIndex]];
             player = Main.player[npc.target];
             npc.spriteDirection = -(int)npc.ai[PrimeAiSlots.ArmSide];
@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             armContext.Owner = this;
             armContext.BossRush = bossRush;
             armContext.MasterMode = masterMode;
-            armContext.Death = death;
+            armContext.Asura = asura;
             armContext.ViceAlive = viceAlive;
             armContext.CannonAlive = cannonAlive;
             armContext.SawAlive = sawAlive;

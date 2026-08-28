@@ -142,8 +142,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                     GroundBrake(npc, 0.7f);
                     if (++stepTimer >= Tempo(context, 42)) {
                         Counter++;
-                        //死亡模式二连跳
-                        if (Counter < (context.DeathMode ? 2 : 1)) {
+                        //修罗模式二连跳
+                        if (Counter < (context.AsuraMode ? 2 : 1)) {
                             stepTimer = 0;
                             step = Step.Squat;
                         }
@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
 
             //尖刺环：以落点为心向外序列起爆
             int spikeDamage = ScaleDamage(context, GolemDirector.SpikeDamage);
-            int rings = context.DeathMode ? 4 : 3;
+            int rings = context.AsuraMode ? 4 : 3;
             for (int r = 1; r <= rings; r++) {
                 for (int dir = -1; dir <= 1; dir += 2) {
                     float x = npc.Bottom.X + dir * r * 150f;

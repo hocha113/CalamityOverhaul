@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
             handContext.Owner = this;
             handContext.BossRush = CWRRef.GetBossRushActive();
             handContext.MasterMode = Main.masterMode || handContext.BossRush;
-            handContext.Death = CWRRef.GetDeathMode() || handContext.BossRush;
+            handContext.Asura = CWRWorld.Asura;
             handContext.Side = npc.ai[SkeletronAiSlots.HandSide] < 0f ? -1 : 1;
         }
 

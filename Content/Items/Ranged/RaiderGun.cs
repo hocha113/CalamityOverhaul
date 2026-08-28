@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.autoReuse = true;
             Item.rare = ItemRarityID.Pink;
             Item.value = Item.buyPrice(0, 1, 60, 10);
-            Item.CWR().DeathModeItem = true;
+            Item.CWR().BrutalWorldItem = true;
         }
 
         //右键冲刺
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.autoReuse = true;
             Item.rare = ItemRarityID.Red;
             Item.value = Item.buyPrice(0, 12, 60, 10);
-            Item.CWR().DeathModeItem = true;
+            Item.CWR().BrutalWorldItem = true;
         }
 
         //右键冲刺

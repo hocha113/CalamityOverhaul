@@ -105,9 +105,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             Timer++;
 
             if (t > EndFrame || t > 160) {
-                //攻速热身阀：转阶段后第一招来得慢半拍
-                ctx.AttackCooldown = 40;
-                return new BssHubState();
+                //旗舰首秀即热身阀：沙暴起后直接盘涡（漩涡自带就位 + 盘旋近 90 帧无伤蓄力，
+                //比原 40 帧空冷却读招期更长，且沙暴与漩涡在同一口气里登场）
+                ctx.AttackCooldown = 12;
+                return new BssVortexDashState();
             }
             return null;
         }

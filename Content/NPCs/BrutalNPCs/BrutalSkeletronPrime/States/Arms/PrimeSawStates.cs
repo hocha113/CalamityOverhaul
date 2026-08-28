@@ -29,13 +29,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
 
             //充能
             float chargeRate = ctx.MasterMode ? 2f : 1f;
-            if (ctx.Death) {
+            if (ctx.Asura) {
                 chargeRate *= PrimeDirector.DeathChargeMultiplier;
             }
             chargeRate += ctx.MissingPartnerCount * PrimeDirector.MissingLimbChargeBonus;
             ctx.ChargeTimer += chargeRate;
 
-            int threshold = PrimeDirector.GetArmChargeThreshold(ctx.MasterMode, ctx.Death);
+            int threshold = PrimeDirector.GetArmChargeThreshold(ctx.MasterMode, ctx.Asura);
             if (ctx.ChargeTimer >= threshold && !VaultUtils.isClient && !ctx.DontAttack) {
                 ctx.ChargeTimer = 0f;
                 npc.TargetClosest();
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             playedSpinSound = false;
         }
 
-        private int SpinUpDuration(PrimeArmStateContext ctx) => ctx.Death ? 22 : (ctx.MasterMode ? 27 : 36);
+        private int SpinUpDuration(PrimeArmStateContext ctx) => ctx.Asura ? 22 : (ctx.MasterMode ? 27 : 36);
 
         public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
@@ -158,7 +158,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
 
         private int MaxDashes(PrimeArmStateContext ctx) {
             int maxDashes = 3 + ctx.MissingPartnerCount;
-            if (ctx.Death) {
+            if (ctx.Asura) {
                 maxDashes += 2;
             }
             return maxDashes;
@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         private void LaunchDash(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             float dashSpeed = (ctx.BossRush ? 27.5f : 22f) + ctx.MissingPartnerCount * 2f;
-            if (ctx.Death) {
+            if (ctx.Asura) {
                 dashSpeed *= 1.2f;
             }
             Vector2 velocity = npc.Center.DirectionTo(ctx.Target.Center) * dashSpeed;
@@ -250,7 +250,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             npc.damage = npc.defDamage;
             ctx.TargetSpinSpeed = 0.8f;
 
-            orbitAngle += (ctx.MasterMode ? 0.12f : 0.09f) * (ctx.Death ? 1.5f : 1f);
+            orbitAngle += (ctx.MasterMode ? 0.12f : 0.09f) * (ctx.Asura ? 1.5f : 1f);
             orbitRadius = MathHelper.Lerp(orbitRadius, 180f, 0.05f);
 
             Vector2 orbitTarget = ctx.Target.Center + orbitAngle.ToRotationVector2() * orbitRadius;
@@ -272,7 +272,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             }
 
             Timer++;
-            int orbitDuration = ctx.Death ? 120 : (ctx.MasterMode ? 180 : 240);
+            int orbitDuration = ctx.Asura ? 120 : (ctx.MasterMode ? 180 : 240);
             if ((Timer >= orbitDuration || npc.justHit) && !VaultUtils.isClient) {
                 return new SawRecoveryState();
             }
@@ -296,7 +296,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
 
             //预判追击
             Vector2 predictedPos = ctx.Target.Center + ctx.Target.velocity * 10f;
-            float acceleration = ctx.BossRush ? 0.3f : (ctx.Death ? 0.1f : 0.08f);
+            float acceleration = ctx.BossRush ? 0.3f : (ctx.Asura ? 0.1f : 0.08f);
             if (ctx.MasterMode) {
                 acceleration *= 1.25f;
             }

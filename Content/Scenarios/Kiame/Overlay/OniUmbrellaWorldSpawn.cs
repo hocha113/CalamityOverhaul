@@ -8,7 +8,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
+namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
 {
     /// <summary>
     /// 世界鬼伞的出生点放置：出生点附近选一片平地立起 <see cref="OniRainWorldUmbrella"/>，

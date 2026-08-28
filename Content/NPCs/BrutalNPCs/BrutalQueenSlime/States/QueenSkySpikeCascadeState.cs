@@ -28,8 +28,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
         private const int HardTimeout = 700;
         #endregion
 
-        private int WaveCount(QueenSlimeStateContext ctx) => ctx.IsDeathMode ? 4 : 3;
-        private int LaneCount(QueenSlimeStateContext ctx) => ctx.IsDeathMode ? 11 : 9;
+        private int WaveCount(QueenSlimeStateContext ctx) => ctx.IsAsuraMode ? 4 : 3;
+        private int LaneCount(QueenSlimeStateContext ctx) => ctx.IsAsuraMode ? 11 : 9;
 
         /// <summary>本波锁定的车道X(服务端弹幕生成用；预告落定后不再改向)</summary>
         private float[] laneXs;

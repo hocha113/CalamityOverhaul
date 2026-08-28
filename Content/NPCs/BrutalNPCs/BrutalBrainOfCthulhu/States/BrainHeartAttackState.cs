@@ -179,7 +179,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
             Player player = context.Target;
             float baseAngle = rolledAngles[beatIndex];
             int dashers = isFinal ? 6 : 3;
-            int fakeDamage = BrainMirrorStrikeState.MirrorContactDamage + (context.IsDeathMode ? 3 : 0);
+            int fakeDamage = BrainMirrorStrikeState.MirrorContactDamage + (context.IsAsuraMode ? 3 : 0);
 
             KillWarnRifts();
 
@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
 
             //终拍中心散珠
             if (isFinal) {
-                int damage = ShardDamage + (context.IsDeathMode ? 3 : 0);
+                int damage = ShardDamage + (context.IsAsuraMode ? 3 : 0);
                 for (int i = 0; i < 8; i++) {
                     float angle = baseAngle + MathHelper.TwoPi * i / 8f + 0.2f;
                     Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center + angle.ToRotationVector2() * 30f,

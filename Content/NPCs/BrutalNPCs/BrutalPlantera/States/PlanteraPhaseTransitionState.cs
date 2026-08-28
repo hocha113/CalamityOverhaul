@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                 context.IsPhase2 = true;
 
                 if (!VaultUtils.isClient) {
-                    int count = context.IsDeathMode ? 10 : 8;
+                    int count = context.IsAsuraMode ? 10 : 8;
                     for (int i = 0; i < count; i++) {
                         PlanteraTentacleAI.SpawnTentacle(npc, MathHelper.TwoPi * i / count);
                     }

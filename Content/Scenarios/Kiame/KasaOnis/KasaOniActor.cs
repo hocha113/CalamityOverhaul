@@ -15,7 +15,9 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
+using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
+
+namespace CalamityOverhaul.Content.Scenarios.Kiame.KasaOnis
 {
     internal enum KasaOniPhase : byte
     {
@@ -115,7 +117,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
 
         /// <summary>本机观察者是否身处这只鬼所在的雨语境（可见性/音效/接触威胁共用门）</summary>
         private bool ObserverIn => Context == KasaOniContext.KiameWorld
-            ? Kiame.KiameWorld.Active
+            ? KiameWorld.Active
             : OniRainWorldState.LocalIn;
         /// <summary>脚底中心锚点</summary>
         internal Vector2 FeetAnchor => Position + new Vector2(Width * 0.5f, Height);
@@ -152,7 +154,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
                 ownerWhoAmI = nearest?.whoAmI ?? -1;
                 phaseRaw = (int)KasaOniPhase.Emerging;
                 //栖息语境按生成时所在世界推断，随生成包的 SyncVar 到各端
-                contextRaw = Kiame.KiameWorld.Active
+                contextRaw = KiameWorld.Active
                     ? (int)KasaOniContext.KiameWorld
                     : (int)KasaOniContext.RainOverlay;
             }
@@ -470,7 +472,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
 
             //子世界里趟过洼地：向水面层报涉水足点，接触涟漪跟脚走
             if (Context == KasaOniContext.KiameWorld && Phase == KasaOniPhase.Walking) {
-                Kiame.Water.KiameWaterRender.ReportWader(FeetAnchor, Width * 1.5f, 0.7f);
+                Water.KiameWaterRender.ReportWader(FeetAnchor, Width * 1.5f, 0.7f);
             }
 
             switch (Phase) {

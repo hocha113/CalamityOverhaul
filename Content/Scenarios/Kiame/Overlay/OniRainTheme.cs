@@ -7,7 +7,7 @@ using CalamityOverhaul.Content.Scenarios.Shenyo;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
+namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
 {
     /// <summary>
     /// 鬼雨主题曲 <c>Rains</c>：播放窗口是每帧现算的叙事在场证明，没有随存档或会话的永真钥匙。<br/>

@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 {
     /// <summary>
     /// 盲侧横贯（二阶段）：摆出原版经典的高位俯冲姿态骗预读→化雾消隐→自屏侧平线暴冲；<br/>
-    /// 死亡模式第二轮把骗局再反转一次，真从头顶砸下。车道预警+入场雾是公平前摇
+    /// 修罗模式第二轮把骗局再反转一次，真从头顶砸下。车道预警+入场雾是公平前摇
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EocStateIndex.BlindsideCross, typeof(EocStateContext))]
     internal class EocBlindsideCrossState : EocStateBase
@@ -31,9 +31,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private const int CrossBrake = 13;
 
         private int MaxReps => 2;
-        private float CrossSpeed => Context.IsDeathMode ? 63f : 57f;
-        /// <summary>死亡模式第二轮改真俯冲</summary>
-        private bool SecondRepIsDive => Context.IsDeathMode;
+        private float CrossSpeed => Context.IsAsuraMode ? 63f : 57f;
+        /// <summary>修罗模式第二轮改真俯冲</summary>
+        private bool SecondRepIsDive => Context.IsAsuraMode;
 
         private EocStateContext Context;
         private CrossPhase phase;
@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                 if (VaultUtils.isClient) {
                     return null;
                 }
-                return new EocVeilHoverState(context.IsDeathMode ? 42 : 56);
+                return new EocVeilHoverState(context.IsAsuraMode ? 42 : 56);
             }
             return null;
         }

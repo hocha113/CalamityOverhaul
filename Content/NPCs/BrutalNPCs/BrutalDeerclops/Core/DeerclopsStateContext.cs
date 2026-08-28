@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Core
         public bool PhaseRoarDone { get; set; }
         /// <summary>白澈大招是否已用</summary>
         public bool WhiteoutUsed { get; set; }
-        public bool IsDeathMode { get; set; }
+        public bool IsAsuraMode { get; set; }
         /// <summary>出招环索引</summary>
         public int AttackPhaseIndex { get; set; }
         /// <summary>上次投技结束的 GameUpdateCount 戳(服务端选招用，不同步)</summary>

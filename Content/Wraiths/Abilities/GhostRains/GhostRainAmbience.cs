@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
 {
     /// <summary>
     /// 阴幕强度控制器：取本地视野内所有鬼雨控制器的包络峰值，纯本地演出量。<br/>
-    /// 鬼雨世界（<see cref="Scenarios.OniRainWorlds.OniRainWorldState"/>）也从这里喂强度，复用同一套天幕/滤镜/压顶。
+    /// 鬼雨世界（<see cref="Scenarios.Kiame.Overlay.OniRainWorldState"/>）也从这里喂强度，复用同一套天幕/滤镜/压顶。
     /// </summary>
     internal static class GhostRainAmbience
     {
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
                 Intensity = 0f;
                 return;
             }
-            float target = Scenarios.OniRainWorlds.OniRainWorldState.GlobalAmbientTarget;
+            float target = Scenarios.Kiame.Overlay.OniRainWorldState.GlobalAmbientTarget;
             //强度已归零且近两帧无雨幕盖戳时跳过全表扫描；强度未归零则继续扫，
             //时停中 AI 停摆（戳过期）也能靠这条继续找到冻结的雨幕、演出不塌
             if (Intensity > 0f || GhostRainProj.PresenceStamp.ActiveWithin()) {
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
             backgroundColor = Color.Lerp(backgroundColor, rainBg, veil * 0.62f);
 
             //鬼雨世界深层的附加压顶：只随嵌套深度走，役鬼鬼雨不受影响
-            float depth = Scenarios.OniRainWorlds.OniRainWorldState.DepthGrade;
+            float depth = Scenarios.Kiame.Overlay.OniRainWorldState.DepthGrade;
             if (depth > 0.001f) {
                 Color deepTile = new(30, 38, 44);
                 Color deepBg = new(18, 24, 30);
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
         public override SceneEffectPriority Priority => SceneEffectPriority.Event;
         public override bool IsSceneEffectActive(Player player) =>
             player.whoAmI == Main.myPlayer && GhostRainAmbience.Visible
-            && !Scenarios.OniRainWorlds.OniRainWorldState.LocalIn;
+            && !Scenarios.Kiame.Overlay.OniRainWorldState.LocalIn;
         public override void SpecialVisuals(Player player, bool isActive) =>
             player.ManageSpecialBiomeVisuals(GhostRainSky.Name, isActive);
     }

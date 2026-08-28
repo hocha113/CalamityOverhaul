@@ -7,7 +7,7 @@ using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
+namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
 {
     //世界内启用专属天空（GhostRainSceneEffect 在世界内让位）
     internal class OniRainWorldSkySceneEffect : ModSceneEffect

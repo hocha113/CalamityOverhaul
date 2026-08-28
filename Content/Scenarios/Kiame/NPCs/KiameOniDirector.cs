@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis;
+using CalamityOverhaul.Content.Scenarios.Kiame.KasaOnis;
 using InnoVault.Actors;
 using System.Collections.Generic;
 using Terraria;

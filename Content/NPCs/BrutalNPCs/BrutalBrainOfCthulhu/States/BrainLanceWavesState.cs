@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
                 damageOn = false;
             }
 
-            int spokes = context.IsPhase2 || context.IsDeathMode ? 3 : 2;
+            int spokes = context.IsPhase2 || context.IsAsuraMode ? 3 : 2;
             BrainFormationChannel.PushLance(npc.Center, spin, spokes, reach,
                 damageOn, Math.Max(context.Creepers.Count, 1));
 
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
                 long beatIndex = (long)(npc.ai[3] / period);
                 if (Timer >= GatherTime && Timer <= GatherTime + SweepTime && beatLocal == 4 && beatIndex != lastVolleyBeat) {
                     lastVolleyBeat = beatIndex;
-                    int damage = ShardDamage + (context.IsDeathMode ? 3 : 0);
+                    int damage = ShardDamage + (context.IsAsuraMode ? 3 : 0);
                     for (int i = -1; i <= 1; i += 2) {
                         Vector2 aim = (player.Center + player.velocity * 14f - npc.Center).SafeNormalize(Vector2.UnitY);
                         Vector2 vel = aim.RotatedBy(i * 0.14f) * 10.5f;

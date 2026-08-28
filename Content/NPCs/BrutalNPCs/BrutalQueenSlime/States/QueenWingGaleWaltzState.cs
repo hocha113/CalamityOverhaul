@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
         private const int GlideTime = 58;
         private const int PassLength = SetupTime + PoiseTime + GlideTime;//124
 
-        private int PassCount(QueenSlimeStateContext ctx) => ctx.IsDeathMode ? 3 : 2;
+        private int PassCount(QueenSlimeStateContext ctx) => ctx.IsAsuraMode ? 3 : 2;
 
         private int currentPass = -1;
         private Vector2 glideDir;
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
                 //滑翔掠空
                 int gt = t - SetupTime - PoiseTime;
                 if (gt == 0) {
-                    npc.velocity = glideDir * (context.IsDeathMode ? 24f : 21f);
+                    npc.velocity = glideDir * (context.IsAsuraMode ? 24f : 21f);
                     if (!VaultUtils.isClient) {
                         npc.netUpdate = true;
                     }

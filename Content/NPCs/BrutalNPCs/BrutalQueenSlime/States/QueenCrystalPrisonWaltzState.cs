@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
         private const float BreakDistance = 380f;
         //释放后冷却
         private const int CooldownAfter = 1500;
-        private const int CooldownAfterDeathMode = 1140;
+        private const int CooldownAfterAsuraMode = 1140;
 
         //御晶吊灯金色相种子(PrismHue 金段)
         internal const float RoyalHue = 0.72f;
@@ -515,7 +515,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
                 chandelier?.Kill();
                 npc.ai[0] = 0f;
                 npc.ai[1] = 0f;
-                context.GrabCooldown = context.IsDeathMode ? CooldownAfterDeathMode : CooldownAfter;
+                context.GrabCooldown = context.IsAsuraMode ? CooldownAfterAsuraMode : CooldownAfter;
             }
         }
     }

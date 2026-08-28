@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             if (!context.IsSecondPhase) {
                 //一阶段：7束同向，逐阕错半距
                 int rays = 7;
-                float sweep = (context.IsDeathMode ? 0.0086f : 0.0074f) * (volleyIdx % 2 == 0 ? 1f : -1f);
+                float sweep = (context.IsAsuraMode ? 0.0086f : 0.0074f) * (volleyIdx % 2 == 0 ? 1f : -1f);
                 for (int i = 0; i < rays; i++) {
                     float angle = baseOffset + MathHelper.TwoPi / rays * (i + volleyIdx * 0.5f);
                     EmpressCast.Sunray(npc, angle, sweep, context.SunrayDamage);
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             else {
                 //二阶段：6+6双扇反向，扇面交切出开合的菱格；两阕叠加时错开基准角
                 int rays = 6;
-                float sweep = context.IsDeathMode ? 0.0068f : 0.0058f;
+                float sweep = context.IsAsuraMode ? 0.0068f : 0.0058f;
                 float volleyShift = volleyIdx * MathHelper.TwoPi / rays * 0.33f;
                 for (int i = 0; i < rays; i++) {
                     float angle = baseOffset + volleyShift + MathHelper.TwoPi / rays * i;

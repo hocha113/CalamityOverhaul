@@ -1,5 +1,5 @@
 using CalamityOverhaul.Content.Narrative;
-using CalamityOverhaul.Content.Scenarios.OniRainWorlds;
+using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
 using CalamityOverhaul.Content.Scenarios.Shenyo.Dolls;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;

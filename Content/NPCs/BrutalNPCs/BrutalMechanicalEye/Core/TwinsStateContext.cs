@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
 
         #region 状态标记
         public bool IsSecondPhase { get; set; }
-        public bool IsDeathMode { get; set; }
+        public bool IsAsuraMode { get; set; }
         public bool IsSpazmatism { get; set; }
         /// <summary>转阶段中</summary>
         public bool IsInPhaseTransition { get; set; }

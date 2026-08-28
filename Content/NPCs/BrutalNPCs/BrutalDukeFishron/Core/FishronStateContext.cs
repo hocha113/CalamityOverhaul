@@ -21,8 +21,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Core
         #endregion
 
         #region 战斗阶段
-        /// <summary>死亡模式/BossRush 增压</summary>
-        public bool IsDeathMode { get; set; }
+        /// <summary>修罗模式/BossRush 增压</summary>
+        public bool IsAsuraMode { get; set; }
         /// <summary>离开海域/太空的原版式激怒</summary>
         public bool IsLandEnraged { get; set; }
         /// <summary>二阶段狂化已启（单调锁存）</summary>

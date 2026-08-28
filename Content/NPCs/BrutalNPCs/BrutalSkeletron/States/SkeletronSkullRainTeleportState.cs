@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
 
         public override ISkeletronState OnUpdate(SkeletronStateContext context) {
             NPC npc = context.Npc;
-            int maxRounds = context.DeathMode ? 4 : 3;
+            int maxRounds = context.AsuraMode ? 4 : 3;
 
             UpdateRound(context, npc);
 
@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
 
                 if (!VaultUtils.isClient) {
                     int damage = SkullDamage(context);
-                    int numProj = context.DeathMode ? 7 : 5;
+                    int numProj = context.AsuraMode ? 7 : 5;
                     float spread = MathHelper.ToRadians(52f);
                     Vector2 baseVel = dir * 6.8f;
                     float centralCount = 0.5f * (numProj - 1f);

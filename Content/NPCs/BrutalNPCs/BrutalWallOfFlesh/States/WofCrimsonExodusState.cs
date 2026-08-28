@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
             //血幕几何：贴着墙面前方 gap 处，gap 随时间收缩到公平下限
             float gap = Math.Max(WofDirector.CurtainMinGap,
                 WofDirector.CurtainStartGap - WofDirector.CurtainCloseRate * surgeT);
-            if (context.IsDeathMode) {
+            if (context.IsAsuraMode) {
                 gap = Math.Max(gap - 120f, WofDirector.CurtainMinGap - 100f);
             }
             float curtainX = WofWallField.WallFaceX(npc) + npc.direction * gap;

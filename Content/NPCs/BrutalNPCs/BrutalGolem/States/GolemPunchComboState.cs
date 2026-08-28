@@ -59,9 +59,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                 LandingImpact(context, context.Sundered ? 3 : 2);
             }
 
-            int totalPunches = (context.Sundered ? 5 : 4) + (context.DeathMode ? 1 : 0);
+            int totalPunches = (context.Sundered ? 5 : 4) + (context.AsuraMode ? 1 : 0);
             int windup = context.Sundered ? GolemDirector.PunchWindupP2 : GolemDirector.PunchWindupP1;
-            if (context.DeathMode) {
+            if (context.AsuraMode) {
                 windup -= 4;
             }
             //紧凑衔接：上一拳蓄力完出手时，下一拳已开始蓄
@@ -97,12 +97,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             }
 
             float speed = context.Sundered ? GolemDirector.PunchSpeedP2 : GolemDirector.PunchSpeedP1;
-            if (context.DeathMode) {
+            if (context.AsuraMode) {
                 speed += 5f;
             }
             //激怒翻倍统一落在拳端 Launch，此处不再叠乘
             int windup = context.Sundered ? GolemDirector.PunchWindupP2 : GolemDirector.PunchWindupP1;
-            if (context.DeathMode) {
+            if (context.AsuraMode) {
                 windup -= 4;
             }
             int bounce = context.Sundered ? 2 : 1;

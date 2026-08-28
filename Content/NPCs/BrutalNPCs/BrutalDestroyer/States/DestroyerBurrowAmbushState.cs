@@ -36,8 +36,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         }
 
         private int EruptionCount(DestroyerStateContext ctx) => ctx.IsEnraged ? 3 : 2;
-        private float EruptSpeed(DestroyerStateContext ctx) => 70f + (ctx.IsDeathMode ? 6f : 0f);
-        private float StalkSpeed(DestroyerStateContext ctx) => 42f + (ctx.IsDeathMode ? 5f : 0f);
+        private float EruptSpeed(DestroyerStateContext ctx) => 70f + (ctx.IsAsuraMode ? 6f : 0f);
+        private float StalkSpeed(DestroyerStateContext ctx) => 42f + (ctx.IsAsuraMode ? 5f : 0f);
 
         private Phase phase;
         private int eruptionsDone;

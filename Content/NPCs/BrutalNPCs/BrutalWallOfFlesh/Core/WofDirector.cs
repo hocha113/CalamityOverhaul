@@ -226,13 +226,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core
         #endregion
 
         /// <summary>阶段间隔帧：两招之间的推进喘息</summary>
-        public static int AdvanceGapFrames(int phase, bool death) {
+        public static int AdvanceGapFrames(int phase, bool asura) {
             int baseGap = phase switch {
                 1 => 150,
                 2 => 112,
                 _ => 84,
             };
-            if (death) {
+            if (asura) {
                 baseGap = (int)(baseGap * 0.8f);
             }
             return baseGap;

@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
 
             //布设墙面射线口（第三声部，服务端）
             if (!VaultUtils.isClient) {
-                int rayDamage = GolemDirector.ScaleDamage(GolemDirector.EyeRayDamage, context.DeathMode, context.Enraged);
+                int rayDamage = GolemDirector.ScaleDamage(GolemDirector.EyeRayDamage, context.AsuraMode, context.Enraged);
                 GolemTrapUnit.PlantOnSide(context.Npc, context.Target, -1, GolemTrapUnit.TrapKind.RayPort,
                     GolemDirector.TrapTelegraph + 40, rayDamage);
                 GolemTrapUnit.PlantOnSide(context.Npc, context.Target, 1, GolemTrapUnit.TrapKind.RayPort,

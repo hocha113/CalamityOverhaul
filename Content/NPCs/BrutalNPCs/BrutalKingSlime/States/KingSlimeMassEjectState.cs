@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                 (impact.X - spawn.X) / frames,
                 (impact.Y - spawn.Y) / frames - 0.5f * BKSMassGlobProj.Gravity * frames);
 
-            int dmg = (int)(npc.defDamage * (context.IsDeathMode ? 0.7f : 0.6f));
+            int dmg = (int)(npc.defDamage * (context.IsAsuraMode ? 0.7f : 0.6f));
             Projectile.NewProjectile(npc.GetSource_FromAI(), spawn, vel,
                 ModContent.ProjectileType<BKSMassGlobProj>(), dmg, 0f, Main.myPlayer,
                 npc.whoAmI, impact.X, impact.Y);

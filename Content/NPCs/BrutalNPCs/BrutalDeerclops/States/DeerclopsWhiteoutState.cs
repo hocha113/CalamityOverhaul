@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
             }
             NPC npc = context.Npc;
             Point feet = npc.Bottom.ToTileCoordinates();
-            int damage = context.IsDeathMode ? 20 : 16;
+            int damage = context.IsAsuraMode ? 20 : 16;
 
             for (int i = 0; i < 14; i++) {
                 if (i % 5 == 4) {

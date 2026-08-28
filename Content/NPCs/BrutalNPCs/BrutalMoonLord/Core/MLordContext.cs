@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         #endregion
 
         #region 战场事实（每帧刷新）
-        public bool DeathMode { get; set; }
+        public bool AsuraMode { get; set; }
         public bool BossRush { get; set; }
         public bool MasterMode { get; set; }
         /// <summary>部件存活快照</summary>

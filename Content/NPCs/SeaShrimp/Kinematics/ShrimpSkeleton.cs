@@ -86,9 +86,9 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
                 + Lateral(armIndex) * SeaShrimpDirector.ShoulderSide;
         }
 
-        /// <summary>螯尖世界位（腕位再沿螯姿态探出，判定与打点共用）</summary>
+        /// <summary>螯尖世界位（腕位再沿螯姿态探出，判定与打点共用；掌根锚→钳口 ≈70px）</summary>
         public Vector2 ClawTip(int armIndex)
-            => ArmSolves[armIndex].Wrist + ClawRot[armIndex].ToRotationVector2() * 46f;
+            => ArmSolves[armIndex].Wrist + ClawRot[armIndex].ToRotationVector2() * 70f;
 
         /// <summary>硬重建：沿朝向反向铺直整条链，臂足触角全部归位</summary>
         public void Rebuild(Vector2 headPos, float heading, float _ = 1f) {
@@ -305,9 +305,9 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
                 gripT[armIndex] = -1f;
             }
 
-            //腕缩在抓点后方，螯体（锚→尖 ~46px）恰好压在抓点上
+            //腕缩在抓点后方，螯体（掌根锚→钳口 ~70px）恰好咬在抓点上
             Vector2 toGrip = (gripPos[armIndex] - shoulder).SafeNormalize(Nodes[0].Forward);
-            return gripPos[armIndex] - toGrip * 38f;
+            return gripPos[armIndex] - toGrip * 64f;
         }
 
         private void UpdateAntennae(bool wet) {

@@ -228,7 +228,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles
             }
             Player target = Main.player[closest];
             Vector2 baseDir = (target.Center - node.Center).SafeNormalize(Vector2.UnitY);
-            int count = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive() ? 6 : 5;
+            int count = CWRWorld.Asura ? 6 : 5;
             for (int i = 0; i < count; i++) {
                 float spread = MathHelper.Lerp(-0.4f, 0.4f, count == 1 ? 0.5f : i / (float)(count - 1));
                 Vector2 vel = baseDir.RotatedBy(spread) * 9.2f;

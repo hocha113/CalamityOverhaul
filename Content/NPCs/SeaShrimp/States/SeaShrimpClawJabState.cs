@@ -94,6 +94,11 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
 
             //收臂段走守位默认；双出口：定长即完成
             if (t >= Total) {
+                //连击链：P2+ 且目标仍贴身，顺势接空泡拳（确定性条件，各端一致，不掷随机）
+                if (ctx.Phase >= 2 && ctx.AttackIndex % 2 == 0
+                    && Vector2.Distance(ctx.Target.Center, npc.Center) < 560f) {
+                    ctx.QueuedChainState = (int)SeaShrimpStateIndex.CavitationPunch;
+                }
                 return EndAttack(ctx, 46);
             }
             return null;

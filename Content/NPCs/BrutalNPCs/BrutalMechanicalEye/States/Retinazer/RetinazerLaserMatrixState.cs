@@ -17,21 +17,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         public override string StateName => "RetinazerLaserMatrix";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerLaserMatrix;
 
-        private int PositionPhase => Context.IsDeathMode ? 28 : 35;
+        private int PositionPhase => Context.IsAsuraMode ? 28 : 35;
 
-        private int DeployPhase => Context.IsDeathMode ? 50 : 60;
+        private int DeployPhase => Context.IsAsuraMode ? 50 : 60;
 
-        private int ChargePhase => Context.IsDeathMode ? 38 : 45;
+        private int ChargePhase => Context.IsAsuraMode ? 38 : 45;
 
-        private int FirePhase => Context.IsDeathMode ? 18 : 20;
+        private int FirePhase => Context.IsAsuraMode ? 18 : 20;
 
-        private int RecoveryPhase => Context.IsDeathMode ? 20 : 25;
+        private int RecoveryPhase => Context.IsAsuraMode ? 20 : 25;
 
         private int TotalDuration => PositionPhase + DeployPhase + ChargePhase + FirePhase + RecoveryPhase;
 
-        private int MatrixPointCount => Context.IsDeathMode ? 5 : 4;
+        private int MatrixPointCount => Context.IsAsuraMode ? 5 : 4;
 
-        private float LaserSpeed => Context.IsDeathMode ? 14f : 12f;
+        private float LaserSpeed => Context.IsAsuraMode ? 14f : 12f;
 
         private TwinsStateContext Context;
         private Vector2[] matrixPoints;

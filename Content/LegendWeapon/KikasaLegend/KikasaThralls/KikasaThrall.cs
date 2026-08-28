@@ -1,5 +1,5 @@
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
-using CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis;
+using CalamityOverhaul.Content.Scenarios.Kiame.KasaOnis;
 using System;
 using System.Collections.Generic;
 using Terraria;

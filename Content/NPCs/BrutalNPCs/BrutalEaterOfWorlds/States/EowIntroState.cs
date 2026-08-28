@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
 
             //生成体节链+统一血池(服务端)
             if (!VaultUtils.isClient) {
-                EowHeadAI.SpawnBodySegments(npc, context.IsDeathMode);
+                EowHeadAI.SpawnBodySegments(npc, context.IsAsuraMode);
             }
 
             EowMotionFX.SpawnBreachBlast(breachPoint, 1.9f, -Vector2.UnitY);

@@ -9,13 +9,18 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles
 {
     /// <summary>
     /// 破土预告实体：沙丘隆起 + 渗沙 + 隆隆声。生成位置即锁定位置（预告即承诺，
-    /// 突袭不再改向）。ai[0]=预告总帧数。无伤害，纯预告。
+    /// 突袭不再改向）。本体无伤害。
+    /// ai[0]=预告总帧数；ai[1]=0 纯预告（破土时机由蛇自己控制）/ 1 到期自喷发沙泉
+    /// （沙泉行军用，近竖直上抛沙球，回落是第二拍）；ai[2]=头 whoAmI（自喷发的伤害换算源）。
+    /// 自喷发只认自然到期（timeLeft 走完）：被转阶段清弹 Kill 掉的隆包不爆，安静退场。
     /// </summary>
     internal class BssBreachOmen : BssModProjectile
     {
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.SandBallFalling;
 
         private int TotalFrames => (int)Projectile.ai[0];
+        private bool SelfErupt => (int)Projectile.ai[1] == 1;
+        private int HeadIndex => (int)Projectile.ai[2];
         private float Progress => TotalFrames > 0 ? 1f - Projectile.timeLeft / (float)TotalFrames : 1f;
 
         public override void SetDefaults() {
@@ -67,6 +72,48 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles
                 SoundEngine.PlaySound(SoundID.WormDig with { Volume = 0.45f + 0.35f * p, Pitch = -0.5f + 0.3f * p, MaxInstances = 3 },
                     Projectile.Center);
                 BssVfx.Shake(Projectile.Center, 1.2f + 2.4f * p, 900f);
+            }
+        }
+
+        /// <summary>自喷发：只在自然到期时爆（timeLeft 走完），表现各端本地、沙球权威端</summary>
+        public override void OnKill(int timeLeft) {
+            if (!SelfErupt || timeLeft > 0) {
+                return;
+            }
+
+            if (!Main.dedServ) {
+                BssVfx.SandBurst(Projectile.Center, 1.3f);
+                SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.75f, Pitch = -0.15f, MaxInstances = 3 },
+                    Projectile.Center);
+                BssVfx.Shake(Projectile.Center, 3f, 800f);
+                //竖直沙柱：窄口喷泉读数
+                for (int i = 0; i < 14; i++) {
+                    Dust d = Dust.NewDustPerfect(
+                        Projectile.Center + new Vector2(Main.rand.NextFloat(-10f, 10f), -2f),
+                        DustID.Sand,
+                        new Vector2(Main.rand.NextFloat(-1.2f, 1.2f), -Main.rand.NextFloat(7f, 14f)),
+                        80, default, Main.rand.NextFloat(1.2f, 1.7f));
+                    d.noGravity = false;
+                }
+            }
+
+            if (VaultUtils.isClient || HeadIndex < 0 || HeadIndex >= Main.maxNPCs) {
+                return;
+            }
+            NPC head = Main.npc[HeadIndex];
+            if (!head.Alives()) {
+                return;
+            }
+            int damage = Core.BssDirector.ScaleProjectileDamage(head, Core.BssDirector.SandGlobDamage);
+            int type = ModContent.ProjectileType<BssSandGlob>();
+            int count = Core.BssDirector.GeyserGlobsEach;
+            for (int i = 0; i < count; i++) {
+                //近竖直窄扇：上抛回落是第二拍威胁
+                float ang = -MathHelper.PiOver2 + (i - (count - 1) * 0.5f) * 0.13f;
+                float speed = Main.rand.NextFloat(11f, 14f);
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(),
+                    Projectile.Center - new Vector2(0f, 8f),
+                    ang.ToRotationVector2() * speed, type, damage, 0.6f, Main.myPlayer);
             }
         }
 

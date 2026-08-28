@@ -45,8 +45,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
 
         /// <summary>常规体节数(不含头尾)</summary>
         internal const int NormalBodyCount = 54;
-        /// <summary>死亡模式体节数</summary>
-        internal const int DeathBodyCount = 60;
+        /// <summary>修罗模式体节数</summary>
+        internal const int AsuraBodyCount = 60;
         /// <summary>触发死亡演出的生命阈值</summary>
         internal const int DeathPerformanceTriggerLife = 30;
         /// <summary>蜕皮阈值(生命比)</summary>
@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
         private void InitializeStateContext() {
             stateContext = new EowStateContext {
                 Npc = npc,
-                IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()
+                IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<EowStateContext>(stateContext, aiSlot: 2);
 
@@ -231,7 +231,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
         private void UpdateStateContext() {
             stateContext.Npc = npc;
             stateContext.Target = targetPlayer;
-            stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            stateContext.IsAsuraMode = CWRWorld.Asura;
             stateContext.SplitGroups = (int)ai[SlotSplitGroups];
             stateContext.TotalSegments = (int)ai[SlotSegmentCount] > 0
                 ? (int)ai[SlotSegmentCount] : stateContext.Segments.Count;
@@ -511,8 +511,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
 
         #region 体节生成与统一血池
         /// <summary>生成体节链并汇总统一血池(服务端，Intro破土帧调用)</summary>
-        internal static void SpawnBodySegments(NPC headNpc, bool deathMode) {
-            int bodyCount = deathMode ? DeathBodyCount : NormalBodyCount;
+        internal static void SpawnBodySegments(NPC headNpc, bool asuraMode) {
+            int bodyCount = asuraMode ? AsuraBodyCount : NormalBodyCount;
             int totalLife = headNpc.lifeMax;
             int frontIndex = headNpc.whoAmI;
 
@@ -659,7 +659,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
         /// 体节先死时其余段仍在场、不会重复掉落
         /// </summary>
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(),
                 ModContent.ItemType<WorldEatersMaw>()));
         }
 

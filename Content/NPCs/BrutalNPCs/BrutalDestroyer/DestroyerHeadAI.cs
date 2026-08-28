@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private void InitializeStateContext() {
             stateContext = new DestroyerStateContext {
                 Npc = npc,
-                IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()
+                IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<DestroyerStateContext>(stateContext, aiSlot: 2);
 
@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             stateContext.Npc = npc;
             stateContext.Target = targetPlayer;
             stateContext.IsEnraged = npc.life < npc.lifeMax * 0.5f;
-            stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            stateContext.IsAsuraMode = CWRWorld.Asura;
 
             if (Main.GameUpdateCount % 60 == 0) {
                 stateContext.RefreshBodySegments();
@@ -461,13 +461,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         #region 掉落
 
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
-            IItemDropRuleCondition condition = new DropInDeathMode();
+            IItemDropRuleCondition condition = new DropInBrutalWorld();
             LeadingConditionRule rule = new LeadingConditionRule(condition);
             rule.SimpleAdd(ModContent.ItemType<DestroyersBlade>(), 4);
             rule.SimpleAdd(ModContent.ItemType<StaffoftheDestroyer>(), 4);
             rule.SimpleAdd(ModContent.ItemType<Observer>(), 4);
             npcLoot.Add(rule);
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<Items.Accessories.BrutalRelics.Destroyer.ProbeMatrixCore>()));
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(), ModContent.ItemType<Items.Accessories.BrutalRelics.Destroyer.ProbeMatrixCore>()));
         }
 
         public override bool CheckActive() => false;

@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
         private void InitializeStateContext() {
             stateContext = new EocStateContext {
                 Npc = npc,
-                IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive(),
+                IsAsuraMode = CWRWorld.Asura,
             };
             stateMachine = new NpcStateMachine<EocStateContext>(stateContext, aiSlot: 2);
 
@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
         private void UpdateStateContext() {
             stateContext.Npc = npc;
             stateContext.Target = targetPlayer ?? Main.player[Main.myPlayer];
-            stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            stateContext.IsAsuraMode = CWRWorld.Asura;
             stateContext.IsLowPhase = npc.life < npc.lifeMax * stateContext.LowPhaseRatio;
 
             //阶段旗随 ai[0] 同步，晚入场客户端由此恢复口器形态
@@ -290,7 +290,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
 
         /// <summary>残酷世界必掉专属遗物「血雾之瞳」</summary>
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<BloodfogIris>()));
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(), ModContent.ItemType<BloodfogIris>()));
         }
         #endregion
 

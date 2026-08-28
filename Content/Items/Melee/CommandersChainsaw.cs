@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.channel = true;
             Item.tileBoost = -1;
             Item.axe = 20;
-            Item.CWR().DeathModeItem = true;
+            Item.CWR().BrutalWorldItem = true;
         }
     }
 

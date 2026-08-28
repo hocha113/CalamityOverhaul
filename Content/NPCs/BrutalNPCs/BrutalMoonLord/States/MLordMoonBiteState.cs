@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         internal const int MouthOpenEnd = 40;
         internal const int BiteEnd = 380;
 
-        //―――― 合掌抓捕拍（原始帧，不吃死亡模式压缩：与受击无敌节奏耦合）――――
+        //―――― 合掌抓捕拍（原始帧，不吃修罗模式压缩：与受击无敌节奏耦合）――――
         /// <summary>抓捕拍开始（散至捕位并追踪）</summary>
         internal const int ClapStart = 150;
         /// <summary>追踪帧长（预警前半段）</summary>

@@ -17,15 +17,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         public override string StateName => "RetinazerPrecisionSniper";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerPrecisionSniper;
 
-        private int ChargeTime => Context.IsDeathMode ? 70 : 85;
-        private int RecoveryTime => Context.IsDeathMode ? 105 : 120;
-        private int MaxSniperCount => Context.IsDeathMode ? 2 : 2;
-        private int ProjectileCount => Context.IsDeathMode ? 9 : 8;
-        private float SpreadAngle => Context.IsDeathMode ? 60f : 50f;
-        private float BaseSpeed => Context.IsDeathMode ? 7f : 5f;
+        private int ChargeTime => Context.IsAsuraMode ? 70 : 85;
+        private int RecoveryTime => Context.IsAsuraMode ? 105 : 120;
+        private int MaxSniperCount => Context.IsAsuraMode ? 2 : 2;
+        private int ProjectileCount => Context.IsAsuraMode ? 9 : 8;
+        private float SpreadAngle => Context.IsAsuraMode ? 60f : 50f;
+        private float BaseSpeed => Context.IsAsuraMode ? 7f : 5f;
 
         /// <summary>狙击站位，距离不足则蓄力期退开，扇形齐射才有展开空间</summary>
-        private float SniperStandoff => Context.IsDeathMode ? 420f : 480f;
+        private float SniperStandoff => Context.IsAsuraMode ? 420f : 480f;
 
         private TwinsStateContext Context;
         private int sniperCount;

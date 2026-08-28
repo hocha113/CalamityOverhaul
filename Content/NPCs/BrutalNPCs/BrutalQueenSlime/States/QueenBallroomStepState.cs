@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
             stage = 0;
             stageTimer = 0;
             apexPassed = false;
-            if (context.IsDeathMode) {
+            if (context.IsAsuraMode) {
                 hopsPlanned = Math.Max(hopsPlanned, 3);
             }
         }
@@ -153,7 +153,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
             if (grandJete) {
                 //大跨越：越过玩家头顶
                 vx = MathHelper.Clamp(dx * 0.028f, -14f, 14f) + dir * 4.8f;
-                vy = context.IsDeathMode ? -14.6f : -13.4f;
+                vy = context.IsAsuraMode ? -14.6f : -13.4f;
             }
             else {
                 //矮弧快扑(-9.7避开重力步长整数倍误判落地)
@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
 
             //第二跳起落点碎晶飞溅(上-外斜向直刺，材质化出生自带前摇)
             if (!VaultUtils.isClient && hopsDone >= 2) {
-                int spikes = context.IsDeathMode ? 5 : 3;
+                int spikes = context.IsAsuraMode ? 5 : 3;
                 for (int i = 0; i < spikes; i++) {
                     //以竖直向上为基准向两侧展开
                     float lean = MathHelper.Lerp(-0.85f, 0.85f, spikes == 1 ? 0.5f : i / (float)(spikes - 1));

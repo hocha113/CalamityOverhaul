@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
             //尾迹冰刺(服务端)：迟到20帧破土，惩罚贴身跟跑
             if (!VaultUtils.isClient && phaseTimer % 9 == 0) {
                 Point feet = npc.Bottom.ToTileCoordinates();
-                int damage = context.IsDeathMode ? 19 : 15;
+                int damage = context.IsAsuraMode ? 19 : 15;
                 DeerIceSpikeProj.TrySpawn(npc, feet.X - dir * 3, feet.Y, -dir * 0.14f, 0.85f,
                     TelegraphTime(context, 20, 14), damage);
             }

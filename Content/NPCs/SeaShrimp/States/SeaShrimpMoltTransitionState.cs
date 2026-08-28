@@ -1,3 +1,5 @@
+using CalamityOverhaul.Content.Items.Magic.Everdeeps;
+using CalamityOverhaul.Content.Items.Melee.Abyssrends;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering;
@@ -40,6 +42,12 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
             Timer++;
             npc.dontTakeDamage = true;
 
+            //运镜窗口：仅前 20 帧敞开，锚点每帧刷新
+            if (t < 20) {
+                SeaShrimpCutscenes.ArmMolt(npc.Center);
+            }
+            SeaShrimpCutscenes.MoltAnchor = npc.Center;
+
             if (t < CrackEnd) {
                 //龟裂段：驻停颤抖，晶屑与裂纹音渐密，晶光拉满
                 HoldInPlace(ctx);
@@ -60,12 +68,19 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                             SeaShrimpRenderer.CrystalBlue * 0.9f,
                             Main.rand.NextFloat(0.4f, 0.8f))?.Configure(Main.rand.Next(20, 34), Main.rand.NextFloat(-0.2f, 0.2f));
                     }
+                    //崩壳前 12 帧：水被吸向壳体——先内爆吸水，粒子密度反而收干（吸气拍）
+                    if (t > CrackEnd - 12 && Main.GameUpdateCount % 2 == 0) {
+                        Vector2 from = npc.Center + Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(120f, 240f);
+                        PRTLoader.NewParticle<PRT_AbyssGlob>(from, (npc.Center - from) * 0.1f,
+                            Color.Lerp(SeaShrimpVFX.Deep, SeaShrimpVFX.Body, Main.rand.NextFloat()),
+                            Main.rand.NextFloat(0.3f, 0.5f))?.Configure(12, 1.8f);
+                    }
                 }
                 return null;
             }
 
             if (t == CrackEnd) {
-                //崩壳帧：旧壳实体碎屑放射崩落（慢速可读的重力弧），本体跃起
+                //崩壳帧：吸入的水轰然炸开——旧壳实体碎屑放射崩落（慢速可读的重力弧），本体跃起
                 if (!VaultUtils.isClient) {
                     int damage = SeaShrimpDirector.ScaleProjectileDamage(npc, SeaShrimpDirector.ShellFragDamage);
                     for (int i = 0; i < 10; i++) {
@@ -83,7 +98,12 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                 if (!Main.dedServ) {
                     SoundEngine.PlaySound(SoundID.Shatter with { Volume = 1f, Pitch = -0.2f }, npc.Center);
                     SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.9f, Pitch = 0.3f }, npc.Center);
+                    SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.8f, Pitch = -0.2f }, npc.Center);
                     ShakeNearby(npc.Center, 7f);
+                    //全场大冲击环 + 滤镜脉冲(0.25 档,层级低于超空化 0.4,满档独留死亡)
+                    SeaShrimpAbyssScreen.TriggerImpactFrame(0.25f);
+                    ctx.AddRing(npc.Center, 430f, 34, 1f);
+                    EverdeepVFX.SplashBurst(npc.Center, Vector2.UnitY * 12f, 1.3f);
                     for (int i = 0; i < 26; i++) {
                         PRTLoader.NewParticle<PRT_DefCrystalShard>(npc.Center + Main.rand.NextVector2Circular(60f, 40f),
                             Main.rand.NextVector2Circular(5f, 4f) - new Vector2(0f, 3f),

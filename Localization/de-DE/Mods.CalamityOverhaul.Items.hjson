@@ -3908,9 +3908,8 @@ ArchiveFrameModule: {
 CWRItem: {
 	TemperatureText: Verbrennungstemperatur
 	InternalStoredEnergy: Gespeicherte Energie
-	DeathModeItemText: Todesmodus
-	// BrutalModeItemText: Drops in Brutal Mode
-	// BrutalRelicSeriesText: Brutal Relic · Exclusive to Brutal Mode
+	BrutalWorldItemText: Exklusiv für die Grausame Welt
+	// BrutalRelicSeriesText: Brutal Relic · Cruel World Exclusive
 	LegendItemUpgradeDisable:
 		'''
 		Diese legendäre Waffe kann in der aktuellen Welt nicht aufgewertet werden.
@@ -3921,9 +3920,8 @@ CWRItem: {
 	CWRItem: {
 		TemperatureText: Verbrennungstemperatur
 		InternalStoredEnergy: Gespeicherte Energie
-		DeathModeItemText: Todesmodus
-		// BrutalModeItemText: Drops in Brutal Mode
-		// BrutalRelicSeriesText: Brutal Relic · Exclusive to Brutal Mode
+		BrutalWorldItemText: Exklusiv für die Grausame Welt
+		// BrutalRelicSeriesText: Brutal Relic · Cruel World Exclusive
 		LegendItemUpgradeDisable:
 			'''
 			Diese legendäre Waffe kann in der aktuellen Welt nicht aufgewertet werden.

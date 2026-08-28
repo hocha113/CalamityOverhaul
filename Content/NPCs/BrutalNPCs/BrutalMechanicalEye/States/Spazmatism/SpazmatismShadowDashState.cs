@@ -18,27 +18,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismShadowDash;
 
         /// <summary>蓄力聚集阶段时长</summary>
-        private int GatherPhase => Context.IsDeathMode ? 38 : 46;
+        private int GatherPhase => Context.IsAsuraMode ? 38 : 46;
 
         /// <summary>每段全速冲刺时长</summary>
-        private int SegmentDashTime => Context.IsDeathMode ? 14 : 16;
+        private int SegmentDashTime => Context.IsAsuraMode ? 14 : 16;
 
         /// <summary>每段急停甩头时长</summary>
-        private int SegmentWhipTime => Context.IsDeathMode ? 9 : 11;
+        private int SegmentWhipTime => Context.IsAsuraMode ? 9 : 11;
 
         /// <summary>每段复位喘息时长，无伤，蓄力预警回涨作下段起手预告</summary>
-        private int SegmentSettleTime => Context.IsDeathMode ? 11 : 16;
+        private int SegmentSettleTime => Context.IsAsuraMode ? 11 : 16;
 
         /// <summary>冲刺段数</summary>
-        private int SegmentCount => Context.IsDeathMode ? 4 : 3;
+        private int SegmentCount => Context.IsAsuraMode ? 4 : 3;
 
         /// <summary>恢复阶段时长</summary>
-        private int RecoveryPhase => Context.IsDeathMode ? 20 : 26;
+        private int RecoveryPhase => Context.IsAsuraMode ? 20 : 26;
 
         private int SegmentTime => SegmentDashTime + SegmentWhipTime + SegmentSettleTime;
         private int TotalDuration => GatherPhase + SegmentCount * SegmentTime + RecoveryPhase;
 
-        private float DashSpeed => Context.IsDeathMode ? 36f : 32f;
+        private float DashSpeed => Context.IsAsuraMode ? 36f : 32f;
 
         private TwinsStateContext Context;
         private int comboStep;

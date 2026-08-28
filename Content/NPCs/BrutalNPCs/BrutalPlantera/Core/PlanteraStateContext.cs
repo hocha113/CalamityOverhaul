@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core
         public bool IsPhase2 { get; set; }
         /// <summary>激怒：目标不在丛林或在地表</summary>
         public bool IsEnraged { get; set; }
-        public bool IsDeathMode { get; set; }
+        public bool IsAsuraMode { get; set; }
         /// <summary>低血 25% 以下</summary>
         public bool IsLowLife { get; set; }
         /// <summary>凋零绽放已放过</summary>

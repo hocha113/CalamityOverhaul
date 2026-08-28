@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
         private static void SpawnWheelPair(SkeletronStateContext context, Vector2 offsetA, Vector2 offsetB) {
             NPC npc = context.Npc;
             Vector2 lockPoint = context.Target.Center;
-            float speed = (context.DeathMode ? 11.4f : 10.2f) + (context.BossRush ? 1.4f : 0f);
+            float speed = (context.AsuraMode ? 11.4f : 10.2f) + (context.BossRush ? 1.4f : 0f);
             int damage = SkullDamage(context);
 
             foreach (Vector2 offset in new[] { offsetA, offsetB }) {

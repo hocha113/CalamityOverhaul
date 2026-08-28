@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     float hue = (cycleIdx * 0.31f + shed * 0.034f) % 1f;
                     //确定性微斜：抛洒角随索引摆动，光墙有编织感
                     float tilt = (float)Math.Sin(shed * 0.9f) * 0.16f;
-                    float wallSpeed = context.IsDeathMode ? 3.6f : 3.1f;
+                    float wallSpeed = context.IsAsuraMode ? 3.6f : 3.1f;
                     //奇偶拍交替快/慢层：同帷幕两种张开速率，视觉双层
                     if (shed % 2 == 1) {
                         wallSpeed *= 0.68f;

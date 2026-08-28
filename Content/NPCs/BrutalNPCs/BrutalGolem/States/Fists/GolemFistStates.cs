@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
                 if (tooFar || timeout || spent || sweepDone || superSpent) {
                     //超级直拳落空反馈：撞墙碎石扇（普通拳有反弹语言，超级拳沉默会读作bug）
                     if (ctx.CmdKind == GolemFistCommand.SuperPunch && spent) {
-                        int damage = GolemDirector.ScaleDamage(GolemDirector.ShrapnelDamage, ctx.DeathMode, ctx.Enraged);
+                        int damage = GolemDirector.ScaleDamage(GolemDirector.ShrapnelDamage, ctx.AsuraMode, ctx.Enraged);
                         Vector2 back = -npc.velocity.SafeNormalize(Vector2.UnitX * ctx.Side);
                         for (int i = 0; i < 3; i++) {
                             Vector2 vel = back.RotatedBy(MathHelper.Lerp(-0.7f, 0.7f, i / 2f)) * Main.rand.NextFloat(5f, 8f);
@@ -299,8 +299,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
 
             //碎石扇（弹幕承载跨端表现与音效）
             Vector2 normal = hitX ? new Vector2(-Math.Sign(npc.velocity.X), 0f) : new Vector2(0f, -Math.Sign(npc.velocity.Y));
-            int damage = GolemDirector.ScaleDamage(GolemDirector.ShrapnelDamage, ctx.DeathMode, ctx.Enraged);
-            int count = ctx.DeathMode ? 5 : 4;
+            int damage = GolemDirector.ScaleDamage(GolemDirector.ShrapnelDamage, ctx.AsuraMode, ctx.Enraged);
+            int count = ctx.AsuraMode ? 5 : 4;
             for (int i = 0; i < count; i++) {
                 Vector2 vel = (-normal).RotatedBy(MathHelper.Lerp(-0.85f, 0.85f, i / (count - 1f)))
                     * Main.rand.NextFloat(6f, 9f) * -1f;

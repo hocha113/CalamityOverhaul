@@ -37,9 +37,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             "PrecisionSniper"
         ];
 
-        private int Duration => Context.IsDeathMode ? 110 : 140;
-        private int BurstRate => Context.IsDeathMode ? 34 : 42;
-        private float LaserSpeed => Context.IsDeathMode ? 17f : 15f;
+        private int Duration => Context.IsAsuraMode ? 110 : 140;
+        private int BurstRate => Context.IsAsuraMode ? 34 : 42;
+        private float LaserSpeed => Context.IsAsuraMode ? 17f : 15f;
         private const int BurstShots = 3;
         private const int BurstInterval = 5;
 

@@ -15,7 +15,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
+namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
 {
     /// <summary>
     /// 插在地上的鬼雨伞，锚点=<see cref="Actor.Position"/>地表中心，
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         internal Vector2 PuddleCenter => Position + new Vector2(0f, 3f);
 
         /// <summary>水洼张开度：常驻 1，演出躁动/触发时涨大</summary>
-        internal float PuddleSwell => 1f + AgitationLevel * 0.25f + KickAmount * 0.35f;
+        internal float PuddleSwell => PuddleBaseSwell * (1f + AgitationLevel * 0.25f + KickAmount * 0.35f);
 
         public override void OnSpawn(params object[] args) {
             Width = 48;
@@ -137,6 +137,18 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 
         /// <summary>本实例的躁动来源；子类换成自己的演出量</summary>
         protected virtual float AgitationLevel => CurrentAgitation;
+
+        /// <summary>水洼基础张开度倍率；恐怖变体的洼更大更活</summary>
+        protected virtual float PuddleBaseSwell => 1f;
+
+        /// <summary>鬼眼睁度下限；恐怖变体从不真正阖眼</summary>
+        protected virtual float EyeOpenFloor => 0f;
+
+        /// <summary>鬼影拖尾强度：大于 0 时伞体外画缓游的重影，读作显形不稳（恐怖变体）</summary>
+        protected virtual float GhostSmear => 0f;
+
+        /// <summary>本体着色的最后一道手；恐怖变体压暗压冷</summary>
+        protected virtual Color TintBody(Color body) => body;
 
         //伞下漏雨与潮气 + 水洼呼出的上浮黑水滴；演出期间随躁动加密
         private void UpdateAmbience() {
@@ -209,6 +221,10 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             }
             if (blinkTimer < 5) {
                 openTarget = 0f;
+            }
+            //恐怖变体的眼从不真正阖上（眨眼帧除外）
+            if (blinkTimer >= 5) {
+                openTarget = MathF.Max(openTarget, EyeOpenFloor);
             }
             eyeOpen = MathHelper.Lerp(eyeOpen, openTarget, 0.16f);
             eyeGlow *= 0.9f;
@@ -330,12 +346,36 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 new Vector2(150f * DrawScale / glow.Width, 140f * DrawScale / glow.Height),
                 SpriteEffects.None, 0f);
 
-            //本体：环境光染向湿墨灰白，夜里保轮廓
+            //本体：环境光染向湿墨灰白，夜里保轮廓；恐怖变体在此压暗压冷
             Color body = Lighting.GetColor((Position / 16f).ToPoint());
             body = Color.Lerp(body, PaleTint, 0.32f);
+            body = TintBody(body);
+
+            //鬼影拖尾：显形不稳的重影缓缓游移，画在实体之下
+            if (GhostSmear > 0.01f) {
+                DrawGhostSmear(spriteBatch, umbrella, drawPos, rotation, body);
+            }
             DrawCanopy(spriteBatch, umbrella, drawPos, rotation, body);
 
             return false;
+        }
+
+        /// <summary>鬼影拖尾：两份错相缓游的裸贴图重影，伞的轮廓永远对不上焦</summary>
+        private void DrawGhostSmear(SpriteBatch sb, Texture2D tex, Vector2 drawPos,
+            float rotation, Color body) {
+            Rectangle frame = tex.Frame();
+            Vector2 origin = frame.Size() * 0.5f;
+            float t = Main.GlobalTimeWrappedHourly;
+            for (int i = 0; i < 2; i++) {
+                float phase = t * (0.7f + i * 0.4f) + i * 2.4f;
+                Vector2 off = new(MathF.Sin(phase) * (3f + i * 3f),
+                    MathF.Cos(phase * 0.8f) * (2f + i * 2f));
+                float rotJitter = MathF.Sin(phase * 1.3f) * 0.05f;
+                sb.Draw(tex, drawPos + off, frame,
+                    body * (GhostSmear * (0.26f - i * 0.08f)),
+                    rotation + rotJitter, origin, DrawScale * (1.02f + i * 0.04f),
+                    SpriteEffects.None, 0f);
+            }
         }
 
         /// <summary>

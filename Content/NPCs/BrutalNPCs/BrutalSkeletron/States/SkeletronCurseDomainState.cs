@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
                 //直贯扑杀：锁死角一往无前，旋杀之躯
                 if (stalkPhase == HuntCondenseEnd) {
                     npc.velocity = npc.ai[SkeletronAiSlots.HeadParamB].ToRotationVector2()
-                        * (context.DeathMode ? 26f : 23.5f);
+                        * (context.AsuraMode ? 26f : 23.5f);
                     if (!VaultUtils.isServer) {
                         SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Volume = 1f, Pitch = -0.45f }, npc.Center);
                         SkeletronScreenEffects.PushShake(npc.Center, 5f);

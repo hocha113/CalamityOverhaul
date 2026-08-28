@@ -122,8 +122,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
         private static void FirePulseRing(BrainStateContext context, int beatNumber) {
             NPC npc = context.Npc;
             Player player = context.Target;
-            int count = context.IsDeathMode ? 15 : 12;
-            int damage = ShardDamage + (context.IsDeathMode ? 3 : 0);
+            int count = context.IsAsuraMode ? 15 : 12;
+            int damage = ShardDamage + (context.IsAsuraMode ? 3 : 0);
 
             float gapDir = (player.Center - npc.Center).ToRotation() + beatNumber * 0.62f;
             for (int i = 0; i < count; i++) {

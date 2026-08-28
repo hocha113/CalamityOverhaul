@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
 
         #region 战场事实（由控制器每帧刷新）
         public bool BossRush { get; set; }
-        public bool DeathMode { get; set; }
+        public bool AsuraMode { get; set; }
         public bool MasterMode { get; set; }
         /// <summary>神庙外/地表上激怒</summary>
         public bool Enraged { get; set; }

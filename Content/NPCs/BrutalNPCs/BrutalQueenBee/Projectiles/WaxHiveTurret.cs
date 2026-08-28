@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Projectiles
 {
     /// <summary>
     /// 蜂巢炮台：定点持续威胁；生长→周期预警脉冲→三连毒刺齐射→到期萎缩<br/>
-    /// ai[0]=死亡模式加成(0/1)
+    /// ai[0]=修罗模式加成(0/1)
     /// </summary>
     internal class WaxHiveTurret : ModProjectile
     {

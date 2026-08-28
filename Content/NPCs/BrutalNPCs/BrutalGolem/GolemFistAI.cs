@@ -205,7 +205,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             fistContext.Target = player;
             fistContext.Owner = this;
             fistContext.Side = Side;
-            fistContext.DeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            fistContext.AsuraMode = CWRWorld.Asura;
             //读躯干滞回后的激怒旗标，与本体同拍落怒/解除
             fistContext.Enraged = GolemBodyAI.SharedEnrage(body, player);
         }

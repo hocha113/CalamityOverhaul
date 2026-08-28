@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
                         clapAnchor = ReadAnchor(ctx, out _);
                         Vector2 slot = clapAnchor + new Vector2(ctx.Side * SkeletronDirector.SnatchHalfGap, 0f);
                         npc.velocity = (slot - npc.Center).SafeNormalize(Vector2.UnitX * -ctx.Side)
-                            * SkeletronDirector.SnatchSnapSpeed(ctx.Death);
+                            * SkeletronDirector.SnatchSnapSpeed(ctx.Asura);
                         ctx.SpringVelocity = npc.velocity;
                         if (!VaultUtils.isServer) {
                             SoundEngine.PlaySound(SoundID.Item71 with { Volume = 1f, Pitch = -0.45f }, npc.Center);
@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
                 case SkeletronPalmSnatchState.SubSlam: {
                     //携人直线下砸
                     if (subTimer == 0) {
-                        npc.velocity = new Vector2(0f, SkeletronDirector.SlamSpeed(ctx.Death) + 6f);
+                        npc.velocity = new Vector2(0f, SkeletronDirector.SlamSpeed(ctx.Asura) + 6f);
                         ctx.SpringVelocity = npc.velocity;
                     }
                     AimPalm(npc, npc.Center + Vector2.UnitY * 200f, 0.4f);

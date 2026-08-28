@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
 
                 //二阶段缓慢补触手(一拍最多补一根，被打光的缺口不会立刻愈合)
                 if (context.IsPhase2) {
-                    int target = context.IsDeathMode ? 10 : 8;
+                    int target = context.IsAsuraMode ? 10 : 8;
                     if (context.Tentacles.Count > 0 && context.Tentacles.Count < target) {
                         PlanteraTentacleAI.SpawnTentacle(context.Npc, Main.rand.NextFloat(MathHelper.TwoPi));
                     }

@@ -5,12 +5,21 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
+namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
 {
+    /// <summary>入雨演出的结算去向：叠加层下潜（剧情线默认）或进入鬼雨子世界（门伞）</summary>
+    internal enum OniRainCommitTarget : byte
+    {
+        /// <summary>叠加层雨世界：Depth+1，演出后半段在雨里落定</summary>
+        OverlayDescend,
+        /// <summary>鬼雨子世界：白闪处交给 SubLib 加载屏，本状态机在 gameMenu 帧自净</summary>
+        KiameSubworld,
+    }
+
     /// <summary>
     /// 入雨演出的相位状态机：涨水浮镜→驻留→180°翻转→落定，纯本地演出量。<br/>
     /// 节拍常量是唯一时钟，<see cref="OniRainWorldCutscene"/> 与 <see cref="OniRainWorldRender"/> 都从这里取数；
-    /// 运镜失败不致命，演出照走。
+    /// 运镜失败不致命，演出照走。结算去向可参数化（<see cref="OniRainCommitTarget"/>）。
     /// </summary>
     internal static class OniRainWorldTransition
     {
@@ -69,8 +78,14 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         public static float AmbientPreGloom => Active && Timer < CommitFrame
             ? MathF.Max(Reveal * 0.25f, Smooth01(Timer / (float)ApproachEnd) * 0.08f) : 0f;
 
+        private static OniRainCommitTarget commitTarget;
+
         /// <summary>开始入雨演出，仅本地玩家生效；重复调用无效，深潜演出期间不可再入</summary>
-        public static void Begin(Player player, Vector2 umbrellaGround) {
+        public static void Begin(Player player, Vector2 umbrellaGround)
+            => Begin(player, umbrellaGround, OniRainCommitTarget.OverlayDescend);
+
+        /// <summary>开始入雨演出并指定结算去向（门伞传子世界）</summary>
+        public static void Begin(Player player, Vector2 umbrellaGround, OniRainCommitTarget target) {
             if (Active || OniRainDescentTransition.Active || Main.dedServ || player == null
                 || player.whoAmI != Main.myPlayer || !player.Alives()) {
                 return;
@@ -78,6 +93,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 
             Active = true;
             Timer = 0;
+            commitTarget = target;
             UmbrellaWorld = umbrellaGround;
             FocusWorld = umbrellaGround + new Vector2(0f, -8f);
             ZeroEnvelopes();
@@ -372,7 +388,8 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             }
         }
 
-        /// <summary>结算：白闪掩护下切入鬼雨世界状态，真实渲染从此带鬼雨调色</summary>
+        /// <summary>结算：白闪掩护下切入去向。叠加层=切世界状态继续演出后半段；
+        /// 子世界=白闪正盛时交给 SubLib 加载屏，gameMenu 帧本状态机自净</summary>
         private static void Commit(Player player) {
             SoundEngine.PlaySound(SoundID.Thunder with {
                 Pitch = -0.6f,
@@ -385,6 +402,13 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 MaxInstances = 3,
             }, player.Center);
             player.CWR()?.GetScreenShake(9f);
+
+            if (commitTarget == OniRainCommitTarget.KiameSubworld) {
+                if (!KiameWorld.Active) {
+                    KiameWorld.EnterWorld();
+                }
+                return;
+            }
             OniRainWorldState.DescendLocal(player);
         }
 

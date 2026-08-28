@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
 
             if (phaseTimer >= telegraph) {
                 //一帧定速：直线读得快
-                npc.velocity = dashDir * SkeletronDirector.SpinDashSpeed(context.DeathMode, IsP2(npc));
+                npc.velocity = dashDir * SkeletronDirector.SpinDashSpeed(context.AsuraMode, IsP2(npc));
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Volume = 1f, Pitch = -0.3f }, npc.Center);
                     SkeletronScreenEffects.PushShake(npc.Center, 5f);

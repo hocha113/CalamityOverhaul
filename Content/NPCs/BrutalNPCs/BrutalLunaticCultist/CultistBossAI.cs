@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
         private void InitializeStateContext() {
             stateContext = new CultistStateContext {
                 Npc = npc,
-                IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive(),
+                IsAsuraMode = CWRWorld.Asura,
             };
             stateMachine = new NpcStateMachine<CultistStateContext>(stateContext, aiSlot: 2);
 
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
         private void UpdateStateContext() {
             stateContext.Npc = npc;
             stateContext.Target = targetPlayer ?? Main.player[Main.myPlayer];
-            stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            stateContext.IsAsuraMode = CWRWorld.Asura;
 
             //权威端写同步槽,客户端读回,晚入场/漂移都由 ai 槽兜底
             if (VaultUtils.isClient) {
@@ -228,7 +228,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 _ => 0f,
             };
             if (rate > 0f) {
-                stateContext.AddAlign(rate * (stateContext.IsDeathMode ? 1.15f : 1f));
+                stateContext.AddAlign(rate * (stateContext.IsAsuraMode ? 1.15f : 1f));
             }
         }
 
@@ -362,7 +362,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
 
         /// <summary>残酷遗物「仪轨集环」：残酷世界击杀必掉（教徒无宝藏袋，此路径全难度通用）</summary>
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<RiteRing>()));
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(), ModContent.ItemType<RiteRing>()));
         }
 
         public override bool CheckActive() => false;

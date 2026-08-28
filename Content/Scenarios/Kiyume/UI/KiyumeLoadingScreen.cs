@@ -138,15 +138,38 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
             emberLights.Clear();
 
             DrawDome(sb, px, w, h, horizonY);
-            //远排：小而密，雾里只剩个大概；近排：大而疏，黑得实
-            DrawVillageRow(sb, px, w, horizonY + h * 0.012f, h * 0.052f, 3, seed: 37, SilFar, 0.62f, nearRow: false);
-            DrawVillageRow(sb, px, w, horizonY + h * 0.062f, h * 0.092f, 7, seed: 911, SilNear, 1f, nearRow: true);
+            //远排：小而密，雾里只剩个大概；近排：大而疏，黑得实。
+            //每排先铺贴地剪影带再立结构，村子长在地上而不是浮在天上
+            DrawVillageRow(sb, px, w, h, horizonY + h * 0.012f, h * 0.052f, 3, seed: 37, SilFar, 0.62f, nearRow: false);
+            DrawVillageRow(sb, px, w, h, horizonY + h * 0.062f, h * 0.092f, 7, seed: 911, SilNear, 1f, nearRow: true);
             DrawEmberMotes(sb, px, w, horizonY);
             DrawWaterGauge(sb, px, w, h, horizonY, afterFog: false);
             DrawFogSea(sb, px, w, h);
             //雾后光学层：雾中晕开的窗火、落在雾面上的灯影、水尺水线亮痕
             DrawEmberOptics(sb, px, h);
             DrawWaterGauge(sb, px, w, h, horizonY, afterFog: true);
+        }
+
+        /// <summary>行地形线：两组慢正弦叠一点定势哈希，结构脚点与地面填充共用同一条线</summary>
+        private static float GroundTopAt(float baseY, float unit, int x, int seed) {
+            return baseY
+                + MathF.Sin(x * 0.0043f + seed * 1.7f) * unit * 0.16f
+                + MathF.Sin(x * 0.0131f + seed * 3.1f) * unit * 0.07f;
+        }
+
+        //软边横带：中心实心，上下缘与两端各退一档透明度——云和雾不许有直角
+        private static void DrawSoftBand(SpriteBatch sb, Texture2D px, int x, int y,
+            int bw, int bh, Color color, float alpha) {
+            if (bw <= 4 || bh <= 0) {
+                return;
+            }
+            int edge = Math.Max(bh / 3, 1);
+            int inset = Math.Max(bw / 12, 3);
+            sb.Draw(px, new Rectangle(x + inset, y, bw - inset * 2, bh), PixelSrc, color * alpha);
+            sb.Draw(px, new Rectangle(x + inset * 2, y - edge, bw - inset * 4, edge), PixelSrc, color * (alpha * 0.45f));
+            sb.Draw(px, new Rectangle(x + inset * 2, y + bh, bw - inset * 4, edge), PixelSrc, color * (alpha * 0.45f));
+            sb.Draw(px, new Rectangle(x, y + bh / 4, inset, bh / 2), PixelSrc, color * (alpha * 0.5f));
+            sb.Draw(px, new Rectangle(x + bw - inset, y + bh / 4, inset, bh / 2), PixelSrc, color * (alpha * 0.5f));
         }
 
         //穹顶：红黑竖向层次 + 地平一线烬光；逐带 hash 抖动破色带
@@ -168,7 +191,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
                 sb.Draw(px, new Rectangle(0, i * (h / bands), w, bandH), PixelSrc, c);
             }
 
-            //缓涌暗云：两层反向漂移的横带，压在地平之上
+            //缓涌暗云：两层反向漂移的软边横带（硬边矩形读作贴片，云不能有直角）
             float t = loadTime;
             for (int i = 0; i < 7; i++) {
                 float phase = i * 1.37f;
@@ -177,14 +200,22 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
                 float drift = (t * 9f * dir + phase * 260f) % (w + 640f) - 320f;
                 int cw = (int)(w * (0.32f + Hash(i, 3) * 0.4f));
                 int ch = (int)(h * (0.012f + Hash(i, 11) * 0.016f));
-                sb.Draw(px, new Rectangle((int)drift, (int)y, cw, ch), PixelSrc,
-                    SkyTop * (0.42f + Hash(i, 7) * 0.24f));
+                DrawSoftBand(sb, px, (int)drift, (int)y, cw, ch,
+                    SkyTop, 0.42f + Hash(i, 7) * 0.24f);
             }
         }
 
-        //一排村落：民居/望楼/枯树错落，近排另掺牌坊与电线杆（乡村怪核的两件标志物）
-        private static void DrawVillageRow(SpriteBatch sb, Texture2D px, int w, float baseY,
+        //一排村落：先铺贴地剪影带（含缓起伏地形线），再把民居/望楼/枯树/牌坊/电杆
+        //的脚点钉在同一条地形线上——雾海吞的是一片地，不是一排浮空剪影
+        private static void DrawVillageRow(SpriteBatch sb, Texture2D px, int w, int h, float baseY,
             float unit, int cellDiv, int seed, Color sil, float lightGate, bool nearRow) {
+            //地面剪影带：逐列填到屏底，顶缘随地形线起伏
+            const int colStep = 4;
+            for (int x = 0; x < w; x += colStep) {
+                int top = (int)GroundTopAt(baseY, unit, x, seed);
+                sb.Draw(px, new Rectangle(x, top, colStep, Math.Max(h - top, 0)), PixelSrc, sil);
+            }
+
             int cell = Math.Max(w / (cellDiv * 6), 18);
             int count = w / cell + 2;
             for (int i = -1; i < count; i++) {
@@ -192,9 +223,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
                 float h2 = Hash(i, seed + 7);
                 float h3 = Hash(i, seed + 13);
                 float roll = Hash(i, seed + 23);
-                //地面起伏：房子平放在格心地面上，不跟着坡歪
-                int gy = (int)(baseY + (Hash(i, seed + 31) - 0.5f) * unit * 0.42f);
                 int cx = i * cell + (int)(h3 * cell * 0.5f);
+                //脚点钉在地形线上（略沉半格，接缝被地面吃掉）
+                int gy = (int)GroundTopAt(baseY, unit, cx, seed) + 1;
 
                 if (roll < 0.14f) {
                     continue;
@@ -313,20 +344,31 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
             }
         }
 
-        //枯树：细干 + 被啃过的双团冠（小矩形簇出毛边，别是个圆疙瘩）
+        //枯树：细干 + 三四条上挑秃枝，梢头各一小团——枝是长在干上的，
+        //不是一圈悬空方块（悬空簇在剪影距离上读作坏像素）
         private static void DrawDeadTree(SpriteBatch sb, Texture2D px, int cx, int groundY,
             float size, int seed, Color sil) {
-            int trunkH = (int)MathHelper.Max(size, 5f);
+            int trunkH = (int)MathHelper.Max(size, 6f);
             sb.Draw(px, new Rectangle(cx - 1, groundY - trunkH, 2, trunkH), PixelSrc, sil);
-            int crownY = groundY - trunkH;
-            for (int i = 0; i < 9; i++) {
-                float a = Hash(seed, i * 3 + 1) * MathHelper.TwoPi;
-                float r = size * (0.14f + Hash(seed, i * 3 + 2) * 0.34f);
-                int bw = (int)MathHelper.Max(size * (0.10f + Hash(seed, i * 3) * 0.16f), 2f);
-                sb.Draw(px, new Rectangle(
-                    cx + (int)(MathF.Cos(a) * r) - bw / 2,
-                    crownY + (int)(MathF.Sin(a) * r * 0.72f) - bw / 2,
-                    bw, bw), PixelSrc, sil);
+
+            int branches = 3 + (Hash(seed, 40) > 0.55f ? 1 : 0);
+            for (int i = 0; i < branches; i++) {
+                //枝根落在干的上半段，向外向上逐段爬
+                float rootK = 0.45f + Hash(seed, i * 5 + 1) * 0.5f;
+                int bx = cx;
+                int by = groundY - (int)(trunkH * rootK);
+                int dir = Hash(seed, i * 5 + 2) > 0.5f ? 1 : -1;
+                int segs = 3 + (int)(Hash(seed, i * 5 + 3) * 3f);
+                for (int s = 0; s < segs; s++) {
+                    bx += dir * (1 + (int)(Hash(seed, i * 7 + s) * 2f));
+                    by -= 1 + (int)(Hash(seed, i * 9 + s) * 2f);
+                    sb.Draw(px, new Rectangle(bx, by, 2, 2), PixelSrc, sil);
+                }
+                //梢头小团：残叶或者别的什么，攥在枝尖上
+                if (Hash(seed, i * 5 + 4) > 0.35f) {
+                    int bw = (int)MathHelper.Max(size * 0.12f, 2f);
+                    sb.Draw(px, new Rectangle(bx - bw / 2, by - bw / 2, bw, bw), PixelSrc, sil);
+                }
             }
         }
 
@@ -417,9 +459,13 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.UI
             int topY = (int)(horizonY + h * 0.02f);
             int footY = (int)(h * 0.93f);
             if (!afterFog) {
-                //桩体 + 顶牌
-                sb.Draw(px, new Rectangle(gx - 1, topY, 3, footY - topY), PixelSrc, SilNear);
+                //桩体：下半粗、上半细 + 顶牌 + 桩脚底堆——桩是打进土里的，不是悬着的线
+                int midY = (topY + footY) / 2;
+                sb.Draw(px, new Rectangle(gx - 2, midY, 5, footY - midY), PixelSrc, SilNear);
+                sb.Draw(px, new Rectangle(gx - 1, topY, 3, midY - topY), PixelSrc, SilNear);
                 sb.Draw(px, new Rectangle(gx - 5, topY - 6, 11, 6), PixelSrc, SilNear);
+                sb.Draw(px, new Rectangle(gx - 5, footY - 3, 11, 3), PixelSrc, SilNear);
+                sb.Draw(px, new Rectangle(gx - 8, footY - 1, 17, 2), PixelSrc, SilNear * 0.8f);
                 //八段刻度：往上数的是水，不是日子
                 const int marks = 8;
                 for (int i = 0; i <= marks; i++) {

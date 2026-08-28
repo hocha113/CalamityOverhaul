@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 
-namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
+namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
 {
     /// <summary>
     /// 入雨演出的全屏合成：拷屏→镜像着色（水位线以下是真正的垂直镜像倒影，

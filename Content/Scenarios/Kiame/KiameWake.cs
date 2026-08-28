@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame
 
         //死因选文案：近期被伞鬼打中 / 溺水（原版 ByOther(1)）/ 其余一律「你从雨里醒来。」
         private static LocalizedText ResolveWakeLine(Player player, PlayerDeathReason source) {
-            if (player.TryGetModPlayer(out OniRainWorlds.OniRainWorldPlayer orp)
+            if (player.TryGetModPlayer(out Overlay.OniRainWorldPlayer orp)
                 && orp.OniHitFrames > 0) {
                 return WakeOni;
             }

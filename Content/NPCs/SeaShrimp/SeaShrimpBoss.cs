@@ -34,6 +34,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
         internal SeaShrimpStateContext Context { get; private set; }
         internal ShrimpSkeleton Skeleton { get; } = new();
         internal ShrimpLocomotion Locomotion { get; } = new();
+        /// <summary>残影位姿环（纯本地表现）</summary>
+        internal ShrimpPoseTrail PoseTrail { get; } = new();
         private Player targetPlayer;
 
         /// <summary>连续量抖动的确定性相位，各端一致（不掷 Main.rand）</summary>
@@ -149,6 +151,11 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
             Skeleton.Update(Context, NPC.Center, Locomotion.Heading,
                 Locomotion.TangentMove, NPC.velocity.Length(), Locomotion.Wet);
 
+            //残影快照：爆发段（尾弹/出拳举旗）才捕获，渲染层按当前强度衰减重绘
+            if (!Main.dedServ) {
+                PoseTrail.Capture(Skeleton, Context.AfterimageStrength);
+            }
+
             if (Context.AttackCooldown > 0) {
                 Context.AttackCooldown--;
             }
@@ -180,14 +187,26 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
         private void WatchPhaseFx() {
             int phase = Context.Phase;
             if (phase == 2 && lastSeenPhase == 1) {
+                //P2 涨压破甲拍：怒吼 + 甲壳缝隙高压水线喷射 + 冲击环 + 滤镜微脉冲
                 SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.8f, Pitch = -0.1f }, NPC.Center);
+                SoundEngine.PlaySound(SoundID.Item94 with { Volume = 0.6f, Pitch = 0.1f }, NPC.Center);
+                SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.8f, Pitch = -0.35f }, NPC.Center);
                 Context.CrystalGlow = 1f;
+                SeaShrimpAbyssScreen.TriggerImpactFrame(0.18f);
                 if (Main.LocalPlayer != null
                     && Vector2.Distance(Main.LocalPlayer.Center, NPC.Center) < 1500f) {
                     Main.LocalPlayer.CWR()?.GetScreenShake(5f);
                 }
-                PRTLoader.NewParticle<PRT_StarPulseRing>(NPC.Center, Vector2.Zero,
-                    SeaShrimpRenderer.CrystalBlue, 1f)?.Configure(0.3f, 2.2f, 20);
+                Context.AddRing(NPC.Center, 320f, 30, 1f);
+                //裂缝喷压：沿体节向外的十股高压水滴锥
+                for (int i = 0; i < 10; i++) {
+                    Vector2 seam = NPC.Center + Main.rand.NextVector2Circular(70f, 44f);
+                    Vector2 dir = (seam - NPC.Center).SafeNormalize(Main.rand.NextVector2Unit());
+                    for (int j = 0; j < 3; j++) {
+                        Content.Items.Magic.Everdeeps.EverdeepVFX.ShedDroplet(seam,
+                            dir.RotatedByRandom(0.3f) * Main.rand.NextFloat(4f, 9f), 1f);
+                    }
+                }
             }
             lastSeenPhase = phase;
         }

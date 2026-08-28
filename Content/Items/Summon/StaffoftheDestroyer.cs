@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Summon
             Item.DamageType = DamageClass.Summon;
             Item.rare = ItemRarityID.Purple;
             Item.value = Item.buyPrice(0, 1, 60, 5);
-            Item.CWR().DeathModeItem = true;
+            Item.CWR().BrutalWorldItem = true;
         }
 
         public override bool CanUseItem(Player player) {

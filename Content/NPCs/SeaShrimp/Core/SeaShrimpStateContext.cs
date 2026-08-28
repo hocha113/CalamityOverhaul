@@ -127,6 +127,59 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Core
                 Hot = hot,
             });
         }
+
+        /// <summary>一次性冲击环事件（本地表现，渲染层展开后自清）</summary>
+        public struct RingEvent
+        {
+            public Vector2 Pos;
+            public uint Birth;
+            public short Life;
+            public float FinalR;
+            public float Squish;
+        }
+
+        /// <summary>一次性短命水柱事件（FishronTornado 换深渊色板）</summary>
+        public struct ColumnEvent
+        {
+            public Vector2 Base;
+            public uint Birth;
+            public short Life;
+            public float Width;
+            public float Height;
+            public float Seed;
+        }
+
+        public List<RingEvent> RingEvents { get; } = new(4);
+        public List<ColumnEvent> ColumnEvents { get; } = new(2);
+
+        /// <summary>登记一发冲击环（纯本地；贴地环 squish≈0.4，空中环 1）</summary>
+        public void AddRing(Vector2 pos, float finalRadius, int life = 26, float squish = 1f) {
+            if (Main.dedServ) {
+                return;
+            }
+            RingEvents.Add(new RingEvent {
+                Pos = pos,
+                Birth = Main.GameUpdateCount,
+                Life = (short)life,
+                FinalR = finalRadius,
+                Squish = squish,
+            });
+        }
+
+        /// <summary>登记一根短命水柱（纯本地，底锚在 basePos）</summary>
+        public void AddColumn(Vector2 basePos, float width, float height, int life = 46) {
+            if (Main.dedServ) {
+                return;
+            }
+            ColumnEvents.Add(new ColumnEvent {
+                Base = basePos,
+                Birth = Main.GameUpdateCount,
+                Life = (short)life,
+                Width = width,
+                Height = height,
+                Seed = Main.GameUpdateCount % 1000 * 0.37f,
+            });
+        }
         #endregion
 
         /// <summary>每帧默认值：姿态回自然、螯回守位、光通道自然衰减</summary>

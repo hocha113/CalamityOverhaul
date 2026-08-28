@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
             //间隔长度按上一招重量伸缩(节奏波形)；LastAttack仅服务端可信，
             //镜像进ai[0]随NPC同步，客户端速度包络与之一致(防墙体橡皮筋)
             if (!VaultUtils.isClient) {
-                context.Npc.ai[0] = WofDirector.AdvanceGapFrames(context.Phase, context.IsDeathMode)
+                context.Npc.ai[0] = WofDirector.AdvanceGapFrames(context.Phase, context.IsAsuraMode)
                     * WofDirector.AttackGapMul(context.LastAttack);
                 context.Npc.netUpdate = true;
             }
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
             Timer++;
 
             int gap = npc.ai[0] > 0f ? (int)npc.ai[0]
-                : WofDirector.AdvanceGapFrames(context.Phase, context.IsDeathMode);
+                : WofDirector.AdvanceGapFrames(context.Phase, context.IsAsuraMode);
 
             //推进速度即节奏乐器：前段喘息回稳→中段常速→末段蓄势跃进，
             //出招瞬间各招自带的减速前摇与跃进形成对比刹车

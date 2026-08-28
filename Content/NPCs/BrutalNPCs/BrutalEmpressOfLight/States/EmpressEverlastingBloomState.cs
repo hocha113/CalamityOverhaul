@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 Vector2 dir = angle.ToRotationVector2();
                 float hue = angle / MathHelper.TwoPi;
                 EmpressCast.Petal(npc, npc.Center + dir * 40f, dir * speed, context.PetalDamage, curve, hue,
-                    context.IsDeathMode ? 2f : 1f);
+                    context.IsAsuraMode ? 2f : 1f);
             }
         }
 
@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             if (VaultUtils.isClient) {
                 return;
             }
-            int count = context.IsDeathMode ? 12 : 10;
+            int count = context.IsAsuraMode ? 12 : 10;
             for (int i = 0; i < count; i++) {
                 //上半扇 -160°..-20°
                 float angle = MathHelper.ToRadians(-160f + 140f * (i / (float)(count - 1)));

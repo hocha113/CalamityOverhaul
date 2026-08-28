@@ -26,8 +26,7 @@ namespace CalamityOverhaul.Content
 
         public static LocalizedText TemperatureText { get; private set; }
         public static LocalizedText InternalStoredEnergy { get; private set; }
-        public static LocalizedText DeathModeItemText { get; private set; }
-        public static LocalizedText BrutalModeItemText { get; private set; }
+        public static LocalizedText BrutalWorldItemText { get; private set; }
         public static LocalizedText BrutalRelicSeriesText { get; private set; }
         public static LocalizedText LegendItemUpgradeDisable { get; private set; }
         public static LocalizedText ItemLegendOnMouseLang { get; private set; }
@@ -35,9 +34,8 @@ namespace CalamityOverhaul.Content
         public override void SetStaticDefaults() {
             TemperatureText = this.GetLocalization(nameof(TemperatureText), () => "燃烧温度");
             InternalStoredEnergy = this.GetLocalization(nameof(InternalStoredEnergy), () => "能量存储");
-            DeathModeItemText = this.GetLocalization(nameof(DeathModeItemText), () => "死亡模式");
-            BrutalModeItemText = this.GetLocalization(nameof(BrutalModeItemText), () => "残酷模式下掉落");
-            BrutalRelicSeriesText = this.GetLocalization(nameof(BrutalRelicSeriesText), () => "残酷遗物 · 残酷模式专属");
+            BrutalWorldItemText = this.GetLocalization(nameof(BrutalWorldItemText), () => "残酷世界专属");
+            BrutalRelicSeriesText = this.GetLocalization(nameof(BrutalRelicSeriesText), () => "残酷遗物 · 残酷世界专属");
             LegendItemUpgradeDisable = this.GetLocalization(nameof(LegendItemUpgradeDisable), () =>
                 """
                 这把传奇武器在当前世界中已被设定为无法升级
@@ -70,8 +68,8 @@ namespace CalamityOverhaul.Content
         public float ConsumeUseUE;
         /// <summary>传奇升级数据</summary>
         public LegendData LegendData;
-        /// <summary>死亡模式专属</summary>
-        public bool DeathModeItem;
+        /// <summary>残酷世界专属</summary>
+        public bool BrutalWorldItem;
         /// <summary>锁定弹药</summary>
         public Item TargetLockAmmo;
         /// <summary>染色物品 ID</summary>
@@ -351,8 +349,8 @@ namespace CalamityOverhaul.Content
                 tooltips.Add(line);
             }
 
-            if (item.CWR().DeathModeItem) {
-                var line = new TooltipLine(CWRMod.Instance, "DeathModeItem", $"--{DeathModeItemText.Value}--");
+            if (item.CWR().BrutalWorldItem) {
+                var line = new TooltipLine(CWRMod.Instance, "BrutalWorldItem", $"--{BrutalWorldItemText.Value}--");
                 line.OverrideColor = VaultUtils.MultiStepColorLerp(Main.LocalPlayer.miscCounter % 100 / 100f
                     , Color.Gold, Color.Red, Color.DarkRed, Color.Red, Color.Gold);
                 tooltips.Add(line);

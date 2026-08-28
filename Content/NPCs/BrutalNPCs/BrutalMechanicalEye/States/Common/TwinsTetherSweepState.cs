@@ -17,8 +17,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         public override string StateName => "TwinsTetherSweep";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.TwinsTetherSweep;
 
-        private int GatherPhase => Context.IsDeathMode ? 46 : 56;
-        private int SweepPhase => Context.IsDeathMode ? 250 : 230;
+        private int GatherPhase => Context.IsAsuraMode ? 46 : 56;
+        private int SweepPhase => Context.IsAsuraMode ? 250 : 230;
         private const int GazePhase = 36;
         private const int RecoveryPhase = 20;
         private const int MaxPartnerWait = 120;
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
 
         private int TotalDuration => GatherPhase + SweepPhase + GazePhase + RecoveryPhase;
 
-        private float MaxOrbitSpeed => Context.IsDeathMode ? 0.034f : 0.028f;
+        private float MaxOrbitSpeed => Context.IsAsuraMode ? 0.034f : 0.028f;
         private static float StartRadius => 1050f;
         private static float EndRadius => 610f;
 
@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             if (!arcSpawned) {
                 arcSpawned = true;
                 if (Context.IsSpazmatism && !VaultUtils.isClient) {
-                    int damage = Context.IsDeathMode ? 36 : 30;
+                    int damage = Context.IsAsuraMode ? 36 : 30;
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
                         ModContent.ProjectileType<TwinsTetherArc>(), damage, 0f, Main.myPlayer,
                         npc.whoAmI, partner.whoAmI, SweepPhase + GazePhase);

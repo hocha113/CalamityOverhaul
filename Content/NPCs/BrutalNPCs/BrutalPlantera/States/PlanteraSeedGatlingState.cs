@@ -23,9 +23,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         private const int FireTime = 75;
         private const int GapTime = 30;
         private const int VolleyCount = 2;
-        //激怒射速翻倍：3→2 / 死亡模式 2→1
+        //激怒射速翻倍：3→2 / 修罗模式 2→1
         private int FireInterval(PlanteraStateContext ctx) {
-            int interval = ctx.IsDeathMode ? 2 : 3;
+            int interval = ctx.IsAsuraMode ? 2 : 3;
             return ctx.IsEnraged ? Math.Max(interval / 2, 1) : interval;
         }
 
@@ -164,8 +164,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                     Projectile.NewProjectile(npc.GetSource_FromAI(), muzzle, lobVel,
                         ModContent.ProjectileType<PlanteraPoisonSeed>(), PlanteraPoisonSeed.GetDamage(npc), 0f, Main.myPlayer);
                 }
-                //死亡模式轮中带荆棘球
-                if (context.IsDeathMode && inCycle == 40) {
+                //修罗模式轮中带荆棘球
+                if (context.IsAsuraMode && inCycle == 40) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(), muzzle, aim * 12f - Vector2.UnitY * 2f,
                         ModContent.ProjectileType<PlanteraThornBall>(), PlanteraThornBall.GetDamage(npc), 0f, Main.myPlayer);
                 }

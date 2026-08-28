@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
                     ? Main.player[target].Center + Main.player[target].velocity * 5f
                     : Projectile.Center - outward * 300f;
                 Projectile.velocity = (aim - Projectile.Center).SafeNormalize(-outward)
-                    * SkeletronDirector.GhostLungeSpeed(CWRRef.GetDeathMode() || CWRRef.GetBossRushActive());
+                    * SkeletronDirector.GhostLungeSpeed(CWRWorld.Asura);
                 Projectile.netUpdate = true;
             }
 

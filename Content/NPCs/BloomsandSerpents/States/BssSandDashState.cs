@@ -1,3 +1,4 @@
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles;
 using System;
@@ -121,8 +122,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.Compression = MathHelper.Lerp(1f, 0.86f, progress);
 
             if (t == 1 && !Main.dedServ) {
-                //蓄力起手音：固定提前量，可被玩家内化
-                SoundEngine.PlaySound(SoundID.Item32 with { Volume = 0.75f, Pitch = -0.5f, MaxInstances = 2 }, npc.Center);
+                //蓄力起手音：固定提前量，可被玩家内化（CC0 嘶息素材，低调 = 伏低吸气）
+                SoundEngine.PlaySound(SoundID.Item102 with { Volume = 0.75f, Pitch = -0.5f, MaxInstances = 2 }, npc.Center);
             }
 
             //尘线车道：沿锁向铺出预告线（各端本地，掠冲的"车道预警"）

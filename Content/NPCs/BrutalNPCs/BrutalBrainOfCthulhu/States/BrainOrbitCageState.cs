@@ -165,8 +165,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
         /// <summary>放射血环：沿笼缺口方向留生路</summary>
         private static void FireRadialShards(BrainStateContext context, Vector2 center, float gapAngleForFinisher) {
             NPC npc = context.Npc;
-            int count = context.IsDeathMode ? 14 : 11;
-            int damage = ShardDamage + (context.IsDeathMode ? 3 : 0);
+            int count = context.IsAsuraMode ? 14 : 11;
+            int damage = ShardDamage + (context.IsAsuraMode ? 3 : 0);
             //缺口方向沿用笼缺口（脑已在心，取穿入前朝向的反向即笼缺口向）
             float gap = gapAngleForFinisher;
             for (int i = 0; i < count; i++) {

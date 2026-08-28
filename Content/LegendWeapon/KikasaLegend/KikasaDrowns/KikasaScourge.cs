@@ -123,7 +123,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             }
             int ownerWho = owner.whoAmI;
             if (punishCooldowns[ownerWho] > 0 || HasPunishActivationFor(ownerWho)
-                || KikasaDrown.HasActivationFor(ownerWho)) {
+                || KikasaDrown.HasActivationFor(ownerWho)
+                || KikasaPlayerDrown.HasBindFor(ownerWho)) {
                 Reject(ownerWho, "cooldown-or-busy");
                 return false;
             }
@@ -167,7 +168,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 return;
             }
             if (KikasaDrownFX.HasActiveShowFor(player.whoAmI)
-                || KikasaScourgeFX.HasActiveShowFor(player.whoAmI)) {
+                || KikasaScourgeFX.HasActiveShowFor(player.whoAmI)
+                || KikasaPlayerDrown.HasClientBindFor(player.whoAmI)) {
                 return;
             }
             if (--ambientLocalTimer > 0) {
@@ -250,7 +252,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             int ownerWho = owner.whoAmI;
             //限频静默拒绝：自动节拍的抖动不值一条日志
             if (ambientGaps[ownerWho] > 0 || HasAmbientActivationFor(ownerWho)
-                || HasPunishActivationFor(ownerWho) || KikasaDrown.HasActivationFor(ownerWho)) {
+                || HasPunishActivationFor(ownerWho) || KikasaDrown.HasActivationFor(ownerWho)
+                || KikasaPlayerDrown.HasBindFor(ownerWho)) {
                 return false;
             }
             if (!KikasaDrown.IsEligibleTarget(target) || !target.CanBeChasedBy()) {

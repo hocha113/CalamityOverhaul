@@ -16,23 +16,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerLaserSweep;
 
         /// <summary>进入位置阶段</summary>
-        private int PositioningPhase => Context.IsDeathMode ? 25 : 30;
+        private int PositioningPhase => Context.IsAsuraMode ? 25 : 30;
 
-        private int ChargePhase => Context.IsDeathMode ? 50 : 60;
+        private int ChargePhase => Context.IsAsuraMode ? 50 : 60;
 
         /// <summary>扫射阶段</summary>
-        private int SweepPhase => Context.IsDeathMode ? 65 : 70;
+        private int SweepPhase => Context.IsAsuraMode ? 65 : 70;
 
-        private int RecoveryPhase => Context.IsDeathMode ? 20 : 25;
+        private int RecoveryPhase => Context.IsAsuraMode ? 20 : 25;
 
         private int TotalDuration => PositioningPhase + ChargePhase + SweepPhase + RecoveryPhase;
 
-        private float MoveSpeed => Context.IsDeathMode ? 12f : 10f;
-        private int FireInterval => Context.IsDeathMode ? 6 : 7;
-        private float LaserSpeed => Context.IsDeathMode ? 13f : 11f;
+        private float MoveSpeed => Context.IsAsuraMode ? 12f : 10f;
+        private int FireInterval => Context.IsAsuraMode ? 6 : 7;
+        private float LaserSpeed => Context.IsAsuraMode ? 13f : 11f;
 
         /// <summary>扫射站位，逼近到此距离即刹停，保证扇形有展开空间</summary>
-        private float SweepStandoff => Context.IsDeathMode ? 380f : 440f;
+        private float SweepStandoff => Context.IsAsuraMode ? 380f : 440f;
 
         /// <summary>蓄力进度过此值即锁死瞄准，不再跟踪玩家(公平阀)</summary>
         private const float AimLockProgress = 0.75f;

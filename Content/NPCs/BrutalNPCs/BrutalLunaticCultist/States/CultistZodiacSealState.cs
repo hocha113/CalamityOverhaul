@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         private const float DriftRate = 0.0016f;
 
         private static int SealCount(CultistStateContext context) =>
-            context.Phase >= 4 || context.IsDeathMode ? 5 : 4;
+            context.Phase >= 4 || context.IsAsuraMode ? 5 : 4;
 
         public override ICultistState OnUpdate(CultistStateContext context) {
             NPC npc = context.Npc;

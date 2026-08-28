@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.GameModes;
-using CalamityOverhaul.OtherMods.InfernumMode;
 using Terraria.GameContent.ItemDropRules;
 
 namespace CalamityOverhaul.Content.Items.Modifys.ModifyBag
@@ -16,18 +15,11 @@ namespace CalamityOverhaul.Content.Items.Modifys.ModifyBag
         string IProvideItemConditionDescription.GetConditionDescription() => null;
     }
 
-    public class DropInDeathMode : IItemDropRuleCondition, IProvideItemConditionDescription
-    {
-        public bool CanDrop(DropAttemptInfo info) => CWRWorld.Death;
-        public bool CanShowItemDropInUI() => CWRWorld.Death || InfernumRef.InfernumModeOpenState;
-        public string GetConditionDescription() => CWRItem.DeathModeItemText.Value;
-    }
-
-    /// <summary>残酷遗物系列掉落条件：世界残酷旗标关闭时不掉落也不在图鉴显示</summary>
-    public class DropInBrutalMode : IItemDropRuleCondition, IProvideItemConditionDescription
+    /// <summary>残酷世界专属掉落条件（机械三王武器与残酷遗物共用）：世界残酷旗标关闭时不掉落也不在图鉴显示</summary>
+    public class DropInBrutalWorld : IItemDropRuleCondition, IProvideItemConditionDescription
     {
         public bool CanDrop(DropAttemptInfo info) => GameModeSystem.BrutalActive;
         public bool CanShowItemDropInUI() => GameModeSystem.BrutalActive;
-        public string GetConditionDescription() => CWRItem.BrutalModeItemText.Value;
+        public string GetConditionDescription() => CWRItem.BrutalWorldItemText.Value;
     }
 }

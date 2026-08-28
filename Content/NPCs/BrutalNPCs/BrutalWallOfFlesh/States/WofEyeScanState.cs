@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
             if (!VaultUtils.isClient) {
                 int damage = WallOfFleshAI.ScaleDamage(npc, WofDirector.ScanBeamDamage);
                 float speedScale = context.Phase >= 3 ? 1.25f : 1f;
-                if (context.IsDeathMode) {
+                if (context.IsAsuraMode) {
                     speedScale *= 1.15f;
                 }
                 int fired = 0;

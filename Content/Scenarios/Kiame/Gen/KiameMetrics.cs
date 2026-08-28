@@ -121,20 +121,21 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Gen
         internal static int MacroSeed { get; private set; }
 
         static KiameMetrics() {
+            //地体不用亮色泥土：村带走深泥，亮土在湿墨世界里发飘（2026-08-28 反馈）
             Bands = [
                 new KiameBand("入口台地", 0, PlateauCols, TileID.Stone, 358, 364),
-                new KiameBand("西村", VillageWestLeft, VillageWestCols, TileID.Dirt, 364, 390),
+                new KiameBand("西村", VillageWestLeft, VillageWestCols, TileID.Mud, 364, 390),
                 new KiameBand("洼原", FlatsLeft, FlatsCols, TileID.Mud, 390, 402),
-                new KiameBand("东村", VillageEastLeft, VillageEastCols, TileID.Dirt, 402, 398),
+                new KiameBand("东村", VillageEastLeft, VillageEastCols, TileID.Mud, 402, 398),
                 new KiameBand("泽地", MarshLeft, MarshCols, TileID.Mud, 398, 414),
                 new KiameBand("预留岭", ReserveLeft, ReserveCols, TileID.Stone, 414, 368),
             ];
             PoolProfiles = [
                 new KiamePoolProfile(0, 0, 0, 0, 0, 0),
-                new KiamePoolProfile(5, 8, 3, 8, 2, 3),
-                new KiamePoolProfile(10, 14, 5, 14, 2, 5),
-                new KiamePoolProfile(6, 9, 4, 10, 2, 4),
-                new KiamePoolProfile(6, 8, 8, 18, 4, 8),
+                new KiamePoolProfile(7, 10, 4, 10, 2, 4),
+                new KiamePoolProfile(13, 17, 7, 18, 3, 6),
+                new KiamePoolProfile(8, 11, 5, 12, 2, 5),
+                new KiamePoolProfile(7, 9, 10, 20, 4, 9),
                 new KiamePoolProfile(0, 0, 0, 0, 0, 0),
             ];
             int sum = 0;
@@ -192,6 +193,17 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Gen
         internal static void CacheMacroSeed() {
             MacroSeed = Main.ActiveWorldFileData?.SeedText?.GetHashCode() ?? 0;
         }
+
+        //════════ 大水面（工造湖盆，骨架 pass 在散洼之前先挖） ════════
+
+        //洼原大洼：洼原带中段的一片开阔积水，半宽 46 列（约 1470px 宽）
+        internal const int FlatsPondCenter = FlatsLeft + FlatsCols / 2;
+        internal const int FlatsPondHalfW = 46;
+        internal const int FlatsPondDepth = 9;
+        //泽地大湖：本世界最大的一片黑水，半宽 88 列（约 2820px 宽），湖心深 15
+        internal const int MarshLakeCenter = MarshLeft + MarshCols / 2;
+        internal const int MarshLakeHalfW = 88;
+        internal const int MarshLakeDepth = 15;
 
         //════════ 村落结构常量 ════════
 

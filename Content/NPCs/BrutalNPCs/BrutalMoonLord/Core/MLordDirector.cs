@@ -110,17 +110,17 @@
         /// （每次重试门线更低，被死亡阈值自然封顶）</summary>
         public static float BlackFlashRearmStep => 0.06f;
 
-        /// <summary>死亡模式/BossRush 节奏倍率：帧数除以它</summary>
-        public static float TempoScale(bool deathMode) => deathMode ? 1.22f : 1f;
+        /// <summary>修罗模式/BossRush 节奏倍率：帧数除以它</summary>
+        public static float TempoScale(bool asuraMode) => asuraMode ? 1.22f : 1f;
 
-        /// <summary>按节奏倍率压缩帧数（死亡模式更快）</summary>
-        public static int Frames(int baseFrames, bool deathMode) {
-            return deathMode ? (int)(baseFrames / TempoScale(true)) : baseFrames;
+        /// <summary>按节奏倍率压缩帧数（修罗模式更快）</summary>
+        public static int Frames(int baseFrames, bool asuraMode) {
+            return asuraMode ? (int)(baseFrames / TempoScale(true)) : baseFrames;
         }
 
-        /// <summary>死亡模式弹幕加伤</summary>
-        public static int ScaleDamage(int damage, bool deathMode) {
-            return deathMode ? (int)(damage * 1.15f) : damage;
+        /// <summary>修罗模式弹幕加伤</summary>
+        public static int ScaleDamage(int damage, bool asuraMode) {
+            return asuraMode ? (int)(damage * 1.15f) : damage;
         }
     }
 }

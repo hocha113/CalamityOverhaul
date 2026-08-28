@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
                 Npc = npc,
                 Swarm = swarm,
                 OverrideAi = ai,
-                IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()
+                IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<QueenBeeStateContext>(stateContext, aiSlot: 2);
 
@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
         private void UpdateStateContext() {
             stateContext.Npc = npc;
             stateContext.Target = targetPlayer;
-            stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            stateContext.IsAsuraMode = CWRWorld.Asura;
             stateContext.EnrageScale = ComputeEnrageScale();
 
             int flags = (int)ai[3];
@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
                 && Main.player[markedWho].Distance(npc.Center) <= 1600f;
         }
 
-        /// <summary>环境激怒 0~2：地表+1 离丛林+1 FTW+0.5 死亡模式垫底0.5；蜂巢墙内豁免</summary>
+        /// <summary>环境激怒 0~2：地表+1 离丛林+1 FTW+0.5 修罗模式垫底0.5；蜂巢墙内豁免</summary>
         private float ComputeEnrageScale() {
             if (!targetPlayer.Alives()) {
                 return 0f;
@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
             Tile tile = Framing.GetTileSafely(tileX, tileY);
             bool exempt = tile.WallType == WallID.HiveUnsafe;
 
-            float scale = stateContext.IsDeathMode ? 0.5f : 0f;
+            float scale = stateContext.IsAsuraMode ? 0.5f : 0f;
             if (!exempt) {
                 if (npc.position.Y / 16f < Main.worldSurface) {
                     scale += 1f;
@@ -519,7 +519,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
         #region 掉落
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
             //残酷遗物：残酷世界击杀必掉
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(),
                 ModContent.ItemType<SwarmVortexBeacon>()));
         }
         #endregion

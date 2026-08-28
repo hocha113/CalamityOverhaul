@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.DashPrepare;
 
         private int ChargeTime(DestroyerStateContext ctx)
-            => (ctx.IsEnraged ? 38 : 52) - (ctx.IsDeathMode ? 6 : 0);
+            => (ctx.IsEnraged ? 38 : 52) - (ctx.IsAsuraMode ? 6 : 0);
         internal static float DashSpeed(DestroyerStateContext ctx)
-            => (ctx.IsEnraged ? 55f : 42f) + (ctx.IsDeathMode ? 4f : 0f);
+            => (ctx.IsEnraged ? 55f : 42f) + (ctx.IsAsuraMode ? 4f : 0f);
         private int MaxDashCount(DestroyerStateContext ctx) => ctx.IsEnraged ? 5 : 3;
 
         private int currentDashCount;

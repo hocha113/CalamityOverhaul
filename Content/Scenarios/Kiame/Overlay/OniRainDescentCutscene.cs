@@ -1,7 +1,7 @@
 ﻿using InnoVault.Cinematics;
 using Terraria;
 
-namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
+namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
 {
     /// <summary>
     /// 深潜演出运镜：锁输入、聚焦伞盖、起势段轻压镜、排墨段回拉、结算震屏。<br/>

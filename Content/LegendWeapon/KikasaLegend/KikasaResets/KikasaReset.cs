@@ -2,7 +2,7 @@
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
-using CalamityOverhaul.Content.Scenarios.OniRainWorlds;
+using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
 using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.Cinematics;
 using System;

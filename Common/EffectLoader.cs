@@ -421,6 +421,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KiyumeFog { get; set; }
         public static Asset<Effect> KiyumeGroundFog { get; set; }
         public static Asset<Effect> Abyssrend { get; set; }
+        public static Asset<Effect> SeaShrimpCavitation { get; set; }
         public static Asset<Effect> HadalWater { get; set; }
         public static Asset<Effect> HadalSky { get; set; }
     }

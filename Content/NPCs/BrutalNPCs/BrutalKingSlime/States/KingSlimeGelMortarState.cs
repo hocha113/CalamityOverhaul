@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                 return;
             }
 
-            int count = context.IsDeathMode ? 15 : 12;
+            int count = context.IsAsuraMode ? 15 : 12;
             int dmg = (int)(npc.defDamage * 0.38f);
             for (int i = 0; i < count; i++) {
                 //公平阀：空槽跳过，弧线雨保证留出落隙(去RNG，各端弹幕排布可读且确定)

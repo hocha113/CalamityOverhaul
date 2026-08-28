@@ -158,7 +158,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
             stateContext.Target = targetPlayer;
             stateContext.Owner = this;
             stateContext.BossRush = CWRRef.GetBossRushActive();
-            stateContext.DeathMode = CWRRef.GetDeathMode() || stateContext.BossRush;
+            stateContext.AsuraMode = CWRWorld.Asura;
             stateContext.MasterMode = Main.masterMode || stateContext.BossRush;
 
             stateContext.HandCount = SkeletronFacts.CountHands(npc, out NPC left, out NPC right);
@@ -254,7 +254,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
 
         /// <summary>难度伤害修正（沿用机械三王规则）</summary>
         internal static int SetMultiplier(int num) {
-            if (!CWRRef.GetBossRushActive() && CWRWorld.Revenge) {
+            if (!CWRRef.GetBossRushActive() && CWRWorld.Brutal) {
                 num = (int)(num * 0.85f);
             }
             return num;
@@ -263,7 +263,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
         /// <summary>骷髅弹幕基准伤害（原始值，敌对弹幕由难度自动倍化）</summary>
         internal static int GetSkullDamage(NPC head) {
             int damage = 16;
-            if (CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()) {
+            if (CWRWorld.Asura) {
                 damage += 3;
             }
             return SetMultiplier(damage);
@@ -317,7 +317,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
 
         /// <summary>残酷遗物必掉：条件类自带残酷世界门禁（loot 注册不经 CanOverride）</summary>
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<SoulbindingArm>()));
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(), ModContent.ItemType<SoulbindingArm>()));
         }
 
         #endregion

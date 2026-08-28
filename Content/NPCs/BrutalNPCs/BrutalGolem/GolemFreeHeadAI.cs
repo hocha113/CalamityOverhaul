@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                 return;
             }
 
-            bool death = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            bool asura = CWRWorld.Asura;
 
             int interval;
             float boltSpeed;
@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                 case GolemStateIndex.SunBarrage:
                 case GolemStateIndex.Connector:
                     //常态压制：环场平台持续输出，弹幕线不断档
-                    interval = GolemDirector.Tempo(92, death, enraged);
+                    interval = GolemDirector.Tempo(92, asura, enraged);
                     boltSpeed = 8.5f;
                     break;
                 default:
@@ -233,7 +233,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             weaveSign = -weaveSign;
             float weave = weaveSign * Main.rand.NextFloat(0.1f, 0.16f);
             Vector2 vel = (lead - muzzle).SafeNormalize(Vector2.UnitY).RotatedBy(weave) * speed;
-            int damage = GolemDirector.ScaleDamage(GolemDirector.SunBoltDamage, CWRRef.GetDeathMode(), enraged);
+            int damage = GolemDirector.ScaleDamage(GolemDirector.SunBoltDamage, GameModes.GameModeSystem.AsuraActive, enraged);
             Projectile.NewProjectile(npc.GetSource_FromAI(), muzzle, vel,
                 ModContent.ProjectileType<GolemSunBolt>(), damage, 0f, Main.myPlayer);
             npc.netUpdate = true;

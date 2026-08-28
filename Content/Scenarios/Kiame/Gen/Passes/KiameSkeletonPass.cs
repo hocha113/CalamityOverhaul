@@ -28,6 +28,11 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Gen.Passes
             int height = Main.maxTilesY;
 
             int[] floorTop = BuildFloorLine(width);
+            //先挖两片工造大水面，再撒散洼（散洼避让已登记的水面）
+            CarveLakeBasin(floorTop, width, KiameMetrics.FlatsPondCenter,
+                KiameMetrics.FlatsPondHalfW, KiameMetrics.FlatsPondDepth);
+            CarveLakeBasin(floorTop, width, KiameMetrics.MarshLakeCenter,
+                KiameMetrics.MarshLakeHalfW, KiameMetrics.MarshLakeDepth);
             CarvePools(floorTop, width);
             KiamePlans.FloorTop = floorTop;
 
@@ -102,9 +107,30 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Gen.Passes
         }
 
         /// <summary>
+        /// 工造湖盆：椭圆剖面的大水面，水面钉在两缘中较低那侧的岸沿。
+        /// 在散洼之前挖，散洼按登记表避让
+        /// </summary>
+        private static void CarveLakeBasin(int[] floorTop, int width, int centerCol, int halfW, int depth) {
+            int left = centerCol - halfW;
+            int right = centerCol + halfW;
+            if (left <= KiameMetrics.BorderThick + 2 || right >= width - KiameMetrics.BorderThick - 2) {
+                return;
+            }
+            int surfaceRow = Math.Max(floorTop[left - 1], floorTop[right + 1]);
+            for (int x = left; x <= right; x++) {
+                float t = (x - centerCol) / (float)halfW;
+                //椭圆剖面：湖心最深，岸线自然爬升
+                int carve = (int)MathF.Round(depth * MathF.Sqrt(MathF.Max(1f - t * t, 0f)));
+                int baseRow = Math.Max(floorTop[x], surfaceRow);
+                floorTop[x] = baseRow + carve;
+            }
+            KiamePlans.Pools.Add(new KiamePoolSpan(left, right, surfaceRow));
+        }
+
+        /// <summary>
         /// 洼地挖坑：逐带按配置抽签落盆，余弦剖面平滑下凹，登记水面行。
         /// 水面 = 两缘中较低那侧的地板行（行号大者），灌到这里绝不外溢；
-        /// 两缘高差超过 2 行的斜坡位不落盆，免得水挂在坡上
+        /// 两缘高差超过 3 行的陡坡位不落盆，免得水挂在坡上
         /// </summary>
         private static void CarvePools(int[] floorTop, int width) {
             for (int bandIdx = 0; bandIdx < KiameMetrics.Bands.Length; bandIdx++) {
@@ -116,7 +142,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Gen.Passes
                 int want = WorldGen.genRand.Next(profile.CountMin, profile.CountMax + 1);
                 int placed = 0;
                 //抽签上限给足：斜坡/重叠会吃掉不少位
-                for (int attempt = 0; attempt < want * 8 && placed < want; attempt++) {
+                for (int attempt = 0; attempt < want * 10 && placed < want; attempt++) {
                     int halfW = WorldGen.genRand.Next(profile.HalfWidthMin, profile.HalfWidthMax + 1);
                     int depth = WorldGen.genRand.Next(profile.DepthMin, profile.DepthMax + 1);
                     int cx = WorldGen.genRand.Next(band.Left + halfW + 4, band.Right - halfW - 4);
@@ -126,17 +152,17 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Gen.Passes
                     if (left <= KiameMetrics.BorderThick + 2 || right >= width - KiameMetrics.BorderThick - 2) {
                         continue;
                     }
-                    //避开出生平台与既有洼地（4 列缓冲）
+                    //避开出生平台与既有水面（3 列缓冲）
                     if (right >= KiameMetrics.SpawnReserveLeft && left < KiameMetrics.SpawnReserveRight) {
                         continue;
                     }
-                    if (KiamePlans.OverlapsPool(left, right, margin: 4)) {
+                    if (KiamePlans.OverlapsPool(left, right, margin: 3)) {
                         continue;
                     }
 
                     int edgeLeft = floorTop[left - 1];
                     int edgeRight = floorTop[right + 1];
-                    if (Math.Abs(edgeLeft - edgeRight) > 2) {
+                    if (Math.Abs(edgeLeft - edgeRight) > 3) {
                         continue;
                     }
                     //水面钉在较低的那侧岸沿（行号大者），水永远兜得住

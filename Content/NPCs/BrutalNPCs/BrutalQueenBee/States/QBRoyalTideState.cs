@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         //回环拍女王与矛体接触伤关闭
         #endregion
 
-        private int ChargeCount(QueenBeeStateContext context) => context.IsDeathMode ? 4 : 3;
+        private int ChargeCount(QueenBeeStateContext context) => context.IsAsuraMode ? 4 : 3;
 
         public override void OnEnter(QueenBeeStateContext context) {
             base.OnEnter(context);
@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
 
             //冲锋发射帧
             if (legT == TelegraphTime) {
-                float speed = 42f + (context.IsDeathMode ? 3f : 0f);
+                float speed = 42f + (context.IsAsuraMode ? 3f : 0f);
                 QueenBeeMotion.DashLaunch(npc, chargeDir, speed, 1.35f);
                 QueenBeeMotion.Shake(npc.Center, 6f, 12);
             }

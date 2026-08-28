@@ -129,8 +129,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
 
             //辐条期：陨星编排（服务端）
             if (Elapsed >= RiseEnd + 30 && Elapsed < SpokeEnd - 30 && !VaultUtils.isClient) {
-                bool death = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
-                int interval = death ? 34 : 44;
+                bool asura = CWRWorld.Asura;
+                int interval = asura ? 34 : 44;
                 if (++meteorTimer >= interval) {
                     meteorTimer = 0;
                     ScheduleMeteor();
@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
             //落点环预警 + 高空备弹
             int delay = GolemDirector.MarkTelegraph;
             GolemTelegraph.SpawnRing(owner, new Vector2(x, groundY - 10f), 130f, delay + 16);
-            int damage = GolemDirector.ScaleDamage(GolemDirector.MeteorDamage, CWRRef.GetDeathMode());
+            int damage = GolemDirector.ScaleDamage(GolemDirector.MeteorDamage, GameModes.GameModeSystem.AsuraActive);
             Projectile.NewProjectile(Projectile.GetSource_FromAI(), new Vector2(x, groundY - 980f), Vector2.Zero,
                 ModContent.ProjectileType<GolemSolarMeteor>(), damage, 0f, Main.myPlayer,
                 delay - 22, groundY);
@@ -208,8 +208,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
                 return;
             }
             //辐射弹扇：等角分布，速度适中可穿缝
-            int bolts = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive() ? 16 : 12;
-            int damage = GolemDirector.ScaleDamage(GolemDirector.UltBurstDamage, CWRRef.GetDeathMode());
+            int bolts = CWRWorld.Asura ? 16 : 12;
+            int damage = GolemDirector.ScaleDamage(GolemDirector.UltBurstDamage, GameModes.GameModeSystem.AsuraActive);
             for (int i = 0; i < bolts; i++) {
                 float angle = MathHelper.TwoPi * i / bolts + Projectile.identity * 0.31f;
                 Vector2 vel = angle.ToRotationVector2() * 7.6f;

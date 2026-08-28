@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         private const int Timeout = 240;
 
         private static int StarCount(CultistStateContext context) =>
-            context.Phase >= 4 || context.IsDeathMode ? 6 : 5;
+            context.Phase >= 4 || context.IsAsuraMode ? 6 : 5;
 
         public override ICultistState OnUpdate(CultistStateContext context) {
             NPC npc = context.Npc;

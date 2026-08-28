@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         #endregion
 
         private int MaxVolleys(QueenBeeStateContext context) =>
-            context.IsPhase2 || context.IsDeathMode ? 3 : 2;
+            context.IsPhase2 || context.IsAsuraMode ? 3 : 2;
 
         public override IQueenBeeState OnUpdate(QueenBeeStateContext context) {
             NPC npc = context.Npc;
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                 context.Swarm.Declare(SwarmFormation.Arrow, npc.Center + lockedAim * 130f, lockedAim);
                 context.Swarm.PushSignal(0.9f);
                 int launchT = cycleT - TrackTime - FreezeTime;
-                float dartSpeed = 30f + (context.IsDeathMode ? 4f : 0f) + context.EnrageScale * 1.5f;
+                float dartSpeed = 30f + (context.IsAsuraMode ? 4f : 0f) + context.EnrageScale * 1.5f;
                 //未出手的波次维持满亮预警，出手即熄
                 if (launchT < 3) {
                     context.Swarm.WarnDarts(1, SwarmDirector.MaxBees - 1, 1f);

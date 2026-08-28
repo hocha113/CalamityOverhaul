@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
         #endregion
 
         private int FlitCount(QueenSlimeStateContext ctx) {
-            int baseCount = ctx.IsDeathMode ? 2 : 3;
+            int baseCount = ctx.IsAsuraMode ? 2 : 3;
             //大招后节奏提速
             return ctx.UltFired ? Math.Max(baseCount - 1, 2) : baseCount;
         }

@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             stateContext.Target = targetPlayer;
             stateContext.Owner = this;
             stateContext.BossRush = CWRRef.GetBossRushActive();
-            stateContext.DeathMode = CWRRef.GetDeathMode() || stateContext.BossRush;
+            stateContext.AsuraMode = CWRWorld.Asura;
             stateContext.MasterMode = Main.masterMode || stateContext.BossRush;
 
             CheakRam(out bool cannonAlive, out bool viceAlive, out bool sawAlive, out bool laserAlive);
@@ -412,7 +412,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         num = (int)(num * secondMechMultiplier);
                     }
                 }
-                if (CWRWorld.Revenge) {
+                if (CWRWorld.Brutal) {
                     num = (int)(num * 0.75f);
                 }
             }
@@ -679,14 +679,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
-            LeadingConditionRule rule = new LeadingConditionRule(new DropInDeathMode());
+            LeadingConditionRule rule = new LeadingConditionRule(new DropInBrutalWorld());
             rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<CommandersChainsaw>(), 4));
             rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<HyperionBarrage>(), 4));
             rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<CommandersStaff>(), 4));
             rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<CommandersClaw>(), 4));
             rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<RaiderGun>(), 4));
             npcLoot.Add(rule);
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<Content.Items.Accessories.BrutalRelics.SkeletronPrime.OverloadCommandCore>()));
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(), ModContent.ItemType<Content.Items.Accessories.BrutalRelics.SkeletronPrime.OverloadCommandCore>()));
         }
 
         public override void BossHeadSlot(ref int index) {

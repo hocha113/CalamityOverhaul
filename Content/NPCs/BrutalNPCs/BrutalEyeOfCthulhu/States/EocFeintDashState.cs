@@ -30,9 +30,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         /// <summary>瞬闪提前量：变轨前几帧发出苍白闪</summary>
         private const int BlinkLead = 5;
 
-        private int ReelTime => Context.IsDeathMode ? 22 : 27;
-        private int MaxDashes => Context.IsDeathMode ? 4 : 3;
-        private float DashSpeed => (Context.IsDeathMode ? 50f : 44f) + (Context.IsLowPhase ? 3f : 0f);
+        private int ReelTime => Context.IsAsuraMode ? 22 : 27;
+        private int MaxDashes => Context.IsAsuraMode ? 4 : 3;
+        private float DashSpeed => (Context.IsAsuraMode ? 50f : 44f) + (Context.IsLowPhase ? 3f : 0f);
         private float ContactMult => Context.IsSecondPhase ? 1.3f : 1.1f;
 
         private EocStateContext Context;
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                 if (VaultUtils.isClient) {
                     return null;
                 }
-                return new EocVeilHoverState(context.IsDeathMode ? 40 : 56);
+                return new EocVeilHoverState(context.IsAsuraMode ? 40 : 56);
             }
 
             return null;
@@ -179,8 +179,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                 EocMotion.KinkBurst(npc, context, oldVel, context.IsSecondPhase);
             }
 
-            //死亡模式二次小变轨
-            if (context.IsDeathMode && kinked && !kinked2 && Timer == kinkFrame + 9) {
+            //修罗模式二次小变轨
+            if (context.IsAsuraMode && kinked && !kinked2 && Timer == kinkFrame + 9) {
                 kinked2 = true;
                 Vector2 oldVel = npc.velocity;
                 if (!VaultUtils.isClient) {

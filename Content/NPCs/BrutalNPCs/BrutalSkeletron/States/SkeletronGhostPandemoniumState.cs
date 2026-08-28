@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
         /// <summary>两横两竖巷道臂：错拍扫掠，缝隙可走</summary>
         private void SpawnLaneArms(SkeletronStateContext context, NPC npc) {
             int damage = SkullDamage(context);
-            float sweep = SkeletronDirector.GhostSweepSpeed(context.DeathMode);
+            float sweep = SkeletronDirector.GhostSweepSpeed(context.AsuraMode);
             Vector2 c = latchCenter;
 
             //横巷道：上下两条，方向相对

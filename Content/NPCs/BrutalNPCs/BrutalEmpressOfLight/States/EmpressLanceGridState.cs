@@ -83,8 +83,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 
             Vector2 anchor = target.Center;
             int orientation = waveIdx % 3;
-            //死亡模式多铺一行
-            int halfLanes = context.IsDeathMode ? 5 : 4;
+            //修罗模式多铺一行
+            int halfLanes = context.IsAsuraMode ? 5 : 4;
 
             //权威端掷骰：本波从哪一侧灌入（编码进弹幕生成位，天然同步）
             bool fromPositive = Main.rand.NextBool();

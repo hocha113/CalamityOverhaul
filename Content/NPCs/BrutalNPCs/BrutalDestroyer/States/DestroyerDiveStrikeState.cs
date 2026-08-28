@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         private int PassCount(DestroyerStateContext ctx) => ctx.IsEnraged ? 3 : 2;
         private float DiveSpeed(DestroyerStateContext ctx)
-            => (ctx.IsEnraged ? 80f : 74f) + (ctx.IsDeathMode ? 8f : 0f);
+            => (ctx.IsEnraged ? 80f : 74f) + (ctx.IsAsuraMode ? 8f : 0f);
 
         private Vector2 lineCenter;
         private Vector2 diveDir;

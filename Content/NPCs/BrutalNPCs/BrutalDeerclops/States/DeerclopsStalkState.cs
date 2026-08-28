@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
 
         private int BaseDuration(DeerclopsStateContext ctx) {
             int duration = ctx.IsPhase2 ? 45 : 58;
-            if (ctx.IsDeathMode) {
+            if (ctx.IsAsuraMode) {
                 duration -= 8;
             }
             return duration;

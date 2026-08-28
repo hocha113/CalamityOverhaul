@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
         #endregion
 
         private int PincerCycles(EowStateContext ctx) => ctx.IsPhase2 ? 3 : 2;
-        private float DashSpeed(EowStateContext ctx) => (ctx.IsPhase2 ? 46f : 41f) + (ctx.IsDeathMode ? 4f : 0f);
+        private float DashSpeed(EowStateContext ctx) => (ctx.IsPhase2 ? 46f : 41f) + (ctx.IsAsuraMode ? 4f : 0f);
 
         private enum Phase
         {

@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         /// <summary>基础时长随阶段收紧(2026-08-28 二次提速:技能间隔全段较上版再收短 30%)</summary>
         private static int BaseDuration(CultistStateContext context) {
             int frames = context.Phase switch { >= 4 => 13, 3 => 15, 2 => 17, 1 => 20, _ => 22 };
-            if (context.IsDeathMode) {
+            if (context.IsAsuraMode) {
                 frames = (int)(frames * 0.85f);
             }
             return frames;

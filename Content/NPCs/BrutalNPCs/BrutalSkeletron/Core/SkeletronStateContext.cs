@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core
 
         #region 战场事实（控制器每帧刷新）
         public bool BossRush { get; set; }
-        public bool DeathMode { get; set; }
+        public bool AsuraMode { get; set; }
         public bool MasterMode { get; set; }
         public int HandCount { get; set; }
         public NPC LeftHand { get; set; }

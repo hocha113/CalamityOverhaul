@@ -1,7 +1,7 @@
 ﻿using InnoVault.Cinematics;
 using Terraria;
 
-namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
+namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
 {
     /// <summary>
     /// 送出演出运镜：锁输入、镜头落在被送走的人身上、合幕段轻压镜、排水段回拉、结算震屏。<br/>

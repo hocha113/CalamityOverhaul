@@ -3926,9 +3926,8 @@ ArchiveFrameModule: {
 CWRItem: {
 	TemperatureText: Temperatura de Combustao
 	InternalStoredEnergy: Energia Interna Armazenada
-	DeathModeItemText: Item do Modo Morte
-	// BrutalModeItemText: Drops in Brutal Mode
-	// BrutalRelicSeriesText: Brutal Relic · Exclusive to Brutal Mode
+	BrutalWorldItemText: Exclusivo do Mundo Cruel
+	// BrutalRelicSeriesText: Brutal Relic · Cruel World Exclusive
 	LegendItemUpgradeDisable:
 		'''
 		Esta arma lendaria foi configurada para desabilitar atualizacoes no mundo atual.
@@ -3939,9 +3938,8 @@ CWRItem: {
 	CWRItem: {
 		TemperatureText: Temperatura de Combustao
 		InternalStoredEnergy: Armazenamento de Energia
-		DeathModeItemText: Modo Morte
-		// BrutalModeItemText: Drops in Brutal Mode
-		// BrutalRelicSeriesText: Brutal Relic · Exclusive to Brutal Mode
+		BrutalWorldItemText: Exclusivo do Mundo Cruel
+		// BrutalRelicSeriesText: Brutal Relic · Cruel World Exclusive
 		LegendItemUpgradeDisable:
 			'''
 			Esta arma lendaria foi configurada para desabilitar atualizacoes no mundo atual.

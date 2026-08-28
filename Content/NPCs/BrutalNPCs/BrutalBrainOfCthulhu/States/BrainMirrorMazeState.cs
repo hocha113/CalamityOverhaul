@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
                 npc.netUpdate = true;
 
                 Vector2 anchor = context.Target.Center;
-                int damage = BrainMirrorStrikeState.MirrorContactDamage + (context.IsDeathMode ? 3 : 0);
+                int damage = BrainMirrorStrikeState.MirrorContactDamage + (context.IsAsuraMode ? 3 : 0);
                 for (int i = 0; i < FakeCount; i++) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(), anchor, Vector2.Zero,
                         ModContent.ProjectileType<BrainMirrorImage>(), damage, 0f, Main.myPlayer,
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
 
         private void ScatterShards(BrainStateContext context) {
             NPC npc = context.Npc;
-            int damage = ShardDamage + (context.IsDeathMode ? 3 : 0);
+            int damage = ShardDamage + (context.IsAsuraMode ? 3 : 0);
             for (int i = 0; i < 6; i++) {
                 float angle = dashDir.ToRotation() + MathHelper.TwoPi * i / 6f + 0.26f;
                 Vector2 vel = angle.ToRotationVector2() * 7.5f;

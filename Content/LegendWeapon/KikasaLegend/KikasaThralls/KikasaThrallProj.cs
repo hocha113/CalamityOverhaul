@@ -1,7 +1,7 @@
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis;
+using CalamityOverhaul.Content.Scenarios.Kiame.KasaOnis;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;

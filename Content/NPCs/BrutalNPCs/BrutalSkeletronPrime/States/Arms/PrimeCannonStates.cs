@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 fireCooldown += 1f + ctx.MissingPartnerCount * PrimeDirector.MissingHeavyLimbChargeBonus;
 
                 float interval = 120f;
-                if (ctx.Death) {
+                if (ctx.Asura) {
                     interval -= 20;
                 }
                 if (ctx.MasterMode) {
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 spawnPos, rocketVelocity,
                 ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
                 Main.myPlayer, npc.whoAmI, npc.target, 0);
-            Main.projectile[proj].timeLeft = (ctx.Death && ctx.MasterMode) || ctx.BossRush ? 60 : 80;
+            Main.projectile[proj].timeLeft = (ctx.Asura && ctx.MasterMode) || ctx.BossRush ? 60 : 80;
 
             ctx.ApplyRecoil(12f);
             SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.9f, Pitch = -0.2f }, npc.Center);
@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
 
             Vector2 baseVelocity = ctx.AimDirection * 10f;
             //制导炮弹，难度改弹数张角
-            int numProj = ctx.BossRush ? 5 : (ctx.Death ? 4 : 3);
+            int numProj = ctx.BossRush ? 5 : (ctx.Asura ? 4 : 3);
             float rotation = MathHelper.ToRadians(ctx.BossRush ? 15 : 9);
 
             for (int i = 0; i < numProj; i++) {

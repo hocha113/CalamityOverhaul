@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             }
             //第二小节：追猎布设——逐拍在玩家预读位置种刺（预告即承诺：种下即锁位；
             //每刺恒定 TrapTelegraph 预警；单点危害，缺口=其余全场）
-            int chaseCount = (context.Sundered ? 11 : 9) + (context.DeathMode ? 2 : 0);
+            int chaseCount = (context.Sundered ? 11 : 9) + (context.AsuraMode ? 2 : 0);
             int chaseStart = Tempo(context, ChaseStart);
             int chaseStep = Math.Max(Tempo(context, ChaseInterval), 4);
             if (!VaultUtils.isClient && Timer >= chaseStart && chasePlanted < chaseCount
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
         private static void PlantChaseSpike(GolemStateContext context) {
             Player target = context.Target;
             float x = target.Center.X + target.velocity.X * (GolemDirector.TrapTelegraph * ChaseLead);
-            int damage = GolemDirector.ScaleDamage(GolemDirector.SpikeDamage, context.DeathMode, context.Enraged);
+            int damage = GolemDirector.ScaleDamage(GolemDirector.SpikeDamage, context.AsuraMode, context.Enraged);
             GolemTrapUnit.PlantOnGround(context.Npc, x, target.Center.Y,
                 GolemTrapUnit.TrapKind.Spike, GolemDirector.TrapTelegraph, damage);
         }
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
         /// <summary>尖刺涟漪：一排尖刺按序起爆，reverse 反向</summary>
         private void PlantSpikeRipple(GolemStateContext context, float centerX, bool reverse) {
             NPC npc = context.Npc;
-            int count = context.DeathMode ? 9 : 7;
+            int count = context.AsuraMode ? 9 : 7;
             float spacing = 116f;
             int damage = ScaleDamage(context, GolemDirector.SpikeDamage);
 

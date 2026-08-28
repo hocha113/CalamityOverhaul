@@ -115,9 +115,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Core
             return sign == 0 ? 1 : sign;
         }
 
-        /// <summary>预兆时长按死亡模式压缩，留可读下限</summary>
+        /// <summary>预兆时长按修罗模式压缩，留可读下限</summary>
         protected static int TelegraphTime(DeerclopsStateContext context, int baseFrames, int floorFrames) {
-            if (!context.IsDeathMode) {
+            if (!context.IsAsuraMode) {
                 return baseFrames;
             }
             int scaled = (int)(baseFrames * 0.85f);

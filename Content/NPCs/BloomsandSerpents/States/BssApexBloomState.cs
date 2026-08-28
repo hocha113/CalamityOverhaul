@@ -61,9 +61,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             Timer++;
 
             if (t > EndFrame || t > 80) {
-                //热身阀：怒放后的第一招也别贴脸即到
-                ctx.AttackCooldown = 26;
-                return new BssHubState();
+                //终局首秀即热身阀：怒放直接接回环沙瀑（蹲跳 + 入环 + 画环的长无伤前摇，
+                //P3 回环落地还会连击掠冲 = 宣言之后立刻两连演出）
+                ctx.AttackCooldown = 12;
+                return new BssLoopCascadeState();
             }
             return null;
         }

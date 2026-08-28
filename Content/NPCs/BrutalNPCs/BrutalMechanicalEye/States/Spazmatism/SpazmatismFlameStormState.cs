@@ -14,21 +14,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         public override string StateName => "SpazmatismFlameStorm";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismFlameStorm;
 
-        private int RisePhase => Context.IsDeathMode ? 35 : 45;
+        private int RisePhase => Context.IsAsuraMode ? 35 : 45;
 
-        private int WarningPhase => Context.IsDeathMode ? 40 : 50;
+        private int WarningPhase => Context.IsAsuraMode ? 40 : 50;
 
-        private int ChargePhase => Context.IsDeathMode ? 45 : 55;
+        private int ChargePhase => Context.IsAsuraMode ? 45 : 55;
 
-        private int StormPhase => Context.IsDeathMode ? 130 : 120;
+        private int StormPhase => Context.IsAsuraMode ? 130 : 120;
 
-        private int RecoveryPhase => Context.IsDeathMode ? 25 : 30;
+        private int RecoveryPhase => Context.IsAsuraMode ? 25 : 30;
 
         private int TotalDuration => RisePhase + WarningPhase + ChargePhase + StormPhase + RecoveryPhase;
 
-        private float RotSpeed => Context.IsDeathMode ? 0.075f : 0.06f;
+        private float RotSpeed => Context.IsAsuraMode ? 0.075f : 0.06f;
 
-        private int FireRate => Context.IsDeathMode ? 8 : 10;
+        private int FireRate => Context.IsAsuraMode ? 8 : 10;
 
         private TwinsStateContext Context;
         private Vector2 stormCenter;

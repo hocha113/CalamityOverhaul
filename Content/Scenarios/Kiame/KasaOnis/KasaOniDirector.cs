@@ -1,7 +1,9 @@
 ﻿using InnoVault.Actors;
 using Terraria;
 
-namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
+using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
+
+namespace CalamityOverhaul.Content.Scenarios.Kiame.KasaOnis
 {
     /// <summary>
     /// 伞鬼的本地出没调度：盯着本机玩家的鬼雨深度。

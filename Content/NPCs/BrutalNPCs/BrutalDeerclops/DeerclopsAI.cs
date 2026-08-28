@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
         private void InitializeStateContext() {
             stateContext = new DeerclopsStateContext {
                 Npc = npc,
-                IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()
+                IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<DeerclopsStateContext>(stateContext, aiSlot: 2);
 
@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
         private void UpdateStateContext() {
             stateContext.Npc = npc;
             stateContext.Target = targetPlayer;
-            stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            stateContext.IsAsuraMode = CWRWorld.Asura;
 
             //阶段位标自 ai[0] 反解(各端一致)
             int flags = (int)npc.ai[0];
@@ -510,7 +510,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
 
         /// <summary>残酷遗物掉落：独眼巨鹿无宝藏袋，本路径全难度通用，残酷世界必掉</summary>
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(),
                 ModContent.ItemType<WhiteoutStormCore>()));
         }
         #endregion

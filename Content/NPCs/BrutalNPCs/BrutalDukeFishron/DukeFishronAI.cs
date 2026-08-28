@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
         private void InitializeStateContext() {
             stateContext = new FishronStateContext {
                 Npc = npc,
-                IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()
+                IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<FishronStateContext>(stateContext, aiSlot: 2);
 
@@ -179,7 +179,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
         private void UpdateStateContext() {
             stateContext.Npc = npc;
             stateContext.Target = targetPlayer;
-            stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            stateContext.IsAsuraMode = CWRWorld.Asura;
 
             //投技冷却回填（裁决只在服务端，客户端递减无害）
             if (stateContext.GrabCooldown > 0) {
@@ -461,7 +461,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
         #region 生死与收尾
         /// <summary>残酷遗物：潮汐之鳍，残酷世界必掉（条件类自带门禁）</summary>
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<TidalFin>()));
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(), ModContent.ItemType<TidalFin>()));
         }
 
         public override bool CheckActive() => false;

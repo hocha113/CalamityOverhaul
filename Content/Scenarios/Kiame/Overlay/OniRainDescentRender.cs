@@ -3,7 +3,7 @@ using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
-namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
+namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
 {
     /// <summary>
     /// 湿墨冲刷的全屏合成：拷屏→湿墨冲刷（颜色向下流淌溶解）+ 雨帘合拢

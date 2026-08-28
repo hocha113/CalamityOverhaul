@@ -31,13 +31,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             ServoAimAt(npc, ctx.Target.Center, 0.03f);
 
             float chargeRate = ctx.MasterMode ? 2f : 1f;
-            if (ctx.Death) {
+            if (ctx.Asura) {
                 chargeRate *= PrimeDirector.DeathChargeMultiplier;
             }
             chargeRate += ctx.MissingPartnerCount * PrimeDirector.MissingLimbChargeBonus;
             ctx.ChargeTimer += chargeRate;
 
-            int threshold = PrimeDirector.GetArmChargeThreshold(ctx.MasterMode, ctx.Death);
+            int threshold = PrimeDirector.GetArmChargeThreshold(ctx.MasterMode, ctx.Asura);
             if (ctx.ChargeTimer >= threshold && !VaultUtils.isClient && !ctx.DontAttack) {
                 ctx.ChargeTimer = 0f;
                 npc.TargetClosest();
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         /// <summary>活塞回缩帧</summary>
         internal static int CoilFrames => 5;
 
-        private int WindUpDuration(PrimeArmStateContext ctx) => ctx.Death ? 16 : (ctx.MasterMode ? 21 : 26);
+        private int WindUpDuration(PrimeArmStateContext ctx) => ctx.Asura ? 16 : (ctx.MasterMode ? 21 : 26);
 
         public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
 
             NPC npc = ctx.Npc;
             float chargeVelocity = (ctx.BossRush ? 20f : 16f) + ctx.MissingPartnerCount * 1.5f;
-            if (ctx.Death) {
+            if (ctx.Asura) {
                 chargeVelocity *= 1.2f;
             }
             Vector2 velocity = npc.Center.DirectionTo(ctx.Target.Center) * chargeVelocity;
@@ -296,7 +296,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             else {
                 if (!stageLaunched) {
                     stageLaunched = true;
-                    float speed = 18f + (ctx.Death ? 6f : 0f);
+                    float speed = 18f + (ctx.Asura ? 6f : 0f);
                     Vector2 velocity = npc.Center.DirectionTo(ctx.Target.Center) * speed;
                     ctx.SpringVelocity = velocity;
                     npc.rotation = velocity.ToRotation() - MathHelper.PiOver2;//硬咬合
@@ -345,7 +345,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             else {
                 if (!stageLaunched) {
                     stageLaunched = true;
-                    float chargeSpeed = 28f + (ctx.Death ? 8f : 0f);
+                    float chargeSpeed = 28f + (ctx.Asura ? 8f : 0f);
                     Vector2 velocity = npc.Center.DirectionTo(ctx.Target.Center) * chargeSpeed;
                     ctx.SpringVelocity = velocity;
                     npc.rotation = velocity.ToRotation() - MathHelper.PiOver2;//硬咬合
@@ -551,7 +551,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 //出手瞬间锁死预判弹道，突刺全程不转向
                 Vector2 predict = ctx.Target.Center + ctx.Target.velocity * 9f;
                 lungeDir = npc.Center.DirectionTo(predict);
-                float speed = ctx.Death ? 28f : 26f;
+                float speed = ctx.Asura ? 28f : 26f;
                 ctx.SpringVelocity = lungeDir * speed;
                 npc.rotation = lungeDir.ToRotation() - MathHelper.PiOver2;
                 if (!VaultUtils.isClient) {

@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
 
             //体节弹降密度
-            int baseFireChance = CWRWorld.Death ? 130 : 180;
+            int baseFireChance = CWRWorld.Asura ? 130 : 180;
             int fireChance = (int)(baseFireChance * (1f - easeOut * 0.5f));
             fireChance = Math.Max(fireChance, 40);
 
@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             if (VaultUtils.isClient) {
                 return;
             }
-            float speed = CWRWorld.Death ? 6f : 4f;
+            float speed = CWRWorld.Asura ? 6f : 4f;
             Vector2 velocity = (context.Target.Center - source.Center).SafeNormalize(Vector2.Zero) * speed;
             int damage = (int)(HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(context.Npc, ProjectileID.DeathLaser)));
             Projectile.NewProjectile(source.GetSource_FromAI(), source.Center, velocity,

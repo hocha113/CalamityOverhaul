@@ -91,9 +91,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                 return;
             }
 
-            //夹击落点：脚下+两翼，死亡模式加一发远端封路
+            //夹击落点：脚下+两翼，修罗模式加一发远端封路
             int globCount = context.IsPhase2 ? 3 : 2;
-            if (context.IsDeathMode) {
+            if (context.IsAsuraMode) {
                 globCount++;
             }
             for (int i = 0; i < globCount; i++) {

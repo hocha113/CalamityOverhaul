@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
         private const int RingHold = 44;
         private const int StepLength = ShrinkTime + BlinkHold + GrowTime + RingHold;//88
 
-        private int StepCount(QueenSlimeStateContext ctx) => ctx.IsDeathMode ? 4 : 3;
+        private int StepCount(QueenSlimeStateContext ctx) => ctx.IsAsuraMode ? 4 : 3;
 
         private int currentStep = -1;
 
@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
             if (VaultUtils.isClient) {
                 return;
             }
-            int spikes = context.IsDeathMode ? 14 : 12;
+            int spikes = context.IsAsuraMode ? 14 : 12;
             float baseAngle = step * 0.35f;
             for (int i = 0; i < spikes; i++) {
                 float angle = MathHelper.TwoPi * i / spikes + baseAngle;

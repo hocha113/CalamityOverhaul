@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core
         #endregion
 
         #region 战斗状态
-        public bool IsDeathMode { get; set; }
+        public bool IsAsuraMode { get; set; }
         /// <summary>二阶段已进入(60%)</summary>
         public bool IsPhase2 { get; set; }
         /// <summary>低血大招已放</summary>

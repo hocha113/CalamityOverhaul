@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private int DashEnd => ReelEnd + DashCycle * DashCount;
         private int TotalTime => DashEnd + ExhaustTime;
 
-        private int SpikeInterval => Context.IsDeathMode ? 7 : 9;
+        private int SpikeInterval => Context.IsAsuraMode ? 7 : 9;
         private float SpikeCurl => 0.0069f;
 
         private EocStateContext Context;
@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                     npc.ai[3] = 11f;
                     Vector2 dir = (EocMotion.PredictTarget(player, npc.Center, 58f, 0.5f) - npc.Center)
                         .SafeNormalize(Vector2.UnitY);
-                    EocMotion.DashLaunch(npc, context, dir, Context.IsDeathMode ? 62f : 58f, 1.3f);
+                    EocMotion.DashLaunch(npc, context, dir, Context.IsAsuraMode ? 62f : 58f, 1.3f);
                     npc.netUpdate = true;
                 }
                 else {

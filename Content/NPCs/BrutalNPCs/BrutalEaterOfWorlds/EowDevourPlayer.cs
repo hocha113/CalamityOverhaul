@@ -237,9 +237,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
         #region 挤压拍结算
         /// <summary>挤压伤害：百分比+小额固定值，三拍总量恒低于满血(公平阀门)</summary>
         private void DoSqueezeBeat(NPC head) {
-            bool brutal = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
-            float pct = brutal ? 0.15f : 0.12f;
-            int flat = brutal ? 10 : 8;
+            bool asura = CWRWorld.Asura;
+            float pct = asura ? 0.15f : 0.12f;
+            int flat = asura ? 10 : 8;
             int dmg = (int)(Player.statLifeMax2 * pct) + flat;
 
             //腹内免疫为常态，本拍开一帧口子让 Hurt 落地(生命是客户端权威，正确端结算)

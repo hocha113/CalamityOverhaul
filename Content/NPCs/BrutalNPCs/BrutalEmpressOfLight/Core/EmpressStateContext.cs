@@ -44,8 +44,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         public bool DayEmpowered { get; set; }
         /// <summary>昼形态视觉过渡 0~1，各端本地缓动</summary>
         public float DayFormBlend { get; set; }
-        /// <summary>死亡模式/BossRush 增压</summary>
-        public bool IsDeathMode { get; set; }
+        /// <summary>修罗模式/BossRush 增压</summary>
+        public bool IsAsuraMode { get; set; }
         /// <summary>低血大招已经放过一次</summary>
         public bool OverdriveUsed { get; set; }
         /// <summary>死亡演出结束，CheckDead 放行</summary>
@@ -79,14 +79,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         #endregion
 
         #region 节奏与伤害
-        /// <summary>节奏因子：昼形态与死亡模式压缩计时（乘在阶段时长上）</summary>
+        /// <summary>节奏因子：昼形态与修罗模式压缩计时（乘在阶段时长上）</summary>
         public float TempoScale {
             get {
                 float scale = 1f;
                 if (DayEmpowered) {
                     scale *= 0.8f;
                 }
-                if (IsDeathMode) {
+                if (IsAsuraMode) {
                     scale *= 0.88f;
                 }
                 return scale;

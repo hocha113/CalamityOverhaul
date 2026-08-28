@@ -27,9 +27,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             this.restFrames = restFrames;
         }
 
-        private int ShootRate => Context.IsDeathMode ? 26 : 34;
+        private int ShootRate => Context.IsAsuraMode ? 26 : 34;
         private int MinRest => restFrames;
-        private int MaxDuration => restFrames + (Context.IsDeathMode ? 54 : 76);
+        private int MaxDuration => restFrames + (Context.IsAsuraMode ? 54 : 76);
 
         private EocStateContext Context;
 
@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                 bool canShoot = Collision.CanHitLine(npc.Center, 1, 1, player.Center, 1, 1)
                     && npc.Distance(player.Center) > 220f;
                 if (canShoot) {
-                    float shootSpeed = context.IsDeathMode ? 13.5f : 11.5f;
+                    float shootSpeed = context.IsAsuraMode ? 13.5f : 11.5f;
                     Vector2 predicted = EocMotion.PredictTarget(player, npc.Center, shootSpeed, 0.5f);
                     Vector2 dir = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
 

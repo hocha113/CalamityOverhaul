@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Content.Narrative;
-using CalamityOverhaul.Content.Scenarios.OniRainWorlds;
+using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
 using InnoVault.Cinematics;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;

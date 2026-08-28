@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             stateContext.Target = targetPlayer;
             stateContext.Owner = this;
             stateContext.BossRush = CWRRef.GetBossRushActive();
-            stateContext.DeathMode = CWRRef.GetDeathMode() || stateContext.BossRush;
+            stateContext.AsuraMode = CWRWorld.Asura;
             stateContext.MasterMode = Main.masterMode || stateContext.BossRush;
 
             //滞回消抖：连续30帧在庙外才落怒，一回神庙立即解除
@@ -366,7 +366,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
 
         /// <summary>残酷遗物：日核拳骨，残酷世界必掉</summary>
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(),
                 ModContent.ItemType<SolarCoreFist>()));
         }
         #endregion

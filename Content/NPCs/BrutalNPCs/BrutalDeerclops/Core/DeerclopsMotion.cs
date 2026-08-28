@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Core
             if (ctx.IsPhase2) {
                 baseSpeed += 0.7f;
             }
-            if (ctx.IsDeathMode) {
+            if (ctx.IsAsuraMode) {
                 baseSpeed += 0.5f;
             }
             baseSpeed *= ctx.MoveSpeedMult;
@@ -81,9 +81,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Core
             bool insideTilesShallow = Collision.SolidCollision(foot, footW, footH - 4, acceptTopSurfaces);
             bool wallAhead = !Collision.SolidCollision(foot + new Vector2(footW * npc.direction, 0f), 16, 80, acceptTopSurfaces);
 
-            float jumpVel = ctx.IsDeathMode ? -11f : -8.5f;
+            float jumpVel = ctx.IsAsuraMode ? -11f : -8.5f;
             float gravity = 0.4f;
-            float riseCap = ctx.IsDeathMode ? -12f : -8f;
+            float riseCap = ctx.IsAsuraMode ? -12f : -8f;
 
             if (insideTiles || insideTilesShallow) {
                 //贴地重置跳跃闩

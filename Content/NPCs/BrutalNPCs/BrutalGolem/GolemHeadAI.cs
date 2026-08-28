@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
 
         #region 火控（服务端裁决，弹幕自带出膛表现）
         private void UpdateFireControl(GolemStateIndex bodyState, bool enraged) {
-            bool death = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            bool asura = CWRWorld.Asura;
 
             //眼部炽热提示：任何压制射击窗口发亮
             bool inFireWindow = bodyState is GolemStateIndex.SunBarrage or GolemStateIndex.TrapScore
@@ -121,12 +121,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             switch (bodyState) {
                 case GolemStateIndex.SunBarrage:
                     //双眼交替直射弹，与躯干宝石臼炮互补
-                    interval = GolemDirector.Tempo(40, death, enraged);
+                    interval = GolemDirector.Tempo(40, asura, enraged);
                     alternate = true;
                     break;
                 case GolemStateIndex.TrapScore:
                     //机关演奏时点射，把走位逼进刺谱
-                    interval = GolemDirector.Tempo(62, death, enraged);
+                    interval = GolemDirector.Tempo(62, asura, enraged);
                     alternate = false;
                     break;
                 case GolemStateIndex.PunchCombo:
@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                 case GolemStateIndex.StompCombo:
                 case GolemStateIndex.Connector:
                     //近战窗口保底压制
-                    interval = GolemDirector.Tempo(84, death, enraged);
+                    interval = GolemDirector.Tempo(84, asura, enraged);
                     alternate = true;
                     break;
                 default:
@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             float weave = weaveSign * Main.rand.NextFloat(0.09f, 0.15f);
             Vector2 vel = (lead - muzzle).SafeNormalize(Vector2.UnitY).RotatedBy(weave) * 9.5f;
 
-            int damage = GolemDirector.ScaleDamage(GolemDirector.SunBoltDamage, CWRRef.GetDeathMode(), enraged);
+            int damage = GolemDirector.ScaleDamage(GolemDirector.SunBoltDamage, GameModes.GameModeSystem.AsuraActive, enraged);
             Projectile.NewProjectile(npc.GetSource_FromAI(), muzzle, vel,
                 ModContent.ProjectileType<GolemSunBolt>(), damage, 0f, Main.myPlayer);
             npc.netUpdate = true;

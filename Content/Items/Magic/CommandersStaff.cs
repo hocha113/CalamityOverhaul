@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.autoReuse = true;
             Item.rare = ItemRarityID.Pink;
             Item.value = Item.buyPrice(0, 1, 60, 10);
-            Item.CWR().DeathModeItem = true;
+            Item.CWR().BrutalWorldItem = true;
         }
 
         public override bool CanUseItem(Player player)

@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         private void InitializeStateContext() {
             stateContext = new PlanteraStateContext {
                 Npc = npc,
-                IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()
+                IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<PlanteraStateContext>(stateContext, aiSlot: 2);
 
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         private void UpdateStateContext() {
             stateContext.Npc = npc;
             stateContext.Target = targetPlayer;
-            stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            stateContext.IsAsuraMode = CWRWorld.Asura;
             stateContext.IsLowLife = npc.life < npc.lifeMax * PlanteraDirector.NovaLifeRatio;
 
             //激怒：目标出丛林或上地表(原版规则)；滞回消抖：连续30帧在外才落怒，一回丛林立即解除
@@ -269,7 +269,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
                 speed *= 2f;
                 accel = Math.Max(accel * 2f, 0.12f);
             }
-            if (stateContext.IsDeathMode) {
+            if (stateContext.IsAsuraMode) {
                 speed *= 1.2f;
             }
 
@@ -454,7 +454,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         #region 掉落
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
             //残酷遗物：残酷世界必掉(条件类自带门禁与图鉴显示)
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<BloomNovaBulb>()));
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(), ModContent.ItemType<BloomNovaBulb>()));
         }
         #endregion
 

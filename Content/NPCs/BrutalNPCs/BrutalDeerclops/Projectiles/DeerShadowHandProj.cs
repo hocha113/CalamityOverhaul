@@ -225,9 +225,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Projectiles
             Vector2 away = (player.Center - npc.Center).SafeNormalize(Vector2.UnitX);
             Vector2 spawnPos = player.Center + away * 430f + away.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-120f, 120f);
             Vector2 vel = (player.Center - spawnPos).SafeNormalize(Vector2.UnitX) * 6.5f;
-            bool death = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            bool asura = CWRWorld.Asura;
             Projectile.NewProjectile(npc.GetSource_FromAI(), spawnPos, vel,
-                ModContent.ProjectileType<DeerShadowHandProj>(), death ? 15 : 12, 0f, Main.myPlayer,
+                ModContent.ProjectileType<DeerShadowHandProj>(), asura ? 15 : 12, 0f, Main.myPlayer,
                 1f, player.whoAmI, 0f);
         }
         #endregion

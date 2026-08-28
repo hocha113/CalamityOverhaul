@@ -36,13 +36,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             "Phase2Dash"
         ];
 
-        private float ChaseSpeed => Context.IsDeathMode ? 11f : 9f;
-        private float MaxTurnRad => Context.IsDeathMode ? 0.052f : 0.042f;
-        private int FlameDuration => Context.IsDeathMode ? 100 : 130;
-        private int FlameInterval => Context.IsDeathMode ? 8 : 9;
+        private float ChaseSpeed => Context.IsAsuraMode ? 11f : 9f;
+        private float MaxTurnRad => Context.IsAsuraMode ? 0.052f : 0.042f;
+        private int FlameDuration => Context.IsAsuraMode ? 100 : 130;
+        private int FlameInterval => Context.IsAsuraMode ? 8 : 9;
 
         /// <summary>最小交战半径，切向盘旋不贴脸</summary>
-        private float StandoffRadius => Context.IsDeathMode ? 280f : 320f;
+        private float StandoffRadius => Context.IsAsuraMode ? 280f : 320f;
 
         /// <summary>近于此距离不点火，防糊脸</summary>
         private const float MinFireDistance = 200f;

@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
             Exit = 3,
         }
 
-        private float RakeSpeed(EowStateContext ctx) => (ctx.IsPhase2 ? 30f : 26f) + (ctx.IsDeathMode ? 3f : 0f);
+        private float RakeSpeed(EowStateContext ctx) => (ctx.IsPhase2 ? 30f : 26f) + (ctx.IsAsuraMode ? 3f : 0f);
         private int PassCount(EowStateContext ctx) => 2;
 
         private Phase phase;

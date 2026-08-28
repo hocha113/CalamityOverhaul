@@ -81,8 +81,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
 
         #region 系绳模式(原版几何+灾厄口径)
         private void UpdateTetherMode(NPC wall) {
-            bool death = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
-            float acceleration = death ? 0.15f : 0.12f;
+            bool asura = CWRWorld.Asura;
+            float acceleration = asura ? 0.15f : 0.12f;
             float tetherRadius = 300f;
 
             npc.damage = npc.defDamage;
@@ -91,12 +91,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
             if (wallLifeRatio < 0.5f) {
                 npc.damage = npc.defDamage * 2;
                 npc.defense = 30;
-                acceleration += death ? 0.1f : 0.08f;
+                acceleration += asura ? 0.1f : 0.08f;
             }
             else if (wallLifeRatio < 0.75f) {
                 npc.damage = (int)Math.Round(npc.defDamage * 1.5f);
                 npc.defense = 20;
-                acceleration += death ? 0.05f : 0.04f;
+                acceleration += asura ? 0.05f : 0.04f;
             }
 
             //个体差异化系绳半径(原版按whoAmI打散)
@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
                 if (wallLifeRatio < 0.1f) {
                     velocityBoost += 0.9f;
                 }
-                velocityBoost *= death ? 1.4f : 1.25f;
+                velocityBoost *= asura ? 1.4f : 1.25f;
                 velocityBoost += 0.3f;
                 maxVelocity += velocityBoost * 0.35f;
                 if ((npc.Center.X < wall.Center.X && wall.velocity.X > 0f)

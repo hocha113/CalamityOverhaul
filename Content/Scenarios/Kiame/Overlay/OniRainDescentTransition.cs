@@ -1,70 +1,107 @@
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.Scenarios.Shenyo;
 using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
+namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
 {
     /// <summary>
-    /// 送出演出的相位状态机（沈幽初遇落幕后被送出鬼雨世界）：
-    /// 骤雨合幕 → 满幕遮蔽下深度归零并真正交付鬼伞 → 排水揭回真实世界 → 落定。<br/>
-    /// 与深潜同一套冲刷语汇，渲染复用 <see cref="OniRainDescentRender"/> 的合成管线
-    /// （两条演出互斥，渲染层按活动源取数）；节拍常量是唯一时钟，纯本地演出量。
+    /// 深潜演出的相位状态机（雨世界内再撑一层）：骤雨起势→湿墨冲刷合幕→满幕遮蔽下结算→
+    /// 排墨揭深层→落定，纯本地演出量。<br/>
+    /// 与入雨的镜面翻转不同语法：世界是画在纸上的，雨把它冲掉，颜色先被冲得向下流淌，
+    /// 雨帘随后合拢成整幅水幕，幕后切层，幕再向下排尽。节拍常量是唯一时钟，
+    /// <see cref="OniRainDescentCutscene"/> 与 <see cref="OniRainDescentRender"/> 都从这里取数；
+    /// 运镜失败不致命，演出照走。
     /// </summary>
-    internal static class OniRainExitTransition
+    internal static class OniRainDescentTransition
     {
-        //节拍表（60fps）：合幕起势0-40 → 冲刷合幕40-92 → 遮蔽结算100 → 排水110-152 → 落定168
-        public const int SurgeEnd = 40;
-        public const int CoverEnd = 92;
-        /// <summary>送出结算帧：满幕遮蔽下深度归零+发伞，跳变全被水幕盖住</summary>
-        public const int CommitFrame = 100;
-        public const int DrainStart = 110;
-        public const int DrainEnd = 152;
-        public const int TotalFrames = 168;
+        //节拍表（60fps）：骤雨起势0-46 → 冲刷合幕46-118 → 遮蔽结算126 → 排墨136-186 → 落定204
+        public const int SurgeEnd = 46;
+        public const int CoverEnd = 118;
+        /// <summary>深潜结算帧：满幕遮蔽下切换深度，跳变全被水幕盖住</summary>
+        public const int CommitFrame = 126;
+        public const int DrainStart = 136;
+        public const int DrainEnd = 186;
+        public const int TotalFrames = 204;
 
         public static bool Active { get; private set; }
         public static int Timer { get; private set; }
 
-        /// <summary>运镜焦点：起演时的玩家立点，这次被送走的门是人自己</summary>
+        /// <summary>运镜焦点：伞盖上方，深潜的门就是这把伞</summary>
         public static Vector2 FocusWorld { get; private set; }
+        /// <summary>伞的世界坐标，排墨撕口从伞顶先裂开</summary>
+        public static Vector2 UmbrellaWorld { get; private set; }
 
         //渲染包络，Update 逐帧推进
-        /// <summary>骤雨增压：送别的雨最后压一阵，结算后真实世界无雨</summary>
+        /// <summary>骤雨增压：加进常驻雨帘密度的额外量，结算后由深层密度接管</summary>
         public static float RainSurge { get; private set; }
-        /// <summary>湿墨冲刷强度 0-1：深层的颜色被冲得向下流淌</summary>
+        /// <summary>湿墨冲刷强度 0-1：旧世界颜色向下流淌溶解</summary>
         public static float InkRun { get; private set; }
-        /// <summary>雨帘遮蔽 0-1：满幕水幕合拢进度</summary>
+        /// <summary>雨帘遮蔽 0-1：满幕水幕的合拢进度，1=全遮蔽</summary>
         public static float CurtainCover { get; private set; }
-        /// <summary>排水进度 0-1：水幕排走，露出真实世界</summary>
+        /// <summary>排墨进度 0-1：水幕自上而下排走，露出深层</summary>
         public static float Drain { get; private set; }
-        /// <summary>结算雷闪</summary>
+        /// <summary>结算雷闪：隔着水幕亮起的惨白</summary>
         public static float Flash { get; private set; }
+        /// <summary>伞的躁动包络，起势段起颤、合幕段拉满、结算后回落</summary>
+        public static float UmbrellaAgitation { get; private set; }
+        /// <summary>溺亡拖入模式：被鬼奴杀死时的下潜，起手带一记被拽走的重拍</summary>
+        public static bool DrownMode { get; private set; }
 
-        /// <summary>渲染合成是否需要介入：排尽且无闪光后输出等于输入</summary>
+        /// <summary>渲染合成是否需要介入：排尽且无闪光后输出等于输入，直接让位</summary>
         public static bool RenderActive => Active
             && (InkRun > 0.0005f || Flash > 0.0005f
             || (CurtainCover > 0.0005f && Drain < 0.999f));
 
-        /// <summary>开始送出演出，仅本地玩家且身处雨世界时生效；重复调用无效</summary>
-        public static void Begin(Player player) {
-            if (Active || OniRainWorldTransition.Active || OniRainDescentTransition.Active
-                || Main.dedServ || player == null || player.whoAmI != Main.myPlayer
-                || !player.Alives()) {
+        /// <summary>开始深潜演出，仅本地玩家且身处雨世界未达最深层时生效；重复调用无效</summary>
+        public static void Begin(Player player, Vector2 umbrellaGround)
+            => BeginCore(player, umbrellaGround, drown: false);
+
+        /// <summary>
+        /// 溺亡拖入：被鬼奴杀死后的下潜，共用整条冲刷时间轴，
+        /// 只在起手补一记被拽走的重拍
+        /// </summary>
+        public static void BeginFromDrown(Player player, Vector2 ground)
+            => BeginCore(player, ground, drown: true);
+
+        private static void BeginCore(Player player, Vector2 umbrellaGround, bool drown) {
+            if (Active || OniRainWorldTransition.Active || Main.dedServ
+                || player == null || player.whoAmI != Main.myPlayer || !player.Alives()) {
                 return;
             }
-            if (!OniRainWorldState.LocalIn) {
+            if (!OniRainWorldState.LocalIn
+                || OniRainWorldState.LocalDepth >= OniRainWorldState.MaxDepth) {
                 return;
             }
 
             Active = true;
             Timer = 0;
-            FocusWorld = player.Center;
+            UmbrellaWorld = umbrellaGround;
+            FocusWorld = umbrellaGround + new Vector2(0f, -40f);
             ZeroEnvelopes();
+            DrownMode = drown;
+
+            if (drown) {
+                //被拽走的一记重锤：致死帧直接砸下，雨随后灌满
+                SoundEngine.PlaySound(SoundID.Thunder with {
+                    Pitch = -0.5f,
+                    Volume = 0.8f,
+                    MaxInstances = 3,
+                }, player.Center);
+                SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
+                    Pitch = -0.6f,
+                    Volume = 0.65f,
+                    MaxInstances = 3,
+                }, player.Center);
+                SoundEngine.PlaySound(SoundID.SplashWeak with {
+                    Pitch = -0.95f,
+                    Volume = 0.7f,
+                    MaxInstances = 3,
+                }, player.Bottom);
+                player.CWR()?.GetScreenShake(10f);
+            }
         }
 
         internal static void Update() {
@@ -101,18 +138,18 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         private static void AdvanceEnvelopes() {
             int t = Timer;
 
-            //骤雨增压：起势段涨满压着送行，结算后真实世界自然无雨
-            RainSurge = t >= CommitFrame ? 0f : 0.6f * Smooth01(t / (float)SurgeEnd);
+            //骤雨增压：起势段涨满，结算前一直压着；结算后深层自身密度接管
+            RainSurge = t >= CommitFrame ? 0f : 0.7f * Smooth01(t / (float)SurgeEnd);
 
-            //湿墨冲刷：起势中段起手，合幕时拉满；结算后真实世界不再流墨
+            //湿墨冲刷：起势中段起手，合幕时拉满；结算后新世界不再流墨（切断藏在满幕后）
             float inkStart = SurgeEnd * 0.6f;
             InkRun = t >= CommitFrame ? 0f
                 : Smooth01((t - inkStart) / (CoverEnd - inkStart));
 
-            //雨帘遮蔽：略晚于流墨合拢，满幕后保持，揭开交给排水
-            CurtainCover = Smooth01((t - 26f) / (CoverEnd - 26f));
+            //雨帘遮蔽：略晚于流墨合拢，满幕后保持，揭开交给排墨
+            CurtainCover = Smooth01((t - 30f) / (CoverEnd - 30f));
 
-            //排水：先慢后快再慢，水幕整体排走
+            //排墨：先慢后快再慢，水幕整体向下排走
             Drain = t <= DrainStart ? 0f
                 : CubicInOut((t - DrainStart) / (float)(DrainEnd - DrainStart));
 
@@ -126,16 +163,22 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             else {
                 Flash = 0f;
             }
+
+            //伞的躁动：起势起颤、合幕拉满、结算后松劲
+            UmbrellaAgitation = t <= SurgeEnd
+                ? Smooth01(t / (float)SurgeEnd)
+                : t < CommitFrame ? 1f
+                : 1f - Smooth01((t - CommitFrame) / 40f);
         }
 
-        /// <summary>相位粒子：合幕段满屏流水、排水段沿前沿泼水、落定溅圈，与深潜同语汇</summary>
+        /// <summary>相位粒子：合幕段满屏流水、排墨段沿撕口线泼水、落定溅圈</summary>
         private static void SpawnStageFx(Player player) {
             //湿墨色板，与鬼雨体系一致
             Color pale = new(170, 185, 190);
             Color damp = new(58, 66, 70);
 
-            //合幕段：整幅屏幕都在流水
-            if (Timer > 26 && Timer < CoverEnd && Timer % 2 == 0) {
+            //合幕段：整幅屏幕都在流水，快速竖直水线随遮蔽加密
+            if (Timer > 30 && Timer < CoverEnd && Timer % 2 == 0) {
                 Matrix inv = Matrix.Invert(Main.GameViewMatrix.TransformationMatrix);
                 int burst = 2 + (int)(CurtainCover * 3f);
                 for (int i = 0; i < burst; i++) {
@@ -144,15 +187,15 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                         Main.rand.NextFloat(-0.05f, 0.6f) * Main.screenHeight);
                     Vector2 world = Vector2.Transform(screenPx, inv) + Main.screenPosition;
                     Vector2 vel = new(Main.rand.NextFloat(-0.3f, 0.3f),
-                        Main.rand.NextFloat(14f, 20f));
+                        Main.rand.NextFloat(15f, 21f));
                     PRTLoader.NewParticle<PRT_GhostRainDrop>(world, vel,
                         pale * Main.rand.NextFloat(0.4f, 0.6f),
-                        Main.rand.NextFloat(0.8f, 1.25f))
+                        Main.rand.NextFloat(0.8f, 1.3f))
                         ?.Configure(Main.rand.Next(26, 44), vel.X);
                 }
             }
 
-            //排水段：前沿向下泼水
+            //排墨段：撕口前沿向下泼水，水是整片排走的
             if (Timer >= DrainStart && Timer < DrainEnd && Timer % 3 == 0) {
                 float frontUv = MathHelper.Clamp(Drain * 1.25f, 0f, 1f);
                 if (frontUv > 0.02f && frontUv < 0.98f) {
@@ -163,16 +206,16 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                             frontUv * Main.screenHeight);
                         Vector2 world = Vector2.Transform(screenPx, inv) + Main.screenPosition;
                         Vector2 vel = new(Main.rand.NextFloat(-0.5f, 0.5f),
-                            Main.rand.NextFloat(9f, 13f));
+                            Main.rand.NextFloat(9f, 14f));
                         PRTLoader.NewParticle<PRT_GhostRainDrop>(world, vel,
                             pale * Main.rand.NextFloat(0.35f, 0.55f),
-                            Main.rand.NextFloat(0.5f, 0.75f))
+                            Main.rand.NextFloat(0.5f, 0.8f))
                             ?.Configure(Main.rand.Next(18, 30), vel.X);
                     }
                 }
             }
 
-            //落定确认拍：真实世界的地面上溅开最后一圈水，潮气散尽
+            //落定确认拍：排尽的水在脚下溅开一圈，潮气腾起
             if (Timer == DrainEnd) {
                 for (int i = 0; i < 12; i++) {
                     float angle = -MathHelper.Pi * (0.15f + 0.7f * i / 11f);
@@ -191,51 +234,62 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                         Main.rand.NextFloat(0.7f, 1.05f))
                         ?.Configure(Main.rand.Next(80, 120));
                 }
-                player.CWR()?.GetScreenShake(3f);
+                player.CWR()?.GetScreenShake(3.5f);
             }
         }
 
         private static void PlayBeats(Player player) {
             switch (Timer) {
-                case 8:
-                    //送别的雨压上来
+                case 6:
+                    //远处一声闷雷，雨要变天
+                    SoundEngine.PlaySound(SoundID.Thunder with {
+                        Pitch = -0.85f,
+                        Volume = 0.4f,
+                        MaxInstances = 3,
+                    }, player.Center);
+                    break;
+                case 24:
+                    //雨声骤密第一拍
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
                         Pitch = -0.8f,
                         Volume = 0.55f,
                         MaxInstances = 3,
-                    }, player.Center);
+                    }, FocusWorld);
                     break;
                 case SurgeEnd:
+                    //雨压上来，已经不是下雨是灌
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
                         Pitch = -0.55f,
-                        Volume = 0.6f,
+                        Volume = 0.65f,
                         MaxInstances = 3,
-                    }, player.Center);
+                    }, FocusWorld);
                     break;
-                case 70:
-                    //颜色被冲走：布被扯紧的闷吸声
+                case 78:
+                    //颜色开始被冲走：布被扯紧的闷吸声
                     SoundEngine.PlaySound(SoundID.DD2_BookStaffCast with {
                         Pitch = -0.9f,
-                        Volume = 0.42f,
+                        Volume = 0.45f,
                         MaxInstances = 3,
-                    }, player.Center);
+                    }, FocusWorld);
                     break;
                 case CoverEnd - 4:
+                    //水幕合拢，世界被整幅盖住
                     SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with {
-                        Pitch = -0.75f,
+                        Pitch = -0.8f,
                         Volume = 0.5f,
                         MaxInstances = 3,
-                    }, player.Center);
+                    }, FocusWorld);
                     break;
                 case DrainStart + 6:
-                    //水向下抽走，真实世界露出来
+                    //排水：整片水向下抽走
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
-                        Pitch = -0.25f,
+                        Pitch = -0.3f,
                         Volume = 0.6f,
                         MaxInstances = 3,
                     }, player.Center);
                     break;
                 case DrainEnd:
+                    //落定一记压低的闷锣，深层的雨声接管
                     SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
                         Pitch = -0.9f,
                         Volume = 0.4f,
@@ -245,34 +299,20 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             }
         }
 
-        /// <summary>结算：满幕遮蔽下深度归零、真正交付鬼伞，跳变全被水幕盖住</summary>
+        /// <summary>结算：满幕遮蔽下潜入更深一层，天空与调色的跳变全被水幕盖住</summary>
         private static void Commit(Player player) {
             SoundEngine.PlaySound(SoundID.Thunder with {
                 Pitch = -0.7f,
-                Volume = 0.8f,
+                Volume = 0.85f,
                 MaxInstances = 3,
             }, player.Center);
-            //交付拍：雨声里一记清响
-            SoundEngine.PlaySound(SoundID.Item4 with {
-                Pitch = -0.2f,
-                Volume = 0.6f,
+            SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
+                Pitch = -0.75f,
+                Volume = 0.55f,
                 MaxInstances = 3,
             }, player.Center);
-            player.CWR()?.GetScreenShake(7f);
-
-            OniRainWorldState.ExitToSurfaceLocal(player);
-            GrantKikasa(player);
-        }
-
-        /// <summary>真正交付鬼伞，防重复；背包满时 GiveItem 自动落地</summary>
-        internal static void GrantKikasa(Player player) {
-            if (player == null || player.whoAmI != Main.myPlayer
-                || ShenyoStorySync.KikasaGranted) {
-                return;
-            }
-            ShenyoStorySync.KikasaGranted = true;
-            player.GiveItem(player.GetSource_Misc("OniRainWorld"),
-                ModContent.ItemType<KikasaItem>());
+            player.CWR()?.GetScreenShake(8f);
+            OniRainWorldState.DescendLocal(player);
         }
 
         private static void Finish() {
@@ -281,13 +321,13 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             ZeroEnvelopes();
         }
 
-        /// <summary>玩家中途失效：结算前取消（进度自愈会再送一次），结算后直接收尾</summary>
+        /// <summary>玩家中途失效：结算前取消不下潜，结算后直接收尾（深度已切换）</summary>
         private static void Abort() {
             Active = false;
             ZeroEnvelopes();
         }
 
-        /// <summary>世界卸载/回主菜单的硬复位，不回滚已结算的状态</summary>
+        /// <summary>世界卸载/回主菜单的硬复位，不回滚已结算的深度</summary>
         internal static void HardReset() {
             Active = false;
             Timer = 0;
@@ -296,6 +336,8 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 
         private static void ZeroEnvelopes() {
             RainSurge = InkRun = CurtainCover = Drain = Flash = 0f;
+            UmbrellaAgitation = 0f;
+            DrownMode = false;
         }
 
         private static float Smooth01(float value) {

@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
         public Player Target { get; set; }
         public GolemFistAI Owner { get; set; }
 
-        public bool DeathMode { get; set; }
+        public bool AsuraMode { get; set; }
         public bool Enraged { get; set; }
         /// <summary>拳侧 -1左 / 1右</summary>
         public int Side { get; set; }

@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
                 if (!VaultUtils.isClient) {
                     Vector2 muzzle = npc.Center + tipDir * 30f;
                     Projectile.NewProjectile(npc.GetSource_FromAI(), muzzle,
-                        tipDir * SkeletronDirector.FlickSkullSpeed(ctx.Death),
+                        tipDir * SkeletronDirector.FlickSkullSpeed(ctx.Asura),
                         ModContent.ProjectileType<SkeletronCursedSkull>(),
                         SkeletronHeadAI.GetSkullDamage(ctx.Head), 0f, Main.myPlayer, 0f, 0f);
                     npc.netUpdate = true;
@@ -306,7 +306,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
 
             if (phaseTimer >= duration) {
                 //一帧内定速：直线读得快；出手瞬间指轴拉伸（弹性形变）
-                npc.velocity = (strikeAim - npc.Center).SafeNormalize(Vector2.UnitY) * SkeletronDirector.SlamSpeed(ctx.Death);
+                npc.velocity = (strikeAim - npc.Center).SafeNormalize(Vector2.UnitY) * SkeletronDirector.SlamSpeed(ctx.Asura);
                 npc.rotation = npc.velocity.ToRotation() - MathHelper.PiOver2;
                 ctx.SpringVelocity = npc.velocity;
                 ctx.TriggerSquash(-0.3f);
@@ -326,7 +326,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
             ctx.PalmFlame = 1f;
             npc.rotation = npc.velocity.ToRotation() - MathHelper.PiOver2;
 
-            if (npc.velocity.Length() < SkeletronDirector.SlamSpeed(ctx.Death) * 1.28f) {
+            if (npc.velocity.Length() < SkeletronDirector.SlamSpeed(ctx.Asura) * 1.28f) {
                 npc.velocity *= 1.02f;
             }
 
@@ -443,7 +443,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
             else if (!arrived) {
                 //合拢
                 if (Timer == SnapFrame) {
-                    npc.velocity = (clapAnchor - npc.Center).SafeNormalize(Vector2.UnitX * ctx.Side) * SkeletronDirector.ClapSpeed(ctx.Death);
+                    npc.velocity = (clapAnchor - npc.Center).SafeNormalize(Vector2.UnitX * ctx.Side) * SkeletronDirector.ClapSpeed(ctx.Asura);
                     npc.rotation = npc.velocity.ToRotation() - MathHelper.PiOver2;
                     ctx.SpringVelocity = npc.velocity;
                     if (!VaultUtils.isServer) {

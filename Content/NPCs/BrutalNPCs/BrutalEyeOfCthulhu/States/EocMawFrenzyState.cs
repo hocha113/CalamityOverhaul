@@ -32,8 +32,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private const int GapTime = 6;
         private const int RecoverTime = 44;
 
-        private int MaxHops => Context.IsDeathMode ? 7 : 6;
-        private float HopSpeed => Context.IsDeathMode ? 56f : 52f;
+        private int MaxHops => Context.IsAsuraMode ? 7 : 6;
+        private float HopSpeed => Context.IsAsuraMode ? 56f : 52f;
 
         private EocStateContext Context;
         private FrenzyPhase phase;
@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                 if (VaultUtils.isClient) {
                     return null;
                 }
-                return new EocVeilHoverState(context.IsDeathMode ? 42 : 56);
+                return new EocVeilHoverState(context.IsAsuraMode ? 42 : 56);
             }
             return null;
         }

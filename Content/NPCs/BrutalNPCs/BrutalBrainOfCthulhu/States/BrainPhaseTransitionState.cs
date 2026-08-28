@@ -157,7 +157,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
             npc.netUpdate = true;
 
             //壳片四象限×2轮抛射
-            int fragDamage = FragmentDamage + (context.IsDeathMode ? 3 : 0);
+            int fragDamage = FragmentDamage + (context.IsAsuraMode ? 3 : 0);
             for (int round = 0; round < 2; round++) {
                 for (int q = 0; q < 4; q++) {
                     float angle = -MathHelper.PiOver2 + Main.rand.NextFloat(-1.2f, 1.2f);
@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
             }
 
             //存活飞眼殉爆：各放两粒慢速血珠后移除（前期清眼的回报=更干净的爆场）
-            int shardDamage = ShardDamage + (context.IsDeathMode ? 2 : 0);
+            int shardDamage = ShardDamage + (context.IsAsuraMode ? 2 : 0);
             context.RefreshCreepers();
             foreach (var creeper in context.Creepers) {
                 if (!creeper.Alives()) {

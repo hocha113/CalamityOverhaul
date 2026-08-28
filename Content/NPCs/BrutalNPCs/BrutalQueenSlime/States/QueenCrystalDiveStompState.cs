@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
                         if (dir.Y < 0.55f) {
                             dir = new Vector2(MathHelper.Clamp(dir.X, -0.8f, 0.8f), 1f).SafeNormalize(Vector2.UnitY);
                         }
-                        npc.velocity = dir * (context.IsDeathMode ? 37f : 33f);
+                        npc.velocity = dir * (context.IsAsuraMode ? 37f : 33f);
                         if (!VaultUtils.isClient) {
                             npc.netUpdate = true;
                         }
@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
             }
 
             //左右各三座尖塔行进波(留出落点身侧的近身安全角)
-            int spires = context.IsDeathMode ? 4 : 3;
+            int spires = context.IsAsuraMode ? 4 : 3;
             for (int side = -1; side <= 1; side += 2) {
                 for (int i = 0; i < spires; i++) {
                     Vector2 basePos = npc.Bottom + new Vector2(side * (150f + i * 128f), 0f);

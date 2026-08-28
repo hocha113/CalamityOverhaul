@@ -10,7 +10,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Gen.Passes
     //只往地面上放，不动体块；洼地与结构禁区一律让路
     internal class KiameScatterPass : GenPass
     {
-        private const ushort TrunkTile = TileID.SpookyWood;
+        //灰烬木：泡烂发灰的枯木质感（幽灵木在暗调下读作黑曜石，2026-08-28 反馈换掉）
+        private const ushort TrunkTile = TileID.AshWood;
 
         private static int trees;
         private static int rubble;

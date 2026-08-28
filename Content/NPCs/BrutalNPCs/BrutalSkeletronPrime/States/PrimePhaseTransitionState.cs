@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             npc.ai[PrimeAiSlots.HeadPhase] = PrimePhase.Rage;
 
             //Lerp升至高空定点
-            Vector2 toPoint = context.Target.Center + new Vector2(0, context.DeathMode ? -400 : -500);
+            Vector2 toPoint = context.Target.Center + new Vector2(0, context.AsuraMode ? -400 : -500);
             npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.05f);
             LeanTowards(npc, context.Target.Center);
 

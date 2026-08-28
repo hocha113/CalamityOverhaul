@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
 
         public override IGolemState OnUpdate(GolemStateContext context) {
             NPC npc = context.Npc;
-            int totalHops = context.DeathMode ? 4 : 3;
+            int totalHops = context.AsuraMode ? 4 : 3;
             bool isHeavy = Counter == totalHops - 1;
 
             switch (step) {
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             //落地碎石扇：快跳小扇、重踏大扇，压制头顶空域（服务端）
             if (!VaultUtils.isClient) {
                 int shards = isHeavy ? 5 : (context.Sundered ? 3 : 2);
-                if (context.DeathMode) {
+                if (context.AsuraMode) {
                     shards++;
                 }
                 SpawnLandingShards(context, shards);

@@ -110,8 +110,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
         private static void SprayGlobs(BrainStateContext context, int volley) {
             NPC npc = context.Npc;
             Player player = context.Target;
-            int count = (context.IsDeathMode ? 13 : 10) + volley;
-            int damage = GlobDamage + (context.IsDeathMode ? 3 : 0);
+            int count = (context.IsAsuraMode ? 13 : 10) + volley;
+            int damage = GlobDamage + (context.IsAsuraMode ? 3 : 0);
 
             Vector2 predicted = player.Center + player.velocity * 22f;
             Vector2 toTarget = predicted - npc.Center;

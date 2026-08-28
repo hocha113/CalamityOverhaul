@@ -1,3 +1,4 @@
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles;
 using System;
@@ -112,7 +113,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 float fraction = ordinal / (float)ctx.TotalSegments;
                 if (ctx.PulsePhase >= fraction) {
                     ticked[ordinal] = true;
-                    SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.4f, Pitch = 0.2f + fraction * 0.5f, MaxInstances = 4 },
+                    //干木咔嗒逐节爬调
+                    SoundEngine.PlaySound(SoundID.Item102 with { Volume = 0.5f, Pitch = 0.2f + fraction * 0.5f, MaxInstances = 4 },
                         seg.Center);
                 }
             }

@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             //扫描间隙手部缓速波矢压位：上对与下对错半拍（四臂持握转向的火力仪式，幻影眼已除役）。
             //节拍放疏 46→100：主秀是扫描束，波矢只留禁蹲桩的底压——旧节拍四手交叉满屏乱矢，
             //盖过扫描角可读性（2026-08 用户令砍半：同屏至多一组对射，总量约 34→16）。
-            //死亡模式压缩后节拍点须仍落在余数域内：拍点钳到 interval-1 兜底任何节奏缩放，
+            //修罗模式压缩后节拍点须仍落在余数域内：拍点钳到 interval-1 兜底任何节奏缩放，
             //下对取相移半周期而非固定余数
             int streamInterval = Frames(context, 100);
             int streamBeat = Math.Min(20, streamInterval - 1);

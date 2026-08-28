@@ -205,8 +205,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 return;
             }
             int timer = coreAI.StateTimer;
-            bool death = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
-            int chargeEnd = MLordDirector.Frames(ChargeEnd, death);
+            bool asura = CWRWorld.Asura;
+            int chargeEnd = MLordDirector.Frames(ChargeEnd, asura);
             int fire = chargeEnd + SilenceLen;
             int aimLock = (int)(AimLockTick / (float)ChargeEnd * chargeEnd);
             if (timer < aimLock || timer >= fire) {

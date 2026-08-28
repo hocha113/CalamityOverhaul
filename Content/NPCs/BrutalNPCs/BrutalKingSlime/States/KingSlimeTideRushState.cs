@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             }
 
             //复合加速
-            rushSpeed = Math.Min(rushSpeed * 1.045f, context.IsDeathMode ? 30f : 26f);
+            rushSpeed = Math.Min(rushSpeed * 1.045f, context.IsAsuraMode ? 30f : 26f);
             npc.velocity = new Vector2(rushDir * rushSpeed, 0f);
 
             //贴地形起伏

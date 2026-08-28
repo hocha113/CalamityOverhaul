@@ -154,7 +154,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
             Vector2 meet = ClapMeetPoint(npc);
             float playerAng = (context.Target.Center - meet).ToRotation();
             int count = SkeletronDirector.ApplauseRingCount + clapIndex * 3;
-            float speed = SkeletronDirector.ApplauseRingSpeed(context.DeathMode) + clapIndex * 0.5f;
+            float speed = SkeletronDirector.ApplauseRingSpeed(context.AsuraMode) + clapIndex * 0.5f;
             int damage = SkullDamage(context);
 
             for (int i = 0; i < count; i++) {

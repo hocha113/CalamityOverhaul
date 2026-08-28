@@ -1,7 +1,10 @@
+using CalamityOverhaul.Content.Items.Magic.Everdeeps;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics;
 using System;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
 {
@@ -40,6 +43,22 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
             float speedScale = dist > SeaShrimpDirector.LeashDistance ? 1.6f : 1f;
             loco.RequestCrawlTo(target.Center, speedScale);
             ctx.WaveGain = MathHelper.Clamp(npc.velocity.Length() / 7f, 0.4f, 1.4f);
+
+            //connector 喘息：收招回枢纽的整备身语——尾扇甩水的一次呼吸，段落间的可见标点
+            if (t <= SeaShrimpDirector.ConnectorFrames) {
+                float ct = t / (float)SeaShrimpDirector.ConnectorFrames;
+                float pulse = MathF.Sin(ct * MathF.PI);
+                ctx.TailFlare = 0.35f + 0.45f * pulse;
+                ctx.SpineCurl = -0.12f * pulse;
+                if (t == 6 && !Main.dedServ) {
+                    SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.35f, Pitch = 0.45f, MaxInstances = 2 }, npc.Center);
+                    Vector2 tailPos = ctx.Owner.Skeleton.Nodes[4].Pos;
+                    for (int i = 0; i < 3; i++) {
+                        EverdeepVFX.ShedDroplet(tailPos + Main.rand.NextVector2Circular(10f, 8f),
+                            ctx.Owner.Skeleton.Nodes[4].Forward * 1.5f + new Vector2(0f, -1.6f), 0.8f);
+                    }
+                }
+            }
 
             //出招裁决：connector 喘息走完 + 冷却归零 + 目标在交战圈内
             if (t > SeaShrimpDirector.ConnectorFrames && ctx.AttackCooldown <= 0

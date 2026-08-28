@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
             Player player = context.Target;
 
             if (!VaultUtils.isClient) {
-                int count = context.IsDeathMode ? 9 : 7;
+                int count = context.IsAsuraMode ? 9 : 7;
                 Vector2 baseDir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
                 for (int i = 0; i < count; i++) {
                     float spread = MathHelper.Lerp(-1.1f, 1.1f, count <= 1 ? 0.5f : i / (float)(count - 1))

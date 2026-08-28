@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
 
             int dir = DirToTarget(context);
             Point feet = npc.Bottom.ToTileCoordinates();
-            int damage = context.IsDeathMode ? 20 : 16;
+            int damage = context.IsAsuraMode ? 20 : 16;
 
             for (int k = 0; k < ChunksPerScoop; k++) {
                 //掀起点：身前地表

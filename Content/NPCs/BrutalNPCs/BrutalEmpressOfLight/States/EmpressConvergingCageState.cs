@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             float gapSeed = Main.rand.NextFloat(MathHelper.TwoPi);
             float chirality = cageIdx % 2 == 0 ? 1f : -1f;
             float radius = CageRadius + cageIdx * 90f;
-            float inSpeed = (context.IsDeathMode ? 5.2f : 4.6f) + cageIdx * 0.3f;
+            float inSpeed = (context.IsAsuraMode ? 5.2f : 4.6f) + cageIdx * 0.3f;
             float tangential = 1.35f * chirality;
             int hold = context.Scaled(HoldTime);
 

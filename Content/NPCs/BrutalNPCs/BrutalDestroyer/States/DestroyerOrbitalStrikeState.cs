@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         private int PassCount(DestroyerStateContext ctx) => 2;
         private float DiveSpeed(DestroyerStateContext ctx)
-            => 82f + (ctx.IsDeathMode ? 10f : 0f);
+            => 82f + (ctx.IsAsuraMode ? 10f : 0f);
 
         //字段由Timer+ai[3]确定性推导
         private Vector2 lineCenter;

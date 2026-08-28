@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics;
 using Microsoft.Xna.Framework.Graphics;
@@ -44,11 +45,12 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
         /// <summary>臂节2：肘端锚点与轴长</summary>
         private static readonly Vector2 Arm2Anchor = new(28f, 10f);
         private const float Arm2AxisLen = 88f;
-        /// <summary>螯：承窝锚点（掌部右中的关节托，网格实测）</summary>
-        private static readonly Vector2 ClawAnchor = new(82f, 58f);
-        /// <summary>螯贴图内在指向角：承窝→钳口方向。网格实测：掌在右下、上钳指从左上弧入，
-        /// 钳口区质心 ≈(48,25)，轴角 ≈ atan2(-33,-34) = -2.35 rad；实机核对时只调这一个数</summary>
-        private const float ClawTexAxis = -2.35f;
+        /// <summary>螯：掌根锚点（左下粗壮处=臂关节位，二审网格实测）</summary>
+        private static readonly Vector2 ClawAnchor = new(40f, 96f);
+        /// <summary>螯贴图内在指向角：掌根→钳口。终裁 2026-08-28：-2.52
+        /// （实机"向中间转90°"指令 + 离线 ±90° 双候选对比，齿口相向收拢者胜出；
+        /// 镜像臂对此参数天然反号，单参数即完成双钳对称向心）。实机核对时只调这一个数</summary>
+        private const float ClawTexAxis = -2.52f;
 
         /// <summary>步足贴图髋/足端锚点与轴角（按站位取 Leg1/2/3）</summary>
         private static readonly Vector2[] LegHip = [new(32f, 5f), new(38f, 6f), new(45f, 4f)];
@@ -88,6 +90,9 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
             gloomMul = 1f - MathHelper.Clamp(ctx.DeathGloom, 0f, 1f) * 0.52f;
             moltWash = MathHelper.Clamp(ctx.Molted01, 0f, 1f);
 
+            //残影拖影：爆发段的同素材水影，压在全部部件之后
+            DrawAfterimages(sb, owner, ctx, alpha);
+
             //远侧层（压暗贴后）
             DrawAntenna(sb, sk, 1, alpha * 0.72f);
             DrawLegRow(sb, sk, row: 1, alpha, dark: 0.55f);
@@ -111,6 +116,152 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
 
             DrawBeams(sb, ctx);
             DrawCrystalGlow(sb, sk, ctx);
+            DrawRingEvents(sb, ctx);
+            DrawColumnEvents(sb, ctx);
+        }
+
+        /// <summary>一次性冲击环事件：ShockRing 参数化环展开（撕裂缘、非数学圆），消费后自清</summary>
+        private static void DrawRingEvents(SpriteBatch sb, SeaShrimpStateContext ctx) {
+            for (int i = ctx.RingEvents.Count - 1; i >= 0; i--) {
+                SeaShrimpStateContext.RingEvent e = ctx.RingEvents[i];
+                float t = (Main.GameUpdateCount - e.Birth) / (float)e.Life;
+                if (t >= 1f) {
+                    ctx.RingEvents.RemoveAt(i);
+                    continue;
+                }
+                float ease = 1f - (1f - t) * (1f - t);
+                float radius = e.FinalR * MathHelper.Lerp(0.12f, 1f, ease);
+                float alpha = (1f - t) * 0.85f * gloomMul;
+                ShockRingDraw.Draw(sb, e.Pos, radius, MathHelper.Lerp(24f, 9f, t),
+                    SeaShrimpVFX.Foam, SeaShrimpVFX.Glow, SeaShrimpVFX.Body, alpha,
+                    tearPx: 14f, squish: e.Squish, innerGlow: t < 0.35f ? 0.3f : 0f, timeSeed: e.Birth * 0.31f);
+            }
+        }
+
+        /// <summary>
+        /// 一次性水柱事件：FishronTornado 换深渊色板，起-盛-散包络，底锚不动
+        /// （柱从地里长出来，quad 大幅宽于名义柱径，撕裂轮廓留在画布内侧）
+        /// </summary>
+        private static void DrawColumnEvents(SpriteBatch sb, SeaShrimpStateContext ctx) {
+            if (ctx.ColumnEvents.Count == 0) {
+                return;
+            }
+            Effect fx = EffectLoader.FishronTornado?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            Texture2D pixel = VaultAsset.placeholder2?.Value;
+            if (fx == null || noise == null || pixel == null) {
+                ctx.ColumnEvents.Clear();
+                return;
+            }
+            for (int i = ctx.ColumnEvents.Count - 1; i >= 0; i--) {
+                SeaShrimpStateContext.ColumnEvent e = ctx.ColumnEvents[i];
+                float t = (Main.GameUpdateCount - e.Birth) / (float)e.Life;
+                if (t >= 1f) {
+                    ctx.ColumnEvents.RemoveAt(i);
+                    continue;
+                }
+                //前 25% 快速蹿起，45% 后向消散
+                float rise = MathHelper.Clamp(t / 0.25f, 0f, 1f);
+                rise = 1f - (1f - rise) * (1f - rise);
+                float fade = 1f - MathHelper.Clamp((t - 0.45f) / 0.55f, 0f, 1f);
+                float drawH = e.Height * 1.3f * MathHelper.Lerp(0.3f, 1f, rise);
+                float drawW = e.Width * 3f;
+
+                fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+                fx.Parameters["uIntensity"]?.SetValue(fade * 1.25f * gloomMul);
+                fx.Parameters["uGrade"]?.SetValue(1f);
+                fx.Parameters["uSeed"]?.SetValue(e.Seed);
+                fx.Parameters["uDeepColor"]?.SetValue(SeaShrimpVFX.Deep.ToVector3());
+                fx.Parameters["uSeaColor"]?.SetValue(SeaShrimpVFX.Body.ToVector3());
+                fx.Parameters["uFoamColor"]?.SetValue(SeaShrimpVFX.Foam.ToVector3());
+
+                sb.End();
+                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                    DepthStencilState.None, RasterizerState.CullNone, fx, Main.GameViewMatrix.TransformationMatrix);
+                GraphicsDevice gd = Main.instance.GraphicsDevice;
+                gd.Textures[1] = noise;
+                gd.SamplerStates[1] = SamplerState.LinearWrap;
+                fx.CurrentTechnique.Passes[0].Apply();
+
+                Vector2 drawCenter = e.Base - new Vector2(0f, drawH * 0.5f);
+                sb.Draw(pixel, drawCenter - Main.screenPosition, null, Color.White, 0f,
+                    pixel.Size() * 0.5f, new Vector2(drawW / pixel.Width, drawH / pixel.Height),
+                    SpriteEffects.None, 0f);
+
+                sb.End();
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                    DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+        }
+
+        /// <summary>
+        /// 残影：位姿环里的主剪影部件（体链+双螯）以深渊水色低透明重绘，
+        /// 同素材残影（契约5），强度由 AfterimageStrength 门控——只在爆发段出现。
+        /// 旧影更暗更沉，新影带一线青,读作被身体拖开的水
+        /// </summary>
+        private static void DrawAfterimages(SpriteBatch sb, SeaShrimpBoss owner, SeaShrimpStateContext ctx, float alpha) {
+            float strength = ctx.AfterimageStrength;
+            if (strength <= 0.06f) {
+                return;
+            }
+            Texture2D arm1 = Arm1Tex?.Value;
+            Texture2D arm2 = Arm2Tex?.Value;
+            Texture2D claw = ClawTex?.Value;
+            Texture2D tail = TailTex?.Value;
+            if (tail == null) {
+                return;
+            }
+            //旧→新叠画：新影盖旧影
+            for (int age = ShrimpPoseTrail.Slots - 1; age >= 0; age--) {
+                ShrimpPoseTrail.Snapshot snap = owner.PoseTrail.Get(age);
+                if (snap == null) {
+                    continue;
+                }
+                float slotFade = age switch { 0 => 0.34f, 1 => 0.24f, 2 => 0.16f, _ => 0.10f };
+                float a = strength * slotFade * alpha * gloomMul;
+                if (a <= 0.02f) {
+                    continue;
+                }
+                //深水拖影底色，最新一层向青辉抬一点
+                Color tint = Color.Lerp(SeaShrimpVFX.Deep, SeaShrimpVFX.Body, age == 0 ? 0.75f : 0.35f) * a;
+
+                //体链（尾→头）
+                DrawGhostPart(sb, tail, snap.NodePos[4], snap.NodeDir[4], tint,
+                    new Vector2(0.72f + 0.42f * snap.TailFlare, 1f), new Vector2(83f, 16f));
+                DrawGhostPart(sb, Seg3Tex?.Value, snap.NodePos[3], snap.NodeDir[3], tint, Vector2.One, null);
+                DrawGhostPart(sb, Seg2Tex?.Value, snap.NodePos[2], snap.NodeDir[2], tint, Vector2.One, null);
+                DrawGhostPart(sb, Seg1Tex?.Value, snap.NodePos[1], snap.NodeDir[1], tint, Vector2.One, null);
+                DrawGhostPart(sb, HeadTex?.Value, snap.NodePos[0], snap.NodeDir[0], tint, Vector2.One, null);
+
+                //双螯（前景主角，残影必须带上它）
+                if (arm1 == null || arm2 == null || claw == null) {
+                    continue;
+                }
+                for (int arm = 1; arm >= 0; arm--) {
+                    bool mirror = arm == 0;
+                    SpriteEffects fx = mirror ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                    sb.Draw(arm1, snap.Shoulder[arm] - Main.screenPosition, null, tint,
+                        snap.UpperRot[arm] - MathHelper.PiOver2, Arm1Anchor,
+                        new Vector2(1f, SeaShrimpDirector.ArmBone1 / Arm1AxisLen), fx, 0f);
+                    sb.Draw(arm2, snap.Elbow[arm] - Main.screenPosition, null, tint,
+                        snap.ForeRot[arm] - MathHelper.PiOver2, Arm2Anchor,
+                        new Vector2(1f, SeaShrimpDirector.ArmBone2 / Arm2AxisLen), fx, 0f);
+                    float texAxis = mirror ? MathHelper.Pi - ClawTexAxis : ClawTexAxis;
+                    Vector2 anchor = mirror ? new Vector2(claw.Width - ClawAnchor.X, ClawAnchor.Y) : ClawAnchor;
+                    sb.Draw(claw, snap.Wrist[arm] - Main.screenPosition, null, tint,
+                        snap.ClawRot[arm] - texAxis, anchor, 1f, fx, 0f);
+                }
+            }
+        }
+
+        private static void DrawGhostPart(SpriteBatch sb, Texture2D tex, Vector2 pos, float dir,
+            Color tint, Vector2 scale, Vector2? originOverride) {
+            if (tex == null) {
+                return;
+            }
+            Vector2 origin = originOverride ?? tex.Size() * 0.5f;
+            sb.Draw(tex, pos - Main.screenPosition, null, tint,
+                dir + MathHelper.PiOver2, origin, scale, SpriteEffects.None, 0f);
         }
 
         /// <summary>
@@ -215,7 +366,12 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
             }
         }
 
-        /// <summary>单侧螯臂：臂节1（肩→肘）→ 臂节2（肘→腕）→ 螯体（腕锚承窝）</summary>
+        /// <summary>
+        /// 单侧螯臂：臂节1（肩→肘）→ 臂节2（肘→腕）→ 螯体（腕锚承窝）。
+        /// 单贴图有手性：远侧臂（armIndex 1）整条水平镜像，双钳才会对称地咬向前方中线
+        /// （离线装配 A/B 方案对比实测）。臂节锚点横向居中且轴向 +Y，镜像下只翻位图；
+        /// 螯需要镜像锚点（w-x）、镜像轴角（π-axis）与开合反号
+        /// </summary>
         private static void DrawArm(SpriteBatch sb, ShrimpSkeleton sk, int armIndex, float alpha, float dark) {
             TwoBoneSolve solve = sk.ArmSolves[armIndex];
             Texture2D arm1 = Arm1Tex?.Value;
@@ -225,25 +381,30 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
                 return;
             }
             Color darkMul = new(dark, dark, dark);
+            //镜像给近侧臂（实机裁决 2026-08-28：轴角 -0.95 下左右手性与旧对比结论对调）
+            bool mirror = armIndex == 0;
+            SpriteEffects fx = mirror ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
             //臂节1：贴图轴 +Y，肩锚在顶部
             Color c1 = LightAt(solve.Shoulder, alpha).MultiplyRGB(darkMul);
             sb.Draw(arm1, solve.Shoulder - Main.screenPosition, null, c1,
                 solve.UpperDir.ToRotation() - MathHelper.PiOver2, Arm1Anchor,
-                new Vector2(1f, SeaShrimpDirector.ArmBone1 / Arm1AxisLen), SpriteEffects.None, 0f);
+                new Vector2(1f, SeaShrimpDirector.ArmBone1 / Arm1AxisLen), fx, 0f);
 
             //臂节2
             Color c2 = LightAt(solve.Elbow, alpha).MultiplyRGB(darkMul);
             sb.Draw(arm2, solve.Elbow - Main.screenPosition, null, c2,
                 solve.ForeDir.ToRotation() - MathHelper.PiOver2, Arm2Anchor,
-                new Vector2(1f, SeaShrimpDirector.ArmBone2 / Arm2AxisLen), SpriteEffects.None, 0f);
+                new Vector2(1f, SeaShrimpDirector.ArmBone2 / Arm2AxisLen), fx, 0f);
 
             //螯体：承窝挂腕，贴图内在轴角对齐世界指向（ClawRot=尖端朝向），钳开合绕锚微旋
-            float open = sk.ClawOpen[armIndex] * 0.34f;
+            float texAxis = mirror ? MathHelper.Pi - ClawTexAxis : ClawTexAxis;
+            Vector2 anchor = mirror ? new Vector2(claw.Width - ClawAnchor.X, ClawAnchor.Y) : ClawAnchor;
+            float open = sk.ClawOpen[armIndex] * 0.34f * (mirror ? -1f : 1f);
             Color c3 = LightAt(solve.Wrist, alpha).MultiplyRGB(darkMul);
             sb.Draw(claw, solve.Wrist - Main.screenPosition, null, c3,
-                sk.ClawRot[armIndex] - ClawTexAxis + open, ClawAnchor,
-                1f, SpriteEffects.None, 0f);
+                sk.ClawRot[armIndex] - texAxis + open, anchor,
+                1f, fx, 0f);
         }
 
         /// <summary>触角：verlet 折线，逐段渐细，尖端泛晶蓝</summary>

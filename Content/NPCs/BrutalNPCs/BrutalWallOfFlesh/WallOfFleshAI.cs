@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
         private void InitializeStateContext() {
             stateContext = new WofStateContext {
                 Npc = npc,
-                IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()
+                IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<WofStateContext>(stateContext, aiSlot: 2);
 
@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
         private void UpdateStateContext() {
             stateContext.Npc = npc;
             stateContext.Target = targetPlayer;
-            stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            stateContext.IsAsuraMode = CWRWorld.Asura;
             stateContext.MasterMode = Main.masterMode;
             stateContext.Phase = (int)npc.ai[1] > 0 ? (int)npc.ai[1] : 1;
 
@@ -304,7 +304,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
                 if (Main.expertMode) {
                     speed *= 1.18f;
                 }
-                if (stateContext.IsDeathMode) {
+                if (stateContext.IsAsuraMode) {
                     speed *= 1.12f;
                 }
                 if (stateContext.Phase >= 3) {
@@ -581,7 +581,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
         #region 掉落
         /// <summary>残酷世界击杀必掉遗物饕餮之喉(条件类自带门禁)</summary>
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(),
                 ModContent.ItemType<GluttonousThroat>()));
         }
         #endregion

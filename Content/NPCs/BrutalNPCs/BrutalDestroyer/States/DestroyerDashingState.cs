@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
 
             //受限转向，高速大弧
-            float maxTurn = (context.IsEnraged ? 0.011f : 0.007f) + (context.IsDeathMode ? 0.003f : 0f);
+            float maxTurn = (context.IsEnraged ? 0.011f : 0.007f) + (context.IsAsuraMode ? 0.003f : 0f);
             float heading = npc.velocity.ToRotation();
             float desired = (player.Center - npc.Center).ToRotation();
             heading = heading.AngleTowards(desired, maxTurn);
@@ -146,7 +146,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 SetMovement(context, player.Center + new Vector2(0, -500), 9f, 0.4f);
             }
 
-            int cooldownTime = (context.IsEnraged ? 40 : 55) - (context.IsDeathMode ? 8 : 0);
+            int cooldownTime = (context.IsEnraged ? 40 : 55) - (context.IsAsuraMode ? 8 : 0);
             Timer++;
 
             if (Timer >= cooldownTime) {

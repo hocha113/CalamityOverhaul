@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         #region 战场事实（由控制器每帧刷新）
         public bool BossRush { get; set; }
         public bool MasterMode { get; set; }
-        public bool Death { get; set; }
+        public bool Asura { get; set; }
         public bool ViceAlive { get; set; }
         public bool CannonAlive { get; set; }
         public bool SawAlive { get; set; }

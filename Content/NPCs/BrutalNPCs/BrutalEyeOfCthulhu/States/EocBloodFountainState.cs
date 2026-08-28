@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private const int SprayTime = 118;
         private const int DizzyTime = 40;
 
-        private int SprayInterval => Context.IsDeathMode ? 4 : 5;
+        private int SprayInterval => Context.IsAsuraMode ? 4 : 5;
 
         private EocStateContext Context;
         private float spinSpeed;
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                 if (VaultUtils.isClient) {
                     return null;
                 }
-                return new EocVeilHoverState(Context.IsDeathMode ? 40 : 52);
+                return new EocVeilHoverState(Context.IsAsuraMode ? 40 : 52);
             }
 
             return null;

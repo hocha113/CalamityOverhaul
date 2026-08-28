@@ -3930,9 +3930,8 @@ ArchiveFrameModule: {
 CWRItem: {
 	TemperatureText: Температура сгорания
 	InternalStoredEnergy: Запас энергии
-	DeathModeItemText: Режим Смерти
-	// BrutalModeItemText: Drops in Brutal Mode
-	// BrutalRelicSeriesText: Brutal Relic · Exclusive to Brutal Mode
+	BrutalWorldItemText: Эксклюзив Жестокого мира
+	// BrutalRelicSeriesText: Brutal Relic · Cruel World Exclusive
 	LegendItemUpgradeDisable:
 		'''
 		Улучшение этого легендарного оружия отключено в текущем мире
@@ -3943,9 +3942,8 @@ CWRItem: {
 	CWRItem: {
 		TemperatureText: Температура сгорания
 		InternalStoredEnergy: Запас энергии
-		DeathModeItemText: Режим Смерти
-		// BrutalModeItemText: Drops in Brutal Mode
-		// BrutalRelicSeriesText: Brutal Relic · Exclusive to Brutal Mode
+		BrutalWorldItemText: Эксклюзив Жестокого мира
+		// BrutalRelicSeriesText: Brutal Relic · Cruel World Exclusive
 		LegendItemUpgradeDisable:
 			'''
 			Улучшение этого легендарного оружия отключено в текущем мире

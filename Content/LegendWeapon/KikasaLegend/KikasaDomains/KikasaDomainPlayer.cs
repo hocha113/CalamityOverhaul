@@ -2,7 +2,7 @@
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps;
-using CalamityOverhaul.Content.Scenarios.OniRainWorlds;
+using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
 using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.Cinematics;
 using Microsoft.Xna.Framework.Input;
@@ -454,8 +454,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
         }
 
-        /// <summary>湖面物理：移动应用前钳制。每端对所有玩家跑同一规则（状态源自同步快照），各端一致</summary>
-        public override void PreUpdateMovement() => KikasaLakeSurface.ApplyStanding(Player);
+        /// <summary>湖面物理：移动应用前钳制。每端对所有玩家跑同一规则（状态源自同步快照），各端一致；
+        /// 沉玩家束缚在湖面钳制之后钉身（仅受害者本机生效），束缚写的速度是最终裁决</summary>
+        public override void PreUpdateMovement() {
+            KikasaLakeSurface.ApplyStanding(Player);
+            KikasaDrowns.KikasaPlayerDrown.ApplyBindMovement(Player);
+        }
 
         //==================== 网络形态 ====================
 

@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             stateContext = new TwinsStateContext {
                 Npc = npc,
                 Ai = ai,
-                IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive(),
+                IsAsuraMode = CWRWorld.Asura,
                 IsSpazmatism = npc.type == NPCID.Spazmatism
             };
 
@@ -182,13 +182,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             //残酷遗物：双瞳系绳。两眼都挂规则(Retinazer 控制器继承本方法)，
             //MissingTwin 令最后倒下的那只结算，保证双眼全灭只掉一件
             LeadingConditionRule twinRelicRule = new LeadingConditionRule(new Conditions.MissingTwin());
-            twinRelicRule.OnSuccess(ItemDropRule.ByCondition(new DropInBrutalMode(),
+            twinRelicRule.OnSuccess(ItemDropRule.ByCondition(new DropInBrutalWorld(),
                 ModContent.ItemType<Items.Accessories.BrutalRelics.Twins.TwinPupilTether>()));
             npcLoot.Add(twinRelicRule);
             if (thisNPC.type != NPCID.Spazmatism) {
                 return;
             }
-            IItemDropRuleCondition condition = new DropInDeathMode();
+            IItemDropRuleCondition condition = new DropInBrutalWorld();
             LeadingConditionRule rule = new LeadingConditionRule(condition);
             rule.SimpleAdd(ModContent.ItemType<FocusingGrimoire>(), 4);
             rule.SimpleAdd(ModContent.ItemType<GeminisTribute>(), 4);
@@ -298,7 +298,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             stateContext.Npc = npc;
             stateContext.Target = player;
             stateContext.IsSecondPhase = IsSecondPhase();
-            stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            stateContext.IsAsuraMode = CWRWorld.Asura;
 
             //冲刺视觉每帧衰减
             stateContext.DecayDashVisuals();
@@ -317,8 +317,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             NPC partner = TwinsStateContext.GetPartnerNpc(npc.type);
             bool partnerDead = !partner.Alives();
 
-            //死亡模式允许搭档濒死即提前狂暴，但名额只有一个，避免双眼同时进无限狂暴
-            if (!partnerDead && stateContext.IsDeathMode
+            //修罗模式允许搭档濒死即提前狂暴，但名额只有一个，避免双眼同时进无限狂暴
+            if (!partnerDead && stateContext.IsAsuraMode
                 && (partner.life / (float)partner.lifeMax) < 0.15f) {
                 partnerDead = TwinsStateContext.TryClaimEarlyRage(npc.type);
             }

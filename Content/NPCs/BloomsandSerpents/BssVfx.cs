@@ -1,3 +1,4 @@
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -82,12 +83,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 ?.Configure(Main.rand.Next(80, 130), 0.7f);
         }
 
-        /// <summary>沙兽嘶吼（Zombie7 = 沙鲨/猛兽声部，仓内蠕虫先例）</summary>
+        /// <summary>沙兽怒吼</summary>
         internal static void Roar(Vector2 pos, float pitch = -0.4f, float volume = 1f) {
             if (VaultUtils.isServer) {
                 return;
             }
-            SoundEngine.PlaySound(SoundID.Zombie7 with { Pitch = pitch, Volume = volume, MaxInstances = 3 }, pos);
+            SoundEngine.PlaySound(SoundID.Roar with { Pitch = pitch, Volume = volume, MaxInstances = 3 }, pos);
         }
 
         /// <summary>就近震屏：只震看得见战斗的本地玩家</summary>
@@ -121,7 +122,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             }
         }
 
-        /// <summary>转阶段公平阀：清掉本 boss 已发出的全部敌对弹幕（只清自家类型）</summary>
+        /// <summary>
+        /// 转阶段公平阀：清掉本 boss 已发出的全部敌对弹幕与滞留演出实体（只清自家类型）。
+        /// 漩涡与隆包非 hostile 也要清：转场后残留的蓄力涡/待爆泉是失主的旧预告
+        /// （两者的爆点逻辑都有自然到期守卫，被 Kill 清掉不会放沙球）。
+        /// </summary>
         internal static void ClearOwnHostileProjectiles() {
             if (VaultUtils.isClient) {
                 return;
@@ -130,8 +135,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             int needle = ModContent.ProjectileType<Projectiles.BssNeedleProj>();
             int ball = ModContent.ProjectileType<Projectiles.BssCactusBallProj>();
             int petal = ModContent.ProjectileType<Projectiles.BssPetalProj>();
+            int vortex = ModContent.ProjectileType<Projectiles.BssSandVortexProj>();
+            int omen = ModContent.ProjectileType<Projectiles.BssBreachOmen>();
             foreach (var p in Main.ActiveProjectiles) {
-                if (p.type == sand || p.type == needle || p.type == ball || p.type == petal) {
+                if (p.type == sand || p.type == needle || p.type == ball || p.type == petal
+                    || p.type == vortex || p.type == omen) {
                     p.Kill();
                 }
             }

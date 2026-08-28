@@ -41,8 +41,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         protected virtual float BodyFraction => MathHelper.Clamp(bodyCount / DestroyerHeadAI.BodyCount, 0f, 1f);
         private float LifeRatio => npc.life / (float)npc.lifeMax;
         private bool StartFlightPhase => LifeRatio < 0.5f;
-        private bool Phase2 => LifeRatio < (CWRWorld.Death ? 0.4f : 0.25f);
-        private bool Phase3 => LifeRatio < (CWRWorld.Death ? 0.2f : 0.1f);
+        private bool Phase2 => LifeRatio < (CWRWorld.Asura ? 0.4f : 0.25f);
+        private bool Phase3 => LifeRatio < (CWRWorld.Asura ? 0.2f : 0.1f);
         private bool IncreaseSpeed => Vector2.Distance(Target.Center, npc.Center) > 4000;
         private bool IncreaseSpeedMore => Vector2.Distance(Target.Center, npc.Center) > 6000;
         private bool FlyAtTarget => ai[3] >= AerialPhaseThreshold && StartFlightPhase;
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             totalSegments = Main.getGoodWorld ? 100 : 80;
-            bool spitLaserSpreads = CWRWorld.Death;
+            bool spitLaserSpreads = CWRWorld.Asura;
             float speed, turnSpeed, segmentVelocity, velocityMultiplier;
             noFlyZoneBoxHeight = 0;
 
@@ -377,7 +377,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         /// <summary>禁飞区高度</summary>
         private int CalculateNoFlyZoneHeight() {
             int baseHeight = CWRWorld.MasterMode ? 1500 : 1800;
-            return baseHeight - (CWRWorld.Death ? 400 : (int)(400f * (1f - LifeRatio)));
+            return baseHeight - (CWRWorld.Asura ? 400 : (int)(400f * (1f - LifeRatio)));
         }
 
         /// <summary>速度/加速度/转向</summary>
@@ -386,9 +386,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             turnSpeed = CWRWorld.MasterMode ? 0.3f : 0.15f;
             segmentVelocity = FlyAtTarget ? (CWRWorld.MasterMode ? 22.5f : 15f) : (CWRWorld.MasterMode ? 30f : 20f);
 
-            float segmentVelocityBoost = CWRWorld.Death ? (FlyAtTarget ? 4.5f : 6f) * (1f - LifeRatio) : (FlyAtTarget ? 3f : 4f) * (1f - LifeRatio);
-            float speedBoost = CWRWorld.Death ? (FlyAtTarget ? 0.1125f : 0.15f) * (1f - LifeRatio) : (FlyAtTarget ? 0.075f : 0.1f) * (1f - LifeRatio);
-            float turnSpeedBoost = CWRWorld.Death ? 0.18f * (1f - LifeRatio) : 0.12f * (1f - LifeRatio);
+            float segmentVelocityBoost = CWRWorld.Asura ? (FlyAtTarget ? 4.5f : 6f) * (1f - LifeRatio) : (FlyAtTarget ? 3f : 4f) * (1f - LifeRatio);
+            float speedBoost = CWRWorld.Asura ? (FlyAtTarget ? 0.1125f : 0.15f) * (1f - LifeRatio) : (FlyAtTarget ? 0.075f : 0.1f) * (1f - LifeRatio);
+            float turnSpeedBoost = CWRWorld.Asura ? 0.18f * (1f - LifeRatio) : 0.12f * (1f - LifeRatio);
 
             segmentVelocity += segmentVelocityBoost;
             speed += speedBoost;

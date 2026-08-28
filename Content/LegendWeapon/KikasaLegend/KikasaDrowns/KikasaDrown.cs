@@ -129,7 +129,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             }
             if (Main.GameUpdateCount < localLockUntil
                 || KikasaDrownFX.HasActiveShowFor(player.whoAmI)
-                || KikasaScourgeFX.HasPressBlockingShowFor(player.whoAmI)) {
+                || KikasaScourgeFX.HasPressBlockingShowFor(player.whoAmI)
+                || KikasaPlayerDrown.HasClientBindFor(player.whoAmI)
+                || KikasaPlayerDrownFX.HasActiveShowFor(player.whoAmI)) {
                 Refuse(player);
                 return true;
             }
@@ -191,9 +193,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
         /// <summary>
         /// 光标选目标：精确命中（外扩 12px）优先；都没戳中时，吸附半径内
-        /// 离光标最近的生物顶上。悬停预兆与按键共用本函数，预览恒等于按下结果
+        /// 离光标最近的生物顶上。悬停预兆与按键共用本函数，预览恒等于按下结果；
+        /// 沉玩家的吸附兜底也要先问它（生物优先于玩家吸附）
         /// </summary>
-        private static NPC FindCursorTarget() {
+        internal static NPC FindCursorTarget() {
             Vector2 mouse = Main.MouseWorld;
             NPC best = null;
             float bestDistSq = float.MaxValue;
@@ -250,7 +253,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             if (Main.GameUpdateCount < localLockUntil
                 || KikasaDrownFX.HasActiveShowFor(player.whoAmI)
                 || KikasaScourgeFX.HasPressBlockingShowFor(player.whoAmI)
+                || KikasaPlayerDrown.HasClientBindFor(player.whoAmI)
+                || KikasaPlayerDrownFX.HasActiveShowFor(player.whoAmI)
                 || !player.GetModPlayer<KikasaVaultPlayer>().LakeReady) {
+                hoverOmenNpc = -1;
+                return;
+            }
+            //精确指着够资格的敌对玩家：这一按走沉人分支，生物预兆让位（预览恒等于按下结果）
+            if (KikasaPlayerDrown.HoverTargetsPlayer(player)) {
                 hoverOmenNpc = -1;
                 return;
             }
@@ -385,7 +395,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             }
             int ownerWho = owner.whoAmI;
             if (cooldowns[ownerWho] > 0 || HasActivationFor(ownerWho)
-                || KikasaScourge.HasPunishActivationFor(ownerWho)) {
+                || KikasaScourge.HasPunishActivationFor(ownerWho)
+                || KikasaPlayerDrown.HasBindFor(ownerWho)) {
                 Reject(ownerWho, "cooldown-or-busy");
                 return false;
             }
@@ -456,6 +467,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 }
             }
             return false;
+        }
+
+        //同一双手一本冷却账：沉玩家（KikasaPlayerDrown）与沉溺共用，这两个口子给它读写
+
+        internal static bool IsCoolingDown(int ownerWho)
+            => ownerWho >= 0 && ownerWho < cooldowns.Length && cooldowns[ownerWho] > 0;
+
+        internal static void SetCooldown(int ownerWho, int frames) {
+            if (ownerWho >= 0 && ownerWho < cooldowns.Length) {
+                cooldowns[ownerWho] = Math.Max(cooldowns[ownerWho], frames);
+            }
         }
 
         //被拒的请求写日志：静默拒绝没法诊断（§2.8）

@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
                 2 => 4,
                 _ => 5,
             };
-            if (ctx.IsDeathMode) {
+            if (ctx.IsAsuraMode) {
                 count++;
             }
             return count;
@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
                         (int)(npc.Center.Y + 20f), NPCID.LeechHead, 1);
                     if (leech < Main.maxNPCs) {
                         //错拍散射：速度与仰角随索引变化，波次感
-                        float speed = (context.IsDeathMode ? 11f : 9f) + spitIndex * 0.8f;
+                        float speed = (context.IsAsuraMode ? 11f : 9f) + spitIndex * 0.8f;
                         Main.npc[leech].velocity.X = npc.direction * speed;
                         Main.npc[leech].velocity.Y = -2.5f + spitIndex * 1.3f;
                         Main.npc[leech].netUpdate = true;

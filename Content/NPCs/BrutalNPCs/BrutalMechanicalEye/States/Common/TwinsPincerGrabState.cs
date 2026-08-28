@@ -41,8 +41,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         internal const int BeatEject = 5;
         internal const int BeatRecover = 6;
 
-        private int GatherPhase => Context.IsDeathMode ? 40 : 46;
-        private int LockPhase => Context.IsDeathMode ? 34 : 40;
+        private int GatherPhase => Context.IsAsuraMode ? 40 : 46;
+        private int LockPhase => Context.IsAsuraMode ? 34 : 40;
         private const int ClosePhaseMax = 16;
         private const int WhiffRecover = 44;
         private const int ClampTime = 10;
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         //慈悲阀：被抓者血量低于上限此比例则跳过剩余喷灼
         private const float MercyLifeRatio = 0.2f;
 
-        private float CloseSpeed => Context.IsDeathMode ? 56f : 52f;
+        private float CloseSpeed => Context.IsAsuraMode ? 56f : 52f;
 
         #endregion
 

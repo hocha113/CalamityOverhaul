@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             if (dy < -140f) {
                 vy -= MathHelper.Clamp(-dy * 0.014f, 0f, 6f);
             }
-            if (context.IsDeathMode) {
+            if (context.IsAsuraMode) {
                 vx *= 1.18f;
             }
 

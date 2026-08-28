@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             NPC npc = ctx.Npc;
             npc.TargetClosest();
             //定制激光，死亡弹速放缓
-            float laserSpeed = (ctx.BossRush ? 5f : 4f) * (1f + Counter * 0.1f) * (ctx.Death ? 0.65f : 0.8f);
+            float laserSpeed = (ctx.BossRush ? 5f : 4f) * (1f + Counter * 0.1f) * (ctx.Asura ? 0.65f : 0.8f);
             int type = ModContent.ProjectileType<DeadLaser>();
             int damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, type));
 
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             LaserAimState.Follow(ctx);
 
             if (chargeProgress < ChargeTime) {
-                chargeProgress += 1f + (ctx.Death ? 0.5f : 0f);
+                chargeProgress += 1f + (ctx.Asura ? 0.5f : 0f);
                 ctx.ChargeGlow = chargeProgress / ChargeTime;
 
                 //临射前锁死瞄准
@@ -250,7 +250,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             LaserAimState.Follow(ctx);
 
             //自旋扫场
-            float scanSpeed = (ctx.MasterMode ? 0.04f : 0.03f) * (ctx.Death ? 1.5f : 1f);
+            float scanSpeed = (ctx.MasterMode ? 0.04f : 0.03f) * (ctx.Asura ? 1.5f : 1f);
             rotationSpeed = MathHelper.Lerp(rotationSpeed, scanSpeed, 0.1f);
             npc.rotation += rotationSpeed * ctx.Side;
 
@@ -277,7 +277,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         private void FireLaserRing(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             //全向环，难度改密度
-            int totalProjectiles = ctx.BossRush ? 22 : (ctx.Death ? 16 : (ctx.MasterMode ? 13 : 10));
+            int totalProjectiles = ctx.BossRush ? 22 : (ctx.Asura ? 16 : (ctx.MasterMode ? 13 : 10));
             float radians = MathHelper.TwoPi / totalProjectiles;
             int ringType = ProjectileID.DeathLaser;
             int ringDamage = ScaleDamage(CWRRef.GetProjectileDamage(npc, ringType));
@@ -297,8 +297,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 Main.projectile[proj].timeLeft = 900;
             }
 
-            //Death追加锁定扇面
-            if (ctx.Death || InfernumRef.InfernumModeOpenState) {
+            //修罗追加锁定扇面
+            if (ctx.Asura || InfernumRef.InfernumModeOpenState) {
                 int fanType = ModContent.ProjectileType<DeadLaser>();
                 int fanDamage = ScaleDamage(CWRRef.GetProjectileDamage(npc, fanType));
                 Vector2 toTarget = npc.Center.To(ctx.Target.Center).UnitVector();

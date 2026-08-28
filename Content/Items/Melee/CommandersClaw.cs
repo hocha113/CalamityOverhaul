@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.DamageType = DamageClass.Melee;
             Item.rare = ItemRarityID.Purple;
             Item.value = Item.buyPrice(0, 1, 65, 0);
-            Item.CWR().DeathModeItem = true;
+            Item.CWR().BrutalWorldItem = true;
         }
 
         public override bool CanUseItem(Player player) => true;

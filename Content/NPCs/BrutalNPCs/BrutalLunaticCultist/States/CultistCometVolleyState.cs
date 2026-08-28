@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         private float orbitDir = 1f;
 
         private static int CometCount(CultistStateContext context) =>
-            context.Phase >= 4 || context.IsDeathMode ? 4 : 3;
+            context.Phase >= 4 || context.IsAsuraMode ? 4 : 3;
 
         public override void OnEnter(CultistStateContext context) {
             base.OnEnter(context);

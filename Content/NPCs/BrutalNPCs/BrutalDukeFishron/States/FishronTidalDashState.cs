@@ -19,13 +19,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
         //末相预警线 -30%：三阶段蓄力（=预告线时长）24→17 帧
         private static int ChargeTime(FishronStateContext ctx) {
             int t = ctx.Phase == 3 ? 17 : ctx.Phase == 2 ? 28 : 34;
-            return t - (ctx.IsDeathMode ? 4 : 0);
+            return t - (ctx.IsAsuraMode ? 4 : 0);
         }
 
         //末相冲刺 +15%：三阶段巡航 58→67
         internal static float DashSpeed(FishronStateContext ctx) {
             float s = ctx.Phase == 3 ? 67f : ctx.Phase == 2 ? 52f : 45f;
-            if (ctx.IsDeathMode) {
+            if (ctx.IsAsuraMode) {
                 s += 4f;
             }
             if (ctx.IsLandEnraged) {
@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             //末相连撞收势 26→16 帧：初版 10 帧被实测读作零间隔，回填到刚好刹满
             //14 帧硬刹再留 2 帧摆位，链感仍远快于一二阶段
             int cooldown = context.Phase >= 3
-                ? 16 : (context.Phase >= 2 ? 26 : 34) - (context.IsDeathMode ? 5 : 0);
+                ? 16 : (context.Phase >= 2 ? 26 : 34) - (context.IsAsuraMode ? 5 : 0);
             Timer++;
 
             if (Timer >= cooldown) {

@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         private const int PhaseTravel = 1;
         private const int PhaseBrake = 2;
 
-        private int MaxPounce(PlanteraStateContext ctx) => ctx.IsDeathMode ? 3 : 2;
+        private int MaxPounce(PlanteraStateContext ctx) => ctx.IsAsuraMode ? 3 : 2;
         private int AimTime(PlanteraStateContext ctx) {
             int t = PlanteraDirector.PounceTelegraphFrames - Counter * 8;
             return Math.Max((int)(t * PlanteraDirector.TimeScale(ctx)), 20);

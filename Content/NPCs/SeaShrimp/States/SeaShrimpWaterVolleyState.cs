@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Magic.Everdeeps;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles;
 using System;
@@ -24,6 +25,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
         private const int Total = 92;
 
         private Vector2 volleyAim = Vector2.UnitX;
+        /// <summary>出膛反坐余量，指数回落</summary>
+        private float recoil;
 
         public override ISeaShrimpState OnUpdate(SeaShrimpStateContext ctx) {
             NPC npc = ctx.Npc;
@@ -31,9 +34,10 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
             Timer++;
             HoldInPlace(ctx);
 
-            //全程蝎式卷尾持姿
+            //全程蝎式卷尾持姿 + 出膛后脊柱前抖的反坐
+            recoil *= 0.8f;
             float curlIn = MathHelper.Clamp(t / (float)CurlEnd, 0f, 1f);
-            ctx.SpineCurl = -0.92f * (curlIn * curlIn * (3f - 2f * curlIn));
+            ctx.SpineCurl = -0.92f * (curlIn * curlIn * (3f - 2f * curlIn)) + 0.2f * recoil;
             ctx.TailFlare = curlIn;
             ctx.WaveGain = 0.35f;
             ctx.CrystalGlow = MathF.Max(ctx.CrystalGlow, curlIn * 0.6f);
@@ -59,10 +63,14 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                     }
                 }
                 if (t == fire) {
-                    //出膛：尾扇回抖一口（发射器反坐），弹间角距=声明缺口
+                    //出膛：尾扇回抖 + 脊柱反坐 + 炮口水花锥，弹间角距=声明缺口
                     ctx.TailFlare = 0.55f;
+                    recoil = 1f;
                     if (!Main.dedServ) {
-                        SoundEngine.PlaySound(SoundID.Item85 with { Volume = 0.7f, Pitch = 0.15f, MaxInstances = 3 }, tailPos);
+                        //三连音调渐升：节奏推进的听觉声明
+                        int round = fire == FireFrames[0] ? 0 : fire == FireFrames[1] ? 1 : 2;
+                        SoundEngine.PlaySound(SoundID.Item85 with { Volume = 0.7f, Pitch = 0.05f + round * 0.14f, MaxInstances = 3 }, tailPos);
+                        EverdeepVFX.SplashBurst(tailPos, -volleyAim * 11f, 0.9f);
                         ShakeNearby(npc.Center, 2.5f);
                     }
                     if (!VaultUtils.isClient) {

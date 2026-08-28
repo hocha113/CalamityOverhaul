@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Magic.Everdeeps;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -38,6 +39,11 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles
             Projectile.velocity.X *= 0.995f;
             Projectile.rotation += Projectile.velocity.X * 0.03f + 0.02f;
             Lighting.AddLight(Projectile.Center, 0.05f, 0.1f, 0.2f);
+            //湿壳滴水:飞行途中偶发甩滴
+            if (!Main.dedServ && Main.rand.NextBool(11)) {
+                EverdeepVFX.ShedDroplet(Projectile.Center,
+                    -Projectile.velocity * 0.06f + Main.rand.NextVector2Circular(0.5f, 0.5f), 0.7f);
+            }
         }
 
         public override void OnKill(int timeLeft) {
@@ -45,6 +51,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles
                 return;
             }
             SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.5f, Pitch = 0.2f, MaxInstances = 3 }, Projectile.Center);
+            //落地:晶屑 + 一小蓬水花
+            EverdeepVFX.SplashBurst(Projectile.Center, Projectile.velocity, 0.6f);
             for (int i = 0; i < 6; i++) {
                 PRTLoader.NewParticle<PRT_DefCrystalShard>(Projectile.Center,
                     new Vector2(Main.rand.NextFloat(-2f, 2f), -Main.rand.NextFloat(0.5f, 2.5f)),

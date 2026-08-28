@@ -42,8 +42,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                 return;
             }
             if (CWRKeySystem.Kikasa_Sink.JustPressed) {
-                //同一个"沉入"手势：光标指着生物就沉生物，否则沉手中物
-                if (!KikasaDrown.TryDrownAtCursor(Player)) {
+                //同一个"沉入"手势的分流：精确指着敌对玩家先沉玩家（联机 PvP），
+                //其次光标指着生物沉生物，玩家吸附命中垫后，都没有才沉手中物
+                if (!KikasaPlayerDrown.TryDrownAtCursor(Player, precise: true)
+                    && !KikasaDrown.TryDrownAtCursor(Player)
+                    && !KikasaPlayerDrown.TryDrownAtCursor(Player, precise: false)) {
                     TrySink();
                 }
             }

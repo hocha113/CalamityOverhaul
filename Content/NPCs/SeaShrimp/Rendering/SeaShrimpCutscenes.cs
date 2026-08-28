@@ -4,20 +4,27 @@ using Terraria;
 namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
 {
     /// <summary>
-    /// 海虾运镜静态口：入场/死亡两段演出各自敞开一个 20 帧窗口（状态推进时上膛），
+    /// 海虾运镜静态口：入场/蜕壳/死亡三段演出各自敞开一个 20 帧窗口（状态推进时上膛），
     /// 窗口关闭后不重播。锚点每帧由状态刷新，时间轴构建期只吃常量（InnoVault 契约）。
     /// 纯本机表现，不锁输入
     /// </summary>
     internal static class SeaShrimpCutscenes
     {
         internal static Vector2 IntroAnchor;
+        internal static Vector2 MoltAnchor;
         internal static Vector2 DeathAnchor;
         private static uint introArmTick;
+        private static uint moltArmTick;
         private static uint deathArmTick;
 
         internal static void ArmIntro(Vector2 anchor) {
             IntroAnchor = anchor;
             introArmTick = Main.GameUpdateCount;
+        }
+
+        internal static void ArmMolt(Vector2 anchor) {
+            MoltAnchor = anchor;
+            moltArmTick = Main.GameUpdateCount;
         }
 
         internal static void ArmDeath(Vector2 anchor) {
@@ -26,6 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
         }
 
         internal static bool IntroArmed => Main.GameUpdateCount - introArmTick < 6u;
+        internal static bool MoltArmed => Main.GameUpdateCount - moltArmTick < 6u;
         internal static bool DeathArmed => Main.GameUpdateCount - deathArmTick < 6u;
     }
 
@@ -46,6 +54,26 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
                 .Add(new CameraZoomTrack(0, 110, 1f, 1.11f, 0.05f, CutsceneEase.CubicOut))
                 .Add(new CameraZoomTrack(170, total - 170, 1.11f, 1f, 0.05f, CutsceneEase.CubicOut))
                 .Add(new CameraShakeTrack(84, Vector2.Zero, 8f, 0.9f, 26));
+        }
+    }
+
+    /// <summary>蜕壳运镜：龟裂期缓推聚焦，崩壳拍重震后缓收（164f 与蜕壳态同拍）</summary>
+    internal sealed class SeaShrimpMoltCutscene : CutsceneClip
+    {
+        public override int Priority => 43;
+
+        public override bool CanPlay(Player player)
+            => base.CanPlay(player) && SeaShrimpGate.Enabled && SeaShrimpCutscenes.MoltArmed
+                && Vector2.Distance(player.Center, SeaShrimpCutscenes.MoltAnchor) < 2000f;
+
+        protected override void BuildTimeline(CutsceneTimeline timeline) {
+            const int total = 164;
+            timeline.Duration = total;
+            timeline
+                .Add(CameraFocusTrack.Follow(0, total, _ => SeaShrimpCutscenes.MoltAnchor, default, 0.07f))
+                .Add(new CameraZoomTrack(0, 66, 1f, 1.09f, 0.05f, CutsceneEase.CubicOut))
+                .Add(new CameraZoomTrack(118, total - 118, 1.09f, 1f, 0.05f, CutsceneEase.CubicOut))
+                .Add(new CameraShakeTrack(70, Vector2.Zero, 10f, 0.9f, 24));
         }
     }
 

@@ -50,9 +50,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             QueenBeeMotion.SpringHover(npc, hoverPos, 0.017f, 0.09f, 26f);
             FaceTarget(npc, player.Center);
 
-            //射击节拍：死亡模式/激怒加速
+            //射击节拍：修罗模式/激怒加速
             int interval = BaseInterval;
-            if (context.IsDeathMode) {
+            if (context.IsAsuraMode) {
                 interval -= 5;
             }
             interval -= (int)(context.EnrageScale * 3f);
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
 
             int count = context.IsPhase2 ? 5 : 3;
             float spreadHalf = context.IsPhase2 ? FanSpreadHalfP2 : FanSpreadHalfP1;
-            float speed = 8.5f + context.EnrageScale * 1.2f + (context.IsDeathMode ? 1f : 0f);
+            float speed = 8.5f + context.EnrageScale * 1.2f + (context.IsAsuraMode ? 1f : 0f);
             for (int i = 0; i < count; i++) {
                 float t = count <= 1 ? 0f : i / (float)(count - 1) * 2f - 1f;
                 Vector2 vel = aim.RotatedBy(t * spreadHalf) * speed;

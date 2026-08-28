@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         public override string StateName => "TwinsScissorRay";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.TwinsScissorRay;
 
-        private int PositionPhase => Context.IsDeathMode ? 56 : 66;
-        private int LockPhase => Context.IsDeathMode ? 60 : 70;
-        private int SweepPhase => Context.IsDeathMode ? 135 : 155;
+        private int PositionPhase => Context.IsAsuraMode ? 56 : 66;
+        private int LockPhase => Context.IsAsuraMode ? 60 : 70;
+        private int SweepPhase => Context.IsAsuraMode ? 135 : 155;
         private const int RecoveryPhase = 42;
         private const int MaxPartnerWait = 120;
 
@@ -178,7 +178,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             if (!rayFired) {
                 rayFired = true;
                 if (!VaultUtils.isClient) {
-                    int damage = Context.IsDeathMode ? 46 : 40;
+                    int damage = Context.IsAsuraMode ? 46 : 40;
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
                         ModContent.ProjectileType<RetinazerDeathRay>(), damage, 0f, Main.myPlayer,
                         npc.whoAmI, SweepPhase, Context.IsSpazmatism ? 1f : 0f);

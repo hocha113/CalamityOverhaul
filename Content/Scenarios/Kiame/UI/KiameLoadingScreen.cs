@@ -139,15 +139,23 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
             waterSurfaceY = MathHelper.Lerp(h * 1.04f, h * 0.74f, rise);
 
             DrawDome(sb, px, w, h, horizonY);
-            //远排：小而密，雨里只剩个大概；近排：大而疏，黑得实
-            DrawRuinRow(sb, px, w, horizonY + h * 0.010f, h * 0.050f, 3, seed: 41, SilFar);
-            DrawRuinRow(sb, px, w, horizonY + h * 0.058f, h * 0.090f, 7, seed: 733, SilNear);
+            //远排：小而密，雨里只剩个大概；近排：大而疏，黑得实。
+            //每排先铺贴地剪影带再立结构，村子长在地上而不是浮在天上
+            DrawRuinRow(sb, px, w, h, horizonY + h * 0.010f, h * 0.050f, 3, seed: 41, SilFar);
+            DrawRuinRow(sb, px, w, h, horizonY + h * 0.058f, h * 0.090f, 7, seed: 733, SilNear);
             DrawUmbrella(sb, px, w, h, horizonY);
             DrawWaterGauge(sb, px, w, h, horizonY, afterWater: false);
             DrawRain(sb, px, w, h);
             DrawWaterRise(sb, px, w, h);
             DrawWaterOptics(sb, px, w, h);
             DrawWaterGauge(sb, px, w, h, horizonY, afterWater: true);
+        }
+
+        /// <summary>行地形线：两组慢正弦叠一点定势哈希，结构脚点与地面填充共用同一条线</summary>
+        private static float GroundTopAt(float baseY, float unit, int x, int seed) {
+            return baseY
+                + MathF.Sin(x * 0.0043f + seed * 1.7f) * unit * 0.16f
+                + MathF.Sin(x * 0.0131f + seed * 3.1f) * unit * 0.07f;
         }
 
         //穹顶：倒置明度，头顶最黑、地平尸青雾光反亮；雷闪从云底透出来
@@ -173,7 +181,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
                 sb.Draw(px, new Rectangle(0, i * (h / bands), w, bandH), PixelSrc, c);
             }
 
-            //缓涌沉云：两层反向漂移的横带，压在地平之上
+            //缓涌沉云：两层反向漂移的软边横带（中心实、上下缘与两端各让半档，
+            //硬边矩形读作贴片，云不能有直角）
             float t = loadTime;
             for (int i = 0; i < 7; i++) {
                 float phase = i * 1.37f;
@@ -182,8 +191,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
                 float drift = (t * 11f * dir + phase * 260f) % (w + 640f) - 320f;
                 int cw = (int)(w * (0.32f + Hash(i, 3) * 0.4f));
                 int ch = (int)(h * (0.014f + Hash(i, 11) * 0.018f));
-                sb.Draw(px, new Rectangle((int)drift, (int)y, cw, ch), PixelSrc,
-                    SkyTop * (0.5f + Hash(i, 7) * 0.26f));
+                DrawSoftBand(sb, px, (int)drift, (int)y, cw, ch,
+                    SkyTop, 0.5f + Hash(i, 7) * 0.26f);
             }
 
             //远景雨幡：云底垂向地平的倾斜暗柱，两层缓移
@@ -203,9 +212,17 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
             }
         }
 
-        //一排废村：残屋/断墙/枯树/歪杆错落，没有一扇窗亮着
-        private static void DrawRuinRow(SpriteBatch sb, Texture2D px, int w, float baseY,
+        //一排废村：先铺贴地剪影带（含缓起伏地形线），再把残屋/断墙/枯树/歪杆
+        //的脚点钉在同一条地形线上——没有一扇窗亮着，也没有一样东西悬空
+        private static void DrawRuinRow(SpriteBatch sb, Texture2D px, int w, int h, float baseY,
             float unit, int cellDiv, int seed, Color sil) {
+            //地面剪影带：逐列填到屏底，顶缘随地形线起伏；上涨的黑水吞的就是这片地
+            const int colStep = 4;
+            for (int x = 0; x < w; x += colStep) {
+                int top = (int)GroundTopAt(baseY, unit, x, seed);
+                sb.Draw(px, new Rectangle(x, top, colStep, Math.Max(h - top, 0)), PixelSrc, sil);
+            }
+
             int cell = Math.Max(w / (cellDiv * 6), 18);
             int count = w / cell + 2;
             for (int i = -1; i < count; i++) {
@@ -213,8 +230,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
                 float h2 = Hash(i, seed + 7);
                 float h3 = Hash(i, seed + 13);
                 float roll = Hash(i, seed + 23);
-                int gy = (int)(baseY + (Hash(i, seed + 31) - 0.5f) * unit * 0.42f);
                 int cx = i * cell + (int)(h3 * cell * 0.5f);
+                //脚点钉在地形线上（略沉半格，接缝被地面吃掉）
+                int gy = (int)GroundTopAt(baseY, unit, cx, seed) + 1;
 
                 if (roll < 0.16f) {
                     continue;
@@ -231,6 +249,24 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
                         (int)(unit * (0.50f + h1 * 0.42f)), (int)(unit * 0.30f), sil, seed + i);
                 }
             }
+        }
+
+        //软边横带：中心实心，上下缘与两端各退一档透明度——云和雾不许有直角
+        private static void DrawSoftBand(SpriteBatch sb, Texture2D px, int x, int y,
+            int bw, int bh, Color color, float alpha) {
+            if (bw <= 4 || bh <= 0) {
+                return;
+            }
+            int edge = Math.Max(bh / 3, 1);
+            int inset = Math.Max(bw / 12, 3);
+            //中心体
+            sb.Draw(px, new Rectangle(x + inset, y, bw - inset * 2, bh), PixelSrc, color * alpha);
+            //上下软缘
+            sb.Draw(px, new Rectangle(x + inset * 2, y - edge, bw - inset * 4, edge), PixelSrc, color * (alpha * 0.45f));
+            sb.Draw(px, new Rectangle(x + inset * 2, y + bh, bw - inset * 4, edge), PixelSrc, color * (alpha * 0.45f));
+            //两端软头
+            sb.Draw(px, new Rectangle(x, y + bh / 4, inset, bh / 2), PixelSrc, color * (alpha * 0.5f));
+            sb.Draw(px, new Rectangle(x + bw - inset, y + bh / 4, inset, bh / 2), PixelSrc, color * (alpha * 0.5f));
         }
 
         //残屋：墙体 + 残破坡脊（随机蛀掉的横条）+ 塌陷侧；窗是黑的
@@ -303,20 +339,31 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
             }
         }
 
-        //枯树：细干 + 被啃过的双团冠（小矩形簇出毛边，别是个圆疙瘩）
+        //枯树：细干 + 三四条上挑秃枝，梢头各一小团——枝是长在干上的，
+        //不是一圈悬空方块（悬空簇在剪影距离上读作坏像素）
         private static void DrawDeadTree(SpriteBatch sb, Texture2D px, int cx, int groundY,
             float size, int seed, Color sil) {
-            int trunkH = (int)MathHelper.Max(size, 5f);
+            int trunkH = (int)MathHelper.Max(size, 6f);
             sb.Draw(px, new Rectangle(cx - 1, groundY - trunkH, 2, trunkH), PixelSrc, sil);
-            int crownY = groundY - trunkH;
-            for (int i = 0; i < 9; i++) {
-                float a = Hash(seed, i * 3 + 1) * MathHelper.TwoPi;
-                float r = size * (0.14f + Hash(seed, i * 3 + 2) * 0.34f);
-                int bw = (int)MathHelper.Max(size * (0.10f + Hash(seed, i * 3) * 0.16f), 2f);
-                sb.Draw(px, new Rectangle(
-                    cx + (int)(MathF.Cos(a) * r) - bw / 2,
-                    crownY + (int)(MathF.Sin(a) * r * 0.72f) - bw / 2,
-                    bw, bw), PixelSrc, sil);
+
+            int branches = 3 + (Hash(seed, 40) > 0.55f ? 1 : 0);
+            for (int i = 0; i < branches; i++) {
+                //枝根落在干的上半段，向外向上逐段爬
+                float rootK = 0.45f + Hash(seed, i * 5 + 1) * 0.5f;
+                int bx = cx;
+                int by = groundY - (int)(trunkH * rootK);
+                int dir = Hash(seed, i * 5 + 2) > 0.5f ? 1 : -1;
+                int segs = 3 + (int)(Hash(seed, i * 5 + 3) * 3f);
+                for (int s = 0; s < segs; s++) {
+                    bx += dir * (1 + (int)(Hash(seed, i * 7 + s) * 2f));
+                    by -= 1 + (int)(Hash(seed, i * 9 + s) * 2f);
+                    sb.Draw(px, new Rectangle(bx, by, 2, 2), PixelSrc, sil);
+                }
+                //梢头小团：残叶或者别的什么，攥在枝尖上
+                if (Hash(seed, i * 5 + 4) > 0.35f) {
+                    int bw = (int)MathHelper.Max(size * 0.12f, 2f);
+                    sb.Draw(px, new Rectangle(bx - bw / 2, by - bw / 2, bw, bw), PixelSrc, sil);
+                }
             }
         }
 
@@ -348,17 +395,20 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
             //盖沿一线湿光
             sb.Draw(px, new Rectangle((int)(cx + sway) - canopyW / 2, canopyTop + canopyH - 1, canopyW, 1),
                 PixelSrc, WaterRim * 0.22f);
+            //伞脚一点湿光：柄插在积水里
+            sb.Draw(px, new Rectangle(cx - 10, footY - 1, 20, 1), PixelSrc, WaterRim * 0.14f);
         }
 
-        //斜雨丝：三层视差，近层粗快、远层细慢；雷闪时整幕透亮
+        //斜雨丝：三层视差，近层粗快、远层细慢；雷闪时整幕透亮。
+        //每丝拆三段头亮尾隐——均匀亮条读作拉伸像素，雨要有来处和去处
         private static void DrawRain(SpriteBatch sb, Texture2D px, int w, int h) {
             float flash = FlashEnv;
             for (int layer = 0; layer < 3; layer++) {
                 int count = layer == 0 ? 26 : layer == 1 ? 38 : 52;
                 float speed = layer == 0 ? 900f : layer == 1 ? 640f : 430f;
-                float len = layer == 0 ? h * 0.045f : layer == 1 ? h * 0.032f : h * 0.022f;
+                float len = layer == 0 ? h * 0.040f : layer == 1 ? h * 0.028f : h * 0.019f;
                 float slant = 0.16f - layer * 0.03f;
-                float alpha = (layer == 0 ? 0.34f : layer == 1 ? 0.24f : 0.15f) * (1f + flash * 0.9f);
+                float alpha = (layer == 0 ? 0.30f : layer == 1 ? 0.21f : 0.13f) * (1f + flash * 0.9f);
                 for (int i = 0; i < count; i++) {
                     float hx = Hash(i, 101 + layer * 37);
                     float hy = Hash(i, 211 + layer * 37);
@@ -368,9 +418,16 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
                     if (y > waterSurfaceY + 6f) {
                         continue;
                     }
-                    sb.Draw(px, new Vector2(x % (w + 40f), y), PixelSrc,
-                        RainPale * alpha, slant, Vector2.Zero,
-                        new Vector2(1.1f, len), SpriteEffects.None, 0f);
+                    //三段渐隐：落点端最亮，来向端几乎没了
+                    float segLen = len / 3f;
+                    Vector2 dir = new(MathF.Sin(slant), MathF.Cos(slant));
+                    Vector2 head = new(x % (w + 40f), y);
+                    for (int s = 0; s < 3; s++) {
+                        float fade = 1f - s * 0.34f;
+                        sb.Draw(px, head - dir * (segLen * (s + 1)), PixelSrc,
+                            RainPale * (alpha * fade), slant, Vector2.Zero,
+                            new Vector2(1.1f, segLen + 1f), SpriteEffects.None, 0f);
+                    }
                 }
             }
         }
@@ -456,16 +513,23 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
             }
         }
 
-        //木桩水尺：进度即水位。桩体与刻度画在水前（会被淹掉），水线亮痕画在水后（浮在面上）
+        //木桩水尺：进度即水位。桩体与刻度画在水前（会被淹掉），水线亮痕画在水后（浮在面上）。
+        //桩要种进土里：下粗上细带底堆，一根裸线悬在半空读作坏像素
         private static void DrawWaterGauge(SpriteBatch sb, Texture2D px, int w, int h,
             float horizonY, bool afterWater) {
             int gx = (int)(w * 0.115f);
             int topY = (int)(horizonY + h * 0.02f);
             int footY = (int)(h * 0.93f);
             if (!afterWater) {
-                //桩体 + 顶牌
-                sb.Draw(px, new Rectangle(gx - 1, topY, 3, footY - topY), PixelSrc, SilNear);
+                //桩体：下半粗、上半细，微斜一笔
+                int midY = (topY + footY) / 2;
+                sb.Draw(px, new Rectangle(gx - 2, midY, 5, footY - midY), PixelSrc, SilNear);
+                sb.Draw(px, new Rectangle(gx - 1, topY, 3, midY - topY), PixelSrc, SilNear);
+                //顶牌
                 sb.Draw(px, new Rectangle(gx - 5, topY - 6, 11, 6), PixelSrc, SilNear);
+                //底堆：桩脚一小撮土石，桩是打进去的
+                sb.Draw(px, new Rectangle(gx - 5, footY - 3, 11, 3), PixelSrc, SilNear);
+                sb.Draw(px, new Rectangle(gx - 8, footY - 1, 17, 2), PixelSrc, SilNear * 0.8f);
                 //八段刻度：往上数的是水，不是日子
                 const int marks = 8;
                 for (int i = 0; i <= marks; i++) {

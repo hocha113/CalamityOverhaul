@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
             }
 
             Point anchor = player.Bottom.ToTileCoordinates();
-            int damage = context.IsDeathMode ? 20 : 16;
+            int damage = context.IsAsuraMode ? 20 : 16;
             bool phase2 = context.IsPhase2;
             int pocketHalf = phase2 ? 6 : 7;
             int outerHalf = 44;
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
 
             //爆心用当前玩家位置(追击口袋里的人)
             Point center = player.Bottom.ToTileCoordinates();
-            int damage = context.IsDeathMode ? 21 : 17;
+            int damage = context.IsAsuraMode ? 21 : 17;
             for (int i = -2; i <= 2; i++) {
                 int tileX = center.X + i * 2;
                 float lean = Math.Sign(i) * 0.22f;

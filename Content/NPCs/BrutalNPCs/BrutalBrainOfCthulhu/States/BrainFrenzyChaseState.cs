@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
                     Vector2 aim = (player.Center + player.velocity * 12f - npc.Center).SafeNormalize(Vector2.UnitY);
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, aim * 11.5f,
                         ModContent.ProjectileType<BrainBloodShard>(),
-                        ShardDamage + (context.IsDeathMode ? 3 : 0), 0f, Main.myPlayer, 0f);
+                        ShardDamage + (context.IsAsuraMode ? 3 : 0), 0f, Main.myPlayer, 0f);
                 }
             }
 

@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private const int EmergeFlight = 30;
         private const int EmergeBrake = 14;
 
-        private float EmergeSpeed => Context.IsDeathMode ? 52f : 47f;
+        private float EmergeSpeed => Context.IsAsuraMode ? 52f : 47f;
         private int MaxAmbushes => Context.IsSecondPhase ? 2 : 1;
 
         private EocStateContext Context;
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 
             //收招决策仅权威端
             if (finished && !VaultUtils.isClient) {
-                return new EocVeilHoverState(context.IsDeathMode ? 42 : 58);
+                return new EocVeilHoverState(context.IsAsuraMode ? 42 : 58);
             }
 
             return null;

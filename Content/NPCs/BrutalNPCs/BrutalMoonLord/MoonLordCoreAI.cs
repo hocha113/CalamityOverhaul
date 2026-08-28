@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             stateContext = new MLordContext {
                 Npc = npc,
                 Owner = this,
-                DeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()
+                AsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<MLordContext>(stateContext, aiSlot: MLordAiSlots.CoreStateSlot);
 
@@ -168,7 +168,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             stateContext.Target = targetPlayer;
             stateContext.Owner = this;
             stateContext.BossRush = CWRRef.GetBossRushActive();
-            stateContext.DeathMode = CWRRef.GetDeathMode() || stateContext.BossRush;
+            stateContext.AsuraMode = CWRWorld.Asura;
             stateContext.MasterMode = Main.masterMode || stateContext.BossRush;
             stateContext.Parts = MLordFacts.ScanParts(npc);
             stateContext.CoreExposed = (int)npc.ai[MLordAiSlots.CorePhase] == MLordPhase.CoreExposed;
@@ -519,7 +519,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 
         /// <summary>残酷遗物：黑闪印记，残酷世界必掉（掉落经死亡演出落幕的原版 checkDead 结算，核心是掉落归属）</summary>
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(),
                 ModContent.ItemType<Items.Accessories.BrutalRelics.MoonLord.BlackFlashSigil>()));
         }
 

@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
 
         #region 战斗状态
         public bool IsEnraged { get; set; }
-        public bool IsDeathMode { get; set; }
+        public bool IsAsuraMode { get; set; }
         //出招环索引
         public int AttackPhaseIndex { get; set; }
         /// <summary>激怒环已启，过半血首招轨道绞杀</summary>

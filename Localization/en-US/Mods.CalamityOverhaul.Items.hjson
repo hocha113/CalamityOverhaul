@@ -4005,9 +4005,8 @@ ArchiveFrameModule: {
 CWRItem: {
 	TemperatureText: Combustion Temperature
 	InternalStoredEnergy: Stored Energy
-	DeathModeItemText: Death Mode
-	BrutalModeItemText: Drops in Brutal Mode
-	BrutalRelicSeriesText: Brutal Relic · Exclusive to Brutal Mode
+	BrutalWorldItemText: Cruel World Exclusive
+	BrutalRelicSeriesText: Brutal Relic · Cruel World Exclusive
 	LegendItemUpgradeDisable:
 		'''
 		This legendary weapon cannot be upgraded in the current world.
@@ -4018,9 +4017,8 @@ CWRItem: {
 	CWRItem: {
 		TemperatureText: Combustion Temperature
 		InternalStoredEnergy: Stored Energy
-		DeathModeItemText: Death Mode
-		BrutalModeItemText: Drops in Brutal Mode
-		BrutalRelicSeriesText: Brutal Relic · Exclusive to Brutal Mode
+		BrutalWorldItemText: Cruel World Exclusive
+		BrutalRelicSeriesText: Brutal Relic · Cruel World Exclusive
 		LegendItemUpgradeDisable:
 			'''
 			This legendary weapon cannot be upgraded in the current world.

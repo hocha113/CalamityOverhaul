@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             //奇偶环反向微旋，相邻环交错成网
             float spiralRate = (ringIdx % 2 == 0 ? 1f : -1f) * 0.0042f;
             float speed = 5.1f + ringIdx * 0.22f;
-            if (context.IsDeathMode) {
+            if (context.IsAsuraMode) {
                 speed += 0.5f;
             }
 

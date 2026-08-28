@@ -29,8 +29,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
         private const int HardTimeout = 900;
         #endregion
 
-        private int BurstsPlanned(QueenSlimeStateContext ctx) => ctx.IsDeathMode ? 4 : 3;
-        private int SpikesPerBurst(QueenSlimeStateContext ctx) => ctx.IsDeathMode ? 20 : 16;
+        private int BurstsPlanned(QueenSlimeStateContext ctx) => ctx.IsAsuraMode ? 4 : 3;
+        private int SpikesPerBurst(QueenSlimeStateContext ctx) => ctx.IsAsuraMode ? 20 : 16;
 
         /// <summary>0落地呼吸 1蹲身预备 2腾空(顶点绽放) 3收势</summary>
         private int stage;
@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
             npc.direction = npc.spriteDirection = dir;
 
             float vx = MathHelper.Clamp(dx * 0.024f, -10.5f, 10.5f) + dir * 3.4f;
-            float vy = context.IsDeathMode ? -12.4f : -11.6f;
+            float vy = context.IsAsuraMode ? -12.4f : -11.6f;
             QueenMotion.LaunchHop(npc, vx, vy);
             context.PushSquash(0.55f);
             context.PoseCommand = 1;

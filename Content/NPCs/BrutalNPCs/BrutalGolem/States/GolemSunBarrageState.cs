@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                 context.VeinGlow = Math.Max(context.VeinGlow, 0.8f);
 
                 //连发段
-                int volleys = context.DeathMode ? 4 : 3;
+                int volleys = context.AsuraMode ? 4 : 3;
                 int volleyInterval = Tempo(context, VolleyInterval);
                 if (!VaultUtils.isClient && Counter < volleys) {
                     if (++volleyTimer >= volleyInterval) {
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             }
 
             Timer++;
-            int endTime = charge + Tempo(context, VolleyInterval) * (context.DeathMode ? 4 : 3) + 70;
+            int endTime = charge + Tempo(context, VolleyInterval) * (context.AsuraMode ? 4 : 3) + 70;
             if (Timer >= endTime && !VaultUtils.isClient) {
                 return new GolemConnectorState();
             }
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             Player target = context.Target;
             Vector2 gem = npc.Center + new Vector2(0f, -6f);
 
-            int shots = (context.Sundered ? 4 : 3) + (context.DeathMode ? 1 : 0);
+            int shots = (context.Sundered ? 4 : 3) + (context.AsuraMode ? 1 : 0);
             int damage = ScaleDamage(context, GolemDirector.MortarDamage);
 
             for (int i = 0; i < shots; i++) {

@@ -30,8 +30,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private const float RingStartRadius = 640f;
         private const float RingEndRadius = 470f;
 
-        private int ServantCount => Context.IsDeathMode ? 8 : 7;
-        private float ConvergeSpeed => Context.IsDeathMode ? 27f : 23f;
+        private int ServantCount => Context.IsAsuraMode ? 8 : 7;
+        private float ConvergeSpeed => Context.IsAsuraMode ? 27f : 23f;
 
         private EocStateContext Context;
         private EncirclePhase phase;
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                         if (VaultUtils.isClient) {
                             return null;
                         }
-                        return new EocVeilHoverState(context.IsDeathMode ? 40 : 54);
+                        return new EocVeilHoverState(context.IsAsuraMode ? 40 : 54);
                     }
                     break;
             }
@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             if (Timer == 14 && !diveLaunched) {
                 diveLaunched = true;
                 Vector2 diveDir = (player.Center + player.velocity * 8f - npc.Center).SafeNormalize(Vector2.UnitY);
-                EocMotion.DashLaunch(npc, context, diveDir, Context.IsDeathMode ? 50f : 45f, 1.15f);
+                EocMotion.DashLaunch(npc, context, diveDir, Context.IsAsuraMode ? 50f : 45f, 1.15f);
                 if (!VaultUtils.isClient) {
                     npc.netUpdate = true;
                 }

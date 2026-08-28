@@ -917,6 +917,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
             //役灵收湖的手同层压上：目标是活体召唤物，真身走普通弹幕层，手要罩着它拖
             KikasaMinionDrownFX.Draw(spriteBatch, viewedOwner, handFx, noise, handShaderOk);
+
+            //沉玩家的手同层压上：目标是活体玩家，真身走原版玩家层，手要罩着他押
+            KikasaPlayerDrownFX.Draw(spriteBatch, viewedOwner, handFx, noise, handShaderOk);
         }
 
         //加色层：合围鼓包的水下行进光斑 + 出水根口的泡沫光

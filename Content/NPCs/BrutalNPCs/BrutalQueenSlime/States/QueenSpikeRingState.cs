@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
         private const int TailTime = 34;
         private const int TotalTime = MaterializeTime + VolleyTime + TailTime;
         /// <summary>跑马灯轮射拍(节点依次开火，永不齐射——公平阀)</summary>
-        private int VolleyGap(QueenSlimeStateContext ctx) => ctx.IsDeathMode ? 21 : 26;
+        private int VolleyGap(QueenSlimeStateContext ctx) => ctx.IsAsuraMode ? 21 : 26;
         /// <summary>皇后自补扇周期</summary>
         private const int QueenFanPeriod = 88;
         #endregion
@@ -154,7 +154,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
                 if ((int)n.ai[1] != slot) {
                     continue;
                 }
-                int count = context.IsDeathMode ? 6 : 5;
+                int count = context.IsAsuraMode ? 6 : 5;
                 QueenMotion.SpawnSpikeFan(n, n.Center, context.Target.Center, count, 0.3f, 8.6f,
                     QueenCrystalSpikeProj.SpikeDamage, slot * 0.2f);
                 return;

@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.value = Item.buyPrice(0, 1, 60, 5);
             Item.shoot = ModContent.ProjectileType<DestroyersBladeHeld>();
             Item.shootSpeed = 15;
-            Item.CWR().DeathModeItem = true;
+            Item.CWR().BrutalWorldItem = true;
             //noMelee 武器需要手动允许近战词缀
             ItemOverride.ItemMeleePrefixDic[Type] = true;
         }

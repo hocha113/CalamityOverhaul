@@ -16,9 +16,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         public override string StateName => "RetinazerHoverShoot";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerHoverShoot;
 
-        private int ShootRate => Context.IsDeathMode ? 52 : 64;
-        private float LaserSpeed => Context.IsDeathMode ? 12f : 10f;
-        private int MaxBurstCount => Context.IsDeathMode ? 2 : 3;
+        private int ShootRate => Context.IsAsuraMode ? 52 : 64;
+        private float LaserSpeed => Context.IsAsuraMode ? 12f : 10f;
+        private int MaxBurstCount => Context.IsAsuraMode ? 2 : 3;
         private const int BurstShots = 3;
         private const int BurstInterval = 6;
 

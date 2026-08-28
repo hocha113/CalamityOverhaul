@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core
         #region 战斗状态
         /// <summary>战斗阶段 1/2/3，写入 npc.ai[1] 同步(大招/转阶段的一次性门也由它承担)</summary>
         public int Phase { get; set; } = 1;
-        public bool IsDeathMode { get; set; }
+        public bool IsAsuraMode { get; set; }
         public bool MasterMode { get; set; }
         /// <summary>死亡演出完成，CheckDead 放行真死</summary>
         public bool DeathPerformanceFinished { get; set; }

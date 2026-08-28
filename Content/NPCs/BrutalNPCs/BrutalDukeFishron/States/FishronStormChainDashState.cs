@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
         //每轮冲刺方向，预告锁定帧冻结
         private Vector2 frozenDashDir;
 
-        private static int MaxReps(FishronStateContext ctx) => ctx.IsDeathMode ? 5 : 4;
+        private static int MaxReps(FishronStateContext ctx) => ctx.IsAsuraMode ? 5 : 4;
 
         public override void OnEnter(FishronStateContext context) {
             base.OnEnter(context);

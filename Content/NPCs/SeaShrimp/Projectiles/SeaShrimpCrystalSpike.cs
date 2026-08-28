@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Magic.Everdeeps;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -84,8 +85,9 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles
                 }
             }
             if (age == OmenFrames && !Main.dedServ) {
-                //拔地帧
+                //拔地帧：晶屑 + 湿沙水花锥（晶刺是从浸水海床里顶出来的）
                 SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.5f, Pitch = -0.25f, MaxInstances = 4 }, Projectile.Center);
+                EverdeepVFX.SplashBurst(Projectile.Center, Vector2.UnitY * 8f, 0.75f);
                 for (int i = 0; i < 6; i++) {
                     PRTLoader.NewParticle<PRT_DefCrystalShard>(Projectile.Center + new Vector2(Main.rand.NextFloat(-14f, 14f), 0f),
                         new Vector2(Main.rand.NextFloat(-1.6f, 1.6f), -Main.rand.NextFloat(2f, 5f)),

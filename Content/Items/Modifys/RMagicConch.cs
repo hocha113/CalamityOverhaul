@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Modifys
 
         public override bool? On_CanUseItem(Item item, Player player) => DontInBossUseItem(player);
         public static bool? DontInBossUseItem(Player player) {
-            if (CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()) {
+            if (CWRWorld.Asura) {
                 bool myIsBossTarget = false;
                 foreach (var npc in Main.ActiveNPCs) {
                     if (npc.boss) {

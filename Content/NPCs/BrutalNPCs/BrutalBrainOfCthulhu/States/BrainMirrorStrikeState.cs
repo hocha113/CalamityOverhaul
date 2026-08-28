@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
         private static void SpawnMirrors(BrainStateContext context) {
             NPC npc = context.Npc;
             Vector2 anchor = context.Target.Center;
-            int damage = MirrorContactDamage + (context.IsDeathMode ? 3 : 0);
+            int damage = MirrorContactDamage + (context.IsAsuraMode ? 3 : 0);
 
             Projectile.NewProjectile(npc.GetSource_FromAI(), anchor, Vector2.Zero,
                 ModContent.ProjectileType<BrainMirrorImage>(), damage, 0f, Main.myPlayer,

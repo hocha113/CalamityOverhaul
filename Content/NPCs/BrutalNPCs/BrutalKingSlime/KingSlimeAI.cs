@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
             stateContext = new KingSlimeStateContext {
                 Npc = npc,
                 Host = this,
-                IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()
+                IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<KingSlimeStateContext>(stateContext, aiSlot: 2);
 
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
             stateContext.Target = targetPlayer;
             stateContext.IsPhase2 = stateContext.Phase2Started;
             stateContext.IsLowHP = npc.life <= npc.lifeMax * DecreeLifeRatio;
-            stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            stateContext.IsAsuraMode = CWRWorld.Asura;
 
             //液化掠近冷却递减；客户端在状态机推进前从 ai[5] 恢复位移旗
             //(潮汐 OnEnter 读取该旗，须先于状态创建到位)
@@ -364,7 +364,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
         private void UpdateScaleAndHitbox() {
             float lifeRatio = MathHelper.Clamp(npc.life / (float)npc.lifeMax, 0f, 1f);
             float baseScale = 0.95f + lifeRatio * 0.55f;
-            if (stateContext.IsDeathMode) {
+            if (stateContext.IsAsuraMode) {
                 baseScale += 0.18f;
             }
             float newScale = baseScale * stateContext.ScaleMul;
@@ -456,7 +456,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
 
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
             //残酷遗物：残酷模式击杀必掉(条件类自带门禁)
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(),
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(),
                 ModContent.ItemType<FallenKingsCrown>()));
         }
 

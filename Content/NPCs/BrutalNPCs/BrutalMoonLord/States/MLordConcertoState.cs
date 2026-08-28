@@ -186,7 +186,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             int breather = context.ConcertoShortVariant ? ShortBreatherStart : BreatherStart;
             float best = 0f;
             for (int i = 0; i < count; i++) {
-                int beat = MLordDirector.Frames(beats[i], context.DeathMode);
+                int beat = MLordDirector.Frames(beats[i], context.AsuraMode);
                 //喘息窗后的节拍不会开火，不给预备（短变体裁掉的拍不抬手）
                 if (beats[i] >= breather) {
                     continue;
@@ -205,7 +205,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             if (BoltStartBeat >= breather) {
                 return 0f;
             }
-            int beat = MLordDirector.Frames(BoltStartBeat, context.DeathMode);
+            int beat = MLordDirector.Frames(BoltStartBeat, context.AsuraMode);
             int wait = beat - stateTimer;
             if (wait > 0 && wait <= WindupLead) {
                 return 1f - wait / (float)WindupLead;

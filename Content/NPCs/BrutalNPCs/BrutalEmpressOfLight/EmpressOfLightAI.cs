@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
         private void InitializeStateContext() {
             stateContext = new EmpressStateContext {
                 Npc = npc,
-                IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()
+                IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<EmpressStateContext>(stateContext, aiSlot: 2);
 
@@ -153,7 +153,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             stateContext.Target = targetPlayer;
             //二阶段从ai[3]位读出（服务端写入，客户端经同步获得，外部模组兼容原版语义）
             stateContext.IsSecondPhase = ((int)npc.ai[3] & 1) != 0;
-            stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            stateContext.IsAsuraMode = CWRWorld.Asura;
             //昼形态：全局昼夜标志各端一致
             stateContext.DayEmpowered = NPC.ShouldEmpressBeEnraged();
             //形态视觉过渡：跨昼夜战斗平滑换形
@@ -261,7 +261,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
 
         /// <summary>残酷遗物掉落：AI重制虽在禁用名单，loot注册不经CanOverride，条件类只看世界旗标</summary>
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<WingsOfInterference>()));
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(), ModContent.ItemType<WingsOfInterference>()));
         }
 
         /// <summary>演出中锁血，完后放行；秒杀也先切演出</summary>

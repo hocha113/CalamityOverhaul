@@ -17,15 +17,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         public override string StateName => "TwinsCrossDash";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.TwinsCrossDash;
 
-        private int GatherPhase => Context.IsDeathMode ? 44 : 52;
-        private int ChargePhase => Context.IsDeathMode ? 38 : 46;
+        private int GatherPhase => Context.IsAsuraMode ? 44 : 52;
+        private int ChargePhase => Context.IsAsuraMode ? 38 : 46;
         private const int DashPhase = 26;
         private const int WhipPhase = 14;
         private const int RecoveryPhase = 22;
         private const int MaxPartnerWait = 120;
 
         private int TotalDuration => GatherPhase + ChargePhase + DashPhase + WhipPhase + RecoveryPhase;
-        private float DashSpeed => Context.IsDeathMode ? 34f : 30f;
+        private float DashSpeed => Context.IsAsuraMode ? 34f : 30f;
 
         private TwinsStateContext Context;
         private int comboStep;

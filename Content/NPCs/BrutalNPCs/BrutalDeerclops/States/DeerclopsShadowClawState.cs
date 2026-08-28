@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                 return;
             }
             NPC npc = context.Npc;
-            int damage = context.IsDeathMode ? 17 : 14;
+            int damage = context.IsAsuraMode ? 17 : 14;
             int telegraph = TelegraphTime(context, context.IsPhase2 ? 30 : 34, 26);
 
             foreach (Player player in Main.ActivePlayers) {

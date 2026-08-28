@@ -157,8 +157,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
             }
             lastBeatFired = beatTick;
 
-            bool deathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
-            int damage = (int)(Player.statLifeMax2 * damageFrac * (deathMode ? 1.25f : 1f));
+            bool asuraMode = CWRWorld.Asura;
+            int damage = (int)(Player.statLifeMax2 * damageFrac * (asuraMode ? 1.25f : 1f));
             //留命钳制：满血一套必不致死，残血进爪也只打到1
             damage = Math.Min(damage, Math.Max(Player.statLife - 1, 0));
             if (damage > 0) {

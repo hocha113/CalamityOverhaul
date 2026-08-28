@@ -87,19 +87,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
         public const int UltBurstDamage = 40;
         #endregion
 
-        /// <summary>死亡模式/激怒伤害增压</summary>
-        public static int ScaleDamage(int baseDamage, bool death, bool enraged = false) {
-            float f = death ? 1.15f : 1f;
+        /// <summary>修罗模式/激怒伤害增压</summary>
+        public static int ScaleDamage(int baseDamage, bool asura, bool enraged = false) {
+            float f = asura ? 1.15f : 1f;
             if (enraged) {
                 f *= 1.3f;
             }
             return (int)(baseDamage * f);
         }
 
-        /// <summary>节奏帧数缩放：死亡模式与激怒压缩间隔</summary>
-        public static int Tempo(int frames, bool death, bool enraged) {
+        /// <summary>节奏帧数缩放：修罗模式与激怒压缩间隔</summary>
+        public static int Tempo(int frames, bool asura, bool enraged) {
             float f = frames;
-            if (death) {
+            if (asura) {
                 f *= 0.8f;
             }
             if (enraged) {

@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
             NPC npc = context.Npc;
             int dir = DirToTarget(context);
             Point feet = npc.Bottom.ToTileCoordinates();
-            int damage = context.IsDeathMode ? 20 : 16;
+            int damage = context.IsAsuraMode ? 20 : 16;
             float scaleMult = context.IsPhase2 ? 1.18f : 1f;
 
             for (int i = 0; i < Columns; i++) {
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
             NPC npc = context.Npc;
             int dir = DirToTarget(context);
             Point feet = npc.Bottom.ToTileCoordinates();
-            int damage = context.IsDeathMode ? 20 : 16;
+            int damage = context.IsAsuraMode ? 20 : 16;
             float scaleMult = context.IsPhase2 ? 1.18f : 1f;
 
             for (int i = 0; i < Columns; i++) {
@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
             NPC npc = context.Npc;
             int dir = -DirToTarget(context);
             Point feet = npc.Bottom.ToTileCoordinates();
-            int damage = context.IsDeathMode ? 20 : 16;
+            int damage = context.IsAsuraMode ? 20 : 16;
 
             for (int i = 0; i < 12; i++) {
                 int tileX = feet.X + dir * (3 + i);

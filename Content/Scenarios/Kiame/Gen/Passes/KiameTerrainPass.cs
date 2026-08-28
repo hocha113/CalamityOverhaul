@@ -39,6 +39,11 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Gen.Passes
                 for (int y = Math.Max(KiameMetrics.DeepBaseRow, floorTop); y < bottom; y++) {
                     KiameTileBrush.SetSolid(x, y, TileID.Stone);
                 }
+                //地表以下满铺自然背景墙：没有墙的地体会被天光判定打穿，
+                //挖开一格就漏光（洼水上方刻意不铺，露天池塘不该有墙）
+                for (int y = floorTop + 1; y < bottom; y++) {
+                    KiameTileBrush.SetWall(x, y, UnderWall(band, y, floorTop));
+                }
             }
             log.Info("[Kiame] Terrain veneer done");
 
@@ -49,14 +54,24 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Gen.Passes
             log.Info($"[Kiame] Terrain 洼水格={KiameTileBrush.LiquidWrites} 洼数={KiamePlans.Pools.Count}");
         }
 
-        //逐带表层材质：台地裸岩 / 村带湿泥盖干土 / 洼原厚泥 / 泽地深泥黏土 / 预留岭裸岩
+        //逐带表层材质（全深色，亮土不上台面）：
+        //台地烬皮裸岩 / 村带烬面盖深泥 / 洼原厚泥黏土 / 泽地深泥黏土 / 预留岭烬皮裸岩
         private static ushort Veneer(int band, int depth) => band switch {
-            0 => depth < 2 ? TileID.Dirt : TileID.Stone,
-            1 or 3 => depth < 1 ? TileID.Mud : depth < 8 ? TileID.Dirt : TileID.Stone,
-            2 => depth < 3 ? TileID.Mud : depth < 8 ? TileID.ClayBlock : TileID.Stone,
-            4 => depth < 4 ? TileID.Mud : depth < 10 ? TileID.ClayBlock : TileID.Stone,
-            _ => depth < 1 ? TileID.Dirt : TileID.Stone,
+            0 => depth < 1 ? TileID.Ash : TileID.Stone,
+            1 or 3 => depth < 2 ? TileID.Ash : TileID.Mud,
+            2 => depth < 3 ? TileID.Mud : depth < 8 ? TileID.ClayBlock : TileID.Mud,
+            4 => depth < 4 ? TileID.Mud : depth < 10 ? TileID.ClayBlock : TileID.Mud,
+            _ => depth < 1 ? TileID.Ash : TileID.Stone,
         };
+
+        //地下自然墙：泥系带表层挂泥墙，其余挂土墙，深处石底换洞穴石墙
+        private static ushort UnderWall(int band, int y, int floorTop) {
+            if (y >= KiameMetrics.DeepBaseRow + 4) {
+                return WallID.Cave7Unsafe;
+            }
+            int depth = y - floorTop;
+            return band is >= 1 and <= 4 && depth < 6 ? WallID.MudUnsafe : WallID.DirtUnsafe;
+        }
 
         //洼地灌水到各自登记的水面行；NormalUpdates=false 液体不流动，构造性铺设即定型
         //洼底再压两行淤泥：雨水泡出来的坑，底不是干土

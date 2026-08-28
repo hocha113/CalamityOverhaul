@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             phaseTimer++;
             Timer++;
 
-            int maxDashes = 3 + (context.DeathMode ? 1 : 0) + (context.BossRush ? 1 : 0);
+            int maxDashes = 3 + (context.AsuraMode ? 1 : 0) + (context.BossRush ? 1 : 0);
             if (Counter >= maxDashes && cyclePhase != 1 && !VaultUtils.isClient) {
                 npc.damage = npc.defDamage;
                 npc.defense = npc.defDefense;
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             context.ResetChargeState();
 
             float speed = Main.masterMode ? DashSpeedMaster : DashSpeedNormal;
-            if (context.DeathMode) {
+            if (context.AsuraMode) {
                 speed += DashSpeedDeathBonus;
             }
             if (context.BossRush) {
@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             npc.velocity *= 0.62f;
             SpinRotation(npc, 0.18f);
 
-            int maxDashes = 3 + (context.DeathMode ? 1 : 0) + (context.BossRush ? 1 : 0);
+            int maxDashes = 3 + (context.AsuraMode ? 1 : 0) + (context.BossRush ? 1 : 0);
             if (phaseTimer >= BrakeFrames && Counter < maxDashes) {
                 cyclePhase = 0;
                 phaseTimer = 0;
@@ -221,7 +221,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 Main.myPlayer, npc.target, phaseTimer);
             }
 
-            int maxHits = 3 + (context.DeathMode ? 1 : 0);
+            int maxHits = 3 + (context.AsuraMode ? 1 : 0);
             if (Counter >= maxHits && phase == 2 && phaseTimer > 6 && !VaultUtils.isClient) {
                 return new PrimeRageConnectorState();
             }

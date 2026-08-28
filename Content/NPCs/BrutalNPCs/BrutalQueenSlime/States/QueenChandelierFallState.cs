@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
                 stageCenter = player.Center;
                 //挂灯(服务端)
                 if (!VaultUtils.isClient) {
-                    int count = context.IsDeathMode ? 5 : 4;
+                    int count = context.IsAsuraMode ? 5 : 4;
                     float spacing = 300f;
                     for (int i = 0; i < count; i++) {
                         float x = stageCenter.X + (i - (count - 1) * 0.5f) * spacing;

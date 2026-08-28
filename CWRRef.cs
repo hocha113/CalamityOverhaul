@@ -34,8 +34,6 @@ namespace CalamityOverhaul
 
         #region 反射缓存-Calamity 静态状态
         //CalamityWorld
-        private static FieldInfo calWorld_death_Field;
-        private static FieldInfo calWorld_revenge_Field;
         private static FieldInfo calWorld_DraedonMechToSummon_Field;
         //BossRushEvent
         private static MemberInfo bossRush_Active_M;
@@ -351,8 +349,6 @@ namespace CalamityOverhaul
         private static void LoadCalamityStaticState(Mod mod) {
             Type calWorld = GetModType(mod, "CalamityMod.World.CalamityWorld");
             if (calWorld != null) {
-                calWorld_death_Field = GetField(calWorld, "death", PublicStaticFlags);
-                calWorld_revenge_Field = GetField(calWorld, "revenge", PublicStaticFlags);
                 calWorld_DraedonMechToSummon_Field = GetField(calWorld, "DraedonMechToSummon", PublicStaticFlags);
             }
 
@@ -503,8 +499,6 @@ namespace CalamityOverhaul
             downedBossRushProp = null;
             downedThanatosProp = null;
 
-            calWorld_death_Field = null;
-            calWorld_revenge_Field = null;
             calWorld_DraedonMechToSummon_Field = null;
             arsenalRecipe_ConstructCondition_Method = null;
             bossRush_Active_M = null;
@@ -713,33 +707,13 @@ namespace CalamityOverhaul
         public static void SetDownedPrimordialWyrm(bool value) => SetDownedProp(downedPrimordialWyrmProp, value);
 
         //==== 高频世界旗的帧戳缓存 ====
-        //死亡/复仇/终焉/酸雨被难度属性、音乐仲裁、氛围与叙事 ticker 每帧多次读取，
+        //终焉/酸雨被难度属性、音乐仲裁、氛围与叙事 ticker 每帧多次读取，
         //一帧内不会变，反射读一次后整帧复用（GameUpdateCount 在玩家阶段后自增，
         //等效每 tick 至多刷新两次；入世归零由帧戳不等自然触发重读）
-        private static uint deathModeFrame = uint.MaxValue;
-        private static bool deathModeCache;
-        private static uint revengeModeFrame = uint.MaxValue;
-        private static bool revengeModeCache;
         private static uint bossRushFrame = uint.MaxValue;
         private static bool bossRushCache;
         private static uint acidRainFrame = uint.MaxValue;
         private static bool acidRainCache;
-
-        public static bool GetDeathMode() {
-            if (deathModeFrame != Main.GameUpdateCount) {
-                deathModeFrame = Main.GameUpdateCount;
-                deathModeCache = calWorld_death_Field != null && (bool)calWorld_death_Field.GetValue(null);
-            }
-            return deathModeCache;
-        }
-
-        public static bool GetRevengeMode() {
-            if (revengeModeFrame != Main.GameUpdateCount) {
-                revengeModeFrame = Main.GameUpdateCount;
-                revengeModeCache = calWorld_revenge_Field != null && (bool)calWorld_revenge_Field.GetValue(null);
-            }
-            return revengeModeCache;
-        }
 
         public static bool GetBossRushActive() {
             if (bossRushFrame != Main.GameUpdateCount) {

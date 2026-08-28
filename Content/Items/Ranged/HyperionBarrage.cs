@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.autoReuse = true;
             Item.rare = ItemRarityID.Pink;
             Item.value = Item.buyPrice(0, 2, 60, 10);
-            Item.CWR().DeathModeItem = true;
+            Item.CWR().BrutalWorldItem = true;
         }
 
         //物品使用本身不消耗子弹，由手持弹幕在实际开火时自行拾取

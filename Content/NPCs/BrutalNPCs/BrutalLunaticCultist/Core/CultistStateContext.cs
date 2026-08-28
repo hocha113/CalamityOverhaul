@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         #endregion
 
         #region 阶段与模式
-        public bool IsDeathMode { get; set; }
+        public bool IsAsuraMode { get; set; }
         /// <summary>阶段 0星旋 1星云 2星尘 3日耀 4月明,镜像 ai[0]</summary>
         public int Phase { get; set; }
         /// <summary>浑天仪形态 0随身 1离体(掷环),镜像 ai[1]</summary>

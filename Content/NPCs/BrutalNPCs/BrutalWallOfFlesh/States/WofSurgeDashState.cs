@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
         /// <summary>本次蓄势帧数：第二段更短</summary>
         private int TelegraphFrames(WofStateContext ctx) {
             int frames = dashDone == 0 ? WofDirector.SurgeTelegraph : 26;
-            if (ctx.IsDeathMode) {
+            if (ctx.IsAsuraMode) {
                 frames -= 8;
             }
             return frames;
@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
         private void UpdateDash(WofStateContext context) {
             NPC npc = context.Npc;
             float dashSpeed = WofDirector.SurgeSpeed;
-            if (context.IsDeathMode) {
+            if (context.IsAsuraMode) {
                 dashSpeed += 3f;
             }
             context.SpeedOverride = dashSpeed;

@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
 
             //双臂颅火螺旋（纯弹幕，无追踪）
             if (Timer >= SpiralStart && Timer < SpiralEnd && !VaultUtils.isClient) {
-                int interval = context.DeathMode ? 7 : 9;
+                int interval = context.AsuraMode ? 7 : 9;
                 if ((Timer - SpiralStart) % interval == 0) {
                     int damage = SkullDamage(context);
                     float angle = spiralClock * 0.618f * MathHelper.TwoPi;

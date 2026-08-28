@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             probesFired = false;
 
             probeCount = context.IsEnraged ? 12 : 8;
-            if (context.IsDeathMode) probeCount += 4;
+            if (context.IsAsuraMode) probeCount += 4;
 
             probeIndices = new int[probeCount];
             //客户端探针索引初值-1，防驱动npc[0]

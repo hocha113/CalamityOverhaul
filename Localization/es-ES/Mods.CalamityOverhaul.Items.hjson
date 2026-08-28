@@ -3932,9 +3932,8 @@ ArchiveFrameModule: {
 CWRItem: {
 	TemperatureText: Temperatura de combustión
 	InternalStoredEnergy: Energía almacenada
-	DeathModeItemText: Objeto de Modo Muerte
-	// BrutalModeItemText: Drops in Brutal Mode
-	// BrutalRelicSeriesText: Brutal Relic · Exclusive to Brutal Mode
+	BrutalWorldItemText: Exclusivo del Mundo Cruel
+	// BrutalRelicSeriesText: Brutal Relic · Cruel World Exclusive
 	LegendItemUpgradeDisable:
 		'''
 		Esta arma legendaria ha sido configurada para no poder mejorarse en el mundo actual.
@@ -3945,9 +3944,8 @@ CWRItem: {
 	CWRItem: {
 		TemperatureText: Temperatura de combustión
 		InternalStoredEnergy: Energía almacenada
-		DeathModeItemText: Modo Muerte
-		// BrutalModeItemText: Drops in Brutal Mode
-		// BrutalRelicSeriesText: Brutal Relic · Exclusive to Brutal Mode
+		BrutalWorldItemText: Exclusivo del Mundo Cruel
+		// BrutalRelicSeriesText: Brutal Relic · Cruel World Exclusive
 		LegendItemUpgradeDisable:
 			'''
 			Esta arma legendaria ha sido configurada para no poder mejorarse en el mundo actual.

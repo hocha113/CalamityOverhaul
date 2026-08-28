@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Core
         public bool MoltDone { get; set; }
         /// <summary>大招环已启动</summary>
         public bool ApexCycleStarted { get; set; }
-        public bool IsDeathMode { get; set; }
+        public bool IsAsuraMode { get; set; }
         /// <summary>出招环索引</summary>
         public int AttackPhaseIndex { get; set; }
         /// <summary>死亡演出完成，CheckDead 放行真死</summary>

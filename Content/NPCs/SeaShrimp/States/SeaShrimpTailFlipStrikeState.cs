@@ -81,6 +81,10 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
             }
 
             if (loco.BallisticDone || t >= HardTimeout) {
+                //连击链：P2+ 穿场刹停后顺势卷尾接水弹齐射（确定性条件，各端一致）
+                if (ctx.Phase >= 2 && ctx.AttackIndex % 3 == 1) {
+                    ctx.QueuedChainState = (int)SeaShrimpStateIndex.WaterVolley;
+                }
                 return EndAttack(ctx, 68);
             }
             return null;

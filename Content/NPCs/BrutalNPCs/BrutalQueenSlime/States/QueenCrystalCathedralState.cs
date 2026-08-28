@@ -224,7 +224,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
         /// <summary>穹顶尖刺雨(服务端)：自圣殿上缘悬花成形后坠落，波间错列</summary>
         private void FireDomeRain(QueenSlimeStateContext context, int wave) {
             NPC npc = context.Npc;
-            int count = context.IsDeathMode ? 8 : 6;
+            int count = context.IsAsuraMode ? 8 : 6;
             float halfSpan = CathedralRadius * 0.82f;
             float stagger = wave % 2 == 1 ? halfSpan / count : 0f;
             for (int i = 0; i < count; i++) {

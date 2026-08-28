@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
         private void InitializeStateContext() {
             stateContext = new QueenSlimeStateContext {
                 Npc = npc,
-                IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()
+                IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<QueenSlimeStateContext>(stateContext, aiSlot: 2);
 
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
             stateContext.Npc = npc;
             stateContext.Target = targetPlayer;
             stateContext.IsPhase2 = npc.life * 2 <= npc.lifeMax;
-            stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+            stateContext.IsAsuraMode = CWRWorld.Asura;
 
             //中途入场的客户端从无歧义的二阶段专属状态反推翼展标记
             if (!stateContext.Phase2Unfolded && stateContext.IsPhase2
@@ -343,7 +343,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
         #region 掉落
         /// <summary>残酷模式击杀必掉专属遗物「折光华尔兹」</summary>
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
-            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalMode(), ModContent.ItemType<RefractionWaltz>()));
+            npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(), ModContent.ItemType<RefractionWaltz>()));
         }
         #endregion
 

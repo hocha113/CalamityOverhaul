@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         private float gapBase;
 
         private static int PulseCount(CultistStateContext context) =>
-            context.Phase >= 3 || context.IsDeathMode ? 4 : 3;
+            context.Phase >= 3 || context.IsAsuraMode ? 4 : 3;
 
         public override ICultistState OnUpdate(CultistStateContext context) {
             NPC npc = context.Npc;

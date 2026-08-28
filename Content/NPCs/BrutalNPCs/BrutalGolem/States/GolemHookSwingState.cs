@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                 if (Timer == Tempo(context, HookTick)) {
                     Vector2 cross = context.Target.Center + context.Target.velocity * 14f;
                     int windup = Tempo(context, 26);
-                    float speed = (context.Sundered ? 34f : 30f) + (context.DeathMode ? 4f : 0f);
+                    float speed = (context.Sundered ? 34f : 30f) + (context.AsuraMode ? 4f : 0f);
                     CommandBoth(context, GolemFistCommand.HookSwing, cross, windup, speed, 1);
                 }
 
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                     float leftReach = LateralReach(context.Target, sweepY, -1);
                     float rightReach = LateralReach(context.Target, sweepY, 1);
                     GolemLimbStatus limbs = context.Limbs;
-                    float sweepSpeed = (context.Sundered ? 30f : 26f) + (context.DeathMode ? 4f : 0f);
+                    float sweepSpeed = (context.Sundered ? 30f : 26f) + (context.AsuraMode ? 4f : 0f);
                     int windup = Tempo(context, 30);
                     if (limbs.LeftFistAlive) {
                         //左拳从右起扫向左端

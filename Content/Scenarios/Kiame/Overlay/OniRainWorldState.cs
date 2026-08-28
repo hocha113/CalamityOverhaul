@@ -11,7 +11,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
+namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
 {
     /// <summary>身处鬼雨世界的嵌套深度（0=真实世界，最深 <see cref="OniRainWorldState.MaxDepth"/>），按玩家独立存档</summary>
     internal sealed class OniRainWorldPlayer : ModPlayer

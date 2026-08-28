@@ -56,9 +56,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         /// <summary>眼体中心贴地悬高</summary>
         private const float DragHoverHeight = 66f;
 
-        private float FeintSpeed => Context.IsDeathMode ? 46f : 42f;
-        private float RealDashSpeed => Context.IsDeathMode ? 62f : 58f;
-        private float DragSpeed => Context.IsDeathMode ? 40f : 36f;
+        private float FeintSpeed => Context.IsAsuraMode ? 46f : 42f;
+        private float RealDashSpeed => Context.IsAsuraMode ? 62f : 58f;
+        private float DragSpeed => Context.IsAsuraMode ? 40f : 36f;
 
         private EocStateContext Context;
         private DragPhase phase;

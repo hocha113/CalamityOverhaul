@@ -37,18 +37,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         /// <summary>换招连接节拍剩余帧，让段落间隔被看见</summary>
         private int modeTransitionTimer;
 
-        private int ModeTransitionTime => Context.IsDeathMode ? 14 : 18;
+        private int ModeTransitionTime => Context.IsAsuraMode ? 14 : 18;
 
-        private float DashSpeed => Context.IsDeathMode ? 42f : 38f;
-        private int MaxDashCount => Context.IsDeathMode ? 5 : 4;
-        private int DashPrepareTime => Context.IsDeathMode ? 26 : 30;
+        private float DashSpeed => Context.IsAsuraMode ? 42f : 38f;
+        private int MaxDashCount => Context.IsAsuraMode ? 5 : 4;
+        private int DashPrepareTime => Context.IsAsuraMode ? 26 : 30;
         private int DashDuration => 16;
 
         /// <summary>每次冲刺后的复位喘息，无伤</summary>
-        private int DashRecoverTime => Context.IsDeathMode ? 10 : 12;
-        private float VortexSpeed => Context.IsDeathMode ? 0.1f : 0.08f;
-        private int BurstFireRate => Context.IsDeathMode ? 7 : 8;
-        private int BurstCount => Context.IsDeathMode ? 12 : 10;
+        private int DashRecoverTime => Context.IsAsuraMode ? 10 : 12;
+        private float VortexSpeed => Context.IsAsuraMode ? 0.1f : 0.08f;
+        private int BurstFireRate => Context.IsAsuraMode ? 7 : 8;
+        private int BurstCount => Context.IsAsuraMode ? 12 : 10;
 
         public SpazmatismSoloRageState() {
         }
@@ -232,7 +232,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         /// <summary>火焰漩涡，绕玩家旋转喷火</summary>
         private void ExecuteFlameVortex(NPC npc, Player player) {
             //缩短漩涡时长
-            int vortexDuration = Context.IsDeathMode ? 110 : 95;
+            int vortexDuration = Context.IsAsuraMode ? 110 : 95;
 
             if (!hasPlayedModeSound) {
                 hasPlayedModeSound = true;
@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             FaceTarget(npc, player.Center);
 
             //操你妈躲都躲不开，注释了
-            //int fireRate = Context.IsDeathMode ? 5 : 6;
+            //int fireRate = Context.IsAsuraMode ? 5 : 6;
             //if (modeTimer % fireRate == 0 && !VaultUtils.isClient) {
             //    Vector2 fireDir = (player.Center - npc.Center).SafeNormalize(Vector2.Zero);
             //    Projectile.NewProjectile(
@@ -359,7 +359,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
         /// <summary>追踪冲刺，持续追玩家 dash</summary>
         private void ExecuteHomingDash(NPC npc, Player player) {
-            int homingDuration = Context.IsDeathMode ? 120 : 100;
+            int homingDuration = Context.IsAsuraMode ? 120 : 100;
 
             if (!hasPlayedModeSound) {
                 hasPlayedModeSound = true;
@@ -369,14 +369,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
 
             //弧线穷追
-            float chaseSpeed = Context.IsDeathMode ? 9.5f : 7.5f;
-            float maxTurn = Context.IsDeathMode ? 0.055f : 0.045f;
+            float chaseSpeed = Context.IsAsuraMode ? 9.5f : 7.5f;
+            float maxTurn = Context.IsAsuraMode ? 0.055f : 0.045f;
             TwinsMotion.CurveChase(npc, player.Center, chaseSpeed, maxTurn);
             FaceVelocity(npc);
             Context.PushDashVisuals(0.3f, 0.4f);
 
             //持续喷吐火舌
-            int fireRate = Context.IsDeathMode ? 8 : 10;
+            int fireRate = Context.IsAsuraMode ? 8 : 10;
             if (modeTimer > 30 && modeTimer % fireRate == 0 && !VaultUtils.isClient) {
                 Vector2 fireDir = npc.velocity.SafeNormalize(Vector2.UnitY);
                 for (int i = -1; i <= 1; i += 2) {
