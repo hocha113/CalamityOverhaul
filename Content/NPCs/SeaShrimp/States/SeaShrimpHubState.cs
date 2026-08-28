@@ -6,9 +6,9 @@ using Terraria;
 namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
 {
     /// <summary>
-    /// 爬行索敌 hub（选招枢纽）：贴地爬向目标、目标高悬且身处水中时起泳，
-    /// connector 喘息后按手写轮换表出招（压近→压制→爆发→走位交替）。
-    /// 轮换表各端一致，只有权威端的转场被采纳
+    /// 凝视逼近 hub（选招枢纽）：头恒对玩家、环距弹簧进退（NightmareReaper 式分镜），
+    /// 双手在骨架层交替抓着屏幕平面拖动身体；connector 喘息后按手写轮换表出招
+    /// （压近→压制→爆发→走位交替）。轮换表各端一致，只有权威端的转场被采纳
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)SeaShrimpStateIndex.Hub, typeof(SeaShrimpStateContext))]
     internal class SeaShrimpHubState : SeaShrimpStateBase
@@ -36,21 +36,10 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
             Vector2 toTarget = target.Center - npc.Center;
             float dist = toTarget.Length();
 
-            //主场在海底：爬行目标 = 目标脚下的海床（高空目标交给远程招覆盖）；
-            //深水失附时游泳只作"回床手段"，锚点是海床而不是玩家（贴玩家悬停会挂在水面缠团）
-            Vector2 seabed = new(target.Center.X,
-                FindGroundY(new Vector2(target.Center.X, target.Center.Y - 120f)) - SeaShrimpDirector.RideHeight);
-            bool deepWaterAdrift = !loco.Attached && loco.Wet
-                && npc.Center.Y < seabed.Y - SeaShrimpDirector.RideHeight * 3f;
-            if (deepWaterAdrift) {
-                loco.RequestSwim(seabed, 1.1f);
-                ctx.WaveGain = 1.7f;
-                ctx.TailFlare = 0.6f;
-            }
-            else {
-                float speedScale = dist > SeaShrimpDirector.LeashDistance ? 1.5f : 1f;
-                loco.RequestCrawlTo(seabed, speedScale);
-            }
+            //凝视逼近：头恒对玩家，环距弹簧进退；双手在骨架层交替抓着屏幕平面拖动身体
+            float speedScale = dist > SeaShrimpDirector.LeashDistance ? 1.6f : 1f;
+            loco.RequestCrawlTo(target.Center, speedScale);
+            ctx.WaveGain = MathHelper.Clamp(npc.velocity.Length() / 7f, 0.4f, 1.4f);
 
             //出招裁决：connector 喘息走完 + 冷却归零 + 目标在交战圈内
             if (t > SeaShrimpDirector.ConnectorFrames && ctx.AttackCooldown <= 0

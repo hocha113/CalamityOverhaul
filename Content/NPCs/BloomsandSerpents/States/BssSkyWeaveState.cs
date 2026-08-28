@@ -82,7 +82,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 ctx.AccelRate = 0.1f;
                 ctx.Slither = 0.85f;
                 ctx.LegCommand = BssLegCommand.Flail;
-                ctx.LegAlpha = 0.8f;
 
                 //身体即威胁：高速蜿蜒段开伤害窗
                 if (npc.velocity.Length() > 14f) {
@@ -122,7 +121,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 }
                 ctx.Mode = BssMoveMode.Direct;
                 ctx.LegCommand = BssLegCommand.Tuck;
-                ctx.LegAlpha = 0.5f;
                 float speed = npc.velocity.Length();
                 if (speed > BssDirector.LungeContactSpeed) {
                     npc.damage = npc.defDamage;

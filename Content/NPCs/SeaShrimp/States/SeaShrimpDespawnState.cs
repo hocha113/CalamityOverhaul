@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
             NPC npc = ctx.Npc;
             Timer++;
 
-            ctx.Owner.Locomotion.RequestCrawlTo(npc.Center + new Vector2(0f, 400f), 0.6f);
+            ctx.Owner.Locomotion.RequestSwim(npc.Center + new Vector2(0f, 400f), 0.8f);
             ctx.BodyAlpha = MathHelper.Clamp(1f - Timer / 90f, 0f, 1f);
             ctx.WaveGain = 0.6f;
 

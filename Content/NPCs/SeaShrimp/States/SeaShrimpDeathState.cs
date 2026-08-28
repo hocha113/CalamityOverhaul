@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
             if (t < StaggerEnd) {
                 //踉跄：低速左右趔趄，晶光乱闪
                 float side = (t / 24) % 2 == 0 ? 1f : -1f;
-                ctx.Owner.Locomotion.RequestCrawlTo(npc.Center + new Vector2(side * 90f, 0f), 0.3f);
+                ctx.Owner.Locomotion.RequestCrawlTo(npc.Center + new Vector2(side * 90f, 0f), 0.3f, 0f);
                 ctx.SpineCurl = MathF.Sin(t * 0.31f) * 0.12f;
                 ctx.WaveGain = 0.5f;
                 float flicker = 0.4f + 0.5f * MathF.Abs(MathF.Sin(t * 0.9f + npc.whoAmI));

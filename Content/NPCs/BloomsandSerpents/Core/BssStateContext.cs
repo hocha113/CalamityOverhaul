@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         Tuck,
         /// <summary>立起姿态：前腿举离地面</summary>
         Raise,
-        /// <summary>腾空乱蹬</summary>
+        /// <summary>腾空划游（与步行同一划桨节律，空中照样爬，无地面交互）</summary>
         Flail,
         /// <summary>死亡逐腿失力（配合 CollapsedLegs 计数）</summary>
         Collapse,
@@ -101,8 +101,36 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
             WhipStrength = strength;
         }
 
-        /// <summary>落足下沉回弹 0..1（步态系统落足时置位，身体表现"被腿撑着走"）</summary>
-        public float StepBob { get; set; }
+        /// <summary>
+        /// 步态时钟（弧度，持久量）：随体速推进，腿的换步排程与爬行的涌动/贴地呼吸共读此拍，
+        /// 腿和身体因此咬合在同一节奏上。各端同算，联机风险面同 <see cref="SlitherPhase"/>。
+        /// </summary>
+        public float GaitPhase { get; set; }
+
+        /// <summary>
+        /// 步态时钟推进速率（弧度/帧）：随体速加快。划桨式步态（镜像坟灾虫臂）端点不钉世界，
+        /// 周期可以放到从容档——巡曳速约 32 帧一个完整划水循环。
+        /// </summary>
+        public static float GaitIncrement(float speedX) => 0.045f + speedX * 0.009f;
+
+        /// <summary>
+        /// 各髋站落步下沉 0..1（步态系统落足帧置位，客户端表现量）。
+        /// 体节/头部绘制按链序采样局部下沉，腿绘制层把同量叠到髋位做支撑腿压缩。
+        /// </summary>
+        public float[] StationBob { get; } = new float[BssLegRig.LegCount];
+
+        /// <summary>按链序采样落步下沉（距髋站 ±3 节内线性衰减，重量波沿身传播的读数来源）</summary>
+        public float SampleStationBob(float ordinal) {
+            float sum = 0f;
+            for (int k = 0; k < StationBob.Length; k++) {
+                if (StationBob[k] <= 0.02f) {
+                    continue;
+                }
+                float weight = MathHelper.Clamp(1f - Math.Abs(ordinal - BssLegRig.StationOrdinals[k]) / 3f, 0f, 1f);
+                sum += StationBob[k] * weight;
+            }
+            return Math.Min(sum, 1.25f);
+        }
 
         /// <summary>红花节辉光 0..1（涟漪预告/怒放）</summary>
         public float BloomGlow { get; set; }
@@ -158,9 +186,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
             PulsePhase = 0f;
 
             WhipAge = Math.Min(WhipAge + 1f, 999f);
-            StepBob *= 0.78f;
-            if (StepBob < 0.02f) {
-                StepBob = 0f;
+            for (int k = 0; k < StationBob.Length; k++) {
+                StationBob[k] *= 0.85f;
+                if (StationBob[k] < 0.02f) {
+                    StationBob[k] = 0f;
+                }
             }
 
             FrontRaise *= 0.9f;

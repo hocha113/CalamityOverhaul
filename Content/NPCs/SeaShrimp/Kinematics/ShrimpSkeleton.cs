@@ -23,8 +23,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
         /// <summary>0=头 1..3=体节 4=尾扇</summary>
         public readonly Node[] Nodes = new Node[5];
 
-        /// <summary>腹侧符号：+1 表示"前向顺时针转 90°"指向地面，随贴附面更新</summary>
-        public float DownSign { get; private set; } = 1f;
+        /// <summary>侧向符号约定：+1 = 前向顺转 90°（自由悬浮体不再随地形翻转）</summary>
+        public float DownSign => 1f;
 
         /// <summary>双螯：0=近侧 1=远侧</summary>
         public readonly TwoBoneIK[] Arms = [
@@ -45,21 +45,21 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
         /// <summary>尾扇张合 0..1（平滑）</summary>
         public float TailFlare { get; private set; } = 0.35f;
 
-        /// <summary>爬行 S 波相位（按路程推进）</summary>
+        /// <summary>游波相位（按路程推进）</summary>
         private float wavePhase;
         private bool built;
-        /// <summary>本帧是否贴附（Update 记录，螯撑地据此启停）</summary>
-        private bool attached;
 
-        //==================== 双螯撑地（守位=拄地承重，攻击指令一来即自动脱撑）====================
+        //==================== 双螯空间抓握（NightmareReaper 式：手撑在屏幕平面上交替抓行）====================
 
-        /// <summary>当前撑点（世界）</summary>
-        private readonly Vector2[] plantPos = new Vector2[2];
-        private readonly Vector2[] plantFrom = new Vector2[2];
-        private readonly Vector2[] plantTo = new Vector2[2];
-        /// <summary>&lt;0 撑稳；0..1 迈撑中</summary>
-        private readonly float[] plantStepT = [-1f, -1f];
-        private readonly bool[] plantValid = new bool[2];
+        /// <summary>当前抓点（世界坐标，抓住后固定不动，身体被拖着走的读感来源）</summary>
+        private readonly Vector2[] gripPos = new Vector2[2];
+        private readonly Vector2[] gripFrom = new Vector2[2];
+        private readonly Vector2[] gripTo = new Vector2[2];
+        /// <summary>&lt;0 已抓稳；0..1 挪抓中</summary>
+        private readonly float[] gripT = [-1f, -1f];
+        private readonly bool[] gripInit = new bool[2];
+        /// <summary>抓握节拍计时（两手错半拍）</summary>
+        private int gripTick;
 
         /// <summary>确定性相位种子（各端一致）</summary>
         private float seed;
@@ -75,13 +75,15 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
         /// <summary>头节腹侧方向</summary>
         public Vector2 HeadDown => LocalDown(in Nodes[0]);
 
-        /// <summary>近侧肩锚（螯击状态取出手起点用）</summary>
+        /// <summary>臂的体侧方向：0=右列（前向顺转 90°）1=左列</summary>
+        public Vector2 Lateral(int armIndex)
+            => Nodes[0].Forward.RotatedBy(MathHelper.PiOver2 * (armIndex == 0 ? 1f : -1f));
+
+        /// <summary>肩锚：头前部两侧对称（双手撑屏的出臂位）</summary>
         public Vector2 ShoulderWorld(int armIndex) {
             Vector2 forward = Nodes[0].Forward;
-            Vector2 down = HeadDown;
-            return armIndex == 0
-                ? Nodes[0].Pos + forward * SeaShrimpDirector.ShoulderForward + down * SeaShrimpDirector.ShoulderSide
-                : Nodes[0].Pos + forward * (SeaShrimpDirector.ShoulderForward - 8f) + down * (SeaShrimpDirector.ShoulderSide - 12f);
+            return Nodes[0].Pos + forward * SeaShrimpDirector.ShoulderForward
+                + Lateral(armIndex) * SeaShrimpDirector.ShoulderSide;
         }
 
         /// <summary>螯尖世界位（腕位再沿螯姿态探出，判定与打点共用）</summary>
@@ -89,9 +91,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
             => ArmSolves[armIndex].Wrist + ClawRot[armIndex].ToRotationVector2() * 46f;
 
         /// <summary>硬重建：沿朝向反向铺直整条链，臂足触角全部归位</summary>
-        public void Rebuild(Vector2 headPos, float heading, float downSign) {
+        public void Rebuild(Vector2 headPos, float heading, float _ = 1f) {
             built = true;
-            DownSign = downSign;
             Nodes[0].Pos = headPos;
             Nodes[0].Dir = heading;
             for (int i = 1; i < Nodes.Length; i++) {
@@ -101,40 +102,36 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
             for (int a = 0; a < 2; a++) {
                 Arms[a].Snap(GuardWristWant(a));
                 ArmSolves[a] = Arms[a].Solve(ShoulderWorld(a), GuardWristWant(a),
-                    SeaShrimpDirector.ArmSpring, SeaShrimpDirector.ArmDamping, -DownSign);
+                    SeaShrimpDirector.ArmSpring, SeaShrimpDirector.ArmDamping, a == 0 ? -1f : 1f);
                 ClawRot[a] = Nodes[0].Dir;
-                plantValid[a] = false;
-                plantStepT[a] = -1f;
+                gripInit[a] = false;
+                gripT[a] = -1f;
             }
-            Vector2 groundDir = HeadDown;
-            Gait.SnapAll(this, groundDir);
+            Gait.SnapAll(this, HeadDown);
             for (int s = 0; s < 2; s++) {
-                Antennae[s].WarmStart(AntennaAnchor(s), AntennaRestDir());
+                Antennae[s].WarmStart(AntennaAnchor(s), AntennaRestDir(s));
             }
         }
 
-        /// <summary>守位腕点：折叠在头前下方 + 呼吸微摆</summary>
+        /// <summary>抓握不可用时的收拢腕点：折叠在头前两侧 + 呼吸微摆</summary>
         private Vector2 GuardWristWant(int armIndex) {
             Vector2 forward = Nodes[0].Forward;
-            Vector2 down = HeadDown;
             float breathe = MathF.Sin(Main.GlobalTimeWrappedHourly * 1.4f + seed + armIndex * 2.3f) * 5f;
             float alongBreathe = MathF.Sin(Main.GlobalTimeWrappedHourly * 0.9f + seed * 1.7f + armIndex) * 4f;
             return ShoulderWorld(armIndex)
-                + forward * (56f + alongBreathe)
-                + down * (26f + breathe)
-                + forward * (armIndex == 1 ? -10f : 0f);
+                + forward * (58f + alongBreathe)
+                + Lateral(armIndex) * (22f + breathe);
         }
 
         private Vector2 AntennaAnchor(int side) {
             Vector2 forward = Nodes[0].Forward;
-            Vector2 down = HeadDown;
-            return Nodes[0].Pos + forward * 82f + down * (side == 0 ? 6f : -8f);
+            return Nodes[0].Pos + forward * 82f
+                + Lateral(side) * (side == 0 ? 7f : 8f);
         }
 
-        private Vector2 AntennaRestDir() {
+        private Vector2 AntennaRestDir(int side) {
             Vector2 forward = Nodes[0].Forward;
-            Vector2 up = -HeadDown;
-            return Vector2.Normalize(forward + up * 0.62f);
+            return Vector2.Normalize(forward + Lateral(side) * 0.55f);
         }
 
         /// <summary>
@@ -142,30 +139,22 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
         /// （游泳时传上方向）；attached 决定步态模式
         /// </summary>
         public void Update(SeaShrimpStateContext ctx, Vector2 headPos, float heading,
-            Vector2 normal, bool attached, Vector2 tangentMove, float speed, bool wet) {
+            Vector2 tangentMove, float speed, bool wet) {
             NPC npc = ctx.Npc;
             if (!built || Vector2.Distance(Nodes[0].Pos, headPos) > 340f) {
                 //初建或同步包把头拽走半屏：整链重建防抽搐
-                float ds = MathF.Sign(Vector2.Dot(heading.ToRotationVector2().RotatedBy(MathHelper.PiOver2), -normal));
-                Rebuild(headPos, heading, ds == 0f ? DownSign : ds);
-            }
-
-            //腹侧符号跟随贴附面（法线几乎平行体轴时保持旧值防抖）
-            float dot = Vector2.Dot(Nodes[0].Forward.RotatedBy(MathHelper.PiOver2), -normal);
-            if (MathF.Abs(dot) > 0.35f) {
-                DownSign = MathF.Sign(dot);
+                Rebuild(headPos, heading, 1f);
             }
 
             Nodes[0].Pos = headPos;
             Nodes[0].Dir = heading;
-            this.attached = attached;
 
-            //S 波相位按路程推进（停住波也停，蠕动与位移强绑定）
+            //游波相位按路程推进（停住波也停，蠕动与位移强绑定）
             wavePhase += speed * 0.05f * ctx.WaveGain;
 
             SolveSpine(ctx, speed);
             SolveArms(ctx);
-            Gait.Update(this, attached, -normal, tangentMove, speed);
+            Gait.Update(this, false, HeadDown, tangentMove, speed);
             UpdateAntennae(wet);
 
             TailFlare = MathHelper.Lerp(TailFlare, MathHelper.Clamp(ctx.TailFlare, 0f, 1f), 0.14f);
@@ -185,7 +174,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
         private void SolveSpine(SeaShrimpStateContext ctx, float speed) {
             float curl = MathHelper.Clamp(ctx.SpineCurl, -1f, 1f);
             float poseWeight = 0.3f + 0.6f * MathF.Min(1f, MathF.Abs(curl) * 1.6f);
-            float speedFactor = MathHelper.Clamp(speed / SeaShrimpDirector.CrawlSpeed, 0.15f, 1.4f);
+            float speedFactor = MathHelper.Clamp(speed / 9f, 0.15f, 1.4f);
 
             for (int i = 1; i < Nodes.Length; i++) {
                 ref Node node = ref Nodes[i];
@@ -213,101 +202,117 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
             }
         }
 
-        /// <summary>双螯求解：守位=拄地撑身（虾用双螯撑在地上），攻击指令一来自动脱撑</summary>
+        /// <summary>
+        /// 双螯求解（NightmareReaper 手部文法）：守位=空间抓握——双手撑在屏幕平面上，
+        /// 每 30 帧左右手错半拍向新的休息抓点猛挪 12 帧然后钉死（抓住空间、身体被拖行的读感）；
+        /// 任何攻击指令一来自动松手出招，打完回抓
+        /// </summary>
         private void SolveArms(SeaShrimpStateContext ctx) {
-            float bendSign = -DownSign;
+            gripTick = (gripTick + 1) % SeaShrimpDirector.GripCycleFrames;
             for (int a = 0; a < 2; a++) {
                 ClawDirective d = ctx.Claws[a];
                 Vector2 shoulder = ShoulderWorld(a);
-                bool planted = false;
+                bool gripping = d.Mode == ClawMode.Guard;
                 Vector2 want;
-                if (d.Mode == ClawMode.Guard && attached) {
-                    planted = UpdatePlant(a, out want);
+                float open = d.ClawOpen;
+                if (gripping) {
+                    want = UpdateGrip(a, shoulder, out bool lurching);
+                    //挪抓张钳伸够，落点合拢咬紧
+                    open = lurching ? 0.85f : 0.06f;
                 }
                 else {
-                    plantValid[a] = false;
-                    plantStepT[a] = -1f;
-                    want = d.Mode == ClawMode.Guard ? GuardWristWant(a) : d.Target;
+                    gripInit[a] = false;
+                    gripT[a] = -1f;
+                    want = d.Target;
                 }
                 float spring = d.Spring > 0f ? d.Spring : SeaShrimpDirector.ArmSpring;
                 float damping = d.Damping > 0f ? d.Damping : SeaShrimpDirector.ArmDamping;
-                ArmSolves[a] = Arms[a].Solve(shoulder, want, spring, damping, bendSign);
+                //抓握段用更硬的弹簧：手要钉得住空间
+                if (gripping) {
+                    spring = 0.34f;
+                    damping = 0.72f;
+                }
+                ArmSolves[a] = Arms[a].Solve(shoulder, want, spring, damping, a == 0 ? -1f : 1f);
 
-                //螯体姿态：撑地时螯尖指向撑点（拄地承重读数），
-                //其余情形沿前臂方向 + 指令偏置，守位钳口微垂
+                //螯体姿态：抓握时螯尖指向抓点（扒住平面的读数），出招沿前臂方向+指令偏置
                 float wantRot;
-                if (planted) {
-                    wantRot = (plantPos[a] - ArmSolves[a].Wrist)
-                        .SafeNormalize(HeadDown).ToRotation();
+                if (gripping && gripInit[a]) {
+                    wantRot = (gripPos[a] - ArmSolves[a].Wrist)
+                        .SafeNormalize(Nodes[0].Forward).ToRotation();
                 }
                 else {
-                    wantRot = ArmSolves[a].ForeDir.ToRotation() + d.ClawPoseOffset
-                        + (d.Mode == ClawMode.Guard ? 0.22f * DownSign : 0f);
+                    wantRot = ArmSolves[a].ForeDir.ToRotation() + d.ClawPoseOffset;
                 }
-                ClawRot[a] = ClawRot[a].AngleLerp(wantRot, 0.2f);
-                ClawOpen[a] = MathHelper.Lerp(ClawOpen[a], MathHelper.Clamp(d.ClawOpen, 0f, 1f), 0.24f);
+                ClawRot[a] = ClawRot[a].AngleLerp(wantRot, 0.22f);
+                ClawOpen[a] = MathHelper.Lerp(ClawOpen[a], MathHelper.Clamp(open, 0f, 1f), 0.24f);
             }
         }
 
-        /// <summary>
-        /// 撑地更新：头前下方探地作撑点，偏离过远或超出可及就迈撑（双螯交替，带抬弧），
-        /// 返回腕的期望位置（螯体悬在撑点上方，尖端拄地）。探不到地退回折叠守位
-        /// </summary>
-        private bool UpdatePlant(int armIndex, out Vector2 wristWant) {
-            Vector2 down = HeadDown;
+        /// <summary>本臂的休息抓点：头前两侧（朝向目标的屏幕平面），带确定性微偏</summary>
+        private Vector2 RestGrip(int armIndex) {
             Vector2 forward = Nodes[0].Forward;
-            Vector2 shoulder = ShoulderWorld(armIndex);
-            //近臂撑得靠前，远臂靠后错开
-            Vector2 probeFrom = Nodes[0].Pos + forward * (92f - armIndex * 34f) + down * 8f;
-            bool hit = ShrimpTerrain.RaycastSurface(probeFrom, down, 175f, out Vector2 desired);
-            if (!hit) {
-                plantValid[armIndex] = false;
-                plantStepT[armIndex] = -1f;
-                wristWant = GuardWristWant(armIndex);
-                return false;
+            float wob = MathF.Sin(seed * 3.1f + armIndex * 2.7f + wavePhase * 0.5f) * 10f;
+            return Nodes[0].Pos + forward * (SeaShrimpDirector.GripForward + wob)
+                + Lateral(armIndex) * SeaShrimpDirector.GripSide;
+        }
+
+        /// <summary>
+        /// 抓握推进：到本手节拍帧就向新的休息抓点猛挪（smooth 12f），
+        /// 其余时间抓点世界坐标钉死。返回腕期望位（腕悬在抓点后方，螯尖压在抓点上）
+        /// </summary>
+        private Vector2 UpdateGrip(int armIndex, Vector2 shoulder, out bool lurching) {
+            if (!gripInit[armIndex]) {
+                gripInit[armIndex] = true;
+                gripPos[armIndex] = RestGrip(armIndex);
+                gripT[armIndex] = -1f;
             }
 
-            if (!plantValid[armIndex]) {
-                plantValid[armIndex] = true;
-                plantPos[armIndex] = desired;
-                plantStepT[armIndex] = -1f;
+            //节拍帧：0 号手在 0，1 号手在半拍
+            int myBeat = armIndex * (SeaShrimpDirector.GripCycleFrames / 2);
+            if (gripTick == myBeat && gripT[armIndex] < 0f) {
+                gripFrom[armIndex] = gripPos[armIndex];
+                gripTo[armIndex] = RestGrip(armIndex);
+                //挪距太小不值得抬手（驻停时手保持钉死）
+                if (Vector2.DistanceSquared(gripFrom[armIndex], gripTo[armIndex]) > 18f * 18f) {
+                    gripT[armIndex] = 0f;
+                }
             }
 
-            if (plantStepT[armIndex] >= 0f) {
-                //迈撑中：抬弧挪向新撑点
-                plantStepT[armIndex] += 1f / 9f;
-                if (plantStepT[armIndex] >= 1f) {
-                    plantStepT[armIndex] = -1f;
-                    plantPos[armIndex] = plantTo[armIndex];
+            if (gripT[armIndex] >= 0f) {
+                gripT[armIndex] += 1f / SeaShrimpDirector.GripLurchFrames;
+                if (gripT[armIndex] >= 1f) {
+                    gripT[armIndex] = -1f;
+                    gripPos[armIndex] = gripTo[armIndex];
                 }
                 else {
-                    float t = plantStepT[armIndex];
+                    float t = gripT[armIndex];
                     float ease = t * t * (3f - 2f * t);
-                    plantPos[armIndex] = Vector2.Lerp(plantFrom[armIndex], plantTo[armIndex], ease)
-                        - down * (MathF.Sin(t * MathHelper.Pi) * 20f);
+                    gripPos[armIndex] = Vector2.Lerp(gripFrom[armIndex], gripTo[armIndex], ease);
                 }
+                lurching = gripT[armIndex] >= 0f;
             }
             else {
-                float drift = Vector2.Distance(plantPos[armIndex], desired);
-                bool overReach = Vector2.Distance(plantPos[armIndex], shoulder)
-                    > (SeaShrimpDirector.ArmBone1 + SeaShrimpDirector.ArmBone2) * 0.96f;
-                bool otherStepping = plantStepT[1 - armIndex] >= 0f;
-                if ((drift > 64f || overReach) && (!otherStepping || overReach)) {
-                    plantFrom[armIndex] = plantPos[armIndex];
-                    plantTo[armIndex] = desired;
-                    plantStepT[armIndex] = 0f;
-                }
+                lurching = false;
             }
 
-            //腕悬在撑点上方，螯尖（腕沿姿态角探出 ~46px）恰好落在撑点
-            wristWant = plantPos[armIndex] - down * 42f;
-            return true;
+            //抓点失效判定：被甩超臂展一截，或落到头的后侧（臂不许反拖向身后）→ 立刻换抓新位
+            float maxReach = SeaShrimpDirector.ArmBone1 + SeaShrimpDirector.ArmBone2;
+            bool tooFar = Vector2.Distance(gripPos[armIndex], shoulder) > maxReach * 1.15f;
+            bool behindHead = Vector2.Dot(gripPos[armIndex] - Nodes[0].Pos, Nodes[0].Forward) < 12f;
+            if (tooFar || behindHead) {
+                gripPos[armIndex] = RestGrip(armIndex);
+                gripT[armIndex] = -1f;
+            }
+
+            //腕缩在抓点后方，螯体（锚→尖 ~46px）恰好压在抓点上
+            Vector2 toGrip = (gripPos[armIndex] - shoulder).SafeNormalize(Nodes[0].Forward);
+            return gripPos[armIndex] - toGrip * 38f;
         }
 
         private void UpdateAntennae(bool wet) {
             float time = Main.GlobalTimeWrappedHourly;
             for (int s = 0; s < 2; s++) {
-                Antennae[s].Update(AntennaAnchor(s), AntennaRestDir(), time, seed + s * 2.61f, wet);
+                Antennae[s].Update(AntennaAnchor(s), AntennaRestDir(s), time, seed + s * 2.61f, wet);
             }
         }
     }

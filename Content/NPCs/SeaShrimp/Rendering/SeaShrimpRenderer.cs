@@ -44,8 +44,11 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
         /// <summary>臂节2：肘端锚点与轴长</summary>
         private static readonly Vector2 Arm2Anchor = new(28f, 10f);
         private const float Arm2AxisLen = 88f;
-        /// <summary>螯：承窝锚点（贴图右上的关节托），主体朝 -Y 下垂</summary>
-        private static readonly Vector2 ClawAnchor = new(76f, 42f);
+        /// <summary>螯：承窝锚点（掌部右中的关节托，网格实测）</summary>
+        private static readonly Vector2 ClawAnchor = new(82f, 58f);
+        /// <summary>螯贴图内在指向角：承窝→钳口方向。网格实测：掌在右下、上钳指从左上弧入，
+        /// 钳口区质心 ≈(48,25)，轴角 ≈ atan2(-33,-34) = -2.35 rad；实机核对时只调这一个数</summary>
+        private const float ClawTexAxis = -2.35f;
 
         /// <summary>步足贴图髋/足端锚点与轴角（按站位取 Leg1/2/3）</summary>
         private static readonly Vector2[] LegHip = [new(32f, 5f), new(38f, 6f), new(45f, 4f)];
@@ -88,11 +91,11 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
             //远侧层（压暗贴后）
             DrawAntenna(sb, sk, 1, alpha * 0.72f);
             DrawLegRow(sb, sk, row: 1, alpha, dark: 0.55f);
-            DrawArm(sb, sk, 1, alpha, dark: 0.62f);
 
-            //体链（尾→头，头压顶）
+            //体链（尾→头，头压顶）；尾扇锚在前缘，弯折时前缘始终咬进体节3 不脱节
             DrawSpinePart(sb, TailTex.Value, sk.Nodes[4], alpha, 1f,
-                scaleOverride: new Vector2(0.72f + 0.42f * sk.TailFlare, 1f));
+                scaleOverride: new Vector2(0.72f + 0.42f * sk.TailFlare, 1f),
+                originOverride: new Vector2(83f, 16f));
             DrawSpinePart(sb, Seg3Tex.Value, sk.Nodes[3], alpha, 1f);
             DrawSpinePart(sb, Seg2Tex.Value, sk.Nodes[2], alpha, 1f);
             DrawSpinePart(sb, Seg1Tex.Value, sk.Nodes[1], alpha, 1f);
@@ -100,8 +103,11 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
 
             //近侧层
             DrawLegRow(sb, sk, row: 0, alpha, dark: 0.88f);
-            DrawArm(sb, sk, 0, alpha, dark: 1f);
             DrawAntenna(sb, sk, 0, alpha);
+
+            //双螯压最上层：手撑向玩家所在的屏幕平面，是这套分镜的前景主角
+            DrawArm(sb, sk, 1, alpha, dark: 0.68f);
+            DrawArm(sb, sk, 0, alpha, dark: 1f);
 
             DrawBeams(sb, ctx);
             DrawCrystalGlow(sb, sk, ctx);
@@ -155,21 +161,22 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
             }
         }
 
-        /// <summary>体链部件：贴图上方 = 前向</summary>
+        /// <summary>体链部件：贴图上方 = 前向；originOverride 可把锚点移到贴图前缘（尾扇咬合用）</summary>
         private static void DrawSpinePart(SpriteBatch sb, Texture2D tex, ShrimpSkeleton.Node node,
-            float alpha, float dark, Vector2? scaleOverride = null) {
+            float alpha, float dark, Vector2? scaleOverride = null, Vector2? originOverride = null) {
             if (tex == null) {
                 return;
             }
             Color color = LightAt(node.Pos, alpha).MultiplyRGB(new Color(dark, dark, dark));
             Vector2 scale = scaleOverride ?? Vector2.One;
+            Vector2 origin = originOverride ?? tex.Size() * 0.5f;
             sb.Draw(tex, node.Pos - Main.screenPosition, null, color,
-                node.Dir + MathHelper.PiOver2, tex.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+                node.Dir + MathHelper.PiOver2, origin, scale, SpriteEffects.None, 0f);
             //蜕壳裸晶：半透晶蓝水洗提亮体色
             if (moltWash > 0.05f) {
                 Color wash = new Color(120, 175, 255, 70) * (moltWash * 0.32f * alpha * gloomMul);
                 sb.Draw(tex, node.Pos - Main.screenPosition, null, wash,
-                    node.Dir + MathHelper.PiOver2, tex.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+                    node.Dir + MathHelper.PiOver2, origin, scale, SpriteEffects.None, 0f);
             }
         }
 
@@ -231,11 +238,11 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
                 solve.ForeDir.ToRotation() - MathHelper.PiOver2, Arm2Anchor,
                 new Vector2(1f, SeaShrimpDirector.ArmBone2 / Arm2AxisLen), SpriteEffects.None, 0f);
 
-            //螯体：承窝挂腕，钳开合以轻微绕锚旋开表达
+            //螯体：承窝挂腕，贴图内在轴角对齐世界指向（ClawRot=尖端朝向），钳开合绕锚微旋
             float open = sk.ClawOpen[armIndex] * 0.34f;
             Color c3 = LightAt(solve.Wrist, alpha).MultiplyRGB(darkMul);
             sb.Draw(claw, solve.Wrist - Main.screenPosition, null, c3,
-                sk.ClawRot[armIndex] - MathHelper.PiOver2 + open, ClawAnchor,
+                sk.ClawRot[armIndex] - ClawTexAxis + open, ClawAnchor,
                 1f, SpriteEffects.None, 0f);
         }
 

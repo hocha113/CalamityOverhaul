@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.States;
 using InnoVault.StateMachines;
@@ -66,6 +66,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
     /// 联机契约：转场只在权威端裁决（状态走 ai[3]），各端本地跑同一状态机做表现，
     /// 弹幕只在权威端生成，粒子音效全走 !dedServ 门，腿是纯本地表现。
     /// </summary>
+    [AutoloadBossHead]
     internal class BssHead : BssModNPC, ICWRLoader
     {
         #region 数据
@@ -196,6 +197,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             Context.BeginFrameDefaults();
             stateMachine.Update();
 
+            //步态时钟：腿的划桨排程与爬行涌动/贴地呼吸共读一拍（全端同算；
+            //任何状态都推进，速率取全速度模长——竖直攀升/俯冲时腿照样有划水节奏）
+            Context.GaitPhase += BssStateContext.GaitIncrement(NPC.velocity.Length());
             ApplyDeclaredMovement();
 
             if (Main.GameUpdateCount % 45 == 0 || Context.Segments.Count == 0) {
@@ -336,8 +340,15 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         }
 
         /// <summary>
-        /// 蜈蚣爬行：沿地形等高线推进。波幅随速放大（快爬时全身明显起伏），
-        /// 推进速度按步频节律涌动（surge-glide，读作腿在发力而非匀速漂移），
+        /// 耙沙拍相位修正：0 号髋站走地腿的抓地拍在 GaitPhase ≡ 0 (mod 2π)，
+        /// 功率段约占 [0, PowerFraction·2π]；push 峰值压在功率段中点（≈0.9 弧度）。
+        /// 向左走时走地排换到反相侧（时钟槽差 π），由 ApplyCrawl 给 bodyPhase 补相。
+        /// </summary>
+        private static readonly float PushAlignPhase = MathHelper.PiOver2 - 0.9f;
+
+        /// <summary>
+        /// 蜈蚣爬行：沿地形等高线推进。全身起伏与推进涌动读步态时钟（与腿的划桨
+        /// 周期同源同拍）：耙沙功率段身体微抬加速、恢复段回沉滑行——"耙一记、滑一段"。
         /// 急转向时甩一记鞭链行波。
         /// </summary>
         private void ApplyCrawl() {
@@ -357,13 +368,19 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             float desiredY = groundY - BssDirector.CrawlRideHeight;
 
             float speedNow = Math.Abs(NPC.velocity.X);
-            Context.SlitherPhase += 0.11f + speedNow * 0.005f;
+            //身体节律 = 步态时钟全频（划桨周期本身从容）；向左走时走地排换侧（槽差 π）补相
+            float bodyPhase = Context.GaitPhase + (dir < 0f ? MathHelper.Pi : 0f);
             //波幅随速：静止近乎不动，快爬时全身起伏（灵动的来源）
             float waveAmp = 3f + MathHelper.Clamp(speedNow * 0.85f, 0f, 11f);
-            desiredY += MathF.Sin(Context.SlitherPhase) * waveAmp;
+            desiredY += MathF.Sin(bodyPhase) * waveAmp;
 
-            //步频涌动：推进速度围绕目标值脉动（腿蹬一下、滑一段）
-            float stridePulse = 0.86f + 0.28f * Math.Max(0f, MathF.Sin(Context.SlitherPhase * 1.6f));
+            //耙沙拍：尖锐脉冲（pow3），相位对齐 0 号髋站功率段中点（每个划桨周期耙一记）
+            float push = MathF.Pow(Math.Max(0f, MathF.Sin(bodyPhase + PushAlignPhase)), 3f);
+            //耙沙身体微抬、恢复段回沉：身体高度骑在腿的节拍上
+            desiredY -= push * MathHelper.Clamp(3f + speedNow * 0.25f, 0f, 9f);
+
+            //步频涌动：推进速度围绕目标值脉动（与贴地呼吸同拍 = 腿在发力的读数）
+            float stridePulse = 0.84f + 0.30f * push;
             float vx = MathHelper.Lerp(NPC.velocity.X, dir * Context.CrawlSpeed * stridePulse, 0.12f);
             float vy = MathHelper.Clamp((desiredY - NPC.Center.Y) * 0.1f, -12f, 12f);
             NPC.velocity = new Vector2(vx, vy);
@@ -604,8 +621,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             Texture2D texture = TextureAssets.Npc[Type].Value;
             Rectangle frameRec = texture.Bounds;
             Vector2 origin = frameRec.Size() / 2f;
-            //落足下沉回弹：身体被腿撑着走的重量读数（纯绘制偏移）
-            Vector2 mainPos = NPC.Center - screenPos + new Vector2(0f, Context.StepBob * 3f);
+            //落足下沉回弹：头随 0 号髋站（最前大腿）落步下沉，被腿撑着走的重量读数（纯绘制偏移）
+            Vector2 mainPos = NPC.Center - screenPos + new Vector2(0f, Context.SampleStationBob(0f) * BssLegRig.StationDipPx);
             float fade = 1f - NPC.alpha / 255f;
 
             //高速残影（速度门控，只在冲刺时出现）

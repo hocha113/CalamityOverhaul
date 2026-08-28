@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
 using System;
+using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
 {
@@ -51,13 +52,13 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
             }
         }
 
-        /// <summary>髋世界位：站点节位 + 沿轴偏移 + 贴地侧下潜；近远排微错开</summary>
+        /// <summary>髋世界位：站点节位 + 沿轴偏移 + 各自体侧外挂（0 排右列、1 排左列）</summary>
         public Vector2 HipWorld(in Leg leg, ShrimpSkeleton skeleton) {
             ShrimpSkeleton.Node node = skeleton.StationNode(leg.Station);
             Vector2 forward = node.Forward;
-            Vector2 down = skeleton.LocalDown(node);
-            float along = StationAlong[leg.Station] + (leg.Row == 0 ? 5f : -5f);
-            return node.Pos + forward * along + down * 14f;
+            Vector2 side = forward.RotatedBy(MathHelper.PiOver2 * (leg.Row == 0 ? 1f : -1f));
+            float along = StationAlong[leg.Station];
+            return node.Pos + forward * along + side * 15f;
         }
 
         private bool AnyStepping(int group) {
@@ -146,13 +147,13 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
         }
 
         private void UpdatePaddle(ref Leg leg, ShrimpSkeleton skeleton, Vector2 hip, int index) {
-            //游泳/悬空：腿收拢成桨，沿体侧正弦划水，相位沿体轴递进
+            //悬浮划水：腿向各自体侧外后方伸出，正弦桨摆沿体轴递相（六桨轮动）
             ShrimpSkeleton.Node node = skeleton.StationNode(leg.Station);
-            Vector2 down = skeleton.LocalDown(node);
+            Vector2 side = node.Forward.RotatedBy(MathHelper.PiOver2 * (leg.Row == 0 ? 1f : -1f));
             Vector2 back = -node.Forward;
-            float swing = MathF.Sin(paddlePhase + index * 1.05f) * 0.55f;
-            Vector2 paddleDir = Vector2.Normalize(down + back * (0.5f + swing));
-            Vector2 target = hip + paddleDir * (SeaShrimpDirector.LegReach * 0.5f);
+            float swing = MathF.Sin(paddlePhase + index * 1.05f) * 0.6f;
+            Vector2 paddleDir = Vector2.Normalize(side + back * (0.55f + swing));
+            Vector2 target = hip + paddleDir * (SeaShrimpDirector.LegReach * 0.52f);
             if (!leg.Init) {
                 leg.Init = true;
                 leg.Foot = target;

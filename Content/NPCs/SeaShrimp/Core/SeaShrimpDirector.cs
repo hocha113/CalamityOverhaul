@@ -40,10 +40,11 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Core
 
         //==================== 脊链（头→体节1→2→3→尾扇，节距按贴图 2x 尺寸估）====================
 
-        /// <summary>节距：头中心→体节1、1→2、2→3、3→尾扇</summary>
-        public static readonly float[] SpineGaps = [96f, 44f, 38f, 46f];
-        /// <summary>相邻关节最大弯角 rad（防折叠）</summary>
-        public const float SpineMaxBend = 0.62f;
+        /// <summary>节距：头中心→体节1、1→2、2→3、3→尾扇（比贴图裸尺寸收紧一档，弯折时不豁口；
+        /// 末段配合尾扇前缘锚再收，保证尾扇咬进体节3）</summary>
+        public static readonly float[] SpineGaps = [82f, 37f, 32f, 26f];
+        /// <summary>相邻关节最大弯角 rad（防折叠，同时压住弯折豁口）</summary>
+        public const float SpineMaxBend = 0.5f;
         /// <summary>节向角平滑速率</summary>
         public const float SpineTurnRate = 0.38f;
         /// <summary>爬行 S 波每节相位差 rad</summary>
@@ -79,18 +80,29 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Core
         /// <summary>腿可及半径 px（超出则悬空）</summary>
         public const float LegReach = 96f;
 
-        //==================== 地面运动 ====================
+        //==================== 凝视逼近（NightmareReaper 式分镜：头恒对玩家，环距弹簧）====================
 
-        /// <summary>体轴离地高度 px</summary>
+        /// <summary>驻停环距 px：逼近到此距离停住漂移</summary>
+        public const float StalkHoldDistance = 380f;
+        /// <summary>超出此距离恢复逼近</summary>
+        public const float StalkResumeFar = 580f;
+        /// <summary>近于此距离恢复移动（同一弹簧自然后退）</summary>
+        public const float StalkResumeNear = 150f;
+        /// <summary>每帧最大转向 rad（恒速转头，蓄意感）</summary>
+        public const float StalkTurnRate = MathHelper.Pi / 30f;
+        /// <summary>体轴离地高度 px（入场/晶刺落点等地形参考仍用）</summary>
         public const float RideHeight = 46f;
-        /// <summary>爬行满速 px/f</summary>
-        public const float CrawlSpeed = 8.6f;
-        /// <summary>爬行加速度 px/f²</summary>
-        public const float CrawlAccel = 0.24f;
-        /// <summary>贴地弹簧系数</summary>
-        public const float SurfaceStick = 0.22f;
-        /// <summary>法线平滑速率</summary>
-        public const float NormalLerp = 0.14f;
+
+        //==================== 双螯空间抓握（手撑屏幕平面，交替抓行）====================
+
+        /// <summary>抓握节拍总长（两手错半拍）</summary>
+        public const int GripCycleFrames = 30;
+        /// <summary>单次挪抓时长</summary>
+        public const int GripLurchFrames = 12;
+        /// <summary>休息抓点前伸量（沿头前向）</summary>
+        public const float GripForward = 126f;
+        /// <summary>休息抓点侧展量</summary>
+        public const float GripSide = 128f;
 
         //==================== 游泳 ====================
 

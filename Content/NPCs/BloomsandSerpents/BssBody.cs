@@ -300,9 +300,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                     shakeOffset += perpAng.ToRotationVector2() * wave * ctx.WhipStrength;
                 }
             }
-            //落足下沉：前段体节跟头一起被腿撑住下沉回弹
-            if (ctx != null && ctx.StepBob > 0.02f && Ordinal < 11) {
-                shakeOffset.Y += ctx.StepBob * 3f * (1f - Ordinal / 11f);
+            //落足下沉：落步髋站上方的体节局部下沉回弹（重量波沿身传播，采样距站 ±3 节内衰减）
+            if (ctx != null) {
+                float dip = ctx.SampleStationBob(Ordinal);
+                if (dip > 0.02f) {
+                    shakeOffset.Y += dip * BssLegRig.StationDipPx;
+                }
             }
             Vector2 drawPos = NPC.Center + shakeOffset - screenPos;
 

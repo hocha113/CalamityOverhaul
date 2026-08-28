@@ -146,8 +146,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
             stateMachine.Update();
 
             Locomotion.Update();
-            Skeleton.Update(Context, NPC.Center, Locomotion.Heading, Locomotion.SurfaceNormal,
-                Locomotion.Attached, Locomotion.TangentMove, NPC.velocity.Length(), Locomotion.Wet);
+            Skeleton.Update(Context, NPC.Center, Locomotion.Heading,
+                Locomotion.TangentMove, NPC.velocity.Length(), Locomotion.Wet);
 
             if (Context.AttackCooldown > 0) {
                 Context.AttackCooldown--;

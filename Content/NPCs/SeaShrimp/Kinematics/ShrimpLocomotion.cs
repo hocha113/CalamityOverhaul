@@ -7,9 +7,9 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
     /// <summary>运动模式</summary>
     internal enum ShrimpMoveMode
     {
-        /// <summary>贴面爬行（海底/礁壁，法线夹持）</summary>
-        SurfaceCrawl,
-        /// <summary>水中悬浮巡游</summary>
+        /// <summary>凝视逼近：头恒对目标，环距弹簧进退（NightmareReaper 式分镜）</summary>
+        Stalk,
+        /// <summary>直线游动（离场/回位等直达移动）</summary>
         Swim,
         /// <summary>弹道段（尾弹/击飞），状态一帧点火后自治</summary>
         Ballistic,
@@ -18,26 +18,22 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
     }
 
     /// <summary>
-    /// 运动执行层：状态每帧写意图（薄命令 API），本层持有贴附面/朝向等持久量并落实速度。
-    /// 贴附 = 射线捕面 + 圆周法线 + 贴面弹簧 + 切向推进，斜坡陡壁一体处理；
-    /// 尾弹 = 虾式后向弹道（身体朝向不翻转，尾先行）。
+    /// 运动执行层（NightmareReaper 动作语言）：boss 悬浮于开阔空间，头永远以恒速转向目标；
+    /// 逼近走环距弹簧——远了爬近、入环停住漂移、过远或贴脸再动（同一弹簧自然进退）。
+    /// 身体从不贴地形（noTileCollide），双螯的"抓地感"由骨架的空间抓握系统承担。
     /// 全部消费确定性输入，各端结果一致
     /// </summary>
     internal class ShrimpLocomotion
     {
         private NPC npc;
 
-        public ShrimpMoveMode Mode { get; private set; } = ShrimpMoveMode.SurfaceCrawl;
-        /// <summary>贴附面外法线（平滑）</summary>
-        public Vector2 SurfaceNormal { get; private set; } = -Vector2.UnitY;
-        /// <summary>本帧是否有贴附面</summary>
-        public bool Attached { get; private set; }
-        /// <summary>头前向角（平滑，骨架直接消费）</summary>
-        public float Heading { get; private set; } = 0f;
-        /// <summary>本帧切向行进向量（含符号，步态前探用）</summary>
+        public ShrimpMoveMode Mode { get; private set; } = ShrimpMoveMode.Stalk;
+        /// <summary>头前向角（恒速转向，骨架直接消费）</summary>
+        public float Heading { get; private set; }
+        /// <summary>本帧行进向量（步态划桨参考）</summary>
         public Vector2 TangentMove { get; private set; } = Vector2.UnitX;
-        /// <summary>当前标量速度（表现层读）</summary>
-        public float Speed => npc?.velocity.Length() ?? 0f;
+        /// <summary>名义上方向（保留给个别姿态偏置消费）</summary>
+        public Vector2 SurfaceNormal => -Vector2.UnitY;
         /// <summary>身体当前是否浸水</summary>
         public bool Wet => npc != null && ShrimpTerrain.WetAt(npc.Center);
 
@@ -46,36 +42,41 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
         private ShrimpMoveMode wantMode;
         private Vector2 wantPoint;
         private float wantSpeedScale;
+        private float wantHoldDist;
+        private bool holdIntent;
+
+        //环距弹簧滞回：在环内漂移，出环再动
+        private bool stalking = true;
 
         //弹道段
         private int ballisticFrames;
         private float ballisticBrake;
         private bool braking;
 
-        //爬行标量速度（加速度积分）
-        private float crawlSpeed;
-
         public void Bind(NPC target) => npc = target;
 
-        /// <summary>贴面爬向世界点（自动解算切向与朝向）</summary>
-        public void RequestCrawlTo(Vector2 worldPoint, float speedScale = 1f) {
+        /// <summary>凝视逼近目标点：holdDistance 为驻停环距（0=直达）</summary>
+        public void RequestCrawlTo(Vector2 worldPoint, float speedScale = 1f,
+            float holdDistance = SeaShrimpDirector.StalkHoldDistance) {
             hasIntent = true;
-            wantMode = ShrimpMoveMode.SurfaceCrawl;
+            holdIntent = false;
+            wantMode = ShrimpMoveMode.Stalk;
             wantPoint = worldPoint;
             wantSpeedScale = speedScale;
+            wantHoldDist = holdDistance;
         }
 
-        /// <summary>原地驻停（保持贴附，速度归零）</summary>
+        /// <summary>原地驻停漂移（蓄力/齐射用；不转头，姿态由状态自持）</summary>
         public void RequestHold() {
             hasIntent = true;
-            wantMode = ShrimpMoveMode.SurfaceCrawl;
-            wantPoint = npc.Center + Heading.ToRotationVector2() * 4f;
-            wantSpeedScale = 0f;
+            holdIntent = true;
+            wantMode = ShrimpMoveMode.Stalk;
         }
 
-        /// <summary>游向锚点</summary>
+        /// <summary>直线游向锚点（离场等直达移动）</summary>
         public void RequestSwim(Vector2 anchor, float speedScale = 1f) {
             hasIntent = true;
+            holdIntent = false;
             wantMode = ShrimpMoveMode.Swim;
             wantPoint = anchor;
             wantSpeedScale = speedScale;
@@ -84,6 +85,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
         /// <summary>剧本模式：本层不碰速度，演出状态自行脚本化位移与朝向</summary>
         public void RequestScripted() {
             hasIntent = true;
+            holdIntent = false;
             wantMode = ShrimpMoveMode.Scripted;
         }
 
@@ -106,6 +108,9 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
         /// <summary>弹道段是否结束（刹停）</summary>
         public bool BallisticDone => Mode != ShrimpMoveMode.Ballistic;
 
+        /// <summary>入场/重建时硬置朝向</summary>
+        public void SnapHeading(float heading) => Heading = heading;
+
         /// <summary>每帧执行（主体 AI 在状态机之后调用）</summary>
         public void Update() {
             if (Mode == ShrimpMoveMode.Ballistic) {
@@ -115,30 +120,22 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
             }
 
             if (!hasIntent) {
-                //无意图默认驻停
-                wantMode = ShrimpMoveMode.SurfaceCrawl;
-                wantPoint = npc.Center + Heading.ToRotationVector2() * 4f;
-                wantSpeedScale = 0f;
+                holdIntent = true;
+                wantMode = ShrimpMoveMode.Stalk;
             }
             hasIntent = false;
 
             Mode = wantMode;
-            if (Mode == ShrimpMoveMode.Scripted) {
-                //剧本段：只维持贴附探测供步态参考，不写速度
-                Attached = ShrimpTerrain.RaycastSurface(npc.Center, Vector2.UnitY,
-                    SeaShrimpDirector.RideHeight * 3f, out Vector2 sp);
-                if (Attached) {
-                    SurfaceNormal = ShrimpTerrain.SampleNormal(sp, Vector2.UnitY);
-                }
-                crawlSpeed = 0f;
-                TangentMove = Heading.ToRotationVector2();
-                return;
-            }
-            if (Mode == ShrimpMoveMode.Swim) {
-                UpdateSwim();
-            }
-            else {
-                UpdateCrawl();
+            switch (Mode) {
+                case ShrimpMoveMode.Scripted:
+                    TangentMove = Heading.ToRotationVector2();
+                    return;
+                case ShrimpMoveMode.Swim:
+                    UpdateSwim();
+                    return;
+                default:
+                    UpdateStalk();
+                    return;
             }
         }
 
@@ -150,86 +147,58 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
                 if (ballisticFrames == 0) {
                     braking = true;
                 }
-                Attached = false;
                 return;
             }
             if (braking) {
                 npc.velocity *= ballisticBrake;
                 if (npc.velocity.Length() < 3f) {
                     braking = false;
-                    Mode = ShrimpMoveMode.SurfaceCrawl;
-                    crawlSpeed = 0f;
+                    Mode = ShrimpMoveMode.Stalk;
+                    stalking = true;
                 }
             }
-            Attached = false;
         }
 
-        private void UpdateCrawl() {
-            //捕面：先沿当前腹侧探，丢面后向世界下方重捕
-            bool hit = ShrimpTerrain.RaycastSurface(npc.Center, -SurfaceNormal,
-                SeaShrimpDirector.RideHeight * 2.8f, out Vector2 surfPoint);
-            if (!hit) {
-                hit = ShrimpTerrain.RaycastSurface(npc.Center, Vector2.UnitY,
-                    SeaShrimpDirector.RideHeight * 3.4f, out surfPoint);
-                if (hit) {
-                    SurfaceNormal = ShrimpTerrain.SampleNormal(surfPoint, Vector2.UnitY);
-                }
-            }
-
-            if (!hit) {
-                //悬空：缓沉找地，保持朝向
-                Attached = false;
-                npc.velocity.X *= 0.97f;
-                npc.velocity.Y = MathF.Min(npc.velocity.Y + 0.34f, 9f);
-                crawlSpeed *= 0.9f;
+        /// <summary>
+        /// 凝视逼近：头以恒速转向目标；环距弹簧 (d-hold) 决定进退加速度，
+        /// 入环停住漂移、出环（过远/贴脸）再动——同一条公式自然完成贴近与后撤
+        /// </summary>
+        private void UpdateStalk() {
+            if (holdIntent) {
+                //驻停漂移：泄速不转头（蓄力姿态由状态自持）
+                npc.velocity *= 0.95f;
+                TangentMove = Heading.ToRotationVector2();
                 return;
             }
 
-            Attached = true;
-            Vector2 sampled = ShrimpTerrain.SampleNormal(surfPoint, -SurfaceNormal);
-            float normalAngle = SurfaceNormal.ToRotation().AngleLerp(sampled.ToRotation(), SeaShrimpDirector.NormalLerp);
-            SurfaceNormal = normalAngle.ToRotationVector2();
+            Vector2 to = wantPoint - npc.Center;
+            float d = to.Length();
+            Vector2 dir = to.SafeNormalize(Vector2.UnitX);
 
-            //切向推进：正切向 = 法线顺转 90°，符号朝目标
-            Vector2 tangentPositive = SurfaceNormal.RotatedBy(MathHelper.PiOver2);
-            Vector2 toTarget = wantPoint - npc.Center;
-            float moveSign = MathF.Sign(Vector2.Dot(tangentPositive, toTarget));
-            if (moveSign == 0f) {
-                moveSign = 1f;
+            //恒速转头：蓄意而不慌乱
+            Heading = Heading.AngleTowards(dir.ToRotation(), SeaShrimpDirector.StalkTurnRate);
+
+            float hold = wantHoldDist;
+            if (hold <= 1f) {
+                //直达：无环，一路进逼
+                npc.velocity = npc.velocity * 0.95f + dir * (d / 20f * 0.05f * wantSpeedScale);
             }
-
-            //目标够近就驻停，防原地抽搐
-            float targetSpeed = SeaShrimpDirector.CrawlSpeed * MathHelper.Clamp(wantSpeedScale, 0f, 1.6f);
-            float tangentDist = MathF.Abs(Vector2.Dot(tangentPositive, toTarget));
-            if (tangentDist < 30f) {
-                targetSpeed = 0f;
+            else if (stalking) {
+                npc.velocity = npc.velocity * 0.95f + dir * ((d - hold) / 20f * 0.05f * wantSpeedScale);
+                if (MathF.Abs(d - hold) < hold * 0.12f) {
+                    stalking = false;
+                }
             }
-            crawlSpeed = MoveTowards(crawlSpeed, targetSpeed, SeaShrimpDirector.CrawlAccel);
-
-            Vector2 tangentMove = tangentPositive * moveSign;
-            //贴面弹簧：把体轴钉回离面高度，修正量限幅防弹跳
-            Vector2 desiredPos = surfPoint + SurfaceNormal * SeaShrimpDirector.RideHeight;
-            Vector2 stick = (desiredPos - npc.Center) * SeaShrimpDirector.SurfaceStick;
-            float stickLen = stick.Length();
-            if (stickLen > 7f) {
-                stick *= 7f / stickLen;
+            else {
+                npc.velocity *= 0.97f;
+                if (d > SeaShrimpDirector.StalkResumeFar || d < SeaShrimpDirector.StalkResumeNear) {
+                    stalking = true;
+                }
             }
-
-            npc.velocity = tangentMove * crawlSpeed + stick;
-            TangentMove = tangentMove;
-
-            //朝向：有速度朝切向，驻停保持
-            if (crawlSpeed > 0.4f) {
-                Heading = Heading.AngleLerp(tangentMove.ToRotation(), 0.13f);
-            }
+            TangentMove = Heading.ToRotationVector2();
         }
 
         private void UpdateSwim() {
-            Attached = false;
-            //法线缓回世界上方（身体转平）
-            float normalAngle = SurfaceNormal.ToRotation().AngleLerp((-Vector2.UnitY).ToRotation(), 0.05f);
-            SurfaceNormal = normalAngle.ToRotationVector2();
-
             Vector2 desired = (wantPoint - npc.Center) * SeaShrimpDirector.SwimApproach;
             float maxSpeed = SeaShrimpDirector.SwimSpeed * MathHelper.Clamp(wantSpeedScale, 0f, 1.6f);
             if (desired.Length() > maxSpeed) {
@@ -237,18 +206,11 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
             }
             npc.velocity = Vector2.Lerp(npc.velocity, desired, SeaShrimpDirector.SwimInertia);
             TangentMove = npc.velocity.SafeNormalize(Heading.ToRotationVector2());
-            crawlSpeed = 0f;
 
             //朝向只认实速：锚点悬停时速度在零附近抖动，低阈值会让整条链原地缠团
             if (npc.velocity.Length() > 3.4f) {
                 Heading = Heading.AngleLerp(npc.velocity.ToRotation(), 0.07f);
             }
         }
-
-        /// <summary>入场/重建时硬置朝向</summary>
-        public void SnapHeading(float heading) => Heading = heading;
-
-        private static float MoveTowards(float cur, float target, float step)
-            => cur < target ? MathF.Min(cur + step, target) : MathF.Max(cur - step, target);
     }
 }

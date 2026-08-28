@@ -93,16 +93,9 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Core
             return new States.SeaShrimpHubState();
         }
 
-        /// <summary>原地稳身：贴地时驻停，水中悬停（攻击蓄力通用）</summary>
-        protected static void HoldInPlace(SeaShrimpStateContext ctx) {
-            Kinematics.ShrimpLocomotion loco = ctx.Owner.Locomotion;
-            if (loco.Attached || !loco.Wet) {
-                loco.RequestHold();
-            }
-            else {
-                loco.RequestSwim(ctx.Npc.Center, 0.4f);
-            }
-        }
+        /// <summary>原地稳身：驻停漂移（攻击蓄力通用，朝向由蓄力姿态自持）</summary>
+        protected static void HoldInPlace(SeaShrimpStateContext ctx)
+            => ctx.Owner.Locomotion.RequestHold();
 
         /// <summary>就近震屏：只震看得见战斗的本地玩家，带距离门</summary>
         protected static void ShakeNearby(Vector2 pos, float amount, float range = 1300f) {

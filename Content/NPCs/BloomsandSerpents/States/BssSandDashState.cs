@@ -168,7 +168,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
         private void UpdateFlight(BssStateContext ctx, NPC npc) {
             ctx.Mode = BssMoveMode.Direct;
             ctx.LegCommand = BssLegCommand.Tuck;
-            ctx.LegAlpha = 0.7f;
             npc.rotation = npc.velocity.ToRotation() + BssHead.FacingRot;
 
             float speed = npc.velocity.Length();
