@@ -352,7 +352,7 @@ SHPCTrialQuestLine: {
 	Trial_2: 寄生源头
 	Trial_3: 凝胶之神
 	Trial_4: 封印突破
-	Trial_5: 深海污染
+	Trial_5: 变异检疫
 	Trial_6: 硫火采样
 	Trial_7: 机械蠕虫
 	Trial_8: 双眼拆解
@@ -396,8 +396,8 @@ SHPCTrialQuestLine: {
 		'''
 	TrialSummary_5:
 		'''
-		硫磺之海的巨虫已经浮出水面
-		主人，请拆下它的吞噬器官。我需要确认这种污染源的运作方式。
+		荒漠的沙蟒被暗影腐化成了新的变种，脓液里检出高浓度灵液
+		主人，请采集它的病变组织。我需要弄清这种突变的传导路径。
 		'''
 	TrialSummary_6:
 		'''
@@ -760,7 +760,7 @@ OnikiriTrialQuestLine: {
 	Trial_2: 结聚秽巢
 	Trial_3: 妄称神明
 	Trial_4: 截界肉壁
-	Trial_5: 硫海腐鳞
+	Trial_5: 腐沙脓鳞
 	Trial_6: 深渊余烬
 	Trial_7: 轰鸣铁蛇
 	Trial_8: 双生魔瞳
@@ -811,9 +811,9 @@ OnikiriTrialQuestLine: {
 		'''
 	TrialSummary_5:
 		'''
-		硫海那边味就不对，有东西在翻
-		别让它靠岸，你去拦一拦
-		回来刀要是一股味，那可太混蛋了
+		沙漠那头味变了，烂花混着脓，有东西在拱
+		别让它钻深，你去截一截
+		刀别往脓包里杵，我这儿还住着人呢
 		'''
 	TrialSummary_6:
 		'''
@@ -953,7 +953,7 @@ KikasaTrialQuestLine: {
 	Trial_6: 驳杂神胶
 	Trial_7: 横途热肉
 	Trial_8: 展翼粉冻
-	Trial_9: 硫海腐身
+	Trial_9: 腐沙金涎
 	Trial_10: 生铁三味
 	Trial_11: 雨林红蕊
 	Trial_12: 晶壳弹肉
@@ -1032,10 +1032,10 @@ KikasaTrialQuestLine: {
 		'''
 	TrialSummary_9:
 		'''
-		硫磺泡着条长虫，一身腥臭，尸浸八里
-		那片水馊得湖也皱眉
-		捞干净，收作网，但不收烂口水
-		完事把伞抖三抖再回来
+		荒花那条蟒回来了，红花烂成了脓疮
+		沙里发金光的洼子别踩，那是它的口涎
+		湖什么味都收，就是嫌它把一片沙子泡馊了
+		去，请它沉底，伞抖干净再回来
 		'''
 	TrialSummary_10:
 		'''

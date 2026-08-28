@@ -87,13 +87,31 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
         }
 
         public override void ModifyNPCLoot(NPCLoot npcLoot) {
-            //专家：宝藏袋；普通：同池直掉（专属武器另开任务后填充）
+            //专家：宝藏袋；普通：同池直掉（与袋共享一张掉落表，袋内量更足）
             npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<SeaShrimpTreasureBag>()));
             LeadingConditionRule notExpert = new(new Conditions.NotExpert());
-            notExpert.OnSuccess(ItemDropRule.Common(ItemID.CrystalShard, 1, 18, 30));
-            notExpert.OnSuccess(ItemDropRule.Common(ItemID.SoulofMight, 1, 8, 14));
-            notExpert.OnSuccess(ItemDropRule.Common(ItemID.BeetleHusk, 1, 4, 7));
+            RegisterSharedLoot(rule => notExpert.OnSuccess(rule), expert: false);
             npcLoot.Add(notExpert);
+        }
+
+        /// <summary>
+        /// 共享掉落池（普通直掉与专家袋同表）：签名深渊武器永渊/裂渊二取一保底 +
+        /// 渊晶碎片；灾厄在场换深渊系材料（荧光藻/虚空石/深渊细胞——正是两把武器的
+        /// 合成料，击杀反哺成套），缺席回退后石巨人期原版材料
+        /// </summary>
+        internal static void RegisterSharedLoot(Action<IItemDropRule> add, bool expert) {
+            add(ItemDropRule.OneFromOptions(1,
+                ModContent.ItemType<Content.Items.Magic.Everdeeps.Everdeep>(),
+                ModContent.ItemType<Content.Items.Melee.Abyssrends.Abyssrend>()));
+            add(ItemDropRule.Common(ItemID.CrystalShard, 1, expert ? 24 : 18, expert ? 40 : 30));
+            if (CWRID.Item_Lumenyl > 0 && CWRID.Item_Voidstone > 0 && CWRID.Item_DepthCells > 0) {
+                add(ItemDropRule.Common(CWRID.Item_Lumenyl, 1, expert ? 14 : 10, expert ? 22 : 16));
+                add(ItemDropRule.Common(CWRID.Item_Voidstone, 1, expert ? 20 : 15, expert ? 34 : 25));
+                add(ItemDropRule.Common(CWRID.Item_DepthCells, 1, expert ? 12 : 8, expert ? 20 : 14));
+                return;
+            }
+            add(ItemDropRule.Common(ItemID.SoulofMight, 1, expert ? 12 : 8, expert ? 20 : 14));
+            add(ItemDropRule.Common(ItemID.BeetleHusk, 1, expert ? 6 : 4, expert ? 10 : 7));
         }
 
         public override void OnKill() {
@@ -245,7 +263,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
             }
             IVaultState<SeaShrimpStateContext> current = stateMachine.CurrentState;
             if (current is SeaShrimpIntroState or SeaShrimpDespawnState
-                or SeaShrimpMoltTransitionState or SeaShrimpDeathState) {
+                or SeaShrimpMoltTransitionState or SeaShrimpDeathState
+                or SeaShrimpVortexWallState) {
                 return;
             }
 
@@ -260,12 +279,9 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
                 return;
             }
 
-            //70%：入 P2 涨压（清弹 + 冷却风起，演出走各端阶段观察者）
+            //70%：入 P2 由双渊柱封场事件承接（状态内置 Phase 切换+清弹+封场召唤）
             if (Context.Phase == 1 && NPC.life <= NPC.lifeMax * 0.7f) {
-                Context.Phase = 2;
-                NPC.netUpdate = true;
-                ClearHostileProjectiles();
-                Context.AttackCooldown = Math.Max(Context.AttackCooldown, 55);
+                stateMachine.ChangeState(new SeaShrimpVortexWallState());
                 return;
             }
 

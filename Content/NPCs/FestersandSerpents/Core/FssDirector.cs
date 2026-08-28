@@ -226,28 +226,57 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         /// <summary>吞沙炮收势帧数</summary>
         public const int MortarRecoverFrames = 24;
 
-        //==================== A6 灵液瀑洗（空中悬游持续呕吐横扫）====================
+        //==================== A6 环卷瀑洗（大范围绕圈 + 向心管流；地形无关，P1 起）====================
 
-        /// <summary>爬升就位帧数上限（提前到位即早退入扫）</summary>
-        public const int HoseClimbFrames = 46;
-        /// <summary>悬游锚点高度（玩家地表上方）</summary>
-        public const float HoseAltitude = 430f;
-        /// <summary>锚点侧偏（瀑流必须在屏内被看见才算预告）</summary>
-        public const float HoseSideOffset = 540f;
-        /// <summary>单向横扫帧数（固定角速 = 可读可躲）</summary>
-        public const int HoseSweepFrames = 130;
-        /// <summary>折返断流帧数（声明逃生拍：换向必歇一口）</summary>
-        public const int HosePauseFrames = 20;
-        /// <summary>横扫次数（单向计）：P3 三趟</summary>
-        public static int HoseSweeps(int phase) => phase >= 3 ? 3 : 2;
-        /// <summary>扫域半角（弧度，绕正下方对称；时间表驱动不追踪玩家）</summary>
-        public const float HoseArcHalf = 0.56f;
-        /// <summary>痰滴链间隔帧（连续流密度）</summary>
-        public const int HoseDropGap = 3;
-        /// <summary>痰滴喷出初速</summary>
-        public const float HoseDropSpeed = 14f;
-        /// <summary>留池滴间隔（每 N 滴一颗留池 = 稀疏播种声明）</summary>
-        public const int HosePoolEvery = 6;
+        /// <summary>入环就位帧数上限（提前到位即早退入圈）</summary>
+        public const int CoilEntryFrames = 40;
+        /// <summary>环径（圈内即战场，圈本身即笼压）</summary>
+        public const float CoilRadius = 470f;
+        /// <summary>基础角速（弧度/帧；P3 提速档见 CoilOmega）</summary>
+        public static float CoilOmega(int phase) => phase >= 3 ? 0.052f : 0.045f;
+        /// <summary>圈数：P1 一圈、P2 一圈半、P3 两圈</summary>
+        public static float CoilLaps(int phase) => phase >= 3 ? 2f : phase == 2 ? 1.5f : 1f;
+        /// <summary>圈心慢跟系数（不追踪只慢跟 = 圈几何稳定可读）</summary>
+        public const float CoilCenterLerp = 0.02f;
+        /// <summary>喷窗帧数（向心管流的占空循环之"喷"）</summary>
+        public const int CoilFireFrames = 36;
+        /// <summary>歇窗帧数（断流 + 吸气音 = 声明逃生拍，切向绕行/出圈窗口）</summary>
+        public const int CoilRestFrames = 16;
+        /// <summary>痰滴链间隔帧</summary>
+        public const int CoilDropGap = 3;
+        /// <summary>痰滴向心初速（14px/f 自环径 470 到圈心约 33 帧 = 反应窗）</summary>
+        public const float CoilDropSpeed = 14f;
+        /// <summary>喷向提前角（沿转向偏置，辐条追着转速走而非追玩家）</summary>
+        public const float CoilLeadAngle = 0.3f;
+        /// <summary>留池滴间隔（向心滴多在空中耗尽，落地留池更稀疏）</summary>
+        public const int CoilPoolEvery = 7;
+        /// <summary>收束切线冲刺速度（P2 起的出圈标点）</summary>
+        public const float CoilExitDashSpeed = 40f;
+        /// <summary>切线冲刺飞行帧数</summary>
+        public const int CoilExitFlightFrames = 16;
+
+        //==================== A10 灵液门冲（开门隐身传送 + 出门爆冲；地形无关，P2 起）====================
+
+        /// <summary>门冲循环数：P3 三门</summary>
+        public static int PortalReps(int phase) => phase >= 3 ? 3 : 2;
+        /// <summary>出口门最短预告帧（生成到爆冲；门就是预告实体）</summary>
+        public const int PortalOpenLeadFrames = 42;
+        /// <summary>进门点在蛇前方的距离</summary>
+        public const float PortalEntryOffset = 300f;
+        /// <summary>出口门绕玩家半径（生成即锁位锁向）</summary>
+        public const float PortalExitRadius = 560f;
+        /// <summary>钻入段帧数上限（到不了也强制吞入）</summary>
+        public const int PortalDiveMaxFrames = 40;
+        /// <summary>门内滞留帧数（双门脉动的吊拍；实际爆冲还须满足预告下限）</summary>
+        public const int PortalInsideFrames = 12;
+        /// <summary>出门爆冲速度</summary>
+        public const float PortalBurstSpeed = 44f;
+        /// <summary>爆冲飞行帧数</summary>
+        public const int PortalBurstFlightFrames = 16;
+        /// <summary>爆冲硬刹帧数</summary>
+        public const int PortalBrakeFrames = 8;
+        /// <summary>门实体寿命兜底（状态会提前收门）</summary>
+        public const int PortalGateLife = 240;
 
         //==================== A7 疮爆掠航（高速掠过 + 囊肿链式爆裂）====================
 
@@ -269,6 +298,33 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         public const float RippleDropSpeed = 8.5f;
         /// <summary>掠航跑道最短距离</summary>
         public const float RippleRunwayMin = 420f;
+
+        //==================== A11 裂躯交叉（P3：中段撕裂双蛇 + 同帧交叉冲刺编舞）====================
+
+        /// <summary>立身撕裂帧数（缝节渐亮到炸开）</summary>
+        public const int SunderTearFrames = 30;
+        /// <summary>两半分赴对角锚点帧数上限（双双到位即早退）</summary>
+        public const int SunderRegroupFrames = 50;
+        /// <summary>锚点距玩家距离</summary>
+        public const float SunderAnchorDist = 520f;
+        /// <summary>锚点相对头顶正上的偏角（两锚点相隔约 90° = 冲线近正交）</summary>
+        public const float SunderAnchorSpread = 0.9f;
+        /// <summary>交叉冲刺蓄力帧数（双向同时预亮）</summary>
+        public const int SunderWindupFrames = 14;
+        /// <summary>锁向提前量（预告即承诺）</summary>
+        public const int SunderLockLead = 5;
+        /// <summary>交叉冲刺速度</summary>
+        public const float SunderDashSpeed = 44f;
+        /// <summary>冲刺飞行帧数</summary>
+        public const int SunderFlightFrames = 18;
+        /// <summary>硬刹帧数</summary>
+        public const int SunderBrakeFrames = 8;
+        /// <summary>交叉次数（每次后两半换边）</summary>
+        public const int SunderCrossReps = 2;
+        /// <summary>合体引导帧数上限（到时强制焊合）</summary>
+        public const int SunderMergeFrames = 80;
+        /// <summary>焊合判距（领节贴回前半尾节即恢复跟链）</summary>
+        public const float SunderMergeSnapDist = 46f;
 
         //==================== 脓池引爆（池经济兑现的公共口径）====================
 

@@ -17,6 +17,17 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
         Scripted,
     }
 
+    /// <summary>弹道段身轴跟随方式：身轴不对齐冲刺线会读作"侧身滑行"</summary>
+    internal enum BallisticHeading
+    {
+        /// <summary>冻结（短促位移/竖直上跳）</summary>
+        Frozen,
+        /// <summary>头先行：身轴贴向速度方向（犁浪冲锋）</summary>
+        HeadFirst,
+        /// <summary>尾先行：身轴贴向速度反方向（虾式后向弹射）</summary>
+        TailFirst,
+    }
+
     /// <summary>
     /// 运动执行层（NightmareReaper 动作语言）：boss 悬浮于开阔空间，头永远以恒速转向目标；
     /// 逼近走环距弹簧——远了爬近、入环停住漂移、过远或贴脸再动（同一弹簧自然进退）。
@@ -48,10 +59,16 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
         //环距弹簧滞回：在环内漂移，出环再动
         private bool stalking = true;
 
+        //驻停转身意图（RequestHoldFacing 写，UpdateStalk 消费）
+        private bool faceIntent;
+        private float faceHeading;
+        private float faceRate;
+
         //弹道段
         private int ballisticFrames;
         private float ballisticBrake;
         private bool braking;
+        private BallisticHeading ballisticHeading;
 
         public void Bind(NPC target) => npc = target;
 
@@ -71,6 +88,20 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
             hasIntent = true;
             holdIntent = true;
             wantMode = ShrimpMoveMode.Stalk;
+            faceIntent = false;
+        }
+
+        /// <summary>
+        /// 驻停并转身对线（冲刺/水炮蓄力用）：漂移泄速的同时身轴以给定速率贴向目标角。
+        /// 转率由调用方随蓄力进度衰减——越接近锁定转得越慢，锁线读得出来
+        /// </summary>
+        public void RequestHoldFacing(float heading, float turnRate) {
+            hasIntent = true;
+            holdIntent = true;
+            wantMode = ShrimpMoveMode.Stalk;
+            faceIntent = true;
+            faceHeading = heading;
+            faceRate = turnRate;
         }
 
         /// <summary>直线游向锚点（离场等直达移动）</summary>
@@ -94,14 +125,16 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
             => Heading = Heading.AngleLerp(heading, rate);
 
         /// <summary>
-        /// 点火弹道段（尾弹）：一帧定初速，flight 帧内不衰减，此后按 brake 硬刹。
-        /// 身体朝向冻结（虾是尾先行的后向弹射）
+        /// 点火弹道段（尾弹/冲锋）：一帧定初速，flight 帧内不衰减，此后按 brake 硬刹。
+        /// headingFollow 决定身轴是否贴合速度轴——不对齐的冲刺读作侧身滑行（设计缺陷修复 2026-08）
         /// </summary>
-        public void LaunchBallistic(Vector2 velocity, int flightFrames, float brake) {
+        public void LaunchBallistic(Vector2 velocity, int flightFrames, float brake,
+            BallisticHeading headingFollow = BallisticHeading.Frozen) {
             npc.velocity = velocity;
             ballisticFrames = flightFrames;
             ballisticBrake = brake;
             braking = false;
+            ballisticHeading = headingFollow;
             Mode = ShrimpMoveMode.Ballistic;
         }
 
@@ -140,6 +173,13 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
         }
 
         private void UpdateBallistic() {
+            //身轴贴向速度轴：头先行贴正向，尾先行贴反向;刹停低速段不再纠(避免尾速抖动带歪)
+            if (ballisticHeading != BallisticHeading.Frozen && npc.velocity.Length() > 3.5f) {
+                float axis = npc.velocity.ToRotation()
+                    + (ballisticHeading == BallisticHeading.TailFirst ? MathHelper.Pi : 0f);
+                Heading = Heading.AngleLerp(axis, 0.22f);
+                TangentMove = Heading.ToRotationVector2();
+            }
             if (ballisticFrames > 0) {
                 ballisticFrames--;
                 //弹道中段微加速：爆发不衰减（Old Duke 冲刺文法）
@@ -165,8 +205,12 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
         /// </summary>
         private void UpdateStalk() {
             if (holdIntent) {
-                //驻停漂移：泄速不转头（蓄力姿态由状态自持）
+                //驻停漂移：泄速；有转身意图则身轴贴向目标角（冲刺蓄力的锁线动作）
                 npc.velocity *= 0.95f;
+                if (faceIntent) {
+                    Heading = Heading.AngleTowards(faceHeading, faceRate);
+                    faceIntent = false;
+                }
                 TangentMove = Heading.ToRotationVector2();
                 return;
             }

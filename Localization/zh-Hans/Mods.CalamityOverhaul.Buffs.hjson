@@ -78,6 +78,11 @@ EyekiteBuff: {
 	Description: 被血线缚住的小克苏鲁之眼正跟在你身边
 }
 
+AbyssclaspBuff: {
+	DisplayName: 攫渊龙虾
+	Description: 深渊龙虾挥着巨钳跟在你身边
+}
+
 EyetoothWound: {
 	DisplayName: 牙创
 	Description: 被獠牙咬开的伤口仍在渗血

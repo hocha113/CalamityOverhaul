@@ -23,8 +23,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         MoltGrowth = 6,
         /// <summary>吞沙炮：吞沙鼓包沿身蠕动到口，喷巨型空爆炮弹</summary>
         SwallowMortar = 7,
-        /// <summary>灵液瀑洗：空中悬游持续呕吐灵液水管横扫</summary>
-        CascadeHose = 8,
+        /// <summary>环卷瀑洗：围玩家画大圈，绕圈中向心呕吐灵液管流（地形无关）</summary>
+        CoilCascade = 8,
         /// <summary>疮爆掠航：高速掠过玩家，囊肿沿身链式爆裂</summary>
         FesterRipple = 9,
         /// <summary>满溢怒放连接段（28%）</summary>
@@ -35,6 +35,10 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         Despawn = 12,
         /// <summary>死亡演出</summary>
         Death = 13,
+        /// <summary>灵液门冲：开门隐身传送，从玩家侧的出口门爆冲而出（地形无关）</summary>
+        PortalRush = 14,
+        /// <summary>裂躯交叉：中段撕裂成双蛇，同帧交叉冲刺编舞后合体（P3）</summary>
+        SunderCross = 15,
     }
 
     /// <summary>脓蕾沙蟒状态接口</summary>

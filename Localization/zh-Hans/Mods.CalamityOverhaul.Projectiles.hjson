@@ -801,6 +801,11 @@ AbyssrendBurst.DisplayName: 高压空化
 EverdeepHeld.DisplayName: 永渊
 EverdeepRing.DisplayName: 渊环水流
 EverdeepMaelstrom.DisplayName: 渊涡水龙卷
+AbyssclaspLobster.DisplayName: 攫渊龙虾
+AbyssclaspSnapBurst.DisplayName: 空化钳鸣
+UndertowHeld.DisplayName: 贯渊
+UndertowSpine.DisplayName: 渊棘箭
+UndertowBurst.DisplayName: 空化泡
 CultistPlanetProj.DisplayName: 巨型天体
 LegionVolleyOmen.DisplayName: 军团箭令
 LegionVolleyArrow.DisplayName: 军团战矢
@@ -1106,9 +1111,14 @@ InterferenceDawnBurst.DisplayName: 昼夜干涉爆发
 // SeaShrimpBubble.DisplayName: Sea Shrimp Bubble
 // SeaShrimpCavitationBubble.DisplayName: Sea Shrimp Cavitation Bubble
 // SeaShrimpClawHitbox.DisplayName: Sea Shrimp Claw Hitbox
+// SeaShrimpCrescentWave.DisplayName: Sea Shrimp Crescent Wave
 // SeaShrimpCrystalSpike.DisplayName: Sea Shrimp Crystal Spike
+// SeaShrimpGeyserSpout.DisplayName: Sea Shrimp Geyser Spout
+// SeaShrimpJetBeam.DisplayName: Sea Shrimp Jet Beam
 // SeaShrimpLaneOmen.DisplayName: Sea Shrimp Lane Omen
+// SeaShrimpMiniVortex.DisplayName: Sea Shrimp Mini Vortex
 // SeaShrimpShellFrag.DisplayName: Sea Shrimp Shell Frag
+// SeaShrimpVortexWall.DisplayName: Sea Shrimp Vortex Wall
 // SeaShrimpWaterBolt.DisplayName: Sea Shrimp Water Bolt
 // CultistArcanePulse.DisplayName: Cultist Arcane Pulse
 // CultistFallingStar.DisplayName: Cultist Falling Star
@@ -1199,6 +1209,7 @@ InterferenceDawnBurst.DisplayName: 昼夜干涉爆发
 // BssSandVortexProj.DisplayName: Bss Sand Vortex Proj
 FssBreachOmen.DisplayName: 腐沙隆包
 FssCascadeDrop.DisplayName: 灵液瀑流
+FssIchorGate.DisplayName: 灵液之门
 FssGeyserColumn.DisplayName: 脓泉柱
 FssHuskShard.DisplayName: 蜕壳碎屑
 FssIchorGlob.DisplayName: 灵液痰弹

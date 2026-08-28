@@ -21,10 +21,10 @@ ShenyoDollGift: {
 	L3: 我当年和她换了不少，拿来当礼物送小辈
 }
 
-ShenyoAquaticScourgeGift: {
-	L0: 水里泡烂的东西，我最看不惯
-	L1: 那滩脏水，倒是比我的雨还难闻
-	L2: 收拾完了把伞收一收，别沾着那股味回来
+ShenyoFesterSerpentGift: {
+	L0: 沙子里烂出来的东西，比水里泡烂的还难看
+	L1: 那身金脓不是蜜，凑近闻一口你就明白了
+	L2: 办完把伞面冲一冲，脓渍干了就刮不掉了
 }
 
 ShenyoBossRushGift: {

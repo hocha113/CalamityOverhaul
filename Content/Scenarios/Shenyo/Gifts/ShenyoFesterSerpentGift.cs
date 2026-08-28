@@ -6,8 +6,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
 {
-    /// <summary>kikasa.009：渊海灾虫</summary>
-    internal sealed class ShenyoAquaticScourgeGift : ShenyoBossGiftNarrative, ILocalizedModType
+    /// <summary>kikasa.009：脓蕾沙蟒</summary>
+    internal sealed class ShenyoFesterSerpentGift : ShenyoBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Shenyo";
 
@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "水里泡烂的东西，我最看不惯");
-            L1 = this.GetLocalization(nameof(L1), () => "那滩脏水，倒是比我的雨还难闻");
-            L2 = this.GetLocalization(nameof(L2), () => "收拾完了把伞收一收，别沾着那股味回来");
+            L0 = this.GetLocalization(nameof(L0), () => "沙子里烂出来的东西，比水里泡烂的还难看");
+            L1 = this.GetLocalization(nameof(L1), () => "那身金脓不是蜜，凑近闻一口你就明白了");
+            L2 = this.GetLocalization(nameof(L2), () => "办完把伞面冲一冲，脓渍干了就刮不掉了");
         }
 
         protected override void Build(NarrativeComposer n) {
@@ -30,8 +30,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
              .Say(NarrativeIds.Shenyo, L2.Value, Voice[3], onEnter: PortraitFace(ShenyoFullBodyPortrait.Face.Wry));
         }
 
-        protected override bool IsGiftCompleted() => ShenyoStorySync.GiftStory.AquaticScourgeGift;
+        protected override bool IsGiftCompleted() => ShenyoStorySync.GiftStory.FesterSerpentGift;
 
-        protected override void MarkGiftCompleted() => ShenyoStorySync.GiftStory.AquaticScourgeGift = true;
+        protected override void MarkGiftCompleted() => ShenyoStorySync.GiftStory.FesterSerpentGift = true;
     }
 }

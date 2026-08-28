@@ -55,11 +55,11 @@ HimayoWallOfFleshGift: {
 	L2: 之后的路大概更难走，你自己心里有数就行
 }
 
-HimayoAquaticScourgeGift: {
-	L0: 等等，刃上这一股海腥味……
-	L1: 我住刀里啊，现在闻着跟开了家海鲜铺差不多
-	L2: 还没法开窗，刀哪里有窗户
-	L3: 你倒是砍痛快了，整柄往那股怪味里杵，下次轻着点行不行
+HimayoFesterSerpentGift: {
+	L0: 等等，这回刃上的是……脓？
+	L1: 我住刀里啊，海鲜铺才关张，又改开诊所了
+	L2: 还是没窗，病房连个通风口都没有
+	L3: 下次挑干净点的地方下刀，我这儿实在晾不开
 }
 
 HimayoBrimstoneElementalGift: {

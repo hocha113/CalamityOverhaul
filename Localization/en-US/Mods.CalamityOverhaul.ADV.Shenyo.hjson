@@ -21,10 +21,10 @@ ShenyoDollGift: {
 	L3: Back then I traded her plenty of ghost money for them. They make fine gifts for the young ones
 }
 
-ShenyoAquaticScourgeGift: {
-	L0: 水里泡烂的东西，我最看不惯
-	L1: 那滩脏水，倒是比我的雨还难闻
-	L2: 收拾完了把伞收一收，别沾着那股味回来
+ShenyoFesterSerpentGift: {
+	L0: Things that fester in the sand look even worse than things that rot in water
+	L1: That golden pus is not honey, one sniff up close and you will understand
+	L2: Rinse the umbrella when you are done, dried pus stains never scrape off
 }
 
 ShenyoBossRushGift: {

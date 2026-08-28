@@ -352,7 +352,7 @@ SHPCTrialQuestLine: {
 	Trial_2: Source of Parasitism
 	Trial_3: God of Gel
 	Trial_4: Seal Breakthrough
-	Trial_5: Deep Sea Contamination
+	Trial_5: Mutation Quarantine
 	Trial_6: Brimstone Sampling
 	Trial_7: Mechanical Worm
 	Trial_8: Twin Eye Dismantlement
@@ -396,8 +396,8 @@ SHPCTrialQuestLine: {
 		'''
 	TrialSummary_5:
 		'''
-		The giant worm of the Sulphurous Sea has surfaced.
-		Master, please dismantle its devouring organs. I need to confirm how this pollution source operates.
+		The desert serpent has festered into a new strain, its pus testing thick with ichor.
+		Master, please collect its lesion tissue. I need to trace how this mutation propagates.
 		'''
 	TrialSummary_6:
 		'''
@@ -760,7 +760,7 @@ OnikiriTrialQuestLine: {
 	Trial_2: Clustered Blight
 	Trial_3: Presumptuous God
 	Trial_4: The Dividing Flesh
-	Trial_5: Rotten Scales of Sulphur
+	Trial_5: Pus-Rotten Scales
 	Trial_6: Ashes in the Abyss
 	Trial_7: Roaring Metal Serpent
 	Trial_8: Twin Demon Eyes
@@ -811,9 +811,9 @@ OnikiriTrialQuestLine: {
 		'''
 	TrialSummary_5:
 		'''
-		Smell off the brimstone sea is wrong. Something's churning
-		Don't let it near the shore. Go cut it off
-		If the blade stinks when you're back, then we'll talk
+		The desert smells different now, rotten blooms mixed with pus, something's burrowing
+		Don't let it dig deep. Go cut it off
+		And keep the blade out of the cysts, someone lives in here
 		'''
 	TrialSummary_6:
 		'''
@@ -953,7 +953,7 @@ KikasaTrialQuestLine: {
 	Trial_6: Motley God-Gel
 	Trial_7: Flesh Across the Path
 	Trial_8: Winged Pink Gel
-	Trial_9: Sour Worm of Sulphur
+	Trial_9: Golden Drool in Rotten Sand
 	Trial_10: Three Tastes of Iron
 	Trial_11: Crimson Bloom of the Jungle
 	Trial_12: Crystal-Shelled Morsel
@@ -1032,10 +1032,10 @@ KikasaTrialQuestLine: {
 		'''
 	TrialSummary_9:
 		'''
-		A long worm soaks in the Sulphurous Sea, half-asleep in rotten scales
-		That water is sour enough to make even the lake frown
-		Fish it out clean—the lake takes the worm, not that mouthful of filth
-		Shake the umbrella well before you come home
+		The bloomsand serpent is back, its red blooms festered into cysts
+		Don't step in the golden puddles, that is its drool
+		The lake takes every flavor, it just hates what this one did to the sand
+		Go, invite it to the bottom, and shake the umbrella clean after
 		'''
 	TrialSummary_10:
 		'''

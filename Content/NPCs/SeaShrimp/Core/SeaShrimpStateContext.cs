@@ -61,6 +61,11 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Core
         public bool DeathPerformanceFinished { get; set; }
         /// <summary>连击队列：当前攻击收招后直接接的状态号（-1 无）</summary>
         public int QueuedChainState { get; set; } = -1;
+
+        /// <summary>双渊柱封场是否在场（封场态举旗，死亡/离场清旗）</summary>
+        public bool ArenaActive { get; set; }
+        /// <summary>封场场心 X（Hub 爬行与泡幕列位钳制在 ±ArenaHalfWidth 内）</summary>
+        public float ArenaCenterX { get; set; }
         #endregion
 
         #region 姿态通道（每帧由 BeginFrameDefaults 复位，状态重新断言）

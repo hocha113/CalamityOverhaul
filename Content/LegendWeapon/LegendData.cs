@@ -508,6 +508,11 @@ namespace CalamityOverhaul.Content.LegendWeapon
             //0.9202:鬼伞线利维坦席换渊晶海虾并顺移到石巨人后,石巨人席序号随之前移
             ["kikasa.012.leviathan"] = "kikasa.013.sea_shrimp",
             ["kikasa.013.golem"] = "kikasa.012.golem",
+            //0.9202:四线渊海灾虫席位原位换脓蕾沙蟒
+            ["shpc.005.aquatic_scourge"] = "shpc.005.fester_serpent",
+            ["onikiri.005.aquatic_scourge"] = "onikiri.005.fester_serpent",
+            ["kikasa.009.aquatic_scourge"] = "kikasa.009.fester_serpent",
+            ["halibut.004.mech_or_aquatic_scourge"] = "halibut.004.mech_or_fester_serpent",
         };
 
         private void NormalizeCompletedTrialKeys(IReadOnlyList<LegendTrialDefinition> definitions) {

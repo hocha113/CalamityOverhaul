@@ -31,6 +31,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
 
         public override void OnEnter(SeaShrimpStateContext ctx) {
             base.OnEnter(ctx);
+            //撤旗：死亡演出开始即解除封场（清弹带走双渊柱）
+            ctx.ArenaActive = false;
             if (!VaultUtils.isClient) {
                 SeaShrimpBoss.ClearHostileProjectiles();
             }

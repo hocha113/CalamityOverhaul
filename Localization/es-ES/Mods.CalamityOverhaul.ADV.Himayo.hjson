@@ -55,11 +55,11 @@ HimayoWallOfFleshGift: {
 	// L2: The road ahead is probably going to get a lot rougher. Just keep your wits about you.
 }
 
-HimayoAquaticScourgeGift: {
-	// L0: Hold on, this fishy sea-stench on the blade…
-	// L1: I live inside here! It smells like someone opened a seafood stall in my room.
-	// L2: Can't even open a window—swords don't have windows!
-	// L3: You sure had a blast slicing through it, shoving the whole hilt into that reek. Next time, go a little easier, will you?
+HimayoFesterSerpentGift: {
+	// L0: Hold on, what's on the blade this time… pus?
+	// L1: I live inside here! The seafood stall just closed and now it's a clinic.
+	// L2: Still no window—sick wards should at least get a vent!
+	// L3: Next time pick somewhere cleaner to cut. I have nowhere left to air this place out.
 }
 
 HimayoBrimstoneElementalGift: {

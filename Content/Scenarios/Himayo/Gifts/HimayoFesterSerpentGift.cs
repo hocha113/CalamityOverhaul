@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Narrative;
+using CalamityOverhaul.Content.Narrative;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria.Localization;
@@ -6,8 +6,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 {
-    /// <summary>onikiri.005，C 护刀+幽默；海鲜铺笑话</summary>
-    internal sealed class HimayoAquaticScourgeGift : HimayoBossGiftNarrative, ILocalizedModType
+    /// <summary>onikiri.005，C 护刀+幽默；诊所笑话（接海鲜铺的旧梗）</summary>
+    internal sealed class HimayoFesterSerpentGift : HimayoBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Himayo";
 
@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "等等。刃上这一股……");
-            L1 = this.GetLocalization(nameof(L1), () => "我住里面啊。现在跟开了家海鲜铺差不多");
-            L2 = this.GetLocalization(nameof(L2), () => "还没法开窗。刀哪里有窗");
-            L3 = this.GetLocalization(nameof(L3), () => "你倒是痛快，整柄往味里杵。下次轻着点，行不行");
+            L0 = this.GetLocalization(nameof(L0), () => "等等。这回刃上的是……脓？");
+            L1 = this.GetLocalization(nameof(L1), () => "我住里面啊。海鲜铺才关张，又改开诊所了");
+            L2 = this.GetLocalization(nameof(L2), () => "还是没窗。病房连个通风口都没有");
+            L3 = this.GetLocalization(nameof(L3), () => "下次挑干净点的地方下刀，我这儿实在晾不开");
         }
 
         protected override void Build(NarrativeComposer n) {
@@ -34,9 +34,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         }
 
         protected override bool IsGiftCompleted()
-            => HimayoStorySync.ReadGift(d => d.AquaticScourgeGift, d => d.AquaticScourgeGift);
+            => HimayoStorySync.ReadGift(d => d.FesterSerpentGift, d => d.FesterSerpentGift);
 
         protected override void MarkGiftCompleted()
-            => HimayoStorySync.WriteGift(d => d.AquaticScourgeGift = true, d => d.AquaticScourgeGift = true);
+            => HimayoStorySync.WriteGift(d => d.FesterSerpentGift = true, d => d.FesterSerpentGift = true);
     }
 }

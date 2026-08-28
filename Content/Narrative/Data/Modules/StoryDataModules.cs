@@ -177,7 +177,8 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool SlimeGodGift;
         public bool WallOfFleshGift;
         public bool QueenSlimeGift;
-        public bool AquaticScourgeGift;
+        /// <summary>0.9202 接替渊海灾虫席位的脓蕾沙蟒礼物；旧档 AquaticScourgeGift 位随场景退役废弃</summary>
+        public bool FesterSerpentGift;
         public bool MechsGift;
         public bool PlanteraGift;
         public bool GolemGift;
@@ -207,7 +208,8 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool CalamityEvilGift;
         public bool SlimeGodGift;
         public bool WallOfFleshGift;
-        public bool AquaticScourgeGift;
+        /// <summary>0.9202 接替渊海灾虫席位的脓蕾沙蟒礼物；旧档 AquaticScourgeGift 位随场景退役废弃</summary>
+        public bool FesterSerpentGift;
         public bool BrimstoneElementalGift;
         public bool DestroyerGift;
         public bool TwinsGift;

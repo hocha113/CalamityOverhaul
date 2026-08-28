@@ -28,6 +28,14 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Core
         public static (float Normal, float Expert) BubbleDamage => (50f, 42f);
         /// <summary>壳屑弹片</summary>
         public static (float Normal, float Expert) ShellFragDamage => (54f, 45f);
+        /// <summary>渊喉水炮</summary>
+        public static (float Normal, float Expert) JetDamage => (88f, 72f);
+        /// <summary>水龙卷（封场柱与行走小涡共用）</summary>
+        public static (float Normal, float Expert) VortexDamage => (72f, 60f);
+        /// <summary>间歇泉柱</summary>
+        public static (float Normal, float Expert) GeyserDamage => (64f, 53f);
+        /// <summary>合钳水刃</summary>
+        public static (float Normal, float Expert) CrescentDamage => (66f, 55f);
 
         //==================== 感知与脱战 ====================
 
@@ -141,6 +149,34 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Core
         public const int BoltsPerVolley = 5;
         /// <summary>水弹初速 px/f</summary>
         public const float WaterBoltSpeed = 11.5f;
+
+        //==================== 扩编批（2026-08）：封场/水炮/间歇泉/涡旋/水刃/犁浪 ====================
+
+        /// <summary>双渊柱场地半宽 px（封场龙卷距场心的距离，场内即安全声明）</summary>
+        public const float ArenaHalfWidth = 1150f;
+        /// <summary>封场龙卷可见高度 px</summary>
+        public const float VortexWallHeight = 920f;
+        /// <summary>封场龙卷判定芯半宽 px（判定藏在可见体内：名义可见宽 ~170）</summary>
+        public const float VortexWallCoreHalfWidth = 52f;
+        /// <summary>行走小龙卷：可见高度 / 行军速度 px每帧 / 生成最小间距（声明式缺口）</summary>
+        public const float MiniVortexHeight = 260f;
+        public const float MiniVortexSpeed = 2.2f;
+        public const float MiniVortexGap = 240f;
+        /// <summary>渊喉水炮：可见满宽 / 最大射程 / 扫速 rad每帧（声明式）/ 全宽持续帧</summary>
+        public const float JetWidth = 110f;
+        public const float JetMaxLength = 1500f;
+        public const float JetSweepRate = 0.0042f;
+        public const int JetFireFrames = 96;
+        /// <summary>水炮判定芯宽 = 可见满宽 × 此系数（判定不宽于可见体）</summary>
+        public const float JetCoreFrac = 0.62f;
+        /// <summary>间歇泉行军：步距 px（声明式缺口）/ 根数 / 逐根错帧</summary>
+        public const float GeyserStep = 170f;
+        public const int GeyserCount = 6;
+        public const int GeyserStagger = 9;
+        /// <summary>犁浪冲锋：初速 / 冲刺帧 / 最大俯仰 rad（贴地冲锋，不追高）</summary>
+        public const float PlowSpeed = 30f;
+        public const int PlowFrames = 26;
+        public const float PlowMaxPitch = 0.30f;
 
         //==================== 通用节奏 ====================
 

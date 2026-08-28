@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.FestersandSerpents.Core;
+﻿using CalamityOverhaul.Content.NPCs.FestersandSerpents.Core;
 using CalamityOverhaul.Content.NPCs.FestersandSerpents.Projectiles;
 using System;
 using Terraria;
@@ -40,10 +40,11 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
 
             Timer++;
 
-            //追击阀：拉出交战圈时钻沙突袭接管（追击即攻击，不消耗轮换序号）
+            //追击阀：拉出交战圈时接管（追击即攻击，不消耗轮换序号）。
+            //P2 起走门冲（地形无关的贴近手段），P1 保持钻沙突袭
             if (t > FssDirector.ConnectorFrames && !ctx.Owner.TargetInvalid()
                 && dist > FssDirector.EngageDistance) {
-                return new FssBreachFountState();
+                return ctx.Phase >= 2 ? new FssPortalRushState() : (IFssState)new FssBreachFountState();
             }
 
             if (t > FssDirector.ConnectorFrames && ctx.AttackCooldown <= 0
@@ -119,10 +120,11 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
         }
 
         /// <summary>
-        /// 手写轮换表：压力招（毒冲/突袭/掠航）与区域招（扫喷/黏疮/炮/瀑）交替，
-        /// 强招押后阶段解锁：吞沙炮/瀑洗/掠航属变异蔓延身份 P2 起，
-        /// 满场引爆 P3 才上（P3 槽位随攻击态实装扩充）。
-        /// 高飞替补：贴地招按槽位换成破土突袭/瀑洗，天上也有全套威胁。
+        /// 手写轮换表：压力招（毒冲/突袭/掠航/门冲）与区域招（扫喷/黏疮/炮/环卷）交替，
+        /// 强招押后阶段解锁：吞沙炮/门冲/掠航属变异蔓延身份 P2 起，
+        /// 满场引爆与裂躯交叉 P3 才上；环卷瀑洗 P1 即有（地形无关的基础对空）。
+        /// 高飞/平台替补：贴地招按槽位换成环卷/门冲/破土（破土自地下向上突袭，
+        /// 对平台上方玩家仍有效），天上也有全套变化而非单招循环。
         /// </summary>
         private static IFssState PickAttack(FssStateContext ctx) {
             ctx.QueuedChainState = -1;
@@ -134,62 +136,63 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             if (ctx.Phase >= 3) {
                 switch (ctx.AttackIndex % 10) {
                     case 1:
-                        return new FssSwallowMortarState();
+                        return air ? new FssPortalRushState() : (IFssState)new FssSwallowMortarState();
                     case 2:
-                        return air ? new FssBreachFountState() : (IFssState)new FssVenomSkimState();
+                        return air ? new FssPortalRushState() : (IFssState)new FssVenomSkimState();
                     case 3:
-                        return new FssFieldDetonateState();
+                        //满场引爆吃地面池；高空/平台观众改看裂躯交叉
+                        return air ? new FssSunderCrossState() : (IFssState)new FssFieldDetonateState();
                     case 4:
-                        return new FssCascadeHoseState();
+                        return new FssCoilCascadeState();
                     case 5:
                         return new FssFesterRippleState();
                     case 6:
-                        return new FssStickyCystState();
+                        return new FssSunderCrossState();
                     case 7:
-                        return air ? new FssCascadeHoseState() : (IFssState)new FssIchorSpitState();
+                        return air ? new FssCoilCascadeState() : (IFssState)new FssIchorSpitState();
                     case 8:
-                        return new FssBreachFountState();
+                        return air ? new FssPortalRushState() : (IFssState)new FssBreachFountState();
                     case 9:
-                        return air ? new FssBreachFountState() : (IFssState)new FssVenomSkimState();
+                        return air ? new FssPortalRushState() : (IFssState)new FssVenomSkimState();
                     default:
-                        return new FssFesterRippleState();
+                        return new FssSunderCrossState();
                 }
             }
 
             if (ctx.Phase >= 2) {
                 switch (ctx.AttackIndex % 8) {
                     case 1:
-                        return air ? new FssBreachFountState() : (IFssState)new FssIchorSpitState();
+                        return air ? new FssPortalRushState() : (IFssState)new FssIchorSpitState();
                     case 2:
-                        return new FssSwallowMortarState();
+                        return air ? new FssPortalRushState() : (IFssState)new FssSwallowMortarState();
                     case 3:
-                        return air ? new FssBreachFountState() : (IFssState)new FssVenomSkimState();
+                        return air ? new FssCoilCascadeState() : (IFssState)new FssVenomSkimState();
                     case 4:
-                        return new FssCascadeHoseState();
+                        return new FssCoilCascadeState();
                     case 5:
-                        return new FssStickyCystState();
+                        return air ? new FssPortalRushState() : (IFssState)new FssStickyCystState();
                     case 6:
                         return new FssFesterRippleState();
                     case 7:
                         return new FssBreachFountState();
                     default:
-                        return air ? new FssCascadeHoseState() : (IFssState)new FssVenomSkimState();
+                        return air ? new FssCoilCascadeState() : (IFssState)new FssVenomSkimState();
                 }
             }
 
             switch (ctx.AttackIndex % 7) {
                 case 1:
-                    return air ? new FssBreachFountState() : (IFssState)new FssIchorSpitState();
+                    return air ? new FssCoilCascadeState() : (IFssState)new FssIchorSpitState();
                 case 2:
-                    return new FssStickyCystState();
+                    return air ? new FssBreachFountState() : (IFssState)new FssStickyCystState();
                 case 3:
                     return new FssBreachFountState();
                 case 4:
-                    return air ? new FssBreachFountState() : (IFssState)new FssVenomSkimState();
+                    return air ? new FssCoilCascadeState() : (IFssState)new FssVenomSkimState();
                 case 5:
                     return air ? new FssBreachFountState() : (IFssState)new FssIchorSpitState();
                 case 6:
-                    return air ? new FssBreachFountState() : (IFssState)new FssVenomSkimState();
+                    return air ? new FssCoilCascadeState() : (IFssState)new FssVenomSkimState();
                 default:
                     return air ? new FssBreachFountState() : (IFssState)new FssVenomSkimState();
             }

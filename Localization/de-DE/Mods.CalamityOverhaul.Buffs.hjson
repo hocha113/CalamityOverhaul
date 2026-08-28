@@ -78,6 +78,11 @@ EyekiteBuff: {
 	// Description: A small Eye of Cthulhu is bound to you by a blood-soaked cord
 }
 
+AbyssclaspBuff: {
+	// DisplayName: Abyssclasp Lobster
+	// Description: An abyssal lobster prowls at your side, pincers at the ready
+}
+
 EyetoothWound: {
 	// DisplayName: Fang Wound
 	// Description: The bite keeps weeping blood

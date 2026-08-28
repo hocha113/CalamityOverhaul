@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.NPCs.SeaShrimp;
+﻿using CalamityOverhaul.Content.NPCs.FestersandSerpents;
+using CalamityOverhaul.Content.NPCs.SeaShrimp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             Trial("shpc.002.calamity_evil_boss", Npc(() => [CWRID.NPC_HiveMind, CWRID.NPC_PerforatorHive], () => InWorldBossPhase.Downed3.Invoke() || InWorldBossPhase.Downed4.Invoke()), titles, summaries, 2),
             Trial("shpc.003.slime_god", Npc(() => [CWRID.NPC_SlimeGodCore], InWorldBossPhase.Downed5), titles, summaries, 3),
             Trial("shpc.004.wall_of_flesh", Npc(() => [NPCID.WallofFlesh], () => Main.hardMode), titles, summaries, 4),
-            Trial("shpc.005.aquatic_scourge", Npc(() => [CWRID.NPC_AquaticScourgeHead], InWorldBossPhase.Downed8), titles, summaries, 5),
+            Trial("shpc.005.fester_serpent", Npc(() => [ModContent.NPCType<FssHead>()], () => FssWorldFlag.DownedFesterSerpent), titles, summaries, 5),
             Trial("shpc.006.brimstone_elemental", Npc(() => [CWRID.NPC_BrimstoneElemental], InWorldBossPhase.Downed7), titles, summaries, 6),
             Trial("shpc.007.destroyer", Npc(() => [NPCID.TheDestroyer], () => NPC.downedMechBoss1), titles, summaries, 7),
             Trial("shpc.008.twins", Npc(() => [NPCID.Retinazer, NPCID.Spazmatism], () => NPC.downedMechBoss2), titles, summaries, 8),
@@ -63,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             Trial("onikiri.002.calamity_evil_boss", Npc(() => [CWRID.NPC_HiveMind, CWRID.NPC_PerforatorHive], () => InWorldBossPhase.Downed3.Invoke() || InWorldBossPhase.Downed4.Invoke()), titles, summaries, 2),
             Trial("onikiri.003.slime_god", Npc(() => [CWRID.NPC_SlimeGodCore], InWorldBossPhase.Downed5), titles, summaries, 3),
             Trial("onikiri.004.wall_of_flesh", Npc(() => [NPCID.WallofFlesh], () => Main.hardMode), titles, summaries, 4),
-            Trial("onikiri.005.aquatic_scourge", Npc(() => [CWRID.NPC_AquaticScourgeHead], InWorldBossPhase.Downed8), titles, summaries, 5),
+            Trial("onikiri.005.fester_serpent", Npc(() => [ModContent.NPCType<FssHead>()], () => FssWorldFlag.DownedFesterSerpent), titles, summaries, 5),
             Trial("onikiri.006.brimstone_elemental", Npc(() => [CWRID.NPC_BrimstoneElemental], InWorldBossPhase.Downed7), titles, summaries, 6),
             Trial("onikiri.007.destroyer", Npc(() => [NPCID.TheDestroyer], () => NPC.downedMechBoss1), titles, summaries, 7),
             Trial("onikiri.008.twins", Npc(() => [NPCID.Retinazer, NPCID.Spazmatism], () => NPC.downedMechBoss2), titles, summaries, 8),
@@ -102,7 +103,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             Trial("kikasa.006.slime_god", Npc(() => [CWRID.NPC_SlimeGodCore], InWorldBossPhase.Downed5), titles, summaries, 6),
             Trial("kikasa.007.wall_of_flesh", Npc(() => [NPCID.WallofFlesh], () => Main.hardMode), titles, summaries, 7),
             Trial("kikasa.008.queen_slime", Npc(() => [NPCID.QueenSlimeBoss], () => NPC.downedQueenSlime), titles, summaries, 8),
-            Trial("kikasa.009.aquatic_scourge", Npc(() => [CWRID.NPC_AquaticScourgeHead], InWorldBossPhase.Downed8), titles, summaries, 9),
+            Trial("kikasa.009.fester_serpent", Npc(() => [ModContent.NPCType<FssHead>()], () => FssWorldFlag.DownedFesterSerpent), titles, summaries, 9),
             Trial("kikasa.010.mechs", All(
                 Npc(() => [NPCID.TheDestroyer], () => NPC.downedMechBoss1),
                 Npc(() => [NPCID.Retinazer, NPCID.Spazmatism], () => NPC.downedMechBoss2),
@@ -134,7 +135,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             Trial("halibut.001.eye_of_cthulhu", Npc(() => [NPCID.EyeofCthulhu], InWorldBossPhase.DownedV1), titles, summaryProvider, 1),
             Trial("halibut.002.queen_bee", Npc(() => [NPCID.QueenBee], InWorldBossPhase.DownedV3), titles, summaryProvider, 2),
             Trial("halibut.003.skeletron_and_wall", Npc(() => [NPCID.SkeletronHead, NPCID.WallofFlesh], () => InWorldBossPhase.DownedV4.Invoke() && Main.hardMode), titles, summaryProvider, 3),
-            Trial("halibut.004.mech_or_aquatic_scourge", Npc(() => [NPCID.TheDestroyer, NPCID.SkeletronPrime, NPCID.Retinazer, NPCID.Spazmatism, CWRID.NPC_AquaticScourgeHead], () => InWorldBossPhase.DownedV5.Invoke() || InWorldBossPhase.Downed8.Invoke()), titles, summaryProvider, 4),
+            Trial("halibut.004.mech_or_fester_serpent", Npc(() => [NPCID.TheDestroyer, NPCID.SkeletronPrime, NPCID.Retinazer, NPCID.Spazmatism, ModContent.NPCType<FssHead>()], () => InWorldBossPhase.DownedV5.Invoke() || FssWorldFlag.DownedFesterSerpent), titles, summaryProvider, 4),
             Trial("halibut.005.calamitas_or_plantera", Npc(() => [CWRID.NPC_CalamitasClone, NPCID.Plantera], () => InWorldBossPhase.Downed10.Invoke() || InWorldBossPhase.VDownedV7.Invoke()), titles, summaryProvider, 5),
             Trial("halibut.006.golem", Npc(() => [NPCID.Golem, NPCID.GolemHead], InWorldBossPhase.DownedV7), titles, summaryProvider, 6),
             Trial("halibut.007.moon_lord", Npc(() => [NPCID.MoonLordCore], InWorldBossPhase.VDownedV16), titles, summaryProvider, 7),

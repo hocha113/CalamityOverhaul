@@ -297,12 +297,22 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
                 float bulge = MathHelper.Clamp(1f - Math.Abs(ordinal - ctx.BulgeOrdinal) / 2.5f, 0f, 1f);
                 swell = Math.Max(swell, ctx.BulgeStrength * bulge);
             }
+            //裂躯断口：领节挂伪头热点，缝两端裂隙渗光满值
+            bool seamLead = ctx.SplitLeaderOrdinal >= 0 && ordinal == ctx.SplitLeaderOrdinal;
+            bool seamRear = ctx.SplitLeaderOrdinal >= 0 && ordinal == ctx.SplitLeaderOrdinal - 1;
+            if (seamLead) {
+                swell = Math.Max(swell, 0.9f);
+            }
+            float crack = Math.Max(ctx.ErodeLevel, ruptured ? 0.85f : 0f);
+            if (seamLead || seamRear) {
+                crack = 1f;
+            }
 
             shader.Parameters["uUvRect"]?.SetValue(uvRect);
             shader.Parameters["uSeed"]?.SetValue(ordinal * 0.173f);
             shader.Parameters["uPhase"]?.SetValue(ordinal + 1f);
             shader.Parameters["uSwell"]?.SetValue(MathHelper.Clamp(swell, 0f, 1f));
-            shader.Parameters["uCrack"]?.SetValue(MathHelper.Clamp(Math.Max(ctx.ErodeLevel, ruptured ? 0.85f : 0f), 0f, 1f));
+            shader.Parameters["uCrack"]?.SetValue(MathHelper.Clamp(crack, 0f, 1f));
             shader.Parameters["uVein"]?.SetValue(ruptured ? 0f : VeinLevel(ctx));
             shader.CurrentTechnique.Passes[0].Apply();
 
@@ -331,11 +341,13 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
 
         private static void DrawSegmentGlowOverlay(SpriteBatch sb, Vector2 screenPos, FssStateContext ctx, NPC seg) {
             int ordinal = (int)seg.ai[0];
-            if (!IsCystSeg(ctx, seg) || ctx.TotalSegments <= 0 || Ruptured(ctx, ordinal)) {
+            bool seamPiece = ctx.SplitLeaderOrdinal >= 0
+                && (ordinal == ctx.SplitLeaderOrdinal || ordinal == ctx.SplitLeaderOrdinal - 1);
+            if ((!IsCystSeg(ctx, seg) && !seamPiece) || ctx.TotalSegments <= 0 || Ruptured(ctx, ordinal)) {
                 return;
             }
             float spent = ordinal < ctx.CystSpent.Length ? ctx.CystSpent[ordinal] : 0f;
-            if (spent >= 0.6f) {
+            if (spent >= 0.6f && !seamPiece) {
                 return;
             }
             float fade = 1f - seg.alpha / 255f;
@@ -351,6 +363,10 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
                 glow = 0.65f + 0.35f * MathF.Sin(Main.GlobalTimeWrappedHourly * 18f + ordinal * 0.8f);
             }
             glow = Math.Max(glow, ctx.CystGlow * 0.6f) * (1f - spent);
+            //断口常亮：伪头/裂端的伤口辉光（脉动）
+            if (seamPiece) {
+                glow = Math.Max(glow, 0.6f + 0.25f * MathF.Sin(Main.GlobalTimeWrappedHourly * 11f + ordinal));
+            }
             if (glow <= 0.03f) {
                 return;
             }

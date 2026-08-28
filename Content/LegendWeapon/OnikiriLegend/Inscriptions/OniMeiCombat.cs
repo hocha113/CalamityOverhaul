@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents;
+using CalamityOverhaul.Content.NPCs.FestersandSerpents;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -533,8 +534,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             || type == CWRID.NPC_EidolonWyrmTail
             || type == NPCID.EaterofWorldsBody || type == NPCID.EaterofWorldsTail
             || type == NPCID.TheDestroyerBody || type == NPCID.TheDestroyerTail
-            //本模组蠕虫:荒花沙蟒体节/尾节,防冒充头部与上表灾厄蠕虫同规
-            || type == ModContent.NPCType<BssBody>() || type == ModContent.NPCType<BssTail>();
+            //本模组蠕虫:荒花沙蟒/脓蕾沙蟒体节与尾节,防冒充头部与上表灾厄蠕虫同规
+            || type == ModContent.NPCType<BssBody>() || type == ModContent.NPCType<BssTail>()
+            || type == ModContent.NPCType<FssBody>() || type == ModContent.NPCType<FssTail>();
 
         /// <summary>
         /// 髭切「断首」或旧首「取首」终结倍率：目标已入斩杀线时随已损生命递增；

@@ -33,7 +33,6 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
             Timer++;
 
             if (!launched) {
-                HoldInPlace(ctx);
                 int windup = SeaShrimpDirector.TailFlipWindup;
 
                 if (t < LockFrame) {
@@ -41,6 +40,11 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                 }
 
                 float w = MathHelper.Clamp(t / (float)windup, 0f, 1f);
+                //转身对线：尾扇对准冲刺线（身轴=冲刺线反向，虾式后向弹射的可读上膛），
+                //转率随蓄力衰减——越接近锁定越慢，锁线本身就是预告的一部分
+                float turnRate = MathHelper.Lerp(0.09f, 0.02f, w);
+                HoldFacing(ctx, lockDir.ToRotation() + MathHelper.Pi, turnRate);
+
                 float snap = MathF.Pow(w, 8f);
                 ctx.SpineCurl = -(0.3f + 0.7f * snap);
                 ctx.TailFlare = MathHelper.Clamp(0.35f - w * 0.35f, 0f, 1f);
@@ -58,8 +62,10 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
 
                 if (t >= windup) {
                     launched = true;
+                    //尾先行：飞行期身轴持续贴合速度轴反向，侧身滑行由此根除
                     loco.LaunchBallistic(lockDir * SeaShrimpDirector.TailFlipSpeed,
-                        SeaShrimpDirector.TailFlipFrames, SeaShrimpDirector.TailFlipBrake);
+                        SeaShrimpDirector.TailFlipFrames, SeaShrimpDirector.TailFlipBrake,
+                        BallisticHeading.TailFirst);
                     ctx.TailFlare = 1f;
                     if (!Main.dedServ) {
                         //甩尾出手：重挥低啸（原 Item86 在原版全源码零调用，听感无人能作保）

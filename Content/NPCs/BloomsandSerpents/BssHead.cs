@@ -1,4 +1,7 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Magic;
+using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.States;
 using InnoVault.StateMachines;
@@ -154,10 +157,22 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         }
 
         public override void ModifyNPCLoot(NPCLoot npcLoot) {
-            //占位掉落：沙漠主题材料，专属掉落后续另定
-            npcLoot.Add(ItemDropRule.Common(ItemID.SandBlock, 1, 30, 60));
+            //荒漠沙器四件套：每次必出一把。这四把原本只在灾厄荒漠灾虫身上，
+            //挂到这里之后无灾厄环境也有正经来源（原有的无灾厄合成配方仍留作保底）
+            npcLoot.Add(ItemDropRule.OneFromOptions(1,
+                ModContent.ItemType<SandDagger>(),
+                ModContent.ItemType<WastelandFang>(),
+                ModContent.ItemType<UnderTheSand>(),
+                ModContent.ItemType<DuneStalker>()));
+            //沙中曲：小沙龙卷与本体的旋沙冲同源，越级一档，压低概率当额外彩头
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<MelodyTheSand>(), 4));
+
+            //材料：蚁狮颚是沙器线与花蕾配方共同的瓶颈，一次击杀够换一把
+            npcLoot.Add(ItemDropRule.Common(ItemID.AntlionMandible, 1, 8, 14));
+            npcLoot.Add(ItemDropRule.Common(ItemID.FossilOre, 1, 12, 20));
+            npcLoot.Add(ItemDropRule.Common(ItemID.SandBlock, 1, 40, 70));
             npcLoot.Add(ItemDropRule.Common(ItemID.Cactus, 1, 20, 40));
-            npcLoot.Add(ItemDropRule.Common(ItemID.AntlionMandible, 2, 3, 6));
+            npcLoot.Add(ItemDropRule.Common(ItemID.Amber, 3, 1, 2));
         }
         #endregion
 

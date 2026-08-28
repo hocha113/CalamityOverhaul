@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Melee.CursedflameBloodfists;
 using CalamityOverhaul.Content.NPCs.FestersandSerpents.Core;
 using CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering;
 using CalamityOverhaul.Content.NPCs.FestersandSerpents.States;
@@ -158,10 +159,21 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
         }
 
         public override void ModifyNPCLoot(NPCLoot npcLoot) {
-            //占位掉落：暗影之魂 + 灵液 + 黑曜碎片（腐化沙漠主题），专属掉落后续另定
-            npcLoot.Add(ItemDropRule.Common(ItemID.SoulofNight, 1, 8, 14));
-            npcLoot.Add(ItemDropRule.Common(ItemID.Ichor, 1, 12, 24));
+            //咒焰血拳：模组里唯一一把腐化系困难模式双拳，必出。
+            //它的合成配方要秘银砧加精金，这条蛇打得下来就算提前拿到手
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<CursedflameBloodfist>()));
+
+            //材料：全是腐化沙漠本地产。暗影碎片出自黑暗木乃伊，与本体同乡
+            npcLoot.Add(ItemDropRule.Common(ItemID.SoulofNight, 1, 15, 25));
+            npcLoot.Add(ItemDropRule.Common(ItemID.Ichor, 1, 18, 30));
+            npcLoot.Add(ItemDropRule.Common(ItemID.CursedFlame, 1, 10, 18));
             npcLoot.Add(ItemDropRule.Common(ItemID.DarkShard, 1, 2, 4));
+            npcLoot.Add(ItemDropRule.Common(ItemID.EbonsandBlock, 1, 60, 100));
+        }
+
+        public override void OnKill() {
+            //击杀旗标：SetEventFlagCleared 自动处理联机 WorldData 广播（传奇试炼完成位读它）
+            NPC.SetEventFlagCleared(ref FssWorldFlag.DownedFesterSerpent, -1);
         }
         #endregion
 
@@ -228,8 +240,9 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
                 Context.AttackCooldown--;
             }
 
-            //入场演出自管 alpha，其余状态兜底淡入（中途加入的客户端以 255 重建）
-            if (stateMachine?.CurrentState is not FssIntroState && NPC.alpha > 0) {
+            //入场/门冲演出自管 alpha，其余状态兜底淡入（中途加入的客户端以 255 重建）
+            if (stateMachine?.CurrentState is not FssIntroState and not FssPortalRushState
+                && NPC.alpha > 0) {
                 NPC.alpha = Math.Max(NPC.alpha - 42, 0);
             }
 
@@ -270,8 +283,10 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
                 return;
             }
             IVaultState<FssStateContext> current = stateMachine.CurrentState;
+            //门冲入列：隐身传送段被转阶段打断会把不可见的蛇钉在半途；
+            //血线转移等它收招（致死伤害仍走 CheckDead 即时拦截，死亡响应不受影响）
             if (current is FssIntroState or FssMoltGrowthState or FssOverflowState
-                or FssDespawnState or FssDeathState) {
+                or FssDespawnState or FssDeathState or FssPortalRushState) {
                 return;
             }
 

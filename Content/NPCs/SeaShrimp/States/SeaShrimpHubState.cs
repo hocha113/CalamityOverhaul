@@ -40,8 +40,15 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
             float dist = toTarget.Length();
 
             //凝视逼近：头恒对玩家，环距弹簧进退；双手在骨架层交替抓着屏幕平面拖动身体
+            //封场存续期爬行目标钳进双渊柱之间（boss 不出场，玩家出场自担柱伤）
+            Vector2 crawlTarget = target.Center;
+            if (ctx.ArenaActive) {
+                crawlTarget.X = MathHelper.Clamp(crawlTarget.X,
+                    ctx.ArenaCenterX - SeaShrimpDirector.ArenaHalfWidth + 180f,
+                    ctx.ArenaCenterX + SeaShrimpDirector.ArenaHalfWidth - 180f);
+            }
             float speedScale = dist > SeaShrimpDirector.LeashDistance ? 1.6f : 1f;
-            loco.RequestCrawlTo(target.Center, speedScale);
+            loco.RequestCrawlTo(crawlTarget, speedScale);
             ctx.WaveGain = MathHelper.Clamp(npc.velocity.Length() / 7f, 0.4f, 1.4f);
 
             //connector 喘息：收招回枢纽的整备身语——尾扇甩水的一次呼吸，段落间的可见标点
@@ -70,56 +77,69 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
         }
 
         /// <summary>
-        /// 手写轮换表（压力/走位/压制交替），距离自适应：
+        /// 手写轮换表（压力/走位/压制/封场件交替），距离自适应：
         /// 螯刺/空泡拳要够近，够不着时换成远程压制或穿场突袭。
-        /// P2 插入晶刺阵/泡幕，P3 押上超空泡终拳（好招押到低血量）
+        /// P1 六招起步（犁浪/间歇泉/水刃扩编），P2 上水炮/涡旋/泡幕，
+        /// P3 押上超空泡终拳（好招押到低血量），环内重拍不相邻
         /// </summary>
         private static ISeaShrimpState PickAttack(SeaShrimpStateContext ctx, float dist) {
             ctx.QueuedChainState = -1;
 
             if (ctx.Phase >= 3) {
-                switch (ctx.AttackIndex % 6) {
+                switch (ctx.AttackIndex % 8) {
                     case 1:
-                        return dist < 480f ? new SeaShrimpClawJabState() : new SeaShrimpWaterVolleyState();
+                        return new SeaShrimpAbyssJetState();
                     case 2:
-                        return new SeaShrimpCrystalSpikesState();
+                        return dist < 480f ? new SeaShrimpClawJabState() : new SeaShrimpWaterVolleyState();
                     case 3:
                         return new SeaShrimpSuperCavitationState();
                     case 4:
-                        return new SeaShrimpBubbleCurtainState();
+                        return new SeaShrimpVortexTossState();
                     case 5:
+                        return new SeaShrimpPlowChargeState();
+                    case 6:
+                        return new SeaShrimpBubbleCurtainState();
+                    case 7:
                         return new SeaShrimpTailFlipStrikeState();
                     default:
-                        return dist < 560f ? new SeaShrimpCavitationPunchState() : new SeaShrimpTailFlipStrikeState();
+                        return dist < 560f ? new SeaShrimpCavitationPunchState() : new SeaShrimpGeyserMarchState();
                 }
             }
 
             if (ctx.Phase >= 2) {
-                switch (ctx.AttackIndex % 6) {
+                switch (ctx.AttackIndex % 8) {
                     case 1:
-                        return dist < 480f ? new SeaShrimpClawJabState() : new SeaShrimpWaterVolleyState();
+                        return new SeaShrimpAbyssJetState();
                     case 2:
                         return new SeaShrimpCrystalSpikesState();
                     case 3:
-                        return new SeaShrimpWaterVolleyState();
+                        return dist < 480f ? new SeaShrimpClawJabState() : new SeaShrimpWaterVolleyState();
                     case 4:
-                        return new SeaShrimpTailFlipStrikeState();
+                        return new SeaShrimpVortexTossState();
                     case 5:
                         return new SeaShrimpBubbleCurtainState();
+                    case 6:
+                        return new SeaShrimpTailFlipStrikeState();
+                    case 7:
+                        return new SeaShrimpGeyserMarchState();
                     default:
-                        return dist < 560f ? new SeaShrimpCavitationPunchState() : new SeaShrimpTailFlipStrikeState();
+                        return dist < 560f ? new SeaShrimpCavitationPunchState() : new SeaShrimpPlowChargeState();
                 }
             }
 
-            switch (ctx.AttackIndex % 4) {
+            switch (ctx.AttackIndex % 6) {
                 case 1:
-                    return dist < 480f ? new SeaShrimpClawJabState() : new SeaShrimpWaterVolleyState();
+                    return new SeaShrimpPlowChargeState();
                 case 2:
-                    return new SeaShrimpWaterVolleyState();
+                    return new SeaShrimpGeyserMarchState();
                 case 3:
-                    return dist < 560f ? new SeaShrimpCavitationPunchState() : new SeaShrimpTailFlipStrikeState();
-                default:
+                    return dist < 480f ? new SeaShrimpClawJabState() : new SeaShrimpWaterVolleyState();
+                case 4:
+                    return new SeaShrimpCrescentClapState();
+                case 5:
                     return new SeaShrimpTailFlipStrikeState();
+                default:
+                    return dist < 560f ? new SeaShrimpCavitationPunchState() : new SeaShrimpWaterVolleyState();
             }
         }
     }

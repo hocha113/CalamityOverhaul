@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.NPCs.FestersandSerpents;
 using CalamityOverhaul.Content.NPCs.SeaShrimp;
 using System;
 using System.Collections.Generic;
@@ -51,7 +52,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
             Gift<ShenyoSlimeGodGift>(6, "SlimeGod", "FuZi", () => [CWRID.NPC_SlimeGodCore]),
             Gift<ShenyoWallOfFleshGift>(7, "WallOfFlesh", "FuTing", () => [NPCID.WallofFlesh]),
             Gift<ShenyoQueenSlimeGift>(8, "QueenSlime", "FuHong", () => [NPCID.QueenSlimeBoss]),
-            Gift<ShenyoAquaticScourgeGift>(9, "AquaticScourge", "FuHang", () => [CWRID.NPC_AquaticScourgeHead]),
+            //0.9202:渊海灾虫席位换脓蕾沙蟒,符沆按获取序留在原序号
+            Gift<ShenyoFesterSerpentGift>(9, "FesterSerpent", "FuHang", () => [ModContent.NPCType<FssHead>()]),
             Gift<ShenyoMechsGift>(10, "Mechs", "FuBao", () =>
                 [NPCID.TheDestroyer, NPCID.Retinazer, NPCID.Spazmatism, NPCID.SkeletronPrime]),
             Gift<ShenyoPlanteraGift>(11, "Plantera", "FuShu", () => [NPCID.Plantera]),

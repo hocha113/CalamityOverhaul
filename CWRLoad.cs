@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents;
+using CalamityOverhaul.Content.NPCs.FestersandSerpents;
 using CalamityOverhaul.Content.Projectiles;
 using System.Collections.Generic;
 using System.Reflection;
@@ -184,8 +185,9 @@ namespace CalamityOverhaul
                 CWRID.NPC_SepulcherBody, CWRID.NPC_PerforatorBodyLarge,
                 CWRID.NPC_PerforatorBodyMedium, CWRID.NPC_PerforatorBodySmall,
                 NPCID.TheDestroyerBody, NPCID.EaterofWorldsBody,
-                //本模组蠕虫:荒花沙蟒体节共享血池,多段蹭刀保护与灾厄蠕虫同规(表惯例只收 Body 不收 Tail)
+                //本模组蠕虫:荒花沙蟒/脓蕾沙蟒体节共享血池,多段蹭刀保护与灾厄蠕虫同规(表惯例只收 Body 不收 Tail)
                 ModContent.NPCType<BssBody>(),
+                ModContent.NPCType<FssBody>(),
             ];
         }
 

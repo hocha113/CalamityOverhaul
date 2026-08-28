@@ -10,6 +10,12 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
         public override string StateName => "Despawn";
         public override SeaShrimpStateIndex StateIndex => SeaShrimpStateIndex.Despawn;
 
+        public override void OnEnter(SeaShrimpStateContext ctx) {
+            base.OnEnter(ctx);
+            //撤旗：封场随宿主离场解除（柱体自身也有宿主消失淡出兜底）
+            ctx.ArenaActive = false;
+        }
+
         public override ISeaShrimpState OnUpdate(SeaShrimpStateContext ctx) {
             NPC npc = ctx.Npc;
             Timer++;

@@ -801,6 +801,11 @@ VictorRiftPortalProj.DisplayName: Victors Kyber-Riss
 // EverdeepHeld.DisplayName: Everdeep
 // EverdeepRing.DisplayName: Abyssal Ring
 // EverdeepMaelstrom.DisplayName: Abyssal Maelstrom
+// AbyssclaspLobster.DisplayName: Abyssclasp Lobster
+// AbyssclaspSnapBurst.DisplayName: Cavitation Snap
+// UndertowHeld.DisplayName: Undertow
+// UndertowSpine.DisplayName: Abyssal Spine
+// UndertowBurst.DisplayName: Cavitation Bubble
 // CultistPlanetProj.DisplayName: Colossal Celestial Body
 // LegionVolleyOmen.DisplayName: Legion Volley Order
 // LegionVolleyArrow.DisplayName: Legion War Arrow
@@ -1106,9 +1111,14 @@ VictorRiftPortalProj.DisplayName: Victors Kyber-Riss
 // SeaShrimpBubble.DisplayName: Sea Shrimp Bubble
 // SeaShrimpCavitationBubble.DisplayName: Sea Shrimp Cavitation Bubble
 // SeaShrimpClawHitbox.DisplayName: Sea Shrimp Claw Hitbox
+// SeaShrimpCrescentWave.DisplayName: Sea Shrimp Crescent Wave
 // SeaShrimpCrystalSpike.DisplayName: Sea Shrimp Crystal Spike
+// SeaShrimpGeyserSpout.DisplayName: Sea Shrimp Geyser Spout
+// SeaShrimpJetBeam.DisplayName: Sea Shrimp Jet Beam
 // SeaShrimpLaneOmen.DisplayName: Sea Shrimp Lane Omen
+// SeaShrimpMiniVortex.DisplayName: Sea Shrimp Mini Vortex
 // SeaShrimpShellFrag.DisplayName: Sea Shrimp Shell Frag
+// SeaShrimpVortexWall.DisplayName: Sea Shrimp Vortex Wall
 // SeaShrimpWaterBolt.DisplayName: Sea Shrimp Water Bolt
 // CultistArcanePulse.DisplayName: Cultist Arcane Pulse
 // CultistFallingStar.DisplayName: Cultist Falling Star
@@ -1199,6 +1209,7 @@ VictorRiftPortalProj.DisplayName: Victors Kyber-Riss
 // BssSandVortexProj.DisplayName: Bss Sand Vortex Proj
 // FssBreachOmen.DisplayName: Fester Breach Mound
 // FssCascadeDrop.DisplayName: Ichor Cascade
+// FssIchorGate.DisplayName: Ichor Gate
 // FssGeyserColumn.DisplayName: Ichor Geyser
 // FssHuskShard.DisplayName: Molted Husk Shard
 // FssIchorGlob.DisplayName: Ichor Glob

@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.NPCs.FestersandSerpents;
 using InnoVault.Narrative.Composition;
 using System;
 using System.Collections.Generic;
@@ -48,8 +49,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
                 () => [CWRID.NPC_SlimeGodCore]),
             Gift<HimayoWallOfFleshGift, OniMeiRubbingTomokiri>(4, nameof(MeiTomokiri),
                 () => [NPCID.WallofFlesh]),
-            Gift<HimayoAquaticScourgeGift, OniMeiRubbingFudo>(5, nameof(MeiFudo),
-                () => [CWRID.NPC_AquaticScourgeHead]),
+            //0.9202:渊海灾虫席位换脓蕾沙蟒,拓本不动(铭按获取序)
+            Gift<HimayoFesterSerpentGift, OniMeiRubbingFudo>(5, nameof(MeiFudo),
+                () => [ModContent.NPCType<FssHead>()]),
             Gift<HimayoBrimstoneElementalGift, OniMeiRubbingKogehi>(6, nameof(MeiKogehi),
                 () => [CWRID.NPC_BrimstoneElemental]),
             Gift<HimayoDestroyerGift, OniMeiRubbingTessetsu>(7, nameof(MeiTessetsu),

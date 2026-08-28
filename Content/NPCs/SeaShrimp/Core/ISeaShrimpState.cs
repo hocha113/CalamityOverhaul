@@ -31,6 +31,18 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Core
         Despawn = 10,
         /// <summary>死亡演出</summary>
         Death = 11,
+        /// <summary>双渊柱封场（P2 进场事件 / 蜕壳后刷新）</summary>
+        VortexWall = 12,
+        /// <summary>渊喉水炮（蓄力口吐巨型水柱，P2+）</summary>
+        AbyssJet = 13,
+        /// <summary>间歇泉行军（P1+）</summary>
+        GeyserMarch = 14,
+        /// <summary>甩尾涡旋（行走小龙卷，P2+）</summary>
+        VortexToss = 15,
+        /// <summary>合钳水刃（P1+）</summary>
+        CrescentClap = 16,
+        /// <summary>犁浪冲锋（头先行贴地冲刺，P1+）</summary>
+        PlowCharge = 17,
     }
 
     /// <summary>渊晶海虾状态接口</summary>
@@ -96,6 +108,10 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Core
         /// <summary>原地稳身：驻停漂移（攻击蓄力通用，朝向由蓄力姿态自持）</summary>
         protected static void HoldInPlace(SeaShrimpStateContext ctx)
             => ctx.Owner.Locomotion.RequestHold();
+
+        /// <summary>驻停并转身对线（冲刺/水炮蓄力用）：身轴贴向目标角，转率随蓄力衰减</summary>
+        protected static void HoldFacing(SeaShrimpStateContext ctx, float heading, float turnRate)
+            => ctx.Owner.Locomotion.RequestHoldFacing(heading, turnRate);
 
         /// <summary>就近震屏：只震看得见战斗的本地玩家，带距离门</summary>
         protected static void ShakeNearby(Vector2 pos, float amount, float range = 1300f) {

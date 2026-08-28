@@ -130,9 +130,10 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
             ctx.TailFlare = 0.6f;
 
             if (t >= Total) {
-                //转阶段后攻速风起：冷却抬高一档（公平阀）
+                //转阶段后攻速风起：冷却抬高一档（公平阀）；
+                //蜕壳清弹带走了旧封场柱,接双渊柱刷新(裸晶形态的 P3 重立场地)
                 ctx.AttackCooldown = 70;
-                return new SeaShrimpHubState();
+                return new SeaShrimpVortexWallState();
             }
             return null;
         }

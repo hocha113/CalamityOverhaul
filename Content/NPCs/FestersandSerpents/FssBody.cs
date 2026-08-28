@@ -101,10 +101,10 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
 
             NPC.realLife = head.whoAmI;
             NPC.timeLeft = 1800;
-            UpdateAlphaFade(head);
-            UpdateGrowthBirth();
 
             FssStateContext ctx = (head.ModNPC as FssHead)?.Context;
+            UpdateAlphaFade(head, ctx);
+            UpdateGrowthBirth();
 
             //死亡演出：冻结姿态保活 + 本地溃爆表现
             if (HeadInDeathPerformance(head)) {
@@ -114,6 +114,12 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
             }
             deathFreezeCaptured = false;
             ruptureFired = false;
+
+            //裂躯领节：跳过跟链，运动由头部状态直驱（各端同跑，位置靠周期同步纠偏）
+            if (ctx != null && ctx.SplitLeaderOrdinal == Ordinal) {
+                UpdateSplitLeader(ctx);
+                return;
+            }
 
             //前邻失效（非演出期）：链条已断，跟随溃散
             NPC front = FrontNPC;
@@ -155,6 +161,39 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
             }
         }
 
+        /// <summary>
+        /// 裂躯领节帧：保留状态写入的速度（位置由引擎积分），旋转跟速度或状态覆盖，
+        /// 接触伤害按速度门控（伤害窗=可见冲势），断口持续渗漏。
+        /// </summary>
+        private void UpdateSplitLeader(FssStateContext ctx) {
+            if (!float.IsNaN(ctx.SplitLeaderAim)) {
+                NPC.rotation = NPC.rotation.AngleLerp(ctx.SplitLeaderAim + FssHead.FacingRot, 0.35f);
+            }
+            else if (NPC.velocity.LengthSquared() > 0.2f) {
+                NPC.rotation = NPC.velocity.ToRotation() + FssHead.FacingRot;
+            }
+
+            float speed = NPC.velocity.Length();
+            const float minContact = 7f;
+            NPC.damage = speed <= minContact
+                ? 0
+                : (int)MathHelper.Lerp(0f, NPC.defDamage, MathHelper.Clamp((speed - minContact) / 13f, 0f, 1f));
+
+            //断口渗漏（伪头的伤口底噪）
+            if (!VaultUtils.isServer && Main.rand.NextBool(4)) {
+                Vector2 wound = NPC.Center + (NPC.rotation - FssHead.FacingRot).ToRotationVector2() * 18f;
+                FssVfx.FesterTrickle(wound, 1.5f);
+                if (Main.rand.NextBool(3)) {
+                    Dust gold = Dust.NewDustPerfect(wound, DustID.Ichor,
+                        Main.rand.NextVector2Circular(1.2f, 1.2f) + new Vector2(0f, 1f),
+                        40, default, Main.rand.NextFloat(0.7f, 1.1f));
+                    gold.noGravity = false;
+                }
+            }
+
+            FssHead.ForcedNetUpdating(NPC);
+        }
+
         /// <summary>无头/断链溃散</summary>
         private void SelfDestruct() {
             NPC.life = 0;
@@ -180,10 +219,11 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
             NPC.rotation = toFront.ToRotation() + FssHead.FacingRot;
             NPC.Center = front.Center - toFront.SafeNormalize(Vector2.Zero) * gap;
 
-            //接触伤害按位移速度门控（伤害窗=可见冲势）
+            //接触伤害按位移速度门控（伤害窗=可见冲势）；
+            //隐身段（门冲吞没/传送帧的巨额位移）无判定——看不见的东西不许咬人
             float moved = (NPC.position - NPC.oldPosition).Length();
             const float minContact = 7f;
-            if (moved <= minContact) {
+            if (moved <= minContact || NPC.alpha > 200) {
                 NPC.damage = 0;
             }
             else {
@@ -235,12 +275,21 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
             }
         }
 
-        /// <summary>出生 alpha=255：入场按前邻涟漪淡入（破土渐显），其余状态直接淡入</summary>
-        private void UpdateAlphaFade(NPC head) {
+        /// <summary>
+        /// 出生 alpha=255：入场/门冲按前邻涟漪淡入（破土渐显/鱼贯出门），其余状态直接淡入；
+        /// 门冲吞没段全链快速渐隐（门口吞没的读数）。
+        /// </summary>
+        private void UpdateAlphaFade(NPC head, FssStateContext ctx) {
+            if (ctx != null && ctx.PortalHiding) {
+                NPC.alpha = Math.Min(NPC.alpha + 40, 255);
+                return;
+            }
             if (NPC.alpha <= 0) {
                 return;
             }
-            if ((int)head.ai[3] == (int)FssStateIndex.Intro) {
+            bool ripple = (int)head.ai[3] == (int)FssStateIndex.Intro
+                || (ctx != null && ctx.PortalPhase);
+            if (ripple) {
                 NPC front = FrontNPC;
                 if (front.Alives() && front.alpha >= 128) {
                     return; //涟漪未到本节

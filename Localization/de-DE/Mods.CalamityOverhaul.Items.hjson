@@ -4572,6 +4572,31 @@ Everdeep: {
 		''' */
 }
 
+Abyssclasp: {
+	// DisplayName: Abyssclasp
+	/* Tooltip:
+		'''
+		Summons an abyssal lobster to fight for you
+		The lobster lunges at enemies with snapping pincer strikes
+		Every third pincer hit, it rears back and detonates a cavitation snap
+		The snap deals area damage and drags enemies toward its center
+		"What lives below never loosens its grip"
+		''' */
+}
+
+Undertow: {
+	// DisplayName: Undertow
+	/* Tooltip:
+		'''
+		Turns any arrow into an abyssal spine
+		When a spine strikes an enemy, its wake collapses into a small cavitation bubble that bursts again
+		Hold right click to charge; release at full draw to loose a depth-pressure spine at 3x damage
+		The heavy spine pierces everything and drags enemies toward its path
+		When it finally stops, it detonates a cavitation implosion
+		"The sea does not push you away; it takes you in"
+		''' */
+}
+
 FallenKingsCrown: {
 	// DisplayName: Fallen King's Crown
 	/* Tooltip:

@@ -181,9 +181,11 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
             int shard = ModContent.ProjectileType<Projectiles.FssMortarShard>();
             int drop = ModContent.ProjectileType<Projectiles.FssCascadeDrop>();
             int husk = ModContent.ProjectileType<Projectiles.FssHuskShard>();
+            int gate = ModContent.ProjectileType<Projectiles.FssIchorGate>();
             foreach (var p in Main.ActiveProjectiles) {
                 if (p.type == omen || p.type == glob || p.type == cyst
-                    || p.type == shell || p.type == shard || p.type == drop || p.type == husk) {
+                    || p.type == shell || p.type == shard || p.type == drop
+                    || p.type == husk || p.type == gate) {
                     p.Kill();
                 }
             }

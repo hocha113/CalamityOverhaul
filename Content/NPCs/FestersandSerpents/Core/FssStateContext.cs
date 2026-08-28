@@ -167,6 +167,20 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         /// 各端从状态时序同算，不入网络包。
         /// </summary>
         public float[] CystSpent { get; } = new float[FssDirector.MaxOrdinals];
+
+        /// <summary>门冲进行中（每帧重声明）：体节 alpha 走"前邻涟漪"渐显（同入场）</summary>
+        public bool PortalPhase { get; set; }
+        /// <summary>门冲吞入段（每帧重声明）：全链快速渐隐（门口吞没的读数）</summary>
+        public bool PortalHiding { get; set; }
+
+        /// <summary>
+        /// 裂躯领节链序（-1 = 未分裂）。被标记的体节跳过跟链、由头部状态直驱其
+        /// 转向物理，成为后半身的临时首领；断口两端体表挂满值裂隙渗光。
+        /// 持久量（不逐帧衰减），裂躯态 OnExit 无条件清除 = 任何中断路径都必然重连链。
+        /// </summary>
+        public int SplitLeaderOrdinal { get; set; } = -1;
+        /// <summary>裂躯领节旋转覆盖（弧度；NaN=跟速度走；每帧重声明）。蓄力后撤时领节仍面向冲线</summary>
+        public float SplitLeaderAim { get; set; } = float.NaN;
         #endregion
 
         #region 体节缓存
@@ -205,6 +219,9 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
             LegCommand = FssLegCommand.March;
             PulseKind = 0;
             PulsePhase = 0f;
+            PortalPhase = false;
+            PortalHiding = false;
+            SplitLeaderAim = float.NaN;
             BulgeStrength *= 0.85f;
             if (BulgeStrength < 0.02f) {
                 BulgeStrength = 0f;
