@@ -956,7 +956,7 @@ KikasaTrialQuestLine: {
 	// Trial_9: Sour Worm of Sulphur
 	// Trial_10: Three Tastes of Iron
 	// Trial_11: Crimson Bloom of the Jungle
-	// Trial_12: Ocean Behemoth
+	// Trial_12: Crystal-Shelled Morsel
 	// Trial_13: Temple Boulder
 	// Trial_14: Wave-Stirring Winged Boar
 	// Trial_15: Nocturnal Radiance
@@ -1053,10 +1053,10 @@ KikasaTrialQuestLine: {
 		''' */
 	/* TrialSummary_12:
 		'''
-		A big one lives in the sea, kept company by a singing girl
-		The lake has always held a grudge against the sea: why should it get to hold more
-		Invite the big one over, let the lake save some face
-		Don't listen to the song too long, it leads you off
+		A big shrimp nests under the beach, dressed in crystal shell, and it molts
+		When its claw snaps, the water cracks, heard half a sea away
+		The lake has craved this springy bite for ages, go and send the invitation
+		The shell it sheds on its own, the punch you dodge on your own
 		''' */
 	/* TrialSummary_13:
 		'''

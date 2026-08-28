@@ -1465,6 +1465,7 @@ OldNetTexts: {
 	// OldNetRelayEmpty: Ledger empty, nothing to uplink
 	// OldNetEnterHint: Jack into the OldNet (dive beyond the Blackwall)
 	// OldNetEnterConfirm: Link warmed up — interact again to dive beyond the wall
+	// OldNetEnterArmedHint: Link warmed up: interact again to dive beyond the wall
 	// OldNetEnterSPOnly: Diving is single-player only
 	// OldNetDiveCharge: Hold the descent — crossing the wall
 	// OldNetBandFoot: Wallfoot Belt // FOOTHOLD

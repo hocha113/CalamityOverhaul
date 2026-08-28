@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
 {
-    /// <summary>kikasa.013：石巨人</summary>
+    /// <summary>kikasa.012：石巨人</summary>
     internal sealed class ShenyoGolemGift : ShenyoBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Shenyo";

@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -93,11 +94,18 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            //缓存 RT 路径下 PreDraw 非逐帧，只登记特殊绘制点；登记/回退在 SpecialDraw
+            //（防闪烁，引导进度读数也须逐帧刷新）
+            Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomNonSolid);
+            return false;
+        }
+
+        public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) {
             float seed = (i * 7 + j * 13) * 0.7f;
             float t = Main.GlobalTimeWrappedHourly;
             float bob = MathF.Sin(t * 1.1f + seed) * 1.5f;
 
-            //本机引导状态（单人语义：PreDraw 读本地玩家即可）
+            //本机引导状态（单人语义：绘制读本地玩家即可）
             OldNetPlayer session = OldNetPlayer.Get(Main.LocalPlayer);
             bool channeling = session.Channeling
                 && session.ChannelNode.X == i && session.ChannelNode.Y == j;
@@ -111,13 +119,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
                     Seed = seed,
                     Progress = progress,
                 });
-                return false;
+                return;
             }
 
             //CPU 回退：琥珀红双层菱晶 + 进度弧
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null || px.IsDisposed) {
-                return false;
+                return;
             }
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 center = new Vector2(i * 16 + 8, j * 16 + 8) - Main.screenPosition + offset;
@@ -160,7 +168,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
                         origin, Size(3.4f), SpriteEffects.None, 0f);
                 }
             }
-            return false;
         }
 
         //斜置正方形描边：4 条线段

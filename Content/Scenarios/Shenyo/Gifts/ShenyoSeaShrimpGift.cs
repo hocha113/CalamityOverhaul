@@ -6,8 +6,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
 {
-    /// <summary>kikasa.012：利维坦与安娜希塔</summary>
-    internal sealed class ShenyoLeviathanGift : ShenyoBossGiftNarrative, ILocalizedModType
+    /// <summary>kikasa.013：渊晶海虾</summary>
+    internal sealed class ShenyoSeaShrimpGift : ShenyoBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Shenyo";
 
@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "海里那个头，还有个爱唱歌的丫头跟着");
-            L1 = this.GetLocalization(nameof(L1), () => "歌声这种东西，听多了会跟着走，你倒是清醒");
-            L2 = this.GetLocalization(nameof(L2), () => "水里的事，我多少懂一些，算你今天走运");
+            L0 = this.GetLocalization(nameof(L0), () => "海滩底下那只虾，一身晶壳，一拳能把水打空");
+            L1 = this.GetLocalization(nameof(L1), () => "壳蜕了一层又一层，脾气倒是半点没软");
+            L2 = this.GetLocalization(nameof(L2), () => "空响听着吓人，你接住了，手上算有真功夫");
         }
 
         protected override void Build(NarrativeComposer n) {
@@ -30,8 +30,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
              .Say(NarrativeIds.Shenyo, L2.Value, Voice[3], onEnter: PortraitFace(ShenyoFullBodyPortrait.Face.Smile));
         }
 
-        protected override bool IsGiftCompleted() => ShenyoStorySync.GiftStory.LeviathanGift;
+        protected override bool IsGiftCompleted() => ShenyoStorySync.GiftStory.SeaShrimpGift;
 
-        protected override void MarkGiftCompleted() => ShenyoStorySync.GiftStory.LeviathanGift = true;
+        protected override void MarkGiftCompleted() => ShenyoStorySync.GiftStory.SeaShrimpGift = true;
     }
 }

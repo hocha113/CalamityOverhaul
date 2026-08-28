@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Scenarios.OldNet.NPCs;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -79,9 +80,16 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            //缓存 RT 路径下 PreDraw 非逐帧，只登记特殊绘制点；桩体绘制与光束登记在
+            //SpecialDraw（每帧必跑），否则光束一帧有一帧无
+            Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomNonSolid);
+            return false;
+        }
+
+        public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) {
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null || px.IsDisposed) {
-                return false;
+                return;
             }
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 center = new Vector2(i * 16 + 8, j * 16 + 8) - Main.screenPosition + offset;
@@ -155,7 +163,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
                 spriteBatch.Draw(glowTex, muzzle, null, glowCol, 0f,
                     glowTex.Size() * 0.5f, 0.12f, SpriteEffects.None, 0f);
             }
-            return false;
         }
     }
 }

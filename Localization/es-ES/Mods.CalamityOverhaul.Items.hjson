@@ -4931,3 +4931,12 @@ BssBloomBud: {
 		"The root of the dunes grows hungry when it blooms"
 		''' */
 }
+
+FssFesterBud: {
+	// DisplayName: Festered Bloombud
+	/* Tooltip:
+		'''
+		Summons the Festersand Serpent when used on the desert surface in hardmode
+		"The bud never died. It learned to fester"
+		''' */
+}

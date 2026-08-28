@@ -180,8 +180,9 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool AquaticScourgeGift;
         public bool MechsGift;
         public bool PlanteraGift;
-        public bool LeviathanGift;
         public bool GolemGift;
+        /// <summary>0.9202 接替利维坦席位的渊晶海虾礼物；旧档 LeviathanGift 位随场景退役废弃</summary>
+        public bool SeaShrimpGift;
         public bool DukeFishronGift;
         public bool EmpressGift;
         public bool CultistGift;

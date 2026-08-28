@@ -151,3 +151,11 @@ BssHead: {
 
 // BssBody.DisplayName: Bloomsand Serpent
 // BssTail.DisplayName: Bloomsand Serpent
+
+FssHead: {
+	// DisplayName: Festersand Serpent
+	// Bestiary: A mutated Bloomsand Serpent. Shadow seeped into the sand, the crimson blooms festered into cysts, and ichor replaced the blood in its veins. It is longer than it once was, and hungrier. The golden puddles gleaming in the desert are not rainwater. They are its drool.
+}
+
+// FssBody.DisplayName: Festersand Serpent
+// FssTail.DisplayName: Festersand Serpent

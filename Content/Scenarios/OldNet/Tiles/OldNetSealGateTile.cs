@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent.Drawing;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
@@ -36,6 +37,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            //缓存 RT 路径下 PreDraw 非逐帧，只登记特殊绘制点（实心层用 CustomSolid）；
+            //登记/回退在 SpecialDraw，否则扫描段一帧有一帧无
+            Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomSolid);
+            return false;
+        }
+
+        public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) {
             float t = Main.GlobalTimeWrappedHourly;
 
             //shader 路径：整根闸柱共相位的通电扫描（局部扫描行 CPU 折算）
@@ -47,13 +55,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
                     LocalScan = localScan,
                     Seed = i * 0.13f,
                 });
-                return false;
+                return;
             }
 
             //CPU 回退：暗底 + 双缘警戒线 + 扫描亮段
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null || px.IsDisposed) {
-                return false;
+                return;
             }
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 tl = new Vector2(i * 16, j * 16) - Main.screenPosition + offset;
@@ -80,7 +88,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
                 spriteBatch.Draw(px, tl + new Vector2(2f, yClamped + 1f), null, Color.White * 0.5f, 0f,
                     Vector2.Zero, Size(12f, 1f), SpriteEffects.None, 0f);
             }
-            return false;
         }
     }
 }

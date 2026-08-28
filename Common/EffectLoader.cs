@@ -35,6 +35,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> SkeletronSpinBlur { get; set; }
         public static Asset<Effect> StitcherThread { get; set; }
         public static Asset<Effect> StitcherBoneDress { get; set; }
+        public static Asset<Effect> FssCorruptSkin { get; set; }
         public static Asset<Effect> GolemSunTelegraph { get; set; }
         public static Asset<Effect> GolemMagmaVein { get; set; }
         public static Asset<Effect> GolemSolarFlare { get; set; }

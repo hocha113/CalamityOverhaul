@@ -5020,3 +5020,12 @@ BssBloomBud: {
 		"沙丘的根，开花时会饿"
 		'''
 }
+
+FssFesterBud: {
+	DisplayName: 脓化花蕾
+	Tooltip:
+		'''
+		在困难模式的沙漠地表使用，唤来脓蕾沙蟒
+		"花蕾没有死，它学会了流脓"
+		'''
+}

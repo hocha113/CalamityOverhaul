@@ -96,10 +96,10 @@ ShenyoKingSlimeGift: {
 	L2: 往后碰上真正难缠的，别学它虚张声势
 }
 
-ShenyoLeviathanGift: {
-	L0: 海里那个头，还有个爱唱歌的丫头跟着
-	L1: 歌声这种东西，听多了会跟着走，你倒是清醒
-	L2: 水里的事，我多少懂一些，算你今天走运
+ShenyoSeaShrimpGift: {
+	L0: That shrimp under the beach, all crystal shell, one punch that knocks the water hollow
+	L1: It sheds shell after shell, yet its temper never softens a bit
+	L2: The hollow crack sounds scary, but you caught it, so your hands know their craft
 }
 
 ShenyoMechsGift: {

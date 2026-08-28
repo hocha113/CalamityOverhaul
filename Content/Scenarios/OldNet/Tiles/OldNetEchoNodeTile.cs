@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -93,11 +94,18 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
             b = 0.25f * pulse * vis;
         }
 
-        //回声=轮廓幽灵：常态只有描边残影，时停中补上体积，刻意不走节点 shader（材质是"残影"不是晶体）
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            //缓存 RT 路径下 PreDraw 非逐帧，只登记特殊绘制点；绘制在 SpecialDraw
+            //（时停显影是即时状态切换，卡在缓存里会滞后数帧）
+            Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomNonSolid);
+            return false;
+        }
+
+        //回声=轮廓幽灵：常态只有描边残影，时停中补上体积，刻意不走节点 shader（材质是"残影"不是晶体）
+        public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) {
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null || px.IsDisposed) {
-                return false;
+                return;
             }
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 center = new Vector2(i * 16 + 8, j * 16 + 8) - Main.screenPosition + offset;
@@ -123,7 +131,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
                 spriteBatch.Draw(px, center, null, Color.White * 0.85f,
                     -t * 1.2f + seed, origin, Size(3.2f), SpriteEffects.None, 0f);
             }
-            return false;
         }
 
         private static void DrawDiamondOutline(SpriteBatch sb, Texture2D px, Vector2 center,

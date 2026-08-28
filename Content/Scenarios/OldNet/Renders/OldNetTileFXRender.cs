@@ -9,8 +9,11 @@ using Terraria;
 namespace CalamityOverhaul.Content.Scenarios.OldNet.Renders
 {
     /// <summary>
-    /// 节点/锚点着色器绘制收集器：tile PreDraw 逐帧登记（天然只含可见格），
+    /// 节点/锚点着色器绘制收集器：tile SpecialDraw 逐帧登记（天然只含可见格），
     /// <see cref="OldNetTileFXRender"/> 在物块层之后一次性按技法批绘。
+    /// 登记点必须是 SpecialDraw 而非 PreDraw：彩色照明下非实心物块层走缓存
+    /// RenderTarget，PreDraw 只在重绘帧（约每 4 帧）被调用，从那里登记会让
+    /// 批绘一帧有一帧无，表现为整根光柱高频闪烁。
     /// shader 缺失时 tile 走各自的 CPU 回退、不登记，本收集器不承担回退
     /// </summary>
     internal static class OldNetTileFX
@@ -32,6 +35,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Renders
             internal Vector2 BasePos;
             internal bool Relay;
             internal float Seed;
+            /// <summary>预热增亮 0..1（接入终端确认窗口内随剩余时间衰减，读作倒计时）</summary>
+            internal float Boost;
         }
 
         internal struct GateEntry
@@ -348,9 +353,11 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Renders
             Vector2 scale = new(ColumnW / px.Width, ColumnH / px.Height);
             foreach (OldNetTileFX.ColumnEntry c in OldNetTileFX.Columns) {
                 fx.CurrentTechnique = fx.Techniques[c.Relay ? "TechRelay" : "TechTerminal"];
+                //预热增亮：确认窗口内快脉动抬亮，随 Boost 衰减回落读作倒计时
+                float alpha = 1f + c.Boost * (0.4f + 0.25f * MathF.Sin(time * 9f));
                 fx.Parameters["uTime"]?.SetValue(time);
                 fx.Parameters["uSeed"]?.SetValue(c.Seed);
-                fx.Parameters["uAlpha"]?.SetValue(1f);
+                fx.Parameters["uAlpha"]?.SetValue(alpha);
                 fx.Parameters["uLocalScan"]?.SetValue(0f);
                 fx.CurrentTechnique.Passes[0].Apply();
                 sb.Draw(px, c.BasePos - Main.screenPosition, null, Color.White,

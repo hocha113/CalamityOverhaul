@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
         //M2c 入口
         public static LocalizedText OldNetEnterHint { get; private set; }
         public static LocalizedText OldNetEnterConfirm { get; private set; }
+        public static LocalizedText OldNetEnterArmedHint { get; private set; }
         public static LocalizedText OldNetEnterSPOnly { get; private set; }
         public static LocalizedText OldNetDiveCharge { get; private set; }
         //M2c 分带横幅
@@ -137,6 +138,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
 
             OldNetEnterHint = this.GetLocalization(nameof(OldNetEnterHint), () => "接入旧网（越墙深潜）");
             OldNetEnterConfirm = this.GetLocalization(nameof(OldNetEnterConfirm), () => "链路已预热，再次交互，越墙深潜");
+            OldNetEnterArmedHint = this.GetLocalization(nameof(OldNetEnterArmedHint), () => "链路已预热：再次交互，越墙深潜");
             OldNetEnterSPOnly = this.GetLocalization(nameof(OldNetEnterSPOnly), () => "深潜仅单人模式可用");
             OldNetDiveCharge = this.GetLocalization(nameof(OldNetDiveCharge), () => "保持下潜，正在穿墙");
 

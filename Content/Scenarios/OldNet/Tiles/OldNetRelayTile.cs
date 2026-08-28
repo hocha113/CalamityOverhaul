@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -72,6 +73,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            //缓存 RT 路径下 PreDraw 非逐帧，只登记特殊绘制点；登记/回退在 SpecialDraw（防光柱闪烁）
+            Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomNonSolid);
+            return false;
+        }
+
+        public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) {
             //shader 路径：琥珀中继柱（矮一截+离散数据包，"驿站不是家"在材质里）
             if (Renders.OldNetTileFX.TerminalShaderReady) {
                 Renders.OldNetTileFX.Columns.Add(new Renders.OldNetTileFX.ColumnEntry {
@@ -79,13 +86,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
                     Relay = true,
                     Seed = i * 0.53f,
                 });
-                return false;
+                return;
             }
 
             //CPU 回退：琥珀光柱 + 上行数据点
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null || px.IsDisposed) {
-                return false;
+                return;
             }
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 basePos = new Vector2(i * 16 + 8, j * 16 + 16) - Main.screenPosition + offset;
@@ -115,7 +122,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
                 spriteBatch.Draw(px, basePos - new Vector2(0f, y), null,
                     Amber * (0.7f * alpha), 0f, origin, Size(5f, 2f), SpriteEffects.None, 0f);
             }
-            return false;
         }
     }
 }

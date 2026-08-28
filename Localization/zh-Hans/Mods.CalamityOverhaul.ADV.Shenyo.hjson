@@ -96,10 +96,10 @@ ShenyoKingSlimeGift: {
 	L2: 往后碰上真正难缠的，别学它虚张声势
 }
 
-ShenyoLeviathanGift: {
-	L0: 海里那个头，还有个爱唱歌的丫头跟着
-	L1: 歌声这种东西，听多了会跟着走，你倒是清醒
-	L2: 水里的事，我多少懂一些，算你今天走运
+ShenyoSeaShrimpGift: {
+	L0: 海滩底下那只虾，一身晶壳，一拳能把水打空
+	L1: 壳蜕了一层又一层，脾气倒是半点没软
+	L2: 空响听着吓人，你接住了，手上算有真功夫
 }
 
 ShenyoMechsGift: {

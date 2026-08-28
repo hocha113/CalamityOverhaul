@@ -1463,6 +1463,7 @@ OldNetTexts: {
 	OldNetRelayEmpty: 账本为空，无可上行
 	OldNetEnterHint: 接入旧网（越墙深潜）
 	OldNetEnterConfirm: 链路已预热，再次交互，越墙深潜
+	OldNetEnterArmedHint: 链路已预热：再次交互，越墙深潜
 	OldNetEnterSPOnly: 深潜仅单人模式可用
 	OldNetDiveCharge: 保持下潜，正在穿墙
 	OldNetBandFoot: 墙脚带 // FOOTHOLD

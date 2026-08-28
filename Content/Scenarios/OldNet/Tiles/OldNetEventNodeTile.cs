@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -77,6 +78,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            //缓存 RT 路径下 PreDraw 非逐帧，只登记特殊绘制点；登记/回退在 SpecialDraw（防闪烁）
+            Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomNonSolid);
+            return false;
+        }
+
+        public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) {
             //shader 路径：闸杆信标技法（慢闪节律在着色器内）
             if (Renders.OldNetTileFX.NodeShaderReady) {
                 Renders.OldNetTileFX.Nodes.Add(new Renders.OldNetTileFX.NodeEntry {
@@ -85,13 +92,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
                     Seed = i * 0.7f,
                     Progress = 0f,
                 });
-                return false;
+                return;
             }
 
             //CPU 回退：警戒红闸杆 + 慢闪信标
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null || px.IsDisposed) {
-                return false;
+                return;
             }
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 center = new Vector2(i * 16 + 8, j * 16 + 8) - Main.screenPosition + offset;
@@ -126,7 +133,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Tiles
                 spriteBatch.Draw(px, a, new Rectangle(0, 0, 1, 1), ringCol, diff.ToRotation(),
                     new Vector2(0f, 0.5f), new Vector2(diff.Length(), 1f), SpriteEffects.None, 0f);
             }
-            return false;
         }
     }
 }

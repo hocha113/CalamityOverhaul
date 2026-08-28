@@ -1,6 +1,8 @@
+using CalamityOverhaul.Content.NPCs.SeaShrimp;
 using System;
 using System.Collections.Generic;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
 {
@@ -53,8 +55,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
             Gift<ShenyoMechsGift>(10, "Mechs", "FuBao", () =>
                 [NPCID.TheDestroyer, NPCID.Retinazer, NPCID.Spazmatism, NPCID.SkeletronPrime]),
             Gift<ShenyoPlanteraGift>(11, "Plantera", "FuShu", () => [NPCID.Plantera]),
-            Gift<ShenyoLeviathanGift>(12, "Leviathan", "FuLong", () => [CWRID.NPC_Leviathan, CWRID.NPC_Anahita]),
-            Gift<ShenyoGolemGift>(13, "Golem", "FuShuang", () => [NPCID.Golem, NPCID.GolemHead]),
+            //0.9202 席位换序:利维坦席退场、渊晶海虾入席并顺移到石巨人后;符按获取序留在原序号(12泷13霜)
+            Gift<ShenyoGolemGift>(12, "Golem", "FuLong", () => [NPCID.Golem, NPCID.GolemHead]),
+            Gift<ShenyoSeaShrimpGift>(13, "SeaShrimp", "FuShuang", () => [ModContent.NPCType<SeaShrimpBoss>()]),
             Gift<ShenyoDukeFishronGift>(14, "DukeFishron", "FuZha", () => [NPCID.DukeFishron]),
             Gift<ShenyoEmpressGift>(15, "Empress", "FuNi", () => [NPCID.HallowBoss]),
             Gift<ShenyoCultistGift>(16, "Cultist", "FuWen", () => [NPCID.CultistBoss]),
