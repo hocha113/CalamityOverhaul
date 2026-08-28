@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
             for (int a = 0; a < 2; a++) {
                 Arms[a].Snap(GuardWristWant(a));
                 ArmSolves[a] = Arms[a].Solve(ShoulderWorld(a), GuardWristWant(a),
-                    SeaShrimpDirector.ArmSpring, SeaShrimpDirector.ArmDamping, a == 0 ? -1f : 1f);
+                    SeaShrimpDirector.ArmSpring, SeaShrimpDirector.ArmDamping, a == 0 ? 1f : -1f);
                 ClawRot[a] = Nodes[0].Dir;
                 gripInit[a] = false;
                 gripT[a] = -1f;
@@ -232,7 +232,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
                     spring = 0.34f;
                     damping = 0.72f;
                 }
-                ArmSolves[a] = Arms[a].Solve(shoulder, want, spring, damping, a == 0 ? -1f : 1f);
+                //肘极性：向体外侧弓（离线装配实测 -1/+1 会内拐成反关节）
+                ArmSolves[a] = Arms[a].Solve(shoulder, want, spring, damping, a == 0 ? 1f : -1f);
 
                 //螯体姿态：抓握时螯尖指向抓点（扒住平面的读数），出招沿前臂方向+指令偏置
                 float wantRot;

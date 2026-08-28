@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.HackTimes.Protocols;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Scenarios.OldNet;
 using InnoVault.Actors;
 using InnoVault.PRT;
 using System;
@@ -16,10 +17,12 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
     /// <summary>
     /// 电路节点布设器：Actor 不随世界持久化，每次进世界后由本系统在
     /// <see cref="PostUpdateWorld"/> 里渐进扫描落点并重新布设（刻意不动现有 worldgen 文件）。<br/>
-    /// 布点偏好：实验室板材（Calamity 实验室）舱内地板放炮台；
-    /// 地表远离出生点、住区与玩家建筑的平地立信号塔，塔侧再配一两台炮台读作机械废墟。<br/>
-    /// 可拆规则（#67/#118）：玩家填埋本体或挖空基座即视作拆除，锚列写入世界存档的
-    /// 禁布名单，重扫时跳过，不再重布；名单只在权威端读写。<br/>
+    /// 布设范围仅旧网（2026-08-28 裁定，此前主世界地表+灾厄实验室的布点全部收编）：
+    /// 地表远离出生点的平地立信号塔，塔侧再配一两台炮台读作机械废墟；
+    /// 实验室炮位分支保留代码，但旧网无实验室板材，实际不落点。<br/>
+    /// 可拆规则（#67/#118）：玩家填埋本体或挖空基座即视作拆除，锚列写入禁布名单，
+    /// 重扫时跳过；名单只在权威端读写。旧网 ShouldSave=false 不落盘，
+    /// 名单只活一次深潜，重潜随世界一并重生成，符合旧网回放制。<br/>
     /// 同时兼任电路节点族的本地化文本挂点（HackCircuit 类目）
     /// </summary>
     internal class CircuitNodeSpawner : ModSystem, ILocalizedModType
@@ -91,8 +94,6 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
         private const int PlayerKeepOut = 90;
         private const int TownKeepOut = 60;
         private const int LabTurretSpacing = 40;
-        //玩家建筑避让半径（格）：落点周围此半径内检出住房墙面或家具即放弃该点
-        private const int BuildingKeepOut = 48;
         //禁布名单命中半径（格）：重扫的候选列受玩家/城镇位置影响会漂移几列，
         //按邻近匹配而不是精确列号；塔取大半径覆盖整片废墟，炮台取小半径只封本机位
         private const int TowerBanRadius = 48;
@@ -119,9 +120,6 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
         private readonly record struct PlacedSpot(List<int> BanList, int AnchorX, Actor ActorRef);
         private static readonly List<PlacedSpot> placedSpots = [];
         private static int demolishTimer;
-
-        //住房家具集合（椅/桌/门/光源），懒构建；命中即视作玩家房屋组件
-        private static HashSet<int> housingFurniture;
 
         private static int TowerBudget => Math.Clamp(Main.maxTilesX / 1500, 2, 5);
         private static int LabTurretBudget => 8;
@@ -209,6 +207,13 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
                 return;
             }
 
+            //电路节点旧网专属（2026-08-28 裁定）：主世界与其他子世界一律不布设。
+            //SubLib 的 NormalUpdates=false 拦不住本钩子，必须显式判世界；
+            //进出世界都会 ResetScanState，每次深潜进场后照常从头渐进重布
+            if (!OldNetWorld.Active) {
+                return;
+            }
+
             WatchDemolition();
 
             if (placementDone) {
@@ -270,10 +275,6 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
             if (!FarFromEverything(x, groundY, TowerSpacing)) {
                 return;
             }
-            //建筑避让放最后，它是这串校验里最贵的一项
-            if (NearPlayerBuilding(x, groundY)) {
-                return;
-            }
 
             //塔锚点：底边中心落地
             Vector2 towerPos = new(x * 16f + 8f - 15f, groundY * 16f - 96f);
@@ -303,9 +304,6 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
                     continue;
                 }
                 if (!IsFlatSolid(x, groundY, 1) || !IsClearAbove(x - 1, groundY, 3, 5)) {
-                    continue;
-                }
-                if (NearPlayerBuilding(x, groundY)) {
                     continue;
                 }
                 Vector2 pos = new(x * 16f + 8f - 18f, groundY * 16f - 46f);
@@ -338,7 +336,7 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
 
         #region 实验室炮位
         private static void TryLabTurretSite(int x) {
-            //实验室炮位不做建筑避让：落点被限死在实验室板材舱内，开档时不会有玩家建筑
+            //旧网无实验室板材，本分支在"仅旧网布设"裁定下处于休眠；保留以备布设范围再调整
             if (IsBannedColumn(bannedLabX, x, TurretBanRadius)) {
                 return;
             }
@@ -483,35 +481,9 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
             return false;
         }
 
-        /// <summary>
-        /// 落点周边 <see cref="BuildingKeepOut"/> 半径内是否存在玩家建筑。<br/>
-        /// 判据取原版住房惯例：计入住房的墙面（<see cref="Main.wallHouse"/>，天然墙的 Unsafe 变体不在其列）
-        /// 或住房家具（椅/桌/门/光源）。天然结构里活树墙、雪原小屋会误中，代价只是少布一两个点，可接受
-        /// </summary>
-        private static bool NearPlayerBuilding(int cx, int cy) {
-            housingFurniture ??= [
-                .. TileID.Sets.RoomNeeds.CountsAsChair,
-                .. TileID.Sets.RoomNeeds.CountsAsTable,
-                .. TileID.Sets.RoomNeeds.CountsAsDoor,
-                .. TileID.Sets.RoomNeeds.CountsAsTorch,
-            ];
-            int x0 = Math.Max(20, cx - BuildingKeepOut);
-            int x1 = Math.Min(Main.maxTilesX - 20, cx + BuildingKeepOut);
-            int y0 = Math.Max(20, cy - BuildingKeepOut);
-            int y1 = Math.Min(Main.maxTilesY - 20, cy + BuildingKeepOut);
-            for (int i = x0; i <= x1; i++) {
-                for (int j = y0; j <= y1; j++) {
-                    Tile tile = Main.tile[i, j];
-                    if (tile.WallType > 0 && Main.wallHouse[tile.WallType]) {
-                        return true;
-                    }
-                    if (tile.HasTile && housingFurniture.Contains(tile.TileType)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
+        //玩家建筑避让已随"仅旧网布设"裁定删除：旧网每次深潜重生成、没有常驻玩家建筑，
+        //而 Z1/Z2 带的补墙（TinPlating/MartianConduit 计入 Main.wallHouse）会让住房判据全域误中，
+        //留着只会把大半个旧网地表误判成禁区
         #endregion
 
         #region 通用校验
