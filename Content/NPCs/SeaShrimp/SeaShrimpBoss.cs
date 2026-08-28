@@ -95,14 +95,17 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
         }
 
         /// <summary>
-        /// 共享掉落池（普通直掉与专家袋同表）：签名深渊武器永渊/裂渊二取一保底 +
-        /// 渊晶碎片；灾厄在场换深渊系材料（荧光藻/虚空石/深渊细胞——正是两把武器的
+        /// 共享掉落池（普通直掉与专家袋同表）：签名深渊武器永渊/裂渊/钳渊/潮渊/镰渊五取一保底 +
+        /// 渊晶碎片；灾厄在场换深渊系材料（荧光藻/虚空石/深渊细胞——正是这套武器的
         /// 合成料，击杀反哺成套），缺席回退后石巨人期原版材料
         /// </summary>
         internal static void RegisterSharedLoot(Action<IItemDropRule> add, bool expert) {
             add(ItemDropRule.OneFromOptions(1,
                 ModContent.ItemType<Content.Items.Magic.Everdeeps.Everdeep>(),
-                ModContent.ItemType<Content.Items.Melee.Abyssrends.Abyssrend>()));
+                ModContent.ItemType<Content.Items.Melee.Abyssrends.Abyssrend>(),
+                ModContent.ItemType<Content.Items.Summon.Deepclaws.Deepclaw>(),
+                ModContent.ItemType<Content.Items.Ranged.Undertows.Undertow>(),
+                ModContent.ItemType<Content.Items.Melee.TideReapers.TideReaper>()));
             add(ItemDropRule.Common(ItemID.CrystalShard, 1, expert ? 24 : 18, expert ? 40 : 30));
             if (CWRID.Item_Lumenyl > 0 && CWRID.Item_Voidstone > 0 && CWRID.Item_DepthCells > 0) {
                 add(ItemDropRule.Common(CWRID.Item_Lumenyl, 1, expert ? 14 : 10, expert ? 22 : 16));

@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills.Restarts;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
@@ -201,7 +202,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
                 Refuse(player);
                 return;
             }
-            if (Active != null) {
+            //倒带演出全局同刻只一场：比目鱼的大范围重启共用同一个天下
+            if (Active != null || HalibutReset.Active != null) {
                 Refuse(player);
                 return;
             }
@@ -255,7 +257,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
                 return false;
             }
             int ownerWho = owner.whoAmI;
-            if (Active != null) {
+            if (Active != null || HalibutReset.Active != null) {
                 Reject(ownerWho, "show-busy");
                 return false;
             }

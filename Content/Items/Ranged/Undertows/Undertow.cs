@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Ranged.Undertows
 {
     /// <summary>
-    /// 贯渊，深渊长弓。左键把任意箭矢化为渊棘箭，命中坍缩出空化泡；
+    /// 潮渊，深渊长弓。左键把任意箭矢化为渊棘箭，命中坍缩出空化泡；
     /// 右键蓄力三段，拉满松手射出渊压重箭，贯穿并沿途拖拽，终点引爆内爆。
     /// 拉弦与发射在 <see cref="UndertowHeld"/>
     /// </summary>

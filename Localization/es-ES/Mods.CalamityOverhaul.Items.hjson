@@ -4596,8 +4596,8 @@ Everdeep: {
 		''' */
 }
 
-Abyssclasp: {
-	// DisplayName: Abyssclasp
+Deepclaw: {
+	// DisplayName: Deepclaw
 	/* Tooltip:
 		'''
 		Summons an abyssal lobster to fight for you
@@ -4618,6 +4618,18 @@ Undertow: {
 		The heavy spine pierces everything and drags enemies toward its path
 		When it finally stops, it detonates a cavitation implosion
 		"The sea does not push you away; it takes you in"
+		''' */
+}
+
+TideReaper: {
+	// DisplayName: Tide Reaper
+	/* Tooltip:
+		'''
+		Hurls a spinning abyssal scythe that boomerangs back to you
+		In flight it flings tide crescents that hunt nearby enemies
+		Right click to throw a vortex anchor: the scythe pins ahead and spins into a maelstrom
+		The maelstrom drags enemies inward and flings crescents faster before returning
+		"When the tide goes out, only bones are left on the shore"
 		''' */
 }
 
@@ -4963,5 +4975,51 @@ FssFesterBud: {
 		'''
 		Summons the Festersand Serpent when used on the desert surface in hardmode
 		"The bud never died. It learned to fester"
+		''' */
+}
+
+BudPiercer: {
+	// DisplayName: Budpiercer
+	/* Tooltip:
+		'''
+		Flies straight for a moment, then dips
+		Striking an enemy plants a bud that soon blooms into a ring of petals
+		Multiple daggers can stack buds on the same target
+		Sticking into the ground blooms on the spot, spraying three needles upward
+		"Under the serpent's scales, every one of them wants to bloom"
+		''' */
+}
+
+Thornstring: {
+	// DisplayName: Thornstring
+	/* Tooltip:
+		'''
+		Turns any arrow into a thorn arrow
+		Thorn arrows burst into short needles on both sides when they strike
+		Hold right click to draw fully, then release a piercing heavy thorn arrow at 2.5x damage
+		The heavy arrow blooms a ring of petals on every strike and where it lands
+		"The string is a vine, the arrow a thorn, the bow a flower that refuses to wither"
+		''' */
+}
+
+BloomCaller: {
+	// DisplayName: Bloomcaller
+	/* Tooltip:
+		'''
+		Sounds the horn to call a wildbloom sprout to fight beside you
+		The sprout hurls sinking thorns at enemies
+		After every two throws, the third attack becomes a body slam that spins into a ring of petals
+		"The horn does not command. It waters"
+		''' */
+}
+
+Budcrown: {
+	// DisplayName: Budcrown
+	/* Tooltip:
+		'''
+		Hold the attack key to whirl the head around you, release to hurl it at your cursor
+		The head sheds needles when it strikes enemies
+		Every third strike bursts into full bloom, blasting a ring of petals with heavy knockback
+		"The heaviest bud blooms the loudest"
 		''' */
 }

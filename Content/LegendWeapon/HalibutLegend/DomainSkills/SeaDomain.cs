@@ -94,6 +94,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Projectile.NewProjectile(source, player.Center, Vector2.Zero
                 , ModContent.ProjectileType<SeaDomainProj>(), 0, 0, player.whoAmI, layers);
         }
+
+        /// <summary>按层数推算领域最外层半径：领域未展开时（如大范围重启的作用圈）也能拿到同一答案</summary>
+        public static float MaxRadiusForLayers(int layers) {
+            return DomainLayer.LayerTargetRadius(Math.Clamp(layers, 1, 10) - 1);
+        }
     }
 
     internal class SeaDomainProj : BaseHeldProj
@@ -756,23 +761,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         public float WaveAmplitude;
         public int LayerIndex;
 
+        /// <summary>层序号→目标半径：前3层密后续扩；抽成静态供未展开态推算作用圈</summary>
+        internal static float LayerTargetRadius(int layerIndex) {
+            const float baseRadius = 220f;
+            if (layerIndex < 3) {
+                //前3层紧
+                return baseRadius + layerIndex * 130f;
+            }
+            //3层后渐扩
+            float base3LayerRadius = baseRadius + 2 * 130f; //第3层的半径
+            float radiusStep = 100f + (layerIndex - 2) * 15f; //逐渐增大间距
+            return base3LayerRadius + radiusStep * (layerIndex - 2);
+        }
+
         public DomainLayer(int layerIndex, int totalLayers) {
             LayerIndex = layerIndex;
 
-            //半径、前3层密后续扩
-            float baseRadius = 220f;
-            float radiusStep;
-            if (layerIndex < 3) {
-                //前3层紧
-                radiusStep = 130f;
-                TargetRadius = baseRadius + (layerIndex * radiusStep);
-            }
-            else {
-                //3层后渐扩
-                float base3LayerRadius = baseRadius + (2 * 130f); //第3层的半径
-                radiusStep = 100f + ((layerIndex - 2) * 15f); //逐渐增大间距
-                TargetRadius = base3LayerRadius + radiusStep * (layerIndex - 2);
-            }
+            TargetRadius = LayerTargetRadius(layerIndex);
             Radius = TargetRadius;
 
             //鱼数、前5层线性后续放缓

@@ -1,3 +1,5 @@
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills.Restarts;
 using System;
 using Terraria;
 using Terraria.ModLoader;
@@ -7,8 +9,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
     /// <summary>
     /// 大范围重启的运动历史：客户端与服务器都无条件记录活跃 NPC（位置+姿态）
     /// 与玩家（位置）的环形缓冲。服务器不模拟领域、无法按形态门控，纯拷贝的开销可忽略；
-    /// 倒放期间由 <see cref="KikasaReset"/> 暂停记录（最新样本即触发帧），
+    /// 倒放期间由演出方暂停记录（最新样本即触发帧），
     /// 倒放结束后旧轨迹作废、整表清空重新积累。
+    /// 缓冲由鬼伞与比目鱼两家共享消费（<see cref="KikasaReset"/> /
+    /// <see cref="HalibutReset"/>），两场演出全局互斥，暂停/清空语义一致。
     /// </summary>
     internal static class KikasaResetHistory
     {
@@ -66,19 +70,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
         private static readonly bool[] npcWasActive = new bool[Main.maxNPCs];
         private static readonly bool[] playerWasActive = new bool[Main.maxPlayers];
 
-        //持有门：无人拥有鬼伞时整套采样（含槽位重用检测）停摆，两端按背包判定、结果一致。
-        //开门沿清空全部轨迹重新积累——语义注记：鬼伞首次入包后约 13 秒内倒带深度不满，
-        //属可接受行为（重启只能由持伞者主动触发）
+        //持有门：无人拥有鬼伞/比目鱼时整套采样（含槽位重用检测）停摆，两端按背包判定、结果一致。
+        //开门沿清空全部轨迹重新积累——语义注记：倒带源武器首次入包后约 13 秒内倒带深度不满，
+        //属可接受行为（重启只能由持械者主动触发）
         private static bool ownerGateOpen;
         private static uint nextOwnerPollFrame;
 
-        private static bool AnyPlayerOwnsKikasa() {
-            int type = ModContent.ItemType<KikasaItem>();
+        /// <summary>任一在演的倒带演出：记录暂停、持有门保持</summary>
+        private static bool AnyRewindShowPaused
+            => KikasaReset.HistoryPaused || HalibutReset.HistoryPaused;
+
+        private static bool AnyPlayerOwnsRewindSource() {
+            int kikasaType = ModContent.ItemType<KikasaItem>();
+            int halibutType = HalibutOverride.ID;
             foreach (Player player in Main.ActivePlayers) {
                 Item[] inventory = player.inventory;
                 for (int i = 0; i < inventory.Length; i++) {
                     Item item = inventory[i];
-                    if (item != null && item.type == type && item.stack > 0) {
+                    if (item != null && item.stack > 0
+                        && (item.type == kikasaType || item.type == halibutType)) {
                         return true;
                     }
                 }
@@ -91,13 +101,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
             //每 60 帧轮询一次持有门；倒放进行中不关门（HistoryPaused 期间维持原有路径）
             if (Main.GameUpdateCount >= nextOwnerPollFrame) {
                 nextOwnerPollFrame = Main.GameUpdateCount + 60;
-                bool owned = AnyPlayerOwnsKikasa();
+                bool owned = AnyPlayerOwnsRewindSource();
                 if (owned && !ownerGateOpen) {
                     Clear();//开门沿：停更期间的旧轨迹作废，重新积累
                 }
                 ownerGateOpen = owned;
             }
-            if (!ownerGateOpen && !KikasaReset.HistoryPaused) {
+            if (!ownerGateOpen && !AnyRewindShowPaused) {
                 return;
             }
 
@@ -120,7 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
                 playerWasActive[i] = active;
             }
 
-            if (KikasaReset.HistoryPaused
+            if (AnyRewindShowPaused
                 || Main.GameUpdateCount % (uint)SampleInterval != 0) {
                 return;
             }

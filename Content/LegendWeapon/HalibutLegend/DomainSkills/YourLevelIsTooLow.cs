@@ -780,6 +780,57 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
     }
     #endregion
 
+    #region 能量环效果
+    /// <summary>星点能量环：原住 RestartFish.cs，重启自身演出 shader 化后仅本演出消费，随迁于此</summary>
+    internal class EnergyRing
+    {
+        public Vector2 Center;
+        public float Radius;
+        public float Life;
+        public float MaxLife;
+        public float RotationSpeed;
+        private float rotation;
+
+        public EnergyRing(Vector2 center) {
+            Center = center;
+            Radius = 40f;
+            Life = 0f;
+            MaxLife = 60f;
+            RotationSpeed = Main.rand.NextFloat(0.05f, 0.1f) * (Main.rand.NextBool() ? 1 : -1);
+            rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+        }
+
+        public void Update() {
+            Life++;
+            float progress = Life / MaxLife;
+            Radius = 40f + progress * 120f;
+            rotation += RotationSpeed;
+        }
+
+        public bool ShouldRemove() => Life >= MaxLife;
+
+        public void Draw(float globalAlpha) {
+            float progress = Life / MaxLife;
+            float alpha = (1f - progress) * globalAlpha * 0.7f;
+            if (alpha < 0.01f) return;
+
+            Texture2D tex = CWRAsset.StarTexture.Value;
+            int segments = 24;
+            float angleStep = MathHelper.TwoPi / segments;
+
+            for (int i = 0; i < segments; i++) {
+                float angle = i * angleStep + rotation;
+                Vector2 pos = Center + angle.ToRotationVector2() * Radius;
+                float scale = 0.8f + (float)Math.Sin(angle * 3f + Main.GlobalTimeWrappedHourly * 5f) * 0.3f;
+                Color c = new Color(120, 230, 255, 0) * alpha;
+
+                Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, c, angle,
+                    tex.Size() / 2f, scale * 0.5f, SpriteEffects.None, 0f);
+            }
+        }
+    }
+    #endregion
+
     #region 无限符环
     internal class InfiniteRuneCircle
     {

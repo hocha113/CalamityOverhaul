@@ -339,6 +339,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaDreamFog { get; set; }
         public static Asset<Effect> KikasaReset { get; set; }
         public static Asset<Effect> KikasaHourglass { get; set; }
+        public static Asset<Effect> HalibutRestartTide { get; set; }
         public static Asset<Effect> KikasaWispFire { get; set; }
         public static Asset<Effect> KikasaTalisman { get; set; }
         public static Asset<Effect> OniOmokage { get; set; }

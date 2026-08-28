@@ -4,13 +4,13 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 
-namespace CalamityOverhaul.Content.Items.Summon.Abyssclasps
+namespace CalamityOverhaul.Content.Items.Summon.Deepclaws
 {
     /// <summary>
-    /// 攫渊尾链与粒子帮助。色板沿用 <see cref="AbyssrendFX"/>。
+    /// 钳渊尾链与粒子帮助。色板沿用 <see cref="AbyssrendFX"/>。
     /// 尾链参数按组装参考图实测:尾节间距 7px@1x(=14px@2x),三节尾节接尾扇
     /// </summary>
-    internal static class AbyssclaspVFX
+    internal static class DeepclawVFX
     {
         /// <summary>尾节数(不含尾扇)</summary>
         public const int TailSegments = 3;
@@ -57,8 +57,8 @@ namespace CalamityOverhaul.Content.Items.Summon.Abyssclasps
 
         /// <summary>尾扇最先画,尾节由尾向根叠上来,躯干由调用方压轴</summary>
         public static void DrawTail(Vector2[] nodes, Color lightColor, float alpha, float scale) {
-            Texture2D seg = AbyssclaspLobster.SegmentTex?.Value;
-            Texture2D fan = AbyssclaspLobster.FanTex?.Value;
+            Texture2D seg = DeepclawLobster.SegmentTex?.Value;
+            Texture2D fan = DeepclawLobster.FanTex?.Value;
             if (seg == null || fan == null) {
                 return;
             }

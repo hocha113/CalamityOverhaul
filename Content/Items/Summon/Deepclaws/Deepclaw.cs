@@ -3,15 +3,15 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Summon.Abyssclasps
+namespace CalamityOverhaul.Content.Items.Summon.Deepclaws
 {
     /// <summary>
-    /// 攫渊，深渊龙虾召唤杖。龙虾以钳击突进近战，每第三次钳击命中后
-    /// 收势引爆空化钳鸣，范围伤害并把敌人向爆心拖拽。行为在 <see cref="AbyssclaspLobster"/>
+    /// 钳渊，深渊龙虾召唤杖。龙虾以钳击突进近战，每第三次钳击命中后
+    /// 收势引爆空化钳鸣，范围伤害并把敌人向爆心拖拽。行为在 <see cref="DeepclawLobster"/>
     /// </summary>
-    internal class Abyssclasp : ModItem
+    internal class Deepclaw : ModItem
     {
-        public override string Texture => CWRConstant.Item_Summon + "Abyssclasp";
+        public override string Texture => CWRConstant.Item_Summon + "Deepclaw";
 
         public override void SetDefaults() {
             Item.width = 66;
@@ -24,9 +24,9 @@ namespace CalamityOverhaul.Content.Items.Summon.Abyssclasps
             Item.UseSound = SoundID.Item44;
             Item.noMelee = true;
             Item.autoReuse = true;
-            Item.shoot = ModContent.ProjectileType<AbyssclaspLobster>();
+            Item.shoot = ModContent.ProjectileType<DeepclawLobster>();
             Item.shootSpeed = 8f;
-            Item.buffType = ModContent.BuffType<AbyssclaspBuff>();
+            Item.buffType = ModContent.BuffType<DeepclawBuff>();
             Item.DamageType = DamageClass.Summon;
             Item.rare = ItemRarityID.Lime;
             Item.value = Item.sellPrice(0, 10);
@@ -61,10 +61,10 @@ namespace CalamityOverhaul.Content.Items.Summon.Abyssclasps
         }
     }
 
-    /// <summary>攫渊龙虾在场的召唤增益</summary>
-    internal class AbyssclaspBuff : ModBuff
+    /// <summary>钳渊龙虾在场的召唤增益</summary>
+    internal class DeepclawBuff : ModBuff
     {
-        public override string Texture => CWRConstant.Buff + "AbyssclaspBuff";
+        public override string Texture => CWRConstant.Buff + "DeepclawBuff";
 
         public override void SetStaticDefaults() {
             Main.buffNoTimeDisplay[Type] = true;
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.Items.Summon.Abyssclasps
         }
 
         public override void Update(Player player, ref int buffIndex) {
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<AbyssclaspLobster>()] > 0) {
+            if (player.ownedProjectileCounts[ModContent.ProjectileType<DeepclawLobster>()] > 0) {
                 player.buffTime[buffIndex] = 18000;
             }
             else {

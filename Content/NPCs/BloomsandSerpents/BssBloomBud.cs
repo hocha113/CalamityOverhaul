@@ -8,19 +8,19 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 {
     /// <summary>
     /// 带刺花蕾：沙漠地表使用，唤来荒花沙蟒。
-    /// 条件：击败克苏鲁之眼 + 沙漠 + 地表 + 场上无沙蟒。贴图借用刺球素材。
+    /// 条件：击败克苏鲁之眼 + 沙漠 + 地表 + 场上无沙蟒。
     /// </summary>
     internal class BssBloomBud : BssModItem
     {
-        public override string Texture => CWRConstant.NPC + "BSS/CactusBall";
+        public override string Texture => CWRConstant.NPC + "BSS/BloomBud";
 
         public override void SetStaticDefaults() {
             ItemID.Sets.SortingPriorityBossSpawns[Type] = 3;
         }
 
         public override void SetDefaults() {
-            Item.width = 26;
-            Item.height = 26;
+            Item.width = 20;
+            Item.height = 36;
             Item.maxStack = Item.CommonMaxStack;
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.useAnimation = 45;

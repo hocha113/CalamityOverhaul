@@ -78,9 +78,14 @@ EyekiteBuff: {
 	Description: 被血线缚住的小克苏鲁之眼正跟在你身边
 }
 
-AbyssclaspBuff: {
-	DisplayName: 攫渊龙虾
+DeepclawBuff: {
+	DisplayName: 钳渊龙虾
 	Description: 深渊龙虾挥着巨钳跟在你身边
+}
+
+BloomCallerBuff: {
+	DisplayName: 荒花相伴
+	Description: 荒花幼蕾跟在你身边，随时准备甩出垂刺
 }
 
 EyetoothWound: {

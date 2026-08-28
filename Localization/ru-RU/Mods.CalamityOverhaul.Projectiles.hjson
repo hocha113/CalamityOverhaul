@@ -801,11 +801,13 @@ VictorRiftPortalProj.DisplayName: Кибер-разлом Виктора
 // EverdeepHeld.DisplayName: Everdeep
 // EverdeepRing.DisplayName: Abyssal Ring
 // EverdeepMaelstrom.DisplayName: Abyssal Maelstrom
-// AbyssclaspLobster.DisplayName: Abyssclasp Lobster
-// AbyssclaspSnapBurst.DisplayName: Cavitation Snap
+// DeepclawLobster.DisplayName: Deepclaw Lobster
+// DeepclawSnapBurst.DisplayName: Cavitation Snap
 // UndertowHeld.DisplayName: Undertow
 // UndertowSpine.DisplayName: Abyssal Spine
 // UndertowBurst.DisplayName: Cavitation Bubble
+// TideReaperThrown.DisplayName: Tide Reaper
+// TideReaperWave.DisplayName: Tide Crescent
 // CultistPlanetProj.DisplayName: Colossal Celestial Body
 // LegionVolleyOmen.DisplayName: Legion Volley Order
 // LegionVolleyArrow.DisplayName: Legion War Arrow
@@ -1217,3 +1219,12 @@ VictorRiftPortalProj.DisplayName: Кибер-разлом Виктора
 // FssMortarShard.DisplayName: Fester Mortar Shard
 // FssMortarShell.DisplayName: Fester Mortar Shell
 // FssStickyCyst.DisplayName: Sticky Fester Cyst
+// BudPiercerThrow.DisplayName: Budpiercer
+// BudSeedling.DisplayName: Planted Bud
+// ThornstringHeld.DisplayName: Thornstring
+// ThornstringArrow.DisplayName: Thorn Arrow
+// BloomCallerSprout.DisplayName: Wildbloom Sprout
+// BloomCallerThorn.DisplayName: Wildbloom Thorn
+// BudcrownBall.DisplayName: Budcrown Head
+// BloomPetalProj.DisplayName: Wildbloom Petal
+// BloomNeedleProj.DisplayName: Wild Needle

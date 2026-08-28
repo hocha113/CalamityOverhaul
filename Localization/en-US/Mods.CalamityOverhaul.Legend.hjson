@@ -15,6 +15,7 @@ HalibutOverride: {
 	KeyLabelClone: Past Self Invasion
 	KeyLabelSuperpose: Superposition
 	KeyLabelRestart: Self-Restart
+	KeyLabelRestartWide: Wide-Area Restart
 	KeyLabelTeleport: Domain Teleport
 	KeyLabelWheel: Skill Wheel
 	KeyLabelAtlas: Abyss Atlas

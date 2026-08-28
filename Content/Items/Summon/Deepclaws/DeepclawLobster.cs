@@ -11,21 +11,21 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Summon.Abyssclasps
+namespace CalamityOverhaul.Content.Items.Summon.Deepclaws
 {
     /// <summary>
-    /// 攫渊龙虾。ai0 状态 ai1 计时 ai2 目标 whoAmI(-1 无)。
-    /// 钳击命中三次后收势引爆空化钳鸣(<see cref="AbyssclaspSnapBurst"/>)，
-    /// 尾链为参数化装配,见 <see cref="AbyssclaspVFX"/>
+    /// 钳渊龙虾。ai0 状态 ai1 计时 ai2 目标 whoAmI(-1 无)。
+    /// 钳击命中三次后收势引爆空化钳鸣(<see cref="DeepclawSnapBurst"/>)，
+    /// 尾链为参数化装配,见 <see cref="DeepclawVFX"/>
     /// </summary>
-    internal class AbyssclaspLobster : ModProjectile, IPrimitiveDrawable
+    internal class DeepclawLobster : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Projectile_Summon + "AbyssclaspLobster";
+        public override string Texture => CWRConstant.Projectile_Summon + "DeepclawLobster";
 
         //客户端 PostSetupContent 加载,服务端为空,绘制侧判空
-        [VaultLoaden(CWRConstant.Projectile_Summon + "AbyssclaspLobsterSegment")]
+        [VaultLoaden(CWRConstant.Projectile_Summon + "DeepclawLobsterSegment")]
         public static Asset<Texture2D> SegmentTex = null;
-        [VaultLoaden(CWRConstant.Projectile_Summon + "AbyssclaspLobsterFan")]
+        [VaultLoaden(CWRConstant.Projectile_Summon + "DeepclawLobsterFan")]
         public static Asset<Texture2D> FanTex = null;
 
         private const int StIdle = 0;
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Items.Summon.Abyssclasps
         /// <summary>朝向角(世界),贴图朝上所以绘制时 +PiOver2</summary>
         private float facing = -MathHelper.PiOver2;
         /// <summary>尾链节点,索引 0 为尾根</summary>
-        private readonly Vector2[] tailNodes = new Vector2[AbyssclaspVFX.TailNodes];
+        private readonly Vector2[] tailNodes = new Vector2[DeepclawVFX.TailNodes];
         private bool tailInit;
         /// <summary>甩尾增幅,冲刺/尾弹时拉高</summary>
         private float whip;
@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.Items.Summon.Abyssclasps
                 Projectile.Kill();
                 return;
             }
-            Owner.AddBuff(ModContent.BuffType<AbyssclaspBuff>(), 2);
+            Owner.AddBuff(ModContent.BuffType<DeepclawBuff>(), 2);
             Projectile.timeLeft = 2;
 
             if (appear < 1f) {
@@ -231,7 +231,7 @@ namespace CalamityOverhaul.Content.Items.Summon.Abyssclasps
             dashHeat = MathHelper.Clamp(dashHeat + 0.2f, 0f, 1f);
             whip = MathHelper.Clamp(whip + 0.1f, 0f, 1.1f);
             if (!Main.dedServ && Timer % 2 == 0) {
-                AbyssclaspVFX.DashSpray(Projectile.Center, Projectile.velocity);
+                DeepclawVFX.DashSpray(Projectile.Center, Projectile.velocity);
             }
 
             bool overLeash = Vector2.Distance(Projectile.Center, Owner.Center) > PinchLeash - 40f;
@@ -254,7 +254,7 @@ namespace CalamityOverhaul.Content.Items.Summon.Abyssclasps
             }
 
             if (!Main.dedServ) {
-                AbyssclaspVFX.SnapGather(ClawPoint(), clawOpen);
+                DeepclawVFX.SnapGather(ClawPoint(), clawOpen);
             }
 
             if (Timer >= SnapTime) {
@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.Items.Summon.Abyssclasps
                 }
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(), ClawPoint(), Vector2.Zero
-                        , ModContent.ProjectileType<AbyssclaspSnapBurst>()
+                        , ModContent.ProjectileType<DeepclawSnapBurst>()
                         , (int)(Projectile.damage * 1.5f), Projectile.knockBack * 1.5f, Projectile.owner);
                     Owner.CWR().ScreenShakeValue = Math.Max(Owner.CWR().ScreenShakeValue, 3f);
                 }
@@ -353,7 +353,7 @@ namespace CalamityOverhaul.Content.Items.Summon.Abyssclasps
         #region 命中与视觉
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (!Main.dedServ) {
-                AbyssclaspVFX.HitSplat(target.Center, Projectile.velocity);
+                DeepclawVFX.HitSplat(target.Center, Projectile.velocity);
             }
             if (State != StPinch) {
                 return;
@@ -419,22 +419,22 @@ namespace CalamityOverhaul.Content.Items.Summon.Abyssclasps
 
             //尾链装配
             float drawRot = facing + MathHelper.PiOver2;
-            Vector2 anchor = Projectile.Center + AbyssclaspVFX.TailAnchorOffset.RotatedBy(drawRot) * Projectile.scale;
+            Vector2 anchor = Projectile.Center + DeepclawVFX.TailAnchorOffset.RotatedBy(drawRot) * Projectile.scale;
             float restAngle = facing + MathHelper.Pi;
             if (!tailInit) {
-                AbyssclaspVFX.ResetTail(tailNodes, anchor, restAngle);
+                DeepclawVFX.ResetTail(tailNodes, anchor, restAngle);
                 tailInit = true;
             }
             float swim = 0.14f + MathHelper.Clamp(Projectile.velocity.Length() * 0.018f, 0f, 0.3f);
             float time = Main.GlobalTimeWrappedHourly * MathHelper.TwoPi * 0.5f + Projectile.identity * 0.6f;
-            AbyssclaspVFX.BuildTail(tailNodes, anchor, restAngle, time, swim, whip, 0.34f);
+            DeepclawVFX.BuildTail(tailNodes, anchor, restAngle, time, swim, whip, 0.34f);
         }
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D tex = TextureAssets.Projectile[Type].Value;
             Color col = lightColor * appear;
 
-            AbyssclaspVFX.DrawTail(tailNodes, lightColor, appear, Projectile.scale);
+            DeepclawVFX.DrawTail(tailNodes, lightColor, appear, Projectile.scale);
 
             float drawRot = facing + MathHelper.PiOver2;
             float speed = Projectile.velocity.Length();
@@ -487,7 +487,7 @@ namespace CalamityOverhaul.Content.Items.Summon.Abyssclasps
     /// <summary>
     /// 空化钳鸣。ai0 半径倍率。伤害窗对准崩开段,窗内把非 Boss 敌人向爆心拖拽
     /// </summary>
-    internal class AbyssclaspSnapBurst : ModProjectile
+    internal class DeepclawSnapBurst : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 

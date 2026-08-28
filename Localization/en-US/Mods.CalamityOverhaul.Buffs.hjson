@@ -78,9 +78,14 @@ EyekiteBuff: {
 	Description: A small Eye of Cthulhu is bound to you by a blood-soaked cord
 }
 
-AbyssclaspBuff: {
-	DisplayName: Abyssclasp Lobster
+DeepclawBuff: {
+	DisplayName: Deepclaw Lobster
 	Description: An abyssal lobster prowls at your side, pincers at the ready
+}
+
+BloomCallerBuff: {
+	DisplayName: Wildbloom Company
+	Description: A wildbloom sprout drifts at your side, thorns at the ready
 }
 
 EyetoothWound: {

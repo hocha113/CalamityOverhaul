@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Undertows
                     , Projectile.owner, ai0: 0.5f);
             }
             if (!Main.dedServ) {
-                AbyssclaspHitFx(target.Center);
+                SpineHitFx(target.Center);
             }
         }
 
@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Undertows
             }
         }
 
-        private static void AbyssclaspHitFx(Vector2 pos) {
+        private static void SpineHitFx(Vector2 pos) {
             for (int i = 0; i < 3; i++) {
                 PRTLoader.NewParticle<PRT_AbyssGlob>(pos, Main.rand.NextVector2Circular(3f, 3f)
                     , AbyssrendFX.Body, Main.rand.NextFloat(0.28f, 0.5f))

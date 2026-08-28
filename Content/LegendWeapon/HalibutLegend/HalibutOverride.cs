@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public static LocalizedText KeyLabelClone { get; private set; }
         public static LocalizedText KeyLabelSuperpose { get; private set; }
         public static LocalizedText KeyLabelRestart { get; private set; }
+        public static LocalizedText KeyLabelRestartWide { get; private set; }
         public static LocalizedText KeyLabelTeleport { get; private set; }
         public static LocalizedText KeyLabelWheel { get; private set; }
         public static LocalizedText KeyLabelAtlas { get; private set; }
@@ -124,6 +125,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             KeyLabelClone = this.GetLocalization(nameof(KeyLabelClone), () => "过去身入侵");
             KeyLabelSuperpose = this.GetLocalization(nameof(KeyLabelSuperpose), () => "叠加");
             KeyLabelRestart = this.GetLocalization(nameof(KeyLabelRestart), () => "重启自身");
+            KeyLabelRestartWide = this.GetLocalization(nameof(KeyLabelRestartWide), () => "大范围重启");
             KeyLabelTeleport = this.GetLocalization(nameof(KeyLabelTeleport), () => "领域传送");
             KeyLabelWheel = this.GetLocalization(nameof(KeyLabelWheel), () => "技能盘");
             KeyLabelAtlas = this.GetLocalization(nameof(KeyLabelAtlas), () => "深渊图鉴");

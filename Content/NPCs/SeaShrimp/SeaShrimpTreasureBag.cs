@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.SeaShrimp
 {
-    /// <summary>渊晶海虾宝藏袋：货币 + 共享掉落池（签名武器二取一与深渊材料，表在 <see cref="SeaShrimpBoss.RegisterSharedLoot"/>）</summary>
+    /// <summary>渊晶海虾宝藏袋：货币 + 共享掉落池（签名武器五取一与深渊材料，表在 <see cref="SeaShrimpBoss.RegisterSharedLoot"/>）</summary>
     internal class SeaShrimpTreasureBag : SeaShrimpModItem
     {
         //自绘贴图（原稿 20×17，按项目 2x 约定近邻放大为 40×34）

@@ -108,7 +108,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 LegendTooltipPanel.BuildKeyRow(HalibutOverride.KeyLabelDomain, CWRKeySystem.Legend_Domain),
                 LegendTooltipPanel.BuildKeyRow(HalibutOverride.KeyLabelClone, CWRKeySystem.Halibut_Clone),
                 LegendTooltipPanel.BuildKeyRow(HalibutOverride.KeyLabelSuperpose, CWRKeySystem.Halibut_Superposition),
-                LegendTooltipPanel.BuildKeyRow(HalibutOverride.KeyLabelRestart, CWRKeySystem.Legend_Restart),
+                //七眼起重启升格为大范围重启，键位行同步改口
+                LegendTooltipPanel.BuildKeyRow(
+                    HalibutData.GetDomainLayer() >= DomainSkills.Restarts.HalibutReset.UnlockLayers
+                        ? HalibutOverride.KeyLabelRestartWide : HalibutOverride.KeyLabelRestart,
+                    CWRKeySystem.Legend_Restart),
                 LegendTooltipPanel.BuildKeyRow(HalibutOverride.KeyLabelTeleport, CWRKeySystem.Legend_Teleport),
                 LegendTooltipPanel.BuildKeyRow(HalibutOverride.KeyLabelWheel, CWRKeySystem.RadialWheel_Key),
                 LegendTooltipPanel.BuildKeyRow(HalibutOverride.KeyLabelAtlas, CWRKeySystem.Legend_UIControl),
