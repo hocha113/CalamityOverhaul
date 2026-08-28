@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Rendering;
 using InnoVault.PRT;
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Everdeeps
             Projectile.ignoreWater = true;
             Projectile.timeLeft = TotalLife;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 9;
+            Projectile.localNPCHitCooldown = 20;
         }
 
         public override void SetStaticDefaults() {

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering;
@@ -26,9 +26,10 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
     /// 各端本地跑同一状态机做表现，节拍键控在本地 Timer 上，弹幕只在权威端生成，
     /// 粒子音效全走 !dedServ 门，表现层随机只用确定性种子
     /// </summary>
+    [AutoloadBossHead]
     internal class SeaShrimpBoss : SeaShrimpModNPC
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => CWRConstant.NPC + "SeaShrimp/SeaShrimpHead";
         public override string BossHeadTexture => CWRConstant.NPC + "SeaShrimp/SeaShrimpBoss_Head_Boss";
 
         private NpcStateMachine<SeaShrimpStateContext> stateMachine;
