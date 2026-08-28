@@ -21,9 +21,17 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Verdant
         /// <summary>荆棘环影段数</summary>
         private const int ThornSegments = 24;
 
+        /// <summary>在场帧戳：雾团/荆棘环 AI 每帧盖戳，据此跳过空场的全表扫描</summary>
+        internal static Common.ActivityStamp PresenceStamp;
+        //上帧画到过东西：时停中弹幕 AI 停摆（戳过期）靠它继续扫，雾影不塌
+        private static bool lastAnyDrawn;
+
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main,
             GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
             if (Main.dedServ || Main.gameMenu) {
+                return;
+            }
+            if (!lastAnyDrawn && !PresenceStamp.ActiveWithin()) {
                 return;
             }
             int fogType = ModContent.ProjectileType<VerdantMireFogProj>();
@@ -41,6 +49,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Verdant
                     break;
                 }
             }
+            lastAnyDrawn = anyFog || anyThorn;
             if (!anyFog && !anyThorn) {
                 return;
             }

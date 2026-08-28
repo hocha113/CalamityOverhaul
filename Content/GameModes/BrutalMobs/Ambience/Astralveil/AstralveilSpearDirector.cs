@@ -15,8 +15,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Astralveil
     {
         /// <summary>点名间隔（帧），档位只调频率</summary>
         private static readonly int[] SpearIntervalByTier = [1400, 1150, 900];
-        /// <summary>绽放存续（帧），档位只调持续；随星矛 ai[0] 传给绽放实体</summary>
-        private static readonly int[] BloomDurationByTier = [300, 390, 480];
+        /// <summary>绽放存续（帧），档位只调持续；随星矛 ai[0] 传给绽放实体。
+        /// 复衡：绽放伤害密度曾为全舰队最高，存续与 TickDamage 一并下调（锚定口径见绽放实体注释）</summary>
+        private static readonly int[] BloomDurationByTier = [270, 330, 390];
         /// <summary>
         /// 同一玩家两次被点名的最短间隔（随档位缩短，≈全局间隔的 1.35~1.43 倍）。
         /// 单人时唯一候选就是上次被点名者，节奏由本数组主导（全局间隔被它盖过），

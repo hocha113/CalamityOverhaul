@@ -1,0 +1,98 @@
+GsWoodenBoomerang.Desc:
+	'''
+	Living wood remembers the throw: after its first hit it rebounds toward another nearby foe
+	Right click while it flies: command it to dash toward your cursor
+	'''
+GsEnchantedBoomerang.Desc:
+	'''
+	Decelerates outbound, gathers starlight while hovering, accelerates home
+	At the hover peak it flings three homing star sparks, each dealing 30% damage
+	Right click while it flies: command it to dash toward your cursor
+	'''
+GsFruitcakeChakram.Desc:
+	'''
+	Outbound hits frost the target with sugar glaze, up to three coats
+	Hitting a glazed target on the return detonates every coat, 25% bonus damage per coat
+	Right click while it flies: command it to dash toward your cursor
+	'''
+GsBloodyMachete.Desc:
+	'''
+	Hits inflict Bleeding and carve a tally; three tallies on one target let the blood loose
+	The bloodletting strike deals 40% bonus damage and heals you for 2 life
+	Right click while it flies: command it to dash toward your cursor
+	'''
+GsIceBoomerang.Desc:
+	'''
+	Hits inflict Frostburn and shatter off two piercing ice shards, each dealing 25% damage
+	While hovering it frosts over, wreathed in freezing mist
+	Right click while it flies: command it to dash toward your cursor
+	'''
+GsShroomerang.Desc:
+	'''
+	At the hover peak it puffs out a lingering spore cloud that keeps searing foes inside
+	The flight path rains glowing spores
+	Right click while it flies: command it to dash toward your cursor
+	'''
+GsThornChakram.Desc:
+	'''
+	Hits poison the target and burst three thorn spikes outward, each dealing 22% damage
+	Right click while it flies: command it to dash toward your cursor
+	'''
+GsCombatWrench.Desc:
+	'''
+	Every third hit on the same target is a bolt-knock: 80% bonus damage
+	Bolt-knocks against steel constructs gain another 25%
+	Right click while it flies: command it to dash toward your cursor
+	'''
+GsFlamarang.Desc:
+	'''
+	Every hit sets the target on fire
+	At the hover peak it bursts into a ring of flame; the return path drops smoldering embers
+	Right click while it flies: command it to dash toward your cursor
+	'''
+GsTrimarang.Desc:
+	'''
+	Up to three airborne; each extra boomerang in flight grants all of them 8% damage
+	Right click: the whole squad dashes toward your cursor at once
+	'''
+GsFlyingKnife.Desc:
+	'''
+	Hold the attack button to steer the knife after your cursor
+	Release it to whirl in place, slashing all around, then carve a straight line home
+	Right click while it flies: command it to dash toward your cursor
+	'''
+GsBananarang.Desc:
+	'''
+	Throw up to ten; every hit ripens that banana, 6% bonus damage per stage, five stages max
+	Right click: every airborne banana dashes toward your cursor at once
+	'''
+GsLightDisc.Desc:
+	'''
+	On hitting a foe it refracts toward the nearest other enemy, up to three times
+	Each refraction loses 10% damage
+	Right click while it flies: command it to dash toward your cursor
+	'''
+GsPossessedHatchet.Desc:
+	'''
+	A wind-up throw: the possessed axe accelerates after its prey, then latches on,
+	whirling around the victim; every slash brands a soul mark, the fifth ruptures for 150% damage
+	Right click while it flies: command it to redirect its hunt
+	'''
+GsPaladinsHammer.Desc:
+	'''
+	A two-handed overhead throw; the hammer arcs heavily through the air
+	At the end of its flight it rises, then slams down for 65% area damage and a shockwave
+	Right click while it flies: it dashes to your cursor and delivers the slam there
+	'''
+GsSergeantUnitedShield.Desc:
+	'''
+	Outbound it ricochets between foes up to four times, knocking harder with every bounce
+	Catching it raises your guard for a moment, blocking one instance of damage
+	Right click while it flies: command it to dash toward your cursor
+	'''
+GsAnchor.Desc:
+	'''
+	Flies in a heavy arc, then plunges straight down past its peak
+	The slam quakes the ground for 60% area damage; the anchor digs in, then reels home along its chain
+	Right click while it flies: command it to dash toward your cursor first
+	'''

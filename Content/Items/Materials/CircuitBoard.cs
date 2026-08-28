@@ -10,8 +10,8 @@ namespace CalamityOverhaul.Content.Items.Materials
         public override string Texture => CWRConstant.Item_Material + "CircuitBoard";
 
         public override void SetDefaults() {
-            Item.width = 15;
-            Item.height = 16;
+            Item.width = 30;
+            Item.height = 32;
             Item.maxStack = 9999;
             Item.value = Item.sellPrice(0, 0, 8, 0);
             Item.rare = ItemRarityID.Blue;

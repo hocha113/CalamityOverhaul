@@ -103,5 +103,41 @@
 	Reforged: hits leave a storm eye, on-beat casts surge toward it and swell;
 	high resonance twins the whirlwinds, at full resonance the next cast summons a grand storm chorus
 	''' */
+/* GsCursedFlames.Desc:
+	'''
+	Reforged: on-beat bolts plant curse seeds; the third seed ignites into a ring of cursed spikes and a lingering fire pool
+	At full resonance the next cast unleashes a weaving curse serpent that sheds fire pools along its path
+	''' */
 // GsChantFlameFieldProj.DisplayName: Blazing Flower Field
 // GsChantStormChoirProj.DisplayName: Storm Chorus
+// GsCursedFlamesSerpentProj.DisplayName: Curse Serpent
+// GsCursedFlamesPoolProj.DisplayName: Cursed Fire Pool
+/* GsGoldenShower.Desc:
+	'''
+	Reforged: hits etch molten ichor; the fifth layer bursts into an eight-way spray and a dripping ichor cluster
+	Spray without pause to build high pressure: faster bolts, denser streams, double etching
+	''' */
+/* GsCrystalVileShard.Desc:
+	'''
+	Reforged: on-beat spears embed crystal seeds; when the spear shatters, every seeded foe erupts in a cross of shard rays
+	At full resonance the next cast raises six crystal spears around you
+	''' */
+/* GsUnholyTrident.Desc:
+	'''
+	Reforged: on-beat casts split into a trident of three prongs that sear with hellfire
+	At full resonance the next cast raises four waves of infernal tridents from beneath your cursor
+	''' */
+/* GsNettleBurst.Desc:
+	'''
+	Reforged: on-beat vines take root where they bite, leaving stinging nettle thickets (up to three)
+	At full resonance the next cast unleashes a great vine dragon that sweeps through the field
+	''' */
+/* GsWaspGun.Desc:
+	'''
+	Reforged: on-beat wasps sting a pheromone mark into their prey; every wasp in the air hunts the marked target first
+	At full resonance the next cast releases a queen wasp that cruises ahead, seeding hunters along her path
+	''' */
+// GsGoldenShowerDripProj.DisplayName: Ichor Cluster
+// GsNettleBurstThicketProj.DisplayName: Nettle Thicket
+// GsNettleBurstDragonProj.DisplayName: Vine Dragon
+// GsWaspGunQueenProj.DisplayName: Queen Wasp

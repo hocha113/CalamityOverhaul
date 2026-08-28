@@ -710,403 +710,421 @@ OniRainWorld: {
 }
 
 GodSmithGunsEarly: {
-	/* GsFlintlockPistol.Desc:
+	GsFlintlockPistol.Desc:
 		'''
-		Reforged: two chambers, the second shot comes 40% faster;
-		the last chamber fires a V-shaped double ball from a single bullet with doubled knockback.
-		Right-click to reload early; hit the sweet spot for +25% on the next shot
-		''' */
+		重铸：双膛装填，第 2 发出膛快 40%；末膛把一发弹药打成 V 形双弹，击退翻倍
+		右键提前装填；掐准亮带，下一发伤害提高 25%
+		'''
 
 	GsGunsEarlyPlayer: {
-		// Perfect: Perfect reload!
-		// HighNoon: High Noon!
+		Perfect: 完美装填！
+		HighNoon: 正午时刻！
 	}
 
-	/* GsMusket.Desc:
+	GsMusket.Desc:
 		'''
-		Reforged: a true muzzle-loader; every ball is a stone-piercer that flies faster and punches through one more foe.
-		Reload in three beats: pour, ram, prime. Right-click on the ram beat for +30% damage and extra pierce
-		''' */
-	/* GsQuadBarrelShotgun.Desc:
+		重铸：货真价实的前装枪，每发铅弹都是更快更穿的碎石弹，多贯穿 1 名敌人
+		装填分三拍：倒药、压弹、上火；在压弹拍按右键，下一发伤害提高 30%，贯穿再加一层
 		'''
-		Reforged: fire one barrel at a time in a rapid four-count;
-		the fourth barrel roars all at once with 8 pellets and hurls you backward.
-		Aim down to rocket-jump. Right-click to break open and reload; nail the sweet spot for +2 pellets
-		''' */
-	/* GsRevolver.Desc:
+	GsQuadBarrelShotgun.Desc:
 		'''
-		Reforged: a six-round cylinder; the final chamber always hits +40% harder.
-		Hold right-click to spin the wheel: instantly reload a random 1 to 6 rounds.
-		Roll exactly six and the next shot is High Noon: double damage, double knockback
-		''' */
+		重铸：四管改为快速轮放，一次一管；第 4 管 8 粒齐轰，后坐力把你猛推出去
+		朝下开火可以借力起跳
+		右键折开枪管装填；掐准亮带，下轮每管多 2 粒
+		'''
+	GsRevolver.Desc:
+		'''
+		重铸：六发弹巢，末膛一发威力永远高 40%
+		按住右键转轮盘：立刻装回随机 1 至 6 发
+		恰好转出 6 发时，下一枪就是正午时刻：伤害翻倍，击退翻倍
+		'''
 }
 
 GodSmithGunsHard: {
 	GsCandyCornRifle: {
-		/* Desc:
+		Desc:
 			'''
-			Reforged: right click to switch coating
-			Candy Rain adds a sweet drooping arc to the classic spray
-			Sticky Burst fires three gummy rounds; hits stack Sugar Coat, slowing the target and sweetening your shots
-			''' */
-		// ModeCandyRain: Candy Rain
-		// ModeStickyBurst: Sticky Burst
+			重铸：右键切换糖衣
+			糖果雨：经典速射不变，弹道带上甜腻的下坠弧线
+			黏糖三连：一次吐出 3 粒软糖弹；命中叠加糖霜，减速目标并让你的糖弹打得更痛
+			'''
+		ModeCandyRain: 糖果雨
+		ModeStickyBurst: 黏糖三连
 	}
 
 	GsClockworkAssaultRifle: {
-		/* Desc:
+		Desc:
 			'''
-			Reforged: right click to switch fire mode
-			Gear Burst keeps the classic three round burst, the third round bites 30% harder
-			Overclock trades heat for 40% more speed; run it too hot and the gears jam
-			''' */
-		// ModeGearBurst: Gear Burst
-		// ModeOverclock: Overclock
+			重铸：右键切换射击模式
+			齿轮点射：保留经典三连发，第 3 发威力提高 30%
+			超频：射速加快 40%，代价是积热；打得太热齿轮会卡壳
+			'''
+		ModeGearBurst: 齿轮点射
+		ModeOverclock: 超频
 	}
 
 	GsGatligator: {
-		/* Desc:
+		Desc:
 			'''
-			Reforged: right click to switch temper
-			Swamp Riot keeps the wild spray but every round skips once off blocks
-			Death Roll fires tight four round strings; the last bite tears a bleeding wound
-			''' */
-		// ModeSwampRiot: Swamp Riot
-		// ModeDeathRoll: Death Roll
+			重铸：右键切换性子
+			沼泽乱涌：狂野散射不变，每发子弹能在物块上弹跳一次
+			死亡翻滚：改为收束的四连串射，链末一发撕开流血伤口
+			'''
+		ModeSwampRiot: 沼泽乱涌
+		ModeDeathRoll: 死亡翻滚
 	}
 
 	GsMegashark: {
-		/* Desc:
+		Desc:
 			'''
-			Reforged: right click to switch jaw
-			Feeding Frenzy ramps fire rate the longer you hold the trigger; Shark Bite tightens the spread and bites 15% harder
-			Land 50 hits to draw blood: for 3 seconds every hit leaves a bleeding wound
-			''' */
-		// ModeFrenzy: Feeding Frenzy
-		// ModeSharkBite: Shark Bite
+			重铸：右键切换咬合
+			狂食：扣住扳机越久，射速越快；鲨咬：收束散布，威力提高 15%
+			累计命中 50 发即见血：3 秒内每发命中都会留下流血伤口
+			'''
+		ModeFrenzy: 狂食
+		ModeSharkBite: 鲨咬
 	}
 
 	GsOnyxBlaster: {
-		/* Desc:
+		Desc:
 			'''
-			Reforged: right click to switch charge
-			Onyx Volley leaves a lingering dark stain at the blast that drags foes inward
-			Singularity Charge fires slower but hurls one huge onyx orb: its blast pulls everything toward the core and sprays your bullets in a ring
-			''' */
-		// ModeVolley: Onyx Volley
-		// ModeSingularity: Singularity Charge
+			重铸：右键切换装药
+			玛瑙齐射：暗球爆点留下驻留的暗渍，把敌人向内拖拽
+			奇点装药：射速放慢，改掷一颗巨型玛瑙球；爆炸把万物拽向核心，并向四周环洒你的子弹
+			'''
+		ModeVolley: 玛瑙齐射
+		ModeSingularity: 奇点装药
 	}
 
 	GsSDMG: {
-		/* Desc:
+		Desc:
 			'''
-			Reforged: right click to cycle three fire modes
-			Dolphin Tide keeps the legendary speed; Sonar Burst tags the third hit so the whole team's ranged shots dig 8% deeper
-			Orbital Guide gently homes for 10% less punch
-			''' */
-		// ModeDolphinTide: Dolphin Tide
-		// ModeSonarBurst: Sonar Burst
-		// ModeOrbitalGuide: Orbital Guide
+			重铸：右键循环三种射击模式
+			海豚奔潮：传说级射速原样保留
+			声呐点射：每第 3 发命中挂上声呐标记，全队远程对该目标伤害提高 8%
+			轨道导引：子弹轻微追踪，威力降低 10%
+			'''
+		ModeDolphinTide: 海豚奔潮
+		ModeSonarBurst: 声呐点射
+		ModeOrbitalGuide: 轨道导引
 	}
 
 	GsShotgun: {
-		/* Desc:
+		Desc:
 			'''
-			Reforged: right click to switch choke
-			Wide Bore throws six pellets in a broad fan; Tight Choke fires three heavy pellets dead straight
-			Every trigger pull still costs one shell
-			''' */
-		// ModeWideBore: Wide Bore
-		// ModeTightChoke: Tight Choke
+			重铸：右键切换喉径
+			宽喉：6 粒带铅坠弧线的宽扇；单次射击命中满 3 粒，目标上空炸开一阵坠落铅雨
+			收颈：3 粒精束直线，每粒更重；3 粒全中同一目标使其铅蚀 1.5 秒，受本枪伤害提高 12%
+			每次扣扳机仍只消耗 1 发弹药
+			'''
+		ModeWideBore: 宽喉
+		ModeTightChoke: 收颈
 	}
 
 	GsSniperRifle: {
-		/* Desc:
+		Desc:
 			'''
-			Reforged: tap right click to switch fire mode, hold to scope
-			Snipe mode paints a piercing aim line; stand still to steady your breath, a steadied shot always crits
-			Rapid mode trades power for speed
-			''' */
-		// ModeSnipe: Snipe
-		// ModeRapid: Rapid Fire
+			重铸：轻点右键切换射击模式，按住右键开镜
+			狙击：亮出贯穿瞄准线；站定不动即可屏息，屏息后的一枪必定暴击
+			速射：用威力换射速
+			'''
+		ModeSnipe: 狙击
+		ModeRapid: 速射
 	}
 
 	GsTacticalShotgun: {
-		/* Desc:
+		Desc:
 			'''
-			Reforged: right click to switch stance
-			Tactical Fan paints the spread cone so you know exactly what the six pellets cover
-			Triple Pump racks three fast shells then forces a rest; each pump still costs one shell
-			''' */
-		// ModeFan: Tactical Fan
-		// ModeTriplePump: Triple Pump
+			重铸：右键切换战术姿态
+			战术扇面：常亮散布锥标线，6 粒的覆盖面一目了然
+			压制三泵：快速连打 3 泵后强制歇泵；首泵推出破门冲击气浪，被撞开的敌人 1 秒内受本枪弹丸伤害提高 10%
+			每泵照常消耗 1 发弹药
+			'''
+		ModeFan: 战术扇面
+		ModeTriplePump: 压制三泵
 	}
 
 	GsUzi: {
-		/* Desc:
+		Desc:
 			'''
-			Reforged: right click to switch grip
-			Akimbo sprays 30% faster with a loose pattern; Burst fires tight three round strings dead on target
-			High velocity rounds stay in both grips
-			''' */
-		// ModeAkimbo: Akimbo
-		// ModeBurst: Burst
+			重铸：右键切换握持
+			双持乱射：射速加快三成，弹道松散；高速点射：三连收束，弹弹咬点
+			每第 4 发（点射档为链末发）是琥珀曳光弹：曳光命中点亮目标，1.5 秒内你的乌兹子弹对其伤害提高 10%
+			'''
+		ModeAkimbo: 双持乱射
+		ModeBurst: 高速点射
 	}
 
 	GsVenusMagnum: {
-		/* Desc:
+		Desc:
 			'''
-			Reforged: right click to switch bloom
-			Magnum Focus: after a crit the next round pierces one extra foe, the aim line lights up for the window
-			Petal Triplet fires three petals in a fan for one bullet
-			''' */
-		// ModeFocus: Magnum Focus
-		// ModeTriplet: Petal Triplet
+			重铸：右键切换花期
+			金蕊聚焦：打出暴击后，下一发额外贯穿 1 名敌人，窗口期内瞄准线会亮起
+			花瓣三裂：一发弹药裂成扇形三瓣
+			'''
+		ModeFocus: 金蕊聚焦
+		ModeTriplet: 花瓣三裂
 	}
 
 	GsVortexBeater: {
-		/* Desc:
+		Desc:
 			'''
-			Reforged: right click to switch flow
-			Vortex Sweep keeps the classic storm, rockets gently home in
-			Vortex Cannon fires slow charged rounds hitting 2.6 times harder; heavy impacts tear open a pulling vortex
-			''' */
-		// ModeSweep: Vortex Sweep
-		// ModeCannon: Vortex Cannon
+			重铸：右键切换流态
+			星旋扫射：经典弹雨不变，火箭带轻微追踪
+			星旋炮击：改射缓慢的充能重弹，单发威力 2.6 倍；重击落点撕开一个牵引旋涡
+			'''
+		ModeSweep: 星旋扫射
+		ModeCannon: 星旋炮击
 	}
 
 	GsXenopopper: {
-		/* Desc:
+		Desc:
 			'''
-			Reforged: right click to switch bubble
-			Cluster pops five bubbles that converge and burst in a crossfire on your cursor
-			Vacuum floats one big bubble to the cursor, holds, then vents all five rounds at once
-			''' */
-		// ModeCluster: Cluster Pop
-		// ModeVacuum: Vacuum Bubble
+			重铸：右键切换泡型
+			集束：吹出 5 只气泡，向光标处收拢并交叉引爆
+			真空：吹出一只大泡飘向光标，悬停片刻后 5 发弹药一次性喷出
+			'''
+		ModeCluster: 集束
+		ModeVacuum: 真空
 	}
+
+	GsShotgunLeadRainProj.DisplayName: 坠落铅雨
+	GsTacticalShotgunBreachProj.DisplayName: 破门气浪
+	GsUziTracerProj.DisplayName: 琥珀曳光弹
 }
 
 GodSmithLaunchers: {
 	GsElectrosphereLauncher: {
-		// Desc: Reforged: two or more of your spheres link up with tesla arcs (up to 3, half sphere damage); right click overloads them all: +40% radius, discharged in 2 seconds
-		// TipOverload: Overload!
+		Desc:
+			'''
+			重铸：场上有两颗以上电球时，球间架起特斯拉电弧，最多连 3 段，电弧造成电球一半的伤害
+			右键让全部电球过载：半径扩大 40%，2 秒内放电殆尽
+			'''
+		TipOverload: 过载！
 	}
 
 	GsGrenadeLauncher: {
-		// Desc: Reforged: grenades stick to walls and foes (+25% damage when stuck on flesh), no more self-fuse; right click to detonate all, up to 6 planted
-		// TipDetonate: Blast them all!
+		Desc:
+			'''
+			重铸：榴弹改为黏附墙面与敌身，不再自动起爆；黏在血肉上的榴弹伤害提高 25%
+			右键统一引爆，场上最多布设 6 枚
+			'''
+		TipDetonate: 全部引爆！
 	}
 
 	GsJackOLanternLauncher: {
-		// Desc: Reforged: right click makes every rolling pumpkin grin and burst, each releasing 3 homing flame wisps; every blast leaves a candle field that scorches whoever stands in it
-		// TipGrin: Grin in unison!
+		Desc:
+			'''
+			重铸：右键让滚动中的南瓜齐声狞笑并炸裂，每颗放出 3 缕追踪鬼火
+			每处爆点留下一片烛火场，持续灼烧站在里面的敌人
+			'''
+		TipGrin: 齐声狞笑！
 	}
 
 	GsNailGun: {
-		// Desc: Reforged: nails embed into flesh (up to 5 per victim), each making the victim take +3% damage from all sources; right click rips every nail out in a burst of shrapnel
-		// TipExtract: Rip them out!
+		Desc:
+			'''
+			重铸：钉子钉进血肉不再脱落，每名敌人最多钉 5 枚，每枚使其受到的所有伤害提高 3%
+			右键把全部钉子连肉拔出，炸成一蓬弹片
+			'''
+		TipExtract: 连肉拔钉！
 	}
 
 	GsProximityMineLauncher: {
-		// Desc: Reforged: mines show their trigger radius to you; right click chains them in placement order; mines idle for 60s refund a rocket and self-clear
-		// TipChain: Domino!
-		// TipRecycle: Mine reclaimed
+		Desc:
+			'''
+			重铸：地雷的触发半径只对你可见
+			右键按布设顺序连环引爆；闲置 60 秒的地雷自行回收，退还一发火箭
+			'''
+		TipChain: 多米诺！
+		TipRecycle: 地雷已回收
 	}
 
 	GsRocketLauncher: {
-		// Desc: Reforged: right click to detonate every rocket in flight; each airburst hurls 3 piercing darts toward your cursor
-		// TipDetonate: Airburst!
+		Desc:
+			'''
+			重铸：右键引爆所有飞行中的火箭
+			每次空爆朝你的光标方向甩出 3 枚贯穿镖
+			'''
+		TipDetonate: 空爆！
 	}
 
 	GsSnowmanCannon: {
-		// Desc: Reforged: right click swaps carriers. Homing swarm brands victims with a snowflake (+8% from this weapon); Blizzard orbit lofts rockets skyward to dive from above your cursor
-		// ModeHoming: Carrier: homing swarm
-		// ModeOrbital: Carrier: blizzard orbit
+		Desc:
+			'''
+			重铸：右键切换载具
+			追踪蜂群：命中给敌人烙上雪花印，受本武器伤害提高 8%
+			暴雪轨道：火箭先升空，再从光标上方俯冲而下
+			'''
+		ModeHoming: 载具：追踪蜂群
+		ModeOrbital: 载具：暴雪轨道
 	}
 
 	GsStarCannon: {
-		// Desc: Reforged: right click swaps trajectory. Direct fire, or Starfall: stars loft skyward and rain down around your cursor, splashing stardust on hit
-		// ModeDirect: Trajectory: direct
-		// ModeStarfall: Trajectory: starfall
+		Desc:
+			'''
+			重铸：右键切换弹道
+			平射：星辰直线飞行；坠星：星辰先升空，再绕光标一带落下星雨，命中溅开星尘
+			'''
+		ModeDirect: 弹道：平射
+		ModeStarfall: 弹道：坠星
 	}
 
 	GsStynger: {
-		// Desc: Reforged: right click cycles the fuze. Impact detonates on hit; Range airbursts at your cursor's distance with a focused shrapnel cone; Ricochet bounces off blocks once before arming
-		// ModeImpact: Fuze: impact
-		// ModeRange: Fuze: range airburst
-		// ModeRicochet: Fuze: ricochet
+		Desc:
+			'''
+			重铸：右键循环引信
+			触发：命中即炸；定距：飞到光标距离处空爆，弹片收束成锥；跳弹：先在物块上弹跳一次再解除保险
+			'''
+		ModeImpact: 引信：触发
+		ModeRange: 引信：定距空爆
+		ModeRicochet: 引信：跳弹
 	}
 }
 
 GodSmithMagicConduit: {
-	/* GsHeatRay.Desc:
+	GsHeatRay.Desc:
 		'''
-		Reforged: hold to sustain a scorching ray; white heat widens the beam and molten stacks detonate on the fifth
-		Right click to vent all heat as a corona flash lance
-		''' */
-	/* GsMedusaHead.Desc:
+		重铸：按住持续照射灼热射线；白热时光束变宽，熔蚀叠满 5 层即引爆
+		右键泄压，把全部热量化作一道日冕闪矛
 		'''
-		Reforged: hold to unleash a petrifying gaze cone; stone-mark stacks briefly petrify, white heat narrows the gaze into a focused glare
-		Right click to vent all heat as an eight-way stone glare
-		''' */
+	GsMedusaHead.Desc:
+		'''
+		重铸：按住展开石化凝视锥；石纹叠满会短暂石化敌人，白热时凝视收束成聚焦瞪视
+		右键泄压，向八方射出石化目光
+		'''
 
 	GsSoulDrain: {
-		/* Desc:
+		Desc:
 			'''
-			Reforged: a leech conduit that tethers up to three foes and drains them together; white heat grants true life recovery
-			Right click to detonate the stored blood at your cursor; overload backfires for 10 life
-			''' */
-		// BloodPriceDeath: "{0} was drained by their own leech conduit"
+			重铸：蛭吸导管，最多拴住 3 名敌人一同抽取；白热期间才有真实的生命回复
+			右键在光标处引爆储存的血量；过载引爆会反噬你 10 点生命
+			'''
+		BloodPriceDeath: "{0}被自己的蛭吸导管抽干了"
 	}
 }
 
 GodSmithMagicMorph: {
-	/* GsClingerStaff.Desc:
+	GsClingerStaff.Desc:
 		'''
-		Reforged: hold right click briefly to lay a 260px cursed vine wall along your aim, at any angle.
-		Overcharge it and both ends sprout vertical skirt walls
-		''' */
-	/* GsCrimsonRod.Desc:
+		重铸：按住右键片刻，沿瞄准方向铺一道约 16 格长的诅咒藤墙，角度随意
+		蓄力过满时，藤墙两端再各生出一段垂直裙墙
 		'''
-		Reforged: the blood cloud becomes a sacrificial rain field.
-		Raindrops stack Blood Erosion, three stacks burst; allies inside slowly mend.
-		Right click migrates the field to your cursor for a sliver of mana
-		''' */
-	/* GsCrystalSerpent.Desc:
+	GsCrimsonRod.Desc:
 		'''
-		Reforged: burst shards bounce once more.
-		Hold right click to charge; release a great crystal python that slithers in a sine wave and bursts into a richer shard shower
-		''' */
-	/* GsCrystalStorm.Desc:
+		重铸：血云化作献祭雨场
+		雨滴叠加血蚀，叠满三层即溃爆；站在场内的友方缓缓回血
+		右键花少量魔力把雨场挪到光标处
 		'''
-		Reforged: hold right click to charge a refraction vortex at the cursor.
-		Your crystal shards passing through it refract, gaining speed and one extra pierce
-		''' */
-	/* GsFlamelash.Desc:
+	GsCrystalSerpent.Desc:
 		'''
-		Reforged: guided flight steers 25% faster.
-		Hold right click to charge; release a serpent of flame whose coils trail your guidance and set foes ablaze
-		''' */
-	/* GsMagicMissile.Desc:
+		重铸：迸裂的碎晶可以多弹跳一次
+		按住右键蓄力，松开放出巨大的水晶巨蟒，蜿蜒游进并炸开更丰厚的碎晶雨
 		'''
-		Reforged: guided flight steers 25% faster.
-		Hold right click to charge; release a triple volley that escorts your cursor in formation
-		''' */
-	/* GsMeteorStaff.Desc:
+	GsCrystalStorm.Desc:
 		'''
-		Reforged: meteors leave a scorching crater where they land.
-		Hold right click to charge; release to call a five-meteor barrage across the cursor
-		''' */
-	/* GsNimbusRod.Desc:
+		重铸：按住右键在光标处蓄起一座折射旋涡
+		你的水晶碎片穿过旋涡就会折射，飞得更快，并多贯穿 1 名敌人
 		'''
-		Reforged: with both clouds afield, a rain corridor bridges them, soaking and slowing foes inside.
-		Right click toggles warm rain or thunderstorm; the storm calls down bolts along the corridor
-		''' */
-	/* GsRainbowGun.Desc:
+	GsFlamelash.Desc:
 		'''
-		Reforged: while the rainbow stands, your projectiles inside the band above the arc deal 8% more damage, and the arc sheds homing prism pulses.
-		Right click recalls the rainbow and refunds half its mana
-		''' */
-	/* GsRainbowRod.Desc:
+		重铸：手控飞行的转向灵敏 25%
+		按住右键蓄力，松开放出一条火焰长蛇，蛇身尾随你的指引游走，点燃沿途敌人
 		'''
-		Reforged: guided bolts burst into prismatic shards on hit.
-		Hold right click to charge; release to raise a rainbow bridge that hurts foes crossing it and hastens allies standing on it
-		''' */
-	/* GsSkyFracture.Desc:
+	GsMagicMissile.Desc:
 		'''
-		Reforged: blades tear a flash of fracture as they launch.
-		Hold right click to charge; release to open three rifts around the cursor that loose converging blades
-		''' */
+		重铸：手控飞行的转向灵敏 25%
+		按住右键蓄力，松开放出三连魔弹，列队护送你的光标
+		'''
+	GsMeteorStaff.Desc:
+		'''
+		重铸：流星落点留下持续灼烧的弹坑
+		按住右键蓄力，松开在光标一线召下五连流星弹幕
+		'''
+	GsNimbusRod.Desc:
+		'''
+		重铸：两朵雨云同时在场时，云间架起一条雨廊，淋湿并减速廊内敌人
+		右键在暖雨与雷暴间切换；雷暴会沿雨廊劈下闪电
+		'''
+	GsRainbowGun.Desc:
+		'''
+		重铸：彩虹驻场期间，你在虹弧上方带内的弹幕伤害提高 8%，虹弧还会洒下追踪棱光脉冲
+		右键收回彩虹，退还一半魔力
+		'''
+	GsRainbowRod.Desc:
+		'''
+		重铸：手控光弹命中时炸成棱彩碎光
+		按住右键蓄力，松开架起一道彩虹桥，敌人穿桥受伤，友方踩桥提速
+		'''
+	GsSkyFracture.Desc:
+		'''
+		重铸：魔刃出手时撕开一瞬裂空闪光
+		按住右键蓄力，松开在光标周围裂开三道裂隙，射出向心收拢的魔刃
+		'''
 }
 
 GodSmithSummonWhips: {
-	// GsCoolWhip.Desc: Reforged: snowflakes born from on-beat lashes grow larger and pierce one more foe; 4 frost scars seal the mark, and the next on-beat hit blooms it into a frost burst that inflicts Frostbite
-	// GsDarkHarvest.Desc: Reforged: dark energy leaps spread to nearby foes for each reap scar on the victim; 4 scars seal the mark, and the next on-beat hit reaps its soul, flash-scything every scarred enemy on the field
-	// GsDurendal.Desc: Reforged: after three on-beat lashes, every further on-beat swing looses a golden sword-wave from the whip tip; 5 scars seal the mark, and the next on-beat hit calls down a holy verdict blade
-	// GsFirecracker.Desc: Reforged: keeps the classic minion-detonated blast; on-beat lashes load fuses into the target, and at 3 fuses the next blast chains into 3 extra staggered explosions
-	// GsKaleidoscope.Desc: Reforged: the tightest beat window, and a missed swing resets all tempo; each scar lights one prism color, and at five colors the next on-beat hit unfolds a kaleidoscope of five prismatic slashes, exposing the victim to guaranteed-crit chances for 5 seconds
-	// GsLeatherWhip.Desc: Reforged: chain swings on the beat to build tempo and lash speed; 3 lash scars seal the mark, and the next on-beat hit cracks it for 200% damage, then your minions maul the target for 2 seconds
-	// GsMorningStar.Desc: Reforged: every on-beat swing slams a quake at the whip tip; 3 scars seal the mark, and the next on-beat hit calls a falling star mace down on the target's head
-	// GsSnapthorn.Desc: Reforged: on-beat lashes grow thorn scars on the prey; 4 scars seal the mark, and the next on-beat hit bursts it into a thorn explosion plus 4 homing venom barbs
-	// GsSpinalTap.Desc: Reforged: an on-beat sweep that tags 3 foes cracks a bone echo into everything it missed; 4 scars seal the mark, and the next on-beat hit erupts a bone spire from below
+	GsCoolWhip.Desc:
+		'''
+		重铸：踩拍鞭击生成的雪花更大，多贯穿 1 名敌人
+		4 道霜痕落成处决印，下一记踩拍命中将其绽成冰霜爆发，附加霜冻
+		'''
+	GsDarkHarvest.Desc:
+		'''
+		重铸：暗能跃迁会扩散到周围敌人，目标身上每有一道收割鞭痕就多跳一路
+		4 道鞭痕落成处决印，下一记踩拍命中收割其魂，对场上所有带鞭痕的敌人闪现补镰
+		'''
+	GsDurendal.Desc:
+		'''
+		重铸：连续踩拍 3 次后，之后每记踩拍挥击都从鞭梢放出金色剑波
+		5 道鞭痕落成处决印，下一记踩拍命中召下一柄神圣裁决之刃
+		'''
+	GsFirecracker.Desc:
+		'''
+		重铸：保留经典的仆从引爆炸响
+		踩拍鞭击往目标身上装填引信，攒到 3 根后，下一次炸响会接连引发 3 次追加爆炸
+		'''
+	GsKaleidoscope.Desc:
+		'''
+		重铸：节拍窗口全鞭最严，挥空一次就清空节奏
+		每道鞭痕点亮一种棱彩，集齐五色后，下一记踩拍命中展开万花筒五连棱光斩，目标其后 5 秒必定被暴击
+		'''
+	GsLeatherWhip.Desc:
+		'''
+		重铸：踩着节拍连挥可以攒节奏，鞭速越攒越快
+		3 道鞭痕落成处决印，下一记踩拍命中将其炸开，造成 200% 伤害，随后你的仆从围殴目标 2 秒
+		'''
+	GsMorningStar.Desc:
+		'''
+		重铸：每记踩拍挥击都在鞭梢砸出一圈震荡
+		3 道鞭痕落成处决印，下一记踩拍命中从天召落一颗坠星锤，正中目标头顶
+		'''
+	GsSnapthorn.Desc:
+		'''
+		重铸：踩拍鞭击在猎物身上种下荆棘鞭痕
+		4 道鞭痕落成处决印，下一记踩拍命中引爆荆棘，并射出 4 枚追踪毒刺
+		'''
+	GsSpinalTap.Desc:
+		'''
+		重铸：一次踩拍横扫抽中 3 名敌人时，震出骨响余波，扫及所有没被抽中的敌人
+		4 道鞭痕落成处决印，下一记踩拍命中从地底顶出一根骨刺尖塔
+		'''
 }
 
-GodSmithVolleyBows: {
-	// GsAdamantiteRepeater.Desc: Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon at x1.5 knockback, one ammo per volley
-	/* GsChlorophyteShotbow.Desc:
-		'''
-		Reforged: every 6th shot triple-taps; volley charge looses a 6-arrow spore cone, one ammo per volley
-		Branded foes take +10% from this bow; execution bursts a spore cloud
-		''' */
-	/* GsCobaltRepeater.Desc:
-		'''
-		Reforged: every 6th bolt triple-taps; volley charge looses a 3-bolt line at +15% speed, one ammo per volley
-		Volley hits brand prey; branded foes draw pursuit bolts
-		''' */
-	/* GsHallowedRepeater.Desc:
-		'''
-		Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt cross, one ammo per volley
-		Executing a fully branded foe calls down a hallowed star
-		''' */
-	/* GsIceBow.Desc:
-		'''
-		Reforged: volley charge hurls 6 icicles skyward to rain on the cursor, one ammo per volley
-		Icicle hits stack frostbrand; at 3 stacks the next icicle shatters into a frost burst
-		''' */
-	/* GsMarrow.Desc:
-		'''
-		Reforged: volley charge looses a 5-bone-arrow cross with +1 pierce, one ammo per volley
-		Executing a fully branded foe cages it with 4 converging bone arrows
-		''' */
-	// GsMythrilRepeater.Desc: Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge with +8% crit, one ammo per volley
-	/* GsOrichalcumRepeater.Desc:
-		'''
-		Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge trailing petals, one ammo per volley
-		Volley hits burst into a small petal blast
-		''' */
-	/* GsPalladiumRepeater.Desc:
-		'''
-		Reforged: every 6th bolt triple-taps; volley charge looses a 3-bolt line, one ammo per volley
-		Branded foes slain restore 2 life
-		''' */
-	/* GsPearlwoodBow.Desc:
-		'''
-		Reforged: every 5 shots charge a 5-arrow pearlescent line volley, one ammo per volley
-		Right click releases the volley early at 60%+ charge
-		''' */
-	/* GsPulseBow.Desc:
-		'''
-		Reforged: each wall bounce now grants +10% damage (up to 5); volley charge looses 3 parallel pulse tracks, one ammo per volley
-		Branded foes bend passing pulses toward them; execution chains a surge to 2 nearby foes
-		''' */
-	/* GsShadowflameBow.Desc:
-		'''
-		Reforged: volley charge looses 3 shadowflame arrows crossing at the cursor, one ammo per volley
-		Branded foes struck by any arrow draw a homing shadowflame wisp; execution erupts in shadow
-		''' */
-	/* GsStakeLauncher.Desc:
-		'''
-		Reforged: every 6th stake triple-taps; volley charge looses a 3-stake wedge, one ammo per volley
-		Stakes pin and brand prey; the executing stake crucifies at x2.3, undead take a further +25%
-		''' */
-	// GsTitaniumRepeater.Desc: Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon with +4 armor penetration, one ammo per volley
-}
-
-/* GodSmithAcc.GodSmithSharkToothNecklace.EffectDesc:
+GodSmithAcc.GodSmithSharkToothNecklace.EffectDesc:
 	'''
-	+4% damage
-	Strikes tear the target's hide, granting Rend: +1 armor penetration per stack, up to 8 stacks, lasts 3s
-	''' */
+	伤害提高 4%
+	利齿撕裂：攻击撕开目标的护皮，每层撕裂等效 1 点穿甲，至多 8 层，持续 3 秒
+	'''
 
 GodSmithEndow: {
 	GodSmithLegendaryEndow: {
-		// EndowName: Sword Saint's Echo
-		// EndowDesc: Swings have a {0}% chance to loose a golden sword wave dealing {1}% weapon damage
+		EndowName: 剑圣回响
+		EndowDesc: 挥击有 {0}% 几率放出金色剑波，造成 {1}% 武器伤害
 	}
 
 	GodSmithWardingEndow: {
-		// EndowName: Bulwark Oath
-		// EndowDesc: Reduces damage taken by {0}%
+		EndowName: 壁垒誓约
+		EndowDesc: 受到的伤害降低 {0}%
 	}
 }

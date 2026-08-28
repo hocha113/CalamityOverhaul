@@ -89,6 +89,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         /// <summary>解出正抓着本地玩家的抓握手；无则 null</summary>
         private NPC ResolveGrab(out NPC grabCore) {
             grabCore = null;
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必扫表
+                return null;
+            }
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (npc.type != NPCID.MoonLordCore) {
                     continue;

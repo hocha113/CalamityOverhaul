@@ -10,10 +10,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Silkcrypt.Proje
 {
     /// <summary>
     /// 垂袭蛛影。ai[0]=垂降行程(像素) ai[1]=视觉种子。
-    /// 预告 46 帧（丝线反光闪烁 + 两声丝弦，视听双通道）→ 黑影沿丝速降（仅降程与
-    /// 底端 4 帧有判定，擦中只掉微量血）→ 收回（无判定，影子爬回顶洞）→ 丝线残留
-    /// 飘动 150 帧渐散。这是环境"影"，不生成任何真蜘蛛 NPC；
-    /// 全时间轴是 timeLeft 的确定函数，各端各自展开
+    /// 预告 46 帧（丝线反光闪烁 + 两声丝弦，视听双通道）→ 黑影沿丝下探，
+    /// 至 1/3 行程绷丝一顿再加速俯冲（仅降程与底端 4 帧有判定，擦中只掉微量血）
+    /// → 收回（无判定，影子爬回顶洞）→ 丝线残留飘动 150 帧渐散。
+    /// 这是环境"影"，不生成任何真蜘蛛 NPC；全时间轴是 timeLeft 的确定函数，各端各自展开
     /// </summary>
     internal class SilkcryptDropShadowProj : ModProjectile
     {
@@ -25,8 +25,17 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Silkcrypt.Proje
         private const int DwellFrames = 4;
         /// <summary>丝线残留飘动帧数（余韵）</summary>
         private const int LingerFrames = 150;
-        /// <summary>速降速度（像素/帧，决定降程时长）</summary>
-        private const float DescendSpeed = 26f;
+        /// <summary>速降平均速度（像素/帧，决定降程移动帧数）</summary>
+        private const float DescendSpeed = 13f;
+        /// <summary>降程移动帧数下限/上限（下限 18 + 顿挫 4 保底执行段 ≥22 帧，公平契约执行段 ≥20）</summary>
+        private const int DescFramesMin = 18;
+        private const int DescFramesMax = 30;
+        /// <summary>绷丝顿挫帧数：降至 1/3 行程收足一拍再俯冲（捕猎节奏）</summary>
+        private const int HitchFrames = 4;
+        /// <summary>顿挫点的行程进度</summary>
+        private const float HitchAt = 1f / 3f;
+        /// <summary>顿挫前缓降段占移动帧数比（其余帧留给俯冲段）</summary>
+        private const float PreDiveFramesFrac = 0.45f;
         /// <summary>收回速度（略慢于速降，读得出"收"）</summary>
         private const float RetractSpeed = 17f;
         /// <summary>判定盒尺寸（贴着可见剪影）</summary>
@@ -36,9 +45,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Silkcrypt.Proje
         private float DropLen => Projectile.ai[0];
         private int Seed => (int)Projectile.ai[1];
 
-        private int DescFrames => Math.Clamp((int)(DropLen / DescendSpeed) + 1, 8, 18);
+        private int DescFrames => Math.Clamp((int)(DropLen / DescendSpeed) + 1, DescFramesMin, DescFramesMax);
+        /// <summary>降程相总帧数（移动 + 顿挫）</summary>
+        private int DescPhaseFrames => DescFrames + HitchFrames;
         private int RetractFrames => Math.Clamp((int)(DropLen / RetractSpeed) + 1, 10, 26);
-        private int TotalLife => TelegraphFrames + DescFrames + DwellFrames + RetractFrames + LingerFrames;
+        private int TotalLife => TelegraphFrames + DescPhaseFrames + DwellFrames + RetractFrames + LingerFrames;
         private int Elapsed => TotalLife - Projectile.timeLeft;
 
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 460;
@@ -64,12 +75,23 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Silkcrypt.Proje
                 if (t < 0) {
                     return 0f;
                 }
-                if (t < DescFrames) {
-                    //速降带一点加速度：越垂越快
-                    float x = t / (float)DescFrames;
-                    return MathF.Pow(x, 1.3f);
+                //降程三拍：缓降至 1/3 → 绷丝顿挫 → 加速俯冲
+                int preFrames = (int)(DescFrames * PreDiveFramesFrac);
+                if (t < preFrames) {
+                    return HitchAt * t / preFrames;
                 }
-                t -= DescFrames;
+                t -= preFrames;
+                if (t < HitchFrames) {
+                    return HitchAt;
+                }
+                t -= HitchFrames;
+                int diveFrames = DescFrames - preFrames;
+                if (t < diveFrames) {
+                    //俯冲带加速度：越垂越快
+                    float x = t / (float)diveFrames;
+                    return HitchAt + (1f - HitchAt) * MathF.Pow(x, 1.6f);
+                }
+                t -= diveFrames;
                 if (t < DwellFrames) {
                     return 1f;
                 }
@@ -84,7 +106,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Silkcrypt.Proje
         /// <summary>黑影仍挂在丝上（降/停/收三段）</summary>
         private bool ShadowVisible
             => Elapsed >= TelegraphFrames
-            && Elapsed < TelegraphFrames + DescFrames + DwellFrames + RetractFrames;
+            && Elapsed < TelegraphFrames + DescPhaseFrames + DwellFrames + RetractFrames;
 
         public override void AI() {
             if (Projectile.localAI[0] == 0f) {
@@ -94,10 +116,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Silkcrypt.Proje
             }
             int elapsed = Elapsed;
 
-            //判定窗 = 可见降程窗（含底端短停）；Boss 在场则伤害通道静默
+            //判定窗 = 可见降程窗（含顿挫与底端短停）；Boss 在场则伤害通道静默
             Projectile.hostile = !CWRWorld.HasBoss
                 && elapsed >= TelegraphFrames
-                && elapsed < TelegraphFrames + DescFrames + DwellFrames;
+                && elapsed < TelegraphFrames + DescPhaseFrames + DwellFrames;
 
             if (Main.dedServ) {
                 return;
@@ -120,7 +142,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Silkcrypt.Proje
                     Volume = 0.4f, Pitch = -0.3f, MaxInstances = 4,
                 }, Projectile.Center + new Vector2(0f, DropLen * 0.5f));
             }
-            else if (elapsed == TelegraphFrames + DescFrames + DwellFrames) {
+            else if (elapsed == TelegraphFrames + DescPhaseFrames + DwellFrames) {
                 //收回起手：丝线回卷的轻响
                 SoundEngine.PlaySound(SoundID.Item17 with {
                     Volume = 0.14f, Pitch = 0.2f, MaxInstances = 4,
@@ -129,7 +151,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Silkcrypt.Proje
 
             //降程沿途网尘（≤0.5 粒/帧）
             if (ShadowVisible && elapsed % 2 == 0
-                && elapsed < TelegraphFrames + DescFrames) {
+                && elapsed < TelegraphFrames + DescPhaseFrames) {
                 Dust dust = Dust.NewDustPerfect(ShadowPos() + Main.rand.NextVector2Circular(8f, 8f),
                     DustID.Web, new Vector2(0f, -0.4f), 150, default, 0.7f);
                 dust.noGravity = true;
@@ -244,7 +266,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Silkcrypt.Proje
 
             float progress = ShadowProgress;
             Vector2 pos = anchor + new Vector2(0f, DropLen * progress);
-            bool descending = elapsed < TelegraphFrames + DescFrames + DwellFrames;
+            bool descending = elapsed < TelegraphFrames + DescPhaseFrames + DwellFrames;
             //降=头朝下(Pi)，收=头朝上(0)；足步按走过的丝长换帧
             float rot = descending ? MathHelper.Pi : 0f;
             int frame = (int)(DropLen * progress / 13f) % frameCount;
@@ -252,8 +274,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Silkcrypt.Proje
             Vector2 origin = src.Size() * 0.5f;
 
             //底端短停时微微张足（擦中判定的可读锚点）
-            bool dwelling = elapsed >= TelegraphFrames + DescFrames
-                && elapsed < TelegraphFrames + DescFrames + DwellFrames;
+            bool dwelling = elapsed >= TelegraphFrames + DescPhaseFrames
+                && elapsed < TelegraphFrames + DescPhaseFrames + DwellFrames;
             Vector2 scale = new(dwelling ? 1.14f : 1f, 1f);
 
             Color body = new Color(13, 9, 17) * 0.9f;

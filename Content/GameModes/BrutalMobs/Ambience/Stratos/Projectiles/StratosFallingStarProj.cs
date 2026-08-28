@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using ReLogic.Utilities;
 using System;
 using Terraria;
@@ -12,8 +13,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stratos.Project
     /// <summary>
     /// 「坠星」环境流星。ai[0]=天穹起点横向偏斜 ai[1]=空爆标记（1=无地面云层空爆）。
     /// 生成位置即锁定落点（区域随机，调度端保证永不点名玩家坐标）：
-    /// 天际亮点增大+呼啸渐强+落点光圈收拢 52 帧 → 坠落 18 帧 → 小爆炸 8 帧（仅此窗口有判定）
+    /// 天际亮点增大+呼啸渐强+落点光圈收拢 52 帧 → 坠落 34 帧 → 小爆炸 8 帧（仅此窗口有判定）
     /// → 烟尘碎星余韵 36 帧。预告期出现 Boss 则取消爆炸（伤害机制暂停）。
+    /// 坠落体=真 alpha 暗石壳+A=0 外缘热边（层序对标烬羽 PRT），拖尾是壳体自身层叠的残影重绘。
     /// 各端从各自 timeLeft 展开同一时间轴，伤害值恒定不清零，判定窗只由 hostile 门控
     /// </summary>
     internal class StratosFallingStarProj : ModProjectile
@@ -22,14 +24,14 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stratos.Project
 
         /// <summary>预告帧数（公平契约 ≥45，各档位一律不缩短）</summary>
         private const int TelegraphFrames = 52;
-        /// <summary>坠落帧数</summary>
-        private const int FallFrames = 18;
+        /// <summary>坠落帧数（执行段公平契约 ≥30：预告后仍有整段反应窗）</summary>
+        private const int FallFrames = 34;
         /// <summary>爆炸判定窗</summary>
         private const int BurstFrames = 8;
         /// <summary>余韵帧数（纯视觉，无伤害残留——陨石坑灼热余烬地归 Starfall 槽）</summary>
         private const int AfterglowFrames = 36;
-        /// <summary>天穹起点高度</summary>
-        private const float SkyDropHeight = 640f;
+        /// <summary>天穹起点高度（随坠落段拉长抬高，进场仍自屏幕上方）</summary>
+        private const float SkyDropHeight = 760f;
         /// <summary>爆炸半径（小于调度端的最小落点偏移 180，原地站立的玩家永不被点名命中）</summary>
         private const float BlastRadius = 104f;
         /// <summary>预告圈起始半径，随预告向爆炸半径收拢</summary>
@@ -38,6 +40,21 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stratos.Project
         /// <summary>呼啸：暴风雪嘶声定位循环，音量音调随逼近渐强渐尖</summary>
         private static readonly SoundStyle WhistleStyle =
             SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 4 };
+
+        /// <summary>熔石壳贴图：真 alpha 梭形（有 alpha 才能遮挡，读作石体而非光点）</summary>
+        [VaultLoaden(CWRConstant.Masking)]
+        private static Asset<Texture2D> Extra_98 = null;
+
+        /// <summary>石壳暗体（带 A，承担轮廓与遮挡）</summary>
+        private static readonly Color ShellDark = new(56, 36, 30);
+        /// <summary>熔缘炽色（A=0 加色敷边）</summary>
+        private static readonly Color RimHot = new(255, 118, 46);
+        /// <summary>拖尾末端冷却色</summary>
+        private static readonly Color RimCool = new(150, 52, 26);
+
+        /// <summary>拖尾残影数与采样帧距：重绘壳体自身层叠，横轴恒 ≥0.5 体宽</summary>
+        private const int TrailGhosts = 6;
+        private const float TrailSpacing = 0.75f;
 
         private float SkySlant => Projectile.ai[0];
         private bool AirBurst => Projectile.ai[1] == 1f;
@@ -70,12 +87,12 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stratos.Project
 
         public override bool ShouldUpdatePosition() => false;
 
-        /// <summary>流星头当前位置：预告期钉在天穹起点，坠落期二次加速扑向落点</summary>
-        private Vector2 HeadPos(int elapsed) {
+        /// <summary>流星头位置：预告期钉在天穹起点，坠落期二次加速扑向落点（浮点采样供拖尾回看）</summary>
+        private Vector2 HeadPos(float elapsed) {
             if (elapsed <= TelegraphFrames) {
                 return SkyOrigin;
             }
-            float t = MathHelper.Clamp((elapsed - TelegraphFrames) / (float)FallFrames, 0f, 1f);
+            float t = MathHelper.Clamp((elapsed - TelegraphFrames) / FallFrames, 0f, 1f);
             return Vector2.Lerp(SkyOrigin, Projectile.Center, t * t);
         }
 
@@ -130,21 +147,26 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stratos.Project
             }
 
             if (elapsed < ImpactFrame) {
-                //坠落期：沿途剥落星屑（2 粒/帧，短促）
+                //坠落期：熔壳剥落烬屑+断续烟迹（石质通道，2 粒/帧短促）
                 Vector2 head = HeadPos(elapsed);
                 Vector2 dir = (Projectile.Center - SkyOrigin).SafeNormalize(Vector2.UnitY);
                 for (int i = 0; i < 2; i++) {
-                    Dust dust = Dust.NewDustPerfect(head + Main.rand.NextVector2Circular(8f, 8f),
-                        DustID.YellowStarDust, -dir * Main.rand.NextFloat(1f, 3f)
-                        + Main.rand.NextVector2Circular(1f, 1f), 90, default, Main.rand.NextFloat(1f, 1.5f));
-                    dust.noGravity = true;
+                    Dust ember = Dust.NewDustPerfect(head + Main.rand.NextVector2Circular(9f, 9f),
+                        DustID.Meteorite, -dir * Main.rand.NextFloat(1f, 3f)
+                        + Main.rand.NextVector2Circular(1f, 1f), 60, default, Main.rand.NextFloat(0.9f, 1.4f));
+                    ember.noGravity = true;
                 }
-                Lighting.AddLight(head, new Vector3(0.85f, 0.72f, 0.45f));
+                if (Main.rand.NextBool(2)) {
+                    Dust smoke = Dust.NewDustPerfect(head - dir * 18f, DustID.Smoke,
+                        -dir * Main.rand.NextFloat(0.4f, 1.1f), 150, default, Main.rand.NextFloat(1f, 1.5f));
+                    smoke.noGravity = true;
+                }
+                Lighting.AddLight(head, new Vector3(0.85f, 0.6f, 0.35f));
                 return;
             }
 
             if (elapsed == ImpactFrame) {
-                //落地拍：小爆炸+碎星迸射+近距离屏震（随距离衰减）
+                //落地拍：小爆炸+石屑迸溅+熔烬+烟团+近距离屏震（随距离衰减）
                 SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.8f, Pitch = 0.1f, MaxInstances = 5 }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.6f, Pitch = -0.2f, MaxInstances = 5 }, Projectile.Center);
                 for (int i = 0; i < 10; i++) {
@@ -153,11 +175,22 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stratos.Project
                         Main.rand.NextFloat(1.2f, 2f));
                     smoke.noGravity = Main.rand.NextBool();
                 }
-                for (int i = 0; i < 12; i++) {
-                    Dust shard = Dust.NewDustPerfect(Projectile.Center, DustID.YellowStarDust,
+                for (int i = 0; i < 14; i++) {
+                    Dust rock = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(10f, 6f),
+                        DustID.Stone, new Vector2(Main.rand.NextFloat(-5.5f, 5.5f), -Main.rand.NextFloat(1.5f, 7f)),
+                        30, default, Main.rand.NextFloat(1f, 1.7f));
+                    rock.noGravity = false;
+                }
+                for (int i = 0; i < 8; i++) {
+                    Dust ember = Dust.NewDustPerfect(Projectile.Center, DustID.Meteorite,
                         Main.rand.NextVector2Circular(6f, 5f) - new Vector2(0f, 2f), 60, default,
-                        Main.rand.NextFloat(1f, 1.6f));
-                    shard.noGravity = false;
+                        Main.rand.NextFloat(1f, 1.5f));
+                    ember.noGravity = Main.rand.NextBool();
+                }
+                for (int i = 0; i < 3; i++) {
+                    Gore.NewGore(Projectile.GetSource_FromAI(), Projectile.Center + Main.rand.NextVector2Circular(14f, 8f),
+                        new Vector2(Main.rand.NextFloat(-1.6f, 1.6f), -Main.rand.NextFloat(0.4f, 1.8f)),
+                        Main.rand.Next(61, 64));
                 }
                 float dist = Vector2.Distance(Main.LocalPlayer.Center, Projectile.Center);
                 float shake = MathHelper.Lerp(4.2f, 0f, MathHelper.Clamp(dist / 640f, 0f, 1f));
@@ -221,11 +254,13 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stratos.Project
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             Texture2D fogTex = CWRAsset.Fog?.Value;
             Texture2D sparkle = CWRAsset.StarGlow01?.Value;
-            if (star == null || glow == null || fogTex == null || sparkle == null) {
+            Texture2D shell = Extra_98?.Value;
+            if (star == null || glow == null || fogTex == null || sparkle == null || shell == null) {
                 return false;
             }
             Vector2 starOrig = star.Size() * 0.5f;
             Vector2 glowOrig = glow.Size() * 0.5f;
+            Vector2 shellOrig = shell.Size() * 0.5f;
             float squish = AirBurst ? 0.8f : 0.42f;
 
             if (elapsed < TelegraphFrames) {
@@ -252,28 +287,53 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stratos.Project
             }
 
             if (elapsed < ImpactFrame) {
-                //坠落期：速度拉伸的星头+三重残影拖尾（各向异性，运动即拉丝）
-                Vector2 head = HeadPos(elapsed);
+                //坠落期：熔石体=暗石壳剪影+外缘热边（层序对标烬羽 PRT），拖尾=壳体自身层叠的残影回放
+                float fallT = (elapsed - TelegraphFrames) / (float)FallFrames;
                 Vector2 dir = (Projectile.Center - SkyOrigin).SafeNormalize(Vector2.UnitY);
-                float rot = dir.ToRotation();
-                for (int k = 1; k <= 3; k++) {
-                    Vector2 ghostPos = head - dir * (20f + 26f * k) - Main.screenPosition;
-                    Color ghostCol = new Color(255, 168, 92) * ((0.42f - 0.11f * k) * cancelDim);
-                    Main.EntitySpriteDraw(star, ghostPos, null, ghostCol, rot, starOrig,
-                        new Vector2(0.28f - 0.05f * k, 0.09f), SpriteEffects.None, 0);
+                float rockRot = dir.ToRotation() + MathHelper.PiOver2;//梭形贴图长轴竖直，转到运动向
+                float fallFlicker = 0.8f + 0.2f * MathF.Sin(Main.GlobalTimeWrappedHourly * 30f + Projectile.identity);
+
+                //拖尾残影：由远及近重绘暗壳+热边，缩放 0.5→0.7、透明度递减，末端热色冷却
+                for (int k = TrailGhosts; k >= 1; k--) {
+                    float kt = (k - 1) / (float)(TrailGhosts - 1);
+                    Vector2 ghostPos = HeadPos(elapsed - k * TrailSpacing) - Main.screenPosition;
+                    float mul = MathHelper.Lerp(0.7f, 0.5f, kt);
+                    float fade = MathHelper.Lerp(0.5f, 0.14f, kt) * cancelDim;
+                    Vector2 ghostScale = new Vector2(0.55f, 1.35f) * mul;//沿运动向拉长补缝
+                    Color ghostRim = Color.Lerp(RimHot, RimCool, kt) with { A = 0 };
+                    Main.EntitySpriteDraw(shell, ghostPos, null, ghostRim * fade, rockRot,
+                        shellOrig, ghostScale * 1.25f, SpriteEffects.None, 0);
+                    Main.EntitySpriteDraw(shell, ghostPos, null, ShellDark * fade, rockRot,
+                        shellOrig, ghostScale, SpriteEffects.None, 0);
                 }
-                Vector2 headScreen = head - Main.screenPosition;
-                Main.EntitySpriteDraw(glow, headScreen, null, new Color(255, 190, 110, 0) * (0.6f * cancelDim),
-                    0f, glowOrig, 0.9f, SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(star, headScreen, null, new Color(255, 234, 186) * (0.85f * cancelDim),
-                    rot, starOrig, new Vector2(0.34f, 0.14f), SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(star, headScreen, null, new Color(255, 240, 205) * (0.9f * cancelDim),
-                    0f, starOrig, 0.12f, SpriteEffects.None, 0);
+
+                Vector2 headScreen = HeadPos(elapsed) - Main.screenPosition;
+                //热晕衬底（弱底光，不当本体）
+                Main.EntitySpriteDraw(glow, headScreen, null, new Color(255, 150, 70, 0) * (0.45f * cancelDim),
+                    0f, glowOrig, 0.85f, SpriteEffects.None, 0);
+                //外缘热边：略大于壳体垫底，只露一圈灼烧缘
+                Main.EntitySpriteDraw(shell, headScreen, null, (RimHot with { A = 0 }) * (0.85f * fallFlicker * cancelDim),
+                    rockRot, shellOrig, new Vector2(0.72f, 1.24f), SpriteEffects.None, 0);
+                //暗石壳：真 alpha 剪影，可见体的遮挡主体
+                Main.EntitySpriteDraw(shell, headScreen, null, ShellDark * (0.92f * cancelDim),
+                    rockRot, shellOrig, new Vector2(0.55f, 1.05f), SpriteEffects.None, 0);
+                //熔核内芒：壳内余温透出（对标烬羽内敷层）
+                Main.EntitySpriteDraw(shell, headScreen, null, (RimHot with { A = 0 }) * (0.5f * fallFlicker * cancelDim),
+                    rockRot, shellOrig, new Vector2(0.3f, 0.62f), SpriteEffects.None, 0);
+                //迎风燃点：前端最热
+                Main.EntitySpriteDraw(glow, headScreen + dir * 20f, null, new Color(255, 210, 130, 0) * (0.6f * cancelDim),
+                    0f, glowOrig, 0.4f, SpriteEffects.None, 0);
+                //点火眩光：预告星点熄灭成岩体的衔接拍（坠落前 1/4 段渐隐）
+                if (fallT < 0.25f) {
+                    float ig = 1f - fallT / 0.25f;
+                    Main.EntitySpriteDraw(star, headScreen, null, new Color(255, 228, 170) * (0.85f * ig * cancelDim),
+                        0f, starOrig, 0.22f * ig + 0.03f, SpriteEffects.None, 0);
+                }
                 return false;
             }
 
             if (elapsed < ImpactFrame + BurstFrames) {
-                //爆炸窗：白金闪核+扩张冲击环+星芒十字，可见闪爆=判定圈
+                //爆炸窗：热闪核+扩张冲击环+破壳石屑外抛，可见闪爆=判定圈
                 float pb = (elapsed - ImpactFrame) / (float)BurstFrames;
                 float fade = 1f - pb;
                 ShockRingDraw.Draw(Main.spriteBatch, Projectile.Center,
@@ -283,11 +343,19 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stratos.Project
                 Vector2 center = Projectile.Center - Main.screenPosition;
                 Main.EntitySpriteDraw(glow, center, null, new Color(255, 214, 150, 0) * (0.9f * fade),
                     0f, glowOrig, 3.4f * (0.6f + 0.8f * pb), SpriteEffects.None, 0);
-                float crossScale = 0.5f + 0.4f * pb;
-                Color crossCol = new Color(255, 236, 190) * (0.8f * fade);
-                Main.EntitySpriteDraw(star, center, null, crossCol, 0f, starOrig, crossScale, SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(star, center, null, crossCol * 0.6f, MathHelper.PiOver4, starOrig,
-                    crossScale * 0.75f, SpriteEffects.None, 0);
+                //破壳石屑：暗壳碎块带热边外抛旋转（确定性布点，各端画面一致）
+                for (int k = 0; k < 6; k++) {
+                    float ang = Projectile.identity * 0.31f + k * (MathHelper.TwoPi / 6f) + pb * (0.35f + 0.11f * k);
+                    float dist = MathHelper.Lerp(12f, BlastRadius * (0.72f + 0.1f * (k % 3)), pb);
+                    Vector2 fragPos = center + ang.ToRotationVector2() * dist * new Vector2(1f, squish)
+                        - new Vector2(0f, 30f * MathF.Sin(pb * MathHelper.Pi) * (k % 2 == 0 ? 1f : 0.55f));
+                    float spin = ang * 3f + pb * (3f + k * 0.8f);
+                    Vector2 fragScale = new Vector2(0.2f, 0.3f) * (1f - 0.3f * pb) * (0.8f + 0.12f * (k % 3));
+                    Main.EntitySpriteDraw(shell, fragPos, null, (RimHot with { A = 0 }) * (0.55f * fade),
+                        spin, shellOrig, fragScale * 1.3f, SpriteEffects.None, 0);
+                    Main.EntitySpriteDraw(shell, fragPos, null, ShellDark * (0.9f * fade),
+                        spin, shellOrig, fragScale, SpriteEffects.None, 0);
+                }
                 return false;
             }
 
@@ -302,7 +370,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stratos.Project
             for (int k = 0; k < 3; k++) {
                 float drift = MathF.Sin(Projectile.identity * 1.9f + k * 2.4f);
                 Vector2 puffPos = impact + new Vector2(drift * 26f, -16f - 62f * pa - k * 15f);
-                Color puffCol = new Color(70, 62, 58) * (0.28f * linger);
+                Color puffCol = new Color(70, 62, 58) * (0.33f * linger);
                 Main.EntitySpriteDraw(fogTex, puffPos, null, puffCol, drift * 0.6f + k, fogOrig,
                     0.45f + 0.5f * pa + 0.12f * k, k % 2 == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             }

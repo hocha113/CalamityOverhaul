@@ -27,10 +27,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
             AddMapEntry(new Color(105, 95, 185), VaultUtils.GetLocalizedItemName<MushroomFarmer>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.Width = 2;
-            TileObjectData.newTile.Height = 2;
-            TileObjectData.newTile.Origin = new Point16(0, 1);
-            TileObjectData.newTile.CoordinateHeights = [16, 18];
+            TileObjectData.newTile.Width = 4;
+            TileObjectData.newTile.Height = 3;
+            TileObjectData.newTile.Origin = new Point16(2, 2);
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 18];
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile
                 | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.CoordinateWidth = 16;
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
             }
 
             //缺电时机身压暗,全系"断电减半"状态语言
-            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 2, tp.MachineData.UEvalue < MushroomFarmerTP.PlantCost);
+            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 3, 18, tp.MachineData.UEvalue < MushroomFarmerTP.PlantCost);
             return false;
         }
     }

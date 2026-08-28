@@ -232,3 +232,8 @@ AbyssalPressure: {
 	DisplayName: 渊压
 	Description: 深渊水压裹住全身，行动迟滞
 }
+
+BlessErosionBuff: {
+	DisplayName: 侵蚀
+	Description: 腐环啃咬着护甲，防御减少10点
+}

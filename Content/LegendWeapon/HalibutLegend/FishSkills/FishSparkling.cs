@@ -29,7 +29,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
             //仅依据存活的鱼来判断是否处于齐射状态，避免依赖未同步的玩家状态字段
             //同时不再使用 SparklingVolleyActive / SparklingVolleyTimer，所有齐射状态均存在弹幕本体上
-            bool hasSparklingFish = player.CountProjectilesOfID<SparklingFishHolder>() > 0;
+            //玩家更新阶段 ownedProjectileCounts 是上一拍完整快照，O(1) 代替全表扫描
+            bool hasSparklingFish = player.ownedProjectileCounts[ModContent.ProjectileType<SparklingFishHolder>()] > 0;
             return !hasSparklingFish;
         }
         internal void TryTriggerSparklingVolley(Item item, Player player, HalibutPlayer hp) {

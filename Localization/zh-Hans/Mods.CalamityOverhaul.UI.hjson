@@ -1395,6 +1395,15 @@ DungeonworldLoadingScreen: {
 	RevealHold: 正在点亮烛火
 }
 
+DungeonworldGuideNotes: {
+	LayerNoteGaol: 牢狱层。铐链和锈往哪边密，深牢禁室就在哪边。
+	LayerNoteFlood: 水牢。水都往最底一层的泄洪堂去，你也一样。
+	LayerNoteProof: 铸造机关层。齿轮没停过，最底下那条天轨通向验收堂。
+	ApproachGaol: 铐链密得挂不下了。前面那间牢房，门是从外面锁的。
+	ApproachFlood: 水线爬到了顶。前面的泄洪堂里，有东西还在等水。
+	ApproachProof: 天轨到了头。炉火还热着，验收堂在等今天的工件。
+}
+
 HadalworldLoadingScreen: {
 	BandName0: 日光带
 	BandName1: 暮光带
@@ -1418,6 +1427,23 @@ KiyumeLoadingScreen: {
 	VerseExit: 湖松手了，别回头。
 	StatusEnter: 雾从湖上漫过来
 	StatusExit: 村子沉回雾里
+}
+
+KiameLoadingScreen: {
+	TitleEnter: 鬼雨
+	TitleExit: 雨歇
+	VerseEnter: 洼里的水涨了一夜，没有人来收伞。
+	VerseExit: 伞收了，雨还在下。
+	StatusEnter: 雨漫过洼地
+	StatusExit: 雨声退远
+}
+
+KiameExitKeeper.ExitHint: "[右键] 收伞归返"
+
+KiameWake: {
+	WakeOni: 伞下的东西松了手，你醒了。
+	WakeDrowned: 黑水漫过头顶，你醒了。
+	WakeGeneric: 你从雨里醒来。
 }
 
 OldNetTexts: {

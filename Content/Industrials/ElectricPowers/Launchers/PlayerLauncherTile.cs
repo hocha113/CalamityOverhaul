@@ -26,10 +26,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Launchers
             AddMapEntry(new Color(80, 150, 220), VaultUtils.GetLocalizedItemName<PlayerLauncher>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.Width = 2;
-            TileObjectData.newTile.Height = 2;
-            TileObjectData.newTile.Origin = new Point16(0, 1);
-            TileObjectData.newTile.CoordinateHeights = [16, 18];
+            TileObjectData.newTile.Width = 4;
+            TileObjectData.newTile.Height = 3;
+            TileObjectData.newTile.Origin = new Point16(2, 2);
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16];
             TileObjectData.newTile.AnchorBottom = new AnchorData(
                 AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide,
                 TileObjectData.newTile.Width, 0);
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Launchers
             }
 
             //电量不足一次弹射时机身压暗,全系"断电减半"状态语言
-            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 2, tp.MachineData.UEvalue < tp.LaunchCost);
+            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 3, 16, tp.MachineData.UEvalue < tp.LaunchCost);
             return false;
         }
     }

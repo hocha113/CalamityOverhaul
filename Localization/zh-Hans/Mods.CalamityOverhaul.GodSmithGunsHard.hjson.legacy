@@ -1,0 +1,152 @@
+GsCandyCornRifle: {
+	Desc:
+		'''
+		重铸：右键切换糖衣
+		糖果雨：经典速射不变，弹道带上甜腻的下坠弧线
+		黏糖三连：一次吐出 3 粒软糖弹；命中叠加糖霜，减速目标并让你的糖弹打得更痛
+		'''
+	ModeCandyRain: 糖果雨
+	ModeStickyBurst: 黏糖三连
+}
+
+GsClockworkAssaultRifle: {
+	Desc:
+		'''
+		重铸：右键切换射击模式
+		齿轮点射：保留经典三连发，第 3 发威力提高 30%
+		超频：射速加快 40%，代价是积热；打得太热齿轮会卡壳
+		'''
+	ModeGearBurst: 齿轮点射
+	ModeOverclock: 超频
+}
+
+GsGatligator: {
+	Desc:
+		'''
+		重铸：右键切换性子
+		沼泽乱涌：狂野散射不变，每发子弹能在物块上弹跳一次
+		死亡翻滚：改为收束的四连串射，链末一发撕开流血伤口
+		'''
+	ModeSwampRiot: 沼泽乱涌
+	ModeDeathRoll: 死亡翻滚
+}
+
+GsMegashark: {
+	Desc:
+		'''
+		重铸：右键切换咬合
+		狂食：扣住扳机越久，射速越快；鲨咬：收束散布，威力提高 15%
+		累计命中 50 发即见血：3 秒内每发命中都会留下流血伤口
+		'''
+	ModeFrenzy: 狂食
+	ModeSharkBite: 鲨咬
+}
+
+GsOnyxBlaster: {
+	Desc:
+		'''
+		重铸：右键切换装药
+		玛瑙齐射：暗球爆点留下驻留的暗渍，把敌人向内拖拽
+		奇点装药：射速放慢，改掷一颗巨型玛瑙球；爆炸把万物拽向核心，并向四周环洒你的子弹
+		'''
+	ModeVolley: 玛瑙齐射
+	ModeSingularity: 奇点装药
+}
+
+GsSDMG: {
+	Desc:
+		'''
+		重铸：右键循环三种射击模式
+		海豚奔潮：传说级射速原样保留
+		声呐点射：每第 3 发命中挂上声呐标记，全队远程对该目标伤害提高 8%
+		轨道导引：子弹轻微追踪，威力降低 10%
+		'''
+	ModeDolphinTide: 海豚奔潮
+	ModeSonarBurst: 声呐点射
+	ModeOrbitalGuide: 轨道导引
+}
+
+GsShotgun: {
+	Desc:
+		'''
+		重铸：右键切换喉径
+		宽喉：6 粒带铅坠弧线的宽扇；单次射击命中满 3 粒，目标上空炸开一阵坠落铅雨
+		收颈：3 粒精束直线，每粒更重；3 粒全中同一目标使其铅蚀 1.5 秒，受本枪伤害提高 12%
+		每次扣扳机仍只消耗 1 发弹药
+		'''
+	ModeWideBore: 宽喉
+	ModeTightChoke: 收颈
+}
+
+GsShotgunLeadRainProj.DisplayName: 坠落铅雨
+
+GsSniperRifle: {
+	Desc:
+		'''
+		重铸：轻点右键切换射击模式，按住右键开镜
+		狙击：亮出贯穿瞄准线；站定不动即可屏息，屏息后的一枪必定暴击
+		速射：用威力换射速
+		'''
+	ModeSnipe: 狙击
+	ModeRapid: 速射
+}
+
+GsTacticalShotgun: {
+	Desc:
+		'''
+		重铸：右键切换战术姿态
+		战术扇面：常亮散布锥标线，6 粒的覆盖面一目了然
+		压制三泵：快速连打 3 泵后强制歇泵；首泵推出破门冲击气浪，被撞开的敌人 1 秒内受本枪弹丸伤害提高 10%
+		每泵照常消耗 1 发弹药
+		'''
+	ModeFan: 战术扇面
+	ModeTriplePump: 压制三泵
+}
+
+GsTacticalShotgunBreachProj.DisplayName: 破门气浪
+
+GsUzi: {
+	Desc:
+		'''
+		重铸：右键切换握持
+		双持乱射：射速加快三成，弹道松散；高速点射：三连收束，弹弹咬点
+		每第 4 发（点射档为链末发）是琥珀曳光弹：曳光命中点亮目标，1.5 秒内你的乌兹子弹对其伤害提高 10%
+		'''
+	ModeAkimbo: 双持乱射
+	ModeBurst: 高速点射
+}
+
+GsUziTracerProj.DisplayName: 琥珀曳光弹
+
+GsVenusMagnum: {
+	Desc:
+		'''
+		重铸：右键切换花期
+		金蕊聚焦：打出暴击后，下一发额外贯穿 1 名敌人，窗口期内瞄准线会亮起
+		花瓣三裂：一发弹药裂成扇形三瓣
+		'''
+	ModeFocus: 金蕊聚焦
+	ModeTriplet: 花瓣三裂
+}
+
+GsVortexBeater: {
+	Desc:
+		'''
+		重铸：右键切换流态
+		星旋扫射：经典弹雨不变，火箭带轻微追踪
+		星旋炮击：改射缓慢的充能重弹，单发威力 2.6 倍；重击落点撕开一个牵引旋涡
+		'''
+	ModeSweep: 星旋扫射
+	ModeCannon: 星旋炮击
+}
+
+GsXenopopper: {
+	Desc:
+		'''
+		重铸：右键切换泡型
+		集束：吹出 5 只气泡，向光标处收拢并交叉引爆
+		真空：吹出一只大泡飘向光标，悬停片刻后 5 发弹药一次性喷出
+		'''
+	ModeCluster: 集束
+	ModeVacuum: 真空
+}

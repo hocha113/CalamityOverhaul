@@ -76,6 +76,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
 
         /// <summary>正以缚舞态擒住该玩家的女皇，无则null（各端可用，读同步数据）</summary>
         internal static NPC FindGrabbingEmpress(int playerIndex) {
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必扫表
+                return null;
+            }
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (npc.type != NPCID.HallowBoss) {
                     continue;

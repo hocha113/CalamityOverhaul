@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.GameInput;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -34,7 +35,11 @@ namespace CalamityOverhaul.Common
         public static ModKeybind Onikiri_DomainFlip { get; private set; }
         public static ModKeybind Kikasa_Sink { get; private set; }
         public static ModKeybind Kikasa_DomainMutate { get; private set; }
+        /// <summary>鬼伞引潮：长按让血湖水位跟随光标高度</summary>
+        public static ModKeybind Kikasa_TideControl { get; private set; }
         public static ModKeybind Accessory_Skills { get; private set; }
+        /// <summary>祝福往生轮开关键，修罗模式未开启时静默</summary>
+        public static ModKeybind Blessing_Key { get; private set; }
 
         public override void SetStaticDefaults() {
             Notbound = this.GetLocalization(nameof(Notbound), () => "[未绑定按键]");
@@ -68,9 +73,12 @@ namespace CalamityOverhaul.Common
             //倒影自醒/鬼火自燃随湖自动走；鬼奴召/收走 RadialWheel_Key 转盘，
             //旧 Kikasa_Summon/DreamReflect/DreamPull/WispFire 四键已随编成制删除
             Kikasa_DomainMutate = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_DomainMutate), "Mouse3");
+            //引潮:长按水位跟随光标高度(自动跟脚设计 2026-08 实机废弃,改玩家号令)
+            Kikasa_TideControl = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_TideControl), "X");
             //鬼伞大范围重启复用 Legend_Restart，与比目鱼/赛博/绯嫁同键、按各自形态门互斥
             //旧 WeponSkill_Q/R 两键已删:武器技能改走手持技能按钮 HUD(WeaponSkillHud)
             Accessory_Skills = KeybindLoader.RegisterKeybind(mod, nameof(Accessory_Skills), "V");
+            Blessing_Key = KeybindLoader.RegisterKeybind(mod, nameof(Blessing_Key), "P");
         }
 
         public static bool IsKeybindUnbound(ModKeybind keybind, InputMode mode = InputMode.Keyboard) {
@@ -79,18 +87,35 @@ namespace CalamityOverhaul.Common
                 || assignedKeys.All(key => string.Equals(key, Keys.None.ToString(), StringComparison.OrdinalIgnoreCase));
         }
 
+        //键位文本帧戳缓存：HUD/转盘/教程同帧多次问同一键位，改键最迟下一帧生效
+        private readonly record struct KeybindTextKey(ModKeybind Keybind, InputMode Mode);
+        private static readonly Dictionary<KeybindTextKey, string> keybindTextCache = [];
+        private static uint keybindTextFrame = uint.MaxValue;
+
         public static string GetKeybindText(ModKeybind keybind, string fallback, InputMode mode = InputMode.Keyboard) {
-            List<string> assignedKeys = keybind?.GetAssignedKeys(mode);
-            if (assignedKeys == null) {
+            if (keybind == null) {
                 return fallback;
             }
-            string[] effectiveKeys = assignedKeys
-                .Where(key => !string.Equals(key, Keys.None.ToString(), StringComparison.OrdinalIgnoreCase))
-                .ToArray();
-            return effectiveKeys.Length == 0 ? fallback : string.Join(" / ", effectiveKeys);
+            if (keybindTextFrame != Main.GameUpdateCount) {
+                keybindTextFrame = Main.GameUpdateCount;
+                keybindTextCache.Clear();
+            }
+            KeybindTextKey cacheKey = new(keybind, mode);
+            if (!keybindTextCache.TryGetValue(cacheKey, out string text)) {
+                List<string> assignedKeys = keybind.GetAssignedKeys(mode);
+                if (assignedKeys != null) {
+                    string[] effectiveKeys = assignedKeys
+                        .Where(key => !string.Equals(key, Keys.None.ToString(), StringComparison.OrdinalIgnoreCase))
+                        .ToArray();
+                    text = effectiveKeys.Length == 0 ? null : string.Join(" / ", effectiveKeys);
+                }
+                keybindTextCache[cacheKey] = text;
+            }
+            return text ?? fallback;
         }
 
         public override void Unload() {
+            keybindTextCache.Clear();
             QuestLog_Key = null;
             Onikiri_FlashStep = null;
             Onikiri_Execute = null;
@@ -98,6 +123,7 @@ namespace CalamityOverhaul.Common
             Onikiri_DomainFlip = null;
             Kikasa_Sink = null;
             Kikasa_DomainMutate = null;
+            Kikasa_TideControl = null;
             Legend_Domain = null;
             RadialWheel_Key = null;
             Halibut_Clone = null;
@@ -111,6 +137,7 @@ namespace CalamityOverhaul.Common
             CyberFreeze_Key = null;
             CyberwareSkill_Key = null;
             VoidTimeShift_Key = null;
+            Blessing_Key = null;
         }
     }
 }

@@ -75,6 +75,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
         /// <summary>找正吞着本人的王：验接管在场+状态为吞没+受害者槽指向自己</summary>
         private NPC FindHolder(out KingSlimeAI holderAI) {
             holderAI = null;
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必扫表
+                return null;
+            }
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (!KingSlimeAI.TryGetKingAI(npc, out KingSlimeAI king)) {
                     continue;

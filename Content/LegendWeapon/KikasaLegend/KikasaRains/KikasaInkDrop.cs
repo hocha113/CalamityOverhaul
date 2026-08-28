@@ -16,7 +16,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
     /// 越过顶点切入坠落段,有目标时曲率限幅平滑追击:转向率随追踪渐拧紧、
     /// 真拦截提前量、远距先绕到目标头顶再俯冲,轨迹恒为圆滑弧线,无锐角;
     /// 无目标时重力坠向光标列。追太久或擦身而过即放弃追踪转坠落,不绕圈。
-    /// 集中绘制在 <see cref="KikasaRainRender"/>,本体 PreDraw 不画
+    /// 血湖是介质不是地板:入水留墨膜与水花后穿入继续飞,水下粘阻+追击变钝,
+    /// 死在湖底地形照常留渍。集中绘制在 <see cref="KikasaRainRender"/>,本体 PreDraw 不画
     /// </summary>
     internal class KikasaInkDrop : ModProjectile
     {
@@ -108,8 +109,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>弓身:转向角速度的平滑量,笔触随轨迹弯</summary>
         private float bend;
         private Vector2 prevVel;
-        //落湖被收走:谢幕换涟漪不走溅斑
-        private bool lakeSwallowed;
+        //身在湖中:穿水态(湖是介质不是地板),粘阻+追踪变钝+拖尾冒泡;
+        //入/出水沿各留一次边沿谢幕,各端从同步领域态自算同一答案
+        private bool inLake;
         //实心命中:AI 的地形检测各端确定性一致,渍斑贴地
         private bool onTileHit;
 
@@ -183,37 +185,63 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 Projectile.rotation = Utils.AngleLerp(Projectile.rotation, 0f, 0.25f);
             }
 
-            //域内落湖:湖收走自己的墨,涟漪+墨晕谢幕
+            //域内湖水是介质不是地板(2026-08 改制,原为过线即 Kill):
+            //入水沿保留全部触水谢幕(墨膜/水花/入水声),弹体穿入继续飞,水下略慢
             Player owner = Main.player[Projectile.owner];
             bool lakeAlive = owner?.active == true
                 && owner.TryGetModPlayer(out KikasaDomainPlayer domain)
                 && domain.AnyActive && domain.RiseT > 0.5f;
             KikasaDomainPlayer kdp = lakeAlive ? owner.GetModPlayer<KikasaDomainPlayer>() : null;
-            if (lakeAlive && Projectile.Center.Y >= kdp.LakeWorldY + 4f) {
-                lakeSwallowed = true;
+            bool belowLine = lakeAlive && Projectile.Center.Y >= kdp.LakeWorldY + 4f;
+            if (!inLake && belowLine) {
+                //入水沿:墨在水面晕开一片墨膜,稠血咬住来势
+                inLake = true;
                 float ke = MathHelper.Clamp(Projectile.velocity.Length() / plungeMaxSpeed, 0.25f, 1f);
                 if (!Main.dedServ && KikasaDomain.Viewed == kdp) {
                     KikasaDomainDeco.RippleAt(new Vector2(Projectile.Center.X, kdp.LakeWorldY), 0.8f);
                     KikasaDomainDeco.SplashAt(new Vector2(Projectile.Center.X, kdp.LakeWorldY), 5);
                 }
-                //墨入水:水面晕开一片墨膜
                 KikasaInkFX.AddLakeBlot(Projectile.owner, Projectile.Center.X,
                     (36f + ke * 30f) * Projectile.scale);
                 KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.42f, -0.25f, 4);
-                Projectile.Kill();
-                return;
+                Projectile.velocity *= 0.65f;
+            }
+            else if (inLake && lakeAlive && Projectile.Center.Y < kdp.LakeWorldY - 6f) {
+                //出水沿:破水而出,小水花复常速(迟滞带防贴线抖动)
+                inLake = false;
+                if (!Main.dedServ && KikasaDomain.Viewed == kdp) {
+                    KikasaDomainDeco.RippleAt(new Vector2(Projectile.Center.X, kdp.LakeWorldY), 0.5f);
+                    KikasaDomainDeco.SplashAt(new Vector2(Projectile.Center.X, kdp.LakeWorldY), 3);
+                }
+            }
+            else if (inLake && !lakeAlive) {
+                //湖收了,水下态静默解除
+                inLake = false;
             }
 
-            //坠落段的实心检测(湖线以上才算,湖下地形被湖面盖着)。
-            //碰撞在坠落段首次身处空气后才武装:室内上抛扎进天花板的滴
-            //先穿回房内再正常落地,不死在顶上(反馈七·#74)
+            if (inLake) {
+                //水下粘阻:每帧轻咬,追击终速约降到六成五;拖尾冒细泡
+                Projectile.velocity *= 0.97f;
+                if ((int)life % 4 == 0 && Main.rand.NextBool(2)) {
+                    PRTLoader.NewParticle<PRT_KikasaLakeBubble>(
+                        Projectile.Center - Projectile.velocity.UnitVector() * 8f
+                            + Main.rand.NextVector2Circular(4f, 4f),
+                        new Vector2(0f, -0.25f), default,
+                        Main.rand.NextFloat(0.35f, 0.6f) * Projectile.scale)
+                        ?.Configure(Main.rand.Next(30, 56), kdp.LakeWorldY);
+                }
+            }
+
+            //坠落段的实心检测。碰撞在坠落段首次身处空气后才武装:室内上抛扎进天花板的滴
+            //先穿回房内再正常落地,不死在顶上(反馈七·#74);
+            //穿水改制后湖下地形照常接墨,滴能死在湖底,渍斑与墨洼一并落底
             if (Phase == DropPhase.Plunge) {
                 bool insideSolid = Collision.SolidCollision(
                     Projectile.position, Projectile.width, Projectile.height);
                 if (!plungeArmed) {
                     plungeArmed = !insideSolid;
                 }
-                else if ((!lakeAlive || Projectile.Center.Y < kdp.LakeWorldY - 2f) && insideSolid) {
+                else if (insideSolid) {
                     onTileHit = true;
                     Projectile.Kill();
                 }
@@ -367,6 +395,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             if (dist < 90f) {
                 maxTurn = MathF.Max(maxTurn, HomingTurnTerminal * ramp);
             }
+            if (inLake) {
+                //稠血里拧不动那么急,水下追击弧更钝
+                maxTurn *= 0.8f;
+            }
             Projectile.velocity = Projectile.velocity.RotatedBy(MathHelper.Clamp(dAng, -maxTurn, maxTurn));
 
             //速度包络:大角度贴近时优雅减速调整,其余时候平滑加速俯冲
@@ -431,7 +463,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         //==================== 谢幕 ====================
 
         public override void OnKill(int timeLeft) {
-            if (Main.dedServ || lakeSwallowed) {
+            if (Main.dedServ) {
                 return;
             }
             //落点挂钩(霰碎珠/霏雾团/霜碎镜等):非服务器各端派发,生成物由实现自设 owner 门

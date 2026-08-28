@@ -44,7 +44,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
                 || pour.ModProjectile is not KikasaInkPour inkPour || !inkPour.HitGroundNow) {
                 return;
             }
-            Vector2 basePos = inkPour.FallEndPoint - new Vector2(0f, 36f);
+            //虹要有雨停的地方:过水线的瀑取水面过线点,虹桥不沉进湖里
+            Vector2 basePos = inkPour.SurfaceAnchorPoint - new Vector2(0f, 36f);
             Projectile.NewProjectile(pour.GetSource_FromThis(), basePos, Vector2.Zero,
                 ModContent.ProjectileType<FuHongRainbowBridge>(),
                 System.Math.Max((int)(pour.damage * BridgeDamageMul), 1),

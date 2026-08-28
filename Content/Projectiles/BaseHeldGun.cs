@@ -129,8 +129,11 @@ namespace CalamityOverhaul.Content.Projectiles
         public virtual bool WantsFireRight => CanRightClick && DownRight && !DownLeft && mouseUIFree && MouseIconFree && GunCanUse;
         /// <summary>开火尝试，兼驱动 BaseHeldProj 鼠标同步</summary>
         public override bool CanFire => (DownLeft || DownRight && CanRightClick && MouseIconFree) && mouseUIFree;
-        /// <summary>瞄准时保持鼠标同步</summary>
-        public override bool CanMouseNet => AlwaysAimPose;
+        /// <summary>瞄准时保持鼠标同步。帧模节流：空闲瞄准的姿态包从鼠标一动就发（~60Hz）
+        /// 压到 ~15Hz，仅影响旁观端看到的持枪朝向平滑度；开火窗口由 <see cref="CanFire"/>
+        /// 驱动全速同步，命中判定端的瞄向不受影响</summary>
+        public override bool CanMouseNet => AlwaysAimPose
+            && (Main.GameUpdateCount + (uint)Projectile.whoAmI) % 4 == 0;
         /// <summary>绘制位矫正，跟身体起伏</summary>
         public Vector2 SpecialDrawPositionOffset => CanFire ? Vector2.Zero : Owner.CWR().SpecialDrawPositionOffset;
         /// <summary>发光层，null 不绘</summary>

@@ -26,6 +26,17 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             return true;
         }
 
+        //汇算节流：里程碑是全表/长清单统计，60 帧一次足够（书面进度 1 秒内跟上），按类型错相
+        private int tallyPhase = -1;
+
+        /// <summary>本帧是否轮到汇算</summary>
+        protected bool ShouldTallyThisFrame() {
+            if (tallyPhase < 0) {
+                tallyPhase = Math.Abs(GetType().Name.GetHashCode()) % 60;
+            }
+            return (Main.GameUpdateCount + (uint)tallyPhase) % 60 == 0;
+        }
+
         /// <summary>按 ID 清单汇算，缺席节点跳过；返回值填进目标进度</summary>
         protected void TallyByIDs(string[] ids) {
             int total = 0;
@@ -88,6 +99,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
+            if (!ShouldTallyThisFrame()) {
+                return;
+            }
             TallyByIDs(BossQuestIDs);
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
@@ -123,6 +137,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
+            if (!ShouldTallyThisFrame()) {
+                return;
+            }
             TallyByIDs(EventQuestIDs);
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
@@ -151,6 +168,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
+            if (!ShouldTallyThisFrame()) {
+                return;
+            }
             //隐藏彩蛋不计入分母，缺席内容自然不在表里
             int total = 0;
             int done = 0;

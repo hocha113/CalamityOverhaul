@@ -101,11 +101,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
 
         //---- 钓竿装配锚点(相对物块左上角,由组合预览图反算) ----
         //竿底插销枢轴:竿绕它做小幅摆动
-        private static readonly Vector2 RodPivotOffset = new(12f, 18f);
+        private static readonly Vector2 RodPivotOffset = new(24f, 16f);
         //插销在竿贴图内的本地坐标(底部尖头中心)
-        private static readonly Vector2 RodPivotLocal = new(5f, 26f);
+        private static readonly Vector2 RodPivotLocal = new(10f, 52f);
         //出线点在竿贴图内的本地坐标(竿顶红球)
-        private static readonly Vector2 RodTipLocal = new(6.5f, 1.5f);
+        private static readonly Vector2 RodTipLocal = new(13f, 3f);
 
         #endregion
 
@@ -280,7 +280,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
         /// 只读物块,并行阶段安全。熔岩不认
         /// </summary>
         private void ScanWater() {
-            int centerX = Position.X + 1;
+            int centerX = Position.X + Width / 16 / 2;
             int startY = Position.Y + Height / 16;
 
             Point16 found = Point16.Zero;
@@ -668,13 +668,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
 
             Vector2 bobberWorld = BobberPos;
             //线从竿顶红球出,挂到浮标顶端
-            DrawFishingLine(spriteBatch, RodTipPos, bobberWorld - new Vector2(0f, 4f), lightColor);
+            DrawFishingLine(spriteBatch, RodTipPos, bobberWorld - new Vector2(0f, 8f), lightColor);
 
             //浮标贴图:锚点取贴图中上,浮在水面线上
             Texture2D hookTex = hookAsset.Value;
             spriteBatch.Draw(hookTex, bobberWorld - Main.screenPosition, null,
                 Lighting.GetColor(bobberWorld.ToTileCoordinates()), 0f,
-                new Vector2(hookTex.Width * 0.5f, 4f), 1f, SpriteEffects.None, 0f);
+                new Vector2(hookTex.Width * 0.5f, 8f), 1f, SpriteEffects.None, 0f);
         }
 
         /// <summary>竿尖到浮标的下垂钓线,二次贝塞尔逐段画</summary>

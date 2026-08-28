@@ -226,24 +226,30 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             ensureCheckTimer = actorReady ? EnsureCheckInterval : 0;
         }
 
-        /// <summary>权威端维持恰好一个Actor，并把位置纠正到存档锚点</summary>
+        /// <summary>权威端维持恰好一个Actor，并把位置纠正到存档锚点。
+        /// GetActiveActors 按 is 匹配会捞到门伞等子类，唯一性只对故事伞本型生效</summary>
         private static bool EnsureSingleUmbrellaActor() {
             if (VaultUtils.isClient || !IsGenerated || !IsValidWorldPosition(UmbrellaPosition)) {
                 return false;
             }
 
             List<OniRainWorldUmbrella> actors = ActorLoader.GetActiveActors<OniRainWorldUmbrella>();
-            if (actors.Count > 1) {
-                CWRMod.Instance.Logger.Warn($"[OniUmbrellaWorldSpawn] Found {actors.Count} umbrella actors; removing duplicates");
-            }
 
             OniRainWorldUmbrella keeper = null;
+            int exactCount = 0;
             foreach (OniRainWorldUmbrella actor in actors) {
+                if (actor.GetType() != typeof(OniRainWorldUmbrella)) {
+                    continue;
+                }
+                exactCount++;
                 if (keeper == null) {
                     keeper = actor;
                     continue;
                 }
                 ActorLoader.KillActor(actor.WhoAmI);
+            }
+            if (exactCount > 1) {
+                CWRMod.Instance.Logger.Warn($"[OniUmbrellaWorldSpawn] Found {exactCount} umbrella actors; removing duplicates");
             }
 
             if (keeper != null) {

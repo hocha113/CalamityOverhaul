@@ -1161,6 +1161,7 @@ KikasaText: {
 		ScrollName: 湖 心 景
 		OpenTag: 点击打开
 		TipWaterFormat: 水位 {0}%
+		TipTideHintFormat: 长按 {0}，水位跟着光标走
 		TipVaultFormat: 湖藏 {0} / {1}
 		TipWispClick: 点击焰苗，点燃或收火
 		TipCooldownFormat: 冷却中 · {0}%
@@ -1168,7 +1169,7 @@ KikasaText: {
 		TipDrownHintFormat: 对着敌人或拿着物品按 {0}
 		TipDrownReady: 可以沉溺
 		TipResetTitle: 大范围重启
-		TipResetHintFormat: 在鬼雨中按 {0}，把附近的一切倒回数秒前
+		TipResetHintFormat: 随时按 {0}，把附近的一切倒回数秒前
 		TipTeleportTitle: 鬼域传送
 		TipTeleportHintFormat: 按 {0} 借一滩水渡到指针处；在血湖里施展更快、冷却更短
 		TipThrallFormat: 在场伞奴 {0} / {1}
@@ -1270,7 +1271,7 @@ KikasaText: {
 
 	KikasaHudLead: {
 		DomainTitle: 撑开血湖
-		DomainBody: 血湖是鬼伞立足的地方：存取物品、沉溺敌人、驱使沉影，都要先把湖撑开，让血水涨起来。
+		DomainBody: 血湖是鬼伞立足的地方：存取物品、沉溺敌人、驱使沉影，都要先把湖撑开，让血水涨起来。水位听你号令：长按「引潮」键（默认 X），水面就跟着光标升降。
 		DomainPrompt: 手持鬼伞，按 {0}
 		SinkTitle: 沉进湖里
 		SinkBody: 拿着物品按沉入键，物品会存进湖底，之后能在湖心景里取回。对着敌人按同一个键，就把它按进水里。被沉溺过的 Boss 会留下影子，这就是沉影，往后可以驱使它替你作战。
@@ -1285,9 +1286,9 @@ KikasaText: {
 		RainTitle: 异化成鬼雨
 		RainBody: 「血湖表里」键（默认鼠标中键）有两种按法：湖水涨满后短按，血湖翻转成鬼雨；长按则沉入鬼梦，留到最后一步。在鬼雨中杀死的敌人会化作伞奴，替你作战。
 		RainPrompt: 湖水涨满后，短按 {0} 翻转血湖
-		RestartTitle: 雨中重启
-		RestartBody: 鬼雨记得几秒前的一切。按下重启键，画面定格成黑白照片，再被雨痕冲开：附近的敌人和你都退回数秒前的位置，你的生命回满、减益洗净，倒带全程无敌。
-		RestartPrompt: 鬼雨满水时，按 {0}
+		RestartTitle: 大范围重启
+		RestartBody: 按下重启键，画面定格成黑白照片，再被雨痕冲开：附近的敌人和你都退回数秒前的位置，你的生命回满、减益洗净，倒带全程无敌。不在鬼雨里也能按：快门那一刻会借来一场鬼雨，落定后雨自行退场，领域还是按键前的领域。
+		RestartPrompt: 手持鬼伞，按 {0}
 		DreamTitle: 进入鬼梦
 		DreamBody: 湖水涨满后长按「血湖表里」键，湖里的倒影会把你拽进鬼梦。梦中敌人失能，远程弹幕无法存在；你的物品也被封禁，改为按住左键连续唤出恶犬撕咬。再按一次同键就能醒来。
 		DreamPrompt: 湖水涨满后，长按 {0}

@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.Runtime;
 using InnoVault.Cinematics;
@@ -19,6 +20,9 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
     {
         //演出总长硬上限，防坏包把余韵拖死
         private const int MaxSeizeFrames = 60 * 10;
+
+        /// <summary>在场帧戳：任一玩家夺身演出推进时盖戳，渲染层据此跳过空场全玩家表扫描</summary>
+        internal static ActivityStamp PresenceStamp;
 
         private string activeKey = string.Empty;
         private int timer;
@@ -149,6 +153,7 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
             if (!Active || Player.dead) {
                 return;
             }
+            PresenceStamp.Stamp();
             EnsurePerformance();
             StartPresentation();
 
@@ -196,6 +201,7 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
             if (!Active) {
                 return;
             }
+            PresenceStamp.Stamp();
             EnsurePerformance();
             StartPresentation();
             if (!executed) {

@@ -2,56 +2,69 @@ GsBatScepter.Desc:
 	'''
 	Reforged: hits build Nightfall; at full charge, right click to call the bat deluge
 	A phantom moon rises, waves of bats dive at your foes, then circle you as a guard ring
+	Every 8th bat bite splits off a phantom bat that dives at another nearby foe
 	'''
 GsRazorpine.Desc:
 	'''
 	Reforged: hits build Resin; at full charge, right click to raise the Needle Storm
 	A ring of needles tightens around you, then settles into a needle mat underfoot
+	Needle hits smear resin; 5 smears on one foe draw a ring of 4 needles closing in on it
 	'''
 GsBlizzardStaff.Desc:
 	'''
 	Reforged: hits build Snowsquall; at full charge, right click to call the Whiteout over your cursor
 	A giant blizzard hammers the area and leaves rime spikes on the ground
+	Every 5th icicle is a rime seed that bursts into a small frost blast where it dies
 	'''
 GsStaffofEarth.Desc:
 	'''
 	Reforged: hits build Earthwrath; at full charge, right click to raise the Orogeny at your cursor
 	Rock pillars erupt in waves amid flying rubble, leaving a magma vein bed behind
+	The boulder grinds harder with every foe it crushes, and a half-height rock pillar erupts where it shatters
 	'''
 GsBetsysWrath.Desc:
 	'''
 	Reforged: hits build Dragonfire; at full charge, right click to invoke the Dragon's Wrath
 	Betsy's shade dives three times trailing flame curtains, leaving a cursed pyre bed
+	Hits on cursed foes bank extra Dragonfire, and every 4th cursed hit bursts into hexfire
 	'''
 GsNightglow.Desc:
 	'''
 	Reforged: hits build Dawnlight; at full charge, right click to unfurl an Aurora Curtain over your cursor
 	The curtain sears foes within and rains light lances below
+	Every 5th bolt hit drops an aurora lance from above the target
 	'''
 GsStellarTune.Desc:
 	'''
 	Reforged: hits build Melody; at full charge, right click to open the Stellar Finale
 	Star chords play themselves at your foes on the beat while you dance a little faster
+	Consecutive hits climb a scale; the 8th note lands as a star chord burst
 	'''
 GsResonanceScepter.Desc:
 	'''
 	Reforged: hits build Resonance; at full charge, right click to collapse the harmonics at your cursor
 	Five standing waves cross the area and their nodes strike whatever lingers
+	The royal wave rings a standing wave pulse on every 3rd foe it pierces
 	'''
 GsNebulaArcanum.Desc:
 	'''
 	Reforged: hits build Arcanum; at full charge, right click to spin up the Nebula Spiral
 	Three nebula arms orbit you, grinding foes and dragging the lesser ones inward
+	The arcanum orb itself now swells in flight and slowly drags lesser foes toward its heart
+	Nebula mist rises from the staff as the gauge fills
 	'''
 GsNebulaBlaze.Desc:
 	'''
 	Reforged: hits build Blaze; at full charge, right click to mark a nova on the target near your cursor
 	It detonates in three staggered blast rings around a gravity well
+	Nebula eruption bolts now always ignite a micro nova where they strike
 	'''
 GsLunarFlare.Desc:
 	'''
 	Reforged: hits build Moonphase; at full charge, right click to raise the Lunar Eclipse
 	An eclipse disk pours twelve woven flare falls, every third one backed by a phantom moonbeam
+	Every 4th cast pours a pale fourth flare from the sky
+	Moonlight gathers on the book as the gauge fills
 	'''
 GsBatSwarmDirector.DisplayName: Bat Deluge
 GsPineStormDirector.DisplayName: Needle Storm
@@ -65,5 +78,19 @@ GsStellarFinaleDirector.DisplayName: Stellar Finale
 GsResonanceCollapseDirector.DisplayName: Harmonic Collapse
 GsNebulaSpiralDirector.DisplayName: Nebula Spiral
 GsNovaDetonationDirector.DisplayName: Nova Detonation
+GsSpectreStaff.Desc:
+	'''
+	Reforged: hits build Soulharvest; when full, right click to raise the Soul Tide at your cursor
+	Every quarter of the gauge banked splits off an echo soul that hunts another nearby foe
+	Three tide crests sweep the ring; each crest hit ferries 1 life back to you, up to 6 a second
+	'''
 GsLunarEclipseDirector.DisplayName: Lunar Eclipse
 GsMoonPillarProj.DisplayName: Phantom Moonbeam
+GsSpectreStaffTideDirector.DisplayName: Soul Tide
+GsInfernoFork.Desc:
+	'''
+	Reforged: fireballs corkscrew with furnace slag and every hit banks Cinder
+	When the gauge is full, right click to set the Wildfire at your cursor: three waves of flame sweep the ground, fire rains between them, and an ember shoal smolders after
+	'''
+GsInfernoForkWildfireDirector.DisplayName: Wildfire
+GsCataclysmRiderBurstProj.DisplayName: Cataclysm Aftershock

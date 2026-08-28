@@ -12,8 +12,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Prismglade
 {
     /// <summary>
     /// 残酷模式神圣之地环境氛围层（地表与地下同管，ZoneHallow 检测）。
-    /// 三个具名特色：「虹尘」常态氛围（彩虹微尘+风铃泛音+夜间妖精光球群舞）、
-    /// 「棱光审判」（夜间低频天降光柱，地下变奏为晶簇共鸣脉冲）、
+    /// 三个具名特色：「虹尘」常态氛围（彩虹微尘+少量暗芯微晶+风铃泛音+夜间妖精光球群舞）、
+    /// 「棱光审判」（夜间低频审判柱：地表夜空凝聚悬浮棱晶折射天光而下，地下变奏为晶簇共鸣脉冲）、
     /// 「圣晶折射」（白天水晶簇刺目闪光，纯视觉）；另有低频甜头「独角尘迹」远景彩虹尘线。
     /// 权威端只做审判调度与弹幕生成，一切视觉与声音在客户端本地驱动；
     /// 档位只调光束频率，机制形状不随档位改变
@@ -285,7 +285,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Prismglade
             UpdateStreak();
         }
 
-        /// <summary>「虹尘」主体：屏内空气里的彩虹微尘（满在场约 8~10 粒/秒，地下略疏略亮）</summary>
+        /// <summary>「虹尘」主体：屏内空气里的彩虹微尘（满在场约 8~10 粒/秒，地下略疏略亮；约 1/5 为暗芯微晶）</summary>
         private static void UpdateMotes() {
             if (--moteIn > 0) {
                 return;
@@ -297,6 +297,13 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Prismglade
             Point tp = pos.ToTileCoordinates();
             if (!WorldGen.InWorld(tp.X, tp.Y, 10) || WorldGen.SolidTile(tp.X, tp.Y)) {
                 return;//只在空气中飘
+            }
+            if (Main.rand.NextBool(5)) {
+                //暗芯微晶变体：真 alpha 遮挡颗粒缓沉，压住全加法虹尘的发虚
+                PRTLoader.NewParticle<PRT_PrismgladeChip>(pos,
+                    new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), Main.rand.NextFloat(0.04f, 0.16f)),
+                    default, Main.rand.NextFloat(0.16f, 0.28f) * (1f + 0.25f * caveBlend));
+                return;
             }
             PRTLoader.NewParticle<PRT_PrismgladeMote>(pos,
                 new Vector2(Main.rand.NextFloat(-0.25f, 0.25f), -Main.rand.NextFloat(0.02f, 0.14f)),

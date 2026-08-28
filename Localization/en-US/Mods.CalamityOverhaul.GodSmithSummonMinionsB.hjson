@@ -1,0 +1,24 @@
+GsOpticStaff.Desc: Twin Pact: the mini twins fly wing formation; under the assault order, a laser and a ram biting one foe in quick succession cross their sights into an X-flash that ignites cursed flames
+GsSanguineStaff.Desc: Sanguine Homing: under the assault order, each bat bite tears a crescent of clotted blood off the marked prey that wings back to you, cutting whatever stands in its path
+GsPirateStaff.Desc: Plunder Writ: every pirate strike stashes loot; under the rally order, six shares crack the chest open at the flag and five gilded mortar coins rain toward nearby foes, marking them with the Midas touch
+GsPygmyStaff.Desc: Headhunt Drums: under the rally order, a spear strike raises a totem at the flag; inside its war-drum ring your minions hit 10% harder and pygmy spears steep their venom deeper
+GsRavenStaff.Desc: Omen Collapse: under the assault order, four pecks from two different ravens fold the marked prey's shadow into a dire omen that detonates in shadowflame
+GsDeadlySphereStaff.Desc: Grinder Protocol: under the assault order, three sphere slams within a breath rivet a whirling saw ring into the marked foe, grinding it with sparking steel teeth
+GsTempestStaff.Desc: Confluence Surge: under the assault order, a tempest lash and a mini shark bite landing on one foe in quick succession merge into a sweeping tidal wall that batters everything in its path
+GsXenoStaff.Desc: Orbital Calibration: under the assault order, four lasers into the marked foe finish the calibration and call down an annihilation lance from high orbit
+GsStardustCellStaff.Desc: Mitosis Tide: under the assault order, once three little cells cling to the marked foe, the next cell slam splits into five seeking spores that each deepen the cellular corrosion
+GsStardustDragonStaff.Desc: Skyrift Piercer: under the assault order, two drills of the dragon's head into the marked foe tear open a star rift at the wound that gushes falling stardust
+GsEmpressBlade.Desc: Prismatic Finale: under the assault order, six slashes from at least two blades open the execution rite; six phantom blades fan out above the marked prey and plunge through it one by one in rainbow order
+GsStormTigerStaff.Desc: Ambush Rend: under the assault order, three tiger strikes within a breath unleash the kill rite; three storm-sand claw tears rip through the marked prey, and a mightier tiger stalks a shorter cooldown
+GsOpticCrossrayProj.DisplayName: Crossed Sights
+GsSanguineArcProj.DisplayName: Homing Blood Arc
+GsPiratePlunderProj.DisplayName: Plunder Coin
+GsPygmyTotemProj.DisplayName: Headhunt Totem
+GsRavenOmenProj.DisplayName: Dire Omen
+GsDeadlySphereSawProj.DisplayName: Riveted Grinder
+GsTempestSurgeProj.DisplayName: Confluence Wall
+GsXenoOrbitalProj.DisplayName: Orbital Annihilation Lance
+GsStardustCellMoteProj.DisplayName: Mitosis Spore
+GsStardustDragonRiftProj.DisplayName: Star Rift
+GsEmpressFinaleProj.DisplayName: Prismatic Finale
+GsStormTigerRendProj.DisplayName: Ambush Claw Rend

@@ -214,6 +214,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         /// <summary>真眼集群规模上限（四手+头各脱出一只）</summary>
         public const int MaxFreeEyes = 5;
 
+        //部件状态帧戳缓存：AI/绘制/DrawBehind/真眼锚点同帧对同一核心多次扫描，
+        //扫一次整帧复用（同帧内所有消费方读到一致快照）
+        private static int partsCacheCore = -1;
+        private static uint partsCacheFrame = uint.MaxValue;
+        private static MLordPartsStatus partsCache;
+
         /// <summary>扫出隶属该核心的四手/头部件状态（手槽 = 行*2+边）</summary>
         public static MLordPartsStatus ScanParts(NPC core) {
             Span<int> hands = stackalloc int[MLordPartsStatus.HandSlots];
@@ -223,6 +229,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
 
             if (core == null || !core.active) {
                 return new MLordPartsStatus(hands, 0, -1);
+            }
+
+            if (partsCacheCore == core.whoAmI && partsCacheFrame == Main.GameUpdateCount) {
+                return partsCache;
             }
 
             foreach (NPC npc in Main.ActiveNPCs) {
@@ -245,7 +255,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
                     }
                 }
             }
-            return new MLordPartsStatus(hands, aliveMask, head);
+            partsCacheCore = core.whoAmI;
+            partsCacheFrame = Main.GameUpdateCount;
+            partsCache = new MLordPartsStatus(hands, aliveMask, head);
+            return partsCache;
         }
 
         /// <summary>场上隶属该核心的真眼列表写入 buffer，返回数量（钳到缓冲长度，防越界读默认槽）</summary>

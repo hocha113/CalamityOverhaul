@@ -41,18 +41,23 @@ namespace CalamityOverhaul.Common
     {
         public static bool IsUpdate { get; private set; } = false;
         public override int TargetID => -1;//-1 全局覆盖所有弹幕
+        //TargetID == -1 的节点不随实体克隆，是被逐帧换 projectile 上下文的单例，
+        //所以 SetProperty 不会被调用，实例字段缓存不到任何东西，必须每拍现查
         public override bool AI() {
-            IsDyeDustEffectActive = IsUpdate = true;
+            //零染料实体不写染色上下文（染色上下文的消费方只在有染料时才有意义）
             int dyeItemID = projectile.CWR().DyeItemID;
             if (dyeItemID > 0) {
+                IsDyeDustEffectActive = IsUpdate = true;
                 DyeShaderData = GameShaders.Armor.GetShaderFromItemId(dyeItemID);
             }
             return true;
         }
 
         public override void PostAI() {
-            IsDyeDustEffectActive = IsUpdate = false;
-            DyeShaderData = null;
+            if (IsUpdate) {
+                IsDyeDustEffectActive = IsUpdate = false;
+                DyeShaderData = null;
+            }
         }
     }
 
@@ -60,10 +65,11 @@ namespace CalamityOverhaul.Common
     {
         public static bool IsUpdate { get; private set; } = false;
         public override int TargetID => -1;//-1 全局覆盖所有 NPC
+        //同上，通用节点是共享单例，npc 上下文每拍被换，不能缓存 CWRNpc
         public override bool AI() {
-            IsDyeDustEffectActive = IsUpdate = true;
             int dyeItemID = npc.CWR().DyeItemID;
             if (dyeItemID > 0) {
+                IsDyeDustEffectActive = IsUpdate = true;
                 DyeShaderData = GameShaders.Armor.GetShaderFromItemId(dyeItemID);
             }
             return true;
@@ -73,8 +79,10 @@ namespace CalamityOverhaul.Common
         }
 
         internal static void ClearUpdateContext() {
-            IsDyeDustEffectActive = IsUpdate = false;
-            DyeShaderData = null;
+            if (IsUpdate) {
+                IsDyeDustEffectActive = IsUpdate = false;
+                DyeShaderData = null;
+            }
         }
     }
 

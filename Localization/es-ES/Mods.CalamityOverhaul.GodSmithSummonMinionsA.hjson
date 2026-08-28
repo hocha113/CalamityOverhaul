@@ -6,7 +6,7 @@
 // GsVampireFrogStaff.Desc: Blood Frog Feast: frogs flank you in twin files; their bites may spill a marrow bead that flies back to heal you, and the blood moon whips them into a crimson frenzy
 // GsImpStaff.Desc: Hellfire Battery: imps hold a rear artillery line; under the assault order, three fireballs into one foe raise a pyre column beneath it
 // GsSpiderStaff.Desc: Web Hunt: three spider breeds hold a triangle watch; concerted bites truss the prey in a binding web that deepens every wound, and every bite now envenoms
-// GsBladeStaff.Desc: Bagua Blade Wheel: daggers orbit as a slow-turning wheel; a dagger's sixth consecutive strike on one foe cuts armor-deep, and the rally order raises a gate of blades
+// GsBladeStaff.Desc: Bagua Blade Wheel: daggers orbit as a slow-turning wheel; a dagger's sixth consecutive strike on one foe cuts armor-deep and flashes a phantom cross-slash for 40% more, and the rally order raises a gate of blades
 
 GsLegionBannerProj: {
 	// DisplayName: Legion Banner
@@ -23,3 +23,4 @@ GsLegionBannerProj: {
 // GsBloodSipProj.DisplayName: Marrow Bead
 // GsWebBindProj.DisplayName: Binding Web
 // GsSoulSolaceProj.DisplayName: Soul Solace Ring
+// GsBladeStaffPhantomProj.DisplayName: Gs Blade Staff Phantom Proj

@@ -48,7 +48,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
-            return player.CountProjectilesOfID<CloudRide>() == 0;
+            //玩家更新阶段 ownedProjectileCounts 是上一拍完整快照，O(1) 代替全表扫描
+            return player.ownedProjectileCounts[ModContent.ProjectileType<CloudRide>()] == 0;
         }
     }
 

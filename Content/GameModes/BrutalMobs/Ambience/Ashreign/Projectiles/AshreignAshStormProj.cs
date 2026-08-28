@@ -21,6 +21,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Ashreign.Projec
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
+        /// <summary>在场帧戳：AI 每帧盖戳，氛围层据此跳过无烬暴时的全表扫描</summary>
+        internal static Common.ActivityStamp PresenceStamp;
+
         /// <summary>烬幕带半宽（像素），带内即暴露候选</summary>
         internal const float HalfWidth = 380f;
         private const int TotalLife = 780;
@@ -50,6 +53,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Ashreign.Projec
         }
 
         public override void AI() {
+            PresenceStamp.Stamp();
             if (Main.dedServ || Main.gamePaused) {
                 return;
             }

@@ -94,6 +94,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
         #region 检测
         /// <summary>正抓着指定玩家的世吞头(验状态+验接管在场)，无则null</summary>
         private static NPC FindDevourHead(int playerWho, out EowHeadAI headOverride) {
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必扫表(世吞头有 HasBoss 特判)
+                headOverride = null;
+                return null;
+            }
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (npc.type != NPCID.EaterofWorldsHead) {
                     continue;

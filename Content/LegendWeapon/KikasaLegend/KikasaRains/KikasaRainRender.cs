@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 if (p.Y < minY) minY = p.Y;
                 if (p.Y > maxY) maxY = p.Y;
             }
-            const float pad = 40f;
+            const float pad = 64f;   //幕级半宽 ~34px + 尾端垂坠 ~14px 的余量
             Vector2 screen = Main.screenPosition;
             return maxX + pad >= screen.X && minX - pad <= screen.X + Main.screenWidth
                 && maxY + pad >= screen.Y && minY - pad <= screen.Y + Main.screenHeight;
@@ -266,13 +266,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             Vector2 headPos = umbrella.Projectile.Center;
             float headDist = lastPt.Dist + Vector2.Distance(lastPt.Pos, headPos);
 
+            //尾端包络:末端约两成点位随点序压向 0。高速拖幕时最老点死于
+            //MaxPoints 硬删而非寿命过期(被删时寿命还剩大半,满宽实心段一帧
+            //消失=平切断裂);包络保证无论哪条死亡路径,末端都先撕散再消失,
+            //端点收零(柱/束长条效果两端收口纪律)
+            int tailN = Math.Max(4, count / 5);
+            float TailT(int idx) => MathHelper.Clamp(idx / (float)tailN, 0f, 1f);
+
             Vector2 PosAt(int idx) {
                 if (idx >= pts.Count) {
                     return headPos;
                 }
                 float lifeT = MathHelper.Clamp(
                     (pts[idx].DeathAt - now) / (float)KikasaRainUmbrella.TrailLifetime, 0f, 1f);
-                float sag = (1f - lifeT) * (1f - lifeT) * 8f;
+                //幕级垂坠:尾端轴心约 11px,配合下缘追加共 14px 量级;
+                //吃包络后的等效寿命,硬删尾同样先坠再散
+                float eff = MathF.Min(lifeT, TailT(idx));
+                float sag = (1f - eff) * (1f - eff) * 11f;
                 return pts[idx].Pos + new Vector2(0f, sag);
             }
 
@@ -303,16 +313,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 }
                 prevNormal = normal;
 
-                //宽度:头满尾窄,速度强度直接吃进几何
-                float halfW = (4f + 5f * strength) * widthScale * MathF.Pow(lifeT, 0.55f);
-                //顶点色 R=剩余寿命 G=速度强度 A=头部整体透明度,与 fx 契约一致
-                Color data = new(lifeT, strength, 0f, headFade);
+                //等效寿命=寿命与尾端包络取小:尾端点即使寿命充足也按濒死老段
+                //处理,自动吃 shader 现有撕丝+熄灭管线,材质故事统一
+                float effLife = MathF.Min(lifeT, TailT(i));
+
+                //宽度:幕级量宽——满速峰值全宽≈伞盖直径(halfW 34×widthScale);
+                //峰值压在离头约两成处,头端收窄让墨幕读作"从伞底钻出来"
+                //而非方头探出伞缘;尾端随等效寿命收窄到零
+                float s = count > 1 ? i / (float)(count - 1) : 1f;
+                float headTaper = 1f - 0.35f * MathF.Max(0f, (s - 0.78f) / 0.22f);
+                float halfW = (12f + 22f * strength) * widthScale
+                    * MathF.Pow(effLife, 0.62f) * headTaper;
+                //顶点色 R=等效寿命 G=速度强度 A=头部整体透明度,与 fx 契约一致
+                Color data = new(effLife, strength, 0f, headFade);
                 float u = dist / 32f;
                 Vector2 off = normal * halfW;
+                Vector2 pA = new(pos.X + off.X, pos.Y + off.Y);
+                Vector2 pB = new(pos.X - off.X, pos.Y - off.Y);
+                //幕下缘比上缘再多坠一分:布/液体的下摆感
+                float sagExtra = (1f - effLife) * (1f - effLife) * 3.5f;
+                if (pA.Y >= pB.Y) {
+                    pA.Y += sagExtra;
+                }
+                else {
+                    pB.Y += sagExtra;
+                }
                 trailVertexBuf[i * 2] = new VertexPositionColorTexture(
-                    new Vector3(pos.X + off.X, pos.Y + off.Y, 0f), data, new Vector2(u, 0f));
+                    new Vector3(pA.X, pA.Y, 0f), data, new Vector2(u, 0f));
                 trailVertexBuf[i * 2 + 1] = new VertexPositionColorTexture(
-                    new Vector3(pos.X - off.X, pos.Y - off.Y, 0f), data, new Vector2(u, 1f));
+                    new Vector3(pB.X, pB.Y, 0f), data, new Vector2(u, 1f));
             }
 
             foreach (EffectPass pass in fx.CurrentTechnique.Passes) {

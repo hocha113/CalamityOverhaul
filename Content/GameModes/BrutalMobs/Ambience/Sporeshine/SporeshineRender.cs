@@ -6,10 +6,11 @@ using Terraria;
 namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine
 {
     /// <summary>
-    /// 发光蘑菇地屏幕层绘制（挂 EndEntityDraw，自开自收加色批，无 RT 槽）：<br/>
-    /// 「蓝澜」孢子光尘：屏内漂浮的蓝色光点，被移动中的玩家推挤散开；<br/>
+    /// 发光蘑菇地屏幕层绘制（挂 EndEntityDraw，自开自收批次，无 RT 槽）：<br/>
+    /// 环境雾体：真 alpha 蓝澜雾片走 AlphaBlend 乘环境光，缓慢弥漫漂移，承担遮挡感；<br/>
+    /// 「蓝澜」孢子光尘：屏内漂浮的蓝色光点，被移动中的玩家推挤散开（加色只做雾中光点）；<br/>
     /// 荧光波纹：踩菇的地面扩散椭圆与菌歌的圆晕（数据在 <see cref="SporeshineAmbience"/>）；<br/>
-    /// 「孢醉」屏边：迷醉越深屏幕四缘蓝光越浓、色调轻微摇曳。加色层物理上不可能遮挡画面
+    /// 「孢醉」屏边：迷醉越深屏幕四缘蓝光越浓、色调轻微摇曳（亮边警示，可读性保留）
     /// </summary>
     internal sealed class SporeshineRender : RenderHandle
     {
@@ -22,10 +23,18 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine
         /// <summary>光尘速度封顶（被推开也不乱飞）</summary>
         private const float MoteMaxSpeed = 3f;
 
+        //==== 环境雾体（真 alpha 遮挡层）====
+        private const int MaxHaze = 10;
+        /// <summary>雾片基础透明度（AlphaBlend 真 alpha，承担遮挡感）</summary>
+        private const float HazeAlpha = 0.17f;
+        /// <summary>雾片环境光乘算下限（微弱孢光，防全黑处彻底沉没）</summary>
+        private const float HazeLightFloor = 0.3f;
+
         private static readonly Color MoteBlue = new(96, 190, 255);
         private static readonly Color RippleBlue = new(110, 215, 255);
         private static readonly Color EdgeBlueA = new(70, 150, 255);
         private static readonly Color EdgeBlueB = new(125, 115, 255);
+        private static readonly Color HazeBlue = new(26, 44, 82);
 
         private struct Mote
         {
@@ -41,6 +50,24 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine
         private static readonly Mote[] motes = new Mote[MaxMotes];
         private static int moteSpawnIn;
 
+        private struct Haze
+        {
+            internal bool Active;
+            internal Vector2 Pos;
+            internal Vector2 Vel;
+            internal int Life;
+            internal int MaxLife;
+            internal float Scale;
+            internal float Seed;
+        }
+
+        //屏幕级演出量（非逐玩家状态），与光尘同一口径
+        private static readonly Haze[] hazes = new Haze[MaxHaze];
+        private static int hazeSpawnIn;
+
+        //本帧会扰动光尘的玩家复用缓冲（避免逐光尘全槽扫描）
+        private static readonly Player[] stirPlayers = new Player[Main.maxPlayers];
+
         //==================== 逻辑更新（孢子光尘） ====================
 
         public override void UpdateBySystem(int index) {
@@ -52,7 +79,21 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine
                 for (int i = 0; i < motes.Length; i++) {
                     motes[i].Active = false;
                 }
+                for (int i = 0; i < hazes.Length; i++) {
+                    hazes[i].Active = false;
+                }
                 return;
+            }
+
+            UpdateHazes();
+
+            //先收集会扰动光尘的玩家，免得每粒光尘都过一遍 255 槽
+            int stirCount = 0;
+            foreach (Player stirPlayer in Main.ActivePlayers) {
+                if (stirPlayer.dead || stirPlayer.velocity.Length() < 1f) {
+                    continue;
+                }
+                stirPlayers[stirCount++] = stirPlayer;
             }
 
             float time = Main.GlobalTimeWrappedHourly;
@@ -65,15 +106,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine
                 m.Vel.X += MathF.Sin(time * 0.7f + m.Seed) * 0.006f;
                 m.Vel.Y -= 0.0035f;
                 //玩家扰动：移动中的玩家把身边光尘推挤散开
-                for (int p = 0; p < Main.maxPlayers; p++) {
-                    Player player = Main.player[p];
-                    if (!player.active || player.dead) {
-                        continue;
-                    }
+                for (int p = 0; p < stirCount; p++) {
+                    Player player = stirPlayers[p];
                     float playerSpeed = player.velocity.Length();
-                    if (playerSpeed < 1f) {
-                        continue;
-                    }
                     Vector2 away = m.Pos - player.Center;
                     float dist = away.Length();
                     if (dist > StirRange || dist < 1f) {
@@ -121,6 +156,49 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine
             }
         }
 
+        /// <summary>环境雾片推进：极缓漂移，寿命尽或漂出屏外即回收，每 14 帧至多补一片</summary>
+        private static void UpdateHazes() {
+            float time = Main.GlobalTimeWrappedHourly;
+            for (int i = 0; i < hazes.Length; i++) {
+                if (!hazes[i].Active) {
+                    continue;
+                }
+                ref Haze h = ref hazes[i];
+                h.Pos += h.Vel + new Vector2(MathF.Sin(time * 0.3f + h.Seed) * 0.08f, 0f);
+                h.Life++;
+
+                bool offScreen = h.Pos.X < Main.screenPosition.X - 420f
+                    || h.Pos.X > Main.screenPosition.X + Main.screenWidth + 420f
+                    || h.Pos.Y < Main.screenPosition.Y - 420f
+                    || h.Pos.Y > Main.screenPosition.Y + Main.screenHeight + 420f;
+                if (h.Life >= h.MaxLife || offScreen) {
+                    h.Active = false;
+                }
+            }
+
+            if (--hazeSpawnIn > 0) {
+                return;
+            }
+            hazeSpawnIn = 14;
+            for (int i = 0; i < hazes.Length; i++) {
+                if (hazes[i].Active) {
+                    continue;
+                }
+                hazes[i] = new Haze {
+                    Active = true,
+                    Pos = new Vector2(
+                        Main.screenPosition.X + Main.rand.NextFloat(-160f, Main.screenWidth + 160f),
+                        Main.screenPosition.Y + Main.rand.NextFloat(-160f, Main.screenHeight + 160f)),
+                    Vel = new Vector2(Main.rand.NextFloat(-0.22f, 0.22f), Main.rand.NextFloat(-0.04f, 0.04f)),
+                    Life = 0,
+                    MaxLife = Main.rand.Next(480, 840),
+                    Scale = Main.rand.NextFloat(0.9f, 1.8f),
+                    Seed = Main.rand.NextFloat(MathHelper.TwoPi),
+                };
+                return;
+            }
+        }
+
         //==================== 绘制 ====================
 
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main
@@ -137,8 +215,15 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine
                 return;
             }
 
-            //世界层：光尘与波纹（加色批，随镜头矩阵）
+            //世界层一：环境雾体（AlphaBlend 真 alpha 乘环境光，承担遮挡感）
             if (presence >= 0.02f) {
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                    DepthStencilState.None, RasterizerState.CullNone, null,
+                    Main.GameViewMatrix.TransformationMatrix);
+                DrawHaze(spriteBatch, presence);
+                spriteBatch.End();
+
+                //世界层二：光尘与波纹（加色只做雾中光点，随镜头矩阵）
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
                     DepthStencilState.None, RasterizerState.CullNone, null,
                     Main.GameViewMatrix.TransformationMatrix);
@@ -153,6 +238,34 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine
                     DepthStencilState.None, RasterizerState.CullNone);
                 DrawDazeVeil(spriteBatch, daze);
                 spriteBatch.End();
+            }
+        }
+
+        /// <summary>环境雾片：真 alpha 蓝澜雾体，逐片乘环境光（亮处显形暗处沉没）</summary>
+        private static void DrawHaze(SpriteBatch sb, float presence) {
+            Texture2D fogTex = CWRAsset.Fog?.Value;
+            if (fogTex == null || fogTex.IsDisposed) {
+                return;
+            }
+            Vector2 origin = fogTex.Size() * 0.5f;
+            float time = Main.GlobalTimeWrappedHourly;
+
+            for (int i = 0; i < hazes.Length; i++) {
+                if (!hazes[i].Active) {
+                    continue;
+                }
+                ref Haze h = ref hazes[i];
+                float t = h.Life / (float)h.MaxLife;
+                float env = MathF.Min(t / 0.22f, 1f) * MathHelper.Clamp((1f - t) / 0.25f, 0f, 1f);
+                Color lit = Lighting.GetColor((int)(h.Pos.X / 16f), (int)(h.Pos.Y / 16f));
+                float lightK = HazeLightFloor + (1f - HazeLightFloor) * ((lit.R + lit.G + lit.B) / 765f);
+                float alpha = HazeAlpha * env * presence * lightK;
+                if (alpha < 0.004f) {
+                    continue;
+                }
+                float breathe = 1f + 0.05f * MathF.Sin(time * 0.5f + h.Seed);
+                sb.Draw(fogTex, h.Pos - Main.screenPosition, null, HazeBlue * alpha,
+                    h.Seed + time * 0.02f, origin, h.Scale * breathe, SpriteEffects.None, 0f);
             }
         }
 

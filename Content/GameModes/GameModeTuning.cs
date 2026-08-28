@@ -9,11 +9,11 @@ namespace CalamityOverhaul.Content.GameModes
 {
     /// <summary>
     /// 档位数值表：通用增强与修罗强化的全部可调常量收拢在此，机制文件不散写数字。
-    /// 档位口径见 <see cref="GameModeSystem.EffectiveTier"/>：1 残酷 / 2 修罗 / 3 毁灭（天顶世界的修罗）
+    /// 档位口径见 <see cref="GameModeSystem.EffectiveTier"/>：1 残酷 / 2 修罗 / 3 毁灭（传奇世界的修罗）
     /// </summary>
     internal static class GameModeTuning
     {
-        //——全体敌对 NPC：血量与伤害倍率（SetDefaults 时绑定，含无重制的 Boss）——
+        //——全体敌对 NPC：血量与伤害倍率（SetDefaults 时绑定，Boss 与重制 Boss 一并计入）——
         private const float BrutalStatMult = 1.5f;
         private const float AsuraStatMult = 2.0f;
         private const float AnnihilationStatMult = 3.0f;
@@ -39,6 +39,19 @@ namespace CalamityOverhaul.Content.GameModes
         public const float AnnihilationAdaptStacksPerHit = 2f;
         /// <summary>毁灭下伤害下限相对最近命中的倍率（其余档位 1 倍）</summary>
         public const float AnnihilationFloorMult = 2f;
+
+        //——修罗：近战是适应的裂隙——
+
+        /// <summary>真近战（物品挥击与刀刃本体弹幕）承受的适应减伤比例</summary>
+        public const float AsuraTrueMeleeAdaptTaken = 0.4f;
+        /// <summary>其余近战类弹幕（剑气等）承受的适应减伤比例</summary>
+        public const float AsuraMeleeProjAdaptTaken = 0.7f;
+        /// <summary>贴身增幅上限：贴着目标碰撞箱出手时的额外伤害比例</summary>
+        public const float AsuraCloseRangeMaxBonus = 0.35f;
+        /// <summary>贴身增幅满额距离（像素，玩家中心到目标碰撞箱最近点）</summary>
+        public const float AsuraCloseRangeFullDist = 120f;
+        /// <summary>贴身增幅归零距离（像素），由满额线性衰减到此为止</summary>
+        public const float AsuraCloseRangeZeroDist = 400f;
 
         /// <summary>档位血量伤害倍率</summary>
         public static float StatMult(int tier) => tier switch {
@@ -73,10 +86,11 @@ namespace CalamityOverhaul.Content.GameModes
         };
 
         //——重制 Boss 的大师基线锚定——
-        //残酷模式下重制 Boss 不吃通用档位增幅，血量/伤害系数写在各自 SetProperty，
-        //乘在"当前世界"的原版缩放之上。世界低于大师（经典/旅途低强度/专家）时原版
-        //系数不足，会出现"开残酷反而比原版大师血少"。此处按原版口径精确补足：
-        //补偿 × 世界系数 == 大师系数，使重制系数永远乘在大师基线上，全难度强度一致。
+        //重制 Boss 的血量/伤害系数写在各自 SetProperty，乘在"当前世界"的原版缩放之上。
+        //世界低于大师（经典/旅途低强度/专家）时原版系数不足，会出现"开残酷反而比原版
+        //大师血少"。此处按原版口径精确补足：补偿 × 世界系数 == 大师系数，使重制系数永远
+        //乘在大师基线上，全难度强度一致。档位增幅（StatMult）另行乘在这个底之上，
+        //与其余敌人同等对待——锚定只管补齐地板，不替代增幅。
         //数据转录自原版 NPC.ScaleStats：ApplyGameMode（专家 ×2 / 大师 ×3 / FTW 再 +1）
         //与 ApplyMultiplayerStats（各 Boss 专属系数、大师 bossAdjustment 0.85）。
         //多人 balance 两侧同源，比值中恒约去，故不参与计算；防御的小额修正不锚定
@@ -216,7 +230,7 @@ namespace CalamityOverhaul.Content.GameModes
         /// <summary>
         /// 重制 Boss 的大师基线补偿系数（血量, 伤害）。
         /// 世界缩放已达大师时恒为 1；不在锚定表内的类型恒为 1。
-        /// 在 SetDefaults 期乘上后，原版缩放跑完即恰好落在大师基线
+        /// 在 SetDefaults 期乘上后，原版缩放跑完即恰好落在大师基线，档位增幅再乘于其上
         /// </summary>
         public static (float life, float damage) MasterAnchorCompensation(int npcType) {
             if (!AnchorRows.TryGetValue(npcType, out VanillaBossScale row)) {

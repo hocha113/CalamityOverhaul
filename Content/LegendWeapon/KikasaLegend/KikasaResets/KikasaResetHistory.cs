@@ -1,5 +1,6 @@
 using System;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
 {
@@ -65,8 +66,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
         private static readonly bool[] npcWasActive = new bool[Main.maxNPCs];
         private static readonly bool[] playerWasActive = new bool[Main.maxPlayers];
 
+        //持有门：无人拥有鬼伞时整套采样（含槽位重用检测）停摆，两端按背包判定、结果一致。
+        //开门沿清空全部轨迹重新积累——语义注记：鬼伞首次入包后约 13 秒内倒带深度不满，
+        //属可接受行为（重启只能由持伞者主动触发）
+        private static bool ownerGateOpen;
+        private static uint nextOwnerPollFrame;
+
+        private static bool AnyPlayerOwnsKikasa() {
+            int type = ModContent.ItemType<KikasaItem>();
+            foreach (Player player in Main.ActivePlayers) {
+                Item[] inventory = player.inventory;
+                for (int i = 0; i < inventory.Length; i++) {
+                    Item item = inventory[i];
+                    if (item != null && item.type == type && item.stack > 0) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         /// <summary>由 <see cref="KikasaResetSystem"/> 两端逐帧驱动</summary>
         internal static void Update() {
+            //每 60 帧轮询一次持有门；倒放进行中不关门（HistoryPaused 期间维持原有路径）
+            if (Main.GameUpdateCount >= nextOwnerPollFrame) {
+                nextOwnerPollFrame = Main.GameUpdateCount + 60;
+                bool owned = AnyPlayerOwnsKikasa();
+                if (owned && !ownerGateOpen) {
+                    Clear();//开门沿：停更期间的旧轨迹作废，重新积累
+                }
+                ownerGateOpen = owned;
+            }
+            if (!ownerGateOpen && !KikasaReset.HistoryPaused) {
+                return;
+            }
+
             //槽位重用每帧检测；3 帧采样间隙里死而复用的槽不能继承旧轨迹
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
@@ -188,6 +222,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
             Array.Clear(npcWasActive);
             Array.Clear(npcLastType);
             Array.Clear(playerWasActive);
+            //帧计回绕（换世界）时轮询点可能落到遥远未来，这里归零保证立即重判
+            nextOwnerPollFrame = 0;
         }
     }
 }

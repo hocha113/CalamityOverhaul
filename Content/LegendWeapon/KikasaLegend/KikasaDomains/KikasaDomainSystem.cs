@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
     {
         public override void PostUpdateEverything() {
             if (Main.dedServ) {
+                //服务器只推进状态机镜像（快照喂入+确定性跟跑），表现层全数跳过
+                KikasaDomain.UpdateAll();
                 return;
             }
             //先定主导域再推进：本帧的表现闸门按上一帧的相位选，差一帧看不出来

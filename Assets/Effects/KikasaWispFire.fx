@@ -34,6 +34,7 @@ float uBurn;        //0~1 在场包络
 float uQuench;      //0~1 鬼雨压制
 float uWobblePx;    //水线噪声波动幅度（px），与湖面着色器同源换算
 float4 uLineWave[4];//行波（世界像素域）x=源worldX y=寿命01 z=幅度px w=范围乘数；空槽 z=0
+float4 uTideTroughW;//跟脚潮让位坑（世界像素域）x=中心worldX y=半宽px z=坑深px(负=隆起) w=坑唇幅px；闲置全零
 
 //== TechBurnBody ==
 float2 uTexelSize;  //1/贴图尺寸
@@ -67,17 +68,28 @@ float waveSum(float worldX) {
          + waveOne(worldX, uLineWave[2]) + waveOne(worldX, uLineWave[3]);
 }
 
+//跟脚潮让位坑：与 KikasaGrade.tideTrough 同轮廓（世界像素域），火贴着分开的水面走进坑里。
+//返回值语义=表面下压量（正=挖坑），本层 yOff 正值是抬升，消费处取负
+float tideTroughW(float worldX) {
+    float d = abs(worldX - uTideTroughW.x) / max(uTideTroughW.y, 1.0);
+    float bowl = 1.0 - smoothstep(0.25, 1.05, d);
+    float lipD = d - 1.18;
+    float lip = exp2(-lipD * lipD * 22.0);
+    return uTideTroughW.z * bowl - uTideTroughW.w * lip;
+}
+
 //====== TechLakeFire ======
 float4 PSLakeFire(float2 coords : TEXCOORD0, float4 vc : COLOR0) : COLOR0 {
     float worldX = uWorldX0 + coords.x * uQuadSize.x;
     float flameCanvas = uWaterV * uQuadSize.y;      //水线以上画布高（px）
     float lipCanvas = uQuadSize.y - flameCanvas;    //水线以下画布高（px）
 
-    //水面局部起伏：双频噪声波动 + 落点行波，火贴着真实水面烧
+    //水面局部起伏：双频噪声波动 + 落点行波 + 让位坑，火贴着真实水面烧
     //（波动形状与湖面着色器的屏幕空间版不逐像素同源，幅度同源；根床带厚度吸收差异）
     float n0 = nrm(tex2D(uNoiseTex, float2(worldX * 0.0009 + uTime * 0.020, uTime * 0.011)).r);
     float n1 = nrm(tex2D(uNoiseTex, float2(worldX * 0.0025 - uTime * 0.016, 0.41 + uTime * 0.027)).r);
-    float yOff = ((n0 - 0.5) * 1.4 + (n1 - 0.5) * 0.6) * uWobblePx + waveSum(worldX);
+    float yOff = ((n0 - 0.5) * 1.4 + (n1 - 0.5) * 0.6) * uWobblePx + waveSum(worldX)
+        - tideTroughW(worldX);
     //h：相对起伏水面的高度（px），正=水上
     float h = (uWaterV - coords.y) * uQuadSize.y - yOff;
 

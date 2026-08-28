@@ -194,6 +194,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
             //落点行波源：水线在涟漪处真的起伏
             KikasaDomainDeco.FillWaveUniforms(grade, Main.screenPosition, screenSize);
+            //跟脚潮让位坑：排水让位时水面向两侧分开，镜像随坑沉降
+            KikasaDomainDeco.FillTideUniforms(grade, kdp, Main.screenPosition, screenSize);
         }
 
         private static void ApplyUnify(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice,

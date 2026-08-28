@@ -30,6 +30,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 是否拥有大比目鱼
         /// </summary>
         public bool HasHalubut;
+        //捕获剧情旗本会话已写过（写入幂等，无需每帧重写）
+        private bool caughtFlagWritten;
         /// <summary>
         /// 是否尝试关闭眼睛
         /// </summary>
@@ -384,6 +386,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 cloneLastShootFrame = -1;
             }
 
+            Item item = Player.GetItem();
+            bool wasHeldHalibut = HeldHalibut;//记录上一帧状态
+            HeldHalibut = item.Alives() && item.type == HalibutOverride.ID;
+            //手写循环代替 LINQ Any，省每帧闭包分配
+            HasHalubut = false;
+            Item[] inventory = Player.inventory;
+            for (int i = 0; i < inventory.Length; i++) {
+                Item slot = inventory[i];
+                if (slot.Alives() && slot.type == HalibutOverride.ID) {
+                    HasHalubut = true;
+                    break;
+                }
+            }
+
             if (TimeGear.TimeScale > 0) {
                 if (CloneFishToggleCD > 0) CloneFishToggleCD--;
 
@@ -404,19 +420,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
                 if (HidePlayerTime > 0) HidePlayerTime--;
 
-                foreach (var skill in FishSkill.Instances) {
-                    if (skill.UpdateCooldown(this, Player) && skill.Cooldown > 0) {
-                        skill.Cooldown--;
+                //不拥有比目鱼时跳过全部鱼技冷却推进（技能只能由持鱼者触发；
+                //丢弃鱼后冷却冻结、重拾后续走，属保守语义）
+                if (HasHalubut) {
+                    foreach (var skill in FishSkill.Instances) {
+                        if (skill.UpdateCooldown(this, Player) && skill.Cooldown > 0) {
+                            skill.Cooldown--;
+                        }
                     }
                 }
             }
 
-            Item item = Player.GetItem();
-            bool wasHeldHalibut = HeldHalibut;//记录上一帧状态
-            HeldHalibut = item.Alives() && item.type == HalibutOverride.ID;
-            HasHalubut = Player.inventory.Any(i => i.Alives() && i.type == HalibutOverride.ID);
-
-            if (HasHalubut) {//只要拥有大比目鱼，就标记已经捕获过
+            if (HasHalubut && !caughtFlagWritten) {//只要拥有大比目鱼，就标记已经捕获过（幂等，一次即可）
+                caughtFlagWritten = true;
                 HalibutState.Write(Player, d => d.HasCaughtHalibut = true, d => d.HasCaughtHalibut = true);
             }
 

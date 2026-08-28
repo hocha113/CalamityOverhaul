@@ -12,7 +12,7 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
 {
-    /// <summary>传送站瓦片,2x3 拱门</summary>
+    /// <summary>传送站瓦片,4x5 拱门</summary>
     internal class TeleportStationTile : ModTile
     {
         public override string Texture => CWRConstant.Asset + "ElectricPowers/TeleportStationTile";
@@ -28,11 +28,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
             AddMapEntry(new Color(70, 160, 150), VaultUtils.GetLocalizedItemName<TeleportStation>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.Width = 2;
-            TileObjectData.newTile.Height = 3;
-            TileObjectData.newTile.Origin = new Point16(1, 2);
+            TileObjectData.newTile.Width = 4;
+            TileObjectData.newTile.Height = 5;
+            TileObjectData.newTile.Origin = new Point16(2, 4);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateHeights = [16, 16, 18];
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16];
             TileObjectData.newTile.LavaDeath = false;
 
             TileObjectData.addTile(Type);
@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
             }
 
             //电量不足一次传送时机身压暗,全系"断电减半"状态语言
-            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 3, tp.MachineData.UEvalue < TeleportStationTP.BaseCost);
+            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 5, 16, tp.MachineData.UEvalue < TeleportStationTP.BaseCost);
             return false;
         }
     }

@@ -69,9 +69,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             AddMapEntry(new Color(88, 142, 88), VaultUtils.GetLocalizedItemName<CapacitorMatrix>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.Origin = new Point16(1, 1);
+            TileObjectData.newTile.Width = 4;
+            TileObjectData.newTile.Height = 4;
+            TileObjectData.newTile.Origin = new Point16(2, 3);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateHeights = [16, 18];
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 20];
             TileObjectData.newTile.LavaDeath = false;
 
             TileObjectData.addTile(Type);
@@ -180,8 +182,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
 
         /// <summary>两只顶端子之间的一道跳弧:两端钉死,中段拱起随机摆</summary>
         private void SpawnTerminalArc() {
-            Vector2 t1 = PosInWorld + new Vector2(8f, 4f);
-            Vector2 t2 = PosInWorld + new Vector2(Width - 8f, 4f);
+            Vector2 t1 = PosInWorld + new Vector2(16f, 5f);
+            Vector2 t2 = PosInWorld + new Vector2(Width - 16f, 5f);
             int pointCount = Main.rand.Next(5, 8);
             Vector2[] path = new Vector2[pointCount];
             for (int i = 0; i < pointCount; i++) {
@@ -233,7 +235,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
                 float coreBreath = 1f + 0.14f * MathHelper.Clamp(activeTime / 60f, 0f, 1f)
                     * MathF.Sin(Main.GlobalTimeWrappedHourly * 5.2f + Position.X * 0.7f);
                 Vector2 coreP = PosInWorld + ThermalBatteryTP.CoreCenter - Main.screenPosition;
-                float coreSize = 14f + 8f * coreRatio;
+                float coreSize = 28f + 16f * coreRatio;
                 spriteBatch.Draw(glow, coreP, null, (CapacitorMatrix.Tint with { A = 0 }) * ((0.20f + 0.45f * coreRatio) * coreBreath),
                     0f, glow.Size() * 0.5f, coreSize / glow.Width, SpriteEffects.None, 0f);
             }
@@ -243,8 +245,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
                 float breath = 0.62f + 0.38f * MathF.Sin(Main.GlobalTimeWrappedHourly * 2.6f
                     + Position.X * 0.31f);
                 Color corona = CapacitorMatrix.Tint with { A = 0 };
-                Vector2 t1 = PosInWorld + new Vector2(8f, 5f) - Main.screenPosition;
-                Vector2 t2 = PosInWorld + new Vector2(Width - 8f, 5f) - Main.screenPosition;
+                Vector2 t1 = PosInWorld + new Vector2(16f, 6f) - Main.screenPosition;
+                Vector2 t2 = PosInWorld + new Vector2(Width - 16f, 6f) - Main.screenPosition;
                 float s = 0.34f + 0.10f * breath;
                 spriteBatch.Draw(glow, t1, null, corona * (0.5f * breath), 0f, glow.Size() * 0.5f, s, SpriteEffects.None, 0f);
                 spriteBatch.Draw(glow, t2, null, corona * (0.5f * breath), 0f, glow.Size() * 0.5f, s, SpriteEffects.None, 0f);

@@ -101,7 +101,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Ashreign
         /// <summary>最近烬暴临近度：带内即 1，带外 2200px 线性衰减（听觉预告通道）</summary>
         private static void UpdateStormLoom(Player player) {
             float loom = 0f;
-            if (player != null && player.active) {
+            //残值未归零或近两帧有烬暴盖戳才扫表；空世界零成本，时停中靠残值闩锁继续找到冻结的烬暴
+            if (player != null && player.active
+                && (StormLoom > 0.005f || AshreignAshStormProj.PresenceStamp.ActiveWithin())) {
                 int stormType = ModContent.ProjectileType<AshreignAshStormProj>();
                 foreach (Projectile proj in Main.ActiveProjectiles) {
                     if (proj.type != stormType) {

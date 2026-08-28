@@ -30,6 +30,19 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
     }
 
     /// <summary>
+    /// 伞鬼栖息语境：叠加层雨世界（本地 Depth 标记）或鬼雨子世界（真实世界）。
+    /// 权威端生成时按所在世界推断，随生成包的 SyncVar 到各端；
+    /// 观察者可见性/音效/接触威胁按语境取各自的"身处雨中"判据
+    /// </summary>
+    internal enum KasaOniContext : byte
+    {
+        /// <summary>主世界叠加层：观察者=身处鬼雨 Depth 的本地玩家</summary>
+        RainOverlay,
+        /// <summary>鬼雨子世界：观察者=身处 Kiame 的所有人；夺伞下潜不开放</summary>
+        KiameWorld,
+    }
+
+    /// <summary>
     /// 鬼雨世界的伞鬼：入第一层时从地下以污水凝聚现身。<br/>
     /// 服务器权威推进相位与瞬移调度，运动积分全端一致跑以获得平滑预测；
     /// 雨世界是本地叠加层，故绘制/粒子/音效只对身处雨中的观察者生效。<br/>
@@ -72,6 +85,8 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
         private int phaseRaw = (int)KasaOniPhase.Emerging;
         [SyncVar]
         private int ownerWhoAmI = -1;
+        [SyncVar]
+        private int contextRaw = (int)KasaOniContext.RainOverlay;
 
         private KasaOniPhase lastSeenPhase;
         private int phaseTimer;
@@ -96,6 +111,12 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
         internal KasaOniPhase Phase => (KasaOniPhase)phaseRaw;
         internal int OwnerWhoAmI => ownerWhoAmI;
         internal int PhaseTimer => phaseTimer;
+        internal KasaOniContext Context => (KasaOniContext)contextRaw;
+
+        /// <summary>本机观察者是否身处这只鬼所在的雨语境（可见性/音效/接触威胁共用门）</summary>
+        private bool ObserverIn => Context == KasaOniContext.KiameWorld
+            ? Kiame.KiameWorld.Active
+            : OniRainWorldState.LocalIn;
         /// <summary>脚底中心锚点</summary>
         internal Vector2 FeetAnchor => Position + new Vector2(Width * 0.5f, Height);
         /// <summary>着色器地面裁切线的世界Y</summary>
@@ -130,6 +151,10 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
                 Player nearest = Position.FindClosestPlayer(2000f);
                 ownerWhoAmI = nearest?.whoAmI ?? -1;
                 phaseRaw = (int)KasaOniPhase.Emerging;
+                //栖息语境按生成时所在世界推断，随生成包的 SyncVar 到各端
+                contextRaw = Kiame.KiameWorld.Active
+                    ? (int)KasaOniContext.KiameWorld
+                    : (int)KasaOniContext.RainOverlay;
             }
 
             lastSeenPhase = Phase;
@@ -212,9 +237,11 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
 
         #region 权威决策
         private void UpdateAuthorityDecisions() {
-            //单机里玩家离开第一层（浮出或深潜）：伞鬼失去栖息层，消融退场
-            //（多人退场由 owner 端 Director 发销毁请求，专用服务器不知深度）
-            if (VaultUtils.isSinglePlayer && OniRainWorldState.LocalDepth != 1) {
+            //叠加层语境：单机里玩家离开第一层（浮出或深潜）伞鬼失去栖息层，消融退场
+            //（多人退场由 owner 端 Director 发销毁请求，专用服务器不知深度）。
+            //子世界语境：世界本身即栖息层，卸载即整体消亡，不做深度退场
+            if (Context == KasaOniContext.RainOverlay
+                && VaultUtils.isSinglePlayer && OniRainWorldState.LocalDepth != 1) {
                 HandleWorldExitAuthority();
                 return;
             }
@@ -437,8 +464,13 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
 
             UpdateFacing();
 
-            if (!OniRainWorldState.LocalIn) {
+            if (!ObserverIn) {
                 return;
+            }
+
+            //子世界里趟过洼地：向水面层报涉水足点，接触涟漪跟脚走
+            if (Context == KasaOniContext.KiameWorld && Phase == KasaOniPhase.Walking) {
+                Kiame.Water.KiameWaterRender.ReportWader(FeetAnchor, Width * 1.5f, 0.7f);
             }
 
             switch (Phase) {
@@ -600,7 +632,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
 
         /// <summary>相位确认拍：对齐伞奴成形的破土/撑伞语汇，仅雨中观察者可闻</summary>
         private void PlayPhaseCue(KasaOniPhase phase) {
-            if (Main.dedServ || !OniRainWorldState.LocalIn) {
+            if (Main.dedServ || !ObserverIn) {
                 return;
             }
 
@@ -673,7 +705,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
         /// 演出与叙事期间收爪。
         /// </summary>
         private void UpdateLocalThreat() {
-            if (Main.dedServ || Phase != KasaOniPhase.Walking || !OniRainWorldState.LocalIn) {
+            if (Main.dedServ || Phase != KasaOniPhase.Walking || !ObserverIn) {
                 return;
             }
             Player player = Main.LocalPlayer;
@@ -697,9 +729,11 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
                 ContactDamage, direction, knockback: ContactKnockback);
         }
 
-        /// <summary>本地玩家可否对这只伞鬼夺伞：只许夺自己的追猎者，行走相位、未达最深层</summary>
+        /// <summary>本地玩家可否对这只伞鬼夺伞：叠加层剧情专属（子世界不开放下潜），
+        /// 只许夺自己的追猎者，行走相位、未达最深层</summary>
         private bool LocalPlayerCanGrab(Player player) {
-            return player != null && player.Alives()
+            return Context == KasaOniContext.RainOverlay
+                && player != null && player.Alives()
                 && OwnerWhoAmI == player.whoAmI
                 && Phase == KasaOniPhase.Walking
                 && OniRainWorldState.LocalIn
@@ -785,8 +819,8 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
 
         #region 绘制
         public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {
-            //雨世界是本地叠加层：不在雨中的观察者看不见伞鬼
-            if (Main.dedServ || !OniRainWorldState.LocalIn) {
+            //按语境裁观察者：叠加层只给雨中人看，子世界里人人可见
+            if (Main.dedServ || !ObserverIn) {
                 return false;
             }
             KasaOniRenderer.Draw(spriteBatch, this);
@@ -794,7 +828,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor) {
-            if (Main.dedServ || !OniRainWorldState.LocalIn) {
+            if (Main.dedServ || !ObserverIn) {
                 return;
             }
             DrawGrabPrompt(spriteBatch);

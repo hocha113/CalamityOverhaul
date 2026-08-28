@@ -103,5 +103,41 @@ GsWeatherPain.Desc:
 	重铸：龙卷命中处留下风眼，正拍下一发朝风眼增压突进并渐渐涨大；
 	共鸣三层起双龙卷对旋齐出，满层时下一次咏唱召来驻场的风暴合唱
 	'''
+GsCursedFlames.Desc:
+	'''
+	重铸：正拍咒火命中会种下咒种，种满三颗自燃，炸出八向咒刺并留下咒火滩
+	共鸣满层时，下一次咏唱放出蜿蜒焚蟒，沿途滴落咒火
+	'''
 GsChantFlameFieldProj.DisplayName: 盛焰花田
 GsChantStormChoirProj.DisplayName: 风暴合唱
+GsCursedFlamesSerpentProj.DisplayName: 焚蟒
+GsCursedFlamesPoolProj.DisplayName: 咒火滩
+GsGoldenShower.Desc:
+	'''
+	重铸：命中蚀刻熔金印记，蚀满五层炸成八向喷洒，并落下滴淌圣金的液团；
+	不间断喷洒会蓄起高压水势，弹速更快、水流更密、蚀刻翻倍
+	'''
+GsCrystalVileShard.Desc:
+	'''
+	重铸：正拍晶矛在敌身嵌入晶种，晶矛碎裂时，凡带种之敌齐齐炸出十字晶芒；
+	共鸣满层时，下一次咏唱在身周升起六柄环阵晶矛
+	'''
+GsUnholyTrident.Desc:
+	'''
+	重铸：正拍咏唱裂成三叉齐出的狱焰叉，灼以地狱之火；
+	共鸣满层时，下一次咏唱自光标下方掀起四波狱叉浪涌
+	'''
+GsNettleBurst.Desc:
+	'''
+	重铸：正拍藤蔓咬中处会扎根，留下滞敌的荨麻棘丛（至多三处）；
+	共鸣满层时，下一次咏唱放出横扫战场的藤蔓巨龙
+	'''
+GsWaspGun.Desc:
+	'''
+	重铸：正拍黄蜂蜇入信息素猎标，空中的每一只黄蜂都会优先扑向被标记的猎物；
+	共鸣满层时，下一次咏唱放出蜂后，巡航沿途撒下猎手
+	'''
+GsGoldenShowerDripProj.DisplayName: 圣金液团
+GsNettleBurstThicketProj.DisplayName: 荨麻棘丛
+GsNettleBurstDragonProj.DisplayName: 藤蔓巨龙
+GsWaspGunQueenProj.DisplayName: 蜂后

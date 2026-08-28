@@ -27,23 +27,27 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
                 return;
             }
             float target = Scenarios.OniRainWorlds.OniRainWorldState.GlobalAmbientTarget;
-            int type = ModContent.ProjectileType<GhostRainProj>();
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                Projectile projectile = Main.projectile[i];
-                if (!projectile.active || projectile.type != type
-                    || projectile.ModProjectile is not GhostRainProj rain) {
-                    continue;
+            //强度已归零且近两帧无雨幕盖戳时跳过全表扫描；强度未归零则继续扫，
+            //时停中 AI 停摆（戳过期）也能靠这条继续找到冻结的雨幕、演出不塌
+            if (Intensity > 0f || GhostRainProj.PresenceStamp.ActiveWithin()) {
+                int type = ModContent.ProjectileType<GhostRainProj>();
+                for (int i = 0; i < Main.maxProjectiles; i++) {
+                    Projectile projectile = Main.projectile[i];
+                    if (!projectile.active || projectile.type != type
+                        || projectile.ModProjectile is not GhostRainProj rain) {
+                        continue;
+                    }
+                    Player owner = Main.player[projectile.owner];
+                    if (owner?.active != true) {
+                        continue;
+                    }
+                    float envelope = rain.Presence;
+                    //远处别人的鬼雨不压暗本地屏幕
+                    float distance = Vector2.Distance(owner.Center, Main.LocalPlayer.Center);
+                    float near = 1f - MathHelper.Clamp(
+                        (distance - (GhostRainStorm.Radius + 300f)) / 900f, 0f, 1f);
+                    target = Math.Max(target, envelope * near);
                 }
-                Player owner = Main.player[projectile.owner];
-                if (owner?.active != true) {
-                    continue;
-                }
-                float envelope = rain.Presence;
-                //远处别人的鬼雨不压暗本地屏幕
-                float distance = Vector2.Distance(owner.Center, Main.LocalPlayer.Center);
-                float near = 1f - MathHelper.Clamp(
-                    (distance - (GhostRainStorm.Radius + 300f)) / 900f, 0f, 1f);
-                target = Math.Max(target, envelope * near);
             }
             Intensity = Math.Abs(target - Intensity) < 0.01f
                 ? target : MathHelper.Lerp(Intensity, target, 0.22f);

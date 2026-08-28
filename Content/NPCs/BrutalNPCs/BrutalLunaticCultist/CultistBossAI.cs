@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist;
 using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
@@ -25,6 +26,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
 
         /// <summary>life 低于此值进死亡演出</summary>
         internal const int DeathPerformanceTriggerLife = 40;
+
+        /// <summary>在场帧戳：AI 每帧盖戳，分相天幕驱动据此跳过无战斗时的全表扫描</summary>
+        internal static ActivityStamp PresenceStamp;
 
         private VaultStateMachine<CultistStateContext> stateMachine;
         private CultistStateContext stateContext;
@@ -75,6 +79,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
 
         #region 主AI
         public override bool AI() {
+            PresenceStamp.Stamp();
             if (stateContext == null || stateMachine == null) {
                 InitializeStateContext();
             }

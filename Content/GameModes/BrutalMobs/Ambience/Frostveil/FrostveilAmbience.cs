@@ -127,10 +127,17 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil
         //==================== 环境声 ====================
 
         private static void ScanNearestWave(Player player) {
-            nearestWaveDist = float.MaxValue;
             if (player == null || !player.active) {
+                nearestWaveDist = float.MaxValue;
                 return;
             }
+            //近两帧无风雪墙盖戳且上帧不在可闻界内：跳过全表扫描
+            //（时停中墙 AI 停摆时靠"上帧可闻"闩锁继续扫，逼近风啸不断音）
+            if (!FrostveilGaleWallProj.PresenceStamp.ActiveWithin() && nearestWaveDist >= 1700f) {
+                nearestWaveDist = float.MaxValue;
+                return;
+            }
+            nearestWaveDist = float.MaxValue;
             int waveType = ModContent.ProjectileType<FrostveilGaleWallProj>();
             foreach (Projectile proj in Main.ActiveProjectiles) {
                 if (proj.type != waveType) {

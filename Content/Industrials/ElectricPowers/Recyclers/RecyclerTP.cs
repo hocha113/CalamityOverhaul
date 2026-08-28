@@ -312,12 +312,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
 
         /// <summary>拆解头与装备的接触点(世界坐标),锚在拆解舱内、随工位横移</summary>
         private Vector2 ContactWorldPos()
-            => PosInWorld + new Vector2(12f + ArmX01 * 8f, 22f);
+            => PosInWorld + new Vector2(24f + ArmX01 * 16f, 24f);
 
         /// <summary>切割火花+偶发零件碎片</summary>
         private void SpawnCutSparks(bool withShard) {
             Vector2 contact = ContactWorldPos();
-            float floorY = PosInWorld.Y + 27f;
+            float floorY = PosInWorld.Y + 34f;
             Defer(() => {
                 int count = Rand.Next(1, 3);
                 for (int k = 0; k < count; k++) {
@@ -557,17 +557,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
             bool hasInput = RecData?.InputItem != null && !RecData.InputItem.IsAir;
             if (hasInput) {
                 Color rare = ItemRarity.GetColor(RecData.InputItem.rare);
-                SvgPathPen.SoftDot(spriteBatch, basePos + new Vector2(16f, 22f), 10f,
+                SvgPathPen.SoftDot(spriteBatch, basePos + new Vector2(32f, 24f), 20f,
                     rare, 0.14f + 0.32f * RarityPulse);
                 Main.instance.LoadItem(RecData.InputItem.type);
                 VaultUtils.SimpleDrawItem(spriteBatch, RecData.InputItem.type,
-                    basePos + new Vector2(16f, 22f), 12, 1f, 0f, Color.White);
+                    basePos + new Vector2(32f, 24f), 24, 1f, 0f, Color.White);
             }
 
             //切割驻留:接触点炽亮闪烁
             if (CutGlow > 0.05f) {
                 float flicker = 0.35f + 0.22f * MathF.Sin(Main.GlobalTimeWrappedHourly * 43f);
-                SvgPathPen.SoftDot(spriteBatch, ContactWorldPos() - Main.screenPosition, 5.5f,
+                SvgPathPen.SoftDot(spriteBatch, ContactWorldPos() - Main.screenPosition, 11f,
                     new Color(255, 214, 150), CutGlow * flicker);
             }
 
@@ -583,8 +583,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
             else {
                 lamp = new Color(60, 68, 62);
             }
-            spriteBatch.Draw(VaultAsset.placeholder2.Value, basePos + new Vector2(23f, 13f),
-                new Rectangle(0, 0, 1, 1), lamp, 0f, Vector2.Zero, new Vector2(2f, 2f), SpriteEffects.None, 0f);
+            spriteBatch.Draw(VaultAsset.placeholder2.Value, basePos + new Vector2(46f, 6f),
+                new Rectangle(0, 0, 1, 1), lamp, 0f, Vector2.Zero, new Vector2(4f, 4f), SpriteEffects.None, 0f);
         }
 
         public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();

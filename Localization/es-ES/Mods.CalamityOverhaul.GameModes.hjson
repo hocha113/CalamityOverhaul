@@ -14,6 +14,8 @@ GameModeText: {
 	BrutalDesc: Libera la IA rediseñada y despiadada de los jefes brutales; el resto de enemigos gana un 50% más de vida y daño, y los enemigos menores se vuelven veloces y frenéticos
 	AsuraDesc: La mejora sube al 100%. Los enemigos se adaptan al daño repetido del mismo tipo, y cada golpe tuyo fija el mínimo del suyo
 	AnnihilationDesc: La forma final del Infierno Asura en un mundo cénit. Todo terror se duplica de nuevo: los enemigos se adaptan el doble de rápido y tu dolor se devuelve por partida doble
+	// BrutalCreationDesc: Master is the floor: reworked bosses awaken, all foes empowered
+	// AsuraCreationDesc: Master is the floor: foes adapt to your blows and mirror your pain
 	// GodSmithDesc: Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched, and it toggles independently of every other mode
 	// GodSmithRecastTitle: Godsmith Reforged
 	// GodSmithEndowPrefix: "Endowment: "
@@ -22,6 +24,7 @@ GameModeText: {
 	HintEnable: Clic para despertar
 	HintDisable: Clic para sellar
 	BossRefuse: Un jefe sigue vivo. El pacto no puede alterarse ahora
+	// AsuraNeedBrutal: Awaken Cruel World first
 }
 
 // SporeshineAmbience.DazeDeathReason: "{0} drowsed away deep in the spore haze"

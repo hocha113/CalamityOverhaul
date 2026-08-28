@@ -1,6 +1,8 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 
@@ -17,7 +19,8 @@ namespace CalamityOverhaul.Content.GameModes.UI
         private static readonly Rectangle One = new(0, 0, 1, 1);
 
         internal static void DrawTab(SpriteBatch sb, Rectangle rect, GameModeFace face,
-            float lit, float hover, float burst, bool burstOn, float disabled, float guide, float alpha) {
+            float lit, float hover, float burst, bool burstOn, float disabled, float guide, float alpha,
+            float press, float deny) {
             if (alpha <= 0.01f || rect.Width < 4 || rect.Height < 4) {
                 return;
             }
@@ -39,6 +42,8 @@ namespace CalamityOverhaul.Content.GameModes.UI
             effect.Parameters["uBurst"]?.SetValue(burst);
             effect.Parameters["uBurstOn"]?.SetValue(burstOn ? 1f : 0f);
             effect.Parameters["uDisabled"]?.SetValue(disabled);
+            effect.Parameters["uPress"]?.SetValue(press);
+            effect.Parameters["uDeny"]?.SetValue(deny);
             effect.Parameters["uGuide"]?.SetValue(guide);
             effect.Parameters["uAccent"]?.SetValue(accent.ToVector3());
             effect.Parameters["uEmber"]?.SetValue(ember.ToVector3());
@@ -232,9 +237,13 @@ namespace CalamityOverhaul.Content.GameModes.UI
                 }
                 float age = 1f - m.Life / m.MaxLife;
                 float a = MathF.Sin(age * MathF.PI);
-                //亮芯
-                sb.Draw(Pixel, m.Pos, One, m.Col * (a * 0.9f), 0f,
-                    new Vector2(0.5f), new Vector2(2f * m.Scale), SpriteEffects.None, 0f);
+                //亮芯沿速度方向拉伸（运动的余烬是短划，不是圆点），慢速时回落成方粒
+                float speed = m.Vel.Length();
+                float stretch = 1f + Math.Min(2.4f, speed * 1.15f);
+                float rot = speed > 0.05f ? m.Vel.ToRotation() : 0f;
+                Vector2 span = new(2f * m.Scale * stretch, 2f * m.Scale * Math.Max(0.55f, 1f - 0.16f * (stretch - 1f)));
+                sb.Draw(Pixel, m.Pos, One, m.Col * (a * 0.9f), rot,
+                    new Vector2(0.5f), span, SpriteEffects.None, 0f);
                 //光晕（A=0 加法）
                 if (glow != null) {
                     Color halo = new Color(m.Col.R, m.Col.G, m.Col.B, (byte)0) * (a * 0.5f);
@@ -242,6 +251,151 @@ namespace CalamityOverhaul.Content.GameModes.UI
                     sb.Draw(glow, m.Pos, null, halo, 0f, glow.Size() / 2f, scale, SpriteEffects.None, 0f);
                 }
             }
+        }
+
+        //——悬停说明面板：测量排版 + 四边钳制（版式数学照 KikasaTipPanel 口径，皮换模式漆底）——
+
+        private const float TipMaxWidth = 440f;
+        private const float TipPaddingX = 12f;
+        private const int TipScreenPad = 8;
+
+        /// <summary>
+        /// 悬停说明面板：题行（文艺名+状态章）+ 分隔线 + 换行正文 + 操作提示。
+        /// 锚在标签正下方，装不下时翻到上方，四边钳进 UI 空间；
+        /// 由 <see cref="GameModeTipOverlay"/> 顶层绘制，不与旗身同层
+        /// </summary>
+        internal static void DrawHoverPanel(SpriteBatch sb, Rectangle tab, GameModeKind kind, float alpha) {
+            if (alpha <= 0.03f) {
+                return;
+            }
+            GameModeFace face = GameModeSystem.FaceOf(kind);
+            bool on = GameModeSystem.FlagOf(kind);
+            Color accent = GameModeTheme.Accent(face);
+            Color ember = GameModeTheme.Ember(face);
+
+            string title = GameModeText.Name(face).Value;
+            string chip = on ? GameModeText.StateOn.Value : GameModeText.StateOff.Value;
+            string body = GameModeText.Desc(face).Value;
+            //操作提示按可用性分级：Boss 锁定 > 修罗依赖 > 常规开/关
+            string hint;
+            Color hintCol;
+            if (!GameModeSystem.CanToggleNow()) {
+                hint = GameModeText.BossRefuse.Value;
+                hintCol = GameModeTheme.DangerRed;
+            }
+            else if (kind == GameModeKind.Asura && !on && !GameModeSystem.BrutalActive) {
+                hint = GameModeText.AsuraNeedBrutal.Value;
+                hintCol = GameModeTheme.DangerRed;
+            }
+            else {
+                hint = on ? GameModeText.HintDisable.Value : GameModeText.HintEnable.Value;
+                hintCol = on ? GameModeTheme.BoneDim : ember;
+            }
+
+            const float titleScale = 1.0f;
+            const float chipScale = 0.8f;
+            const float bodyScale = 0.9f;
+            const float hintScale = 0.85f;
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            float glyphH = font.MeasureString("A").Y;
+
+            float panelLimit = Math.Min(TipMaxWidth, Math.Max(1f, GameModeTheme.UIScreenW - TipScreenPad * 2f));
+            float contentLimit = Math.Max(1f, panelLimit - TipPaddingX * 2f);
+
+            //状态章尺寸（题行右侧的小方章）
+            Vector2 chipTextSize = font.MeasureString(chip) * chipScale;
+            float chipW = chipTextSize.X + 10f;
+            float chipH = glyphH * chipScale + 2f;
+
+            List<string> bodyLines = VaultUtils.WrapText(body, font, contentLimit, bodyScale);
+            List<string> hintLines = VaultUtils.WrapText(hint, font, contentLimit, hintScale);
+
+            float naturalW = font.MeasureString(title).X * titleScale + 8f + chipW;
+            foreach (string line in bodyLines) {
+                naturalW = Math.Max(naturalW, font.MeasureString(line).X * bodyScale);
+            }
+            foreach (string line in hintLines) {
+                naturalW = Math.Max(naturalW, font.MeasureString(line).X * hintScale);
+            }
+            float contentW = MathHelper.Clamp(naturalW, 120f, contentLimit);
+
+            float titleY = 5f;
+            float titleH = Math.Max(glyphH * titleScale, chipH);
+            float dividerY = titleY + titleH + 3f;
+            float bodyY = dividerY + 6f;
+            float panelH = bodyY;
+            panelH += bodyLines.Count * (glyphH * bodyScale + 2f);
+            panelH += 5f;
+            panelH += hintLines.Count * (glyphH * hintScale + 2f);
+            panelH += 5f;
+
+            Rectangle panel = PlaceTipPanel(tab, contentW + TipPaddingX * 2f, panelH);
+
+            //标签底缘到面板的一线牵（面板翻到上方时省略，避免穿旗）
+            if (panel.Y > tab.Bottom) {
+                DrawLine(sb, new Vector2(tab.Center.X, tab.Bottom + 1),
+                    new Vector2(tab.Center.X, panel.Y + 1), 2f, accent * (alpha * 0.45f));
+            }
+
+            //贴身投影 + 夜漆实底 + 顶缘主色受光线 + 题旁主色刻痕
+            sb.Draw(Pixel, new Rectangle(panel.X + 2, panel.Y + 3, panel.Width, panel.Height), One,
+                Color.Black * (alpha * 0.45f));
+            sb.Draw(Pixel, panel, One, GameModeTheme.NightBase * (alpha * 0.96f));
+            DrawLine(sb, new Vector2(panel.X + 2, panel.Y), new Vector2(panel.Right - 2, panel.Y),
+                1.5f, Color.Lerp(accent, ember, 0.4f) * (alpha * 0.8f));
+            sb.Draw(Pixel, new Rectangle(panel.X, panel.Y + (int)titleY + 2, 3, (int)titleH - 4), One,
+                accent * (alpha * 0.9f));
+
+            //题行 + 状态章
+            Utils.DrawBorderString(sb, title, new Vector2(panel.X + TipPaddingX, panel.Y + titleY),
+                Color.Lerp(ember, Color.White, 0.25f) * alpha, titleScale);
+            var chipRect = new Rectangle(
+                (int)(panel.Right - TipPaddingX - chipW), (int)(panel.Y + titleY + (titleH - chipH) * 0.5f),
+                (int)chipW, (int)chipH);
+            Color chipCol = on ? accent : GameModeTheme.BoneDim;
+            sb.Draw(Pixel, chipRect, One, chipCol * (alpha * (on ? 0.22f : 0.12f)));
+            DrawLine(sb, new Vector2(chipRect.X, chipRect.Y), new Vector2(chipRect.Right, chipRect.Y), 1f, chipCol * (alpha * 0.8f));
+            DrawLine(sb, new Vector2(chipRect.X, chipRect.Bottom), new Vector2(chipRect.Right, chipRect.Bottom), 1f, chipCol * (alpha * 0.5f));
+            DrawLine(sb, new Vector2(chipRect.X, chipRect.Y), new Vector2(chipRect.X, chipRect.Bottom), 1f, chipCol * (alpha * 0.6f));
+            DrawLine(sb, new Vector2(chipRect.Right, chipRect.Y), new Vector2(chipRect.Right, chipRect.Bottom), 1f, chipCol * (alpha * 0.6f));
+            Utils.DrawBorderString(sb, chip,
+                new Vector2(chipRect.X + 5f, chipRect.Y + (chipH - chipTextSize.Y) * 0.5f),
+                Color.Lerp(chipCol, Color.White, on ? 0.35f : 0.1f) * alpha, chipScale);
+
+            //题下分隔线
+            DrawLine(sb, new Vector2(panel.X + 6f, panel.Y + dividerY),
+                new Vector2(panel.Right - 6f, panel.Y + dividerY), 1f, accent * (alpha * 0.5f));
+
+            //正文与操作提示
+            float y = panel.Y + bodyY;
+            foreach (string line in bodyLines) {
+                Utils.DrawBorderString(sb, line, new Vector2(panel.X + TipPaddingX, y),
+                    GameModeTheme.TextBody * alpha, bodyScale);
+                y += glyphH * bodyScale + 2f;
+            }
+            y += 5f;
+            foreach (string line in hintLines) {
+                Utils.DrawBorderString(sb, line, new Vector2(panel.X + TipPaddingX, y),
+                    hintCol * alpha, hintScale);
+                y += glyphH * hintScale + 2f;
+            }
+        }
+
+        /// <summary>面板落位：先试标签正下方，越下缘翻上方，最后四边钳进 UI 空间</summary>
+        private static Rectangle PlaceTipPanel(Rectangle tab, float requestW, float requestH) {
+            int screenW = Math.Max(1, (int)MathF.Floor(GameModeTheme.UIScreenW));
+            int screenH = Math.Max(1, (int)MathF.Floor(GameModeTheme.UIScreenH));
+            int w = Math.Min((int)MathF.Ceiling(requestW), Math.Max(1, screenW - TipScreenPad * 2));
+            int h = Math.Min((int)MathF.Ceiling(requestH), Math.Max(1, screenH - TipScreenPad * 2));
+
+            int x = tab.X - 6;
+            int y = tab.Bottom + 10;
+            if (y + h > screenH - TipScreenPad) {
+                y = tab.Y - h - 10;
+            }
+            x = Math.Clamp(x, TipScreenPad, Math.Max(TipScreenPad, screenW - w - TipScreenPad));
+            y = Math.Clamp(y, TipScreenPad, Math.Max(TipScreenPad, screenH - h - TipScreenPad));
+            return new Rectangle(x, y, w, h);
         }
 
         //——越身扩张环与首见信标（细亮环双 pass 叠辉光；亮色合法，暗层禁羽化）——

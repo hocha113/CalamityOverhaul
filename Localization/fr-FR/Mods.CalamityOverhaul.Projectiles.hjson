@@ -913,3 +913,198 @@ VictorRiftPortalProj.DisplayName: Fissure cyber de Victor
 // BloodfogAmbushMark.DisplayName: Bloodfog Ambush Mark
 // BloodfogVeilProj.DisplayName: Bloodfog Veil Proj
 // RiteVeilRift.DisplayName: Rite Veil Rift
+// GodSmithPaladinsShieldHammerProj.DisplayName: God Smith Paladins Shield Hammer Proj
+// GodSmithShieldofCthulhuBurstProj.DisplayName: God Smith Shieldof Cthulhu Burst Proj
+// GodSmithStarCloakStarProj.DisplayName: God Smith Star Cloak Star Proj
+// GodSmithDestroyerEmblemPulseProj.DisplayName: God Smith Destroyer Emblem Pulse Proj
+// GodSmithHerculesBeetleRamProj.DisplayName: God Smith Hercules Beetle Ram Proj
+// GodSmithMagicQuiverBoltProj.DisplayName: God Smith Magic Quiver Bolt Proj
+// GodSmithMagnetFlowerArcProj.DisplayName: God Smith Magnet Flower Arc Proj
+// GodSmithManaCloakStarProj.DisplayName: God Smith Mana Cloak Star Proj
+// GodSmithNecromanticScrollSoulProj.DisplayName: God Smith Necromantic Scroll Soul Proj
+// GodSmithRifleScopeTracerProj.DisplayName: God Smith Rifle Scope Tracer Proj
+// GodSmithTitanGloveQuakeProj.DisplayName: God Smith Titan Glove Quake Proj
+// GsApprenticeGlyphProj.DisplayName: Gs Apprentice Glyph Proj
+// GsHuntressSnareBoltProj.DisplayName: Gs Huntress Snare Bolt Proj
+// GsMonkZenPalmProj.DisplayName: Gs Monk Zen Palm Proj
+// GsNebulaBloomProj.DisplayName: Gs Nebula Bloom Proj
+// GsSolarCoronaProj.DisplayName: Gs Solar Corona Proj
+// GsSquireOathLanceProj.DisplayName: Gs Squire Oath Lance Proj
+// GsStardustFallProj.DisplayName: Gs Stardust Fall Proj
+// GsVortexRiftProj.DisplayName: Gs Vortex Rift Proj
+// GsAdamantiteFurnaceEmberProj.DisplayName: Gs Adamantite Furnace Ember Proj
+// GsAdamantiteFurnaceNovaProj.DisplayName: Gs Adamantite Furnace Nova Proj
+// GsBeetleShellShrapnelProj.DisplayName: Gs Beetle Shell Shrapnel Proj
+// GsBeetleShellWardProj.DisplayName: Gs Beetle Shell Ward Proj
+// GsBeetleWarScarabProj.DisplayName: Gs Beetle War Scarab Proj
+// GsChlorophyteVineLashProj.DisplayName: Gs Chlorophyte Vine Lash Proj
+// GsChlorophyteVineParasiteProj.DisplayName: Gs Chlorophyte Vine Parasite Proj
+// GsCobaltAfterimageProj.DisplayName: Gs Cobalt Afterimage Proj
+// GsForbiddenWraithBoltProj.DisplayName: Gs Forbidden Wraith Bolt Proj
+// GsForbiddenWraithProj.DisplayName: Gs Forbidden Wraith Proj
+// GsFrostSquallDomainProj.DisplayName: Gs Frost Squall Domain Proj
+// GsFrostSquallShardProj.DisplayName: Gs Frost Squall Shard Proj
+// GsHallowedVerdictBladeProj.DisplayName: Gs Hallowed Verdict Blade Proj
+// GsMythrilForgeBladeProj.DisplayName: Gs Mythril Forge Blade Proj
+// GsOrichalcumPetalBladeProj.DisplayName: Gs Orichalcum Petal Blade Proj
+// GsPalladiumSiphonBloomProj.DisplayName: Gs Palladium Siphon Bloom Proj
+// GsPearlwoodWardPearlProj.DisplayName: Gs Pearlwood Ward Pearl Proj
+// GsPearlwoodWardShardProj.DisplayName: Gs Pearlwood Ward Shard Proj
+// GsShroomiteChainBloomProj.DisplayName: Gs Shroomite Chain Bloom Proj
+// GsShroomiteMortarProj.DisplayName: Gs Shroomite Mortar Proj
+// GsShroomiteSporeArrowProj.DisplayName: Gs Shroomite Spore Arrow Proj
+// GsShroomiteSporeTurretProj.DisplayName: Gs Shroomite Spore Turret Proj
+// GsSpectreRiftProj.DisplayName: Gs Spectre Rift Proj
+// GsSpectreSanctumProj.DisplayName: Gs Spectre Sanctum Proj
+// GsSpectreSoulOrbProj.DisplayName: Gs Spectre Soul Orb Proj
+// GsSpookyLanternProj.DisplayName: Gs Spooky Lantern Proj
+// GsSpookyLanternWispProj.DisplayName: Gs Spooky Lantern Wisp Proj
+// GsTikiTotemFlameProj.DisplayName: Gs Tiki Totem Flame Proj
+// GsTikiTotemProj.DisplayName: Gs Tiki Totem Proj
+// GsTitaniumMirrorEdgeProj.DisplayName: Gs Titanium Mirror Edge Proj
+// GsTurtleBulwarkDomainProj.DisplayName: Gs Turtle Bulwark Domain Proj
+// GsTurtleBulwarkSpikeProj.DisplayName: Gs Turtle Bulwark Spike Proj
+// GsBeeGuardProj.DisplayName: Gs Bee Guard Proj
+// GsCactusCloakNeedleProj.DisplayName: Gs Cactus Cloak Needle Proj
+// GsCactusNeedleCloakProj.DisplayName: Gs Cactus Needle Cloak Proj
+// GsCopperArcProj.DisplayName: Gs Copper Arc Proj
+// GsCrimsonLeechProj.DisplayName: Gs Crimson Leech Proj
+// GsFossilBoneSpurProj.DisplayName: Gs Fossil Bone Spur Proj
+// GsGladiatorJavelinProj.DisplayName: Gs Gladiator Javelin Proj
+// GsIronQuenchHammerProj.DisplayName: Gs Iron Quench Hammer Proj
+// GsJungleSporeCloudProj.DisplayName: Gs Jungle Spore Cloud Proj
+// GsLeadBeadProj.DisplayName: Gs Lead Bead Proj
+// GsLeadDropProj.DisplayName: Gs Lead Drop Proj
+// GsMeteorShardProj.DisplayName: Gs Meteor Shard Proj
+// GsMoltenGeyserProj.DisplayName: Gs Molten Geyser Proj
+// GsNecroBoneLanceProj.DisplayName: Gs Necro Bone Lance Proj
+// GsNinjaShurikenProj.DisplayName: Gs Ninja Shuriken Proj
+// GsObsidianGlassFangProj.DisplayName: Gs Obsidian Glass Fang Proj
+// GsPlatinumStarProj.DisplayName: Gs Platinum Star Proj
+// GsPumpkinBombProj.DisplayName: Gs Pumpkin Bomb Proj
+// GsPumpkinSliceProj.DisplayName: Gs Pumpkin Slice Proj
+// GsShadowScytheProj.DisplayName: Gs Shadow Scythe Proj
+// GsSilverMoonProj.DisplayName: Gs Silver Moon Proj
+// GsTinChimeRingProj.DisplayName: Gs Tin Chime Ring Proj
+// GsTungstenSpikeProj.DisplayName: Gs Tungsten Spike Proj
+// GsWoodAcornProj.DisplayName: Gs Wood Acorn Proj
+// GsWoodSplinterProj.DisplayName: Gs Wood Splinter Proj
+// GodSmithLuckyStarBolt.DisplayName: God Smith Lucky Star Bolt
+// GodSmithMenaceClaw.DisplayName: God Smith Menace Claw
+// GodSmithSwiftWindBlade.DisplayName: God Smith Swift Wind Blade
+// GodSmithViolentArc.DisplayName: God Smith Violent Arc
+// GodSmithManaRefluxWisp.DisplayName: God Smith Mana Reflux Wisp
+// GodSmithMythicStarShot.DisplayName: God Smith Mythic Star Shot
+// GodSmithMythicStarWisp.DisplayName: God Smith Mythic Star Wisp
+// GodSmithOverloadArc.DisplayName: God Smith Overload Arc
+// GodSmithCritMarkBurst.DisplayName: God Smith Crit Mark Burst
+// GodSmithEchoSlashWave.DisplayName: God Smith Echo Slash Wave
+// GodSmithExecutionSlash.DisplayName: God Smith Execution Slash
+// GodSmithOverkillChainBolt.DisplayName: God Smith Overkill Chain Bolt
+// GodSmithShockwavePulse.DisplayName: God Smith Shockwave Pulse
+// GodSmithBallisticTracer.DisplayName: God Smith Ballistic Tracer
+// GodSmithPhantomBolt.DisplayName: God Smith Phantom Bolt
+// GodSmithRicochetBolt.DisplayName: God Smith Ricochet Bolt
+// GodSmithDesperationBurst.DisplayName: God Smith Desperation Burst
+// GodSmithHiddenEdgeSlash.DisplayName: God Smith Hidden Edge Slash
+// GodSmithAfterimageBolt.DisplayName: God Smith Afterimage Bolt
+// GodSmithComboBurstRing.DisplayName: God Smith Combo Burst Ring
+// GsAnchorQuakeProj.DisplayName: Gs Anchor Quake Proj
+// GsEnchantedBoomerangStarProj.DisplayName: Gs Enchanted Boomerang Star Proj
+// GsIceBoomerangShardProj.DisplayName: Gs Ice Boomerang Shard Proj
+// GsPaladinsHammerWaveProj.DisplayName: Gs Paladins Hammer Wave Proj
+// GsPossessedHatchetSoulBurstProj.DisplayName: Gs Possessed Hatchet Soul Burst Proj
+// GsShroomerangSporeCloudProj.DisplayName: Gs Shroomerang Spore Cloud Proj
+// GsThornChakramSpikeProj.DisplayName: Gs Thorn Chakram Spike Proj
+// GsBeamSwordBeamProj.DisplayName: Gs Beam Sword Beam Proj
+// GsBladeofGrassSporeProj.DisplayName: Gs Bladeof Grass Spore Proj
+// GsBladetongueGeyserProj.DisplayName: Gs Bladetongue Geyser Proj
+// GsBladetongueSpitProj.DisplayName: Gs Bladetongue Spit Proj
+// GsBloodButchererBurstProj.DisplayName: Gs Blood Butcherer Burst Proj
+// GsBoneSwordTossProj.DisplayName: Gs Bone Sword Toss Proj
+// GsBreakerBladeShockProj.DisplayName: Gs Breaker Blade Shock Proj
+// GsCactusNeedleProj.DisplayName: Gs Cactus Needle Proj
+// GsChlorophyteClaymoreOrbProj.DisplayName: Gs Chlorophyte Claymore Orb Proj
+// GsChlorophyteClaymoreRootProj.DisplayName: Gs Chlorophyte Claymore Root Proj
+// GsChlorophyteClaymoreThornProj.DisplayName: Gs Chlorophyte Claymore Thorn Proj
+// GsChlorophyteSaberMistProj.DisplayName: Gs Chlorophyte Saber Mist Proj
+// GsChristmasTreeSwordOrnamentProj.DisplayName: Gs Christmas Tree Sword Ornament Proj
+// GsChristmasTreeSwordTreeProj.DisplayName: Gs Christmas Tree Sword Tree Proj
+// GsDD2SquireBetsySwordWaveProj.DisplayName: Gs D D2 Squire Betsy Sword Wave Proj
+// GsDD2SquireDemonSwordFireWaveProj.DisplayName: Gs D D2 Squire Demon Sword Fire Wave Proj
+// GsEbonSporeMistProj.DisplayName: Gs Ebon Spore Mist Proj
+// GsEnchantedSwordBeamProj.DisplayName: Gs Enchanted Sword Beam Proj
+// GsExcaliburArcProj.DisplayName: Gs Excalibur Arc Proj
+// GsExcaliburNovaProj.DisplayName: Gs Excalibur Nova Proj
+// GsFetidBaghnakhsBurstProj.DisplayName: Gs Fetid Baghnakhs Burst Proj
+// GsFetidBaghnakhsMarkProj.DisplayName: Gs Fetid Baghnakhs Mark Proj
+// GsFieryGreatswordPitProj.DisplayName: Gs Fiery Greatsword Pit Proj
+// GsFrostbrandBoltProj.DisplayName: Gs Frostbrand Bolt Proj
+// GsHamBatAromaProj.DisplayName: Gs Ham Bat Aroma Proj
+// GsIceBladeShardProj.DisplayName: Gs Ice Blade Shard Proj
+// GsInfluxWaverBrandProj.DisplayName: Gs Influx Waver Brand Proj
+// GsInfluxWaverPhaseSlashProj.DisplayName: Gs Influx Waver Phase Slash Proj
+// GsInfluxWaverWaveProj.DisplayName: Gs Influx Waver Wave Proj
+// GsKeybrandUnlockProj.DisplayName: Gs Keybrand Unlock Proj
+// GsLightsBaneScarProj.DisplayName: Gs Lights Bane Scar Proj
+// GsMeowmereCatProj.DisplayName: Gs Meowmere Cat Proj
+// GsMeowmereMeteorProj.DisplayName: Gs Meowmere Meteor Proj
+// GsMeowmereStarBurstProj.DisplayName: Gs Meowmere Star Burst Proj
+// GsNightsEdgeWaveProj.DisplayName: Gs Nights Edge Wave Proj
+// GsPalmSandWaveProj.DisplayName: Gs Palm Sand Wave Proj
+// GsPhasebladeArcProj.DisplayName: Gs Phaseblade Arc Proj
+// GsPhasesaberBurstProj.DisplayName: Gs Phasesaber Burst Proj
+// GsPiercingStarlightBoltProj.DisplayName: Gs Piercing Starlight Bolt Proj
+// GsPiercingStarlightBurstProj.DisplayName: Gs Piercing Starlight Burst Proj
+// GsPsychoKnifeShadowBurstProj.DisplayName: Gs Psycho Knife Shadow Burst Proj
+// GsSeedlerBrambleProj.DisplayName: Gs Seedler Bramble Proj
+// GsSeedlerPodProj.DisplayName: Gs Seedler Pod Proj
+// GsSeedlerThornProj.DisplayName: Gs Seedler Thorn Proj
+// GsSlapHandClapProj.DisplayName: Gs Slap Hand Clap Proj
+// GsSlapHandPrintProj.DisplayName: Gs Slap Hand Print Proj
+// GsStarfuryStarProj.DisplayName: Gs Starfury Star Proj
+// GsStarWrathFallProj.DisplayName: Gs Star Wrath Fall Proj
+// GsStarWrathRingProj.DisplayName: Gs Star Wrath Ring Proj
+// GsTerraBladeBurstProj.DisplayName: Gs Terra Blade Burst Proj
+// GsTerraBladeRingProj.DisplayName: Gs Terra Blade Ring Proj
+// GsTerraBladeWaveProj.DisplayName: Gs Terra Blade Wave Proj
+// GsTheHorsemansBladeJackProj.DisplayName: Gs The Horsemans Blade Jack Proj
+// GsTrueExcaliburCrossProj.DisplayName: Gs True Excalibur Cross Proj
+// GsTrueExcaliburWaveProj.DisplayName: Gs True Excalibur Wave Proj
+// GsTrueNightsEdgeShardProj.DisplayName: Gs True Nights Edge Shard Proj
+// GsTrueNightsEdgeWaveProj.DisplayName: Gs True Nights Edge Wave Proj
+// GsZenithPhantomProj.DisplayName: Gs Zenith Phantom Proj
+// GsZenithRiftProj.DisplayName: Gs Zenith Rift Proj
+// GsBallOHurtBarbProj.DisplayName: Gs Ball O Hurt Barb Proj
+// GsBlueMoonCrescentProj.DisplayName: Gs Blue Moon Crescent Proj
+// GsChainGuillotinesShearProj.DisplayName: Gs Chain Guillotines Shear Proj
+// GsDaoofPowBurstProj.DisplayName: Gs Daoof Pow Burst Proj
+// GsDripplerFlailBeadProj.DisplayName: Gs Drippler Flail Bead Proj
+// GsFlaironBubbleProj.DisplayName: Gs Flairon Bubble Proj
+// GsFlamingMaceEmberProj.DisplayName: Gs Flaming Mace Ember Proj
+// GsFlowerPowPetalProj.DisplayName: Gs Flower Pow Petal Proj
+// GsGolemFistMagmaProj.DisplayName: Gs Golem Fist Magma Proj
+// GsGolemFistQuakeProj.DisplayName: Gs Golem Fist Quake Proj
+// GsKOCannonShockProj.DisplayName: Gs K O Cannon Shock Proj
+// GsSunfuryScorchProj.DisplayName: Gs Sunfury Scorch Proj
+// GsTheMeatballBurstProj.DisplayName: Gs The Meatball Burst Proj
+// GsBoomstickBiteProj.DisplayName: Gs Boomstick Bite Proj
+// GsFlareGunSignalProj.DisplayName: Gs Flare Gun Signal Proj
+// GsHarpoonSpearProj.DisplayName: Gs Harpoon Spear Proj
+// GsPhoenixBlasterChickProj.DisplayName: Gs Phoenix Blaster Chick Proj
+// GsPhoenixBlasterNirvanaProj.DisplayName: Gs Phoenix Blaster Nirvana Proj
+// GsRedRyderPelletProj.DisplayName: Gs Red Ryder Pellet Proj
+// GsSandgunGlassProj.DisplayName: Gs Sandgun Glass Proj
+// GsUndertakerSoulProj.DisplayName: Gs Undertaker Soul Proj
+// GsBetsyBombardProj.DisplayName: Gs Betsy Bombard Proj
+// GsDaedalusSigilProj.DisplayName: Gs Daedalus Sigil Proj
+// GsPhantasmEchoArrowProj.DisplayName: Gs Phantasm Echo Arrow Proj
+// GsTsunamiCrestProj.DisplayName: Gs Tsunami Crest Proj
+// FuLaoOverflowSurge.DisplayName: Fu Lao Overflow Surge
+// FuPeiGateBurst.DisplayName: Fu Pei Gate Burst
+// SeaShrimpBubble.DisplayName: Sea Shrimp Bubble
+// SeaShrimpCavitationBubble.DisplayName: Sea Shrimp Cavitation Bubble
+// SeaShrimpClawHitbox.DisplayName: Sea Shrimp Claw Hitbox
+// SeaShrimpCrystalSpike.DisplayName: Sea Shrimp Crystal Spike
+// SeaShrimpShellFrag.DisplayName: Sea Shrimp Shell Frag
+// SeaShrimpWaterBolt.DisplayName: Sea Shrimp Water Bolt

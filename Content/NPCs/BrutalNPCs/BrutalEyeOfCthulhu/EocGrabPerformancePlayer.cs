@@ -53,6 +53,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
 
         /// <summary>找正抓着该玩家的克眼；必须确认本模组接管在场，防原版 ai 撞值</summary>
         internal static NPC FindGrabbingEye(int playerIndex) {
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必扫表
+                return null;
+            }
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (npc.type != NPCID.EyeofCthulhu) {
                     continue;

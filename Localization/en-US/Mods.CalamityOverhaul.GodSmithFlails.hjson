@@ -1,0 +1,75 @@
+GsBallOHurt.Desc:
+	'''
+	Reforged: spin to charge the swing; the flying ball sheds hovering barbs along its path
+	A fully charged strike bursts a ring of barbs on the target
+	'''
+GsChainKnife.Desc:
+	'''
+	Reforged: landing a blade hit grants Momentum for 7 seconds
+	Each stack spins up and throws faster, up to 3 stacks
+	'''
+GsTheMeatball.Desc:
+	'''
+	Reforged: a fully charged strike bursts into a gout of gore
+	The burst wounds everything nearby and inflicts Bleeding
+	'''
+GsBlueMoon.Desc:
+	'''
+	Reforged: charged strikes loose piercing crescent blades through the target
+	Half charge looses one blade, a full charge looses three
+	'''
+GsSunfury.Desc:
+	'''
+	Reforged: the flying ball sears hovering scorch marks along its path
+	The marks linger and burn whoever touches them with hellfire
+	'''
+GsMace.Desc:
+	'''
+	Reforged: a fully charged strike cracks the target's armor, halving its defense for a few seconds
+	Heavier knockback backs up every blow
+	'''
+GsFlamingMace.Desc:
+	'''
+	Reforged: spinning the mace flings burning embers outward
+	Faster spins throw the embers harder and farther, igniting whatever they strike
+	'''
+GsDaoofPow.Desc:
+	'''
+	Reforged: throws alternate between Yin and Yang; a Yin strike brands and slows the target
+	A Yang strike on a branded target detonates the brand into a burst of light and ink
+	'''
+GsFlowerPow.Desc:
+	'''
+	Reforged: petals bloom around the head while spinning, up to five
+	Landing a throw sends every petal homing at the target as razor blades
+	'''
+GsDripplerFlail.Desc:
+	'''
+	Reforged: at high spin and through every throw, the head weeps gravity-bound blood beads
+	Beads burst into stinging blood spikes on contact or landing
+	'''
+
+GsKOCannon: {
+	Desc:
+		'''
+		Reforged: a braced straight punch; land three solid hits on the same target within four seconds
+		The third punch is a KO: double damage, double knockback, and a concussive ring
+		'''
+	TipKO: KO!
+}
+
+GsChainGuillotines.Desc:
+	'''
+	Reforged: hurls both guillotines at once, fanning apart mid-flight
+	When the two blades cross paths they shear, bursting cross-cut slashes between them
+	'''
+GsGolemFist.Desc:
+	'''
+	Reforged: solid hits stack heat (up to 3, +8% damage each, fades after 8 seconds); at full heat the fist runs molten and impacts hurl 3 magma chunks
+	Every punch that lands on a foe or a wall slams out a stone shockwave
+	'''
+GsFlairon.Desc:
+	'''
+	Reforged: the chain squeezes out homing bubble blades while swinging and flying (up to 8 afield, 40% damage each)
+	A full-spin strike bursts a ring of six bubble blades around the target
+	'''

@@ -42,8 +42,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
     }
 
     /// <summary>鬼梦表现泵（延迟雷、梦中氛围：烬灰/贴地雾毯）</summary>
-    internal class KikasaDreamSystem : ModSystem
+    internal class KikasaDreamSystem : ModSystem, ICWRLoader
     {
+        void ICWRLoader.UnLoadData() => KikasaDreamGroundField.Unload();
+
         public override void PostUpdateEverything() {
             if (Main.dedServ) {
                 return;
@@ -56,6 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             if (!Main.dedServ) {
                 KikasaDreamFX.Clear();
                 KikasaDreamFogField.Clear();
+                KikasaDreamGroundField.Reset();
             }
         }
 
@@ -97,28 +100,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                     ?.Configure(Main.rand.Next(120, 200), isEmber);
             }
 
-            //贴地雾毯本体已改走连续雾场（KikasaDreamFogRender 三角带 + KikasaDreamFog.fx）：
+            //贴地雾毯本体已改走连续雾场（KikasaDreamGroundField 距离场 + KikasaDreamFog.fx）：
             //粒子堆叠的生灭错相会读成闪烁，这里只负责重建驱散场，不再撒雾粒
-        }
-
-        /// <summary>从起始高度向下探地表（雾带渲染 KikasaDreamFogRender 逐列复用）</summary>
-        internal static bool TryFindGround(float x, float fromY, out float groundY) {
-            int tileX = (int)(x / 16f);
-            int tileY = (int)(fromY / 16f);
-            for (int i = 0; i < 46; i++) {
-                int y = tileY + i;
-                if (!WorldGen.InWorld(tileX, y, 40)) {
-                    break;
-                }
-                Tile tile = Framing.GetTileSafely(tileX, y);
-                if (tile.HasTile && Main.tileSolid[tile.TileType]
-                    && !Main.tileSolidTop[tile.TileType]) {
-                    groundY = y * 16f;
-                    return true;
-                }
-            }
-            groundY = 0f;
-            return false;
         }
 
         /// <summary>拒绝反馈：轻点一声，别让按键静默吞掉</summary>

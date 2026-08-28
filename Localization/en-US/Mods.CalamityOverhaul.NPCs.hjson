@@ -137,3 +137,9 @@ RidgeWalkerYokai: {
 ShallowHandsYokai.DisplayName: Hand in the Shallows
 MinoFisherYokai.DisplayName: Straw-Cloaked Fisherman
 KiyumeWhiteHound.DisplayName: Homeward-Gazing White Hound
+
+SeaShrimpBoss: {
+	DisplayName: Abyssal Crystal Shrimp
+	Bestiary: The carapaced tyrant of the deepest trench. Its great claw strikes faster than sound can swim; the blow tears the water itself into vacuum, and the collapsing bubble flashes bright as day. Fishermen say the waterspouts that burst from a calm sea are just it shadowboxing far below.
+	ChecklistSpawnInfo: Use Crystallized Shrimp Bait at the ocean
+}

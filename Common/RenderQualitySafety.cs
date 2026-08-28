@@ -42,23 +42,61 @@ namespace CalamityOverhaul.Common
             "LiquidQuality", "liquidQuality"
         ];
 
-        private static bool IsLowWaterQuality() {
+        //成员名加载后不会漂移：句柄只解析一次；读值结果帧戳缓存，
+        //同一帧内约 20 处后处理各问一次也只反射读一遍
+        private static bool waterMembersResolved;
+        private static FieldInfo[] waterFields;
+        private static PropertyInfo[] waterProps;
+        private static uint lowWaterFrame = uint.MaxValue;
+        private static bool lowWaterCache;
+
+        private static void ResolveWaterMembers() {
             const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
             Type mainType = typeof(Main);
-
+            var fields = new System.Collections.Generic.List<FieldInfo>();
+            var props = new System.Collections.Generic.List<PropertyInfo>();
             foreach (string memberName in WaterQualityMemberNames) {
                 FieldInfo field = mainType.GetField(memberName, flags);
-                if (field != null && IsLowQualityValue(field.GetValue(null))) {
-                    return true;
+                if (field != null) {
+                    fields.Add(field);
                 }
-
                 PropertyInfo property = mainType.GetProperty(memberName, flags);
-                if (property != null && IsLowQualityValue(property.GetValue(null))) {
-                    return true;
+                if (property != null) {
+                    props.Add(property);
                 }
             }
+            waterFields = [.. fields];
+            waterProps = [.. props];
+            waterMembersResolved = true;
+        }
 
-            return false;
+        private static bool IsLowWaterQuality() {
+            if (lowWaterFrame == Main.GameUpdateCount) {
+                return lowWaterCache;
+            }
+            lowWaterFrame = Main.GameUpdateCount;
+
+            if (!waterMembersResolved) {
+                ResolveWaterMembers();
+            }
+
+            bool low = false;
+            foreach (FieldInfo field in waterFields) {
+                if (IsLowQualityValue(field.GetValue(null))) {
+                    low = true;
+                    break;
+                }
+            }
+            if (!low) {
+                foreach (PropertyInfo property in waterProps) {
+                    if (IsLowQualityValue(property.GetValue(null))) {
+                        low = true;
+                        break;
+                    }
+                }
+            }
+            lowWaterCache = low;
+            return low;
         }
 
         private static bool IsLowQualityValue(object value) {

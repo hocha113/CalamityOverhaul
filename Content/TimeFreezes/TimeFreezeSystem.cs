@@ -641,6 +641,18 @@ namespace CalamityOverhaul.Content.TimeFreezes
             int Type, int Owner, int Identity);
 
         private static readonly Dictionary<Type, ulong> cinematicSources = new();
+
+        /// <summary>
+        /// 实体时控闩锁：任何可能给实体挂上时控状态的门面入口都置位；
+        /// <see cref="SynchronizeEntitySources"/> 在一次全表观察到"无任何实体持有状态
+        /// 且无全局冻结"后自行放下。放下期间三条全表循环与逐实体 AI 钩子全部早退，
+        /// 空闲世界不再为时停框架付每帧全表 GetGlobal 成本。
+        /// </summary>
+        private static bool entityControlLatch = true;
+
+        /// <summary>任何可能创建实体时控状态的入口调用，重新抬起闩锁</summary>
+        private static void NotifyEntityControlTouched() => entityControlLatch = true;
+
         private static ulong nextEntityGeneration;
         private static ulong nextNetworkGeneration;
         private static ulong nextLeaseEpoch;
@@ -707,6 +719,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (ticks <= 0) {
                 return;
             }
+            NotifyEntityControlTouched();
             Type source = typeof(TSource);
             ulong expiry = Main.GameUpdateCount + (ulong)ticks + 1UL;
             if (!cinematicSources.TryGetValue(source, out ulong oldExpiry) || expiry > oldExpiry) {
@@ -716,12 +729,14 @@ namespace CalamityOverhaul.Content.TimeFreezes
 
         internal static void RefreshNPC<TSource>(NPC npc, int ticks) {
             if (npc?.active == true) {
+                NotifyEntityControlTouched();
                 npc.GetGlobalNPC<TimeFreezeNPC>().RefreshTimedSource(npc, typeof(TSource), ticks);
             }
         }
 
         internal static void RefreshProjectile<TSource>(Projectile projectile, int ticks) {
             if (projectile?.active == true) {
+                NotifyEntityControlTouched();
                 projectile.GetGlobalProjectile<TimeFreezeProjectile>()
                     .RefreshTimedSource(projectile, typeof(TSource), ticks);
             }
@@ -733,6 +748,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (npc?.active != true) {
                 return default;
             }
+            NotifyEntityControlTouched();
             TimeFreezeNPC freeze = npc.GetGlobalNPC<TimeFreezeNPC>();
             TimeFreezeLease lease = freeze.Acquire(npc,
                 new FreezeSourceKey(typeof(TSource), sourceInstance), anchorCenter,
@@ -747,6 +763,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (projectile?.active != true) {
                 return default;
             }
+            NotifyEntityControlTouched();
             TimeFreezeProjectile freeze = projectile.GetGlobalProjectile<TimeFreezeProjectile>();
             TimeFreezeLease lease = freeze.Acquire(projectile,
                 new FreezeSourceKey(typeof(TSource), sourceInstance), anchorCenter,
@@ -793,6 +810,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (npc?.active != true) {
                 return false;
             }
+            NotifyEntityControlTouched();
             return npc.GetGlobalNPC<TimeFreezeNPC>().SetTimeScale(npc,
                 new FreezeSourceKey(typeof(TSource), sourceInstance), scale);
         }
@@ -802,6 +820,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (projectile?.active != true) {
                 return false;
             }
+            NotifyEntityControlTouched();
             return projectile.GetGlobalProjectile<TimeFreezeProjectile>()
                 .SetTimeScale(projectile,
                     new FreezeSourceKey(typeof(TSource), sourceInstance), scale);
@@ -897,6 +916,10 @@ namespace CalamityOverhaul.Content.TimeFreezes
         }
 
         internal static bool FreezeNPCPreAI(NPC npc) {
+            //闩锁放下期间保证无任何实体持有时控状态：跳过全局实例访问，直接放行 AI
+            if (!entityControlLatch) {
+                return false;
+            }
             TimeFreezeNPC freeze = npc.GetGlobalNPC<TimeFreezeNPC>();
             freeze.SyncTransientSources(npc, GetTransientSources(npc));
             if (freeze.IsFrozen) {
@@ -907,6 +930,9 @@ namespace CalamityOverhaul.Content.TimeFreezes
         }
 
         internal static bool FreezeProjectilePreAI(Projectile projectile) {
+            if (!entityControlLatch) {
+                return false;
+            }
             TimeFreezeProjectile freeze = projectile.GetGlobalProjectile<TimeFreezeProjectile>();
             freeze.SyncTransientSources(projectile, GetTransientSources(projectile));
             if (freeze.IsFrozen) {
@@ -917,12 +943,23 @@ namespace CalamityOverhaul.Content.TimeFreezes
         }
 
         internal static void SynchronizeEntitySources() {
+            if (!entityControlLatch) {
+                //防御：全局冻结理论上必经 BeginWorldFreeze/RefreshCinematic 抬闩，双保险
+                if (!IsAnyGlobalFreezeActive) {
+                    return;
+                }
+                entityControlLatch = true;
+            }
+
+            //同步的同时观察：全表都不再持有任何时控状态且无全局冻结，则放下闩锁
+            bool anyControl = IsAnyGlobalFreezeActive;
             if (Main.npc != null) {
                 for (int i = 0; i < Main.maxNPCs; i++) {
                     NPC npc = Main.npc[i];
                     if (npc?.active == true && npc.type > NPCID.None) {
-                        npc.GetGlobalNPC<TimeFreezeNPC>()
-                            .SyncTransientSources(npc, GetTransientSources(npc));
+                        TimeFreezeNPC freeze = npc.GetGlobalNPC<TimeFreezeNPC>();
+                        freeze.SyncTransientSources(npc, GetTransientSources(npc));
+                        anyControl |= freeze.HasTimeControl;
                     }
                 }
             }
@@ -930,14 +967,20 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 for (int i = 0; i < Main.maxProjectiles; i++) {
                     Projectile projectile = Main.projectile[i];
                     if (projectile?.active == true && projectile.type > ProjectileID.None) {
-                        projectile.GetGlobalProjectile<TimeFreezeProjectile>()
-                            .SyncTransientSources(projectile, GetTransientSources(projectile));
+                        TimeFreezeProjectile freeze = projectile.GetGlobalProjectile<TimeFreezeProjectile>();
+                        freeze.SyncTransientSources(projectile, GetTransientSources(projectile));
+                        anyControl |= freeze.HasTimeControl;
                     }
                 }
             }
+            entityControlLatch = anyControl;
         }
 
         internal static void CompleteNPCFrames() {
+            //闩锁放下即全表无状态，CompleteFrame 必为 None，整条循环可跳
+            if (!entityControlLatch) {
+                return;
+            }
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
                 if (npc?.active == true) {
@@ -947,6 +990,9 @@ namespace CalamityOverhaul.Content.TimeFreezes
         }
 
         internal static void CompleteProjectileFrames() {
+            if (!entityControlLatch) {
+                return;
+            }
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile projectile = Main.projectile[i];
                 if (projectile?.active == true) {
@@ -957,6 +1003,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
         }
 
         internal static void BeginWorldFreeze() {
+            NotifyEntityControlTouched();
             CaptureWorldFreezeProjectileBaseline();
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
@@ -974,6 +1021,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
         }
 
         internal static void EndWorldFreeze() {
+            NotifyEntityControlTouched();
             try {
                 for (int i = 0; i < Main.maxNPCs; i++) {
                     NPC npc = Main.npc[i];
@@ -1022,6 +1070,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
         }
 
         internal static void RollbackWorldFreeze() {
+            NotifyEntityControlTouched();
             try {
                 for (int i = 0; i < Main.maxNPCs; i++) {
                     NPC npc = Main.npc[i];
@@ -1044,6 +1093,8 @@ namespace CalamityOverhaul.Content.TimeFreezes
         internal static void ResetSession() {
             cinematicSources.Clear();
             nextInvalidMotionLogFrame = 0;
+            //入世保守抬闩：第一次全表观察后若干净会自行放下
+            entityControlLatch = true;
             ClearWorldFreezeProjectileBaseline();
             if (Main.npc != null) {
                 for (int i = 0; i < Main.maxNPCs; i++) {

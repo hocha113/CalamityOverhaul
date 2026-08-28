@@ -256,6 +256,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         }
 
         /// <summary>
+        /// 跟脚潮让位坑参数打包（uv 域）：x=中心 uv.x，y=半宽 uv.x，z=坑深 uv.y（负=蓄势隆起），
+        /// w=坑唇幅度 uv.y。湖面与天空像素空间不同，各自传入自家相机原点与视口尺寸，
+        /// 投影结果逐像素一致（同 <see cref="FillWaveUniforms"/> 之约）
+        /// </summary>
+        internal static void FillTideUniforms(Effect effect, KikasaDomainPlayer kdp,
+            Vector2 cameraPos, Vector2 viewSize) {
+            float centerUv = Vector2.Transform(
+                new Vector2(kdp.TideTroughCenterX - cameraPos.X, 0f),
+                Main.GameViewMatrix.TransformationMatrix).X / viewSize.X;
+            effect.Parameters["uTideTrough"]?.SetValue(new Vector4(
+                centerUv,
+                MathF.Max(kdp.TideTroughHalfWidthPx * Main.GameViewMatrix.Zoom.X / viewSize.X, 1e-4f),
+                kdp.TideTroughDepthPx * Main.GameViewMatrix.Zoom.Y / viewSize.Y,
+                kdp.TideLipAmpPx * Main.GameViewMatrix.Zoom.Y / viewSize.Y));
+        }
+
+        /// <summary>让位坑参数打包（世界像素域），供世界锚定 quad 的鬼火层自算，
+        /// 与 uv 版坑轮廓常数同源（同 <see cref="FillWaveUniformsWorld"/> 之约）</summary>
+        internal static void FillTideUniformsWorld(Effect effect, KikasaDomainPlayer kdp) {
+            effect.Parameters["uTideTroughW"]?.SetValue(new Vector4(
+                kdp.TideTroughCenterX,
+                MathF.Max(kdp.TideTroughHalfWidthPx, 1f),
+                kdp.TideTroughDepthPx,
+                kdp.TideLipAmpPx));
+        }
+
+        /// <summary>
         /// 行波以世界像素域打包（x=源世界X y=寿命进度 z=幅度px w=范围乘数），
         /// 供世界锚定 quad 的着色器（鬼火层）自算涌动，与屏幕 uv 版波形常数同源
         /// </summary>
@@ -402,6 +429,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 }
                 PRTLoader.NewParticle<PRT_GhostRainDrop>(pos, vel, color, scale)
                     ?.Configure(life, vel.X).AsCurtain(depthMul);
+            }
+        }
+
+        /// <summary>
+        /// 大范围重启借雨的一次性补雨：照片背后按稳态同款色板/风偏/纵深分层，
+        /// 在整个视区高度上撒满下落中的雨滴，冲刷揭出的空中已是一场下了很久的雨，
+        /// 而不是刚从天顶起头。与稳态雨帘共享 PRT 池预算；出生点陷在实心方块里的滴直接略过
+        /// </summary>
+        internal static void PrefillRainCurtain() {
+            float left = Main.screenPosition.X - 160f;
+            float right = Main.screenPosition.X + Main.screenWidth + 160f;
+            float top = Main.screenPosition.Y - 40f;
+            float bottom = Main.screenPosition.Y + Main.screenHeight + 40f;
+            Color pale = new(170, 185, 190);
+            Color corpse = new(140, 170, 165);
+            //风偏与演出期稳态雨帘同口径（重启强拉的密度 1.35）
+            float wind = MathF.Sin(Main.worldID % 255 * 0.37f) * 2.2f * 1.35f;
+            for (int i = 0; i < 300; i++) {
+                Vector2 pos = new(Main.rand.NextFloat(left, right),
+                    Main.rand.NextFloat(top, bottom));
+                if (Collision.SolidCollision(pos - new Vector2(1f, 1f), 2, 2)) {
+                    continue;
+                }
+                Vector2 vel = new(wind + Main.rand.NextFloat(-0.35f, 0.35f),
+                    Main.rand.NextFloat(11f, 17f));
+                Color color = (Main.rand.NextBool(7) ? corpse : pale)
+                    * Main.rand.NextFloat(0.42f, 0.65f);
+                float scale = Main.rand.NextFloat(0.8f, 1.25f);
+                float depthMul = 1f;
+                if (Main.rand.NextFloat() < 0.42f) {
+                    depthMul = Main.rand.NextFloat(0.68f, 0.8f);
+                    vel *= depthMul;
+                    color *= 0.62f;
+                    scale *= 0.66f;
+                }
+                PRTLoader.NewParticle<PRT_GhostRainDrop>(pos, vel, color, scale)
+                    ?.Configure(Main.rand.Next(70, 110), vel.X).AsCurtain(depthMul);
             }
         }
 

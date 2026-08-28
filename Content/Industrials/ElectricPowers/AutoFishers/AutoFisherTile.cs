@@ -13,7 +13,7 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
 {
-    /// <summary>自动钓鱼机瓦片,2x3;钓竿与鱼线由 TP 在物块层上拼装</summary>
+    /// <summary>自动钓鱼机瓦片,4x5;钓竿与鱼线由 TP 在物块层上拼装</summary>
     internal class AutoFisherTile : ModTile
     {
         public override string Texture => CWRConstant.Asset + "ElectricPowers/AutoFisherTile";
@@ -27,10 +27,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
             AddMapEntry(new Color(78, 122, 156), VaultUtils.GetLocalizedItemName<AutoFisher>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.Width = 2;
-            TileObjectData.newTile.Height = 3;
-            TileObjectData.newTile.Origin = new Point16(1, 2);
-            TileObjectData.newTile.CoordinateHeights = [16, 16, 18];
+            TileObjectData.newTile.Width = 4;
+            TileObjectData.newTile.Height = 5;
+            TileObjectData.newTile.Origin = new Point16(2, 4);
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16];
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile
                 | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.CoordinateWidth = 16;
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
             }
 
             //电量不足以下一竿时机身压暗,一眼可读的断电状态
-            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 3, tp.MachineData.UEvalue < AutoFisherTP.CastCost);
+            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 5, 16, tp.MachineData.UEvalue < AutoFisherTP.CastCost);
             return false;
         }
     }

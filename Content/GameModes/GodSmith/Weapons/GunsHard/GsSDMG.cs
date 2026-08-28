@@ -2,6 +2,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -12,9 +13,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard
 {
     /// <summary>
-    /// S.D.M.G. 重铸：终局特权三档。基数极强，全部加成克制。<br/>
-    /// [海豚狂涛]：原版极速原样，青色浪尾稀疏点缀。<br/>
-    /// [声呐点射]：3 连点射，链末发命中挂「声呐标记」4 秒；
+    /// S.D.M.G. 重铸：终局特权三档。材质：深海声呐合金机枪，海豚青浪光与声纹环。<br/>
+    /// 签名行为：①每发子弹拖海豚青浪光曳尾，命中溅起水沫 ②声呐链末发命中
+    /// 挂全端可见的声纹扩散环 ③三档后坐分野（狂涛高频轻挫/点射沉踢/微导绵柔）。<br/>
+    /// [海豚狂涛]：原版极速原样。[声呐点射]：3 连点射，链末发命中挂「声呐标记」4 秒，
     /// 被标记目标吃全队远程伤害 +8%（联机协作亮点，标记为弹幕实体全端可见）。<br/>
     /// [轨道微导]：子弹轻微追踪、伤害 -10% 的懒人扫场形态
     /// </summary>
@@ -55,6 +57,16 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard
                 DamageMul = 0.90f,
             },
         ];
+
+        //终局机枪后坐三档分野：狂涛高频轻挫、点射沉踢、微导绵柔
+        protected override float RecoilShift => 2.8f;
+        protected override float RecoilKick => 0.04f;
+        protected override float RecoilScale(Item item, Player player, GsFireMode mode) {
+            if (mode.BurstCount > 0) {
+                return 1.5f;
+            }
+            return mode.DamageMul < 1f ? 0.6f : 1f;
+        }
 
         protected override void GsGunModifyShoot(Item item, Player player, ref Vector2 position,
             ref Vector2 velocity, ref int type, ref int damage, ref float knockback,
@@ -101,6 +113,26 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard
             }
         }
 
+        /// <summary>飞行相：全弹海豚青浪光曳尾（原版子弹贴图垫底，光带压上）</summary>
+        public override void GsProjPostDraw(Projectile proj, Color lightColor, GodSmithProjRouter router) {
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (glow == null) {
+                return;
+            }
+            float speed = proj.velocity.Length();
+            if (speed < 2f) {
+                return;
+            }
+            //identity 定相微闪，绘制路径不掷随机
+            float flicker = 0.8f + 0.2f * MathF.Sin(Main.GlobalTimeWrappedHourly * 15f + proj.identity * 0.9f);
+            float stretch = MathHelper.Clamp(speed * 0.07f, 0.5f, 2.2f);
+            Color c = DolphinCyan * (0.5f * flicker);
+            c.A = 0;
+            Main.EntitySpriteDraw(glow, proj.Center - Main.screenPosition, null, c,
+                proj.velocity.ToRotation(), glow.Size() / 2f,
+                new Vector2(0.24f * stretch, 0.055f), SpriteEffects.None, 0);
+        }
+
         private static NPC FindHomingTarget(Projectile proj) {
             NPC best = null;
             float bestDist = 260f;
@@ -120,6 +152,16 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard
 
         public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit,
             int damageDone, GodSmithProjRouter router) {
+            //命中相：水沫迸溅（攻击方端个人反馈，5t 射速下隔发节流）
+            if (!VaultUtils.isServer && proj.identity % 2 == 0) {
+                Vector2 back = -proj.velocity.SafeNormalize(Vector2.UnitX);
+                for (int i = 0; i < 2; i++) {
+                    PRTLoader.NewParticle<PRT_Spark>(target.Center,
+                        back.RotatedByRandom(0.7) * Main.rand.NextFloat(1.5f, 3.5f),
+                        i == 0 ? DolphinCyan : Color.White,
+                        Main.rand.NextFloat(0.2f, 0.3f))?.Configure(false, Main.rand.Next(7, 12));
+                }
+            }
             //只在攻击方端执行：声呐弹命中挂标记（owner 生成标记弹幕，全端可见）
             if (MarkFlagOf(router.MarkData) != FlagSonar || target.friendly || !target.active) {
                 return;

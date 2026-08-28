@@ -20,12 +20,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.FluidPumps
             AddMapEntry(new Color(64, 96, 128), VaultUtils.GetLocalizedItemName<FluidPump>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.Width = 2;
-            TileObjectData.newTile.Height = 1;
-            TileObjectData.newTile.Origin = new Point16(1, 0);
+            TileObjectData.newTile.Width = 3;
+            TileObjectData.newTile.Height = 2;
+            TileObjectData.newTile.Origin = new Point16(1, 1);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile
                 | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateHeights = [18];
+            TileObjectData.newTile.CoordinateHeights = [16, 16];
             TileObjectData.newTile.LavaDeath = false;
 
             TileObjectData.addTile(Type);

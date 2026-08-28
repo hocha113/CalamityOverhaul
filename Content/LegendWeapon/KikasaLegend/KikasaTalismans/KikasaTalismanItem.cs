@@ -144,50 +144,5 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
         }
     }
 
-    internal sealed class KikasaTalismanLin : KikasaTalismanItem
-    {
-        public override string TalismanKey => nameof(FuLin);
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient(ItemID.RainCloud, 4)
-                .AddIngredient(ItemID.Silk, 2)
-                .AddIngredient(ItemID.BlackInk, 1)
-                .AddTile(TileID.WorkBenches)
-                .AddCondition(Condition.NearWater)
-                .Register();
-        }
-    }
-
-    internal sealed class KikasaTalismanLao : KikasaTalismanItem
-    {
-        public override string TalismanKey => nameof(FuLao);
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient(ItemID.RainCloud, 4)
-                .AddIngredient(ItemID.Silk, 2)
-                .AddIngredient(ItemID.BlackInk, 1)
-                .AddIngredient(ItemID.BottledWater, 2)
-                .AddTile(TileID.WorkBenches)
-                .AddCondition(Condition.NearWater)
-                .Register();
-        }
-    }
-
-    internal sealed class KikasaTalismanPei : KikasaTalismanItem
-    {
-        public override string TalismanKey => nameof(FuPei);
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient(ItemID.RainCloud, 8)
-                .AddIngredient(ItemID.Silk, 2)
-                .AddIngredient(ItemID.BlackInk, 1)
-                .AddIngredient(ItemID.FallenStar, 1)
-                .AddTile(TileID.WorkBenches)
-                .AddCondition(Condition.NearWater)
-                .Register();
-        }
-    }
+    //合成三符（霖/潦/沛）的符纸物品随定义同住 Roster/FuLin|FuLao|FuPei.cs，此处只留基类
 }

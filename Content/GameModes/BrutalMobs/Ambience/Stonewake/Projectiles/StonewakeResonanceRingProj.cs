@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -176,38 +177,64 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake.Proje
 
         public override bool PreDraw(ref Color lightColor) {
             int elapsed = Elapsed;
-            Texture2D sliver = CWRAsset.Extra_98.Value;
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Texture2D ring = CWRAsset.DiffusionCircle.Value;
             Texture2D line = CWRAsset.Line.Value;
             Vector2 center = Projectile.Center - Main.screenPosition;
 
+            //加色敷料染色（A=0）：只给扩散环、缘光、芯光这类"本身是光"的层
             Color deep = StonewakeFX.GraniteDeep; deep.A = 0;
             Color core = StonewakeFX.GraniteCore; core.A = 0;
             Color sparkTint = StonewakeFX.GraniteSpark; sparkTint.A = 0;
+            //晶体实体层染色（A>0 真 alpha）：花岗岩色系暗底
+            Color graniteDark = new(44, 50, 82);
 
-            //==== 晶簇：充能期长出，释放后随扩张回落（余韵冷却） ====
+            //==== 晶簇：花岗岩暗底晶体+电蓝亮缘，充能期长出，释放后随扩张回落（余韵冷却） ====
             float chargeProgress = MathHelper.Clamp(elapsed / (float)ChargeFrames, 0f, 1f);
             float crystalScale = elapsed < ChargeFrames
                 ? 0.35f + 0.65f * chargeProgress
                 : MathHelper.Clamp(1f - (elapsed - ChargeFrames) / (float)(ExpandFrames + FadeFrames), 0.25f, 1f);
             float pulse = 0.7f + 0.3f * MathF.Sin(Main.GlobalTimeWrappedHourly * (6f + 14f * chargeProgress) + Projectile.identity);
             float crystalGlowK = elapsed < ChargeFrames ? chargeProgress * pulse : 0.5f * FadeFactor * pulse;
+            //实体不随脉冲呼吸：充能早期即凝实，尾段随消散淡出
+            float crystalBodyK = elapsed < ChargeFrames
+                ? MathF.Min(1f, 0.3f + chargeProgress * 1.1f) : FadeFactor;
 
+            //原版巨鹿冰刺贴图作晶柱体（换构图：五根扇排自地面立起，花岗岩暗色重染）
+            Main.instance.LoadProjectile(ProjectileID.DeerclopsIceSpike);
+            Texture2D spike = TextureAssets.Projectile[ProjectileID.DeerclopsIceSpike].Value;
+
+            //接地暗座（真 alpha）：晶簇底部的落地压暗
+            Main.EntitySpriteDraw(ring, center + new Vector2(0f, 2f), null,
+                graniteDark * (0.45f * crystalBodyK), 0f, ring.Size() / 2f,
+                new Vector2(0.17f, 0.05f) * crystalScale, SpriteEffects.None, 0);
             //底部辉光垫
             Main.EntitySpriteDraw(glow, center, null, deep * (0.5f * crystalGlowK), 0f,
                 glow.Size() / 2f, new Vector2(1.1f, 0.5f) * crystalScale, SpriteEffects.None, 0);
-            //五片晶簇自地面呈扇形立起（确定性微颤）
+
+            //五根扇排晶柱：中间最高向两侧递减外倾，逐根取不同帧异形（确定性微颤）
+            ReadOnlySpan<float> fan = [-0.52f, -0.26f, 0f, 0.26f, 0.52f];
+            ReadOnlySpan<float> tall = [0.55f, 0.78f, 1f, 0.78f, 0.55f];
             for (int i = 0; i < 5; i++) {
-                float lean = (i - 2) * 0.34f + MathF.Sin(Projectile.identity * 1.7f + i * 2.3f) * 0.08f;
-                float segScale = crystalScale * (0.5f + 0.16f * (i % 3));
-                Vector2 tipOffset = new Vector2(MathF.Sin(lean), -MathF.Cos(lean)) * 12f * segScale;
-                Main.EntitySpriteDraw(sliver, center + new Vector2((i - 2) * 5f * crystalScale, -2f) + tipOffset * 0.4f,
-                    null, core * (0.55f + 0.4f * crystalGlowK), lean, sliver.Size() / 2f,
-                    new Vector2(0.16f, 0.5f) * segScale, SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(sliver, center + new Vector2((i - 2) * 5f * crystalScale, -2f) + tipOffset * 0.4f,
-                    null, Color.White * (0.5f * crystalGlowK), lean, sliver.Size() / 2f,
-                    new Vector2(0.07f, 0.36f) * segScale, SpriteEffects.None, 0);
+                Rectangle rect = spike.Frame(1, 5, 0, (Projectile.identity + i) % 5);
+                float axisLen = MathF.Max(rect.Width - 18f, 40f);
+                float wob = MathF.Sin(Projectile.identity * 1.7f + i * 2.3f) * 0.06f;
+                float rot = -MathHelper.PiOver2 + fan[i] * 0.8f + wob;
+                float len = (18f + 30f * tall[i]) * crystalScale;
+                Vector2 rootPos = center + new Vector2(fan[i] * 42f * crystalScale, 2f);
+                Vector2 scale = new(len / axisLen, 0.55f * crystalScale);
+                Vector2 orig = new(16f, rect.Height / 2f);
+                SpriteEffects flip = ((Projectile.identity + i) & 1) == 0
+                    ? SpriteEffects.None : SpriteEffects.FlipVertically;
+                //电蓝亮缘：略大一号垫底（A=0 加色，只露边缘）
+                Main.EntitySpriteDraw(spike, rootPos, rect, core * ((0.3f + 0.6f * crystalGlowK) * crystalBodyK),
+                    rot, orig, scale * 1.16f, flip, 0);
+                //花岗岩暗底晶体（A>0 实体，撑起剪影与遮挡）
+                Main.EntitySpriteDraw(spike, rootPos, rect, graniteDark * (0.92f * crystalBodyK),
+                    rot, orig, scale, flip, 0);
+                //晶面电光（A=0，充能越满越亮）
+                Main.EntitySpriteDraw(spike, rootPos, rect, sparkTint * (0.45f * crystalGlowK),
+                    rot, orig, scale * 0.82f, flip, 0);
             }
             //充能芯光
             Main.EntitySpriteDraw(glow, center - new Vector2(0f, 8f * crystalScale), null,
@@ -234,7 +261,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake.Proje
                     float tickLen = 26f / line.Height;
                     Main.EntitySpriteDraw(line, rim, null, core * (0.7f * fade), ang, line.Size() / 2f,
                         new Vector2(0.05f, tickLen), SpriteEffects.None, 0);
-                    Main.EntitySpriteDraw(line, rim, null, Color.White * (0.35f * fade), ang, line.Size() / 2f,
+                    //Line 是黑底贴图：染色 A 必须为 0，A>0 会把黑底当半透明暗矩形画上屏
+                    Main.EntitySpriteDraw(line, rim, null, new Color(255, 255, 255, 0) * (0.35f * fade), ang, line.Size() / 2f,
                         new Vector2(0.025f, tickLen * 0.7f), SpriteEffects.None, 0);
                 }
             }

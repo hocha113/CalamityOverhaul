@@ -36,8 +36,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             => trialFrontierHintText ??= Language.GetOrRegister("Mods.CalamityOverhaul.Legend.TrialFrontierHint",
                 static () => "等级按顺序结算，正卡在这一关。后面的先打了也会记下，补完这一关一起入账。");
 
+        //同步节流错相：各线按键前缀散开，避免同帧齐跑
+        private int syncPhase = -1;
+
         public override void PostUpdateEverything() {
             if (Main.dedServ || Main.gameMenu) {
+                return;
+            }
+
+            //30 帧同步一次：每帧全量注销/重注册是纯浪费，0.5 秒延迟对委托面板无感
+            if (syncPhase < 0) {
+                syncPhase = Math.Abs(KeyPrefix?.GetHashCode() ?? 0) % 30;
+            }
+            if ((Main.GameUpdateCount + (uint)syncPhase) % 30 != 0) {
                 return;
             }
 

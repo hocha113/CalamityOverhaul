@@ -46,8 +46,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
     internal class ThermalBatteryTile : ModTile
     {
         public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryTile";
-        public const int Width = 2;
-        public const int Height = 2;
+        public const int Width = 4;
+        public const int Height = 4;
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
@@ -59,9 +59,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             AddMapEntry(new Color(67, 72, 81), VaultUtils.GetLocalizedItemName<ThermalBattery>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.Origin = new Point16(1, 1);
+            TileObjectData.newTile.Width = 4;
+            TileObjectData.newTile.Height = 4;
+            TileObjectData.newTile.Origin = new Point16(2, 3);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateHeights = [16, 18];
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 20];
             TileObjectData.newTile.LavaDeath = false;
 
             TileObjectData.addTile(Type);
@@ -94,8 +96,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         //熔核显示比例与初始化标记
         internal float displayRatio;
         private bool ratioInited;
-        //熔核窗中心(画布像素)与基准辉光直径,对齐贴图观察窗
-        internal static readonly Vector2 CoreCenter = new(16f, 12f);
+        //熔核窗中心(画布像素),对齐贴图观察窗
+        internal static readonly Vector2 CoreCenter = new(30f, 25f);
         public override void UpdateMachine() {
             if (activeTime > 0) {
                 activeTime--;
@@ -129,7 +131,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             float breath = 1f + 0.14f * activity * MathF.Sin(Main.GlobalTimeWrappedHourly * 5.2f + Position.X * 0.7f);
             Vector2 core = PosInWorld + CoreCenter - Main.screenPosition;
             Color c = new Color(255, 150, 60) with { A = 0 };
-            float size = 14f + 8f * ratio;
+            float size = 28f + 16f * ratio;
             spriteBatch.Draw(glow, core, null, c * ((0.20f + 0.45f * ratio) * breath), 0f,
                 glow.Size() * 0.5f, size / glow.Width, SpriteEffects.None, 0f);
             //近满电时窗心追加一层白热

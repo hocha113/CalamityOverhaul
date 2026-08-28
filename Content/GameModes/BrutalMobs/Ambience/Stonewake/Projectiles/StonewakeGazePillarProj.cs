@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake.Proje
     /// <summary>
     /// 凝视之柱（大理石厅）。生成位置即地面锚点（预告即承诺），无 ai 参数。<br/>
     /// 预告：地面刻纹亮起+石化质感音逐拍推进（50 帧，公平契约 ≥45）；<br/>
-    /// 落地：美杜莎风格光柱立起，柱内玩家受微量伤害并挂短暂石纹视觉（绝不做真石化/禁锢），
+    /// 落地：美杜莎凝视凝成石化金柱（暗石纹剪影+大理石白实体+金光缘，真 alpha 实体层），
+    /// 柱内玩家受微量伤害并挂短暂石纹视觉（绝不做真石化/禁锢），
     /// 柱体静止不追，走出柱区即安全（具名逃生阀门）；<br/>
     /// 余韵：光柱自顶回落入地，刻纹余温冷却熄灭
     /// </summary>
@@ -194,8 +195,12 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake.Proje
             Texture2D line = CWRAsset.Line.Value;
             Texture2D glow = CWRAsset.SoftGlow.Value;
 
+            //加色敷料染色（A=0）：只给刻纹预告、金光缘、辉芒这类"本身是光"的层
             Color gold = StonewakeFX.MarbleGold; gold.A = 0;
             Color core = StonewakeFX.MarbleCore; core.A = 0;
+            //实体层染色（A>0）：LightBeam 是真 alpha 贴图，A=0 染色会把贴图自带 alpha 乘没
+            Color stoneDark = new(64, 54, 42);//暗石纹衬底
+            Color marbleBody = Color.Lerp(StonewakeFX.MarbleDust, StonewakeFX.MarbleGold, 0.3f);//大理石白实体
 
             //==== 地面刻纹：预告期亮起，立柱期满亮，回落期余温冷却 ====
             float engraveK;
@@ -229,7 +234,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake.Proje
                     new Vector2(0.03f, ColumnHeight * 0.9f * hint / line.Height), SpriteEffects.None, 0);
             }
 
-            //==== 光柱：三段叠绘收口（底亮顶散），回落期整柱缩回地面 ====
+            //==== 石化金柱：暗石纹剪影+金光缘+大理石白实体，三段收口（底亮顶散），回落期整柱缩回地面 ====
             float bodyK = RiseProgress * RetractFactor;
             Texture2D beam = LightBeam?.Value;
             if (bodyK > 0.02f && beam != null && !beam.IsDisposed) {
@@ -240,14 +245,41 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake.Proje
                 ReadOnlySpan<float> segAlpha = [0.30f, 0.62f, 1f];
                 ReadOnlySpan<float> segWide = [0.86f, 1f, 1.12f];
                 const float beamWidth = 72f;
+                Vector2 beamOrig = new(beam.Width * 0.5f, 0f);
 
+                //暗接地座（真 alpha）：柱底压暗椭圆，成柱后的落地实感
+                Main.EntitySpriteDraw(ring, basePos + new Vector2(0f, 2f), null,
+                    stoneDark * (0.5f * bodyK), 0f, ring.Size() / 2f,
+                    new Vector2(ringScale * 0.95f, ringScale * 0.26f), SpriteEffects.None, 0);
+
+                //第一遍：暗石纹剪影（最宽，A>0），亮厅背景上给柱体可辨轮廓
                 float cum = 0f;
+                for (int s = 0; s < 3; s++) {
+                    float segLen = height * segFrac[s];
+                    Vector2 scale = new(beamWidth * segWide[s] * 1.16f / BeamContentW, segLen / BeamContentH);
+                    Main.EntitySpriteDraw(beam, top + new Vector2(0f, cum), null,
+                        stoneDark * ((0.5f + 0.45f * segAlpha[s]) * 0.8f * RetractFactor), 0f,
+                        beamOrig, scale, SpriteEffects.None, 0);
+                    cum += segLen * 0.92f;
+                }
+                //第二遍：金光缘（A=0 加色），亮在剪影与实体之间的边带
+                cum = 0f;
+                for (int s = 0; s < 3; s++) {
+                    float segLen = height * segFrac[s];
+                    Vector2 scale = new(beamWidth * segWide[s] * 1.08f / BeamContentW, segLen / BeamContentH);
+                    Main.EntitySpriteDraw(beam, top + new Vector2(0f, cum), null,
+                        gold * (0.7f * segAlpha[s] * RetractFactor), 0f,
+                        beamOrig, scale, SpriteEffects.None, 0);
+                    cum += segLen * 0.92f;
+                }
+                //第三遍：大理石白实体核（A>0），石化金柱的实体感来源
+                cum = 0f;
                 for (int s = 0; s < 3; s++) {
                     float segLen = height * segFrac[s];
                     Vector2 scale = new(beamWidth * segWide[s] / BeamContentW, segLen / BeamContentH);
                     Main.EntitySpriteDraw(beam, top + new Vector2(0f, cum), null,
-                        gold * (0.7f * segAlpha[s] * RetractFactor), 0f,
-                        new Vector2(beam.Width * 0.5f, 0f), scale, SpriteEffects.None, 0);
+                        marbleBody * (0.78f * segAlpha[s] * RetractFactor), 0f,
+                        beamOrig, scale, SpriteEffects.None, 0);
                     cum += segLen * 0.92f;
                 }
                 //白热芯线与基座辉光

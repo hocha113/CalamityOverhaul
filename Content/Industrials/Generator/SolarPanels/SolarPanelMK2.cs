@@ -64,10 +64,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator.SolarPanels
             AddMapEntry(new Color(150, 110, 220), VaultUtils.GetLocalizedItemName<SolarPanelMK2>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.Width = 4;
-            TileObjectData.newTile.Height = 2;
-            TileObjectData.newTile.Origin = new Point16(1, 1);
-            TileObjectData.newTile.CoordinateHeights = [16, 18];
+            TileObjectData.newTile.Width = 7;
+            TileObjectData.newTile.Height = 3;
+            TileObjectData.newTile.Origin = new Point16(3, 2);
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16];
             TileObjectData.newTile.AnchorBottom = new AnchorData(
                 AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide,
                 TileObjectData.newTile.Width, 0);

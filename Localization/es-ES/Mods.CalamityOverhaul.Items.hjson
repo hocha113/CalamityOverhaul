@@ -369,25 +369,25 @@ KikasaItem: {
 
 KikasaTalismanLin: {
 	// DisplayName: Fine Rain Talisman
-	// Tooltip: Faster rain beats; each drop slightly lighter
+	// Tooltip: Faster rain beats, denser still as the rain holds; each drop slightly lighter
 	// Origin: The old scribe said: no need to trouble the Dragon King for rain—one Fine Rain Talisman will do. Small drops are fine, so long as they never stop
-	// Power: "'Fine Rain': ink-rain tempo +20%, drops falling one after another"
+	// Power: "'Fine Rain': ink-rain tempo +20%, drops falling one after another; about ten seconds of unbroken rain builds 'Lin': a drizzle veil hangs beneath the umbrella and the tempo quickens another 10%; the buildup fades when the rain stops, and recalling the umbrella halves it at once"
 	// Burden: Drop damage -6%
 }
 
 KikasaTalismanLao: {
 	// DisplayName: Ink Puddle Talisman
-	// Tooltip: Ink drops always pool into puddles; puddles larger and longer-lived; direct hits slightly lighter
+	// Tooltip: Ink drops always pool into puddles; puddles drink the rain, rising until they overflow; direct hits slightly lighter
 	// Origin: The scribe hated seeing rain dry up the moment it landed—a whole inkfall wasted—so he drew this talisman to keep the rain on the ground a while longer
-	// Power: "'Pooling': ink drops always pool into puddles on landing (no Lake-Tilt tier required); puddles last +50% and spread +30%"
+	// Power: "'Pooling': ink drops always pool into puddles on landing (no Lake-Tilt tier required), and puddles last +50% and spread +30%; drops merging into an existing puddle raise its water level, and the third one overflows it: the puddle widens a step and slaps out overflow surges to both sides (50% puddle damage each)"
 	// Burden: Drop direct damage -5%
 }
 
 KikasaTalismanPei: {
 	// DisplayName: Downpour Talisman
-	// Tooltip: Faster inverted charging, fiercer geysers; steady rain slightly slower
+	// Tooltip: Faster inverted charging; a full bowl tips like a floodgate; steady rain slightly slower
 	// Origin: The worst prayer for rain is a half-hearted one. This talisman answers a single request: if it rains, let it pour
-	// Power: "'Downpour': inverted charge rate +35%, ink geyser damage +20%"
+	// Power: "'Downpour': inverted charge rate +35%, ink geyser damage +20%; at full charge the bowl brims over with beads and a low hum, and pouring right then opens the gate: a burst erupts at the fall's source (80% pour damage) and the inkfall runs wider"
 	// Burden: Ink-rain tempo 8% slower
 }
 
@@ -4903,4 +4903,23 @@ NinjaCthulsparkBoots: {
 		Your dash is always the great eye's ramming charge
 		"The eye tied on its headband and swore never to blink again"
 		''' */
+}
+
+SeaShrimpSummonItem: {
+	// DisplayName: Crystallized Shrimp Bait
+	/* Tooltip:
+		'''
+		Summons the Abyssal Crystal Shrimp when used at the ocean
+		"Bait that sinks never comes back. Something else does."
+		''' */
+}
+
+SeaShrimpTreasureBag: {
+	// DisplayName: Treasure Bag (Abyssal Crystal Shrimp)
+	// Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+SeaShrimpTestItem: {
+	// DisplayName: Shrimp Observation Cage
+	// Tooltip: Dev testing: summons the Abyssal Crystal Shrimp anywhere
 }

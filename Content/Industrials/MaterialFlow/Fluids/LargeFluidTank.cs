@@ -52,11 +52,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
             AddMapEntry(new Color(58, 96, 118), VaultUtils.GetLocalizedItemName<LargeFluidTank>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.Width = 2;
-            TileObjectData.newTile.Height = 3;
-            TileObjectData.newTile.Origin = new Point16(1, 2);
+            TileObjectData.newTile.Width = 4;
+            TileObjectData.newTile.Height = 5;
+            TileObjectData.newTile.Origin = new Point16(2, 4);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateHeights = [16, 16, 18];
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16];
             TileObjectData.newTile.LavaDeath = false;
 
             TileObjectData.addTile(Type);
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
         public override int TargetTileID => ModContent.TileType<LargeFluidTankTile>();
         public override int TargetItem => ModContent.ItemType<LargeFluidTank>();
         public override int FluidCapacity => 128 * FluidHelper.UnitsPerTile;
-        internal override Vector2 ChamberMin => new(9f, 20f);
-        internal override Vector2 ChamberMax => new(23f, 33f);
+        internal override Vector2 ChamberMin => new(18f, 20f);
+        internal override Vector2 ChamberMax => new(46f, 46f);
     }
 }

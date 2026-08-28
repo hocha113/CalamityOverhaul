@@ -1,0 +1,30 @@
+// P10b armor endowments (17 hardmode sets + 5 pre-HM sets handed over from P10a); the four Ancient Hallowed combos share one line
+// GsCobaltArmor.EndowLine: Cobalt Flicker: strikes build swiftness; at 5 stacks enter a 5s stance where each strike calls a cobalt afterimage slash from the flank (6 charges)
+// GsPalladiumArmor.EndowLine: Vital Siphon: strikes build vigor; at 8 stacks the next strike plants a siphon bloom that gnaws the host and sends life motes back to you
+// GsMythrilArmor.EndowLine: Anvilborn Blades: strikes build temper; every 6 stacks forges a hovering mythril blade (up to 3), and with all three forged the next full charge commands a staggered triple thrust
+// GsOrichalcumArmor.EndowLine: Petal Waltz: strikes build pollen; at 7 stacks enter a 4s bloom where each strike looses two spiraling crystal petal blades (10 petals)
+// GsAdamantiteArmor.EndowLine: Furnace Overload: strikes stoke the furnace by 1, taking hits by 2; at 10 heat it erupts into a molten shockwave that seeds burning adamantite embers on the ground
+// GsTitaniumArmor.EndowLine: Mirror Riposte: taking hits builds cold-forge; at 4 stacks the next strike calls four mirror blades that converge on the target in a cross
+// GsPearlwoodArmor.EndowLine: Pearl Aegis: strikes build luster; every 6 stacks condenses an orbiting pearl (up to 3) that shatters in your defense, loosing five homing pearl shards
+// GsFrostArmor.EndowLine: Coldsnap Dominion: strikes build rime; at 8 stacks the next strike raises a 4s blizzard that rains crystal darts on foes inside
+// GsForbiddenArmor.EndowLine: Sandbound Shades: strikes build sand-soul; at 6 stacks a sand shade rises (up to 2) to haunt your side and spit whirling sand bolts
+// GsTurtleArmor.EndowLine: Spiked Sanctum: strikes build fury by 1, taking hits by 2; at 6 fury a turtle-shell dome rises for 4s, and every hit taken inside erupts an eight-way spike ring scaling with your defense
+// GsSpookyWoodArmor.EndowLine: Hallow's Patrol: strikes build soulfire; at 6 stacks a jack-o'-lantern rises (up to 2) to patrol around you and spit triple ghostflame at the nearest foe
+// GsTikiArmor.EndowLine: Totem Rite: strikes build ritual fire; at 8 stacks a three-faced totem is planted for 8s, waking face by face, each lit face adding a flame tongue lashed at the nearest foe
+// GsHallowedArmor.EndowLine: Radiant Verdict: strikes build radiance; at 10 stacks a verdict blade rises overhead, and striking one foe three times sends it plunging in holy judgement
+// GsHallowedArmorAncientBody.EndowLine: Radiant Verdict: strikes build radiance; at 10 stacks a verdict blade rises overhead, and striking one foe three times sends it plunging in holy judgement
+// GsHallowedArmorAncientLegs.EndowLine: Radiant Verdict: strikes build radiance; at 10 stacks a verdict blade rises overhead, and striking one foe three times sends it plunging in holy judgement
+// GsHallowedArmorAncientFull.EndowLine: Radiant Verdict: strikes build radiance; at 10 stacks a verdict blade rises overhead, and striking one foe three times sends it plunging in holy judgement
+// GsChlorophyteArmor.EndowLine: Symbiotic Vine: strikes build spores; at 8 stacks the next strike plants a parasite vine, and every strike on the host lashes a vine-blade at a second foe; the vine bursts into a spore cloud when it withers
+// GsBeetleScaleArmor.EndowLine: War Scarab: chain strikes to build momentum (breaks after 1.5s idle); at 5, 10 and 15 hits a war scarab charges from your back, each rank larger and heavier
+// GsBeetleShellArmor.EndowLine: Scarab Bulwark: taking hits builds shell-crystal; every 3 stacks condenses an orbiting shell plate (up to 3), and further hits shatter a plate into a retaliating fan of chitin shrapnel
+// GsShroomiteArrowArmor.EndowLine: Spore Nursery: ranged hits build spores; at 6 stacks the next hit plants a spore turret that snipes the nearest foe with fungal arrows for 5s
+// GsShroomiteBulletArmor.EndowLine: Mycelium Chain: ranged hits build mycelium; at 8 stacks the strike point erupts into a fungal blast that chain-jumps to nearby foes up to 3 times, growing each jump
+// GsShroomiteRocketArmor.EndowLine: Sporefall Barrage: ranged hits build charges; at 5 stacks the next hit calls three spore mortars crashing down on the target in a staggered barrage
+// GsSpectreHoodArmor.EndowLine: Soulmend Sanctum: magic hits build ectoplasm; at 10 stacks a sanctum unfolds underfoot for 5s, searing foes inside and drawing soul orbs back to mend you
+// GsSpectreMaskArmor.EndowLine: Nether Rift: magic hits build wraiths; at 8 stacks the next hit tears a rift that drags nearby foes inward and pulses soulflame for 3s
+// GsCactusArmor.EndowLine: Needle Shroud: strikes build barbs; at 6 stacks don a 4s needle shroud that pricks foes on contact and flings needles behind you as you run
+// GsPumpkinArmor.EndowLine: Gourd Harvest: strikes build vines; at 6 stacks the next strike plants a blast gourd that ripens in 3s (strike the victim again to force it), bursting into three spinning slices
+// GsFossilArmor.EndowLine: Boneage Wake: strikes build bone dust; at 6 stacks the next strike wakes the strata, thrusting three bone spurs up from the ground in a marching row
+// GsObsidianArmor.EndowLine: Glassfang Return: strikes build obsidian heat; at 7 stacks the next strike hurls two volcanic glass fangs that sweep out and boomerang home, searing all in their path
+// GsGladiatorArmor.EndowLine: Triumph Volley: strikes build acclaim; at 6 stacks the next strike hurls three bronze javelins over your shoulder in arcing volleys at the foe

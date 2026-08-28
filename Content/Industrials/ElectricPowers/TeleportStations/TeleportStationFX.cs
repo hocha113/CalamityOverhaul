@@ -237,7 +237,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
                     }
                 }
 
-                Vector2 center = new(station.CenterInWorld.X, station.PosInWorld.Y - 12f);
+                //门户环悬在拱门内部中央
+                Vector2 center = new(station.CenterInWorld.X, station.PosInWorld.Y + station.Height - 40f);
                 float pulse = station.Afterglow / (float)TeleportStationTP.AfterglowFrames;
 
                 if (useShader) {

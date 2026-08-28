@@ -5,6 +5,7 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -12,7 +13,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
 {
     //================================================================ T1：驻场教学 ================================================================
 
-    /// <summary>Y1 木悠悠球：纯基准行教驻场，驻场自旋带木屑微粒</summary>
+    /// <summary>
+    /// Y1 木悠悠球「木屑飞轮」：教驻场的第一课。材质：粗车床木球。<br/>
+    /// 签名行为：①驻场自旋拖出暖木色环锯弧光 ②驻场每 4 次命中甩出 2 枚木屑镖
+    /// （各 25% 伤害的抛旋小弹）③自旋抛洒木屑
+    /// </summary>
     internal sealed class GsWoodYoyo : GsYoyoScheme
     {
         public override int TargetItemID => ItemID.WoodYoyo;
@@ -20,7 +25,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
         internal override float DamageMul => 1.15f;
         internal override Color GlowColor => new(205, 160, 90);
         protected override string GsDescFallback =>
-            "Reforged: right click to anchor the yoyo at your cursor, patrolling in place\nRepeated hits on the same target build Heat, up to +40% damage";
+            "Reforged: right click to anchor the yoyo at your cursor, patrolling in place\nRepeated hits build Heat, up to +40% damage; every 4th anchored hit flings 2 spinning wood chips at 25% damage";
 
         internal override void OnAnchorTick(Projectile proj, GodSmithProjRouter router, GsYoyoState st) {
             if (VaultUtils.isServer || !Main.rand.NextBool(6)) {
@@ -31,6 +36,38 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
                 DustID.WoodFurniture, proj.velocity * 0.2f + Main.rand.NextVector2Circular(1.2f, 1.2f));
             d.noGravity = false;
             d.scale = Main.rand.NextFloat(0.7f, 1.05f);
+        }
+
+        internal override void OnCommandHit(Projectile proj, NPC target, in NPC.HitInfo hit, GsYoyoState st, int mode, GodSmithProjRouter router) {
+            //木屑飞轮：驻场每 4 次命中甩出 2 枚木屑镖（命中钩子只在攻击方端执行）
+            if (mode != GsYoyoMode.Anchor || ++st.SigCount < 4) {
+                return;
+            }
+            st.SigCount = 0;
+            int pellet = ModContent.ProjectileType<GsYoyoPelletProj>();
+            if (Main.player[proj.owner].ownedProjectileCounts[pellet] >= 6) {
+                return;
+            }
+            for (int i = 0; i < 2; i++) {
+                Vector2 vel = new(Main.rand.NextFloat(-3.5f, 3.5f), -Main.rand.NextFloat(2.5f, 5f));
+                Projectile.NewProjectile(proj.GetSource_FromAI(), proj.Center, vel, pellet,
+                    Math.Max(1, (int)(proj.damage * 0.25f)), 1f, proj.owner, GsYoyoPelletProj.StyleWoodChip);
+            }
+        }
+
+        internal override void OnCommandDraw(Projectile proj, GodSmithProjRouter router, GsYoyoState st, int effMode, float heatRatio) {
+            if (effMode != GsYoyoMode.Anchor) {
+                return;
+            }
+            //环锯弧光：两道暖木色涂抹弧随自旋相位对转（identity 相位在族层已入 SpinPhase）
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            Color c = GlowColor * (0.4f + 0.2f * heatRatio);
+            c.A = 0;
+            for (int i = 0; i < 2; i++) {
+                float ang = st.SpinPhase * 2f + i * MathHelper.Pi;
+                Main.EntitySpriteDraw(glow, proj.Center - Main.screenPosition, null, c * (0.8f - i * 0.3f),
+                    ang, glow.Size() / 2f, new Vector2(0.34f, 0.07f), SpriteEffects.None, 0);
+            }
         }
     }
 
@@ -147,7 +184,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
         }
     }
 
-    /// <summary>Y5 亚马逊：驻场命中叠中毒，热度满层后中毒时长翻倍</summary>
+    /// <summary>
+    /// Y5 亚马逊「毒藤缠抽」：丛林藤球。材质：缠藤木球与毒汁。<br/>
+    /// 签名行为：①驻场命中叠中毒，热度满层后时长翻倍 ②热度满层时球体长出毒藤，
+    /// 每 0.75 秒抽打最近的敌人（20% 伤害 + 中毒），藤条全程可见蠕动 ③满层绿环辉光
+    /// </summary>
     internal sealed class GsAmazonYoyo : GsYoyoScheme
     {
         public override int TargetItemID => ItemID.JungleYoyo;
@@ -155,13 +196,51 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
         internal override float DamageMul => 1.10f;
         internal override Color GlowColor => new(120, 220, 100);
         protected override string GsDescFallback =>
-            "Reforged: right click to anchor; anchored hits inflict Poisoned\nAt full Heat the poison lasts twice as long";
+            "Reforged: right click to anchor; anchored hits inflict Poisoned, and at full Heat the poison lasts twice as long\nAt full Heat the yoyo also sprouts a venom vine, lashing the nearest foe for 20% damage every 0.75s";
+
+        /// <summary>藤抽打击半径</summary>
+        private const float VineRange = 240f;
 
         internal override void OnCommandHit(Projectile proj, NPC target, in NPC.HitInfo hit, GsYoyoState st, int mode, GodSmithProjRouter router) {
             if (mode != GsYoyoMode.Anchor && mode != GsYoyoMode.Path) {
                 return;
             }
             target.AddBuff(BuffID.Poisoned, st.HeatLayers >= HeatCapLayers ? 240 : 120);
+        }
+
+        internal override void OnAnchorTick(Projectile proj, GodSmithProjRouter router, GsYoyoState st) {
+            //毒藤只在热度满层生效（远端读 MarkData2 同步层数，选目标各端同源）
+            int heat = proj.IsOwnedByLocalPlayer() ? st.HeatLayers : (int)router.MarkData2;
+            if (heat < HeatCapLayers) {
+                st.SigTarget = -1;
+                return;
+            }
+            if (++st.SigTimer % 45 != 0) {
+                return;
+            }
+            //45f 一拍：重选最近敌并抽打（选择各端一致，判定只在权威端）
+            st.SigTarget = -1;
+            float best = VineRange;
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (npc.friendly || !npc.CanBeChasedBy(proj)) {
+                    continue;
+                }
+                float dist = npc.Distance(proj.Center);
+                if (dist < best) {
+                    best = dist;
+                    st.SigTarget = npc.whoAmI;
+                }
+            }
+            if (st.SigTarget < 0 || Main.netMode == NetmodeID.MultiplayerClient) {
+                return;
+            }
+            NPC hitNpc = Main.npc[st.SigTarget];
+            if (hitNpc.active && !hitNpc.friendly) {
+                //权威端结算藤抽（SimpleStrikeNPC 服务器调用自带全端广播）
+                int dir = hitNpc.Center.X >= proj.Center.X ? 1 : -1;
+                hitNpc.SimpleStrikeNPC(Math.Max(1, (int)(proj.damage * 0.20f)), dir, false, 1f, null, false, 0f, true);
+                hitNpc.AddBuff(BuffID.Poisoned, 120);
+            }
         }
 
         internal override void OnCommandDraw(Projectile proj, GodSmithProjRouter router, GsYoyoState st, int effMode, float heatRatio) {
@@ -174,12 +253,50 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
             c.A = 0;
             Main.EntitySpriteDraw(glow, proj.Center - Main.screenPosition, null, c,
                 0f, glow.Size() / 2f, 0.8f, SpriteEffects.None, 0);
+            DrawVine(proj, st.SigTarget);
+        }
+
+        /// <summary>毒藤：六段折线蠕动（identity 定相），暗藤体线 + 毒绿加色缘</summary>
+        private static void DrawVine(Projectile proj, int whoAmI) {
+            if (whoAmI < 0) {
+                return;
+            }
+            NPC npc = Main.npc[whoAmI];
+            if (!npc.active || npc.Distance(proj.Center) > VineRange + 50f) {
+                return;
+            }
+            Texture2D line = CWRAsset.MaskLaserLine.Value;
+            Vector2 from = proj.Center;
+            Vector2 axis = npc.Center - from;
+            Vector2 normal = axis.SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2);
+            const int segs = 6;
+            Vector2 prev = from;
+            for (int i = 1; i <= segs; i++) {
+                float t = i / (float)segs;
+                float wave = MathF.Sin(Main.GlobalTimeWrappedHourly * 5f + i * 1.1f + proj.identity * 0.7f)
+                    * 7f * MathF.Sin(t * MathHelper.Pi);
+                Vector2 cur = from + axis * t + normal * wave;
+                Vector2 mid = (prev + cur) / 2f;
+                float rot = (cur - prev).ToRotation();
+                float lenScale = Vector2.Distance(prev, cur) / line.Width;
+                Main.EntitySpriteDraw(line, mid - Main.screenPosition, null, new Color(30, 58, 24) * 0.85f,
+                    rot, line.Size() / 2f, new Vector2(lenScale, 0.20f), SpriteEffects.None, 0);
+                Color edge = new Color(120, 220, 100) * 0.32f;
+                edge.A = 0;
+                Main.EntitySpriteDraw(line, mid - Main.screenPosition, null, edge,
+                    rot, line.Size() / 2f, new Vector2(lenScale, 0.30f), SpriteEffects.None, 0);
+                prev = cur;
+            }
         }
     }
 
     //================================================================ T2：+折返 ================================================================
 
-    /// <summary>Y6 代码1：折返路径显示为数据流，折返命中迸数据方块</summary>
+    /// <summary>
+    /// Y6 代码1「断点」：数据流之球。材质：荧青数据体。<br/>
+    /// 签名行为：①折返命中给目标打「断点」3 秒，驻场命中断点目标 +30%（折返↔驻场的调试循环）
+    /// ②断点目标身上故障方块闪烁 ③折返路径化作数据流，命中迸错位数据块
+    /// </summary>
     internal sealed class GsCode1Yoyo : GsYoyoScheme
     {
         public override int TargetItemID => ItemID.Code1;
@@ -187,7 +304,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
         internal override float DamageMul => 1.08f;
         internal override Color GlowColor => new(90, 220, 235);
         protected override string GsDescFallback =>
-            "Reforged: right click to anchor, double click to lash back through foes at 2.2x speed for 135% damage\nThe lash trail streams with data";
+            "Reforged: right click to anchor, double click to lash back through foes at 2.2x speed for 135% damage\nA lash hit sets a Breakpoint on the target for 3s: anchored hits on it deal 30% more";
+
+        internal override void OnGlobalTick(Projectile proj, GodSmithProjRouter router, GsYoyoState st, int effMode) {
+            if (st.SigTimer > 0) {
+                st.SigTimer--;
+            }
+        }
 
         internal override void OnLashTick(Projectile proj, GodSmithProjRouter router, GsYoyoState st) {
             if (VaultUtils.isServer || st.LashTimer % 2 != 0) {
@@ -198,13 +321,55 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
         }
 
         internal override void OnCommandHit(Projectile proj, NPC target, in NPC.HitInfo hit, GsYoyoState st, int mode, GodSmithProjRouter router) {
-            if (mode != GsYoyoMode.Lash || VaultUtils.isServer) {
+            if (mode != GsYoyoMode.Lash) {
+                return;
+            }
+            //打断点：owner 本地登记（命中钩子只在攻击方端执行，收益结算同端）
+            st.SigTarget = target.whoAmI;
+            st.SigCount = target.type;
+            st.SigTimer = 180;
+            if (VaultUtils.isServer) {
                 return;
             }
             //故障色偏：命中处一撮错位数据块
             for (int i = 0; i < 3; i++) {
                 PRTLoader.NewParticle<PRT_CyberSquare>(target.Center + Main.rand.NextVector2Circular(10f, 10f),
                     Main.rand.NextVector2Circular(2f, 2f), GlowColor, 0.7f)?.Configure(GlowColor, 14);
+            }
+        }
+
+        internal override void ModifyCommandHit(Projectile proj, NPC target, ref NPC.HitModifiers modifiers, GsYoyoState st, int mode) {
+            //断点收割：驻场命中断点目标 +30%
+            if ((mode == GsYoyoMode.Anchor || mode == GsYoyoMode.Path)
+                && st.SigTimer > 0 && target.whoAmI == st.SigTarget && target.type == st.SigCount) {
+                modifiers.FinalDamage *= 1.30f;
+            }
+        }
+
+        internal override void OnCommandDraw(Projectile proj, GodSmithProjRouter router, GsYoyoState st, int effMode, float heatRatio) {
+            //断点读数：目标身上故障方块错闪（identity+序号定相，绘制不掷随机）
+            if (st.SigTimer <= 0 || st.SigTarget < 0) {
+                return;
+            }
+            NPC npc = Main.npc[st.SigTarget];
+            if (!npc.active || npc.type != st.SigCount) {
+                return;
+            }
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float fade = MathHelper.Clamp(st.SigTimer / 40f, 0f, 1f);
+            for (int i = 0; i < 4; i++) {
+                float phase = Main.GlobalTimeWrappedHourly * 7f + i * 1.7f + proj.identity;
+                //方块只在相位窗内亮，读出「错闪」而非常亮
+                if (MathF.Sin(phase) < 0.3f) {
+                    continue;
+                }
+                Vector2 off = new(MathF.Sin(phase * 1.3f + i) * npc.width * 0.45f,
+                    MathF.Cos(phase * 0.9f + i * 2.1f) * npc.height * 0.45f);
+                Color c = GlowColor * (0.6f * fade);
+                c.A = 0;
+                Main.EntitySpriteDraw(pixel, npc.Center + off - Main.screenPosition,
+                    new Rectangle(0, 0, 1, 1), c, 0f, new Vector2(0.5f),
+                    3f + i % 2 * 2f, SpriteEffects.None, 0);
             }
         }
     }
@@ -560,7 +725,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
         }
     }
 
-    /// <summary>Y17 红的投掷：T3 基准数值，折返命中爆红色像素方块（开发者彩蛋）</summary>
+    /// <summary>
+    /// Y17 红的投掷「红字判定」：开发者的裁决之球。材质：绯红像素体。<br/>
+    /// 签名行为：①折返命中给目标充入 3 层「红显」，此后驻场命中该目标逐层消耗、必定暴击
+    /// ②红显目标周身红像素环绕读数 ③折返命中爆红色像素方块
+    /// </summary>
     internal sealed class GsRedsThrowYoyo : GsYoyoScheme
     {
         public override int TargetItemID => ItemID.RedsYoyo;
@@ -568,16 +737,60 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
         internal override float DamageMul => 1.04f;
         internal override Color GlowColor => new(235, 60, 60);
         protected override string GsDescFallback =>
-            "Reforged: all three commands unlocked; lash hits burst into red pixels";
+            "Reforged: all three commands unlocked; a lash hit loads 3 Red Flags into the target\nWhile flags remain, anchored hits on it are guaranteed crits, one flag per hit";
 
         internal override void OnCommandHit(Projectile proj, NPC target, in NPC.HitInfo hit, GsYoyoState st, int mode, GodSmithProjRouter router) {
-            if (mode != GsYoyoMode.Lash || VaultUtils.isServer) {
+            if (mode == GsYoyoMode.Lash) {
+                //充入红显：owner 本地登记 3 层（命中钩子只在攻击方端执行）
+                st.SigTarget = target.whoAmI;
+                st.SigTimer = target.type;
+                st.SigCount = 3;
+                if (!VaultUtils.isServer) {
+                    for (int i = 0; i < 5; i++) {
+                        PRTLoader.NewParticle<PRT_CyberSquare>(target.Center + Main.rand.NextVector2Circular(12f, 12f),
+                            Main.rand.NextVector2Circular(2.5f, 2.5f), GlowColor, Main.rand.NextFloat(0.5f, 0.8f))?
+                            .Configure(GlowColor, Main.rand.Next(12, 20));
+                    }
+                }
                 return;
             }
-            for (int i = 0; i < 5; i++) {
-                PRTLoader.NewParticle<PRT_CyberSquare>(target.Center + Main.rand.NextVector2Circular(12f, 12f),
-                    Main.rand.NextVector2Circular(2.5f, 2.5f), GlowColor, Main.rand.NextFloat(0.5f, 0.8f))?
-                    .Configure(GlowColor, Main.rand.Next(12, 20));
+            //红字落地：驻场命中逐层消耗
+            if ((mode == GsYoyoMode.Anchor || mode == GsYoyoMode.Path)
+                && st.SigCount > 0 && target.whoAmI == st.SigTarget && target.type == st.SigTimer) {
+                st.SigCount--;
+                if (!VaultUtils.isServer) {
+                    PRTLoader.NewParticle<PRT_CyberSquare>(target.Center, -Vector2.UnitY * 1.5f,
+                        GlowColor, 0.7f)?.Configure(GlowColor, 14);
+                }
+            }
+        }
+
+        internal override void ModifyCommandHit(Projectile proj, NPC target, ref NPC.HitModifiers modifiers, GsYoyoState st, int mode) {
+            //红显必暴：层数在 OnCommandHit（同端稍后执行）消耗
+            if ((mode == GsYoyoMode.Anchor || mode == GsYoyoMode.Path)
+                && st.SigCount > 0 && target.whoAmI == st.SigTarget && target.type == st.SigTimer) {
+                modifiers.SetCrit();
+            }
+        }
+
+        internal override void OnCommandDraw(Projectile proj, GodSmithProjRouter router, GsYoyoState st, int effMode, float heatRatio) {
+            //红显读数：目标周身层数颗红像素环绕（identity 定相，绘制不掷随机）
+            if (st.SigCount <= 0 || st.SigTarget < 0) {
+                return;
+            }
+            NPC npc = Main.npc[st.SigTarget];
+            if (!npc.active || npc.type != st.SigTimer) {
+                return;
+            }
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float r = MathF.Max(npc.width, npc.height) * 0.6f + 8f;
+            for (int i = 0; i < st.SigCount; i++) {
+                float ang = Main.GlobalTimeWrappedHourly * 3f + i * MathHelper.TwoPi / 3f + proj.identity;
+                Vector2 pos = npc.Center + ang.ToRotationVector2() * r;
+                Color c = GlowColor * 0.75f;
+                c.A = 0;
+                Main.EntitySpriteDraw(pixel, pos - Main.screenPosition,
+                    new Rectangle(0, 0, 1, 1), c, ang, new Vector2(0.5f), 4f, SpriteEffects.None, 0);
             }
         }
     }
@@ -773,9 +986,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
     //================================================================ T4：路径编程 ================================================================
 
     /// <summary>
-    /// Y21 泰拉悠悠球：全指令 + 路径编程。右键连点标记至多 3 个路径点，
-    /// 球按序贝塞尔巡回；巡回中绿珠发射率翻倍（原版绿珠照发，巡回补射同款等效实现）；
-    /// 招牌绿珠与 ∞ 时限完整保留
+    /// Y21 泰拉悠悠球「路径编程 + 巡回共鸣」：终局旗舰。材质：泰拉合金球体，翠脉绿与地心青双色。<br/>
+    /// 签名行为：①右键连点标记至多 3 个路径点，球沿贝塞尔巡回，绿珠发射率翻倍
+    /// ②每完成一次往返触发 1 秒「巡回共鸣」：翠环炸开、补射绿珠提速且 +30%
+    /// ③巡回沿途洒翠脉余珠，命中迸绿青双色迸溅。招牌绿珠与 ∞ 时限完整保留
     /// </summary>
     internal sealed class GsTerrarianYoyo : GsYoyoScheme
     {
@@ -785,13 +999,44 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
         internal override int PathPoints => 3;
         internal override Color GlowColor => new(150, 255, 120);
         protected override string GsDescFallback =>
-            "Reforged: all commands unlocked, plus Path Programming\nRight click to chart up to 3 waypoints; the yoyo patrols the bezier route and its beam rate doubles while patrolling\nClick again when full to clear the route";
+            "Reforged: all commands unlocked, plus Path Programming\nRight click to chart up to 3 waypoints; the yoyo patrols the bezier route and its beam rate doubles while patrolling\nEach completed lap rings a Patrol Resonance: for 1s beams fire faster and 30% harder\nClick again when full to clear the route";
+
+        /// <summary>地心青（与翠脉绿构成泰拉双色）</summary>
+        private static readonly Color TerraCyan = new(90, 230, 200);
 
         /// <summary>巡回补射间隔（帧），对齐原版绿珠观测率的等效翻倍</summary>
         private const int BeamInterval = 20;
 
         internal override void OnPathTick(Projectile proj, GodSmithProjRouter router, GsYoyoState st) {
-            if (!proj.IsOwnedByLocalPlayer() || ++st.SigTimer < BeamInterval) {
+            //巡回共鸣：往返折点触发（PathT/PathDir 是 owner 权威量，读数随 owner 走）
+            if (proj.IsOwnedByLocalPlayer() && st.PathNodes.Count >= 2) {
+                if (st.SigCount == 0) {
+                    st.SigCount = st.PathDir;
+                }
+                else if (st.PathDir != st.SigCount) {
+                    st.SigCount = st.PathDir;
+                    st.SigTarget = 60;    //共鸣窗
+                    st.SigTarget2 = 14;   //共鸣环闪
+                    if (!VaultUtils.isServer) {
+                        SoundEngine.PlaySound(SoundID.Item9 with { Volume = 0.5f, Pitch = 0.45f }, proj.Center);
+                    }
+                }
+            }
+            if (st.SigTarget > 0) {
+                st.SigTarget--;
+            }
+            if (st.SigTarget2 > 0) {
+                st.SigTarget2--;
+            }
+            //巡回沿途翠脉余珠（各端表现，低频预算）
+            if (!VaultUtils.isServer && Main.rand.NextBool(5)) {
+                PRTLoader.NewParticle<PRT_Light>(proj.Center - proj.velocity * 0.5f,
+                    -proj.velocity * 0.04f, Main.rand.NextBool() ? GlowColor : TerraCyan, 0.10f)
+                    ?.Configure(10, 0.8f);
+            }
+            //补射绿珠：共鸣期提速 + 增伤
+            bool resonant = st.SigTarget > 0;
+            if (!proj.IsOwnedByLocalPlayer() || ++st.SigTimer < (resonant ? BeamInterval / 2 : BeamInterval)) {
                 return;
             }
             st.SigTimer = 0;
@@ -801,8 +1046,46 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
             }
             //补射同款绿珠：原版 AI 自身的发射照常跑，两者叠加即发射率翻倍
             Vector2 vel = (target.Center - proj.Center).SafeNormalize(Vector2.UnitX) * 14f;
+            int dmg = resonant ? (int)(proj.damage * 1.30f) : proj.damage;
             Projectile.NewProjectile(proj.GetSource_FromAI(), proj.Center, vel, ProjectileID.TerrarianBeam,
-                proj.damage, proj.knockBack, proj.owner);
+                dmg, proj.knockBack, proj.owner);
+        }
+
+        internal override void OnCommandHit(Projectile proj, NPC target, in NPC.HitInfo hit, GsYoyoState st, int mode, GodSmithProjRouter router) {
+            //指令态命中：翠绿/地心青双色迸溅（攻击方端，预算隔发）
+            if (VaultUtils.isServer || !Main.rand.NextBool(2)) {
+                return;
+            }
+            for (int i = 0; i < 3; i++) {
+                PRTLoader.NewParticle<PRT_Spark>(target.Center + Main.rand.NextVector2Circular(8f, 8f),
+                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f),
+                    i % 2 == 0 ? GlowColor : TerraCyan,
+                    Main.rand.NextFloat(0.22f, 0.36f))?.Configure(true, Main.rand.Next(10, 16));
+            }
+        }
+
+        internal override void OnCommandDraw(Projectile proj, GodSmithProjRouter router, GsYoyoState st, int effMode, float heatRatio) {
+            if (effMode != GsYoyoMode.Path) {
+                return;
+            }
+            //球体泰拉双色呼吸辉光（identity 定相）
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            float pulse = 0.5f + 0.25f * MathF.Sin(Main.GlobalTimeWrappedHourly * 5f + proj.identity * 0.7f);
+            Color inner = GlowColor * pulse;
+            inner.A = 0;
+            Color outer = TerraCyan * (pulse * 0.5f);
+            outer.A = 0;
+            Main.EntitySpriteDraw(glow, proj.Center - Main.screenPosition, null, outer, 0f,
+                glow.Size() / 2f, 0.85f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(glow, proj.Center - Main.screenPosition, null, inner, 0f,
+                glow.Size() / 2f, 0.55f, SpriteEffects.None, 0);
+            //巡回共鸣环：折点炸开的翠环（14f 扩张衰减）
+            if (st.SigTarget2 > 0) {
+                float k = 1f - st.SigTarget2 / 14f;
+                ShockRingDraw.Draw(Main.spriteBatch, proj.Center, 14f + 66f * k, 6f,
+                    Color.White, GlowColor, TerraCyan, (1f - k) * 0.8f,
+                    timeSeed: proj.identity * 0.37f);
+            }
         }
     }
 }

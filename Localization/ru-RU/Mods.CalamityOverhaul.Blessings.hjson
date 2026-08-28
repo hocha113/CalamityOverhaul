@@ -1,0 +1,103 @@
+System: {
+	// UnlockBroadcast: Death nods. "{0}" has entered the Wheel of Passing
+	// KindleLabel: Kindle
+	// SnuffLabel: Snuff
+	// BurningCounter: Burning {0}/{1}
+	// SlotFullNotice: All lamp seats are taken. Snuff one flame before kindling another
+	// LockedHint: Slay it while Asura reigns, and its soulflame will take its seat
+	// HudName: Soulguide Lantern
+	// HudOpenHint: Click to open the Wheel of Passing
+	// WheelTitle: Wheel of Passing
+	// CenterHint: Pick a soul bead to view its blessing
+	// CloseHint: Esc, right-click, or {0} folds the Wheel
+}
+
+KingSlimeBlessing: {
+	// DisplayName: Crown of Royal Gel
+	// Description: Sheathed in gel, contact damage from enemies is reduced by 12%
+}
+
+EyeOfCthulhuBlessing: {
+	// DisplayName: Abyssal Pupil
+	// Description: Critical strike chance increased by 5%, plus another 3% at night
+}
+
+EaterOfWorldsBlessing: {
+	// DisplayName: Ring of Rot
+	// Description: Your attacks inflict Erosion, reducing the target's defense by 10 for 5 seconds
+}
+
+BrainOfCthulhuBlessing: {
+	// DisplayName: Pain Empathy
+	// Description: For 5 seconds after taking damage, your damage is increased by 12%
+}
+
+QueenBeeBlessing: {
+	// DisplayName: Hive Mending
+	// Description: Healing items restore 15% more life
+}
+
+SkeletronBlessing: {
+	// DisplayName: Bonewatch
+	// Description: Every 45 seconds the bones stand watch, halving the next hit you take
+}
+
+DeerclopsBlessing: {
+	// DisplayName: Winter's Stride
+	// Description: No slipping on ice, movement speed increased by 8%, immune to Chilled
+}
+
+WallOfFleshBlessing: {
+	// DisplayName: Covenant of Flesh
+	// Description: After taking damage, 20% of it is slowly restored over 8 seconds
+}
+
+QueenSlimeBlessing: {
+	// DisplayName: Crystal Plume
+	// Description: Immune to fall damage, jump height increased
+}
+
+TwinsBlessing: {
+	// DisplayName: Twin Pupil Concerto
+	// Description: Consecutive hits on the same target raise damage by 2% each, up to 5 stacks
+}
+
+DestroyerBlessing: {
+	// DisplayName: Probe Circuit
+	// Description: Kills restore 3 mana, and shots have a 1 in 12 chance not to consume ammo
+}
+
+SkeletronPrimeBlessing: {
+	// DisplayName: Overclocked Frame
+	// Description: Item use speed increased by 5%
+}
+
+PlanteraBlessing: {
+	// DisplayName: Thorned Renewal
+	// Description: Life regeneration increased, and further increased for 3 seconds after taking damage
+}
+
+GolemBlessing: {
+	// DisplayName: Heart of Stone
+	// Description: Defense increased by 8, and you can no longer be knocked back
+}
+
+DukeFishronBlessing: {
+	// DisplayName: Raging Tide
+	// Description: Below half life, movement speed is increased by 12% and damage by 8%
+}
+
+EmpressBlessing: {
+	// DisplayName: Daylight Verdict
+	// Description: Critical strike damage increased by 18% during the day
+}
+
+LunaticCultistBlessing: {
+	// DisplayName: Lunar Aegis
+	// Description: Every 40 seconds a lunar shield forms, fully blocking one enemy projectile
+}
+
+MoonLordBlessing: {
+	// DisplayName: Starcore Resonance
+	// Description: All damage dealt increased by 8%
+}

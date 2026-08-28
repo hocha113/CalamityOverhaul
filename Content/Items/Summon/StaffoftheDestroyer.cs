@@ -316,8 +316,30 @@ namespace CalamityOverhaul.Content.Items.Summon
         }
         //我他妈也不知道为什么要这么写
         private bool FindaheadSegmentByIdentity(Projectile proj) => proj.owner == Projectile.owner && (proj.projUUID == (int)Projectile.ai[0] || proj.identity == (int)Projectile.ai[0]);
+
+        //上一节所在槽位缓存：命中即 O(1)，失效才重扫（原 LINQ 每节每帧扫满弹幕表）
+        private int aheadSegmentIndex = -1;
+
+        private Projectile ResolveAheadSegment() {
+            if (aheadSegmentIndex >= 0 && aheadSegmentIndex < Main.maxProjectiles) {
+                Projectile cached = Main.projectile[aheadSegmentIndex];
+                if (cached.active && FindaheadSegmentByIdentity(cached)) {
+                    return cached;
+                }
+            }
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile candidate = Main.projectile[i];
+                if (candidate.active && FindaheadSegmentByIdentity(candidate)) {
+                    aheadSegmentIndex = i;
+                    return candidate;
+                }
+            }
+            aheadSegmentIndex = -1;
+            return null;
+        }
+
         public override void AI() {
-            Projectile aheadSegment = Main.projectile.Take(Main.maxProjectiles).FirstOrDefault(FindaheadSegmentByIdentity);
+            Projectile aheadSegment = ResolveAheadSegment();
             if (!aheadSegment.Alives() || (aheadSegment.type != Type && aheadSegment.type != ModContent.ProjectileType<DestroyerHead>())) {
                 Projectile.Kill();
                 return;

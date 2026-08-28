@@ -1,6 +1,8 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
+using CalamityOverhaul.Content.Scenarios.OniRainWorlds;
 using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.Cinematics;
 using System;
@@ -12,10 +14,12 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
 {
     /// <summary>
-    /// 鬼伞·大范围重启权威核心。鬼雨形态下把最近数秒"冲洗"回去：
+    /// 鬼伞·大范围重启权威核心。持伞随时可按，把最近数秒"冲洗"回去：
     /// 屏幕定格成黑白照片、被雨痕刷掉，场内 NPC 与玩家沿运动历史倒退，
     /// 结算分两拍：先清 debuff，隔两帧回满生命法力，全程无敌。
-    /// 契约：服务器只验冷却/在场，不验领域，服务器没有领域状态，形态由客户端预检；
+    /// 非鬼雨状态下发动时演出借雨：照片掩护下把施术者领域强制成鬼雨满水稳态，
+    /// 落定白闪峰值弹回施术前状态，鬼雨只借给演出用（见 <see cref="UpdateBorrow"/>）。
+    /// 契约：服务器只验冷却/在场，不验领域，服务器没有领域状态，冲突门由客户端预检；
     /// NPC 倒放两端各按本端历史推演，服务器周期 netUpdate 与落定 SyncNPC 兜住终位；
     /// NPC 冻结走 TimeFreezes 租约（统一 AI 入口把 Override/原版 AI 一并停摆，
     /// 位置由冻结锚点沿历史驱动），敌方弹幕在范围内计时冻结、演出收场自然解冻；
@@ -53,6 +57,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
         /// <summary>回满相对清 debuff 的延迟帧：等削上限的效果退场、statLifeMax2 恢复后再兑现满血</summary>
         private const int HealDelayFrames = 2;
 
+        /// <summary>借雨帧：照片已在演出首帧的绘制里捕获，留一帧余量，照片永远定格旧世界</summary>
+        private const int BorrowFrame = 2;
+
+        /// <summary>借雨弹回帧：落定白闪峰值，与结算两拍（<see cref="RewindEnd"/> / +<see cref="HealDelayFrames"/>）错开</summary>
+        private const int BorrowRevertFrame = RewindEnd + 3;
+
         /// <summary>倒带的脉冲波数：胶片回卷的呼吸感来源（波谷不停摆，见 <see cref="RewindEase"/>）</summary>
         private const int RewindPulses = 3;
 
@@ -70,6 +80,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
             public int Timer;
             public bool RestoreFired;
             public bool HealFired;
+            /// <summary>借雨生效中：演出把施术者领域临时强制成鬼雨满水稳态</summary>
+            public bool BorrowActive;
+            /// <summary>借雨前的领域底片，弹回用</summary>
+            public KikasaDomainPlayer.ResetBorrowState BorrowSnapshot;
             /// <summary>受影响 NPC 身份（Apply 时刻权威圈定）</summary>
             public readonly List<NetworkNPCIdentity> Npcs = [];
             /// <summary>受影响玩家 whoAmI</summary>
@@ -157,16 +171,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
         //==================== 客户端入口 ====================
 
         /// <summary>
-        /// 按键受理：鬼雨形态稳态预检（服务器没有领域状态，这里是唯一的形态门）、
-        /// 本机乐观锁，然后单机直通/联机上行请求
+        /// 本机状态预检（不含冷却与在演场次）：重启不再看领域形态，随时可按；
+        /// 只拒全屏世界改写正忙的场合——翻转/鬼梦过场、入雨/深潜、本人鬼切领域，
+        /// 借雨不与它们叠加。HUD 教程与按键受理同口径；服务器照旧不验领域
+        /// </summary>
+        internal static bool CanStartLocal(Player player) {
+            if (player?.active != true || player.dead) {
+                return false;
+            }
+            KikasaDomainPlayer domain = player.GetModPlayer<KikasaDomainPlayer>();
+            if (domain.Phase == KikasaDomainPhase.Flipping || domain.InDreamPhase) {
+                return false;
+            }
+            if (OniRainWorldTransition.Active || OniRainDescentTransition.Active) {
+                return false;
+            }
+            return !player.GetModPlayer<OniDomainPlayer>().AnyActive;
+        }
+
+        /// <summary>
+        /// 按键受理：随时可按，非鬼雨状态由演出借雨补齐（见 <see cref="UpdateBorrow"/>）；
+        /// 冲突预检、本机乐观锁，然后单机直通/联机上行请求
         /// </summary>
         internal static void TryReset(Player player) {
             if (player == null || player.whoAmI != Main.myPlayer) {
                 return;
             }
-            KikasaDomainPlayer domain = player.GetModPlayer<KikasaDomainPlayer>();
-            //统一受理门（湖侧可见且稳定）+ 鬼雨形态
-            if (!domain.LakeAbilityReady || !domain.IsRainForm) {
+            if (!CanStartLocal(player)) {
                 Refuse(player);
                 return;
             }
@@ -358,6 +389,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
         }
 
         private static void AbortShow() {
+            //中断也要把借来的雨还回去，不留借用残留
+            RevertBorrowOnEnd(Active);
             //中断放行不带历史动量：恢复各自冻结前的速度快照即可
             ReleaseAllNpcLeases();
             Active = null;
@@ -419,6 +452,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
             }
 
             show.Timer++;
+            UpdateBorrow(show, owner);
             RefreshHeldNpcs(show);
 
             float age = AgeAt(show.Timer);
@@ -485,6 +519,73 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
 
             if (show.Timer >= TotalFrames) {
                 FinishShow(show);
+            }
+        }
+
+        //==================== 借雨 ====================
+
+        /// <summary>
+        /// 借雨推进：非鬼雨状态下发动时，照片掩护下把施术者领域强制成鬼雨满水稳态，
+        /// 冲刷揭出的就是一场下了很久的鬼雨；落定白闪峰值弹回施术前状态。
+        /// 借用/弹回是 show 时间轴的确定性函数，各端本地自算同一答案，
+        /// 每帧幂等重申压过途中迟到的旧领域快照包；owner 端在借用与弹回帧各转播一份兜底。
+        /// 服务器没有领域状态，全程跳过
+        /// </summary>
+        private static void UpdateBorrow(ResetShow show, Player owner) {
+            if (Main.dedServ) {
+                return;
+            }
+            KikasaDomainPlayer domain = owner.GetModPlayer<KikasaDomainPlayer>();
+            if (show.Timer == BorrowFrame) {
+                //已是稳定鬼雨不借；翻转/鬼梦正忙（服务器不验领域留下的竞态缝隙）整场跳过借雨
+                if ((domain.IsRainForm && domain.LakeAbilityReady)
+                    || domain.Phase == KikasaDomainPhase.Flipping || domain.InDreamPhase) {
+                    return;
+                }
+                show.BorrowSnapshot = domain.CaptureResetBorrow();
+                show.BorrowActive = true;
+                domain.ApplyResetBorrow(entryBeat: true);
+                if (LocallyViewed) {
+                    //冲刷揭幕前空中先布满雨：照片背后世界已在下雨
+                    KikasaDomainDeco.PrefillRainCurtain();
+                    //入雨先兆：天幕先闪在照片后头，雷声延迟到冲刷揭幕时分（光先于声）
+                    KikasaDomainSky.NotifyThunder();
+                }
+                return;
+            }
+            if (!show.BorrowActive || show.Timer < BorrowFrame) {
+                return;
+            }
+            if (show.Timer < BorrowRevertFrame) {
+                domain.ApplyResetBorrow(entryBeat: false);
+            }
+            else if (show.Timer == BorrowRevertFrame) {
+                RevertBorrow(show, domain);
+            }
+        }
+
+        /// <summary>弹回借雨；未借用时为空操作</summary>
+        private static void RevertBorrow(ResetShow show, KikasaDomainPlayer domain) {
+            if (!show.BorrowActive) {
+                return;
+            }
+            show.BorrowActive = false;
+            domain.RevertResetBorrow(show.BorrowSnapshot);
+        }
+
+        /// <summary>演出中断/收尾的借雨兜底弹回：正常路径在弹回帧已还原，这里防中断残留</summary>
+        private static void RevertBorrowOnEnd(ResetShow show) {
+            if (show == null || !show.BorrowActive || Main.dedServ) {
+                return;
+            }
+            Player owner = show.OwnerWho >= 0 && show.OwnerWho < Main.maxPlayers
+                ? Main.player[show.OwnerWho] : null;
+            if (owner?.active == true) {
+                RevertBorrow(show, owner.GetModPlayer<KikasaDomainPlayer>());
+            }
+            else {
+                //施术者已离场：其域由 PlayerDisconnect→ResetDomain 清场，借用旗就地作废
+                show.BorrowActive = false;
             }
         }
 
@@ -574,6 +675,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
         }
 
         private static void FinishShow(ResetShow show) {
+            //借雨兜底：正常路径已在弹回帧还原
+            RevertBorrowOnEnd(show);
             //放行：以回溯终点当刻的历史速度续走，时间接回过去，动量也接回过去
             foreach (int index in heldNpcIndices) {
                 Vector2? resume = KikasaResetHistory.TryNpcVelocityAt(index,

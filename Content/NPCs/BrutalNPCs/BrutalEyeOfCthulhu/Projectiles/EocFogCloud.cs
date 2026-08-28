@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Rendering;
 using System;
 using Terraria;
@@ -51,6 +52,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Projectile
         /// <summary>预警已开始的本地帧计数，画收缩环</summary>
         private float pulseLocalTimer;
 
+        /// <summary>在场帧戳：AI 每帧盖戳，血雾全屏层据此跳过无雾时的全表扫描</summary>
+        internal static ActivityStamp PresenceStamp;
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 64;
             Projectile.hostile = false;
@@ -64,6 +68,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Projectile
         }
 
         public override void AI() {
+            PresenceStamp.Stamp();
             //缓慢漂移+吸附初速衰减
             Projectile.velocity *= 0.965f;
 

@@ -219,6 +219,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core
         /// <summary>找到正在摄持指定玩家的脑（ai[2] 状态粗筛 + 接管在场验证 + 受害者标记精配）</summary>
         internal static NPC FindSeizingBrain(int playerIndex, out BrainOfCthulhuAI master) {
             master = null;
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必扫表
+                return null;
+            }
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (npc.type != NPCID.BrainofCthulhu) {
                     continue;

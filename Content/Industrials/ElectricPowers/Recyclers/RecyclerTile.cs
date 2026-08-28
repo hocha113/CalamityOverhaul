@@ -13,11 +13,11 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
 {
-    /// <summary>回收机瓦片:2×2;台上物品与状态灯等反馈覆层由 TP 在物块层上绘制</summary>
+    /// <summary>回收机瓦片:4×3;台上物品与状态灯等反馈覆层由 TP 在物块层上绘制</summary>
     internal class RecyclerTile : ModTile
     {
-        public const int TileWidth = 2;
-        public const int TileHeight = 2;
+        public const int TileWidth = 4;
+        public const int TileHeight = 3;
         public override string Texture => CWRConstant.Asset + "ElectricPowers/RecyclerTile";
 
         public override void SetStaticDefaults() {
@@ -29,11 +29,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
             AddMapEntry(new Color(96, 116, 104), VaultUtils.GetLocalizedItemName<Recycler>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.Origin = new Point16(1, 1);
+            TileObjectData.newTile.Width = 4;
+            TileObjectData.newTile.Height = 3;
+            TileObjectData.newTile.Origin = new Point16(2, 2);
             TileObjectData.newTile.AnchorBottom = new AnchorData(
                 AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide,
                 TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateHeights = [16, 18];
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16];
             TileObjectData.newTile.CoordinateWidth = 16;
             TileObjectData.newTile.CoordinatePadding = 2;
             TileObjectData.newTile.LavaDeath = false;
@@ -92,7 +94,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
 
             //缺电时机身压暗,全系"断电减半"状态语言
             bool powered = tp.RecData != null && tp.RecData.UEvalue >= tp.RecData.UEPerTick;
-            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 2, !powered);
+            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 3, 16, !powered);
             return false;
         }
     }

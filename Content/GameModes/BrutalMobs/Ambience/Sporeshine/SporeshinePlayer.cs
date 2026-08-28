@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine
                 return;
             }
 
-            //浓雾滞留判定：读同步弹幕的浓雾窗口，几何与雾判定同源
+            //浓雾滞留判定：读同步弹幕的浓雾窗口，几何与雾判定同源（宽限带内的稀雾不积醉）
             bool dense = false;
             if (Player.ZoneGlowshroom && !CWRWorld.HasBoss) {
                 int fogType = ModContent.ProjectileType<SporeshineSporeFogProj>();
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine
                     if (proj.type != fogType || proj.ModProjectile is not SporeshineSporeFogProj fog || !fog.DenseNow) {
                         continue;
                     }
-                    float r = fog.CurrentRadius * SporeshineSporeFogProj.CollideRadiusFrac;
+                    float r = fog.HurtRadius;
                     if (Vector2.DistanceSquared(Player.Center, proj.Center) < r * r) {
                         dense = true;
                         break;

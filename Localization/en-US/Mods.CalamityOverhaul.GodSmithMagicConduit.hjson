@@ -1,0 +1,53 @@
+GsLastPrism.Desc:
+	'''
+	Reforged: heat is focus; six splayed beams converge into one white-hot lance, and at white heat the impact refracts prism shards
+	Capping the gauge never breaks the beam, it only surges mana upkeep
+	Right click while channeling to shatter the lance into a prismatic fan, spending all heat
+	'''
+GsLastPrismHeldProj.DisplayName: Last Prism Lance
+GsLastPrismBurstProj.DisplayName: Prismatic Shatter
+GsLastPrismShardProj.DisplayName: Prism Shard
+GsMagicalHarp.Desc:
+	'''
+	Reforged: unbroken play builds crescendo; at fortissimo the notes swell, race and rain music
+	Right click to resolve all crescendo into a ringing chord shockwave; rapid re-hits echo for bonus damage
+	'''
+GsBubbleGun.Desc:
+	'''
+	Reforged: nonstop spray builds bubble pressure; at a boil the bubbles swell and burst into twin beads on impact
+	Cap the gauge and the barrel jams shut in a gush of foam
+	Right click to vent everything as a fan of seven great bubbles that pop in a rolling chain
+	'''
+GsLaserMachinegun.Desc:
+	'''
+	Reforged: heat is spin; the barrel drags cold and roars at white heat, where every sixth shot rides a piercing crimson lance
+	Holding the gauge at the redline only surges mana upkeep
+	Right click to vent the whole cylinder as a sweeping thirty-round fan
+	'''
+GsRazorbladeTyphoon.Desc:
+	'''
+	Reforged: each cast banks storm charge; blades born at white heat never get lost, they wheel back to your side and hunt again
+	Right click to open the Eye of the Typhoon at your cursor: every blade in the air is drawn into the vortex, and the eye bursts as it closes
+	'''
+GsMagnetSphere.Desc:
+	'''
+	Reforged: while you hold the staff a feed-tether links you to your sphere, and magnetic flux climbs as long as the link holds
+	At full flux the sphere overcharges, lashing heavy arcs at anything close
+	Right click to detonate a magnet storm around the sphere that drags lesser foes toward its heart
+	'''
+GsShadowbeamStaff.Desc:
+	'''
+	Reforged: hold to sustain a shadow beam that ricochets off the walls; white heat adds one more bounce and thickens the beam
+	Right click to vent everything as chained shadow bursts along every bend of the beam
+	'''
+GsChargedBlasterCannon.Desc:
+	'''
+	Reforged: hold to channel; cold plasma spits bolts, white heat pulses focused arc lances
+	Charging never stops: cap the gauge and the cannon itself fires the Annihilator, a massive plasma sphere that licks arcs at everything nearby
+	Right click to cash out early as a lesser charge shot
+	'''
+GsLaserMachinegunLanceProj.DisplayName: Crimson Lance
+GsShadowbeamStaffHeldProj.DisplayName: Shadow Polyline Beam
+GsChargedBlasterCannonHeldProj.DisplayName: Annihilation Charge
+GsChargedBlasterCannonOrbProj.DisplayName: Annihilator
+GsMagicalHarpNovaProj.DisplayName: Chord Shockwave

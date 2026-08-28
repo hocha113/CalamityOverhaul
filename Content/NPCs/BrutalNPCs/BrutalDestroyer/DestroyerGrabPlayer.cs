@@ -99,6 +99,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         /// <summary>找到正抓着本地玩家的毁灭者头(须确认接管在场)，无则null</summary>
         private NPC FindGrabbingHead() {
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必扫表
+                return null;
+            }
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (npc.type != NPCID.TheDestroyer) {
                     continue;

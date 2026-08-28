@@ -334,6 +334,8 @@ namespace CalamityOverhaul.Content.Projectiles
             State = (float)LightningState.Fading;
             Timer = 0;
             Projectile.timeLeft = FadeTime + 10;
+            //入淡出沿一次性同步；淡出本身由 Timer 各端本地推导，不再逐帧发包
+            Projectile.netUpdate = true;
         }
 
         protected virtual void UpdateFade() {
@@ -357,8 +359,6 @@ namespace CalamityOverhaul.Content.Projectiles
             if (Timer > FadeTime) {
                 Projectile.Kill();
             }
-
-            Projectile.netUpdate = true;
         }
         #endregion
 

@@ -67,6 +67,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
             presence = 0f;
             KiyumeFogSuppression.Clear();
             KiyumeFogSim.Unload();
+            KiyumeGroundField.Unload();
         }
 
         public override void OnWorldLoad() => HardReset();
@@ -80,6 +81,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume.Fog
             KiyumeHoundShade.Clear();
             Ambience.KiyumeCrowFlight.Clear();
             KiyumeGroundFogRender.Clear();
+            KiyumeGroundField.Reset();
             NPCs.KiyumeHoundEyeGleam.Clear();
             tideVel = 0f;
             tidePrev = KiyumeFogTide.Tide;

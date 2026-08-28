@@ -230,10 +230,38 @@ namespace CalamityOverhaul
             return mainRule.OnSuccess(rule, hideLootReport);
         }
 
+        /// <summary>
+        /// 扫掠弧粗筛：目标盒到轴心的最近距离超出 reach+lineWidth 时，
+        /// 弧上任何角度的线段都不可能命中（圆是角楔的严格超集，无漏检），
+        /// 挥砍 Colliding 在逐段线检前先调它省掉多数目标的 64 段判定
+        /// </summary>
+        public static bool ArcSweepCulled(in Rectangle targetHitbox, Vector2 pivot, float reach, float lineWidth) {
+            float nearestX = MathHelper.Clamp(pivot.X, targetHitbox.Left, targetHitbox.Right);
+            float nearestY = MathHelper.Clamp(pivot.Y, targetHitbox.Top, targetHitbox.Bottom);
+            float cullRadius = reach + lineWidth;
+            float dx = nearestX - pivot.X;
+            float dy = nearestY - pivot.Y;
+            return dx * dx + dy * dy > cullRadius * cullRadius;
+        }
+
+        /// <summary>列表内单一 type 总量（专用重载，免去 params 集合与列表拷贝分配）</summary>
+        public static int InquireItem(this IList<Item> items, int itemType) {
+            int num = 0;
+            for (int i = 0; i < items.Count; i++) {
+                Item item = items[i];
+                if (item.Alives() && item.type == itemType) {
+                    num += item.stack;
+                }
+            }
+            return num;
+        }
+
         /// <summary>列表内指定 type 总量</summary>
         public static int InquireItem(this IList<Item> items, params HashSet<int> itemTypes) {
             int num = 0;
-            foreach (var item in items.ToList()) {
+            //只读查询，按下标遍历即可，不必 ToList 拷贝整包
+            for (int i = 0; i < items.Count; i++) {
+                Item item = items[i];
                 if (!item.Alives()) {
                     continue;
                 }

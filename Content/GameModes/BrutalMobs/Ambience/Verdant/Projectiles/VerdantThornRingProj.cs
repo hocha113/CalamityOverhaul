@@ -103,6 +103,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Verdant.Project
         public override bool ShouldUpdatePosition() => false;
 
         public override void AI() {
+            VerdantAmbientRender.PresenceStamp.Stamp();
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
                 Projectile.timeLeft = TotalLife;

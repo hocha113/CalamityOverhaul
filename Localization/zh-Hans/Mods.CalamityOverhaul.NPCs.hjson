@@ -137,3 +137,9 @@ RidgeWalkerYokai: {
 ShallowHandsYokai.DisplayName: 水中手
 MinoFisherYokai.DisplayName: 蓑翁
 KiyumeWhiteHound.DisplayName: 白毛望乡犬
+
+SeaShrimpBoss: {
+	DisplayName: 渊晶海虾
+	Bestiary: 海沟最深处的甲壳暴君。它的巨螯挥出时快过声音在水里奔跑的速度，拳锋过处海水被生生撕出真空，气泡崩灭的那一瞬亮如白昼。渔民说，海上无端炸起的水柱，就是它在深处练拳。
+	ChecklistSpawnInfo: 在海洋使用晶化虾饵召唤
+}

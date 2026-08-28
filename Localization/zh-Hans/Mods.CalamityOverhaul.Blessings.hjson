@@ -1,0 +1,103 @@
+System: {
+	UnlockBroadcast: 死神颔首，「{0}」已入往生轮
+	KindleLabel: 点燃
+	SnuffLabel: 熄灭
+	BurningCounter: 燃焰 {0}/{1}
+	SlotFullNotice: 灯座已满，先熄灭一盏，才能点燃新的祝福
+	LockedHint: 在修罗降世时讨伐它，魂焰才会归位
+	HudName: 引魂灯
+	HudOpenHint: 点击打开往生轮
+	WheelTitle: 往生轮
+	CenterHint: 点选一枚魂珠，查看它的祝福
+	CloseHint: Esc、右键或 {0} 键合拢往生轮
+}
+
+KingSlimeBlessing: {
+	DisplayName: 御胶之冕
+	Description: 凝胶裹身，敌怪的接触伤害降低12%
+}
+
+EyeOfCthulhuBlessing: {
+	DisplayName: 渊瞳
+	Description: 暴击率提高5%，夜间额外提高3%
+}
+
+EaterOfWorldsBlessing: {
+	DisplayName: 腐环
+	Description: 你的攻击使目标陷入侵蚀，防御减少10点，持续5秒
+}
+
+BrainOfCthulhuBlessing: {
+	DisplayName: 痛觉共感
+	Description: 受到伤害后5秒内，你造成的伤害提高12%
+}
+
+QueenBeeBlessing: {
+	DisplayName: 蜂巢再生
+	Description: 治疗物品的恢复量提高15%
+}
+
+SkeletronBlessing: {
+	DisplayName: 亡骨守望
+	Description: 每45秒凝聚一次守望，将下一次受到的伤害减半
+}
+
+DeerclopsBlessing: {
+	DisplayName: 凛冬之步
+	Description: 冰面不再打滑，移动速度提高8%，免疫寒冷
+}
+
+WallOfFleshBlessing: {
+	DisplayName: 血肉盟约
+	Description: 受到伤害后，其中20%会在8秒内缓慢回复
+}
+
+QueenSlimeBlessing: {
+	DisplayName: 晶羽
+	Description: 免疫坠落伤害，跳跃力提升
+}
+
+TwinsBlessing: {
+	DisplayName: 双瞳协奏
+	Description: 连续命中同一目标时，伤害每次提高2%，至多叠5层
+}
+
+DestroyerBlessing: {
+	DisplayName: 探针回路
+	Description: 击杀敌怪回复3点魔力，射击有1/12的概率不消耗弹药
+}
+
+SkeletronPrimeBlessing: {
+	DisplayName: 过载骨架
+	Description: 物品使用速度提高5%
+}
+
+PlanteraBlessing: {
+	DisplayName: 荆棘新生
+	Description: 生命再生提高，受到伤害后3秒内进一步提高
+}
+
+GolemBlessing: {
+	DisplayName: 岩心
+	Description: 防御提高8点，不再被击退
+}
+
+DukeFishronBlessing: {
+	DisplayName: 怒潮
+	Description: 生命低于一半时，移动速度提高12%，伤害提高8%
+}
+
+EmpressBlessing: {
+	DisplayName: 昼光裁决
+	Description: 白天时暴击伤害提高18%
+}
+
+LunaticCultistBlessing: {
+	DisplayName: 月相护盾
+	Description: 每40秒凝成一层月相护盾，完全挡下一发敌方弹幕
+}
+
+MoonLordBlessing: {
+	DisplayName: 星核共鸣
+	Description: 造成的一切伤害提高8%
+}

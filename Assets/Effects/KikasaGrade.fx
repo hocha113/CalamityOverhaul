@@ -29,6 +29,7 @@ float4 uLineWave[4];    //水线行波源 x=源uv.x y=寿命进度01 z=幅度(uv
 float4 uCoverRect;      //倒影抹除矩形（屏幕 uv：xy=左上 zw=右下），倒影恶犬替换施术者镜像时用
 float uCoverA;          //0~1 抹除强度，随倒影出没渐变；0=不生效
 float uWispGlow;        //0~1 鬼火燃湖：浅水金光渗色 + 缝线金辉（火层画在实体层，这里补水体被照亮）
+float4 uTideTrough;     //跟脚潮让位坑 x=中心uv.x y=半宽uv.x z=坑深uv.y(负=蓄势隆起) w=坑唇浪包幅度uv.y；闲置全零
 
 #define LUMA_W float3(0.299, 0.587, 0.114)
 
@@ -72,6 +73,18 @@ float lineWaveOne(float uvx, float4 src) {
 float lineWaveSum(float uvx) {
     return lineWaveOne(uvx, uLineWave[0]) + lineWaveOne(uvx, uLineWave[1])
          + lineWaveOne(uvx, uLineWave[2]) + lineWaveOne(uvx, uLineWave[3]);
+}
+
+//跟脚潮让位坑：浅盘缓坡 + 双侧坑唇缓浪，水面向两侧分开让位于施术者（2026-08 实机收敛：
+//坑壁 0.45/1.0→0.25/1.05 放缓、坑唇 34→22 变宽变软，深峡谷读感废弃）。
+//低频结构项，镜像几何跟随它（倒影随坑沉降），噪声波动与行波仍绕稳定枢轴；
+//轮廓常数（0.25/1.05 坑壁、1.18 坑唇位、22 唇宽）与 KikasaSky/KikasaWispFire 及 C# 侧节拍取位同契约
+float tideTrough(float uvx) {
+    float d = abs(uvx - uTideTrough.x) / max(uTideTrough.y, 1e-4);
+    float bowl = 1.0 - smoothstep(0.25, 1.05, d);
+    float lipD = d - 1.18;
+    float lip = exp2(-lipD * lipD * 22.0);
+    return uTideTrough.z * bowl - uTideTrough.w * lip;
 }
 
 //撕纸遮罩：圆扩散 + 三频纤维毛边（大团湿斑/细碎裂纹/横向纤维丝）
@@ -155,18 +168,20 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float3 tone = lerp(src, luma.xxx, (0.14 + 0.10 * uRain) * (1.0 - redMask));
     tone *= lerp(float3(1.030, 0.905, 0.885), float3(0.900, 0.965, 1.005), uRain);
 
-    //水位线：稳定枢轴 + 噪声波动 + 落点行波（波动只动遮罩边界，不动镜像几何）
+    //水位线：稳定枢轴 + 噪声波动 + 落点行波 + 让位坑
+    //（噪声/行波只动遮罩边界不动镜像几何；让位坑是低频结构项，镜像跟随它沉降）
     float n0 = noiseTex(float2(uv.x * 2.6 + uTime * 0.020, uTime * 0.011));
     float n1 = noiseTex(float2(uv.x * 7.2 - uTime * 0.016, 0.41 + uTime * 0.027));
     float lineWave = (n0 - 0.5) * 1.4 + (n1 - 0.5) * 0.6;
     float waveSum = lineWaveSum(uv.x);
-    float waterY = uWaterLevel + lineWave * uWaterWobble + waveSum;
+    float structural = tideTrough(uv.x);
+    float waterY = uWaterLevel + lineWave * uWaterWobble + waveSum + structural;
     float below = uv.y - waterY;
     float belowMask = saturate(below * 320.0);
 
-    //镜像采样：绕稳定缝线 uPivotY 垂直镜像，近水面涟漪扰动
+    //镜像采样：绕（稳定缝线 uPivotY + 让位坑结构项）垂直镜像，近水面涟漪扰动
     float seamProx = exp2(-abs(below) * 22.0);
-    float2 muv = float2(uv.x, 2.0 * uPivotY - uv.y);
+    float2 muv = float2(uv.x, 2.0 * (uPivotY + structural) - uv.y);
     muv.x += ((n0 - 0.5) * (0.0070 + seamProx * 0.016) + (n1 - 0.5) * 0.0042) * belowMask;
     muv.y += (n1 - 0.5) * 0.0062 * belowMask;
     //倒影恶犬替换人影：镜像源落在施术者身上的像素，把采样点水平推到身侧
@@ -226,11 +241,11 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float3 final = lerp(src, domainCol, mask);
 
     //缝线水沫：贴水位线的一线微光，噪声闪烁不与全屏同相；异化态叠雨点砸水的碎闪；
-    //行波扰动处水膜增亮，搅动读得出来
+    //行波与让位坑扰动处水膜增亮，搅动读得出来
     float seamBand = exp2(-abs(below) * 150.0);
     float foam = saturate((n1 - 0.35) * 2.2);
     float glintN = noiseTex(float2(uv.x * 5.0 - uTime * 0.05, 0.77));
-    float waveGlow = saturate(abs(waveSum) * uScreenSize.y * 0.10);
+    float waveGlow = saturate((abs(waveSum) + abs(structural) * 0.22) * uScreenSize.y * 0.10);
     float3 foamCol = lerp(FOAM_COL, RAIN_FOAM, uRain);
     final += foamCol * seamBand * uSeamGlow * mask
         * (0.26 + 0.32 * glintN + 0.30 * foam * uFoamBoost + 0.40 * waveGlow);

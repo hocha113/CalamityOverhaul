@@ -77,6 +77,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
         /// <summary>死亡演出中的女皇，无则null</summary>
         private static EmpressOfLightAI FindPerformingEmpress(out NPC boss) {
             boss = null;
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必扫表
+                return null;
+            }
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (npc.type != NPCID.HallowBoss) {
                     continue;

@@ -17,9 +17,12 @@ Onikiri_SakuraFlight.DisplayName: Onikiri: Sakura Flight
 Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
 Kikasa_Sink.DisplayName: Kikasa: Sink Item into the Lake
 Kikasa_DomainMutate.DisplayName: Kikasa: Flip the Lake
+Kikasa_TideControl.DisplayName: Kikasa: Command the Tide
 Accessory_Skills.DisplayName: Accessory Skill
 
 CWRKeySystem: {
 	Notbound: "[Unbound Key]"
 	RightClickFallback: Right-click
 }
+
+Blessing_Key.DisplayName: Blessing_ Key

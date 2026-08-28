@@ -28,13 +28,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.PotionBeacons
             AddMapEntry(new Color(152, 112, 190), VaultUtils.GetLocalizedItemName<PotionBeacon>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.Width = 2;
-            TileObjectData.newTile.Height = 2;
-            TileObjectData.newTile.Origin = new Point16(1, 1);
+            TileObjectData.newTile.Width = 4;
+            TileObjectData.newTile.Height = 4;
+            TileObjectData.newTile.Origin = new Point16(2, 3);
             TileObjectData.newTile.AnchorBottom = new AnchorData(
                 AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide
                 , TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateHeights = [16, 18];
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16];
             TileObjectData.newTile.LavaDeath = false;
 
             TileObjectData.addTile(Type);
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.PotionBeacons
             }
 
             //停摆时机身压暗,全系"断电减半"状态语言
-            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 2, !tp.WorkingActive);
+            MachineTileDraw.DrawCell(i, j, spriteBatch, Type, 4, 16, !tp.WorkingActive);
             return false;
         }
     }

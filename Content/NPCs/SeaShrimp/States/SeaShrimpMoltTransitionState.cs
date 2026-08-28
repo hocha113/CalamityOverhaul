@@ -1,0 +1,119 @@
+using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
+using CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles;
+using CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
+using System;
+using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
+{
+    /// <summary>
+    /// 蜕壳转阶段（40%，甲壳类专属演出）：清弹 → 70f 甲壳龟裂（裂纹音与晶屑渐密）→
+    /// 旧壳作为实体碎屑崩落四散 + 裸晶形态跃出（Phase=3，体色转亮）→
+    /// 落定怒吼收束。全程无敌；转阶段后攻速经冷却风起（公平阀）
+    /// </summary>
+    [InnoVault.StateMachines.VaultState((int)SeaShrimpStateIndex.MoltTransition, typeof(SeaShrimpStateContext))]
+    internal class SeaShrimpMoltTransitionState : SeaShrimpStateBase
+    {
+        public override string StateName => "MoltTransition";
+        public override SeaShrimpStateIndex StateIndex => SeaShrimpStateIndex.MoltTransition;
+
+        private const int CrackEnd = 70;
+        private const int SettleFrame = 118;
+        private const int Total = 164;
+
+        public override void OnEnter(SeaShrimpStateContext ctx) {
+            base.OnEnter(ctx);
+            //阶段转换清弹（公平阀）
+            if (!VaultUtils.isClient) {
+                SeaShrimpBoss.ClearHostileProjectiles();
+            }
+        }
+
+        public override ISeaShrimpState OnUpdate(SeaShrimpStateContext ctx) {
+            NPC npc = ctx.Npc;
+            int t = (int)Timer;
+            Timer++;
+            npc.dontTakeDamage = true;
+
+            if (t < CrackEnd) {
+                //龟裂段：驻停颤抖，晶屑与裂纹音渐密，晶光拉满
+                HoldInPlace(ctx);
+                float build = t / (float)CrackEnd;
+                ctx.CrystalGlow = MathF.Max(ctx.CrystalGlow, build);
+                ctx.SpineCurl = MathF.Sin(t * 0.7f) * 0.06f * build;
+                ctx.WaveGain = 0.25f;
+
+                if (!Main.dedServ) {
+                    if (t % 14 == 0) {
+                        SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.5f + build * 0.4f, Pitch = -0.3f + build * 0.5f, MaxInstances = 3 }, npc.Center);
+                        ShakeNearby(npc.Center, 1.5f + build * 2f, 1100f);
+                    }
+                    if (Main.rand.NextFloat() < 0.2f + build * 0.6f) {
+                        Vector2 seam = npc.Center + Main.rand.NextVector2Circular(70f, 44f);
+                        PRTLoader.NewParticle<PRT_DefCrystalShard>(seam,
+                            new Vector2(Main.rand.NextFloat(-1.4f, 1.4f), -Main.rand.NextFloat(0.6f, 2.2f)),
+                            SeaShrimpRenderer.CrystalBlue * 0.9f,
+                            Main.rand.NextFloat(0.4f, 0.8f))?.Configure(Main.rand.Next(20, 34), Main.rand.NextFloat(-0.2f, 0.2f));
+                    }
+                }
+                return null;
+            }
+
+            if (t == CrackEnd) {
+                //崩壳帧：旧壳实体碎屑放射崩落（慢速可读的重力弧），本体跃起
+                if (!VaultUtils.isClient) {
+                    int damage = SeaShrimpDirector.ScaleProjectileDamage(npc, SeaShrimpDirector.ShellFragDamage);
+                    for (int i = 0; i < 10; i++) {
+                        float ang = -MathHelper.Pi * (0.12f + 0.76f * i / 9f);
+                        Vector2 vel = ang.ToRotationVector2() * (5.4f + (i % 3) * 1.3f);
+                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Main.rand.NextVector2Circular(30f, 20f),
+                            vel, ModContent.ProjectileType<SeaShrimpShellFrag>(), damage, 2f, Main.myPlayer,
+                            Main.rand.Next(3));
+                    }
+                    //服务器裁决进入 P3；ai[2] 随 netUpdate 广播
+                    ctx.Phase = 3;
+                    npc.netUpdate = true;
+                }
+                ctx.Owner.Locomotion.LaunchBallistic(new Vector2(0f, -11f), 8, 0.86f);
+                if (!Main.dedServ) {
+                    SoundEngine.PlaySound(SoundID.Shatter with { Volume = 1f, Pitch = -0.2f }, npc.Center);
+                    SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.9f, Pitch = 0.3f }, npc.Center);
+                    ShakeNearby(npc.Center, 7f);
+                    for (int i = 0; i < 26; i++) {
+                        PRTLoader.NewParticle<PRT_DefCrystalShard>(npc.Center + Main.rand.NextVector2Circular(60f, 40f),
+                            Main.rand.NextVector2Circular(5f, 4f) - new Vector2(0f, 3f),
+                            SeaShrimpRenderer.CrystalBlue,
+                            Main.rand.NextFloat(0.5f, 1f))?.Configure(Main.rand.Next(26, 44), Main.rand.NextFloat(-0.3f, 0.3f));
+                    }
+                }
+                return null;
+            }
+
+            //蜕壳进度推进：绘制层据此把体色提亮成裸晶形态
+            ctx.Molted01 = MathHelper.Clamp(ctx.Molted01 + 0.03f, 0f, 1f);
+            ctx.CrystalGlow = MathF.Max(ctx.CrystalGlow, 0.85f);
+
+            if (t < SettleFrame) {
+                //跃出段：弹道自治，尾扇全开
+                ctx.TailFlare = 1f;
+                ctx.SpineCurl = -0.3f * (1f - (t - CrackEnd) / (float)(SettleFrame - CrackEnd));
+                return null;
+            }
+
+            HoldInPlace(ctx);
+            ctx.TailFlare = 0.6f;
+
+            if (t >= Total) {
+                //转阶段后攻速风起：冷却抬高一档（公平阀）
+                ctx.AttackCooldown = 70;
+                return new SeaShrimpHubState();
+            }
+            return null;
+        }
+    }
+}

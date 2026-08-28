@@ -196,6 +196,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             Vector2 hand = Owner.GetPlayerStabilityCenter();
             float reach = BladeReach * Projectile.scale;
+            if (CWRUtils.ArcSweepCulled(targetHitbox, hand, reach, 56f)) {
+                return false;
+            }
             int steps = GetAngularSteps(sweepCollisionEnd - sweepCollisionStart, reach, 28f, 64);
             for (int i = 0; i <= steps; i++) {
                 float rotation = MathHelper.Lerp(sweepCollisionStart, sweepCollisionEnd, i / (float)steps);

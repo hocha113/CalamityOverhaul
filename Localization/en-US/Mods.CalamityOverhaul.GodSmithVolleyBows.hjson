@@ -1,0 +1,107 @@
+GsDaedalusStormbow.Desc:
+	'''
+	Reforged: arrows now fall from the sky, and a silver seal marks each landing point before the bolt strikes
+	Shots build storm charge; at full charge the next shot lays a 3x3 sky matrix, corners then edges then center
+	The center bolt lands heaviest and bursts on impact. Right click to release a partial matrix early
+	Sky bolts stack hunt brands; branding a foe thrice calls a verdict bolt down upon it
+	'''
+GsTsunami.Desc:
+	'''
+	Reforged: each draw looses a rank of 5 arrows that surge forward in a rolling wave, one ammo per draw
+	Shots build tide charge; at full charge the next draw becomes a great wave: 7 piercing arrows in two ranks led by a sweeping foam crest
+	Wave arrows stack tide brands; branding a foe thrice sends a water spout erupting beneath it
+	While a branded foe stands, every 4th arrow splits off a tide-chaser that bites toward it
+	'''
+GsFairyQueenRangedItem.Desc:
+	'''
+	Reforged: all arrows become twilight lances; each sweep of the bow looses 5 lances along an arc, converging on the cursor
+	The 3rd lance of every sweep is the Queen's lance, striking nearly twice as hard
+	Shots build twilight; at full charge the next shot blooms into a prismatic fan of 5 lances
+	Lance hits stack brands; branding a foe thrice calls twin fae orbs to circle and peck it for 2 seconds
+	'''
+GsDD2BetsyBow.Desc:
+	'''
+	Reforged: each draw looses 5 dragonfire bolts that climb, stall, then dive-bomb the cursor area
+	Impacts burst into dragonfire rings; airborne foes take 35% more damage
+	Shots build airstrike charge; at full charge the next draw calls a carpet run of 9 bolts along the flight line
+	Bolt hits stack flame brands; branding a foe thrice drops one heavy bomb straight onto it
+	'''
+GsPhantasm.Desc:
+	'''
+	Reforged: hold to channel; fire rate climbs with frenzy, and the bow splits into phantom after-bows
+	At frenzy rank 2 every volley gains two flanking phantom arrows
+	Striking the same foe 6 times in a row calls a phantom archer to hover at your back and loose soul bolts alongside you
+	Main arrows stack soul brands; branding a foe thrice makes the archer nail it with 4 homing soul bolts
+	'''
+GsPearlwoodBow.Desc:
+	'''
+	Reforged: every 5 shots charge a rainbow arc volley, 5 arrows sweeping out one by one, one ammo per volley
+	Landing 3 arc arrows on the same foe pops a pearl prism burst
+	Right click releases the volley early at 60%+ charge
+	'''
+GsCobaltRepeater.Desc:
+	'''
+	Reforged: every 6th bolt triple-taps; volley charge looses 3 bolts one after another that accelerate in flight, one ammo per volley
+	Volley hits brand prey and grant you a short gust of Swiftness
+	'''
+GsPalladiumRepeater.Desc:
+	'''
+	Reforged: every 6th bolt triple-taps; volley charge looses a 3-bolt line, one ammo per volley
+	Branded foes slain restore 2 life; executions restore 5 more
+	'''
+GsMythrilRepeater.Desc:
+	'''
+	Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge, one ammo per volley
+	The lead volley bolt always crits against branded foes; side bolts gain +8% crit
+	'''
+GsOrichalcumRepeater.Desc:
+	'''
+	Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge trailing petals, one ammo per volley
+	Volley hits burst into a small petal blast
+	'''
+GsAdamantiteRepeater.Desc:
+	'''
+	Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon at x1.5 knockback, one ammo per volley
+	The lead volley bolt lands with a crimson shockwave that splashes nearby foes
+	'''
+GsTitaniumRepeater.Desc:
+	'''
+	Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon, one ammo per volley
+	Volley bolts etch armor: each hit on the same foe adds +2 armor penetration, up to 5 stacks
+	'''
+GsHallowedRepeater.Desc:
+	'''
+	Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt cross, one ammo per volley
+	Executing a fully branded foe calls down a hallowed star trailing gold
+	'''
+GsChlorophyteShotbow.Desc:
+	'''
+	Reforged: every 6th shot triple-taps; volley charge looses a 6-arrow spore cone, one ammo per volley
+	Branded foes take +10% from this bow; execution bursts a spore cloud
+	'''
+GsStakeLauncher.Desc:
+	'''
+	Reforged: every 6th stake triple-taps; volley charge looses a 3-stake wedge, one ammo per volley
+	Stakes pin and brand prey; the executing stake crucifies at x2.3, undead take a further +25%
+	Each crucifixion reloads 30 volley charge; silver light gathers at the muzzle when fully charged
+	'''
+GsIceBow.Desc:
+	'''
+	Reforged: volley charge hurls 6 icicles skyward to rain on the cursor, one ammo per volley
+	Icicle hits stack frostbrand; at 3 stacks the next icicle shatters into a frost burst
+	'''
+GsMarrow.Desc:
+	'''
+	Reforged: volley charge looses a 5-bone-arrow cross with +1 pierce, one ammo per volley
+	Executing a fully branded foe cages it with 4 converging bone arrows
+	'''
+GsShadowflameBow.Desc:
+	'''
+	Reforged: volley charge looses 3 shadowflame arrows crossing at the cursor, one ammo per volley
+	Branded foes struck by any arrow draw a homing shadowflame wisp; execution erupts in shadow
+	'''
+GsPulseBow.Desc:
+	'''
+	Reforged: each wall bounce now grants +10% damage (up to 5); volley charge looses 3 parallel pulse tracks, one ammo per volley
+	Branded foes bend passing pulses toward them; execution chains a surge to 2 nearby foes
+	'''

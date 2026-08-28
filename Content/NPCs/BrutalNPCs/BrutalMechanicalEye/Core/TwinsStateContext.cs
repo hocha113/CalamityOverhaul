@@ -105,14 +105,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
             }
         }
 
+        //搭档槽位缓存（按搭档 type 分两格）：命中即 O(1)，失效才重扫活跃表
+        private static int cachedRetinazerIndex = -1;
+        private static int cachedSpazmatismIndex = -1;
+
         /// <summary>取搭档 NPC</summary>
         public static NPC GetPartnerNpc(int myType) {
             int partnerType = myType == NPCID.Spazmatism ? NPCID.Retinazer : NPCID.Spazmatism;
-            foreach (var n in Main.npc) {
-                if (n.active && n.type == partnerType) {
+            ref int cachedIndex = ref (partnerType == NPCID.Retinazer
+                ? ref cachedRetinazerIndex : ref cachedSpazmatismIndex);
+
+            if (cachedIndex >= 0 && cachedIndex < Main.maxNPCs) {
+                NPC cached = Main.npc[cachedIndex];
+                if (cached.active && cached.type == partnerType) {
+                    return cached;
+                }
+            }
+            foreach (var n in Main.ActiveNPCs) {
+                if (n.type == partnerType) {
+                    cachedIndex = n.whoAmI;
                     return n;
                 }
             }
+            cachedIndex = -1;
             return null;
         }
         #endregion

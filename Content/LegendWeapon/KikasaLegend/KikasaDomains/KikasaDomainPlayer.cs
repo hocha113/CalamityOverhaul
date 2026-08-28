@@ -169,6 +169,52 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// <summary>喂给湖面调色的鬼火光强：压制中水里的金光先行冷却</summary>
         public float WispGlow => WispT * (1f - WispQuench * 0.6f);
 
+        //==================== 引潮 ====================
+
+        /// <summary>让位演出包络 0~1：向下排大水时开演，驱动分浪坑/坑唇/泡沫。
+        /// 纯本地表现量（同 <see cref="SoakDim"/> 之例），各端从自算的滑动得到几乎同拍的演出</summary>
+        public float TideYieldT { get; private set; }
+
+        /// <summary>让位坑中心世界 X，演出期逐帧跟人</summary>
+        public float TideTroughCenterX { get; private set; }
+
+        /// <summary>让位坑半宽（世界像素）</summary>
+        public float TideTroughHalfWidthPx { get; private set; }
+
+        /// <summary>让位坑深（世界像素，正=下挖，负=蓄势隆起）</summary>
+        public float TideTroughDepthPx { get; private set; }
+
+        /// <summary>坑唇浪包幅度（世界像素）：被推开的水堆在坑沿</summary>
+        public float TideLipAmpPx { get; private set; }
+
+        //引潮参数（2026-08 二次改制：自动跟脚判"不好"废弃，目标改由长按引潮键的光标高度写入）：
+        //比例速率无硬上限——远处（视野外）快追、近目标自然减速成潮，地狱级落差约 1~2 秒到位
+
+        private const float TideStartGapPx = 12f;
+        private const float TideStopGapPx = 2f;
+        /// <summary>每帧向目标收敛的落差比例（约 0.8 秒收敛 95%）</summary>
+        private const float TideRatePerFrame = 0.055f;
+        private const float TideMinStepPx = 0.6f;
+        //向下排水且人没在水下超过此值不放分浪让位演出；到位拍则看本轮最大行程
+        private const float TideYieldShowGapPx = 64f;
+        private const float TideArriveBeatGapPx = 48f;
+        //坑深上限：浅盘让位，快潮负责主行程（原 180 实机夸张，收敛）
+        private const float TideTroughDepthCapPx = 64f;
+        /// <summary>坑唇位于半宽的倍数处，与 KikasaGrade/KikasaSky/KikasaWispFire 的 tideTrough 同契约</summary>
+        internal const float TideTroughLipD = 1.18f;
+
+        //目标水位=施术者引潮号令的光标高度（随快照同步，光标是别处推不出来的骰）；
+        //开域/仪式重锚时同步为当前水线，不残留旧目标
+        private float tideTargetY;
+        private bool tideTargetValid;
+        private bool tideDrifting;
+        //本轮引潮出现过的最大落差，决定到位拍的量级
+        private float tideTravelMax;
+        private int tideYieldTimer;
+        //引潮键长按态：边沿受理拍与节流转播用
+        private bool tidePrevDown;
+        private float tideLastSentY;
+
         /// <summary>处于鬼梦相位（拉入/梦中/归返）任意一段</summary>
         public bool InDreamPhase => Phase == KikasaDomainPhase.DreamPull
             || Phase == KikasaDomainPhase.Dreaming
@@ -180,6 +226,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             Phase == KikasaDomainPhase.Dreaming
             || (Phase == KikasaDomainPhase.DreamPull && PhaseTimer >= KikasaDream.PullCommitFrame)
             || (Phase == KikasaDomainPhase.DreamReturn && PhaseTimer < KikasaDream.ReturnCommitFrame);
+
+        /// <summary>湖体此刻物理成立：满水且画面不在梦侧（含翻转期，水位强制满、演出中不掉人）。
+        /// 湖面单向平台（<see cref="KikasaLakeSurface"/>）与 NPC 没入判定（<see cref="KikasaLakeNPC"/>）
+        /// 共用这一个谓词；Closing 首帧后水位跌破阈值自动失效</summary>
+        public bool LakeBodySolid => AnyActive && RiseT >= 0.999f && !DreamWorldVisual;
 
         /// <summary>湖侧能力统一受理门：湖侧世界此刻可见且稳定（满水，非收合/翻转，画面不在梦侧）。
         /// 沉溺/鞭笞/湖藏/役灵洗礼/鬼火/回溯等湖技入口共用；鬼梦两段过场以
@@ -246,7 +297,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// <summary>
         /// 持鬼伞按 <see cref="CWRKeySystem.Legend_Domain"/> 开阖；
         /// <see cref="CWRKeySystem.Kikasa_DomainMutate"/>（默认中键，被清空绑定时回退原生中键）：
-        /// 短按=开域/血雨翻转，长按=拉入鬼梦（满水即可，不看编成），梦中任按即归返。
+        /// 短按=开域/血雨翻转，长按=拉入鬼梦（满水即可，不看编成），梦中任按即归返；
+        /// 长按 <see cref="CWRKeySystem.Kikasa_TideControl"/>（默认 X）水位跟随光标高度。
         /// 倒影醒睡随湖自动走（纯氛围指示）；鬼火点燃/收火是玩家号令，
         /// 入口在转盘金焰扇与 HUD 焰苗（<see cref="KikasaWisp.TryToggle"/>）；骇客时停不受理
         /// </summary>
@@ -279,6 +331,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             bool mutateDown = unbound ? middleDown : CWRKeySystem.Kikasa_DomainMutate.Current;
             bool mutateEdge = unbound ? middleEdge : CWRKeySystem.Kikasa_DomainMutate.JustPressed;
             HandleMutateKey(holding, mutateDown, mutateEdge);
+            //引潮键:长按让水位跟随光标高度
+            HandleTideKey(holding);
 
             //满水稳态则倒影自醒，醒睡不再占键
             UpdateReflectionGate();
@@ -341,6 +395,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         }
 
         /// <summary>
+        /// 引潮：长按 <see cref="CWRKeySystem.Kikasa_TideControl"/>，水位目标逐帧跟随光标高度，
+        /// 松手潮停在当前目标。目标随快照节流转播（对齐墨瀑跟手补包纪律），滑动各端自算
+        /// </summary>
+        private void HandleTideKey(bool holding) {
+            bool down = CWRKeySystem.Kikasa_TideControl?.Current == true;
+            bool edge = down && !tidePrevDown;
+            tidePrevDown = down;
+            if (!down || Player.mouseInterface) {
+                return;
+            }
+            if (!holding && !AnyActive) {
+                return;
+            }
+            if (Phase != KikasaDomainPhase.Open || RiseT < 0.999f) {
+                //湖还没就位:按下沿拒一声,不留"按了没反应"
+                if (edge) {
+                    KikasaDreamSystem.Refuse(Player);
+                }
+                return;
+            }
+            tideTargetY = Main.MouseWorld.Y;
+            tideTargetValid = true;
+            if (edge && IsLocalVisual) {
+                //受理拍:水线荡一圈,潮听见了
+                KikasaDomainDeco.RippleAt(new Vector2(Player.Center.X, LakeWorldY), 0.8f);
+                SoundEngine.PlaySound(SoundID.SplashWeak with {
+                    Volume = 0.4f, Pitch = -0.5f, MaxInstances = 2,
+                }, Player.Center);
+            }
+            //目标真动了才转播,10 帧一发不淹链路
+            if (Main.netMode == NetmodeID.MultiplayerClient
+                && (edge || (Main.GameUpdateCount % 10 == 0
+                    && MathF.Abs(tideTargetY - tideLastSentY) > 8f))) {
+                tideLastSentY = tideTargetY;
+                BroadcastCommand();
+            }
+        }
+
+        /// <summary>
         /// 倒影自动门控：稳态满水即自醒。倒影只是氛围与「梦之门开着」的世界内指示，
         /// 不再是入梦的前置条件（入梦门见 <see cref="DreamPullReady"/>）。
         /// 醒着的倒影不因水位波动入睡（收域时在 UpdateLocal 里随域睡透）；
@@ -366,7 +459,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         //==================== 网络形态 ====================
 
-        /// <summary>只含施术者掷过骰、别处推不出来的量；包络各端本地自算</summary>
+        /// <summary>只含施术者掷过骰、别处推不出来的量；包络各端本地自算。
+        /// 引潮目标是光标写的骰，同样只能从这里来</summary>
         internal void WriteNetworkState(BinaryWriter writer) {
             writer.Write((byte)Phase);
             writer.Write((ushort)Math.Clamp(PhaseTimer, 0, ushort.MaxValue));
@@ -381,6 +475,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             writer.Write(WispFireActive);
             writer.Write(WispOriginX);
             writer.Write(WispRainProof);
+            writer.Write(tideTargetValid);
+            writer.Write(tideTargetY);
         }
 
         /// <summary>先读满整份负载再校验，脏包只做丢弃，不留半套状态</summary>
@@ -397,11 +493,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             bool wispFire = reader.ReadBoolean();
             float wispOriginX = reader.ReadSingle();
             bool wispRainProof = reader.ReadBoolean();
+            bool tideValid = reader.ReadBoolean();
+            float tideTarget = reader.ReadSingle();
 
             if (phase > (byte)KikasaDomainPhase.DreamReturn
                 || !float.IsFinite(spread) || !float.IsFinite(rise)
                 || !float.IsFinite(origin.X) || !float.IsFinite(origin.Y)
-                || !float.IsFinite(lakeY) || !float.IsFinite(wispOriginX)) {
+                || !float.IsFinite(lakeY) || !float.IsFinite(wispOriginX)
+                || !float.IsFinite(tideTarget)) {
                 return;
             }
 
@@ -419,6 +518,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             WispFireActive = wispFire;
             WispOriginX = wispOriginX;
             WispRainProof = wispRainProof;
+            //引潮目标:光标写的骰,远端与服务器只能从快照拿,滑动自算
+            tideTargetValid = tideValid;
+            tideTargetY = tideTarget;
             //触脚拍可从水位推回，中途加入者跨过 1 时照常触发
             contactDone = RiseT >= 0.999f;
             riseBeatNear = RiseT >= 0.75f;
@@ -443,6 +545,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// </summary>
         private void ReanchorLake() {
             LakeWorldY = Player.Bottom.Y;
+            //潮目标同步落到新锚，仪式落定后不再残留旧目标把水拽走
+            tideTargetY = LakeWorldY;
+            tideTargetValid = true;
         }
 
         internal bool OpenDomain() {
@@ -468,6 +573,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             RiseT = 0f;
             OriginWorldPos = Player.Center;
             LakeWorldY = Player.Bottom.Y;
+            tideTargetY = LakeWorldY;
+            tideTargetValid = true;
             contactDone = false;
             riseBeatNear = false;
             riseBeatFar = false;
@@ -679,6 +786,75 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             DreamGrade = 1f;
         }
 
+        //==================== 大范围重启借雨 ====================
+
+        /// <summary>大范围重启借雨的还原底片：落定弹回施术前的领域状态。
+        /// 鬼火点燃态一并入册，防借来的鬼雨把火永久浇灭</summary>
+        internal struct ResetBorrowState
+        {
+            public KikasaDomainPhase Phase;
+            public int PhaseTimer;
+            public float SpreadProgress;
+            public float RiseT;
+            public bool IsRainForm;
+            public bool FlipToRain;
+            public float RainBlend;
+            public bool WispFireActive;
+            public float WispQuench;
+        }
+
+        /// <summary>借雨前拍底片，由 <see cref="KikasaResets.KikasaReset"/> 在借用帧调用</summary>
+        internal ResetBorrowState CaptureResetBorrow() => new() {
+            Phase = Phase,
+            PhaseTimer = PhaseTimer,
+            SpreadProgress = SpreadProgress,
+            RiseT = RiseT,
+            IsRainForm = IsRainForm,
+            FlipToRain = FlipToRain,
+            RainBlend = RainBlend,
+            WispFireActive = WispFireActive,
+            WispQuench = WispQuench,
+        };
+
+        /// <summary>
+        /// 大范围重启的借雨：照片掩护下强制鬼雨满水稳态，混合量直接就位（同鬼梦归返之例）。
+        /// 演出期间每帧幂等重申，途中迟到的旧领域快照会被下一帧压回；
+        /// entryBeat 帧预埋延迟雷声（天幕闪由演出侧先行）并转播一份形态
+        /// </summary>
+        internal void ApplyResetBorrow(bool entryBeat) {
+            if (Phase == KikasaDomainPhase.Closed) {
+                //从关域借用（或途中被旧快照打回关域）：湖锚落到人脚底
+                ReanchorLake();
+            }
+            Phase = KikasaDomainPhase.Open;
+            PhaseTimer = 0;
+            SpreadProgress = 1f;
+            RiseT = 1f;
+            IsRainForm = true;
+            FlipToRain = true;
+            RainBlend = 1f;
+            if (!entryBeat) {
+                return;
+            }
+            //雷声延迟十几帧，正落在冲刷揭幕的时分（光先于声）
+            thunderSoundDelay = Main.rand.Next(14, 24);
+            BroadcastCommand();
+        }
+
+        /// <summary>落定弹回：白闪峰值掩护下还原底片，其余包络由各相位分支自然收拾</summary>
+        internal void RevertResetBorrow(in ResetBorrowState state) {
+            Phase = state.Phase;
+            PhaseTimer = state.PhaseTimer;
+            SpreadProgress = state.SpreadProgress;
+            RiseT = state.RiseT;
+            IsRainForm = state.IsRainForm;
+            FlipToRain = state.FlipToRain;
+            RainBlend = state.RainBlend;
+            WispFireActive = state.WispFireActive;
+            WispQuench = state.WispQuench;
+            BroadcastCommand();
+        }
+
         /// <summary>
         /// 专场时停：NPC/弹幕/玩家钉住，状态机仍走 PostUpdateEverything。
         /// 镜像鬼切 <c>OniDomainFlip</c>：多人静态快照会失同步，只在单机挂
@@ -750,6 +926,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 WispT = 0f;
                 WispSpread = 0f;
                 WispQuench = 0f;
+                ResetTideState();
                 return;
             }
 
@@ -773,6 +950,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 case KikasaDomainPhase.DreamPull: KikasaDreamDirector.UpdatePull(this); break;
                 case KikasaDomainPhase.Dreaming: KikasaDreamDirector.UpdateDreaming(this); break;
                 case KikasaDomainPhase.DreamReturn: KikasaDreamDirector.UpdateReturn(this); break;
+            }
+
+            //引潮只活在 Open 稳态；其余相位各有自己的全屏演出，让位坑快速抹平不抢戏
+            if (Phase != KikasaDomainPhase.Open) {
+                DecayTideTrough();
             }
 
             //延迟雷声的公共泵：闪光由 NotifyThunder 先行，这里在任意阶段把声补到
@@ -857,6 +1039,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             //续开时水位可能未满，继续涨
 
             AdvanceRise();
+            //满水后水位向引潮号令的目标滑动
+            UpdateTideFollow();
 
             //血湖偶尔一声水滴；异化态换成远雷（天幕先闪、雷声延迟，光先于声）
 
@@ -1205,6 +1389,178 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
         }
 
+        //==================== 引潮 ====================
+
+        //引潮：水位向施术者号令的目标滑动。目标由长按引潮键时的光标高度写入
+        //（<see cref="HandleTideKey"/>，owner 端）并随快照同步——光标是施术者掷的骰，
+        //别处推不出来；滑动规则各端从同步的目标自算，残差由快照里的 LakeWorldY 校正。
+        //一版自动跟脚（落脚即跟）实机判"不好"于 2026-08 废弃，滑动/让位机器原样保留
+
+        private void UpdateTideFollow() {
+            float feetGap = Player.Bottom.Y - LakeWorldY;   //>0 人在水面线以下
+
+            if (!tideTargetValid || RiseT < 0.999f) {
+                UpdateTideYield(feetGap);
+                return;
+            }
+
+            float gap = tideTargetY - LakeWorldY;
+            float absGap = MathF.Abs(gap);
+            if (!tideDrifting) {
+                if (absGap > TideStartGapPx) {
+                    tideDrifting = true;
+                }
+            }
+            else if (absGap <= TideStopGapPx) {
+                //到位：走满一段像样行程的潮补一记落定拍
+                if (tideTravelMax > TideArriveBeatGapPx && IsLocalVisual) {
+                    PlayTideArriveBeat();
+                }
+                tideTravelMax = 0f;
+                tideDrifting = false;
+            }
+
+            if (tideDrifting) {
+                tideTravelMax = MathF.Max(tideTravelMax, absGap);
+                float step = MathF.Max(absGap * TideRatePerFrame, TideMinStepPx);
+                LakeWorldY += MathF.Sign(gap) * MathF.Min(step, absGap);
+            }
+
+            UpdateTideYield(feetGap);
+        }
+
+        /// <summary>蓄势帧数：坑开之前水面先向中心聚起一小口，没有预备的让位是生硬的</summary>
+        private const int TideSwellFrames = 10;
+
+        //让位演出包络：向下排大水且人在水下时水面向两侧分开让位。迟滞双阈值：
+        //开演看大落差，收场等水贴到脚边，快到时不提前散戏
+
+        private void UpdateTideYield(float feetGap) {
+            bool drainingDown = tideDrifting && tideTargetValid && tideTargetY > LakeWorldY;
+            bool show = drainingDown
+                && feetGap > (TideYieldT > 0.1f ? 12f : TideYieldShowGapPx);
+            if (show) {
+                tideYieldTimer++;
+                TideYieldT = MathF.Min(TideYieldT + 1f / 18f, 1f);
+                PlayTideYieldBeats();
+            }
+            else {
+                TideYieldT = MathF.Max(TideYieldT - 1f / 40f, 0f);
+                if (TideYieldT <= 0f) {
+                    tideYieldTimer = 0;
+                }
+            }
+            RefreshTideTrough(feetGap);
+        }
+
+        //坑参数逐帧刷新：蓄势期隆起，随后坑深追当前落差（浅盘上限，快潮负责主行程），
+        //到位时落差自然归零，坑随包络退场抹平；被推开的水小比例堆在坑唇
+
+        private void RefreshTideTrough(float feetGap) {
+            if (TideYieldT <= 0f) {
+                TideTroughDepthPx = 0f;
+                TideLipAmpPx = 0f;
+                return;
+            }
+            TideTroughCenterX = Player.Center.X;
+            if (tideYieldTimer > 0 && tideYieldTimer < TideSwellFrames) {
+                float k = MathF.Sin(MathHelper.Pi * tideYieldTimer / TideSwellFrames);
+                TideTroughHalfWidthPx = 120f;
+                TideTroughDepthPx = -6f * k;
+                TideLipAmpPx = 0f;
+                return;
+            }
+            float open = Smooth01((tideYieldTimer - TideSwellFrames) / 22f);
+            float depth = MathF.Min(MathF.Max(feetGap, 0f), TideTroughDepthCapPx)
+                * open * TideYieldT;
+            TideTroughDepthPx = depth;
+            TideTroughHalfWidthPx = MathHelper.Clamp(110f + depth * 0.9f, 110f, 240f);
+            TideLipAmpPx = MathF.Min(depth * 0.12f, 9f);
+        }
+
+        /// <summary>让位节拍：蓄势起手一记聚拢，坑开的瞬间破水推浪，随后坑唇周期性溅血、外送长浪</summary>
+        private void PlayTideYieldBeats() {
+            if (!IsLocalVisual) {
+                return;
+            }
+            float lipX = TideTroughHalfWidthPx * TideTroughLipD;
+            Vector2 center = new(TideTroughCenterX, LakeWorldY);
+            Vector2 lipL = new(TideTroughCenterX - lipX, LakeWorldY);
+            Vector2 lipR = new(TideTroughCenterX + lipX, LakeWorldY);
+            if (tideYieldTimer == 1) {
+                //蓄：头顶水面先向中心聚拢的一记闷响
+                SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.45f, Pitch = -0.9f, MaxInstances = 2 }, center);
+                KikasaDomainDeco.RippleAt(center, 0.9f);
+            }
+            else if (tideYieldTimer == TideSwellFrames) {
+                //开：水被推开的破水拍，两侧坑唇同时溅开（收敛版，浅盘不炸场）
+                SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.55f, Pitch = -0.45f, MaxInstances = 2 }, center);
+                SoundEngine.PlaySound(SoundID.DD2_BookStaffCast with { Volume = 0.32f, Pitch = -0.85f, MaxInstances = 2 }, center);
+                KikasaDomainDeco.SplashAt(lipL, 6);
+                KikasaDomainDeco.SplashAt(lipR, 6);
+                ShakeViewer(1.8f);
+            }
+            else if (tideYieldTimer > TideSwellFrames) {
+                //送：坑唇溅血与外荡缓浪，坑越深越显
+                float k = MathHelper.Clamp(TideTroughDepthPx / TideTroughDepthCapPx, 0.2f, 1f);
+                if (tideYieldTimer % 9 == 0) {
+                    KikasaDomainDeco.SplashAt(Main.rand.NextBool() ? lipL : lipR, 3 + (int)(3f * k));
+                }
+                if (tideYieldTimer % 26 == 0) {
+                    KikasaDomainDeco.RippleAt(lipL, 0.8f + 0.5f * k);
+                    KikasaDomainDeco.RippleAt(lipR, 0.8f + 0.5f * k);
+                    SoundEngine.PlaySound(SoundID.SplashWeak with {
+                        Volume = 0.3f + 0.15f * k, Pitch = -0.6f, MaxInstances = 2,
+                    }, center);
+                }
+            }
+        }
+
+        /// <summary>到位拍：潮走完一段像样的行程，水线在脚边落定</summary>
+        private void PlayTideArriveBeat() {
+            Vector2 at = new(Player.Center.X, LakeWorldY);
+            float k = MathHelper.Clamp(tideTravelMax / 300f, 0.3f, 1f);
+            SoundEngine.PlaySound(SoundID.SplashWeak with {
+                Volume = 0.45f + 0.25f * k, Pitch = -0.2f, MaxInstances = 2,
+            }, at);
+            KikasaDomainDeco.SplashAt(at, 5 + (int)(7f * k));
+            KikasaDomainDeco.RippleAt(at, 0.9f + 0.5f * k);
+            ShakeViewer(1.5f + 1.5f * k);
+        }
+
+        /// <summary>非稳态相位把让位坑快速抹平：收域/翻转/入梦各有自己的全屏演出，坑不抢戏也不跳变</summary>
+        private void DecayTideTrough() {
+            tideDrifting = false;
+            tideTravelMax = 0f;
+            if (TideYieldT <= 0f && TideTroughDepthPx == 0f && TideLipAmpPx == 0f) {
+                return;
+            }
+            TideYieldT = MathF.Max(TideYieldT - 1f / 12f, 0f);
+            TideTroughDepthPx *= 0.8f;
+            TideLipAmpPx *= 0.78f;
+            if (TideYieldT <= 0f) {
+                tideYieldTimer = 0;
+                if (MathF.Abs(TideTroughDepthPx) < 0.5f) {
+                    TideTroughDepthPx = 0f;
+                    TideLipAmpPx = 0f;
+                }
+            }
+        }
+
+        /// <summary>引潮硬复位，关域/清世界用</summary>
+        private void ResetTideState() {
+            tideDrifting = false;
+            tideTargetValid = false;
+            tideTargetY = 0f;
+            tideTravelMax = 0f;
+            tideYieldTimer = 0;
+            tidePrevDown = false;
+            tideLastSentY = 0f;
+            TideYieldT = 0f;
+            TideTroughDepthPx = 0f;
+            TideLipAmpPx = 0f;
+        }
+
         private void UpdatePresence() {
             float target = AnyActive ? SpreadProgress : 0f;
             float rate = target > PresenceSmooth ? 0.08f : 0.06f;
@@ -1223,6 +1579,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
             else if (!contactDone && AnyActive) {
                 target = RiseT > 0f ? 1f : 0f;
+            }
+            else if (TideYieldT > 0.05f || tideDrifting) {
+                //潮在走：泡沫随让位演出与缓移增强
+                target = MathF.Max(0.2f + 0.55f * TideYieldT, tideDrifting ? 0.4f : 0f);
             }
             else {
                 //静水微澜
@@ -1367,6 +1727,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             riseBeatNear = false;
             riseBeatFar = false;
             lastCommandFrame = -1;
+            ResetTideState();
         }
     }
 }

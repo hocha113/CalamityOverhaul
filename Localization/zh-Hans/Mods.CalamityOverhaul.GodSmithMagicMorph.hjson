@@ -1,0 +1,30 @@
+GsSpiritFlame.Desc:
+	'''
+	重铸：灵焰曳着苍白魂火，命中时有一半几率分出一缕追猎的火苗
+	按住右键蓄力，松开后在光标处布下五焰环阵，阵焰会依次扑向靠近的敌人
+	'''
+GsSpiritFlameRingProj.DisplayName: 灵焰环阵
+GsSpiritFlameWispProj.DisplayName: 追灵火苗
+GsPoisonStaff.Desc:
+	'''
+	重铸：毒牙拖着毒雾飞行，咬中第二个目标时分裂两枚细牙
+	按住右键蓄力放出蛇吻：一条小而疾的盘蛇蜿蜒扑咬，沿途铺开中毒的雾廊
+	'''
+GsVenomStaff.Desc:
+	'''
+	重铸：毒牙拖着毒雾飞行，咬中第二个目标时分裂一枚重牙
+	按住右键蓄力放出蛇吻：一条大而重的蝮蛇缓缓碾进，蛇躯消散处熔成滞留的酸池
+	'''
+GsShadowFlameHexDoll.Desc:
+	'''
+	重铸：暗影焰触须把咒偶印钉进碰到的一切，被印之敌受这只娃娃的伤害更重
+	按住右键蓄力施下大咒：在光标处钉起咒偶烙印域，域内不断向来敌抽打暗影焰触须
+	'''
+GsLeafBlower.Desc:
+	'''
+	重铸：叶刃带着锋绿旋痕飞行
+	按住右键蓄力开启风暴模式：六秒内每一片叶刃都飞得更快、切得更深、旋得更急
+	'''
+GsMorphFangSerpentProj.DisplayName: 蛇吻毒蛇
+GsMorphFangAcidPoolProj.DisplayName: 剧毒酸池
+GsShadowFlameHexSigilProj.DisplayName: 咒偶烙印域

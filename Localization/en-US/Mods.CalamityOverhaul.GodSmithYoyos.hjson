@@ -2,6 +2,7 @@ GsWoodYoyo.Desc:
 	'''
 	Right click: anchor, the yoyo patrols in place at your cursor
 	Anchored hits on the same target build Heat, up to +40% damage
+	Every 4th anchored hit flings 2 spinning wood chips at 25% damage
 	'''
 GsRallyYoyo.Desc:
 	'''
@@ -22,11 +23,12 @@ GsAmazonYoyo.Desc:
 	'''
 	Right click: anchor patrol
 	Anchored hits inflict Poisoned; at full Heat the poison lasts twice as long
+	At full Heat the yoyo also sprouts a venom vine, lashing the nearest foe for 20% damage every 0.75s
 	'''
 GsCode1Yoyo.Desc:
 	'''
 	Right click: single tap to anchor, double tap to lash back through foes (2.2x speed, 135% damage)
-	The lash trail streams with data
+	A lash hit sets a Breakpoint on the target for 3s: anchored hits on it deal 30% more
 	'''
 GsValorYoyo.Desc:
 	'''
@@ -81,7 +83,7 @@ GsYeletsYoyo.Desc:
 GsRedsThrowYoyo.Desc:
 	'''
 	Right click: tap to anchor, double tap to lash, hold to orbit
-	Lash hits burst into red pixels
+	A lash hit loads 3 Red Flags into the target; while flags remain, anchored hits on it are guaranteed crits, one flag per hit
 	'''
 GsValkyrieYoyo.Desc:
 	'''
@@ -102,6 +104,7 @@ GsEyeOfCthulhuYoyo.Desc:
 GsTerrarianYoyo.Desc:
 	'''
 	Right click taps: chart up to 3 waypoints, the yoyo patrols the bezier route and its beam rate doubles while patrolling
+	Each completed lap rings a Patrol Resonance: for 1s beams fire faster and 30% harder
 	Double tap to lash, hold to orbit; click again when the route is full to clear it
 	'''
 GsYoyoPelletProj.DisplayName: Yoyo Pellet

@@ -87,21 +87,36 @@ namespace CalamityOverhaul.Content
             return TimeFreezeSystem.IsAnyGlobalFreezeActive;
         }
 
+        //世吞在场闩锁：有货时每帧核销，无货时每 4 帧补扫一次
+        private static bool eowAlive;
+
         public override void PostUpdateEverything() {
             ChekPrimeArm();
 
             HasBoss = BossRush;
-            if (!HasBoss) {
+            //原版旗在 NPC 循环后发布、本钩子前新鲜；旗不含 friendly 判定，
+            //为真时再按旧谓词确认一遍（仅战斗期，成本有界），空闲世界零扫描
+            if (!HasBoss && Main.CurrentFrameFlags.AnyActiveBossNPC) {
                 foreach (var n in Main.ActiveNPCs) {
                     if (n.boss && !n.friendly) {
                         HasBoss = true;
                         break;
                     }
-                    if (n.type == NPCID.EaterofWorldsHead) {//世吞无 boss 标签
-                        HasBoss = true;
-                        break;
+                }
+            }
+            if (!HasBoss) {
+                //世吞无 boss 标签、也不在原版危险集合里：单独补扫。
+                //闩锁着时每帧核销（死亡当帧感知），无货时降到每 4 帧一次
+                if (eowAlive || Main.GameUpdateCount % 4 == 0) {
+                    eowAlive = false;
+                    foreach (var n in Main.ActiveNPCs) {
+                        if (n.type == NPCID.EaterofWorldsHead) {
+                            eowAlive = true;
+                            break;
+                        }
                     }
                 }
+                HasBoss = eowAlive;
             }
         }
 

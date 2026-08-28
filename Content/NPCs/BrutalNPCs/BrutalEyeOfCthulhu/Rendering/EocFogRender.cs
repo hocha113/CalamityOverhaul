@@ -16,13 +16,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Rendering
 
         internal const int MaxBlobs = 10;
         private static readonly Vector4[] blobBuffer = new Vector4[MaxBlobs];
+        //上帧收到的雾团数：时停中雾团 AI 停摆（戳过期）靠"上帧有货"闩锁继续扫，遮蔽不塌
+        private static int lastBlobCount;
 
         public override void EndCaptureDraw(SpriteBatch sb, GraphicsDevice gd, RenderTarget2D screenSwap) {
             //谎言残影与屏效状态每帧推进，与本体是否在屏内无关
             EocRenderHelper.UpdateGhosts();
             EocScreenFX.Update();
 
-            int blobCount = GatherFogBlobs();
+            int blobCount = 0;
+            if (lastBlobCount > 0 || EocFogCloud.PresenceStamp.ActiveWithin()) {
+                blobCount = GatherFogBlobs();
+            }
+            lastBlobCount = blobCount;
 
             if (blobCount == 0 && !EocScreenFX.HasAny) {
                 return;

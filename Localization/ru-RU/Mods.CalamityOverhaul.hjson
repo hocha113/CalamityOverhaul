@@ -813,7 +813,8 @@ GodSmithGunsHard: {
 		/* Desc:
 			'''
 			Reforged: right click to switch choke
-			Wide Bore throws six pellets in a broad fan; Tight Choke fires three heavy pellets dead straight
+			Wide Bore throws six drooping pellets in a broad fan; landing 3 pellet hits in one blast bursts a rain of lead over the target
+			Tight Choke fires three heavy pellets dead straight; all three into one foe corrodes it, taking 12% more from this gun
 			Every trigger pull still costs one shell
 			''' */
 		// ModeWideBore: Wide Bore
@@ -836,7 +837,7 @@ GodSmithGunsHard: {
 			'''
 			Reforged: right click to switch stance
 			Tactical Fan paints the spread cone so you know exactly what the six pellets cover
-			Triple Pump racks three fast shells then forces a rest; each pump still costs one shell
+			Triple Pump racks three fast shells then forces a rest; the first pump slams a breaching shockwave, and breached foes take 10% more from your pellets for a second
 			''' */
 		// ModeFan: Tactical Fan
 		// ModeTriplePump: Triple Pump
@@ -847,7 +848,7 @@ GodSmithGunsHard: {
 			'''
 			Reforged: right click to switch grip
 			Akimbo sprays 30% faster with a loose pattern; Burst fires tight three round strings dead on target
-			High velocity rounds stay in both grips
+			Every 4th round (the burst finisher) is an amber tracer: tracer hits light the target up, and your Uzi rounds dig 10% deeper into lit targets
 			''' */
 		// ModeAkimbo: Akimbo
 		// ModeBurst: Burst
@@ -885,6 +886,10 @@ GodSmithGunsHard: {
 		// ModeCluster: Cluster Pop
 		// ModeVacuum: Vacuum Bubble
 	}
+
+	// GsShotgunLeadRainProj.DisplayName: Gs Shotgun Lead Rain Proj
+	// GsTacticalShotgunBreachProj.DisplayName: Gs Tactical Shotgun Breach Proj
+	// GsUziTracerProj.DisplayName: Gs Uzi Tracer Proj
 }
 
 GodSmithLaunchers: {
@@ -1030,67 +1035,6 @@ GodSmithSummonWhips: {
 	// GsMorningStar.Desc: Reforged: every on-beat swing slams a quake at the whip tip; 3 scars seal the mark, and the next on-beat hit calls a falling star mace down on the target's head
 	// GsSnapthorn.Desc: Reforged: on-beat lashes grow thorn scars on the prey; 4 scars seal the mark, and the next on-beat hit bursts it into a thorn explosion plus 4 homing venom barbs
 	// GsSpinalTap.Desc: Reforged: an on-beat sweep that tags 3 foes cracks a bone echo into everything it missed; 4 scars seal the mark, and the next on-beat hit erupts a bone spire from below
-}
-
-GodSmithVolleyBows: {
-	// GsAdamantiteRepeater.Desc: Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon at x1.5 knockback, one ammo per volley
-	/* GsChlorophyteShotbow.Desc:
-		'''
-		Reforged: every 6th shot triple-taps; volley charge looses a 6-arrow spore cone, one ammo per volley
-		Branded foes take +10% from this bow; execution bursts a spore cloud
-		''' */
-	/* GsCobaltRepeater.Desc:
-		'''
-		Reforged: every 6th bolt triple-taps; volley charge looses a 3-bolt line at +15% speed, one ammo per volley
-		Volley hits brand prey; branded foes draw pursuit bolts
-		''' */
-	/* GsHallowedRepeater.Desc:
-		'''
-		Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt cross, one ammo per volley
-		Executing a fully branded foe calls down a hallowed star
-		''' */
-	/* GsIceBow.Desc:
-		'''
-		Reforged: volley charge hurls 6 icicles skyward to rain on the cursor, one ammo per volley
-		Icicle hits stack frostbrand; at 3 stacks the next icicle shatters into a frost burst
-		''' */
-	/* GsMarrow.Desc:
-		'''
-		Reforged: volley charge looses a 5-bone-arrow cross with +1 pierce, one ammo per volley
-		Executing a fully branded foe cages it with 4 converging bone arrows
-		''' */
-	// GsMythrilRepeater.Desc: Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge with +8% crit, one ammo per volley
-	/* GsOrichalcumRepeater.Desc:
-		'''
-		Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge trailing petals, one ammo per volley
-		Volley hits burst into a small petal blast
-		''' */
-	/* GsPalladiumRepeater.Desc:
-		'''
-		Reforged: every 6th bolt triple-taps; volley charge looses a 3-bolt line, one ammo per volley
-		Branded foes slain restore 2 life
-		''' */
-	/* GsPearlwoodBow.Desc:
-		'''
-		Reforged: every 5 shots charge a 5-arrow pearlescent line volley, one ammo per volley
-		Right click releases the volley early at 60%+ charge
-		''' */
-	/* GsPulseBow.Desc:
-		'''
-		Reforged: each wall bounce now grants +10% damage (up to 5); volley charge looses 3 parallel pulse tracks, one ammo per volley
-		Branded foes bend passing pulses toward them; execution chains a surge to 2 nearby foes
-		''' */
-	/* GsShadowflameBow.Desc:
-		'''
-		Reforged: volley charge looses 3 shadowflame arrows crossing at the cursor, one ammo per volley
-		Branded foes struck by any arrow draw a homing shadowflame wisp; execution erupts in shadow
-		''' */
-	/* GsStakeLauncher.Desc:
-		'''
-		Reforged: every 6th stake triple-taps; volley charge looses a 3-stake wedge, one ammo per volley
-		Stakes pin and brand prey; the executing stake crucifies at x2.3, undead take a further +25%
-		''' */
-	// GsTitaniumRepeater.Desc: Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon with +4 armor penetration, one ammo per volley
 }
 
 /* GodSmithAcc.GodSmithSharkToothNecklace.EffectDesc:

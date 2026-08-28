@@ -403,6 +403,10 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
                 return;
             }
             armed = false;
+            //近两帧无持握弹幕盖戳（无人持枪）：跳过全弹幕表扫描
+            if (!TiroFinaleHeld.PresenceStamp.ActiveWithin()) {
+                return;
+            }
             foreach (Projectile proj in Main.projectile) {
                 if (!proj.active || proj.ModProjectile is not TiroFinaleHeld held) {
                     continue;

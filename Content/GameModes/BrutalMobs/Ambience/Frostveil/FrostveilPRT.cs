@@ -76,6 +76,75 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil
     }
 
     /// <summary>
+    /// 雪团块：Spray 真 alpha 撕裂剪影九宫取一，实心遮挡的雪块随风翻滚缓沉，
+    /// 亮度乘所在处环境光；风雪墙前缘翻卷与散幕余韵用
+    /// </summary>
+    internal class PRT_FrostveilClump : BasePRT
+    {
+        public override string Texture => CWRConstant.Masking + "Spray";
+        public override bool CanPool => true;
+        public override int InGame_World_MaxCount => 120;
+
+        private Color initialColor;
+        private int cell;
+        private float spin;
+        private float windX;
+
+        public PRT_FrostveilClump Configure(int lifetime, float wind) {
+            Lifetime = lifetime;
+            windX = wind;
+            initialColor = Color;
+            //生成帧不跑 AI：首帧包络为 0，防单帧闪现
+            Color = initialColor * 0f;
+            cell = Main.rand.Next(9);
+            spin = Main.rand.NextFloat(0.02f, 0.06f) * (Main.rand.NextBool() ? 1f : -1f);
+            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+            return this;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            initialColor = default;
+            cell = 0;
+            spin = 0f;
+            windX = 0f;
+        }
+
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
+            if (Lifetime <= 0) {
+                Lifetime = 36;
+            }
+            if (initialColor == default) {
+                initialColor = Color;
+            }
+        }
+
+        public override void AI() {
+            //横向缓慢向风速靠拢，翻过锋面后缓沉
+            Velocity.X = MathHelper.Lerp(Velocity.X, windX, 0.05f);
+            Velocity.Y = MathHelper.Lerp(Velocity.Y, 1.1f, 0.04f);
+            Rotation += spin * (0.6f + MathF.Abs(Velocity.X) * 0.08f);
+
+            float t = LifetimeCompletion;
+            float env = MathHelper.Clamp(t / 0.12f, 0f, 1f)
+                * MathHelper.Clamp((1f - t) / 0.30f, 0f, 1f);
+            //雪块是遮挡体：亮度乘所在处环境光（保 0.3 底）
+            Color light = Lighting.GetColor((int)(Position.X / 16f), (int)(Position.Y / 16f));
+            float lightK = 0.3f + 0.7f * ((light.R + light.G + light.B) / 765f);
+            Color = initialColor * (env * lightK);
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
+            Rectangle src = new(cell % 3 * 171, cell / 3 * 171, 170, 170);
+            spriteBatch.Draw(tex, Position - Main.screenPosition, src, Color,
+                Rotation, new Vector2(85f, 85f), Scale * 0.5f, SpriteEffects.None, 0f);
+            return false;
+        }
+    }
+
+    /// <summary>
     /// 呼气白雾：白毛风暴露度的第一层反馈。Fog 真 alpha 烟羽，
     /// 出口小而实，随即膨胀、随风飘散、快速透明化
     /// </summary>

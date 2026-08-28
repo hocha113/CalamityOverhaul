@@ -1,0 +1,215 @@
+GodSmithFeralClaws.EffectDesc:
+	'''
+	野性节奏：2.5 秒内持续命中近战叠加野性，每层近战速度+1%，至多 8 层
+	6 层起挥击迸出兽爪血火花；受击则节奏中断
+	'''
+GodSmithTitanGlove.EffectDesc:
+	'''
+	泰坦震击：每第 5 次近战命中在目标处轰出冲击波并重重击退
+	按该击伤害的 35%/45%/55%（泰坦/能量/机械手套）造成范围伤害
+	'''
+GodSmithFireGauntlet.EffectDesc:
+	'''
+	熔火震击：每第 5 次近战命中轰出灼热冲击波，造成该击伤害的 60%
+	爆震点燃敌人（狱火）
+	'''
+GodSmithBerserkerGlove.EffectDesc:
+	'''
+	狂战震击：每第 5 次近战命中引爆冲击波，造成该击伤害的 70%
+	每次震击令你狂暴 3 秒：近战速度+10%
+	'''
+GodSmithWarriorEmblem.EffectDesc:
+	'''
+	破阵战意：近战命中积攒战意，每层近战伤害+1.5%，至多 6 层，持续 4 秒
+	满层时挥击迸金红怒焰；受击掉落 3 层
+	'''
+GodSmithRangerEmblem.EffectDesc:
+	'''
+	远猎专注：自 25 格外命中的远程攻击给予 4 秒专注：远程伤害+8%
+	专注期间命中闪银白曳光
+	'''
+GodSmithSorcererEmblem.EffectDesc:
+	'''
+	秘能回涌：魔法命中返还 6 点法力，法力低于三成时返还 12 点
+	每 0.75 秒至多触发一次
+	'''
+GodSmithSummonerEmblem.EffectDesc:
+	'''
+	军团号令：仆从与鞭命中集结号令，每层召唤伤害+1.5%，至多 4 层，持续 6 秒
+	集结满编时自身荡开金色号令环
+	'''
+GodSmithAvengerEmblem.EffectDesc:
+	'''
+	复仇烙印：受击烙下复仇印，5 秒内全部伤害+8%
+	烙印触发时迸血金复仇焰
+	'''
+GodSmithDestroyerEmblem.EffectDesc:
+	'''
+	歼灭协议：命中生命低于两成的敌人时，向其追射一发歼灭脉冲
+	脉冲造成该击伤害的 50%，每 0.67 秒至多一发
+	'''
+GodSmithEyeoftheGolem.EffectDesc:
+	'''
+	巨像凝视：打出会心一击后锁定凝视 4 秒：会心率+6%
+	每 1.5 秒至多触发一次；凝视中的会心迸日耀火花
+	'''
+GodSmithMagicQuiver.EffectDesc:
+	'''
+	蓄光引弓：每第 7 次远程命中凝出一支幻光箭追咬目标
+	幻光箭造成该击伤害的 45%，可穿透
+	'''
+GodSmithMoltenQuiver.EffectDesc:
+	'''
+	熔芯引燃：远程命中点燃目标（狱火），每 0.75 秒至多一次
+	每次引燃令熔芯灼热 4 秒：远程穿甲+6
+	'''
+GodSmithStalkersQuiver.EffectDesc:
+	'''
+	潜猎帷影：4 秒不受伤即入帷影：远程伤害+8%
+	影中命中曳暮紫火花；受击破影
+	'''
+GodSmithNaturesGift.EffectDesc:
+	'''
+	自然馈赠：魔法命中绽出生命之花，回复 5 点生命与 5 点法力
+	每 1.5 秒至多触发一次
+	'''
+GodSmithManaFlower.EffectDesc:
+	'''
+	甘露应急：法力跌破两成时立即涌回 50 点法力，蓝白花瓣迸开
+	每 10 秒至多触发一次
+	'''
+GodSmithArcaneFlower.EffectDesc:
+	'''
+	秘术虹吸：魔法命中虹吸法力，每层魔法伤害+1%，至多 6 层，持续 5 秒
+	满层时施法消耗再降 5%
+	'''
+GodSmithMagnetFlower.EffectDesc:
+	'''
+	磁引闪络：魔法命中时向 19 格内另一敌人甩出磁光弧
+	弧光造成该击伤害的 35%，每 0.75 秒至多一次
+	'''
+GodSmithManaCloak.EffectDesc:
+	'''
+	织法星屑：魔法命中织出法力星屑绕身，至多蓄 3 枚
+	受击时星屑尽数掷出，追踪敌人，每枚造成 60 点伤害
+	'''
+GodSmithRifleScope.EffectDesc:
+	'''
+	稳像狙击：原地站稳 1.25 秒蓄满稳像，下一次远程命中放出贯穿曳光
+	曳光按该击的 45%/60%/75%（步枪镜/狙击镜/侦察镜）结算，穿透 2/3/4 个敌人
+	高速移动会流失稳像
+	'''
+GodSmithPygmyNecklace.EffectDesc:
+	'''
+	侏儒战舞：仆从命中延续战舞，每层召唤伤害+1.2%，至多 5 层，持续 6 秒
+	满拍时仆从的攻击撒出图腾彩羽
+	'''
+GodSmithNecromanticScroll.EffectDesc:
+	'''
+	亡灵收魂：仆从击杀敌人时，尸骸处升起缚魂魂焰追咬最近之敌
+	魂焰造成致命一击伤害的 40%，每 1.5 秒至多一次
+	'''
+GodSmithPapyrusScarab.EffectDesc:
+	'''
+	点金圣甲：仆从命中为目标镀上点金债（掉落更多钱币），每秒至多一次
+	场上有镀金敌人时，仆从伤害+5%
+	'''
+GodSmithHerculesBeetle.EffectDesc:
+	'''
+	猛冲角力：仆从命中积攒角力，蓄满 8 层后下一次仆从命中
+	放出赫拉克勒斯冲角犁穿战线，造成该击伤害的 90%并重重击退
+	'''
+GodSmithShackle.EffectDesc:
+	'''
+	役魂铁镣：受击后铁镣定身 4 秒：免疫击退且防御+4
+	每 5 秒至多触发一次
+	'''
+GodSmithCobaltShield.EffectDesc:
+	'''
+	坚壁回振：受击时盾面回振，获得 3 秒护甲：+6/+8/+10 防御（钴/黑曜石/十字章）
+	黑曜石回振点燃近身敌人；十字章回振另净化至多 2 个减益
+	每 4 秒至多触发一次
+	'''
+GodSmithPaladinsShield.EffectDesc:
+	'''
+	圣裁回掷：受击时向最近的敌人掷出审判之锤
+	锤造成所受伤害的 150%，穿透 3 个敌人，每 5 秒至多一次
+	替队友分担的伤害同样计数
+	'''
+GodSmithHeroShield.EffectDesc:
+	'''
+	英雄血契：受击立契 5 秒：防御+8，期间近战命中吸取 1 点生命
+	每 4 秒至多触发一次
+	'''
+GodSmithFrozenShield.EffectDesc:
+	'''
+	寒晶护死：致死一击会被冻进寒晶：以 25% 最大生命存活
+	近身敌人挂上霜火，自身获得短暂无敌
+	每 90 秒至多一次
+	'''
+GodSmithStarCloak.EffectDesc:
+	'''
+	星怒延落：受击时在原版坠星之外再唤落 2 颗神匠星
+	每颗造成 40 点伤害并划出金迹，每 2 秒至多一次
+	'''
+GodSmithBeeCloak.EffectDesc:
+	'''
+	蜂群守卫：受击惊起 3 只护主蜂，并渡你 5 秒蜂蜜疗愈
+	每 3 秒至多触发一次
+	'''
+GodSmithCrossNecklace.EffectDesc:
+	'''
+	殉道恢复：受击后开启 3 秒恢复窗：每秒回复 3 点生命
+	窗口期间免疫击退
+	'''
+GodSmithStarVeil.EffectDesc:
+	'''
+	星幕：受击垂下 2.5 秒星光帷幕：期间再受的伤害降低 30%
+	每 5 秒至多触发一次
+	'''
+GodSmithMoonCharm.EffectDesc:
+	'''
+	狼嚎月狩：夜间近战撕咬自猎物身上吸取 2 点生命，每 0.5 秒至多一次
+	每口撕咬闪月银光
+	'''
+GodSmithMoonStone.EffectDesc:
+	'''
+	月相守御：夜间受击时垂落月纱 4 秒：防御+8
+	每 4 秒至多触发一次
+	'''
+GodSmithNeptunesShell.EffectDesc:
+	'''
+	深海潮涌：入水掀起 5 秒潮甲：防御+6，每 5 秒至多一次
+	湿身时命中溅起潮沫
+	'''
+GodSmithCelestialStone.EffectDesc:
+	'''
+	昼夜双相：白昼命中点燃敌人（狱火），黑夜命中挂上霜火
+	每 2 秒至多一次，迸日金或月霜火花
+	'''
+GodSmithCelestialShell.EffectDesc:
+	'''
+	万相天体：白昼命中点燃、黑夜命中霜灼，每 1.5 秒至多一次
+	入水另掀 5 秒潮甲：防御+8，每 5 秒至多一次
+	'''
+GodSmithCharmofMyths.EffectDesc:
+	'''
+	药力回环：饮下治疗药水后余韵延续 8 秒：每秒再回复 2 点生命
+	回环期间翠光绕身
+	'''
+GodSmithWormScarf.EffectDesc:
+	'''
+	共生甲壳：每次受击生长一片甲鳞，每片受到的伤害降低 4%，至多 3 片，持续 8 秒
+	被逼得越狠，围巾缠得越紧
+	'''
+GodSmithBrainOfConfusion.EffectDesc:
+	'''
+	神经错乱波：受击炸开心灵冲击波，近旁敌人混乱 3 秒
+	自身神经过载 3 秒：全部伤害+8%；每 4 秒至多一次
+	'''
+GodSmithShieldofCthulhu.EffectDesc:
+	'''
+	瞳溃冲撞：冲刺撞上敌人时，自撞点炸开猩红瞳震
+	瞳震造成 25 点伤害并重重击退，每 1.5 秒至多一次
+	冲刺期间拖曳猩红凝视残影
+	'''

@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Cindercrag.Proj
     /// 「崖口喷焰」：崖壁裂口周期喷吐的硫火舌。ai[0]=喷向弧度 ai[1]=喷长px ai[2]=裂口面(0右1左2上3下)。
     /// 生成帧锁死喷口与喷向（预告即承诺）：裂口蓄压 56 帧（红光渐盛+汽笛式嘶鸣，双通道预告）
     /// → 喷焰 38 帧（仅此窗口有判定，触碰微量伤害+短暂着火）→ 裂口冷却暗淡 20 帧。
-    /// 喷长在生成时按净空钳过，火舌不穿岩；源头在崖壁裂口，与岩浆池液面熔泡严格分野
+    /// 喷长在生成时按净空钳过，火舌不穿岩；源头在崖壁裂口，与岩浆池液面熔泡严格分野。
+    /// 可见体=Extra_98 真 alpha 焦烟暗衬底（承遮挡与轮廓）+TearFlame 加色焰层敷其上（暗体+热边，同烬羽层序）
     /// </summary>
     internal class CindercragVentProj : ModProjectile
     {
@@ -21,6 +22,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Cindercrag.Proj
 
         [VaultLoaden(CWRConstant.Masking + "TearFlame01")]
         private static Asset<Texture2D> FlameTex = null;
+
+        /// <summary>真 alpha 梭形，暗衬底专用（TearFlame/SoftGlow 是黑底贴图画不出暗体）</summary>
+        [VaultLoaden(CWRConstant.Masking + "Extra_98")]
+        private static Asset<Texture2D> SootTex = null;
 
         /// <summary>喷长上限（短程火舌）</summary>
         internal const float JetMaxLen = 210f;
@@ -44,6 +49,14 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Cindercrag.Proj
         private static readonly Color FlameCore = new(255, 190, 90);
         /// <summary>焰外缘焦暗红</summary>
         private static readonly Color FlameOuter = new(150, 36, 20);
+        /// <summary>舌身焦烟暗衬（带 A 承担轮廓与遮挡，同烬羽暗体一族）</summary>
+        private static readonly Color SootBody = new(46, 20, 14);
+        /// <summary>翻卷缘片暗赭</summary>
+        private static readonly Color SootOchre = new(76, 32, 18);
+        /// <summary>裂口暗岩缘</summary>
+        private static readonly Color RockRim = new(38, 20, 16);
+        /// <summary>Extra_98 可见域占画布比（VFX.md 实测 ext≈0.65，可见像素换算用）</summary>
+        private const float SootVisFrac = 0.65f;
 
         private float JetDir => Projectile.ai[0];
         private float JetLen => Projectile.ai[1];
@@ -170,6 +183,13 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Cindercrag.Proj
                     PRTLoader.NewParticle<PRT_CindercragFeather>(Projectile.Center + dir * reach,
                         dir * 1.4f - Vector2.UnitY * 0.5f, default, Main.rand.NextFloat(0.55f, 0.85f));
                 }
+                //舌尖飞溅熔星：熔渣星点带重力甩出坠回崖底，火有去处
+                if (Main.rand.NextBool(2)) {
+                    Dust.NewDustPerfect(Projectile.Center + dir * reach, DustID.Lava,
+                        dir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(2.5f, 6.5f)
+                        - Vector2.UnitY * Main.rand.NextFloat(0.3f, 1.1f),
+                        0, default, Main.rand.NextFloat(0.9f, 1.4f));
+                }
             }
             else if (Main.rand.NextBool(2)) {
                 //冷却期：裂口余烟
@@ -224,6 +244,14 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Cindercrag.Proj
                 float pulse = 0.66f + 0.34f * MathF.Sin(elapsed * (0.18f + 0.5f * progress) + Projectile.identity);
                 float heat = (0.25f + 0.75f * progress * progress) * pulse;
 
+                Texture2D rimTex = SootTex?.Value;
+                if (rimTex != null) {
+                    //暗岩缘：真 alpha 暗层沿崖面切向勾出裂口剪影，岩缘稳定不随光脉动；预热光保留加色在内
+                    float rimGrow = 0.9f + 0.1f * progress;
+                    DrawSlit(rimTex, mouthPos, rimTex.Size() * 0.5f, slitRot + MathHelper.PiOver2,
+                        RockRim * (0.55f + 0.25f * progress), new Vector2(0.85f, 2.15f) * rimGrow);
+                }
+
                 Color deep = CrackDeep with { A = 0 };
                 Color core = FlameMid with { A = 0 };
                 DrawSlit(glow, mouthPos, glowOrigin, slitRot, deep * (0.4f * heat), new Vector2(1.7f, 0.6f));
@@ -241,7 +269,47 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Cindercrag.Proj
                 return false;
             }
 
-            //裂口口部辉光（喷焰期最亮，冷却期暗淡）
+            float tongueRot = JetDir + MathHelper.PiOver2;
+            Texture2D soot = SootTex?.Value;
+            if (soot != null) {
+                Vector2 sootOrigin = soot.Size() * 0.5f;
+                float visW = soot.Width * SootVisFrac;
+                float visH = soot.Height * SootVisFrac;
+                //暗岩唇：点火拍裂口撑开一圈，冷却尾段随余焰缓熄（岩缘比焰体熄得慢）
+                float rimFade = MathHelper.Clamp(fade * 2f, 0f, 1f);
+                DrawSlit(soot, mouthPos, sootOrigin, slitRot + MathHelper.PiOver2,
+                    RockRim * ((0.62f + 0.18f * fade) * rimFade), new Vector2(1f, 2.45f));
+
+                //焦烟暗衬底：真 alpha 舌身剪影先落，加色焰层敷其上（暗体+热边，同烬羽层序）；
+                //剪影略宽略长于外焰，在亮红崖背景上兜出可辨轮廓，随喷发相位伸缩
+                float sootFade = 0.45f + 0.55f * fade;
+                float bodyLen = reachVis * 1.06f;
+                Main.EntitySpriteDraw(soot, mouthPos + dir * (bodyLen * 0.5f), null,
+                    SootBody * (0.32f * sootFade), tongueRot, sootOrigin,
+                    new Vector2(84f / visW, bodyLen * 1.12f / visH), SpriteEffects.None, 0);
+                float bodyJit = 0.95f + 0.05f * MathF.Sin((elapsed * 1.1f + Projectile.identity) * 1.3f);
+                Main.EntitySpriteDraw(soot, mouthPos + dir * (bodyLen * bodyJit * 0.5f), null,
+                    SootBody * (0.8f * sootFade), tongueRot, sootOrigin,
+                    new Vector2(62f / visW, bodyLen * bodyJit / visH), SpriteEffects.None, 0);
+
+                //缘片翻卷：暗赭缘鳞沿舌身错相摆动，撕开平滑轮廓
+                Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
+                ReadOnlySpan<float> curlFrac = [0.3f, 0.56f, 0.82f];
+                for (int i = 0; i < 3; i++) {
+                    float side = i % 2 == 0 ? 1f : -1f;
+                    float wob = MathF.Sin(elapsed * 0.33f + i * 2.1f + Projectile.identity * 0.7f);
+                    Vector2 curlPos = mouthPos + dir * (reachVis * curlFrac[i]) + perp * (side * (10f + 4f * wob));
+                    Main.EntitySpriteDraw(soot, curlPos, null, SootOchre * (0.5f * sootFade),
+                        tongueRot + side * (0.5f + 0.28f * wob), sootOrigin,
+                        new Vector2(0.5f, reachVis * (0.34f - 0.06f * i) / visH), SpriteEffects.None, 0);
+                }
+                //舌尖烟帽：焰尖过渡成烟，端头不平滑收口，兜住焰层抖动越界的舌尖
+                Main.EntitySpriteDraw(soot, mouthPos + dir * (reachVis * 0.98f), null,
+                    SootBody * (0.5f * sootFade), tongueRot + 0.35f * MathF.Sin(elapsed * 0.5f + Projectile.identity),
+                    sootOrigin, new Vector2(0.9f, reachVis * 0.3f / visH), SpriteEffects.None, 0);
+            }
+
+            //裂口口部辉光（喷焰期最亮，冷却期暗淡；加色在暗岩唇与舌根剪影之上）
             Color mouthDeep = CrackDeep with { A = 0 };
             DrawSlit(glow, mouthPos, glowOrigin, slitRot, mouthDeep * (0.5f * fade), new Vector2(1.9f, 0.7f));
             DrawSlit(glow, mouthPos, glowOrigin, slitRot, (FlameCore with { A = 0 }) * (0.35f * fade), new Vector2(0.8f, 0.3f));
@@ -250,9 +318,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Cindercrag.Proj
             if (flame == null) {
                 return false;
             }
-            //火舌：根锚喷口向外舔，三层异宽异长，逐帧高频抖动是火的时域签名；
+            //火舌加色焰层：根锚喷口向外舔，三层异宽异长，逐帧高频抖动是火的时域签名；
             //贴图自带噪声撕裂端头，外缘焦暗→焰体红橙→窄焰芯暖金
-            float tongueRot = JetDir + MathHelper.PiOver2;
             var flameOrigin = new Vector2(flame.Width * 0.5f, flame.Height);
             //外层全宽 ~46px，判定半宽 15px 藏在可见焰体之内（判定不宽于可见）
             const float OuterWidthPx = 46f;

@@ -56,9 +56,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
             AddMapEntry(new Color(58, 96, 118), VaultUtils.GetLocalizedItemName<FluidTank>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.Origin = new Point16(1, 1);
+            TileObjectData.newTile.Width = 4;
+            TileObjectData.newTile.Height = 4;
+            TileObjectData.newTile.Origin = new Point16(2, 3);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateHeights = [16, 18];
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 20];
             TileObjectData.newTile.LavaDeath = false;
 
             TileObjectData.addTile(Type);
@@ -103,8 +105,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
         private float displayRatio;
         private bool ratioInited;
         //观察窗像素矩形(相对物块左上角),对齐罐体贴图玻璃窗
-        internal virtual Vector2 ChamberMin => new(9f, 5f);
-        internal virtual Vector2 ChamberMax => new(22f, 18f);
+        internal virtual Vector2 ChamberMin => new(18f, 10f);
+        internal virtual Vector2 ChamberMax => new(44f, 36f);
 
         //充放活跃度 0..1(液面涌动与亮线增强),动画时钟(待机冻结)
         private float activityVis;

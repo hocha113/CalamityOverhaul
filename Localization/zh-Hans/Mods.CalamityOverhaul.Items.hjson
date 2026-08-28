@@ -332,25 +332,25 @@ KikasaItem: {
 
 KikasaTalismanLin: {
 	DisplayName: 细雨符
-	Tooltip: 墨雨节拍加快，单滴略轻
+	Tooltip: 墨雨节拍加快，连雨不断愈下愈密；单滴略轻
 	Origin: 老符师说：求雨不必惊动龙王，一张细雨符足矣。雨点小些不打紧，要紧的是下个不停
-	Power: 「细雨」墨雨节拍加快 20%，雨点前赴后继
+	Power: 「细雨」墨雨节拍加快 20%，雨点前赴后继；连雨不断约十秒蓄成「霖」：伞下垂落雨丝帘，雨拍再加快 10%；停手雨势渐散，收伞立折一半
 	Burden: 单滴伤害 -6%
 }
 
 KikasaTalismanLao: {
 	DisplayName: 墨洼符
-	Tooltip: 墨滴落地必积墨洼，墨洼更大更久；直击略轻
+	Tooltip: 墨滴落地必积墨洼，墨洼吃雨涨水位、满则漫溢；直击略轻
 	Origin: 符师嫌雨落完就干，白瞎了一场墨，便画了这张符把雨留在地上。多淹一刻是一刻
-	Power: 「积洼」墨滴落地必积成墨洼（不必等湖倾档）；墨洼持续 +50%、范围 +30%
+	Power: 「积洼」墨滴落地必积成墨洼（不必等湖倾档），墨洼持续 +50%、范围 +30%；墨滴汇入已有墨洼令水位上涨，第三注满潦漫溢：洼面阔一步，并向两侧拍出溢流波（各 50% 洼伤）
 	Burden: 墨滴直击伤害 -5%
 }
 
 KikasaTalismanPei: {
 	DisplayName: 倾盆符
-	Tooltip: 倒撑蓄墨更快，墨泉更猛；常雨略缓
+	Tooltip: 倒撑蓄墨更快，盆满则倾、开泼如开闸；常雨略缓
 	Origin: 求雨最忌不痛不痒。这张符只应一件事：要下，就下个倾盆
-	Power: 「倾盆」倒撑蓄墨速率 +35%，墨泉伤害 +20%
+	Power: 「倾盆」倒撑蓄墨速率 +35%，墨泉伤害 +20%；蓄满时碗沿溢珠低鸣，此刻开泼即为开闸：瀑源炸开一记冲击（80% 瀑伤），墨瀑更宽
 	Burden: 墨雨节拍放缓 8%
 }
 
@@ -4992,4 +4992,23 @@ NinjaCthulsparkBoots: {
 		冲刺固定为克苏鲁巨眼的撞击冲刺
 		"巨眼系上头巾，发誓再也不眨眼"
 		'''
+}
+
+SeaShrimpSummonItem: {
+	DisplayName: 晶化虾饵
+	Tooltip:
+		'''
+		在海洋使用，召唤渊晶海虾
+		"沉下去的饵不会回来，回来的是别的东西"
+		'''
+}
+
+SeaShrimpTreasureBag: {
+	DisplayName: 宝藏袋（渊晶海虾）
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+SeaShrimpTestItem: {
+	DisplayName: 海虾观察笼
+	Tooltip: 开发测试用：任意位置召唤渊晶海虾
 }

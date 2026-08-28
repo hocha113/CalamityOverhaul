@@ -107,27 +107,27 @@ namespace CalamityOverhaul.Content.Industrials.Generator.SolarPanels
             Texture2D px = VaultAsset.placeholder2.Value;
             Vector2 origin = PosInWorld - Main.screenPosition;
             float env = EnvFactor;
-            //受光斜面:贴图 art 底对齐,顶起于物块区底上方 18px
-            Rectangle face = new((int)origin.X + 2, (int)origin.Y + Height - 18, Width - 4, 14);
+            //受光斜面:贴图 art 底对齐(顶部留 8px 空),面板斜面取 art 上部 28px
+            Rectangle face = new((int)origin.X + 8, (int)origin.Y + Height - 38, Width - 16, 28);
 
             bool glintOn = env > 0.01f && Main.dayTime && skyExposed;
             if (glintOn) {
                 //太阳角驱动的高光带中心:清晨在东缘,正午居中,黄昏在西缘
                 float dayProg = (float)(Main.time / Main.dayLength);
-                float bandX = MathHelper.Lerp(face.Left + 5, face.Right - 5, dayProg);
-                float slant = MathHelper.Lerp(2.6f, -2.6f, dayProg);
+                float bandX = MathHelper.Lerp(face.Left + 10, face.Right - 10, dayProg);
+                float slant = MathHelper.Lerp(5.2f, -5.2f, dayProg);
                 Color glint = GlintColor with { A = 0 };
                 for (int seg = 0; seg < 3; seg++) {
-                    int segY = face.Y + 1 + seg * 4;
+                    int segY = face.Y + 2 + seg * 8;
                     //钳进面板内,晨昏两端掠光不越出边框
-                    int segX = Math.Clamp((int)(bandX + slant * (seg - 1)), face.Left + 4, face.Right - 5);
-                    spriteBatch.Draw(px, new Rectangle(segX - 1, segY, 3, 4), glint * (env * 0.6f));
-                    spriteBatch.Draw(px, new Rectangle(segX - 4, segY, 2, 4), glint * (env * 0.25f));
-                    spriteBatch.Draw(px, new Rectangle(segX + 3, segY, 2, 4), glint * (env * 0.25f));
+                    int segX = Math.Clamp((int)(bandX + slant * (seg - 1)), face.Left + 8, face.Right - 10);
+                    spriteBatch.Draw(px, new Rectangle(segX - 2, segY, 6, 8), glint * (env * 0.6f));
+                    spriteBatch.Draw(px, new Rectangle(segX - 8, segY, 4, 8), glint * (env * 0.25f));
+                    spriteBatch.Draw(px, new Rectangle(segX + 6, segY, 4, 8), glint * (env * 0.25f));
                 }
                 //正午满功率:顶缘压一道日光线
                 if (env > 0.8f) {
-                    spriteBatch.Draw(px, new Rectangle(face.X + 2, face.Y - 1, face.Width - 4, 1),
+                    spriteBatch.Draw(px, new Rectangle(face.X + 4, face.Y - 2, face.Width - 8, 2),
                         new Color(255, 240, 190, 0) * ((env - 0.8f) / 0.2f * 0.8f));
                 }
             }
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.SolarPanels
             //遮挡警示灯:头顶被封死时红灯慢闪,阻塞状态一眼可读
             if (!skyExposed) {
                 float blink = MathF.Sin(Main.GlobalTimeWrappedHourly * 4.4f) > 0f ? 1f : 0.25f;
-                Rectangle lamp = new(face.Right - 5, face.Y + 2, 2, 2);
+                Rectangle lamp = new(face.Right - 10, face.Y + 4, 4, 4);
                 spriteBatch.Draw(px, lamp, new Color(220, 40, 40) * blink);
                 spriteBatch.Draw(px, lamp, new Color(255, 90, 90, 0) * (blink * 0.6f));
             }
@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.SolarPanels
 
         /// <summary>失效哑光的瓦片绘制:夜/日食/遮挡时机身减半暗化,全系状态语言</summary>
         internal static bool DrawDimmablePanelTile(int i, int j, SpriteBatch spriteBatch, BaseSolarPanelTP tp, int tileType) {
-            MachineTileDraw.DrawCell(i, j, spriteBatch, tileType, 2, tp.EnvFactor <= 0.01f);
+            MachineTileDraw.DrawCell(i, j, spriteBatch, tileType, 3, 16, tp.EnvFactor <= 0.01f);
             return false;
         }
 
@@ -205,10 +205,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator.SolarPanels
             AddMapEntry(new Color(58, 112, 205), VaultUtils.GetLocalizedItemName<SolarPanel>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.Width = 3;
-            TileObjectData.newTile.Height = 2;
-            TileObjectData.newTile.Origin = new Point16(1, 1);
-            TileObjectData.newTile.CoordinateHeights = [16, 18];
+            TileObjectData.newTile.Width = 5;
+            TileObjectData.newTile.Height = 3;
+            TileObjectData.newTile.Origin = new Point16(2, 2);
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16];
             TileObjectData.newTile.AnchorBottom = new AnchorData(
                 AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide,
                 TileObjectData.newTile.Width, 0);

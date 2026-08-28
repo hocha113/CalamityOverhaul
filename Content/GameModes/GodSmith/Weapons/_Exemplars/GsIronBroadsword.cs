@@ -70,6 +70,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons._Exemplars
 
         public override void GsModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
             => damage *= 1.10f;//弱势前期武器，重铸补一成底伤，综合 DPS 落在原版 105%~115%
+
+        /// <summary>
+        /// 压掉原版挥舞的物理尾巴：held 每帧强撑 itemAnimation&gt;0 而铁宽剑 noMelee=false（SetDefaults 密封禁改），
+        /// 不压则 Player.ItemCheck 的隐形挥舞碰撞箱在 owner 端逐帧结算，与 held 扫击双吃。
+        /// noHitbox=true 令 GetMeleeHitbox 置 dontAttack，整段近战尾巴跳过。近战接管范式必带此压制
+        /// </summary>
+        public override void GsUseItemHitbox(Item item, Player player, ref Rectangle hitbox, ref bool noHitbox)
+            => noHitbox = true;
     }
 
     /// <summary>

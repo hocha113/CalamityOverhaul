@@ -91,6 +91,74 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Prismglade
     }
 
     /// <summary>
+    /// 虹尘暗芯微晶：空气里真正的晶屑颗粒。真 alpha 暗体承担轮廓与遮挡，彩虹缘光加色敷其上
+    /// （层序对标烬羽 PRT 的暗体+热边），缓沉+自旋+后段渐融。
+    /// 氛围层少量掺入压住全加法虹尘的发虚；「棱光审判」余韵的碎晶残留同用
+    /// </summary>
+    internal class PRT_PrismgladeChip : BasePRT
+    {
+        public override string Texture => CWRConstant.Masking + "Extra_98";
+        public override bool CanPool => true;
+
+        /// <summary>晶屑暗体（带 A，承担轮廓与遮挡）</summary>
+        private static readonly Color BodyDark = new(56, 44, 84);
+
+        /// <summary>缘光色相，随寿命缓慢流转</summary>
+        public float hue;
+        private float spin;
+        private float spinSpeed;
+
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
+            if (Lifetime <= 0) {
+                Lifetime = Main.rand.Next(90, 150);
+            }
+            hue = Main.rand.NextFloat();
+            spin = Main.rand.NextFloat(MathHelper.TwoPi);
+            spinSpeed = Main.rand.NextFloat(-0.045f, 0.045f);
+            Opacity = 0f;
+        }
+
+        public override void AI() {
+            float t = LifetimeCompletion;
+            Opacity = Math.Min(t / 0.14f, 1f) * MathHelper.Clamp((1f - t) / 0.3f, 0f, 1f);
+            spin += spinSpeed;
+            //微晶有分量：阻尼后缓沉，与上飘的光尘形成密度对比
+            Velocity *= 0.975f;
+            Velocity += new Vector2(0f, 0.008f);
+            hue += 0.0012f;
+            if (t > 0.6f) {
+                Scale *= 0.992f;//渐融：后段体积收缩
+            }
+        }
+
+        public override void Reset() {
+            base.Reset();
+            hue = 0f;
+            spin = 0f;
+            spinSpeed = 0f;
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            if (Opacity <= 0.004f) {
+                return false;
+            }
+            Texture2D tex = TexValue;
+            Vector2 pos = Position - Main.screenPosition;
+            Vector2 orig = tex.Size() * 0.5f;
+            var bodyScale = new Vector2(0.28f, 0.6f) * Scale;
+            //暗体梭形：真 alpha 遮挡，读作实体微晶
+            spriteBatch.Draw(tex, pos, null, BodyDark * (0.8f * Opacity),
+                spin, orig, bodyScale, SpriteEffects.None, 0f);
+            //彩虹缘光：A=0 加色敷在暗体上
+            Color rim = PrismgladeFX.Prism(hue, 0.8f, 0.6f) with { A = 0 };
+            spriteBatch.Draw(tex, pos, null, rim * (0.55f * Opacity),
+                spin, orig, bodyScale * 0.72f, SpriteEffects.None, 0f);
+            return false;
+        }
+    }
+
+    /// <summary>
     /// 妖精光球：夜间多彩光点绕圈缓飞。每只自带椭圆轨道与漂移的轨道心，
     /// 翅频用缩放脉动表达，炽芯+四芒星闪防"裸光球"
     /// </summary>

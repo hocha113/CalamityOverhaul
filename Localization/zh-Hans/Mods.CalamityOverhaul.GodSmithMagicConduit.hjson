@@ -1,0 +1,53 @@
+GsLastPrism.Desc:
+	'''
+	重铸：热量即聚焦，六股彩束引导中逐渐收拢，白热时合为一根白炽主束
+	白热主束的落点会折射出棱光碎束；计量顶格也不断束，只是蓝耗激增
+	引导中点击右键，主束炸解成七瓣棱光扇，威力随热量走，耗尽热量重新聚焦
+	'''
+GsLastPrismHeldProj.DisplayName: 最后棱镜聚束
+GsLastPrismBurstProj.DisplayName: 棱光崩解
+GsLastPrismShardProj.DisplayName: 棱光碎束
+GsMagicalHarp.Desc:
+	'''
+	重铸：不间断的连奏积攒声势，奏至最强音时音符涨大、疾行、如雨倾泻
+	右键把全部声势收束成一记轰鸣的和弦冲击波；短促的连续命中还会回响追伤
+	'''
+GsBubbleGun.Desc:
+	'''
+	重铸：不停喷吐积攒泡压，沸腾时泡弹涨大、命中迸裂成双珠
+	计量顶格枪管会被泡沫堵爆，锁上片刻
+	右键把泡压尽数泄成七枚错速大泡的扇面，依次连环炸开
+	'''
+GsLaserMachinegun.Desc:
+	'''
+	重铸：热量即转速，冷枪迟滞、白热咆哮，白热下每第六发骑上一道贯穿的绯红重束
+	顶着红线维持不会炸膛，只会加倍蓝耗
+	右键把整轮弹巢泄成横扫的三十连扇面
+	'''
+GsRazorbladeTyphoon.Desc:
+	'''
+	重铸：每次施放蓄积风暴势能；白热出生的风刃永不迷航，飞远了会折返身侧再度出猎
+	右键在光标处睁开台风眼：空中的风刃全部卷入涡心合猎，涡眼闭合时轰然环爆
+	'''
+GsMagnetSphere.Desc:
+	'''
+	重铸：持杖时你与磁球之间架起馈磁链，链通则磁通不断攀升
+	磁通满格磁球过充，向近处的一切泼洒重弧
+	右键以磁球为心引爆磁暴，把小型敌人拽向暴心
+	'''
+GsShadowbeamStaff.Desc:
+	'''
+	重铸：按住维持一道沿墙折射的暗影束，白热多折一段、束身更粗
+	右键沿光束的每一处折点连环炸开影爆
+	'''
+GsChargedBlasterCannon.Desc:
+	'''
+	重铸：按住引导充能，低温吐电浆弹，白热改放聚能弧束脉冲
+	充能永不止步：计量顶格时炮身自行轰出湮灭炮，一颗向近敌舔弧的巨型电浆球
+	右键提前止盈，放出威力打折的聚能弹
+	'''
+GsLaserMachinegunLanceProj.DisplayName: 穿透红束
+GsShadowbeamStaffHeldProj.DisplayName: 折线影束
+GsChargedBlasterCannonHeldProj.DisplayName: 湮灭充能
+GsChargedBlasterCannonOrbProj.DisplayName: 湮灭炮
+GsMagicalHarpNovaProj.DisplayName: 和弦冲击波

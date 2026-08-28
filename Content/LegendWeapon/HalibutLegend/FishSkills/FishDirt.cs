@@ -37,7 +37,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Active(player)) {
                 spawnTimer++;
 
-                int currentCount = player.CountProjectilesOfID<DirtFishFollower>();
+                //玩家更新阶段 ownedProjectileCounts 是上一拍完整快照，O(1) 代替全表扫描
+                //（生成间隔 20 帧，一拍旧不会导致超编）
+                int currentCount = player.ownedProjectileCounts[ModContent.ProjectileType<DirtFishFollower>()];
                 int maxCount = MaxDirtFish + HalibutData.GetDomainLayer() * FishPerDomainLayer;
 
                 if (spawnTimer >= SpawnInterval && currentCount < maxCount && player.velocity.LengthSquared() > 1f) {

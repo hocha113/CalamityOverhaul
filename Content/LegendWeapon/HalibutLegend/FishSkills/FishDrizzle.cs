@@ -138,7 +138,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
-            return !HasActiveDrizzle(player);
+            //每帧路径用 O(1) 快照；Shoot 事件路径保留 HasActiveDrizzle 的实时全表扫描防同拍重触发
+            return player.ownedProjectileCounts[ModContent.ProjectileType<DrizzleFishHolder>()] == 0;
         }
 
         private static bool HasActiveDrizzle(Player player) {

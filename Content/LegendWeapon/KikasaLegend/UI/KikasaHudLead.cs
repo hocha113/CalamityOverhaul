@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
     /// 鬼伞七步引导：首次持伞后串起 开域 → 沉溺 → 湖心景 → 转盘号令 → 鬼雨异化 → 雨中重启 → 鬼梦。
     /// 卡片底板走 KikasaScene.fx 的 TechCard 湿纸技法（入口已迁 KikasaPanoramaRenderer）。
     /// 防呆四件：检查点续讲（存 <see cref="KikasaGuideData.StepCheckpoint"/>，中断不从头来）、
-    /// 场面失守退步（湖收了退回开域，翻回血湖退回异化）、死路与条件读数（键未绑定/册空/水未满/重启回卷）、
+    /// 场面失守退步（依湖的步湖收了退回开域；重启随时可按不退步）、死路与条件读数（键未绑定/册空/水未满/重启回卷）、
     /// 帮做分流（世界步卡住出「替我演示」，湖心景常驻「帮我打开」，沉溺动玩家物品不代做）。
     /// 收起写 <see cref="KikasaGuideData.Declined"/>，湖心景页脚「?」经 <see cref="RestartFromHelp"/> 重开。
     /// 经 <see cref="GuideLeadQueue"/> 排队，晚于比目鱼(10)、早于义体(15)
@@ -119,11 +119,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             RainPrompt = this.GetLocalization(nameof(RainPrompt),
                 () => "At full water, tap {0} to flip the lake");
 
-            RestartTitle = this.GetLocalization(nameof(RestartTitle), () => "Rewind in the Rain");
+            RestartTitle = this.GetLocalization(nameof(RestartTitle), () => "Wide Restart");
             RestartBody = this.GetLocalization(nameof(RestartBody),
-                () => "Ghost rain remembers. One press freezes the scene into a photograph and washes everyone back to where they stood seconds ago — wounds close, curses rinse off, and nothing can touch you while it rewinds.");
+                () => "Press the restart key and the scene freezes into a black-and-white photograph, then washes open: nearby foes and you slide back to where you stood seconds ago, your life refills, debuffs rinse off, and nothing can touch you while it rewinds. It works outside the ghost rain too: the shutter borrows a ghost rain for that moment, and once the rewind settles the rain withdraws, leaving your domain as it was.");
             RestartPrompt = this.GetLocalization(nameof(RestartPrompt),
-                () => "In ghost rain at full water, press {0}");
+                () => "Hold the umbrella and press {0}");
 
             DreamTitle = this.GetLocalization(nameof(DreamTitle), () => "Sink into the Ghost Dream");
             DreamBody = this.GetLocalization(nameof(DreamBody),
@@ -346,19 +346,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         /// <summary>
         /// 场面失守退步：依赖湖的步湖收了退回开域重讲；
-        /// 重启只活在鬼雨里，稳态翻回血湖就退回异化步（翻转途中不动）。
+        /// 重启已随时可按（雨外由演出借雨），不依赖领域，不再退步等形态。
         /// 只退步等人，不逐帧硬扳玩家刚做的操作
         /// </summary>
         private static bool KeepStepAlive(KikasaDomainPlayer domain) {
             bool needLake = currentPhase
-                is Phase.Sink or Phase.Rain or Phase.Restart or Phase.Dream;
+                is Phase.Sink or Phase.Rain or Phase.Dream;
             if (needLake && !domain.AnyActive) {
                 SetPhase(Phase.Domain);
-                return false;
-            }
-            if (currentPhase == Phase.Restart && !domain.IsRainForm
-                && domain.Phase == KikasaDomainPhase.Open) {
-                SetPhase(Phase.Rain);
                 return false;
             }
             return true;
@@ -424,7 +419,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                     && !Main.LocalPlayer.GetModPlayer<OniDomainPlayer>().AnyActive,
                 Phase.Rain => domain.Phase == KikasaDomainPhase.Open && domain.RiseT >= 0.999f,
                 //与 KikasaReset.TryReset 的受理门同口径
-                Phase.Restart => domain.LakeAbilityReady && domain.IsRainForm
+                Phase.Restart => KikasaReset.Active == null
+                    && KikasaReset.CanStartLocal(Main.LocalPlayer)
                     && KikasaReset.LocalCooldown01 <= 0f,
                 Phase.Dream => domain.DreamPullReady,
                 _ => false,
@@ -657,14 +653,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                     }
                     break;
                 case Phase.Restart: {
+                    //重启不吃水位与形态，唯一等的是冷却回卷
                     float cd = KikasaReset.LocalCooldown01;
                     if (cd > 0f) {
                         return string.Format(ResetCooldownFormat.Value,
                             (int)MathF.Round(cd * 100f));
-                    }
-                    if (domain.Phase == KikasaDomainPhase.Open && domain.IsRainForm
-                        && domain.RiseT < 0.999f) {
-                        return WaterNote(domain);
                     }
                     break;
                 }

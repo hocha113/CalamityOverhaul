@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         internal Vector2 PuddleCenter => Position + new Vector2(0f, 3f);
 
         /// <summary>水洼张开度：常驻 1，演出躁动/触发时涨大</summary>
-        internal float PuddleSwell => 1f + CurrentAgitation * 0.25f + KickAmount * 0.35f;
+        internal float PuddleSwell => 1f + AgitationLevel * 0.25f + KickAmount * 0.35f;
 
         public override void OnSpawn(params object[] args) {
             Width = 48;
@@ -98,6 +98,9 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 && !player.HasItem(ModContent.ItemType<KikasaItem>());
         }
 
+        /// <summary>本实例对本地玩家的可见性；子类（鬼域门伞等）按各自门禁改写</summary>
+        internal virtual bool VisibleToLocalPlayer() => ShouldShowForLocalPlayer();
+
         public override void AI() {
             swayTimer += 0.016f;
             if (swayTimer > MathHelper.TwoPi) {
@@ -108,7 +111,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 return;
             }
 
-            if (!ShouldShowForLocalPlayer()) {
+            if (!VisibleToLocalPlayer()) {
                 promptAlpha = 0f;
                 return;
             }
@@ -132,9 +135,12 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             OniRainWorldTransition.Active ? OniRainWorldTransition.UmbrellaAgitation : 0f,
             OniRainDescentTransition.Active ? OniRainDescentTransition.UmbrellaAgitation : 0f);
 
+        /// <summary>本实例的躁动来源；子类换成自己的演出量</summary>
+        protected virtual float AgitationLevel => CurrentAgitation;
+
         //伞下漏雨与潮气 + 水洼呼出的上浮黑水滴；演出期间随躁动加密
         private void UpdateAmbience() {
-            float agitation = CurrentAgitation;
+            float agitation = AgitationLevel;
             int interval = Math.Max(8, 42 - (int)((agitation + KickAmount) * 30f));
 
             dripTimer++;
@@ -196,7 +202,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 Vector2 look = (player.Center - CanopyAnchor).SafeNormalize(Vector2.UnitY);
                 eyeLook = Vector2.Lerp(eyeLook, look, 0.12f).SafeNormalize(Vector2.UnitY);
             }
-            openTarget = MathF.Max(openTarget, CurrentAgitation * 0.9f);
+            openTarget = MathF.Max(openTarget, AgitationLevel * 0.9f);
 
             if (--blinkTimer <= 0) {
                 blinkTimer = Main.rand.Next(170, 320);
@@ -208,14 +214,26 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             eyeGlow *= 0.9f;
         }
 
+        /// <summary>本实例的交互资格；子类按各自门禁改写。故事伞：只管入雨（雨世界外撑伞）</summary>
+        protected virtual bool InteractEligible(Player player)
+            => !OniRainWorldState.LocalIn
+            && !OniRainWorldTransition.Active
+            && !OniRainDescentTransition.Active
+            && !CutsceneDirector.IsPlaying;
+
+        /// <summary>交互提示文案；子类按去向改写</summary>
+        protected virtual string HintText => OniRainWorldSystem.InteractHint.Value;
+
+        /// <summary>触发确认帧后的实际去向；子类改写（故事伞=入雨演出）</summary>
+        protected virtual void OnInteract(Player player) {
+            //运镜失败不致命，演出照走
+            OniRainWorldTransition.Begin(player, Position);
+            CutsceneDirector.Play<OniRainWorldCutscene>(player);
+        }
+
         private void UpdateInteraction() {
             Player player = Main.LocalPlayer;
-            //只管入雨（雨世界外撑伞）；雨中的下潜交给夺伞
-            bool eligible = player != null && player.Alives()
-                && !OniRainWorldState.LocalIn
-                && !OniRainWorldTransition.Active
-                && !OniRainDescentTransition.Active
-                && !CutsceneDirector.IsPlaying;
+            bool eligible = player != null && player.Alives() && InteractEligible(player);
             bool near = eligible && player.Center.Distance(CanopyAnchor) < InteractDistance;
 
             promptAlpha = MathHelper.Clamp(promptAlpha + (near && CanTrigger(player) ? 0.05f : -0.05f), 0f, 1f);
@@ -276,14 +294,12 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                     ?.Configure(Main.rand.Next(40, 70));
             }
 
-            //运镜失败不致命，演出照走
-            OniRainWorldTransition.Begin(player, Position);
-            CutsceneDirector.Play<OniRainWorldCutscene>(player);
+            OnInteract(player);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {
-            //已获伞的玩家看不见它，Actor 本体留给其他玩家
-            if (!ShouldShowForLocalPlayer()) {
+            //可见性按实例门禁裁（故事伞=获伞即隐，门伞=获伞才见）
+            if (!VisibleToLocalPlayer()) {
                 return false;
             }
 
@@ -297,7 +313,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             }
 
             //演出期伞体颤抖：压镜段起颤、浮现段拉满，触发瞬间猛地一颤
-            float agitation = CurrentAgitation;
+            float agitation = AgitationLevel;
             float shiver = (agitation * 0.05f + KickAmount * 0.09f)
                 * MathF.Sin(Main.GlobalTimeWrappedHourly * 46f);
             float rotation = -0.13f + MathF.Sin(swayTimer) * 0.03f + shiver;
@@ -485,7 +501,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 
             Vector2 textPos = CanopyAnchor - Main.screenPosition + new Vector2(0f, -64f);
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            string hint = OniRainWorldSystem.InteractHint.Value;
+            string hint = HintText;
             Vector2 textSize = font.MeasureString(hint) * 0.9f;
 
             Texture2D glow = CWRAsset.SoftGlow.Value;

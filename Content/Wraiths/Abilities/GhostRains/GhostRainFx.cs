@@ -42,6 +42,11 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
             if (fxByPlayer.Count == 0) {
                 return;
             }
+            //近两帧无任何雨幕盖戳：不必按簿记逐个 Find 全弹幕表。簿记留待
+            //下一场雨出现时再清（或 ClearWorld），残留只是几条字典项，无玩法影响
+            if (!GhostRainProj.PresenceStamp.ActiveWithin()) {
+                return;
+            }
             List<int> stale = null;
             foreach (int who in fxByPlayer.Keys) {
                 if (GhostRainProj.Find(who) == null) {

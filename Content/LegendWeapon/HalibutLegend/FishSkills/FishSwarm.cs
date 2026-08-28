@@ -51,7 +51,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            return player.CountProjectilesOfID<FishSwarmController>() == 0;
+            //玩家更新阶段 ownedProjectileCounts 是上一拍完整快照，O(1) 代替全表扫描
+            return player.ownedProjectileCounts[ModContent.ProjectileType<FishSwarmController>()] == 0;
         }
         public override void Use(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();

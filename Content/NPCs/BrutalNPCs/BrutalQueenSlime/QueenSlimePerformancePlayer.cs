@@ -233,6 +233,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
 
         /// <summary>正抓着指定玩家、且确认被本模组接管的皇后，无则null</summary>
         private static NPC FindGrabbingQueen(int playerIndex) {
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必扫表
+                return null;
+            }
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (npc.type != NPCID.QueenSlimeBoss) {
                     continue;

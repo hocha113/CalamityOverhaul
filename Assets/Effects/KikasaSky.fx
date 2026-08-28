@@ -36,6 +36,7 @@ float uFlash;           //0~1 雷闪包络，快起慢衰（异化态）
 float uWaterLevel;      //血湖水线 uv.y：与 KikasaGrade 同公式，1.15(屏下) 涨到枢轴
 float uWaterWobble;     //水线噪声波动幅度，与 KikasaGrade 同值
 float4 uLineWave[4];    //水线行波源，与 KikasaGrade 同源同公式，垫底顶边跟着一起荡
+float4 uTideTrough;     //跟脚潮让位坑，与 KikasaGrade 同源同轮廓，垫底顶边跟着分开；闲置全零
 
 //====== 血暮调色板 ======
 static const float3 SKY_TOP    = float3(0.085, 0.012, 0.030);  //凝血暗红近黑
@@ -85,6 +86,15 @@ float lineWaveOne(float uvx, float4 src) {
 float lineWaveSum(float uvx) {
     return lineWaveOne(uvx, uLineWave[0]) + lineWaveOne(uvx, uLineWave[1])
          + lineWaveOne(uvx, uLineWave[2]) + lineWaveOne(uvx, uLineWave[3]);
+}
+
+//跟脚潮让位坑：与 KikasaGrade.tideTrough 完全同式，坑内露出天穹而不是垫底湖体
+float tideTrough(float uvx) {
+    float d = abs(uvx - uTideTrough.x) / max(uTideTrough.y, 1e-4);
+    float bowl = 1.0 - smoothstep(0.25, 1.05, d);
+    float lipD = d - 1.18;
+    float lip = exp2(-lipD * lipD * 22.0);
+    return uTideTrough.z * bowl - uTideTrough.w * lip;
 }
 
 float fbm2(float2 uv) {
@@ -222,7 +232,7 @@ float4 PSSky(float2 coords : TEXCOORD0) : COLOR0 {
     float wn0 = noiseTex(float2(uv.x * 2.6 + uMaskTime * 0.020, uMaskTime * 0.011));
     float wn1 = noiseTex(float2(uv.x * 7.2 - uMaskTime * 0.016, 0.41 + uMaskTime * 0.027));
     float waterY = uWaterLevel + ((wn0 - 0.5) * 1.4 + (wn1 - 0.5) * 0.6) * uWaterWobble
-        + lineWaveSum(uv.x);
+        + lineWaveSum(uv.x) + tideTrough(uv.x);
     float belowMask = saturate((uv.y - waterY) * 320.0);
 
     //假湖平线随真水线下压：站湖面时远湖带紧贴水线上方，飞高俯瞰回到 HORIZON_MAX 构图；

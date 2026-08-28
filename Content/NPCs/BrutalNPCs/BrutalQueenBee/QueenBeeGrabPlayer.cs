@@ -73,6 +73,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
 
         /// <summary>找当前正抓着本地玩家的女王与其投技状态，无则(null,null)</summary>
         private (NPC, QBSwarmLiftState) FindLiftHoldingMe() {
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必扫表
+                return (null, null);
+            }
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (npc.type != NPCID.QueenBee) {
                     continue;

@@ -34,6 +34,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Rendering
             }
             armed = false;
 
+            //近两帧无气泡盖戳（无公爵战）：跳过全表探测
+            if (!FishronBubbleAI.PresenceStamp.ActiveWithin()) {
+                return;
+            }
+
             //先探一遍有没有被接管的泡，空场不开批
             bool any = false;
             foreach (var npc in Main.ActiveNPCs) {

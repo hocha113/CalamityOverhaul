@@ -15,7 +15,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
     /// 源头=碗口溢流球根沉进伞底(禁平切),落点=推进期坠落头/触地后溅丘翻沫/
     /// 空中散逸成股;宽度走全生命周期包络(展开铺满→排空收窄断流,判定同源);
     /// 刚性摆压到极小,流体甩尾由 shader 行波承担。
-    /// 射线逐帧找落点(实心或域内湖面),落点持续搅浊留渍;前 12 帧沿瀑缘散射特大墨滴。
+    /// 射线逐帧找落点:实心截断,域内湖面是介质——过线留墨膜搅涟漪后穿入水中,
+    /// 水下段长度预算 1.8×(臂长自然缩短)、前锋推进放缓,湖中敌人照打;前 12 帧沿瀑缘散射特大墨滴。
     /// 冲刷期方向持续跟手:所有者端限速转向光标(ai[0] 为权威角,节流补包),
     /// 旁观端向权威角平滑追赶;源头逐帧钉回伞碗口,排空断流后方向与源头就地定格。
     /// 判定为线碰撞,排空过半即失能;绘制走 KikasaInkDrop.fx 的 TechPour
@@ -65,6 +66,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private float lenPx = MaxLenPx;
         private bool hitGround;
         private bool hitLake;
+        //过水线距离(px,-1=未过线):水面锚点(墨膜/涟漪/墨泉/虹桥)钉在这里,不随水下段下潜
+        private float lakeCrossPx = -1f;
+        //前锋像素推进:过线后放缓,穿水的柱推得慢(替代纯时间轴的 LenT)
+        private float frontPx;
         private int scatterCount;
         //跟手角的端本地量:旁观端对权威角的平滑镜像(NaN=未初始化,首个 AI 帧对齐);
         //lastSentAngle 是所有者端上次补包时的角,节流判据
@@ -82,11 +87,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>瀑宽材质旋钮(霸月瀑等):OnPourStart 首帧按标签一次性写,默认 1</summary>
         internal float TalismanWidthMul = 1f;
 
-        /// <summary>落线终点(挂钩实现取落点用,如虹符落点拱桥)</summary>
+        /// <summary>落线终点(挂钩实现取落点用,如沛符沿柱银粒):穿水后是真实末端,可能在水下</summary>
         internal Vector2 FallEndPoint => Projectile.Center + DirAngle.ToRotationVector2() * lenPx;
 
-        /// <summary>本帧是否触地(含湖面)</summary>
-        internal bool HitGroundNow => hitGround;
+        /// <summary>本帧是否触地(含湖面),语义与穿水改制前一致:路径撞上实心或穿过水面都算"有落处"</summary>
+        internal bool HitGroundNow => hitGround || hitLake;
+
+        /// <summary>表面锚点:过水线取线上过线点(虹桥这类"雨停处"演出用),否则同 FallEndPoint</summary>
+        internal Vector2 SurfaceAnchorPoint => hitLake && lakeCrossPx >= 0f
+            ? Projectile.Center + DirAngle.ToRotationVector2() * lakeCrossPx
+            : FallEndPoint;
 
         //刚性摆压到极小(判定线跟随),流体甩尾由 shader 内行波承担，源头钉死碗口;
         //本体角用端本地平滑量,绘制可能先于首个 AI 帧,未初始化时退回权威角
@@ -105,12 +115,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private float WidthPx => (54f + Fill * 36f + KikasaOverride.GetPourWidthBonus(slotCount))
             * pourProfile.PourWidthMul * TalismanWidthMul;
 
-        private float LenT {
-            get {
-                float t = MathHelper.Clamp(life / ExpandFrames, 0f, 1f);
-                return 1f - (1f - t) * (1f - t);
-            }
-        }
+        /// <summary>前锋推进比例:像素推进/当前落线长。推进在 AI 里逐帧累积,
+        /// 过水线后步速 ×0.6(稠血里推得慢),取代原先纯时间轴的展开曲线</summary>
+        private float FrontT => MathHelper.Clamp(frontPx / MathF.Max(lenPx, 1f), 0f, 1f);
 
         private float DrainT
             => MathHelper.Clamp((life - ExpandFrames - sustainFrames) / (float)CollapseFrames, 0f, 1f);
@@ -186,66 +193,103 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
             Vector2 dir = DirAngle.ToRotationVector2();
 
-            //域内湖面:墨倾进湖里,落点换涟漪
+            //域内湖:湖水是介质不是地板(2026-08 改制,原为过线即截断)
             bool lakeAlive = owner?.active == true
                 && owner.TryGetModPlayer(out KikasaDomainPlayer domain)
                 && domain.AnyActive && domain.RiseT > 0.5f;
             float lakeY = lakeAlive ? owner.GetModPlayer<KikasaDomainPlayer>().LakeWorldY : float.MaxValue;
 
-            //射线找落点:实心或湖面,各端确定性一致
+            //射线找落点:实心截断;过水线不停,水下段每像素吃 1.8× 长度预算
+            //(稠血吸收,水下臂长自然缩短),各端确定性一致
             lenPx = MaxLenPx;
             hitGround = false;
             hitLake = false;
+            lakeCrossPx = -1f;
+            float budget = MaxLenPx;
             for (float d = 32f; d <= MaxLenPx; d += 16f) {
                 Vector2 p = Projectile.Center + dir * d;
-                if (p.Y >= lakeY) {
-                    lenPx = d;
-                    hitGround = true;
+                if (p.Y >= lakeY && !hitLake) {
                     hitLake = true;
-                    break;
+                    lakeCrossPx = d;
                 }
                 if (Collision.SolidCollision(p - new Vector2(4f, 4f), 8, 8)) {
                     lenPx = d;
                     hitGround = true;
                     break;
                 }
+                budget -= p.Y >= lakeY ? 16f * 1.8f : 16f;
+                if (budget <= 0f) {
+                    lenPx = d;
+                    break;
+                }
             }
 
+            //前锋推进:方向跟手时落线长逐帧变,推进量夹进当前长度;过线段推得慢
+            float frontStep = lenPx / ExpandFrames;
+            if (hitLake && frontPx > lakeCrossPx) {
+                frontStep *= 0.6f;
+            }
+            frontPx = MathF.Min(frontPx + frontStep, lenPx);
+
             //落点余韵:冲刷期间持续留渍/搅涟漪,节流一拍一次
-            if (hitGround && LenT >= 0.99f && DrainT <= 0f && life % 8 == 0) {
+            if ((hitGround || hitLake) && FrontT >= 0.99f && DrainT <= 0f && life % 8 == 0) {
                 Vector2 end = Projectile.Center + dir * lenPx;
                 if (hitLake) {
+                    //过线锚点:水面持续搅涟漪,同一片墨晕越冲越大(钉在过线处,不随水下段下潜)
+                    Vector2 cross = Projectile.Center + dir * lakeCrossPx;
                     if (!Main.dedServ && KikasaDomain.Viewed != null) {
-                        KikasaDomainDeco.RippleAt(new Vector2(end.X, lakeY), 1.1f);
-                        KikasaDomainDeco.SplashAt(new Vector2(end.X, lakeY), 6);
+                        KikasaDomainDeco.RippleAt(new Vector2(cross.X, lakeY), 1.1f);
+                        KikasaDomainDeco.SplashAt(new Vector2(cross.X, lakeY), 6);
                     }
-                    //持续冲刷:同一片墨晕越冲越大
-                    KikasaInkFX.AddLakeBlot(Projectile.owner, end.X, 44f + Fill * 30f);
+                    KikasaInkFX.AddLakeBlot(Projectile.owner, cross.X, 44f + Fill * 30f);
                 }
-                else {
+                if (hitGround) {
+                    //触地(含湖底):落点留渍+翻涌:反弹墨珠+一口墨雾+贴地横滑的溅珠
                     KikasaInkFX.AddGroundSplat(end + dir * 6f, dir * 14f, 46f + Fill * 28f);
+                    if (!Main.dedServ) {
+                        for (int i = 0; i < 3; i++) {
+                            Vector2 vel = (-dir).RotatedByRandom(0.9f) * Main.rand.NextFloat(2f, 5.5f);
+                            PRTLoader.NewParticle<PRT_KikasaInkBead>(end + Main.rand.NextVector2Circular(WidthPx * 0.3f, 6f),
+                                vel, Main.rand.NextBool(3) ? KikasaInk.InkDeep : KikasaInk.InkBody,
+                                Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(18, 28));
+                        }
+                        Vector2 tang = dir.RotatedBy(MathHelper.PiOver2);
+                        for (int i = 0; i < 2; i++) {
+                            float side = i == 0 ? 1f : -1f;
+                            PRTLoader.NewParticle<PRT_KikasaInkBead>(
+                                end - dir * 4f + tang * side * Main.rand.NextFloat(4f, WidthPx * 0.4f),
+                                tang * side * Main.rand.NextFloat(3f, 6f) - dir * Main.rand.NextFloat(0.4f, 1.4f),
+                                KikasaInk.InkBody, Main.rand.NextFloat(0.34f, 0.55f))?.Configure(Main.rand.Next(16, 26));
+                        }
+                        PRTLoader.NewParticle<PRT_KikasaInkMist>(end - dir * 10f,
+                            -dir * Main.rand.NextFloat(0.5f, 1.2f), KikasaInk.InkDeep,
+                            Main.rand.NextFloat(0.9f, 1.3f))?.Configure(Main.rand.Next(26, 40));
+                    }
+                    KikasaInk.Play(KikasaInk.InkSplash, end, 0.48f, -0.4f, 4);
                 }
-                //落点翻涌:反弹墨珠+一口墨雾+贴地横滑的溅珠(溅裙沿地面铺开)
-                if (!Main.dedServ) {
-                    for (int i = 0; i < 3; i++) {
-                        Vector2 vel = (-dir).RotatedByRandom(0.9f) * Main.rand.NextFloat(2f, 5.5f);
-                        PRTLoader.NewParticle<PRT_KikasaInkBead>(end + Main.rand.NextVector2Circular(WidthPx * 0.3f, 6f),
-                            vel, Main.rand.NextBool(3) ? KikasaInk.InkDeep : KikasaInk.InkBody,
-                            Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(18, 28));
-                    }
-                    Vector2 tang = dir.RotatedBy(MathHelper.PiOver2);
-                    for (int i = 0; i < 2; i++) {
-                        float side = i == 0 ? 1f : -1f;
-                        PRTLoader.NewParticle<PRT_KikasaInkBead>(
-                            end - dir * 4f + tang * side * Main.rand.NextFloat(4f, WidthPx * 0.4f),
-                            tang * side * Main.rand.NextFloat(3f, 6f) - dir * Main.rand.NextFloat(0.4f, 1.4f),
-                            KikasaInk.InkBody, Main.rand.NextFloat(0.34f, 0.55f))?.Configure(Main.rand.Next(16, 26));
-                    }
+                else if (hitLake && !Main.dedServ) {
+                    //末端散在水里:墨股散逸成雾与泡,没有撞击丘
                     PRTLoader.NewParticle<PRT_KikasaInkMist>(end - dir * 10f,
-                        -dir * Main.rand.NextFloat(0.5f, 1.2f), KikasaInk.InkDeep,
+                        -dir * Main.rand.NextFloat(0.3f, 0.8f), KikasaInk.InkDeep,
                         Main.rand.NextFloat(0.9f, 1.3f))?.Configure(Main.rand.Next(26, 40));
+                    for (int i = 0; i < 2; i++) {
+                        PRTLoader.NewParticle<PRT_KikasaLakeBubble>(
+                            end + Main.rand.NextVector2Circular(WidthPx * 0.35f, 14f),
+                            new Vector2(0f, -0.3f), default,
+                            Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(30, 60), lakeY);
+                    }
+                    KikasaInk.Play(KikasaInk.InkSplash, end, 0.3f, -0.5f, 3);
                 }
-                KikasaInk.Play(KikasaInk.InkSplash, end, 0.48f, -0.4f, 4);
+            }
+
+            //水下段沿柱冒泡:稠血被墨股持续搅动
+            if (hitLake && !Main.dedServ && KikasaDomain.Viewed != null && DrainT <= 0f
+                && (int)life % 6 == 0 && frontPx > lakeCrossPx + 24f) {
+                float along = Main.rand.NextFloat(lakeCrossPx + 12f, frontPx);
+                Vector2 at = Projectile.Center + dir * along
+                    + dir.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-0.6f, 0.6f) * WidthPx;
+                PRTLoader.NewParticle<PRT_KikasaLakeBubble>(at, new Vector2(0f, -0.3f), default,
+                    Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(30, 60), lakeY);
             }
 
             //特大墨滴沿瀑缘散射(所有者端);沿程不跟空射 6400 一起拉长,否则会在视野外刷滴。
@@ -305,14 +349,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
 
             //众鬼齐掷档:瀑线带沉溺内吸，推 NPC 归权威端,联机客户端靠同步兜底
-            if (slotCount >= KikasaOverride.TierGhostVolley && LenT >= 0.6f && DrainT <= 0.35f
+            if (slotCount >= KikasaOverride.TierGhostVolley && FrontT >= 0.6f && DrainT <= 0.35f
                 && Main.netMode != NetmodeID.MultiplayerClient) {
                 SuckIntoFall(dir);
             }
 
-            //湖倾终幕:满蓄且触地的墨瀑在排空前沿,沿落线唤起墨泉(所有者端)。
+            //湖倾终幕:满蓄且有落处(实心或穿过水面)的墨瀑在排空前沿,沿落线唤起墨泉(所有者端)。
             //齐发决策一瀑只做一次:基础条件不满足也过泉齐发挂钩(霆非满蓄小雷泉/雩大雩解锁可强开)
-            if (Main.myPlayer == Projectile.owner && !geyserFired && hitGround
+            if (Main.myPlayer == Projectile.owner && !geyserFired && (hitGround || hitLake)
                 && (int)life >= ExpandFrames + sustainFrames) {
                 geyserFired = true;
                 bool fullCharge = slotCount >= KikasaOverride.TierLakeTilt && Fill >= 0.99f;
@@ -341,7 +385,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// </summary>
         private void SuckIntoFall(Vector2 dir) {
             Vector2 a = Projectile.Center;
-            Vector2 b = Projectile.Center + dir * (lenPx * LenT);
+            Vector2 b = Projectile.Center + dir * frontPx;
             float inner = WidthPx * 0.7f;
             float outer = WidthPx * 2.4f;
             for (int i = 0; i < Main.maxNPCs; i++) {
@@ -390,15 +434,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             float geyserAi1 = KikasaTalismanHooks.PackTag(geyserCtx.TagId, geyserCtx.TagPayload);
             float geyserAi2 = MathF.Round(MathHelper.Clamp(geyserCtx.HeightMul, 0.2f, 8f) * 1000f);
 
-            Vector2 end = Projectile.Center + dir * lenPx;
+            //泉锚点:过水线的瀑锚在过线处的水面(墨泉是湖面特性,不随水下段下潜),否则用真实末端
+            Vector2 anchor = hitLake && lakeCrossPx >= 0f
+                ? Projectile.Center + dir * lakeCrossPx
+                : Projectile.Center + dir * lenPx;
             int fired = 0;
             for (int i = 0; i < geyserCtx.Count; i++) {
                 float off = (i - (geyserCtx.Count - 1) * 0.5f) * 96f;
                 Vector2 basePos;
                 if (hitLake) {
-                    basePos = new Vector2(end.X + off, lakeY);
+                    basePos = new Vector2(anchor.X + off, lakeY);
                 }
-                else if (!TryFindGroundBelow(new Vector2(end.X + off, end.Y - 90f), 320f, out basePos)) {
+                else if (!TryFindGroundBelow(new Vector2(anchor.X + off, anchor.Y - 90f), 320f, out basePos)) {
                     continue;
                 }
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), basePos, Vector2.Zero,
@@ -455,7 +502,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             float _ = 0f;
             Vector2 dir = DirAngle.ToRotationVector2();
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
-                Projectile.Center, Projectile.Center + dir * (lenPx * LenT), WidthPx * 0.7f * WidthT, ref _);
+                Projectile.Center, Projectile.Center + dir * frontPx, WidthPx * 0.7f * WidthT, ref _);
         }
 
         //==================== 绘制(由 KikasaRainRender 集中调用) ====================
@@ -473,7 +520,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 return;
             }
             float fade = MathHelper.Clamp(life / 4f, 0f, 1f);
-            float churn = hitGround ? MathHelper.Clamp((LenT - 0.9f) * 10f, 0f, 1f) * (1f - DrainT) : 0f;
+            float churn = hitGround ? MathHelper.Clamp((FrontT - 0.9f) * 10f, 0f, 1f) * (1f - DrainT) : 0f;
 
             float inset = WidthPx * 0.14f;   //源头沉进碗口,球根顶端藏在伞体后
             float padPx = WidthPx * 1.8f;    //落点外的溅丘/空中散逸画布
@@ -486,7 +533,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             fx.Parameters["uFade"]?.SetValue(fade);
             fx.Parameters["uWScale"]?.SetValue(ws);
             fx.Parameters["uSrcV"]?.SetValue(inset / quadH);
-            fx.Parameters["uFront"]?.SetValue((inset + lenPx * LenT) / quadH);
+            fx.Parameters["uFront"]?.SetValue((inset + frontPx) / quadH);
             fx.Parameters["uSpanV"]?.SetValue(spanV);
             fx.Parameters["uGrounded"]?.SetValue(hitGround ? 1f : 0f);
             fx.Parameters["uDrainV"]?.SetValue(MathHelper.Lerp(-ws * 1.5f, spanV + ws * 2f, DrainT));
@@ -517,8 +564,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 return;
             }
             float alpha = (1f - DrainT) * MathHelper.Clamp(life / 4f, 0f, 1f);
-            Vector2 mid = Projectile.Center + DirAngle.ToRotationVector2() * (lenPx * LenT * 0.5f);
-            Vector2 scale = new(WidthPx * widthT / tex.Width * 1.2f, lenPx * LenT / tex.Height * 1.1f);
+            Vector2 mid = Projectile.Center + DirAngle.ToRotationVector2() * (frontPx * 0.5f);
+            Vector2 scale = new(WidthPx * widthT / tex.Width * 1.2f, frontPx / tex.Height * 1.1f);
             sb.Draw(tex, mid - Main.screenPosition, null, KikasaInk.InkBody * (0.85f * alpha),
                 DirAngle - MathHelper.PiOver2, tex.Size() * 0.5f, scale, SpriteEffects.None, 0f);
         }

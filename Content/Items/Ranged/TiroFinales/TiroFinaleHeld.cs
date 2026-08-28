@@ -150,7 +150,11 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
             finaleCount = reader.ReadByte();
         }
 
+        /// <summary>在场帧戳：AI 与绘制各盖一次（时停中 AI 停摆靠绘制维持），远半环层据此跳过空表扫描</summary>
+        internal static ActivityStamp PresenceStamp;
+
         public override void AI() {
+            PresenceStamp.Stamp();
             if (finalePhase != FinaleNone) {
                 UpdateHeldPose(true);
                 FinaleAI();
@@ -649,7 +653,10 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
         }
 
         /// <summary>近半环(z&lt;0)与终曲巨炮，压在实体层之上</summary>
-        void IPrimitiveDrawable.DrawPrimitives() => TiroFinaleRenderer.DrawHeldLayer(this, -1);
+        void IPrimitiveDrawable.DrawPrimitives() {
+            PresenceStamp.Stamp();
+            TiroFinaleRenderer.DrawHeldLayer(this, -1);
+        }
 
         /// <summary>远半环(z&gt;=0)，由 <see cref="TiroFinaleFarRender"/> 在玩家层之前调</summary>
         internal void DrawFarLayer() => TiroFinaleRenderer.DrawHeldLayer(this, 1);

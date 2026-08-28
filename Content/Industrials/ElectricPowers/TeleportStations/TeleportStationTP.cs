@@ -110,9 +110,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
             return Math.Min(BaseCost + tiles * CostPerTile, CostCap);
         }
 
-        /// <summary>落点:站台顶面中心,玩家脚底贴台面</summary>
+        /// <summary>落点:拱门内金托盘中心,玩家脚底贴机身底线</summary>
         internal Vector2 ArrivalPositionFor(Player player)
-            => new(CenterInWorld.X - player.width / 2f, PosInWorld.Y - player.height);
+            => new(CenterInWorld.X - player.width / 2f, PosInWorld.Y + Height - player.height);
 
         #endregion
 
@@ -178,10 +178,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
                 arriveRing--;
             }
 
-            //待机微光尘:门户环上偶发一粒上飘光屑,通电才有
+            //待机微光尘:拱门内偶发一粒上飘光屑,通电才有
             if (!VaultUtils.isServer && InScreen && PortalPower > 0.55f && Rand.NextBool(46)) {
                 Defer(() => {
-                    Vector2 pos = new(CenterInWorld.X + Main.rand.NextFloat(-22f, 22f), PosInWorld.Y - 10f);
+                    Vector2 pos = new(CenterInWorld.X + Main.rand.NextFloat(-22f, 22f), PosInWorld.Y + Height - 26f);
                     PRTLoader.NewParticle<PRT_Light>(pos, new Vector2(0f, -Main.rand.NextFloat(0.4f, 0.9f)),
                         TeleportStation.Tint, Main.rand.NextFloat(0.06f, 0.12f))?.Configure(26, 0.6f);
                 });
@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
             Afterglow = AfterglowFrames;
             departRing = 30;
 
-            Vector2 platform = new(CenterInWorld.X, PosInWorld.Y);
+            Vector2 platform = new(CenterInWorld.X, PosInWorld.Y + Height - 10f);
             SvcColumnFX.Push(platform, 132f, 44f,
                 SvcColumnFX.CyanBright, SvcColumnFX.CyanMain, SvcColumnFX.CyanDeep, 34, 0f);
             SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.4f, Pitch = -0.35f }, platform);
@@ -233,7 +233,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
             Afterglow = AfterglowFrames;
             arriveRing = 38;
 
-            Vector2 platform = new(CenterInWorld.X, PosInWorld.Y);
+            Vector2 platform = new(CenterInWorld.X, PosInWorld.Y + Height - 10f);
             SvcColumnFX.Push(platform, 150f, 40f,
                 SvcColumnFX.CyanBright, SvcColumnFX.CyanMain, SvcColumnFX.CyanDeep, 30, 1f);
             SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.42f, Pitch = 0.25f }, platform);
@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
             if (Main.dedServ) {
                 return;
             }
-            Vector2 platform = new(CenterInWorld.X, PosInWorld.Y + 2f);
+            Vector2 platform = new(CenterInWorld.X, PosInWorld.Y + Height - 10f);
             Color bright = new(210, 255, 246);
             Color main = TeleportStation.Tint;
             Color deep = new(16, 88, 80);

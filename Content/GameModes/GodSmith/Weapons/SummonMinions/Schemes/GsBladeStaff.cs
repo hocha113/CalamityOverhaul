@@ -1,7 +1,6 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -10,9 +9,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Schemes
 {
     /// <summary>
-    /// 刀刃法杖「八卦剑轮」：环绕剑轮缓转（原版已顶级，克制档 108%）；
-    /// 协同「破防斩」= 单把匕首对同目标连击满 5 次，第 6 击 +40%（橙闪，无视防御特性不另叠破甲）；
-    /// 集结「万剑门」= 旗点立剑门 60 帧（穿门敌人受三段链斩，冷却 300 帧）
+    /// 刀刃法杖「八卦剑轮」：环绕剑轮缓转（原版已顶级，克制档 104%）。材质：附魔星辉双匕。<br/>
+    /// 签名行为：①协同「破防斩」= 单把匕首对同目标连击满 5 次，第 6 击 +40% 并在
+    /// 目标身上闪过「八卦剑影」（双匕交叉幻影真弹幕，追加一段 40% 召唤伤害）
+    /// ②集结「万剑门」= 旗点立剑门 60 帧（穿门敌人受三段链斩，冷却 300 帧）
     /// </summary>
     internal class GsBladeStaff : GsMinionScheme
     {
@@ -21,9 +21,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
         public override string GsFamily => "SummonMinionsA";
 
         protected override string GsDescFallback =>
-            "Bagua Blade Wheel: daggers orbit as a slow-turning wheel; a dagger's sixth consecutive strike on one foe cuts armor-deep, and the rally order raises a gate of blades";
-
-        private static readonly Color BladeGold = new(255, 206, 110);
+            "Bagua Blade Wheel: daggers orbit as a slow-turning wheel; a dagger's sixth consecutive strike on one foe cuts armor-deep and flashes a phantom cross-slash for 40% more, and the rally order raises a gate of blades";
 
         private static readonly GsMinionKit kit = new() {
             Formation = GsFormationKind.Ring,
@@ -76,18 +74,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
             e.Expire = now + 90;
 
             if (e.Count >= 6) {
-                //破防斩已落地：清账 + 橙闪
+                //破防斩已落地：清账 + 八卦剑影（owner 生成真弹幕，全端可见，演出与音效随弹幕走）
                 e.Count = 0;
-                if (!VaultUtils.isServer) {
-                    for (int i = 0; i < 6; i++) {
-                        PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                            Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f),
-                            BladeGold, Main.rand.NextFloat(0.3f, 0.5f))
-                            ?.Configure(false, Main.rand.Next(12, 20));
-                    }
-                    PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero,
-                        BladeGold, 0.15f)?.Configure(8, 0.8f);
-                }
+                Projectile.NewProjectile(proj.GetSource_FromAI(), target.Center, Vector2.Zero,
+                    ModContent.ProjectileType<GsBladeStaffPhantomProj>(),
+                    Math.Max(1, (int)(proj.damage * 0.40f)), 2f, proj.owner);
             }
             combo[proj.identity] = e;
 

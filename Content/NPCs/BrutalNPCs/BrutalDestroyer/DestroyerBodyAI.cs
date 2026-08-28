@@ -352,16 +352,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
         }
 
+        //骷髅王在场结果帧戳共享：60 节体节同帧各查一次，全体共用一次扫描
+        private static uint skeletronAliveFrame = uint.MaxValue;
+        private static bool skeletronAliveCache;
+
         /// <summary>骷髅王存活</summary>
         private bool CheckSkeletronAlive() {
             if (!(CWRWorld.MasterMode && !CWRWorld.BossRush && npc.localAI[3] != -1f))
                 return false;
 
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                if (Main.npc[i].active && Main.npc[i].type == NPCID.SkeletronPrime)
-                    return true;
+            if (skeletronAliveFrame != Main.GameUpdateCount) {
+                skeletronAliveFrame = Main.GameUpdateCount;
+                skeletronAliveCache = false;
+                foreach (var n in Main.ActiveNPCs) {
+                    if (n.type == NPCID.SkeletronPrime) {
+                        skeletronAliveCache = true;
+                        break;
+                    }
+                }
             }
-            return false;
+            return skeletronAliveCache;
         }
 
         /// <summary>禁飞区高度</summary>

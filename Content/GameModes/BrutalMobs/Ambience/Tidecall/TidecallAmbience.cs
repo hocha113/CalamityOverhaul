@@ -14,15 +14,25 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Tidecall
     /// 客户端持环境声层（海风+浪涌双循环+海鸥啼鸣，镜像 OldNetAmbience 的槽位管理），
     /// 浪涌包络 <see cref="Swell"/> 同时喂给岸线泡沫与碎金光斑（TidecallAmbientRender），音画同拍；
     /// 权威端低频调度「离岸流」与「疯狗浪」两个机制实体。
-    /// 档位契约：只调离岸流频率与疯狗浪浪高，机制形状不随档位改变
+    /// 档位契约：只调离岸流频率与疯狗浪浪高，机制形状不随档位改变；
+    /// 风雨联动：<see cref="StormSurge"/> 抬高浪涌包络下限并增益疯狗浪高度/频率，暴雨大风时浪更凶
     /// </summary>
     internal class TidecallAmbience : ModSystem
     {
         /// <summary>本地玩家的沙滩在场强度 0~1（进出 ~1.5s 缓升缓降，离开群系淡出不硬切）</summary>
         internal static float Presence { get; private set; }
 
-        /// <summary>浪涌包络 0~1：主周期 ~5.6s 与慢周期 ~13.7s 叠加，声量与泡沫摆动同源</summary>
+        /// <summary>浪涌包络 0~1：主周期 ~5.6s 与慢周期 ~13.7s 叠加，声量与泡沫摆动同源；风雨抬底见 <see cref="StormSurge"/></summary>
         internal static float Swell { get; private set; }
+
+        /// <summary>风雨联动强度 0~1：风速为主、降雨抬底（两者皆为全端同步的世界状态量，各端读值一致）</summary>
+        internal static float StormSurge {
+            get {
+                float wind = MathHelper.Clamp(MathF.Abs(Main.windSpeedCurrent) / 0.8f, 0f, 1f);
+                float rain = Main.raining ? 0.35f + 0.30f * Main.maxRaining : 0f;
+                return MathHelper.Clamp(0.75f * wind + rain, 0f, 1f);
+            }
+        }
 
         /// <summary>Boss 在场时纯视觉氛围保留但减弱的统一系数</summary>
         internal static float BossDim => CWRWorld.HasBoss ? 0.55f : 1f;
@@ -48,7 +58,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Tidecall
         private static readonly int[] RipIntervalByTier = [1140, 880, 660];
         /// <summary>疯狗浪浪高（像素），档位只调浪高</summary>
         internal static readonly int[] WaveHeightByTier = [96, 128, 160];
-        /// <summary>疯狗浪间隔（不随档位变化，低频）</summary>
+        /// <summary>疯狗浪间隔（不随档位变化，低频；风雨联动只在投放处做数值缩短）</summary>
         private const int WaveIntervalBase = 1900;
         /// <summary>疯狗浪伤害：锚定海洋原版粉水母接触伤害 20 × 0.5（DamageFrac 惯例）</summary>
         private const int WaveDamage = 10;
@@ -111,7 +121,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Tidecall
             }
             float main = 0.5f + 0.5f * MathF.Sin(swellClock * MathHelper.TwoPi / 5.6f);
             float slow = 0.5f + 0.5f * MathF.Sin(swellClock * MathHelper.TwoPi / 13.7f + 1.3f);
-            Swell = main * (0.45f + 0.55f * slow);
+            float baseline = main * (0.45f + 0.55f * slow);
+            //风雨抬底：暴雨大风时海面不再有真正的平静期（周期结构不动，声画同拍照旧走 Swell）
+            Swell = baseline + (1f - baseline) * (0.42f * StormSurge);
 
             if (Presence <= 0.02f || Main.gamePaused) {
                 return;
@@ -278,11 +290,14 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Tidecall
                     continue;
                 }
 
+                //风雨调制：档位仍从 WaveHeightByTier 取基数，暴雨大风只做高度增益与间隔缩短（机制形状不变）
+                float storm = StormSurge;
+                float waveHeight = WaveHeightByTier[tier - 1] * (1f + 0.30f * storm);
                 //出生在岸线向海约 55 格处的水面上，向陆压来
                 Vector2 spawn = new(shoreWorldX + seaDir * TidecallRogueWaveProj.ApproachTiles * 16f, surfaceY * 16f);
                 Projectile.NewProjectile(new EntitySource_Misc("CWRTidecallWave"), spawn, Vector2.Zero,
-                    waveType, WaveDamage, 3f, Main.myPlayer, -seaDir, WaveHeightByTier[tier - 1], shoreX);
-                waveTimer = WaveIntervalBase + Main.rand.Next(-480, 481);
+                    waveType, WaveDamage, 3f, Main.myPlayer, -seaDir, waveHeight, shoreX);
+                waveTimer = WaveIntervalBase - (int)(560f * storm) + Main.rand.Next(-480, 481);
                 return;
             }
         }

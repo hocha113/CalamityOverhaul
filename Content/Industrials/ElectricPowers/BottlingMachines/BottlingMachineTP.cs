@@ -285,15 +285,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.BottlingMachines
             else {
                 lamp = FluidVFX.Glow(new Color(255, 170, 50), 0.4f + 0.25f * MathF.Sin(animTime * 2.2f));
             }
-            spriteBatch.Draw(px, new Rectangle((int)(basePos.X + Width) - 6, (int)basePos.Y + 4, 3, 3), lamp);
+            spriteBatch.Draw(px, new Rectangle((int)(basePos.X + Width) - 12, (int)basePos.Y + 8, 6, 6), lamp);
 
             if (!hasInput) {
                 //最后一件输入被消耗的那次完成:借成品贴图把闪光打完
                 if (flashT > 0.03f && lastOutputType > 0) {
                     Main.instance.LoadItem(lastOutputType);
                     Texture2D outTex = TextureAssets.Item[lastOutputType].Value;
-                    float outFit = MathF.Min(15f / outTex.Width, 15f / outTex.Height);
-                    Vector2 outPos = new(basePos.X + Width / 2f, basePos.Y + Height - 10f);
+                    float outFit = MathF.Min(30f / outTex.Width, 30f / outTex.Height);
+                    Vector2 outPos = new(basePos.X + Width / 2f, basePos.Y + Height - 20f);
                     spriteBatch.Draw(outTex, outPos, null, FluidVFX.Glow(Color.White, flashT * 0.85f),
                         0f, outTex.Size() * 0.5f, outFit, SpriteEffects.None, 0f);
                 }
@@ -303,8 +303,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.BottlingMachines
             //容器剪影:输入物品缩进机面下部
             Main.instance.LoadItem(InputItem.type);
             Texture2D itemTex = TextureAssets.Item[InputItem.type].Value;
-            float fit = MathF.Min(15f / itemTex.Width, 15f / itemTex.Height);
-            Vector2 bottleCenter = new(basePos.X + Width / 2f, basePos.Y + Height - 10f);
+            float fit = MathF.Min(30f / itemTex.Width, 30f / itemTex.Height);
+            Vector2 bottleCenter = new(basePos.X + Width / 2f, basePos.Y + Height - 20f);
             Vector2 origin = itemTex.Size() * 0.5f;
             spriteBatch.Draw(itemTex, bottleCenter, null, new Color(120, 126, 138).MultiplyRGB(lit),
                 0f, origin, fit, SpriteEffects.None, 0f);
@@ -328,13 +328,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.BottlingMachines
             //软管脉动:作业中两粒液色辉点自机顶滑向瓶口
             if (visualWorking) {
                 Texture2D glow = CWRAsset.SoftGlow.Value;
-                Vector2 hoseTop = new(basePos.X + Width / 2f, basePos.Y + 4f);
-                Vector2 hoseBottom = bottleCenter - new Vector2(0f, itemTex.Height * fit * 0.5f + 1f);
+                Vector2 hoseTop = new(basePos.X + Width / 2f, basePos.Y + 8f);
+                Vector2 hoseBottom = bottleCenter - new Vector2(0f, itemTex.Height * fit * 0.5f + 2f);
                 for (int i = 0; i < 2; i++) {
                     float t = (animTime * 0.9f + i * 0.5f) % 1f;
                     Vector2 dotPos = Vector2.Lerp(hoseTop, hoseBottom, t);
                     spriteBatch.Draw(glow, dotPos, null, FluidVFX.Glow(style.Bright, 0.4f * MathF.Sin(t * MathHelper.Pi)),
-                        0f, glow.Size() * 0.5f, 0.07f, SpriteEffects.None, 0f);
+                        0f, glow.Size() * 0.5f, 0.12f, SpriteEffects.None, 0f);
                 }
             }
 

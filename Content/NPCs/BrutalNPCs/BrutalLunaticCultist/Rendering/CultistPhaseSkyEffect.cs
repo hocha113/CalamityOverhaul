@@ -30,15 +30,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
             }
             float target = 0f;
             float phaseTarget = VisualPhase;
-            foreach (NPC npc in Main.ActiveNPCs) {
-                if (npc.type != NPCID.CultistBoss || !npc.TryGetOverride(out CultistBossAI _)) {
-                    continue;
-                }
-                float distance = Vector2.Distance(npc.Center, Main.LocalPlayer.Center);
-                float near = 1f - MathHelper.Clamp((distance - 2000f) / 1200f, 0f, 1f);
-                if (near > target) {
-                    target = near;
-                    phaseTarget = npc.ai[0];
+            //强度已归零且近两帧无教徒盖戳时跳过全表扫描；强度未归零则继续扫，
+            //时停中 AI 停摆（戳过期）也能靠这条继续找到冻结的教徒、天幕不塌
+            if (Intensity > 0f || CultistBossAI.PresenceStamp.ActiveWithin()) {
+                foreach (NPC npc in Main.ActiveNPCs) {
+                    if (npc.type != NPCID.CultistBoss || !npc.TryGetOverride(out CultistBossAI _)) {
+                        continue;
+                    }
+                    float distance = Vector2.Distance(npc.Center, Main.LocalPlayer.Center);
+                    float near = 1f - MathHelper.Clamp((distance - 2000f) / 1200f, 0f, 1f);
+                    if (near > target) {
+                        target = near;
+                        phaseTarget = npc.ai[0];
+                    }
                 }
             }
             Intensity = MathHelper.Lerp(Intensity, target, 0.04f);

@@ -92,6 +92,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
         /// <summary>正在投技流程的公爵；无则全 null</summary>
         private static DukeFishronAI FindGrabBoss(out NPC boss) {
             boss = null;
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必扫表
+                return null;
+            }
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (npc.type != NPCID.DukeFishron) {
                     continue;

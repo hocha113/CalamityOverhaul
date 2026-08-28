@@ -182,6 +182,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
 
         /// <summary>正抓着本端玩家的拳，无则 null</summary>
         private NPC FindGrabbingMe() {
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必扫表(拳在场必有本体撑旗)
+                return null;
+            }
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (npc.type != NPCID.GolemFistLeft && npc.type != NPCID.GolemFistRight) {
                     continue;

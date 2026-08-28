@@ -1395,6 +1395,15 @@ DungeonworldLoadingScreen: {
 	// RevealHold: Lighting the candles
 }
 
+DungeonworldGuideNotes: {
+	// LayerNoteGaol: The Gaols. Where the shackles and rust hang thickest, that way lies the deep gaol cell.
+	// LayerNoteFlood: The Drowned Ward. All the water drains toward the flood gallery at the very bottom. So should you.
+	// LayerNoteProof: The Foundry. The gears never stopped, and the rail at the very bottom runs straight to the proofing hall.
+	// ApproachGaol: No room left on the walls for more shackles. The cell ahead is locked from the outside.
+	// ApproachFlood: The waterline has climbed to the ceiling. Something in the flood gallery ahead is still waiting for the water.
+	// ApproachProof: The rail ends here. The furnaces are still warm. The proofing hall expects today's workpiece.
+}
+
 HadalworldLoadingScreen: {
 	// BandName0: Sunlit Zone
 	// BandName1: Twilight Zone
@@ -1418,6 +1427,23 @@ KiyumeLoadingScreen: {
 	// VerseExit: The lake has let go. Don't look back.
 	// StatusEnter: Fog coming in off the lake
 	// StatusExit: The village sinking back into the fog
+}
+
+KiameLoadingScreen: {
+	// TitleEnter: Kiame
+	// TitleExit: Rainbreak
+	// VerseEnter: The hollows filled overnight, and no one came for the umbrella.
+	// VerseExit: The umbrella is folded. The rain goes on.
+	// StatusEnter: Rain flooding the hollows
+	// StatusExit: The rain falling away
+}
+
+// KiameExitKeeper.ExitHint: "[Right Click] Fold the umbrella and return"
+
+KiameWake: {
+	// WakeOni: The thing under the umbrella let go, and you woke.
+	// WakeDrowned: The black water closed over your head, and you woke.
+	// WakeGeneric: You woke from the rain.
 }
 
 OldNetTexts: {

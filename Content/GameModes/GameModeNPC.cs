@@ -9,12 +9,12 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes
 {
     /// <summary>
-    /// 游戏模式的通用敌怪增强，作用于没有 Brutal AI 重制的敌人。
+    /// 游戏模式的通用敌怪增强，血量与伤害的档位增幅作用于全体敌人，重制 Boss 也不例外。
     /// 属性缩放在 <see cref="SetDefaults"/> 绑定：世界旗标已全端同步，两端确定性执行零网络，
     /// 切换模式只影响此后生成的个体（与 AI 覆盖同语义）。
-    /// Brutal 重制类型不吃通用增幅，改走大师基线锚定（<see cref="GameModeTuning.MasterAnchorCompensation"/>），
-    /// 保证重制 Boss 在任何世界难度下都不低于原版大师的血量伤害。
-    /// 提速与常态狂暴只作用于非 Boss，保护 Boss 招式编排的可读性
+    /// Brutal 重制类型多走一层大师基线锚定（<see cref="GameModeTuning.MasterAnchorCompensation"/>），
+    /// 把世界难度补足到大师后再乘档位增幅，保证任何世界难度下的强度一致。
+    /// 提速与常态狂暴只作用于非 Boss 且非重制类型，保护 Boss 招式编排的可读性
     /// </summary>
     internal class GameModeNPC : GlobalNPC
     {
@@ -30,8 +30,13 @@ namespace CalamityOverhaul.Content.GameModes
                 return;
             }
 
+            float statMult = GameModeTuning.StatMult(tier);
+
+            //重制类型：先把世界难度补到大师基线，再和其余敌人一样吃档位增幅。
+            //提速与常态狂暴仍不给（boundTier 留 0），招式编排的节奏由重制自己掌控
             if (GameModeNPCLoader.BrutalOverriddenTypes.Contains(npc.type)) {
-                ApplyMasterAnchor(npc);
+                (float lifeComp, float damageComp) = GameModeTuning.MasterAnchorCompensation(npc.type);
+                ScaleStats(npc, lifeComp * statMult, damageComp * statMult);
                 return;
             }
 
@@ -40,34 +45,28 @@ namespace CalamityOverhaul.Content.GameModes
             }
             boundTier = tier;
 
-            float statMult = GameModeTuning.StatMult(tier);
-            npc.lifeMax = (int)(npc.lifeMax * statMult);
-            npc.damage = (int)(npc.damage * statMult);
+            ScaleStats(npc, statMult, statMult);
             if (RageEligible(npc)) {
                 //常态狂暴：越来越推不动
                 npc.knockBackResist *= GameModeTuning.KnockbackMult(tier);
             }
-            //恢复 SetDefaults 不变量；顺序无关（原版 ScaleStats 是乘法，先后可交换）
-            npc.life = npc.lifeMax;
-            npc.defDamage = npc.damage;
-            npc.defDefense = npc.defense;
         }
 
         /// <summary>
-        /// 重制 Boss 的大师基线补偿：世界难度不足大师时把血量伤害补足到大师基线，
-        /// 重制自身的系数（各 SetProperty 里的乘法）永远乘在这个底上。
-        /// 此钩子先于原版 ScaleStats 执行，补偿 × 世界缩放 == 大师缩放，乘法可交换故顺序无关
+        /// 缩放血量与伤害并恢复 SetDefaults 不变量。
+        /// 此钩子先于原版 ScaleStats 执行，乘法可交换故与世界缩放顺序无关；
+        /// 重制类型的大师基线补偿也从这里乘进去（补偿 × 世界缩放 == 大师缩放）
         /// </summary>
-        private static void ApplyMasterAnchor(NPC npc) {
-            (float lifeComp, float damageComp) = GameModeTuning.MasterAnchorCompensation(npc.type);
-            if (lifeComp > 1f) {
-                npc.lifeMax = (int)(npc.lifeMax * lifeComp);
-                npc.life = npc.lifeMax;
+        private static void ScaleStats(NPC npc, float lifeMult, float damageMult) {
+            if (lifeMult > 1f) {
+                npc.lifeMax = (int)(npc.lifeMax * lifeMult);
             }
-            if (damageComp > 1f && npc.damage > 0) {
-                npc.damage = (int)(npc.damage * damageComp);
-                npc.defDamage = npc.damage;
+            if (damageMult > 1f && npc.damage > 0) {
+                npc.damage = (int)(npc.damage * damageMult);
             }
+            npc.life = npc.lifeMax;
+            npc.defDamage = npc.damage;
+            npc.defDefense = npc.defense;
         }
 
         /// <summary>通用增强资格：敌对、非小动物、非假人（重制类型已在上游分流）</summary>
@@ -129,8 +128,8 @@ namespace CalamityOverhaul.Content.GameModes
     {
         /// <summary>
         /// 实际会接管的 Brutal 重制 NPC 类型。
-        /// 模式开启时这些类型由 AI 重制承担难度，不吃通用增强。
-        /// <see cref="BrutalNPCOverride.DisabledReworkTypes"/> 里的类型不进此表，留给通用增强。
+        /// 这些类型照吃档位血量伤害增幅，只是多一层大师基线锚定，且不吃提速与常态狂暴。
+        /// <see cref="BrutalNPCOverride.DisabledReworkTypes"/> 里的类型不进此表，走完整通用增强。
         /// </summary>
         internal static readonly HashSet<int> BrutalOverriddenTypes = [];
 

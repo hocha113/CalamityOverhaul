@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.GameModes
 
     /// <summary>
     /// 模式的表现脸：名字/台词/色板/纹样按脸取。
-    /// 毁灭是修罗在天顶世界的呈现，只存在于表现层与数值层，不进旗标与网络
+    /// 毁灭是修罗在传奇世界（FTW）的呈现，只存在于表现层与数值层，不进旗标与网络
     /// </summary>
     internal enum GameModeFace : byte
     {
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.GameModes
         Brutal,
         /// <summary>修罗地狱</summary>
         Asura,
-        /// <summary>死神永生（天顶世界的修罗）</summary>
+        /// <summary>死神永生（传奇世界的修罗）</summary>
         Annihilation,
         /// <summary>神工开物（神匠模式，无天顶变脸）</summary>
         GodSmith,
@@ -50,8 +50,14 @@ namespace CalamityOverhaul.Content.GameModes
         /// <summary>神匠模式已开启（独立世界旗标，不随残酷开关联动；内容向，不进 <see cref="EffectiveTier"/>）</summary>
         public static bool GodSmithActive { get; internal set; }
 
-        /// <summary>毁灭模式：修罗在天顶世界的派生终相（隐藏难度，无独立旗标与网络协议）</summary>
-        public static bool AnnihilationActive => AsuraActive && Main.zenithWorld;
+        /// <summary>毁灭模式：修罗在传奇世界（FTW，天顶种子亦满足）的派生终相（隐藏难度，无独立旗标与网络协议）</summary>
+        public static bool AnnihilationActive => AsuraActive && Main.getGoodWorld;
+
+        /// <summary>创建界面预选残酷后的待生效旗标，世界生成完毕由 <see cref="PostWorldGen"/> 消费</summary>
+        internal static bool PendingBrutal;
+
+        /// <summary>创建界面预选修罗后的待生效旗标（随残酷一并落地）</summary>
+        internal static bool PendingAsura;
 
         /// <summary>当前生效档位：0 无 / 1 残酷 / 2 修罗 / 3 毁灭</summary>
         public static int EffectiveTier {
@@ -62,7 +68,7 @@ namespace CalamityOverhaul.Content.GameModes
                 if (!AsuraActive) {
                     return 1;
                 }
-                return Main.zenithWorld ? 3 : 2;
+                return Main.getGoodWorld ? 3 : 2;
             }
         }
 
@@ -91,6 +97,33 @@ namespace CalamityOverhaul.Content.GameModes
             GodSmithActive = tag.TryGet(nameof(GodSmithActive), out bool godSmith) && godSmith;
         }
 
+        /// <summary>
+        /// 世界头部旗标：写进 .twld 头部，菜单阶段世界选择列表经
+        /// <see cref="Terraria.IO.WorldFileData.TryGetHeaderData{T}(out TagCompound)"/> 读取，
+        /// 键与 <see cref="SaveWorldData"/> 同名同规（仅真值写入）
+        /// </summary>
+        public override void SaveWorldHeader(TagCompound tag) {
+            if (BrutalActive) {
+                tag[nameof(BrutalActive)] = true;
+            }
+            if (AsuraActive) {
+                tag[nameof(AsuraActive)] = true;
+            }
+            if (GodSmithActive) {
+                tag[nameof(GodSmithActive)] = true;
+            }
+        }
+
+        /// <summary>创建界面预选的模式在此落地：直写旗标不走 Apply，新世界不播切换演出；消费后必清零</summary>
+        public override void PostWorldGen() {
+            if (PendingBrutal) {
+                BrutalActive = true;
+                AsuraActive = PendingAsura;
+            }
+            PendingBrutal = false;
+            PendingAsura = false;
+        }
+
         public override void NetSend(BinaryWriter writer) {
             writer.Write(BrutalActive);
             writer.Write(AsuraActive);
@@ -113,7 +146,7 @@ namespace CalamityOverhaul.Content.GameModes
             _ => GodSmithActive,
         };
 
-        /// <summary>模式种类在本世界的表现脸：天顶世界里修罗恒以毁灭示人（含休眠态），神匠无变脸</summary>
+        /// <summary>模式种类在本世界的表现脸：传奇世界（FTW）里修罗恒以毁灭示人（含休眠态），神匠无变脸</summary>
         public static GameModeFace FaceOf(GameModeKind kind) {
             if (kind == GameModeKind.Brutal) {
                 return GameModeFace.Brutal;
@@ -121,7 +154,7 @@ namespace CalamityOverhaul.Content.GameModes
             if (kind == GameModeKind.GodSmith) {
                 return GameModeFace.GodSmith;
             }
-            return Main.zenithWorld ? GameModeFace.Annihilation : GameModeFace.Asura;
+            return Main.getGoodWorld ? GameModeFace.Annihilation : GameModeFace.Asura;
         }
 
         /// <summary>

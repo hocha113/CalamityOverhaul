@@ -188,10 +188,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         /// <summary>拖尾采样步长(px)</summary>
         private const float TrailSampleStep = 8f;
-        /// <summary>拖尾点数上限,总长约 200px</summary>
-        private const int TrailMaxPoints = 26;
+        /// <summary>
+        /// 拖尾点数上限,总长约 320px——幕级宽度配短尾会显局促;
+        /// 高速下最老点死于此处硬删,渲染层尾端包络负责删前压熄
+        /// </summary>
+        private const int TrailMaxPoints = 40;
         /// <summary>拖尾点寿命(tick)</summary>
-        internal const int TrailLifetime = 26;
+        internal const int TrailLifetime = 30;
         /// <summary>单帧位移超过该值视为传送瞬挪,斩断不拉横跨屏幕的带</summary>
         private const float TrailTeleportBreak = 130f;
 
@@ -244,6 +247,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 (StateTimer - PourTiltFrames) / (float)PourHoldFrames, 0f, 1f)),
             _ => 0f,
         };
+
+        /// <summary>
+        /// 倒撑蓄力读数(符系口径):仅 Flip 蓄墨期非零,倾覆排空不算。
+        /// State/StateTimer 走原版 ai 同步,旁观端读数近似一致——沛「盆满」演出读这里
+        /// </summary>
+        internal float FlipChargeFill => State == UmbrellaState.Flip ? ChargeFill : 0f;
 
         /// <summary>
         /// 一波墨雨节拍的完整解:周期/滴数/错拍/是否齐掷波。

@@ -205,7 +205,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
             }
 
             float quadW = right - left;
-            float quadH = FlameCanvasH + LipCanvasH;
+            //让位坑把局部水面压到画布下缘之外会截断火根，按坑深扩下缘
+            float troughExtra = MathF.Max(kdp.TideTroughDepthPx, 0f);
+            float quadH = FlameCanvasH + LipCanvasH + troughExtra;
             Vector2 topLeft = new(left, kdp.LakeWorldY - FlameCanvasH);
 
             fx.Parameters["uTime"]?.SetValue(kdp.EffectTime);
@@ -225,6 +227,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaWisps
                 / MathF.Max(Main.GameViewMatrix.Zoom.Y, 0.01f);
             fx.Parameters["uWobblePx"]?.SetValue(wobblePx);
             KikasaDomainDeco.FillWaveUniformsWorld(fx);
+            //让位坑（世界域）：火贴着分开的水面走进坑里
+            KikasaDomainDeco.FillTideUniformsWorld(fx, kdp);
 
             GraphicsDevice gd = Main.instance.GraphicsDevice;
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,

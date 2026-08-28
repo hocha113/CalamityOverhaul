@@ -1,0 +1,50 @@
+GsCopperShortsword.Desc:
+	'''
+	Reforged: every hit strikes a spark off the copper edge;
+	the fourth spark bursts into flame at the point, igniting nearby foes
+	'''
+GsTinShortsword.Desc:
+	'''
+	Reforged: chain your thrusts to climb the tin scale, each note higher than the last;
+	at full chime every thrust rings out a rippling pulse and bites a little deeper
+	'''
+GsIronShortsword.Desc:
+	'''
+	Reforged: the recovery stance holds a guard that blunts incoming blows by 30%;
+	block a hit to ready a riposte, and your next thrust within a second strikes true
+	'''
+GsLeadShortsword.Desc:
+	'''
+	Reforged: the corroded lead edge poisons whatever it touches;
+	striking an already poisoned foe bites 25% deeper into the rot
+	'''
+GsSilverShortsword.Desc:
+	'''
+	Reforged: mirror-polished silver that drinks moonlight, striking 25% harder and 10% faster at night;
+	under a blood moon each hit steals back a sliver of life
+	'''
+GsTungstenShortsword.Desc:
+	'''
+	Reforged: a dense tungsten core rewards a brief hold before the thrust;
+	a full charge lunges half again as far, punching through armor and everything in line
+	'''
+GsGoldShortsword.Desc:
+	'''
+	Reforged: gilded edge that shakes loose coins, one hit in four rattles change from the wound;
+	kills always spill a handful
+	'''
+GsPlatinumShortsword.Desc:
+	'''
+	Reforged: the thrust outruns its own light, leaving a platinum afterimage hanging along the line;
+	foes that brush the lingering light take 40% damage
+	'''
+GsGladius.Desc:
+	'''
+	Reforged: legion drill in three beats, two quick thrusts then a shield-step heavy;
+	keep the rhythm and each thrust comes faster, up to three tempo stacks
+	'''
+GsRuler.Desc:
+	'''
+	Reforged: discipline demands exact measurement, land the very tip for a 1.6x graded strike;
+	sloppy hits closer to the hand are marked down to 0.85x
+	'''

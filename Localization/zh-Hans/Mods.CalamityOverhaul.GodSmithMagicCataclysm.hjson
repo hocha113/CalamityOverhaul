@@ -2,56 +2,69 @@ GsBatScepter.Desc:
 	'''
 	重铸：命中积攒夜幕，集满后右键召唤万蝠临渊
 	月轮升起，蝠群成波扑向敌人，余下的绕你结成护环
+	每第 8 次蝙蝠咬中，分出一只幻影蝠扑向近旁另一个敌人
 	'''
 GsRazorpine.Desc:
 	'''
 	重铸：命中积攒松脂，集满后右键掀起针叶风暴
 	针叶旋涡绕身收紧，散场后在脚下铺一层松针毯
+	松针命中涂抹松脂，同一敌积 5 层，四支松针围环收拢刺向它
 	'''
 GsBlizzardStaff.Desc:
 	'''
 	重铸：命中积攒风雪，集满后右键在光标处降下白灾
 	特大暴雪轰击区域，散场后地面留下冰晶棘
+	每第 5 支冰矢是霜种，坠灭处炸开一小团霜爆
 	'''
 GsStaffofEarth.Desc:
 	'''
 	重铸：命中积攒地怒，集满后右键在光标处发动造山
 	岩柱成波自地面顶升，碎石横飞，余下熔岩脉滩
+	巨石每碾穿一名敌人伤害递增，碎裂处顶起一根半高岩柱
 	'''
 GsBetsysWrath.Desc:
 	'''
 	重铸：命中积攒龙焰，集满后右键唤来龙王孽焰
 	贝特西的影子俯冲三趟拖出焰幕，留下一片咒火滩
+	命中带咒之敌额外积攒龙焰，每第 4 次咒火命中翻起一团孽火爆
 	'''
 GsNightglow.Desc:
 	'''
 	重铸：命中积攒曦光，集满后右键在光标上空展开极光帷幕
 	帷幕灼烧帘中之敌，并向下方垂落光矛
+	每第 5 次命中，一支极光光矛自敌人头顶垂落
 	'''
 GsStellarTune.Desc:
 	'''
 	重铸：命中积攒乐章，集满后右键开演星海终章
 	星和弦踩着节拍自动奏向敌人，演奏时你的脚步更轻快
+	连续命中攀音阶，第 8 音落成一记和弦星爆
 	'''
 GsResonanceScepter.Desc:
 	'''
 	重铸：命中积攒共振，集满后右键在光标区引发谐振崩解
 	五道驻波交叉驻留，波节点持续打击滞留之敌
+	王家音波每穿透第 3 名敌人，波节就在他身上奏响一记驻波脉冲
 	'''
 GsNebulaArcanum.Desc:
 	'''
 	重铸：命中积攒奥秘，集满后右键旋开星云漩臂
 	三条旋臂绕你公转碾磨敌人，小敌被缓缓拽向臂心
+	奥秘巨球飞行中辉体渐涨，缓缓把小敌拽向球心
+	计量渐满时，杖尖星雾越聚越浓
 	'''
 GsNebulaBlaze.Desc:
 	'''
 	重铸：命中积攒烈焰，集满后右键在光标附近的目标上标记新星
 	三层环爆错拍引爆，中心引力窟吞吸小敌
+	星云喷发强化弹命中，必定点燃一枚微新星
 	'''
 GsLunarFlare.Desc:
 	'''
 	重铸：命中积攒月相，集满后右键升起月蚀审判
 	蚀盘倾泻十二连月焰瀑，每第三落补一道幻影月光柱
+	每第 4 次施放自天穹补落一道苍白月焰
+	计量渐满时，书页月辉越聚越浓
 	'''
 GsBatSwarmDirector.DisplayName: 万蝠临渊
 GsPineStormDirector.DisplayName: 针叶风暴
@@ -65,5 +78,19 @@ GsStellarFinaleDirector.DisplayName: 星海终章
 GsResonanceCollapseDirector.DisplayName: 谐振崩解
 GsNebulaSpiralDirector.DisplayName: 星云漩臂
 GsNovaDetonationDirector.DisplayName: 新星引爆
+GsSpectreStaff.Desc:
+	'''
+	重铸：命中积攒收魂，集满后右键在光标处掀起魂渊潮汐
+	每攒过四分之一计量，就分出一缕副魂扑向近旁另一个敌人
+	三涌潮头环状扫荡敌群，潮头命中会渡魂回血，每秒至多6点
+	'''
 GsLunarEclipseDirector.DisplayName: 月蚀审判
 GsMoonPillarProj.DisplayName: 幻影月光柱
+GsSpectreStaffTideDirector.DisplayName: 魂渊潮汐
+GsInfernoFork.Desc:
+	'''
+	重铸：火球盘旋着炉渣火屑，命中积攒积炎，集满后右键在光标处点起燎原
+	火线沿地蔓延，三波火浪横扫两翼，波间天降火雨，散场后余下焚野烬滩
+	'''
+GsInfernoForkWildfireDirector.DisplayName: 燎原
+GsCataclysmRiderBurstProj.DisplayName: 灾变余波

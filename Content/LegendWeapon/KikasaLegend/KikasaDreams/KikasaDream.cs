@@ -43,20 +43,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
         /// KikasaDrown.MaxRange 同源：覆盖最大缩放下整屏可视，不随各端屏幕尺寸漂移</summary>
         public const float WorldRange = 4000f;
 
+        //梦心快照：每逻辑帧至多重建一次，免得 SetControls 等逐玩家调用方
+        //把"玩家表 × TryGetModPlayer"打成平方量级
+        private static readonly List<Vector2> dreamCenterCache = [];
+        private static uint dreamCenterCacheFrame = uint.MaxValue;
+
+        private static List<Vector2> DreamCenters() {
+            if (dreamCenterCacheFrame != Main.GameUpdateCount) {
+                dreamCenterCacheFrame = Main.GameUpdateCount;
+                CollectDreamWorldCenters(dreamCenterCache);
+            }
+            return dreamCenterCache;
+        }
+
         /// <summary>
         /// 该世界坐标此刻是否落在任一玩家的梦世界侧（拉入结算后~归返结算前）。
         /// 每端从已同步的领域快照自算同一答案，与湖面物理同款的一致性模型；
         /// 专用服务器不持有领域相位（KikasaDomainNet 既定契约），恒 false
         /// </summary>
         public static bool DreamWorldAt(Vector2 worldPos) {
-            for (int i = 0; i < Main.maxPlayers; i++) {
-                Player caster = Main.player[i];
-                if (caster?.active != true
-                    || !caster.TryGetModPlayer(out KikasaDomainPlayer domain)
-                    || !domain.DreamWorldVisual) {
-                    continue;
-                }
-                if (Vector2.DistanceSquared(worldPos, caster.Center)
+            List<Vector2> centers = DreamCenters();
+            for (int i = 0; i < centers.Count; i++) {
+                if (Vector2.DistanceSquared(worldPos, centers[i])
                     <= WorldRange * WorldRange) {
                     return true;
                 }

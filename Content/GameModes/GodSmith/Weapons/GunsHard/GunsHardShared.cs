@@ -243,6 +243,43 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard
         /// <summary>过热卡壳触发瞬间（owner 端；播卡壳演出）</summary>
         protected virtual void OnJam(Item item, Player player, GsFireMode mode) { }
 
+        //==================== 族级后坐姿态（密封；位移 + 角度踢，参数子类可调） ====================
+
+        /// <summary>后坐位移幅度 px（沿瞄准反向后挫，出膛帧最大）；0 = 关闭</summary>
+        protected virtual float RecoilShift => 3f;
+
+        /// <summary>后坐角度踢幅度（弧度，枪口上抬，仅本机玩家应用）</summary>
+        protected virtual float RecoilKick => 0.045f;
+
+        /// <summary>按当前模式/状态缩放后坐（重炮档加重等），默认恒 1</summary>
+        protected virtual float RecoilScale(Item item, Player player, GsFireMode mode) => 1f;
+
+        /// <summary>
+        /// 族级后坐：使用动画进度二次衰减包络，出膛帧最猛随后回位。
+        /// itemLocation 由原版每帧绝对赋值，负偏移各端安全；
+        /// itemRotation 远端来自同步不每帧重算，累减会转圈，角度踢只在本机玩家应用
+        /// </summary>
+        public sealed override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame) {
+            if (player.itemAnimationMax > 0) {
+                float env = player.itemAnimation / (float)player.itemAnimationMax;
+                env *= env;
+                if (env > 0f) {
+                    float scale = RecoilScale(item, player, CurrentMode(player));
+                    //镜像角乘朝向还原世界瞄准向，沿其反向后挫
+                    Vector2 aim = player.itemRotation.ToRotationVector2() * player.direction;
+                    player.itemLocation -= aim * (RecoilShift * scale * env);
+                    if (player.whoAmI == Main.myPlayer) {
+                        //镜像角坐标系里两个朝向枪口上抬都是减号
+                        player.itemRotation -= RecoilKick * scale * env;
+                    }
+                }
+            }
+            GsGunUseStyle(item, player, heldItemFrame);
+        }
+
+        /// <summary>后坐之后的姿态追加（枪口下压/自定义持握放这）</summary>
+        protected virtual void GsGunUseStyle(Item item, Player player, Rectangle heldItemFrame) { }
+
         //==================== 稳息表帮手 ====================
 
         /// <summary>

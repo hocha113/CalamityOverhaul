@@ -80,7 +80,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
             //oldPos 残影缓存
             NPCID.Sets.TrailingMode[npc.type] = 1;
             NPCID.Sets.TrailCacheLength[npc.type] = 12;
-            InitializeStateContext();
+            //状态机不在这里装配：SetProperty 跟着 NPC.SetDefaults 走，
+            //连世界加载期的模板 NPC 都会进来，且此刻 npc.Center 还不是真实出生点。
+            //在这里装配等于让入场态的 OnEnter 对着幽灵实体放演出（进世界白响一声蜂鸣，
+            //真身出生时蜜雾也落在错位置）。交给 AI() 首帧的惰性初始化
         }
 
         private void InitializeStateContext() {

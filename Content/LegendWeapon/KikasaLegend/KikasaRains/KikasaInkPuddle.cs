@@ -46,6 +46,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>判定关断旋钮(霜镜无 DoT 等):OnPuddleUpdate 逐帧写,每帧派发前复位</summary>
         internal bool TalismanDamageOff;
 
+        /// <summary>
+        /// 符用持久计量(潦「涨潦」的续命总账等):随洼实例存续、不复位不同步,语义由挂符自定。
+        /// 续命写在所有者端且带 netUpdate,各端凭 timeLeft 回顶自行观测,旁观端近似一致
+        /// </summary>
+        internal float TalismanMeter;
+
+        /// <summary>符用寿命锚(潦续命边沿检测的上帧 timeLeft):0=未立锚,初始化与推进由挂符自理</summary>
+        internal int TalismanLifeAnchor;
+
         private float Seed => Projectile.identity * 0.7391f % 3.71f;
 
         /// <summary>半径倍率(潦符),生成包 ai[0],0 视作 1</summary>

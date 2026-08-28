@@ -232,3 +232,8 @@ AbyssalPressure: {
 	// DisplayName: Abyssal Pressure
 	// Description: Wrapped in crushing deep-sea pressure, movement is severely impeded
 }
+
+BlessErosionBuff: {
+	// DisplayName: Erosion
+	// Description: The Ring of Rot gnaws the armor, reducing defense by 10
+}

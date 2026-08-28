@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override int SortOrder => 20;
         internal override ushort NetworkId => 1;
         internal override WraithCatalogState CatalogState => WraithCatalogState.Usable;
-        internal override float RevivalCost => 0.04f;
+        internal override float RevivalCost => 0.02f;
         internal override float ErosionCost => 0.01f;
         internal override WraithMark Emits => WraithMark.Lit;
         internal override WraithSynergyRule[] BuildSynergyRules()
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override int SortOrder => 30;
         internal override ushort NetworkId => 2;
         internal override WraithCatalogState CatalogState => WraithCatalogState.Usable;
-        internal override float RevivalCost => 0.25f;
+        internal override float RevivalCost => 0.125f;
         internal override float ErosionCost => 0.22f;
         internal override WraithMark Emits => WraithMark.Betrothed;
         //「喜堂」的冻结效果由缚印的 Timelock 状态属性兑现（WraithStateDef），
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override int SortOrder => 40;
         internal override ushort NetworkId => 3;
         internal override WraithCatalogState CatalogState => WraithCatalogState.Usable;
-        internal override float RevivalCost => 0.25f;
+        internal override float RevivalCost => 0.125f;
         internal override float ErosionCost => 0.30f;
         //「顶劫」的泄压结算在 WraithPlayer.RelieveCovenRevival，这条规则只声明边
         internal override WraithSynergyRule[] BuildSynergyRules() => [
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override int SortOrder => 50;
         internal override ushort NetworkId => 4;
         internal override WraithCatalogState CatalogState => WraithCatalogState.Usable;
-        internal override float RevivalCost => 0.09f;
+        internal override float RevivalCost => 0.045f;
         internal override float ErosionCost => 0.025f;
         internal override WraithMark Emits => WraithMark.Severed;
         internal override WraithSynergyRule[] BuildSynergyRules()
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override int SortOrder => 60;
         internal override ushort NetworkId => 5;
         internal override WraithCatalogState CatalogState => WraithCatalogState.Usable;
-        internal override float RevivalCost => 0.10f;
+        internal override float RevivalCost => 0.05f;
         internal override float ErosionCost => 0.035f;
         internal override WraithMark Emits => WraithMark.Gripped;
         internal override WraithSynergyRule[] BuildSynergyRules() => [
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override int SortOrder => 70;
         internal override ushort NetworkId => 0;
         internal override WraithCatalogState CatalogState => WraithCatalogState.Usable;
-        internal override float RevivalCost => 0.25f;
+        internal override float RevivalCost => 0.125f;
         internal override float ErosionCost => 0.18f;
         internal override WraithMark Emits => WraithMark.Soaked;
         internal override WraithSynergyRule[] BuildSynergyRules()

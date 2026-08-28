@@ -11,7 +11,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 {
     internal sealed class SandevistanPlayer : ModPlayer
     {
-        internal const int SnapshotInterval = 15;
+        //状态变化走 stateDirty 立即发送，这里只是丢包自愈的保活兜底：
+        //90 帧（1.5 秒）足够，原 15 帧等于空闲期每人每秒 4 包纯浪费
+        internal const int SnapshotInterval = 90;
         internal const int RecoveryDelayTicks = 120;
         internal const int SpawnInterval = 4;
         internal const float DefaultSlowFactor = 0.08f;

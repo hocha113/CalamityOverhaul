@@ -26,6 +26,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.VolleyBows.Project
         public const int ThemeVolt = 4;
         public const int ThemeTide = 5;
         public const int ThemeHoly = 6;
+        public const int ThemeEmber = 7;
+        public const int ThemePearl = 8;
 
         /// <summary>亮缘 / 主体 / 尾波 / Y 压缩（贴地溅射用 0.45，空中爆用 1）</summary>
         private static readonly (Color Bright, Color Main, Color Deep, float Squish)[] Themes = [
@@ -36,6 +38,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.VolleyBows.Project
             (new Color(220, 245, 255), new Color(120, 200, 255), new Color(50, 80, 190), 1f),
             (new Color(200, 245, 255), new Color(60, 170, 220), new Color(20, 70, 130), 1f),
             (new Color(255, 250, 200), new Color(255, 210, 110), new Color(170, 120, 40), 1f),
+            (new Color(255, 205, 150), new Color(235, 95, 55), new Color(125, 35, 18), 1f),
+            (new Color(255, 248, 240), new Color(238, 196, 220), new Color(150, 112, 162), 1f),
         ];
 
         private ref float Radius => ref Projectile.ai[0];
@@ -89,6 +93,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.VolleyBows.Project
                 ThemeVolt => SoundID.Item94 with { Volume = 0.55f },
                 ThemeTide => SoundID.Splash with { Volume = 0.8f },
                 ThemeHoly => SoundID.Item29 with { Volume = 0.7f },
+                ThemeEmber => SoundID.Item74 with { Volume = 0.5f, Pitch = 0.1f },
+                ThemePearl => SoundID.Item29 with { Volume = 0.5f, Pitch = 0.55f },
                 _ => SoundID.Item62 with { Volume = 0.55f, Pitch = 0.3f },
             };
             SoundEngine.PlaySound(sound, Projectile.Center);

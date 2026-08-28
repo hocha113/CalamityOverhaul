@@ -24,8 +24,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Brinefume.Proje
         internal const float HalfHeight = 260f;
         /// <summary>生成锚点相对水面的抬升量（墙体下缘略浸水面）</summary>
         internal const float AnchorLift = HalfHeight - 60f;
-        /// <summary>开始挂毒前的滞留宽限（给"走进去又立刻退出来"留反应窗）</summary>
-        private const int GraceTicks = 40;
+        /// <summary>开始挂毒前的滞留宽限（给"走进去又立刻退出来"留反应窗）。
+        /// 挂毒节拍按 30 帧对齐，本值须取 30 的整倍数才是真实首毒帧（旧值 40 实际在第 60 帧才起毒）</summary>
+        private const int GraceTicks = 90;
         /// <summary>曝露累积上限</summary>
         private const int ExposureCap = 1800;
 

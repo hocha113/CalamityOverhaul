@@ -1,4 +1,5 @@
-﻿using InnoVault.TileProcessors;
+﻿using CalamityOverhaul.Common;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -101,6 +102,9 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
             Rite = null;
         }
 
+        /// <summary>持有帧戳：任一祭坛压夜时盖戳，世界守卫据此跳过无持有者时的全 TP 表扫描</summary>
+        internal static ActivityStamp HoldStamp;
+
         public override void Update() {
             //阶段边沿：权威端翻 phaseRaw、客户端由 SyncVar 收到，两条路都在这里收敛成一次入场
             if (lastPhaseRaw != phaseRaw) {
@@ -110,6 +114,9 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
             }
             PhaseTimer++;
             AliveTime++;
+            if (HoldsBloodMoon) {
+                HoldStamp.Stamp();
+            }
 
             if (!VaultUtils.isClient) {
                 AdvancePhaseOnAuthority();
@@ -383,7 +390,12 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
                 return;
             }
 
-            bool held = AnyAltarHolding();
+            //无持有戳且上帧也没压夜：跳过全 TP 表扫描（时停中 TP Update 停摆时
+            //靠 heldLastTick 闩锁继续扫，压住的血夜不会被误收场）
+            bool held = false;
+            if (heldLastTick || BloodAltarTP.HoldStamp.ActiveWithin()) {
+                held = AnyAltarHolding();
+            }
             if (held) {
                 AssertBloodNight();
             }

@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Rendering;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -16,6 +17,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
     internal class FishronBubbleAI : BrutalNPCOverride
     {
         public override int TargetID => NPCID.DetonatingBubble;
+
+        /// <summary>在场帧戳：AI 与绘制各盖一次，水膜泡统一绘制层据此跳过无泡时的全表扫描</summary>
+        internal static ActivityStamp PresenceStamp;
 
         private int Mode => (int)npc.ai[0];
         private ref float Param => ref npc.ai[1];
@@ -45,10 +49,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
 
         /// <summary>着色器可用时本体交给 <see cref="Rendering.FishronBubbleRender"/> 单批绘制，缺失则回退原版</summary>
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            PresenceStamp.Stamp();
             return Rendering.FishronBubbleRender.PathReady ? false : null;
         }
 
         public override bool AI() {
+            PresenceStamp.Stamp();
             //体型系数初始化（服务端定，随生成同步）
             if (npc.ai[3] == 0f) {
                 if (!VaultUtils.isClient) {

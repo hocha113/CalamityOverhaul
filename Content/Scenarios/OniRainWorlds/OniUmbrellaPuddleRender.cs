@@ -29,17 +29,13 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 return;
             }
 
-            //已获伞的玩家看不见立伞，倒影同步消隐
-            if (!OniRainWorldUmbrella.ShouldShowForLocalPlayer()) {
-                return;
-            }
-
-            //找屏内的立伞（带余量），正常世界至多一把
+            //找屏内对本地玩家可见的立伞（含门伞子类），可见性按实例门禁裁；
+            //同屏多把时只映最先命中的一把（正常世界不会同屏）
             OniRainWorldUmbrella target = null;
             Rectangle view = new((int)Main.screenPosition.X - 240, (int)Main.screenPosition.Y - 240,
                 Main.screenWidth + 480, Main.screenHeight + 480);
             foreach (OniRainWorldUmbrella umbrella in ActorLoader.GetActiveActors<OniRainWorldUmbrella>()) {
-                if (view.Contains(umbrella.Position.ToPoint())) {
+                if (umbrella.VisibleToLocalPlayer() && view.Contains(umbrella.Position.ToPoint())) {
                     target = umbrella;
                     break;
                 }

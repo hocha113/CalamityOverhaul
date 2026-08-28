@@ -1,0 +1,86 @@
+GsElectrosphereLauncher: {
+	Desc:
+		'''
+		重铸：场上有两颗以上电球时，球间架起特斯拉电弧，最多连 3 段，电弧造成电球一半的伤害
+		右键让全部电球过载：半径扩大 40%，2 秒内放电殆尽
+		'''
+	TipOverload: 过载！
+}
+
+GsGrenadeLauncher: {
+	Desc:
+		'''
+		重铸：榴弹改为黏附墙面与敌身，不再自动起爆；黏在血肉上的榴弹伤害提高 25%
+		右键统一引爆，场上最多布设 6 枚
+		'''
+	TipDetonate: 全部引爆！
+}
+
+GsJackOLanternLauncher: {
+	Desc:
+		'''
+		重铸：右键让滚动中的南瓜齐声狞笑并炸裂，每颗放出 3 缕追踪鬼火
+		每处爆点留下一片烛火场，持续灼烧站在里面的敌人
+		'''
+	TipGrin: 齐声狞笑！
+}
+
+GsNailGun: {
+	Desc:
+		'''
+		重铸：钉子钉进血肉不再脱落，每名敌人最多钉 5 枚，每枚使其受到的所有伤害提高 3%
+		右键把全部钉子连肉拔出，炸成一蓬弹片
+		'''
+	TipExtract: 连肉拔钉！
+}
+
+GsProximityMineLauncher: {
+	Desc:
+		'''
+		重铸：地雷的触发半径只对你可见
+		右键按布设顺序连环引爆；闲置 60 秒的地雷自行回收，退还一发火箭
+		'''
+	TipChain: 多米诺！
+	TipRecycle: 地雷已回收
+}
+
+GsRocketLauncher: {
+	Desc:
+		'''
+		重铸：右键引爆所有飞行中的火箭
+		每次空爆朝你的光标方向甩出 3 枚贯穿镖
+		'''
+	TipDetonate: 空爆！
+}
+
+GsSnowmanCannon: {
+	Desc:
+		'''
+		重铸：右键切换载具
+		追踪蜂群：命中给敌人烙上雪花印，受本武器伤害提高 8%
+		暴雪轨道：火箭先升空，再从光标上方俯冲而下
+		'''
+	ModeHoming: 载具：追踪蜂群
+	ModeOrbital: 载具：暴雪轨道
+}
+
+GsStarCannon: {
+	Desc:
+		'''
+		重铸：右键切换弹道
+		平射：星辰直线飞行；坠星：星辰先升空，再绕光标一带落下星雨，命中溅开星尘
+		'''
+	ModeDirect: 弹道：平射
+	ModeStarfall: 弹道：坠星
+}
+
+GsStynger: {
+	Desc:
+		'''
+		重铸：右键循环引信
+		触发：命中即炸；定距：飞到光标距离处空爆，弹片收束成锥；跳弹：先在物块上弹跳一次再解除保险
+		'''
+	ModeImpact: 引信：触发
+	ModeRange: 引信：定距空爆
+	ModeRicochet: 引信：跳弹
+}

@@ -14,6 +14,8 @@ GameModeText: {
 	BrutalDesc: Пробуждает переработанный беспощадный ИИ жестоких боссов; остальные враги получают на 50% больше здоровья и урона, а мелкие враги становятся быстрыми и бешеными
 	AsuraDesc: Усиление возрастает до 100%. Враги приспосабливаются к повторному урону одного типа, а каждый твой удар задаёт нижний предел их ответного
 	AnnihilationDesc: Последняя форма Ада Асуры в зенитном мире. Каждый ужас удваивается вновь: враги приспосабливаются вдвое быстрее, а твоя боль возвращается вдвойне
+	// BrutalCreationDesc: Master is the floor: reworked bosses awaken, all foes empowered
+	// AsuraCreationDesc: Master is the floor: foes adapt to your blows and mirror your pain
 	// GodSmithDesc: Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched, and it toggles independently of every other mode
 	// GodSmithRecastTitle: Godsmith Reforged
 	// GodSmithEndowPrefix: "Endowment: "
@@ -22,6 +24,7 @@ GameModeText: {
 	HintEnable: Нажмите, чтобы пробудить
 	HintDisable: Нажмите, чтобы запечатать
 	BossRefuse: Босс ещё жив. Договор сейчас не изменить
+	// AsuraNeedBrutal: Awaken Cruel World first
 }
 
 // SporeshineAmbience.DazeDeathReason: "{0} drowsed away deep in the spore haze"

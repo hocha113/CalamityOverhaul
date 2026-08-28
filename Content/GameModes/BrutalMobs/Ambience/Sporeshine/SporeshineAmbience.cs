@@ -165,12 +165,13 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine
         //==================== 踩菇反馈 ====================
 
         private static void UpdateStepRings() {
-            for (int i = 0; i < Main.maxPlayers; i++) {
+            //只遍历活跃玩家；离线槽的冷却残值最多 30 帧，无感
+            foreach (Player player in Main.ActivePlayers) {
+                int i = player.whoAmI;
                 if (stepCooldown[i] > 0) {
                     stepCooldown[i]--;
                 }
-                Player player = Main.player[i];
-                if (!player.active || player.dead || stepCooldown[i] > 0) {
+                if (player.dead || stepCooldown[i] > 0) {
                     continue;
                 }
                 if (player.velocity.Y != 0f || Math.Abs(player.velocity.X) < 1.2f) {

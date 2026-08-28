@@ -712,24 +712,56 @@ namespace CalamityOverhaul
 
         public static void SetDownedPrimordialWyrm(bool value) => SetDownedProp(downedPrimordialWyrmProp, value);
 
+        //==== 高频世界旗的帧戳缓存 ====
+        //死亡/复仇/终焉/酸雨被难度属性、音乐仲裁、氛围与叙事 ticker 每帧多次读取，
+        //一帧内不会变，反射读一次后整帧复用（GameUpdateCount 在玩家阶段后自增，
+        //等效每 tick 至多刷新两次；入世归零由帧戳不等自然触发重读）
+        private static uint deathModeFrame = uint.MaxValue;
+        private static bool deathModeCache;
+        private static uint revengeModeFrame = uint.MaxValue;
+        private static bool revengeModeCache;
+        private static uint bossRushFrame = uint.MaxValue;
+        private static bool bossRushCache;
+        private static uint acidRainFrame = uint.MaxValue;
+        private static bool acidRainCache;
+
         public static bool GetDeathMode() {
-            return calWorld_death_Field != null && (bool)calWorld_death_Field.GetValue(null);
+            if (deathModeFrame != Main.GameUpdateCount) {
+                deathModeFrame = Main.GameUpdateCount;
+                deathModeCache = calWorld_death_Field != null && (bool)calWorld_death_Field.GetValue(null);
+            }
+            return deathModeCache;
         }
 
         public static bool GetRevengeMode() {
-            return calWorld_revenge_Field != null && (bool)calWorld_revenge_Field.GetValue(null);
+            if (revengeModeFrame != Main.GameUpdateCount) {
+                revengeModeFrame = Main.GameUpdateCount;
+                revengeModeCache = calWorld_revenge_Field != null && (bool)calWorld_revenge_Field.GetValue(null);
+            }
+            return revengeModeCache;
         }
 
         public static bool GetBossRushActive() {
-            return bossRush_Active_M != null && (bool)GetMember(bossRush_Active_M, null);
+            if (bossRushFrame != Main.GameUpdateCount) {
+                bossRushFrame = Main.GameUpdateCount;
+                bossRushCache = bossRush_Active_M != null && (bool)GetMember(bossRush_Active_M, null);
+            }
+            return bossRushCache;
         }
 
         public static void SetBossRushActive(bool value) {
             SetMember(bossRush_Active_M, null, value);
+            //写入端直写缓存，本帧后续读取立即见新值
+            bossRushFrame = Main.GameUpdateCount;
+            bossRushCache = bossRush_Active_M != null && value;
         }
 
         public static bool GetAcidRainEventIsOngoing() {
-            return acidRain_Ongoing_M != null && (bool)GetMember(acidRain_Ongoing_M, null);
+            if (acidRainFrame != Main.GameUpdateCount) {
+                acidRainFrame = Main.GameUpdateCount;
+                acidRainCache = acidRain_Ongoing_M != null && (bool)GetMember(acidRain_Ongoing_M, null);
+            }
+            return acidRainCache;
         }
 
         //回退用近战类而不是 Default:Default 不算近战,无灾厄时鬼切全系吃不到近战加成、
@@ -737,6 +769,10 @@ namespace CalamityOverhaul
         public static DamageClass GetTrueMeleeDamageClass() => trueMeleeDamageClass ?? DamageClass.Melee;
 
         public static DamageClass GetTrueMeleeNoSpeedDamageClass() => trueMeleeNoSpeedDamageClass ?? DamageClass.MeleeNoSpeed;
+
+        /// <summary>该伤害类是否为灾厄的真近战类；缓存未命中时恒 false，不借上面的回退误判普通近战</summary>
+        public static bool IsTrueMeleeClass(DamageClass damageClass) => damageClass != null
+            && (damageClass == trueMeleeDamageClass || damageClass == trueMeleeNoSpeedDamageClass);
 
         public static float ChargeRatio(Item item) {
             GlobalItem cgi = GetCalItem(item);

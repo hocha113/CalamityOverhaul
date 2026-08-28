@@ -1,0 +1,12 @@
+GsMonkArmor.EndowLine: 入定雷禅：站进自己的闪电光环即入定，入定中每四次近战或召唤命中，打出一道贯穿的禅雷掌波
+GsMonkShinobiArmor.EndowLine: 入定雷禅·忍：入定中每三次命中即可出掌，掌波首次命中后还会分出两道侧掌
+GsSquireArmor.EndowLine: 誓约壁垒：受击后竖起誓约之盾五秒，期间近战命中会从肩后掷出一柄鎏金誓约骑枪
+GsSquireValhallaArmor.EndowLine: 誓约壁垒·瓦尔哈拉：誓约之盾持续六秒，期间每次近战命中掷出双枪
+GsHuntressArmor.EndowLine: 布网狩猎：被你的爆炸陷阱炸中的敌人带上猎印，远程命中带印目标时，两支荆棘猎矢自侧翼合围而来
+GsHuntressRedRidingArmor.EndowLine: 布网狩猎·红裳：合围的猎矢增至三支，且淬上剧毒
+GsApprenticeArmor.EndowLine: 引焰术：火焰爆哨兵的命中为你积攒引焰，满六层后下一次魔法命中在目标上方展开焰文，倾泻三枚烬弹
+GsApprenticeDarkArtistArmor.EndowLine: 引焰术·暗艺：五层引焰即可引爆，焰文化作影焰文，倾泻四枚影烬并点燃暗影焰
+GsSolarArmor.EndowLine: 日冕环爆：日耀冲刺撞中敌人的一瞬，自命中处环状炸出四道日冕火舌咬向周围敌人；护盾尚有富余时多出一道
+GsVortexArmor.EndowLine: 破隐撕裂：进入星旋隐身即蓄好破隐一击，隐身中或现身一瞬的远程命中会在目标处撕开星旋裂口，把周围敌人拽入其中
+GsNebulaArmor.EndowLine: 三相共鸣：任意星云增益升至满级的一瞬绽放星云之华，华体三次脉冲灼烧周围敌人，谢幕时化作星尘飘回你身边
+GsStardustArmor.EndowLine: 守望星尘：星尘守卫击打过的敌人带上星尘印，你亲手命中带印目标时，一颗星陨彗屑自天顶坠落砸向它

@@ -49,6 +49,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
         public string LocalizationCategory => "NPCModifys";
 
+        /// <summary>在场帧戳：任一菌生蟹（含未驯）AI 每帧盖戳，玩家侧列表重建与指令环据此跳过空场扫描</summary>
+        internal static ActivityStamp PresenceStamp;
+
         public float FeedValue = 0;
         public NPC TargetNPC;
         public Player Owner;
@@ -334,6 +337,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         }
 
         public override bool AI() {
+            PresenceStamp.Stamp();
             if (FeedValue <= 0f) {
                 return true;
             }

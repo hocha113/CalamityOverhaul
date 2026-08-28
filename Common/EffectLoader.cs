@@ -10,6 +10,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> Blackwall { get; set; }
         public static Asset<Effect> GameModeTab { get; set; }
         public static Asset<Effect> GameModeBanner { get; set; }
+        public static Asset<Effect> AsuraBlessWheel { get; set; }
+        public static Asset<Effect> AsuraBlessFlame { get; set; }
         public static Asset<Effect> OldNetNode { get; set; }
         public static Asset<Effect> OldNetTerminal { get; set; }
         public static Asset<Effect> OldNetSky { get; set; }
@@ -369,6 +371,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniRaikiri { get; set; }
         public static Asset<Effect> OniBellWave { get; set; }
         public static Asset<Effect> OniPuddleMirror { get; set; }
+        public static Asset<Effect> KiameWater { get; set; }
         public static Asset<Effect> OniRainWorld { get; set; }
         public static Asset<Effect> OniRainSky { get; set; }
         public static Asset<Effect> OniRainDescent { get; set; }
@@ -396,6 +399,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> ScrapHeavyBeam { get; set; }
         public static Asset<Effect> ScrapMagnetField { get; set; }
         public static Asset<Effect> ScrapSiegeFilter { get; set; }
+        public static Asset<Effect> SeaShrimpAbyssFilter { get; set; }
         public static Asset<Effect> ShockRing { get; set; }
         public static Asset<Effect> DungeonworldLoading { get; set; }
         public static Asset<Effect> DungeonworldEntryReveal { get; set; }

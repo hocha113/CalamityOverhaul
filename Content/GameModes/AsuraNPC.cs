@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -8,6 +9,8 @@ namespace CalamityOverhaul.Content.GameModes
     /// <summary>
     /// 修罗模式：敌怪对同种伤害来源的自适应免疫。
     /// 来源键 = 弹幕类型（正数）/物品类型（负数），层数随命中积累、脱手一段时间后逐层衰减。
+    /// 近战是适应的裂隙：刀刃本体只承受部分适应减伤，近战弹幕次之；
+    /// 近战命中还按出手距离获得贴身增幅，越近越痛。数值见 <see cref="GameModeTuning"/>。
     /// tML 的打击判定在攻击方本机进行（伤害随打击包下发，服务端不重算），
     /// 因此适应状态无需网络同步；联机下每个攻击者面对的是敌怪对"自己"的适应
     /// </summary>
@@ -50,8 +53,8 @@ namespace CalamityOverhaul.Content.GameModes
             return stacks;
         }
 
-        /// <summary>该来源当前的伤害保留系数（1 = 无适应）</summary>
-        private float ResistFactor(int key) {
+        /// <summary>该来源当前的伤害保留系数（1 = 无适应）；adaptTaken 为该攻击实际承受的适应减伤比例</summary>
+        private float ResistFactor(int key, float adaptTaken) {
             if (adapt == null || !adapt.TryGetValue(key, out AdaptEntry entry)) {
                 return 1f;
             }
@@ -60,7 +63,20 @@ namespace CalamityOverhaul.Content.GameModes
                 adapt.Remove(key);
                 return 1f;
             }
-            return 1f - Math.Min(ResistCap, stacks * ResistPerStack);
+            return 1f - Math.Min(ResistCap, stacks * ResistPerStack) * adaptTaken;
+        }
+
+        /// <summary>贴身增幅倍率：按玩家中心到目标碰撞箱最近点的距离线性增伤，贴脸满额、出增幅圈归 1</summary>
+        private static float CloseRangeMult(Player player, NPC npc) {
+            Rectangle box = npc.Hitbox;
+            Vector2 nearest = new(
+                MathHelper.Clamp(player.Center.X, box.Left, box.Right),
+                MathHelper.Clamp(player.Center.Y, box.Top, box.Bottom));
+            float dist = player.Center.Distance(nearest);
+            float t = MathHelper.Clamp(
+                (GameModeTuning.AsuraCloseRangeZeroDist - dist)
+                / (GameModeTuning.AsuraCloseRangeZeroDist - GameModeTuning.AsuraCloseRangeFullDist), 0f, 1f);
+            return 1f + GameModeTuning.AsuraCloseRangeMaxBonus * t;
         }
 
         /// <summary>记一次同类命中：折算现有层数后加层（毁灭下适应更快），封顶并刷新计时</summary>
@@ -82,14 +98,29 @@ namespace CalamityOverhaul.Content.GameModes
             if (!Eligible(npc)) {
                 return;
             }
-            modifiers.FinalDamage *= ResistFactor(ItemKey(item.type));
+            //物品挥击就是刀刃本体：适应减伤按真近战折扣，并吃贴身增幅
+            bool melee = item.DamageType.CountsAsClass(DamageClass.Melee);
+            float adaptTaken = melee ? GameModeTuning.AsuraTrueMeleeAdaptTaken : 1f;
+            modifiers.FinalDamage *= ResistFactor(ItemKey(item.type), adaptTaken);
+            if (melee) {
+                modifiers.FinalDamage *= CloseRangeMult(player, npc);
+            }
         }
 
         public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers) {
             if (!Eligible(npc)) {
                 return;
             }
-            modifiers.FinalDamage *= ResistFactor(ProjKey(projectile.type));
+            //ownerHitCheck 是手持刀刃弹幕的通行标记，灾厄真近战伤害类是另一路信号
+            bool melee = projectile.DamageType.CountsAsClass(DamageClass.Melee);
+            bool blade = melee && (projectile.ownerHitCheck || CWRRef.IsTrueMeleeClass(projectile.DamageType));
+            float adaptTaken = blade ? GameModeTuning.AsuraTrueMeleeAdaptTaken
+                : melee ? GameModeTuning.AsuraMeleeProjAdaptTaken : 1f;
+            modifiers.FinalDamage *= ResistFactor(ProjKey(projectile.type), adaptTaken);
+            Player owner = Main.player[projectile.owner];
+            if (melee && owner.active) {
+                modifiers.FinalDamage *= CloseRangeMult(owner, npc);
+            }
         }
 
         public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone) {

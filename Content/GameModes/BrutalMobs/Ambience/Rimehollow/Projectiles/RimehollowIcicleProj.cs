@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow.Proj
     /// 抖动预告（50 帧，抖动+碎冰声双通道）→ 坠落（仅此窗口有伤害）→ 触地碎裂+冰屑余韵；
     /// 无人问津的成熟冰锥最终自行消融。
     /// 与 Hollowdeep 的声响触发落石划界：这里是时间生长的悬顶威胁，
-    /// 成熟前永远无害，成熟后由"正下方通过/附近战斗声响"触发。
+    /// 成熟前永远无害，成熟后由"正下方通过/附近战斗声响"触发（惊落有短窗限流，防清怪时齐落）。
     /// 联机：权威端只决策"成熟→抖动/消融"（netUpdate），
     /// 其余相位推进与坠落物理各端确定性自走；伤害值全程满值不清零，
     /// 判定开关走各端本地按相位重算的 hostile
@@ -47,6 +47,15 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow.Proj
         private const float CombatNoiseRange = 340f;
         /// <summary>战斗声响触发半径（友方弹幕）</summary>
         private const float CombatProjRange = 300f;
+        /// <summary>短窗内允许进入抖动的冰锥上限（战斗声连锁惊落的限流阀）</summary>
+        private const int StartleCapPerWindow = 2;
+        /// <summary>惊落限流窗口长度（帧）</summary>
+        private const int StartleWindowFrames = 60;
+
+        //惊落限流的世界级窗口状态（非逐玩家数据；触发决策只在权威端跑，客户端不读写。
+        //uint 差值运算自愈跨世界的陈旧值，无需挂 ClearWorld）
+        private static uint startleWindowStart;
+        private static int startleWindowUsed;
 
         private const float FallGravity = 0.36f;
         private const float FallMaxSpeed = 17f;
@@ -181,7 +190,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow.Proj
                 return;
             }
             if (AnchorBroken()) {
-                //挖断路径与常规触发共用同一道伤害门：门外只碎不伤（走 OnKill 的碎散分支），视觉照常
+                //挖断路径与常规触发共用同一道伤害门：门外只碎不伤（走 OnKill 的碎散分支），视觉照常。
+                //断根是物理因果（锚没了挂不住），不占惊落限流名额
                 if (HazardGateOpen()) {
                     EnterShake();
                 }
@@ -191,7 +201,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow.Proj
                 return;
             }
             if (Timer >= MatureSettleMin && (int)Timer % 5 == 0
-                && HazardGateOpen() && TriggerScan()) {
+                && HazardGateOpen() && TriggerScan() && TryReserveStartleSlot()) {
                 EnterShake();
                 return;
             }
@@ -318,6 +328,23 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow.Proj
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// 申请一个惊落名额：同一短窗内进入抖动的冰锥数封顶，
+        /// 超出的保持成熟态等下次触发扫描（战斗声半径内齐落的瞬时压力阀）
+        /// </summary>
+        private static bool TryReserveStartleSlot() {
+            uint now = Main.GameUpdateCount;
+            if (now - startleWindowStart >= StartleWindowFrames) {
+                startleWindowStart = now;
+                startleWindowUsed = 0;
+            }
+            if (startleWindowUsed >= StartleCapPerWindow) {
+                return false;
+            }
+            startleWindowUsed++;
+            return true;
         }
 
         /// <summary>相位入场演出（声音通道；各端只随相位前进播一次，同步包驱动也能命中）</summary>

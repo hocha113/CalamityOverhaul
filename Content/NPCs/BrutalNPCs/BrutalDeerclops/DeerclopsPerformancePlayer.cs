@@ -45,6 +45,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
 
         /// <summary>处于死亡演出态且被本模组接管的独眼巨鹿，无则null</summary>
         private static NPC FindDeathPerformanceDeer() {
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必扫表
+                return null;
+            }
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (npc.type != NPCID.Deerclops) {
                     continue;

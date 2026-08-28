@@ -1,9 +1,11 @@
 // ============================================================================
 //GameModeTab.fx 游戏模式标签（残酷/修罗/毁灭/神匠）
-//SDF 旗标：暗漆底 + 模式纹样 + 点亮呼吸 + 切换爆发环
+//织物军旗：顶缘挂轨铁条（铆钉受光）+ 布面织纹/毛蚀边/内缘缝线 + 悬摆（顶固定、底摆幅大）
+//+ 模式纹样 + 点亮呼吸与旗内升腾余烬 + 切换爆发环
 //点亮态逐脸签名动效：残酷=爪尖渗血滴落 / 修罗=环上棱光巡行+芯部脉动 / 毁灭=坠星曳尾+坍缩呼吸变速
 // / 神匠=锤击循环+落点火星+砧面熔光
-//悬停=纹样发烫 + 旗缘火舌；uGuide=首见引导的旗内增辉（旗外光环由 CPU 画）
+//悬停=纹样微放大发烫+旗缘火舌+风起摆幅增；uPress=受理按压回响；uDeny=拒绝红脉冲
+//uGuide=首见引导的旗内增辉（旗外光环由 CPU 画）
 //AlphaBlend 预乘；ps_3_0
 //uMode 0=残酷（三道爪痕） 1=修罗（环+三棱+芯） 2=毁灭（坍缩环+镰月+坠星） 3=神匠（锤与砧）
 // ============================================================================
@@ -19,6 +21,8 @@ float uHover;       //0..1 悬停
 float uBurst;       //0..1 切换爆发进度（1=无）
 float uBurstOn;     //1=本次爆发是"开启"（纹样随爆发逐道亮），0=关闭爆发
 float uDisabled;    //0..1 Boss 锁定置灰
+float uPress;       //0..1 受理按压回响（联机等回执期的即时确认）
+float uDeny;        //0..1 拒绝红脉冲（与 CPU 横震同拍）
 float3 uAccent;     //模式主色
 float3 uEmber;      //模式余烬色（残酷=橙，修罗=金）
 float uGuide;       //0..1 首见引导增辉（CPU 给脉冲包络）
@@ -81,31 +85,45 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float aspect = uResolution.x / max(uResolution.y, 1.0);
     float2 p = (coords - 0.5) * float2(aspect, 1.0);
 
+    //——布面悬摆：顶缘是挂轨（固定），越往下摆幅越大；悬停当作风起，摆幅微增——
+    float hang = saturate(p.y + 0.44);
+    float swayAmp = hang * hang * (0.011 + 0.007 * uHover);
+    float swayPh = uTime * 1.35 + uMode * 2.1 + p.y * 3.4;
+    float sway = sin(swayPh) + 0.45 * sin(uTime * 2.9 + uMode * 0.7 - p.y * 6.2);
+    p.x += sway * swayAmp;
+
     //表现脸权重：算术门取代 uniform 分支（MojoShader 常量布局教训）；毁灭权重开窗，防止模式 3 继承其签名
     float wBrutal = saturate(1.0 - uMode);
     float wAsura = saturate(1.0 - abs(uMode - 1.0));
     float wAnnih = saturate(uMode - 1.0) * saturate(3.0 - uMode);
     float wSmith = saturate(uMode - 2.0);
 
-    //——旗身：圆角矩形 + 底缘燕尾切口——
+    //——旗身：圆角矩形 + 底缘燕尾切口 + 边缘毛蚀（手织布的破口）——
     float d = sdRoundBox(p, float2(aspect * 0.86 * 0.5, 0.44), 0.055);
+    float fray = sin(p.x * 92.0 + uMode * 13.0) * sin(p.y * 71.0 - uMode * 7.0);
+    d += fray * 0.0035;
     float notchIn = step(0.26, p.y) * (1.0 - smoothstep(0.0, 0.02, abs(p.x) - (p.y - 0.26) * 0.55));
     float body = smoothstep(0.012, -0.006, d) * (1.0 - notchIn);
     float r = length(p);
 
-    //漆底 + 纵向拉丝
+    //漆底 + 纵向拉丝 + 织纹经纬
     float grain = sin(p.x * 42.0 + sin(p.y * 9.0)) * 0.5 + 0.5;
-    float3 col = float3(0.055, 0.040, 0.048) * (0.85 + grain * 0.16);
+    float weave = sin(p.x * 148.0) * sin(p.y * 118.0) * 0.5 + 0.5;
+    float3 col = float3(0.055, 0.040, 0.048) * (0.78 + grain * 0.14 + weave * 0.09);
     //底部沉一点，顶缘受光
     col *= 1.0 - (p.y + 0.5) * 0.22;
+    //悬摆带出的布面明暗起伏（位移读作褶皱受光）
+    col *= 1.0 + sway * hang * 0.10;
 
     //点亮时旗内自下而上的一层暗火衬
     float innerFire = saturate(0.5 - p.y) * uLit * 0.20;
     col += uAccent * innerFire * (0.8 + 0.2 * sin(uTime * 1.7));
 
-    //——模式纹样——
+    //——模式纹样（悬停/按压微放大：q 是纹样与签名动效的公用坐标）——
     //注意：不要在 uniform 上写 if 分支（MojoShader 会把常量布局搅乱，实测一个作业分支取反、
     //另一个作业整片 NaN 条带），两套纹样都算完用 uMode lerp 混合
+    float2 q = p * (1.0 - 0.055 * uHover - 0.03 * uPress);
+    float rq = length(q);
     float breath = 0.86 + 0.14 * sin(uTime * 2.4 + uMode * 1.7);
     //开启爆发时纹样逐段亮：门值随爆发推进；平时全亮
     float gate = lerp(1.0, uBurst, uBurstOn * step(uBurst, 0.999));
@@ -117,28 +135,28 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 dir = normalize(float2(-0.52, 1.0));
     float2 perp = float2(-dir.y, dir.x);
     float claw = 0.0;
-    claw += clawStroke(p, -dir * 0.30 + perp * 0.15 + float2(0.02, -0.03),
+    claw += clawStroke(q, -dir * 0.30 + perp * 0.15 + float2(0.02, -0.03),
                           dir * 0.26 + perp * 0.15, 0.052, 0.008, 1.3) * g0;
-    claw += clawStroke(p, -dir * 0.34 + float2(-0.01, 0.0),
+    claw += clawStroke(q, -dir * 0.34 + float2(-0.01, 0.0),
                           dir * 0.30, 0.060, 0.010, 4.1) * g1;
-    claw += clawStroke(p, -dir * 0.27 - perp * 0.15 + float2(0.01, 0.03),
+    claw += clawStroke(q, -dir * 0.27 - perp * 0.15 + float2(0.01, 0.03),
                           dir * 0.24 - perp * 0.15, 0.048, 0.007, 7.9) * g2;
 
     //修罗：火环 + 三向棱 + 芯
     float ringR = 0.235 + 0.012 * sin(uTime * 2.1) * uLit;
-    float ringBand = smoothstep(0.034, 0.012, abs(r - ringR));
+    float ringBand = smoothstep(0.034, 0.012, abs(rq - ringR));
     float asura = ringBand * g0;
-    asura += (prong(p, -1.5708) + prong(p, 2.618) + prong(p, 0.5236)) * g1;
-    asura += smoothstep(0.055, 0.018, r) * g2;
+    asura += (prong(q, -1.5708) + prong(q, 2.618) + prong(q, 0.5236)) * g1;
+    asura += smoothstep(0.055, 0.018, rq) * g2;
 
     //毁灭：坍缩细环（呼吸速率自身缓慢摆动=忽急忽缓）+ 镰月弯刃 + 坠星
     float collRate = 1.1 + 0.55 * sin(uTime * 0.37);
     float collR = 0.355 - 0.045 * (0.5 + 0.5 * sin(uTime * collRate));
-    float annih = smoothstep(0.014, 0.004, abs(r - collR)) * 0.55 * g0;
-    float cOut = smoothstep(0.015, -0.005, length(p - float2(-0.035, 0.0)) - 0.255);
-    float cCut = smoothstep(0.012, -0.008, length(p - float2(0.085, -0.028)) - 0.235);
+    float annih = smoothstep(0.014, 0.004, abs(rq - collR)) * 0.55 * g0;
+    float cOut = smoothstep(0.015, -0.005, length(q - float2(-0.035, 0.0)) - 0.255);
+    float cCut = smoothstep(0.012, -0.008, length(q - float2(0.085, -0.028)) - 0.235);
     annih += saturate(cOut - cCut) * g1;
-    float2 starP = p - float2(0.175, -0.215 + 0.04 * sin(uTime * 1.6));
+    float2 starP = q - float2(0.175, -0.215 + 0.04 * sin(uTime * 1.6));
     annih += smoothstep(0.055, 0.014, length(starP)) * g2;
 
     //神匠：砧台（顶板+颈+底座）+ 锤（柄+头），锤走 抬起→悬顿→落击 循环；未点亮冻在半抬姿
@@ -151,13 +169,13 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 headPos = lerp(headRaised, headContact, strikeT);
     //落锤路径带一点外弧，读得出抡的弧线
     headPos.x += sin(strikeT * 3.1416) * -0.07;
-    float smith = capsule(p, float2(-0.26, 0.16), float2(0.26, 0.16), 0.052) * g0;
-    smith += capsule(p, float2(0.0, 0.20), float2(0.0, 0.29), 0.050) * g0;
-    smith += capsule(p, float2(-0.11, 0.31), float2(0.11, 0.31), 0.042) * g0;
+    float smith = capsule(q, float2(-0.26, 0.16), float2(0.26, 0.16), 0.052) * g0;
+    smith += capsule(q, float2(0.0, 0.20), float2(0.0, 0.29), 0.050) * g0;
+    smith += capsule(q, float2(-0.11, 0.31), float2(0.11, 0.31), 0.042) * g0;
     float2 armDir = normalize(headPos - pivot);
     float2 armPerp = float2(-armDir.y, armDir.x);
-    smith += capsule(p, pivot, headPos, 0.022) * g1;
-    smith += capsule(p, headPos - armPerp * 0.095, headPos + armPerp * 0.095, 0.056) * g1;
+    smith += capsule(q, pivot, headPos, 0.022) * g1;
+    smith += capsule(q, headPos - armPerp * 0.095, headPos + armPerp * 0.095, 0.056) * g1;
     smith = saturate(smith);
 
     //纹样链式混合：uniform 上禁 if 分支（MojoShader 常量布局教训）
@@ -165,31 +183,43 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     icon = lerp(icon, annih, saturate(uMode - 1.0));
     icon = saturate(lerp(icon, smith, wSmith));
 
-    //未点亮=石上刻痕，点亮=主色+余烬芯；悬停整体发烫
+    //未点亮=石上刻痕，点亮=主色+余烬芯；悬停整体发烫，按压补一记即时增能
     float hot = icon * icon * icon;
     float3 litCol = lerp(uAccent * 0.55, uAccent * 1.15, icon);
     litCol = lerp(litCol, uEmber, hot * 0.85);
     litCol = lerp(litCol, uEmber * 1.2 + float3(0.12, 0.10, 0.08), uHover * 0.40);
     float3 dimCol = float3(0.30, 0.27, 0.26) * (0.45 + 0.55 * icon);
-    float iconEnergy = uLit * breath + uHover * 0.35;
+    float iconEnergy = uLit * breath + uHover * 0.35 + uPress * 0.5;
     col = lerp(col, lerp(dimCol, litCol, saturate(uLit * 1.2)), icon * saturate(0.55 + iconEnergy * 0.6));
     //点亮泛光
     col += uAccent * icon * uLit * breath * 0.30;
 
+    //——内缘缝线：一圈压痕线，点亮时透一丝主色（织物的收边）——
+    float hem = smoothstep(0.0075, 0.0028, abs(d + 0.038));
+    col = lerp(col, col * 0.70, hem * (1.0 - icon) * 0.55);
+    col += lerp(float3(0.20, 0.18, 0.17), uAccent * 0.5, uLit) * hem * 0.16;
+
+    //——点亮态旗内升腾余烬：稀疏星点自下而上漂，闪烁不齐——
+    float2 ep = float2(p.x * 9.0 + uMode * 3.7, p.y * 7.0 + uTime * 1.55);
+    float emberCell = sin(ep.x * 2.3 + sin(ep.y * 1.7)) * sin(ep.y * 2.1 + sin(ep.x * 1.3));
+    float embers = smoothstep(0.905, 0.985, emberCell)
+                 * saturate(0.55 - p.y) * (0.55 + 0.45 * sin(uTime * 6.8 + p.x * 21.0));
+    col += uEmber * embers * uLit * 0.55;
+
     //——逐脸签名动效（点亮态才有，随爆发揭示门同步出现）——
     //残酷：两道爪痕尖端渗血滴落
-    float drops = bloodDrop(p, dir * 0.26 + perp * 0.15, 0.00) * g0
-                + bloodDrop(p, dir * 0.30, 0.47) * g1;
+    float drops = bloodDrop(q, dir * 0.26 + perp * 0.15, 0.00) * g0
+                + bloodDrop(q, dir * 0.30, 0.47) * g1;
     col += uAccent * 0.9 * drops * uLit * wBrutal;
 
     //修罗：环上棱光巡行（点积形式，无 atan2 极点）+ 芯部双拍脉动
     float2 runDir = float2(cos(uTime * 1.9), sin(uTime * 1.9));
-    float runner = pow(saturate(dot(p, runDir) / max(r, 1e-4)), 26.0)
-                 * smoothstep(0.042, 0.014, abs(r - ringR)) * g0;
+    float runner = pow(saturate(dot(q, runDir) / max(rq, 1e-4)), 26.0)
+                 * smoothstep(0.042, 0.014, abs(rq - ringR)) * g0;
     col += lerp(uAccent, uEmber, 0.75) * runner * 1.1 * uLit * wAsura;
     float beatT = frac(uTime * 0.75);
     float corePulse = exp(-beatT * 7.0) + 0.5 * exp(-abs(beatT - 0.30) * 14.0);
-    col += uEmber * smoothstep(0.075, 0.02, r) * corePulse * 0.5 * g2 * uLit * wAsura;
+    col += uEmber * smoothstep(0.075, 0.02, rq) * corePulse * 0.5 * g2 * uLit * wAsura;
 
     //毁灭：坠星向上曳出彗尾（轻微摆动），环体微闪
     float2 tp = float2(starP.x + sin(uTime * 2.3 + starP.y * 9.0) * 0.008, starP.y);
@@ -197,7 +227,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float tail = smoothstep(0.026 * (1.0 - tailT * 0.8) + 0.003, 0.0, abs(tp.x))
                * (1.0 - tailT) * (1.0 - tailT) * step(tp.y, 0.0);
     col += lerp(uAccent, uEmber, 0.6) * tail * 0.55 * g2 * uLit * wAnnih;
-    col += uAccent * smoothstep(0.014, 0.004, abs(r - collR)) * (0.10 + 0.10 * sin(uTime * 9.7)) * g0 * uLit * wAnnih;
+    col += uAccent * smoothstep(0.014, 0.004, abs(rq - collR)) * (0.10 + 0.10 * sin(uTime * 9.7)) * g0 * uLit * wAnnih;
 
     //神匠：落击帧砧点白闪，随后三道火星弹起衰减；砧面常驻熔光随击闪增亮
     float slamFlash = saturate(1.0 - (smithPhase - 0.72) / 0.08) * step(0.72, smithPhase);
@@ -209,23 +239,36 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 sd2 = normalize(float2(0.62, -0.66));
     //火星吃一点重力，末段下坠
     float sag = sparkLife * sparkLife * 0.10;
-    sparks += capsule(p, contactPt + sd0 * (0.04 + sparkLife * 0.20) + float2(0.0, sag)
+    sparks += capsule(q, contactPt + sd0 * (0.04 + sparkLife * 0.20) + float2(0.0, sag)
                        , contactPt + sd0 * (0.10 + sparkLife * 0.24) + float2(0.0, sag), 0.014);
-    sparks += capsule(p, contactPt + sd1 * (0.04 + sparkLife * 0.26) + float2(0.0, sag * 0.7)
+    sparks += capsule(q, contactPt + sd1 * (0.04 + sparkLife * 0.26) + float2(0.0, sag * 0.7)
                        , contactPt + sd1 * (0.09 + sparkLife * 0.30) + float2(0.0, sag * 0.7), 0.012);
-    sparks += capsule(p, contactPt + sd2 * (0.04 + sparkLife * 0.17) + float2(0.0, sag)
+    sparks += capsule(q, contactPt + sd2 * (0.04 + sparkLife * 0.17) + float2(0.0, sag)
                        , contactPt + sd2 * (0.09 + sparkLife * 0.21) + float2(0.0, sag), 0.012);
     sparks *= (1.0 - sparkLife) * step(0.74, smithPhase);
-    col += (uEmber * 1.2 + 0.25) * slamFlash * smoothstep(0.10, 0.02, length(p - contactPt)) * g2 * uLit * wSmith;
+    col += (uEmber * 1.2 + 0.25) * slamFlash * smoothstep(0.10, 0.02, length(q - contactPt)) * g2 * uLit * wSmith;
     col += lerp(uAccent, uEmber, 0.7) * sparks * 1.1 * g2 * uLit * wSmith;
-    float anvilGlow = smoothstep(0.05, 0.012, abs(p.y - 0.14)) * smoothstep(0.30, 0.10, abs(p.x));
+    float anvilGlow = smoothstep(0.05, 0.012, abs(q.y - 0.14)) * smoothstep(0.30, 0.10, abs(q.x));
     col += uAccent * anvilGlow * (0.16 + 0.30 * slamFlash + 0.06 * sin(uTime * 2.8)) * g0 * uLit * wSmith;
+
+    //——顶缘挂轨铁条：拉丝暗钢横带 + 两粒铆钉受光（旗有挂处，不是浮在空中）——
+    float rail = 1.0 - smoothstep(-0.392, -0.360, p.y);
+    float railGrain = sin(p.x * 130.0) * 0.5 + 0.5;
+    float3 railCol = float3(0.135, 0.128, 0.140) * (0.85 + railGrain * 0.22);
+    railCol += float3(0.10, 0.095, 0.09) * smoothstep(-0.44, -0.425, p.y) * (1.0 - smoothstep(-0.425, -0.405, p.y));
+    railCol += uAccent * uLit * 0.06;
+    col = lerp(col, railCol, rail * 0.92);
+    float2 rp = float2(abs(p.x) - aspect * 0.27, p.y + 0.402);
+    float rivet = smoothstep(0.030, 0.017, length(rp));
+    float rivetHi = smoothstep(0.016, 0.005, length(rp + float2(0.007, 0.008)));
+    col = lerp(col, float3(0.075, 0.070, 0.078), rivet * rail);
+    col += float3(0.30, 0.29, 0.27) * rivetHi * rail;
 
     //——顶缘受光线 + 悬停缘光 + 引导增辉——
     float edge = smoothstep(0.016, 0.002, abs(d + 0.006));
     float topLight = saturate(0.5 - (p.y + 0.5)) + 0.25;
     float3 rimCol = lerp(float3(0.42, 0.38, 0.36), lerp(uAccent, uEmber, 0.35), saturate(uLit + uGuide * 0.7));
-    col += rimCol * edge * topLight * (0.55 + uHover * 0.55 + uLit * 0.25 + uGuide * 0.6);
+    col += rimCol * edge * topLight * (0.55 + uHover * 0.55 + uLit * 0.25 + uGuide * 0.6 + uPress * 0.8);
 
     //悬停旗缘火舌：边带里双频闪烁、上半更旺
     float fl = sin(p.x * 34.0 + uTime * 6.2) * 0.5 + sin(p.x * 57.0 - uTime * 9.1 + p.y * 11.0) * 0.5;
@@ -237,6 +280,11 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     //首见引导：旗内整体增辉（脉冲节奏由 CPU 包络给），叠一层自下而上的慢速微光游移
     float guideShimmer = 0.78 + 0.22 * sin(uTime * 2.1 + p.y * 5.0 - p.x * 1.5);
     col += (uAccent * 0.55 + uEmber * 0.45) * uGuide * guideShimmer * (0.22 + icon * 0.5);
+
+    //——拒绝红脉冲：旗身向哑红压沉、旗缘泛红，与 CPU 横震同拍——
+    float3 denyRed = float3(0.62, 0.10, 0.09);
+    col = lerp(col, denyRed * (0.40 + 0.50 * icon), uDeny * 0.55);
+    col += denyRed * 1.6 * edge * uDeny * 0.8;
 
     //——切换爆发：扩张环闪——
     float shock = smoothstep(0.10, 0.0, abs(r - uBurst * 0.62)) * (1.0 - uBurst) * step(uBurst, 0.999);

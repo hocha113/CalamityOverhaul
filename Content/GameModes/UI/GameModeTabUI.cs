@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.GameModes.UI
     /// 背包右缘的游戏模式标签行：残酷与神匠常驻，修罗模式在残酷开启后从两者之间滑出，
     /// 神匠随之让位到第三席（神匠是独立开关，任何时候都能点）。
     /// 标签动画由旗标真值差分点火（本地点击与联机回执走同一条表现路径）；
+    /// 交互回馈四件套：悬停抬升+旗面微放大、按压下沉+uPress 即时回响（联机等回执期不哑）、
+    /// 拒绝横震+uDeny 红脉冲+闷响、悬浮说明面板（<see cref="GameModeTipOverlay"/> 顶层绘制）。
     /// 切换演出大字也由本 UI 绘制，背包合上时靠 <see cref="GameModeCeremony.LineActive"/> 维持活跃。
     /// 首见引导：光标从未造访过标签时，残酷标签挂信标光效相邀，
     /// 悬停一次即收束熄灭并落档（客户端全局，跨世界只引导一次）
@@ -55,6 +57,8 @@ namespace CalamityOverhaul.Content.GameModes.UI
         private bool prevAsura;
         private bool prevGodSmith;
         private int hoverKind = -1;
+        //最后悬停过的标签：悬停缓动衰减期间悬浮说明照着它淡出
+        private int tipKind = -1;
         private uint lastUpdateTick;
 
         //入场滑入进度
@@ -174,10 +178,14 @@ namespace CalamityOverhaul.Content.GameModes.UI
             UpdateMotes();
         }
 
-        /// <summary>把入场滑入/按压下沉/拒绝横震一次性折进标签矩形，命中与绘制不再各算一遍</summary>
+        /// <summary>
+        /// 把入场滑入/悬停抬升/按压下沉/拒绝横震一次性折进标签矩形，命中与绘制不再各算一遍。
+        /// 悬停抬升读的是上一帧的缓动值（本方法先于 UpdateInteraction 跑），至多陈旧 1 帧
+        /// </summary>
         private void ComputeRects() {
             Rectangle brutal = GameModeTheme.BrutalTab;
             brutal.X += SlideOffset(entranceBrutal);
+            brutal.Y -= (int)MathF.Round(brutalHover * 2f);
             if (pressDip > 0f && pressTab == 0) {
                 brutal.Y += (int)MathF.Round(pressDip * 2.5f);
             }
@@ -188,6 +196,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
 
             Rectangle asura = GameModeTheme.AsuraTab(EasedReveal());
             asura.X += SlideOffset(entranceAsura);
+            asura.Y -= (int)MathF.Round(asuraHover * 2f);
             if (pressDip > 0f && pressTab == 1) {
                 asura.Y += (int)MathF.Round(pressDip * 2.5f);
             }
@@ -198,6 +207,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
 
             Rectangle godSmith = GameModeTheme.GodSmithTab(EasedReveal());
             godSmith.X += SlideOffset(entranceGodSmith);
+            godSmith.Y -= (int)MathF.Round(godSmithHover * 2f);
             if (pressDip > 0f && pressTab == 2) {
                 godSmith.Y += (int)MathF.Round(pressDip * 2.5f);
             }
@@ -235,12 +245,12 @@ namespace CalamityOverhaul.Content.GameModes.UI
             }
 
             player.mouseInterface = true;
+            tipKind = hoverKind;
             GameModeKind kind = hoverKind switch {
                 0 => GameModeKind.Brutal,
                 1 => GameModeKind.Asura,
                 _ => GameModeKind.GodSmith,
             };
-            Main.hoverItemName = ComposeTip(kind);
 
             if (keyLeftPressState != KeyPressState.Pressed) {
                 return;
@@ -306,18 +316,41 @@ namespace CalamityOverhaul.Content.GameModes.UI
             GameModeRenderer.UpdateMotes(TabsVisible);
         }
 
-        private static string ComposeTip(GameModeKind kind) {
-            bool on = GameModeSystem.FlagOf(kind);
-            GameModeFace face = GameModeSystem.FaceOf(kind);
-            string state = on ? GameModeText.StateOn.Value : GameModeText.StateOff.Value;
-            string hint = !GameModeSystem.CanToggleNow() ? GameModeText.BossRefuse.Value
-                : on ? GameModeText.HintDisable.Value : GameModeText.HintEnable.Value;
-            return GameModeText.Name(face).Value + " · " + state
-                + "\n" + GameModeText.Desc(face).Value
-                + "\n" + hint;
-        }
-
         private float EasedReveal() => MathHelper.SmoothStep(0f, 1f, asuraReveal);
+
+        /// <summary>标签的按压回响强度（受理请求后随 pressDip 衰减）</summary>
+        private float PressOf(int tab) => pressDip > 0f && pressTab == tab ? pressDip : 0f;
+
+        /// <summary>标签的拒绝红脉冲强度（与横震同拍衰减）</summary>
+        private float DenyOf(int tab) => shakeTimer > 0 && shakeTab == tab
+            ? shakeTimer / (float)ShakeDuration : 0f;
+
+        /// <summary>悬浮说明是否在场（含淡出尾），由顶层 overlay 查询</summary>
+        internal bool TipActive => TabsVisible && tipKind >= 0 && TipEase(tipKind) > 0.03f;
+
+        private float TipEase(int tab) => tab switch {
+            0 => brutalHover,
+            1 => asuraHover,
+            _ => godSmithHover,
+        };
+
+        /// <summary>顶层悬浮说明绘制入口（由 <see cref="GameModeTipOverlay"/> 调用，压在同层其他 UI 之上）</summary>
+        internal void DrawTipOverlay(SpriteBatch spriteBatch) {
+            if (!TipActive) {
+                return;
+            }
+            GameModeKind kind = tipKind switch {
+                0 => GameModeKind.Brutal,
+                1 => GameModeKind.Asura,
+                _ => GameModeKind.GodSmith,
+            };
+            Rectangle rect = tipKind switch {
+                0 => brutalRect,
+                1 => asuraRect,
+                _ => godSmithRect,
+            };
+            GameModeRenderer.DrawHoverPanel(spriteBatch, rect, kind, TipEase(tipKind));
+        }
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (TabsVisible) {
@@ -326,16 +359,16 @@ namespace CalamityOverhaul.Content.GameModes.UI
                 GameModeFace asuraFace = GameModeSystem.FaceOf(GameModeKind.Asura);
                 GameModeRenderer.DrawTab(spriteBatch, godSmithRect, GameModeFace.GodSmith,
                     godSmithLit, godSmithHover, godSmithBurst, godSmithBurstOn, disabledDim,
-                    0f, EntranceAlpha(entranceGodSmith));
+                    0f, EntranceAlpha(entranceGodSmith), PressOf(2), DenyOf(2));
                 if (reveal > 0.01f) {
                     GameModeRenderer.DrawTab(spriteBatch, asuraRect, asuraFace,
                         asuraLit, asuraHover, asuraBurst, asuraBurstOn, disabledDim,
-                        0f, reveal * EntranceAlpha(entranceAsura));
+                        0f, reveal * EntranceAlpha(entranceAsura), PressOf(1), DenyOf(1));
                 }
 
                 GameModeRenderer.DrawTab(spriteBatch, brutalRect, GameModeFace.Brutal,
                     brutalLit, brutalHover, brutalBurst, brutalBurstOn, disabledDim,
-                    GuideLevel(), EntranceAlpha(entranceBrutal));
+                    GuideLevel(), EntranceAlpha(entranceBrutal), PressOf(0), DenyOf(0));
 
                 //切换爆发的越身扩张环压在旗身之上
                 if (godSmithBurst < 1f) {
@@ -386,5 +419,21 @@ namespace CalamityOverhaul.Content.GameModes.UI
             float next = MathHelper.Lerp(cur, target, rate);
             return Math.Abs(next - target) < 0.004f ? target : next;
         }
+    }
+
+    /// <summary>
+    /// 模式标签悬浮说明的顶层绘制壳：说明面板压在同层其余 UIHandle（任务书图标等）之上，
+    /// 不与旗身同批（口径同 KikasaHudTipOverlay）
+    /// </summary>
+    internal sealed class GameModeTipOverlay : UIHandle
+    {
+        public override LayersModeEnum LayersMode => LayersModeEnum.Vanilla_Mouse_Text;
+
+        public override float RenderPriority => 10f;
+
+        public override bool Active => GameModeTabUI.Instance?.TipActive ?? false;
+
+        public override void Draw(SpriteBatch spriteBatch)
+            => GameModeTabUI.Instance?.DrawTipOverlay(spriteBatch);
     }
 }

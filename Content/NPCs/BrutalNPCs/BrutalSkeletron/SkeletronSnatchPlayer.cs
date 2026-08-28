@@ -46,6 +46,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
             if (head != null) {
                 return head;
             }
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必走多头兜底扫表
+                return null;
+            }
             //多头兜底（槽位登记只记最后活跃头）
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (npc.type != NPCID.SkeletronHead) {

@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.UIs
         Halibut,
         /// <summary>鬼切（改铭台/结印盘/点鬼簿/铭谱）</summary>
         Onikiri,
+        /// <summary>修罗（往生轮）</summary>
+        Asura,
     }
 
     /// <summary>

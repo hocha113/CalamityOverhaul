@@ -36,6 +36,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.VolleyBows
         /// <summary>标桩钉桩节流：>0 时本目标不再被钉（防连射永锁）</summary>
         internal int PinCooldown;
 
+        /// <summary>钛金连弩蚀甲层数（0~5，每层齐射箭对该敌 +2 穿甲）</summary>
+        internal int ErodeStacks;
+
+        /// <summary>蚀甲剩余帧，归零清层</summary>
+        internal int ErodeTimer;
+
         public override void PostAI(NPC npc) {
             if (Timer > 0 && --Timer == 0) {
                 Stacks = 0;
@@ -45,6 +51,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.VolleyBows
             }
             if (PinCooldown > 0) {
                 PinCooldown--;
+            }
+            if (ErodeTimer > 0 && --ErodeTimer == 0) {
+                ErodeStacks = 0;
             }
         }
 

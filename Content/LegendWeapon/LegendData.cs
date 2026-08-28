@@ -359,9 +359,22 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
         #region 调用入口
 
+        //上次判定"无需升级"后的打盹：目标等级链（试炼路线 × 反射旗）只需低频重估。
+        //用无符号帧差而非绝对帧点，换世界 GameUpdateCount 归零时差值回绕成大数、自然立即重判
+        private bool upgradeCheckSnoozed;
+        private uint lastUpgradeCheckFrame;
+
         /// <summary>升级主入口；手持/背包需确认时走 <see cref="LegendUpgradeManager"/>，存读/世界物品跨世界不动</summary>
         public virtual void Update(Item item, Player owner, LegendUpdateContext context) {
+            uint now = Main.GameUpdateCount;
+            if (upgradeCheckSnoozed && now - lastUpgradeCheckFrame < 30) {
+                return;
+            }
+            lastUpgradeCheckFrame = now;
+            upgradeCheckSnoozed = false;
+
             if (!NeedUpgrade()) {
+                upgradeCheckSnoozed = true;
                 return;
             }
 

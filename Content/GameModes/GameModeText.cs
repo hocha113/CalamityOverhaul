@@ -42,6 +42,10 @@ namespace CalamityOverhaul.Content.GameModes
         internal static LocalizedText BrutalDesc;
         /// <summary>修罗悬停说明</summary>
         internal static LocalizedText AsuraDesc;
+        /// <summary>创建界面难度行的残酷一句话说明（底部说明板单行，须短）</summary>
+        internal static LocalizedText BrutalCreationDesc;
+        /// <summary>创建界面难度行的修罗一句话说明</summary>
+        internal static LocalizedText AsuraCreationDesc;
         /// <summary>毁灭悬停说明</summary>
         internal static LocalizedText AnnihilationDesc;
         /// <summary>神匠悬停说明</summary>
@@ -61,6 +65,8 @@ namespace CalamityOverhaul.Content.GameModes
         internal static LocalizedText HintDisable;
         /// <summary>拒绝原因：Boss 在场</summary>
         internal static LocalizedText BossRefuse;
+        /// <summary>拒绝原因：修罗依赖残酷未开启</summary>
+        internal static LocalizedText AsuraNeedBrutal;
 
         public override void SetStaticDefaults() {
             BrutalName = this.GetLocalization(nameof(BrutalName), () => "Cruel World");
@@ -79,11 +85,15 @@ namespace CalamityOverhaul.Content.GameModes
             AnnihilationOffLine = this.GetLocalization(nameof(AnnihilationOffLine),
                 () => "Death rests a while; the living steal a breath.");
             BrutalDesc = this.GetLocalization(nameof(BrutalDesc),
-                () => "Unleashes the reworked, merciless AI of brutal foes, their stats anchored no lower than Master Mode; all other enemies gain 50% more life and damage, and lesser fiends turn swift and frenzied");
+                () => "Unleashes the reworked, merciless AI of brutal foes, their stats anchored no lower than Master Mode; every enemy gains 50% more life and damage, and lesser fiends turn swift and frenzied");
             AsuraDesc = this.GetLocalization(nameof(AsuraDesc),
-                () => "The enhancement rises to 100%. Foes adapt to repeated damage of the same kind, and any blow you deal sets the least they deal back");
+                () => "The enhancement rises to 100%. Foes adapt to repeated damage of the same kind, and any blow you deal sets the least they deal back. Melee strikes resist adaptation, the blade itself most of all; the closer you strike, the more melee damage you deal");
             AnnihilationDesc = this.GetLocalization(nameof(AnnihilationDesc),
                 () => "The final form of Asura Hell in a zenith world. Every terror doubles again: foes adapt twice as fast, and your pain is repaid twofold");
+            BrutalCreationDesc = this.GetLocalization(nameof(BrutalCreationDesc),
+                () => "Master is the floor: reworked bosses awaken, all foes empowered");
+            AsuraCreationDesc = this.GetLocalization(nameof(AsuraCreationDesc),
+                () => "Master is the floor: foes adapt to your blows and mirror your pain");
             GodSmithName = this.GetLocalization(nameof(GodSmithName), () => "Divine Artifice");
             GodSmithOnLine = this.GetLocalization(nameof(GodSmithOnLine),
                 () => "The Godsmith takes up the hammer; every common iron shall be reforged.");
@@ -99,6 +109,8 @@ namespace CalamityOverhaul.Content.GameModes
             HintDisable = this.GetLocalization(nameof(HintDisable), () => "Click to seal");
             BossRefuse = this.GetLocalization(nameof(BossRefuse),
                 () => "A boss still lives. The pact cannot be altered now");
+            AsuraNeedBrutal = this.GetLocalization(nameof(AsuraNeedBrutal),
+                () => "Awaken Cruel World first");
         }
 
         /// <summary>指定表现脸在指定开关方向下的台词</summary>

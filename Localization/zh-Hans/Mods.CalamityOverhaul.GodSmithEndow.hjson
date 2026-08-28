@@ -1,0 +1,182 @@
+GodSmithExecutionEndow: {
+	EndowName: 处决斩痕
+	EndowDesc:
+		'''
+		命中生命低于 {0}% 的敌人时，追出一道处决斩
+		处决斩造成该击 {1}% 的伤害
+		'''
+}
+
+GodSmithOverkillEndow: {
+	EndowName: 溢杀连锁
+	EndowDesc:
+		'''
+		击杀敌人时，血色电光跃向附近敌人
+		携带溢出伤害的 {0}%，外加该击 {1}% 的伤害
+		'''
+}
+
+GodSmithCritMarkEndow: {
+	EndowName: 会心印记
+	EndowDesc:
+		'''
+		命中在敌人身上累刻印记，叠满 {0} 层引爆
+		爆裂必定暴击，基础为该击的 {1}%
+		'''
+}
+
+GodSmithEchoSlashEndow: {
+	EndowName: 剑风回响
+	EndowDesc:
+		'''
+		命中掀起剑风，向四周荡开
+		对其余敌人造成该击 {0}% 的伤害
+		'''
+}
+
+GodSmithShockwaveEndow: {
+	EndowName: 冲击震波
+	EndowDesc:
+		'''
+		每 1.5 秒，命中震出冲击波
+		击退周围敌人并造成该击 {0}% 的伤害
+		'''
+}
+
+GodSmithComboEndow: {
+	EndowName: 连击迸发
+	EndowDesc:
+		'''
+		连续命中累积连势，第 {0} 击迸发
+		对周围造成该击 {1}% 的范围伤害
+		手停或换武器，连势散去
+		'''
+}
+
+GodSmithAfterimageEndow: {
+	EndowName: 疾影残击
+	EndowDesc:
+		'''
+		每第 {0} 次出手，一道残影朝准星追斩
+		造成武器伤害的 {1}%
+		'''
+}
+
+GodSmithBallisticEndow: {
+	EndowName: 穿云曳光
+	EndowDesc:
+		'''
+		每第 {0} 次射击附送一发曳光弹
+		贯穿敌人，造成武器伤害的 {1}%
+		'''
+}
+
+GodSmithRicochetEndow: {
+	EndowName: 流转跳弹
+	EndowDesc:
+		'''
+		弹药命中后弹开一粒跳弹，跃向另一名敌人
+		造成该击 {0}% 的伤害
+		'''
+}
+
+GodSmithPhantomVolleyEndow: {
+	EndowName: 幻影齐射
+	EndowDesc:
+		'''
+		每第 {0} 次射击唤出 {1} 发幻影弹随行齐射
+		每发造成武器伤害的 {2}%
+		'''
+}
+
+GodSmithManaRefluxEndow: {
+	EndowName: 魔力回流
+	EndowDesc:
+		'''
+		命中有 {0}% 几率剥出一缕魔力，飞回你身边
+		接住返还 {1} 点魔力
+		'''
+}
+
+GodSmithOverloadEndow: {
+	EndowName: 奥能过载
+	EndowDesc:
+		'''
+		魔力高于 {0}% 时，命中引爆紫电奥能
+		追加该击 {1}% 的伤害
+		'''
+}
+
+GodSmithMythicEchoEndow: {
+	EndowName: 星辉咏灵
+	EndowDesc:
+		'''
+		施法唤来星灵绕身随行
+		星灵不时朝附近敌人掷出星弹，造成武器伤害的 {0}%
+		'''
+}
+
+GodSmithDesperationEndow: {
+	EndowName: 破釜沉舟
+	EndowDesc:
+		'''
+		残破的武器在逆境中怒吼
+		命中有 {0}% 几率爆发，造成该击 {1}% 的范围伤害
+		词缀越破，爆发越猛
+		'''
+}
+
+GodSmithHiddenEdgeEndow: {
+	EndowName: 拙器藏锋
+	EndowDesc:
+		'''
+		钝拙的兵刃暗藏真锋
+		每第 {0} 次出手闪出雪白一刀，造成武器伤害的 {1}%
+		武器越迟钝，藏锋越利
+		'''
+}
+
+GodSmithLuckyStarEndow: {
+	EndowName: 幸运星芒
+	EndowDesc:
+		'''
+		暴击时天降幸运星，坠向目标
+		造成该击 {0}% 的伤害
+		'''
+}
+
+GodSmithMenaceEndow: {
+	EndowName: 威压杀意
+	EndowDesc:
+		'''
+		命中累积杀意，第 {0} 击撕出黑红爪痕
+		造成该击 {1}% 的伤害
+		'''
+}
+
+GodSmithSwiftFootEndow: {
+	EndowName: 奔行风势
+	EndowDesc:
+		'''
+		跑动约 {0} 格蓄满风势
+		下一次命中放出贯穿风刃，造成该击 {1}% 的伤害
+		'''
+}
+
+GodSmithViolentSurgeEndow: {
+	EndowName: 狂性迸发
+	EndowDesc:
+		'''
+		近战命中累积狂性，叠满 {0} 层迸发血色刃环
+		造成该击 {1}% 的范围伤害
+		'''
+}
+
+GodSmithArcaneWardEndow: {
+	EndowName: 奥术护持
+	EndowDesc:
+		'''
+		受击时以魔力织出符文护持
+		每 1 点魔力抵 {0} 点伤害，至多抵掉该击的 {1}%
+		'''
+}

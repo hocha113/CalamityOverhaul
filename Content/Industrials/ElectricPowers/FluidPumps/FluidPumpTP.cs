@@ -218,12 +218,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.FluidPumps
 
             //左缘储液量规:底暗条+按液色的充盈段,贴着桶身左壁
             float ratio = MathHelper.Clamp(FluidAmount / (float)FluidCapacity, 0f, 1f);
-            spriteBatch.Draw(px, new Rectangle((int)basePos.X + 7, topY + 7, 2, 9), new Color(18, 20, 24).MultiplyRGB(lit));
+            spriteBatch.Draw(px, new Rectangle((int)basePos.X + 6, topY + 10, 4, 18), new Color(18, 20, 24).MultiplyRGB(lit));
             if (ratio > 0.01f) {
-                int fillH = (int)(9 * ratio);
-                spriteBatch.Draw(px, new Rectangle((int)basePos.X + 7, topY + 7 + 9 - fillH, 2, fillH),
+                int fillH = (int)(18 * ratio);
+                spriteBatch.Draw(px, new Rectangle((int)basePos.X + 6, topY + 10 + 18 - fillH, 4, fillH),
                     style.Main.MultiplyRGB(lit));
-                spriteBatch.Draw(px, new Rectangle((int)basePos.X + 7, topY + 7 + 9 - fillH, 2, 1),
+                spriteBatch.Draw(px, new Rectangle((int)basePos.X + 6, topY + 10 + 18 - fillH, 4, 1),
                     FluidVFX.Glow(style.Bright, 0.35f));
             }
 
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.FluidPumps
             else {
                 lamp = FluidVFX.Glow(new Color(255, 180, 60), 0.55f);
             }
-            spriteBatch.Draw(px, new Rectangle((int)(basePos.X + Width) - 7, topY + 6, 2, 2), lamp);
+            spriteBatch.Draw(px, new Rectangle((int)(basePos.X + Width) - 10, topY + 10, 4, 4), lamp);
         }
         #endregion
 

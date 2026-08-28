@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Wraiths.Abilities;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Wraiths.Abilities;
 using CalamityOverhaul.Content.Wraiths.Abilities.GhostRains;
 using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.Marks;
@@ -59,6 +60,9 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
         }
 
+        /// <summary>在场帧戳：AI 每帧盖戳，阴幕/簿记扫描器据此跳过空表全扫</summary>
+        internal static ActivityStamp PresenceStamp;
+
         internal static GhostRainProj Find(int owner) {
             int type = ModContent.ProjectileType<GhostRainProj>();
             for (int i = 0; i < Main.maxProjectiles; i++) {
@@ -113,6 +117,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 return;
             }
 
+            PresenceStamp.Stamp();
             Projectile.timeLeft = 2;
             Projectile.Center = Owner.MountedCenter;
             EnsureSeed();

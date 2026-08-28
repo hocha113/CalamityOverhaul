@@ -14,6 +14,10 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
         public override float Weight => 1.25f;
 
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
+            //近两帧无夺身演出盖戳：跳过全玩家表探测
+            if (!WraithRevivalDeathPlayer.PresenceStamp.ActiveWithin()) {
+                return;
+            }
             if (!AnySeizureActive(out int firstIndex)) {
                 return;
             }

@@ -6,10 +6,10 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 {
     /// <summary>
-    /// 血湖湖面的物理面：只对玩家生效的单向平台。
-    /// 服务器不持有领域状态（<see cref="KikasaDomainNet"/> 的既定契约），而玩家移动本就是
-    /// 客户端权威，每端用已同步的领域快照对所有玩家跑同一条钳制规则，各端自然一致；
-    /// NPC/物品/弹幕是服务器权威实体，有意不参与，拖敌入湖走 KikasaDrown 通道。
+    /// 血湖湖面的物理面：只对玩家生效的单向平台。玩家移动是客户端权威，
+    /// 每端用已同步的领域快照对所有玩家跑同一条钳制规则，各端自然一致，判定不走服务器。
+    /// NPC 有意不上平台——它们沉入湖中吃介质交互（减速/水花/血泡，<see cref="KikasaLakeNPC"/>，
+    /// 服务器靠领域镜像跟跑）；拖敌入湖的处决走 KikasaDrown 通道。
     /// </summary>
     internal static class KikasaLakeSurface
     {
@@ -27,11 +27,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// <summary>行走涟漪节流，纯本机表现量（涟漪只在 Viewed 端出现，无需同步）</summary>
         private static readonly int[] walkRippleTimers = new int[Main.maxPlayers];
 
-        /// <summary>该域此刻是否托得住人：水位满即成面。含 Flipping（翻转期水位强制满，
-        /// 演出中不掉人）；Closing 首帧后水位跌破阈值自动失效。
+        /// <summary>该域此刻是否托得住人：水位满即成面。谓词与 NPC 没入判定同源
+        /// （<see cref="KikasaDomainPlayer.LakeBodySolid"/>）。
         /// 鬼梦的梦侧湖不存在（拉入结算帧起脚下落空，归返结算帧湖面重新接人）</summary>
         private static bool SurfaceSolid(KikasaDomainPlayer domain)
-            => domain.AnyActive && domain.RiseT >= 0.999f && !domain.DreamWorldVisual;
+            => domain.LakeBodySolid;
 
         /// <summary>
         /// 逐帧钳制，移动应用前调用：本帧脚底将下穿湖面且未主动下潜时，把纵速截到精确落线。

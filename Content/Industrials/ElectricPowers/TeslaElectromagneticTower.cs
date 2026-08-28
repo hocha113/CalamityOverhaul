@@ -759,10 +759,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     break;
                 case 2://后摇，闪电逐渐消失
                     {
+                    //淡出由 Timer 纯本地推导（各端 AI 自行推进），不再逐拍 netUpdate；
+                    //入淡出沿已一次性同步（Fade / 守卫球直切处），丢包兜底靠击杀广播
                     Timer++;
                     FadeValue = Smoother((int)Timer, 30);
                     ThunderWidth = Smoother(60 - (int)Timer, 60) * 14;
-                    Projectile.netUpdate = true;
                     float factor = Timer / 30;
                     float sinFactor = MathF.Sin(factor * MathHelper.Pi);
 
@@ -891,6 +892,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Hited = 1;
             Timer = 0;
             State = 2;
+            //入淡出沿一次性同步（State/Timer 随包出门），替代原先淡出期的逐拍 netUpdate
+            Projectile.netUpdate = true;
 
             if (trail != null && trailList != null) {
                 trail.BasePositions = [.. trailList];
@@ -971,6 +974,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                         targetCenter = TargetPlayer.Center;
                         TargetCenter = TargetPlayer.Center;
                         State = 2;
+                        //入淡出沿一次性同步，淡出期不再逐拍发包
+                        Projectile.netUpdate = true;
                     }
                     else {
                         Vector2 dir2 = TargetPlayer.Center - Projectile.Center;

@@ -88,6 +88,10 @@ namespace CalamityOverhaul.Content.GameModes.UI
         public static readonly Color GodSmithEmber = new(255, 226, 142);
         /// <summary>休眠态骨灰色</summary>
         public static readonly Color BoneDim = new(118, 106, 100);
+        /// <summary>悬停面板正文灰白</summary>
+        public static readonly Color TextBody = new(212, 205, 198);
+        /// <summary>拒绝/锁定警示红</summary>
+        public static readonly Color DangerRed = new(226, 74, 64);
 
         /// <summary>表现脸的主 accent</summary>
         public static Color Accent(GameModeFace face) => face switch {

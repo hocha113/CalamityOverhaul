@@ -10,8 +10,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
 {
     /// <summary>
-    /// 悠悠球族个性小弹：三风格弹丸（动脉血珠 / 叶列茨孢子 / 克眼血泪）。<br/>
-    /// ai[0] = 风格（0 血珠抛物线 / 1 孢子缓漂 / 2 血泪直飞），随生成包同步；
+    /// 悠悠球族个性小弹：四风格弹丸（动脉血珠 / 叶列茨孢子 / 克眼血泪 / 木球木屑镖）。<br/>
+    /// ai[0] = 风格（0 血珠抛物线 / 1 孢子缓漂 / 2 血泪直飞 / 3 木屑镖抛旋），随生成包同步；
     /// 伤害在生成时按各球条目折算烘焙。owner 端生成，命中判定 owner 权威
     /// </summary>
     internal class GsYoyoPelletProj : ModProjectile
@@ -23,16 +23,19 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
         internal const int StyleBloodBead = 0;
         internal const int StyleSpore = 1;
         internal const int StyleBloodTear = 2;
+        internal const int StyleWoodChip = 3;
 
         private static readonly Color BeadRed = new(210, 40, 50);
         private static readonly Color SporeGreen = new(140, 230, 120);
         private static readonly Color TearCrimson = new(185, 30, 60);
+        private static readonly Color ChipBrown = new(205, 160, 90);
 
         private int Style => (int)Projectile.ai[0];
 
         private Color StyleColor => Style switch {
             StyleSpore => SporeGreen,
             StyleBloodTear => TearCrimson,
+            StyleWoodChip => ChipBrown,
             _ => BeadRed,
         };
 
@@ -63,11 +66,17 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
                 case StyleBloodTear:
                     Projectile.velocity *= 1.005f;
                     break;
+                case StyleWoodChip:
+                    //木屑镖：略轻的抛物线 + 自旋
+                    Projectile.velocity.Y = MathF.Min(Projectile.velocity.Y + 0.22f, 11f);
+                    break;
                 default:
                     Projectile.velocity.Y = MathF.Min(Projectile.velocity.Y + 0.30f, 12f);
                     break;
             }
-            Projectile.rotation = Projectile.velocity.ToRotation();
+            Projectile.rotation = Style == StyleWoodChip
+                ? Projectile.rotation + 0.4f * Math.Sign(Projectile.velocity.X == 0f ? 1f : Projectile.velocity.X)
+                : Projectile.velocity.ToRotation();
             Lighting.AddLight(Projectile.Center, StyleColor.ToVector3() * 0.14f);
 
             if (VaultUtils.isServer) {
@@ -77,6 +86,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
                 if (Style == StyleSpore) {
                     PRTLoader.NewParticle<PRT_FarmSpore>(Projectile.Center, -Projectile.velocity * 0.1f,
                         SporeGreen, Main.rand.NextFloat(0.3f, 0.5f))?.Configure(Main.rand.Next(14, 22), true);
+                }
+                else if (Style == StyleWoodChip) {
+                    Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.WoodFurniture,
+                        -Projectile.velocity * 0.1f + Main.rand.NextVector2Circular(0.6f, 0.6f));
+                    d.noGravity = true;
+                    d.scale = Main.rand.NextFloat(0.7f, 1f);
                 }
                 else {
                     PRTLoader.NewParticle<PRT_HeartcarverDroplet>(Projectile.Center, -Projectile.velocity * 0.15f,

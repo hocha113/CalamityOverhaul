@@ -11,8 +11,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Fleshfen.Projectiles
 {
     /// <summary>
-    /// 血露雨帘（环境驱动，非 NPC 弹幕）。ai[0]=帘半宽（像素）。
-    /// 生成位置即锁定落点（预告即承诺）：空中血珠凝聚 75 帧（滴答声渐密+闪烁渐急，双通道预告）
+    /// 血露雨帘（环境驱动，非 NPC 弹幕）。ai[0]=帘半宽（像素）；ai[1]=猩红锚面 Y（世界像素，
+    /// 与凝核同列，随生成包原生同步）——锚面在凝核下方即立足面凝云、在上方即洞穴贴顶凝露。
+    /// 生成位置即锁定落点（预告即承诺）：锚物表面血珠汇聚攀升 90 帧凝出血云
+    /// （滴答声渐密+闪烁渐急，双通道预告，"雨从哪来"有视觉答案）
     /// → 雨帘落下 200 帧（触帘者短暂流血+微量伤害，檐下/室内被瓦面物理挡住即免疫）
     /// → 血渍余韵 80 帧（地面血渍蒸散收场）。
     /// 伤害不走 hostile 碰撞管线：各端只判定本机玩家并本机结算 Hurt（受击端权威，原生同步）；
@@ -22,8 +24,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Fleshfen.Projec
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        /// <summary>凝聚预告帧数（公平契约 ≥45，各档位一律不缩短）</summary>
-        private const int CondenseFrames = 75;
+        /// <summary>凝聚预告帧数（公平契约 ≥45，各档位一律不缩短；自 75 加长，给锚面攀升演出留足可读时间）</summary>
+        private const int CondenseFrames = 90;
         /// <summary>雨帘落下帧数</summary>
         private const int FallFrames = 200;
         /// <summary>余韵蒸散帧数</summary>
@@ -42,6 +44,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Fleshfen.Projec
         private static readonly Color BrightBlood = EvilBiomeFX.Bright(EvilBiomeFX.FlavorCrimson);
 
         private float HalfWidth => Projectile.ai[0];
+        /// <summary>猩红锚面 Y（世界像素）：凝聚演出的"来处"，与凝核同列</summary>
+        private float AnchorFaceY => Projectile.ai[1];
+        /// <summary>洞穴贴顶变体：锚面在凝核上方（顶壁下挂），血珠沿顶汇聚滴挂</summary>
+        private bool CeilingAnchor => AnchorFaceY < Projectile.Center.Y;
         private int TotalLife => CondenseFrames + FallFrames + AfterFrames;
         private int Elapsed => TotalLife - Projectile.timeLeft;
 
@@ -176,9 +182,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Fleshfen.Projec
             }
         }
 
-        /// <summary>凝聚期：血珠向凝核收拢 + 滴答声渐密 + 微光渐急（视觉/听觉双通道）</summary>
+        /// <summary>凝聚期：锚物表面血珠汇聚攀升 + 血珠向凝核收拢 + 滴答声渐密（视觉/听觉双通道）</summary>
         private void UpdateCondenseFx(int elapsed) {
             float progress = elapsed / (float)CondenseFrames;
+            SpawnAnchorSeep(progress);
             //收拢粉尘（≤2 粒/帧）
             for (int i = 0; i < 2; i++) {
                 if (!Main.rand.NextBool(2)) {
@@ -200,6 +207,56 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Fleshfen.Projec
                 }, Projectile.Center);
             }
             Lighting.AddLight(Projectile.Center, new Vector3(0.24f, 0.04f, 0.05f) * (0.4f + 0.6f * progress));
+        }
+
+        /// <summary>
+        /// 锚面渗珠（凝聚期专属，"雨从哪来"的视觉答案）：
+        /// 立足面 = 锚面血珠沸涌 + 光珠自表面攀升汇入凝核；
+        /// 贴顶面 = 血珠沿顶壁向凝核列爬行、近核滴挂坠入。密度随凝聚进度渐密（与滴答对拍）
+        /// </summary>
+        private void SpawnAnchorSeep(float progress) {
+            float density = 0.45f + 0.9f * progress;
+            //攀升/爬行光珠（≤2 粒/帧，渐密）
+            for (int i = 0; i < 2; i++) {
+                if (Main.rand.NextFloat() >= density * 0.55f) {
+                    continue;
+                }
+                float ox = Main.rand.NextFloat(-0.7f, 0.7f) * HalfWidth;
+                if (!CeilingAnchor) {
+                    //立足面：自锚面出发向凝核汇聚，速度随核距折算，凝聚期内可见抵达
+                    Vector2 pos = new(Projectile.Center.X + ox, AnchorFaceY - 2f);
+                    Vector2 toCore = Projectile.Center - pos;
+                    float speed = MathHelper.Clamp(toCore.Length() / 55f, 1.5f, 4f)
+                        * Main.rand.NextFloat(0.85f, 1.25f);
+                    Dust climb = Dust.NewDustPerfect(pos, DustID.CrimsonTorch,
+                        toCore.SafeNormalize(-Vector2.UnitY) * speed,
+                        110, default, 0.8f + 0.4f * progress);
+                    climb.noGravity = true;
+                }
+                else {
+                    //贴顶面：沿顶壁向凝核列聚拢
+                    Vector2 pos = new(Projectile.Center.X + ox, AnchorFaceY + 2f);
+                    Dust crawl = Dust.NewDustPerfect(pos, DustID.CrimsonTorch,
+                        new Vector2(-Math.Sign(ox) * Main.rand.NextFloat(0.7f, 1.5f), 0.1f),
+                        120, default, 0.75f + 0.35f * progress);
+                    crawl.noGravity = true;
+                }
+            }
+            //血珠实体（带重力的液体身份）：立足面偶发溅涌，贴顶面近核滴挂坠入凝核
+            if (Main.rand.NextFloat() < density * 0.4f) {
+                if (!CeilingAnchor) {
+                    Dust.NewDustPerfect(
+                        new Vector2(Projectile.Center.X + Main.rand.NextFloat(-0.6f, 0.6f) * HalfWidth, AnchorFaceY - 3f),
+                        DustID.Blood, new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), -Main.rand.NextFloat(1.6f, 3f)),
+                        60, default, Main.rand.NextFloat(1f, 1.35f));
+                }
+                else {
+                    Dust.NewDustPerfect(
+                        new Vector2(Projectile.Center.X + Main.rand.NextFloat(-12f, 12f), AnchorFaceY + 3f),
+                        DustID.Blood, new Vector2(0f, Main.rand.NextFloat(0.4f, 1f)),
+                        60, default, Main.rand.NextFloat(0.9f, 1.2f));
+                }
+            }
         }
 
         /// <summary>雨帘期：持续血珠 + 地面溅答声 + 凝核渐排空</summary>

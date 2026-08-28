@@ -7,37 +7,20 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 {
     /// <summary>
-    /// 鬼梦贴地雾带：逐列探地建一条地形跟随三角带，KikasaDreamFog.fx 以连续噪声场着雾
-    /// （替换粒子堆叠地雾：连续场无生灭即无闪烁，"走"由风相滚动实现）。
+    /// 鬼梦贴地雾带：<see cref="KikasaDreamGroundField"/> 供带符号离地距离场，
+    /// KikasaDreamFog.fx 逐像素采样定密度（连续噪声场着雾，无生灭即无闪烁）。
+    /// 旧的逐列探地三角带在复杂地形（陡坡/多层洞穴/悬空岛）会把雾带钉在玩家视线高度
+    /// 横贯岩面，已废除；距离场对任意地形逐像素贴合。
     /// 驱散源经 <see cref="KikasaDreamFogField"/> 喂 uniform，玩家/光标/恶犬处雾让位。
     /// 由 <see cref="KikasaDomains.KikasaDomainRender"/> 的 EndEntityDraw 驱动，仅梦侧可视时绘制
     /// </summary>
     internal static class KikasaDreamFogRender
     {
-        /// <summary>地表以上雾带高（世界 px）</summary>
-        private const float FogHeight = 96f;
-
-        /// <summary>地表以下裙边，盖住坡坎台阶的接缝</summary>
-        private const float Skirt = 26f;
-
-        /// <summary>探地列距（世界 px）</summary>
-        private const float ColumnStep = 32f;
-
-        /// <summary>列数上限：5K 超宽 + 边距 / 32 仍有余量</summary>
-        private const int MaxColumns = 180;
-
-        /// <summary>相邻列高度差钳制（px），雾爬坡不跳崖</summary>
-        private const float MaxSlope = 30f;
-
         /// <summary>与着色器 uRepulse[6] 对齐的槽位数</summary>
         private const int RepulseSlots = 6;
 
-        //探地/平滑/断崖缓冲与顶点缓冲逐帧复用，零分配
-        private static readonly float[] heights = new float[MaxColumns];
-        private static readonly float[] smoothed = new float[MaxColumns];
-        private static readonly float[] gaps = new float[MaxColumns];
-        private static readonly float[] gapsBlur = new float[MaxColumns];
-        private static readonly VertexPositionColorTexture[] verts = new VertexPositionColorTexture[MaxColumns * 2];
+        //窗口 quad 4 顶点 + 驱散槽上载缓冲，逐帧复用零分配
+        private static readonly VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
         private static readonly Vector4[] repulseUpload = new Vector4[RepulseSlots];
 
         internal static void Draw(SpriteBatch spriteBatch) {
@@ -56,20 +39,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                 return;
             }
 
-            //带跨度：屏幕±80 ∩ 梦界圆（与物品封禁/禁弹同一半径口径）
-            float casterX = kdp.Player.Center.X;
-            float left = MathF.Max(Main.screenPosition.X - 80f,
-                casterX - KikasaDream.WorldRange);
-            float right = MathF.Min(Main.screenPosition.X + Main.screenWidth + 80f,
-                casterX + KikasaDream.WorldRange);
-            int cols = (int)((right - left) / ColumnStep) + 2;
-            if (cols < 2) {
+            //距离场逐 tick 全量重建（同 tick 幂等；内部 SetData 前清 s1/s2，须在绑定之前调）
+            KikasaDreamGroundField.Update();
+            if (!KikasaDreamGroundField.Ready) {
                 return;
             }
-            cols = Math.Min(cols, MaxColumns);
 
-            SampleGround(viewer, left, cols);
-            BuildVerts(left, cols);
+            //quad 跨度：距离场窗口 ∩ 梦界圆（与物品封禁/禁弹同一半径口径）
+            Point origin = KikasaDreamGroundField.OriginTile;
+            float winLeft = origin.X * 16f;
+            float winTop = origin.Y * 16f;
+            float winRight = (origin.X + KikasaDreamGroundField.WindowW) * 16f;
+            float winBottom = (origin.Y + KikasaDreamGroundField.WindowH) * 16f;
+            float casterX = kdp.Player.Center.X;
+            float left = MathF.Max(winLeft, casterX - KikasaDream.WorldRange);
+            float right = MathF.Min(winRight, casterX + KikasaDream.WorldRange);
+            if (right - left < 16f) {
+                return;
+            }
+            BuildQuad(left, right, winTop, winBottom);
 
             fx.CurrentTechnique = fx.Techniques["TechGroundFog"];
             fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
@@ -77,6 +65,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             //风向与雨帘同源定相，量级压低：梦里的死风，雾贴地缓行
             fx.Parameters["uWind"]?.SetValue(MathF.Sin(Main.worldID % 255 * 0.37f) * 16f);
             fx.Parameters["uAlpha"]?.SetValue(kdp.DreamBlend);
+            //距离场窗口 UV 映射（KiyumeFog 的 uFogOrigin/uFogUvMul/uFogUvClamp 同式）
+            fx.Parameters["uFieldOrigin"]?.SetValue(new Vector2(winLeft, winTop));
+            fx.Parameters["uFieldUvMul"]?.SetValue(new Vector2(
+                1f / (KikasaDreamGroundField.CapW * KikasaDreamGroundField.CellPx),
+                1f / (KikasaDreamGroundField.CapH * KikasaDreamGroundField.CellPx)));
+            fx.Parameters["uFieldUvClamp"]?.SetValue(new Vector4(
+                0.5f / KikasaDreamGroundField.CapW,
+                0.5f / KikasaDreamGroundField.CapH,
+                (KikasaDreamGroundField.WindowW - 0.5f) / KikasaDreamGroundField.CapW,
+                (KikasaDreamGroundField.WindowH - 0.5f) / KikasaDreamGroundField.CapH));
             FillRepulse();
             fx.Parameters["uRepulse"]?.SetValue(repulseUpload);
 
@@ -88,92 +86,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             device.RasterizerState = RasterizerState.CullNone;
             device.Textures[1] = noise;
             device.SamplerStates[1] = SamplerState.LinearWrap;
+            device.Textures[2] = KikasaDreamGroundField.Texture;
+            device.SamplerStates[2] = SamplerState.LinearClamp;
 
             foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
                 pass.Apply();
-                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, cols * 2 - 2);
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);
             }
 
             device.BlendState = origBlend;
             device.RasterizerState = origRaster;
+            //归还纹理槽：同帧邻居泄漏纪律
+            device.Textures[1] = null;
+            device.Textures[2] = null;
         }
 
-        /// <summary>
-        /// 逐列探地 + 3 点平均 + 双向斜率钳制 + 断崖羽化：
-        /// 雾流过小坑不打摆，探不到地的列（深崖/大空腔）在两三列内软收为无雾
-        /// </summary>
-        private static void SampleGround(Player viewer, float left, int cols) {
-            float carry = viewer.Bottom.Y;
-            for (int i = 0; i < cols; i++) {
-                float x = left + i * ColumnStep;
-                if (KikasaDreamSystem.TryFindGround(x, viewer.Center.Y - 60f, out float groundY)) {
-                    heights[i] = groundY;
-                    gaps[i] = 1f;
-                    carry = groundY;
-                }
-                else {
-                    //高度沿用最近有效列，可见性交给 gap 归零
-                    heights[i] = carry;
-                    gaps[i] = 0f;
-                }
-            }
-
-            //3 点平均
-            for (int i = 0; i < cols; i++) {
-                float sum = heights[i];
-                float weight = 1f;
-                if (i > 0) {
-                    sum += heights[i - 1];
-                    weight += 1f;
-                }
-                if (i < cols - 1) {
-                    sum += heights[i + 1];
-                    weight += 1f;
-                }
-                smoothed[i] = sum / weight;
-            }
-            //双向斜率钳制：先左后右各一遍，坡度封在 MaxSlope/列 内
-            for (int i = 1; i < cols; i++) {
-                smoothed[i] = MathHelper.Clamp(smoothed[i],
-                    smoothed[i - 1] - MaxSlope, smoothed[i - 1] + MaxSlope);
-            }
-            for (int i = cols - 2; i >= 0; i--) {
-                smoothed[i] = MathHelper.Clamp(smoothed[i],
-                    smoothed[i + 1] - MaxSlope, smoothed[i + 1] + MaxSlope);
-            }
-            //断崖羽化两遍，雾在崖口渐没而非平切
-            for (int pass = 0; pass < 2; pass++) {
-                for (int i = 0; i < cols; i++) {
-                    float sum = gaps[i] * 2f;
-                    float weight = 2f;
-                    if (i > 0) {
-                        sum += gaps[i - 1];
-                        weight += 1f;
-                    }
-                    if (i < cols - 1) {
-                        sum += gaps[i + 1];
-                        weight += 1f;
-                    }
-                    gapsBlur[i] = sum / weight;
-                }
-                Array.Copy(gapsBlur, gaps, cols);
-            }
-        }
-
-        //顶点契约与 KikasaDreamFog.fx 对齐：POSITION=世界坐标，
-        //TEXCOORD0.y=带内高度01（顶=1 裙底=0），COLOR0.r=断崖渐隐
-
-        private static void BuildVerts(float left, int cols) {
-            for (int i = 0; i < cols; i++) {
-                float x = left + i * ColumnStep;
-                float ground = smoothed[i];
-                byte gap = (byte)(MathHelper.Clamp(gaps[i], 0f, 1f) * 255f);
-                Color data = new(gap, byte.MaxValue, byte.MaxValue, byte.MaxValue);
-                verts[i * 2] = new VertexPositionColorTexture(
-                    new Vector3(x, ground - FogHeight, 0f), data, new Vector2(0f, 1f));
-                verts[i * 2 + 1] = new VertexPositionColorTexture(
-                    new Vector3(x, ground + Skirt, 0f), data, new Vector2(0f, 0f));
-            }
+        //顶点契约与 KikasaDreamFog.fx 对齐：POSITION=世界坐标（VS 过 transformMatrix），
+        //密度全部由 PS 采距离场推导，COLOR0/TEXCOORD0 不再承载数据
+        private static void BuildQuad(float left, float right, float top, float bottom) {
+            verts[0] = new VertexPositionColorTexture(new Vector3(left, top, 0f), Color.White, Vector2.Zero);
+            verts[1] = new VertexPositionColorTexture(new Vector3(right, top, 0f), Color.White, Vector2.Zero);
+            verts[2] = new VertexPositionColorTexture(new Vector3(left, bottom, 0f), Color.White, Vector2.Zero);
+            verts[3] = new VertexPositionColorTexture(new Vector3(right, bottom, 0f), Color.White, Vector2.Zero);
         }
 
         private static void FillRepulse() {

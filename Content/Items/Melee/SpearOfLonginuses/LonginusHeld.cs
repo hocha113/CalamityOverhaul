@@ -46,15 +46,29 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => false;
 
-        private bool isProj() => Main.projectile.Count((p)
-                => p.type == ModContent.ProjectileType<LonginusThrow>()
-                && p.Center.To(Owner.Center).LengthSquared() < 9000) == 0;
+        /// <summary>在场帧戳：AI 与绘制各盖一次（时停中 AI 停摆靠绘制维持），光之翼层据此跳过空表扫描</summary>
+        internal static ActivityStamp PresenceStamp;
+
+        //全客户端至多一个被标记的 NPC（单一写方），换目标只清上一个，免去每帧全表清扫
+        private static int signedNpcIndex = -1;
+        private static int signedNpcType = -1;
+
+        private bool isProj() {
+            int throwType = ModContent.ProjectileType<LonginusThrow>();
+            foreach (Projectile p in Main.ActiveProjectiles) {
+                if (p.type == throwType && p.Center.To(Owner.Center).LengthSquared() < 9000) {
+                    return false;
+                }
+            }
+            return true;
+        }
 
         public override void AI() {
             if (Item.type != SpearOfLonginus.ID || !isProj()) {
                 Projectile.Kill();
                 return;
             }
+            PresenceStamp.Stamp();
             Projectile.velocity = Projectile.rotation.ToRotationVector2();
             fullCharge = Owner.HeldItem?.ModItem is SpearOfLonginus held && held.ChargeGrade >= SpearOfLonginus.MaxChargeGrade;
             if (Projectile.IsOwnedByLocalPlayer()) {
@@ -64,12 +78,16 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             }
             NPC npc = Projectile.Center.FindClosestNPC(1900);
             if (npc != null) {
-                npc.CWR().LonginusSign = true;
-                foreach (NPC overNPC in Main.npc) {
-                    if (overNPC.whoAmI != npc.whoAmI && overNPC.type != NPCID.None) {
-                        overNPC.CWR().LonginusSign = false;
+                //换目标时只清上一个（带槽位复用校验），效果等价旧的全表清扫
+                if (signedNpcIndex >= 0 && signedNpcIndex != npc.whoAmI) {
+                    NPC old = Main.npc[signedNpcIndex];
+                    if (old.active && old.type == signedNpcType) {
+                        old.CWR().LonginusSign = false;
                     }
                 }
+                npc.CWR().LonginusSign = true;
+                signedNpcIndex = npc.whoAmI;
+                signedNpcType = npc.type;
             }
             //标记光轮显隐，换目标重新显现
             if (npc != markNPC) {
@@ -264,6 +282,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            PresenceStamp.Stamp();
             Texture2D value = TextureAssets.Item[SpearOfLonginus.ID].Value;
             int dir = Owner.direction * (int)Owner.gravDir;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition + Owner.CWR().SpecialDrawPositionOffset, null, lightColor

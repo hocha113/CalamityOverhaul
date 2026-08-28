@@ -17,9 +17,12 @@ Onikiri_SakuraFlight.DisplayName: 鬼切:樱流
 Onikiri_DomainFlip.DisplayName: 鬼切:领域表里翻转
 Kikasa_Sink.DisplayName: 鬼伞:沉物入湖
 Kikasa_DomainMutate.DisplayName: 鬼伞:血湖表里
+Kikasa_TideControl.DisplayName: 鬼伞:引潮
 Accessory_Skills.DisplayName: 饰品技能
 
 CWRKeySystem: {
 	Notbound: "[未绑定按键]"
 	RightClickFallback: 右键
 }
+
+// Blessing_Key.DisplayName: Blessing_ Key

@@ -1,0 +1,68 @@
+# GodSmith MeleeOddities (P5) weapon descriptions
+# Keys composed by the framework: Mods.CalamityOverhaul.GodSmithMeleeOddities.{SchemeClass}.Desc
+
+/* GsVampireKnives.Desc:
+	'''
+	Reforged: hurls 4-8 knives that heal 7.5% of damage dealt;
+	stolen blood condenses into up to 3 orbiting blood pearls, each adding a knife to the next throw;
+	at 3 pearls the next throw is a crimson volley with doubled lifesteal
+	''' */
+/* GsScourgeoftheCorruptor.Desc:
+	'''
+	Reforged: the javelin bursts into a brood of tiny eaters on impact;
+	it also pins a festering sore on whatever it strikes - eaters dive at the sore,
+	and after three passes the sore ruptures with cursed flames
+	''' */
+/* GsSolarEruption.Desc:
+	'''
+	Reforged: lashes out a looping chain-blade that pierces walls and detonates sunlight on hit;
+	land 8 hits to charge a corona - the next lash ignites its whole path in a chain of blasts
+	''' */
+/* GsDayBreak.Desc:
+	'''
+	Reforged: spears stick and burn, up to 8 per target;
+	pinning 4 spears into one target detonates them into a cross of daylight
+	''' */
+/* GsSickle.Desc:
+	'''
+	Reforged: still harvests hay from grass.
+	Slashes build Harvest, each stack swinging a little faster;
+	at 5 stacks the next slash becomes a widened reaping sweep
+	''' */
+/* GsIceSickle.Desc:
+	'''
+	Reforged: the thrown sickle freezes into an ice prism where it stops;
+	shatter the prism with a slash to burst a fan of icicles forward
+	''' */
+/* GsDeathSickle.Desc:
+	'''
+	Reforged: the wall-piercing scythe grows a tier for each new enemy it reaps;
+	at three tiers it erupts in a ring of soulfire where it halts
+	''' */
+/* GsTerragrim.Desc:
+	'''
+	Reforged: hold to become a storm of blades while Growth builds;
+	release to loose a blade wave scaled by Growth - at full power it takes the shape of the Terra Blade
+	''' */
+/* GsArkhalis.Desc:
+	'''
+	Reforged: the flurry pierces 20 armor;
+	sustained hits on one target build Insight, each stack adding 2 more armor penetration,
+	and at 8 stacks the flurry snaps into a piercing execution thrust
+	''' */
+/* GsMonkStaffT1.Desc:
+	'''
+	Reforged: the ground slam still deals triple damage in an area, and you can still turn or cut the spin short;
+	slammed enemies grow drowsy and slow, and a third slam on the same target puts it to sleep -
+	that slam hits harder and slows longer
+	''' */
+/* GsMonkStaffT2.Desc:
+	'''
+	Reforged: every landed thrust calls a ghast to pierce a nearby enemy;
+	the ghast then circles its victim for one more bite
+	''' */
+/* GsMonkStaffT3.Desc:
+	'''
+	Reforged: left-click swings build Dragon Breath, lighting up the pearl on the staff;
+	at 5 stacks the right-click dragon sphere ascends, calling down lightning along its path
+	''' */

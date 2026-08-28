@@ -14,6 +14,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
     internal class CrabulonPlayer : PlayerOverride
     {
+        /// <summary>骑乘帧戳：任一玩家骑蟹时盖戳，玩家绘制过滤据此免掉空场的 LINQ 包装</summary>
+        internal static Common.ActivityStamp MountStamp;
+
         /// <summary>已驯蟹索引，-1无</summary>
         public int CrabulonIndex;
         /// <summary>骑乘蟹，未骑null</summary>
@@ -38,11 +41,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
 
             if (IsMount) {
-                if (Player.CountProjectilesOfID<ElectricMinRocketHeld>() > 0) {
-                    foreach (var p in Main.ActiveProjectiles) {
-                        if (p.owner == Player.whoAmI && p.type == ModContent.ProjectileType<ElectricMinRocketHeld>()) {
-                            p.Kill();
-                        }
+                MountStamp.Stamp();
+                //单遍扫描直接杀，省去先计数再扫的双遍
+                int rocketType = ModContent.ProjectileType<ElectricMinRocketHeld>();
+                foreach (var p in Main.ActiveProjectiles) {
+                    if (p.owner == Player.whoAmI && p.type == rocketType) {
+                        p.Kill();
                     }
                 }
             }
@@ -56,12 +60,18 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
             oldIsMount = IsMount;
 
-            ModifyCrabulons.Clear();
-            foreach (var npc in Main.ActiveNPCs) {
-                if (npc.boss || npc.type != CWRID.NPC_Crabulon) {
-                    continue;
+            //近两帧无蟹盖戳（世上没有菌生蟹）：不必每帧全表重建
+            if (ModifyCrabulon.PresenceStamp.ActiveWithin()) {
+                ModifyCrabulons.Clear();
+                foreach (var npc in Main.ActiveNPCs) {
+                    if (npc.boss || npc.type != CWRID.NPC_Crabulon) {
+                        continue;
+                    }
+                    ModifyCrabulons.Add(npc.GetOverride<ModifyCrabulon>());
                 }
-                ModifyCrabulons.Add(npc.GetOverride<ModifyCrabulon>());
+            }
+            else if (ModifyCrabulons.Count > 0) {
+                ModifyCrabulons.Clear();
             }
         }
         private static bool PlayerIsMount(Player player) {
@@ -77,6 +87,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return crabulonPlayer.IsMount;
         }
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
+            //近两帧无人骑蟹：不包 Where 层（空场时包装结果与输入相同，纯分配）
+            if (!MountStamp.ActiveWithin()) {
+                return true;
+            }
             players = players.Where(p => !PlayerIsMount(p));//骑乘玩家蟹侧绘
             return true;
         }

@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
     /// 液中烬点=湖藏填充、整铃随形态浸染。
     /// 信息层（2026-08 重做）：短册只留纸与三席驻影小印（亲和色+在场/收起态），
     /// 铃右一列图标读数，鬼梦犬眼（睡/醒/梦中）、鬼火焰苗（熄/燃/压制，点击点燃/收火）、
-    /// 沉溺冷却、鬼域传送冷却、鬼雨态的重启冷却与伞奴计数；
+    /// 沉溺冷却、鬼域传送冷却、重启冷却（常驻，重启随时可按）与鬼雨态的伞奴计数；
     /// 一切悬停说明走顶层 <see cref="KikasaHudTipOverlay"/>，题行 1.0 与原版 tooltip 同级。
     /// 点铃展开「湖心景」全屏（任何域状态都响应）。
     /// </summary>
@@ -44,6 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         public static LocalizedText ScrollName { get; private set; }
         public static LocalizedText OpenTag { get; private set; }
         public static LocalizedText TipWaterFormat { get; private set; }
+        public static LocalizedText TipTideHintFormat { get; private set; }
         public static LocalizedText TipVaultFormat { get; private set; }
         public static LocalizedText TipWispClick { get; private set; }
         public static LocalizedText TipCooldownFormat { get; private set; }
@@ -65,6 +66,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             ScrollName = this.GetLocalization(nameof(ScrollName), () => "Lakeheart");
             OpenTag = this.GetLocalization(nameof(OpenTag), () => "Click to unfold");
             TipWaterFormat = this.GetLocalization(nameof(TipWaterFormat), () => "Water {0}%");
+            TipTideHintFormat = this.GetLocalization(nameof(TipTideHintFormat),
+                () => "Hold {0} to draw the waterline to your cursor");
             TipVaultFormat = this.GetLocalization(nameof(TipVaultFormat), () => "Hoard {0} / {1}");
             TipWispClick = this.GetLocalization(nameof(TipWispClick),
                 () => "Click the flame sprout to light or draw back the fire");
@@ -76,7 +79,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             TipDrownReady = this.GetLocalization(nameof(TipDrownReady), () => "The hand is ready");
             TipResetTitle = this.GetLocalization(nameof(TipResetTitle), () => "Wide Restart");
             TipResetHintFormat = this.GetLocalization(nameof(TipResetHintFormat),
-                () => "Press {0} in the ghost rain to wind the field back");
+                () => "Press {0} anytime to rewind nearby things a few seconds");
             TipTeleportTitle = this.GetLocalization(nameof(TipTeleportTitle),
                 () => "Ghostwater Passage");
             TipTeleportHintFormat = this.GetLocalization(nameof(TipTeleportHintFormat),
@@ -368,7 +371,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         /// <summary>
         /// 读数栈布局：只排本帧有话可说的条目，犬眼与焰苗（常驻两鬼）、
-        /// 沉溺（冷却中）、重启与伞奴（鬼雨态）。绘制与命中共用这一份
+        /// 沉溺（冷却中）、重启（常驻，随时可按）、伞奴（鬼雨态）。绘制与命中共用这一份
         /// </summary>
         private void LayoutReadouts(Vector2 anchor) {
             readouts.Clear();
@@ -387,11 +390,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             if (KikasaTeleport.LocalCooldown01 > 0.005f) {
                 Push(TipTarget.Teleport);
             }
-            if (domain.IsRainForm) {
-                Push(TipTarget.Reset);
-                if (KikasaThrall.CountActive(player.whoAmI) > 0) {
-                    Push(TipTarget.Thrall);
-                }
+            Push(TipTarget.Reset);
+            if (domain.IsRainForm && KikasaThrall.CountActive(player.whoAmI) > 0) {
+                Push(TipTarget.Thrall);
             }
         }
 
@@ -813,6 +814,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                             + CWRKeySystem.Legend_UIControl.ToTooltipString(CWRKeySystem.Notbound.Value),
                             glowC),
                         new KikasaTipLine(string.Format(TipWaterFormat.Value, waterPct), dimC),
+                        new KikasaTipLine(string.Format(TipTideHintFormat.Value,
+                            CWRKeySystem.Kikasa_TideControl.ToTooltipString(CWRKeySystem.Notbound.Value)),
+                            dimC),
                         new KikasaTipLine(string.Format(TipVaultFormat.Value,
                             vault.Stored.Count, KikasaVaultPlayer.Capacity), dimC));
                     return;

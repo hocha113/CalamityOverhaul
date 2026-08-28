@@ -219,6 +219,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         /// <summary>处于投技状态且接管在场的机械骷髅王头；多头同刑时优先返回抓着本地玩家的那个</summary>
         private static HeadPrimeAI FindExecutionHead(out NPC head) {
             head = null;
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必扫表
+                return null;
+            }
             HeadPrimeAI found = null;
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (npc.type != NPCID.SkeletronPrime || HeadPrimeAI.IsMechdusa(npc)) {

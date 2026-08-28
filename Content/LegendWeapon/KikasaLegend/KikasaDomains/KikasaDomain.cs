@@ -135,11 +135,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             viewedIndex = nearestIndex;
         }
 
-        /// <summary>各端逐帧推进全体活跃玩家的域，远端形态由施术者的转播兜住</summary>
+        /// <summary>各端逐帧推进全体活跃玩家的域，远端形态由施术者的转播兜住。
+        /// 服务器同样推进（2026-08 起持有快照镜像，NPC 减速等权威判定要读湖态）：
+        /// 状态机是 PhaseTimer+同步玩家态的确定性函数，FX 全在 IsLocalVisual 门后，服务器恒 false</summary>
         internal static void UpdateAll() {
-            if (Main.dedServ) {
-                return;
-            }
             for (int i = 0; i < Main.maxPlayers; i++) {
                 Player player = Main.player[i];
                 if (player?.active == true

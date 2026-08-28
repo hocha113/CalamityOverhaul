@@ -29,6 +29,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         private NPC FindEyeGrabbingMe(out int beat, out float lineAngle) {
             beat = TwinsPincerGrabState.BeatNone;
             lineAngle = 0f;
+            if (!CWRWorld.HasBoss) {//世上无 Boss 时不必扫表
+                return null;
+            }
             NPC found = null;
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (npc.type != NPCID.Spazmatism && npc.type != NPCID.Retinazer) {

@@ -44,10 +44,15 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         }
 
         internal static void ReconcileNPC(NPC npc) {
+            //失活期间无事可做：失活沿的 ReconcileAllEntities 已全表清场，
+            //新生实体也不会带残留，这里直接早退省掉每实体每帧的全局实例访问
+            if (!IsActive) {
+                return;
+            }
             if (npc?.active != true) {
                 return;
             }
-            if (IsActive && ShouldAffectNPC(npc)) {
+            if (ShouldAffectNPC(npc)) {
                 TimeFreezeSystem.SetNPCTimeScale<SandevistanTimeSlow>(
                     npc, appliedScale);
             }
@@ -57,10 +62,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         }
 
         internal static void ReconcileProjectile(Projectile projectile) {
+            //同 ReconcileNPC：失活期间直接早退
+            if (!IsActive) {
+                return;
+            }
             if (projectile?.active != true) {
                 return;
             }
-            if (IsActive && ShouldAffectProjectile(projectile)) {
+            if (ShouldAffectProjectile(projectile)) {
                 TimeFreezeSystem.SetProjectileTimeScale<SandevistanTimeSlow>(
                     projectile, appliedScale);
             }

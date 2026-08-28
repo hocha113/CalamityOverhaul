@@ -1,0 +1,100 @@
+/* GsSpear.Desc:
+	'''
+	Reforged: drill-manual thrusts in three beats, each one deeper and faster than the last;
+	the third beat steps into the strike like a veteran
+	''' */
+/* GsTrident.Desc:
+	'''
+	Reforged: every strike bursts three jets of seawater from the wound;
+	while wet or in the rain the tide rises, jets fly faster and farther
+	''' */
+/* GsThunderSpear.Desc:
+	'''
+	Reforged: the tip charges while held at full extension; land a hit during that moment
+	and lightning arcs to the nearest other enemy, or two in the rain
+	''' */
+/* GsTheRottedFork.Desc:
+	'''
+	Reforged: two-beat strikes, a quick jab then a heavy squeeze;
+	the heavy beat squeezes a glob of gore from the wound that splats into a corroding pool
+	''' */
+/* GsDarkLance.Desc:
+	'''
+	Reforged: hold to feed the lance with devouring shadowflame, release to strike farther and harder;
+	a fully charged hit bursts three shadow embers from the wound
+	''' */
+/* GsSwordfish.Desc:
+	'''
+	Reforged: every thrust leaps you forward along the strike, twice as far underwater;
+	while wet the swordfish is in its element and deals 15% more damage
+	''' */
+/* GsObsidianSwordfish.Desc:
+	'''
+	Reforged: strikes set enemies on fire and burst obsidian shards from the wound;
+	while you are burning or soaked in lava the core reheats, dealing 15% more damage
+	''' */
+/* GsCobaltNaginata.Desc:
+	'''
+	Reforged: alternating polework, a straight thrust then a wide cobalt sweep;
+	the sweep carves an arc where the thrust line cannot reach
+	''' */
+/* GsPalladiumPike.Desc:
+	'''
+	Reforged: each hit stores a charge of vigor in the warm palladium edge;
+	at five charges the spear bursts them, restoring 5 life to its wielder
+	''' */
+/* GsMythrilHalberd.Desc:
+	'''
+	Reforged: two-beat halberd work, a quick jab then a deep heavy thrust;
+	the heavy beat looses a short-ranged mythril crescent that pierces twice
+	''' */
+/* GsOrichalcumHalberd.Desc:
+	'''
+	Reforged: every thrust that lands blooms two homing petals from the wound,
+	each spiraling after nearby prey
+	''' */
+/* GsAdamantiteGlaive.Desc:
+	'''
+	Reforged: the last quarter of the blade is a sweet spot;
+	landing the very tip shatters armor and staggers, the shaft is just a poke
+	''' */
+/* GsTitaniumTrident.Desc:
+	'''
+	Reforged: each thrust casts two parallel shade-tridents above and below the true blade,
+	flying a short lane before dissolving
+	''' */
+/* GsGungnir.Desc:
+	'''
+	Reforged: a stately three-beat thrust crowned by a golden finisher;
+	right click hurls the oath-lance as a piercing bolt of light that never misses its sworn prey
+	''' */
+/* GsChlorophytePartisan.Desc:
+	'''
+	Reforged: while the blade dwells at full reach, spores gather on its tip;
+	as the spear withdraws it looses a drifting spore cloud that hunts and poisons
+	''' */
+/* GsMushroomSpear.Desc:
+	'''
+	Reforged: the heavy second beat plants a glowing spore mine in the wound;
+	it bursts moments later, harming foes around and feeding 2 life back to the wielder
+	''' */
+/* GsNorthPole.Desc:
+	'''
+	Reforged: quick thrusts fling spiraling frost crystals, and the third strike plants a polar pillar
+	at the wound that rains icicles; the dwell wreathes the tip in freezing mist
+	''' */
+/* GsJoustingLance.Desc:
+	'''
+	Reforged: hold to couch the lance, speed builds momentum, a full-tilt strike deals up to 2.4x damage;
+	the longer you ride at full tilt, the more bonus damage the next strike carries
+	''' */
+/* GsShadowJoustingLance.Desc:
+	'''
+	Reforged: charging at speed leaves shadowflame embers along your path;
+	foes touching an ember take 25% damage and catch shadowflame
+	''' */
+/* GsHallowJoustingLance.Desc:
+	'''
+	Reforged: at full tilt, a prismatic star falls on the nearest foe every 0.7s for 40% damage;
+	full-tilt strikes burst with holy prismatic light
+	''' */

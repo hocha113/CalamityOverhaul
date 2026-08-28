@@ -6,8 +6,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 {
     /// <summary>
-    /// 血湖领域的表现层同步。领域是施术者本机的状态机，这里只把它的形态转播给同场的人，
-    /// 让队友能看见别人开的域；服务端不持有也不推进领域，判定不经过这条通道。
+    /// 血湖领域的形态同步。领域是施术者本机的状态机，这里把它的形态转播给同场的人，
+    /// 让队友能看见别人开的域。2026-08 起服务器也应用一份快照镜像并逐帧确定性跟跑
+    /// （<see cref="KikasaDomain.UpdateAll"/>）：NPC 减速这类服务器权威判定需要湖的状态；
+    /// 玩家侧湖面平台仍是各端本地钳制，不经这条通道。
     /// </summary>
     internal class KikasaDomainNet : CWRNetChannel
     {
@@ -45,6 +47,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
 
             if (Main.netMode == NetmodeID.Server) {
+                //服务器自己也应用一份镜像：NPC 减速等服务器权威判定要读湖的状态；
+                //快照间隔里由 UpdateAll 的确定性状态机跟跑
+                Player sender = whoAmI >= 0 && whoAmI < Main.maxPlayers ? Main.player[whoAmI] : null;
+                if (sender?.active == true
+                    && sender.TryGetModPlayer(out KikasaDomainPlayer serverDomain)) {
+                    using MemoryStream mirror = new(state);
+                    using BinaryReader mirrorReader = new(mirror);
+                    try {
+                        serverDomain.ReadNetworkState(mirrorReader);
+                    } catch (EndOfStreamException) {
+                    }
+                }
                 //来源以连接为准，不信包里自报的槽位；原样转播给除发送者外的所有人
                 ModPacket packet = CWRNetWork.GetPacket<KikasaDomainNet>();
                 packet.Write((byte)whoAmI);

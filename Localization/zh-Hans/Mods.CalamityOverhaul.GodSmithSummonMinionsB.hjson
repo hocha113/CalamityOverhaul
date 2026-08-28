@@ -1,0 +1,24 @@
+GsOpticStaff.Desc: 双瞳协议：机械双瞳成对翼列护卫。突击令下，红瞳激光与绿瞳冲撞短时间内先后咬中同一目标，视线便交汇成 X 形爆闪，引燃咒焰
+GsSanguineStaff.Desc: 血弧回航：突击令下，血蝠每次咬中被标记的猎物，都会撕下一弯血弧飞回你身边，沿途割伤挡路的敌人
+GsPirateStaff.Desc: 分赃令：海盗成船员纵队跟行，每次得手都积攒赃金。集结令下赃金攒满六份，就在旗点开箱分赃，五枚金币臼弹洒向近敌并附上点金指
+GsPygmyStaff.Desc: 猎首战鼓：集结令下投矛命中即在旗点竖起猎首图腾。战鼓圈内你的仆从伤害提高 10%，投矛的毒也蛊得更深
+GsRavenStaff.Desc: 凶兆坍缩：鸦群绕主盘旋。突击令下两只以上乌鸦对同一目标啄满四次，兆羽向心坍缩，炸成一记暗影焰凶兆
+GsDeadlySphereStaff.Desc: 绞锯协议：致命球结成悬浮三角。突击令下短窗内撞中焦点三次，就拆下一环锯齿铆进目标原地研磨，钢花四溅
+GsTempestStaff.Desc: 合流潮涌：龙卷列成风暴横线。突击令下龙卷卷击与迷你鲨撞击先后咬中同一目标，两股杀意合成一面横扫浪墙
+GsXenoStaff.Desc: 轨道校准：UFO 舰群结成蜂巢天顶阵。突击令下四束激光钉入焦点完成校准，高轨落下一柄歼灭光矛
+GsStardustCellStaff.Desc: 有丝分裂：细胞群贴身快转。突击令下焦点身上附满三只小细胞时，细胞本体的下一撞引发分裂潮，五枚胞子四散寻敌并加深细胞侵蚀
+GsStardustDragonStaff.Desc: 星穹撕裂：星尘龙不理阵型，只认猎杀。突击令下龙首两次凿中焦点，就在凿点撕开星穹裂隙，倾洒坠落的星屑
+GsEmpressBlade.Desc: 虹彩终幕：突击令下两柄以上棱镜剑对焦点斩满六剑，便举行处决仪式。六柄虚像剑在其头顶展扇，依虹彩剑序逐一贯穿
+GsStormTigerStaff.Desc: 伏杀爪撕：沙漠虎独来独往。突击令下虎爪短窗内抓中焦点三次就施展伏杀，三道风沙爪痕接连撕开猎物。虎的阶级越高，伏杀来得越勤
+GsOpticCrossrayProj.DisplayName: 交叉视线
+GsSanguineArcProj.DisplayName: 回航血弧
+GsPiratePlunderProj.DisplayName: 分赃金币
+GsPygmyTotemProj.DisplayName: 猎首图腾
+GsRavenOmenProj.DisplayName: 凶兆坍缩
+GsDeadlySphereSawProj.DisplayName: 附体绞锯
+GsTempestSurgeProj.DisplayName: 合流浪墙
+GsXenoOrbitalProj.DisplayName: 轨道歼灭光矛
+GsStardustCellMoteProj.DisplayName: 分裂胞子
+GsStardustDragonRiftProj.DisplayName: 星穹裂隙
+GsEmpressFinaleProj.DisplayName: 虹彩终幕
+GsStormTigerRendProj.DisplayName: 伏杀爪痕

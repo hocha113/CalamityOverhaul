@@ -1,0 +1,99 @@
+GodSmithExecutionEndow: {
+	EndowName: Executioner's Line
+	EndowDesc: Striking a foe below {0}% life looses an executioner's slash dealing {1}% of that hit
+}
+
+GodSmithOverkillEndow: {
+	EndowName: Overkill Cascade
+	EndowDesc: Kills send a crimson bolt to a nearby foe, carrying {0}% of the overkill plus {1}% of the hit
+}
+
+GodSmithCritMarkEndow: {
+	EndowName: Critical Sigil
+	EndowDesc: Hits engrave a sigil; at {0} stacks it detonates as a guaranteed critical dealing {1}% of that hit
+}
+
+GodSmithEchoSlashEndow: {
+	EndowName: Blade Echo
+	EndowDesc: Hits echo outward as a blade-wind ring dealing {0}% of that hit to other nearby foes
+}
+
+GodSmithShockwaveEndow: {
+	EndowName: Concussive Wave
+	EndowDesc: Every 1.5s, a hit slams out a shockwave knocking nearby foes away and dealing {0}% of that hit
+}
+
+GodSmithComboEndow: {
+	EndowName: Combo Surge
+	EndowDesc: Consecutive hits build momentum; the {0}th strike erupts for {1}% of that hit in an area
+}
+
+GodSmithAfterimageEndow: {
+	EndowName: Afterimage Strike
+	EndowDesc: Every {0}th use, a pale afterimage lashes toward the cursor dealing {1}% weapon damage
+}
+
+GodSmithBallisticEndow: {
+	EndowName: Piercing Tracer
+	EndowDesc: Every {0}th shot adds a piercing tracer round dealing {1}% weapon damage
+}
+
+GodSmithRicochetEndow: {
+	EndowName: Wild Ricochet
+	EndowDesc: Projectile hits ricochet a copper spark into another foe for {0}% of that hit
+}
+
+GodSmithPhantomVolleyEndow: {
+	EndowName: Phantom Volley
+	EndowDesc: Every {0}th shot conjures {1} phantom bolts, each dealing {2}% weapon damage
+}
+
+GodSmithManaRefluxEndow: {
+	EndowName: Mana Reflux
+	EndowDesc: Hits have a {0}% chance to pull a wisp of mana back to you, restoring {1} mana
+}
+
+GodSmithOverloadEndow: {
+	EndowName: Arcane Overload
+	EndowDesc: While above {0}% mana, hits overload with violet arcs dealing {1}% of that hit
+}
+
+GodSmithMythicEchoEndow: {
+	EndowName: Mythic Starcall
+	EndowDesc: Casting calls a star spirit to your side; it hurls starbolts at nearby foes for {0}% weapon damage
+}
+
+GodSmithDesperationEndow: {
+	EndowName: Desperate Burst
+	EndowDesc: This battered weapon rages: hits have a {0}% chance to erupt for {1}% of that hit in an area
+}
+
+GodSmithHiddenEdgeEndow: {
+	EndowName: Hidden Edge
+	EndowDesc: A clumsy weapon hides its true edge: every {0}th use flashes a white slash dealing {1}% weapon damage
+}
+
+GodSmithLuckyStarEndow: {
+	EndowName: Lucky Starfall
+	EndowDesc: Critical hits call down a lucky star dealing {0}% of that hit
+}
+
+GodSmithMenaceEndow: {
+	EndowName: Killing Intent
+	EndowDesc: Hits build killing intent; the {0}th strike rends the foe for {1}% of that hit
+}
+
+GodSmithSwiftFootEndow: {
+	EndowName: Gale Stride
+	EndowDesc: Running about {0} tiles charges a gale; your next hit looses a piercing wind blade dealing {1}% of that hit
+}
+
+GodSmithViolentSurgeEndow: {
+	EndowName: Violent Surge
+	EndowDesc: Melee hits build fury; at {0} stacks it erupts as a crimson blade ring dealing {1}% of that hit
+}
+
+GodSmithArcaneWardEndow: {
+	EndowName: Arcane Aegis
+	EndowDesc: When struck, runes drink your mana: each point of mana blocks {0} damage, up to {1}% of the hit
+}

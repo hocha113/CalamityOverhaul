@@ -14,18 +14,22 @@ GameModeText: {
 	BrutalDesc:
 		'''
 		解放狂暴重制的 Boss AI，其数值以大师难度为底线
-		其余敌人血量与伤害提升 50%，小型敌怪提速且常态狂暴
+		全体敌人血量与伤害提升 50%，小型敌怪提速且常态狂暴
 		'''
 	AsuraDesc:
 		'''
 		增幅提升至 100%。敌人会适应你反复使用的同种攻击，
-		你造成的伤害也将成为敌人对你出手的下限
+		你造成的伤害也将成为敌人对你出手的下限。
+		近战攻击不易被适应，刀刃本体尤其如此；
+		近战离敌人越近，造成的伤害越高
 		'''
 	AnnihilationDesc:
 		'''
-		修罗地狱在天顶世界的终相。一切恐怖再次翻倍，
+		修罗地狱在传奇世界的终相。一切恐怖再次翻倍，
 		敌人适应更快，你施予的苦痛将双倍奉还
 		'''
+	BrutalCreationDesc: 以大师难度为底：重制 Boss 尽数苏醒，众敌增幅五成
+	AsuraCreationDesc: 以大师难度为底：敌人适应你的攻击，苦痛如数奉还
 	GodSmithDesc:
 		'''
 		所有原版武器获得焕然一新的攻击方式，
@@ -39,6 +43,7 @@ GameModeText: {
 	HintEnable: 点击唤醒
 	HintDisable: 点击封印
 	BossRefuse: Boss 仍在世间，此刻无法更改契约
+	AsuraNeedBrutal: 需先唤醒残酷世界
 }
 
 SporeshineAmbience.DazeDeathReason: "{0}醉倒在孢雾深处"

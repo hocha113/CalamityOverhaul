@@ -519,6 +519,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
                     , handPos, stabTip, 38f, ref collisionPoint);
             }
             float reach = BladeLen + holdout + 14f;
+            if (CWRUtils.ArcSweepCulled(targetHitbox, handPos, reach, 50f)) {
+                return false;
+            }
             int steps = GetAngularSteps(sweepCollisionEnd - sweepCollisionStart, reach, 28f, 64);
             for (int i = 0; i <= steps; i++) {
                 float rotation = MathHelper.Lerp(sweepCollisionStart, sweepCollisionEnd, i / (float)steps);

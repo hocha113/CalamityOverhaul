@@ -74,6 +74,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         private ModifyCrabulon ScanCrabulons(out ModifyCrabulon nearest) {
             ModifyCrabulon hovered = null;
             nearest = null;
+            //近两帧无蟹盖戳（世上没有菌生蟹）：跳过全表扫描
+            if (!ModifyCrabulon.PresenceStamp.ActiveWithin()) {
+                return null;
+            }
             float nearestDistSq = DetectRange * DetectRange;
 
             foreach (NPC npc in Main.ActiveNPCs) {

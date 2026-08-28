@@ -25,6 +25,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
         //→P45禁室盖章→泄洪堂盖章(Wave-2 C路,坐标均取P30已定值)→P50层内容入口(七层全接线)
         //→P52夹层带/P54封存副翼(填充体系,消费P50留下的空闲足印)
         //→P54.5子地带(Wave-2 B路,消费副翼吃剩的死岩)→P55撒布装饰
+        //→P58引路痕迹(发现引导批:三Boss房沿脊渐变面包屑,纯hash零genRand,
+        //  排尾部不动既有随机流与pass相对顺序)
         //→P80校验(帧修+洪泛+门/家具审计+GenReport)
         //两个填充pass的位置是硬约束:P50之后才拿得到"全部主内容足印"这份底稿,
         //P55之前才吃得到撒布;Wave-2各新增随机消耗集中在各自接线点(R4账见
@@ -42,6 +44,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
             new TimedPass(new Gen.Infill.AnnexPass()),
             new TimedPass(new Gen.Zones.ZonePass()),
             new TimedPass(new ScatterPass()),
+            new TimedPass(new GuideTrailPass()),
             new ValidatePass()
         ];
 

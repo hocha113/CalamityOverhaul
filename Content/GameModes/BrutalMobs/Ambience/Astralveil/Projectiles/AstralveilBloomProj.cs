@@ -9,23 +9,24 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Astralveil.Proj
 {
     /// <summary>
     /// 「感染绽放」星尘花。ai[0]=存续帧（档位只调持续，随生成包同步，各端首个本地刻自设 timeLeft）。
-    /// 星矛落点绽开一朵靛/橙星尘晶羽：向上扇形展瓣（带过冲）→ 驻留期滞留圈内累积微量伤害
-    /// （原版受击无敌帧天然节流）→ 凋散期花瓣垂落、星屑坠地，判定先于视觉半程关闭。
-    /// 落点因此有"余威"：星矛躲过了也别原路折返
+    /// 星矛落点绽开一朵靛/橙星尘晶羽：向上扇形展瓣（带过冲，无伤）→ 边界晶环列装（自持预告 ≥45f）
+    /// → 驻留期滞留圈内累积微量伤害（原版受击无敌帧天然节流）→ 凋散期花瓣垂落、晶环黯灭、
+    /// 星屑坠地，判定先于视觉半程关闭。落点因此有"余威"：星矛躲过了也别原路折返
     /// </summary>
     internal class AstralveilBloomProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        /// <summary>滞留伤害（经典模式基线：星辉敌怪接触伤 ~75 × 0.4，困难度加成由原版结算）</summary>
-        internal const int TickDamage = 30;
+        /// <summary>滞留伤害（经典模式基线：星辉群系怪接触伤中位 50 × 0.4，取白金星舰前口径——
+        /// 灾厄源码 NPCs/Astral 各怪 SetDefaults 中位 50，击败白金星舰后才升至 ~85；困难度加成由原版结算）</summary>
+        internal const int TickDamage = 20;
 
         /// <summary>展瓣帧数</summary>
         private const int UnfurlFrames = 26;
         /// <summary>凋散帧数</summary>
         private const int WitherFrames = 42;
-        /// <summary>伤害起始帧（半开即有威胁，边界点阵同帧亮起）</summary>
-        private const int HitStartFrames = 14;
+        /// <summary>伤害起始帧（自持预告契约 ≥45f：展瓣毕且边界晶环列装满才开窗，半开不咬人）</summary>
+        private const int HitStartFrames = 48;
         /// <summary>感染区半径</summary>
         private const float Radius = 84f;
         /// <summary>判定板高度（低矮贴地）</summary>
@@ -36,6 +37,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Astralveil.Proj
         private const int PetalCount = 6;
         /// <summary>花瓣长度</summary>
         private const float PetalLength = 78f;
+        /// <summary>边界晶粒数</summary>
+        private const int RingGrains = 12;
+
+        /// <summary>暗橙晶体底色（真 alpha 暗层用，与暗靛交替成星辉双色）</summary>
+        private static readonly Color EmberDeep = new(96, 52, 22);
 
         private int Duration => (int)Projectile.localAI[1];
         private int Elapsed => Duration - Projectile.timeLeft;
@@ -81,7 +87,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Astralveil.Proj
             }
             int elapsed = Elapsed;
 
-            //判定窗：半开起效，凋散半程即关（花瓣明显收拢=安全信号）；
+            //判定窗：展瓣毕且晶环列装满才起效（自持预告 ≥45f），凋散半程即关（花瓣收拢+晶环黯灭=安全信号）；
             //中途关残酷模式或 Boss 在场时伤害层让位
             Projectile.hostile = GameModeSystem.BrutalActive
                 && elapsed >= HitStartFrames && Projectile.timeLeft > WitherFrames / 2
@@ -94,6 +100,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Astralveil.Proj
             if (elapsed == 8) {
                 //绽放和音：一声上挑水晶震音（与星矛蜂鸣同族但更轻更高）
                 SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.26f, Pitch = 0.75f, MaxInstances = 4 },
+                    Projectile.Center);
+            }
+            if (elapsed == HitStartFrames) {
+                //晶环列装完毕：判定开启的听觉确认（双通道预告的收尾拍）
+                SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.30f, Pitch = 0.95f, MaxInstances = 4 },
                     Projectile.Center);
             }
             if (Projectile.timeLeft == WitherFrames) {
@@ -201,16 +212,32 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Astralveil.Proj
                 AstralveilFX.A0(Color.White) * (0.7f * alpha * corePulse),
                 elapsed * 0.01f + phase, starOrig, 0.06f * unfurl, SpriteEffects.None, 0);
 
-            //边界点阵：判定在开时亮出感染区边缘（可见环=判定环的公平读数）
-            if (Projectile.hostile) {
+            //边界晶环：星辉晶尘沿感染区边缘列装（暗芯真 alpha 承遮挡+晶尖加色微光）。
+            //列装进度与伤害窗同源（elapsed/timeLeft）：列装满=判定开，关窗后晶粒随即黯灭
+            //（可见环=判定环的公平读数，预告期渐显、退场期渐隐都压在无伤窗内）
+            float arm = MathHelper.Clamp((elapsed - UnfurlFrames) / (float)(HitStartFrames - UnfurlFrames), 0f, 1f);
+            float armGate = MathHelper.Clamp((Projectile.timeLeft - WitherFrames / 2 + 14) / 14f, 0f, 1f);
+            float ring = arm * armGate * alpha;
+            if (ring > 0.02f) {
                 float edgePulse = 0.6f + 0.4f * MathF.Sin(elapsed * 0.16f + phase);
-                for (int i = 0; i < 12; i++) {
-                    float ang = phase + elapsed * 0.008f + MathHelper.TwoPi * i / 12f;
+                for (int i = 0; i < RingGrains; i++) {
+                    float ang = phase + elapsed * 0.008f + MathHelper.TwoPi * i / RingGrains;
+                    float h = 0.5f + 0.5f * MathF.Sin(i * 2.7f + phase * 3f);
                     Vector2 pos = center + new Vector2(
                         MathF.Cos(ang) * Radius * unfurl, MathF.Sin(ang) * Radius * unfurl * GroundSquash);
-                    Main.EntitySpriteDraw(glow, pos, null,
-                        AstralveilFX.A0(AstralveilFX.Orange) * (0.30f * edgePulse * alpha),
-                        0f, glowOrig, 0.10f, SpriteEffects.None, 0);
+                    float len = (9f + 7f * h) * (0.75f + 0.25f * arm);
+                    float lean = MathF.Cos(ang) * 0.30f + (h - 0.5f) * 0.26f;
+                    bool indigo = (i & 1) == 0;
+                    //晶粒暗芯（真 alpha 梭形，微微外倾如自地面析出）
+                    Main.EntitySpriteDraw(petalTex, pos + new Vector2(0f, -len * 0.28f), null,
+                        (indigo ? AstralveilFX.IndigoDeep : EmberDeep) * (0.85f * ring),
+                        lean, petalOrig, new Vector2(0.26f, len / 42f), SpriteEffects.None, 0);
+                    //晶尖微光（加色敷料）
+                    Main.EntitySpriteDraw(glow,
+                        pos + new Vector2(MathF.Sin(lean), -MathF.Cos(lean)) * (len * 0.42f), null,
+                        AstralveilFX.A0(indigo ? AstralveilFX.IndigoPale : AstralveilFX.OrangePale)
+                            * (0.32f * edgePulse * ring),
+                        0f, glowOrig, 0.085f, SpriteEffects.None, 0);
                 }
             }
             return false;
