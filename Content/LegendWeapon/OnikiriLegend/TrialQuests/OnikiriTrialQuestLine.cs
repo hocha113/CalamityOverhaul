@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.EntrustManager;
+﻿using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using CalamityOverhaul.Content.Scenarios.Himayo;
 using System;
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.TrialQuests
 
         public override void SetStaticDefaults() {
             QuestCategory = this.GetLocalization(nameof(QuestCategory), () => "鬼切·试刃");
-            TrackerWaiting = this.GetLocalization(nameof(TrackerWaiting), () => "它还不在，等等，或我们去请");
+            TrackerWaiting = this.GetLocalization(nameof(TrackerWaiting), () => "它还不在");
             TrackerFighting = this.GetLocalization(nameof(TrackerFighting), () => "{0}: {1:0%}");
             TrackerBrief = this.GetLocalization(nameof(TrackerBrief), () => "下一刀：{0}");
             BossRushTargetName = this.GetLocalization(nameof(BossRushTargetName), () => "散不掉的夜");

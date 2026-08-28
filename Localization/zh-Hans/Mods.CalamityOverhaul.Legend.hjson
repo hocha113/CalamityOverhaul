@@ -750,8 +750,8 @@ OnikiriOverride: {
 }
 
 OnikiriTrialQuestLine: {
-	QuestCategory: 鬼切·试刃
-	TrackerWaiting: 它还不在，等等，或我们去请
+	QuestCategory: 试炼
+	TrackerWaiting: 它还不在
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: 下一刀：{0}
 	BossRushTargetName: 散不掉的夜
@@ -939,8 +939,8 @@ KikasaOverride: {
 }
 
 KikasaTrialQuestLine: {
-	QuestCategory: 鬼伞·沉宴
-	TrackerWaiting: 还没入席，去请，或再等等
+	QuestCategory: 试炼
+	TrackerWaiting: 还没入席
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: 下一席：{0}
 	BossRushTargetName: 满桌的客

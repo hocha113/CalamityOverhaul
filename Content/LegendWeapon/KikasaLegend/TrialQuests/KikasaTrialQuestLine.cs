@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.EntrustManager;
+﻿using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using CalamityOverhaul.Content.Narrative;
 using System;
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.TrialQuests
 
         public override void SetStaticDefaults() {
             QuestCategory = this.GetLocalization(nameof(QuestCategory), () => "鬼伞·沉宴");
-            TrackerWaiting = this.GetLocalization(nameof(TrackerWaiting), () => "还没入席，去请，或再等等");
+            TrackerWaiting = this.GetLocalization(nameof(TrackerWaiting), () => "还没入席");
             TrackerFighting = this.GetLocalization(nameof(TrackerFighting), () => "{0}: {1:0%}");
             TrackerBrief = this.GetLocalization(nameof(TrackerBrief), () => "下一席：{0}");
             BossRushTargetName = this.GetLocalization(nameof(BossRushTargetName), () => "满桌的客");
