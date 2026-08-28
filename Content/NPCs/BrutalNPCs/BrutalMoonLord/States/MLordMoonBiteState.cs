@@ -118,11 +118,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 SpawnLeechBlobs(head);
             }
 
-            //慢压期间头部偶发直射弹补压
+            //慢压期间偶发直射弹补压：活头自口出弹；头破由真眼轮席代射（残口只管咬舌，不当炮口）
             if (Timer > MouthOpenEnd && Timer % Frames(context, 64) == 30) {
-                Vector2 aim = (context.Target.Center - head.Center).SafeNormalize(Vector2.UnitY);
-                Projectile.NewProjectile(head.GetSource_FromAI(), head.Center + aim * 44f, aim * 6.8f,
-                    ModContent.ProjectileType<MLordBoltProj>(), ScaleDamage(context, MLordDirector.BoltDamage), 0f, Main.myPlayer);
+                NPC origin = context.Parts.HeadAlive ? head
+                    : MLordFacts.GetFreeEye(context.Npc, Timer % MLordFacts.MaxFreeEyes);
+                if (origin != null) {
+                    Vector2 aim = (context.Target.Center - origin.Center).SafeNormalize(Vector2.UnitY);
+                    Projectile.NewProjectile(origin.GetSource_FromAI(), origin.Center + aim * 44f, aim * 6.8f,
+                        ModContent.ProjectileType<MLordBoltProj>(), ScaleDamage(context, MLordDirector.BoltDamage), 0f, Main.myPlayer);
+                }
             }
         }
 

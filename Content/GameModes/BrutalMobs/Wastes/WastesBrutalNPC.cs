@@ -2,6 +2,7 @@ using CalamityOverhaul.Content.GameModes.BrutalMobs.Wastes.Projectiles;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent.Events;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -137,11 +138,20 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Wastes
                 return;
             }
             boundTier = tier;
-            //出生错拍：避免同屏群体同帧齐射。
+            //出生错拍：避免同屏群体同帧齐射（M7 密度预算：60~180 帧窗）。
             //SetDefaults 期 whoAmI 尚未赋值（NewNPC 之后才写入），不可用作错拍源；
             //冷却是权威端决策私产，随机数无同步语义
-            actionTimer = 90 + Main.rand.Next(150);
+            actionTimer = 60 + Main.rand.Next(121);
         }
+
+        /// <summary>
+        /// 沙隐联动（DuneStorm×Wastes 试点）：沙暴事件中地表荒地怪获得沙隐。
+        /// 只读原版天气（全端同步的世界状态），不读氛围包的本机观察量；
+        /// 隐身换来的公平回款在锥幕缺口加宽（<see cref="WastesSandConeTelegraph.CurrentGapHalfAngle"/>）
+        /// </summary>
+        internal static bool SandVeilActive(NPC npc)
+            => GameModeSystem.EffectiveTier > 0 && Sandstorm.Happening && Sandstorm.Severity > 0.4f
+            && npc.Center.Y < Main.worldSurface * 16f;
 
         /// <summary>机制资格（每个机制入口都要过；雕像怪在此排除）</summary>
         private static bool MechEligible(NPC npc) {
@@ -199,6 +209,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Wastes
             if (boundTier <= 0) {
                 return;
             }
+            UpdateSandVeil(npc);//全端确定性模拟，须在客户端早退之前
             if (Main.netMode == NetmodeID.MultiplayerClient) {
                 return;//决策只在权威端
             }
@@ -229,6 +240,39 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Wastes
             }
             //纯死亡机制/接触风味类型无主动触发
             actionTimer = 600;
+        }
+
+        /// <summary>本个体沙隐强度 0..1（各端从同步天气确定性推得，无需同步）</summary>
+        private float veil;
+
+        /// <summary>
+        /// 沙隐：沙暴里荒地怪半透明并获得微幅推进。透明度只抬不压（出生淡入等原版
+        /// 自管值取更大者），退隐期把本层抬上去的余量收回；推进量过碰撞钳制（镜像 GameModeNPC 口径）
+        /// </summary>
+        private void UpdateSandVeil(NPC npc) {
+            bool active = SandVeilActive(npc);
+            if (!active && veil <= 0f) {
+                return;
+            }
+            veil = MathHelper.Clamp(veil + (active ? 0.03f : -0.05f), 0f, 1f);
+            if (veil > 0.02f) {
+                npc.alpha = Math.Max(npc.alpha, (int)(veil * 130f));
+                Vector2 advance = npc.velocity * (veil * 0.10f);
+                if (!npc.noTileCollide) {
+                    advance = Collision.TileCollision(npc.position, advance, npc.width, npc.height);
+                }
+                npc.position += advance;
+                if (!Main.dedServ && Main.rand.NextBool(6)) {
+                    Dust dust = Dust.NewDustDirect(npc.position, npc.width, npc.height,
+                        DustID.Sand, npc.velocity.X * 0.3f, 0f, 140, default, 0.9f);
+                    dust.noGravity = true;
+                    dust.velocity *= 0.4f;
+                }
+            }
+            else if (!active && npc.alpha > 0 && npc.alpha <= 131) {
+                //退隐余量回收：只收本层可能抬上去的区间，不碰原版更高的自管值
+                npc.alpha = Math.Max(0, npc.alpha - 6);
+            }
         }
 
         /// <summary>遁地伏击：蠕虫头在地下且目标近地面时，在目标脚下锁点起一根地涌沙柱</summary>

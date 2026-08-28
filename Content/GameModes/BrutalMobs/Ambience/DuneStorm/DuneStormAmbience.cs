@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using ReLogic.Utilities;
 using System;
 using Terraria;
@@ -103,7 +104,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.DuneStorm
             }
             float wind = DuneStorm.WindStrength01();
             //无风也留 0.15 底密度让群系可读，随风与沙暴上量
-            float chance = Presence * (0.15f + 0.45f * wind) * (1f + 1.4f * StormPressure);
+            //氛围性能总闸：只缩装饰扬沙密度，不碰风堑/沙鞭等机制与预告路径
+            float chance = Presence * (0.15f + 0.45f * wind) * (1f + 1.4f * StormPressure)
+                * CWRClientConfig.Instance.AmbienceDensity;
             chance = Math.Min(chance, 1.15f);
 
             while (chance > 0f) {

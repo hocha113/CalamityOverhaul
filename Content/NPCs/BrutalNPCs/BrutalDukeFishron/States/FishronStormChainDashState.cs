@@ -19,11 +19,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
         public override string StateName => "StormChainDash";
         public override FishronStateIndex StateIndex => FishronStateIndex.StormChainDash;
 
-        private const int VanishEnd = 8;
-        private const int TelegraphEnd = 26;
-        private const int DashEnd = 42;
-        private const int RepLength = 48;
-        private const float DashSpeed = 56f;
+        //末相二压：预告 18→13 帧（-30%），遁走/拖刹空拍 10→7 帧（实测全砍读作零间隔，回填一口喘息），
+        //冲速 56→64.4（+15%），贯穿 16→14 帧保住原冲程 ~900px——每轮 44→34 帧
+        private const int VanishEnd = 3;
+        private const int TelegraphEnd = 16;
+        private const int DashEnd = 30;
+        private const int RepLength = 34;
+        private const float DashSpeed = 64.4f;
 
         public FishronStormChainDashState() {
         }
@@ -51,9 +53,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             //相位a：化雨遁走，雾中消隐，服务端择位重投
             if (t < VanishEnd) {
                 frozenDashDir = Vector2.Zero;
-                npc.alpha = Math.Min(npc.alpha + 34, 220);
+                //遁走仅 3 帧，淡出一步到位，消隐深度不打折；雾每帧都放，盖住急促的消隐
+                npc.alpha = Math.Min(npc.alpha + 115, 220);
                 npc.velocity *= 0.85f;
-                if (!VaultUtils.isServer && t % 2 == 0) {
+                if (!VaultUtils.isServer) {
                     FishronMotionFX.SpawnMist(npc.Center, Vector2.Zero, 1f, 2);
                 }
                 if (t == VanishEnd - 1 && !VaultUtils.isClient) {
@@ -63,9 +66,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                     npc.velocity = Vector2.Zero;
                     npc.netUpdate = true;
 
-                    //落位即亮短预告（恒定 18 帧，比一二阶段更短，第三危险等级）
+                    //落位即亮短预告（13 帧短于线体锁定窗 14：出线即锁死，整段预告都是承诺）；
+                    //服务端在此同帧冻结冲向，线与冲刺严格同向
+                    frozenDashDir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center,
-                        (player.Center - npc.Center).SafeNormalize(Vector2.UnitY),
+                        frozenDashDir,
                         ModContent.ProjectileType<FishronTelegraph>(), 0, 0f, Main.myPlayer,
                         npc.whoAmI, player.whoAmI, FishronTelegraph.PackParams(0, TelegraphEnd - VanishEnd));
                 }
@@ -76,8 +81,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             if (t < TelegraphEnd) {
                 npc.alpha = Math.Max(npc.alpha - 26, 60);
                 float progress = (t - VanishEnd) / (float)(TelegraphEnd - VanishEnd);
-                //短预告锁定即冻结方向（与预告线的 LockTime 同拍）
-                if (t < TelegraphEnd - FishronTelegraph.LockTime || frozenDashDir == Vector2.Zero) {
+                //预告全程锁线：远端没赶上服务端冻结帧就在显形首帧补冻，此后绝不再变
+                if (frozenDashDir == Vector2.Zero) {
                     frozenDashDir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
                 }
                 context.SetChargeState(3, progress);

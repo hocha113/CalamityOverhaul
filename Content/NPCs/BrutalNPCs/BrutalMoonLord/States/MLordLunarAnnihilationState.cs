@@ -12,11 +12,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 {
     /// <summary>
     /// 月明湮灭（残血循环压轴，裸露期血量低于 <see cref="MLordDirector.AnnihilationLifeRatio"/>
-    /// 后接替死光扫描席）：残口四爪张成 X 形抓桩定身（发射架）→心口聚星蓄力，
+    /// 后接替死光扫描席；跌破 <see cref="MLordDirector.AnnihilationForceRatio"/> 仍一次未放则强制补放）：
+    /// 残口四爪张成 X 形抓桩定身（发射架）→心口聚星蓄力，
     /// 引导线锁死起始角与扫向（预告即承诺）→一拍寂静→喷发巨幅横扫死光，
-    /// 梯形角速度扫过 ~470°、历时约九秒半→收束后长硬直大惩罚窗。
-    /// 公平声明（契约3）：清场先行、单束、角速度封顶、起始角落后玩家角位 0.7 rad
-    /// （出束先给起跑余量）、扫向锁定后绝不追踪，顺扫向绕行即为解
+    /// 三幕扫掠约十二秒半（回放自 1 倍速匀加速至 <see cref="MLordAnnihilationRayProj.SpeedCap"/> 倍速封顶，
+    /// 正扫渐快 ~435° → 刹停一拍 → 反向回刮 ~280°，越扫越急）
+    /// →收束后长硬直大惩罚窗。
+    /// 公平声明（契约3）：清场先行、单束、有效角速度封顶（包络峰值×回放倍率）、
+    /// 起始角落后玩家角位 0.7 rad（出束先给起跑余量）、扫向锁定后绝不追踪，
+    /// 顺扫向绕行即为解（后段提速，收半径绕行更稳）；
+    /// 回旋不是偷袭——减速、定格与反侧引导线三重预告后才回刮
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)MLordStateIndex.LunarAnnihilation, typeof(MLordContext))]
     internal class MLordLunarAnnihilationState : MLordStateBase
@@ -24,7 +29,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         public override string StateName => "LunarAnnihilation";
         public override MLordStateIndex StateIndex => MLordStateIndex.LunarAnnihilation;
 
-        //―――― 时间轴（原始帧，蓄力/收尾吃节奏压缩，巨束本体定长）――――
+        //―――― 时间轴（原始帧，蓄力/收尾吃节奏压缩，巨束本体定长——束内另有回放加速，见弹体）――――
         /// <summary>蓄力段结束（黑臂抓桩与聚星并行）</summary>
         internal const int ChargeEnd = 140;
         /// <summary>引导线亮起并锁定承诺的时刻</summary>
@@ -42,6 +47,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             fireTick = Frames(context, ChargeEnd) + SilenceLen;
             stateLength = fireTick + MLordAnnihilationRayProj.TotalLife + Frames(context, StaggerLen);
             if (!VaultUtils.isClient) {
+                //记一次已放：保底强制线据此判断这场还欠不欠压轴巨束（常规席位不受影响）
+                context.Owner.ai[MLordAiSlots.OvUltUsed] =
+                    MLordUltFlags.With(context.Owner.ai[MLordAiSlots.OvUltUsed], MLordUltFlags.Annihilation);
                 context.Owner.ai[MLordAiSlots.OvEyeCommand] = MLordEyeCommand.Retreat;
                 context.Owner.ai[MLordAiSlots.OvAttackSeed] = Main.rand.Next(1, 100000);
                 MLordBlackFlashState.ClearHostileStage();
@@ -170,14 +178,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 npc.whoAmI, startAngle, context.Owner.ai[MLordAiSlots.OvAnchorY]);
         }
 
-        /// <summary>扫掠段：本体逆扫向微倾（发射架承受反扭），心口白热</summary>
+        /// <summary>扫掠段：本体逆当前行进方向微倾（发射架承受反扭），心口白热</summary>
         private void UpdateSweep(MLordContext context) {
             NPC npc = context.Npc;
             context.HeartExposure = 1f;
             context.SetChargeState(1f);
             float sweepDir = context.Owner.ai[MLordAiSlots.OvAnchorY] >= 0f ? 1f : -1f;
-            //反扭倾斜：巨束的质量反作用写在身体姿态上
-            context.LeanAngle = -sweepDir * 0.055f;
+            //反扭倾斜：巨束的质量反作用写在身体姿态上，随回放提速加剧。
+            //刹停时回正、反扫时倒向另一侧——身体先于束交代这门炮要回刮了
+            float sweepFrame = Timer - fireTick - MLordAnnihilationRayProj.BurstTime;
+            float sign = MLordAnnihilationRayProj.SweepSignAt(MLordAnnihilationRayProj.WarpedSweepFrame(sweepFrame));
+            context.LeanAngle = -sweepDir * sign * 0.055f * MLordAnnihilationRayProj.PlaybackRateAt(sweepFrame);
             npc.rotation = npc.rotation.AngleLerp(context.LeanAngle, 0.08f);
         }
 

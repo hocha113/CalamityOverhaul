@@ -762,6 +762,7 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // CultistOrreryRingProj.DisplayName: Orrery Ring
 // CultistOrbitPath.DisplayName: Orbital Alignment
 // CultistUmbraShade.DisplayName: Eclipse Shade
+// CultistEclipseDragon.DisplayName: Eclipse Phantasm Dragon
 // CultistCoronaLance.DisplayName: Corona Lance
 // CultistStarChart.DisplayName: Star Chart Judgement
 // CultistGazeBeam.DisplayName: Lunar Gaze
@@ -1108,3 +1109,90 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // SeaShrimpCrystalSpike.DisplayName: Sea Shrimp Crystal Spike
 // SeaShrimpShellFrag.DisplayName: Sea Shrimp Shell Frag
 // SeaShrimpWaterBolt.DisplayName: Sea Shrimp Water Bolt
+
+// CultistArcanePulse.DisplayName: Cultist Arcane Pulse
+// CultistFallingStar.DisplayName: Cultist Falling Star
+// CultistGoldRingSeal.DisplayName: Cultist Gold Ring Seal
+// CultistSeekerStar.DisplayName: Cultist Seeker Star
+// RainveilThunderboltProj.DisplayName: Rainveil Thunderbolt Proj
+// WoodsongBrambleProj.DisplayName: Woodsong Bramble Proj
+// DdBoltProj.DisplayName: Dd Bolt Proj
+// DdCastOmen.DisplayName: Dd Cast Omen
+// DdChargeOmen.DisplayName: Dd Charge Omen
+// DdFirePillarProj.DisplayName: Dd Fire Pillar Proj
+// DdGuardStanceProj.DisplayName: Dd Guard Stance Proj
+// DdHammerConeOmen.DisplayName: Dd Hammer Cone Omen
+// DdMarksmanOmen.DisplayName: Dd Marksman Omen
+// DdRocketProj.DisplayName: Dd Rocket Proj
+// DdSkullOmen.DisplayName: Dd Skull Omen
+// EclFrankSparkProj.DisplayName: Ecl Frank Spark Proj
+// MummyWrapOmen.DisplayName: Mummy Wrap Omen
+// MummyWrapProj.DisplayName: Mummy Wrap Proj
+// SiphonPounceOmen.DisplayName: Siphon Pounce Omen
+// FlgAimLineOmen.DisplayName: Flg Aim Line Omen
+// FlgMortarRingOmen.DisplayName: Flg Mortar Ring Omen
+// FlgMortarShellProj.DisplayName: Flg Mortar Shell Proj
+// FlgSnowShardProj.DisplayName: Flg Snow Shard Proj
+// FlgStabGlintOmen.DisplayName: Flg Stab Glint Omen
+// FrmFlockoBurstOmen.DisplayName: Frm Flocko Burst Omen
+// FrmIceShardProj.DisplayName: Frm Ice Shard Proj
+// FrmIcingPatchProj.DisplayName: Frm Icing Patch Proj
+// FrmPoseTelegraphProj.DisplayName: Frm Pose Telegraph Proj
+// FrmSnowballProj.DisplayName: Frm Snowball Proj
+// FrmYetiConeOmen.DisplayName: Frm Yeti Cone Omen
+// GyGhostNameThread.DisplayName: Gy Ghost Name Thread
+// GyMaggotBolt.DisplayName: Gy Maggot Bolt
+// GyMaggotBurstCore.DisplayName: Gy Maggot Burst Core
+// GyRavenSwoopOmen.DisplayName: Gy Raven Swoop Omen
+// LegionClownBomb.DisplayName: Legion Clown Bomb
+// LegionInkGlob.DisplayName: Legion Ink Glob
+// LegionInkOmen.DisplayName: Legion Ink Omen
+// LegionPoseOmen.DisplayName: Legion Pose Omen
+// LegionScoutBolt.DisplayName: Legion Scout Bolt
+// LegionScoutOmen.DisplayName: Legion Scout Omen
+// LegionSurfOmen.DisplayName: Legion Surf Omen
+// MrtGuardShieldProj.DisplayName: Mrt Guard Shield Proj
+// MrtReinforceSignalProj.DisplayName: Mrt Reinforce Signal Proj
+// MrtWrenchProj.DisplayName: Mrt Wrench Proj
+// MeteoriteDiveOmen.DisplayName: Meteorite Dive Omen
+// MeteoriteFireSpot.DisplayName: Meteorite Fire Spot
+// MeteoriteMoltenGlob.DisplayName: Meteorite Molten Glob
+// MushroomChargeGlowProj.DisplayName: Mushroom Charge Glow Proj
+// MushroomSporeBoltProj.DisplayName: Mushroom Spore Bolt Proj
+// MushroomSporeBurstCore.DisplayName: Mushroom Spore Burst Core
+// MushroomSporeMistTelegraph.DisplayName: Mushroom Spore Mist Telegraph
+// MushroomSporePatchZone.DisplayName: Mushroom Spore Patch Zone
+// MushroomSporeSacProj.DisplayName: Mushroom Spore Sac Proj
+// MushroomVineWhipOmen.DisplayName: Mushroom Vine Whip Omen
+// MushroomVineWhipProj.DisplayName: Mushroom Vine Whip Proj
+// OceanInkCloud.DisplayName: Ocean Ink Cloud
+// OceanPulseRing.DisplayName: Ocean Pulse Ring
+// OceanSandMound.DisplayName: Ocean Sand Mound
+// OceanSharkOmen.DisplayName: Ocean Shark Omen
+// PmkEmberFlareProj.DisplayName: Pmk Ember Flare Proj
+// PmkEmberSeedProj.DisplayName: Pmk Ember Seed Proj
+// SandveilBounceMarkOmen.DisplayName: Sandveil Bounce Mark Omen
+// SandveilCursedBeadProj.DisplayName: Sandveil Cursed Bead Proj
+// SandveilFinSurgeOmen.DisplayName: Sandveil Fin Surge Omen
+// SandveilPrismFlashProj.DisplayName: Sandveil Prism Flash Proj
+// SandveilSurgeColumnProj.DisplayName: Sandveil Surge Column Proj
+// SandveilVortexArrayOmen.DisplayName: Sandveil Vortex Array Omen
+// SkyFeatherBolt.DisplayName: Sky Feather Bolt
+// SkyFeatherFanOmen.DisplayName: Sky Feather Fan Omen
+// SkyGaleDiveOmen.DisplayName: Sky Gale Dive Omen
+// StonebornArcResidue.DisplayName: Stoneborn Arc Residue
+// StonebornCounterRing.DisplayName: Stoneborn Counter Ring
+// StonebornDiveLane.DisplayName: Stoneborn Dive Lane
+// StonebornGazeOmen.DisplayName: Stoneborn Gaze Omen
+// StonebornJavelinOmen.DisplayName: Stoneborn Javelin Omen
+// StonebornJavelinProj.DisplayName: Stoneborn Javelin Proj
+// StonebornQuakeCharge.DisplayName: Stoneborn Quake Charge
+// StonebornQuakeWave.DisplayName: Stoneborn Quake Wave
+// TempleDiveOmen.DisplayName: Temple Dive Omen
+// TempleDropOmen.DisplayName: Temple Drop Omen
+// TempleEmberProj.DisplayName: Temple Ember Proj
+// BssBreachOmen.DisplayName: Bss Breach Omen
+// BssCactusBallProj.DisplayName: Bss Cactus Ball Proj
+// BssNeedleProj.DisplayName: Bss Needle Proj
+// BssPetalProj.DisplayName: Bss Petal Proj
+// BssSandGlob.DisplayName: Bss Sand Glob

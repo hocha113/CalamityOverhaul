@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,7 +23,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Ashreign.Projec
         public override string Texture => CWRConstant.VaultPlaceholder;
 
         /// <summary>在场帧戳：AI 每帧盖戳，氛围层据此跳过无烬暴时的全表扫描</summary>
-        internal static Common.ActivityStamp PresenceStamp;
+        internal static ActivityStamp PresenceStamp;
 
         /// <summary>烬幕带半宽（像素），带内即暴露候选</summary>
         internal const float HalfWidth = 380f;

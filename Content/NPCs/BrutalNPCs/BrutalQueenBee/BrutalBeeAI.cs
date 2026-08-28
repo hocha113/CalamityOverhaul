@@ -236,6 +236,52 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
         }
 
         /// <summary>
+        /// 本体绘制前垫冲刺预警描边：领到掷镖预令的蜂加色剪影八向错位勾出警戒黄轮廓，<br/>
+        /// 越临近起跳越亮、闪烁越急，读作"这几只即将化镖"；与常亮琥珀结构描边(深色)区分
+        /// </summary>
+        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (npc.IsABestiaryIconDummy || !IsMarked || npc.ai[1] == 1f
+                || !TryGetDirector(npc, out SwarmDirector director)) {
+                return null;
+            }
+            int slot = director.GetEffectiveSlot(npc.whoAmI);
+            float warn = director.GetDartWarning(slot);
+            if (warn <= 0.04f) {
+                return null;
+            }
+
+            Main.instance.LoadNPC(npc.type);
+            Texture2D tex = TextureAssets.Npc[npc.type].Value;
+            int frameCount = Math.Max(Main.npcFrameCount[npc.type], 1);
+            Rectangle frame = npc.frame;
+            if (frame.Width <= 0 || frame.Height <= 0) {
+                frame = tex.Frame(1, frameCount, 0, 0);
+            }
+            Vector2 origin = frame.Size() / 2f;
+            //原版通用底锚：帧心 = (Center.X, Bottom.Y + 4 + gfxOffY - 帧高*scale/2)，与本体同变换描边才不错位
+            Vector2 pos = new Vector2(npc.Center.X,
+                npc.Bottom.Y + 4f + npc.gfxOffY - frame.Height * npc.scale * 0.5f) - screenPos;
+            SpriteEffects effects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+            //越临近起跳闪烁越急，槽位错相避免整群同明同灭(时钟同步，各端一致)
+            float blink = 0.72f + 0.28f * (float)Math.Sin(director.Clock * (0.28f + warn * 0.55f) + slot * 1.1f);
+            float strength = warn * blink;
+            Color rim = new Color(255, 240, 70, 0) * (0.5f * strength);
+            Color halo = new Color(255, 214, 40, 0) * (0.18f * strength);
+
+            for (int i = 0; i < 8; i++) {
+                Vector2 off = (MathHelper.TwoPi * i / 8f).ToRotationVector2();
+                //外圈软晕
+                spriteBatch.Draw(tex, pos + off * 3.8f * npc.scale, frame, halo,
+                    npc.rotation, origin, npc.scale, effects, 0f);
+                //内圈亮边
+                spriteBatch.Draw(tex, pos + off * 1.8f * npc.scale, frame, rim,
+                    npc.rotation, origin, npc.scale, effects, 0f);
+            }
+            return null;
+        }
+
+        /// <summary>
         /// 摇摆舞信号可视化：波前沿槽位链扫过时蜂身金闪(命令传遍蜂群)，<br/>
         /// 缺口沿蜂/领航蜂常亮琥珀描边(阵型门框与矛尖)；加色层贴蜂身遮罩，亮背景不糊屏
         /// </summary>

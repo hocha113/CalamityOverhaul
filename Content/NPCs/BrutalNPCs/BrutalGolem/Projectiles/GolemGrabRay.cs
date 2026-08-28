@@ -127,6 +127,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            //出生帧哨兵守卫：同 GolemEyeRay——哨兵寿命未归位时负进度会翻出全屏闪，跳过本帧
+            if (Projectile.timeLeft > TotalFrames) {
+                return false;
+            }
             Texture2D line = CWRAsset.MaskLaserLine.Value;
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;

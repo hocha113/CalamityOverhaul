@@ -127,8 +127,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
             npc.rotation = 0f;
             //物化年龄(各端本地，纯视觉)
             localAI[1]++;
+            //馈能视觉信号衰减(npc.localAI[3]由馈线光束逐帧写入，各端本地)
+            npc.localAI[3] = Math.Max(0f, npc.localAI[3] - 0.045f);
 
-            Lighting.AddLight(npc.Center, QueenMotion.CrystalBlue.ToVector3() * 0.55f);
+            Lighting.AddLight(npc.Center, QueenMotion.CrystalBlue.ToVector3() * (0.55f + npc.localAI[3] * 0.35f));
 
             //寿命倒计时(服务端)，归零碎裂
             if (!VaultUtils.isClient && npc.ai[3] > 0f) {

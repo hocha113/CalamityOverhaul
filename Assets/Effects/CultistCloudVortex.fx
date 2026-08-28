@@ -11,6 +11,7 @@ sampler uNoise : register(s1);
 float uTime;
 float uAlpha;      //整体浓度(出场推满,常驻回落)
 float uHole;       //中心开孔半径(画布空间,默认 0.20)
+float uSwirl;      //云环整体旋角(rad):由消费端独立驱动,与星球自转解耦
 float3 uColDark;   //云体墨色
 float3 uColLit;    //云顶受光色
 
@@ -32,8 +33,8 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         return float4(0, 0, 0, 0);
     }
 
-    //差速旋转:内快外慢,把径向噪声搅成螺旋缠绕
-    float swirlAng = (1.55 - r) * 2.6 + uTime * 0.22;
+    //差速旋转:内快外慢,把径向噪声搅成螺旋缠绕;整体旋角走 uSwirl(与星球自转分开)
+    float swirlAng = (1.55 - r) * 2.6 + uSwirl;
     float2 v = rot(p, swirlAng);
     float2 unitV = r > 0.001 ? v / r : float2(0.0, 1.0);
     //径向条纹底 + 两层浓云

@@ -9,7 +9,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon.Projectiles
 {
     /// <summary>
-    /// 祭火种（稻草人族死亡掉落 / 无头骑士冲锋沿途）。ai[0]=燃烧存续帧 ai[1]=风味(0稻草人/1小木灵/2骑士)。
+    /// 祭火种（稻草人族死亡掉落 / 投火组抛掷落点 / 无头骑士冲锋沿途）。
+    /// ai[0]=燃烧存续帧 ai[1]=风味+引燃延长×10（风味：0稻草人/1小木灵/2骑士）。
     /// 生命周期：引燃期（≥30 帧无害，玩家踩上即熄灭=互动）→ 燃烧期（判定窗=火光可见窗）→ 熄灭收场。
     /// 踩灭判定只在权威端执行，Kill 经弹幕原生同步下发；生成位置即锁定（地面静物，预告即承诺）
     /// </summary>
@@ -17,7 +18,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon.Projectiles
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        /// <summary>引燃预告帧（公平契约 ≥30，踩灭窗口）</summary>
+        /// <summary>基准引燃预告帧（公平契约 ≥30，踩灭窗口）</summary>
         internal const int KindleFrames = 34;
         private const int FadeFrames = 16;
         /// <summary>踩灭判定的外扩像素</summary>
@@ -27,21 +28,24 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon.Projectiles
         private static readonly Color EmberDeep = new Color(122, 44, 16);
 
         private int LitFrames => Math.Max((int)Projectile.ai[0], 30);
-        private int Flavor => (int)Projectile.ai[1];
-        private int TotalLife => KindleFrames + LitFrames + FadeFrames;
+        private int Flavor => (int)Projectile.ai[1] % 10;
+        /// <summary>实例引燃期：基准之上只允许延长（踩灭窗只放宽不收紧，投火组闷燃型用）</summary>
+        private int Kindle => KindleFrames + Math.Max(0, (int)Projectile.ai[1] / 10);
+        private int TotalLife => Kindle + LitFrames + FadeFrames;
         private int Elapsed => TotalLife - Projectile.timeLeft;
-        private bool Lit => Elapsed >= KindleFrames && Elapsed < KindleFrames + LitFrames;
+        private bool Lit => Elapsed >= Kindle && Elapsed < Kindle + LitFrames;
         /// <summary>燃势 0~1（引燃渐起、熄灭渐落），绘制与灯光共用</summary>
         private float Blaze {
             get {
                 int elapsed = Elapsed;
-                if (elapsed < KindleFrames) {
-                    return 0.25f * (elapsed / (float)KindleFrames);
+                int kindle = Kindle;
+                if (elapsed < kindle) {
+                    return 0.25f * (elapsed / (float)kindle);
                 }
-                if (elapsed < KindleFrames + LitFrames) {
+                if (elapsed < kindle + LitFrames) {
                     return 1f;
                 }
-                return MathHelper.Clamp(1f - (elapsed - KindleFrames - LitFrames) / (float)FadeFrames, 0f, 1f);
+                return MathHelper.Clamp(1f - (elapsed - kindle - LitFrames) / (float)FadeFrames, 0f, 1f);
             }
         }
 
@@ -71,7 +75,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon.Projectiles
             Projectile.hostile = Lit;
 
             //踩灭互动：引燃期玩家覆压即熄（权威端裁决，Kill 原生同步；此期无判定零代价）
-            if (!VaultUtils.isClient && elapsed < KindleFrames) {
+            if (!VaultUtils.isClient && elapsed < Kindle) {
                 Rectangle stompRect = Projectile.Hitbox;
                 stompRect.Inflate((int)StompInflate, (int)StompInflate);
                 for (int i = 0; i < Main.maxPlayers; i++) {
@@ -83,7 +87,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon.Projectiles
                 }
             }
 
-            if (elapsed == KindleFrames && !Main.dedServ) {
+            if (elapsed == Kindle && !Main.dedServ) {
                 SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.4f, Pitch = -0.35f, MaxInstances = 4 }, Projectile.Center);
             }
 
@@ -91,7 +95,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon.Projectiles
                 return;
             }
 
-            if (elapsed < KindleFrames) {
+            if (elapsed < Kindle) {
                 //引燃期：细烟与零星火星（≤2 粒/帧）
                 if (Main.rand.NextBool(3)) {
                     Dust smoke = Dust.NewDustPerfect(Projectile.Top + new Vector2(Main.rand.NextFloat(-6f, 6f), 2f),
@@ -126,7 +130,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon.Projectiles
             if (Main.dedServ) {
                 return;
             }
-            if (Elapsed < KindleFrames) {
+            if (Elapsed < Kindle) {
                 //引燃期被踩灭：烟尘一口
                 SoundEngine.PlaySound(SoundID.Item54 with { Volume = 0.5f, MaxInstances = 4 }, Projectile.Center);
                 for (int i = 0; i < 6; i++) {

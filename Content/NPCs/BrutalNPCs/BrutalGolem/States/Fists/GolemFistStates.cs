@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
                 if (tooFar || timeout || spent || sweepDone || superSpent) {
                     //超级直拳落空反馈：撞墙碎石扇（普通拳有反弹语言，超级拳沉默会读作bug）
                     if (ctx.CmdKind == GolemFistCommand.SuperPunch && spent) {
-                        int damage = GolemDirector.ScaleDamage(GolemDirector.ShrapnelDamage, ctx.DeathMode);
+                        int damage = GolemDirector.ScaleDamage(GolemDirector.ShrapnelDamage, ctx.DeathMode, ctx.Enraged);
                         Vector2 back = -npc.velocity.SafeNormalize(Vector2.UnitX * ctx.Side);
                         for (int i = 0; i < 3; i++) {
                             Vector2 vel = back.RotatedBy(MathHelper.Lerp(-0.7f, 0.7f, i / 2f)) * Main.rand.NextFloat(5f, 8f);
@@ -208,6 +208,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
             NPC npc = ctx.Npc;
             Vector2 aim = (ctx.CmdPoint - npc.Center).SafeNormalize(Vector2.UnitX * ctx.Side);
             float speed = ctx.CmdSpeed;
+            //激怒惩罚：四种打击指令飞行速度统一翻倍(蓄力预警帧不缩，公平锚在出手前)
+            if (ctx.Enraged) {
+                speed *= 2f;
+            }
 
             switch (ctx.CmdKind) {
                 case GolemFistCommand.HookSwing: {
@@ -295,7 +299,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
 
             //碎石扇（弹幕承载跨端表现与音效）
             Vector2 normal = hitX ? new Vector2(-Math.Sign(npc.velocity.X), 0f) : new Vector2(0f, -Math.Sign(npc.velocity.Y));
-            int damage = GolemDirector.ScaleDamage(GolemDirector.ShrapnelDamage, ctx.DeathMode);
+            int damage = GolemDirector.ScaleDamage(GolemDirector.ShrapnelDamage, ctx.DeathMode, ctx.Enraged);
             int count = ctx.DeathMode ? 5 : 4;
             for (int i = 0; i < count; i++) {
                 Vector2 vel = (-normal).RotatedBy(MathHelper.Lerp(-0.85f, 0.85f, i / (count - 1f)))

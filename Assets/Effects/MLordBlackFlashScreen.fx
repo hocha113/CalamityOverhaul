@@ -1,7 +1,9 @@
 // ============================================================================
 //MLordBlackFlashScreen.fx 黑闪爆点全屏后效（月总）
 //采样 uImage0 屏幕；两层门控：一帧黑白反转冲击帧（亮度阈值双色调+红描边）
-//+ 红黑冲击波（环形折射推挤 + 红色波前 + 向红黑压暗的余韵）
+//+ 红黑冲击波（环形折射推挤 + 红色波前 + 向红黑压暗的余韵）。
+//波强度超 1（残血底牌拍）时主波加宽、身后显形尾随涟漪列——
+//多圈波纹大幅扫过全屏的天界塔护盾爆碎语法；强度≤1 时涟漪项为零，开幕拍不变
 //纯径向算术，无角向项，无极缝
 // ============================================================================
 
@@ -10,7 +12,7 @@ sampler uImage0 : register(s0);
 float uAspect;
 //xy=爆心uv z=冲击帧开关(0/1×强度) w=余韵强度
 float4 uFlash;
-//xy=爆心uv z=波半径(屏高归一) w=波强度
+//xy=爆心uv z=波半径(屏高归一) w=波强度(可超1：残血大爆)
 float4 uWave;
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
@@ -20,9 +22,13 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 dir = d / r;
     dir.x /= uAspect;
 
-    //―――― 冲击波：环形折射推挤 ――――
-    float band = exp(-pow((r - uWave.z) / 0.07, 2.0));
-    float2 off = dir * band * 0.02 * uWave.w;
+    //―――― 冲击波：主波环形折射推挤（超 1 强度加宽波带）――――
+    float over = saturate(uWave.w - 1.0);
+    float band = exp(-pow((r - uWave.z) / (0.07 + over * 0.05), 2.0));
+    //尾随涟漪列：主波身后 ~0.35 屏高内的正弦波纹，仅超 1 强度显形
+    float trail = exp(-pow((r - uWave.z + 0.17) / 0.14, 2.0));
+    float ripple = sin((r - uWave.z) * 46.0) * trail * over;
+    float2 off = dir * (band * 0.02 + ripple * 0.013) * uWave.w;
 
     float3 col;
     col.r = tex2D(uImage0, coords - off * 1.3).r;
@@ -36,10 +42,10 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float3 impact = mono * float3(0.96, 0.94, 0.95) + float3(1.0, 0.1, 0.13) * edge * 1.3;
     col = lerp(col, impact, saturate(uFlash.z));
 
-    //―――― 红色波前 + 余韵向红黑压暗（世界被黑闪染过一瞬）――――
-    col += float3(0.6, 0.05, 0.07) * band * uWave.w;
+    //―――― 红色波前（钳制防过曝）+ 余韵向红黑压暗（世界被黑闪染过一瞬）――――
+    col += float3(0.6, 0.05, 0.07) * band * min(uWave.w, 1.4);
     float vin = (1.0 - exp(-r * r * 1.8)) * uFlash.w;
-    col = lerp(col, float3(0.03, 0.0, 0.012), vin * 0.3);
+    col = lerp(col, float3(0.03, 0.0, 0.012), saturate(vin * 0.3));
 
     return float4(col, 1.0);
 }

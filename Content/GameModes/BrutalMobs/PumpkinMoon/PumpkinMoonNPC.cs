@@ -1,6 +1,8 @@
+using CalamityOverhaul.Content.GameModes.BrutalMobs.Common;
 using CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon.Projectiles;
 using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -8,7 +10,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon
 {
     /// <summary>
     /// 南瓜月「祭火与镰阵」行为层：叠加在原版 AI 之上，不接管、不动数值属性。
-    /// 稻草人族/小木灵=祭火小卒（死亡掉落短存续地面祭火种，燃起前可踩灭）；
+    /// 稻草人族/小木灵=祭火小卒，战斗内分两风味：稻草人1-5 聚火抛掷火种（落点带具名缺口），
+    /// 稻草人6-10+小木灵 聚火自燃突进（包络塑形，仅小木灵二连）；亡语仍掉落地面祭火种，燃起前可踩灭；
     /// 地狱犬/无头骑士=定向冲锋（预告线锁定即承诺，骑士沿途撒火种）；
     /// 幽灵=火种祭圈（圈心锁定的公转灯魂环，带具名旋转缺口）。
     /// 小 Boss（哀木/南瓜王）走同一叠加形态，各持两个签名技（预告 ≥40 帧，每实例同刻至多一技）：
@@ -26,9 +29,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon
         private const int RetryDelay = 30;
         /// <summary>资格不符（雕像怪等）的复查间隔</summary>
         private const int IneligibleDelay = 120;
-        /// <summary>出生首攻等待窗，随机错开避免同屏齐动</summary>
-        private const int FirstCooldownMin = 90;
-        private const int FirstCooldownMax = 240;
+        /// <summary>出生首攻等待窗，随机错开避免同屏齐动（M7 契约收进 60~180）</summary>
+        private const int FirstCooldownMin = 60;
+        private const int FirstCooldownMax = 180;
         private const int CooldownJitter = 60;
         /// <summary>高波次阈值：达到后小 Boss 冷却缩短、火种延燃（波次值只读，风味输入）</summary>
         private const int HighWaveThreshold = 15;
@@ -46,12 +49,61 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon
         /// <summary>火种落点向下寻地面的最大格数</summary>
         private const int EmberGroundScanTiles = 12;
 
+        //==== 祭火小卒战斗招式（投火：稻草人1-5 / 自燃突进：稻草人6-10+小木灵）====
+        /// <summary>招式基础冷却（ByTier 只缩短节奏，机制形状不变）</summary>
+        private static readonly int[] EmberMoveCooldownByTier = [560, 485, 420];
+        /// <summary>同刻处于前摇/突进/后摇的祭火小卒全局上限（并发闸，仅触发时计数）</summary>
+        private const int EmberActiveCap = 6;
+        /// <summary>投火前摇帧（胸口火光渐亮，≥30 契约）</summary>
+        private const int ThrowWindupFrames = 32;
+        /// <summary>投火收势后摇帧</summary>
+        private const int ThrowRecoverFrames = 18;
+        /// <summary>具名缺口：相邻火种落点强制间距（格），布点循环按其展开；
+        /// 扣除火种体宽 24px 与两侧散布抖动后间隙仍 ≥2.7 格，人站间隙即安全，档位与型号均不得收窄</summary>
+        private const float EmberGapTiles = 5f;
+        /// <summary>落点散布抖动上限（远小于间距，不吞缺口）</summary>
+        private const float ThrowScatter = 6f;
+        private const float ThrowMinRangeX = 120f;
+        private const float ThrowMaxRangeX = 520f;
+        private const float ThrowMaxRangeY = 260f;
+        /// <summary>掷种数 ByType（行=稻草人1..5，组内签名差异之一）</summary>
+        private static readonly int[] ThrowCountByType = [2, 3, 2, 3, 2];
+        /// <summary>火种抛体滞空帧 ByType（帧多=弧高：3 号高抛慢种、4 号平射急火）</summary>
+        private static readonly int[] ThrowFlightByType = [26, 32, 44, 24, 36];
+        /// <summary>落地火种燃烧存续修正 ByType（叠加 EmberLitByTier：3 号久燃、4 号速熄、5 号最久）</summary>
+        private static readonly int[] ThrowLitDeltaByType = [0, 0, 30, -30, 75];
+        /// <summary>火种引燃期延长 ByType（只许 ≥0：5 号闷燃巨种，踩灭窗只放宽不收紧）</summary>
+        private static readonly int[] ThrowKindleExtraByType = [0, 0, 0, 0, 12];
+        private const float IgniteMinRangeX = 90f;
+        private const float IgniteMaxRangeX = 400f;
+        private const float IgniteMaxRangeY = 140f;
+        /// <summary>自燃组聚火前摇帧（行=稻草人6..10、小木灵=5；≥24 契约，8 号重踏聚得最久）</summary>
+        private static readonly int[] IgniteWindupByType = [24, 26, 32, 24, 24, 24];
+        /// <summary>突进名义峰速（未含提速补偿，注入时除回 MoveGain；9 号燎原最快、8 号最沉）</summary>
+        private static readonly float[] IgnitePeakByType = [8.5f, 8f, 7f, 10f, 8.5f, 8f];
+        /// <summary>突进包络三段：爬升/保持/衰减帧（保持长=突进远：7 号长驱、小木灵短刺）</summary>
+        private static readonly int[] IgniteRiseByType = [6, 6, 8, 5, 6, 5];
+        private static readonly int[] IgniteHoldByType = [8, 16, 12, 8, 10, 6];
+        private static readonly int[] IgniteDecayByType = [8, 10, 12, 7, 8, 7];
+        /// <summary>力竭后摇帧（10 号破势急停收招最快、8 号最僵）</summary>
+        private static readonly int[] IgniteRecoverByType = [12, 20, 26, 14, 8, 16];
+        /// <summary>小木灵二连：第二段重新前摇帧（重新锁向=新的承诺）</summary>
+        private const int SplinterChainWindup = 12;
+        /// <summary>突进朝向倾斜上限（弧度，读作发力，后摇回正）</summary>
+        private const float IgniteLeanMax = 0.16f;
+
         //==== 定向冲锋（地狱犬 / 无头骑士）====
         private static readonly int[] ChargeCooldownByTier = [320, 260, 210];
         private static readonly float[] HoundChargeSpeedByTier = [10.5f, 11.5f, 12.5f];
         private static readonly float[] HorsemanChargeSpeedByTier = [12f, 13f, 14f];
         /// <summary>冲锋窗命中的点燃时长</summary>
         private const int ChargeBurnTicks = 120;
+        /// <summary>冲锋包络爬升帧（保持段=突进窗总帧−爬升−衰减，犬/骑士窗长不同）</summary>
+        private const int ChargeRiseFrames = 4;
+        /// <summary>冲锋包络力竭衰减帧（撞墙钳短与衰减段先到者为准，末帧包络归零即清残速）</summary>
+        private const int ChargeDecayFrames = 8;
+        /// <summary>起手帧横向初始推力系数（衔接包络首帧，避免速度空窗）</summary>
+        private const float ChargeLaunchPush = 0.35f;
         /// <summary>冲锋预告全局并发上限</summary>
         private const int ChargeConcurrentCap = 6;
         /// <summary>骑士单次冲锋沿途火种数上限与间隔帧</summary>
@@ -136,6 +188,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon
         private bool moveToggle;
         private int emberDropsLeft;
         private int emberDropTick;
+        /// <summary>投火锚点：前摇起手锁定的落点展开中心（预告即承诺）</summary>
+        private Vector2 lockPoint;
+        /// <summary>小木灵二连剩余段数（权威端私产）</summary>
+        private int chainLeft;
 
         /// <summary>
         /// 类型表。小 Boss（哀木/南瓜王）为显式名单放行；PumpkingBlade（南瓜王镰刃部件）不入表：
@@ -258,6 +314,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon
                 return;
             }
             switch (family) {
+                case PmkFamily.Ember:
+                    EmberStep(npc);
+                    break;
                 case PmkFamily.Charge:
                     ChargeStep(npc);
                     break;
@@ -270,7 +329,6 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon
                 case PmkFamily.Pumpking:
                     PumpkingStep(npc);
                     break;
-                    //Ember 家族纯死亡驱动，无每帧逻辑
             }
         }
 
@@ -287,8 +345,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon
             TrySpawnEmber(npc, npc.Bottom, npc.type == NPCID.Splinterling ? 1 : 0);
         }
 
-        /// <summary>权威端掉落一枚祭火种：全局限额、寻地面、波次延燃风味</summary>
-        private bool TrySpawnEmber(NPC npc, Vector2 basePos, int flavor) {
+        /// <summary>
+        /// 权威端落一枚祭火种的公共入口：全局限额、寻地面（亡语/骑士沿途/火种抛体共用同一把关）。
+        /// flavorPack=风味+引燃延长×10（<see cref="PmkEmberProj"/> 的 ai[1] 口径）
+        /// </summary>
+        internal static bool SpawnEmberAt(IEntitySource source, Vector2 basePos, int damage, int litFrames, int flavorPack) {
             int emberType = ModContent.ProjectileType<PmkEmberProj>();
             if (CountActive(emberType) >= EmberGlobalCap) {
                 return false;
@@ -297,14 +358,278 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon
             if (groundY < 0f) {
                 return false;
             }
+            Projectile.NewProjectile(source, new Vector2(basePos.X, groundY - 12f),
+                Vector2.Zero, emberType, damage, 0f, Main.myPlayer, litFrames, flavorPack);
+            return true;
+        }
+
+        /// <summary>权威端掉落一枚祭火种：档位存续、波次延燃风味</summary>
+        private bool TrySpawnEmber(NPC npc, Vector2 basePos, int flavor) {
             int lit = EmberLitByTier[boundTier - 1];
             if (Main.pumpkinMoon && NPC.waveNumber >= HighWaveThreshold) {
                 lit += EmberHighWaveBonus;
             }
             int damage = Math.Max(1, (int)(npc.damage * EmberDamageFrac));
-            Projectile.NewProjectile(npc.GetSource_FromAI(), new Vector2(basePos.X, groundY - 12f),
-                Vector2.Zero, emberType, damage, 0f, Main.myPlayer, lit, flavor);
+            return SpawnEmberAt(npc.GetSource_FromAI(), basePos, damage, lit, flavor);
+        }
+        #endregion
+
+        #region 祭火小卒战斗招式
+        /// <summary>投火组（稻草人1-5）；其余祭火小卒（稻草人6-10+小木灵）走自燃突进</summary>
+        private static bool EmberThrows(int type) => type >= NPCID.Scarecrow1 && type <= NPCID.Scarecrow5;
+
+        /// <summary>自燃组行号：稻草人6..10→0..4，小木灵→5</summary>
+        private static int IgniteRow(int type) => type == NPCID.Splinterling ? 5 : type - NPCID.Scarecrow6;
+
+        /// <summary>突进执行窗总帧=包络三段之和（包络走完速度自然归零）</summary>
+        private static int IgniteStrikeFrames(int row)
+            => IgniteRiseByType[row] + IgniteHoldByType[row] + IgniteDecayByType[row];
+
+        /// <summary>同刻施招（前摇/突进/后摇）的祭火小卒计数（并发闸，仅触发时调用，自愈无漂移）</summary>
+        private static int CountBusyEmbers() {
+            int count = 0;
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC other = Main.npc[i];
+                if (other.active && other.TryGetGlobalNPC(out PumpkinMoonNPC pack)
+                    && pack.family == PmkFamily.Ember && pack.phase != PhaseIdle) {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        private void EmberStep(NPC npc) {
+            if (phase == PhaseIdle) {
+                if (--cooldown > 0) {
+                    return;
+                }
+                TryStartEmberMove(npc);
+                return;
+            }
+            if (phase == PhaseTelegraph) {
+                TickEmberWindup(npc);
+                return;
+            }
+            if (phase == PhaseStrike) {
+                TickIgniteDash(npc);
+                return;
+            }
+            TickEmberRecover(npc);
+        }
+
+        private void TryStartEmberMove(NPC npc) {
+            if (!Eligible(npc)) {
+                cooldown = IneligibleDelay;
+                return;
+            }
+            if (npc.target < 0 || npc.target >= Main.maxPlayers) {
+                cooldown = RetryDelay;
+                return;
+            }
+            Player player = Main.player[npc.target];
+            if (!player.Alives()) {
+                cooldown = RetryDelay;
+                return;
+            }
+            if (CountBusyEmbers() >= EmberActiveCap) {
+                cooldown = RetryDelay;
+                return;
+            }
+            bool throws = EmberThrows(npc.type);
+            float dx = Math.Abs(player.Center.X - npc.Center.X);
+            float dy = Math.Abs(player.Center.Y - npc.Center.Y);
+            bool ready = npc.velocity.Y == 0f
+                && dx >= (throws ? ThrowMinRangeX : IgniteMinRangeX)
+                && dx <= (throws ? ThrowMaxRangeX : IgniteMaxRangeX)
+                && dy <= (throws ? ThrowMaxRangeY : IgniteMaxRangeY)
+                && Collision.CanHit(npc.position, npc.width, npc.height, player.position, player.width, player.height);
+            if (!ready) {
+                cooldown = RetryDelay;
+                return;
+            }
+            int windup;
+            int strike = 0;
+            lockDir = player.Center.X >= npc.Center.X ? 1f : -1f;
+            if (throws) {
+                //火种满额或目标脚下够不到地面：这轮不投（免得前摇后放空）
+                if (CountActive(ModContent.ProjectileType<PmkEmberProj>()) >= EmberGlobalCap
+                    || FindSurfaceY(player.Center.X, player.Center.Y, EmberGroundScanTiles) < 0f) {
+                    cooldown = RetryDelay;
+                    return;
+                }
+                //落点锚自此锁定（预告即承诺，落点不追人）
+                lockPoint = player.Center;
+                windup = ThrowWindupFrames;
+            }
+            else {
+                //锁向不重瞄：方向自前摇起手即为承诺
+                chainLeft = npc.type == NPCID.Splinterling ? 1 : 0;
+                int row = IgniteRow(npc.type);
+                windup = IgniteWindupByType[row];
+                strike = IgniteStrikeFrames(row);
+            }
+            //预告即实体：胸口火光载体生成失败（弹幕位满）则整次进攻作废
+            if (!SpawnEmberFlare(npc, windup, strike)) {
+                cooldown = RetryDelay;
+                return;
+            }
+            //刹车脉冲：急停蓄势（仅脉冲帧跟同步）
+            npc.velocity.X *= 0.2f;
+            npc.netUpdate = true;
+            timer = windup;
+            phase = PhaseTelegraph;
+        }
+
+        /// <summary>生成前摇火光预告体，槽位记入 omenIndex；失败=不起招（预告即实体）</summary>
+        private bool SpawnEmberFlare(NPC npc, int windup, int strike) {
+            float modePack = (EmberThrows(npc.type) ? 0f : 1f) + (lockDir < 0f ? 2f : 0f);
+            omenIndex = Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
+                ModContent.ProjectileType<PmkEmberFlareProj>(), 0, 0f, Main.myPlayer,
+                (npc.whoAmI + 1) | (npc.type << 8), modePack, windup + strike * 1000);
+            if (omenIndex < 0 || omenIndex >= Main.maxProjectiles) {
+                omenIndex = -1;
+                return false;
+            }
             return true;
+        }
+
+        /// <summary>校验名下火光预告体仍有效（index+type+来源包三重校验，槽位不是身份）</summary>
+        private bool TryGetEmberFlare(NPC npc, out Projectile flare) {
+            flare = null;
+            if (omenIndex < 0 || omenIndex >= Main.maxProjectiles) {
+                return false;
+            }
+            Projectile proj = Main.projectile[omenIndex];
+            if (!proj.active || proj.type != ModContent.ProjectileType<PmkEmberFlareProj>()
+                || (int)proj.ai[0] != ((npc.whoAmI + 1) | (npc.type << 8))) {
+                return false;
+            }
+            flare = proj;
+            return true;
+        }
+
+        private void TickEmberWindup(NPC npc) {
+            timer--;
+            //预告体缺位（弹幕满额等异常）：不出招回冷却（失败方向=安全方向）
+            if (!TryGetEmberFlare(npc, out _)) {
+                phase = PhaseIdle;
+                omenIndex = -1;
+                chainLeft = 0;
+                cooldown = EmberMoveCooldownByTier[boundTier - 1];
+                return;
+            }
+            //离散刹车脉冲压住走位漂移（脉冲帧才跟同步）
+            if (timer > 0 && timer % 8 == 0) {
+                npc.velocity.X *= 0.4f;
+                npc.netUpdate = true;
+            }
+            if (timer > 0) {
+                return;
+            }
+            if (EmberThrows(npc.type)) {
+                ReleaseSeeds(npc);
+                phase = PhaseBusy;
+                timer = ThrowRecoverFrames;
+                npc.netUpdate = true;
+                return;
+            }
+            //点火起步：速度由包络自零爬升（TickIgniteDash 逐帧赋形）
+            phase = PhaseStrike;
+            timer = IgniteStrikeFrames(IgniteRow(npc.type));
+            npc.netUpdate = true;
+        }
+
+        /// <summary>释放帧：向锁定锚点定帧抛物线掷出火种抛体（落点=承诺，抵达帧由抛体放置火种）</summary>
+        private void ReleaseSeeds(NPC npc) {
+            int row = npc.type - NPCID.Scarecrow1;
+            int flight = ThrowFlightByType[row];
+            int lit = EmberLitByTier[boundTier - 1] + ThrowLitDeltaByType[row];
+            if (Main.pumpkinMoon && NPC.waveNumber >= HighWaveThreshold) {
+                lit += EmberHighWaveBonus;
+            }
+            int damage = Math.Max(1, (int)(npc.damage * EmberDamageFrac));
+            int count = ThrowCountByType[row];
+            Vector2 muzzle = npc.Center + new Vector2(npc.direction * 6f, -8f);
+            for (int i = 0; i < count; i++) {
+                //具名缺口：落点沿锚点按 EmberGapTiles 格间距展开，间隙即安全带（循环真正读取）
+                float x = lockPoint.X + (i - (count - 1) * 0.5f) * (EmberGapTiles * 16f)
+                    + Main.rand.NextFloat(-ThrowScatter, ThrowScatter);
+                float groundY = FindSurfaceY(x, lockPoint.Y, EmberGroundScanTiles);
+                if (groundY < 0f) {
+                    continue;
+                }
+                Vector2 impact = new Vector2(x, groundY - 12f);
+                //定帧弹道解算（与抛体每帧先加速后位移严格同源），落点即承诺
+                Vector2 v0 = new Vector2((impact.X - muzzle.X) / flight,
+                    (impact.Y - muzzle.Y) / flight - PmkEmberSeedProj.SeedGravity * (flight + 1) * 0.5f);
+                Projectile.NewProjectile(npc.GetSource_FromAI(), muzzle, v0,
+                    ModContent.ProjectileType<PmkEmberSeedProj>(), damage, 0f, Main.myPlayer,
+                    flight, lit, ThrowKindleExtraByType[row]);
+            }
+        }
+
+        private void TickIgniteDash(NPC npc) {
+            int row = IgniteRow(npc.type);
+            int strike = IgniteStrikeFrames(row);
+            timer--;
+            //包络塑形的承诺性速度：位移项除回提速补偿（重力不注入、自然不除）
+            float env = MobDash.Envelope(strike - timer, IgniteRiseByType[row], IgniteHoldByType[row], IgniteDecayByType[row]);
+            npc.velocity.X = lockDir * (IgnitePeakByType[row] / MoveGain(npc)) * env;
+            npc.rotation = MobDash.Lean(env, lockDir, IgniteLeanMax);
+            //撞墙即坠入衰减段（突进撞空=反制有效）
+            if (npc.collideX) {
+                timer = Math.Min(timer, IgniteDecayByType[row]);
+            }
+            if (timer % 6 == 0) {
+                npc.netUpdate = true;
+            }
+            if (timer > 0) {
+                return;
+            }
+            //包络已衰竭，显式清残速
+            npc.velocity.X = 0f;
+            if (chainLeft > 0 && StartIgniteChain(npc)) {
+                return;
+            }
+            chainLeft = 0;
+            phase = PhaseBusy;
+            timer = IgniteRecoverByType[row];
+            npc.netUpdate = true;
+        }
+
+        /// <summary>小木灵二连：第二段重新前摇并重新锁向（新的承诺）；预告体生成失败则直接收势</summary>
+        private bool StartIgniteChain(NPC npc) {
+            chainLeft--;
+            if (npc.target < 0 || npc.target >= Main.maxPlayers || !Main.player[npc.target].Alives()) {
+                return false;
+            }
+            lockDir = Main.player[npc.target].Center.X >= npc.Center.X ? 1f : -1f;
+            if (!SpawnEmberFlare(npc, SplinterChainWindup, IgniteStrikeFrames(IgniteRow(npc.type)))) {
+                return false;
+            }
+            npc.velocity.X *= 0.2f;
+            npc.netUpdate = true;
+            timer = SplinterChainWindup;
+            phase = PhaseTelegraph;
+            return true;
+        }
+
+        /// <summary>力竭后摇：衰减清残速、姿态回正，结束把控制权干净还给原版 AI</summary>
+        private void TickEmberRecover(NPC npc) {
+            timer--;
+            npc.velocity.X *= 0.75f;
+            npc.rotation *= 0.65f;
+            if (timer % 6 == 0) {
+                npc.netUpdate = true;
+            }
+            if (timer <= 0) {
+                npc.rotation = 0f;
+                phase = PhaseIdle;
+                omenIndex = -1;
+                chainLeft = 0;
+                cooldown = EmberMoveCooldownByTier[boundTier - 1] + Main.rand.Next(CooldownJitter + 1);
+                npc.netUpdate = true;
+            }
         }
         #endregion
 
@@ -418,8 +743,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon
                 //提速位移补偿：注入速度除回 (1+SpeedBonus)，实际轨迹与预告线一致
                 float speed = (horseman ? HorsemanChargeSpeedByTier : HoundChargeSpeedByTier)[boundTier - 1];
                 Vector2 dir = lockDir.ToRotationVector2();
-                npc.velocity = dir * (speed / MoveGain(npc));
-                dashVX = npc.velocity.X;
+                dashVX = dir.X * (speed / MoveGain(npc));
+                //起手帧：纵向承诺分量一次注入（此后交给重力），横向给初始推力衔接包络首帧（避免空窗）
+                npc.velocity = new Vector2(dashVX * ChargeLaunchPush, dir.Y * (speed / MoveGain(npc)));
                 npc.netUpdate = true;
                 timer = horseman ? PmkChargeOmen.HorsemanStrikeFrames : PmkChargeOmen.HoundStrikeFrames;
                 emberDropsLeft = horseman ? HorsemanTrailEmbers : 0;
@@ -430,8 +756,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.PumpkinMoon
 
         private void TickChargeStrike(NPC npc) {
             timer--;
-            //抵住原版 AI 的横向衰减，保持冲锋直线（服务端持有，低频同步）
-            npc.velocity.X = dashVX;
+            int strike = IsHorseman(npc) ? PmkChargeOmen.HorsemanStrikeFrames : PmkChargeOmen.HoundStrikeFrames;
+            //包络塑形抵住原版横向衰减：爬升→保持→力竭（末帧包络归零=清残速），服务端持有低频同步
+            npc.velocity.X = dashVX * MobDash.Envelope(strike - timer, ChargeRiseFrames,
+                strike - ChargeRiseFrames - ChargeDecayFrames, ChargeDecayFrames);
             if (timer % 6 == 0) {
                 npc.netUpdate = true;
             }

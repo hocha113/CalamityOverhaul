@@ -143,3 +143,11 @@ SeaShrimpBoss: {
 	Bestiary: 海沟最深处的甲壳暴君。它的巨螯挥出时快过声音在水里奔跑的速度，拳锋过处海水被生生撕出真空，气泡崩灭的那一瞬亮如白昼。渔民说，海上无端炸起的水柱，就是它在深处练拳。
 	ChecklistSpawnInfo: 在海洋使用晶化虾饵召唤
 }
+
+BssHead: {
+	DisplayName: 荒花沙蟒
+	Bestiary: 游弋在沙丘之下的巨蟒。仙人掌在它的背甲上扎根,红花吸饱了它的血,开得格外艳。据说沙暴起时,就是它在下面翻身。
+}
+
+BssBody.DisplayName: 荒花沙蟒
+BssTail.DisplayName: 荒花沙蟒

@@ -33,6 +33,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
 
         private float beamWidth;
         private float beamLength;
+        /// <summary>上一帧束角(鞭滞角速度差分用)</summary>
+        private float prevBeamAngle;
+        /// <summary>平滑后的鞭滞弯曲，喂 shader uBend；本地视觉量不入网络</summary>
+        private float bendSmooth;
 
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 3400;
 
@@ -118,6 +122,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             float offset = SweepValue * WofDirector.ScanArcHalf;
             float beamAngle = dir > 0 ? offset : MathHelper.Pi - offset;
             Projectile.rotation = beamAngle;
+
+            //鞭滞：末端拖在转动方向后面。按满速角速度归一，折返时平滑回甩
+            if (Timer == 0) {
+                prevBeamAngle = beamAngle;
+            }
+            float angVel = MathHelper.WrapAngle(beamAngle - prevBeamAngle);
+            prevBeamAngle = beamAngle;
+            float speedScaleNow = Projectile.ai[2] > 0f ? Projectile.ai[2] : 1f;
+            float fullAngVel = WofDirector.ScanArcHalf * 4f / TrianglePeriod * speedScaleNow;
+            float bendTarget = MathHelper.Clamp(angVel / fullAngVel, -1f, 1f) * 0.18f;
+            bendSmooth = MathHelper.Lerp(bendSmooth, bendTarget, 0.12f);
 
             //宽长缓动
             float collapseStart = TotalLife - CollapseTime;
@@ -228,6 +243,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             effect.Parameters["seed"]?.SetValue(Projectile.ai[1] * 0.61f + Projectile.whoAmI * 0.137f % 1f);
             effect.Parameters["uScanTurn"]?.SetValue(turn);
             effect.Parameters["uQuadLen"]?.SetValue(beamLength + backBleed);
+            effect.Parameters["uBend"]?.SetValue(bendSmooth);
             //噪声显式绑到 s1（shader 内 register(s1)），参数式绑定废弃
             device.Textures[1] = noise;
             device.SamplerStates[1] = SamplerState.LinearWrap;
@@ -249,11 +265,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             Vector2 screenPos = Projectile.Center - Main.screenPosition;
             float flicker = 1f + 0.09f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 26f);
 
-            //眼窝聚光，此批是真加色(源因子=SourceAlpha)，A=0 什么都画不出，A 必须随强度走
-            Main.EntitySpriteDraw(glow, screenPos, null, WofMotionFX.BloodHot * (0.9f * opacity),
-                0f, glow.Size() / 2f, 1.7f * flicker, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(glow, screenPos, null, new Color(255, 170, 150) * (0.7f * opacity),
-                0f, glow.Size() / 2f, 0.9f, SpriteEffects.None, 0);
+            //眼窝聚光：贴眼尺寸的热点，束体喉口辉已在 shader 内，此处只补眼窝亮缝
+            Main.EntitySpriteDraw(glow, screenPos, null, WofMotionFX.BloodHot * (0.75f * opacity),
+                0f, glow.Size() / 2f, 1.2f * flicker, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(glow, screenPos, null, new Color(255, 170, 150) * (0.6f * opacity),
+                0f, glow.Size() / 2f, 0.7f, SpriteEffects.None, 0);
         }
     }
 }

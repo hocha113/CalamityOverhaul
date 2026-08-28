@@ -30,7 +30,7 @@
         public static int OrbDamage => 40;           //幻影星球
         public static int ScanRayDamage => 70;       //扫描死光
         public static int ArcRayDamage => 76;        //弧光死光
-        public static int UltRayDamage => 82;        //大招追踪死光
+        public static int UltRayDamage => 82;        //大招三叉横扫死光（2026-08-28 废除追踪：两闪预警线+固定扫角）
         public static int AnnihilationRayDamage => 88;   //月明湮灭巨幅横扫（射线族之顶）
         public static int CometDamage => 62;         //星陨彗星
         public static int StarfireDamage => 45;      //星火余留
@@ -88,8 +88,8 @@
         public static int LimpStepBias => 26;
 
         //―――― 全局阀 ――――
-        /// <summary>远距回归瞬移距离</summary>
-        public static float FarSnapDistance => 2600f;
+        /// <summary>远距回归瞬移距离：奔袭步态能真追人之后往外推，瞬移只当追击失败的兜底</summary>
+        public static float FarSnapDistance => 3200f;
         /// <summary>触发死亡演出的核心生命阈值</summary>
         public static int DeathTriggerLife => 10;
         /// <summary>大招解锁的核心生命比例</summary>
@@ -98,6 +98,10 @@
         public static float BlackFlashLifeRatio => 0.22f;
         /// <summary>月明湮灭解锁的核心生命比例：低于此后裸露出招表的死光扫描席升级为巨幅横扫</summary>
         public static float AnnihilationLifeRatio => 0.33f;
+        /// <summary>月明湮灭保底线：跌破此血线仍一次未放，下一拍强制释放。
+        /// 席位升级要等出招表轮到死光扫描（最多隔七拍），高爆发队伍常常直接把 Boss 打死、
+        /// 压轴巨束一次没见过——保底线补的就是这个缺口</summary>
+        public static float AnnihilationForceRatio => 0.26f;
         /// <summary>黑闪蓄力打断阈值：揉搓窗内核心失血达最大生命此比例即失手。
         /// 需要刻意爆发才打得断——裸露期常规输出 2.5 秒约 5%~8%，阈值必须高于它，
         /// 否则大招永远以失手收场、掷出演出被吞（2026-08 审计根因）</summary>

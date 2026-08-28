@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,7 +26,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil.Proje
         public override string Texture => CWRConstant.VaultPlaceholder;
 
         /// <summary>在场帧戳：AI 每帧盖戳，氛围层据此跳过无风雪墙时的全表扫描</summary>
-        internal static Common.ActivityStamp PresenceStamp;
+        internal static ActivityStamp PresenceStamp;
 
         //雪材贴图（Masking alpha 表已核：Spray/GlaciateWave 均为真 alpha，可作遮挡体）
         [VaultLoaden(CWRConstant.Masking)]

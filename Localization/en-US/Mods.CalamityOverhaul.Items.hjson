@@ -1139,7 +1139,7 @@ DestroyersBladeEX: {
 		'''
 		Heavy swings unleash black-crimson slashes, energy beams and shadow bolts
 		Sheathing the blade briefly engages the Stalk Protocol: increased movement speed
-		While stalking near a target, right click to become the Destroyer's maw and bite it
+		While stalking, right click to become the Destroyer's maw and bite prey; with no target it lunges toward the cursor
 		A successful bite deals massive damage and engages the Annihilation Protocol:
 		all projectiles are empowered with homing, and finishers launch Destroyer heads
 		"It's always easier to destroy than to build"
@@ -5053,7 +5053,8 @@ NinjaCthulsparkBoots: {
 		'''
 		Grants all the powers of the Cthulspark Boots
 		Grants a 10% chance to dodge attacks, and the ability to climb and slide down walls
-		Your dash is always the great eye's ramming charge
+		Double tap a direction to perform a crimson shadow dash, faster and farther, trailing scarlet afterimages
+		The charge bashes enemies aside like the Shield of Cthulhu, granting a moment of immunity on impact
 		"The eye tied on its headband and swore never to blink again"
 		'''
 }
@@ -5075,4 +5076,13 @@ SeaShrimpTreasureBag: {
 SeaShrimpTestItem: {
 	DisplayName: Shrimp Observation Cage
 	Tooltip: Dev testing: summons the Abyssal Crystal Shrimp anywhere
+}
+
+BssBloomBud: {
+	DisplayName: Thorned Bloombud
+	Tooltip:
+		'''
+		Summons the Bloomsand Serpent when used on the desert surface
+		"The root of the dunes grows hungry when it blooms"
+		'''
 }

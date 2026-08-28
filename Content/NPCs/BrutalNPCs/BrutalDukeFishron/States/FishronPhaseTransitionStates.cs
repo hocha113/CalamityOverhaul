@@ -111,7 +111,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
         public override bool AllowFarSnap => false;
 
         private const int AscendEnd = 46;
-        private const int TelegraphFrame = 60;
+        //末相预警线 -30%：落雷预告 52→36 帧（预告晚亮，落点帧不动）
+        private const int TelegraphFrame = 76;
         private const int StrikeFrame = 112;
         private const int TotalTime = 206;
 
@@ -123,6 +124,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             context.SkipDefaultMovement = true;
             context.PhaseThreeStarted = true;
             strikeResolved = false;
+            //入夜续命：三阶开幕回填 20% 上限血（服务端裁决，netUpdate 广播，绿字各端可见）
+            if (!VaultUtils.isClient) {
+                NPC npc = context.Npc;
+                int heal = (int)(npc.lifeMax * 0.20f);
+                npc.life = Math.Min(npc.life + heal, npc.lifeMax);
+                npc.HealEffect(heal);
+                npc.netUpdate = true;
+            }
             //夜幕清场：气泡与龙卷都归于雨
             DukeFishronAI.ClearMinions(alsoTornado: true);
         }

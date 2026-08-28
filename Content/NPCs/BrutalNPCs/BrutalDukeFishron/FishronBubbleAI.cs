@@ -103,13 +103,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             return false;
         }
 
-        /// <summary>模式0：缓慢追踪玩家，超时自爆（近原版）</summary>
-        private void UpdateChase() {
+        /// <summary>解析猎物：目标失效就重找最近玩家，无可猎则 null（模式0/末相漂近共用）</summary>
+        private Player ResolvePrey() {
             if (npc.target < 0 || npc.target >= 255 || Main.player[npc.target].dead) {
                 npc.TargetClosest();
             }
             Player player = Main.player[npc.target];
-            if (player.Alives()) {
+            return player.Alives() ? player : null;
+        }
+
+        /// <summary>末相驻停泡的缓慢压近分量（服务端调用），无猎物回零</summary>
+        private Vector2 PhaseThreeCreep() {
+            if (!DukeFishronAI.AnyPhaseThreeActive()) {
+                return Vector2.Zero;
+            }
+            Player prey = ResolvePrey();
+            if (prey == null) {
+                return Vector2.Zero;
+            }
+            return (prey.Center - npc.Center).SafeNormalize(Vector2.Zero) * 1.1f;
+        }
+
+        /// <summary>模式0：缓慢追踪玩家，超时自爆（近原版）</summary>
+        private void UpdateChase() {
+            Player player = ResolvePrey();
+            if (player != null) {
                 Vector2 dir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
                 const float inertia = 34f;
                 npc.velocity = (npc.velocity * inertia + dir * 5.5f) / (inertia + 1f);
@@ -147,7 +165,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
                         (float)Math.Sin(t * 0.0043f + 1.3f) * 0.38f);
                     //小环游：逐泡错相的缓慢绕圈（半径 10px 级）
                     Vector2 loop = (t * 0.055f + npc.whoAmI * 1.7f).ToRotationVector2() * 0.6f;
-                    npc.velocity = Vector2.Lerp(npc.velocity, current + loop, 0.1f);
+                    //末相：整阵在洋流之上再缓慢压向玩家，走廊随时间收拢
+                    npc.velocity = Vector2.Lerp(npc.velocity, current + loop + PhaseThreeCreep(), 0.1f);
                 }
 
                 //超时自爆（服务端）
@@ -161,10 +180,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
         private void UpdateRingArmed() {
             if (Param > 0f) {
                 Param--;
-                //待发漂浮：服务端写小环游速度，环位轻轻游动仍保阵形
+                //待发漂浮：服务端写小环游速度，环位轻轻游动仍保阵形；末相整环缓慢向玩家收口
                 if (!VaultUtils.isClient) {
                     Vector2 loop = (Main.GameUpdateCount * 0.09f + npc.whoAmI * 1.3f).ToRotationVector2() * 0.8f;
-                    npc.velocity = Vector2.Lerp(npc.velocity, loop, 0.15f);
+                    npc.velocity = Vector2.Lerp(npc.velocity, loop + PhaseThreeCreep(), 0.15f);
                 }
                 float pulse = 1f + 0.06f * (float)Math.Sin(Main.GameUpdateCount * 0.35f + npc.whoAmI);
                 npc.scale = npc.ai[3] * pulse;

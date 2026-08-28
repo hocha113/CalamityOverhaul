@@ -10,8 +10,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
 {
     /// <summary>
-    /// 毁灭者之刃EX。左键沉重三拍挥砍(红白光束+影子弹幕),
-    /// 停手片刻进入潜猎协议(移速上升),贴近猎物后右键发动毁灭者之撕咬,
+    /// 毁灭者之刃EX。左键沉重三拍挥砍(红白光束+影子弹幕,第二拍椭圆环斩),
+    /// 停手片刻进入潜猎协议(移速上升),右键发动毁灭者之撕咬:
+    /// 有猎物锁定猎物,无猎物朝鼠标方向空扑。
     /// 咬中进入歼灭协议:弹幕全面强化获得追踪,终结斩额外吐出毁灭者头颅
     /// </summary>
     internal class DestroyersBladeEX : ModItem
@@ -65,13 +66,12 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             DestroyerEXPlayer mp = player.GetModPlayer<DestroyerEXPlayer>();
 
             if (player.altFunctionUse == 2) {
-                //毁灭者之撕咬:锁定潜猎目标,化身头颅扑咬
+                //毁灭者之撕咬:有猎物锁定猎物,无猎物朝鼠标方向空扑(目标索引传-1)
                 int target = mp.FindBiteTarget();
-                if (target < 0) {
-                    return false;
-                }
-                Vector2 toTarget = (Main.npc[target].Center - player.Center).SafeNormalize(velocity);
-                Projectile.NewProjectile(source, player.Center, toTarget
+                Vector2 dir = target >= 0
+                    ? (Main.npc[target].Center - player.Center).SafeNormalize(velocity)
+                    : velocity.SafeNormalize(Vector2.UnitX);
+                Projectile.NewProjectile(source, player.Center, dir
                     , ModContent.ProjectileType<DestroyerBiteProj>(), (int)(damage * 6f), 12f
                     , player.whoAmI, target);
                 return false;

@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             //拍间压近跳：勾拳交汇后、横扫之前躯干跃向目标，双线威胁不断档
             if (Timer == Tempo(context, HopTick) && OnGround(npc)) {
                 float dx = context.Target.Center.X - npc.Center.X;
-                LaunchJump(npc, MathHelper.Clamp(dx / 55f, -11f, 11f), -9.5f);
+                LaunchJump(context, MathHelper.Clamp(dx / 55f, -11f, 11f), -9.5f);
                 if (!VaultUtils.isClient) {
                     npc.netUpdate = true;
                 }

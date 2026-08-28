@@ -67,6 +67,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> BRelicAuroraWing { get; set; }
         public static Asset<Effect> QueenPrismBeam { get; set; }
         public static Asset<Effect> QueenPrismCrystal { get; set; }
+        public static Asset<Effect> QueenPrismGem { get; set; }
         public static Asset<Effect> QueenGaleField { get; set; }
         public static Asset<Effect> QueenCrystalSkin { get; set; }
         public static Asset<Effect> BrainHeartbeatPulse { get; set; }

@@ -172,6 +172,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             effect.Parameters["seed"]?.SetValue(Projectile.whoAmI * 0.137f % 1f);
             effect.Parameters["uScanTurn"]?.SetValue(0.35f);
             effect.Parameters["uQuadLen"]?.SetValue(beamLength + backBleed);
+            //斩束不扫掠：显式归零，Effect 实例与扫描束共享，参数会跨绘制残留
+            effect.Parameters["uBend"]?.SetValue(0f);
             //噪声显式绑到 s1（shader 内 register(s1)）
             device.Textures[1] = noise;
             device.SamplerStates[1] = SamplerState.LinearWrap;
@@ -193,11 +195,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             Vector2 screenPos = Projectile.Center - Main.screenPosition;
             float flicker = 1f + 0.08f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 30f);
 
-            //口部聚光：真加色批，A随强度走
-            Main.EntitySpriteDraw(glow, screenPos, null, WofMotionFX.BloodHot * (0.95f * opacity),
-                0f, glow.Size() / 2f, 2f * flicker, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(glow, screenPos, null, new Color(255, 200, 160) * (0.7f * opacity),
-                0f, glow.Size() / 2f, 1f, SpriteEffects.None, 0);
+            //口部聚光：真加色批，A随强度走；束体喉口辉在 shader 内，此处贴腐眼尺寸
+            Main.EntitySpriteDraw(glow, screenPos, null, WofMotionFX.BloodHot * (0.85f * opacity),
+                0f, glow.Size() / 2f, 1.5f * flicker, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(glow, screenPos, null, new Color(255, 200, 160) * (0.65f * opacity),
+                0f, glow.Size() / 2f, 0.8f, SpriteEffects.None, 0);
         }
     }
 }

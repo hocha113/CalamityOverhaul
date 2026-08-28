@@ -95,6 +95,13 @@ namespace CalamityOverhaul.Content.GameModes
             }
             npc.position += advance;
 
+            //滑步补偿：位置推进不走 velocity，原版 FindFrame 的步频感知不到额外位移，
+            //腿慢身快读作滑行。对贴地行走个体按同一系数追加动画计数对齐步频；
+            //frameCounter 纯视觉量，服务器不画不累加
+            if (!Main.dedServ && !npc.noGravity && npc.velocity.Y == 0f && MathF.Abs(npc.velocity.X) > 0.05f) {
+                npc.frameCounter += GameModeTuning.SpeedBonus(boundTier);
+            }
+
             //狂暴余烬：低频血色怒火，纯客户端表现
             if (!Main.dedServ && Main.rand.NextBool(28)) {
                 Dust dust = Dust.NewDustDirect(npc.position, npc.width, npc.height,

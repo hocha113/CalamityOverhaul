@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                     hopTimer = 0;
                     float dx = context.Target.Center.X - npc.Center.X;
                     if (Math.Abs(dx) > 150f) {
-                        LaunchJump(npc, MathHelper.Clamp(dx / 65f, -10f, 10f), -9f);
+                        LaunchJump(context, MathHelper.Clamp(dx / 65f, -10f, 10f), -9f);
                         if (!VaultUtils.isClient) {
                             npc.netUpdate = true;
                         }
@@ -100,9 +100,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             if (context.DeathMode) {
                 speed += 5f;
             }
-            if (context.Enraged) {
-                speed *= 1.2f;
-            }
+            //激怒翻倍统一落在拳端 Launch，此处不再叠乘
             int windup = context.Sundered ? GolemDirector.PunchWindupP2 : GolemDirector.PunchWindupP1;
             if (context.DeathMode) {
                 windup -= 4;

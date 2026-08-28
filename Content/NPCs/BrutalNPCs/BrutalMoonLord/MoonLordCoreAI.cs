@@ -25,8 +25,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         private VaultStateMachine<MLordContext> stateMachine;
         private MLordContext stateContext;
         private Player targetPlayer;
-        /// <summary>远距滞留帧，达上限触发日蚀回归瞬移</summary>
+        /// <summary>追击失败滞留帧，达上限触发日蚀回归瞬移</summary>
         private int farTimer;
+        /// <summary>上次判定时的超线距离，用来识别"还在拉近"，0=未在超线态</summary>
+        private float lastFarDist;
+        /// <summary>判定追击失败所需的连续帧数（够长，确保是真追不上而不是一时落后）</summary>
+        private const int FarFailFrames = 90;
+        /// <summary>视作"仍在拉近"的每帧最小缩短量，低于它算追不动（爬行本就有步间起伏）</summary>
+        private const float FarClosingSlack = 0.5f;
         /// <summary>心跳帧（心脏裸露动画）</summary>
         private int heartFrameTick;
         private int heartFrame;
@@ -202,7 +208,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 return;
             }
 
-            //终局黑闪（比虚空撕裂更迟解锁；不打断进行中的另一大招）。
+            bool ultBusy = current is MLordBlackFlashState or MLordVoidRuptureState
+                or MLordLunarAnnihilationState;
+
+            //开幕黑闪：全眼破碎进二阶段后的第一个常规拍即刻释放（开场宣言，不看血线）。
+            //失手即算放过不重试——开幕拍重试会循环成打断刷子，残血底牌拍照旧会来
+            if (stateContext.CoreExposed && !ultBusy
+                && !MLordBlackFlashFlags.Has(ai[MLordAiSlots.OvBlackFlashUsed], MLordBlackFlashFlags.Opener)) {
+                stateMachine.ChangeState(new MLordBlackFlashState());
+                return;
+            }
+
+            //残血底牌黑闪（比虚空撕裂更迟解锁；不打断进行中的另一大招）。
             //失手不消耗底牌：重试门线=失手时血线再降一档（OvBlackFlashRearm），
             //每次失手门线更低，被死亡阈值自然封顶——底牌被打断后更低血量孤注一掷
             float blackFlashGate = npc.lifeMax * MLordDirector.BlackFlashLifeRatio;
@@ -210,20 +227,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             if (rearmRatio > 0f) {
                 blackFlashGate = Math.Min(blackFlashGate, npc.lifeMax * rearmRatio);
             }
-            if (stateContext.CoreExposed && ai[MLordAiSlots.OvBlackFlashUsed] == 0f
-                && npc.life < blackFlashGate
-                && current is not MLordBlackFlashState and not MLordVoidRuptureState
-                and not MLordLunarAnnihilationState) {
+            if (stateContext.CoreExposed && !ultBusy
+                && !MLordBlackFlashFlags.Has(ai[MLordAiSlots.OvBlackFlashUsed], MLordBlackFlashFlags.Desperate)
+                && npc.life < blackFlashGate) {
                 stateMachine.ChangeState(new MLordBlackFlashState());
                 return;
             }
 
             //低血大招（一场一次，裸露期解锁；进行中的月明湮灭同样不被打断）
-            if (stateContext.CoreExposed && ai[MLordAiSlots.OvUltUsed] == 0f
+            if (stateContext.CoreExposed
+                && !MLordUltFlags.Has(ai[MLordAiSlots.OvUltUsed], MLordUltFlags.VoidRupture)
                 && npc.life < npc.lifeMax * MLordDirector.UltLifeRatio
                 && current is not MLordVoidRuptureState and not MLordBlackFlashState
                 and not MLordLunarAnnihilationState) {
                 stateMachine.ChangeState(new MLordVoidRuptureState());
+                return;
+            }
+
+            //月明湮灭保底：跌破保底线仍一次未放就强制补上——
+            //常规路径要等出招表轮到死光扫描席，高爆发下 Boss 往往先倒，压轴巨束一次都放不出来
+            if (stateContext.CoreExposed
+                && !MLordUltFlags.Has(ai[MLordAiSlots.OvUltUsed], MLordUltFlags.Annihilation)
+                && npc.life < npc.lifeMax * MLordDirector.AnnihilationForceRatio
+                && current is not MLordLunarAnnihilationState and not MLordVoidRuptureState
+                and not MLordBlackFlashState) {
+                stateMachine.ChangeState(new MLordLunarAnnihilationState());
             }
         }
 
@@ -265,7 +293,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             newBreaks++;
         }
 
-        /// <summary>远距日蚀回归：整套阵形相对平移，保持拼装关系</summary>
+        /// <summary>
+        /// 远距日蚀回归：整套阵形相对平移，保持拼装关系。
+        /// 触发条件不是"离得远"而是"追击确实失败"——奔袭步态已经能真追人，
+        /// 所以只在距离超线**且不再缩小**地持续 <see cref="FarFailFrames"/> 帧后才搬家；
+        /// 只要还在拉近就一直让它自己爬（无预告的瞬移读起来像 bug，能不用就不用）
+        /// </summary>
         private void UpdateFarReturnValve() {
             if (VaultUtils.isClient || !targetPlayer.Alives()) {
                 farTimer = 0;
@@ -275,14 +308,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 farTimer = 0;
                 return;
             }
-            if (npc.Distance(targetPlayer.Center) <= MLordDirector.FarSnapDistance) {
+            float dist = npc.Distance(targetPlayer.Center);
+            if (dist <= MLordDirector.FarSnapDistance) {
                 farTimer = 0;
+                lastFarDist = 0f;
                 return;
             }
-            if (++farTimer < 30) {
+            //还在把距离拉近就重新计时：它在追，给它追
+            if (lastFarDist > 0f && dist < lastFarDist - FarClosingSlack) {
+                farTimer = 0;
+                lastFarDist = dist;
+                return;
+            }
+            lastFarDist = dist;
+            if (++farTimer < FarFailFrames) {
                 return;
             }
             farTimer = 0;
+            lastFarDist = 0f;
 
             //相对位移全家桶（原版 -2 段的搬迁逻辑）
             Vector2 shift = targetPlayer.Center + new Vector2(0f, -150f) - npc.Center;
@@ -532,6 +575,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             MLordUltArms.Draw(spriteBatch, npc, screenPos);
             //月明湮灭引导线：锁定承诺的可视化（状态窗内自判定）
             MLordLunarAnnihilationState.DrawAimGuide(npc, this);
+            //虚空撕裂三叉引导线：同式，出束前画出三束的落位
+            MLordVoidRuptureState.DrawAimGuide(npc, this);
             return false;
         }
 

@@ -79,19 +79,52 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         public const int OvEyeCommand = 4;
         /// <summary>Override ai[5] 最近破坏的部件 1上左/2上右/3头/4下左/5下右</summary>
         public const int OvLastBrokenPart = 5;
-        /// <summary>Override ai[6] 大招已用标记 0/1</summary>
+        /// <summary>Override ai[6] 大招已放标记位掩码 <see cref="MLordUltFlags"/>
+        /// （Override ai 只有 12 槽且已排满，各大招的"已放"标记合存此槽）</summary>
         public const int OvUltUsed = 6;
         /// <summary>Override ai[7] 投技被抓玩家 whoAmI+1，0=无（服务端写，被抓端读）</summary>
         public const int OvGrabTarget = 7;
         /// <summary>Override ai[8] 投技抓握之手 whoAmI+1，0=无</summary>
         public const int OvGrabHand = 8;
-        /// <summary>Override ai[9] 黑闪已用标记 0/1（失手不消耗：失手退场时清回 0 允许重试）</summary>
+        /// <summary>Override ai[9] 黑闪已放标记位掩码 <see cref="MLordBlackFlashFlags"/>
+        /// （开幕/残血两拍分位记账；残血拍失手不消耗：失手退场时清回对应位允许重试）</summary>
         public const int OvBlackFlashUsed = 9;
         /// <summary>Override ai[10] 黑闪节拍：0正常 / 1蓄力被打断（服务端写，各端演出分支）</summary>
         public const int OvBlackFlashBeat = 10;
         /// <summary>Override ai[11] 黑闪重试门线（生命比例）：失手时写入"当前血线-一档"，
         /// 0=未设；核心转移检测取它与解锁线的较小者</summary>
         public const int OvBlackFlashRearm = 11;
+    }
+
+    /// <summary>
+    /// 大招已放标记位，同存 <see cref="MLordAiSlots.OvUltUsed"/> 一槽。
+    /// 各标记只负责"这场还欠不欠这一次"，不影响出招表里的常规席位
+    /// </summary>
+    internal static class MLordUltFlags
+    {
+        /// <summary>虚空撕裂已放</summary>
+        public const int VoidRupture = 1;
+        /// <summary>月明湮灭已放（保底强制线据此判断是否还欠一次压轴巨束）</summary>
+        public const int Annihilation = 2;
+
+        public static bool Has(float slotValue, int flag) => ((int)slotValue & flag) != 0;
+        public static float With(float slotValue, int flag) => (int)slotValue | flag;
+    }
+
+    /// <summary>
+    /// 黑闪已放标记位，同存 <see cref="MLordAiSlots.OvBlackFlashUsed"/> 一槽。
+    /// 一场两拍：全眼破碎进二阶段的开幕宣言拍 + 残血底牌拍
+    /// </summary>
+    internal static class MLordBlackFlashFlags
+    {
+        /// <summary>开幕拍已放（核心裸露后的第一个常规拍强制释放，失手即算放过不重试）</summary>
+        public const int Opener = 1;
+        /// <summary>残血底牌拍已放（失手清位重试，门线走 OvBlackFlashRearm）</summary>
+        public const int Desperate = 2;
+
+        public static bool Has(float slotValue, int flag) => ((int)slotValue & flag) != 0;
+        public static float With(float slotValue, int flag) => (int)slotValue | flag;
+        public static float Without(float slotValue, int flag) => (int)slotValue & ~flag;
     }
 
     /// <summary>真眼编队指令</summary>
@@ -262,7 +295,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         }
 
         /// <summary>场上隶属该核心的真眼列表写入 buffer，返回数量（钳到缓冲长度，防越界读默认槽）</summary>
-        public static int ScanFreeEyes(NPC core, int[] buffer) {
+        public static int ScanFreeEyes(NPC core, Span<int> buffer) {
             int count = 0;
             if (core == null || !core.active) {
                 return 0;
@@ -279,6 +312,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
                 count++;
             }
             return count;
+        }
+
+        /// <summary>
+        /// 取第 ordinal 只真眼（whoAmI 扫描序，对在场数循环取模）。
+        /// 心脏与残口不客串小弹幕炮口——无活头时的小型弹幕代射一律从这里领真眼，
+        /// 场上无真眼返回 null（该拍静默）
+        /// </summary>
+        public static NPC GetFreeEye(NPC core, int ordinal) {
+            Span<int> eyes = stackalloc int[MaxFreeEyes];
+            int count = ScanFreeEyes(core, eyes);
+            if (count <= 0) {
+                return null;
+            }
+            return Main.npc[eyes[ordinal % count]];
         }
 
         /// <summary>由部件反查核心，无效返回 null</summary>

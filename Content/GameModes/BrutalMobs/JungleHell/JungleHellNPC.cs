@@ -1,16 +1,19 @@
+using CalamityOverhaul.Content.GameModes.BrutalMobs.Common;
 using CalamityOverhaul.Content.GameModes.BrutalMobs.JungleHell.Projectiles;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.GameModes.BrutalMobs.JungleHell
 {
     /// <summary>
     /// 残酷模式丛林+地狱小怪行为机制层，主题「伏击与弹幕幕」。
     /// 不接管原版 AI，只做叠加：齐射幕(蜂族/恶魔/血魔/龟壳)、藤蔓鞭击(食人花族)、
-    /// 小鬼传送开窗、骨蛇破土预告、闻血狂暴(鱼/蝠/蛛)。
+    /// 小鬼传送开窗、骨蛇破土预告、闻血追猎(鱼/蝠/蛛，嗅探定身→锁向突进→力竭后摇)。
     /// 数值增强由 GameModeNPC 统一负责，此处只加行为
     /// </summary>
     internal class JungleHellNPC : GlobalNPC
@@ -63,16 +66,53 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.JungleHell
         private const float SerpentAmbushBase = 0.3f;
         private const float SerpentAmbushPerTier = 0.1f;
 
-        //闻血狂暴族
-        private const float FrenzyAdvanceBase = 0.35f;
-        private const float FrenzyAdvancePerTier = 0.12f;
+        //闻血追猎族（嗅探定身→锁向突进→力竭后摇的三段相位机）
+        private const float FrenzyMinRange = 80f;
+        private const float FrenzyMaxRange = 560f;
+        /// <summary>嗅探定身前摇帧数（姿态前摇替代预告实体，≥30 可见帧，档位不缩短）</summary>
+        private const int FrenzyWindupFrames = 34;
+        /// <summary>突进包络三段：爬升/保持/衰减帧数（MobDash.Envelope 塑形）</summary>
+        private const int FrenzyDashRise = 8;
+        private const int FrenzyDashHold = 14;
+        private const int FrenzyDashDecay = 20;
+        /// <summary>力竭后摇帧数：清残速后横向阻尼，把控制权干净还给原版 AI</summary>
+        private const int FrenzyRecoverFrames = 20;
+        /// <summary>单个体突进冷却（M7 要求 ≥360，不随档位缩短）与向上随机抖动</summary>
+        private const int FrenzyCooldownBase = 360;
+        private const int FrenzyCooldownJitter = 60;
+        /// <summary>射程/视线/并发闸未过时的复查间隔</summary>
+        private const int FrenzyRetryDelay = 30;
+        /// <summary>前摇被反制（清流血/目标失效/鱼离水）后的重整冷却</summary>
+        private const int FrenzyAbortDelay = 90;
+        /// <summary>同时处于前摇或突进段的同族个体上限（权威端扫描计数）</summary>
+        private const int FrenzyMaxConcurrent = 4;
+        /// <summary>前摇每帧压速阻尼（急停蓄势，前摇可见信号之一）</summary>
+        private const float FrenzyWindupDamp = 0.82f;
+        /// <summary>后摇每帧横向阻尼</summary>
+        private const float FrenzyRecoverDamp = 0.8f;
+        //突进名义峰速（未含提速补偿，注入时除回 MoveGain；约为原怪常速的 1.3~1.5 倍）
+        private const float FrenzyPeakSmallBat = 6.8f;
+        private const float FrenzyPeakGiantBat = 8f;
+        private const float FrenzyPeakPiranha = 6.6f;
+        private const float FrenzyPeakArapaima = 8f;
+        private const float FrenzyPeakSpider = 7.2f;
+        /// <summary>档位峰速倍率（只调强度不改机制形状）</summary>
+        private static readonly float[] FrenzyPeakByTier = [1f, 1.1f, 1.2f];
+        /// <summary>地面蜘蛛突进倾角上限（弧度）；蝙蝠/鱼原版自转，跳过 Lean</summary>
+        private const float FrenzySpiderLean = 0.18f;
         /// <summary>咬伤流血时长（帧），反制=处理自己的减益</summary>
         private const int BiteBleedBase = 240;
         private const int BiteBleedPerTier = 60;
 
-        //出生冷却宽限：刚刷出的个体不许立刻放特殊攻击
-        private const int InitialGraceMin = 90;
-        private const int InitialGraceRand = 90;
+        //出生冷却宽限：刚刷出的个体不许立刻放特殊攻击（首发错拍窗收进 60~180，M7）
+        private const int InitialGraceMin = 60;
+        private const int InitialGraceRand = 120;
+
+        //闻血追猎相位常量
+        private const byte FrenzyIdle = 0;
+        private const byte FrenzyWindup = 1;
+        private const byte FrenzyDash = 2;
+        private const byte FrenzyRecover = 3;
         #endregion
 
         /// <summary>机制族</summary>
@@ -89,7 +129,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.JungleHell
             ImpWindow,
             /// <summary>破土预告</summary>
             Serpent,
-            /// <summary>闻血狂暴</summary>
+            /// <summary>闻血追猎</summary>
             Frenzy,
         }
 
@@ -122,6 +162,12 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.JungleHell
         private Vector2 lastPos;
         /// <summary>乌龟起旋检测的上一帧速度</summary>
         private float prevSpeed;
+        /// <summary>闻血追猎相位（权威端真相；客户端经 ExtraAI 镜像收表现）</summary>
+        private byte frenzyPhase;
+        /// <summary>相位内计时：前摇/后摇倒数，突进段递增喂包络</summary>
+        private int frenzyTimer;
+        /// <summary>突进锁定方向（前摇结束帧锁定，预告即承诺，此后不重瞄）</summary>
+        private float frenzyLockDir;
         /// <summary>破土预兆最近一次刷新的帧号（预兆实体每帧回写，各端本地一致）</summary>
         internal int lastOmenFrame = -100000;
 
@@ -177,6 +223,12 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.JungleHell
         /// <summary>档位冷却折算</summary>
         private int TierCd(int baseCd) => (int)(baseCd * (1f - TierCooldownStep * (boundTier - 1)));
 
+        /// <summary>
+        /// 提速位移补偿：GameModeNPC.PostAI 按 velocity×SpeedBonus 追加位置推进，
+        /// 本层注入的承诺性速度一律除回该系数（位移项除回、重力项不除）
+        /// </summary>
+        private float MoveGain(NPC npc) => !npc.boss && npc.realLife < 0 ? 1f + GameModeTuning.SpeedBonus(boundTier) : 1f;
+
         public override void PostAI(NPC npc) {
             if (boundTier <= 0) {
                 return;
@@ -215,34 +267,276 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.JungleHell
             return true;
         }
 
-        #region 闻血狂暴（鱼/蝠/蛛：目标带流血则提速，全端确定性模拟）
-        private void FrenzyTick(NPC npc) {
+        #region 闻血追猎（鱼/蝠/蛛：目标带流血→嗅探定身→锁向突进→力竭后摇）
+        private static bool IsFrenzyFish(int type) => type == NPCID.Piranha || type == NPCID.Arapaima;
+
+        /// <summary>突进名义峰速按类型分档（小蝙蝠/大狐蝠/食人鱼/巨骨舌鱼/蜘蛛各不同）</summary>
+        private static float FrenzyPeak(int type) => type switch {
+            NPCID.Piranha => FrenzyPeakPiranha,
+            NPCID.Arapaima => FrenzyPeakArapaima,
+            NPCID.GiantFlyingFox => FrenzyPeakGiantBat,
+            NPCID.JungleCreeper or NPCID.JungleCreeperWall => FrenzyPeakSpider,
+            _ => FrenzyPeakSmallBat,
+        };
+
+        /// <summary>猎物有效：目标存活且带流血；鱼类只在水中追猎（离水翻滚不狂暴）</summary>
+        private bool FrenzyPreyValid(NPC npc, out Player target) {
+            target = null;
             if (!npc.HasValidTarget) {
-                return;
+                return false;
             }
-            Player target = Main.player[npc.target];
-            if (!target.active || target.dead || !target.HasBuff(BuffID.Bleeding)) {
-                return;
+            Player player = Main.player[npc.target];
+            if (!player.active || player.dead || !player.HasBuff(BuffID.Bleeding)) {
+                return false;
             }
-            //鱼类离水翻滚时不狂暴
-            bool isFish = npc.type == NPCID.Piranha || npc.type == NPCID.Arapaima;
-            if (isFish && !npc.wet) {
-                return;
+            if (IsFrenzyFish(npc.type) && !npc.wet) {
+                return false;
             }
+            target = player;
+            return true;
+        }
 
-            Vector2 advance = npc.velocity * (FrenzyAdvanceBase + FrenzyAdvancePerTier * (boundTier - 1));
-            if (!npc.noTileCollide) {
-                advance = Collision.TileCollision(npc.position, advance, npc.width, npc.height);
+        /// <summary>权威端扫描同族处于前摇/突进段的个体数（全局并发闸，客户端不跑此判定）</summary>
+        private static int CountFrenzyEngaged() {
+            int count = 0;
+            foreach (NPC other in Main.ActiveNPCs) {
+                if (other.TryGetGlobalNPC(out JungleHellNPC global) && global.kind == MechKind.Frenzy
+                    && (global.frenzyPhase == FrenzyWindup || global.frenzyPhase == FrenzyDash)) {
+                    count++;
+                }
             }
-            npc.position += advance;
+            return count;
+        }
 
-            //嗜血余迹，纯客户端表现
-            if (!Main.dedServ && Main.rand.NextBool(7)) {
-                Dust dust = Dust.NewDustDirect(npc.position, npc.width, npc.height,
-                    DustID.Blood, 0f, 0f, 120, default, Main.rand.NextFloat(0.8f, 1.2f));
-                dust.velocity = -npc.velocity * 0.2f;
-                dust.noGravity = true;
+        private void FrenzyTick(NPC npc) {
+            if (VaultUtils.isClient) {
+                //客户端不做决策：推进本地镜像计时，让红雾/倾斜在低频同步间隙也连续
+                FrenzyMirrorAdvance();
+                FrenzyPresentTick(npc);
+                return;
             }
+            switch (frenzyPhase) {
+                case FrenzyWindup: FrenzyWindupTick(npc); break;
+                case FrenzyDash: FrenzyDashTick(npc); break;
+                case FrenzyRecover: FrenzyRecoverTick(npc); break;
+                default: FrenzyIdleTick(npc); break;
+            }
+            FrenzyPresentTick(npc);
+        }
+
+        /// <summary>待机：冷却走完且嗅到血（目标带流血+射程+视线+并发闸）才进前摇</summary>
+        private void FrenzyIdleTick(NPC npc) {
+            if (cooldown > 0) {
+                cooldown--;
+                return;
+            }
+            if (!FrenzyPreyValid(npc, out Player target)) {
+                return;
+            }
+            float dist = npc.Distance(target.Center);
+            if (dist < FrenzyMinRange || dist > FrenzyMaxRange
+                || !Collision.CanHitLine(npc.Center, 1, 1, target.Center, 1, 1)) {
+                cooldown = FrenzyRetryDelay;
+                return;
+            }
+            if (CountFrenzyEngaged() >= FrenzyMaxConcurrent) {
+                cooldown = FrenzyRetryDelay;
+                return;
+            }
+            frenzyPhase = FrenzyWindup;
+            frenzyTimer = FrenzyWindupFrames;
+            //相位沿同步：镜像相位随包出线，客户端立刻开播前摇红雾
+            npc.netUpdate = true;
+        }
+
+        /// <summary>前摇被反制（清流血/目标失效/鱼离水）：中止回短冷却，失败方向=安全方向</summary>
+        private void FrenzyAbort(NPC npc) {
+            frenzyPhase = FrenzyIdle;
+            frenzyTimer = 0;
+            cooldown = FrenzyAbortDelay;
+            npc.netUpdate = true;
+        }
+
+        /// <summary>嗅探定身：压速蓄势（可见信号），结束帧锁向进突进（预告即承诺）</summary>
+        private void FrenzyWindupTick(NPC npc) {
+            frenzyTimer--;
+            if (!FrenzyPreyValid(npc, out Player target)) {
+                FrenzyAbort(npc);
+                return;
+            }
+            //压速：地面蜘蛛只阻尼横向（重力项不动），游/飞类全向阻尼
+            if (npc.type == NPCID.JungleCreeper) {
+                npc.velocity.X *= FrenzyWindupDamp;
+            }
+            else {
+                npc.velocity *= FrenzyWindupDamp;
+            }
+            if (frenzyTimer <= 0) {
+                //锁定帧：方向自此为承诺，突进期不再重瞄
+                frenzyLockDir = (target.Center - npc.Center).ToRotation();
+                frenzyPhase = FrenzyDash;
+                frenzyTimer = 0;
+                npc.netUpdate = true;
+                return;
+            }
+            if (frenzyTimer % 6 == 0) {
+                //低频载波：压速期间客户端位置纠偏 + 镜像计时对齐
+                npc.netUpdate = true;
+            }
+        }
+
+        /// <summary>锁向突进：包络塑形注入速度（爬升→保持→衰减），撞墙快进衰减段泄力</summary>
+        private void FrenzyDashTick(NPC npc) {
+            frenzyTimer++;
+            if (IsFrenzyFish(npc.type) && !npc.wet) {
+                //鱼被引出水面=反制成功，立即力竭
+                FrenzyEnterRecover(npc);
+                return;
+            }
+            //撞墙即泄力：爬升段不判（出发帧还带着站地的陈旧碰撞旗），入保持段后撞上就快进衰减
+            if (frenzyTimer > FrenzyDashRise && frenzyTimer < FrenzyDashRise + FrenzyDashHold
+                && (npc.collideX || npc.collideY)) {
+                frenzyTimer = FrenzyDashRise + FrenzyDashHold;
+            }
+            float peak = FrenzyPeak(npc.type) * FrenzyPeakByTier[boundTier - 1] / MoveGain(npc);
+            npc.velocity = MobDash.Velocity(frenzyLockDir.ToRotationVector2(), peak,
+                frenzyTimer, FrenzyDashRise, FrenzyDashHold, FrenzyDashDecay);
+            if (frenzyTimer % 6 == 0) {
+                npc.netUpdate = true;
+            }
+            if (frenzyTimer >= FrenzyDashRise + FrenzyDashHold + FrenzyDashDecay) {
+                FrenzyEnterRecover(npc);
+            }
+        }
+
+        /// <summary>衰减段结束：清残速进力竭后摇</summary>
+        private void FrenzyEnterRecover(NPC npc) {
+            if (npc.type == NPCID.JungleCreeper) {
+                npc.velocity.X = 0f;//重力项留给原版
+            }
+            else {
+                npc.velocity = Vector2.Zero;
+            }
+            frenzyPhase = FrenzyRecover;
+            frenzyTimer = FrenzyRecoverFrames;
+            npc.netUpdate = true;
+        }
+
+        /// <summary>力竭后摇：短暂横向阻尼后把控制权干净还给原版 AI，回长冷却</summary>
+        private void FrenzyRecoverTick(NPC npc) {
+            frenzyTimer--;
+            npc.velocity.X *= FrenzyRecoverDamp;
+            if (npc.type != NPCID.JungleCreeper) {
+                npc.velocity.Y *= FrenzyRecoverDamp;
+            }
+            if (frenzyTimer <= 0) {
+                frenzyPhase = FrenzyIdle;
+                frenzyTimer = 0;
+                cooldown = FrenzyCooldownBase + Main.rand.Next(FrenzyCooldownJitter + 1);
+                //空闲帧传输：镜像位=0 自清客户端残留
+                npc.netUpdate = true;
+                return;
+            }
+            if (frenzyTimer % 6 == 0) {
+                npc.netUpdate = true;
+            }
+        }
+
+        /// <summary>客户端镜像推进：按相位规则本地走表，只喂表现不做决策</summary>
+        private void FrenzyMirrorAdvance() {
+            if (frenzyPhase == FrenzyWindup || frenzyPhase == FrenzyRecover) {
+                if (frenzyTimer > 0) {
+                    frenzyTimer--;
+                }
+            }
+            else if (frenzyPhase == FrenzyDash
+                && frenzyTimer < FrenzyDashRise + FrenzyDashHold + FrenzyDashDecay) {
+                frenzyTimer++;
+            }
+        }
+
+        /// <summary>各端本地表现：前摇红雾+微光、突进血尘拖尾+蜘蛛倾角、后摇残滴</summary>
+        private void FrenzyPresentTick(NPC npc) {
+            if (Main.dedServ) {
+                return;
+            }
+            if (frenzyPhase == FrenzyWindup && frenzyTimer > 0) {
+                //嗅探红雾：身周起雾上飘，尘量给足让前摇可读
+                for (int i = 0; i < 2; i++) {
+                    Dust mist = Dust.NewDustDirect(npc.position - new Vector2(6f, 6f),
+                        npc.width + 12, npc.height + 12, DustID.Blood, 0f, 0f, 150, default,
+                        Main.rand.NextFloat(1.1f, 1.7f));
+                    mist.velocity = new Vector2(Main.rand.NextFloat(-0.4f, 0.4f),
+                        Main.rand.NextFloat(-0.9f, -0.2f));
+                    mist.noGravity = true;
+                }
+                if (Main.rand.NextBool(3)) {
+                    Dust spark = Dust.NewDustDirect(npc.position, npc.width, npc.height,
+                        DustID.RedTorch, 0f, 0f, 100, default, 0.9f);
+                    spark.velocity *= 0.3f;
+                    spark.noGravity = true;
+                }
+                //微光随前摇进度增强（越临近突进越亮）
+                float progress = 1f - frenzyTimer / (float)FrenzyWindupFrames;
+                Lighting.AddLight(npc.Center, 0.3f + 0.25f * progress, 0.04f, 0.05f);
+                return;
+            }
+            if (frenzyPhase == FrenzyDash
+                && frenzyTimer < FrenzyDashRise + FrenzyDashHold + FrenzyDashDecay) {
+                //嗜血余迹拖尾
+                if (Main.rand.NextBool(2)) {
+                    Dust trail = Dust.NewDustDirect(npc.position, npc.width, npc.height,
+                        DustID.Blood, 0f, 0f, 120, default, Main.rand.NextFloat(1f, 1.5f));
+                    trail.velocity = -npc.velocity * 0.2f;
+                    trail.noGravity = true;
+                }
+                Lighting.AddLight(npc.Center, 0.4f, 0.05f, 0.06f);
+                //地面蜘蛛按包络强度压身发力；蝙蝠/鱼原版自转，跳过 Lean 防打架
+                if (npc.type == NPCID.JungleCreeper) {
+                    float envelope = MobDash.Envelope(frenzyTimer,
+                        FrenzyDashRise, FrenzyDashHold, FrenzyDashDecay);
+                    npc.rotation = MobDash.Lean(envelope,
+                        frenzyLockDir.ToRotationVector2().X, FrenzySpiderLean);
+                }
+                return;
+            }
+            if (frenzyPhase == FrenzyRecover && frenzyTimer > 0) {
+                //力竭残滴（带重力下坠）
+                if (Main.rand.NextBool(4)) {
+                    Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Blood,
+                        0f, 1f, 140, default, 1f);
+                }
+                if (npc.type == NPCID.JungleCreeper) {
+                    npc.rotation = 0f;//倾角复位，残姿不留给原版
+                }
+            }
+        }
+
+        /// <summary>
+        /// 狂暴相位镜像随 SyncNPC 过线（GlobalNPC 实例字段本身不同步）：
+        /// 活跃时付相位/计时/锁向，空闲帧位=0 自清客户端残留，丢包自愈
+        /// </summary>
+        public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {
+            bool engaged = kind == MechKind.Frenzy && frenzyPhase != FrenzyIdle;
+            bitWriter.WriteBit(engaged);
+            if (!engaged) {
+                return;
+            }
+            binaryWriter.Write(frenzyPhase);
+            binaryWriter.Write((short)frenzyTimer);
+            binaryWriter.Write(frenzyLockDir);
+        }
+
+        public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) {
+            if (!bitReader.ReadBit()) {
+                frenzyPhase = FrenzyIdle;
+                frenzyTimer = 0;
+                return;
+            }
+            //先读齐再用：流对齐优先，哪怕本端档位未绑定也要消费同样的字节数
+            frenzyPhase = binaryReader.ReadByte();
+            frenzyTimer = binaryReader.ReadInt16();
+            frenzyLockDir = binaryReader.ReadSingle();
         }
         #endregion
 
@@ -414,7 +708,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.JungleHell
         }
         #endregion
 
-        /// <summary>撕咬者挂流血（命中方本机结算，原生同步）；流血是闻血狂暴族的触发器</summary>
+        /// <summary>撕咬者挂流血（命中方本机结算，原生同步）；流血是闻血追猎族的触发器</summary>
         public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo) {
             if (boundTier <= 0) {
                 return;

@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         private int MaxPounce(PlanteraStateContext ctx) => ctx.IsDeathMode ? 3 : 2;
         private int AimTime(PlanteraStateContext ctx) {
             int t = PlanteraDirector.PounceTelegraphFrames - Counter * 8;
-            return Math.Max((int)(t * PlanteraDirector.DeathTimeScale(ctx)), 20);
+            return Math.Max((int)(t * PlanteraDirector.TimeScale(ctx)), 20);
         }
 
         private int phase;
@@ -130,7 +130,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
             traveled = 0f;
             context.ResetChargeState();
 
-            npc.velocity = pounceDir * PlanteraDirector.PounceSpeedP1 * 1.15f;
+            float speed = PlanteraDirector.PounceSpeedP1 * 1.15f;
+            //激怒惩罚：扑速翻倍(预警线已锁向，公平锚在预告期)
+            if (context.IsEnraged) {
+                speed *= 2f;
+            }
+            npc.velocity = pounceDir * speed;
             if (!VaultUtils.isClient) {
                 npc.netUpdate = true;
             }

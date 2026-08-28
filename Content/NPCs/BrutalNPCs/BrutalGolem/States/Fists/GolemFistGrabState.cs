@@ -207,13 +207,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
 
             if (thrown) {
                 //终结重砸：双向石浪 + 上抛碎石扇（弹幕承载跨端表现）
-                int waveDamage = GolemDirector.ScaleDamage(GolemDirector.ShockwaveDamage, ctx.DeathMode);
+                int waveDamage = GolemDirector.ScaleDamage(GolemDirector.ShockwaveDamage, ctx.DeathMode, ctx.Enraged);
                 for (int dir = -1; dir <= 1; dir += 2) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Bottom + new Vector2(dir * 30f, -12f),
                         new Vector2(dir * 10f, 0f), ModContent.ProjectileType<GolemShockWave>(),
                         waveDamage, 0f, Main.myPlayer);
                 }
-                int shrapnelDamage = GolemDirector.ScaleDamage(GolemDirector.ShrapnelDamage, ctx.DeathMode);
+                int shrapnelDamage = GolemDirector.ScaleDamage(GolemDirector.ShrapnelDamage, ctx.DeathMode, ctx.Enraged);
                 for (int i = 0; i < 6; i++) {
                     Vector2 vel = (-Vector2.UnitY).RotatedBy(MathHelper.Lerp(-0.9f, 0.9f, i / 5f))
                         * Main.rand.NextFloat(6f, 10f);

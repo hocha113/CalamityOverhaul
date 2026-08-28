@@ -12,14 +12,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
     /// <summary>
     /// 节肢爬行步态：本体没有任何自主推进——四只手轮流探向行进方向抓住
     /// 世界固定锚点，抓牢后钉死不动，身体被已抓的锚点拽过去。
+    /// 步序沿对角环固定轮转（上左→下右→上右→下左，四足对角步态），
+    /// 探爪走抬-刺两段（先抬向落点上方再猛刺锚点，甩鞭式末端加速）。
     /// 拉拽走"收缩曲线"：落爪先顿一拍（爪落身不动），随后该肢猛然收缩
-    /// 拽动身体（拉力尖峰），再转入持续拖拽——每次窜动都归因于一只具体的手。
+    /// 拽动身体（拉力尖峰），再转入持续拖拽——每次窜动都归因于一只具体的手；
+    /// 拽动间隙躯干缓缓下坠、发力时向出力侧压倾，一沉一起一拧即爬行的呼吸。
     /// 状态每帧经 <see cref="MLordContext.MovePolicy"/> 通道申报意图：
     /// Travel=爬行赶路，Tow=手阵携行（手全被征用的状态），Brace=四爪抓桩定身，
     /// Off=状态自管（演出/投技）。
+    /// 按与目标位的差距分三档步态（走/小跑/奔袭）：步幅只小幅增长，
+    /// 速度主要来自步频与本体封顶，奔袭还会对角成对同落带出短腾空。
     /// 相位/锚点写在手部 Override ai（随 netUpdate 同步），转移服务端裁定，
     /// 运动公式各端按同步数据镜像执行；三相期用存活手，
-    /// 核心裸露期由四个残口实体原样充当爬行肢（保留断腕蠕动形态）
+    /// 核心裸露期由四条眼窝已爆的手臂原样充当爬行肢（手臂完好，残口仍在蠕动）
     /// </summary>
     internal static class MLordLocomotion
     {
@@ -39,20 +44,94 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         private const float ArriveDist = 30f;
         /// <summary>探爪超时帧（超时原地抓牢，绝不悬空卡死）</summary>
         private const int ReachTimeout = 30;
-        /// <summary>松爪收势帧长</summary>
-        private const int RecoverLen = 14;
-        /// <summary>同时在途探爪上限（节肢交错步态）</summary>
-        private const int MaxConcurrentReach = 2;
-        /// <summary>新探爪起步的错拍间隔（有更年轻的在途探爪时不再起步）</summary>
-        private const int StepStagger = 8;
         /// <summary>抓牢过久强制换点（死区休息时放宽）</summary>
         private const int PlantTimeout = 300;
         /// <summary>死区内抓牢的手过此帧数逐只松爪回巢</summary>
         private const int IdleReleaseTick = 240;
         /// <summary>跛行肢探爪超时宽限（拖得久，常在半途就地抓牢——瘸腿够不到落点）</summary>
         private const int LimpTimeoutGrace = 12;
-        /// <summary>落爪后的顿帧：爪先落，身不动，随后才开始收缩（因果可读）</summary>
-        private const int GripSettleFrames = 7;
+        /// <summary>探爪抬程帧长：前段爪走高弧（腿在迈），此后转入猛刺</summary>
+        private const int ReachLiftFrames = 9;
+        /// <summary>抬爪高度（落点上方的过路点，抬-刺两段的节肢腿语言）</summary>
+        private const float ReachLiftHeight = 96f;
+        /// <summary>刺爪段速度倍率：挥程慢、落点快，甩鞭式的末端加速</summary>
+        private const float StabSpeedFactor = 1.35f;
+
+        //―――― 三档步态 ――――
+        /// <summary>步态档：贴身走、中距小跑、远距奔袭</summary>
+        internal enum LocoGait
+        {
+            /// <summary>四拍单爪轮转（战斗默认，本 Boss 的性格步）</summary>
+            Walk = 0,
+            /// <summary>对角错拍，节拍收紧</summary>
+            Trot = 1,
+            /// <summary>对角成对同落，带短腾空</summary>
+            Gallop = 2,
+        }
+
+        /// <summary>升档门槛（差距 px）</summary>
+        private const float TrotEnterGap = 400f;
+        private const float GallopEnterGap = 1100f;
+        /// <summary>降档门槛：约七五折回差，边界上不来回抖</summary>
+        private const float TrotExitGap = 300f;
+        private const float GallopExitGap = 850f;
+        /// <summary>升档最短驻留帧：至少让上一档跑完一个完整步序再换</summary>
+        private const int GaitMinDwell = 40;
+        /// <summary>超出封顶时的主动刹车衰减：降档不硬切速度，看得见庞然大物在急停</summary>
+        private const float BrakeDamping = 0.9f;
+
+        /// <summary>
+        /// 单档步态参数。速度主要来自步频（Stagger/Concurrent/Settle/Recover）与
+        /// 本体封顶（CapMul），步幅只小幅增长——但步幅直接买锚点寿命，
+        /// 不给加成的话高速下锚会比手臂补得还快地被用尽，抓牢数塌了拉力跟着塌
+        /// </summary>
+        private readonly struct GaitTuning(int stagger, int concurrent, int settle, int recover,
+            float reachSpeedMul, float strideBonus, float capMul, float damping, bool pairStep)
+        {
+            /// <summary>新探爪起步的错拍间隔</summary>
+            public readonly int Stagger = stagger;
+            /// <summary>同时在途探爪上限</summary>
+            public readonly int Concurrent = concurrent;
+            /// <summary>落爪顿帧：爪先落身不动，随后才收缩（因果可读）</summary>
+            public readonly int Settle = settle;
+            /// <summary>松爪收势帧长</summary>
+            public readonly int Recover = recover;
+            /// <summary>探爪飞行速度倍率</summary>
+            public readonly float ReachSpeedMul = reachSpeedMul;
+            /// <summary>步幅前引加成 px</summary>
+            public readonly float StrideBonus = strideBonus;
+            /// <summary>本体速度封顶倍率</summary>
+            public readonly float CapMul = capMul;
+            /// <summary>本体速度阻尼：越快越要保动量，否则腾空相把攒的速度漏光</summary>
+            public readonly float Damping = damping;
+            /// <summary>对角成对同帧出爪（双拍步态，落地双爪同时供力）</summary>
+            public readonly bool PairStep = pairStep;
+        }
+
+        private static readonly GaitTuning[] GaitTable = [
+            //走：整场默认步态，一个数都不动
+            new GaitTuning(8, 2, 7, 14, 1f, 0f, 1f, 0.945f, false),
+            //小跑：步序环相邻两位本就是对角，收紧节拍即自然成对错拍
+            new GaitTuning(4, 3, 5, 9, 1.25f, 60f, 1.6f, 0.955f, false),
+            //奔袭：对角成对同落，腾空靠"另一对刚松爪"自然形成
+            new GaitTuning(2, 4, 3, 6, 1.55f, 120f, 2.5f, 0.965f, true),
+        ];
+
+        /// <summary>
+        /// 当前步态。各端按同步位置同式推导；迟滞状态本地保有，
+        /// 短暂分歧只影响本体封顶，手臂相位与锚点始终走服务端裁定的同步槽
+        /// </summary>
+        internal static LocoGait Gait { get; private set; } = LocoGait.Walk;
+        private static int gaitDwell;
+
+        private static GaitTuning Tuning => GaitTable[(int)Gait];
+
+        /// <summary>节肢步序环：上左→下右→上右→下左，对角交替的固定循环（读作步态而非乱抓）</summary>
+        private static readonly int[] StepRing = [0, 3, 1, 2];
+        /// <summary>上一次出爪的槽位（服务端步序记忆）</summary>
+        private static int lastSteppedSlot = -1;
+        /// <summary>本体侧倾（向正在猛拽的肢体一侧压），姿态层经 <see cref="BodyRoll"/> 消费</summary>
+        private static float bodyRoll;
 
         private static int ownerWhoAmI = -1;
         private static uint lastUpdateTick;
@@ -68,12 +147,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         /// <summary>当前抓牢肢数（激光发射架就位判据等）</summary>
         internal static int PlantedCount { get; private set; }
 
+        /// <summary>本体侧倾角：被哪只手猛拽就向哪侧压（<see cref="MLordStateBase.UpdateLean"/> 叠加消费）</summary>
+        internal static float BodyRoll => bodyRoll;
+
         /// <summary>卸载/离开世界清空</summary>
         public static void Reset() {
             ownerWhoAmI = -1;
             mode = lastMode = LocoMode.Off;
             Array.Clear(prevPhase);
             PlantedCount = 0;
+            lastSteppedSlot = -1;
+            bodyRoll = 0f;
+            Gait = LocoGait.Walk;
+            gaitDwell = 0;
         }
 
         #region 对外查询
@@ -185,6 +271,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
 
             if (mode == LocoMode.Off) {
                 PlantedCount = 0;
+                bodyRoll *= 0.9f;
                 return;
             }
 
@@ -193,6 +280,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
             Vector2 travelDir = gap.SafeNormalize(Vector2.UnitX);
             lameDesperation = policy == MLordMovePolicy.Travel
                 ? MathHelper.Clamp((gap.Length() - 1100f) / 900f, 0f, 1f) : 0f;
+
+            //可用臂数先点清：成对出爪的档位要靠它兜底，臂不够会让四肢同时离地
+            int eligibleArms = 0;
+            for (int slot = 0; slot < MLordPartsStatus.HandSlots; slot++) {
+                NPC probe = HandOf(ctx, slot);
+                if (probe != null && MLordFacts.GetHandOverride(probe) != null && HandEligible(ctx, slot, probe)) {
+                    eligibleArms++;
+                }
+            }
+            ResolveGait(policy, gap.Length(), eligibleArms);
 
             if (policy == MLordMovePolicy.Tow) {
                 //拖曳：手全被状态征用，不跑步态，仅编队携行
@@ -274,7 +371,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
                             break;
                         }
                         case MLordCrawlPhase.Recover:
-                            if (tick > RecoverLen) {
+                            if (tick > Tuning.Recover) {
                                 SetPhase(hand, ov, MLordCrawlPhase.Free);
                             }
                             break;
@@ -296,8 +393,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
                 }
                 else if (phase == MLordCrawlPhase.Free) {
                     freeSlots[freeCount] = slot;
-                    //跛行肢排序惩罚：轮换里永远最后一个出爪
-                    freeTicks[freeCount] = tick - (lame ? MLordDirector.LimpStepBias : 0);
+                    //记原始空闲帧：步序环用它做跛行肢的出爪门槛
+                    freeTicks[freeCount] = tick;
                     freeCount++;
                 }
 
@@ -305,48 +402,120 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
             }
 
             //―――― 起步调度（服务端）――――
-            if (!VaultUtils.isClient && reachingCount < MaxConcurrentReach
-                && youngestReachTick >= StepStagger && freeCount > 0) {
+            if (!VaultUtils.isClient && reachingCount < Tuning.Concurrent
+                && youngestReachTick >= Tuning.Stagger && freeCount > 0) {
                 bool wantStep = policy == MLordMovePolicy.Brace
                     || (policy == MLordMovePolicy.Travel && !inDeadZone);
                 if (wantStep) {
-                    //空闲最久者先出爪（免存储的左右交错来源）；
-                    //本侧锚点落在行进后方的手不起步（横移时对侧手不做无效抓握），
-                    //候选逐个验锚直至找到能供力的那只
-                    for (int guard = 0; guard < freeCount; guard++) {
-                        int pick = 0;
-                        for (int i = 1; i < freeCount; i++) {
-                            if (freeTicks[i] > freeTicks[pick]) {
-                                pick = i;
-                            }
+                    //奔袭的成对同落：步序环相邻两位即对角伙伴，连出两爪就是一记双拍。
+                    //只在还有爪抓着地时才成对——否则这一帧四肢全空，拉力断档
+                    int launches = Tuning.PairStep && plantedCount > 0 ? 2 : 1;
+                    for (int n = 0; n < launches; n++) {
+                        if (!TryLaunchStep(ctx, core, policy, travelDir, freeSlots, freeTicks, freeCount)) {
+                            break;
                         }
-                        int slot = freeSlots[pick];
-                        //淘汰本候选（无论成败不再复选）
-                        freeTicks[pick] = int.MinValue;
-                        NPC hand = HandOf(ctx, slot);
-                        MoonLordHandAI ov = MLordFacts.GetHandOverride(hand);
-                        if (hand == null || ov == null) {
-                            continue;
-                        }
-                        Vector2 anchor = policy == MLordMovePolicy.Brace
-                            ? BraceAnchor(core, hand, slot)
-                            : TravelAnchor(ctx, core, hand, slot, travelDir);
-                        if (policy == MLordMovePolicy.Travel) {
-                            Vector2 toAnchor = (anchor - core.Center).SafeNormalize(Vector2.Zero);
-                            if (Vector2.Dot(toAnchor, travelDir) < -0.05f) {
-                                continue;
-                            }
-                        }
-                        ov.ai[MLordAiSlots.HandOvAnchorX] = anchor.X;
-                        ov.ai[MLordAiSlots.HandOvAnchorY] = anchor.Y;
-                        SetPhase(hand, ov, MLordCrawlPhase.Reach);
-                        break;
                     }
                 }
             }
 
             PlantedCount = plantedCount;
             UpdateBody(ctx, core, gap, travelDir, plantedCount);
+        }
+
+        /// <summary>
+        /// 沿步序环起一只爪，返回是否真的出了爪。
+        /// 节肢步序：自上次出爪槽位起沿对角环轮转（上左→下右→上右→下左），
+        /// 固定循环节拍读作虫的步态而非四手乱抓；
+        /// 本侧锚点落在行进后方的候选跳过（横移时对侧手不做无效抓握）；
+        /// 跛行肢在环里但门槛更高——空闲不足 LimpStepBias 帧就让过本轮
+        /// （永远慢半拍的那条腿），远距拼命时豁免。
+        /// 出爪后把该槽从空闲表划掉，成对出爪的第二爪才会落到对角伙伴上
+        /// </summary>
+        private static bool TryLaunchStep(MLordContext ctx, NPC core, MLordMovePolicy policy,
+            Vector2 travelDir, Span<int> freeSlots, Span<int> freeTicks, int freeCount) {
+            int ringStart = 0;
+            for (int i = 0; i < StepRing.Length; i++) {
+                if (StepRing[i] == lastSteppedSlot) {
+                    ringStart = i + 1;
+                    break;
+                }
+            }
+            for (int step = 0; step < StepRing.Length; step++) {
+                int slot = StepRing[(ringStart + step) % StepRing.Length];
+                int freeAt = -1;
+                for (int i = 0; i < freeCount; i++) {
+                    if (freeSlots[i] == slot) {
+                        freeAt = i;
+                        break;
+                    }
+                }
+                if (freeAt < 0) {
+                    continue;
+                }
+                NPC hand = HandOf(ctx, slot);
+                MoonLordHandAI ov = hand != null ? MLordFacts.GetHandOverride(hand) : null;
+                if (ov == null) {
+                    continue;
+                }
+                if (IsLameLimb(core, hand) && lameDesperation < 0.6f
+                    && freeTicks[freeAt] < MLordDirector.LimpStepBias) {
+                    continue;
+                }
+                Vector2 anchor = policy == MLordMovePolicy.Brace
+                    ? BraceAnchor(core, hand, slot)
+                    : TravelAnchor(ctx, core, hand, slot, travelDir);
+                if (policy == MLordMovePolicy.Travel) {
+                    Vector2 toAnchor = (anchor - core.Center).SafeNormalize(Vector2.Zero);
+                    if (Vector2.Dot(toAnchor, travelDir) < -0.05f) {
+                        continue;
+                    }
+                }
+                ov.ai[MLordAiSlots.HandOvAnchorX] = anchor.X;
+                ov.ai[MLordAiSlots.HandOvAnchorY] = anchor.Y;
+                SetPhase(hand, ov, MLordCrawlPhase.Reach);
+                lastSteppedSlot = slot;
+                freeSlots[freeAt] = -1;
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 步态换档：按差距分三档，升降门槛带回差、升档要过最短驻留（边界不抖）；
+        /// 降档立刻生效——追不动了就该慢下来。
+        /// 臂数门槛：奔袭要三条以上可用臂、小跑要两条，否则成对出爪会让四肢同时离地，
+        /// 拉力归零身体就只剩下坠。非赶路策略（抓桩/携行/停摆）一律回到走
+        /// </summary>
+        private static void ResolveGait(MLordMovePolicy policy, float gapLen, int eligibleArms) {
+            gaitDwell++;
+            LocoGait want = Gait;
+            if (policy != MLordMovePolicy.Travel) {
+                want = LocoGait.Walk;
+            }
+            else {
+                want = Gait switch {
+                    LocoGait.Walk => gapLen >= GallopEnterGap ? LocoGait.Gallop
+                        : gapLen >= TrotEnterGap ? LocoGait.Trot : LocoGait.Walk,
+                    LocoGait.Trot => gapLen >= GallopEnterGap ? LocoGait.Gallop
+                        : gapLen < TrotExitGap ? LocoGait.Walk : LocoGait.Trot,
+                    _ => gapLen < GallopExitGap ? LocoGait.Trot : LocoGait.Gallop,
+                };
+            }
+
+            if (want == LocoGait.Gallop && eligibleArms < 3) {
+                want = LocoGait.Trot;
+            }
+            if (want == LocoGait.Trot && eligibleArms < 2) {
+                want = LocoGait.Walk;
+            }
+
+            if (want == Gait) {
+                return;
+            }
+            if (want < Gait || gaitDwell >= GaitMinDwell) {
+                Gait = want;
+                gaitDwell = 0;
+            }
         }
 
         /// <summary>模式解析：策略 Off 即停摆；裸露期走残口黑臂，三相期走存活手</summary>
@@ -381,6 +550,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
             if (policy == MLordMovePolicy.Brace) {
                 //抓桩定身：爪一落，身体像被四根锁链吊死
                 core.velocity *= plantedCount > 0 ? 0.82f : 0.9f;
+                bodyRoll *= 0.9f;
                 return;
             }
 
@@ -390,13 +560,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
             //各抓牢锚按收缩曲线牵引：只取行进向前方的分量（身后残锚不拖后腿），
             //拉力带方向与大小——身体明确偏向正在发力的那只手
             Vector2 pull = Vector2.Zero;
+            float rollDrive = 0f;
             for (int slot = 0; slot < MLordPartsStatus.HandSlots; slot++) {
                 NPC hand = HandOf(ctx, slot);
                 MoonLordHandAI ov = hand != null ? MLordFacts.GetHandOverride(hand) : null;
                 if (ov == null || (int)ov.ai[MLordAiSlots.HandOvCrawlPhase] != MLordCrawlPhase.Planted) {
                     continue;
                 }
-                float contraction = ContractionCurve((int)ov.ai[MLordAiSlots.HandOvPhaseTick]);
+                float contraction = ContractionCurve((int)ov.ai[MLordAiSlots.HandOvPhaseTick], Tuning.Settle);
                 if (contraction <= 0f) {
                     continue;
                 }
@@ -411,28 +582,43 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
                 Vector2 dir = (anchor - core.Center).SafeNormalize(Vector2.Zero);
                 float align = Math.Max(0f, Vector2.Dot(dir, travelDir));
                 pull += dir * (align * contraction);
+                //发力侧入账：尖峰段的手把躯干往自己那侧拧
+                float side = (int)hand.ai[MLordAiSlots.HandSide] == 0 ? -1f : 1f;
+                rollDrive += side * MathHelper.Clamp((contraction - 1f) / 0.75f, 0f, 1f);
             }
 
             if (pull.LengthSquared() > 0.0004f) {
                 core.velocity += pull * (0.34f + 0.46f * urgency) * gapFactor;
             }
 
-            core.velocity *= 0.945f;
-            float cap = (3.5f + 8.5f * urgency) * (0.35f + 0.65f * gapFactor);
-            if (core.velocity.Length() > cap) {
-                core.velocity = core.velocity.SafeNormalize(Vector2.Zero) * cap;
+            //步间坠身：没有肢体在发力的间隙，躯干像挂在锚上的死重缓缓下沉，
+            //下一记拉拽尖峰再把它拽起——一沉一起即爬行的呼吸
+            float slack = 1f - MathHelper.Clamp(pull.Length() * 2.2f, 0f, 1f);
+            core.velocity.Y += 0.055f * slack * (0.35f + 0.65f * gapFactor);
+
+            //躯干侧倾：向正在猛拽的那侧压（节肢拖行的扭动）
+            bodyRoll = MathHelper.Lerp(bodyRoll, MathHelper.Clamp(rollDrive, -1f, 1f) * 0.055f, 0.12f);
+
+            //阻尼按档：奔袭要保住腾空相的动量，否则攒的速度全漏在飞行段
+            core.velocity *= Tuning.Damping;
+            float cap = (3.5f + 8.5f * urgency) * (0.35f + 0.65f * gapFactor) * Tuning.CapMul;
+            float speed = core.velocity.Length();
+            if (speed > cap) {
+                //超顶不硬切：按刹车系数衰减过去，降档时读得出"庞然大物在急停"而不是瞬间变慢
+                core.velocity = core.velocity.SafeNormalize(Vector2.Zero) * Math.Max(cap, speed * BrakeDamping);
             }
         }
 
         /// <summary>
         /// 收缩曲线（自落爪起的帧数）：顿帧零力→猛拽尖峰（easeOut 冲到 1.75）→
-        /// 回落 1.0 持续拖拽。尖峰段就是身体窜动的那一下
+        /// 回落 1.0 持续拖拽。尖峰段就是身体窜动的那一下。
+        /// 顿帧长度随步态收紧（奔袭的双爪几乎落地即发力）
         /// </summary>
-        private static float ContractionCurve(int tick) {
-            if (tick <= GripSettleFrames) {
+        private static float ContractionCurve(int tick, int settle) {
+            if (tick <= settle) {
                 return 0f;
             }
-            float t = tick - GripSettleFrames;
+            float t = tick - settle;
             if (t < 13f) {
                 float k = t / 13f;
                 return 1.75f * k * (2f - k);
@@ -449,12 +635,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
             if (ov == null || (int)ov.ai[MLordAiSlots.HandOvCrawlPhase] != MLordCrawlPhase.Planted) {
                 return 0f;
             }
-            float c = ContractionCurve((int)ov.ai[MLordAiSlots.HandOvPhaseTick]);
+            float c = ContractionCurve((int)ov.ai[MLordAiSlots.HandOvPhaseTick], Tuning.Settle);
             return MathHelper.Clamp((c - 1f) / 0.75f, 0f, 1f);
         }
 
         /// <summary>拖曳携行：手阵抬着身体缓移（无步态）</summary>
         private static void UpdateTowBody(NPC core, Vector2 gap) {
+            bodyRoll *= 0.9f;
             Vector2 want = gap * 0.028f;
             if (want.Length() > 4.6f) {
                 want = want.SafeNormalize(Vector2.Zero) * 4.6f;
@@ -467,26 +654,40 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         #region 手部运动执行（手 AI 调用，各端镜像）
 
         /// <summary>
-        /// 被征用手的运动：探爪冲刺 / 抓牢钉死 / 松爪收势。
+        /// 被征用手的运动：探爪（抬-刺两段）/ 抓牢钉死 / 松爪收势。
         /// 跛行肢的探爪只有六成速，且带周期性卡顿（抬不起来又硬拽的节奏）。
         /// 单写者约定：手的速度只在手自己的 AI 里写，本方法即该写入点
         /// </summary>
         public static void ApplyHandMotion(NPC hand, int phase, Vector2 anchor) {
             switch (phase) {
                 case MLordCrawlPhase.Reach: {
-                    float cap = MLordDirector.CrawlReachSpeed;
+                    MoonLordHandAI ov = MLordFacts.GetHandOverride(hand);
+                    float tick = ov?.ai[MLordAiSlots.HandOvPhaseTick] ?? 0f;
+                    bool lame = IsLameLimb(MLordFacts.GetCore(hand), hand);
+                    //探爪飞行速度随步态提升：步频提上去了，爪也得真能在更少的帧里赶到
+                    float cap = MLordDirector.CrawlReachSpeed * Tuning.ReachSpeedMul;
                     float gain = 0.5f;
-                    if (IsLameLimb(MLordFacts.GetCore(hand), hand)) {
+                    if (lame) {
                         //卡顿包络：|sin| 在拖滞与发力间摆动，PhaseTick 各端镜像自增；
                         //远距拼命时慢探惩罚同步淡出
-                        MoonLordHandAI ov = MLordFacts.GetHandOverride(hand);
-                        float tick = ov?.ai[MLordAiSlots.HandOvPhaseTick] ?? 0f;
                         float seize = 0.45f + 0.55f * Math.Abs((float)Math.Sin(tick * 0.42f));
                         float speedMul = MLordDirector.LimpSpeedFactor * seize;
                         cap *= MathHelper.Lerp(speedMul, 1f, lameDesperation);
                         gain = MathHelper.Lerp(0.34f, 0.5f, lameDesperation);
                     }
-                    Vector2 want = (anchor - hand.Center) * 0.24f;
+                    //抬-刺两段：前段爪尖先奔落点上方的过路点（腿抬起来在迈），
+                    //抬程结束一口气刺向锚点（末端加速）——节肢腿的甩鞭时序；
+                    //瘸腿抬不高，贴着拖过去
+                    float liftK = MathHelper.Clamp(1f - tick / ReachLiftFrames, 0f, 1f);
+                    if (lame) {
+                        liftK *= 0.35f;
+                    }
+                    Vector2 aimPoint = anchor - new Vector2(0f, ReachLiftHeight * liftK);
+                    if (liftK <= 0f) {
+                        cap *= StabSpeedFactor;
+                        gain = Math.Min(1f, gain + 0.12f);
+                    }
+                    Vector2 want = (aimPoint - hand.Center) * 0.24f;
                     float len = want.Length();
                     if (len > cap) {
                         want = want / len * cap;
@@ -670,7 +871,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         private static Vector2 TravelAnchor(MLordContext ctx, NPC core, NPC hand, int slot, Vector2 travelDir) {
             float dir = (int)hand.ai[MLordAiSlots.HandSide] == 0 ? -1f : 1f;
             int row = (int)hand.ai[MLordAiSlots.HandRow] == 1 ? 1 : 0;
-            float lead = MathHelper.Lerp(300f, 420f, ctx.MoveUrgency);
+            //步幅随档小幅前伸：多出来的距离是锚点寿命，高速下才不会锚比爪消耗得快
+            float lead = MathHelper.Lerp(300f, 420f, ctx.MoveUrgency) + Tuning.StrideBonus;
             Vector2 outBase = new(dir * (row == 0 ? 350f : 410f), row == 0 ? -120f : 110f);
             Vector2 raw = core.Center + outBase + travelDir * lead;
             return ClampHandZone(core, hand, raw,
@@ -687,7 +889,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         }
 
         /// <summary>该手对应肩锚（与臂链 IK 同式）</summary>
-        private static Vector2 ShoulderOf(NPC core, NPC hand) {
+        internal static Vector2 ShoulderOf(NPC core, NPC hand) {
             float dir = (int)hand.ai[MLordAiSlots.HandSide] == 0 ? -1f : 1f;
             Vector2 offset = (int)hand.ai[MLordAiSlots.HandRow] == 1
                 ? MLordDirector.LowerShoulderOffset : MLordDirector.ShoulderOffset;

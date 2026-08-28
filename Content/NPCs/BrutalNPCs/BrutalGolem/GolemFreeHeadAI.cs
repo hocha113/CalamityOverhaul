@@ -72,11 +72,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             npc.noTileCollide = true;
             npc.dontTakeDamage = bodyState is GolemStateIndex.Despawn;
 
+            //激怒惩罚与躯干同拍：防御翻倍(飞头走 realLife 血池，防御却是自己的)
+            bool enraged = GolemBodyAI.SharedEnrage(body, player);
+            npc.defense = enraged ? npc.defDefense * 2 : npc.defDefense;
+
             //服务端广播位置，客户端傀儡
             if (!VaultUtils.isClient) {
                 npc.netUpdate = true;
                 UpdateMovementServer(bodyState);
-                UpdateFireControl(bodyState);
+                UpdateFireControl(bodyState, enraged);
             }
 
             //倾角与喷焰表现各端本地；大招节拍广播与投技压制时眼焰常亮
@@ -187,22 +191,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         #endregion
 
         #region 服务端火控
-        private void UpdateFireControl(GolemStateIndex bodyState) {
+        private void UpdateFireControl(GolemStateIndex bodyState, bool enraged) {
             if (!player.Alives()) {
                 return;
             }
 
             bool death = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
-            bool enraged = GolemBodyAI.ComputeEnrage(player, CWRRef.GetBossRushActive());
 
             int interval;
             float boltSpeed;
+            //交叉火力窗口刻意不在列：射线声部独占，飞头不再叠散射眼弹（用户令 2026-08-28）
             switch (bodyState) {
-                case GolemStateIndex.Crossfire:
-                    //交叉射线由 GolemCrossfireState 统一编谱，飞头在此提供节奏外的散射压制
-                    interval = GolemDirector.Tempo(84, death, enraged);
-                    boltSpeed = 9.5f;
-                    break;
                 case GolemStateIndex.PunchCombo:
                 case GolemStateIndex.HookSwing:
                 case GolemStateIndex.StompCombo:
@@ -223,18 +222,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             }
             if (++fireTimer >= interval) {
                 fireTimer = 0;
-                FireEyeBolt(boltSpeed);
+                FireEyeBolt(boltSpeed, enraged);
             }
         }
 
         /// <summary>散射压制弹：半额预读 + 编织散布，与一阶段附着头同一套公平语言</summary>
-        private void FireEyeBolt(float speed) {
+        private void FireEyeBolt(float speed, bool enraged) {
             Vector2 muzzle = npc.Center + new Vector2(npc.localAI[1] * 14f, 6f);
             Vector2 lead = player.Center + player.velocity * 7f;
             weaveSign = -weaveSign;
             float weave = weaveSign * Main.rand.NextFloat(0.1f, 0.16f);
             Vector2 vel = (lead - muzzle).SafeNormalize(Vector2.UnitY).RotatedBy(weave) * speed;
-            int damage = GolemDirector.ScaleDamage(GolemDirector.SunBoltDamage, CWRRef.GetDeathMode());
+            int damage = GolemDirector.ScaleDamage(GolemDirector.SunBoltDamage, CWRRef.GetDeathMode(), enraged);
             Projectile.NewProjectile(npc.GetSource_FromAI(), muzzle, vel,
                 ModContent.ProjectileType<GolemSunBolt>(), damage, 0f, Main.myPlayer);
             npc.netUpdate = true;

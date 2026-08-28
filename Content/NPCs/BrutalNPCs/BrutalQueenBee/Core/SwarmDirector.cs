@@ -85,6 +85,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core
         }
 
         private readonly DartOrder[] dartOrders = new DartOrder[MaxBees];
+
+        //冲刺预警：状态在起跳前窗口逐帧声明，渲染侧按新鲜度读取(声明停止即熄灭)
+        private struct DartWarning
+        {
+            public float IssueClock;
+            public float Progress;
+        }
+
+        private readonly DartWarning[] dartWarnings = new DartWarning[MaxBees];
         #endregion
 
         public SwarmDirector(NPC queen) {
@@ -335,6 +344,32 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core
                     SteerTime = steerTime,
                 };
             }
+        }
+
+        /// <summary>
+        /// 对槽位区间声明冲刺预警：progress 0~1 越临近起跳越高，起跳前窗口逐帧调用<br/>
+        /// 与掷镖令同源同节拍(状态代码各端确定性调用)，中断转移后声明停止自然熄灭
+        /// </summary>
+        public void WarnDarts(int fromSlot, int toSlot, float progress) {
+            progress = MathHelper.Clamp(progress, 0f, 1f);
+            for (int s = Math.Max(fromSlot, 0); s <= toSlot && s < MaxBees; s++) {
+                dartWarnings[s] = new DartWarning {
+                    IssueClock = Clock,
+                    Progress = progress,
+                };
+            }
+        }
+
+        /// <summary>取本槽位冲刺预警强度 0~1(渲染侧只读，2帧内新鲜有效)</summary>
+        public float GetDartWarning(int slot) {
+            if (slot < 0 || slot >= MaxBees) {
+                return 0f;
+            }
+            DartWarning warning = dartWarnings[slot];
+            if (warning.Progress <= 0f || Clock - warning.IssueClock > 2f) {
+                return 0f;
+            }
+            return warning.Progress;
         }
 
         /// <summary>蜂查询本槽位是否有新鲜掷镖令(4帧内)</summary>

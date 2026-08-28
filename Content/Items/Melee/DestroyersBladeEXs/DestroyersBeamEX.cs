@@ -28,8 +28,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         public override void SetDefaults() {
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 2;
-            Projectile.width = 26;
-            Projectile.height = 26;
+            Projectile.width = 48;
+            Projectile.height = 48;
             Projectile.timeLeft = 300;
             Projectile.friendly = true;
             Projectile.ignoreWater = true;
@@ -62,8 +62,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
 
             //沿途电火花
             if (!VaultUtils.isServer && Main.rand.NextBool(8)) {
-                Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6f, 6f)
-                    , DustID.RedTorch, -Projectile.velocity * 0.1f, 100, default, 1.1f);
+                Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(11f, 11f)
+                    , DustID.RedTorch, -Projectile.velocity * 0.1f, 100, default, 1.6f);
                 d.noGravity = true;
             }
 
@@ -89,17 +89,17 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
 
         public override void OnKill(int timeLeft) {
             //爆响压量限流,齐射连爆不叠成噪墙
-            Projectile.Explode(Empowered ? 150 : 110, SoundID.Item14 with { Volume = 0.38f, Pitch = 0.1f, MaxInstances = 3, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew });
+            Projectile.Explode(Empowered ? 200 : 150, SoundID.Item14 with { Volume = 0.38f, Pitch = 0.1f, MaxInstances = 3, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew });
             if (Main.dedServ) {
                 return;
             }
             Color warm = new Color(255, 120, 80);
             PRTLoader.NewParticle<PRT_MechExplosion>(Projectile.Center, Main.rand.NextVector2Circular(1f, 1f)
-                , warm, Empowered ? 0.75f : 0.5f).Configure(Main.rand.Next(16, 26), warm);
-            for (int i = 0; i < 9; i++) {
-                PRTLoader.NewParticle<PRT_SparkAlpha>(Projectile.Center, Main.rand.NextVector2Circular(7f, 7f)
+                , warm, Empowered ? 1.15f : 0.85f).Configure(Main.rand.Next(16, 26), warm);
+            for (int i = 0; i < 12; i++) {
+                PRTLoader.NewParticle<PRT_SparkAlpha>(Projectile.Center, Main.rand.NextVector2Circular(9f, 9f)
                     , Main.rand.NextBool(3) ? Color.White : new Color(255, 70, 50)
-                    , Main.rand.NextFloat(1f, 2f)).Configure(false, Main.rand.Next(10, 16));
+                    , Main.rand.NextFloat(1.2f, 2.3f)).Configure(false, Main.rand.Next(10, 16));
             }
         }
 
@@ -110,17 +110,17 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             Color outer = new Color(255, 60, 40);
             outer.A = 0;
             Main.EntitySpriteDraw(glow, drawPos, null, outer, 0f, glow.Size() / 2f
-                , (Empowered ? 1.15f : 0.85f) * Projectile.scale, SpriteEffects.None, 0);
+                , (Empowered ? 2.3f : 1.7f) * Projectile.scale, SpriteEffects.None, 0);
             Color core = new Color(255, 235, 225);
             core.A = 0;
             Main.EntitySpriteDraw(glow, drawPos, null, core, 0f, glow.Size() / 2f
-                , 0.4f * Projectile.scale, SpriteEffects.None, 0);
+                , 0.8f * Projectile.scale, SpriteEffects.None, 0);
 
             Texture2D star = CWRAsset.StarTexture.Value;
             Color starColor = new Color(255, 210, 190);
             starColor.A = 0;
             Main.EntitySpriteDraw(star, drawPos, null, starColor * 0.85f, Projectile.rotation
-                , star.Size() / 2f, 0.17f * Projectile.scale, SpriteEffects.None, 0);
+                , star.Size() / 2f, 0.34f * Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
 
@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
                 return;
             }
 
-            float halfWidth = (Empowered ? 26f : 19f) * Projectile.scale;
+            float halfWidth = (Empowered ? 54f : 40f) * Projectile.scale;
             var bars = new VertexPositionColorTexture[valid * 2];
             for (int i = 0; i < valid; i++) {
                 Vector2 pos = Projectile.oldPos[i] + Projectile.Size / 2f;

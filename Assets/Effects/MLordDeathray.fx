@@ -9,6 +9,7 @@ float4x4 transformMatrix;
 float uTime;        //滚动时间
 float fadeAlpha;    //整体透明度 0~1
 float seed;         //实例种子，错开多束相位
+float rootPinch;    //根部收窄量 0~0.95：束身增幅时根部保持原宽（喇叭外扩），0=全束等宽（默认）
 
 //噪声显式钉在 s1：不吃 fxc 自动分配（s0 会被 SpriteBatch 画布贴图覆写）
 texture uNoiseTex;
@@ -50,6 +51,10 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float2 uv = input.TexCoords;
     float along = uv.x;                  //1 光源 → 0 末端
     float cross_ = (uv.y - 0.5) * 2.0;   //-1 ~ 1 横截面
+
+    //根部保宽：近源 14% 段横截面按 1-rootPinch 收窄（束身胀大时口部锚在本体上不跟涨）
+    float widthScale = 1.0 - rootPinch * smoothstep(0.86, 1.0, along);
+    cross_ /= max(widthScale, 0.05);
 
     //=========================================================
     //末端撕散：远端前沿被噪声撕成星雾，不留平切口

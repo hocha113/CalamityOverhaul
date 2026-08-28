@@ -272,7 +272,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
                     EowMotionFX.CameraPunch(npc.Center, 8f, 14, "EowDevourBite", -Vector2.UnitY);
                     break;
                 case Phase.Squeeze:
-                    SoundEngine.PlaySound(SoundID.Zombie13 with { Pitch = -0.75f, Volume = 1.0f, MaxInstances = 2 }, npc.Center);
+                    SoundEngine.PlaySound(SoundID.Zombie7 with { Pitch = -0.75f, Volume = 1.0f, MaxInstances = 2 }, npc.Center);
                     break;
                 case Phase.Eject:
                     EowMotionFX.PlayRoar(npc.Center, -0.2f, 1.1f);
@@ -350,7 +350,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
                     Projectile.NewProjectile(npc.GetSource_FromAI(), new Vector2(lockX, groundY), Vector2.Zero,
                         ModContent.ProjectileType<EowDevourOmen>(), 0, 0f, Main.myPlayer, AmbushTime + 2, 0f);
                 }
-                SoundEngine.PlaySound(SoundID.Zombie13 with { Pitch = -0.5f, Volume = 1.0f }, new Vector2(lockX, groundY));
+                SoundEngine.PlaySound(SoundID.Zombie7 with { Pitch = -0.5f, Volume = 1.0f }, new Vector2(lockX, groundY));
             }
 
             //锁点正下方盘桓蓄势，腭光爬升

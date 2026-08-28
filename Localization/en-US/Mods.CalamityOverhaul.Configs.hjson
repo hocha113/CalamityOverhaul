@@ -54,4 +54,9 @@ CWRClientConfig: {
 		Label: Lens Easing
 		Tooltip: When enabled, long distance rapid displacement will slow the lens, which avoids the feeling of being moved too fast
 	}
+
+	AmbienceDensity: {
+		Label: Ambience Density
+		Tooltip: Scales decorative ambience particle density only; telegraphs and hazards are never reduced.
+	}
 }

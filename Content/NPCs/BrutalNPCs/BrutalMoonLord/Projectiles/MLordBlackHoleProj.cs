@@ -31,10 +31,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
         //―――― 公平阀（发射/拉拽/爆点逻辑真正读取的命名常量）――――
         /// <summary>出手初速（慢起步：给玩家读向时间）</summary>
         internal const float LaunchSpeed = 4.6f;
+        /// <summary>残血底牌拍出手初速（更快，锁定承诺与超长预告不变）</summary>
+        internal const float DesperateLaunchSpeed = 6.9f;
         /// <summary>复合加速倍率/帧</summary>
         private const float AccelRate = 1.0175f;
         /// <summary>速度上限</summary>
         private const float MaxSpeed = 14.5f;
+        /// <summary>残血底牌拍速度上限</summary>
+        private const float DesperateMaxSpeed = 17.5f;
         /// <summary>引力井作用半径 px</summary>
         private const float PullRadius = 780f;
         /// <summary>强拉半径（此内拉力最大）</summary>
@@ -56,6 +60,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
         private ref float PassedDist => ref Projectile.localAI[1];
 
         private Vector2 Anchor => new(Projectile.ai[0], Projectile.ai[1]);
+        /// <summary>残血底牌拍标记（ai[2]，随生成包同步）：巨体量+更快+爆点大幅震屏与大面积扭曲</summary>
+        private bool Desperate => Projectile.ai[2] == 1f;
+        /// <summary>残血底牌拍体量倍率：暗核视觉与接触判定同倍放大（视觉=判定的承诺不破）</summary>
+        private float BodyScale => Desperate ? 2.5f : 1f;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.DrawScreenCheckFluff[Type] = 1400;
@@ -116,9 +124,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
 
         /// <summary>飞行：复合加速 + 引力拉拽 + 过锚提前引爆（服务端判据）</summary>
         private void UpdateFlight() {
-            //复合加速：慢起步越飞越快（重量感=起步迟，威胁感=后段快）
+            //复合加速：慢起步越飞越快（重量感=起步迟，威胁感=后段快）；残血拍全程更快
             float speed = Projectile.velocity.Length();
-            if (speed < MaxSpeed) {
+            if (speed < (Desperate ? DesperateMaxSpeed : MaxSpeed)) {
                 Projectile.velocity *= AccelRate;
             }
 
@@ -153,9 +161,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             if (VaultUtils.isServer) {
                 return;
             }
-            //吸积：周边星尘被拉进洞（红黑材质）
+            //吸积：周边星尘被拉进洞（红黑材质），取位随体量同倍外扩
             if (Main.rand.NextBool(2)) {
-                Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(90f, 240f);
+                Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit()
+                    * Main.rand.NextFloat(90f, 240f) * BodyScale;
                 Vector2 pull = (Projectile.Center - pos) * 0.1f + Projectile.velocity * 0.4f;
                 Color c = Color.Lerp(MLordDirector.BlackFlashRed, MLordDirector.VoidBlack, Main.rand.NextFloat(0.6f));
                 PRTLoader.NewParticle<PRT_HeavenfallStar>(pos, pull.RotatedBy(0.4f), c,
@@ -164,30 +173,41 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             //缘弧迸溅
             if (Main.rand.NextBool(7)) {
                 PRTLoader.NewParticle<PRT_Spark>(
-                    Projectile.Center + Main.rand.NextVector2Unit() * CoreRadius * 1.3f,
+                    Projectile.Center + Main.rand.NextVector2Unit() * CoreRadius * BodyScale * 1.3f,
                     Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f),
                     MLordDirector.BlackFlashRed, Main.rand.NextFloat(0.8f, 1.2f))
                     ?.Configure(false, Main.rand.Next(8, 14));
             }
         }
 
-        /// <summary>黑闪爆点表现：冲击帧 + 屏效 + 红黑碎星（伤害窗同帧开启）</summary>
+        /// <summary>黑闪爆点表现：冲击帧 + 屏效 + 红黑碎星（伤害窗同帧开启）。
+        /// 残血底牌拍全面放大：涟漪列全屏波纹（护盾爆碎级）+ 碎星更多更远更大</summary>
         private void FireFlashPresentation() {
             SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1.2f, Pitch = -0.45f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 1f, Pitch = 0.1f }, Projectile.Center);
-            MLordScreenFX.Punch(Projectile.Center, 13f, 18);
-            MLordBlackFlashFX.PushFlash(Projectile.Center);
-            //红黑碎星 + 空间裂纹
-            for (int i = 0; i < 26; i++) {
-                Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 13f);
+            //残血底牌拍：爆点大幅震撼（冲击帧加重 + 约 1.2 秒长余震），开幕拍保持正常冲击
+            MLordScreenFX.Punch(Projectile.Center, Desperate ? 20f : 13f, Desperate ? 26 : 18);
+            if (Desperate) {
+                Main.LocalPlayer.CWR()?.GetScreenShake(14f);
+            }
+            //残血大爆：超 1 强度显形尾随涟漪列，58 帧扩散窗把波扫出全屏
+            MLordBlackFlashFX.PushFlash(Projectile.Center,
+                Desperate ? 2.2f : 1f, Desperate ? 58 : MLordBlackFlashFX.BaseLife);
+            //红黑碎星 + 空间裂纹（残血拍：更多、更快、更大）
+            int starCount = Desperate ? 42 : 26;
+            float velScale = Desperate ? 1.6f : 1f;
+            float sizeScale = Desperate ? 1.35f : 1f;
+            for (int i = 0; i < starCount; i++) {
+                Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 13f) * velScale;
                 Color c = Color.Lerp(MLordDirector.BlackFlashRed, MLordDirector.MoonWhite, Main.rand.NextFloat(0.35f));
                 PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, vel, c,
-                    Main.rand.NextFloat(0.6f, 1.2f))?.Configure(true, Main.rand.Next(20, 36));
+                    Main.rand.NextFloat(0.6f, 1.2f) * sizeScale)?.Configure(true, Main.rand.Next(20, 36));
             }
-            for (int i = 0; i < 6; i++) {
+            int fractureCount = Desperate ? 11 : 6;
+            for (int i = 0; i < fractureCount; i++) {
                 PRTLoader.NewParticle<PRT_SpaceFracture>(Projectile.Center,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 6f),
-                    MLordDirector.BlackFlashRed, Main.rand.NextFloat(0.9f, 1.4f))
+                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 6f) * velScale,
+                    MLordDirector.BlackFlashRed, Main.rand.NextFloat(0.9f, 1.4f) * sizeScale)
                     ?.Configure(Main.rand.Next(18, 28), Main.rand.NextFloat(-0.05f, 0.05f));
             }
         }
@@ -201,7 +221,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             if (InFlight && FlightTimer <= GraceFrames) {
                 return false;
             }
-            float radius = InFlash ? FlashRingRadius : CoreRadius;
+            //暗核判定随体量同倍放大（可见暗核=判定圆）；爆闪环半径不随体量走
+            float radius = InFlash ? FlashRingRadius : CoreRadius * BodyScale;
             Vector2 closest = new(
                 MathHelper.Clamp(Projectile.Center.X, targetHitbox.Left, targetHitbox.Right),
                 MathHelper.Clamp(Projectile.Center.Y, targetHitbox.Top, targetHitbox.Bottom));
@@ -221,36 +242,46 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
         public bool CanDrawCustom() => false;
         public void DrawCustom(SpriteBatch spriteBatch) { }
 
-        /// <summary>引力透镜：飞行常驻，坍缩收紧，爆闪一记扩张脉冲</summary>
+        /// <summary>引力透镜：飞行常驻，坍缩收紧，爆闪一记扩张脉冲。
+        /// 残血底牌拍：透镜场随体量放大，爆点扩成大面积光线扭曲并在余辉期继续外扩</summary>
         public void Warp() {
             float env;
             float size;
             if (InFlight) {
                 env = MathHelper.Clamp(FlightTimer / 20f, 0f, 1f);
-                size = 800f;
+                size = 800f * BodyScale;
             }
             else if (InCollapse) {
                 env = 1f;
-                size = MathHelper.Lerp(800f, 420f, CollapseT);
+                size = MathHelper.Lerp(800f, 420f, CollapseT) * BodyScale;
             }
             else {
                 float fade = InFlash ? 1f : 1f - Projectile.timeLeft / (float)LingerLife;
                 env = 1f - fade * 0.85f;
-                size = MathHelper.Lerp(420f, 1400f, VaultUtils.EaseOutCubic(FlashT));
+                size = MathHelper.Lerp(420f * BodyScale, Desperate ? 4600f : 1400f,
+                    VaultUtils.EaseOutCubic(FlashT));
+                if (Desperate && InLinger) {
+                    //余辉期扭曲场继续外扩到 ~7200px：大面积光线涟漪扫过战场后随 env 自然消散
+                    size += (1f - Projectile.timeLeft / (float)LingerLife) * 2600f;
+                }
             }
             if (env <= 0.04f) {
                 return;
             }
-            NeutronWarpHelper.DrawWarp(Projectile.Center, size, size, 0.38f * env, 1f, 0f, "GravitationalLens", 0.42f);
+            //残血拍飞行/坍缩 0.55，爆闪与余辉顶到 0.7——增强聚焦在爆点
+            float strength = Desperate ? (InFlight || InCollapse ? 0.55f : 0.7f) : 0.38f;
+            NeutronWarpHelper.DrawWarp(Projectile.Center, size, size,
+                strength * env, 1f, 0f, "GravitationalLens", 0.42f);
         }
 
         public override bool PreDraw(ref Color lightColor) {
             Vector2 pos = Projectile.Center - Main.screenPosition;
-            float bodyR = InCollapse
-                ? MathHelper.Lerp(FlightBodyRadius, 40f, CollapseT) : FlightBodyRadius;
+            //残血底牌拍全程 2.5 倍体量（坍缩/爆闪的收缩终值同倍，节奏曲线不变）
+            float bodyR = (InCollapse
+                ? MathHelper.Lerp(FlightBodyRadius, 40f, CollapseT) : FlightBodyRadius) * BodyScale;
             float bodyVis = InLinger ? Projectile.timeLeft / (float)LingerLife : 1f;
             if (InFlash) {
-                bodyR = MathHelper.Lerp(40f, 18f, FlashT);
+                bodyR = MathHelper.Lerp(40f, 18f, FlashT) * BodyScale;
             }
 
             if (InFlight) {
@@ -347,10 +378,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             float ringR = FlashRingRadius;
             float fade = InLinger ? Projectile.timeLeft / (float)LingerLife : 1f;
             float ringScale = ringR * 2f / glow.Width;
-            //白芯闪帧（只在爆闪窗内的短脉冲）
+            //白芯闪帧（只在爆闪窗内的短脉冲）；残血拍白芯放大一倍——爆心体量而非判定边界，不误读
             if (InFlash) {
+                float coreScale = (0.6f + FlashT * 0.5f) * (Desperate ? 2f : 1f);
                 Main.EntitySpriteDraw(star, pos, null, MLordDirector.MoonWhite with { A = 0 } * (0.9f * (1f - FlashT)),
-                    Main.GlobalTimeWrappedHourly * 3f, star.Size() / 2f, 0.6f + FlashT * 0.5f, SpriteEffects.None, 0);
+                    Main.GlobalTimeWrappedHourly * 3f, star.Size() / 2f, coreScale, SpriteEffects.None, 0);
             }
             //红黑环体：外红缘 + 内暗吞（暗层真 alpha，把爆心咬出一圈黑）
             Main.EntitySpriteDraw(glow, pos, null, MLordDirector.BlackFlashRed with { A = 0 } * (0.85f * fade),

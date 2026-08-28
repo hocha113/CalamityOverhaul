@@ -42,25 +42,46 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
 
         /// <summary>开火后余痕帧（覆盖多连发窗口）</summary>
         internal const int RemnantFrames = 20;
-        /// <summary>多连发的次发间隔帧（NPC 侧收势计时读取；须 &lt; RemnantFrames）</summary>
+        /// <summary>多连发的次发间隔帧（NPC 侧收势计时读取；须整除进 RemnantFrames 窗内）</summary>
         internal const int SecondShotGapFrames = 8;
 
-        /// <summary>风味索引：0 无人机 / 1 行走者 / 2 射线枪手 / 3 脑波扰乱者 / 4 军官 / 5 Scutlix 骑手</summary>
+        //==== 行走者·压制扫描（族内签名） ====
+        /// <summary>
+        /// 扫掠总弧宽（弧度）。扫掠即缺口的反面：亮线已越过的角域不再产生新弹（扫过即安全，
+        /// 在途弹体自身可见可躲），威胁只在亮线当前角与未扫角域。发射循环与预览共用本常量
+        /// </summary>
+        internal const float SweepArc = 0.4f;
+        /// <summary>扫掠总帧（固定角速度 = SweepArc / SweepFrames）</summary>
+        internal const int SweepFrames = 48;
+        /// <summary>扫掠期发数</summary>
+        internal const int SweepShots = 5;
+        /// <summary>相邻扫掠弹的帧距（发射循环与预览共用同一里程碑）</summary>
+        internal const int SweepStepFrames = SweepFrames / (SweepShots - 1);
+
+        /// <summary>扫掠角公式：起点=锁定角-半弧，恒正向匀角速扫过 SweepArc（NPC 发射循环与标线绘制共用）</summary>
+        internal static float SweepAngle(float lockedDir, int frame)
+            => lockedDir - SweepArc * 0.5f + SweepArc * MathHelper.Clamp(frame / (float)SweepFrames, 0f, 1f);
+
+        /// <summary>
+        /// 风味索引：0 无人机 / 1 行走者 / 2 射线枪手 / 3 脑波扰乱者 / 4 军官 / 5 Scutlix 骑手。
+        /// 行走者发数由 SweepShots 定义（压制扫描）；射线枪手三连点射（单发另乘 ×0.5 补偿）；
+        /// 扰乱者前摇 44=基准 38+6（黑暗减益的补偿帧）
+        /// </summary>
         internal static readonly MrtStrikeProfile[] Profiles = [
             new(34, 12,  80f, 520f, 14f, 1, 0.55f, 640f, 420, 360, 300),
-            new(40, 14, 140f, 700f, 12f, 2, 0.50f, 820f, 520, 440, 370),
-            new(36, 12, 180f, 780f, 17f, 1, 0.60f, 900f, 480, 410, 340),
-            new(38, 14, 160f, 700f, 12f, 1, 0.50f, 820f, 540, 460, 380),
+            new(40, 14, 140f, 700f, 12f, 1, 0.50f, 820f, 520, 440, 370),
+            new(36, 12, 180f, 780f, 17f, 3, 0.60f, 900f, 480, 410, 340),
+            new(44, 14, 160f, 700f, 12f, 1, 0.50f, 820f, 540, 460, 380),
             new(44, 16, 160f, 700f, 11f, 1, 0.65f, 820f, 600, 510, 430),
             new(46, 16, 140f, 650f,  9f, 1, 0.75f, 780f, 560, 480, 400),
         ];
 
-        /// <summary>风味警示色（A=0 加色标线；弹体不透明配色在弹体类里）</summary>
+        /// <summary>风味警示色（A=0 加色标线；弹体不透明配色在弹体类里）。扰乱者显著紫化=危险差异标识</summary>
         internal static readonly Color[] FlavorColors = [
             new(110, 225, 255, 0),
             new(255, 120, 205, 0),
             new(130, 255, 150, 0),
-            new(200, 130, 255, 0),
+            new(168, 60, 255, 0),
             new(255, 205, 110, 0),
             new(255, 90, 90, 0),
         ];
@@ -75,7 +96,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
         private MrtStrikeProfile Profile => Profiles[Flavor];
         private int Elapsed => (int)Projectile.localAI[1] - Projectile.timeLeft;
         private bool Locked => Elapsed >= Profile.TelegraphFrames - Profile.LockFrames;
-        private bool InRemnant => Elapsed >= Profile.TelegraphFrames;
+        /// <summary>行走者风味（压制扫描的唯一走线）</summary>
+        private bool SweepFlavor => Flavor == 1;
+        /// <summary>预告期之后的存续帧：行走者多出整段扫掠窗</summary>
+        private int PostFrames => SweepFlavor ? SweepFrames + RemnantFrames : RemnantFrames;
+        private bool InRemnant => Elapsed >= Profile.TelegraphFrames + (SweepFlavor ? SweepFrames : 0);
 
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 960;
 
@@ -96,13 +121,13 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
         public override void AI() {
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
-                int total = Profile.TelegraphFrames + RemnantFrames;
+                int total = Profile.TelegraphFrames + PostFrames;
                 Projectile.timeLeft = total;
                 Projectile.localAI[1] = total;
                 //迟入端：首帧 ai[2] 已非零 = 权威端早过锁定帧的同步证据，本地相位快进到锁定段起点，
                 //不重放整段追踪期（方向本就走 ai[2] 权威分支，此处只对齐判定窗相位）
                 if (Projectile.ai[2] != 0f) {
-                    Projectile.timeLeft = Profile.LockFrames + RemnantFrames;
+                    Projectile.timeLeft = Profile.LockFrames + PostFrames;
                 }
             }
 
@@ -115,8 +140,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
             Projectile.Center = anchor.Center;
 
             if (Projectile.ai[2] != 0f) {
-                //权威端已写入锁定方向
-                Projectile.rotation = Projectile.ai[2] - 10f;
+                //权威端已写入锁定方向；行走者在预告期满后沿固定角速度推进（与 NPC 发射循环同一 SweepAngle）
+                float committed = Projectile.ai[2] - 10f;
+                Projectile.rotation = SweepFlavor && Elapsed >= Profile.TelegraphFrames
+                    ? SweepAngle(committed, Elapsed - Profile.TelegraphFrames)
+                    : committed;
             }
             else if (!Locked) {
                 //追踪期：直读目标方向（各端从同步数据确定性推得）
@@ -143,8 +171,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
             float fadeIn = MathHelper.Clamp(Elapsed / 8f, 0f, 1f);
             float strength;
             if (InRemnant) {
-                //余痕期：淡出残线，标注弹体正沿此线飞行
-                strength = MathHelper.Clamp(1f - (Elapsed - Profile.TelegraphFrames) / (float)RemnantFrames, 0f, 1f) * 0.22f;
+                //余痕期：淡出残线，标注弹体正沿此线飞行（行走者从扫掠终点起算）
+                int remnantAge = Elapsed - Profile.TelegraphFrames - (SweepFlavor ? SweepFrames : 0);
+                strength = MathHelper.Clamp(1f - remnantAge / (float)RemnantFrames, 0f, 1f) * 0.22f;
             }
             else {
                 strength = fadeIn * (Locked ? 1f : 0.5f);
@@ -163,7 +192,30 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
             Color warn = FlavorColors[Flavor];
             float pulse = 0.7f + 0.3f * MathF.Sin(Main.GlobalTimeWrappedHourly * 13f + Projectile.identity);
 
-            if (!Locked || InRemnant) {
+            if (SweepFlavor && Locked && !InRemnant) {
+                //行走者压制扫描：锁定窗预览整段扇形路径（扫掠路径提前可见），扫掠窗亮线匀角速推进。
+                //扫过即安全：亮线已越过的角域不再标示也不再产生新弹（在途弹体自身可见可躲），
+                //威胁只在亮线当前角与未扫里程碑——本扇形是缺口的反面
+                float sweepCenter = Projectile.ai[2] != 0f ? Projectile.ai[2] - 10f : Projectile.rotation;
+                bool sweeping = Elapsed >= Profile.TelegraphFrames;
+                int sweepFrame = sweeping ? Elapsed - Profile.TelegraphFrames : 0;
+                for (int i = 0; i <= SweepFrames; i += SweepStepFrames) {
+                    if (sweeping && i <= sweepFrame) {
+                        continue;//已扫过=安全，撤下标示
+                    }
+                    float ghostAng = SweepAngle(sweepCenter, i);
+                    Main.EntitySpriteDraw(tex, drawPos, null, warn * (0.22f * strength * pulse), ghostAng,
+                        origin, new Vector2(scaleX, (LaneCoreWidth - 8f) / tex.Height), SpriteEffects.None, 0);
+                }
+                //当前亮线：锁定窗停在扫掠起点白闪（宣告即将开扫），扫掠窗即实时威胁线
+                float curAng = SweepAngle(sweepCenter, sweepFrame);
+                float sweepFlash = sweeping ? 1f : 0.7f + 0.3f * MathF.Sin(Elapsed * 0.45f);
+                Main.EntitySpriteDraw(tex, drawPos, null, warn * (0.6f * sweepFlash * strength), curAng,
+                    origin, new Vector2(scaleX, (LaneGlowWidth + 10f) / tex.Height), SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(tex, drawPos, null, new Color(255, 250, 235, 0) * (0.75f * sweepFlash * strength), curAng,
+                    origin, new Vector2(scaleX, (LaneCoreWidth - 6f) / tex.Height), SpriteEffects.None, 0);
+            }
+            else if (!Locked || InRemnant) {
                 //追踪期/余痕期：细芯 + 宽柔光（直线科技标线）
                 Main.EntitySpriteDraw(tex, drawPos, null, warn * (0.5f * strength * pulse), Projectile.rotation,
                     origin, new Vector2(scaleX, LaneCoreWidth / tex.Height), SpriteEffects.None, 0);

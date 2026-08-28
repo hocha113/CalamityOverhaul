@@ -62,4 +62,9 @@ CWRClientConfig: {
 			уменьшая ощущение резкого скачка
 			'''
 	}
+
+	AmbienceDensity: {
+		// Label: Ambience Density
+		// Tooltip: Scales decorative ambience particle density only; telegraphs and hazards are never reduced.
+	}
 }

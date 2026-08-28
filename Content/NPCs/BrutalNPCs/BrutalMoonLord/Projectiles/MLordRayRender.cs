@@ -9,8 +9,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
     /// <summary>幻影死光共用绘制：MLordDeathray.fx 星质光柱 + 无着色器三层退避</summary>
     internal static class MLordRayRender
     {
-        /// <summary>画一根死光柱。origin=光源点，宽长为视觉值，quad 自带回渗遮住硬边</summary>
-        public static void DrawBeam(Vector2 origin, float angle, float length, float width, float opacity, float seed) {
+        /// <summary>
+        /// 画一根死光柱。origin=光源点，宽长为视觉值，quad 自带回渗遮住硬边。
+        /// rootWidthRatio=根宽/束身宽（&lt;1 时近源段收窄成喇叭，月明湮灭增幅期用；1=全束等宽）
+        /// </summary>
+        public static void DrawBeam(Vector2 origin, float angle, float length, float width, float opacity, float seed,
+            float rootWidthRatio = 1f) {
             if (width <= 0.5f || length <= 8f || opacity <= 0.01f) {
                 return;
             }
@@ -46,6 +50,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             effect.Parameters["fadeAlpha"]?.SetValue(opacity);
             effect.Parameters["seed"]?.SetValue(seed);
+            //每次绘制都显式置根部收窄量：参数驻留 Effect 实例，不恒置会串到其他射线上
+            effect.Parameters["rootPinch"]?.SetValue(1f - MathHelper.Clamp(rootWidthRatio, 0.05f, 1f));
             effect.Parameters["uNoiseTex"]?.SetValue(noise);
             //合同：噪声显式钉在 s1（与 .fx 的 register(s1) 对应），不依赖参数隐式绑定
             device.Textures[1] = noise;

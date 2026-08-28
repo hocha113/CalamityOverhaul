@@ -135,6 +135,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.NightPack.Projectiles
             else {
                 strength = fadeIn * (Locked ? 1f : 0.55f);
             }
+            //暮雾联动（只读 Woodsong 信号）：浓雾里预告线更亮，萤火沿线指路
+            float fog = Ambience.Woodsong.WoodsongAmbience.FogStrength;
+            if (!InStrike && fog > 0.15f) {
+                strength = Math.Min(1f, strength * (1f + fog * 0.4f));
+            }
             if (strength <= 0.01f) {
                 return false;
             }
@@ -162,6 +167,21 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.NightPack.Projectiles
                     origin, new Vector2(scaleX, (LaneGlowWidth + 20f) / tex.Height), SpriteEffects.None, 0);
                 Main.EntitySpriteDraw(tex, drawPos, null, core, Projectile.rotation,
                     origin, new Vector2(scaleX, (LaneCoreWidth - 8f) / tex.Height), SpriteEffects.None, 0);
+            }
+
+            //雾夜萤火沿线指路（纯表现，各端本地按自身雾浓度绘制）
+            if (!InStrike && fog > 0.15f) {
+                Texture2D glowDot = CWRAsset.SoftGlow.Value;
+                Color firefly = new Color(186, 240, 120, 0);
+                Vector2 along = Projectile.rotation.ToRotationVector2();
+                Vector2 side = (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2();
+                for (int i = 1; i <= 3; i++) {
+                    float t = i / 4f + 0.05f * MathF.Sin(Main.GlobalTimeWrappedHourly * 2.3f + i * 2.1f + Projectile.identity);
+                    Vector2 p = drawPos + along * (LaneLength * t)
+                        + side * (10f * MathF.Sin(Main.GlobalTimeWrappedHourly * 3f + i * 1.7f));
+                    Main.EntitySpriteDraw(glowDot, p, null, firefly * (fog * 0.6f * strength), 0f,
+                        glowDot.Size() / 2f, 0.045f, SpriteEffects.None, 0);
+                }
             }
             return false;
         }

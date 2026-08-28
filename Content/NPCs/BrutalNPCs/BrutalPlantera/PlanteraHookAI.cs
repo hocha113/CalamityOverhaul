@@ -113,6 +113,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             //禁用原版aiStyle画藤，藤由本类自绘
             npc.aiStyle = -1;
             npc.dontTakeDamage = true;
+            //纯运动引擎：钩爪不造成接触伤害
+            npc.damage = 0;
             npc.timeLeft = 300;
 
             if (boss == null) {
@@ -143,10 +145,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
 
             //爪面朝本体(藤从爪根长出)
             npc.rotation = (boss.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
-
-            //移动接触伤害门：静止锚桩无害
-            float speed = npc.velocity.Length();
-            npc.damage = speed > 8f ? (int)(npc.defDamage * (phase2 ? 1.2f : 1f)) : 0;
 
             if (glowFlash > 0f) {
                 glowFlash *= 0.92f;
@@ -260,7 +258,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             npc.velocity.X *= 0.97f;
             npc.velocity.Y = Math.Min(npc.velocity.Y + 0.25f, 9f);
             npc.rotation += npc.velocity.X * 0.01f;
-            npc.damage = 0;
         }
         #endregion
 

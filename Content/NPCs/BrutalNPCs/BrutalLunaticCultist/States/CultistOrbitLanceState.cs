@@ -9,7 +9,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
     /// 星轨连珠:在场心架起倾斜轨道椭圆,星珠沿轨巡行;星尘主场追加错拍副轨<br/>
-    /// 公平阀在轨道实体内声明(GapSlots/近平面阈);本体全程只施法不出手
+    /// 巡行末段全轨刹停,星珠向心收缩、预警线锁死外法向,停顿一拍后全珠极速环爆(预告即承诺)<br/>
+    /// 公平阀在轨道实体内声明(GapSlots/近平面阈/外法向环爆不入环内域);本体全程只施法不出手
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.OrbitLance, typeof(CultistStateContext))]
     internal class CultistOrbitLanceState : CultistStateBase
@@ -17,7 +18,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         public override string StateName => "CultistOrbitLance";
         public override CultistStateIndex StateIndex => CultistStateIndex.OrbitLance;
 
-        private const int Timeout = 360;
+        private const int Timeout = 300;
 
         public override ICultistState OnUpdate(CultistStateContext context) {
             NPC npc = context.Npc;
@@ -38,13 +39,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 SoundEngine.PlaySound(SoundID.Item117 with { Volume = 0.8f, Pitch = -0.4f }, npc.Center);
             }
 
-            //架轨(权威端):主轨即刻,星尘主场 36 帧后错拍副轨(一轨歇一轨压)
-            if (Timer == 10 && !VaultUtils.isClient) {
+            //架轨(权威端):主轨即刻,星尘主场 24 帧后错拍副轨(一轨歇一轨压)
+            if (Timer == 8 && !VaultUtils.isClient) {
                 Projectile.NewProjectile(npc.GetSource_FromAI(), context.ArenaCenter, Vector2.Zero,
                     ModContent.ProjectileType<CultistOrbitPath>(), 40, 0f, Main.myPlayer,
                     npc.whoAmI, Main.rand.Next(100000));
             }
-            if (Timer == 46 && context.Phase == 2 && !VaultUtils.isClient) {
+            if (Timer == 32 && context.Phase == 2 && !VaultUtils.isClient) {
                 Projectile.NewProjectile(npc.GetSource_FromAI(), context.ArenaCenter, Vector2.Zero,
                     ModContent.ProjectileType<CultistOrbitPath>(), 40, 0f, Main.myPlayer,
                     npc.whoAmI, Main.rand.Next(100000), 1f);
@@ -55,7 +56,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             }
 
             //双出口:轨道散场即收,或超时兜底
-            if (Timer > 60 && !AnyPathAlive(npc.whoAmI)) {
+            if (Timer > 48 && !AnyPathAlive(npc.whoAmI)) {
                 return new CultistCoilState();
             }
             if (Timer >= Timeout) {

@@ -9,7 +9,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
     /// <summary>
     /// 幻影协奏（四臂分声部）：基线火力网兼连接拍。上对错拍星球扇射（布阵声部），
     /// 下对同拍低位剪切波（自两肋交叉掠过玩家脚下，执行声部），头交叉波弹，
-    /// 中段留一个可读的换位喘息，核心裸露后追加螺旋波列。
+    /// 中段留一个可读的换位喘息。心脏与残口不客串炮口：缺手缺头的席位由真眼代射，
+    /// 全员尽墨时该拍静默（裸露期真眼集群自有火力）。
     /// 出手前各声部抬手亮眼（预备动作兼弹幕预告，手部 AI 经 <see cref="BeatWindup"/> 查询）。
     /// 循环内非首位协奏走短变体（连接拍收紧，节拍表只保留前段）
     /// </summary>
@@ -90,14 +91,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 SpawnLowShear(context);
             }
 
-            //头部三连交叉波弹
-            if (Timer == boltStart || Timer == boltStart + Frames(context, 22) || Timer == boltStart + Frames(context, 44)) {
+            //头部交叉波弹：整个协奏只齐射一次（无活头时真眼代射）
+            if (Timer == boltStart) {
                 SpawnHeadBoltCross(context);
-            }
-
-            //裸露阶段：核心自体螺旋波列填充节拍（末拍收在喘息窗之前）
-            if (context.CoreExposed && (Timer == Frames(context, 56) || Timer == Frames(context, 130) || Timer == Frames(context, 188))) {
-                SpawnCoreSpiral(context);
             }
         }
 
@@ -121,10 +117,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             origin.netUpdate = true;
         }
 
-        /// <summary>头部交叉波弹：一发直指两发斜掠</summary>
+        /// <summary>头部交叉波弹：一发直指两发斜掠（无活头时真眼代射，心脏不开火）</summary>
         private void SpawnHeadBoltCross(MLordContext context) {
             NPC origin = context.Parts.Head >= 0 && context.Parts.HeadAlive
-                ? Main.npc[context.Parts.Head] : context.Npc;
+                ? Main.npc[context.Parts.Head] : MLordFacts.GetFreeEye(context.Npc, 2);
+            if (origin == null) {
+                return;
+            }
             Vector2 muzzle = origin.Center + new Vector2(0f, 30f);
             Vector2 aim = (context.Target.Center - muzzle).SafeNormalize(Vector2.UnitY);
             int damage = ScaleDamage(context, MLordDirector.BoltDamage);
@@ -133,18 +132,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 Vector2 vel = aim.RotatedBy(i * 0.34f) * speed;
                 Projectile.NewProjectile(origin.GetSource_FromAI(), muzzle, vel,
                     ModContent.ProjectileType<MLordBoltProj>(), damage, 0f, Main.myPlayer);
-            }
-        }
-
-        /// <summary>核心螺旋波列：按编队时钟转相位的环射</summary>
-        private void SpawnCoreSpiral(MLordContext context) {
-            NPC npc = context.Npc;
-            int damage = ScaleDamage(context, MLordDirector.BoltDamage);
-            float baseAngle = context.FormationClock * 0.09f;
-            for (int i = 0; i < 8; i++) {
-                float angle = baseAngle + MathHelper.TwoPi / 8f * i;
-                Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center,
-                    angle.ToRotationVector2() * 5.6f, ModContent.ProjectileType<MLordBoltProj>(), damage, 0f, Main.myPlayer);
             }
         }
 
@@ -166,7 +153,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             }
         }
 
-        /// <summary>优先取指定手槽，缺位就近换手→头→核心（核心代射兜底）</summary>
+        /// <summary>优先取指定手槽，缺位就近换手→活头→真眼（心脏不客串炮口）；全无返回 null 该拍静默</summary>
         private static NPC PickPart(MLordContext context, int preferSlot) {
             MLordPartsStatus parts = context.Parts;
             int hand = parts.FirstAliveHand(preferSlot);
@@ -176,7 +163,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             if (parts.HeadAlive && parts.Head >= 0) {
                 return Main.npc[parts.Head];
             }
-            return context.Npc;
+            return MLordFacts.GetFreeEye(context.Npc, preferSlot);
         }
 
         /// <summary>
@@ -210,6 +197,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 }
             }
             return best;
+        }
+
+        /// <summary>头声部（交叉波弹单次齐射）的预备窗进度 0~1：出弹前额眼睁大提亮（头部姿态消费）</summary>
+        internal static float HeadBoltWindup(MLordContext context, int stateTimer) {
+            int breather = context.ConcertoShortVariant ? ShortBreatherStart : BreatherStart;
+            if (BoltStartBeat >= breather) {
+                return 0f;
+            }
+            int beat = MLordDirector.Frames(BoltStartBeat, context.DeathMode);
+            int wait = beat - stateTimer;
+            if (wait > 0 && wait <= WindupLead) {
+                return 1f - wait / (float)WindupLead;
+            }
+            return 0f;
         }
     }
 }

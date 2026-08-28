@@ -7,7 +7,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
 {
     /// <summary>
-    /// 敌对天雷：从云底劈到地面预告点。生成于高空锚点，ai[0]=落点 y。
+    /// 敌对天雷：从云底劈到地面预告点。生成于高空锚点，ai[2]=落点 y。
     /// 复用 Lightning 的 ThunderTrail 管线，仅改为敌对判定
     /// </summary>
     internal class FishronSkyBoltProj : Lightning
@@ -29,8 +29,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
         }
 
         public override Vector2 FindTargetPosition() {
-            //落点：本体 x 垂直向下到 ai[0] 指定的 y
-            return new Vector2(Projectile.Center.X, Projectile.ai[0]);
+            //落点：本体 x 垂直向下到 ai[2] 指定的 y。
+            //ai[0]/ai[1] 是 Lightning 基类的状态与命中标记，落点参数只能挂 ai[2]（同 StormLightning）
+            return new Vector2(Projectile.Center.X, Projectile.ai[2]);
         }
 
         public override void OnStrike() {

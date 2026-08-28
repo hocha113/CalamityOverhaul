@@ -15,12 +15,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core
         public static float DriftSpeedP1 => 6.2f;
         /// <summary>悬吊漂移基速 二阶段</summary>
         public static float DriftSpeedP2 => 8.8f;
-        /// <summary>激怒追加速度</summary>
-        public static float EnrageSpeedBonus => 7f;
         /// <summary>悬吊leash 一阶段(远程压制保持距离)</summary>
         public static float LeashP1 => 460f;
         /// <summary>悬吊leash 二阶段(近身狂化贴脸)</summary>
         public static float LeashP2 => 250f;
+        /// <summary>二阶段悬吊移速全局倍率</summary>
+        public static float Phase2SpeedMult => 1.35f;
+        /// <summary>二阶段加速率倍率，压低=惯性更强(转向漂、刹不住)</summary>
+        public static float Phase2InertiaMult => 0.65f;
         /// <summary>猛扑速度 一阶段</summary>
         public static float PounceSpeedP1 => 46f;
         /// <summary>猛扑速度 二阶段</summary>
@@ -50,8 +52,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core
         /// <summary>投技点名最远距离(超出必然空挥)</summary>
         public static float FeastMaxRange => 980f;
 
-        /// <summary>死亡模式时间压缩系数(蓄力/间隔乘它)</summary>
-        public static float DeathTimeScale(PlanteraStateContext ctx) => ctx.IsDeathMode ? 0.8f : 1f;
+        /// <summary>时间压缩系数(蓄力/间隔乘它)：死亡模式0.8×，激怒再0.5×(间隔减半=攻速翻倍)，可叠加</summary>
+        public static float TimeScale(PlanteraStateContext ctx) {
+            float scale = ctx.IsDeathMode ? 0.8f : 1f;
+            if (ctx.IsEnraged) {
+                scale *= 0.5f;
+            }
+            return scale;
+        }
 
         /// <summary>一阶段攻击池</summary>
         private static readonly PlanteraStateIndex[] Phase1Pool = [
@@ -61,8 +69,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core
             PlanteraStateIndex.SporeSow,
         ];
 
-        /// <summary>二阶段攻击池</summary>
+        /// <summary>二阶段攻击池：狂扑双份权重，冲刺更频繁</summary>
         private static readonly PlanteraStateIndex[] Phase2Pool = [
+            PlanteraStateIndex.FrenzyPounce,
             PlanteraStateIndex.FrenzyPounce,
             PlanteraStateIndex.TentacleRing,
             PlanteraStateIndex.WhipBarrage,

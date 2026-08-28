@@ -17,13 +17,15 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
 
         /// <summary>出膛淡入帧：判定门与透明度用同一时钟</summary>
         private const int MuzzleFadeFrames = 6;
+        /// <summary>扰乱脉冲的黑暗减益时长（~2 秒，前摇已 +6 帧补偿）</summary>
+        private const int ScramblerDarknessTicks = 120;
 
-        /// <summary>风味不透明弹体配色（与标线警示色同相，A&gt;0 保证有遮挡像素）</summary>
+        /// <summary>风味不透明弹体配色（与标线警示色同相，A&gt;0 保证有遮挡像素）。扰乱者显著紫化=危险差异标识</summary>
         private static readonly Color[] BodyColors = [
             new(110, 225, 255),
             new(255, 120, 205),
             new(130, 255, 150),
-            new(200, 130, 255),
+            new(178, 80, 255),
             new(255, 205, 110),
             new(255, 90, 90),
         ];
@@ -69,8 +71,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
         public override bool? CanDamage() => Age > MuzzleFadeFrames ? null : false;
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            //命中方本机结算，减益原生同步；风味：扰乱者致混乱，军官致带电
+            //命中方本机结算，减益原生同步；风味：扰乱者扰乱脉冲（黑暗+混乱），军官致带电
             if (Flavor == 3) {
+                target.AddBuff(BuffID.Darkness, ScramblerDarknessTicks);
                 target.AddBuff(BuffID.Confused, 60);
             }
             else if (Flavor == 4) {

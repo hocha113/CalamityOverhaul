@@ -204,8 +204,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.EliteMove
 
             if (!initialized) {
                 initialized = true;
-                //错拍初始冷却，避免同屏群体同帧触发
-                cooldown = profile.Cooldown / 2 + npc.whoAmI * 37 % (profile.Cooldown / 2 + 1);
+                //错拍初始冷却，避免同屏群体同帧触发；首发窗封顶 180 帧（M7 密度预算），
+                //长冷却只管后续节奏，不许把首次亮相也拖走
+                int firstBase = Math.Min(profile.Cooldown / 2, 120);
+                cooldown = firstBase + npc.whoAmI * 37 % 61;
                 lifeTracker = npc.life;
             }
 

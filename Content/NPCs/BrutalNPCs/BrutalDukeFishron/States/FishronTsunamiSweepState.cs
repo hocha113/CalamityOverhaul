@@ -21,10 +21,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
         public override bool AllowFarSnap => false;
 
         private const int RepositionEnd = 46;
-        private const int TelegraphTime = 46;
-        private const float SweepSpeed = 30f;
         /// <summary>浪墙出膛速度：入场即迅猛，弹幕自身还会一路增速到上限</summary>
         private const float WaveSpeed = 18f;
+
+        /// <summary>横贯预告：末相预警线 -30%（46→32 帧）</summary>
+        private static int TelegraphTime(FishronStateContext ctx) => ctx.Phase >= 3 ? 32 : 46;
+        /// <summary>末相横扫 +15%：30→34.5</summary>
+        private static float SweepSpeed(FishronStateContext ctx) => ctx.Phase >= 3 ? 34.5f : 30f;
 
         private int sweepDir;
         private int passIndex;
@@ -76,9 +79,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             }
 
             //幕二：贴地蓄势+横贯预告线
-            if (t <= RepositionEnd + TelegraphTime) {
+            int telegraphTime = TelegraphTime(context);
+            if (t <= RepositionEnd + telegraphTime) {
                 int tt = t - RepositionEnd;
-                float progress = tt / (float)TelegraphTime;
+                float progress = tt / (float)telegraphTime;
 
                 npc.velocity *= 0.86f;
                 FaceBody(npc, npc.Center + new Vector2(sweepDir * 200f, 0f), 0.18f);
@@ -89,9 +93,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
                     //横贯预告线（定线模式）
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center,
                         new Vector2(sweepDir, 0f), ModContent.ProjectileType<FishronTelegraph>(),
-                        0, 0f, Main.myPlayer, npc.whoAmI, -1, FishronTelegraph.PackParams(2, TelegraphTime));
+                        0, 0f, Main.myPlayer, npc.whoAmI, -1, FishronTelegraph.PackParams(2, telegraphTime));
                 }
-                if (tt > TelegraphTime - 12) {
+                if (tt > telegraphTime - 12) {
                     context.FrameCommand = 1;
                 }
                 //脚下的海先起沫
@@ -109,7 +113,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             //起扫帧：一帧写满速度并拖出浪墙
             if (!launched) {
                 launched = true;
-                npc.velocity = new Vector2(sweepDir * SweepSpeed, 0f);
+                npc.velocity = new Vector2(sweepDir * SweepSpeed(context), 0f);
                 npc.netUpdate = true;
                 FishronMotionFX.SpawnDashBurst(npc.Center, new Vector2(sweepDir, 0f), 1.2f);
                 SoundEngine.PlaySound(SoundID.Zombie20 with { Volume = 1f, Pitch = 0f, MaxInstances = 3 }, npc.Center);
@@ -143,7 +147,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             //越过玩家足够远则收束本趟
             bool passed = Math.Sign(npc.Center.X - player.Center.X) == sweepDir
                 && Math.Abs(npc.Center.X - player.Center.X) > 780f;
-            if (passed || t > RepositionEnd + TelegraphTime + 90) {
+            if (passed || t > RepositionEnd + telegraphTime + 90) {
                 passIndex++;
                 if (passIndex >= MaxPasses(context)) {
                     return new FishronHoverState();

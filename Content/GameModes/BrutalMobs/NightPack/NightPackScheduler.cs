@@ -52,9 +52,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.NightPack
         /// <summary>
         /// 类型 → 家族。僵尸直接用 <see cref="NPCID.Sets.Zombies"/>，
         /// 但剔除集合里的血月变体 TheGroom/TheBride（军团组领地）
+        /// 与墓地蛆尸 MaggotZombie（墓地包领地，防两台相位机双驱同一怪）
         /// </summary>
         internal static bool TryGetFamily(int type, out NightPackFamily family) {
-            if (NPCID.Sets.Zombies[type] && type != NPCID.TheGroom && type != NPCID.TheBride) {
+            if (NPCID.Sets.Zombies[type] && type != NPCID.TheGroom && type != NPCID.TheBride
+                && type != NPCID.MaggotZombie) {
                 family = NightPackFamily.Zombie;
                 return true;
             }

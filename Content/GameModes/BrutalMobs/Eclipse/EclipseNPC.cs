@@ -1,6 +1,8 @@
+using CalamityOverhaul.Content.GameModes.BrutalMobs.Common;
 using CalamityOverhaul.Content.GameModes.BrutalMobs.Eclipse.Projectiles;
 using System;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Eclipse
@@ -8,6 +10,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Eclipse
     /// <summary>
     /// 日食「处刑与破绽」行为层：每类怪一记带实体预告的蓄力重击（冲锋/俯冲/重载荷三家族），
     /// 挥空则进入 60-90 帧可见破绽态（承伤加深+踉跄），躲招的奖励是反打窗口。
+    /// 冲锋家族带 M6 签名分支：Frankenstein 落点电火花、SwampThing 两段小跳接扑、
+    /// CreatureFromTheDeep 力竭长滑行（Vampire 的血狩印为既有签名）；Fritz/Psycho/Butcher 仍走基础冲锋。
     /// 不接管原版 AI，只做叠加注入；决策全在服务端（客户端 PostAI 早退），
     /// 客户端可见状态一律来自已同步实体（预兆/破绽/血狩印），实体每帧向本类盖镜像戳，
     /// 命中门与减速只读镜像（受击结算端本地可读，各端数字一致）。
@@ -22,10 +26,38 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Eclipse
         private const int RetryDelay = 30;
         /// <summary>资格不符（雕像怪等）的复查间隔</summary>
         private const int IneligibleDelay = 120;
+        /// <summary>出生首攻错拍窗下界（M7 契约 60~180：初见 3 秒内可见首招，个体错帧防齐动）</summary>
+        private const int FirstCooldownMin = 60;
+        /// <summary>出生首攻错拍窗上界</summary>
+        private const int FirstCooldownMax = 180;
         /// <summary>冷却随机抖动上限</summary>
         private const int CooldownJitter = 70;
         /// <summary>处刑重击全局并发上限（数活预兆实体，自愈无漂移）</summary>
         private const int StrikeConcurrentCap = 6;
+
+        //==== 基础 Rush 冲锋包络（M2：缓入→峰值→力竭衰减，替代起手瞬间满速的匀速回写）====
+        /// <summary>冲锋包络爬升帧</summary>
+        private const int RushRiseFrames = 4;
+        /// <summary>冲锋包络力竭衰减帧（峰值保持=Strike-rise-decay，各型按档案自解）</summary>
+        private const int RushDecayFrames = 7;
+        /// <summary>起手帧初始推力系数：垫住包络首帧前的原版接管空窗</summary>
+        private const float RushLaunchPulse = 0.35f;
+
+        //==== Rush 签名差异（M6：每型一条玩家叫得出名字的行为差异，不是数值微调）====
+        /// <summary>SwampThing 签名·蹒跚双跳：跳数</summary>
+        private const int SwampHopCount = 2;
+        /// <summary>小跳前向名义速（承诺位移，注入时除提速补偿）</summary>
+        private const float SwampHopSpeed = 3.4f;
+        /// <summary>小跳起跳竖速（重力域弹道量，不除补偿）</summary>
+        private const float SwampHopLaunchVy = -3.8f;
+        /// <summary>单跳超时帧（落地判定的兜底推进，防卡崖/水中悬滞）</summary>
+        private const int SwampHopTimeout = 34;
+        /// <summary>CreatureFromTheDeep 签名·长滑行：滑行窗帧数</summary>
+        private const int DeepGlideFrames = 26;
+        /// <summary>滑行每帧衰减（力竭曲线，M2 后摇=显式衰减帧）</summary>
+        private const float DeepGlideDecay = 0.93f;
+        /// <summary>Frankenstein 签名·落点电火花伤害系数（基于已缩放 npc.damage）</summary>
+        private const float SparkDamageFrac = 0.45f;
 
         //==== 家族触发窗 ====
         /// <summary>冲锋家族的纵向高差容忍</summary>
@@ -52,6 +84,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Eclipse
         private const byte PhaseIdle = 0;
         private const byte PhaseTelegraph = 1;
         private const byte PhaseStrike = 2;
+        /// <summary>SwampThing 专属：双跳段（预告结束→正式扑出之间）</summary>
+        private const byte PhaseHop = 3;
+        /// <summary>CreatureFromTheDeep 专属：冲锋后力竭滑行段</summary>
+        private const byte PhaseGlide = 4;
 
         /// <summary>本个体出生时绑定的档位，0=未绑定（中途切模式不影响已出生个体）</summary>
         private int boundTier;
@@ -68,6 +104,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Eclipse
         private Vector2 lockPoint;
         /// <summary>执行期注入速度（每帧回写抵住原版 AI 衰减）</summary>
         private Vector2 dashVec;
+        /// <summary>SwampThing 双跳游标</summary>
+        private int hopIndex;
         private int omenIndex = -1;
         /// <summary>本次重击是否碰到过玩家（服务端几何采样；碰到=不给破绽）</summary>
         private bool strikeConnected;
@@ -164,8 +202,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Eclipse
 
             if (!initialized) {
                 initialized = true;
-                //错拍初始冷却：此刻 whoAmI 已有效，个体错帧防同屏齐动
-                cooldown = profile.Cooldown / 2 + npc.whoAmI * 37 % (profile.Cooldown / 2 + 1);
+                //首攻错拍冷却收进 60~180 帧（M7）：此刻 whoAmI 已有效，个体错帧防同屏齐动
+                cooldown = FirstCooldownMin + npc.whoAmI * 37 % (FirstCooldownMax - FirstCooldownMin + 1);
             }
 
             switch (phase) {
@@ -176,6 +214,12 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Eclipse
                     break;
                 case PhaseTelegraph:
                     TickTelegraph(npc);
+                    break;
+                case PhaseHop:
+                    TickHop(npc);
+                    break;
+                case PhaseGlide:
+                    TickGlide(npc);
                     break;
                 default:
                     TickStrike(npc);
@@ -324,7 +368,17 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Eclipse
             switch (profile.Family) {
                 case EclFamily.Rush:
                     dashVec = lockDir.ToRotationVector2() * (profile.Power / gain);
-                    npc.velocity.X = dashVec.X;
+                    if (npc.type == NPCID.SwampThing) {
+                        //【SwampThing 签名】两段小跳接扑（M6）：不从静止直接起冲，先蹒跚双跳逼近再扑
+                        hopIndex = 0;
+                        StartSwampHop(npc);
+                        break;
+                    }
+                    //基础冲锋起手帧只给垫底推力，满速交给 TickStrike 的包络爬升；
+                    //CreatureFromTheDeep 豁免（保持现状满速出手，衰减段由 PhaseGlide 滑行承担）
+                    npc.velocity.X = npc.type == NPCID.CreatureFromTheDeep
+                        ? dashVec.X
+                        : dashVec.X * RushLaunchPulse;
                     npc.netUpdate = true;
                     timer = profile.Strike;
                     phase = PhaseStrike;
@@ -404,12 +458,36 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Eclipse
             timer--;
 
             if (profile.Family == EclFamily.Rush) {
-                npc.velocity.X = dashVec.X;    //抵住原版 AI 的横向衰减，保持冲锋直线
+                if (npc.type is NPCID.SwampThing or NPCID.CreatureFromTheDeep) {
+                    //签名豁免：SwampThing 从双跳带动量入冲（包络起零会顿挫），
+                    //CreatureFromTheDeep 的衰减段就是 PhaseGlide 滑行——两型保持满速回写抵住原版衰减
+                    npc.velocity.X = dashVec.X;
+                }
+                else {
+                    //M2 包络塑形：缓入→峰值→力竭衰减；每帧回写=包络内抵住原版衰减的持有
+                    int t = profile.Strike - timer;
+                    npc.velocity.X = dashVec.X * MobDash.Envelope(t, RushRiseFrames,
+                        profile.Strike - RushRiseFrames - RushDecayFrames, RushDecayFrames);
+                }
                 if (timer % 6 == 0) {
                     npc.netUpdate = true;
                 }
                 SampleBodyHit(npc);
                 if (timer <= 0) {
+                    if (npc.type == NPCID.Frankenstein) {
+                        //【Frankenstein 签名】突进落点滞留 8 帧电火花判定（M6）：
+                        //火花区落在预告警示带内（带长≥全程），亮窗=判窗由实体自身把守
+                        int sparkDamage = Math.Max(1, (int)(npc.damage * SparkDamageFrac));
+                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Bottom - Vector2.UnitY * 18f,
+                            Vector2.Zero, ModContent.ProjectileType<EclFrankSparkProj>(), sparkDamage, 0.5f, Main.myPlayer);
+                    }
+                    else if (npc.type == NPCID.CreatureFromTheDeep) {
+                        //【CreatureFromTheDeep 签名】收势不急停，转入力竭长滑行段（M6）
+                        timer = DeepGlideFrames;
+                        phase = PhaseGlide;
+                        npc.netUpdate = true;
+                        return;
+                    }
                     npc.velocity.X *= 0.3f;    //收势急停
                     npc.netUpdate = true;
                     Resolve(npc, allowOpening: true);
@@ -437,6 +515,76 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Eclipse
             }
             else if (timer <= 0) {
                 Resolve(npc, allowOpening: false);
+            }
+        }
+
+        /// <summary>
+        /// SwampThing 蹒跚小跳起跳注入：前向为承诺位移除提速补偿，竖向为重力域弹道量不除
+        /// （落地时机由真实重力决定，镜像 NightPackNPC 跳弧的补偿口径）
+        /// </summary>
+        private void StartSwampHop(NPC npc) {
+            float gain = EclEclipseSets.MoveGain(npc, boundTier);
+            npc.velocity = new Vector2(lockDir.ToRotationVector2().X * (SwampHopSpeed / gain), SwampHopLaunchVy);
+            npc.netUpdate = true;
+            timer = SwampHopTimeout;
+            phase = PhaseHop;
+            //起跳泥尘：沼泽步态的落脚反馈（决策端演出，专用服务器无尘；客户端凭同步跳弧读招）
+            if (!Main.dedServ) {
+                for (int i = 0; i < 6; i++) {
+                    Dust mud = Dust.NewDustPerfect(npc.Bottom + new Vector2(Main.rand.NextFloat(-10f, 10f), 0f),
+                        DustID.Mud, new Vector2(Main.rand.NextFloat(-1.4f, 1.4f), Main.rand.NextFloat(-2.2f, -0.6f)),
+                        90, default, Main.rand.NextFloat(0.9f, 1.3f));
+                    mud.noGravity = Main.rand.NextBool();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 【SwampThing 签名】双跳段推进（M6）：跳-跳-扑的沼泽蹒跚步态；
+        /// 落地判定推进、超时兜底，双跳完毕沿锁定承诺正式扑出（不重瞄）
+        /// </summary>
+        private void TickHop(NPC npc) {
+            timer--;
+            SampleBodyHit(npc);
+            //离地至少 5 帧后才认落地，防起跳帧误判
+            bool landed = timer <= SwampHopTimeout - 5 && npc.velocity.Y == 0f;
+            if (!landed && timer > 0) {
+                return;
+            }
+            hopIndex++;
+            if (hopIndex < SwampHopCount) {
+                StartSwampHop(npc);
+                return;
+            }
+            npc.velocity.X = dashVec.X;
+            npc.netUpdate = true;
+            timer = profile.Strike;
+            phase = PhaseStrike;
+        }
+
+        /// <summary>
+        /// 【CreatureFromTheDeep 签名】力竭长滑行段（M6）：指数衰减的余势滑步带水花，
+        /// 滑行期怪体仍是威胁（继续采样命中）；衰减到位后清残速把控制权还给原版 AI
+        /// </summary>
+        private void TickGlide(NPC npc) {
+            timer--;
+            dashVec.X *= DeepGlideDecay;
+            npc.velocity.X = dashVec.X;    //每帧回写=包络衰减段，抵住原版步行 AI 的改写
+            if (timer % 8 == 0) {
+                npc.netUpdate = true;
+            }
+            SampleBodyHit(npc);
+            //滑行水花（决策端演出，专用服务器无尘；客户端凭同步滑行速度读招）
+            if (!Main.dedServ && Main.rand.NextBool(2)) {
+                Dust splash = Dust.NewDustPerfect(npc.Bottom + new Vector2(Main.rand.NextFloat(-8f, 8f), -2f),
+                    DustID.Water, new Vector2(-npc.velocity.X * 0.2f, Main.rand.NextFloat(-1.8f, -0.4f)),
+                    80, default, Main.rand.NextFloat(0.9f, 1.4f));
+                splash.noGravity = false;
+            }
+            if (timer <= 0 || Math.Abs(dashVec.X) < 0.8f) {
+                npc.velocity.X *= 0.25f;    //清残速，控制权干净还给原版
+                npc.netUpdate = true;
+                Resolve(npc, allowOpening: true);
             }
         }
 

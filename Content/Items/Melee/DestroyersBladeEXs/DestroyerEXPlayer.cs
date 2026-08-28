@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         /// <summary>潜行移速加成</summary>
         public const float StalkMoveSpeed = 0.28f;
         /// <summary>撕咬索敌半径(px)</summary>
-        public const float BiteRange = 430f;
+        public const float BiteRange = 560f;
         /// <summary>撕咬冷却时长(帧)</summary>
         public const int BiteCooldownTime = 300;
         /// <summary>歼灭协议持续帧数,8秒</summary>
@@ -53,8 +53,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             && Player.ownedProjectileCounts[ModContent.ProjectileType<DestroyerBiteProj>()] == 0
             && !Empowered;
 
-        /// <summary>撕咬就绪:潜行中、冷却转完、附近有可咬目标</summary>
-        public bool BiteReady => StalkActive && BiteCooldown <= 0 && FindBiteTarget() >= 0;
+        /// <summary>撕咬就绪:潜行中且冷却转完。无目标也可空放,朝鼠标方向扑咬</summary>
+        public bool BiteReady => StalkActive && BiteCooldown <= 0;
 
         /// <summary>出手记账:挥砍与撕咬都会打断潜行</summary>
         public void NoteAttack() => LastAttackTick = Main.GameUpdateCount;

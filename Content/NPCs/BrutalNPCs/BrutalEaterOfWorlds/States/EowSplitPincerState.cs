@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
             npc.damage = 0;
 
             if (Timer == 6) {
-                SoundEngine.PlaySound(SoundID.Zombie13 with { Pitch = -0.6f, Volume = 1f }, npc.Center);
+                SoundEngine.PlaySound(SoundID.Zombie7 with { Pitch = -0.6f, Volume = 1f }, npc.Center);
             }
 
             //分裂帧(服务端裁定，组数经同步槽下发)
@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
                 }
 
                 if (t == 4) {
-                    SoundEngine.PlaySound(SoundID.Zombie13 with { Pitch = -0.2f, Volume = 0.9f, MaxInstances = 3 }, npc.Center);
+                    SoundEngine.PlaySound(SoundID.Zombie7 with { Pitch = -0.2f, Volume = 0.9f, MaxInstances = 3 }, npc.Center);
                 }
                 //地底席预兆：t=16各端提交起爆点，服务端放盘；t=38喷发沿用该点不重瞄
                 if (t == 16) {

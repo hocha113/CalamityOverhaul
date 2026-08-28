@@ -371,6 +371,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         private void UpdatePreSilence(QueenBeeStateContext context, NPC npc) {
             float t = (Timer - PassEnd) / (float)(DetonateTick - PassEnd);
             DeclareCocoon(context, MathHelper.Lerp(0.38f, 0.29f, t));
+            //整茧黄描边渐亮：读作"蜂群即将化作放射刺幕"
+            context.Swarm.WarnDarts(0, SwarmDirector.MaxBees - 1, t);
 
             QueenBeeMotion.BrakeHard(npc, 0.8f);
             FaceTarget(npc, CocoonCenter);

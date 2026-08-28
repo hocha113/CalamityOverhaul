@@ -164,6 +164,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             //落回 ±0.22 迟滞带内；取 1.8 后同一位形最差 |want|≈0.42，全部驻留位安全
             float hintDown = lowerRow ? 1.8f : 0.85f;
             Vector2 hint = new Vector2(dir, hintDown).RotatedBy(core.rotation);
+            //瘫臂（眼窝已爆且未被爬行征用）：关节不再抗重力，肘只朝下坠。
+            //不随躯干倾斜旋转——重力不跟着身体歪；留一点外偏防止肘穿过躯干
+            if (hand.ai[MLordAiSlots.PartBroken] == MLordAiSlots.BrokenMark
+                && !MLordLocomotion.IsClaimed(hand)) {
+                hint = new Vector2(dir * 0.15f, 1f);
+            }
             Vector2 n = new(-dN.Y, dN.X);
             float want = Vector2.Dot(n, hint);
             if (snap || st.DesiredSide == 0f) {

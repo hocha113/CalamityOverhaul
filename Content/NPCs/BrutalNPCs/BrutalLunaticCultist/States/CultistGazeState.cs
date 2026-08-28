@@ -8,8 +8,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
-    /// 月瞳凝视(月明专属):司祭跪祷,月面竖瞳 40 帧睁开(预告)后自星心扫出凝视光束<br/>
-    /// 扫速声明恒定,跑在光前即安全;攻击主体是月亮,他只是祈祷
+    /// 月瞳凝视(月明专属):司祭跪祷,月面竖瞳 28 帧睁开(预告)后自星心扫出凝视光束<br/>
+    /// 扫速缓起后恒定(声明式),跑在光前即安全;攻击主体是月亮,他只是祈祷
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.Gaze, typeof(CultistStateContext))]
     internal class CultistGazeState : CultistStateBase
@@ -17,8 +17,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         public override string StateName => "CultistGaze";
         public override CultistStateIndex StateIndex => CultistStateIndex.Gaze;
 
-        private const int EyeOpenFrames = 40;
-        private const int Timeout = 300;
+        private const int EyeOpenFrames = 28;
+        private const int Timeout = 260;
 
         private bool aborted;
 
@@ -57,10 +57,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 else {
                     float sweepDir = Main.rand.NextBool() ? 1f : -1f;
                     float playerAngle = (player.Center - planet.Center).ToRotation();
-                    float startAngle = playerAngle - sweepDir * 0.85f;
+                    float startAngle = playerAngle - sweepDir * 0.5f;
+                    //巡航扫速 0.006(月总死光 60°/180f≈0.0058 基准),束内 30f 缓起;
+                    //后撤 0.5 弧=约 2/3 处扫过玩家原位,压迫感来自逼近而非快甩
                     Projectile.NewProjectile(npc.GetSource_FromAI(), planet.Center, Vector2.Zero,
                         ModContent.ProjectileType<CultistGazeBeam>(), 50, 0f, Main.myPlayer,
-                        startAngle, sweepDir * 0.011f, planet.whoAmI);
+                        startAngle, sweepDir * 0.006f, planet.whoAmI);
                     npc.netUpdate = true;
                 }
             }
@@ -72,11 +74,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             if (aborted) {
                 return new CultistCoilState();
             }
-            if (Timer > EyeOpenFrames + 40 && !AnyBeamAlive(npc.whoAmI)) {
-                return new CultistCoilState(30);
+            if (Timer > EyeOpenFrames + 30 && !AnyBeamAlive(npc.whoAmI)) {
+                return new CultistCoilState(14);
             }
             if (Timer >= Timeout) {
-                return new CultistCoilState(30);
+                return new CultistCoilState(14);
             }
             return null;
         }

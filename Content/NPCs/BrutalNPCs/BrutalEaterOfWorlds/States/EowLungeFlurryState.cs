@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
                 npc.damage = 0;
 
                 if (inLunge == CoilTime - 12) {
-                    SoundEngine.PlaySound(SoundID.Zombie13 with { Pitch = -0.45f, Volume = 0.85f, MaxInstances = 3 }, npc.Center);
+                    SoundEngine.PlaySound(SoundID.Zombie7 with { Pitch = -0.45f, Volume = 0.85f, MaxInstances = 3 }, npc.Center);
                 }
                 return;
             }

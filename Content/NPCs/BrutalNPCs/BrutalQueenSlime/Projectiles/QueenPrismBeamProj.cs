@@ -203,6 +203,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles
                         QueenMotion.PrismHue(Phase * 0.17f).ToVector3() * 0.5f * glow);
                 }
             }
+
+            //节点馈能视觉信号(各端本地)：齐射馈线蓄能爬升+折射拍过冲，其余随亮窗
+            NPC feedDst = TargetNpc;
+            if (feedDst.Alives() && feedDst.type == NPCID.QueenSlimeMinionBlue) {
+                float feed = Mode == BeamMode.FeederVolley
+                    ? (Timer < VolleyEmitFrame
+                        ? Timer / (float)VolleyEmitFrame
+                        : MathHelper.Clamp(1.2f - (Timer - VolleyEmitFrame) * 0.05f, 0f, 1.2f))
+                    : glow * 0.65f;
+                feedDst.localAI[3] = Math.Max(feedDst.localAI[3], feed);
+            }
         }
 
         /// <summary>折射：自节点向其最近玩家散射密集尖刺扇(服务端)，材质化出生自带前摇</summary>

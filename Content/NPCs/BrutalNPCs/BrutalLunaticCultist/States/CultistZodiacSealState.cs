@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
-    /// 十二宫封禁(P2 起):司祭仰祷,黄道环上数个宫位刻痕亮起充能,80 帧后各自点燃辐条封锁扇区<br/>
+    /// 十二宫封禁(P2 起):司祭仰祷,黄道环上数个宫位刻痕亮起充能,56 帧后各自点燃辐条封锁扇区<br/>
     /// 整组辐条以常量速率刚体进动,安全扇随组同转不塌<br/>
     /// 公平阀:选宫排除玩家所在宫位±PlayerSectorClearance(当拍保底 90° 安全扇);
     /// 预告与点燃同参同角(预告即承诺);辐条内端净空由弹幕声明
@@ -21,8 +21,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         public override string StateName => "CultistZodiacSeal";
         public override CultistStateIndex StateIndex => CultistStateIndex.ZodiacSeal;
 
-        private const int CastBeat = 14;
-        private const int Timeout = 320;
+        private const int CastBeat = 10;
+        private const int Timeout = 260;
         private const int SlotCount = 12;
         /// <summary>公平阀:玩家所在宫位±此值永不选中</summary>
         private const int PlayerSectorClearance = 1;
@@ -96,11 +96,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             }
 
             //双出口:辐条散尽即收,或超时兜底
-            if (Timer > CastBeat + 40 && !AnySpokeAlive(npc.whoAmI)) {
-                return new CultistCoilState(20);
+            if (Timer > CastBeat + 30 && !AnySpokeAlive(npc.whoAmI)) {
+                return new CultistCoilState(10);
             }
             if (Timer >= Timeout) {
-                return new CultistCoilState(20);
+                return new CultistCoilState(10);
             }
             return null;
         }

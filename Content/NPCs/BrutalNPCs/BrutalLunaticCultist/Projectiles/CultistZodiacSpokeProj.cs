@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
     /// <summary>
     /// 十二宫辐条:黄道环刻痕亮起充能,自环缘向环心点燃一道星力封条<br/>
     /// ai[0]=宿主npc ai[1]=基角 ai[2]=进动速率(rad/f,带符号,全组同源)<br/>
-    /// 公平阀:80 帧宫位充能+虚线预告(与点燃同参同角);伤害窗=点燃可见窗;
+    /// 公平阀:56 帧宫位充能+虚线预告(与点燃同参同角);伤害窗=点燃可见窗;
     /// 判定宽 30 藏于亮体;辐条内端止步 InnerClear,场心恒为通路;
     /// 进动是常量匀速(整组刚体旋转),选宫时已排除玩家所在扇区,安全扇随组同转不塌
     /// </summary>
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        internal const int WarnFrames = 80;
+        internal const int WarnFrames = 56;
         internal const int FireFrames = 110;
         internal const int FadeFrames = 18;
         internal const int Lifetime = WarnFrames + FireFrames + FadeFrames;
@@ -42,6 +42,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             Projectile.penetrate = -1;
             Projectile.timeLeft = Lifetime;
             Projectile.netImportant = true;
+            //配合 DrawBehind 设 hide,免得普通弹幕层重复画一遍辐条光带
+            Projectile.hide = true;
             CooldownSlot = ImmunityCooldownID.Bosses;
         }
 

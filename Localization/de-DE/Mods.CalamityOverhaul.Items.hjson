@@ -4876,7 +4876,8 @@ NinjaCthulsparkBoots: {
 		'''
 		Grants all the powers of the Cthulspark Boots
 		Grants a 10% chance to dodge attacks, and the ability to climb and slide down walls
-		Your dash is always the great eye's ramming charge
+		Double tap a direction to perform a crimson shadow dash, faster and farther, trailing scarlet afterimages
+		The charge bashes enemies aside like the Shield of Cthulhu, granting a moment of immunity on impact
 		"The eye tied on its headband and swore never to blink again"
 		''' */
 }
@@ -4898,4 +4899,13 @@ SeaShrimpTreasureBag: {
 SeaShrimpTestItem: {
 	// DisplayName: Shrimp Observation Cage
 	// Tooltip: Dev testing: summons the Abyssal Crystal Shrimp anywhere
+}
+
+BssBloomBud: {
+	// DisplayName: Thorned Bloombud
+	/* Tooltip:
+		'''
+		Summons the Bloomsand Serpent when used on the desert surface
+		"The root of the dunes grows hungry when it blooms"
+		''' */
 }

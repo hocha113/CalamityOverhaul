@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
     /// <summary>
     /// 黄道环:司祭划下的天穹界(战场边界),同时是合相的空间化读数<br/>
     /// 环上五颗行星信标随充能(owner.ai[3])向天顶汇聚,连珠即大祭<br/>
-    /// ai[0]=宿主npc ai[1]=阶段 0展开 1常驻 2收拢;推回只作用于本机玩家,无伤害软墙
+    /// ai[0]=宿主npc ai[1]=阶段 0展开 1常驻 2收拢;推回只作用于本机玩家,无伤害软墙(收拢期不推)
     /// </summary>
     internal class CultistZodiacRing : ModProjectile
     {
@@ -38,6 +38,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             Projectile.penetrate = -1;
             Projectile.timeLeft = 18000;
             Projectile.netImportant = true;
+            //必须配合 DrawBehind 设 hide:否则原版普通弹幕层会再画一遍,
+            //穹膜内侧亮带糊在低槽位弹幕上面,贴墙时全屏弹幕"消失"
+            Projectile.hide = true;
         }
 
         public override void AI() {
@@ -79,9 +82,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             PushLocalPlayerInside();
         }
 
-        /// <summary>软墙:出界的本机玩家被持续推回,越远推力越大</summary>
+        /// <summary>软墙:出界的本机玩家被持续推回,越远推力越大;收拢期界职已卸,不推(缩环扫场会把玩家加速甩向场心再抛飞)</summary>
         private void PushLocalPlayerInside() {
-            if (Main.dedServ || Radius < 200f) {
+            if (Main.dedServ || Stage == 2 || Radius < 200f) {
                 return;
             }
             Player player = Main.LocalPlayer;
@@ -101,6 +104,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             if (Main.GameUpdateCount % 10 == 0) {
                 int ownerPhase = OwnerWho >= 0 && OwnerWho < Main.maxNPCs ? (int)Main.npc[OwnerWho].ai[0] : 0;
                 CultistMotion.RuneBurst(player.Center + inward * -20f, CultistMotion.PhaseCore(ownerPhase), 1, 2f);
+            }
+        }
+
+        /// <summary>穹膜受击脉冲(各端本地演出):星球砸上结界时点亮环膜</summary>
+        internal static void PulseWall(int ownerWho, float amount = 1f) {
+            int type = ModContent.ProjectileType<CultistZodiacRing>();
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (proj.type == type && (int)proj.ai[0] == ownerWho && proj.ModProjectile is CultistZodiacRing ring) {
+                    ring.wallPulse = MathHelper.Max(ring.wallPulse, amount);
+                }
             }
         }
 
@@ -194,12 +207,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                     0.30f * pulse, (0.55f + 0.45f * align) * reveal, Main.GlobalTimeWrappedHourly * 0.7f + i);
             }
 
-            //十二宫刻痕:环上静默的分度
+            //十二宫刻痕:环上静默的分度(加大加亮:环缘远观也有锚点)
             for (int i = 0; i < 12; i++) {
                 float angle = i / 12f * MathHelper.TwoPi;
                 Vector2 pos = Projectile.Center + angle.ToRotationVector2() * Radius - Main.screenPosition;
                 CultistOrreryRenderer.DrawStarBead(sb, pos, CultistMotion.RuneGold,
-                    CultistMotion.RuneGold, 0.10f, 0.28f * reveal, angle);
+                    CultistMotion.RuneGold, 0.17f, 0.55f * reveal, angle);
             }
         }
     }

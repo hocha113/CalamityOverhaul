@@ -26,6 +26,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
         private const int LoopTime = 34;
         private const int LegTime = TelegraphTime + ChargeTime + LoopTime;
         private const int FinaleTime = 66;   //甩鞭+力竭(奖励输出窗口)
+        //甩鞭放镖前的黄描边预警窗(落在末段回环拍内)
+        private const int DartWarnLead = 26;
         /// <summary>公平阀：冲锋沿途两侧撒刺的间隔帧，成对垂直出射留出棋盘状穿越缝</summary>
         private const int SideSpitInterval = 6;
         //公平阀：每段航向在段首一次掷定(ai[0])后整段锁死不再跟踪，预警线全程42帧；
@@ -75,6 +77,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
             int legT = legTimer % LegTime;
 
             if (leg < ChargeCount(context)) {
+                //末段收尾时预警甩鞭：全矛黄描边读秒
+                int whipIn = ChargeCount(context) * LegTime - legTimer;
+                if (whipIn <= DartWarnLead) {
+                    context.Swarm.WarnDarts(0, SwarmDirector.MaxBees - 1, 1f - whipIn / (float)DartWarnLead);
+                }
                 UpdateChargeLeg(context, npc, player, legT);
                 return null;
             }

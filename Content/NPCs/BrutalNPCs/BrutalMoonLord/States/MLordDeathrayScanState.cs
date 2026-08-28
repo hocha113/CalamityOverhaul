@@ -96,9 +96,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             }
 
             //扫描间隙手部缓速波矢压位：上对与下对错半拍（四臂持握转向的火力仪式，幻影眼已除役）。
+            //节拍放疏 46→100：主秀是扫描束，波矢只留禁蹲桩的底压——旧节拍四手交叉满屏乱矢，
+            //盖过扫描角可读性（2026-08 用户令砍半：同屏至多一组对射，总量约 34→16）。
             //死亡模式压缩后节拍点须仍落在余数域内：拍点钳到 interval-1 兜底任何节奏缩放，
             //下对取相移半周期而非固定余数
-            int streamInterval = Frames(context, 46);
+            int streamInterval = Frames(context, 100);
             int streamBeat = Math.Min(20, streamInterval - 1);
             if (Timer % streamInterval == streamBeat) {
                 SpawnHandBoltStream(context, row: 0);
@@ -106,6 +108,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             if ((Timer + streamInterval / 2) % streamInterval == streamBeat) {
                 SpawnHandBoltStream(context, row: 1);
             }
+        }
+
+        /// <summary>
+        /// 头颅当帧的瞄向角：正在充能的下一束扫描角（跳过缺口束），
+        /// 末段指向终拍双束的玩家轴——头看哪、束落哪，瞳孔即预告（头部姿态消费）
+        /// </summary>
+        internal static bool TryGetHeadAim(MLordContext context, int stateTimer, out float angle) {
+            angle = 0f;
+            int passCount = context.CoreExposed ? 7 : 5;
+            int seed = (int)context.Owner.ai[MLordAiSlots.OvAttackSeed];
+            int gap = 1 + (int)(MLordConstellationProj.Hash01(seed, 11) * (passCount - 2));
+            for (int i = 0; i < passCount; i++) {
+                if (i == gap) {
+                    continue;
+                }
+                if (stateTimer <= FirstPass + i * PassInterval) {
+                    angle = MathHelper.Lerp(MathHelper.PiOver2 + 1.05f, MathHelper.PiOver2 - 1.05f,
+                        i / (float)(passCount - 1));
+                    return true;
+                }
+            }
+            //终拍双束段：封边走廊以玩家为轴
+            if (context.Target.Alives()) {
+                angle = (context.Target.Center - context.Npc.Center).ToRotation();
+                return true;
+            }
+            return false;
         }
 
         /// <summary>指定行位（0上对/1下对）的手放出缓速波矢</summary>

@@ -126,6 +126,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            //出生帧哨兵守卫：射线口（弹幕 AI 中途生成）落在低槽位时本帧不再更新但会被绘制，
+            //负 Elapsed 把预警进度算成大负数→枪口辉光负缩放翻出全屏白闪；哨兵未归位则跳过本帧
+            if (Projectile.timeLeft > TotalFrames) {
+                return false;
+            }
             Texture2D line = CWRAsset.MaskLaserLine.Value;
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;

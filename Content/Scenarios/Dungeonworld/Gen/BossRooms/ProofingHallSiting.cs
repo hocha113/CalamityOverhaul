@@ -27,7 +27,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
             int floorRel = ProofingHallRoom.LeftDoorOffset.Y + ProofingHallRoom.DoorHeight;
             int originY = l6.SpineFloorTop - floorRel;
 
+            //放不下=硬错误跳过。R4:跳过也要把本函数的2次账掷满,否则退化种子上全链路随机流错位
             if (originY < l6.Top + 2 || originY + ProofingHallRoom.Height > l6.Bottom) {
+                BurnRolls(2);
                 CWRMod.Instance.Logger.Error(
                     $"[Dungeonworld] 验收堂垂直放不进L6带[{l6.Top},{l6.Bottom}),originY={originY},本次跳过");
                 return null;
@@ -48,8 +50,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
                 CWRMod.Instance.Logger.Warn("[Dungeonworld] 验收堂所选侧被井位禁带扣空,换侧落位");
                 side = pickLeft ? rightSegs : leftSegs;
             }
+            //PickFromSegments对空段表零消耗直接返回-1,该分支由补掷找平
             int originX = VerticalLinks.PickFromSegments(side);
             if (originX < 0) {
+                BurnRolls(1);
                 CWRMod.Instance.Logger.Error(
                     "[Dungeonworld] 验收堂两侧均无合法落位,本次跳过,责任=常量表/井位禁带");
                 return null;
@@ -60,6 +64,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
                 $"[Dungeonworld] 验收堂落位 origin=({originX},{originY})"
                 + $" 门槽行={originY + ProofingHallRoom.LeftDoorOffset.Y}..{originY + floorRel - 1} 脊地板={l6.SpineFloorTop}");
             return LastOrigin;
+        }
+
+        /// <summary>退化分支补掷:把本函数的genRand消耗凑满恒定值(R4账),掷出的数弃用</summary>
+        private static void BurnRolls(int count) {
+            for (int i = 0; i < count; i++) {
+                WorldGen.genRand.Next(100);
+            }
         }
     }
 }

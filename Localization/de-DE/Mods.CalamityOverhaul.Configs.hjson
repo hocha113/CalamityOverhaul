@@ -54,4 +54,9 @@ CWRClientConfig: {
 		Label: Objektiv-Easing
 		Tooltip: Bei Aktivierung wird bei schnellen Langstreckenbewegungen ein Easing-Effekt auf das Objektiv angewendet, um ein unnatürliches Gefühl zu vermeiden
 	}
+
+	AmbienceDensity: {
+		// Label: Ambience Density
+		// Tooltip: Scales decorative ambience particle density only; telegraphs and hazards are never reduced.
+	}
 }

@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         public override string StateName => "WhipBarrage";
         public override PlanteraStateIndex StateIndex => PlanteraStateIndex.WhipBarrage;
 
-        private int LashGap(PlanteraStateContext ctx) => ctx.IsDeathMode ? 20 : 26;
+        private int LashGap(PlanteraStateContext ctx) => (int)(26 * PlanteraDirector.TimeScale(ctx));
         private int TotalLashes(PlanteraStateContext ctx) => ctx.IsDeathMode ? 12 : 10;
 
         /// <summary>服务端出鞭轮转序</summary>

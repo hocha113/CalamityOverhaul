@@ -93,14 +93,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             npc.rotation = 0f;
             npc.dontTakeDamage = bodyState is GolemStateIndex.Intro or GolemStateIndex.Despawn;
 
-            UpdateFireControl(bodyState);
+            //激怒惩罚与躯干同拍：防御翻倍(头走 realLife 血池，防御却是自己的)
+            bool enraged = GolemBodyAI.SharedEnrage(body, player);
+            npc.defense = enraged ? npc.defDefense * 2 : npc.defDefense;
+
+            UpdateFireControl(bodyState, enraged);
             return false;
         }
 
         #region 火控（服务端裁决，弹幕自带出膛表现）
-        private void UpdateFireControl(GolemStateIndex bodyState) {
+        private void UpdateFireControl(GolemStateIndex bodyState, bool enraged) {
             bool death = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
-            bool enraged = GolemBodyAI.ComputeEnrage(player, CWRRef.GetBossRushActive());
 
             //眼部炽热提示：任何压制射击窗口发亮
             bool inFireWindow = bodyState is GolemStateIndex.SunBarrage or GolemStateIndex.TrapScore
@@ -144,13 +147,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             }
             if (++fireTimer >= interval) {
                 fireTimer = 0;
-                FireEyeBolt(alternate);
+                FireEyeBolt(alternate, enraged);
             }
         }
 
         /// <summary>眼位直射太阳弹：半额预读 + 编织散布——弹着点逐发交替夹住目标动向两侧，
         /// 不全数收束于预读点（方向层公平缺口：匀速漂移可从弹缝穿过，急转向令预读落空）</summary>
-        private void FireEyeBolt(bool alternate) {
+        private void FireEyeBolt(bool alternate, bool enraged) {
             int eye = alternate ? (int)(npc.localAI[2] = 1f - npc.localAI[2]) : 1;
             Vector2 muzzle = npc.Center + new Vector2((eye == 0 ? -18f : 18f) * npc.scale, -6f * npc.scale);
             Vector2 lead = player.Center + player.velocity * 8f;
@@ -158,7 +161,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             float weave = weaveSign * Main.rand.NextFloat(0.09f, 0.15f);
             Vector2 vel = (lead - muzzle).SafeNormalize(Vector2.UnitY).RotatedBy(weave) * 9.5f;
 
-            int damage = GolemDirector.ScaleDamage(GolemDirector.SunBoltDamage, CWRRef.GetDeathMode());
+            int damage = GolemDirector.ScaleDamage(GolemDirector.SunBoltDamage, CWRRef.GetDeathMode(), enraged);
             Projectile.NewProjectile(npc.GetSource_FromAI(), muzzle, vel,
                 ModContent.ProjectileType<GolemSunBolt>(), damage, 0f, Main.myPlayer);
             npc.netUpdate = true;

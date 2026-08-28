@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                 if (++hopTimer >= Tempo(context, 54)) {
                     hopTimer = 0;
                     float dx = context.Target.Center.X - npc.Center.X;
-                    LaunchJump(npc, MathHelper.Clamp(dx / 70f, -9f, 9f), -8.5f);
+                    LaunchJump(context, MathHelper.Clamp(dx / 70f, -9f, 9f), -8.5f);
                     if (!VaultUtils.isClient) {
                         npc.netUpdate = true;
                     }
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
         private static void PlantChaseSpike(GolemStateContext context) {
             Player target = context.Target;
             float x = target.Center.X + target.velocity.X * (GolemDirector.TrapTelegraph * ChaseLead);
-            int damage = GolemDirector.ScaleDamage(GolemDirector.SpikeDamage, context.DeathMode);
+            int damage = GolemDirector.ScaleDamage(GolemDirector.SpikeDamage, context.DeathMode, context.Enraged);
             GolemTrapUnit.PlantOnGround(context.Npc, x, target.Center.Y,
                 GolemTrapUnit.TrapKind.Spike, GolemDirector.TrapTelegraph, damage);
         }

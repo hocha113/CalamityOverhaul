@@ -53,6 +53,13 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Wastes.Projectiles
         internal const float GapHalfAngle = 0.13f;
         /// <summary>缺口中心偏离锥轴的量（弧度），偏向侧由打包位决定</summary>
         internal const float GapOffset = 0.24f;
+        /// <summary>沙暴期缺口加宽量：沙隐（WastesBrutalNPC.SandVeilActive）的公平回款</summary>
+        internal const float StormGapBonus = 0.06f;
+
+        /// <summary>当前缺口半角：沙暴里更宽。读原版天气（全端同步），发射与虚影同读保持缺口即所见</summary>
+        internal static float CurrentGapHalfAngle
+            => GapHalfAngle + (Terraria.GameContent.Events.Sandstorm.Happening
+                && Terraria.GameContent.Events.Sandstorm.Severity > 0.4f ? StormGapBonus : 0f);
 
         /// <summary>预告帧数（公平契约 ≥30，各档位一律不缩短）</summary>
         private const int TelegraphFrames = 34;
@@ -62,7 +69,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Wastes.Projectiles
         internal static float? EmitOffset(int i, int count, float halfArc, float gapSide) {
             float t = count <= 1 ? 0.5f : i / (float)(count - 1);
             float ang = MathHelper.Lerp(-halfArc, halfArc, t);
-            if (Math.Abs(MathHelper.WrapAngle(ang - GapOffset * gapSide)) < GapHalfAngle) {
+            if (Math.Abs(MathHelper.WrapAngle(ang - GapOffset * gapSide)) < CurrentGapHalfAngle) {
                 return null;
             }
             return ang;

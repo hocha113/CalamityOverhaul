@@ -58,6 +58,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core
         public int ChargeType { get; set; }
         /// <summary>本体荧光强度 0~1，每帧声明</summary>
         public float GlowPulse { get; set; }
+        /// <summary>激怒红辉 0~1，主控平滑驱动，绘制层消费</summary>
+        public float RageGlow { get; set; }
         /// <summary>身体额外缩放脉冲(呼吸/蓄力压缩)</summary>
         public float BodyScalePulse { get; set; }
         /// <summary>枯萎进度 0~1，死亡演出抽干颜色</summary>

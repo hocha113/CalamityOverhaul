@@ -22,9 +22,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.NightPack
         private const int RetryDelay = 30;
         /// <summary>资格不符（雕像怪等）的复查间隔</summary>
         private const int IneligibleDelay = 120;
-        /// <summary>出生后首攻等待窗，随机错开避免同屏齐动</summary>
-        private const int FirstCooldownMin = 100;
-        private const int FirstCooldownMax = 260;
+        /// <summary>出生后首攻等待窗，随机错开避免同屏齐动（M7 密度预算：遭遇 ≤3 秒可见首个机制）</summary>
+        private const int FirstCooldownMin = 60;
+        private const int FirstCooldownMax = 180;
         /// <summary>攻击冷却（档位 1/2/3），另加随机抖动</summary>
         private static readonly int[] AttackCooldownByTier = [300, 245, 190];
         private const int CooldownJitter = 60;

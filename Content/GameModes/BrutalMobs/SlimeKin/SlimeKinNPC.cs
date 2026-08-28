@@ -107,9 +107,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.SlimeKin
                 return;
             }
             boundTier = tier;
-            //出生错拍：避免同屏群体同帧齐跳。whoAmI 在 SetDefaults 期尚不可靠
+            //出生错拍：避免同屏群体同帧齐跳（M7 密度预算：60~180 帧窗）。whoAmI 在 SetDefaults 期尚不可靠
             //（原版在 NewNPC 尾部/UpdateNPC 才盖戳），改用权威端随机；冷却是服务端私产，无同步语义
-            cooldown = 120 + Main.rand.Next(180);
+            cooldown = 60 + Main.rand.Next(121);
         }
 
         /// <summary>机制资格（每个机制入口都要过；雕像怪/Pinky 在此排除）</summary>

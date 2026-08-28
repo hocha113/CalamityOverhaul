@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 {
     /// <summary>
-    /// 转阶段演出:清场+旧星裂解内爆→仰首嘶吼+浑天仪调律→新星穿门降临<br/>
+    /// 转阶段演出:清场+旧星裂解(裂纹→坍缩→单帧引爆散尽)→仰首嘶吼+浑天仪调律→新星开金门降临<br/>
     /// 全程免伤但不出手,攻势不跨阶段(公平阀:清弹幕+新阶段起手有缓冲)
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.PhaseShift, typeof(CultistStateContext))]
@@ -17,7 +17,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         public override string StateName => "CultistPhaseShift";
         public override CultistStateIndex StateIndex => CultistStateIndex.PhaseShift;
 
-        private const int Duration = 175;
+        private const int Duration = 150;
+        /// <summary>旧星引爆落拍:清场令(8)+裂纹(40)+坍缩(14)</summary>
+        private const int DetonationBeat = 62;
 
         public override void OnEnter(CultistStateContext context) {
             base.OnEnter(context);
@@ -68,8 +70,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 }
             }
 
-            //新星降临(权威端):等旧核引爆完落幕,新的从头顶穿门而来
-            if (Timer == 124 && !VaultUtils.isClient) {
+            //新星降临(权威端):旧星散尽尘埃落定后,新的推开金门而来(门闪演出在星球降临段自带)
+            if (Timer == DetonationBeat + 14 && !VaultUtils.isClient) {
                 int kind = System.Math.Clamp(context.Phase, 0, 4);
                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + new Vector2(0f, -430f), Vector2.Zero,
                     ModContent.ProjectileType<CultistPlanetProj>(), 60, 0f, Main.myPlayer,
@@ -85,7 +87,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 return null;
             }
             if (Timer >= Duration) {
-                return new CultistCoilState(20);
+                return new CultistCoilState(10);
             }
             return null;
         }
