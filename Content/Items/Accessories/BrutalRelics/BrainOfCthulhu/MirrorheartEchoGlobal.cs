@@ -14,8 +14,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
 {
     /// <summary>
     /// 镜心复现拦截与镜像弹演出。
-    /// 拦截只在所有者端(OnSpawn 仅随 NewProjectile 触发)，登记进
-    /// <see cref="MirrorheartPlayer"/> 的延迟队列；复现弹经 extraAI 一位标记跨端，
+    /// 拦截只在所有者端(OnSpawn 仅随 NewProjectile 触发)且只在换位后的复现窗口内，
+    /// 登记进 <see cref="MirrorheartPlayer"/> 的延迟队列；复现弹经 extraAI 一位标记跨端，
     /// 各端叠冷色负片残影与血雾细尾
     /// </summary>
     internal class MirrorheartEchoGlobal : GlobalProjectile
@@ -41,7 +41,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
                 return;
             }
             MirrorheartPlayer mp = player.GetModPlayer<MirrorheartPlayer>();
-            if (!mp.Equipped || mp.ShatterTimer > 0) {
+            //复现窗口(换位后5秒)之外直接放行不登记；窗口与碎裂重聚期重叠，不看 ShatterTimer
+            if (!mp.Equipped || mp.EchoWindowTimer <= 0) {
                 return;
             }
 

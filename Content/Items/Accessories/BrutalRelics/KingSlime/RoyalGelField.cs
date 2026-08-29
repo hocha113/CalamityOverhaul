@@ -70,9 +70,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
             bool authority = Main.netMode != NetmodeID.MultiplayerClient;
             bool dotTick = authority && Timer % DotInterval == 0 && Drain < 1f;
 
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (!npc.active || !npc.CanBeChasedBy() || npc.dontTakeDamage) {
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (!npc.CanBeChasedBy() || npc.dontTakeDamage) {
                     continue;
                 }
                 if (!band.Intersects(npc.Hitbox)) {
@@ -81,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
 
                 //减速=位移回滚：不复利、不碰velocity同步字段，各端确定性一致
                 bool bossTier = npc.boss || NPCID.Sets.ShouldBeCountedAsBoss[npc.type];
-                float slow = (bossTier ? 0.15f : 0.35f) * strength;
+                float slow = (bossTier ? 0.12f : 0.35f) * strength;
                 npc.position -= npc.velocity * slow;
 
                 //持续伤害：权威端周期结算
@@ -137,7 +136,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
                 drain: Drain,
                 alpha: 0.9f,
                 boil: 0.35f,
-                seed: Projectile.whoAmI * 0.137f % 1f);
+                seed: Projectile.identity * 0.137f % 1f);
             //泡沫改鎏金：王的凝胶，与Boss敌对池一眼区分
             shader.Parameters["uColorFoam"]?.SetValue(
                 Color.Lerp(KingSlimeGelFX.GelFoam, KingSlimeGelFX.CrownGold, 0.55f).ToVector3());

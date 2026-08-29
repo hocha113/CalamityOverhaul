@@ -14,14 +14,14 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Deerclops
     /// </summary>
     internal class WhiteblindDebuff : ModBuff
     {
-        public override string Texture => CWRConstant.Item_BrutalRelic + "WhiteoutStormCore";
+        public override string Texture => CWRConstant.Item_BrutalRelic + "WhiteblindDebuff";
 
         private LocalizedText displayNameCache;
         private LocalizedText descriptionCache;
         public override LocalizedText DisplayName
             => displayNameCache ??= this.GetLocalization(nameof(DisplayName), () => "白盲");
         public override LocalizedText Description
-            => descriptionCache ??= this.GetLocalization(nameof(Description), () => "风雪蒙眼，行动冻结，每秒30点冻伤");
+            => descriptionCache ??= this.GetLocalization(nameof(Description), () => "风雪蒙眼，行动迟滞，每秒10点冻伤");
 
         public override void SetStaticDefaults() {
             Main.debuff[Type] = true;
@@ -58,10 +58,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Deerclops
             if (npc.lifeRegen > 0) {
                 npc.lifeRegen = 0;
             }
-            //30dps冻伤(lifeRegen单位=0.5HP/s)
-            npc.lifeRegen -= 60;
-            if (damage < 10) {
-                damage = 10;
+            //10dps冻伤(lifeRegen单位=0.5HP/s)；正回复归零保留(对Boss再生的长线价值)
+            npc.lifeRegen -= 20;
+            if (damage < 5) {
+                damage = 5;
             }
         }
 
@@ -70,8 +70,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Deerclops
                 return;
             }
             //位移回滚式减速：不碰velocity，AI节奏不乱，各端按同步buff一致回滚。
-            //非Boss回滚55%(重度冰冻)，Boss级12%(折扣声明见报告)
-            float hold = IsBossLike(npc) ? 0.12f : 0.55f;
+            //非Boss回滚35%(减速中档)，Boss级12%(折扣声明见报告)
+            float hold = IsBossLike(npc) ? 0.12f : 0.35f;
             npc.position -= npc.velocity * hold;
         }
 

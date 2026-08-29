@@ -117,14 +117,32 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
             SpawnMarkTickFX(target, entry.Stacks);
         }
 
-        /// <summary>叠满放涡：ai0=目标槽位 ai1=目标类型，全部随生成包出发(netcode §2.7)</summary>
+        /// <summary>
+        /// 叠满放涡：ai0=目标槽位 ai1=目标类型，全部随生成包出发(netcode §2.7)。<br/>
+        /// 场上单涡硬顶：已有存活涡时改绑旧涡到新猎物(转移拍演出由绑定槽位变化沿在各端自现)，
+        /// 不并行第二涡；仅消散中的涡放行新涡(短暂交叠属收尾渐隐)
+        /// </summary>
         private void LaunchVortex(NPC target) {
+            int vortexType = ModContent.ProjectileType<SwarmVortexProj>();
+            if (Player.ownedProjectileCounts[vortexType] > 0) {
+                foreach (Projectile proj in Main.ActiveProjectiles) {
+                    if (proj.owner != Player.whoAmI || proj.type != vortexType
+                        || proj.ai[2] == SwarmVortexProj.PhaseDissolving) {
+                        continue;
+                    }
+                    proj.ai[0] = target.whoAmI;
+                    proj.ai[1] = target.type;
+                    proj.netUpdate = true;
+                    return;
+                }
+            }
+
             int damage = ComputeVortexDamage(Player);
             Item beacon = FindEquippedBeacon();
             var source = beacon != null ? Player.GetSource_Accessory(beacon)
                 : Player.GetSource_Misc("SwarmVortexBeacon");
             Projectile.NewProjectile(source,
-                target.Center, Vector2.Zero, ModContent.ProjectileType<SwarmVortexProj>(),
+                target.Center, Vector2.Zero, vortexType,
                 damage, 0f, Player.whoAmI, target.whoAmI, target.type);
 
             //成形演出由弹幕自身首帧在各端播，这里只给owner一记近距离手感
@@ -170,6 +188,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
                 equippedLast = false;
                 DecayFlashes();
                 DetectRemoteBreak();
+                StampShellPresence();
                 return;
             }
             equippedLast = true;
@@ -178,6 +197,14 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
             UpdateWax();
             DecayFlashes();
             DetectRemoteBreak();
+            StampShellPresence();
+        }
+
+        /// <summary>蜡甲在场即盖戳，渲染层据此免掉全员无蜡时的全玩家表扫描</summary>
+        private void StampShellPresence() {
+            if (WaxCharge > 0.01f || CrackFlash > 0.02f || Player.HasBuff<WaxWardBuff>()) {
+                SwarmVortexRender.ShellStamp.Stamp();
+            }
         }
 
         private void DecayFlashes() {
@@ -236,6 +263,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
                     //保留窗过后融蜡，滴落收尾
                     WaxCharge = Math.Max(0f, WaxCharge - SwarmVortexBeacon.WaxMeltPerTick);
                     SpawnWaxMeltFX();
+                    //融尽沿：owner摘buff各端同见(buff.Update每帧续时，不摘就成幽灵蜡甲)
+                    if (WaxCharge < 1f && Player.whoAmI == Main.myPlayer
+                        && Player.HasBuff<WaxWardBuff>()) {
+                        Player.ClearBuff(ModContent.BuffType<WaxWardBuff>());
+                    }
                 }
             }
 
@@ -258,14 +290,22 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
             }
         }
 
-        /// <summary>远端碎甲边沿：buff消失且镜像池还厚 → 补一记碎裂演出并清镜像</summary>
+        /// <summary>
+        /// 远端碎甲边沿：buff消失且镜像池还厚 → 清镜像收敛状态；
+        /// 碎裂演出只在 CrackFlash 活跃期(近期真挨打，远端OnHurt点燃)补播。
+        /// 安静融尽(owner融蜡摘buff)没有近期受击，静默清池不误播碎甲；
+        /// 真碎甲的受击广播与buff消失几乎同帧到达，闪光窗(~16f)足够盖住RTT，
+        /// 受击后融蜡的假阳性被 retainTimer≥60f 的保留窗隔开
+        /// </summary>
         private void DetectRemoteBreak() {
             bool hasBuff = Player.HasBuff<WaxWardBuff>();
             if (Player.whoAmI != Main.myPlayer && hadWaxBuff && !hasBuff && WaxCharge > 8f) {
                 WaxCharge = 0f;
-                rebuildLock = SwarmVortexBeacon.WaxRebuildLock;
-                CrackFlash = 1f;
-                PlayShatterFX();
+                if (CrackFlash > 0.05f) {
+                    rebuildLock = SwarmVortexBeacon.WaxRebuildLock;
+                    CrackFlash = 1f;
+                    PlayShatterFX();
+                }
             }
             hadWaxBuff = hasBuff;
         }

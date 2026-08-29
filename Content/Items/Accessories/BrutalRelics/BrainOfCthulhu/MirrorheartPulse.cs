@@ -29,8 +29,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
         private const float BandInner = 70f;
         /// <summary>判定带外缘余量(px)</summary>
         private const float BandOuter = 26f;
-        /// <summary>困惑时长(帧)</summary>
-        private const int ConfusedTime = 240;
+        /// <summary>困惑时长(帧)，2.5秒</summary>
+        private const int ConfusedTime = 150;
 
         private ref float Age => ref Projectile.ai[0];
         private bool IsPrimary => Projectile.ai[1] == 1f;

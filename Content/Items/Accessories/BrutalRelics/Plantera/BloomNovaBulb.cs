@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Rendering;
 using System;
 using Terraria;
@@ -10,15 +11,16 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
 {
     /// <summary>
     /// 绽放新星球茎：世纪之花残酷遗物。
-    /// 受击自动甩出荆棘藤网反缠攻击者(束缚+撕裂+反伤)；
-    /// 生命低于阈值自动引爆绽放新星(花瓣冲击波+大额回血+再生强化+孢子雾遮蔽)；
-    /// 战斗时长积累生长值，反缠藤更多更痛
+    /// 受击自动甩出荆棘藤网反缠攻击者(束缚+撕裂+反伤，伤害吃 Generic 加成)；
+    /// 生命低于阈值自动引爆绽放新星(花瓣冲击波+回血25%+再生强化+孢子雾遮蔽)，
+    /// 触发即耗尽生长值；战斗时长积累生长值，反缠藤更多更痛
     /// </summary>
     internal class BloomNovaBulb : BaseBrutalRelic
     {
         public override void SetDefaults() {
             base.SetDefaults();
-            Item.value = Item.buyPrice(1, 0, 0, 0);//同期Boss掉落物约4倍
+            //框架 §9 T4 梯度统一 75 金
+            Item.value = Item.buyPrice(0, 75, 0, 0);
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
@@ -42,31 +44,36 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
         public const float NovaLifeRatio = 0.35f;
         /// <summary>新星冷却(帧)</summary>
         public const int NovaCooldownTime = 3600;
-        /// <summary>新星瞬间回血比例(生命上限)</summary>
-        public const float NovaHealRatio = 0.40f;
+        /// <summary>新星瞬间回血比例(生命上限，框架 §3.3 瞬回上限)</summary>
+        public const float NovaHealRatio = 0.25f;
         /// <summary>再生强化时长(帧)</summary>
         public const int RegenBoostTime = 360;
         /// <summary>孢子雾遮蔽时长(帧)，覆盖鼓胀+爆发+雾滞留全程</summary>
         public const int FogTime = BloomNovaBurst.SwellTime + BloomNovaBurst.BurstTime + BloomNovaBurst.FogHoldTime;
         /// <summary>雾中敌人攻击落空概率</summary>
         public const float FogMissChance = 0.25f;
-        /// <summary>反缠出手冷却(帧)</summary>
-        public const int LashCooldownTime = 45;
-        /// <summary>藤网撞击基础伤害</summary>
-        public const int LashBaseDamage = 950;
+        /// <summary>反缠出手冷却(帧，1.5s)</summary>
+        public const int LashCooldownTime = 90;
+        /// <summary>藤网撞击基数(吃 Generic 加成)</summary>
+        public const int LashBaseDamage = 220;
+        /// <summary>藤网基数的生长值增幅(满生长 ×1.5 = 330)</summary>
+        public const float LashGrowthScale = 0.5f;
+        /// <summary>荆棘反伤封频：同一敌人两次结算的最小间隔(帧)</summary>
+        public const int ThornReflectICD = 30;
         /// <summary>生长值积满所需战斗时长(帧)</summary>
         public const int GrowthFullTime = 5400;
         /// <summary>脱战后生长值排空时长(帧)</summary>
         private const int GrowthDrainTime = 2700;
         /// <summary>攻击或受击后视为战斗中的窗口(帧)</summary>
         private const int CombatWindow = 300;
-        /// <summary>荆棘反伤：受伤倍率部分</summary>
-        private const float ThornReflectMult = 3f;
-        /// <summary>荆棘反伤：固定部分(随生长值放大)</summary>
-        private const int ThornReflectFlat = 600;
+        /// <summary>荆棘反伤：固定部分基数(吃 Generic 加成)，另有 1 倍受伤</summary>
+        private const int ThornReflectFlat = 120;
         /// <summary>同时在场反缠藤上限</summary>
         private const int MaxActiveVines = 10;
         #endregion
+
+        /// <summary>渲染层帧戳：本端有人装备时盖戳，待机花茎绘制据此跳过空场全表扫</summary>
+        internal static ActivityStamp PresenceStamp;
 
         /// <summary>本帧是否装备生效，物品钩子逐帧点亮</summary>
         public bool Equipped;
@@ -100,6 +107,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
                 Growth = Math.Max(0f, Growth - 4f / GrowthFullTime);
                 return;
             }
+            //渲染层帧戳：本端存在装备者才放行待机花茎的全表扫
+            PresenceStamp.Stamp();
 
             //战斗中积累(90秒满)，脱战缓慢流失
             Growth = combatTimer > 0
@@ -169,12 +178,19 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
                 }
             }
 
-            //荆棘反伤：被缠住的敌人打你要付出代价
+            //荆棘反伤：被缠住的敌人打你要付出代价。
+            //口径 = 1 倍受伤 + 固定基数(吃 Generic 加成)；每目标 30 帧封频斩掉多段命中滚雪球，
+            //封频账本挂 GlobalNPC 实例(受害端读写，与本结算同端，无需同步)
             if (attackerNpc != null && attackerNpc.active
                 && attackerNpc.HasBuff(ModContent.BuffType<BloomSnaredDebuff>())) {
-                int reflect = (int)(info.Damage * ThornReflectMult) + (int)(ThornReflectFlat * (1f + Growth));
-                int dir = attackerNpc.Center.X >= Player.Center.X ? 1 : -1;
-                Player.ApplyDamageToNPC(attackerNpc, reflect, 2f, dir, false);
+                BloomSnareNPC ledger = attackerNpc.GetGlobalNPC<BloomSnareNPC>();
+                if (ledger.ThornReflectReady) {
+                    ledger.StampThornReflect();
+                    int reflect = Math.Max(info.Damage, 0)
+                        + (int)Player.GetTotalDamage(DamageClass.Generic).ApplyTo(ThornReflectFlat);
+                    int dir = attackerNpc.Center.X >= Player.Center.X ? 1 : -1;
+                    Player.ApplyDamageToNPC(attackerNpc, reflect, 2f, dir, false);
+                }
             }
 
             TryLash(attackerNpc, sourceProj, info);
@@ -218,43 +234,48 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
                 threatDir = Player.Center.To(sourceProj.Center).SafeNormalize(fallback);
             }
 
-            //目标集合：攻击者优先，其余按距离补位
+            //目标集合：攻击者钉首位，其余按距离升序补位。
+            //单轮有界插入排序：原"藤数×全表"嵌套扫收敛为一趟全表(audit P4)
             int vineCount = 1 + (int)(Growth * 3f);
             Span<int> targets = stackalloc int[4];
+            Span<float> targetDist = stackalloc float[4];
             int found = 0;
+            int pinned = 0;
             if (attacker != null && attacker.CanBeChasedBy()) {
-                targets[found++] = attacker.whoAmI;
+                targets[found] = attacker.whoAmI;
+                targetDist[found] = -1f;//哨兵距离：攻击者永不被挤出
+                found++;
+                pinned = 1;
             }
-            for (int pass = found; pass < vineCount; pass++) {
-                int best = -1;
-                float bestDist = 1000f;
-                foreach (var npc in Main.ActiveNPCs) {
-                    if (!npc.CanBeChasedBy()) {
+            foreach (var npc in Main.ActiveNPCs) {
+                if (!npc.CanBeChasedBy() || (pinned == 1 && npc.whoAmI == targets[0])) {
+                    continue;
+                }
+                float dist = Player.Distance(npc.Center);
+                if (dist >= 1000f) {
+                    continue;
+                }
+                if (found >= vineCount) {
+                    //满员：不优于当前最远者就跳过，否则挤出末位
+                    if (found <= pinned || dist >= targetDist[found - 1]) {
                         continue;
                     }
-                    bool taken = false;
-                    for (int j = 0; j < found; j++) {
-                        if (targets[j] == npc.whoAmI) {
-                            taken = true;
-                            break;
-                        }
-                    }
-                    if (taken) {
-                        continue;
-                    }
-                    float dist = Player.Distance(npc.Center);
-                    if (dist < bestDist) {
-                        bestDist = dist;
-                        best = npc.whoAmI;
-                    }
+                    found--;
                 }
-                if (best < 0) {
-                    break;
+                int at = found;
+                while (at > pinned && targetDist[at - 1] > dist) {
+                    targets[at] = targets[at - 1];
+                    targetDist[at] = targetDist[at - 1];
+                    at--;
                 }
-                targets[found++] = best;
+                targets[at] = npc.whoAmI;
+                targetDist[at] = dist;
+                found++;
             }
 
-            int damage = (int)(LashBaseDamage * (1f + 2f * Growth));
+            //基数吃玩家总伤加成(框架 §1)，生长档 220~330
+            int damage = (int)Player.GetTotalDamage(DamageClass.Generic)
+                .ApplyTo(LashBaseDamage * (1f + LashGrowthScale * Growth));
             IEntitySource source = Player.GetSource_Accessory(SourceItem);
             for (int i = 0; i < vineCount; i++) {
                 Vector2 vel;
@@ -294,21 +315,34 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
             FogTimer = FogTime;
             RegenTimer = BloomNovaBurst.SwellTime + RegenBoostTime;
 
+            //开花即耗尽全部生长藤力：救急与反缠共享一条资源(养花—开花循环)。
+            //演出参数用消耗前的值，脚下花茎随归零自然萎缩
+            float bloomGrowth = Growth;
+            Growth = 0f;
+
             int heal = (int)(Player.statLifeMax2 * NovaHealRatio);
             Player.statLife = Math.Min(Player.statLife + heal, Player.statLifeMax2);
             Player.HealEffect(heal, true);
             //可见的再生指示走原版快速治愈图标，实际数值在 UpdateLifeRegen
             Player.AddBuff(BuffID.RapidHealing, BloomNovaBurst.SwellTime + RegenBoostTime);
 
+            //冲击波基数吃玩家总伤加成(框架 §1)，临爆前由弹幕逐帧校准
+            int waveDamage = (int)Player.GetTotalDamage(DamageClass.Generic).ApplyTo(BloomNovaBurst.WaveDamage);
             IEntitySource source = SourceItem != null
                 ? Player.GetSource_Accessory(SourceItem)
                 : Player.GetSource_FromThis();
             Projectile.NewProjectile(source, Player.Center, Vector2.Zero,
-                ModContent.ProjectileType<BloomNovaBurst>(), BloomNovaBurst.WaveDamage, 11f, Player.whoAmI, Growth);
+                ModContent.ProjectileType<BloomNovaBurst>(), waveDamage, 11f, Player.whoAmI, bloomGrowth);
         }
         #endregion
 
         #region 待机视觉
+        /// <summary>
+        /// 脚下花茎的生长前沿系数：owner 视角随生长值萎缩/重生(开花耗尽的可视反馈)；
+        /// 远端不知生长值(owner 本地资源)，恒 1 只按血量亮
+        /// </summary>
+        public float FeetGrowthVisual => Player.whoAmI == Main.myPlayer ? 0.3f + 0.7f * Growth : 1f;
+
         /// <summary>低血待机强度0~1：血越低越亮。远端不知道冷却，只按同步血量亮；owner冷却中压暗</summary>
         public float StandbyIntensity {
             get {

@@ -21,7 +21,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime
         public override string Texture => CWRConstant.VaultPlaceholder2;
         public override Terraria.Localization.LocalizedText DisplayName => this.GetLocalization("DisplayName", () => "棱镜光束");
 
-        internal const int BeamDamage = 85;
+        /// <summary>光束基伤(挂通用加成，owner 端逐帧刷新)</summary>
+        internal const int BeamDamage = 35;
         private const int ExpandTime = 8;
         private const int CollapseTime = 12;
         private const float MaxWidth = 22f;
@@ -48,6 +49,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime
         private Vector2 endA;
         private Vector2 endB;
         private Rectangle segmentBounds;
+        //quad 顶点成员缓存，免每帧分配
+        private readonly VertexPositionColorTexture[] beamVerts = new VertexPositionColorTexture[4];
 
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2400;
 
@@ -62,7 +65,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime
             Projectile.ignoreWater = true;
             Projectile.netImportant = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 12;
+            Projectile.localNPCHitCooldown = 15;//单束对同一目标每秒至多4割
         }
 
         private bool Collapsing => CollapseFlag || localCollapse;
@@ -125,6 +128,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime
                     && !Collision.CanHitLine(endA, 1, 1, endB, 1, 1)) {
                     StartCollapse();
                 }
+                //长寿命光束逐帧刷新伤害，吃到加成变化
+                Projectile.damage = (int)Main.player[Projectile.owner]
+                    .GetTotalDamage(DamageClass.Generic).ApplyTo(BeamDamage);
             }
             //远端兜底：端点没了就本地收线，不等包
             if (!endpointsValid && timer > 4) {
@@ -173,7 +179,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime
             segmentBounds = new Rectangle((int)minX, (int)minY, (int)(maxX - minX), (int)(maxY - minY));
         }
 
-        private void StartCollapse() {
+        /// <summary>进入收线(owner 端调用)：链拓扑变更时也由 ReconcileLinks 点名</summary>
+        internal void StartCollapse() {
             if (CollapseFlag) {
                 return;
             }
@@ -205,12 +212,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime
             float p = 0f;
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
                 endA, endB, beamWidth * 0.62f, ref p);
-        }
-
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (target.HasBuff(ModContent.BuffType<RefractionTag>())) {
-                modifiers.FinalDamage *= RefractionTag.DamageTakenMult;
-            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -260,7 +261,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime
             Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
             float halfW = beamWidth * 2.8f;
 
-            VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
+            VertexPositionColorTexture[] verts = beamVerts;
             verts[0] = new VertexPositionColorTexture((a + perp * halfW).ToVector3(), Color.White, new Vector2(0f, 0f));
             verts[1] = new VertexPositionColorTexture((a - perp * halfW).ToVector3(), Color.White, new Vector2(0f, 1f));
             verts[2] = new VertexPositionColorTexture((b + perp * halfW).ToVector3(), Color.White, new Vector2(1f, 0f));

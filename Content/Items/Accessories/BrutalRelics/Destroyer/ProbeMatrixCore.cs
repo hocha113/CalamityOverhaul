@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -14,9 +15,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
         /// <summary>编队规模</summary>
         internal const int ProbeCount = 5;
         /// <summary>探针激光基伤(通用伤害加成)</summary>
-        internal const int BoltDamage = 115;
-        /// <summary>轨道打击基伤(贯穿柱，单目标可吃多跳)</summary>
-        internal const int StrikeDamage = 1150;
+        internal const int BoltDamage = 55;
+        /// <summary>轨道打击基伤(贯穿柱，单目标至多两跳)</summary>
+        internal const int StrikeDamage = 900;
         /// <summary>标定满格所需命中层数</summary>
         internal const int DesignationNeed = 8;
         /// <summary>探针被击落后的重构延迟(2.5秒，与Tooltip口径一致)</summary>
@@ -44,10 +45,16 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
     /// <summary>
     /// 编队管理与标定结算，全部状态在实例字段。
     /// 编队维护/标定/呼叫打击只在所有者端执行，远端经弹幕同步看到结果；
-    /// 标定进度经队长探针 ai[2] 量化下发，供各端画标定光标
+    /// 标定进度经队长探针 ai[2] 量化下发，供各端画标定光标。
+    /// 帧级缓存(队内广播/击落粗筛)只是读法优化，ai 写入与同步路径照旧
     /// </summary>
     internal class ProbeMatrixPlayer : ModPlayer
     {
+        /// <summary>击落粗筛半径(px)，以玩家为心足以罩住编队活动圈</summary>
+        private const float ThreatSpan = 340f;
+        /// <summary>无标定目标时的重索敌节流(帧)</summary>
+        private const int RetargetPeriod = 12;
+
         /// <summary>本帧饰品生效，物品钩子逐帧点亮</summary>
         public bool MatrixActive;
         /// <summary>本帧装备的物品实例，仅作生成源</summary>
@@ -63,6 +70,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
         public int StrikeCooldownTimer;
         //无新命中时的标定衰减计时
         private int decayTimer;
+        //重索敌节流计时(仅无目标时生效)
+        private int retargetGate;
 
         //逐槽位重构倒计时
         private readonly int[] respawnTimers = new int[ProbeMatrixCore.ProbeCount];
@@ -71,9 +80,51 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
         //部署节流，防五枚同帧齐出
         private int spawnGate;
 
+        //—— 队内广播帧缓存：owner 由 UpdateSquad 顺手填，远端由首个探针填 ——
+        /// <summary>广播缓存填充帧(GameUpdateCount)</summary>
+        internal uint SquadCacheFrame;
+        /// <summary>全队最高量化标定进度(缓存)</summary>
+        internal float SquadProgressCache;
+        /// <summary>队长槽位(缓存)，int.MaxValue=无</summary>
+        internal int SquadLeadSlotCache = int.MaxValue;
+
+        //—— 击落粗筛帧缓存：owner 每帧单趟收集玩家周边敌对实体，探针只查短清单 ——
+        /// <summary>粗筛缓存填充帧</summary>
+        internal uint ThreatCacheFrame;
+        internal readonly List<int> ThreatNpcs = new(8);
+        internal readonly List<int> ThreatProjs = new(8);
+
         public override void ResetEffects() {
             MatrixActive = false;
             SourceItem = null;
+        }
+
+        /// <summary>
+        /// 队内广播缓存兜底：本帧尚未有人填(非 owner 端)则单趟填充。
+        /// 语义与逐探针自扫等价：队长=最小槽位，进度=全队 ai[2] 最大值
+        /// </summary>
+        internal void EnsureSquadCache() {
+            if (SquadCacheFrame == Main.GameUpdateCount) {
+                return;
+            }
+            SquadCacheFrame = Main.GameUpdateCount;
+            int droneType = ModContent.ProjectileType<ProbeDroneProj>();
+            float prog = 0f;
+            int lead = int.MaxValue;
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (proj.type != droneType || proj.owner != Player.whoAmI) {
+                    continue;
+                }
+                int slot = (int)proj.ai[0];
+                if (slot < lead) {
+                    lead = slot;
+                }
+                if (proj.ai[2] > prog) {
+                    prog = proj.ai[2];
+                }
+            }
+            SquadProgressCache = prog;
+            SquadLeadSlotCache = lead;
         }
 
         public override void UpdateDead() {
@@ -91,6 +142,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
             DesignationStacks = 0;
             decayTimer = 0;
             spawnGate = 0;
+            retargetGate = 0;
         }
 
         public override void PostUpdate() {
@@ -113,7 +165,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
                 StrikeCooldownTimer--;
             }
 
-            UpdateDesignationTarget();
+            ValidateDesignation();
+            ScanNpcTable();
             UpdateDesignationDecay();
             UpdateSquad();
             TryCallStrike();
@@ -121,13 +174,28 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
 
         #region 编队维护
 
+        /// <summary>
+        /// 编队维护(owner 每帧唯一一趟弹幕全表)：认领在场槽位、收集探针引用，
+        /// 顺手收集敌对弹幕威胁清单；ai 写入走收集到的 ≤5 个引用，不再二次全表
+        /// </summary>
         private void UpdateSquad() {
             Span<bool> aliveNow = stackalloc bool[ProbeMatrixCore.ProbeCount];
+            Span<int> slotProj = stackalloc int[ProbeMatrixCore.ProbeCount];
+            slotProj.Fill(-1);
             int droneType = ModContent.ProjectileType<ProbeDroneProj>();
             int leadSlot = -1;
             float progress = MathHelper.Clamp(DesignationStacks / (float)ProbeMatrixCore.DesignationNeed, 0f, 1f);
+            float quantized = (float)Math.Round(progress * 8f) / 8f;
+
+            ThreatCacheFrame = Main.GameUpdateCount;
+            ThreatProjs.Clear();
+            Rectangle vicinity = Utils.CenteredRectangle(Player.Center, new Vector2(ThreatSpan * 2f));
 
             foreach (Projectile proj in Main.ActiveProjectiles) {
+                //击落粗筛：敌对弹幕短清单(盒判包容大判定箱)
+                if (proj.hostile && proj.damage > 0 && proj.Hitbox.Intersects(vicinity)) {
+                    ThreatProjs.Add(proj.whoAmI);
+                }
                 if (proj.type != droneType || proj.owner != Player.whoAmI) {
                     continue;
                 }
@@ -136,31 +204,33 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
                     continue;
                 }
                 aliveNow[slot] = true;
+                slotProj[slot] = proj.whoAmI;
                 if (leadSlot < 0 || slot < leadSlot) {
                     leadSlot = slot;
                 }
+            }
 
-                //目标写进探针 ai[1]，变更才发包
+            //目标与量化进度写进探针 ai，变更才发包(同步语义不变：队长 ai[2] 仍是跨端进度真相)
+            for (int slot = 0; slot < slotProj.Length; slot++) {
+                if (slotProj[slot] < 0) {
+                    continue;
+                }
+                Projectile proj = Main.projectile[slotProj[slot]];
                 if ((int)proj.ai[1] != DesignatedTarget) {
                     proj.ai[1] = DesignatedTarget;
                     proj.netUpdate = true;
                 }
-            }
-
-            //标定进度量化写进队长 ai[2]，远端凭它画光标
-            if (leadSlot >= 0) {
-                float quantized = (float)Math.Round(progress * 8f) / 8f;
-                foreach (Projectile proj in Main.ActiveProjectiles) {
-                    if (proj.type != droneType || proj.owner != Player.whoAmI) {
-                        continue;
-                    }
-                    float want = (int)proj.ai[0] == leadSlot ? quantized : 0f;
-                    if (proj.ai[2] != want) {
-                        proj.ai[2] = want;
-                        proj.netUpdate = true;
-                    }
+                float want = slot == leadSlot ? quantized : 0f;
+                if (proj.ai[2] != want) {
+                    proj.ai[2] = want;
+                    proj.netUpdate = true;
                 }
             }
+
+            //队内广播缓存顺手填好，owner 端探针本帧直读免自扫
+            SquadCacheFrame = Main.GameUpdateCount;
+            SquadLeadSlotCache = leadSlot >= 0 ? leadSlot : int.MaxValue;
+            SquadProgressCache = leadSlot >= 0 ? quantized : 0f;
 
             if (spawnGate > 0) {
                 spawnGate--;
@@ -207,26 +277,44 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
 
         #region 标定
 
-        private void UpdateDesignationTarget() {
-            //既有目标校验：死亡/换型/超脱离半径都作废
-            if (DesignatedTarget >= 0) {
-                NPC current = Main.npc[DesignatedTarget];
-                bool valid = current.active && current.type == designatedType
-                    && current.CanBeChasedBy()
-                    && Player.Distance(current.Center) < ProbeMatrixCore.DropRange;
-                if (valid) {
-                    return;
-                }
-                DesignatedTarget = -1;
-                designatedType = -1;
-                DesignationStacks = 0;
+        /// <summary>既有目标 O(1) 校验：死亡/换型/超脱离半径都作废，作废帧放行一次立即重索</summary>
+        private void ValidateDesignation() {
+            if (DesignatedTarget < 0) {
+                return;
             }
+            NPC current = Main.npc[DesignatedTarget];
+            bool valid = current.active && current.type == designatedType
+                && current.CanBeChasedBy()
+                && Player.Distance(current.Center) < ProbeMatrixCore.DropRange;
+            if (valid) {
+                return;
+            }
+            DesignatedTarget = -1;
+            designatedType = -1;
+            DesignationStacks = 0;
+            retargetGate = 0;
+        }
 
-            //重新索敌，Boss优先
+        /// <summary>
+        /// owner 每帧唯一一趟 NPC 全表：击落粗筛威胁清单每帧收集；
+        /// 重索敌(Boss优先)只在节流拍顺手做，空场不再逐帧全扫
+        /// </summary>
+        private void ScanNpcTable() {
+            ThreatNpcs.Clear();
+            Rectangle vicinity = Utils.CenteredRectangle(Player.Center, new Vector2(ThreatSpan * 2f));
+
+            bool retarget = DesignatedTarget < 0;
+            if (retarget && --retargetGate > 0) {
+                retarget = false;
+            }
             int best = -1;
             float bestScore = float.MaxValue;
+
             foreach (NPC npc in Main.ActiveNPCs) {
-                if (!npc.CanBeChasedBy()) {
+                if (!npc.friendly && npc.damage > 0 && npc.Hitbox.Intersects(vicinity)) {
+                    ThreatNpcs.Add(npc.whoAmI);
+                }
+                if (!retarget || !npc.CanBeChasedBy()) {
                     continue;
                 }
                 float dist = Player.Distance(npc.Center);
@@ -240,6 +328,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
                 }
             }
 
+            if (!retarget) {
+                return;
+            }
+            retargetGate = RetargetPeriod;
             if (best >= 0) {
                 DesignatedTarget = best;
                 designatedType = Main.npc[best].type;

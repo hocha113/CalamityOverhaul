@@ -12,11 +12,20 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
     /// </summary>
     internal sealed class SwarmVortexRender : RenderHandle
     {
-        /// <summary>残酷遗物认领槽位</summary>
-        public override float Weight => 1.75f;
+        /// <summary>残酷遗物认领槽位 1.752（错开环境渲染 RimehollowRender 的 1.75）</summary>
+        public override float Weight => 1.752f;
+
+        /// <summary>蜡甲在场帧戳：玩家侧逐帧盖戳，据此跳过全员无蜡时的每绘制帧双轮全玩家扫描</summary>
+        internal static ActivityStamp ShellStamp;
+        //上帧画到过甲：暂停/时停中玩家更新停摆(戳过期)靠它继续扫，护膜不塌
+        private static bool lastAnyDrawn;
 
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
             if (Main.gameMenu) {
+                return;
+            }
+            //帧戳门：无人盖戳且上帧无甲，跳过全表扫(既有 anyShell 门保持在后)
+            if (!ShellStamp.ActiveWithin(3) && !lastAnyDrawn) {
                 return;
             }
 
@@ -28,6 +37,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
                     break;
                 }
             }
+            lastAnyDrawn = anyShell;
             if (!anyShell) {
                 return;
             }

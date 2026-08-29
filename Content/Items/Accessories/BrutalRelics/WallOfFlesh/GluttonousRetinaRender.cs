@@ -2,18 +2,23 @@
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
 {
     /// <summary>
     /// 视网膜锁定绘制层(权重槽 1.78)：
-    /// 1) 处刑窗口内被标记敌人头上的低强度虹膜准星(各端可见，状态由各端本地推得)；
+    /// 1) 处刑窗口内被标记敌人头上的低强度虹膜准星(各端可见，状态由各端本地推得，
+    ///    标记主人带月噬时准星褪灰提示吸血被封)；
     /// 2) 处刑命中瞬间的一次性红光锁定扫描闪(仅命中结算端=拥有者本地，观感反馈)。
     /// 两者共用 BRelicRetinaLock 着色器，uMode 区分常驻环与爆闪
     /// </summary>
     internal sealed class GluttonousRetinaRender : RenderHandle
     {
         public override float Weight => 1.78f;
+
+        /// <summary>活跃帧戳：有可见标记的 NPC 每帧盖戳(GlobalNPC.ResetEffects)，无戳跳过全表扫描</summary>
+        internal static ActivityStamp MarkStamp;
 
         /// <summary>爆闪时长(tick)</summary>
         private const int FlashLife = 16;
@@ -44,17 +49,24 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
                 return;
             }
 
-            //常驻标记准星：慢环呼吸 + 旋转刻度
-            foreach (NPC npc in Main.ActiveNPCs) {
-                GluttonousThroatGlobalNPC mark = npc.GetGlobalNPC<GluttonousThroatGlobalNPC>();
-                if (!mark.MarkVisible || !OnScreen(npc.Center, MarkSize)) {
-                    continue;
+            //常驻标记准星：慢环呼吸 + 旋转刻度(帧戳早退：无标记时不扫全表)
+            if (MarkStamp.ActiveWithin()) {
+                foreach (NPC npc in Main.ActiveNPCs) {
+                    GluttonousThroatGlobalNPC mark = npc.GetGlobalNPC<GluttonousThroatGlobalNPC>();
+                    if (!mark.MarkVisible || !OnScreen(npc.Center, MarkSize)) {
+                        continue;
+                    }
+                    float remain = MathHelper.Clamp(
+                        (mark.MarkUntil - (long)Main.GameUpdateCount) / (float)GluttonousThroatPlayer.MarkWindow, 0f, 1f);
+                    //标记主人带月噬＝吸血封禁，准星褪灰提示
+                    bool sealedByMoonBite = mark.MarkOwner >= 0 && mark.MarkOwner < Main.maxPlayers
+                        && Main.player[mark.MarkOwner]?.active == true
+                        && Main.player[mark.MarkOwner].HasBuff(BuffID.MoonLeech);
+                    DrawLockQuad(spriteBatch, effect, noise, npc.Center,
+                        MarkSize * (0.9f + npc.width / 120f), mode: 0f,
+                        progress: 1f - remain, intensity: 0.7f, seed: npc.whoAmI * 0.173f % 1f,
+                        seal: sealedByMoonBite ? 1f : 0f);
                 }
-                float remain = MathHelper.Clamp(
-                    (mark.MarkUntil - (long)Main.GameUpdateCount) / (float)GluttonousThroatPlayer.MarkWindow, 0f, 1f);
-                DrawLockQuad(spriteBatch, effect, noise, npc.Center,
-                    MarkSize * (0.9f + npc.width / 120f), mode: 0f,
-                    progress: 1f - remain, intensity: 0.7f, seed: npc.whoAmI * 0.173f % 1f);
             }
 
             //一次性处刑爆闪：跟随目标，目标没了停在原地收尾
@@ -80,12 +92,14 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
 
         /// <summary>Immediate 批画一片着色器方形面片(入场时无活动批，自开自收)</summary>
         private static void DrawLockQuad(SpriteBatch sb, Effect effect, Texture2D noise,
-            Vector2 worldCenter, float size, float mode, float progress, float intensity, float seed) {
+            Vector2 worldCenter, float size, float mode, float progress, float intensity, float seed,
+            float seal = 0f) {
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             effect.Parameters["uMode"]?.SetValue(mode);
             effect.Parameters["uProgress"]?.SetValue(MathHelper.Clamp(progress, 0f, 1f));
             effect.Parameters["uIntensity"]?.SetValue(intensity);
             effect.Parameters["seed"]?.SetValue(seed);
+            effect.Parameters["uSeal"]?.SetValue(MathHelper.Clamp(seal, 0f, 1f));
 
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap,
                 DepthStencilState.None, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);

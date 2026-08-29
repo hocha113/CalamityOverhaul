@@ -30,9 +30,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
         /// <summary>出招后冷却帧（逐臂错相形成轮转）</summary>
         internal const int StrikeCooldown = 22;
         /// <summary>挥击伤害＝武器面板伤害比例</summary>
-        internal const float MeleeDamageMul = 0.35f;
+        internal const float MeleeDamageMul = 0.24f;
         /// <summary>离子弹伤害比例</summary>
-        internal const float BoltDamageMul = 0.32f;
+        internal const float BoltDamageMul = 0.20f;
         /// <summary>展开动画帧数</summary>
         internal const int MaterializeFrames = 16;
         /// <summary>消散帧数</summary>
@@ -56,9 +56,12 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
         private float handRot;
         private int dissolveTimer;
         private int handFrame;
-        //挥击拖影：最近几帧手端位置角度
-        private readonly float[] smearAngles = new float[3];
+        //挥击拖影：最近几帧手端位置角度（5 槽，3 槽在高速挥时断帧）
+        private readonly float[] smearAngles = new float[5];
         private int smearCount;
+        //远端表现索敌缓存（8~10 帧节流，按臂错相）
+        private float remoteAimCache;
+        private uint remoteAimFrame;
 
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 800;
 
@@ -176,16 +179,21 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
             }
         }
 
-        /// <summary>owner 用光标，远端/服务器退最近敌人或朝向水平（纯表现）</summary>
+        /// <summary>owner 用光标，远端/服务器退最近敌人或朝向水平（纯表现，节流缓存防四臂每帧全表扫）</summary>
         private float AimAngle(Player owner) {
             if (Projectile.IsOwnedByLocalPlayer()) {
                 return owner.MountedCenter.To(Main.MouseWorld).ToRotation();
             }
-            NPC target = owner.Center.FindClosestNPC(600f);
-            if (target != null) {
-                return owner.MountedCenter.To(target.Center).ToRotation();
+            //9 帧左右刷新一次，四臂按 ArmIndex 错相摊开
+            if (remoteAimFrame != 0 && Main.GameUpdateCount - remoteAimFrame < 8 + (uint)ArmIndex) {
+                return remoteAimCache;
             }
-            return owner.direction >= 0 ? 0f : MathHelper.Pi;
+            remoteAimFrame = Main.GameUpdateCount;
+            NPC target = owner.Center.FindClosestNPC(600f);
+            remoteAimCache = target != null
+                ? owner.MountedCenter.To(target.Center).ToRotation()
+                : (owner.direction >= 0 ? 0f : MathHelper.Pi);
+            return remoteAimCache;
         }
 
         private static bool IsMeleeItem(Item item) {
@@ -255,14 +263,15 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
                 handPos = owner.MountedCenter + ang.ToRotationVector2() * radius;
                 handRot = ang + MathHelper.PiOver2;
 
-                //旋转拖影记账
+                //旋转拖影记账（满槽后前移一位续记）
                 if (smearCount < smearAngles.Length) {
                     smearAngles[smearCount++] = ang;
                 }
                 else {
-                    smearAngles[0] = smearAngles[1];
-                    smearAngles[1] = smearAngles[2];
-                    smearAngles[2] = ang;
+                    for (int k = 0; k < smearAngles.Length - 1; k++) {
+                        smearAngles[k] = smearAngles[k + 1];
+                    }
+                    smearAngles[^1] = ang;
                 }
                 //锯刃转帧 + 刃端火花
                 if (HandFrameCounts[ArmIndex] > 1) {
@@ -433,7 +442,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
             return false;
         }
 
-        /// <summary>骨节：BoneArm 沿 from→to 拉伸，rotation 契约同原版臂绘制</summary>
+        /// <summary>骨节：BoneArm 沿 from→to 按距离分节循环盖章（不再无上限纵向拉皮），末节按余长缩放</summary>
         private void DrawSegment(SpriteBatch sb, Effect shader, Texture2D tex,
             Vector2 from, Vector2 to, float ghost, float flicker, float alpha) {
             Vector2 along = to - from;
@@ -442,11 +451,18 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
                 return;
             }
             ApplyShader(shader, tex, new Vector2(0f, 1f), ghost, flicker, alpha);
-            sb.Draw(tex, from - Main.screenPosition, null,
-                shader == null ? OverloadCommandCore.IonCyan * (0.7f * alpha * ghost) : Color.White,
-                along.ToRotation() - MathHelper.PiOver2,
-                new Vector2(tex.Width * 0.5f, 0f),
-                new Vector2(0.9f, dist / tex.Height), SpriteEffects.None, 0f);
+            float rot = along.ToRotation() - MathHelper.PiOver2;
+            Vector2 dir = along / dist;
+            Color col = shader == null ? OverloadCommandCore.IonCyan * (0.7f * alpha * ghost) : Color.White;
+            float segH = tex.Height;
+            int segs = (int)MathF.Ceiling(dist / segH);
+            for (int i = 0; i < segs; i++) {
+                float start = i * segH;
+                float chunk = MathF.Min(segH, dist - start);
+                sb.Draw(tex, from + dir * start - Main.screenPosition, null, col, rot,
+                    new Vector2(tex.Width * 0.5f, 0f),
+                    new Vector2(0.9f, chunk / segH), SpriteEffects.None, 0f);
+            }
         }
 
         private void DrawHand(SpriteBatch sb, Effect shader, Texture2D tex, Rectangle frameRec,

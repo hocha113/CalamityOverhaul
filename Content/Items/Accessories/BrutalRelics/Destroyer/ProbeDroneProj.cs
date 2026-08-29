@@ -30,8 +30,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
         internal static readonly Color ThemeAmber = new(255, 150, 70);
         internal static readonly Color ThemeCore = new(255, 225, 185);
 
-        /// <summary>开火周期</summary>
-        internal const int FireInterval = 42;
+        /// <summary>开火周期(5机合计约5.6发/秒)</summary>
+        internal const int FireInterval = 54;
         /// <summary>周期末蓄力帧数</summary>
         internal const int ChargeFrames = 12;
         /// <summary>出生免击落帧数</summary>
@@ -91,13 +91,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
             Age++;
             spawnScale = 0.25f + 0.75f * VaultUtils.EaseOutCubic(Math.Min(Age / 14f, 1f));
 
-            ReadSquadBroadcast();
+            ReadSquadBroadcast(mp);
             bool hasTarget = TargetAlive(out NPC target);
 
             UpdateMovement(owner, hasTarget ? target : null);
             UpdatePosture(owner, hasTarget ? target : null);
             UpdateFire(owner, hasTarget ? target : null);
-            CheckShotDown();
+            CheckShotDown(mp);
 
             float heat = Math.Max(squadProgress, chargeT);
             Lighting.AddLight(Projectile.Center, ThemeBlood.ToVector3() * (0.28f + 0.3f * heat));
@@ -217,8 +217,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
 
         #region 击落与殉爆
 
-        /// <summary>敌怪撞击或敌对弹幕命中即击落，仅所有者端裁决</summary>
-        private void CheckShotDown() {
+        /// <summary>
+        /// 敌怪撞击或敌对弹幕命中即击落，仅所有者端裁决。
+        /// 候选来自 <see cref="ProbeMatrixPlayer"/> 单趟粗筛的短清单，不再逐探针扫全表
+        /// </summary>
+        private void CheckShotDown(ProbeMatrixPlayer mp) {
             if (Projectile.owner != Main.myPlayer || Age < SpawnGrace) {
                 return;
             }
@@ -226,22 +229,22 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
             if (((int)Age + Slot) % 2 != 0) {
                 return;
             }
+            //粗筛缓存非本帧(所有者 PostUpdate 未跑到)则跳过本拍
+            if (mp.ThreatCacheFrame != Main.GameUpdateCount) {
+                return;
+            }
 
             Rectangle box = Projectile.Hitbox;
-            foreach (NPC npc in Main.ActiveNPCs) {
-                if (npc.friendly || npc.damage <= 0) {
-                    continue;
-                }
-                if (npc.Hitbox.Intersects(box)) {
+            foreach (int idx in mp.ThreatNpcs) {
+                NPC npc = Main.npc[idx];
+                if (npc.active && npc.Hitbox.Intersects(box)) {
                     Projectile.Kill();
                     return;
                 }
             }
-            foreach (Projectile proj in Main.ActiveProjectiles) {
-                if (!proj.hostile || proj.damage <= 0) {
-                    continue;
-                }
-                if (proj.Hitbox.Intersects(box)) {
+            foreach (int idx in mp.ThreatProjs) {
+                Projectile proj = Main.projectile[idx];
+                if (proj.active && proj.hostile && proj.Hitbox.Intersects(box)) {
                     Projectile.Kill();
                     return;
                 }
@@ -291,24 +294,15 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
 
         #region 队内广播
 
-        /// <summary>读队长 ai[2] 的量化标定进度并判定自己是否队长，各端一致</summary>
-        private void ReadSquadBroadcast() {
-            squadProgress = 0f;
-            isLead = true;
-            foreach (Projectile proj in Main.ActiveProjectiles) {
-                if (proj.type != Type || proj.owner != Projectile.owner || proj.whoAmI == Projectile.whoAmI) {
-                    continue;
-                }
-                if ((int)proj.ai[0] < Slot) {
-                    isLead = false;
-                }
-                if (proj.ai[2] > squadProgress) {
-                    squadProgress = proj.ai[2];
-                }
-            }
-            if (Projectile.ai[2] > squadProgress) {
-                squadProgress = Projectile.ai[2];
-            }
+        /// <summary>
+        /// 读队长 ai[2] 的量化标定进度并判定自己是否队长，各端一致。
+        /// 走 <see cref="ProbeMatrixPlayer"/> 帧戳缓存：owner 端由编队维护顺手填好，
+        /// 其余端每帧首个探针填一次、其余直读——五探针不再各自扫全表
+        /// </summary>
+        private void ReadSquadBroadcast(ProbeMatrixPlayer mp) {
+            mp.EnsureSquadCache();
+            squadProgress = Math.Max(Projectile.ai[2], mp.SquadProgressCache);
+            isLead = Slot == mp.SquadLeadSlotCache;
         }
 
         private bool TargetAlive(out NPC target) {

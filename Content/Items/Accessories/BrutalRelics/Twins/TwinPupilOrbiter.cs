@@ -48,6 +48,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Twins
         private long consumedOrder;
         private int attackTimer;
         private float glintProgress;
+        //索敌缓存：全表扫5帧一趟，间隔帧只做便宜校验
+        private int cachedTargetIdx = -1;
+        private int retargetTimer;
 
         internal Color MainColor => IsLaserEye ? TwinPupilTether.LaserColor : TwinPupilTether.FlameColor;
         internal Color GlowColor => IsLaserEye ? TwinPupilTether.LaserGlow : TwinPupilTether.FlameGlow;
@@ -257,12 +260,26 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Twins
             }
         }
 
+        /// <summary>索敌：全表扫5帧一趟并缓存目标，间隔帧只做 O(1) 校验(视线在节流拍复查)</summary>
         private NPC FindTarget(float range, bool needLineOfSight) {
+            if (retargetTimer > 0) {
+                retargetTimer--;
+                if (cachedTargetIdx >= 0 && cachedTargetIdx < Main.maxNPCs) {
+                    NPC cached = Main.npc[cachedTargetIdx];
+                    if (cached.active && cached.CanBeChasedBy(Projectile)
+                        && Vector2.Distance(cached.Center, Projectile.Center) < range) {
+                        return cached;
+                    }
+                    cachedTargetIdx = -1;
+                }
+                return null;
+            }
+
+            retargetTimer = 5;
             NPC best = null;
             float bestDist = range;
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (!npc.active || !npc.CanBeChasedBy(Projectile)) {
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (!npc.CanBeChasedBy(Projectile)) {
                     continue;
                 }
                 float dist = Vector2.Distance(npc.Center, Projectile.Center);
@@ -275,6 +292,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Twins
                 best = npc;
                 bestDist = dist;
             }
+            cachedTargetIdx = best?.whoAmI ?? -1;
             return best;
         }
 

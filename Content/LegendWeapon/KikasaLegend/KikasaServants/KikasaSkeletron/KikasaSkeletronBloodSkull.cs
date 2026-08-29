@@ -67,7 +67,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             if (Life > HomingDelay) {
                 NPC target = TargetIndex >= 0 && TargetIndex < Main.maxNPCs ? Main.npc[TargetIndex] : null;
-                if (target?.active == true && target.CanBeChasedBy(Projectile)) {
+                //锁定即咬死：出手端选目标时已过可追猎判定，这里逐帧再问 CanBeChasedBy
+                //会在目标的短暂无敌窗（残酷 Boss 佯攻/锁血拍、木桩）上瞬间失锁，
+                //弹道退化成直线滑翔从目标下方掠过（反馈 #23）；存活且非友方就咬住不放
+                if (target?.active == true && target.life > 0 && !target.friendly) {
                     //咬合：转率随追猎时间爬升，速度复利到上限
                     float turn = MathHelper.Lerp(0.035f, 0.1f, MathHelper.Clamp((Life - HomingDelay) / 30f, 0f, 1f));
                     float wantAngle = (target.Center - Projectile.Center).ToRotation();

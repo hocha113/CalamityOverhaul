@@ -103,7 +103,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Twins
         }
     }
 
-    /// <summary>焚瞳的咒焰喷流。近距扩散减速火舌，膨胀判定+咒火点燃；本体不画，绿焰粒子承载</summary>
+    /// <summary>
+    /// 焚瞳的咒焰喷流。近距扩散减速火舌，膨胀判定+咒火点燃；
+    /// 本体在绘制层承载(根部亮核+速度拉伸条带)，dust 只做尖端撕裂
+    /// </summary>
     internal class TwinPupilFlameJet : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
@@ -141,15 +144,16 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Twins
                 return;
             }
 
-            //咒焰主体：绿火簇
-            for (int i = 0; i < 2; i++) {
-                Dust dust = Dust.NewDustDirect(
-                    Projectile.Center + Main.rand.NextVector2Circular(7f + progress * 13f, 7f + progress * 13f),
-                    4, 4, DustID.CursedTorch,
-                    Projectile.velocity.X * 0.4f, Projectile.velocity.Y * 0.4f, 100, default,
-                    Main.rand.NextFloat(1.3f, 2f));
+            //尖端噪声撕裂：火舌前缘低频撕裂粒，主体交给绘制层
+            Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            if (Main.rand.NextBool(2)) {
+                Dust dust = Dust.NewDustPerfect(
+                    Projectile.Center + dir * (10f + progress * 14f) + Main.rand.NextVector2Circular(4f, 4f),
+                    DustID.CursedTorch,
+                    dir.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)) * Main.rand.NextFloat(1.5f, 3.5f),
+                    100, default, Main.rand.NextFloat(1.1f, 1.7f));
                 dust.noGravity = true;
-                dust.fadeIn = 0.4f;
+                dust.fadeIn = 0.3f;
             }
             //热浪柔光
             if (Main.rand.NextBool(5)) {
@@ -181,7 +185,38 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Twins
             }
         }
 
-        public override bool PreDraw(ref Color lightColor) => false;
+        /// <summary>
+        /// 火舌本体：根部亮核锚在喷口侧+速度拉伸条带主体+前端渐散，
+        /// A=0 加色技法进实体批；判定层(penetrate/Resize)一律不碰
+        /// </summary>
+        public override bool PreDraw(ref Color lightColor) {
+            float progress = MathHelper.Clamp(Projectile.ai[0] / 68f, 0f, 1f);
+            float fade = 1f - progress * progress;//收尾渐熄
+            if (fade <= 0.02f) {
+                return false;
+            }
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Vector2 origin = glow.Size() / 2f;
+            float rot = dir.ToRotation() + MathHelper.PiOver2;//拉伸长轴取速度向
+            float flick = 1f + 0.16f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 34f + Projectile.whoAmI * 1.7f);
+
+            //外鞘：宽绿焰，随扩散变宽变淡
+            Main.EntitySpriteDraw(glow, drawPos - dir * 6f, null,
+                (TwinPupilTether.FlameColor with { A = 0 }) * (0.5f * fade),
+                rot, origin, new Vector2(0.34f + progress * 0.22f, 0.5f + progress * 0.25f) * flick,
+                SpriteEffects.None, 0);
+            //中层亮焰：条带主体
+            Main.EntitySpriteDraw(glow, drawPos, null,
+                (TwinPupilTether.FlameGlow with { A = 0 }) * (0.75f * fade),
+                rot, origin, new Vector2(0.2f, 0.42f + progress * 0.1f), SpriteEffects.None, 0);
+            //根部亮核：锚在喷口侧，白热收心
+            Main.EntitySpriteDraw(glow, drawPos - dir * (8f + progress * 8f), null,
+                (Color.White with { A = 0 }) * (0.85f * fade * flick),
+                rot, origin, new Vector2(0.15f, 0.2f), SpriteEffects.None, 0);
+            return false;
+        }
     }
 
     /// <summary>

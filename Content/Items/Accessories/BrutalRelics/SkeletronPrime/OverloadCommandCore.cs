@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -12,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
     /// <summary>
     /// 过载指令核心：机械骷髅王残酷遗物。
     /// 命中积累离子充能，充满进入离子过载窗口（攻速大增+命中链电弧+背后四臂虚影协同），
-    /// 窗口结束短暂过热。数值按机械 Boss 档位刻意超模（系列基调）
+    /// 窗口结束短暂过热。数值按平衡框架 §8 T3b 机械层级标定（二次重做后基调）
     /// </summary>
     internal class OverloadCommandCore : BaseBrutalRelic
     {
@@ -32,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
         /// <summary>过热时长（帧）＝3秒</summary>
         internal const int OverheatFrames = 180;
         /// <summary>过载攻速乘子（全 DamageClass，经 UseSpeedMultiplier）</summary>
-        internal const float OverloadUseSpeed = 1.45f;
+        internal const float OverloadUseSpeed = 1.30f;
         /// <summary>过热攻速乘子（轻微负面）</summary>
         internal const float OverheatUseSpeed = 0.92f;
         /// <summary>电弧链最短触发间隔（帧）</summary>
@@ -68,7 +69,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
     /// <summary>
     /// 过载指令核心玩家侧：离子充能记账与过载/过热状态机。<br/>
     /// 充能只在 owner 端入账（命中钩子本就跑在 owner，netcode §2.2），
-    /// 远端玩家不可见充能字符流，但四臂虚影/电弧均为真实弹幕经原版同步全端可见。<br/>
+    /// 四臂虚影/电弧均为真实弹幕经原版同步全端可见；
+    /// 字符流/漩涡/入场爆发经 <see cref="OverloadStateNet"/> 状态沿转播喂远端镜像
+    /// （纯表现镜像：远端本地推演倒计时，服务器不落状态）。<br/>
     /// 攻速走 <see cref="UseSpeedMultiplier"/> 正规通道（近战/远程/魔法/召唤全类覆盖）
     /// </summary>
     internal class OverloadCorePlayer : ModPlayer
@@ -77,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
         internal bool Equipped;
         private bool equippedLast;
 
-        /// <summary>离子充能 0~MaxCharge</summary>
+        /// <summary>离子充能 0~MaxCharge（远端为 25 一档的量化镜像）</summary>
         internal float IonCharge;
         /// <summary>过载窗口剩余帧，&gt;0 即窗口中</summary>
         internal int OverloadTimer;
@@ -93,6 +96,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
         internal float StreamPhase;
         //25/50/75 里程碑音效闩
         private int milestoneLatch;
+        //上次广播的充能档位（owner 端状态沿去重）
+        private int lastSentTier;
 
         internal bool OverloadActive => OverloadTimer > 0;
         internal bool Overheated => OverheatTimer > 0;
@@ -159,6 +164,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
             if (IonCharge >= OverloadCommandCore.MaxCharge) {
                 EnterOverload();
             }
+            else {
+                SyncChargeTier();
+            }
         }
 
         /// <summary>电弧链首段：从被击目标跳向最近敌人（无近邻则不出弧，单敌时四臂承伤）</summary>
@@ -184,21 +192,12 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
         private void EnterOverload() {
             IonCharge = 0f;
             milestoneLatch = 0;
+            lastSentTier = 0;
             OverloadTimer = OverloadCommandCore.OverloadFrames;
             BurstFlashTimer = 18;
 
-            //机械 Boss 战中天幕电光一闪（MachineEffect 自带 isServer/IsActive 门）
-            MachineEffect.TriggerSkyFlash(Player.Center, 1f);
-
-            if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Thunder with { Volume = 0.75f, Pitch = -0.1f }, Player.Center);
-                SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.9f, Pitch = 0.1f }, Player.Center);
-                SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.8f, Pitch = 0.6f }, Player.Center);
-                SpawnOverloadNova();
-                if (Player.whoAmI == Main.myPlayer) {
-                    Main.LocalPlayer?.CWR()?.GetScreenShake(4f);
-                }
-            }
+            PlayOverloadEntranceFx();
+            OverloadStateNet.SendState(Player.whoAmI, OverloadStateNet.StateOverload);
 
             //四臂虚影：真实弹幕，臂位随生成包出发（ai0=臂型，netcode §2.7 安全）
             if (Player.whoAmI == Main.myPlayer) {
@@ -210,9 +209,27 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
             }
         }
 
-        /// <summary>窗口结束进入过热：蒸汽嘶鸣，轻微负面</summary>
+        /// <summary>过载入场演出：天幕电光+三重音效+离子新星（本端播放，owner 与远端镜像共用一份）</summary>
+        internal void PlayOverloadEntranceFx() {
+            //机械 Boss 战中天幕电光一闪（MachineEffect 自带 isServer/IsActive 门）
+            MachineEffect.TriggerSkyFlash(Player.Center, 1f);
+
+            if (VaultUtils.isServer) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.Thunder with { Volume = 0.75f, Pitch = -0.1f }, Player.Center);
+            SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.9f, Pitch = 0.1f }, Player.Center);
+            SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.8f, Pitch = 0.6f }, Player.Center);
+            SpawnOverloadNova();
+            if (Player.whoAmI == Main.myPlayer) {
+                Main.LocalPlayer?.CWR()?.GetScreenShake(4f);
+            }
+        }
+
+        /// <summary>窗口结束进入过热：蒸汽嘶鸣，轻微负面（owner 与远端镜像各自倒数到点触发）</summary>
         private void EnterOverheat() {
             OverheatTimer = OverloadCommandCore.OverheatFrames;
+            OverloadStateNet.SendState(Player.whoAmI, OverloadStateNet.StateOverheat);
             if (VaultUtils.isServer) {
                 return;
             }
@@ -227,6 +244,45 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
             }
         }
 
+        //==================== 状态转播（纯表现，OverloadStateNet） ====================
+
+        /// <summary>owner 端充能档位沿变更广播（每跨 25 一档，升降都发）</summary>
+        private void SyncChargeTier() {
+            int tier = Math.Clamp((int)(IonCharge / 25f), 0, 4);
+            if (tier == lastSentTier) {
+                return;
+            }
+            lastSentTier = tier;
+            OverloadStateNet.SendState(Player.whoAmI, (byte)tier);
+        }
+
+        /// <summary>远端镜像入口：按状态码驱动本地表现状态机（无伤害权威，丢包只损失演出）</summary>
+        internal void ApplyRemoteState(byte state) {
+            switch (state) {
+                case OverloadStateNet.StateOverload:
+                    IonCharge = 0f;
+                    OverloadTimer = OverloadCommandCore.OverloadFrames;
+                    OverheatTimer = 0;
+                    BurstFlashTimer = 18;
+                    PlayOverloadEntranceFx();
+                    break;
+                case OverloadStateNet.StateOverheat:
+                    OverloadTimer = 0;
+                    //本地倒数常已先一步入过热（演出已播），此时只重锚计时防漂移
+                    if (OverheatTimer <= 0) {
+                        EnterOverheat();
+                    }
+                    else {
+                        OverheatTimer = OverloadCommandCore.OverheatFrames;
+                    }
+                    break;
+                default:
+                    //充能档位镜像（×25）：远端不走衰减，等下一档包重锚
+                    IonCharge = Math.Clamp((int)state, 0, 4) * 25f;
+                    break;
+            }
+        }
+
         //==================== 逐帧状态机 ====================
 
         public override void PostUpdate() {
@@ -237,9 +293,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
                     OverloadTimer = 0;
                     OverheatTimer = 0;
                     milestoneLatch = 0;
+                    lastSentTier = 0;
                 }
                 equippedLast = false;
                 TickSharedTimers();
+                StampRenderIfVisible();
                 return;
             }
             equippedLast = true;
@@ -257,15 +315,29 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
                 OverheatTimer--;
                 UpdateOverheatAmbience();
             }
-            else if (IonCharge > 0f && comboIdleTimer > OverloadCommandCore.ComboIdleLimit) {
-                //连击中断缓慢衰减
+            else if (Player.whoAmI == Main.myPlayer
+                && IonCharge > 0f && comboIdleTimer > OverloadCommandCore.ComboIdleLimit) {
+                //连击中断缓慢衰减（仅 owner：远端镜像持档等下一包重锚）
                 IonCharge = Math.Max(0f, IonCharge - OverloadCommandCore.ChargeDecay);
                 RollbackMilestone();
+                SyncChargeTier();
             }
 
             //字符流速率随充能/过载加快（本地表现，渲染层消费）
             float rate = OverloadTimer > 0 ? 0.11f : 0.012f + ChargeRatio * 0.05f;
             StreamPhase += rate;
+
+            StampRenderIfVisible();
+        }
+
+        /// <summary>渲染层帧戳：本玩家有可见状态即放行 RenderHandle 的全表扫描</summary>
+        private void StampRenderIfVisible() {
+            if (Main.dedServ) {
+                return;
+            }
+            if (IonCharge > 0.5f || OverloadTimer > 0 || OverheatTimer > 0 || BurstFlashTimer > 0) {
+                OverloadCommandRender.RenderStamp.Stamp();
+            }
         }
 
         private void TickSharedTimers() {
@@ -288,6 +360,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
             OverheatTimer = 0;
             BurstFlashTimer = 0;
             milestoneLatch = 0;
+            lastSentTier = 0;
         }
 
         //==================== 表现（全部 client-only） ====================
@@ -374,6 +447,56 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
                     OverloadCommandCore.HeatEmber, Main.rand.NextFloat(0.5f, 0.8f))
                     ?.Configure(true, Main.rand.Next(12, 20), Player);
             }
+        }
+    }
+
+    /// <summary>
+    /// 过载状态演出转播：owner 状态沿变更时发送（充能每跨 25 一档 / 入过载 / 入过热），
+    /// 服务器校验 whoAmI 防伪后转播，远端收包驱动字符流与入场爆发一拍。
+    /// 纯表现包（镜像 BlackFlashSigilNet 范式）：不携带任何伤害结算字段，
+    /// 服务器不落状态，丢包只损失演出无状态污染
+    /// </summary>
+    internal class OverloadStateNet : CWRNetChannel
+    {
+        /// <summary>状态码：0~4＝充能档位（×25），5＝入过载，6＝入过热</summary>
+        internal const byte StateOverload = 5;
+        internal const byte StateOverheat = 6;
+
+        public override void Receive(BinaryReader reader, int whoAmI) {
+            //先读净负载再守卫
+            int owner = reader.ReadByte();
+            byte state = reader.ReadByte();
+
+            if (Main.netMode == NetmodeID.Server) {
+                if (owner != whoAmI) {
+                    CWRMod.Instance.Logger.Info($"OverloadCommandCore state spoof dropped: claim={owner} actual={whoAmI}");
+                    return;
+                }
+                ModPacket relay = CWRNetWork.GetPacket<OverloadStateNet>();
+                relay.Write((byte)owner);
+                relay.Write(state);
+                relay.Send(ignoreClient: whoAmI);
+                return;
+            }
+            if (owner < 0 || owner >= Main.maxPlayers || owner == Main.myPlayer) {
+                return;
+            }
+            Player player = Main.player[owner];
+            if (player?.active != true || !player.TryGetModPlayer(out OverloadCorePlayer mp)) {
+                return;
+            }
+            mp.ApplyRemoteState(state);
+        }
+
+        /// <summary>owner 端状态沿发送（单人无包，本地演出已在触发处播放）</summary>
+        internal static void SendState(int owner, byte state) {
+            if (Main.netMode != NetmodeID.MultiplayerClient || owner != Main.myPlayer) {
+                return;
+            }
+            ModPacket packet = CWRNetWork.GetPacket<OverloadStateNet>();
+            packet.Write((byte)owner);
+            packet.Write(state);
+            packet.Send();
         }
     }
 }

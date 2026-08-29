@@ -17,19 +17,19 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
         internal const int MarkFadeTicks = 240;
         /// <summary>蜂涡基础持续(5s)</summary>
         internal const int VortexBaseTicks = 300;
-        /// <summary>蜂涡续时上限(10s)</summary>
-        internal const int VortexMaxTicks = 600;
+        /// <summary>蜂涡续时上限(8s)</summary>
+        internal const int VortexMaxTicks = 480;
         /// <summary>期间每次命中续时</summary>
         internal const int VortexExtendPerHit = 30;
         /// <summary>蜂噬单跳基础伤害(吃全伤害加成)</summary>
-        internal const int VortexHitDamage = 16;
-        /// <summary>蜂噬间隔(帧)，约每秒12跳</summary>
-        internal const int VortexHitInterval = 5;
+        internal const int VortexHitDamage = 18;
+        /// <summary>蜂噬间隔(帧)，每秒4跳</summary>
+        internal const int VortexHitInterval = 15;
         /// <summary>蜂巢背包(strongBees)协同倍率</summary>
         internal const float HivePackMult = 1.25f;
         /// <summary>蜜蜡甲吸收池上限</summary>
-        internal const float WaxMax = 60f;
-        /// <summary>静立每帧充蜡(75帧充满)</summary>
+        internal const float WaxMax = 30f;
+        /// <summary>静立每帧充蜡(约38帧充满)</summary>
         internal const float WaxChargePerTick = 0.8f;
         /// <summary>移动后蜡甲保留帧数(5s)</summary>
         internal const int WaxRetainTicks = 300;

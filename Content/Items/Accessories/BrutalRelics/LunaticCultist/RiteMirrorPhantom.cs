@@ -28,6 +28,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
         /// <summary>三轮齐射拍点</summary>
         private static readonly int[] VolleyTicks = [30, 58, 86];
         private const float OrbitRadius = 92f;
+        /// <summary>镜射伤害系数（复制攻击梯度：Prime 0.24 T3b &lt; 本件 0.40 T4b &lt; 克脑 0.5 T1 窗口）</summary>
+        private const float MirrorDamageFactor = 0.40f;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 30;
@@ -88,15 +90,16 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
             Lighting.AddLight(Projectile.Center, CultistMotion.PaleClone.ToVector3() * 0.3f);
         }
 
-        /// <summary>owner 端：解析当前武器弹幕并镜射，不可镜射时改射符文弹</summary>
+        /// <summary>owner 端：解析当前武器弹幕并镜射（伤害折 40%），不可镜射时改射符文弹</summary>
         private void FireVolley(Player owner, Vector2 aim) {
             if (TryResolveWeaponShot(owner, out int shoot, out float speed, out int damage, out float kb)) {
+                int mirrored = Math.Max(1, (int)(damage * MirrorDamageFactor));
                 Vector2 vel = aim.RotatedBy(Main.rand.NextFloat(-0.04f, 0.04f)) * speed;
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(),
-                    Projectile.Center + aim * 22f, vel, shoot, damage, kb, Projectile.owner);
+                    Projectile.Center + aim * 22f, vel, shoot, mirrored, kb, Projectile.owner);
             }
             else {
-                int boltDamage = (int)owner.GetTotalDamage(DamageClass.Generic).ApplyTo(150f);
+                int boltDamage = (int)owner.GetTotalDamage(DamageClass.Generic).ApplyTo(120f);
                 Vector2 vel = aim.RotatedBy(Main.rand.NextFloat(-0.05f, 0.05f)) * 13f;
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(),
                     Projectile.Center + aim * 22f, vel, ModContent.ProjectileType<RiteRuneBolt>(),

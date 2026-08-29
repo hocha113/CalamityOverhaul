@@ -14,10 +14,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Golem
 {
     /// <summary>
-    /// 日核重拳：向光标方向的巨型火焰拳，穿透，伤害随蓄能层数放大。
+    /// 日核重拳：向光标方向的巨型火焰拳，穿透，伤害随蓄能层数放大（24 层封顶）。
     /// 本体=原版石巨人拳贴图（不透明核心），叠 GolemMagmaVein 脉络与
     /// GolemThruster 尾焰；首个命中目标炸出日耀新星并向两侧掀起熔岩链爆。
-    /// ai[0]=蓄能层数（视觉体量用）
+    /// ai[0]=蓄能层数（视觉体量用） ai[1]=原地引拳标记（新星半径 +30%）
     /// </summary>
     internal class SolarCoreFistPunch : ModProjectile
     {
@@ -34,6 +34,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Golem
         private Vector2 muzzleDir;
 
         private int Stacks => (int)Projectile.ai[0];
+        private bool Braced => Projectile.ai[1] >= 1f;
         private float VisualScale => 1.45f + Math.Min(Stacks, 20) * 0.02f;
 
         public override void SetStaticDefaults() {
@@ -114,19 +115,22 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Golem
                 SoundEngine.PlaySound(SoundID.NPCHit41 with { Pitch = -0.3f, Volume = 0.9f }, target.Center);
             }
 
-            //主目标结算：日耀新星 + 双侧熔岩链爆（命中钩子只在所有者端运行，生成即同步）
+            //主目标结算：日耀新星（重拳 ×0.6）+ 双侧熔岩链爆（×0.25 ×6 段，左右各 3）。
+            //命中钩子只在所有者端运行，生成即同步。满层全链 2000+1200+6×500=6200 基伤
             if (novaFired) {
                 return;
             }
             novaFired = true;
 
             Vector2 impact = target.Center;
+            int novaDamage = (int)(Projectile.damage * 0.6f);
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), impact, Vector2.Zero,
-                ModContent.ProjectileType<SolarCoreNova>(), Projectile.damage, 8f, Projectile.owner);
+                ModContent.ProjectileType<SolarCoreNova>(), novaDamage, 8f, Projectile.owner,
+                Braced ? 1f : 0f);
 
-            int chainDamage = (int)(Projectile.damage * 0.55f);
+            int chainDamage = (int)(Projectile.damage * 0.25f);
             for (int side = -1; side <= 1; side += 2) {
-                for (int i = 1; i <= 4; i++) {
+                for (int i = 1; i <= 3; i++) {
                     Vector2 pos = new(impact.X + side * i * 115f, impact.Y);
                     pos.Y = ScanGroundY(pos);
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, Vector2.Zero,
@@ -285,7 +289,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Golem
 
     /// <summary>
     /// 日耀新星：重拳主目标命中处的太阳爆发（GolemSolarFlare CoreTech），
-    /// 展开期 260px 圆判定一次性结算，余辉带余烬。首帧各端本地推白闪/震屏（带距离门）
+    /// 展开期圆判定一次性结算（基础 260px，原地引拳 +30%），余辉带余烬。
+    /// 首帧各端本地推白闪/震屏（带距离门）。ai[0]=引拳标记
     /// </summary>
     internal class SolarCoreNova : ModProjectile
     {
@@ -293,12 +298,14 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Golem
 
         private const int TotalFrames = 40;
         private const int ExpandEnd = 14;
-        private const float MaxRadius = 260f;
+        private const float BaseRadius = 260f;
 
         private int Elapsed => TotalFrames - Projectile.timeLeft;
+        /// <summary>沉腰蓄劲奖励：引拳新星半径 +30%</summary>
+        private float MaxRadius => Projectile.ai[0] >= 1f ? BaseRadius * 1.3f : BaseRadius;
         private float Radius => MaxRadius * VaultUtils.EaseOutCubic(MathHelper.Clamp(Elapsed / (float)ExpandEnd, 0f, 1f));
 
-        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 700;
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 900;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 60;

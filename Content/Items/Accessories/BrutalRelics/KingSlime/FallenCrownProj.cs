@@ -64,7 +64,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
                     Projectile.Kill();
                     return;
                 }
-                Projectile.damage = 100 + (int)(8f * mp.FallTiles);
+                //碾压吃玩家总伤加成，计伤深度封顶40格(30~90基伤)
+                float hDmg = MathF.Min(mp.FallTiles, FallenKingsCrownPlayer.DamageCapTiles);
+                Projectile.damage = Math.Max(
+                    (int)owner.GetTotalDamage(DamageClass.Generic).ApplyTo(30f + 1.5f * hDmg), 1);
             }
 
             Projectile.timeLeft = 90;
@@ -135,6 +138,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
             Vector2 origin = crown.Size() * 0.5f;
             bool fast = FastDiving;
 
+            //结算冷却期间王冠压暗、光环停呼吸：可见充能(冷却仅所有者端计时，远端不暗)
+            bool cooling = Projectile.owner == Main.myPlayer
+                && Owner.GetModPlayer<FallenKingsCrownPlayer>().SlamCooldown > 0;
+            float dim = cooling ? 0.5f : 1f;
+
             //实体化包络：快速撑起带一点过冲回落
             float t = MathHelper.Clamp(Age / 12f, 0f, 1f);
             float settle = MathHelper.Clamp((Age - 12f) / 6f, 0f, 1f);
@@ -145,7 +153,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
             Effect fx = EffectLoader.BKSCrownFX?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
             if (fx != null && noise != null) {
-                DrawHalo(fx, noise, fast, t);
+                if (!cooling) {
+                    DrawHalo(fx, noise, fast, t);
+                }
                 DrawGuideColumn(fx, noise, fast);
             }
 
@@ -159,10 +169,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
                 }
             }
 
-            //本体+金属泽光(与Boss扣冠层同款双层画法)
+            //本体+金属泽光(与Boss扣冠层同款双层画法)，冷却期整体减半压暗
             Color light = Lighting.GetColor(Projectile.Center.ToTileCoordinates());
-            Main.EntitySpriteDraw(crown, pos, null, light, Projectile.rotation, origin, scale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(crown, pos, null, KingSlimeGelFX.CrownGold with { A = 0 } * 0.35f,
+            Main.EntitySpriteDraw(crown, pos, null, light * dim, Projectile.rotation, origin, scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(crown, pos, null, KingSlimeGelFX.CrownGold with { A = 0 } * (0.35f * dim),
                 Projectile.rotation, origin, scale * 1.03f, SpriteEffects.None, 0);
             return false;
         }
@@ -172,7 +182,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
             fx.CurrentTechnique = fx.Techniques["HaloTech"];
             fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
             fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-            fx.Parameters["uSeed"]?.SetValue(Projectile.whoAmI * 0.173f % 1f);
+            //identity跨端一致，噪声相位不因槽位漂移
+            fx.Parameters["uSeed"]?.SetValue(Projectile.identity * 0.173f % 1f);
             fx.Parameters["uOpacity"]?.SetValue((fast ? 0.68f : 0.42f) * growT);
             fx.Parameters["uProg"]?.SetValue(MathHelper.Clamp(Age / 14f, 0f, 1f));
             fx.Parameters["uLock"]?.SetValue(0f);
@@ -198,7 +209,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
             fx.CurrentTechnique = fx.Techniques["GuideTech"];
             fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
             fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-            fx.Parameters["uSeed"]?.SetValue(Projectile.whoAmI * 0.173f % 1f);
+            fx.Parameters["uSeed"]?.SetValue(Projectile.identity * 0.173f % 1f);
             fx.Parameters["uOpacity"]?.SetValue(fast ? 0.75f : 0.4f);
             fx.Parameters["uProg"]?.SetValue(MathHelper.Clamp(LocalFallPx / 16f / 40f, 0f, 1f));
             fx.Parameters["uLock"]?.SetValue(fast ? 1f : 0f);

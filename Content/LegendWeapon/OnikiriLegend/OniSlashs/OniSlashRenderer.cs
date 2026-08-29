@@ -7,8 +7,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
 {
     /// <summary>
     /// 鬼门开缝共享渲染,斩痕定义/真投影几何/扫掠生命周期<br/>
-    /// 语法=主流 ARPG 扫掠光刃:刃头带着揭开沿弧扫过(3~6帧,爆发起步减速落位)
-    /// →满形定格闪(money frame,过冲落定)→尾端先蚀的定向消散;几何落位后冻结<br/>
+    /// 语法=刀为主驱的扫掠光刃:刀先鞭过拉背段(缝全藏),随后缝头跟着刀锋撕开,
+    /// 共用 <see cref="BurstCurve"/> 冲过冲再落定→落位帧满形闪(money frame)
+    /// →尾端先蚀的定向消散;几何落位后冻结<br/>
     /// 几何=刀刃扫过的环带:外缘=刀尖轨迹(锐利),内缘=软融;径向宽度≈半径40%(阔剑体量)<br/>
     /// 刀身/碰撞/光刃全部从 <see cref="ProjectLocal"/> 同源采样,刃头与刀走同一条揭开曲线<br/>
     /// 鬼门身份只住在终结拍:满形定格时外缘豁开黑缝+魂火,消散初段闭合
@@ -33,6 +34,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
             public float PeakU;          //带宽峰值位置(0..1沿刃)
             public float PowIn;          //入锋锐度指数(大=更尖更久)
             public float PowOut;         //收锋锐度指数(小=肥撕)
+            /// <summary>拉背角占总行程比(0..0.9),开火时由几何算出;
+            /// 爆发曲线前段是刀追赶缝起点的纯鞭击,缝保持隐藏</summary>
+            public float WindupFrac;
             //==== 时间轴(帧,相对出生) ====
             public int GatherFrames;     //S0 蓄势帧数
             public int SweepFrames;      //S1 扫掠帧数(刃带头揭开)
@@ -115,9 +119,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
         private const int DetailStepFrames = 3;
         private const float DetailStepPhase = 0.1573f;
 
-        /// <summary>刃头揭开曲线,爆发起步减速落位(与实体刀共用)</summary>
-        public static float HeadCurve(in RiftDef d, int sinceSweep)
-            => EaseOutQuad((sinceSweep + 1) / (float)Math.Max(d.SweepFrames, 1));
+        /// <summary>爆发曲线峰值过冲倍率</summary>
+        public const float BurstOvershoot = 1.05f;
+        /// <summary>爆发曲线冲顶位置(行程占比),其后回坐落定</summary>
+        private const float BurstEnd = 0.62f;
+
+        /// <summary>
+        /// 爆发行程曲线(刀与缝共用同一条,因果由构造保证):
+        /// smoothstep 冲到 <see cref="BurstOvershoot"/> 过冲,再回坐落定 1;
+        /// 替代旧 EaseOutQuad 的减速尾("砰—然后拖"是没力的直接根源)
+        /// </summary>
+        public static float BurstCurve(float p) {
+            p = MathHelper.Clamp(p, 0f, 1f);
+            if (p < BurstEnd) {
+                return BurstOvershoot * SmoothStep01(p / BurstEnd);
+            }
+            return MathHelper.Lerp(BurstOvershoot, 1f, SmoothStep01((p - BurstEnd) / (1f - BurstEnd)));
+        }
+
+        /// <summary>落位帧(相对扫掠起始):曲线首次冲满 1 的那帧,满形闪/落位火花/尺寸脉冲都锚这里</summary>
+        public static int LandingFrame(in RiftDef d) {
+            int frames = Math.Max(d.SweepFrames, 1);
+            for (int i = 0; i < frames; i++) {
+                if (BurstCurve((i + 1) / (float)frames) >= 1f) {
+                    return i;
+                }
+            }
+            return frames - 1;
+        }
+
+        /// <summary>曲线值→缝头位置:扣掉鞭击段(刀在追赶缝起点)后归一化,过冲最多推到 1.08</summary>
+        public static float HeadUFromCurve(in RiftDef d, float c) {
+            float windupFrac = MathHelper.Clamp(d.WindupFrac, 0f, 0.9f);
+            float u = (c - windupFrac) / MathF.Max(1f - windupFrac, 0.1f);
+            return MathHelper.Clamp(u, 0f, 1.08f);
+        }
 
         /// <summary>扫掠生命周期状态,落位后几何冻结,消散只走材质</summary>
         public static RiftAnim Anim(in RiftDef d, int lt) {
@@ -136,13 +172,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
             }
 
             if (lt < holdStart) {
-                //S1 扫掠,刃带着光刃头走;落位帧106%过冲+满形闪起
+                //S1 扫掠,缝头与刀共用爆发曲线:鞭击段全藏→撕开→过冲→回坐;
+                //几何过冲随曲线冲顶回坐,满形闪锚在落位帧(首次冲满)
                 int since = lt - sweepStart;
-                a.HeadU = HeadCurve(in d, since);
+                float c = BurstCurve((since + 1) / (float)Math.Max(d.SweepFrames, 1));
+                a.HeadU = HeadUFromCurve(in d, c);
+                if (a.HeadU <= 0.001f) {
+                    //鞭击帧缝还没现身,应力线不熄,等缝头接管防闪断
+                    a.Telegraph = d.TelegraphAmt;
+                }
                 a.Lead = 1f;
-                if (since == d.SweepFrames - 1) {
-                    a.Overshoot = 1.06f;
+                a.Overshoot = MathF.Max(1f, c);
+                int landing = LandingFrame(in d);
+                if (since == landing) {
                     a.Flash = 1f;
+                }
+                else if (since > landing) {
+                    a.Flash = MathF.Pow(0.48f, since - landing);
+                    if (a.Flash < 0.04f) {
+                        a.Flash = 0f;
+                    }
                 }
                 return a;
             }
@@ -151,9 +200,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
             a.HeadU = 1.08f;
             a.GateT = d.GateOpen;
             if (lt < dissolveStart) {
-                //S2 满形定格(money frame),闪速落,刃头线熄,细节步进重掷
+                //S2 满形定格,闪自落位帧起连续衰减,刃头线熄,细节步进重掷
                 int hs = lt - holdStart;
-                a.Flash = MathF.Pow(0.48f, hs + 1);
+                a.Flash = MathF.Pow(0.48f, d.SweepFrames - LandingFrame(in d) + hs);
                 if (a.Flash < 0.04f) {
                     a.Flash = 0f;
                 }

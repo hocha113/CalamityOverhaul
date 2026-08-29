@@ -23,8 +23,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
 {
     /// <summary>
     /// 鬼门开缝,按住左键滚动五段连段控制器(绯红裂空斩的平行普攻,材质=撕开世界膜)<br/>
-    /// 连段状态机/铭刻/役鬼/教程集成与绯红裂空斩行为一致,表现层为主流扫掠光刃语法:<br/>
-    /// S0 蓄势(应力线预告)→S1 刃带头扫掠(3~6帧,爆发起步减速落位)→S2 满形定格闪→S3 尾蚀定向消散<br/>
+    /// 连段状态机/铭刻/役鬼/教程集成与绯红裂空斩行为一致,表现层为刀主驱的扫掠光刃语法:<br/>
+    /// S0 拉背蓄势(应力线预告,重拍末尾死寂谷)→S1 爆发:刀先鞭过拉背段(缝全藏,残影扛速度),
+    /// 随后缝头跟着刀锋撕开,共用 BurstCurve 冲过冲再落定→S2 落位帧满形闪→S3 尾蚀定向消散<br/>
     /// 形状升级链:拍0/1 直线斩缝组X→拍2 首记月牙→拍3 大月牙带力点→拍4 巨弧鬼门大开<br/>
     /// 刀身/缝带/碰撞共用真投影几何源;命中停顿冻结整张画(Birth顺延)<br/>
     /// ai[0]=初始瞄准角(弧度) ai[2]=尺寸倍率
@@ -57,6 +58,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
         private static Vector2 BladeTipUV => new(0.73f, 0.01f);
         /// <summary>各拍到下一拍基准间隔(攻速 1),末位终结后循环呼吸</summary>
         private static readonly int[] BeatGap = [10, 10, 13, 15, 24];
+        /// <summary>每拍拉背角(rad):爆发前刀抬进背后这里,蓄势对比是力量感的来源(调参旋钮)</summary>
+        private static readonly float[] WindupRad = [0.90f, 0.90f, 1.10f, 1.40f, 1.70f];
+        /// <summary>蓄势末尾死寂帧数(角度冻结只留微颤),死寂谷框住爆发;仅重拍(调参旋钮)</summary>
+        private static readonly int[] GatherStillFrames = [0, 0, 0, 1, 2];
         /// <summary>快斩收势轻确认(白闪/火花/音高/是否命中型白闪)</summary>
         private static readonly (float Flash, int Sparks, float Pitch, bool HitFlash)[] PingTable = [
             (0.02f, 6, 0.50f, false),
@@ -150,7 +155,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
         private float bladeScalePulse;
         //==== 爆发态 ====
         private bool bladeInBurst;          //本帧处于撕开跨越段
-        private float bladeSpeedFade;       //角速度包络,峰值期本体让位残迹
+        private float bladeSpeedFade;       //角速度包络,峰值期本体轻微调淡
+        //==== 挥砍残影(纯视觉运动记录,顿帧随整画冻结) ====
+        private struct BladeGhost
+        {
+            public float Rotation;
+            public int Facing;
+            public bool EdgeFlip;
+            public float Stretch;
+            public float Strength;
+            public int Life;
+        }
+        /// <summary>残影寿命(帧);数量=缓冲长度,间距由角速度自然拉开(调参旋钮)</summary>
+        private const int GhostLifeFrames = 6;
+        private readonly BladeGhost[] ghosts = new BladeGhost[6];
+        private int ghostHead;
         //==== 全身体态(纯视觉,由刀时间轴确定性导出,不上网络) ====
         private float bodyLean;
         private bool bodyLeanApplied;
@@ -226,7 +245,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
         /// 拍0/1 镜像对角直痕组X(长度读作速度)→拍2 首记压扁月牙→拍3 舀击大月牙(入锋尖收锋肥撕)
         /// →拍4 巨弧终结鬼门大开+魂火<br/>
         /// 阔剑体量:带宽(环带径向深度)≈半径40%,轻拍72px→终结195px;
-        /// 扫掠帧数=挥舞可见时长,轻拍3帧重拍5~6帧,刃带着光走<br/>
+        /// 扫掠帧数=挥舞可见时长(前 1~2 帧是刀追赶缝起点的鞭击段),轻拍4帧重拍5~6帧<br/>
         /// Seed 掺入出生帧防循环同噪声;深度剖面笔画固定不随朝向镜像
         /// </summary>
         private RiftDef BuildBeatDef(int beat, float a, float f, float s) {
@@ -236,8 +255,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
                     Mode = 1f, Rot = a + f * 0.44f, R = 195f * s, LineZSlope = 0.30f,
                     OffsetAlongAim = 108f * s,
                     Flip = f, BandMax = 72f * s, PeakU = 0.60f, PowIn = 1.45f, PowOut = 0.80f,
-                    GatherFrames = 2, SweepFrames = 3, HoldFrames = 2, Life = 16,
-                    DamageStart = 2, DamageEnd = 8,
+                    GatherFrames = 2, SweepFrames = 4, HoldFrames = 2, Life = 16,
+                    DamageStart = 2, DamageEnd = 9,
                     TelegraphAmt = 0f, GateOpen = 0f, EmberAmt = 0f, FarDim = 0.72f, Opacity = 0.94f,
                 },
                 //1 反手镜像斜切,X第二笔,稍长
@@ -245,8 +264,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
                     Mode = 1f, Rot = a - f * 0.44f, R = 215f * s, LineZSlope = -0.30f,
                     OffsetAlongAim = 118f * s,
                     Flip = -f, BandMax = 78f * s, PeakU = 0.58f, PowIn = 1.45f, PowOut = 0.80f,
-                    GatherFrames = 2, SweepFrames = 3, HoldFrames = 2, Life = 16,
-                    DamageStart = 2, DamageEnd = 8,
+                    GatherFrames = 2, SweepFrames = 4, HoldFrames = 2, Life = 16,
+                    DamageStart = 2, DamageEnd = 9,
                     TelegraphAmt = 0f, GateOpen = 0f, EmberAmt = 0f, FarDim = 0.72f, Opacity = 0.96f,
                 },
                 //2 首记月牙,贯通面压扁0.60,腹部朝目标中心后拉
@@ -439,11 +458,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
             return MathHelper.Clamp(raw, floor, ceil);
         }
 
-        /// <summary>体态倾斜幅度(rad);仅后两重拍(蓄势/终结)前倾发力,前三拍直立</summary>
+        /// <summary>体态倾斜幅度(rad),全拍生效按拍重分级:蓄势后仰爆发前甩;
+        /// 轻拍幅度是调参旋钮,读着吵就归零对比</summary>
         private static float BeatLeanAmp(int beat) => beat switch {
+            0 => 0.035f,
+            1 => 0.04f,
+            2 => 0.06f,
             3 => 0.12f,
-            4 => 0.17f,
-            _ => 0f,
+            _ => 0.17f,
         };
 
         /// <summary>深度→亮度,身后压暗至~0.72</summary>
@@ -647,8 +669,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
                 return;
             }
 
+            RiftDef def = BuildBeatDef(beat, aim, flip, sizeMul);
+            //拉背角占总行程比:几何定出路径角跨度后冻结进 Def,缝的鞭击隐藏段与刀共用这一份
+            float defStartRot = BladePathRotation(in def, aim, (int)flip, BladePathStart);
+            float defEndRot = BladePathRotation(in def, aim, (int)flip, BladePathEnd);
+            float defSpan = MathF.Abs(MathHelper.WrapAngle(defEndRot - defStartRot));
+            def.WindupFrac = WindupRad[beat] / MathF.Max(WindupRad[beat] + defSpan, 0.1f);
+
             ActiveRift active = new() {
-                Def = BuildBeatDef(beat, aim, flip, sizeMul),
+                Def = def,
                 Birth = timer,
                 Beat = beat,
                 Aim = aim,
@@ -718,12 +747,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
         }
 
         /// <summary>
-        /// 实体刀姿态时间轴(纯视觉),收势反拉→扫掠(刃带光刃头走)→停驻静止谷→松手收刀<br/>
-        /// 角度/深度/轴向缩放全部从投影几何源导出
+        /// 实体刀姿态时间轴(纯视觉),拉背蓄势(重拍末死寂)→鞭击爆发(缝头随刀,过冲回坐)
+        /// →停驻静止谷→松手收刀<br/>
+        /// 角度/深度/轴向缩放全部从投影几何源导出,行程曲线与缝共用 BurstCurve
         /// </summary>
         private void UpdateBladePose() {
             bladeInBurst = false;
             bladeSpeedFade *= 0.55f;
+            DecayGhosts();
 
             //硬让位期间藏刀
             if (yielding) {
@@ -760,12 +791,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
                 int windFrames = FirstWindupFrames;
                 float windT = OSR.EaseOutCubic(MathHelper.Clamp(firstWindupTicks / (float)Math.Max(windFrames, 1), 0f, 1f));
                 targetRotation = hasHandoff
-                    ? OniBladePose.LerpAngle(handoffRot, startRot - sweepSign * 0.55f, windT)
-                    : startRot - sweepSign * 0.55f * windT;
+                    ? OniBladePose.LerpAngle(handoffRot, startRot - sweepSign * WindupRad[0], windT)
+                    : startRot - sweepSign * WindupRad[0] * windT;
                 targetDepth = MathHelper.Lerp(0.15f, -0.60f, windT);
                 targetStretch = 0.86f;
                 stretchArm = Player.CompositeArmStretchAmount.ThreeQuarters;
-                //首拍起手不前倾,体态留给后两重拍
+                //起手随拉背微后仰,幅度走拍0档
+                leanTarget = -facing * BeatLeanAmp(0) * 0.6f;
+                leanRate = 0.30f;
             }
             else if (actives.Count == 0) {
                 if (scheduling && hasHandoff && timer < nextBeatTime) {
@@ -777,13 +810,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
                     RiftDef next = BuildBeatDef(comboIndex, aim, facing, sizeMul);
                     bladeEdgeFlip = EdgeFlipOf(in next, aim, facing);
                     float startRot = BladePathRotation(in next, aim, facing, BladePathStart);
+                    float sweepSign = PathSweepSign(in next, aim, facing);
                     float windT = OSR.EaseOutCubic(
                         1f - (nextBeatTime - timer) / (float)RestartWindupFrames);
-                    targetRotation = OniBladePose.LerpAngle(handoffRot, startRot, windT);
+                    //先拉进半程拉背位,开火后真正的蓄势相接着拉满
+                    targetRotation = OniBladePose.LerpAngle(handoffRot
+                        , startRot - sweepSign * WindupRad[comboIndex] * 0.5f, windT);
                     targetDepth = MathHelper.Lerp(-0.20f, -0.45f, windT);
                     targetStretch = 0.88f;
                     stretchArm = Player.CompositeArmStretchAmount.ThreeQuarters;
-                    //仅即将进入后两重拍时微前倾蓄力
+                    //随拉背微后仰蓄力,幅度按拍重分级
                     float nextLean = BeatLeanAmp(comboIndex);
                     if (nextLean > 0f) {
                         leanTarget = -facing * nextLean * 0.4f;
@@ -809,27 +845,65 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
                 float leanAmp = BeatLeanAmp(a.Beat);
 
                 if (lt < sweepStart) {
-                    //B1 收势,自上一停驻位反拉上膛;斩痕侧只有应力线
-                    float gT = OSR.EaseOutCubic((lt + 1) / (float)(sweepStart + 1));
+                    //B1 蓄势,自上一停驻位反拉进拉背位;重拍末尾死寂谷(角度冻结只留微颤)框住爆发
                     float startRot = BladePathRotation(in a.Def, a.Aim, a.Facing, BladePathStart);
                     float sweepSign = PathSweepSign(in a.Def, a.Aim, a.Facing);
-                    float pull = a.Beat >= 3 ? 0.62f : 0.38f;
-                    float chamberRot = a.HasGatherFrom ? a.GatherFromRot : startRot - sweepSign * pull * 0.5f;
-                    targetRotation = LerpAngle(chamberRot, startRot - sweepSign * pull, gT);
-                    targetDepth = MathHelper.Lerp(a.HasGatherFrom ? a.GatherFromDepth : 0f, -0.55f, gT);
-                    targetStretch = MathHelper.Lerp(0.94f, 0.84f, gT);
+                    float windupRot = startRot - sweepSign * WindupRad[a.Beat];
+                    int moveFrames = Math.Max(1, sweepStart - GatherStillFrames[a.Beat]);
+                    if (lt < moveFrames) {
+                        float gT = OSR.EaseOutCubic((lt + 1) / (float)moveFrames);
+                        float chamberRot = a.HasGatherFrom
+                            ? a.GatherFromRot
+                            : startRot - sweepSign * WindupRad[a.Beat] * 0.5f;
+                        targetRotation = LerpAngle(chamberRot, windupRot, gT);
+                        targetDepth = MathHelper.Lerp(a.HasGatherFrom ? a.GatherFromDepth : 0f, -0.55f, gT);
+                        targetStretch = MathHelper.Lerp(0.94f, 0.84f, gT);
+                    }
+                    else {
+                        //死寂谷:蓄满的静止里只有指尖发颤,静默买爆发
+                        targetRotation = windupRot + sweepSign * 0.018f * MathF.Sin(timer * 1.9f);
+                        targetDepth = -0.55f;
+                        targetStretch = 0.84f;
+                    }
                     stretchArm = Player.CompositeArmStretchAmount.ThreeQuarters;
                     leanTarget = -a.Facing * leanAmp * 0.9f;
                     leanRate = 0.35f;
                 }
                 else if (lt < holdStart) {
-                    //B2 扫掠,刃带着光刃头走同一条揭开曲线(爆发起步减速落位);深度走路径真实z
+                    //B2 爆发:刀先鞭过拉背段(缝全藏,残影扛速度),随后刀锋恰在缝头上;
+                    //刀与缝共用 BurstCurve,过冲随曲线回坐,落位帧尺寸脉冲
                     bladeInBurst = true;
-                    float headU = OSR.HeadCurve(in a.Def, lt - sweepStart);
-                    float edgeU = MathHelper.Lerp(BladePathStart, BladePathEnd, headU);
-                    targetRotation = BladePathRotation(in a.Def, a.Aim, a.Facing, edgeU);
-                    targetDepth = BladePathDepth(in a.Def, a.Aim, edgeU);
-                    targetStretch = StretchOf(in a.Def, edgeU, burst: true);
+                    int since = lt - sweepStart;
+                    float c = OSR.BurstCurve((since + 1) / (float)Math.Max(a.Def.SweepFrames, 1));
+                    float windupFrac = MathHelper.Clamp(a.Def.WindupFrac, 0f, 0.9f);
+                    float uProg = (c - windupFrac) / MathF.Max(1f - windupFrac, 0.1f);
+                    float startRot = BladePathRotation(in a.Def, a.Aim, a.Facing, BladePathStart);
+                    float sweepSign = PathSweepSign(in a.Def, a.Aim, a.Facing);
+                    if (uProg <= 0f) {
+                        //鞭击段,拉背角内直线追赶缝起点
+                        float whipT = windupFrac > 0.001f ? MathHelper.Clamp(c / windupFrac, 0f, 1f) : 1f;
+                        targetRotation = startRot - sweepSign * WindupRad[a.Beat] * (1f - whipT);
+                        targetDepth = MathHelper.Lerp(-0.55f
+                            , BladePathDepth(in a.Def, a.Aim, BladePathStart), whipT);
+                        targetStretch = StretchOf(in a.Def, BladePathStart, burst: true);
+                    }
+                    else {
+                        float edgeU = MathHelper.Lerp(BladePathStart, BladePathEnd, Math.Min(uProg, 1f));
+                        targetRotation = BladePathRotation(in a.Def, a.Aim, a.Facing, edgeU);
+                        if (uProg > 1f) {
+                            //角度过冲,幅度随路径角跨度走并设上限,随曲线回坐
+                            float endRot = BladePathRotation(in a.Def, a.Aim, a.Facing, BladePathEnd);
+                            float pathSpan = MathF.Abs(MathHelper.WrapAngle(endRot - startRot));
+                            float overRad = MathF.Min(0.16f, pathSpan * 0.05f);
+                            targetRotation += sweepSign * overRad
+                                * MathHelper.Clamp((c - 1f) / (OSR.BurstOvershoot - 1f), 0f, 1f);
+                        }
+                        targetDepth = BladePathDepth(in a.Def, a.Aim, edgeU);
+                        targetStretch = StretchOf(in a.Def, edgeU, burst: true);
+                    }
+                    if (since == OSR.LandingFrame(in a.Def)) {
+                        bladeScalePulse = MathF.Max(bladeScalePulse, 0.07f);
+                    }
                     leanTarget = a.Facing * leanAmp * 1.35f;
                     leanRate = 0.80f;
                 }
@@ -898,11 +972,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
 
             bladePrevRotation = bladeRotation;
             bladeRotation = targetRotation + recoilOffset;
-            //角速度包络,峰值期刀体略淡(主流语法:武器挥动中保持可见,光刃头就是刀)
+            //角速度包络只轻微调淡刀体,运动记录交给残影
             float absDelta = MathF.Abs(MathHelper.WrapAngle(bladeRotation - bladePrevRotation));
             bladeSpeedFade = MathF.Max(bladeSpeedFade, MathHelper.Clamp((absDelta - 0.32f) / 0.55f, 0f, 1f));
+            //爆发帧压入上一帧姿态作残影,鞭击段的速度由它扛;强度随角速度
+            if (bladeInBurst && absDelta > 0.05f) {
+                ghosts[ghostHead] = new BladeGhost {
+                    Rotation = bladePrevRotation,
+                    Facing = bladeFacing,
+                    EdgeFlip = bladeEdgeFlip,
+                    Stretch = bladeStretch,
+                    Strength = MathHelper.Clamp(absDelta / 0.45f, 0.3f, 1f),
+                    Life = GhostLifeFrames,
+                };
+                ghostHead = (ghostHead + 1) % ghosts.Length;
+            }
             bladeDepth = MathHelper.Lerp(bladeDepth, targetDepth, bladeInBurst ? 0.85f : 0.5f);
             bladeStretch = MathHelper.Lerp(bladeStretch, targetStretch, bladeInBurst ? 0.85f : 0.45f);
+        }
+
+        /// <summary>残影逐帧衰减;顿帧期 UpdateBladePose 整个跳过,残影随整画冻结</summary>
+        private void DecayGhosts() {
+            for (int i = 0; i < ghosts.Length; i++) {
+                if (ghosts[i].Life > 0) {
+                    ghosts[i].Life--;
+                }
+            }
         }
 
         /// <summary>起手音,轻拍只留低量气口(主响在撕开帧),重击低鸣预告</summary>
@@ -943,6 +1038,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
                         MaxInstances = 3
                     }, Projectile.Center);
 
+                    //重拍出刀本身震一下相机(轻拍不加,防五连拍震屏疲劳;调参旋钮)
+                    if (a.Beat >= 3 && !Main.dedServ) {
+                        Vector2 swingTangent = (a.Aim + a.Def.Flip * MathHelper.PiOver2).ToRotationVector2();
+                        Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center
+                            , swingTangent, a.Beat == BeatCount - 1 ? 3f : 2f, 5f, 6, -1f, FullName));
+                    }
+
                     //息合:卡在出刀释放同一帧甩出弧剑气(从本拍刃弧中段甩离)
                     if (a.Beat == BeatCount - 1 && a.Profile.BreathWave
                         && Projectile.IsOwnedByLocalPlayer()) {
@@ -952,8 +1054,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
                     }
                 }
 
-                //落位满形帧(money frame),沿全弧溅火花;终结拍魂火涌出
-                if (!a.LandingPlayed && lt >= OSR.HoldStartFrame(in a.Def) - 1) {
+                //落位满形帧(money frame,曲线首次冲满),沿全弧溅火花;终结拍魂火涌出
+                if (!a.LandingPlayed
+                    && lt - OSR.SweepStartFrame(in a.Def) >= OSR.LandingFrame(in a.Def)) {
                     a.LandingPlayed = true;
                     if (!Main.dedServ) {
                         SpawnLandingBurst(a);
@@ -1368,6 +1471,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
                 , rotation - textureAxis, origin, scale, bladeEffect, 0f);
         }
 
+        /// <summary>挥砍残影,新影亮旧影暗,调色与 OniBladePose 烟痕同源;
+        /// 锚当前手心,残影逐条记录翻刃态防反向拍污染</summary>
+        private void DrawGhosts(SpriteBatch sb, float layerWeight) {
+            if (layerWeight <= 0.02f) {
+                return;
+            }
+            for (int i = 0; i < ghosts.Length; i++) {
+                BladeGhost g = ghosts[(ghostHead + i) % ghosts.Length];
+                if (g.Life <= 0) {
+                    continue;
+                }
+                float ageT = 1f - g.Life / (float)GhostLifeFrames;
+                float alpha = g.Strength * (1f - ageT) * (1f - ageT) * 0.42f * layerWeight;
+                if (alpha <= 0.02f) {
+                    continue;
+                }
+                Color c = Color.Lerp(new Color(210, 42, 38, 130), new Color(126, 20, 30, 105), ageT) * alpha;
+                DrawBladeSprite(sb, g.Rotation, g.Facing, BladeDrawScale * sizeMul * g.Stretch
+                    , c, default, g.EdgeFlip);
+            }
+        }
+
         /// <summary>身后层,远半侧斩缝+身后刀身</summary>
         void ICrimsonFarDrawable.DrawFarSlashes() {
             if (Main.dedServ) {
@@ -1398,11 +1523,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
                 , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             Color lightColor = Lighting.GetColor((int)(Owner.Center.X / 16f), (int)(Owner.Center.Y / 16f));
             float scale = BladeDrawScale * sizeMul * bladeStretch * (1f + bladeScalePulse);
+            DrawGhosts(sb, farW * DepthDim(bladeDepth));
             Color body = Color.Lerp(lightColor, Color.White, 0.12f)
-                * (bladeOpacity * farW * DepthDim(bladeDepth) * (1f - 0.30f * bladeSpeedFade));
+                * (bladeOpacity * farW * DepthDim(bladeDepth) * (1f - 0.15f * bladeSpeedFade));
             DrawBladeSprite(sb, bladeRotation, bladeFacing, scale, body, default, bladeEdgeFlip);
             DrawEngrave(sb, scale, bladeOpacity * farW * DepthDim(bladeDepth)
-                * (1f - 0.30f * bladeSpeedFade));
+                * (1f - 0.15f * bladeSpeedFade));
             sb.End();
         }
 
@@ -1418,9 +1544,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
 
             Color lightColor = Lighting.GetColor((int)(Owner.Center.X / 16f), (int)(Owner.Center.Y / 16f));
             float scale = BladeDrawScale * sizeMul * bladeStretch * (1f + bladeScalePulse);
-            //扫掠峰值刀体略淡不隐去,刃头亮线与刀重合(主流语法:看得见的挥舞)
-            float speedThin = 1f - 0.30f * bladeSpeedFade;
+            //峰值只轻微调淡刀体不隐去,运动记录交给残影,刃头亮线与刀重合
+            float speedThin = 1f - 0.15f * bladeSpeedFade;
 
+            DrawGhosts(sb, nearW);
             Color shadow = new Color(15, 3, 8, 190) * (bladeOpacity * 0.62f * nearW * speedThin);
             DrawBladeSprite(sb, bladeRotation, bladeFacing, scale * 1.018f, shadow
                 , new Vector2(bladeFacing, 1f), bladeEdgeFlip);

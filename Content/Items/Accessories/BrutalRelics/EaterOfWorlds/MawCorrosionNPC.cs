@@ -97,11 +97,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
             }
         }
 
-        /// <summary>酸蚀削甲：判伤端(攻击方客户端)按本地层数削减目标防御，全队受益</summary>
+        /// <summary>酸蚀削甲：判伤端(攻击方客户端)按本地层数削减目标防御，全队受益。结算取整，满层-15</summary>
         public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers) {
             int s = Stacks;
             if (s > 0) {
-                modifiers.Defense.Flat -= s * WorldEatersMaw.DefShredPerStack;
+                modifiers.Defense.Flat -= (int)(s * WorldEatersMaw.DefShredPerStack);
             }
         }
         #endregion
@@ -121,6 +121,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
                 || !player.TryGetModPlayer(out WorldEatersMawPlayer mp) || !mp.Equipped) {
                 return;
             }
+            //出虫内置冷却：冷却期内的酸蚀死亡不出虫(尸位冒泡表现在HitEffect)，斩断击杀链永动
+            if (mp.WormSpawnCooldown > 0) {
+                return;
+            }
+            mp.WormSpawnCooldown = WorldEatersMaw.WormSpawnCooldownTicks;
 
             int wormType = ModContent.ProjectileType<MawWormProj>();
             EnforceWormCap(owner, wormType);
@@ -135,6 +140,31 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
             if (proj < Main.maxProjectiles && VaultUtils.isServer) {
                 //服务端代玩家生成的弹幕不会自发同步包，必须显式广播
                 NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
+            }
+        }
+
+        /// <summary>
+        /// 冷却期内的酸蚀死亡：尸位冒一小撮酸泡但无虫破出，向玩家解释"为什么没出虫"。<br/>
+        /// HitEffect各端随伤害包自跑；冷却读数只有权威端与owner镜像持有，故只在owner本机播
+        /// </summary>
+        public override void HitEffect(NPC npc, NPC.HitInfo hit) {
+            if (npc.life > 0 || VaultUtils.isServer || Stacks <= 0) {
+                return;
+            }
+            int owner = OwnerWho;
+            if (owner != Main.myPlayer || owner < 0 || owner >= Main.maxPlayers) {
+                return;
+            }
+            if (!Main.player[owner].TryGetModPlayer(out WorldEatersMawPlayer mp)
+                || mp.WormSpawnCooldown <= 0 || !EowMotionFX.OnScreen(npc.Center)) {
+                return;
+            }
+            int count = Main.rand.Next(3, 6);
+            for (int i = 0; i < count; i++) {
+                PRTLoader.NewParticle<PRT_ToxicBubble>(
+                    npc.Center + Main.rand.NextVector2Circular(npc.width * 0.35f, npc.height * 0.35f),
+                    -Vector2.UnitY * Main.rand.NextFloat(0.6f, 1.4f), Color.White,
+                    Main.rand.NextFloat(0.12f, 0.2f)).Configure(Main.rand.Next(20, 34));
             }
         }
 
@@ -338,7 +368,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
     /// </summary>
     internal sealed class MawCorrosionBuff : ModBuff
     {
-        public override string Texture => CWRConstant.VaultPlaceholder2;
+        public override string Texture => CWRConstant.Item_BrutalRelic + "MawCorrosionBuff";
 
         public override LocalizedText DisplayName
             => this.GetLocalization(nameof(DisplayName), () => "酸蚀");

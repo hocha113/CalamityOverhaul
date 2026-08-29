@@ -195,10 +195,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
 
         private NPC FindIntroBoss() {
             foreach (var npc in Main.ActiveNPCs) {
-                if (npc.type == NPCID.KingSlime && (int)npc.ai[2] == (int)KingSlimeStateIndex.Intro
-                    && Player.Distance(npc.Center) < 2300f) {
-                    return npc;
+                if (npc.type != NPCID.KingSlime || (int)npc.ai[2] != (int)KingSlimeStateIndex.Intro
+                    || Player.Distance(npc.Center) >= 2300f) {
+                    continue;
                 }
+                //必须验接管在场：原版王把ai[2]当传送计时器用，出生与每次传送后都归0，
+                //恰与Intro索引撞值，不验则关闭残酷模式也会误触入场运镜
+                if (!KingSlimeAI.TryGetKingAI(npc, out _)) {
+                    continue;
+                }
+                return npc;
             }
             return null;
         }

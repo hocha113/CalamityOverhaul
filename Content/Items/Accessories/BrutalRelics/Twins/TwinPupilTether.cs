@@ -12,19 +12,19 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Twins
     /// </summary>
     internal class TwinPupilTether : BaseBrutalRelic
     {
-        //超模数值档：机械Boss档位奖励，刻意压过同期
-        public const int LaserDamage = 300;
+        //T3b 数值档：基伤全部挂通用加成，三线被动实战约同期武器五成
+        public const int LaserDamage = 140;
         public const int LaserFireInterval = 42;
         public const float LaserRange = 1100f;
-        public const int FlameDamage = 90;
-        public const int FlameFireInterval = 5;
+        public const int FlameDamage = 40;
+        public const int FlameFireInterval = 12;
         public const float FlameRange = 330f;
-        public const int TetherDamage = 260;
-        public const int DashContactDamage = 520;
-        public const int BurstDamage = 1250;
+        public const int TetherDamage = 80;
+        public const int DashContactDamage = 380;
+        public const int BurstDamage = 1100;
         public const float BurstRadius = 250f;
-        public const int CrossDashCooldownTime = 360;
-        public const float RendBonus = 0.30f;
+        public const int CrossDashCooldownTime = 540;
+        public const float RendBonus = 0.25f;
         public const int RendDuration = 180;
 
         //系列双色：视界红激光 / 焚瞳青焰
@@ -113,25 +113,25 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Twins
                 return;
             }
 
-            //缺件补齐：两眼+系绳都是装备期间常驻的弹幕，只在 owner 端生成
+            //缺件补齐：两眼+系绳都是装备期间常驻的弹幕，只在 owner 端生成。
+            //稳态走 O(1) 计数即通过；编制不齐(首帧/被清场)才进全表扫认领缺哪只眼
             int orbiterType = ModContent.ProjectileType<TwinPupilOrbiter>();
             int beamType = ModContent.ProjectileType<TwinPupilTetherBeam>();
-            bool hasLaser = false, hasFlame = false, hasBeam = false;
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                Projectile proj = Main.projectile[i];
-                if (!proj.active || proj.owner != Player.whoAmI) {
+            bool hasBeam = Player.ownedProjectileCounts[beamType] >= 1;
+            if (Player.ownedProjectileCounts[orbiterType] >= 2 && hasBeam) {
+                return;
+            }
+
+            bool hasLaser = false, hasFlame = false;
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (proj.owner != Player.whoAmI || proj.type != orbiterType) {
                     continue;
                 }
-                if (proj.type == orbiterType) {
-                    if (proj.ai[0] == 0f) {
-                        hasLaser = true;
-                    }
-                    else {
-                        hasFlame = true;
-                    }
+                if (proj.ai[0] == 0f) {
+                    hasLaser = true;
                 }
-                else if (proj.type == beamType) {
-                    hasBeam = true;
+                else {
+                    hasFlame = true;
                 }
             }
 

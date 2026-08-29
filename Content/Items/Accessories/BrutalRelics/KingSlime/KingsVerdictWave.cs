@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
                 fx.CurrentTechnique = fx.Techniques["GuideTech"];
                 fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
                 fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-                fx.Parameters["uSeed"]?.SetValue(Projectile.whoAmI * 0.211f % 1f);
+                fx.Parameters["uSeed"]?.SetValue(Projectile.identity * 0.211f % 1f);
                 fx.Parameters["uOpacity"]?.SetValue(0.85f * columnAlpha);
                 fx.Parameters["uProg"]?.SetValue(1f);
                 fx.Parameters["uLock"]?.SetValue(1f);

@@ -20,8 +20,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Skeletron
     /// </summary>
     internal sealed class SoulbindingArmRender : RenderHandle
     {
-        /// <summary>认领表槽位 1.76（骷髅王本体屏效在 1.092，互不相扰）</summary>
-        public override float Weight => 1.76f;
+        /// <summary>认领表槽位 1.762（骷髅王本体屏效在 1.092；错开环境渲染 MireheartTempleGlyphs 的 1.76）</summary>
+        public override float Weight => 1.762f;
+
+        /// <summary>活跃帧戳：装备者 PostUpdateEquips 盖戳，无戳时两段绘制直接早退全表扫描</summary>
+        internal static ActivityStamp RenderStamp;
 
         #region 视觉队列（纯本端演出，每客户端一份，不跨网络——合法 static，同冷焰批先例）
         private struct RingPop
@@ -114,7 +117,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Skeletron
 
         #region 暗纱层与冷焰入队（物块后、实体前）
         public override void DrawAfterTiles(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
-            if (Main.gameMenu) {
+            if (Main.gameMenu || !RenderStamp.ActiveWithin()) {
                 return;
             }
 
@@ -221,17 +224,23 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Skeletron
             }
         }
 
+        /// <summary>格挡冷却期魂环整体亮度回落（可见冷却），随余帧线性回满</summary>
+        private static float BlockDim(SoulbindingArmPlayer mp)
+            => mp.BlockCooldown <= 0 ? 1f
+                : MathHelper.Lerp(1f, 0.45f, mp.BlockCooldown / (float)SoulbindingArmPlayer.BlockCooldownFrames);
+
         /// <summary>魂环鬼火：外鞘 + 骨白内芯双层，焰轴顺运动方向（旋转即拉丝）</summary>
         private static void PushSoulRing(Player plr, SoulbindingArmPlayer mp) {
             int count = Math.Clamp(mp.SoulCount, 0, SoulbindingArmPlayer.MaxSouls);
+            float dim = BlockDim(mp);
             for (int i = 0; i < count; i++) {
                 Vector2 pos = SoulPos(plr, mp, i, 0f, out float tangent);
                 float flick = 0.85f + 0.15f * MathF.Sin(mp.SpinPhase * 3f + i * 2.1f);
                 SkeletronFlameRender.Push(pos, tangent,
                     new Vector2(12f, (24f + 6f * flick) * (1f + 0.4f * mp.VisualConverge)),
-                    0.5f + 0.35f * mp.VisualConverge, i * 0.137f + plr.whoAmI * 0.29f, 0.25f, 0.85f);
+                    0.5f + 0.35f * mp.VisualConverge, i * 0.137f + plr.whoAmI * 0.29f, 0.25f, 0.85f * dim);
                 SkeletronFlameRender.Push(pos, tangent,
-                    new Vector2(6f, 13f), 0.95f, i * 0.137f + 0.41f, 0.05f, 0.8f);
+                    new Vector2(6f, 13f), 0.95f, i * 0.137f + 0.41f, 0.05f, 0.8f * dim);
             }
         }
 
@@ -250,6 +259,18 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Skeletron
         #region 拖尾绸带 / 爆点环 / 凝聚涡流（实体之上）
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
             if (Main.gameMenu) {
+                return;
+            }
+            //帧戳早退：无装备者时只剩爆点环的余帧要收尾
+            if (!RenderStamp.ActiveWithin()) {
+                PrunePops();
+                if (pops.Count == 0) {
+                    return;
+                }
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                    DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+                DrawPops(spriteBatch);
+                spriteBatch.End();
                 return;
             }
 
@@ -298,13 +319,14 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Skeletron
         /// <summary>魂魄拖尾：沿轨道向后回溯采样的灵息绸带（青绿鬼火拖尾环绕体）</summary>
         private static void DrawSoulRibbons(Player plr, SoulbindingArmPlayer mp) {
             int count = Math.Clamp(mp.SoulCount, 0, SoulbindingArmPlayer.MaxSouls);
+            float dim = BlockDim(mp);
             for (int i = 0; i < count; i++) {
                 for (int k = 0; k < 7; k++) {
                     //uv.x=0 是尾端：先采最旧的回溯点
                     ribbonPts[k] = SoulPos(plr, mp, i, (6 - k) * 0.09f, out _);
                 }
                 SkeletronRenderHelper.DrawSpecterRibbon(ribbonPts, 7, 1.5f, 6.5f,
-                    0.5f + 0.3f * mp.VisualConverge, 0.5f,
+                    (0.5f + 0.3f * mp.VisualConverge) * dim, 0.5f,
                     i * 0.137f + plr.whoAmI * 0.29f, 0.3f, 0.15f, 2.2f);
             }
         }

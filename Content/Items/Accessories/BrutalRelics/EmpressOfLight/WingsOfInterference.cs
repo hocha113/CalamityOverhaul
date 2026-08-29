@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Rendering;
 using InnoVault.PRT;
@@ -5,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -20,8 +22,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EmpressOfLight
     {
         public override void SetDefaults() {
             base.SetDefaults();
-            //光女档掉落物约20~25金购价，按系列基准放大到约4~5倍
-            Item.value = Item.buyPrice(1, 0, 0, 0);
+            //平衡框架 §9：T4 遗物统一 75 金
+            Item.value = Item.buyPrice(0, 75, 0, 0);
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
@@ -87,19 +89,19 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EmpressOfLight
         #region 常量
         /// <summary>光女翼档位（LongTrailRainbowWings：飞速8/加速4.5/按下悬浮16）</summary>
         private const int WingSlotEmpress = 45;
-        /// <summary>昼形态飞行时间（原版最强翼180帧，超模档）</summary>
-        private const int WingTimeDay = 240;
+        /// <summary>昼形态飞行时间（原版最强翼180帧，遗物越级档）</summary>
+        private const int WingTimeDay = 210;
         /// <summary>夜形态飞行时间</summary>
-        private const int WingTimeNight = 320;
+        private const int WingTimeNight = 270;
         /// <summary>夜形态移动速度加成</summary>
-        private const float NightMoveSpeed = 0.32f;
+        private const float NightMoveSpeed = 0.20f;
         /// <summary>夜形态跑速/翼平飞上限乘数</summary>
-        private const float NightRunMult = 1.18f;
+        private const float NightRunMult = 1.10f;
 
-        /// <summary>夜闪避冷却（帧）</summary>
-        public const int DodgeCooldownFrames = 480;
+        /// <summary>夜闪避冷却（帧）：48s 周期，2026-08-29 用户终审定值</summary>
+        public const int DodgeCooldownFrames = 2880;
         /// <summary>闪避成功后的无敌帧</summary>
-        private const int DodgeImmuneFrames = 45;
+        private const int DodgeImmuneFrames = 30;
 
         /// <summary>同时跟踪的光径上限</summary>
         private const int MaxTrails = 12;
@@ -113,17 +115,17 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EmpressOfLight
         private const float TeleportBreak = 200f;
 
         /// <summary>棱镜爆裂基伤（Generic 全加成）</summary>
-        private const float BurstBaseDamage = 240f;
+        private const float BurstBaseDamage = 200f;
         /// <summary>爆裂判定半径(px)</summary>
         private const float BurstRadius = 150f;
         /// <summary>爆点位置冷却（帧）：同点近旁不复爆</summary>
-        private const int BurstLockFrames = 30;
-        private const float BurstLockRadius = 130f;
+        private const int BurstLockFrames = 45;
+        private const float BurstLockRadius = 160f;
         /// <summary>每帧引爆上限（节流）</summary>
         private const int MaxBurstsPerFrame = 2;
 
         /// <summary>昼夜切换全屏爆发基伤</summary>
-        private const float DawnBurstBaseDamage = 1350f;
+        private const float DawnBurstBaseDamage = 1100f;
         /// <summary>爆发判定半径(px)</summary>
         public const float DawnBurstRadius = 1250f;
         #endregion
@@ -155,17 +157,32 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EmpressOfLight
         //爆点位置冷却表（owner 端）
         private readonly List<Vector2> burstLockPos = new();
         private readonly List<int> burstLockTimer = new();
+
+        //---- P1 采样重构状态 ----
+        /// <summary>事件驱动的光径候选（OnSpawn 推入，owner 端 PostUpdate 排空）</summary>
+        private readonly List<int> pendingTrailProj = new(8);
+        /// <summary>注册扫描计时：owner 每4帧补扫兜漏，旁观副本每8帧低频采样</summary>
+        private int trailSampleTimer;
+        /// <summary>敌弹计数门刷新倒计时（每8帧刷新）</summary>
+        private int hostileGateTimer;
+        /// <summary>缓存的敌对弹幕数，空场时夜读弹层整段跳过</summary>
+        private int hostileProjCached;
+
+        /// <summary>在场帧戳：翼或光径可见的实例每帧盖戳，渲染层据此跳过空场全玩家表扫描</summary>
+        internal static ActivityStamp PresenceStamp;
         #endregion
 
         public override void ResetEffects() {
-            Equipped = false;
-            HideVisual = false;
-            if (DodgeCooldown > 0) {
+            //冷却纪律：冻结制。冷却只在装备时递减，卸装冻结不清零不递减（原「卸装清零」
+            //可摘戴一次白嫖重置 48s 必闪，D 阶段回溯修正）。Equipped 此刻仍是上一帧值，先读再清旗
+            if (Equipped && DodgeCooldown > 0) {
                 DodgeCooldown--;
             }
+            Equipped = false;
+            HideVisual = false;
         }
 
-        /// <summary>飞行授予：光女翼档位+悬浮+超模续航（UpdateAccessory 逐帧调用）</summary>
+        /// <summary>飞行授予：光女翼档位+悬浮+昼夜双档续航（UpdateAccessory 逐帧调用）</summary>
         internal void ApplyFlightStats() {
             //不覆盖玩家已有的更高档翅膀，只保底光女翼手感
             Player.wingsLogic = Math.Max(Player.wingsLogic, WingSlotEmpress);
@@ -224,14 +241,24 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EmpressOfLight
             }
         }
 
-        /// <summary>死亡期间跟踪昼夜位，防复活瞬间误爆；光径随攻击中断散去</summary>
+        /// <summary>
+        /// 死亡期间跟踪昼夜位，防复活瞬间误爆；光径随攻击中断散去。
+        /// 死亡期间 ResetEffects 不跑（原版 dead 分支早退），冷却在这里显式递减照常流逝，
+        /// 对齐血雾之瞳纪律；冻结制只针对卸装，死亡不冻结
+        /// </summary>
         public override void UpdateDead() {
             lastDayTime = Main.dayTime;
+            if (DodgeCooldown > 0) {
+                DodgeCooldown--;
+            }
             for (int i = 0; i < Trails.Count; i++) {
                 Trails[i].Alive = false;
             }
             AdvanceTrailFade();
             WingSpread = MathHelper.Lerp(WingSpread, 0f, 0.1f);
+            if (WingSpread > 0.02f || Trails.Count > 0) {
+                PresenceStamp.Stamp();
+            }
         }
 
         /// <summary>
@@ -287,25 +314,46 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EmpressOfLight
             AdvanceBurstLocks();
 
             bool visualOn = Equipped && !HideVisual;
+            bool isOwner = Player.whoAmI == Main.myPlayer;
 
-            //光径：昼形态采样，夜形态与卸装只余像渐隐
+            //光径：昼形态采样（owner 逐帧续线+事件注册+4帧补扫；旁观副本8帧低频，不做交点检测），
+            //夜形态与卸装只余像渐隐
             if (visualOn && Main.dayTime && !Player.dead) {
-                SampleTrails();
+                if (isOwner) {
+                    ExtendTrails(1);
+                    DrainTrailCandidates();
+                    if (++trailSampleTimer >= 4) {
+                        trailSampleTimer = 0;
+                        ScanForNewTrails();
+                    }
+                }
+                else if (++trailSampleTimer >= 8) {
+                    ExtendTrails(trailSampleTimer);
+                    ScanForNewTrails();
+                    trailSampleTimer = 0;
+                }
             }
             else {
                 for (int i = 0; i < Trails.Count; i++) {
                     Trails[i].Alive = false;
                 }
+                pendingTrailProj.Clear();
+                trailSampleTimer = 0;
             }
             AdvanceTrailFade();
 
+            //在场帧戳：渲染层空场早退的依据
+            if (WingSpread > 0.02f || Trails.Count > 0) {
+                PresenceStamp.Stamp();
+            }
+
             //交点引爆：伤害决策只在 owner 端
-            if (Equipped && Main.dayTime && !Player.dead && Player.whoAmI == Main.myPlayer) {
+            if (Equipped && Main.dayTime && !Player.dead && isOwner) {
                 DetectIntersections();
             }
 
-            //夜形态读弹辅助：极光残迹（owner 本机的提示层）
-            if (visualOn && !Main.dayTime && !Player.dead && Player.whoAmI == Main.myPlayer) {
+            //夜形态读弹辅助：极光残迹（owner 本机的提示层，敌弹计数门空场跳过）
+            if (visualOn && !Main.dayTime && !Player.dead && isOwner && AnyHostileProjectiles()) {
                 EmitAuroraTraces();
             }
         }
@@ -329,9 +377,12 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EmpressOfLight
             }
         }
 
-        /// <summary>光径采样：注册己方攻击弹幕并等距记录轨迹（各端本地自采）</summary>
-        private void SampleTrails() {
-            //1) 校验现存径的宿主弹幕（whoAmI+identity+type 三元验证，防槽位复用串线）
+        /// <summary>
+        /// 已注册光径的等距续线（whoAmI+identity+type 三元验证，防槽位复用串线）。
+        /// frames=距上次采样的帧数：旁观副本低频路径传 &gt;1，瞬移断线阈值按帧数同倍放宽
+        /// </summary>
+        private void ExtendTrails(int frames) {
+            float breakDist = TeleportBreak * Math.Max(frames, 1);
             foreach (InterferenceTrail trail in Trails) {
                 trail.FreshPoints = 0;
                 if (!trail.Alive) {
@@ -348,7 +399,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EmpressOfLight
                 Vector2 anchor = proj.Center;
                 Vector2 last = trail.Points[^1];
                 float move = Vector2.Distance(last, anchor);
-                if (move > TeleportBreak) {
+                if (move > breakDist) {
                     trail.Alive = false;
                     continue;
                 }
@@ -370,48 +421,71 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EmpressOfLight
                     }
                 }
             }
+        }
 
-            //2) 注册新弹幕
+        /// <summary>OnSpawn 事件入口：本机出生的攻击弹幕推入候选队列（容量兜底防高射速爆表）</summary>
+        internal void QueueTrailCandidate(int projIndex) {
+            if (pendingTrailProj.Count < 16) {
+                pendingTrailProj.Add(projIndex);
+            }
+        }
+
+        /// <summary>排空候选队列并注册（owner 端逐帧，注册延迟为零）</summary>
+        private void DrainTrailCandidates() {
+            for (int i = 0; i < pendingTrailProj.Count; i++) {
+                TryRegisterTrail(pendingTrailProj[i]);
+            }
+            pendingTrailProj.Clear();
+        }
+
+        /// <summary>低频全表补扫：兜住不经本机 NewProjectile 出生的漏网弹（服务端代生成等）</summary>
+        private void ScanForNewTrails() {
             if (Trails.Count >= MaxTrails) {
                 return;
             }
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                Projectile proj = Main.projectile[i];
-                if (!proj.active || proj.owner != Player.whoAmI || !proj.friendly || proj.hostile
-                    || proj.damage <= 0 || proj.minion || proj.sentry
-                    || proj.velocity.LengthSquared() < 7f) {
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (proj.owner != Player.whoAmI) {
                     continue;
                 }
-                //自产爆裂不再拉线，防递归织网
-                if (proj.type == ModContent.ProjectileType<InterferencePrismBurst>()
-                    || proj.type == ModContent.ProjectileType<InterferenceDawnBurst>()) {
-                    continue;
-                }
-                bool tracked = false;
-                foreach (InterferenceTrail trail in Trails) {
-                    if (trail.Alive && trail.ProjWhoAmI == i && trail.ProjIdentity == proj.identity) {
-                        tracked = true;
-                        break;
-                    }
-                }
-                if (tracked) {
-                    continue;
-                }
-
-                InterferenceTrail fresh = new() {
-                    ProjWhoAmI = i,
-                    ProjIdentity = proj.identity,
-                    ProjType = proj.type,
-                    //identity 黄金比散列：各端色相一致
-                    Hue = proj.identity * 0.61803399f % 1f
-                };
-                fresh.Points.Add(proj.Center);
-                fresh.Min = fresh.Max = proj.Center;
-                Trails.Add(fresh);
+                TryRegisterTrail(proj.whoAmI);
                 if (Trails.Count >= MaxTrails) {
                     break;
                 }
             }
+        }
+
+        /// <summary>候选校验+去重+建径（事件注册与补扫共用同一套过滤）</summary>
+        private void TryRegisterTrail(int index) {
+            if (index < 0 || index >= Main.maxProjectiles || Trails.Count >= MaxTrails) {
+                return;
+            }
+            Projectile proj = Main.projectile[index];
+            if (!proj.active || proj.owner != Player.whoAmI || !proj.friendly || proj.hostile
+                || proj.damage <= 0 || proj.minion || proj.sentry
+                || proj.velocity.LengthSquared() < 7f) {
+                return;
+            }
+            //自产爆裂不再拉线，防递归织网
+            if (proj.type == ModContent.ProjectileType<InterferencePrismBurst>()
+                || proj.type == ModContent.ProjectileType<InterferenceDawnBurst>()) {
+                return;
+            }
+            foreach (InterferenceTrail trail in Trails) {
+                if (trail.Alive && trail.ProjWhoAmI == index && trail.ProjIdentity == proj.identity) {
+                    return;
+                }
+            }
+
+            InterferenceTrail fresh = new() {
+                ProjWhoAmI = index,
+                ProjIdentity = proj.identity,
+                ProjType = proj.type,
+                //identity 黄金比散列：各端色相一致
+                Hue = proj.identity * 0.61803399f % 1f
+            };
+            fresh.Points.Add(proj.Center);
+            fresh.Min = fresh.Max = proj.Center;
+            Trails.Add(fresh);
         }
 
         /// <summary>渐隐推进：失活光径余像倒计时后移除</summary>
@@ -521,14 +595,27 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EmpressOfLight
             return true;
         }
 
+        /// <summary>敌弹计数门：每8帧刷新一次敌对弹幕计数，空场时夜读弹层整段跳过</summary>
+        private bool AnyHostileProjectiles() {
+            if (--hostileGateTimer <= 0) {
+                hostileGateTimer = 8;
+                hostileProjCached = 0;
+                foreach (Projectile proj in Main.ActiveProjectiles) {
+                    if (proj.hostile && proj.damage > 0) {
+                        hostileProjCached++;
+                    }
+                }
+            }
+            return hostileProjCached > 0;
+        }
+
         /// <summary>夜形态读弹辅助：逼近的敌方弹幕沿途留下极光残迹（owner 本机提示层）</summary>
         private void EmitAuroraTraces() {
             const float WarnRange = 360f;
             float r2 = WarnRange * WarnRange;
             int emitted = 0;
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                Projectile proj = Main.projectile[i];
-                if (!proj.active || !proj.hostile || proj.damage <= 0) {
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (!proj.hostile || proj.damage <= 0) {
                     continue;
                 }
                 if (Vector2.DistanceSquared(proj.Center, Player.Center) > r2) {
@@ -545,6 +632,29 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EmpressOfLight
                     break;
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// 光径注册的事件驱动入口：本机玩家昼形态下出生的攻击弹幕即时推入候选队列，
+    /// 免去逐帧全表扫描（漏网的由低频补扫兜底）。OnSpawn 只在生成端触发，
+    /// 远端旁观副本不走此路径，其光径由低频采样自行维护
+    /// </summary>
+    internal sealed class InterferenceTrailSpawnWatcher : GlobalProjectile
+    {
+        public override void OnSpawn(Projectile projectile, IEntitySource source) {
+            if (VaultUtils.isServer || !Main.dayTime || projectile.owner != Main.myPlayer
+                || !projectile.friendly || projectile.hostile || projectile.damage <= 0
+                || projectile.minion || projectile.sentry) {
+                return;
+            }
+            Player player = Main.player[projectile.owner];
+            if (player?.active != true || player.dead
+                || !player.TryGetModPlayer(out WingsOfInterferencePlayer mp)
+                || !mp.Equipped || mp.HideVisual) {
+                return;
+            }
+            mp.QueueTrailCandidate(projectile.whoAmI);
         }
     }
 }

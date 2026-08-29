@@ -12,8 +12,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
 {
     /// <summary>
     /// 镜心悖论：克苏鲁之脑残酷遗物。
-    /// 镜像之心游曳在玩家对侧，以半伤复现玩家射出的弹幕；
-    /// 受击瞬间与镜心换位闪避，两端爆发心跳脉冲环并困惑敌人，镜心随后碎裂重聚
+    /// 镜像之心游曳在玩家对侧；镜心凝实时受击即与其换位闪避(25秒冷却)，
+    /// 两端爆发心跳脉冲环并困惑敌人；换位后5秒内以半伤复现你射出的弹幕，
+    /// 镜心碎裂重聚后呈半透蓄势态，冷却走满才再凝实
     /// </summary>
     internal class MirrorheartParadox : BaseBrutalRelic
     {
@@ -29,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
     }
 
     /// <summary>
-    /// 镜心状态机：装备旗、镜位推演、复现队列、换位闪避与碎裂计时。
+    /// 镜心状态机：装备旗、镜位推演、复现窗口与队列、换位冷却与悖论反噬计时。
     /// 位置为各端本地推演(本人端用光标锚，远端用朝向/速度锚，仅表现差异)；
     /// 换位在受击者本人端裁决，演出经 <see cref="MirrorheartNet"/> 广播
     /// </summary>
@@ -37,18 +38,26 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
     {
         /// <summary>镜心悬停距离(px)</summary>
         public const float MirrorDist = 110f;
-        /// <summary>碎裂重聚时长(帧)，期间无复现无闪避</summary>
+        /// <summary>碎裂重聚演出时长(帧)：镜心视觉重建期，与换位冷却解耦</summary>
         public const int ShatterRebuildTime = 360;
+        /// <summary>换位冷却(帧)，25秒；冷却走满镜心凝实才能再换位</summary>
+        public const int SwapCooldownTime = 1500;
+        /// <summary>复现窗口(帧)：换位后5秒内射出的弹幕才被登记复现</summary>
+        public const int EchoWindowFrames = 300;
+        /// <summary>悖论反噬窗口(帧)：换位后3秒内的下一击受伤加深</summary>
+        public const int BacklashFrames = 180;
+        /// <summary>悖论反噬受伤倍率(命中即耗)</summary>
+        public const float BacklashMul = 1.25f;
         /// <summary>换位演出时长(帧)</summary>
         public const int SwapFxTime = 34;
         /// <summary>复现伤害倍率(设计卡定值)</summary>
         public const float EchoDamageMul = 0.5f;
         /// <summary>复现延迟(帧)，镜心慢半拍出手</summary>
         public const int EchoDelay = 7;
-        /// <summary>脉冲环伤害</summary>
-        public const int PulseDamage = 165;
+        /// <summary>脉冲环基础伤害(生成时吃玩家总伤加成)</summary>
+        public const int PulseBaseDamage = 90;
         /// <summary>换位后无敌帧</summary>
-        public const int SwapImmuneTime = 75;
+        public const int SwapImmuneTime = 45;
         private const int EchoPerFrameCap = 4;
         private const int EchoQueueCap = 24;
         internal const string EchoSourceContext = "MirrorheartEcho";
@@ -67,11 +76,17 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
 
         /// <summary>本帧装备生效，物品钩子逐帧点亮</summary>
         public bool Equipped;
-        /// <summary>镜心碎裂剩余帧，>0 期间复现与闪避同时下线</summary>
+        /// <summary>镜心碎裂剩余帧：重聚演出计时(复现窗口与其重叠，闪避由换位冷却把关)</summary>
         public int ShatterTimer;
+        /// <summary>换位冷却剩余帧；蓄势期凝实度=冷却完成度(远端经换位包点亮，纯表现)</summary>
+        public int SwapCooldown;
+        /// <summary>复现窗口剩余帧(仅 owner 有效)，换位点亮</summary>
+        public int EchoWindowTimer;
+        /// <summary>悖论反噬剩余帧(仅 owner 有效)，期间下一击受伤+25%，命中即耗</summary>
+        public int BacklashTimer;
         /// <summary>镜心当前位置(各端本地推演)</summary>
         public Vector2 MirrorPos;
-        /// <summary>镜心实体化程度 0~1，重聚渐显</summary>
+        /// <summary>镜心实体化程度 0~1：碎裂归零，蓄势期绑定冷却进度</summary>
         public float CloneMaterialize;
         /// <summary>换位演出剩余帧(本人裁决或远端事件点亮)</summary>
         public int SwapFxTimer;
@@ -101,12 +116,31 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
                 SwapFxTimer--;
                 UpdateSwapScreenPulse();
             }
+            if (EchoWindowTimer > 0) {
+                EchoWindowTimer--;
+            }
+            if (BacklashTimer > 0) {
+                BacklashTimer--;
+            }
+            if (SwapCooldown > 0) {
+                SwapCooldown--;
+                if (SwapCooldown == 0 && Equipped
+                    && !VaultUtils.isServer && BrainMotion.OnScreen(MirrorPos)) {
+                    //凝实完成：比重聚轻响高一档的第二声提示，镜心可再换位
+                    BrainMotion.FleshSquish(MirrorPos, 0.55f, 0.55f);
+                    BrainMotion.BloodMistBurst(MirrorPos, 0.4f, 2, 3f);
+                    if (Player.whoAmI == Main.myPlayer) {
+                        //心跳屏效只给本人(同族提示惯例)，位置音与血雾留给旁观
+                        BrainHeartbeat.Thump(0.5f);
+                    }
+                }
+            }
 
             if (ShatterTimer > 0) {
                 ShatterTimer--;
                 CloneMaterialize = 0f;
                 if (ShatterTimer == 0) {
-                    //重聚瞬间：镜位重置到锚点，播一记轻响
+                    //重聚瞬间：镜位重置到锚点，播一记轻响；此后半透蓄势直到冷却走满
                     mirrorPosValid = false;
                     if (!VaultUtils.isServer && Equipped && BrainMotion.OnScreen(Player.Center)) {
                         BrainMotion.BloodMistBurst(Player.Center, 0.55f, 3, 4f);
@@ -115,8 +149,14 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
                     }
                 }
             }
-            else if (Equipped && CloneMaterialize < 1f) {
-                CloneMaterialize = Math.Min(CloneMaterialize + 0.045f, 1f);
+            else if (Equipped) {
+                if (SwapCooldown > 0) {
+                    //蓄势态：凝实度绑定冷却进度，冷却走满自然到1
+                    CloneMaterialize = 1f - SwapCooldown / (float)SwapCooldownTime;
+                }
+                else if (CloneMaterialize < 1f) {
+                    CloneMaterialize = Math.Min(CloneMaterialize + 0.045f, 1f);
+                }
             }
         }
 
@@ -133,6 +173,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
             }
             if (!BrainHeartbeat.ActiveThisFrame) {
                 BrainHeartbeat.Push(SwapPosB, 0.55f * k * proximity, 0.10f * k * proximity, 0f);
+            }
+        }
+
+        public override void PostUpdateEquips() {
+            //帧戳：装备或换位演出存续时盖戳，渲染层凭此免于空扫全玩家表
+            if (Equipped || SwapFxTimer > 0) {
+                MirrorheartRender.ActiveStamp.Stamp();
             }
         }
 
@@ -170,6 +217,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
         /// </summary>
         private void UpdateMirrorPosition() {
             if (ShatterTimer > 0) {
+                //碎裂期锚点驻留裂响处：复现后坐逐帧向 SwapPosA 回弹，
+                //留住单发后坐观感，杜绝整窗累积倒退数百px致复现弹生成进墙
+                MirrorPos = Vector2.Lerp(MirrorPos, SwapPosA, 0.1f);
+                //极端多弹丸连发仍钳住漂移半径：出膛口不离裂响处比常态悬停更远
+                if (Vector2.Distance(MirrorPos, SwapPosA) > 90f) {
+                    MirrorPos = SwapPosA + (MirrorPos - SwapPosA).SafeNormalize(Vector2.Zero) * 90f;
+                }
                 return;
             }
 
@@ -212,15 +266,15 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
             });
         }
 
-        /// <summary>镜心慢半拍复现：到期弹从镜心当前位置出膛，带回坐微动与冷色出手花</summary>
+        /// <summary>
+        /// 镜心慢半拍复现：到期弹从镜心当前位置出膛，带回坐微动与冷色出手花。<br/>
+        /// 复现窗口与碎裂重聚期重叠：碎裂中照常出手，镜中之物从裂响处(旧位)涌出
+        /// </summary>
         private void FirePendingEchoes() {
             if (pendingEchoes.Count == 0) {
                 return;
             }
-            if (Player.whoAmI != Main.myPlayer || ShatterTimer > 0 || !mirrorPosValid) {
-                if (ShatterTimer > 0) {
-                    pendingEchoes.Clear();
-                }
+            if (Player.whoAmI != Main.myPlayer || !mirrorPosValid) {
                 return;
             }
 
@@ -259,12 +313,12 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
         }
 
         /// <summary>
-        /// 受击瞬间换位闪避：镜心在位即免除本次伤害，与镜心互换位置，
-        /// 两端各爆一圈心跳脉冲，镜心碎裂进入重聚期。
+        /// 受击瞬间换位闪避：镜心凝实(冷却走满)时免除本次伤害，与镜心互换位置，
+        /// 两端各爆一圈心跳脉冲，镜心碎裂进入重聚期，同拍点亮复现窗口与悖论反噬。
         /// 裁决仅在受击者本人端(服务端或他端发起的伤害不吃闪避，按原样结算)
         /// </summary>
         public override bool FreeDodge(Player.HurtInfo info) {
-            if (!Equipped || ShatterTimer > 0 || info.Damage <= 0) {
+            if (!Equipped || SwapCooldown > 0 || ShatterTimer > 0 || info.Damage <= 0) {
                 return false;
             }
             if (Player.whoAmI != Main.myPlayer || !mirrorPosValid) {
@@ -291,14 +345,18 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
             ShatterTimer = ShatterRebuildTime;
             CloneMaterialize = 0f;
             pendingEchoes.Clear();
+            //裂响之后镜中之物涌出：复现窗口与悖论反噬同拍点亮(owner 本地字段)
+            EchoWindowTimer = EchoWindowFrames;
+            BacklashTimer = BacklashFrames;
 
-            //两端脉冲环：落点为主拍(ai1=1 承担心音)，旧位为副拍
+            //两端脉冲环：落点为主拍(ai1=1 承担心音)，旧位为副拍；伤害生成时吃总伤加成
             int ringType = ModContent.ProjectileType<MirrorheartPulse>();
+            int pulseDmg = Math.Max((int)Player.GetTotalDamage(DamageClass.Generic).ApplyTo(PulseBaseDamage), 1);
             Projectile.NewProjectile(Player.GetSource_Misc(PulseSourceContext), posB, Vector2.Zero,
-                ringType, PulseDamage, 9f, Player.whoAmI, 0f, 1f);
+                ringType, pulseDmg, 9f, Player.whoAmI, 0f, 1f);
             if (posB != posA) {
                 Projectile.NewProjectile(Player.GetSource_Misc(PulseSourceContext), posA, Vector2.Zero,
-                    ringType, PulseDamage, 9f, Player.whoAmI, 0f, 0f);
+                    ringType, pulseDmg, 9f, Player.whoAmI, 0f, 0f);
             }
 
             StartSwapFx(posA, posB);
@@ -306,12 +364,25 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
             return true;
         }
 
-        /// <summary>点亮换位演出(本端立即演，远端经网络事件到达后演)</summary>
+        //悖论反噬：换位后短窗内的下一击受伤加深，命中即耗(受伤结算天然在 owner 端)
+        public override void ModifyHurt(ref Player.HurtModifiers modifiers) {
+            if (BacklashTimer > 0) {
+                modifiers.FinalDamage *= BacklashMul;
+            }
+        }
+
+        public override void OnHurt(Player.HurtInfo info) {
+            //反噬一击即耗；计时本就 ≤0 时清零无副作用
+            BacklashTimer = 0;
+        }
+
+        /// <summary>点亮换位演出(本端立即演，远端经网络事件到达后演)；换位冷却随包一并点亮</summary>
         internal void StartSwapFx(Vector2 posA, Vector2 posB) {
             SwapFxTimer = SwapFxTime;
             SwapPosA = posA;
             SwapPosB = posB;
             ShatterTimer = Math.Max(ShatterTimer, ShatterRebuildTime);
+            SwapCooldown = Math.Max(SwapCooldown, SwapCooldownTime);
             CloneMaterialize = 0f;
 
             if (VaultUtils.isServer) {

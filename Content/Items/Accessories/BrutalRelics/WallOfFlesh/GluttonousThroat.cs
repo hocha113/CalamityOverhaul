@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -8,9 +9,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
 {
     /// <summary>
-    /// 饕餮之喉：血肉墙残酷遗物。全伤害超模吸血(血珠逆流回体，独立于药水疲劳、
-    /// 无视月噬)，周期性伸出血肉巨舌攫取范围内最远的敌人拖到面前，
-    /// 咬合施加腐锯(防御归零+高额撕裂)，拖到面前的敌人吃下一击双倍(处刑窗口)
+    /// 饕餮之喉：血肉墙残酷遗物。全伤害吸血(血珠逆流回体，不占药水疲劳，
+    /// 但每秒结算封顶为生命上限的 2%，月噬期间被彻底封禁，超量血珠洒落在地)，
+    /// 周期性伸出血肉巨舌攫取范围内最远的敌人拖到面前，咬合施加腐锯(持续撕裂)，
+    /// 拖到面前的敌人吃下一击双倍(处刑窗口)，处刑一击引爆残余腐锯折现
     /// </summary>
     internal class GluttonousThroat : BaseBrutalRelic
     {
@@ -33,10 +35,12 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
     /// </summary>
     internal class GluttonousThroatPlayer : ModPlayer
     {
-        /// <summary>吸血比例(全伤害)</summary>
-        public const float LeechRatio = 0.12f;
-        /// <summary>舌攫冷却(tick)</summary>
-        public const int TongueCooldown = 360;
+        /// <summary>吸血比例(全伤害)。系数保饱满手感，真闸是下面的每秒结算上限</summary>
+        public const float LeechRatio = 0.08f;
+        /// <summary>每秒吸血结算上限＝生命上限的此比例(400血=8HP/s，随进度自然成长)</summary>
+        public const float LeechCapRatio = 0.02f;
+        /// <summary>舌攫冷却(tick)＝9秒，同时钳制处刑窗频率</summary>
+        public const int TongueCooldown = 540;
         /// <summary>无目标时的重试间隔(tick)</summary>
         public const int RetryGap = 20;
         /// <summary>舌攫索敌半径(px)，68 格</summary>
@@ -54,6 +58,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
         public Item EquipItem;
         /// <summary>待结算吸血池</summary>
         private float pendingLeech;
+        /// <summary>每秒结算预算(令牌桶：逐帧回充，血珠触体扣减，容量＝1秒额度)</summary>
+        private float leechBudget;
         /// <summary>最近一次命中位置(血珠出生点)</summary>
         private Vector2 lastHitPos;
         /// <summary>血珠生成间隔计时</summary>
@@ -73,6 +79,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
         public override void PostUpdateEquips() {
             if (!Equipped) {
                 pendingLeech = 0f;
+                leechBudget = 0f;
                 tongueCD = Math.Max(tongueCD, 60);
                 return;
             }
@@ -81,8 +88,28 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
                 return;
             }
 
+            //预算逐帧回充：令牌桶，容量=1秒额度。闲置满桶后的首个滑动秒最多结算 2 倍
+            //(满桶瞬泄+当秒回充)，长程均值恒≤上限(结算本就只在 owner 端)
+            float cap = Player.statLifeMax2 * LeechCapRatio;
+            leechBudget = MathF.Min(leechBudget + cap / 60f, cap);
+
             UpdateLeechOrbSpawn();
             UpdateTongueTrigger();
+        }
+
+        /// <summary>
+        /// 血珠触体结算闸(仅 owner 端调用)：月噬期间彻底封禁(返回 0)；
+        /// 否则按每秒预算放行，超出部分由调用方洒落为坠地血滴
+        /// </summary>
+        internal int SettleLeech(int requested) {
+            if (requested <= 0 || Player.HasBuff(BuffID.MoonLeech)) {
+                return 0;
+            }
+            int granted = Math.Min(requested, (int)leechBudget);
+            if (granted > 0) {
+                leechBudget -= granted;
+            }
+            return granted;
         }
 
         #region 吸血
@@ -174,7 +201,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
             }
         }
 
-        /// <summary>命中收尾：吸血入池 + 处刑标记消费与视网膜锁定演出</summary>
+        /// <summary>命中收尾：吸血入池 + 处刑标记消费(附带引爆残余腐锯)与视网膜锁定演出</summary>
         private void SettleHit(NPC target, int damageDone) {
             if (!Equipped) {
                 return;
@@ -183,6 +210,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
             GluttonousThroatGlobalNPC mark = target.GetGlobalNPC<GluttonousThroatGlobalNPC>();
             if (mark.MarkValidFor(Player.whoAmI)) {
                 mark.MarkConsumed = true;
+                RequestRotsawDetonate(target);
                 if (!VaultUtils.isServer) {
                     GluttonousRetinaRender.RequestFlash(target.whoAmI, target.Center);
                     SoundEngine.PlaySound(SoundID.Item29 with { Pitch = 0.55f, Volume = 0.9f }, target.Center);
@@ -199,21 +227,44 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
                 lastHitPos = target.Center;
             }
         }
+
+        /// <summary>
+        /// 处刑引爆：目标残余腐锯折现为一次性伤害并提前终结腐锯。
+        /// 腐锯早停必须落在服务端(客户端 DelBuff 不广播，会被下次 buff 同步顶回)，
+        /// 联机走 <see cref="GluttonousDetonateNet"/> 请求，本端只先出演出拍
+        /// </summary>
+        private void RequestRotsawDetonate(NPC target) {
+            if (target.FindBuffIndex(ModContent.BuffType<RotsawRendDebuff>()) < 0) {
+                return;
+            }
+            if (Main.netMode == NetmodeID.SinglePlayer) {
+                GluttonousDetonateNet.Detonate(target, Player.whoAmI);
+            }
+            else {
+                GluttonousDetonateNet.SendDetonate(target, Player.whoAmI);
+            }
+            //引爆演出：放大版血浆喷泉(本端即时，其余客户端由服务端转播补拍)
+            if (!VaultUtils.isServer) {
+                WofMotionFX.SpawnBloodBurst(target.Center, 1.8f,
+                    (target.Center - Player.Center).SafeNormalize(Vector2.UnitX));
+            }
+        }
         #endregion
     }
 
     /// <summary>
-    /// 腐锯：饕餮之喉咬合施加的撕裂减益。防御归零 + 每秒 180 点生命撕裂，
-    /// 由服务端 AddBuff 施加并走原版减益同步
+    /// 腐锯：饕餮之喉咬合施加的撕裂减益。每秒 40 点生命撕裂，
+    /// 由服务端 AddBuff 施加并走原版减益同步；处刑一击可引爆残余时长折现
+    /// (削甲身份已让渡世吞，防御归零删除)
     /// </summary>
     internal class RotsawRendDebuff : ModBuff
     {
         /// <summary>持续时长(tick)</summary>
         public const int Duration = 300;
         /// <summary>每秒撕裂生命</summary>
-        public const int DotPerSecond = 180;
+        public const int DotPerSecond = 40;
 
-        public override string Texture => CWRConstant.VaultPlaceholder2;
+        public override string Texture => CWRConstant.Item_BrutalRelic + "RotsawRendDebuff";
 
         public override void SetStaticDefaults() {
             Main.debuff[Type] = true;
@@ -221,14 +272,110 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
         }
 
         public override void Update(NPC npc, ref int buffIndex) {
-            //防御归零：本帧生效，原版每帧自 defDefense 重置，减益过期即自愈
-            npc.defense = 0;
             npc.GetGlobalNPC<GluttonousThroatGlobalNPC>().RotsawActive = true;
         }
     }
 
     /// <summary>
-    /// 敌人侧状态：腐锯撕裂、拖拽冻结、处刑标记。
+    /// 处刑引爆转播信道：owner 请求 → 服务端复验并权威结算(折现伤害 + 腐锯早停) →
+    /// 其余客户端补演出。伤害经 SimpleStrikeNPC 自带同步；腐锯早停必须在服务端 DelBuff
+    /// (netMode==Server 才广播 NPCBuffs)。目标身份沿本件既有契约：下标 + 类型双验。
+    /// 服务端限频 30t/请求端(合法节奏为舌攫 9s 一次)；空转(无腐锯)不转播演出
+    /// </summary>
+    internal class GluttonousDetonateNet : CWRNetChannel
+    {
+        /// <summary>服务端各请求端最近受理帧(限频用，仅服务端读写，客户端槽位无意义)</summary>
+        private static readonly long[] lastDetonateFrame = new long[Main.maxPlayers];
+        /// <summary>服务端受理间隔下限(tick)</summary>
+        private const int DetonateGapTicks = 30;
+
+        public override void Receive(BinaryReader reader, int whoAmI) {
+            //先读完全部载荷再校验早退
+            int owner = reader.ReadByte();
+            int npcIndex = reader.ReadByte();
+            int npcType = reader.ReadInt32();
+            Vector2 pos = reader.ReadVector2();
+
+            if (Main.netMode == NetmodeID.Server) {
+                //限频先行：恶意端高频请求连伪造日志都不给刷
+                if (Main.GameUpdateCount < lastDetonateFrame[whoAmI] + DetonateGapTicks) {
+                    return;
+                }
+                lastDetonateFrame[whoAmI] = Main.GameUpdateCount;
+                if (owner != whoAmI) {
+                    CWRMod.Instance.Logger.Info($"GluttonousThroat detonate spoof dropped: claim={owner} actual={whoAmI}");
+                    return;
+                }
+                if (npcIndex < 0 || npcIndex >= Main.maxNPCs) {
+                    return;
+                }
+                NPC npc = Main.npc[npcIndex];
+                //槽位复用/同帧死亡竞态：静默丢弃，不视作错误
+                if (npc?.active != true || npc.type != npcType) {
+                    return;
+                }
+                //空转(目标已无腐锯)不转播，堵死旁观者演出刷屏面
+                if (!Detonate(npc, owner)) {
+                    return;
+                }
+                ModPacket relay = CWRNetWork.GetPacket<GluttonousDetonateNet>();
+                relay.Write((byte)owner);
+                relay.Write((byte)npcIndex);
+                relay.Write(npcType);
+                relay.WriteVector2(npc.Center);
+                relay.Send(ignoreClient: whoAmI);
+                return;
+            }
+
+            //其余客户端：只补引爆演出(请求端已本地出拍)
+            if (owner < 0 || owner >= Main.maxPlayers || owner == Main.myPlayer) {
+                return;
+            }
+            Player plr = Main.player[owner];
+            Vector2 dir = plr?.active == true
+                ? (pos - plr.Center).SafeNormalize(Vector2.UnitX)
+                : Vector2.UnitX;
+            WofMotionFX.SpawnBloodBurst(pos, 1.8f, dir);
+        }
+
+        /// <summary>owner 端请求引爆(联机)；须在标记消费同帧调用</summary>
+        internal static void SendDetonate(NPC target, int owner) {
+            if (Main.netMode != NetmodeID.MultiplayerClient || owner != Main.myPlayer) {
+                return;
+            }
+            ModPacket packet = CWRNetWork.GetPacket<GluttonousDetonateNet>();
+            packet.Write((byte)owner);
+            packet.Write((byte)target.whoAmI);
+            packet.Write(target.type);
+            packet.WriteVector2(target.Center);
+            packet.Send();
+        }
+
+        /// <summary>
+        /// 权威端结算(单机/服务端)：残余腐锯时长 × 40HP/s 的 50% 折现
+        /// (即 buffTime/3，满时长 5s 上限 100 点，属 DoT 折现非新增输出)，随后腐锯提前结束。
+        /// 返回是否真的爆掉了一层腐锯(false=空转，调用方不应转播演出)
+        /// </summary>
+        internal static bool Detonate(NPC target, int byPlayer) {
+            int idx = target.FindBuffIndex(ModContent.BuffType<RotsawRendDebuff>());
+            if (idx < 0) {
+                return false;
+            }
+            int damage = target.buffTime[idx] / 3;
+            target.DelBuff(idx);
+            if (damage <= 0) {
+                return true;
+            }
+            int dir = byPlayer >= 0 && byPlayer < Main.maxPlayers && Main.player[byPlayer]?.active == true
+                ? (target.Center.X >= Main.player[byPlayer].Center.X ? 1 : -1)
+                : 0;
+            target.SimpleStrikeNPC(damage, dir, false, 0f, null, false, 0f, true);
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// 敌人侧状态：腐锯撕裂、拖拽冻结、拖拽免疫、处刑标记。
     /// 拖拽/标记均由各端从同步的舌攫弹幕状态本地推得，无需额外网络包；
     /// 标记消费(拥有者本地)后远端准星最多多亮到窗口自然结束
     /// </summary>
@@ -238,6 +385,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
 
         /// <summary>拖拽冻结时间戳：不早于此刻则跳过自驱 AI，位移由服务端书写</summary>
         public long DragHoldUntil = -1;
+        /// <summary>拖拽免疫时间戳：释放拍写入(释放后 1 秒)，期间舌攫只咬不拖，防无限风筝链</summary>
+        public long DragImmuneUntil = -1;
         /// <summary>处刑窗口结束时间戳</summary>
         public long MarkUntil = -1;
         /// <summary>处刑窗口归属玩家</summary>
@@ -257,6 +406,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
 
         public override void ResetEffects(NPC npc) {
             RotsawActive = false;
+            //可见标记盖渲染帧戳，准星绘制层无戳早退
+            if (MarkVisible) {
+                GluttonousRetinaRender.MarkStamp.Stamp();
+            }
         }
 
         public override bool PreAI(NPC npc) {
@@ -271,7 +424,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
             if (npc.lifeRegen > 0) {
                 npc.lifeRegen = 0;
             }
-            //lifeRegen 单位为 0.5HP/s：180HP/s → 360
+            //lifeRegen 单位为 0.5HP/s：40HP/s → 80
             npc.lifeRegen -= RotsawRendDebuff.DotPerSecond * 2;
             int tick = RotsawRendDebuff.DotPerSecond / 4;
             if (damage < tick) {

@@ -76,6 +76,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
         private Vector2 ambushAnchor;
         /// <summary>路径历史：旧在前新在后，等距重采样</summary>
         private readonly List<Vector2> path = new(MaxPathPoints + 4);
+        /// <summary>体节链位缓存(AI每帧算一次；Colliding按候选目标逐调，走缓存免全路径重走)</summary>
+        private readonly Vector2[] segCache = new Vector2[BodyCount + 2];
         #endregion
 
         public override void SetStaticDefaults() {
@@ -93,7 +95,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
             Projectile.ignoreWater = true;
             Projectile.timeLeft = WorldEatersMaw.WormLifetime;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 12;
+            Projectile.localNPCHitCooldown = 24;
             Projectile.netImportant = true;
         }
 
@@ -105,6 +107,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
                 path.Add(Projectile.Center);
                 prevPhase = Phase;
                 wasInSolid = Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height);
+                //owner端冷却镜像：MP里OnKill在服务端裁决，owner凭虫的出现对齐读数(尸位冒泡表现用)
+                if (Projectile.owner == Main.myPlayer
+                    && Main.player[Projectile.owner].TryGetModPlayer(out WorldEatersMawPlayer mawMp)) {
+                    mawMp.WormSpawnCooldown = WorldEatersMaw.WormSpawnCooldownTicks;
+                }
                 if (!VaultUtils.isServer) {
                     EowMotionFX.SpawnBreachBlast(Projectile.Center, 1.3f, -Vector2.UnitY);
                     EowMotionFX.PlaySpitCue(Projectile.Center, -0.2f);
@@ -146,6 +153,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
 
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             UpdatePath();
+            //链位缓存：每帧一次全链采样，判定端逐目标复用
+            for (int k = 1; k <= BodyCount + 1; k++) {
+                segCache[k] = PositionAlongPath(k * SegSpacing);
+            }
             UpdateGroundCrossing();
             UpdateAmbientFX();
 
@@ -450,14 +461,14 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
         #endregion
 
         #region 判定
-        /// <summary>整条体节链参与碰撞：头框+各节22px方框</summary>
+        /// <summary>整条体节链参与碰撞：头框+各节22px方框(节位读AI帧缓存)</summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (projHitbox.Intersects(targetHitbox)) {
                 return true;
             }
             int half = (int)(SegSpacing * 0.5f);
             for (int k = 1; k <= BodyCount + 1; k++) {
-                Vector2 seg = PositionAlongPath(k * SegSpacing);
+                Vector2 seg = segCache[k];
                 Rectangle segBox = new((int)seg.X - half, (int)seg.Y - half, half * 2, half * 2);
                 if (segBox.Intersects(targetHitbox)) {
                     return true;
@@ -562,7 +573,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
             const float radius = 110f;
             effect.CurrentTechnique = effect.Techniques["TechOmen"];
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-            effect.Parameters["uSeed"]?.SetValue(Projectile.whoAmI % 71 * 0.149f);
+            //identity跨端一致(whoAmI是本机槽位，联机两端预兆盘相位会漂)
+            effect.Parameters["uSeed"]?.SetValue(Projectile.identity % 71 * 0.149f);
             effect.Parameters["uProgress"]?.SetValue(chargeT);
             effect.Parameters["uFade"]?.SetValue(0f);
             effect.Parameters["uAspect"]?.SetValue(1f);

@@ -148,6 +148,7 @@ BssHead: {
 	DisplayName: Bloomsand Serpent
 	Bestiary: A great serpent that prowls beneath the dunes. Cacti have taken root in its hide, and the crimson blooms drink deep of its blood. They say when a sandstorm rises, it is the serpent turning over below.
 	ChecklistSpawnInfo: Use a Thorned Bloombud in the surface desert after defeating the Eye of Cthulhu
+	BossChecklistIntegration.EntryName: Bss Head
 }
 
 BssBody.DisplayName: Bloomsand Serpent
@@ -157,6 +158,7 @@ FssHead: {
 	DisplayName: Festersand Serpent
 	Bestiary: A mutated Bloomsand Serpent. Shadow seeped into the sand, the crimson blooms festered into cysts, and ichor replaced the blood in its veins. It is longer than it once was, and hungrier. The golden puddles gleaming in the desert are not rainwater. They are its drool.
 	ChecklistSpawnInfo: Use a Festered Bloombud in the surface desert in Hardmode
+	BossChecklistIntegration.EntryName: Fss Head
 }
 
 FssBody.DisplayName: Festersand Serpent

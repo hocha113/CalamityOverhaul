@@ -14,6 +14,7 @@ float uMode;        //0 常驻准星 / 1 爆闪
 float uProgress;    //常驻:窗口已耗比例 0~1 / 爆闪:演出进度 0~1
 float uIntensity;
 float seed;
+float uSeal;        //月噬封禁 0~1：常驻准星褪色转灰(吸血被封的可读提示)
 
 static const float PI = 3.14159265;
 
@@ -67,6 +68,11 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         col *= grain;
         alpha = saturate(ring * 0.60 + ticks * 0.55 + hair * 0.45 + pupil * 0.35)
               * 0.62 * blink;
+
+        //月噬封禁：血红准星褪成死灰并压暗(仅常驻准星，爆闪不受封禁影响)
+        float gray = dot(col, float3(0.30, 0.55, 0.15));
+        col = lerp(col, float3(gray, gray, gray) * 0.85, uSeal);
+        alpha *= lerp(1.0, 0.55, uSeal);
     }
     else
     {

@@ -1,6 +1,5 @@
 using CalamityOverhaul.Content.TimeFreezes;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.ID;
@@ -29,9 +28,14 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Skeletron
     {
         /// <summary>格挡复验距离（px），比客户端判定半径宽放余量</summary>
         private const float BlockValidateRange = 620f;
+        /// <summary>服务端格挡受理间隔下限(tick)。合法节奏受 owner 端 60f 冷却钳制，仍宽 1 倍</summary>
+        private const int BlockGapTicks = 30;
 
-        //服务端限频戳：whoAmI → 上次请求帧（per-player 状态放字典，键即玩家）
-        private static readonly Dictionary<int, uint> lastBlockFrame = [];
+        //服务端限频戳：按玩家槽位记上次受理帧。槽位数组无需离场清理，
+        //槽复用残留的旧帧戳至多让新占用者首个请求延后半秒，无害
+        private static readonly uint[] lastBlockFrame = new uint[Main.maxPlayers];
+        //限频日志每窗只记首犯，防限频日志自身成刷屏面
+        private static readonly bool[] rateLogged = new bool[Main.maxPlayers];
 
         private static ModPacket NewPacket(SoulbindingOp op) {
             ModPacket packet = CWRNetWork.GetPacket<SoulbindingArmNet>();
@@ -136,19 +140,38 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Skeletron
             if (whoAmI < 0 || whoAmI >= Main.maxPlayers || Main.player[whoAmI]?.active != true) {
                 return;
             }
-            //限频：拥有者扫描每 tick 至多一发，超频视作伪造直接丢弃（镜像靠慢对账自愈）
-            if (lastBlockFrame.TryGetValue(whoAmI, out uint last) && last == Main.GameUpdateCount) {
-                CWRMod.Instance.Logger.Info($"SoulbindingArm block rate-limited: player={whoAmI}");
+            //限频：受理间隔 ≥30t(合法节奏 ≥60t)，超频视作伪造直接丢弃（镜像靠慢对账自愈）
+            if (Main.GameUpdateCount < lastBlockFrame[whoAmI] + BlockGapTicks) {
+                if (!rateLogged[whoAmI]) {
+                    rateLogged[whoAmI] = true;
+                    CWRMod.Instance.Logger.Info($"SoulbindingArm block rate-limited: player={whoAmI}");
+                }
                 return;
             }
-            lastBlockFrame[whoAmI] = (uint)Main.GameUpdateCount;
+            rateLogged[whoAmI] = false;
+            lastBlockFrame[whoAmI] = Main.GameUpdateCount;
 
-            //权威灭杀：身份解析失败（同帧自然死亡的竞态）不视作错误，计数照常转播
-            if (identityOk && identity.TryResolve(out Projectile proj)
-                && proj.hostile && !proj.friendly
-                && Main.player[whoAmI].WithinRange(proj.Center, BlockValidateRange)) {
+            //权威灭杀：身份解析失败（同帧自然死亡的竞态）不视作错误，计数照常转播；
+            //拒杀分支具名留痕(netcode 2.8)，供实测对账竞态白扣频次
+            string skip = null;
+            if (!identityOk) {
+                skip = "identity-unreadable";
+            }
+            else if (!identity.TryResolve(out Projectile proj)) {
+                skip = "resolve-miss";
+            }
+            else if (!proj.hostile || proj.friendly) {
+                skip = "not-hostile";
+            }
+            else if (!Main.player[whoAmI].WithinRange(proj.Center, BlockValidateRange)) {
+                skip = "out-of-range";
+            }
+            else {
                 //敌方弹幕 owner=255 与服务端 myPlayer 一致，Kill 自带 KillProjectile 广播
                 proj.Kill();
+            }
+            if (skip != null) {
+                CWRMod.Instance.Logger.Info($"SoulbindingArm block kill skipped: player={whoAmI} reason={skip}");
             }
 
             ApplyCount(whoAmI, count);
@@ -167,7 +190,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Skeletron
             if (Main.netMode != NetmodeID.MultiplayerClient) {
                 return;
             }
-            ApplyCount(player, count);
+            if (ApplyCount(player, count)
+                && Main.player[player].TryGetModPlayer(out SoulbindingArmPlayer mp)) {
+                //远端镜像同步格挡冷却，魂环变暗的可见冷却各端一致
+                mp.BlockCooldown = SoulbindingArmPlayer.BlockCooldownFrames;
+            }
             SoulbindingArmRender.BlockPopFx(pos);
         }
 

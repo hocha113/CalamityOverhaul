@@ -14,17 +14,24 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
     /// </summary>
     internal sealed class BloodfogIrisRender : RenderHandle
     {
-        /// <summary>认领槽位 1.72</summary>
-        public override float Weight => 1.72f;
+        /// <summary>认领槽位 1.722（错开环境渲染 AetherglimPhaseRender 的 1.72）</summary>
+        public override float Weight => 1.722f;
 
         private const int MaxBlobs = 10;
         private static readonly Vector4[] blobBuffer = new Vector4[MaxBlobs];
+
+        /// <summary>活跃帧戳：佩戴者(或雾态存续)每帧盖戳，无戳且无屏效余量时跳过全弹幕扫描</summary>
+        internal static ActivityStamp ActiveStamp;
 
         public override void EndCaptureDraw(SpriteBatch sb, GraphicsDevice gd, RenderTarget2D screenSwap) {
             //屏效状态每帧推进，与是否有雾团无关
             BloodfogScreenFX.Update();
 
             if (Main.gameMenu) {
+                return;
+            }
+            //帧戳门：无佩戴者活跃且无屏效余量时，免于每绘制帧空扫全弹幕表
+            if (!ActiveStamp.ActiveWithin() && !BloodfogScreenFX.HasAny) {
                 return;
             }
             int blobCount = GatherVeilBlobs();

@@ -887,9 +887,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             if (phase == 2) {
-                //连吐三发，每发后坐上仰；窗口闩出手，远端迟到换场也补得上节拍
+                //连吐三发，每发后坐上仰；窗口闩出手，远端迟到换场也补得上节拍。
+                //目标恰在无敌窗里丢锁的拍直接压枪跳过：此时 aim 已回退成自己下方 300px，
+                //照吐就是整排骨弹从目标下方入土（反馈 #23）
                 int shotIndex = (t - 1) / SkullGap;
-                if (shotIndex < SkullCount && lastSkullFired < shotIndex) {
+                if (shotIndex < SkullCount && lastSkullFired < shotIndex && cachedTarget >= 0) {
                     lastSkullFired = shotIndex;
                     FireSkull(owner, aim, shotIndex, authority);
                 }

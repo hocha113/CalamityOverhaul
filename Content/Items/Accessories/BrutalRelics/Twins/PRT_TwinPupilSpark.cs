@@ -11,7 +11,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Twins
     /// </summary>
     internal class PRT_TwinPupilSpark : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "Extra_193_White";
+        //声明与实画对齐(PreDraw 画 SoftGlow)，免加载无用贴图
+        public override string Texture => CWRConstant.Masking + "SoftGlow";
 
         public Color InitialColor;
         public Color TrailGlow;

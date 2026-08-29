@@ -58,9 +58,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
             Projectile.penetrate = -1;
             Projectile.timeLeft = TotalLife;
             Projectile.DamageType = DamageClass.Generic;
-            //绞杀节奏：本地免疫表约 10 帧一跳
+            //绞杀节奏：本地免疫表 12 帧一跳
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;
+            Projectile.localNPCHitCooldown = 12;
         }
 
         public override bool ShouldUpdatePosition() => false;
@@ -72,6 +72,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
 
         public override void AI() {
             LifeTimer++;
+
+            //长寿命弹幕：owner 端逐帧按面板刷新单跳伤害（含雨天强化倍率）
+            if (Projectile.owner == Main.myPlayer) {
+                float mult = Empowered ? TidalFinPlayer.EmpowerMult : 1f;
+                Projectile.damage = (int)Main.player[Projectile.owner]
+                    .GetTotalDamage(DamageClass.Generic).ApplyTo(TidalFinPlayer.TornadoDamage * mult);
+            }
 
             //首帧落定：向下探地，近地贴地、高空悬滞（同步的生成位置+确定性探地，各端一致）
             if (Anchored == 0f) {
@@ -86,8 +93,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
                 FishronMotionFX.SpawnSplashBurst(bottom, Empowered ? 1.5f : 1.25f);
             }
 
-            //绞杀吸力：把非 Boss 且不免击退的敌人往柱身里拽（服务端权威，限频同步）
-            if (!VaultUtils.isClient && HitWindowOpen) {
+            //绞杀吸力：把非 Boss 且不免击退的敌人往柱身里拽（服务端权威，限频同步；2 帧节流省全表扫）
+            if (!VaultUtils.isClient && HitWindowOpen && Main.GameUpdateCount % 2 == 0) {
                 PullVictims();
             }
 
@@ -107,7 +114,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
                 }
                 Vector2 toCol = new(colCenter.X - n.Center.X, (colCenter.Y - n.Center.Y) * 0.35f);
                 Vector2 pull = toCol.SafeNormalize(Vector2.Zero) * 5f * n.knockBackResist;
-                n.velocity = Vector2.Lerp(n.velocity, pull, 0.08f);
+                //2 帧节流下的等效补偿：0.15 ≈ 1-(1-0.08)²，吸力手感不变
+                n.velocity = Vector2.Lerp(n.velocity, pull, 0.15f);
                 if (Main.GameUpdateCount % 10 == 0) {
                     n.netUpdate = true;
                 }

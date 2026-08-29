@@ -4739,9 +4739,10 @@ FallenKingsCrown: {
 		'''
 		Immunity to fall damage
 		Hold DOWN in midair to become a crown dive and plummet
-		Landing unleashes a gel shockwave whose damage grows with fall height, without cap
-		Enemies struck mid-dive are crushed by the crown
 		Falling more than 25 tiles naturally also triggers the dive
+		Enemies struck mid-dive are crushed by the crown
+		Landing unleashes a gel shockwave; deeper falls hit harder, maxing out at 40 tiles
+		The shockwave fires at most once every 1.5 seconds; the crown dims while it recharges
 		The impact leaves a gel field that slows enemies inside and drains their health
 		Grappling, mounting or entering liquid cancels the dive
 		"The day the throne fell, weight itself became the verdict"
@@ -4753,11 +4754,12 @@ BloodfogIris: {
 	/* Tooltip:
 		'''
 		8% increased critical strike chance
-		Double tap LEFT, RIGHT or UP to surge that way as blood fog, immune to damage while surging
-		A surge ends in a 1.5 second ambush state: you sink into the fog and enemies mostly lose interest in you
-		Your next strike during an ambush is a guaranteed critical hit dealing double damage
+		Double tap LEFT, RIGHT or UP to surge that way as blood fog, briefly invulnerable at the start
+		Surges have a 1.25 second cooldown; the pupil glow dims while it recharges
+		A surge ends in a 1.5 second ambush state: you sink into the fog and draw less attention
+		Your next strike during an ambush is a guaranteed critical hit
 		Lethal damage dissolves you into blood fog; you reform toward your cursor, briefly invulnerable and already in ambush
-		The fog rebirth can occur once every 60 seconds
+		The fog rebirth can occur once every 60 seconds; for 3 seconds after reforming you take 15% more damage
 		"The fog has not settled, and the pupil has not closed"
 		''' */
 }
@@ -4766,11 +4768,11 @@ WorldEatersMaw: {
 	// DisplayName: World-Eater's Maw
 	/* Tooltip:
 		'''
-		All your attacks add a stack of Corrosion: each stack strips 3 defense and sears for 6 acid damage per second
-		Corrosion stacks up to 10 times, lasts 6 seconds and refreshes on every hit
-		When a corroded enemy dies, a devouring wormling bursts from its corpse to fight for you
+		All your attacks add a stack of Corrosion, up to 10 stacks; lasts 6 seconds and refreshes on every hit
+		At full stacks, Corrosion strips 15 defense and sears for 20 acid damage per second
+		When a corroded enemy dies, a devouring wormling bursts from its corpse to fight for you, at most one every 2 seconds
 		Wormlings burrow and ambush nearby foes, biting for 2 stacks and splashing Corrosion around each breach
-		Up to 6 wormlings at once, each living for 7 seconds
+		Up to 3 wormlings at once, each living for 7 seconds
 		"Every edge of the world is a tooth mark it left behind"
 		''' */
 }
@@ -4780,11 +4782,12 @@ MirrorheartParadox: {
 	/* Tooltip:
 		'''
 		A mirrored heart drifts at your side
-		Every projectile you fire is echoed by the mirrorheart at 50% damage
+		While the mirrorheart is solid, the moment you take damage you swap places with it, dodging the hit with brief invulnerability
+		Heartbeat pulses burst at both swap positions, dealing 90 base damage and confusing enemies for 2.5 seconds
+		For 5 seconds after a swap, projectiles you fire are echoed by the mirrorheart at 50% damage
 		Summons, held weapons and explosives are not echoed
-		The moment you take damage, you swap places with the mirrorheart and dodge the hit
-		The swap bursts heartbeat pulses at both positions, dealing 165 damage and confusing enemies for 4 seconds
-		The mirrorheart shatters after a swap and reforms in 6 seconds, doing nothing while broken
+		Paradox backlash: the next hit you take within 3 seconds of a swap deals 25% more damage
+		Swaps occur at most once every 25 seconds; the mirrorheart stays translucent while recharging, with an audible cue when it turns solid again
 		"In the mirror, it breaks a heartbeat before you do"
 		''' */
 }
@@ -4794,13 +4797,14 @@ SwarmVortexBeacon: {
 	/* Tooltip:
 		'''
 		Hitting enemies stacks Bee Marks; at 8 stacks the target is caught in a swarm vortex
-		The vortex grinds its victim for 5 seconds, stinging 12 times per second for 16 base damage each
+		The vortex grinds its victim for 5 seconds, stinging 4 times per second for 18 base damage each
 		Trapped enemies are heavily slowed; bosses are only slightly slowed
-		Landing more hits on the victim extends the grip, up to 10 seconds
-		When the victim dies, the vortex transfers to a nearby enemy
+		Landing more hits on the victim extends the grip, up to 8 seconds
+		Only one vortex is kept at a time; when a new prey's marks fill up, the swarm moves over to it
+		When the victim dies, the vortex also transfers to a nearby enemy
 		Vortex stings deal 25% more damage while you carry a Hive Pack
 		Stand still and the swarm returns to you, crystallizing into a wax ward over your skin
-		The wax ward absorbs up to 60 damage and lingers for 5 seconds once you start moving
+		The wax ward absorbs up to 30 damage and lingers for 5 seconds once you start moving
 		A shattered ward takes 3 seconds to crystallize again
 		"The Queen's beacon does not summon the swarm - it marks the next prey"
 		''' */
@@ -4810,11 +4814,14 @@ SoulbindingArm: {
 	// DisplayName: Soulbinding Arm
 	/* Tooltip:
 		'''
-		Projects a curse domain around you; enemies inside take 32% increased damage
+		Projects a curse domain around you; enemies inside take 8% increased damage from you
 		Killing an enemy inside the domain harvests a soul, storing up to 8
 		Souls orbit you; each one blocks an enemy projectile in your place, then expires
+		Blocked projectiles turn into curseflame orbs hurled back at nearby enemies, dealing 60 base damage
+		After each block, the soul ring takes 1 second to reload
 		Once the ring is full it gathers briefly, then a spectral hand lunges at the strongest enemy nearby
-		The seized enemy takes 500 damage ignoring defense and is briefly imprisoned
+		The hand deals 300 base damage ignoring defense, scaling with your damage bonuses
+		Seized enemies take 20% increased damage from all sources for 5 seconds; regular enemies are also pinned for 1 second
 		"The severed arm still harvests souls; its five fingers have never let go"
 		''' */
 }
@@ -4823,13 +4830,14 @@ WhiteoutStormCore: {
 	// DisplayName: Whiteout Storm Core
 	/* Tooltip:
 		'''
-		12% damage reduction; immune to Chilled, Frozen, Frostburn and Frostbite
+		5% damage reduction; immune to Chilled, Frozen, Frostburn and Frostbite
 		Taking damage automatically detonates a whiteout storm; lasts 6 seconds, 20 second cooldown
-		The storm deals 180 damage and blinds nearby enemies: scrambled aggro, heavy slow, 30 frostbite damage per second
-		During the storm you gain 50% damage reduction and knockback immunity, and the snow veil never blocks your sight
+		The storm deals 120 base damage to nearby enemies, confusing them for 3 seconds and whiteblinding them for 6
+		Whiteblinded enemies are heavily slowed and take 10 frostbite damage per second
+		During the storm you gain an extra 30% damage reduction and knockback immunity, and the snow veil never blocks your sight
 		Boss-class enemies cannot be confused and take a greatly reduced slow
-		While running on the ground, periodically heaves a row of ice spikes from the earth ahead
-		Each spike deals 80 damage and briefly chills enemies
+		While running on the ground, heaves a row of ice spikes from the earth ahead every second
+		Each spike deals 45 base damage and briefly chills enemies
 		"Within the whiteout, the blizzard parts only for you"
 		''' */
 }
@@ -4838,13 +4846,15 @@ GluttonousThroat: {
 	// DisplayName: Gluttonous Throat
 	/* Tooltip:
 		'''
-		12% of all damage you deal flows back to you as blood beads
-		This lifesteal has no cap, skips potion sickness, and Moon Bite cannot stop it
-		Every 6 seconds a tongue of flesh seizes the farthest enemy within 68 tiles and drags it before you
-		Bitten enemies suffer Rotsaw for 5 seconds: defense drops to zero, 180 life torn per second
+		8% of all damage you deal flows back to you as blood beads
+		Blood beads skip potion sickness, but restore at most 2% of your max life per second
+		Overflow blood splatters onto the ground; Moon Bite seals the throat, and every bead falls astray
+		Every 9 seconds a tongue of flesh seizes the farthest enemy within 68 tiles and drags it before you
+		Bitten enemies suffer Rotsaw for 5 seconds: 40 life torn per second
 		For 2.5 seconds after an enemy is dragged to you, your next strike against it deals double damage
+		The executing strike also detonates any remaining Rotsaw as a burst of bonus damage
 		Bosses cannot be dragged, but are still bitten, sawed and marked for execution
-		The far end of the throat has no bottom
+		"The far end of the throat has no bottom"
 		''' */
 }
 
@@ -4855,11 +4865,12 @@ RefractionWaltz: {
 		Greatly boosts aerial acceleration and turning
 		Cresting a jump, double-jumping, reversing or dashing midair condenses a refraction crystal behind you
 		Up to 6 crystals may exist at once; the oldest shatters to make room
-		Any two crystals in each other's line of sight link up with a prism beam
-		Enemies touching a beam take heavy continuous damage and are Refracted
-		Refracted enemies take 30% more damage from this relic
-		Crystals shattered by enemies burst into shards toward the attacker
-		When the light-web takes shape, the one dancing to the music owns the ballroom
+		Crystals link up with prism beams in the order they were danced out, closing the loop at six
+		Beam, crystal and shard damage all scale with your damage bonuses
+		Each beam slices the same enemy up to 4 times per second for 35 base damage
+		Enemies shattering a crystal take 70 base damage and are struck by shards dealing 40 each
+		Hits inflict Refraction: the target slows and your crit chance against it rises by 8%
+		"When the light-web takes shape, the one dancing to the music owns the ballroom"
 		''' */
 }
 
@@ -4867,14 +4878,14 @@ TwinPupilTether: {
 	// DisplayName: Twin-Pupil Tether
 	/* Tooltip:
 		'''
-		Summons Vision and Pyrepupil, a pair of mini mechanical eyes that orbit you
-		Vision snipes mid-range enemies with precise laser shots
-		Pyrepupil breathes cursed flames at nearby enemies
-		A cutting tether is always strung between the eyes, slicing enemies it sweeps across and tearing wounds open
-		Wounds last 3 seconds, during which that enemy takes 30% more damage from the pair
+		Summons Vision and Pyrepupil, a pair of orbiting mini mechanical eyes; their damage scales with your damage bonuses
+		Vision snipes mid-range enemies with lasers: 140 base damage per shot, about one shot every 0.7 seconds
+		Pyrepupil breathes cursed flames at nearby enemies: 40 base damage per gout, five gouts per second
+		A cutting tether is always strung between the eyes, slicing the same enemy up to 4 times per second for 80 base damage
+		Cut enemies are torn open for 3 seconds, taking 25% more damage from the pair
 		The faster you move, the wider the eyes spread and the longer the tether stretches
 		Double tap Down to order a cross charge: the eyes flank your cursor, dash through each other, and detonate at the crossing point
-		The cross charge has a 6 second cooldown
+		The charge impact deals 380 and the crossing detonation 1100 base damage, with a 9 second cooldown
 		"A stitched gaze, and the thread that cuts everything"
 		''' */
 }
@@ -4884,8 +4895,9 @@ ProbeMatrixCore: {
 	/* Tooltip:
 		'''
 		Deploys five Destroyer probes as an escort formation that seeks enemies and fires homing lasers
-		Lasers deal 115 base damage; hits on the same target build designation, and 8 stacks call an orbital strike
-		The strike drops a piercing deathray from the sky, dealing 1150 base damage per tick to targets caught in the column
+		Lasers deal 55 base damage; hits on the same target build designation, and 8 stacks call an orbital strike
+		The strike drops a piercing deathray from the sky, dealing 900 base damage per tick
+		Targets caught in the column take at most two ticks per strike, up to 1800 base damage total
 		Designation resets after each strike with a 3 second cooldown, and the impact site lingers with searing heat
 		Probes shot down by enemies rebuild after about 2.5 seconds; the formation uses no minion slots
 		"The iron serpent has fallen, yet its eyes still patrol the sky for you"
@@ -4898,12 +4910,12 @@ OverloadCommandCore: {
 		'''
 		Striking enemies builds ion charge: +4 per hit, Ion Overload triggers at 100
 		Stop attacking for over a second and the charge slowly drains
-		Ion Overload lasts 5 seconds, increasing attack speed by 45%
+		Ion Overload lasts 5 seconds, increasing attack speed by 30%
 		While overloaded, your hits arc chain lightning between nearby enemies, jumping up to 3 times
 		Each arc deals 40% of the triggering hit's damage, decaying per jump
 		Four phantom mechanical arms unfold behind you, striking in sync with your attacks
-		With a melee weapon the arms sweep, each blow dealing 35% weapon damage
-		With any other weapon the arms fire ion bolts, each dealing 32% weapon damage
+		With a melee weapon the arms sweep, each blow dealing 24% weapon damage
+		With any other weapon the arms fire ion bolts, each dealing 20% weapon damage
 		When the overload ends, the core overheats for 3 seconds: 8% reduced attack speed and no charge gain
 		"Command authority transferred. Four arms at your service, until meltdown"
 		''' */
@@ -4914,12 +4926,14 @@ BloomNovaBulb: {
 	/* Tooltip:
 		'''
 		+30 max life and +4 life regeneration
-		When struck, lashes thorn vines at your attacker or toward the incoming threat
-		Snared enemies are heavily slowed and torn over time; bosses are only slightly slowed
-		Snared enemies suffer fierce thorn damage when they hit you
-		Fighting builds Growth: more vines that hit harder and snare longer
-		Below 35% life, a Bloom Nova erupts: a petal shockwave sweeps and snares nearby enemies
-		The bloom instantly restores 40% of your life, then greatly boosts regeneration for 6 seconds
+		When struck, lashes thorn vines at your attacker or toward the incoming threat, at most once every 1.5 seconds
+		Vines deal 220 to 330 base damage depending on Growth, scaling with your damage bonuses
+		Snared enemies are slowed and torn for 80 damage per second; bosses are only slightly slowed
+		Snared enemies that hit you suffer thorn backlash: the full damage dealt plus 120 base damage
+		Thorn backlash triggers at most once per half second on each enemy
+		Fighting builds Growth: more vines that snare longer
+		Below 35% life, a Bloom Nova erupts: a petal shockwave of 1200 base damage sweeps and snares nearby enemies
+		The bloom instantly restores 25% of your life, greatly boosts regeneration for 6 seconds, and consumes all Growth
 		Spore fog follows you for 6 seconds afterward; enemies in the fog miss 25% of their attacks
 		Bloom Nova occurs at most once every 60 seconds
 		"Every wound waters the next bloom"
@@ -4931,13 +4945,16 @@ SolarCoreFist: {
 	/* Tooltip:
 		'''
 		Stand still for half a second to enter Stone Guard stance
-		While in stance, damage taken is reduced by 75% and you are immune to knockback
-		Each hit taken in stance grants 1 stack of Solar Charge
-		Every 100 raw damage in a single hit grants 1 extra stack, with no stack limit
-		Moving or double-tapping DOWN hurls a Solar Core Fist toward your cursor
-		The fist pierces enemies; its damage scales with stacks, without cap
-		The first enemy struck erupts in a solar nova, chaining lava bursts to both sides
-		At 8 or more stacks, the stance radiates a scorching aura that burns nearby enemies
+		While in stance, damage taken is reduced by 50% and you are immune to knockback
+		Each hit taken in stance grants 1 stack of Solar Charge, plus 1 extra per 100 raw damage of the blow
+		Charge caps at 24 stacks; the shell veins brighten one tier per 8 stacks
+		Holding the stance for 5 seconds forces a 2 second overheat: no damage reduction, no charge, no re-entering stance
+		Hold DOWN for half a second in stance to hurl a full-power fist toward your cursor with a larger solar nova
+		Moving also breaks the stance and throws the fist, but at 25% reduced damage
+		Throwing the fist ends the stance without overheating
+		The fist deals 500 base damage, +12.5% per stack, 2000 at full charge, scaling with your damage bonuses
+		The first enemy struck erupts in a solar nova, chaining six lava bursts to both sides
+		At 8 or more stacks, the stance radiates a scorching aura that scales with your damage bonuses
 		"The temple's sun gem still beats; the stone shell is merely its gauntlet"
 		''' */
 }
@@ -4946,13 +4963,15 @@ TidalFin: {
 	// DisplayName: Tidal Fin
 	/* Tooltip:
 		'''
-		Press [KEY] to dash toward the cursor; press again shortly after to chain, up to three dashes
+		Press [KEY] to dash toward the cursor; press again shortly after to chain, up to two dashes
 		Every dash can be re-aimed, and you are fully invincible while dashing
-		Each dash raises a lingering tsunami wall along its path, dealing 360 damage per hit
+		Each dash raises a lingering tsunami wall along its path, dealing 140 base damage per hit
+		Multiple walls do not stack their hits on the same target
 		The wall shoves away and slows small hostile projectiles
-		The final dash raises a stationary tidal tornado at its endpoint, grinding for 520 damage per hit
-		While it rains or you are submerged, the chain gains a fourth dash and all damage is boosted by 50%
-		The full chain has a 5 second cooldown
+		The final dash raises a stationary tidal tornado at its endpoint, grinding for 200 base damage per hit
+		Wall and tornado damage scales with your damage bonuses
+		While it rains or you are submerged, the chain gains a third dash and all damage is boosted by 50%
+		The full chain has a 12 second cooldown
 		[c/2696A0:"The tide has not forgotten its duke"]
 		''' */
 }
@@ -4961,15 +4980,15 @@ RiteRing: {
 	// DisplayName: Rite Ring
 	/* Tooltip:
 		'''
-		15% increased damage, +40 maximum mana, and each lit rune grants 1% more damage
+		8% increased damage, +40 maximum mana, and each lit rune grants 1% more damage
 		Attacking or casting lights runes around you; at 8 runes the current rite fires automatically
 		Rites rotate in order: Mirror Rite, Moonflame Laser, Star Rite
-		Mirror Rite: conjures 3 pale mirror bodies, each firing 3 volleys of your held weapon's shots
+		Mirror Rite: conjures 3 pale mirror bodies, each firing 3 volleys of your held weapon's shots at 40% damage
 		Summon, held-style and explosive weapons cannot be mirrored; mirrors fire rune bolts instead
 		Moonflame Laser: a moon eye opens overhead and sweeps the field with a death ray
 		Star Rite: a tiny planetary ring collapses, calling down 16 falling stars upon your foes
 		Double tap Left or Right to spend 3 runes, tearing the veil for a short blink in that direction
-		'The rite began long ago, and you are standing at the circle's heart'
+		"The rite began long ago, and you are standing at the circle's heart"
 		''' */
 }
 
@@ -4977,13 +4996,13 @@ WingsOfInterference: {
 	// DisplayName: Wings of Interference
 	/* Tooltip:
 		'''
-		Become the wings of the Empress of Light: top-tier flight, hold DOWN while flying to hover
+		Become the wings of the Empress of Light: 3.5s of flight time by day and 4.5s by night, hold DOWN while flying to hover
 		Day form: your attack projectiles trace interference light-paths as they fly
-		When two light-paths cross, the intersection detonates a prism burst dealing 240 base damage
-		Night form: greatly increased movement speed and longer flight time
-		At night, automatically dodge one hit, once every 8 seconds
+		When two light-paths cross, the intersection detonates a prism burst dealing 200 base damage
+		Night form: noticeably increased movement speed and longer flight time
+		At night, automatically dodge one hit, once every 48 seconds
 		At night, hostile projectiles closing in on you drag auroral trails, exposing their paths early
-		The instant dawn or dusk arrives, a screen-wide interference burst deals 1350 base damage and clears hostile projectiles
+		The instant dawn or dusk arrives, a screen-wide interference burst deals 1100 base damage and clears hostile projectiles
 		"Day and night interfere at the wingtip; light collapses where paths cross"
 		''' */
 	// FormDay: It is day now: the interference weave is deployed
@@ -4996,11 +5015,11 @@ BlackFlashSigil: {
 		'''
 		Attacking awakens the sigil; a black flash tempo ring lights up on your chest
 		The instant the ring contracts to its smallest, the judgment window opens with a sharp chime
-		Hits landed within the window trigger a Black Flash: that strike deals 8x damage and always crits
-		Each Black Flash adds 1 Flash Chain stack; every stack adds another 2.5x, capped at 12 stacks for 38x
+		Hits landed within the window trigger a Black Flash: that strike deals 3x damage and always crits
+		Each Black Flash adds 1 Flash Chain stack; every stack adds another 0.25x, capped at 6 stacks for 4.5x
 		Higher chains quicken the tempo; the next window comes ever sooner
 		Letting a window pass empty, or landing hits outside it, clears every stack
-		At 6 stacks you enter Domain Sense; projectiles around you seem to slow
+		At 4 stacks you enter Domain Sense; projectiles around you seem to slow
 		Minions act on their own; they neither follow the tempo nor break the chain
 		"When the flash turns black, the instant reigns over eternity"
 		''' */

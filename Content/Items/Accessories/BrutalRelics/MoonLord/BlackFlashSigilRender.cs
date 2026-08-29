@@ -23,6 +23,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.MoonLord
         /// <summary>残影弹幕上限（填充率保险）</summary>
         private const int MaxGhostProj = 48;
 
+        //敌弹计数门：每8帧刷新一次计数，空场时残影层整段跳过（纯本地视图状态）
+        private static uint hostileGateFrame;
+        private static int hostileProjCached;
+
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
             if (Main.gameMenu || Main.dedServ) {
                 return;
@@ -50,6 +54,20 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.MoonLord
             //冷色滞象：去饱和的月白偏紫
             Color ghostTint = new(150, 158, 208);
 
+            //敌弹计数门：空场时不进全表扫描
+            if (Main.GameUpdateCount - hostileGateFrame >= 8) {
+                hostileGateFrame = Main.GameUpdateCount;
+                hostileProjCached = 0;
+                foreach (Projectile hostileProj in Main.ActiveProjectiles) {
+                    if (hostileProj.hostile) {
+                        hostileProjCached++;
+                    }
+                }
+            }
+            if (hostileProjCached == 0) {
+                return;
+            }
+
             Rectangle view = new((int)Main.screenPosition.X - 200, (int)Main.screenPosition.Y - 200,
                 Main.screenWidth + 400, Main.screenHeight + 400);
 
@@ -62,7 +80,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.MoonLord
                     || !view.Contains(proj.Center.ToPoint())) {
                     continue;
                 }
-                Main.instance.LoadProjectile(proj.type);
+                //只画已加载贴图的弹种，未加载者跳过一帧等原版惰载，避免绘制线程 IO 尖峰
+                if (!TextureAssets.Projectile[proj.type].IsLoaded) {
+                    continue;
+                }
                 Texture2D tex = TextureAssets.Projectile[proj.type].Value;
                 if (tex == null) {
                     continue;
@@ -93,6 +114,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.MoonLord
 
         #region 胸前印记
         private static void DrawSigils(SpriteBatch spriteBatch) {
+            //帧戳门：无任何印记可见时跳过全玩家表扫描（本函数原本要走两遍 maxPlayers）
+            if (!BlackFlashSigilPlayer.PresenceStamp.ActiveWithin()) {
+                return;
+            }
+
             Rectangle view = new((int)Main.screenPosition.X - 240, (int)Main.screenPosition.Y - 240,
                 Main.screenWidth + 480, Main.screenHeight + 480);
 

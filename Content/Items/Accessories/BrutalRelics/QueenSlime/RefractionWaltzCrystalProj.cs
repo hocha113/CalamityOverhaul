@@ -22,8 +22,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime
         public override string Texture => CWRConstant.VaultPlaceholder2;
         public override Terraria.Localization.LocalizedText DisplayName => this.GetLocalization("DisplayName", () => "折射水晶");
 
-        /// <summary>撞碎它要挨的一下</summary>
-        internal const int ContactDamage = 110;
+        /// <summary>撞碎它要挨的一下(基伤，挂通用加成)</summary>
+        internal const int ContactDamage = 70;
         /// <summary>凝胶→晶体物化帧数</summary>
         internal const int MaterializeFrames = 26;
         /// <summary>驻场寿命(帧)</summary>
@@ -43,9 +43,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime
         private int evictTimer;
         private int linkCountCache;
         private int linkCountTimer;
+        /// <summary>满编时的装饰假束搭档槽位(-1无)，纯视觉</summary>
+        private int fakePartnerIdx = -1;
         /// <summary>被敌人撞碎标记(owner 端命中钩写)，碎晶朝这个方向迸</summary>
         private bool shatteredByEnemy;
         private Vector2 shatterDir = Vector2.UnitY;
+        //quad 顶点成员缓存，免每帧分配
+        private readonly VertexPositionColorTexture[] shellVerts = new VertexPositionColorTexture[4];
 
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 200;
 
@@ -118,10 +122,16 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime
                 }
             }
 
-            //连线数缓存(供蓄能辉光)，每12帧一算
+            //连线数与假束搭档缓存(供蓄能辉光/满编暗弦)，每12帧一趟
             if (++linkCountTimer >= 12) {
                 linkCountTimer = 0;
-                linkCountCache = CountLinks();
+                RefreshLinkCaches();
+            }
+
+            //owner 端逐帧刷新接触伤害，长驻水晶吃到加成变化
+            if (Projectile.owner == Main.myPlayer) {
+                Projectile.damage = (int)Main.player[Projectile.owner]
+                    .GetTotalDamage(DamageClass.Generic).ApplyTo(ContactDamage);
             }
 
             Lighting.AddLight(Projectile.Center, QueenMotion.PrismHue(HueSeed).ToVector3() * (0.5f * Grow));
@@ -135,16 +145,53 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime
             }
         }
 
-        private int CountLinks() {
+        /// <summary>
+        /// 单趟缓存刷新：数与自己相连的光束(蓄能辉光用)；
+        /// 满编(6颗全部成形)时按布晶序取对角搭档(rank 0↔3、1↔4)，供装饰假束绘制。
+        /// 假束无判定不入和弦，纯加色视觉
+        /// </summary>
+        private void RefreshLinkCaches() {
             int beamType = ModContent.ProjectileType<RefractionWaltzBeamProj>();
             int count = 0;
+            Span<(float seq, int idx)> formed = stackalloc (float, int)[RefractionWaltzPlayer.MaxCrystals + 2];
+            int formedCount = 0;
             foreach (Projectile proj in Main.ActiveProjectiles) {
-                if (proj.type == beamType && proj.owner == Projectile.owner
-                    && ((int)proj.ai[0] == Projectile.identity || (int)proj.ai[1] == Projectile.identity)) {
-                    count++;
+                if (proj.owner != Projectile.owner) {
+                    continue;
+                }
+                if (proj.type == beamType) {
+                    if ((int)proj.ai[0] == Projectile.identity || (int)proj.ai[1] == Projectile.identity) {
+                        count++;
+                    }
+                    continue;
+                }
+                if (proj.type == Projectile.type && formedCount < formed.Length
+                    && proj.ModProjectile is RefractionWaltzCrystalProj sibling && sibling.LinkReady) {
+                    formed[formedCount++] = (proj.ai[0], proj.whoAmI);
                 }
             }
-            return count;
+            linkCountCache = count;
+
+            fakePartnerIdx = -1;
+            if (formedCount != RefractionWaltzPlayer.MaxCrystals || !LinkReady) {
+                return;
+            }
+            //布晶序插入排序(规模≤6)
+            for (int i = 1; i < formedCount; i++) {
+                (float seq, int idx) cur = formed[i];
+                int j = i - 1;
+                while (j >= 0 && formed[j].seq > cur.seq) {
+                    formed[j + 1] = formed[j];
+                    j--;
+                }
+                formed[j + 1] = cur;
+            }
+            for (int rank = 0; rank < 2; rank++) {
+                if (formed[rank].idx == Projectile.whoAmI) {
+                    fakePartnerIdx = formed[rank + 3].idx;
+                    return;
+                }
+            }
         }
 
         /// <summary>让位快碎(owner 端调用)：写状态并同步，几帧后自杀</summary>
@@ -159,12 +206,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime
         /// <summary>成形前与收场中无判定</summary>
         public override bool? CanDamage() {
             return age > MaterializeFrames * 0.6f && EvictState < 1.5f && Projectile.timeLeft > FadeOutFrames ? null : false;
-        }
-
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (target.HasBuff(ModContent.BuffType<RefractionTag>())) {
-                modifiers.FinalDamage *= RefractionTag.DamageTakenMult;
-            }
         }
 
         /// <summary>被撞碎：盖折光、记迸射方向、当场碎裂(owner 端命中钩)</summary>
@@ -184,14 +225,16 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime
                 }
             }
 
-            //碎晶朝来敌迸出(owner 端生成，走原版同步)
+            //碎晶朝来敌迸出(owner 端生成，走原版同步；短寿命弹生成时折算即可)
             if (shatteredByEnemy && Projectile.owner == Main.myPlayer) {
+                int shardDamage = (int)Main.player[Projectile.owner]
+                    .GetTotalDamage(DamageClass.Generic).ApplyTo(RefractionWaltzShardProj.ShardDamage);
                 int count = 5;
                 for (int i = 0; i < count; i++) {
                     float spread = MathHelper.Lerp(-0.5f, 0.5f, i / (float)(count - 1));
                     Vector2 vel = shatterDir.RotatedBy(spread) * Main.rand.NextFloat(9.5f, 11.5f);
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, vel,
-                        ModContent.ProjectileType<RefractionWaltzShardProj>(), RefractionWaltzShardProj.ShardDamage,
+                        ModContent.ProjectileType<RefractionWaltzShardProj>(), shardDamage,
                         2f, Projectile.owner, (HueSeed + i * 0.11f) % 1f);
                 }
             }
@@ -213,7 +256,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime
 
             Vector2 center = Projectile.Center + VisualBob(Projectile);
             float half = ShellHalfSize * (0.4f + 0.6f * grow);
-            VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
+            VertexPositionColorTexture[] verts = shellVerts;
             verts[0] = new VertexPositionColorTexture(new Vector3(center.X - half, center.Y - half, 0f), Color.White, new Vector2(0f, 0f));
             verts[1] = new VertexPositionColorTexture(new Vector3(center.X + half, center.Y - half, 0f), Color.White, new Vector2(1f, 0f));
             verts[2] = new VertexPositionColorTexture(new Vector3(center.X - half, center.Y + half, 0f), Color.White, new Vector2(0f, 1f));
@@ -280,6 +323,39 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenSlime
             spriteBatch.Draw(star, drawPos, null, hue * (0.5f * grow * charge),
                 Main.GlobalTimeWrappedHourly * 1.4f + Projectile.identity, star.Size() / 2f,
                 0.3f * grow, SpriteEffects.None, 0f);
+
+            //装饰假束：满编时的对角暗弦，补"光网琴弦"观感密度(无判定、不入和弦)
+            if (fakePartnerIdx >= 0 && fakePartnerIdx < Main.maxProjectiles) {
+                Projectile partner = Main.projectile[fakePartnerIdx];
+                if (partner.active && partner.type == Projectile.type && partner.owner == Projectile.owner
+                    && partner.ModProjectile is RefractionWaltzCrystalProj pc && pc.LinkReady) {
+                    DrawFakeBeam(spriteBatch, partner, pc.Grow);
+                }
+            }
+        }
+
+        /// <summary>对角暗弦：分段光条正弦包络，两端归零，亮度压在0.4档之下</summary>
+        private void DrawFakeBeam(SpriteBatch spriteBatch, Projectile partner, float partnerGrow) {
+            Texture2D lineTex = CWRAsset.LightShot.Value;
+            Vector2 a = Projectile.Center + VisualBob(Projectile);
+            Vector2 b = partner.Center + VisualBob(partner);
+            float len = Vector2.Distance(a, b);
+            if (len < 24f) {
+                return;
+            }
+            Vector2 dir = (b - a) / len;
+            Color hue = QueenMotion.PrismHue((HueSeed + partner.ai[1]) * 0.5f + 0.31f);
+            float bright = 0.4f * Grow * partnerGrow;
+            int segments = Math.Max((int)(len / 30f), 3);
+            float segLen = len / segments;
+            for (int i = 0; i < segments; i++) {
+                float t = (i + 0.5f) / segments;
+                float envelope = (float)Math.Sin(t * MathHelper.Pi);
+                Vector2 pos = a + dir * len * t - Main.screenPosition;
+                spriteBatch.Draw(lineTex, pos, null, hue * (bright * envelope), dir.ToRotation(),
+                    lineTex.Size() / 2f, new Vector2(segLen * 1.25f / lineTex.Width, 0.03f + 0.05f * envelope),
+                    SpriteEffects.None, 0f);
+            }
         }
     }
 }

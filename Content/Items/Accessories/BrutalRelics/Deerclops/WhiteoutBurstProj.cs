@@ -89,9 +89,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Deerclops
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //致盲=仇恨混乱，Boss级不吃混乱(折扣规则)；白盲减速在GlobalNPC里分档
+            //致盲=仇恨混乱(3s)，Boss级不吃混乱(折扣规则)；白盲减速在GlobalNPC里分档
             if (!WhiteoutStormGlobalNPC.IsBossLike(target)) {
-                target.AddBuff(BuffID.Confused, WhiteoutStormCore.StormTicks);
+                target.AddBuff(BuffID.Confused, WhiteoutStormCore.ConfuseTicks);
             }
             target.AddBuff(ModContent.BuffType<WhiteblindDebuff>(), WhiteoutStormCore.StormTicks);
 

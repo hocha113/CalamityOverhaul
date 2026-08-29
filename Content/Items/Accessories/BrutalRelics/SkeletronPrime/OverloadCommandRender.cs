@@ -12,11 +12,16 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
     /// 过载指令核心表现层：环绕玩家的指令序列字符流（速率随充能加快）、
     /// 高充能离子漩涡（PrimeChargeVortex 换青）、过载入场爆发环与白闪。<br/>
     /// 全部状态取自逐玩家 <see cref="OverloadCorePlayer"/> 实例字段，无静态可变态；
-    /// 充能记账在 owner 端，故远端玩家的字符流不显示（弹幕类表现另经原版同步全端可见）
+    /// 充能在 owner 端记账，远端经 OverloadStateNet 档位镜像(跨25充能/过载/过热沿)
+    /// 同步，故字符流全端可见（弹幕类表现另经原版同步）
     /// </summary>
     internal sealed class OverloadCommandRender : RenderHandle
     {
-        public override float Weight => 1.82f;
+        /// <summary>认领槽位 1.822（错开环境渲染 LumindepthAmbientRender 的 1.82）</summary>
+        public override float Weight => 1.822f;
+
+        /// <summary>活跃帧戳：有可见状态的玩家在 PostUpdate 盖戳，无戳跳过全表扫描</summary>
+        internal static ActivityStamp RenderStamp;
 
         //指令助记符池：机械指令风味，逐槽位哈希轮换
         private static readonly string[] Tokens = [
@@ -26,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.SkeletronPrime
         private static readonly string[] HeatTokens = ["ERR", "HEAT", "COOL", "0x00", "VENT"];
 
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
-            if (Main.gameMenu) {
+            if (Main.gameMenu || !RenderStamp.ActiveWithin()) {
                 return;
             }
 

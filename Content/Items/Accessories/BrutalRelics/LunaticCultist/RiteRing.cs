@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Rendering;
 using InnoVault.PRT;
@@ -18,15 +19,15 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
     {
         public override void SetDefaults() {
             base.SetDefaults();
-            //同期(石巨人后)饰品售价的 4 倍档
-            Item.value = Item.buyPrice(0, 45, 0, 0);
+            //平衡框架 §9：T4 遗物统一 75 金
+            Item.value = Item.buyPrice(0, 75, 0, 0);
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
             RiteRingPlayer mp = player.GetModPlayer<RiteRingPlayer>();
             mp.MarkEquipped(Item, hideVisual);
-            //超模被动：常驻全伤+集环随符文数追加
-            player.GetDamage(DamageClass.Generic) += 0.15f + mp.RuneCount * 0.01f;
+            //常驻全伤+集环随符文数追加（8%~16% 波动，峰值靠维护符文数背书）
+            player.GetDamage(DamageClass.Generic) += 0.08f + mp.RuneCount * 0.01f;
             player.statManaMax2 += 40;
         }
     }
@@ -50,6 +51,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
         private const int RuneGainSpacing = 10;
         /// <summary>符文环基础半径(px)</summary>
         public const float RingBaseRadius = 76f;
+
+        /// <summary>在场帧戳：任一玩家环形显形时盖戳，绘制层据此跳过空场全玩家表扫描</summary>
+        internal static ActivityStamp PresenceStamp;
 
         /// <summary>本帧装备中（ResetEffects 清）</summary>
         public bool Equipped;
@@ -177,6 +181,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
             RingReveal = MathHelper.Lerp(RingReveal, Equipped && !HideRing ? 1f : 0f, 0.1f);
             CommitPulse *= 0.88f;
             LitFlash *= 0.86f;
+            if (RingReveal > 0.02f) {
+                PresenceStamp.Stamp();
+            }
 
             //仪式轮换沿=定形拍（远端由收包触发同一处）
             if (displayedIndex != RitualIndex) {
@@ -385,7 +392,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
                 NetMessage.SendData(MessageID.TeleportEntity, -1, -1, null, 0,
                     Player.whoAmI, dest.X, dest.Y, 1);
             }
-            Player.GivePlayerImmuneState(15);
+            Player.GivePlayerImmuneState(15, true);
 
             //出入口裂幕（owner 生成，各端经原版弹幕同步看到）
             IEntitySource src = sourceItem != null

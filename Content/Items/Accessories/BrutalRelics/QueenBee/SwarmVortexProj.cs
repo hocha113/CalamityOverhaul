@@ -283,8 +283,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
                 return;
             }
 
-            //稳态：持续补蜂维持涡群密度(多涡并行时各自限速，PRT池另有600硬顶)
-            int activeVortex = CountActiveVortexes();
+            //稳态：持续补蜂维持涡群密度(单涡硬顶后计数只剩粒子限流职责，
+            //读引擎每帧重建的 ownedProjectileCounts 免全表扫；PRT池另有600硬顶)
+            int activeVortex = Main.player[Projectile.owner].ownedProjectileCounts[Type];
             int spawnGate = activeVortex >= 3 ? 2 : 1;
             if ((int)Age % spawnGate == 0) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -316,16 +317,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
         }
 
         private Entity TargetEntity(NPC target) => target != null && target.active ? target : null;
-
-        private int CountActiveVortexes() {
-            int count = 0;
-            foreach (Projectile proj in Main.ActiveProjectiles) {
-                if (proj.type == Type) {
-                    count++;
-                }
-            }
-            return count;
-        }
 
         //==================== 绘制 ====================
 

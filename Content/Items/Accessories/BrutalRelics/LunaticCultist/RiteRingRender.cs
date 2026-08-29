@@ -20,6 +20,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
             if (Main.gameMenu) {
                 return;
             }
+            //帧戳门：无任何环形显形时跳过全玩家表扫描
+            if (!RiteRingPlayer.PresenceStamp.ActiveWithin()) {
+                return;
+            }
 
             bool begun = false;
             for (int i = 0; i < Main.maxPlayers; i++) {

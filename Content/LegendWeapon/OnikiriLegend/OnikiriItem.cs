@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
     internal class OnikiriItem : ModItem
     {
         /// <summary>普攻控制器切换,真=鬼门开缝(OniSlash) 假=绯红裂空斩;A/B 对比用,双方外部接口一致</summary>
-        internal static bool UseOniSlash = false;
+        internal static bool UseOniSlash => false;
 
         public override void SetStaticDefaults() {
             ItemOverride.ItemMeleePrefixDic[Type] = true;

@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -32,6 +31,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
         internal const int ReelEnd = 56;
         /// <summary>收舌结束(消亡)</summary>
         internal const int RetractEnd = 70;
+        /// <summary>AI 冻结窗结束(回卷中点)：此后目标行为恢复、位移牵引照旧(失能收口)</summary>
+        internal const int FreezeEnd = 40;
+        /// <summary>释放后拖拽免疫时长(tick)，防无限风筝链</summary>
+        internal const int DragImmuneTicks = 60;
         /// <summary>喉口锚距玩家中心 px</summary>
         private const float MawRadius = 26f;
         /// <summary>释放点水平前距 px</summary>
@@ -174,10 +177,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
         private void UpdateLatchAndReel(Player owner, NPC target) {
             drawTip = target.Center;
 
-            //咬合一次性拍：腐锯上身 + 可拖性判定 + 全端咬合演出
+            //咬合一次性拍：腐锯上身 + 可拖性判定(含释放后拖拽免疫) + 全端咬合演出
             if (!latched) {
                 latched = true;
-                displaceable = CanDisplace(target);
+                displaceable = CanDisplace(target)
+                    && Main.GameUpdateCount > target.GetGlobalNPC<GluttonousThroatGlobalNPC>().DragImmuneUntil;
                 grabAnchor = target.Center;
                 if (!VaultUtils.isClient) {
                     target.AddBuff(ModContent.BuffType<RotsawRendDebuff>(), RotsawRendDebuff.Duration);
@@ -191,8 +195,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
                 }
             }
 
-            //各端冻结目标自驱 AI(时间戳自然过期，无需清理)
-            target.GetGlobalNPC<GluttonousThroatGlobalNPC>().DragHoldUntil = Main.GameUpdateCount + 2;
+            //各端冻结目标自驱 AI(时间戳自然过期，无需清理)。
+            //失能收口：冻结窗只到回卷中点(咬合10t+回卷前半16t≈0.45s，远低于1.5s红线)，
+            //其后目标行为恢复，位移仍由服务端牵引书写(拖得动、打得还手)。
+            //冻结与拖拽同门：Boss/蠕虫链等不可拖体不冻结(框架§10.1 红线)，咬合/腐锯/标记照常
+            if (timer <= FreezeEnd && displaceable) {
+                target.GetGlobalNPC<GluttonousThroatGlobalNPC>().DragHoldUntil = Main.GameUpdateCount + 2;
+            }
 
             if (timer <= LatchEnd) {
                 peristalsis += 0.06f;
@@ -277,6 +286,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
             mark.MarkOwner = Projectile.owner;
             mark.MarkUntil = Main.GameUpdateCount + GluttonousThroatPlayer.MarkWindow;
             mark.MarkConsumed = false;
+            //释放落地即挂拖拽免疫(各端本地写，读写都在释放/咬合拍，帧差无害)
+            mark.DragImmuneUntil = Main.GameUpdateCount + DragImmuneTicks;
 
             if (!VaultUtils.isClient && displaceable) {
                 Vector2 front = FrontPoint(owner);
@@ -381,6 +392,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
 
             DrawMaw(owner, root);
             DrawTongueStrip(owner, root);
+            NPC coilTarget = Target;
+            if (!whiffed && latched && timer <= ReelEnd && coilTarget != null) {
+                DrawWrapCoil(coilTarget);
+            }
             DrawTipHead();
         }
 
@@ -486,6 +501,66 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
                 verts[i * 2 + 1] = new VertexPositionColorTexture((pos - n * halfW).ToVector3(), col, new Vector2(t, 1f));
             }
 
+            SubmitFleshStrip(effect, noise, verts, Samples * 2 - 2,
+                len, peristalsis, engorge, taut, erode, seedF);
+        }
+
+        /// <summary>
+        /// 缠体圈：舌尖段绕体 1.6 圈的收紧螺旋，材质与舌体同源(BRelicThroatTongue 短段)。
+        /// 起端宽、末端细读作"舌梢缠上去"，椭圆压扁沿用旧环的伪 3D 姿态
+        /// </summary>
+        private void DrawWrapCoil(NPC target) {
+            Effect effect = EffectLoader.BRelicThroatTongue?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect == null || noise == null) {
+                return;
+            }
+            const int CoilSamples = 24;
+            const float Turns = 1.6f;
+            float seedF = Projectile.identity * 0.61f % 1f;
+            //咬合起 4t 淡入，防止硬弹出
+            float fade = MathHelper.Clamp((timer - StrikeEnd) / 4f, 0f, 1f);
+            //缠圈与舌体同一吞咽节律蠕胀
+            float engorge = 0.4f;
+            if (timer > LatchEnd && timer <= ReelEnd) {
+                float u = (timer - LatchEnd) / (float)(ReelEnd - LatchEnd);
+                engorge = 0.4f + 0.4f * MathF.Sin(MathHelper.Clamp(u * 3f % 1f, 0f, 1f) * MathHelper.Pi);
+            }
+            float spin = Main.GlobalTimeWrappedHourly * 0.9f + seedF * 9f;
+            float bodyR = MathF.Max(14f, MathF.Min(target.width, 60f) * 0.5f) + 6f;
+
+            var verts = new VertexPositionColorTexture[CoilSamples * 2];
+            Vector2 prevPos = default;
+            float len = 0f;
+            for (int i = 0; i < CoilSamples; i++) {
+                float t = i / (float)(CoilSamples - 1);
+                float ang = spin + t * MathHelper.TwoPi * Turns;
+                //由外向内收紧的螺旋，椭圆压扁 0.62 与旧环姿态一致
+                float radius = MathHelper.Lerp(bodyR + 9f, bodyR - 4f, t);
+                Vector2 pos = target.Center + ang.ToRotationVector2() * new Vector2(radius, radius * 0.62f);
+                float angNext = spin + MathHelper.Clamp(t + 0.04f, 0f, 1.04f) * MathHelper.TwoPi * Turns;
+                float radiusNext = MathHelper.Lerp(bodyR + 9f, bodyR - 4f, t + 0.04f);
+                Vector2 posNext = target.Center + angNext.ToRotationVector2() * new Vector2(radiusNext, radiusNext * 0.62f);
+                Vector2 n = (posNext - pos).SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2);
+                if (i > 0) {
+                    len += Vector2.Distance(pos, prevPos);
+                }
+                prevPos = pos;
+                //起端接续舌尖体量，向缠梢收细
+                float halfW = MathHelper.Lerp(9f, 5.5f, t);
+                Color col = Color.White * fade;
+                verts[i * 2] = new VertexPositionColorTexture((pos + n * halfW).ToVector3(), col, new Vector2(t, 0f));
+                verts[i * 2 + 1] = new VertexPositionColorTexture((pos - n * halfW).ToVector3(), col, new Vector2(t, 1f));
+            }
+
+            SubmitFleshStrip(effect, noise, verts, CoilSamples * 2 - 2,
+                len, peristalsis * 0.7f, engorge, 0.9f, 0.25f, seedF + 0.37f);
+        }
+
+        /// <summary>公共肉质顶点带提交：设参 + 绘制 + 设备状态还原(舌体与缠体圈共用)</summary>
+        private static void SubmitFleshStrip(Effect effect, Texture2D noise,
+            VertexPositionColorTexture[] verts, int triCount,
+            float len, float flow, float engorge, float taut, float erode, float seedF) {
             GraphicsDevice device = Main.instance.GraphicsDevice;
             BlendState origBlend = device.BlendState;
             RasterizerState origRaster = device.RasterizerState;
@@ -497,7 +572,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
             effect.Parameters["seed"]?.SetValue(seedF);
             effect.Parameters["fadeAlpha"]?.SetValue(1f);
             effect.Parameters["uQuadLen"]?.SetValue(len);
-            effect.Parameters["uFlow"]?.SetValue(peristalsis);
+            effect.Parameters["uFlow"]?.SetValue(flow);
             effect.Parameters["uEngorge"]?.SetValue(engorge);
             effect.Parameters["uTaut"]?.SetValue(taut);
             effect.Parameters["uTipErode"]?.SetValue(erode);
@@ -505,14 +580,14 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
             device.SamplerStates[1] = SamplerState.LinearWrap;
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                 pass.Apply();
-                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, Samples * 2 - 2);
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, triCount);
             }
 
             device.BlendState = origBlend;
             device.RasterizerState = origRaster;
         }
 
-        /// <summary>舌尖肉锤与缠体环：暗核+湿高光；咬合期在受害者身上绕缠两圈舌肉</summary>
+        /// <summary>舌尖肉锤与勒痕：暗核+湿高光；缠体本体已改由 <see cref="DrawWrapCoil"/> 顶点带承担</summary>
         private void DrawTipHead() {
             SpriteBatch sb = Main.spriteBatch;
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
@@ -528,26 +603,15 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
             sb.Draw(drop, tipScreen - new Vector2(2f, 3f), null, WofMotionFX.BloodHot * 0.7f, tipRot,
                 drop.Size() / 2f, new Vector2(0.46f, 0.6f) * biteFlex, SpriteEffects.None, 0f);
 
-            //缠体环(咬合到释放)：舌肉在目标身上绕两圈，读作缠住而非贴着
+            //勒痕(咬合到释放)：窄暗带衬底(Extra_98 真 alpha 才压得暗)托住血光(A=0 加色)
             NPC target = Target;
             if (!whiffed && latched && timer <= ReelEnd && target != null) {
-                Texture2D chain = TextureAssets.Chain12.Value;
-                for (int ring = 0; ring < 2; ring++) {
-                    float radius = 20f + ring * 10f;
-                    float spin = Main.GlobalTimeWrappedHourly * (ring == 0 ? 1.7f : -1.3f);
-                    const int RingSegs = 9;
-                    for (int i = 0; i < RingSegs; i++) {
-                        float ang = MathHelper.TwoPi * i / RingSegs + spin;
-                        Vector2 pos = target.Center + ang.ToRotationVector2() * new Vector2(radius, radius * 0.62f);
-                        Color light = Lighting.GetColor((int)pos.X / 16, (int)(pos.Y / 16f));
-                        sb.Draw(chain, pos - Main.screenPosition, null,
-                            Color.Lerp(light, WofMotionFX.BloodDark, 0.5f), ang + MathHelper.PiOver2,
-                            chain.Size() / 2f, 0.68f, SpriteEffects.None, 0f);
-                    }
-                }
-                //勒痕血光(A=0 加色技法，AlphaBlend 批内合法)
+                Vector2 targetScreen = target.Center - Main.screenPosition;
+                float squeeze = 1f + 0.06f * MathF.Sin(timer * 0.7f);
+                sb.Draw(drop, targetScreen, null, WofMotionFX.BloodDark * 0.5f, 0f,
+                    drop.Size() / 2f, new Vector2(1.0f, 0.34f) * squeeze, SpriteEffects.None, 0f);
                 Texture2D glow = CWRAsset.SoftGlow.Value;
-                sb.Draw(glow, target.Center - Main.screenPosition, null,
+                sb.Draw(glow, targetScreen, null,
                     new Color(255, 55, 40, 0) * 0.35f, 0f, glow.Size() / 2f, 0.72f, SpriteEffects.None, 0f);
             }
 

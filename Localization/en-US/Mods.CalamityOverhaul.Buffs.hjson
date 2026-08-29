@@ -190,7 +190,7 @@ IndustrialRegenBuff: {
 
 RotsawRendDebuff: {
 	DisplayName: Rotsaw
-	Description: Defense stripped to zero; flesh is being sawed apart
+	Description: Flesh is being sawed apart, losing 40 life per second
 }
 
 WaxWardBuff: {
@@ -210,12 +210,12 @@ MawCorrosionBuff: {
 
 WhiteoutStormBuff: {
 	DisplayName: Whiteout Storm
-	Description: 50% damage reduction and knockback immunity; the snow veil does not block your sight
+	Description: An extra 30% damage reduction and knockback immunity; the snow veil does not block your sight
 }
 
 WhiteblindDebuff: {
 	DisplayName: Whiteblind
-	Description: Blinded by the blizzard, movements frozen, 30 frostburn damage per second
+	Description: Blinded by the blizzard, movements dulled, 10 frostbite damage per second
 }
 
 BloomSnaredDebuff: {
@@ -225,7 +225,7 @@ BloomSnaredDebuff: {
 
 SoulbindCurseDebuff: {
 	DisplayName: Soulbinding Curse
-	Description: Bound by the curse, damage taken is increased
+	Description: Trapped in the curse domain, taking increased damage from its owner
 }
 
 SoulGripLockDebuff: {
@@ -233,9 +233,14 @@ SoulGripLockDebuff: {
 	Description: Clutched in the ghostly hand's grasp, unable to move
 }
 
+SoulbindOverwhelmDebuff: {
+	DisplayName: Soul Crush
+	Description: Cursed flames bear down; all damage taken is increased by 20%
+}
+
 RefractionTag: {
 	DisplayName: Refraction
-	Description: Taking 30% increased damage from the Refraction Waltz
+	Description: Slowed; the Refraction Waltz wearer gains 8% crit chance against it
 }
 
 AbyssalPressure: {

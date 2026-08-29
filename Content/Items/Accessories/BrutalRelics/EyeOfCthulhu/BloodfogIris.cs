@@ -10,7 +10,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
 {
     /// <summary>
     /// 血雾之瞳：克苏鲁之眼残酷遗物。把克眼的血雾伏击反转成玩家能力：<br/>
-    /// 致命伤化雾免死并向光标重凝、双击方向键血雾突进、突进/重凝后短窗口伏击必暴翻倍
+    /// 致命伤化雾免死并向光标重凝(重凝后短暂虚弱)、双击方向键血雾突进、
+    /// 突进/重凝后短窗口伏击必暴
     /// </summary>
     internal class BloodfogIris : BaseBrutalRelic, ICWRLoader
     {
@@ -41,7 +42,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
         /// <summary>免死冷却(帧)，60 秒</summary>
         public const int DodgeCooldownFrames = 3600;
         /// <summary>免死后无敌帧</summary>
-        public const int DodgeImmuneFrames = 80;
+        public const int DodgeImmuneFrames = 45;
+        /// <summary>雾体虚弱窗口(帧)：重凝后受到的伤害提高，免死的代价</summary>
+        public const int MistWeaknessFrames = 180;
+        /// <summary>雾体虚弱受伤倍率</summary>
+        public const float MistWeaknessMul = 1.15f;
         /// <summary>重凝最近距离(px)</summary>
         public const float DodgeMinDist = 150f;
         /// <summary>重凝最远距离(px)</summary>
@@ -55,12 +60,12 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
         public const int DashTotalFrames = DashWindupFrames + DashTravelFrames + DashBrakeFrames;
         /// <summary>突进速度(px/帧)</summary>
         public const float DashSpeed = 26f;
+        /// <summary>突进起手无敌帧(只够穿模)</summary>
+        public const int DashImmuneFrames = 8;
         /// <summary>突进冷却(帧)，收招起算</summary>
-        public const int DashCooldownFrames = 40;
+        public const int DashCooldownFrames = 75;
         /// <summary>伏击窗口(帧)，1.5 秒</summary>
         public const int AmbushWindowFrames = 90;
-        /// <summary>伏击伤害倍率</summary>
-        public const float AmbushDamageMul = 2f;
         /// <summary>常驻暴击率加成(%)</summary>
         public const int CritChanceBonus = 8;
         /// <summary>拖尾采样点寿命(帧)</summary>
@@ -75,8 +80,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
         public int DodgeCooldown;
         /// <summary>突进冷却剩余</summary>
         public int DashCooldown;
-        /// <summary>伏击窗口剩余，>0 时下一击必暴翻倍</summary>
+        /// <summary>伏击窗口剩余，>0 时下一击必暴</summary>
         public int AmbushWindow;
+        /// <summary>雾体虚弱剩余(仅 owner 端置位)，期间受到的伤害提高15%</summary>
+        public int MistWeaknessTimer;
         /// <summary>雾态视觉计时，由随身雾裹弹幕在各端每帧点亮</summary>
         public int VeilVisualTimer;
         /// <summary>突进剩余帧，>0 为突进中(仅 owner 有效)</summary>
@@ -125,6 +132,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             if (AmbushWindow > 0) {
                 AmbushWindow--;
             }
+            if (MistWeaknessTimer > 0) {
+                MistWeaknessTimer--;
+            }
             if (VeilVisualTimer > 0) {
                 VeilVisualTimer--;
             }
@@ -144,10 +154,14 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             if (Equipped) {
                 Player.GetCritChance(DamageClass.Generic) += CritChanceBonus;
             }
+            //帧戳：装备或雾态存续时盖戳，全屏合成层凭此免于空扫弹幕表
+            if (Equipped || VeilVisualTimer > 0) {
+                BloodfogIrisRender.ActiveStamp.Stamp();
+            }
             //雾态仇恨压制：VeilVisualTimer 由雾裹弹幕在各端(含服务端)点亮，
             //写在玩家更新阶段，NPC 索敌同帧读到
             if (VeilVisualTimer > 0) {
-                Player.aggro -= 900;
+                Player.aggro -= 400;
             }
             //双击检测必须在这里跑：原版在 Update 中段把 releaseLeft/Right 改写为"按住即 false"，
             //到 PreUpdateMovement 时按键沿已不可见，检测恒假（NinjaCthulsparkBoots 同款既证，反馈 #29）
@@ -173,9 +187,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
                 Player.velocity = -dashDir * 4.6f * MathF.Pow(tw, 8f);
             }
             else if (elapsed == DashWindupFrames) {
-                //一帧满速，起手演出交给随身雾裹弹幕首帧(各端可见)
+                //一帧满速，起手演出交给随身雾裹弹幕首帧(各端可见)；无敌只够穿模
                 Player.velocity = dashDir * DashSpeed;
-                Player.GivePlayerImmuneState(DashTravelFrames + DashBrakeFrames + 6, false);
+                Player.GivePlayerImmuneState(DashImmuneFrames, false);
                 SpawnShroudVeil(0, DashTravelFrames + DashBrakeFrames + AmbushWindowFrames + 26);
             }
             else if (elapsed < DashWindupFrames + DashTravelFrames) {
@@ -259,7 +273,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             return true;
         }
 
-        /// <summary>化雾免死：消隐点雾爆 + 向光标方向找落点重凝 + 无敌 + 伏击窗口</summary>
+        /// <summary>化雾免死：消隐点雾爆 + 向光标方向找落点重凝 + 无敌 + 伏击窗口 + 3秒雾体虚弱</summary>
         private void ExecuteBloodfogRebirth() {
             Vector2 oldCenter = Player.Center;
             Vector2 aim = Main.MouseWorld - oldCenter;
@@ -286,6 +300,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             DodgeCooldown = DodgeCooldownFrames;
             Player.GivePlayerImmuneState(DodgeImmuneFrames, false);
             AmbushWindow = AmbushWindowFrames;
+            MistWeaknessTimer = MistWeaknessFrames;   //雾体虚弱：免死的代价
             TrailPoints.Clear();   //传送切断血带
 
             //消隐点雾爆(弹幕承载，各端可见)
@@ -308,6 +323,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             BloodfogScreenFX.PushFlash(0.5f);
             EocMotion.Shake(Player.Center, 6f, 12, dir);
         }
+
+        //雾体虚弱：重凝后短窗内受到的伤害加深(受伤结算天然在 owner 端，无同步面)
+        public override void ModifyHurt(ref Player.HurtModifiers modifiers) {
+            if (MistWeaknessTimer > 0) {
+                modifiers.FinalDamage *= MistWeaknessMul;
+            }
+        }
         #endregion
 
         #region 伏击
@@ -315,8 +337,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             if (!Equipped || AmbushWindow <= 0) {
                 return;
             }
+            //伏击必暴，无额外倍率(×2单发消费位归饕餮之喉独占)
             modifiers.SetCrit();
-            modifiers.FinalDamage *= AmbushDamageMul;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -353,15 +375,23 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
         #endregion
 
         #region 视觉
-        //雾态时本体褪成半透酒红，各端一致(VeilVisualTimer 由弹幕在各端点亮)
+        //雾态时本体褪成半透酒红，各端一致(VeilVisualTimer 由弹幕在各端点亮)；
+        //虚弱期再加深一成(计时仅 owner 端非零，信息属自己)
         public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright) {
-            if (VeilVisualTimer <= 0) {
+            bool weakened = MistWeaknessTimer > 0;
+            if (VeilVisualTimer <= 0 && !weakened) {
                 return;
             }
             r *= 0.78f;
             g *= 0.36f;
             b *= 0.42f;
             a *= 0.55f;
+            if (weakened) {
+                r *= 0.9f;
+                g *= 0.9f;
+                b *= 0.9f;
+                a *= 0.9f;
+            }
         }
 
         //拖尾各端本地自采：位移推导热度，无需网络包

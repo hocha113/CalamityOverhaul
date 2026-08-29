@@ -21,8 +21,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Skeletron
         public override string Texture => CWRConstant.VaultPlaceholder;
 
         #region 常量
-        /// <summary>掌攫伤害，与 Tooltip 的 500 同源</summary>
-        public const int GrabDamage = 500;
+        /// <summary>掌攫基伤（挂 Generic 加成，生成时 ApplyTo、扑击期 owner 逐帧刷新）</summary>
+        public const int GrabBaseDamage = 300;
         /// <summary>凝聚帧数（含末段回抽蓄势）</summary>
         private const int CondenseFrames = 16;
         /// <summary>扑击初速 / 复利加速 / 速度上限</summary>
@@ -34,9 +34,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Skeletron
         /// <summary>抓握碾轧帧数与随后的消散帧数</summary>
         private const int HoldFrames = 34;
         private const int DissolveFrames = 16;
-        /// <summary>禁锢时长：普通敌人 / Boss</summary>
-        private const int LockFrames = 75;
-        private const int BossLockFrames = 40;
+        /// <summary>普通敌人禁锢时长（Boss 不吃禁锢，改挂缚魂重压）</summary>
+        private const int LockFrames = 60;
         /// <summary>扑空判定：起扑后超时即空振</summary>
         private const int MissTimeout = 110;
         #endregion
@@ -93,6 +92,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Skeletron
             }
             Age++;
 
+            //扑击期 owner 逐帧刷新伤害，长寿命弹幕吃得到 buff 变化（命中判定本在 owner 端，无需同步）
+            if (IsOwnerEndpoint && (int)Phase == 0) {
+                Projectile.damage = (int)owner.GetTotalDamage(DamageClass.Generic).ApplyTo(GrabBaseDamage);
+            }
+
             switch ((int)Phase) {
                 case 1:
                     GrabBehavior();
@@ -145,6 +149,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Skeletron
         private void CondenseBehavior(Player owner) {
             Vector2 anchor = owner.Center + new Vector2(-owner.direction * 26f, -10f);
             Vector2 aimDir = AimDirection(anchor);
+            //首帧直接以"玩家→目标"方向落位，防臂根自默认 UnitX 瞬跳
+            if ((int)Age == 1) {
+                shoulderDir = -aimDir;
+            }
             float reel = MathHelper.Clamp((Age - (CondenseFrames - 5f)) / 5f, 0f, 1f);
             Projectile.Center = anchor - aimDir * MathF.Pow(reel, 3f) * 16f;
             Projectile.velocity = Vector2.Zero;
@@ -303,9 +311,12 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Skeletron
             Projectile.velocity = Vector2.Zero;
             Projectile.netUpdate = true;
 
-            //禁锢与追咒走 AddBuff，骑原版 buff 同步
-            target.AddBuff(ModContent.BuffType<SoulGripLockDebuff>(), target.boss ? BossLockFrames : LockFrames);
-            target.AddBuff(ModContent.BuffType<SoulbindCurseDebuff>(), 300);
+            //缚魂重压团队标记走 AddBuff 骑原版同步；禁锢只给普通敌人（Boss 硬控红线，
+            //Boss 端顿感全交演出：屏震/冲击环/攥紧脉冲照旧，不碰 velocity）
+            if (!target.boss && !NPCID.Sets.ShouldBeCountedAsBoss[target.type]) {
+                target.AddBuff(ModContent.BuffType<SoulGripLockDebuff>(), LockFrames);
+            }
+            target.AddBuff(ModContent.BuffType<SoulbindOverwhelmDebuff>(), SoulbindOverwhelmDebuff.Duration);
 
             PlayImpactFx();
         }

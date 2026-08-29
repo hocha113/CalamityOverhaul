@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -19,8 +20,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.MoonLord
     {
         public override void SetDefaults() {
             base.SetDefaults();
-            //同期月总掉落物（约 50 金购价）的 4 倍
-            Item.value = Item.buyPrice(2, 0, 0, 0);
+            //平衡框架 §9：T5 遗物统一 120 金
+            Item.value = Item.buyPrice(1, 20, 0, 0);
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
@@ -40,9 +41,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.MoonLord
         /// <summary>零层节拍周期（帧）</summary>
         public const int BasePeriod = 96;
         /// <summary>每层连闪缩短的周期（帧）</summary>
-        public const int PeriodPerStack = 4;
-        /// <summary>周期下限（帧）</summary>
-        public const int MinPeriod = 54;
+        public const int PeriodPerStack = 6;
+        /// <summary>周期下限（帧）：满层 1s，与旧 12 层 54f 手感近似</summary>
+        public const int MinPeriod = 60;
         /// <summary>判定窗口宽度（帧），位于周期末尾</summary>
         public const int WindowFrames = 14;
         /// <summary>黑闪后的余隙（帧）：跟刀与同帧多段命中不判失手</summary>
@@ -50,13 +51,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.MoonLord
         /// <summary>窗口前摇：印记收缩读秒时长（帧）</summary>
         public const int TelegraphFrames = 36;
         /// <summary>连闪层数上限</summary>
-        public const int MaxStacks = 12;
-        /// <summary>黑闪基础倍率</summary>
-        public const float MultBase = 8f;
+        public const int MaxStacks = 6;
+        /// <summary>黑闪基础倍率（满层 ×4.5：肾上腺素 ×2.5 的 1.8 倍，由 14f 窗口+失手全清背书）</summary>
+        public const float MultBase = 3f;
         /// <summary>每层连闪追加倍率</summary>
-        public const float MultPerStack = 2.5f;
+        public const float MultPerStack = 0.25f;
         /// <summary>进入领域感（弹幕减速暗示+日蚀轮廓）的层数门槛</summary>
-        public const int DomainStacks = 6;
+        public const int DomainStacks = 4;
         /// <summary>入战热度时长（帧）：静息不读秒不出声</summary>
         private const int CombatHeatFrames = 300;
 
@@ -66,7 +67,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.MoonLord
         internal static readonly Color FlashRed = new(255, 46, 58);
         #endregion
 
-        #region 状态（全部实例字段，禁 static）
+        #region 状态（全部实例字段，禁 static；帧戳是全局在场闩不算每玩家状态）
+        /// <summary>在场帧戳：任一玩家印记可见时盖戳，绘制层据此跳过空场全玩家表扫描</summary>
+        internal static ActivityStamp PresenceStamp;
+
         /// <summary>本帧装备中，物品钩子逐帧点亮</summary>
         public bool Equipped;
         /// <summary>节拍计时（帧），黑闪与整拍回绕时归零</summary>
@@ -217,6 +221,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.MoonLord
             VisualFade = MathHelper.Lerp(VisualFade, fadeTarget, 0.12f);
             if (VisualFade < 0.01f) {
                 VisualFade = 0f;
+            }
+            else {
+                PresenceStamp.Stamp();
             }
         }
 

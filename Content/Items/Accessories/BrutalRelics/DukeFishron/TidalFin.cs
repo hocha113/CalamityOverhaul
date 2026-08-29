@@ -14,16 +14,17 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
 {
     /// <summary>
-    /// 潮汐之鳍：猪龙鱼公爵残酷遗物。按饰品技能键向光标方向连锁冲刺（最多三段，
+    /// 潮汐之鳍：猪龙鱼公爵残酷遗物。按饰品技能键向光标方向连锁冲刺（基础两段，
     /// 每段可重新瞄准），每段拖出持留的海啸水墙，末段落点掀起潮汐龙卷；
-    /// 雨天/浸水时段数+1 且全段伤害强化。冲刺全程无敌帧覆盖（系列超模基调）
+    /// 雨天/浸水时段数+1 且全段伤害强化。冲刺全程无敌保留（2026-08-29 用户终审
+    /// 回退案），代价换成 12 秒整链冷却与非雨天减段
     /// </summary>
     internal class TidalFin : BaseBrutalRelic
     {
         public override void SetDefaults() {
             base.SetDefaults();
-            //同期公爵掉落武器约 25 金购价，系列基准 3-5 倍
-            Item.value = Item.buyPrice(0, 90, 0, 0);
+            //框架 §9 T4 梯度统一 75 金
+            Item.value = Item.buyPrice(0, 75, 0, 0);
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
@@ -38,8 +39,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
     }
 
     /// <summary>
-    /// 三段连锁冲刺状态机。全部状态只活在 owner 端本地（键位只在本机响应，
-    /// 玩家位移走原版玩家同步），旁观端的可见性由海啸水墙/龙卷弹幕承载
+    /// 连锁冲刺状态机（非雨天两段/雨天浸水三段）。全部状态只活在 owner 端本地
+    /// （键位只在本机响应，玩家位移走原版玩家同步），旁观端的可见性由海啸水墙/龙卷弹幕承载
     /// </summary>
     internal class TidalFinPlayer : ModPlayer
     {
@@ -52,16 +53,16 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
         private const int BrakeTime = 3;
         /// <summary>段间接续窗口</summary>
         private const int ChainWindowTime = 36;
-        /// <summary>整链冷却</summary>
-        private const int CooldownTime = 300;
+        /// <summary>整链冷却（12s：全程无敌保留的代价，回退案）</summary>
+        private const int CooldownTime = 720;
         /// <summary>爆发瞬间速度（过冲），随后指数回落巡航</summary>
         private const float BurstSpeed = 46f;
         private const float CruiseSpeed = 33f;
 
-        /// <summary>水墙单跳基伤</summary>
-        internal const int WallDamage = 360;
-        /// <summary>龙卷单跳基伤</summary>
-        internal const int TornadoDamage = 520;
+        /// <summary>水墙单跳基数（生成时吃 Generic 加成，长寿命期 owner 逐帧刷新）</summary>
+        internal const int WallDamage = 140;
+        /// <summary>龙卷单跳基数（同上）</summary>
+        internal const int TornadoDamage = 200;
         /// <summary>雨天/浸水强化倍率</summary>
         internal const float EmpowerMult = 1.5f;
         #endregion
@@ -130,7 +131,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
 
         private void StartChain() {
             empowered = Main.raining || Player.wet;
-            maxStages = empowered ? 4 : 3;
+            //回退案段数：非雨天 2 段，雨天/浸水 3 段（超模无敌压进条件窗口）
+            maxStages = empowered ? 3 : 2;
             Player.RemoveAllGrapplingHooks();
             StartStage(1);
         }
@@ -208,7 +210,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
             phaseTimer = 0;
             Player.velocity = dashDir * BurstSpeed;
 
-            int dmg = (int)(WallDamage * DamageMult);
+            //基数吃玩家总伤加成（框架 §1 口径），长寿命期由墙自身逐帧刷新
+            int dmg = (int)Player.GetTotalDamage(DamageClass.Generic).ApplyTo(WallDamage * DamageMult);
             Projectile.NewProjectile(Player.FromObjectGetParent(), Player.Center, dashDir,
                 ModContent.ProjectileType<TidalFinTsunamiProj>(), dmg, 2f, Player.whoAmI,
                 stage, empowered ? 1f : 0f);
@@ -236,7 +239,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
 
             if (stage >= maxStages) {
                 //末段落点起潮汐龙卷，整链收束进冷却
-                int dmg = (int)(TornadoDamage * DamageMult);
+                int dmg = (int)Player.GetTotalDamage(DamageClass.Generic).ApplyTo(TornadoDamage * DamageMult);
                 Projectile.NewProjectile(Player.FromObjectGetParent(), Player.Center, Vector2.Zero,
                     ModContent.ProjectileType<TidalFinTornadoProj>(), dmg, 4f, Player.whoAmI,
                     empowered ? 1f : 0f);
@@ -279,7 +282,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
     /// </summary>
     internal sealed class TidalFinStormFlashRender : RenderHandle
     {
-        public override float Weight => 1.85f;
+        /// <summary>认领槽位 1.852（错开环境渲染 NyxdepthAmbientRender 的 1.85）</summary>
+        public override float Weight => 1.852f;
 
         private const int FlashDuration = 26;
         //纯表现计时（每端本地，非游戏状态）

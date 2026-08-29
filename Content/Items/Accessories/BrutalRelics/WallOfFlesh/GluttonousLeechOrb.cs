@@ -12,7 +12,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
 {
     /// <summary>
     /// 逆流血珠：吸血池的治疗载体。ai[0]=治疗量(生成参数随出生包同步) ai[1]=形态种子。
-    /// 凝珠短悬(反向漂离) → 加速逆流归体(垂线摆动的曲线路径，禁匀速直线) → 触体回血。
+    /// 凝珠短悬(反向漂离) → 加速逆流归体(垂线摆动的曲线路径，禁匀速直线) → 触体过闸结算。
+    /// 触体结算过两道闸(每秒 2% 生命上限 + 月噬封禁，见 GluttonousThroatPlayer.SettleLeech)，
+    /// 超出部分洒落为坠地血滴("吃太撑喷出来")；飞行演出链不因闸缩短。
     /// 回血只在拥有者端写自身生命(玩家自写生命无需网络包，逐帧差量同步收尾)，
     /// 其余端只演出；到体绿字由 HealEffect 广播
     /// </summary>
@@ -95,14 +97,34 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
         //自管位移(凝珠段反向漂移与逆流段变速曲线都不走默认积分)
         public override bool ShouldUpdatePosition() => false;
 
-        /// <summary>触体吸收：拥有者端写生命(独立通道：不动药水疲劳、不动原版吸血预算)</summary>
+        /// <summary>
+        /// 触体吸收：拥有者端过结算闸写生命(不占药水疲劳；每秒上限与月噬封禁见闸)。
+        /// 被闸截断的部分洒落为坠地血滴；全被截断(封禁/过撑)则不出吸入拍。
+        /// 旁观端凭同步的月噬 buff 对齐封禁表现(预算过撑仅 owner 可知，旁观端照播吸入)
+        /// </summary>
         private void Absorb(Player owner) {
             int amount = (int)HealAmount;
-            if (Main.myPlayer == Projectile.owner && amount > 0 && owner.Alives()) {
-                owner.statLife = Math.Min(owner.statLife + amount, owner.statLifeMax2);
-                owner.HealEffect(amount);
+            bool absorbed = true;
+            if (Main.myPlayer == Projectile.owner) {
+                int granted = 0;
+                if (amount > 0 && owner.Alives()) {
+                    granted = owner.GetModPlayer<GluttonousThroatPlayer>().SettleLeech(amount);
+                }
+                if (granted > 0) {
+                    owner.statLife = Math.Min(owner.statLife + granted, owner.statLifeMax2);
+                    owner.HealEffect(granted);
+                }
+                if (granted < amount) {
+                    SpillOverflow(owner, granted <= 0);
+                }
+                absorbed = granted > 0;
             }
-            if (!VaultUtils.isServer) {
+            else if (owner.HasBuff(BuffID.MoonLeech)) {
+                //owner 被月噬全封：旁观端也走洒落版，不再播吸入收拢
+                absorbed = false;
+                SpillOverflow(owner, true);
+            }
+            if (!VaultUtils.isServer && absorbed) {
                 SoundEngine.PlaySound(SoundID.Item3 with { Pitch = 0.35f, Volume = 0.45f }, owner.Center);
                 //吸入演出：血滴向体心收拢
                 for (int i = 0; i < 6; i++) {
@@ -113,6 +135,24 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.WallOfFlesh
                 }
             }
             Projectile.Kill();
+        }
+
+        /// <summary>吃太撑/月噬封禁：超量血液自体侧喷出重坠落地(强化饕餮叙事；
+        /// owner 端按结算结果调用，旁观端仅月噬封禁时调用)</summary>
+        private void SpillOverflow(Player owner, bool full) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            if (full) {
+                SoundEngine.PlaySound(SoundID.NPCHit13 with { Pitch = 0.2f, Volume = 0.4f }, owner.Center);
+            }
+            int count = full ? 6 : 3;
+            for (int i = 0; i < count; i++) {
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(
+                    owner.Center + new Vector2(Main.rand.NextFloat(-10f, 10f), Main.rand.NextFloat(-6f, 4f)),
+                    new Vector2(Main.rand.NextFloat(-2.4f, 2.4f), Main.rand.NextFloat(-1.5f, 0.5f)) + Vector2.UnitY * 2f,
+                    WofMotionFX.BloodDark, Main.rand.NextFloat(0.5f, 0.9f))?.Configure(Main.rand.Next(20, 32), 0.4f);
+            }
         }
 
         /// <summary>失所血珠：无人可治，散作重坠血滴</summary>

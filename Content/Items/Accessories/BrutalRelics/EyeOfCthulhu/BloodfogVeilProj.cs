@@ -185,18 +185,22 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             }
             if (owner.TryGetModPlayer(out BloodfogIrisPlayer mp)) {
                 DrawPlayerTrail(owner, mp);
+                DrawPupilGlint(owner, mp);
             }
-            DrawPupilGlint(owner);
             return false;
         }
 
-        /// <summary>雾中瞳光：常亮微光(位置的公平线索) + 间歇一闪</summary>
-        private void DrawPupilGlint(Player owner) {
+        /// <summary>雾中瞳光：常亮微光(位置的公平线索) + 间歇一闪；突进冷却期微暗</summary>
+        private void DrawPupilGlint(Player owner, BloodfogIrisPlayer mp) {
             float bloom = VaultUtils.EaseOutCubic(BloomProgress);
             float fade = MathHelper.Clamp(Projectile.timeLeft / 24f, 0f, 1f);
             float blink = MathF.Pow(MathF.Max(MathF.Sin(
                 (float)Main.timeForVisualEffects * 0.11f + Projectile.whoAmI * 1.7f), 0f), 7f);
             float glow = (0.2f + blink * 0.8f) * bloom * fade;
+            //可见冷却：突进转好前瞳光收敛(计时仅所有者端非零，远端不暗)
+            if (mp.DashCooldown > 0) {
+                glow *= 0.6f;
+            }
             if (glow < 0.03f) {
                 return;
             }

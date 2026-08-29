@@ -5,7 +5,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
     /// <summary>
     /// 坠王之冕：史莱姆王残酷遗物。把王冠天坠反转成玩家能力——<br/>
     /// 免疫摔落伤害；空中按住下键(或自然坠落超25格)进入王冠坠击，
-    /// 落地释放随坠落高度无上限成长的凝胶震荡波，落点留存减速凝胶领域。<br/>
+    /// 落地释放凝胶震荡波(伤害吃玩家加成、计伤深度封顶40格，半径继续随深度增长，
+    /// 结算内置1.5秒冷却)，落点留存减速凝胶领域。<br/>
     /// 状态机在 <see cref="FallenKingsCrownPlayer"/>，弹幕产物见同目录三弹幕
     /// </summary>
     internal class FallenKingsCrown : BaseBrutalRelic

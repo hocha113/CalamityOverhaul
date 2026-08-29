@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering;
 using System;
 using Terraria;
 using Terraria.ModLoader;
@@ -25,7 +26,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
         /// <summary>上一帧垂直速度，落地冲量来源(照抄Boss落地检测)</summary>
         private float prevVelY;
 
-        /// <summary>落地结算后的短冷却，防反冲小跳二连触发</summary>
+        /// <summary>落地结算内置冷却，期间落地不出波不出池，王冠压暗提示</summary>
         private int slamCooldown;
 
         /// <summary>按住下键起坠的最小蓄坠(4格)，防平台穿落误触</summary>
@@ -36,6 +37,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
         private const float SlamImpactVel = 6f;
         /// <summary>快坠落速上限</summary>
         private const float DiveMaxFall = 30f;
+        /// <summary>落地结算内置冷却(1.5秒)</summary>
+        private const int SlamCooldownFrames = 90;
+        /// <summary>计伤坠深封顶(格)：伤害只吃到这里，半径与演出档继续吃真实深度</summary>
+        public const float DamageCapTiles = 40f;
+
+        /// <summary>结算冷却剩余帧(仅所有者端计时)，王冠弹幕据此压暗充能演出</summary>
+        public int SlamCooldown => slamCooldown;
 
         /// <summary>当前累计坠深(格)，王冠弹幕与结算共用</summary>
         public float FallTiles => fallPx / 16f;
@@ -72,6 +80,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
             }
             if (slamCooldown > 0) {
                 slamCooldown--;
+                //冷却转好：金鸣一声提示震荡波可再结算(owner本机)
+                if (slamCooldown == 0 && Equipped) {
+                    KingSlimeGelFX.CrownChime(Player.Center, 0.2f, 0.8f);
+                }
             }
             if (!Equipped) {
                 ResetDiveState();
@@ -92,8 +104,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
             }
 
             if (prevVelY > 0.5f && Player.velocity.Y == 0f) {
-                //落地帧：够冲量且脚下有真地面才结算，否则软着陆收冠
-                if (DiveArmed && prevVelY >= SlamImpactVel && GroundBeneath()) {
+                //落地帧：冷却已转好、够冲量且脚下有真地面才结算，否则软着陆收冠
+                if (DiveArmed && slamCooldown == 0 && prevVelY >= SlamImpactVel && GroundBeneath()) {
                     DoSlam();
                 }
                 else if (DiveArmed) {
@@ -103,7 +115,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
             }
             else if (Player.velocity.Y > 0f) {
                 fallPx += Player.velocity.Y;
-                if (!DiveArmed && slamCooldown == 0) {
+                //冷却期间也可现冕坠击(碾压照常)，只是落地不结算，王冠压暗提示充能中
+                if (!DiveArmed) {
                     bool holdArm = Player.controlDown && fallPx >= HoldArmPx;
                     bool autoArm = fallPx >= AutoArmPx;
                     if (holdArm || autoArm) {
@@ -118,25 +131,28 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
             prevVelY = Player.velocity.Y;
         }
 
-        /// <summary>起坠：王冠实体化(弹幕经原版同步全端可见)</summary>
+        /// <summary>起坠：王冠实体化(弹幕经原版同步全端可见)；碾压伤害由王冠每帧自刷</summary>
         private void ArmDive() {
             DiveArmed = true;
             Projectile.NewProjectile(Player.GetSource_Misc("CWR_FallenKingsCrown"),
                 Player.Top, Vector2.Zero, ModContent.ProjectileType<FallenCrownProj>(),
-                100, 4f, Player.whoAmI);
+                (int)Player.GetTotalDamage(DamageClass.Generic).ApplyTo(30f), 4f, Player.whoAmI);
         }
 
         /// <summary>
         /// 落地结算：伤害载体+可视金环+凝胶领域三件套，全部所有者端生成。<br/>
-        /// 成长曲线(h=累计坠深格数，无上限)：伤害 150+22h+0.55h²；
-        /// 波及半径 300+9h(上限1000px)；领域宽 280+7h(上限720px)；领域单跳 30+0.6h
+        /// 成长曲线(h=累计坠深格数)：伤害吃玩家总伤加成，计伤深度封顶40格
+        /// (波 50+3h、领域单跳 6+0.15h 基伤)；波及半径 300+9h(上限1000px)
+        /// 与领域宽 280+7h(上限720px)继续吃真实深度，超深坠落换半径与演出档不换伤害
         /// </summary>
         private void DoSlam() {
             float h = FallTiles;
-            int dmg = (int)(150f + 22f * h + 0.55f * h * h);
+            float hDmg = MathF.Min(h, DamageCapTiles);
+            var generic = Player.GetTotalDamage(DamageClass.Generic);
+            int dmg = Math.Max((int)generic.ApplyTo(50f + 3f * hDmg), 1);
             float radius = MathF.Min(300f + 9f * h, 1000f);
             float poolW = MathF.Min(280f + 7f * h, 720f);
-            int dotDmg = 30 + (int)(0.6f * h);
+            int dotDmg = Math.Max((int)generic.ApplyTo(6f + 0.15f * hDmg), 1);
             Vector2 impact = Player.Bottom;
             var source = Player.GetSource_Misc("CWR_FallenKingsCrown");
 
@@ -155,7 +171,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.KingSlime
 
             //反冲小跳：冲击回馈，也把玩家从凝胶里弹开半步
             Player.velocity.Y = -4.6f;
-            slamCooldown = 12;
+            slamCooldown = SlamCooldownFrames;
             ResetDiveState();
         }
 

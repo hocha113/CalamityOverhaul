@@ -16,8 +16,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
     /// </summary>
     internal sealed class MirrorheartRender : RenderHandle
     {
-        /// <summary>残酷遗物系列预留权重槽</summary>
-        public override float Weight => 1.74f;
+        /// <summary>残酷遗物系列预留权重槽 1.742（错开环境渲染 SunkenduneAmbientRender 的 1.74）</summary>
+        public override float Weight => 1.742f;
+
+        /// <summary>活跃帧戳：佩戴者或换位演出存续时由 MirrorheartPlayer 盖戳，无戳跳过全玩家扫描</summary>
+        internal static ActivityStamp ActiveStamp;
 
         private static bool armed;
 
@@ -29,6 +32,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
                 return;
             }
             armed = false;
+
+            //帧戳门：近两帧无佩戴者活跃即免于全玩家扫描
+            if (!ActiveStamp.ActiveWithin()) {
+                return;
+            }
 
             //先扫一遍有没有活干，避免空开批
             bool anyWork = false;

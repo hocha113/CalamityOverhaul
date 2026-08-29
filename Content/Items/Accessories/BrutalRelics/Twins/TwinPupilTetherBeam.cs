@@ -10,8 +10,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Twins
 {
     /// <summary>
-    /// 双眼之间的切割系绳。两端位置每帧从两只眼本地解析(owner+类型+ai0 唯一标识，跨端等价)，
-    /// 弹幕天然同步在所有端可见；切割伤害走整线段碰撞+本地免疫12帧节流，命中撕开创口
+    /// 双眼之间的切割系绳。两端位置每帧从两只眼本地解析(owner+类型+ai0 唯一标识，跨端等价，槽位缓存)，
+    /// 弹幕天然同步在所有端可见；切割伤害走整线段碰撞+本地免疫15帧节流，命中撕开创口
     /// </summary>
     internal class TwinPupilTetherBeam : ModProjectile
     {
@@ -25,6 +25,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Twins
         private bool linked;
         private float power;//0~1 展开度
         private int cutFlash;//近期切中的增亮计时
+        //两眼槽位缓存：缓存有效时免全表扫
+        private int cachedEyeA = -1;
+        private int cachedEyeB = -1;
 
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 3200;
 
@@ -38,7 +41,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Twins
             Projectile.timeLeft = 18000;
             Projectile.netImportant = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 12;//切割节流：同一目标每12帧至多一割
+            Projectile.localNPCHitCooldown = 15;//切割节流：同一目标每秒至多4割
             Projectile.DamageType = DamageClass.Generic;
         }
 
@@ -84,22 +87,29 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Twins
             }
         }
 
-        private void ResolveEyes() {
-            linked = false;
+        /// <summary>按槽位缓存解析一只眼(owner+类型+ai0 唯一，跨端等价)，缓存失效才全表重扫</summary>
+        private Projectile ResolveEye(ref int cache, float eyeKind) {
             int orbiterType = ModContent.ProjectileType<TwinPupilOrbiter>();
-            Projectile eyeA = null, eyeB = null;
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                Projectile proj = Main.projectile[i];
-                if (!proj.active || proj.owner != Projectile.owner || proj.type != orbiterType) {
-                    continue;
-                }
-                if (proj.ai[0] == 0f) {
-                    eyeA = proj;
-                }
-                else {
-                    eyeB = proj;
+            if (cache >= 0 && cache < Main.maxProjectiles) {
+                Projectile p = Main.projectile[cache];
+                if (p.active && p.type == orbiterType && p.owner == Projectile.owner && p.ai[0] == eyeKind) {
+                    return p;
                 }
             }
+            cache = -1;
+            foreach (Projectile p in Main.ActiveProjectiles) {
+                if (p.type == orbiterType && p.owner == Projectile.owner && p.ai[0] == eyeKind) {
+                    cache = p.whoAmI;
+                    return p;
+                }
+            }
+            return null;
+        }
+
+        private void ResolveEyes() {
+            linked = false;
+            Projectile eyeA = ResolveEye(ref cachedEyeA, 0f);
+            Projectile eyeB = ResolveEye(ref cachedEyeB, 1f);
             if (eyeA == null || eyeB == null) {
                 return;
             }

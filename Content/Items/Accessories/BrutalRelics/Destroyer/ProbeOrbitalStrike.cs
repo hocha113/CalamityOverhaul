@@ -56,7 +56,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Destroyer
             Projectile.ignoreWater = true;
             Projectile.timeLeft = TotalLife + 10;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 12;
+            //判定窗≈48帧：全程被罩住的目标恰好两跳，晚进柱的一跳(三跳不可达)
+            Projectile.localNPCHitCooldown = 44;
         }
 
         public override bool ShouldUpdatePosition() => false;

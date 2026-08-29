@@ -208,18 +208,21 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
 
             PlanteraVineRenderer.DrawVine(Main.spriteBatch, root, Projectile.Center, vine);
 
-            //梢头爪叶：飞行张开，缠中扣紧(粉瓣=玩家侧身份色)
+            //梢头爪叶：飞行张开，缠中扣紧(粉瓣=玩家侧身份色)。
+            //缠中拍补一帧闭合脉冲：角度过冲收紧+微放大，"扣住了"读感(latchTimer 各端本地推进)
             Texture2D petal = CWRAsset.Extra_98.Value;
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            float openAngle = latched ? 0.30f : 0.82f;
+            float latchPulse = latched ? MathHelper.Clamp(1f - latchTimer / 7f, 0f, 1f) : 0f;
+            float openAngle = latched ? 0.30f - 0.12f * latchPulse : 0.82f;
             Color leafColor = Color.Lerp(PlanteraRenderHelper.PetalPink, Color.White, 0.18f) * fade;
+            Vector2 leafScale = new Vector2(0.15f, 0.30f) * (1f + 0.24f * latchPulse);
 
             for (int i = -1; i <= 1; i++) {
                 float rot = Projectile.rotation + i * openAngle;
                 Main.EntitySpriteDraw(petal, drawPos, null, leafColor, rot + MathHelper.PiOver2,
                     new Vector2(petal.Width / 2f, petal.Height * 0.9f),
-                    new Vector2(0.15f, 0.30f), SpriteEffects.None, 0);
+                    leafScale, SpriteEffects.None, 0);
             }
             //梢心荧光：默认AlphaBlend批里A=0加色技法
             Main.EntitySpriteDraw(glow, drawPos, null,

@@ -108,8 +108,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
     /// </summary>
     internal class BloomNovaRender : RenderHandle, ICWRLoader
     {
-        /// <summary>认领表分配的遗物权重槽</summary>
-        public override float Weight => 1.83f;
+        /// <summary>认领表分配的遗物权重槽 1.832（错开环境渲染 CindercragGlowRender 的 1.83）</summary>
+        public override float Weight => 1.832f;
 
         private static bool feetArmed;
 
@@ -143,11 +143,18 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
         /// <summary>低血待机：脚踝处交叉花茎，随血量下降逐节长出，脉络行波即呼吸。
         /// 先辉团批(垫底)后藤蔓图元，避免图元夹在延迟批中间导致层序错乱</summary>
         private static void DrawStandbyFeetVines(SpriteBatch sb) {
+            //帧戳门：本端没人装备该遗物时跳过全表扫(框架 §14.3)
+            if (!BloomNovaBulbPlayer.PresenceStamp.ActiveWithin()) {
+                return;
+            }
+
             Span<float> intensities = stackalloc float[Main.maxPlayers];
+            Span<float> growthVisuals = stackalloc float[Main.maxPlayers];
             bool any = false;
             for (int i = 0; i < Main.maxPlayers; i++) {
                 Player player = Main.player[i];
                 intensities[i] = 0f;
+                growthVisuals[i] = 1f;
                 if (player == null || !player.active || player.dead
                     || !player.TryGetModPlayer(out BloomNovaBulbPlayer mp)) {
                     continue;
@@ -157,6 +164,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
                     continue;
                 }
                 intensities[i] = intensity;
+                growthVisuals[i] = mp.FeetGrowthVisual;
                 any = true;
             }
             if (!any) {
@@ -197,7 +205,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
                 vine.Taut = 0.8f;
                 vine.Pulse = 0.25f + 0.35f * breath * intensity;
                 vine.PulseDir = 1f;
-                vine.Grow = MathHelper.Clamp(intensity * 1.3f, 0.2f, 1f);
+                //生长前沿叠乘生长值系数：开花耗尽后花茎萎缩、随战斗重新长回(owner 视角)
+                vine.Grow = MathHelper.Clamp(intensity * 1.3f, 0.2f, 1f) * growthVisuals[i];
                 vine.Fade = MathHelper.Clamp(intensity * 1.6f, 0f, 0.9f);
                 vine.Seed = 0.21f + i * 0.043f % 0.6f;
                 Vector2 a1 = feet + new Vector2(-30f, 4f);

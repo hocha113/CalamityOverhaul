@@ -45,8 +45,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
     }
 
     /// <summary>
-    /// 蜂涡减速施加：buff经原版同步落在各端，此处每帧按同一规则拖速度，全端确定性一致。<br/>
-    /// 普通敌怪拖得狠、Boss只拖一小口(公平阀)
+    /// 蜂涡减速施加：buff经原版同步落在各端，此处每帧按同一规则回滚位移，全端确定性一致。<br/>
+    /// 普通敌怪拖得狠、Boss只拖一小口(公平阀)；8层启动成本背书重档
     /// </summary>
     internal class SwarmVortexGlobalNPC : GlobalNPC
     {
@@ -55,14 +55,24 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.QueenBee
         /// <summary>本帧被蜂涡缠住，buff逐帧点亮</summary>
         public bool VortexSlowed;
 
+        /// <summary>
+        /// Boss级判定：Boss本体/计名Boss/蠕虫链。蠕虫整链按Boss档折扣，
+        /// 避免分段回滚不齐拉伸链体(镜像巨鹿白盲先例)
+        /// </summary>
+        private static bool IsBossLike(NPC npc) {
+            return npc.boss || Terraria.ID.NPCID.Sets.ShouldBeCountedAsBoss[npc.type]
+                || npc.aiStyle == Terraria.ID.NPCAIStyleID.Worm;
+        }
+
         public override void ResetEffects(NPC npc) => VortexSlowed = false;
 
         public override void PostAI(NPC npc) {
             if (!VortexSlowed) {
                 return;
             }
-            bool bossLike = npc.boss || Terraria.ID.NPCID.Sets.ShouldBeCountedAsBoss[npc.type];
-            npc.velocity *= bossLike ? 0.94f : 0.82f;
+            //位移回滚式减速：不碰velocity，AI节奏不乱，等效减速稳定不复利
+            float hold = IsBossLike(npc) ? 0.15f : 0.50f;
+            npc.position -= npc.velocity * hold;
         }
     }
 }

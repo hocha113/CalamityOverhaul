@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
         }
     }
 
-    /// <summary>缠中状态落地：减速/撕裂/藤蔓覆盖装点。旗标每帧由减益重新点亮，禁静态状态</summary>
+    /// <summary>缠中状态落地：减速/撕裂/藤蔓覆盖装点 + 荆棘反伤封频账本。旗标每帧由减益重新点亮，禁静态状态</summary>
     internal class BloomSnareNPC : GlobalNPC
     {
         public override bool InstancePerEntity => true;
@@ -35,15 +35,29 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
         /// <summary>本帧被荆棘缠住(由 BloomSnaredDebuff.Update 逐帧点亮)</summary>
         public bool Snared;
 
+        //荆棘反伤封频账本：结算与读写都在受害端(判伤端)，同端一致无需同步
+        private uint lastThornFrame;
+        private bool thornStamped;
+
+        /// <summary>该敌人反伤冷却已过，允许结算下一次</summary>
+        public bool ThornReflectReady
+            => !thornStamped || Main.GameUpdateCount - lastThornFrame >= BloomNovaBulbPlayer.ThornReflectICD;
+
+        public void StampThornReflect() {
+            lastThornFrame = Main.GameUpdateCount;
+            thornStamped = true;
+        }
+
         public override void ResetEffects(NPC npc) => Snared = false;
 
         public override void PostAI(NPC npc) {
             if (!Snared) {
                 return;
             }
-            //束缚减速：AI写完速度后乘算。Boss砍两成，杂兵近半
+            //束缚减速=位移回滚(框架 §10 正典)：不碰velocity、不复利，各端按同步buff一致回滚。
+            //中档：杂兵 35%，Boss 12%
             bool bossLike = npc.boss || NPCID.Sets.ShouldBeCountedAsBoss[npc.type];
-            npc.velocity *= bossLike ? 0.80f : 0.55f;
+            npc.position -= npc.velocity * (bossLike ? 0.12f : 0.35f);
 
             //缠身微粒(客户端装点)
             if (!VaultUtils.isServer && Main.rand.NextBool(14)) {
@@ -56,13 +70,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
             if (!Snared) {
                 return;
             }
-            //持续撕裂：240点/秒
+            //持续撕裂：80点/秒(框架 §8.2 T4a DoT 上限)
             if (npc.lifeRegen > 0) {
                 npc.lifeRegen = 0;
             }
-            npc.lifeRegen -= 480;
-            if (damage < 80) {
-                damage = 80;
+            npc.lifeRegen -= 160;
+            if (damage < 20) {
+                damage = 20;
             }
         }
 

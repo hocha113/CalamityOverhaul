@@ -21,8 +21,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
 
-        /// <summary>花瓣冲击波伤害</summary>
-        public const int WaveDamage = 4200;
+        /// <summary>花瓣冲击波基数(生成时吃 Generic 加成，临爆前 owner 逐帧校准)</summary>
+        public const int WaveDamage = 1200;
         /// <summary>花苞鼓胀(帧)</summary>
         public const int SwellTime = 26;
         /// <summary>冲击波扩张(帧)</summary>
@@ -99,6 +99,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Plantera
             Projectile.velocity = Vector2.Zero;
 
             int age = Age;
+            //临爆前 owner 逐帧按面板校准冲击波伤害(鼓胀期吃到的增益不落空)
+            if (Projectile.owner == Main.myPlayer && age < SwellTime + BurstTime) {
+                Projectile.damage = (int)Owner.GetTotalDamage(DamageClass.Generic).ApplyTo(WaveDamage);
+            }
             if (age < SwellTime) {
                 UpdateSwell(age);
             }

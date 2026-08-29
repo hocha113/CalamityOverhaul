@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Rendering;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -33,9 +34,16 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
         private const float QuadH = 300f;
         /// <summary>裙摆压在冲刺线下方的深度</summary>
         private const float Skirt = 58f;
+        /// <summary>全部潮汐墙对同一目标共享的跳伤间隔（帧）</summary>
+        internal const int SharedHitCooldown = 12;
 
         [VaultLoaden(CWRConstant.Masking + "PerlinNoise")]
         private static Asset<Texture2D> noiseTex = null;
+
+        //本帧推弹候选缓存：全弹幕表每帧只扫一趟，其余墙读缓存做各自法线推离。
+        //纯本端预演/表现数据（敌弹权威在服务端，客户端本就是预演），static 合法
+        private static uint pushScanFrame;
+        private static readonly List<int> pushCandidates = new();
 
         private int Stage => (int)Projectile.ai[0];
         private bool Empowered => Projectile.ai[1] >= 1f;
@@ -62,9 +70,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
             Projectile.penetrate = -1;
             Projectile.timeLeft = RecordTime + HoldTime + CollapseTime;
             Projectile.DamageType = DamageClass.Generic;
-            //持留伤害区：本地免疫表约 9 帧一跳
+            //持留伤害区：本地免疫表 12 帧一跳（跨墙共享冷却另见 CanHitNPC）
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 9;
+            Projectile.localNPCHitCooldown = SharedHitCooldown;
         }
 
         public override bool ShouldUpdatePosition() => false;
@@ -82,6 +90,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
             LifeTimer++;
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             Vector2 up = UpOf(dir);
+
+            //长寿命弹幕：owner 端逐帧按面板刷新单跳伤害（含雨天强化倍率）
+            if (Projectile.owner == Main.myPlayer) {
+                float mult = Empowered ? TidalFinPlayer.EmpowerMult : 1f;
+                Projectile.damage = (int)Main.player[Projectile.owner]
+                    .GetTotalDamage(DamageClass.Generic).ApplyTo(TidalFinPlayer.WallDamage * mult);
+            }
 
             if (LifeTimer == 1f) {
                 FirstFrameFX(dir);
@@ -124,17 +139,19 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
         /// 规则确定性、无随机，各端同步自算，不发包
         /// </summary>
         private void PushHostileProjectiles(Vector2 dir, Vector2 up) {
+            //本帧第一面墙扫全表建候选清单，其余墙直接消费（至多 4 墙并存时省 3 趟全表）
+            if (pushScanFrame != Main.GameUpdateCount) {
+                pushScanFrame = Main.GameUpdateCount;
+                RebuildPushCandidates();
+            }
+
             Vector2 a = Projectile.Center;
             //墙体中面：冲刺线上抬 55px（浪体主体所在）
             Vector2 planeOffset = up * 55f;
-            foreach (var p in Main.ActiveProjectiles) {
-                if (!p.hostile || p.friendly || p.damage <= 0) {
-                    continue;
-                }
-                if (p.aiStyle == 84 || p.width > 80 || p.height > 80) {
-                    continue;
-                }
-                if (p.velocity.LengthSquared() < 0.25f) {
+            for (int i = 0; i < pushCandidates.Count; i++) {
+                Projectile p = Main.projectile[pushCandidates[i]];
+                //槽位复用防线：消费前复核白名单核心项（含吸附式死亡射线排除，防缓存帧内变形漏推）
+                if (!p.active || !p.hostile || p.friendly || p.damage <= 0 || p.aiStyle == 84) {
                     continue;
                 }
 
@@ -153,6 +170,23 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
                 if (p.velocity.LengthSquared() > 24f * 24f) {
                     p.velocity = p.velocity.SafeNormalize(Vector2.Zero) * 24f;
                 }
+            }
+        }
+
+        /// <summary>候选重建：白名单三条原样（敌对带伤/在动/小体量，排除 aiStyle 84），确定性无随机</summary>
+        private static void RebuildPushCandidates() {
+            pushCandidates.Clear();
+            foreach (var p in Main.ActiveProjectiles) {
+                if (!p.hostile || p.friendly || p.damage <= 0) {
+                    continue;
+                }
+                if (p.aiStyle == 84 || p.width > 80 || p.height > 80) {
+                    continue;
+                }
+                if (p.velocity.LengthSquared() < 0.25f) {
+                    continue;
+                }
+                pushCandidates.Add(p.whoAmI);
             }
         }
 
@@ -191,7 +225,21 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
             }
         }
 
-        public override bool? CanHitNPC(NPC target) => HitActive && headDist > 40f ? null : false;
+        public override bool? CanHitNPC(NPC target) {
+            if (!HitActive || headDist < 40f) {
+                return false;
+            }
+            //跨墙共享跳伤：多面墙叠同一目标时跳伤频率与单墙相同（owner 判定端本地读写）
+            if (!target.GetGlobalNPC<TidalFinWallHitNPC>().WallHitReady) {
+                return false;
+            }
+            return null;
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            //任一墙命中即刷新共享冷却
+            target.GetGlobalNPC<TidalFinWallHitNPC>().StampWallHit();
+        }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (!HitActive || headDist < 40f) {
@@ -257,8 +305,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
                     continue;
                 }
 
+                float intensity = (0.4f + 0.6f * growth) * (1f - segCollapse * 0.35f);
+                //持留期墙头端帽：最前段未长满时按生长度斜降，端面不读斜切
+                if (i == segCount - 1 && growth < 1f && LifeTimer > RecordTime) {
+                    intensity *= growth;
+                }
                 effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-                effect.Parameters["uIntensity"]?.SetValue((0.4f + 0.6f * growth) * (1f - segCollapse * 0.35f));
+                effect.Parameters["uIntensity"]?.SetValue(intensity);
                 effect.Parameters["uGrowth"]?.SetValue(growth);
                 effect.Parameters["uCollapse"]?.SetValue(segCollapse);
                 effect.Parameters["uDir"]?.SetValue(uDir);
@@ -296,6 +349,27 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
                     new Vector2(QuadW / wave.Width, 200f / wave.Height),
                     dir.X >= 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             }
+        }
+    }
+
+    /// <summary>
+    /// 潮汐墙共享跳伤账本：记录该 NPC 最近一次被任意潮汐墙命中的帧。
+    /// 命中判定与结算都在 owner 端，本字段只在同一端读写，无需同步
+    /// </summary>
+    internal class TidalFinWallHitNPC : GlobalNPC
+    {
+        public override bool InstancePerEntity => true;
+
+        private uint lastWallHitFrame;
+        private bool everHit;
+
+        /// <summary>共享冷却已过，允许任意墙结算下一跳</summary>
+        public bool WallHitReady
+            => !everHit || Main.GameUpdateCount - lastWallHitFrame >= TidalFinTsunamiProj.SharedHitCooldown;
+
+        public void StampWallHit() {
+            lastWallHitFrame = Main.GameUpdateCount;
+            everHit = true;
         }
     }
 }

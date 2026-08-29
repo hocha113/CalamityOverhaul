@@ -19,23 +19,27 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Deerclops
         /// <summary>内置冷却(20s)</summary>
         internal const int CooldownTicks = 1200;
         /// <summary>爆发基础伤害</summary>
-        internal const int BurstDamage = 180;
+        internal const int BurstDamage = 120;
+        /// <summary>爆发致盲(仇恨混乱)时长(3s，非Boss)</summary>
+        internal const int ConfuseTicks = 180;
         /// <summary>冰刺基础伤害</summary>
-        internal const int SpikeDamage = 80;
+        internal const int SpikeDamage = 45;
+        /// <summary>刺浪间隔(1s一浪)</summary>
+        internal const int SpikeWaveInterval = 60;
         /// <summary>爆发最大半径(px)</summary>
         internal const float BurstRadius = 500f;
-        /// <summary>风暴中额外减伤</summary>
-        internal const float StormEndurance = 0.5f;
+        /// <summary>风暴中额外减伤(窗口总减伤约33.5%)</summary>
+        internal const float StormEndurance = 0.3f;
 
         public override void SetDefaults() {
             base.SetDefaults();
-            Item.defense = 8;
-            //同期巨鹿掉落(售约2金/购约10金)的3.5倍
-            Item.value = Item.buyPrice(0, 35, 0, 0);
+            Item.defense = 3;
+            //T1 value梯度上界(平衡框架§9统一梯度)
+            Item.value = Item.buyPrice(0, 20, 0, 0);
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
-            player.endurance += 0.12f;
+            player.endurance += 0.05f;
             player.buffImmune[BuffID.Chilled] = true;
             player.buffImmune[BuffID.Frozen] = true;
             player.buffImmune[BuffID.Frostburn] = true;
@@ -47,17 +51,17 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Deerclops
         }
     }
 
-    /// <summary>白视风暴增益：风暴期间高额减伤+击退免疫，图标复用物品贴图</summary>
+    /// <summary>白视风暴增益：风暴期间减伤窗+击退免疫，专属图标(清明圈中雪盾)</summary>
     internal class WhiteoutStormBuff : ModBuff
     {
-        public override string Texture => CWRConstant.Item_BrutalRelic + "WhiteoutStormCore";
+        public override string Texture => CWRConstant.Item_BrutalRelic + "WhiteoutStormBuff";
 
         private LocalizedText displayNameCache;
         private LocalizedText descriptionCache;
         public override LocalizedText DisplayName
             => displayNameCache ??= this.GetLocalization(nameof(DisplayName), () => "白视风暴");
         public override LocalizedText Description
-            => descriptionCache ??= this.GetLocalization(nameof(Description), () => "获得50%减伤与击退免疫，雪幕不遮挡你的视野");
+            => descriptionCache ??= this.GetLocalization(nameof(Description), () => "额外获得30%减伤与击退免疫，雪幕不遮挡你的视野");
 
         public override void SetStaticDefaults() {
             Main.debuff[Type] = false;
@@ -184,7 +188,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Deerclops
             }
 
             spikeTimer++;
-            if (spikeTimer < 45) {
+            if (spikeTimer < WhiteoutStormCore.SpikeWaveInterval) {
                 return;
             }
             spikeTimer = 0;

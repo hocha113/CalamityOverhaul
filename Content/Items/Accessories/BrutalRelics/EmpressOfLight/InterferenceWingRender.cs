@@ -36,41 +36,50 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EmpressOfLight
             }
             armed = false;
 
+            //帧戳门：无任何翼/光径在场时跳过全玩家表扫描
+            if (!WingsOfInterferencePlayer.PresenceStamp.ActiveWithin()) {
+                return;
+            }
+
             bool deviceReady = false;
             BlendState origBlend = null;
             RasterizerState origRaster = null;
 
-            for (int i = 0; i < Main.maxPlayers; i++) {
-                Player player = Main.player[i];
-                if (player == null || !player.active
-                    || !player.TryGetModPlayer(out WingsOfInterferencePlayer mp)) {
-                    continue;
-                }
-                bool hasWings = mp.WingSpread > 0.02f && !player.dead;
-                bool hasTrails = mp.Trails.Count > 0;
-                if (!hasWings && !hasTrails) {
-                    continue;
-                }
+            try {
+                for (int i = 0; i < Main.maxPlayers; i++) {
+                    Player player = Main.player[i];
+                    if (player == null || !player.active
+                        || !player.TryGetModPlayer(out WingsOfInterferencePlayer mp)) {
+                        continue;
+                    }
+                    bool hasWings = mp.WingSpread > 0.02f && !player.dead;
+                    bool hasTrails = mp.Trails.Count > 0;
+                    if (!hasWings && !hasTrails) {
+                        continue;
+                    }
 
-                if (!deviceReady) {
-                    deviceReady = true;
-                    origBlend = graphicsDevice.BlendState;
-                    origRaster = graphicsDevice.RasterizerState;
-                    graphicsDevice.BlendState = BlendState.Additive;
-                    graphicsDevice.RasterizerState = RasterizerState.CullNone;
-                }
+                    if (!deviceReady) {
+                        deviceReady = true;
+                        origBlend = graphicsDevice.BlendState;
+                        origRaster = graphicsDevice.RasterizerState;
+                        graphicsDevice.BlendState = BlendState.Additive;
+                        graphicsDevice.RasterizerState = RasterizerState.CullNone;
+                    }
 
-                if (hasWings && PlayerOnScreen(player)) {
-                    DrawWings(graphicsDevice, player, mp);
-                }
-                if (hasTrails) {
-                    DrawTrails(graphicsDevice, mp);
+                    if (hasWings && PlayerOnScreen(player)) {
+                        DrawWings(graphicsDevice, player, mp);
+                    }
+                    if (hasTrails) {
+                        DrawTrails(graphicsDevice, mp);
+                    }
                 }
             }
-
-            if (deviceReady) {
-                graphicsDevice.BlendState = origBlend;
-                graphicsDevice.RasterizerState = origRaster;
+            finally {
+                //绘制中途抛异常也要还原混合态，防泄漏 Additive 污染后续玩家层
+                if (deviceReady) {
+                    graphicsDevice.BlendState = origBlend;
+                    graphicsDevice.RasterizerState = origRaster;
+                }
             }
         }
 

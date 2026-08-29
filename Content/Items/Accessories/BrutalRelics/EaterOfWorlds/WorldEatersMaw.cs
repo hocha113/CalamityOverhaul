@@ -9,23 +9,25 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
     /// </summary>
     internal class WorldEatersMaw : BaseBrutalRelic
     {
-        //====酸蚀数值(刻意超模：明显压过肉山前档位，用户签字基调)====
+        //====酸蚀数值(T1层级基准：DoT单源≤20HP/s，削甲身份本件独占)====
         /// <summary>酸蚀层数上限</summary>
         internal const int MaxStacks = 10;
-        /// <summary>每层削减防御</summary>
-        internal const float DefShredPerStack = 3f;
-        /// <summary>每层 lifeRegen 削减(单位2=每秒1点，12即每秒6点)</summary>
-        internal const int DotPerStack = 12;
+        /// <summary>每层削减防御(结算取整，满层-15)</summary>
+        internal const float DefShredPerStack = 1.5f;
+        /// <summary>每层 lifeRegen 削减(单位2=每秒1点，4即每秒2点，满层20HP/s)</summary>
+        internal const int DotPerStack = 4;
         /// <summary>酸蚀持续帧(命中刷新)</summary>
         internal const int BrandDuration = 360;
 
         //====幼虫数值====
         /// <summary>幼虫基础伤害(乘玩家通用增伤)</summary>
-        internal const int WormBaseDamage = 70;
+        internal const int WormBaseDamage = 28;
         /// <summary>同时存活的幼虫上限(设计声明：同屏多条的封顶)</summary>
-        internal const int WormCap = 6;
+        internal const int WormCap = 3;
         /// <summary>幼虫存活时长(帧，设计声明：7秒后自行入土消散)</summary>
         internal const int WormLifetime = 420;
+        /// <summary>出虫内置冷却(2s，斩断击杀链永动；权威端计时)</summary>
+        internal const int WormSpawnCooldownTicks = 120;
 
         public override void SetDefaults() {
             base.SetDefaults();
@@ -44,7 +46,24 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
         /// <summary>本帧是否装备生效，物品钩子逐帧点亮</summary>
         public bool Equipped;
 
+        /// <summary>
+        /// 出虫冷却读数。OnKill在权威端裁决(SP=本机/MP=服务端)，不进包丢包自愈；
+        /// MP的owner端由幼虫首帧镜像一份，供尸位冒泡表现读取
+        /// </summary>
+        public int WormSpawnCooldown;
+
         public override void ResetEffects() => Equipped = false;
+
+        public override void PostUpdateEquips() => TickWormCooldown();
+
+        //死亡期间冷却照常回转(PostUpdate系钩子死亡不跑)
+        public override void UpdateDead() => TickWormCooldown();
+
+        private void TickWormCooldown() {
+            if (WormSpawnCooldown > 0) {
+                WormSpawnCooldown--;
+            }
+        }
 
         public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone) {
             if (Equipped) {
