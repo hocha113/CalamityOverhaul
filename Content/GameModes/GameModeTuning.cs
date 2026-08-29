@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.GameModes
         }
 
         /// <summary>
-        /// 需要锚定的重制 Boss 及其原版专属系数。
+        /// 需要锚定的重制 Boss 及其原版专属系数
         /// 不在表内的接管类型（蜂群/探测怪/孢子/泡泡等战斗物）血量由战斗代码自管，不锚定
         /// </summary>
         private static readonly Dictionary<int, VanillaBossScale> AnchorRows = new() {
@@ -228,8 +228,8 @@ namespace CalamityOverhaul.Content.GameModes
         }
 
         /// <summary>
-        /// 重制 Boss 的大师基线补偿系数（血量, 伤害）。
-        /// 世界缩放已达大师时恒为 1；不在锚定表内的类型恒为 1。
+        /// 重制 Boss 的大师基线补偿系数（血量, 伤害）
+        /// 世界缩放已达大师时恒为 1；不在锚定表内的类型恒为 1
         /// 在 SetDefaults 期乘上后，原版缩放跑完即恰好落在大师基线，档位增幅再乘于其上
         /// </summary>
         public static (float life, float damage) MasterAnchorCompensation(int npcType) {

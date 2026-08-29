@@ -6,10 +6,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes
 {
     /// <summary>
-    /// 修罗模式：敌怪对同种伤害来源的自适应免疫。
+    /// 修罗模式：敌怪对同种伤害来源的自适应免疫
     /// 来源键 = 弹幕类型（正数）/物品类型（负数），层数随命中积累、脱手一段时间后逐层衰减。
     /// 近战是适应的裂隙：刀刃本体只承受部分适应减伤，近战弹幕次之；
-    /// 近战命中还按出手距离获得贴身增幅，越近越痛。数值见 <see cref="GameModeTuning"/>。
+    /// 近战命中还按出手距离获得贴身增幅，越近越痛。数值见 <see cref="GameModeTuning"/>
     /// tML 的打击判定在攻击方本机进行（伤害随打击包下发，服务端不重算），
     /// 因此适应状态无需网络同步；联机下每个攻击者面对的是敌怪对"自己"的适应
     /// </summary>
@@ -24,9 +24,9 @@ namespace CalamityOverhaul.Content.GameModes
         /// <summary>层数上限（到顶后继续命中只刷新计时）</summary>
         private const float StackCap = 11f;
         /// <summary>无同类命中的宽限帧数，此后开始衰减</summary>
-        private const int GraceTicks = 90;
+        private const int GraceTicks = 60;
         /// <summary>衰减速率：每这么多帧掉一层</summary>
-        private const int DecayTicksPerStack = 30;
+        private const int DecayTicksPerStack = 20;
 
         private struct AdaptEntry
         {
