@@ -5,5 +5,5 @@ sortAfter = CalamityMod, InnoVault
 homepage = https://calamity-overhaul.cc
 buildIgnore = .git\*, Doc\*, .vissandbox\*, .editorconfig, .gitignore, *.ps1
 author = HoCha113
-version = 0.9201
+version = 0.9202
 includeSource = true
