@@ -336,8 +336,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                     }
                 }
 
-                //目标没入后手化水收场
-                if (hand.Entry.Splashed) {
+                //目标没入后手化水收场;波已结束却始终没等到溅水的同样收场——
+                //引潮把水面挪过目标后溅水条件永假,不收就是湖面上一只永驻的手(反馈 #18)
+                if (hand.Entry.Splashed || show.Done) {
                     rig.Drain = MathHelper.Clamp(rig.Drain + 0.07f, 0f, 1f);
                     rig.Opacity = MathHelper.Clamp(rig.Opacity - 0.09f, 0f, 1f);
                 }

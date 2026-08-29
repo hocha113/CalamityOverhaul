@@ -1018,7 +1018,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 skinRotFix = 0f;
                 Texture2D body = TextureAssets.Npc[NPCID.TheDestroyerBody].Value;
                 float frameH = body.Height / (float)Math.Max(Main.npcFrameCount[NPCID.TheDestroyerBody], 1);
-                skinScale = frameH > 0f ? SegSpacing / frameH : DrawScale;
+                //"满帧高≈实体高"会被高留白的重绘贴图打破(灾厄系体节帧高翻倍、实体只占半帧),
+                //按帧高折算会把节缩成散珠;取帧高与贴图宽中较小者当体节特征尺寸,
+                //经典近满帧贴图下结果不变,高留白贴图恢复节距咬合(反馈 #22)
+                float charSize = MathF.Min(frameH, body.Width);
+                skinScale = charSize > 0f ? SegSpacing / charSize : DrawScale;
             }
             SpriteBatch sb = Main.spriteBatch;
 

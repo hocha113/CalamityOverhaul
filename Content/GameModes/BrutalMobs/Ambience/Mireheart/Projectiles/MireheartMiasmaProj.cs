@@ -182,35 +182,25 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mireheart.Proje
             }
             float time = Main.GlobalTimeWrappedHourly;
 
-            //层序自下而上：底部浓稠暗带 → 中层流动雾团 → 顶部消散丝缕；
+            //层序自下而上：贴地瘴带密度场 → 顶部消散丝缕；
             //沉重腐气不发光，全程无加法层（与孢子云的发光点缀划清）
 
-            //1 底部浓稠暗带（贴地最暗最浓，两片错相压出厚度）
-            Vector2 baseWorld = Projectile.Center + new Vector2(0f, halfH * 0.4f);
-            float baseK = LightK(baseWorld);
-            Vector2 baseScale = new(halfW * 2.15f / fog.Width, halfH * 1.5f / fog.Height);
-            Main.EntitySpriteDraw(fog, baseWorld - Main.screenPosition, null,
-                DeepMurk * (0.62f * fade * baseK), 0f, fogOrigin, baseScale, SpriteEffects.None, 0);
-            float baseSway = MathF.Sin(time * 0.4f + Projectile.identity) * halfW * 0.06f;
-            Main.EntitySpriteDraw(fog, baseWorld - Main.screenPosition + new Vector2(baseSway, -halfH * 0.18f),
-                null, DeepMurk * (0.38f * fade * baseK), 0f, fogOrigin,
-                baseScale * new Vector2(0.8f, 0.85f), SpriteEffects.FlipHorizontally, 0);
-
-            //2 中层流动雾团：底重分布（hY² 压向底部），从破裂点向两侧摊开，出缘溶掉回中心重来
-            for (int i = 0; i < BandPuffCount; i++) {
-                float hY = Hash(i, 2);
-                float hS = Hash(i, 3);
-                float dir = hS > 0.5f ? 1f : -1f;
-                float u = (Hash(i, 1) + time * (0.05f + 0.05f * hS)) % 1f;
-                float flowFade = MathF.Sin(u * MathHelper.Pi);//新生与出缘两端都稀薄
-                Vector2 world = Projectile.Center + new Vector2(
-                    dir * u * halfW * 0.92f, halfH * (0.55f - 0.95f * hY * hY));
-                float sx = halfW * (0.85f + 0.3f * hS) / fog.Width;
-                Main.EntitySpriteDraw(fog, world - Main.screenPosition, null,
-                    MidMurk * (0.5f * fade * flowFade * LightK(world)), 0f, fogOrigin,
-                    new Vector2(sx, sx * 0.45f),
-                    dir > 0f ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-            }
+            //1+2 贴地瘴带：密度场单 pass（旧 底带 0.62+0.38 共址再叠流团 0.5 ≈0.88 已废 2026-08-29）；
+            //底重剖面+顶冠噪声侵蚀承担旧「底浓顶散」层序，浓核自影承担 DeepMurk 暗层
+            var murk = AmbientFogDraw.PoolSpec.Default;
+            murk.Center = Projectile.Center + new Vector2(0f, 4f);
+            murk.SizePx = new Vector2(halfW * 2f + 70f, halfH * 2f + 46f);
+            murk.Body = MidMurk;
+            murk.Edge = new Color(88, 98, 46);
+            murk.MaxAlpha = 0.62f;
+            murk.Density = fade;
+            murk.FlowPx = 10f;
+            murk.Seed = Projectile.identity * 0.71f;
+            murk.Anchor = 1f;
+            murk.CrownV = 0.40f;
+            murk.EdgePow = 2.0f;
+            murk.LightFloor = LightFloor;
+            AmbientFogDraw.DrawPoolInEntityBatch(in murk);
 
             //3 顶部消散丝缕：自带顶缓升缓淡，升尽即回（纯演出，不参与判定）
             for (int i = 0; i < WispCount; i++) {

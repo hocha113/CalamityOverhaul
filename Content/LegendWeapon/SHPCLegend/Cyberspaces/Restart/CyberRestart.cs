@@ -262,6 +262,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                     i--;
                 }
             }
+            //海妖八音盒的必死是玩家字段不是 debuff，清 buff 洗不掉——对齐比目鱼重启的清诅咒口径（反馈 #7）。
+            //只在被诅咒者本机执行强停，免得本函数被旁观端回放时误停自己的会话
+            if (owner.whoAmI == Main.myPlayer
+                && owner.TryGetModPlayer(out Items.Tools.SirenMusicalBoxPlayer sirenPlayer)
+                && sirenPlayer.IsCursed) {
+                Items.Tools.SirenMusicalBoxPlayer.StopAllMusicBoxes(owner);
+            }
             owner.immune = true;
             owner.immuneTime = Math.Max(owner.immuneTime, 40);
             if (Main.netMode == NetmodeID.MultiplayerClient

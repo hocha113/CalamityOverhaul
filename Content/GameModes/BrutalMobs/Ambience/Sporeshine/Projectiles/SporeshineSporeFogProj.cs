@@ -155,10 +155,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine.Proj
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D fog = CWRAsset.Fog.Value;
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Texture2D star = CWRAsset.StarTexture_White.Value;
-            Vector2 fogOrigin = fog.Size() * 0.5f;
             Vector2 glowOrigin = glow.Size() * 0.5f;
             Vector2 starOrigin = star.Size() * 0.5f;
             Vector2 center = Projectile.Center - Main.screenPosition;
@@ -192,30 +190,23 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine.Proj
                 return false;
             }
 
-            //浓度只抬透明度与粉尘，几何不变；透明度封顶防糊死
-            float deepA = MathF.Min(0.5f * Density, 0.62f) * fade;
-
-            //中央雾体（真 alpha 乘环境光，承担遮挡感）
-            float bodyScale = radius * 1.5f / fog.Width;
-            Main.EntitySpriteDraw(fog, center, null, DeepSpore * (0.75f * deepA * LightK(lightColor)),
-                Projectile.identity * 0.7f, fogOrigin, bodyScale, SpriteEffects.None, 0);
-
-            //雾团：黄金角螺旋铺排（内密外稀），内圈回旋快外圈慢，逐团乘环境光；
-            //边缘稀薄可读，对应判定宽限带
-            for (int i = 0; i < PuffCount; i++) {
-                float frac = (i + 0.5f) / PuffCount;
-                float hS = Hash(i, 3);
-                float ang = i * 2.39996f + time * (0.08f + 0.18f * (1f - frac));
-                float r = radius * 0.86f * MathF.Sqrt(frac);
-                Vector2 world = Projectile.Center + ang.ToRotationVector2() * r;
-                float edgeThin = 1f - 0.55f * MathHelper.Clamp((r / radius - 0.5f) / 0.5f, 0f, 1f);
-                float puffScale = (0.24f + 0.14f * hS) * (radius / MaxRadius);
-                float rot = hS * MathHelper.TwoPi + time * (hS - 0.5f) * 0.5f;
-                Color lit = Lighting.GetColor((int)(world.X / 16f), (int)(world.Y / 16f));
-                Main.EntitySpriteDraw(fog, world - Main.screenPosition, null,
-                    DeepSpore * (deepA * edgeThin * LightK(lit)), rot, fogOrigin, puffScale,
-                    hS > 0.5f ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
-            }
+            //孢雾体：悬浮盘密度场单 pass（旧 中央体+10 螺旋团 core≈0.93 全饱和已废 2026-08-29）；
+            //浓度只抬密度、几何不变，盘内缓旋接替旧螺旋公转，外缘稀薄对应判定宽限带
+            var cloud = AmbientFogDraw.PoolSpec.Default;
+            cloud.Center = Projectile.Center;
+            cloud.SizePx = new Vector2(radius * 2.6f, radius * 2.6f);
+            cloud.Body = DeepSpore;
+            cloud.Edge = BrightSpore;
+            cloud.MaxAlpha = 0.58f;
+            cloud.Density = MathF.Min(0.78f * Density, 1f) * fade;
+            cloud.FlowPx = 6f;
+            cloud.Seed = Projectile.identity * 0.43f;
+            cloud.Anchor = 0f;
+            cloud.CrownV = 0f;
+            cloud.EdgePow = 1.5f;
+            cloud.Swirl = 0.18f;
+            cloud.LightFloor = LightFloor;
+            AmbientFogDraw.DrawPoolInEntityBatch(in cloud);
 
             //悬浮发光孢子点（加法点缀，光本体）：成形期渐亮=自持预告的视觉通道
             float dotA = (0.3f + 0.7f * ArmProgress) * fade;

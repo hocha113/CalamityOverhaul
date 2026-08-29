@@ -129,24 +129,25 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Brinefume.Proje
             float t = Main.GlobalTimeWrappedHourly;
             Vector2 basePos = Projectile.Center - Main.screenPosition;
 
-            //体雾：12 团纵向排布的浓雾（Fog 真 alpha，AlphaBlend 直接染色），慢旋慢摆，逐团镜像防贴纸感
-            Color body = Color.Lerp(new Color(96, 104, 44), lightColor, 0.30f);
-            for (int i = 0; i < 12; i++) {
-                float col = (i % 3 - 1) * HalfWidth * 0.55f;
-                float row = (i / 3 + 0.5f) / 4f * 2f - 1f;
-                float phase = Hash(i, 0.7f) * MathHelper.TwoPi;
-                Vector2 wob = new(
-                    MathF.Sin(t * 0.31f + phase) * 16f + Dir * 8f * (row + 1f),
-                    MathF.Sin(t * 0.23f + phase * 1.7f) * 10f);
-                Vector2 pos = basePos + new Vector2(col, row * HalfHeight * 0.78f) + wob;
-                float rot = t * (0.04f + 0.05f * Hash(i, 1.3f)) * (Hash(i, 2.9f) > 0.5f ? 1f : -1f);
-                float scale = 1.5f + 1.0f * Hash(i, 4.1f);
-                float alpha = (0.30f + 0.14f * Hash(i, 5.3f)) * env;
-                Main.EntitySpriteDraw(fog, pos, null, body * alpha, rot, fogOrigin, scale,
-                    i % 2 == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-            }
+            //体雾：密度场单 pass（旧 12 团网格堆叠共址 ≈0.9 已废 2026-08-29）；
+            //缓移毒霾近对称剖面，行进侧略浓，撕缘由噪声阈值承担
+            var haze = AmbientFogDraw.WallSpec.Default;
+            haze.Center = Projectile.Center;
+            haze.SizePx = new Vector2(HalfWidth * 2f + 120f, HalfHeight * 2f + 140f);
+            haze.Dir = Dir;
+            haze.Body = new Color(96, 104, 44);
+            haze.Edge = BrinefumeAmbience.FoamPale;
+            haze.MaxAlpha = 0.60f;
+            haze.Density = env;
+            haze.FlowPx = 46f;
+            haze.Streak = 0.18f;
+            haze.Seed = Projectile.identity * 0.53f;
+            haze.FrontBias = 0.58f;
+            haze.TaperV = 0.15f;
+            haze.LightFloor = 0.35f;
+            AmbientFogDraw.DrawWallInEntityBatch(in haze);
 
-            //冠顶亮缘：上排更亮的稀雾，远处可读的"墙头"
+            //冠顶亮缘：上排更亮的稀雾，远处可读的"墙头"（点缀层保留）
             Color crown = Color.Lerp(BrinefumeAmbience.FoamPale, lightColor, 0.25f);
             for (int i = 0; i < 4; i++) {
                 float u = (i + 0.5f) / 4f * 2f - 1f;

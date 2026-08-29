@@ -650,6 +650,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
                     i--;
                 }
             }
+            //海妖八音盒的必死是玩家字段不是 debuff，清 buff 洗不掉——与比目鱼重启同款收口（反馈 #7）
+            if (player.TryGetModPlayer<Items.Tools.SirenMusicalBoxPlayer>(out var sirenPlayer)
+                && sirenPlayer.IsCursed) {
+                Items.Tools.SirenMusicalBoxPlayer.StopAllMusicBoxes(player);
+            }
             player.immune = true;
             player.immuneTime = Math.Max(player.immuneTime, PostImmuneFrames);
         }

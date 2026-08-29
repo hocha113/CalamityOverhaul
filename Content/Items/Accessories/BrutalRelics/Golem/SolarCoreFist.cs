@@ -80,6 +80,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Golem
 
         private int auraStrikeTimer;
         private int punchCooldown;
+        /// <summary>双击下的按键沿闩：PostUpdateEquips 记沿，PreUpdateMovement 姿态机消费，只活一帧</summary>
+        private bool queuedStancePunch;
         /// <summary>上帧层数（各端统一的受击反馈/满层拍检测）</summary>
         private int prevStacksVisual;
         private bool netDirty;
@@ -97,12 +99,24 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Golem
             AuraGlow = 0f;
             auraStrikeTimer = 0;
             punchCooldown = 0;
+            queuedStancePunch = false;
             prevStacksVisual = 0;
             netDirty = false;
             netThrottle = 0;
         }
 
         public override void ResetEffects() => Equipped = false;
+
+        //双击下的按键沿只在这里可见：原版在 Update 中段把 releaseDown 改写为"按住即 false"，
+        //到 PreUpdateMovement 时沿已不可见、检测恒假（与血雾之瞳同病同修，反馈 #29）。
+        //这里只记沿，是否出拳仍由姿态状态机裁决
+        public override void PostUpdateEquips() {
+            if (Player.whoAmI == Main.myPlayer && Equipped && !Player.dead
+                && Player.controlDown && Player.releaseDown
+                && Player.doubleTapCardinalTimer[0] > 0 && Player.doubleTapCardinalTimer[0] < 15) {
+                queuedStancePunch = true;
+            }
+        }
 
         public override void UpdateDead() {
             //死亡蓄能清空，不打拳
@@ -170,8 +184,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Golem
 
                 //双击下：原地释放重拳，姿态保持（与旋涡潜行/星尘守卫同一交互位）
                 //末位消费闩：前置条件全过才尝试取同帧执行权，被别家抢走则本帧静默放弃
-                if (punchCooldown <= 0 && Player.controlDown && Player.releaseDown
-                    && Player.doubleTapCardinalTimer[0] > 0 && Player.doubleTapCardinalTimer[0] < 15
+                if (punchCooldown <= 0 && queuedStancePunch
                     && Player.CWR().TryConsumeRelicDoubleTap(0)) {
                     FirePunch();
                 }
@@ -188,6 +201,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Golem
                 }
             }
 
+            //沿只活一帧：无论姿态是否消费，帧末清闩
+            queuedStancePunch = false;
             UpdateVisualEnvelopes();
             TickNet();
         }

@@ -185,6 +185,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             npcLoot.Add(ItemDropRule.Common(ItemID.Cactus, 1, 20, 40));
             npcLoot.Add(ItemDropRule.Common(ItemID.Amber, 3, 1, 2));
         }
+
+        public override void OnKill() {
+            //击杀旗标：SetEventFlagCleared 自动处理联机 WorldData 广播（镜像脓蕾沙蟒）
+            NPC.SetEventFlagCleared(ref BssWorldFlag.DownedBloomSerpent, -1);
+        }
         #endregion
 
         #region 状态机装配

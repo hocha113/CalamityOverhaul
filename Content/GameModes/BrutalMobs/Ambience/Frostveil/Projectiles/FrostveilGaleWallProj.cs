@@ -17,7 +17,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil.Proje
     /// 预告=远处白幕逼近（1500px 外生成，约 214 帧后过顶，远超 45 帧底线）+ 风啸渐强（氛围层循环）；
     /// 落地=经过时视野雪幕 + 顺风轻推 + 数秒原版寒颤；余韵=散幕消融。
     /// 具名缺口「明窗」：墙面上一条雪幕挖薄的横缝，边缘雪唇可读，站进窗内整浪安全通过。
-    /// 可见体=雪浓度体：真 alpha 白幕（Fog 底+Spray 雪团+GlaciateWave 前缘弧）乘环境光，
+    /// 可见体=雪浓度体：AmbientFogBody 密度场单 pass（前缘噪声撕裂+定向雪缕+浓核自影+明窗，
+    /// 合成不透明度封顶，乘环境光），Spray 雪团/GlaciateWave 前缘弧只作材质点缀；
     /// 前缘最浓、尾部稀薄，白是遮挡不是发光；发光只剩明窗一线弱光敷料。
     /// 可见墙=判定墙（绘制与判定读同一几何），一切施加只落在本机玩家
     /// </summary>
@@ -53,8 +54,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil.Proje
         private const float PushMaxSpeed = 6f;
         /// <summary>墙端纵向收口长度</summary>
         private const float EndTaper = 150f;
-        /// <summary>绘制行距</summary>
-        private const float RowSpacing = 68f;
+        /// <summary>雪浓度体画布厚度（判定 ±80 藏在撕裂前缘之内）</summary>
+        private const float CanvasThickness = 300f;
+        /// <summary>雪浓度体画布长轴（±WallHalfHeight + 两端收口余量）</summary>
+        private const float CanvasLength = WallHalfHeight * 2f + 120f;
 
         private float SeamY => Projectile.ai[0];
         private int Dir => (int)Projectile.ai[1];
@@ -282,16 +285,13 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil.Proje
             if (envelope < 0.02f) {
                 return false;
             }
-            Texture2D fog = CWRAsset.Fog?.Value;
             Texture2D spindle = CWRAsset.Extra_98?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             Texture2D clump = Spray?.Value;
             Texture2D waveFront = GlaciateWave?.Value;
-            if (fog == null || spindle == null || glow == null
-                || clump == null || waveFront == null) {
+            if (spindle == null || glow == null || clump == null || waveFront == null) {
                 return false;
             }
-            Vector2 fogOrigin = fog.Size() * 0.5f;
             Vector2 spindleOrigin = spindle.Size() * 0.5f;
             Vector2 glowOrigin = glow.Size() * 0.5f;
             Vector2 frontOrigin = waveFront.Size() * 0.5f;
@@ -301,77 +301,49 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil.Proje
             int seed = Projectile.identity * 97;
             SpriteEffects frontFx = Dir > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            //雪的三级明度：阴影底 / 雪体 / 前缘新雪——全 A>0 遮挡，白不发光
-            Color shade = new(188, 202, 222);
+            //雪的三级明度在密度场内完成（撕缘新雪→雪体→浓核自影）；点缀层沿用体色
             Color body = new(226, 236, 248);
             Color fresh = new(247, 251, 255);
             Color seamLight = new Color(255, 250, 235, 0);//A=0：明窗仅存的一线弱光敷料
 
             float frontX = centerX + Dir * HalfThickness * 0.8f;
 
-            //——幕体：自明窗向上下铺行；每行 雾底(尾稀)+雾体+实雪团(前浓)，错相翻滚——
-            int rows = (int)(WallHalfHeight * 2f / RowSpacing);
-            for (int i = 0; i <= rows; i++) {
-                float y = SeamY - WallHalfHeight + i * RowSpacing;
-                float seamDist = MathF.Abs(y - SeamY);
-                if (seamDist < SeamHalfHeight) {
-                    continue;//明窗净空（窗内薄幕另画）
-                }
-                //窗缘薄化 + 墙端收口
-                float seamMask = MathHelper.Clamp((seamDist - SeamHalfHeight) / 60f, 0.25f, 1f);
-                float endMask = MathHelper.Clamp((WallHalfHeight - seamDist) / EndTaper, 0f, 1f);
-                float rowK = envelope * seamMask * endMask;
-                if (rowK < 0.02f) {
+            //——雪浓度体：密度场单 pass（行铺堆叠病根治 2026-08-29）——
+            //明窗/前缘撕裂/幕内流丝/两端收口全部入 shader，合成不透明度封顶 0.68
+            var wall = AmbientFogDraw.WallSpec.Default;
+            wall.Center = new Vector2(centerX, SeamY);
+            wall.SizePx = new Vector2(CanvasThickness, CanvasLength);
+            wall.Dir = Dir;
+            wall.Body = body;
+            wall.Edge = fresh;
+            wall.MaxAlpha = 0.68f;
+            wall.Density = envelope;
+            wall.FlowPx = 420f;
+            wall.Streak = 0.85f;
+            wall.Seed = Projectile.identity * 0.37f;
+            wall.FrontBias = 0.72f;
+            wall.SeamV = 0.5f;//画布以 SeamY 为中，窗恒居中
+            wall.SeamHalfV = SeamHalfHeight / CanvasLength;
+            wall.TaperV = EndTaper / CanvasLength;
+            AmbientFogDraw.DrawWallInEntityBatch(in wall);
+
+            //——幕内实雪团：撕裂剪影错相翻滚，材质锚点（少量点缀，密度由雪体承担）——
+            for (int i = 0; i < 5; i++) {
+                float hy = Hash01(seed + i * 11);
+                float y = SeamY + (hy * 2f - 1f) * WallHalfHeight * 0.86f;
+                if (MathF.Abs(y - SeamY) < SeamHalfHeight + 20f) {
                     continue;
                 }
-                float lightK = LightK(centerX, y);
-                float bob = MathF.Sin(time * 1.6f + Hash01(seed + i) * MathHelper.TwoPi) * 8f;
-
-                //尾部稀薄雾底：贴后半厚度，慢速翻滚
-                float rearX = centerX - Dir * HalfThickness * (0.18f + 0.42f * Hash01(seed + i + 40));
-                Main.EntitySpriteDraw(fog, new Vector2(rearX, y + bob) - Main.screenPosition, null,
-                    shade * (0.15f * rowK * lightK),
-                    Hash01(seed + i + 41) * 2.4f + time * (Hash01(seed + i + 42) > 0.5f ? 0.18f : -0.18f),
-                    fogOrigin, new Vector2(1.9f + 0.4f * Hash01(seed + i + 43), 1.3f), SpriteEffects.None, 0);
-
-                //前半厚度雾体：更浓
-                float midX = centerX + Dir * HalfThickness * (0.22f + 0.26f * Hash01(seed + i + 50));
-                Main.EntitySpriteDraw(fog, new Vector2(midX, y - bob * 0.7f) - Main.screenPosition, null,
-                    body * (0.26f * rowK * lightK),
-                    -Hash01(seed + i + 51) * 1.8f - time * (Hash01(seed + i + 52) > 0.5f ? 0.22f : -0.14f),
-                    fogOrigin, new Vector2(1.6f + 0.3f * Hash01(seed + i + 53), 1.2f), SpriteEffects.None, 0);
-
-                //实雪团：撕裂剪影错相位翻滚，密度梯度的骨架
-                float churnPhase = Hash01(seed + i + 60) * MathHelper.TwoPi;
-                float clumpX = centerX + Dir * HalfThickness * (0.05f + 0.5f * Hash01(seed + i + 61))
-                    + Dir * MathF.Sin(time * (1f + Hash01(seed + i + 62)) + churnPhase) * 7f;
-                float pulse = 0.30f + 0.10f * MathF.Sin(time * 1.8f + churnPhase * 1.7f);
-                Main.EntitySpriteDraw(clump, new Vector2(clumpX, y + bob * 0.5f) - Main.screenPosition,
-                    ClumpCell(seed + i * 5),
-                    Color.Lerp(body, fresh, Hash01(seed + i + 63)) * (pulse * rowK * lightK),
-                    time * (0.5f + 0.6f * Hash01(seed + i + 64)) * (Hash01(seed + i + 65) > 0.5f ? 1f : -1f),
-                    clumpOrigin, 0.5f + 0.34f * Hash01(seed + i + 66), SpriteEffects.None, 0);
-            }
-
-            //——幕内风带：横贯厚度的流丝随风滚动，给墙内一个统一的横扫运动——
-            for (int i = 0; i < 4; i++) {
-                float h = Hash01(seed + i + 300);
-                float y = SeamY + (Hash01(seed + i + 310) * 2f - 1f) * WallHalfHeight * 0.85f;
-                if (MathF.Abs(y - SeamY) < SeamHalfHeight + 14f) {
-                    continue;
-                }
-                float span = HalfThickness * 1.8f;
-                float scroll = (h * span + time * (300f + h * 160f)) % span;
-                if (scroll < 0f) {
-                    scroll += span;
-                }
-                //跨度端点渐隐：尾端淡入、锋端淡出，环回不跳变
-                float fadeAcross = MathF.Sin(MathHelper.Pi * scroll / span);
-                float x = centerX - Dir * HalfThickness * 0.9f + Dir * scroll;
+                float churnPhase = Hash01(seed + i * 13) * MathHelper.TwoPi;
+                float x = centerX + Dir * HalfThickness * (-0.1f + 0.55f * Hash01(seed + i * 17))
+                    + Dir * MathF.Sin(time * (1f + Hash01(seed + i * 19)) + churnPhase) * 8f;
                 float lightK = LightK(x, y);
-                Main.EntitySpriteDraw(spindle, new Vector2(x, y) - Main.screenPosition, null,
-                    body * (0.14f * envelope * lightK * fadeAcross), MathHelper.PiOver2 + Dir * 0.05f,
-                    spindleOrigin, new Vector2(0.13f, 2.8f + h * 1.4f), SpriteEffects.None, 0);
+                float pulse = 0.30f + 0.10f * MathF.Sin(time * 1.8f + churnPhase * 1.7f);
+                Main.EntitySpriteDraw(clump, new Vector2(x, y) - Main.screenPosition,
+                    ClumpCell(seed + i * 5),
+                    Color.Lerp(body, fresh, Hash01(seed + i * 23)) * (pulse * envelope * lightK),
+                    time * (0.5f + 0.6f * Hash01(seed + i * 29)) * (Hash01(seed + i * 31) > 0.5f ? 1f : -1f),
+                    clumpOrigin, 0.55f + 0.30f * Hash01(seed + i * 37), SpriteEffects.None, 0);
             }
 
             //——前缘撕裂弧：GlaciateWave 弧缘朝行进向，亮弧领跑、碎舌向尾撕开——
@@ -428,24 +400,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil.Proje
                     spindleOrigin, new Vector2(0.15f, 1.7f + 0.6f * MathF.Abs(h)), SpriteEffects.None, 0);
             }
 
-            //——明窗：窗内薄幕 + 上下雪唇 + 一线弱光，「雪幕稀薄处」即逃生窗——
-            float seamLightK = LightK(centerX, SeamY);
-            //窗内薄幕：稀薄到能看穿，但不是凭空的黑洞
-            Main.EntitySpriteDraw(fog, new Vector2(centerX, SeamY) - Main.screenPosition, null,
-                body * (0.08f * envelope * seamLightK), 0f, fogOrigin,
-                new Vector2(2.3f, 0.42f), SpriteEffects.None, 0);
-            //上下雪唇：窗缘被风压实的亮雪线，边缘可读
-            for (int s = -1; s <= 1; s += 2) {
-                float lipY = SeamY + s * (SeamHalfHeight + 12f);
-                float lipBob = MathF.Sin(time * 2.1f + s * 1.3f + Projectile.identity) * 2f;
-                Main.EntitySpriteDraw(fog, new Vector2(centerX, lipY + lipBob) - Main.screenPosition,
-                    null, fresh * (0.46f * envelope * seamLightK), 0f, fogOrigin,
-                    new Vector2(1.75f, 0.30f), SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(spindle, new Vector2(centerX, lipY + lipBob) - Main.screenPosition,
-                    null, fresh * (0.22f * envelope * seamLightK), MathHelper.PiOver2,
-                    spindleOrigin, new Vector2(0.10f, 2.0f), SpriteEffects.None, 0);
-            }
-            //弱化后的暖光条：只剩一线，远读「那里能过」的余韵
+            //——明窗：窗内薄幕与上下雪唇由密度场承担，此处只剩一线弱光，远读「那里能过」——
             float seamPulse = 0.8f + 0.2f * MathF.Sin(time * 2.4f + Projectile.identity);
             Main.EntitySpriteDraw(glow, new Vector2(centerX, SeamY) - Main.screenPosition, null,
                 seamLight * (0.20f * envelope * seamPulse), 0f, glowOrigin,

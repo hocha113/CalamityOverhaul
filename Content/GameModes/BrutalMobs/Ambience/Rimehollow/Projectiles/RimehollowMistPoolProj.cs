@@ -105,36 +105,26 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow.Proj
             if (env <= 0.02f) {
                 return false;
             }
-            //真 alpha 烟羽做雾体：两排团絮，底排浓、顶排薄，缓慢呼吸漂移
-            Texture2D fog = CWRAsset.Fog.Value;
-            Vector2 origin = fog.Size() / 2f;
             float time = Main.GlobalTimeWrappedHourly;
             float seed = Projectile.identity * 1.31f;
 
-            //底排 5 团（贴地滞留的主体）
-            for (int i = 0; i < 5; i++) {
-                float off = (i / 4f * 2f - 1f) * HalfWidth * 0.82f;
-                float edgeK = 1f - Math.Abs(off) / HalfWidth * 0.55f;
-                Vector2 drift = new(
-                    MathF.Sin(time * 0.4f + seed + i * 1.7f) * 9f,
-                    MathF.Sin(time * 0.31f + seed + i * 2.6f) * 3f + 6f);
-                float scale = HalfWidth / fog.Width * (0.68f + 0.1f * MathF.Sin(seed + i * 2.2f));
-                Color tint = new Color(208, 226, 238) * (0.30f * env * edgeK);
-                Main.EntitySpriteDraw(fog, Projectile.Center + new Vector2(off, 0f) + drift - Main.screenPosition,
-                    null, tint, MathF.Sin(seed + i) * 0.3f, origin, scale, SpriteEffects.None, 0);
-            }
-            //顶排 4 团（雾面起伏，稍小稍淡）
-            for (int i = 0; i < 4; i++) {
-                float off = (i / 3f * 2f - 1f) * HalfWidth * 0.6f;
-                float edgeK = 1f - Math.Abs(off) / HalfWidth * 0.5f;
-                Vector2 drift = new(
-                    MathF.Sin(time * 0.33f + seed + i * 2.1f) * 11f,
-                    MathF.Sin(time * 0.27f + seed + i * 1.9f) * 4f - 20f);
-                float scale = HalfWidth / fog.Width * 0.5f;
-                Color tint = new Color(216, 232, 242) * (0.19f * env * edgeK);
-                Main.EntitySpriteDraw(fog, Projectile.Center + new Vector2(off, 0f) + drift - Main.screenPosition,
-                    null, tint, MathF.Sin(seed + i * 3f) * 0.4f, origin, scale, SpriteEffects.None, 0);
-            }
+            //寒雾体：贴地密度场单 pass（旧 双排 9 团 0.19-0.30 亮体堆叠已废 2026-08-29）；
+            //顶冠噪声侵蚀=雾面起伏，横向 sin 长肩=雾缘稀薄，呼吸走 Density 微摆
+            float breath = 1f + 0.05f * MathF.Sin(time * 0.5f + seed);
+            var mist = AmbientFogDraw.PoolSpec.Default;
+            mist.Center = Projectile.Center + new Vector2(0f, BandDown - 60f);
+            mist.SizePx = new Vector2(HalfWidth * 2f + 60f, 120f);
+            mist.Body = new Color(208, 226, 238);
+            mist.Edge = new Color(234, 244, 252);
+            mist.MaxAlpha = 0.5f;
+            mist.Density = env * breath;
+            mist.FlowPx = 14f;
+            mist.Seed = seed;
+            mist.Anchor = 1f;
+            mist.CrownV = 0.45f;
+            mist.EdgePow = 2.4f;
+            mist.LightFloor = 0.3f;
+            AmbientFogDraw.DrawPoolInEntityBatch(in mist);
 
             //雾心一点冷芯（A=0 加色，克制到只提示"这雾是冷的"）
             Texture2D glow = CWRAsset.SoftGlow.Value;

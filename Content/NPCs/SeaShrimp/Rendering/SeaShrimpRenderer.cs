@@ -64,6 +64,31 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
         /// <summary>蜕壳提亮量</summary>
         private static float moltWash;
 
+        //==================== 图鉴沙盒环境（默认跟随世界；BeginPortrait 期间由舞台接管）====================
+
+        /// <summary>沙盒绘制环境：视口偏移、光照采样与批次重启参数</summary>
+        internal sealed class PortraitEnv
+        {
+            /// <summary>视口偏移（沙盒场景坐标下给 Zero，映射交给批次矩阵）</summary>
+            public Vector2 ViewOffset;
+            /// <summary>光照采样（沙盒给固定环境光；剪影模式给黑）</summary>
+            public Func<Vector2, Color> Light;
+            /// <summary>中途 End/Begin 用的批次矩阵</summary>
+            public Matrix BatchMatrix;
+            /// <summary>中途 End/Begin 用的光栅态（沿用舞台裁剪）</summary>
+            public RasterizerState Rasterizer;
+        }
+
+        private static PortraitEnv portrait;
+
+        internal static void BeginPortrait(PortraitEnv env) => portrait = env;
+        internal static void EndPortrait() => portrait = null;
+
+        private static Vector2 ViewOff => portrait?.ViewOffset ?? Main.screenPosition;
+        private static Matrix BatchMatrix => portrait?.BatchMatrix ?? Main.GameViewMatrix.TransformationMatrix;
+        private static RasterizerState BatchRasterizer => portrait?.Rasterizer ?? RasterizerState.CullNone;
+        private static SamplerState RestoreSampler => portrait != null ? SamplerState.LinearClamp : Main.DefaultSamplerState;
+
         /// <summary>体节贴图访问口（壳屑弹幕复用：旧壳就是它自己）</summary>
         internal static Texture2D SegmentTexture(int variant) => variant switch {
             0 => Seg1Tex?.Value,
@@ -72,7 +97,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
         };
 
         private static Color LightAt(Vector2 world, float alpha) {
-            Color c = Lighting.GetColor((int)(world.X / 16f), (int)(world.Y / 16f));
+            Color c = portrait != null ? portrait.Light(world)
+                : Lighting.GetColor((int)(world.X / 16f), (int)(world.Y / 16f));
             return c * (alpha * gloomMul);
         }
 
@@ -93,6 +119,36 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
             //残影拖影：爆发段的同素材水影，压在全部部件之后
             DrawAfterimages(sb, owner, ctx, alpha);
 
+            DrawBodyParts(sb, sk, alpha);
+
+            DrawBeams(sb, ctx);
+            DrawCrystalGlow(sb, sk, ctx);
+            DrawRingEvents(sb, ctx);
+            DrawColumnEvents(sb, ctx);
+        }
+
+        /// <summary>
+        /// 图鉴沙盒入口：只画本体装配与晶簇辉光（残影/预警/事件层是战斗专属）。
+        /// 调用方需先 BeginPortrait 接管环境，画完 EndPortrait 归还
+        /// </summary>
+        internal static void DrawPortrait(SpriteBatch sb, ShrimpSkeleton sk, SeaShrimpStateContext ctx, bool glow) {
+            if (sk == null || ctx == null || HeadTex == null) {
+                return;
+            }
+            float alpha = MathHelper.Clamp(ctx.BodyAlpha, 0f, 1f);
+            if (alpha < 0.02f) {
+                return;
+            }
+            gloomMul = 1f - MathHelper.Clamp(ctx.DeathGloom, 0f, 1f) * 0.52f;
+            moltWash = MathHelper.Clamp(ctx.Molted01, 0f, 1f);
+            DrawBodyParts(sb, sk, alpha);
+            if (glow) {
+                DrawCrystalGlow(sb, sk, ctx);
+            }
+        }
+
+        /// <summary>本体装配（后→前）：远触角→远足→体链→近足→近触角→双螯</summary>
+        private static void DrawBodyParts(SpriteBatch sb, ShrimpSkeleton sk, float alpha) {
             //远侧层（压暗贴后）
             DrawAntenna(sb, sk, 1, alpha * 0.72f);
             DrawLegRow(sb, sk, row: 1, alpha, dark: 0.55f);
@@ -113,11 +169,6 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
             //双螯压最上层：手撑向玩家所在的屏幕平面，是这套分镜的前景主角
             DrawArm(sb, sk, 1, alpha, dark: 0.68f);
             DrawArm(sb, sk, 0, alpha, dark: 1f);
-
-            DrawBeams(sb, ctx);
-            DrawCrystalGlow(sb, sk, ctx);
-            DrawRingEvents(sb, ctx);
-            DrawColumnEvents(sb, ctx);
         }
 
         /// <summary>一次性冲击环事件：ShockRing 参数化环展开（撕裂缘、非数学圆），消费后自清</summary>
@@ -176,21 +227,21 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
                 fx.Parameters["uFoamColor"]?.SetValue(SeaShrimpVFX.Foam.ToVector3());
 
                 sb.End();
-                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState,
-                    DepthStencilState.None, RasterizerState.CullNone, fx, Main.GameViewMatrix.TransformationMatrix);
+                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, RestoreSampler,
+                    DepthStencilState.None, BatchRasterizer, fx, BatchMatrix);
                 GraphicsDevice gd = Main.instance.GraphicsDevice;
                 gd.Textures[1] = noise;
                 gd.SamplerStates[1] = SamplerState.LinearWrap;
                 fx.CurrentTechnique.Passes[0].Apply();
 
                 Vector2 drawCenter = e.Base - new Vector2(0f, drawH * 0.5f);
-                sb.Draw(pixel, drawCenter - Main.screenPosition, null, Color.White, 0f,
+                sb.Draw(pixel, drawCenter - ViewOff, null, Color.White, 0f,
                     pixel.Size() * 0.5f, new Vector2(drawW / pixel.Width, drawH / pixel.Height),
                     SpriteEffects.None, 0f);
 
                 sb.End();
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
-                    DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, RestoreSampler,
+                    DepthStencilState.None, portrait?.Rasterizer ?? Main.Rasterizer, null, BatchMatrix);
             }
         }
 
@@ -240,15 +291,15 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
                 for (int arm = 1; arm >= 0; arm--) {
                     bool mirror = arm == 0;
                     SpriteEffects fx = mirror ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-                    sb.Draw(arm1, snap.Shoulder[arm] - Main.screenPosition, null, tint,
+                    sb.Draw(arm1, snap.Shoulder[arm] - ViewOff, null, tint,
                         snap.UpperRot[arm] - MathHelper.PiOver2, Arm1Anchor,
                         new Vector2(1f, SeaShrimpDirector.ArmBone1 / Arm1AxisLen), fx, 0f);
-                    sb.Draw(arm2, snap.Elbow[arm] - Main.screenPosition, null, tint,
+                    sb.Draw(arm2, snap.Elbow[arm] - ViewOff, null, tint,
                         snap.ForeRot[arm] - MathHelper.PiOver2, Arm2Anchor,
                         new Vector2(1f, SeaShrimpDirector.ArmBone2 / Arm2AxisLen), fx, 0f);
                     float texAxis = mirror ? MathHelper.Pi - ClawTexAxis : ClawTexAxis;
                     Vector2 anchor = mirror ? new Vector2(claw.Width - ClawAnchor.X, ClawAnchor.Y) : ClawAnchor;
-                    sb.Draw(claw, snap.Wrist[arm] - Main.screenPosition, null, tint,
+                    sb.Draw(claw, snap.Wrist[arm] - ViewOff, null, tint,
                         snap.ClawRot[arm] - texAxis, anchor, 1f, fx, 0f);
                 }
             }
@@ -260,7 +311,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
                 return;
             }
             Vector2 origin = originOverride ?? tex.Size() * 0.5f;
-            sb.Draw(tex, pos - Main.screenPosition, null, tint,
+            sb.Draw(tex, pos - ViewOff, null, tint,
                 dir + MathHelper.PiOver2, origin, scale, SpriteEffects.None, 0f);
         }
 
@@ -297,16 +348,16 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
                             continue;
                         }
                         Vector2 start = mark.From + mark.Dir * a;
-                        sb.Draw(pixel, start - Main.screenPosition, src, dark, rot,
+                        sb.Draw(pixel, start - ViewOff, src, dark, rot,
                             new Vector2(0f, 0.5f), new Vector2(b - a, 7f), SpriteEffects.None, 0f);
-                        sb.Draw(pixel, start - Main.screenPosition, src, core, rot,
+                        sb.Draw(pixel, start - ViewOff, src, core, rot,
                             new Vector2(0f, 0.5f), new Vector2(b - a, 2.6f), SpriteEffects.None, 0f);
                     }
                 }
                 else {
-                    sb.Draw(pixel, mark.From - Main.screenPosition, src, dark, rot,
+                    sb.Draw(pixel, mark.From - ViewOff, src, dark, rot,
                         new Vector2(0f, 0.5f), new Vector2(mark.Length, 8f), SpriteEffects.None, 0f);
-                    sb.Draw(pixel, mark.From - Main.screenPosition, src, core, rot,
+                    sb.Draw(pixel, mark.From - ViewOff, src, core, rot,
                         new Vector2(0f, 0.5f), new Vector2(mark.Length, 3f), SpriteEffects.None, 0f);
                 }
             }
@@ -321,12 +372,12 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
             Color color = LightAt(node.Pos, alpha).MultiplyRGB(new Color(dark, dark, dark));
             Vector2 scale = scaleOverride ?? Vector2.One;
             Vector2 origin = originOverride ?? tex.Size() * 0.5f;
-            sb.Draw(tex, node.Pos - Main.screenPosition, null, color,
+            sb.Draw(tex, node.Pos - ViewOff, null, color,
                 node.Dir + MathHelper.PiOver2, origin, scale, SpriteEffects.None, 0f);
             //蜕壳裸晶：半透晶蓝水洗提亮体色
             if (moltWash > 0.05f) {
                 Color wash = new Color(120, 175, 255, 70) * (moltWash * 0.32f * alpha * gloomMul);
-                sb.Draw(tex, node.Pos - Main.screenPosition, null, wash,
+                sb.Draw(tex, node.Pos - ViewOff, null, wash,
                     node.Dir + MathHelper.PiOver2, origin, scale, SpriteEffects.None, 0f);
             }
         }
@@ -361,7 +412,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
                 float rotation = toFoot.ToRotation() - axisAngle;
                 float stretch = MathHelper.Clamp(dist / axisLen, 0.8f, 1.28f);
                 Color color = LightAt(hip, alpha).MultiplyRGB(new Color(dark, dark, dark));
-                sb.Draw(tex, hip - Main.screenPosition, null, color, rotation,
+                sb.Draw(tex, hip - ViewOff, null, color, rotation,
                     hipPx, stretch, SpriteEffects.None, 0f);
             }
         }
@@ -387,13 +438,13 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
 
             //臂节1：贴图轴 +Y，肩锚在顶部
             Color c1 = LightAt(solve.Shoulder, alpha).MultiplyRGB(darkMul);
-            sb.Draw(arm1, solve.Shoulder - Main.screenPosition, null, c1,
+            sb.Draw(arm1, solve.Shoulder - ViewOff, null, c1,
                 solve.UpperDir.ToRotation() - MathHelper.PiOver2, Arm1Anchor,
                 new Vector2(1f, SeaShrimpDirector.ArmBone1 / Arm1AxisLen), fx, 0f);
 
             //臂节2
             Color c2 = LightAt(solve.Elbow, alpha).MultiplyRGB(darkMul);
-            sb.Draw(arm2, solve.Elbow - Main.screenPosition, null, c2,
+            sb.Draw(arm2, solve.Elbow - ViewOff, null, c2,
                 solve.ForeDir.ToRotation() - MathHelper.PiOver2, Arm2Anchor,
                 new Vector2(1f, SeaShrimpDirector.ArmBone2 / Arm2AxisLen), fx, 0f);
 
@@ -402,7 +453,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
             Vector2 anchor = mirror ? new Vector2(claw.Width - ClawAnchor.X, ClawAnchor.Y) : ClawAnchor;
             float open = sk.ClawOpen[armIndex] * 0.34f * (mirror ? -1f : 1f);
             Color c3 = LightAt(solve.Wrist, alpha).MultiplyRGB(darkMul);
-            sb.Draw(claw, solve.Wrist - Main.screenPosition, null, c3,
+            sb.Draw(claw, solve.Wrist - ViewOff, null, c3,
                 sk.ClawRot[armIndex] - texAxis + open, anchor,
                 1f, fx, 0f);
         }
@@ -428,7 +479,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
                 float t = i / (float)(n - 1);
                 float thickness = MathHelper.Lerp(4.4f, 1.4f, t);
                 Color col = Color.Lerp(rootColor, tipColor, t * t).MultiplyRGB(LightAt(a, 1f));
-                sb.Draw(pixel, a - Main.screenPosition, new Rectangle(0, 0, 1, 1), col,
+                sb.Draw(pixel, a - ViewOff, new Rectangle(0, 0, 1, 1), col,
                     d.ToRotation(), new Vector2(0f, 0.5f), new Vector2(len + 0.6f, thickness),
                     SpriteEffects.None, 0f);
             }
@@ -442,7 +493,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
             }
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+                DepthStencilState.None, BatchRasterizer, null, BatchMatrix);
 
             Vector2 gOrigin = glow.Size() * 0.5f;
             float seedPulse = 0.72f + 0.28f * MathF.Sin(Main.GlobalTimeWrappedHourly * 3.1f + ctx.Npc.whoAmI);
@@ -450,7 +501,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
                 * (1f + ctx.Molted01 * 0.45f) * (1f - MathHelper.Clamp(ctx.DeathGloom, 0f, 1f));
 
             void Spot(Vector2 pos, float radius, float strength) {
-                sb.Draw(glow, pos - Main.screenPosition, null, CrystalBlue * (strength * baseGain), 0f,
+                sb.Draw(glow, pos - ViewOff, null, CrystalBlue * (strength * baseGain), 0f,
                     gOrigin, new Vector2(radius * 2f / glow.Width), SpriteEffects.None, 0f);
             }
 
@@ -467,8 +518,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
             }
 
             sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, RestoreSampler,
+                DepthStencilState.None, BatchRasterizer, null, BatchMatrix);
         }
     }
 }

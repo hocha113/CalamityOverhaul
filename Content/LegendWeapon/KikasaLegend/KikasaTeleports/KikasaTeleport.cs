@@ -37,6 +37,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTeleports
                 if (Main.GameUpdateCount >= localLockUntil) {
                     return 0f;
                 }
+                //绝对帧戳只在当前世界会话内有意义:进出子世界后 GameUpdateCount 回跳,
+                //旧锁的剩余帧会远超一段完整冷却——视为脏值就地自愈,否则 HUD 恒显 100% 锁死
+                if (localLockUntil - Main.GameUpdateCount > (uint)localLockTotal) {
+                    Reset();
+                    return 0f;
+                }
                 return MathHelper.Clamp(
                     (localLockUntil - Main.GameUpdateCount) / (float)localLockTotal, 0f, 1f);
             }
@@ -45,6 +51,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTeleports
         private static void LockLocal(int frames) {
             localLockUntil = Main.GameUpdateCount + (uint)Math.Max(frames, 1);
             localLockTotal = Math.Max(frames, 1);
+        }
+
+        /// <summary>清空本机传送锁；换世界（含子世界）后旧帧戳作废，由 <see cref="KikasaTeleportSystem.ClearWorld"/> 调用</summary>
+        internal static void Reset() {
+            localLockUntil = 0;
+            localLockTotal = 1;
         }
 
         /// <summary>本机受理入口：门控通过即起演出弹幕并上锁，目标与变体全随出生包走</summary>
@@ -94,5 +106,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTeleports
                 MaxInstances = 2,
             }, player.Center);
         }
+    }
+
+    /// <summary>传送锁生命周期：镜像 <see cref="KikasaResets.KikasaResetSystem"/>，卸世界即清静态帧戳</summary>
+    internal class KikasaTeleportSystem : ModSystem
+    {
+        public override void ClearWorld() => KikasaTeleport.Reset();
     }
 }

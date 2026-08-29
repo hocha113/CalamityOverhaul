@@ -249,7 +249,10 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.Item;
             IconItemType = ItemID.ChlorophyteOre;
-            Position = new Vector2(150, 150);
+            //挂父节点正下方：旧位 (150,150)→绝对 (900,150) 恰在骷髅王(有灾厄)/世纪之花(无灾厄)
+            //讨伐节点正上一格，被读作"叶绿和骷髅王连在一起"（反馈 #2）；
+            //(0,150)→绝对 (750,150) 两套配置均为空位，连线成最短竖线，脚本核算无新叠点
+            Position = new Vector2(0, 150);
             AddParent<HardmodeOresQuest>();
 
             QuestType = QuestType.Main;

@@ -338,6 +338,12 @@ namespace CalamityOverhaul.Content.LegendWeapon
                     if (seg.Length == 0) {
                         continue;
                     }
+                    //实测已适宽的整段不进折行器：CJK 逐字累计宽略胖于整串测量，
+                    //恰好定下面板宽的最长句会被折行器把末字挤成孤行（与 WrapBodyText 同判式，反馈 #8）
+                    if (font.MeasureString(seg).X * scale <= contentW) {
+                        wrapped.Add(seg);
+                        continue;
+                    }
                     foreach (string piece in VaultUtils.WrapText(seg, font, contentW, scale)) {
                         string trimmed = piece.TrimEnd();
                         if (trimmed.Length > 0) {

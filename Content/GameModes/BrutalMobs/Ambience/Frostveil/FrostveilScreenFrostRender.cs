@@ -62,26 +62,33 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil
             int vpW = Main.screenWidth;
             int vpH = Main.screenHeight;
             float time = Main.GlobalTimeWrappedHourly;
+            float sweep = MathF.Sign(Main.windSpeedCurrent) >= 0f ? 1f : -1f;
+
+            //风雪墙雪幕：镜头雾化密度场（屏幕空间单 pass，满幅充盈；
+            //旧版全屏白矩形+7 张巨雾团共址堆叠 ≈0.7 已废 2026-08-29）
+            if (veil > 0.01f) {
+                var lens = AmbientFogDraw.WallSpec.Default;
+                lens.ScreenSpace = true;
+                lens.Center = new Vector2(vpW * 0.5f, vpH * 0.5f);
+                lens.SizePx = new Vector2(vpW + 160f, vpH + 160f);
+                lens.Dir = sweep >= 0f ? 1 : -1;
+                lens.Body = new Color(226, 238, 250);
+                lens.Edge = new Color(247, 251, 255);
+                lens.MaxAlpha = 0.55f;
+                lens.Density = veil;
+                lens.FlowPx = 640f;
+                lens.Streak = 0.9f;
+                lens.Seed = 11.7f;
+                lens.Fill = 1f;
+                lens.TaperV = 0.10f;
+                AmbientFogDraw.DrawWallDirect(in lens);
+            }
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
 
-            //风雪墙雪幕：整幕白化 + 横掠的大雾团 + 镜前斜扫雪丝，视野被雪吃掉
+            //镜前斜扫雪丝：快速掠过的拉丝，读出"雪打在镜头上"的速度
             if (veil > 0.01f) {
-                spriteBatch.Draw(white, new Rectangle(0, 0, vpW, vpH),
-                    new Color(238, 246, 252) * (0.3f * veil));
-                Vector2 fogOrigin = fog.Size() * 0.5f;
-                float sweep = MathF.Sign(Main.windSpeedCurrent) >= 0f ? 1f : -1f;
-                for (int i = 0; i < 7; i++) {
-                    float h = Hash01(i + 90);
-                    float x = ((h * (vpW + 700f) + time * sweep * (260f + h * 160f))
-                        % (vpW + 700f) + vpW + 700f) % (vpW + 700f) - 350f;
-                    float y = vpH * (0.1f + 0.8f * Hash01(i + 130));
-                    spriteBatch.Draw(fog, new Vector2(x, y), null,
-                        Color.White * (0.2f * veil), h * MathHelper.TwoPi + time * 0.05f,
-                        fogOrigin, 3.4f + h * 2.2f, SpriteEffects.None, 0f);
-                }
-                //镜前斜扫雪丝：快速掠过的拉丝，读出"雪打在镜头上"的速度
                 Texture2D spindle = Extra_98?.Value;
                 if (spindle != null) {
                     Vector2 spindleOrigin = spindle.Size() * 0.5f;

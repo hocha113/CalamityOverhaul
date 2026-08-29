@@ -336,21 +336,40 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Framework
         public sealed override void OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone)
             => GsOnHitNPC(item, player, target, hit, damageDone);
 
-        /// <summary>金色「神匠重铸」标题行 + 方案简述注入；追加行走 <see cref="GsModifyTooltips"/></summary>
+        /// <summary>简述行折行宽（像素，1.0 测量口径）：原版 tooltip 不自动换行，超长简述会挤成一行遮住数值区（反馈 #3）</summary>
+        private const float DescWrapWidth = 440f;
+
+        /// <summary>金色「神匠重铸」标题行 + 方案简述注入（超宽段落按 <see cref="DescWrapWidth"/> 预折行）；追加行走 <see cref="GsModifyTooltips"/></summary>
         public sealed override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             Color gold = Color.Lerp(GameModeTheme.GodSmithAccent, GameModeTheme.GodSmithEmber, 0.55f);
             tooltips.Add(new TooltipLine(CWRMod.Instance, "CWR_GodSmithTitle",
                 GameModeText.GodSmithRecastTitle.Value) { OverrideColor = gold });
             string desc = GsDesc?.Value;
             if (!string.IsNullOrWhiteSpace(desc)) {
-                string[] lines = desc.Split('\n');
-                for (int i = 0; i < lines.Length; i++) {
-                    if (string.IsNullOrWhiteSpace(lines[i])) {
+                Color descColor = Color.Lerp(gold, new Color(200, 190, 172), 0.62f);
+                var font = Main.dedServ ? null : Terraria.GameContent.FontAssets.MouseText?.Value;
+                int lineIndex = 0;
+                foreach (string seg in desc.Split('\n')) {
+                    if (string.IsNullOrWhiteSpace(seg)) {
                         continue;
                     }
-                    tooltips.Add(new TooltipLine(CWRMod.Instance, "CWR_GodSmithDesc" + i, lines[i]) {
-                        OverrideColor = Color.Lerp(gold, new Color(200, 190, 172), 0.62f)
-                    });
+                    //只认显式换行会让无 \n 的长简述挤成一行遮住数值（天顶剑等，反馈 #3）；
+                    //实测适宽的整段直加（不进折行器，防 CJK 字宽膨胀挤末字），超宽段按固定宽折行
+                    if (font == null || font.MeasureString(seg).X <= DescWrapWidth) {
+                        tooltips.Add(new TooltipLine(CWRMod.Instance, "CWR_GodSmithDesc" + lineIndex++, seg) {
+                            OverrideColor = descColor
+                        });
+                        continue;
+                    }
+                    foreach (string piece in VaultUtils.WrapText(seg, font, DescWrapWidth, 1f)) {
+                        string trimmed = piece.TrimEnd();
+                        if (trimmed.Length == 0) {
+                            continue;
+                        }
+                        tooltips.Add(new TooltipLine(CWRMod.Instance, "CWR_GodSmithDesc" + lineIndex++, trimmed) {
+                            OverrideColor = descColor
+                        });
+                    }
                 }
             }
             GsModifyTooltips(item, tooltips);

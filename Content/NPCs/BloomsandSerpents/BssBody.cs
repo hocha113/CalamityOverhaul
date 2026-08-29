@@ -88,14 +88,18 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
         #region 主 AI
         public override void AI() {
+            NPC.timeLeft = 1800;
             NPC head = ResolveHead();
             if (head == null) {
-                SelfDestruct();
+                //无头溃散只由权威端裁决：联机客户端的头可能比体节晚到几帧，
+                //本地抢跑自毁会把整条链在该端清成"只剩头"（反馈 #37）；权威端销毁自会同步过来
+                if (!VaultUtils.isClient) {
+                    SelfDestruct();
+                }
                 return;
             }
 
             NPC.realLife = head.whoAmI;
-            NPC.timeLeft = 1800;
             UpdateAlphaFade(head);
 
             BssStateContext ctx = (head.ModNPC as BssHead)?.Context;
@@ -109,12 +113,16 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             deathFreezeCaptured = false;
             ruptureFired = false;
 
-            //前邻失效（非演出期）：链条已断，跟随溃散
+            //前邻失效（非演出期）：链条已断，跟随溃散。
+            //判定用 active+类型而非 Alives()：头不逐帧续 timeLeft，靠它判会把活链误判成断链；
+            //溃散同样只由权威端裁决，客户端等同步（与上方无头分支同理）
             NPC front = FrontNPC;
-            bool frontValid = front.Alives()
+            bool frontValid = front.active
                 && (front.type == ModContent.NPCType<BssHead>() || front.type == ModContent.NPCType<BssBody>());
             if (!frontValid) {
-                SelfDestruct();
+                if (!VaultUtils.isClient) {
+                    SelfDestruct();
+                }
                 return;
             }
 

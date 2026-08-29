@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         public static bool IsActive => CybCourseWorld.Active;
 
         public static void Enter() {
+            StashMouseItem(Main.LocalPlayer);
             ClearCrossWorldRefs(Main.LocalPlayer);
             CybCourseWorldGuard.Snapshot();
             CybCourseWorld.Enter();
@@ -39,6 +40,27 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             p.SetTalkNPC(-1, fromNet: false);
             p.tileEntityAnchor.Clear();
             Main.npcChatText = string.Empty;
+        }
+
+        /// <summary>
+        /// 子世界切换前把鼠标上的物品收回背包：SubworldLibrary 过渡会把光标物品落在原世界，
+        /// 凭证掉在超梦里等于丢失（反馈 #36）。背包全满的余量留在鼠标上，不比现状更差
+        /// </summary>
+        private static void StashMouseItem(Player p) {
+            if (p == null || !p.active || p.whoAmI != Main.myPlayer) {
+                return;
+            }
+            Item mouse = Main.mouseItem;
+            if (mouse == null || mouse.IsAir) {
+                return;
+            }
+            Item leftover = p.GetItem(p.whoAmI, mouse, GetItemSettings.NPCEntityToPlayerInventorySettings);
+            bool cleared = leftover == null || leftover.IsAir;
+            Main.mouseItem = cleared ? new Item() : leftover;
+            //槽 58 与 mouseItem 可能是两个引用，收干净时两边一起清防残影复制（对齐 RamUpgradeChips 口径）
+            if (cleared && p.inventory.Length > 58) {
+                p.inventory[58].TurnToAir();
+            }
         }
 
         //FirstMetShepel_CybCourseAccept进子世界前调用
@@ -57,6 +79,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             CybCourseKeyBindReminderPanel.Hide();
             NarrativeRunner.Reset();
             HackTime.InfiniteHack = false;
+            StashMouseItem(Main.LocalPlayer);
             ClearCrossWorldRefs(Main.LocalPlayer);
             CybCourseWorld.Exit();
         }

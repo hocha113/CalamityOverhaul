@@ -96,6 +96,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 npc.HitEffect();
                 npc.checkDead();
                 npc.netUpdate = true;
+                //与世吞同型：假死帧烧掉讨伐闩，双子祝福的"另一眼犹在"判定在两帧各失一半——
+                //后倒下的那只眼真死收尾补账（幂等，反馈 #44 同族预防）
+                GameModes.Blessings.BlessingKillNPC.RecordPerformanceKill(npc);
             }
 
             return null;

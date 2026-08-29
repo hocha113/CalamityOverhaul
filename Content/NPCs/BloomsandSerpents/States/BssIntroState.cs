@@ -72,7 +72,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     }
                     npc.velocity = new Vector2(-side * 3.2f, -BssDirector.BreachLaunchSpeed);
                     npc.netUpdate = true;
-                    BssHead.SpawnBodySegments(npc);
                 }
                 npc.alpha = 0;
                 ctx.Mode = BssMoveMode.Direct;
@@ -112,6 +111,14 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                         return EndStare(ctx);
                     }
                 }
+            }
+
+            //体节链兜底：破土帧起权威端逐帧确保链在——旧实现只在破土那一帧且目标存活时生成一次，
+            //目标恰在该帧无效（死亡/离场）就整场只剩头（反馈 #37）；
+            //头的体节数槽当闩防重复生成（重复生成会翻倍统一血池）
+            if (!VaultUtils.isClient && t >= BreachFrame
+                && npc.ai[BssHead.SlotSegmentCount] <= 0) {
+                BssHead.SpawnBodySegments(npc);
             }
 
             //破土穿面表现（各端本地按位置检测）

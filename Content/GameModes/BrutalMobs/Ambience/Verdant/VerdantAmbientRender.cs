@@ -55,27 +55,28 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Verdant
                 return;
             }
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null,
-                Main.GameViewMatrix.TransformationMatrix);
-            //先雾后棘：荆棘影必须盖在雾上，可读性优先
+            //先雾后棘：荆棘影必须盖在雾上，可读性优先。
+            //雾体走密度场自管 Immediate 批（AmbientFogDraw），故先于荆棘批直绘
             if (anyFog) {
                 foreach (Projectile proj in Main.ActiveProjectiles) {
                     if (proj.type == fogType && proj.ModProjectile is VerdantMireFogProj fog
                         && OnScreen(proj.Center, VerdantMireFogProj.FogRadius + 260f)) {
-                        DrawFogCloud(spriteBatch, proj, fog);
+                        DrawFogCloud(proj, fog);
                     }
                 }
             }
             if (anyThorn) {
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                    DepthStencilState.None, RasterizerState.CullNone, null,
+                    Main.GameViewMatrix.TransformationMatrix);
                 foreach (Projectile proj in Main.ActiveProjectiles) {
                     if (proj.type == thornType && proj.ModProjectile is VerdantThornRingProj thorn
                         && OnScreen(proj.Center, 480f)) {
                         DrawThornRing(spriteBatch, proj, thorn);
                     }
                 }
+                spriteBatch.End();
             }
-            spriteBatch.End();
         }
 
         private static bool OnScreen(Vector2 worldPos, float fluff) {
@@ -85,48 +86,31 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Verdant
                 && worldPos.Y < Main.screenPosition.Y + Main.screenHeight + fluff;
         }
 
-        /// <summary>雾团遮蔽：中心厚幕 + 内环游移团 + 外缘散絮，浓度由弹幕包络同源驱动</summary>
-        private static void DrawFogCloud(SpriteBatch sb, Projectile proj, VerdantMireFogProj fog) {
+        /// <summary>雾团遮蔽：悬浮盘密度场单 pass（旧 1+6+5 同图环列共址 ≈0.57 已废 2026-08-29）。
+        /// 雨天转灰湿色保留；昼夜明暗改由环境光采样承担（旧版不乘光才需手动压暗）</summary>
+        private static void DrawFogCloud(Projectile proj, VerdantMireFogProj fog) {
             float density = fog.Density;
             if (density < 0.02f) {
                 return;
             }
-            Texture2D tex = CWRAsset.Fog?.Value;
-            if (tex == null) {
-                return;
-            }
-            Vector2 origin = tex.Size() * 0.5f;
-            float time = Main.GlobalTimeWrappedHourly;
-            float seed = proj.identity * 1.37f;
             Color baseCol = Main.raining ? new Color(134, 148, 134) : new Color(148, 164, 140);
-            if (!Main.dayTime) {
-                baseCol = new Color((int)(baseCol.R * 0.72f), (int)(baseCol.G * 0.76f), (int)(baseCol.B * 0.74f));
-            }
-            //Fog 内容约占画布 8 成，按可见像素折算缩放
-            float unit = tex.Width * 0.8f;
             const float R = VerdantMireFogProj.FogRadius;
-            Vector2 center = proj.Center - Main.screenPosition;
 
-            //中心厚幕
-            sb.Draw(tex, center, null, baseCol * (0.30f * density),
-                time * 0.05f + seed, origin, R * 2.3f / unit, SpriteEffects.None, 0f);
-
-            //内环游移团（遮蔽主力）
-            for (int i = 0; i < 6; i++) {
-                float ang = time * 0.09f + seed + i * MathHelper.TwoPi / 6f;
-                Vector2 off = ang.ToRotationVector2() * R * 0.55f;
-                float wobble = 0.85f + 0.18f * MathF.Sin(time * 0.7f + seed + i * 1.31f);
-                sb.Draw(tex, center + off, null, baseCol * (0.22f * density),
-                    -time * 0.07f + i, origin, R * 1.15f / unit * wobble, SpriteEffects.None, 0f);
-            }
-
-            //外缘散絮
-            for (int i = 0; i < 5; i++) {
-                float ang = -time * 0.05f + seed * 2.1f + i * MathHelper.TwoPi / 5f;
-                Vector2 off = ang.ToRotationVector2() * R * 0.95f;
-                sb.Draw(tex, center + off, null, baseCol * (0.12f * density),
-                    time * 0.04f + i * 2f, origin, R * 0.7f / unit, SpriteEffects.None, 0f);
-            }
+            var cloud = AmbientFogDraw.PoolSpec.Default;
+            cloud.Center = proj.Center;
+            cloud.SizePx = new Vector2(R * 2.7f, R * 2.4f);
+            cloud.Body = baseCol;
+            cloud.Edge = Color.Lerp(baseCol, new Color(214, 226, 204), 0.45f);
+            cloud.MaxAlpha = 0.55f;
+            cloud.Density = density;
+            cloud.FlowPx = 12f;
+            cloud.Seed = proj.identity * 0.61f;
+            cloud.Anchor = 0f;
+            cloud.CrownV = 0f;
+            cloud.EdgePow = 1.7f;
+            cloud.Swirl = 0.12f;
+            cloud.LightFloor = 0.3f;
+            AmbientFogDraw.DrawPoolDirect(in cloud);
         }
 
         /// <summary>

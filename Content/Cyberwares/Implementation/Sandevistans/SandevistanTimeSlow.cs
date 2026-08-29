@@ -30,11 +30,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             appliedScale = scale;
             if (IsActive) {
                 TimeGear.Register<SandevistanTimeSlow>(appliedScale);
+                ReconcileAllEntities();
             }
             else {
                 TimeGear.Unregister<SandevistanTimeSlow>();
+                //失活沿必须显式全表清场：Reconcile 系列在 !IsActive 时早退，
+                //靠它们清不掉已挂的实体时缓，Boss 会永远留在慢放里（反馈 #6/#31）
+                ClearAllEntities();
             }
-            ReconcileAllEntities();
         }
 
         internal static void Reset() {
@@ -44,7 +47,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         }
 
         internal static void ReconcileNPC(NPC npc) {
-            //失活期间无事可做：失活沿的 ReconcileAllEntities 已全表清场，
+            //失活期间无事可做：失活沿的 ClearAllEntities 已全表清场，
             //新生实体也不会带残留，这里直接早退省掉每实体每帧的全局实例访问
             if (!IsActive) {
                 return;

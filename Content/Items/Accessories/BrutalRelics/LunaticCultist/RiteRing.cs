@@ -154,7 +154,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
             }
 
             DetectRuneGain();
-            DetectVeilStep();
 
             //慢速保活：覆盖晚入场端与丢包
             if (++keepaliveTimer >= 150) {
@@ -162,6 +161,14 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
                 MarkDirty();
             }
             FlushNet(false);
+        }
+
+        //纱幕步双击检测必须在这里跑：原版在 Update 中段把 releaseLeft/Right 改写为
+        //"按住即 false"，到 PreUpdateMovement 时按键沿已不可见，检测恒假（与血雾之瞳同病同修，反馈 #29）
+        public override void PostUpdateEquips() {
+            if (Player.whoAmI == Main.myPlayer && Equipped) {
+                DetectVeilStep();
+            }
         }
         #endregion
 

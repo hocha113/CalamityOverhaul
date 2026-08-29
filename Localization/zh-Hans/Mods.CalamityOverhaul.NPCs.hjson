@@ -147,6 +147,7 @@ SeaShrimpBoss: {
 BssHead: {
 	DisplayName: 荒花沙蟒
 	Bestiary: 游弋在沙丘之下的巨蟒。仙人掌在它的背甲上扎根,红花吸饱了它的血,开得格外艳。据说沙暴起时,就是它在下面翻身。
+	ChecklistSpawnInfo: 击败克苏鲁之眼后，在沙漠地表使用带刺花蕾召唤
 }
 
 BssBody.DisplayName: 荒花沙蟒
@@ -155,6 +156,7 @@ BssTail.DisplayName: 荒花沙蟒
 FssHead: {
 	DisplayName: 脓蕾沙蟒
 	Bestiary: 荒花沙蟒的变异体。暗影渗进沙层，红花溃烂成脓疮，灵液顶替了它血管里的血。它比过去更长，也更饿。沙漠里发金光的水洼不是雨水，是它的口涎。
+	ChecklistSpawnInfo: 进入困难模式后，在沙漠地表使用脓化花蕾召唤
 }
 
 FssBody.DisplayName: 脓蕾沙蟒

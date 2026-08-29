@@ -40,10 +40,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float availablePanelWidth = Math.Max(1f, OnikiriUITheme.UIScreenW - ScreenPadding * 2f);
             float panelWidthLimit = Math.Min(MaxPanelWidth, availablePanelWidth);
             float contentWidthLimit = Math.Max(1f, panelWidthLimit - PanelPaddingX * 2f);
+
+            //先按面板宽度上限折行，再按折后行实测定内容宽——与 KikasaTipPanel 同修：
+            //旧序"先量后折"叠加 CJK 逐字折行的字宽膨胀，会把恰好贴住自然宽的短行末字挤成孤行（反馈 #8）
+            List<DrawLine> drawLines = [];
             float naturalWidth = font.MeasureString(title).X * titleScale;
-            foreach (OniTooltipLine line in body) {
-                if (!string.IsNullOrEmpty(line.Text)) {
-                    naturalWidth = Math.Max(naturalWidth, font.MeasureString(line.Text).X * line.Scale);
+            foreach (OniTooltipLine source in body) {
+                if (string.IsNullOrEmpty(source.Text)) {
+                    continue;
+                }
+                List<string> wrapped = VaultUtils.WrapText(source.Text, font, contentWidthLimit, source.Scale);
+                for (int i = 0; i < wrapped.Count; i++) {
+                    string text = wrapped[i].TrimEnd();
+                    if (string.IsNullOrEmpty(text)) {
+                        continue;
+                    }
+                    naturalWidth = Math.Max(naturalWidth, font.MeasureString(text).X * source.Scale);
+                    drawLines.Add(new DrawLine(text, source.Color, source.Scale,
+                        i == wrapped.Count - 1 ? 1f : 0f));
                 }
             }
 
@@ -53,26 +67,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float drawTitleScale = measuredTitleWidth > 0f
                 ? Math.Min(titleScale, contentWidth / measuredTitleWidth)
                 : titleScale;
-
-            List<DrawLine> drawLines = [];
-            foreach (OniTooltipLine source in body) {
-                if (string.IsNullOrEmpty(source.Text)) {
-                    continue;
-                }
-                List<string> wrapped = VaultUtils.WrapText(source.Text, font, contentWidth, source.Scale);
-                for (int i = 0; i < wrapped.Count; i++) {
-                    string text = wrapped[i].TrimEnd();
-                    if (string.IsNullOrEmpty(text)) {
-                        continue;
-                    }
-                    float measuredWidth = font.MeasureString(text).X;
-                    float drawScale = measuredWidth > 0f
-                        ? Math.Min(source.Scale, contentWidth / measuredWidth)
-                        : source.Scale;
-                    drawLines.Add(new DrawLine(text, source.Color, drawScale,
-                        i == wrapped.Count - 1 ? 1f : 0f));
-                }
-            }
 
             float maxPanelHeight = Math.Max(1f, OnikiriUITheme.UIScreenH - ScreenPadding * 2f);
             float glyphHeight = font.MeasureString("A").Y;

@@ -1,29 +1,30 @@
-﻿using System;
+﻿using CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering;
+using CalamityOverhaul.OtherMods.BossChecklist;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.SeaShrimp
 {
-    /// <summary>BossChecklist 弱引用注册：石巨人后档位（17.5，介于石巨人与猪龙鱼之间）</summary>
+    /// <summary>
+    /// BossChecklist 图鉴登记：石巨人后档位（17.5，介于石巨人与猪龙鱼之间）。
+    /// 头像不用静态图，走 <see cref="SeaShrimpPortraitActor"/> 实时沙盒绘制
+    /// </summary>
     internal class SeaShrimpChecklist : SeaShrimpModSystem
     {
         public override void PostSetupContent() {
-            if (!ModLoader.TryGetMod("BossChecklist", out Mod checklist)) {
-                return;
-            }
-            try {
-                checklist.Call("LogBoss", Mod, nameof(SeaShrimpBoss), 17.5f,
-                    () => SeaShrimpWorldFlag.DownedSeaShrimp,
-                    ModContent.NPCType<SeaShrimpBoss>(),
-                    new Dictionary<string, object> {
-                        ["spawnItems"] = ModContent.ItemType<SeaShrimpSummonItem>(),
-                        ["spawnInfo"] = Language.GetText("Mods.CalamityOverhaul.NPCs.SeaShrimpBoss.ChecklistSpawnInfo"),
-                    });
-            } catch (Exception e) {
-                //弱引用容错：BossChecklist 签名漂移只记日志，不拦加载
-                Mod.Logger.Warn($"BossChecklist 注册失败: {e.Message}");
-            }
+            BossLogRegistry.Register(Mod, nameof(SeaShrimpBoss), 17.5f,
+                () => SeaShrimpWorldFlag.DownedSeaShrimp,
+                ModContent.NPCType<SeaShrimpBoss>(),
+                new Dictionary<string, object> {
+                    ["spawnItems"] = ModContent.ItemType<SeaShrimpSummonItem>(),
+                    ["spawnInfo"] = Language.GetText("Mods.CalamityOverhaul.NPCs.SeaShrimpBoss.ChecklistSpawnInfo"),
+                    ["collectibles"] = new List<int> { ModContent.ItemType<SeaShrimpRelic>() },
+                    ["customPortrait"] = (Action<SpriteBatch, Rectangle, Color>)((sb, rect, color)
+                        => BossPortraitStage.Draw(sb, rect, color, SeaShrimpPortraitActor.Instance)),
+                });
         }
     }
 }

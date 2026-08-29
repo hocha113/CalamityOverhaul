@@ -7,6 +7,7 @@ namespace CalamityOverhaul.Common
     [VaultLoaden(CWRConstant.Effects)]
     public static class EffectLoader
     {
+        public static Asset<Effect> AmbientFogBody { get; set; }
         public static Asset<Effect> Blackwall { get; set; }
         public static Asset<Effect> GameModeTab { get; set; }
         public static Asset<Effect> GameModeBanner { get; set; }

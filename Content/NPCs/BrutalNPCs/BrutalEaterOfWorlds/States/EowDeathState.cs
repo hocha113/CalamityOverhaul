@@ -226,6 +226,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
             if (Main.dedServ) {
                 Terraria.NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc.whoAmI);
             }
+
+            //入演出那帧的假死烧掉了讨伐追踪闩，腐环这类多节判定的祝福在那帧又因残部未清不入档，
+            //真死的这一击则被闩挡住——收尾补账（幂等，反馈 #44）
+            GameModes.Blessings.BlessingKillNPC.RecordPerformanceKill(npc);
         }
         #endregion
     }

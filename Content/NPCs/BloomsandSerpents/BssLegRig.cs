@@ -42,14 +42,14 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
         /// <summary>功率段（快耙）占周期比例；其余为从容恢复段（镜像坟灾虫快收慢展的不对称）</summary>
         internal const float PowerFraction = 0.32f;
-        /// <summary>划水前探倾角（自法线向体前，弧度）</summary>
-        private const float TiltForward = 0.9f;
-        /// <summary>划水后耙倾角（自法线向体后，弧度）</summary>
-        private const float TiltBack = 0.85f;
-        /// <summary>恢复段最大离地余隙（抬腿过障的高度）</summary>
-        private const float RecoveryClearance = 26f;
-        /// <summary>站间相位差：划水波前→后传的蜈蚣节律</summary>
-        private const float StationLag = MathHelper.TwoPi * 0.22f;
+        /// <summary>划水前探倾角（自法线向体前，弧度；图鉴沙盒腿复用）</summary>
+        internal const float TiltForward = 0.9f;
+        /// <summary>划水后耙倾角（自法线向体后，弧度；图鉴沙盒腿复用）</summary>
+        internal const float TiltBack = 0.85f;
+        /// <summary>恢复段最大离地余隙（抬腿过障的高度；图鉴沙盒腿复用）</summary>
+        internal const float RecoveryClearance = 26f;
+        /// <summary>站间相位差：划水波前→后传的蜈蚣节律（图鉴沙盒腿复用）</summary>
+        internal const float StationLag = MathHelper.TwoPi * 0.22f;
         /// <summary>落步下沉的绘制像素基数（体节/头/髋压缩共用）</summary>
         internal const float StationDipPx = 6f;
 
@@ -310,8 +310,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             }
         }
 
-        /// <summary>骨节拉伸绘制：贴图约定尖端朝上（占位 = 尾节素材），底端锚在关节起点</summary>
-        private static void DrawBone(SpriteBatch sb, Texture2D tex, Vector2 from, Vector2 to,
+        /// <summary>骨节拉伸绘制：贴图约定尖端朝上（占位 = 尾节素材），底端锚在关节起点（图鉴沙盒腿复用）</summary>
+        internal static void DrawBone(SpriteBatch sb, Texture2D tex, Vector2 from, Vector2 to,
             float thickness, Color tint, Vector2 screenPos) {
             Vector2 dir = to - from;
             float len = dir.Length();

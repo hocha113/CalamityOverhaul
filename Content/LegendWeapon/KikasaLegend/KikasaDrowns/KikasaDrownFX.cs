@@ -38,6 +38,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         private const int ShowEnd = 152;
         private const int GhostOverdrawStart = 32;
         private const int WhiffFrames = 22;
+        /// <summary>开演水线快照与实时水位的容忍漂移；引潮拖出这截,臂只会穿地悬空,提前收手（反馈 #32）</summary>
+        private const float LakeDriftWhiffPx = 240f;
 
         //==================== 槽位表 ====================
         //Dir=抓点在目标椭圆上的方向（屏幕系）；RootSide=根横向偏移比例；Front=画在鬼影前
@@ -413,6 +415,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             }
             //湖塌了演出没有舞台：收手谢幕（移除已是权威的事）
             if (!LakeAlive(show.OwnerIndex)) {
+                BeginWhiff(show);
+                return;
+            }
+            //引潮把水线挪出一大截：手根仍钉在开演水线上，再解算只会穿地或悬空，舞台散了就收手
+            if (Main.player[show.OwnerIndex].TryGetModPlayer(out KikasaDomainPlayer liveDomain)
+                && MathF.Abs(liveDomain.LakeWorldY - show.LakeY) > LakeDriftWhiffPx) {
                 BeginWhiff(show);
                 return;
             }

@@ -149,6 +149,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             if (VeilVisualTimer > 0) {
                 Player.aggro -= 900;
             }
+            //双击检测必须在这里跑：原版在 Update 中段把 releaseLeft/Right 改写为"按住即 false"，
+            //到 PreUpdateMovement 时按键沿已不可见，检测恒假（NinjaCthulsparkBoots 同款既证，反馈 #29）
+            if (Player.whoAmI == Main.myPlayer && Equipped && !Player.dead) {
+                TryStartDash();
+            }
         }
 
         #region 突进
@@ -156,8 +161,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             if (Player.whoAmI != Main.myPlayer || !Equipped || Player.dead) {
                 return;
             }
-
-            TryStartDash();
 
             if (dashTimer <= 0) {
                 return;

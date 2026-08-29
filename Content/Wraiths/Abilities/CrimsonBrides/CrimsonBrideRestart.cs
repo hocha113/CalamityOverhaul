@@ -98,6 +98,13 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.CrimsonBrides
                     owner.DelBuff(i);
                 }
             }
+            //海妖八音盒的必死是玩家字段不是 buff，清 buff 洗不掉——对齐比目鱼重启的清诅咒口径（反馈 #7）。
+            //本函数在服务器与旁观端也会回放，只在被诅咒者本机执行强停，免得旁观端误停自己的会话
+            if (owner.whoAmI == Main.myPlayer && !Main.dedServ
+                && owner.TryGetModPlayer(out Items.Tools.SirenMusicalBoxPlayer sirenPlayer)
+                && sirenPlayer.IsCursed) {
+                Items.Tools.SirenMusicalBoxPlayer.StopAllMusicBoxes(owner);
+            }
             owner.immune = true;
             owner.immuneTime = Math.Max(owner.immuneTime, 60);
             owner.fallStart = (int)(owner.position.Y / 16f);
