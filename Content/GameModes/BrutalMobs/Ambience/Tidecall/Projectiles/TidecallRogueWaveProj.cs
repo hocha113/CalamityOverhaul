@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -13,7 +14,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Tidecall.Projec
     /// 预告：暗水浪包自远海隆起压来（150 帧，浪吼渐强，远超 45 帧公平线；浪峰白线从出生即可读）→
     /// 破碎：浪峰向岸卷落，沫块抛洒、水花炸开（12 帧）→ 扫滩：与判定同高的白水涌锋向陆推进约 24 格，
     /// 对岸上玩家轻推+微量伤害，脚底高于浪峰者免疫（站上高处躲浪）→ 余韵：泡沫湿痕消退+滩水回流（90 帧，判定早已关闭）。
-    /// 浪身用真 alpha 浪弧贴图作暗水遮挡体，底缘沉入水线以下——浪从海面里长出来，不是悬浮物；
+    /// 浪身是流体着色器画的水体（复用猪鲨海啸的世界锚定噪声域：浪形在跑，水留在原地），
+    /// 画布底缘压在水线/滩面上——浪从海面里长出来，不是悬浮物；
     /// 浪高由调度端在出生时按档位基数×风雨增益定死（ai[1]），位置全程由出生参数+timeLeft 确定性推演，各端一致；
     /// 判定窗只覆盖破碎+扫滩，接近期的涌浪从泳者头顶无害滚过
     /// </summary>
@@ -21,12 +23,14 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Tidecall.Projec
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        //GlaciateWave 512² 真alpha浪弧（白RGB）：亮缘作行进浪锋，内侧拖须向海溶回水面，浪体主载体
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> GlaciateWave = null;
         //Spray 512² 3×3 真alpha碎沫块贴片：破碎期抛洒的水花块
         [VaultLoaden(CWRConstant.Masking)]
         private static Asset<Texture2D> Spray = null;
+
+        //汐声自持水色：近岸浅海的深蓝，不用猪鲨那套远洋青绿（共享的只是流体技法）
+        private static readonly Vector3 DeepWater = new Color(7, 24, 42).ToVector3();
+        private static readonly Vector3 SeaBody = new Color(24, 70, 106).ToVector3();
+        private static readonly Vector3 FoamCrest = new Color(230, 242, 248).ToVector3();
 
         /// <summary>出生点在岸线向海侧的格数（调度端同用）</summary>
         internal const int ApproachTiles = 55;
@@ -291,42 +295,114 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Tidecall.Projec
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D waveArc = GlaciateWave?.Value;
             Texture2D spraySheet = Spray?.Value;
             Texture2D foam = CWRAsset.Fog?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             Texture2D spindle = CWRAsset.Extra_98?.Value;
-            if (waveArc == null || spraySheet == null || foam == null || glow == null || spindle == null) {
+            if (spraySheet == null || foam == null || glow == null || spindle == null) {
                 return false;
             }
             float dim = TidecallAmbience.BossDim;
 
             if (InApproach) {
-                DrawApproachSwell(waveArc, foam, glow, spindle, dim);
+                DrawApproachSwell(foam, glow, spindle, dim);
             }
             else {
-                DrawBreakAndWash(waveArc, spraySheet, foam, glow, spindle, dim);
+                DrawBreakAndWash(spraySheet, foam, glow, spindle, dim);
             }
             return false;
         }
 
-        /// <summary>泡沫受环境光调制：夜间压暗但保留可读下限（带伤害的实体不许在黑夜隐形）</summary>
-        private static Color LitFoam(Color baseColor, Color ambient) {
+        /// <summary>环境光系数：夜间压暗但保留可读下限（带伤害的实体不许在黑夜隐形）</summary>
+        private static float LitK(Color ambient) {
             float lum = MathHelper.Clamp((ambient.R + ambient.G + ambient.B) / 700f, 0f, 1f);
-            float k = 0.35f + 0.65f * lum;
+            return 0.35f + 0.65f * lum;
+        }
+
+        /// <summary>泡沫受环境光调制</summary>
+        private static Color LitFoam(Color baseColor, Color ambient) {
+            float k = LitK(ambient);
             return new Color((int)(baseColor.R * k), (int)(baseColor.G * k), (int)(baseColor.B * k), baseColor.A);
         }
 
-        //接近期：从海面里长出来的行进浪包——暗水浪腹作遮挡体，底缘沉入水线，浪峰叠真 alpha 白沫
-        private void DrawApproachSwell(Texture2D waveArc, Texture2D foam, Texture2D glow, Texture2D spindle, float dim) {
+        /// <summary>浪前脸在画布横向的落位：着色器的水体到此截断，画布余下部分是向海的后坡</summary>
+        private const float FaceU = 0.72f;
+
+        /// <summary>
+        /// 浪体：流体着色器画的水（噪声域锚在世界坐标，浪形推进而水体留在原地）。
+        /// 画布契约同猪鲨海啸——底缘=水线/滩面，顶部三成留给抛沫，前脸朝 <see cref="LandDir"/>；
+        /// 入参 <paramref name="frontFoot"/> 是浪锋脚点（可见浪锋=判定浪锋，画布自行向海回退）；
+        /// 调色板乘环境光后上载，夜里是暗水而不是自发光贴片
+        /// </summary>
+        private void DrawWaveBody(Vector2 frontFoot, float widthPx, float heightPx,
+            float growth, float collapse, float speedRatio, float intensity, float lit) {
+            Vector2 bottomCenter = frontFoot - new Vector2(LandDir * widthPx * (FaceU - 0.5f), 0f);
+            Effect effect = EffectLoader.FishronTsunami?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            Texture2D pixel = VaultAsset.placeholder2?.Value;
+            if (effect == null || noise == null || pixel == null) {
+                DrawWaveBodyFallback(bottomCenter, widthPx, heightPx, intensity, lit);
+                return;
+            }
+            Vector2 center = bottomCenter - new Vector2(0f, heightPx * 0.5f);
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uIntensity"]?.SetValue(intensity);
+            effect.Parameters["uGrowth"]?.SetValue(growth);
+            effect.Parameters["uCollapse"]?.SetValue(collapse);
+            effect.Parameters["uDir"]?.SetValue((float)LandDir);
+            effect.Parameters["uSeed"]?.SetValue(Projectile.identity * 0.271f);
+            effect.Parameters["uWorldX"]?.SetValue(center.X);
+            effect.Parameters["uCanvasPx"]?.SetValue(widthPx);
+            effect.Parameters["uSpeedRatio"]?.SetValue(speedRatio);
+            effect.Parameters["uDeepColor"]?.SetValue(DeepWater * lit);
+            effect.Parameters["uSeaColor"]?.SetValue(SeaBody * lit);
+            effect.Parameters["uFoamColor"]?.SetValue(FoamCrest * lit);
+
+            SpriteBatch sb = Main.spriteBatch;
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+            //噪声显式绑 s1：SpriteBatch.Draw 会把 s0 覆写成画布贴图，参数式绑定实机失效
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            gd.Textures[1] = noise;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
+            effect.CurrentTechnique.Passes[0].Apply();
+            sb.Draw(pixel, center - Main.screenPosition, null, Color.White, 0f, pixel.Size() * 0.5f,
+                new Vector2(widthPx / pixel.Width, heightPx / pixel.Height), SpriteEffects.None, 0f);
+            sb.End();
+            gd.Textures[1] = null;//归还噪声槽
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        /// <summary>着色器缺席兜底：真 alpha 雾团堆出一道暗水丘，保证带伤害的浪不会隐形</summary>
+        private void DrawWaveBodyFallback(Vector2 bottomCenter, float widthPx, float heightPx,
+            float intensity, float lit) {
+            Texture2D foam = CWRAsset.Fog?.Value;
+            if (foam == null) {
+                return;
+            }
+            Color deep = new((int)(DeepWater.X * 255f * lit), (int)(DeepWater.Y * 255f * lit),
+                (int)(DeepWater.Z * 255f * lit));
+            for (int i = 0; i < 3; i++) {
+                float u = (i + 0.5f) / 3f;
+                Vector2 pos = bottomCenter + new Vector2(
+                    LandDir * (u - 0.65f) * widthPx * 0.5f, -heightPx * (0.16f + 0.20f * u));
+                Main.EntitySpriteDraw(foam, pos - Main.screenPosition, null,
+                    deep * (0.72f * intensity), 0f, foam.Size() / 2f,
+                    new Vector2(widthPx / foam.Width * 0.75f, heightPx / foam.Height * (0.5f + 0.3f * u)),
+                    SpriteEffects.None, 0);
+            }
+        }
+
+        //接近期：从海面里长出来的行进浪包——水体由着色器画，肩部涌线把浪接回平静海面
+        private void DrawApproachSwell(Texture2D foam, Texture2D glow, Texture2D spindle, float dim) {
             float p = ApproachProgress;
             float height = CurrentHeight;
             Vector2 crest = new(CrestX, crestSurfaceY);
             Vector2 screen = crest - Main.screenPosition;
-            float time = (float)Main.timeForVisualEffects;
-            SpriteEffects flip = LandDir > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             Color ambient = Lighting.GetColor((int)(CrestX / 16f), (int)((crestSurfaceY - height * 0.5f) / 16f));
-            float bodyAlpha = (0.18f + 0.44f * p) * dim;
+            float lean = LandDir * (0.06f + 0.16f * p);//浅滩化前倾：越近岸越陡
 
             //肩部涌线：浪前后两道半沉于水线的暗涌，把浪包接回平静海面（底部锚定连续，不悬空）
             for (int s = 0; s < 2; s++) {
@@ -336,35 +412,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Tidecall.Projec
                     spindle.Size() / 2f, new Vector2(0.4f - 0.08f * s, 2.6f - 0.6f * s), SpriteEffects.None, 0);
             }
 
-            //浪包主体：真 alpha 浪弧，亮缘为向陆前坡，拖须向海溶回水面；中心压低使底缘沉入水线以下
-            float bodyH = height * 1.30f;
-            float bodyW = height * 1.45f + 70f;
-            Vector2 arcScale = new(bodyW / waveArc.Width, bodyH / waveArc.Height);
-            float lean = LandDir * (0.06f + 0.16f * p);//浅滩化前倾：越近岸越陡
-            Vector2 bodyPos = screen + new Vector2(0f, -height * 0.42f);
-            Main.EntitySpriteDraw(waveArc, bodyPos, null,
-                new Color(13, 36, 56) * bodyAlpha, lean,
-                waveArc.Size() / 2f, arcScale, flip, 0);
-            //浪腹加深：内层更暗的小一号弧，给水体体积梯度
-            Main.EntitySpriteDraw(waveArc, bodyPos + new Vector2(-LandDir * bodyW * 0.10f, bodyH * 0.10f), null,
-                new Color(7, 22, 38) * (bodyAlpha * 0.8f), lean * 0.9f,
-                waveArc.Size() / 2f, arcScale * 0.72f, flip, 0);
-
-            //浪峰白沫冠：浅滩化后渐盛（真 alpha 白层，不是加法光），横向随风吹偏
-            float foamGrow = MathHelper.Clamp((p - 0.30f) / 0.70f, 0f, 1f);
-            if (foamGrow > 0.01f) {
-                Color foamLit = LitFoam(new Color(230, 242, 248), ambient);
-                for (int i = -2; i <= 2; i++) {
-                    float jig = MathF.Sin(time * 0.12f + i * 2.1f + Projectile.identity);
-                    Vector2 lip = screen + new Vector2(
-                        i * height * 0.16f + jig * 3f + Main.windSpeedCurrent * 14f,
-                        -height + MathF.Abs(i) * height * 0.06f + jig * 2f);
-                    Main.EntitySpriteDraw(foam, lip, null,
-                        foamLit * ((0.42f - 0.07f * MathF.Abs(i)) * foamGrow * dim),
-                        i * 0.8f + jig * 0.2f, foam.Size() / 2f,
-                        new Vector2(0.16f, 0.10f) * (0.7f + 0.5f * foamGrow), SpriteEffects.None, 0);
-                }
-            }
+            //浪体：浪锋落在 CrestX、底缘压进水线 6px（浪从海里长出来），越近岸浪面越陡、翻涌越烈
+            DrawWaveBody(new Vector2(CrestX, crestSurfaceY + 6f),
+                height * 2.1f + 120f, height * 1.6f,
+                0.52f + 0.48f * p, 0f, 0.30f + 0.55f * p,
+                (0.55f + 0.45f * p) * dim, LitK(ambient));
 
             //远海预告白线：150 帧预告的远视载体，从出生起可读（A=0 加色仅作细线点缀）
             float lineAlpha = (0.20f + 0.35f * MathF.Sqrt(p)) * dim;
@@ -375,10 +427,26 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Tidecall.Projec
             Main.EntitySpriteDraw(glow, screen + new Vector2(LandDir * height * 0.30f, -height * 0.45f), null,
                 new Color(120, 190, 215, 0) * (0.28f * p * dim), lean + LandDir * 1.1f,
                 glow.Size() / 2f, new Vector2(height / 64f, 0.32f), SpriteEffects.None, 0);
+            //临破前浪唇白沫：真 alpha 沫块压在冠线上，破碎的最后预兆
+            float foamGrow = MathHelper.Clamp((p - 0.55f) / 0.45f, 0f, 1f);
+            if (foamGrow > 0.01f) {
+                Color foamLit = LitFoam(new Color(230, 242, 248), ambient);
+                float time = (float)Main.timeForVisualEffects;
+                for (int i = -1; i <= 1; i++) {
+                    float jig = MathF.Sin(time * 0.12f + i * 2.1f + Projectile.identity);
+                    Vector2 lip = screen + new Vector2(
+                        i * height * 0.18f + jig * 3f + Main.windSpeedCurrent * 14f,
+                        -height * 0.96f + MathF.Abs(i) * height * 0.05f + jig * 2f);
+                    Main.EntitySpriteDraw(foam, lip, null,
+                        foamLit * ((0.30f - 0.06f * MathF.Abs(i)) * foamGrow * dim),
+                        i * 0.8f + jig * 0.2f, foam.Size() / 2f,
+                        new Vector2(0.14f, 0.08f) * (0.7f + 0.5f * foamGrow), SpriteEffects.None, 0);
+                }
+            }
         }
 
         //破碎+扫滩+余韵：浪峰卷落→与判定同高的白水涌锋推进→泡沫残迹消退+滩水回流
-        private void DrawBreakAndWash(Texture2D waveArc, Texture2D spraySheet, Texture2D foam,
+        private void DrawBreakAndWash(Texture2D spraySheet, Texture2D foam,
             Texture2D glow, Texture2D spindle, float dim) {
             float sweep = SweepProgress;
             float fade = FadeFactor;
@@ -387,7 +455,6 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Tidecall.Projec
             float baseY = SurfaceWorldY;
             float time = (float)Main.timeForVisualEffects;
             Vector2 foamOrigin = foam.Size() / 2f;
-            SpriteEffects flip = LandDir > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             Color ambient = Lighting.GetColor((int)(frontX / 16f), (int)((baseY - height * 0.5f) / 16f));
             Color foamLit = LitFoam(new Color(228, 240, 246), ambient);
 
@@ -407,25 +474,18 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Tidecall.Projec
                     new Vector2(0.30f, 0.05f), SpriteEffects.None, 0);
             }
 
-            //浪锋白水涌锋：与判定带同轴同高的翻滚水锋（暗水底体+白沫锋面），不再是竖立静态雾片
-            float boreAlpha = InHostileWindow ? 0.60f : 0.60f * MathHelper.Clamp((fade - 0.55f) / 0.45f, 0f, 1f);
+            //浪锋涌锋：与判定带同轴同高的水体，破碎期钉在岸线过卷，扫滩期向陆推进，余韵期自冠而下蚀掉
+            float boreAlpha = InHostileWindow ? 1f : MathHelper.Clamp((fade - 0.35f) / 0.65f, 0f, 1f);
             if (boreAlpha > 0.01f) {
                 float boreBase = MathF.Min(GroundYNear(frontX), baseY) + 6f;
-                float churn = MathF.Sin(time * 0.31f + Projectile.identity) * 0.05f;
-                float leanB = LandDir * (0.16f + 0.10f * sweep) + churn;
-                float boreH = height * 1.18f;
-                float boreW = height * 1.15f + 56f;
-                Vector2 boreScale = new(boreW / waveArc.Width, boreH / waveArc.Height);
-                Vector2 borePos = new Vector2(frontX, boreBase - boreH * 0.38f) - Main.screenPosition;
-                //暗水底体：白沫下面仍然是水
-                Main.EntitySpriteDraw(waveArc, borePos + new Vector2(-LandDir * boreW * 0.14f, boreH * 0.08f), null,
-                    new Color(16, 42, 60) * (boreAlpha * 0.75f * dim), leanB * 0.8f,
-                    waveArc.Size() / 2f, boreScale * 0.9f, flip, 0);
-                //白沫锋面
-                Main.EntitySpriteDraw(waveArc, borePos, null,
-                    foamLit * (boreAlpha * dim), leanB,
-                    waveArc.Size() / 2f, boreScale, flip, 0);
-                //锋后翻滚沫团：滚动的碎沫贴地跟进，替代旧静态雾墙
+                float boreH = height * 1.5f;
+                //破碎拍最猛：前倾与翻涌烈度在破碎期冲到峰值，扫滩期回落成稳定推进
+                float churn = 0.55f + 0.85f * BreakProgress - 0.30f * sweep;
+                float collapse = InHostileWindow ? 0f : MathHelper.Clamp((1f - fade) * 1.5f, 0f, 1f);
+                //浪锋对齐判定带轴：可见白水锋到哪，判定就到哪
+                DrawWaveBody(new Vector2(frontX, boreBase), height * 1.7f + 90f, boreH,
+                    1f, collapse, churn, boreAlpha * dim, LitK(ambient));
+                //锋后翻滚沫团：滚动的碎沫贴地跟进，白沫脱离锋面独立活着
                 for (int i = 0; i < 4; i++) {
                     float back = (i + 1) * (26f + height * 0.10f);
                     float bx = frontX - LandDir * back;
@@ -436,26 +496,13 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Tidecall.Projec
                     float bh = height * (0.62f - 0.11f * i);
                     float by = MathF.Min(GroundYNear(bx), baseY);
                     Main.EntitySpriteDraw(foam, new Vector2(bx, by - bh * 0.5f) - Main.screenPosition, null,
-                        foamLit * (boreAlpha * (0.72f - 0.13f * i) * dim), roll,
+                        foamLit * (boreAlpha * (0.44f - 0.08f * i) * dim), roll,
                         foamOrigin, new Vector2(0.14f + 0.02f * i, 0.11f), SpriteEffects.None, 0);
                 }
                 //锋顶亮沫（A=0 加色敷料）
-                Main.EntitySpriteDraw(glow, new Vector2(frontX, boreBase - boreH * 0.84f) - Main.screenPosition, null,
+                Main.EntitySpriteDraw(glow, new Vector2(frontX, boreBase - boreH * 0.62f) - Main.screenPosition, null,
                     new Color(220, 240, 248, 0) * (0.42f * boreAlpha * dim), 0f,
                     glow.Size() / 2f, new Vector2(0.9f, 0.3f), SpriteEffects.None, 0);
-            }
-
-            //破碎期：浪峰卷落——白唇自峰顶向岸翻卷压下
-            if (Elapsed < ApproachFrames + BreakFrames) {
-                float bp = BreakProgress;
-                Vector2 curlPos = new Vector2(
-                    ShoreWorldX + LandDir * (8f + 42f * bp),
-                    baseY - height * (1.02f - 0.50f * bp * bp)) - Main.screenPosition;
-                float curlRot = LandDir * (0.35f + 1.15f * bp);
-                Main.EntitySpriteDraw(waveArc, curlPos, null,
-                    foamLit * (0.62f * (1f - 0.25f * bp) * dim), curlRot,
-                    waveArc.Size() / 2f,
-                    new Vector2(height * 0.9f / waveArc.Width, height * 0.72f / waveArc.Height), flip, 0);
             }
 
             //破碎抛沫块：碎沫块抛洒，活过破碎+扫滩前段

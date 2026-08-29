@@ -18,8 +18,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil.Proje
     /// 落地=经过时视野雪幕 + 顺风轻推 + 数秒原版寒颤；余韵=散幕消融。
     /// 具名缺口「明窗」：墙面上一条雪幕挖薄的横缝，边缘雪唇可读，站进窗内整浪安全通过。
     /// 可见体=雪浓度体：AmbientFogBody 密度场单 pass（前缘噪声撕裂+定向雪缕+浓核自影+明窗，
-    /// 合成不透明度封顶，乘环境光），Spray 雪团/GlaciateWave 前缘弧只作材质点缀；
-    /// 前缘最浓、尾部稀薄，白是遮挡不是发光；发光只剩明窗一线弱光敷料。
+    /// 合成不透明度封顶，乘环境光），一张画布上下贯通、两端收口带跨过判定边界，墙不硬切；
+    /// Spray 雪团只作材质点缀；前缘最浓、尾部稀薄，白是遮挡不是发光；发光只剩明窗一线弱光敷料。
     /// 可见墙=判定墙（绘制与判定读同一几何），一切施加只落在本机玩家
     /// </summary>
     internal class FrostveilGaleWallProj : ModProjectile
@@ -29,11 +29,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil.Proje
         /// <summary>在场帧戳：AI 每帧盖戳，氛围层据此跳过无风雪墙时的全表扫描</summary>
         internal static ActivityStamp PresenceStamp;
 
-        //雪材贴图（Masking alpha 表已核：Spray/GlaciateWave 均为真 alpha，可作遮挡体）
+        //雪材贴图（Masking alpha 表已核：Spray 为真 alpha，可作遮挡体）
         [VaultLoaden(CWRConstant.Masking)]
         private static Asset<Texture2D> Spray = null;
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> GlaciateWave = null;
 
         /// <summary>横扫速度（px/帧），调度器与实体同读</summary>
         internal const float SweepSpeed = 7f;
@@ -52,12 +50,12 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil.Proje
         /// <summary>顺风轻推：每帧增量与推速上限</summary>
         private const float PushAccel = 0.32f;
         private const float PushMaxSpeed = 6f;
-        /// <summary>墙端纵向收口长度</summary>
-        private const float EndTaper = 150f;
+        /// <summary>墙端纵向收口长度：收口带跨过判定边界，浓段落在墙内、稀段溢出一点，两端不硬切</summary>
+        private const float EndTaper = 260f;
         /// <summary>雪浓度体画布厚度（判定 ±80 藏在撕裂前缘之内）</summary>
         private const float CanvasThickness = 300f;
-        /// <summary>雪浓度体画布长轴（±WallHalfHeight + 两端收口余量）</summary>
-        private const float CanvasLength = WallHalfHeight * 2f + 120f;
+        /// <summary>雪浓度体画布长轴（±WallHalfHeight + 两端收口带）</summary>
+        private const float CanvasLength = WallHalfHeight * 2f + EndTaper * 2f;
 
         private float SeamY => Projectile.ai[0];
         private int Dir => (int)Projectile.ai[1];
@@ -288,18 +286,15 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil.Proje
             Texture2D spindle = CWRAsset.Extra_98?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             Texture2D clump = Spray?.Value;
-            Texture2D waveFront = GlaciateWave?.Value;
-            if (spindle == null || glow == null || clump == null || waveFront == null) {
+            if (spindle == null || glow == null || clump == null) {
                 return false;
             }
             Vector2 spindleOrigin = spindle.Size() * 0.5f;
             Vector2 glowOrigin = glow.Size() * 0.5f;
-            Vector2 frontOrigin = waveFront.Size() * 0.5f;
             Vector2 clumpOrigin = new(85f, 85f);
             float time = Main.GlobalTimeWrappedHourly;
             float centerX = Projectile.Center.X;
             int seed = Projectile.identity * 97;
-            SpriteEffects frontFx = Dir > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
             //雪的三级明度在密度场内完成（撕缘新雪→雪体→浓核自影）；点缀层沿用体色
             Color body = new(226, 236, 248);
@@ -346,28 +341,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil.Proje
                     clumpOrigin, 0.55f + 0.30f * Hash01(seed + i * 37), SpriteEffects.None, 0);
             }
 
-            //——前缘撕裂弧：GlaciateWave 弧缘朝行进向，亮弧领跑、碎舌向尾撕开——
-            ReadOnlySpan<float> crestOffY = [-310f, 285f, -545f, 520f];
-            for (int i = 0; i < crestOffY.Length; i++) {
-                float phase = Hash01(seed + i + 400) * MathHelper.TwoPi;
-                float y = SeamY + crestOffY[i] + MathF.Sin(time * 1.1f + phase) * 14f;
-                float endMask = MathHelper.Clamp(
-                    (WallHalfHeight + 60f - MathF.Abs(y - SeamY)) / EndTaper, 0f, 1f);
-                if (endMask < 0.05f) {
-                    continue;
-                }
-                float cScale = 0.72f + 0.14f * Hash01(seed + i + 410);
-                //弧缘（贴图中心右侧约 246px 处）压在墙前脸上
-                float crestX = centerX + Dir * (HalfThickness + 12f - 246f * cScale);
-                float lightK = LightK(frontX, y);
-                Main.EntitySpriteDraw(waveFront, new Vector2(crestX, y) - Main.screenPosition, null,
-                    fresh * (0.42f * envelope * endMask * lightK),
-                    MathF.Sin(time * 1.7f + phase) * 0.05f,
-                    frontOrigin, cScale, frontFx, 0);
-            }
-
-            //——前缘翻卷团块：锋面上错相位滚动的实雪块——
-            for (int i = 0; i < 6; i++) {
+            //——前缘翻卷团块：锋面上错相位滚动的实雪块（前缘撕裂本身由密度场承担）——
+            for (int i = 0; i < 9; i++) {
                 float h = Hash01(seed + i + 500);
                 float y = SeamY + (Hash01(seed + i + 510) * 2f - 1f) * WallHalfHeight * 0.88f;
                 if (MathF.Abs(y - SeamY) < SeamHalfHeight + 26f) {

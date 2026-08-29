@@ -333,21 +333,24 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.DukeFishron
             return false;
         }
 
-        /// <summary>着色器缺失兜底：浪形贴图沿线斜叠</summary>
+        /// <summary>着色器缺失兜底：真 alpha 雾团沿线堆出暗水墙体，只求带伤害的墙不隐形</summary>
         private void DrawSpriteFallback(Vector2 dir, Vector2 up) {
-            Texture2D wave = CWRUtils.GetT2DAsset(CWRConstant.Masking + "GlaciateWave")?.Value;
-            if (wave == null) {
+            Texture2D puff = CWRAsset.Fog?.Value;
+            if (puff == null) {
                 return;
             }
             float env = HitActive ? 1f : MathHelper.Clamp(Projectile.timeLeft / (float)CollapseTime, 0f, 1f);
             int count = Math.Clamp((int)(headDist / Stride) + 1, 1, MaxSegments);
+            float rot = dir.ToRotation();
             for (int i = 0; i < count; i++) {
-                Vector2 pos = Projectile.Center + dir * (i + 0.5f) * Stride + up * 60f - Main.screenPosition;
-                Color c = Color.Lerp(FishronMotionFX.DeepSea, FishronMotionFX.SeaGreen, i / (float)count);
-                c = new Color(c.R, c.G, c.B, 0) * (env * 0.5f);
-                Main.EntitySpriteDraw(wave, pos, null, c, dir.ToRotation(), wave.Size() / 2f,
-                    new Vector2(QuadW / wave.Width, 200f / wave.Height),
-                    dir.X >= 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+                Vector2 pos = Projectile.Center + dir * (i + 0.5f) * Stride + up * (QuadH * 0.4f) - Main.screenPosition;
+                Color deep = Color.Lerp(FishronMotionFX.DeepSea, FishronMotionFX.SeaGreen, i / (float)count);
+                Main.EntitySpriteDraw(puff, pos, null, deep * (0.72f * env), rot, puff.Size() / 2f,
+                    new Vector2(Stride / puff.Width * 1.4f, QuadH * 0.8f / puff.Height), SpriteEffects.None, 0);
+                //冠线白沫：暗水体顶上一层薄沫，读出"这是水"
+                Main.EntitySpriteDraw(puff, pos + up * (QuadH * 0.30f), null,
+                    FishronMotionFX.FoamWhite * (0.34f * env), rot, puff.Size() / 2f,
+                    new Vector2(Stride / puff.Width * 1.3f, QuadH * 0.18f / puff.Height), SpriteEffects.None, 0);
             }
         }
     }

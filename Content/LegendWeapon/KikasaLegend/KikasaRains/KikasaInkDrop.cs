@@ -14,8 +14,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
     /// 墨雨:一笔会追人的水墨,普攻的演出主角。
     /// 弹道两段，抛洒段=真弹道学上抛(重力+微阻力,不追踪),被抛起的水先是水;
     /// 越过顶点切入坠落段,有目标时曲率限幅平滑追击:转向率随追踪渐拧紧、
-    /// 真拦截提前量、远距先绕到目标头顶再俯冲,轨迹恒为圆滑弧线,无锐角;
-    /// 无目标时重力坠向光标列。追太久或擦身而过即放弃追踪转坠落,不绕圈。
+    /// 真拦截提前量、远距先绕到目标头顶再俯冲,近距按几何可达放开转向并刹车收弯,
+    /// 轨迹恒为圆滑弧线,无锐角;无目标时重力坠向光标列。
+    /// 追太久、擦身而过或近场绕满一圈半即放弃追踪转坠落,不绕圈。
     /// 血湖是介质不是地板:入水留墨膜与水花后穿入继续飞,水下粘阻+追击变钝,
     /// 死在湖底地形照常留渍。集中绘制在 <see cref="KikasaRainRender"/>,本体 PreDraw 不画
     /// </summary>
@@ -33,10 +34,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private const float PlungeGravity = 0.95f;
         private const float PlungeMaxSpeed = 26f;
 
-        /// <summary>追踪转向率包络(弧度/帧):起手轻、渐拧紧、近距终末最果决</summary>
+        /// <summary>追踪转向率包络(弧度/帧):起手轻、渐拧紧,中远距的弧线语言由它定调</summary>
         private const float HomingTurnStart = 0.035f;
         private const float HomingTurnFull = 0.10f;
-        private const float HomingTurnTerminal = 0.14f;
+
+        /// <summary>
+        /// 近距曲率执照:纯追击要咬中,转弯半径 R=v/ω 不得超过半交战距离,
+        /// 包络转向率近距远远不够(拧满也是 260px 半径),目标落进转向圆内就只能绕圈打不中。
+        /// 距离进 CloseGate 起平滑放开转向率上限,按几何需求 2v/d 带余量现算,顶到 CloseTurnCap;
+        /// 中远距零介入,起手轻的优雅弧线一寸不动
+        /// </summary>
+        private const float CloseGate = 160f;
+        private const float CloseTurnCap = 0.5f;
 
         /// <summary>追踪加速度系数(乘在坠落加速度上)与放弃追踪的时长护栏</summary>
         private const float HomingAccelMul = 0.55f;
@@ -95,6 +104,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private bool retargeted;
         //擦身黏滞:第一次擦身不放弃,重置护栏再咬一口(反馈七·#42)
         private bool stickyRebitten;
+        //近场绕圈保险:累计同向转角,绕满约一圈半判死圈(曲率执照下常规几何到不了这里)
+        private float nearWind;
         //坠落段碰撞武装:首次身处空气后才生效,室内上抛扎进天花板的滴穿回房内再落(反馈七·#74)
         private bool plungeArmed;
 
@@ -350,6 +361,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     //换锁即清护栏:旧目标的擦身记录不能拿来判新目标,追踪时长也放宽一截
                     minTargetDist = float.MaxValue;
                     homingT = MathF.Min(homingT, 30f);
+                    nearWind = 0f;
                 }
             }
             if (target == null || homingGaveUp) {
@@ -369,6 +381,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     stickyRebitten = true;
                     minTargetDist = float.MaxValue;
                     homingT = MathF.Max(homingT, 20f);
+                    nearWind = 0f;
                 }
                 else {
                     homingGaveUp = true;
@@ -387,23 +400,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 aim.Y -= overheadBias * bias;
             }
 
-            //曲率限幅转向:转向率随追踪渐拧紧,近距终末段最果决,轨迹恒为圆滑弧线
+            //曲率限幅转向:转向率随追踪渐拧紧,中远距轨迹恒为圆滑弧线
             float dAng = MathHelper.WrapAngle((aim - Projectile.Center).ToRotation()
                 - Projectile.velocity.ToRotation());
             float ramp = MathHelper.Clamp(homingT / 20f, 0f, 1f);
             float maxTurn = MathHelper.Lerp(HomingTurnStart, HomingTurnFull, ramp);
-            if (dist < 90f) {
-                maxTurn = MathF.Max(maxTurn, HomingTurnTerminal * ramp);
+            //近距曲率执照:按几何可达现算最低转向率,平滑混入且无视起手渐进——
+            //这段路短到没资格演起手轻,不果决就是绕着目标转圈
+            float closeIn = MathHelper.Clamp((CloseGate - dist) / 70f, 0f, 1f);
+            if (closeIn > 0f) {
+                float needTurn = MathF.Min(2.2f * speed / MathF.Max(dist, 32f), CloseTurnCap);
+                maxTurn = MathF.Max(maxTurn, needTurn * closeIn);
             }
             if (inLake) {
                 //稠血里拧不动那么急,水下追击弧更钝
                 maxTurn *= 0.8f;
             }
-            Projectile.velocity = Projectile.velocity.RotatedBy(MathHelper.Clamp(dAng, -maxTurn, maxTurn));
+            float applied = MathHelper.Clamp(dAng, -maxTurn, maxTurn);
+            Projectile.velocity = Projectile.velocity.RotatedBy(applied);
 
-            //速度包络:大角度贴近时优雅减速调整,其余时候平滑加速俯冲
+            //近场绕圈保险:同向累计转过约一圈半还没咬中即判死圈,放弃追踪转坠落
+            //(执照生效后常规几何到不了这里,留给瞬移/急折目标的病理场景)
+            if (dist < 240f) {
+                nearWind += applied;
+                if (MathF.Abs(nearWind) > 8.5f) {
+                    homingGaveUp = true;
+                }
+            }
+
+            //速度包络:大角度贴近时刹车收弯(转弯半径随速度同缩,越贴身刹得越狠),
+            //其余时候平滑加速俯冲
             if (MathF.Abs(dAng) > 1.2f && dist < 140f) {
-                speed = MathF.Max(speed * 0.96f, 13f);
+                speed = MathF.Max(speed * MathHelper.Lerp(0.96f, 0.9f, closeIn), 10f);
             }
             else {
                 speed = MathF.Min(speed + plungeGravity * HomingAccelMul, plungeMaxSpeed);

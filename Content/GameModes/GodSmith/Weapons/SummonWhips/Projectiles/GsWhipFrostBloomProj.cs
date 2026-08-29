@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,7 +12,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
 {
     /// <summary>
     /// 酷鞭处决「冰锁绽放」：聚霜、冰爆（1.5x 主段 + 霜焚）、
-    /// 冰晶迸裂（ai[0] 传 0.5x 二段），冰环视觉用 GlaciateWave 扩张
+    /// 冰晶迸裂（ai[0] 传 0.5x 二段）。冰环走共享参数化冲击环（撕裂缘+厚度生命周期）
     /// </summary>
     internal class GsWhipFrostBloomProj : ModProjectile
     {
@@ -94,9 +95,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D wave = CWRUtils.GetT2DAsset(CWRConstant.Masking + "GlaciateWave")?.Value;
             Texture2D flare = CWRUtils.GetT2DAsset(CWRConstant.Masking + "StarFlare02")?.Value;
-            if (wave == null || flare == null) {
+            if (flare == null) {
                 return false;
             }
             int elapsed = Elapsed;
@@ -108,14 +108,23 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
                     seed, flare.Size() * 0.5f, 0.12f + 0.1f * g, SpriteEffects.None, 0);
                 return false;
             }
-            //冰环扩张 + 六向冰晶闪
+            //冰爆波前：共享参数化冲击环，环缘撕裂、扩张同时变薄（判定主爆 90px 收在环带之内）
             float t = MathHelper.Clamp((elapsed - GatherFrames) / (float)(LifeFrames - GatherFrames), 0f, 1f);
             float fade = 1f - t;
-            float ringScale = MathHelper.Lerp(0.15f, 0.62f, 1f - fade * fade);
-            Main.EntitySpriteDraw(wave, pos, null, FrostMain with { A = 0 } * (0.8f * fade),
-                seed * 0.3f, wave.Size() * 0.5f, ringScale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(wave, pos, null, FrostDeep with { A = 0 } * (0.45f * fade),
-                -seed * 0.2f, wave.Size() * 0.5f, ringScale * 1.28f, SpriteEffects.None, 0);
+            ShockRingDraw.Draw(Main.spriteBatch, Projectile.Center,
+                MathHelper.Lerp(38f, 150f, 1f - fade * fade), 12f + 22f * fade,
+                FrostBright, FrostMain, FrostDeep, 0.85f * fade,
+                innerGlow: 0.22f * fade, timeSeed: seed);
+            //二段迸裂：一道更小更锐的内环追出来，与迸裂判定同拍
+            if (elapsed >= CrackAt) {
+                float ct = MathHelper.Clamp((elapsed - CrackAt) / (float)(LifeFrames - CrackAt), 0f, 1f);
+                float cFade = 1f - ct;
+                ShockRingDraw.Draw(Main.spriteBatch, Projectile.Center,
+                    MathHelper.Lerp(16f, 84f, 1f - cFade * cFade), 7f + 9f * cFade,
+                    FrostBright, FrostBright, FrostMain, 0.70f * cFade,
+                    tearPx: 8f, timeSeed: seed + 1.7f);
+            }
+            //六向冰晶闪
             float starFade = MathF.Max(0f, fade - 0.2f);
             Main.EntitySpriteDraw(flare, pos, null, FrostBright with { A = 0 } * (0.9f * starFade),
                 seed, flare.Size() * 0.5f, 0.3f * fade + 0.08f, SpriteEffects.None, 0);

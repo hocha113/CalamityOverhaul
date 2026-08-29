@@ -192,22 +192,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             return false;
         }
 
-        /// <summary>着色器缺失兜底：浪形贴图斜叠</summary>
+        /// <summary>着色器缺失兜底：真 alpha 雾团堆出暗水墙体，只求带伤害的浪不隐形</summary>
         private void DrawSpriteFallback(float env, Vector2 center, float drawW, float drawH) {
-            Texture2D wave = CWRUtils.GetT2DAsset(CWRConstant.Masking + "GlaciateWave")?.Value;
-            if (wave == null) {
+            Texture2D puff = CWRAsset.Fog?.Value;
+            if (puff == null) {
                 return;
             }
-            for (int i = 0; i < 4; i++) {
-                float t = i / 3f;
-                Vector2 pos = center + new Vector2(-Dir * t * 26f, drawH * (0.5f - t * 0.8f) * 0.5f) - Main.screenPosition;
-                Color c = Color.Lerp(FishronMotionFX.DeepSea, FishronMotionFX.SeaGreen, t);
-                c = new Color(c.R, c.G, c.B, 0) * (env * 0.5f);
-                float rot = Dir > 0 ? -0.4f : 0.4f;
-                Main.EntitySpriteDraw(wave, pos, null, c, rot, wave.Size() / 2f,
-                    new Vector2(drawW / wave.Width, drawH / wave.Height * (0.5f + t * 0.5f)),
-                    Dir > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            Vector2 origin = puff.Size() / 2f;
+            for (int i = 0; i < 3; i++) {
+                float t = i / 2f;
+                //自浪脚向冠线逐层收窄：底厚顶薄，前脸压向行进方向
+                Vector2 pos = center + new Vector2(Dir * t * 20f, drawH * (0.30f - t * 0.30f)) - Main.screenPosition;
+                Color deep = Color.Lerp(FishronMotionFX.DeepSea, FishronMotionFX.SeaGreen, t);
+                Main.EntitySpriteDraw(puff, pos, null, deep * (0.75f * env), 0f, origin,
+                    new Vector2(drawW * (0.62f - 0.12f * t) / puff.Width, drawH * 0.34f / puff.Height),
+                    SpriteEffects.None, 0);
             }
+            //冠线白沫
+            Main.EntitySpriteDraw(puff, center + new Vector2(Dir * 24f, -drawH * 0.16f) - Main.screenPosition, null,
+                FishronMotionFX.FoamWhite * (0.36f * env), 0f, origin,
+                new Vector2(drawW * 0.42f / puff.Width, drawH * 0.10f / puff.Height), SpriteEffects.None, 0);
         }
     }
 }
