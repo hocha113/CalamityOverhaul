@@ -56,6 +56,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public const float MaxFindDistance = 5600f;
         /// <summary>出招最大交战距离</summary>
         public const float EngageDistance = 1400f;
+        /// <summary>
+        /// 追击阀触发距离：拉远到此距离才插入钻地追击连接件。配合单发闸
+        /// （用过一次必须走一轮轮换才能再用），防止机动战里追击无限复读、
+        /// 轮换表（含沙柱三招）永远轮不到（真机反馈 2026-08-31）。
+        /// </summary>
+        public const float ChaseValveDistance = 1900f;
         /// <summary>远距回归阀触发距离（钻地瞬移贴回）</summary>
         public const float FarSnapDistance = 2600f;
 
@@ -318,6 +324,89 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public const int SweepFlingWindow = 20;
         /// <summary>甩针速度（方向 = 体节自身运动向 = 物理离心，非瞄准）</summary>
         public const float SweepNeedleSpeed = 10f;
+
+        //==================== 沙丘柱（场地实体，Actor 承载）====================
+
+        /// <summary>同屏柱数上限（怒放波 16 + 入场双柱 + 腾跃应急柱 + 余量）</summary>
+        public const int PillarMax = 20;
+        /// <summary>柱宽（5 物块 = 80px）</summary>
+        public const float PillarWidth = 80f;
+        /// <summary>柱高下限/上限（随机档；参差天际线是怒放波的沸腾读数）</summary>
+        public const float PillarHeightMin = 700f;
+        public const float PillarHeightMax = 940f;
+        /// <summary>钻出帧数（唯一伤害窗：极锐缓出一口气升满）</summary>
+        public const int PillarEruptFrames = 9;
+        /// <summary>缓沉帧数（缓慢落回地面消失）</summary>
+        public const int PillarSinkFrames = 80;
+        /// <summary>置景柱滞留（入场双柱：站到 P2 爆震首秀当燃料）</summary>
+        public const int PillarIntroLinger = 60 * 45;
+        /// <summary>突刺柱滞留（腾跃/爆震的燃料窗口）</summary>
+        public const int PillarSpikeLinger = 60 * 16;
+        /// <summary>柱体钻出接触伤害（normal/expert，走 GetAttackDamage_ForProjectiles 换算）</summary>
+        public static (float Normal, float Expert) PillarContactDamage => (26f, 22f);
+
+        //==================== 沙柱突刺（跺地锁心，全场怒放式钻出）====================
+
+        /// <summary>立起跺地蓄势帧数（立起剪影 + 跺地即预告主体，跺地帧锁定花心）</summary>
+        public const int SpikeStompFrames = 20;
+        /// <summary>逐根点名间隔帧（快节奏滚开：鼓包波扫过全场、柱群按同序轰起）</summary>
+        public const int SpikeStepGap = 8;
+        /// <summary>单根鼓包预告帧数</summary>
+        public const int SpikeOmenFrames = 22;
+        /// <summary>怒放根数：P1 十二根，P2 十四根，P3 十六根（全场沸腾档）</summary>
+        public static int SpikeCount(int phase) => phase >= 3 ? 16 : phase == 2 ? 14 : 12;
+        /// <summary>怒放车道间距（0/+1/-1/+2/-2 扩散序的槽距；槽距−抖散 ≥ 走廊宽）</summary>
+        public const float SpikeLaneSpacing = 210f;
+        /// <summary>落点相对车道槽位的横向抖散（去机械感，幅度不许吃掉走廊）</summary>
+        public const float SpikeScatterPx = 24f;
+        /// <summary>与最近既有柱的最小间距（柱间走廊 = 声明的逃生道）</summary>
+        public const float SpikeMinGapPx = 170f;
+
+        //==================== 沙柱腾跃（盘柱螺旋 + 蹬柱爆冲）====================
+
+        /// <summary>接近柱脚的就位帧数上限（贴到即早退）</summary>
+        public const int VaultApproachFrames = 60;
+        /// <summary>盘柱螺旋圈时长（帧；升到柱顶的总时长）</summary>
+        public const int VaultClimbFrames = 78;
+        /// <summary>螺旋角速度（弧度/帧）</summary>
+        public const float VaultClimbOmega = 0.13f;
+        /// <summary>螺旋半径（相对柱半宽的倍率：贴着柱身绕）</summary>
+        public const float VaultOrbitScale = 1.7f;
+        /// <summary>柱顶盘紧静止拍（爆发前的收势：静止即预告）</summary>
+        public const int VaultCoilFrames = 26;
+        /// <summary>蹬柱上抛滞空帧数（跳到空中再冲：滞空前段可重瞄，末段死向）</summary>
+        public const int VaultHopFrames = 14;
+        /// <summary>蹬柱上抛初速（竖直向）</summary>
+        public const float VaultHopKick = 17f;
+        /// <summary>锁向提前量（出手前死向，预告即承诺）</summary>
+        public const int VaultLockLead = 8;
+        /// <summary>蹬柱爆冲速度（速度分层：掠冲 46 < 本招 48 < 漩涡 50）</summary>
+        public const float VaultDashSpeed = 48f;
+        /// <summary>爆冲飞行帧数</summary>
+        public const int VaultFlightFrames = 19;
+        /// <summary>爆冲硬刹帧数</summary>
+        public const int VaultBrakeFrames = 9;
+        /// <summary>接触伤害的速度门槛</summary>
+        public const float VaultContactSpeed = 24f;
+
+        //==================== 沙柱爆震（怒吼声波环 + 逐柱引爆）====================
+
+        /// <summary>选招门槛：场上可点名柱数不足此值时该槽位落到替补招</summary>
+        public const int BurstMinPillars = 2;
+        /// <summary>后仰怒吼帧数（声波环 + 立起剪影即预告）</summary>
+        public const int BurstRoarFrames = 42;
+        /// <summary>裂纹预闪帧数（怒吼后全柱同亮，错拍延迟另加）</summary>
+        public const int BurstCrackFrames = 30;
+        /// <summary>逐柱错拍间隔帧（近柱先爆，波次可读）</summary>
+        public const int BurstStaggerGap = 9;
+        /// <summary>每柱径向沙球枚数（球环缺口 + 柱间走廊 = 逃生道）</summary>
+        public const int BurstGlobRing = 14;
+        /// <summary>沙球环速度下限（快慢双速分层 = 内外两圈落点）</summary>
+        public const float BurstGlobSpeedMin = 6.5f;
+        /// <summary>沙球环速度上限</summary>
+        public const float BurstGlobSpeedMax = 12.5f;
+        /// <summary>无柱可爆时先种的应急柱数（保底演出：两翼各两根再吼）</summary>
+        public const int BurstFallbackPillars = 4;
 
         //==================== 通用节奏（推倒版：近乎无缝的出招密度）====================
 

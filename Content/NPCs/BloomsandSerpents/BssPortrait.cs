@@ -43,6 +43,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                     SpawnPetal(pos + Main.rand.NextVector2Circular(18f, 10f), vel);
                 }
             };
+            //落步爪咬/滑刹犁沙的微尘（步足模拟的沙效出口）
+            rig.OnLegSandFx = (pos, vel, power) =>
+                SandBurst(pos, vel.SafeNormalize(-Vector2.UnitY), 2, 0.45f * power);
         }
 
         protected override void Reset() {

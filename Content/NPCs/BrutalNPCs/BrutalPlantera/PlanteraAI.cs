@@ -243,8 +243,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         #endregion
 
         #region 悬吊运动
-        /// <summary>藤蔓悬吊：身体被拉向钩爪质心+目标偏移，弹簧+摆动</summary>
+        /// <summary>藤蔓悬吊：身体被拉向钩爪质心+目标偏移，弹簧+摆动。
+        /// 速度只在权威端写：客户端本地积分会与每10帧的服务器快照互相拉扯，
+        /// 即联机抽搐的根源(反馈四 #77，netcode"两端都写位置"病族)；
+        /// 客户端速度全权用同步值，本地只推进摆动相位等纯表现</summary>
         private void UpdateSuspension() {
+            if (VaultUtils.isClient) {
+                stateContext.SwayPhase += 0.033f + npc.velocity.Length() * 0.0012f;
+                return;
+            }
+
             Vector2 centroid = stateContext.HookCentroid();
             Vector2 toPlayer = targetPlayer.Center - centroid;
             float leash = stateContext.IsPhase2 ? PlanteraDirector.LeashP2 : PlanteraDirector.LeashP1;

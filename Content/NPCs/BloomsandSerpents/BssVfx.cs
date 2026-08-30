@@ -126,11 +126,14 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         /// 转阶段公平阀：清掉本 boss 已发出的全部敌对弹幕与滞留演出实体（只清自家类型）。
         /// 漩涡与隆包非 hostile 也要清：转场后残留的蓄力涡/待爆泉是失主的旧预告
         /// （两者的爆点逻辑都有自然到期守卫，被 Kill 清掉不会放沙球）。
+        /// 沙丘柱只清未成形的威胁（鼓包/钻出中缓沉），滞留柱留作场地与爆震燃料；
+        /// 全场收尾由柱的孤儿守卫兜底（头消失即缓沉）。
         /// </summary>
         internal static void ClearOwnHostileProjectiles() {
             if (VaultUtils.isClient) {
                 return;
             }
+            BssSandPillar.CancelPending();
             int sand = ModContent.ProjectileType<Projectiles.BssSandGlob>();
             int needle = ModContent.ProjectileType<Projectiles.BssNeedleProj>();
             int ball = ModContent.ProjectileType<Projectiles.BssCactusBallProj>();

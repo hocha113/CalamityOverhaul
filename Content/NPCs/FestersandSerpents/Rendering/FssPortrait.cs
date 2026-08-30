@@ -35,6 +35,9 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             rig = new SerpentPortraitRig(bodyCount: 12, segmentGap: 46f, sandY: 122f, patrolHalfWidth: 236f);
             rig.OnDive = pos => SandBurst(pos, -Vector2.UnitY, 10, 0.8f);
             rig.OnLand = pos => SandBurst(pos, -Vector2.UnitY, 9, 0.9f);
+            //落步爪咬/滑刹犁沙的微尘（步足模拟的沙效出口）
+            rig.OnLegSandFx = (pos, vel, power) =>
+                SandBurst(pos, vel.SafeNormalize(-Vector2.UnitY), 2, 0.4f * power);
             rig.OnBreach = (pos, dir) => {
                 SandBurst(pos, dir, 18, 1.3f);
                 for (int i = 0; i < 9; i++) {

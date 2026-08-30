@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Magic;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Magic.BloomTomes;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Melee.Budcrowns;
@@ -94,6 +95,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         internal static Asset<Texture2D> LegUpperAsset = null;
         [VaultLoaden(CWRConstant.NPC + "BSS/LegLower")]
         internal static Asset<Texture2D> LegLowerAsset = null;
+        /// <summary>爪尖微节贴图（占位=胫爪素材缩窄）</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/LegClaw")]
+        internal static Asset<Texture2D> LegClawAsset = null;
 
         private NpcStateMachine<BssStateContext> stateMachine;
         internal BssStateContext Context { get; private set; }
@@ -526,13 +530,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             BssVfx.SandBurst(ground + new Vector2(side * 640f, 0f), 1.2f);
         }
 
-        //漩涡/回环不进回归阀：远距瞬移会把蛇从自己的漩涡/环上拽走造成演出脱节，
-        //两招自带超时兜底，收招回 hub 后自然触发回归
+        //漩涡/回环/沙柱腾跃/沙柱爆震不进回归阀：远距瞬移会把蛇从自己的漩涡/环/
+        //柱上拽走（或打断钉桩怒吼）造成演出脱节，各招自带超时兜底，收招回 hub 后自然触发回归
         private static bool AllowFarSnap(BssStateBase state) {
             return state is BssHubState or BssBurrowLungeState or BssSandSpitState
                 or BssCactusBallState or BssNeedleRippleState or BssPetalShakeState
                 or BssSandDashState or BssSkyWeaveState or BssCoilOrbitState
-                or BssGeyserMarchState or BssTailSweepState;
+                or BssGeyserMarchState or BssTailSweepState or BssPillarSpikeState;
         }
         #endregion
 
@@ -718,6 +722,17 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 spriteBatch.Draw(texture, mainPos, frameRec, bloom, NPC.rotation,
                     origin, NPC.scale * 1.04f, SpriteEffects.None, 0f);
                 Lighting.AddLight(NPC.Center, BssVfx.BloomRed.ToVector3() * 0.35f * Context.BloomGlow);
+            }
+
+            //怒吼声波环（沙柱爆震）：共享冲击环换沙色板，环心钉在点火位不随头走
+            if (Context.RoarRingAge >= 0f) {
+                float p = MathHelper.Clamp(Context.RoarRingAge / 46f, 0f, 1f);
+                float radius = (1f - MathF.Pow(1f - p, 3f)) * 980f;
+                float alpha = MathF.Pow(1f - p, 1.2f) * 0.9f;
+                ShockRingDraw.Draw(spriteBatch, Context.RoarRingCenter, radius,
+                    26f + 34f * p,
+                    new Color(242, 214, 158), BssVfx.SandWarm, BssVfx.SandDark,
+                    alpha, squish: 0.92f, innerGlow: 0.1f, timeSeed: NPC.whoAmI * 0.61f);
             }
 
             return false;

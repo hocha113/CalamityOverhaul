@@ -16,6 +16,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
         private const int CooldownFrames = 22;
 
         /// <summary>
+        /// 满编顶替后的唤犬间隔：旧犬要走完 26 帧溶解才真正离场，22 帧冷却短于它，
+        /// 连点会新旧并存突破上限（反馈四 #61）；顶替那次闸到溶解完成再放行，
+        /// 常态唤犬节奏不变
+        /// </summary>
+        private const int OverflowCooldownFrames = KikasaDreamHound.DissolveFrames + 2;
+
+        /// <summary>
         /// 同时在场的犬数上限：随影位魇系涨（无魇基线 4 只、每枚 +2），
         /// 超编时最老的那只先散
         /// </summary>
@@ -63,17 +70,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             }
             //左键按住连唤；悬停 UI 让位界面点击
             if (Player.controlUseItem && !Player.mouseInterface && houndCooldown <= 0) {
-                SummonHound();
-                houndCooldown = CooldownFrames;
+                houndCooldown = SummonHound();
             }
         }
 
         /// <summary>
         /// 唤出一只恶犬：玩家朝光标一侧的身旁撕开梦境裂缝，犬自缝中窜出
         /// （出生态时序与撕裂音效都在 <see cref="KikasaDreamHound"/> 里各端自播）。
-        /// 仅本机受理，弹幕走原版同步
+        /// 仅本机受理，弹幕走原版同步。返回本次应用的唤犬冷却
         /// </summary>
-        private void SummonHound() {
+        private int SummonHound() {
             //超编先散最老的：timeLeft 最小者
             int count = 0;
             KikasaDreamHound oldest = null;
@@ -90,7 +96,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                     oldest = hound;
                 }
             }
-            if (count >= MaxHoundsFor(Player)) {
+            bool overflow = count >= MaxHoundsFor(Player);
+            if (overflow) {
                 oldest?.BeginDissolve();
             }
 
@@ -107,6 +114,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             Projectile.NewProjectile(Player.GetSource_Misc("KikasaDreamHound"),
                 spawnAt, vel, ModContent.ProjectileType<KikasaDreamHound>(),
                 damage, 4f, Player.whoAmI, KikasaDreamHound.StateEmerge);
+
+            return overflow ? OverflowCooldownFrames : CooldownFrames;
         }
     }
 }

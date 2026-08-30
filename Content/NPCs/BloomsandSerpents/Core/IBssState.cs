@@ -42,6 +42,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         GeyserMarch = 16,
         /// <summary>回马甩尾：擦身而过 + 急转离心甩针 + 回马枪连段</summary>
         TailSweep = 17,
+        /// <summary>沙柱突刺：跺地点名，地刺式沙柱逐根钻出（柱滞留为后续燃料）</summary>
+        PillarSpike = 18,
+        /// <summary>沙柱腾跃：盘柱螺旋而上 + 柱顶盘紧 + 蹬柱爆冲</summary>
+        PillarVault = 19,
+        /// <summary>沙柱爆震：后仰怒吼声波环，全柱裂纹预闪后错拍炸沙球环</summary>
+        PillarBurst = 20,
     }
 
     /// <summary>荒花沙蟒状态接口</summary>

@@ -36,6 +36,14 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Core
         public static (float Normal, float Expert) GeyserDamage => (64f, 53f);
         /// <summary>合钳水刃</summary>
         public static (float Normal, float Expert) CrescentDamage => (66f, 55f);
+        /// <summary>巨型雷泡（飞行本体与崩爆共用）</summary>
+        public static (float Normal, float Expert) VoltBubbleDamage => (80f, 66f);
+        /// <summary>带电小泡起爆</summary>
+        public static (float Normal, float Expert) SparkBubbleDamage => (52f, 43f);
+        /// <summary>泡间电弧</summary>
+        public static (float Normal, float Expert) BubbleArcDamage => (58f, 48f);
+        /// <summary>跃空砸落巨浪</summary>
+        public static (float Normal, float Expert) WaveCrestDamage => (70f, 58f);
 
         //==================== 感知与脱战 ====================
 
@@ -177,6 +185,40 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Core
         public const float PlowSpeed = 30f;
         public const int PlowFrames = 26;
         public const float PlowMaxPitch = 0.30f;
+
+        //==================== 扩编批（2026-08 二期）：雷泡大炮/泡球连拍/跃空砸落 ====================
+
+        /// <summary>雷泡满径 px（生长终值，飞行判定同径）</summary>
+        public const float VoltBubbleRadius = 130f;
+        /// <summary>雷泡拍出速度 px/f</summary>
+        public const float VoltBubbleSpeed = 26f;
+        /// <summary>雷泡崩爆环半径 px</summary>
+        public const float VoltBlastRadius = 300f;
+        /// <summary>雷泡崩爆散出的小泡数（角序单圈，速度交替内外错落）</summary>
+        public const int SparkBubbleCount = 14;
+        /// <summary>小泡起爆环半径 px</summary>
+        public const float SparkBlastRadius = 90f;
+        /// <summary>小泡错帧起爆：基础延迟 / 逐个递增帧（基础延迟给足散开时间——先飞出爆区再链爆）</summary>
+        public const int SparkBurstBase = 52;
+        public const int SparkBurstStep = 7;
+        /// <summary>小泡散射初速 px/f（0.965 阻尼下积分距离 ≈ 初速×28.6，散到崩爆环外）</summary>
+        public const float SparkScatterSpeed = 12f;
+        /// <summary>泡球被拍飞速度 px/f</summary>
+        public const float BattedBubbleSpeed = 30f;
+        /// <summary>泡球待拍泡半径 px</summary>
+        public const float BatBubbleRadius = 30f;
+        /// <summary>跃空上跳初速 px/f</summary>
+        public const float LeapUpSpeed = 34f;
+        /// <summary>跃空下砸速度 px/f</summary>
+        public const float LeapSlamSpeed = 46f;
+        /// <summary>巨浪行进速度 px/f / 浪体高 px / 行进距离 px</summary>
+        public const float WaveCrestSpeed = 9f;
+        public const float WaveCrestHeight = 1000f;
+        public const float WaveCrestRange = 700f;
+        /// <summary>落地水龙卷可见高度 px</summary>
+        public const float LeapVortexHeight = 2000f;
+        /// <summary>落地喷泉水球数</summary>
+        public const int LeapBoltCount = 16;
 
         //==================== 通用节奏 ====================
 

@@ -141,6 +141,18 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
         /// <summary>弹道段是否结束（刹停）</summary>
         public bool BallisticDone => Mode != ShrimpMoveMode.Ballistic;
 
+        /// <summary>硬终止弹道段（跃空砸地等触地即停）：清速度，立即回凝视模式</summary>
+        public void AbortBallistic() {
+            if (Mode != ShrimpMoveMode.Ballistic) {
+                return;
+            }
+            npc.velocity = Vector2.Zero;
+            ballisticFrames = 0;
+            braking = false;
+            Mode = ShrimpMoveMode.Stalk;
+            stalking = true;
+        }
+
         /// <summary>入场/重建时硬置朝向</summary>
         public void SnapHeading(float heading) => Heading = heading;
 

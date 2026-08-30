@@ -1,4 +1,4 @@
-using CalamityOverhaul.OtherMods.Wikithis;
+﻿using CalamityOverhaul.OtherMods.Wikithis;
 using InnoVault.GameSystem;
 using System;
 using System.Collections.Generic;

@@ -43,6 +43,12 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Core
         CrescentClap = 16,
         /// <summary>犁浪冲锋（头先行贴地冲刺，P1+）</summary>
         PlowCharge = 17,
+        /// <summary>泡泡大炮：张钳聚出巨型雷泡拍向玩家，链爆电网（P1+）</summary>
+        BubbleCannon = 18,
+        /// <summary>泡泡棒球：挥尾甩泡，双钳交替连拍出击（P1+）</summary>
+        BubbleBat = 19,
+        /// <summary>跃空大跳：腾空砸落，两侧掀巨浪（P1+）</summary>
+        SkyLeap = 20,
     }
 
     /// <summary>渊晶海虾状态接口</summary>

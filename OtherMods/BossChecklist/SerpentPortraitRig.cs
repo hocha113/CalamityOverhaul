@@ -10,8 +10,8 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
     /// <summary>
     /// 图鉴沙盒共享蛇链：荒花/脓蕾两条沙蟒的 headless 段链模拟。
     /// 编排一条固定循环的招牌动线——地表爬行 → 右端钻沙 → 沙下回返（地面鼓包）→
-    /// 左侧破沙腾跃 → 落地续爬；跟链公式与八腿划桨步态镜像战斗实现
-    /// （腿骨绘制与步态常量直接取自 <see cref="BssLegRig"/>），探地换成虚拟沙线。
+    /// 左侧破沙腾跃 → 落地续爬；跟链公式镜像战斗实现，八腿直接托管战斗端的
+    /// <see cref="BssLegRig"/> 三节步足模拟（世界落足步行同一套），探地换成虚拟沙线。
     /// 体节蒙皮由各自演员绘制，rig 只输出位姿与腿
     /// </summary>
     internal sealed class SerpentPortraitRig
@@ -68,18 +68,6 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
 
         /// <summary>髋站体节链序（沿用战斗编制）</summary>
         private static readonly int[] LegStations = BssLegRig.StationOrdinals;
-        private const float LegUpperLen = BssLegRig.UpperLen;
-        private const float LegLowerLen = BssLegRig.LowerLen;
-        private const float LegMaxReach = LegUpperLen + LegLowerLen - 2f;
-
-        private struct PortraitLeg
-        {
-            public Vector2 Hip;
-            public Vector2 Foot;
-            public Vector2 Back;
-            public float Groundness;
-            public bool Inited;
-        }
 
         //==================== 状态 ====================
 
@@ -89,7 +77,11 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
         public readonly float SandY;
 
         private readonly SegmentPose[] segs;
-        private readonly PortraitLeg[] legs = new PortraitLeg[8];
+        /// <summary>八腿共用战斗端三节步足模拟（探地换虚拟沙线，沙效喂 motes）</summary>
+        private readonly BssLegRig legRig = new();
+        private Func<float, float, float> legGroundAt;
+        /// <summary>落步/犁沙的沙尘出口（由演员 Reset 后经 OnLegSandFx 订阅）</summary>
+        public Action<Vector2, Vector2, float> OnLegSandFx;
 
         private Vector2 headPos;
         private Vector2 prevHeadPos;
@@ -147,9 +139,7 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
                 segs[i].Center = headPos - new Vector2((i + 1) * gap, 0f);
                 segs[i].Rotation = BssHead.FacingRot;
             }
-            for (int li = 0; li < legs.Length; li++) {
-                legs[li].Inited = false;
-            }
+            legRig.ResetLegs();
         }
 
         /// <summary>推进一帧（frames = dt×60，60fps 基准）</summary>
@@ -255,136 +245,39 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
             }
         }
 
-        //==================== 八腿划桨（镜像 BssLegRig.UpdateStroke，探地换沙线）====================
+        //==================== 八腿（共用战斗端三节步足模拟，探地换虚拟沙线）====================
 
         private void UpdateLegs() {
-            for (int li = 0; li < legs.Length; li++) {
-                int station = li / 2;
-                int ordinal = LegStations[station];
-                if (ordinal >= segs.Length) {
-                    continue;
-                }
-                SegmentPose seg = segs[ordinal];
-
-                float chainDir = seg.Rotation + MathHelper.PiOver2;
-                Vector2 chainVec = chainDir.ToRotationVector2();
-                float flankSign = (li & 1) == 0 ? 1f : -1f;
-                Vector2 normal = (chainDir + MathHelper.PiOver2).ToRotationVector2() * flankSign;
-                Vector2 hip = seg.Center + normal * 10f;
-
-                ref PortraitLeg leg = ref legs[li];
-                leg.Hip = hip;
-                leg.Back = -chainVec;
-                leg.Groundness = MathHelper.Clamp((normal.Y + 0.6f) / 1.2f, 0f, 1f);
-
-                if (!leg.Inited) {
-                    Vector2 f0 = hip + normal * (LegMaxReach * 0.7f);
-                    f0.Y = MathF.Min(f0.Y, SandY);
-                    leg.Foot = f0;
-                    leg.Inited = true;
-                }
-
-                //宿主体节埋沙：沿体轴后掠收拢（钻沙流线，镜像 Tuck 指令）
-                if (seg.Center.Y > SandY + 4f) {
-                    Vector2 fold = hip - chainVec * (30f + station * 6f + (li & 1) * 8f) + normal * 8f;
-                    leg.Foot = Vector2.Lerp(leg.Foot, fold, 0.28f);
-                    continue;
-                }
-
-                //划桨往复：功率段快耙全伸、恢复段折叠前探抛物线抬腿
-                float t01 = SlotPhase01(li);
-                float tilt, radius, clearance;
-                if (t01 < BssLegRig.PowerFraction) {
-                    float p = t01 / BssLegRig.PowerFraction;
-                    tilt = MathHelper.Lerp(BssLegRig.TiltForward, -BssLegRig.TiltBack, p);
-                    radius = 0.88f;
-                    clearance = 0f;
-                }
-                else {
-                    float r = (t01 - BssLegRig.PowerFraction) / (1f - BssLegRig.PowerFraction);
-                    float arc = MathF.Sin(r * MathHelper.Pi);
-                    float eased = r * r * (3f - 2f * r);
-                    tilt = MathHelper.Lerp(-BssLegRig.TiltBack, BssLegRig.TiltForward, eased);
-                    radius = MathHelper.Lerp(0.88f, 0.52f, arc);
-                    clearance = BssLegRig.RecoveryClearance * arc;
-                }
-
-                float rotSign = (li & 1) == 0 ? -1f : 1f;
-                Vector2 target = hip + normal.RotatedBy(tilt * rotSign) * (LegMaxReach * radius);
-                //沙线钳制：贴地排耙沙，背侧/空中排 min() 自然无效
-                target.Y = MathF.Min(target.Y, SandY - clearance);
-                leg.Foot = Vector2.Lerp(leg.Foot, target, 0.4f);
+            for (int st = 0; st < BssLegRig.LegCount; st++) {
+                int ordinal = LegStations[st];
+                bool ok = ordinal < segs.Length;
+                legRig.SetStation(st,
+                    ok ? segs[ordinal].Center : Vector2.Zero,
+                    ok ? segs[ordinal].Rotation : 0f, ok);
             }
+
+            legGroundAt ??= (x, refY) => SandY;
+            BssLegRig.LegEnv env = new() {
+                //钻沙埋腿（髋没入沙线自动收拢）与破沙腾空（够不着沙线自动卷曲）
+                //都由核心兜底，图鉴只声明常态步行
+                Command = BssLegCommand.March,
+                GaitPhase = gait,
+                HostVelocity = headPos - prevHeadPos,
+                GroundAt = legGroundAt,
+                OnPlant = null,
+                SandFx = OnLegSandFx,
+                AllowDust = false,
+            };
+            legRig.Advance(in env);
         }
 
-        /// <summary>该腿的时钟槽相位 0..1：站序节律波 + 同站两侧反相（镜像战斗版）</summary>
-        private float SlotPhase01(int li) {
-            float phase = gait - li / 2 * BssLegRig.StationLag + ((li & 1) == 1 ? MathHelper.Pi : 0f);
-            phase %= MathHelper.TwoPi;
-            if (phase < 0f) {
-                phase += MathHelper.TwoPi;
-            }
-            return phase / MathHelper.TwoPi;
-        }
-
-        /// <summary>
-        /// 画八腿：按走地权重升序（暗排在底亮排在面），二骨余弦 IK 膝弯朝体后，
-        /// 骨节绘制直接走 <see cref="BssLegRig.DrawBone"/>
-        /// </summary>
+        /// <summary>画八腿：排序/骨节绘制都在 <see cref="BssLegRig.DrawStandalone"/>，此处只给环境色</summary>
         public void DrawLegs(SpriteBatch sb, in PortraitFrame frame, Color ambient) {
-            Texture2D upperTex = BssHead.LegUpperAsset?.Value;
-            Texture2D lowerTex = BssHead.LegLowerAsset?.Value;
-            if (upperTex == null || lowerTex == null) {
-                return;
-            }
-
-            Span<int> order = stackalloc int[legs.Length];
-            for (int i = 0; i < legs.Length; i++) {
-                order[i] = i;
-            }
-            for (int i = 1; i < legs.Length; i++) {
-                int cur = order[i];
-                float key = legs[cur].Groundness;
-                int j = i - 1;
-                while (j >= 0 && legs[order[j]].Groundness > key) {
-                    order[j + 1] = order[j];
-                    j--;
-                }
-                order[j + 1] = cur;
-            }
-
-            foreach (int li in order) {
-                PortraitLeg leg = legs[li];
-                if (!leg.Inited) {
-                    continue;
-                }
-                float dim = MathHelper.Lerp(0.62f, 1f, leg.Groundness);
-                Color tint = frame.Tint(ambient.MultiplyRGB(new Color(dim, dim, dim)));
-
-                Vector2 hip = leg.Hip;
-                Vector2 foot = leg.Foot;
-                Vector2 d = foot - hip;
-                float rawLen = d.Length();
-                if (rawLen > LegMaxReach) {
-                    foot = hip + d * (LegMaxReach / rawLen);
-                    d = foot - hip;
-                }
-                float dist = MathHelper.Clamp(d.Length(), 14f, LegMaxReach);
-                float baseAng = d.ToRotation();
-                float cosA = MathHelper.Clamp(
-                    (LegUpperLen * LegUpperLen + dist * dist - LegLowerLen * LegLowerLen)
-                    / (2f * LegUpperLen * dist), -1f, 1f);
-                float phi = MathF.Acos(cosA);
-                Vector2 back = leg.Back;
-                float kneeAng = Vector2.Dot((baseAng + phi).ToRotationVector2(), back)
-                    >= Vector2.Dot((baseAng - phi).ToRotationVector2(), back)
-                    ? baseAng + phi : baseAng - phi;
-                Vector2 knee = hip + kneeAng.ToRotationVector2() * LegUpperLen;
-
-                float thick = MathHelper.Lerp(0.9f, 1f, leg.Groundness);
-                BssLegRig.DrawBone(sb, upperTex, hip, knee, 1.2f * thick, tint, Vector2.Zero);
-                BssLegRig.DrawBone(sb, lowerTex, knee, foot, 0.95f * thick, tint, Vector2.Zero);
-            }
+            PortraitFrame frameCopy = frame;
+            legRig.DrawStandalone(sb, (li, groundness) => {
+                float dim = MathHelper.Lerp(0.62f, 1f, groundness);
+                return frameCopy.Tint(ambient.MultiplyRGB(new Color(dim, dim, dim)));
+            });
         }
     }
 }

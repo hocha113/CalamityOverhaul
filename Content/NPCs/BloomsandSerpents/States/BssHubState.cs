@@ -38,16 +38,19 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
 
             Timer++;
 
-            //追击阀：只在拉出交战圈时接管（追击即攻击），且不消耗轮换序号——
-            //追击是连接件不是节目单。空中目标不再劫持选招：轮换表各槽自带对空替补，
-            //飞天也要看得到全套演出（此前 820px/高飞就一律钻地，整场只剩突袭来回切）
+            //追击阀：拉到 ChaseValveDistance 才插入钻地连接件，且单发限流——用过一次
+            //必须走一轮轮换才能再用。旧版 1400px 无限连发会让机动战整场复读钻地，
+            //轮换表（含沙柱三招）永远轮不到（真机反馈 2026-08-31）。轮换招大半
+            //自带远距/对空能力（突刺点名脚下、腾跃爆冲、突袭本身），不靠追击兜距离
             if (t > BssDirector.ConnectorFrames && !ctx.Owner.TargetInvalid()
-                && dist > BssDirector.EngageDistance) {
+                && dist > BssDirector.ChaseValveDistance && !ctx.ChaseValveUsed) {
+                ctx.ChaseValveUsed = true;
                 return new BssBurrowLungeState();
             }
 
             if (t > BssDirector.ConnectorFrames && ctx.AttackCooldown <= 0
                 && !ctx.Owner.TargetInvalid()) {
+                ctx.ChaseValveUsed = false;
                 ctx.AttackIndex++;
                 return PickAttack(ctx);
             }
@@ -112,12 +115,16 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
         }
 
         /// <summary>
-        /// 手写轮换表：压力招（掠冲/突袭/漩涡/甩尾）与区域招（沙团/刺球/涟漪/花瓣/沙泉/沙瀑）
-        /// 交替，强招押后阶段解锁：沙泉行军 P1 即有（立起砸地的腿架戏），
-        /// 沙爆漩涡与回环沙瀑属沙暴身份 P2 解锁（转阶段收尾即漩涡首秀），
+        /// 手写轮换表：压力招（掠冲/突袭/漩涡/甩尾/腾跃）与区域招（沙团/刺球/涟漪/
+        /// 花瓣/沙泉/沙瀑/沙柱）交替，强招押后阶段解锁：沙泉行军与沙柱突刺 P1 即有
+        /// （立起砸地/跺地点名的腿架戏，突刺双槽保出场率），沙爆漩涡、回环沙瀑、
+        /// 沙柱腾跃与沙柱爆震属沙暴身份 P2 解锁（转阶段收尾即漩涡首秀），
         /// 回马甩尾 P3 才上（自带掠冲回马枪连段）。
-        /// 高飞替补按槽位各配：贴地招换成突袭/天游/漩涡等对空招，天上也有全套变化。
-        /// P3 花瓣直接连击涟漪（收招帧即后招蓄力帧）。
+        /// 沙柱三招一律前置排位且相互毗邻：突刺柱只滞留 16s，爆震必须排在突刺
+        /// 两招之内，排远了轮到时柱已沉、门槛永远不过（真机时序死穴 2026-08-31）。
+        /// 高飞替补按槽位各配：贴地招换成突袭/天游/漩涡等对空招（沙柱突刺自带空中
+        /// 凝沙变体，天然对空），天上也有全套变化。
+        /// P3 连段：花瓣直连涟漪；沙柱突刺直连爆震（种柱即引爆的连段压迫，自带种柱保底）。
         /// </summary>
         private static IBssState PickAttack(BssStateContext ctx) {
             ctx.QueuedChainState = -1;
@@ -128,26 +135,32 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             IBssState Dash() => air ? new BssBurrowLungeState() : new BssSandDashState();
 
             if (ctx.Phase >= 3) {
-                switch (ctx.AttackIndex % 10) {
+                switch (ctx.AttackIndex % 12) {
                     case 1:
                         ctx.QueuedChainState = (int)BssStateIndex.NeedleRipple;
                         return new BssPetalShakeState();
                     case 2:
-                        return new BssVortexDashState();
+                        //种柱即引爆：突刺收招直接接爆震（爆震自带种柱保底，连段必成立）
+                        ctx.QueuedChainState = (int)BssStateIndex.PillarBurst;
+                        return new BssPillarSpikeState();
                     case 3:
-                        return new BssCactusBallState();
+                        return new BssVortexDashState();
                     case 4:
                         //甩尾要贴地擦身；高飞替补漩涡（终局旗舰加密是特性）
                         return air ? new BssVortexDashState() : (IBssState)new BssTailSweepState();
                     case 5:
-                        return new BssLoopCascadeState();
+                        return new BssPillarVaultState();
                     case 6:
-                        return air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState();
+                        return new BssLoopCascadeState();
                     case 7:
-                        return new BssCoilOrbitState();
+                        return air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState();
                     case 8:
-                        return new BssNeedleRippleState();
+                        return new BssCoilOrbitState();
                     case 9:
+                        return new BssNeedleRippleState();
+                    case 10:
+                        return new BssCactusBallState();
+                    case 11:
                         return new BssBurrowLungeState();
                     default:
                         return Dash();
@@ -155,43 +168,56 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             }
 
             if (ctx.Phase >= 2) {
-                switch (ctx.AttackIndex % 10) {
+                switch (ctx.AttackIndex % 13) {
                     case 1:
                         return new BssVortexDashState();
                     case 2:
-                        return new BssNeedleRippleState();
+                        return new BssPillarSpikeState();
                     case 3:
-                        return new BssSkyWeaveState();
+                        return new BssNeedleRippleState();
                     case 4:
-                        return air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState();
+                        //爆震紧跟突刺两招内（突刺柱滞留 16s，排远了轮到时柱已沉、
+                        //门槛永远不过——真机反馈爆震整场不放的时序死穴）；
+                        //柱不够落到本槽原本的地面压制替补
+                        return BssSandPillar.CountDetonatable() >= BssDirector.BurstMinPillars
+                            ? new BssPillarBurstState()
+                            : (air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState());
                     case 5:
-                        return new BssPetalShakeState();
+                        return new BssPillarVaultState();
                     case 6:
-                        return new BssCoilOrbitState();
+                        return new BssPetalShakeState();
                     case 7:
                         return new BssLoopCascadeState();
                     case 8:
                         return air ? new BssSkyWeaveState() : (IBssState)new BssSandSpitState();
                     case 9:
+                        return air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState();
+                    case 10:
+                        return new BssCoilOrbitState();
+                    case 11:
+                        return new BssSkyWeaveState();
+                    case 12:
                         return new BssBurrowLungeState();
                     default:
                         return Dash();
                 }
             }
 
-            switch (ctx.AttackIndex % 7) {
+            switch (ctx.AttackIndex % 8) {
                 case 1:
                     return air ? new BssSkyWeaveState() : (IBssState)new BssSandSpitState();
                 case 2:
-                    return air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState();
+                    return new BssPillarSpikeState();
                 case 3:
-                    return new BssBurrowLungeState();
+                    return air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState();
                 case 4:
                     return new BssCactusBallState();
                 case 5:
                     return new BssCoilOrbitState();
                 case 6:
-                    return Dash();
+                    return new BssPillarSpikeState();
+                case 7:
+                    return new BssBurrowLungeState();
                 default:
                     return Dash();
             }

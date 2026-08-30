@@ -481,6 +481,14 @@ VictorRiftPortalProj.DisplayName: Victors Kyber-Riss
 // KikasaWallOfFleshEyeLaser.DisplayName: Kikasa Wall Of Flesh Eye Laser
 // KikasaWallOfFleshLeech.DisplayName: Kikasa Wall Of Flesh Leech
 // KikasaWallOfFleshServant.DisplayName: Kikasa Wall Of Flesh Servant
+// KikasaBloomSerpentServant.DisplayName: Kikasa Bloom Serpent Servant
+// KikasaBloomNeedle.DisplayName: Kikasa Bloom Needle
+// KikasaFesterSerpentServant.DisplayName: Kikasa Fester Serpent Servant
+// KikasaFesterGlob.DisplayName: Kikasa Fester Glob
+// KikasaFesterPool.DisplayName: Kikasa Fester Pool
+// KikasaSeaShrimpServant.DisplayName: Kikasa Sea Shrimp Servant
+// KikasaCavitationOrb.DisplayName: Kikasa Cavitation Orb
+// KikasaShrimpWaterBolt.DisplayName: Kikasa Shrimp Water Bolt
 // KikasaRainUmbrella.DisplayName: Hovering Kikasa
 // KikasaInkDrop.DisplayName: Ink Rain
 // KikasaInkPour.DisplayName: Ink Torrent
@@ -1111,6 +1119,7 @@ VictorRiftPortalProj.DisplayName: Victors Kyber-Riss
 // FuLaoOverflowSurge.DisplayName: Fu Lao Overflow Surge
 // FuPeiGateBurst.DisplayName: Fu Pei Gate Burst
 // SeaShrimpBubble.DisplayName: Sea Shrimp Bubble
+// SeaShrimpBubbleArc.DisplayName: Sea Shrimp Bubble Arc
 // SeaShrimpCavitationBubble.DisplayName: Sea Shrimp Cavitation Bubble
 // SeaShrimpClawHitbox.DisplayName: Sea Shrimp Claw Hitbox
 // SeaShrimpCrescentWave.DisplayName: Sea Shrimp Crescent Wave
@@ -1118,10 +1127,14 @@ VictorRiftPortalProj.DisplayName: Victors Kyber-Riss
 // SeaShrimpGeyserSpout.DisplayName: Sea Shrimp Geyser Spout
 // SeaShrimpJetBeam.DisplayName: Sea Shrimp Jet Beam
 // SeaShrimpLaneOmen.DisplayName: Sea Shrimp Lane Omen
+// SeaShrimpLeapVortex.DisplayName: Sea Shrimp Leap Vortex
 // SeaShrimpMiniVortex.DisplayName: Sea Shrimp Mini Vortex
 // SeaShrimpShellFrag.DisplayName: Sea Shrimp Shell Frag
+// SeaShrimpSparkBubble.DisplayName: Sea Shrimp Spark Bubble
+// SeaShrimpVoltBubble.DisplayName: Sea Shrimp Volt Bubble
 // SeaShrimpVortexWall.DisplayName: Sea Shrimp Vortex Wall
 // SeaShrimpWaterBolt.DisplayName: Sea Shrimp Water Bolt
+// SeaShrimpWaveCrest.DisplayName: Sea Shrimp Wave Crest
 // CultistArcanePulse.DisplayName: Cultist Arcane Pulse
 // CultistFallingStar.DisplayName: Cultist Falling Star
 // CultistGoldRingSeal.DisplayName: Cultist Gold Ring Seal

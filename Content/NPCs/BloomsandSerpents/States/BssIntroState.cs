@@ -49,6 +49,16 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 npc.netUpdate = true;
                 Projectile.NewProjectile(npc.GetSource_FromAI(), new Vector2(breachX, groundY - 4f),
                     Vector2.Zero, ModContent.ProjectileType<BssBreachOmen>(), 0, 0f, Main.myPlayer, BreachFrame);
+
+                //开幕双柱：玩家两翼各起一根置景柱（无伤害、长滞留），预告期与蛇的
+                //破土预告同拍隆隆，蛇出土后紧跟着立起——开幕即立"沙丘"招牌，
+                //也是 P2 爆震首秀的燃料
+                for (int flank = -1; flank <= 1; flank += 2) {
+                    Vector2 anchor = ctx.Target.Center + new Vector2(flank * 440f, 0f);
+                    BssSandPillar.Spawn(npc, anchor,
+                        BssDirector.PillarHeightMax, BssDirector.PillarWidth,
+                        BreachFrame + 10, BssDirector.PillarIntroLinger, armedPillar: false);
+                }
             }
         }
 

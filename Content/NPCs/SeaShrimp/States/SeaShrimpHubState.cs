@@ -79,64 +79,83 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
         /// <summary>
         /// 手写轮换表（压力/走位/压制/封场件交替），距离自适应：
         /// 螯刺/空泡拳要够近，够不着时换成远程压制或穿场突袭。
-        /// P1 六招起步（犁浪/间歇泉/水刃扩编），P2 上水炮/涡旋/泡幕，
+        /// 二期扩编（雷泡大炮/泡球连拍/跃空砸落）P1 全解锁，环内占 2/4/7 位彼此不相邻——
+        /// 每轮必见全三招（中等频率），P2 上水炮/涡旋/泡幕，
         /// P3 押上超空泡终拳（好招押到低血量），环内重拍不相邻
         /// </summary>
         private static ISeaShrimpState PickAttack(SeaShrimpStateContext ctx, float dist) {
             ctx.QueuedChainState = -1;
 
             if (ctx.Phase >= 3) {
-                switch (ctx.AttackIndex % 8) {
+                switch (ctx.AttackIndex % 11) {
                     case 1:
                         return new SeaShrimpAbyssJetState();
                     case 2:
-                        return dist < 480f ? new SeaShrimpClawJabState() : new SeaShrimpWaterVolleyState();
+                        return new SeaShrimpBubbleCannonState();
                     case 3:
                         return new SeaShrimpSuperCavitationState();
                     case 4:
-                        return new SeaShrimpVortexTossState();
+                        return new SeaShrimpSkyLeapState();
                     case 5:
-                        return new SeaShrimpPlowChargeState();
+                        return dist < 480f ? new SeaShrimpClawJabState() : new SeaShrimpWaterVolleyState();
                     case 6:
-                        return new SeaShrimpBubbleCurtainState();
+                        return new SeaShrimpBubbleBatState();
                     case 7:
+                        return new SeaShrimpVortexTossState();
+                    case 8:
+                        return new SeaShrimpPlowChargeState();
+                    case 9:
                         return new SeaShrimpTailFlipStrikeState();
+                    case 10:
+                        return new SeaShrimpBubbleCurtainState();
                     default:
                         return dist < 560f ? new SeaShrimpCavitationPunchState() : new SeaShrimpGeyserMarchState();
                 }
             }
 
             if (ctx.Phase >= 2) {
-                switch (ctx.AttackIndex % 8) {
+                switch (ctx.AttackIndex % 11) {
                     case 1:
                         return new SeaShrimpAbyssJetState();
                     case 2:
-                        return new SeaShrimpCrystalSpikesState();
+                        return new SeaShrimpBubbleBatState();
                     case 3:
-                        return dist < 480f ? new SeaShrimpClawJabState() : new SeaShrimpWaterVolleyState();
+                        return new SeaShrimpCrystalSpikesState();
                     case 4:
-                        return new SeaShrimpVortexTossState();
+                        return new SeaShrimpSkyLeapState();
                     case 5:
-                        return new SeaShrimpBubbleCurtainState();
+                        return dist < 480f ? new SeaShrimpClawJabState() : new SeaShrimpWaterVolleyState();
                     case 6:
-                        return new SeaShrimpTailFlipStrikeState();
+                        return new SeaShrimpVortexTossState();
                     case 7:
+                        return new SeaShrimpBubbleCannonState();
+                    case 8:
+                        return new SeaShrimpBubbleCurtainState();
+                    case 9:
+                        return new SeaShrimpTailFlipStrikeState();
+                    case 10:
                         return new SeaShrimpGeyserMarchState();
                     default:
                         return dist < 560f ? new SeaShrimpCavitationPunchState() : new SeaShrimpPlowChargeState();
                 }
             }
 
-            switch (ctx.AttackIndex % 6) {
+            switch (ctx.AttackIndex % 9) {
                 case 1:
                     return new SeaShrimpPlowChargeState();
                 case 2:
-                    return new SeaShrimpGeyserMarchState();
+                    return new SeaShrimpBubbleBatState();
                 case 3:
-                    return dist < 480f ? new SeaShrimpClawJabState() : new SeaShrimpWaterVolleyState();
+                    return new SeaShrimpGeyserMarchState();
                 case 4:
-                    return new SeaShrimpCrescentClapState();
+                    return new SeaShrimpSkyLeapState();
                 case 5:
+                    return dist < 480f ? new SeaShrimpClawJabState() : new SeaShrimpWaterVolleyState();
+                case 6:
+                    return new SeaShrimpCrescentClapState();
+                case 7:
+                    return new SeaShrimpBubbleCannonState();
+                case 8:
                     return new SeaShrimpTailFlipStrikeState();
                 default:
                     return dist < 560f ? new SeaShrimpCavitationPunchState() : new SeaShrimpWaterVolleyState();

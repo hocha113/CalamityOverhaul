@@ -70,14 +70,26 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 return;
             }
 
-            //同 LegendData 引用已在队/展示中则忽略(不看 ItemType)
-            if (current != null && ReferenceEquals(current.Data, data)) {
+            //去重按稳定身份"物品类型+目标等级"(同引用是其特例)：LegendData 引用会被
+            //Clone/SetDefaults/NetReceive 换新，只按引用去重时拿起物品即反复入队，
+            //通知数可飙到数百(反馈四 #89)。顺扫时失效项就地剔除，防僵尸堆积
+            if (current != null && IsSameAsk(current, data, item, targetLevel)) {
                 return;
             }
-            foreach (var pending in queue) {
-                if (ReferenceEquals(pending.Data, data)) {
-                    return;
+            bool duplicated = false;
+            int sweep = queue.Count;
+            for (int i = 0; i < sweep; i++) {
+                PendingRequest pending = queue.Dequeue();
+                if (!pending.IsStillValid()) {
+                    continue;
                 }
+                if (IsSameAsk(pending, data, item, targetLevel)) {
+                    duplicated = true;
+                }
+                queue.Enqueue(pending);
+            }
+            if (duplicated) {
+                return;
             }
 
             var req = new PendingRequest {
@@ -149,6 +161,11 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
             AdvanceQueue();
         }
+
+        /// <summary>同一请求判定：同 LegendData 引用，或同物品类型+同目标等级</summary>
+        private static bool IsSameAsk(PendingRequest pending, LegendData data, Item item, int targetLevel)
+            => ReferenceEquals(pending.Data, data)
+                || (pending.ItemType == item.type && pending.TargetLevel == targetLevel);
 
         /// <summary>清空队列，不写数据</summary>
         public static void CancelAll() {

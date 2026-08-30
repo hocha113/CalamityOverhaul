@@ -534,7 +534,23 @@ namespace CalamityOverhaul.Content.Players
                 && npc.realLife < 0 && npc.type != NPCID.TargetDummy
                 && !NPCID.Sets.ProjectileNPC[npc.type]
                 && !NPCID.Sets.PositiveNPCTypesExcludedFromDeathTally[npc.type]
-                && !NpcGroupHelper.IsBossTier(npc);
+                && !NpcGroupHelper.IsBossTier(npc)
+                && !IsUnflaggedBossCompanion(npc);
+
+        /// <summary>
+        /// 灾厄圣卫（史莱姆之神战斗成员）不设 boss 旗标、无 realLife 锚也不在体节名单，
+        /// IsBossTier 四层全漏；替死转移伤害取 max(受伤, 当前生命) 等于即死，
+        /// 被选中即两秒终结 Boss 战（反馈四 #57）。这里按 ID 显式豁免；
+        /// 小史莱姆仆从（SlimeSpawn 系）是常规战斗仆从，保留为合法替死目标
+        /// </summary>
+        private static bool IsUnflaggedBossCompanion(NPC npc) {
+            if (!CWRRef.Has) {
+                return false;
+            }
+            int type = npc.type;
+            return type == CWRID.NPC_EbonianPaladin || type == CWRID.NPC_CrimulanPaladin
+                || type == CWRID.NPC_SplitEbonianPaladin || type == CWRID.NPC_SplitCrimulanPaladin;
+        }
 
         /// <summary>
         /// 将 PlayerDeathReason 中仍存活的致因实体投影成 NPC HitInfo。<br/>

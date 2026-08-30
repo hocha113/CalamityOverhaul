@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -72,6 +73,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
             public int Damage;
             public float Knockback;
             public int Timer;
+            /// <summary>源弹登记时的 whoAmI；供跨弹锚定类弹种(漫天星鱼)重锚镜像主星</summary>
+            public int SourceIndex;
         }
 
         /// <summary>本帧装备生效，物品钩子逐帧点亮</summary>
@@ -97,6 +100,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
 
         private bool mirrorPosValid;
         private readonly List<PendingEcho> pendingEchoes = new(EchoQueueCap);
+        //漫天星鱼锚定映射：原主星 whoAmI → 镜像主星 whoAmI，随队列同生同灭
+        private readonly Dictionary<int, int> starEchoAnchorMap = [];
         private long lastEchoSoundTick;
 
         //计时挂 ResetEffects：上游 Player.Update 里它与死亡分支互斥(PreUpdate 则死活都跑，
@@ -109,6 +114,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
         public override void UpdateDead() {
             TickTimers();
             pendingEchoes.Clear();
+            starEchoAnchorMap.Clear();
         }
 
         private void TickTimers() {
@@ -187,12 +193,14 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
             if (VaultUtils.isServer) {
                 //服务端不推演镜位(纯表现)，只保证队列不积压
                 pendingEchoes.Clear();
+                starEchoAnchorMap.Clear();
                 return;
             }
 
             if (!Equipped || Player.dead) {
                 mirrorPosValid = false;
                 pendingEchoes.Clear();
+                starEchoAnchorMap.Clear();
                 return;
             }
 
@@ -262,7 +270,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
                 Ai2 = projectile.ai[2],
                 Damage = Math.Max(1, (int)(projectile.damage * EchoDamageMul)),
                 Knockback = projectile.knockBack * 0.75f,
-                Timer = EchoDelay
+                Timer = EchoDelay,
+                SourceIndex = projectile.whoAmI
             });
         }
 
@@ -272,6 +281,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
         /// </summary>
         private void FirePendingEchoes() {
             if (pendingEchoes.Count == 0) {
+                if (starEchoAnchorMap.Count > 0) {
+                    starEchoAnchorMap.Clear();
+                }
                 return;
             }
             if (Player.whoAmI != Main.myPlayer || !mirrorPosValid) {
@@ -279,6 +291,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
             }
 
             int fired = 0;
+            int spiralStarType = ModContent.ProjectileType<SpiralStarProjectile>();
             for (int i = 0; i < pendingEchoes.Count; i++) {
                 PendingEcho echo = pendingEchoes[i];
                 echo.Timer--;
@@ -287,9 +300,28 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
                     continue;
                 }
 
-                Projectile.NewProjectile(Player.GetSource_Misc(EchoSourceContext),
+                //漫天星鱼伴星以 ai0=主星 whoAmI+1 跨弹锚定，照抄会锚回原主星与原伴星
+                //叠轨(反馈四 #63)：主星复制体出膛时登记旧→新映射，伴星复制体重锚
+                //镜像主星；映射缺失(主星未入队/已被清)则该伴星放弃复现
+                float ai0 = echo.Ai0;
+                if (echo.Type == spiralStarType && ai0 > 0f) {
+                    if (starEchoAnchorMap.TryGetValue((int)ai0 - 1, out int echoMain)) {
+                        ai0 = echoMain + 1;
+                    }
+                    else {
+                        pendingEchoes.RemoveAt(i);
+                        i--;
+                        continue;
+                    }
+                }
+
+                int newIndex = Projectile.NewProjectile(Player.GetSource_Misc(EchoSourceContext),
                     MirrorPos, echo.Velocity, echo.Type, echo.Damage, echo.Knockback,
-                    Player.whoAmI, echo.Ai0, echo.Ai1, echo.Ai2);
+                    Player.whoAmI, ai0, echo.Ai1, echo.Ai2);
+                if (echo.Type == spiralStarType && echo.Ai0 == 0f
+                    && newIndex >= 0 && newIndex < Main.maxProjectiles) {
+                    starEchoAnchorMap[echo.SourceIndex] = newIndex;
+                }
                 pendingEchoes.RemoveAt(i);
                 i--;
                 fired++;
@@ -345,6 +377,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.BrainOfCthulhu
             ShatterTimer = ShatterRebuildTime;
             CloneMaterialize = 0f;
             pendingEchoes.Clear();
+            starEchoAnchorMap.Clear();
             //裂响之后镜中之物涌出：复现窗口与悖论反噬同拍点亮(owner 本地字段)
             EchoWindowTimer = EchoWindowFrames;
             BacklashTimer = BacklashFrames;

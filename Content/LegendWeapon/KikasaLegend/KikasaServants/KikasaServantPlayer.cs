@@ -464,9 +464,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                     tag["KikasaArmsMemoryName"] = modItem.FullName;
                 }
             }
-            //沉影盘：鬼奴注册表只收原版 boss，键即原版类型号，跨会话稳定
+            //沉影盘：原版 boss 按类型号存（跨会话稳定），模组 boss 按全名存（类型号跨会话不稳定）
             if (collectedServants.Count > 0) {
-                tag["KikasaServantCodex"] = collectedServants.ToList();
+                List<int> vanillaServants = [];
+                List<string> moddedServants = [];
+                foreach (int type in collectedServants) {
+                    if (type < NPCID.Count) {
+                        vanillaServants.Add(type);
+                    }
+                    else if (NPCLoader.GetNPC(type) is ModNPC modServant) {
+                        moddedServants.Add(modServant.FullName);
+                    }
+                }
+                if (vanillaServants.Count > 0) {
+                    tag["KikasaServantCodex"] = vanillaServants;
+                }
+                if (moddedServants.Count > 0) {
+                    tag["KikasaServantCodexNames"] = moddedServants;
+                }
             }
             //械奴册对任意武器开放：原版按类型号、模组物品按全名存（类型号跨会话不稳定）
             if (collectedArms.Count > 0) {
@@ -502,6 +517,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             if (anySlotName) {
                 tag["KikasaLakeSlotNames"] = slotNames;
             }
+            //驻模组鬼奴的席位并行存 NPC 全名，读档按名恢复（int 表里的失效键会被校验丢弃）
+            List<string> slotNpcNames = [.. Enumerable.Repeat(string.Empty, SlotCount)];
+            bool anySlotNpcName = false;
+            for (int i = 0; i < SlotCount; i++) {
+                int key = lakeSlots[i];
+                if (key >= NPCID.Count && NPCLoader.GetNPC(key) is ModNPC slotServant) {
+                    slotNpcNames[i] = slotServant.FullName;
+                    anySlotNpcName = true;
+                }
+            }
+            if (anySlotNpcName) {
+                tag["KikasaLakeSlotNpcNames"] = slotNpcNames;
+            }
             tag["KikasaSlotHeld"] = slotHeld.ToList();
         }
 
@@ -533,13 +561,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
 
             //收集册与影位：逐条校验解析链，读损/退役条目静默丢弃
             bool hasCodexTag = tag.ContainsKey("KikasaServantCodex")
+                || tag.ContainsKey("KikasaServantCodexNames")
                 || tag.ContainsKey("KikasaArmsCodex") || tag.ContainsKey("KikasaArmsCodexNames")
                 || tag.ContainsKey("KikasaLakeSlots");
             if (tag.TryGet("KikasaServantCodex", out List<int> codex)) {
                 foreach (int type in codex) {
+                    //int 表只认原版段：模组类型号跨会话不稳定，可能误指到别的 NPC
+                    if (type >= NPCID.Count) {
+                        continue;
+                    }
                     int canonical = KikasaServantIndex.CanonicalOf(type);
                     if (canonical > 0) {
                         collectedServants.Add(canonical);
+                    }
+                }
+            }
+            //模组鬼奴按全名找回当前会话的类型号，找不到（卸了模组/退役）静默丢弃
+            if (tag.TryGet("KikasaServantCodexNames", out List<string> servantNames)) {
+                foreach (string servantName in servantNames) {
+                    if (ModContent.TryFind(servantName, out ModNPC modServant)) {
+                        int canonical = KikasaServantIndex.CanonicalOf(modServant.Type);
+                        if (canonical > 0) {
+                            collectedServants.Add(canonical);
+                        }
                     }
                 }
             }
@@ -562,6 +606,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             if (tag.TryGet("KikasaLakeSlots", out List<int> slots)) {
                 for (int i = 0; i < SlotCount && i < slots.Count; i++) {
                     int key = slots[i];
+                    //正键模组段跳过：那是上一会话的失效类型号，由席位全名表恢复
+                    if (key >= NPCID.Count) {
+                        continue;
+                    }
                     if (key != 0 && IsCollected(key) && SlotIndexOf(key) < 0) {
                         lakeSlots[i] = key;
                     }
@@ -577,6 +625,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                     }
                     int key = -modArm.Type;
                     if (IsCollected(key) && SlotIndexOf(key) < 0) {
+                        lakeSlots[i] = key;
+                    }
+                }
+            }
+            //模组鬼奴席位同理按 NPC 全名恢复，过规范归并校验
+            if (tag.TryGet("KikasaLakeSlotNpcNames", out List<string> slotNpcNamesIn)) {
+                for (int i = 0; i < SlotCount && i < slotNpcNamesIn.Count; i++) {
+                    string npcName = slotNpcNamesIn[i];
+                    if (string.IsNullOrEmpty(npcName)
+                        || !ModContent.TryFind(npcName, out ModNPC slotServant)) {
+                        continue;
+                    }
+                    int key = KikasaServantIndex.CanonicalOf(slotServant.Type);
+                    if (key > 0 && IsCollected(key) && SlotIndexOf(key) < 0) {
                         lakeSlots[i] = key;
                     }
                 }

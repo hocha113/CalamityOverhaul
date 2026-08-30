@@ -22,16 +22,20 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
     /// <summary>四足步态指令（纯表现，各端本地模拟）</summary>
     internal enum BssLegCommand
     {
-        /// <summary>常态步行：足端踩地、超步幅换步</summary>
+        /// <summary>常态步行：足端钉世界落点、超步幅/超伸展换步（够不着地自动腾空卷曲）</summary>
         March,
         /// <summary>钻沙收拢贴体</summary>
         Tuck,
-        /// <summary>立起姿态：前腿举离地面</summary>
+        /// <summary>立起姿态：前腿螳螂式收折举离地面</summary>
         Raise,
-        /// <summary>腾空划游（与步行同一划桨节律，空中照样爬，无地面交互）</summary>
+        /// <summary>强制腾空卷曲（抓挠空气，无地面交互）</summary>
         Flail,
         /// <summary>死亡逐腿失力（配合 CollapsedLegs 计数）</summary>
         Collapse,
+        /// <summary>柱面抓握：足端锚沙柱壁面攀爬（几何由 LegGrip* 声明）</summary>
+        Grip,
+        /// <summary>蓄势蹲伏：站距外扩贴地咬定、快步稳桩（起跳前的压缩拍）</summary>
+        Brace,
     }
 
     /// <summary>荒花沙蟒状态上下文</summary>
@@ -53,6 +57,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public int Phase { get => (int)Npc.ai[2]; set => Npc.ai[2] = value; }
         /// <summary>连击队列：收招后直接接的状态号（-1 无）</summary>
         public int QueuedChainState { get; set; } = -1;
+        /// <summary>追击阀已用闸（连接件不许连发；轮换出招时清零，权威端裁决量）</summary>
+        public bool ChaseValveUsed { get; set; }
         /// <summary>死亡演出已完，CheckDead 据此放行</summary>
         public bool DeathPerformanceFinished { get; set; }
         #endregion
@@ -84,6 +90,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public int CollapsedLegs { get; set; }
         /// <summary>腿整体可见度（钻沙期渐隐）</summary>
         public float LegAlpha { get; set; } = 1f;
+
+        /// <summary>柱面抓握声明（Grip 指令的几何，每帧重声明；盘柱状态喂值）</summary>
+        public bool LegGripActive { get; set; }
+        public float LegGripCenterX { get; set; }
+        public float LegGripHalfWidth { get; set; }
+        public float LegGripTopY { get; set; }
+        public float LegGripBottomY { get; set; }
         #endregion
 
         #region 表现通道
@@ -156,6 +169,17 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
             return Math.Min(sum, 1.25f);
         }
 
+        /// <summary>怒吼声波环龄（帧；&lt;0 = 无。爆震怒吼帧点火，头部绘制层消费）</summary>
+        public float RoarRingAge { get; set; } = -1f;
+        /// <summary>声波环心（点火帧锁定，不随头移动）</summary>
+        public Vector2 RoarRingCenter { get; set; }
+
+        /// <summary>点一记怒吼声波环（各端本地演出）</summary>
+        public void FireRoarRing(Vector2 center) {
+            RoarRingAge = 0f;
+            RoarRingCenter = center;
+        }
+
         /// <summary>红花节辉光 0..1（涟漪预告/怒放）</summary>
         public float BloomGlow { get; set; }
         /// <summary>全身抖动强度 0..1（体节绘制层读取，位置不动）</summary>
@@ -206,11 +230,15 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
             Slither = 0f;
             AimAngle = float.NaN;
             LegCommand = BssLegCommand.March;
+            LegGripActive = false;
             PulseKind = 0;
             PulsePhase = 0f;
 
             WhipAge = Math.Min(WhipAge + 1f, 999f);
             GapWaveAge = Math.Min(GapWaveAge + 1f, 999f);
+            if (RoarRingAge >= 0f && ++RoarRingAge > 46f) {
+                RoarRingAge = -1f;
+            }
             GatherLevel = 0f;
             for (int k = 0; k < StationBob.Length; k++) {
                 StationBob[k] *= 0.85f;

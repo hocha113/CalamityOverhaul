@@ -88,6 +88,16 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             return false;
         }
 
+        protected override void ChantProjOnSpawnInherited(Projectile proj, GodSmithProjRouter router,
+            Projectile parent, GodSmithProjRouter parentRouter) {
+            //蜂后产的蜂是普通蜂：承签复制会把 FormQueen 一并传给子蜂，
+            //子蜂再当蜂后产蜂即指数增殖、蜂群不灭(反馈四 #52)；出生瞬间降级，随生成包过线。
+            //根钩子 GsProjOnSpawnInherited 被咏唱基类密封，这里走族内扩展点（时序仍先于生成包）
+            if (parentRouter.MarkData == FormQueen) {
+                router.MarkData = 0f;
+            }
+        }
+
         public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
             //蜂后产蜂：每 30 帧一只、至多六只，扑向最近敌
             if (router.MarkData == FormQueen && proj.IsOwnedByLocalPlayer()) {

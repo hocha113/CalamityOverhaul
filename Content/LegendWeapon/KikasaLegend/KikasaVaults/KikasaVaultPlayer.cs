@@ -105,10 +105,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                 return false;
             }
 
+            //先记来源：GetItem 鼠标有物时返回的是 Main.mouseItem 本体
+            bool fromMouse = ReferenceEquals(item, Main.mouseItem);
+
             Item stored = item.Clone();
             Stored.Add(stored);
             //GetItem 返回的就是光标物或快捷栏槽位本体，原地清空即可
             item.TurnToAir();
+            //沉的是鼠标物时，槽 58 与 mouseItem 可能是两个引用，只清一头会被镜像
+            //同步写回而复制（反馈四 #10/#54）；同帧两边一起清，对齐 RamUpgradeChips 口径
+            if (fromMouse && Player.inventory.Length > 58) {
+                Player.inventory[58].TurnToAir();
+            }
 
             //已注册的武器同时写进鬼奴记忆：湖学会了驱使这批武器（未注册的照旧纯存储）
             Player.GetModPlayer<KikasaServants.KikasaServantPlayer>().RecordDrownedItem(stored.type);

@@ -28,7 +28,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
         /// <summary>在场寿命（帧），尽头化雾</summary>
         internal const int LifeFrames = 300;
 
-        private const int DissolveFrames = 26;
+        /// <summary>化雾包络时长；唤犬侧的满编顶替闸引用它对齐节奏</summary>
+        internal const int DissolveFrames = 26;
 
         //==================== 状态 ====================
 

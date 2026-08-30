@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaDestroyer;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaEye;
+using CalamityOverhaul.Content.NPCs.BloomsandSerpents;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -64,6 +65,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             Register(KikasaAffinity.Nightmare, KikasaEyeServant.Summon,
                 static () => ModContent.ProjectileType<KikasaEyeServant>(),
                 NPCID.EyeofCthulhu);
+            //荒花沙蟒（本模组 boss，类型号运行期求值）：沉哪一节都记同一条
+            Register(KikasaAffinity.Flame, KikasaBloomSerpent.KikasaBloomSerpentServant.Summon,
+                static () => ModContent.ProjectileType<KikasaBloomSerpent.KikasaBloomSerpentServant>(),
+                ModContent.NPCType<BssHead>(), ModContent.NPCType<BssBody>(),
+                ModContent.NPCType<BssTail>());
             //世界吞噬怪：沉的可能是任意一节，头/体/尾都记同一条
             Register(KikasaAffinity.Rain, KikasaEater.KikasaEaterServant.Summon,
                 static () => ModContent.ProjectileType<KikasaEater.KikasaEaterServant>(),
@@ -89,6 +95,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             Register(KikasaAffinity.Rain, KikasaQueenSlime.KikasaQueenSlimeServant.Summon,
                 static () => ModContent.ProjectileType<KikasaQueenSlime.KikasaQueenSlimeServant>(),
                 NPCID.QueenSlimeBoss);
+            //脓蕾沙蟒（本模组 boss，类型号运行期求值）：沉哪一节都记同一条
+            Register(KikasaAffinity.Nightmare, KikasaFesterSerpent.KikasaFesterSerpentServant.Summon,
+                static () => ModContent.ProjectileType<KikasaFesterSerpent.KikasaFesterSerpentServant>(),
+                ModContent.NPCType<NPCs.FestersandSerpents.FssHead>(),
+                ModContent.NPCType<NPCs.FestersandSerpents.FssBody>(),
+                ModContent.NPCType<NPCs.FestersandSerpents.FssTail>());
             //双子魔眼：同源同沉，沉任意一只都召出成对双瞳
             Register(KikasaAffinity.Nightmare, KikasaTwins.KikasaTwinsServant.Summon,
                 static () => ModContent.ProjectileType<KikasaTwins.KikasaTwinsServant>(),
@@ -111,6 +123,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 static () => ModContent.ProjectileType<KikasaGolem.KikasaGolemServant>(),
                 NPCID.Golem, NPCID.GolemHead, NPCID.GolemHeadFree,
                 NPCID.GolemFistLeft, NPCID.GolemFistRight);
+            //渊晶海虾（本模组 boss，类型号运行期求值）：单体
+            Register(KikasaAffinity.Rain, KikasaSeaShrimp.KikasaSeaShrimpServant.Summon,
+                static () => ModContent.ProjectileType<KikasaSeaShrimp.KikasaSeaShrimpServant>(),
+                ModContent.NPCType<NPCs.SeaShrimp.SeaShrimpBoss>());
             Register(KikasaAffinity.Rain, KikasaFishron.KikasaFishronServant.Summon,
                 static () => ModContent.ProjectileType<KikasaFishron.KikasaFishronServant>(),
                 NPCID.DukeFishron);

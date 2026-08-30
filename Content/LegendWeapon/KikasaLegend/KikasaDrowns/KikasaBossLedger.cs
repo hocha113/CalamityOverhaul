@@ -42,6 +42,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             [NPCID.MoonLordCore] = static () => NPC.downedMoonlord,
         };
 
+        //本模组自产 boss 规范类型 → 世界旗标；懒建避开加载期类型未注册
+        private static Dictionary<int, Func<bool>> cwrDowned;
+
+        private static Dictionary<int, Func<bool>> BuildCwrMap() => new() {
+            [ModContent.NPCType<NPCs.BloomsandSerpents.BssHead>()]
+                = static () => NPCs.BloomsandSerpents.BssWorldFlag.DownedBloomSerpent,
+            [ModContent.NPCType<NPCs.FestersandSerpents.FssHead>()]
+                = static () => NPCs.FestersandSerpents.FssWorldFlag.DownedFesterSerpent,
+            [ModContent.NPCType<NPCs.SeaShrimp.SeaShrimpBoss>()]
+                = static () => NPCs.SeaShrimp.SeaShrimpWorldFlag.DownedSeaShrimp,
+        };
+
         //灾厄 boss 头类型 → 灾厄 downed 委托；懒建，CWRID 取值在灾厄缺席时只会得 0
         private static Dictionary<int, Func<bool>> calamityDowned;
 
@@ -134,6 +146,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         internal static bool IsDefeatedType(int identityType) {
             if (vanillaDowned.TryGetValue(identityType, out Func<bool> flag)) {
                 return flag();
+            }
+            //本模组 boss 认自家世界旗标；旗标未立仍落入台账兜底（登记前的旧档击杀记录还认）
+            cwrDowned ??= BuildCwrMap();
+            if (cwrDowned.TryGetValue(identityType, out Func<bool> cwrFlag) && cwrFlag()) {
+                return true;
             }
             if (CWRRef.Has) {
                 calamityDowned ??= BuildCalamityMap();
