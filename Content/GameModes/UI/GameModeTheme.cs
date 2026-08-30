@@ -93,6 +93,23 @@ namespace CalamityOverhaul.Content.GameModes.UI
         /// <summary>拒绝/锁定警示红</summary>
         public static readonly Color DangerRed = new(226, 74, 64);
 
+        //——Boss 锁定封条的冷钢族（锁链/挂锁）：中性钢色，不与任何模式旗色抢戏——
+
+        /// <summary>锁链正面环暗钢</summary>
+        public static readonly Color ChainSteel = new(62, 58, 70);
+        /// <summary>锁链侧立环沉钢</summary>
+        public static readonly Color ChainSteelDark = new(46, 43, 52);
+        /// <summary>锁链受光亮缘</summary>
+        public static readonly Color ChainSteelLit = new(142, 136, 152);
+        /// <summary>挂锁体填充</summary>
+        public static readonly Color LockBodyFill = new(44, 41, 50);
+        /// <summary>挂锁顶缘受光</summary>
+        public static readonly Color LockBevel = new(150, 145, 160);
+        /// <summary>锁孔近黑（兼作挂锁底缘沉影）</summary>
+        public static readonly Color KeyholeDark = new(8, 7, 10);
+        /// <summary>链上巡行冷光</summary>
+        public static readonly Color ChainGlint = new(214, 218, 230);
+
         /// <summary>表现脸的主 accent</summary>
         public static Color Accent(GameModeFace face) => face switch {
             GameModeFace.Brutal => BrutalAccent,

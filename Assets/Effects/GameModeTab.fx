@@ -6,6 +6,8 @@
 // / 神匠=锤击循环+落点火星+砧面熔光
 //悬停=纹样微放大发烫+旗缘火舌+风起摆幅增；uPress=受理按压回响；uDeny=拒绝红脉冲
 //uGuide=首见引导的旗内增辉（旗外光环由 CPU 画）
+//Boss 锁定不再置灰（与未点亮的灰刻痕撞车）：uDisabled 只压悬摆（旗被锁链钉住），
+//锁链封条本体由 CPU 层（GameModeRenderer.DrawLockSeal）盖绘
 //AlphaBlend 预乘；ps_3_0
 //uMode 0=残酷（三道爪痕） 1=修罗（环+三棱+芯） 2=毁灭（坍缩环+镰月+坠星） 3=神匠（锤与砧）
 // ============================================================================
@@ -20,7 +22,7 @@ float uLit;         //0..1 点亮程度（CPU 缓动）
 float uHover;       //0..1 悬停
 float uBurst;       //0..1 切换爆发进度（1=无）
 float uBurstOn;     //1=本次爆发是"开启"（纹样随爆发逐道亮），0=关闭爆发
-float uDisabled;    //0..1 Boss 锁定置灰
+float uDisabled;    //0..1 Boss 锁定：只压悬摆，不动色（锁链封条在 CPU 层）
 float uPress;       //0..1 受理按压回响（联机等回执期的即时确认）
 float uDeny;        //0..1 拒绝红脉冲（与 CPU 横震同拍）
 float3 uAccent;     //模式主色
@@ -85,9 +87,10 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float aspect = uResolution.x / max(uResolution.y, 1.0);
     float2 p = (coords - 0.5) * float2(aspect, 1.0);
 
-    //——布面悬摆：顶缘是挂轨（固定），越往下摆幅越大；悬停当作风起，摆幅微增——
+    //——布面悬摆：顶缘是挂轨（固定），越往下摆幅越大；悬停当作风起，摆幅微增；
+    //Boss 锁定时旗面被锁链钉住，摆幅压去大半（色不动，锁定语言交给 CPU 锁链封条）——
     float hang = saturate(p.y + 0.44);
-    float swayAmp = hang * hang * (0.011 + 0.007 * uHover);
+    float swayAmp = hang * hang * (0.011 + 0.007 * uHover) * (1.0 - 0.72 * uDisabled);
     float swayPh = uTime * 1.35 + uMode * 2.1 + p.y * 3.4;
     float sway = sin(swayPh) + 0.45 * sin(uTime * 2.9 + uMode * 0.7 - p.y * 6.2);
     p.x += sway * swayAmp;
@@ -289,10 +292,6 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     //——切换爆发：扩张环闪——
     float shock = smoothstep(0.10, 0.0, abs(r - uBurst * 0.62)) * (1.0 - uBurst) * step(uBurst, 0.999);
     col += (uEmber * 0.8 + 0.45) * shock * (0.55 + 0.45 * uBurstOn);
-
-    //——Boss 锁定：压灰——
-    float gray = dot(col, float3(0.30, 0.50, 0.20));
-    col = lerp(col, float3(gray, gray, gray) * 0.55, uDisabled * 0.85);
 
     //——合成：旗身 + 悬停外晕（悬停晕随火舌闪烁）——
     float halo = smoothstep(0.10, 0.0, d) * (1.0 - body)

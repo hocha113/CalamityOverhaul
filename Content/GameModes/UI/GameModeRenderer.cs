@@ -1,8 +1,10 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.UIs.UIEffect;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Terraria;
 using Terraria.GameContent;
 
@@ -10,7 +12,8 @@ namespace CalamityOverhaul.Content.GameModes.UI
 {
     /// <summary>
     /// 模式标签绘制：shader 旗身（<see cref="EffectLoader.GameModeTab"/>）+ CPU 矢量回退 + 切换演出大字。
-    /// 另持余烬微粒池与越身扩张环、首见信标等亮色辉光件（暗层禁 magic-pixel 假羽化，亮线多 pass 合法）。
+    /// 另持余烬微粒池与越身扩张环、首见信标等亮色辉光件（暗层禁 magic-pixel 假羽化，亮线多 pass 合法），
+    /// 以及 Boss 锁定的锁链封条（<see cref="DrawLockSeal"/>，SVG 矢量盖绘）。
     /// 批处理契约照 TBUGRenderer.ShaderQuad：End → Immediate+effect → 画 quad → 恢复 Deferred
     /// </summary>
     internal static class GameModeRenderer
@@ -27,7 +30,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
 
             Effect effect = EffectLoader.GameModeTab?.Value;
             if (effect == null) {
-                DrawTabFallback(sb, rect, face, lit, disabled, alpha);
+                DrawTabFallback(sb, rect, face, lit, alpha);
                 return;
             }
 
@@ -50,14 +53,16 @@ namespace CalamityOverhaul.Content.GameModes.UI
             ShaderQuad(sb, effect, rect);
         }
 
-        /// <summary>shader 缺编时的诚实矢量回退：漆底 + 边线 + 模式线稿</summary>
+        /// <summary>
+        /// shader 缺编时的诚实矢量回退：漆底 + 边线 + 模式线稿。
+        /// 锁定态不在这里置灰——锁链封条由 <see cref="DrawLockSeal"/> 独立盖绘，两条路径共用
+        /// </summary>
         private static void DrawTabFallback(SpriteBatch sb, Rectangle rect, GameModeFace face,
-            float lit, float disabled, float alpha) {
+            float lit, float alpha) {
             Color baseCol = GameModeTheme.NightBase * (0.94f * alpha);
             sb.Draw(Pixel, rect, One, baseCol);
 
-            Color iconCol = Color.Lerp(GameModeTheme.BoneDim, GameModeTheme.Accent(face), lit);
-            iconCol = Color.Lerp(iconCol, Color.Gray * 0.6f, disabled) * alpha;
+            Color iconCol = Color.Lerp(GameModeTheme.BoneDim, GameModeTheme.Accent(face), lit) * alpha;
             Color rim = iconCol * 0.8f;
 
             //1px 边
@@ -140,6 +145,138 @@ namespace CalamityOverhaul.Content.GameModes.UI
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
                 DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+        }
+
+        //——Boss 锁定封条：交叉锁链 + 挂锁（SVG 矢量盖绘）。
+        //置灰语言已废：置灰与未点亮的灰刻痕在静态截图里无法区分（用户裁定 2026-08-30），
+        //锁定态旗色一概不动，"不可切换"由锁链自己说话。
+        //几何蓝本与离线自检：.vissandbox/jobs/plot_lockseal_svg.py（C# 与脚本保持同一份数）——
+
+        /// <summary>链环椭圆的贝塞尔近似系数</summary>
+        private const float LinkKappa = 0.5523f;
+
+        /// <summary>正面链环（椭圆描边）串，归一 [-1,1] 沿 X 排布，居中环被挂锁遮住</summary>
+        private static readonly string ChainLinksD = BuildChainD(true);
+        /// <summary>侧立链环（短棱）串，与正面环交替</summary>
+        private static readonly string ChainBarsD = BuildChainD(false);
+        /// <summary>挂锁锁梁：U 型两腿垂入锁体（px 单位，scale=1 绘制）</summary>
+        private const string ShackleD = "M -4.2 -1.5 L -4.2 -6.0 C -4.2 -9.0 4.2 -9.0 4.2 -6.0 L 4.2 -1.5";
+        /// <summary>锁孔圆环（px 单位，圆心即绘制 center）</summary>
+        private static readonly string KeyholeRingD = EllipseD(0f, 1.6f, 1.6f);
+
+        /// <summary>椭圆的 4 段 C 曲线 d 串（SvgPathPen 不支持 A 弧线指令）</summary>
+        private static string EllipseD(float cx, float rx, float ry) {
+            float kx = rx * LinkKappa;
+            float ky = ry * LinkKappa;
+            return string.Create(CultureInfo.InvariantCulture,
+                $"M {cx - rx} 0 C {cx - rx} {-ky} {cx - kx} {-ry} {cx} {-ry} " +
+                $"C {cx + kx} {-ry} {cx + rx} {-ky} {cx + rx} 0 " +
+                $"C {cx + rx} {ky} {cx + kx} {ry} {cx} {ry} " +
+                $"C {cx - kx} {ry} {cx - rx} {ky} {cx - rx} 0 Z");
+        }
+
+        /// <summary>正面环与侧立棱沿 X 交替排布成整条链</summary>
+        private static string BuildChainD(bool ovals) {
+            if (ovals) {
+                ReadOnlySpan<float> centers = [-0.84f, -0.42f, 0f, 0.42f, 0.84f];
+                var sb = new System.Text.StringBuilder();
+                foreach (float c in centers) {
+                    sb.Append(EllipseD(c, 0.10f, 0.052f)).Append(' ');
+                }
+                return sb.ToString();
+            }
+            ReadOnlySpan<float> barCenters = [-0.63f, -0.21f, 0.21f, 0.63f];
+            var bar = new System.Text.StringBuilder();
+            foreach (float c in barCenters) {
+                bar.Append(string.Create(CultureInfo.InvariantCulture,
+                    $"M {c - 0.085f} 0 L {c + 0.085f} 0 "));
+            }
+            return bar.ToString();
+        }
+
+        /// <summary>
+        /// Boss 锁定封条：两道交叉锁链反向缠旗 + 居中挂锁落座，盖在旗身之上。
+        /// t 为封条包络（0..1，锁链先缠、挂锁后落；回落即解链），alpha 随旗身入场/滑出淡入。
+        /// 阴影是 1px 级贴身投影（合法），不做同心假羽化
+        /// </summary>
+        internal static void DrawLockSeal(SpriteBatch sb, Rectangle tab, float t, float alpha) {
+            if (t <= 0.01f || alpha <= 0.01f) {
+                return;
+            }
+
+            SvgPath links = SvgPathPen.Path(ChainLinksD);
+            SvgPath bars = SvgPathPen.Path(ChainBarsD);
+            Vector2 c = tab.Center.ToVector2();
+            float rot = MathF.Atan2(tab.Height, tab.Width);
+            //链长盖过对角线并越出旗缘少许，读作"缠了一整圈"
+            float chainScale = new Vector2(tab.Width, tab.Height).Length() * 0.5f + 3f;
+
+            //双链错拍：A 链自左上先缠，B 链自左下随后反向缠
+            float revealA = EaseOutCubic(Math.Min(1f, t * 1.25f));
+            float revealB = EaseOutCubic(MathHelper.Clamp(t * 1.25f - 0.12f, 0f, 1f));
+            Vector2 shadowOff = new(1f, 1.4f);
+
+            for (int side = 0; side < 2; side++) {
+                float r = side == 0 ? rot : -rot;
+                float reveal = side == 0 ? revealA : revealB;
+                if (reveal <= 0.01f) {
+                    continue;
+                }
+                SvgPathPen.Stroke(sb, bars, c + shadowOff, chainScale, r, Color.Black, 2.2f, alpha * 0.55f, 0f, reveal);
+                SvgPathPen.Stroke(sb, links, c + shadowOff, chainScale, r, Color.Black, 1.45f, alpha * 0.55f, 0f, reveal);
+            }
+            for (int side = 0; side < 2; side++) {
+                float r = side == 0 ? rot : -rot;
+                float reveal = side == 0 ? revealA : revealB;
+                if (reveal <= 0.01f) {
+                    continue;
+                }
+                SvgPathPen.Stroke(sb, bars, c, chainScale, r, GameModeTheme.ChainSteelDark, 2.2f, alpha, 0f, reveal);
+                SvgPathPen.Stroke(sb, links, c, chainScale, r, GameModeTheme.ChainSteel, 1.45f, alpha, 0f, reveal,
+                    core: GameModeTheme.ChainSteelLit);
+            }
+
+            //锁定坐实后链上一段冷光缓行（活物，不是贴纸）
+            if (t > 0.9f) {
+                float head = Main.GlobalTimeWrappedHourly * 0.10f;
+                SvgPathPen.StrokeRunner(sb, links, c, chainScale, rot,
+                    GameModeTheme.ChainGlint, 1.0f, alpha * 0.35f, head, 0.06f);
+                SvgPathPen.StrokeRunner(sb, links, c, chainScale, -rot,
+                    GameModeTheme.ChainGlint, 1.0f, alpha * 0.35f, head + 0.5f, 0.06f);
+            }
+
+            //挂锁：链缠过半后自上方落座，轻微下坠缓动
+            float lockT = MathHelper.Clamp((t - 0.5f) / 0.5f, 0f, 1f);
+            if (lockT <= 0.01f) {
+                return;
+            }
+            float lockA = alpha * lockT;
+            Vector2 lc = c + new Vector2(0f, (1f - EaseOutCubic(lockT)) * -5f);
+
+            //锁梁先画，压在锁体后
+            SvgPathPen.Stroke(sb, SvgPathPen.Path(ShackleD), lc, 1f, 0f,
+                GameModeTheme.ChainSteel, 2.0f, lockA, core: GameModeTheme.ChainSteelLit);
+
+            //锁体：贴身投影 + 实体填充 + 顶缘受光 + 底缘沉影（粗笔当体，不描空心框）
+            Vector2 bodyC = lc + new Vector2(0f, 3f);
+            Vector2 bodySize = new(15f, 11f);
+            Vector2 half = new(0.5f);
+            sb.Draw(Pixel, bodyC + new Vector2(1f, 1f), One, Color.Black * (lockA * 0.55f), 0f, half, bodySize, SpriteEffects.None, 0f);
+            sb.Draw(Pixel, bodyC, One, GameModeTheme.LockBodyFill * lockA, 0f, half, bodySize, SpriteEffects.None, 0f);
+            sb.Draw(Pixel, lc + new Vector2(0f, -1.9f), One, GameModeTheme.LockBevel * lockA, 0f, half, new Vector2(15f, 1.2f), SpriteEffects.None, 0f);
+            sb.Draw(Pixel, lc + new Vector2(0f, 8f), One, GameModeTheme.KeyholeDark * (lockA * 0.85f), 0f, half, new Vector2(15f, 1f), SpriteEffects.None, 0f);
+
+            //锁孔：实心暗孔 + 匙槽，孔心一粒警示红
+            Vector2 kc = lc + new Vector2(0f, 1.8f);
+            SvgPathPen.Stroke(sb, SvgPathPen.Path(KeyholeRingD), kc, 1f, 0f, GameModeTheme.KeyholeDark, 1.6f, lockA);
+            DrawLine(sb, kc + new Vector2(0f, 0.8f), kc + new Vector2(0f, 3.6f), 1.5f, GameModeTheme.KeyholeDark * lockA);
+            sb.Draw(Pixel, kc + new Vector2(0f, -0.35f), One, GameModeTheme.DangerRed * (0.75f * lockA), 0f, half, new Vector2(1.1f, 1f), SpriteEffects.None, 0f);
+        }
+
+        /// <summary>出笔快收笔缓的三次缓动</summary>
+        private static float EaseOutCubic(float t) {
+            float u = 1f - t;
+            return 1f - u * u * u;
         }
 
         //——余烬微粒池：点亮标签的顶缘上浮 + 切换爆发喷洒 + 引导确认撒粒（全亮色，A=0 加法光晕）——

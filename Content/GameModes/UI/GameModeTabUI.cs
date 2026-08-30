@@ -14,6 +14,8 @@ namespace CalamityOverhaul.Content.GameModes.UI
     /// 标签动画由旗标真值差分点火（本地点击与联机回执走同一条表现路径）；
     /// 交互回馈四件套：悬停抬升+旗面微放大、按压下沉+uPress 即时回响（联机等回执期不哑）、
     /// 拒绝横震+uDeny 红脉冲+闷响、悬浮说明面板（<see cref="GameModeTipOverlay"/> 顶层绘制）。
+    /// Boss 在场的不可切换态是锁链封条（交叉锁链+挂锁盖旗，shader 同步压悬摆），不置灰——
+    /// 置灰与未启用的暗旗在静态截图里无法区分（用户裁定 2026-08-30）。
     /// 切换演出大字也由本 UI 绘制，背包合上时靠 <see cref="GameModeCeremony.LineActive"/> 维持活跃。
     /// 首见引导：光标从未造访过标签时，残酷标签挂信标光效相邀，
     /// 悬停一次即收束熄灭并落档（客户端全局，跨世界只引导一次）
@@ -44,7 +46,8 @@ namespace CalamityOverhaul.Content.GameModes.UI
         private float brutalHover;
         private float asuraHover;
         private float godSmithHover;
-        private float disabledDim;
+        //Boss 锁定封条包络：锁链缠绕/解链进度，同时喂 shader 压悬摆（uDisabled）
+        private float lockSeal;
         private float brutalBurst = 1f;
         private float asuraBurst = 1f;
         private float godSmithBurst = 1f;
@@ -163,7 +166,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
             asuraLit = Ease(asuraLit, GameModeSystem.AsuraActive ? 1f : 0f, 0.12f);
             godSmithLit = Ease(godSmithLit, GameModeSystem.GodSmithActive ? 1f : 0f, 0.12f);
             asuraReveal = Ease(asuraReveal, GameModeSystem.BrutalActive ? 1f : 0f, 0.13f);
-            disabledDim = Ease(disabledDim, GameModeSystem.CanToggleNow() ? 0f : 1f, 0.15f);
+            lockSeal = Ease(lockSeal, GameModeSystem.CanToggleNow() ? 0f : 1f, 0.15f);
 
             if (shakeTimer > 0) {
                 shakeTimer--;
@@ -358,17 +361,29 @@ namespace CalamityOverhaul.Content.GameModes.UI
                 float reveal = EasedReveal();
                 GameModeFace asuraFace = GameModeSystem.FaceOf(GameModeKind.Asura);
                 GameModeRenderer.DrawTab(spriteBatch, godSmithRect, GameModeFace.GodSmith,
-                    godSmithLit, godSmithHover, godSmithBurst, godSmithBurstOn, disabledDim,
+                    godSmithLit, godSmithHover, godSmithBurst, godSmithBurstOn, lockSeal,
                     0f, EntranceAlpha(entranceGodSmith), PressOf(2), DenyOf(2));
                 if (reveal > 0.01f) {
                     GameModeRenderer.DrawTab(spriteBatch, asuraRect, asuraFace,
-                        asuraLit, asuraHover, asuraBurst, asuraBurstOn, disabledDim,
+                        asuraLit, asuraHover, asuraBurst, asuraBurstOn, lockSeal,
                         0f, reveal * EntranceAlpha(entranceAsura), PressOf(1), DenyOf(1));
                 }
 
                 GameModeRenderer.DrawTab(spriteBatch, brutalRect, GameModeFace.Brutal,
-                    brutalLit, brutalHover, brutalBurst, brutalBurstOn, disabledDim,
+                    brutalLit, brutalHover, brutalBurst, brutalBurstOn, lockSeal,
                     GuideLevel(), EntranceAlpha(entranceBrutal), PressOf(0), DenyOf(0));
+
+                //Boss 锁定封条盖在整行旗身之上：旗色不动，锁链自己说"不可切换"
+                if (lockSeal > 0.01f) {
+                    GameModeRenderer.DrawLockSeal(spriteBatch, godSmithRect, lockSeal,
+                        EntranceAlpha(entranceGodSmith));
+                    if (reveal > 0.01f) {
+                        GameModeRenderer.DrawLockSeal(spriteBatch, asuraRect, lockSeal,
+                            reveal * EntranceAlpha(entranceAsura));
+                    }
+                    GameModeRenderer.DrawLockSeal(spriteBatch, brutalRect, lockSeal,
+                        EntranceAlpha(entranceBrutal));
+                }
 
                 //切换爆发的越身扩张环压在旗身之上
                 if (godSmithBurst < 1f) {
