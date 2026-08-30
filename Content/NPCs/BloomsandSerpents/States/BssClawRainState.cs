@@ -173,8 +173,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
         }
 
         /// <summary>
-        /// 权威端弹道：按预测位与横向车道反解高弧初速（R = v² sin2α / g），
-        /// 车道间距 = 落点逃生缝，速度钳制在远程档。
+        /// 权威端弹道：按预测位与横向车道反解高弧初速（R = v² sin2α / g，用低重力
+        /// 变体的有效 g），车道间距 = 落点逃生缝，速度钳制在远程档。
+        /// ai[0]=1 走低重力长滞空变体：弧顶更高，够得着空中玩家。
         /// </summary>
         private static void ThrowGlobs(BssStateContext ctx, NPC npc, Vector2 tip) {
             int damage = BssDirector.ScaleProjectileDamage(npc, BssDirector.SandGlobDamage);
@@ -185,17 +186,21 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 hf = 1f;
             }
             float baseRange = Math.Abs(predicted.X - tip.X);
+            float gravity = BssDirector.SandGlobGravity * BssDirector.RainGlobGravityMul;
 
             int count = BssDirector.RainGlobsPerFlick;
             for (int k = 0; k < count; k++) {
                 float lane = k - (count - 1) * 0.5f;
-                float range = Math.Max(baseRange + lane * BssDirector.RainLanePx, 220f);
-                float elev = 0.95f - Math.Abs(lane) * 0.08f + Main.rand.NextFloat(-0.05f, 0.05f);
-                float v = MathF.Sqrt(range * BssDirector.SandGlobGravity / MathF.Sin(2f * elev));
+                float range = Math.Max(baseRange + lane * BssDirector.RainLanePx, 260f);
+                //定高仰角（沙球雨从头顶浇下），初速按 R = v² sin2α / g 反解
+                float elev = BssDirector.RainElevation - Math.Abs(lane) * 0.05f
+                    + Main.rand.NextFloat(-0.04f, 0.04f);
+                float v = MathF.Sqrt(range * gravity / MathF.Sin(2f * elev));
                 v = MathHelper.Clamp(v * Main.rand.NextFloat(0.96f, 1.08f),
                     BssDirector.RainGlobSpeedMin, BssDirector.RainGlobSpeedMax);
                 Vector2 vel = new(hf * MathF.Cos(elev) * v, -MathF.Sin(elev) * v);
-                Projectile.NewProjectile(npc.GetSource_FromAI(), tip, vel, type, damage, 0.6f, Main.myPlayer);
+                Projectile.NewProjectile(npc.GetSource_FromAI(), tip, vel, type, damage, 0.6f,
+                    Main.myPlayer, 1f);
             }
         }
     }

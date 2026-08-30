@@ -78,6 +78,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public int QueuedChainState { get; set; } = -1;
         /// <summary>追击阀已用闸（连接件不许连发；轮换出招时清零，权威端裁决量）</summary>
         public bool ChaseValveUsed { get; set; }
+        /// <summary>上一手选招的状态号（-1 无；钻地连发闸的判据，权威端裁决量）</summary>
+        public int LastPickedState { get; set; } = -1;
         /// <summary>死亡演出已完，CheckDead 据此放行</summary>
         public bool DeathPerformanceFinished { get; set; }
         #endregion

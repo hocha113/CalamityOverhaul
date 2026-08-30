@@ -7,7 +7,10 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles
 {
-    /// <summary>喷沙沙团：重力弧线，原版沙球贴图为体（漫反射，乘光照），同材质残影拖尾</summary>
+    /// <summary>
+    /// 喷沙沙团：重力弧线，原版沙球贴图为体（漫反射，乘光照），同材质残影拖尾。
+    /// ai[0]=1 为鳌足挥掷的高抛变体：低重力长滞空（弧顶更高，够得着空中玩家）。
+    /// </summary>
     internal class BssSandGlob : BssModProjectile
     {
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.SandBallFalling;
@@ -29,7 +32,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles
         }
 
         public override void AI() {
-            Projectile.velocity.Y = MathHelper.Clamp(Projectile.velocity.Y + BssDirector.SandGlobGravity, -30f, 16f);
+            float gravity = Projectile.ai[0] == 1f
+                ? BssDirector.SandGlobGravity * BssDirector.RainGlobGravityMul
+                : BssDirector.SandGlobGravity;
+            Projectile.velocity.Y = MathHelper.Clamp(Projectile.velocity.Y + gravity, -30f, 16f);
             Projectile.rotation += Projectile.velocity.X * 0.05f;
 
             if (!Main.dedServ && Main.rand.NextBool(3)) {

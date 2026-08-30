@@ -45,6 +45,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             if (t > BssDirector.ConnectorFrames && !ctx.Owner.TargetInvalid()
                 && dist > BssDirector.ChaseValveDistance && !ctx.ChaseValveUsed) {
                 ctx.ChaseValveUsed = true;
+                //追击也计入连发闸：紧接着的轮换选招不许再补一记钻地
+                ctx.LastPickedState = (int)BssStateIndex.BurrowLunge;
                 return new BssBurrowLungeState();
             }
 
@@ -52,7 +54,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 && !ctx.Owner.TargetInvalid()) {
                 ctx.ChaseValveUsed = false;
                 ctx.AttackIndex++;
-                return PickAttack(ctx);
+                IBssState pick = PickAttack(ctx);
+                ctx.LastPickedState = pick is BssStateBase picked ? (int)picked.StateIndex : -1;
+                return pick;
             }
             return null;
         }
@@ -123,7 +127,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
         /// 沙柱三招一律前置排位且相互毗邻：突刺柱只滞留 16s，爆震必须排在突刺
         /// 两招之内，排远了轮到时柱已沉、门槛永远不过（真机时序死穴 2026-08-31）。
         /// 高飞替补按槽位各配：贴地招换成突袭/天游/漩涡等对空招（沙柱突刺自带空中
-        /// 凝沙变体，天然对空），天上也有全套变化。
+        /// 凝沙变体，天然对空），天上也有全套变化。钻地突袭挂连发闸：上一手（含
+        /// 追击阀）已是突袭就换成替补对空招——P2/P3 的专属钻地槽让位给祭舞双槽，
+        /// 钻地降级为连接件与替补（真机反馈：追逐类复读挤占高级招窗口 2026-08-31）。
         /// P3 连段：花瓣直连涟漪；沙柱突刺直连爆震（种柱即引爆的连段压迫，自带种柱保底）。
         /// </summary>
         private static IBssState PickAttack(BssStateContext ctx) {
@@ -132,7 +138,14 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             //高飞判定：贴地招按槽位换对空替补（不再一律钻地）
             bool air = ctx.Target.Alives()
                 && BssVfx.FindGroundY(ctx.Target.Center) - ctx.Target.Center.Y > 430f;
-            IBssState Dash() => air ? new BssBurrowLungeState() : new BssSandDashState();
+            //钻地连发闸：上一手（含追击阀）已是突袭就换成槽位各自的对空替补——
+            //突袭是好连接件但复读感的元凶，两记之间必须隔一手别的（真机反馈 2026-08-31）
+            IBssState Burrow(Func<IBssState> alt)
+                => ctx.LastPickedState == (int)BssStateIndex.BurrowLunge
+                    ? alt() : new BssBurrowLungeState();
+            IBssState Dash() => air
+                ? Burrow(() => new BssSkyWeaveState())
+                : new BssSandDashState();
 
             if (ctx.Phase >= 3) {
                 switch (ctx.AttackIndex % 14) {
@@ -157,7 +170,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     case 8:
                         return new BssClawRainState();
                     case 9:
-                        return air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState();
+                        return air ? Burrow(() => new BssVortexDashState())
+                            : (IBssState)new BssGeyserMarchState();
                     case 10:
                         return new BssCoilOrbitState();
                     case 11:
@@ -165,7 +179,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     case 12:
                         return new BssCactusBallState();
                     case 13:
-                        return new BssBurrowLungeState();
+                        //祭舞终局双槽（顶掉原专属钻地槽：钻地只走替补与追击阀）
+                        return new BssStormRiteState();
                     default:
                         return Dash();
                 }
@@ -185,7 +200,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                         //柱不够落到本槽原本的地面压制替补
                         return BssSandPillar.CountDetonatable() >= BssDirector.BurstMinPillars
                             ? new BssPillarBurstState()
-                            : (air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState());
+                            : (air ? Burrow(() => new BssVortexDashState())
+                                : (IBssState)new BssGeyserMarchState());
                     case 5:
                         return new BssPillarVaultState();
                     case 6:
@@ -200,13 +216,15 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     case 10:
                         return new BssClawRainState();
                     case 11:
-                        return air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState();
+                        return air ? Burrow(() => new BssVortexDashState())
+                            : (IBssState)new BssGeyserMarchState();
                     case 12:
                         return new BssCoilOrbitState();
                     case 13:
                         return new BssSkyWeaveState();
                     case 14:
-                        return new BssBurrowLungeState();
+                        //祭舞沙暴双槽（顶掉原专属钻地槽：钻地只走替补与追击阀）
+                        return new BssStormRiteState();
                     default:
                         return Dash();
                 }
@@ -218,7 +236,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 case 2:
                     return new BssPillarSpikeState();
                 case 3:
-                    return air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState();
+                    return air ? Burrow(() => new BssCoilOrbitState())
+                        : (IBssState)new BssGeyserMarchState();
                 case 4:
                     //鳌足挥掷 P1 即有（远程压制的抖袖戏）
                     return new BssClawRainState();
@@ -227,7 +246,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 case 6:
                     return new BssPillarSpikeState();
                 case 7:
-                    return new BssBurrowLungeState();
+                    return Burrow(() => new BssSkyWeaveState());
                 case 8:
                     return new BssCactusBallState();
                 default:

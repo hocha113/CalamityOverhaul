@@ -430,9 +430,18 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public const float RainLanePx = 120f;
         /// <summary>贴脸阀：距离低于此提前收招（邀请骑脸，镜像喷沙口径）</summary>
         public const float RainMinDistance = 260f;
+        /// <summary>
+        /// 挥掷沙球的重力倍率（走 BssSandGlob 的 ai[0]=1 低重力变体）。
+        /// 弹道账：定仰角 ~1.3 rad（75°）时 h = R·tanα/4——R=700 弧顶 ~650px（够到
+        /// 空中玩家），反解初速恰落 17+ 档；重力压得更低会让反解初速跌破可读档、
+        /// 钳到下限后全弹越顶，0.7 是"高弧 + 高速 + 准落点"三者同时成立的档。
+        /// </summary>
+        public const float RainGlobGravityMul = 0.7f;
+        /// <summary>挥掷仰角基准（弧度；沙球雨从头顶浇下的身份角）</summary>
+        public const float RainElevation = 1.3f;
         /// <summary>高弧沙球初速下限/上限（弹道反解后钳制）</summary>
-        public const float RainGlobSpeedMin = 13f;
-        public const float RainGlobSpeedMax = 24f;
+        public const float RainGlobSpeedMin = 17f;
+        public const float RainGlobSpeedMax = 28f;
 
         //==================== 升空祭舞沙尘爆（鳌足：三拍编舞 + 复用原版 657 沙尘暴）====================
 
@@ -444,8 +453,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public const int RiteFrames = 96;
         /// <summary>合掌召唤拍（双爪即将撞合的瞬间）</summary>
         public const int RiteClaspBeat = 86;
-        /// <summary>沙暴落点数：P2 五座，P3 七座</summary>
-        public static int RiteStormCount(int phase) => phase >= 3 ? 7 : 5;
+        /// <summary>沙暴落点数：P2 七座，P3 十座（一场仪式压满半个战场）</summary>
+        public static int RiteStormCount(int phase) => phase >= 3 ? 10 : 7;
         /// <summary>落点车道间距（相互走廊 = 逃生道声明）</summary>
         public const float RiteStormSpacing = 250f;
         /// <summary>风暴标记预告帧数（旋沙收束 + 隆隆）</summary>
