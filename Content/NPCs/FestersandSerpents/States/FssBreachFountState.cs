@@ -128,18 +128,27 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             }
         }
 
-        /// <summary>隆包等待：钉在锁点正下方蓄势</summary>
+        /// <summary>
+        /// 隆包等待：先钉到锁点正下方深处蓄势，末段调头垂直预爬升——穿面帧颈线
+        /// 已经竖直、速度连续（出手只变速不变向），调头折角全部消化在地下深处不可见段。
+        /// </summary>
         private void UpdateOmenWait(FssStateContext ctx, NPC npc) {
             ctx.LegCommand = FssLegCommand.Tuck;
             ctx.LegAlpha = 0f;
             ctx.Mode = FssMoveMode.Steer;
-            ctx.MoveTarget = new Vector2(lockedX, breachGroundY + 380f);
-            ctx.MoveSpeed = 14f;
-            ctx.TurnSpeed = 2.6f;
+            //末 12 帧把转向目标抬到浅层：航向从"扎向深处"沿弧翻成"竖直向上"
+            bool preAscent = phaseTimer >= FssDirector.BreachTelegraphFrames - 12;
+            ctx.MoveTarget = new Vector2(lockedX, breachGroundY + (preAscent ? 40f : 380f));
+            ctx.MoveSpeed = preAscent ? 17f : 14f;
+            ctx.TurnSpeed = preAscent ? 5.5f : 2.6f;
+            ctx.AccelRate = preAscent ? 0.2f : 0.08f;
             ctx.Compression = Math.Min(ctx.Compression, 0.9f);
+            ctx.GatherLevel = MathHelper.Clamp(
+                phaseTimer / (float)FssDirector.BreachTelegraphFrames, 0f, 1f);
 
             if (phaseTimer >= FssDirector.BreachTelegraphFrames) {
-                //破土一帧定初速：直上微偏（锁点承诺内的自然散布）
+                //破土一帧定初速：直上微偏（锁点承诺内的自然散布）。
+                //预爬升已把航向掰竖直，这里只是速度跳档
                 if (!VaultUtils.isClient) {
                     npc.Center = new Vector2(lockedX, npc.Center.Y);
                     float tilt = Main.rand.NextFloat(-0.12f, 0.12f);
@@ -147,6 +156,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                         * FssDirector.BreachLaunchSpeed * ctx.RampSpeedScale;
                     npc.netUpdate = true;
                 }
+                //释放波：蓄势聚拢的长度从头向尾付出去
+                ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.15f);
                 phase = Phase.Airborne;
                 phaseTimer = 0;
                 breachFxDone = false;

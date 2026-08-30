@@ -110,6 +110,30 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
             WhipStrength = strength;
         }
 
+        /// <summary>
+        /// 纵向肌肉波（真实节距，非绘制偏移）：出手帧释放波头→尾付出蓄势长度，
+        /// 急刹追压波身体向头压缩。种类常量见 <see cref="NPCs.SerpentChainMath"/>。
+        /// 各端本地演算 + 周期纠偏，与 Compression 同风险级，不新增网络包。
+        /// </summary>
+        public int GapWaveKind { get; set; }
+        /// <summary>肌肉波龄（帧）</summary>
+        public float GapWaveAge { get; set; } = 999f;
+        /// <summary>肌肉波振幅（节距比例）</summary>
+        public float GapWaveAmp { get; set; }
+
+        /// <summary>触发一记纵向肌肉波</summary>
+        public void PulseGapWave(int kind, float amp) {
+            GapWaveKind = kind;
+            GapWaveAge = 0f;
+            GapWaveAmp = amp;
+        }
+
+        /// <summary>蓄力聚拢 0..1（每帧重声明）：颈段节距收紧、身体向头收拢上膛</summary>
+        public float GatherLevel { get; set; }
+
+        /// <summary>头部本帧速度模长（头 AI 每帧喂值，体节跟链读它算高速拉伸）</summary>
+        public float HeadSpeed { get; set; }
+
         /// <summary>步态时钟（弧度，持久量）：腿的换步排程与爬行涌动共读此拍</summary>
         public float GaitPhase { get; set; }
 
@@ -233,6 +257,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
             }
 
             WhipAge = Math.Min(WhipAge + 1f, 999f);
+            GapWaveAge = Math.Min(GapWaveAge + 1f, 999f);
+            GatherLevel = 0f;
             for (int k = 0; k < StationBob.Length; k++) {
                 StationBob[k] *= 0.85f;
                 if (StationBob[k] < 0.02f) {

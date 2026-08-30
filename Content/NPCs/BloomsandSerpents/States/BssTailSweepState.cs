@@ -37,10 +37,16 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
         private Vector2 passDir = Vector2.UnitX;
         /// <summary>入弯拉升侧（入弯帧锁定）</summary>
         private Vector2 turnLift;
+        /// <summary>掉头助跑累计路程（沿冲刺向的真实位移，链条对齐的计程器）</summary>
+        private float alignRun;
+        /// <summary>上一帧的冲刺朝向（玩家换边时重置助跑计程）</summary>
+        private float lastToward;
 
         public override void OnEnter(BssStateContext ctx) {
             base.OnEnter(ctx);
             phase = SweepPhase.Stalk;
+            alignRun = 0f;
+            lastToward = 0f;
         }
 
         public override IBssState OnUpdate(BssStateContext ctx) {
@@ -87,21 +93,39 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             Timer = 0;
         }
 
-        /// <summary>就位：跑道不足先退开（可读的拉弓走位）</summary>
+        /// <summary>
+        /// 就位两拍：跑道（含助跑余量）不足先退开，随后掉头助跑——链条重排到身后，
+        /// 蓄力后撤才是"全身拉弓"而非把脖子甩上擦身线。
+        /// </summary>
         private void UpdateStalk(BssStateContext ctx, NPC npc) {
             float dist = Math.Abs(ctx.Target.Center.X - npc.Center.X);
-            float stalkDir = dist < BssDirector.DashRunwayMin
-                ? -FacingToTarget(ctx, 0f)
-                : FacingToTarget(ctx, 0f);
+            float toward = FacingToTarget(ctx, 0f);
+
+            //玩家换边：已积的助跑路程作废，重新对齐
+            if (lastToward != 0f && Math.Sign(toward) != Math.Sign(lastToward)) {
+                alignRun = 0f;
+            }
+            lastToward = toward;
+
+            //退开段预留助跑要吃掉的余量；一旦开始助跑就不再回头退
+            bool needRetreat = alignRun < 1f
+                && dist < BssDirector.DashRunwayMin + BssDirector.DashAlignRunPx;
+            float stalkDir = needRetreat ? -toward : toward;
 
             ctx.Mode = BssMoveMode.Crawl;
             ctx.CrawlDirX = stalkDir;
             ctx.CrawlSpeed = BssDirector.CrawlChaseSpeed;
             ctx.LegCommand = BssLegCommand.March;
 
+            //助跑计程：只累计与冲刺向同号的真实位移
+            if (!needRetreat && Math.Sign(npc.velocity.X) == Math.Sign(toward)) {
+                alignRun += Math.Abs(npc.velocity.X);
+            }
+
             Timer++;
-            if ((Timer >= BssDirector.SweepStalkFrames && dist >= BssDirector.DashRunwayMin * 0.8f)
-                || Timer >= BssDirector.SweepStalkFrames * 3) {
+            bool aligned = alignRun >= BssDirector.DashAlignRunPx;
+            if ((Timer >= BssDirector.SweepStalkFrames && aligned
+                && dist >= BssDirector.DashRunwayMin * 0.8f) || Timer >= 90) {
                 SwitchPhase(SweepPhase.Windup);
             }
         }
@@ -120,12 +144,14 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 passDir = new Vector2(sign * MathF.Cos(ang), MathF.Sin(ang));
             }
 
+            //链条已对齐在身后，后撤 = 全身后拉，聚拢波把身体向头收拢上膛
             ctx.Mode = BssMoveMode.Direct;
             float late = MathF.Pow(progress, 8f);
             npc.velocity = Vector2.Lerp(npc.velocity, -passDir * (3f + 8f * late), 0.25f);
             npc.rotation = npc.rotation.AngleLerp(passDir.ToRotation() + BssHead.FacingRot, 0.25f);
             ctx.LegCommand = BssLegCommand.March;
             ctx.Compression = Math.Min(ctx.Compression, MathHelper.Lerp(1f, 0.88f, progress));
+            ctx.GatherLevel = progress;
 
             if (t == 1 && !Main.dedServ) {
                 SoundEngine.PlaySound(SoundID.Item102 with { Volume = 0.7f, Pitch = -0.4f, MaxInstances = 2 },
@@ -151,6 +177,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     npc.netUpdate = true;
                 }
                 ctx.PulseWhip(11f);
+                //释放波：蓄力聚拢的长度从头向尾付出去
+                ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.15f);
                 if (!Main.dedServ) {
                     BssVfx.SandBurst(npc.Center + new Vector2(0f, 16f), 1.2f);
                     BssVfx.Roar(npc.Center, -0.3f, 0.9f);

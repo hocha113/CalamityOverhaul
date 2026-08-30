@@ -48,11 +48,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             float seed = npc.whoAmI * 0.73f;
 
             if (t < LeapFrame) {
-                //蹬地蓄势：前身压低（弹簧要先压才有劲）
+                //蹬地蓄势：前身压低 + 节距聚拢（弹簧要先压才有劲）；
+                //起跳帧的颈部折角由跟链的颈段弯角钳制圆化成甩弧
                 ctx.Mode = BssMoveMode.Crawl;
                 ctx.CrawlSpeed = 4f;
                 ctx.CrawlDirX = FacingToTarget(ctx);
                 ctx.FrontRaise = 0.3f;
+                ctx.GatherLevel = MathHelper.Clamp(t / (float)LeapFrame, 0f, 1f);
             }
             else if (t == LeapFrame) {
                 //破空：一帧起跳

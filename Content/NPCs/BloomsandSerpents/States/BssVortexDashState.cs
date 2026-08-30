@@ -38,6 +38,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
         private float orbitSign = 1f;
         /// <summary>锁定射向（锁向帧后不再更新 = 预告即承诺）</summary>
         private Vector2 lockedDir = Vector2.UnitX;
+        /// <summary>锁定穿刺点（塌缩弧的转向目标，锁向帧后不再更新）</summary>
+        private Vector2 lockedPoint;
 
         public override void OnEnter(BssStateContext ctx) {
             base.OnEnter(ctx);
@@ -168,23 +170,32 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             }
         }
 
-        /// <summary>锁向塌缩：脱轨急刹再瞄，末段死向；涡在同拍静默变小（各自吸气）</summary>
+        /// <summary>
+        /// 锁向塌缩 → 弧线切入：不再急刹一帧改向（那会把盘紧的螺旋从颈部生生折断），
+        /// 而是保持行进、高转向 Steer 把切向航向沿弧掰进穿刺线——颈链跟着弧走，
+        /// 出手帧只变速不变向。低速转向更灵（收油本身就是塌缩的吸气拍），
+        /// 时长仍是 VortexCollapseFrames = 漩涡实体的塌缩窗不动。
+        /// </summary>
         private void UpdateCollapse(BssStateContext ctx, NPC npc) {
             int t = (int)Timer;
             float progress = MathHelper.Clamp(t / (float)BssDirector.VortexCollapseFrames, 0f, 1f);
 
-            ctx.Mode = BssMoveMode.Direct;
-            ctx.LegCommand = BssLegCommand.Tuck;
-            npc.velocity *= 0.8f;
-
-            //锁向拍之前追瞄（全向自由 = 与贴地掠冲的身份区分），之后死向
+            //锁向拍之前追瞄（全向自由 = 与贴地掠冲的身份区分），之后死点
             if (t <= BssDirector.VortexCollapseFrames - BssDirector.DashLockLead) {
-                Vector2 predicted = PredictTarget(ctx, 12f);
-                lockedDir = (predicted - npc.Center).SafeNormalize(Vector2.UnitX);
+                lockedPoint = PredictTarget(ctx, 12f);
             }
-            npc.rotation = npc.rotation.AngleLerp(lockedDir.ToRotation() + BssHead.FacingRot, 0.3f);
+            lockedDir = (lockedPoint - npc.Center).SafeNormalize(Vector2.UnitX);
+
+            ctx.Mode = BssMoveMode.Steer;
+            ctx.MoveTarget = lockedPoint;
+            ctx.MoveSpeed = 15f;
+            ctx.TurnSpeed = 6.4f;
+            ctx.AccelRate = 0.22f;
+            ctx.LegCommand = BssLegCommand.Tuck;
+
             ctx.BloomGlow = Math.Max(ctx.BloomGlow, 1f);
             ctx.Compression = Math.Min(ctx.Compression, 0.86f);
+            ctx.GatherLevel = progress;
 
             //末段绷紧颤抖
             if (progress > 0.5f && !Main.dedServ) {
@@ -198,13 +209,17 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             }
         }
 
-        /// <summary>弃涡爆冲：一帧定速 50px/f，力量在出手帧；漩涡按自己的定时器在身后爆</summary>
+        /// <summary>弃涡爆冲：沿当前航向一帧定速 50px/f（塌缩弧已把航向掰上穿刺线，
+        /// 速度突变、航向连续）；漩涡按自己的定时器在身后爆</summary>
         private void Launch(BssStateContext ctx, NPC npc) {
             if (!VaultUtils.isClient) {
-                npc.velocity = lockedDir * BssDirector.VortexDashSpeed;
+                Vector2 dir = npc.velocity.SafeNormalize(lockedDir);
+                npc.velocity = dir * BssDirector.VortexDashSpeed;
                 npc.netUpdate = true;
             }
             ctx.PulseWhip(12f);
+            //释放波：蓄力聚拢的长度从头向尾付出去
+            ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.16f);
             if (!Main.dedServ) {
                 BssVfx.SandBurst(npc.Center, 1.4f);
                 BssVfx.Roar(npc.Center, -0.35f, 1f);
@@ -216,6 +231,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
         private void UpdateFlight(BssStateContext ctx, NPC npc) {
             ctx.Mode = BssMoveMode.Direct;
             ctx.LegCommand = BssLegCommand.Tuck;
+            //复利加速：招牌冲越冲越快
+            npc.velocity *= 1.01f;
 
             if (npc.velocity.Length() > BssDirector.DashContactSpeed) {
                 npc.damage = npc.defDamage;

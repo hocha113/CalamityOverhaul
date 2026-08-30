@@ -36,6 +36,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
         /// <summary>穿心突刺锁点</summary>
         private Vector2 exitLock;
         private bool exitDashed;
+        /// <summary>J 弯切出已用帧数（环上切向沿弧掰进穿心线）</summary>
+        private int hookFrames;
+        /// <summary>突刺出手帧（J 弯结束时记录，飞行时长从这里起算）</summary>
+        private float dashStartT;
         private float prevY;
 
         public override void OnEnter(BssStateContext ctx) {
@@ -45,6 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             orbitAngle = (ctx.Npc.Center - anchor).ToRotation();
             orbitSign = ctx.Npc.Center.X < anchor.X ? 1f : -1f;
             exitDashed = false;
+            hookFrames = 0;
             prevY = ctx.Npc.Center.Y;
             ctx.RefreshSegments();
             ctx.PulseWhip(8f);
@@ -103,20 +108,41 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     ctx.BloomGlow = Math.Max(ctx.BloomGlow, 1f);
                 }
             }
-            else {
-                //穿心突刺：一帧定速，直线承诺
-                if (!exitDashed) {
+            else if (!exitDashed) {
+                //J 弯切出：环上切向航向沿弧掰进穿心线——从环上直接一帧转 90° 扎向环心
+                //会把颈部生生折断（切向⊥径向），改为高转向 Steer 划弧收进，
+                //颈链跟着弧走，出手帧只变速不变向
+                ctx.Mode = BssMoveMode.Steer;
+                ctx.MoveTarget = exitLock;
+                ctx.MoveSpeed = 19f;
+                ctx.TurnSpeed = 6f;
+                ctx.AccelRate = 0.2f;
+                ctx.LegCommand = BssLegCommand.Tuck;
+                ctx.BloomGlow = Math.Max(ctx.BloomGlow, 1f);
+                ctx.GatherLevel = MathHelper.Clamp(hookFrames / 10f, 0f, 1f);
+
+                Vector2 toLock = (exitLock - npc.Center).SafeNormalize(Vector2.UnitY);
+                Vector2 heading = npc.velocity.SafeNormalize(toLock);
+                float err = MathF.Acos(MathHelper.Clamp(Vector2.Dot(heading, toLock), -1f, 1f));
+                hookFrames++;
+                if (err < 0.28f || hookFrames > 16) {
+                    //出手：沿当前航向定速（弧已把航向掰上穿心线）
                     exitDashed = true;
+                    dashStartT = Timer;
                     if (!VaultUtils.isClient) {
-                        npc.velocity = (exitLock - npc.Center).SafeNormalize(Vector2.UnitY)
-                            * BssDirector.OrbitExitSpeed;
+                        npc.velocity = npc.velocity.SafeNormalize(toLock) * BssDirector.OrbitExitSpeed;
                         npc.netUpdate = true;
                     }
                     ctx.PulseWhip(12f);
+                    //释放波：蓄力聚拢的长度从头向尾付出去
+                    ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.16f);
                     if (!Main.dedServ) {
                         BssVfx.Shake(npc.Center, 5f, 1200f);
                     }
                 }
+            }
+            else {
+                //穿心突刺：直线承诺
                 ctx.Mode = BssMoveMode.Direct;
                 ctx.LegCommand = BssLegCommand.Tuck;
                 float speed = npc.velocity.Length();
@@ -130,7 +156,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     BssVfx.SandBurst(new Vector2(npc.Center.X, groundY), 1.2f);
                 }
 
-                if (t >= ExitFrame + ExitFlightFrames) {
+                if (t >= dashStartT + ExitFlightFrames) {
                     npc.velocity *= 0.6f;
                     return EndAttack(ctx);
                 }

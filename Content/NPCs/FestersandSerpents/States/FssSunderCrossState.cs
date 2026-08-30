@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
         public override string StateName => "SunderCross";
         public override FssStateIndex StateIndex => FssStateIndex.SunderCross;
 
-        private enum Phase { Tear, Regroup, Windup, CrossDash, Brake, Merge }
+        private enum Phase { Tear, Regroup, AlignGlide, Windup, CrossDash, Brake, Merge }
 
         private Phase phase;
         private int phaseTimer;
@@ -71,6 +71,9 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                     break;
                 case Phase.Regroup:
                     UpdateRegroup(ctx, npc, leader);
+                    break;
+                case Phase.AlignGlide:
+                    UpdateAlignGlide(ctx, npc, leader);
                     break;
                 case Phase.Windup:
                     UpdateWindup(ctx, npc, leader);
@@ -165,10 +168,46 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             bool headOk = Vector2.Distance(npc.Center, headAnchor) < 130f;
             bool leaderOk = Vector2.Distance(leader.Center, leaderAnchor) < 130f;
             if ((headOk && leaderOk) || phaseTimer > FssDirector.SunderRegroupFrames) {
+                phase = Phase.AlignGlide;
+                phaseTimer = 0;
+            }
+        }
+
+        /// <summary>
+        /// 对齐滑翔：两半各自限速转向，直到航向压上各自的冲线（颈链跟弧走）。
+        /// 到锚点时航向朝着锚点而非玩家，直接蓄力会把两条脖子都甩上冲线；
+        /// 双双对齐或超时才进蓄力——后撤只有在链条已对齐时才是"拉弓"。
+        /// </summary>
+        private void UpdateAlignGlide(FssStateContext ctx, NPC npc, NPC leader) {
+            Vector2 predict = PredictTarget(ctx, 9f);
+
+            ctx.Mode = FssMoveMode.Steer;
+            ctx.MoveTarget = predict;
+            ctx.MoveSpeed = 13f;
+            ctx.TurnSpeed = 5f;
+            ctx.AccelRate = 0.16f;
+            ctx.LegCommand = FssLegCommand.Flail;
+            ctx.CystGlow = Math.Max(ctx.CystGlow, 0.5f);
+
+            FssHead.SteerMovement(leader, predict, 13f, 5f, 0.16f, 0f, ref leaderSlither);
+
+            bool headOk = HeadingAligned(npc, predict, 0.3f);
+            bool leaderOk = HeadingAligned(leader, predict, 0.3f);
+            if ((headOk && leaderOk) || phaseTimer > 20) {
                 phase = Phase.Windup;
                 phaseTimer = 0;
                 locked = false;
             }
+        }
+
+        /// <summary>航向与"指向目标"的夹角是否小于容差（速度过低视作未对齐）</summary>
+        private static bool HeadingAligned(NPC npc, Vector2 target, float tolerance) {
+            if (npc.velocity.LengthSquared() < 1f) {
+                return false;
+            }
+            Vector2 heading = npc.velocity.SafeNormalize(Vector2.UnitX);
+            Vector2 to = (target - npc.Center).SafeNormalize(Vector2.UnitX);
+            return MathF.Acos(MathHelper.Clamp(Vector2.Dot(heading, to), -1f, 1f)) < tolerance;
         }
 
         /// <summary>同帧蓄力：双向后撤 + 双预亮 + 共享提示音，末段各自锁向</summary>
@@ -190,12 +229,14 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                 }
             }
 
-            //双向后撤（反向运动即预告）；领节面向冲线不面向撤向
+            //双向后撤（反向运动即预告）；领节面向冲线不面向撤向。
+            //对齐滑翔已把两条链甩到各自冲线身后，后撤 = 双双全身拉弓
             ctx.Mode = FssMoveMode.Direct;
             npc.velocity = -lockHead * (w * w * 8f);
             npc.rotation = npc.rotation.AngleLerp(lockHead.ToRotation() + FssHead.FacingRot, 0.35f);
             leader.velocity = -lockLeader * (w * w * 8f);
             ctx.SplitLeaderAim = lockLeader.ToRotation();
+            ctx.GatherLevel = w;
 
             if (phaseTimer >= FssDirector.SunderWindupFrames) {
                 //同帧交叉出手：一帧定双初速
@@ -206,6 +247,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                     leader.netUpdate = true;
                 }
                 ctx.PulseWhip(11f);
+                //释放波：两半共读一记（后半按距领节的相对链序读波）
+                ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.16f);
                 if (!Main.dedServ) {
                     FssVfx.Roar(npc.Center, -0.7f, 0.85f);
                     FssVfx.Shake(ctx.Target.Center, 5f, 1500f);
@@ -219,6 +262,9 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
         private void UpdateCrossDash(FssStateContext ctx, NPC npc, NPC leader) {
             ctx.Mode = FssMoveMode.Direct;
             ctx.LegCommand = FssLegCommand.Tuck;
+            //复利加速：双线同拍越冲越快
+            npc.velocity *= 1.01f;
+            leader.velocity *= 1.01f;
             if (npc.velocity.Length() > FssDirector.SkimContactSpeed) {
                 npc.damage = npc.defDamage;
             }

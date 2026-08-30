@@ -126,8 +126,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 return;
             }
 
-            float compression = ctx != null && ctx.Compression > 0.01f ? ctx.Compression : 1f;
-            FollowChain(front, compression);
+            FollowChain(front, ctx);
 
             //高速沙沫（客户端表现）
             if (!VaultUtils.isServer) {
@@ -149,16 +148,42 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             NPC.netUpdate = true;
         }
 
-        /// <summary>标准跟链；压缩系数由头声明（盘拢呼吸）</summary>
-        private void FollowChain(NPC front, float compression) {
+        /// <summary>
+        /// 标准跟链 + 链体力学：均匀压缩（盘拢呼吸）之上叠三层真实节距语言
+        /// （蓄力聚拢/肌肉行波/高速拉伸），颈段带刚度梯度与弯角钳制（永不锐角）。
+        /// </summary>
+        private void FollowChain(NPC front, BssStateContext ctx) {
+            float compression = ctx != null && ctx.Compression > 0.01f ? ctx.Compression : 1f;
             float gap = BssDirector.SegmentGap * NPC.scale * compression;
+            int total = ctx != null && ctx.TotalSegments > 0
+                ? ctx.TotalSegments : BssDirector.BodyCount + 1;
+
+            if (ctx != null) {
+                gap *= SerpentChainMath.GatherFactor(Ordinal, ctx.GatherLevel);
+                gap *= SerpentChainMath.GapWaveFactor(Ordinal, ctx.GapWaveKind, ctx.GapWaveAge, ctx.GapWaveAmp);
+                gap *= SerpentChainMath.SpeedStretchFactor(ctx.HeadSpeed);
+            }
 
             Vector2 toFront = front.Center - NPC.Center;
 
-            //前邻转角带动（链条弯曲传递）
-            if (front.rotation != NPC.rotation) {
-                float angleDelta = MathHelper.WrapAngle(front.rotation - NPC.rotation);
-                toFront = toFront.RotatedBy(angleDelta * 0.12f);
+            //堆叠態（门冲/出生）不做刚度与钳制：保持原地等前邻拉出的鱼贯行为
+            if (toFront.LengthSquared() > 1f) {
+                //前邻转角带动（链条弯曲传递）：颈紧尾松的刚度梯度
+                if (front.rotation != NPC.rotation) {
+                    float angleDelta = MathHelper.WrapAngle(front.rotation - NPC.rotation);
+                    toFront = toFront.RotatedBy(angleDelta * SerpentChainMath.StiffnessFactor(Ordinal, total));
+                }
+
+                //颈段弯角硬钳制：相对前邻体轴的折角超限即圆化（出手帧不许发卡折颈）
+                float maxBend = SerpentChainMath.MaxBendAngle(Ordinal);
+                if (maxBend < MathHelper.Pi) {
+                    float frontAxis = front.rotation - BssHead.FacingRot;
+                    float bend = MathHelper.WrapAngle(toFront.ToRotation() - frontAxis);
+                    if (Math.Abs(bend) > maxBend) {
+                        float clamped = frontAxis + Math.Sign(bend) * maxBend;
+                        toFront = clamped.ToRotationVector2() * toFront.Length();
+                    }
+                }
             }
 
             NPC.velocity = Vector2.Zero;
@@ -315,10 +340,16 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                     shakeOffset.Y += dip * BssLegRig.StationDipPx;
                 }
             }
+            float moved = (NPC.position - NPC.oldPosition).Length();
+            //高速微颤：冲刺直线段小幅侧向抖（速度门控，冻结布条变活体的廉价一笔）
+            if (moved > 20f) {
+                float flut = MathHelper.Clamp((moved - 20f) / 26f, 0f, 1f);
+                shakeOffset += perpAng.ToRotationVector2()
+                    * MathF.Sin(Main.GlobalTimeWrappedHourly * 55f + Ordinal * 1.7f) * (2.2f * flut);
+            }
             Vector2 drawPos = NPC.Center + shakeOffset - screenPos;
 
             //高速残影：冲刺期体节也甩影（速度门控，读出整条虫在飞）
-            float moved = (NPC.position - NPC.oldPosition).Length();
             float ghostIntensity = MathHelper.Clamp((moved - 15f) / 22f, 0f, 1f);
             if (ghostIntensity > 0.05f) {
                 Vector2 back = NPC.Center - (NPC.position - NPC.oldPosition) * 1.5f - screenPos;

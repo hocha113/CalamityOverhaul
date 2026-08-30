@@ -98,6 +98,10 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
         private float stormSmooth;
         /// <summary>远距滞留帧</summary>
         private int farTimer;
+#if DEBUG
+        /// <summary>上一帧速度（航向突变探针用）</summary>
+        private Vector2 probeVelocity;
+#endif
 
         internal FssStateIndex CurrentStateIndex => (FssStateIndex)(int)NPC.ai[3];
         #endregion
@@ -215,6 +219,30 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
             //步态时钟：任何状态都推进，速率取全速度模长
             Context.GaitPhase += FssStateContext.GaitIncrement(NPC.velocity.Length());
             ApplyDeclaredMovement();
+
+            //肌肉波自动触发（各端从同步速度同算）：一帧提速 >18 = 出手释放波；
+            //高速骤降 = 急刹追压波（波龄门防刹车段逐帧重触，也防覆盖状态同帧的显式波）
+            float speedNow = NPC.velocity.Length();
+            if (speedNow - Context.HeadSpeed > 18f && Context.GapWaveAge >= 1f) {
+                Context.PulseGapWave(SerpentChainMath.WaveRelease, 0.12f);
+            }
+            else if (Context.HeadSpeed > 22f && speedNow < Context.HeadSpeed * 0.72f
+                && Context.GapWaveAge > 24f) {
+                Context.PulseGapWave(SerpentChainMath.WavePress, 0.15f);
+            }
+            Context.HeadSpeed = speedNow;
+
+#if DEBUG
+            //航向突变探针：高速中单帧航向跳变 >0.5 rad = 漏网折角（调参期从日志追查来源状态）
+            if (probeVelocity.LengthSquared() > 400f && NPC.velocity.LengthSquared() > 400f) {
+                float jump = Math.Abs(MathHelper.WrapAngle(
+                    NPC.velocity.ToRotation() - probeVelocity.ToRotation()));
+                if (jump > 0.5f) {
+                    Mod.Logger.Debug($"FssHead 航向突变 {jump:F2} rad，状态 {CurrentStateIndex}，速度 {NPC.velocity.Length():F1}");
+                }
+            }
+            probeVelocity = NPC.velocity;
+#endif
 
             if (Main.GameUpdateCount % 45 == 0 || Context.Segments.Count == 0) {
                 Context.RefreshSegments();

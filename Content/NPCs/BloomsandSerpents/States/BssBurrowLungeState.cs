@@ -116,17 +116,27 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 ctx.Mode = BssMoveMode.Hold;
             }
             else if (t < LungeFrame) {
-                //预告期：地下就位到锁点正下方蓄势
+                //预告期：先就位到锁点正下方深处，末段沿"即将出土的射线"预爬升——
+                //穿面帧航向已压在射线上（出手只变速不变向），调头折角全部消化在地下。
+                //原先的临出土急刹会让链条失序堆在头后，出土帧甩出发卡折角
                 ctx.LegCommand = BssLegCommand.Tuck;
                 ctx.Mode = BssMoveMode.Steer;
-                ctx.MoveTarget = (lockDone ? lockPoint : ctx.Target.Center) + new Vector2(0f, 300f);
-                ctx.MoveSpeed = 15f;
-                ctx.TurnSpeed = 3f;
-                ctx.AccelRate = 0.14f;
-                //临出土收油蓄势（吸气拍）
-                if (t > LungeFrame - 10) {
-                    npc.velocity *= 0.8f;
+                if (t > LungeFrame - 12 && lockDone) {
+                    Vector2 launchDir = PlannedBreachDir(npc);
+                    ctx.MoveTarget = npc.Center + launchDir * 320f;
+                    ctx.MoveSpeed = 16f;
+                    ctx.TurnSpeed = 5.5f;
+                    ctx.AccelRate = 0.2f;
                 }
+                else {
+                    ctx.MoveTarget = (lockDone ? lockPoint : ctx.Target.Center) + new Vector2(0f, 300f);
+                    ctx.MoveSpeed = 15f;
+                    ctx.TurnSpeed = 3f;
+                    ctx.AccelRate = 0.14f;
+                }
+                //蓄势聚拢（吸气拍改由身体语言承担）
+                ctx.GatherLevel = MathHelper.Clamp(
+                    (t - OmenFrame) / (float)BssDirector.BreachTelegraphFrames, 0f, 1f);
             }
             else if (t == LungeFrame) {
                 //出土爆冲：一帧定初速，按三式给向，全部直线承诺不追瞄
@@ -163,6 +173,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     npc.velocity = vel;
                     npc.netUpdate = true;
                 }
+                //释放波：蓄势聚拢的长度从头向尾付出去
+                ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.15f);
                 ctx.Mode = BssMoveMode.Direct;
                 ctx.LegCommand = BssLegCommand.Flail;
             }
@@ -231,6 +243,37 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 return EndAttack(ctx);
             }
             return null;
+        }
+
+        /// <summary>
+        /// 本循环破土式的计划射向（与出土帧的取向公式同源）：预爬升沿它掰航向，
+        /// 保证穿面帧航向连续。仅作转向目标用，幅值细节仍由出土帧裁决。
+        /// </summary>
+        private Vector2 PlannedBreachDir(NPC npc) {
+            switch (breachStyle) {
+                case 1: {
+                    //侧翼斜刺：斜穿锁定的玩家原位
+                    Vector2 aim = (lockTarget + new Vector2(0f, -50f) - npc.Center)
+                        .SafeNormalize(-Vector2.UnitY);
+                    if (aim.Y > -0.35f) {
+                        aim.Y = -0.35f;
+                        aim = aim.SafeNormalize(-Vector2.UnitY);
+                    }
+                    return aim;
+                }
+                case 2: {
+                    //过顶长跃：冲天带横向惯性
+                    float side = Math.Sign(lockTarget.X - npc.Center.X);
+                    if (side == 0f) {
+                        side = 1f;
+                    }
+                    return new Vector2(side * 11f, -BssDirector.BreachLaunchSpeed)
+                        .SafeNormalize(-Vector2.UnitY);
+                }
+                default:
+                    //直上顶袭
+                    return -Vector2.UnitY;
+            }
         }
 
         /// <summary>

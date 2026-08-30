@@ -28,6 +28,10 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
         private Vector2 passStart;
         private bool locked;
         private int burstFrontier;
+        /// <summary>掉头助跑累计路程（沿冲刺向的真实位移，链条对齐的计程器）</summary>
+        private float alignRun;
+        /// <summary>上一帧的冲刺朝向（玩家换边时重置助跑计程）</summary>
+        private float lastToward;
 
         public override void OnEnter(FssStateContext ctx) {
             base.OnEnter(ctx);
@@ -35,6 +39,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             phaseTimer = 0;
             locked = false;
             burstFrontier = 0;
+            alignRun = 0f;
+            lastToward = 0f;
             ctx.RefreshSegments();
         }
 
@@ -65,29 +71,45 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             phaseTimer++;
             Timer++;
 
-            //超时保险
-            if (Timer > 160) {
+            //超时保险（就位段含掉头助跑上限 90 帧，整体上限相应放宽）
+            if (Timer > 230) {
                 npc.velocity *= 0.8f;
                 return EndAttack(ctx);
             }
             return null;
         }
 
-        /// <summary>就位：跑道不足先退开</summary>
+        /// <summary>
+        /// 就位两拍：跑道（含助跑余量）不足先退开，随后掉头助跑——沿冲刺线前进
+        /// 足够路程把链条重排到身后，蓄力后撤才是"全身拉弓"而非把脖子甩上冲刺线。
+        /// </summary>
         private void UpdateStalk(FssStateContext ctx, NPC npc) {
             float dist = Vector2.Distance(npc.Center, ctx.Target.Center);
+            float toward = FacingToTarget(ctx, 0f);
+
+            //玩家换边：已积的助跑路程作废，重新对齐
+            if (lastToward != 0f && Math.Sign(toward) != Math.Sign(lastToward)) {
+                alignRun = 0f;
+            }
+            lastToward = toward;
+
+            //退开段预留助跑要吃掉的余量；一旦开始助跑就不再回头退（防贴脸抖动）
+            bool needRetreat = alignRun < 1f
+                && dist < FssDirector.RippleRunwayMin + FssDirector.SkimAlignRunPx;
+
             ctx.Mode = FssMoveMode.Crawl;
             ctx.LegCommand = FssLegCommand.March;
-            if (dist < FssDirector.RippleRunwayMin) {
-                ctx.CrawlDirX = -FacingToTarget(ctx);
-                ctx.CrawlSpeed = FssDirector.CrawlChaseSpeed;
+            ctx.CrawlDirX = needRetreat ? -toward : toward;
+            ctx.CrawlSpeed = FssDirector.CrawlChaseSpeed;
+
+            //助跑计程：只累计与冲刺向同号的真实位移（掉头减速段不计）
+            if (!needRetreat && Math.Sign(npc.velocity.X) == Math.Sign(toward)) {
+                alignRun += Math.Abs(npc.velocity.X);
             }
-            else {
-                ctx.CrawlDirX = FacingToTarget(ctx);
-                ctx.CrawlSpeed = 8f;
-            }
-            if (phaseTimer >= FssDirector.RippleStalkFrames
-                && (dist >= FssDirector.RippleRunwayMin || phaseTimer > 46)) {
+
+            bool aligned = alignRun >= FssDirector.SkimAlignRunPx;
+            if ((phaseTimer >= FssDirector.RippleStalkFrames && aligned
+                && dist >= FssDirector.RippleRunwayMin * 0.8f) || phaseTimer >= 90) {
                 phase = Phase.Windup;
                 phaseTimer = 0;
                 locked = false;
@@ -110,9 +132,11 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                     }
                 }
             }
+            //链条已对齐在身后，后撤 = 全身后拉，聚拢波把身体向头收拢上膛
             float w = phaseTimer / (float)FssDirector.RippleWindupFrames;
             npc.velocity = -lockDir * (w * w * 8f);
             npc.rotation = npc.rotation.AngleLerp(lockDir.ToRotation() + FssHead.FacingRot, 0.35f);
+            ctx.GatherLevel = w;
 
             if (phaseTimer >= FssDirector.RippleWindupFrames) {
                 npc.velocity = lockDir * FssDirector.RipplePassSpeed * ctx.RampSpeedScale;
@@ -121,6 +145,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                 }
                 passStart = npc.Center;
                 ctx.PulseWhip(9f);
+                //释放波：蓄力聚拢的长度从头向尾付出去
+                ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.15f);
                 if (!Main.dedServ) {
                     FssVfx.Roar(npc.Center, -0.65f, 0.8f);
                     FssVfx.Shake(npc.Center, 4f, 1200f);

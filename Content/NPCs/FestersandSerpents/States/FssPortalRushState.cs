@@ -72,6 +72,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                 case Phase.Burst:
                     ctx.Mode = FssMoveMode.Direct;
                     ctx.LegCommand = FssLegCommand.Tuck;
+                    //复利加速：出门越冲越快（鱼贯拉出的链条被越扯越直）
+                    npc.velocity *= 1.012f;
                     if (npc.velocity.Length() > FssDirector.SkimContactSpeed) {
                         npc.damage = npc.defDamage;
                     }

@@ -35,12 +35,18 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
         private Vector2 lockedDir = Vector2.UnitX;
         private float stalkDir = 1f;
         private int wakeTimer;
+        /// <summary>掉头助跑累计路程（沿冲刺向的真实位移，链条对齐的计程器）</summary>
+        private float alignRun;
+        /// <summary>上一帧的冲刺朝向（玩家换边时重置助跑计程）</summary>
+        private float lastToward;
 
         public override void OnEnter(BssStateContext ctx) {
             base.OnEnter(ctx);
             phase = DashPhase.Stalk;
             dashCount = 0;
             wakeTimer = 0;
+            alignRun = 0f;
+            lastToward = 0f;
         }
 
         public override IBssState OnUpdate(BssStateContext ctx) {
@@ -76,23 +82,40 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             Timer = 0;
         }
 
-        /// <summary>就位：跑道不足先贴地退开（可读的"拉弓"走位），足够即入蓄力</summary>
+        /// <summary>
+        /// 就位两拍：跑道（含助跑余量）不足先贴地退开，随后掉头助跑——沿冲刺线
+        /// 前进足够路程把链条重排到身后，之后的后撤蓄力才是"全身拉弓"，
+        /// 而不是把脖子甩到冲刺线前方（出手帧穿颈 = 布条感的几何根源）。
+        /// </summary>
         private void UpdateStalk(BssStateContext ctx, NPC npc) {
             float dist = Math.Abs(ctx.Target.Center.X - npc.Center.X);
-            stalkDir = dist < BssDirector.DashRunwayMin
-                ? -FacingToTarget(ctx, 0f)
-                : FacingToTarget(ctx, 0f);
+            float toward = FacingToTarget(ctx, 0f);
+
+            //玩家换边：已积的助跑路程作废，重新对齐
+            if (lastToward != 0f && Math.Sign(toward) != Math.Sign(lastToward)) {
+                alignRun = 0f;
+            }
+            lastToward = toward;
+
+            //退开段预留助跑要吃掉的余量；一旦开始助跑就不再回头退（防贴脸抖动）
+            bool needRetreat = alignRun < 1f
+                && dist < BssDirector.DashRunwayMin + BssDirector.DashAlignRunPx;
+            stalkDir = needRetreat ? -toward : toward;
 
             ctx.Mode = BssMoveMode.Crawl;
             ctx.CrawlDirX = stalkDir;
             ctx.CrawlSpeed = BssDirector.CrawlChaseSpeed;
             ctx.LegCommand = BssLegCommand.March;
 
-            Timer++;
-            if (Timer >= BssDirector.DashStalkFrames && dist >= BssDirector.DashRunwayMin * 0.8f) {
-                SwitchPhase(DashPhase.Windup);
+            //助跑计程：只累计与冲刺向同号的真实位移（掉头减速段不计）
+            if (!needRetreat && Math.Sign(npc.velocity.X) == Math.Sign(toward)) {
+                alignRun += Math.Abs(npc.velocity.X);
             }
-            else if (Timer >= BssDirector.DashStalkFrames * 3) {
+
+            Timer++;
+            bool aligned = alignRun >= BssDirector.DashAlignRunPx;
+            if ((Timer >= BssDirector.DashStalkFrames && aligned
+                && dist >= BssDirector.DashRunwayMin * 0.8f) || Timer >= 90) {
                 SwitchPhase(DashPhase.Windup);
             }
         }
@@ -112,13 +135,15 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 lockedDir = new Vector2(sign * MathF.Cos(ang), MathF.Sin(ang));
             }
 
-            //反向后撤：迟滞收势，最后几帧猛然吸满
+            //反向后撤：迟滞收势，最后几帧猛然吸满。链条已对齐在身后，
+            //后撤 = 头顶进自己的链（全身后拉），聚拢波把身体向头收拢上膛
             float late = MathF.Pow(progress, 8f);
             ctx.Mode = BssMoveMode.Direct;
             npc.velocity = Vector2.Lerp(npc.velocity, -lockedDir * (3f + 9f * late), 0.25f);
             npc.rotation = npc.rotation.AngleLerp(lockedDir.ToRotation() + BssHead.FacingRot, 0.25f);
             ctx.LegCommand = BssLegCommand.March;
             ctx.Compression = MathHelper.Lerp(1f, 0.86f, progress);
+            ctx.GatherLevel = progress;
 
             if (t == 1 && !Main.dedServ) {
                 //蓄力起手音：固定提前量，可被玩家内化（CC0 嘶息素材，低调 = 伏低吸气）
@@ -157,6 +182,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 npc.netUpdate = true;
             }
             ctx.PulseWhip(11f);
+            //释放波：蓄力聚拢的长度从头向尾付出去（力从身体流向头）
+            ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.16f);
             if (!Main.dedServ) {
                 BssVfx.SandBurst(npc.Center + new Vector2(0f, 16f), 1.4f);
                 BssVfx.Roar(npc.Center, -0.35f, 1f);
@@ -168,6 +195,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
         private void UpdateFlight(BssStateContext ctx, NPC npc) {
             ctx.Mode = BssMoveMode.Direct;
             ctx.LegCommand = BssLegCommand.Tuck;
+            //复利加速：冲刺沿途越冲越快（速度拉伸波随之拉长身体）
+            npc.velocity *= 1.012f;
             npc.rotation = npc.velocity.ToRotation() + BssHead.FacingRot;
 
             float speed = npc.velocity.Length();
@@ -222,6 +251,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
 
             Timer++;
             if (Timer >= BssDirector.DashBrakeFrames && dashCount < BssDirector.DashReps(ctx.Phase)) {
+                //下一段连冲重新对齐（冲过头后链条在玩家侧，必须再掉头助跑）
+                alignRun = 0f;
+                lastToward = 0f;
                 SwitchPhase(DashPhase.Stalk);
             }
         }

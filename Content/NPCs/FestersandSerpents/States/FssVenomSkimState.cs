@@ -28,6 +28,10 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
         private Vector2 lockDir;
         private bool locked;
         private int dripIndex;
+        /// <summary>掉头助跑累计路程（沿冲刺向的真实位移，链条对齐的计程器）</summary>
+        private float alignRun;
+        /// <summary>上一帧的冲刺朝向（玩家换边时重置助跑计程）</summary>
+        private float lastToward;
 
         public override void OnEnter(FssStateContext ctx) {
             base.OnEnter(ctx);
@@ -35,6 +39,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             phaseTimer = 0;
             locked = false;
             dripIndex = 0;
+            alignRun = 0f;
+            lastToward = 0f;
         }
 
         public override IFssState OnUpdate(FssStateContext ctx) {
@@ -72,21 +78,38 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             return null;
         }
 
-        /// <summary>就位：跑道不足先退开</summary>
+        /// <summary>
+        /// 就位两拍：跑道（含助跑余量）不足先退开，随后掉头助跑——沿冲刺线前进
+        /// 足够路程把链条重排到身后，之后的后撤蓄力才是"全身拉弓"，
+        /// 而不是把脖子甩到冲刺线前方（出手帧穿颈 = 布条感的几何根源）。
+        /// </summary>
         private void UpdateStalk(FssStateContext ctx, NPC npc) {
             float dx = Math.Abs(ctx.Target.Center.X - npc.Center.X);
+            float toward = FacingToTarget(ctx, 0f);
+
+            //玩家换边：已积的助跑路程作废，重新对齐
+            if (lastToward != 0f && Math.Sign(toward) != Math.Sign(lastToward)) {
+                alignRun = 0f;
+            }
+            lastToward = toward;
+
+            //退开段预留助跑要吃掉的余量；一旦开始助跑就不再回头退（防贴脸抖动）
+            bool needRetreat = alignRun < 1f
+                && dx < FssDirector.SkimRunwayMin + FssDirector.SkimAlignRunPx;
+
             ctx.Mode = FssMoveMode.Crawl;
             ctx.LegCommand = FssLegCommand.March;
-            if (dx < FssDirector.SkimRunwayMin) {
-                ctx.CrawlDirX = -FacingToTarget(ctx);
-                ctx.CrawlSpeed = FssDirector.CrawlChaseSpeed;
+            ctx.CrawlDirX = needRetreat ? -toward : toward;
+            ctx.CrawlSpeed = FssDirector.CrawlChaseSpeed;
+
+            //助跑计程：只累计与冲刺向同号的真实位移（掉头减速段不计）
+            if (!needRetreat && Math.Sign(npc.velocity.X) == Math.Sign(toward)) {
+                alignRun += Math.Abs(npc.velocity.X);
             }
-            else {
-                ctx.CrawlDirX = FacingToTarget(ctx);
-                ctx.CrawlSpeed = 8f;
-            }
-            if (phaseTimer >= FssDirector.SkimStalkFrames
-                && (dx >= FssDirector.SkimRunwayMin || phaseTimer > 50)) {
+
+            bool aligned = alignRun >= FssDirector.SkimAlignRunPx;
+            if ((phaseTimer >= FssDirector.SkimStalkFrames && aligned
+                && dx >= FssDirector.SkimRunwayMin * 0.8f) || phaseTimer >= 90) {
                 phase = Phase.Windup;
                 phaseTimer = 0;
                 locked = false;
@@ -111,10 +134,12 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                 }
             }
 
-            //后撤反向运动（二次方迟滞：末段猛吸）；头部快速插值入向（禁一帧瞬转）
+            //后撤反向运动（二次方迟滞：末段猛吸）；头部快速插值入向（禁一帧瞬转）。
+            //链条已对齐在身后，后撤 = 全身后拉，聚拢波把身体向头收拢上膛
             float w = phaseTimer / (float)FssDirector.SkimWindupFrames;
             npc.velocity = -lockDir * (w * w * 9f);
             npc.rotation = npc.rotation.AngleLerp(lockDir.ToRotation() + FssHead.FacingRot, 0.35f);
+            ctx.GatherLevel = w;
 
             //尘线车道（客户端；锁向后线更实）
             if (!Main.dedServ) {
@@ -136,6 +161,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                     npc.netUpdate = true;
                 }
                 ctx.PulseWhip(10f);
+                //释放波：蓄力聚拢的长度从头向尾付出去（力从身体流向头）
+                ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.16f);
                 if (!Main.dedServ) {
                     FssVfx.Roar(npc.Center, -0.7f, 0.75f);
                     FssVfx.Shake(npc.Center, 4.5f, 1200f);
@@ -150,6 +177,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
         private void UpdateFlight(FssStateContext ctx, NPC npc) {
             ctx.Mode = FssMoveMode.Direct;
             ctx.LegCommand = FssLegCommand.Tuck;
+            //复利加速：冲刺沿途越冲越快（速度拉伸波随之拉长身体）
+            npc.velocity *= 1.012f;
 
             //伤害窗与可见冲势同门
             if (npc.velocity.Length() > FssDirector.SkimContactSpeed) {
@@ -184,6 +213,9 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                 if (Counter >= FssDirector.SkimReps(ctx.Phase) || ctx.Owner.TargetInvalid()) {
                     return EndAttack(ctx);
                 }
+                //下一段连冲重新对齐（冲过头后链条在玩家侧，必须再掉头助跑）
+                alignRun = 0f;
+                lastToward = 0f;
                 phase = Phase.Stalk;
                 phaseTimer = 0;
             }

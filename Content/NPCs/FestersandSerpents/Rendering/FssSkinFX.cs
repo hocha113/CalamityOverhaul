@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
         private static bool IsCystSeg(FssStateContext ctx, NPC seg)
             => seg.type != ModContent.NPCType<FssTail>() && FssStateContext.IsCystOrdinal((int)seg.ai[0]);
 
-        /// <summary>抖动/鞭波/落步下沉的绘制偏移（位置不动）</summary>
+        /// <summary>抖动/鞭波/落步下沉/高速微颤的绘制偏移（位置不动）</summary>
         private static Vector2 SegDrawOffset(FssStateContext ctx, NPC seg) {
             int ordinal = (int)seg.ai[0];
             Vector2 offset = Vector2.Zero;
@@ -125,6 +125,24 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             float dip = ctx.SampleStationBob(ordinal);
             if (dip > 0.02f) {
                 offset.Y += dip * FssLegRig.StationDipPx;
+            }
+            //高速微颤：冲刺直线段小幅侧向抖（速度门控，冻结布条变活体的廉价一笔）
+            float moved = (seg.position - seg.oldPosition).Length();
+            if (moved > 20f) {
+                float flut = MathHelper.Clamp((moved - 20f) / 26f, 0f, 1f);
+                offset += perpAng.ToRotationVector2()
+                    * MathF.Sin(Main.GlobalTimeWrappedHourly * 55f + ordinal * 1.7f) * (2.2f * flut);
+            }
+            return offset;
+        }
+
+        /// <summary>头部绘制偏移：落步下沉 + 出手帧反冲（释放波最初几帧向速度反向缩一记）</summary>
+        private static Vector2 HeadDrawOffset(FssStateContext ctx) {
+            NPC npc = ctx.Npc;
+            Vector2 offset = new(0f, ctx.SampleStationBob(0f) * FssLegRig.StationDipPx);
+            if (ctx.GapWaveKind == SerpentChainMath.WaveRelease && ctx.GapWaveAge < 4f
+                && npc.velocity.LengthSquared() > 1f) {
+                offset -= npc.velocity.SafeNormalize(Vector2.Zero) * ((4f - ctx.GapWaveAge) * 1.4f);
             }
             return offset;
         }
@@ -188,8 +206,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             Texture2D texture = TextureAssets.Npc[npc.type].Value;
             Rectangle frameRec = texture.Bounds;
             Vector2 origin = frameRec.Size() / 2f;
-            Vector2 mainPos = npc.Center - screenPos
-                + new Vector2(0f, ctx.SampleStationBob(0f) * FssLegRig.StationDipPx);
+            Vector2 mainPos = npc.Center - screenPos + HeadDrawOffset(ctx);
             float fade = 1f - npc.alpha / 255f;
             if (fade <= 0.01f) {
                 return;
@@ -218,8 +235,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             Texture2D texture = TextureAssets.Npc[npc.type].Value;
             Rectangle frameRec = texture.Bounds;
             Vector2 origin = frameRec.Size() / 2f;
-            Vector2 mainPos = npc.Center - screenPos
-                + new Vector2(0f, ctx.SampleStationBob(0f) * FssLegRig.StationDipPx);
+            Vector2 mainPos = npc.Center - screenPos + HeadDrawOffset(ctx);
             float fade = 1f - npc.alpha / 255f;
             Color light = Lighting.GetColor(npc.Center.ToTileCoordinates());
             sb.Draw(texture, mainPos, frameRec, light.MultiplyRGB(FssVfx.SkinMul) * fade, npc.rotation,
@@ -234,8 +250,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             Texture2D texture = TextureAssets.Npc[npc.type].Value;
             Rectangle frameRec = texture.Bounds;
             Vector2 origin = frameRec.Size() / 2f;
-            Vector2 mainPos = npc.Center - screenPos
-                + new Vector2(0f, ctx.SampleStationBob(0f) * FssLegRig.StationDipPx);
+            Vector2 mainPos = npc.Center - screenPos + HeadDrawOffset(ctx);
             float fade = 1f - npc.alpha / 255f;
             Color glow = FssVfx.IchorBright with { A = 0 } * (0.45f * ctx.CystGlow * fade);
             sb.Draw(texture, mainPos, frameRec, glow, npc.rotation,

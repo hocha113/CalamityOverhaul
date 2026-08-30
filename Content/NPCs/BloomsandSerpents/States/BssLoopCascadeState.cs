@@ -96,12 +96,14 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             Timer = 0;
         }
 
-        /// <summary>蹬地蓄势：前身压低（弹簧先压才有劲）</summary>
+        /// <summary>蹬地蓄势：前身压低 + 节距聚拢（弹簧先压才有劲）；
+        /// 起跳帧的颈部折角由跟链的颈段弯角钳制圆化成甩弧</summary>
         private void UpdateCrouch(BssStateContext ctx, NPC npc) {
             ctx.Mode = BssMoveMode.Crawl;
             ctx.CrawlSpeed = 4f;
             ctx.CrawlDirX = FacingToTarget(ctx);
             ctx.FrontRaise = 0.3f;
+            ctx.GatherLevel = MathHelper.Clamp(Timer / (float)CrouchFrames, 0f, 1f);
 
             Timer++;
             if (Timer >= CrouchFrames) {
@@ -192,8 +194,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 npc.damage = npc.defDamage;
             }
 
-            Vector2 tangent = (loopAngle + loopSign * MathHelper.PiOver2).ToRotationVector2();
-            Vector2 toPlayer = (PredictTarget(ctx, 14f) - npc.Center).SafeNormalize(Vector2.UnitY);
+            //切点判定用"预告期漂移后的未来切线"：预告期还要以半速再绕 LoopDiveTelegraph 帧，
+            //按当前切线判定的话出手时早已漂过切点，俯冲向与航向重新错开 = 颈部折角回归
+            float drift = MathHelper.TwoPi / BssDirector.LoopLapFrames * 0.5f * BssDirector.LoopDiveTelegraph;
+            float futureAngle = loopAngle + loopSign * drift;
+            Vector2 futurePos = ringCenter + futureAngle.ToRotationVector2() * BssDirector.LoopRadius;
+            Vector2 tangent = (futureAngle + loopSign * MathHelper.PiOver2).ToRotationVector2();
+            Vector2 toPlayer = (PredictTarget(ctx, 14f) - futurePos).SafeNormalize(Vector2.UnitY);
             float error = MathF.Acos(MathHelper.Clamp(Vector2.Dot(tangent, toPlayer), -1f, 1f));
 
             Timer++;
@@ -206,12 +213,14 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             }
         }
 
-        /// <summary>俯冲预告：转速减半（吸气拍）+ 亮头，锁点不再更新</summary>
+        /// <summary>俯冲预告：转速减半（吸气拍）+ 亮头 + 聚拢上膛，锁点不再更新。
+        /// 切点判定已预付这段漂移，预告走完时航向恰好压在俯冲线上（出手只变速不变向）</summary>
         private void UpdateTelegraph(BssStateContext ctx, NPC npc) {
             float omega = MathHelper.TwoPi / BssDirector.LoopLapFrames * 0.5f;
             loopAngle += omega * loopSign;
             SteerOnRing(ctx, npc, omega);
             ctx.BloomGlow = Math.Max(ctx.BloomGlow, 1f);
+            ctx.GatherLevel = MathHelper.Clamp(Timer / (float)BssDirector.LoopDiveTelegraph, 0f, 1f);
 
             Timer++;
             if (Timer >= BssDirector.LoopDiveTelegraph) {
@@ -221,6 +230,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     npc.netUpdate = true;
                 }
                 ctx.PulseWhip(12f);
+                //释放波：蓄力聚拢的长度从头向尾付出去
+                ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.15f);
                 if (!Main.dedServ) {
                     BssVfx.Shake(npc.Center, 5f, 1300f);
                 }

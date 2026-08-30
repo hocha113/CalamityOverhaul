@@ -95,12 +95,14 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                     break;
 
                 case Phase.ExitDash: {
-                    //切线收束冲刺：预亮 8 帧锁切向（预告即承诺），一帧全速甩出
+                    //切线收束冲刺：预亮 8 帧锁切向（预告即承诺），一帧全速甩出。
+                    //出手向 = 环上切向 = 当前航向的延续（离心出手天然零折角）
                     ctx.Mode = FssMoveMode.Direct;
                     ctx.LegCommand = FssLegCommand.Tuck;
                     if (!exitLocked) {
                         exitDashDir = (angle + MathHelper.PiOver2 * spinDir).ToRotationVector2();
                         ctx.CystGlow = 1f;
+                        ctx.GatherLevel = MathHelper.Clamp(phaseTimer / 8f, 0f, 1f);
                         if (phaseTimer >= 8) {
                             exitLocked = true;
                             npc.velocity = exitDashDir * FssDirector.CoilExitDashSpeed * ctx.RampSpeedScale;
@@ -108,6 +110,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                                 npc.netUpdate = true;
                             }
                             ctx.PulseWhip(10f);
+                            //释放波：收油聚拢的长度从头向尾付出去
+                            ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.15f);
                             if (!Main.dedServ) {
                                 FssVfx.Roar(npc.Center, -0.7f, 0.8f);
                                 FssVfx.Shake(npc.Center, 4.5f, 1300f);

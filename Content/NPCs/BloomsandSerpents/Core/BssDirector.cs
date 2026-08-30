@@ -88,6 +88,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public const float DashContactSpeed = 24f;
         /// <summary>冲刺跑道最短距离：太近先退开再冲，杀贴脸秒杀</summary>
         public const float DashRunwayMin = 440f;
+        /// <summary>
+        /// 掉头助跑最短路程（约 3.5 节距）：蓄力前沿冲刺线前进这么远，
+        /// 链条重排到身后，后撤蓄力才是"全身拉弓"而非把脖子甩上冲刺线。
+        /// 退开段要在跑道之外多留这份余量。掠冲与回马甩尾共用。
+        /// </summary>
+        public const float DashAlignRunPx = 150f;
         /// <summary>射向相对水平的最大仰角（弧度，贴地掠过的身份）</summary>
         public const float DashMaxPitch = 0.24f;
         /// <summary>连冲次数：P1 三段，P2 起四段</summary>

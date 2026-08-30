@@ -41,8 +41,8 @@ namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals
         public override DamageClass SetClass => DamageClass.Melee;
 
         public override void SetDefaults() {
-            Item.width = 30;
-            Item.height = 26;
+            Item.width = 26;
+            Item.height = 24;
             Item.value = Item.sellPrice(0, 3);
             Item.rare = ItemRarityID.Lime;
             Item.defense = 9;
@@ -62,8 +62,8 @@ namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals
         public override DamageClass SetClass => DamageClass.Ranged;
 
         public override void SetDefaults() {
-            Item.width = 22;
-            Item.height = 20;
+            Item.width = 26;
+            Item.height = 24;
             Item.value = Item.sellPrice(0, 3);
             Item.rare = ItemRarityID.Lime;
             Item.defense = 7;
@@ -83,8 +83,8 @@ namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals
         public override DamageClass SetClass => DamageClass.Magic;
 
         public override void SetDefaults() {
-            Item.width = 22;
-            Item.height = 26;
+            Item.width = 26;
+            Item.height = 24;
             Item.value = Item.sellPrice(0, 3);
             Item.rare = ItemRarityID.Lime;
             Item.defense = 7;
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals
 
         public override void SetDefaults() {
             Item.width = 26;
-            Item.height = 30;
+            Item.height = 24;
             Item.value = Item.sellPrice(0, 3);
             Item.rare = ItemRarityID.Lime;
             Item.defense = 7;
@@ -124,8 +124,8 @@ namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals
         public override string Texture => CWRConstant.Item + "Armor/DeepcrystalBreastplate";
 
         public override void SetDefaults() {
-            Item.width = 30;
-            Item.height = 20;
+            Item.width = 34;
+            Item.height = 22;
             Item.value = Item.sellPrice(0, 5);
             Item.rare = ItemRarityID.Lime;
             Item.defense = 12;
@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals
 
         public override void SetDefaults() {
             Item.width = 22;
-            Item.height = 18;
+            Item.height = 14;
             Item.value = Item.sellPrice(0, 4);
             Item.rare = ItemRarityID.Lime;
             Item.defense = 9;

@@ -130,8 +130,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
                 return;
             }
 
-            float compression = ctx != null && ctx.Compression > 0.01f ? ctx.Compression : 1f;
-            FollowChain(front, compression);
+            FollowChain(front, ctx);
 
             //高速渗漏（客户端表现）
             if (!VaultUtils.isServer) {
@@ -203,16 +202,48 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
             NPC.netUpdate = true;
         }
 
-        /// <summary>标准跟链；压缩系数由头声明（盘拢呼吸）</summary>
-        private void FollowChain(NPC front, float compression) {
+        /// <summary>
+        /// 标准跟链 + 链体力学：均匀压缩（盘拢呼吸）之上叠三层真实节距语言
+        /// （蓄力聚拢/肌肉行波/高速拉伸），颈段带刚度梯度与弯角钳制（永不锐角）。
+        /// 裂躯期后半身以领节为临时首领，刚度与波形按相对链序计。
+        /// </summary>
+        private void FollowChain(NPC front, FssStateContext ctx) {
+            float compression = ctx != null && ctx.Compression > 0.01f ? ctx.Compression : 1f;
             float gap = FssDirector.SegmentGap * NPC.scale * compression;
+            int total = ctx != null && ctx.TotalSegments > 0
+                ? ctx.TotalSegments : FssDirector.BodyCount + 1;
+
+            float relOrdinal = Ordinal;
+            if (ctx != null && ctx.SplitLeaderOrdinal >= 0 && Ordinal > ctx.SplitLeaderOrdinal) {
+                relOrdinal = Ordinal - ctx.SplitLeaderOrdinal;
+            }
+
+            if (ctx != null) {
+                gap *= SerpentChainMath.GatherFactor(relOrdinal, ctx.GatherLevel);
+                gap *= SerpentChainMath.GapWaveFactor(relOrdinal, ctx.GapWaveKind, ctx.GapWaveAge, ctx.GapWaveAmp);
+                gap *= SerpentChainMath.SpeedStretchFactor(ctx.HeadSpeed);
+            }
 
             Vector2 toFront = front.Center - NPC.Center;
 
-            //前邻转角带动（链条弯曲传递）
-            if (front.rotation != NPC.rotation) {
-                float angleDelta = MathHelper.WrapAngle(front.rotation - NPC.rotation);
-                toFront = toFront.RotatedBy(angleDelta * 0.12f);
+            //堆叠態（门冲/出生）不做刚度与钳制：保持原地等前邻拉出的鱼贯行为
+            if (toFront.LengthSquared() > 1f) {
+                //前邻转角带动（链条弯曲传递）：颈紧尾松的刚度梯度
+                if (front.rotation != NPC.rotation) {
+                    float angleDelta = MathHelper.WrapAngle(front.rotation - NPC.rotation);
+                    toFront = toFront.RotatedBy(angleDelta * SerpentChainMath.StiffnessFactor(relOrdinal, total));
+                }
+
+                //颈段弯角硬钳制：相对前邻体轴的折角超限即圆化（出手帧不许发卡折颈）
+                float maxBend = SerpentChainMath.MaxBendAngle(relOrdinal);
+                if (maxBend < MathHelper.Pi) {
+                    float frontAxis = front.rotation - FssHead.FacingRot;
+                    float bend = MathHelper.WrapAngle(toFront.ToRotation() - frontAxis);
+                    if (Math.Abs(bend) > maxBend) {
+                        float clamped = frontAxis + Math.Sign(bend) * maxBend;
+                        toFront = clamped.ToRotationVector2() * toFront.Length();
+                    }
+                }
             }
 
             NPC.velocity = Vector2.Zero;
