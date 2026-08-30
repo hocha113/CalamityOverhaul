@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Diagnostics;
 using Terraria;
 
 namespace CalamityOverhaul.OtherMods.BossChecklist
@@ -49,8 +50,11 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
         /// <summary>场景时钟（秒，重置归零）</summary>
         protected float Time { get; private set; }
 
-        /// <summary>上次绘制墙钟毫秒（舞台步进与过期判定用）</summary>
-        internal long LastDrawMs;
+        /// <summary>上次绘制的高精度时戳（Stopwatch tick，舞台步进与离页判定用）</summary>
+        internal long LastStamp;
+
+        /// <summary>待偿步进债（秒，舞台固定步进积累器）</summary>
+        internal float StepDebt;
 
         internal void Step(float dt) {
             Time += dt;
@@ -82,10 +86,12 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
         /// <summary>顶部预留：BossChecklist 会在页面上叠画 Boss 名、来源模组与右上头图标</summary>
         private const int TopReserve = 52;
         private const int EdgeInset = 8;
-        /// <summary>单帧步进上限（秒）：低帧率下动画减速而不跳变</summary>
-        private const float MaxDt = 1f / 30f;
-        /// <summary>断绘重置阈值（毫秒）：翻页回来重新开演</summary>
-        private const long StaleMs = 600;
+        /// <summary>固定逻辑步长（与游戏 60fps 逻辑帧一致）</summary>
+        private const float StepSeconds = 1f / 60f;
+        /// <summary>单次绘制最多补几步：低帧率下动画减速而不快进跳变</summary>
+        private const int MaxStepsPerDraw = 3;
+        /// <summary>离页重开阈值（秒）：离开该页再回来重新开演；中途卡顿尖峰不算</summary>
+        private const float StaleSeconds = 2.5f;
 
         private static readonly RasterizerState scissorState = new() {
             CullMode = CullMode.None,
@@ -103,16 +109,33 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
                 return;
             }
 
-            //墙钟步进：跨页/首帧断绘则重开演出
-            long now = Environment.TickCount64;
-            long gapMs = now - actor.LastDrawMs;
-            actor.LastDrawMs = now;
-            if (gapMs <= 0 || gapMs > StaleMs) {
+            //固定步进积累器：动画恒按 60fps 逻辑步长推进，绘制率/时钟粒度/同帧多次回调都不影响速度。
+            //旧实现拿 TickCount64 毫秒差直接当 dt——15.6ms 计时粒度在高刷新率下频繁读出 0ms，
+            //被误判成断绘触发整场重置，表现为开场反复回退卡顿（2026-08-30 用户反馈修复）
+            long now = Stopwatch.GetTimestamp();
+            if (actor.LastStamp == 0) {
                 actor.ResetScene();
-                actor.Step(1f / 60f);
+                actor.StepDebt = StepSeconds;
             }
             else {
-                actor.Step(MathF.Min(gapMs / 1000f, MaxDt));
+                double gapSec = (now - actor.LastStamp) / (double)Stopwatch.Frequency;
+                if (gapSec > StaleSeconds) {
+                    //真离页重开演出；中途卡顿只按上限补步，不重置
+                    actor.ResetScene();
+                    actor.StepDebt = StepSeconds;
+                }
+                else if (gapSec > 0) {
+                    actor.StepDebt = MathF.Min(actor.StepDebt + (float)gapSec,
+                        StepSeconds * (MaxStepsPerDraw + 0.5f));
+                }
+            }
+            actor.LastStamp = now;
+
+            int steps = 0;
+            while (actor.StepDebt >= StepSeconds && steps < MaxStepsPerDraw) {
+                actor.StepDebt -= StepSeconds;
+                actor.Step(StepSeconds);
+                steps++;
             }
 
             Vector2 half = actor.SceneHalfSize;

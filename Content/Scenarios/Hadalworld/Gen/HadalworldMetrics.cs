@@ -18,7 +18,9 @@
     internal static class HadalworldMetrics
     {
         internal const int Width = 2200;
-        internal const int Height = 5000;
+        //5100=150的整倍数:原版WorldSections按150行分段向上取整,高度不整除时
+        //末段会读Main.Map越界(DrawToMap_Section崩溃),宽同理须被200整除(2200✓)
+        internal const int Height = 5100;
 
         //天空缓冲带[0,SkyRows),海面以上留白
         internal const int SkyRows = 60;
@@ -31,9 +33,9 @@
         internal const int MidnightBottom = 2700;
         internal const int AbyssalBottom = 4100;
 
-        //原版地狱判定线UnderworldLayer=Height-200=4800(地狱音乐/背景/深度计标签),
+        //原版地狱判定线UnderworldLayer=Height-200=4900(地狱音乐/背景/深度计标签),
         //镜像DungeonworldMetrics的"层带避开"裁决:最深可玩点压在4780行以上,
-        //以下保持实心封底,避免超深渊带误触地狱判定
+        //以下保持实心封底,避免超深渊带误触地狱判定(余量120行)
         internal const int DeepestPlayableRow = 4780;
         internal const int BedrockTopRow = DeepestPlayableRow;
 

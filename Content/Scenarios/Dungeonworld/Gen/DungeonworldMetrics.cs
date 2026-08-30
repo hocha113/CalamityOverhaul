@@ -40,6 +40,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
     //4.背景切换:地下/洞穴背景按worldSurface(55)/rockLayer(222)切换,地狱背景绘制条件
     //  屏幕底>5800*16(Main.cs L51368),深处屏幕底最多~5630行不触发,SubLib hideUnderworld兜底
     //5.ZoneSkyHeight=y≤worldSurface*0.35=行19(Player.cs L14480),天空缓冲带上部少量误判,M0可接受
+    //6.小地图渲染目标网格(2026-08-30补审,原排查漏项):原版mapTarget[5,2]单元2000x1800
+    //  纵向只盖3600行,行≥3600的分段令DrawToMap_Section/checkMap/DrawMap索引越界,进世界数秒必崩;
+    //  6000高需4行网格,由共享的SubworldMapGrid在OnLoad扩容/Update保养/回主世界收缩,
+    //  高度另须被段高150整除(6000✓,Hadalworld为此从5000改5100)
     internal static class DungeonworldMetrics
     {
         internal const int Width = 2000;

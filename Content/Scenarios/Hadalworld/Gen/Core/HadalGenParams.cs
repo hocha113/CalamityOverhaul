@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Scenarios.Hadalworld.Gen.Core
     internal sealed class HadalGenParams
     {
         internal int Width = 2200;
-        internal int Height = 5000;
+        internal int Height = 5100;
         internal int SeaLevelRow = 100;
         internal int SunlitBottom = 500;
         internal int TwilightBottom = 1300;

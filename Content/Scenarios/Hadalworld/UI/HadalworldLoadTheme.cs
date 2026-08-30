@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Scenarios.Hadalworld.UI
         public const float UiRampEnd = 1.1f;       //前景文字/深度计淡入结束
 
         //进度估计(真实进度缺席时的时间估计,钉 95%)
-        public const float EnterEstSeconds = 12f;  //进入路径估时(2200x5000 世界,待实测重标)
+        public const float EnterEstSeconds = 12f;  //进入路径估时(2200x5100 世界,待实测重标)
         public const float ExitEstSeconds = 6f;    //退出路径估时(大地图读档更久,待实测重标)
         public const float EstPin = 0.95f;
 

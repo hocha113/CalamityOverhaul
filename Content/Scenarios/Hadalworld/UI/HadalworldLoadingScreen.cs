@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using SubworldLibrary;
@@ -30,7 +31,8 @@ namespace CalamityOverhaul.Content.Scenarios.Hadalworld.UI
     /// 时间源只走 DrawSetup 墙钟(加载期 gameMenu 早退,Update 钩不到;
     /// 本机 SLib 还会把 Main 当 GameTime 传入,Elapsed 恒 0,详见 UI.md "SLib 加载屏时间源")<br/>
     /// Present:SLib 跳过 EndCapture,DrawSetup 须先把 RT 钉回后台缓冲<br/>
-    /// 第一期纯 CPU 绘制(渐变水体+气泡+深度计),零 shader 零新贴图
+    /// 水体背景走 HadalworldLoading.fx 全屏着色器(逐像素渐变+天光束+涌动,镜像 Dungeonworld 接线),
+    /// shader 缺席时回退 CPU 分带渐变绝不裸黑屏;前景(气泡/深度计/文案)仍为 CPU 绘制
     /// </summary>
     internal class HadalworldLoadingScreen : ModSystem, ILocalizedModType
     {
@@ -143,10 +145,11 @@ namespace CalamityOverhaul.Content.Scenarios.Hadalworld.UI
                 gd.Clear(HadalworldLoadTheme.HadalBlack);
             }
 
+            //水体背景自管一个批(Immediate+shader 或 CPU 回退),前景仍走 Deferred 批
+            DrawWater();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer,
                 null, Main.UIScaleMatrix);
-            DrawWater();
             DrawMenu();
             Main.DrawCursor(Main.DrawThickCursor());
             Main.spriteBatch.End();
@@ -303,7 +306,7 @@ namespace CalamityOverhaul.Content.Scenarios.Hadalworld.UI
         #endregion
 
         #region 绘制
-        //纵向海水渐变(屏幕窗口随 depth 下移)+顶部天光柱,纯 CPU 分带条
+        //水体背景总入口:全屏着色器(逐像素渐变+天光束+涌动),shader 缺席走 CPU 回退
         private static void DrawWater() {
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null || px.IsDisposed) {
@@ -311,6 +314,44 @@ namespace CalamityOverhaul.Content.Scenarios.Hadalworld.UI
             }
             int w = Main.screenWidth;
             int h = Main.screenHeight;
+            Effect shader = EffectLoader.HadalworldLoading?.Value;
+            if (shader == null) {
+                //FNA3D 静默毁 shader 时的完整回退:CPU 分带渐变+天光柱,绝不裸黑屏
+                DrawWaterFallback(px, w, h);
+                return;
+            }
+
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
+                SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer,
+                null, Main.UIScaleMatrix);
+            //uniform 残值硬规则:每次调用全参数重设
+            shader.Parameters["uTime"]?.SetValue(realSeconds);
+            shader.Parameters["uDepth"]?.SetValue(depth);
+            shader.Parameters["uSkyLight"]?.SetValue(skyLight);
+            shader.Parameters["uIntroFade"]?.SetValue(IntroFade);
+            shader.Parameters["uAspectRatio"]?.SetValue(w / (float)h);
+            shader.Parameters["uWater0"]?.SetValue(HadalworldLoadTheme.SurfaceCyan.ToVector3());
+            shader.Parameters["uWater1"]?.SetValue(HadalworldLoadTheme.SunlitBlue.ToVector3());
+            shader.Parameters["uWater2"]?.SetValue(HadalworldLoadTheme.TwilightBlue.ToVector3());
+            shader.Parameters["uWater3"]?.SetValue(HadalworldLoadTheme.MidnightBlue.ToVector3());
+            shader.Parameters["uWater4"]?.SetValue(HadalworldLoadTheme.AbyssInk.ToVector3());
+            shader.Parameters["uWater5"]?.SetValue(HadalworldLoadTheme.HadalBlack.ToVector3());
+            //四个内断点=五带带底(首尾 0/1 shader 隐含),与深度计同一坐标系
+            shader.Parameters["uKeys"]?.SetValue(new Vector4(
+                HadalworldLoadTheme.BandBottomFracs[0], HadalworldLoadTheme.BandBottomFracs[1],
+                HadalworldLoadTheme.BandBottomFracs[2], HadalworldLoadTheme.BandBottomFracs[3]));
+            shader.Parameters["uShaft"]?.SetValue(HadalworldLoadTheme.SkyShaft.ToVector3());
+            shader.CurrentTechnique.Passes[0].Apply();
+
+            Main.spriteBatch.Draw(px, new Rectangle(0, 0, w, h), Color.White);
+            Main.spriteBatch.End();
+        }
+
+        //CPU 回退:纵向分带渐变(屏幕窗口随 depth 下移)+顶部天光柱
+        private static void DrawWaterFallback(Texture2D px, int w, int h) {
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer,
+                null, Main.UIScaleMatrix);
             float fade = IntroFade;
 
             //屏幕纵向映射到深度窗口[depth-0.05, depth+0.08],下潜时整窗随深度下移
@@ -335,6 +376,7 @@ namespace CalamityOverhaul.Content.Scenarios.Hadalworld.UI
                     new Rectangle(w / 2 - bw / 2, 0, bw, (int)(h * 0.55f)),
                     HadalworldLoadTheme.SkyShaft * (alphas[i] * skyLight));
             }
+            Main.spriteBatch.End();
         }
 
         //CPU 前景层(气泡/深度计/播报/短句/状态行)

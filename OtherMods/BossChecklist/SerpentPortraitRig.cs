@@ -94,6 +94,10 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
         private Vector2 headPos;
         private Vector2 prevHeadPos;
         private float heading;
+        /// <summary>显示朝向（对运动朝向做平滑：落地收平、破沙扬头读作转体而非瞬跳）</summary>
+        private float displayHeading;
+        /// <summary>下一步显示朝向直接对齐（沙下不可见的急转向，如出射瞬间）</summary>
+        private bool snapHeading;
         private float gait;
         private float speedNow;
         private Vector2 breachVel;
@@ -116,8 +120,8 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
         }
 
         public Vector2 HeadPos => headPos;
-        /// <summary>头绘制旋转（与战斗头同约定）</summary>
-        public float HeadRotation => heading + BssHead.FacingRot;
+        /// <summary>头绘制旋转（与战斗头同约定，用平滑后的显示朝向）</summary>
+        public float HeadRotation => displayHeading + BssHead.FacingRot;
         public SegmentPose[] Segments => segs;
         public int TailOrdinal => segs.Length - 1;
         /// <summary>当前行进速度（px每帧，演员的辉光/粒子门控用）</summary>
@@ -133,6 +137,8 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
             headPos = new Vector2(-patrolHalf * 0.25f, SandY - RideHeight);
             prevHeadPos = headPos;
             heading = 0f;
+            displayHeading = 0f;
+            snapHeading = false;
             gait = 0f;
             speedNow = CruiseSpeed;
             CurrentStage = Stage.Surface;
@@ -171,6 +177,15 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
             if (moved.LengthSquared() > 0.01f) {
                 heading = moved.ToRotation();
             }
+            //显示朝向：沙下急转向直接对齐（不可见），可见段平滑过渡——
+            //落地由俯冲角渐收回水平，读作收平身体而非贴图瞬跳
+            if (snapHeading) {
+                snapHeading = false;
+                displayHeading = heading;
+            }
+            else {
+                displayHeading = displayHeading.AngleLerp(heading, 0.3f);
+            }
 
             gait += BssStateContext.GaitIncrement(speedNow) * frames;
             FollowChain();
@@ -207,6 +222,8 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
             if (headPos.X <= breachX) {
                 CurrentStage = Stage.Breach;
                 breachVel = BreachLaunch;
+                //出射转向发生在沙下：显示朝向直接对齐，出水那一帧头已朝出射方向
+                snapHeading = true;
             }
         }
 

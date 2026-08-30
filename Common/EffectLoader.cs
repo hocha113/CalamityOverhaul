@@ -407,6 +407,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> SeaShrimpAbyssFilter { get; set; }
         public static Asset<Effect> ShockRing { get; set; }
         public static Asset<Effect> DungeonworldLoading { get; set; }
+        public static Asset<Effect> HadalworldLoading { get; set; }
         public static Asset<Effect> DungeonworldEntryReveal { get; set; }
         public static Asset<Effect> DungeonworldSky { get; set; }
         public static Asset<Effect> DungeonworldFog { get; set; }

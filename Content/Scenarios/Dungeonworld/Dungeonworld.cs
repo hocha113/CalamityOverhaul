@@ -53,6 +53,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
         //NormalUpdates=false 把原版世界更新整段停掉(F16/F17),需要逐帧的子系统在这里手动驱动。
         //SLib 在 ModSystem.PreUpdateWorld 之后、PostUpdateWorld 之前调本方法,每帧必到
         public override void Update() {
+            //扩容行地图目标的主线程补建/设备重置自愈(6000 高世界,详见 SubworldMapGrid)
+            SubworldMapGrid.Upkeep();
             Machines.DungeonworldMachines.Update();
             //Machines.DungeonworldWaterGate.Update();
         }
@@ -103,6 +105,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
         }
 
         public override void OnLoad() {
+            //小地图渲染目标网格扩容:原版[5,2]只盖3600行,6000高世界不扩必崩(DrawToMap_Section越界)
+            SubworldMapGrid.Sync();
             Main.dayTime = false;
             Main.time = 0;
             //运行时子系统随世界重置(回放制:每次进入都是新生成的一份)

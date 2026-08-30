@@ -28,6 +28,8 @@ namespace CalamityOverhaul.Content.Scenarios.Hadalworld
         //SLib 在 ModSystem.PreUpdateWorld 之后、PostUpdateWorld 之前调本方法,每帧必到;
         //C 路氛围若需逐帧推进,通过报告申请在此接线(镜像 Dungeonworld.Update 的驱动方式)
         public override void Update() {
+            //扩容行地图目标的主线程补建/设备重置自愈(5100 高世界,详见 SubworldMapGrid)
+            SubworldMapGrid.Upkeep();
         }
 
         //进出统一走这两个入口,快照/加载屏复位/跨世界引用清理不漏
@@ -76,6 +78,8 @@ namespace CalamityOverhaul.Content.Scenarios.Hadalworld
         }
 
         public override void OnLoad() {
+            //小地图渲染目标网格扩容:原版[5,2]只盖3600行,不扩必崩(DrawToMap_Section越界)
+            SubworldMapGrid.Sync();
             //正午定格:日光带天光基准,昼夜循环留待后续裁决
             Main.dayTime = true;
             Main.time = 27000;
@@ -83,7 +87,7 @@ namespace CalamityOverhaul.Content.Scenarios.Hadalworld
             //(背景/地下判定,取值理由见HadalworldMetrics头注释与DungeonworldMetrics排查法)
             Main.worldSurface = HadalworldMetrics.WorldSurfaceRow;
             Main.rockLayer = HadalworldMetrics.RockLayerRow;
-            //深渊带屏幕底可越过UnderworldLayer=4800线(最深可玩4780行+半屏≈4814),
+            //地狱判定线UnderworldLayer=Height-200=4900,最深可玩4780行+半屏≈4814仍在线上,
             //SubLib进子世界默认置true拦地狱背景/地狱光,这里显式重申契约(镜像OldNetWorld)
             SubworldSystem.hideUnderworld = true;
             //出生点兜底:SLib LoadSubworld生成前把spawn钉在世界正中(SubworldSystem.cs:1303),
