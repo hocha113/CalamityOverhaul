@@ -48,6 +48,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
 
         public override void SetGunProperty() {
             Projectile.DamageType = DamageClass.Magic;
+            //贴图 2x 入库（148x462），持握绘制减半保世界尺寸
+            Projectile.scale = 0.5f;
             HandFireDistanceX = 12;
             HandFireDistanceY = -2;
             MuzzleForwardOffset = 118;
@@ -252,12 +254,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             SpriteEffects flip;
             if (DirSign > 0) {
                 flip = SpriteEffects.None;
-                origin = new Vector2(17, 161);
+                origin = new Vector2(34, 322);
                 drawRot = Projectile.rotation + axisOffset;
             }
             else {
                 flip = SpriteEffects.FlipVertically;
-                origin = new Vector2(17, TextureValue.Height - 161);
+                origin = new Vector2(34, TextureValue.Height - 322);
                 drawRot = Projectile.rotation - axisOffset;
             }
             Main.EntitySpriteDraw(TextureValue, drawPos, null, lightColor

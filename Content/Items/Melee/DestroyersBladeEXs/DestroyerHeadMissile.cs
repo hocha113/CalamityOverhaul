@@ -33,8 +33,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
         public override void SetDefaults() {
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 2;
-            //贴图仅 28x32,按 2 倍出膛才压得住场
-            Projectile.scale = 2f;
+            //贴图 56x64（2x 入库），原生尺寸出膛即可压场
             Projectile.width = 52;
             Projectile.height = 52;
             Projectile.timeLeft = 240;
@@ -171,7 +170,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
             Color halo = new Color(255, 60, 40) * 0.65f;
             halo.A = 0;
             Main.EntitySpriteDraw(glow, drawPos, null, halo, 0f, glow.Size() / 2f,
-                0.6f * Projectile.scale, SpriteEffects.None, 0);
+                1.2f * Projectile.scale, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(tex, drawPos, null, Color.Lerp(lightColor, Color.White, 0.4f),
                 Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
             return false;

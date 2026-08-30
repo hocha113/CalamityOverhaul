@@ -182,8 +182,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Color drawColor = Lighting.GetColor(Position.ToTileCoordinates()) * Opacity;
+            //贴图 2x 入库，绘制减半保世界尺寸，Scale 语义不变
             spriteBatch.Draw(TexValue, Position - Main.screenPosition, Frame
-                , drawColor, Rotation, Frame.Size() / 2, Scale, SpriteEffects.None, 0);
+                , drawColor, Rotation, Frame.Size() / 2, Scale * 0.5f, SpriteEffects.None, 0);
             return false;
         }
     }

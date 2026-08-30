@@ -22,14 +22,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Rendering
 
         /// <summary>两张体贴图都是 3 帧竖排</summary>
         internal const int FrameCount = 3;
-        /// <summary>贴图里眼球本体约 50px 宽，碰撞箱 100px，放大到与体型相称</summary>
-        private const float BodyScale = 1.8f;
+        /// <summary>贴图里眼球本体约 100px 宽（2x 入库），碰撞箱 100px，绘制倍率补到与体型相称</summary>
+        private const float BodyScale = 0.9f;
         /// <summary>一阶段帧内的眼球中心，绘制锚点用它对齐碰撞箱中心</summary>
-        private static readonly Vector2 BodyOrigin = new(60.5f, 26.5f);
+        private static readonly Vector2 BodyOrigin = new(121f, 53f);
         /// <summary>二阶段帧内的眼球中心</summary>
-        private static readonly Vector2 BodyAltOrigin = new(60f, 26f);
+        private static readonly Vector2 BodyAltOrigin = new(120f, 52f);
         /// <summary>瞳位相对眼球中心的前向偏移，单位是贴图像素</summary>
-        private const float PupilForward = 22.3f;
+        private const float PupilForward = 44.6f;
 
         /// <summary>贴图正面朝 +X，而 npc.rotation 以 +Y 为正面，绘制角要补这个差</summary>
         private static float ToDrawRotation(float npcRotation) => npcRotation + MathHelper.PiOver2;

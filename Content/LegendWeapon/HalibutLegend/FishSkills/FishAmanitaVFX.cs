@@ -169,9 +169,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 spriteBatch.Draw(glow, pos, null, col * (0.35f * Opacity), 0f
                     , glow.Size() * 0.5f, 0.14f * Scale, SpriteEffects.None, 0f);
             }
-            //孢子实体帧，剪影载体
+            //孢子实体帧，剪影载体（贴图 2x 入库，倍率减半保世界尺寸）
             spriteBatch.Draw(TexValue, pos, Frame, col * (0.9f * Opacity), Rotation
-                , Frame.Size() / 2f, 0.85f * Scale, SpriteEffects.None, 0f);
+                , Frame.Size() / 2f, 0.425f * Scale, SpriteEffects.None, 0f);
             return false;
         }
     }

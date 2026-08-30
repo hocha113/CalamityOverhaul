@@ -52,6 +52,13 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.NewProjectile(source, player.Center, Vector2.Zero, type, damage, knockback, player.whoAmI);
             return false;
         }
+
+        //贴图 2x 入库（112x122），掉落绘制减半保世界尺寸
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor
+            , ref float rotation, ref float scale, int whoAmI) {
+            scale *= 0.5f;
+            return true;
+        }
     }
 
     /// 手持 蓄力举斧→投出拖云雾→飞回→收手销毁
@@ -383,7 +390,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             Vector2 drawPos = axePivot - Main.screenPosition;
-            float scale = 1.0f + (Phase == PhaseCharging ? ChargeRatio * 0.14f : 0f);
+            //贴图 2x 入库，基线 0.5 保世界尺寸
+            float scale = 0.5f + (Phase == PhaseCharging ? ChargeRatio * 0.07f : 0f);
 
             //蓄力时蓝色外光晕
             if (Phase == PhaseCharging && ChargeRatio > 0.05f) {

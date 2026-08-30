@@ -86,6 +86,13 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             Item.shootSpeed = 12f;
         }
 
+        //贴图 2x 入库（148x462），掉落绘制减半保世界尺寸
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor
+            , ref float rotation, ref float scale, int whoAmI) {
+            scale *= 0.5f;
+            return true;
+        }
+
         public override void AddRecipes() {
             if (!CWRID.AllValid(CWRID.Item_Apotheosis, CWRID.Item_DivineGeode
                 , CWRID.Item_AshesofAnnihilation, CWRID.Item_Rock)) {

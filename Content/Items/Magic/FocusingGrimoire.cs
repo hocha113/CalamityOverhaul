@@ -143,10 +143,12 @@ namespace CalamityOverhaul.Content.Items.Magic
             Projectile.hostile = false;
             Projectile.ignoreWater = true;
             Projectile.extraUpdates = 2;
+            //贴图 2x 入库，基线倍率减半保世界尺寸
+            Projectile.scale = 0.5f;
         }
 
         public override void AI() {
-            Lighting.AddLight(Projectile.Center, ThemeColor.ToVector3() * 0.7f * Projectile.scale);
+            Lighting.AddLight(Projectile.Center, ThemeColor.ToVector3() * 1.4f * Projectile.scale);
 
             //短直飞后再追踪脉动
             if (Projectile.timeLeft > 400) {
@@ -161,7 +163,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             if (target != null) {
                 Projectile.SmoothHomingBehavior(target.Center, 1, 0.1f);
             }
-            Projectile.scale = 1 + Math.Abs(MathF.Sin(Projectile.ai[0] * 0.04f)) * 0.2f;
+            Projectile.scale = 0.5f + Math.Abs(MathF.Sin(Projectile.ai[0] * 0.04f)) * 0.1f;
             Projectile.ai[0]++;
 
             if (VaultUtils.isServer) {
@@ -169,7 +171,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             }
 
             if (Main.rand.NextBool(3)) {
-                PRTLoader.NewParticle<PRT_LavaFire>(Projectile.Center + VaultUtils.RandVr(6f), Projectile.velocity * 0.1f + Main.rand.NextVector2Circular(1f, 1f), Color.White, Main.rand.NextFloat(0.6f, 1f) * Projectile.scale)
+                PRTLoader.NewParticle<PRT_LavaFire>(Projectile.Center + VaultUtils.RandVr(6f), Projectile.velocity * 0.1f + Main.rand.NextVector2Circular(1f, 1f), Color.White, Main.rand.NextFloat(1.2f, 2f) * Projectile.scale)
                     ?.SetLifetime(10, 20);
             }
             if (Main.rand.NextBool(5)) {
@@ -228,7 +230,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
             Texture2D glow = CWRAsset.SoftGlow.Value;
-            Main.EntitySpriteDraw(glow, drawPos, null, (ThemeColor with { A = 0 }) * 0.55f, 0f, glow.Size() / 2f, Projectile.scale * 1.5f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(glow, drawPos, null, (ThemeColor with { A = 0 }) * 0.55f, 0f, glow.Size() / 2f, Projectile.scale * 3f, SpriteEffects.None, 0);
 
             Color tint = Color.Lerp(Color.White, ThemeColor, 0.35f);
             Main.EntitySpriteDraw(texture, drawPos, rectangle, tint, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0);

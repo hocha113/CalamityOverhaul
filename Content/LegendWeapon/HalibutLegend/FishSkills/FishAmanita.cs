@@ -443,7 +443,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (sheet != null) {
                 Rectangle frame = sheet.GetRectangle(Projectile.whoAmI % 4, 4);
                 Main.EntitySpriteDraw(sheet, drawPos, frame, FishAmanitaVFX.HomingCyan with { A = 0 } * 0.95f
-                    , Projectile.rotation + age * 0.04f, frame.Size() / 2f, 0.6f, SpriteEffects.None);
+                    , Projectile.rotation + age * 0.04f, frame.Size() / 2f, 0.3f, SpriteEffects.None);
             }
             Main.EntitySpriteDraw(soft, drawPos, null, FishAmanitaVFX.SporeGlow with { A = 0 } * 0.9f
                 , rot, origin, new Vector2(0.08f, 0.14f * stretch), SpriteEffects.None);
@@ -869,7 +869,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (sheet != null) {
                 Rectangle frame = sheet.GetRectangle(Projectile.whoAmI % 4, 4);
                 Main.EntitySpriteDraw(sheet, drawPos, frame, FishAmanitaVFX.ArcVolt with { A = 0 } * (0.9f * pulse)
-                    , Projectile.rotation, frame.Size() / 2f, 0.52f, SpriteEffects.None);
+                    , Projectile.rotation, frame.Size() / 2f, 0.26f, SpriteEffects.None);
             }
             Main.EntitySpriteDraw(soft, drawPos, null, FishAmanitaVFX.SporeGlow with { A = 0 } * (0.95f * pulse)
                 , rot, origin, new Vector2(0.08f, 0.13f * stretch), SpriteEffects.None);

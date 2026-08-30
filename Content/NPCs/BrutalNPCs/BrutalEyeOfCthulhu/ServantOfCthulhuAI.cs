@@ -37,10 +37,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
 
         /// <summary>两张贴图都是 4 帧竖排</summary>
         private const int FrameCount = 4;
-        /// <summary>贴图里眼球本体约 10px 宽，碰撞箱 20px，放大到与体型相称</summary>
-        private const float BodyScale = 1.8f;
+        /// <summary>贴图里眼球本体约 20px 宽（2x 入库），碰撞箱 20px，绘制倍率补到与体型相称</summary>
+        private const float BodyScale = 0.9f;
         /// <summary>帧内的眼球中心，绘制锚点用它对齐碰撞箱中心</summary>
-        private static readonly Vector2 BodyOrigin = new(12.5f, 6.5f);
+        private static readonly Vector2 BodyOrigin = new(25f, 13f);
         /// <summary>插值过的绘制朝向，纯客户端表现</summary>
         private float drawFacing;
         private bool facingReady;

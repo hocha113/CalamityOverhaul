@@ -19,8 +19,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
         /// <summary>贴图帧数（竖排）。真贴图多帧时只改这一处，帧矩形与着色器自动适配</summary>
         internal const int FrameCount = 1;
 
-        /// <summary>贴图脚底距画布底边的像素。画布 77×115（KasaOni 的 1.6 倍身量），留白同比放大</summary>
-        internal const int FeetOffsetY = 6;
+        /// <summary>贴图 2x 入库（画布 154×230），身量语义仍按旧 77×115 画布走：本体纹理绘制统一乘它归一</summary>
+        internal const float BodyTexelScale = 0.5f;
+
+        /// <summary>贴图脚底距画布底边的像素（154×230 画布，KasaOni 的 1.6 倍身量），留白同比放大</summary>
+        internal const int FeetOffsetY = 12;
 
         [VaultLoaden(CWRConstant.NPC + "Kikasa/KikasaThrall")]
         private static Asset<Texture2D> ThrallTex = null;
@@ -81,14 +84,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 return;
             }
             Rectangle frame = FrameOf(body, frameIndex);
-            Vector2 center = BodyCenterFromFeet(feet, frame, scale);
+            float texScale = scale * BodyTexelScale;
+            Vector2 center = BodyCenterFromFeet(feet, frame, texScale);
             SpriteEffects flip = facingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
             Effect form = EffectLoader.KikasaThrallForm?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
             GraphicsDevice device = Main.instance?.GraphicsDevice;
             if (form == null || noise == null || noise.IsDisposed || device == null) {
-                DrawBodyFallback(sb, body, frame, center, scale, flip, light, progress);
+                DrawBodyFallback(sb, body, frame, center, texScale, flip, light, progress);
                 return;
             }
 
@@ -109,10 +113,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 device.Textures[1] = noise;
                 device.SamplerStates[1] = SamplerState.LinearWrap;
 
-                SetFormParams(form, body, frame, progress, scale, wobble, center.Y, groundY, seedOffset);
+                SetFormParams(form, body, frame, progress, texScale, wobble, center.Y, groundY, seedOffset);
                 form.CurrentTechnique.Passes[0].Apply();
                 sb.Draw(body, center - Main.screenPosition, frame, light,
-                    wobble, frame.Size() * 0.5f, scale, flip, 0f);
+                    wobble, frame.Size() * 0.5f, texScale, flip, 0f);
 
                 sb.End();
                 formBatchOpen = false;
@@ -131,7 +135,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             }
 
             if (drawFallback && batchRestored) {
-                DrawBodyFallback(sb, body, frame, center, scale, flip, light, progress);
+                DrawBodyFallback(sb, body, frame, center, texScale, flip, light, progress);
             }
         }
 
@@ -145,11 +149,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
                 return;
             }
             Rectangle frame = FrameOf(body, frameIndex);
+            float texScale = scale * BodyTexelScale;
             float rotation = MathF.Sin(waddlePhase) * 0.07f * moveFactor;
             float bob = Math.Abs(MathF.Sin(waddlePhase)) * 1.6f * moveFactor;
             Vector2 squash = new(1f + MathF.Sin(waddlePhase * 2f) * 0.015f * moveFactor,
                 1f - Math.Abs(MathF.Sin(waddlePhase * 2f)) * 0.03f * moveFactor);
-            Vector2 center = BodyCenterFromFeet(feet, frame, scale);
+            Vector2 center = BodyCenterFromFeet(feet, frame, texScale);
             Vector2 drawPos = center - Main.screenPosition - new Vector2(0f, bob);
             SpriteEffects flip = facingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
@@ -157,14 +162,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaThralls
             if (glow != null) {
                 float pulse = MathF.Sin(Main.GlobalTimeWrappedHourly * 2.1f + identitySeed) * 0.5f + 0.5f;
                 Color backing = new Color(80, 102, 106) with { A = 0 } * (0.10f + pulse * 0.05f);
-                //衬底尺寸按 77×115 画布配，撑得住放大后的身量
+                //衬底尺寸按旧 77×115 身量语义配（世界尺寸，不随贴图 2x 入库变），撑得住放大后的身量
                 sb.Draw(glow, drawPos, null, backing, 0f, glow.Size() / 2f,
                     new Vector2(176f * scale / glow.Width, 154f * scale / glow.Height),
                     SpriteEffects.None, 0f);
             }
 
             sb.Draw(body, drawPos, frame, light, rotation,
-                frame.Size() * 0.5f, squash * scale, flip, 0f);
+                frame.Size() * 0.5f, squash * texScale, flip, 0f);
         }
 
         /// <summary>脚下污潭：envelope 0~1 张开度，真 alpha 深色水渍 + 尸斑青薄光沿</summary>
