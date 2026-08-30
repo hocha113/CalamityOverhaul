@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Narrative;
+﻿using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
 using CalamityOverhaul.Content.Scenarios.Shenyo.Dolls;
 using InnoVault.Narrative.Composition;
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
 
         protected override void Build(NarrativeComposer n) {
             n.Say(NarrativeIds.Shenyo, L0.Value, Voice[1],
-                    onEnter: ShenyoNarrativePortrait.FaceEnter(ShenyoFullBodyPortrait.Face.Pensive))
+                    onEnter: ShenyoNarrativePortrait.FaceEnter(ShenyoFullBodyPortrait.Face.None))
              .SayReward(NarrativeIds.Shenyo, L1.Value, ModContent.ItemType<ScapegoatDoll>(), title: string.Empty,
                     onEnter: ShenyoNarrativePortrait.FaceEnter(ShenyoFullBodyPortrait.Face.Smile))
              .Say(NarrativeIds.Shenyo, L2.Value, Voice[3],
