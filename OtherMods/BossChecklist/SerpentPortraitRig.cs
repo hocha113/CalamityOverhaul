@@ -82,6 +82,10 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
         private Func<float, float, float> legGroundAt;
         /// <summary>落步/犁沙的沙尘出口（由演员 Reset 后经 OnLegSandFx 订阅）</summary>
         public Action<Vector2, Vector2, float> OnLegSandFx;
+        /// <summary>是否带鳌足（荒花专属剪影；脓蕾共用本 rig 但无鳌足）</summary>
+        public bool WithClaws;
+        /// <summary>鳌足共用战斗端骨架（待机呼吸摆，埋沙自动收拢）</summary>
+        private readonly BssClawRig clawRig = new();
 
         private Vector2 headPos;
         private Vector2 prevHeadPos;
@@ -180,6 +184,41 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
             gait += BssStateContext.GaitIncrement(speedNow) * frames;
             FollowChain();
             UpdateLegs();
+            if (WithClaws) {
+                UpdateClaws();
+            }
+        }
+
+        /// <summary>鳌足推进：地表待机呼吸摆，埋沙/钻沙自动收拢（跟随头位姿）</summary>
+        private void UpdateClaws() {
+            BssClawRig.ClawEnv env = new() {
+                Command = HeadBuried ? BssClawCommand.Tuck : BssClawCommand.Idle,
+                HeadCenter = headPos,
+                HeadRotation = HeadRotation,
+                HeadVelocity = headPos - prevHeadPos,
+                AllowDust = false,
+            };
+            clawRig.Advance(in env);
+        }
+
+        /// <summary>远层鳌足（蒙皮前调用）</summary>
+        public void DrawClawsBack(SpriteBatch sb, in PortraitFrame frame, Color ambient) {
+            if (!WithClaws) {
+                return;
+            }
+            PortraitFrame frameCopy = frame;
+            clawRig.DrawStandalone(sb, front: false,
+                dim => frameCopy.Tint(ambient.MultiplyRGB(new Color(dim, dim, dim))));
+        }
+
+        /// <summary>近层鳌足（蒙皮后调用）</summary>
+        public void DrawClawsFront(SpriteBatch sb, in PortraitFrame frame, Color ambient) {
+            if (!WithClaws) {
+                return;
+            }
+            PortraitFrame frameCopy = frame;
+            clawRig.DrawStandalone(sb, front: true,
+                dim => frameCopy.Tint(ambient.MultiplyRGB(new Color(dim, dim, dim))));
         }
 
         private void UpdateSurface(float frames) {

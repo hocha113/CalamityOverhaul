@@ -12,9 +12,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
 {
     /// <summary>
-    /// 背晶齐射→地面晶刺阵（P2）：拱背蓄势 → f20 锁定阵心（承诺，不追人）→
-    /// 背晶迸射（表现）+ 六柱晶刺落位，各柱自带 30f 鬼影预告后拔地。
-    /// 声明式缺口：柱间距 130px、柱宽 32px，柱间走廊即逃逸通道
+    /// 背晶齐射→晶刺阵（P2）：拱背蓄势 → f20 锁定阵心（承诺，不追人）→
+    /// 背晶迸射（表现）+ 六柱巨晶刺落位，各柱自带 30f 鬼影预告后拔地。
+    /// 声明式缺口：柱间距 260px、判定宽 68px，柱间走廊即逃逸通道。
+    /// 玩家悬空/搭台（脚下实地深过最大落差）时柱底悬空生成，攻击不再在地下空转
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)SeaShrimpStateIndex.CrystalSpikes, typeof(SeaShrimpStateContext))]
     internal class SeaShrimpCrystalSpikesState : SeaShrimpStateBase
@@ -25,8 +26,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
         private const int LockFrame = 20;
         private const int CastFrame = 26;
         private const int Total = 100;
-        /// <summary>柱位阵列（相对阵心），间距 130px 即声明缺口</summary>
-        private static readonly float[] SpikeOffsets = [-325f, -195f, -65f, 65f, 195f, 325f];
+        /// <summary>柱位阵列（相对阵心），间距 260px 即声明缺口（巨柱配宽廊）</summary>
+        private static readonly float[] SpikeOffsets = [-650f, -390f, -130f, 130f, 390f, 650f];
 
         private Vector2 lockCenter;
 
@@ -67,18 +68,19 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                     }
                 }
                 if (!VaultUtils.isClient) {
-                    //六柱落位：阵心已锁，各柱自带鬼影预告（预告即实体）
+                    //六柱落位：阵心已锁，各柱自带鬼影预告（预告即实体）。
+                    //落差阀：脚下实地深过最大落差（玩家悬空/搭台）→ 柱底悬空到玩家下方定距
                     int damage = SeaShrimpDirector.ScaleProjectileDamage(npc, SeaShrimpDirector.CrystalSpikeDamage);
                     foreach (float offset in SpikeOffsets) {
                         Vector2 probe = new(lockCenter.X + offset, lockCenter.Y - 240f);
                         float groundY = FindGroundY(probe);
-                        if (groundY > probe.Y + 1500f) {
-                            continue;
-                        }
+                        float spawnY = groundY - lockCenter.Y > SeaShrimpDirector.GroundAttackMaxDrop
+                            ? lockCenter.Y + SeaShrimpDirector.AirSpawnBelow
+                            : groundY;
                         Projectile.NewProjectile(npc.GetSource_FromAI(),
-                            new Vector2(probe.X, groundY), Vector2.Zero,
+                            new Vector2(probe.X, spawnY), Vector2.Zero,
                             ModContent.ProjectileType<SeaShrimpCrystalSpike>(), damage, 2f,
-                            Main.myPlayer, 30f, 190f);
+                            Main.myPlayer, 30f, SeaShrimpDirector.CrystalSpikeHeight);
                     }
                 }
             }

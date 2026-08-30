@@ -341,6 +341,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             if (npc.velocity.Length() > BssDirector.VaultContactSpeed) {
                 npc.damage = npc.defDamage;
             }
+            //撕咬意图：蹬柱爆冲中玩家贴嘴即鳌足急伸钳合
+            DeclareSnatchIfClose(ctx, npc, BssDirector.VaultContactSpeed);
 
             if (!Main.dedServ && Main.GameUpdateCount % 2 == 0) {
                 Dust d = Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(18f, 18f),

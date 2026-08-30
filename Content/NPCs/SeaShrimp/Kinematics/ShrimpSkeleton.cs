@@ -37,9 +37,6 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
         /// <summary>螯钳开合 0..1（平滑）</summary>
         public readonly float[] ClawOpen = new float[2];
 
-        /// <summary>触角：0=近侧 1=远侧</summary>
-        public readonly ShrimpVerletStrand[] Antennae = [new(6, 116f), new(6, 108f)];
-
         public readonly ShrimpLegGait Gait = new();
 
         /// <summary>尾扇张合 0..1（平滑）</summary>
@@ -108,9 +105,6 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
                 gripT[a] = -1f;
             }
             Gait.SnapAll(this, HeadDown);
-            for (int s = 0; s < 2; s++) {
-                Antennae[s].WarmStart(AntennaAnchor(s), AntennaRestDir(s));
-            }
         }
 
         /// <summary>抓握不可用时的收拢腕点：折叠在头前两侧 + 呼吸微摆</summary>
@@ -123,23 +117,9 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
                 + Lateral(armIndex) * (22f + breathe);
         }
 
-        private Vector2 AntennaAnchor(int side) {
-            Vector2 forward = Nodes[0].Forward;
-            return Nodes[0].Pos + forward * 82f
-                + Lateral(side) * (side == 0 ? 7f : 8f);
-        }
-
-        private Vector2 AntennaRestDir(int side) {
-            Vector2 forward = Nodes[0].Forward;
-            return Vector2.Normalize(forward + Lateral(side) * 0.55f);
-        }
-
-        /// <summary>
-        /// 每帧总装。headPos/heading 来自运动学层；normal 为贴附面外法线
-        /// （游泳时传上方向）；attached 决定步态模式
-        /// </summary>
+        /// <summary>每帧总装。headPos/heading 来自运动学层</summary>
         public void Update(SeaShrimpStateContext ctx, Vector2 headPos, float heading,
-            Vector2 tangentMove, float speed, bool wet) {
+            Vector2 tangentMove, float speed) {
             NPC npc = ctx.Npc;
             if (!built || Vector2.Distance(Nodes[0].Pos, headPos) > 340f) {
                 //初建或同步包把头拽走半屏：整链重建防抽搐
@@ -155,16 +135,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
             SolveSpine(ctx, speed);
             SolveArms(ctx);
             Gait.Update(this, false, HeadDown, tangentMove, speed);
-            UpdateAntennae(wet);
 
             TailFlare = MathHelper.Lerp(TailFlare, MathHelper.Clamp(ctx.TailFlare, 0f, 1f), 0.14f);
-
-            //尾弹级高速给触角一记甩尾冲量（本地表现）
-            if (speed > 24f && Main.GameUpdateCount % 6 == 0) {
-                for (int s = 0; s < 2; s++) {
-                    Antennae[s].Nudge(npc.velocity * 0.22f);
-                }
-            }
         }
 
         /// <summary>
@@ -310,11 +282,5 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics
             return gripPos[armIndex] - toGrip * 64f;
         }
 
-        private void UpdateAntennae(bool wet) {
-            float time = Main.GlobalTimeWrappedHourly;
-            for (int s = 0; s < 2; s++) {
-                Antennae[s].Update(AntennaAnchor(s), AntennaRestDir(s), time, seed + s * 2.61f, wet);
-            }
-        }
     }
 }

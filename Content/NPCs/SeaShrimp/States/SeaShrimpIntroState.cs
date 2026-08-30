@@ -138,14 +138,12 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
             }
 
             if (t < StareEnd) {
-                //威压静止：落回地面驻停，晶光脉冲蓄势，触角尝水
+                //威压静止：落回地面驻停，晶光脉冲蓄势
                 HoldInPlace(ctx);
                 float stare = (t - SettleFrame) / (float)(StareEnd - SettleFrame);
                 ctx.CrystalGlow = MathF.Max(ctx.CrystalGlow, 0.35f + stare * 0.6f);
                 ctx.TailFlare = 0.5f;
                 if ((t == SettleFrame + 24 || t == SettleFrame + 52) && !Main.dedServ) {
-                    ctx.Owner.Skeleton.Antennae[0].Nudge(new Vector2(2.4f, -1.2f));
-                    ctx.Owner.Skeleton.Antennae[1].Nudge(new Vector2(-2f, -1f));
                     SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.5f, Pitch = 0.4f, MaxInstances = 2 }, npc.Center);
                 }
                 //钳口开合示威

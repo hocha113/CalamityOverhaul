@@ -38,6 +38,25 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         Brace,
     }
 
+    /// <summary>鳌足姿态指令（纯表现，各端本地模拟；未显式声明时自动跟随腿的收拢/瘫软）</summary>
+    internal enum BssClawCommand
+    {
+        /// <summary>胸前折叠螳臂待机（呼吸摆）</summary>
+        Idle,
+        /// <summary>护嘴：合拢护在嘴前，ClawBurst 拍猛推摊开（配合喷吐）</summary>
+        GuardMouth,
+        /// <summary>撕咬挣抱：朝 ClawAim 急伸钳合（冲刺伤害窗内玩家贴嘴时）</summary>
+        Snatch,
+        /// <summary>过顶挥掷（沙球雨；ClawPhase = 本记进度，ClawActiveSide = 主甩侧）</summary>
+        RainFlick,
+        /// <summary>祭舞三拍（沙尘爆；ClawPhase = 全程进度）</summary>
+        Rite,
+        /// <summary>钻沙/掠冲收拢贴体</summary>
+        Tuck,
+        /// <summary>死亡垂软</summary>
+        Collapse,
+    }
+
     /// <summary>荒花沙蟒状态上下文</summary>
     internal class BssStateContext : INpcStateContext
     {
@@ -97,6 +116,18 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public float LegGripHalfWidth { get; set; }
         public float LegGripTopY { get; set; }
         public float LegGripBottomY { get; set; }
+        #endregion
+
+        #region 鳌足指令（每帧重声明；Burst 自衰减跨帧）
+        public BssClawCommand ClawCommand { get; set; }
+        /// <summary>命令语义相位（挥掷 = 本记 0..1 / 祭舞 = 全程 0..1 / 护嘴 = 合拢度）</summary>
+        public float ClawPhase { get; set; }
+        /// <summary>猛推包络（齐射拍置 1，逐帧自衰减）</summary>
+        public float ClawBurst { get; set; }
+        /// <summary>撕咬目标点</summary>
+        public Vector2 ClawAim { get; set; }
+        /// <summary>挥掷主甩侧（±1，0 = 双爪同姿）</summary>
+        public int ClawActiveSide { get; set; }
         #endregion
 
         #region 表现通道
@@ -231,6 +262,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
             AimAngle = float.NaN;
             LegCommand = BssLegCommand.March;
             LegGripActive = false;
+            ClawCommand = BssClawCommand.Idle;
+            ClawPhase = 0f;
+            ClawActiveSide = 0;
+            ClawBurst *= 0.84f;
+            if (ClawBurst < 0.02f) {
+                ClawBurst = 0f;
+            }
             PulseKind = 0;
             PulsePhase = 0f;
 

@@ -140,9 +140,15 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             int petal = ModContent.ProjectileType<Projectiles.BssPetalProj>();
             int vortex = ModContent.ProjectileType<Projectiles.BssSandVortexProj>();
             int omen = ModContent.ProjectileType<Projectiles.BssBreachOmen>();
+            int stormMark = ModContent.ProjectileType<Projectiles.BssStormMark>();
             foreach (var p in Main.ActiveProjectiles) {
                 if (p.type == sand || p.type == needle || p.type == ball || p.type == petal
-                    || p.type == vortex || p.type == omen) {
+                    || p.type == vortex || p.type == omen || p.type == stormMark) {
+                    p.Kill();
+                }
+                //祭舞召出的沙尘暴本体是原版通用类型：本 boss 战斗语境内 657 只会由
+                //它召出，转阶段顺带清掉（误伤面可忽略，标记被杀不再产新暴）
+                else if (p.type == ProjectileID.SandnadoHostile && p.hostile) {
                     p.Kill();
                 }
             }

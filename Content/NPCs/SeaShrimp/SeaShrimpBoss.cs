@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
 
             Locomotion.Update();
             Skeleton.Update(Context, NPC.Center, Locomotion.Heading,
-                Locomotion.TangentMove, NPC.velocity.Length(), Locomotion.Wet);
+                Locomotion.TangentMove, NPC.velocity.Length());
 
             //残影快照：爆发段（尾弹/出拳举旗）才捕获，渲染层按当前强度衰减重绘
             if (!Main.dedServ) {

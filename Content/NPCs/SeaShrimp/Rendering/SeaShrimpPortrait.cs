@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
                 ctx.CrystalGlow = MathF.Max(ctx.CrystalGlow, 0.55f + 0.45f * k);
             }
 
-            skeleton.Update(ctx, headPos, heading, vel.SafeNormalize(Vector2.Zero), speed, wet: true);
+            skeleton.Update(ctx, headPos, heading, vel.SafeNormalize(Vector2.Zero), speed);
         }
 
         public override void Draw(SpriteBatch sb, in PortraitFrame frame) {

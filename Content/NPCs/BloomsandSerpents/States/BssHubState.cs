@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             IBssState Dash() => air ? new BssBurrowLungeState() : new BssSandDashState();
 
             if (ctx.Phase >= 3) {
-                switch (ctx.AttackIndex % 12) {
+                switch (ctx.AttackIndex % 14) {
                     case 1:
                         ctx.QueuedChainState = (int)BssStateIndex.NeedleRipple;
                         return new BssPetalShakeState();
@@ -151,16 +151,20 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     case 5:
                         return new BssPillarVaultState();
                     case 6:
-                        return new BssLoopCascadeState();
+                        return new BssStormRiteState();
                     case 7:
-                        return air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState();
+                        return new BssLoopCascadeState();
                     case 8:
-                        return new BssCoilOrbitState();
+                        return new BssClawRainState();
                     case 9:
-                        return new BssNeedleRippleState();
+                        return air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState();
                     case 10:
-                        return new BssCactusBallState();
+                        return new BssCoilOrbitState();
                     case 11:
+                        return new BssNeedleRippleState();
+                    case 12:
+                        return new BssCactusBallState();
+                    case 13:
                         return new BssBurrowLungeState();
                     default:
                         return Dash();
@@ -168,7 +172,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             }
 
             if (ctx.Phase >= 2) {
-                switch (ctx.AttackIndex % 13) {
+                switch (ctx.AttackIndex % 15) {
                     case 1:
                         return new BssVortexDashState();
                     case 2:
@@ -185,25 +189,30 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     case 5:
                         return new BssPillarVaultState();
                     case 6:
-                        return new BssPetalShakeState();
+                        //祭舞属沙暴身份（与漩涡/沙瀑同族）：P2 首秀
+                        return new BssStormRiteState();
                     case 7:
-                        return new BssLoopCascadeState();
+                        return new BssPetalShakeState();
                     case 8:
-                        return air ? new BssSkyWeaveState() : (IBssState)new BssSandSpitState();
+                        return new BssLoopCascadeState();
                     case 9:
-                        return air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState();
+                        return air ? new BssSkyWeaveState() : (IBssState)new BssSandSpitState();
                     case 10:
-                        return new BssCoilOrbitState();
+                        return new BssClawRainState();
                     case 11:
-                        return new BssSkyWeaveState();
+                        return air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState();
                     case 12:
+                        return new BssCoilOrbitState();
+                    case 13:
+                        return new BssSkyWeaveState();
+                    case 14:
                         return new BssBurrowLungeState();
                     default:
                         return Dash();
                 }
             }
 
-            switch (ctx.AttackIndex % 8) {
+            switch (ctx.AttackIndex % 9) {
                 case 1:
                     return air ? new BssSkyWeaveState() : (IBssState)new BssSandSpitState();
                 case 2:
@@ -211,13 +220,16 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 case 3:
                     return air ? new BssBurrowLungeState() : (IBssState)new BssGeyserMarchState();
                 case 4:
-                    return new BssCactusBallState();
+                    //鳌足挥掷 P1 即有（远程压制的抖袖戏）
+                    return new BssClawRainState();
                 case 5:
                     return new BssCoilOrbitState();
                 case 6:
                     return new BssPillarSpikeState();
                 case 7:
                     return new BssBurrowLungeState();
+                case 8:
+                    return new BssCactusBallState();
                 default:
                     return Dash();
             }

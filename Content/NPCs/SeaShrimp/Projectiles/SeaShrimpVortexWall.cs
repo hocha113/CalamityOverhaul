@@ -22,8 +22,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles
         [VaultLoaden(CWRConstant.Masking + "PerlinNoise")]
         private static Asset<Texture2D> noiseTex = null;
 
-        /// <summary>名义可见宽 px（quad 按 3× 折算，撕裂轮廓留在画布内侧）</summary>
-        private const float VisualWidth = 170f;
+        /// <summary>名义可见宽 px（quad 按 3× 折算，撕裂轮廓留在画布内侧；3000 高的巨柱配厚身）</summary>
+        private const float VisualWidth = 280f;
         private const int GrowFrames = 40;
         private const int FadeFrames = 30;
 
@@ -39,8 +39,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles
         private float Fade01 => 1f - MathHelper.Clamp(FadeAge / (float)FadeFrames, 0f, 1f);
 
         public override void SetStaticDefaults() {
-            //quad 远宽于命中盒，近出屏不许整柱瞬灭
-            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 720;
+            //quad 远宽于命中盒（高 ~3900），近出屏不许整柱瞬灭
+            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2400;
         }
 
         public override void SetDefaults() {

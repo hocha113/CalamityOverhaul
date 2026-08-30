@@ -1,5 +1,6 @@
 ﻿using InnoVault.StateMachines;
 using System;
+using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
 {
@@ -48,6 +49,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         PillarVault = 19,
         /// <summary>沙柱爆震：后仰怒吼声波环，全柱裂纹预闪后错拍炸沙球环</summary>
         PillarBurst = 20,
+        /// <summary>挥掷沙球雨：鳌足交替过顶抖出高弧沙球（距离带半锚定远程压制）</summary>
+        ClawRain = 21,
+        /// <summary>升空祭舞沙尘爆：冲天悬停三拍编舞，环玩家召唤沙尘暴（复用 657）</summary>
+        StormRite = 22,
     }
 
     /// <summary>荒花沙蟒状态接口</summary>
@@ -115,6 +120,21 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
                 return ctx.CrawlDirX != 0f ? ctx.CrawlDirX : 1f;
             }
             return Math.Sign(dx);
+        }
+
+        /// <summary>
+        /// 撕咬意图（纯表现）：冲势伤害窗内玩家贴嘴时鳌足急伸钳合。
+        /// 冲刺类状态在腾空/飞行段每帧调用，接触伤害机制不变。
+        /// </summary>
+        protected static void DeclareSnatchIfClose(BssStateContext ctx, NPC npc, float speedGate) {
+            if (!ctx.Target.Alives() || npc.velocity.Length() <= speedGate) {
+                return;
+            }
+            Vector2 mouth = BssClawScript.MouthPos(npc.Center, npc.rotation);
+            if (Vector2.Distance(mouth, ctx.Target.Center) < 190f) {
+                ctx.ClawCommand = BssClawCommand.Snatch;
+                ctx.ClawAim = ctx.Target.Center;
+            }
         }
 
         #endregion

@@ -10,9 +10,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
 {
     /// <summary>
-    /// 甩尾涡旋（P2+）：卷尾蓄势 → 横扫甩出 3 个贴地行走小龙卷
+    /// 甩尾涡旋（P2+）：卷尾蓄势 → 横扫甩出 3 个行走巨龙卷
     /// （生成即定速定向不追踪=缺口保证，落位间距 ≥MiniVortexGap 声明式）。
-    /// 小龙卷 30f 生长期无伤（生长即预告），行军向玩家所在侧
+    /// 龙卷 30f 生长期无伤（生长即预告），行军向玩家所在侧；
+    /// 玩家悬空/搭台（脚下实地深过最大落差）时龙卷悬空生成随空行军
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)SeaShrimpStateIndex.VortexToss, typeof(SeaShrimpStateContext))]
     internal class SeaShrimpVortexTossState : SeaShrimpStateBase
@@ -63,13 +64,17 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                     }
                     int damage = SeaShrimpDirector.ScaleProjectileDamage(npc, SeaShrimpDirector.VortexDamage);
                     for (int i = 0; i < 3; i++) {
-                        //落位间距 ≥ MiniVortexGap：三涡沿玩家方向排开，行军同向
+                        //落位间距 ≥ MiniVortexGap：三涡沿玩家方向排开，行军同向。
+                        //落差阀：从玩家上方扫地，实地深过最大落差 → 柱底悬空到玩家下方定距
                         float spawnX = npc.Center.X + dir * (SeaShrimpDirector.MiniVortexGap * (i + 1) + 60f);
-                        float groundY = FindGroundY(new Vector2(spawnX, npc.Center.Y - 200f));
+                        float groundY = FindGroundY(new Vector2(spawnX, ctx.Target.Center.Y - 200f));
+                        float spawnY = groundY - ctx.Target.Center.Y > SeaShrimpDirector.GroundAttackMaxDrop
+                            ? ctx.Target.Center.Y + SeaShrimpDirector.AirSpawnBelow
+                            : groundY;
                         Projectile.NewProjectile(npc.GetSource_FromAI(),
-                            new Vector2(spawnX, groundY), Vector2.Zero,
+                            new Vector2(spawnX, spawnY), Vector2.Zero,
                             ModContent.ProjectileType<SeaShrimpMiniVortex>(), damage, 2f,
-                            Main.myPlayer, SeaShrimpDirector.MiniVortexHeight + i % 2 * 40f,
+                            Main.myPlayer, SeaShrimpDirector.MiniVortexHeight + i % 2 * 120f,
                             dir * SeaShrimpDirector.MiniVortexSpeed);
                     }
                 }

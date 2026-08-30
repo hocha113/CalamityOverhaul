@@ -1122,7 +1122,6 @@ InterferenceDawnBurst.DisplayName: 昼夜干涉爆发
 // SeaShrimpBubbleArc.DisplayName: Sea Shrimp Bubble Arc
 // SeaShrimpCavitationBubble.DisplayName: Sea Shrimp Cavitation Bubble
 // SeaShrimpClawHitbox.DisplayName: Sea Shrimp Claw Hitbox
-// SeaShrimpCrescentWave.DisplayName: Sea Shrimp Crescent Wave
 // SeaShrimpCrystalSpike.DisplayName: Sea Shrimp Crystal Spike
 // SeaShrimpGeyserSpout.DisplayName: Sea Shrimp Geyser Spout
 // SeaShrimpJetBeam.DisplayName: Sea Shrimp Jet Beam
@@ -1131,6 +1130,7 @@ InterferenceDawnBurst.DisplayName: 昼夜干涉爆发
 // SeaShrimpMiniVortex.DisplayName: Sea Shrimp Mini Vortex
 // SeaShrimpShellFrag.DisplayName: Sea Shrimp Shell Frag
 // SeaShrimpSparkBubble.DisplayName: Sea Shrimp Spark Bubble
+// SeaShrimpSwarmBubble.DisplayName: Sea Shrimp Swarm Bubble
 // SeaShrimpVoltBubble.DisplayName: Sea Shrimp Volt Bubble
 // SeaShrimpVortexWall.DisplayName: Sea Shrimp Vortex Wall
 // SeaShrimpWaterBolt.DisplayName: Sea Shrimp Water Bolt
@@ -1246,3 +1246,4 @@ BloomTomeBolt.DisplayName: 蕾弹
 // DeepcrystalSeekBubble.DisplayName: Deepcrystal Seek Bubble
 // DeepcrystalWaterShot.DisplayName: Deepcrystal Water Shot
 // SoulbindingCounterFlame.DisplayName: Soulbinding Counter Flame
+// BssStormMark.DisplayName: Bss Storm Mark

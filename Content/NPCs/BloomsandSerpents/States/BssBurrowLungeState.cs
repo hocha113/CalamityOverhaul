@@ -206,6 +206,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             float speed = npc.velocity.Length();
             if (t > LungeFrame && speed > BssDirector.LungeContactSpeed) {
                 npc.damage = npc.defDamage;
+                //撕咬意图：出土冲势中玩家贴嘴即鳌足急伸钳合
+                DeclareSnatchIfClose(ctx, npc, BssDirector.LungeContactSpeed);
             }
 
             UpdateCrossFx(ctx, npc, t);

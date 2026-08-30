@@ -203,6 +203,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             if (speed > BssDirector.DashContactSpeed) {
                 npc.damage = npc.defDamage;
             }
+            //撕咬意图：掠冲中玩家贴嘴即鳌足急伸钳合
+            DeclareSnatchIfClose(ctx, npc, BssDirector.DashContactSpeed);
 
             //贴地尘浪（各端本地）
             if (!Main.dedServ && Main.GameUpdateCount % 2 == 0) {

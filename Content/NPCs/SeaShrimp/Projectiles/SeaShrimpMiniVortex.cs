@@ -11,8 +11,9 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles
 {
     /// <summary>
-    /// 行走小水龙卷：甩尾甩出，贴地定向行军（生成即定速不追踪=缺口保证）。
+    /// 行走水龙卷：甩尾甩出，定向行军（生成即定速不追踪=缺口保证）。
     /// 30f 生长期与 30f 消散期无伤（生长即预告）。
+    /// 柱底在贴地容差内吸附地面爬坡；悬空生成（落差阀）时保持高度随空行军。
     /// ai[0]=可见高度，ai[1]=行军横速（带符号，定值）；Center=柱底
     /// </summary>
     internal class SeaShrimpMiniVortex : SeaShrimpModProjectile
@@ -22,10 +23,10 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles
         [VaultLoaden(CWRConstant.Masking + "PerlinNoise")]
         private static Asset<Texture2D> noiseTex = null;
 
-        /// <summary>名义可见宽 px</summary>
-        private const float VisualWidth = 76f;
+        /// <summary>名义可见宽 px（四倍扩编 2026-08：千像素级龙卷配厚身）</summary>
+        private const float VisualWidth = 190f;
         /// <summary>判定芯半宽（判定藏在可见体内）</summary>
-        private const float CoreHalfWidth = 24f;
+        private const float CoreHalfWidth = 52f;
         private const int GrowFrames = 30;
         private const int FadeFrames = 30;
         private const int LifeFrames = 330;
@@ -38,7 +39,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles
         private float Fade01 => MathHelper.Clamp(Projectile.timeLeft / (float)FadeFrames, 0f, 1f);
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 420;
+            //quad 高 ~1400：近出屏不许整柱瞬灭
+            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 900;
         }
 
         public override void SetDefaults() {

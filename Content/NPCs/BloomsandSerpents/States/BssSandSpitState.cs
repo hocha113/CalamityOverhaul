@@ -64,6 +64,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             }
             ctx.AimAngle = lockedAim.ToRotation();
 
+            //鳌足护嘴：吸气窗合拢护住（合拢度 = 吸气进度），齐射期保持护姿等推开拍
+            if (t >= LockFrame && t <= FireEnd) {
+                ctx.ClawCommand = BssClawCommand.GuardMouth;
+                ctx.ClawPhase = MathHelper.Clamp((t - LockFrame) / (float)BssDirector.SpitInhaleFrames, 0f, 1f);
+            }
+
             //吸气表现：沙尘向嘴收束
             if (!Main.dedServ && t >= LockFrame && t < FireFrom && Main.GameUpdateCount % 2 == 0) {
                 Vector2 mouth = npc.Center + lockedAim * 28f;
@@ -77,8 +83,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 int volley = (t - FireFrom) / BssDirector.SpitVolleyGap;
                 float lane = LanePairs[volley % LanePairs.Length];
                 Vector2 mouth = npc.Center + lockedAim * 28f;
-                //后坐：每口喷沙头向后一顿
+                //后坐：每口喷沙头向后一顿；鳌足同拍猛推摊开（护嘴配合喷吐的读数）
                 npc.velocity -= lockedAim * 2.6f;
+                ctx.ClawBurst = 1f;
                 if (!Main.dedServ) {
                     SoundEngine.PlaySound(SoundID.Item17 with { Volume = 0.65f, Pitch = -0.2f, MaxInstances = 3 }, mouth);
                     for (int i = 0; i < 4; i++) {

@@ -408,6 +408,55 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         /// <summary>无柱可爆时先种的应急柱数（保底演出：两翼各两根再吼）</summary>
         public const int BurstFallbackPillars = 4;
 
+        //==================== 挥掷沙球雨（鳌足：距离带锚定 + 交替过顶抖袖）====================
+
+        /// <summary>就位帧数上限（进距离带即早退）</summary>
+        public const int RainPositionFrames = 40;
+        /// <summary>距离带内缘（太近后退）</summary>
+        public const float RainBandNear = 500f;
+        /// <summary>距离带外缘（太远逼近）</summary>
+        public const float RainBandFar = 780f;
+        /// <summary>单记挥掷：后引蓄势帧数（慢段 = 预告）</summary>
+        public const int RainFlickWindup = 12;
+        /// <summary>单记挥掷：甩出帧数（快段）</summary>
+        public const int RainFlickRelease = 4;
+        /// <summary>单记挥掷：收势帧数（对侧接手）</summary>
+        public const int RainFlickRecover = 6;
+        /// <summary>挥掷记数：P1 六记，P2 七记，P3 八记（左右交替）</summary>
+        public static int RainFlicks(int phase) => phase >= 3 ? 8 : phase == 2 ? 7 : 6;
+        /// <summary>每记高弧沙球数（横向车道扇散）</summary>
+        public const int RainGlobsPerFlick = 4;
+        /// <summary>沙球雨落点车道间距（逃生缝声明）</summary>
+        public const float RainLanePx = 120f;
+        /// <summary>贴脸阀：距离低于此提前收招（邀请骑脸，镜像喷沙口径）</summary>
+        public const float RainMinDistance = 260f;
+        /// <summary>高弧沙球初速下限/上限（弹道反解后钳制）</summary>
+        public const float RainGlobSpeedMin = 13f;
+        public const float RainGlobSpeedMax = 24f;
+
+        //==================== 升空祭舞沙尘爆（鳌足：三拍编舞 + 复用原版 657 沙尘暴）====================
+
+        /// <summary>冲天就位帧数上限（到锚即早退）</summary>
+        public const int RiteAscendFrames = 50;
+        /// <summary>天空锚点抬升</summary>
+        public const float RiteAscendHeight = 430f;
+        /// <summary>祭舞总帧数（三拍：展开 34% / 划弧 38% / 合掌 28%）</summary>
+        public const int RiteFrames = 96;
+        /// <summary>合掌召唤拍（双爪即将撞合的瞬间）</summary>
+        public const int RiteClaspBeat = 86;
+        /// <summary>沙暴落点数：P2 五座，P3 七座</summary>
+        public static int RiteStormCount(int phase) => phase >= 3 ? 7 : 5;
+        /// <summary>落点车道间距（相互走廊 = 逃生道声明）</summary>
+        public const float RiteStormSpacing = 250f;
+        /// <summary>风暴标记预告帧数（旋沙收束 + 隆隆）</summary>
+        public const int RiteMarkFrames = 66;
+        /// <summary>沙尘暴本体寿命钳制（原版 657 默认 1200 = 20 秒，砍到 10 秒区域封锁）</summary>
+        public const int RiteNadoLife = 600;
+        /// <summary>沙尘暴接触基伤（normal/expert；原版 658 标记自产的 30/22 对本档位超模，走自控伤害）</summary>
+        public static (float Normal, float Expert) StormDamage => (15f, 12f);
+        /// <summary>俯冲回地收招帧数上限</summary>
+        public const int RiteExitFrames = 46;
+
         //==================== 通用节奏（推倒版：近乎无缝的出招密度）====================
 
         /// <summary>hub 连接段最短帧数（换招的一口气）</summary>

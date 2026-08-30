@@ -147,10 +147,9 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
             }
         }
 
-        /// <summary>本体装配（后→前）：远触角→远足→体链→近足→近触角→双螯</summary>
+        /// <summary>本体装配（后→前）：远足→体链→近足→双螯</summary>
         private static void DrawBodyParts(SpriteBatch sb, ShrimpSkeleton sk, float alpha) {
             //远侧层（压暗贴后）
-            DrawAntenna(sb, sk, 1, alpha * 0.72f);
             DrawLegRow(sb, sk, row: 1, alpha, dark: 0.55f);
 
             //体链（尾→头，头压顶）；尾扇锚在前缘，弯折时前缘始终咬进体节3 不脱节
@@ -164,7 +163,6 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
 
             //近侧层
             DrawLegRow(sb, sk, row: 0, alpha, dark: 0.88f);
-            DrawAntenna(sb, sk, 0, alpha);
 
             //双螯压最上层：手撑向玩家所在的屏幕平面，是这套分镜的前景主角
             DrawArm(sb, sk, 1, alpha, dark: 0.68f);
@@ -456,33 +454,6 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
             sb.Draw(claw, solve.Wrist - ViewOff, null, c3,
                 sk.ClawRot[armIndex] - texAxis + open, anchor,
                 1f, fx, 0f);
-        }
-
-        /// <summary>触角：verlet 折线，逐段渐细，尖端泛晶蓝</summary>
-        private static void DrawAntenna(SpriteBatch sb, ShrimpSkeleton sk, int side, float alpha) {
-            ShrimpVerletStrand strand = sk.Antennae[side];
-            Texture2D pixel = VaultAsset.placeholder2?.Value;
-            if (pixel == null) {
-                return;
-            }
-            Color rootColor = new Color(40, 46, 70) * alpha;
-            Color tipColor = new Color(96, 150, 255) * (alpha * 0.85f);
-            int n = strand.Count;
-            for (int i = 0; i < n - 1; i++) {
-                Vector2 a = strand[i];
-                Vector2 b = strand[i + 1];
-                Vector2 d = b - a;
-                float len = d.Length();
-                if (len < 0.01f) {
-                    continue;
-                }
-                float t = i / (float)(n - 1);
-                float thickness = MathHelper.Lerp(4.4f, 1.4f, t);
-                Color col = Color.Lerp(rootColor, tipColor, t * t).MultiplyRGB(LightAt(a, 1f));
-                sb.Draw(pixel, a - ViewOff, new Rectangle(0, 0, 1, 1), col,
-                    d.ToRotation(), new Vector2(0f, 0.5f), new Vector2(len + 0.6f, thickness),
-                    SpriteEffects.None, 0f);
-            }
         }
 
         /// <summary>晶簇加色层：眼、须冠主晶、尾扇晶的常燃脉冲 + 蓄力增益</summary>

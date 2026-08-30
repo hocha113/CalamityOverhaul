@@ -98,12 +98,20 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         /// <summary>爪尖微节贴图（占位=胫爪素材缩窄）</summary>
         [VaultLoaden(CWRConstant.NPC + "BSS/LegClaw")]
         internal static Asset<Texture2D> LegClawAsset = null;
+        /// <summary>鳌足节贴图（占位=步足腿节素材）</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/ClawSegment")]
+        internal static Asset<Texture2D> ClawSegmentAsset = null;
+        /// <summary>鳌足爪刃贴图（占位=爪尖素材）</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/ClawBlade")]
+        internal static Asset<Texture2D> ClawBladeAsset = null;
 
         private NpcStateMachine<BssStateContext> stateMachine;
         internal BssStateContext Context { get; private set; }
         private Player targetPlayer;
         /// <summary>四足步态（本地表现）</summary>
         internal BssLegRig LegRig { get; } = new();
+        /// <summary>鳌足螳臂（本地表现）</summary>
+        internal BssClawRig ClawRig { get; } = new();
         /// <summary>滤镜平滑包络（本地）</summary>
         private float stormSmooth;
         /// <summary>远距滞留帧</summary>
@@ -270,6 +278,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             }
             if (!Main.dedServ) {
                 LegRig.Update(Context);
+                ClawRig.Update(Context);
             }
 
             //阶段驱动的沙暴底线（各端从同步的 Phase 推导，确定性）；死亡/撤离让位给演出退场
@@ -530,13 +539,15 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             BssVfx.SandBurst(ground + new Vector2(side * 640f, 0f), 1.2f);
         }
 
-        //漩涡/回环/沙柱腾跃/沙柱爆震不进回归阀：远距瞬移会把蛇从自己的漩涡/环/
-        //柱上拽走（或打断钉桩怒吼）造成演出脱节，各招自带超时兜底，收招回 hub 后自然触发回归
+        //漩涡/回环/沙柱腾跃/沙柱爆震/升空祭舞不进回归阀：远距瞬移会把蛇从自己的
+        //漩涡/环/柱/天空编舞上拽走（或打断钉桩怒吼）造成演出脱节，
+        //各招自带超时兜底，收招回 hub 后自然触发回归
         private static bool AllowFarSnap(BssStateBase state) {
             return state is BssHubState or BssBurrowLungeState or BssSandSpitState
                 or BssCactusBallState or BssNeedleRippleState or BssPetalShakeState
                 or BssSandDashState or BssSkyWeaveState or BssCoilOrbitState
-                or BssGeyserMarchState or BssTailSweepState or BssPillarSpikeState;
+                or BssGeyserMarchState or BssTailSweepState or BssPillarSpikeState
+                or BssClawRainState;
         }
         #endregion
 
@@ -683,6 +694,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             //腿画最底：体节 whoAmI 更高、绘制在后，天然盖住腿根
             LegRig.Draw(spriteBatch, screenPos, Context);
 
+            float clawFade = 1f - NPC.alpha / 255f;
+            //远层鳌足：压暗垫在头本体之下（深度读数）
+            ClawRig.DrawBack(spriteBatch, screenPos, clawFade);
+
             Main.instance.LoadNPC(Type);
             Texture2D texture = TextureAssets.Npc[Type].Value;
             Rectangle frameRec = texture.Bounds;
@@ -723,6 +738,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                     origin, NPC.scale * 1.04f, SpriteEffects.None, 0f);
                 Lighting.AddLight(NPC.Center, BssVfx.BloomRed.ToVector3() * 0.35f * Context.BloomGlow);
             }
+
+            //近层鳌足：盖在头本体之上（螳臂在前的主剪影）
+            ClawRig.DrawFront(spriteBatch, screenPos, clawFade);
 
             //怒吼声波环（沙柱爆震）：共享冲击环换沙色板，环心钉在点火位不随头走
             if (Context.RoarRingAge >= 0f) {

@@ -32,7 +32,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         public override Vector2 SceneHalfSize => new(300f, 250f);
 
         private BssPortraitActor() {
-            rig = new SerpentPortraitRig(bodyCount: 12, segmentGap: 40f, sandY: 118f, patrolHalfWidth: 232f);
+            rig = new SerpentPortraitRig(bodyCount: 12, segmentGap: 40f, sandY: 118f, patrolHalfWidth: 232f) {
+                WithClaws = true,
+            };
             rig.OnDive = pos => SandBurst(pos, -Vector2.UnitY, 10, 0.8f);
             rig.OnLand = pos => SandBurst(pos, -Vector2.UnitY, 9, 0.9f);
             rig.OnBreach = (pos, dir) => {
@@ -98,7 +100,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         public override void Draw(SpriteBatch sb, in PortraitFrame frame) {
             DrawSky(sb, in frame);
             rig.DrawLegs(sb, in frame, LegAmbient);
+            rig.DrawClawsBack(sb, in frame, LegAmbient);
             DrawWorm(sb, in frame);
+            rig.DrawClawsFront(sb, in frame, LegAmbient);
             DrawSandBand(sb, in frame);
             motes.Draw(sb, in frame);
         }

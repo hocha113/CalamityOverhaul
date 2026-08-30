@@ -34,8 +34,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Core
         public static (float Normal, float Expert) VortexDamage => (72f, 60f);
         /// <summary>间歇泉柱</summary>
         public static (float Normal, float Expert) GeyserDamage => (64f, 53f);
-        /// <summary>合钳水刃</summary>
-        public static (float Normal, float Expert) CrescentDamage => (66f, 55f);
+        /// <summary>合钳泡群（单发细泡，量大伤低）</summary>
+        public static (float Normal, float Expert) SwarmBubbleDamage => (46f, 38f);
         /// <summary>巨型雷泡（飞行本体与崩爆共用）</summary>
         public static (float Normal, float Expert) VoltBubbleDamage => (80f, 66f);
         /// <summary>带电小泡起爆</summary>
@@ -162,14 +162,20 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Core
 
         /// <summary>双渊柱场地半宽 px（封场龙卷距场心的距离，场内即安全声明）</summary>
         public const float ArenaHalfWidth = 1150f;
-        /// <summary>封场龙卷可见高度 px</summary>
-        public const float VortexWallHeight = 920f;
+        /// <summary>封场龙卷可见高度 px（顶天立地的场界声明）</summary>
+        public const float VortexWallHeight = 3000f;
         /// <summary>封场龙卷判定芯半宽 px（判定藏在可见体内：名义可见宽 ~170）</summary>
         public const float VortexWallCoreHalfWidth = 52f;
-        /// <summary>行走小龙卷：可见高度 / 行军速度 px每帧 / 生成最小间距（声明式缺口）</summary>
-        public const float MiniVortexHeight = 260f;
+        /// <summary>行走小龙卷：可见高度（四倍扩编 2026-08）/ 行军速度 px每帧 / 生成最小间距（声明式缺口）</summary>
+        public const float MiniVortexHeight = 1040f;
         public const float MiniVortexSpeed = 2.2f;
         public const float MiniVortexGap = 240f;
+        /// <summary>地面攻击（晶刺/小龙卷）与玩家的最大落差 px：地面比这更深就悬空生成</summary>
+        public const float GroundAttackMaxDrop = 460f;
+        /// <summary>悬空生成时柱底在玩家下方的距离 px</summary>
+        public const float AirSpawnBelow = 320f;
+        /// <summary>地面晶刺柱高 px（四倍扩编 2026-08）</summary>
+        public const float CrystalSpikeHeight = 760f;
         /// <summary>渊喉水炮：可见满宽 / 最大射程 / 扫速 rad每帧（声明式）/ 全宽持续帧</summary>
         public const float JetWidth = 110f;
         public const float JetMaxLength = 1500f;
@@ -205,6 +211,10 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Core
         public const float SparkScatterSpeed = 12f;
         /// <summary>泡球被拍飞速度 px/f</summary>
         public const float BattedBubbleSpeed = 30f;
+        /// <summary>合钳泡群：弹数 / 微追踪转率 rad每帧 / 追踪持续帧</summary>
+        public const int SwarmBubbleCount = 22;
+        public const float SwarmHomingRate = 0.016f;
+        public const int SwarmHomingFrames = 55;
         /// <summary>泡球待拍泡半径 px</summary>
         public const float BatBubbleRadius = 30f;
         /// <summary>跃空上跳初速 px/f</summary>
