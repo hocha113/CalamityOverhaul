@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.EntrustManager;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests;
+using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using CalamityOverhaul.Content.Structures;
@@ -15,6 +17,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
     /// 首潜委托："越墙深潜"，把旧网入口暴露进任务书
     /// 完成判据 = 一次安全登出（OldNetPlayer.SettleAndLogout 写 DiveCompleted）
     /// 逐帧同步注册的既有惯例（DraedonQuestLine 同款泵）
+    /// 派发与追踪窗显示都跟 SHPC 试炼线同口径：手持 SHPC 才发单、才显示
     /// </summary>
     internal class OldNetQuestLine : ModSystem
     {
@@ -31,14 +34,18 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             }
 
             OldNetGuideData data = player.GetModPlayer<StoryPlayer>().Get<OldNetGuideData>();
-            EnsureEntry(manager, data);
+            EnsureEntry(manager, player, data);
         }
 
         //入口是否算"存在"：深潜仅单人开放，且玩家没把坠舱密度设为灭绝（否则终端根本没落地）
         private static bool EntranceEligible
             => Main.netMode == NetmodeID.SinglePlayer && SHPCCradleGen.Enabled;
 
-        private static void EnsureEntry(QuestManagerUI manager, OldNetGuideData data) {
+        //派发门禁照抄 SHPC 试炼线：手持 SHPC 才发单，演出进行中暂缓
+        private static bool CanDispatch(Player player)
+            => !NarrativeTriggerGate.IsBusy && player.GetItem().type == SHPCOverride.ID;
+
+        private static void EnsureEntry(QuestManagerUI manager, Player player, OldNetGuideData data) {
             EntrustEntryData existing = manager.GetEntry(QuestKey);
             if (existing is OldNetQuestEntry) {
                 if (data.DiveCompleted && existing.Status != QuestEntryStatus.Completed) {
@@ -46,6 +53,11 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
                     existing.Progress = 1f;
                     manager.MarkFilterDirty();
                 }
+                return;
+            }
+
+            //没握着 SHPC 就不落委托：这单本来就是 SHPC 的活，跟其余试炼一样只对持枪者开
+            if (!CanDispatch(player)) {
                 return;
             }
 
@@ -65,8 +77,11 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
             OldNetQuestEntry entry = new(QuestKey,
                 OldNetTexts.EntrustTitle, OldNetTexts.EntrustSummary, OldNetTexts.EntrustCategory) {
                 Priority = 30,
-                //旧网入口在 SHPC 坠舱，关注侧栏直接套 SHPC 简约文字提示
+                //旧网入口在 SHPC 坠舱，委托人与关注侧栏都归 SHPC
+                Provider = EntrustProviders.SHPC,
                 TrackerStyle = new SHPCTrackerWidgetStyle(),
+                //追踪窗仅手持 SHPC 时显示
+                TrackerVisibilityCheck = static () => Main.LocalPlayer.GetItem().type == SHPCOverride.ID,
             };
 
             if (data.DiveCompleted) {
