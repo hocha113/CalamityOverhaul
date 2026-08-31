@@ -77,6 +77,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                     if (npc.velocity.Length() > FssDirector.SkimContactSpeed) {
                         npc.damage = npc.defDamage;
                     }
+                    //撕咬意图：出门爆冲中玩家贴嘴即鳌足急伸合围
+                    DeclareSnatchIfClose(ctx, npc, FssDirector.SkimContactSpeed);
                     if (phaseTimer >= FssDirector.PortalBurstFlightFrames) {
                         //收出口门（进入收拢窗）
                         KillGate(ref exitGateId);

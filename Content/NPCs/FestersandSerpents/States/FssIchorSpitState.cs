@@ -35,6 +35,13 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             ctx.AimAngle = aim.ToRotation();
             ctx.LegCommand = FssLegCommand.March;
 
+            //鳌足护嘴：吸气窗镰横挡杵托颌（合拢度 = 吸气进度），齐射期保持护姿等推开拍
+            if (t >= FssDirector.SpitTrackFrames && t <= VolleyEnd) {
+                ctx.ClawCommand = FssClawCommand.GuardMouth;
+                ctx.ClawPhase = MathHelper.Clamp(
+                    (t - FssDirector.SpitTrackFrames) / (float)FssDirector.SpitInhaleFrames, 0f, 1f);
+            }
+
             if (t < FssDirector.SpitTrackFrames) {
                 //跟踪段：继续逼近，囊肿渐亮
                 ctx.CrawlSpeed = 9f;
@@ -103,12 +110,13 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             k = Math.Max(k, 0);
             float lane = FssDirector.SpitLaneBase + k * FssDirector.SpitLaneStep;
 
-            //出手表现（各端本地）：口沫 + 短鞭波 = 逐口后坐
+            //出手表现（各端本地）：口沫 + 短鞭波 = 逐口后坐；鳌足同拍猛推摊开
             if (!Main.dedServ) {
                 FssVfx.IchorBurst(mouth, 0.7f, aim);
                 SoundEngine.PlaySound(SoundID.Item17 with { Volume = 0.55f, Pitch = -0.15f, MaxInstances = 5 }, mouth);
             }
             ctx.PulseWhip(4f);
+            ctx.ClawBurst = 1f;
             ctx.CystGlow = Math.Max(ctx.CystGlow, 0.55f);
 
             if (VaultUtils.isClient) {

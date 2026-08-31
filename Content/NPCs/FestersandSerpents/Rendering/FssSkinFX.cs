@@ -27,6 +27,10 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             //腿画最底
             ctx.Owner.LegRig.Draw(sb, screenPos, ctx);
 
+            float clawFade = ctx.LegAlpha * (1f - ctx.Npc.alpha / 255f);
+            //远层长镰：压暗垫在整链之下（深度读数）
+            ctx.Owner.ClawRig.DrawBack(sb, screenPos, clawFade);
+
             Effect shader = EffectLoader.FssCorruptSkin?.Value;
 
             //残影层（Deferred 批加色，画在本体之下）
@@ -77,6 +81,9 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
                     DrawSegmentGlowOverlay(sb, screenPos, ctx, seg);
                 }
             }
+
+            //近层疮杵：盖在整链之上（不对称剪影的主臂）
+            ctx.Owner.ClawRig.DrawFront(sb, screenPos, clawFade);
         }
 
         private static bool OnScreen(Vector2 worldPos, Vector2 screenPos) {

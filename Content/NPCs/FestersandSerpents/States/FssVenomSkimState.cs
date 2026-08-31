@@ -184,6 +184,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             if (npc.velocity.Length() > FssDirector.SkimContactSpeed) {
                 npc.damage = npc.defDamage;
             }
+            //撕咬意图：毒冲中玩家贴嘴即鳌足急伸合围
+            DeclareSnatchIfClose(ctx, npc, FssDirector.SkimContactSpeed);
 
             //尾迹滴灵液：留池滴与雨滴交替（池经济播种的机动路径）
             if (!VaultUtils.isClient && phaseTimer % FssDirector.SkimDripGap == 0) {

@@ -39,6 +39,12 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         PortalRush = 14,
         /// <summary>裂躯交叉：中段撕裂成双蛇，同帧交叉冲刺编舞后合体（P3）</summary>
         SunderCross = 15,
+        /// <summary>疮杵夯地：双杵合砸 + 灵液喷泉爆发播池</summary>
+        ClawSlam = 16,
+        /// <summary>长镰自刈：双镰剪切自体囊肿喷扇 + 镰尖甩痰（消耗囊肿充能）</summary>
+        ClawReap = 17,
+        /// <summary>夯地泉列：双杵合砸，灵液冲击柱自夯点双向行军喷发</summary>
+        ClawQuake = 18,
     }
 
     /// <summary>脓蕾沙蟒状态接口</summary>
@@ -111,6 +117,20 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         /// <summary>口部位置（rotation − FacingRot = 实际朝向）</summary>
         protected static Vector2 MouthPos(NPC npc)
             => npc.Center + (npc.rotation - FssHead.FacingRot).ToRotationVector2() * 34f * npc.scale;
+
+        /// <summary>
+        /// 撕咬意图（纯表现）：冲势伤害窗内玩家贴嘴时鳌足急伸合围（镰钩压 + 杵砸托）。
+        /// 冲刺类状态在飞行段每帧调用，接触伤害机制不变。
+        /// </summary>
+        protected static void DeclareSnatchIfClose(FssStateContext ctx, NPC npc, float speedGate) {
+            if (!ctx.Target.Alives() || npc.velocity.Length() <= speedGate) {
+                return;
+            }
+            if (Vector2.Distance(MouthPos(npc), ctx.Target.Center) < 210f) {
+                ctx.ClawCommand = FssClawCommand.Snatch;
+                ctx.ClawAim = ctx.Target.Center;
+            }
+        }
 
         #endregion
     }

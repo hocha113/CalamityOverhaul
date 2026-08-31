@@ -34,6 +34,27 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         Collapse,
     }
 
+    /// <summary>变异鳌足姿态指令（纯表现，各端本地模拟；未显式声明时自动跟随腿的收拢/瘫软）</summary>
+    internal enum FssClawCommand
+    {
+        /// <summary>不对称待机：疮杵拄地 + 长镰半举</summary>
+        Idle,
+        /// <summary>护嘴：镰横挡杵托颌，ClawBurst 拍猛推摊开（配合灵液扫喷）</summary>
+        GuardMouth,
+        /// <summary>撕咬挣抱：镰自上钩压、杵自下砸托（冲刺伤害窗内玩家贴嘴时）</summary>
+        Snatch,
+        /// <summary>疮杵夯地（ClawPhase = 本记 0..1；夯点由 FssClawScript.SlamImpact 同源）</summary>
+        Slam,
+        /// <summary>长镰自刈（ClawPhase = 切弧 0..1，ClawAim = 当前被割囊肿位）</summary>
+        Reap,
+        /// <summary>自刈收势甩痰（ClawPhase = 甩弧 0..1，镰尖即弹幕出生点）</summary>
+        Fling,
+        /// <summary>钻沙/掠冲收拢贴体</summary>
+        Tuck,
+        /// <summary>死亡垂软</summary>
+        Collapse,
+    }
+
     /// <summary>脓蕾沙蟒状态上下文</summary>
     internal class FssStateContext : INpcStateContext
     {
@@ -53,6 +74,10 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         public int Phase { get => (int)Npc.ai[2]; set => Npc.ai[2] = value; }
         /// <summary>连击队列：收招后直接接的状态号（-1 无）</summary>
         public int QueuedChainState { get; set; } = -1;
+        /// <summary>追击阀已用闸（连接件不许连发；轮换出招时清零，权威端裁决量）</summary>
+        public bool ChaseValveUsed { get; set; }
+        /// <summary>上一手选招的状态号（-1 无；压力招连发闸的判据，权威端裁决量）</summary>
+        public int LastPickedState { get; set; } = -1;
         /// <summary>
         /// 骚扰滴射时钟（跨 hub 进出持久累积）。hub 每次重建 Timer 归零而 hub
         /// 存活常仅几帧，按状态内 Timer 取模的骚扰永远凑不满周期——时钟必须挂在
@@ -96,6 +121,16 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         public int CollapsedLegs { get; set; }
         /// <summary>腿整体可见度（钻沙期渐隐）</summary>
         public float LegAlpha { get; set; } = 1f;
+        #endregion
+
+        #region 鳌足指令（每帧重声明；Burst 自衰减跨帧）
+        public FssClawCommand ClawCommand { get; set; }
+        /// <summary>命令语义相位（夯地/切弧/甩痰 = 各自 0..1 / 护嘴 = 合拢度）</summary>
+        public float ClawPhase { get; set; }
+        /// <summary>猛推包络（齐射拍置 1，逐帧自衰减）</summary>
+        public float ClawBurst { get; set; }
+        /// <summary>目标点（撕咬 / 自刈当前囊肿位）</summary>
+        public Vector2 ClawAim { get; set; }
         #endregion
 
         #region 表现通道
@@ -241,6 +276,12 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
             Slither = 0f;
             AimAngle = float.NaN;
             LegCommand = FssLegCommand.March;
+            ClawCommand = FssClawCommand.Idle;
+            ClawPhase = 0f;
+            ClawBurst *= 0.84f;
+            if (ClawBurst < 0.02f) {
+                ClawBurst = 0f;
+            }
             PulseKind = 0;
             PulsePhase = 0f;
             PortalPhase = false;

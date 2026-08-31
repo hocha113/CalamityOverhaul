@@ -165,6 +165,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             if (npc.velocity.Length() > FssDirector.SkimContactSpeed) {
                 npc.damage = npc.defDamage;
             }
+            //撕咬意图：掠航中玩家贴嘴即鳌足急伸合围
+            DeclareSnatchIfClose(ctx, npc, FssDirector.SkimContactSpeed);
 
             //链式爆裂波：头→尾随航过推进（各端同拍，弹幕只在权威端）
             int total = Math.Max(ctx.TotalSegments, 1);

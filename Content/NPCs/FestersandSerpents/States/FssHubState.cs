@@ -40,18 +40,27 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
 
             Timer++;
 
-            //追击阀：拉出交战圈时接管（追击即攻击，不消耗轮换序号）。
-            //P2 起走门冲（地形无关的贴近手段），P1 保持钻沙突袭
+            //追击阀：拉到 ChaseValveDistance 才插入连接件（P2 门冲 / P1 钻沙突袭），
+            //且单发限流——用过一次必须走一手轮换才许再追。旧版 1500px 无限连发会让
+            //机动战整场复读门冲/钻地，轮换表（含鳌足新招）永远轮不到（移植 BSS 口径）
             if (t > FssDirector.ConnectorFrames && !ctx.Owner.TargetInvalid()
-                && dist > FssDirector.EngageDistance) {
-                return ctx.Phase >= 2 ? new FssPortalRushState() : (IFssState)new FssBreachFountState();
+                && dist > FssDirector.ChaseValveDistance && !ctx.ChaseValveUsed) {
+                ctx.ChaseValveUsed = true;
+                if (ctx.Phase >= 2) {
+                    ctx.LastPickedState = (int)FssStateIndex.PortalRush;
+                    return new FssPortalRushState();
+                }
+                ctx.LastPickedState = (int)FssStateIndex.BreachFount;
+                return new FssBreachFountState();
             }
 
             if (t > FssDirector.ConnectorFrames && ctx.AttackCooldown <= 0
                 && !ctx.Owner.TargetInvalid()) {
                 IFssState pick = PickAttack(ctx);
                 if (pick != null) {
+                    ctx.ChaseValveUsed = false;
                     ctx.AttackIndex++;
+                    ctx.LastPickedState = pick is FssStateBase picked ? (int)picked.StateIndex : -1;
                     return pick;
                 }
             }
@@ -120,11 +129,13 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
         }
 
         /// <summary>
-        /// 手写轮换表：压力招（毒冲/突袭/掠航/门冲）与区域招（扫喷/黏疮/炮/环卷）交替，
-        /// 强招押后阶段解锁：吞沙炮/门冲/掠航属变异蔓延身份 P2 起，
-        /// 满场引爆与裂躯交叉 P3 才上；环卷瀑洗 P1 即有（地形无关的基础对空）。
-        /// 高飞/平台替补：贴地招按槽位换成环卷/门冲/破土（破土自地下向上突袭，
-        /// 对平台上方玩家仍有效），天上也有全套变化而非单招循环。
+        /// 手写轮换表：压力招（毒冲/突袭/掠航/门冲）与区域招（扫喷/黏疮/炮/环卷/
+        /// 鳌足夯地）交替，强招押后阶段解锁：吞沙炮/门冲/掠航/长镰自刈属变异蔓延
+        /// 身份 P2 起，满场引爆与裂躯交叉 P3 才上；环卷瀑洗与疮杵夯地 P1 即有
+        /// （夯地播池 = 给满场引爆喂燃料的前菜）。
+        /// 高飞/平台替补：贴地招按槽位换成环卷/门冲/裂躯，天上也有全套变化。
+        /// 压力招连发闸：门冲/破土/毒冲上一手同招即换替补（含追击阀记账）——
+        /// 黏疮布点与吞沙炮各保双语境出场，复读连接件不许挤占轮换（移植 BSS 口径）。
         /// </summary>
         private static IFssState PickAttack(FssStateContext ctx) {
             ctx.QueuedChainState = -1;
@@ -133,68 +144,108 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             bool air = ctx.Target.Alives()
                 && FssVfx.FindGroundY(ctx.Target.Center) - ctx.Target.Center.Y > 430f;
 
+            //压力招连发闸：门冲/破土/毒冲是复读惯犯——上一手（含追击阀）已是同招
+            //就换成槽位替补，两记之间必然隔一手别的（移植 BSS 真机验证过的口径）
+            IFssState Portal(Func<IFssState> alt)
+                => ctx.LastPickedState == (int)FssStateIndex.PortalRush ? alt() : new FssPortalRushState();
+            IFssState Breach(Func<IFssState> alt)
+                => ctx.LastPickedState == (int)FssStateIndex.BreachFount ? alt() : new FssBreachFountState();
+            IFssState Skim(Func<IFssState> alt)
+                => ctx.LastPickedState == (int)FssStateIndex.VenomSkim ? alt() : new FssVenomSkimState();
+
             if (ctx.Phase >= 3) {
-                switch (ctx.AttackIndex % 10) {
+                switch (ctx.AttackIndex % 12) {
                     case 1:
-                        return air ? new FssPortalRushState() : (IFssState)new FssSwallowMortarState();
+                        return air ? Portal(() => new FssCoilCascadeState())
+                            : (IFssState)new FssSwallowMortarState();
                     case 2:
-                        return air ? new FssPortalRushState() : (IFssState)new FssVenomSkimState();
+                        //长镰自刈 P3 常驻（割囊肿的资源戏；充能不足状态自落替补）
+                        return new FssClawReapState();
                     case 3:
                         //满场引爆吃地面池；高空/平台观众改看裂躯交叉
                         return air ? new FssSunderCrossState() : (IFssState)new FssFieldDetonateState();
                     case 4:
                         return new FssCoilCascadeState();
                     case 5:
-                        return new FssFesterRippleState();
+                        //P3 夯击升级为泉列版（普通夯地退居 P1/P2）
+                        return air ? Portal(() => new FssSunderCrossState())
+                            : (IFssState)new FssClawQuakeState();
                     case 6:
-                        return new FssSunderCrossState();
+                        return new FssFesterRippleState();
                     case 7:
-                        return air ? new FssCoilCascadeState() : (IFssState)new FssIchorSpitState();
+                        return new FssSunderCrossState();
                     case 8:
-                        return air ? new FssPortalRushState() : (IFssState)new FssBreachFountState();
+                        return air ? new FssCoilCascadeState() : (IFssState)new FssIchorSpitState();
                     case 9:
-                        return air ? new FssPortalRushState() : (IFssState)new FssVenomSkimState();
+                        return air ? Portal(() => new FssCoilCascadeState())
+                            : Breach(() => new FssFesterRippleState());
+                    case 10:
+                        return new FssStickyCystState();
+                    case 11:
+                        return air ? Portal(() => new FssSunderCrossState())
+                            : Skim(() => new FssIchorSpitState());
                     default:
                         return new FssSunderCrossState();
                 }
             }
 
             if (ctx.Phase >= 2) {
-                switch (ctx.AttackIndex % 8) {
+                switch (ctx.AttackIndex % 11) {
                     case 1:
-                        return air ? new FssPortalRushState() : (IFssState)new FssIchorSpitState();
+                        return air ? Portal(() => new FssCoilCascadeState())
+                            : (IFssState)new FssIchorSpitState();
                     case 2:
-                        return air ? new FssPortalRushState() : (IFssState)new FssSwallowMortarState();
+                        //疮杵夯地：播种脓池的前菜（给满场引爆喂燃料）
+                        return new FssClawSlamState();
                     case 3:
-                        return air ? new FssCoilCascadeState() : (IFssState)new FssVenomSkimState();
+                        return air ? Portal(() => new FssCoilCascadeState())
+                            : (IFssState)new FssSwallowMortarState();
                     case 4:
-                        return new FssCoilCascadeState();
+                        return air ? new FssCoilCascadeState() : Skim(() => new FssIchorSpitState());
                     case 5:
-                        return air ? new FssPortalRushState() : (IFssState)new FssStickyCystState();
+                        //长镰自刈 P2 首秀
+                        return new FssClawReapState();
                     case 6:
-                        return new FssFesterRippleState();
+                        //夯地泉列 P2 首秀（冲击柱双向行军）
+                        return new FssClawQuakeState();
                     case 7:
-                        return new FssBreachFountState();
+                        return air ? Portal(() => new FssCoilCascadeState())
+                            : (IFssState)new FssStickyCystState();
+                    case 8:
+                        return new FssFesterRippleState();
+                    case 9:
+                        return Breach(() => new FssFesterRippleState());
+                    case 10:
+                        //环卷专属槽（泉列顶掉旧环卷槽后还回来：基础招不许从地面轮换里消失）
+                        return new FssCoilCascadeState();
                     default:
-                        return air ? new FssCoilCascadeState() : (IFssState)new FssVenomSkimState();
+                        return air ? new FssCoilCascadeState() : Skim(() => new FssIchorSpitState());
                 }
             }
 
-            switch (ctx.AttackIndex % 7) {
+            switch (ctx.AttackIndex % 9) {
                 case 1:
                     return air ? new FssCoilCascadeState() : (IFssState)new FssIchorSpitState();
                 case 2:
-                    return air ? new FssBreachFountState() : (IFssState)new FssStickyCystState();
+                    return air ? Breach(() => new FssCoilCascadeState())
+                        : (IFssState)new FssStickyCystState();
                 case 3:
-                    return new FssBreachFountState();
+                    //疮杵夯地 P1 即有（腿架 + 播池的重击戏）
+                    return new FssClawSlamState();
                 case 4:
-                    return air ? new FssCoilCascadeState() : (IFssState)new FssVenomSkimState();
+                    return Breach(() => new FssCoilCascadeState());
                 case 5:
-                    return air ? new FssBreachFountState() : (IFssState)new FssIchorSpitState();
+                    return air ? new FssCoilCascadeState() : Skim(() => new FssIchorSpitState());
                 case 6:
-                    return air ? new FssCoilCascadeState() : (IFssState)new FssVenomSkimState();
+                    return air ? Breach(() => new FssCoilCascadeState())
+                        : (IFssState)new FssIchorSpitState();
+                case 7:
+                    return air ? new FssCoilCascadeState() : Skim(() => new FssStickyCystState());
+                case 8:
+                    return new FssClawSlamState();
                 default:
-                    return air ? new FssBreachFountState() : (IFssState)new FssVenomSkimState();
+                    return air ? Breach(() => new FssCoilCascadeState())
+                        : Skim(() => new FssIchorSpitState());
             }
         }
     }

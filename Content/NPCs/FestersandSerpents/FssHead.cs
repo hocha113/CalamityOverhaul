@@ -88,12 +88,20 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
         internal static Asset<Texture2D> LegUpperAsset = null;
         [VaultLoaden(CWRConstant.NPC + "BSS/LegLower")]
         internal static Asset<Texture2D> LegLowerAsset = null;
+        /// <summary>疮杵臂贴图（占位=步足腿节素材）</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/ClawClub")]
+        internal static Asset<Texture2D> ClawClubAsset = null;
+        /// <summary>长镰臂贴图（占位=步足胫爪素材）</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/ClawSickle")]
+        internal static Asset<Texture2D> ClawSickleAsset = null;
 
         private NpcStateMachine<FssStateContext> stateMachine;
         internal FssStateContext Context { get; private set; }
         private Player targetPlayer;
         /// <summary>变异四足步态（本地表现）</summary>
         internal FssLegRig LegRig { get; } = new();
+        /// <summary>不对称变异鳌足（疮杵 + 长镰，本地表现）</summary>
+        internal FssClawRig ClawRig { get; } = new();
         /// <summary>滤镜平滑包络（本地）</summary>
         private float stormSmooth;
         /// <summary>远距滞留帧</summary>
@@ -249,6 +257,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
             }
             if (!Main.dedServ) {
                 LegRig.Update(Context);
+                ClawRig.Update(Context);
             }
 
             //阶段驱动的腐沙暴底线（各端从同步的 Phase 推导，确定性）
@@ -503,10 +512,12 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
         }
 
         //锚定型演出招（瀑洗/引爆/吞沙炮/蜕变）不进回归阀：远距瞬移会撕裂演出，
-        //各招自带超时兜底，收招回 hub 后自然触发回归
+        //各招自带超时兜底，收招回 hub 后自然触发回归。
+        //鳌足夯地/自刈皆贴地锚定短招，放行
         private static bool AllowFarSnap(FssStateBase state) {
             return state is FssHubState or FssIchorSpitState or FssVenomSkimState
-                or FssStickyCystState or FssBreachFountState or FssFesterRippleState;
+                or FssStickyCystState or FssBreachFountState or FssFesterRippleState
+                or FssClawSlamState or FssClawReapState or FssClawQuakeState;
         }
         #endregion
 

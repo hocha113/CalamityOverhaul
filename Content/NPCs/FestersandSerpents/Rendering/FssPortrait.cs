@@ -31,6 +31,9 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
 
         public override Vector2 SceneHalfSize => new(322f, 258f);
 
+        /// <summary>不对称鳌足（疮杵 + 长镰，图鉴待机剪影）</summary>
+        private readonly FssClawRig clawRig = new();
+
         private FssPortraitActor() {
             rig = new SerpentPortraitRig(bodyCount: 12, segmentGap: 46f, sandY: 122f, patrolHalfWidth: 236f);
             rig.OnDive = pos => SandBurst(pos, -Vector2.UnitY, 10, 0.8f);
@@ -63,6 +66,21 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             float frames = dt * 60f;
             rig.Update(dt);
             motes.Update(frames);
+
+            //头尾双对鳌足（前双杵 + 后双镰）：待机剪影，埋沙自动收拢
+            SerpentPortraitRig.SegmentPose[] portraitSegs = rig.Segments;
+            int rearIdx = Math.Max(rig.TailOrdinal - 3, 1);
+            FssClawRig.ClawEnv clawEnv = new() {
+                Command = rig.HeadBuried ? FssClawCommand.Tuck : FssClawCommand.Idle,
+                HeadCenter = rig.HeadPos,
+                HeadRotation = rig.HeadRotation,
+                RearCenter = portraitSegs[rearIdx].Center,
+                RearRotation = portraitSegs[rearIdx].Rotation,
+                RearOk = !rig.SegmentBuried(rearIdx),
+                HeadScale = 1f,
+                AllowDust = false,
+            };
+            clawRig.Advance(in clawEnv);
 
             //囊肿滴漏：地表期从随机囊肿节垂灵液
             dripTimer += dt;
@@ -97,7 +115,12 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
         public override void Draw(SpriteBatch sb, in PortraitFrame frame) {
             DrawSky(sb, in frame);
             rig.DrawLegs(sb, in frame, LegAmbient);
+            PortraitFrame frameCopy = frame;
+            clawRig.DrawStandalone(sb, front: false,
+                dim => frameCopy.Tint(LegAmbient.MultiplyRGB(new Color(dim, dim, dim))));
             DrawWorm(sb, in frame);
+            clawRig.DrawStandalone(sb, front: true,
+                dim => frameCopy.Tint(LegAmbient.MultiplyRGB(new Color(dim, dim, dim))));
             DrawSandBand(sb, in frame);
             motes.Draw(sb, in frame);
         }

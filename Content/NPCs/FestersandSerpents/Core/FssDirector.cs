@@ -66,6 +66,12 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         public const float MaxFindDistance = 5600f;
         /// <summary>出招最大交战距离</summary>
         public const float EngageDistance = 1500f;
+        /// <summary>
+        /// 追击阀触发距离：拉远到此距离才插入门冲/破土连接件。配合单发闸
+        /// （用过一次必须走一轮轮换才能再用），防止机动战里追击无限复读、
+        /// 轮换表（含鳌足新招）永远轮不到（移植 BSS 真机验证过的口径）。
+        /// </summary>
+        public const float ChaseValveDistance = 2000f;
         /// <summary>远距回归阀触发距离（钻地瞬移贴回）</summary>
         public const float FarSnapDistance = 2700f;
 
@@ -353,6 +359,59 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         public const float DetonateMaxRadius = 3400f;
         /// <summary>收招呼吸拍（行波过后的整拍留白）</summary>
         public const int DetonateBreathFrames = 30;
+
+        //==================== A12 疮杵夯地（鳌足：双杵合砸 + 灵液喷泉爆发播池）====================
+
+        /// <summary>贴近出手距离的就位帧数上限（到位即早退）</summary>
+        public const int SlamApproachFrames = 40;
+        /// <summary>出手距离（夯点在头前方 ~190px，太远夯不着）</summary>
+        public const float SlamRange = 330f;
+        /// <summary>单记夯地全程帧数（编舞 0..1 映射：举杵 50% / 砸落 12% / 钉地回弹 20% / 半收 18%）</summary>
+        public const int SlamCycleFrames = 56;
+        /// <summary>夯击记数：P1 两记，P2 起三记</summary>
+        public static int SlamReps(int phase) => phase >= 2 ? 3 : 2;
+        /// <summary>
+        /// 每记喷泉爆发的灵液团数（真机反馈：旧版行军小滴离地几十像素读不出攻击——
+        /// 改为夯点炸起高抛喷泉，弧顶 400~500px、落点两翼 100~700px 播池）。
+        /// </summary>
+        public const int SlamEruptGlobs = 9;
+        /// <summary>喷泉初速下限/上限（竖直分量档；重力 0.27 下 16px/f 弧顶约 474px）</summary>
+        public const float SlamEruptSpeedMin = 11f;
+        public const float SlamEruptSpeedMax = 17f;
+        /// <summary>喷泉扇半角（弧度，自竖直向两翼展开；两翼远落点 = 播池扩散面）</summary>
+        public const float SlamEruptHalfArc = 0.85f;
+
+        //==================== A14 夯地泉列（鳌足：双杵合砸 → 灵液冲击柱双向行军）====================
+
+        /// <summary>就位帧数上限（同夯地口径）</summary>
+        public const int QuakeApproachFrames = 40;
+        /// <summary>每侧冲击柱数：P2 四座，P3 六座</summary>
+        public static int QuakeColumnsPerSide(int phase) => phase >= 3 ? 6 : 4;
+        /// <summary>柱距（站缝即逃生道：柱芯 ~41px 判定，缝宽 ~109px）</summary>
+        public const float QuakeStepPx = 150f;
+        /// <summary>首柱引信帧数（夯击帧起算）</summary>
+        public const int QuakeFuseBase = 12;
+        /// <summary>逐柱引信步进（由近及远的行波，可沿波前穿行）</summary>
+        public const int QuakeFuseStep = 7;
+
+        //==================== A13 长镰自刈（鳌足：割自体囊肿喷扇 + 镰尖甩痰）====================
+
+        /// <summary>半立起蓄势帧数（立起 + 镰高举即预告）</summary>
+        public const int ReapRaiseFrames = 22;
+        /// <summary>单颗囊肿切弧帧数（预亮 → 割破在弧中点）</summary>
+        public const int ReapSliceFrames = 26;
+        /// <summary>割取颗数：P2 三颗，P3 四颗</summary>
+        public static int ReapCuts(int phase) => phase >= 3 ? 4 : 3;
+        /// <summary>可割门槛：CystSpent 低于此值才算有料（与疮爆掠航共享资源口径）</summary>
+        public const float ReapCystThreshold = 0.55f;
+        /// <summary>每颗割破的定向喷扇滴数（留池模式，落点播种）</summary>
+        public const int ReapFanDrops = 5;
+        /// <summary>喷扇初速</summary>
+        public const float ReapFanSpeed = 12.5f;
+        /// <summary>收势甩痰帧数（镰尖过顶回甩）</summary>
+        public const int ReapFlingFrames = 20;
+        /// <summary>甩痰重团数（mode 2 重团，落地大池）</summary>
+        public const int ReapFlingGlobs = 3;
 
         //==================== 通用节奏 ====================
 
