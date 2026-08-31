@@ -40,9 +40,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         private const float RainSkyJitterY = 64f;
         /// <summary>P2 落点高度(玩家上方 px)</summary>
         private const float RainSkyHeight = 760f;
-        /// <summary>P3 冕暴:轮转缺口半角(rad)与每轮进角</summary>
+        /// <summary>P3 冕暴:轮转缺口半角(rad)与每轮进角;<br/>
+        /// 追缺口所需切速=GapStep×半径/22f,日面贴身半径 460 处≈5px/f 带翅可跟;
+        /// 0.30 步进在中距半径要求 7~9px/f 持续圆周飞行,判无解(2026-08-31),勿回调</summary>
         private const float CoronaGapHalf = 0.55f;
-        private const float CoronaGapStep = 0.30f;
+        private const float CoronaGapStep = 0.24f;
 
         private int ReleaseEnd => ChargeFrames + (StatePhase(ctxCache) == 4 ? 396 : 300);
         private CultistStateContext ctxCache;
@@ -51,6 +53,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         private readonly int[] trioOrder = [-1, -1, -1];
         /// <summary>裂化成功(权威端置位),失手时退回星珠垫压</summary>
         private bool trioActive;
+        /// <summary>P3 冕暴缺口基角(权威端首轮锁玩家方位,先给活路;此前是绝对角 0,站对侧必吃保底伤)</summary>
+        private float coronaGapBase;
 
         private static int StatePhase(CultistStateContext context) => context?.Phase ?? 0;
 
@@ -296,7 +300,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                     //冕暴轮转:冕矛全周辐射,缺口扇区逐轮进角(缺口=活口,追着走)
                     if (!VaultUtils.isClient && planet != null && Timer % 22 == 0) {
                         int volley = (int)(t / 22f);
-                        float gapAngle = volley * CoronaGapStep;
+                        //首轮缺口正对玩家方位(先给活路,与奥术新星/蚀祭本影同惯例),后轮按声明步进轮转
+                        if (volley == 0) {
+                            coronaGapBase = (player.Center - origin).ToRotation();
+                        }
+                        float gapAngle = coronaGapBase + volley * CoronaGapStep;
                         for (int i = 0; i < 12; i++) {
                             float angle = i * MathHelper.TwoPi / 12f + volley * 0.13f;
                             if (Math.Abs(MathHelper.WrapAngle(angle - gapAngle)) < CoronaGapHalf) {

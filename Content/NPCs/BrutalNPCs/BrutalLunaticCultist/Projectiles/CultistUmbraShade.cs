@@ -13,8 +13,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
     /// <summary>
     /// 蚀祭主控:暗影盘滑过主星(食相自身即预告),全食后先给宽限期,再放冕矛,本影楔=唯一安全走廊<br/>
     /// ai[0]=宿主npc ai[1]=本影基角(出生锁定,朝向当时的目标=先给玩家安全区) ai[2]=漂移率(符号即方向)<br/>
-    /// 节奏:滑入 62f(楔形随食相渐显)→宽限 108f(无冕矛,楔慢漂 0.4x)→齐射期 512f(楔加速到 2.55x,12槽/20f 起步收紧到 16槽/14f)→复圆,全程 760f<br/>
-    /// 分相变体:星旋楔宽 ×0.7;星云本影漂至中点拍反向折返(折返窗匀减速过零);日耀本影旋速 ×0.7(出手端定率)+齐射窗天降散点火焰流星;<br/>
+    /// 节奏:滑入 62f(楔形随食相渐显)→宽限 108f(无冕矛,楔慢漂 0.4x)→齐射期 512f(楔加速到 1.9x,12槽/20f 起步收紧到 16槽/14f)→复圆,全程 760f<br/>
+    /// 分相变体:星旋楔宽 ×0.8;星云本影漂至中点拍反向折返(折返窗匀减速过零);日耀本影旋速 ×0.7(出手端定率)+齐射窗天降散点火焰流星;<br/>
     /// 月明全食段 +MoonExtend 帧(齐射窗同步拉长,蚀祭态另在首尾各压一轮追星矢);星尘由蚀祭态召幻影龙(主星公转冻结见星球)<br/>
     /// 公平阀:GapHalf 声明角缺口(分相同参),冕矛发射循环与本影楔绘制同读;本影在漂,故跳槽按冕矛伤害窗前瞻扫过区间,<br/>
     /// 星云折返拍落在窗内时区间并入折返极值;命中端再对楔内玩家豁免(<see cref="PointInUmbra"/>)=黑区对冕矛绝对安全<br/>
@@ -36,8 +36,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         internal const int MoonLateVolleyAge = TotalityEnd + MoonExtend - 90;
         /// <summary>声明缺口半角基准(rad):本影楔可见宽度与冕矛跳角同源;分相实值走 <see cref="GapHalf"/></summary>
         internal const float GapHalfAngle = 0.34f;
-        /// <summary>星旋相楔宽系数:宽度减 30%(判定/绘制/跳槽同参收窄)</summary>
-        private const float VortexGapMul = 0.7f;
+        /// <summary>星旋相楔宽系数:宽度减 20%(判定/绘制/跳槽同参收窄;
+        /// 0.7 时首相楔仅 ±13.6°,最窄的楔压在玩家还没学会跟楔的第一阶段,判过窄勿回调)</summary>
+        private const float VortexGapMul = 0.8f;
         /// <summary>冕矛节奏:起步 12 槽/20 帧,中段起收紧 16 槽/14 帧(浪形升级)</summary>
         private const int VolleyIntervalEarly = 20;
         private const int VolleyIntervalLate = 14;
@@ -137,12 +138,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             }
         }
 
-        /// <summary>本影角:宽限期 0.4x 慢漂,冕矛解禁后 90 帧线性加速到 2.55x;解析积分保持 Age 纯函数(各端零同步)</summary>
+        /// <summary>本影角:宽限期 0.4x 慢漂,冕矛解禁后 90 帧线性加速到 1.9x;解析积分保持 Age 纯函数(各端零同步)</summary>
         internal float UmbraAngle => UmbraAngleAt(Age);
 
-        /// <summary>漂移速率档:宽限慢漂/满速巡航/加速斜坡长(漂移时间的每帧增量,乘 DriftRate 才是角速度)</summary>
+        /// <summary>漂移速率档:宽限慢漂/满速巡航/加速斜坡长(漂移时间的每帧增量,乘 DriftRate 才是角速度);<br/>
+        /// 满速追楔所需切速=档位×0.0045rad/f×半径,贴星半径 600 处≈5px/f 带翅可跟;
+        /// 2.55 档在 700~900px 半径要求 8~10px/f 持续圆周飞行,判无解(2026-08-31),勿回调</summary>
         private const float DriftSlow = 0.4f;
-        private const float DriftFast = 2.55f;
+        private const float DriftFast = 1.9f;
         private const float DriftRampLen = 90f;
         /// <summary>星云折返缓冲半窗(帧):折返点两侧匀减速过零再反向,不再瞬间调头;窗必须落在满速巡航段内(见 UmbraAngleAt)</summary>
         private const float FlipEaseHalf = 45f;

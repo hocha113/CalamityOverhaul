@@ -25,6 +25,10 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         private const int FlatSampleRadius = 9;
         //相邻列允许高差(格)
         private const int MaxGroundDeviation = 3;
+        //出生地面上方允许的自然抬升(格)，再高的地表进入空岛甄别
+        private const int MaxRiseAboveSpawn = 45;
+        //悬空判定：实心体厚度不足此值且下方为空气，视为空岛或浮空建筑
+        private const int MaxFloatingMassThickness = 40;
 
         /// <summary>世界尺寸是否足以安全解析鸟居位置</summary>
         public static bool WorldGeometryReady
@@ -191,7 +195,11 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             return true;
         }
 
-        /// <summary>出生高度附近向下扫到第一块实心地面</summary>
+        /// <summary>
+        /// 出生高度附近向下扫描地表。明显高于出生地面的命中先做悬空甄别：
+        /// 薄悬空体（空岛、浮空建筑）跳过后继续向下找玩家同层的真实地面；
+        /// 厚实体视为相连的高地形，仍算真实地面。
+        /// </summary>
         private static bool TryFindSurfaceGround(int tileX, out int groundY) {
             groundY = 0;
             if (tileX < WorldEdgeMargin || tileX >= Main.maxTilesX - WorldEdgeMargin) {
@@ -200,12 +208,36 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
             int startY = Math.Max(WorldEdgeMargin, Main.spawnTileY - 120);
             int endY = Math.Min(Main.maxTilesY - WorldEdgeMargin, Main.spawnTileY + 100);
-            for (int y = startY; y < endY; y++) {
+            //高于此线的地表按疑似高空处理
+            int suspectCeiling = Main.spawnTileY - MaxRiseAboveSpawn;
+
+            int y = startY;
+            while (y < endY) {
                 Tile tile = Main.tile[tileX, y];
-                if (tile != null && tile.HasSolidTile()) {
+                if (tile == null || !tile.HasSolidTile()) {
+                    y++;
+                    continue;
+                }
+
+                if (y >= suspectCeiling) {
                     groundY = y;
                     return true;
                 }
+
+                //疑似高空地表：探明实心体厚度再定性
+                int massBottom = y;
+                while (massBottom < endY && Main.tile[tileX, massBottom] != null
+                    && Main.tile[tileX, massBottom].HasSolidTile()) {
+                    massBottom++;
+                }
+
+                if (massBottom - y >= MaxFloatingMassThickness) {
+                    groundY = y;
+                    return true;
+                }
+
+                //薄悬空体，跳过后继续向下
+                y = massBottom;
             }
 
             return false;
