@@ -118,6 +118,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            //先画枪体（法杖斜握，Item.staff 名单成员），束与枪口辉光压在其上
+            DrawWeaponBody();
             float vis = VisWidth(lastCollapse01);
             if (vis < 0.8f || beamLength < 12f) {
                 return false;

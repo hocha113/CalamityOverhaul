@@ -41,19 +41,20 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         internal static readonly Color GoldDeep = new(152, 102, 32);
 
         protected override float WindupFrames => 3f;
-        protected override float ThrustFrames => 3f;
+        protected override float ThrustFrames => 4f;
         protected override float DwellFrames => 2f;
         protected override float RecoverFrames => 6f;
         protected override float PullbackDist => 10f;
         protected override float StabReach => 32f;
         protected override float BladeLength => 44f;
-        protected override float ThrustEasePower => 5.5f;
+        protected override float ThrustEasePower => 2.6f;
         protected override int HitstopFrames => 2;
         protected override float LeanAmp => 0.030f;
         protected override float ThrustPitch => 0.15f;
 
         protected override Color EdgeColor => GoldBright;
         protected override Color CoreColor => GoldMain;
+        protected override Color ShaftColor => GoldDeep with { A = 235 };
 
         /// <summary>掠夺结算护栏：假人/雕像怪/召唤物不出币</summary>
         private static bool ValidPlunderTarget(NPC target)

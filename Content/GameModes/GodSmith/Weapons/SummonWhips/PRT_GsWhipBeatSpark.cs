@@ -41,11 +41,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = TexValue;
             Vector2 pos = Position - Main.screenPosition;
-            Color c = Color with { A = 0 };
+            //本 PRT 走 AdditiveBlend 批（源因子 = SourceAlpha）：A=0 会让整层源项归零、物理隐形。
+            //强度全部由 RGB 承载（AI 已按寿命衰减 RGB），A 写满 255 只当因子 1 用，镜像 ShockRingDraw 回退层的防御
+            Color outer = (Color * 0.55f) with { A = 255 };
+            Color core = Color with { A = 255 };
             float wave = 1f + 0.15f * MathF.Sin(LifetimeCompletion * MathHelper.Pi);
-            spriteBatch.Draw(tex, pos, null, c * 0.55f, Rotation + MathHelper.PiOver4,
+            spriteBatch.Draw(tex, pos, null, outer, Rotation + MathHelper.PiOver4,
                 tex.Size() * 0.5f, Scale * wave * 1.6f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(tex, pos, null, c, Rotation,
+            spriteBatch.Draw(tex, pos, null, core, Rotation,
                 tex.Size() * 0.5f, Scale * wave, SpriteEffects.None, 0f);
             return false;
         }

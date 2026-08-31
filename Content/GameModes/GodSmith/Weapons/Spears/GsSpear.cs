@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         //操典渐进：逐拍更短促（新兵慢工整，老兵快狠准），行程与锐度递增。
         //前两拍收势特意拉长（对齐原版 31 帧节奏），把「快」留给老兵拍，全程不超原版均速太多
         protected override float WindupFrames => 6f - Beat;
-        protected override float ThrustFrames => 6f - Beat;
+        protected override float ThrustFrames => 6f - Beat * 0.5f;
         protected override float DwellFrames => 3f + Beat;
         protected override float RecoverFrames => 14f - Beat * 2f;
         protected override float RestHoldout => 12f;
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         protected override float BladeLength => 84f;
         protected override float CollisionWidth => 28f;
         protected override float TipGreedRadius => 26f;
-        protected override float ThrustEasePower => 4.5f + Beat * 1.25f;
+        protected override float ThrustEasePower => 2.5f + Beat * 0.25f;
         protected override bool TwoHanded => true;
         protected override float LeanAmp => 0.035f + Beat * 0.012f;
         protected override int HitboxSize => 50;

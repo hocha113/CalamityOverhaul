@@ -71,7 +71,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Core
         /// <summary>佩戴者受击结算修改（受击方本地端权威）</summary>
         public virtual void ModifyHurt(Item item, Player player, GodSmithPlayer state, ref Player.HurtModifiers modifiers) { }
 
-        /// <summary>佩戴者受击后</summary>
+        /// <summary>
+        /// 佩戴者受击后。全端执行——tML Player.Hurt 无条件派发 OnHurt（Player.cs:34654），
+        /// 远端与服务端还会经 MessageBuffer case 117 收包重放同一次 Hurt。
+        /// Heal/AddBuff(自身)/NewProjectile 等权威动作必须守 player.whoAmI == Main.myPlayer，否则多端多发
+        /// </summary>
         public virtual void OnHurt(Item item, Player player, GodSmithPlayer state, in Player.HurtInfo info) { }
 
         /// <summary>

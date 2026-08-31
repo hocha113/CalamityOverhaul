@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         //叶绿轻快，驻相拉长给聚孢演出留时间
         protected override float WindupFrames => 4f;
-        protected override float ThrustFrames => 4f;
+        protected override float ThrustFrames => 5f;
         protected override float DwellFrames => 6f;
         protected override float RecoverFrames => 8f;
         protected override float RestHoldout => 10f;
@@ -62,6 +62,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         protected override Color EdgeColor => ChloroBright;
         protected override Color CoreColor => ChloroGreen;
+        protected override Color ShaftColor => ChloroDeep with { A = 235 };
 
         /// <summary>本次突刺是否已放孢（收相首帧只放一次）</summary>
         private bool sporeReleased;

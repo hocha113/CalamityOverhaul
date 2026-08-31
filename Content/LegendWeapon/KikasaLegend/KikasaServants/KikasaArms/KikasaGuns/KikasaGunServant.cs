@@ -33,8 +33,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //==================== 可调基数（占位初值，验收再调）====================
 
-        /// <summary>湖水子弹基伤（召唤加成与档案倍率前），由子弹幕消费</summary>
-        internal const int ShotDamage = 165;
+        /// <summary>湖水子弹基伤（召唤加成与档案倍率前），由子弹幕消费。
+        /// 165 时血肉墙段 DPS 破 2600 超模，下调（反馈三·#35，拍板 2026/8/31）</summary>
+        internal const int ShotDamage = 120;
 
         /// <summary>编队硬上限：数组容量，实际编制还要过档案 MaxUnits</summary>
         internal const int MaxGuns = 5;

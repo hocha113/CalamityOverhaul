@@ -136,7 +136,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Core
         public virtual float UseSpeedMultiply(Item item, Player player, float tierScale) => 1f;
 
         /// <summary>
-        /// 神赋武器：每次使用动画开始（各端都会模拟这条链）。
+        /// 神赋武器：每次使用动画开始。两条触发路径——
+        /// 非接管武器走 tML UseAnimation 原链（各端都会模拟）；
+        /// 接管武器（GsCanUseItem 压掉原版 use 流）由 <see cref="GodSmithEndowSource"/>
+        /// 在 held 出生沿补发，仅 owner 端执行、每玩家每帧至多一次。
         /// 生成弹幕等权威动作守 player.whoAmI == Main.myPlayer，随 NewProjectile 自动同步
         /// </summary>
         public virtual void OnUseAnimation(Item item, Player player, float tierScale) { }
@@ -144,9 +147,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Core
         /// <summary>
         /// 神赋武器命中 NPC 的统一入口（只在攻击方端执行）。
         /// 直击：sourceItem = 武器，sourceProj = null；
-        /// 弹幕：sourceItem = null，sourceProj = 弹幕（出生源打标回溯，含仆从/哨兵与近战接管手持弹幕）。
-        /// 在此派生新弹幕时若不想让派生弹幕继承打标再次触发本钩子，
-        /// 出生源用 sourceProj.GetSource_FromThis() 而不是物品源
+        /// 弹幕：sourceItem = null，sourceProj = 弹幕（出生源打标回溯，含仆从/哨兵与近战接管手持弹幕；
+        /// 打标沿出生源传染——ItemUse 直标 + 父弹承签，见 <see cref="GodSmithEndowSource"/>）。
+        /// 在此派生新弹幕（proc 弹）时出生源一律用 player.GetSource_Misc(键)：
+        /// Misc 源既不打标也不承签，防止 proc 弹命中再触发本钩子形成自喂环
         /// </summary>
         public virtual void OnHitNPC(Player player, Item sourceItem, Projectile sourceProj, NPC target,
             in NPC.HitInfo hit, int damageDone, float tierScale) { }
@@ -161,7 +165,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Core
         /// <summary>神赋饰品：佩戴者受击结算修改（受击方本地端权威）</summary>
         public virtual void ModifyHurt(Item accessory, Player player, ref Player.HurtModifiers modifiers, float tierScale) { }
 
-        /// <summary>神赋饰品：佩戴者受击后</summary>
+        /// <summary>
+        /// 神赋饰品：佩戴者受击后。全端执行——tML Player.Hurt 无条件派发 OnHurt（Player.cs:34654），
+        /// 远端与服务端还会经 MessageBuffer case 117 收包重放同一次 Hurt。
+        /// Heal/AddBuff(自身)/NewProjectile 等权威动作必须守 player.whoAmI == Main.myPlayer，否则多端多发
+        /// </summary>
         public virtual void OnHurt(Item accessory, Player player, in Player.HurtInfo info, float tierScale) { }
     }
 }

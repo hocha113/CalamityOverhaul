@@ -42,10 +42,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// 近距曲率执照:纯追击要咬中,转弯半径 R=v/ω 不得超过半交战距离,
         /// 包络转向率近距远远不够(拧满也是 260px 半径),目标落进转向圆内就只能绕圈打不中。
         /// 距离进 CloseGate 起平滑放开转向率上限,按几何需求 2v/d 带余量现算,顶到 CloseTurnCap;
-        /// 中远距零介入,起手轻的优雅弧线一寸不动
+        /// 中远距零介入,起手轻的优雅弧线一寸不动。
+        /// 160/0.5 时高速滴在 160~260 带仍只有包络(半径约 200px),转不进就绕外圈耗尽护栏,
+        /// 即"近敌原地打转直至追踪归零"——执照提前到 220 并抬顶格(反馈三·#12)
         /// </summary>
-        private const float CloseGate = 160f;
-        private const float CloseTurnCap = 0.5f;
+        private const float CloseGate = 220f;
+        private const float CloseTurnCap = 0.65f;
 
         /// <summary>追踪加速度系数(乘在坠落加速度上)与放弃追踪的时长护栏</summary>
         private const float HomingAccelMul = 0.55f;

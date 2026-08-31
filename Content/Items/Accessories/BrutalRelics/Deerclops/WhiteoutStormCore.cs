@@ -208,6 +208,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Deerclops
                 ? Player.GetSource_Accessory(SourceItem)
                 : Player.GetSource_Misc(nameof(WhiteoutStormCore));
 
+            //整浪只由头一根成功落位的刺领声：持续跑动约每秒一浪，逐根各响一次
+            //吵到影响体验（反馈六·#68），ai[2]=1 标记领声根
+            bool voiced = false;
             for (int i = 0; i < 6; i++) {
                 int tileX = feet.X + dir * (3 + i * 2);
                 int surfaceY = RelicIceSpikeProj.FindSurfaceTileY(tileX, feet.Y);
@@ -223,7 +226,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Deerclops
                 //生成参数全走NewProjectile的ai槽，随生成包一次同步
                 Projectile.NewProjectile(source, pos, axis,
                     ModContent.ProjectileType<RelicIceSpikeProj>(), damage, 4f, Player.whoAmI,
-                    telegraph, scale, 0f);
+                    telegraph, scale, voiced ? 0f : 1f);
+                voiced = true;
             }
         }
         #endregion

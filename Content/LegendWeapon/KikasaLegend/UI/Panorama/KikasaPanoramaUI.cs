@@ -314,6 +314,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
         private KikasaVaultPlayer Vault => player.GetModPlayer<KikasaVaultPlayer>();
         private KikasaServantPlayer Servant => player.GetModPlayer<KikasaServantPlayer>();
 
+        /// <summary>拾影在手的记忆键（0=空手），械奴册修剪的豁免面；合画后视同空手</summary>
+        internal int CarriedKey => IsOpen ? carryKey : 0;
+
         //M 键与风铃点击都走这里：别的全屏界面（任务书等）开着时不抢屏
         public override void Open() {
             if (!FullScreenUIHub.TryClaimScreen(this)) {
@@ -372,6 +375,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI.Panorama
                 Close();
             }
 
+            //先剪后建：取空/卸席/收手的幽灵械奴当帧从册里退场，图鉴不显示删不掉的影子
+            Servant.PruneStaleArms();
             BuildRoster();
             DiffSeatStates();
             DiffTalisStates();

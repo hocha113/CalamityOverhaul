@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Deerclops
 {
     /// <summary>
-    /// 遗物冰刺(友方刺浪单元，复用巨鹿刺笼语汇)。ai[0]=预兆帧 ai[1]=体型；
+    /// 遗物冰刺(友方刺浪单元，复用巨鹿刺笼语汇)。ai[0]=预兆帧 ai[1]=体型 ai[2]=整浪领声根；
     /// 生命周期：冰裂预兆→破土(土屑+碎晶)→驻留→缩回，判定窗只在破土与驻留
     /// </summary>
     internal class RelicIceSpikeProj : ModProjectile, IPrimitiveDrawable
@@ -91,9 +91,12 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.Deerclops
             //判定窗与可见破土精确对齐
             Projectile.friendly = elapsed >= FissureTime && elapsed < FissureTime + EruptTime + HoldTime;
 
-            //破土帧：土屑+冰晶碎裂
+            //破土帧：土屑+冰晶碎裂。破土音只有领声根（ai[2]=1）播，整浪一声且压低音量，
+            //跑动中逐根各响一次太吵（反馈六·#68）
             if (elapsed == FissureTime && !Main.dedServ) {
-                SoundEngine.PlaySound(SoundID.DeerclopsIceAttack with { Volume = 0.6f, Pitch = 0.1f, MaxInstances = 3 }, Projectile.Center);
+                if (Projectile.ai[2] == 1f) {
+                    SoundEngine.PlaySound(SoundID.DeerclopsIceAttack with { Volume = 0.45f, Pitch = 0.1f, MaxInstances = 2 }, Projectile.Center);
+                }
                 Vector2 axis = Projectile.rotation.ToRotationVector2();
                 for (int i = 0; i < 7; i++) {
                     Dust ice = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(10f, 5f),

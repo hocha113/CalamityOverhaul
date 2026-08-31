@@ -553,13 +553,13 @@ GalacticCrisisRender: {
 	KortoThreatCritical: 威胁：危急
 	KortoPlanetCountInfo: 科尔托星系：6颗行星
 	KortoStatusCompromised: 状态：已沦陷
-	HeaderAndroidProfile: ◢ TACTICAL ANDROID DOSSIER ◣
-	AndroidArtisName: ARTIS
-	AndroidApolaName: APOLA
-	AndroidCodename: CODENAME
-	AndroidClassLabel: CLASS: TACTICAL ANDROID
-	AndroidStatusLabel: STATUS
-	AndroidStatusLost: SIGNAL LOST
+	HeaderAndroidProfile: ◢ 战术人形档案 ◣
+	AndroidArtisName: 阿蒂斯
+	AndroidApolaName: 阿波利娅
+	AndroidCodename: 代号
+	AndroidClassLabel: 类型：战术人形
+	AndroidStatusLabel: 状态
+	AndroidStatusLost: 信号丢失
 }
 
 TransitionScene: {
@@ -1091,10 +1091,10 @@ DecryptionStrings: {
 	DecryptionPanelHintMessage: 解码完成，以下为截获片段。
 	DecryptionPanelBeginBreach: ▷ 启动破译
 	DecryptionPanelClose: ✕ 断开
-	DecryptionPanelStatusLocked: LOCKED
-	DecryptionPanelStatusBreaching: BREACHING
-	DecryptionPanelStatusDataFlood: INJECTING
-	DecryptionPanelStatusMessage: DECODED
+	DecryptionPanelStatusLocked: 已锁定
+	DecryptionPanelStatusBreaching: 破译中
+	DecryptionPanelStatusDataFlood: 注入中
+	DecryptionPanelStatusMessage: 已解码
 	BreachBuffer: 缓冲区 {0}/{1}
 	BreachTargets: 目标序列
 	BreachTimer: 剩余时间
@@ -1289,9 +1289,9 @@ AbandonedPortalStrings: {
 	Teleport: ▷ 启动传送
 	Close: ✕ 关闭
 	ProgressFormat: 修复进度 {0}%
-	StatusBroken: STATUS  ▌ OFFLINE
-	StatusRepairing: STATUS  ▌ CALIBRATING
-	StatusRepaired: STATUS  ▌ ONLINE
+	StatusBroken: 状态  ▌ 离线
+	StatusRepairing: 状态  ▌ 校准中
+	StatusRepaired: 状态  ▌ 在线
 	DiagnosticHeader: "[DIAG]"
 	DiagnosticBroken: ERR-0xC4: 定位环裂隙 / 主能源回路断开
 	DiagnosticRepairing: INFO: 纳米焊缝阵列同步中…请勿移动门基座

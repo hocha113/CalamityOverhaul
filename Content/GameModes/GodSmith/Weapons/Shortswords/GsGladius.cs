@@ -64,13 +64,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
 
         //盾步重刺整体更沉更深
         protected override float WindupFrames => IsFinisher ? 6f : 3f;
-        protected override float ThrustFrames => IsFinisher ? 4f : 3f;
+        protected override float ThrustFrames => IsFinisher ? 5f : 4f;
         protected override float DwellFrames => IsFinisher ? 3f : 2f;
         protected override float RecoverFrames => IsFinisher ? 9f : 6f;
         protected override float PullbackDist => IsFinisher ? 16f : 9f;
         protected override float StabReach => IsFinisher ? 46f : 30f;
         protected override float BladeLength => 44f;
-        protected override float ThrustEasePower => IsFinisher ? 7f : 5f;
+        protected override float ThrustEasePower => IsFinisher ? 3f : 2.55f;
         protected override int HitstopFrames => IsFinisher ? 3 : 1;
         protected override float LeanAmp => IsFinisher ? 0.06f : 0.028f;
         protected override float ThrustPitch => IsFinisher ? -0.10f : 0.22f;

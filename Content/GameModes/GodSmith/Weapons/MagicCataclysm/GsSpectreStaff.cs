@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicCataclysm.Projectiles;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -43,10 +44,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicCataclysm
             if (player.itemAnimationMax <= 0) {
                 return;
             }
-            //施法举杖：杖头抬升 5px 再缓落（确定性输入，各端一致）
-            float progress = player.itemAnimation / (float)player.itemAnimationMax;
+            //施法举杖：杖头抬升 5px 再缓落（绝对剖面 0.12·p，差分施加防累积漂移）
+            float n = player.itemAnimationMax;
+            float progress = player.itemAnimation / n;
             player.itemLocation += new Vector2(-player.direction * 2f, -5f) * progress;
-            player.itemRotation -= player.direction * 0.12f * progress;
+            GsMagicKickMath.ApplyKickDiff(player, 0.12f * progress, 0.12f * ((player.itemAnimation + 1) / n));
         }
 
         public override void GsUseAnimation(Item item, Player player) {

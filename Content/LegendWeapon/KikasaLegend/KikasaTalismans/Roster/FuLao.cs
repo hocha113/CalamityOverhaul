@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
             this.GetLocalization("Origin",
                 () => "符师嫌雨落完就干，白瞎了一场墨，便画了这张符把雨留在地上。多淹一刻是一刻");
             this.GetLocalization("Power",
-                () => "「积洼」墨滴落地必积成墨洼（不必等湖倾档），墨洼持续 +50%、范围 +30%；墨滴汇入已有墨洼令水位上涨，第三注满潦漫溢：洼面阔一步，并向两侧拍出溢流波（各 50% 洼伤）");
+                () => "「积洼」墨滴落地必积成墨洼（无需蓄到第四档『湖倾』），墨洼持续 +50%、范围 +30%；墨滴汇入已有墨洼令水位上涨，第三注满潦漫溢：洼面阔一步，并向两侧拍出溢流波（各 50% 洼伤）");
             this.GetLocalization("Burden",
                 () => "墨滴直击伤害 -5%");
             base.SetDefaults();

@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -37,6 +38,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         protected const float FormShard = 10f;
         /// <summary>形态：红玉小爆</summary>
         protected const float FormBurst = 12f;
+        /// <summary>红玉小爆判定边长（px）：Resize 与爆环绘制同源</summary>
+        protected const int BurstBoxPx = 80;
+        /// <summary>红玉小爆判定窗（帧）：timeLeft 与爆环扩张进度同源</summary>
+        protected const int BurstLifeTicks = 6;
         /// <summary>形态：钻石折光短线</summary>
         protected const float FormRay = 13f;
         /// <summary>形态：琥珀滞留尘域</summary>
@@ -152,6 +157,21 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                     ang.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * 0.8f,
                     GemColors[6], 0.07f)?.Configure(10, 0.6f);
             }
+        }
+
+        public sealed override bool? GsProjPreDraw(Projectile proj, ref Color lightColor, GodSmithProjRouter router) {
+            //红玉小爆自绘：判定同源的扩张爆环替代未放大的弹体（镜像水矢涟漪画法），
+            //半径终点 = BurstBoxPx/2，与 Resize 的判定框同一常量
+            if (router.MarkData != FormBurst) {
+                return null;
+            }
+            float t = 1f - proj.timeLeft / (float)BurstLifeTicks;
+            Color gem = ColorOfProj(proj.type);
+            ShockRingDraw.Draw(Main.spriteBatch, proj.Center,
+                MathHelper.Lerp(12f, BurstBoxPx * 0.5f, t), 7f,
+                Color.Lerp(gem, Color.White, 0.6f), gem, Color.Lerp(gem, Color.Black, 0.65f),
+                0.85f * (1f - t * t), squish: 1f, innerGlow: 0.35f, timeSeed: proj.identity * 0.37f);
+            return false;
         }
 
         public sealed override void GsProjOnKill(Projectile proj, int timeLeft, GodSmithProjRouter router) {
@@ -282,8 +302,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                 shard.type, shard.damage, 0f, shard.owner);
             if (idx >= 0 && idx < Main.maxProjectiles) {
                 Projectile burst = Main.projectile[idx];
-                burst.timeLeft = 6;
-                burst.Resize(80, 80);
+                burst.timeLeft = BurstLifeTicks;
+                burst.Resize(BurstBoxPx, BurstBoxPx);
                 burst.netUpdate = true;
             }
         }

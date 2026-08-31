@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         //钛沉稳：重量阶梯的沉端
         protected override float WindupFrames => 5f;
-        protected override float ThrustFrames => 5f;
+        protected override float ThrustFrames => 6f;
         protected override float DwellFrames => 4f;
         protected override float RecoverFrames => 9f;
         protected override float RestHoldout => 11f;
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         protected override float BladeLength => 96f;
         protected override float CollisionWidth => 33f;
         protected override float TipGreedRadius => 28f;
-        protected override float ThrustEasePower => 6f;
+        protected override float ThrustEasePower => 3f;
         protected override bool TwoHanded => true;
         protected override float LeanAmp => 0.05f;
         protected override int HitboxSize => 54;
@@ -64,6 +64,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         protected override Color EdgeColor => TitanBright;
         protected override Color CoreColor => TitanCold;
+        protected override Color ShaftColor => TitanDeep with { A = 235 };
 
         protected override void OnThrustBurst() {
             //爆发帧上下各放一道平行幻矛（owner 端生成，随生成包过线）

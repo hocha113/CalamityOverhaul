@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         //收势拉长对齐原版 31 帧节奏，水束的加成才有预算
         protected override float WindupFrames => 6f;
-        protected override float ThrustFrames => 5f;
+        protected override float ThrustFrames => 6f;
         protected override float DwellFrames => 4f;
         protected override float RecoverFrames => 11f;
         protected override float RestHoldout => 13f;
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         protected override float BladeLength => 88f;
         protected override float CollisionWidth => 32f;
         protected override float TipGreedRadius => 28f;
-        protected override float ThrustEasePower => 5.5f;
+        protected override float ThrustEasePower => 2.8f;
         protected override bool TwoHanded => true;
         protected override float LeanAmp => 0.04f;
         protected override int HitboxSize => 54;
@@ -66,6 +66,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         protected override Color EdgeColor => SeaFoam;
         protected override Color CoreColor => TideTeal;
+        protected override Color ShaftColor => DeepSea with { A = 235 };
 
         /// <summary>潮汐涨势：身处水中或雨天（owner 端读取，水束参数随生成同步）</summary>
         private bool TideRising => Owner.wet || Owner.ZoneRain;

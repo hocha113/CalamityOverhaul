@@ -56,13 +56,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         internal static readonly Color EmberHot = new(255, 116, 40);
 
         protected override float WindupFrames => 2f;
-        protected override float ThrustFrames => 3f;
+        protected override float ThrustFrames => 4f;
         protected override float DwellFrames => 2f;
         protected override float RecoverFrames => 5f;
         protected override float PullbackDist => 8f;
         protected override float StabReach => 28f;
         protected override float BladeLength => 40f;
-        protected override float ThrustEasePower => 5f;
+        protected override float ThrustEasePower => 2.5f;
         protected override int HitstopFrames => 1;
         protected override float LeanAmp => 0.024f;
         protected override float ThrustPitch => 0.30f;

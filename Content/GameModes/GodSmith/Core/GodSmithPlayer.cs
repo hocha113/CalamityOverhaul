@@ -22,6 +22,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Core
         //冷却表：键按约定 = 物品 type，值 = 到期帧（对比 Main.GameUpdateCount）
         private readonly Dictionary<int, uint> cooldownExpiry = [];
 
+        /// <summary>接管武器使用沿的本帧去重戳（仅 <see cref="GodSmithEndowSource"/> 补发 OnUseAnimation 时读写）</summary>
+        internal uint LastTakeoverUseAnimFrame;
+
         internal void RegisterActiveAcc(Item item, GodSmithAccEffect effect) => activeAccs.Add((item, effect));
 
         internal void RegisterActiveEndowAcc(Item item, GodSmithEndow endow) => activeEndowAccs.Add((item, endow));
@@ -107,6 +110,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Core
             }
         }
 
+        //OnHurt 在所有端执行（tML Player.Hurt 无条件派发 + 远端/服务端收包重放，
+        //Player.cs:34654 + MessageBuffer case 117），fan-out 不做端点守门：
+        //各效果的权威动作自守 myPlayer，契约见 GodSmithEndow/GodSmithAccEffect 的 OnHurt 注释
         public override void OnHurt(Player.HurtInfo info) {
             if (!GameModeSystem.GodSmithActive) {
                 return;

@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.GameModes.UI;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
+using CalamityOverhaul.Content.GameModes.UI;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -253,7 +254,20 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Framework
 
         //==================== 密封转发：InnoVault 钩子 → Gs* ====================
 
-        public sealed override bool? CanUseItem(Item item, Player player) => GsCanUseItem(item, player);
+        /// <summary>
+        /// 转发 GsCanUseItem，并为 <see cref="GodSmithEndowSource"/> 开「使用沿窗口」：
+        /// 接管方案在本栈内生成 held 并返回 false 压掉原版 use 流，UseAnimation 钩子链因此死链，
+        /// 窗口让 held 出生沿充当等价触发点补发神赋 OnUseAnimation（判据与互斥论证见 EndowSource）
+        /// </summary>
+        public sealed override bool? CanUseItem(Item item, Player player) {
+            GodSmithEndowSource.OpenUseGate(player);
+            try {
+                return GsCanUseItem(item, player);
+            }
+            finally {
+                GodSmithEndowSource.CloseUseGate();
+            }
+        }
 
         public sealed override bool? UseItem(Item item, Player player) => GsUseItem(item, player);
 

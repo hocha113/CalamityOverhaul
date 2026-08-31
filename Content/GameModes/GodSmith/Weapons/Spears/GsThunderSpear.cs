@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         private const float ChainRange = 340f;
 
         protected override float WindupFrames => 5f;
-        protected override float ThrustFrames => 4f;
+        protected override float ThrustFrames => 5f;
         protected override float DwellFrames => 6f;//驻相拉长：蓄电窗就是签名
         protected override float RecoverFrames => 10f;//收势对齐原版 28 帧节奏
         protected override float RestHoldout => 12f;
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         protected override float BladeLength => 90f;
         protected override float CollisionWidth => 28f;
         protected override float TipGreedRadius => 28f;
-        protected override float ThrustEasePower => 6f;
+        protected override float ThrustEasePower => 2.8f;
         protected override bool TwoHanded => true;
         protected override float LeanAmp => 0.04f;
         protected override int HitboxSize => 52;
@@ -70,6 +70,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         protected override Color EdgeColor => StormWhite;
         protected override Color CoreColor => VoltBlue;
+        protected override Color ShaftColor => StormDeep with { A = 235 };
 
         /// <summary>驻相进度 0~1，蓄电可视化用</summary>
         private float DwellT => CurrentPhase == PhaseDwell

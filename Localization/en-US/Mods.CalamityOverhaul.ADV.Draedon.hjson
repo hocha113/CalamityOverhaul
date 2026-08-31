@@ -100,6 +100,7 @@ DraedonQuestLine: {
 }
 
 FirstMetTzeentch: {
+	Rolename: ?????????????????????
 	L1: Hush... don't look back.
 	L2: I've been watching you build these little contraptions.
 	L3: Ten quantum nodes. Ten pathways. Ten possible futures.
@@ -123,7 +124,6 @@ FirstMetTzeentch: {
 	Choice3_R3: It's just... most of the endings are not very pleasant.
 	EndLine1: Well, then. We will meet again.
 	EndLine2: Soon.
-	Rolename: ?????????????????????
 }
 
 GalacticCrisis: {

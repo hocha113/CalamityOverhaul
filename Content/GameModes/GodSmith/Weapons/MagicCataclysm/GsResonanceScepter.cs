@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicCataclysm.Projectiles;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -52,10 +53,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicCataclysm
             if (player.itemAnimationMax <= 0) {
                 return;
             }
-            //杖头轻扬：抬 3px 带一记后旋，读作敲响音叉（确定性输入，各端一致）
-            float progress = player.itemAnimation / (float)player.itemAnimationMax;
+            //杖头轻扬：抬 3px 带一记后旋，读作敲响音叉（绝对剖面 0.09·p，差分施加防累积漂移）
+            float n = player.itemAnimationMax;
+            float progress = player.itemAnimation / n;
             player.itemLocation += new Vector2(-player.direction * 1.5f, -3f) * progress;
-            player.itemRotation -= player.direction * 0.09f * progress;
+            GsMagicKickMath.ApplyKickDiff(player, 0.09f * progress, 0.09f * ((player.itemAnimation + 1) / n));
         }
 
         //==================== 左键 rider：谐振涟漪 + 波节脉冲 ====================

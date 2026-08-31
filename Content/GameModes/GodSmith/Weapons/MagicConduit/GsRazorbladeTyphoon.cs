@@ -42,9 +42,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit
             if (player.itemAnimationMax <= 0) {
                 return;
             }
-            //甩盘后坐：出手瞬间整臂角度踢起，随动画进度扫回（确定性输入，各端一致）
-            float progress = player.itemAnimation / (float)player.itemAnimationMax;
-            player.itemRotation -= player.direction * 0.3f * progress * progress;
+            //甩盘后坐：出手瞬间整臂角度踢起，随动画进度扫回（绝对剖面 0.3·p²，差分施加防累积漂移）
+            float n = player.itemAnimationMax;
+            float progress = player.itemAnimation / n;
+            float prev = (player.itemAnimation + 1) / n;
+            GsMagicKickMath.ApplyKickDiff(player, 0.3f * progress * progress, 0.3f * prev * prev);
             player.itemLocation -= new Vector2(player.direction * 3f, -2f) * progress;
         }
 
@@ -169,6 +171,41 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit
             int damage = Math.Max(1, (int)(player.GetWeaponDamage(player.HeldItem) * (0.4f + 0.8f * frac)));
             Projectile.NewProjectile(player.GetSource_Misc("GsConduitVent"), Main.MouseWorld, Vector2.Zero,
                 ModContent.ProjectileType<GsTyphoonEyeProj>(), damage, 6f, player.whoAmI);
+        }
+    }
+
+    /// <summary>
+    /// 法器施法踢的差分数学（法器四族共用，镜像枪族 GsGunKickMath 的差分思路）。<br/>
+    /// 原版事实（TML 源 Player.cs）：useStyle-5 的 itemRotation 只在射击帧被绝对赋值
+    /// （L43594-L43604，每发一次、动画中途连发同样 snap），动画期 ItemCheck_ApplyUseStyle_Inner
+    /// 只重算 itemLocation 不碰 itemRotation（L46736-L46781，3779/4715/4952 等每帧归零特例除外），
+    /// 且方案钩子在原版之后每帧跑（L46313-L46317）——UseStyle 里直接 `itemRotation ±= k·包络`
+    /// 是逐帧累减而非绝对偏移，慢杖漂移可达 48°~238° 再被下一发 snap 掰回。<br/>
+    /// 修法：目标绝对剖面 offset(a) = want(a)，逐帧差分 Δ = want(本帧) − want(上帧)。
+    /// 帧序确定（itemAnimation 逐帧递减、UseStyle 每帧一跑），差分无需记账字段：<br/>
+    /// ·射击帧（itemTime==0；射击门 L39786-L39793 在 UseStyle 之后同帧）写了也被 snap 抹掉，跳写；<br/>
+    /// ·射击后首帧（itemTime==itemTimeMax−1；SetItemTime L4971 同帧写双值）上帧施加量已被
+    /// snap 清掉，按 0 计；<br/>
+    /// ·远端不 snap 但同样走 ApplyItemTime（L43377-L43380），itemTime 节奏各端一致，残差 ≤want
+    /// 峰值且被 owner 每发的 NetMessage 41 绝对覆盖自愈，故无需 myPlayer 守门，旁观者同样看到施法踢
+    /// </summary>
+    internal static class GsMagicKickMath
+    {
+        /// <summary>
+        /// 差分施加一帧施法踢。want 正=杖头上挑、负=下压（镜像角约定同 GsGunKickMath：
+        /// 上挑符号 = −direction·gravDir，倒挂自动翻转）。wantNow/wantPrev 为本帧与上帧
+        /// （itemAnimation+1）的目标绝对偏移，须按确定性输入求值
+        /// </summary>
+        internal static void ApplyKickDiff(Player player, float wantNow, float wantPrev) {
+            if (player.itemTime == 0) {
+                //射击帧：UseStyle 之后同帧 snap 绝对覆盖 itemRotation，施加无意义
+                return;
+            }
+            if (player.itemTime == player.itemTimeMax - 1) {
+                //上帧是射击帧，其施加量已被 snap 抹掉，按已清账计
+                wantPrev = 0f;
+            }
+            player.itemRotation -= (wantNow - wantPrev) * player.direction * player.gravDir;
         }
     }
 }

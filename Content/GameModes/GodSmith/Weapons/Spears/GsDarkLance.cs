@@ -46,8 +46,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         internal static readonly Color PaleEdge = new(224, 210, 252);
 
         protected override float WindupFrames => 5f;
-        protected override float ThrustFrames => 5f + ChargeT * 2f;
-        protected override float DwellFrames => 3f + ChargeT * 3f;
+        /// <summary>满蓄 reach ×1.6：刺出帧数随行程等比放大（6→9），驻相收敛到 4 帧（桥接后驻相才是卖点，悬空不是）</summary>
+        protected override float ThrustFrames => 6f + ChargeT * 3f;
+        protected override float DwellFrames => 3f + ChargeT * 1f;
         protected override float RecoverFrames => 9f;
         protected override float RestHoldout => 12f;
         protected override float PullbackDist => 18f;
@@ -55,7 +56,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         protected override float BladeLength => 92f;
         protected override float CollisionWidth => 30f;
         protected override float TipGreedRadius => 30f;
-        protected override float ThrustEasePower => 6f + ChargeT * 2f;
+        protected override float ThrustEasePower => 3f + ChargeT * 0.5f;
         protected override bool TwoHanded => true;
         protected override float LeanAmp => 0.045f;
         protected override int HitboxSize => 56;
@@ -64,6 +65,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         protected override Color EdgeColor => PaleEdge;
         protected override Color CoreColor => ShadowPurple;
+        protected override Color ShaftColor => VoidDeep with { A = 240 };
 
         /// <summary>最大蓄力约半秒，长按即满</summary>
         protected override float MaxChargeFrames => 32f;

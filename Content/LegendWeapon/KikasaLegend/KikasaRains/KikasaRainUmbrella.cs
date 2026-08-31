@@ -573,9 +573,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 //出手拍:湿掌甩墨+向上后坐+眼睛燃一下+碎珠随甩;齐掷拍整把伞一沉
                 recoil = ghostVolley ? 7f : 4.5f;
                 eyeGlow = MathF.Max(eyeGlow, ghostVolley ? 1f : 0.5f);
+                //出手拍是全武器最高频音，灾厄 WetSlap 底子偏轰，整体压三成（反馈三·#67）
                 KikasaInk.Play(KikasaInk.InkFlick, Projectile.Center,
-                    ghostVolley ? 0.9f : 0.72f, ghostVolley ? -0.12f : 0.08f, 4);
-                KikasaInk.Play(SoundID.SplashWeak, Projectile.Center, 0.42f, 0.12f, 4);
+                    ghostVolley ? 0.62f : 0.5f, ghostVolley ? -0.12f : 0.08f, 4);
+                KikasaInk.Play(SoundID.SplashWeak, Projectile.Center, 0.3f, 0.12f, 4);
                 if (ghostVolley) {
                     KikasaInk.Play(KikasaInk.InkSpray, Projectile.Center, 0.55f, -0.3f, 3);
                 }
@@ -866,8 +867,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 || (int)StateTimer == chargeFull) {
                 float tier = MathHelper.Clamp(StateTimer / (float)chargeFull, 0f, 1f);
                 eyeGlow = MathF.Max(eyeGlow, 0.3f + 0.4f * tier);
-                KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.48f + 0.28f * tier, -0.25f - 0.35f * tier, 3);
-                KikasaInk.Play(SoundID.Item21, Projectile.Center, 0.32f + 0.22f * tier, -0.4f - 0.25f * tier, 3);
+                KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.38f + 0.2f * tier, -0.25f - 0.35f * tier, 3);
+                KikasaInk.Play(SoundID.Item21, Projectile.Center, 0.26f + 0.16f * tier, -0.4f - 0.25f * tier, 3);
                 if (!Main.dedServ) {
                     for (int i = 0; i < 6; i++) {
                         float xOff = Main.rand.NextFloat(-1f, 1f) * RimRadius * 0.8f * visualScale;
@@ -913,7 +914,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             eyeOpen = 1f;
             eyeGlow = 1f;
             KikasaInk.Play(KikasaInk.UmbrellaWhoosh, Projectile.Center, 0.65f, -0.55f, 2);
-            KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.9f, -0.45f, 2);
+            KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.62f, -0.45f, 2);
         }
 
         /// <summary>倾覆:猛倾→墨瀑冲刷→甩干回正;结束后按输入续蓄或收伞</summary>
@@ -963,8 +964,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
             //倾覆拍:墨瀑出手(所有者端),各端同帧甩出一蓬碎珠与墨雾
             if ((int)StateTimer == PourTiltFrames) {
-                KikasaInk.Play(KikasaInk.InkSpray, Projectile.Center, 0.7f + 0.2f * pourFill, -0.55f, 2);
-                KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.75f + 0.2f * pourFill, -0.3f, 2);
+                KikasaInk.Play(KikasaInk.InkSpray, Projectile.Center, 0.55f + 0.15f * pourFill, -0.55f, 2);
+                KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.55f + 0.15f * pourFill, -0.3f, 2);
                 if (Main.myPlayer == Projectile.owner) {
                     //跟光标走,不再卡在朝下 ±31°，倒撑是碗,但瞄准必须跟手
                     pourAim = (Main.MouseWorld - Projectile.Center).ToRotation();

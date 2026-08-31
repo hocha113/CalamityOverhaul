@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicCataclysm.Projectiles;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -49,10 +50,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicCataclysm
             if (player.itemAnimationMax <= 0) {
                 return;
             }
-            //掷矛前压：矛身前送 4px 带下压，读作把怒火掷出去（确定性输入，各端一致）
-            float progress = player.itemAnimation / (float)player.itemAnimationMax;
+            //掷矛前压：矛身前送 4px 带下压，读作把怒火掷出去（绝对剖面 −0.08·p 下压，差分施加防累积漂移）
+            float n = player.itemAnimationMax;
+            float progress = player.itemAnimation / n;
             player.itemLocation += new Vector2(player.direction * 4f, 1f) * progress;
-            player.itemRotation += player.direction * 0.08f * progress;
+            GsMagicKickMath.ApplyKickDiff(player, -0.08f * progress, -0.08f * ((player.itemAnimation + 1) / n));
         }
 
         //==================== 左键 rider：双螺旋焰幕 + 咒火积怒 ====================

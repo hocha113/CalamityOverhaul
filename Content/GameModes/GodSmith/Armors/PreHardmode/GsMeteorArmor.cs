@@ -78,11 +78,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
             if (player.whoAmI == Main.myPlayer) {
                 int shardDamage = Math.Clamp((int)(damageDone * 0.30f), 10, 130);
                 for (int side = -1; side <= 1; side += 2) {
-                    Vector2 spawn = target.Center + new Vector2(side * Main.rand.NextFloat(140f, 220f), -420f);
+                    //生成前探顶棚收缩高度，碎片带标的线（ai[1]）越线恢复碰撞，洞内不再穿岩
+                    Vector2 spawn = GsArmorTerrainProbe.SkySpawnAbove(target.Center,
+                        side * Main.rand.NextFloat(140f, 220f), 420f);
                     Vector2 aim = target.Center + Main.rand.NextVector2Circular(24f, 24f);
                     Projectile.NewProjectile(player.GetSource_Misc("GodSmithMeteorEndow"),
                         spawn, (aim - spawn).SafeNormalize(Vector2.UnitY) * 15f,
-                        ModContent.ProjectileType<GsMeteorShardProj>(), shardDamage, 3f, player.whoAmI);
+                        ModContent.ProjectileType<GsMeteorShardProj>(), shardDamage, 3f, player.whoAmI,
+                        0f, target.Center.Y);
                 }
             }
         }
@@ -105,6 +108,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
 
     /// <summary>
     /// 陨铁碎片：一块正在烧穿大气的陨铁，不是匀速光弹。坠体每帧 ×1.03 增速（上限 22）；
+    /// 出生免地形碰撞、越过标的线（ai[1]）才恢复（Stardust 式高度门，脱靶后砸地收场不穿岩）；
     /// 三层强速度拉伸叠色（焦黑壳尾部拖长/熔橙主体/白热芯头部压缩）+ 余烬残影渐暗，
     /// 沿途甩火星陨尘拖烟，命中点燃并小爆（脉冲环 + 火星扇 + 低音爆响）
     /// </summary>
@@ -113,6 +117,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
         public override string Texture => CWRConstant.Masking + "Extra_98";
 
         private ref float Life => ref Projectile.ai[0];
+
+        /// <summary>标的高度线：低于此线才恢复地形碰撞</summary>
+        private ref float TargetLineY => ref Projectile.ai[1];
 
         /// <summary>确定性抖动相位，绘制路径不掷 Main.rand</summary>
         private float Seed => Projectile.identity * 0.7391f % 3.71f;
@@ -134,12 +141,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
             Projectile.timeLeft = 70;
+            //出生免碰撞，越过标的线由高度门恢复（见 AI），脱靶砸地收场
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
         }
 
         public override void AI() {
             Life++;
+            //高度门：越过标的线才恢复地形碰撞（标的线为 0 的裸生成立即恢复，普通坠落）
+            GsArmorTerrainProbe.UpdateFallGate(Projectile, TargetLineY);
 
             //坠体增速不匀速：每帧 ×1.03，上限 22
             if (Projectile.velocity.Length() < 22f) {

@@ -90,6 +90,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard.Specials
             if (mode != 0) {
                 return;
             }
+            //蓄射档压掉 use 流，itemAnimation 恒 0 时原版不绘制枪体：持枪姿态件常驻补位
+            //（蓄力与静息全程枪在手；蓄力比映射后倾属演出升级，冻结待后续波）
+            GsGunHoldPoseProj.Ensure(player, TargetItemID, 0f);
             if (player.controlUseItem && !player.mouseInterface) {
                 int prev = charge;
                 charge = Math.Min(charge + 1, ChargeFull);

@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -42,10 +43,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
             if (player.itemAnimationMax <= 0) {
                 return;
             }
-            //蛇杖压腕：出手瞬间杖头向下咬合 3px，随动画进度回抬（确定性输入，各端一致）
-            float progress = player.itemAnimation / (float)player.itemAnimationMax;
+            //蛇杖压腕：出手瞬间杖头向下咬合 3px，随动画进度回抬（绝对剖面 −0.09·p 下压，差分施加防累积漂移）
+            float n = player.itemAnimationMax;
+            float progress = player.itemAnimation / n;
             player.itemLocation += new Vector2(player.direction * 1f, 3f) * progress;
-            player.itemRotation += player.direction * 0.09f * progress;
+            GsMagicKickMath.ApplyKickDiff(player, -0.09f * progress, -0.09f * ((player.itemAnimation + 1) / n));
         }
 
         //==================== B 形态：蛇吻 ====================

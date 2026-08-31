@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -50,10 +51,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
             if (player.itemAnimationMax <= 0) {
                 return;
             }
-            //持续风压：itemAnimation 定相正弦抖动（确定性输入，各端一致）
-            float jitter = MathF.Sin(player.itemAnimation * 1.9f) * 1.4f;
+            //持续风压：itemAnimation 定相正弦抖动（绝对抖动剖面 ±0.028，差分施加防积分失真；want 取负=原 += 语义）
+            int a = player.itemAnimation;
+            float jitter = MathF.Sin(a * 1.9f) * 1.4f;
             player.itemLocation += new Vector2(0f, jitter);
-            player.itemRotation += player.direction * jitter * 0.02f;
+            GsMagicKickMath.ApplyKickDiff(player,
+                -jitter * 0.02f,
+                -MathF.Sin((a + 1) * 1.9f) * 1.4f * 0.02f);
         }
 
         //==================== B 形态：开风暴窗 ====================

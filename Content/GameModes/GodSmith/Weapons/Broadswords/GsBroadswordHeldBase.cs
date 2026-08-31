@@ -606,6 +606,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected virtual int GhostCount => IsFinisher ? 3 : 2;
         /// <summary>残影角间距</summary>
         protected virtual float GhostSpacing => IsFinisher ? 0.24f : 0.18f;
+        /// <summary>残影透明度倍率，与 BladeAlpha 解耦：藏刀入影时刀身隐没、残影仍承弧；
+        /// 需要残影随刀身一起隐没的件显式覆写</summary>
+        protected virtual float GhostAlphaScale => 1f;
         /// <summary>刀身整体透明度（藏刀入影类演出用）</summary>
         protected virtual float BladeAlpha => 1f;
         /// <summary>刀身光照染色（暗质材质可压暗）</summary>
@@ -625,11 +628,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             Vector2 hand = Hand;
             float bladeAlpha = MathHelper.Clamp(BladeAlpha, 0f, 1f);
 
-            //斩切期姿态残影，最近的最亮
+            //斩切期姿态残影，最近的最亮；透明度走 GhostAlphaScale 不乘 BladeAlpha（藏刀时残影承弧）
             if (CurrentPhase == PhaseSlash && slashProgress > 0.10f) {
+                float ghostScale = MathHelper.Clamp(GhostAlphaScale, 0f, 1f);
                 for (int g = GhostCount; g >= 1; g--) {
                     float ghostAngle = mainAngle - (swingDir * GhostSpacing * g);
-                    float ghostAlpha = g switch { 1 => 0.34f, 2 => 0.18f, _ => 0.08f } * bladeAlpha;
+                    float ghostAlpha = g switch { 1 => 0.34f, 2 => 0.18f, _ => 0.08f } * ghostScale;
                     Color ghost = EdgeBright * ghostAlpha;
                     ghost.A = 0;
                     Vector2 gPos = hand + (ghostAngle.ToRotationVector2() * mainReach * BladePark) - Main.screenPosition;
@@ -654,9 +658,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             }
         }
 
-        /// <summary>反向拍翻刃：刃口镜像到挥动前缘，双向朝向都要读得对</summary>
+        /// <summary>反向拍翻刃：刃口镜像到挥动前缘，双向朝向都要读得对。
+        /// 扫向读 swingDir 而非裸 ai[1]：子类覆写扫向（过顶劈恒沿面向）后翻刃跟着对齐，
+        /// 未覆写时两式恒等价</summary>
         protected void GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset) {
-            bool edgeFlip = (Projectile.ai[1] >= 0f ? 1 : -1) * facingDir < 0;
+            bool edgeFlip = swingDir < 0f;
             bool flipVertically = (facingDir < 0) != edgeFlip;
             effect = flipVertically ? SpriteEffects.FlipVertically : SpriteEffects.None;
             rotOffset = flipVertically ? -MathHelper.PiOver4 : MathHelper.PiOver4;

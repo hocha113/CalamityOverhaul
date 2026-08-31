@@ -58,13 +58,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         internal static readonly Color BloodMoonRed = new(255, 96, 96);
 
         protected override float WindupFrames => 2f;
-        protected override float ThrustFrames => 3f;
+        protected override float ThrustFrames => 4f;
         protected override float DwellFrames => 2f;
         protected override float RecoverFrames => 6f;
         protected override float PullbackDist => 9f;
         protected override float StabReach => 33f;
         protected override float BladeLength => 43f;
-        protected override float ThrustEasePower => 6f;
+        protected override float ThrustEasePower => 2.7f;
         protected override int HitstopFrames => 1;
         protected override float LeanAmp => 0.028f;
         protected override float ThrustPitch => 0.18f;

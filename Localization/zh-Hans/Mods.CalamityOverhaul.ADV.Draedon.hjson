@@ -100,6 +100,7 @@ DraedonQuestLine: {
 }
 
 FirstMetTzeentch: {
+	Rolename: ？？？
 	L1: 嘘，别回头
 	L2: 我一直在看你搭建这些小玩意儿
 	L3: 十座量子节点，十条通路，十个可能的未来
@@ -123,7 +124,6 @@ FirstMetTzeentch: {
 	Choice3_R3: 只是……大多数结局都不太愉快
 	EndLine1: 那么，我们会再见的
 	EndLine2: 很快
-	// Rolename: ?????????????????????
 }
 
 GalacticCrisis: {

@@ -100,6 +100,7 @@ DraedonQuestLine: {
 }
 
 FirstMetTzeentch: {
+	// Rolename: ?????????????????????
 	L1: Shhh... no mires atrás.
 	L2: Te he observado montar esos aparatos.
 	L3: Diez nodos cuánticos, diez caminos, diez futuros posibles.
@@ -123,7 +124,6 @@ FirstMetTzeentch: {
 	Choice3_R3: Solo que la mayoría de finales no son agradables.
 	EndLine1: Entonces nos veremos de nuevo.
 	EndLine2: Pronto.
-	// Rolename: ?????????????????????
 }
 
 GalacticCrisis: {

@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         internal static readonly Color PalladiumDeep = new(150, 78, 52);    //深铜底
 
         protected override float WindupFrames => 4f;
-        protected override float ThrustFrames => 4f;
+        protected override float ThrustFrames => 5f;
         protected override float DwellFrames => 4f;
         protected override float RecoverFrames => 8f;
         protected override float RestHoldout => 10f;
@@ -76,6 +76,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         protected override Color EdgeColor => PalladiumGold;
         protected override Color CoreColor => PalladiumRose;
+        protected override Color ShaftColor => PalladiumDeep with { A = 235 };
 
         private int Vigor => Owner.GetModPlayer<GsPalladiumPikePlayer>().vigor;
 

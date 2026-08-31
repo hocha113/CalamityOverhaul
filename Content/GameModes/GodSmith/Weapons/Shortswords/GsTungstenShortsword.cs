@@ -40,7 +40,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         internal static readonly Color CoreGreen = new(146, 214, 172);
 
         protected override float WindupFrames => 4f;
-        protected override float ThrustFrames => 4f;
+        /// <summary>满蓄 reach ×1.5：刺出帧数随行程等比放大（4→6），保持帧间矛体重叠</summary>
+        protected override float ThrustFrames => 4f + ChargeT * 2f;
         protected override float DwellFrames => 3f;
         protected override float RecoverFrames => 7f;
         protected override float PullbackDist => 14f;
@@ -49,7 +50,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         /// <summary>蓄力加宽刺线：满蓄一条更粗的直线全穿</summary>
         protected override float CollisionWidth => 26f + ChargeT * 12f;
         protected override float TipGreedRadius => 24f + ChargeT * 8f;
-        protected override float ThrustEasePower => 6f + ChargeT * 2f;
+        protected override float ThrustEasePower => 2.6f + ChargeT * 0.4f;
         protected override int HitboxSize => 44;
         protected override int HitstopFrames => ChargeT >= 0.8f ? 3 : 2;
         protected override float LeanAmp => 0.040f;

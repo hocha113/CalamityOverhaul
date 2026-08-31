@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         internal static readonly Color PetalDeep = new(96, 34, 92);       //深紫底
 
         protected override float WindupFrames => 5f;
-        protected override float ThrustFrames => 4f;
+        protected override float ThrustFrames => 5f;
         protected override float DwellFrames => 4f;
         protected override float RecoverFrames => 9f;
         protected override float RestHoldout => 10f;
@@ -61,6 +61,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         protected override Color EdgeColor => PetalPink;
         protected override Color CoreColor => PetalViolet;
+        protected override Color ShaftColor => PetalDeep with { A = 235 };
 
         protected override void OnHitTarget(NPC target, NPC.HitInfo hit, int damageDone, bool firstOnTarget) {
             //每次突刺只在首个命中绽瓣（owner 端生成，随生成包过线）

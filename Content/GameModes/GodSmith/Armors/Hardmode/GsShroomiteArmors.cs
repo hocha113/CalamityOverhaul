@@ -140,7 +140,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Hardmode
             }
             int mortarDamage = Math.Clamp((int)(damageDone * 0.50f), 12, 170);
             for (int i = 0; i < 3; i++) {
-                Vector2 from = target.Center + new Vector2(Main.rand.NextFloat(-70f, 70f), -Main.rand.NextFloat(300f, 360f));
+                //生成前探顶棚收缩高度（弹体另有高度门管坠落段碰撞），天花板下照常空投
+                Vector2 from = GsArmorTerrainProbe.SkySpawnAbove(target.Center,
+                    Main.rand.NextFloat(-70f, 70f), Main.rand.NextFloat(300f, 360f));
                 Vector2 vel = (target.Center - from).SafeNormalize(Vector2.UnitY) * 3f;
                 Projectile.NewProjectile(player.GetSource_Misc("GodSmithShroomiteEndow"),
                     from, vel, ModContent.ProjectileType<GsShroomiteMortarProj>(),
@@ -500,7 +502,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Hardmode
     }
 
     /// <summary>
-    /// 孢子迫击弹：自天而降的荧菌炮弹，弹头蓝芒 + 坠落菌烟，触地/触敌涨爆菌云
+    /// 孢子迫击弹：自天而降的荧菌炮弹，弹头蓝芒 + 坠落菌烟，触地/触敌涨爆菌云；
+    /// 出生免地形碰撞，降到点名目标高度线附近才恢复（高度门，顶棚不再截胡；目标没了立即恢复）
     /// </summary>
     internal class GsShroomiteMortarProj : ModProjectile
     {
@@ -527,7 +530,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Hardmode
             Projectile.DamageType = DamageClass.Generic;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 120;
-            Projectile.tileCollide = true;
+            //出生免碰撞，坠落段由高度门恢复（见 AI）
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
@@ -552,6 +556,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Hardmode
             if (target != null && target.active) {
                 float wantX = MathHelper.Clamp((target.Center.X - Projectile.Center.X) * 0.03f, -1f, 1f);
                 Projectile.velocity.X += wantX * 0.3f;
+            }
+            //高度门：降到点名目标高度线附近才恢复碰撞（各端读同步的 NPC 位置，确定性一致）；
+            //目标没了立即恢复，照常触地起爆
+            if (!Projectile.tileCollide
+                && (target == null || !target.active || Projectile.Center.Y > target.Center.Y - 80f)) {
+                Projectile.tileCollide = true;
             }
             Projectile.velocity.Y = Math.Min(Projectile.velocity.Y + 0.55f, 18f);
             Projectile.rotation = Projectile.velocity.ToRotation();

@@ -75,7 +75,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
         private Item sourceItem;
         private int runeGainCooldown;
         private int veilStepCooldown;
-        private bool wasUsingItem;
         //演出侧变化检测（远端由收包驱动同一套）
         private int displayedCount;
         private int displayedIndex;
@@ -152,7 +151,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
                     RuneCount = 0;
                     MarkDirty();
                 }
-                wasUsingItem = false;
                 FlushNet(false);
                 return;
             }
@@ -230,10 +228,12 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
         #endregion
 
         #region 集环（owner 端）
-        /// <summary>攻击/施法沿检测：每次武器使用点亮一枚，带最小间隔</summary>
+        /// <summary>攻击/施法计数：每轮使用动画的重启帧记一枚，长按连射逐轮点亮，带最小间隔</summary>
         private void DetectRuneGain() {
-            bool usingNow = Player.itemAnimation > 0;
-            if (usingNow && !wasUsingItem && runeGainCooldown <= 0 && RuneCount < RuneMax) {
+            //旧判式认 itemAnimation>0 的上升沿，长按时动画不归零、恒真无沿，整段只记一次
+            //（反馈六·#26/#79）。改认原版每轮动画首帧的官方判式（consumeAmmoOnFirstShotOnly
+            //同源）；本钩（PreUpdateMovement）在 ItemCheck 重启动画之后跑，首帧可靠可见
+            if (Player.ItemAnimationJustStarted && runeGainCooldown <= 0 && RuneCount < RuneMax) {
                 Item held = Player.HeldItem;
                 bool isWeapon = held != null && !held.IsAir && held.damage > 0
                     && held.pick == 0 && held.axe == 0 && held.hammer == 0;
@@ -246,7 +246,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
                     }
                 }
             }
-            wasUsingItem = usingNow;
         }
 
         /// <summary>集满发动当前仪式并轮换（弹幕全部 owner 生成，走原版同步）</summary>

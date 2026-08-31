@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         private bool IsHeavy => ComboStage == 1;
 
         protected override float WindupFrames => IsHeavy ? 5f : 4f;
-        protected override float ThrustFrames => IsHeavy ? 5f : 4f;
+        protected override float ThrustFrames => IsHeavy ? 6f : 5f;
         protected override float DwellFrames => IsHeavy ? 4f : 3f;
         protected override float RecoverFrames => IsHeavy ? 9f : 8f;
         protected override float RestHoldout => 10f;
@@ -58,6 +58,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         protected override float BladeLength => 90f;
         protected override float CollisionWidth => 29f;
         protected override float TipGreedRadius => 26f;
+        protected override float ThrustEasePower => IsHeavy ? 3.1f : 2.6f;
         protected override bool TwoHanded => true;
         protected override float LeanAmp => IsHeavy ? 0.045f : 0.034f;
         protected override int HitboxSize => 50;
@@ -66,6 +67,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         protected override Color EdgeColor => ShroomCyan;
         protected override Color CoreColor => ShroomBlue;
+        protected override Color ShaftColor => ShroomDeep with { A = 235 };
 
         protected override void OnInit() {
             if (IsHeavy) {

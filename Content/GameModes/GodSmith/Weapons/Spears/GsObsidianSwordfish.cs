@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         //六把里最沉的时间线：黑曜石又重又狠
         protected override float WindupFrames => 6f;
-        protected override float ThrustFrames => 5f;
+        protected override float ThrustFrames => 6f;
         protected override float DwellFrames => 4f;
         protected override float RecoverFrames => 9f;
         protected override float RestHoldout => 12f;
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         protected override float BladeLength => 84f;
         protected override float CollisionWidth => 30f;
         protected override float TipGreedRadius => 27f;
-        protected override float ThrustEasePower => 5f;
+        protected override float ThrustEasePower => 3f;
         protected override bool TwoHanded => true;
         protected override float LeanAmp => 0.05f;
         protected override int HitboxSize => 50;
@@ -65,6 +65,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         protected override Color EdgeColor => ObsidianSheen;
         protected override Color CoreColor => MoltenOrange;
+        protected override Color ShaftColor => ObsidianDark with { A = 240 };
 
         /// <summary>淬火状态：自身着火或浸岩浆，矛芯回温</summary>
         private bool Quenched => Owner.lavaWet || Owner.HasBuff(BuffID.OnFire);

@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.VolleyBows.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -523,7 +524,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.VolleyBows
 
         //==================== 动画法：重弩后坐 + 上膛读数 ====================
 
-        /// <summary>重弩后坐：出手瞬间弩身反坐 5px 加桩口上踢，指数回坐；满充弩身细颤读作桩已上膛</summary>
+        /// <summary>重弩后坐：出手瞬间弩身反坐 5px 加桩口上踢，指数回坐；满充弩身细颤读作桩已上膛。
+        /// 上踢走 GsMagicKickMath 差分——useStyle-5 的 itemRotation 无人每帧重算，
+        /// 直接 -= 会逐帧累减漂移（S10 同型定罪，剖面 0.09·exp(-5·elapsed) 原值保留）</summary>
         public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame) {
             if (player.itemAnimationMax <= 0) {
                 return;
@@ -532,7 +535,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.VolleyBows
             float kick = MathF.Exp(-5f * elapsed);
             Vector2 aimDir = player.itemRotation.ToRotationVector2() * player.direction;
             player.itemLocation -= aimDir * (5f * kick);
-            player.itemRotation -= player.direction * 0.09f * kick;
+            float kickPrev = MathF.Exp(-5f * (1f - (player.itemAnimation + 1) / (float)player.itemAnimationMax));
+            GsMagicKickMath.ApplyKickDiff(player, 0.09f * kick, 0.09f * kickPrev);
             if (player.whoAmI == Main.myPlayer
                 && player.GetModPlayer<GsVolleyPlayer>().Charge >= 100f) {
                 player.itemLocation.Y += MathF.Sin(Main.GlobalTimeWrappedHourly * 40f) * 0.6f * player.gravDir;

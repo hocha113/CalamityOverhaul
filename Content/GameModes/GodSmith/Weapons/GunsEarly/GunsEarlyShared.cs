@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard.Specials;
 using CalamityOverhaul.Content.GameModes.UI;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -77,6 +78,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
         public int pullNpc;             //鱼叉：拽己目标 NPC
         public bool pullArmed;          //鱼叉：叉中重敌，待绞盘拽己
         public int shellCounter;        //抛壳节流计数
+        public float kickApplied;       //角度踢差分记账：已施加的绝对偏移（各端各持）
+        public int kickLastAnim;        //角度踢差分记账：上帧 itemAnimation（动画重启检测）
 
         /// <summary>切枪/死亡时清空瞬时态（涅槃层单独按死亡清）</summary>
         public void ResetTransient() {
@@ -99,6 +102,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
             noonArmed = false;
             pullTimer = 0;
             pullArmed = false;
+            kickApplied = 0f;
+            kickLastAnim = 0;
         }
 
         public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource) {
@@ -198,6 +203,23 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
             }
         }
 
+        /// <summary>
+        /// 族共享后坐姿态（各枪 GsUseStyle 一行调用）：线性衰减包络，
+        /// 位移沿瞄准向后挫（itemLocation 每帧被原版绝对重置，直接减安全），
+        /// 角度踢走差分施加（kick 正=上踢、负=下压，见 <see cref="GsGunKickMath"/>）。
+        /// 各端同式，无 myPlayer 守门，旁观者可见踢
+        /// </summary>
+        protected static void GunKickStyle(Player player, float shift, float kick) {
+            if (player.itemAnimationMax <= 0) {
+                return;
+            }
+            float env = player.itemAnimation / (float)player.itemAnimationMax;
+            GsGunsEarlyPlayer mp = State(player);
+            Vector2 aim = player.itemRotation.ToRotationVector2() * player.direction;
+            player.itemLocation -= aim * (shift * env);
+            GsGunKickMath.ApplyKickDiff(player, ref mp.kickApplied, ref mp.kickLastAnim, kick, env);
+        }
+
         //==================== 使用流 ====================
 
         public override bool? GsCanUseItem(Item item, Player player) {
@@ -242,6 +264,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
             SyncHeld(mp);
             if (mp.reloadDuration > 0) {
                 TickReload(item, player, mp);
+                //装填期枪体在手：useStyle-5 动画外原版不绘制 held item，由持枪姿态件补位
+                //（TickReload 本帧可能完成装填，二次判空防多续一帧）
+                if (mp.reloadDuration > 0) {
+                    GsGunHoldPoseProj.Ensure(player, TargetItemID, GsGunHoldPoseProj.ReloadPitch);
+                }
             }
             HoldTick(item, player, mp);
         }
@@ -289,6 +316,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
             else {
                 mp.perfectStart = mp.perfectEnd = -1f;
             }
+            //起装帧即持枪补位（held 枪换鼓自杀与本件同帧交接，无空手帧）；此后由 GsHoldItem 逐帧续命
+            GsGunHoldPoseProj.Ensure(player, TargetItemID, GsGunHoldPoseProj.ReloadPitch);
             OnReloadStart(item, player, mp);
         }
 
@@ -416,6 +445,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
             mp.magLeft = Math.Max(0, mp.magLeft - 1);
             mp.idleTicksAtShot = Main.GameUpdateCount - mp.lastShotTick;
             mp.lastShotTick = Main.GameUpdateCount;
+            //原版 snap 在本射击帧稍后绝对赋值 itemRotation（同帧晚于 UseStyle），踢记账随之归零
+            mp.kickApplied = 0f;
             pendingMark = 0f;
 
             ApplyRecoil(player, velocity, GetRecoil(last));

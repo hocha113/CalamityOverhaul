@@ -550,6 +550,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
                 prevDownLeft = DownLeft;
                 return;
             }
+            //化樱接管期间连段全冻（排拍/首拍前摇都不走）：起飞侧只清 controlUseItem 与排拍，
+            //而连段读的是原始 MouseLeft，按住左键会当帧把排拍重启成"边流樱边攻击"（反馈四·#28）。
+            //轻点缓冲一并吞掉——冻结期不递减，残留会在樱流结束后兑现成一记早已松手的延迟刀；
+            //樱流结束仍按着则从这里正常重启排拍
+            if (OniSakuraFlights.OniSakuraFlight.ControlsOwner(Owner.whoAmI)) {
+                prevDownLeft = DownLeft;
+                scheduling = false;
+                pressBuffer = 0;
+                return;
+            }
             bool canContinue = !Owner.noItems && !Owner.CCed
                 && Item.type == ModContent.ItemType<OnikiriItem>()
                 && Owner.ownedProjectileCounts[ModContent.ProjectileType<OniDismembers.OniSeverStrike>()] == 0;

@@ -115,8 +115,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             if (!erupted) {
                 erupted = true;
                 KikasaTalismanHooks.OnGeyserErupt(Projectile);
-                KikasaInk.Play(KikasaInk.InkSpray, Projectile.Center, 0.8f, -0.2f, 3);
-                KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.85f, -0.5f, 3);
+                KikasaInk.Play(KikasaInk.InkSpray, Projectile.Center, 0.6f, -0.2f, 3);
+                KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.6f, -0.5f, 3);
                 if (!Main.dedServ) {
                     for (int i = 0; i < 10; i++) {
                         Vector2 vel = new(Main.rand.NextFloat(-2.6f, 2.6f), -Main.rand.NextFloat(3f, 8f));

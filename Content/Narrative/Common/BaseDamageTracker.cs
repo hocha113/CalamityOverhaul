@@ -1,5 +1,7 @@
+using CalamityOverhaul.Common;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Localization;
@@ -106,17 +108,18 @@ namespace CalamityOverhaul.Content.Narrative.Common
             return true;
         }
 
+        //计伤面放宽到全队：命中钩子只在攻击者本机跑，此处不再按"攻击者接没接委托"预筛——
+        //结算端 Check 仍按接单人（Main.LocalPlayer 的 IsQuestActive）收口，没人接单时
+        //白记的量随 DealtReset 清掉无消费。旧前筛正是"队友任务武器伤害不计入"的一半根因
+        //（反馈五·#24），另一半是增量只落本端 static，由 EntrustDamageNet 广播补齐
+
         public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone) {
             if (!IsTargetByID(npc)) {
                 return;
             }
 
-            if (!IsQuestActive(player)) {
-                return;
-            }
-
             if (IsTargetWeapon(item.type)) {
-                TargetWeaponDamageDealt += hit.Damage;
+                AddTargetDamage(hit.Damage);
             }
         }
 
@@ -125,23 +128,33 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 return;
             }
 
-            Player player = Main.LocalPlayer;
-            if (projectile.owner.TryGetPlayer(out Player owner)) {
-                player = owner;
-            }
-
-            if (!IsQuestActive(player)) {
-                return;
-            }
-
             if (IsTargetProjectile(projectile)) {
-                TargetWeaponDamageDealt += hit.Damage;
+                AddTargetDamage(hit.Damage);
                 return;
             }
 
             if (projectile.Alives() && projectile.CWR().Source is EntitySource_ItemUse itemSource && IsTargetWeapon(itemSource.Item.type)) {
-                TargetWeaponDamageDealt += hit.Damage;
+                AddTargetDamage(hit.Damage);
             }
+        }
+
+        /// <summary>
+        /// 任务武器伤害入账：本端立加（结算即时可见），联机把增量广播给其余各端——
+        /// 命中钩子只在攻击者本机跑（上游 StrikeNPC 转发不派发 OnHitBy* 族），
+        /// 各端 static 各自累加全队增量、最终一致；分母 TotalBossDamage 取 lifeMax 天然同值
+        /// </summary>
+        internal static void AddTargetDamage(float amount) {
+            if (amount <= 0f) {
+                return;
+            }
+            TargetWeaponDamageDealt += amount;
+            if (VaultUtils.isSinglePlayer) {
+                return;
+            }
+            //客户端发服务器中继；听服房主自打时直接广播给所有客户端
+            ModPacket packet = CWRNetWork.GetPacket<EntrustDamageNet>();
+            packet.Write(amount);
+            packet.Send();
         }
 
         public sealed override void OnNPCDeath(NPC npc) {
@@ -214,6 +227,29 @@ namespace CalamityOverhaul.Content.Narrative.Common
 
         public static (float targetWeaponDamage, float totalDamage, bool isActive) GetDamageTrackingData() {
             return (TargetWeaponDamageDealt, TotalBossDamage, IsBossFightActive);
+        }
+    }
+
+    /// <summary>
+    /// 委托任务武器伤害的增量广播信道：攻击者端入账时发出，服务器累加并中继给
+    /// 其余客户端，各端 static 收敛到全队合计（反馈五·#24）。迟到包落在战斗
+    /// 结算后会被 DealtReset 清掉，属正确行为
+    /// </summary>
+    internal sealed class EntrustDamageNet : CWRNetChannel
+    {
+        public override void Receive(BinaryReader reader, int whoAmI) {
+            //先读净载荷再判端，保流对齐
+            float amount = reader.ReadSingle();
+            if (amount <= 0f || !float.IsFinite(amount)) {
+                return;
+            }
+            TargetWeaponDamageDealt += amount;
+            if (VaultUtils.isServer) {
+                //中继给除来源外的所有客户端（服务器份也累加：听服房主的结算读它）
+                ModPacket packet = CWRNetWork.GetPacket<EntrustDamageNet>();
+                packet.Write(amount);
+                packet.Send(-1, whoAmI);
+            }
         }
     }
 }

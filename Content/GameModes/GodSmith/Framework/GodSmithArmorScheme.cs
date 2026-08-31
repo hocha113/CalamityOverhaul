@@ -92,7 +92,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Framework
         /// </summary>
         public virtual void OnEndowHitNPC(Player player, GodSmithArmorPlayer state, NPC target, in NPC.HitInfo hit, int damageDone, Projectile sourceProj) { }
 
-        /// <summary>穿戴者受击（受击方端执行）</summary>
+        /// <summary>
+        /// 穿戴者受击。全端执行——tML Player.Hurt 无条件派发 OnHurt（Player.cs:34654），
+        /// 远端与服务端还会经 MessageBuffer case 117 收包重放同一次 Hurt。
+        /// Heal/AddBuff(自身)/NewProjectile 等权威动作必须守 player.whoAmI == Main.myPlayer，否则多端多发
+        /// </summary>
         public virtual void OnEndowHurt(Player player, GodSmithArmorPlayer state, in Player.HurtInfo info) { }
 
         /// <summary>穿戴者击杀 NPC（由命中钩子里 life&lt;=0 判定，攻击方端执行）</summary>

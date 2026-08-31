@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         //轻拍快叉，重拍慢压更深；重拍收势特意拉长（对齐原版 31 帧节奏，腐脓弹才有预算）
         protected override float WindupFrames => IsHeavyBeat ? 6f : 5f;
-        protected override float ThrustFrames => IsHeavyBeat ? 5f : 4f;
+        protected override float ThrustFrames => IsHeavyBeat ? 6f : 5f;
         protected override float DwellFrames => IsHeavyBeat ? 4f : 3f;
         protected override float RecoverFrames => IsHeavyBeat ? 12f : 10f;
         protected override float RestHoldout => 12f;
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         protected override float BladeLength => 86f;
         protected override float CollisionWidth => 30f;
         protected override float TipGreedRadius => 27f;
-        protected override float ThrustEasePower => IsHeavyBeat ? 6.5f : 5f;
+        protected override float ThrustEasePower => IsHeavyBeat ? 3.2f : 2.6f;
         protected override bool TwoHanded => true;
         protected override float LeanAmp => IsHeavyBeat ? 0.055f : 0.032f;
         protected override int HitboxSize => 52;
@@ -70,6 +70,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         protected override Color EdgeColor => PusBright;
         protected override Color CoreColor => IsHeavyBeat ? IchorPurple : FleshRed;
+        protected override Color ShaftColor => GoreDark with { A = 235 };
 
         protected override void OnInit() {
             //重拍慢压：伤害上浮补慢拍节奏

@@ -567,6 +567,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             bool headHit = !chainGrazeHit;
+            //时序契约：命中钩先于状态转换——钩子读到的 State/velocity 是命中时刻的值，
+            //子类查 State == StateLaunch 的满转 payoff 才可达；反冲收链在钩子之后执行，
+            //掷出实打首中即转收链，保证满转 payoff 一掷至多结算一次
+            if (!VaultUtils.isServer && headHit) {
+                SpawnHitBurst(target, hit, LaunchCharge);
+            }
+            OnHeadHit(target, hit, damageDone, headHit);
             //锤头实打命中的物理反冲：弹开并转入收链，链感落地
             if (headHit && State == StateLaunch && RecoilOnHit && Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.velocity = -Projectile.velocity.SafeNormalize(Vector2.Zero)
@@ -574,10 +581,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
                 EnterRetract(skipSag: false);
                 Projectile.netUpdate = true;
             }
-            if (!VaultUtils.isServer && headHit) {
-                SpawnHitBurst(target, hit, LaunchCharge);
-            }
-            OnHeadHit(target, hit, damageDone, headHit);
         }
 
         /// <summary>族默认命中反馈：重音色火花+闷响，满转命中升级一圈脉冲</summary>

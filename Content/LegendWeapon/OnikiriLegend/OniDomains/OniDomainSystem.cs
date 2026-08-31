@@ -20,9 +20,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
         //领域是玩家主动能力，不进 ModSceneEffect 场景竞争，不占 boss 的天空/音乐槽位
 
-        //只在上升沿激活:每帧重激活会被 SkyManager.OnActivate 挪到活动链表末尾、永远最后绘制,
-        //把虚无化身黑洞等 Boss 背景全部压掉(反馈十一·#40)。上升沿激活后,晚激活的 Boss 天空
-        //自然排在鬼蜮之后、该赢时能赢;Boss 天空退场后鬼蜮仍在场照常显示
+        //激活期间每帧重激活：SkyManager.OnActivate 把本天空移到活动链表末尾、永远最后绘制，
+        //领域背景覆盖优先级最高，Boss/事件天空一律被压是设计意图（拍板 2026/8/31，
+        //回滚 0.9202 反馈十一·#40 时误改的"上升沿让位"策略），与血湖 KikasaDomainSystem 同策
 
         private static void UpdateSkyActivation() {
             CustomSky sky = SkyManager.Instance[OniDomainSky.Name];
@@ -31,9 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
             bool active = OniDomain.Viewed?.AnyActive ?? false;
             if (active) {
-                if (!sky.IsActive()) {
-                    SkyManager.Instance.Activate(OniDomainSky.Name);
-                }
+                SkyManager.Instance.Activate(OniDomainSky.Name);
                 if (!Filters.Scene[OniDomainSky.Name].IsActive()) {
                     Filters.Scene.Activate(OniDomainSky.Name);
                 }

@@ -48,13 +48,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         protected override float PullbackDist => 11f;
         protected override float StabReach => 32f;
         protected override float BladeLength => 44f;
-        protected override float ThrustEasePower => 4.5f;//钝头刺出没那么锐利
+        protected override float ThrustEasePower => 2.5f;//钝头刺出没那么锐利
         protected override int HitstopFrames => 2;
         protected override float LeanAmp => 0.036f;
         protected override float ThrustPitch => -0.18f;//铅的钝重低音
 
         protected override Color EdgeColor => LeadPale;
         protected override Color CoreColor => ToxGreen;
+        protected override Color ShaftColor => LeadDeep with { A = 235 };
 
         /// <summary>本次命中是否吃到了蚀毒增伤（ModifyHit 与 OnHit 同链，供反馈分流）</summary>
         private bool rotBite;

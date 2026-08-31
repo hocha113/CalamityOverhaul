@@ -57,13 +57,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         private bool FullChime => ChimeStacks >= 4;
 
         protected override float WindupFrames => 3f;
-        protected override float ThrustFrames => 3f;
+        protected override float ThrustFrames => 4f;
         protected override float DwellFrames => 2f;
         protected override float RecoverFrames => 5f;
         protected override float PullbackDist => 9f;
         protected override float StabReach => 29f;
         protected override float BladeLength => 41f;
-        protected override float ThrustEasePower => 5.2f;
+        protected override float ThrustEasePower => 2.55f;
         protected override int HitstopFrames => 1;
         protected override float LeanAmp => 0.026f;
         /// <summary>音阶上行：层数直接抬 Pitch</summary>

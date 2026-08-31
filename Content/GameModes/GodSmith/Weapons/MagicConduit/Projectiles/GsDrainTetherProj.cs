@@ -152,6 +152,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            //先画法器本体（法杖斜握），血丝与血泵核压在其上
+            DrawWeaponBody();
             Decode();
             bool whiteHot = HeatStageSync >= 1;
             float alpha = 0.9f - 0.7f * MathHelper.Clamp(Projectile.localAI[0] / CollapseTicks, 0f, 1f);

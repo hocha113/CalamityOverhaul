@@ -94,6 +94,23 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             }
         }
 
+        protected override void ChantHoldItem(Item item, Player player) {
+            //风眼锚读数：锚点在期时打呼吸风环脉冲（锚是 owner 本地量，个人读数即可，
+            //镜像族杖尖读数的 myPlayer 路径）
+            if (player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            GsChantPlayer chant = Chant(player);
+            if (chant.AnchorUntil <= Main.GameUpdateCount || chant.AnchorPos == Vector2.Zero) {
+                return;
+            }
+            Lighting.AddLight(chant.AnchorPos, ChantColor.ToVector3() * 0.2f);
+            if (Main.GameUpdateCount % 12 == 0) {
+                PRTLoader.NewParticle<PRT_ProcRing>(chant.AnchorPos, Vector2.Zero, ChantColor, 1f)
+                    ?.Configure(22f, 42f, 12);
+            }
+        }
+
         public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
             //增压弹涨体：飞行 22 帧后体量渐涨到 1.5 倍（各端按同一标推演）
             if (router.MarkData == FormOnBeat && router.MarkData2 >= SurgeFlag) {

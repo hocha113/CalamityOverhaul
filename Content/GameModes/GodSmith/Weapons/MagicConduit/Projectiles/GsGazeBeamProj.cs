@@ -29,6 +29,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
         protected override float TickDamageCoef => 0.55f;
         protected override bool UseChannelFlag => true;
 
+        /// <summary>蛇首直立悬在扇心（原版由宿主 535 自绘，0/π 直立姿态）</summary>
+        protected override GsConduitBodyPose BodyPose => GsConduitBodyPose.MuzzleUpright;
+
         /// <summary>扇半宽的本地平滑量（从同步热段确定性推进，判定端只有 owner）</summary>
         private float halfArcCur = WideHalfArc;
 
@@ -112,6 +115,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            //先画蛇首本体，凝视扇线与瞳孔星芒压在其上（瞳孔即蛇首的发光双目）
+            DrawWeaponBody();
             float reach = EffRadius;
             float half = EffHalfArc(lastCollapse01);
             if (reach < 20f || half < 0.01f) {

@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -45,10 +46,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             if (player.itemAnimationMax <= 0) {
                 return;
             }
-            //前刺推压：出手瞬间杖身向瞄准向前压 4px 并下沉，随动画进度回收（确定性输入，各端一致）
-            float progress = player.itemAnimation / (float)player.itemAnimationMax;
+            //前刺推压：出手瞬间杖身向瞄准向前压 4px 并下沉，随动画进度回收（绝对剖面 −0.06·p 下压，差分施加防累积漂移）
+            float n = player.itemAnimationMax;
+            float progress = player.itemAnimation / n;
             player.itemLocation += new Vector2(player.direction, 0.4f) * (4f * progress);
-            player.itemRotation += player.direction * 0.06f * progress;
+            GsMagicKickMath.ApplyKickDiff(player, -0.06f * progress, -0.06f * ((player.itemAnimation + 1) / n));
         }
 
         //==================== 强化咏唱：晶狱丛生 ====================

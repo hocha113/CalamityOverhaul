@@ -200,14 +200,54 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         }
 
         /// <summary>
-        /// 入世追认湖藏：注册表扩了专门条目后（如传奇武器专属械奴），
-        /// 更新前就泡在湖里的原件静默补入械奴册，不落座、不出声，编成自己来
+        /// 入世对齐湖藏真值（双向）：注册表扩了专门条目后（如传奇武器专属械奴），
+        /// 更新前就泡在湖里的原件静默补入械奴册，不落座、不出声，编成自己来；
+        /// 反向把已取空的幽灵影子一并修剪，老档的污染册进世界即自愈
         /// </summary>
         public override void OnEnterWorld() {
             foreach (Item item in Player.GetModPlayer<KikasaVaultPlayer>().Stored) {
                 if (item?.IsAir == false && !collectedArms.Contains(item.type)
                     && KikasaArmsIndex.TryGet(item.type, out _)) {
                     collectedArms.Add(item.type);
+                }
+            }
+            PruneStaleArms();
+        }
+
+        /// <summary>
+        /// 械奴册与湖藏真值对齐：湖藏已无原件、未驻席、不在拾影手上的械奴记忆除名，
+        /// 图鉴影子随取空自动隐去（反馈一·湖藏影子残留）。驻席记忆豁免，保住
+        /// 「席位保留等再沉」语义（反馈三·#37/#53）——取空的驻席影在图鉴压暗显示，
+        /// 右键卸席或拾走后即被修剪；再沉同型武器经 <see cref="RecordDrownedItem"/>
+        /// 重新入册，除名可逆。鬼奴册（boss 收集）不在修剪面内
+        /// </summary>
+        internal void PruneStaleArms() {
+            if (collectedArms.Count == 0) {
+                return;
+            }
+            //拾影在手的键不剪：拾走驻影的瞬间席位已腾出，不豁免会把手上的影剪没
+            int carriedKey = UI.Panorama.KikasaPanoramaUI.Instance?.CarriedKey ?? 0;
+            HashSet<int> stocked = null;
+            foreach (Item item in Player.GetModPlayer<KikasaVaultPlayer>().Stored) {
+                if (item?.IsAir == false) {
+                    (stocked ??= []).Add(item.type);
+                }
+            }
+            List<int> stale = null;
+            foreach (int itemType in collectedArms) {
+                if (stocked?.Contains(itemType) == true || SlotIndexOf(-itemType) >= 0
+                    || carriedKey == -itemType) {
+                    continue;
+                }
+                (stale ??= []).Add(itemType);
+            }
+            if (stale == null) {
+                return;
+            }
+            foreach (int itemType in stale) {
+                collectedArms.Remove(itemType);
+                if (LastDrownedItemType == itemType) {
+                    LastDrownedItemType = 0;
                 }
             }
         }
@@ -446,6 +486,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         //==================== 存档 ====================
 
         public override void SaveData(TagCompound tag) {
+            //幽灵影子不入档：湖心景没开过的会话也在这里保底修剪（自动存档时拾影豁免仍生效）
+            PruneStaleArms();
             if (LastDrownedType > NPCID.None) {
                 if (LastDrownedType < NPCID.Count) {
                     tag["KikasaServantMemory"] = LastDrownedType;

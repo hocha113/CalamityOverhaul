@@ -132,16 +132,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
             }
         }
 
-        //==================== 后坐姿态：掷叉沉手 ====================
+        //==================== 后坐姿态：掷叉沉手（差分，见 GsGunKickMath） ====================
 
-        public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame) {
-            if (player.itemAnimationMax <= 0) {
-                return;
-            }
-            float progress = player.itemAnimation / (float)player.itemAnimationMax;
-            player.itemLocation -= new Vector2(player.direction, 0f) * (2.5f * progress);
-            player.itemRotation -= player.direction * 0.1f * progress;
-        }
+        public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame)
+            => GunKickStyle(player, 2.5f, 0.1f);
     }
 
     /// <summary>

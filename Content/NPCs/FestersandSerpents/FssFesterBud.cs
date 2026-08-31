@@ -8,7 +8,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
 {
     /// <summary>
     /// 脓化花蕾：荒花沙蟒召唤物被暗影之魂沁染的变异体。沙漠地表使用，唤来脓蕾沙蟒。
-    /// 条件：困难模式 + 沙漠 + 地表 + 场上无本体。贴图暂借刺球素材（与带刺花蕾同源）。
+    /// 条件：沙漠 + 地表 + 场上无本体——不设进度门槛，前置由配方里的暗影之魂把关。
+    /// 贴图暂借刺球素材（与带刺花蕾同源）。
     /// </summary>
     internal class FssFesterBud : FssModItem
     {
@@ -31,9 +32,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
         }
 
         public override bool CanUseItem(Player player) {
-            //肉山后 + 沙漠地表 + 场上无脓蕾沙蟒
-            return Main.hardMode
-                && player.ZoneDesert
+            //沙漠地表 + 场上无脓蕾沙蟒
+            return player.ZoneDesert
                 && player.position.Y < Main.worldSurface * 16f
                 && !NPC.AnyNPCs(ModContent.NPCType<FssHead>());
         }
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
             CreateRecipe()
                 .AddIngredient(ModContent.ItemType<BssBloomBud>())
                 .AddIngredient(ItemID.SoulofNight, 8)
-                .AddTile(TileID.MythrilAnvil)
+                .AddTile(TileID.Anvils)
                 .Register();
         }
     }

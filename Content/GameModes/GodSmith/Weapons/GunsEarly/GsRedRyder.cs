@@ -101,16 +101,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
                 ?.Configure(Color.White, Main.rand.Next(10, 16), 0.1f, 0.6f);
         }
 
-        //==================== 后坐姿态 ====================
+        //==================== 后坐姿态（差分，见 GsGunKickMath） ====================
 
-        public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame) {
-            if (player.itemAnimationMax <= 0) {
-                return;
-            }
-            float progress = player.itemAnimation / (float)player.itemAnimationMax;
-            player.itemLocation -= new Vector2(player.direction, 0f) * (0.8f * progress);
-            player.itemRotation -= player.direction * 0.04f * progress;
-        }
+        public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame)
+            => GunKickStyle(player, 0.8f, 0.04f);
     }
 
     /// <summary>

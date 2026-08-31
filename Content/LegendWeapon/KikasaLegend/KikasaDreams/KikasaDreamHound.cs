@@ -570,7 +570,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                 float dy = target.Center.Y - Projectile.Center.Y;
                 float absDx = MathF.Abs(dx);
                 float absDy = MathF.Abs(dy);
-                if (!grounded && absDx < 210f && absDy < 340f) {
+                //对空改咬窗放宽（210/340→280/400）：侧方/上方目标以前极易擦窗而过（反馈三·#61）
+                if (!grounded && absDx < 280f && absDy < 400f) {
                     //对空冲进牙距，直接咬，别等落地伏地
                     StartLunge(target, PounceSpeed * 0.9f, 36f, growl: false);
                     return 0.05f;
@@ -579,6 +580,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                     //冲进扑距，滑进蓄势，一套连招
                     EnterState(StateCrouch);
                     return Gravity;
+                }
+                //过靶止损：冲向已背离目标（点积转负）就是冲过头了，提前收招重新规划，
+                //别揣着续力冲满 48 帧把身位越拉越远（反馈三·#61 附图姿态）
+                if (StateTimer > SprintPrepFrames + 6f
+                    && Vector2.Dot(Projectile.velocity, new Vector2(dx, dy)) < 0f) {
+                    EnterState(StateRun);
+                    return grounded ? Gravity : 0.09f;
                 }
             }
             //平地撞墙才按水平失速收招；对空冲刺几乎竖直，不能拿 |vx| 当失败

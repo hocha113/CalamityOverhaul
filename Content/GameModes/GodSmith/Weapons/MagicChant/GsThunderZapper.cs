@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -26,10 +27,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
 
         /// <summary>形态：折点分叉的小电弧</summary>
         private const float FormArc = 10f;
-        /// <summary>形态：落雷印（隐形倒计时载体）</summary>
+        /// <summary>形态：落雷印（倒计时载体，预告读数在 GsProjPreDraw）</summary>
         private const float FormMark = 11f;
         /// <summary>形态：天降雷柱</summary>
         private const float FormPillar = 12f;
+        /// <summary>雷印倒计时（帧，0.4s）：timeLeft 与预告爬升进度同源</summary>
+        private const int MarkLifeTicks = 24;
 
         private static readonly Color VoltWhite = new(226, 240, 255);
 
@@ -54,8 +57,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                 proj.scale *= 0.7f;
             }
             else if (router.MarkData == FormMark) {
-                //雷印：隐形倒计时载体，不判定不移动
-                proj.timeLeft = 24;
+                //雷印：倒计时载体，不判定不移动（可见层在 GsProjPreDraw）
+                proj.timeLeft = MarkLifeTicks;
                 proj.friendly = false;
             }
             else if (router.MarkData == FormPillar) {
@@ -74,6 +77,32 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                 return false;
             }
             return true;
+        }
+
+        public override bool? GsProjPreDraw(Projectile proj, ref Color lightColor, GodSmithProjRouter router) {
+            //雷印预告可见层：落点星芒交叉缓对旋 + 呼吸，0.4s 从暗到亮爬升至落雷（预告即倒计时）
+            if (router.MarkData != FormMark) {
+                return null;
+            }
+            Texture2D star = CWRUtils.GetT2DAsset(CWRConstant.Masking + "StarTexture_White")?.Value;
+            if (star == null) {
+                return false;
+            }
+            float t = 1f - proj.timeLeft / (float)MarkLifeTicks;
+            float ramp = 0.25f + 0.75f * t;
+            float breath = 1f + 0.1f * MathF.Sin(Main.GlobalTimeWrappedHourly * 34f + proj.identity * 0.7f);
+            float spin = Main.GlobalTimeWrappedHourly * 2.2f + proj.identity * 0.53f;
+            //实体批为预乘 AlphaBlend：A=0 是合法加色技，黑底星贴图不糊黑框
+            Color glow = ChantColor with { A = 0 };
+            Color core = VoltWhite with { A = 0 };
+            Vector2 pos = proj.Center - Main.screenPosition;
+            Vector2 origin = star.Size() * 0.5f;
+            float scale = (0.16f + 0.10f * t) * breath;
+            Main.spriteBatch.Draw(star, pos, null, glow * (0.75f * ramp), spin,
+                origin, scale * 1.2f, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(star, pos, null, core * ramp, -spin * 0.6f + MathHelper.PiOver4,
+                origin, scale * 0.8f, SpriteEffects.None, 0f);
+            return false;
         }
 
         public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
@@ -101,7 +130,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             }
 
             if (VaultUtils.isServer || router.MarkData == FormMark) {
-                //雷印读数走 OnKill 前的静默：不画飞行相
+                //雷印不发飞行相粒子：预告读数由 GsProjPreDraw 的星芒交叉承载
                 return;
             }
             //飞行相：稀疏电花 + 电蓝光

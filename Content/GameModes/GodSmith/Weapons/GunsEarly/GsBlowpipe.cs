@@ -118,16 +118,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
             }
         }
 
-        //==================== 后坐姿态：吹嘴轻推 ====================
+        //==================== 后坐姿态：吹嘴轻推（差分；负踢=管口下压的设计语义） ====================
 
-        public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame) {
-            if (player.itemAnimationMax <= 0) {
-                return;
-            }
-            float progress = player.itemAnimation / (float)player.itemAnimationMax;
-            player.itemLocation -= new Vector2(player.direction, 0f) * (0.8f * progress);
-            player.itemRotation += player.direction * 0.03f * progress;
-        }
+        public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame)
+            => GunKickStyle(player, 0.8f, -0.03f);
 
         //==================== 毒镖表现 ====================
 

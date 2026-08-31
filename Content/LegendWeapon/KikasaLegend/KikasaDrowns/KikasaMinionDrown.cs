@@ -251,6 +251,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             if (!proj.minion && !proj.sentry && proj.minionSlots <= 0f) {
                 return false;
             }
+            //饰品/套装衍生的常驻随从（灾厄渎魂守卫、星尘守卫这类）：不占召唤栏，
+            //被扣押期间源头察觉缺位会再造一只，抓了吐、吐了再抓，观感即"一直拖下水"（反馈三·#19）
+            if (proj.minion && proj.minionSlots <= 0f) {
+                return false;
+            }
+            //它模哨兵（灾厄熵嗫告篇帙这类自维持哨兵）：反复拉入会打断其常驻机制（护盾重充能），
+            //少给一口洗礼增益换不误伤；原版与本模组哨兵照旧参与仪式（反馈三·#65）
+            if (proj.sentry && proj.ModProjectile != null && proj.ModProjectile.Mod is not CWRMod) {
+                return false;
+            }
             KikasaMinionHeldGlobal held = proj.GetGlobalProjectile<KikasaMinionHeldGlobal>();
             //浸洗中排重；血湖状态激活者是刚洗礼过的，到期前不回锅
             if (held.LakeHeld || held.BloodLakeTime > 0) {

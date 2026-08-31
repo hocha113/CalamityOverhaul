@@ -101,14 +101,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         internal static readonly Color RiposteHot = new(255, 152, 78);
 
         protected override float WindupFrames => 3f;
-        protected override float ThrustFrames => 3f;
+        protected override float ThrustFrames => 4f;
         protected override float DwellFrames => 2f;
         //收刀相拉长：格挡帧就藏在这里，收得慢换来盾面
         protected override float RecoverFrames => 7f;
         protected override float PullbackDist => 10f;
         protected override float StabReach => 31f;
         protected override float BladeLength => 43f;
-        protected override float ThrustEasePower => 5.5f;
+        protected override float ThrustEasePower => 2.6f;
         protected override int HitstopFrames => 2;
         protected override float LeanAmp => 0.032f;
         protected override float ThrustPitch => 0.10f;

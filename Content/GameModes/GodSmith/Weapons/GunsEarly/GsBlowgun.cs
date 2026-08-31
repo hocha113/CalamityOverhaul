@@ -136,24 +136,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
             }
         }
 
-        //==================== 后坐姿态：渐强推沉 ====================
+        //==================== 后坐姿态：渐强推沉（差分；负踢=管口下压的设计语义） ====================
 
         public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame) {
-            if (player.itemAnimationMax <= 0 || !IsLocal(player)) {
-                //渐强档位是本地节拍层，远端画基础推量即可
-                BasePush(player, 1f);
-                return;
-            }
-            BasePush(player, 1f + BreathIndex(State(player)) * 0.25f);
-        }
-
-        private static void BasePush(Player player, float depth) {
-            if (player.itemAnimationMax <= 0) {
-                return;
-            }
-            float progress = player.itemAnimation / (float)player.itemAnimationMax;
-            player.itemLocation -= new Vector2(player.direction, 0f) * (0.8f * depth * progress);
-            player.itemRotation += player.direction * 0.03f * progress;
+            //渐强档位是本地节拍层，远端画基础推量即可（深度只走位移轴，踢幅不变）
+            float depth = IsLocal(player) ? 1f + BreathIndex(State(player)) * 0.25f : 1f;
+            GunKickStyle(player, 0.8f * depth, -0.03f);
         }
 
         //==================== 渐强曳尾表现 ====================

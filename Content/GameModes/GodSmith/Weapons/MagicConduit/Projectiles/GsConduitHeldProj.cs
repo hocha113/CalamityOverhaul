@@ -1,7 +1,10 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using InnoVault.GameContent.BaseEntity;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Projectiles
@@ -178,6 +181,86 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
 
         private GsHeatScheme BoundScheme
             => GodSmithScheme.TryGetScheme(BoundItemID, out GodSmithScheme s) ? s as GsHeatScheme : null;
+
+        //==================== 武器本体自绘（A09：引导期本体可见性恢复） ====================
+
+        /// <summary>本体绘制姿（原版物品贴图的握持约定，子类逐件接线）</summary>
+        protected enum GsConduitBodyPose
+        {
+            /// <summary>法杖斜握：镜像原版第 27 层 useStyle5 + Item.staff 分支（本族 1444/1445/3006 全在 staff 名单）</summary>
+            Staff,
+            /// <summary>横版炮体沿瞄准旋转，炮口钉在束根（充能爆破炮，物品贴图口朝右）</summary>
+            MuzzleAimed,
+            /// <summary>本体直立悬在束根，不随瞄准旋转（美杜莎，镜像原版宿主 535 的 0/π 姿态）</summary>
+            MuzzleUpright,
+            /// <summary>贴图上端为前，旋转 = 瞄准 + π/2，悬在束根（最后棱镜，镜像原版宿主 633 约定）</summary>
+            MuzzleForward,
+        }
+
+        /// <summary>本武器的本体绘制姿</summary>
+        protected virtual GsConduitBodyPose BodyPose => GsConduitBodyPose.Staff;
+
+        /// <summary>
+        /// 引导期补画武器本体（原版物品贴图）。桥（GodSmithHeldVisualBridge）把 heldItem 换成
+        /// noUseGraphic 替身压掉第 27 层持物（防阔剑族叠影），引导族 held 此前不画本体 = 空手放束；
+        /// 本方法是唯一本体层，桥保持原样故不会与 27 层叠影。
+        /// 光照在玩家中心取样（同 27 层 itemColor），塌缩期本体不淡出（武器实物随 held 存亡）
+        /// </summary>
+        protected void DrawWeaponBody() {
+            int id = BoundItemID;
+            Main.instance.LoadItem(id);
+            Texture2D tex = TextureAssets.Item[id].Value;
+            Rectangle frame = Owner.GetItemDrawFrame(id);
+            Item sample = ContentSamples.ItemsByType[id];
+            Color light = Lighting.GetColor((int)(Owner.Center.X / 16f), (int)(Owner.Center.Y / 16f));
+            float scale = Owner.GetAdjustedItemScale(sample);
+            int dir = Owner.direction;
+            int grav = SafeGravDir;
+            Vector2 aim = AimUnit;
+
+            Vector2 drawPos;
+            float rot;
+            Vector2 origin;
+            SpriteEffects fx;
+            switch (BodyPose) {
+                case GsConduitBodyPose.MuzzleAimed:
+                    //炮口端中心为轴钉在束根，炮身向后铺；面左/反重力竖翻保持顶面朝上
+                    drawPos = Projectile.Center;
+                    rot = aim.ToRotation();
+                    origin = new Vector2(frame.Width, frame.Height * 0.5f);
+                    fx = dir * grav > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+                    break;
+                case GsConduitBodyPose.MuzzleUpright:
+                    drawPos = Projectile.Center;
+                    rot = grav == 1 ? 0f : MathHelper.Pi;
+                    origin = frame.Size() / 2f;
+                    fx = dir == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+                    break;
+                case GsConduitBodyPose.MuzzleForward:
+                    drawPos = Projectile.Center;
+                    rot = aim.ToRotation() + MathHelper.PiOver2;
+                    origin = frame.Size() / 2f;
+                    fx = dir == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+                    break;
+                default:
+                    //法杖斜握：锚/角/轴/翻面四象限与原版 27 层 staff 分支逐项等价
+                    //（锚 = MountedCenter 沿 itemRotation 前推 6px，握角 = itemRotation ± π/4，轴 = 柄角）
+                    float itemRot = (aim * dir).ToRotation();
+                    drawPos = Owner.MountedCenter + (itemRot.ToRotationVector2() * 6f * dir).Floor();
+                    rot = itemRot + 0.785f * dir * grav;
+                    origin = new Vector2(dir == 1 ? 0f : frame.Width, grav == 1 ? frame.Height : 0f);
+                    fx = (dir == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None)
+                       | (grav == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None);
+                    break;
+            }
+
+            Main.EntitySpriteDraw(tex, drawPos - Main.screenPosition, frame, light, rot, origin, scale, fx, 0);
+            if (sample.glowMask >= 0) {
+                //物品自带辉罩（充能爆破炮 102）同变换叠画，暗处也可读
+                Main.EntitySpriteDraw(TextureAssets.GlowMask[sample.glowMask].Value, drawPos - Main.screenPosition,
+                    frame, new Color(250, 250, 250, sample.alpha), rot, origin, scale, fx, 0);
+            }
+        }
 
         /// <summary>持械姿态（各端，用同步方向）</summary>
         private void UpdatePose() {

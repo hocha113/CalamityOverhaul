@@ -236,16 +236,17 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.VolleyBows
         public override bool? GsAltFunctionUse(Item item, Player player)
             => player.GetModPlayer<GsVolleyPlayer>().Charge >= AltReleaseThreshold ? true : null;
 
-        //==================== 连弩后坐姿态 ====================
+        //==================== 后坐姿态（族层一笔全族生效；终局弓自有覆写不叠加） ====================
 
         public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame) {
-            if (!UsePointBlast || player.itemAnimationMax <= 0) {
+            if (player.itemAnimationMax <= 0) {
                 return;
             }
-            //每发 2px 后坐，随使用进度回弹（确定性输入，各端画同一姿态）
+            //每发 2px 后坐沿弓身轴向回坐（确定性输入，各端画同一姿态）；
+            //itemRotation×direction 即瞄准轴，仰射俯射后坐方向皆正确
             float progress = player.itemAnimation / (float)player.itemAnimationMax;
-            Vector2 dir = new(player.direction, 0f);
-            player.itemLocation -= dir * (2f * progress);
+            Vector2 aimDir = player.itemRotation.ToRotationVector2() * player.direction;
+            player.itemLocation -= aimDir * (2f * progress);
         }
 
         //==================== 弹幕表现（各端） ====================

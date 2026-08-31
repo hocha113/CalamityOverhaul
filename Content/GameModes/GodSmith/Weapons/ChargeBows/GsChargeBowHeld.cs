@@ -55,14 +55,19 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.ChargeBows
         private int flashTimer;
         /// <summary>T3 星芒计时</summary>
         private int starTimer;
+        /// <summary>档位弓身前送量（T2/T3 弓向前顶体现深拉，6 帧线性到位；各端按同步档位自走）</summary>
+        private float tierLead;
 
         private int boundBowType;
         private GsChargeBowScheme scheme;
         //阈值缓存（各端按同步的 Item 各自折算，结果一致）
         private int nockDur = GsChargeBowScheme.NockFrames;
         private int t1F, t2F, t3F, overF;
+        //弦几何缓存（TryBind 时按弦锚库折算）
+        private float holdDist = 13f;
+        private float stringInset = 5f;
 
-        private Vector2 BowCenter => Owner.GetPlayerStabilityCenter() + ToMouseA.ToRotationVector2() * 13f;
+        private Vector2 BowCenter => Owner.GetPlayerStabilityCenter() + ToMouseA.ToRotationVector2() * (holdDist + tierLead);
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 26;
@@ -72,6 +77,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.ChargeBows
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 6;
+            //heldProj 只走玩家第 27 层内联绘制（PlayerDrawLayers 无 hide 检查），
+            //不设 hide 会在 Main.DrawProjectiles 再画一遍成加色层 2× 亮度
+            Projectile.hide = true;
         }
 
         public override bool ShouldUpdatePosition() => false;
@@ -102,6 +110,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.ChargeBows
             t2F = cs.Tier2Frames(item, Owner);
             t3F = cs.Tier3Frames(item, Owner);
             overF = cs.OverloadFrames(item, Owner);
+            stringInset = GsBowStringLib.StringInset(item.type);
+            holdDist = GsBowStringLib.HoldDistance(item.type);
             return true;
         }
 
@@ -124,11 +134,18 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.ChargeBows
             }
 
             SetHeld();
+            UpdateTierLead();
             UpdatePose();
             UpdateArms();
             UpdateStateMachine();
             WatchTierCues();
             EmitDrawParticles();
+        }
+
+        /// <summary>档位前送量趋近目标（每帧 1/3 px，T2→T3 的 2px 差 6 帧到位，消单帧瞬跳）</summary>
+        private void UpdateTierLead() {
+            float target = Phase == PhaseDraw ? Tier switch { 3 => 3f, 2 => 1f, _ => 0f } : 0f;
+            tierLead += MathHelper.Clamp(target - tierLead, -1f / 3f, 1f / 3f);
         }
 
         //==================== 状态机 ====================
@@ -338,11 +355,18 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.ChargeBows
             return MathHelper.Clamp(drawFrames / (float)Math.Max(1, t2F), 0.08f, 1f);
         }
 
-        /// <summary>搭箭点：弓中心沿瞄准反向随拉弓进度与档位后移，读作弦被拉满</summary>
+        /// <summary>
+        /// 搭箭点：静止弦位（实测弦锚沿轴投影）随拉弓进度收向前手锚，封顶不越手；
+        /// 档位深拉改由弓身前送（tierLead）体现，回拉量回到 BarrenBow 量级。
+        /// 前手锚 = None 档长 4 + 方向修正沿轴投影（TML Player.GetFrontHandPosition 数学，
+        /// 修正向量 (∓4,-2)，其 (0,±3) 项恒垂直于瞄准轴不参与投影）
+        /// </summary>
         private Vector2 GetNockWorldPos() {
-            float tierBack = Tier switch { 3 => 9f, 2 => 7f, 1 => 4f, _ => 0f };
-            float back = 2f + DrawProgress() * 8f + tierBack;
-            return BowCenter - ToMouseA.ToRotationVector2() * back;
+            Vector2 aim = ToMouseA.ToRotationVector2();
+            float stringRest = holdDist + tierLead - stringInset;
+            float handAlong = 4f + Vector2.Dot(new Vector2(-4f * Owner.direction, -2f * SafeGravDir), aim);
+            float nockAlong = MathHelper.Lerp(stringRest, MathF.Min(handAlong, stringRest), DrawProgress());
+            return Owner.GetPlayerStabilityCenter() + aim * nockAlong;
         }
 
         //==================== 绘制 ====================
@@ -382,12 +406,21 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.ChargeBows
                     0.55f + 0.1f * tier + flash * 0.2f, SpriteEffects.None);
             }
 
-            //弓弦：两端锚点连到搭箭点的两段直线（原版贴图静态弦上叠动态弦）
+            //弓弦：实测锚两段直线连到搭箭点；拉弓期抠掉贴图静态弦只留动态弦（镜像 BarrenBow，消双弦伪影）
+            bool hasAnchor = GsBowStringLib.TryGet(bowType, out var anchor);
+            bool deductString = hasAnchor && Phase == PhaseDraw;
             if (Phase == PhaseDraw) {
-                Vector2 perp = (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2();
-                float halfString = bowTex.Height * 0.36f;
-                Vector2 top = drawCenter + perp * halfString;
-                Vector2 bottom = drawCenter - perp * halfString;
+                Vector2 top, bottom;
+                if (hasAnchor) {
+                    top = GsBowStringLib.TexPosToWorld(drawCenter, Projectile.rotation, DirSign, bowTex.Size(), anchor.Top);
+                    bottom = GsBowStringLib.TexPosToWorld(drawCenter, Projectile.rotation, DirSign, bowTex.Size(), anchor.Bottom);
+                }
+                else {
+                    //未录锚兜底：中轴近似（不抠静态弦）
+                    Vector2 perp = (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2();
+                    top = drawCenter + perp * (bowTex.Height * 0.36f);
+                    bottom = drawCenter - perp * (bowTex.Height * 0.36f);
+                }
                 Vector2 nock = GetNockWorldPos() + (drawCenter - Projectile.Center);
                 Color stringColor = Color.Lerp(lightColor, Color.White, 0.3f) * 0.8f;
                 DrawLine(top, nock, stringColor, 2f);
@@ -395,17 +428,29 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.ChargeBows
                 DrawNockedArrow(nock, lightColor);
             }
 
-            //弓体
+            //弓体（拉弓期抠静态弦；玩家渲染批为 Immediate，Apply/复位即可生效）
+            if (deductString) {
+                GsBowStringLib.ApplyDeduct(anchor.Cut, lightColor, bowTex.Size());
+            }
             Main.EntitySpriteDraw(bowTex, screenPos, null, lightColor, Projectile.rotation,
                 bowTex.Size() / 2f, 1f, effect);
+            if (deductString) {
+                GsBowStringLib.RestoreDefaultShader();
+            }
 
-            //过满档弓身加色重影
+            //过满档弓身加色重影（同样抠弦，防静态弦从重影层透出）
             if (tier >= 3) {
                 float pulse = 0.7f + 0.3f * MathF.Sin(Main.GlobalTimeWrappedHourly * 10f + Projectile.identity * 0.53f);
                 Color hot = scheme.TrailHot * (0.35f * pulse);
                 hot.A = 0;
+                if (deductString) {
+                    GsBowStringLib.ApplyDeduct(anchor.Cut, hot, bowTex.Size());
+                }
                 Main.EntitySpriteDraw(bowTex, screenPos, null, hot, Projectile.rotation,
                     bowTex.Size() / 2f, 1.06f, effect);
+                if (deductString) {
+                    GsBowStringLib.RestoreDefaultShader();
+                }
             }
 
             //T3 达成星芒（StarTexture_White 加色，identity 定相）
@@ -431,7 +476,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.ChargeBows
                 color, toEnd.ToRotation(), new Vector2(0f, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0);
         }
 
-        /// <summary>搭在弦上的箭矢：按展示弹药画，随档位后移；无限弹药映射到实体箭贴图</summary>
+        /// <summary>搭在弦上的箭矢：按展示弹药画，锚在搭箭点；无限弹药映射到实体箭贴图</summary>
         private void DrawNockedArrow(Vector2 nock, Color lightColor) {
             int ammoItemType = (int)AmmoShowType;
             if (ammoItemType <= ItemID.None || ammoItemType >= TextureAssets.Item.Length) {

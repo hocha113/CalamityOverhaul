@@ -379,7 +379,7 @@ KikasaTalismanLao: {
 	// DisplayName: Ink Puddle Talisman
 	// Tooltip: Ink drops always pool into puddles; puddles drink the rain, rising until they overflow; direct hits slightly lighter
 	// Origin: The scribe hated seeing rain dry up the moment it landed—a whole inkfall wasted—so he drew this talisman to keep the rain on the ground a while longer
-	// Power: "'Pooling': ink drops always pool into puddles on landing (no Lake-Tilt tier required), and puddles last +50% and spread +30%; drops merging into an existing puddle raise its water level, and the third one overflows it: the puddle widens a step and slaps out overflow surges to both sides (50% puddle damage each)"
+	// Power: "'Pooling': ink drops always pool into puddles on landing (no need to reach the fourth tier, Lake Tilt), and puddles last +50% and spread +30%; drops merging into an existing puddle raise its water level, and the third one overflows it: the puddle widens a step and slaps out overflow surges to both sides (50% puddle damage each)"
 	// Burden: Drop direct damage -5%
 }
 
@@ -499,7 +499,7 @@ KikasaTalismanShuang: {
 	// DisplayName: Frost Mirror Talisman
 	// Tooltip: Puddles freeze into frost mirrors—treading slows foes, drop hits shatter the mirror for a burst; puddles cannot be renewed
 	// Origin: After Frost's Descent, puddle water freezes overnight into thin ice—it looks like a mirror, until you step on it. What the scribe collected was exactly that layer of "looks harmless"
-	// Power: "'Frost Mirror': large drops freeze into frost puddles where they land (no Lake-Tilt tier required); the mirror no longer sears—treading foes are slowed 40%, and an ink drop striking the mirror shatters it at once, bursting for damage scaled to its remaining life and raising ice spikes"
+	// Power: "'Frost Mirror': large drops freeze into frost puddles where they land (no need to reach the fourth tier, Lake Tilt); the mirror no longer sears—treading foes are slowed 40%, and an ink drop striking the mirror shatters it at once, bursting for damage scaled to its remaining life and raising ice spikes"
 	// Burden: Each mirror stands alone—puddles cannot merge to renew their life
 }
 
@@ -5094,7 +5094,7 @@ FssFesterBud: {
 	// DisplayName: Festered Bloombud
 	/* Tooltip:
 		'''
-		Summons the Festersand Serpent when used on the desert surface in hardmode
+		Summons the Festersand Serpent when used on the desert surface
 		"The bud never died. It learned to fester"
 		''' */
 }

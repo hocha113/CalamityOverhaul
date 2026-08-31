@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard.Specials;
 using CalamityOverhaul.Content.GameModes.UI;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -92,6 +93,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
                 return;
             }
             mp.rouletteHold++;
+            //轮盘长按是本枪的装填仪式变体，同样发生在动画外：持枪补位
+            GsGunHoldPoseProj.Ensure(player, TargetItemID, GsGunHoldPoseProj.ReloadPitch);
             if (!VaultUtils.isServer && mp.rouletteHold % 8 == 0 && mp.rouletteHold < RouletteHoldTicks) {
                 //转轮爬音
                 SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.6f, Pitch = -0.2f + mp.rouletteHold * 0.02f }, player.Center);

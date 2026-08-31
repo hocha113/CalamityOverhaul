@@ -70,13 +70,20 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.ChargeBows
             return state.Left <= 0;
         }
 
-        /// <summary>王权掉币（owner 端）：假人/雕像怪不结算，币值护栏远低于 1 银</summary>
+        /// <summary>
+        /// 王权掉币（owner 端命中钩子）：假人/雕像怪不结算，币值护栏远低于 1 银。<br/>
+        /// 联机下客户端 Item.NewItem 只落本地 400 槽且不广播（TML 源 Item.cs：非服务器不挑真槽/仅服务器发包），
+        /// 需补发 SyncItem 走原版客户端掷物通道：服务器收到 400 槽包后分配真槽并全网转播
+        /// </summary>
         protected static void DropCoins(Projectile proj, NPC target, int min, int max) {
             if (!ValidRiderTarget(target)) {
                 return;
             }
             int stack = Main.rand.Next(min, max + 1);
-            Item.NewItem(proj.GetSource_FromThis(), target.Hitbox, ItemID.CopperCoin, stack, noGrabDelay: true);
+            int idx = Item.NewItem(proj.GetSource_FromThis(), target.Hitbox, ItemID.CopperCoin, stack, noGrabDelay: true);
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                NetMessage.SendData(MessageID.SyncItem, number: idx, number2: 1f);
+            }
         }
     }
 

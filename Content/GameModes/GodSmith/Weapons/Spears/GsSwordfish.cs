@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         //六把里最轻快的时间线：破浪讲究一气呵成
         protected override float WindupFrames => 4f;
-        protected override float ThrustFrames => 4f;
+        protected override float ThrustFrames => 5f;
         protected override float DwellFrames => 3f;
         protected override float RecoverFrames => 8f;
         protected override float RestHoldout => 11f;
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         protected override float BladeLength => 82f;
         protected override float CollisionWidth => 28f;
         protected override float TipGreedRadius => 26f;
-        protected override float ThrustEasePower => 6f;
+        protected override float ThrustEasePower => 2.7f;
         protected override bool TwoHanded => true;
         protected override float LeanAmp => 0.045f;
         protected override int HitboxSize => 48;
@@ -63,6 +63,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         protected override Color EdgeColor => FishSilver;
         protected override Color CoreColor => OceanBlue;
+        protected override Color ShaftColor => WaveDeep with { A = 235 };
 
         /// <summary>本次突进是否在水中起跳（爆发帧快照，尾流与音效随它走）</summary>
         private bool leapWet;

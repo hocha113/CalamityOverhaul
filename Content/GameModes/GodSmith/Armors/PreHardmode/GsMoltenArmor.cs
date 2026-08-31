@@ -12,7 +12,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
 {
     /// <summary>
     /// 【神赋·盔甲】熔岩套「熔核喷发」（A 档）：材质=地底熔浆。<br/>
-    /// ①命中积攒熔压，满 10 层后下一击自目标脚下裂地喷出三股熔浆柱（先裂纹预兆再喷发）
+    /// ①命中积攒熔压，满 10 层后下一击自目标脚下裂地喷出三股熔浆柱（先裂纹预兆再喷发；
+    /// 逐口向下 8 格探实心地面锚喷口，飞行目标在其正下方地面喷发）
     /// ②喷发后 4 秒进入「余温」，期间你的攻击附带烈焰③受击泄压崩 3 层，高攒高崩。<br/>
     /// 原版套装奖励保留，神赋是叠加层；层数与余温是攻击方端本地量，
     /// 跨端可见的部分是熔浆柱实体；柱体分相演出（蓄压 14 帧→喷发 26 帧），两端有收口
@@ -108,8 +109,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
             if (player.whoAmI == Main.myPlayer) {
                 int geyserDamage = Math.Clamp((int)(damageDone * 0.30f), 10, 140);
                 for (int i = -1; i <= 1; i++) {
+                    //逐口探地（Pumpkin 式）：向下 8 格找实心地面锚喷口，飞行目标在其正下方地面喷发；
+                    //脚下无地才保留原空中落位
+                    Vector2 vent = new(target.Center.X + i * 70f, target.Bottom.Y);
+                    GsArmorTerrainProbe.TryFindGroundBelow(vent, 8, out float groundY);
                     Projectile.NewProjectile(player.GetSource_Misc("GodSmithMoltenEndow"),
-                        new Vector2(target.Center.X + i * 70f, target.Bottom.Y),
+                        new Vector2(vent.X, groundY),
                         Vector2.Zero,
                         ModContent.ProjectileType<GsMoltenGeyserProj>(), geyserDamage, 3f, player.whoAmI);
                 }

@@ -702,10 +702,10 @@ TileNameFallback: {
 
 OniRainWorld: {
 	OniRainWorldSystem: {
-		// InteractHint: "[右键] 撑伞入雨"
-		// DescendHint: "[右键] 撑伞入深雨"
-		// GrabHint: "[右键] 夺伞"
-		// OniDeathReason: "{0}被伞下的东西拖进了雨里"
+		// InteractHint: "[Right Click] Hold umbrella into the rain"
+		// DescendHint: "[Right Click] Hold umbrella into the deep rain"
+		// GrabHint: "[Right Click] Seize umbrella"
+		// OniDeathReason: "{0} was dragged into the rain by the thing beneath the umbrella"
 	}
 }
 

@@ -78,10 +78,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
             if (player.whoAmI == Main.myPlayer) {
                 int dropDamage = Math.Clamp((int)(damageDone * 0.18f), 6, 80);
                 for (int i = 0; i < 3; i++) {
-                    Vector2 at = target.Center + new Vector2(Main.rand.NextFloat(-60f, 60f), -240f);
+                    //生成前探顶棚收缩高度，滴带标的线（ai[1]）免碰撞降到线再恢复，洞顶不再灭整链
+                    Vector2 at = GsArmorTerrainProbe.SkySpawnAbove(target.Center, Main.rand.NextFloat(-60f, 60f), 240f);
                     Projectile.NewProjectile(player.GetSource_Misc("GodSmithLeadEndow"),
                         at, new Vector2(0f, 5f),
-                        ModContent.ProjectileType<GsLeadDropProj>(), dropDamage, 1f, player.whoAmI);
+                        ModContent.ProjectileType<GsLeadDropProj>(), dropDamage, 1f, player.whoAmI,
+                        0f, target.Center.Y);
                 }
             }
         }
@@ -103,7 +105,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
     }
 
     /// <summary>
-    /// 沉铅雨滴：一滴有重量的哑光铅液，不是光点。自高处加速坠落，砸中 NPC 或触地
+    /// 沉铅雨滴：一滴有重量的哑光铅液，不是光点。自高处加速坠落，出生免地形碰撞、
+    /// 越过标的线（ai[1]）才恢复（Stardust 式高度门，洞顶不再灭滴），砸中 NPC 或触地
     /// 溅裂成两枚低抛铅珠；泪滴形三层正常 alpha 叠色（暗蓝灰边/铅灰体/闷白微光压到 0.3），
     /// 无亮芯无加色，命中挂铅毒，落地沉闷噗声
     /// </summary>
@@ -112,6 +115,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
         public override string Texture => CWRConstant.Masking + "Extra_98";
 
         private ref float Life => ref Projectile.ai[0];
+
+        /// <summary>标的高度线：低于此线才恢复地形碰撞</summary>
+        private ref float TargetLineY => ref Projectile.ai[1];
 
         /// <summary>确定性抖动相位，绘制路径不掷 Main.rand</summary>
         private float Seed => Projectile.identity * 0.7391f % 3.71f;
@@ -126,12 +132,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
             Projectile.DamageType = DamageClass.Generic;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 90;
-            Projectile.tileCollide = true;
+            //出生免碰撞，越过标的线由高度门恢复（见 AI）
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
         }
 
         public override void AI() {
             Life++;
+            //高度门：越过标的线才恢复地形碰撞
+            GsArmorTerrainProbe.UpdateFallGate(Projectile, TargetLineY);
 
             //沉铅只认重力：持续加速下坠，封顶 18
             Projectile.velocity.Y = Math.Min(Projectile.velocity.Y + 0.35f, 18f);

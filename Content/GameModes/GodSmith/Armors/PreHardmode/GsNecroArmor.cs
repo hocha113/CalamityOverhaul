@@ -11,7 +11,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
     /// <summary>
     /// 【神赋·盔甲】死灵套「白骨升矛」（A 档）：材质=白骨，死物不发光。<br/>
     /// ①命中 +1 层骸骨，击杀额外 +2 层（上限 6），杀得越快升矛越快
-    /// ②满 6 层后下一击自目标脚下唤起三根骨矛：前 12 帧蛰伏预兆（碎骨聚拢无判定），
+    /// ②满 6 层后下一击自目标脚下唤起三根骨矛（逐根向下 10 格探实心地破土，
+    /// 飞行目标脚下无地才允许空中升矛）：前 12 帧蛰伏预兆（碎骨聚拢无判定），
     /// 后 28 帧升矛上刺（减速穿刺，每敌一次）③骨矛全程正常 alpha 自绘，无任何发光层
     /// ④受击掉 1 层（骸骨已收，惩罚轻）。<br/>
     /// 本套是全包唯一禁 Lighting.AddLight、禁加色亮芯的套：白骨是死物，全部正常 alpha 绘制。
@@ -81,8 +82,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
             if (player.whoAmI == Main.myPlayer) {
                 int lanceDamage = Math.Clamp((int)(damageDone * 0.25f), 8, 100);
                 for (int i = -1; i <= 1; i++) {
+                    //逐根探地（Fossil 式）：脚下向下 10 格找实心砖破土，找不到才允许空中升矛
+                    Vector2 root = new(target.Center.X + i * 60f, target.Bottom.Y);
+                    GsArmorTerrainProbe.TryFindGroundBelow(root, 10, out float groundY);
                     Projectile.NewProjectile(player.GetSource_Misc("GodSmithNecroEndow"),
-                        new Vector2(target.Center.X + i * 60f, target.Bottom.Y), Vector2.Zero,
+                        new Vector2(root.X, groundY), Vector2.Zero,
                         ModContent.ProjectileType<GsNecroBoneLanceProj>(), lanceDamage, 2.5f, player.whoAmI);
                 }
             }

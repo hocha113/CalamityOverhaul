@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Common;
@@ -8,8 +10,10 @@ using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 {
@@ -65,10 +69,14 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static void ResetWorldState() {
             spawned.Clear();
             repairedGiftKeys.Clear();
+            HimayoGiftNet.ClearDelivered();
             lastEvilBossId = 0;
             wasDownedBossRush = CWRRef.Has && CWRRef.GetDownedBossRush();
             RegisterAll();
         }
+
+        /// <summary>该首领身份是否挂着礼物；死亡入口的服务器端预筛（名册在 OnWorldLoad 两端都注册）</summary>
+        internal static bool IsGiftBoss(int bossId) => byBossId.ContainsKey(bossId);
 
         private static void RegisterAll() {
             scenariosByGiftKey.Clear();
@@ -263,16 +271,78 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         }
     }
 
+    /// <summary>
+    /// 礼物击杀的死亡入口：击杀与参战判定只在服务器/单机端可靠——多人客户端本地的
+    /// playerInteraction 恒空，且灾厄锁血假死的 HitEffect 会在旁观端白给入队，
+    /// 正是"没打过 Boss 也拿铭文、试炼却不认"的分叉源（反馈四·#38）。
+    /// 与试炼台账 <see cref="LegendWeapon.TrialQuests.LegendTrialKillNPC"/> 同口径：
+    /// 服务器读参战名单逐个单播，客户端只等包
+    /// </summary>
     internal sealed class HimayoGiftBossKillNPC : DeathTrackingNPC
     {
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => true;
 
         public override void OnNPCDeath(NPC npc) {
-            if (Main.dedServ) {
+            if (VaultUtils.isClient) {
                 return;
             }
+            if (CWRRef.GetBossRushActive()) {
+                //BossRush 击杀不给常规礼物（专属礼物走 TickBossRushEdge），包也不必发
+                return;
+            }
+            //蠕虫按门槛身份归并（打哪一节都记头），与礼物名册的主体类型直接可比，
+            //参战口径与原版战利品一致：打过任意一节即算
+            int identity = KikasaBossGate.IdentityTypeOf(npc);
+            if (!HimayoGiftNarrativeTracker.IsGiftBoss(identity)) {
+                return;
+            }
+            for (int i = 0; i < Main.maxPlayers; i++) {
+                if (!npc.playerInteraction[i] || Main.player[i]?.active != true) {
+                    continue;
+                }
+                HimayoGiftNet.Deliver(i, identity);
+            }
+        }
+    }
 
-            HimayoGiftNarrativeTracker.NotifyBossDefeated(npc.type);
+    /// <summary>
+    /// 礼物击杀的投递信道：服务器把归并后的首领身份单播给参战客户端，
+    /// 各端在本机入队叙事（队列与演出全程本地，数据契约不变）
+    /// </summary>
+    internal sealed class HimayoGiftNet : CWRNetChannel
+    {
+        //会话内已投递抑制：蠕虫逐节死亡逐节触发，同人同首领只投递一次（镜像试炼的 Record 抑制）
+        private static readonly HashSet<long> delivered = [];
+
+        internal static void ClearDelivered() => delivered.Clear();
+
+        internal static void Deliver(int playerIndex, int bossId) {
+            if (playerIndex < 0 || playerIndex >= Main.maxPlayers
+                || !delivered.Add(((long)playerIndex << 32) | (uint)bossId)) {
+                return;
+            }
+            if (Main.netMode != NetmodeID.Server) {
+                //单机：本地直接入队
+                HimayoGiftNarrativeTracker.NotifyBossDefeated(bossId);
+                return;
+            }
+            if (!Main.dedServ && playerIndex == Main.myPlayer) {
+                //听服房主自己：本地入队，不发包
+                HimayoGiftNarrativeTracker.NotifyBossDefeated(bossId);
+                return;
+            }
+            ModPacket packet = CWRNetWork.GetPacket<HimayoGiftNet>();
+            packet.Write(bossId);
+            packet.Send(toClient: playerIndex);
+        }
+
+        public override void Receive(BinaryReader reader, int whoAmI) {
+            //先读净载荷再判端，保流对齐
+            int bossId = reader.ReadInt32();
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                return;
+            }
+            HimayoGiftNarrativeTracker.NotifyBossDefeated(bossId);
         }
     }
 }

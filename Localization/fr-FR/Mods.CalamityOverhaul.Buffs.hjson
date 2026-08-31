@@ -159,8 +159,8 @@ OniNumbDebuff: {
 }
 
 ScapeAfterburn: {
-	// DisplayName: Scape Afterburn
-	// Description: Mods.CalamityOverhaul.Buffs.ScapeAfterburn.Description
+	// DisplayName: Scapegoat Afterburn
+	// Description: Severe aftershocks from death evasion; movement speed reduced by 28%
 }
 
 GhostGripDebuff: {
@@ -169,13 +169,13 @@ GhostGripDebuff: {
 }
 
 OniPaperBrandDebuff: {
-	// DisplayName: Oni Paper Brand Debuff
-	// Description: Mods.CalamityOverhaul.Buffs.OniPaperBrandDebuff.Description
+	// DisplayName: Effigy Wound
+	// Description: Backlash from the paper effigy being struck; takes increased damage from Onikiri slashes
 }
 
 FuHongBlessBuff: {
-	// DisplayName: 虹桥眷护
-	// Description: 虹下移速 +10%，召唤伤害 +10%
+	// DisplayName: Rainbow Bridge Grace
+	// Description: Under the rainbow bridge: +10% movement speed, +10% summon damage
 }
 
 IndustrialShieldBuff: {

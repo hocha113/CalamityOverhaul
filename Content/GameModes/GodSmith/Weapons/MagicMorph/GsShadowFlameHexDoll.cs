@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -46,10 +47,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
             if (player.itemAnimationMax <= 0) {
                 return;
             }
-            //举偶：出手瞬间咒偶举高 4px 微斜，随动画进度垂回（确定性输入，各端一致）
-            float progress = player.itemAnimation / (float)player.itemAnimationMax;
+            //举偶：出手瞬间咒偶举高 4px 微斜，随动画进度垂回（绝对剖面 0.14·p，差分施加防累积漂移；本偶动画三发，中途 snap 由差分清账）
+            float n = player.itemAnimationMax;
+            float progress = player.itemAnimation / n;
             player.itemLocation += new Vector2(-player.direction * 1f, -4f) * progress;
-            player.itemRotation -= player.direction * 0.14f * progress;
+            GsMagicKickMath.ApplyKickDiff(player, 0.14f * progress, 0.14f * ((player.itemAnimation + 1) / n));
         }
 
         public override void GsUseAnimation(Item item, Player player) {

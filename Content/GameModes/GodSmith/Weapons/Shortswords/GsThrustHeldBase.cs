@@ -128,8 +128,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         protected virtual float TipGreedRadius => 24f;
         /// <summary>贴身救济半径：贴脸也要能刺中</summary>
         protected virtual float PointBlankRadius => 34f;
-        /// <summary>刺出 ease-out 幂，越大首帧越暴力</summary>
-        protected virtual float ThrustEasePower => 5.5f;
+        /// <summary>刺出 ease-out 幂。值域 2.5~3.5：配合持距限速保证帧间矛体重叠，禁回 4.5~8 旧值域（脱手根因）</summary>
+        protected virtual float ThrustEasePower => 2.7f;
         /// <summary>刺出过冲比例，顶点先冲过头再回坐（硬停顿感）</summary>
         protected virtual float OvershootRatio => 1.035f;
         /// <summary>贴图对角线上刃身占比（换算绘制缩放）</summary>
@@ -140,6 +140,33 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         protected virtual float LeanAmp => 0.03f;
         /// <summary>碰撞箱边长</summary>
         protected virtual int HitboxSize => 36;
+        /// <summary>杆段桥实体色（真 alpha）：驻相时矛尾与手之间那截可见杆体。默认自亮缘色压暗合成，有 Deep 色板的武器覆写</summary>
+        protected virtual Color ShaftColor {
+            get {
+                Color c = Color.Lerp(EdgeColor, Color.Black, 0.62f);
+                c.A = 235;
+                return c;
+            }
+        }
+
+        //==================== 横扫第二时间线（可选）：参数默认值即薙刀现值 ====================
+
+        /// <summary>本拍是否走横扫时间线（薙刀等横扫变式覆写；默认全拍直刺）</summary>
+        protected virtual bool SweepBeatActive => false;
+        /// <summary>横扫举势帧</summary>
+        protected virtual float SweepRaiseFrames => 5f;
+        /// <summary>横扫扫掠帧</summary>
+        protected virtual float SweepSlashFrames => 5f;
+        /// <summary>横扫收势帧</summary>
+        protected virtual float SweepRecoverFrames => 9f;
+        /// <summary>举势后仰弧度</summary>
+        protected virtual float SweepRaiseBack => 1.30f;
+        /// <summary>扫过基准角后的跟随弧度</summary>
+        protected virtual float SweepFollow => 1.15f;
+        /// <summary>手→扫斩刃尖距离，与直刺持距量级一致</summary>
+        protected virtual float SweepReach => BladeLength + 16f;
+        /// <summary>横扫拍命中顿帧数（真实帧）</summary>
+        protected virtual int SweepHitstopFrames => 2;
 
         //==================== 蓄力（可选） ====================
 
@@ -181,6 +208,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         private float fanFade = 1f;
         private float bodyLean;
         private bool bodyLeanApplied;
+        /// <summary>本真实帧持距步进绝对值（残影运动调制用：静止不画残影）</summary>
+        private float lastGripStep;
+        /// <summary>横扫时间线实例，走横扫拍时首帧创建</summary>
+        protected GsSweepBeatModule sweepBeat;
         private readonly HashSet<int> hitNPCs = [];
 
         protected int ComboStage => (int)Projectile.ai[0];
@@ -236,6 +267,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
             if (speedMul <= 0f) {
                 speedMul = 1f;
             }
+            //持距从静息值起步：积分器首帧不跳变
+            holdout = RestHoldout;
             BaseDamage = Projectile.damage;
             OnInit();
         }
@@ -252,6 +285,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
                 return;
             }
             Projectile.timeLeft = 90;
+
+            //横扫拍走第二时间线，直刺相位机整段旁路
+            if (SweepBeatActive) {
+                sweepBeat ??= new GsSweepBeatModule(this);
+                sweepBeat.Tick();
+                return;
+            }
 
             //命中顿帧：时间线冻结，姿态一起停
             if (hitstopTimer > 0) {
@@ -301,12 +341,22 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         /// <summary>放刺瞬间（写 reachChargeMul、按 ChargeT 改 Projectile.damage）</summary>
         protected virtual void OnChargeRelease() { }
 
-        /// <summary>相位机：出（回拉→爆发过冲）- 驻（定格回坐）- 回（温柔收刀）</summary>
+        /// <summary>持距下限：矛根最多回到手根后 RestHoldout−2，不穿背（深回拉感改由臂姿泵动与体态后倾表达）</summary>
+        protected float HoldoutFloor => -(RestHoldout - 2f);
+
+        /// <summary>单真实帧持距步进上限：帧间矛体重叠 ≥45% 且刺出首帧行程占比 ≤45%（对照原版矛峰值 11.8px/帧的连续行进；攻速加成不放大单帧位移）</summary>
+        protected float MaxGripStep => MathF.Min(BladeLength * 0.55f,
+            (PullbackDist + ReachNow * OvershootRatio) * 0.45f);
+
+        /// <summary>相位机：出（回拉→爆发过冲）- 驻（定格回坐）- 回（温柔收刀）。<br/>
+        /// 相位公式只产出目标值，实际持距走受限积分器——每真实帧步进封顶 MaxGripStep、下限 HoldoutFloor，
+        /// 任何相位切换与攻速缩放下矛体都帧帧连续（脱手三症的数学根治）</summary>
         private void UpdateHoldout(int phase) {
+            float target;
             switch (phase) {
                 case PhaseWindup: {
                     float t = MathHelper.Clamp(elapsed / WindupFrames, 0f, 1f);
-                    holdout = MathHelper.Lerp(RestHoldout, -PullbackDist, MathF.Sin(t * MathHelper.PiOver2));
+                    target = MathHelper.Lerp(RestHoldout, -PullbackDist, MathF.Sin(t * MathHelper.PiOver2));
                     break;
                 }
                 case PhaseThrust: {
@@ -317,7 +367,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
                     }
                     float t = (elapsed - WindupFrames) / ThrustFrames;
                     float eased = 1f - MathF.Pow(1f - MathHelper.Clamp(t, 0f, 1f), ThrustEasePower);
-                    holdout = MathHelper.Lerp(-PullbackDist, ReachNow * OvershootRatio, eased);
+                    target = MathHelper.Lerp(-PullbackDist, ReachNow * OvershootRatio, eased);
                     break;
                 }
                 case PhaseDwell: {
@@ -328,16 +378,20 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
                     //过冲回坐后硬停：静谷衬爆发
                     float t = (elapsed - WindupFrames - ThrustFrames) / DwellFrames;
                     float settle = MathHelper.Clamp(t * 2.5f, 0f, 1f);
-                    holdout = MathHelper.Lerp(ReachNow * OvershootRatio, ReachNow, settle);
+                    target = MathHelper.Lerp(ReachNow * OvershootRatio, ReachNow, settle);
                     break;
                 }
                 default: {
                     float t = MathHelper.Clamp((elapsed - WindupFrames - ThrustFrames - DwellFrames) / RecoverFrames, 0f, 1f);
-                    holdout = MathHelper.Lerp(ReachNow, RestHoldout, t * t * (3f - 2f * t));
+                    target = MathHelper.Lerp(ReachNow, RestHoldout, t * t * (3f - 2f * t));
                     fanFade = MathHelper.Clamp(1f - t * 1.4f, 0f, 1f);
                     break;
                 }
             }
+            target = MathF.Max(target, HoldoutFloor);
+            float step = MathHelper.Clamp(target - holdout, -MaxGripStep, MaxGripStep);
+            holdout += step;
+            lastGripStep = MathF.Abs(step);
         }
 
         /// <summary>刺出爆发帧（音效/爆发粒子/体术前压）。默认一记快刺音 + 两粒方向火花</summary>
@@ -362,15 +416,33 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         /// <summary>每帧尾钩：武器自有粒子/驻场逻辑（粒子守 !VaultUtils.isServer）</summary>
         protected virtual void OnTick(int phase) { }
 
-        /// <summary>持械姿态：臂姿 + 体态倾斜（坐骑/冲刺让位）</summary>
+        /// <summary>臂姿伸展量随相位泵动：蓄势收臂、爆发驻相全伸、收相放松——
+        /// 身体参与发力（原版 useStyle 12 的伸缩泵动语言，Player.cs L46954-46979）</summary>
+        private Player.CompositeArmStretchAmount ArmStretchFor(int phase) {
+            if (phase == PhaseWindup) {
+                float t = MathHelper.Clamp(elapsed / WindupFrames, 0f, 1f);
+                if (t < 0.35f) {
+                    return Player.CompositeArmStretchAmount.Full;
+                }
+                return t < 0.7f
+                    ? Player.CompositeArmStretchAmount.ThreeQuarters
+                    : Player.CompositeArmStretchAmount.Quarter;
+            }
+            return phase == PhaseRecover
+                ? Player.CompositeArmStretchAmount.ThreeQuarters
+                : Player.CompositeArmStretchAmount.Full;
+        }
+
+        /// <summary>持械姿态：臂姿泵动 + 体态倾斜（坐骑/冲刺让位）。
+        /// 臂角按 InnoVault 正典映射补 gravDir（世界向 = armRot + π/2·gravDir），倒重力不再反指</summary>
         private void UpdatePose(int phase) {
             Owner.ChangeDir(facingDir);
             Owner.heldProj = Projectile.whoAmI;
             Owner.itemTime = Owner.itemAnimation = 2;
             Owner.itemRotation = (stabUnit * Owner.direction).ToRotation();
 
-            float armRot = stabUnit.ToRotation() - MathHelper.PiOver2;
-            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRot);
+            float armRot = stabUnit.ToRotation() - MathHelper.PiOver2 * SafeGravDir;
+            Owner.SetCompositeArmFront(true, ArmStretchFor(phase), armRot);
             if (TwoHanded) {
                 Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters, armRot - facingDir * 0.30f);
             }
@@ -409,18 +481,28 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
                 Owner.fullRotation = 0f;
                 bodyLeanApplied = false;
             }
+            if (sweepBeat is { leanApplied: true } && Owner.active) {
+                Owner.fullRotation = 0f;
+                sweepBeat.leanApplied = false;
+            }
         }
 
         //==================== 判定 ====================
 
-        /// <summary>伤害窗：爆发刺出 + 驻相（驻相尖端仍然致命）</summary>
+        /// <summary>伤害窗：爆发刺出 + 驻相（驻相尖端仍然致命）；横扫拍走扫掠窗</summary>
         public override bool? CanDamage() {
+            if (SweepBeatActive) {
+                return sweepBeat is { damageActive: true } ? null : false;
+            }
             float t = elapsed;
             return t >= WindupFrames && t <= WindupFrames + ThrustFrames + DwellFrames + 1f ? null : false;
         }
 
-        /// <summary>贪婪判定：刺线 + 刺尖圆 + 贴身救济</summary>
+        /// <summary>贪婪判定：刺线 + 刺尖圆 + 贴身救济；横扫拍走弧线逐段采样</summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
+            if (SweepBeatActive) {
+                return sweepBeat != null && sweepBeat.Colliding(targetHitbox);
+            }
             if (CurrentPhase is not PhaseThrust and not PhaseDwell) {
                 return false;
             }
@@ -442,6 +524,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         }
 
         public override void CutTiles() {
+            if (SweepBeatActive) {
+                sweepBeat?.CutTiles();
+                return;
+            }
             if (CurrentPhase is not PhaseThrust and not PhaseDwell) {
                 return;
             }
@@ -468,12 +554,18 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
                 PlayerLoader.OnHitNPC(Owner, target, hit, damageDone);
             }
 
-            //顿帧一刺只吃一次，扣回额度记账
+            //顿帧一刺只吃一次，扣回额度记账；横扫拍冻结自己的扫掠时间线
             if (!hitstopApplied) {
                 hitstopApplied = true;
-                int stop = HitstopFrames;
-                hitstopTimer = stop;
-                hitstopSpent = stop;
+                if (SweepBeatActive && sweepBeat != null) {
+                    sweepBeat.hitstop = SweepHitstopFrames;
+                    sweepBeat.hitstopSpent = SweepHitstopFrames;
+                }
+                else {
+                    int stop = HitstopFrames;
+                    hitstopTimer = stop;
+                    hitstopSpent = stop;
+                }
             }
 
             OnHitTarget(target, hit, damageDone, firstOnTarget);
@@ -508,16 +600,23 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
             }
         }
 
-        //==================== 绘制（原版贴图垫底 + 自绘速度线/残影/辉光层） ====================
+        //==================== 绘制（原版贴图垫底 + 杆段桥/残影/辉光层） ====================
 
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
+            if (SweepBeatActive) {
+                DrawSweepSet(sb, lightColor);
+                return false;
+            }
             DrawUnderBlade(sb);
-            DrawThrustStreak(sb);
+            DrawShaftBridge(sb);
             DrawBladeSet(sb, lightColor);
             DrawOverBlade(sb);
             return false;
         }
+
+        /// <summary>横扫拍绘制（横扫消费者自绘涂抹与刀身）</summary>
+        protected virtual void DrawSweepSet(SpriteBatch sb, Color lightColor) { }
 
         /// <summary>刀身之下的武器自有层（驻场焰/领域等）</summary>
         protected virtual void DrawUnderBlade(SpriteBatch sb) { }
@@ -525,36 +624,57 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         /// <summary>最上层的武器自有层</summary>
         protected virtual void DrawOverBlade(SpriteBatch sb) { }
 
-        /// <summary>突刺速度线：藏行程露停顿——行程由拉丝烟线代言（加色 A=0，无随机）</summary>
-        private void DrawThrustStreak(SpriteBatch sb) {
-            int phase = CurrentPhase;
-            if (phase is not PhaseThrust and not PhaseDwell || fanFade <= 0.02f) {
+        /// <summary>杆段桥：绘手端与矛尾角之间画一截真 alpha 杆体（实体带 + 加色缘线）——
+        /// 驻相悬远的矛与手之间永远有看得见的连接（替换旧加色 A=0 隐形速度线）。
+        /// 手锚取原版正典 Main.GetPlayerArmPosition（含 bodyFrame/direction/gravDir/体态旋转全套）；
+        /// 驻相期不衰减，收相随持距回落自然缩短</summary>
+        private void DrawShaftBridge(SpriteBatch sb) {
+            Texture2D shaft = CWRAsset.Extra_98?.Value;
+            if (shaft == null || fanFade <= 0.02f) {
                 return;
             }
+            Main.instance.LoadItem(TargetItemType);
+            Texture2D tex = TextureAssets.Item[TargetItemType].Value;
+            float scale = BladeLength / MathF.Max(tex.Size().Length() * BladeTexFill, 1f);
+            //矛尾角 = 绘制中心沿刺向后退半个贴图对角长
+            Vector2 butt = Hand + stabUnit * (holdout + BladeLength * 0.5f - tex.Size().Length() * scale * 0.5f);
+            Vector2 handTip = Main.GetPlayerArmPosition(Projectile);
+            Vector2 span = butt - handTip;
+            float len = span.Length();
+            //矛尾贴手/回拉到手后时不画桥（桥只补前方悬空，不往身后延伸）
+            if (len <= 6f || Vector2.Dot(span, stabUnit) <= 0f) {
+                return;
+            }
+            float alpha = 0.85f * fanFade;
+            float rot = span.ToRotation();
+            Vector2 mid = (handTip + butt) * 0.5f - Main.screenPosition;
+            Vector2 shaftSize = shaft.Size();
+            //真 alpha 实体杆芯（柔斑贴图两端自然羽化，长度略放补偿）
+            sb.Draw(shaft, mid, null, ShaftColor * alpha, rot, shaftSize / 2f,
+                new Vector2(len * 1.15f / shaftSize.X, 9f / shaftSize.Y), SpriteEffects.None, 0f);
+            //加色缘线提亮杆脊
             Texture2D streak = CWRAsset.LightShot?.Value;
-            if (streak == null) {
-                return;
+            if (streak != null) {
+                Color edge = EdgeColor with { A = 0 } * (alpha * 0.35f);
+                sb.Draw(streak, mid, null, edge, rot, streak.Size() / 2f,
+                    new Vector2(len / streak.Size().X, 0.06f), SpriteEffects.None, 0f);
             }
-            //速度线从回拉点画到当前刀根，驻相期快速蚀散
-            float dwellT = phase == PhaseDwell
-                ? (elapsed - WindupFrames - ThrustFrames) / MathF.Max(DwellFrames, 1f) : 0f;
-            float alpha = (0.55f - dwellT * 0.45f) * fanFade;
-            if (alpha <= 0.02f) {
-                return;
+        }
+
+        /// <summary>贴图朝向与翻转，含倒重力竖翻（对照原版 DrawProj_Spear 的 gravDir 分支语义，Main.cs L33382-33395）。
+        /// 物品贴图刃尖右上 = 贴图内容轴 −π/4：FlipH 后内容轴 5π/4、FlipV 后 +π/4、双翻 3π/4，补角据此反推</summary>
+        protected void GetBladeOrientation(out float rotOffset, out SpriteEffects effect) {
+            bool flipH = facingDir < 0;
+            if (SafeGravDir >= 0) {
+                rotOffset = flipH ? MathHelper.PiOver4 * 3f : MathHelper.PiOver4;
+                effect = flipH ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             }
-            float len = holdout + PullbackDist + BladeLength * 0.8f;
-            if (len <= 8f) {
-                return;
+            else {
+                rotOffset = flipH ? -MathHelper.PiOver4 * 3f : -MathHelper.PiOver4;
+                effect = flipH
+                    ? SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically
+                    : SpriteEffects.FlipVertically;
             }
-            Vector2 mid = Hand + stabUnit * (len * 0.5f - PullbackDist) - Main.screenPosition;
-            float rot = stabUnit.ToRotation();
-            Vector2 texSize = streak.Size();
-            Color c1 = EdgeColor with { A = 0 } * alpha;
-            sb.Draw(streak, mid, null, c1, rot, texSize / 2f,
-                new Vector2(len / texSize.X, 0.20f), SpriteEffects.None, 0f);
-            Color c2 = CoreColor with { A = 0 } * (alpha * 0.75f);
-            sb.Draw(streak, mid, null, c2, rot, texSize / 2f,
-                new Vector2(len / texSize.X * 0.9f, 0.10f), SpriteEffects.None, 0f);
         }
 
         /// <summary>残影 + 暗影垫底 + 本体 + 辉光（辉光强度 = 闪帧 + 蓄力 + 子类增量）</summary>
@@ -564,25 +684,21 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
             Vector2 origin = tex.Size() / 2f;
             float scale = BladeLength / MathF.Max(tex.Size().Length() * BladeTexFill, 1f);
 
-            //贴图刃尖指向右上：沿刺向旋转；朝左翻转再补角
-            float rot = stabUnit.ToRotation() + MathHelper.PiOver4;
-            SpriteEffects effect = SpriteEffects.None;
-            if (facingDir < 0) {
-                rot += MathHelper.PiOver2;
-                effect = SpriteEffects.FlipHorizontally;
-            }
+            GetBladeOrientation(out float rotOffset, out SpriteEffects effect);
+            float rot = stabUnit.ToRotation() + rotOffset;
 
             Vector2 hand = Hand;
             int phase = CurrentPhase;
 
-            //刺出/驻相前段的持距残影，最近的最亮
-            if (phase is PhaseThrust or PhaseDwell && fanFade > 0.05f) {
+            //持距残影只随运动出现：本帧步进越大越亮，驻相静止即隐（去频闪/去静止叠影）
+            float motionT = MathHelper.Clamp(lastGripStep / MathF.Max(MaxGripStep * 0.3f, 1f), 0f, 1f);
+            if (phase is PhaseThrust or PhaseDwell && fanFade > 0.05f && motionT > 0.05f) {
                 for (int g = 1; g <= 3; g++) {
-                    float ghostHold = holdout - g * (holdout + PullbackDist) * 0.22f;
-                    if (ghostHold <= -PullbackDist) {
+                    float ghostHold = holdout - g * lastGripStep;
+                    if (ghostHold <= HoldoutFloor) {
                         continue;
                     }
-                    float ghostAlpha = g switch { 1 => 0.30f, 2 => 0.16f, _ => 0.07f } * fanFade;
+                    float ghostAlpha = g switch { 1 => 0.30f, 2 => 0.16f, _ => 0.07f } * fanFade * motionT;
                     Color ghost = EdgeColor with { A = 0 } * ghostAlpha;
                     Vector2 gPos = hand + stabUnit * (ghostHold + BladeLength * 0.5f) - Main.screenPosition;
                     sb.Draw(tex, gPos, null, ghost, rot, origin, scale, effect, 0f);
@@ -608,5 +724,205 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
 
         /// <summary>子类附加辉光强度（节奏层数/资源状态可视化）</summary>
         protected virtual float ExtraGlowStrength() => 0f;
+
+        /// <summary>横扫拍每帧尾钩（首帧音效/扫掠粒子，粒子守 !VaultUtils.isServer）</summary>
+        protected virtual void OnSweepTick(int sweepPhase) { }
+
+        /// <summary>
+        /// 横扫第二时间线：举-扫-收角度扫掠 + 弧线逐段采样判定 + 双手持杆姿态 + 顿帧记账。<br/>
+        /// 自薙刀横扫旁路下沉（行为保持原样），挂族基类供横扫变式复用；
+        /// 扫向符号取 ai[1]（WeaponParam）符号 × 朝向
+        /// </summary>
+        protected sealed class GsSweepBeatModule
+        {
+            private readonly GsThrustHeldBase host;
+
+            internal float timer;
+            internal float baseAngle;
+            internal float swingDir = 1f;
+            internal float mainAngle;
+            internal float lastAngle;
+            internal float mainReach;
+            internal float slashProgress;
+            internal float fade = 1f;
+            internal bool damageActive;
+            internal int hitstop;
+            internal float hitstopSpent;
+            internal float lean;
+            internal bool leanApplied;
+            private bool inited;
+
+            internal GsSweepBeatModule(GsThrustHeldBase host) => this.host = host;
+
+            internal int Phase {
+                get {
+                    if (timer < host.SweepRaiseFrames) {
+                        return 0;
+                    }
+                    return timer < host.SweepRaiseFrames + host.SweepSlashFrames ? 1 : 2;
+                }
+            }
+
+            private float ArcStart => baseAngle - swingDir * host.SweepRaiseBack;
+            private float ArcEnd => baseAngle + swingDir * host.SweepFollow;
+
+            /// <summary>扫掠行程曲线：爆发过冲 4.5% 再回坐（收-爆-停）</summary>
+            private static float SweepCurve(float p) {
+                const float burstEnd = 0.52f;
+                const float overshoot = 1.045f;
+                static float Smooth(float x) {
+                    x = MathHelper.Clamp(x, 0f, 1f);
+                    return x * x * (3f - 2f * x);
+                }
+                if (p < burstEnd) {
+                    return overshoot * Smooth(p / burstEnd);
+                }
+                return MathHelper.Lerp(overshoot, 1f, Smooth((p - burstEnd) / (1f - burstEnd)));
+            }
+
+            internal void Tick() {
+                if (!inited) {
+                    inited = true;
+                    baseAngle = host.stabUnit.ToRotation();
+                    swingDir = (host.WeaponParam >= 0f ? 1f : -1f) * host.facingDir;
+                }
+
+                //命中顿帧：扫掠时间线冻结
+                if (hitstop > 0) {
+                    hitstop--;
+                }
+                else {
+                    timer += host.speedMul;
+                }
+
+                lastAngle = mainAngle;
+                int phase = Phase;
+                UpdateTransform(phase);
+                damageActive = phase == 1 && slashProgress <= 0.92f
+                    && MathF.Abs(mainAngle - lastAngle) > 0.004f;
+                UpdatePose(phase);
+                host.OnSweepTick(phase);
+
+                Lighting.AddLight(host.Hand + mainAngle.ToRotationVector2() * (host.SweepReach * 0.7f),
+                    host.CoreColor.ToVector3() * (0.32f * fade));
+
+                //顿帧从收势尾巴等量扣回
+                float total = host.SweepRaiseFrames + host.SweepSlashFrames + host.SweepRecoverFrames;
+                float effectiveTotal = MathF.Max(host.SweepRaiseFrames + host.SweepSlashFrames + 2f,
+                    total - hitstopSpent * host.speedMul);
+                if (timer >= effectiveTotal && host.Projectile.IsOwnedByLocalPlayer()) {
+                    host.Projectile.Kill();
+                }
+            }
+
+            private void UpdateTransform(int phase) {
+                float arcStart = ArcStart;
+                float heldAngle = arcStart - swingDir * 0.06f;
+                float reachMax = host.SweepReach;
+                switch (phase) {
+                    case 0: {
+                        float p = MathHelper.Clamp(timer / host.SweepRaiseFrames, 0f, 1f);
+                        float eased = 1f - MathF.Pow(1f - p, 3f);
+                        float liftFrom = arcStart + swingDir * host.SweepRaiseBack * 0.62f;
+                        mainAngle = MathHelper.Lerp(liftFrom, heldAngle, eased);
+                        mainReach = reachMax * MathHelper.Lerp(0.6f, 0.94f, eased);
+                        slashProgress = 0f;
+                        break;
+                    }
+                    case 1: {
+                        float p = MathHelper.Clamp((timer - host.SweepRaiseFrames) / host.SweepSlashFrames, 0f, 1f);
+                        slashProgress = p;
+                        mainAngle = MathHelper.Lerp(heldAngle, ArcEnd, SweepCurve(p));
+                        mainReach = reachMax * (0.96f + 0.04f * MathF.Sin(MathHelper.Clamp(p * 1.8f, 0f, 1f) * MathHelper.Pi));
+                        break;
+                    }
+                    default: {
+                        float q = MathHelper.Clamp((timer - host.SweepRaiseFrames - host.SweepSlashFrames) / host.SweepRecoverFrames, 0f, 1f);
+                        float settle = 1f - (1f - Math.Min(1f, q * 2.2f)) * (1f - Math.Min(1f, q * 2.2f));
+                        mainAngle = ArcEnd + swingDir * 0.08f * (1f - settle);
+                        mainReach = reachMax * MathHelper.Lerp(0.96f, 0.8f, q * q);
+                        slashProgress = 1f;
+                        fade = MathHelper.Clamp(1f - q * 1.3f, 0f, 1f);
+                        break;
+                    }
+                }
+            }
+
+            /// <summary>横扫姿态：双手持杆随扫角走，体态举势后仰扫出前甩；臂角同补 gravDir 正典映射</summary>
+            private void UpdatePose(int phase) {
+                Player owner = host.Owner;
+                owner.ChangeDir(host.facingDir);
+                owner.heldProj = host.Projectile.whoAmI;
+                owner.itemTime = owner.itemAnimation = 2;
+                owner.itemRotation = (mainAngle.ToRotationVector2() * owner.direction).ToRotation();
+
+                float armRot = mainAngle - MathHelper.PiOver2 * host.SafeGravDir;
+                owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRot);
+                owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters, armRot - host.facingDir * 0.35f);
+
+                host.Projectile.Center = host.Hand + mainAngle.ToRotationVector2() * (mainReach * 0.55f);
+                host.Projectile.rotation = mainAngle;
+
+                if (hitstop > 0) {
+                    return;
+                }
+                (float target, float rate) = phase switch {
+                    0 => (-host.facingDir * 0.05f, 0.25f),
+                    1 => (host.facingDir * 0.07f, 0.65f),
+                    _ => (0f, 0.16f),
+                };
+                lean = MathHelper.Lerp(lean, target, rate);
+
+                //体态倾斜钉脚底，坐骑/冲刺旋转让位（镜像直刺规矩）
+                CWRPlayer modPlayer = owner.CWR();
+                if (owner.mount.Active || (modPlayer != null && modPlayer.IsRotatingDuringDash)) {
+                    leanApplied = false;
+                    return;
+                }
+                owner.fullRotation = lean * owner.gravDir;
+                owner.fullRotationOrigin = new Vector2(owner.width * 0.5f, owner.gravDir >= 0f ? owner.height : 0f);
+                leanApplied = true;
+            }
+
+            /// <summary>扫拍贪婪判定：本帧扫过的角度区间逐段采样，贴身段单独兜一次</summary>
+            internal bool Colliding(Rectangle targetHitbox) {
+                if (!damageActive) {
+                    return false;
+                }
+                Rectangle greedyBox = targetHitbox;
+                greedyBox.Inflate(8, 8);
+                Vector2 hand = host.Hand;
+                if (greedyBox.Distance(hand) <= 40f) {
+                    return true;
+                }
+                float delta = mainAngle - lastAngle;
+                float reach = mainReach * 1.04f + 8f;
+                int steps = Math.Clamp((int)MathF.Ceiling(MathF.Abs(delta) * reach / 30f), 1, 16);
+                float collisionPoint = 0f;
+                for (int i = 0; i <= steps; i++) {
+                    float ang = MathHelper.Lerp(lastAngle, mainAngle, i / (float)steps);
+                    Vector2 tip = hand + ang.ToRotationVector2() * reach;
+                    if (Collision.CheckAABBvLineCollision(greedyBox.TopLeft(), greedyBox.Size(),
+                        hand, tip, 38f, ref collisionPoint)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            internal void CutTiles() {
+                if (!damageActive) {
+                    return;
+                }
+                DelegateMethods.tilecut_0 = Terraria.Enums.TileCuttingContext.AttackProjectile;
+                Vector2 hand = host.Hand;
+                const int samples = 2;
+                for (int i = 0; i <= samples; i++) {
+                    float ang = MathHelper.Lerp(lastAngle, mainAngle, i / (float)samples);
+                    Vector2 tip = hand + ang.ToRotationVector2() * (mainReach * 1.02f);
+                    Utils.PlotTileLine(hand, tip, 32f, DelegateMethods.CutTiles);
+                }
+            }
+        }
     }
 }

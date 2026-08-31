@@ -33,6 +33,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
         protected override float TickDamageCoef => 0.5f;
         protected override float MuzzleOffset => 26f;
 
+        /// <summary>炮体沿瞄准，炮口钉在束根（原版由宿主 460 自绘，物品贴图口朝右）</summary>
+        protected override GsConduitBodyPose BodyPose => GsConduitBodyPose.MuzzleAimed;
+
         /// <summary>发射节拍：白热 14t 弧束脉冲 / 低热 19t 电浆弹</summary>
         private int CycleTicks => HeatStageSync >= 1 ? 14 : 19;
 
@@ -112,6 +115,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            //先画炮体，脉冲束与炮口充能核压在其上
+            DrawWeaponBody();
             SpriteBatch sb = Main.spriteBatch;
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 muzzle = Projectile.Center - Main.screenPosition;

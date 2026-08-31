@@ -43,13 +43,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         internal static readonly Color PlatCold = new(150, 182, 242);
 
         protected override float WindupFrames => 4f;
-        protected override float ThrustFrames => 3f;//刺出本身极快
+        protected override float ThrustFrames => 4f;//刺出仍是族内最锐
         protected override float DwellFrames => 3f;
         protected override float RecoverFrames => 7f;
         protected override float PullbackDist => 13f;
         protected override float StabReach => 38f;
         protected override float BladeLength => 46f;
-        protected override float ThrustEasePower => 7f;//首帧最暴力，快到把光甩在身后
+        protected override float ThrustEasePower => 3f;//短剑值域上限，「光留原处」的锐度身份
         protected override int HitstopFrames => 2;
         protected override float LeanAmp => 0.042f;
         protected override float ThrustPitch => -0.28f;//铂金厚重低音

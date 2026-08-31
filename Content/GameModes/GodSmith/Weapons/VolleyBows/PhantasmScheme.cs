@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.ChargeBows;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.VolleyBows.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
@@ -182,8 +183,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.VolleyBows
 
         private int boundBowType;
         private GsPhantasm scheme;
+        //弦几何缓存（TryBind 时按弦锚库折算，同构 GsChargeBowHeld）
+        private float holdDist = 13f;
+        private float stringInset = 5f;
 
-        private Vector2 BowCenter => Owner.GetPlayerStabilityCenter() + ToMouseA.ToRotationVector2() * 13f;
+        private Vector2 BowCenter => Owner.GetPlayerStabilityCenter() + ToMouseA.ToRotationVector2() * holdDist;
 
         private float Frenzy => MathHelper.Clamp(channelFrames / 160f, 0f, 1f);
 
@@ -195,6 +199,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.VolleyBows
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 6;
+            //heldProj 只走玩家第 27 层内联绘制（PlayerDrawLayers 无 hide 检查），
+            //不设 hide 会在 Main.DrawProjectiles 再画一遍成加色层 2× 亮度
+            Projectile.hide = true;
         }
 
         public override bool ShouldUpdatePosition() => false;
@@ -215,6 +222,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.VolleyBows
             }
             scheme = ps;
             boundBowType = item.type;
+            stringInset = GsBowStringLib.StringInset(item.type);
+            holdDist = GsBowStringLib.HoldDistance(item.type);
             return true;
         }
 
@@ -407,9 +416,18 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.VolleyBows
         /// <summary>拨弦进度 0~1（每轮循环抽满一次）</summary>
         private float PluckProgress() => MathHelper.Clamp(pluckTimer / (float)Math.Max(1, pluckPeriod), 0f, 1f);
 
-        /// <summary>搭箭点：弦被快速抽放，狂乱越高抽幅越大</summary>
-        private Vector2 GetNockWorldPos()
-            => BowCenter - ToMouseA.ToRotationVector2() * (3f + PluckProgress() * (6f + 2f * (int)Rank));
+        /// <summary>
+        /// 搭箭点：静止弦位（实测弦锚沿轴投影）随拨弦循环抽向前手锚，狂乱越高抽得越深，
+        /// 封顶不越手（同构 GsChargeBowHeld 的弦手接触修复；手锚数学见其注释）
+        /// </summary>
+        private Vector2 GetNockWorldPos() {
+            Vector2 aim = ToMouseA.ToRotationVector2();
+            float stringRest = holdDist - stringInset;
+            float handAlong = 4f + Vector2.Dot(new Vector2(-4f * Owner.direction, -2f * SafeGravDir), aim);
+            float depth = MathHelper.Clamp(PluckProgress() * (0.7f + 0.1f * (int)Rank), 0f, 1f);
+            float nockAlong = MathHelper.Lerp(stringRest, MathF.Min(handAlong, stringRest), depth);
+            return Owner.GetPlayerStabilityCenter() + aim * nockAlong;
+        }
 
         //==================== 绘制 ====================
 
@@ -456,20 +474,35 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.VolleyBows
                     Projectile.rotation - lag * DirSign, bowTex.Size() / 2f, 1f, effect);
             }
 
-            //弓弦：两端锚点连到搭箭点（随拨弦循环快速抽放）
-            Vector2 perp = (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2();
-            float halfString = bowTex.Height * 0.36f;
-            Vector2 top = drawCenter + perp * halfString;
-            Vector2 bottom = drawCenter - perp * halfString;
+            //弓弦：实测锚两段直线连到搭箭点（随拨弦循环快速抽放）；
+            //主弓体每帧抠掉贴图静态弦只留动态弦（消双弦伪影），残弓层保留原弦作幻影
+            bool hasAnchor = GsBowStringLib.TryGet(boundBowType, out var anchor);
+            Vector2 top, bottom;
+            if (hasAnchor) {
+                top = GsBowStringLib.TexPosToWorld(drawCenter, Projectile.rotation, DirSign, bowTex.Size(), anchor.Top);
+                bottom = GsBowStringLib.TexPosToWorld(drawCenter, Projectile.rotation, DirSign, bowTex.Size(), anchor.Bottom);
+            }
+            else {
+                //未录锚兜底：中轴近似（不抠静态弦）
+                Vector2 perp = (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2();
+                top = drawCenter + perp * (bowTex.Height * 0.36f);
+                bottom = drawCenter - perp * (bowTex.Height * 0.36f);
+            }
             Vector2 nock = GetNockWorldPos() + (drawCenter - Projectile.Center);
             Color stringColor = Color.Lerp(lightColor, Color.White, 0.3f) * 0.8f;
             DrawLine(top, nock, stringColor, 2f);
             DrawLine(nock, bottom, stringColor, 2f);
             DrawNockedArrow(nock, lightColor, rank);
 
-            //弓体
+            //弓体（抠静态弦；玩家渲染批为 Immediate，Apply/复位即可生效）
+            if (hasAnchor) {
+                GsBowStringLib.ApplyDeduct(anchor.Cut, lightColor, bowTex.Size());
+            }
             Main.EntitySpriteDraw(bowTex, screenPos, null, lightColor, Projectile.rotation,
                 bowTex.Size() / 2f, 1f, effect);
+            if (hasAnchor) {
+                GsBowStringLib.RestoreDefaultShader();
+            }
 
             //升阶星芒
             if (starTimer > 0) {

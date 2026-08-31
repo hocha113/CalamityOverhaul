@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -47,11 +48,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             if (player.itemAnimationMax <= 0) {
                 return;
             }
-            //前刺推压：过冲曲线（progress 平方）比晶邪碎片压得更深，收势带回挑（确定性输入，各端一致）
-            float progress = player.itemAnimation / (float)player.itemAnimationMax;
+            //前刺推压：过冲曲线（progress 平方）比晶邪碎片压得更深，收势带回挑（绝对剖面 0.09·p²，差分施加防累积漂移）
+            float n = player.itemAnimationMax;
+            float progress = player.itemAnimation / n;
             float shove = progress * progress;
+            float prev = (player.itemAnimation + 1) / n;
             player.itemLocation += new Vector2(player.direction, 0f) * (6f * shove);
-            player.itemRotation -= player.direction * 0.09f * shove;
+            GsMagicKickMath.ApplyKickDiff(player, 0.09f * shove, 0.09f * prev * prev);
         }
 
         //==================== 强化咏唱：藤龙横扫 ====================

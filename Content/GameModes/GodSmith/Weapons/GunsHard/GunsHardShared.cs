@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard.Specials;
 using CalamityOverhaul.Content.GameModes.UI;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -223,6 +224,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard
         /// <summary>射击记账：点射链、热量、时间戳。弹药消耗不在此处（原版管线自理，守恒）</summary>
         private void RecordShot(Item item, Player player, GsFireMode mode, GsGunsHardPlayer mp) {
             mp.LastShotTick = Main.GameUpdateCount;
+            //原版 snap 在本射击帧稍后绝对赋值 itemRotation（同帧晚于 UseStyle），踢记账随之归零
+            mp.KickApplied = 0f;
             if (mode.BurstCount > 0) {
                 mp.BurstShots++;
                 if (mp.BurstShots >= mode.BurstCount) {
@@ -248,31 +251,31 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard
         /// <summary>后坐位移幅度 px（沿瞄准反向后挫，出膛帧最大）；0 = 关闭</summary>
         protected virtual float RecoilShift => 3f;
 
-        /// <summary>后坐角度踢幅度（弧度，枪口上抬，仅本机玩家应用）</summary>
+        /// <summary>后坐角度踢幅度（弧度，枪口上抬，差分施加各端可见）</summary>
         protected virtual float RecoilKick => 0.045f;
 
         /// <summary>按当前模式/状态缩放后坐（重炮档加重等），默认恒 1</summary>
         protected virtual float RecoilScale(Item item, Player player, GsFireMode mode) => 1f;
 
         /// <summary>
-        /// 族级后坐：使用动画进度二次衰减包络，出膛帧最猛随后回位。
-        /// itemLocation 由原版每帧绝对赋值，负偏移各端安全；
-        /// itemRotation 远端来自同步不每帧重算，累减会转圈，角度踢只在本机玩家应用
+        /// 族级后坐：目标剖面 = 二次衰减包络的绝对偏移，出膛帧最猛随后回落归零。<br/>
+        /// itemLocation 由原版每帧绝对赋值，负偏移各端安全直接减；
+        /// itemRotation 原版只在射击瞬间 snap、动画期无人重算，直接减是逐帧累减（慢枪漂移 18°~100°），
+        /// 故角度踢走 <see cref="GsGunKickMath.ApplyKickDiff"/> 差分施加：owner 端射击帧由
+        /// <see cref="RecordShot"/> 清账对齐 snap，远端靠动画重启检测清账（自愈无累积），
+        /// 不设 myPlayer 守门，旁观者可见踢；镜像 sign 面右=减、面左=增，倒挂重力自动翻转
         /// </summary>
         public sealed override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame) {
             if (player.itemAnimationMax > 0) {
                 float env = player.itemAnimation / (float)player.itemAnimationMax;
                 env *= env;
-                if (env > 0f) {
-                    float scale = RecoilScale(item, player, CurrentMode(player));
-                    //镜像角乘朝向还原世界瞄准向，沿其反向后挫
-                    Vector2 aim = player.itemRotation.ToRotationVector2() * player.direction;
-                    player.itemLocation -= aim * (RecoilShift * scale * env);
-                    if (player.whoAmI == Main.myPlayer) {
-                        //镜像角坐标系里两个朝向枪口上抬都是减号
-                        player.itemRotation -= RecoilKick * scale * env;
-                    }
-                }
+                float scale = RecoilScale(item, player, CurrentMode(player));
+                //镜像角乘朝向还原世界瞄准向，沿其反向后挫
+                Vector2 aim = player.itemRotation.ToRotationVector2() * player.direction;
+                player.itemLocation -= aim * (RecoilShift * scale * env);
+                GsGunsHardPlayer mp = player.GetModPlayer<GsGunsHardPlayer>();
+                GsGunKickMath.ApplyKickDiff(player, ref mp.KickApplied, ref mp.KickLastAnim,
+                    RecoilKick * scale, env);
             }
             GsGunUseStyle(item, player, heldItemFrame);
         }
@@ -355,6 +358,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard
         public int CurAnimShot;
         /// <summary>上帧光标世界坐标（稳息甩枪检测）</summary>
         public Vector2 LastAimWorld;
+        /// <summary>角度踢差分记账：当前已施加在 itemRotation 上的绝对偏移（各端各持不同步）</summary>
+        public float KickApplied;
+        /// <summary>角度踢差分记账：上帧观察到的 itemAnimation（动画重启检测）</summary>
+        public int KickLastAnim;
 
         public override void PreUpdate() {
             if (Player.whoAmI != Main.myPlayer) {
@@ -398,6 +405,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsHard
             Heat = 0f;
             SteadyMeter = 0f;
             CurAnimShot = 0;
+            KickApplied = 0f;
+            KickLastAnim = 0;
         }
 
         private void NotifyHeldReset(int oldHeldType) {

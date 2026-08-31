@@ -128,12 +128,13 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Verdant.Project
                 SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.55f, Pitch = -0.5f, MaxInstances = 4 }, Projectile.Center);
             }
             else if (elapsed > WarnFrames && elapsed < WarnFrames + ConvergeFrames) {
-                //收拢途中持续的枝叶摩擦
-                if (elapsed % 12 == 0) {
+                //收拢途中持续的枝叶摩擦。12 帧一声约每秒五响过密，是"丛林草声反复播放"
+                //反馈的头号嫌疑（反馈十·#43，未锁死先降频），拉到 24 帧并压量
+                if (elapsed % 24 == 0) {
                     SoundEngine.PlaySound(SoundID.Grass with {
-                        Volume = 0.26f,
+                        Volume = 0.22f,
                         Pitch = Main.rand.NextFloat(-0.55f, -0.2f),
-                        MaxInstances = 5,
+                        MaxInstances = 3,
                     }, Projectile.Center);
                 }
                 //环带上稀疏叶屑（≤1 粒/2 帧）

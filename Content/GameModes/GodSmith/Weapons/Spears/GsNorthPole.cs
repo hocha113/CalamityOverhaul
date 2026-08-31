@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         private bool IsFinisher => ComboStage >= 2;
 
         protected override float WindupFrames => IsFinisher ? 6f : 4f;
-        protected override float ThrustFrames => IsFinisher ? 5f : 4f;
+        protected override float ThrustFrames => IsFinisher ? 7f : 5f;
         protected override float DwellFrames => IsFinisher ? 5f : 4f;
         protected override float RecoverFrames => IsFinisher ? 10f : 8f;
         protected override float RestHoldout => 12f;
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         protected override float BladeLength => 96f;
         protected override float CollisionWidth => 32f;
         protected override float TipGreedRadius => 30f;
-        protected override float ThrustEasePower => IsFinisher ? 7f : 5.5f;
+        protected override float ThrustEasePower => IsFinisher ? 3.4f : 2.8f;
         protected override bool TwoHanded => true;
         protected override float LeanAmp => IsFinisher ? 0.055f : 0.038f;
         protected override int HitboxSize => 54;
@@ -70,6 +70,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         protected override Color EdgeColor => IceWhite;
         protected override Color CoreColor => IsFinisher ? CyanCore : FrostBlue;
+        protected override Color ShaftColor => DeepIce with { A = 235 };
 
         protected override void OnInit() {
             if (IsFinisher) {

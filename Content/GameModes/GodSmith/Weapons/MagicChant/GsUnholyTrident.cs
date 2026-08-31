@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -44,10 +45,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             if (player.itemAnimationMax <= 0) {
                 return;
             }
-            //掷矛后坐：出手瞬间戟身后坐 4px 并上踢，随动画进度回坐（确定性输入，各端一致）
-            float progress = player.itemAnimation / (float)player.itemAnimationMax;
+            //掷矛后坐：出手瞬间戟身后坐 4px 并上踢，随动画进度回坐（绝对剖面 0.12·p，差分施加防累积漂移）
+            float n = player.itemAnimationMax;
+            float progress = player.itemAnimation / n;
             player.itemLocation -= new Vector2(player.direction, 0f) * (4f * progress);
-            player.itemRotation -= player.direction * 0.12f * progress;
+            GsMagicKickMath.ApplyKickDiff(player, 0.12f * progress, 0.12f * ((player.itemAnimation + 1) / n));
         }
 
         public override void GsUseAnimation(Item item, Player player) {

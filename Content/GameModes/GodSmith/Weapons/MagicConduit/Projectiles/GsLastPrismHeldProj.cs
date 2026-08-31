@@ -37,6 +37,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
 
         internal const float HeatRate = 0.75f;
 
+        /// <summary>棱镜本体悬在束根，贴图上端为前（镜像原版宿主 633 的 +π/2 约定）</summary>
+        protected override GsConduitBodyPose BodyPose => GsConduitBodyPose.MuzzleForward;
+
         /// <summary>持续蓝耗：顶格 NoBreak 只涨蓝耗（经典不毁）</summary>
         protected override float ManaPerSecond
             => Owner.GetModPlayer<GsHeatPlayer>().Heat >= GsHeatPlayer.HeatMax ? 17f : 11f;
@@ -194,6 +197,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
         internal static Color HueOf(int i) => Main.hslToRgb(i / (float)BeamCount * 0.92f, 0.85f, 0.6f);
 
         public override bool PreDraw(ref Color lightColor) {
+            //先画棱镜本体（原版由宿主 633 自绘，接管后由此补回），束与辉体压在其上
+            DrawWeaponBody();
             float focus = Focus01;
             float vis = VisWidth(focus, lastCollapse01);
             if (vis < 0.8f) {

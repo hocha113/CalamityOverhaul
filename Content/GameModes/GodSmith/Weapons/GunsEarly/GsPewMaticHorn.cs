@@ -164,16 +164,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
         /// <summary>完美奖励改整匣：本匣「调准」，和弦更大更痛</summary>
         protected override void OnPerfectReload(Item item, Player player, GsGunsEarlyPlayer mp) => mp.perfectMag = true;
 
-        //==================== 后坐姿态：号口上扬 ====================
+        //==================== 后坐姿态：号口上扬（差分，见 GsGunKickMath） ====================
 
-        public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame) {
-            if (player.itemAnimationMax <= 0) {
-                return;
-            }
-            float progress = player.itemAnimation / (float)player.itemAnimationMax;
-            player.itemLocation -= new Vector2(player.direction, 0f) * (1f * progress);
-            player.itemRotation -= player.direction * 0.08f * progress;
-        }
+        public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame)
+            => GunKickStyle(player, 1f, 0.08f);
 
         //==================== 音光弹表现 ====================
 

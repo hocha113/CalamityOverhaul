@@ -159,8 +159,8 @@ OniNumbDebuff: {
 }
 
 ScapeAfterburn: {
-	// DisplayName: Scape Afterburn
-	// Description: Mods.CalamityOverhaul.Buffs.ScapeAfterburn.Description
+	DisplayName: 替死后遗症
+	Description: 替死造成的剧烈后遗症，移动速度降低28%
 }
 
 GhostGripDebuff: {
@@ -169,13 +169,13 @@ GhostGripDebuff: {
 }
 
 OniPaperBrandDebuff: {
-	// DisplayName: Oni Paper Brand Debuff
-	// Description: Mods.CalamityOverhaul.Buffs.OniPaperBrandDebuff.Description
+	DisplayName: 表影创痕
+	Description: 替身纸人受创的反噬，受到的鬼切斩击伤害增加
 }
 
 FuHongBlessBuff: {
-	// DisplayName: 虹桥眷护
-	// Description: 虹下移速 +10%，召唤伤害 +10%
+	DisplayName: 虹桥眷护
+	Description: 虹桥庇护下移动速度增加10%，召唤伤害增加10%
 }
 
 IndustrialShieldBuff: {

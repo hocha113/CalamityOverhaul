@@ -122,11 +122,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Hardmode
                         continue;
                     }
                     called++;
-                    Vector2 from = npc.Center + new Vector2(Main.rand.NextFloat(-40f, 40f), -Main.rand.NextFloat(220f, 280f));
+                    //生成前探顶棚收缩高度，矢带标的线（ai[2]）免碰撞降到线再恢复，隧道里领域不再空转
+                    Vector2 from = GsArmorTerrainProbe.SkySpawnAbove(npc.Center,
+                        Main.rand.NextFloat(-40f, 40f), Main.rand.NextFloat(220f, 280f));
                     Vector2 vel = (npc.Center - from).SafeNormalize(Vector2.UnitY) * 14f;
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(),
                         from, vel, ModContent.ProjectileType<GsFrostSquallShardProj>(),
-                        Projectile.damage, 1f, Projectile.owner, 0f, npc.whoAmI);
+                        Projectile.damage, 1f, Projectile.owner, 0f, npc.whoAmI, npc.Center.Y);
                 }
             }
 
@@ -178,7 +180,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Hardmode
     }
 
     /// <summary>
-    /// 冰晶矢：风雪凝成的坠落冰锥，落向点名目标微调弹道；
+    /// 冰晶矢：风雪凝成的坠落冰锥，落向点名目标微调弹道；出生免地形碰撞、
+    /// 越过标的线（ai[2]）才恢复（Stardust 式高度门，低顶棚下照常坠击）；
     /// 矢身冰蓝三层 + 晶尖闪光，命中挂霜火并炸开冰屑
     /// </summary>
     internal class GsFrostSquallShardProj : ModProjectile
@@ -188,6 +191,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Hardmode
         private ref float Life => ref Projectile.ai[0];
 
         private ref float TargetIndex => ref Projectile.ai[1];
+
+        /// <summary>标的高度线：低于此线才恢复地形碰撞</summary>
+        private ref float TargetLineY => ref Projectile.ai[2];
 
         private float Seed => Projectile.identity * 0.8447f % 3.91f;
 
@@ -200,12 +206,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Hardmode
             Projectile.DamageType = DamageClass.Generic;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 60;
-            Projectile.tileCollide = true;
+            //出生免碰撞，越过标的线由高度门恢复（见 AI）
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
         }
 
         public override void AI() {
             Life++;
+            //高度门：越过标的线才恢复地形碰撞
+            GsArmorTerrainProbe.UpdateFallGate(Projectile, TargetLineY);
             //坠中微调横向，咬准点名目标
             NPC target = TargetIndex >= 0 && TargetIndex < Main.maxNPCs ? Main.npc[(int)TargetIndex] : null;
             if (target != null && target.active) {

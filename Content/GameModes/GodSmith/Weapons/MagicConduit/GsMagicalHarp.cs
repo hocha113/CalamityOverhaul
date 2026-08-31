@@ -63,11 +63,17 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit
             if (player.itemAnimationMax <= 0) {
                 return;
             }
-            //拨弦顿挫：按 itemAnimation 奇偶小幅交替（琴身随拨弦轻颤），随进度回稳（确定性输入）
-            float progress = player.itemAnimation / (float)player.itemAnimationMax;
-            float pluck = player.itemAnimation % 2 == 0 ? 1f : -1f;
+            //拨弦顿挫：按 itemAnimation 奇偶小幅交替（琴身随拨弦轻颤），随进度回稳
+            //（绝对交替剖面 ±0.04·p，差分施加，数学见 GsMagicKickMath；want 取负=原 += 语义）
+            float n = player.itemAnimationMax;
+            int a = player.itemAnimation;
+            float progress = a / n;
+            float pluck = a % 2 == 0 ? 1f : -1f;
+            float pluckPrev = (a + 1) % 2 == 0 ? 1f : -1f;
             player.itemLocation += new Vector2(0f, pluck * 1.2f * progress);
-            player.itemRotation += player.direction * pluck * 0.04f * progress;
+            GsMagicKickMath.ApplyKickDiff(player,
+                -pluck * 0.04f * progress,
+                -pluckPrev * 0.04f * ((a + 1) / n));
         }
 
         public override void GsUseAnimation(Item item, Player player) {

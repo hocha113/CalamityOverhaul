@@ -28,8 +28,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //==================== 可调基数（占位初值，验收再调）====================
 
-        /// <summary>湖水箭基伤（召唤加成与档案倍率前）</summary>
-        internal const int ArrowDamage = 165;
+        /// <summary>湖水箭基伤（召唤加成与档案倍率前）。
+        /// 与枪奴同批下调 165→120（反馈三·#35，拍板 2026/8/31）</summary>
+        internal const int ArrowDamage = 120;
 
         /// <summary>箭雨单箭倍率折扣（箭多而密）</summary>
         internal const float RainMul = 0.8f;

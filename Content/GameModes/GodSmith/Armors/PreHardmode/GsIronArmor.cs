@@ -78,9 +78,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
             //proc 弹幕 owner 侧生成；单发重击按触发伤害 45% 折算并封顶
             if (player.whoAmI == Main.myPlayer) {
                 int hammerDamage = Math.Clamp((int)(damageDone * 0.45f), 12, 150);
+                //生成前探顶棚收缩高度，锤带标的线（ai[1]）免碰撞降到线再恢复，洞顶不再吞锤
+                Vector2 spawn = GsArmorTerrainProbe.SkySpawnAbove(target.Center, 0f, 260f);
                 Projectile.NewProjectile(player.GetSource_Misc("GodSmithIronEndow"),
-                    target.Center + new Vector2(0f, -260f), new Vector2(0f, 4f),
-                    ModContent.ProjectileType<GsIronQuenchHammerProj>(), hammerDamage, 3f, player.whoAmI);
+                    spawn, new Vector2(0f, 4f),
+                    ModContent.ProjectileType<GsIronQuenchHammerProj>(), hammerDamage, 3f, player.whoAmI,
+                    0f, target.Center.Y);
             }
         }
 
@@ -109,7 +112,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
 
     /// <summary>
     /// 淬火锻锤：一柄还带炉温的实心铁锤，不是光块。自目标上空重坠加速（每帧 +0.9 封顶 26），
-    /// 触地即碎；三层紧实叠色（铁蓝灰压边/钢灰主体/淬橙热芯余热明灭）+ 下坠速度拉伸
+    /// 出生免地形碰撞、越过标的线（ai[1]）才恢复、触地即碎（Stardust 式高度门，洞顶不吞锤）；
+    /// 三层紧实叠色（铁蓝灰压边/钢灰主体/淬橙热芯余热明灭）+ 下坠速度拉伸
     /// + 短拖尾残影，途中甩橙火星，落点顿响火星扇起烟
     /// </summary>
     internal class GsIronQuenchHammerProj : ModProjectile
@@ -117,6 +121,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
         public override string Texture => CWRConstant.Masking + "Extra_98";
 
         private ref float Life => ref Projectile.ai[0];
+
+        /// <summary>标的高度线：低于此线才恢复地形碰撞</summary>
+        private ref float TargetLineY => ref Projectile.ai[1];
 
         /// <summary>确定性抖动相位，绘制路径不掷 Main.rand</summary>
         private float Seed => Projectile.identity * 0.7391f % 3.71f;
@@ -138,12 +145,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
             Projectile.timeLeft = 90;
-            Projectile.tileCollide = true;
+            //出生免碰撞，越过标的线由高度门恢复（见 AI）
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
         }
 
         public override void AI() {
             Life++;
+            //高度门：越过标的线才恢复地形碰撞
+            GsArmorTerrainProbe.UpdateFallGate(Projectile, TargetLineY);
             //重坠加速，落速封顶
             Projectile.velocity.Y = MathF.Min(Projectile.velocity.Y + 0.9f, 26f);
             //锤体微晃，确定性相位

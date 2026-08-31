@@ -100,6 +100,7 @@ DraedonQuestLine: {
 }
 
 FirstMetTzeentch: {
+	// Rolename: ?????????????????????
 	L1: Psiu... nao olhe para tras.
 	L2: Estou observando voce construir essas pequenas engenhocas.
 	L3: Dez nos quanticos. Dez caminhos. Dez futuros possiveis.
@@ -123,7 +124,6 @@ FirstMetTzeentch: {
 	Choice3_R3: Apenas... a maioria dos finais nao sao muito agradaveis.
 	EndLine1: Bem, entao. Nos encontraremos novamente.
 	EndLine2: Em breve.
-	// Rolename: ?????????????????????
 }
 
 GalacticCrisis: {

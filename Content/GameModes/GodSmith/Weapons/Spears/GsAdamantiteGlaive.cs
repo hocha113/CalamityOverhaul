@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         //重装节奏：本组最沉的一杆
         protected override float WindupFrames => 6f;
-        protected override float ThrustFrames => 5f;
+        protected override float ThrustFrames => 7f;
         protected override float DwellFrames => 4f;
         protected override float RecoverFrames => 10f;
         protected override float RestHoldout => 11f;
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         protected override float BladeLength => 96f;
         protected override float CollisionWidth => 32f;
         protected override float TipGreedRadius => 28f;
-        protected override float ThrustEasePower => 6.5f;
+        protected override float ThrustEasePower => 3.3f;
         protected override bool TwoHanded => true;
         protected override float LeanAmp => 0.055f;
         protected override int HitboxSize => 54;
@@ -68,6 +68,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
 
         protected override Color EdgeColor => AdamRed;
         protected override Color CoreColor => AdamCrimson;
+        protected override Color ShaftColor => AdamDeep with { A = 235 };
 
         /// <summary>本次命中是否落在甜点段（ModifyHitExtra 先于 OnHitNPC 写入，顿帧属性随之读到）</summary>
         private bool sweetPending;

@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
             this.GetLocalization("Origin",
                 () => "霜降之后，洼水一夜结成薄冰，看着像面镜子，踩上去才知道厉害。符师收下的，正是这层\"看着没事\"");
             this.GetLocalization("Power",
-                () => "「霜镜」大滴落地自凝霜洼（不必等湖倾档），墨洼凝为霜镜：不再灼敌，踏镜者减速 40%；墨滴击中镜面立刻碎镜，按剩余镜寿折算爆伤并立起冰锥");
+                () => "「霜镜」大滴落地自凝霜洼（无需蓄到第四档『湖倾』），墨洼凝为霜镜：不再灼敌，踏镜者减速 40%；墨滴击中镜面立刻碎镜，按剩余镜寿折算爆伤并立起冰锥");
             this.GetLocalization("Burden",
                 () => "霜镜各自成镜，墨洼不可合并续命");
             base.SetDefaults();

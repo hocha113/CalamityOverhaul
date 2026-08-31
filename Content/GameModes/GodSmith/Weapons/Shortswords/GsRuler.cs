@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         internal static readonly Color MarkRed = new(232, 78, 58);
 
         protected override float WindupFrames => 2f;
-        protected override float ThrustFrames => 3f;
+        protected override float ThrustFrames => 4f;
         protected override float DwellFrames => 2f;
         protected override float RecoverFrames => 5f;
         protected override float PullbackDist => 7f;
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         protected override float BladeLength => 44f;
         protected override float CollisionWidth => 18f;//尺薄，刺线最细
         protected override float TipGreedRadius => 20f;
-        protected override float ThrustEasePower => 5f;
+        protected override float ThrustEasePower => 2.55f;
         protected override int HitstopFrames => 1;
         protected override float LeanAmp => 0.024f;
         protected override float ThrustPitch => 0.35f;//木尺破空的轻脆高音

@@ -30,6 +30,15 @@ namespace CalamityOverhaul.Content.GameModes
                 return;
             }
 
+            //灾厄 BossRush 专场豁免：事件已自带强化（强制死亡模式数值、专属倍率、限定出怪），
+            //档位增幅再叠上去血量爆炸——猪鲨常驻 DR 50% 下 DPS 观感趋零、80% 转阶段阈值
+            //遥不可及，读作"一直无敌不转阶段"（反馈七·#47，拍板 2026/8/31）。
+            //体节 SetDefaults 时 realLife 未绑、认不出部件，故事件期间生成的个体一体豁免；
+            //灾厄缺席时 GetBossRushActive 恒 false，零开销
+            if (CWRRef.GetBossRushActive()) {
+                return;
+            }
+
             float statMult = GameModeTuning.StatMult(tier);
 
             //重制类型：先把世界难度补到大师基线，再和其余敌人一样吃档位增幅。
