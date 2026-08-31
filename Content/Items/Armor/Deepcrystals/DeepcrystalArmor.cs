@@ -24,8 +24,8 @@ namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals
         public sealed override void UpdateArmorSet(Player player) {
             player.setBonus = this.GetLocalization("SetBonus").Value;
             //狂战士代价:受到的伤害加深
-            player.endurance -= 0.08f;
-            player.GetDamage(SetClass) += 0.10f;
+            player.endurance -= 0.10f;
+            player.GetDamage(SetClass) += 0.18f;
             DeepcrystalPlayer dcp = player.GetModPlayer<DeepcrystalPlayer>();
             dcp.SetActive = true;
             dcp.SetClass = SetClass;
@@ -49,9 +49,9 @@ namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals
         }
 
         public override void UpdateEquip(Player player) {
-            player.GetDamage(DamageClass.Melee) += 0.12f;
-            player.GetAttackSpeed(DamageClass.Melee) += 0.10f;
-            player.GetCritChance(DamageClass.Melee) += 6f;
+            player.GetDamage(DamageClass.Melee) += 0.18f;
+            player.GetAttackSpeed(DamageClass.Melee) += 0.18f;
+            player.GetCritChance(DamageClass.Melee) += 10f;
         }
     }
 
@@ -70,9 +70,9 @@ namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals
         }
 
         public override void UpdateEquip(Player player) {
-            player.GetDamage(DamageClass.Ranged) += 0.12f;
-            player.GetCritChance(DamageClass.Ranged) += 8f;
-            player.ammoCost80 = true;
+            player.GetDamage(DamageClass.Ranged) += 0.18f;
+            player.GetCritChance(DamageClass.Ranged) += 10f;
+            player.GetModPlayer<DeepcrystalPlayer>().SaveAmmo30 = true;
         }
     }
 
@@ -91,9 +91,9 @@ namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals
         }
 
         public override void UpdateEquip(Player player) {
-            player.GetDamage(DamageClass.Magic) += 0.12f;
-            player.GetCritChance(DamageClass.Magic) += 6f;
-            player.manaCost -= 0.10f;
+            player.GetDamage(DamageClass.Magic) += 0.18f;
+            player.GetCritChance(DamageClass.Magic) += 10f;
+            player.manaCost -= 0.18f;
         }
     }
 
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals
         }
 
         public override void UpdateEquip(Player player) {
-            player.GetDamage(DamageClass.Summon) += 0.14f;
+            player.GetDamage(DamageClass.Summon) += 0.18f;
             player.maxMinions += 2;
         }
     }
@@ -132,8 +132,8 @@ namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals
         }
 
         public override void UpdateEquip(Player player) {
-            player.GetDamage(DamageClass.Generic) += 0.08f;
-            player.GetCritChance(DamageClass.Generic) += 4f;
+            player.GetDamage(DamageClass.Generic) += 0.10f;
+            player.GetCritChance(DamageClass.Generic) += 6f;
         }
 
         public override void AddRecipes() => DeepcrystalRecipe.Add(this, 6, 10, 6, 8, 12, 5, 8);

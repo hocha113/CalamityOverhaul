@@ -1,4 +1,4 @@
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -12,8 +12,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Dolls
     /// </summary>
     internal class ScapegoatDoll : ModItem
     {
-        public override string Texture => "Terraria/Images/Item_" + ItemID.GuideVoodooDoll;
-
         /// <summary>挡死结算时的漂浮字</summary>
         public static LocalizedText ShatterText { get; private set; }
 

@@ -30,16 +30,18 @@ namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals
         private const int DecayStep = 60;
         private const int HurtBurstCooldown = 240;
         /// <summary>湿身引爆增幅</summary>
-        private const float WetPayloadMul = 1.25f;
+        private const float WetPayloadMul = 1.5f;
 
         //各职业引爆基伤与受击反震基伤(按对应职业总增伤缩放)
-        private const int MeleeBurstDamage = 300;
-        private const int JetTickDamage = 80;
-        private const int WaterShotDamage = 130;
-        private const int SeekBubbleDamage = 90;
-        private const int HurtBurstDamage = 160;
+        private const int MeleeBurstDamage = 460;
+        private const int JetTickDamage = 160;
+        private const int WaterShotDamage = 150;
+        private const int SeekBubbleDamage = 120;
+        private const int HurtBurstDamage = 360;
 
         public bool SetActive;
+        /// <summary>目镜:30%不耗弹药(原版只有20%/25%旗标)</summary>
+        public bool SaveAmmo30;
         /// <summary>引爆演出归属职业,由头盔 UpdateArmorSet 每帧挂上</summary>
         public DamageClass SetClass = DamageClass.Generic;
 
@@ -60,6 +62,14 @@ namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals
         public override void ResetEffects() {
             //职业与激活随头盔每帧重挂;层数保留,卸甲在 PostUpdateMiscEffects 清
             SetActive = false;
+            SaveAmmo30 = false;
+        }
+
+        public override bool CanConsumeAmmo(Item weapon, Item ammo) {
+            if (SaveAmmo30 && Main.rand.Next(10) < 3) {
+                return false;
+            }
+            return true;
         }
 
         public override void PostUpdateMiscEffects() {

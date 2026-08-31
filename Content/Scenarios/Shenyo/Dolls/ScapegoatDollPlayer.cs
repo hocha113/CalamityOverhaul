@@ -17,8 +17,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Dolls
         private const int BlockImmuneFrames = 180;
 
         //蹦出遛弯的随机间隔与条件不满足时的重试间隔(帧)
-        private const int WalkerIntervalMin = 60 * 90;
-        private const int WalkerIntervalMax = 60 * 240;
+        private const int WalkerIntervalMin = 60 * 30;
+        private const int WalkerIntervalMax = 60 * 40;
         private const int WalkerRetryDelay = 60 * 5;
 
         private int walkerTimer;

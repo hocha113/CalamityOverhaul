@@ -4800,13 +4800,13 @@ DeepcrystalWarhelm: {
 	DisplayName: Deepcrystal Warhelm
 	Tooltip:
 		'''
-		12% increased melee damage and 6% melee critical strike chance
-		10% increased melee speed
+		18% increased melee damage and 10% melee critical strike chance
+		18% increased melee speed
 		"The shell's weight grew into your bones"
 		'''
 	SetBonus:
 		'''
-		10% increased melee damage, but damage taken is deepened by 8%
+		18% increased melee damage, but damage taken is deepened by 10%
 		Striking foes condenses orbiting bubbles; at five they all collapse, detonating a heavy cavitation burst on the target
 		Getting hit shatters your condensed bubbles and answers with a cavitation counter-burst (short cooldown)
 		While wet, bubbles condense faster and detonate harder
@@ -4817,13 +4817,13 @@ DeepcrystalVisor: {
 	DisplayName: Deepcrystal Visor
 	Tooltip:
 		'''
-		12% increased ranged damage and 8% ranged critical strike chance
-		20% chance to not consume ammo
+		18% increased ranged damage and 10% ranged critical strike chance
+		30% chance to not consume ammo
 		"Through the crystal lens, the trench shines like day"
 		'''
 	SetBonus:
 		'''
-		10% increased ranged damage, but damage taken is deepened by 8%
+		18% increased ranged damage, but damage taken is deepened by 10%
 		Striking foes condenses orbiting bubbles; at five they all collapse into a piercing water jet toward the target
 		Getting hit shatters your condensed bubbles and answers with a cavitation counter-burst (short cooldown)
 		While wet, bubbles condense faster and detonate harder
@@ -4834,13 +4834,13 @@ DeepcrystalCrown: {
 	DisplayName: Deepcrystal Crown
 	Tooltip:
 		'''
-		12% increased magic damage and 6% magic critical strike chance
-		Reduces mana cost by 10%
+		18% increased magic damage and 10% magic critical strike chance
+		Reduces mana cost by 18%
 		"A murmur of the sea is sealed in the crystals"
 		'''
 	SetBonus:
 		'''
-		10% increased magic damage, but damage taken is deepened by 8%
+		18% increased magic damage, but damage taken is deepened by 10%
 		Striking foes condenses orbiting bubbles; at five they all collapse, launching three guided water bolts at the target
 		Getting hit shatters your condensed bubbles and answers with a cavitation counter-burst (short cooldown)
 		While wet, bubbles condense faster and detonate harder
@@ -4851,13 +4851,13 @@ DeepcrystalFeelers: {
 	DisplayName: Deepcrystal Feelers
 	Tooltip:
 		'''
-		14% increased summon damage
+		18% increased summon damage
 		Increases max minions by 2
 		"The feelers know where prey hides before you do"
 		'''
 	SetBonus:
 		'''
-		10% increased summon damage, but damage taken is deepened by 8%
+		18% increased summon damage, but damage taken is deepened by 10%
 		Striking foes condenses orbiting bubbles; at five they all collapse, releasing four seeking bubbles to hunt the target
 		Getting hit shatters your condensed bubbles and answers with a cavitation counter-burst (short cooldown)
 		While wet, bubbles condense faster and detonate harder
@@ -4868,7 +4868,7 @@ DeepcrystalBreastplate: {
 	DisplayName: Deepcrystal Breastplate
 	Tooltip:
 		'''
-		8% increased damage and 4% critical strike chance
+		10% increased damage and 6% critical strike chance
 		"Shell traded for blade, blood traded for tide"
 		'''
 }
