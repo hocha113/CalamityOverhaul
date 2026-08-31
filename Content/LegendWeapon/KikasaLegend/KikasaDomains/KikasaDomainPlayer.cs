@@ -1602,16 +1602,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             FoamBoost = MathHelper.Lerp(FoamBoost, target, 0.06f);
         }
 
-        //各阶段压低音乐；不直接归零由引擎自然回升
+        //常态不压曲；翻转/鬼梦仍压，不直接归零由引擎自然回升
 
         private void UpdateMusicCap() {
             if (!IsLocalVisual || Main.gameMenu) {
                 return;
             }
             float cap = Phase switch {
-                KikasaDomainPhase.Opening => MathHelper.Lerp(1f, 0.5f, SpreadProgress),
-                KikasaDomainPhase.Open => 0.5f,
-                KikasaDomainPhase.Closing => MathHelper.Lerp(1f, 0.5f, SpreadProgress),
+                KikasaDomainPhase.Opening => 1f,
+                KikasaDomainPhase.Open => 1f,
+                KikasaDomainPhase.Closing => 1f,
                 //倒转期音乐随沸腾压向死寂，雷声与水声接管
                 KikasaDomainPhase.Flipping => MathHelper.Lerp(0.5f, 0.2f, FlipBoil),
                 //拉入沿沸腾压向死寂；梦中维持低鸣，远吠与风声当主角

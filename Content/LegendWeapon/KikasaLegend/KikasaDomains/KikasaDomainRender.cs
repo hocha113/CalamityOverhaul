@@ -276,13 +276,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone);
 
-            //血暮轻罩 + 沉暗，血湖细节让位；异化时罩色随之转冷
+            //瘀青靛轻罩 + 沉暗，血湖细节让位；异化时罩色随之转冷
 
             float rain = kdp.RainBlend;
             spriteBatch.Draw(white, full,
-                Color.Lerp(new Color(96, 18, 20), new Color(28, 42, 48), rain) * (0.22f * coverage));
+                Color.Lerp(new Color(22, 28, 56), new Color(28, 42, 48), rain) * (0.22f * coverage));
             spriteBatch.Draw(white, full,
-                Color.Lerp(new Color(14, 4, 8), new Color(8, 12, 16), rain) * (0.16f * coverage));
+                Color.Lerp(new Color(8, 10, 20), new Color(8, 12, 16), rain) * (0.16f * coverage));
 
             spriteBatch.End();
         }

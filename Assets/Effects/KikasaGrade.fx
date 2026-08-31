@@ -1,6 +1,6 @@
 // ============================================================================
 //KikasaGrade.fx 鬼伞血湖领域全屏调色，两个 technique 对应两个渲染时机
-//TechGrade（NPC 层之前，只吃环境）：血暮调色（红罩+暗部沉深绯+非红轻去饱和）
+//TechGrade（NPC 层之前，只吃环境）：血暮调色（红罩+暗部沉瘀青靛+非红轻去饱和）
 //TechUnify（EndCapture，吃整帧含实体）：
 //  轻血罩 + 血湖镜面（水位线以下真垂直镜像倒影，血染+深度血雾+浮渣+缝线血沫，
 //  反射率贴缝强向深弱、透出水下真实世界，被淹之物经折射采样随水摆动）
@@ -34,7 +34,7 @@ float4 uTideTrough;     //跟脚潮让位坑 x=中心uv.x y=半宽uv.x z=坑深u
 #define LUMA_W float3(0.299, 0.587, 0.114)
 
 //====== 血暮调色板 ======
-static const float3 DUSK_SHADOW = float3(0.315, 0.045, 0.075);  //暗部沉入的深绯
+static const float3 DUSK_SHADOW = float3(0.14, 0.09, 0.18);  //暗部沉入的瘀青靛
 static const float3 DUSK_TINT   = float3(1.055, 0.845, 0.800);  //血暮轻罩（乘色）
 //====== 血湖 ======
 static const float3 LAKE_TINT   = float3(0.930, 0.300, 0.270);  //镜像血染乘色
@@ -119,7 +119,7 @@ float3 paperFront(float2 coords, float sd) {
     return float3(soak, edge, curl);
 }
 
-//血暮环境调色：红是领域的colour保真，其余轻去饱和；暗部沉深绯
+//血暮环境调色：红是领域的colour保真，其余轻去饱和；暗部沉瘀青靛
 //鬼雨异化（uRain）后不再保红、去饱和加重、罩色与暗部全套转冷
 float3 GradeDusk(float3 src, float d) {
     float luma = dot(src, LUMA_W);
@@ -166,7 +166,7 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float redness = src.r - max(src.g, src.b);
     float redMask = smoothstep(0.05, 0.30, redness) * (1.0 - uRain);
     float3 tone = lerp(src, luma.xxx, (0.14 + 0.10 * uRain) * (1.0 - redMask));
-    tone *= lerp(float3(1.030, 0.905, 0.885), float3(0.900, 0.965, 1.005), uRain);
+    tone *= lerp(float3(1.015, 0.935, 0.970), float3(0.900, 0.965, 1.005), uRain);
 
     //水位线：稳定枢轴 + 噪声波动 + 落点行波 + 让位坑
     //（噪声/行波只动遮罩边界不动镜像几何；让位坑是低频结构项，镜像跟随它沉降）
