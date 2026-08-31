@@ -83,16 +83,16 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
 
         internal const string StormFilterName = "CalamityOverhaul:FssFesterStorm";
 
-        /// <summary>腿贴图（借 BSS 素材；正式贴图到位后换路径即可）</summary>
+        /// <summary>腿贴图（共用 BSS 步足正式稿；要专属稿换路径即可）</summary>
         [VaultLoaden(CWRConstant.NPC + "BSS/LegUpper")]
         internal static Asset<Texture2D> LegUpperAsset = null;
         [VaultLoaden(CWRConstant.NPC + "BSS/LegLower")]
         internal static Asset<Texture2D> LegLowerAsset = null;
-        /// <summary>疮杵臂贴图（占位=步足腿节素材）</summary>
-        [VaultLoaden(CWRConstant.NPC + "BSS/ClawClub")]
+        /// <summary>疮杵臂贴图（共用 BSS 步足腿节稿）</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/LegUpper")]
         internal static Asset<Texture2D> ClawClubAsset = null;
-        /// <summary>长镰臂贴图（占位=步足胫爪素材）</summary>
-        [VaultLoaden(CWRConstant.NPC + "BSS/ClawSickle")]
+        /// <summary>长镰臂贴图（共用 BSS 胫爪稿）</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/LegLower")]
         internal static Asset<Texture2D> ClawSickleAsset = null;
 
         private NpcStateMachine<FssStateContext> stateMachine;

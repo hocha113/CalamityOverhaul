@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
     ///
     /// 解算：常曲率弧链（割线校弦长 + 端向对齐），逐关节拖拽平滑（尖端滞后甩鞭）。
     /// 变异层：关节痉挛微颤、灵液滴漏、疮杵逆锥增粗（越到末端越肿）。
-    /// 贴图占位借步足素材（ClawClub/ClawSickle 两槽，正式贴图到位后覆盖）。
+    /// 贴图共用 BSS 步足正式稿（ClawClub/ClawSickle 槽位在 FssHead，要专属稿改路径即可）。
     /// </summary>
     internal class FssClawRig
     {
@@ -394,7 +394,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
             }
         }
 
-        /// <summary>骨节拉伸绘制：贴图约定尖端朝上（占位 = 步足素材），底端锚在关节起点</summary>
+        /// <summary>骨节拉伸绘制：贴图约定尖端朝上，底端锚在关节起点</summary>
         private static void DrawBone(SpriteBatch sb, Texture2D tex, Vector2 from, Vector2 to,
             float thickness, Color tint, Vector2 screenPos) {
             Vector2 dir = to - from;

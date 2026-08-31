@@ -90,19 +90,19 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
         internal const string StormFilterName = "CalamityOverhaul:BssSandstorm";
 
-        /// <summary>腿贴图（占位=尾节素材；用户腿贴图到位后覆盖同名 png 即换装）</summary>
+        /// <summary>腿贴图（正式稿；上=基节腿节，下=胫爪。骨节绘制按长度拉伸，各槽共用不失真）</summary>
         [VaultLoaden(CWRConstant.NPC + "BSS/LegUpper")]
         internal static Asset<Texture2D> LegUpperAsset = null;
         [VaultLoaden(CWRConstant.NPC + "BSS/LegLower")]
         internal static Asset<Texture2D> LegLowerAsset = null;
-        /// <summary>爪尖微节贴图（占位=胫爪素材缩窄）</summary>
-        [VaultLoaden(CWRConstant.NPC + "BSS/LegClaw")]
+        /// <summary>爪尖微节贴图（共用胫爪稿；要专属稿时改回独立路径并补 png）</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/LegLower")]
         internal static Asset<Texture2D> LegClawAsset = null;
-        /// <summary>鳌足节贴图（占位=步足腿节素材）</summary>
-        [VaultLoaden(CWRConstant.NPC + "BSS/ClawSegment")]
+        /// <summary>鳌足节贴图（共用步足腿节稿）</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/LegUpper")]
         internal static Asset<Texture2D> ClawSegmentAsset = null;
-        /// <summary>鳌足爪刃贴图（占位=爪尖素材）</summary>
-        [VaultLoaden(CWRConstant.NPC + "BSS/ClawBlade")]
+        /// <summary>鳌足爪刃贴图（共用胫爪稿）</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/LegLower")]
         internal static Asset<Texture2D> ClawBladeAsset = null;
 
         private NpcStateMachine<BssStateContext> stateMachine;

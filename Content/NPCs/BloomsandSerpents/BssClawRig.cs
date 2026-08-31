@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
     /// 爪刃画双刃钳口（开合角随姿态）。
     ///
     /// 绘制分层：side=-1 爪压暗画在头本体之前（远层），side=+1 画在头之后（近层）。
-    /// 贴图占位 = 复制步足素材；用户贴图到位后覆盖 ClawSegment/ClawBlade 两张 png。
+    /// 贴图共用步足正式稿（ClawSegment/ClawBlade 槽位在 BssHead，要专属稿改路径即可）。
     /// 图鉴沙盒共用本类（AdvanceStandalone + DrawStandalone）。
     /// </summary>
     internal class BssClawRig

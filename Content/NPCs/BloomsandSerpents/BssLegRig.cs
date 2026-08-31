@@ -26,8 +26,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
     /// 爪尖第四微节：落地咬地、摆越后拖、腾空内卷。
     ///
     /// 图鉴沙盒共用本类：SetStation + Advance 由 <see cref="OtherMods.BossChecklist.SerpentPortraitRig"/>
-    /// 驱动，探地换虚拟沙线。贴图占位 = 尾节素材拉伸，用户贴图到位后覆盖
-    /// LegUpper/LegLower/LegClaw 三张 png，本文件不动。
+    /// 驱动，探地换虚拟沙线。贴图为步足正式稿（爪尖微节共用胫爪稿，槽位在 BssHead），
+    /// 本文件不动。
     /// </summary>
     internal class BssLegRig
     {
@@ -736,7 +736,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             }
         }
 
-        /// <summary>骨节拉伸绘制：贴图约定尖端朝上（占位 = 尾节素材），底端锚在关节起点</summary>
+        /// <summary>骨节拉伸绘制：贴图约定尖端朝上，底端锚在关节起点</summary>
         internal static void DrawBone(SpriteBatch sb, Texture2D tex, Vector2 from, Vector2 to,
             float thickness, Color tint, Vector2 screenPos) {
             Vector2 dir = to - from;
