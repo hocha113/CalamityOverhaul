@@ -88,6 +88,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> MLordCelestial { get; set; }
         public static Asset<Effect> MLordBlackFlash { get; set; }
         public static Asset<Effect> MLordBlackFlashScreen { get; set; }
+        public static Asset<Effect> MLordOrb { get; set; }
         public static Asset<Effect> BRelicBlackFlash { get; set; }
         public static Asset<Effect> QueenHoneyPool { get; set; }
         public static Asset<Effect> QueenBeeTelegraph { get; set; }
