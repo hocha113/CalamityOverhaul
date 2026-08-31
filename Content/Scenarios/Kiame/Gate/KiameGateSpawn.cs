@@ -11,8 +11,8 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.Scenarios.Kiame.Gate
 {
     /// <summary>
-    /// 鬼域门伞的游走放置：主世界地表随机选一片平地立起 <see cref="KiameGateUmbrella"/>，
-    /// 每个黎明换一处。世界态（是否已生成+锚点+上次黎明戳）随世界存档，
+    /// 鬼域门伞的游走放置：世界两侧三分之一带内随机选一片平地立起 <see cref="KiameGateUmbrella"/>，
+    /// 每个黎明换一处（可换边）。世界态（是否已生成+锚点+上次黎明戳）随世界存档，
     /// 权威端逐帧维护恰好一个门伞 Actor；管线形制镜像 <see cref="OniUmbrellaWorldSpawn"/>。<br/>
     /// 存在性是世界级的（服务器读不到各玩家的获伞进度），
     /// 未获伞玩家看不见它也点不动它——可见性在 Actor 侧按玩家各自裁
@@ -281,15 +281,21 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Gate
         }
 
         /// <summary>
-        /// 游走选址：全图地表随机抽列，避开出生点一带（故事伞与鸟居的地盘），
-        /// 要求平整净空。抽不中就这拍作罢，下拍再来——门伞晚到一步无妨
+        /// 游走选址：随机选左右一侧，在以世界宽三分之一（或三分之二）处为中心、
+        /// 半宽约世界宽 1/12 的带内抽列——够偏但不到海边，也进不了中央出生区；
+        /// 出生点避让保留作兜底（防特殊种子出生点偏移），要求平整净空。
+        /// 抽不中就这拍作罢，下拍再来——门伞晚到一步无妨
         /// </summary>
         private static bool TryPickWanderSite(out Vector2 position) {
             position = default;
             int spawnX = Main.spawnTileX;
+            int minX = WorldEdgeMargin + FlatSampleRadius + 2;
+            int maxX = Main.maxTilesX - WorldEdgeMargin - FlatSampleRadius - 2;
+            int third = Main.maxTilesX / 3;
+            int halfBand = Main.maxTilesX / 12;
             for (int attempt = 0; attempt < PickAttempts; attempt++) {
-                int x = Main.rand.Next(WorldEdgeMargin + FlatSampleRadius + 2,
-                    Main.maxTilesX - WorldEdgeMargin - FlatSampleRadius - 2);
+                int bandCenter = Main.rand.NextBool() ? third : Main.maxTilesX - third;
+                int x = Math.Clamp(bandCenter + Main.rand.Next(-halfBand, halfBand + 1), minX, maxX);
                 if (Math.Abs(x - spawnX) < SpawnAvoidTiles) {
                     continue;
                 }

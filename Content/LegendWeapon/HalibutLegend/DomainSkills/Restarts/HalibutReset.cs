@@ -2,6 +2,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
+using CalamityOverhaul.Content.Scenarios.Kiame;
 using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.Cinematics;
 using Microsoft.Xna.Framework.Graphics;
@@ -157,6 +158,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills.Resta
         /// </summary>
         internal static bool CanStartLocal(Player player) {
             if (player?.active != true || player.dead) {
+                return false;
+            }
+            //鬼雨子世界的死亡重启演出进行中：同族全屏演出且世界即将切换，不叠加
+            if (KiameWake.ShowActive) {
                 return false;
             }
             return Active == null && KikasaReset.Active == null;

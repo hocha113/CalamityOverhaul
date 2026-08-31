@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend;
+using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
 using CalamityOverhaul.Content.Scenarios.Shenyo;
@@ -59,7 +60,11 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Gate
         protected override Color TintBody(Color body)
             => Color.Lerp(body, BodyCold, 0.45f);
 
-        //交互资格沿用基类（雨外、无演出进行中）；去向同一句话：撑伞入雨
+        /// <summary>基类门禁之外再挡叙事对话：沈幽正当面讲这把伞时，不许右键入雨</summary>
+        protected override bool InteractEligible(Player player)
+            => base.InteractEligible(player) && !NarrativeTriggerGate.IsBusy;
+
+        //去向同一句话：撑伞入雨
         protected override string HintText => OniRainWorldSystem.InteractHint.Value;
 
         /// <summary>整套入雨转场（涨水浮镜→窥影→翻转），结算白闪处切进子世界；

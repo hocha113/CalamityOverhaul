@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills.Restarts;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
+using CalamityOverhaul.Content.Scenarios.Kiame;
 using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
 using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.Cinematics;
@@ -185,6 +186,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
                 return false;
             }
             if (OniRainWorldTransition.Active || OniRainDescentTransition.Active) {
+                return false;
+            }
+            //鬼雨子世界的死亡重启演出进行中：同族全屏演出且世界即将切换，不叠加
+            if (KiameWake.ShowActive) {
                 return false;
             }
             return !player.GetModPlayer<OniDomainPlayer>().AnyActive;

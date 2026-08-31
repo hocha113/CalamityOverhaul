@@ -138,6 +138,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame
 
             float wind = MathF.Sin(Gen.KiameMetrics.MacroSeed % 255 * 0.37f) * 1.4f
                 * (0.5f + stormPulse);
+            bool rewinding = KiameWake.RainRewindActive;
             for (int i = 0; i < count; i++) {
                 Vector2 pos = new(Main.rand.NextFloat(left, right),
                     Main.screenPosition.Y - Main.rand.NextFloat(10f, 220f));
@@ -145,9 +146,25 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame
                     Main.rand.NextFloat(11.5f, 17.5f));
                 Color color = (Main.rand.NextBool(7) ? RainCorpse : RainPale)
                     * Main.rand.NextFloat(0.42f, 0.65f);
-                PRTLoader.NewParticle<PRT_GhostRainDrop>(pos, vel, color,
-                    Main.rand.NextFloat(0.8f, 1.25f))
-                    ?.Configure(Main.rand.Next(70, 110), vel.X);
+                float scale = Main.rand.NextFloat(0.8f, 1.25f);
+                int life = Main.rand.Next(70, 110);
+                if (rewinding) {
+                    //死亡重启倒带：约半数从地表反向扁溅重生——砸过地的雨被时间收回去，
+                    //整幕只向上飞会缺"从地面收回来"那一层（镜像 KikasaDomainDeco 的倒带雨）
+                    if (Main.rand.NextBool() && TryFindGround(pos.X,
+                        Main.screenPosition.Y + Main.screenHeight * 0.1f, out float groundY)) {
+                        PRTLoader.NewParticle<PRT_GhostRainDrop>(
+                            new Vector2(pos.X, groundY - 2f), Vector2.Zero, color, scale)
+                            ?.Configure(life, vel.X).BeginRebirth();
+                        continue;
+                    }
+                    //其余在幕内出生向上飞，补足空中密度
+                    pos.Y = Main.screenPosition.Y
+                        + Main.rand.NextFloat(Main.screenHeight * 0.2f, Main.screenHeight + 60f);
+                    vel.Y = -vel.Y;
+                }
+                PRTLoader.NewParticle<PRT_GhostRainDrop>(pos, vel, color, scale)
+                    ?.Configure(life, vel.X);
             }
         }
 

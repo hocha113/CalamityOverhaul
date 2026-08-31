@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets;
+using CalamityOverhaul.Content.Scenarios.Kiame;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -76,8 +77,10 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
 
         public override void AI() {
-            //大范围重启倒带：雨滴倒着往回飞，玩家对比雨的轨迹立刻读出时间在倒流
-            if (KikasaReset.RainRewindActive) {
+            //重启倒带（大范围重启 / 鬼雨死亡重启）：雨滴倒着往回飞，
+            //玩家对比雨的轨迹立刻读出时间在倒流
+            bool kiameRewind = KiameWake.RainRewindActive;
+            if (KikasaReset.RainRewindActive || kiameRewind) {
                 splashing = false;
                 splashTicks = 0;
                 Color = initialColor;
@@ -92,7 +95,8 @@ namespace CalamityOverhaul.Content.PRTTypes
                     return;
                 }
                 //上飞速度吃回卷脉冲：拍点上全速抽回，拍间保留缓升，与世界同节奏
-                float pulse = KikasaReset.RewindPulseRate;
+                float pulse = kiameRewind
+                    ? KiameWake.RewindPulseRate : KikasaReset.RewindPulseRate;
                 Velocity.X = -windX;
                 Velocity.Y = MathHelper.Lerp(Velocity.Y, -6f - 12f * pulse, 0.14f);
                 if (Velocity.LengthSquared() > 0.25f) {

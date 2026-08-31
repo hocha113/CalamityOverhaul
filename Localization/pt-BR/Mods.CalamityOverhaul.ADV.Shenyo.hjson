@@ -14,6 +14,19 @@ FirstMetShenyo: {
 	// C2: That umbrella is yours from now on
 }
 
+ShenyoDerivedUmbrella: {
+	// L1: That umbrella looks like a derived paranormal entity
+	// Opt1: A derived paranormal entity? Meaning it is a part of you?
+	// L2: Exactly. I once dismembered my own paranormal form, and the severed fragments revive on their own once enough years go by
+	// L3: This umbrella intruding on reality, for instance, is a paranormal phenomenon derived from the Kikasa's source
+	// Opt2: So you are not actually the source of the Kikasa?
+	// L4: I was, once
+	// L5: I should have died long ago, but my consciousness woke again inside a paranormal fragment left in this world
+	// L6: Touch this derived umbrella, and you should be able to enter its ghost domain
+	// L7: Whether you go is your own business
+	// L8: If you die in there, I will pull you back with a Restart
+}
+
 ShenyoDollGift: {
 	// L0: I just remembered something worth giving you
 	// L1: Keep this doll close. It can save your life once

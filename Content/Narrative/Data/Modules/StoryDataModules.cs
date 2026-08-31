@@ -161,6 +161,10 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool KikasaGranted;
         /// <summary>邪恶地形替死娃娃赠礼已演，开演即写防重领</summary>
         public bool EvilBiomeDollGift;
+        /// <summary>门伞初谈「衍生灵异」已触发过（统计口径）</summary>
+        public bool DerivedUmbrellaMet;
+        /// <summary>门伞初谈播完，防重播</summary>
+        public bool PostDerivedUmbrellaIsComplete;
     }
 
     /// <summary>鬼伞沉宴试炼节点礼物完成位，顺序对应 KikasaTrialQuestLine 的24关</summary>

@@ -35,6 +35,16 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
             set => Story.KikasaGranted = value;
         }
 
+        /// <summary>门伞初谈「衍生灵异」已触发过（统计口径，重播判定走 <see cref="PostDerivedUmbrellaIsComplete"/>）</summary>
+        public static bool DerivedUmbrellaMet => Story.DerivedUmbrellaMet;
+
+        public static void MarkDerivedUmbrellaMet() => Story.DerivedUmbrellaMet = true;
+
+        /// <summary>门伞初谈播完，防重播</summary>
+        public static bool PostDerivedUmbrellaIsComplete => Story.PostDerivedUmbrellaIsComplete;
+
+        public static void MarkPostDerivedUmbrellaComplete() => Story.PostDerivedUmbrellaIsComplete = true;
+
         /// <summary>沉宴礼物线完成位，随玩家存档</summary>
         public static bool EvilBiomeDollGift => Story.EvilBiomeDollGift;
 
