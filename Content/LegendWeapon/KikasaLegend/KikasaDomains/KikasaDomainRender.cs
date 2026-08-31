@@ -181,6 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             grade.Parameters["uSeamGlow"]?.SetValue(seamGlow);
             grade.Parameters["uAspect"]?.SetValue(screenSize.X / screenSize.Y);
             grade.Parameters["uRain"]?.SetValue(kdp.RainBlend);
+            grade.Parameters["uCoolAir"]?.SetValue(KikasaDomain.CoolAirGrade ? 1f : 0f);
             grade.Parameters["uWispGlow"]?.SetValue(kdp.WispGlow);
 
             //倒影恶犬醒着时，镜像里抹掉施术者本人，镜像源落在他身上的像素改采身侧背景
@@ -276,13 +277,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone);
 
-            //瘀青靛轻罩 + 沉暗，血湖细节让位；异化时罩色随之转冷
+            //血暮红罩或瘀青靛轻罩 + 沉暗，血湖细节让位；异化时罩色随之转冷
 
             float rain = kdp.RainBlend;
+            Color veilA = KikasaDomain.CoolAirGrade ? new Color(22, 28, 56) : new Color(96, 18, 20);
+            Color veilB = KikasaDomain.CoolAirGrade ? new Color(8, 10, 20) : new Color(14, 4, 8);
             spriteBatch.Draw(white, full,
-                Color.Lerp(new Color(22, 28, 56), new Color(28, 42, 48), rain) * (0.22f * coverage));
+                Color.Lerp(veilA, new Color(28, 42, 48), rain) * (0.22f * coverage));
             spriteBatch.Draw(white, full,
-                Color.Lerp(new Color(8, 10, 20), new Color(8, 12, 16), rain) * (0.16f * coverage));
+                Color.Lerp(veilB, new Color(8, 12, 16), rain) * (0.16f * coverage));
 
             spriteBatch.End();
         }

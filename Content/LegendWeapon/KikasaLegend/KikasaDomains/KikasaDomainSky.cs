@@ -28,10 +28,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             //Sky 与 Filter 必须同名成对注册，KikasaDomainSystem 按该名驱动，缺 Filter 直接 NRE
 
             SkyManager.Instance[Name] = this;
-            //空气层微滤镜、颜色与透明度由 Update 动态驱动（血湖瘀青靛，异化转冷灰青）
+            //空气层微滤镜、颜色与透明度由 Update 动态驱动（默认血暮红罩，CoolAirGrade 转瘀青靛）
 
             Filters.Scene[Name] = new Filter(new ScreenShaderData("FilterMiniTower")
-                .UseColor(0.045f, 0.058f, 0.125f)
+                .UseColor(0.10f, 0.02f, 0.03f)
                 .UseOpacity(0f), EffectPriority.High);
         }
 
@@ -72,13 +72,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 flashStrength = MathHelper.Max(flashStrength, 0.55f);
             }
 
-            //滤镜垫底色（低画质回退时的主要氛围来源）：瘀青靛空气↔冷灰青随异化过渡；
-            //天空/湖/日光仍热；鬼梦期让位梦空滤镜
+            //滤镜垫底色（低画质回退时的主要氛围来源）：血暮红罩或瘀青靛↔冷灰青随异化过渡；
+            //鬼梦期让位梦空滤镜
 
             float rain = kdp?.RainBlend ?? 0f;
             float dreamYield = 1f - (kdp?.DreamBlend ?? 0f);
+            Vector3 bloodAir = KikasaDomain.CoolAirGrade
+                ? new Vector3(0.045f, 0.058f, 0.125f)
+                : new Vector3(0.10f, 0.02f, 0.03f);
             Vector3 filterCol = Vector3.Lerp(
-                new Vector3(0.045f, 0.058f, 0.125f),
+                bloodAir,
                 new Vector3(0.04f, 0.05f, 0.07f), rain);
             Filters.Scene[Name]?.GetShader()
                 ?.UseColor(filterCol.X, filterCol.Y, filterCol.Z)
