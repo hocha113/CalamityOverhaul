@@ -10,92 +10,104 @@ ExoMechdusaSum: {
 	ChoiceThanatos: Thanatos
 	ChoiceTwins: Artemis
 }
+
 ExoMechEndingDialogue: {
 	EndLine1: Une variable inconnue. Vous… êtes une singularité.
 	EndLine2: Vous êtes un étranger à cette terre et à son histoire — comme moi.
-	EndLine3: "…Mes excuses. Après une « démonstration » pareille, je dois rassembler mes pensées."
+	EndLine3: …Mes excuses. Après une « démonstration » pareille, je dois rassembler mes pensées.
 	EndLine4: Le sang versé jusqu'ici a laissé ce continent stagnant et sans vie.
-	EndLine5: "Vous avez versé le vôtre. Peut-être suffira-t-il à mettre fin à cette ère de désespoir… Quoi qu'il en soit, c'est un changement que je voulais voir."
-	EndLine6: "Vous voulez maintenant atteindre le tyran. Malheureusement, je ne peux pas vous aider."
+	EndLine5: Vous avez versé le vôtre. Peut-être suffira-t-il à mettre fin à cette ère de désespoir… Quoi qu'il en soit, c'est un changement que je voulais voir.
+	EndLine6: Vous voulez maintenant atteindre le tyran. Malheureusement, je ne peux pas vous aider.
 	EndLine7: Ce n'est pas par rancune. Mon seul but depuis le début était d'observer ce combat.
-	EndLine8: "Mais vous avez déjà réussi par le passé. Vous trouverez un chemin, tôt ou tard."
-	EndLine9: "Je dois respecter et reconnaître votre victoire. Pour l'instant, mon attention retourne à mes mécanismes."
+	EndLine8: Mais vous avez déjà réussi par le passé. Vous trouverez un chemin, tôt ou tard.
+	EndLine9: Je dois respecter et reconnaître votre victoire. Pour l'instant, mon attention retourne à mes mécanismes.
 	KillAttemptLine: …Votre action est… inutile.
 }
+
 DeploySignaltowerScenario: {
 	IntroLine1: Je dois mener une expérience critique — et vous êtes actuellement le meilleur candidat pour m'aider.
-	IntroLine2: "Il y a cent ans terraniens, une tempête d'énergie a balayé la galaxie et détruit la majorité de mes installations sur cette planète."
-	IntroLine3: "Tout était trop loin. Quand j'ai compris que mon réseau de surveillance sur Terra était coupé, un siècle s'était écoulé."
-	IntroLine4: "Après cette tempête, le voyage interstellaire est devenu extrêmement instable. Je dois donc reconstruire mes systèmes de base sur Terra."
+	IntroLine2: Il y a cent ans terraniens, une tempête d'énergie a balayé la galaxie et détruit la majorité de mes installations sur cette planète.
+	IntroLine3: Tout était trop loin. Quand j'ai compris que mon réseau de surveillance sur Terra était coupé, un siècle s'était écoulé.
+	IntroLine4: Après cette tempête, le voyage interstellaire est devenu extrêmement instable. Je dois donc reconstruire mes systèmes de base sur Terra.
 	IntroLine5: J'ai besoin de votre aide pour déployer le dernier réseau d'intrication quantique.
 	IntroLine6: Cette technologie contourne les limites de la vitesse de la lumière et permet une communication galactique instantanée.
-	IntroLine7: "Avant application, ce monde a besoin d'un nombre suffisant de nœuds d'intrication quantique."
+	IntroLine7: Avant application, ce monde a besoin d'un nombre suffisant de nœuds d'intrication quantique.
 	IntroLine8: Voici la tour de signal quantique que j'ai conçue. Son cœur utilise des stabilisateurs d'intrication et des amplificateurs d'énergie du point zéro.
-	TechExplainLine1: "Chaque tour peut établir un lien d'intrication avec d'autres nœuds, formant un réseau de communication galactique."
-	TechExplainLine2: "En théorie, la latence de transmission peut tendre vers zéro."
+	TechExplainLine1: Chaque tour peut établir un lien d'intrication avec d'autres nœuds, formant un réseau de communication galactique.
+	TechExplainLine2: En théorie, la latence de transmission peut tendre vers zéro.
 	TaskLine: Je vous demande de déployer ces tours de signal dans le monde pour établir le réseau d'intrication complet.
 	AcceptPrompt: Alors ? Acceptez-vous ?
 	ChoiceAccept: Accepter la commission
 	ChoiceDecline: Plus tard
+
 	Choice_Accept: {
 		AcceptResponse: Excellent. Voici les plans des tours. Faites-moi un rapport une fois terminé.
 		L1: Voici le premier lot de matériaux — limité. Construisez d'abord le cadre principal de la tour.
-		L2: "Une fois le premier nœud opérationnel, le lien de communication commencera à se stabiliser."
-		L3: "À ce moment, je pourrai transporter plus de ressources en continu par le sous-espace pour une construction à plus grande échelle."
+		L2: Une fois le premier nœud opérationnel, le lien de communication commencera à se stabiliser.
+		L3: À ce moment, je pourrai transporter plus de ressources en continu par le sous-espace pour une construction à plus grande échelle.
 	}
+
 	Choice_Decline.DeclineResponse: Compris. Revenez quand vous serez prêt.
 }
+
 FirstTowerBuiltScenario: {
 	Line1: Le nouveau nœud d'intrication quantique fonctionne sans problème. Le signal est stable.
 	Line2: Bien. C'est la première étape du réseau. Continuez à déployer les tours restantes.
-	Line3: "Quand le nombre de nœuds atteindra le standard, je pourrai observer sur une zone bien plus vaste."
+	Line3: Quand le nombre de nœuds atteindra le standard, je pourrai observer sur une zone bien plus vaste.
 	Line4: Maintenez votre efficacité.
 }
+
 QuestCompleteScenario: {
 	Line1: Tous les nœuds quantiques sont en ligne. Le réseau est pleinement opérationnel.
 	Line2: La latence de transmission correspond aux valeurs théoriques. Aucun écart.
 	Line3: Votre performance a dépassé mes projections. Louable.
-	Line4: "En paiement, je vous accorde l'accès à une sélection de mon équipement et de mes autorisations — à votre discrétion."
-	Line5: "Si vous avez besoin d'aide, contactez-moi directement via le réseau de communication."
+	Line4: En paiement, je vous accorde l'accès à une sélection de mon équipement et de mes autorisations — à votre discrétion.
+	Line5: Si vous avez besoin d'aide, contactez-moi directement via le réseau de communication.
 }
+
 ExoMechHardDefeat: {
 	HardDefeatLine1: Décisions sous pression extrême. Ce sont les données que je voulais voir.
 	HardDefeatLine2: Votre capacité à rester rationnel sous pression est… satisfaisante.
 }
+
 ExoMechQuickDefeat: {
 	QuickDefeatLine1: …Ce délai est nettement inférieur à mes modèles prédictifs.
 	QuickDefeatLine2: Il semble que j'ai sous-estimé votre efficacité au combat actuelle.
 	QuickDefeatLine3: Peut-être est-il temps d'envisager des philosophies de conception… plus agressives.
 }
+
 ExoMechSecondDefeat: {
 	SecondDefeatLine1: Intéressant. Votre taux d'adaptation dépasse mes projections.
 	SecondDefeatLine2: Les données montrent des améliorations ciblées depuis le dernier engagement.
 	SecondDefeatLine3: Il semble que je doive réévaluer votre courbe d'apprentissage.
 }
+
 ExoMechThirdDefeat: {
 	ThirdDefeatLine1: Performance constante. Un élément de la perfection que je vise.
 	ThirdDefeatLine2: Vous avez prouvé que vos capacités ne sont pas… une anomalie statistique.
 }
+
 DraedonQuestLine: {
 	QuestCategory: Draedon
 	DeployTitle: Déploiement du réseau d'intrication quantique
 	DeploySummary: Déployez 10 tours de signalisation aux points cibles du monde
 	TrackerNearestTarget: Cible la plus proche
-	TrackerNodeName: "Nœud d'intrication N°[NUM]"
+	TrackerNodeName: Nœud d'intrication N°[NUM]
 	TrackerInRange: À portée
 	TrackerDistance: Distance
 	TrackerDeployProgress: Progression
 	TrackerQuestComplete: Quête terminée !
 }
+
 FirstMetTzeentch: {
 	Rolename: ???
 	L1: Chut… ne vous retournez pas.
 	L2: Je vous ai regardé construire ces petits appareils.
 	L3: Dix nœuds quantiques. Dix chemins. Dix futurs possibles.
 	L4: Un joli petit réseau. Avez-vous une idée de combien de… *choses*… il attirera ?
-	L5: "Ah oui, je devrais me présenter."
+	L5: Ah oui, je devrais me présenter.
 	L6: Certains m'appellent l'Oracle. D'autres la Plume du Destin…
-	L7: "Mais ce qui m'intéresse, c'est comment… *vous*… m'appelleriez, maintenant."
+	L7: Mais ce qui m'intéresse, c'est comment… *vous*… m'appelleriez, maintenant.
 	L8: Allez. Laissez-moi entendre.
 	Choice1Text: Un… magicien… ?
 	Choice2Text: Un menteur.
@@ -103,8 +115,8 @@ FirstMetTzeentch: {
 	Choice1_R1: Ha ! Quel terme… doux.
 	Choice1_R2: Dommage. Je ne fais pas de magie. Je change seulement les faits.
 	Choice1_R3: Continuez. Nous noterons « magicien » pour l'instant.
-	Choice2_R1: "Ah. Direct, brut, honnête. Des qualités précieuses."
-	Choice2_R2: "Mais je ne mens jamais, je crois."
+	Choice2_R1: Ah. Direct, brut, honnête. Des qualités précieuses.
+	Choice2_R2: Mais je ne mens jamais, je crois.
 	Choice2_R3: Je vous dis simplement… ce qui va arriver.
 	Choice2_R4: Que vous y croyiez ou non… c'est déjà arrivé.
 	Choice3_R1: Non ? Excellent.
@@ -113,39 +125,41 @@ FirstMetTzeentch: {
 	EndLine1: Bien. Nous nous reverrons.
 	EndLine2: Bientôt.
 }
+
 GalacticCrisis: {
-	CrisisIntro1: "Le réseau quantique étant reconnecté, vous devez voir certaines choses de vos propres yeux."
+	CrisisIntro1: Le réseau quantique étant reconnecté, vous devez voir certaines choses de vos propres yeux.
 	CrisisIntro2: Voici l'ombre qui dévore actuellement les bras spiraux de la galaxie.
-	CrisisIntro3: "Ces ombres sont l'Essaim. Avant cela, j'ai déployé des millions d'Exo-Titans pour les intercepter."
-	CrisisIntro4: "Les données indiquent une guerre d'usure perdue. Ils sont infinis, mes ressources s'épuiseront."
+	CrisisIntro3: Ces ombres sont l'Essaim. Avant cela, j'ai déployé des millions d'Exo-Titans pour les intercepter.
+	CrisisIntro4: Les données indiquent une guerre d'usure perdue. Ils sont infinis, mes ressources s'épuiseront.
 	CrisisIntro5: J'ai donc formulé le seul plan avec un taux de succès supérieur à 0 %.
-	CrisisIntro6: "Faire détoner les noyaux planétaires de tous les mondes, de la Bordure extérieure à la Bordure médiane."
-	CrisisIntro7: "Réduire des dizaines de milliers d'années-lumière en zone morte absolue, couper les lignes d'approvisionnement de l'Essaim et le détourner vers les galaxies voisines par attrition navigationnelle extrême."
-	CrisisIntro8: "La faim est la force motrice la plus puissante de l'univers — et la plus facile à calculer. Sous le seuil critique, cette galaxie ne sera pour l'Essaim qu'un cercueil vide."
-	CrisisIntro9: "Terra est aussi sur la liste de la terre brûlée. Mais en tant que singularité, votre essence ne devrait pas s'éteindre ici. Je prépare un vaisseau d'évacuation."
+	CrisisIntro6: Faire détoner les noyaux planétaires de tous les mondes, de la Bordure extérieure à la Bordure médiane.
+	CrisisIntro7: Réduire des dizaines de milliers d'années-lumière en zone morte absolue, couper les lignes d'approvisionnement de l'Essaim et le détourner vers les galaxies voisines par attrition navigationnelle extrême.
+	CrisisIntro8: La faim est la force motrice la plus puissante de l'univers — et la plus facile à calculer. Sous le seuil critique, cette galaxie ne sera pour l'Essaim qu'un cercueil vide.
+	CrisisIntro9: Terra est aussi sur la liste de la terre brûlée. Mais en tant que singularité, votre essence ne devrait pas s'éteindre ici. Je prépare un vaisseau d'évacuation.
 	ChoiceRefuse: Il doit y avoir un autre chemin.
 	ChoiceSilence: ……(Silence et poigne serrée sur l'arme)
 	RebuttalLine1: …Exactement.
 	RebuttalLine2: J'avais prévu 99 % de probabilité d'évacuation — mais j'attendais ces 1 % de comportement irrationnel.
 	RebuttalLine3: Vous avez refusé le raccourci vers la survie. C'est précisément la nature de la singularité que j'observe.
 	RebuttalLine4: J'ai alors un plan de secours — une opération mise de côté pour taux de succès trop bas.
-	MissionBrief1: "La cible est le système Corto. Il est tombé, mais l'Essaim ne l'a pas encore entièrement digéré."
+	MissionBrief1: La cible est le système Corto. Il est tombé, mais l'Essaim ne l'a pas encore entièrement digéré.
 	MissionBrief2: Dans le manteau de la troisième planète se forme une veine d'Exo-matière de très haute pureté.
-	MissionBrief3: "L'Essaim ne doit pas l'obtenir. S'il apprend à utiliser l'Exo-matière, la situation galactique deviendra incontrôlable."
-	MissionBrief4: "Votre tâche est simple : percer la mer d'insectes, atteindre le noyau, faire détoner la veine et détruire entièrement la planète."
-	MissionBrief5: "Si l'opération réussit, cela prouvera qu'un individu peut être décisif contre l'Essaim — je concevrai une nouvelle stratégie autour de vous."
-	AndroidReveal1: "Avant votre arrivée, j'ai envoyé une équipe avancée à ces coordonnées."
-	AndroidReveal2: "Ce sont des androïdes tactiques de ma dernière technologie : Altis et Apollia."
+	MissionBrief3: L'Essaim ne doit pas l'obtenir. S'il apprend à utiliser l'Exo-matière, la situation galactique deviendra incontrôlable.
+	MissionBrief4: Votre tâche est simple : percer la mer d'insectes, atteindre le noyau, faire détoner la veine et détruire entièrement la planète.
+	MissionBrief5: Si l'opération réussit, cela prouvera qu'un individu peut être décisif contre l'Essaim — je concevrai une nouvelle stratégie autour de vous.
+	AndroidReveal1: Avant votre arrivée, j'ai envoyé une équipe avancée à ces coordonnées.
+	AndroidReveal2: Ce sont des androïdes tactiques de ma dernière technologie : Altis et Apollia.
 	AndroidReveal3: Leur mobilité et leur logique dépassent les anciens mechs — mais j'ai perdu leur signal peu après l'atterrissage sur Corto III.
-	AndroidReveal4: "Les dernières données montrent encore des signes vitaux, en danger extrême."
-	MissionObjective: "Allez au système Corto et vérifiez l'état des deux unités. Si elles peuvent encore combattre, qu'elles vous aident. Sinon…"
-	MissionObjectiveDark: "Au minimum, rapportez leurs données de cœur. Mes chefs-d'œuvre ne seront pas la pitance des insectes."
+	AndroidReveal4: Les dernières données montrent encore des signes vitaux, en danger extrême.
+	MissionObjective: Allez au système Corto et vérifiez l'état des deux unités. Si elles peuvent encore combattre, qu'elles vous aident. Sinon…
+	MissionObjectiveDark: Au minimum, rapportez leurs données de cœur. Mes chefs-d'œuvre ne seront pas la pitance des insectes.
 	FinalSendOff: Coordonnées saisies. Allez — et montrez-moi si vous pouvez encore dépasser mes calculs.
 }
+
 FirstMetApollia: {
 	Line1: ……Humain ?
 	Line2: La trajectoire d'entrée atmosphérique était trop évidente. J'ai prédit la zone d'atterrissage et tenté ma chance.
-	Line3: "Je suis Apollia. Vous feriez mieux d'être l'avant-garde de la Flotte Exo, ici pour dire que la force principale suit."
+	Line3: Je suis Apollia. Vous feriez mieux d'être l'avant-garde de la Flotte Exo, ici pour dire que la force principale suit.
 	C1: (Remettre la puce d'autorisation de Draedon)
 	C2: Comment savoir que vous n'êtes pas un piège mimétique de l'Essaim ?
 	C2_R1: ……Les mimiques n'exposent pas leur position ni ne courent vers une capsule.
@@ -154,20 +168,22 @@ FirstMetApollia: {
 	Line5: Vous seul ?! Qu'est-ce que c'est que ça !
 	Line6: Il nous faut une Légion de Titans et un Exterminatus ! Pas encore quelqu'un envoyé mourir !
 	Line7: (Profonde inspiration)……Mes excuses. Je connais maintenant les dispositions de la Source.
-	Line8: "Apollia, anciennement de la Neuvième Légion, vous assistera dans toutes vos opérations sur cette planète."
+	Line8: Apollia, anciennement de la Neuvième Légion, vous assistera dans toutes vos opérations sur cette planète.
 }
+
 GargoyleWarningScenario: {
 	Line1: ……Un groupe d'éclaireurs de l'Essaim. La masse principale suit probablement.
 	Line2: Ils vous ont repéré. Suivez-moi. Une forteresse abandonnée devant — ses fortifications nous tiendront un moment.
 }
+
 DropPodCallScenario: {
-	Line1: "Plus fluide que prévu. Temps de transit warp : moins 43 minutes."
+	Line1: Plus fluide que prévu. Temps de transit warp : moins 43 minutes.
 	Line2: Votre constitution convient exceptionnellement à la navigation subspatiale.
 	Line3: Vous êtes en orbite basse au-dessus de Corto III.
 	Line4: Évitez les débris de ces Exo-Mechs.
-	Line5: "Après la guerre de classe Apocalypse, la masse totale de cette planète a doublé. D'où ce que vous voyez."
+	Line5: Après la guerre de classe Apocalypse, la masse totale de cette planète a doublé. D'où ce que vous voyez.
 	Line6: J'ai gravé les autorisations dans votre puce. Toute unité survivante comprendra tout.
 	Line7: Vous entrez bientôt dans le champ de blindage de l'Essaim. Toute communication extérieure sera coupée.
 	Line8: Tuez la créature-nœud de cette planète et le champ devrait faiblir. Elle est probablement près du noyau.
-	Line9: "Enfin : bonne chance."
+	Line9: Enfin : bonne chance.
 }

@@ -1,19 +1,19 @@
-GsSlimeStaff.Desc: "Gel-Legion: Schleime bilden eine rollende Wache; treffen zwei Schleime dasselbe Ziel innerhalb eines Takts, folgt eine Schmelzgel-Explosion, unter Sammelbefehl türmen sie sich zum federnden Gelhaufen"
-GsFinchStaff.Desc: "Finkenschwarm: Finken fliegen in V-Formation; nach dem ersten Pick gewinnen Folgepicks am selben Ziel an Kraft, unter Sammelbefehl werden sie zum kreisenden Schwarm"
-GsAbigailsFlower.Desc: "Gefährtenseele: Abigails Schläge hinterlassen einen Seelentrost-Ring, darin werden deine Diener wilder; unter Sturmbefehl bündelt sie ihren Zorn auf den Markierten"
-GsFlinxStaff.Desc: "Schneelawine: Flinxe stoßen in Staffel; der vierte Stoß auf dasselbe Ziel im kurzen Fenster trifft um die Hälfte härter und trägt Frostbrand, unter Sammelbefehl türmen sie eine Schneewehr"
-GsHornetStaff.Desc: "Nestfeuer: Hornissen bilden ein Wabengitter oben seitlich; drei Giftstachel ins selbe Ziel werfen eine Giftexplosions-Kapsel, danach bleibt Giftnebel; unter Sturmbefehl fliegen die Stachel schneller"
-GsVampireFrogStaff.Desc: "Blutfrosch-Fest: Blutfrösche bewachen links und rechts; Bisse können Markperlen spritzen, die zurückfliegen und dich heilen, unter Blutmond verfallen sie in karmesinrote Raserei"
-GsImpStaff.Desc: "Höllenbatterie: Imps bilden eine Geschützlinie hinter dir; unter Sturmbefehl treffen drei Feuerbälle dasselbe Ziel, unter seinen Füßen steigt eine Höllenfeuersäule"
-GsSpiderStaff.Desc: "Netzjagd: Drei Spinnentypen halten ein Dreieck; gemeinsame Bisse wickeln die Beute ins Bindungsnetz, Wunden darin werden tiefer, und jeder Biss spritzt Säuregift"
-GsBladeStaff.Desc: "Bagua-Klingenrad: Verzauberte Dolche bilden ein langsam drehendes Rad; der sechste Treffer eines Dolchs am selben Ziel schneidet rüstungsbrechend tief und blitzt ein Bagua-Klingenschatten für 40% Extra-Schaden; unter Sammelbefehl erhebt sich das Tor der Zehntausend Klingen"
+GsSlimeStaff.Desc: Gel-Legion: Schleime bilden eine rollende Wache; treffen zwei Schleime dasselbe Ziel innerhalb eines Takts, folgt eine Schmelzgel-Explosion, unter Sammelbefehl türmen sie sich zum federnden Gelhaufen
+GsFinchStaff.Desc: Finkenschwarm: Finken fliegen in V-Formation; nach dem ersten Pick gewinnen Folgepicks am selben Ziel an Kraft, unter Sammelbefehl werden sie zum kreisenden Schwarm
+GsAbigailsFlower.Desc: Gefährtenseele: Abigails Schläge hinterlassen einen Seelentrost-Ring, darin werden deine Diener wilder; unter Sturmbefehl bündelt sie ihren Zorn auf den Markierten
+GsFlinxStaff.Desc: Schneelawine: Flinxe stoßen in Staffel; der vierte Stoß auf dasselbe Ziel im kurzen Fenster trifft um die Hälfte härter und trägt Frostbrand, unter Sammelbefehl türmen sie eine Schneewehr
+GsHornetStaff.Desc: Nestfeuer: Hornissen bilden ein Wabengitter oben seitlich; drei Giftstachel ins selbe Ziel werfen eine Giftexplosions-Kapsel, danach bleibt Giftnebel; unter Sturmbefehl fliegen die Stachel schneller
+GsVampireFrogStaff.Desc: Blutfrosch-Fest: Blutfrösche bewachen links und rechts; Bisse können Markperlen spritzen, die zurückfliegen und dich heilen, unter Blutmond verfallen sie in karmesinrote Raserei
+GsImpStaff.Desc: Höllenbatterie: Imps bilden eine Geschützlinie hinter dir; unter Sturmbefehl treffen drei Feuerbälle dasselbe Ziel, unter seinen Füßen steigt eine Höllenfeuersäule
+GsSpiderStaff.Desc: Netzjagd: Drei Spinnentypen halten ein Dreieck; gemeinsame Bisse wickeln die Beute ins Bindungsnetz, Wunden darin werden tiefer, und jeder Biss spritzt Säuregift
+GsBladeStaff.Desc: Bagua-Klingenrad: Verzauberte Dolche bilden ein langsam drehendes Rad; der sechste Treffer eines Dolchs am selben Ziel schneidet rüstungsbrechend tief und blitzt ein Bagua-Klingenschatten für 40% Extra-Schaden; unter Sammelbefehl erhebt sich das Tor der Zehntausend Klingen
 
 GsLegionBannerProj: {
 	DisplayName: Legionsbanner
 	GuardTip: Wache
 	AssaultTip: Sturm!
 	RallyTip: Sammeln!
-	CommandHint: "Rechtsklick zum Befehlen: auf Feind für Sturm, auf Boden zum Sammeln, neben dich zum Rückruf"
+	CommandHint: Rechtsklick zum Befehlen: auf Feind für Sturm, auf Boden zum Sammeln, neben dich zum Rückruf
 }
 
 GsRallyFieldProj.DisplayName: Sammelfeld

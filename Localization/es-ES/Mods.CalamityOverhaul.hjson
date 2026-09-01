@@ -24,11 +24,11 @@ Biomes: {
 	}
 }
 
-# Para creadores de paquetes de idioma:
-# Estas claves estaban antes en Items. Tras eliminar EcTypeItem, las claves del tipo "ItemNameEcType" se han movido aquí.
-# El formato correspondiente es "ItemNameEcType" → "RItemName" o "ItemNameOverride".
-# Salvo el cambio de nombre de clase, DisplayName y Tooltip siguen igual que en la versión anterior.
-# Si necesitas migrar tu paquete de idioma a la nueva versión, copia y pega las entradas aquí y actualiza los nombres de clase.
+# For Language Pack Creators:
+# The keys here were previously in Items. Since EcTypeItem has been removed, all localization keys similar to "ItemNameEcType" have been moved here.
+# The corresponding format is "ItemNameEcType" → "RItemName" or "ItemNameOverride".
+# Apart from the class name change, the DisplayName and Tooltip remain the same as in the previous version.
+# So if you need to migrate your language pack to the new version, simply copy and paste the entries here and update the class names accordingly.
 
 Arcanes: {
 	Items: {
@@ -303,7 +303,7 @@ QuickHack: {
 	DataBrand: {
 		DisplayName: Marca de datos
 		Description: Copia el prefijo de este equipo y, en el siguiente hackeo, lo imprime en otro
-		HudTag: "Marca: {0}"
+		HudTag: Marca: {0}
 		DenyNoPrefix: Este objeto no tiene prefijo que copiar
 		DenyIncompatible: El prefijo registrado no encaja en este objeto
 	}
@@ -423,7 +423,7 @@ QuickHack: {
 		DisplayName: Traición balística
 		Description: Los tres siguientes proyectiles del rival dan la vuelta a medio vuelo y vuelven a su dueño; si deja de disparar, está a salvo
 		HijackCounter: Proyectil secuestrado {0}/{1}
-		DeathReason: "El proyectil que disparó {0} fue desviado por {1} y volvió"
+		DeathReason: El proyectil que disparó {0} fue desviado por {1} y volvió
 	}
 
 	MeltdownBrand: {
@@ -567,7 +567,7 @@ HackCircuit: {
 		IffHostile: Hostil
 		IffFriendly: Aliado
 		MunitionKinetic: Proyectil cinético
-		BeaconCount: "Atraídos: {0}"
+		BeaconCount: Atraídos: {0}
 	}
 }
 
@@ -956,8 +956,8 @@ GodSmithLaunchers: {
 			Enjambre perseguidor: al acertar marca al enemigo con un sello de copo; recibe un 8% más de daño de esta arma
 			Órbita de ventisca: el cohete sube primero y luego se lanza en picado desde encima del cursor
 			'''
-		ModeHoming: "Vehículo: enjambre perseguidor"
-		ModeOrbital: "Vehículo: órbita de ventisca"
+		ModeHoming: Vehículo: enjambre perseguidor
+		ModeOrbital: Vehículo: órbita de ventisca
 	}
 
 	GsStarCannon: {
@@ -966,8 +966,8 @@ GodSmithLaunchers: {
 			Reforja: clic derecho para cambiar la trayectoria
 			Tiro tenso: las estrellas vuelan en línea recta; Estrella caída: las estrellas suben y luego llueven alrededor del cursor; al acertar salpican polvo estelar
 			'''
-		ModeDirect: "Trayectoria: tiro tenso"
-		ModeStarfall: "Trayectoria: estrella caída"
+		ModeDirect: Trayectoria: tiro tenso
+		ModeStarfall: Trayectoria: estrella caída
 	}
 
 	GsStynger: {
@@ -976,9 +976,9 @@ GodSmithLaunchers: {
 			Reforja: clic derecho para ciclar la espoleta
 			Impacto: estalla al acertar; Distancia: estalla en el aire al alcanzar la distancia del cursor y la metralla se cierra en cono; Rebote: rebota una vez en un bloque antes de armarse
 			'''
-		ModeImpact: "Espoleta: impacto"
-		ModeRange: "Espoleta: explosión a distancia"
-		ModeRicochet: "Espoleta: rebote"
+		ModeImpact: Espoleta: impacto
+		ModeRange: Espoleta: explosión a distancia
+		ModeRicochet: Espoleta: rebote
 	}
 }
 

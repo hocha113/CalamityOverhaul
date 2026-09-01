@@ -1,18 +1,18 @@
-GsWoodArmor.EndowLine: "Éclat de gland : les coups accumulent la sève ; à six charges, le prochain coup fait jaillir trois glands rebondissants qui éclatent en éclats de bois"
-GsCopperArmor.EndowLine: "Veines de cuivre : les coups accumulent la charge ; à cinq charges, le prochain coup relâche un arc qui saute jusqu'à trois ennemis"
-GsTinArmor.EndowLine: "Résonance d'étain : les coups accumulent la résonance ; à cinq charges, le prochain coup fait sonner l'étain, trois anneaux sonores qui blessent et troublent"
-GsIronArmor.EndowLine: "Trempe de forge : subir des coups accumule la trempe ; à quatre charges, le prochain impact abat un marteau de forge trempé"
-GsLeadArmor.EndowLine: "Pluie de plomb : les coups accumulent le plomb ; à six charges, le prochain coup verse trois gouttes lourdes qui éclaboussent en perles et empoisonnent"
-GsSilverArmor.EndowLine: "Garde lunaire : les coups accumulent l'éclat de lune ; à six charges, une lune d'argent orbite autour de vous et éclate au contact"
-GsTungstenArmor.EndowLine: "Croix de tungstène : les coups accumulent la pression du noyau ; à cinq charges, le prochain coup fait jaillir de la cible quatre clous de tungstène perçants"
-GsPlatinumArmor.EndowLine: "Heure royale : les coups accumulent l'éclat de platine ; à sept charges, le prochain coup ouvre l'Heure royale : 5 s durant, chaque impact tire un éclat de platine à tête chercheuse ; subir un coup interrompt le règne"
-GsNinjaArmor.EndowLine: "Pieu de substitution : toutes les 8 s, un leurre est prêt ; subir un coup le brise en fumée et lance trois shuriken en riposte"
-GsBeeArmor.EndowLine: "Garde de la reine : les coups accumulent le nectar ; à huit charges, le prochain coup lâche quatre abeilles de garde sur la cible"
-GsMeteorArmor.EndowLine: "Braises célestes : les coups accumulent le feu d'étoile ; à sept charges, le prochain coup fait tomber deux éclats de météore en flammes"
-GsJungleArmor.EndowLine: "Fléau de spores : les coups accumulent les spores ; à six charges, le prochain coup fait éclore un nuage qui empoisonne qui s'y attarde"
-GsJungleArmorAncientCobalt.EndowLine: "Fléau de spores : les coups accumulent les spores ; à six charges, le prochain coup fait éclore un nuage qui empoisonne qui s'y attarde"
-GsNecroArmor.EndowLine: "Lances d'os : les coups accumulent les ossements, les kills plus vite ; à six charges, le prochain coup dresse trois lances d'os hors du sol"
-GsShadowArmor.EndowLine: "Marée d'ombre : les coups accumulent la flamme d'ombre ; à huit charges la marée monte, chaque coup pendant 6 s fait tournoyer une faux d'ombre, et trois autres jaillissent au reflux"
-GsShadowArmorAncient.EndowLine: "Marée d'ombre : les coups accumulent la flamme d'ombre ; à huit charges la marée monte, chaque coup pendant 6 s fait tournoyer une faux d'ombre, et trois autres jaillissent au reflux"
-GsCrimsonArmor.EndowLine: "Pacte de sangsue : les coups accumulent le sang ; à six charges, le prochain coup déchire deux sangsues qui mordent la cible et vous rendent un peu de vie"
-GsMoltenArmor.EndowLine: "Éruption du noyau : les coups accumulent la pression de magma ; à dix charges, le prochain coup fait jaillir trois colonnes de lave sous la cible, puis vos attaques enflamment 4 s"
+GsWoodArmor.EndowLine: Éclat de gland : les coups accumulent la sève ; à six charges, le prochain coup fait jaillir trois glands rebondissants qui éclatent en éclats de bois
+GsCopperArmor.EndowLine: Veines de cuivre : les coups accumulent la charge ; à cinq charges, le prochain coup relâche un arc qui saute jusqu'à trois ennemis
+GsTinArmor.EndowLine: Résonance d'étain : les coups accumulent la résonance ; à cinq charges, le prochain coup fait sonner l'étain, trois anneaux sonores qui blessent et troublent
+GsIronArmor.EndowLine: Trempe de forge : subir des coups accumule la trempe ; à quatre charges, le prochain impact abat un marteau de forge trempé
+GsLeadArmor.EndowLine: Pluie de plomb : les coups accumulent le plomb ; à six charges, le prochain coup verse trois gouttes lourdes qui éclaboussent en perles et empoisonnent
+GsSilverArmor.EndowLine: Garde lunaire : les coups accumulent l'éclat de lune ; à six charges, une lune d'argent orbite autour de vous et éclate au contact
+GsTungstenArmor.EndowLine: Croix de tungstène : les coups accumulent la pression du noyau ; à cinq charges, le prochain coup fait jaillir de la cible quatre clous de tungstène perçants
+GsPlatinumArmor.EndowLine: Heure royale : les coups accumulent l'éclat de platine ; à sept charges, le prochain coup ouvre l'Heure royale : 5 s durant, chaque impact tire un éclat de platine à tête chercheuse ; subir un coup interrompt le règne
+GsNinjaArmor.EndowLine: Pieu de substitution : toutes les 8 s, un leurre est prêt ; subir un coup le brise en fumée et lance trois shuriken en riposte
+GsBeeArmor.EndowLine: Garde de la reine : les coups accumulent le nectar ; à huit charges, le prochain coup lâche quatre abeilles de garde sur la cible
+GsMeteorArmor.EndowLine: Braises célestes : les coups accumulent le feu d'étoile ; à sept charges, le prochain coup fait tomber deux éclats de météore en flammes
+GsJungleArmor.EndowLine: Fléau de spores : les coups accumulent les spores ; à six charges, le prochain coup fait éclore un nuage qui empoisonne qui s'y attarde
+GsJungleArmorAncientCobalt.EndowLine: Fléau de spores : les coups accumulent les spores ; à six charges, le prochain coup fait éclore un nuage qui empoisonne qui s'y attarde
+GsNecroArmor.EndowLine: Lances d'os : les coups accumulent les ossements, les kills plus vite ; à six charges, le prochain coup dresse trois lances d'os hors du sol
+GsShadowArmor.EndowLine: Marée d'ombre : les coups accumulent la flamme d'ombre ; à huit charges la marée monte, chaque coup pendant 6 s fait tournoyer une faux d'ombre, et trois autres jaillissent au reflux
+GsShadowArmorAncient.EndowLine: Marée d'ombre : les coups accumulent la flamme d'ombre ; à huit charges la marée monte, chaque coup pendant 6 s fait tournoyer une faux d'ombre, et trois autres jaillissent au reflux
+GsCrimsonArmor.EndowLine: Pacte de sangsue : les coups accumulent le sang ; à six charges, le prochain coup déchire deux sangsues qui mordent la cible et vous rendent un peu de vie
+GsMoltenArmor.EndowLine: Éruption du noyau : les coups accumulent la pression de magma ; à dix charges, le prochain coup fait jaillir trois colonnes de lave sous la cible, puis vos attaques enflamment 4 s

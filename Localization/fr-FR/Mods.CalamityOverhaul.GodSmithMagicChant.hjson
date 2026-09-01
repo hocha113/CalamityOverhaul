@@ -1,109 +1,109 @@
-GsWandOfSparking.Desc: 
+GsWandOfSparking.Desc:
 	'''
 	Reforgé : jeter sur le tempo accumule la résonance ; une étincelle sur le temps saute en chaîne et enflamme les ennemis proches ;
 	à résonance pleine, le prochain sort éclate en un éventail de douze braises
 	'''
-GsWandOfFrosting.Desc: 
+GsWandOfFrosting.Desc:
 	'''
 	Reforgé : un bolt de givre sur le temps se réfracte en éclats de glace, plus nombreux à mesure que la résonance monte ;
 	à résonance pleine, le prochain sort souffle un large cône de brume qui inflige Morsure de givre
 	'''
-GsThunderZapper.Desc: 
+GsThunderZapper.Desc:
 	'''
 	Reforgé : un bolt de foudre sur le temps zigzague pour de vrai, chaque coude peut forker un petit arc, la résonance accélère la détente ;
 	à résonance pleine, le prochain impact pose une marque de foudre, puis la foudre tombe du ciel
 	'''
-GsAmethystStaff.Desc: 
+GsAmethystStaff.Desc:
 	'''
 	Reforgé : un bolt de gemme sur le temps éclate en améthyste prismatique qui perce un ennemi de plus ;
 	à résonance pleine, le prochain sort tire trois bolts de gemmes aux teintes voisines
 	'''
-GsTopazStaff.Desc: 
+GsTopazStaff.Desc:
 	'''
 	Reforgé : un bolt de gemme sur le temps éclate en éclats de topaze à tête chercheuse ;
 	à résonance pleine, le prochain sort tire trois bolts de gemmes aux teintes voisines
 	'''
-GsSapphireStaff.Desc: 
+GsSapphireStaff.Desc:
 	'''
 	Reforgé : un bolt de gemme sur le temps éclate en lances de saphir rapides, en ligne droite ;
 	à résonance pleine, le prochain sort tire trois bolts de gemmes aux teintes voisines
 	'''
-GsEmeraldStaff.Desc: 
+GsEmeraldStaff.Desc:
 	'''
 	Reforgé : un bolt de gemme sur le temps éclate plus fort, un éclat d'émeraude de plus que les autres gemmes ;
 	à résonance pleine, le prochain sort tire trois bolts de gemmes aux teintes voisines
 	'''
-GsRubyStaff.Desc: 
+GsRubyStaff.Desc:
 	'''
 	Reforgé : un bolt de gemme sur le temps éclate en éclats de rubis qui explosent au contact ;
 	à résonance pleine, le prochain sort tire trois bolts de gemmes aux teintes voisines
 	'''
-GsDiamondStaff.Desc: 
+GsDiamondStaff.Desc:
 	'''
 	Reforgé : un bolt de gemme sur le temps éclate en éclats de diamant qui réfractent deux rayons rapides ;
 	à résonance pleine, le prochain sort tire trois bolts de gemmes aux teintes voisines
 	'''
-GsAmberStaff.Desc: 
+GsAmberStaff.Desc:
 	'''
 	Reforgé : un bolt de gemme sur le temps éclate en éclats d'ambre qui laissent un nuage de poussière piquante ;
 	à résonance pleine, le prochain sort tire trois bolts de gemmes aux teintes voisines
 	'''
-GsVilethorn.Desc: 
+GsVilethorn.Desc:
 	'''
 	Reforgé : une épine sur le temps, à chaque morsure de chair, fourche en pointes impies ;
 	à résonance pleine, le prochain estoc ouvre aussi un anneau de huit épines autour de vous
 	'''
-GsWaterBolt.Desc: 
+GsWaterBolt.Desc:
 	'''
 	Reforgé : un bolt d'eau sur le temps rebondit plus loin, chaque mur ouvre un anneau d'eau ;
 	à résonance pleine, le prochain sort devient une grande marée qui perce tout
 	'''
-GsBookOfSkulls.Desc: 
+GsBookOfSkulls.Desc:
 	'''
 	Reforgé : un impact inscrit l'ennemi au registre ; les crânes sur le temps chassent les proies inscrites ;
 	à résonance pleine, le prochain sort lâche trois crânes en triangle ; trois marques sur la même cible, explosion d'os
 	'''
-GsDemonScythe.Desc: 
+GsDemonScythe.Desc:
 	'''
 	Reforgé : une faux sur le temps se charge plus vite ; à résonance haute, elle revient pour un second passage ;
 	à résonance pleine, le prochain sort croise deux faux, horizontale et verticale, sur le viseur
 	'''
-GsAquaScepter.Desc: 
+GsAquaScepter.Desc:
 	'''
 	Reforgé : le jet continu gonfle la marée ; dans la fenêtre de crue, la pression monte, le mana coûte moins, une vague toutes les trois respirations ;
 	après trois crues, le prochain sort éclate en un éventail de brisants
 	'''
-GsFlowerOfFire.Desc: 
+GsFlowerOfFire.Desc:
 	'''
 	Reforgé : une boule de feu sur le temps, au premier atterrissage, ouvre un éventail de langues ; la résonance ajoute des rebonds et des langues ;
 	à résonance pleine, la prochaine boule s'ouvre en un champ de fleurs brûlantes
 	'''
-GsBeeGun.Desc: 
+GsBeeGun.Desc:
 	'''
 	Reforgé : un essaim sur le temps vole en V ; plus la résonance est haute, plus il y a de grandes abeilles ;
 	à résonance pleine, le prochain sort lâche une reine qui sème un essaim vivant
 	'''
-GsSpaceGun.Desc: 
+GsSpaceGun.Desc:
 	'''
 	Reforgé : chaque tir sur le temps charge une case de bobine, un raté ne remet pas à zéro ;
 	toutes les quatre cases, ce tir devient une impulsion large et perçante qui tire les petits ennemis
 	'''
-GsGrayZapinator.Desc: 
+GsGrayZapinator.Desc:
 	'''
 	Reforgé : le chaos reste le chaos, mais un zap sur le temps est toujours un segment haute tension ;
 	à résonance pleine, le prochain tir surcharge en un faisceau gonflé et perçant
 	'''
-GsLaserRifle.Desc: 
+GsLaserRifle.Desc:
 	'''
 	Reforgé : tous les trois tirs sur le temps d'affilée, le troisième se scinde en deux lasers parallèles ;
 	à résonance pleine, le prochain tir allume une rafale en surchauffe, cadence en flèche, puis le canon s'essouffle un instant
 	'''
-GsWeatherPain.Desc: 
+GsWeatherPain.Desc:
 	'''
 	Reforgé : un impact laisse un œil de tempête ; le prochain sort sur le temps fonce vers l'œil et gonfle ;
 	à trois charges de résonance, deux tornades tournent ensemble ; à résonance pleine, le prochain sort appelle un Chœur de tempête
 	'''
-GsCursedFlames.Desc: 
+GsCursedFlames.Desc:
 	'''
 	Reforgé : un bolt de Flammes maudites sur le temps plante une graine ; à trois graines, elles s'enflamment, huit épines maudites et un bassin de feu
 	À résonance pleine, le prochain sort lâche un serpent incendiaire qui goutte des Flammes maudites
@@ -112,27 +112,27 @@ GsChantFlameFieldProj.DisplayName: Champ de fleurs de feu
 GsChantStormChoirProj.DisplayName: Chœur de tempête
 GsCursedFlamesSerpentProj.DisplayName: Serpent incendiaire
 GsCursedFlamesPoolProj.DisplayName: Bassin de Flammes maudites
-GsGoldenShower.Desc: 
+GsGoldenShower.Desc:
 	'''
 	Reforgé : les impacts gravent une marque d'ichor ; à cinq charges, explosion en huit jets et un globule d'or sacré qui goutte ;
 	un jet ininterrompu accumule la haute pression : bolts plus rapides, flux plus dense, gravure doublée
 	'''
-GsCrystalVileShard.Desc: 
+GsCrystalVileShard.Desc:
 	'''
 	Reforgé : une lance de cristal sur le temps plante une graine ; quand la lance se brise, chaque ennemi ensemencé explose en croix de cristal ;
 	à résonance pleine, le prochain sort dresse six lances en anneau autour de vous
 	'''
-GsUnholyTrident.Desc: 
+GsUnholyTrident.Desc:
 	'''
 	Reforgé : un sort sur le temps se scinde en un trident de trois fourches, brûlées au Feu infernal ;
 	à résonance pleine, le prochain sort soulève quatre vagues de fourches depuis sous le curseur
 	'''
-GsNettleBurst.Desc: 
+GsNettleBurst.Desc:
 	'''
 	Reforgé : une liane sur le temps s'enracine à la morsure, laissant un fourré d'orties qui retient (trois au plus) ;
 	à résonance pleine, le prochain sort lâche un dragon de lianes qui balaye le champ
 	'''
-GsWaspGun.Desc: 
+GsWaspGun.Desc:
 	'''
 	Reforgé : une guêpe sur le temps pique une marque de phéromone ; toutes les guêpes en l'air chassent d'abord cette proie ;
 	à résonance pleine, le prochain sort lâche une reine qui sème des chasseuses sur son passage

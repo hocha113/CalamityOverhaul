@@ -1,4 +1,4 @@
-# Dádivas de armadura P10b (17 conjuntos hardmode + 5 pre-HM cedidos de P10a); las cuatro combinaciones de Sagrado ancestral comparten una línea
+// P10b armor endowments (17 hardmode sets + 5 pre-HM sets handed over from P10a); the four Ancient Hallowed combos share one line
 GsCobaltArmor.EndowLine: Trasimagen veloz: los golpes acumulan tajo rápido; al llegar a cinco capas, cambias a postura veloz; durante cinco segundos cada golpe saca desde el flanco del objetivo un filo de cobalto, seis en total
 GsPalladiumArmor.EndowLine: Sifón vital: los golpes acumulan vitalidad; al llegar a ocho capas, el siguiente impacto planta un capullo sifón en el objetivo; el capullo muerde al huésped por ciclos y te devuelve vida en hilos de sangre dorada
 GsMythrilArmor.EndowLine: Espadas del yunque: los golpes acumulan filo templado; cada seis capas forjan una espada flotante, hasta tres; con las tres listas, al llenar de nuevo el siguiente impacto las manda a clavar al objetivo a destiempo

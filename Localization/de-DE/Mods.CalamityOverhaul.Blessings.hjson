@@ -2,7 +2,7 @@ System: {
 	UnlockBroadcast: Der Tod nickt. »{0}« ist ins Jenseitsrad eingegangen
 	KindleLabel: Entzünden
 	SnuffLabel: Löschen
-	BurningCounter: "Flamme {0}/{1}"
+	BurningCounter: Flamme {0}/{1}
 	SlotFullNotice: Die Lampensitze sind voll. Lösche erst eine Flamme, bevor du einen neuen Segen entzündest
 	LockedHint: Erschlage es, während die Asura-Hölle herrscht, dann kehrt seine Seelenflamme auf den Sitz zurück
 	HudName: Seelenlaterne

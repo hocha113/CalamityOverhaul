@@ -1,4 +1,4 @@
-GsLastPrism.Desc: 
+GsLastPrism.Desc:
 	'''
 	Reforgé : la chaleur, c'est la focalisation ; six faisceaux colorés se resserrent, et à blanc ils fusionnent en un faisceau incandescent
 	Le point d'impact du faisceau blanc réfracte des éclats de prisme ; au plafond de la jauge le faisceau continue, mais le mana flambe
@@ -7,40 +7,40 @@ GsLastPrism.Desc:
 GsLastPrismHeldProj.DisplayName: Faisceau du Dernier prisme
 GsLastPrismBurstProj.DisplayName: Éclat prismatique
 GsLastPrismShardProj.DisplayName: Éclat de prisme
-GsMagicalHarp.Desc: 
+GsMagicalHarp.Desc:
 	'''
 	Reforgé : un jeu ininterrompu accumule le crescendo ; au fortissimo les notes gonflent, filent et pleuvent
 	Clic droit : tout le crescendo se résout en une onde d'accord ; les impacts rapides d'affilée font écho et blessent encore
 	'''
-GsBubbleGun.Desc: 
+GsBubbleGun.Desc:
 	'''
 	Reforgé : le jet continu accumule la pression ; à ébullition les bulles gonflent et éclatent en deux perles
 	Au plafond, le canon se bouche de mousse et se verrouille un instant
 	Clic droit : toute la pression part en un éventail de sept grandes bulles qui explosent en chaîne
 	'''
-GsLaserMachinegun.Desc: 
+GsLaserMachinegun.Desc:
 	'''
 	Reforgé : la chaleur, c'est le régime ; canon froid et lent, blanc et rugissant ; à blanc, chaque sixième tir porte un faisceau cramoisi perçant
 	Tenir la ligne rouge ne fait pas exploser le canon, ça double seulement le coût en mana
 	Clic droit : tout le barillet part en un éventail de trente tirs
 	'''
-GsRazorbladeTyphoon.Desc: 
+GsRazorbladeTyphoon.Desc:
 	'''
 	Reforgé : chaque sort accumule la tempête ; les lames nées à blanc ne se perdent jamais, elles reviennent à vos côtés et chassent encore
 	Clic droit : ouvrez l'Œil du typhon au curseur ; toutes les lames en l'air sont aspirées au cœur, et l'œil explose en se fermant
 	'''
-GsMagnetSphere.Desc: 
+GsMagnetSphere.Desc:
 	'''
 	Reforgé : tant que vous tenez le sceptre, un lien magnétique vous relie à la sphère et le flux grimpe
 	À flux plein, la sphère surcharge et verse des arcs lourds sur tout ce qui est proche
 	Clic droit : une tempête magnétique autour de la sphère aspire les petits ennemis vers le cœur
 	'''
-GsShadowbeamStaff.Desc: 
+GsShadowbeamStaff.Desc:
 	'''
 	Reforgé : maintenez pour tenir un faisceau d'ombre qui rebondit sur les murs ; à blanc, un rebond de plus et le faisceau s'épaissit
 	Clic droit : des explosions d'ombre s'enchaînent à chaque coude du faisceau
 	'''
-GsChargedBlasterCannon.Desc: 
+GsChargedBlasterCannon.Desc:
 	'''
 	Reforgé : maintenez pour charger ; à froid, des bolts de plasma ; à blanc, des impulsions d'arc focalisé
 	La charge ne s'arrête jamais : au plafond, le canon tire de lui-même le Canon d'annihilation, une énorme sphère de plasma qui lèche d'arcs les ennemis proches

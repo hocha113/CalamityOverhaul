@@ -1,19 +1,19 @@
-GsSlimeStaff.Desc: "Legión de gel: los slimes ruedan en escolta; si dos slimes golpean al mismo objetivo en un mismo tiempo, estalla una explosión de gel, y la orden de reunión los apila en un montón elástico"
-GsFinchStaff.Desc: "Falange de pinzones: las aves vuelan en V; tras el primer picotazo, los siguientes al mismo objetivo ganan fuerza por capas, y la orden de reunión forma una bandada en círculo"
-GsAbigailsFlower.Desc: "Alma compañera: los golpes de Abigail dejan un anillo de consuelo, y dentro tus súbditos son más feroces; bajo la orden de asalto, concentra su ira en el marcado"
-GsFlinxStaff.Desc: "Avalancha de nieve: los flinx cargan en columna de relevo; el cuarto choque al mismo objetivo en la ventana golpea un 50% más fuerte y aplica Quemadura gélida, y la orden de reunión apila una barrera de nieve"
-GsHornetStaff.Desc: "Red de colmena: las avispas forman una retícula de panal arriba a un lado; tres aguijones en el mismo objetivo hacen caer una cápsula de veneno que deja niebla tóxica; bajo la orden de asalto, los aguijones salen más rápidos"
-GsVampireFrogStaff.Desc: "Festín de ranas: las ranas de sangre flanquean a izquierda y derecha; una mordida puede soltar una perla de tuétano que vuela a curarte; bajo la Luna de Sangre, la tropa entra en frenesí carmesí"
-GsImpStaff.Desc: "Batería infernal: los diablillos forman una línea de artillería a tu espalda; bajo la orden de asalto, tres bolas de fuego al mismo objetivo hacen brotar una columna de Fuego infernal bajo sus pies"
-GsSpiderStaff.Desc: "Caza en tela: tres razas de arañas guardan un triángulo; las mordidas concertadas envuelven a la presa en una red, las heridas se ahondan, y cada mordida inyecta veneno ácido"
-GsBladeStaff.Desc: "Rueda de hojas bagua: las dagas encantadas orbitan lentas; el sexto golpe seguido de una misma daga al mismo objetivo corta la armadura y destella una sombra bagua que añade un 40% de daño; la orden de reunión alza una puerta de diez mil hojas"
+GsSlimeStaff.Desc: Legión de gel: los slimes ruedan en escolta; si dos slimes golpean al mismo objetivo en un mismo tiempo, estalla una explosión de gel, y la orden de reunión los apila en un montón elástico
+GsFinchStaff.Desc: Falange de pinzones: las aves vuelan en V; tras el primer picotazo, los siguientes al mismo objetivo ganan fuerza por capas, y la orden de reunión forma una bandada en círculo
+GsAbigailsFlower.Desc: Alma compañera: los golpes de Abigail dejan un anillo de consuelo, y dentro tus súbditos son más feroces; bajo la orden de asalto, concentra su ira en el marcado
+GsFlinxStaff.Desc: Avalancha de nieve: los flinx cargan en columna de relevo; el cuarto choque al mismo objetivo en la ventana golpea un 50% más fuerte y aplica Quemadura gélida, y la orden de reunión apila una barrera de nieve
+GsHornetStaff.Desc: Red de colmena: las avispas forman una retícula de panal arriba a un lado; tres aguijones en el mismo objetivo hacen caer una cápsula de veneno que deja niebla tóxica; bajo la orden de asalto, los aguijones salen más rápidos
+GsVampireFrogStaff.Desc: Festín de ranas: las ranas de sangre flanquean a izquierda y derecha; una mordida puede soltar una perla de tuétano que vuela a curarte; bajo la Luna de Sangre, la tropa entra en frenesí carmesí
+GsImpStaff.Desc: Batería infernal: los diablillos forman una línea de artillería a tu espalda; bajo la orden de asalto, tres bolas de fuego al mismo objetivo hacen brotar una columna de Fuego infernal bajo sus pies
+GsSpiderStaff.Desc: Caza en tela: tres razas de arañas guardan un triángulo; las mordidas concertadas envuelven a la presa en una red, las heridas se ahondan, y cada mordida inyecta veneno ácido
+GsBladeStaff.Desc: Rueda de hojas bagua: las dagas encantadas orbitan lentas; el sexto golpe seguido de una misma daga al mismo objetivo corta la armadura y destella una sombra bagua que añade un 40% de daño; la orden de reunión alza una puerta de diez mil hojas
 
 GsLegionBannerProj: {
 	DisplayName: Estandarte de la legión
 	GuardTip: Guardia
 	AssaultTip: ¡Asalto!
 	RallyTip: ¡Reunión!
-	CommandHint: "Clic derecho para mandar: clic en un enemigo para asaltar, clic en el suelo para reunir, clic cerca de ti para retirar la orden y volver a defender"
+	CommandHint: Clic derecho para mandar: clic en un enemigo para asaltar, clic en el suelo para reunir, clic cerca de ti para retirar la orden y volver a defender
 }
 
 GsRallyFieldProj.DisplayName: Campo de reunión

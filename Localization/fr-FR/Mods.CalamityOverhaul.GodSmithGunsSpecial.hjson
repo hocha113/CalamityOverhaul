@@ -1,5 +1,5 @@
 GsFlamethrower: {
-	Desc: 
+	Desc:
 		'''
 		Reforgé : jet de flammes à deux modes. L'éventail balaye un large cône et laisse des braises au sol ; la lance concentre un jet perçant
 		Clic droit pour changer de mode. Un jet trop long vide la pression et raccourcit la flamme ; relâchez pour recharger
@@ -7,8 +7,9 @@ GsFlamethrower: {
 	Mode0: Éventail
 	Mode1: Lance
 }
+
 GsElfMelter: {
-	Desc: 
+	Desc:
 		'''
 		Reforgé : jet de fête à deux modes. L'éventail de dégel asperge un large cône rouge-vert mêlé de vapeur de neige fondue ; le lancer de cadeaux concentre une lance étroite et jette une boîte en feu toutes les 0.8 s, valeur de 8 gels
 		Clic droit pour changer de mode. La pression reste : un jet trop long raccourcit la flamme
@@ -16,8 +17,9 @@ GsElfMelter: {
 	Mode0: Éventail de dégel
 	Mode1: Lancer de cadeaux
 }
+
 GsChainGun: {
-	Desc: 
+	Desc:
 		'''
 		Reforgé : maintenez pour entrer en Suppression, la cadence grimpe jusqu'à la plus rapide de Terraria ; 8 s de feu continu, le canon rougit et force le ralentissement jusqu'à ce que vous relâchiez
 		Clic droit : Focalisation, sans montée en régime, plus lente mais précise et lourde. En Suppression, tirer réduit votre vitesse de déplacement
@@ -25,8 +27,9 @@ GsChainGun: {
 	Mode0: Suppression
 	Mode1: Focalisation
 }
+
 GsDartPistol: {
-	Desc: 
+	Desc:
 		'''
 		Reforgé : deux modes. Double dard tire deux fléchettes rapides, la seconde à 70% ; Embuscade exige 0.8 s d'immobilité pour une fléchette +60% de dégâts et deux fois plus rapide
 		Clic droit pour changer de mode. Les effets des munitions à fléchettes sont conservés
@@ -34,8 +37,9 @@ GsDartPistol: {
 	Mode0: Double dard
 	Mode1: Embuscade
 }
+
 GsDartRifle: {
-	Desc: 
+	Desc:
 		'''
 		Reforgé : deux modes. Tir perçant se charge en maintenant, la ligne de visée apparaît, relâchez pour tirer : 1 s pleine charge double la vitesse, +2 perçage, +50% de dégâts ; Éventail triple envoie trois fléchettes à ±6°, 60% chacune, 1 fléchette consommée
 		Clic droit pour changer de mode. Les effets des munitions à fléchettes sont conservés
@@ -43,8 +47,9 @@ GsDartRifle: {
 	Mode0: Tir perçant
 	Mode1: Éventail triple
 }
+
 GsPiranhaGun: {
-	Desc: 
+	Desc:
 		'''
 		Reforgé : deux chasses. Morsure, c'est l'accroche classique ; Patrouille envoie le banc tourner autour du curseur 6 s, tout dans l'anneau se fait mordre, puis les poissons rentrent au nid
 		Clic droit pour changer de mode. Chaque morsure de patrouille inflige 85% ; 9 poissons de patrouille au plus
@@ -52,8 +57,9 @@ GsPiranhaGun: {
 	Mode0: Morsure
 	Mode1: Patrouille
 }
+
 GsToxikarp: {
-	Desc: 
+	Desc:
 		'''
 		Reforgé : deux crachats. Flux de bulles, c'est le tir rapide classique ; Pustule prend environ le triple du temps pour une grosse bulle à ×2.4 qui éclate en 6 bulles de spores et un brouillard toxique
 		Clic droit pour changer de mode. Toujours sans munitions
@@ -61,8 +67,9 @@ GsToxikarp: {
 	Mode0: Flux de bulles
 	Mode1: Pustule
 }
+
 GsCoinGun: {
-	Desc: 
+	Desc:
 		'''
 		Reforgé : clic droit pour faire défiler les dénominations, seulement les pièces que vous portez. Le cuivre tire une salve de trois, l'argent perce un ennemi de plus, l'or +10% de dégâts, le platine explose en lumière d'or
 		Retour sur investissement : un kill rend 1 pièce de cette dénomination, 3 par seconde au plus

@@ -1,26 +1,26 @@
-GsSpiritFlame.Desc: 
+GsSpiritFlame.Desc:
 	'''
 	Reforgé : les flammes spirituelles traînent un feu d'âme pâle ; la moitié des impacts détache une flammèche chasseuse
 	Maintenez le clic droit pour charger ; relâchez pour poser au curseur un anneau de cinq flammes qui se jettent tour à tour sur les ennemis proches
 	'''
 GsSpiritFlameRingProj.DisplayName: Anneau de flammes spirituelles
 GsSpiritFlameWispProj.DisplayName: Flammèche chasseuse
-GsPoisonStaff.Desc: 
+GsPoisonStaff.Desc:
 	'''
 	Reforgé : les crocs traînent un brouillard de venin et se scindent en deux crocs fins au second mors
 	Maintenez le clic droit pour charger le Baiser du serpent : une petite vipère rapide qui se faufile et pose un couloir de poison
 	'''
-GsVenomStaff.Desc: 
+GsVenomStaff.Desc:
 	'''
 	Reforgé : les crocs traînent un brouillard de venin et se scindent en un croc lourd au second mors
 	Maintenez le clic droit pour charger le Baiser du serpent : une grosse vipère lente dont le corps fondu laisse un bassin d'acide
 	'''
-GsShadowFlameHexDoll.Desc: 
+GsShadowFlameHexDoll.Desc:
 	'''
 	Reforgé : les tentacules de Flamme d'ombre plantent une marque de malédiction ; les ennemis marqués subissent plus de dégâts de cette poupée
 	Maintenez le clic droit pour charger le Grand hex : un domaine de marque au curseur qui fouette les intrus de tentacules
 	'''
-GsLeafBlower.Desc: 
+GsLeafBlower.Desc:
 	'''
 	Reforgé : les lames de feuilles volent avec un sillage vert tranchant
 	Maintenez le clic droit pour charger le mode Tempête : six secondes durant, chaque feuille va plus vite, coupe plus profond et tourne plus fort

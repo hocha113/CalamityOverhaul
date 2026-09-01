@@ -1,19 +1,21 @@
-GsSlimeStaff.Desc: "Légion de gel : les slimes roulent en escortes ; deux slimes différents qui frappent la même cible dans le même temps déclenchent une explosion de gel, et l'ordre de rassemblement les empile en un tas élastique"
-GsFinchStaff.Desc: "Phalange de pinsons : les oiseaux volent en V ; après le premier coup de bec, les suivants sur la même cible s'empilent en force, et l'ordre de rassemblement forme une nuée en cercle"
-GsAbigailsFlower.Desc: "Âme de compagne : les coups d'Abigail laissent un anneau de réconfort, vos sbires y sont plus féroces ; sous l'ordre d'assaut, elle concentre sa colère sur la cible marquée"
-GsFlinxStaff.Desc: "Avalanche de neige : les flinx chargent en colonne-relais ; le quatrième choc sur la même cible dans la fenêtre frappe 50% plus fort et inflige Brûlure de givre, et l'ordre de rassemblement dresse une barrière de neige"
-GsHornetStaff.Desc: "Toile de ruche : les frelons tiennent une grille en nid d'abeilles au-dessus et sur le côté ; trois dards dans la même cible font tomber une capsule de venin, puis un brouillard toxique ; sous l'ordre d'assaut, les dards partent plus vite"
-GsVampireFrogStaff.Desc: "Festin de grenouilles : les grenouilles de sang flanquent à gauche et à droite ; une morsure a une chance de projeter une perle de moelle qui revient vous soigner ; sous une Lune de sang, la meute entre en frénésie cramoisie"
-GsImpStaff.Desc: "Batterie infernale : les diablotins tiennent une ligne d'artillerie dans votre dos ; sous l'ordre d'assaut, trois boules de feu sur la même cible font jaillir une colonne de Feu infernal sous ses pieds"
-GsSpiderStaff.Desc: "Chasse en toile : trois races d'araignées tiennent un triangle ; les morsures concertées emmaillotent la proie, les plaies s'approfondissent, et chaque morsure injecte un venin acide"
-GsBladeStaff.Desc: "Roue de lames bagua : les dagues enchantées orbitent lentement ; la sixième frappe d'affilée d'une même dague sur la même cible perce l'armure et flash une ombre bagua pour +40% de dégâts ; l'ordre de rassemblement dresse une porte de dix mille lames"
+GsSlimeStaff.Desc: Légion de gel : les slimes roulent en escortes ; deux slimes différents qui frappent la même cible dans le même temps déclenchent une explosion de gel, et l'ordre de rassemblement les empile en un tas élastique
+GsFinchStaff.Desc: Phalange de pinsons : les oiseaux volent en V ; après le premier coup de bec, les suivants sur la même cible s'empilent en force, et l'ordre de rassemblement forme une nuée en cercle
+GsAbigailsFlower.Desc: Âme de compagne : les coups d'Abigail laissent un anneau de réconfort, vos sbires y sont plus féroces ; sous l'ordre d'assaut, elle concentre sa colère sur la cible marquée
+GsFlinxStaff.Desc: Avalanche de neige : les flinx chargent en colonne-relais ; le quatrième choc sur la même cible dans la fenêtre frappe 50% plus fort et inflige Brûlure de givre, et l'ordre de rassemblement dresse une barrière de neige
+GsHornetStaff.Desc: Toile de ruche : les frelons tiennent une grille en nid d'abeilles au-dessus et sur le côté ; trois dards dans la même cible font tomber une capsule de venin, puis un brouillard toxique ; sous l'ordre d'assaut, les dards partent plus vite
+GsVampireFrogStaff.Desc: Festin de grenouilles : les grenouilles de sang flanquent à gauche et à droite ; une morsure a une chance de projeter une perle de moelle qui revient vous soigner ; sous une Lune de sang, la meute entre en frénésie cramoisie
+GsImpStaff.Desc: Batterie infernale : les diablotins tiennent une ligne d'artillerie dans votre dos ; sous l'ordre d'assaut, trois boules de feu sur la même cible font jaillir une colonne de Feu infernal sous ses pieds
+GsSpiderStaff.Desc: Chasse en toile : trois races d'araignées tiennent un triangle ; les morsures concertées emmaillotent la proie, les plaies s'approfondissent, et chaque morsure injecte un venin acide
+GsBladeStaff.Desc: Roue de lames bagua : les dagues enchantées orbitent lentement ; la sixième frappe d'affilée d'une même dague sur la même cible perce l'armure et flash une ombre bagua pour +40% de dégâts ; l'ordre de rassemblement dresse une porte de dix mille lames
+
 GsLegionBannerProj: {
 	DisplayName: Bannière de légion
 	GuardTip: Garde
 	AssaultTip: Assaut !
 	RallyTip: Rassemblement !
-	CommandHint: "Clic droit pour commander : un ennemi pour l'assaut, le sol pour le rassemblement, près de vous pour rappeler en garde"
+	CommandHint: Clic droit pour commander : un ennemi pour l'assaut, le sol pour le rassemblement, près de vous pour rappeler en garde
 }
+
 GsRallyFieldProj.DisplayName: Terrain de rassemblement
 GsGelBurstProj.DisplayName: Explosion de gel
 GsVenomPodProj.DisplayName: Capsule de venin

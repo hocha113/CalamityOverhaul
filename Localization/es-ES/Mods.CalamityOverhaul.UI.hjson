@@ -130,7 +130,7 @@ Generator: {
 		WindLabel: Viento
 		FlowLabel: Caudal
 		StorageLabel: Reserva
-		OutputLine: "Salida: {0} UE/s"
+		OutputLine: Salida: {0} UE/s
 		RunningText: En marcha
 		NoWindText: Viento débil
 		NoWaterText: Rueda fuera del agua
@@ -438,7 +438,7 @@ ThrowerUI: {
 	DropHint: Inserta objetos
 	AmmoModeOnText: Disparo de munición
 	AmmoModeOffText: Lanzamiento de objetos
-	AmmoModeHint: "Modo munición: al insertar munición dispara el proyectil correspondiente"
+	AmmoModeHint: Modo munición: al insertar munición dispara el proyectil correspondiente
 }
 
 CollectorUI: {
@@ -549,15 +549,15 @@ GalacticCrisisRender: {
 	KortoStarLabel: Korto
 	KortoIIILabel: Korto-III
 	KortoPrimaryObjective: ◢ Objetivo principal ◣
-	KortoClassTerrestrial: "Tipo: planeta terrestre"
-	KortoThreatCritical: "Amenaza: crítica"
-	KortoPlanetCountInfo: "Sistema Korto: 6 planetas"
-	KortoStatusCompromised: "Estado: caído"
+	KortoClassTerrestrial: Tipo: planeta terrestre
+	KortoThreatCritical: Amenaza: crítica
+	KortoPlanetCountInfo: Sistema Korto: 6 planetas
+	KortoStatusCompromised: Estado: caído
 	HeaderAndroidProfile: ◢ Archivo de androide táctico ◣
 	AndroidArtisName: Artis
 	AndroidApolaName: Apolya
 	AndroidCodename: Nombre en clave
-	AndroidClassLabel: "Tipo: androide táctico"
+	AndroidClassLabel: Tipo: androide táctico
 	AndroidStatusLabel: Estado
 	AndroidStatusLost: Señal perdida
 }
@@ -629,7 +629,7 @@ QuestManagerUI: {
 
 CyberwareUI: {
 	TitleText: Ciberimplantes
-	StatusText: "Estado del sistema: en marcha"
+	StatusText: Estado del sistema: en marcha
 	SlotSelectedText: "[ Seleccionado ]"
 	SlotEmptyText: Vacío
 	ClinicRequiredTitle: Ciberimplante bloqueado
@@ -646,8 +646,8 @@ CyberwareUI: {
 	Slot_Skeleton: Esqueleto
 	Slot_RightLeg: Pierna derecha
 	Slot_NervousSystem: Sistema nervioso
-	TooltipSlot: "Ranura:"
-	TooltipCapacityCost: "Consumo de capacidad: {0}"
+	TooltipSlot: Ranura:
+	TooltipCapacityCost: Consumo de capacidad: {0}
 	SkillRamCost: RAM {0}
 }
 
@@ -713,7 +713,7 @@ VictorTalkUI: {
 
 VictorClinicUI: {
 	TitleText: Clínica de Víctor
-	StatusText: "Médico de implantes en línea: elige una parte"
+	StatusText: Médico de implantes en línea: elige una parte
 	GuideText: Elige una parte del cuerpo para ver, cambiar y comprar el ciberimplante correspondiente.
 	LabelOwned: En posesión
 	LabelForSale: En venta
@@ -802,13 +802,13 @@ TBUGShopUI: {
 	SellEmptyText: En la mochila no hay nada que se pueda vender
 	StatusPendingText: Esperando respuesta de la autoridad…
 	ResultSuccessText: exit 0 · transacción completa
-	ResultInvalidText: "ERR: petición no válida"
-	ResultOutOfRangeText: "ERR: demasiado lejos del tendero"
-	ResultNoFundsText: "ERR: saldo insuficiente"
-	ResultNoSpaceText: "ERR: mochila llena"
-	ResultOutOfStockText: "ERR: esto se ha agotado; vuelve al amanecer"
-	ResultBusyText: "ERR: demasiadas peticiones; más despacio"
-	ResultTimeoutText: "ERR: tiempo de espera agotado"
+	ResultInvalidText: ERR: petición no válida
+	ResultOutOfRangeText: ERR: demasiado lejos del tendero
+	ResultNoFundsText: ERR: saldo insuficiente
+	ResultNoSpaceText: ERR: mochila llena
+	ResultOutOfStockText: ERR: esto se ha agotado; vuelve al amanecer
+	ResultBusyText: ERR: demasiadas peticiones; más despacio
+	ResultTimeoutText: ERR: tiempo de espera agotado
 }
 
 EntrustManagerNotification: {
@@ -998,8 +998,8 @@ HackTime: {
 	ProtocolsOwned: "[{0}/{1} protocolos]"
 	NoProtocolTitle: Sin protocolo disponible
 	NoProtocolHint: En la biblioteca de protocolos no hay ninguno que afecte a este objetivo. Escríbelo con un chip de protocolo
-	ChipGrants: "Escribe el protocolo: {0}"
-	ChipTarget: "Aplica a: {0}"
+	ChipGrants: Escribe el protocolo: {0}
+	ChipTarget: Aplica a: {0}
 	ChipOneShot: Escritura de un solo uso; después ya no se puede usar
 	ChipAlreadyOwned: Este protocolo ya está en la biblioteca de protocolos
 	Erased: Dado de baja
@@ -1136,7 +1136,7 @@ SHPCUI: {
 	Cyber_Layer2_Title: Inmersión profunda
 	Cyber_Layer3_Title: Penetración del Blackwall
 	Cyber_NoSkill: Sin habilidad exclusiva
-	Cyber_LayerBaseFooter: "Capa base: solo sirve para establecer el campo del dominio"
+	Cyber_LayerBaseFooter: Capa base: solo sirve para establecer el campo del dominio
 	Cyber_SkillUnlocked: "[#] Desbloqueada"
 	Cyber_SkillLocked: "[X] Requiere dominio de capa {0}"
 	Cyber_KeyUnbound: Sin asignar
@@ -1162,7 +1162,7 @@ SHPCUI: {
 	Modify_NoMatch: En la mochila no hay piezas compatibles
 	Modify_Close: Cerrar
 	Modify_InstallSlot: Instalar · {0}
-	Modify_Current: "Actual: {0}"
+	Modify_Current: Actual: {0}
 	Modify_Slot_Barrel: Cañón
 	Modify_Slot_Optic: Mira
 	Modify_Slot_Power: Energía
@@ -1181,7 +1181,7 @@ SHPCUI: {
 
 QuestBookGuideLead: {
 	WelcomeTitle: Este libro
-	WelcomeLine1: "En el libro hay dos cosas abiertas: la carta de misiones y el expediente de encargos."
+	WelcomeLine1: En el libro hay dos cosas abiertas: la carta de misiones y el expediente de encargos.
 	WelcomeLine2: La carta anota hasta dónde ha llegado la historia principal; el expediente recoge los trabajos que otros te han encargado.
 	RailTitle: Las dos pestañas de la izquierda
 	RailLine1: La de arriba abre la carta de misiones.
@@ -1193,7 +1193,7 @@ QuestBookGuideLead: {
 	ChartViewLine2: Si la vista se aleja, el botón Recentrar a la derecha del pie la trae de vuelta.
 	ChartViewAct: Prueba a girar la rueda o a arrastrar la carta un poco.
 	ChartNodeTitle: Abrir un nodo
-	ChartNodeLine1: "La marca del nodo es su estado: rayado, aún no ha empezado; anillo de tinta, en curso; sello de cera, recompensa pendiente; sello agrietado, cerrado."
+	ChartNodeLine1: La marca del nodo es su estado: rayado, aún no ha empezado; anillo de tinta, en curso; sello de cera, recompensa pendiente; sello agrietado, cerrado.
 	ChartNodeAct: Clic izquierdo en el que está rodeado.
 	ChartDetailTitle: La ficha de la derecha
 	ChartDetailLine1: La mitad de arriba es lo que pide este capítulo; la de abajo, lo que se cobra al terminarlo.
@@ -1259,7 +1259,7 @@ CyberwareGuideLead: {
 }
 
 SHPCDomainWheelUI: {
-	Layer1_Desc: "Capa base: solo abre el campo del dominio a tu alrededor"
+	Layer1_Desc: Capa base: solo abre el campo del dominio a tu alrededor
 	Layer2_Desc: Baja una capa; el campo se extiende más lejos y la RAM se quema más rápido
 	Layer3_Desc: Atraviesa el Blackwall; el mundo entero se vuelve el dominio
 	Layer_HintActivate: «Clic» Desplegar el dominio
@@ -1293,9 +1293,9 @@ AbandonedPortalStrings: {
 	StatusRepairing: Estado  ▌ Calibrando
 	StatusRepaired: Estado  ▌ En línea
 	DiagnosticHeader: "[DIAG]"
-	DiagnosticBroken: "ERR-0xC4: grieta en el anillo de posicionamiento / circuito principal de energía cortado"
-	DiagnosticRepairing: "INFO: matriz de soldadura nano sincronizando… no muevas la base del portal"
-	DiagnosticRepaired: "OK: todos los subsistemas en línea / análisis de coordenadas listo"
+	DiagnosticBroken: ERR-0xC4: grieta en el anillo de posicionamiento / circuito principal de energía cortado
+	DiagnosticRepairing: INFO: matriz de soldadura nano sincronizando… no muevas la base del portal
+	DiagnosticRepaired: OK: todos los subsistemas en línea / análisis de coordenadas listo
 }
 
 ArrowHolderUI: {
@@ -1340,8 +1340,8 @@ MiningMachineUI: {
 	StateWorking: En operación
 	StateNoPower: Energía insuficiente
 	StateNoFooting: Cimiento inestable
-	PickPowerLine: "Poder de pico: {0}%"
-	YieldRateLine: "Rendimiento: ~{0}/min"
+	PickPowerLine: Poder de pico: {0}%
+	YieldRateLine: Rendimiento: ~{0}/min
 	EnergyLabel: Energía
 	YieldLabel: Rendimiento
 	LayerLabel: Estrato
@@ -1362,7 +1362,7 @@ MiningMachineUI: {
 	GateNeedDrill: Requiere un módulo de perforación dedicado
 	GateNotInWorld: El yacimiento aún no se ha prospectado
 	VeinTilesFormat: Vetas halladas: {0} bloques
-	DrillTargetText: "Mineral objetivo: {0}"
+	DrillTargetText: Mineral objetivo: {0}
 	DrillEffectText: Desbloquea la extracción del mineral objetivo y cuadruplica su peso de rendimiento
 }
 
@@ -1456,50 +1456,50 @@ OldNetTexts: {
 	OldNetEjectDeath: El constructo se desintegró; el enlace se quemó; el botín sin inscribir se perdió
 	OldNetLedgerFull: El libro mayor está lleno; ve primero a un relé o cierra sesión
 	OldNetEncryptHint: Descifrado canalizado (quédate quieto ~3 s; hace mucho ruido)
-	OldNetEventHint: "Tirar de la palanca: levanta el bloqueo de todo el mapa y alarma a toda la red"
+	OldNetEventHint: Tirar de la palanca: levanta el bloqueo de todo el mapa y alarma a toda la red
 	OldNetEventPulled: Bloqueo levantado; la oleada de purga está en camino
-	OldNetRelayHint: "Enlace de relé: inscribe el libro mayor actual (el enlace hace ruido)"
+	OldNetRelayHint: Enlace de relé: inscribe el libro mayor actual (el enlace hace ruido)
 	OldNetRelayDone: Inscritos {0} fragmentos de molde; el enlace se mantiene
 	OldNetRelayEmpty: El libro mayor está vacío; no hay nada que enviar
 	OldNetEnterHint: Conectar a OldNet (inmersión más allá del muro)
 	OldNetEnterConfirm: Enlace precalentado; interactúa de nuevo para la inmersión más allá del muro
-	OldNetEnterArmedHint: "Enlace precalentado: interactúa de nuevo para la inmersión más allá del muro"
+	OldNetEnterArmedHint: Enlace precalentado: interactúa de nuevo para la inmersión más allá del muro
 	OldNetEnterSPOnly: La inmersión solo está disponible en un jugador
 	OldNetDiveCharge: Mantén la inmersión; atravesando el muro
-	OldNetBandFoot: "Franja del pie del muro // FOOTHOLD"
-	OldNetBandRuin: "Franja de ruinas // RUINFIELD"
-	OldNetBandFade: "Zona de atenuación de señal // SIGNAL DECAY"
+	OldNetBandFoot: Franja del pie del muro // FOOTHOLD
+	OldNetBandRuin: Franja de ruinas // RUINFIELD
+	OldNetBandFade: Zona de atenuación de señal // SIGNAL DECAY
 	GuideNoiseTitle: Medidor de ruido
-	GuideNoiseBody: "Abajo a la izquierda está el medidor de ruido: moverte, disparar o descifrar te encienden. Las cuatro marcas son cuatro umbrales de amenaza; si pasas T2, algo vendrá desde el otro lado del muro. Si te quedas quieto, el ruido se enfría solo."
+	GuideNoiseBody: Abajo a la izquierda está el medidor de ruido: moverte, disparar o descifrar te encienden. Las cuatro marcas son cuatro umbrales de amenaza; si pasas T2, algo vendrá desde el otro lado del muro. Si te quedas quieto, el ruido se enfría solo.
 	GuideLedgerTitle: Libro mayor sin inscribir
 	GuideLedgerBody: Los fragmentos que recojas entran primero en el libro mayor (lectura LEDGER). Morir o agotar la RAM lo anula todo; solo lo inscrito es realmente tuyo. El libro tiene capacidad y rechaza el exceso.
 	GuideNodesTitle: Grados de nodo
 	GuideNodesBody: Los nodos cian se recogen con clic derecho. Los nodos cifrados ámbar piden ~3 s de canalización: mucho ruido, pero valen el triple. Tirar de la palanca roja de evento levanta el bloqueo de todo el mapa y la oleada de purga llega al momento.
 	GuideRelayTitle: Relé y salida
-	GuideRelayBody: "La columna ámbar es un relé: inscribe el libro mayor in situ y sigues dentro, pero el enlace se oye de lejos. La columna verde menta es el terminal de salida: inscribe y corta el enlace con seguridad. Quedarse o huir es la única pregunta aquí."
+	GuideRelayBody: La columna ámbar es un relé: inscribe el libro mayor in situ y sigues dentro, pero el enlace se oye de lejos. La columna verde menta es el terminal de salida: inscribe y corta el enlace con seguridad. Quedarse o huir es la única pregunta aquí.
 	GuideDrainTitle: Ruido de fondo por distancia
 	GuideDrainBody: Cuanto más lejos del muro, más caro es el consumo de fondo de RAM. Junto a la lectura DEPTH del HUD está el coste por segundo. Quemar la RAM es una eyección; calcula de antemano el viaje de vuelta.
 	GuideSkip: Entendido
 	EntrustTitle: Inmersión más allá del muro
-	EntrustSummary: "La entrada de OldNet está en la isla celeste estrellada sobre el punto de aparición: sube por el cabo ancla que cuelga hasta el suelo; la columna de luz cian en la cabina media es el terminal de acceso. Clic derecho en el terminal para precalentar el enlace; otro clic derecho en 5 s y entras (solo un jugador). Dentro, clic derecho en los nodos cian para recoger fragmentos de molde; el botín entra primero en el libro mayor. Si quieres llevártelo, vuelve al pie del Blackwall y haz clic derecho en la columna verde menta para salir. Una salida segura completa este encargo. Si a mitad de camino se agota la RAM o mueres, todo lo sin inscribir se anula."
+	EntrustSummary: La entrada de OldNet está en la isla celeste estrellada sobre el punto de aparición: sube por el cabo ancla que cuelga hasta el suelo; la columna de luz cian en la cabina media es el terminal de acceso. Clic derecho en el terminal para precalentar el enlace; otro clic derecho en 5 s y entras (solo un jugador). Dentro, clic derecho en los nodos cian para recoger fragmentos de molde; el botín entra primero en el libro mayor. Si quieres llevártelo, vuelve al pie del Blackwall y haz clic derecho en la columna verde menta para salir. Una salida segura completa este encargo. Si a mitad de camino se agota la RAM o mueres, todo lo sin inscribir se anula.
 	EntrustCategory: Arqueología de inmersión
 	TrackerOverworld: Ve a la cabina media de la cápsula caída sobre el punto de aparición; clic derecho dos veces en el terminal de luz cian
 	TrackerDive: Vuelve al pie del Blackwall; clic derecho en la columna verde menta para salir con seguridad
 	OldNetSignRuin: Franja de ruinas. Zona principal de recolección; a partir de aquí aparecen nodos cifrados. Antes de canalizar, mira la salida.
 	OldNetSignFade: Zona de atenuación de señal. El consumo de fondo se dispara a partir de aquí; el enlace no aguantará mucho. Sigue bajo tu propio riesgo.
-	OldNetEchoHint: "Nodo eco: solo tangible durante la parada temporal (cero ruido, rendimiento doble)"
+	OldNetEchoHint: Nodo eco: solo tangible durante la parada temporal (cero ruido, rendimiento doble)
 	OldNetEchoFizzle: El eco es demasiado tenue; solo se alcanza en tiempo detenido
-	OldNetCacheHint: "Caché de inmersión: ábrelo para sacar un módulo sellado (hace ruido)"
-	OldNetTripwireHint: "Cable trampa de ráster: cruzar el haz rojo denuncia tu posición; mantén pulsado el clic derecho para cortarlo"
+	OldNetCacheHint: Caché de inmersión: ábrelo para sacar un módulo sellado (hace ruido)
+	OldNetTripwireHint: Cable trampa de ráster: cruzar el haz rojo denuncia tu posición; mantén pulsado el clic derecho para cortarlo
 	OldNetTripwireCut: Cortado. Esta ruta ya está en silencio
-	OldNetMineHint: "Mina centinela: si te acercas rápido, detona; acércate despacio y mantén pulsado el clic derecho para desmontarla"
+	OldNetMineHint: Mina centinela: si te acercas rápido, detona; acércate despacio y mantén pulsado el clic derecho para desmontarla
 	OldNetMineDefused: Desmontada. Nada se enteró
 	OldNetMineScream: La mina centinela chilla; tu posición ha sido emitida
 	OldNetMineDeath: "{0} pisó una mina centinela"
 	OldNetBulkheadWarn: Señal de alto ruido detectada; las compuertas del pozo se pretensan
 	OldNetBulkheadShut: Pozos sellados. Baja el ruido y espera a que reabran, o fuerza una con la palanca de alivio
 	OldNetBulkheadReopen: El ruido ha bajado; las compuertas del pozo reabren
-	OldNetBreakerHint: "Palanca de alivio de emergencia: tira para abrir la compuerta 8 s, a costa de más ruido"
+	OldNetBreakerHint: Palanca de alivio de emergencia: tira para abrir la compuerta 8 s, a costa de más ruido
 	OldNetBreakerPulled: Alivio completado; la compuerta queda abierta 8 s
 	OldNetSignCheckpoint: Puesto de cuarentena K-3. Las señales al este no están desinfectadas; prohibido pasar con protocolos vivos. Este puesto cayó en la noche 771.
 	TaggerAttached: Señal marcada. Mientras esté presente, el ruido no se disipará solo.
@@ -1508,38 +1508,38 @@ OldNetTexts: {
 	WardenDispatch: Protocolo de reclamación autorizado. Un ejecutor se está desprendiendo del Blackwall.
 	WardenSlain: Ejecutor archivado. Toda la red guarda silencio por ti durante 60 s.
 	WardenGraceHud: Margen de silencio
-	OldNetDockHint: "Clic derecho para ampliar: +8 ranuras de libro mayor en esta inmersión, ruido +15"
+	OldNetDockHint: Clic derecho para ampliar: +8 ranuras de libro mayor en esta inmersión, ruido +15
 	OldNetDockDone: Libro mayor +8 ranuras
-	OldNetColdHint: "Clic derecho para extraer: cuesta 2 de RAM, silencioso"
+	OldNetColdHint: Clic derecho para extraer: cuesta 2 de RAM, silencioso
 	OldNetColdNoRam: RAM insuficiente; la extracción necesita 2
-	OldNetEscrowHint: "Clic derecho para asegurar: cobra el 30% del libro mayor como prima; ruido de enlace +10. Si se quema o mueres, paga el resto; en una salida segura la prima no se devuelve"
+	OldNetEscrowHint: Clic derecho para asegurar: cobra el 30% del libro mayor como prima; ruido de enlace +10. Si se quema o mueres, paga el resto; en una salida segura la prima no se devuelve
 	OldNetEscrowEmpty: El libro mayor está vacío; no hay nada que asegurar
 	OldNetEscrowTooThin: El libro mayor es demasiado flaco; la prima se lo comería todo
 	OldNetEscrowSigned: Asegurados {0}; prima {1}
 	OldNetEscrowPayout: El seguro pagó {0} fragmentos de molde
-	OldNetVaultHint: "Clic derecho para abrir el descifrado: cuesta 3 de RAM; +2 de ruido por segundo mientras esté abierto. Cada fase sube la apuesta; fallar vacía el bote"
+	OldNetVaultHint: Clic derecho para abrir el descifrado: cuesta 3 de RAM; +2 de ruido por segundo mientras esté abierto. Cada fase sube la apuesta; fallar vacía el bote
 	OldNetVaultNoRam: RAM insuficiente; abrir cuesta 3
 	OldNetVaultLocked: La consola principal ya está en marcha
 	OldNetVaultPayout: Bote ingresado: {0} fragmentos (sin inscribir)
 	VaultTitle: Matriz de descifrado de la consola
 	VaultGuide: Cuando la aguja entre en el arco iluminado, clic izquierdo o pulsa saltar para confirmar. Si te golpean o te alejas mientras gira, cuenta como fallo
 	VaultStage: Fase {0} / 5
-	VaultPot: "Bote: fragmentos ×{0}"
+	VaultPot: Bote: fragmentos ×{0}
 	VaultPotModule: Módulos sellados ×{0}
 	VaultPotChip: Chip de ampliación de RAM ×1
 	VaultLedgerRoom: Hueco en el libro mayor {0}
 	VaultCashOut: Cobrar y cerrar
 	VaultContinue: Siguiente fase
 	VaultBust: Quiebra; bote vaciado
-	VaultCounterHack: "Contrahack de la consola: inyección de hackeo"
+	VaultCounterHack: Contrahack de la consola: inyección de hackeo
 	VaultDiscard: El libro mayor no cabe; se descartan {0}
-	OldNetEncryptFadeHint: "Descifrado canalizado: las cerraduras de la zona loca muerden; al terminar, la cacería es segura"
+	OldNetEncryptFadeHint: Descifrado canalizado: las cerraduras de la zona loca muerden; al terminar, la cacería es segura
 	OldNetAftershockWarn: Exposición residual; el eco está rastreando
 	OldNetAftershockHit: Rastreo completo. Ya vienen
-	OldNetDragnetWarn: "La red se está cerrando; la amenaza está a punto de volverse irreversible // DRAGNET 75%"
-	OldNetDragnetOn: "Recogida de red iniciada; el bloqueo ya no se levanta; las cerraduras cifradas están fuera de línea en toda la red // DRAGNET"
-	OldNetHotExtractHint: "Enlace sobrecalentado: cortar requiere 10 s quieto en el terminal, y la red vendrá a por ti"
-	OldNetHotExtractStart: "Cortando el enlace a la fuerza; aguanta // SEVERING"
+	OldNetDragnetWarn: La red se está cerrando; la amenaza está a punto de volverse irreversible // DRAGNET 75%
+	OldNetDragnetOn: Recogida de red iniciada; el bloqueo ya no se levanta; las cerraduras cifradas están fuera de línea en toda la red // DRAGNET
+	OldNetHotExtractHint: Enlace sobrecalentado: cortar requiere 10 s quieto en el terminal, y la red vendrá a por ti
+	OldNetHotExtractStart: Cortando el enlace a la fuerza; aguanta // SEVERING
 	OldNetHotExtractAbort: Corte abortado; el enlace se mantiene
 	OldNetHotExtractTooFar: Demasiado lejos del terminal; acércate para cortar
 }

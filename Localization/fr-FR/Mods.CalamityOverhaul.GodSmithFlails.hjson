@@ -1,72 +1,74 @@
-GsBallOHurt.Desc: 
+GsBallOHurt.Desc:
 	'''
 	Reforgé : faites tourner pour charger ; la Boule de douleur sème des barbes suspendues sur sa trajectoire
 	Un coup à pleine rotation fait éclater un anneau de barbes sur la cible
 	'''
-GsChainKnife.Desc: 
+GsChainKnife.Desc:
 	'''
 	Reforgé : un impact de lame accorde 7 s d'élan
 	Chaque charge accélère la rotation et le lancer, jusqu'à trois
 	'''
-GsTheMeatball.Desc: 
+GsTheMeatball.Desc:
 	'''
 	Reforgé : un lancer à pleine rotation explose en brouillard de sang
 	Le brouillard déchire les ennemis proches et inflige Saignement
 	'''
-GsBlueMoon.Desc: 
+GsBlueMoon.Desc:
 	'''
 	Reforgé : un lancer chargé envoie des lames de croissant qui percent la cible
 	À demi-charge, une lame ; à pleine charge, trois
 	'''
-GsSunfury.Desc: 
+GsSunfury.Desc:
 	'''
 	Reforgé : le marteau en vol grave des brûlures suspendues sur sa trajectoire
 	Elles restent sur place et brûlent qui les touche (Feu infernal)
 	'''
-GsMace.Desc: 
+GsMace.Desc:
 	'''
 	Reforgé : un lancer à pleine rotation fêle l'armure de la cible, défense réduite de moitié quelques secondes
 	Chaque coup porte un recul plus lourd
 	'''
-GsFlamingMace.Desc: 
+GsFlamingMace.Desc:
 	'''
 	Reforgé : en tournant, la masse jette des braises
 	Plus la rotation est rapide, plus elles vont loin et fort, et elles enflamment
 	'''
-GsDaoofPow.Desc: 
+GsDaoofPow.Desc:
 	'''
 	Reforgé : les lancers alternent Yin et Yang ; un coup Yin marque et ralentit
 	Un coup Yang sur une cible marquée fait exploser la marque en un jet d'encre et de lumière
 	'''
-GsFlowerPow.Desc: 
+GsFlowerPow.Desc:
 	'''
 	Reforgé : en tournant, jusqu'à cinq pétales s'ouvrent autour de la tête
 	Un lancer qui touche les convertit tous en lames à tête chercheuse
 	'''
-GsDripplerFlail.Desc: 
+GsDripplerFlail.Desc:
 	'''
 	Reforgé : à haute rotation et à chaque lancer, la tête goutte des perles de sang sujettes à la gravité
 	Elles éclatent en épines de sang au contact ou à l'atterrissage
 	'''
+
 GsKOCannon: {
-	Desc: 
+	Desc:
 		'''
 		Reforgé : un direct chargé ; trois coups francs sur la même cible en quatre secondes
 		Le troisième est un KO : dégâts doublés, recul doublé, plus un anneau de choc
 		'''
 	TipKO: KO!
 }
-GsChainGuillotines.Desc: 
+
+GsChainGuillotines.Desc:
 	'''
 	Reforgé : les deux guillotines partent ensemble et s'ouvrent en vol
 	Quand les lames se croisent, elles cisaillent et font éclater une entaille en croix au milieu
 	'''
-GsGolemFist.Desc: 
+GsGolemFist.Desc:
 	'''
 	Reforgé : les coups francs empilent la chaleur (jusqu'à 3, +8% de dégâts chacune, 8 s sans frapper pour refroidir) ; à pleine chaleur le poing fond et projette 3 blocs de lave
 	Chaque coup qui touche un ennemi ou un mur lance une onde de pierre
 	'''
-GsFlairon.Desc: 
+GsFlairon.Desc:
 	'''
 	Reforgé : la chaîne exsude des lames-bulles à tête chercheuse en tournant et en vol (jusqu'à 8 en même temps, 40% de dégâts chacune)
 	Un coup à pleine rotation relâche six lames-bulles en anneau autour de la cible

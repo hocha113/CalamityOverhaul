@@ -1,6 +1,6 @@
-GsIronBroadsword.Desc: 
+GsIronBroadsword.Desc:
 	'''
 	Reforgé : enchaînement de boucherie à trois temps, lever, pose et taille, chacun avec son poids ;
 	le troisième temps avance d'un pas et trace un arc plus lourd
 	'''
-GsGoldArmor.EndowLine: "Pierre d'or : les coups accumulent la dorure ; à huit charges, le prochain coup fait jaillir de la cible trois perles d'or fondu à tête chercheuse"
+GsGoldArmor.EndowLine: Pierre d'or : les coups accumulent la dorure ; à huit charges, le prochain coup fait jaillir de la cible trois perles d'or fondu à tête chercheuse

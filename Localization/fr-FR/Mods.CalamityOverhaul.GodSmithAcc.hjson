@@ -1,213 +1,213 @@
-GodSmithFeralClaws.EffectDesc: 
+GodSmithFeralClaws.EffectDesc:
 	'''
 	Rythme sauvage : enchaîner des coups de mêlée en 2.5 s empile la sauvagerie, +1% de vitesse de mêlée par charge, jusqu'à 8
 	À partir de 6 charges, les coups projettent des étincelles de griffes ; subir un coup brise le rythme
 	'''
-GodSmithTitanGlove.EffectDesc: 
+GodSmithTitanGlove.EffectDesc:
 	'''
 	Séisme titan : tous les 5 coups de mêlée, une onde de choc éclate sur la cible et recule fortement
 	Elle inflige 35% / 45% / 55% de ce coup (Gant de titan / de pouvoir / mécanique) en zone
 	'''
-GodSmithFireGauntlet.EffectDesc: 
+GodSmithFireGauntlet.EffectDesc:
 	'''
 	Séisme de lave : tous les 5 coups de mêlée, une onde brûlante inflige 60% de ce coup
 	L'explosion enflamme les ennemis (Feu infernal)
 	'''
-GodSmithBerserkerGlove.EffectDesc: 
+GodSmithBerserkerGlove.EffectDesc:
 	'''
 	Séisme berserk : tous les 5 coups de mêlée, une onde explose pour 70% de ce coup
 	Chaque séisme vous rend berserk 3 s : +10% de vitesse de mêlée
 	'''
-GodSmithWarriorEmblem.EffectDesc: 
+GodSmithWarriorEmblem.EffectDesc:
 	'''
 	Ardeur de percée : les coups de mêlée accumulent l'ardeur, +1.5% de dégâts de mêlée par charge, jusqu'à 6, pendant 4 s
 	À charges pleines, les coups projettent une flamme or-rouge ; subir un coup en fait perdre 3
 	'''
-GodSmithRangerEmblem.EffectDesc: 
+GodSmithRangerEmblem.EffectDesc:
 	'''
 	Focus de longue chasse : un tir à plus de 25 blocs accorde 4 s de focus : +8% de dégâts à distance
 	Sous focus, les impacts laissent une traînée d'argent
 	'''
-GodSmithSorcererEmblem.EffectDesc: 
+GodSmithSorcererEmblem.EffectDesc:
 	'''
 	Reflux occulte : un sort qui touche rend 6 mana, ou 12 si le mana est sous 30%
 	Au plus une fois toutes les 0.75 s
 	'''
-GodSmithSummonerEmblem.EffectDesc: 
+GodSmithSummonerEmblem.EffectDesc:
 	'''
 	Ordre de légion : sbires et fouets rassemblent l'ordre, +1.5% de dégâts d'invocation par charge, jusqu'à 4, pendant 6 s
 	À l'effectif plein, un anneau d'ordre doré pulse autour de vous
 	'''
-GodSmithAvengerEmblem.EffectDesc: 
+GodSmithAvengerEmblem.EffectDesc:
 	'''
 	Marque de vengeance : subir un coup vous marque 5 s : +8% à tous les dégâts
 	La marque jaillit d'une flamme or-sang à l'impact
 	'''
-GodSmithDestroyerEmblem.EffectDesc: 
+GodSmithDestroyerEmblem.EffectDesc:
 	'''
 	Protocole d'annihilation : toucher un ennemi sous 20% de vie lui envoie une impulsion d'annihilation
 	Elle inflige 50% de ce coup, au plus une fois toutes les 0.67 s
 	'''
-GodSmithEyeoftheGolem.EffectDesc: 
+GodSmithEyeoftheGolem.EffectDesc:
 	'''
 	Regard du Golem : un critique verrouille le regard 4 s : +6% de chances de critique
 	Au plus une fois toutes les 1.5 s ; les critiques sous regard projettent des étincelles solaires
 	'''
-GodSmithMagicQuiver.EffectDesc: 
+GodSmithMagicQuiver.EffectDesc:
 	'''
 	Arc de lumière : tous les 7 impacts à distance, une flèche de lumière fantôme poursuit la cible
 	Elle inflige 45% de ce coup et peut percer
 	'''
-GodSmithMoltenQuiver.EffectDesc: 
+GodSmithMoltenQuiver.EffectDesc:
 	'''
 	Allumage du noyau : un impact à distance enflamme la cible (Feu infernal), au plus une fois toutes les 0.75 s
 	Chaque allumage chauffe le noyau 4 s : +6 de pénétration d'armure à distance
 	'''
-GodSmithStalkersQuiver.EffectDesc: 
+GodSmithStalkersQuiver.EffectDesc:
 	'''
 	Voile de traque : 4 s sans subir de dégâts et vous entrez dans le voile : +8% de dégâts à distance
 	Sous le voile, les impacts laissent des étincelles pourpres ; subir un coup brise le voile
 	'''
-GodSmithNaturesGift.EffectDesc: 
+GodSmithNaturesGift.EffectDesc:
 	'''
 	Don de la nature : un sort qui touche fait éclore une fleur de vie, +5 vie et +5 mana
 	Au plus une fois toutes les 1.5 s
 	'''
-GodSmithManaFlower.EffectDesc: 
+GodSmithManaFlower.EffectDesc:
 	'''
 	Nectar d'urgence : passer sous 20% de mana rend aussitôt 50 mana, pétales bleu-blanc éclatés
 	Au plus une fois toutes les 10 s
 	'''
-GodSmithArcaneFlower.EffectDesc: 
+GodSmithArcaneFlower.EffectDesc:
 	'''
 	Siphon occulte : un sort qui touche siphonne le pouvoir, +1% de dégâts magiques par charge, jusqu'à 6, pendant 5 s
 	À charges pleines, le coût des sorts baisse encore de 5%
 	'''
-GodSmithMagnetFlower.EffectDesc: 
+GodSmithMagnetFlower.EffectDesc:
 	'''
 	Arc magnétique : un sort qui touche lance un arc de charge vers un autre ennemi dans un rayon de 19 blocs
 	L'arc inflige 35% de ce coup, au plus une fois toutes les 0.75 s
 	'''
-GodSmithManaCloak.EffectDesc: 
+GodSmithManaCloak.EffectDesc:
 	'''
 	Poussière d'étoile tissée : un sort qui touche tisse autour de vous jusqu'à 3 éclats de mana
 	Subir un coup les lance tous, à tête chercheuse, 60 dégâts chacun
 	'''
-GodSmithRifleScope.EffectDesc: 
+GodSmithRifleScope.EffectDesc:
 	'''
 	Visée stable : rester immobile 1.25 s charge la visée ; le prochain impact à distance relâche une traçante perçante
 	Elle inflige 45% / 60% / 75% de ce coup (lunette de fusil / de sniper / de reconnaissance) et perce 2 / 3 / 4 ennemis
 	Un déplacement rapide dissipe la visée
 	'''
-GodSmithPygmyNecklace.EffectDesc: 
+GodSmithPygmyNecklace.EffectDesc:
 	'''
 	Danse de guerre : les coups de sbires prolongent la danse, +1.2% de dégâts d'invocation par charge, jusqu'à 5, pendant 6 s
 	À pleine mesure, les attaques de sbires projettent des plumes de totem
 	'''
-GodSmithNecromanticScroll.EffectDesc: 
+GodSmithNecromanticScroll.EffectDesc:
 	'''
 	Moisson d'âmes : quand un sbire tue, une flamme d'âme liée s'élève du cadavre et poursuit l'ennemi le plus proche
 	Elle inflige 40% du coup fatal, au plus une fois toutes les 1.5 s
 	'''
-GodSmithPapyrusScarab.EffectDesc: 
+GodSmithPapyrusScarab.EffectDesc:
 	'''
 	Scarabée doré : un coup de sbire dore la cible (plus de pièces), au plus une fois par seconde
 	Tant qu'un ennemi doré est en vie, les sbires infligent +5% de dégâts
 	'''
-GodSmithHerculesBeetle.EffectDesc: 
+GodSmithHerculesBeetle.EffectDesc:
 	'''
 	Charge d'Hercule : les coups de sbires accumulent la lutte ; à 8 charges, le prochain coup de sbire
 	lance une corne qui laboure la ligne, 90% de ce coup et un recul massif
 	'''
-GodSmithShackle.EffectDesc: 
+GodSmithShackle.EffectDesc:
 	'''
 	Fers d'âme : subir un coup vous ancre 4 s : immunité au recul et +4 défense
 	Au plus une fois toutes les 5 s
 	'''
-GodSmithCobaltShield.EffectDesc: 
+GodSmithCobaltShield.EffectDesc:
 	'''
 	Écho de rempart : subir un coup fait résonner le bouclier, +6 / +8 / +10 défense (cobalt / obsidienne / Ankh) pendant 3 s
 	L'écho d'obsidienne enflamme les ennemis proches ; celui d'Ankh purge aussi jusqu'à 2 affaiblissements
 	Au plus une fois toutes les 4 s
 	'''
-GodSmithPaladinsShield.EffectDesc: 
+GodSmithPaladinsShield.EffectDesc:
 	'''
 	Renvoi du paladin : subir un coup jette un marteau de jugement sur l'ennemi le plus proche
 	Il inflige 150% des dégâts subis, perce 3 ennemis, au plus une fois toutes les 5 s
 	Les dégâts absorbés pour un allié comptent aussi
 	'''
-GodSmithHeroShield.EffectDesc: 
+GodSmithHeroShield.EffectDesc:
 	'''
 	Pacte de héros : subir un coup scelle un pacte 5 s : +8 défense, et vos coups de mêlée volent 1 vie
 	Au plus une fois toutes les 4 s
 	'''
-GodSmithFrozenShield.EffectDesc: 
+GodSmithFrozenShield.EffectDesc:
 	'''
 	Garde de givre : un coup fatal vous fige dans le cristal : vous survivez à 25% de vie max
 	Les ennemis proches prennent Brûlure de givre, et vous gagnez une brève invincibilité
 	Au plus une fois toutes les 90 s
 	'''
-GodSmithStarCloak.EffectDesc: 
+GodSmithStarCloak.EffectDesc:
 	'''
 	Écho de chute d'étoiles : subir un coup appelle 2 étoiles du Forgeron divin en plus des étoiles vanille
 	Chacune inflige 40 dégâts et laisse une traînée d'or, au plus une fois toutes les 2 s
 	'''
-GodSmithBeeCloak.EffectDesc: 
+GodSmithBeeCloak.EffectDesc:
 	'''
 	Essaim gardien : subir un coup fait jaillir 3 abeilles et vous enduit de miel 5 s
 	Au plus une fois toutes les 3 s
 	'''
-GodSmithCrossNecklace.EffectDesc: 
+GodSmithCrossNecklace.EffectDesc:
 	'''
 	Guérison du martyr : subir un coup ouvre une fenêtre de 3 s : +3 vie par seconde
 	Immunité au recul pendant la fenêtre
 	'''
-GodSmithStarVeil.EffectDesc: 
+GodSmithStarVeil.EffectDesc:
 	'''
 	Voile d'étoiles : subir un coup abaisse un rideau d'étoiles 2.5 s : les dégâts suivants sont réduits de 30%
 	Au plus une fois toutes les 5 s
 	'''
-GodSmithMoonCharm.EffectDesc: 
+GodSmithMoonCharm.EffectDesc:
 	'''
 	Chasse lunaire : la nuit, vos morsures de mêlée volent 2 vie, au plus une fois toutes les 0.5 s
 	Chaque morsure brille d'argent lunaire
 	'''
-GodSmithMoonStone.EffectDesc: 
+GodSmithMoonStone.EffectDesc:
 	'''
 	Égide lunaire : la nuit, subir un coup vous voile de lune 4 s : +8 défense
 	Au plus une fois toutes les 4 s
 	'''
-GodSmithNeptunesShell.EffectDesc: 
+GodSmithNeptunesShell.EffectDesc:
 	'''
 	Marée des profondeurs : entrer dans l'eau lève une armure de marée 5 s : +6 défense, au plus une fois toutes les 5 s
 	Mouillé, vos coups éclaboussent d'écume
 	'''
-GodSmithCelestialStone.EffectDesc: 
+GodSmithCelestialStone.EffectDesc:
 	'''
 	Double phase : le jour, vos coups enflamment (Feu infernal) ; la nuit, ils infligent Brûlure de givre
 	Au plus une fois toutes les 2 s, étincelles d'or solaire ou de givre lunaire
 	'''
-GodSmithCelestialShell.EffectDesc: 
+GodSmithCelestialShell.EffectDesc:
 	'''
 	Ciel total : le jour les coups enflamment, la nuit ils gèlent, au plus une fois toutes les 1.5 s
 	Entrer dans l'eau lève aussi une armure de marée 5 s : +8 défense, au plus une fois toutes les 5 s
 	'''
-GodSmithCharmofMyths.EffectDesc: 
+GodSmithCharmofMyths.EffectDesc:
 	'''
 	Après-goût mythique : boire une potion de soin laisse un éclat 8 s : +2 vie par seconde
 	Une lueur émeraude tourne autour de vous pendant la durée
 	'''
-GodSmithWormScarf.EffectDesc: 
+GodSmithWormScarf.EffectDesc:
 	'''
 	Carapace symbiotique : chaque coup subi fait pousser une écaille, -4% de dégâts subis par écaille, jusqu'à 3, pendant 8 s
 	Plus on vous presse, plus l'écharpe se serre
 	'''
-GodSmithBrainOfConfusion.EffectDesc: 
+GodSmithBrainOfConfusion.EffectDesc:
 	'''
 	Onde neurale : subir un coup éclate une onde psychique, les ennemis proches sont confus 3 s
 	Votre esprit s'emballe 3 s : +8% à tous les dégâts ; au plus une fois toutes les 4 s
 	'''
-GodSmithShieldofCthulhu.EffectDesc: 
+GodSmithShieldofCthulhu.EffectDesc:
 	'''
 	Rupture de pupille : percuter un ennemi en ruée fait éclater un choc cramoisi au point d'impact
 	25 dégâts et un fort recul, au plus une fois toutes les 1.5 s

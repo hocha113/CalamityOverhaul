@@ -303,7 +303,7 @@ QuickHack: {
 	DataBrand: {
 		DisplayName: Datenbrandmal
 		Description: Kopiert das Präfix dieser Ausrüstung und stempelt es beim nächsten Hack auf ein anderes Item.
-		HudTag: "Brandmal: {0}"
+		HudTag: Brandmal: {0}
 		DenyNoPrefix: An diesem Item gibt es kein Präfix zum Kopieren
 		DenyIncompatible: Das gespeicherte Präfix passt nicht auf dieses Item
 	}
@@ -478,7 +478,7 @@ HackTargetType: {
 		AnchorHpLabel: Anker-Leben
 		InvulnLabel: Unverwundbarkeit
 		LinkLabel: Verbindungsstatus
-		RoleSegmentFormat: "Segment · {0}/{1}"
+		RoleSegmentFormat: Segment · {0}/{1}
 		RoleLimb: Gliedmaßeneinheit
 		SharedLifePool: Gemeinsamer Lebenspool
 		InvulnYes: Immun
@@ -486,8 +486,8 @@ HackTargetType: {
 		LinkOnline: Verbund online
 		LinkSevered: Verbund getrennt
 		LinkDelinked: Abgekoppelt
-		AnchorHpFormat: "Anker {0}%"
-		DelinkTallyFormat: "Verbucht {0}"
+		AnchorHpFormat: Anker {0}%
+		DelinkTallyFormat: Verbucht {0}
 	}
 
 	ContainerTargetType: {
@@ -499,7 +499,7 @@ HackTargetType: {
 		ScanTopRare: Höchste Seltenheit
 		ScanTopValue: Wertvollster Eintrag
 		ScanCoord: Koordinaten
-		ScanRest: "…und {0} weitere Einträge"
+		ScanRest: …und {0} weitere Einträge
 		ScanEmpty: Leer
 		LockStateLocked: Verschlossen
 		LockStateOpen: Offen
@@ -567,7 +567,7 @@ HackCircuit: {
 		IffHostile: Feindlich
 		IffFriendly: Freundlich
 		MunitionKinetic: Kinetikgeschoss
-		BeaconCount: "Angelockt {0}"
+		BeaconCount: Angelockt {0}
 	}
 }
 
@@ -956,8 +956,8 @@ GodSmithLaunchers: {
 			Verfolgender Schwarm: Treffer brennen ein Schneeflockenmal, Schaden dieser Waffe +8%
 			Blizzard-Orbit: Raketen steigen erst, dann stürzen sie über dem Fadenkreuz herab
 			'''
-		ModeHoming: "Träger: Verfolgender Schwarm"
-		ModeOrbital: "Träger: Blizzard-Orbit"
+		ModeHoming: Träger: Verfolgender Schwarm
+		ModeOrbital: Träger: Blizzard-Orbit
 	}
 
 	GsStarCannon: {
@@ -966,8 +966,8 @@ GodSmithLaunchers: {
 			Umschmiedung: Rechtsklick wechselt die Bahn
 			Direkt: Sterne fliegen gerade; Sternfall: Sterne steigen, dann fällt um das Fadenkreuz Sternenregen, Treffer spritzen Sternenstaub
 			'''
-		ModeDirect: "Bahn: Direkt"
-		ModeStarfall: "Bahn: Sternfall"
+		ModeDirect: Bahn: Direkt
+		ModeStarfall: Bahn: Sternfall
 	}
 
 	GsStynger: {
@@ -976,9 +976,9 @@ GodSmithLaunchers: {
 			Umschmiedung: Rechtsklick durchläuft den Zünder
 			Aufschlag: Detonation beim Treffer; Distanz: Luftdetonation in Fadenkreuz-Entfernung, Splitter im Kegel; Abpraller: prallt einmal von Blöcken, dann scharf
 			'''
-		ModeImpact: "Zünder: Aufschlag"
-		ModeRange: "Zünder: Distanz-Luftdetonation"
-		ModeRicochet: "Zünder: Abpraller"
+		ModeImpact: Zünder: Aufschlag
+		ModeRange: Zünder: Distanz-Luftdetonation
+		ModeRicochet: Zünder: Abpraller
 	}
 }
 
@@ -1120,11 +1120,11 @@ GodSmithAcc.GodSmithSharkToothNecklace.EffectDesc:
 GodSmithEndow: {
 	GodSmithLegendaryEndow: {
 		EndowName: Schwertheiligen-Echo
-		EndowDesc: "Schwünge haben {0}% Chance, eine goldene Schwertwelle mit {1}% Waffenschaden zu entsenden"
+		EndowDesc: Schwünge haben {0}% Chance, eine goldene Schwertwelle mit {1}% Waffenschaden zu entsenden
 	}
 
 	GodSmithWardingEndow: {
 		EndowName: Bollwerkseid
-		EndowDesc: "Erlittener Schaden um {0}% verringert"
+		EndowDesc: Erlittener Schaden um {0}% verringert
 	}
 }

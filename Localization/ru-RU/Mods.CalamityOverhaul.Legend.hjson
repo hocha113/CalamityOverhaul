@@ -726,7 +726,7 @@ OnikiriText: {
 		SourceFactory: Уже была на клинке, когда вы вытащили его из-под тории
 		SourceGiftFormat: После того как сразите «{0}», Химура Майо принесёт оттиск
 		SourceGiftUnknown: Химура Майо принесёт оттиск в одну из ночей
-		SourceGiftJoin: "» или «"
+		SourceGiftJoin: » или «
 		SourceDeed: Никто не дарит. Эту надпись нужно доказать клинком самому
 		SourceUnknown: Происхождение неизвестно, в своде нет записи
 		ProgressSettled: Узы связаны

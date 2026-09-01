@@ -2,157 +2,183 @@ FirstMetShenyo: {
 	ShenyoName: Shenyo
 	L1: Ça fait longtemps que je n'ai pas vu un vivant ici
 	L2: Comment es-tu arrivé jusqu'ici ?
-	OptDead: "Je suis mort une fois. En me réveillant, j'étais là"
+	OptDead: Je suis mort une fois. En me réveillant, j'étais là
 	OptRain: J'ai chipé un parapluie et je me suis rué dedans
 	OptDeadLocked: Tu n'es pas mort
 	OptRainLocked: Tes mains sont vides
 	A1: ...Revenu d'entre les morts ?
-	A2: "C'est rare. À te voir, pourtant, on dirait que tu en as l'habitude"
+	A2: C'est rare. À te voir, pourtant, on dirait que tu en as l'habitude
 	B1: Alors tu as vraiment de la chance
 	B2: Il est temps de sortir
 	C1: La pluie te tiendra le chemin ouvert. Rentre
-	C2: "Ce parapluie est à toi, désormais"
+	C2: Ce parapluie est à toi, désormais
 }
+
 ShenyoDerivedUmbrella: {
 	L1: Ce parapluie a l'air d'un phénomène spectral dérivé
-	Opt1: "Un phénomène spectral dérivé ? Autrement dit, c'est une part de toi ?"
-	L2: "Exact. J'ai autrefois démembré mon propre spectre. Les fragments, passé assez d'années, se réveillent d'eux-mêmes"
-	L3: "Ce parapluie qui s'immisce dans le réel, par exemple, est un phénomène dérivé de la source de Kikasa"
+	Opt1: Un phénomène spectral dérivé ? Autrement dit, c'est une part de toi ?
+	L2: Exact. J'ai autrefois démembré mon propre spectre. Les fragments, passé assez d'années, se réveillent d'eux-mêmes
+	L3: Ce parapluie qui s'immisce dans le réel, par exemple, est un phénomène dérivé de la source de Kikasa
 	Opt2: Donc tu n'es plus vraiment la source de Kikasa ?
 	L4: Je l'étais
 	L5: J'aurais dû être morte depuis longtemps. Mais ma conscience s'est réveillée dans un fragment spectral laissé en ce monde
-	L6: "Touche ce Kikasa dérivé, et tu devrais pouvoir entrer dans son domaine spectral"
-	L7: "D'y aller ou non, ça te regarde"
-	L8: "Si tu meurs dans le domaine spectral, je te ramènerai par un redémarrage"
+	L6: Touche ce Kikasa dérivé, et tu devrais pouvoir entrer dans son domaine spectral
+	L7: D'y aller ou non, ça te regarde
+	L8: Si tu meurs dans le domaine spectral, je te ramènerai par un redémarrage
 }
+
 ShenyoDollGift: {
 	L0: Je viens de me souvenir de quelque chose qui vaut la peine de t'être donné
 	L1: Garde cette poupée sur toi. Elle peut te sauver la vie une fois
-	L2: "Celle qui les a cousues était une petite sotte. Elle en a fait tout un tas pour celui qu'elle aimait, alors qu'il n'en aurait jamais eu besoin"
-	L3: "À l'époque, j'en ai échangé un bon nombre avec elle. Ça fait de jolis cadeaux pour les plus jeunes"
+	L2: Celle qui les a cousues était une petite sotte. Elle en a fait tout un tas pour celui qu'elle aimait, alors qu'il n'en aurait jamais eu besoin
+	L3: À l'époque, j'en ai échangé un bon nombre avec elle. Ça fait de jolis cadeaux pour les plus jeunes
 }
+
 ShenyoFesterSerpentGift: {
 	L0: Ce qui pourrit dans le sable est encore plus laid que ce qui pourrit dans l'eau
-	L1: "Ce pus doré n'est pas du miel. Approche le nez, et tu comprendras"
-	L2: "Quand tu auras fini, rince la toile. Une tache de pus séchée ne se gratte plus"
+	L1: Ce pus doré n'est pas du miel. Approche le nez, et tu comprendras
+	L2: Quand tu auras fini, rince la toile. Une tache de pus séchée ne se gratte plus
 }
+
 ShenyoBossRushGift: {
-	L0: "Ils sont tous revenus, ou c'est le vieux du fond de l'abîme qui s'est réveillé ?"
-	L1: "Quoi qu'il en soit, ce n'était pas une promenade"
+	L0: Ils sont tous revenus, ou c'est le vieux du fond de l'abîme qui s'est réveillé ?
+	L1: Quoi qu'il en soit, ce n'était pas une promenade
 	L2: Tiens-toi droit. Ne titube pas devant moi
-	L3: "Quand ce repas sera fini, la pluie devrait s'arrêter"
+	L3: Quand ce repas sera fini, la pluie devrait s'arrêter
 }
+
 ShenyoCalamityEvilGift: {
-	L0: "Nichée après nichée, ça s'enfonce dans le sang et dans la chair. Rien que de les voir, ça fait mal"
-	L1: "Toi, au moins, tu n'as pas peur de la douleur"
-	L2: "La prochaine fois, fais attention. Mon parapluie arrête la pluie, pas ces bestioles"
+	L0: Nichée après nichée, ça s'enfonce dans le sang et dans la chair. Rien que de les voir, ça fait mal
+	L1: Toi, au moins, tu n'as pas peur de la douleur
+	L2: La prochaine fois, fais attention. Mon parapluie arrête la pluie, pas ces bestioles
 }
+
 ShenyoCultistGift: {
 	L0: Il n'arrête pas de marmonner. Quel bruit
 	L1: Ce qu'il voulait lâcher n'avait rien de bon
 	L2: Tu as bien fait de l'interrompre. Ça lui aura évité d'en faire trop
 }
+
 ShenyoDevourerOfGodsGift: {
-	L0: "Celle qui tourne dans le ciel, on dit qu'elle a déjà avalé des dieux"
-	L1: "Quel goût a un dieu, ça m'intrigue un peu"
-	L2: "Garde la carapace si tu veux. La chair, tu n'as pas besoin de me la laisser"
+	L0: Celle qui tourne dans le ciel, on dit qu'elle a déjà avalé des dieux
+	L1: Quel goût a un dieu, ça m'intrigue un peu
+	L2: Garde la carapace si tu veux. La chair, tu n'as pas besoin de me la laisser
 }
+
 ShenyoDukeFishronGift: {
-	L0: "Même un porc qui s'essaie à soulever les vagues, il faut le voir"
+	L0: Même un porc qui s'essaie à soulever les vagues, il faut le voir
 	L1: Le tempérament de l'eau n'est pas à lui de le commander
-	L2: "Le renvoyer sous l'eau, c'est déjà ça. Au moins il ne titubera plus sous mes yeux"
+	L2: Le renvoyer sous l'eau, c'est déjà ça. Au moins il ne titubera plus sous mes yeux
 }
+
 ShenyoEmpressGift: {
 	L0: Les choses trop claires fatiguent mes yeux
-	L1: "Le jour, on n'a pas à la provoquer. Toi, bien sûr, tu choisis toujours le plus dur"
-	L2: "Tu as même froissé la lumière jusqu'à l'assombrir. Ça, c'est de toi"
+	L1: Le jour, on n'a pas à la provoquer. Toi, bien sûr, tu choisis toujours le plus dur
+	L2: Tu as même froissé la lumière jusqu'à l'assombrir. Ça, c'est de toi
 }
+
 ShenyoEvilBossGift: {
-	L0Worm: "Une qui sort de la terre, anneau après anneau. Dégoûtant"
+	L0Worm: Une qui sort de la terre, anneau après anneau. Dégoûtant
 	L1Worm: L'odeur de sang est plus lourde que la pluie... Tant que tu le supportes
-	L0Brain: "Un cerveau étalé au grand air, sans même avoir froid"
-	L1Brain: "Ce genre de chose, un regard de trop et ça salit les yeux"
-	L2: "C'est fini, tant mieux. Ne reviens pas imprégné de cette odeur"
+	L0Brain: Un cerveau étalé au grand air, sans même avoir froid
+	L1Brain: Ce genre de chose, un regard de trop et ça salit les yeux
+	L2: C'est fini, tant mieux. Ne reviens pas imprégné de cette odeur
 }
+
 ShenyoExoAndSCalGift: {
-	L0: "L'orgueil de l'artisan, l'obsession de la sorcière. Mis ensemble, ça se marie assez bien"
+	L0: L'orgueil de l'artisan, l'obsession de la sorcière. Mis ensemble, ça se marie assez bien
 	L1: Tu as levé les deux tables. Ta journée n'aura pas été perdue
-	L2: "Des jours comme celui-ci, il n'y en aura plus beaucoup"
+	L2: Des jours comme celui-ci, il n'y en aura plus beaucoup
 }
+
 ShenyoEyeOfCthulhuGift: {
-	L0: "Se balader la nuit avec un œil grand ouvert, sans même avoir peur de se faire peur"
+	L0: Se balader la nuit avec un œil grand ouvert, sans même avoir peur de se faire peur
 	L1: Ça ne cligne même pas. Ça vous donne la chair de poule
 	L2: Il s'est fermé. Tant mieux. Ce qu'on ne voit plus ne trouble plus
 }
+
 ShenyoGolemGift: {
-	L0: "Une tête de pierre, et elle saute encore"
-	L1: "Une fois brisée, ce n'était qu'une coquille vide"
-	L2: "Cette écume, tu l'as gagnée toi-même. Je n'ai pas levé le petit doigt"
+	L0: Une tête de pierre, et elle saute encore
+	L1: Une fois brisée, ce n'était qu'une coquille vide
+	L2: Cette écume, tu l'as gagnée toi-même. Je n'ai pas levé le petit doigt
 }
+
 ShenyoKingSlimeGift: {
-	L0: "Ça aussi, ça se prend pour un roi ?"
-	L1: "Tout mou, mais ça sait sauter"
-	L2: "Quand tu tomberas sur quelque chose de vraiment coriace, ne l'imite pas à faire le malin"
+	L0: Ça aussi, ça se prend pour un roi ?
+	L1: Tout mou, mais ça sait sauter
+	L2: Quand tu tomberas sur quelque chose de vraiment coriace, ne l'imite pas à faire le malin
 }
+
 ShenyoSeaShrimpGift: {
-	L0: "Cette crevette sous la plage, toute de cristal, un coup de poing qui vide l'eau"
-	L1: "Elle mue couche après couche, et son caractère n'a pas ramolli d'un pouce"
-	L2: "Le bruit creux fait peur, mais tu l'as reçue. Tes mains savent y faire"
+	L0: Cette crevette sous la plage, toute de cristal, un coup de poing qui vide l'eau
+	L1: Elle mue couche après couche, et son caractère n'a pas ramolli d'un pouce
+	L2: Le bruit creux fait peur, mais tu l'as reçue. Tes mains savent y faire
 }
+
 ShenyoMechsGift: {
-	L0: "Chaînes, ampoules, ossature. Mis ensemble, on dirait une blague"
-	L1: "L'odeur de fer est lourde. Je n'aime pas, toi tu ne t'en plains pas"
-	L2: "Ranger les trois d'un coup, avoue que tu as de la patience"
+	L0: Chaînes, ampoules, ossature. Mis ensemble, on dirait une blague
+	L1: L'odeur de fer est lourde. Je n'aime pas, toi tu ne t'en plains pas
+	L2: Ranger les trois d'un coup, avoue que tu as de la patience
 }
+
 ShenyoMoonLordGift: {
-	L0: "Celui derrière la lune, lui aussi a vu du pays"
+	L0: Celui derrière la lune, lui aussi a vu du pays
 	L1: Couvert d'yeux. Un peu comme la pluie sous mon parapluie
 	L2: La lune de ce soir n'est pas trop mal
 }
+
 ShenyoOldDukeGift: {
-	L0: "Ce vieux, il a le caractère plus aigre que l'eau acide"
+	L0: Ce vieux, il a le caractère plus aigre que l'eau acide
 	L1: On s'est croisés quelques fois. Ni l'un ni l'autre n'a cédé
-	L2: "Cette fois, c'est toi qui as gagné"
+	L2: Cette fois, c'est toi qui as gagné
 }
+
 ShenyoPlanteraGift: {
-	L0: "Une fleur qui dormait. La réveiller, c'est s'attirer des ennuis"
-	L1: "Ces lianes qui s'enroulent, ça ressemble un peu à mon parapluie quand il refuse de se fermer"
-	L2: "Le suc t'a taché les mains. En rentrant, lave-les"
+	L0: Une fleur qui dormait. La réveiller, c'est s'attirer des ennuis
+	L1: Ces lianes qui s'enroulent, ça ressemble un peu à mon parapluie quand il refuse de se fermer
+	L2: Le suc t'a taché les mains. En rentrant, lave-les
 }
+
 ShenyoPolterghastGift: {
-	L0: "Ces âmes dans le donjon, raccommodées depuis des siècles"
+	L0: Ces âmes dans le donjon, raccommodées depuis des siècles
 	L1: Ce sont de pauvres êtres qu'on peut vraiment tuer
-	L2: "Qu'elles se dissipent, c'est déjà mieux que de rester suspendues là"
+	L2: Qu'elles se dissipent, c'est déjà mieux que de rester suspendues là
 }
+
 ShenyoQueenBeeOrDeerclopsGift: {
-	L0Bee: "C'est sucré, et le caractère est tout aussi vif. Ça va ensemble"
+	L0Bee: C'est sucré, et le caractère est tout aussi vif. Ça va ensemble
 	L1Bee: Le miel est une bonne chose. Dommage qu'elle ne veuille pas le partager
 	L0Deer: Ce borgne a un sacré caractère
-	L1Deer: "Un bout de bois, et tout ce tapage"
-	L2: "Cette fois, tu n'es pas blessé ?"
+	L1Deer: Un bout de bois, et tout ce tapage
+	L2: Cette fois, tu n'es pas blessé ?
 }
+
 ShenyoQueenSlimeGift: {
-	L0: "Toute rose, toute tendre. Elle sait se parer"
+	L0: Toute rose, toute tendre. Elle sait se parer
 	L1: Et elle amène des gardes. Quelle mise en scène
 	L2: La mise en scène la plus grande ne tient pas une averse
 }
+
 ShenyoSkeletronGift: {
-	L0: "Garder la porte pendant tant d'années, les os devraient être tendres"
-	L1: "À ma place, j'aurais depuis longtemps lâché l'affaire"
+	L0: Garder la porte pendant tant d'années, les os devraient être tendres
+	L1: À ma place, j'aurais depuis longtemps lâché l'affaire
 	L2: La porte du donjon est ouverte. Entre avec soin. Ne prends pas goût à l'attendre comme lui
 }
+
 ShenyoSlimeGodGift: {
-	L0: "Du violet et du noir brouillés ensemble, et ça ose se dire dieu"
-	L1: "Il a tout de même un peu de talent, pour coller tant d'horreurs en un seul tas"
-	L2: "Que ça fonde, tant mieux. Ça évitera de salir l'endroit"
+	L0: Du violet et du noir brouillés ensemble, et ça ose se dire dieu
+	L1: Il a tout de même un peu de talent, pour coller tant d'horreurs en un seul tas
+	L2: Que ça fonde, tant mieux. Ça évitera de salir l'endroit
 }
+
 ShenyoWallOfFleshGift: {
-	L0: "Ce mur de chair en enfer, même à travers mon parapluie je le trouve trop chaud"
-	L1: "Tu l'as transpercé, et le monde a changé avec. Ce genre de chose, tu le fais avec une certaine aisance"
-	L2: "Des spectacles comme celui-ci, il y en aura encore"
+	L0: Ce mur de chair en enfer, même à travers mon parapluie je le trouve trop chaud
+	L1: Tu l'as transpercé, et le monde a changé avec. Ce genre de chose, tu le fais avec une certaine aisance
+	L2: Des spectacles comme celui-ci, il y en aura encore
 }
+
 ShenyoYharonGift: {
-	L0: "Un feu qui brûle depuis tant d'années, il était temps qu'il s'éteigne"
+	L0: Un feu qui brûle depuis tant d'années, il était temps qu'il s'éteigne
 	L1: Le feu et la pluie n'ont jamais fait bon ménage
 	L2: Une plume mouillée ne vole plus
 }

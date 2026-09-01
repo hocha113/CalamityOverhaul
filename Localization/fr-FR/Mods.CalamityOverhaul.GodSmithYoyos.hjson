@@ -1,107 +1,107 @@
-GsWoodYoyo.Desc: 
+GsWoodYoyo.Desc:
 	'''
 	Clic droit : ancrage, le yoyo patrouille sur place au curseur
 	Les impacts ancrés sur la même cible accumulent la Chaleur, jusqu'à +40% de dégâts
 	Tous les 4 impacts ancrés, 2 copeaux de bois à 25% de dégâts chacun
 	'''
-GsRallyYoyo.Desc: 
+GsRallyYoyo.Desc:
 	'''
 	Clic droit : ancrage et patrouille
 	Tous les 5 impacts ancrés, le tempo monte d'un palier, jusqu'à trois ; le retour du yoyo remet à zéro
 	'''
-GsMalaiseYoyo.Desc: 
+GsMalaiseYoyo.Desc:
 	'''
 	Clic droit : ancrage et patrouille
 	Un champ de malaise autour de l'ancre réduit la vitesse des ennemis de 8%
 	'''
-GsArteryYoyo.Desc: 
+GsArteryYoyo.Desc:
 	'''
 	Clic droit : ancrage et patrouille
 	Un impact ancré a 20% de chances de projeter une perle de sang, 15% de dégâts
 	'''
-GsAmazonYoyo.Desc: 
+GsAmazonYoyo.Desc:
 	'''
 	Clic droit : ancrage et patrouille
 	Les impacts ancrés empoisonnent ; à Chaleur pleine, le poison dure deux fois plus longtemps
 	À Chaleur pleine, une liane venimeuse fouette l'ennemi le plus proche toutes les 0.75 s, 20% de dégâts et poison
 	'''
-GsCode1Yoyo.Desc: 
+GsCode1Yoyo.Desc:
 	'''
 	Clic droit : un clic pour ancrer, double-clic pour un retour perçant (×2.2 la vitesse, 135% de dégâts)
 	Un retour qui touche pose un Point de rupture 3 s : les impacts ancrés sur cette cible infligent +30%
 	'''
-GsValorYoyo.Desc: 
+GsValorYoyo.Desc:
 	'''
 	Clic droit : un clic pour ancrer, double-clic pour le retour
 	Le recul du retour est doublé ; s'il y a au moins 3 ennemis près de l'ancre, les dégâts ancrés gagnent 15%
 	'''
-GsCascadeYoyo.Desc: 
+GsCascadeYoyo.Desc:
 	'''
 	Clic droit : un clic pour ancrer, double-clic pour le retour
 	Les impacts font tomber une cascade d'étincelles ; le trajet du retour laisse des lignes brûlantes
 	'''
-GsHiveFiveYoyo.Desc: 
+GsHiveFiveYoyo.Desc:
 	'''
 	Clic droit : un clic pour ancrer, double-clic pour le retour
 	Ancré, le yoyo devient une ruche et lâche une abeille toutes les 0.8 s ; les abeilles profitent de votre équipement d'abeilles
 	'''
-GsFormatCYoyo.Desc: 
+GsFormatCYoyo.Desc:
 	'''
 	Clic droit : un clic pour ancrer, double-clic pour le retour
 	Un retour qui touche formate la Chaleur de la cible au maximum, 6 s de recharge, une étoile blanche signale que c'est prêt
 	'''
-GsGradientYoyo.Desc: 
+GsGradientYoyo.Desc:
 	'''
 	Clic droit : un clic pour ancrer, double-clic pour le retour
 	Plafond de Chaleur porté à +60% ; le yoyo passe de l'or à l'orange puis au rouge à mesure que la Chaleur monte
 	'''
-GsChikYoyo.Desc: 
+GsChikYoyo.Desc:
 	'''
 	Clic droit : un clic pour ancrer, double-clic pour le retour
 	Le retour part à ×2.6 la vitesse, avec un anneau de bang sonique
 	'''
-GsHelFireYoyo.Desc: 
+GsHelFireYoyo.Desc:
 	'''
 	Clic droit : un clic pour ancrer, double-clic pour le retour
 	Toutes les 2 s, l'ancre enflamme le sol juste en dessous d'un anneau de Feu infernal
 	'''
-GsAmarokYoyo.Desc: 
+GsAmarokYoyo.Desc:
 	'''
 	Clic droit : un clic pour ancrer, double-clic pour le retour, maintenir pour orbiter
 	L'orbite traîne un brouillard de givre, -12% de vitesse dans le domaine (le temps de spin s'écoule plus vite en orbite)
 	'''
-GsCode2Yoyo.Desc: 
+GsCode2Yoyo.Desc:
 	'''
 	Clic droit : un clic pour ancrer, double-clic pour le retour, maintenir pour orbiter
 	Le retour se scinde en une trajectoire miroir parallèle, décalée de 40 pixels, 50% de dégâts
 	'''
-GsYeletsYoyo.Desc: 
+GsYeletsYoyo.Desc:
 	'''
 	Clic droit : un clic pour ancrer, double-clic pour le retour, maintenir pour orbiter
 	Tous les 6 impacts ancrés, un anneau de 8 spores, 40% de dégâts chacune
 	'''
-GsRedsThrowYoyo.Desc: 
+GsRedsThrowYoyo.Desc:
 	'''
 	Clic droit : un clic pour ancrer, double-clic pour le retour, maintenir pour orbiter
 	Un retour qui touche charge 3 Marques rouges ; tant qu'il en reste, les impacts ancrés sur cette cible sont des critiques assurés, une marque par coup
 	'''
-GsValkyrieYoyo.Desc: 
+GsValkyrieYoyo.Desc:
 	'''
 	Clic droit : un clic pour ancrer, double-clic pour le retour, maintenir pour orbiter
 	L'orbite s'incline en gyre de valkyrie, les impacts font tomber de la lumière de plumes
 	'''
-GsKrakenYoyo.Desc: 
+GsKrakenYoyo.Desc:
 	'''
 	Clic droit : un clic pour ancrer, double-clic pour le retour, maintenir pour orbiter
 	Ancré, deux tentacules d'encre lacèrent les deux ennemis les plus proches, 30% de dégâts par traction
 	Temps de vol illimité, le cœur d'un siège
 	'''
-GsEyeOfCthulhuYoyo.Desc: 
+GsEyeOfCthulhuYoyo.Desc:
 	'''
 	Clic droit : un clic pour ancrer, double-clic pour le retour, maintenir pour orbiter
 	L'ancre fixe l'ennemi le plus proche et crache 3 larmes de sang toutes les 2 s ; le retour devient une charge agrandie, 160% de dégâts
 	'''
-GsTerrarianYoyo.Desc: 
+GsTerrarianYoyo.Desc:
 	'''
 	Clics droits : jusqu'à 3 points de passage, le yoyo patrouille la courbe de Bézier et double sa cadence de perles vertes
 	Chaque aller-retour complet déclenche 1 s de Résonance de ronde : les perles vertes partent plus vite, +30% de dégâts

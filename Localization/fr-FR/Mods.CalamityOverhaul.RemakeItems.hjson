@@ -1,6 +1,6 @@
 ModifyChargingStationItem: {
 	DisplayName: Station de charge
-	Tooltip: 
+	Tooltip:
 		'''
 		Utilise l'électricité pour charger les appareils
 		On peut y insérer des batteries pour les charger en électricité
@@ -9,26 +9,29 @@ ModifyChargingStationItem: {
 		Maj + clic droit pour récupérer les objets
 		'''
 }
+
 DyeVatItem: {
 	DisplayName: "{$ItemName.DyeVat}"
-	Tooltip: 
+	Tooltip:
 		'''
 		Permet de fabriquer des teintures
 		Clic droit après placement pour ouvrir le panneau de teinture
 		Placez un seau d'eau dans l'emplacement pour déteindre
 		'''
 }
+
 RDemonConch: {
 	DisplayName: Conque démoniaque
-	Tooltip: 
+	Tooltip:
 		'''
 		Écoute bien et tu entendras des cris
 		« Fais attention. »
 		'''
 }
+
 RBloodButcherer: {
 	DisplayName: "{$ItemName.BloodButcherer}"
-	Tooltip: 
+	Tooltip:
 		'''
 		Combo de boucherie en trois temps, massif; le troisième coup est plus large et plus cruel
 		Les swings projettent plusieurs projectiles de sang sombre; le sang retombe en arc et éclabousse à l'impact

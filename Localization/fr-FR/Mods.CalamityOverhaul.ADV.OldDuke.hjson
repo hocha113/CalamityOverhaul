@@ -17,30 +17,33 @@ AbyssQuestLine: {
 	FragmentComplete: Quête terminée !
 	FragmentHint: Pêchez ou chassez des créatures océaniques
 }
+
 FirstMetOldDuke: {
 	OldDukeName: Le Vieux Duc
 	L0: ......
-	L1: "Range ta soif de sang, jeune aventurier. Pas besoin de dégainer dès la première rencontre."
+	L1: Range ta soif de sang, jeune aventurier. Pas besoin de dégainer dès la première rencontre.
 	L2: Je suis vieux. J'ai assez de ces jeux violents.
 	L3: Nous pouvons coopérer.
-	L4: "Je collectionne quelque chose de spécial : des Fragments océaniques."
-	L5: "Si tu m'en trouves davantage, ça en vaudra la peine."
+	L4: Je collectionne quelque chose de spécial : des Fragments océaniques.
+	L5: Si tu m'en trouves davantage, ça en vaudra la peine.
 	L6: Voici un échantillon.
 	B1: Tu as changé d'avis ?
 	B2: Alors adieu.
-	HL1: "Le vieux professeur… ? Il ne semble pas me reconnaître, pourtant."
+	HL1: Le vieux professeur… ? Il ne semble pas me reconnaître, pourtant.
 	HL2: Ses paroles sont crédibles. Nous étions collègues à l'Université de la Mer de soufre. C'est un titan de l'archéologie marine.
 	C1: Accepter la coopération
 	C2: Refuser la coopération
 	C3: Refuser et dégainer l'arme
 	C1Response: Excellent. J'espère une agréable collaboration.
-	C2Response: "…Alors je prends congé. Si tu changes d'avis, tu es le bienvenu."
+	C2Response: …Alors je prends congé. Si tu changes d'avis, tu es le bienvenu.
 	C3Response: …Tu insistes donc. Alors laisse-moi mesurer ta valeur.
 }
+
 OldDukeCampsite: {
 	OldDukeWanderingActor.InteractHint: "[Clic droit] Parler"
 	OldDukeCampsite.TitleText: Campement du Vieux Duc
 }
+
 CampsiteInteractionDialogue: {
 	GreetingLine: Que veux-tu ?
 	Choice1Text: Je suis là pour commercer.
@@ -53,10 +56,11 @@ CampsiteInteractionDialogue: {
 	Choice2Response: Bien. Ces fragments suffisent. Voici ta récompense.
 	Choice3Response: ......
 	QuestCompleteLine: Hm… as-tu de nouvelles découvertes ? Je suis très occupé en ce moment.
-	B1: "Les prochains jours, je déchiffrerai ces fragments. Je te préviendrai quand ce sera fini."
-	Choice4_R1: "Je suis vieux, mais je n'ai pas oublié les arts de ma jeunesse."
+	B1: Les prochains jours, je déchiffrerai ces fragments. Je te préviendrai quand ce sera fini.
+	Choice4_R1: Je suis vieux, mais je n'ai pas oublié les arts de ma jeunesse.
 	Choice4_R2: Voyons si tu t'es amélioré récemment.
 	Choice4_R3: Me prendre comme pierre à aiguiser n'est pas sage…
+
 	CampsiteChatDialogue: {
 		GreetingLine: Tu veux bavarder ?
 		Choice_BackToMain: Changer de sujet
@@ -68,67 +72,69 @@ CampsiteInteractionDialogue: {
 		Choice_PersonalLife: Tu n'as pas l'air en forme
 		Choice_Farewell: Au revoir
 		Past_Intro: C'est un passé volontairement effacé. Ou il ne reste plus que peu de poissons qui le connaissent.
-		Past_University: "Nous étions arrogants, croyant mesurer le monde entier à la règle — jusqu'à ce qu'on creuse quelque chose… d'illogique au fond de l'abîme."
+		Past_University: Nous étions arrogants, croyant mesurer le monde entier à la règle — jusqu'à ce qu'on creuse quelque chose… d'illogique au fond de l'abîme.
 		Past_Prime: Cette chose ne pouvait être tuée ni détruite. Ce n'était pas un être vivant.
-		Past_Accident: "Il n'y eut aucun survivant à cet incident. Quand cette froideur m'assimilait, je pris une décision démente."
-		Past_Mutation: "Sans issue, je m'y joignis. Je la forcai dans mon corps. Depuis, je ne vis pas vraiment et je ne peux pas mourir."
+		Past_Accident: Il n'y eut aucun survivant à cet incident. Quand cette froideur m'assimilait, je pris une décision démente.
+		Past_Mutation: Sans issue, je m'y joignis. Je la forcai dans mon corps. Depuis, je ne vis pas vraiment et je ne peux pas mourir.
 		Past_Exile: Tant mieux. Ce corps est assez fort pour dompter cette mer.
-		Past_Reflection: "Je veux seulement garder cette mer. Si ces choses rampent hors de l'abîme, je risquerai renaissance totale et mort pour les arrêter."
+		Past_Reflection: Je veux seulement garder cette mer. Si ces choses rampent hors de l'abîme, je risquerai renaissance totale et mort pour les arrêter.
 		Research_Intro: J'essaie de reconstruire une histoire — ou retrouver une forme d'expérience perdue.
 		Research_CurrentWork: Ces fragments portent des souvenirs du passé. Ils montrent comment cette ancienne civilisation cherchait une voie de survie dans le désespoir.
-		Research_Breakthrough: "Contre une telle terreur, la force brute ne sert à rien. Il faut trouver leurs « règles de chasse » et les exploiter."
+		Research_Breakthrough: Contre une telle terreur, la force brute ne sert à rien. Il faut trouver leurs « règles de chasse » et les exploiter.
 		Research_Difficulties: Mais le déchiffrement est dangereux. Les fragments sont eux-mêmes des médiums. Les fixer trop longtemps et vous entendrez peut-être ce qu'il ne faut pas.
-		Research_Theory: "Si je rassemble toutes les pièces, je trouverai peut-être un moyen de sceller durablement la source de l'abîme."
+		Research_Theory: Si je rassemble toutes les pièces, je trouverai peut-être un moyen de sceller durablement la source de l'abîme.
 		Choice_Research_Details: Que veux-tu dire par « règles de chasse » ?
 		Choice_Research_Help: Que dois-je faire ?
 		Choice_Research_Back: Ça semble fou
-		Research_Details1: "Certaines choses ne doivent pas être regardées, certains noms pas prononcés. Un médium déclenché, la mort est inévitable. Cette civilisation lia les dieux par des règles."
-		Research_Details2: "Ils construisirent même d'immenses récipients pour emprisonner ces choses. Malheureusement, les récipients fuyaient."
+		Research_Details1: Certaines choses ne doivent pas être regardées, certains noms pas prononcés. Un médium déclenché, la mort est inévitable. Cette civilisation lia les dieux par des règles.
+		Research_Details2: Ils construisirent même d'immenses récipients pour emprisonner ces choses. Malheureusement, les récipients fuyaient.
 		Research_Help: Aide-moi à trouver plus de fragments. Le reste de ma vie sera consacré à cette recherche.
 		History_Intro: La Mer de soufre n'est qu'une façade. C'est le résidu après l'empiètement de ce royaume.
-		History_Origin: "C'était autrefois la Mer de saphir, jusqu'à ce que la source échappe à tout contrôle."
+		History_Origin: C'était autrefois la Mer de saphir, jusqu'à ce que la source échappe à tout contrôle.
 		History_Civilization: Cette ancienne civilisation était puissante. Elle utilisa cette force inquiétante et bâtit des cités — comme danser sur un baril de poudre.
-		History_Cataclysm: "Naturellement, l'équilibre céda. Une terreur s'éveilla et toute vie fut effacée en un instant — partie de ce silence mort."
+		History_Cataclysm: Naturellement, l'équilibre céda. Une terreur s'éveilla et toute vie fut effacée en un instant — partie de ce silence mort.
 		History_Ruins: Ce que vous voyez n'est que le résidu de cet événement. L'eau changea de couleur parce qu'elle mourut. Complètement.
-		History_Warning: "Si vous voyez les morts vous saluer ou entendez des appels familiers… souvenez-vous : c'est cette mer de cadavres qui imite les vivants."
+		History_Warning: Si vous voyez les morts vous saluer ou entendez des appels familiers… souvenez-vous : c'est cette mer de cadavres qui imite les vivants.
 		Choice_History_MoreRuins: Où est-ce le plus dangereux ?
 		Choice_History_Dangers: Y a-t-il des contre-mesures ?
 		Choice_History_Back: Inquiétant
 		History_MoreRuins1: Tout au fond de cette mer de cadavres. Il y a une porte. Ne frappe pas. Ce qui se trouve derrière ferait mieux d'y pourrir à jamais.
-		History_MoreRuins2: "Dans les ruines englouties, des salles restent closes. Chambres secrètes en métal lourd spécial, pour couper la perception de ces choses."
-		History_Dangers1: "Outre les morts-vivants mutés : méfie-toi de l'invisible. Parfois, le coup fatal est invisible."
-		History_Dangers2: "Ne fais pas confiance à tes yeux. Ne réponds pas aux appels inexplicables. Dans cette mer de cadavres, les vivants sont l'anomalie."
-		Fragments_Intro: "Les Fragments océaniques… à mes yeux, des archives tachées de sang."
+		History_MoreRuins2: Dans les ruines englouties, des salles restent closes. Chambres secrètes en métal lourd spécial, pour couper la perception de ces choses.
+		History_Dangers1: Outre les morts-vivants mutés : méfie-toi de l'invisible. Parfois, le coup fatal est invisible.
+		History_Dangers2: Ne fais pas confiance à tes yeux. Ne réponds pas aux appels inexplicables. Dans cette mer de cadavres, les vivants sont l'anomalie.
+		Fragments_Intro: Les Fragments océaniques… à mes yeux, des archives tachées de sang.
 		Fragments_Nature: Ce sont des résidus d'un phénomène. Comme des malédictions compressées.
-		Fragments_Power: "Chaque fragment est un « médium ». Seul, il est inoffensif — assez réunis, ils provoquent une collision de forces inquiétantes."
-		Fragments_Collection: "Ils sont éparpillés dans toute la mer morte — sous des ruines, ou poussés dans la chair des créatures."
+		Fragments_Power: Chaque fragment est un « médium ». Seul, il est inoffensif — assez réunis, ils provoquent une collision de forces inquiétantes.
+		Fragments_Collection: Ils sont éparpillés dans toute la mer morte — sous des ruines, ou poussés dans la chair des créatures.
 		Fragments_Purpose: Je les assemble encore pour reconstruire la source de cette catastrophe. Seule en comprenant comment elle tuait trouverai-je un moyen de l'enfermer.
 		Personal_Intro: Je m'en tire comme je peux.
-		Personal_Daily: "Je dors surtout pour amortir les fluctuations de conscience. Si les pensées deviennent trop vives, la chose en moi devient… agitée."
-		Personal_Loneliness: "La solitude, c'est bien. Si ça s'anime ici, c'est que « elles » sont venues. Je suis un poisson solitaire — plus sûr pour moi et pour le monde."
+		Personal_Daily: Je dors surtout pour amortir les fluctuations de conscience. Si les pensées deviennent trop vives, la chose en moi devient… agitée.
+		Personal_Loneliness: La solitude, c'est bien. Si ça s'anime ici, c'est que « elles » sont venues. Je suis un poisson solitaire — plus sûr pour moi et pour le monde.
 		Personal_Memories: Mes souvenirs sont flous. Parfois je ne sais plus ce qui est mien et ce qui est… les souvenirs d'autres dans ce corps.
-		Personal_Hope: "Te voir me rappelle moi d'autrefois. Ignorant et sans peur. J'espère que tu ne finiras pas comme moi, transformé en cette forme."
+		Personal_Hope: Te voir me rappelle moi d'autrefois. Ignorant et sans peur. J'espère que tu ne finiras pas comme moi, transformé en cette forme.
 		Choice_Personal_Tea: Qu'est-ce que tu bois ?
 		Choice_Personal_Past: Es-tu encore… un poisson ?
 		Choice_Personal_Back: Prends soin de toi
 		Personal_Tea1: Infusé de plusieurs plantes spéciales de l'abîme. Le goût… comme de la boue pourrie.
 		Personal_Tea2: Une tasse ? Ça te calmera comme un poisson mort.
-		Personal_Past1: "Qui sait ? Peut-être que le vrai moi est mort depuis longtemps, et je ne suis qu'un… fantôme avec les souvenirs du Vieux Duc ?"
-		Personal_Past2: "Mais je me souviens encore du soleil sur le visage, des livres entre les mains. Tant que je m'en souviens, je me considère vivant."
-		Personal_Past3: "Sans cet accident, je reposerais paisiblement dans une tombe — au lieu d'être incapable de mourir même en le voulant."
+		Personal_Past1: Qui sait ? Peut-être que le vrai moi est mort depuis longtemps, et je ne suis qu'un… fantôme avec les souvenirs du Vieux Duc ?
+		Personal_Past2: Mais je me souviens encore du soleil sur le visage, des livres entre les mains. Tant que je m'en souviens, je me considère vivant.
+		Personal_Past3: Sans cet accident, je reposerais paisiblement dans une tombe — au lieu d'être incapable de mourir même en le voulant.
 		Farewell_Normal: Assez pour aujourd'hui. Reviens si tu as besoin de quelque chose.
-		Farewell_Friendly: "Prudence, jeune aventurier. Dans ce monde, une fin paisible est un luxe."
+		Farewell_Friendly: Prudence, jeune aventurier. Dans ce monde, une fin paisible est un luxe.
 	}
 }
+
 FirstCampsiteDialogue: {
 	L0: Tu es là.
 	L1: Je collectionne ces fragments depuis des années.
-	L2: "Ils sont… singuliers. Pas comme une évolution naturelle, plutôt des objets étrangers qui ont « envahi » ce monde."
+	L2: Ils sont… singuliers. Pas comme une évolution naturelle, plutôt des objets étrangers qui ont « envahi » ce monde.
 	L3: J'espère que tu comprends. Mon intuition dit qu'ils devraient être informes et n'ont choisi qu'une forme que les Terrariens peuvent saisir.
-	L4: "Quoi qu'il en soit… je veux les déchiffrer, mais je n'en ai pas assez."
+	L4: Quoi qu'il en soit… je veux les déchiffrer, mais je n'en ai pas assez.
 	L5: Aide-moi à collecter assez de Fragments océaniques.
 	L6: Je te récompenserai convenablement.
 }
+
 ComeCampsiteFindMe: {
 	B1: …Passe prendre le thé quand tu as le temps.
 	C1: J'ai affaire avec toi.

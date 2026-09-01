@@ -1,4 +1,5 @@
-HeadPrimeAI.SkeletronPrime_Text: "N'essaie pas de me tuer avec cette chose stupide ! Meurs, organisme !"
+HeadPrimeAI.SkeletronPrime_Text: N'essaie pas de me tuer avec cette chose stupide ! Meurs, organisme !
+
 WallOfFleshAI: {
 	CurtainDeathReason: "{0} a été englouti par la marée de sang"
 	NetDeathReason: "{0} a été déchiqueté par le filet de chair des Affamés"

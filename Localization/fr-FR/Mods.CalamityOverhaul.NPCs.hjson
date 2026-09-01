@@ -1,8 +1,9 @@
 Victor: {
 	DisplayName: Médecin cybernétique
-	Bestiary: "Un médecin cybernétique échoué sur ces rivages, portant dans son dos assez d'implants cybernétiques pour reconstituer un corps entier. On dit qu'il peut échanger la chair de quiconque contre de l'acier et du courant électrique — à condition de pouvoir payer le prix."
+	Bestiary: Un médecin cybernétique échoué sur ces rivages, portant dans son dos assez d'implants cybernétiques pour reconstituer un corps entier. On dit qu'il peut échanger la chair de quiconque contre de l'acier et du courant électrique — à condition de pouvoir payer le prix.
 	TalkHint: Parler à Victor
 	Name0: Victor
+
 	TownNPCMood: {
 		Content: Je suis satisfait.
 		NoHome: Je déteste ne pas avoir de maison.
@@ -10,80 +11,94 @@ Victor: {
 		LoveSpace: J'adore avoir autant d'espace.
 		DislikeCrowded: Je n'aime pas que ce soit si bondé.
 		HateCrowded: Je déteste que ce soit si bondé.
-		LoveBiome: "J'aime {BiomeName}. Calme, température stable, parfait pour le travail de précision"
+		LoveBiome: J'aime {BiomeName}. Calme, température stable, parfait pour le travail de précision
 		LikeBiome: "{BiomeName} n'est pas mal. Les stocks s'y conservent"
-		DislikeBiome: "L'humidité de {BiomeName} s'infiltre dans mes circuits. Affreux"
+		DislikeBiome: L'humidité de {BiomeName} s'infiltre dans mes circuits. Affreux
 		HateBiome: "{BiomeName} ? Cet endroit ronge le meilleur des cyberwares jusqu'à la rouille. N'en parlons plus"
 		LoveNPC: "{NPCName} s'y connaît en machines. Une qualité rare, ces temps-ci"
 		LikeNPC: "{NPCName} est un voisin correct, et m'apporte parfois des pièces"
 		DislikeNPC: "{NPCName} appelle mes opérations du 「bricolage de ruelle」. Hum. Les résultats parlent"
-		HateNPC: "Que {NPCName} reste loin de moi. Je n'ai pas envie de recoller chaque jour des clients en morceaux"
-		LikeNPC_Princess: "J'aime {NPCName}."
-		Princess_LovesNPC: "J'aime {NPCName}."
+		HateNPC: Que {NPCName} reste loin de moi. Je n'ai pas envie de recoller chaque jour des clients en morceaux
+		LikeNPC_Princess: J'aime {NPCName}.
+		Princess_LovesNPC: J'aime {NPCName}.
 	}
 }
+
 TBUG: {
 	DisplayName: Marchande de failles
-	Bestiary: "La nuit où Skeletron est tombé, le monde s'est fendu d'une couture qui n'a jamais refermé, et l'a recrachée. La chute l'a bien amochée ; sa première phrase en se relevant a été de demander le cours des pièces d'or. Elle tient maintenant une petite boutique, et vend des puces dont l'origine reste floue."
+	Bestiary: La nuit où Skeletron est tombé, le monde s'est fendu d'une couture qui n'a jamais refermé, et l'a recrachée. La chute l'a bien amochée ; sa première phrase en se relevant a été de demander le cours des pièces d'or. Elle tient maintenant une petite boutique, et vend des puces dont l'origine reste floue.
 	TalkHint: Parler à TBUG
 	Name0: TBUG
+
 	TownNPCMood: {
-		Content: "Fonctionnement normal. Pas d'erreur, pas d'alerte. Presque ennuyeux"
-		NoHome: "Pas de maison. À strictement parler, mes coordonnées actuelles sont une valeur illégale"
+		Content: Fonctionnement normal. Pas d'erreur, pas d'alerte. Presque ennuyeux
+		NoHome: Pas de maison. À strictement parler, mes coordonnées actuelles sont une valeur illégale
 		FarFromHome: Trop loin de chez moi. Le signal s'atténue trop
-		LoveSpace: "Autant de place, ça tient trois écrans. J'aime"
-		DislikeCrowded: "Dès qu'il y a trop de monde, n'importe qui peut regarder mon écran. Agace"
-		HateCrowded: "Entassés comme ça, quelqu'un finira par marcher sur mes câbles"
+		LoveSpace: Autant de place, ça tient trois écrans. J'aime
+		DislikeCrowded: Dès qu'il y a trop de monde, n'importe qui peut regarder mon écran. Agace
+		HateCrowded: Entassés comme ça, quelqu'un finira par marcher sur mes câbles
 		LoveBiome: "{BiomeName} est frais et stable. Ça sent la salle machine"
 		LikeBiome: "{BiomeName} va. Le froid, c'est bon pour le matériel"
-		DislikeBiome: "L'alarme d'humidité de {BiomeName} n'arrête pas"
+		DislikeBiome: L'alarme d'humidité de {BiomeName} n'arrête pas
 		HateBiome: "{BiomeName} ? Mon matériel a déjà pris l'eau de mer une fois. Je garde encore la facture"
 		LoveNPC: "{NPCName} parle aussi bien clés que circuits. Pas besoin de baisser la fréquence avec elle"
 		LikeNPC: "{NPCName} ne me demande pas d'où je viens, seulement si je prends les pièces d'occasion. Validé"
 		DislikeNPC: "{NPCName} n'arrête pas de vouloir me monter sur sa table pour me démonter. Je ne suis pas cassée. Ne me répare pas"
-		HateNPC: "Le grand livre de {NPCName} est plus toxique que n'importe quel virus. Qu'il reste loin de ma boutique"
+		HateNPC: Le grand livre de {NPCName} est plus toxique que n'importe quel virus. Qu'il reste loin de ma boutique
 		LikeNPC_Princess: "{NPCName}... bon. Personne n'arrive à la détester, et ça, c'est déjà suspect"
-		Princess_LovesNPC: "J'adore {NPCName} ! Elle sait plein de choses que personne d'autre ne sait !"
+		Princess_LovesNPC: J'adore {NPCName} ! Elle sait plein de choses que personne d'autre ne sait !
 	}
 }
+
 ScrapCommander: {
 	DisplayName: Commandant de ferraille
-	Bestiary: "Après la chute des trois tyrans mécaniques, personne n'a emporté les débris. Une nuit, un crâne rouillé s'est remis sous tension au milieu de la ferraille, et a hissé sur ses épaules les quatre outils qui tournaient encore. Il ne répare rien : il dresse l'inventaire. Chaque morceau de fer à terre figure déjà sur ses listes."
+	Bestiary: Après la chute des trois tyrans mécaniques, personne n'a emporté les débris. Une nuit, un crâne rouillé s'est remis sous tension au milieu de la ferraille, et a hissé sur ses épaules les quatre outils qui tournaient encore. Il ne répare rien : il dresse l'inventaire. Chaque morceau de fer à terre figure déjà sur ses listes.
 }
+
 ScrapLegionProbe.DisplayName: Serviteur de ferraille
+
 DeepGaolWraith: {
 	DisplayName: Âme vengeresse des geôles
-	Bestiary: "Le geôlier est mort à son poste, la clé rouillée dans la serrure. La rancune restante s'est tordue en forme humaine le long des chaînes, et fait sa ronde entre les cellules en traînant deux menottes vides. Il ne consulte aucun registre, seulement les poignets. Qui n'est pas enchaîné compte pour un évadé."
+	Bestiary: Le geôlier est mort à son poste, la clé rouillée dans la serrure. La rancune restante s'est tordue en forme humaine le long des chaînes, et fait sa ronde entre les cellules en traînant deux menottes vides. Il ne consulte aucun registre, seulement les poignets. Qui n'est pas enchaîné compte pour un évadé.
 }
+
 Undrowned: {
 	DisplayName: L'Insubmersible
-	Bestiary: "Au plus profond de la geôle aquatique, dans la salle des crues, on retient un condamné que l'eau ne peut noyer. Le registre des exécutions grimpe tout un mur : ancre, crue, vidange, examen. Chaque entrée s'achève par la même phrase : le prisonnier respire encore. Les gardiens ont fini par ne plus venir. Seule l'eau se souvient de sa patience."
+	Bestiary: Au plus profond de la geôle aquatique, dans la salle des crues, on retient un condamné que l'eau ne peut noyer. Le registre des exécutions grimpe tout un mur : ancre, crue, vidange, examen. Chaque entrée s'achève par la même phrase : le prisonnier respire encore. Les gardiens ont fini par ne plus venir. Seule l'eau se souvient de sa patience.
 	GateSealed: Les vannes de la salle des crues se sont verrouillées.
 }
+
 UndrownedThrone.DisplayName: Condamné à l'ancre
+
 FoundryOverseer: {
 	DisplayName: Contremaître de la fonderie
-	Bestiary: "Aussi longtemps que la fonderie est à l'arrêt, l'engin de contrôle sur le rail du plafond a couru ses quarts à vide. Il ne fabrique rien : il réceptionne. Estampage, coulée, batterie de dards. Ce qui passe est libéré. Ce qui échoue retourne au four. La pièce livrée aujourd'hui à la salle de réception, c'est toi."
+	Bestiary: Aussi longtemps que la fonderie est à l'arrêt, l'engin de contrôle sur le rail du plafond a couru ses quarts à vide. Il ne fabrique rien : il réceptionne. Estampage, coulée, batterie de dards. Ce qui passe est libéré. Ce qui échoue retourne au four. La pièce livrée aujourd'hui à la salle de réception, c'est toi.
 	GateSealed: Les portes à engrenages de la salle de réception se sont verrouillées.
 }
+
 OverseerDormantRig.DisplayName: Grue ensevelie de poussière
 GaolDormantSkull.DisplayName: Crâne desséché des geôles
+
 LanternWarden: {
 	DisplayName: Sentinelle à la lanterne
-	Bestiary: "Le dernier allumeur de la geôle. Il ne se souvient plus de ce qu'il patrouille, seulement de la règle de la lampe : ce que la lumière touche est un évadé, et un évadé doit être annoncé à la cloche."
+	Bestiary: Le dernier allumeur de la geôle. Il ne se souvient plus de ce qu'il patrouille, seulement de la règle de la lampe : ce que la lumière touche est un évadé, et un évadé doit être annoncé à la cloche.
 }
+
 LampeaterWisp: {
 	DisplayName: Âme dévore-lampe
-	Bestiary: "Les lampes des archives ne s'éteignent pas toutes seules. Cette volute de fumée se souvient de chaque flamme qu'elle a avalée. Plus elle se rassasie, plus elle brûle, jusqu'à devenir elle-même la lampe inscrite au registre des recherchés."
+	Bestiary: Les lampes des archives ne s'éteignent pas toutes seules. Cette volute de fumée se souvient de chaque flamme qu'elle a avalée. Plus elle se rassasie, plus elle brûle, jusqu'à devenir elle-même la lampe inscrite au registre des recherchés.
 }
+
 DrownedTurnkey: {
 	DisplayName: Geôlier des flots
-	Bestiary: "La nuit où l'on a ouvert les vannes, il n'est pas remonté. Sous la surface, il continue l'appel. Là où l'ondulation s'arrête aux pieds de quelqu'un, c'est que celui-là doit rentrer en cellule."
+	Bestiary: La nuit où l'on a ouvert les vannes, il n'est pas remonté. Sous la surface, il continue l'appel. Là où l'ondulation s'arrête aux pieds de quelqu'un, c'est que celui-là doit rentrer en cellule.
 }
+
 BoneStitcher: {
 	DisplayName: Couturier d'ossements
-	Bestiary: "Dans l'ossuaire, les os n'ont pas le droit de rester couchés. Il trie, compare, recoud, et rassemble les prisonniers démontés à leur poste. Les points sont de travers, le devoir ne l'est pas."
+	Bestiary: Dans l'ossuaire, les os n'ont pas le droit de rester couchés. Il trie, compare, recoud, et rassemble les prisonniers démontés à leur poste. Les points sont de travers, le devoir ne l'est pas.
 }
+
 RestitchedBones.DisplayName: Os recousus
 CybTrainingDummy.DisplayName: Cible d'entraînement holographique
 OldNetPatrolICE.DisplayName: ICE de patrouille
@@ -95,45 +110,56 @@ OldNetTaggerICE.DisplayName: Marqueur-phalène
 OldNetTracerICE.DisplayName: Chien pisteur
 OldNetWardenICE.DisplayName: Officier de récupération
 KiyumeHound.DisplayName: Chien féroce
+
 LanternGuideYokai: {
 	DisplayName: Vieillard à la lanterne
 	GripDeathReason: "{0} a suivi la mauvaise lampe"
 }
+
 LanternGuideHungLamp.DisplayName: Lanterne suspendue
 ScarecrowWatcherYokai.DisplayName: Gardien des champs
 WellHandYokai.DisplayName: Main du puits
 FuneralCortegeYokai.DisplayName: Porteur d'étendard
+
 FuneralCortegePorter: {
 	DisplayName: Porte-cercueil
 	WraithDeathReason: "{0} a barré le chemin du cortège"
 }
+
 FuneralCortegeCoffin.DisplayName: Vieux cercueil
 FacelessOneYokai.DisplayName: Sans-visage
+
 RidgeWalkerYokai: {
 	DisplayName: Marcheur de la crête de brume
 	RidgeDeathReason: "{0} a revendiqué une crête qui n'était pas à lui"
 }
+
 ShallowHandsYokai.DisplayName: Main dans l'eau
 MinoFisherYokai.DisplayName: Vieil homme en pèlerine de paille
 KiyumeWhiteHound.DisplayName: Chien blanc au regard du pays natal
+
 SeaShrimpBoss: {
 	DisplayName: Crevette de cristal abyssal
-	Bestiary: "Le tyran à carapace des plus profondes fosses. Quand sa pince géante frappe, elle va plus vite que le son dans l'eau ; le coup déchire la mer jusqu'au vide, et l'implosion des bulles éclaire comme le jour. Les pêcheurs disent que les colonnes d'eau qui explosent sans raison, c'est lui qui s'entraîne au fond."
+	Bestiary: Le tyran à carapace des plus profondes fosses. Quand sa pince géante frappe, elle va plus vite que le son dans l'eau ; le coup déchire la mer jusqu'au vide, et l'implosion des bulles éclaire comme le jour. Les pêcheurs disent que les colonnes d'eau qui explosent sans raison, c'est lui qui s'entraîne au fond.
 	ChecklistSpawnInfo: S'invoque dans l'océan avec un Appât de crevette cristallisée
 }
+
 BssHead: {
 	DisplayName: Serpent des dunes en fleurs
-	Bestiary: "Un grand serpent qui rôde sous les dunes. Des cactus ont pris racine sur sa carapace ; les fleurs rouges se gorgent de son sang et s'ouvrent d'un éclat rare. On dit que lorsque le vent de sable se lève, c'est lui qui se retourne en dessous."
-	ChecklistSpawnInfo: "Après avoir vaincu l'Œil de Cthulhu, s'invoque à la surface du désert avec un Bourgeon épineux"
+	Bestiary: Un grand serpent qui rôde sous les dunes. Des cactus ont pris racine sur sa carapace ; les fleurs rouges se gorgent de son sang et s'ouvrent d'un éclat rare. On dit que lorsque le vent de sable se lève, c'est lui qui se retourne en dessous.
+	ChecklistSpawnInfo: Après avoir vaincu l'Œil de Cthulhu, s'invoque à la surface du désert avec un Bourgeon épineux
 	BossChecklistIntegration.EntryName: Serpent des dunes en fleurs
 }
+
 BssBody.DisplayName: Serpent des dunes en fleurs
 BssTail.DisplayName: Serpent des dunes en fleurs
+
 FssHead: {
 	DisplayName: Serpent des dunes purulent
-	Bestiary: "Une mutation du Serpent des dunes en fleurs. L'ombre a filtré dans le sable, les fleurs rouges ont pourri en abcès, et l'ichor a remplacé le sang de ses veines. Il est plus long qu'avant, et plus affamé. Les flaques dorées du désert ne sont pas de la pluie : c'est sa bave."
+	Bestiary: Une mutation du Serpent des dunes en fleurs. L'ombre a filtré dans le sable, les fleurs rouges ont pourri en abcès, et l'ichor a remplacé le sang de ses veines. Il est plus long qu'avant, et plus affamé. Les flaques dorées du désert ne sont pas de la pluie : c'est sa bave.
 	ChecklistSpawnInfo: S'invoque à la surface du désert avec un Bourgeon purulent
 	BossChecklistIntegration.EntryName: Serpent des dunes purulent
 }
+
 FssBody.DisplayName: Serpent des dunes purulent
 FssTail.DisplayName: Serpent des dunes purulent

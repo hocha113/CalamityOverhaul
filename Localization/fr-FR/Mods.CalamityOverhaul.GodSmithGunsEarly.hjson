@@ -1,5 +1,5 @@
 GsMinishark: {
-	Desc: 
+	Desc:
 		'''
 		Reforgé : maintenez la détente, le Minirequin goûte le sang ; la cadence grimpe, les trajectoires s'affolent
 		À frénésie pleine, chaque quatrième balle devient une dent de requin qui déchire puis referme la plaie
@@ -7,8 +7,9 @@ GsMinishark: {
 		'''
 	Frenzy: Raz-de-marée !
 }
+
 GsPhoenixBlaster: {
-	Desc: 
+	Desc:
 		'''
 		Reforgé : chaque impact nourrit le nid, le Pistolet Phoenix s'embrase ; les kills nourrissent plus vite
 		À 24 braises, le prochain tir renaît en phénix qui plonge, explose et se scinde en trois oisillons chasseurs
@@ -16,14 +17,16 @@ GsPhoenixBlaster: {
 		'''
 	Nirvana: Nirvana !
 }
-GsBoomstick.Desc: 
+
+GsBoomstick.Desc:
 	'''
 	Reforgé : chaque canon envoie 4 plombs qui se resserrent sur le viseur, plus de jet sauvage
 	Les plombs se croisent au viseur et mordent ce qui s'y trouve
 	Clic droit : ouvrez le canon, les deux cartouches partent ; visez la bande lumineuse, +1 plomb par canon au prochain chargement
 	'''
+
 GsHandgun: {
-	Desc: 
+	Desc:
 		'''
 		Reforgé : 3 impacts d'affilée sur la même cible, le 4e devient une balle de point vital, dégâts nettement plus forts et ignore 15 de défense
 		La dernière balle du chargeur frappe plus lourd et plus loin
@@ -31,14 +34,16 @@ GsHandgun: {
 		'''
 	PointShot: Point vital !
 }
-GsTheUndertaker.Desc: 
+
+GsTheUndertaker.Desc:
 	'''
 	Reforgé : tuer un ennemi, ou le frapper à l'agonie, et le Fossoyeur recueille une lanterne d'âme qui revient vous soigner, une fois par barillet
 	La dernière chambre est une balle de glas, un choc de deuil au recul doublé
 	Chargement chambre par chambre, vous pouvez tirer à tout moment, autant de balles que de chambres remplies
 	'''
+
 GsRedRyder: {
-	Desc: 
+	Desc:
 		'''
 		Reforgé : les billes de cuivre rebondissent deux fois sur les blocs, chaque saut sonne une clochette
 		Cinq cloches d'affilée sur la même cible, le prochain tir est une balle-cadeau qui explose en confettis lourds
@@ -46,8 +51,9 @@ GsRedRyder: {
 		'''
 	Gift: Balle-cadeau !
 }
+
 GsPewMaticHorn: {
-	Desc: 
+	Desc:
 		'''
 		Reforgé : un chargeur de sept notes, une couleur et un son par tir
 		Trois notes d'affilée sur la même cible forment un accord : une explosion de teinte selon la troisième note
@@ -55,8 +61,9 @@ GsPewMaticHorn: {
 		'''
 	Chord: Accord !
 }
+
 GsSandgun: {
-	Desc: 
+	Desc:
 		'''
 		Reforgé : le jet continu chauffe la trémie ; à chaud, le sable fond en dards de verre
 		Les dards de verre vont plus vite, percent mieux, et éclatent en facettes sonores ; relâcher laisse refroidir
@@ -64,25 +71,26 @@ GsSandgun: {
 		'''
 	Molten: Verre fondu !
 }
-GsBlowpipe.Desc: 
+
+GsBlowpipe.Desc:
 	'''
 	Reforgé : chaque impact sur la même cible file un mèche de venin ; trois mèches explosent en brouillard toxique persistant
 	Recharger, c'est reprendre souffle, une fléchette par inspiration, interruptible ; immobile, le souffle est 25% plus vite
 	Visez la bande lumineuse : la prochaine fléchette fait exploser les mèches à l'impact
 	'''
-GsBlowgun.Desc: 
+GsBlowgun.Desc:
 	'''
 	Reforgé : un long souffle envoie 5 fléchettes, chacune plus rapide et plus dure que la précédente
 	La cinquième vide les poumons et explose en un large brouillard toxique
 	Reprendre souffle fléchette par fléchette, plus vite à l'arrêt ; visez la bande lumineuse, le chargeur démarre à la force de la troisième
 	'''
-GsHarpoon.Desc: 
+GsHarpoon.Desc:
 	'''
 	Reforgé : le harpon part et revient, le retour de la chaîne, c'est le rechargement
 	Planter un ennemi lourd pose une ancre ; rappuyez la détente, le treuil vous y tire
 	Un ennemi léger, c'est l'inverse : la chaîne le ramène à vous
 	'''
-GsFlareGun.Desc: 
+GsFlareGun.Desc:
 	'''
 	Reforgé : quatre couleurs de fusée, rouge, vert, bleu, blanc, qui se plantent et brûlent
 	Un ennemi planté subit +12% de tous vos dégâts, +16% pour la fusée blanche

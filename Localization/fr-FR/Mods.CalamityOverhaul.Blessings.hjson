@@ -1,84 +1,102 @@
 System: {
-	UnlockBroadcast: "La Mort incline la tête. 「{0}」 a rejoint la Roue de la renaissance"
+	UnlockBroadcast: La Mort incline la tête. 「{0}」 a rejoint la Roue de la renaissance
 	KindleLabel: Allumer
 	SnuffLabel: Éteindre
-	BurningCounter: "Flammes {0}/{1}"
+	BurningCounter: Flammes {0}/{1}
 	SlotFullNotice: Les sièges de lampe sont pleins. Éteignez-en une avant d'allumer une nouvelle bénédiction
-	LockedHint: "Terrassez-le pendant l'Enfer Asura, et sa flamme d'âme reprendra sa place"
+	LockedHint: Terrassez-le pendant l'Enfer Asura, et sa flamme d'âme reprendra sa place
 	HudName: Lanterne d'âme
 	HudOpenHint: Cliquez pour ouvrir la Roue de la renaissance
 	WheelTitle: Roue de la renaissance
 	CenterHint: Choisissez une perle d'âme pour voir sa bénédiction
-	CloseHint: "Échap, clic droit ou la touche {0} referme la Roue de la renaissance"
+	CloseHint: Échap, clic droit ou la touche {0} referme la Roue de la renaissance
 }
+
 KingSlimeBlessing: {
 	DisplayName: Couronne de gelée royale
-	Description: "Enveloppé de gelée, les dégâts de contact des ennemis sont réduits de 12%"
+	Description: Enveloppé de gelée, les dégâts de contact des ennemis sont réduits de 12%
 }
+
 EyeOfCthulhuBlessing: {
 	DisplayName: Pupille abyssale
-	Description: "Chances de critique +5%, et encore +3% la nuit"
+	Description: Chances de critique +5%, et encore +3% la nuit
 }
+
 EaterOfWorldsBlessing: {
 	DisplayName: Anneau de pourriture
-	Description: "Vos attaques infligent Érosion, défense réduite de 10 pendant 5 secondes"
+	Description: Vos attaques infligent Érosion, défense réduite de 10 pendant 5 secondes
 }
+
 BrainOfCthulhuBlessing: {
 	DisplayName: Empathie de la douleur
-	Description: "Pendant 5 secondes après avoir subi des dégâts, vos dégâts sont augmentés de 12%"
+	Description: Pendant 5 secondes après avoir subi des dégâts, vos dégâts sont augmentés de 12%
 }
+
 QueenBeeBlessing: {
 	DisplayName: Régénération de la ruche
 	Description: Les objets de soin restaurent 15% de vie en plus
 }
+
 SkeletronBlessing: {
 	DisplayName: Veille des ossements
-	Description: "Toutes les 45 secondes, une veille se condense et réduit de moitié le prochain coup subi"
+	Description: Toutes les 45 secondes, une veille se condense et réduit de moitié le prochain coup subi
 }
+
 DeerclopsBlessing: {
 	DisplayName: Pas de l'hiver
-	Description: "Plus de glissade sur la glace, vitesse de déplacement +8%, immunité au froid"
+	Description: Plus de glissade sur la glace, vitesse de déplacement +8%, immunité au froid
 }
+
 WallOfFleshBlessing: {
 	DisplayName: Pacte de chair
-	Description: "Après avoir subi des dégâts, 20% sont lentement rendus en 8 secondes"
+	Description: Après avoir subi des dégâts, 20% sont lentement rendus en 8 secondes
 }
+
 QueenSlimeBlessing: {
 	DisplayName: Plume de cristal
-	Description: "Immunité aux dégâts de chute, saut amélioré"
+	Description: Immunité aux dégâts de chute, saut amélioré
 }
+
 TwinsBlessing: {
 	DisplayName: Concerto des deux prunelles
-	Description: "Chaque coup consécutif sur la même cible augmente les dégâts de 2%, jusqu'à 5 cumuls"
+	Description: Chaque coup consécutif sur la même cible augmente les dégâts de 2%, jusqu'à 5 cumuls
 }
+
 DestroyerBlessing: {
 	DisplayName: Circuit de sondes
-	Description: "Tuer un ennemi rend 3 mana, et les tirs ont 1 chance sur 12 de ne pas consommer de munitions"
+	Description: Tuer un ennemi rend 3 mana, et les tirs ont 1 chance sur 12 de ne pas consommer de munitions
 }
+
 SkeletronPrimeBlessing: {
 	DisplayName: Ossature en surrégime
 	Description: Vitesse d'utilisation des objets augmentée de 5%
 }
+
 PlanteraBlessing: {
 	DisplayName: Renouveau d'épines
-	Description: "Régénération de vie accrue, encore renforcée pendant 3 secondes après avoir subi des dégâts"
+	Description: Régénération de vie accrue, encore renforcée pendant 3 secondes après avoir subi des dégâts
 }
+
 GolemBlessing: {
 	DisplayName: Cœur de pierre
-	Description: "Défense +8, plus de recul"
+	Description: Défense +8, plus de recul
 }
+
 DukeFishronBlessing: {
 	DisplayName: Marée furieuse
-	Description: "Sous la moitié de vie, vitesse de déplacement +12%, dégâts +8%"
+	Description: Sous la moitié de vie, vitesse de déplacement +12%, dégâts +8%
 }
+
 EmpressBlessing: {
 	DisplayName: Verdict du jour
-	Description: "Le jour, les dégâts critiques sont augmentés de 18%"
+	Description: Le jour, les dégâts critiques sont augmentés de 18%
 }
+
 LunaticCultistBlessing: {
 	DisplayName: Bouclier lunaire
-	Description: "Toutes les 40 secondes, un bouclier lunaire se forme et bloque entièrement un projectile ennemi"
+	Description: Toutes les 40 secondes, un bouclier lunaire se forme et bloque entièrement un projectile ennemi
 }
+
 MoonLordBlessing: {
 	DisplayName: Résonance du noyau stellaire
 	Description: Tous les dégâts infligés sont augmentés de 8%

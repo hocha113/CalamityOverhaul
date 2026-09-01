@@ -1,106 +1,106 @@
-GsDaedalusStormbow.Desc: 
+GsDaedalusStormbow.Desc:
 	'''
 	Reforgé : les flèches tombent du ciel ; un sceau d'argent marque d'abord le point de chute
 	Les tirs accumulent la tempête ; à pleine charge, le prochain tir pose une matrice de neuf sceaux, coins, bords, puis centre
 	La flèche du centre est la plus lourde et explose. Clic droit pour relâcher une matrice partielle
 	Les flèches du ciel empilent des marques de chasse ; à trois charges, une flèche de châtiment s'abat sur la cible marquée
 	'''
-GsTsunami.Desc: 
+GsTsunami.Desc:
 	'''
 	Reforgé : chaque tir relâche cinq flèches en rang de vague, qui avancent en houle puis retombent
 	Les tirs accumulent la marée ; à pleine charge, le prochain tir devient une grande vague : sept flèches perçantes en deux rangs, une crête d'écume ouvre la voie
 	Les flèches de vague empilent des marques de marée ; à trois charges, une colonne d'eau jaillit sous l'ennemi
 	Tant qu'un ennemi marqué est en vie, chaque quatrième flèche détache une flèche de chasse-marée
 	'''
-GsFairyQueenRangedItem.Desc: 
+GsFairyQueenRangedItem.Desc:
 	'''
 	Reforgé : toutes les flèches deviennent des lances du crépuscule ; cinq lances partent en arc et se resserrent sur le viseur
 	La troisième de chaque salve est la lance de la reine, presque le double de dégâts
 	Les tirs accumulent le crépuscule ; à pleine charge, le prochain tir s'ouvre en éventail prismatique de cinq lances
 	Les lances empilent des marques ; à trois charges, deux orbes de lumière tournent autour de l'ennemi et le picorent deux secondes
 	'''
-GsDD2BetsyBow.Desc: 
+GsDD2BetsyBow.Desc:
 	'''
 	Reforgé : chaque tir relâche cinq flèches de feu-dragon qui montent, décrochent, puis plongent sur le viseur
 	L'impact ouvre un anneau de feu-dragon ; les ennemis en l'air subissent +35% de dégâts
 	Les tirs accumulent le raid aérien ; à pleine charge, le prochain tir appelle un tapis de neuf flèches le long de la ligne de vol
 	Les flèches empilent des marques de flamme ; à trois charges, une lourde flèche de feu-dragon s'abat sur la cible
 	'''
-GsPhantasm.Desc: 
+GsPhantasm.Desc:
 	'''
 	Reforgé : maintenez le clic gauche, la cadence grimpe avec la frénésie, l'arc se fend en arcs fantômes
 	À deux charges de frénésie, chaque salve gagne deux flèches fantômes d'aile
 	Six impacts d'affilée sur la même cible appellent un archer fantôme dans votre dos, qui tire des flèches d'âme avec vous
 	Les flèches principales empilent des marques d'âme ; à trois charges, l'archer envoie quatre flèches d'âme qui clouent cet ennemi
 	'''
-GsPearlwoodBow.Desc: 
+GsPearlwoodBow.Desc:
 	'''
 	Reforgé : tous les 5 tirs, l'arc-en-ciel est plein ; le prochain devient un pont de cinq flèches qui s'ouvre en éventail, 1 munition pour toute la salve
 	Le même ennemi touché par 3 flèches de l'arc fait éclater un prisme de perle
 	Au-dessus de 60% de charge, clic droit relâche la salve plus tôt
 	'''
-GsCobaltRepeater.Desc: 
+GsCobaltRepeater.Desc:
 	'''
 	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, trois flèches partent l'une après l'autre et accélèrent, 1 munition pour toute la salve
 	Les impacts de salve marquent la proie et vous donnent un bref élan de Rapidité
 	'''
-GsPalladiumRepeater.Desc: 
+GsPalladiumRepeater.Desc:
 	'''
 	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, trois flèches en ligne, 1 munition pour toute la salve
 	Un ennemi marqué qui tombe vous rend 2 vie ; une exécution en rend 5 de plus
 	'''
-GsMythrilRepeater.Desc: 
+GsMythrilRepeater.Desc:
 	'''
 	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, quatre flèches en coin, 1 munition pour toute la salve
 	La flèche de tête critique toujours contre une proie marquée ; les flèches d'aile ont +8% de critique
 	'''
-GsOrichalcumRepeater.Desc: 
+GsOrichalcumRepeater.Desc:
 	'''
 	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, quatre flèches en coin traînant des pétales, 1 munition pour toute la salve
 	Les impacts de salve éclatent en une petite explosion de pétales
 	'''
-GsAdamantiteRepeater.Desc: 
+GsAdamantiteRepeater.Desc:
 	'''
 	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, cinq flèches en échelon, recul augmenté de moitié, 1 munition pour toute la salve
 	La flèche de tête pose une onde cramoisie qui blesse autour
 	'''
-GsTitaniumRepeater.Desc: 
+GsTitaniumRepeater.Desc:
 	'''
 	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, cinq flèches en échelon, 1 munition pour toute la salve
 	Les flèches de salve gravent l'armure : +2 de pénétration d'armure par impact sur le même ennemi, jusqu'à 5 charges
 	'''
-GsHallowedRepeater.Desc: 
+GsHallowedRepeater.Desc:
 	'''
 	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, quatre flèches en croix, 1 munition pour toute la salve
 	Exécuter une proie à marques pleines fait tomber une étoile sacrée traînant de l'or
 	'''
-GsChlorophyteShotbow.Desc: 
+GsChlorophyteShotbow.Desc:
 	'''
 	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, six flèches en cône de spores, 1 munition pour toute la salve
 	Une proie marquée subit +10% de dégâts de cet arc ; l'exécution ouvre un nuage de spores
 	'''
-GsStakeLauncher.Desc: 
+GsStakeLauncher.Desc:
 	'''
 	Reforgé : chaque 6e pieu est un triple tap ; à salve pleine, trois pieux en coin, 1 munition pour toute la salve
 	Tout pieu cloue et marque ; le pieu d'exécution crucifie à ×2.3, +25% encore contre les morts-vivants
 	Une crucifixion réussie recharge 30 points de salve ; à charge pleine, une lueur d'argent se rassemble à la bouche
 	'''
-GsIceBow.Desc: 
+GsIceBow.Desc:
 	'''
 	Reforgé : à salve pleine, 6 glaçons sont jetés vers le ciel et pleuvent autour du curseur, 1 munition pour toute la salve
 	Les glaçons empilent des marques de givre ; à 3 charges, le prochain glaçon explose en éclat de givre
 	'''
-GsMarrow.Desc: 
+GsMarrow.Desc:
 	'''
 	Reforgé : à salve pleine, 5 flèches d'os en croix, +1 perçage, 1 munition pour toute la salve
 	Exécuter une proie à marques pleines la cage de 4 flèches d'os convergentes
 	'''
-GsShadowflameBow.Desc: 
+GsShadowflameBow.Desc:
 	'''
 	Reforgé : à salve pleine, 3 flèches de Flamme d'ombre se croisent au curseur, 1 munition pour toute la salve
 	Toute flèche qui touche une proie marquée appelle un feu follet de Flamme d'ombre ; l'exécution explose d'ombre
 	'''
-GsPulseBow.Desc: 
+GsPulseBow.Desc:
 	'''
 	Reforgé : chaque rebond mur +10% de dégâts, jusqu'à 5 ; à salve pleine, 3 rails d'impulsion parallèles, 1 munition pour toute la salve
 	Une proie marquée courbe vers elle les impulsions qui passent ; l'exécution enchaîne une surtension vers 2 ennemis proches

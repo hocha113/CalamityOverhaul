@@ -3,10 +3,12 @@ ElectricMinRocket: {
 	DisplayName: Minifusée Électrique
 	Tooltip: ""
 }
+
 WGGLifeWeaver: {
 	TurretBatteryDepleted: Batterie épuisée
 	DisplayName: Tisseuse de Vie Sauvage
 	Tooltip: ""
 }
+
 WGGWildernessTP.WindGrivenDiscovery1: Ces machines éoliennes vous fascinent — vous songez à en fabriquer quelques-unes...
 WGGMK2WildernessTP.WindGrivenDiscovery2: Cette machine colossale vous impressionne — vous sentez que vous devriez tenter d'en construire une...

@@ -656,7 +656,7 @@ OnikiriText: {
 		DeclineBtn: Nicht nötig
 		DeclineNotice: Die Übungsrune bleibt bei dir. Damit kannst du die Lehre jederzeit öffnen
 		HudTitle: Kraft und Haltung
-		HudBody: Hältst du Onikiri, bleiben unten links zwei Anzeigen. Kraft speist Blitzschritt und Sakuraflug und füllt sich von selbst; Haltung wächst mit Treffern, zur Hälfte und voll schaltet je eine Hinrichtungsstufe frei. Hier nur die Anzeigen; die Griffrechnung steht auf der Waffe
+		HudBody: Hältst du Onikiri, bleiben unten links zwei Anzeigen. Kraft speist Kamui-Blitzschritt und Sakuraflug und füllt sich von selbst; Haltung wächst mit Treffern, zur Hälfte und voll schaltet je eine Hinrichtungsstufe frei. Hier nur die Anzeigen; die Griffrechnung steht auf der Waffe
 		HudPrompt: Sieh dir diese Anzeigen an. Der einzige HUD-Eingang ist der Siegelzettel
 		SigilTitle: Siegelrad
 		SigilBody: Links am Balken des Inschriftentischs hängt das Schild »Siegelrad«, darunter ein Miniaturrad. Außen sitzen sechs Geister, innen nur drei Siegelplätze. Außenring wählen, leeren Platz siegeln. Geister auf demselben Rad wecken einander, die Wiederbelebung steigt zusammen. Im Schlitz unter dem Sockel steckt das Geisterregister; herausziehen nur zum Lesen, nicht zum Siegeln
@@ -739,7 +739,7 @@ OnikiriOverride: {
 	Tooltip:
 		'''
 		Linke Taste halten, die fünf Takte des Scharlach-Risshiebs treiben; Treffer häufen Haltung
-		Kraft speist Blitzschritt und Sakuraflug; Haltung zur Hälfte und voll schaltet je eine Hinrichtungsstufe frei
+		Kraft speist Kamui-Blitzschritt und Sakuraflug; Haltung zur Hälfte und voll schaltet je eine Hinrichtungsstufe frei
 		'''
 	KeyLabelFlashStep: Kamui-Blitzschritt
 	KeyLabelSakura: Sakuraflug

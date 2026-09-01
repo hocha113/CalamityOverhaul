@@ -3,6 +3,7 @@ BloodAltarTP: {
 	InsufficientOfferingText: Vous n'avez pas assez de gouttes sanglantes sur vous pour rendre hommage au roi rouge profond...
 	SacrificeDeathReason: "{0} a sombré dans une folie sans fin de sang et de chair"
 }
+
 OldNetDataNodeTile.MapEntry: Nœud de données
 OldNetLogoutTerminalTile.MapEntry: Terminal de déconnexion
 OldNetEncryptedNodeTile.MapEntry: Nœud chiffré

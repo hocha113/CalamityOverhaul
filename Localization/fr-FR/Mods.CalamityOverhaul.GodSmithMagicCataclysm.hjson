@@ -1,65 +1,65 @@
-GsBatScepter.Desc: 
+GsBatScepter.Desc:
 	'''
 	Reforgé : les impacts accumulent la Nuit ; à jauge pleine, clic droit pour appeler le Déluge de chauves-souris
 	Une lune s'élève, les vagues plongent sur les ennemis, le reste forme un anneau autour de vous
 	Chaque 8e morsure détache une chauve-souris fantôme vers un autre ennemi proche
 	'''
-GsRazorpine.Desc: 
+GsRazorpine.Desc:
 	'''
 	Reforgé : les impacts accumulent la Résine ; à jauge pleine, clic droit pour lever la Tempête d'aiguilles
 	Un tourbillon d'aiguilles se resserre autour de vous, puis un tapis d'aiguilles se pose sous vos pieds
 	Les aiguilles enduisent de résine ; à 5 charges sur le même ennemi, quatre aiguilles se referment en anneau
 	'''
-GsBlizzardStaff.Desc: 
+GsBlizzardStaff.Desc:
 	'''
 	Reforgé : les impacts accumulent le Blizzard ; à jauge pleine, clic droit pour faire tomber le Désastre blanc au curseur
 	Une tempête géante frappe la zone et laisse des épines de glace au sol
 	Chaque 5e glaçon est une graine de givre qui éclate en petit souffle de gel
 	'''
-GsStaffofEarth.Desc: 
+GsStaffofEarth.Desc:
 	'''
 	Reforgé : les impacts accumulent la Colère de la terre ; à jauge pleine, clic droit pour l'Orogenèse au curseur
 	Des piliers de roche s'élèvent par vagues, les éclats volent, un lit de veines de lave reste
 	Le rocher frappe plus fort à chaque ennemi broyé ; là où il se brise, un pilier à mi-hauteur se dresse
 	'''
-GsBetsysWrath.Desc: 
+GsBetsysWrath.Desc:
 	'''
 	Reforgé : les impacts accumulent le Feu-dragon ; à jauge pleine, clic droit pour invoquer le Fléau du roi-dragon
 	L'ombre de Betsy plonge trois fois, des rideaux de flammes, puis un lit de Flammes maudites
 	Frapper un ennemi maudit accumule plus de Feu-dragon ; chaque 4e impact maudit soulève une explosion de fléau
 	'''
-GsNightglow.Desc: 
+GsNightglow.Desc:
 	'''
 	Reforgé : les impacts accumulent l'Aube ; à jauge pleine, clic droit pour déployer un Rideau d'aurore au-dessus du curseur
 	Le rideau brûle qui s'y trouve et fait tomber des lances de lumière
 	Chaque 5e impact fait tomber une lance d'aurore du dessus de l'ennemi
 	'''
-GsStellarTune.Desc: 
+GsStellarTune.Desc:
 	'''
 	Reforgé : les impacts accumulent le Mouvement ; à jauge pleine, clic droit pour ouvrir le Final stellaire
 	Les accords d'étoiles se jouent d'eux-mêmes sur le tempo, et vos pas s'allègent
 	Les impacts d'affilée montent l'échelle ; la 8e note tombe en explosion d'accord stellaire
 	'''
-GsResonanceScepter.Desc: 
+GsResonanceScepter.Desc:
 	'''
 	Reforgé : les impacts accumulent la Résonance ; à jauge pleine, clic droit pour l'Effondrement harmonique au curseur
 	Cinq ondes stationnaires se croisent, les nœuds frappent qui s'attarde
 	L'onde royale, tous les 3 ennemis percés, fait sonner une impulsion de nœud sur cette cible
 	'''
-GsNebulaArcanum.Desc: 
+GsNebulaArcanum.Desc:
 	'''
 	Reforgé : les impacts accumulent l'Arcanum ; à jauge pleine, clic droit pour ouvrir les Bras spiraux de Nébula
 	Trois bras orbitent autour de vous, broient, et tirent les petits ennemis vers le cœur
 	Le grand orbe d'Arcanum gonfle en vol et aspire lentement les petits vers son centre
 	À jauge qui se remplit, le brouillard d'étoiles s'épaissit au bout du sceptre
 	'''
-GsNebulaBlaze.Desc: 
+GsNebulaBlaze.Desc:
 	'''
 	Reforgé : les impacts accumulent le Brasier ; à jauge pleine, clic droit pour marquer une nova sur la cible près du curseur
 	Trois anneaux explosent en décalé autour d'un puits de gravité
 	Un bolt d'éruption Nébula allume toujours une micro-nova à l'impact
 	'''
-GsLunarFlare.Desc: 
+GsLunarFlare.Desc:
 	'''
 	Reforgé : les impacts accumulent la Phase lunaire ; à jauge pleine, clic droit pour lever le Jugement d'éclipse
 	Un disque d'éclipse verse douze chutes de flammes lunaires, chaque troisième doublée d'une colonne de lune fantôme
@@ -78,7 +78,7 @@ GsStellarFinaleDirector.DisplayName: Final stellaire
 GsResonanceCollapseDirector.DisplayName: Effondrement harmonique
 GsNebulaSpiralDirector.DisplayName: Bras spiraux de Nébula
 GsNovaDetonationDirector.DisplayName: Détonation de nova
-GsSpectreStaff.Desc: 
+GsSpectreStaff.Desc:
 	'''
 	Reforgé : les impacts accumulent la Moisson d'âmes ; à jauge pleine, clic droit pour lever la Marée des âmes au curseur
 	Chaque quart de jauge accumulé détache une âme secondaire vers un autre ennemi proche
@@ -87,7 +87,7 @@ GsSpectreStaff.Desc:
 GsLunarEclipseDirector.DisplayName: Jugement d'éclipse
 GsMoonPillarProj.DisplayName: Colonne de lune fantôme
 GsSpectreStaffTideDirector.DisplayName: Marée des âmes
-GsInfernoFork.Desc: 
+GsInfernoFork.Desc:
 	'''
 	Reforgé : les boules de feu vrillent avec des scories, chaque impact accumule la Braise ; à jauge pleine, clic droit pour allumer le Brasier au curseur
 	Le feu court au sol, trois vagues balayent les flancs, une pluie de feu entre les vagues, puis un banc de braises

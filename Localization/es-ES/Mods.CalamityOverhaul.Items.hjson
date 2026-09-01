@@ -188,7 +188,7 @@ SpearOfLonginus: {
 		'''
 	Legend:
 		'''
-		
+
 		“Dios quebrantado, permíteme redimir mis pecados.”
 		La guerra se ha extendido por siglos. Yo, el derrotado que huyó de una gran civilización, sobrevivo solo en este planeta desolado al borde del universo.
 		A decenas de miles de años luz, las máquinas de guerra aplastan estrellas; un ataque brutal y aterrador puede borrar en un instante años luz de cielo y convertirlo en un dominio de silencio.
@@ -333,8 +333,8 @@ KikasaItem: {
 KikasaTalismanLin: {
 	DisplayName: Talismán de llovizna
 	Tooltip: El ritmo de la lluvia de tinta se acelera y, si no se interrumpe, se vuelve cada vez más densa; cada gota pesa un poco menos
-	Origin: "Decía el viejo talismánico: para pedir lluvia no hace falta despertar al Rey Dragón; basta un talismán de llovizna. Que las gotas sean pequeñas no importa; lo que importa es que no paren"
-	Power: "«Llovizna» El ritmo de la lluvia de tinta se acelera un 20% y las gotas se suceden sin descanso; unos diez segundos de lluvia ininterrumpida acumulan «Lluvia persistente»: bajo la sombrilla cae una cortina de hilos de lluvia y el ritmo se acelera otro 10%; al dejar de atacar la intensidad se disipa y, al recoger la sombrilla, se reduce a la mitad de inmediato"
+	Origin: Decía el viejo talismánico: para pedir lluvia no hace falta despertar al Rey Dragón; basta un talismán de llovizna. Que las gotas sean pequeñas no importa; lo que importa es que no paren
+	Power: «Llovizna» El ritmo de la lluvia de tinta se acelera un 20% y las gotas se suceden sin descanso; unos diez segundos de lluvia ininterrumpida acumulan «Lluvia persistente»: bajo la sombrilla cae una cortina de hilos de lluvia y el ritmo se acelera otro 10%; al dejar de atacar la intensidad se disipa y, al recoger la sombrilla, se reduce a la mitad de inmediato
 	Burden: Daño de cada gota -6%
 }
 
@@ -342,22 +342,22 @@ KikasaTalismanLao: {
 	DisplayName: Talismán de charco de tinta
 	Tooltip: Toda gota de tinta que toca el suelo forma un charco; el charco bebe la lluvia, sube de nivel y, al llenarse, se desborda; el impacto directo es un poco más leve
 	Origin: Al talismánico le fastidiaba que la lluvia se secara en cuanto caía y se malgastara toda la tinta, así que dibujó este talismán para dejarla en el suelo. Un instante más de inundación ya es ganancia
-	Power: "«Charcos» Toda gota de tinta que toca el suelo forma un charco (no hace falta llegar al cuarto umbral «Inclinación del lago»); duración del charco +50%, radio +30%; las gotas que se unen a un charco existente suben el nivel del agua, y la tercera lo desborda: la superficie se ensancha un paso y lanza ondas de desborde a ambos lados (50% del daño del charco cada una)"
+	Power: «Charcos» Toda gota de tinta que toca el suelo forma un charco (no hace falta llegar al cuarto umbral «Inclinación del lago»); duración del charco +50%, radio +30%; las gotas que se unen a un charco existente suben el nivel del agua, y la tercera lo desborda: la superficie se ensancha un paso y lanza ondas de desborde a ambos lados (50% del daño del charco cada una)
 	Burden: Daño directo de las gotas de tinta -5%
 }
 
 KikasaTalismanPei: {
 	DisplayName: Talismán de diluvio
 	Tooltip: Al invertir la sombrilla la tinta se acumula más rápido; cuando el cuenco está lleno, verter es abrir la compuerta; la lluvia habitual se vuelve un poco más lenta
-	Origin: "Lo peor al pedir lluvia es que no duela. Este talismán solo atiende una cosa: si va a llover, que sea un diluvio"
-	Power: "«Diluvio» Velocidad de acumulación invertida +35%, daño de los surtidores de tinta +20%; al llenarse, el borde del cuenco rebosa perlas y emite un zumbido grave: verter en ese instante es abrir la compuerta: el origen de la cascada estalla con un impacto (80% del daño de la cascada) y la cascada de tinta se ensancha"
+	Origin: Lo peor al pedir lluvia es que no duela. Este talismán solo atiende una cosa: si va a llover, que sea un diluvio
+	Power: «Diluvio» Velocidad de acumulación invertida +35%, daño de los surtidores de tinta +20%; al llenarse, el borde del cuenco rebosa perlas y emite un zumbido grave: verter en ese instante es abrir la compuerta: el origen de la cascada estalla con un impacto (80% del daño de la cascada) y la cascada de tinta se ensancha
 	Burden: El ritmo de la lluvia de tinta se ralentiza un 8%
 }
 
 KikasaTalismanSha: {
 	DisplayName: Talismán de lluvia veloz
 	Tooltip: La sombrilla se abre en un instante; el primer tiempo suelta tres gotas rápidas seguidas; el tiempo siguiente se retrasa un poco
-	Origin: "El talismánico iba de noche y se topó con salteadores: abrió la sombrilla, dejó caer la lluvia y la recogió, todo en un parpadeo. Después escribió esa «rapidez» en un talismán"
+	Origin: El talismánico iba de noche y se topó con salteadores: abrió la sombrilla, dejó caer la lluvia y la recogió, todo en un parpadeo. Después escribió esa «rapidez» en un talismán
 	Power: «Lluvia veloz» Tiempo de apertura de la sombrilla -75%; el primer tiempo al abrirla suelta siempre tres gotas rápidas (75% de daño cada una)
 	Burden: Tras el triple, el intervalo del siguiente tiempo +40%
 }
@@ -365,7 +365,7 @@ KikasaTalismanSha: {
 KikasaTalismanYin: {
 	DisplayName: Talismán de flor de tinta
 	Tooltip: Las gotas de tinta que impactan apilan marcas de tinta; al completar cinco capas estalla una flor de tinta; el impacto directo es un poco más leve
-	Origin: "Una gota de tinta en papel húmedo, si no la limpias, se abre sola en flor. El talismánico decía que los enemigos son igual: unas gotas más, y florecen"
+	Origin: Una gota de tinta en papel húmedo, si no la limpias, se abre sola en flor. El talismánico decía que los enemigos son igual: unas gotas más, y florecen
 	Power: «Flor de tinta» Las gotas dejan una marca al impactar (hasta cinco capas, cada una sangra con el tiempo); al completar cinco se abre la flor, inflige 160% del daño de gota y limpia las capas
 	Burden: Daño directo de las gotas de tinta -8%
 }
@@ -373,7 +373,7 @@ KikasaTalismanYin: {
 KikasaTalismanLu: {
 	DisplayName: Talismán de rocío
 	Tooltip: Al impactar, las gotas a veces condensan una perla de rocío; recogerla restaura vida; el ritmo de la lluvia se ralentiza un poco
-	Origin: "Dicen los textos que el rocío cae del cielo y aleja toda enfermedad. El talismánico no logró ese milagro, así que se conformó con lo segundo: que cada gota lleve un poco de dulzura"
+	Origin: Dicen los textos que el rocío cae del cielo y aleja toda enfermedad. El talismánico no logró ese milagro, así que se conformó con lo segundo: que cada gota lleve un poco de dulzura
 	Power: «Rocío» Las gotas de tinta tienen un 12% de condensar una perla de rocío al impactar; recogerla restaura 2 de vida; como máximo tres en el campo
 	Burden: El ritmo de la lluvia de tinta se ralentiza un 6%
 }
@@ -382,7 +382,7 @@ KikasaTalismanFei: {
 	DisplayName: Talismán de niebla
 	Tooltip: Cada tercera gota se vuelve gota de niebla y deja en el impacto una bruma de tinta que hiere y ralentiza; la gota de niebla en sí es más leve
 	Origin: A mitad de la lluvia de montaña, a menudo se vuelve niebla y se pega a la gente. El talismánico pensó que ese aferramiento era peor que las gotas, así que lo metió en el talismán para que trabajara por él
-	Power: "«Niebla» Cada tercera gota de tinta se vuelve gota de niebla: en el impacto deja bruma de tinta dos segundos; los enemigos dentro sufren daño continuo y -10% de velocidad de movimiento"
+	Power: «Niebla» Cada tercera gota de tinta se vuelve gota de niebla: en el impacto deja bruma de tinta dos segundos; los enemigos dentro sufren daño continuo y -10% de velocidad de movimiento
 	Burden: Daño de la gota de niebla -30%
 }
 
@@ -397,8 +397,8 @@ KikasaTalismanXian: {
 KikasaTalismanXi: {
 	DisplayName: Talismán de marea
 	Tooltip: Los charcos de tinta respiran con la marea y se abalanzan solos sobre los enemigos cercanos; su duración es un poco más corta
-	Origin: "El talismánico vivió tres años junto al mar y solo aprendió una cosa: el agua no espera a que la pisen, ella misma se lanza"
-	Power: "«Marea» Los charcos de tinta ganan naturaleza de marea: suben y bajan al respirar; cuando cae tinta nueva en un charco, este se lanza hacia el enemigo más cercano y el borde de la ola inflige 50% del daño del charco"
+	Origin: El talismánico vivió tres años junto al mar y solo aprendió una cosa: el agua no espera a que la pisen, ella misma se lanza
+	Power: «Marea» Los charcos de tinta ganan naturaleza de marea: suben y bajan al respirar; cuando cae tinta nueva en un charco, este se lanza hacia el enemigo más cercano y el borde de la ola inflige 50% del daño del charco
 	Burden: Duración de los charcos de tinta -20%
 }
 
@@ -420,9 +420,9 @@ KikasaTalismanTing: {
 
 KikasaTalismanHong: {
 	DisplayName: Talismán de puente iris
-	Tooltip: "Al recogerse la cascada de tinta se alza un puente iris: bajo el puente hay beneficios, el arco quema a los enemigos; la cascada es un poco más estrecha"
-	Origin: "Ver un arcoíris después de la lluvia es buen augurio. El talismánico lo dibujó en el talismán: en cuanto para la lluvia, se tiende el puente, y quien se pone debajo recibe su parte"
-	Power: "«Puente iris» Al recogerse la cascada de tinta, se alza un puente iris cinco segundos sobre el punto de caída: bajo el puente, velocidad de movimiento +10% y daño de invocación +10%; los enemigos que cruzan el arco reciben 40% del daño de la cascada cada medio segundo"
+	Tooltip: Al recogerse la cascada de tinta se alza un puente iris: bajo el puente hay beneficios, el arco quema a los enemigos; la cascada es un poco más estrecha
+	Origin: Ver un arcoíris después de la lluvia es buen augurio. El talismánico lo dibujó en el talismán: en cuanto para la lluvia, se tiende el puente, y quien se pone debajo recibe su parte
+	Power: «Puente iris» Al recogerse la cascada de tinta, se alza un puente iris cinco segundos sobre el punto de caída: bajo el puente, velocidad de movimiento +10% y daño de invocación +10%; los enemigos que cruzan el arco reciben 40% del daño de la cascada cada medio segundo
 	Burden: Anchura de la cascada de tinta -10%
 }
 
@@ -436,16 +436,16 @@ KikasaTalismanHang: {
 
 KikasaTalismanBao: {
 	DisplayName: Talismán de granizo
-	Tooltip: "Cada cuarto tiempo todas las gotas se vuelven granizo gigante: golpes que rompen armadura y no dejan charco; el daño habitual de las gotas es un poco más leve"
-	Origin: "El granizo es el mal genio de la lluvia: parte tejas y cubos y nadie lo detiene. El talismánico no quiso domesticarlo; solo pactó: cada cuatro tiempos, uno es suyo"
-	Power: "«Granizo» Cada cuarto tiempo es una descarga conjunta: todas las gotas se vuelven granizo gigante: tamaño x1.6, daño x2.2, rompe armadura y empuja con fuerza; el granizo gigante no deja charcos de tinta"
+	Tooltip: Cada cuarto tiempo todas las gotas se vuelven granizo gigante: golpes que rompen armadura y no dejan charco; el daño habitual de las gotas es un poco más leve
+	Origin: El granizo es el mal genio de la lluvia: parte tejas y cubos y nadie lo detiene. El talismánico no quiso domesticarlo; solo pactó: cada cuatro tiempos, uno es suyo
+	Power: «Granizo» Cada cuarto tiempo es una descarga conjunta: todas las gotas se vuelven granizo gigante: tamaño x1.6, daño x2.2, rompe armadura y empuja con fuerza; el granizo gigante no deja charcos de tinta
 	Burden: Daño de gota de los tiempos normales -8%
 }
 
 KikasaTalismanShu: {
 	DisplayName: Talismán de lluvia oportuna
 	Tooltip: Tras recibir daño, tres segundos de lluvia densísima y cada gota cura; el ritmo habitual se ralentiza un poco
-	Origin: "En el mundo flotante llaman «lluvia oportuna» a quien llega justo a tiempo. Este talismán sigue esa regla: si el dueño de la sombrilla recibe un golpe, la lluvia tiene que acudir al instante"
+	Origin: En el mundo flotante llaman «lluvia oportuna» a quien llega justo a tiempo. Este talismán sigue esa regla: si el dueño de la sombrilla recibe un golpe, la lluvia tiene que acudir al instante
 	Power: «Lluvia oportuna» Durante tres segundos tras recibir daño, el intervalo de la lluvia se reduce a la mitad, los hilos se vuelven dorados y cada gota que impacta restaura 1 de vida; 12 segundos de enfriamiento
 	Burden: Intervalo habitual de la lluvia +5%
 }
@@ -454,38 +454,38 @@ KikasaTalismanLong: {
 	DisplayName: Talismán de cascada impetuosa
 	Tooltip: La cascada de tinta se vuelve un torrente que empuja a los enemigos; dura menos
 	Origin: Cuando baja una riada, nadie se tiene en pie. El talismánico lo vio una vez desde el risco y, al volver, solo escribió un «empuje» en el talismán
-	Power: "«Cascada impetuosa» La cascada de tinta se vuelve un torrente: el cuerpo de la cascada empuja sin cesar a los enemigos de la línea de caída y el retroceso del impacto directo del origen +35%"
+	Power: «Cascada impetuosa» La cascada de tinta se vuelve un torrente: el cuerpo de la cascada empuja sin cesar a los enemigos de la línea de caída y el retroceso del impacto directo del origen +35%
 	Burden: Duración de la cascada de tinta -20%
 }
 
 KikasaTalismanShuang: {
 	DisplayName: Talismán de espejo de escarcha
-	Tooltip: "Los charcos se congelan en espejos de escarcha: pisarlos ralentiza, una gota los rompe y estallan; los charcos no pueden renovarse"
-	Origin: "Tras la escarcha, el agua de los charcos se congela en una noche: parece un espejo, y solo al pisarlo se entiende. Lo que guardó el talismánico fue precisamente esa capa de «parece inofensivo»"
-	Power: "«Espejo de escarcha» Las gotas grandes se congelan solas en charcos de escarcha (no hace falta llegar al cuarto umbral «Inclinación del lago»); el charco se vuelve espejo: ya no quema, quien lo pisa se ralentiza un 40%; una gota de tinta que golpea el espejo lo rompe al instante, convierte la vida restante del espejo en daño explosivo y alza estalactitas"
+	Tooltip: Los charcos se congelan en espejos de escarcha: pisarlos ralentiza, una gota los rompe y estallan; los charcos no pueden renovarse
+	Origin: Tras la escarcha, el agua de los charcos se congela en una noche: parece un espejo, y solo al pisarlo se entiende. Lo que guardó el talismánico fue precisamente esa capa de «parece inofensivo»
+	Power: «Espejo de escarcha» Las gotas grandes se congelan solas en charcos de escarcha (no hace falta llegar al cuarto umbral «Inclinación del lago»); el charco se vuelve espejo: ya no quema, quien lo pisa se ralentiza un 40%; una gota de tinta que golpea el espejo lo rompe al instante, convierte la vida restante del espejo en daño explosivo y alza estalactitas
 	Burden: Cada espejo de escarcha existe por separado; los charcos no pueden fusionarse para renovar su duración
 }
 
 KikasaTalismanZha: {
 	DisplayName: Talismán de tambor de lluvia
 	Tooltip: Si impactas en siete tiempos seguidos, el octavo triplica el daño de todas las gotas; después la lluvia calla un tiempo
-	Origin: "Las gotas contra la sombrilla ya son un tambor. El talismánico oyó el truco: si no fallas ni un tiempo, el octavo es el más sonoro"
-	Power: "«Tambor de lluvia» Sobre la sombrilla cuelga un anillo de siete puntos: si en siete tiempos seguidos al menos una gota impacta en cada uno, el octavo inflige x3 de daño en todas las gotas, como un redoble; si fallas un tiempo, se cuenta de nuevo"
+	Origin: Las gotas contra la sombrilla ya son un tambor. El talismánico oyó el truco: si no fallas ni un tiempo, el octavo es el más sonoro
+	Power: «Tambor de lluvia» Sobre la sombrilla cuelga un anillo de siete puntos: si en siete tiempos seguidos al menos una gota impacta en cada uno, el octavo inflige x3 de daño en todas las gotas, como un redoble; si fallas un tiempo, se cuenta de nuevo
 	Burden: Tras el redoble, la lluvia calla un tiempo
 }
 
 KikasaTalismanNi: {
 	DisplayName: Talismán tricolor
-	Tooltip: "Las gotas de tinta rotan tres colores: rojo estalla, cian ralentiza, violeta vulnera; el daño de gota baja un poco"
-	Origin: "Que la tinta tenga cinco colores es jerga del oficio; el talismánico solo podía permitirse tres. Aun así, el rojo explota, el cian ata y el violeta corroe: basta"
-	Power: "«Tricolor» Las gotas de tinta rotan tres colores en orden: las rojas estallan en un área pequeña (40% de daño de salpicadura), las cianes ralentizan un 15% y las violetas hacen que el enemigo reciba +5% de daño de tinta"
+	Tooltip: Las gotas de tinta rotan tres colores: rojo estalla, cian ralentiza, violeta vulnera; el daño de gota baja un poco
+	Origin: Que la tinta tenga cinco colores es jerga del oficio; el talismánico solo podía permitirse tres. Aun así, el rojo explota, el cian ata y el violeta corroe: basta
+	Power: «Tricolor» Las gotas de tinta rotan tres colores en orden: las rojas estallan en un área pequeña (40% de daño de salpicadura), las cianes ralentizan un 15% y las violetas hacen que el enemigo reciba +5% de daño de tinta
 	Burden: Daño de las gotas de tinta -5%
 }
 
 KikasaTalismanWen: {
 	DisplayName: Talismán de escritura de nubes
 	Tooltip: Tres estrellas-talismán en el borde de la sombrilla se cargan con cada impacto y, al llenarse, se lanzan solas como saetas de tinta rastreadoras; el ritmo de la lluvia se ralentiza un poco
-	Origin: "La escritura de nubes es la letra que el Dao pone en las nubes; un mortal no puede copiarla. El talismánico copió lo que pudo: los caracteres no salieron bien, pero aprendieron a volar"
+	Origin: La escritura de nubes es la letra que el Dao pone en las nubes; un mortal no puede copiarla. El talismánico copió lo que pudo: los caracteres no salieron bien, pero aprendieron a volar
 	Power: «Escritura de nubes» Tres estrellas de escritura de nubes rodean el borde de la sombrilla; cada impacto de gota las carga; al llenarse, la estrella de turno se lanza sola como una saeta de tinta rastreadora (120% del daño de gota)
 	Burden: Intervalo de la lluvia +8%
 }
@@ -493,8 +493,8 @@ KikasaTalismanWen: {
 KikasaTalismanPo: {
 	DisplayName: Talismán de alma lunar
 	Tooltip: De noche los impactos llenan la luna; en luna llena la siguiente cascada de tinta se vuelve cascada lunar; de día no hace nada
-	Origin: "El talismánico practicaba de noche y vio una luna pequeña sobre la sombrilla: cuantos más golpes, más redonda. Si la criaba hasta el quince, justo caía una buena cascada"
-	Power: "«Alma lunar» De noche cuelga una luna de tinta sobre la sombrilla y se llena con cada impacto; en luna llena la siguiente cascada se vuelve cascada lunar: anchura x1.5, los golpes dejan estallidos de marca lunar (35% de daño de salpicadura)"
+	Origin: El talismánico practicaba de noche y vio una luna pequeña sobre la sombrilla: cuantos más golpes, más redonda. Si la criaba hasta el quince, justo caía una buena cascada
+	Power: «Alma lunar» De noche cuelga una luna de tinta sobre la sombrilla y se llena con cada impacto; en luna llena la siguiente cascada se vuelve cascada lunar: anchura x1.5, los golpes dejan estallidos de marca lunar (35% de daño de salpicadura)
 	Burden: Este talismán no hace nada de día
 }
 
@@ -502,7 +502,7 @@ KikasaTalismanXiao: {
 	DisplayName: Talismán de los Nueve Cielos
 	Tooltip: La sombrilla suspendida sube a gran altura; las gotas caen más rápido y duelen más; el ritmo de la lluvia se ralentiza un poco
 	Origin: La misma gota, desde el alero, solo salpica; desde los Nueve Cielos abre un cráter. El razonamiento del talismánico era así de sencillo
-	Power: "«Nueve Cielos» La altura de la sombrilla suspendida se duplica; las gotas caen en picado desde lo alto: velocidad terminal +40%, daño +25%, y en el punto de caída aparece primero un anillo de sombra de lluvia"
+	Power: «Nueve Cielos» La altura de la sombrilla suspendida se duplica; las gotas caen en picado desde lo alto: velocidad terminal +40%, daño +25%, y en el punto de caída aparece primero un anillo de sombra de lluvia
 	Burden: Intervalo de la lluvia +10%
 }
 
@@ -518,14 +518,14 @@ KikasaTalismanPi: {
 	DisplayName: Talismán de trueno celestial
 	Tooltip: Tras verter una cascada de tinta, durante diez segundos las gotas a veces llaman un rayo que cae en vertical; los surtidores son un poco más leves
 	Origin: Los Cinco Truenos del Dao dicen «llamar al rayo con la lluvia». El talismánico no aprendió bien el oficio y solo se quedó con la segunda mitad. Aun así, de lluvia no le faltaba
-	Power: "«Trueno celestial» Cada vez que vanas una cascada de tinta se abre una ventana de diez segundos: dentro de ella, las gotas tienen un 20% de llamar un rayo que cae en el punto de impacto (180% de daño, atraviesa todo el trayecto del rayo)"
+	Power: «Trueno celestial» Cada vez que vanas una cascada de tinta se abre una ventana de diez segundos: dentro de ella, las gotas tienen un 20% de llamar un rayo que cae en el punto de impacto (180% de daño, atraviesa todo el trayecto del rayo)
 	Burden: Daño de los surtidores de tinta -20%
 }
 
 KikasaTalismanXia: {
 	DisplayName: Talismán de bruma incendiada
 	Tooltip: Al amanecer y al atardecer el daño de tinta se dispara y las gotas encienden llama de bruma; al mediodía y en plena noche baja un poco
-	Origin: "La bruma es lluvia que arde en el horizonte. El talismánico recogió un puñado antes del alba: el papel se tostó, pero el talismán quedó"
+	Origin: La bruma es lluvia que arde en el horizonte. El talismánico recogió un puñado antes del alba: el papel se tostó, pero el talismán quedó
 	Power: «Bruma incendiada» Durante hora y media antes y después del alba y del ocaso, el daño de tinta +18% y las gotas encienden «llama de bruma», una quemadura breve; en esas horas todo el equipo de lluvia se tiñe de naranja dorado
 	Burden: Al mediodía y en plena noche el daño de tinta -6%
 }
@@ -540,9 +540,9 @@ KikasaTalismanJi: {
 
 KikasaTalismanYu: {
 	DisplayName: Talismán de danza Yu
-	Tooltip: "Los impactos acumulan ofrendas; al llenarse se abre el altar y se danza: lluvia densa, gotas feroces, charcos y surtidores a pleno; al terminar, tres surtidores a la vez; fuera del gran rito, todo es un poco más romo"
-	Origin: "Los antiguos pedían lluvia alzando un altar y danzando, con las ocho músicas completas; a ese rito lo llamaban «danza Yu». El talismánico metió todo el ceremonial en un solo talismán: la sombrilla es la bruja, la lluvia es la respuesta"
-	Power: "«Gran Yu» Los impactos de la lluvia de tinta acumulan ofrendas; al llenarse se abre el altar y entra «Gran Yu» diez segundos: el intervalo de la lluvia se reduce a la mitad, las gotas se tiñen de tinta iris y su daño +15%, todas dejan charco al caer y los surtidores se abren del todo; al terminar, tres surtidores brotan a la vez bajo la sombrilla"
+	Tooltip: Los impactos acumulan ofrendas; al llenarse se abre el altar y se danza: lluvia densa, gotas feroces, charcos y surtidores a pleno; al terminar, tres surtidores a la vez; fuera del gran rito, todo es un poco más romo
+	Origin: Los antiguos pedían lluvia alzando un altar y danzando, con las ocho músicas completas; a ese rito lo llamaban «danza Yu». El talismánico metió todo el ceremonial en un solo talismán: la sombrilla es la bruja, la lluvia es la respuesta
+	Power: «Gran Yu» Los impactos de la lluvia de tinta acumulan ofrendas; al llenarse se abre el altar y entra «Gran Yu» diez segundos: el intervalo de la lluvia se reduce a la mitad, las gotas se tiñen de tinta iris y su daño +15%, todas dejan charco al caer y los surtidores se abren del todo; al terminar, tres surtidores brotan a la vez bajo la sombrilla
 	Burden: Fuera del Gran Yu, el daño de tinta -10%
 }
 
@@ -825,7 +825,7 @@ CalSelfPortrait: {
 		Una foto que alguien olvidó
 		[legend]
 		'''
-	Legend: "¿Y qué más querías ver? :)"
+	Legend: ¿Y qué más querías ver? :)
 }
 
 WUTIVSelfPortrait: {
@@ -966,7 +966,7 @@ DestroyersBlade: {
 
 Observer: {
 	DisplayName: Observador
-	Tooltip: "\"Sigue mirándote\""
+	Tooltip: '''"Sigue mirándote"'''
 }
 
 StaffoftheDestroyer: {
@@ -1048,7 +1048,7 @@ CommandersStaffEX: {
 
 CommandersChainsawEX: {
 	DisplayName: Motosierra del comandante EX
-	Tooltip: "\"Tritura todo lo que se interponga\""
+	Tooltip: '''"Tritura todo lo que se interponga"'''
 }
 
 SoulofFrightEX: {
@@ -1436,9 +1436,9 @@ UEPipeline: {
 }
 
 WireInterface: {
-	ModeBridgeText: "Solo puente: al recibir una señal de mecanismo, conmuta las máquinas adyacentes"
-	ModeFullText: "Aviso de lleno: emite una señal de mecanismo cuando una máquina adyacente se llena"
-	ModeEmptyText: "Aviso de vacío: emite una señal de mecanismo cuando una máquina adyacente se agota"
+	ModeBridgeText: Solo puente: al recibir una señal de mecanismo, conmuta las máquinas adyacentes
+	ModeFullText: Aviso de lleno: emite una señal de mecanismo cuando una máquina adyacente se llena
+	ModeEmptyText: Aviso de vacío: emite una señal de mecanismo cuando una máquina adyacente se agota
 	MachineOffText: En espera
 	MachineOnText: Activo
 	DisplayName: Interfaz de mecanismos
@@ -1552,7 +1552,7 @@ PickPowerBoosterModule: {
 
 ChlorophyteDrillModule: {
 	DisplayName: Módulo de perforación de clorofita
-	Tooltip: "La broca misma está fundida con lingotes de clorofita: mineral que extrae mineral"
+	Tooltip: La broca misma está fundida con lingotes de clorofita: mineral que extrae mineral
 }
 
 EfficiencyModule: {
@@ -1647,7 +1647,7 @@ SmelterModule: {
 
 MachineModuleText: {
 	TagText: Módulo de mejora de máquina
-	TargetsLine: "Apto para: {0}"
+	TargetsLine: Apto para: {0}
 	HowToText: Clic derecho en la máquina correspondiente abre el panel; al ponerlo en la ranura de módulos, entra en vigor
 	SocketOnly: ¡Esta máquina no admite este módulo!
 	SocketDuplicate: ¡Ya hay un módulo de este tipo instalado!
@@ -2301,7 +2301,7 @@ PQCD: {
 		"En teoría serviría para emitir una orden de exterminio, pero parece que faltan permisos"
 		'''
 	NeedSignalTowersText: ¡El enlace de entrelazamiento cuántico no está completo! Hay que desplegar las {0} torres de señal para usarlo
-	SignalTowerProgressText: "Progreso de despliegue de torres de señal: {0}/{1}"
+	SignalTowerProgressText: Progreso de despliegue de torres de señal: {0}/{1}
 }
 
 Unsunghero: {
@@ -2468,7 +2468,7 @@ CrusherUI: {
 	CrushingText: Triturando
 	IdleText: En espera
 	NoPowerText: Sin electricidad
-	InputHint: "Introduce mineral: dos porciones salen como tres"
+	InputHint: Introduce mineral: dos porciones salen como tres
 	OutputHint: Pulsa para extraer el triturado
 	PowerUnit: UE
 }
@@ -2495,7 +2495,7 @@ RecyclerUI: {
 	NoPowerText: Sin electricidad
 	InputHint: Introduce un arma, una armadura o un accesorio
 	OutputHint: Pulsa para extraer lingotes
-	EstimateLabel: "Producto estimado:"
+	EstimateLabel: Producto estimado:
 	PowerUnit: UE
 }
 
@@ -2522,7 +2522,7 @@ AutoCrafterUI: {
 	StatusNoPower: Sin electricidad
 	StatusNoStation: Falta una estación de crafteo cerca
 	StatusNoCondition: No se cumplen las condiciones
-	StatusNoMaterial: "Faltan materiales:"
+	StatusNoMaterial: Faltan materiales:
 	StatusOutputFull: La ranura de producto está llena
 	StatusWorking: Ensamblando
 	SampleHint: Introduce un objeto de muestra para listar sus recetas
@@ -3328,7 +3328,7 @@ ScattershotBarrelModule: {
 
 ThermalOpticModule: {
 	DisplayName: Mira térmica
-	Tooltip: "El impacto deja una marca de calor; en la visión térmica la presa pasa del rojo hierro al blanco; al llenarse la marca se activa el bloqueo de blanco: el haz muerde a ese objetivo, con crítico extra y quemadura continua"
+	Tooltip: El impacto deja una marca de calor; en la visión térmica la presa pasa del rojo hierro al blanco; al llenarse la marca se activa el bloqueo de blanco: el haz muerde a ese objetivo, con crítico extra y quemadura continua
 }
 
 VolatileFrameModule: {
@@ -4122,7 +4122,7 @@ OniMeiRubbingOnikiri: {
 	DisplayName: Onikiri
 	Tooltip: Inscripción original. No añade efecto ni cobra precio
 	Origin: Watanabe no Tsuna lo llevó al puente de Ichijō-Modoribashi y cortó de un tajo el brazo de un oni; el demonio huyó y no volvió a reclamarlo. El cuchillo que había cortado a un oni se llamó Onikiri desde entonces, y el nombre se quedó clavado en la espiga
-	Power: "Inscripción original. Todo lo que este cuchillo ya tiene se queda tal cual: ni un ápice de más, ni un ápice de menos"
+	Power: Inscripción original. Todo lo que este cuchillo ya tiene se queda tal cual: ni un ápice de más, ni un ápice de menos
 	Burden: Ninguno
 }
 
@@ -4141,7 +4141,7 @@ OniMeiRubbingShishinoko: {
 OniMeiRubbingTomokiri: {
 	DisplayName: Corte al amigo
 	Tooltip: Si el Paso relámpago corta el combo, deja in situ una sombra de culpa que remata; al empuñarlo, daño recibido +6%
-	Origin: "Dos tesoros Minamoto se probaron filo con filo; este cortó al amigo de en frente por la cintura. Aquella falta se cinceló en el nombre: Corte al amigo, el cuchillo que cortó a un amigo, y el carácter se volvió feroz"
+	Origin: Dos tesoros Minamoto se probaron filo con filo; este cortó al amigo de en frente por la cintura. Aquella falta se cinceló en el nombre: Corte al amigo, el cuchillo que cortó a un amigo, y el carácter se volvió feroz
 	Power:
 		'''
 		«Sombra de culpa» Si cortas el combo con el Paso relámpago Kamui, el tajo interrumpido se queda in situ
@@ -4158,7 +4158,7 @@ OniMeiRubbingTomokiri: {
 OniMeiRubbingKazehi: {
 	DisplayName: Conducto del viento
 	Tooltip: El Paso relámpago ahorra un 15% de vigor y el vuelo de sakura un 20%; daño de las marcas de tinta -20%
-	Origin: "Quien abrió el filo hizo este conducto recto y largo, «para dejarle camino al viento». Al blandir el cuchillo, el viento llega primero: cuando oyes el silbido, el filo ya ha vuelto"
+	Origin: Quien abrió el filo hizo este conducto recto y largo, «para dejarle camino al viento». Al blandir el cuchillo, el viento llega primero: cuando oyes el silbido, el filo ya ha vuelto
 	Power: «Viento a favor» Gasto de vigor del Paso relámpago Kamui -15%; gasto del vuelo de sakura -20%
 	Burden: Daño de las marcas de tinta que deja el Paso relámpago -20%. Este conducto se abrió para aligerar el cuerpo, no para matar
 }
@@ -4166,7 +4166,7 @@ OniMeiRubbingKazehi: {
 OniMeiRubbingChihi: {
 	DisplayName: Conducto de sangre
 	Tooltip: Golpear devuelve vigor; cuanto más cortes, más vigor; recuperación natural de vigor -35%
-	Origin: "Los demás conductos se abren para aligerar la hoja; este no. Quien entregó el filo lo dijo claro: esta ranura es para la sangre; si la sangre corre rápido, tu aliento vuelve rápido"
+	Origin: Los demás conductos se abren para aligerar la hoja; este no. Quien entregó el filo lo dijo claro: esta ranura es para la sangre; si la sangre corre rápido, tu aliento vuelve rápido
 	Power:
 		'''
 		«Reflujo» El primer impacto de cada tiempo del combo devuelve 1 de vigor extra
@@ -4178,7 +4178,7 @@ OniMeiRubbingChihi: {
 OniMeiRubbingFudo: {
 	DisplayName: Inmóvil
 	Tooltip: Si te golpean durante la animación de un gran golpe, gastas postura a cambio de reducción de daño; ganancia de postura -15%
-	Origin: "El tallista cinceló al trazo del sánscrito kāṃ y sentó a Fudō Myōō, cubierto de llamas, en el costado del filo. Este santo solo gobierna una palabra: firmeza. Golpee lo que golpee, se queda sentado"
+	Origin: El tallista cinceló al trazo del sánscrito kāṃ y sentó a Fudō Myōō, cubierto de llamas, en el costado del filo. Este santo solo gobierna una palabra: firmeza. Golpee lo que golpee, se queda sentado
 	Power:
 		'''
 		«Guarda inmóvil» Si te alcanzan durante la animación de un tajo que no puedes recoger —Zanshin, Destello aniquilador, Danza final—, Fudō te cubre
@@ -4190,7 +4190,7 @@ OniMeiRubbingFudo: {
 OniMeiRubbingKurikara: {
 	DisplayName: Kurikara
 	Tooltip: Tras una ejecución acumulas tres capas de fuego de dragón; cada combo de cinco completo quema una; tope de vigor -10%
-	Origin: "En la hoja está tallado el rey dragón Kurikara: un dragón negro se enrosca en la espada y abre la boca para tragar el filo. Es un tema viejo de la talla de cuchillos; entre las escamas hay oro incrustado"
+	Origin: En la hoja está tallado el rey dragón Kurikara: un dragón negro se enrosca en la espada y abre la boca para tragar el filo. Es un tema viejo de la talla de cuchillos; entre las escamas hay oro incrustado
 	Power:
 		'''
 		«Anillo de fuego de dragón» Tras una ejecución, la hoja enciende tres capas de fuego de dragón, válidas diez segundos
@@ -4202,7 +4202,7 @@ OniMeiRubbingKurikara: {
 OniMeiRubbingTessetsu: {
 	DisplayName: Corte de hierro
 	Tooltip: Al cortar acero y máquinas, el primer tajo de cada tiempo +25%; daño base -10%
-	Origin: "Alguien lo probó y torció la boca: el nombre asusta, el filo parece un trozo de hierro crudo. El herrero no se enfadó y cinceló aquella pulla tal cual en la espiga: hierro crudo será, pero hierro contra hierro es donde se ve la verdad"
+	Origin: Alguien lo probó y torció la boca: el nombre asusta, el filo parece un trozo de hierro crudo. El herrero no se enfadó y cinceló aquella pulla tal cual en la espiga: hierro crudo será, pero hierro contra hierro es donde se ve la verdad
 	Power: «Cortar metal» El primer tajo de cada tiempo del combo, si cae sobre enemigos de acero o máquina que echan chispas, +25% de daño
 	Burden: Daño base -10%. Contra carne, se parece más a un trozo de hierro romo
 }
@@ -4210,7 +4210,7 @@ OniMeiRubbingTessetsu: {
 OniMeiRubbingKyushu: {
 	DisplayName: Cabeza antigua
 	Tooltip: Solo cobra cabezas; las de poca vida las cobra más duro que Corte de barba; daño base -3%
-	Origin: "Hay cuchillos que, al cortar una buena cabeza, cambian de nombre y brillan una vez. El dueño de esta inscripción no iba de eso: las cabezas se cortan, el nombre se queda; un cuchillo que corta limpio no asusta con nombres nuevos"
+	Origin: Hay cuchillos que, al cortar una buena cabeza, cambian de nombre y brillan una vez. El dueño de esta inscripción no iba de eso: las cabezas se cortan, el nombre se queda; un cuchillo que corta limpio no asusta con nombres nuevos
 	Power:
 		'''
 		«Tomar la cabeza» Esta bonificación solo reconoce la cabeza, o a los enemigos que no tienen segmentos
@@ -4223,7 +4223,7 @@ OniMeiRubbingKyushu: {
 OniMeiRubbingIkiai: {
 	DisplayName: Unión del aliento
 	Tooltip: El quinto tiempo de un combo de cinco completo lanza una onda de espada hacia el cursor; intervalo entre tajos +4%
-	Origin: "Decía el viejo espadachín que, si el forcejeo se alarga, las respiraciones de ambos se muerden; quien cierra primero ese aliento, su cuchillo llega primero. Esta inscripción talla ese arte: aguantar, coincidir, dejar caer el filo"
+	Origin: Decía el viejo espadachín que, si el forcejeo se alarga, las respiraciones de ambos se muerden; quien cierra primero ese aliento, su cuchillo llega primero. Esta inscripción talla ese arte: aguantar, coincidir, dejar caer el filo
 	Power: «Aliento» Al completar un combo de cinco, el quinto tiempo lanza en la dirección a la que apuntas una onda de espada en arco; el daño es el 55% de un tajo y se disipa tras cortar como máximo a tres enemigos
 	Burden: Intervalo entre tajos del combo +4%
 }
@@ -4231,7 +4231,7 @@ OniMeiRubbingIkiai: {
 OniMeiRubbingKyoko: {
 	DisplayName: Rugido hueco
 	Tooltip: A distancia acumula un tajo; al volverte y cortar a quemarropa duele más; si cortas pegado sin parar, pierdes el foco
-	Origin: "El que probaba el filo rugió hacia un valle vacío y no hubo eco: cuando no hay nadie, ese aliento vuelve entero al cuchillo. Esta talla guarda precisamente esa contención"
+	Origin: El que probaba el filo rugió hacia un valle vacío y no hubo eco: cuando no hay nadie, ese aliento vuelve entero al cuchillo. Esta talla guarda precisamente esa contención
 	Power:
 		'''
 		«Eco vacío» Si en 16 bloques a tu alrededor no hay enemigos durante 1.5 segundos, el cuchillo te guarda un golpe
@@ -4244,7 +4244,7 @@ OniMeiRubbingKyoko: {
 OniMeiRubbingKarikiri: {
 	DisplayName: Corte falso
 	Tooltip: El Paso relámpago deja una sombra que recibe un golpe por ti; tras usarla hay que esperar 4 segundos
-	Origin: "El aprendiz copió la postura del maestro al diez por diez; el maestro solo dijo: demasiado parecido, tan parecido que se ve falso. Esta inscripción talla precisamente ese cuerpo falso: por muy bien que se plante, solo es la sombra que recibe el tajo por ti"
+	Origin: El aprendiz copió la postura del maestro al diez por diez; el maestro solo dijo: demasiado parecido, tan parecido que se ve falso. Esta inscripción talla precisamente ese cuerpo falso: por muy bien que se plante, solo es la sombra que recibe el tajo por ti
 	Power:
 		'''
 		«Cuerpo falso» Al arrancar el Paso relámpago Kamui, deja in situ una sombra congelada en la postura, 1.5 segundos
@@ -4262,7 +4262,7 @@ OniMeiRubbingKarikiri: {
 OniMeiRubbingMokukiri: {
 	DisplayName: Corte silencioso
 	Tooltip: Tras un Paso relámpago normal que gasta vigor, el siguiente tajo +35%; fallar también lo gasta
-	Origin: "En el instante en que termina el Paso relámpago, el entorno se calla de golpe. Los viejos espadachines saben que el siguiente tajo, en ese silencio, es el más pesado. El nombre es la cosa: cortar en silencio"
+	Origin: En el instante en que termina el Paso relámpago, el entorno se calla de golpe. Los viejos espadachines saben que el siguiente tajo, en ese silencio, es el más pesado. El nombre es la cosa: cortar en silencio
 	Power: «Muerte silenciosa» Tras completar de forma natural un Paso relámpago normal que gasta vigor, durante 0.75 segundos el siguiente tajo de combo o de Zanshin +35% de daño
 	Burden: Si ese tajo falla, también se gasta; otro Paso relámpago a mitad también lo borra. El Paso relámpago de ejecución gratuito no da Muerte silenciosa
 }
@@ -4279,7 +4279,7 @@ OniMeiRubbingKumokiri: {
 		Tras recoger la red, 1.5 segundos de descanso antes de tejer otra
 		'''
 	Burden: Mientras hay anclas en el campo, la recuperación natural de vigor -25%. Si el ancla caduca, ese tajo se da por perdido
-	DeedHint: "Mata treinta criaturas arácnidas: arañas, trepadores de sangre, escorpiones de arena y todo lo que tenga ocho patas y suba por las paredes. Al cumplir el cupo, el cuchillo reconoce ese olor a sangre"
+	DeedHint: Mata treinta criaturas arácnidas: arañas, trepadores de sangre, escorpiones de arena y todo lo que tenga ocho patas y suba por las paredes. Al cumplir el cupo, el cuchillo reconoce ese olor a sangre
 }
 
 OniMeiRubbingOnimaru: {
@@ -4291,7 +4291,7 @@ OniMeiRubbingOnimaru: {
 		«Tajo autónomo» Si te quedas quieto 1 segundo, el cuchillo entra en espera
 		Después, cada 1.5 segundos te resta 10 de vigor, vuela solo hacia un enemigo en 40 bloques, corta el 140% de un tajo y vuelve a la vaina
 		'''
-	Burden: "Todo el tiempo que el cuchillo está fuera no está en tu mano: combo, Paso relámpago y vuelo de sakura no se pueden usar. Si no hay objetivo cerca, no vuela"
+	Burden: Todo el tiempo que el cuchillo está fuera no está en tu mano: combo, Paso relámpago y vuelo de sakura no se pueden usar. Si no hay objetivo cerca, no vuela
 	DeedHint: Empuña el cuchillo y quédate quieto diez segundos; aunque te golpeen, no des un paso. Si te aguantas, el cuchillo se mueve una vez por ti
 }
 
@@ -4304,7 +4304,7 @@ OniMeiRubbingRaikiri: {
 		«Cortar el rayo» Cuando el quinto tiempo, el Zanshin, el Destello aniquilador o la Danza final golpea a un enemigo, si ves el cielo sobre tu cabeza, cae una columna de rayo desde el cénit
 		El daño de la columna es el 70% de un tajo; en una tormenta, el mismo golpe puede soltar hasta tres
 		'''
-	Burden: "Intervalo entre tajos del combo +6%; también en día despejado va lento: la cuenta del rayo se paga. Si un bloque te tapa la cabeza o estás en una cueva, no cae"
+	Burden: Intervalo entre tajos del combo +6%; también en día despejado va lento: la cuenta del rayo se paga. Si un bloque te tapa la cabeza o estás en una cueva, no cae
 	DeedHint: En una tormenta, mata a un jefe al aire libre; solo entonces el filo reconoce ese rayo
 }
 
@@ -4324,7 +4324,7 @@ OniMeiRubbingNuekiri: {
 OniMeiRubbingKamihi: {
 	DisplayName: Conducto de papel
 	Tooltip: Si el Paso relámpago atraviesa a un enemigo, deja un recorte de papel; cortar el papel es cortar el cuerpo; con papel en el campo, el Paso relámpago gasta más vigor
-	Origin: "El arte del encuadernador de papel, cuando llega al extremo, parte de un tajo el papel y la sombra. Este conducto copia esa mano: al atravesar el cuerpo, recorta la sombra del otro y la deja in situ. Mientras el papel esté, la cuenta se cobra contra el papel"
+	Origin: El arte del encuadernador de papel, cuando llega al extremo, parte de un tajo el papel y la sombra. Este conducto copia esa mano: al atravesar el cuerpo, recorta la sombra del otro y la deja in situ. Mientras el papel esté, la cuenta se cobra contra el papel
 	Power:
 		'''
 		«Sombra recortada» Si el Paso relámpago Kamui atraviesa a un enemigo, en el punto de llegada deja un recorte de papel a su medida, 7 segundos; como máximo dos a la vez
@@ -4338,7 +4338,7 @@ OniMeiRubbingKamihi: {
 OniMeiRubbingSorahi: {
 	DisplayName: Conducto del aire
 	Tooltip: En el aire, un Paso relámpago extra y la recuperación de vigor se duplica; los 0.75 segundos al aterrizar no recuperan nada
-	Origin: "El maestro que abrió este conducto tenía una teoría rara: el vigor, como la gente, se vuelve perezoso en cuanto el pie toca suelo. Por eso abrió el cuchillo tan ligero, para que uno se quede un rato más en el aire: mientras flotas, el vigor viene a buscarte"
+	Origin: El maestro que abrió este conducto tenía una teoría rara: el vigor, como la gente, se vuelve perezoso en cuanto el pie toca suelo. Por eso abrió el cuchillo tan ligero, para que uno se quede un rato más en el aire: mientras flotas, el vigor viene a buscarte
 	Power:
 		'''
 		«Cuerpo flotante» Con los pies en el aire, la recuperación natural de vigor se duplica y te da un Paso relámpago extra
@@ -4351,7 +4351,7 @@ OniMeiRubbingSorahi: {
 OniMeiRubbingKagamihi: {
 	DisplayName: Conducto del espejo
 	Tooltip: En el final del Paso relámpago se alza un espejo de papel que copia tu siguiente tajo; daño base -5%
-	Origin: "Todo maestro de pulir espejos sabe que el gesto del espejo parece a la vez, pero siempre va medio tiempo tarde. Quien abrió este conducto quiso usar precisamente ese medio tiempo: que el del espejo complete un tajo por ti, tarde, pero que llegue"
+	Origin: Todo maestro de pulir espejos sabe que el gesto del espejo parece a la vez, pero siempre va medio tiempo tarde. Quien abrió este conducto quiso usar precisamente ese medio tiempo: que el del espejo complete un tajo por ti, tarde, pero que llegue
 	Power:
 		'''
 		«Copia del espejo» En el final del Paso relámpago Kamui se alza un espejo de papel, 2 segundos
@@ -4364,7 +4364,7 @@ OniMeiRubbingKagamihi: {
 OniMeiRubbingAmahi: {
 	DisplayName: Conducto de lluvia
 	Tooltip: El vuelo de sakura gotea tinta todo el camino; al caer se extiende en un charco que ata; gasto de vigor del vuelo de sakura +15%
-	Origin: "La canaleta que recoge la lluvia bajo el alero también se llama conducto de lluvia. Quien abrió el filo le hizo al cuchillo esta ranura a imagen del alero: la lluvia recogida no se desperdicia; mientras vuelas, gotea, y gotea sobre los que van a recibir el tajo"
+	Origin: La canaleta que recoge la lluvia bajo el alero también se llama conducto de lluvia. Quien abrió el filo le hizo al cuchillo esta ranura a imagen del alero: la lluvia recogida no se desperdicia; mientras vuelas, gotea, y gotea sobre los que van a recibir el tajo
 	Power:
 		'''
 		«Lluvia que cae» Durante el vuelo de sakura, cada 0.1 segundos suelta una gota de tinta; el daño es el 12% de un tajo
@@ -4377,7 +4377,7 @@ OniMeiRubbingAmahi: {
 OniMeiRubbingTsuzurihi: {
 	DisplayName: Conducto de costura
 	Tooltip: Las marcas de tinta de un mismo Paso relámpago se unen y cortan; daño de cada marca -30%
-	Origin: "Tsuzuri es la puntada con la que el encuadernador cose un libro: un ojo por aguja; al tirar del hilo, las hojas sueltas se vuelven un tomo. Quien abrió este conducto usa las marcas de tinta como puntadas: solo al ensartarlas se cierra la línea"
+	Origin: Tsuzuri es la puntada con la que el encuadernador cose un libro: un ojo por aguja; al tirar del hilo, las hojas sueltas se vuelven un tomo. Quien abrió este conducto usa las marcas de tinta como puntadas: solo al ensartarlas se cierra la línea
 	Power: «Huellas cosidas» Las marcas de tinta de un mismo Paso relámpago detonan a la vez y tienden líneas de corte entre sí; cada tramo inflige el 35% de un tajo
 	Burden: Daño de cada marca de tinta -30%. Si un Paso relámpago solo atraviesa a uno, este conducto es pérdida neta
 	DeedHint: Atraviesa a seis enemigos distintos en un solo Paso relámpago; solo entonces las marcas se pueden coser
@@ -4386,7 +4386,7 @@ OniMeiRubbingTsuzurihi: {
 OniMeiRubbingBonsho: {
 	DisplayName: Campana del templo
 	Tooltip: Si la postura está llena y no sueltas la Danza final, el cuchillo toca la campana solo; el tañido gasta la mitad de la postura a cambio de un anillo que ata y controla el campo
-	Origin: "La campana del templo suena cuando alguien la golpea; la de la hoja no espera. El tallista lo dijo claro: si el ímpetu está lleno y no lo sueltas, la campana lo suelta por ti"
+	Origin: La campana del templo suena cuando alguien la golpea; la de la hoja no espera. El tallista lo dijo claro: si el ímpetu está lleno y no lo sueltas, la campana lo suelta por ti
 	Power:
 		'''
 		«Un golpe de campana» Si en 3 segundos tras llenar la postura no sueltas la Danza final, el cuchillo toca la campana solo
@@ -4398,8 +4398,8 @@ OniMeiRubbingBonsho: {
 
 OniMeiRubbingHannya: {
 	DisplayName: Hannya
-	Tooltip: "Con poca vida se voltea la máscara oni: el cuchillo pesa más y roba vida; durante la máscara eres más frágil; en reposo, un poco más romo"
-	Origin: "La máscara Hannya del nō representa el instante en que una mujer, odiando hasta el extremo, se vuelve oni. El tallista sentó esa máscara en la hoja: cuando te empujan al borde, la máscara se voltea sola"
+	Tooltip: Con poca vida se voltea la máscara oni: el cuchillo pesa más y roba vida; durante la máscara eres más frágil; en reposo, un poco más romo
+	Origin: La máscara Hannya del nō representa el instante en que una mujer, odiando hasta el extremo, se vuelve oni. El tallista sentó esa máscara en la hoja: cuando te empujan al borde, la máscara se voltea sola
 	Power:
 		'''
 		«Cambio de máscara» Si tu vida baja del 35%, se voltea la máscara oni: daño del cuchillo +20%; cada impacto restaura el 0.5% de la vida máxima
@@ -4412,7 +4412,7 @@ OniMeiRubbingHannya: {
 OniMeiRubbingKaresansui: {
 	DisplayName: Jardín seco
 	Tooltip: Quédate quieto y rastrilla un campo de dibujos de arena que se queda in situ; dentro corta sin cesar y sube la postura
-	Origin: "El jardinero no usa ni una gota de agua: solo con arena y piedra rastrilla montes y mares. El tallista metió esas vetas en el cuchillo: si el espadachín se planta lo bastante, el aliento del filo también rastrilla un jardín de arena a tus pies"
+	Origin: El jardinero no usa ni una gota de agua: solo con arena y piedra rastrilla montes y mares. El tallista metió esas vetas en el cuchillo: si el espadachín se planta lo bastante, el aliento del filo también rastrilla un jardín de arena a tus pies
 	Power:
 		'''
 		«Dibujo de arena» Si te quedas quieto 1.5 segundos, rastrilla a tus pies un campo de dibujos de arena de 20 bloques, 5 segundos
@@ -4426,7 +4426,7 @@ OniMeiRubbingKaresansui: {
 OniMeiRubbingSenju: {
 	DisplayName: Mil brazos
 	Tooltip: Al congelarse la Danza final, se alzan seis manos oni que cortan a la vez; tras la Danza, el vigor se vacía y 3 segundos sin Paso relámpago
-	Origin: "Kannon de los mil brazos salva a uno con cada mano. El tallista grabó los mil brazos en la hoja y le puso esta regla: cada uno a quien despide la Danza final debe tener una mano que lo reciba"
+	Origin: Kannon de los mil brazos salva a uno con cada mano. El tallista grabó los mil brazos en la hoja y le puso esta regla: cada uno a quien despide la Danza final debe tener una mano que lo reciba
 	Power: «Mil brazos» Durante el fotograma congelado de la Danza final, a tu espalda se alzan seis manos oni con cuchillo que cortan a la vez; cada una inflige el 30% de un tajo
 	Burden: Tras la Danza final el vigor se vacía y, durante 3 segundos, no puedes usar el Paso relámpago
 	DeedHint: Despide a ocho jefes distintos con la Danza final; una mano por cada uno
@@ -4435,7 +4435,7 @@ OniMeiRubbingSenju: {
 OniMeiRubbingKogehi: {
 	DisplayName: Conducto abrasado
 	Tooltip: El Paso relámpago deja en todo el camino hasta cinco zonas abrasadas; daño base -4%
-	Origin: "El maestro que abrió este conducto vivía junto a un arenal de lava y estaba harto de ver a quien no mira el suelo. Dijo que este conducto se abrió para que esquives el calor: tú pasas, el quemazón se queda atrás, para el que te persigue"
+	Origin: El maestro que abrió este conducto vivía junto a un arenal de lava y estaba harto de ver a quien no mira el suelo. Dijo que este conducto se abrió para que esquives el calor: tú pasas, el quemazón se queda atrás, para el que te persigue
 	Power:
 		'''
 		«Marca abrasada» El Paso relámpago Kamui deja a lo largo de todo el camino hasta cinco zonas abrasadas; cada una quema 1.5 segundos
@@ -4448,7 +4448,7 @@ OniMeiRubbingKogehi: {
 OniMeiRubbingKanhi: {
 	DisplayName: Conducto del ocio
 	Tooltip: Cuando el cuchillo se enfría, la recuperación natural de vigor pasa a 2.25 veces; gasto de vigor del Paso relámpago y del vuelo de sakura +8%
-	Origin: "A la puerta de la forja hay un banco largo; el maestro, al terminar, se sienta y escucha la calle. Decía que hay que saber parar: cuando el oído se aclara, el vigor vuelve rápido. Este conducto es ese banco"
+	Origin: A la puerta de la forja hay un banco largo; el maestro, al terminar, se sienta y escucha la calle. Decía que hay que saber parar: cuando el oído se aclara, el vigor vuelve rápido. Este conducto es ese banco
 	Power: «Aliento ocioso» Tras dos segundos sin que el cuchillo golpee nada, la recuperación natural de vigor pasa a 2.25 veces
 	Burden: Gasto de vigor del Paso relámpago y del vuelo de sakura +8%. El vigor que vuelve en la calma se paga con el movimiento
 }
@@ -4456,7 +4456,7 @@ OniMeiRubbingKanhi: {
 OniMeiRubbingTodohi: {
 	DisplayName: Conducto de la demora
 	Tooltip: Golpear pega al enemigo 0.6 segundos; el siguiente Paso relámpago tarda 0.1 segundos más en arrancar
-	Origin: "Este conducto se templó raro: al pasar el filo por la carne se vuelve pegajoso, y lo que recibe el tajo se queda un instante clavado. Quien abrió el filo no lo veía como defecto: lo pegajoso es él, no tú"
+	Origin: Este conducto se templó raro: al pasar el filo por la carne se vuelve pegajoso, y lo que recibe el tajo se queda un instante clavado. Quien abrió el filo no lo veía como defecto: lo pegajoso es él, no tú
 	Power: «Atadura de demora» Cuando el filo golpea en persona, pega al enemigo 0.6 segundos; los normales bajan al 88% de movimiento, los jefes al 96%
 	Burden: El siguiente arranque del Paso relámpago tarda 0.1 segundos más. La Atadura de demora y el Entumecimiento no se apilan en el mismo enemigo; se queda el más fuerte
 }
@@ -4464,7 +4464,7 @@ OniMeiRubbingTodohi: {
 OniMeiRubbingShiorihi: {
 	DisplayName: Conducto de la poda
 	Tooltip: Al rematar a uno con tu mano, recorta de paso al más herido de al lado; recuperación natural de vigor -10%
-	Origin: "El jardinero, al podar, tiene una regla: si ya ha sacado las tijeras, corta de una vez lo marchito del mismo ramo, para no volver. Quien abrió este conducto, antes, era jardinero"
+	Origin: El jardinero, al podar, tiene una regla: si ya ha sacado las tijeras, corta de una vez lo marchito del mismo ramo, para no volver. Quien abrió este conducto, antes, era jardinero
 	Power:
 		'''
 		«Poda» Al rematar a un objetivo con el cuchillo, busca 15 bloques desde donde cae
@@ -4477,7 +4477,7 @@ OniMeiRubbingShiorihi: {
 OniMeiRubbingShiohi: {
 	DisplayName: Conducto de la marea
 	Tooltip: Si cortas al pulso de la marea, recuperas vigor y el Zanshin pesa más; el combo fuera de pulso es un poco más romo
-	Origin: "Quien abrió el filo creció junto al mar y afilaba al ritmo de la marea. Decía que la marea sube y baja, y el vigor de uno también: el tajo que sale con la pleamar, el mar te devuelve la fuerza"
+	Origin: Quien abrió el filo creció junto al mar y afilaba al ritmo de la marea. Decía que la marea sube y baja, y el vigor de uno también: el tajo que sale con la pleamar, el mar te devuelve la fuerza
 	Power:
 		'''
 		«Pulso de marea» Bajo la barra de vigor hay una cresta de 0.8 segundos por ciclo; los 0.2 segundos de la cima son la ventana de marea
@@ -4489,7 +4489,7 @@ OniMeiRubbingShiohi: {
 OniMeiRubbingShibori: {
 	DisplayName: Talla del entumecimiento
 	Tooltip: Atravesar con el Paso relámpago o recibir un golpe duro en un gran golpe entumece al que te toca; ganancia de postura -15%
-	Origin: "Aunque la mano que empuña se entumezca del golpe, no puedes soltar: es el sufrimiento del primer año. El maestro que talló esta inscripción usó el sufrimiento al revés: si yo me entumezco uno, el que me toca se entumece diez"
+	Origin: Aunque la mano que empuña se entumezca del golpe, no puedes soltar: es el sufrimiento del primer año. El maestro que talló esta inscripción usó el sufrimiento al revés: si yo me entumezco uno, el que me toca se entumece diez
 	Power:
 		'''
 		«Entumecimiento de vuelta» Si el Paso relámpago atraviesa a un enemigo, lo entumece del todo
@@ -4502,7 +4502,7 @@ OniMeiRubbingShibori: {
 OniMeiRubbingChinmei: {
 	DisplayName: Silencio del campo
 	Tooltip: Daño de los proyectiles enemigos -12%, retroceso -65%; ganancia de postura -15%
-	Origin: "En la formación vuelan flechas y piedras; un zumbido en el oído y la gente se asusta. El veterano que talló esta inscripción solo dejó una frase: primero, cálmate; plantéate y luego muévete; lo que vuela duele menos"
+	Origin: En la formación vuelan flechas y piedras; un zumbido en el oído y la gente se asusta. El veterano que talló esta inscripción solo dejó una frase: primero, cálmate; plantéate y luego muévete; lo que vuela duele menos
 	Power: «Silencio del campo» Los proyectiles enemigos que te golpean, daño -12%; el retroceso deja solo el 35%
 	Burden: Ganancia de postura -15%. En un cuerpo a cuerpo puro, esta talla se queda casi ociosa
 }
@@ -4510,7 +4510,7 @@ OniMeiRubbingChinmei: {
 OniMeiRubbingAshidome: {
 	DisplayName: Pie firme
 	Tooltip: Quédate quieto 0.75 segundos y el siguiente gran golpe o el quinto tiempo +25%
-	Origin: "La primera frase del maestro de espada, al abrir la clase: que los pies no se muevan. Con el pie firme se guarda la fuerza; la fuerza guardada, al salir, pesa. Esta inscripción te recuerda esa primera lección"
+	Origin: La primera frase del maestro de espada, al abrir la clase: que los pies no se muevan. Con el pie firme se guarda la fuerza; la fuerza guardada, al salir, pesa. Esta inscripción te recuerda esa primera lección
 	Power: «Pie firme» Si te quedas quieto 0.75 segundos, acumulas un golpe; el siguiente quinto tiempo, Zanshin, Destello aniquilador o Danza final +25% de daño
 	Burden: En cuanto el golpe sale, se gasta; fallar no lo devuelve. Moverte borra lo acumulado
 }
@@ -4518,7 +4518,7 @@ OniMeiRubbingAshidome: {
 OniMeiRubbingYoen: {
 	DisplayName: Ascuas restantes
 	Tooltip: Tras una ejecución deja en el suelo un campo de ascuas; solo uno a la vez; tope de vigor -5%
-	Origin: "Cuando se sella el horno de forja, el calor que queda en la cámara aún calienta toda la noche. Quien abrió el filo le dejó al cuchillo esa mano: el fuego se apagó, el quemazón no"
+	Origin: Cuando se sella el horno de forja, el calor que queda en la cámara aún calienta toda la noche. Quien abrió el filo le dejó al cuchillo esa mano: el fuego se apagó, el quemazón no
 	Power:
 		'''
 		«Ascuas» Tras una ejecución deja en el foco un campo de ascuas, 3 segundos
@@ -5096,8 +5096,8 @@ WingsOfInterference: {
 		En el instante del alba y del ocaso se desencadena una explosión de interferencia a pantalla completa: 1100 de daño base y borra los proyectiles enemigos
 		"Día y noche interfieren en la punta del ala; la luz colapsa en el cruce"
 		'''
-	FormDay: "Ahora es de día: la red de interferencia está tendida"
-	FormNight: "Ahora es de noche: el vuelo de aurora está tendido"
+	FormDay: Ahora es de día: la red de interferencia está tendida
+	FormNight: Ahora es de noche: el vuelo de aurora está tendido
 }
 
 BlackFlashSigil: {
@@ -5167,7 +5167,7 @@ SeaShrimpTreasureBag: {
 
 SeaShrimpTestItem: {
 	DisplayName: Jaula de observación de camarones
-	Tooltip: "Uso de desarrollo: invoca al camarón de cristal abisal en cualquier lugar"
+	Tooltip: Uso de desarrollo: invoca al camarón de cristal abisal en cualquier lugar
 }
 
 BssBloomBud: {
@@ -5244,4 +5244,3 @@ BloomTome: {
 		"La página que abras, esa florece"
 		'''
 }
-

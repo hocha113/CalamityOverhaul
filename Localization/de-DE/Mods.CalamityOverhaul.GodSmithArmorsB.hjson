@@ -1,3 +1,4 @@
+// P10b armor endowments (17 hardmode sets + 5 pre-HM sets handed over from P10a); the four Ancient Hallowed combos share one line
 GsCobaltArmor.EndowLine: Schattennachbild: Treffer häufen Schnellschnitt; fünf Stapel tauschen in die Schattenhaltung, fünf Sekunden lang blitzt bei jedem Treffer ein kobaltblaues Nachbild von der Flanke, insgesamt sechs
 GsPalladiumArmor.EndowLine: Lebenssaug: Treffer häufen Lebenssaft; bei acht Stapeln pflanzt der nächste Schlag eine Saugknospe ins Ziel, sie nagt periodisch und zieht goldene Blutlichtfäden zu dir zurück
 GsMythrilArmor.EndowLine: Ambossseele: Treffer häufen Härte; alle sechs Stapel schmieden ein schwebendes Seelenschwert, höchstens drei; sind drei voll und erneut voll, befiehlt der nächste Schlag den drei Schwertern, versetzt zuzustechen

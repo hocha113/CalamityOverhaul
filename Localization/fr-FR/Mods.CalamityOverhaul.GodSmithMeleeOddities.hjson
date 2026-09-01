@@ -1,64 +1,67 @@
-GsVampireKnives.Desc: 
+# GodSmith MeleeOddities (P5) weapon descriptions
+# Keys composed by the framework: Mods.CalamityOverhaul.GodSmithMeleeOddities.{SchemeClass}.Desc
+
+GsVampireKnives.Desc:
 	'''
 	Reforgé : lance 4 à 8 couteaux de vampire, chaque impact rend 7.5% des dégâts infligés ;
 	le sang volé se condense en perles de sang autour de vous, jusqu'à 3, chacune ajoute 1 couteau au prochain lancer ;
 	à 3 perles, le prochain lancer est une salve cramoisie, le vol de vie est doublé pour ce tour
 	'''
-GsScourgeoftheCorruptor.Desc: 
+GsScourgeoftheCorruptor.Desc:
 	'''
 	Reforgé : le Fléau du corrupteur éclate en une nichée de petits dévoreurs à l'impact ;
 	il plante aussi un chancre corrompu, que les petits dévoreurs plongent en priorité ;
 	au bout de trois traversées, le chancre éclate en pus et enflamme (Flammes maudites)
 	'''
-GsSolarEruption.Desc: 
+GsSolarEruption.Desc:
 	'''
 	Reforgé : une chaîne-lame en anneau perce les murs et explose de soleil à l'impact ;
 	8 impacts d'affilée chargent la couronne, le prochain coup enflamme tout le trajet en explosions en chaîne
 	'''
-GsDayBreak.Desc: 
+GsDayBreak.Desc:
 	'''
 	Reforgé : les lances de l'Aube se plantent et brûlent, jusqu'à 8 par cible ;
 	4 lances dans la même cible explosent d'elles-mêmes en une croix de jour
 	'''
-GsSickle.Desc: 
+GsSickle.Desc:
 	'''
 	Reforgé : faucher l'herbe donne toujours du foin.
 	Les tailles accumulent la Moisson, chaque charge accélère un peu le coup ;
 	à 5 charges, la prochaine taille devient un large balayage
 	'''
-GsIceSickle.Desc: 
+GsIceSickle.Desc:
 	'''
 	Reforgé : la faux de glace lancée ne disparaît plus au bout de sa course, elle se fige en cristal ;
 	cassez le cristal d'un coup pour projeter un éventail de glaçons
 	'''
-GsDeathSickle.Desc: 
+GsDeathSickle.Desc:
 	'''
 	Reforgé : la Faux de la Mort perce les murs et grossit d'un palier à chaque nouvel ennemi fauché ;
 	au troisième palier, elle éclate en un anneau de flamme d'âme là où elle s'arrête
 	'''
-GsTerragrim.Desc: 
+GsTerragrim.Desc:
 	'''
 	Reforgé : maintenez pour devenir une tempête de lames tout en accumulant la Croissance ;
 	relâchez pour lancer une onde d'épée selon la Croissance ; à pleine charge, elle prend la forme de la Lame Terra
 	'''
-GsArkhalis.Desc: 
+GsArkhalis.Desc:
 	'''
 	Reforgé : la rafale ignore 20 points d'armure ;
 	frapper la même cible accumule la Percée, +2 de pénétration d'armure par charge ;
 	à 8 charges, la rafale se resserre en un estoc perçant
 	'''
-GsMonkStaffT1.Desc: 
+GsMonkStaffT1.Desc:
 	'''
 	Reforgé : le coup au sol inflige toujours le triple en zone, et vous pouvez encore tourner ou couper le spin ;
 	les ennemis frappés s'assoupissent et ralentissent ; trois coups sur la même cible l'endorment,
 	ce troisième coup frappe plus fort et ralentit plus longtemps
 	'''
-GsMonkStaffT2.Desc: 
+GsMonkStaffT2.Desc:
 	'''
 	Reforgé : chaque estoc qui touche appelle une âme vengeresse qui perce un ennemi proche ;
 	l'âme fait encore un tour pour mordre une seconde fois
 	'''
-GsMonkStaffT3.Desc: 
+GsMonkStaffT3.Desc:
 	'''
 	Reforgé : le clic gauche accumule le Souffle du dragon, la perle du bâton s'allume ;
 	à 5 charges, la sphère du clic droit s'élève en dragon céleste et fait tomber la foudre sur son passage

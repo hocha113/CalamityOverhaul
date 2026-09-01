@@ -1,14 +1,14 @@
-GsCopperShortsword.Desc: "Reforgé : chaque coup arrache une étincelle à l'épée courte en cuivre ; à la quatrième, une petite explosion de braises jaillit de la pointe et enflamme la cible et les ennemis proches"
-GsTinShortsword.Desc: "Reforgé : enchaînez les estocs, l'échelle de l'étain monte d'une note à chaque fois ; à quatre charges, chaque estoc ouvre une ride sonore et mord un peu plus profond"
-GsIronShortsword.Desc: "Reforgé : la reprise porte une garde qui réduit de 30% les dégâts subis ; parer un coup allume la riposte, et le prochain estoc dans la seconde est un critique assuré"
-GsLeadShortsword.Desc: "Reforgé : le fil de plomb corrodé empoisonne tout ce qu'il touche ; frapper un ennemi déjà empoisonné augmente les dégâts de 25%"
-GsSilverShortsword.Desc: "Reforgé : l'argent miroir s'abreuve de lune, +25% de dégâts et +10% de vitesse d'estoc la nuit ; sous une Lune de sang, chaque coup vole un filet de vie"
-GsTungstenShortsword.Desc: "Reforgé : le noyau dense de tungstène récompense une courte charge ; un estoc plein part 50% plus loin, perce l'armure et embroche tout sur la ligne"
-GsGoldShortsword.Desc: "Reforgé : le fil doré secoue la monnaie hors des plaies, environ un coup sur quatre fait jaillir des pièces ; un kill en répand toujours une poignée"
-GsPlatinumShortsword.Desc: "Reforgé : l'estoc précède sa propre lumière et laisse une rémanence de platine sur la ligne ; un ennemi qui la traverse prend 40% de dégâts"
-GsGladius.Desc: 
+GsCopperShortsword.Desc: Reforgé : chaque coup arrache une étincelle à l'épée courte en cuivre ; à la quatrième, une petite explosion de braises jaillit de la pointe et enflamme la cible et les ennemis proches
+GsTinShortsword.Desc: Reforgé : enchaînez les estocs, l'échelle de l'étain monte d'une note à chaque fois ; à quatre charges, chaque estoc ouvre une ride sonore et mord un peu plus profond
+GsIronShortsword.Desc: Reforgé : la reprise porte une garde qui réduit de 30% les dégâts subis ; parer un coup allume la riposte, et le prochain estoc dans la seconde est un critique assuré
+GsLeadShortsword.Desc: Reforgé : le fil de plomb corrodé empoisonne tout ce qu'il touche ; frapper un ennemi déjà empoisonné augmente les dégâts de 25%
+GsSilverShortsword.Desc: Reforgé : l'argent miroir s'abreuve de lune, +25% de dégâts et +10% de vitesse d'estoc la nuit ; sous une Lune de sang, chaque coup vole un filet de vie
+GsTungstenShortsword.Desc: Reforgé : le noyau dense de tungstène récompense une courte charge ; un estoc plein part 50% plus loin, perce l'armure et embroche tout sur la ligne
+GsGoldShortsword.Desc: Reforgé : le fil doré secoue la monnaie hors des plaies, environ un coup sur quatre fait jaillir des pièces ; un kill en répand toujours une poignée
+GsPlatinumShortsword.Desc: Reforgé : l'estoc précède sa propre lumière et laisse une rémanence de platine sur la ligne ; un ennemi qui la traverse prend 40% de dégâts
+GsGladius.Desc:
 	'''
 	Reforgé : drill de légion à trois temps, deux estocs vifs puis un estoc lourd à pas de bouclier ;
 	tenez le rythme et chaque estoc s'accélère, jusqu'à trois charges de tempo
 	'''
-GsRuler.Desc: "Reforgé : la discipline exige la mesure exacte ; toucher du bout de la règle vaut 1.6 fois, une frappe trop près de la main ne compte que 0.85"
+GsRuler.Desc: Reforgé : la discipline exige la mesure exacte ; toucher du bout de la règle vaut 1.6 fois, une frappe trop près de la main ne compte que 0.85

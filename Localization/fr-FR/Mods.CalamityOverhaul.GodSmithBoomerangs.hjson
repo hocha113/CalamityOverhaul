@@ -1,96 +1,96 @@
-GsWoodenBoomerang.Desc: 
+GsWoodenBoomerang.Desc:
 	'''
 	Le bois vivant se souvient du geste : après le premier impact, il rebondit une fois vers un autre ennemi proche
 	Clic droit en vol : ordonnez-lui de foncer vers le curseur
 	'''
-GsEnchantedBoomerang.Desc: 
+GsEnchantedBoomerang.Desc:
 	'''
 	Ralentit à l'aller, plane pour charger, accélère au retour
 	Au sommet du vol, trois étincelles d'étoiles à tête chercheuse, 30% de dégâts chacune
 	Clic droit en vol : ordonnez-lui de foncer vers le curseur
 	'''
-GsFruitcakeChakram.Desc: 
+GsFruitcakeChakram.Desc:
 	'''
 	Les impacts à l'aller glacent la cible de sucre, jusqu'à trois couches
 	Retoucher une cible sucrée au retour fait exploser le glaçage, +25% de dégâts par couche
 	Clic droit en vol : ordonnez-lui de foncer vers le curseur
 	'''
-GsBloodyMachete.Desc: 
+GsBloodyMachete.Desc:
 	'''
 	Les coups infligent Saignement et gravent une entaille ; trois entailles sur la même cible déclenchent la saignée
 	Ce coup inflige +40% de dégâts et vous rend 2 vie
 	Clic droit en vol : ordonnez-lui de foncer vers le curseur
 	'''
-GsIceBoomerang.Desc: 
+GsIceBoomerang.Desc:
 	'''
 	Les coups infligent Brûlure de givre et projettent deux éclats de glace perçants, 25% de dégâts chacun
 	En planant, le disque se givre, un brouillard froid l'entoure
 	Clic droit en vol : ordonnez-lui de foncer vers le curseur
 	'''
-GsShroomerang.Desc: 
+GsShroomerang.Desc:
 	'''
 	Au sommet du vol, un nuage de spores persistant brûle qui s'y trouve
 	La trajectoire sème des spores lumineuses
 	Clic droit en vol : ordonnez-lui de foncer vers le curseur
 	'''
-GsThornChakram.Desc: 
+GsThornChakram.Desc:
 	'''
 	Les coups empoisonnent et projettent trois épines, 22% de dégâts chacune
 	Clic droit en vol : ordonnez-lui de foncer vers le curseur
 	'''
-GsCombatWrench.Desc: 
+GsCombatWrench.Desc:
 	'''
 	Tous les trois impacts sur la même cible, un coup de boulon : +80% de dégâts
 	Contre une construction d'acier, encore +25%
 	Clic droit en vol : ordonnez-lui de foncer vers le curseur
 	'''
-GsFlamarang.Desc: 
+GsFlamarang.Desc:
 	'''
 	Chaque impact enflamme la cible
 	Au sommet du vol, un anneau de flammes ; le retour sème des braises
 	Clic droit en vol : ordonnez-lui de foncer vers le curseur
 	'''
-GsTrimarang.Desc: 
+GsTrimarang.Desc:
 	'''
 	Jusqu'à trois en l'air ; chaque disque supplémentaire en vol donne +8% de dégâts à tous
 	Clic droit : toute l'équipe fonce vers le curseur
 	'''
-GsFlyingKnife.Desc: 
+GsFlyingKnife.Desc:
 	'''
 	Maintenez le bouton d'attaque, le couteau suit le curseur
 	Relâchez : il tournoie sur place, puis rentre en ligne droite
 	Clic droit en vol : ordonnez-lui de foncer vers le curseur
 	'''
-GsBananarang.Desc: 
+GsBananarang.Desc:
 	'''
 	Jusqu'à dix en l'air ; chaque impact mûrit cette banane, +6% de dégâts par palier, jusqu'à cinq
 	Clic droit : toutes les bananes en l'air foncent vers le curseur
 	'''
-GsLightDisc.Desc: 
+GsLightDisc.Desc:
 	'''
 	À l'impact, il se réfracte vers l'ennemi le plus proche, jusqu'à trois fois
 	Chaque réfraction perd 10% de dégâts
 	Clic droit en vol : ordonnez-lui de foncer vers le curseur
 	'''
-GsPossessedHatchet.Desc: 
+GsPossessedHatchet.Desc:
 	'''
 	Lancer chargé : la hachette possédée accélère, puis s'accroche et tourne autour de la cible
 	Chaque taille grave une marque d'âme ; la cinquième éclate pour 150% de dégâts
 	Clic droit en vol : changez sa course
 	'''
-GsPaladinsHammer.Desc: 
+GsPaladinsHammer.Desc:
 	'''
 	Lancer à deux mains par-dessus la tête, le marteau suit un arc lourd
 	Au bout du vol il s'élève puis s'abat, une onde de choc pour 65% de dégâts de zone
 	Clic droit en vol : il fonce vers le curseur, puis s'y abat
 	'''
-GsSergeantUnitedShield.Desc: 
+GsSergeantUnitedShield.Desc:
 	'''
 	À l'aller, il rebondit jusqu'à quatre fois entre les ennemis, le recul croissant à chaque saut
 	Le rattraper lève votre garde un instant, bloquant un coup
 	Clic droit en vol : ordonnez-lui de foncer vers le curseur
 	'''
-GsAnchor.Desc: 
+GsAnchor.Desc:
 	'''
 	Vol en arc lourd, puis chute verticale passé le sommet
 	L'impact au sol fait une onde pour 60% de dégâts de zone ; l'ancre s'enfonce, puis revient le long de la chaîne
