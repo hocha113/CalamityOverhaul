@@ -2,253 +2,203 @@ SoulBurning: {
 	DisplayName: Feu de l'âme
 	Description: Flammes venues des Enfers
 }
-
 RevelationMarkDebuff: {
-	// DisplayName: Mark of Revelation
-	// Description: Under John's gaze, all damage taken is increased
+	DisplayName: Sceau de révélation
+	Description: "Sous le regard de Jean, tous les dégâts subis sont augmentés"
 }
-
 TruthRevealDebuff: {
-	// DisplayName: Truth Revealed
-	// Description: Armor stripped away, nowhere to hide
+	DisplayName: Révélation de la vérité
+	Description: "L'armure est arrachée, plus nulle part où se cacher"
 }
-
 WealthBlessingDebuff: {
-	// DisplayName: Blessing of Wealth
-	// Description: Bursts into a devoted golden rain upon death
+	DisplayName: Bénédiction de richesse
+	Description: "À la mort, une pluie d'or en offrande jaillira"
 }
-
 VerificationBuff: {
-	// DisplayName: Eye of Verification
-	// Description: Thomas has verified it, your strikes will surely crit
+	DisplayName: Œil de vérification
+	Description: "Thomas a vérifié : vos attaques porteront forcément un coup critique"
 }
-
 ZealotFervorBuff: {
-	// DisplayName: Fervor
-	// Description: The Zealot's holy fire burns within, attack and movement speed surge
+	DisplayName: Ferveur
+	Description: "Le feu sacré des Zélotes brûle dans la poitrine, vitesse d'attaque et vitesse de déplacement s'élèvent"
 }
-
 PlagueMarkDebuff: {
-	// DisplayName: Plague Mark
-	// Description: The Plague Horseman's holy pestilence is eating away at life
+	DisplayName: Sceau de peste
+	Description: La sainte peste du Cavalier de la Peste ronge la vie
 }
-
 HellburnBuff: {
 	DisplayName: Éruption infernale
 	Description: Flammes venues des Enfers
 }
-
 KikasaWispBurn: {
-	// DisplayName: Wisp Fire
-	// Description: Golden wisp fire from the lake clings and burns
+	DisplayName: Brûlure de feu follet
+	Description: Le feu follet doré du lac colle à la peau et brûle
 }
-
 KikasaInkTag: {
-	// DisplayName: Ink Seal
-	// Description: Stamped by the Kikasa's ink, summons deal bonus damage to this target
+	DisplayName: Sceau d'encre
+	Description: "Marqué du sceau d'encre de Kikasa, les invocations infligent des dégâts supplémentaires ici"
 }
-
 DivineSourceChargeBuff: {
-	// DisplayName: Auric Surge
-	// Description: The Divine Source Blade runs at full output, damage soars and bolts rain
+	DisplayName: Charge aurique
+	Description: "La Lame d'anéantissement aurique tourne à plein régime, les dégâts s'envolent, les traits de lumière pleuvent"
 }
-
 VoidErosion: {
 	DisplayName: Érosion du Vide
 	Description: Vous vous dissolvez peu à peu dans le néant
 }
-
 DestroyerSummonBuff: {
 	DisplayName: Le Destructeur
 	Description: Un mini Destructeur vous accompagne au combat
 }
-
 DestroyerStalkBuff: {
-	// DisplayName: Stalk Protocol
-	// Description: Increased movement speed. Close in and right click to unleash the Destroyer's bite
+	DisplayName: Protocole de traque
+	Description: "Vitesse de déplacement accrue, à l'affût. Approchez la proie, puis clic droit pour déclencher la morsure du Destructeur"
 }
-
 DestroyerFrenzyBuff: {
-	// DisplayName: Annihilation Protocol
-	// Description: The blade overloads: increased damage, homing projectiles, and finishers launch Destroyer heads
+	DisplayName: Protocole d'anéantissement
+	Description: "La Lame du Destructeur sature : dégâts accrus, projectiles à tête chercheuse, et le coup final crache une tête de Destructeur"
 }
-
 EyekiteBuff: {
-	// DisplayName: Bound Gaze
-	// Description: A small Eye of Cthulhu is bound to you by a blood-soaked cord
+	DisplayName: Regard lié
+	Description: "Un petit Œil de Cthulhu, lié par un fil de sang, vous suit"
 }
-
 DeepclawBuff: {
-	// DisplayName: Deepclaw Lobster
-	// Description: An abyssal lobster prowls at your side, pincers at the ready
+	DisplayName: Homard des abysses
+	Description: "Un homard des abysses vous suit, pinces prêtes"
 }
-
 BloomCallerBuff: {
-	// DisplayName: Wildbloom Company
-	// Description: A wildbloom sprout drifts at your side, thorns at the ready
+	DisplayName: Compagnie des fleurs sauvages
+	Description: "Un bourgeon des dunes vous suit, prêt à lancer ses épines"
 }
-
 EyetoothWound: {
-	// DisplayName: Fang Wound
-	// Description: The bite keeps weeping blood
+	DisplayName: Plaie de croc
+	Description: La plaie ouverte par les crocs continue de suinter
 }
-
 FrenziedMachineSoul: {
 	DisplayName: Âme mécanique frénétique
 	Description: L'âme de la machine est en extase !
 }
-
 FishoilBuff: {
 	DisplayName: Huile de poisson
 	Description: Vous sentez votre peau devenir huileuse
 }
-
 HyperDisintegration: {
 	DisplayName: Hyper-désintégration
 	Description: Fait s'effondrer la cible de l'intérieur
 }
-
 FocusMark: {
 	DisplayName: Marque de focalisation
 	Description: Les rayons de mort infligent des dégâts bonus contre cette marque
 }
-
 TemporalStasis: {
 	DisplayName: Stase temporelle
 	Description: Le temps se fige autour de la cible
 }
-
 GravitationalCollapse: {
 	DisplayName: Effondrement gravitationnel
 	Description: Entraîné dans l'abîme par son propre poids
 }
-
 MarbleRiposteBuff: {
-	// DisplayName: Marble Riposte
-	// Description: Melee damage increased by 10%
+	DisplayName: Riposte de marbre
+	Description: Dégâts de mêlée augmentés de 10%
 }
-
 MarblePetrify: {
-	// DisplayName: Marble Petrification
-	// Description: Flesh turns to marble, movements grind to a halt
+	DisplayName: Pétrification de marbre
+	Description: "La chair se fait statue, les mouvements s'alourdissent"
 }
-
 PallbearerShrouded: {
-	// DisplayName: Marked for Collection
-	// Description: The coffin's breath clings to it; the casket knows whom to collect
+	DisplayName: Marque de mise en bière
+	Description: Le souffle du cercueil s'y est posé ; ce cercueil le reconnaît
 }
-
 PallbearerSealed: {
-	// DisplayName: Encoffined
-	// Description: The casket's weight lingers; damage taken is increased
+	DisplayName: Mise en bière
+	Description: "L'oppression du cercueil demeure, les dégâts subis sont augmentés"
 }
-
 OniNeckGripDebuff: {
-	// DisplayName: Oni Chokehold
-	// Description: An oni hand is squeezing your throat; your movements grow heavy
+	DisplayName: Étreinte oni à la gorge
+	Description: "Une main oni vous serre la gorge, vos mouvements s'alourdissent"
 }
-
 OniBindDebuff: {
-	// DisplayName: Ink-Bound
-	// Description: Ink clings to its footing; movement turns sluggish
+	DisplayName: Entrave
+	Description: "L'encre a collé aux pieds, on avance mal"
 }
-
 OniNumbDebuff: {
-	// DisplayName: Numbed
-	// Description: Limbs gone numb — slower to move, softer to strike
+	DisplayName: Engourdissement
+	Description: "Mains et pieds engourdis : plus lent à bouger, moins douloureux à frapper"
 }
-
 ScapeAfterburn: {
-	// DisplayName: Scapegoat Afterburn
-	// Description: Severe aftershocks from death evasion; movement speed reduced by 28%
+	DisplayName: Séquelles du substitut
+	Description: "Séquelles violentes d'une substitution : vitesse de déplacement réduite de 28%"
 }
-
 GhostGripDebuff: {
-	// DisplayName: Withered Grip
-	// Description: Seized by the charred hand — there is no moving
+	DisplayName: Poigne de la main desséchée
+	Description: "Pincé par une main calcinée, impossible de bouger"
 }
-
 OniPaperBrandDebuff: {
-	// DisplayName: Effigy Wound
-	// Description: Backlash from the paper effigy being struck; takes increased damage from Onikiri slashes
+	DisplayName: Plaie de l'effigie
+	Description: "Retour de l'effigie de papier blessée : les tailles d'Onikiri infligent plus de dégâts"
 }
-
 FuHongBlessBuff: {
-	// DisplayName: Rainbow Bridge Grace
-	// Description: Under the rainbow bridge: +10% movement speed, +10% summon damage
+	DisplayName: Grâce du pont d'arc-en-ciel
+	Description: "Sous le pont d'arc-en-ciel : vitesse de déplacement +10%, dégâts d'invocation +10%"
 }
-
 IndustrialShieldBuff: {
-	// DisplayName: Energy Shield
-	// Description: The shield keeps charging and absorbs part of incoming damage
+	DisplayName: Bouclier d'énergie
+	Description: Le bouclier continue de se charger et absorbe une part des dégâts à votre place
 }
-
 IndustrialRegenBuff: {
-	// DisplayName: Healing Aura
-	// Description: A healing station is restoring your health
+	DisplayName: Aura de soin
+	Description: Une station de soin régénère votre vie
 }
-
 RotsawRendDebuff: {
-	// DisplayName: Rotsaw
-	// Description: Flesh is being sawed apart, losing 40 life per second
+	DisplayName: Scie putride
+	Description: "La chair est déchirée par les dents, 40 points de vie perdus par seconde"
 }
-
 WaxWardBuff: {
-	// DisplayName: Wax Ward
-	// Description: The swarm's wax ward is absorbing damage in your stead
+	DisplayName: Armure de cire
+	Description: L'armure de cire de l'essaim encaisse les coups à votre place
 }
-
 SwarmVortexDebuff: {
-	// DisplayName: Swarm Vortex
-	// Description: Shredded by the swarm vortex, movements slowed
+	DisplayName: Vortex d'essaim
+	Description: "Étranglé par le vortex d'abeilles, les mouvements ralentissent"
 }
-
 MawCorrosionBuff: {
-	// DisplayName: Acid Corrosion
-	// Description: Acid is eating through armor
+	DisplayName: Corrosion acide
+	Description: L'acide ronge l'armure
 }
-
 WhiteoutStormBuff: {
-	// DisplayName: Whiteout Storm
-	// Description: An extra 30% damage reduction and knockback immunity; the snow veil does not block your sight
+	DisplayName: Tempête blanche
+	Description: 30% de réduction de dégâts supplémentaire et immunité au recul ; le voile de neige ne masque pas votre vue
 }
-
 WhiteblindDebuff: {
-	// DisplayName: Whiteblind
-	// Description: Blinded by the blizzard, movements dulled, 10 frostbite damage per second
+	DisplayName: Cécité blanche
+	Description: "Le blizzard aveugle, les mouvements s'alourdissent, 10 points de gelure par seconde"
 }
-
 BloomSnaredDebuff: {
-	// DisplayName: Thorn Snare
-	// Description: Entangled in bramble vines, bound and torn by thorns
+	DisplayName: Enlacement d'épines
+	Description: "Enlacé par les ronces, les mouvements sont liés, les épines déchirent la chair"
 }
-
 SoulbindCurseDebuff: {
-	// DisplayName: Soulbinding Curse
-	// Description: Trapped in the curse domain, taking increased damage from its owner
+	DisplayName: Malédiction de liaison d'âme
+	Description: "Piégé dans le domaine maudit, les dégâts infligés par son maître sont augmentés"
 }
-
 SoulGripLockDebuff: {
-	// DisplayName: Soul Grip
-	// Description: Clutched in the ghostly hand's grasp, unable to move
+	DisplayName: Empoignade spectrale
+	Description: "Serré dans la main spectrale, impossible de bouger"
 }
-
 SoulbindOverwhelmDebuff: {
-	// DisplayName: Soul Crush
-	// Description: Cursed flames bear down; all damage taken is increased by 20%
+	DisplayName: Pression de l'âme liée
+	Description: "Les flammes maudites pèsent : tous les dégâts subis sont augmentés de 20%"
 }
-
 RefractionTag: {
-	// DisplayName: Refraction
-	// Description: Slowed; the Refraction Waltz wearer gains 8% crit chance against it
+	DisplayName: Réfraction
+	Description: Déplacement ralenti ; le porteur de la Valse de réfraction gagne 8% de chances de critique contre cette cible
 }
-
 AbyssalPressure: {
-	// DisplayName: Abyssal Pressure
-	// Description: Wrapped in crushing deep-sea pressure, movement is severely impeded
+	DisplayName: Pression abyssale
+	Description: "La pression des abysses enveloppe le corps, les mouvements s'alourdissent"
 }
-
 BlessErosionBuff: {
-	// DisplayName: Erosion
-	// Description: The Ring of Rot gnaws the armor, reducing defense by 10
+	DisplayName: Érosion
+	Description: "L'Anneau de pourriture ronge l'armure, défense réduite de 10"
 }

@@ -1,18 +1,18 @@
-// GsWoodArmor.EndowLine: Acorn Burst: strikes build sap; at 6 stacks the next strike bursts into three bouncing acorns that shatter into wooden splinters
-// GsCopperArmor.EndowLine: Conductive Veins: strikes build charge; at 5 stacks the next strike releases a chaining arc that leaps between up to three foes
-// GsTinArmor.EndowLine: Tin Resonance: strikes build resonance; at 5 stacks the next strike rings out three sonic rings that batter and bewilder foes
-// GsIronArmor.EndowLine: Tempered Rebuke: taking hits builds temper; at 4 stacks your next strike calls down a quenched forge hammer
-// GsLeadArmor.EndowLine: Lead Downpour: strikes build lead; at 6 stacks the next strike pours three heavy drops that splash into beads and poison what they touch
-// GsSilverArmor.EndowLine: Silver Vigil: strikes build moonlight; at 6 stacks a silver moon rises to orbit you, bursting into radiance on contact
-// GsTungstenArmor.EndowLine: Tungsten Cross: strikes build core pressure; at 5 stacks the next strike erupts four piercing tungsten spikes from the target
-// GsPlatinumArmor.EndowLine: Regal Hour: strikes build radiance; at 7 stacks the next strike begins the Regal Hour, every blow for 5 seconds looses a homing star shard, ending early if you are struck
-// GsNinjaArmor.EndowLine: Substitution Log: readies a decoy every 8 seconds; when you are struck it shatters into smoke and hurls three avenging shuriken
-// GsBeeArmor.EndowLine: Queen's Guard: strikes build brew; at 8 stacks the next strike releases four guard bees to maul the target
-// GsMeteorArmor.EndowLine: Stray Embers: strikes build starfire; at 7 stacks the next strike calls two burning meteor shards down on your foe
-// GsJungleArmor.EndowLine: Spore Blight: strikes build spores; at 6 stacks the next strike blooms a lingering cloud that poisons all foes inside
-// GsJungleArmorAncientCobalt.EndowLine: Spore Blight: strikes build spores; at 6 stacks the next strike blooms a lingering cloud that poisons all foes inside
-// GsNecroArmor.EndowLine: Bone Uprising: strikes build ossuary and kills feed it faster; at 6 stacks the next strike raises three bone lances from the earth
-// GsShadowArmor.EndowLine: Umbral Tide: strikes build shadowflame; at 8 stacks the tide rises, each strike within 6 seconds reaps a shadow scythe, and three more spiral out as it ebbs
-// GsShadowArmorAncient.EndowLine: Umbral Tide: strikes build shadowflame; at 8 stacks the tide rises, each strike within 6 seconds reaps a shadow scythe, and three more spiral out as it ebbs
-// GsCrimsonArmor.EndowLine: Leech Pact: strikes build blood; at 6 stacks the next strike tears out two crimson leeches that bite your foe and siphon life back to you
-// GsMoltenArmor.EndowLine: Core Eruption: strikes build magma pressure; at 10 stacks the next strike erupts three lava geysers underfoot, and your attacks ignite foes for 4 seconds after
+GsWoodArmor.EndowLine: Estallido de bellotas: los golpes acumulan savia; al llegar a seis capas, el siguiente impacto suelta tres bellotas que rebotan y, al romperse, disparan astillas
+GsCopperArmor.EndowLine: Vena de cobre: los golpes acumulan carga; al llegar a cinco capas, el siguiente impacto suelta un arco que salta, hasta tres enemigos
+GsTinArmor.EndowLine: Resonancia de estaño: los golpes acumulan eco; al llegar a cinco capas, el siguiente impacto hace sonar el estaño y lanza tres anillos que hieren y aturden
+GsIronArmor.EndowLine: Temple de retorno: al recibir golpes acumulas temple; al llegar a cuatro capas, el siguiente impacto deja caer un martillo de forja
+GsLeadArmor.EndowLine: Lluvia de plomo: los golpes acumulan lastre; al llegar a seis capas, el siguiente impacto vierte tres gotas de plomo que, al caer, salpican perlas y envenenan
+GsSilverArmor.EndowLine: Guardia de luna de plata: los golpes acumulan brillo lunar; al llegar a seis capas, surge una luna de plata que te rodea y, al tocar enemigos, estalla en resplandor
+GsTungstenArmor.EndowLine: Cruz de clavos de tungsteno: los golpes acumulan presión de núcleo; al llegar a cinco capas, el siguiente impacto hace brotar del objetivo cuatro clavos de tungsteno que atraviesan
+GsPlatinumArmor.EndowLine: Hora de la corona: los golpes acumulan brillo de platino; al llegar a siete capas, el siguiente impacto abre cinco segundos en los que cada golpe dispara una mota de platino; si te hieren, se corta antes
+GsNinjaArmor.EndowLine: Poste sustituto: cada ocho segundos se prepara un doble; al recibir un golpe, se rompe, se vuelve humo y lanza tres shuriken de contraataque
+GsBeeArmor.EndowLine: Guardia de la reina: los golpes acumulan hidromiel; al llegar a ocho capas, el siguiente impacto suelta cuatro abejas de escolta que muerden al objetivo
+GsMeteorArmor.EndowLine: Ascuas del cielo: los golpes acumulan fuego estelar; al llegar a siete capas, el siguiente impacto hace caer dos fragmentos de meteorito ardientes
+GsJungleArmor.EndowLine: Dominio de esporas: los golpes acumulan esporas; al llegar a seis capas, el siguiente impacto abre una nube de esporas en el objetivo que envenena a quienes permanecen dentro
+GsJungleArmorAncientCobalt.EndowLine: Dominio de esporas: los golpes acumulan esporas; al llegar a seis capas, el siguiente impacto abre una nube de esporas en el objetivo que envenena a quienes permanecen dentro
+GsNecroArmor.EndowLine: Lanzas de hueso: los golpes acumulan osamenta, más rápido al matar; al llegar a seis capas, el siguiente impacto llama tres lanzas de hueso desde el suelo
+GsShadowArmor.EndowLine: Danza de hoces de sombra: los golpes acumulan llama sombría; al llegar a ocho capas, se alza una marea de sombra; durante seis segundos cada golpe hace girar una hoz, y al receder salen tres novas de hoz
+GsShadowArmorAncient.EndowLine: Danza de hoces de sombra: los golpes acumulan llama sombría; al llegar a ocho capas, se alza una marea de sombra; durante seis segundos cada golpe hace girar una hoz, y al receder salen tres novas de hoz
+GsCrimsonArmor.EndowLine: Juramento de sanguijuela: los golpes acumulan gotas de sangre; al llegar a seis capas, el siguiente impacto rasga dos sanguijuelas que muerden al objetivo y te absorben un poco de vida
+GsMoltenArmor.EndowLine: Erupción del núcleo: los golpes acumulan presión fundida; al llegar a diez capas, el siguiente impacto hace brotar tres columnas de magma bajo el objetivo y, durante cuatro segundos, tus ataques llevan llamas

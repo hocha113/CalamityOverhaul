@@ -1,184 +1,184 @@
 FirstMetShenyo: {
-	// ShenyoName: Shenyo
-	// L1: It has been a long time since anything living walked in here
-	// L2: How did you get here?
-	// OptDead: Died once. When I woke up, I was here
-	// OptRain: Snatched an umbrella and charged in
-	// OptDeadLocked: (You are still alive. That answer will not leave your mouth)
-	// OptRainLocked: (Your hands are empty. No umbrella to speak of)
-	// A1: ...Back from the dead?
-	// A2: A rare thing. Though by the look of you, you hardly seem to care
-	// B1: Then your luck is not bad at all
-	// B2: Now start thinking about how to get out
-	// C1: The rain will hold the way open for you. Go back
-	// C2: That umbrella is yours from now on
+	ShenyoName: Shenyo
+	L1: Lange nicht mehr etwas Lebendes hier gesehen
+	L2: Wie bist du hierhergekommen?
+	OptDead: Einmal gestorben. Als ich aufwachte, war ich hier
+	OptRain: Hab einen Schirm geklaut und bin reingestürmt
+	OptDeadLocked: Du bist nicht gestorben
+	OptRainLocked: Deine Hände sind leer
+	A1: ……Von den Toten zurück?
+	A2: Selten. Allerdings siehst du aus, als wäre dir das vertraut
+	B1: Dann hattest du Glück
+	B2: Jetzt solltest du gehen
+	C1: Der Regen hält dir den Weg offen. Geh zurück
+	C2: Der Schirm gehört von jetzt an dir
 }
 
 ShenyoDerivedUmbrella: {
-	// L1: That umbrella looks like a derived paranormal entity
-	// Opt1: A derived paranormal entity? Meaning it is a part of you?
-	// L2: Exactly. I once dismembered my own paranormal form, and the severed fragments revive on their own once enough years go by
-	// L3: This umbrella intruding on reality, for instance, is a paranormal phenomenon derived from the Kikasa's source
-	// Opt2: So you are not actually the source of the Kikasa?
-	// L4: I was, once
-	// L5: I should have died long ago, but my consciousness woke again inside a paranormal fragment left in this world
-	// L6: Touch this derived umbrella, and you should be able to enter its ghost domain
-	// L7: Whether you go is your own business
-	// L8: If you die in there, I will pull you back with a Restart
+	L1: Dieser Schirm sieht nach einer abgeleiteten Spukerscheinung aus
+	Opt1: Abgeleitete Spukerscheinung? Also ein Teil von dir?
+	L2: Genau. Ich habe einst meine eigene Spukgestalt zergliedert. Die abgetrennten Splitter erwachen nach genug Jahren von selbst
+	L3: Dieser Schirm, der in die Wirklichkeit eindringt, ist zum Beispiel eine Spukerscheinung aus der Quelle der Kikasa
+	Opt2: Du bist also gar nicht die Quelle der Kikasa?
+	L4: War ich einmal
+	L5: Ich hätte längst tot sein sollen. Mein Bewusstsein ist in einem Spuksplitter dieser Welt wieder erwacht
+	L6: Berührst du diese abgeleitete Kikasa, solltest du in ihr Geisterreich eintreten können
+	L7: Ob du gehst, ist deine Sache
+	L8: Stirbst du im Geisterreich, hole ich dich mit einem Neustart zurück
 }
 
 ShenyoDollGift: {
-	// L0: I just remembered something worth giving you
-	// L1: Keep this doll close. It can save your life once
-	// L2: The one who sewed these was a silly girl. She made a whole pile for the man she secretly loved, though he could never possibly need them
-	// L3: Back then I traded her plenty of ghost money for them. They make fine gifts for the young ones
+	L0: Mir fällt etwas ein, das sich zu geben lohnt
+	L1: Dieses Püppchen, gut verstaut, kann dir einmal das Leben retten
+	L2: Genäht hat sie ein dummes Mädchen. Einen ganzen Stapel für den, den sie mochte, obwohl der sie nie brauchen würde
+	L3: Damals habe ich ihr etliche abgenommen, als Geschenk für Jüngere
 }
 
 ShenyoFesterSerpentGift: {
-	// L0: Things that fester in the sand look even worse than things that rot in water
-	// L1: That golden pus is not honey, one sniff up close and you will understand
-	// L2: Rinse the umbrella when you are done, dried pus stains never scrape off
+	L0: Was im Sand fault, sieht schlimmer aus als was im Wasser verfault
+	L1: Der goldene Eiter ist kein Honig. Ein Zug aus der Nähe, dann verstehst du
+	L2: Wenn du fertig bist, den Schirm abspülen. Getrocknete Eiterflecken kratzt du nicht mehr ab
 }
 
 ShenyoBossRushGift: {
-	// L0: 都回来了，还是深渊里那条老的醒了？
-	// L1: 不管是哪种，这一趟都不轻松
-	// L2: 站稳了，别在我面前晃
-	// L3: 这顿吃完，雨也该停了
+	L0: Alle wieder da, oder ist das Alte aus dem Abgrund aufgewacht?
+	L1: Egal welche Sorte, dieser Gang war nicht leicht
+	L2: Steh fest. Wackle nicht vor mir
+	L3: Ist diese Mahlzeit vorbei, sollte auch der Regen aufhören
 }
 
 ShenyoCalamityEvilGift: {
-	// L0: 一窝一窝的，钻血又钻肉，看着都疼
-	// L1: 你倒是不怕疼
-	// L2: 下次当心点，我这把伞挡雨，挡不了那些虫子
+	L0: Nest um Nest, bohren sich ins Blut und ins Fleisch. Schon der Anblick tut weh
+	L1: Du scheinst Schmerzen nicht zu fürchten
+	L2: Beim nächsten Mal vorsichtiger. Mein Schirm hält Regen ab, nicht diese Würmer
 }
 
 ShenyoCultistGift: {
-	// L0: 念念叨叨，吵得很
-	// L1: 他要放的那点东西，不是什么好东西
-	// L2: 打断得好，省得他把场面弄大了
+	L0: Gemurmel ohne Ende. Laut
+	L1: Was er loslassen wollte, war nichts Gutes
+	L2: Gut unterbrochen. Sonst wäre die Szene größer geworden
 }
 
 ShenyoDevourerOfGodsGift: {
-	// L0: 天上绕圈的那条，听说吞过神
-	// L1: 神是什么味道，我倒是有点好奇
-	// L2: 壳留着也好，肉不必留给我
+	L0: Die da oben Kreise zieht, soll schon Götter verschluckt haben
+	L1: Wie ein Gott schmeckt, bin ich ein wenig neugierig
+	L2: Die Schale kannst du behalten. Das Fleisch brauchst du mir nicht zu lassen
 }
 
 ShenyoDukeFishronGift: {
-	// L0: 一头猪也学人掀浪，也是奇了
-	// L1: 水的脾气，轮不到它使
-	// L2: 按回水里也好，省得它总在我眼皮底下晃
+	L0: Ein Schwein, das Wellen wirft wie ein Mensch. Auch das noch
+	L1: Das Temperament des Wassers steht ihm nicht zu
+	L2: Zurück ins Wasser ist gut. Dann wackelt es nicht dauernd vor meinen Augen
 }
 
 ShenyoEmpressGift: {
-	// L0: 太亮的东西，我这双眼睛看着费劲
-	// L1: 白天不必去招惹她，你倒好，专挑难的
-	// L2: 光都揉暗了，也算你的本事
+	L0: Zu helles Zeug strengt diese Augen an
+	L1: Tagsüber braucht man sie nicht zu reizen. Du natürlich, du nimmst dir das Schwere vor
+	L2: Das Licht dunkel gerieben zu haben, das kannst du
 }
 
 ShenyoEvilBossGift: {
-	// L0Worm: 土里钻出来一条，一节一节的，恶心
-	// L1Worm: 腥气比雨水还重，我倒是不嫌，你受得住就好
-	// L0Brain: 脑子摊在外头，也不嫌凉
-	// L1Brain: 这种东西，多看一眼都嫌脏了眼睛
-	// L2: 了结了就好，别沾一身腥气回来找我
+	L0Worm: Eine aus der Erde, Glied um Glied. Widerlich
+	L1Worm: Der Fischgeruch ist schwerer als Regenwasser … Wenn du das aushältst, gut
+	L0Brain: Ein Gehirn draußen ausgebreitet, und es friert auch nicht
+	L1Brain: So etwas, ein Blick zu viel, und die Augen sind schmutzig
+	L2: Ist es erledigt, gut. Komm nicht voller Gestank zurück
 }
 
 ShenyoExoAndSCalGift: {
-	// L0: 工匠的得意，魔女的执念，凑一块倒是般配
-	// L1: 两桌都收了，算你今天没白忙
-	// L2: 往后这样的日子，不会再有几回了
+	L0: Des Handwerkers Stolz, der Zwang der Hexe. Zusammen passen sie sogar
+	L1: Beide Tische abgeräumt. Heute hast du nicht umsonst gearbeitet
+	L2: Solche Tage wird es später nicht mehr oft geben
 }
 
 ShenyoEyeOfCthulhuGift: {
-	// L0: 夜里睁着一只眼睛到处看，倒是不怕吓着自己
-	// L1: 眨都不眨，看得人心里发毛
-	// L2: 闭上了，也好，眼不见心不烦
+	L0: Nachts ein Auge offen, überall hinsehen, und sich selbst nicht fürchten
+	L1: Nicht einmal geblinzelt. Da wird einem unheimlich
+	L2: Zu. Gut so. Aus den Augen, aus dem Sinn
 }
 
 ShenyoGolemGift: {
-	// L0: 石头脑袋，还会蹦跶
-	// L1: 砸开了也不过是个空壳子
-	// L2: 浪花是你自己挣的，我可没帮忙
+	L0: Steinkopf, und der hüpft auch noch
+	L1: Aufgeschlagen ist er nur eine leere Schale
+	L2: Die Gischt hast du dir selbst verdient. Ich hab nicht geholfen
 }
 
 ShenyoKingSlimeGift: {
-	// L0: 这也配称王？
-	// L1: 浑身软趴趴的，倒是挺能蹦
-	// L2: 往后碰上真正难缠的，别学它虚张声势
+	L0: Das soll ein König sein?
+	L1: Am ganzen Leib schlaff, hüpfen kann er immerhin
+	L2: Triffst du später etwas wirklich Hartnäckiges, lern nicht von seinem großen Maul
 }
 
 ShenyoSeaShrimpGift: {
-	// L0: That shrimp under the beach, all crystal shell, one punch that knocks the water hollow
-	// L1: It sheds shell after shell, yet its temper never softens a bit
-	// L2: The hollow crack sounds scary, but you caught it, so your hands know their craft
+	L0: Die Garnele unter dem Strand, Kristallpanzer, ein Schlag, der das Wasser leer haut
+	L1: Schale um Schale gehäutet, das Temperament keinen Deut weicher
+	L2: Der hohle Knall klingt furchterregend. Du hast ihn aufgefangen, in der Hand sitzt echtes Können
 }
 
 ShenyoMechsGift: {
-	// L0: 链子、灯泡、骨架，凑一块倒像个笑话
-	// L1: 铁腥味重，我不爱，你倒是不嫌
-	// L2: 三件一起收拾，算你有耐心
+	L0: Kette, Glühbirne, Gerüst. Zusammen eher ein Witz
+	L1: Eisenstank ist schwer. Ich mag das nicht, du scheinst es nicht zu stören
+	L2: Alle drei auf einmal weggeräumt. Geduld hast du
 }
 
 ShenyoMoonLordGift: {
-	// L0: 月亮后头那位，也算见过世面了
-	// L1: 浑身是眼睛，倒是和我这把伞下的雨有点像
-	// L2: 了结了，今晚的月色，替我看仔细些
+	L0: Der hinter dem Mond, den hat man wenigstens schon gesehen
+	L1: Überall Augen. Ein bisschen wie der Regen unter meinem Schirm
+	L2: Das Mondlicht heute Nacht ist gar nicht schlecht
 }
 
 ShenyoOldDukeGift: {
-	// L0: 硫海底下那老东西，脾气比酸水还酸
-	// L1: 跟我打过几次照面，谁也没让过谁
-	// L2: 这回是你赢了，替我记他一笔
+	L0: Das alte Ding, Temperament saurer als Saures Wasser
+	L1: Ein paar Mal gegenübergetreten, keiner ist dem anderen ausgewichen
+	L2: Diesmal hast du gewonnen
 }
 
 ShenyoPlanteraGift: {
-	// L0: 睡着的花，吵醒了她就得担着
-	// L1: 藤蔓缠人的样子，倒有点像我那把伞收不住的时候
-	// L2: 花汁染了手，回来记得洗干净
+	L0: Eine schlafende Blume. Weckst du sie, gibt's Ärger
+	L1: Wie die Ranken einen umschlingen, ein bisschen wie mein Schirm, wenn er nicht zugeht
+	L2: Blütenaft an den Händen, zu Hause abwaschen
 }
 
 ShenyoPolterghastGift: {
-	// L0: 地牢里那团魂，缝缝补补好几百年
-	// L1: 跟我算是同类，你倒不必替它说情
-	// L2: 散了也好，好过在那儿吊着
+	L0: Die Seelen im Kerker, Jahrhunderte lang geflickt
+	L1: Es sind arme Leute, die man wirklich töten kann
+	L2: Auseinander besser, als dort weiterzuhängen
 }
 
 ShenyoQueenBeeOrDeerclopsGift: {
-	// L0Bee: 甜是甜，脾气也冲，倒是配
-	// L1Bee: 蜜是好东西，可惜它舍不得给
-	// L0Deer: 独眼的，脾气比我还倔
-	// L1Deer: 一根木头也能闹出这么大动静
-	// L2: 这一趟，没伤着吧
+	L0Bee: Süß ist süß, das Temperament scharf. Passt
+	L1Bee: Honig ist gut. Schade, dass sie ihn nicht hergibt
+	L0Deer: Das Einäugige ist eigensinnig
+	L1Deer: Ein Stück Holz, und so ein Lärm
+	L2: Dieser Gang, unverletzt?
 }
 
 ShenyoQueenSlimeGift: {
-	// L0: 粉粉嫩嫩的，倒是会打扮
-	// L1: 还带着侍卫，排场不小
-	// L2: 排场再大，也经不起一场雨
+	L0: Rosa und zart, putzen kann sie sich
+	L1: Sogar mit Wache. Nicht wenig Prunk
+	L2: Prunk hin oder her, einen Regen hält das nicht aus
 }
 
 ShenyoSkeletronGift: {
-	// L0: 守门守了这么多年，骨头都该酥了
-	// L1: 换了我，早就懒得守了
-	// L2: 地牢的门开了，进去仔细些，别学它守株待兔守出瘾来
+	L0: So viele Jahre Wache, die Knochen müssten mürbe sein
+	L1: Wäre ich das, hätte ich längst keine Lust mehr
+	L2: Die Kerkertür ist auf. Geh vorsichtig rein. Lern nicht von ihm, bis das Warten zur Sucht wird
 }
 
 ShenyoSlimeGodGift: {
-	// L0: 紫的黑的搅在一起，也敢称神
-	// L1: 倒是有几分本事，能把这么多恶心东西糊成一团
-	// L2: 化开了就好，省得脏了地方
+	L0: Violett und schwarz durcheinander, und das wagt sich Gott zu nennen
+	L1: Ein wenig Können hat es, so viel Widerliches zu einem Klumpen zu rühren
+	L2: Zerlaufen ist gut. Sonst macht es den Ort schmutzig
 }
 
 ShenyoWallOfFleshGift: {
-	// L0: 地狱里那面肉墙，我隔着伞都嫌烫
-	// L1: 捅穿了，世界也就跟着变了，这种事你倒是干得挺熟练
-	// L2: 以后这种阵仗，还有的是
+	L0: Die Fleischmauer in der Hölle, selbst durch den Schirm zu heiß
+	L1: Durchstoßen, und die Welt dreht sich mit. Sowas kannst du schon ziemlich geübt
+	L2: Solche Aufzüge kommen später noch genug
 }
 
 ShenyoYharonGift: {
-	// L0: 烧了这么多年的一团火，也该熄了
-	// L1: 火和雨，本来就合不来
-	// L2: 羽毛湿了，就飘不起来了，正好
+	L0: Ein Feuer, das so viele Jahre gebrannt hat, sollte auch ausgehen
+	L1: Feuer und Regen vertragen sich nicht
+	L2: Sind die Federn nass, steigen sie nicht mehr
 }

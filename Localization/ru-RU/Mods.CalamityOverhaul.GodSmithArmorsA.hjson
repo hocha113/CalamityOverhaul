@@ -1,18 +1,18 @@
-// GsWoodArmor.EndowLine: Acorn Burst: strikes build sap; at 6 stacks the next strike bursts into three bouncing acorns that shatter into wooden splinters
-// GsCopperArmor.EndowLine: Conductive Veins: strikes build charge; at 5 stacks the next strike releases a chaining arc that leaps between up to three foes
-// GsTinArmor.EndowLine: Tin Resonance: strikes build resonance; at 5 stacks the next strike rings out three sonic rings that batter and bewilder foes
-// GsIronArmor.EndowLine: Tempered Rebuke: taking hits builds temper; at 4 stacks your next strike calls down a quenched forge hammer
-// GsLeadArmor.EndowLine: Lead Downpour: strikes build lead; at 6 stacks the next strike pours three heavy drops that splash into beads and poison what they touch
-// GsSilverArmor.EndowLine: Silver Vigil: strikes build moonlight; at 6 stacks a silver moon rises to orbit you, bursting into radiance on contact
-// GsTungstenArmor.EndowLine: Tungsten Cross: strikes build core pressure; at 5 stacks the next strike erupts four piercing tungsten spikes from the target
-// GsPlatinumArmor.EndowLine: Regal Hour: strikes build radiance; at 7 stacks the next strike begins the Regal Hour, every blow for 5 seconds looses a homing star shard, ending early if you are struck
-// GsNinjaArmor.EndowLine: Substitution Log: readies a decoy every 8 seconds; when you are struck it shatters into smoke and hurls three avenging shuriken
-// GsBeeArmor.EndowLine: Queen's Guard: strikes build brew; at 8 stacks the next strike releases four guard bees to maul the target
-// GsMeteorArmor.EndowLine: Stray Embers: strikes build starfire; at 7 stacks the next strike calls two burning meteor shards down on your foe
-// GsJungleArmor.EndowLine: Spore Blight: strikes build spores; at 6 stacks the next strike blooms a lingering cloud that poisons all foes inside
-// GsJungleArmorAncientCobalt.EndowLine: Spore Blight: strikes build spores; at 6 stacks the next strike blooms a lingering cloud that poisons all foes inside
-// GsNecroArmor.EndowLine: Bone Uprising: strikes build ossuary and kills feed it faster; at 6 stacks the next strike raises three bone lances from the earth
-// GsShadowArmor.EndowLine: Umbral Tide: strikes build shadowflame; at 8 stacks the tide rises, each strike within 6 seconds reaps a shadow scythe, and three more spiral out as it ebbs
-// GsShadowArmorAncient.EndowLine: Umbral Tide: strikes build shadowflame; at 8 stacks the tide rises, each strike within 6 seconds reaps a shadow scythe, and three more spiral out as it ebbs
-// GsCrimsonArmor.EndowLine: Leech Pact: strikes build blood; at 6 stacks the next strike tears out two crimson leeches that bite your foe and siphon life back to you
-// GsMoltenArmor.EndowLine: Core Eruption: strikes build magma pressure; at 10 stacks the next strike erupts three lava geysers underfoot, and your attacks ignite foes for 4 seconds after
+GsWoodArmor.EndowLine: Взрыв желудей: попадания копят сок; после шести слоёв следующий удар выбрасывает три скачущих жёлудя, что при разбитии сыплют деревянными шипами
+GsCopperArmor.EndowLine: Медные жилы: попадания копят заряд; после пяти слоёв следующий удар выпускает прыгающую дугу, до трёх врагов
+GsTinArmor.EndowLine: Оловянный резонанс: попадания копят отзвук; после пяти слоёв следующий удар звенит оловом, три звуковых кольца бьют и сбивают с толку
+GsIronArmor.EndowLine: Закалка: получение ударов копит отпуск; после четырёх слоёв следующее попадание обрушивает закалённый молот
+GsLeadArmor.EndowLine: Свинцовый ливень: попадания копят свинец; после шести слоёв следующий удар льёт три тяжёлые капли, что брызжут бусинами и отравляют
+GsSilverArmor.EndowLine: Серебряная стража: попадания копят лунный свет; после шести слоёв вокруг вас встаёт серебряная луна и вспыхивает при касании
+GsTungstenArmor.EndowLine: Вольфрамовый крест: попадания копят давление ядра; после пяти слоёв следующий удар выбрасывает из цели четыре пронзающих вольфрамовых гвоздя
+GsPlatinumArmor.EndowLine: Час короны: попадания копят платиновый свет; после семи слоёв следующий удар открывает Час короны — пять секунд каждое попадание шлёт платиновую звёздную пыль, удар по вам обрывает час
+GsNinjaArmor.EndowLine: Бревно-подмена: каждые восемь секунд готовится подмена; при ударе она крошится в дым и швыряет три сюрикена в ответ
+GsBeeArmor.EndowLine: Стража королевы: попадания копят брагу; после восьми слоёв следующий удар выпускает четырёх сторожевых пчёл на цель
+GsMeteorArmor.EndowLine: Небесный пепел: попадания копят звёздный огонь; после семи слоёв следующий удар роняет две горящие метеорные щепки на цель
+GsJungleArmor.EndowLine: Споровый мор: попадания копят споры; после шести слоёв следующий удар распускает у цели облако, что травит всех внутри
+GsJungleArmorAncientCobalt.EndowLine: Споровый мор: попадания копят споры; после шести слоёв следующий удар распускает у цели облако, что травит всех внутри
+GsNecroArmor.EndowLine: Костяные копья: попадания копят кости, убийства быстрее; после шести слоёв следующий удар поднимает из земли три костяных копья
+GsShadowArmor.EndowLine: Прилив теней: попадания копят теневой огонь; после восьми слоёв встаёт прилив — шесть секунд каждое попадание крутит теневую косу, на отливе ещё три косы-новины
+GsShadowArmorAncient.EndowLine: Прилив теней: попадания копят теневой огонь; после восьми слоёв встаёт прилив — шесть секунд каждое попадание крутит теневую косу, на отливе ещё три косы-новины
+GsCrimsonArmor.EndowLine: Клятва пиявок: попадания копят кровь; после шести слоёв следующий удар рвёт двух пиявок, что кусают цель и тянут вам немного жизни
+GsMoltenArmor.EndowLine: Извержение ядра: попадания копят магму; после десяти слоёв следующий удар бьёт из-под цели тремя столбами лавы, затем четыре секунды ваши атаки несут пламя

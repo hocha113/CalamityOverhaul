@@ -1,75 +1,75 @@
-/* GsBallOHurt.Desc:
+GsBallOHurt.Desc:
 	'''
-	Reforged: spin to charge the swing; the flying ball sheds hovering barbs along its path
-	A fully charged strike bursts a ring of barbs on the target
-	''' */
-/* GsChainKnife.Desc:
+	Reforja: gira para cargar; la bola de púas que lanzas va dejando púas suspendidas por el camino
+	al acertar a plena rotación, estalla un anillo de púas sobre el objetivo
 	'''
-	Reforged: landing a blade hit grants Momentum for 7 seconds
-	Each stack spins up and throws faster, up to 3 stacks
-	''' */
-/* GsTheMeatball.Desc:
+GsChainKnife.Desc:
 	'''
-	Reforged: a fully charged strike bursts into a gout of gore
-	The burst wounds everything nearby and inflicts Bleeding
-	''' */
-/* GsBlueMoon.Desc:
+	Reforja: al acertar con la hoja ganas 7 segundos de Ímpetu
+	cada capa de Ímpetu sube la velocidad de giro y de lanzamiento, hasta tres capas
 	'''
-	Reforged: charged strikes loose piercing crescent blades through the target
-	Half charge looses one blade, a full charge looses three
-	''' */
-/* GsSunfury.Desc:
+GsTheMeatball.Desc:
 	'''
-	Reforged: the flying ball sears hovering scorch marks along its path
-	The marks linger and burn whoever touches them with hellfire
-	''' */
-/* GsMace.Desc:
+	Reforja: el lanzamiento a plena rotación explota en una nube de sangre
+	la nube desgarra a los enemigos cercanos y aplica hemorragia
 	'''
-	Reforged: a fully charged strike cracks the target's armor, halving its defense for a few seconds
-	Heavier knockback backs up every blow
-	''' */
-/* GsFlamingMace.Desc:
+GsBlueMoon.Desc:
 	'''
-	Reforged: spinning the mace flings burning embers outward
-	Faster spins throw the embers harder and farther, igniting whatever they strike
-	''' */
-/* GsDaoofPow.Desc:
+	Reforja: el lanzamiento cargado dispara un filo de luna nueva que atraviesa objetivos
+	a media rotación suelta uno; a plena rotación, tres
 	'''
-	Reforged: throws alternate between Yin and Yang; a Yin strike brands and slows the target
-	A Yang strike on a branded target detonates the brand into a burst of light and ink
-	''' */
-/* GsFlowerPow.Desc:
+GsSunfury.Desc:
 	'''
-	Reforged: petals bloom around the head while spinning, up to five
-	Landing a throw sends every petal homing at the target as razor blades
-	''' */
-/* GsDripplerFlail.Desc:
+	Reforja: la cabeza del martillo que lanzas deja marcas de quemadura suspendidas por el camino
+	las marcas se quedan en el sitio y queman con fuego infernal a quien las toque
 	'''
-	Reforged: at high spin and through every throw, the head weeps gravity-bound blood beads
-	Beads burst into stinging blood spikes on contact or landing
-	''' */
+GsMace.Desc:
+	'''
+	Reforja: el lanzamiento a plena rotación resquebraja la armadura del objetivo y le deja la defensa a la mitad durante unos segundos
+	cada golpe lleva un retroceso más pesado
+	'''
+GsFlamingMace.Desc:
+	'''
+	Reforja: al girarla lanza chispas encendidas hacia afuera
+	cuanto más rápido gires, más lejos y más rápido vuelan las chispas, y prenden a los enemigos que acierten
+	'''
+GsDaoofPow.Desc:
+	'''
+	Reforja: el lanzamiento alterna entre Yin y Yang; el golpe Yin marca y ralentiza al objetivo
+	el golpe Yang que acierta a un objetivo marcado detona la marca y estalla un surtidor de luz y tinta
+	'''
+GsFlowerPow.Desc:
+	'''
+	Reforja: al girar, brotan pétalos alrededor de la cabeza, hasta cinco
+	al acertar el lanzamiento, todos los pétalos se vuelven filos perseguidores y se lanzan al objetivo
+	'''
+GsDripplerFlail.Desc:
+	'''
+	Reforja: a alta rotación y en cada lanzamiento, la cabeza gotea perlas de sangre que caen por gravedad
+	al tocar a un enemigo o al suelo, las perlas estallan en espinas de sangre que pinchan
+	'''
 
 GsKOCannon: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: a braced straight punch; land three solid hits on the same target within four seconds
-		The third punch is a KO: double damage, double knockback, and a concussive ring
-		''' */
-	// TipKO: KO!
+		Reforja: un puñetazo recto que se carga; si en cuatro segundos clavas tres puños al mismo objetivo
+		el tercero es el KO: el doble de daño, el doble de retroceso y un anillo de onda de choque
+		'''
+	TipKO: KO!
 }
 
-/* GsChainGuillotines.Desc:
+GsChainGuillotines.Desc:
 	'''
-	Reforged: hurls both guillotines at once, fanning apart mid-flight
-	When the two blades cross paths they shear, bursting cross-cut slashes between them
-	''' */
-/* GsGolemFist.Desc:
+	Reforja: salen las dos cuchillas a la vez y cada una se abre en vuelo
+	cuando los dos filos se cruzan, cortan y estallan una cruz de tajos en el punto medio
 	'''
-	Reforged: solid hits stack heat (up to 3, +8% damage each, fades after 8 seconds); at full heat the fist runs molten and impacts hurl 3 magma chunks
-	Every punch that lands on a foe or a wall slams out a stone shockwave
-	''' */
-/* GsFlairon.Desc:
+GsGolemFist.Desc:
 	'''
-	Reforged: the chain squeezes out homing bubble blades while swinging and flying (up to 8 afield, 40% damage each)
-	A full-spin strike bursts a ring of six bubble blades around the target
-	''' */
+	Reforja: los puños sólidos acumulan calor (hasta 3 capas, +8% de daño cada una; 8 segundos sin golpear y se enfría); a pleno calor el puño funde y, al acertar, dispara 3 piedras de magma
+	cada puñetazo pesado que golpee a un enemigo o a una pared suelta una onda de choque de piedra
+	'''
+GsFlairon.Desc:
+	'''
+	Reforja: al girar y en vuelo, la cadena no deja de expulsar filos de burbuja perseguidores (hasta 8 en el campo, 40% de daño cada uno)
+	un golpe sólido a plena rotación suelta un anillo de seis filos de burbuja con el objetivo en el centro
+	'''

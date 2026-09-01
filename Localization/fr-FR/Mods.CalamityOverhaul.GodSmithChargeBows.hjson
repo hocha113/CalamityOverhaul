@@ -1,110 +1,109 @@
-/* GsWoodenBow.Desc:
+GsWoodenBow.Desc: 
 	'''
-	Reforged: hold to draw, release to loose. A half draw flies faster and hits harder, a full draw becomes a wood-spirit arrow, an overdrawn hit splits into a fan of arrows
-	Rest at overdraw too long and the string destabilizes: the shot falls back to full-draw power with brief fatigue
-	''' */
-/* GsBorealWoodBow.Desc:
+	Reforgé : tenir l'arc, c'est charger ; relâcher, c'est tirer. À demi-charge, la flèche va plus vite et plus fort ; à pleine charge, elle devient une flèche d'esprit de bois ; trop tirée, elle éclate en éventail
+	Rester trop longtemps en surtension desserre la corde : le tir retombe à la puissance de pleine charge, plus une courte fatigue
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Overdrawn arrows carry rime, chilling and briefly numbing lesser foes
-	''' */
-/* GsPalmWoodBow.Desc:
+GsBorealWoodBow.Desc: 
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Overdrawn arrows fly dry and true, striking vitals more often
-	''' */
-/* GsRichMahoganyBow.Desc:
+	Reforgé : tir à trois paliers, transmutation à pleine charge, éclat en surtension
+	Les flèches surtendues portent le givre et figent un instant les ennemis plus faibles
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Many-stemmed vines: overdrawn hits split into one extra arrow
-	''' */
-/* GsEbonwoodBow.Desc:
+GsPalmWoodBow.Desc: 
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Overdrawn arrows have a chance to ignite shadowflame
-	''' */
-/* GsShadewoodBow.Desc:
+	Reforgé : tir à trois paliers, transmutation à pleine charge, éclat en surtension
+	Les flèches surtendues, sèches et nettes, touchent plus souvent les points vitaux
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Overdrawn arrows have a chance to open a bleeding wound
-	''' */
-/* GsAshWoodBow.Desc:
+GsRichMahoganyBow.Desc: 
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Overdrawn arrows set foes alight, scattering cinders
-	''' */
-/* GsCopperBow.Desc:
+	Reforgé : tir à trois paliers, transmutation à pleine charge, éclat en surtension
+	Lianes à plusieurs tiges : un impact surtendu se scinde d'une flèche de bois de plus
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdraw looses one free side arrow
-	''' */
-/* GsTinBow.Desc:
+GsEbonwoodBow.Desc: 
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdraw looses one free side arrow in a denser spark shower
-	''' */
-/* GsIronBow.Desc:
+	Reforgé : tir à trois paliers, transmutation à pleine charge, éclat en surtension
+	Les flèches surtendues ont une chance d'enflammer (Flamme d'ombre)
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn press arrows: crushing knockback, briefly pinning lesser foes
-	''' */
-/* GsLeadBow.Desc:
+GsShadewoodBow.Desc: 
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn press arrows carry lead: the slam pins and poisons
-	''' */
-/* GsSilverBow.Desc:
+	Reforgé : tir à trois paliers, transmutation à pleine charge, éclat en surtension
+	Les flèches surtendues ont une chance d'ouvrir une plaie saignante
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn hallowed arrows ricochet once toward a nearby foe
-	''' */
-/* GsTungstenBow.Desc:
+GsAshWoodBow.Desc: 
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn arrows ricochet twice; the final strike bursts
-	''' */
-/* GsGoldBow.Desc:
+	Reforgé : tir à trois paliers, transmutation à pleine charge, éclat en surtension
+	Les flèches surtendues enflamment et projettent des braises
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn royal arrows crit more often; critical hits burst into a few copper coins
-	''' */
-/* GsPlatinumBow.Desc:
+GsCopperBow.Desc: 
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn crown arrows always crit, bursting into more copper coins
-	''' */
-/* GsDemonBow.Desc:
+	Reforgé : tir à trois paliers ; à pleine charge, les pointes trempées éclatent en étincelles et blessent autour
+	En surtension, une flèche d'aile gratuite s'ajoute
 	'''
-	Reforged: three-stage draw. A full draw transmutes the arrow into a piercing unholy bolt
-	An overdrawn hit releases two soul-seeking shadowflame wisps that slowly hunt nearby foes
-	''' */
-/* GsTendonBow.Desc:
+GsTinBow.Desc: 
 	'''
-	Reforged: three-stage draw. Full-drawn clot arrows open bleeding wounds
-	Overdrawn heartstring slam: a heavier shaft with brutal knockback that spatters blood and sips a little life back
-	''' */
-/* GsBloodRainBow.Desc:
+	Reforgé : tir à trois paliers ; à pleine charge, les pointes trempées éclatent en étincelles et blessent autour
+	En surtension, une flèche d'aile gratuite, étincelles plus denses
 	'''
-	Reforged: arrows still fall as blood rain. Three-stage draw
-	A full draw calls four extra bolts onto the cursor; an overdrawn flood calls eight, and the main bolt pools blood where it lands, trampling and slowing foes
-	''' */
-/* GsBeesKnees.Desc:
+GsIronBow.Desc: 
 	'''
-	Reforged: wooden arrows still become bee arrows. Three-stage draw
-	Full-drawn hits release two extra bees; an overdrawn hit leaves a swirling bee vortex. At most twelve bees may serve you at once
-	''' */
-/* GsHellwingBow.Desc:
+	Reforgé : tir à trois paliers ; à pleine charge, les pointes trempées éclatent en étincelles et blessent autour
+	En surtension, flèches de presse : recul brutal, les ennemis plus faibles sont figés un instant
 	'''
-	Reforged: wooden arrows still become wall-piercing hellwings, and the draw is faster
-	A full draw looses three bats in a V; an overdrawn draw unleashes six in a spiral that scatters, then converges
-	''' */
-/* GsMoltenFury.Desc:
+GsLeadBow.Desc: 
 	'''
-	Reforged: wooden arrows still become flaming arrows. Three-stage draw
-	Full-drawn molten cores spray magma beads on impact; an overdrawn volcanic shot calls five molten rain bolts down on the mark
-	''' */
-
+	Reforgé : tir à trois paliers ; à pleine charge, les pointes trempées éclatent en étincelles et blessent autour
+	En surtension, flèches de presse au plomb : le choc fige et empoisonne
+	'''
+GsSilverBow.Desc: 
+	'''
+	Reforgé : tir à trois paliers ; à pleine charge, les pointes trempées éclatent en étincelles et blessent autour
+	En surtension, flèches d'éclat sacré : elles rebondissent une fois vers un ennemi proche
+	'''
+GsTungstenBow.Desc: 
+	'''
+	Reforgé : tir à trois paliers ; à pleine charge, les pointes trempées éclatent en étincelles et blessent autour
+	Les flèches surtendues rebondissent deux fois ; le dernier impact éclate
+	'''
+GsGoldBow.Desc: 
+	'''
+	Reforgé : tir à trois paliers ; à pleine charge, les pointes trempées éclatent en étincelles et blessent autour
+	En surtension, flèches royales plus critiques ; un critique fait jaillir quelques pièces de cuivre
+	'''
+GsPlatinumBow.Desc: 
+	'''
+	Reforgé : tir à trois paliers ; à pleine charge, les pointes trempées éclatent en étincelles et blessent autour
+	En surtension, flèches de couronne : critique assuré, et plus de pièces de cuivre
+	'''
+GsDemonBow.Desc: 
+	'''
+	Reforgé : tir à trois paliers. À pleine charge, la flèche devient un bolt impie perçant
+	Un impact surtendu relâche deux flammes d'âme chasseuses qui poursuivent lentement les ennemis proches
+	'''
+GsTendonBow.Desc: 
+	'''
+	Reforgé : tir à trois paliers. À pleine charge, les flèches de caillot ouvrent des plaies saignantes
+	En surtension, frappe de corde de sang : hampe plus lourde, recul plus brutal, perles de sang et un filet de vie
+	'''
+GsBloodRainBow.Desc: 
+	'''
+	Reforgé : les flèches tombent toujours en pluie de sang. Tir à trois paliers
+	À pleine charge, quatre flèches de sang de plus visent le curseur ; en surtension, huit, et la flèche principale laisse une mare qui ralentit
+	'''
+GsBeesKnees.Desc: 
+	'''
+	Reforgé : les flèches de bois deviennent toujours des flèches d'abeilles. Tir à trois paliers
+	Un impact à pleine charge lâche deux abeilles de plus ; en surtension, un vortex d'abeilles reste en place. Douze abeilles au plus à la fois
+	'''
+GsHellwingBow.Desc: 
+	'''
+	Reforgé : les flèches de bois deviennent toujours des chauves-souris de l'enfer perce-murs, et le tir est plus rapide
+	À pleine charge, trois chauves-souris en V ; en surtension, six en spirale qui s'écartent puis se resserrent
+	'''
+GsMoltenFury.Desc: 
+	'''
+	Reforgé : les flèches de bois deviennent toujours des flèches enflammées. Tir à trois paliers
+	À pleine charge, un noyau de lave asperge de perles de magma ; en surtension, cinq pluies de lave s'abattent sur la cible
+	'''
 GsChargeBleedBuff: {
-	// DisplayName: Bloodletting
-	// Description: Bleeding out
+	DisplayName: Saignée
+	Description: Le sang ne s'arrête plus
 }

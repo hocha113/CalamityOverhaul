@@ -1,7 +1,7 @@
-QuestLog_Key.DisplayName: Журнал заданий: Открыть/Закрыть главный интерфейс
-Legend_UIControl.DisplayName: Легендарное оружие: Переключить HUD
-Legend_Domain.DisplayName: Развертывание домена
-RadialWheel_Key.DisplayName: Радиальные меню: удерживайте, чтобы открыть
+QuestLog_Key.DisplayName: Журнал заданий: открыть/закрыть
+Legend_UIControl.DisplayName: Легендарное оружие: переключить HUD
+Legend_Domain.DisplayName: Развёртывание домена
+RadialWheel_Key.DisplayName: Радиальное меню: удерживайте, чтобы открыть
 Legend_Teleport.DisplayName: Телепортация домена
 Legend_Restart.DisplayName: Самоперезагрузка
 HackTime_Toggle.DisplayName: Время взлома
@@ -9,20 +9,20 @@ CyberBanish_Key.DisplayName: Киберпространство: Изгнани�
 CyberFreeze_Key.DisplayName: Киберпространство: Заморозка
 CyberwareSkill_Key.DisplayName: Киберимплант: активировать текущий навык
 VoidTimeShift_Key.DisplayName: Вторжение времени Пустоты
-Halibut_Clone.DisplayName: Палтус: Вторжение прошлого воплощения
-Halibut_Superposition.DisplayName: Палтус: Суперпозиция
-// Onikiri_FlashStep.DisplayName: Onikiri: Kamui Flash Step
-// Onikiri_Execute.DisplayName: Onikiri: Execute
-// Onikiri_SakuraFlight.DisplayName: Onikiri: Sakura Flight
-// Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
-// Kikasa_Sink.DisplayName: Kikasa: Sink Item into the Lake
-// Kikasa_DomainMutate.DisplayName: Kikasa: Flip the Lake
-// Kikasa_TideControl.DisplayName: Kikasa: Command the Tide
+Halibut_Clone.DisplayName: Палтус: вторжение прошлого воплощения
+Halibut_Superposition.DisplayName: Палтус: суперпозиция
+Onikiri_FlashStep.DisplayName: Оникири: рывок Камуи
+Onikiri_Execute.DisplayName: Оникири: казнь
+Onikiri_SakuraFlight.DisplayName: Оникири: сакуровый поток
+Onikiri_DomainFlip.DisplayName: Оникири: переворот домена
+Kikasa_Sink.DisplayName: Кикаса: погрузить в озеро
+Kikasa_DomainMutate.DisplayName: Кикаса: изнанка кровавого озера
+Kikasa_TideControl.DisplayName: Кикаса: управлять приливом
 Accessory_Skills.DisplayName: Навык аксессуара
 
 CWRKeySystem: {
 	Notbound: "[Не назначено]"
-	// RightClickFallback: Right-click
+	RightClickFallback: ПКМ
 }
 
-// Blessing_Key.DisplayName: Rebirth Wheel: Hold to open
+Blessing_Key.DisplayName: Колесо перерождения: удерживайте, чтобы открыть

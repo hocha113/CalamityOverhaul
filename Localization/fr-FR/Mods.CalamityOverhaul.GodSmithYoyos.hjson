@@ -1,112 +1,112 @@
-/* GsWoodYoyo.Desc:
+GsWoodYoyo.Desc: 
 	'''
-	Right click: anchor, the yoyo patrols in place at your cursor
-	Anchored hits on the same target build Heat, up to +40% damage
-	Every 4th anchored hit flings 2 spinning wood chips at 25% damage
-	''' */
-/* GsRallyYoyo.Desc:
+	Clic droit : ancrage, le yoyo patrouille sur place au curseur
+	Les impacts ancrés sur la même cible accumulent la Chaleur, jusqu'à +40% de dégâts
+	Tous les 4 impacts ancrés, 2 copeaux de bois à 25% de dégâts chacun
 	'''
-	Right click: anchor patrol
-	Every 5 anchored hits quicken the strike tempo, up to 3 ranks; ranks reset when the yoyo returns
-	''' */
-/* GsMalaiseYoyo.Desc:
+GsRallyYoyo.Desc: 
 	'''
-	Right click: anchor patrol
-	A field of malaise around the anchor slows enemies by 8%
-	''' */
-/* GsArteryYoyo.Desc:
+	Clic droit : ancrage et patrouille
+	Tous les 5 impacts ancrés, le tempo monte d'un palier, jusqu'à trois ; le retour du yoyo remet à zéro
 	'''
-	Right click: anchor patrol
-	Anchored hits have a 20% chance to fling a blood bead dealing 15% damage
-	''' */
-/* GsAmazonYoyo.Desc:
+GsMalaiseYoyo.Desc: 
 	'''
-	Right click: anchor patrol
-	Anchored hits inflict Poisoned; at full Heat the poison lasts twice as long
-	At full Heat the yoyo also sprouts a venom vine, lashing the nearest foe for 20% damage every 0.75s
-	''' */
-/* GsCode1Yoyo.Desc:
+	Clic droit : ancrage et patrouille
+	Un champ de malaise autour de l'ancre réduit la vitesse des ennemis de 8%
 	'''
-	Right click: single tap to anchor, double tap to lash back through foes (2.2x speed, 135% damage)
-	A lash hit sets a Breakpoint on the target for 3s: anchored hits on it deal 30% more
-	''' */
-/* GsValorYoyo.Desc:
+GsArteryYoyo.Desc: 
 	'''
-	Right click: tap to anchor, double tap to lash
-	Lash knockback is doubled; with 3 or more enemies near the anchor, anchored damage gains 15%
-	''' */
-/* GsCascadeYoyo.Desc:
+	Clic droit : ancrage et patrouille
+	Un impact ancré a 20% de chances de projeter une perle de sang, 15% de dégâts
 	'''
-	Right click: tap to anchor, double tap to lash
-	Hits shed cascading sparks; the lash path leaves burning lines behind
-	''' */
-/* GsHiveFiveYoyo.Desc:
+GsAmazonYoyo.Desc: 
 	'''
-	Right click: tap to anchor, double tap to lash
-	While anchored the yoyo becomes a hive, releasing a bee every 0.8s; bees benefit from your bee equipment
-	''' */
-/* GsFormatCYoyo.Desc:
+	Clic droit : ancrage et patrouille
+	Les impacts ancrés empoisonnent ; à Chaleur pleine, le poison dure deux fois plus longtemps
+	À Chaleur pleine, une liane venimeuse fouette l'ennemi le plus proche toutes les 0.75 s, 20% de dégâts et poison
 	'''
-	Right click: tap to anchor, double tap to lash
-	A lash hit formats the target's Heat straight to full; 6s cooldown, a white star marks it ready
-	''' */
-/* GsGradientYoyo.Desc:
+GsCode1Yoyo.Desc: 
 	'''
-	Right click: tap to anchor, double tap to lash
-	Heat cap raised to +60%; the yoyo shifts gold, orange then red as Heat builds
-	''' */
-/* GsChikYoyo.Desc:
+	Clic droit : un clic pour ancrer, double-clic pour un retour perçant (×2.2 la vitesse, 135% de dégâts)
+	Un retour qui touche pose un Point de rupture 3 s : les impacts ancrés sur cette cible infligent +30%
 	'''
-	Right click: tap to anchor, double tap to lash
-	The lash flies at 2.6x speed with a sonic ring on launch
-	''' */
-/* GsHelFireYoyo.Desc:
+GsValorYoyo.Desc: 
 	'''
-	Right click: tap to anchor, double tap to lash
-	Every 2s the anchor ignites the ground below with a ring of hellfire
-	''' */
-/* GsAmarokYoyo.Desc:
+	Clic droit : un clic pour ancrer, double-clic pour le retour
+	Le recul du retour est doublé ; s'il y a au moins 3 ennemis près de l'ancre, les dégâts ancrés gagnent 15%
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	The orbit trails frost mist, slowing enemies in the domain by 12% (spin time drains faster while orbiting)
-	''' */
-/* GsCode2Yoyo.Desc:
+GsCascadeYoyo.Desc: 
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	The lash splits a parallel mirror track 40px aside, dealing 50% damage
-	''' */
-/* GsYeletsYoyo.Desc:
+	Clic droit : un clic pour ancrer, double-clic pour le retour
+	Les impacts font tomber une cascade d'étincelles ; le trajet du retour laisse des lignes brûlantes
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	Every 6 anchored hits fling a ring of 8 spores, each dealing 40% damage
-	''' */
-/* GsRedsThrowYoyo.Desc:
+GsHiveFiveYoyo.Desc: 
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	A lash hit loads 3 Red Flags into the target; while flags remain, anchored hits on it are guaranteed crits, one flag per hit
-	''' */
-/* GsValkyrieYoyo.Desc:
+	Clic droit : un clic pour ancrer, double-clic pour le retour
+	Ancré, le yoyo devient une ruche et lâche une abeille toutes les 0.8 s ; les abeilles profitent de votre équipement d'abeilles
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	The orbit tilts into a valkyrie's gyre, shedding feather light on hits
-	''' */
-/* GsKrakenYoyo.Desc:
+GsFormatCYoyo.Desc: 
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	While anchored, inky tendrils lash the two nearest foes for 30% damage per pulse
-	Infinite spin time makes it a true siege core
-	''' */
-/* GsEyeOfCthulhuYoyo.Desc:
+	Clic droit : un clic pour ancrer, double-clic pour le retour
+	Un retour qui touche formate la Chaleur de la cible au maximum, 6 s de recharge, une étoile blanche signale que c'est prêt
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	The anchor stares down the nearest foe, spitting 3 blood tears every 2s; the lash becomes a ramming charge dealing 160% damage
-	''' */
-/* GsTerrarianYoyo.Desc:
+GsGradientYoyo.Desc: 
 	'''
-	Right click taps: chart up to 3 waypoints, the yoyo patrols the bezier route and its beam rate doubles while patrolling
-	Each completed lap rings a Patrol Resonance: for 1s beams fire faster and 30% harder
-	Double tap to lash, hold to orbit; click again when the route is full to clear it
-	''' */
-// GsYoyoPelletProj.DisplayName: Yoyo Pellet
-// GsYoyoBurnZoneProj.DisplayName: Scorch Zone
-// GsYoyoMirrorProj.DisplayName: Mirror Track
+	Clic droit : un clic pour ancrer, double-clic pour le retour
+	Plafond de Chaleur porté à +60% ; le yoyo passe de l'or à l'orange puis au rouge à mesure que la Chaleur monte
+	'''
+GsChikYoyo.Desc: 
+	'''
+	Clic droit : un clic pour ancrer, double-clic pour le retour
+	Le retour part à ×2.6 la vitesse, avec un anneau de bang sonique
+	'''
+GsHelFireYoyo.Desc: 
+	'''
+	Clic droit : un clic pour ancrer, double-clic pour le retour
+	Toutes les 2 s, l'ancre enflamme le sol juste en dessous d'un anneau de Feu infernal
+	'''
+GsAmarokYoyo.Desc: 
+	'''
+	Clic droit : un clic pour ancrer, double-clic pour le retour, maintenir pour orbiter
+	L'orbite traîne un brouillard de givre, -12% de vitesse dans le domaine (le temps de spin s'écoule plus vite en orbite)
+	'''
+GsCode2Yoyo.Desc: 
+	'''
+	Clic droit : un clic pour ancrer, double-clic pour le retour, maintenir pour orbiter
+	Le retour se scinde en une trajectoire miroir parallèle, décalée de 40 pixels, 50% de dégâts
+	'''
+GsYeletsYoyo.Desc: 
+	'''
+	Clic droit : un clic pour ancrer, double-clic pour le retour, maintenir pour orbiter
+	Tous les 6 impacts ancrés, un anneau de 8 spores, 40% de dégâts chacune
+	'''
+GsRedsThrowYoyo.Desc: 
+	'''
+	Clic droit : un clic pour ancrer, double-clic pour le retour, maintenir pour orbiter
+	Un retour qui touche charge 3 Marques rouges ; tant qu'il en reste, les impacts ancrés sur cette cible sont des critiques assurés, une marque par coup
+	'''
+GsValkyrieYoyo.Desc: 
+	'''
+	Clic droit : un clic pour ancrer, double-clic pour le retour, maintenir pour orbiter
+	L'orbite s'incline en gyre de valkyrie, les impacts font tomber de la lumière de plumes
+	'''
+GsKrakenYoyo.Desc: 
+	'''
+	Clic droit : un clic pour ancrer, double-clic pour le retour, maintenir pour orbiter
+	Ancré, deux tentacules d'encre lacèrent les deux ennemis les plus proches, 30% de dégâts par traction
+	Temps de vol illimité, le cœur d'un siège
+	'''
+GsEyeOfCthulhuYoyo.Desc: 
+	'''
+	Clic droit : un clic pour ancrer, double-clic pour le retour, maintenir pour orbiter
+	L'ancre fixe l'ennemi le plus proche et crache 3 larmes de sang toutes les 2 s ; le retour devient une charge agrandie, 160% de dégâts
+	'''
+GsTerrarianYoyo.Desc: 
+	'''
+	Clics droits : jusqu'à 3 points de passage, le yoyo patrouille la courbe de Bézier et double sa cadence de perles vertes
+	Chaque aller-retour complet déclenche 1 s de Résonance de ronde : les perles vertes partent plus vite, +30% de dégâts
+	Double-clic pour le retour, maintenir pour orbiter ; un clic de plus à route pleine efface le tracé
+	'''
+GsYoyoPelletProj.DisplayName: Projectile de yoyo
+GsYoyoBurnZoneProj.DisplayName: Zone brûlante
+GsYoyoMirrorProj.DisplayName: Trajectoire miroir

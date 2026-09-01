@@ -1,98 +1,98 @@
-/* GsHoundiusShootius.Desc:
+GsHoundiusShootius.Desc:
 	'''
-	Deploy doctrine: hits charge the eye, right-click when full to overdrive it into twin-pupil rapid fire
-	Its victims are briefly exposed, linked sentries deal 10% more to exposed foes
-	Linked kills on exposed foes feed the eye free charge; redeployed sentries keep a quarter charge
-	''' */
-/* GsQueenSpiderStaff.Desc:
+	Táctica de despliegue: los impactos acumulan carga; al llenar, clic derecho para sobrefrecuencia, las dos pupilas disparan en ráfaga
+	Los enemigos golpeados quedan expuestos un instante; los centinelas enlazados infligen un 10% más a los expuestos
+	Si un centinela de la cadena mata a un expuesto, el ojo recarga gratis; un redespliegue hereda un cuarto de la carga
 	'''
-	Deploy doctrine: hits charge the hive, right-click when full to overdrive into a full swarm
-	Eggs leave webbed ground where they land; linking a lightning aura magnetizes the spiders
-	''' */
-/* GsFrostHydraStaff.Desc:
+GsQueenSpiderStaff.Desc:
 	'''
-	Deploy doctrine: every 3 charge grows a phantom head (up to 2) that echoes each shot
-	Right-click when full to overdrive into a freezing breath; sentries linked to it inflict frostburn
-	''' */
-/* GsFlameburstT1.Desc:
+	Táctica de despliegue: los impactos acumulan carga; al llenar, clic derecho para sobrefrecuencia, sale todo el nido
+	Los huevos dejan una franja de tela; enlazada a un aura de rayos, las arañas pequeñas ganan aceleración electromagnética
 	'''
-	Deploy doctrine: hits charge the tower, right-click when full for saturation barrage
-	Overdriven shots fly in triples and scorch a fire ring on hit; linking a ballista widens the blast
-	''' */
-/* GsFlameburstT2.Desc:
+GsFrostHydraStaff.Desc:
 	'''
-	Deploy doctrine: hits charge the tower, right-click when full for saturation barrage
-	Overdriven shots fly in triples and scorch a wider fire ring; linking a ballista widens the blast
-	''' */
-/* GsFlameburstT3.Desc:
+	Táctica de despliegue: cada tres capas de carga brota una cabeza fantasma, hasta dos, que dispara con la principal
+	Al llenar, clic derecho para un aliento polar; los centinelas enlazados a ella aplican escarcha
 	'''
-	Deploy doctrine: hits charge the tower, right-click when full for saturation barrage
-	Overdrive adds mortar rain on top of triple shots and fire rings; linking a ballista widens the blast
-	''' */
-/* GsBallistaT1.Desc:
+GsFlameburstT1.Desc:
 	'''
-	Deploy doctrine: hits charge the tower, right-click when full for siege repeater fire
-	Two linked ballistas nail a cross-fire spike into any target both hit within moments
-	''' */
-/* GsBallistaT2.Desc:
+	Táctica de despliegue: los impactos acumulan carga; al llenar, clic derecho para bombardeo saturado
+	En sobrefrecuencia, las bolas de fuego salen de tres en tres y dejan un anillo de fuego; enlazada a una balista, la explosión se ensancha
 	'''
-	Deploy doctrine: hits charge the tower, right-click when full for siege repeater fire
-	Two linked ballistas nail a cross-fire spike into any target both hit within moments
-	''' */
-/* GsBallistaT3.Desc:
+GsFlameburstT2.Desc:
 	'''
-	Deploy doctrine: hits charge the tower, right-click when full for siege repeater fire
-	Overdriven bolts grow into massive siege shafts; paired ballistas nail cross-fire spikes
-	''' */
-/* GsExplosiveTrapT1.Desc:
+	Táctica de despliegue: los impactos acumulan carga; al llenar, clic derecho para bombardeo saturado
+	En sobrefrecuencia, las bolas de fuego salen de tres en tres y dejan un anillo de fuego más amplio; enlazada a una balista, la explosión se ensancha
 	'''
-	Deploy doctrine: traps placed near each other form a minefield web, any blast chain-detonates neighbors
-	Five blasts auto-overdrive the trap into high explosive; right-click to trigger a chain check
-	''' */
-/* GsExplosiveTrapT2.Desc:
+GsFlameburstT3.Desc:
 	'''
-	Deploy doctrine: traps placed near each other form a minefield web, any blast chain-detonates neighbors
-	Five blasts auto-overdrive the trap into high explosive; right-click to trigger a chain check
-	''' */
-/* GsExplosiveTrapT3.Desc:
+	Táctica de despliegue: los impactos acumulan carga; al llenar, clic derecho para bombardeo saturado
+	Durante la sobrefrecuencia se añade una lluvia de mortero; el triple y el anillo siguen igual; enlazada a una balista, la explosión se ensancha
 	'''
-	Deploy doctrine: traps placed near each other form a minefield web, any blast chain-detonates neighbors
-	Overdriven blasts hurl shrapnel skyward; five blasts auto-overdrive, right-click for a chain check
-	''' */
-/* GsLightningAuraT1.Desc:
+GsBallistaT1.Desc:
 	'''
-	Deploy doctrine: two overlapping auras form a resonance zone dealing half again as much
-	Ticks charge the aura, right-click when full to overload it wider with a static field that shocks
-	''' */
-/* GsLightningAuraT2.Desc:
+	Táctica de despliegue: los impactos acumulan carga; al llenar, clic derecho para ballesta de asedio
+	Si dos balistas enlazadas golpean al mismo objetivo en un soplo, clavan un pincho de fuego cruzado
 	'''
-	Deploy doctrine: two overlapping auras form a resonance zone dealing half again as much
-	Ticks charge the aura, right-click when full to overload it wider with a static field that shocks
-	''' */
-/* GsLightningAuraT3.Desc:
+GsBallistaT2.Desc:
 	'''
-	Deploy doctrine: overlap auras for resonance, overload adds a wider static field and shock marks
-	While overdriven the aura hurls chain lightning arcing through four foes every second
-	''' */
-/* GsRainbowCrystalStaff.Desc:
+	Táctica de despliegue: los impactos acumulan carga; al llenar, clic derecho para ballesta de asedio
+	Si dos balistas enlazadas golpean al mismo objetivo en un soplo, clavan un pincho de fuego cruzado
 	'''
-	Deploy doctrine: linked to any sentry, each burst refracts a prism ray into another nearby foe
-	Hits charge the crystal, right-click when full to unfurl an aurora veil above it
-	''' */
-/* GsLunarPortalStaff.Desc:
+GsBallistaT3.Desc:
 	'''
-	Deploy doctrine: the portal is a link hub, every sentry linked to it strikes harder
-	Hits charge it, right-click when full for lunar phase volley: side lances and a rear gate
-	''' */
+	Táctica de despliegue: los impactos acumulan carga; al llenar, clic derecho para ballesta de asedio
+	En sobrefrecuencia, los virotes se vuelven enormes saetas de asedio; dos balistas enlazadas pueden clavar el pincho de fuego cruzado
+	'''
+GsExplosiveTrapT1.Desc:
+	'''
+	Táctica de despliegue: las trampas cercanas forman una red de minas; cualquier detonación encadena a las vecinas
+	Cinco explosiones pasan solas a carga de alto explosivo; clic derecho para disparar una ronda de comprobación en cadena
+	'''
+GsExplosiveTrapT2.Desc:
+	'''
+	Táctica de despliegue: las trampas cercanas forman una red de minas; cualquier detonación encadena a las vecinas
+	Cinco explosiones pasan solas a carga de alto explosivo; clic derecho para disparar una ronda de comprobación en cadena
+	'''
+GsExplosiveTrapT3.Desc:
+	'''
+	Táctica de despliegue: las trampas cercanas forman una red de minas; cualquier detonación encadena a las vecinas
+	En sobrefrecuencia, la explosión lanza metralla hacia arriba; cinco explosiones activan la sobrefrecuencia, clic derecho para la comprobación en cadena
+	'''
+GsLightningAuraT1.Desc:
+	'''
+	Táctica de despliegue: donde se solapan dos auras se forma una zona de resonancia, +50% de daño
+	Las descargas acumulan carga; al llenar, clic derecho para un campo de sobrecarga, anillo eléctrico expandido y objetivos electrificados
+	'''
+GsLightningAuraT2.Desc:
+	'''
+	Táctica de despliegue: donde se solapan dos auras se forma una zona de resonancia, +50% de daño
+	Las descargas acumulan carga; al llenar, clic derecho para un campo de sobrecarga, anillo eléctrico expandido y objetivos electrificados
+	'''
+GsLightningAuraT3.Desc:
+	'''
+	Táctica de despliegue: las auras que se solapan forman resonancia; la sobrefrecuencia ensancha el campo de sobrecarga y electrifica
+	Durante la sobrefrecuencia, cada segundo suelta un relámpago en cadena que salta a cuatro enemigos
+	'''
+GsRainbowCrystalStaff.Desc:
+	'''
+	Táctica de despliegue: enlazado a cualquier centinela, cada explosión refracta un rayo de color hacia otro enemigo cercano
+	Los impactos acumulan carga; al llenar, clic derecho despliega un velo de aurora sobre el cristal
+	'''
+GsLunarPortalStaff.Desc:
+	'''
+	Táctica de despliegue: el portal lunar es el nexo de enlace; todo centinela enlazado a él golpea más fuerte
+	Los impactos acumulan carga; al llenar, clic derecho para una salva de fase lunar: haces laterales y disparo de la puerta trasera
+	'''
 
 GsOverdriveProj: {
-	// DisplayName: Overdrive Field
-	// ChargeReady: Overdrive ready
-	// NotReady: No sentry charged
+	DisplayName: Campo de sobrefrecuencia
+	ChargeReady: Carga lista
+	NotReady: Ningún centinela tiene la carga lista
 }
 
-// GsSentryBurstProj.DisplayName: Sentry Burst
-// GsSentryZoneProj.DisplayName: Sentry Field
-// GsSentryBoltProj.DisplayName: Sentry Bolt
-// GsSentryChainBlastProj.DisplayName: Chain Charge
-// GsSentryChainLightningProj.DisplayName: Chain Lightning
+GsSentryBurstProj.DisplayName: Explosión de centinela
+GsSentryZoneProj.DisplayName: Campo de centinela
+GsSentryBoltProj.DisplayName: Proyectil de centinela
+GsSentryChainBlastProj.DisplayName: Carga en cadena
+GsSentryChainLightningProj.DisplayName: Relámpago en cadena

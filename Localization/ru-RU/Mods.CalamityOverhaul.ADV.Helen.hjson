@@ -311,6 +311,6 @@ FishoilSubmitScenario: {
 }
 
 GeiGeiEasterEgg: {
-	// L0: That battle was truly perilous.
-	// L1: But the records tell of a warrior from back then called Gei-Gei, who was far more terrifying.
+	L0: Тот бой и вправду был лютым
+	L1: Но в записях говорится, что воин по имени Гэй-Гэй в те годы был ещё страшнее
 }

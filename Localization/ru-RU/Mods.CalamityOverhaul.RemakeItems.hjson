@@ -30,11 +30,11 @@ RDemonConch: {
 }
 
 RBloodButcherer: {
-	// DisplayName: "{$ItemName.BloodButcherer}"
-	/* Tooltip:
+	DisplayName: "{$ItemName.BloodButcherer}"
+	Tooltip:
 		'''
-		Heavy three-hit butcher combo, the third cut sweeps wider and harder
-		Swings fling gouts of dark blood that arc down and splatter on impact
-		Struck enemies are Blood Butchered
-		''' */
+		Тяжёлая трёхтактная рубка; третий удар шире и злее
+		Взмахи швыряют несколько тёмно-красных сгустков; кровь падает по дуге и разбрызгивается в точке попадания
+		Поражённые враги впадают в кровавую бойню
+		'''
 }

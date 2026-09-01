@@ -1,96 +1,96 @@
-/* GsBatScepter.Desc:
+GsBatScepter.Desc:
 	'''
-	Reforged: hits build Nightfall; at full charge, right click to call the bat deluge
-	A phantom moon rises, waves of bats dive at your foes, then circle you as a guard ring
-	Every 8th bat bite splits off a phantom bat that dives at another nearby foe
-	''' */
-/* GsRazorpine.Desc:
+	Перековка: попадания копят ночь; полный заряд — ПКМ зовёт бездну летучих мышей
+	Встаёт лунный диск, волны мышей бросаются на врагов, остальные кружат стражей
+	Каждый 8-й укус отделяет фантомную мышь на другого ближнего врага
 	'''
-	Reforged: hits build Resin; at full charge, right click to raise the Needle Storm
-	A ring of needles tightens around you, then settles into a needle mat underfoot
-	Needle hits smear resin; 5 smears on one foe draw a ring of 4 needles closing in on it
-	''' */
-/* GsBlizzardStaff.Desc:
+GsRazorpine.Desc:
 	'''
-	Reforged: hits build Snowsquall; at full charge, right click to call the Whiteout over your cursor
-	A giant blizzard hammers the area and leaves rime spikes on the ground
-	Every 5th icicle is a rime seed that bursts into a small frost blast where it dies
-	''' */
-/* GsStaffofEarth.Desc:
+	Перековка: попадания копят смолу; полный заряд — ПКМ поднимает хвойную бурю
+	Вихрь игл сжимается вокруг вас, затем стелет под ногами ковёр хвои
+	Иглы мажут смолой; 5 слоёв на одном враге — четыре иглы смыкаются кольцом
 	'''
-	Reforged: hits build Earthwrath; at full charge, right click to raise the Orogeny at your cursor
-	Rock pillars erupt in waves amid flying rubble, leaving a magma vein bed behind
-	The boulder grinds harder with every foe it crushes, and a half-height rock pillar erupts where it shatters
-	''' */
-/* GsBetsysWrath.Desc:
+GsBlizzardStaff.Desc:
 	'''
-	Reforged: hits build Dragonfire; at full charge, right click to invoke the Dragon's Wrath
-	Betsy's shade dives three times trailing flame curtains, leaving a cursed pyre bed
-	Hits on cursed foes bank extra Dragonfire, and every 4th cursed hit bursts into hexfire
-	''' */
-/* GsNightglow.Desc:
+	Перековка: попадания копят метель; полный заряд — ПКМ роняет белую беду у курсора
+	Гигантская буря бьёт область, на земле остаются ледяные шипы
+	Каждая 5-я стрела — семя инея, при гашении взрывается малым морозным хлопком
 	'''
-	Reforged: hits build Dawnlight; at full charge, right click to unfurl an Aurora Curtain over your cursor
-	The curtain sears foes within and rains light lances below
-	Every 5th bolt hit drops an aurora lance from above the target
-	''' */
-/* GsStellarTune.Desc:
+GsStaffofEarth.Desc:
 	'''
-	Reforged: hits build Melody; at full charge, right click to open the Stellar Finale
-	Star chords play themselves at your foes on the beat while you dance a little faster
-	Consecutive hits climb a scale; the 8th note lands as a star chord burst
-	''' */
-/* GsResonanceScepter.Desc:
+	Перековка: попадания копят гнев земли; полный заряд — ПКМ у курсора поднимает горы
+	Столбы камня волнами встают из земли, щебень летит, остаются жилы лавы
+	Каждый пробитый валуном враг наращивает урон, в точке разлома встаёт полувысокий столб
 	'''
-	Reforged: hits build Resonance; at full charge, right click to collapse the harmonics at your cursor
-	Five standing waves cross the area and their nodes strike whatever lingers
-	The royal wave rings a standing wave pulse on every 3rd foe it pierces
-	''' */
-/* GsNebulaArcanum.Desc:
+GsBetsysWrath.Desc:
 	'''
-	Reforged: hits build Arcanum; at full charge, right click to spin up the Nebula Spiral
-	Three nebula arms orbit you, grinding foes and dragging the lesser ones inward
-	The arcanum orb itself now swells in flight and slowly drags lesser foes toward its heart
-	Nebula mist rises from the staff as the gauge fills
-	''' */
-/* GsNebulaBlaze.Desc:
+	Перековка: попадания копят драконье пламя; полный заряд — ПКМ зовёт скверну короля драконов
+	Тень Бетси пикирует трижды, тянет завесу пламени и оставляет лужу проклятого огня
+	Попадания по проклятым копят пламя быстрее; каждый 4-й удар проклятым огнём взрывает скверну
 	'''
-	Reforged: hits build Blaze; at full charge, right click to mark a nova on the target near your cursor
-	It detonates in three staggered blast rings around a gravity well
-	Nebula eruption bolts now always ignite a micro nova where they strike
-	''' */
-/* GsLunarFlare.Desc:
+GsNightglow.Desc:
 	'''
-	Reforged: hits build Moonphase; at full charge, right click to raise the Lunar Eclipse
-	An eclipse disk pours twelve woven flare falls, every third one backed by a phantom moonbeam
-	Every 4th cast pours a pale fourth flare from the sky
-	Moonlight gathers on the book as the gauge fills
-	''' */
-// GsBatSwarmDirector.DisplayName: Bat Deluge
-// GsPineStormDirector.DisplayName: Needle Storm
-// GsWhiteoutDirector.DisplayName: Whiteout
-// GsOrogenyDirector.DisplayName: Orogeny
-// GsEarthPillarProj.DisplayName: Orogeny Pillar
-// GsDragonWrathDirector.DisplayName: Dragon's Wrath
-// GsAuroraCurtainDirector.DisplayName: Aurora Curtain
-// GsAuroraLanceProj.DisplayName: Aurora Lance
-// GsStellarFinaleDirector.DisplayName: Stellar Finale
-// GsResonanceCollapseDirector.DisplayName: Harmonic Collapse
-// GsNebulaSpiralDirector.DisplayName: Nebula Spiral
-// GsNovaDetonationDirector.DisplayName: Nova Detonation
-/* GsSpectreStaff.Desc:
+	Перековка: попадания копят зарю; полный заряд — ПКМ раскрывает над курсором завесу сияния
+	Завеса жжёт врагов в полотне и роняет световые копья вниз
+	Каждое 5-е попадание роняет копьё сияния с головы врага
 	'''
-	Reforged: hits build Soulharvest; when full, right click to raise the Soul Tide at your cursor
-	Every quarter of the gauge banked splits off an echo soul that hunts another nearby foe
-	Three tide crests sweep the ring; each crest hit ferries 1 life back to you, up to 6 a second
-	''' */
-// GsLunarEclipseDirector.DisplayName: Lunar Eclipse
-// GsMoonPillarProj.DisplayName: Phantom Moonbeam
-// GsSpectreStaffTideDirector.DisplayName: Soul Tide
-/* GsInfernoFork.Desc:
+GsStellarTune.Desc:
 	'''
-	Reforged: fireballs corkscrew with furnace slag and every hit banks Cinder
-	When the gauge is full, right click to set the Wildfire at your cursor: three waves of flame sweep the ground, fire rains between them, and an ember shoal smolders after
-	''' */
-// GsInfernoForkWildfireDirector.DisplayName: Wildfire
-// GsCataclysmRiderBurstProj.DisplayName: Cataclysm Aftershock
+	Перековка: попадания копят партитуру; полный заряд — ПКМ открывает финал звёздного моря
+	Звёздные аккорды сами бьют врагов в такт, пока вы играете — шаг легче
+	Серия поднимает гамму; 8-я нота падает аккордовым взрывом
+	'''
+GsResonanceScepter.Desc:
+	'''
+	Перековка: попадания копят резонанс; полный заряд — ПКМ у курсора рвёт стоячие волны
+	Пять волн пересекаются и бьют застрявших в узлах
+	Каждый 3-й пробитый королевской волной враг получает импульс в узле на теле
+	'''
+GsNebulaArcanum.Desc:
+	'''
+	Перековка: попадания копят тайну; полный заряд — ПКМ раскручивает рукава Туманности
+	Три рукава кружат вокруг вас и трут врагов, мелких тянут к сердцу
+	Шар тайны в полёте растёт и медленно тянет мелких к центру
+	По мере наполнения счётчика туман у острия густеет
+	'''
+GsNebulaBlaze.Desc:
+	'''
+	Перековка: попадания копят пламя; полный заряд — ПКМ метит сверхновую на цели у курсора
+	Три кольца взрываются вразнобой, гравитационная яма в центре глотает мелких
+	Усиленный снаряд вспышки Туманности при попадании всегда зажигает микросверхновую
+	'''
+GsLunarFlare.Desc:
+	'''
+	Перековка: попадания копят фазы луны; полный заряд — ПКМ поднимает суд затмения
+	Диск льёт двенадцать лунных водопадов, каждый третий дополняет фантомный столб
+	Каждое 4-е применение роняет с небосвода бледное лунное пламя
+	По мере наполнения счётчика лунный свет на страницах густеет
+	'''
+GsBatSwarmDirector.DisplayName: Бездна летучих мышей
+GsPineStormDirector.DisplayName: Хвойная буря
+GsWhiteoutDirector.DisplayName: Белая беда
+GsOrogenyDirector.DisplayName: Орогенез
+GsEarthPillarProj.DisplayName: Столб орогенеза
+GsDragonWrathDirector.DisplayName: Скверна короля драконов
+GsAuroraCurtainDirector.DisplayName: Завеса сияния
+GsAuroraLanceProj.DisplayName: Копьё сияния
+GsStellarFinaleDirector.DisplayName: Финал звёздного моря
+GsResonanceCollapseDirector.DisplayName: Резонансный коллапс
+GsNebulaSpiralDirector.DisplayName: Рукава Туманности
+GsNovaDetonationDirector.DisplayName: Детонация сверхновой
+GsSpectreStaff.Desc:
+	'''
+	Перековка: попадания копят жатву душ; полный заряд — ПКМ у курсора поднимает прилив бездны душ
+	Каждая четверть счётчика отделяет побочную душу на другого ближнего врага
+	Три кольцевых вала метут толпу; попадание вала возвращает здоровье, не больше 6 в секунду
+	'''
+GsLunarEclipseDirector.DisplayName: Суд затмения
+GsMoonPillarProj.DisplayName: Фантомный лунный столб
+GsSpectreStaffTideDirector.DisplayName: Прилив бездны душ
+GsInfernoFork.Desc:
+	'''
+	Перековка: огненный шар кружит шлак; попадания копят жар; полный заряд — ПКМ у курсора зажигает пал
+	Огонь стелется по земле, три волны метут фланги, между ними огненный дождь, после остаётся пепелище
+	'''
+GsInfernoForkWildfireDirector.DisplayName: Пал
+GsCataclysmRiderBurstProj.DisplayName: Послеволна катаклизма

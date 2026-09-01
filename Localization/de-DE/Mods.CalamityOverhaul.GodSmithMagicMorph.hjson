@@ -1,30 +1,30 @@
-/* GsSpiritFlame.Desc:
+GsSpiritFlame.Desc:
 	'''
-	Reforged: spirit flames trail pale soulfire; half of their hits split off a hunting wisp
-	Hold right click to charge; release to lay a five-flame ring at your cursor that pounces on intruders
-	''' */
-// GsSpiritFlameRingProj.DisplayName: Spirit Flame Ring
-// GsSpiritFlameWispProj.DisplayName: Hunting Wisp
-/* GsPoisonStaff.Desc:
+	Umschmiedung: Geisterflamme schleppt bleiches Seelenfeuer, beim Treffer spaltet sich mit 50% Chance ein jagendes Flämmchen
+	Rechtsklick halten lädt, Loslassen legt einen Fünf-Flammen-Ring am Cursor, die Ringflammen stürzen nacheinander auf nahende Feinde
 	'''
-	Reforged: fangs trail venom mist and split into thin fangs on their second bite
-	Hold right click to charge the Serpent Kiss: a swift coiling viper that poisons everything on its path
-	''' */
-/* GsVenomStaff.Desc:
+GsSpiritFlameRingProj.DisplayName: Geisterflammen-Ring
+GsSpiritFlameWispProj.DisplayName: Seelenjagd-Flämmchen
+GsPoisonStaff.Desc:
 	'''
-	Reforged: fangs trail venom mist and split a heavy fang on their second bite
-	Hold right click to charge the Serpent Kiss: a massive pit viper whose corpse melts into a lingering acid pool
-	''' */
-/* GsShadowFlameHexDoll.Desc:
+	Umschmiedung: Giftzähne ziehen Giftnebel, beim zweiten Ziel spalten sie zwei feine Zähne
+	Rechtsklick halten lädt und schickt einen Schlangenkuss: eine kleine, schnelle Schlange schlängelt und beißt, unterwegs legt sie einen Giftnebel-Gang
 	'''
-	Reforged: shadowflame tendrils pin a hex brand into whatever they touch; branded foes take more from this doll
-	Hold right click to charge the Grand Hex: a sigil at your cursor that lashes tendrils at intruders
-	''' */
-/* GsLeafBlower.Desc:
+GsVenomStaff.Desc:
 	'''
-	Reforged: leaf blades spin with a razor-green wake
-	Hold right click to charge Storm Mode: for six seconds every leaf flies faster, cuts deeper and spirals harder
-	''' */
-// GsMorphFangSerpentProj.DisplayName: Serpent Kiss
-// GsMorphFangAcidPoolProj.DisplayName: Acid Pool
-// GsShadowFlameHexSigilProj.DisplayName: Grand Hex Sigil
+	Umschmiedung: Giftzähne ziehen Giftnebel, beim zweiten Ziel spalten sie einen schweren Zahn
+	Rechtsklick halten lädt und schickt einen Schlangenkuss: eine große, schwere Otter walzt langsam, wo der Leib vergeht, bleibt ein Säureteich
+	'''
+GsShadowFlameHexDoll.Desc:
+	'''
+	Umschmiedung: Schattenflammen-Tentakel nageln ein Fluchpuppen-Mal in alles, was sie berühren, gezeichnete Feinde erleiden mehr Schaden von dieser Puppe
+	Rechtsklick halten lädt den Großfluch: am Cursor nagelt sich ein Fluchpuppen-Brandmalfeld, darin peitschen ständig Schattenflammen-Tentakel auf Kommende
+	'''
+GsLeafBlower.Desc:
+	'''
+	Umschmiedung: Blattklingen fliegen mit scharfgrünem Wirbelmal
+	Rechtsklick halten lädt den Sturmmodus: sechs Sekunden lang fliegt jedes Blatt schneller, schneidet tiefer, wirbelt schärfer
+	'''
+GsMorphFangSerpentProj.DisplayName: Schlangenkuss-Otter
+GsMorphFangAcidPoolProj.DisplayName: Toxinsäureteich
+GsShadowFlameHexSigilProj.DisplayName: Fluchpuppen-Brandmal

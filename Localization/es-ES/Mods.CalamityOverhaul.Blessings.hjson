@@ -1,103 +1,103 @@
 System: {
-	// UnlockBroadcast: Death nods. "{0}" has entered the Wheel of Passing
-	// KindleLabel: Kindle
-	// SnuffLabel: Snuff
-	// BurningCounter: Burning {0}/{1}
-	// SlotFullNotice: All lamp seats are taken. Snuff one flame before kindling another
-	// LockedHint: Slay it while Asura reigns, and its soulflame will take its seat
-	// HudName: Soulguide Lantern
-	// HudOpenHint: Click to open the Wheel of Passing
-	// WheelTitle: Wheel of Passing
-	// CenterHint: Pick a soul bead to view its blessing
-	// CloseHint: Esc, right-click, or {0} folds the Wheel
+	UnlockBroadcast: La Muerte asiente. «{0}» ha entrado en la Rueda del Tránsito
+	KindleLabel: Encender
+	SnuffLabel: Apagar
+	BurningCounter: Llama {0}/{1}
+	SlotFullNotice: Los asientos de la linterna están llenos. Apaga una llama antes de encender otra bendición
+	LockedHint: Derrótalo mientras el Infierno Asura rija el mundo y su llama de alma ocupará su asiento
+	HudName: Linterna guía de almas
+	HudOpenHint: Clic para abrir la Rueda del Tránsito
+	WheelTitle: Rueda del Tránsito
+	CenterHint: Elige una perla de alma para ver su bendición
+	CloseHint: Esc, clic derecho o {0} pliega la Rueda del Tránsito
 }
 
 KingSlimeBlessing: {
-	// DisplayName: Crown of Royal Gel
-	// Description: Sheathed in gel, contact damage from enemies is reduced by 12%
+	DisplayName: Corona de gel real
+	Description: El gel te envuelve. El daño por contacto de los enemigos se reduce un 12%
 }
 
 EyeOfCthulhuBlessing: {
-	// DisplayName: Abyssal Pupil
-	// Description: Critical strike chance increased by 5%, plus another 3% at night
+	DisplayName: Pupila abisal
+	Description: La probabilidad de golpe crítico aumenta un 5%, y un 3% extra por la noche
 }
 
 EaterOfWorldsBlessing: {
-	// DisplayName: Ring of Rot
-	// Description: Your attacks inflict Erosion, reducing the target's defense by 10 for 5 seconds
+	DisplayName: Anillo de podredumbre
+	Description: Tus ataques infligen Erosión, reduciendo 10 de defensa del objetivo durante 5 segundos
 }
 
 BrainOfCthulhuBlessing: {
-	// DisplayName: Pain Empathy
-	// Description: For 5 seconds after taking damage, your damage is increased by 12%
+	DisplayName: Empatía del dolor
+	Description: Durante 5 segundos tras recibir daño, el daño que infliges aumenta un 12%
 }
 
 QueenBeeBlessing: {
-	// DisplayName: Hive Mending
-	// Description: Healing items restore 15% more life
+	DisplayName: Regeneración de colmena
+	Description: Los objetos de curación restauran un 15% más
 }
 
 SkeletronBlessing: {
-	// DisplayName: Bonewatch
-	// Description: Every 45 seconds the bones stand watch, halving the next hit you take
+	DisplayName: Vigilia de huesos
+	Description: Cada 45 segundos se condensa una vigilia que reduce a la mitad el siguiente daño que recibas
 }
 
 DeerclopsBlessing: {
-	// DisplayName: Winter's Stride
-	// Description: No slipping on ice, movement speed increased by 8%, immune to Chilled
+	DisplayName: Paso del invierno
+	Description: El hielo ya no resbala, la velocidad de movimiento aumenta un 8% y eres inmune al frío
 }
 
 WallOfFleshBlessing: {
-	// DisplayName: Covenant of Flesh
-	// Description: After taking damage, 20% of it is slowly restored over 8 seconds
+	DisplayName: Pacto de carne
+	Description: Tras recibir daño, el 20% se recupera lentamente en 8 segundos
 }
 
 QueenSlimeBlessing: {
-	// DisplayName: Crystal Plume
-	// Description: Immune to fall damage, jump height increased
+	DisplayName: Pluma de cristal
+	Description: Inmune al daño por caída y mayor potencia de salto
 }
 
 TwinsBlessing: {
-	// DisplayName: Twin Pupil Concerto
-	// Description: Consecutive hits on the same target raise damage by 2% each, up to 5 stacks
+	DisplayName: Concierto de pupilas
+	Description: Al golpear al mismo objetivo seguido, el daño aumenta un 2% por golpe, hasta 5 capas
 }
 
 DestroyerBlessing: {
-	// DisplayName: Probe Circuit
-	// Description: Kills restore 3 mana, and shots have a 1 in 12 chance not to consume ammo
+	DisplayName: Circuito de sondas
+	Description: Matar enemigos restaura 3 de maná. Los disparos tienen 1/12 de probabilidad de no consumir munición
 }
 
 SkeletronPrimeBlessing: {
-	// DisplayName: Overclocked Frame
-	// Description: Item use speed increased by 5%
+	DisplayName: Esqueleto sobrecargado
+	Description: La velocidad de uso de objetos aumenta un 5%
 }
 
 PlanteraBlessing: {
-	// DisplayName: Thorned Renewal
-	// Description: Life regeneration increased, and further increased for 3 seconds after taking damage
+	DisplayName: Renacer de espinas
+	Description: La regeneración de vida aumenta y, tras recibir daño, sube aún más durante 3 segundos
 }
 
 GolemBlessing: {
-	// DisplayName: Heart of Stone
-	// Description: Defense increased by 8, and you can no longer be knocked back
+	DisplayName: Núcleo de roca
+	Description: La defensa aumenta 8 puntos y ya no te derriban
 }
 
 DukeFishronBlessing: {
-	// DisplayName: Raging Tide
-	// Description: Below half life, movement speed is increased by 12% and damage by 8%
+	DisplayName: Marea furiosa
+	Description: Con la vida por debajo de la mitad, la velocidad de movimiento aumenta un 12% y el daño un 8%
 }
 
 EmpressBlessing: {
-	// DisplayName: Daylight Verdict
-	// Description: Critical strike damage increased by 18% during the day
+	DisplayName: Veredicto de la luz diurna
+	Description: De día, el daño crítico aumenta un 18%
 }
 
 LunaticCultistBlessing: {
-	// DisplayName: Lunar Aegis
-	// Description: Every 40 seconds a lunar shield forms, fully blocking one enemy projectile
+	DisplayName: Escudo de fase lunar
+	Description: Cada 40 segundos se condensa una capa de escudo de fase lunar que bloquea por completo un proyectil enemigo
 }
 
 MoonLordBlessing: {
-	// DisplayName: Starcore Resonance
-	// Description: All damage dealt increased by 8%
+	DisplayName: Resonancia del núcleo estelar
+	Description: Todo el daño que infliges aumenta un 8%
 }

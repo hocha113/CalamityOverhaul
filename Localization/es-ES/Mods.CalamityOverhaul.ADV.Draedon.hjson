@@ -100,7 +100,7 @@ DraedonQuestLine: {
 }
 
 FirstMetTzeentch: {
-	// Rolename: ?????????????????????
+	Rolename: ？？？
 	L1: Shhh... no mires atrás.
 	L2: Te he observado montar esos aparatos.
 	L3: Diez nodos cuánticos, diez caminos, diez futuros posibles.
@@ -129,7 +129,7 @@ FirstMetTzeentch: {
 GalacticCrisis: {
 	CrisisIntro1: Con la red cuántica reconectada, hay cosas que debes ver con tus propios ojos.
 	CrisisIntro2: Esta es la sombra que devora los brazos espirales de la galaxia.
-	CrisisIntro3: Sombras hechas de enjambre; antes desplegué millones de titanes estelares para interceptarlos.
+	CrisisIntro3: Sombras hechas de enjambre; antes desplegué millones de titanes de flujo estelar para interceptarlos.
 	CrisisIntro4: Los datos indican una guerra de desgaste perdida: son infinitos y mis recursos se agotarán.
 	CrisisIntro5: Por eso formulé el único plan con probabilidad de éxito mayor que cero.
 	CrisisIntro6: Detonar los núcleos planetarios de todos los mundos del borde exterior al medio de la galaxia.

@@ -1,98 +1,98 @@
 GsMinishark: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: hold the trigger and the shark tastes blood; fire rate climbs while the spread runs wild.
-		At full frenzy every fourth round becomes a shark-tooth bite that tears the wound open.
-		A 50-round drum swaps in one piece; nail the sweet spot to start the next drum half-frenzied
-		''' */
-	// Frenzy: Frenzy!
+		Перековка: удерживайте спуск — акулий голод разгоняет темп, трассы всё диче
+		На полном бешенстве каждый четвёртый выстрел становится зубом акулы: рвёт рану и дожимает укусом
+		Барабан на пятьдесят патронов меняется целиком; ПКМ меняет барабан в любой момент; попадите в яркую полосу — следующий барабан стартует с половиной бешенства
+		'''
+	Frenzy: Прилив!
 }
 
 GsPhoenixBlaster: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: every hit feeds the ember nest and the gun glows brighter; kills feed it faster.
-		At 24 sparks the next shot is reborn as a phoenix that dives, detonates, and splits into three seeking chicks.
-		Reloading breathes the stray sparks back into the chamber; a sweet-spot reload grants 8 sparks outright
-		''' */
-	// Nirvana: Nirvana!
+		Перековка: попадания кормят гнездо, перья на стволе ярче от искр, убийства кормят быстрее
+		На 24 искрах следующий выстрел — пикирующий феникс, что рвётся и делит трёх охотящихся птенцов
+		При зарядке искры влетают обратно в патронник; попадите в яркую полосу — сразу +8 искр
+		'''
+	Nirvana: Нирвана!
 }
 
-/* GsBoomstick.Desc:
+GsBoomstick.Desc:
 	'''
-	Reforged: each barrel throws 4 slugs that converge on your cursor instead of spraying.
-	Where they cross, the jaws snap shut: a delayed bite tears whatever stands at the aim point.
-	Break open to reload both shells; nail the sweet spot for +1 slug per barrel
-	''' */
+	Перековка: 4 дробины в каждом стволе сходятся к прицелу, не веером впустую
+	Дробины смыкаются в точке прицела и жёстко кусают того, кто там стоит
+	ПКМ переламывает и меняет оба патрона разом; попадите в яркую полосу — в следующем магазине +1 дробина на ствол
+	'''
 
 GsHandgun: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: land 3 shots on the same target and the 4th becomes a pressure-point round;
-		it hits 80% harder and ignores 15 armor. The last round racks the slide with extra punch.
-		Box-magazine drills: tactical reload is nearly instant, and the sweet spot is generous
-		''' */
-	// PointShot: Pressure point!
+		Перековка: 3 попадания по одной цели — 4-й выстрел сам становится точечным: урон резко выше и игнорирует 15 защиты
+		Последний патрон магазина тяжелее и летит дальше
+		Скоростная смена магазина: при запасе ПКМ меняет магазин очень быстро, яркая полоса шире всего
+		'''
+	PointShot: Точка!
 }
 
-/* GsTheUndertaker.Desc:
+GsTheUndertaker.Desc:
 	'''
-	Reforged: fell a foe, or wound one near death, and the gun collects a soul lantern
-	that drifts back to mend you once per cylinder.
-	The final chamber tolls the burial bell: a heavy blood round with doubled knockback
-	''' */
+	Перековка: убийство или удар по при смерти забирает лампу души — она летит к вам и лечит, раз за магазин
+	Последний выстрел — похоронный колокол: попадание бьёт скорбной волной, отбрасывание удвоено
+	Поштучная зарядка прерывается выстрелом — сколько зарядили, столько и стреляете
+	'''
 
 GsRedRyder: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: copper BBs ricochet off blocks twice, jingling a bell with every bounce.
-		Ring the same target five times in quick succession and the next shot is a gift round
-		that bursts into festive shrapnel. Lever-load one BB at a time; fire whenever you like
-		''' */
-	// Gift: Gift round!
+		Перековка: медные шарики скачут между блоками дважды, каждый отскок звенит колокольчиком
+		Пять звонков по одной цели за короткое окно — следующий выстрел становится подарком и рвётся конфетти
+		Рычаг заряжает по одному — сколько нажали, столько и стреляете
+		'''
+	Gift: Подарок!
 }
 
 GsPewMaticHorn: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: a seven-note magazine, do to ti, each pew tinted by its note.
-		Land three notes in a row on the same target to strike a chord: a paint burst in the third note's color.
-		Reloading plays the scale back up; catch the sweet spot on the high note for bigger chords
-		''' */
-	// Chord: Chord!
+		Перековка: магазин из семи нот идёт вверх по гамме, каждый выстрел — свой цвет и звук
+		Три ноты по одной цели складываются в аккорд и взрываются цветом третьей
+		Зарядка — восходящая гамма; попадите в яркую полосу на высокой ноте — аккорд этого магазина крупнее и больнее
+		'''
+	Chord: Аккорд!
 }
 
 GsSandgun: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: sustained fire heats the hopper; keep pouring and the sand melts in the chamber.
-		While molten, rounds leave as glass bolts that fly faster, pierce deeper, and shatter into razor facets.
-		Reload pours in three rustling beats; a sweet-spot pour ignites the hopper instantly
-		''' */
-	// Molten: Molten!
+		Перековка: непрерывный песок греет ковш; на полном жаре песок в стволе спекается в стеклянные дротики
+		Стеклянные дротики быстрее и пронзают, при попадании сыплют звонкой крошкой; простой остывает
+		Обычный песок ведёт себя по-старому; попадите в яркую полосу — ковш сразу раскалён
+		'''
+	Molten: Стекло!
 }
 
-/* GsBlowpipe.Desc:
+GsBlowpipe.Desc:
 	'''
-	Reforged: each hit on the same target threads in a venom fuse; three fuses burst into a lingering toxic cloud.
-	Reloading is catching your breath, one dart per gulp; stand still to breathe 25% faster.
-	A sweet-spot breath envenoms the next dart to detonate the fuses on contact
-	''' */
-/* GsBlowgun.Desc:
+	Перековка: попадания по одной цели вбивают ядовитый фитиль; три фитиля взрывают стоячий ядовитый туман
+	Зарядка — вдох, по дротику за глоток, можно прервать; стоя на месте вдох на четверть быстрее
+	Попадите в яркую полосу — следующий дротик сразу подрывает фитили
 	'''
-	Reforged: one long breath drives 5 darts, each flying harder and faster than the last.
-	The fifth dart empties the lungs: a heavy bolt that bursts into a broad toxic cloud on impact.
-	Breathe back one dart per gulp, faster while standing still; a sweet-spot breath starts you at third-dart strength
-	''' */
-/* GsHarpoon.Desc:
+GsBlowgun.Desc:
 	'''
-	Reforged: the harpoon flies out and winds back; the reload IS the chain coming home.
-	Spear a heavy foe to set an anchor, then pull the trigger again to winch yourself to it.
-	Light foes get dragged back to you on the return pass
-	''' */
-/* GsFlareGun.Desc:
+	Перековка: один долгий выдох гонит пять дротиков, каждый быстрее и злее предыдущего
+	Пятый выдыхает лёгкие целиком и взрывает большое облако яда
+	Вдох по глотку прерывается, стоя быстрее; попадите в яркую полосу — магазин стартует с темпа третьего глотка
 	'''
-	Reforged: a four-color canister, red, green, blue, then white, each flare pinning into flesh and burning there.
-	A pinned foe takes 12% more damage from you (16% for the white flare).
-	Swap canisters in two beats; a sweet-spot swap fires the next pull as a double flare
-	''' */
+GsHarpoon.Desc:
+	'''
+	Перековка: гарпун уходит и возвращается, возврат цепи и есть зарядка
+	Укол тяжёлого врага ставит якорь — ещё один спуск лебёдкой швыряет вас к нему
+	Лёгкого врага наоборот: обратная цепь тащит его к вам
+	'''
+GsFlareGun.Desc:
+	'''
+	Перековка: красный, зелёный, синий, белый сигналы крутятся и впиваются, горят и светят
+	Меченый враг получает +12% всего вашего урона, белый финальный сигнал поднимает до 16%
+	ПКМ крутит баллон за два такта; попадите в яркую полосу — следующий выстрел двойной
+	'''

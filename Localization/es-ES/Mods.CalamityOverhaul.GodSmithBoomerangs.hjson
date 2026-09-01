@@ -1,98 +1,98 @@
-/* GsWoodenBoomerang.Desc:
+GsWoodenBoomerang.Desc:
 	'''
-	Living wood remembers the throw: after its first hit it rebounds toward another nearby foe
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsEnchantedBoomerang.Desc:
+	La madera viva recuerda la fuerza de la mano que la lanza: tras el primer impacto, rebota hacia otro enemigo cercano
+	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
-	Decelerates outbound, gathers starlight while hovering, accelerates home
-	At the hover peak it flings three homing star sparks, each dealing 30% damage
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsFruitcakeChakram.Desc:
+GsEnchantedBoomerang.Desc:
 	'''
-	Outbound hits frost the target with sugar glaze, up to three coats
-	Hitting a glazed target on the return detonates every coat, 25% bonus damage per coat
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsBloodyMachete.Desc:
+	En la ida frena, se queda en el aire cargando y en la vuelta acelera hacia la mano
+	En el vértice de la suspensión dispara tres destellos estelares que persiguen enemigos, 30% de daño cada uno
+	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
-	Hits inflict Bleeding and carve a tally; three tallies on one target let the blood loose
-	The bloodletting strike deals 40% bonus damage and heals you for 2 life
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsIceBoomerang.Desc:
+GsFruitcakeChakram.Desc:
 	'''
-	Hits inflict Frostburn and shatter off two piercing ice shards, each dealing 25% damage
-	While hovering it frosts over, wreathed in freezing mist
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsShroomerang.Desc:
+	Los impactos de ida bañan al objetivo en almíbar, hasta tres capas
+	Si en la vuelta vuelves a golpear a un objetivo azucarado, detonas el almíbar: +25% de daño por capa
+	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
-	At the hover peak it puffs out a lingering spore cloud that keeps searing foes inside
-	The flight path rains glowing spores
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsThornChakram.Desc:
+GsBloodyMachete.Desc:
 	'''
-	Hits poison the target and burst three thorn spikes outward, each dealing 22% damage
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsCombatWrench.Desc:
+	Al acertar aplica hemorragia y deja una marca; tres marcas en el mismo objetivo lo desangran
+	Ese golpe de sangría añade un 40% de daño y te recupera 2 de vida
+	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
-	Every third hit on the same target is a bolt-knock: 80% bonus damage
-	Bolt-knocks against steel constructs gain another 25%
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsFlamarang.Desc:
+GsIceBoomerang.Desc:
 	'''
-	Every hit sets the target on fire
-	At the hover peak it bursts into a ring of flame; the return path drops smoldering embers
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsTrimarang.Desc:
+	Al acertar aplica quemadura gélida y dispara dos esquirlas de hielo que atraviesan, 25% de daño cada una
+	Al suspenderse, el disco se escarcha y lo rodea una niebla gélida
+	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
-	Up to three airborne; each extra boomerang in flight grants all of them 8% damage
-	Right click: the whole squad dashes toward your cursor at once
-	''' */
-/* GsFlyingKnife.Desc:
+GsShroomerang.Desc:
 	'''
-	Hold the attack button to steer the knife after your cursor
-	Release it to whirl in place, slashing all around, then carve a straight line home
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsBananarang.Desc:
+	En el vértice de la suspensión expulsa una nube de esporas que se queda y quema sin parar a los enemigos dentro
+	Por la trayectoria van cayendo esporas luminosas
+	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
-	Throw up to ten; every hit ripens that banana, 6% bonus damage per stage, five stages max
-	Right click: every airborne banana dashes toward your cursor at once
-	''' */
-/* GsLightDisc.Desc:
+GsThornChakram.Desc:
 	'''
-	On hitting a foe it refracts toward the nearest other enemy, up to three times
-	Each refraction loses 10% damage
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsPossessedHatchet.Desc:
+	Al acertar envenena al objetivo y dispara tres púas de zarza hacia afuera, 22% de daño cada una
+	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
-	A wind-up throw: the possessed axe accelerates after its prey, then latches on,
-	whirling around the victim; every slash brands a soul mark, the fifth ruptures for 150% damage
-	Right click while it flies: command it to redirect its hunt
-	''' */
-/* GsPaladinsHammer.Desc:
+GsCombatWrench.Desc:
 	'''
-	A two-handed overhead throw; the hammer arcs heavily through the air
-	At the end of its flight it rises, then slams down for 65% area damage and a shockwave
-	Right click while it flies: it dashes to your cursor and delivers the slam there
-	''' */
-/* GsSergeantUnitedShield.Desc:
+	Cada tercer impacto al mismo objetivo es un golpe de perno: +80% de daño
+	Si el perno cae sobre un ensamblaje de acero, añade otro 25%
+	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
-	Outbound it ricochets between foes up to four times, knocking harder with every bounce
-	Catching it raises your guard for a moment, blocking one instance of damage
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsAnchor.Desc:
+GsFlamarang.Desc:
 	'''
-	Flies in a heavy arc, then plunges straight down past its peak
-	The slam quakes the ground for 60% area damage; the anchor digs in, then reels home along its chain
-	Right click while it flies: command it to dash toward your cursor first
-	''' */
+	Cada impacto prende al objetivo
+	En el vértice de la suspensión estalla un anillo de llamas; en la vuelta va dejando ascuas por el camino
+	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
+	'''
+GsTrimarang.Desc:
+	'''
+	Hasta tres discos a la vez; por cada disco extra en el aire, todos ganan un 8% de daño
+	Clic derecho: todo el equipo embiste a la vez hacia el cursor
+	'''
+GsFlyingKnife.Desc:
+	'''
+	Mantener pulsado el botón de ataque: el cuchillo sigue virando para perseguir el cursor
+	Al soltar, danza y taja en el sitio y luego corta en línea recta de vuelta a la mano
+	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
+	'''
+GsBananarang.Desc:
+	'''
+	Hasta diez a la vez; dentro de un mismo lanzamiento, cada impacto madura ese plátano: +6% de daño por capa, hasta cinco
+	Clic derecho: los plátanos en el aire embisten a la vez hacia el cursor
+	'''
+GsLightDisc.Desc:
+	'''
+	Al acertar a un enemigo se refracta y sigue volando hacia el otro más cercano, hasta tres veces
+	Cada refracción recorta un 10% del daño
+	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
+	'''
+GsPossessedHatchet.Desc:
+	'''
+	Lanzamiento con carga: el hacha poseída acelera a la caza; al acertar se enreda en el objetivo y taja a su alrededor
+	Cada tajo deja una capa de marca de alma rencorosa; la quinta estalla e inflige un 150% de daño
+	En vuelo, clic derecho: ordénalo a cambiar de rumbo y embestir
+	'''
+GsPaladinsHammer.Desc:
+	'''
+	Lanzamiento a dos manos por encima de la cabeza; el martillo vuela en un arco pesado
+	Al llegar al final primero sube y luego cae, suelta una onda de choque e inflige un 65% de daño en área
+	En vuelo, clic derecho: primero embiste hacia el cursor y luego inicia la caída allí
+	'''
+GsSergeantUnitedShield.Desc:
+	'''
+	En la ida rebota entre enemigos hasta cuatro veces; cada salto empuja más fuerte
+	Tras recoger el escudo con la mano, durante un instante paras un golpe recibido
+	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
+	'''
+GsAnchor.Desc:
+	'''
+	Vuela en una parábola pesada; pasada la cima cae en vertical y golpea el suelo
+	El impacto suelta una onda de choque del 60% de daño en área; el ancla se queda un instante y luego vuelve por la cadena
+	En vuelo, clic derecho: ordénalo a embestir primero hacia el cursor
+	'''

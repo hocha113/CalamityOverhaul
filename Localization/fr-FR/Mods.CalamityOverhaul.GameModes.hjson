@@ -2,29 +2,43 @@ GameModeText: {
 	BrutalName: Monde Cruel
 	AsuraName: Enfer Asura
 	AnnihilationName: La Mort immortelle
-	// GodSmithName: Divine Artifice
-	BrutalOnLine: Ce monde est cruel, et pourtant tu l'aimes encore.
+	GodSmithName: Artifice divin
+	BrutalOnLine: "Ce monde est cruel, et pourtant tu l'aimes encore."
 	BrutalOffLine: Le monde rengaine ses crocs. Sa clémence n'est qu'un répit.
 	AsuraOnLine: La voie Asura s'ouvre. Chaque douleur infligée sera pleinement rendue.
 	AsuraOffLine: La voie Asura se ferme. Toutes les dettes sont soldées.
 	AnnihilationOnLine: Tout passera; seule la Mort vit à jamais.
 	AnnihilationOffLine: La Mort se repose un instant; les vivants volent un souffle.
-	// GodSmithOnLine: The Godsmith takes up the hammer; every common iron shall be reforged.
-	// GodSmithOffLine: The forge fire wanes; all arms return to their former shape.
-	BrutalDesc: Libère l'IA retravaillée et impitoyable des boss brutaux; tous les autres ennemis gagnent 50% de vie et de dégâts, et les moindres créatures deviennent rapides et frénétiques
-	AsuraDesc: L'amélioration monte à 100%. Les ennemis s'adaptent aux dégâts répétés du même type, et chacun de tes coups fixe le plancher des leurs
-	AnnihilationDesc: La forme ultime de l'Enfer Asura dans un monde zénith. Chaque terreur double encore: les ennemis s'adaptent deux fois plus vite et ta douleur est rendue au double
-	// BrutalCreationDesc: Master is the floor: reworked bosses awaken, all foes empowered
-	// AsuraCreationDesc: Master is the floor: foes adapt to your blows and mirror your pain
-	// GodSmithDesc: Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched, and it toggles independently of every other mode
-	// GodSmithRecastTitle: Godsmith Reforged
-	// GodSmithEndowPrefix: "Endowment: "
+	GodSmithOnLine: Le Forgeron divin lève le marteau; tout fer commun sera reforgé.
+	GodSmithOffLine: Le feu de la forge s'éteint; les armes reprennent leur forme première.
+	BrutalDesc: 
+		'''
+		Libère l'IA retravaillée et impitoyable des boss; leurs valeurs prennent le mode Maître comme plancher.
+		Tous les ennemis gagnent 50% de vie et de dégâts; les petites créatures accélèrent et restent en frénésie.
+		'''
+	AsuraDesc: 
+		'''
+		L'amplification monte à 100%. Les ennemis s'adaptent aux attaques répétées du même type,
+		et les dégâts que tu infliges deviennent le plancher de leurs coups.
+		Les attaques de mêlée résistent à l'adaptation, la lame elle-même plus encore;
+		plus tu frappes près, plus la mêlée fait mal.
+		'''
+	AnnihilationDesc: "La forme ultime de l'Enfer Asura dans un monde zénith. Chaque terreur double encore: les ennemis s'adaptent deux fois plus vite et ta douleur est rendue au double"
+	BrutalCreationDesc: "Le mode Maître est le plancher: les boss retravaillés s'éveillent, tous les ennemis sont amplifiés de moitié"
+	AsuraCreationDesc: "Le mode Maître est le plancher: les ennemis s'adaptent à tes coups, la douleur est rendue à l'identique"
+	GodSmithDesc: 
+		'''
+		Toutes les armes vanilla reçoivent une façon d'attaquer toute neuve,
+		et les armures vanilla gagnent un don de set fidèle à leur nature.
+		N'altère pas la force des ennemis; interrupteur indépendant, sans effet sur les autres modes
+		'''
+	GodSmithRecastTitle: Reforge du Forgeron divin
+	GodSmithEndowPrefix: "Don :"
 	StateOn: Actif
 	StateOff: En sommeil
 	HintEnable: Cliquer pour éveiller
 	HintDisable: Cliquer pour sceller
 	BossRefuse: Un boss vit encore. Le pacte ne peut être modifié maintenant
-	// AsuraNeedBrutal: Awaken Cruel World first
+	AsuraNeedBrutal: Il faut d'abord éveiller le Monde Cruel
 }
-
-// SporeshineAmbience.DazeDeathReason: "{0} drowsed away deep in the spore haze"
+SporeshineAmbience.DazeDeathReason: "{0} s'est assoupi au fond de la brume de spores"

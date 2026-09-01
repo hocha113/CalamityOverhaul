@@ -1,53 +1,53 @@
-/* GsLastPrism.Desc:
+GsLastPrism.Desc:
 	'''
-	Reforged: heat is focus; six splayed beams converge into one white-hot lance, and at white heat the impact refracts prism shards
-	Capping the gauge never breaks the beam, it only surges mana upkeep
-	Right click while channeling to shatter the lance into a prismatic fan, spending all heat
-	''' */
-// GsLastPrismHeldProj.DisplayName: Last Prism Lance
-// GsLastPrismBurstProj.DisplayName: Prismatic Shatter
-// GsLastPrismShardProj.DisplayName: Prism Shard
-/* GsMagicalHarp.Desc:
+	Reforja: el calor es el foco; 6 haces de color se cierran poco a poco al canalizar y, al rojo blanco, se funden en un haz incandescente
+	El impacto del haz blanco refracta Esquirlas de prisma; al tope del medidor el haz no se corta, solo se dispara el gasto de maná
+	Clic derecho al canalizar: el haz se deshace en un abanico de 7 pétalos; la potencia sigue al calor, se gasta el calor y hay que volver a enfocar
 	'''
-	Reforged: unbroken play builds crescendo; at fortissimo the notes swell, race and rain music
-	Right click to resolve all crescendo into a ringing chord shockwave; rapid re-hits echo for bonus damage
-	''' */
-/* GsBubbleGun.Desc:
+GsLastPrismHeldProj.DisplayName: Haz del Último prisma
+GsLastPrismBurstProj.DisplayName: Disgregación prismática
+GsLastPrismShardProj.DisplayName: Esquirlas de prisma
+GsMagicalHarp.Desc:
 	'''
-	Reforged: nonstop spray builds bubble pressure; at a boil the bubbles swell and burst into twin beads on impact
-	Cap the gauge and the barrel jams shut in a gush of foam
-	Right click to vent everything as a fan of seven great bubbles that pop in a rolling chain
-	''' */
-/* GsLaserMachinegun.Desc:
+	Reforja: un fraseo ininterrumpido acumula ímpetu; al llegar al fortissimo las notas se hinchan, corren y caen como lluvia
+	Clic derecho: todo el ímpetu se concentra en una Onda de acorde retumbante; los impactos seguidos y rápidos hacen eco y hieren de nuevo
 	'''
-	Reforged: heat is spin; the barrel drags cold and roars at white heat, where every sixth shot rides a piercing crimson lance
-	Holding the gauge at the redline only surges mana upkeep
-	Right click to vent the whole cylinder as a sweeping thirty-round fan
-	''' */
-/* GsRazorbladeTyphoon.Desc:
+GsBubbleGun.Desc:
 	'''
-	Reforged: each cast banks storm charge; blades born at white heat never get lost, they wheel back to your side and hunt again
-	Right click to open the Eye of the Typhoon at your cursor: every blade in the air is drawn into the vortex, and the eye bursts as it closes
-	''' */
-/* GsMagnetSphere.Desc:
+	Reforja: el chorro continuo acumula presión de burbujas; al hervir, las burbujas se hinchan y al impactar estallan en 2 perlas
+	Al tope del medidor, la espuma atasca el cañón y lo bloquea un instante
+	Clic derecho: toda la presión se ventila en un abanico de 7 burbujas grandes a velocidades distintas que estallan en cadena
 	'''
-	Reforged: while you hold the staff a feed-tether links you to your sphere, and magnetic flux climbs as long as the link holds
-	At full flux the sphere overcharges, lashing heavy arcs at anything close
-	Right click to detonate a magnet storm around the sphere that drags lesser foes toward its heart
-	''' */
-/* GsShadowbeamStaff.Desc:
+GsLaserMachinegun.Desc:
 	'''
-	Reforged: hold to sustain a shadow beam that ricochets off the walls; white heat adds one more bounce and thickens the beam
-	Right click to vent everything as chained shadow bursts along every bend of the beam
-	''' */
-/* GsChargedBlasterCannon.Desc:
+	Reforja: el calor es el régimen; el cañón frío se arrastra y, al rojo blanco, ruge; al rojo blanco, de cada 6 disparos uno monta un haz carmesí perforante
+	Mantenerse en la línea roja no revienta el cañón, solo duplica el consumo de maná
+	Clic derecho: todo el tambor se ventila en un abanico de 30 disparos que barre
 	'''
-	Reforged: hold to channel; cold plasma spits bolts, white heat pulses focused arc lances
-	Charging never stops: cap the gauge and the cannon itself fires the Annihilator, a massive plasma sphere that licks arcs at everything nearby
-	Right click to cash out early as a lesser charge shot
-	''' */
-// GsLaserMachinegunLanceProj.DisplayName: Crimson Lance
-// GsShadowbeamStaffHeldProj.DisplayName: Shadow Polyline Beam
-// GsChargedBlasterCannonHeldProj.DisplayName: Annihilation Charge
-// GsChargedBlasterCannonOrbProj.DisplayName: Annihilator
-// GsMagicalHarpNovaProj.DisplayName: Chord Shockwave
+GsRazorbladeTyphoon.Desc:
+	'''
+	Reforja: cada conjuro acumula potencial de tormenta; las cuchillas nacidas al rojo blanco no se pierden nunca: si se alejan, vuelven a tu lado y cazan de nuevo
+	Clic derecho: abre el Ojo del tifón en el cursor; todas las cuchillas en el aire se arremolinan en el vórtice y, al cerrarse el ojo, estalla en anillo
+	'''
+GsMagnetSphere.Desc:
+	'''
+	Reforja: al sostener el bastón se tiende un nexo magnético entre tú y la esfera; mientras el nexo aguanta, el flujo no deja de subir
+	A flujo pleno, la esfera se sobrecarga y vierte arcos pesados sobre todo lo cercano
+	Clic derecho: detona una tormenta magnética centrada en la esfera que arrastra a los enemigos pequeños hacia el núcleo
+	'''
+GsShadowbeamStaff.Desc:
+	'''
+	Reforja: mantén pulsado para sostener un haz de sombra que se refracta en las paredes; al rojo blanco, un quiebro más y el haz se engrosa
+	Clic derecho: en cada quiebro del haz estallan explosiones de sombra en cadena
+	'''
+GsChargedBlasterCannon.Desc:
+	'''
+	Reforja: mantén pulsado para canalizar la carga; en frío escupe proyectiles de plasma, al rojo blanco dispara pulsos de arco concentrado
+	La carga no se detiene nunca: al tope del medidor, el cañón dispara solo el Cañón de aniquilación, una esfera de plasma enorme que lame con arcos a los enemigos cercanos
+	Clic derecho: suelta antes de tiempo un proyectil concentrado de potencia reducida
+	'''
+GsLaserMachinegunLanceProj.DisplayName: Haz rojo perforante
+GsShadowbeamStaffHeldProj.DisplayName: Haz de sombra quebrado
+GsChargedBlasterCannonHeldProj.DisplayName: Carga de aniquilación
+GsChargedBlasterCannonOrbProj.DisplayName: Cañón de aniquilación
+GsMagicalHarpNovaProj.DisplayName: Onda de acorde

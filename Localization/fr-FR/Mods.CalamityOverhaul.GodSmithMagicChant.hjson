@@ -1,143 +1,143 @@
-/* GsWandOfSparking.Desc:
+GsWandOfSparking.Desc: 
 	'''
-	Reforged: casting on the beat builds resonance, on-beat sparks chain-ignite nearby foes;
-	at full resonance the next cast erupts into a fan of twelve stray sparks
-	''' */
-/* GsWandOfFrosting.Desc:
+	Reforgé : jeter sur le tempo accumule la résonance ; une étincelle sur le temps saute en chaîne et enflamme les ennemis proches ;
+	à résonance pleine, le prochain sort éclate en un éventail de douze braises
 	'''
-	Reforged: on-beat frost bolts refract into ice shards on hit, deeper resonance splits more;
-	at full resonance the next cast breathes a wide cone of freezing mist that inflicts frostbite
-	''' */
-/* GsThunderZapper.Desc:
+GsWandOfFrosting.Desc: 
 	'''
-	Reforged: on-beat bolts zigzag like true lightning and may fork at each bend, resonance quickens the trigger;
-	at full resonance the next hit brands the target and calls down a thunder pillar
-	''' */
-/* GsAmethystStaff.Desc:
+	Reforgé : un bolt de givre sur le temps se réfracte en éclats de glace, plus nombreux à mesure que la résonance monte ;
+	à résonance pleine, le prochain sort souffle un large cône de brume qui inflige Morsure de givre
 	'''
-	Reforged: on-beat bolts shatter into piercing amethyst shards on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsTopazStaff.Desc:
+GsThunderZapper.Desc: 
 	'''
-	Reforged: on-beat bolts shatter into homing topaz shards on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsSapphireStaff.Desc:
+	Reforgé : un bolt de foudre sur le temps zigzague pour de vrai, chaque coude peut forker un petit arc, la résonance accélère la détente ;
+	à résonance pleine, le prochain impact pose une marque de foudre, puis la foudre tombe du ciel
 	'''
-	Reforged: on-beat bolts shatter into swift sapphire lances on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsEmeraldStaff.Desc:
+GsAmethystStaff.Desc: 
 	'''
-	Reforged: on-beat bolts burst into one extra emerald shard on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsRubyStaff.Desc:
+	Reforgé : un bolt de gemme sur le temps éclate en améthyste prismatique qui perce un ennemi de plus ;
+	à résonance pleine, le prochain sort tire trois bolts de gemmes aux teintes voisines
 	'''
-	Reforged: on-beat bolts shatter into ruby shards that detonate in a small blast;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsDiamondStaff.Desc:
+GsTopazStaff.Desc: 
 	'''
-	Reforged: on-beat bolts shatter into diamond shards that refract twin light rays;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsAmberStaff.Desc:
+	Reforgé : un bolt de gemme sur le temps éclate en éclats de topaze à tête chercheuse ;
+	à résonance pleine, le prochain sort tire trois bolts de gemmes aux teintes voisines
 	'''
-	Reforged: on-beat bolts shatter into amber shards that linger as motes of stinging dust;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsVilethorn.Desc:
+GsSapphireStaff.Desc: 
 	'''
-	Reforged: on-beat thorns fork into vile spikes wherever they bite;
-	at full resonance the next cast also erupts a ring of thorns around you
-	''' */
-/* GsWaterBolt.Desc:
+	Reforgé : un bolt de gemme sur le temps éclate en lances de saphir rapides, en ligne droite ;
+	à résonance pleine, le prochain sort tire trois bolts de gemmes aux teintes voisines
 	'''
-	Reforged: on-beat bolts bounce further and ripple on every ricochet;
-	at full resonance the next cast surges into a great tide that pierces through everything
-	''' */
-/* GsBookOfSkulls.Desc:
+GsEmeraldStaff.Desc: 
 	'''
-	Reforged: hits brand foes into the registry, on-beat skulls hunt branded prey;
-	at full resonance the next cast looses three skulls, three brands detonate into a bone burst
-	''' */
-/* GsDemonScythe.Desc:
+	Reforgé : un bolt de gemme sur le temps éclate plus fort, un éclat d'émeraude de plus que les autres gemmes ;
+	à résonance pleine, le prochain sort tire trois bolts de gemmes aux teintes voisines
 	'''
-	Reforged: on-beat scythes wind up faster and may boomerang back at high resonance;
-	at full resonance the next cast crosses two scythes over your cursor
-	''' */
-/* GsAquaScepter.Desc:
+GsRubyStaff.Desc: 
 	'''
-	Reforged: sustained spraying swells into a surge window of crushing water pressure;
-	ride three full surges and the next cast breaks into a fan of tidal slams
-	''' */
-/* GsFlowerOfFire.Desc:
+	Reforgé : un bolt de gemme sur le temps éclate en éclats de rubis qui explosent au contact ;
+	à résonance pleine, le prochain sort tire trois bolts de gemmes aux teintes voisines
 	'''
-	Reforged: on-beat fireballs burst into fans of flame tongues on first landing;
-	at full resonance the next fireball blooms into a burning field where it lands
-	''' */
-/* GsBeeGun.Desc:
+GsDiamondStaff.Desc: 
 	'''
-	Reforged: on-beat volleys fly in a V formation, resonance breeds bigger bees;
-	at full resonance the next cast releases a queen bee that trails a living swarm
-	''' */
-/* GsSpaceGun.Desc:
+	Reforgé : un bolt de gemme sur le temps éclate en éclats de diamant qui réfractent deux rayons rapides ;
+	à résonance pleine, le prochain sort tire trois bolts de gemmes aux teintes voisines
 	'''
-	Reforged: every on-beat shot charges the coil, the charge never decays on a miss;
-	every fourth charge discharges as a wide piercing pulse that drags in lesser foes
-	''' */
-/* GsGrayZapinator.Desc:
+GsAmberStaff.Desc: 
 	'''
-	Reforged: chaos stays chaos, but on-beat zaps always surge high voltage;
-	at full resonance the next zap overloads into a swollen piercing beam
-	''' */
-/* GsLaserRifle.Desc:
+	Reforgé : un bolt de gemme sur le temps éclate en éclats d'ambre qui laissent un nuage de poussière piquante ;
+	à résonance pleine, le prochain sort tire trois bolts de gemmes aux teintes voisines
 	'''
-	Reforged: every third on-beat shot splits into twin parallel lasers;
-	at full resonance the next shot ignites a sweeping overdrive burst, then the barrel wilts briefly
-	''' */
-/* GsWeatherPain.Desc:
+GsVilethorn.Desc: 
 	'''
-	Reforged: hits leave a storm eye, on-beat casts surge toward it and swell;
-	high resonance twins the whirlwinds, at full resonance the next cast summons a grand storm chorus
-	''' */
-/* GsCursedFlames.Desc:
+	Reforgé : une épine sur le temps, à chaque morsure de chair, fourche en pointes impies ;
+	à résonance pleine, le prochain estoc ouvre aussi un anneau de huit épines autour de vous
 	'''
-	Reforged: on-beat bolts plant curse seeds; the third seed ignites into a ring of cursed spikes and a lingering fire pool
-	At full resonance the next cast unleashes a weaving curse serpent that sheds fire pools along its path
-	''' */
-// GsChantFlameFieldProj.DisplayName: Blazing Flower Field
-// GsChantStormChoirProj.DisplayName: Storm Chorus
-// GsCursedFlamesSerpentProj.DisplayName: Curse Serpent
-// GsCursedFlamesPoolProj.DisplayName: Cursed Fire Pool
-/* GsGoldenShower.Desc:
+GsWaterBolt.Desc: 
 	'''
-	Reforged: hits etch molten ichor; the fifth layer bursts into an eight-way spray and a dripping ichor cluster
-	Spray without pause to build high pressure: faster bolts, denser streams, double etching
-	''' */
-/* GsCrystalVileShard.Desc:
+	Reforgé : un bolt d'eau sur le temps rebondit plus loin, chaque mur ouvre un anneau d'eau ;
+	à résonance pleine, le prochain sort devient une grande marée qui perce tout
 	'''
-	Reforged: on-beat spears embed crystal seeds; when the spear shatters, every seeded foe erupts in a cross of shard rays
-	At full resonance the next cast raises six crystal spears around you
-	''' */
-/* GsUnholyTrident.Desc:
+GsBookOfSkulls.Desc: 
 	'''
-	Reforged: on-beat casts split into a trident of three prongs that sear with hellfire
-	At full resonance the next cast raises four waves of infernal tridents from beneath your cursor
-	''' */
-/* GsNettleBurst.Desc:
+	Reforgé : un impact inscrit l'ennemi au registre ; les crânes sur le temps chassent les proies inscrites ;
+	à résonance pleine, le prochain sort lâche trois crânes en triangle ; trois marques sur la même cible, explosion d'os
 	'''
-	Reforged: on-beat vines take root where they bite, leaving stinging nettle thickets (up to three)
-	At full resonance the next cast unleashes a great vine dragon that sweeps through the field
-	''' */
-/* GsWaspGun.Desc:
+GsDemonScythe.Desc: 
 	'''
-	Reforged: on-beat wasps sting a pheromone mark into their prey; every wasp in the air hunts the marked target first
-	At full resonance the next cast releases a queen wasp that cruises ahead, seeding hunters along her path
-	''' */
-// GsGoldenShowerDripProj.DisplayName: Ichor Cluster
-// GsNettleBurstThicketProj.DisplayName: Nettle Thicket
-// GsNettleBurstDragonProj.DisplayName: Vine Dragon
-// GsWaspGunQueenProj.DisplayName: Queen Wasp
+	Reforgé : une faux sur le temps se charge plus vite ; à résonance haute, elle revient pour un second passage ;
+	à résonance pleine, le prochain sort croise deux faux, horizontale et verticale, sur le viseur
+	'''
+GsAquaScepter.Desc: 
+	'''
+	Reforgé : le jet continu gonfle la marée ; dans la fenêtre de crue, la pression monte, le mana coûte moins, une vague toutes les trois respirations ;
+	après trois crues, le prochain sort éclate en un éventail de brisants
+	'''
+GsFlowerOfFire.Desc: 
+	'''
+	Reforgé : une boule de feu sur le temps, au premier atterrissage, ouvre un éventail de langues ; la résonance ajoute des rebonds et des langues ;
+	à résonance pleine, la prochaine boule s'ouvre en un champ de fleurs brûlantes
+	'''
+GsBeeGun.Desc: 
+	'''
+	Reforgé : un essaim sur le temps vole en V ; plus la résonance est haute, plus il y a de grandes abeilles ;
+	à résonance pleine, le prochain sort lâche une reine qui sème un essaim vivant
+	'''
+GsSpaceGun.Desc: 
+	'''
+	Reforgé : chaque tir sur le temps charge une case de bobine, un raté ne remet pas à zéro ;
+	toutes les quatre cases, ce tir devient une impulsion large et perçante qui tire les petits ennemis
+	'''
+GsGrayZapinator.Desc: 
+	'''
+	Reforgé : le chaos reste le chaos, mais un zap sur le temps est toujours un segment haute tension ;
+	à résonance pleine, le prochain tir surcharge en un faisceau gonflé et perçant
+	'''
+GsLaserRifle.Desc: 
+	'''
+	Reforgé : tous les trois tirs sur le temps d'affilée, le troisième se scinde en deux lasers parallèles ;
+	à résonance pleine, le prochain tir allume une rafale en surchauffe, cadence en flèche, puis le canon s'essouffle un instant
+	'''
+GsWeatherPain.Desc: 
+	'''
+	Reforgé : un impact laisse un œil de tempête ; le prochain sort sur le temps fonce vers l'œil et gonfle ;
+	à trois charges de résonance, deux tornades tournent ensemble ; à résonance pleine, le prochain sort appelle un Chœur de tempête
+	'''
+GsCursedFlames.Desc: 
+	'''
+	Reforgé : un bolt de Flammes maudites sur le temps plante une graine ; à trois graines, elles s'enflamment, huit épines maudites et un bassin de feu
+	À résonance pleine, le prochain sort lâche un serpent incendiaire qui goutte des Flammes maudites
+	'''
+GsChantFlameFieldProj.DisplayName: Champ de fleurs de feu
+GsChantStormChoirProj.DisplayName: Chœur de tempête
+GsCursedFlamesSerpentProj.DisplayName: Serpent incendiaire
+GsCursedFlamesPoolProj.DisplayName: Bassin de Flammes maudites
+GsGoldenShower.Desc: 
+	'''
+	Reforgé : les impacts gravent une marque d'ichor ; à cinq charges, explosion en huit jets et un globule d'or sacré qui goutte ;
+	un jet ininterrompu accumule la haute pression : bolts plus rapides, flux plus dense, gravure doublée
+	'''
+GsCrystalVileShard.Desc: 
+	'''
+	Reforgé : une lance de cristal sur le temps plante une graine ; quand la lance se brise, chaque ennemi ensemencé explose en croix de cristal ;
+	à résonance pleine, le prochain sort dresse six lances en anneau autour de vous
+	'''
+GsUnholyTrident.Desc: 
+	'''
+	Reforgé : un sort sur le temps se scinde en un trident de trois fourches, brûlées au Feu infernal ;
+	à résonance pleine, le prochain sort soulève quatre vagues de fourches depuis sous le curseur
+	'''
+GsNettleBurst.Desc: 
+	'''
+	Reforgé : une liane sur le temps s'enracine à la morsure, laissant un fourré d'orties qui retient (trois au plus) ;
+	à résonance pleine, le prochain sort lâche un dragon de lianes qui balaye le champ
+	'''
+GsWaspGun.Desc: 
+	'''
+	Reforgé : une guêpe sur le temps pique une marque de phéromone ; toutes les guêpes en l'air chassent d'abord cette proie ;
+	à résonance pleine, le prochain sort lâche une reine qui sème des chasseuses sur son passage
+	'''
+GsGoldenShowerDripProj.DisplayName: Globule d'or sacré
+GsNettleBurstThicketProj.DisplayName: Fourré d'orties
+GsNettleBurstDragonProj.DisplayName: Dragon de lianes
+GsWaspGunQueenProj.DisplayName: Reine guêpe

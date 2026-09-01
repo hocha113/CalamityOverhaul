@@ -1,103 +1,103 @@
 System: {
-	// UnlockBroadcast: Death nods. "{0}" has entered the Wheel of Passing
-	// KindleLabel: Kindle
-	// SnuffLabel: Snuff
-	// BurningCounter: Burning {0}/{1}
-	// SlotFullNotice: All lamp seats are taken. Snuff one flame before kindling another
-	// LockedHint: Slay it while Asura reigns, and its soulflame will take its seat
-	// HudName: Soulguide Lantern
-	// HudOpenHint: Click to open the Wheel of Passing
-	// WheelTitle: Wheel of Passing
-	// CenterHint: Pick a soul bead to view its blessing
-	// CloseHint: Esc, right-click, or {0} folds the Wheel
+	UnlockBroadcast: Смерть кивает: «{0}» вошло в Колесо перерождения
+	KindleLabel: Зажечь
+	SnuffLabel: Погасить
+	BurningCounter: "Пламя {0}/{1}"
+	SlotFullNotice: Подставки заняты. Погасите одну лампу, прежде чем зажечь новое благословение
+	LockedHint: Победите его при сошествии Асуры — тогда пламя души вернётся на место
+	HudName: Лампа душ
+	HudOpenHint: Нажмите, чтобы открыть Колесо перерождения
+	WheelTitle: Колесо перерождения
+	CenterHint: Выберите бусину души, чтобы увидеть её благословение
+	CloseHint: Esc, ПКМ или клавиша {0} сворачивают Колесо перерождения
 }
 
 KingSlimeBlessing: {
-	// DisplayName: Crown of Royal Gel
-	// Description: Sheathed in gel, contact damage from enemies is reduced by 12%
+	DisplayName: Корона желе
+	Description: Гель облекает тело; контактный урон врагов снижен на 12%
 }
 
 EyeOfCthulhuBlessing: {
-	// DisplayName: Abyssal Pupil
-	// Description: Critical strike chance increased by 5%, plus another 3% at night
+	DisplayName: Око бездны
+	Description: Шанс критического удара +5%, ночью ещё +3%
 }
 
 EaterOfWorldsBlessing: {
-	// DisplayName: Ring of Rot
-	// Description: Your attacks inflict Erosion, reducing the target's defense by 10 for 5 seconds
+	DisplayName: Кольцо порчи
+	Description: Ваши атаки разъедают цель: защита −10 на 5 секунд
 }
 
 BrainOfCthulhuBlessing: {
-	// DisplayName: Pain Empathy
-	// Description: For 5 seconds after taking damage, your damage is increased by 12%
+	DisplayName: Сочувствие боли
+	Description: После получения урона ваши атаки наносят на 12% больше урона в течение 5 секунд
 }
 
 QueenBeeBlessing: {
-	// DisplayName: Hive Mending
-	// Description: Healing items restore 15% more life
+	DisplayName: Регенерация улья
+	Description: Восстановление от лечебных предметов увеличено на 15%
 }
 
 SkeletronBlessing: {
-	// DisplayName: Bonewatch
-	// Description: Every 45 seconds the bones stand watch, halving the next hit you take
+	DisplayName: Стража костей
+	Description: Каждые 45 секунд собирается стража: следующий полученный урон уменьшается вдвое
 }
 
 DeerclopsBlessing: {
-	// DisplayName: Winter's Stride
-	// Description: No slipping on ice, movement speed increased by 8%, immune to Chilled
+	DisplayName: Зимний шаг
+	Description: Лёд больше не скользит, скорость передвижения +8%, иммунитет к холоду
 }
 
 WallOfFleshBlessing: {
-	// DisplayName: Covenant of Flesh
-	// Description: After taking damage, 20% of it is slowly restored over 8 seconds
+	DisplayName: Завет плоти
+	Description: После получения урона 20% от него медленно возвращается в течение 8 секунд
 }
 
 QueenSlimeBlessing: {
-	// DisplayName: Crystal Plume
-	// Description: Immune to fall damage, jump height increased
+	DisplayName: Кристальное перо
+	Description: Иммунитет к урону от падения, сила прыжка повышена
 }
 
 TwinsBlessing: {
-	// DisplayName: Twin Pupil Concerto
-	// Description: Consecutive hits on the same target raise damage by 2% each, up to 5 stacks
+	DisplayName: Дуэт зрачков
+	Description: Повторные попадания по одной цели повышают урон на 2% за раз, до 5 слоев
 }
 
 DestroyerBlessing: {
-	// DisplayName: Probe Circuit
-	// Description: Kills restore 3 mana, and shots have a 1 in 12 chance not to consume ammo
+	DisplayName: Контур зондов
+	Description: Убийство врага восстанавливает 3 маны; выстрелы с вероятностью 1/12 не тратят боеприпасы
 }
 
 SkeletronPrimeBlessing: {
-	// DisplayName: Overclocked Frame
-	// Description: Item use speed increased by 5%
+	DisplayName: Перегруженный скелет
+	Description: Скорость использования предметов +5%
 }
 
 PlanteraBlessing: {
-	// DisplayName: Thorned Renewal
-	// Description: Life regeneration increased, and further increased for 3 seconds after taking damage
+	DisplayName: Возрождение терновника
+	Description: Регенерация жизни повышена; ещё сильнее в течение 3 секунд после получения урона
 }
 
 GolemBlessing: {
-	// DisplayName: Heart of Stone
-	// Description: Defense increased by 8, and you can no longer be knocked back
+	DisplayName: Каменное сердце
+	Description: Защита +8, иммунитет к отбрасыванию
 }
 
 DukeFishronBlessing: {
-	// DisplayName: Raging Tide
-	// Description: Below half life, movement speed is increased by 12% and damage by 8%
+	DisplayName: Яростный прилив
+	Description: При здоровье ниже половины скорость передвижения +12%, урон +8%
 }
 
 EmpressBlessing: {
-	// DisplayName: Daylight Verdict
-	// Description: Critical strike damage increased by 18% during the day
+	DisplayName: Приговор дневного света
+	Description: Днём критический урон +18%
 }
 
 LunaticCultistBlessing: {
-	// DisplayName: Lunar Aegis
-	// Description: Every 40 seconds a lunar shield forms, fully blocking one enemy projectile
+	DisplayName: Щит лунной фазы
+	Description: Каждые 40 секунд сгущается щит лунной фазы, полностью блокирующий один вражеский снаряд
 }
 
 MoonLordBlessing: {
-	// DisplayName: Starcore Resonance
-	// Description: All damage dealt increased by 8%
+	DisplayName: Резонанс звёздного ядра
+	Description: Весь наносимый урон +8%
 }

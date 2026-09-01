@@ -1,99 +1,182 @@
 GodSmithExecutionEndow: {
-	// EndowName: Executioner's Line
-	// EndowDesc: Striking a foe below {0}% life looses an executioner's slash dealing {1}% of that hit
+	EndowName: Росчерк казни
+	EndowDesc:
+		'''
+		Попадание по врагу ниже {0}% здоровья выпускает казнящий росчерк
+		Росчерк наносит {1}% урона этого удара
+		'''
 }
 
 GodSmithOverkillEndow: {
-	// EndowName: Overkill Cascade
-	// EndowDesc: Kills send a crimson bolt to a nearby foe, carrying {0}% of the overkill plus {1}% of the hit
+	EndowName: Цепь переизбытка
+	EndowDesc:
+		'''
+		Убийство шлёт багровый разряд к ближайшему врагу
+		Он несёт {0}% избыточного урона плюс {1}% этого удара
+		'''
 }
 
 GodSmithCritMarkEndow: {
-	// EndowName: Critical Sigil
-	// EndowDesc: Hits engrave a sigil; at {0} stacks it detonates as a guaranteed critical dealing {1}% of that hit
+	EndowName: Метка крита
+	EndowDesc:
+		'''
+		Попадания гравируют метку; на {0} слоях она взрывается
+		Взрыв — гарантированный крит, база {1}% этого удара
+		'''
 }
 
 GodSmithEchoSlashEndow: {
-	// EndowName: Blade Echo
-	// EndowDesc: Hits echo outward as a blade-wind ring dealing {0}% of that hit to other nearby foes
+	EndowName: Эхо клинка
+	EndowDesc:
+		'''
+		Попадание поднимает клинок-ветер и гонит его вокруг
+		Остальным врагам — {0}% урона этого удара
+		'''
 }
 
 GodSmithShockwaveEndow: {
-	// EndowName: Concussive Wave
-	// EndowDesc: Every 1.5s, a hit slams out a shockwave knocking nearby foes away and dealing {0}% of that hit
+	EndowName: Ударная волна
+	EndowDesc:
+		'''
+		Каждые 1.5 с попадание бьёт ударной волной
+		Отбрасывает ближних и наносит {0}% урона этого удара
+		'''
 }
 
 GodSmithComboEndow: {
-	// EndowName: Combo Surge
-	// EndowDesc: Consecutive hits build momentum; the {0}th strike erupts for {1}% of that hit in an area
+	EndowName: Всплеск комбо
+	EndowDesc:
+		'''
+		Серия попаданий копит темп; {0}-й удар вспыхивает
+		Область получает {1}% урона этого удара
+		Пауза или смена оружия сбрасывает темп
+		'''
 }
 
 GodSmithAfterimageEndow: {
-	// EndowName: Afterimage Strike
-	// EndowDesc: Every {0}th use, a pale afterimage lashes toward the cursor dealing {1}% weapon damage
+	EndowName: Удар послеобразия
+	EndowDesc:
+		'''
+		Каждое {0}-е применение шлёт послеобразие к прицелу
+		Наносит {1}% урона оружия
+		'''
 }
 
 GodSmithBallisticEndow: {
-	// EndowName: Piercing Tracer
-	// EndowDesc: Every {0}th shot adds a piercing tracer round dealing {1}% weapon damage
+	EndowName: Пронзающий трассер
+	EndowDesc:
+		'''
+		Каждый {0}-й выстрел добавляет трассер
+		Пронзает врагов, нанося {1}% урона оружия
+		'''
 }
 
 GodSmithRicochetEndow: {
-	// EndowName: Wild Ricochet
-	// EndowDesc: Projectile hits ricochet a copper spark into another foe for {0}% of that hit
+	EndowName: Рикошет
+	EndowDesc:
+		'''
+		Снаряд после попадания отскакивает искрой к другому врагу
+		Наносит {0}% урона этого удара
+		'''
 }
 
 GodSmithPhantomVolleyEndow: {
-	// EndowName: Phantom Volley
-	// EndowDesc: Every {0}th shot conjures {1} phantom bolts, each dealing {2}% weapon damage
+	EndowName: Призрачный залп
+	EndowDesc:
+		'''
+		Каждый {0}-й выстрел вызывает {1} призрачных снарядов в залпе
+		Каждый наносит {2}% урона оружия
+		'''
 }
 
 GodSmithManaRefluxEndow: {
-	// EndowName: Mana Reflux
-	// EndowDesc: Hits have a {0}% chance to pull a wisp of mana back to you, restoring {1} mana
+	EndowName: Возврат маны
+	EndowDesc:
+		'''
+		Попадание с шансом {0}% срывает нить маны и гонит её к вам
+		Поймайте — вернёте {1} маны
+		'''
 }
 
 GodSmithOverloadEndow: {
-	// EndowName: Arcane Overload
-	// EndowDesc: While above {0}% mana, hits overload with violet arcs dealing {1}% of that hit
+	EndowName: Чародейская перегрузка
+	EndowDesc:
+		'''
+		Пока маны больше {0}%, попадание взрывает фиолетовые дуги
+		Добавляет {1}% урона этого удара
+		'''
 }
 
 GodSmithMythicEchoEndow: {
-	// EndowName: Mythic Starcall
-	// EndowDesc: Casting calls a star spirit to your side; it hurls starbolts at nearby foes for {0}% weapon damage
+	EndowName: Звёздный зов
+	EndowDesc:
+		'''
+		Заклинание зовёт звёздного духа к боку
+		Дух то и дело швыряет звёздные болты в ближних, по {0}% урона оружия
+		'''
 }
 
 GodSmithDesperationEndow: {
-	// EndowName: Desperate Burst
-	// EndowDesc: This battered weapon rages: hits have a {0}% chance to erupt for {1}% of that hit in an area
+	EndowName: Отчаянный взрыв
+	EndowDesc:
+		'''
+		Изувеченное оружие в беде ревёт
+		Попадание с шансом {0}% взрывается на {1}% урона этого удара по области
+		Чем хуже префикс, тем яростнее взрыв
+		'''
 }
 
 GodSmithHiddenEdgeEndow: {
-	// EndowName: Hidden Edge
-	// EndowDesc: A clumsy weapon hides its true edge: every {0}th use flashes a white slash dealing {1}% weapon damage
+	EndowName: Скрытое лезвие
+	EndowDesc:
+		'''
+		Тупое оружие прячет настоящую кромку
+		Каждое {0}-е применение вспыхивает белым резом на {1}% урона оружия
+		Чем медленнее оружие, тем острее скрытая кромка
+		'''
 }
 
 GodSmithLuckyStarEndow: {
-	// EndowName: Lucky Starfall
-	// EndowDesc: Critical hits call down a lucky star dealing {0}% of that hit
+	EndowName: Счастливая звезда
+	EndowDesc:
+		'''
+		Крит роняет счастливую звезду на цель
+		Наносит {0}% урона этого удара
+		'''
 }
 
 GodSmithMenaceEndow: {
-	// EndowName: Killing Intent
-	// EndowDesc: Hits build killing intent; the {0}th strike rends the foe for {1}% of that hit
+	EndowName: Убийственный умысел
+	EndowDesc:
+		'''
+		Попадания копят умысел; {0}-й удар рвёт чёрно-алым когтем
+		Наносит {1}% урона этого удара
+		'''
 }
 
 GodSmithSwiftFootEndow: {
-	// EndowName: Gale Stride
-	// EndowDesc: Running about {0} tiles charges a gale; your next hit looses a piercing wind blade dealing {1}% of that hit
+	EndowName: Порыв ветра
+	EndowDesc:
+		'''
+		Пробегите около {0} клеток — порыв наполнен
+		Следующее попадание выпускает пронзающий ветряной клинок на {1}% урона этого удара
+		'''
 }
 
 GodSmithViolentSurgeEndow: {
-	// EndowName: Violent Surge
-	// EndowDesc: Melee hits build fury; at {0} stacks it erupts as a crimson blade ring dealing {1}% of that hit
+	EndowName: Яростный всплеск
+	EndowDesc:
+		'''
+		Ближние удары копят ярость; на {0} слоях вспыхивает багровое кольцо клинков
+		Область получает {1}% урона этого удара
+		'''
 }
 
 GodSmithArcaneWardEndow: {
-	// EndowName: Arcane Aegis
-	// EndowDesc: When struck, runes drink your mana: each point of mana blocks {0} damage, up to {1}% of the hit
+	EndowName: Чародейская защита
+	EndowDesc:
+		'''
+		При ударе мана ткёт рунную защиту
+		Каждая 1 единица маны блокирует {0} урона, не больше {1}% этого удара
+		'''
 }

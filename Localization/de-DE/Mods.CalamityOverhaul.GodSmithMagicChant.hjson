@@ -1,143 +1,143 @@
-/* GsWandOfSparking.Desc:
+GsWandOfSparking.Desc:
 	'''
-	Reforged: casting on the beat builds resonance, on-beat sparks chain-ignite nearby foes;
-	at full resonance the next cast erupts into a fan of twelve stray sparks
-	''' */
-/* GsWandOfFrosting.Desc:
+	Umschmiedung: Zaubern im Takt häuft Resonanz, Takt-Funken springen nach dem Treffer zündend zu nahen Feinden;
+	bei voller Resonanz fächert der nächste Gesang zwölf Funkenregen
 	'''
-	Reforged: on-beat frost bolts refract into ice shards on hit, deeper resonance splits more;
-	at full resonance the next cast breathes a wide cone of freezing mist that inflicts frostbite
-	''' */
-/* GsThunderZapper.Desc:
+GsWandOfFrosting.Desc:
 	'''
-	Reforged: on-beat bolts zigzag like true lightning and may fork at each bend, resonance quickens the trigger;
-	at full resonance the next hit brands the target and calls down a thunder pillar
-	''' */
-/* GsAmethystStaff.Desc:
+	Umschmiedung: Takt-Frostfeuer bricht beim Treffer schräge Eissplitter, tiefere Resonanz gibt mehr Brechung;
+	bei voller Resonanz haucht der nächste Gesang einen breiten Eiskegel, wer ihn berührt trägt Frostfraß
 	'''
-	Reforged: on-beat bolts shatter into piercing amethyst shards on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsTopazStaff.Desc:
+GsThunderZapper.Desc:
 	'''
-	Reforged: on-beat bolts shatter into homing topaz shards on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsSapphireStaff.Desc:
+	Umschmiedung: Takt-Donnergeschosse laufen als echte Zickzackblitze, jeder Knick kann kleine Lichtbögen abzweigen, Resonanz beschleunigt den Abzug;
+	bei voller Resonanz hängt der nächste Treffer ein Donnermal, dann fällt Himmelsblitz
 	'''
-	Reforged: on-beat bolts shatter into swift sapphire lances on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsEmeraldStaff.Desc:
+GsAmethystStaff.Desc:
 	'''
-	Reforged: on-beat bolts burst into one extra emerald shard on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsRubyStaff.Desc:
+	Umschmiedung: Takt-Edelsteingeschosse zerbrechen beim Treffer in prismatischen Amethyst, die Splitter durchschlagen ein Ziel extra;
+	bei voller Resonanz schießt der nächste Gesang drei Farben im Farbring
 	'''
-	Reforged: on-beat bolts shatter into ruby shards that detonate in a small blast;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsDiamondStaff.Desc:
+GsTopazStaff.Desc:
 	'''
-	Reforged: on-beat bolts shatter into diamond shards that refract twin light rays;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsAmberStaff.Desc:
+	Umschmiedung: Takt-Edelsteingeschosse zerbrechen beim Treffer in verfolgende Topassplitter, die dem Licht nachbeißen;
+	bei voller Resonanz schießt der nächste Gesang drei Farben im Farbring
 	'''
-	Reforged: on-beat bolts shatter into amber shards that linger as motes of stinging dust;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsVilethorn.Desc:
+GsSapphireStaff.Desc:
 	'''
-	Reforged: on-beat thorns fork into vile spikes wherever they bite;
-	at full resonance the next cast also erupts a ring of thorns around you
-	''' */
-/* GsWaterBolt.Desc:
+	Umschmiedung: Takt-Edelsteingeschosse zerbrechen beim Treffer in rasende Saphir-Kristalllanzen, gerader Durchschlag;
+	bei voller Resonanz schießt der nächste Gesang drei Farben im Farbring
 	'''
-	Reforged: on-beat bolts bounce further and ripple on every ricochet;
-	at full resonance the next cast surges into a great tide that pierces through everything
-	''' */
-/* GsBookOfSkulls.Desc:
+GsEmeraldStaff.Desc:
 	'''
-	Reforged: hits brand foes into the registry, on-beat skulls hunt branded prey;
-	at full resonance the next cast looses three skulls, three brands detonate into a bone burst
-	''' */
-/* GsDemonScythe.Desc:
+	Umschmiedung: Takt-Edelsteingeschosse zerbrechen beim Treffer üppiger, einen Smaragdsplitter mehr als die anderen Edelsteine;
+	bei voller Resonanz schießt der nächste Gesang drei Farben im Farbring
 	'''
-	Reforged: on-beat scythes wind up faster and may boomerang back at high resonance;
-	at full resonance the next cast crosses two scythes over your cursor
-	''' */
-/* GsAquaScepter.Desc:
+GsRubyStaff.Desc:
 	'''
-	Reforged: sustained spraying swells into a surge window of crushing water pressure;
-	ride three full surges and the next cast breaks into a fan of tidal slams
-	''' */
-/* GsFlowerOfFire.Desc:
+	Umschmiedung: Takt-Edelsteingeschosse zerbrechen beim Treffer in Rubinsplitter, die beim Feindkontakt klein explodieren;
+	bei voller Resonanz schießt der nächste Gesang drei Farben im Farbring
 	'''
-	Reforged: on-beat fireballs burst into fans of flame tongues on first landing;
-	at full resonance the next fireball blooms into a burning field where it lands
-	''' */
-/* GsBeeGun.Desc:
+GsDiamondStaff.Desc:
 	'''
-	Reforged: on-beat volleys fly in a V formation, resonance breeds bigger bees;
-	at full resonance the next cast releases a queen bee that trails a living swarm
-	''' */
-/* GsSpaceGun.Desc:
+	Umschmiedung: Takt-Edelsteingeschosse zerbrechen beim Treffer in Diamantsplitter, die beim Feindkontakt zwei Lichtstrahlen brechen;
+	bei voller Resonanz schießt der nächste Gesang drei Farben im Farbring
 	'''
-	Reforged: every on-beat shot charges the coil, the charge never decays on a miss;
-	every fourth charge discharges as a wide piercing pulse that drags in lesser foes
-	''' */
-/* GsGrayZapinator.Desc:
+GsAmberStaff.Desc:
 	'''
-	Reforged: chaos stays chaos, but on-beat zaps always surge high voltage;
-	at full resonance the next zap overloads into a swollen piercing beam
-	''' */
-/* GsLaserRifle.Desc:
+	Umschmiedung: Takt-Edelsteingeschosse zerbrechen beim Treffer in Bernsteinsplitter, wo sie verlöschen bleibt ein blendendes Staubfeld;
+	bei voller Resonanz schießt der nächste Gesang drei Farben im Farbring
 	'''
-	Reforged: every third on-beat shot splits into twin parallel lasers;
-	at full resonance the next shot ignites a sweeping overdrive burst, then the barrel wilts briefly
-	''' */
-/* GsWeatherPain.Desc:
+GsVilethorn.Desc:
 	'''
-	Reforged: hits leave a storm eye, on-beat casts surge toward it and swell;
-	high resonance twins the whirlwinds, at full resonance the next cast summons a grand storm chorus
-	''' */
-/* GsCursedFlames.Desc:
+	Umschmiedung: Jeder Takt-Dornenbiss in Fleisch zweigt Unheilsspitzen aus der Wunde;
+	bei voller Resonanz sticht der nächste Stoß und fächert zugleich einen Achtring um dich
 	'''
-	Reforged: on-beat bolts plant curse seeds; the third seed ignites into a ring of cursed spikes and a lingering fire pool
-	At full resonance the next cast unleashes a weaving curse serpent that sheds fire pools along its path
-	''' */
-// GsChantFlameFieldProj.DisplayName: Blazing Flower Field
-// GsChantStormChoirProj.DisplayName: Storm Chorus
-// GsCursedFlamesSerpentProj.DisplayName: Curse Serpent
-// GsCursedFlamesPoolProj.DisplayName: Cursed Fire Pool
-/* GsGoldenShower.Desc:
+GsWaterBolt.Desc:
 	'''
-	Reforged: hits etch molten ichor; the fifth layer bursts into an eight-way spray and a dripping ichor cluster
-	Spray without pause to build high pressure: faster bolts, denser streams, double etching
-	''' */
-/* GsCrystalVileShard.Desc:
+	Umschmiedung: Takt-Wasserkugeln prallen weiter, jeder Wandstoß schlägt einen Wasserring;
+	bei voller Resonanz wird der nächste Gesang zur alles durchschlagenden Flut
 	'''
-	Reforged: on-beat spears embed crystal seeds; when the spear shatters, every seeded foe erupts in a cross of shard rays
-	At full resonance the next cast raises six crystal spears around you
-	''' */
-/* GsUnholyTrident.Desc:
+GsBookOfSkulls.Desc:
 	'''
-	Reforged: on-beat casts split into a trident of three prongs that sear with hellfire
-	At full resonance the next cast raises four waves of infernal tridents from beneath your cursor
-	''' */
-/* GsNettleBurst.Desc:
+	Umschmiedung: Treffer tragen Feinde ins Register, Takt-Schädel jagen automatisch die eingetragenen;
+	bei voller Resonanz schickt der nächste Gesang drei Schädel im Dreieck, wer drei Male trägt, platzt in einer Knochenexplosion
 	'''
-	Reforged: on-beat vines take root where they bite, leaving stinging nettle thickets (up to three)
-	At full resonance the next cast unleashes a great vine dragon that sweeps through the field
-	''' */
-/* GsWaspGun.Desc:
+GsDemonScythe.Desc:
 	'''
-	Reforged: on-beat wasps sting a pheromone mark into their prey; every wasp in the air hunts the marked target first
-	At full resonance the next cast releases a queen wasp that cruises ahead, seeding hunters along her path
-	''' */
-// GsGoldenShowerDripProj.DisplayName: Ichor Cluster
-// GsNettleBurstThicketProj.DisplayName: Nettle Thicket
-// GsNettleBurstDragonProj.DisplayName: Vine Dragon
-// GsWaspGunQueenProj.DisplayName: Queen Wasp
+	Umschmiedung: Takt-Sensen laden schneller und schlagen früher, tiefe Resonanz lässt sie eine Extra-Runde kreisen;
+	bei voller Resonanz ruft der nächste Gesang Kreuzsensen, senkrecht und waagerecht, die sich ins Fadenkreuz nageln
+	'''
+GsAquaScepter.Desc:
+	'''
+	Umschmiedung: Dauerndes Sprühen staut die Gezeit, im Flutfenster steigt der Druck, Blaukosten sinken, alle drei Atemzüge eine Woge;
+	nach drei Wogentakten schlägt der nächste Zauber einen Wellenbrecher-Fächer
+	'''
+GsFlowerOfFire.Desc:
+	'''
+	Umschmiedung: Takt-Feuerbälle platzen bei der ersten Landung in einem Flammenzungen-Fächer, tiefere Resonanz gibt mehr Sprünge und Zungen;
+	bei voller Resonanz blüht der nächste Feuerball am Einschlag zum brennenden Flammenblütenfeld
+	'''
+GsBeeGun.Desc:
+	'''
+	Umschmiedung: Takt-Bienenschwärme ziehen sich zur V-Formation, tiefere Resonanz gibt mehr Gelee, mehr große Bienen;
+	bei voller Resonanz schickt der nächste Gesang eine Königin, die unterwegs lebende Schwärme streut
+	'''
+GsSpaceGun.Desc:
+	'''
+	Umschmiedung: Jeder Takt-Treffer lädt eine Spule, verfehlter Takt setzt nicht zurück;
+	alle vier Zellen steigt der Schuss zum Breitstrahl-Impuls, durchschlägt und zieht kleine Feinde
+	'''
+GsGrayZapinator.Desc:
+	'''
+	Umschmiedung: Chaos bleibt Chaos, aber Takt-Zischen zischt immer ein Hochspannungsstück;
+	bei voller Resonanz überlädt der nächste Schuss zum geschwollenen Durchschlagstrahl
+	'''
+GsLaserRifle.Desc:
+	'''
+	Umschmiedung: Bei drei Takt-Treffern hintereinander spaltet der dritte in zwei parallele Laser;
+	bei voller Resonanz zündet der nächste Schuss eine Überhitzungs-Salve, Schussfolge explodiert, dann wird der Lauf kurz schlaff
+	'''
+GsWeatherPain.Desc:
+	'''
+	Umschmiedung: Tornadotreffer hinterlassen ein Auge, der nächste Takt-Schuss presst zum Auge und wächst;
+	ab drei Resonanzstapeln gehen Doppel-Tornados gegeneinander, bei voller Lage ruft der nächste Gesang einen stehenden Sturmchor
+	'''
+GsCursedFlames.Desc:
+	'''
+	Umschmiedung: Takt-Fluchfeuer pflanzt Fluchsamen, bei drei Samen entzündet es sich selbst, spritzt acht Fluchdornen und hinterlässt eine Fluchfeuerlache
+	Bei voller Resonanz schickt der nächste Gesang eine windende Brandschlange, die unterwegs Fluchfeuer tropft
+	'''
+GsChantFlameFieldProj.DisplayName: Flammenblütenfeld
+GsChantStormChoirProj.DisplayName: Sturmchor
+GsCursedFlamesSerpentProj.DisplayName: Brandschlange
+GsCursedFlamesPoolProj.DisplayName: Fluchfeuerlache
+GsGoldenShower.Desc:
+	'''
+	Umschmiedung: Treffer ätzen ein Schmelzgold-Mal, bei fünf Stapeln platzt es in acht Richtungen und tropft heiliges Goldgelee;
+	ununterbrochenes Sprühen staut Hochdruck, schnellere Geschosse, dichterer Strom, doppeltes Ätzen
+	'''
+GsCrystalVileShard.Desc:
+	'''
+	Umschmiedung: Takt-Kristalllanzen pflanzen Kristallsaat ins Ziel, zerbricht die Lanze, platzen alle besäten Feinde in Kreuzkristallen;
+	bei voller Resonanz hebt der nächste Gesang sechs Ringlanzen um dich
+	'''
+GsUnholyTrident.Desc:
+	'''
+	Umschmiedung: Takt-Gesang spaltet sich in drei Höllenflammengabeln, brennt mit Höllenfeuer;
+	bei voller Resonanz hebt der nächste Gesang vier Gabelwogen unter dem Cursor
+	'''
+GsNettleBurst.Desc:
+	'''
+	Umschmiedung: Takt-Ranken verwurzeln am Biss und hinterlassen hemmende Nesseldickichte, höchstens drei;
+	bei voller Resonanz schickt der nächste Gesang einen Rankendrachen über das Feld
+	'''
+GsWaspGun.Desc:
+	'''
+	Umschmiedung: Takt-Wespen stechen ein Pheromon-Jagdmal, jede Wespe in der Luft stürzt zuerst auf die markierte Beute;
+	bei voller Resonanz schickt der nächste Gesang eine Königin, die unterwegs Jäger streut
+	'''
+GsGoldenShowerDripProj.DisplayName: Heilgold-Tropfen
+GsNettleBurstThicketProj.DisplayName: Nesseldickicht
+GsNettleBurstDragonProj.DisplayName: Rankendrache
+GsWaspGunQueenProj.DisplayName: Wespenkönigin

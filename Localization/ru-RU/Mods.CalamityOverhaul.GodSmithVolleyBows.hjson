@@ -1,107 +1,107 @@
-/* GsDaedalusStormbow.Desc:
+GsDaedalusStormbow.Desc:
 	'''
-	Reforged: arrows now fall from the sky, and a silver seal marks each landing point before the bolt strikes
-	Shots build storm charge; at full charge the next shot lays a 3x3 sky matrix, corners then edges then center
-	The center bolt lands heaviest and bursts on impact. Right click to release a partial matrix early
-	Sky bolts stack hunt brands; branding a foe thrice calls a verdict bolt down upon it
-	''' */
-/* GsTsunami.Desc:
+	Перековка: стрелы падают с небосвода, точка падения сначала вспыхивает серебряной печатью — туда и бьёт стрела
+	Серия копит заряд бури; полный заряд стелет девять печатей: углы, стороны, центр по очереди
+	Тяжёлая центральная стрела взрывается святым светом. ПКМ сбрасывает часть матрицы раньше
+	Небесные стрелы копят охотничью метку; на трёх слоях следующее попадание роняет казнящую стрелу на меченого
 	'''
-	Reforged: each draw looses a rank of 5 arrows that surge forward in a rolling wave, one ammo per draw
-	Shots build tide charge; at full charge the next draw becomes a great wave: 7 piercing arrows in two ranks led by a sweeping foam crest
-	Wave arrows stack tide brands; branding a foe thrice sends a water spout erupting beneath it
-	While a branded foe stands, every 4th arrow splits off a tide-chaser that bites toward it
-	''' */
-/* GsFairyQueenRangedItem.Desc:
+GsTsunami.Desc:
 	'''
-	Reforged: all arrows become twilight lances; each sweep of the bow looses 5 lances along an arc, converging on the cursor
-	The 3rd lance of every sweep is the Queen's lance, striking nearly twice as hard
-	Shots build twilight; at full charge the next shot blooms into a prismatic fan of 5 lances
-	Lance hits stack brands; branding a foe thrice calls twin fae orbs to circle and peck it for 2 seconds
-	''' */
-/* GsDD2BetsyBow.Desc:
+	Перековка: одно натяжение выпускает пять стрел волной — строй поднимается и падает после гребня
+	Серия копит прилив; полный заряд становится гигантом: семь стрел в двух рядах с пробитием, пена гребня метёт путь
+	Волновые стрелы копят метку прилива; на трёх слоях следующее попадание поднимает столб из-под ног врага
+	Пока меченый на поле, каждая четвёртая стрела отделяет охотящуюся приливную
 	'''
-	Reforged: each draw looses 5 dragonfire bolts that climb, stall, then dive-bomb the cursor area
-	Impacts burst into dragonfire rings; airborne foes take 35% more damage
-	Shots build airstrike charge; at full charge the next draw calls a carpet run of 9 bolts along the flight line
-	Bolt hits stack flame brands; branding a foe thrice drops one heavy bomb straight onto it
-	''' */
-/* GsPhantasm.Desc:
+GsFairyQueenRangedItem.Desc:
 	'''
-	Reforged: hold to channel; fire rate climbs with frenzy, and the bow splits into phantom after-bows
-	At frenzy rank 2 every volley gains two flanking phantom arrows
-	Striking the same foe 6 times in a row calls a phantom archer to hover at your back and loose soul bolts alongside you
-	Main arrows stack soul brands; branding a foe thrice makes the archer nail it with 4 homing soul bolts
-	''' */
-/* GsPearlwoodBow.Desc:
+	Перековка: все стрелы становятся сумеречными копьями; один взмах выпускает пять по дуге, они сходятся к прицелу
+	Каждое третье копьё круга — копьё королевы, урон почти удвоен
+	Серия копит сумерки; полный заряд раскрывается веером из пяти призматических копий
+	Попадания копят метку; на трёх слоях следующее попадание зовёт две световые сферы кружить и клевать две секунды
 	'''
-	Reforged: every 5 shots charge a rainbow arc volley, 5 arrows sweeping out one by one, one ammo per volley
-	Landing 3 arc arrows on the same foe pops a pearl prism burst
-	Right click releases the volley early at 60%+ charge
-	''' */
-/* GsCobaltRepeater.Desc:
+GsDD2BetsyBow.Desc:
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses 3 bolts one after another that accelerate in flight, one ammo per volley
-	Volley hits brand prey and grant you a short gust of Swiftness
-	''' */
-/* GsPalladiumRepeater.Desc:
+	Перековка: одно натяжение выпускает пять драконьих стрел — они набирают высоту, срываются и пикируют в зону прицела
+	Попадание взрывает кольцо драконьего огня; воздушные враги получают +35% урона
+	Серия копит заряд налёта; полный заряд зовёт ковровую бомбардировку — девять стрел по очереди вдоль курса
+	Драконьи стрелы копят огненную метку; на трёх слоях следующее попадание роняет тяжёлую драконью стрелу на меченого
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 3-bolt line, one ammo per volley
-	Branded foes slain restore 2 life; executions restore 5 more
-	''' */
-/* GsMythrilRepeater.Desc:
+GsPhantasm.Desc:
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge, one ammo per volley
-	The lead volley bolt always crits against branded foes; side bolts gain +8% crit
-	''' */
-/* GsOrichalcumRepeater.Desc:
+	Перековка: удерживайте ЛКМ — непрерывная натяжка, темп растёт с безумием, лук множит фантомные тени
+	С двух слоёв безумия каждый залп добавляет две фланговые фантомные стрелы
+	Шесть попаданий по одной цели вызывают фантомного лучника за спиной — он стреляет с вами стрелами душ
+	Главные стрелы копят метку души; на трёх слоях следующее попадание — лучник бьёт четырьмя стрелами душ в этого врага
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge trailing petals, one ammo per volley
-	Volley hits burst into a small petal blast
-	''' */
-/* GsAdamantiteRepeater.Desc:
+GsPearlwoodBow.Desc:
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon at x1.5 knockback, one ammo per volley
-	The lead volley bolt lands with a crimson shockwave that splashes nearby foes
-	''' */
-/* GsTitaniumRepeater.Desc:
+	Перековка: каждые 5 выстрелов наполняют радугу — следующий становится пятистрельным мостом, веер с одной стороны, весь круг тратит 1 боеприпас
+	Три стрелы арки в одного врага вспыхивают жемчужным взрывом
+	После 60% заряда ПКМ сбрасывает залп раньше
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon, one ammo per volley
-	Volley bolts etch armor: each hit on the same foe adds +2 armor penetration, up to 5 stacks
-	''' */
-/* GsHallowedRepeater.Desc:
+GsCobaltRepeater.Desc:
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt cross, one ammo per volley
-	Executing a fully branded foe calls down a hallowed star trailing gold
-	''' */
-/* GsChlorophyteShotbow.Desc:
+	Перековка: каждый 6-й выстрел дожимает тройной очередью; полный заряд залпа выпускает три стрелы гуськом всё быстрее, весь круг тратит 1 боеприпас
+	Попадания залпа копят охотничью метку и поднимают краткий попутный ветер
 	'''
-	Reforged: every 6th shot triple-taps; volley charge looses a 6-arrow spore cone, one ammo per volley
-	Branded foes take +10% from this bow; execution bursts a spore cloud
-	''' */
-/* GsStakeLauncher.Desc:
+GsPalladiumRepeater.Desc:
 	'''
-	Reforged: every 6th stake triple-taps; volley charge looses a 3-stake wedge, one ammo per volley
-	Stakes pin and brand prey; the executing stake crucifies at x2.3, undead take a further +25%
-	Each crucifixion reloads 30 volley charge; silver light gathers at the muzzle when fully charged
-	''' */
-/* GsIceBow.Desc:
+	Перековка: каждый 6-й выстрел дожимает тройной очередью; полный заряд залпа выпускает три стрелы в ряд, весь круг тратит 1 боеприпас
+	Падение меченого возвращает 2 здоровья, казнь ещё 5
 	'''
-	Reforged: volley charge hurls 6 icicles skyward to rain on the cursor, one ammo per volley
-	Icicle hits stack frostbrand; at 3 stacks the next icicle shatters into a frost burst
-	''' */
-/* GsMarrow.Desc:
+GsMythrilRepeater.Desc:
 	'''
-	Reforged: volley charge looses a 5-bone-arrow cross with +1 pierce, one ammo per volley
-	Executing a fully branded foe cages it with 4 converging bone arrows
-	''' */
-/* GsShadowflameBow.Desc:
+	Перековка: каждый 6-й выстрел дожимает тройной очередью; полный заряд залпа выпускает четыре стрелы клином, весь круг тратит 1 боеприпас
+	Главная стрела залпа по меченому всегда крит, побочные +8% шанса крита
 	'''
-	Reforged: volley charge looses 3 shadowflame arrows crossing at the cursor, one ammo per volley
-	Branded foes struck by any arrow draw a homing shadowflame wisp; execution erupts in shadow
-	''' */
-/* GsPulseBow.Desc:
+GsOrichalcumRepeater.Desc:
 	'''
-	Reforged: each wall bounce now grants +10% damage (up to 5); volley charge looses 3 parallel pulse tracks, one ammo per volley
-	Branded foes bend passing pulses toward them; execution chains a surge to 2 nearby foes
-	''' */
+	Перековка: каждый 6-й выстрел дожимает тройной очередью; полный заряд залпа выпускает четыре стрелы клином с лепестками, весь круг тратит 1 боеприпас
+	Попадание залпа взрывается малым цветком
+	'''
+GsAdamantiteRepeater.Desc:
+	'''
+	Перековка: каждый 6-й выстрел дожимает тройной очередью; полный заряд залпа выпускает пять стрел клином, отбрасывание выше наполовину, весь круг тратит 1 боеприпас
+	Главная стрела залпа бьёт багровым кольцом, волна задевает ближних
+	'''
+GsTitaniumRepeater.Desc:
+	'''
+	Перековка: каждый 6-й выстрел дожимает тройной очередью; полный заряд залпа выпускает пять стрел клином, весь круг тратит 1 боеприпас
+	Стрелы залпа травят броню: каждое попадание по одному врагу +2 пробития, до 5 слоёв
+	'''
+GsHallowedRepeater.Desc:
+	'''
+	Перековка: каждый 6-й выстрел дожимает тройной очередью; полный заряд залпа выпускает четыре стрелы крестом, весь круг тратит 1 боеприпас
+	Казнь полностью меченого роняет на него золотую святую звезду
+	'''
+GsChlorophyteShotbow.Desc:
+	'''
+	Перековка: каждый 6-й выстрел дожимает тройной очередью; полный заряд залпа выпускает шесть споровых стрел конусом, весь круг тратит 1 боеприпас
+	Меченый получает +10% урона от этого арбалета, казнь распускает облако спор
+	'''
+GsStakeLauncher.Desc:
+	'''
+	Перековка: каждый 6-й кол дожимает тройной очередью; полный заряд залпа выпускает три кола клином, весь круг тратит 1 боеприпас
+	Любой кол стопорит и метит добычу; кол после полной метки — распятие, урон ×2.3, нежить ещё +25%
+	Удачное распятие сразу возвращает 30 заряда; на полном заряде у дула серебряный свет
+	'''
+GsIceBow.Desc:
+	'''
+	Перековка: полный заряд залпа швыряет в небо 6 сосулек — ледяной дождь вокруг курсора, весь залп тратит 1 боеприпас
+	Сосульки копят морозную метку; на 3 слоях следующая взрывается морозным всплеском
+	'''
+GsMarrow.Desc:
+	'''
+	Перековка: полный заряд залпа выпускает крест из 5 костяных стрел, пробитие +1, весь залп тратит 1 боеприпас
+	Казнь полностью меченого смыкает 4 костяные стрелы клеткой
+	'''
+GsShadowflameBow.Desc:
+	'''
+	Перековка: полный заряд залпа выпускает 3 стрелы теневого огня, они сходятся у курсора, весь залп тратит 1 боеприпас
+	Любая стрела по меченому зовёт охотящийся огонёк теневого огня; казнь взрывает теневой всплеск
+	'''
+GsPulseBow.Desc:
+	'''
+	Перековка: импульсная стрела с каждым отскоком от стены +10% урона, до 5 раз; полный заряд залпа выпускает 3 параллельные импульсные трассы, весь залп тратит 1 боеприпас
+	Меченые гнут проходящий импульс к себе; казнь бьёт цепью по 2 ближним врагам
+	'''

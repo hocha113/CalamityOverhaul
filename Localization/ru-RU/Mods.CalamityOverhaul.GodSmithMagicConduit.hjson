@@ -1,53 +1,53 @@
-/* GsLastPrism.Desc:
+GsLastPrism.Desc:
 	'''
-	Reforged: heat is focus; six splayed beams converge into one white-hot lance, and at white heat the impact refracts prism shards
-	Capping the gauge never breaks the beam, it only surges mana upkeep
-	Right click while channeling to shatter the lance into a prismatic fan, spending all heat
-	''' */
-// GsLastPrismHeldProj.DisplayName: Last Prism Lance
-// GsLastPrismBurstProj.DisplayName: Prismatic Shatter
-// GsLastPrismShardProj.DisplayName: Prism Shard
-/* GsMagicalHarp.Desc:
+	Перековка: жар — это фокус; шесть цветных лучей сходятся, в белом калении сливаются в один белый ствол
+	Точка белого ствола преломляет осколочные лучи; на потолке счётчика луч не гаснет, лишь жрёт ману вдвое яростнее
+	ПКМ во время ведения взрывает ствол в семилепестковый веер; сила от жара, жар сгорает, фокус начинается заново
 	'''
-	Reforged: unbroken play builds crescendo; at fortissimo the notes swell, race and rain music
-	Right click to resolve all crescendo into a ringing chord shockwave; rapid re-hits echo for bonus damage
-	''' */
-/* GsBubbleGun.Desc:
+GsLastPrismHeldProj.DisplayName: Фокус Последней призмы
+GsLastPrismBurstProj.DisplayName: Распад призмы
+GsLastPrismShardProj.DisplayName: Осколочный луч
+GsMagicalHarp.Desc:
 	'''
-	Reforged: nonstop spray builds bubble pressure; at a boil the bubbles swell and burst into twin beads on impact
-	Cap the gauge and the barrel jams shut in a gush of foam
-	Right click to vent everything as a fan of seven great bubbles that pop in a rolling chain
-	''' */
-/* GsLaserMachinegun.Desc:
+	Перековка: непрерывная игра копит мощь; на форте ноты крупнеют, несутся и сыплются дождём
+	ПКМ сжимает всю мощь в грохочущую аккордовую ударную волну; короткие серии попаданий ещё бьют эхом
 	'''
-	Reforged: heat is spin; the barrel drags cold and roars at white heat, where every sixth shot rides a piercing crimson lance
-	Holding the gauge at the redline only surges mana upkeep
-	Right click to vent the whole cylinder as a sweeping thirty-round fan
-	''' */
-/* GsRazorbladeTyphoon.Desc:
+GsBubbleGun.Desc:
 	'''
-	Reforged: each cast banks storm charge; blades born at white heat never get lost, they wheel back to your side and hunt again
-	Right click to open the Eye of the Typhoon at your cursor: every blade in the air is drawn into the vortex, and the eye bursts as it closes
-	''' */
-/* GsMagnetSphere.Desc:
+	Перековка: непрерывный поток копит давление; в кипении пузыри крупнеют и при попадании рвутся на две жемчужины
+	На потолке ствол забивается пеной и запирается на миг
+	ПКМ сбрасывает давление веером из семи крупных пузырей разной скорости, они рвутся цепью
 	'''
-	Reforged: while you hold the staff a feed-tether links you to your sphere, and magnetic flux climbs as long as the link holds
-	At full flux the sphere overcharges, lashing heavy arcs at anything close
-	Right click to detonate a magnet storm around the sphere that drags lesser foes toward its heart
-	''' */
-/* GsShadowbeamStaff.Desc:
+GsLaserMachinegun.Desc:
 	'''
-	Reforged: hold to sustain a shadow beam that ricochets off the walls; white heat adds one more bounce and thickens the beam
-	Right click to vent everything as chained shadow bursts along every bend of the beam
-	''' */
-/* GsChargedBlasterCannon.Desc:
+	Перековка: жар — это обороты; холодный ствол вялый, белое каление ревёт; в калении каждый шестой выстрел несёт пронзающий багровый тяжёлый луч
+	Держать на красной черте не взрывает ствол, лишь удваивает расход маны
+	ПКМ сбрасывает весь барабан веером из тридцати выстрелов
 	'''
-	Reforged: hold to channel; cold plasma spits bolts, white heat pulses focused arc lances
-	Charging never stops: cap the gauge and the cannon itself fires the Annihilator, a massive plasma sphere that licks arcs at everything nearby
-	Right click to cash out early as a lesser charge shot
-	''' */
-// GsLaserMachinegunLanceProj.DisplayName: Crimson Lance
-// GsShadowbeamStaffHeldProj.DisplayName: Shadow Polyline Beam
-// GsChargedBlasterCannonHeldProj.DisplayName: Annihilation Charge
-// GsChargedBlasterCannonOrbProj.DisplayName: Annihilator
-// GsMagicalHarpNovaProj.DisplayName: Chord Shockwave
+GsRazorbladeTyphoon.Desc:
+	'''
+	Перековка: каждое применение копит силу шторма; клинки, рождённые в белом калении, не плутают — улетев, возвращаются к боку и снова охотятся
+	ПКМ открывает глаз тайфуна у курсора: все клинки в воздухе втягиваются в воронку; при смыкании кольцевой взрыв
+	'''
+GsMagnetSphere.Desc:
+	'''
+	Перековка: держа посох, вы и шар связаны питающей цепью; цепь жива — поток растёт
+	На полном потоке шар перезаряжен и льёт тяжёлые дуги на всё ближнее
+	ПКМ взрывает магнитошторм с шаром в центре и тянет мелких врагов к сердцу
+	'''
+GsShadowbeamStaff.Desc:
+	'''
+	Перековка: удерживайте — луч тени преломляется от стен; в белом калении лишнее преломление и толще ствол
+	ПКМ взрывает теневые вспышки в каждой точке преломления
+	'''
+GsChargedBlasterCannon.Desc:
+	'''
+	Перековка: удерживайте заряд; в холоде плюёт плазменные шары, в белом калении — импульсы дугового луча
+	Заряд не останавливается: на потолке ствол сам бьёт пушкой аннигиляции — гигантский шар, что лижет дугой ближних
+	ПКМ фиксирует прибыль раньше и выпускает ослабленный сгусток
+	'''
+GsLaserMachinegunLanceProj.DisplayName: Пронзающий красный луч
+GsShadowbeamStaffHeldProj.DisplayName: Ломаный теневой луч
+GsChargedBlasterCannonHeldProj.DisplayName: Заряд аннигиляции
+GsChargedBlasterCannonOrbProj.DisplayName: Пушка аннигиляции
+GsMagicalHarpNovaProj.DisplayName: Аккордовая ударная волна

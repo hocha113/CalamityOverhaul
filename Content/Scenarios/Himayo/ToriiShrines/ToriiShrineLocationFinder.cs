@@ -19,6 +19,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         //横向搜索格数，避开复活落点与初始建筑
         private const int MinOffsetX = 14;
         private const int MaxOffsetX = 160;
+        //在下限之外再偏远约60格；只改打分倾向，不收缩搜索窗
+        private const int PreferredOffsetX = MinOffsetX + 60;
         //上方净空格数
         private const int RequiredClearance = 18;
         //鸟居约18格宽，按半宽检查整片落地区域
@@ -103,8 +105,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                         continue;
                     }
 
-                    //越近出生点越好
-                    score -= offset;
+                    //倾向落在出生点约74格外，近处仍可作地形妥协
+                    score -= Math.Abs(offset - PreferredOffsetX);
                     if (score > bestScore) {
                         bestScore = score;
                         bestPosition = position;

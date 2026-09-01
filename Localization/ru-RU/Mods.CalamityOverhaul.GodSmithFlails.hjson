@@ -1,75 +1,75 @@
-/* GsBallOHurt.Desc:
+GsBallOHurt.Desc:
 	'''
-	Reforged: spin to charge the swing; the flying ball sheds hovering barbs along its path
-	A fully charged strike bursts a ring of barbs on the target
-	''' */
-/* GsChainKnife.Desc:
+	Перековка: раскрутка копит силу; брошенный шар сыплет по пути висящие шипы
+	Полный оборот при попадании взрывает кольцо шипов на цели
 	'''
-	Reforged: landing a blade hit grants Momentum for 7 seconds
-	Each stack spins up and throws faster, up to 3 stacks
-	''' */
-/* GsTheMeatball.Desc:
+GsChainKnife.Desc:
 	'''
-	Reforged: a fully charged strike bursts into a gout of gore
-	The burst wounds everything nearby and inflicts Bleeding
-	''' */
-/* GsBlueMoon.Desc:
+	Перековка: попадание клинка даёт импульс на 7 с
+	Каждый слой ускоряет раскрутку и бросок, до трёх слоёв
 	'''
-	Reforged: charged strikes loose piercing crescent blades through the target
-	Half charge looses one blade, a full charge looses three
-	''' */
-/* GsSunfury.Desc:
+GsTheMeatball.Desc:
 	'''
-	Reforged: the flying ball sears hovering scorch marks along its path
-	The marks linger and burn whoever touches them with hellfire
-	''' */
-/* GsMace.Desc:
+	Перековка: полный бросок взрывает кровавый туман
+	Туман рвёт ближних и вешает кровотечение
 	'''
-	Reforged: a fully charged strike cracks the target's armor, halving its defense for a few seconds
-	Heavier knockback backs up every blow
-	''' */
-/* GsFlamingMace.Desc:
+GsBlueMoon.Desc:
 	'''
-	Reforged: spinning the mace flings burning embers outward
-	Faster spins throw the embers harder and farther, igniting whatever they strike
-	''' */
-/* GsDaoofPow.Desc:
+	Перековка: зарядный бросок выпускает пронзающие полумесяцы
+	Половина оборота — один, полный — три
 	'''
-	Reforged: throws alternate between Yin and Yang; a Yin strike brands and slows the target
-	A Yang strike on a branded target detonates the brand into a burst of light and ink
-	''' */
-/* GsFlowerPow.Desc:
+GsSunfury.Desc:
 	'''
-	Reforged: petals bloom around the head while spinning, up to five
-	Landing a throw sends every petal homing at the target as razor blades
-	''' */
-/* GsDripplerFlail.Desc:
+	Перековка: летящий молот жжёт по пути висящие ожоги
+	Ожоги стоят на месте и жгут адским огнём тех, кто касается
 	'''
-	Reforged: at high spin and through every throw, the head weeps gravity-bound blood beads
-	Beads burst into stinging blood spikes on contact or landing
-	''' */
+GsMace.Desc:
+	'''
+	Перековка: полный бросок трещит броню цели — защита вдвое меньше на несколько секунд
+	Каждый удар несёт тяжелее отбрасывание
+	'''
+GsFlamingMace.Desc:
+	'''
+	Перековка: в раскрутке наружу летят горящие искры
+	Чем быстрее крутится, тем дальше и злее искры, они поджигают попавших
+	'''
+GsDaoofPow.Desc:
+	'''
+	Перековка: броски чередуют инь и ян; инь клеймит и замедляет
+	Ян по клейму взрывает его свето-чернильным всплеском
+	'''
+GsFlowerPow.Desc:
+	'''
+	Перековка: в раскрутке вокруг головы распускаются лепестки, до пяти
+	Попадание броска превращает все лепестки в самонаводящиеся клинки на цель
+	'''
+GsDripplerFlail.Desc:
+	'''
+	Перековка: на высокой скорости и в полёте голова капает кровью под гравитацией
+	Капли при касании врага или земли взрываются колючими шипами
+	'''
 
 GsKOCannon: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: a braced straight punch; land three solid hits on the same target within four seconds
-		The third punch is a KO: double damage, double knockback, and a concussive ring
-		''' */
-	// TipKO: KO!
+		Перековка: прямой удар с накоплением; три чистых удара по одной цели за четыре секунды
+		Третий — KO: двойной урон, двойное отбрасывание и кольцо ударной волны
+		'''
+	TipKO: KO!
 }
 
-/* GsChainGuillotines.Desc:
+GsChainGuillotines.Desc:
 	'''
-	Reforged: hurls both guillotines at once, fanning apart mid-flight
-	When the two blades cross paths they shear, bursting cross-cut slashes between them
-	''' */
-/* GsGolemFist.Desc:
+	Перековка: две гильотины летят вместе и раскрываются в полёте
+	Пересечение режет — в середине вспыхивает крестовой росчерк
 	'''
-	Reforged: solid hits stack heat (up to 3, +8% damage each, fades after 8 seconds); at full heat the fist runs molten and impacts hurl 3 magma chunks
-	Every punch that lands on a foe or a wall slams out a stone shockwave
-	''' */
-/* GsFlairon.Desc:
+GsGolemFist.Desc:
 	'''
-	Reforged: the chain squeezes out homing bubble blades while swinging and flying (up to 8 afield, 40% damage each)
-	A full-spin strike bursts a ring of six bubble blades around the target
-	''' */
+	Перековка: попадание кулака копит жар (до 3 слоёв, +8% урона за слой, 8 с без удара сбрасывают); на полном жаре кулак раскалён и сыплет 3 расплавленных камня
+	Каждый тяжёлый удар по врагу или стене бьёт каменной ударной волной
+	'''
+GsFlairon.Desc:
+	'''
+	Перековка: в раскрутке и полёте цепь выдавливает самонаводящиеся пузырь-клинки (до 8 на поле, по 40% урона)
+	Полный оборот при попадании кольцом выпускает шесть пузырь-клинков вокруг цели
+	'''

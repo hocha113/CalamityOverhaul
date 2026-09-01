@@ -1,50 +1,14 @@
-/* GsCopperShortsword.Desc:
+GsCopperShortsword.Desc: Umschmiedung: Jeder Treffer schlägt einen Funken aus der Kupferklinge, beim vierten platzt eine kleine Funkenexplosion an der Spitze und entzündet Ziel und nahe Feinde
+GsTinShortsword.Desc: Umschmiedung: Stich im Takt, die Zinnleiter steigt Lage für Lage; bei vier Stapeln wirft jeder Stich Zinnklang-Wellen und beißt tiefer
+GsIronShortsword.Desc: Umschmiedung: Die eingezogene Haltung blockt von selbst, erlittener Schaden sinkt um 30%; blockst du einen Schlag, leuchtet der Gegenstich, der nächste Stich innerhalb einer Sekunde ist immer kritisch
+GsLeadShortsword.Desc: Umschmiedung: Die verrostete Bleiklinge vergiftet, was sie berührt; stichst du bereits Vergiftete, steigt der Schaden um 25%
+GsSilverShortsword.Desc: Umschmiedung: Die Spiegel-Silberklinge saugt Mondlicht, nachts +25% Schaden und +10% Stichgeschwindigkeit; in Blutmondnächten stiehlt jeder Treffer ein wenig Leben
+GsTungstenShortsword.Desc: Umschmiedung: Der dichte Wolframkern verdient ein kurzes Halten zum Aufladen; der voll aufgeladene Stich reicht halb weiter, bricht Rüstung und fädelt alles auf der Linie auf
+GsGoldShortsword.Desc: Umschmiedung: Die vergoldete Schneide schüttelt Kleingeld aus Wunden, etwa jeder vierte Treffer spritzt Münzen; beim Töten streust du immer eine Handvoll
+GsPlatinumShortsword.Desc: Umschmiedung: Schneller als Licht, auf der Stichlinie bleibt ein Platin-Nachbild; Feinde, die dagegenlaufen, erleiden 40% Schaden
+GsGladius.Desc:
 	'''
-	Reforged: every hit strikes a spark off the copper edge;
-	the fourth spark bursts into flame at the point, igniting nearby foes
-	''' */
-/* GsTinShortsword.Desc:
+	Umschmiedung: Legion-Dreierstich, zwei Schnellstiche, dann ein Schildschritt-Schwerstich;
+	stichst du im Takt, wirst du schneller, höchstens drei Stapel
 	'''
-	Reforged: chain your thrusts to climb the tin scale, each note higher than the last;
-	at full chime every thrust rings out a rippling pulse and bites a little deeper
-	''' */
-/* GsIronShortsword.Desc:
-	'''
-	Reforged: the recovery stance holds a guard that blunts incoming blows by 30%;
-	block a hit to ready a riposte, and your next thrust within a second strikes true
-	''' */
-/* GsLeadShortsword.Desc:
-	'''
-	Reforged: the corroded lead edge poisons whatever it touches;
-	striking an already poisoned foe bites 25% deeper into the rot
-	''' */
-/* GsSilverShortsword.Desc:
-	'''
-	Reforged: mirror-polished silver that drinks moonlight, striking 25% harder and 10% faster at night;
-	under a blood moon each hit steals back a sliver of life
-	''' */
-/* GsTungstenShortsword.Desc:
-	'''
-	Reforged: a dense tungsten core rewards a brief hold before the thrust;
-	a full charge lunges half again as far, punching through armor and everything in line
-	''' */
-/* GsGoldShortsword.Desc:
-	'''
-	Reforged: gilded edge that shakes loose coins, one hit in four rattles change from the wound;
-	kills always spill a handful
-	''' */
-/* GsPlatinumShortsword.Desc:
-	'''
-	Reforged: the thrust outruns its own light, leaving a platinum afterimage hanging along the line;
-	foes that brush the lingering light take 40% damage
-	''' */
-/* GsGladius.Desc:
-	'''
-	Reforged: legion drill in three beats, two quick thrusts then a shield-step heavy;
-	keep the rhythm and each thrust comes faster, up to three tempo stacks
-	''' */
-/* GsRuler.Desc:
-	'''
-	Reforged: discipline demands exact measurement, land the very tip for a 1.6x graded strike;
-	sloppy hits closer to the hand are marked down to 0.85x
-	''' */
+GsRuler.Desc: Umschmiedung: Strafe will genaues Maß, triffst du mit dem Linealkopf, gibt es 1,6-fachen Vollpunkt; daneben nur 0,85-fach

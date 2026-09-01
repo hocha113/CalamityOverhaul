@@ -1,9 +1,8 @@
 Victor: {
 	DisplayName: Médecin cybernétique
-	Bestiary: Un médecin cybernétique échoué sur ces rivages, portant dans son dos assez d'implants cybernétiques pour reconstituer un corps entier. On dit qu'il peut échanger la chair de quiconque contre de l'acier et du courant électrique — à condition de pouvoir payer le prix.
+	Bestiary: "Un médecin cybernétique échoué sur ces rivages, portant dans son dos assez d'implants cybernétiques pour reconstituer un corps entier. On dit qu'il peut échanger la chair de quiconque contre de l'acier et du courant électrique — à condition de pouvoir payer le prix."
 	TalkHint: Parler à Victor
 	Name0: Victor
-
 	TownNPCMood: {
 		Content: Je suis satisfait.
 		NoHome: Je déteste ne pas avoir de maison.
@@ -11,155 +10,130 @@ Victor: {
 		LoveSpace: J'adore avoir autant d'espace.
 		DislikeCrowded: Je n'aime pas que ce soit si bondé.
 		HateCrowded: Je déteste que ce soit si bondé.
-		// LoveBiome: I love {BiomeName}. Quiet, stable temperature - perfect for precision work.
-		// LikeBiome: "{BiomeName} is decent. My stock does not spoil here."
-		// DislikeBiome: The damp of {BiomeName} is crawling into my circuits. Terrible.
-		// HateBiome: "{BiomeName}? That place chews the finest chrome down to rust. Don't get me started."
-		// LoveNPC: "{NPCName} understands machines. A rare quality these days."
-		// LikeNPC: "{NPCName} is a decent neighbor, and a steady source of spare parts."
-		// DislikeNPC: "{NPCName} calls my surgery 'back-alley work'. Hmph. Results speak for themselves."
-		// HateNPC: Keep {NPCName} away from me. I'd rather not reassemble blast victims every other day.
-		LikeNPC_Princess: J'aime {NPCName}.
-		Princess_LovesNPC: J'aime {NPCName}.
+		LoveBiome: "J'aime {BiomeName}. Calme, température stable, parfait pour le travail de précision"
+		LikeBiome: "{BiomeName} n'est pas mal. Les stocks s'y conservent"
+		DislikeBiome: "L'humidité de {BiomeName} s'infiltre dans mes circuits. Affreux"
+		HateBiome: "{BiomeName} ? Cet endroit ronge le meilleur des cyberwares jusqu'à la rouille. N'en parlons plus"
+		LoveNPC: "{NPCName} s'y connaît en machines. Une qualité rare, ces temps-ci"
+		LikeNPC: "{NPCName} est un voisin correct, et m'apporte parfois des pièces"
+		DislikeNPC: "{NPCName} appelle mes opérations du 「bricolage de ruelle」. Hum. Les résultats parlent"
+		HateNPC: "Que {NPCName} reste loin de moi. Je n'ai pas envie de recoller chaque jour des clients en morceaux"
+		LikeNPC_Princess: "J'aime {NPCName}."
+		Princess_LovesNPC: "J'aime {NPCName}."
 	}
 }
-
 TBUG: {
-	// DisplayName: Exploit Dealer
-	// Bestiary: The night Skeletron fell, the world tore open along a seam that never closed properly, and spat her out. She hit the ground hard; the first thing she asked after getting up was the local coin exchange rate. Now she runs a little shop, selling chips of origins best left unexplained.
-	// TalkHint: Talk to TBUG
-	// Name0: TBUG
-
+	DisplayName: Marchande de failles
+	Bestiary: "La nuit où Skeletron est tombé, le monde s'est fendu d'une couture qui n'a jamais refermé, et l'a recrachée. La chute l'a bien amochée ; sa première phrase en se relevant a été de demander le cours des pièces d'or. Elle tient maintenant une petite boutique, et vend des puces dont l'origine reste floue."
+	TalkHint: Parler à TBUG
+	Name0: TBUG
 	TownNPCMood: {
-		// Content: Running normally. No errors, no warnings. Almost boring.
-		// NoHome: No house. Strictly speaking, my current coordinates are an illegal value.
-		// FarFromHome: Too far from home. The signal attenuation is terrible.
-		// LoveSpace: All this space? Room for three monitors. I like it.
-		// DislikeCrowded: Too many people. Anyone could peek at my screen. Annoying.
-		// HateCrowded: Packed like this, someone will trip over my cables sooner or later.
-		// LoveBiome: "{BiomeName} is cool and stable. Smells like a server room."
-		// LikeBiome: "{BiomeName} is fine. Low temperatures are good for the hardware."
-		// DislikeBiome: The humidity alarm in {BiomeName} never stops.
-		// HateBiome: "{BiomeName}? My gear took seawater once. I still keep that repair bill."
-		// LoveNPC: "{NPCName} can talk wrenches and circuits both. No need to downclock around her."
-		// LikeNPC: "{NPCName} never asks where I came from, only whether I buy secondhand parts. Approved."
-		// DislikeNPC: "{NPCName} keeps trying to get me on his table and take me apart. I'm not broken. Don't fix me."
-		// HateNPC: "{NPCName}'s ledger is nastier than any virus. Keep him away from my shop."
-		// LikeNPC_Princess: "{NPCName}? Fine. Nobody manages to hate her, which is suspicious in itself."
-		// Princess_LovesNPC: I love {NPCName}! She knows so many things nobody else does!
+		Content: "Fonctionnement normal. Pas d'erreur, pas d'alerte. Presque ennuyeux"
+		NoHome: "Pas de maison. À strictement parler, mes coordonnées actuelles sont une valeur illégale"
+		FarFromHome: Trop loin de chez moi. Le signal s'atténue trop
+		LoveSpace: "Autant de place, ça tient trois écrans. J'aime"
+		DislikeCrowded: "Dès qu'il y a trop de monde, n'importe qui peut regarder mon écran. Agace"
+		HateCrowded: "Entassés comme ça, quelqu'un finira par marcher sur mes câbles"
+		LoveBiome: "{BiomeName} est frais et stable. Ça sent la salle machine"
+		LikeBiome: "{BiomeName} va. Le froid, c'est bon pour le matériel"
+		DislikeBiome: "L'alarme d'humidité de {BiomeName} n'arrête pas"
+		HateBiome: "{BiomeName} ? Mon matériel a déjà pris l'eau de mer une fois. Je garde encore la facture"
+		LoveNPC: "{NPCName} parle aussi bien clés que circuits. Pas besoin de baisser la fréquence avec elle"
+		LikeNPC: "{NPCName} ne me demande pas d'où je viens, seulement si je prends les pièces d'occasion. Validé"
+		DislikeNPC: "{NPCName} n'arrête pas de vouloir me monter sur sa table pour me démonter. Je ne suis pas cassée. Ne me répare pas"
+		HateNPC: "Le grand livre de {NPCName} est plus toxique que n'importe quel virus. Qu'il reste loin de ma boutique"
+		LikeNPC_Princess: "{NPCName}... bon. Personne n'arrive à la détester, et ça, c'est déjà suspect"
+		Princess_LovesNPC: "J'adore {NPCName} ! Elle sait plein de choses que personne d'autre ne sait !"
 	}
 }
-
 ScrapCommander: {
-	// DisplayName: Scrap Commander
-	// Bestiary: After the mechanical tyrants fell, nobody hauled the wreckage away. One night a rusted skull re-powered itself in the scrap heap and hoisted the four tools that still turned onto its own shoulders. It repairs nothing—it takes inventory: every piece of scrap iron on the ground is already on its roster.
+	DisplayName: Commandant de ferraille
+	Bestiary: "Après la chute des trois tyrans mécaniques, personne n'a emporté les débris. Une nuit, un crâne rouillé s'est remis sous tension au milieu de la ferraille, et a hissé sur ses épaules les quatre outils qui tournaient encore. Il ne répare rien : il dresse l'inventaire. Chaque morceau de fer à terre figure déjà sur ses listes."
 }
-
-// ScrapLegionProbe.DisplayName: Scrap Servitor
-
+ScrapLegionProbe.DisplayName: Serviteur de ferraille
 DeepGaolWraith: {
-	// DisplayName: Deep Gaol Wraith
-	// Bestiary: The gaoler died at his post, his key rusted solid in the lock. The grudge that lingered wrung itself into a shape along the fetters, and now it walks the rounds between cells, dragging a pair of empty shackles. It checks no roster—only wrists. A wrist without irons counts as an escape.
+	DisplayName: Âme vengeresse des geôles
+	Bestiary: "Le geôlier est mort à son poste, la clé rouillée dans la serrure. La rancune restante s'est tordue en forme humaine le long des chaînes, et fait sa ronde entre les cellules en traînant deux menottes vides. Il ne consulte aucun registre, seulement les poignets. Qui n'est pas enchaîné compte pour un évadé."
 }
-
 Undrowned: {
-	// DisplayName: The Undrowned
-	// Bestiary: In the flood gallery at the bottom of the water gaol they keep a condemned man who will not drown. The execution ledger climbs an entire wall: anchor, flood, drain, examine. Every entry ends with the same line: the prisoner is still breathing. Eventually the wardens stopped coming. Only the water remembers his patience.
-	// GateSealed: The flood gallery gates have sealed shut.
+	DisplayName: L'Insubmersible
+	Bestiary: "Au plus profond de la geôle aquatique, dans la salle des crues, on retient un condamné que l'eau ne peut noyer. Le registre des exécutions grimpe tout un mur : ancre, crue, vidange, examen. Chaque entrée s'achève par la même phrase : le prisonnier respire encore. Les gardiens ont fini par ne plus venir. Seule l'eau se souvient de sa patience."
+	GateSealed: Les vannes de la salle des crues se sont verrouillées.
 }
-
-// UndrownedThrone.DisplayName: Anchored Convict
-
+UndrownedThrone.DisplayName: Condamné à l'ancre
 FoundryOverseer: {
-	// DisplayName: Foundry Overseer
-	// Bestiary: However many years the foundry has stood idle, the acceptance rig on the ceiling rail has run its empty shifts all the while. It makes nothing; it only inspects: press, pour, dart battery. What passes moves on. What fails goes back to the furnace. The workpiece delivered today is you.
-	// GateSealed: The proofing hall gear-gates have sealed shut.
+	DisplayName: Contremaître de la fonderie
+	Bestiary: "Aussi longtemps que la fonderie est à l'arrêt, l'engin de contrôle sur le rail du plafond a couru ses quarts à vide. Il ne fabrique rien : il réceptionne. Estampage, coulée, batterie de dards. Ce qui passe est libéré. Ce qui échoue retourne au four. La pièce livrée aujourd'hui à la salle de réception, c'est toi."
+	GateSealed: Les portes à engrenages de la salle de réception se sont verrouillées.
 }
-
-// OverseerDormantRig.DisplayName: Dust-caked Rig
-// GaolDormantSkull.DisplayName: Deep Gaol Skull
-
+OverseerDormantRig.DisplayName: Grue ensevelie de poussière
+GaolDormantSkull.DisplayName: Crâne desséché des geôles
 LanternWarden: {
-	// DisplayName: Lantern Warden
-	// Bestiary: The gaol's last lamplighter. It no longer remembers what it patrols for, only the rule of the lantern: whatever the light falls on is an escapee, and an escapee must be rung in.
+	DisplayName: Sentinelle à la lanterne
+	Bestiary: "Le dernier allumeur de la geôle. Il ne se souvient plus de ce qu'il patrouille, seulement de la règle de la lampe : ce que la lumière touche est un évadé, et un évadé doit être annoncé à la cloche."
 }
-
 LampeaterWisp: {
-	// DisplayName: Lampeater Wisp
-	// Bestiary: The archive lamps do not go out on their own. This wisp of smoke remembers every flame it has swallowed. The fuller it feeds, the brighter it burns, until it becomes the one lamp on the wanted list.
+	DisplayName: Âme dévore-lampe
+	Bestiary: "Les lampes des archives ne s'éteignent pas toutes seules. Cette volute de fumée se souvient de chaque flamme qu'elle a avalée. Plus elle se rassasie, plus elle brûle, jusqu'à devenir elle-même la lampe inscrite au registre des recherchés."
 }
-
 DrownedTurnkey: {
-	// DisplayName: Drowned Turnkey
-	// Bestiary: The night the sluice opened, he never came back up. He still calls the roll beneath the surface. Whoever the ripple stops beside is due back in their cell.
+	DisplayName: Geôlier des flots
+	Bestiary: "La nuit où l'on a ouvert les vannes, il n'est pas remonté. Sous la surface, il continue l'appel. Là où l'ondulation s'arrête aux pieds de quelqu'un, c'est que celui-là doit rentrer en cellule."
 }
-
 BoneStitcher: {
-	// DisplayName: Bone Stitcher
-	// Bestiary: The bones of the ossuary are not allowed to lie down. It sorts, matches and stitches, mending fallen prisoners back onto their posts. The seams run crooked, but it is loyal to its work.
+	DisplayName: Couturier d'ossements
+	Bestiary: "Dans l'ossuaire, les os n'ont pas le droit de rester couchés. Il trie, compare, recoud, et rassemble les prisonniers démontés à leur poste. Les points sont de travers, le devoir ne l'est pas."
 }
-
-// RestitchedBones.DisplayName: Restitched Bones
-// CybTrainingDummy.DisplayName: Holo Training Target
-// OldNetPatrolICE.DisplayName: Patrol ICE
-// OldNetBlackICE.DisplayName: Black ICE Hunter
-// OldNetTurretICE.DisplayName: Sentry Turret ICE
-// OldNetSweepEye.DisplayName: Sweep Eye
-// OldNetLurkerICE.DisplayName: Lurker ICE
-// OldNetTaggerICE.DisplayName: Tagger Moth
-// OldNetTracerICE.DisplayName: Tracer Hound
-// OldNetWardenICE.DisplayName: Reclamation Warden
-// KiyumeHound.DisplayName: Feral Hound
-
+RestitchedBones.DisplayName: Os recousus
+CybTrainingDummy.DisplayName: Cible d'entraînement holographique
+OldNetPatrolICE.DisplayName: ICE de patrouille
+OldNetBlackICE.DisplayName: Chasseur Black ICE
+OldNetTurretICE.DisplayName: ICE tourelle de sentinelle
+OldNetSweepEye.DisplayName: Œil-sentinelle
+OldNetLurkerICE.DisplayName: ICE de l'ombre pendue
+OldNetTaggerICE.DisplayName: Marqueur-phalène
+OldNetTracerICE.DisplayName: Chien pisteur
+OldNetWardenICE.DisplayName: Officier de récupération
+KiyumeHound.DisplayName: Chien féroce
 LanternGuideYokai: {
-	// DisplayName: Lantern Elder
-	// GripDeathReason: "{0} followed the wrong lantern"
+	DisplayName: Vieillard à la lanterne
+	GripDeathReason: "{0} a suivi la mauvaise lampe"
 }
-
-// LanternGuideHungLamp.DisplayName: Hanging Lantern
-// ScarecrowWatcherYokai.DisplayName: Field Keeper
-// WellHandYokai.DisplayName: Well Hand
-// FuneralCortegeYokai.DisplayName: Banner Bearer
-
+LanternGuideHungLamp.DisplayName: Lanterne suspendue
+ScarecrowWatcherYokai.DisplayName: Gardien des champs
+WellHandYokai.DisplayName: Main du puits
+FuneralCortegeYokai.DisplayName: Porteur d'étendard
 FuneralCortegePorter: {
-	// DisplayName: Pallbearer
-	// WraithDeathReason: "{0} stood in the funeral's way"
+	DisplayName: Porte-cercueil
+	WraithDeathReason: "{0} a barré le chemin du cortège"
 }
-
-// FuneralCortegeCoffin.DisplayName: Old Coffin
-// FacelessOneYokai.DisplayName: Faceless One
-
+FuneralCortegeCoffin.DisplayName: Vieux cercueil
+FacelessOneYokai.DisplayName: Sans-visage
 RidgeWalkerYokai: {
-	// DisplayName: Ridge Walker
-	// RidgeDeathReason: "{0} claimed a ridge that was not theirs"
+	DisplayName: Marcheur de la crête de brume
+	RidgeDeathReason: "{0} a revendiqué une crête qui n'était pas à lui"
 }
-
-// ShallowHandsYokai.DisplayName: Hand in the Shallows
-// MinoFisherYokai.DisplayName: Straw-Cloaked Fisherman
-// KiyumeWhiteHound.DisplayName: Homeward-Gazing White Hound
-
+ShallowHandsYokai.DisplayName: Main dans l'eau
+MinoFisherYokai.DisplayName: Vieil homme en pèlerine de paille
+KiyumeWhiteHound.DisplayName: Chien blanc au regard du pays natal
 SeaShrimpBoss: {
-	// DisplayName: Abyssal Crystal Shrimp
-	// Bestiary: The carapaced tyrant of the deepest trench. Its great claw strikes faster than sound can swim; the blow tears the water itself into vacuum, and the collapsing bubble flashes bright as day. Fishermen say the waterspouts that burst from a calm sea are just it shadowboxing far below.
-	// ChecklistSpawnInfo: Use Crystallized Shrimp Bait at the ocean
+	DisplayName: Crevette de cristal abyssal
+	Bestiary: "Le tyran à carapace des plus profondes fosses. Quand sa pince géante frappe, elle va plus vite que le son dans l'eau ; le coup déchire la mer jusqu'au vide, et l'implosion des bulles éclaire comme le jour. Les pêcheurs disent que les colonnes d'eau qui explosent sans raison, c'est lui qui s'entraîne au fond."
+	ChecklistSpawnInfo: S'invoque dans l'océan avec un Appât de crevette cristallisée
 }
-
 BssHead: {
-	// DisplayName: Bloomsand Serpent
-	// Bestiary: A great serpent that prowls beneath the dunes. Cacti have taken root in its hide, and the crimson blooms drink deep of its blood. They say when a sandstorm rises, it is the serpent turning over below.
-	// ChecklistSpawnInfo: Use a Thorned Bloombud in the surface desert after defeating the Eye of Cthulhu
-	// BossChecklistIntegration.EntryName: Bloomsand Serpent
+	DisplayName: Serpent des dunes en fleurs
+	Bestiary: "Un grand serpent qui rôde sous les dunes. Des cactus ont pris racine sur sa carapace ; les fleurs rouges se gorgent de son sang et s'ouvrent d'un éclat rare. On dit que lorsque le vent de sable se lève, c'est lui qui se retourne en dessous."
+	ChecklistSpawnInfo: "Après avoir vaincu l'Œil de Cthulhu, s'invoque à la surface du désert avec un Bourgeon épineux"
+	BossChecklistIntegration.EntryName: Serpent des dunes en fleurs
 }
-
-// BssBody.DisplayName: Bloomsand Serpent
-// BssTail.DisplayName: Bloomsand Serpent
-
+BssBody.DisplayName: Serpent des dunes en fleurs
+BssTail.DisplayName: Serpent des dunes en fleurs
 FssHead: {
-	// DisplayName: Festersand Serpent
-	// Bestiary: A mutated Bloomsand Serpent. Shadow seeped into the sand, the crimson blooms festered into cysts, and ichor replaced the blood in its veins. It is longer than it once was, and hungrier. The golden puddles gleaming in the desert are not rainwater. They are its drool.
-	// ChecklistSpawnInfo: Use a Festered Bloombud in the surface desert
-	// BossChecklistIntegration.EntryName: Festersand Serpent
+	DisplayName: Serpent des dunes purulent
+	Bestiary: "Une mutation du Serpent des dunes en fleurs. L'ombre a filtré dans le sable, les fleurs rouges ont pourri en abcès, et l'ichor a remplacé le sang de ses veines. Il est plus long qu'avant, et plus affamé. Les flaques dorées du désert ne sont pas de la pluie : c'est sa bave."
+	ChecklistSpawnInfo: S'invoque à la surface du désert avec un Bourgeon purulent
+	BossChecklistIntegration.EntryName: Serpent des dunes purulent
 }
-
-// FssBody.DisplayName: Festersand Serpent
-// FssTail.DisplayName: Festersand Serpent
+FssBody.DisplayName: Serpent des dunes purulent
+FssTail.DisplayName: Serpent des dunes purulent

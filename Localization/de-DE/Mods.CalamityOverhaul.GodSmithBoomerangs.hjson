@@ -1,98 +1,98 @@
-/* GsWoodenBoomerang.Desc:
+GsWoodenBoomerang.Desc:
 	'''
-	Living wood remembers the throw: after its first hit it rebounds toward another nearby foe
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsEnchantedBoomerang.Desc:
+	Lebendes Holz merkt sich den Wurf: nach dem ersten Treffer prallt es einmal zu einem anderen nahen Feind
+	Rechtsklick im Flug: schick es zum Mauszeiger
 	'''
-	Decelerates outbound, gathers starlight while hovering, accelerates home
-	At the hover peak it flings three homing star sparks, each dealing 30% damage
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsFruitcakeChakram.Desc:
+GsEnchantedBoomerang.Desc:
 	'''
-	Outbound hits frost the target with sugar glaze, up to three coats
-	Hitting a glazed target on the return detonates every coat, 25% bonus damage per coat
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsBloodyMachete.Desc:
+	Hinweg bremst, schwebt und lädt, Rückweg beschleunigt zur Hand
+	Am Schwebehöhepunkt spritzen drei verfolgende Sternenglanze, je 30% Schaden
+	Rechtsklick im Flug: schick es zum Mauszeiger
 	'''
-	Hits inflict Bleeding and carve a tally; three tallies on one target let the blood loose
-	The bloodletting strike deals 40% bonus damage and heals you for 2 life
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsIceBoomerang.Desc:
+GsFruitcakeChakram.Desc:
 	'''
-	Hits inflict Frostburn and shatter off two piercing ice shards, each dealing 25% damage
-	While hovering it frosts over, wreathed in freezing mist
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsShroomerang.Desc:
+	Hinweg-Treffer glasieren das Ziel, höchstens drei Stapel
+	Trifft der Rückweg ein glasiertes Ziel, detoniert die Glasur, je Stapel +25% Schaden
+	Rechtsklick im Flug: schick es zum Mauszeiger
 	'''
-	At the hover peak it puffs out a lingering spore cloud that keeps searing foes inside
-	The flight path rains glowing spores
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsThornChakram.Desc:
+GsBloodyMachete.Desc:
 	'''
-	Hits poison the target and burst three thorn spikes outward, each dealing 22% damage
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsCombatWrench.Desc:
+	Treffer legen Blutung auf und ritzen ein Mal, drei Male am selben Ziel lösen Aderlass aus
+	Der Aderlass-Schlag +40% Schaden und heilt dich um 2 Leben
+	Rechtsklick im Flug: schick es zum Mauszeiger
 	'''
-	Every third hit on the same target is a bolt-knock: 80% bonus damage
-	Bolt-knocks against steel constructs gain another 25%
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsFlamarang.Desc:
+GsIceBoomerang.Desc:
 	'''
-	Every hit sets the target on fire
-	At the hover peak it bursts into a ring of flame; the return path drops smoldering embers
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsTrimarang.Desc:
+	Treffer legen Frostbrand auf und spritzen zwei durchschlagende Eissplitter, je 25% Schaden
+	Im Schweben bereift der Körper, Frostnebel umhüllt ihn
+	Rechtsklick im Flug: schick es zum Mauszeiger
 	'''
-	Up to three airborne; each extra boomerang in flight grants all of them 8% damage
-	Right click: the whole squad dashes toward your cursor at once
-	''' */
-/* GsFlyingKnife.Desc:
+GsShroomerang.Desc:
 	'''
-	Hold the attack button to steer the knife after your cursor
-	Release it to whirl in place, slashing all around, then carve a straight line home
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsBananarang.Desc:
+	Am Schwebehöhepunkt sprüht eine bleibende Sporenwolke, die Feinde darin weiter ätzt
+	Der Flugpfad streut leuchtende Sporen
+	Rechtsklick im Flug: schick es zum Mauszeiger
 	'''
-	Throw up to ten; every hit ripens that banana, 6% bonus damage per stage, five stages max
-	Right click: every airborne banana dashes toward your cursor at once
-	''' */
-/* GsLightDisc.Desc:
+GsThornChakram.Desc:
 	'''
-	On hitting a foe it refracts toward the nearest other enemy, up to three times
-	Each refraction loses 10% damage
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsPossessedHatchet.Desc:
+	Treffer vergiften und spritzen drei Dornenstacheln nach außen, je 22% Schaden
+	Rechtsklick im Flug: schick es zum Mauszeiger
 	'''
-	A wind-up throw: the possessed axe accelerates after its prey, then latches on,
-	whirling around the victim; every slash brands a soul mark, the fifth ruptures for 150% damage
-	Right click while it flies: command it to redirect its hunt
-	''' */
-/* GsPaladinsHammer.Desc:
+GsCombatWrench.Desc:
 	'''
-	A two-handed overhead throw; the hammer arcs heavily through the air
-	At the end of its flight it rises, then slams down for 65% area damage and a shockwave
-	Right click while it flies: it dashes to your cursor and delivers the slam there
-	''' */
-/* GsSergeantUnitedShield.Desc:
+	Jeder dritte Treffer auf dasselbe Ziel löst den Bolzenschlag aus, +80% Schaden
+	Gegen Stahlkonstrukte nochmals +25%
+	Rechtsklick im Flug: schick es zum Mauszeiger
 	'''
-	Outbound it ricochets between foes up to four times, knocking harder with every bounce
-	Catching it raises your guard for a moment, blocking one instance of damage
-	Right click while it flies: command it to dash toward your cursor
-	''' */
-/* GsAnchor.Desc:
+GsFlamarang.Desc:
 	'''
-	Flies in a heavy arc, then plunges straight down past its peak
-	The slam quakes the ground for 60% area damage; the anchor digs in, then reels home along its chain
-	Right click while it flies: command it to dash toward your cursor first
-	''' */
+	Jeder Treffer entzündet das Ziel
+	Am Schwebehöhepunkt platzt ein Flammenring, der Rückweg streut Glut
+	Rechtsklick im Flug: schick es zum Mauszeiger
+	'''
+GsTrimarang.Desc:
+	'''
+	Höchstens drei Bumerangs zugleich, jeder extra in der Luft +8% Schaden für alle
+	Rechtsklick: die ganze Gruppe stürzt zum Mauszeiger
+	'''
+GsFlyingKnife.Desc:
+	'''
+	Halte die Angriffstaste, das Messer folgt weiter dem Mauszeiger
+	Loslassen: es wirbelt am Ort und schneidet, dann schneidet es geradlinig zur Hand zurück
+	Rechtsklick im Flug: schick es zum Mauszeiger
+	'''
+GsBananarang.Desc:
+	'''
+	Höchstens zehn zugleich; jeder Treffer in einem Wurf macht diese Banane reifer, je +6% Schaden, höchstens fünf Stapel
+	Rechtsklick: alle Bananen in der Luft stürzen zum Mauszeiger
+	'''
+GsLightDisc.Desc:
+	'''
+	Trifft es einen Feind, bricht es zum nächsten weiter, höchstens dreimal
+	Jeder Bruch senkt den Schaden um 10%
+	Rechtsklick im Flug: schick es zum Mauszeiger
+	'''
+GsPossessedHatchet.Desc:
+	'''
+	Aufgeladen werfen: die besessene Axt jagt beschleunigt, nach dem Treffer umwickelt sie das Ziel und schneidet im Kreis
+	Jeder Schnitt brennt ein Grollseelenmal, die fünfte Lage platzt für 150% Schaden
+	Rechtsklick im Flug: schick sie in eine andere Richtung
+	'''
+GsPaladinsHammer.Desc:
+	'''
+	Mit beiden Händen über dem Kopf aufladen und werfen, der Hammer fliegt in schwerem Bogen
+	Am Ende steigt er erst, dann fällt er, schlägt eine Stoßwelle, 65% Flächenschaden
+	Rechtsklick im Flug: erst zum Mauszeiger, dann dort der Sturz
+	'''
+GsSergeantUnitedShield.Desc:
+	'''
+	Hinweg springt zwischen Feinden, höchstens vier Mal, jeder Sprung stößt härter
+	Fängst du den Schild wieder, blockst du kurze Zeit einen Treffer
+	Rechtsklick im Flug: schick ihn zum Mauszeiger
+	'''
+GsAnchor.Desc:
+	'''
+	Fliegt in schwerer Wurfparabel, nach dem Scheitel stürzt sie senkrecht zu Boden
+	Der Aufschlag schlägt eine Stoßwelle, 60% Flächenschaden, der Anker bleibt kurz, dann zieht die Kette ihn zurück
+	Rechtsklick im Flug: schick ihn erst zum Mauszeiger
+	'''

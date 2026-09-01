@@ -4,22 +4,22 @@ BloodAltarTP: {
 	SacrificeDeathReason: "{0} cayó en un frenesí interminable de sangre y carne"
 }
 
-// OldNetDataNodeTile.MapEntry: Data Node
-// OldNetLogoutTerminalTile.MapEntry: Logout Terminal
-// OldNetEncryptedNodeTile.MapEntry: Encrypted Node
-// OldNetEventNodeTile.MapEntry: Event Node
-// OldNetSealGateTile.MapEntry: Seal Gate
-// OldNetRelayTile.MapEntry: Relay Station
-// OldNetAccessTerminalTile.MapEntry: OldNet Access Terminal
-// OldNetEchoNodeTile.MapEntry: Echo Node
-// OldNetCacheTile.MapEntry: Deep-Dive Cache
-// OldNetTripwireTile.MapEntry: Tripwire Emitter
-// OldNetSentryMineTile.MapEntry: Sentry Mine
-// OldNetBulkheadTile.MapEntry: Shaft Bulkhead
-// OldNetBreakerTile.MapEntry: Emergency Breaker
-// OldNetRelicTile.MapEntry: OldNet Relic
-// OldNetLedgerDockTile.MapEntry: Ledger Expansion Dock
-// OldNetColdNodeTile.MapEntry: Cold Storage Node
-// OldNetEscrowTile.MapEntry: Escrow Contract Terminal
-// OldNetCipherVaultTile.MapEntry: Cipher Vault Matrix
-// GaolRoomSealTile.MapEntry: Gaol Cell Seal
+OldNetDataNodeTile.MapEntry: Nodo de datos
+OldNetLogoutTerminalTile.MapEntry: Terminal de salida
+OldNetEncryptedNodeTile.MapEntry: Nodo cifrado
+OldNetEventNodeTile.MapEntry: Nodo de evento
+OldNetSealGateTile.MapEntry: Compuerta de bloqueo
+OldNetRelayTile.MapEntry: Estación de relevo
+OldNetAccessTerminalTile.MapEntry: Terminal de acceso OldNet
+OldNetEchoNodeTile.MapEntry: Nodo de eco
+OldNetCacheTile.MapEntry: Caché de inmersión
+OldNetTripwireTile.MapEntry: Poste emisor de red
+OldNetSentryMineTile.MapEntry: Mina centinela
+OldNetBulkheadTile.MapEntry: Compuerta del pozo
+OldNetBreakerTile.MapEntry: Palanca de alivio de emergencia
+OldNetRelicTile.MapEntry: Reliquia OldNet
+OldNetLedgerDockTile.MapEntry: Muelle de ampliación del libro mayor
+OldNetColdNodeTile.MapEntry: Nodo de almacenamiento frío
+OldNetEscrowTile.MapEntry: Terminal de contrato de custodia
+OldNetCipherVaultTile.MapEntry: Matriz de descifrado maestro
+GaolRoomSealTile.MapEntry: Sello de la celda

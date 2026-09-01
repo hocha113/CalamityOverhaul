@@ -1,107 +1,107 @@
-/* GsDaedalusStormbow.Desc:
+GsDaedalusStormbow.Desc:
 	'''
-	Reforged: arrows now fall from the sky, and a silver seal marks each landing point before the bolt strikes
-	Shots build storm charge; at full charge the next shot lays a 3x3 sky matrix, corners then edges then center
-	The center bolt lands heaviest and bursts on impact. Right click to release a partial matrix early
-	Sky bolts stack hunt brands; branding a foe thrice calls a verdict bolt down upon it
-	''' */
-/* GsTsunami.Desc:
+	Umschmiedung: Pfeile fallen vom Firmament, die Einschlagstelle leuchtet zuerst als Silbermal, dort fallen die Pfeile
+	Dauerfeuer häuft Sturmladung, ist sie voll, legt der nächste Schuss ein Neun-Mal-Himmelsquadrat, Ecken, Kanten und Mitte fallen nacheinander
+	Der schwere Mittelpfeil landet in einer Heiligexplosion. Rechtsklick kann einen Teil der Matrix vorzeitig entladen
+	Himmelspfeile häufen Jagdmal, bei drei Stapeln und erneutem Treffer stürzt ein Straf-Schwerepfeil dem markierten Feind nach
 	'''
-	Reforged: each draw looses a rank of 5 arrows that surge forward in a rolling wave, one ammo per draw
-	Shots build tide charge; at full charge the next draw becomes a great wave: 7 piercing arrows in two ranks led by a sweeping foam crest
-	Wave arrows stack tide brands; branding a foe thrice sends a water spout erupting beneath it
-	While a branded foe stands, every 4th arrow splits off a tide-chaser that bites toward it
-	''' */
-/* GsFairyQueenRangedItem.Desc:
+GsTsunami.Desc:
 	'''
-	Reforged: all arrows become twilight lances; each sweep of the bow looses 5 lances along an arc, converging on the cursor
-	The 3rd lance of every sweep is the Queen's lance, striking nearly twice as hard
-	Shots build twilight; at full charge the next shot blooms into a prismatic fan of 5 lances
-	Lance hits stack brands; branding a foe thrice calls twin fae orbs to circle and peck it for 2 seconds
-	''' */
-/* GsDD2BetsyBow.Desc:
+	Umschmiedung: Ein Zug schickt fünf Pfeile als Wellenreihe, sie wogen vorwärts und fallen nach dem Brecher
+	Dauerfeuer häuft Gezeitenkraft, ist sie voll, wird der nächste Schuss zur Riesenwelle: sieben Pfeile in Doppelreihe plus Durchschlag, die Schaumkrone fegt den Weg frei
+	Wellenpfeile häufen Gezeitenmal, bei drei Stapeln und erneutem Treffer steigt eine Gezeitensäule unter dem Feind
+	Sind markierte Feinde auf dem Feld, spaltet jeder vierte Pfeil einen Gezeitenjäger auf sie
 	'''
-	Reforged: each draw looses 5 dragonfire bolts that climb, stall, then dive-bomb the cursor area
-	Impacts burst into dragonfire rings; airborne foes take 35% more damage
-	Shots build airstrike charge; at full charge the next draw calls a carpet run of 9 bolts along the flight line
-	Bolt hits stack flame brands; branding a foe thrice drops one heavy bomb straight onto it
-	''' */
-/* GsPhantasm.Desc:
+GsFairyQueenRangedItem.Desc:
 	'''
-	Reforged: hold to channel; fire rate climbs with frenzy, and the bow splits into phantom after-bows
-	At frenzy rank 2 every volley gains two flanking phantom arrows
-	Striking the same foe 6 times in a row calls a phantom archer to hover at your back and loose soul bolts alongside you
-	Main arrows stack soul brands; branding a foe thrice makes the archer nail it with 4 homing soul bolts
-	''' */
-/* GsPearlwoodBow.Desc:
+	Umschmiedung: Alle Pfeile werden zu Dämmerungslanzen, ein Bogenzug feuert fünf Lanzen, sie lösen sich nacheinander im Bogen und ziehen zum Fadenkreuz
+	Jede dritte Lanze der Runde ist die Königinnenlanze, Schaden fast verdoppelt
+	Dauerfeuer häuft Dämmerung, ist sie voll, fächert der nächste Schuss fünf Prismenlanzen
+	Dämmerungslanzen häufen Male, bei drei Stapeln und erneutem Treffer erscheinen zwei Lichtkugeln, die zwei Sekunden um den Feind kreisen und picken
 	'''
-	Reforged: every 5 shots charge a rainbow arc volley, 5 arrows sweeping out one by one, one ammo per volley
-	Landing 3 arc arrows on the same foe pops a pearl prism burst
-	Right click releases the volley early at 60%+ charge
-	''' */
-/* GsCobaltRepeater.Desc:
+GsDD2BetsyBow.Desc:
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses 3 bolts one after another that accelerate in flight, one ammo per volley
-	Volley hits brand prey and grant you a short gust of Swiftness
-	''' */
-/* GsPalladiumRepeater.Desc:
+	Umschmiedung: Ein Zug schickt fünf Drachenflammen-Pfeile, sie steigen, stallieren, drehen und stürzen aufs Fadenkreuz
+	Einschlag platzt in einem Drachenfeuerring, Feinde in der Luft erleiden 35% mehr Schaden
+	Dauerfeuer häuft Luftschlag-Ladung, ist sie voll, ruft der nächste Schuss einen Teppichbombenlauf, neun Pfeile fallen nacheinander entlang der Bahn
+	Drachenflammen-Pfeile häufen Flammenmal, bei drei Stapeln und erneutem Treffer stürzt ein schwerer Drachenflammen-Pfeil dem markierten Feind nach
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 3-bolt line, one ammo per volley
-	Branded foes slain restore 2 life; executions restore 5 more
-	''' */
-/* GsMythrilRepeater.Desc:
+GsPhantasm.Desc:
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge, one ammo per volley
-	The lead volley bolt always crits against branded foes; side bolts gain +8% crit
-	''' */
-/* GsOrichalcumRepeater.Desc:
+	Umschmiedung: Linksklick halten spannt durchgehend, Schussfolge steigt mit der Raserei, der Bogen spaltet Phantom-Nachbögen
+	Ab zwei Stapeln Raserei kommen pro Salve zwei Flügel-Phantompfeile dazu
+	Sechs Treffer hintereinander auf dasselbe Ziel rufen einen Phantomschützen hinter dir, der Seelenpfeile mit dir schießt
+	Hauptpfeile häufen Seelenmal, bei drei Stapeln und erneutem Treffer schießt der Phantomschütze vier Seelenpfeile dem Feind nach
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge trailing petals, one ammo per volley
-	Volley hits burst into a small petal blast
-	''' */
-/* GsAdamantiteRepeater.Desc:
+GsPearlwoodBow.Desc:
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon at x1.5 knockback, one ammo per volley
-	The lead volley bolt lands with a crimson shockwave that splashes nearby foes
-	''' */
-/* GsTitaniumRepeater.Desc:
+	Umschmiedung: Alle 5 Schüsse füllt sich Regenbogenlicht, der nächste Schuss wird zur Fünf-Pfeil-Regenbogenbrücke, fächert von einer Seite, die Runde verbraucht nur 1 Munition
+	Trifft derselbe Feind 3 Pfeile des Bogens, platzt eine Perlen-Prismenexplosion
+	Übersteigt die Ladung 60%, kann Rechtsklick die Salve vorzeitig entladen
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon, one ammo per volley
-	Volley bolts etch armor: each hit on the same foe adds +2 armor penetration, up to 5 stacks
-	''' */
-/* GsHallowedRepeater.Desc:
+GsCobaltRepeater.Desc:
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt cross, one ammo per volley
-	Executing a fully branded foe calls down a hallowed star trailing gold
-	''' */
-/* GsChlorophyteShotbow.Desc:
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen drei Pfeile hintereinander ab, immer schneller, die Runde verbraucht nur 1 Munition
+	Salventreffer häufen Jagdmal und wirbeln einen Wind, der dich kurz schneller gehen lässt
 	'''
-	Reforged: every 6th shot triple-taps; volley charge looses a 6-arrow spore cone, one ammo per volley
-	Branded foes take +10% from this bow; execution bursts a spore cloud
-	''' */
-/* GsStakeLauncher.Desc:
+GsPalladiumRepeater.Desc:
 	'''
-	Reforged: every 6th stake triple-taps; volley charge looses a 3-stake wedge, one ammo per volley
-	Stakes pin and brand prey; the executing stake crucifies at x2.3, undead take a further +25%
-	Each crucifixion reloads 30 volley charge; silver light gathers at the muzzle when fully charged
-	''' */
-/* GsIceBow.Desc:
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen drei Pfeile in Querreihe, die Runde verbraucht nur 1 Munition
+	Fällt ein markierter Feind, kommen 2 Leben zurück, eine Hinrichtung gibt 5
 	'''
-	Reforged: volley charge hurls 6 icicles skyward to rain on the cursor, one ammo per volley
-	Icicle hits stack frostbrand; at 3 stacks the next icicle shatters into a frost burst
-	''' */
-/* GsMarrow.Desc:
+GsMythrilRepeater.Desc:
 	'''
-	Reforged: volley charge looses a 5-bone-arrow cross with +1 pierce, one ammo per volley
-	Executing a fully branded foe cages it with 4 converging bone arrows
-	''' */
-/* GsShadowflameBow.Desc:
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen vier Pfeile im Keil, die Runde verbraucht nur 1 Munition
+	Salven-Hauptpfeil auf markierte Feinde trifft immer kritisch, Beipfeile +8% kritische Chance
 	'''
-	Reforged: volley charge looses 3 shadowflame arrows crossing at the cursor, one ammo per volley
-	Branded foes struck by any arrow draw a homing shadowflame wisp; execution erupts in shadow
-	''' */
-/* GsPulseBow.Desc:
+GsOrichalcumRepeater.Desc:
 	'''
-	Reforged: each wall bounce now grants +10% damage (up to 5); volley charge looses 3 parallel pulse tracks, one ammo per volley
-	Branded foes bend passing pulses toward them; execution chains a surge to 2 nearby foes
-	''' */
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen vier keilförmige Pfeile mit Blütenblättern, die Runde verbraucht nur 1 Munition
+	Salvenpfeile platzen in kleinen Blütenexplosionen
+	'''
+GsAdamantiteRepeater.Desc:
+	'''
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen fünf Pfeile in Gänseflug, Rückstoß um die Hälfte höher, die Runde verbraucht nur 1 Munition
+	Der Salven-Hauptpfeil schlägt ein karmesinrotes Beben, die Stoßwelle trifft umstehende Feinde
+	'''
+GsTitaniumRepeater.Desc:
+	'''
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen fünf Pfeile in Gänseflug, die Runde verbraucht nur 1 Munition
+	Salvenpfeile ätzen Rüstung: jeder Treffer am selben Feind +2 Durchschlag, höchstens 5 Stapel
+	'''
+GsHallowedRepeater.Desc:
+	'''
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen vier Pfeile im Kreuz, die Runde verbraucht nur 1 Munition
+	Hinrichtung eines voll markierten Feindes stürzt einen goldenen Heiligenstern auf ihn
+	'''
+GsChlorophyteShotbow.Desc:
+	'''
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen sechs Sporenkegel-Pfeile, die Runde verbraucht nur 1 Munition
+	Markierte Feinde erleiden 10% mehr Schaden von dieser Armbrust, Hinrichtung öffnet eine Sporenwolke
+	'''
+GsStakeLauncher.Desc:
+	'''
+	Umschmiedung: Jeder 6. Pflock hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen drei Pflöcke im Keil, die Runde verbraucht nur 1 Munition
+	Jeder Pflock nagelt fest und markiert die Beute; der Pflock nach vollem Mal ist die Kreuzigung, Schaden ×2,3, gegen Untote noch +25%
+	Eine gelungene Kreuzigung füllt sofort 30 Ladung nach; bei voller Ladung sammelt sich Silberlicht an der Mündung
+	'''
+GsIceBow.Desc:
+	'''
+	Umschmiedung: Ist die Salvenladung voll, wirft der Bogen 6 Eiszapfen in den Himmel, sie fallen als Eisregen um den Cursor, die Salvenrunde verbraucht nur 1 Munition
+	Eiszapfen häufen Frostmal, bei 3 Stapeln platzt der nächste Zapfen in einem Frostausbruch
+	'''
+GsMarrow.Desc:
+	'''
+	Umschmiedung: Ist die Salvenladung voll, gehen 5 Knochenpfeile im Kreuz, Durchschlag +1, die Salvenrunde verbraucht nur 1 Munition
+	Hinrichtung eines voll jagdmarkierten Feindes schließt 4 Knochenpfeile um ihn zum Käfig
+	'''
+GsShadowflameBow.Desc:
+	'''
+	Umschmiedung: Ist die Salvenladung voll, gehen 3 Schattenflammen-Pfeile, sie treffen sich am Cursor, die Salvenrunde verbraucht nur 1 Munition
+	Jeder Pfeil auf einen jagdmarkierten Feind ruft ein verfolgendes Schattenflammen-Irrlicht; bei Hinrichtung platzt ein Schattenausbruch
+	'''
+GsPulseBow.Desc:
+	'''
+	Umschmiedung: Impulspfeile gewinnen bei jedem Wandprall 10% Schaden, höchstens 5-mal; ist die Salvenladung voll, gehen 3 parallele Impulsschienen, die Salvenrunde verbraucht nur 1 Munition
+	Jagdmarkierte Feinde biegen vorbeiziehende Impulse zu sich; bei Hinrichtung springt eine Stromkette zu 2 nahen Feinden
+	'''

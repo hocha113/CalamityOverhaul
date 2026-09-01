@@ -1,50 +1,14 @@
-/* GsCopperShortsword.Desc:
+GsCopperShortsword.Desc: Перековка: каждое попадание высекает искру на медном клинке; четвёртая вспыхивает малым взрывом на острие и поджигает цель и ближних
+GsTinShortsword.Desc: Перековка: колите в ритме — оловянная гамма поднимается слой за слоем; после четырёх слоёв каждый укол гонит оловянную рябь и кусает глубже
+GsIronShortsword.Desc: Перековка: стойка убирания клинка сама парирует, входящий урон −30%; парированный удар зажигает контрукол — следующий укол за секунду гарантированно крит
+GsLeadShortsword.Desc: Перековка: ржавый свинцовый клинок травит всё, чего касается; укол в уже отравленного даёт +25% урона
+GsSilverShortsword.Desc: Перековка: зеркальный серебряный клинок пьёт лунный свет; ночью урон +25%, скорость уколов +10%; в Кровавую луну каждое попадание ещё крадёт каплю жизни
+GsTungstenShortsword.Desc: Перековка: плотное вольфрамовое сердце стоит короткой зарядки; полный укол вылетает наполовину дальше, ломает броню и нанизывает всё на линии
+GsGoldShortsword.Desc: Перековка: позолоченное острие трясёт мелочь из ран — примерно каждое четвёртое попадание сыплет монетами; убийство сыплет горсть всегда
+GsPlatinumShortsword.Desc: Перековка: укол быстрее света; на линии остаётся платиновое послеобразие; враг, врезавшийся в него, получает 40% урона
+GsGladius.Desc:
 	'''
-	Reforged: every hit strikes a spark off the copper edge;
-	the fourth spark bursts into flame at the point, igniting nearby foes
-	''' */
-/* GsTinShortsword.Desc:
+	Перековка: три укола легиона — два быстрых и щитовой шаг с тяжёлым;
+	серия в ритме ускоряется, до трёх слоёв
 	'''
-	Reforged: chain your thrusts to climb the tin scale, each note higher than the last;
-	at full chime every thrust rings out a rippling pulse and bites a little deeper
-	''' */
-/* GsIronShortsword.Desc:
-	'''
-	Reforged: the recovery stance holds a guard that blunts incoming blows by 30%;
-	block a hit to ready a riposte, and your next thrust within a second strikes true
-	''' */
-/* GsLeadShortsword.Desc:
-	'''
-	Reforged: the corroded lead edge poisons whatever it touches;
-	striking an already poisoned foe bites 25% deeper into the rot
-	''' */
-/* GsSilverShortsword.Desc:
-	'''
-	Reforged: mirror-polished silver that drinks moonlight, striking 25% harder and 10% faster at night;
-	under a blood moon each hit steals back a sliver of life
-	''' */
-/* GsTungstenShortsword.Desc:
-	'''
-	Reforged: a dense tungsten core rewards a brief hold before the thrust;
-	a full charge lunges half again as far, punching through armor and everything in line
-	''' */
-/* GsGoldShortsword.Desc:
-	'''
-	Reforged: gilded edge that shakes loose coins, one hit in four rattles change from the wound;
-	kills always spill a handful
-	''' */
-/* GsPlatinumShortsword.Desc:
-	'''
-	Reforged: the thrust outruns its own light, leaving a platinum afterimage hanging along the line;
-	foes that brush the lingering light take 40% damage
-	''' */
-/* GsGladius.Desc:
-	'''
-	Reforged: legion drill in three beats, two quick thrusts then a shield-step heavy;
-	keep the rhythm and each thrust comes faster, up to three tempo stacks
-	''' */
-/* GsRuler.Desc:
-	'''
-	Reforged: discipline demands exact measurement, land the very tip for a 1.6x graded strike;
-	sloppy hits closer to the hand are marked down to 0.85x
-	''' */
+GsRuler.Desc: Перековка: кара требует точной меры — попадание концом линейки даёт 1.6× «отлично»; промах по шкале считает 0.85×

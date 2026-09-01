@@ -2,1145 +2,1145 @@ QuestNode: {
 	FirstQuest: {
 		DisplayName: ¡Bienvenido a este mundo!
 		Description: El comienzo del viaje
-		DetailedDescription: Toda leyenda empieza en lo humilde. Reclama tu equipo inicial y prepárate para un mundo de dioses y monstruos.
-		QuestObjective.Description: Clic para reclamar objetos iniciales
+		DetailedDescription: Reclama tu equipo inicial. Este mundo tiene dioses y también monstruos, y tú ahora mismo estás con las manos vacías.
+		QuestObjective.Description: Pulsa para reclamar los objetos iniciales
 	}
 
 	MiningQuest: {
-		DisplayName: Fundamentos de minería
+		DisplayName: Primeros pasos de minería
 		Description: Obtén diez {0}
-		DetailedDescription: El subsuelo guarda riqueza infinita; primero necesitamos metales básicos para herramientas.
+		DetailedDescription: Las herramientas necesitan metal primero. Las vetas bajo tierra no van a asomarse solas: hay que cavar.
 	}
 
 	MiningQuestII: {
 		DisplayName: Edad del hierro
 		Description: Recolecta cincuenta {0}
-		DetailedDescription: El cobre es demasiado blando; necesitamos metales más duros. Baja más para encontrar vetas de hierro.
+		DetailedDescription: El cobre es demasiado blando: dos tajos y ya está mellado. El hierro está enterrado un poco más hondo.
 	}
 
 	MiningQuestIII: {
 		DisplayName: Fiebre del oro
 		Description: Recolecta cien {0}
-		DetailedDescription: El oro no es solo moneda: conduce bien la magia y es dúctil; más blando que el hierro, pero clave para equipo avanzado.
+		DetailedDescription: El oro es más blando que el hierro, pero conduce mejor la magia y se trabaja con más facilidad. El equipo avanzado no puede prescindir de él.
 	}
 
 	BrimstoneElementalQuest: {
-		DisplayName: Elemental de Azufre
-		Description: Derrota al elemental de azufre
-		DetailedDescription: En las ruinas del risco de azufre, despierta y vence al espíritu elemental dormido; cuidado con su infierno de proyectiles.
+		DisplayName: Elemental de azufre
+		Description: Derrota al Elemental de azufre
+		DetailedDescription: En las ruinas de los Riscos de Azufre, despierta y vence al espíritu elemental dormido. Cuidado con su infierno de proyectiles.
 	}
 
 	CalamitasCloneQuest: {
 		DisplayName: Clon de Calamitas
 		Description: Derrota al Clon de Calamitas
-		DetailedDescription: Un clon lleno de odio y destrucción; véncelo para demostrar que mereces enfrentar a la verdadera bruja.
+		DetailedDescription: Un clon lleno de odio y ansias de destrucción. Si ni la sombra puedes vencer, ni sueñes con ver al original.
 	}
 
 	CrabulonQuest: {
 		DisplayName: Crabulon
 		Description: Derrota a Crabulon
-		DetailedDescription: En el subsuelo fúngico acecha un cangrejo gigante infestado; sus esporas son muy peligrosas.
+		DetailedDescription: En el bioma subterráneo de setas luminosas acecha un cangrejo gigante parasitado por hongos. Sus esporas son muy peligrosas.
 	}
 
 	CryogenQuest: {
 		DisplayName: Criógeno
 		Description: Derrota a Criógeno
-		DetailedDescription: El antiguo archimago del cosmos está sellado en hielo eterno; libéralo y véncelo.
+		DetailedDescription: El antiguo mago de hielo que gobernaba el frío, sellado en un bloque de hielo. Rómpelo y despertará cubierto de cristales.
 	}
 
 	DesertScourgeQuest: {
 		DisplayName: Azote del desierto
-		Description: Derrota al azote del desierto
-		DetailedDescription: El antiguo tirano de los mares ahora agoniza en el desierto seco; cuidado con sus mandíbulas y secuaces.
+		Description: Derrota al Azote del desierto
+		DetailedDescription: El antiguo señor de los mares ahora agoniza en el desierto reseco. Cuidado con sus mandíbulas enormes y con sus secuaces.
 	}
 
 	EaterofWorldsQuest: {
-		DisplayName: Devorador de mundos / Cerebro de Cthulhu
+		DisplayName: Devoramundos / Cerebro de Cthulhu
 		Description: Derrota al jefe de la Corrupción o del Carmesí
-		QuestObjective.Description: Derrota al Devorador de mundos o al Cerebro de Cthulhu
-		DetailedDescription: El mal se extiende; entra en la herida del mundo y elimina al gusano o al cerebro vil.
+		QuestObjective.Description: Derrota al Devoramundos o al Cerebro de Cthulhu
+		DetailedDescription: El mal se extiende. Adéntrate en la llaga del mundo y arranca al gusano gigante o al cerebro vil que se ha instalado ahí.
 	}
 
 	EyeofCthulhuQuest: {
 		DisplayName: Ojo de Cthulhu
 		Description: Derrota al Ojo de Cthulhu
-		DetailedDescription: Mientras sientas esa mirada maligna, aparecerá; es tu primera prueba de verdad.
+		DetailedDescription: En cuanto sientas esa mirada maligna, aparecerá. De noche, bajando del cielo.
 	}
 
 	GolemQuest: {
 		DisplayName: Gólem
 		Description: Derrota al Gólem
-		DetailedDescription: En el templo de la jungla yace una máquina de guerra antigua; cuidado con láseres y puños.
+		DetailedDescription: En lo profundo del templo de la jungla se venera una antigua máquina de guerra. Cuidado con sus láseres y sus puños.
 	}
 
 	HiveMindQuest: {
 		DisplayName: La Mente de la Colmena / Los Perforadores
-		Description: Derrota al dios del bioma maligno
+		Description: Derrota al verdadero dios del bioma maligno
 		QuestObjective.Description: Derrota a La Mente de la Colmena o a Los Perforadores
-		DetailedDescription: Son la conciencia de la Corrupción y el Carmesí hecha carne; si no caen, la tierra no tendrá paz.
+		DetailedDescription: La Corrupción y el Carmesí tienen cada uno su cerebro. Si no los arrancas, la plaga no se detiene.
 	}
 
 	KingSlimeQuest: {
-		DisplayName: Rey Slime
-		Description: Derrota al Rey Slime
-		DetailedDescription: El rey de los gelatinosos; parece cómico, pero no dejes que su tamaño te aplaste.
+		DisplayName: Rey slime
+		Description: Derrota al Rey slime
+		DetailedDescription: El soberano de las criaturas de gel. Parece un poco ridículo, pero no dejes que su tamaño te aplaste.
 	}
 
 	LunaticCultistQuest: {
 		DisplayName: Cultista lunático
-		Description: Derrota al cultista lunático
-		DetailedDescription: En la entrada de la mazmorra, fanáticos intentan evitar o provocar el apocalipsis; detén el ritual.
+		Description: Derrota al Cultista lunático
+		DetailedDescription: En la puerta de la mazmorra, un grupo de fanáticos intenta impedir o provocar el fin del mundo. Detén su ritual.
 	}
 
 	MechanicalBossesQuest: {
-		DisplayName: Jefes mecánicos
+		DisplayName: Los tres reyes mecánicos
 		Description: Derrota a todos los jefes mecánicos
 		QuestObjective.Description: Derrota a todos los jefes mecánicos
-		DetailedDescription: Alguien reconstruyó los órganos de Cthulhu en acero. Un par de ojos, un cráneo y un gusano largo.
+		DetailedDescription: Alguien reconstruyó en acero los órganos de Cthulhu. Un par de ojos, un cráneo, un gusano largo.
 	}
 
 	MoonLordQuest: {
 		DisplayName: Señor de la Luna
 		Description: Derrota al Señor de la Luna
-		DetailedDescription: La mente detrás de todo, el terror del lado oscuro de la luna; acaba con esta pesadilla.
+		DetailedDescription: La mente detrás de todo esto, el horror de la cara oculta de la luna. Sus ojos no están donde deberían.
 	}
 
 	PlaguebringerGoliathQuest: {
 		DisplayName: La Goliat Traeplagas
 		Description: Derrota a La Goliat Traeplagas
-		DetailedDescription: Una abeja reina modificada por nanovirus; mortal y cargada de peste.
+		DetailedDescription: Una abeja reina modificada por un nanovirus. Lleva la peste encima: si te pica, seguirás perdiendo vida.
 	}
 
 	PlanteraQuest: {
 		DisplayName: Plantera
 		Description: Derrota a Plantera
-		DetailedDescription: En lo profundo de la jungla duerme una flor devoradora; rompe el bulbo y enfréntate a su furia.
+		DetailedDescription: En lo profundo de la jungla duerme una flor gigante carnívora. Rompe el capullo y enfrenta la ira de la jungla.
 	}
 
 	SkeletronQuest: {
-		DisplayName: Skeletron
-		Description: Derrota a Skeletron
-		DetailedDescription: Solo venciendo a este anciano maldito podrás entrar con seguridad en la mazmorra.
+		DisplayName: Esqueletrón
+		Description: Derrota a Esqueletrón
+		DetailedDescription: Solo venciendo a este anciano maldito podrás entrar a salvo en la mazmorra y husmear sus secretos.
 	}
 
 	SlimeGodQuest: {
-		DisplayName: Dios Slime
-		Description: Derrota al Dios Slime
-		DetailedDescription: La cima de la especie slime, un dios antiguo y voraz; cuidado con sus avatares combinados.
+		DisplayName: Dios slime
+		Description: Derrota al Dios slime
+		DetailedDescription: La cima de la especie slime, un dios antiguo y voraz. Cuidado con el ataque combinado de sus copias.
 	}
 
 	WallofFleshQuest: {
 		DisplayName: Muro carnoso
-		Description: Derrota a Muro carnoso
-		DetailedDescription: El guardián del mundo. Arroja el muñeco vudú del guía a la lava para liberar a la antigua deidad de este mundo y abrir el modo difícil.
+		Description: Derrota al Muro carnoso
+		DetailedDescription: El portero del mundo. Lanza el muñeco vudú del Guía a la lava, libera a la deidad antigua de este mundo y abre el modo difícil.
 	}
 
 	CeaselessVoidQuest: {
 		DisplayName: Vacío Perpetuo
-		Description: Derrota a Vacío Perpetuo
-		DetailedDescription: Centinela del Devorador de Dioses, espejo del vacío de otra dimensión.
+		Description: Derrota al Vacío Perpetuo
+		DetailedDescription: Uno de los centinelas del Devorador de Dioses, un espejo de la nada venido de otra dimensión.
 	}
 
 	DevourerofGodsQuest: {
 		DisplayName: Devorador de Dioses
 		Description: Derrota al Devorador de Dioses
-		DetailedDescription: Una serpiente cósmica hambrienta de divinidad; combátela en el vacío sin dejar que te trague.
+		DetailedDescription: Una serpiente cósmica que ansía devorar toda divinidad. Enfréntala en el Vacío y no dejes que te trague.
 	}
 
 	DragonfollyQuest: {
-		DisplayName: Locura dracónica
-		Description: Derrota a la locura dracónica
-		DetailedDescription: Un fallido clon de Yharon, un pseudodragón loco y electrizado.
+		DisplayName: Locura Dracónica
+		Description: Derrota a la Locura Dracónica
+		DetailedDescription: El fallo de un intento de resucitar a Yharon: un pseudodragón loco y electrizado.
 	}
 
 	ExoMechsQuest: {
 		DisplayName: Exo Mecánicos
 		Description: Derrota a los Exo Mecánicos
-		DetailedDescription: Las obras maestras de Draedon, cénit de la tecnología terrariana; sobrevive a la función perfecta.
+		DetailedDescription: Lo mejor que ha construido Draedon. Las tres a la vez, y él se queda al lado a mirar.
 	}
 
 	OldDukeQuest: {
 		DisplayName: El Viejo Duque
-		Description: Derrota a El Viejo Duque
-		DetailedDescription: El antiguo señor de las profundidades del Mar de Azufre; cuidado con su vapor tóxico.
+		Description: Derrota al Viejo Duque
+		DetailedDescription: El antiguo señor de las profundidades del Mar de Azufre, mutación y poder fundidos. Cuidado con su vapor tóxico.
 	}
 
 	PolterghastQuest: {
 		DisplayName: Polterghast
 		Description: Derrota a Polterghast
-		DetailedDescription: Almas vengativas de la mazmorra reunidas en un monstruo; calma su furia.
+		DetailedDescription: Un monstruo nacido del amasijo de almas que murieron en la mazmorra. Apacigua su furia.
 	}
 
 	PrimordialWyrmQuest: {
 		DisplayName: Guiverno primordial
-		Description: Derrota al guiverno primordial
-		DetailedDescription: Guardián del fondo del abismo, más antiguo que los dioses; no lo molestes sin necesidad.
+		Description: Derrota al Guiverno primordial
+		DetailedDescription: El guardián del fondo del Abismo. Es más antiguo que los dioses; no lo molestes si no hace falta.
 	}
 
 	ProfanedGuardiansQuest: {
 		DisplayName: Guardianes profanados
-		Description: Derrota a los guardianes profanados
-		DetailedDescription: Leales guardianes de la Diosa Profanada; derrotales para debilitar sus defensas.
+		Description: Derrota a los Guardianes profanados
+		DetailedDescription: Los guardianes leales de la Diosa Profanada. Véncelos para debilitar las defensas de la diosa.
 	}
 
 	ProvidenceQuest: {
 		DisplayName: Providence, la Diosa Profanada
-		Description: Derrota a Providence
-		DetailedDescription: Diosa del fuego sagrado y la purificación; desafíala en el Sagrado o el Inframundo sin quemarte.
+		Description: Derrota a Providence, la Diosa Profanada
+		DetailedDescription: La diosa que rige el fuego sagrado y la purificación. Desafíala en el Sagrado o en el Inframundo, pero cuidado de no acabar calcinado por las llamas santas.
 	}
 
 	SignusQuest: {
-		DisplayName: Signus, Enviado del Devorador
+		DisplayName: Signus
 		Description: Derrota a Signus
-		DetailedDescription: Centinela del Devorador de Dioses, asesino sin forma, fantasma del vacío.
+		DetailedDescription: Uno de los centinelas del Devorador de Dioses: un asesino sin forma, un fantasma del Vacío.
 	}
 
 	StormWeaverQuest: {
 		DisplayName: Tejedor de tormentas
-		Description: Derrota al tejedor de tormentas
-		DetailedDescription: Centinela del Devorador de Dioses, gusano del cielo que se alimenta de rayos.
+		Description: Derrota al Tejedor de tormentas
+		DetailedDescription: Uno de los centinelas del Devorador de Dioses, un gusano del cielo que se alimenta de tormentas y rayos.
 	}
 
 	SupremeCalamitasQuest: {
 		DisplayName: Calamitas Suprema
 		Description: Derrota a Calamitas Suprema
-		DetailedDescription: La legendaria Bruja del Azufre; ¿fin del viaje o nuevo comienzo? Prepárate para el infierno de proyectiles.
+		DetailedDescription: La bruja del azufre en persona. Los clones de antes los modeló de un gesto. La pantalla se va a llenar.
 	}
 
 	YharonQuest: {
-		DisplayName: Yharon, dragón del renacimiento
-		Description: Derrota a Yharon
-		DetailedDescription: El fiel compañero del Tirano, dragón con renacer de fénix; prueba del alma.
+		DisplayName: Yharon, dragón de la jungla
+		Description: Derrota a Yharon, dragón de la jungla
+		DetailedDescription: El compañero leal del Tirano, un dragón con el renacer de un fénix. Derribarlo una vez no basta.
 	}
 
 	BatteryQuest: {
 		DisplayName: Almacenamiento de energía
 		Description: Fabrica una batería térmica
-		DetailedDescription: La electricidad debe almacenarse; las baterías son el primer paso de una red estable.
+		DetailedDescription: La electricidad, una vez producida, hay que guardarla. Fabricar baterías es el primer paso de una red eléctrica estable.
 	}
 
 	HydroelectricQuest: {
 		DisplayName: Energía limpia
 		Description: Fabrica un generador hidroeléctrico
-		DetailedDescription: Aprovecha el agua en movimiento para generar electricidad de forma limpia y sostenible.
+		DetailedDescription: Genera electricidad con agua corriente. No quema combustible: mientras el agua siga fluyendo, seguirá girando.
 	}
 
 	IndustrialStartQuest: {
 		DisplayName: Revolución industrial
 		Description: Fabrica un generador eólico
-		DetailedDescription: Primer paso hacia la automatización: usa el viento para mover tus máquinas.
+		DetailedDescription: Haz que el viento mueva las máquinas. Esta es la primera que no necesita que te quedes de guardia.
 	}
 
 	ItemFilterQuest: {
 		DisplayName: Clasificación logística
 		Description: Fabrica un filtro de objetos
-		DetailedDescription: Las líneas automáticas necesitan orden; controla el flujo con filtros.
+		DetailedDescription: Las líneas automáticas necesitan orden. Usa filtros para controlar con precisión el flujo de objetos.
 	}
 
 	MiningMachineQuest: {
 		DisplayName: Excavación automática
 		Description: Fabrica una máquina minera
-		DetailedDescription: Olvida la minería manual; esta máquina devora vetas con eficiencia asombrosa.
+		DetailedDescription: Ya no hace falta cavar tú. Ponla sobre una veta y irá royendo hacia abajo sin parar.
 	}
 
 	MiningMachineIIQuest: {
 		DisplayName: Perforación profunda
 		Description: Fabrica una máquina minera MK2
-		DetailedDescription: Un núcleo reforzado ofrece velocidad sin igual.
+		DetailedDescription: Le han cambiado el núcleo de potencia: el taladro gira más rápido.
 	}
 
 	PipelineQuest: {
 		DisplayName: Transmisión de energía
 		Description: Fabrica tuberías de energía universal
-		DetailedDescription: Las venas entre generadores y máquinas; sin ellas la electricidad no circula.
+		DetailedDescription: Las venas que unen generadores y máquinas. Sin ellas, la electricidad no es más que un charco quieto.
 	}
 
 	TeslaTowerQuest: {
 		DisplayName: Torre de tormenta magnética
-		Description: Fabrica una torre Tesla
-		DetailedDescription: Una maravilla de la energía inalámbrica. La torre transmite energía por el aire y te ahorra la mayor parte del cableado.
+		Description: Fabrica una torre electromagnética Tesla
+		DetailedDescription: Una obra maestra de la transmisión inalámbrica. Esta torre envía electricidad a distancia y te ahorra más de la mitad del cableado.
 	}
 
 	FluidPumpQuest: {
-		// DisplayName: Fluid Engineering
-		// Description: Craft a Fluid Pump
-		// DetailedDescription: Water and lava are resources too. The pump is what invites them out of the world.
+		DisplayName: Ingeniería de líquidos
+		Description: Fabrica una bomba de líquidos
+		DetailedDescription: El agua y la lava también son recursos. La bomba de líquidos se encarga de sacarlos del mundo.
 	}
 
 	FluidPipelineQuest: {
-		// DisplayName: Veins of Liquid
-		// Description: Craft Fluid Pipelines
-		// DetailedDescription: Liquids need a grid of their own. Fluid pipes carry only fluids and leave the power grid alone.
+		DisplayName: Venas líquidas
+		Description: Fabrica tuberías de líquido
+		DetailedDescription: Los líquidos también necesitan su propia red. Las tuberías de líquido solo transportan líquidos y no se meten con la red eléctrica.
 	}
 
 	FluidTankQuest: {
-		// DisplayName: Vessel of Reserves
-		// Description: Craft a Fluid Tank
-		// DetailedDescription: Pumping fast means nothing without somewhere to keep it. The tank is the battery of the fluid network.
+		DisplayName: Vasija de reservas
+		Description: Fabrica un tanque de líquido
+		DetailedDescription: De nada sirve bombear rápido si no hay dónde guardar. El tanque es la batería de la red de líquidos.
 	}
 
 	MagmaGeneratorQuest: {
-		// DisplayName: Magma Thermal Power
-		// Description: Craft a Magma Thermal Generator
-		// DetailedDescription: The pumped magma finally has somewhere to go. It earns a little while touching lava, and runs at full power once its tank is fed.
+		DisplayName: Calor del magma
+		Description: Fabrica un generador térmico de magma
+		DetailedDescription: El magma ya bombeado por fin tiene destino. Pegado a la lava saca un poco; con el depósito lleno, genera a pleno rendimiento.
 	}
 
 	ShimmerTransmuterQuest: {
-		// DisplayName: Shimmer Alchemy
-		// Description: Craft a Shimmer Transmuter
-		// DetailedDescription: Pump shimmer into the machine, and item forms can be rewritten on an assembly line.
+		DisplayName: Alquimia de destello
+		Description: Fabrica una cubeta de transmutación de destello
+		DetailedDescription: Bombea destello a la máquina y la forma de los objetos se podrá reescribir en cadena.
 	}
 
 	CrusherQuest: {
-		// DisplayName: Ore from Rubble
-		// Description: Craft an Ore Crusher
-		// DetailedDescription: Two ore crushed into three. The incinerator's supply line just gained a yield step.
+		DisplayName: Mineral a partir de escombros
+		Description: Fabrica una trituradora de mineral
+		DetailedDescription: Dos partes de mineral se convierten en tres. La línea que alimenta al incinerador gana de golpe un paso de rendimiento.
 	}
 
 	RecyclerQuest: {
-		// DisplayName: Waste into Worth
-		// Description: Craft a Recycler
-		// DetailedDescription: Don't toss retired gear. Break it into bars by rarity and send it back to the furnace.
+		DisplayName: De desecho a tesoro
+		Description: Fabrica una recicladora
+		DetailedDescription: No tires el equipo jubilado. Desmóntalo en lingotes según su rareza y vuelve a meterlo en el horno.
 	}
 
 	AutoCrafterQuest: {
-		// DisplayName: Automated Assembly
-		// Description: Craft an Auto Crafter
-		// DetailedDescription: Pin a recipe; materials walk in and products walk out. The crafting bench no longer needs you standing by.
+		DisplayName: Ensamblaje automático
+		Description: Fabrica una mesa de fabricación automática
+		DetailedDescription: Fija una receta: los materiales entran solos y el producto sale solo. La mesa de fabricación ya no necesita que te quedes de guardia.
 	}
 
 	MushroomFarmerQuest: {
-		// DisplayName: Fungiculture
-		// Description: Craft a Mushroom Farming Machine
-		// DetailedDescription: Harvests on grass and mushroom grass are its business. Glowing mushrooms included.
+		DisplayName: Cultivo de hongos
+		Description: Fabrica una máquina de cultivo de setas
+		DetailedDescription: Déjale a ella las cosechas de hierba y de hierba de setas. Las setas luminosas también entran en el negocio.
 	}
 
 	ApiaryQuest: {
-		// DisplayName: Sweet Industry
-		// Description: Craft an Electric Apiary
-		// DetailedDescription: Empty bottles in, bottled honey out. The hive works harder near honey or in the jungle.
+		DisplayName: Industria dulce
+		Description: Fabrica una colmena
+		DetailedDescription: Botellas vacías entran, botellas de miel salen. Cerca de la miel o en la jungla, el enjambre trabaja con más ganas.
 	}
 
 	SlimeVatQuest: {
-		// DisplayName: Gel Production
-		// Description: Craft a Slime Culture Vat
-		// DetailedDescription: Water and power in, gel out. The vat is the first raw-material machine of the farm waste stream.
+		DisplayName: Producción de gel
+		Description: Fabrica una cuba de cultivo de slimes
+		DetailedDescription: Agua y electricidad a cambio de gel. La cuba es la primera máquina de materia prima del flujo de residuos agrícolas.
 	}
 
 	BiomassGeneratorQuest: {
-		// DisplayName: Closed Ecology
-		// Description: Craft a Biomass Generator
-		// DetailedDescription: Don't waste the farm's surplus. Feed it to the burner for power and the grow-burn loop starts turning.
+		DisplayName: Ciclo ecológico cerrado
+		Description: Fabrica un generador de biomasa
+		DetailedDescription: No desperdicies el sobrante de la granja. Mételo en la tolva y quémalo para hacer electricidad: el ciclo de cultivo y quema empieza a girar.
 	}
 
 	FlameTurretQuest: {
-		// DisplayName: Line of Fire
-		// Description: Craft a Flamethrower Turret
-		// DetailedDescription: A close-range wall of fire against crowds. Load gel and it burns harder.
+		DisplayName: Línea de fuego
+		Description: Fabrica una torre lanzallamas
+		DetailedDescription: Un muro de fuego a corta distancia contra grupos. Cárgala con gel y quema más.
 	}
 
 	CryoTurretQuest: {
-		// DisplayName: Frost Lockdown
-		// Description: Craft a Cryo Turret
-		// DetailedDescription: Not built to kill, built to freeze. Enemies under the tower slow down until they can barely step.
+		DisplayName: Bloqueo de escarcha
+		Description: Fabrica una torre de hielo
+		DetailedDescription: No busca matar, solo congelar. Los enemigos bajo la torre van cada vez más lentos, hasta que no pueden dar un paso.
 	}
 
 	LaserTurretQuest: {
-		// DisplayName: Lightspeed Sniper
-		// Description: Craft a Laser Turret
-		// DetailedDescription: Anything in line of sight is one beam away. Longest range in the family, and it prefers big targets.
+		DisplayName: Francotirador a la velocidad de la luz
+		Description: Fabrica una torre láser
+		DetailedDescription: A donde alcanza la vista, un rayo basta. El alcance más largo de la familia, y prefiere los blancos grandes.
 	}
 
 	ShieldGeneratorQuest: {
-		// DisplayName: Energy Bulwark
-		// Description: Craft a Shield Generator
-		// DetailedDescription: Everyone in range gets a layer of absorbing shield. More allies, faster drain.
+		DisplayName: Baluarte de energía
+		Description: Fabrica un generador de escudo
+		DetailedDescription: Cada aliado en el alcance recibe una capa de escudo absorbente. Cuanta más gente, más rápido gasta.
 	}
 
 	HealStationQuest: {
-		// DisplayName: Field Medicine
-		// Description: Craft a Healing Station
-		// DetailedDescription: Stand in the aura and wounds slowly close. The phrase "workplace injury" retires today.
+		DisplayName: Medicina de campo
+		Description: Fabrica una estación de curación
+		DetailedDescription: Ponte en el aura y las heridas se cierran poco a poco. La palabra «accidente laboral» pasa a la historia.
 	}
 
 	TeleportStationQuest: {
-		// DisplayName: Teleport Network
-		// Description: Craft a Teleport Station
-		// DetailedDescription: Two stations make a network, and the whole map opens up. The farther the hop, the higher the toll.
+		DisplayName: Red de teletransporte
+		Description: Fabrica una estación de teletransporte
+		DetailedDescription: Con dos estaciones arrancas y todo el mapa queda conectado. Cuanto más lejos, más caro el peaje.
 	}
 
 	ElectricSundialQuest: {
-		// DisplayName: Winding the Sundial
-		// Description: Craft an Electric Sundial
-		// DetailedDescription: Store a thousand units of power to skip the night in one press. The whole server gets notified.
+		DisplayName: Adelantar el reloj de sol
+		Description: Fabrica un reloj de sol eléctrico
+		DetailedDescription: Junta mil unidades de energía y sáltate la noche de un pulso. Todo el servidor recibirá tu aviso.
 	}
 
 	SolarPanelQuest: {
-		// DisplayName: Facing the Sun
-		// Description: Craft a Solar Panel
-		// DetailedDescription: Generates by day and peaks at noon. Keep its sky clear; rain and eclipses are its days off.
+		DisplayName: Vivir de cara al sol
+		Description: Fabrica un panel solar
+		DetailedDescription: Genera de día y rinde al máximo al mediodía. No le tapes el cielo; si llueve o hay un eclipse, busca otra solución.
 	}
 
 	CapacitorMatrixQuest: {
-		// DisplayName: Grand Reservoir
-		// Description: Craft a Capacitor Matrix
-		// DetailedDescription: Forty thousand units in one bank. The grid's flywheel, and the end of the blackout era.
+		DisplayName: Almacenamiento masivo
+		Description: Fabrica una matriz de condensadores
+		DetailedDescription: Una batería gigante de cuarenta mil unidades. El volante de la red, el fin de la era de los apagones.
 	}
 
 	WeatherControllerQuest: {
-		// DisplayName: Rainmaker
-		// Description: Craft a Weather Controller
-		// DetailedDescription: Five hundred power buys a rain, and once more clears it. The wind takes no orders.
+		DisplayName: Invocar lluvia y viento
+		Description: Fabrica un controlador del clima
+		DetailedDescription: Quinientas unidades de energía a cambio de una lluvia; si ya llueve, pulsa otra vez y escampará. El viento no le hace caso.
 	}
 
 	WireInterfaceQuest: {
-		// DisplayName: Wire Bridging
-		// Description: Craft Wire Interfaces
-		// DetailedDescription: The wire network and the power grid finally speak. Signals can toggle machines, and machines can send signals back.
+		DisplayName: Puente de mecanismos
+		Description: Fabrica una interfaz de cables
+		DetailedDescription: Los cables de mecanismos y la red eléctrica por fin se hablan. La señal puede encender y apagar máquinas, y las máquinas también pueden emitir señales.
 	}
 
 	SensorQuest: {
-		// DisplayName: Electric Sentry Eye
-		// Description: Craft a Multi-Mode Sensor
-		// DetailedDescription: Charge levels, enemies and blood moons, nothing escapes its watch. The moment a condition holds, a wire signal goes out.
+		DisplayName: Ojo centinela eléctrico
+		Description: Fabrica un sensor multimodo
+		DetailedDescription: Carga, enemigos, Luna de Sangre: nada se le escapa. En cuanto se cumple la condición, la señal de cable sale al instante.
 	}
 
 	GridSwitchQuest: {
-		// DisplayName: Grid Dispatch
-		// Description: Craft a Grid Switch
-		// DetailedDescription: A master switch built into the lines. Flip it open and the whole downstream grid falls silent at once.
+		DisplayName: Despacho de la red
+		Description: Fabrica un interruptor general de la red
+		DetailedDescription: El interruptor maestro empotrado en las tuberías. Un golpe y toda la red río abajo se queda en silencio.
 	}
 
 	ThermalPowerQuest: {
 		DisplayName: Hora de quemar
 		Description: Fabrica un generador térmico
-		DetailedDescription: Quema combustible para mucha energía; poco ecológico, pero fiable al principio.
+		DetailedDescription: Quema combustible para obtener mucha electricidad. Poco ecológico, pero al principio es la fuente más fiable.
 	}
 
 	AnnihilatingUniverseQuest: {
-		DisplayName: Aniquilador del universo
-		Description: Obtén el «Aniquilador del universo»
-		DetailedDescription: Comprime el poder de galaxias en una cuerda de arco; destruye dimensiones, la prueba suprema del arquero.
+		DisplayName: Aniquilación del universo
+		Description: Obtén «Aniquilación del universo»
+		DetailedDescription: Comprime una galaxia contra la cuerda del arco. A plena tensión, el arco es más peligroso que la flecha.
 	}
 
 	AriaofTheCosmosQuest: {
 		DisplayName: Aria del cosmos
-		Description: Obtén la «Aria del cosmos»
-		DetailedDescription: Toca la sinfonía de las estrellas; invoca agujeros negros y cuásares hasta disolver a los enemigos.
+		Description: Obtén «Aria del cosmos»
+		DetailedDescription: Interpreta el movimiento de las estrellas. Este grimorio invoca agujeros negros y cuásares, y deja que los enemigos se disuelvan en el canto del universo.
 	}
 
 	NeutronBowQuest: {
 		DisplayName: Arco de neutrones
-		Description: Obtén arco de neutrones
-		DetailedDescription: Forjado con fragmentos del núcleo de una estrella de neutrones; cada flecha lleva gravedad colapsada.
+		Description: Obtén el arco de neutrones
+		DetailedDescription: Un arco forjado con fragmentos del núcleo de una estrella de neutrones. Cada flecha lleva la gravedad de una estrella que se colapsa.
 	}
 
 	NeutronGlaiveQuest: {
-		DisplayName: Guja de neutrones
-		Description: Obtén guja de neutrones
-		DetailedDescription: Densidad asombrosa; ninguna armadura resiste su tajo.
+		DisplayName: Hoja de combate de neutrones
+		Description: Obtén la hoja de combate de neutrones
+		DetailedDescription: Un arma de asta de densidad asombrosa. Hace falta una fuerza enorme para blandirla, pero ninguna armadura detiene su tajo.
 	}
 
 	NeutronGunQuest: {
-		DisplayName: Rifle de neutrones
-		Description: Obtén rifle de neutrones
-		DetailedDescription: Dispara microflujos de neutrones casi sin resistencia.
+		DisplayName: Pistola de neutrones
+		Description: Obtén la pistola de neutrones
+		DetailedDescription: Un arma que dispara microflujos de neutrones. Por su densidad extrema, las balas apenas notan la resistencia.
 	}
 
 	NeutronScytheQuest: {
 		DisplayName: Guadaña de neutrones
-		Description: Obtén guadaña de neutrones
-		DetailedDescription: La herramienta del segador; siega la vida como trigo.
+		Description: Obtén la guadaña de neutrones
+		DetailedDescription: La herramienta de la Muerte. Rasga el espacio con facilidad y siega vidas como si fueran trigo.
 	}
 
 	NeutronStarIngotQuest: {
 		DisplayName: Lingote de estrella de neutrones
-		Description: Obtén lingote de estrella de neutrones
-		DetailedDescription: Uno de los materiales más densos del universo; vibra con fluctuaciones gravitatorias.
+		Description: Obtén el lingote de estrella de neutrones
+		DetailedDescription: Una de las materias más densas del universo. Este metal pesa de un modo difícil de imaginar y zumba con fluctuaciones gravitatorias.
 	}
 
 	NeutronWandQuest: {
-		DisplayName: Varita de neutrones
-		Description: Obtén varita de neutrones
-		DetailedDescription: Controla la gravedad y deforma el espacio-tiempo.
+		DisplayName: Bastón de neutrones
+		Description: Obtén el bastón de neutrones
+		DetailedDescription: Un bastón que rige la gravedad. Usa la fuerza de una estrella de neutrones para torcer el espacio-tiempo y aplastar a tus enemigos.
 	}
 
 	PandemoniumQuest: {
-		DisplayName: Pandemonium
-		Description: Obtén «Pandemonium»
-		DetailedDescription: Arma definitiva que fusiona almas y poder calamitoso; llaves del infierno y el abismo.
+		DisplayName: Pandemonio
+		Description: Obtén «Pandemonio»
+		DetailedDescription: Un arma fundida con incontables almas. Si la sostienes bastante, oirás que todavía hablan.
 	}
 
 	RockQuest: {
-		DisplayName: Piedra eternita antigua
-		Description: Obtén piedra eternita antigua
-		DetailedDescription: Una piedra aparentemente común que ha visto innumerables ciclos del desafío final; símbolo de perseverancia eterna.
+		DisplayName: Roca
+		Description: Obtén la Roca
+		DetailedDescription: Una piedra de aspecto corriente, lo que quedó del último fin.
 	}
 
 	TerminusQuest: {
-		DisplayName: Piedra del fin
-		Description: Obtén piedra del fin
-		DetailedDescription: Llave del desafío final; contempla la piedra y enfrenta a los seres más fuertes del mundo.
+		DisplayName: Término
+		Description: Obtén el Término
+		DetailedDescription: La llave que abre el desafío final. Aplástala y las cosas más fuertes del mundo harán cola para buscarte.
 	}
 
 	SpearOfLonginusQuest: {
-		DisplayName: Lanza de Longino
-		Description: Obtén lanza de Longino
-		DetailedDescription: La lanza sagrada que perforó a un dios; atraviesa campos y dominios absolutos.
+		DisplayName: Lanza de Longinos
+		Description: Obtén la Lanza de Longinos
+		DetailedDescription: La lanza sagrada que atravesó a un dios. Campos de fuerza, escudos, dominios absolutos: no reconoce ninguno.
 	}
 
 	DragonsWordQuest: {
-		DisplayName: Palabra del dragón
-		Description: Obtén palabra del dragón
-		DetailedDescription: Un dragón solo llora una vez en la vida, al morir.
+		DisplayName: Palabra del Dragón
+		Description: Obtén Palabra del Dragón
+		DetailedDescription: Un dragón solo derrama lágrimas una vez en la vida, y es al morir
 	}
 
 	RockQuestII: {
 		DisplayName: Ciclo de conquista
-		Description: Completa la oleada de jefes cinco veces y obtén al menos cinco piedras eternita antiguas
-		DetailedDescription: Símbolo del verdadero guerrero
+		Description: Completa la batalla final cinco veces y obtén al menos cinco Rocas
+		DetailedDescription: El símbolo del verdadero guerrero
 	}
 
 	AdventurerQuests: {
 		DisplayName: Aventurero
 		Description: ¡El mundo es mío!
-		QuestObjective.Description: Clic para reclamar
-		DetailedDescription: Todo viaje empieza con un paso; calza estas botas y recorre el mundo.
+		QuestObjective.Description: Pulsa para reclamar
+		DetailedDescription: Ponte estas botas. El mundo es grande y el paso importa.
 	}
 
 	ExploreDungeon: {
 		DisplayName: Mazmorra sombría
 		Description: Descubre la entrada de la mazmorra
 		QuestObjective.Description: Llega a la mazmorra
-		DetailedDescription: Secretos y peligros tras muros malditos; solo los más valientes pisan el reino de los muertos.
+		DetailedDescription: Tras los muros de ladrillo maldito está encerrado el guardián de la mazmorra. Quien entra sin haber vencido a Esqueletrón, por lo general no sale.
 	}
 
 	ExploreHell: {
 		DisplayName: Abismo infernal
-		Description: Desciende al Inframundo
+		Description: Adéntrate en el Inframundo
 		QuestObjective.Description: Llega al Inframundo
-		DetailedDescription: Ríos de lava en lo más profundo; hogar de demonios y fuente de obsidiana y mineral del infierno.
+		DetailedDescription: En lo más hondo del mundo corren ríos de lava. Es el hogar de los demonios y la cuna de la obsidiana y el mineral del infierno. Mira por dónde pisas, no te caigas.
 	}
 
 	ExploreJungle: {
 		DisplayName: Expedición a la jungla
-		Description: Adéntrate en la jungla
+		Description: Adéntrate en el bioma de la jungla
 		QuestObjective.Description: Llega a la jungla
-		DetailedDescription: Un laberinto verde vibrante y mortal; templos antiguos y enjambres de abejas.
+		DetailedDescription: Un laberinto verde lleno de vida y de peligros. Bajo la maleza se esconden templos antiguos y enjambres mortales.
 	}
 
 	ExploreOcean: {
-		DisplayName: Fin del mundo
-		Description: Llega al océano
+		DisplayName: El fin del mundo
+		Description: Llega al bioma oceánico
 		QuestObjective.Description: Llega al océano
-		DetailedDescription: Donde el cielo y el mar se encuentran; naufragios y monstruos bajo el azul profundo.
+		DetailedDescription: El borde del continente. Aquí se encuentran el cielo y el mar. Bajo el azul profundo yacen naufragios y monstruos desconocidos.
 	}
 
 	ExploreSnow: {
-		DisplayName: Tierra helada
-		Description: Explora la tundra nevada
+		DisplayName: Tierra del hielo eterno
+		Description: Explora el bioma de nieve
 		QuestObjective.Description: Llega a la nieve
-		DetailedDescription: Permafrost eterno; la vida aquí es más resistente.
+		DetailedDescription: Un sitio helado todo el año, con un viento que no te deja ni tenerte en pie. Aquí viven pingüinos y lobos: los primeros no muerden, los segundos sí.
 	}
 
 	ExploreSpace: {
 		DisplayName: Mar de estrellas
 		Description: Vuela al espacio
 		QuestObjective.Description: Llega al espacio
-		DetailedDescription: Libérate de la gravedad y toca las estrellas para ver el mundo entero.
+		DetailedDescription: Líbrate de la gravedad y toca las estrellas. Solo volando lo bastante alto verás este mundo entero.
 	}
 
 	HellLabSchematic: {
-		DisplayName: Plano del infierno
+		DisplayName: Plano del inframundo
 		Description: Busca el plano cifrado en el laboratorio de Draedon del Inframundo
-		QuestObjective.Description: Obtén el plano del infierno
-		DetailedDescription: Draedon tenía un puesto en el infierno para experimentar con energía geotérmica; el plano puede desbloquear nuevas armas.
+		QuestObjective.Description: Obtén el plano del inframundo
+		DetailedDescription: Draedon levantó un puesto avanzado en el Inframundo para experimentar con el calor de la tierra. Encuentra el plano de allí y quizá desbloquees nueva tecnología de armas.
 	}
 
 	IceLabSchematic: {
 		DisplayName: Código polar
-		Description: Busca el plano cifrado en el laboratorio de Draedon en la nieve
+		Description: Busca el plano cifrado en el laboratorio de Draedon de la nieve
 		QuestObjective.Description: Obtén el plano helado
-		DetailedDescription: El frío conserva instrumentos de precisión; baja al laboratorio bajo el hielo.
+		DetailedDescription: El frío de aquí es el mejor sitio para conservar instrumentos de precisión. Adéntrate en el laboratorio bajo el hielo y busca esa tecnología polar sellada.
 	}
 
 	JungleLabSchematic: {
 		DisplayName: Borrador de la jungla
-		Description: Busca el plano cifrado en el laboratorio de Draedon en la jungla
+		Description: Busca el plano cifrado en el laboratorio de Draedon de la jungla
 		QuestObjective.Description: Obtén el plano de la jungla
-		DetailedDescription: La jungla oculta el laboratorio biológico de Draedon sobre plagas y nanovirus.
+		DetailedDescription: La maleza oculta el laboratorio biológico de Draedon. Allí estudiaba la peste y los nanovirus. Encuentra el plano y destapa la verdad peligrosa.
 	}
 
 	PlanetoidLabSchematic: {
-		DisplayName: Misterio estelar
-		Description: Busca el plano cifrado en el laboratorio de Draedon en el planetoide
-		QuestObjective.Description: Obtén el plano del planetoide
-		DetailedDescription: En la microgravedad de las alturas flota un laboratorio con diseños tempranos de mecánicas estelares.
+		DisplayName: Enigma del flujo estelar
+		Description: Busca el plano cifrado en el laboratorio de Draedon del asteroide
+		QuestObjective.Description: Obtén el plano del asteroide
+		DetailedDescription: En la microgravedad de las alturas, un laboratorio de Draedon flota en silencio. Ve allí a buscar los diseños tempranos de los Exo Mecánicos.
 	}
 
 	SunkenSeaLabSchematic: {
-		DisplayName: Mar hundido
-		Description: Busca el plano cifrado en el laboratorio de Draedon del mar hundido
-		QuestObjective.Description: Obtén el plano del mar hundido
-		DetailedDescription: En este mar subterráneo tranquilo, Draedon dejó investigación sobre energía prismática.
+		DisplayName: Mar Hundido
+		Description: Busca el plano cifrado en el laboratorio de Draedon del Mar Hundido
+		QuestObjective.Description: Obtén el plano del Mar Hundido
+		DetailedDescription: En este mar subterráneo tranquilo, Draedon dejó investigación sobre energía de prismas. Sumérgete y recupera esos datos valiosos.
 	}
 
 	AquaticScourgeQuest: {
 		DisplayName: Azote acuático
-		Description: Derrota al azote acuático
-		DetailedDescription: Antes leviatán pacífico del océano claro, ahora retorcido por el Mar de Azufre; cuidado con cargas y nubes tóxicas.
+		Description: Derrota al Azote acuático
+		DetailedDescription: Antes era un gigante pacífico del océano claro; ahora lo ha retorcido el veneno del Mar de Azufre. En esta mar ácida y contaminada, cuidado con sus embestidas súbitas y sus nubes tóxicas.
 	}
 
 	QueenSlimeQuest: {
-		DisplayName: Reina Slime
-		Description: Derrota a la Reina Slime
-		DetailedDescription: Emperatriz cristalina del Sagrado; más ágil y letal que su consorte; prepárate para un barrage espectacular.
+		DisplayName: Reina slime
+		Description: Derrota a la Reina slime
+		DetailedDescription: La emperatriz de cristal del Sagrado, soberana de todas las criaturas de gel sagrado. Más ágil y letal que su consorte, y además vuela.
 	}
 
 	BuildHouse: {
 		DisplayName: Maestro constructor
-		Description: Construye una casa válida
+		Description: Construye una casa adecuada
 		QuestObjective.Description: Construye una casa válida
-		DetailedDescription: Todos necesitan refugio; con mesa, silla, luz y paredes atraerás al guía y a otros NPC.
+		DetailedDescription: Todo el mundo necesita un refugio. Da igual que sea el Guía u otro vagabundo: si les das una habitación con mesa, silla, luz y paredes, trabajarán para ti.
 	}
 
 	CollectEvilOres: {
 		DisplayName: Menas malignas
-		Description: Recolecta menas malignas
-		QuestObjective.Description: Recolecta mena de demonita o carmesita
-		DetailedDescription: Menas de aura inquietante, frías y viscosas; esenciales pese a venir de la herida del mundo.
+		Description: Recolecta mineral maligno
+		QuestObjective.Description: Recolecta mineral de endemoniado o carmesí
+		DetailedDescription: Este mineral despide un aura inquietante, frío y viscoso al tacto. Viene de la llaga de este mundo, pero es imprescindible para forjar equipo poderoso.
 	}
 
 	CollectFallenStars: {
 		DisplayName: Coleccionista de estrellas
-		Description: Recolecta estrellas fugaces
-		QuestObjective.Description: Recolecta estrellas fugaces
-		DetailedDescription: Lágrimas del cielo nocturno; aumentan maná y sirven de munición o material mágico.
+		Description: Recolecta estrellas caídas
+		QuestObjective.Description: Recolecta estrellas caídas
+		DetailedDescription: Son las lágrimas del cielo nocturno y solo caen de noche. Recógelas: no solo suben tu maná máximo, también sirven de munición potente o de material mágico.
 	}
 
 	CollectGems: {
 		DisplayName: Coleccionista de gemas
-		Description: Recolecta gemas variadas
-		QuestObjective.Description: Recolecta cinco tipos de gemas
-		DetailedDescription: Cristales en la roca; decoración y material para bastones y garfios; juntar colores forma un arcoíris.
+		Description: Recolecta gemas de varios tipos
+		QuestObjective.Description: Recolecta 5 tipos distintos de gemas
+		DetailedDescription: Cristales brillantes enterrados en la roca. Además de adorno, son material clave para bastones y garfios. Cuando juntes gemas de distintos colores, quizá armes el resplandor de un arcoíris.
 	}
 
 	CollectHerbs: {
-		DisplayName: Aprendiz de hierbas
-		Description: Recolecta hierbas variadas
-		QuestObjective.Description: Recolecta tres tipos de hierbas
-		DetailedDescription: Base de la alquimia; plantas del desierto, la nieve o el infierno; el primer paso del maestro alquimista.
+		DisplayName: Aprendiz de herbolario
+		Description: Recolecta hierbas de varios tipos
+		QuestObjective.Description: Recolecta 3 tipos distintos de hierbas
+		DetailedDescription: La base de la alquimia. Distintas plantas crecen en distintos sitios: el desierto, la nieve, incluso el Inframundo. Aprender a distinguirlas es el primer paso para ser maestro alquimista.
 	}
 
 	CollectOres: {
-		DisplayName: Recolección de menas
-		Description: Recolecta menas básicas
+		DisplayName: Recolección de mineral
+		Description: Recolecta minerales básicos
 
 		QuestObjective: {
 			Description: {
-				Iron: Recolecta mena de hierro o plomo
-				Copper: Recolecta mena de cobre o estaño
+				Iron: Recolecta mineral de hierro o de plomo
+				Copper: Recolecta mineral de cobre o de estaño
 			}
 		}
 
-		DetailedDescription: La minería es supervivencia; cobre y hierro son el inicio de todo héroe.
+		DetailedDescription: Cavar es la raíz de la supervivencia. El cobre y el hierro son corrientes, pero son la piedra con la que dejas atrás la vida primitiva. No los desdeñes: hasta el héroe de leyenda empezó blandiendo un pico de cobre.
 	}
 
 	DeepExplorer: {
-		DisplayName: Explorador profundo
+		DisplayName: Explorador del abismo
 		Description: Explora todos los biomas principales
 		QuestObjective.Description: Completa todas las misiones de exploración
-		DetailedDescription: Has recorrido el mundo de las nubes al infierno; el mapa prueba tu valor.
+		DetailedDescription: Has recorrido cada rincón del mundo, de las nubes más altas al Inframundo más hondo. En el mapa ya no queda ningún blanco.
 	}
 
 	ExploreCaverns: {
-		DisplayName: Profundidades de caverna
-		Description: Explora capas más profundas
+		DisplayName: Profundidades de las cavernas
+		Description: Explora las capas más hondas de las cavernas
 		QuestObjective.Description: Llega a la capa de cavernas
-		DetailedDescription: Sin sol, solo oscuridad y criaturas; aparece lava y más mineral; el abismo te mira.
+		DetailedDescription: Aquí no hay sol, solo oscuridad y criaturas desconocidas. Empieza a aparecer lava y las vetas se vuelven más ricas. Mira el suelo: el abismo te está mirando.
 	}
 
 	ExploreCorruption: {
-		DisplayName: Corrupción / Carmesí
+		DisplayName: Corrupción
 		Description: Explora la Corrupción o el Carmesí
 		QuestObjective.Description: Entra en la Corrupción o el Carmesí
-		DetailedDescription: La tierra está enferma; hay que entrar en la guarida para escamas o muestras de tejido.
+		DetailedDescription: Esta tierra está enferma. La corrupción púrpura o la carne roja se está comiendo el suelo. Aunque está lleno de monstruos sedientos de sangre, solo adentrándote en la guarida conseguirás escamas de las sombras o muestras de tejido.
 	}
 
 	ExploreDesert: {
-		DisplayName: Desierto ardiente
-		Description: Entra en el desierto
+		DisplayName: Desierto abrasador
+		Description: Pisa el bioma del desierto
 		QuestObjective.Description: Llega al desierto
-		DetailedDescription: Sol abrasador y arena dorada; lleva agua o la sequedad te vencerá.
+		DetailedDescription: El sol quema la tierra y, bajo el mar de arena dorada, yacen fósiles antiguos y hormigaleones feroces. Lleva agua de sobra: la sequedad de aquí te quitará la vida.
 	}
 
 	ExploreFloatingIsland: {
 		DisplayName: Islas flotantes
-		Description: Encuentra islas en el cielo
+		Description: Encuentra una isla flotante en el cielo
 		QuestObjective.Description: Llega a una isla flotante
-		DetailedDescription: Tesoros sobre las nubes; busca anomalías gravitatorias o construye una torre.
+		DetailedDescription: Sobre las nubes flotan unas islas con tesoros de una civilización antigua. Busca un sitio donde la gravedad falle, o construye una torre y sube tú.
 	}
 
 	ExploreGlowingMushroom: {
-		DisplayName: Setas luminiscentes
-		Description: Encuentra el bioma de setas luminiscentes
-		QuestObjective.Description: Llega al bioma de setas luminiscentes
-		DetailedDescription: Ecosistema subterráneo de luz azul; hogar de la trufa y bichos extraños.
+		DisplayName: Setas luminosas
+		Description: Encuentra el bioma de setas luminosas
+		QuestObjective.Description: Llega a las tierras de setas
+		DetailedDescription: Un ecosistema subterráneo de colores alucinantes. Hongos gigantes emiten un resplandor azul que ilumina la oscuridad. Aquí viven la Trufa y bichos extraños.
 	}
 
 	ExploreUnderground: {
-		DisplayName: Exploración subterránea
-		Description: Adéntrate en cuevas
-		QuestObjective.Description: Llega al subsuelo
-		DetailedDescription: Raspar la superficie no basta; la aventura empieza bajo tierra.
+		DisplayName: Expedición subterránea
+		Description: Adéntrate en las cuevas subterráneas
+		QuestObjective.Description: Llega a las cuevas subterráneas
+		DetailedDescription: Debajo de la capa de tierra está la de piedra. Lleva antorchas de sobra: más abajo todavía hay muchas capas.
 	}
 
 	FindLifeCrystal: {
-		DisplayName: Fuente de vida
-		Description: Encuentra un cristal de vida
+		DisplayName: Origen de la vida
+		Description: Busca un cristal de vida
 		QuestObjective.Description: Encuentra un cristal de vida
-		DetailedDescription: Cristal rojo de vitalidad; úsalo para fortalecer el cuerpo permanentemente.
+		DetailedDescription: Este cristal rojo encierra vitalidad. Rómpelo y úsalo para fortalecer el cuerpo de forma permanente. Es la clave para sobrevivir ante enemigos poderosos.
 	}
 
 	FindShadowOrb: {
 		DisplayName: Núcleo del mal
-		Description: Encuentra un orbe sombrío o corazón carmesí
-		QuestObjective.Description: Destruye un orbe sombrío o corazón carmesí
-		DetailedDescription: En lo profundo del mal palpita corrupción u orbe; romper tres despertará algo terrible.
+		Description: En lo hondo de la tierra maligna, busca un orbe sombrío o un corazón carmesí
+		QuestObjective.Description: Destruye un orbe sombrío o un corazón carmesí
+		DetailedDescription: En lo profundo de las grietas malignas late un corazón podrido o una esfera de sombra. Romperlos te da armas, pero ojo...... si rompes tres, despertarás algo terrible.
 	}
 
 	FirstPotion: {
-		DisplayName: Introducción a alquimia
+		DisplayName: Introducción a la alquimia
 		Description: Prepara tu primera poción
 		QuestObjective.Description: Prepara cualquier poción
-		DetailedDescription: Botella sobre mesa y ya tienes alquimia; mezcla ingredientes y bebe la magia.
+		DetailedDescription: Pon una botella vacía sobre una mesa y ya tienes un puesto de alquimia improvisado. No hacen falta conjuros complicados, solo mezclar bien los materiales. Bébetela y siente el poder de la magia.
 	}
 
 	NPCVillage: {
 		DisplayName: Aldea próspera
-		Description: Atrae a varios NPC
-		QuestObjective.Description: Ten cinco NPC
-		DetailedDescription: La soledad pesa; con monedas y fuerza llegará gente; construye una comunidad.
+		Description: Atrae a varios NPC a vivir aquí
+		QuestObjective.Description: Ten 5 NPC
+		DetailedDescription: Sobrevivir solo en el yermo es solitario. Cuando te hagas fuerte y lleves más monedas, vendrá más gente atraída por tu nombre. Levanta una comunidad próspera y que sean tu retaguardia.
 	}
 
 	QueenBeeQuest: {
 		DisplayName: Abeja reina
 		Description: Derrota a la Abeja reina
-		DetailedDescription: Romper la larva en la colmena de la jungla enfurece a la reina; antídoto y esquivar aguijones.
+		DetailedDescription: Adéntrate en la colmena gigante de la jungla subterránea: romper la larva enfurecerá a la soberana de todo el enjambre. Prepara poción antídoto y cuidado con su aguijón y sus embestidas a toda velocidad.
 	}
 
 	CollectorQuest: {
-		DisplayName: Asistente recolector
+		DisplayName: Ayudante recolector
 		Description: Obtén el recolector
-		DetailedDescription: Recoge botín automáticamente; pieza clave de la logística automatizada.
+		DetailedDescription: Este aparato recoge solo los objetos caídos a tu alrededor: la puerta de entrada a la logística automática. Ya no hace falta ir recogiendo del suelo una a una.
 	}
 
 	LumberjackQuest: {
 		DisplayName: Hora de talar
 		Description: Obtén el leñador
-		DetailedDescription: La madera es base industrial; esta máquina automatiza el bosque con electricidad.
+		DetailedDescription: La madera es la piedra angular de la industria y la construcción. Olvida el hacha primitiva: esta máquina gasta electricidad para gestionar tu bosque sola y garantizar un suministro continuo.
 	}
 
 	LifeWeaverQuest: {
 		DisplayName: Reforestación
 		Description: Obtén el plantador de árboles
-		DetailedDescription: Planta árboles con precisión eléctrica; última pieza del bosque automático.
+		DetailedDescription: Regenerar un bosque suele ser lento. Esta máquina usa electricidad para clavar plantones en la tierra con precisión y devolverle vida al páramo en un santiamén. Es la última pieza de un bosque cíclico totalmente automático.
 	}
 
 	IncineratorQuest: {
 		DisplayName: Fundición eléctrica
 		Description: Fabrica un incinerador eléctrico
-		DetailedDescription: Arcos de alta tensión duplican el rendimiento mineral frente a hornos primitivos.
+		DetailedDescription: El horno tradicional es ineficiente y desperdicia gran parte de la esencia del mineral. Esta máquina usa el calor extremo de un arco de alta tensión para descomponer el mineral por completo y sacar el doble de producto. Es el paso clave hacia la industrialización.
 	}
 
 	ItemPipelineQuest: {
 		DisplayName: Sistema logístico
 		Description: Fabrica una tubería de objetos
-		DetailedDescription: Tuberías que conectan máquinas y cofres; olvida correr como un primitivo.
+		DetailedDescription: Las tuberías son las venas de la industria. Conéctalas entre máquinas y recipientes: los objetos irán solos a donde deben, y tú dejarás de correr de cofre en cofre.
 	}
 
 	ThrowerQuest: {
-		DisplayName: Asistente lanzador
+		DisplayName: Ayudante lanzador
 		Description: Fabrica un lanzador
-		DetailedDescription: Expulsa objetos de la red logística al mundo; útil para automatizar o desechar.
+		DetailedDescription: No todos los objetos merecen guardarse. Este aparato expulsa objetos de la red logística y los lanza al mundo. Tanto si es para una fabricación automática concreta (por ejemplo, tirar algo a un líquido) como si solo quieres un vertedero, cumple a la perfección.
 	}
 
 	DeerclopsQuest: {
-		// DisplayName: Deerclops
-		// Description: Defeat Deerclops
-		// DetailedDescription: Deep in the blizzard stands a one-eyed giant deer. It does not come looking for you; you insist on looking for it.
+		DisplayName: Ciervíclope
+		Description: Derrota al Ciervíclope
+		DetailedDescription: En lo hondo de la ventisca se alza un ciervo gigante de un solo ojo. No viene a buscarte: eres tú quien insiste en buscarlo.
 	}
 
 	DukeFishronQuest: {
-		// DisplayName: Duke Fishron
-		// Description: Defeat Duke Fishron
-		// DetailedDescription: Bait your hook with a truffle worm and a duke will bite. Pig, dragon, fish; three kinds of menace on a single face.
+		DisplayName: Duque Fishron
+		Description: Derrota al Duque Fishron
+		DetailedDescription: Usa un gusano de trufa de cebo y un duque picará en el mar. Cerdo, dragón y pez: tres fieras en una sola cara.
 	}
 
 	EmpressOfLightQuest: {
-		// DisplayName: Empress of Light
-		// Description: Defeat the Empress of Light
-		// DetailedDescription: Step on a prismatic lacewing in the Hallow and the furious empress will come to settle the score herself. Anger her in daylight and every one of her attacks kills in one hit.
+		DisplayName: Emperatriz de la luz
+		Description: Derrota a la Emperatriz de la luz
+		DetailedDescription: Pisa la mariposa prismática del Sagrado y la emperatriz airada vendrá en persona a pedir cuentas. Si la enfureces de día, cualquiera de sus ataques es mortal de necesidad.
 	}
 
 	ZenithQuest: {
-		// DisplayName: Zenith
-		// Description: Forge the Zenith
-		// DetailedDescription: From the copper shortsword to the Starwrath, every blade you ever swung remembers you. Melt them together, and this journey takes its final shape.
+		DisplayName: Zenith
+		Description: Forja el Zenith
+		DetailedDescription: De la espada corta de cobre a la Ira estelar, cada espada que empuñaste te recuerda. Fúndelas y este viaje tomará forma.
 	}
 
 	BloodMoonQuest: {
-		// DisplayName: Night of Blood
-		// Description: Live through a Blood Moon
-		// QuestObjective.Description: Experience a Blood Moon
-		// DetailedDescription: On nights when the moon turns red, monsters stop knocking; they open the door themselves. Survive until dawn.
+		DisplayName: Noche escarlata
+		Description: Vive una Luna de Sangre
+		QuestObjective.Description: Presencia una Luna de Sangre
+		DetailedDescription: Las noches en que la luna se pone roja, los monstruos ya no llaman: abren la puerta. Sobrevive a esta noche; nos vemos al alba.
 	}
 
 	TorchGodQuest: {
-		// DisplayName: The Torch God
-		// Description: Pass the Torch God's trial
-		// QuestObjective.Description: Earn the Torch God's Favor
-		// DetailedDescription: Plant a hundred torches underground and the master of flame will test you in person. Its favor hides within the extinguished lights.
+		DisplayName: Dios Antorcha
+		Description: Supera la prueba del Dios Antorcha
+		QuestObjective.Description: Obtén el favor del Dios Antorcha
+		DetailedDescription: Planta cien antorchas bajo tierra y el señor de las llamas te pondrá a prueba en persona. Su favor se esconde en las luces apagadas.
 	}
 
 	GoblinArmyQuest: {
-		// DisplayName: Goblin Invasion
-		// Description: Repel the Goblin Army
-		// QuestObjective.Description: Repel the Goblin Army
-		// DetailedDescription: Smashing Shadow Orbs draws them in, and so does a growing settlement. Short, swarming, endless; but win, and you may pick up a captive who repairs gear.
+		DisplayName: Invasión goblin
+		Description: Repele al ejército goblin
+		QuestObjective.Description: Repele al ejército goblin
+		DetailedDescription: Romper orbes sombríos los atrae, y también un pueblo crecido. Bajos, en manada, sin fin; pero si ganas, puede que recojas a un cautivo que repara equipo.
 	}
 
 	OldOnesArmyQuest: {
-		// DisplayName: Old One's Army
-		// Description: Guard the Eternia Crystal and repel all three tiers of the Old One's Army
+		DisplayName: Ejército del Antiguo
+		Description: Defiende el cristal de Eternia y repele las tres fases del Ejército del Antiguo
 
 		QuestObjective: {
 			Description: {
-				// T1: Repel the Old One's Army Tier 1
-				// T2: Repel the Old One's Army Tier 2
-				// T3: Repel the Old One's Army Tier 3
+				T1: Repele al Ejército del Antiguo, fase 1
+				T2: Repele al Ejército del Antiguo, fase 2
+				T3: Repele al Ejército del Antiguo, fase 3
 			}
 		}
 
-		// DetailedDescription: The Tavernkeep brings a plea from another world. Set the crystal, hold the portals, and let nothing touch it. Three tiers, each meaner than the last.
+		DetailedDescription: El Tabernero trae un pedido de auxilio de otro mundo. Coloca el cristal, defiende los portales y que nada lo toque. Tres oleadas, cada una más dura que la anterior.
 	}
 
 	PirateInvasionQuest: {
-		// DisplayName: Pirate Invasion
-		// Description: Repel the Pirate Invasion
-		// QuestObjective.Description: Repel the Pirate Invasion
-		// DetailedDescription: Once the world hardens, sails appear on the horizon. They come for your money; take theirs back, captain's belongings included.
+		DisplayName: Invasión pirata
+		Description: Repele la invasión pirata
+		QuestObjective.Description: Repele la invasión pirata
+		DetailedDescription: Cuando el mundo se endurece, las velas empiezan a asomarse en el horizonte. Ellos vienen a robarte el dinero; róbaselo tú, y de paso quédate con el ajuar del capitán.
 	}
 
 	SolarEclipseQuest: {
-		// DisplayName: Eclipse Hunt
-		// Description: Slay a Mothron during a Solar Eclipse
-		// QuestObjective.Description: Slay a Mothron
-		// DetailedDescription: On days the moon blots out the sun, daytime is deadlier than night. Everything from the horror films takes to the streets, and the fastest flier among them is called Mothron.
+		DisplayName: Cacería del eclipse
+		Description: Mata a un Polillón durante un eclipse solar
+		QuestObjective.Description: Mata a un Polillón
+		DetailedDescription: Los días en que la luna tapa el sol, el día es más peligroso que la noche. Todo lo de las películas de terror sale a la calle; el que vuela más rápido se llama Polillón.
 	}
 
 	MartianMadnessQuest: {
-		// DisplayName: Martian Madness
-		// Description: Repel the Martian invasion
-		// QuestObjective.Description: Repel the Martian invasion
-		// DetailedDescription: Do not stare at the probe in the sky; it flies home and brings friends. Saucers, death rays, mind-control helmets; the full alien invasion package.
+		DisplayName: Locura marciana
+		Description: Repele la invasión marciana
+		QuestObjective.Description: Repele la invasión marciana
+		DetailedDescription: No te quedes mirando la sonda del cielo: volverá a casa a llamar a los suyos. Platillos, rayos mortales, cascos de control mental: el paquete completo de invasión alienígena.
 	}
 
 	PumpkinMoonQuest: {
-		// DisplayName: Pumpkin Moon
-		// Description: Defeat Pumpking during the Pumpkin Moon
-		// QuestObjective.Description: Defeat Pumpking
-		// DetailedDescription: Wake Halloween night with a Pumpkin Moon Medallion. Scarecrows line up to collect heads, and the closer is a king carrying twin scythes.
+		DisplayName: Luna Calabaza
+		Description: Derrota al Rey Calabaza durante la Luna Calabaza
+		QuestObjective.Description: Derrota al Rey Calabaza
+		DetailedDescription: Despierta la Noche de Brujas con un medallón de Luna Calabaza. Los espantapájaros hacen cola para recoger cabezas; el plato fuerte es el Rey Calabaza con dos guadañas.
 	}
 
 	FrostMoonQuest: {
-		// DisplayName: Frost Moon
-		// Description: Defeat the Ice Queen during the Frost Moon
-		// QuestObjective.Description: Defeat the Ice Queen
-		// DetailedDescription: Open the present that should have stayed wrapped and Christmas Eve goes sour. Tanks patrol the snow while the queen dives through the blizzard.
+		DisplayName: Luna Gélida
+		Description: Derrota a la Reina de Hielo durante la Luna Gélida
+		QuestObjective.Description: Derrota a la Reina de Hielo
+		DetailedDescription: Abre el regalo que no debías abrir y Nochebuena cambia de sabor. Los tanques patrullan la nieve y la reina se lanza en picado entre la ventisca.
 	}
 
 	FishermanQuest: {
-		// DisplayName: Angler's Errands
-		// Description: Complete five Angler quests
-		// QuestObjective.Description: Complete Angler quests
-		// DetailedDescription: A bossy little brat lives by the sea, but his rewards are surprisingly solid. Where the fish are, the treasure is.
+		DisplayName: Encargos del Pescador
+		Description: Completa cinco encargos del Pescador
+		QuestObjective.Description: Completa encargos del Pescador
+		DetailedDescription: En la costa vive un mocoso mandón, pero sus recompensas son sorprendentemente sólidas. Donde están los peces, está el tesoro.
 	}
 
 	LifeMaxQuest: {
-		// DisplayName: Fountain of Life
-		// Description: Raise your max life to 400
-		// QuestObjective.Description: Reach 400 max life
-		// DetailedDescription: Heart crystals only carry you halfway. The rest of the road is fought and grown through. Four hundred life is the ticket to standing firm in Hardmode.
+		DisplayName: Fuente de la vida
+		Description: Sube el máximo de vida a 400
+		QuestObjective.Description: Alcanza 400 de vida máxima
+		DetailedDescription: Los cristales de vida solo te llevan a la mitad. El resto del camino se pelea y se crece. Cuatrocientos puntos de vida son la entrada para sostenerte en el modo difícil.
 	}
 
 	ManaMaxQuest: {
-		// DisplayName: Heart of Mana
-		// Description: Raise your max mana to 200
-		// QuestObjective.Description: Reach 200 max mana
-		// DetailedDescription: Press fallen stars into crystals and feed them to yourself one by one. Twenty points a sip, nine sips in all, and the night sky runs in your veins.
+		DisplayName: Corazón de maná
+		Description: Sube el máximo de maná a 200
+		QuestObjective.Description: Alcanza 200 de maná máximo
+		DetailedDescription: Comprime estrellas caídas en cristales y tráetelos uno a uno. Veinte puntos por trago, nueve tragos, y el cielo estrellado corre por tus venas.
 	}
 
 	WingsQuest: {
-		// DisplayName: Spread Your Wings
-		// Description: Equip any pair of wings
-		// QuestObjective.Description: Equip wings
-		// DetailedDescription: Sky vaults, fairy feathers, demon membranes. Whatever the source, the moment wings sprout from your back, fall damage becomes history.
+		DisplayName: Desplegar las alas
+		Description: Equipa cualquier par de alas
+		QuestObjective.Description: Equipa unas alas
+		DetailedDescription: Tesoro entre nubes, plumas de hada, membrana de demonio. Da igual el origen: el día que te brotan alas en la espalda, el daño por caída pasa a la historia.
 	}
 
 	MoneyQuest: {
-		// DisplayName: First Fortune
-		// Description: Hold a Platinum Coin
-		// QuestObjective.Description: Hold a Platinum Coin
-		// DetailedDescription: A hundred gold coins pressed into one platinum. You probably died plenty of times earning it; merchants call that a handling fee.
+		DisplayName: La primera fortuna
+		Description: Ten una moneda de platino
+		QuestObjective.Description: Ten una moneda de platino
+		DetailedDescription: Cien monedas de oro prensadas en una de platino. De camino a reunirla ya habrás muerto unas cuantas veces; el mercader lo llama comisión.
 	}
 
 	ExploreAetherQuest: {
-		// DisplayName: The Shimmering Lake
-		// Description: Find the Aether
-		// QuestObjective.Description: Reach the Shimmer
-		// DetailedDescription: Tucked in a corner of the world is a lake that does not belong here. Drop something in and it comes back changed. Do not jump in to test it yourself.
+		DisplayName: Lago de destello
+		Description: Encuentra el lago de destello
+		QuestObjective.Description: Llega al lago de destello
+		DetailedDescription: En un rincón del mundo se esconde un lago que no pertenece a este sitio. Tiras algo y al sacarlo ya no es lo mismo. No saltes tú para probar.
 	}
 
 	HardmodeOresQuest: {
-		// DisplayName: Three New Metals
-		// Description: Gather the three tiers of Hardmode ore
+		DisplayName: Tres minerales nuevos
+		Description: Recolecta los tres rangos de mineral del modo difícil
 
 		QuestObjective: {
 			Description: {
-				// T1: Collect Cobalt or Palladium Ore
-				// T2: Collect Mythril or Orichalcum Ore
-				// T3: Collect Adamantite or Titanium Ore
+				T1: Recolecta mineral de cobalto o de paladio
+				T2: Recolecta mineral de mithril o de oricalco
+				T3: Recolecta mineral de adamantita o de titanio
 			}
 		}
 
-		// DetailedDescription: After the Wall of Flesh falls, smash the altars with a holy hammer and three new metals grow in the deep. Each is harder than everything that came before.
+		DetailedDescription: Tras caer el Muro carnoso, rompe los altares con el martillo pwn y bajo tierra crecerán tres metales nuevos. Todos más duros que lo anterior.
 	}
 
 	ChlorophyteQuest: {
-		// DisplayName: Power of Chlorophyte
-		// Description: Collect 30 Chlorophyte Ore
-		// DetailedDescription: With the machines destroyed, a glowing green metal starts growing in the deep jungle mud. It has a will of its own, and it spreads on its own too.
+		DisplayName: Poder de la clorofita
+		Description: Recolecta treinta minerales de clorofita
+		DetailedDescription: Cuando caen las creaciones mecánicas, en el barro profundo de la jungla empieza a crecer un metal verde que brilla. Tiene voluntad propia y además se reproduce solo.
 	}
 
 	CalamityLoreHub: {
-		// DisplayName: Anomaly Survey
-		// Description: Something is wrong with this world
-		// QuestObjective.Description: Click to claim
-		// DetailedDescription: The sea is acid, the crags are burning, and things no field guide knows grow in the crater a star left behind. Write it all down; this world's dark side is bigger than you think.
+		DisplayName: Investigación de la anomalía
+		Description: Este mundo no está bien
+		QuestObjective.Description: Pulsa para reclamar
+		DetailedDescription: El mar es ácido, los riscos arden, y en el cráter que dejó una estrella crece algo que no sale en ninguna guía. Anótalo: el lado oscuro de este mundo es mucho más grande de lo que imaginas.
 	}
 
 	ExploreSulphurSea: {
-		// DisplayName: Sulphurous Sea
-		// Description: Explore the Sulphurous Sea
-		// QuestObjective.Description: Reach the Sulphurous Sea
-		// DetailedDescription: One side of the world has no blue ocean, only yellowed acid water. Rain fizzes where it lands and the fish come up venomous. Cover your mouth, and do not drink.
+		DisplayName: Mar de Azufre
+		Description: Explora el Mar de Azufre
+		QuestObjective.Description: Llega al Mar de Azufre
+		DetailedDescription: A un lado del mundo no hay mar azul, solo agua ácida amarillenta. La lluvia que cae hace burbujas y los peces que suben traen veneno. Tápate la boca y la nariz, y no bebas.
 	}
 
 	ExploreAbyss: {
-		// DisplayName: Mouth of the Abyss
-		// Description: Dive into the Abyss beneath the Sulphurous Sea
-		// QuestObjective.Description: Enter the Abyss
-		// DetailedDescription: A downward rift splits the floor of the sulphurous sea. Light cannot follow, neither can breath, and the deeper you go, the older the things that live there.
+		DisplayName: Boca del Abismo
+		Description: Sumérgete en el Abismo bajo el Mar de Azufre
+		QuestObjective.Description: Entra en el Abismo
+		DetailedDescription: En el fondo del Mar de Azufre se abre una boca hacia abajo. La luz no baja, el aliento tampoco, y cuanto más hondo, más antiguas son las cosas que viven ahí.
 	}
 
 	AbyssDeepQuest: {
-		// DisplayName: Bottom of the Abyss
-		// Description: Bring back Lumenyl and Voidstone from the Abyss
-		// DetailedDescription: Where mining lamps cannot reach, blue-glowing crystal grows along the rock walls. Dig it out and surface alive; only then have you truly been to the Abyss.
+		DisplayName: Fondo del Abismo
+		Description: Trae Lumenyl y piedra del Vacío desde el Abismo
+		DetailedDescription: Donde no llega la lámpara de mina, en la roca crecen cristales de luz azul. Sácalos y vuelve vivo a la superficie: solo entonces habrás bajado de verdad al Abismo.
 	}
 
 	ExploreSunkenSea: {
-		// DisplayName: Sunken Sea
-		// Description: Find the Sunken Sea deep beneath the desert
-		// QuestObjective.Description: Reach the Sunken Sea
-		// DetailedDescription: Beneath the desert hides a quiet stretch of blue. Prisms glow in the water and the clams are bigger than your house. This may be the gentlest corner of the world.
+		DisplayName: Mar Hundido
+		Description: Encuentra el Mar Hundido en lo hondo del desierto subterráneo
+		QuestObjective.Description: Llega al Mar Hundido
+		DetailedDescription: Bajo el desierto se esconde un azul en calma. Los prismas brillan en el agua y las almejas son más grandes que tu casa. Este es, quizá, el rincón más amable del mundo.
 	}
 
 	ExploreBrimstoneCrag: {
-		// DisplayName: Brimstone Crags
-		// Description: Set foot in the Brimstone Crags at the edge of the Underworld
-		// QuestObjective.Description: Reach the Brimstone Crags
-		// DetailedDescription: On one side of Hell stands a cliff that has burned longer than anyone remembers. Dark red fire seeps from the brickwork, and an elemental spirit sleeps in the ruins.
+		DisplayName: Riscos de Azufre
+		Description: Pisa los Riscos de Azufre, al borde del Inframundo
+		QuestObjective.Description: Llega a los Riscos de Azufre
+		DetailedDescription: A un lado del Inframundo se alza un risco que lleva ardiendo no se sabe cuántos años. De las juntas de los ladrillos rezuma un fuego rojo oscuro, y en lo hondo de las ruinas duerme un espíritu elemental.
 	}
 
 	ExploreAstral: {
-		// DisplayName: Astral Blight
-		// Description: Explore the star-tainted land
-		// QuestObjective.Description: Reach the Astral Infection
-		// DetailedDescription: A star crashed into the world, and what grows in the crater belongs to no bestiary. The land is changing color, the creatures are changing shape, and this is only the beginning.
+		DisplayName: Tierra teñida de estrellas
+		Description: Explora la tierra contaminada por el resplandor estelar
+		QuestObjective.Description: Llega a la Infección astral
+		DetailedDescription: Una estrella se estrelló contra el mundo y lo que crece en el cráter no pertenece a ninguna guía. La tierra cambia de color, las criaturas cambian de forma, y esto no ha hecho más que empezar.
 	}
 
 	AcidRainQuest: {
-		// DisplayName: Acid Rain
-		// Description: Weather an acid rain
-		// QuestObjective.Description: Experience the Acid Rain event
-		// DetailedDescription: The clouds over the sulphurous sea are yellow. When it rains the whole sea boils, and the things in the water climb ashore with it. Bring an umbrella. Seriously.
+		DisplayName: Se acerca la lluvia ácida
+		Description: Vive una lluvia ácida
+		QuestObjective.Description: Presencia el evento de lluvia ácida
+		DetailedDescription: Las nubes sobre el Mar de Azufre son amarillas. Cuando llueve, todo el mar hierve y lo que vive en el agua sube a tierra con la lluvia. Lleva paraguas. En serio.
 	}
 
 	DeliciousMeatQuest: {
-		// DisplayName: Delicious Meat
-		// Description: Obtain a piece of Delicious Meat
-		// DetailedDescription: Nobody knows what animal it came from, and nobody cares. Tasty, filling, doubles as a building block. Stock up.
+		DisplayName: Filete delicioso
+		Description: Obtén un filete delicioso
+		DetailedDescription: Nadie sabe de qué animal es esta carne, y a nadie le importa. Está buena, llena y además sirve de bloque. Haz acopio.
 	}
 
 	BrimlishQuest: {
-		// DisplayName: Brimlish
-		// Description: Fish up a Brimlish
-		// DetailedDescription: Even the acid water has fish in it, and they look surprisingly lively. Cast your line into the sulphurous sea and see what bites.
+		DisplayName: Pez de azufre
+		Description: Pesca un pez de azufre
+		DetailedDescription: Hasta en el agua ácida hay peces vivos, y encima tienen un aire sorprendentemente sano. Lanza el anzuelo al Mar de Azufre y mira qué pica.
 	}
 
 	GiantClamQuest: {
-		// DisplayName: Giant Clam
-		// Description: Defeat the Giant Clam
-		// DetailedDescription: The largest shell in the Sunken Sea. Quiet as a rock most days; everyone who pried it open regretted it.
+		DisplayName: Almeja gigante
+		Description: Derrota a la Almeja gigante
+		DetailedDescription: La concha más grande del Mar Hundido. La mayor parte del tiempo está tan quieta como una piedra; quien la ha abierto se ha arrepentido.
 	}
 
 	CragmawMireQuest: {
-		// DisplayName: Cragmaw Mire
-		// Description: Defeat the Cragmaw Mire during the Acid Rain
-		// DetailedDescription: Once the world hardens, something bitey floats up through the acid rain. It has far too many teeth, and all of them point at you.
+		DisplayName: Lodazal Faucedroco
+		Description: Derrota al Lodazal Faucedroco durante la lluvia ácida
+		DetailedDescription: Cuando el mundo se endurece, en la lluvia ácida flota un lodo que muerde. Tiene demasiados dientes, y todos apuntan a ti.
 	}
 
 	MaulerQuest: {
-		// DisplayName: The Mauler
-		// Description: Defeat the Mauler during the Acid Rain
-		// DetailedDescription: A shark raised on acid, with a temper to match the pH. By the time it breaches, remembering to dodge is already too late.
+		DisplayName: Triturador
+		Description: Derrota al Triturador durante la lluvia ácida
+		DetailedDescription: Un tiburón criado en ácido, con un genio a la altura del pH. Cuando salta fuera del agua, ya es demasiado tarde para acordarte.
 	}
 
 	NuclearTerrorQuest: {
-		// DisplayName: Nuclear Terror
-		// Description: Defeat the Nuclear Terror during the Acid Rain
-		// DetailedDescription: At the deepest hour of the acid rain, something enormous and glowing hatches. Even the acid water pulls back from where it walks.
+		DisplayName: Terror nuclear
+		Description: Derrota al Terror nuclear durante la lluvia ácida
+		DetailedDescription: En lo más hondo de la lluvia ácida incubaba un coloso luminoso. Por donde pasa, hasta el agua ácida se aparta.
 	}
 
 	GreatSandSharkQuest: {
-		// DisplayName: Great Sand Shark
-		// Description: Defeat the Great Sand Shark
-		// DetailedDescription: The fastest hunter in the desert; the dunes are its open sea. Cull enough of its kin and the king of the pack will show up in person.
+		DisplayName: Gran tiburón de arena
+		Description: Derrota al Gran tiburón de arena
+		DetailedDescription: El cazador más rápido del desierto; las dunas son su superficie del mar. Mata a bastantes de los suyos y el rey de la manada saldrá en persona.
 	}
 
 	LeviathanQuest: {
-		// DisplayName: Anahita and the Leviathan
-		// Description: Defeat Anahita and the Leviathan
-		// DetailedDescription: The song comes first, the great shadow after. The siren's melody guides the deep-sea beast; do not stop to listen.
+		DisplayName: Anahita y el Leviatán
+		Description: Derrota a Anahita y al Leviatán
+		DetailedDescription: Primero llega el canto, después la sombra enorme. La melodía de la sirena le abre camino a la bestia de las profundidades; no te pares a escuchar.
 	}
 
 	AstrumAureusQuest: {
-		// DisplayName: Astrum Aureus
-		// Description: Defeat Astrum Aureus
-		// DetailedDescription: Deep in the astral blight crouches an infected war machine. It wakes at night, and nothing grows where its treads have passed.
+		DisplayName: Astrum Aureus
+		Description: Derrota a Astrum Aureus
+		DetailedDescription: En lo hondo de la tierra teñida de estrellas se agazapa una máquina gigante infectada. De noche despierta, y por donde pasan sus orugas no crece ni una brizna.
 	}
 
 	RavagerQuest: {
-		// DisplayName: Ravager
-		// Description: Defeat the Ravager
-		// DetailedDescription: A giant pieced together from flesh and masonry, every limb attacking on its own. Tear off all four before the body itself gets serious.
+		DisplayName: Devastador
+		Description: Derrota al Devastador
+		DetailedDescription: Un gigante ensamblado de carne y ladrillo; cada pieza ataca por su cuenta. Desmonta sus cuatro extremidades y el cuerpo se pondrá serio.
 	}
 
 	AstrumDeusQuest: {
-		// DisplayName: Astrum Deus
-		// Description: Defeat Astrum Deus
-		// DetailedDescription: Lay an offering on the astral beacon and an infected god swims down out of the night sky. Only its death opens the astral ore to your pickaxe.
+		DisplayName: Astrum Deus
+		Description: Derrota a Astrum Deus
+		DetailedDescription: Ofrece un tributo en el altar astral y del cielo nocturno bajará a nadar un dios infectado. Mátalo y las vetas astrales se te abrirán.
 	}
 
 	BossRushQuest: {
-		// DisplayName: The Final Battle
-		// Description: Clear a Boss Rush
-		// QuestObjective.Description: Complete the Boss Rush
-		// DetailedDescription: Crush the Terminus and everything you have ever slain lines up to find you again. Kill them all a second time to put the seal on this journey.
+		DisplayName: Batalla final
+		Description: Completa una batalla final
+		QuestObjective.Description: Completa la batalla final
+		DetailedDescription: Aplasta el Término y todo lo que hayas matado hará cola para volver a buscarte. Mátalos a todos otra vez: solo entonces esta travesía queda sellada.
 	}
 
 	AerialiteQuest: {
-		// DisplayName: Aerialite Gleam
-		// Description: Forge Aerialite Bars
-		// DetailedDescription: When the Desert Scourge dies, pale blue ore-dust settles from the sky. Light enough to float, yet sturdier than iron.
+		DisplayName: Resplandor de aerialita
+		Description: Forja lingotes de aerialita
+		DetailedDescription: Cuando muere el Azote del desierto, del cielo cae un polvo mineral azul pálido. Es tan ligero que flota, pero más recio que el hierro.
 	}
 
 	CryonicQuest: {
-		// DisplayName: Cryonic Crystal
-		// Description: Forge Cryonic Bars
-		// DetailedDescription: With Cryogen shattered, blue veins crystallize in the deep ice of the tundra. It does not melt in your hand; it only gets colder.
+		DisplayName: Cristal polar
+		Description: Forja lingotes criónicos
+		DetailedDescription: Tras hacerse añicos el espíritu de hielo, en el hielo profundo de la nieve empiezan a cristalizar vetas azules. En la mano no se derriten: al contrario, enfrían más.
 	}
 
 	PerennialQuest: {
-		// DisplayName: Perennial Gift
-		// Description: Forge Perennial Bars
-		// DetailedDescription: Where Plantera wilted, a breathing green metal grows from the soil. The jungle repays its debts in its own way.
+		DisplayName: Dádiva perenne
+		Description: Forja lingotes perennes
+		DetailedDescription: Donde se marchitó Plantera, en la tierra creció un metal verde que respira. La jungla responde a su manera.
 	}
 
 	LifeAlloyQuest: {
-		// DisplayName: Life Alloy
-		// Description: Smelt Life Alloys
-		// DetailedDescription: Three living metals melted into one; the ingot still carries a pulse. Every high-end frame is built on it.
+		DisplayName: Aleación de vida
+		Description: Funde aleación de vida
+		DetailedDescription: Tres metales vivos fundidos en uno; al lingote todavía le queda pulso. El armazón de todo el equipo de alto rango se forja sobre él.
 	}
 
 	AstralBarQuest: {
-		// DisplayName: Astral Smelting
-		// Description: Forge Astral Bars
-		// DetailedDescription: With the god-worm dead, the astral veins finally yield to the pickaxe. The bars glow on their own in the dark.
+		DisplayName: Fundición astral
+		Description: Forja lingotes astrales
+		DetailedDescription: Muerto el dragón errante, las vetas teñidas de estrellas por fin dejan que el pico muerda. El lingote fundido brilla solo en la oscuridad.
 	}
 
 	UelibloomQuest: {
-		// DisplayName: Uelibloom in Blossom
-		// Description: Forge Uelibloom Bars
-		// DetailedDescription: After the goddess's holy fire swept through, metal flowers bloomed in the jungle mud. Smelt the petals into bars; the light stays inside.
+		DisplayName: Floración de uelibloom
+		Description: Forja lingotes de uelibloom
+		DetailedDescription: Tras el fuego sagrado de la diosa, en el barro de la jungla brotaron flores de metal. Los pétalos se funden en lingotes, y el lingote todavía lleva luz.
 	}
 
 	BloodstoneQuest: {
-		// DisplayName: Bloodstone Tempering
-		// Description: Gather Bloodstone Cores
-		// DetailedDescription: With the goddess fallen, dark red stones float up through the lava of the Brimstone Crags. They are still beating, like hearts outside their bodies.
+		DisplayName: Templado de piedra de sangre
+		Description: Condensa núcleos de piedra de sangre
+		DetailedDescription: Caída la diosa, de la lava de los Riscos de Azufre flotan piedras rojo oscuro. Todavía laten, como corazones fuera del cuerpo.
 	}
 
 	AscendantEssenceQuest: {
-		// DisplayName: Ascendant Spirit
-		// Description: Condense Ascendant Spirit Essence
-		// DetailedDescription: Phantoms, stardust, moonlight, and a stubborn will that refuses to scatter. Press them into one essence; it is enough to light a legend.
+		DisplayName: Espíritu de la ascensión
+		Description: Condensa esencia de espíritu ascendente
+		DetailedDescription: Fantasmas, polvo estelar, luz de luna, y un poco de obsesión que no se quiere ir. Prénsalos en una esencia: basta para encender una leyenda.
 	}
 
 	YharonSoulQuest: {
-		// DisplayName: Embers of the Dragon Soul
-		// Description: Collect Yharon Soul Fragments
-		// DetailedDescription: When the great dragon burned out, what remained in the flames was not ash but shards of soul, still hot. Mind your heart when you pick them up.
+		DisplayName: Brasas del alma del dragón
+		Description: Recolecta fragmentos de alma de Yharon
+		DetailedDescription: Cuando el gran dragón se consumió, lo que quedó en las llamas no fue ceniza, sino trozos de alma que todavía queman. Al recogerlos, cuidado de no quemarte el corazón.
 	}
 
 	FruitQuest: {
-		// DisplayName: Gifts of Life
-		// Description: Gather all four life-enhancing fruits
-		// DetailedDescription: Strange fruit sometimes ripens beside the corpses of mighty foes. Four kinds in all, and every one pushes your life to a new limit.
+		DisplayName: Dádiva de la vida
+		Description: Reúne las cuatro frutas que refuerzan la vida
+		DetailedDescription: Junto a los cadáveres de enemigos poderosos a veces maduran frutas extrañas. Hay cuatro clases, y cada una empuja tu vida a un nuevo máximo.
 	}
 
 	DraedonPowerCellQuest: {
-		// DisplayName: Ancient Power
-		// Description: Collect Power Cells
-		// DetailedDescription: The lab ruins are littered with cells that still hold a charge. An energy density far beyond your generators; worth studying.
+		DisplayName: Energía ancestral
+		Description: Recolecta baterías de energía
+		DetailedDescription: En las ruinas del laboratorio hay baterías que todavía guardan carga. Esta densidad energética deja atrás a tus generadores; merece estudiarse.
 	}
 
 	DraedonsForgeQuest: {
-		// DisplayName: The Master's Forge
-		// Description: Obtain the master craftsman's forge
-		// DetailedDescription: At the end of industry stands a furnace that can smelt anything. Assemble it, and your workshop will never again meet something it cannot make.
+		DisplayName: Forja de Draedon
+		Description: Obtén la Forja de Draedon
+		DetailedDescription: Al final de la industria hay un horno que funde cualquier cosa. Ármalo y en tu taller ya no habrá nada que no se pueda hacer.
 	}
 
 	ConquerorMilestone: {
-		// DisplayName: Chronicle of Conquest
-		// Description: Defeat every mighty foe of this world
-		// QuestObjective.Description: Complete all hunt quests
-		// DetailedDescription: From King Slime to the things at the world's end, finish every hard fight there is. Few ever fill this page.
+		DisplayName: Crónica de las cacerías
+		Description: Derrota a cada enemigo poderoso de este mundo
+		QuestObjective.Description: Completa todas las misiones de cacería
+		DetailedDescription: Del Rey slime a los seres del fin del mundo, termina cada pelea dura. No son muchos los que llenan esta página.
 	}
 
 	EventMilestone: {
-		// DisplayName: Peacekeeper
-		// Description: Quell every invasion and anomaly
-		// QuestObjective.Description: Complete all event quests
-		// DetailedDescription: Armies, fleets, moons from other worlds. Whatever came in numbers, you sent home.
+		DisplayName: Pacificador de sucesos
+		Description: Apacigua cada invasión y cada prodigio
+		QuestObjective.Description: Completa todas las misiones de eventos
+		DetailedDescription: Ejércitos, flotas, lunas de otros mundos. Todo lo que vino en tropel, tú lo has devuelto.
 	}
 
 	CompletionistMilestone: {
-		// DisplayName: The Complete Codex
-		// Description: Finish everything in this book
-		// QuestObjective.Description: Complete all quests
-		// DetailedDescription: The last page of this book is reserved for whoever reads it all. By the time you close it, this world holds nothing you have not seen.
+		DisplayName: Códice completo
+		Description: Completa todo lo que hay en el Diario de misiones
+		QuestObjective.Description: Completa todas las misiones
+		DetailedDescription: La última página de este libro está reservada a quien lo lee entero. Cuando lo cierres, en este mundo ya no quedará nada que no hayas visto.
 	}
 }

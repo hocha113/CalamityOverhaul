@@ -25,16 +25,16 @@ RDemonConch: {
 	Tooltip:
 		'''
 		Escucha con atención y oirás gritos
-		«Cuidado.»
+		«Cuidado»
 		'''
 }
 
 RBloodButcherer: {
-	// DisplayName: "{$ItemName.BloodButcherer}"
-	/* Tooltip:
+	DisplayName: "{$ItemName.BloodButcherer}"
+	Tooltip:
 		'''
-		Heavy three-hit butcher combo, the third cut sweeps wider and harder
-		Swings fling gouts of dark blood that arc down and splatter on impact
-		Struck enemies are Blood Butchered
-		''' */
+		Combo de carnicería de tres golpes, pesado; el tercer tajo es más ancho y más cruel
+		Al blandir lanza varios proyectiles de sangre oscura que caen en arco y salpican al impactar
+		Los enemigos golpeados caen en Matanza sangrienta
+		'''
 }

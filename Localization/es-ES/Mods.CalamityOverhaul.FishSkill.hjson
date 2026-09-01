@@ -1,5 +1,5 @@
 FishSwarm: {
-	DisplayName: Cambio de sombra acuática
+	DisplayName: Metamorfosis pisciforme
 	Tooltip:
 		'''
 		Clic derecho: transfórmate en un banco de peces y avanza a gran velocidad.
@@ -19,7 +19,7 @@ FishSparkling: {
 }
 
 FishZombie: {
-	DisplayName: Marea de cadáveres
+	DisplayName: Horda de cadáveres saltarines
 	Tooltip:
 		'''
 		Clic derecho: invoca una horda de ahogados que cargan contra los enemigos.
@@ -29,7 +29,7 @@ FishZombie: {
 }
 
 FishCloud: {
-	DisplayName: Surcador de nubes
+	DisplayName: Pez jinete de niebla
 	Tooltip:
 		'''
 		Clic derecho: cabalga una nube de lluvia a gran velocidad.
@@ -72,7 +72,7 @@ FishDynamite: {
 }
 
 FishBone: {
-	DisplayName: Espiral ósea
+	DisplayName: Hueso de pez giratorio
 	Tooltip:
 		'''
 		Mientras disparas, genera periódicamente huesos que orbitan a tu alrededor.
@@ -83,7 +83,7 @@ FishBone: {
 }
 
 FishHarpy: {
-	DisplayName: Tifón de plumas
+	DisplayName: Plumas de pez volador
 	Tooltip:
 		'''
 		Mientras disparas, genera periódicamente plumas de arpía que orbitan a tu alrededor.
@@ -93,7 +93,7 @@ FishHarpy: {
 }
 
 FishFallenStar: {
-	DisplayName: Estrellas caídas
+	DisplayName: Peces estelares del cielo
 	Tooltip:
 		'''
 		Al disparar, lanzas estrellas acompañadas de estrellas satélite.
@@ -103,7 +103,7 @@ FishFallenStar: {
 }
 
 FishHunger: {
-	DisplayName: Fantasma hambriento
+	DisplayName: Hambriento entre peces
 	Tooltip:
 		'''
 		Mientras disparas, genera periódicamente fantasmas hambrientos que orbitan a tu alrededor.
@@ -123,7 +123,7 @@ FishBat: {
 }
 
 FishEaterofPlankton: {
-	DisplayName: Rastro del devorador
+	DisplayName: Rastro de gusanos podridos
 	Tooltip:
 		'''
 		Al disparar, lanza pequeños devoradores de almas.
@@ -156,7 +156,7 @@ FishHoney: {
 }
 
 Fishotroning: {
-	DisplayName: Golpe del Rey Esqueleto
+	DisplayName: Bofetada de brazo óseo
 	Tooltip:
 		'''
 		Mientras disparas, brotan manos del Rey Esqueleto que te ayudan en combate; al recibir daño pierdes una.
@@ -217,7 +217,7 @@ FishCat: {
 }
 
 FishDirt: {
-	DisplayName: Órbita terrestre
+	DisplayName: Órbita del pez de tierra
 	Tooltip:
 		'''
 		Al moverte, invoca peces de tierra que orbitan a tu alrededor.
@@ -424,7 +424,7 @@ FishBrimlish: {
 }
 
 FishDoubleCod: {
-	DisplayName: Persecución de bacalaos gemelos
+	DisplayName: Bacalaos gemelos en vuelo
 	Tooltip:
 		'''
 		Mientras disparas, lanza periódicamente bacalaos que persiguen enemigos.

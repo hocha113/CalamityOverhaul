@@ -1,6 +1,6 @@
 HeadPrimeAI.SkeletronPrime_Text: Versuch nicht, mich mit diesem dummen Ding zu töten! Stirb, Organismus!
 
 WallOfFleshAI: {
-	// CurtainDeathReason: "{0} was swallowed by the blood tide"
-	// NetDeathReason: "{0} was shredded by the net of the Hungry"
+	CurtainDeathReason: "{0} wurde von der Blutflut verschlungen"
+	NetDeathReason: "{0} wurde vom Fleischnetz der Hungrigen zerfetzt"
 }

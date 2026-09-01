@@ -1,125 +1,125 @@
-/* GsShuriken.Desc:
+GsShuriken.Desc: 
 	'''
-	Reforged: 15% chance not to consume; crits refund one; misses stuck in walls can be picked back up
-	At 5 combo stacks every throw splits off a free twin star
-	''' */
-/* GsThrowingKnife.Desc:
+	Reforgé : 15% de chances de ne pas consommer ; un critique rend un shuriken ; les shuriken plantés dans un mur se ramassent
+	À cinq charges de combo, chaque lancer s'accompagne d'une étoile jumelle gratuite
 	'''
-	Reforged: crits refund one; knives stuck in walls often survive to be reclaimed
-	Each hit sharpens the next knife within 0.8s, +12% up to 3 stacks
-	''' */
-/* GsPoisonedKnife.Desc:
+GsThrowingKnife.Desc: 
 	'''
-	Reforged: crits refund one; wall-stuck knives can be reclaimed
-	Hits stack venom, extending poison; at 6 stacks the target corrodes, taking your knives 5 armor deeper for 8s
-	''' */
-/* GsBoneDagger.Desc:
+	Reforgé : un critique rend un couteau ; ceux plantés dans un mur se récupèrent souvent
+	Chaque impact aiguise le suivant dans les 0.8 s, +12% de dégâts, jusqu'à trois charges
 	'''
-	Reforged: crits refund one; strays can be reclaimed
-	Embed 4 daggers in the same foe and they all shatter for 60% each, always dropping one recovery pickup
-	''' */
-/* GsStarAnise.Desc:
+GsPoisonedKnife.Desc: 
 	'''
-	Reforged: crits always refund one; strays can be reclaimed
-	Ricochets to a nearby foe up to twice, losing 15% per hop
-	''' */
-/* GsBone.Desc:
+	Reforgé : un critique rend un couteau ; ceux collés au mur se ramassent
+	Les impacts empilent le venin et prolongent le poison ; à six charges, la cible se corrode, vos couteaux percent 5 points d'armure de plus pendant 8 s
 	'''
-	Reforged: the bone arcs back to your hand and deals damage both ways; catch it to reclaim it outright
-	Misses can be picked back up; crits split off two half-damage shards
-	''' */
-/* GsJavelin.Desc:
+GsBoneDagger.Desc: 
 	'''
-	Reforged: crits refund one; javelins left in walls are usually reclaimable
-	Throwing while sprinting adds 25% damage and 30% velocity; consecutive hits on one target stack +12% up to 3
-	''' */
-/* GsBoneJavelin.Desc:
+	Reforgé : un critique rend un poignard ; les ratés se ramassent
+	Quatre poignards dans la même cible explosent tous, 60% de dégâts chacun, et un ramassable tombe à coup sûr
 	'''
-	Reforged: crits refund one
-	With 3 javelins embedded in one foe your javelins hit 15% harder; each embedded javelin has a 60% chance to drop a recovery pickup when it dies
-	''' */
-/* GsSpikyBall.Desc:
+GsStarAnise.Desc: 
 	'''
-	Reforged: balls that expire on the field return straight to your bag
-	A foe standing on 3 or more of your balls sets off a chain spike-burst, 50% each, once per ball
-	''' */
-/* GsGrenade.Desc:
+	Reforgé : un critique rend toujours une badiane ; les ratés se ramassent
+	Elle rebondit jusqu'à deux fois entre les ennemis, -15% par saut
 	'''
-	Reforged: hitting 3+ foes in one blast refunds a grenade; fuses burn 20% faster inside your combo window
-	Right click for a low roll-throw with a 1.2s fuse
-	''' */
-/* GsStickyGrenade.Desc:
+GsBone.Desc: 
 	'''
-	Reforged: blasts brand foes for 3s; branded foes take 30% more from your next blast and it always crits
-	Hitting 3+ foes refunds one; right click to roll-throw
-	''' */
-/* GsBouncyGrenade.Desc:
+	Reforgé : l'os décrit un arc et revient à la main, aller et retour blessent ; le rattraper le récupère entier
+	Les os à terre se ramassent ; un critique se scinde en deux éclats à demi-dégâts
 	'''
-	Reforged: each bounce charges the blast +12%, up to 3 stacks
-	A grenade that bounced 3 times refunds itself when its blast finds a foe; right click to roll-throw
-	''' */
-/* GsBeenade.Desc:
+GsJavelin.Desc: 
 	'''
-	Reforged: bursts release 2 extra bees; stung foes take 25% more from your bees for 4s
-	Hitting 3+ foes in one burst refunds one
-	''' */
-/* GsHappyGrenade.Desc:
+	Reforgé : un critique rend un javelot ; ceux plantés dans un mur se récupèrent souvent
+	Lancé en courant : +25% de dégâts, +30% de vitesse initiale ; les impacts d'affilée sur la même cible empilent +12%, jusqu'à trois charges
 	'''
-	Reforged: the confetti blast leaves non-boss foes wandering confused for 1s
-	Crits refund one grenade; the party never has to end
-	''' */
-/* GsMolotovCocktail.Desc:
+GsBoneJavelin.Desc: 
 	'''
-	Reforged: 25% chance not to consume; the fire pool spreads 40% wider and burns 50% longer
-	Shatter another bottle on the same spot within 5s to raise a firewall that burns 30% hotter
-	''' */
-/* GsFrostDaggerfish.Desc:
+	Reforgé : un critique rend un javelot
+	Trois javelots plantés dans la même cible, et les vôtres lui infligent +15% ; chaque javelot planté a 60% de chances de tomber en ramassable à sa mort
 	'''
-	Reforged: pierces one more foe; crits refund one
-	Hits stack hypothermia, 3 stacks shatter for +50% and frostburn; hitting a frosted foe always drops the fish back as a pickup
-	''' */
-/* GsSnowball.Desc:
+GsSpikyBall.Desc: 
 	'''
-	Reforged: 30% chance not to consume; each consecutive throw flies 4% faster, up to 8
-	Every 8th throw packs into a great snowball: 2.5x damage and a chilling 90px burst
-	''' */
-/* GsRottenEgg.Desc:
+	Reforgé : une boule à piques qui expire sur le terrain rentre directement dans le sac
+	Un ennemi qui marche sur au moins trois de vos boules déclenche une explosion en chaîne, 50% chacune, une seule fois par boule
 	'''
-	Reforged: the egg bursts into a 4s stench cloud; foes inside take 8% more damage from everything
-	Crits refund one egg. It is still a rotten egg
-	''' */
-/* GsPaperAirplaneA.Desc:
+GsGrenade.Desc: 
 	'''
-	Reforged: the plane banks gently toward your cursor; after striking it loops back for one more pass
-	Crits refund one; strays can be reclaimed
-	''' */
-/* GsPaperAirplaneB.Desc:
+	Reforgé : toucher trois ennemis ou plus d'une même explosion rend une grenade ; dans la fenêtre de combo, la mèche brûle 20% plus vite
+	Clic droit : lancer roulé, mèche réduite à 1.2 s
 	'''
-	Reforged: the white plane banks toward your cursor and loops back after striking; +4% crit
-	Crits refund one; strays can be reclaimed
-	''' */
-/* GsHolyWater.Desc:
+GsStickyGrenade.Desc: 
 	'''
-	Reforged: still hallows the land; the burst also raises a 3s radiant field
-	Foes inside take 10% more from everything, allies inside mend 1 life per second; covering 3 foes refunds a flask
-	''' */
-/* GsUnholyWater.Desc:
+	Reforgé : l'explosion grave 3 s de brûlure corrosive ; un ennemi marqué subit +30% de votre prochaine explosion, et c'est un critique assuré
+	Toucher trois ennemis rend une grenade ; clic droit pour un lancer roulé
 	'''
-	Reforged: still corrupts the land; the burst also raises a 3s miasma
-	Foes inside smolder with shadowflame and wade as if through tar
-	''' */
-/* GsBloodWater.Desc:
+GsBouncyGrenade.Desc: 
 	'''
-	Reforged: still spreads the crimson; the burst also raises a 3s blood haze
-	While you stand inside, your strikes leech 1 life, up to 3 per second
-	''' */
-/* GsAleTosser.Desc:
+	Reforgé : chaque rebond charge l'explosion, +12%, jusqu'à trois charges
+	Une grenade qui a rebondi trois fois se rend entière si l'explosion touche un ennemi ; clic droit pour un lancer roulé
 	'''
-	Reforged: 30% chance to not consume ale
-	Hits stack Tipsy, +8% damage each up to 5; every 6th throw is a keg blast that dazes non-boss foes
-	''' */
-/* GsShadowflameKnife.Desc:
+GsBeenade.Desc: 
 	'''
-	Reforged: hits feed a combo that quickens your arm, up to 25% faster at 9 stacks
-	At full combo the blade enters Flame Edge: shadowflame burns a full 4s and every 4th knife splits off a shadow clone
-	''' */
+	Reforgé : l'explosion lâche deux abeilles de plus ; un ennemi piqué subit +25% de vos abeilles pendant 4 s
+	Toucher trois ennemis d'une même explosion rend une grenade
+	'''
+GsHappyGrenade.Desc: 
+	'''
+	Reforgé : l'explosion de confettis fait errer les non-boss 1 s, ivres et perdus
+	Un critique rend une grenade ; la fête ne s'arrête jamais
+	'''
+GsMolotovCocktail.Desc: 
+	'''
+	Reforgé : 25% de chances de ne pas consommer ; la mer de feu s'étale 40% plus large et brûle 50% plus longtemps
+	Frapper la même zone (120 pixels) en cinq secondes dresse un mur de flammes, +30% de dégâts de feu
+	'''
+GsFrostDaggerfish.Desc: 
+	'''
+	Reforgé : perce un ennemi de plus ; un critique rend un poisson
+	Les impacts empilent l'hypothermie ; à trois charges, la glace se brise, +50% de dégâts et Brûlure de givre ; toucher un ennemi déjà givré fait toujours glisser le poisson en ramassable
+	'''
+GsSnowball.Desc: 
+	'''
+	Reforgé : 30% de chances de ne pas consommer ; chaque lancer d'affilée gagne +4% de vitesse initiale, jusqu'à huit
+	Chaque 8e lancer devient une grosse boule : 2.5 fois les dégâts, explosion de givre de 90 pixels et Brûlure de givre
+	'''
+GsRottenEgg.Desc: 
+	'''
+	Reforgé : l'œuf laisse 4 s de nuage puant ; les ennemis dedans subissent +8% de tous les dégâts
+	Un critique rend un œuf. C'est toujours un œuf pourri
+	'''
+GsPaperAirplaneA.Desc: 
+	'''
+	Reforgé : l'avion de papier plane en suivant doucement le viseur ; après l'impact, il fait une boucle et mord encore une fois
+	Un critique le rend ; les ratés se ramassent
+	'''
+GsPaperAirplaneB.Desc: 
+	'''
+	Reforgé : l'avion blanc plane vers le viseur et revient en boucle après l'impact ; +4% de critique
+	Un critique le rend ; les ratés se ramassent
+	'''
+GsHolyWater.Desc: 
+	'''
+	Reforgé : la conversion du biome reste ; le point de rupture lève 3 s un domaine d'éclat sacré
+	Les ennemis dedans subissent +10% de tous les dégâts, les joueurs dedans régénèrent 1 vie par seconde ; couvrir trois ennemis rend une fiole
+	'''
+GsUnholyWater.Desc: 
+	'''
+	Reforgé : la conversion du biome reste ; le point de rupture lève 3 s un brouillard impie
+	Les ennemis du domaine brûlent de Flamme d'ombre et avancent un peu plus lents
+	'''
+GsBloodWater.Desc: 
+	'''
+	Reforgé : la conversion du biome reste ; le point de rupture lève 3 s un brouillard de sang
+	Debout dans le brouillard, vos coups volent 1 vie, jusqu'à 3 par seconde
+	'''
+GsAleTosser.Desc: 
+	'''
+	Reforgé : 30% de chances de ne pas consommer de bière
+	Les impacts empilent l'ivresse, +8% de dégâts par charge, jusqu'à cinq ; chaque 6e lancer est une explosion de fût qui fait tournoyer les non-boss
+	'''
+GsShadowflameKnife.Desc: 
+	'''
+	Reforgé : les impacts nourrissent le combo, le bras s'accélère, +25% à neuf charges
+	À combo plein, le Fil de flamme : la Flamme d'ombre brûle 4 s, et chaque 4e couteau se scinde en une lame d'ombre à 60% de dégâts
+	'''

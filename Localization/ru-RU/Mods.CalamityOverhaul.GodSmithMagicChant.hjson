@@ -1,143 +1,143 @@
-/* GsWandOfSparking.Desc:
+GsWandOfSparking.Desc:
 	'''
-	Reforged: casting on the beat builds resonance, on-beat sparks chain-ignite nearby foes;
-	at full resonance the next cast erupts into a fan of twelve stray sparks
-	''' */
-/* GsWandOfFrosting.Desc:
+	Перековка: заклинания в такт копят резонанс; искра на сильной доле после попадания прыгает цепью к ближним;
+	на полном резонансе следующее пение сыплет веером из двенадцати искр
 	'''
-	Reforged: on-beat frost bolts refract into ice shards on hit, deeper resonance splits more;
-	at full resonance the next cast breathes a wide cone of freezing mist that inflicts frostbite
-	''' */
-/* GsThunderZapper.Desc:
+GsWandOfFrosting.Desc:
 	'''
-	Reforged: on-beat bolts zigzag like true lightning and may fork at each bend, resonance quickens the trigger;
-	at full resonance the next hit brands the target and calls down a thunder pillar
-	''' */
-/* GsAmethystStaff.Desc:
+	Перековка: морозный огонь на сильной доле при попадании преломляет косой осколок льда — чем глубже резонанс, тем больше преломлений;
+	на полном резонансе следующее пение выдыхает широкий конус инея и вешает ледяную порчу
 	'''
-	Reforged: on-beat bolts shatter into piercing amethyst shards on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsTopazStaff.Desc:
+GsThunderZapper.Desc:
 	'''
-	Reforged: on-beat bolts shatter into homing topaz shards on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsSapphireStaff.Desc:
+	Перековка: грозовой снаряд на сильной доле идёт настоящей ломаной молнией, каждый излом может ветвить малую дугу, резонанс ускоряет спуск;
+	на полном резонансе следующее попадание вешает грозовую печать, затем бьёт небесный разряд
 	'''
-	Reforged: on-beat bolts shatter into swift sapphire lances on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsEmeraldStaff.Desc:
+GsAmethystStaff.Desc:
 	'''
-	Reforged: on-beat bolts burst into one extra emerald shard on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsRubyStaff.Desc:
+	Перековка: самоцвет на сильной доле при попадании крошится в призматический аметист и пронзает ещё одну цель;
+	на полном резонансе следующее пение стреляет трёхцветным кольцом самоцветов
 	'''
-	Reforged: on-beat bolts shatter into ruby shards that detonate in a small blast;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsDiamondStaff.Desc:
+GsTopazStaff.Desc:
 	'''
-	Reforged: on-beat bolts shatter into diamond shards that refract twin light rays;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsAmberStaff.Desc:
+	Перековка: самоцвет на сильной доле при попадании крошится в охотящиеся осколки топаза;
+	на полном резонансе следующее пение стреляет трёхцветным кольцом самоцветов
 	'''
-	Reforged: on-beat bolts shatter into amber shards that linger as motes of stinging dust;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsVilethorn.Desc:
+GsSapphireStaff.Desc:
 	'''
-	Reforged: on-beat thorns fork into vile spikes wherever they bite;
-	at full resonance the next cast also erupts a ring of thorns around you
-	''' */
-/* GsWaterBolt.Desc:
+	Перековка: самоцвет на сильной доле при попадании крошится в стремительные сапфировые пики по прямой;
+	на полном резонансе следующее пение стреляет трёхцветным кольцом самоцветов
 	'''
-	Reforged: on-beat bolts bounce further and ripple on every ricochet;
-	at full resonance the next cast surges into a great tide that pierces through everything
-	''' */
-/* GsBookOfSkulls.Desc:
+GsEmeraldStaff.Desc:
 	'''
-	Reforged: hits brand foes into the registry, on-beat skulls hunt branded prey;
-	at full resonance the next cast looses three skulls, three brands detonate into a bone burst
-	''' */
-/* GsDemonScythe.Desc:
+	Перековка: самоцвет на сильной доле крошится пышнее прочих и сыплет лишний изумрудный осколок;
+	на полном резонансе следующее пение стреляет трёхцветным кольцом самоцветов
 	'''
-	Reforged: on-beat scythes wind up faster and may boomerang back at high resonance;
-	at full resonance the next cast crosses two scythes over your cursor
-	''' */
-/* GsAquaScepter.Desc:
+GsRubyStaff.Desc:
 	'''
-	Reforged: sustained spraying swells into a surge window of crushing water pressure;
-	ride three full surges and the next cast breaks into a fan of tidal slams
-	''' */
-/* GsFlowerOfFire.Desc:
+	Перековка: самоцвет на сильной доле при попадании крошится в рубиновые осколки, что взрываются малой областью;
+	на полном резонансе следующее пение стреляет трёхцветным кольцом самоцветов
 	'''
-	Reforged: on-beat fireballs burst into fans of flame tongues on first landing;
-	at full resonance the next fireball blooms into a burning field where it lands
-	''' */
-/* GsBeeGun.Desc:
+GsDiamondStaff.Desc:
 	'''
-	Reforged: on-beat volleys fly in a V formation, resonance breeds bigger bees;
-	at full resonance the next cast releases a queen bee that trails a living swarm
-	''' */
-/* GsSpaceGun.Desc:
+	Перековка: самоцвет на сильной доле при попадании крошится в алмазные осколки, что преломляют два быстрых луча;
+	на полном резонансе следующее пение стреляет трёхцветным кольцом самоцветов
 	'''
-	Reforged: every on-beat shot charges the coil, the charge never decays on a miss;
-	every fourth charge discharges as a wide piercing pulse that drags in lesser foes
-	''' */
-/* GsGrayZapinator.Desc:
+GsAmberStaff.Desc:
 	'''
-	Reforged: chaos stays chaos, but on-beat zaps always surge high voltage;
-	at full resonance the next zap overloads into a swollen piercing beam
-	''' */
-/* GsLaserRifle.Desc:
+	Перековка: самоцвет на сильной доле при попадании крошится в янтарные осколки; где они гаснут, остаётся колючая пыль;
+	на полном резонансе следующее пение стреляет трёхцветным кольцом самоцветов
 	'''
-	Reforged: every third on-beat shot splits into twin parallel lasers;
-	at full resonance the next shot ignites a sweeping overdrive burst, then the barrel wilts briefly
-	''' */
-/* GsWeatherPain.Desc:
+GsVilethorn.Desc:
 	'''
-	Reforged: hits leave a storm eye, on-beat casts surge toward it and swell;
-	high resonance twins the whirlwinds, at full resonance the next cast summons a grand storm chorus
-	''' */
-/* GsCursedFlames.Desc:
+	Перековка: каждый укус терна на сильной доле ветвит скверные шипы из раны;
+	на полном резонансе следующий укол распускает восьмистороннее кольцо шипов вокруг вас
 	'''
-	Reforged: on-beat bolts plant curse seeds; the third seed ignites into a ring of cursed spikes and a lingering fire pool
-	At full resonance the next cast unleashes a weaving curse serpent that sheds fire pools along its path
-	''' */
-// GsChantFlameFieldProj.DisplayName: Blazing Flower Field
-// GsChantStormChoirProj.DisplayName: Storm Chorus
-// GsCursedFlamesSerpentProj.DisplayName: Curse Serpent
-// GsCursedFlamesPoolProj.DisplayName: Cursed Fire Pool
-/* GsGoldenShower.Desc:
+GsWaterBolt.Desc:
 	'''
-	Reforged: hits etch molten ichor; the fifth layer bursts into an eight-way spray and a dripping ichor cluster
-	Spray without pause to build high pressure: faster bolts, denser streams, double etching
-	''' */
-/* GsCrystalVileShard.Desc:
+	Перековка: водяной шар на сильной доле отскакивает дальше, каждый удар о стену гонит кольцо ряби;
+	на полном резонансе следующее пение становится пронзающим приливом
 	'''
-	Reforged: on-beat spears embed crystal seeds; when the spear shatters, every seeded foe erupts in a cross of shard rays
-	At full resonance the next cast raises six crystal spears around you
-	''' */
-/* GsUnholyTrident.Desc:
+GsBookOfSkulls.Desc:
 	'''
-	Reforged: on-beat casts split into a trident of three prongs that sear with hellfire
-	At full resonance the next cast raises four waves of infernal tridents from beneath your cursor
-	''' */
-/* GsNettleBurst.Desc:
+	Перековка: попадание вписывает врага в список; черепа на сильной доле сами гонятся за записанными;
+	на полном резонансе следующее пение выпускает три черепа клином — три печати взрывают кости на месте
 	'''
-	Reforged: on-beat vines take root where they bite, leaving stinging nettle thickets (up to three)
-	At full resonance the next cast unleashes a great vine dragon that sweeps through the field
-	''' */
-/* GsWaspGun.Desc:
+GsDemonScythe.Desc:
 	'''
-	Reforged: on-beat wasps sting a pheromone mark into their prey; every wasp in the air hunts the marked target first
-	At full resonance the next cast releases a queen wasp that cruises ahead, seeding hunters along her path
-	''' */
-// GsGoldenShowerDripProj.DisplayName: Ichor Cluster
-// GsNettleBurstThicketProj.DisplayName: Nettle Thicket
-// GsNettleBurstDragonProj.DisplayName: Vine Dragon
-// GsWaspGunQueenProj.DisplayName: Queen Wasp
+	Перековка: коса на сильной доле заряжается быстрее; в глубоком резонансе ещё кружит догоняющий путь;
+	на полном резонансе следующее пение зовёт крест из двух кос в прицел
+	'''
+GsAquaScepter.Desc:
+	'''
+	Перековка: непрерывная струя копит прилив; в окне подъёма давление выше, мана дешевле, всплеск каждые три такта;
+	после трёх всплесков следующее заклинание бьёт веером волн
+	'''
+GsFlowerOfFire.Desc:
+	'''
+	Перековка: огненный шар на сильной доле при первом падении взрывает веер языков; резонанс добавляет отскоки и языки;
+	на полном резонансе следующий шар распускает в точке падения горящее цветочное поле
+	'''
+GsBeeGun.Desc:
+	'''
+	Перековка: рой на сильной доле сжимается в V-строй; чем глубже резонанс, тем гуще маточное молочко и больше крупных пчёл;
+	на полном резонансе следующее пение выпускает королеву, что сыплет живой рой по пути
+	'''
+GsSpaceGun.Desc:
+	'''
+	Перековка: каждая сильная доля заряжает катушку на клетку, промах такта не обнуляет;
+	каждые четыре клетки этот выстрел становится широким импульсом, пронзает и тянет мелких
+	'''
+GsGrayZapinator.Desc:
+	'''
+	Перековка: хаос остаётся хаосом, но сильная доля обязательно плюёт высоковольтный отрезок;
+	на полном резонансе следующий выстрел раздувается в пронзающий луч
+	'''
+GsLaserRifle.Desc:
+	'''
+	Перековка: каждые три сильные доли подряд третий выстрел делится на два параллельных лазера;
+	на полном резонансе следующий выстрел зажигает перегретую очередь — темп взлетает, затем ствол кратко вялый
+	'''
+GsWeatherPain.Desc:
+	'''
+	Перековка: попадание смерча оставляет глаз бури; следующий выстрел на сильной доле рвётся к глазу и растёт;
+	с трёх слоёв резонанса вылетают два встречных смерча; на полном — следующее пение зовёт стоячий хор бури
+	'''
+GsCursedFlames.Desc:
+	'''
+	Перековка: проклятый огонь на сильной доле сажает семя; три семени вспыхивают сами, сыплют восьмисторонние шипы и оставляют лужу
+	На полном резонансе следующее пение выпускает извивающуюся змею, что капает проклятым огнём
+	'''
+GsChantFlameFieldProj.DisplayName: Цветочное поле пламени
+GsChantStormChoirProj.DisplayName: Хор бури
+GsCursedFlamesSerpentProj.DisplayName: Змея пепла
+GsCursedFlamesPoolProj.DisplayName: Лужа проклятого огня
+GsGoldenShower.Desc:
+	'''
+	Перековка: попадание травит золотой печатью; на пяти слоях взрывается восьмисторонним спреем и роняет капающий святой комок;
+	непрерывная струя копит давление — быстрее, гуще, травление удвоено
+	'''
+GsCrystalVileShard.Desc:
+	'''
+	Перековка: кристальное копьё на сильной доле сажает семя; при разбитии все семена взрываются крестовыми гранями;
+	на полном резонансе следующее пение поднимает вокруг вас шесть копий кольцом
+	'''
+GsUnholyTrident.Desc:
+	'''
+	Перековка: пение на сильной доле делится на три адских трезубца с адским огнём;
+	на полном резонансе следующее пение поднимает из-под курсора четыре волны трезубцев
+	'''
+GsNettleBurst.Desc:
+	'''
+	Перековка: лоза на сильной доле укореняется в укусе и оставляет колючий куст, что стопорит (до трёх);
+	на полном резонансе следующее пение выпускает лозового дракона через поле
+	'''
+GsWaspGun.Desc:
+	'''
+	Перековка: шершень на сильной доле вживляет феромонную метку — все шершни в воздухе первыми бросаются на меченого;
+	на полном резонансе следующее пение выпускает королеву, что сыплет охотников по курсу
+	'''
+GsGoldenShowerDripProj.DisplayName: Святой золотой комок
+GsNettleBurstThicketProj.DisplayName: Крапивный куст
+GsNettleBurstDragonProj.DisplayName: Лозовый дракон
+GsWaspGunQueenProj.DisplayName: Королева шершней

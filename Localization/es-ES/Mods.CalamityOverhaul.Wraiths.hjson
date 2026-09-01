@@ -1,73 +1,73 @@
 LanternBoy: {
-	// DisplayName: The Lantern Boy
-	// Origin: Those who walk the mountain road at night tell of a lantern waiting at its end with no one beneath it. One traveler braved a longer look — and when he came to, he was the one looking out from inside the lamp
-	// Power: 「Guiding Light」Three Ghost Lanterns orbit the bearer, their shadows echoing Onikiri's normal slashes off-beat for a combined sixty percent of its power.
-	// DeathReason: "{0} became the one inside the fourth lantern"
+	DisplayName: Niño de la linterna
+	Origin: Quienes cruzan el sendero de montaña de noche dicen que al final del camino suele esperar una lámpara, y bajo ella no hay nadie. Un valiente miró dos veces de más; cuando recobró el sentido, ya estaba dentro de la lámpara, mirando hacia afuera
+	Power: «Guiar» Tres linternas espectrales rodean al portador. Sus sombras replican a destiempo los tajos normales de Onikiri, con un 60% de potencia en total.
+	DeathReason: "{0} se convirtió en la persona de la cuarta linterna"
 }
 
 CrimsonBride: {
-	// DisplayName: The Crimson Bride
-	// Origin: A bridal palanquin once stood at somebody's gate with no bearers to carry it, and stood there seven nights. On the eighth night someone lifted the curtain — and from then on, the palanquin answered to a new bride
-	// Power: 「The Procession」Press the Self-Restart key and the palanquin comes following your trail of blood, carrying the blade-bearer into an empty wedding hall; at the nuptial toast, wounds and afflictions alike are restarted.
-	// DeathReason: "{0} boarded that palanquin"
+	DisplayName: Novia carmesí
+	Origin: Frente a una casa se detuvo una litera nupcial que nadie cargaba, y allí se quedó siete noches. En la octava alguien alzó la cortina; desde entonces esa litera reconoce a otra novia
+	Power: «Recibir a la novia» Pulsa «Autorreinicio» y la litera vendrá siguiendo el rastro de sangre, para llevar al que empuña la hoja a una sala nupcial vacía. En el instante de las copas, heridas y estados se reinician por completo.
+	DeathReason: "{0} subió a esa litera nupcial"
 }
 
 ScapeGhost: {
-	// DisplayName: The Scapegoat Wraith
-	// Origin: It left no name behind in life; it only remembers dying in other people's places, so many times it forgot which death was its own. The day it was entered into the register, its birth date was written beside your name — from then on, your death is its to take
-	// Power: 「Death's Stand-In」At the instant death arrives, it seizes a life from afar and forces your death into that body
-	// DeathReason: "{0} died in its place, this once"
+	DisplayName: Espíritu sustituto
+	Origin: En vida no dejó nombre. Solo recuerda haber muerto muchas veces por otros, tantas que olvidó cuál le tocaba de verdad. El día que entró en el libro, su fecha de nacimiento se escribió junto a tu nombre: de ahora en adelante, tu muerte también le corresponde a él
+	Power: «Sustituir» En el instante en que llega la muerte, araña una vida a lo lejos y mete la tuya en ese cuerpo
+	DeathReason: "{0} murió una vez en su lugar"
 }
 
 HeadlessShade: {
-	// DisplayName: The Headless Shade
-	// Origin: On a night of swaying lamplight, a man looked down and saw his shadow twitch when he had not moved — and looking closer, there was nothing above its shoulders. Something that lost its head had moved into a living man's shadow
-	// Power: 「Dismember」It lurks behind you, then rushes anything living and tears its body into pieces
-	// DeathReason: "{0} was torn into pieces by their own shadow"
+	DisplayName: Sombra descabezada
+	Origin: En una noche de lámparas temblorosas, alguien bajó la vista y vio que su propia sombra se movía sola. Miró mejor: sobre los hombros de la sombra no había nada. Lo que perdió la cabeza se alojó así en la sombra de un vivo
+	Power: «Desmembrar» Acecha a tu espalda. Si huele algo vivo, se lanza y parte el cuerpo en varios trozos
+	DeathReason: "{0} fue despedazado por su propia sombra"
 }
 
 GhostHand: {
-	// DisplayName: The Charred Hand
-	// Origin: A charred, withered arm, burnt through and still gripping hard. No one knows whose it once was; all anyone knows is that it reaches for whatever lives
-	// Power: 「Grip」A withered hand lashes out from behind to seize prey, pinning it down and crushing it over and over; when prey abounds, more hands reach out — even colossal beings cannot slip its fingers
-	// DeathReason: "{0} was dragged into the wall"
+	DisplayName: Mano carbonizada
+	Origin: Un brazo negro y seco, quemado así, y aun así los cinco dedos aprietan. Nadie sabe en quién crecía; solo que, al ver algo vivo, quiere agarrarlo
+	Power: «Apretar» La mano seca sale de tu espalda, sujeta a la presa, la inmoviliza y la aplasta una y otra vez. Si hay muchas presas, salen más manos. Ni siquiera un coloso escapa a esos cinco dedos
+	DeathReason: "{0} fue apretado contra el muro"
 }
 
 GhostRain: {
-	// DisplayName: The Ghost Rain
-	// Origin: Everyone caught in that rain says the same thing: look up, and it is not clouds — it is faces, pressing down layer upon layer. The drops do not hurt when they land; it is just that every one feels like someone claiming you
-	// Power: 「Ghost Rain」While equipped and Onikiri is held, the gloom stays and the ghost rain pours; living things caught in the veil are slowly eaten away, or dragged up into the rain
-	// DeathReason: "{0} was claimed by the rain"
+	DisplayName: Lluvia espectral
+	Origin: Quienes se mojaron en aquella lluvia dicen que al alzar la vista no vieron nubes, sino capas y capas de rostros que oprimían hacia abajo. Las gotas no duelen al caer; cada una parece reclamarte
+	Power: «Lluvia espectral» Tras invocarlo, al empuñar la hoja el velo sombrío permanece y cae la lluvia espectral. Los vivos bajo el telón se corroen poco a poco, o son arrastrados dentro
+	DeathReason: "{0} fue reclamado por la lluvia"
 }
 
 System: {
-	// ScapeGhostActivated: 「Death's Stand-In」— {0} bore this death in your place
-	// ScapeGhostUnknownTarget: something living
-	// ScapeGhostDeathBroadcast: "{0} took the hit for {1} — {2}"
-	// ErosionCrawl: Something is crawling beneath the skin
-	// ErosionStain: A corpse-blue tinge creeps up the fingertips
-	// ErosionMirror: The thing in the mirror does not quite look like you
-	// RevivalStir: The name on the talisman shifted
-	// RevivalRise: It is watching you through the paper
-	// RevivalBrink: The talisman is too hot to hold
-	// RevivalHudBrink: One more use and it wakes
+	ScapeGhostActivated: "{0} se ha convertido en el Espíritu sustituto"
+	ScapeGhostUnknownTarget: una criatura viva
+	ScapeGhostDeathBroadcast: "{0} se ha convertido en el Espíritu sustituto de {1}, {2}"
+	ErosionCrawl: Algo se arrastra bajo la piel
+	ErosionStain: En las yemas asoma el azul de las manchas cadavéricas
+	ErosionMirror: Lo que hay en el espejo ya no se parece del todo a ti
+	RevivalStir: El nombre en el sello se ha movido
+	RevivalRise: Te mira a través del papel
+	RevivalBrink: El sello quema tanto que no puedes sostenerlo
+	RevivalHudBrink: Si lo invocas otra vez, despertará
 }
 
 Coven: {
-	// RainHandName: Reach From The Rain
-	// RainHandNote: Soaked prey no longer sits beyond arm's reach — the withered hand hangs down from the rainline above it. Up to five hands reach out at once in the rain, and the crush grows heavier with the downpour
-	// RainShadeName: Wet Edge
-	// RainShadeNote: While the wound the shade tore is still open, every tick of rain-rot on that target is doubled
-	// HandShadeName: Held Down, Then Cut
-	// HandShadeNote: The shade goes for prey the withered hand has hold of first — its speed is already pinned to zero, so the strike cannot miss
-	// LanternHandName: Seen By Lanternlight
-	// LanternHandNote: Prey the lantern has lit can be found by the hand even through cover; lantern slashes land 60% heavier on a target already held
-	// BrideName: Wedding Hall
-	// BrideNote: Prey drawn into the hall at the cup-sharing frame keeps every other mark on it from fading until the hall breaks up
-	// ScapeName: Take The Blow
-	// ScapeNote: Each time the substitute dies, every other wraith on the wheel drops one step of revival
-	// CallName: Calling Each Other
-	// CallNote: Wraiths sharing the wheel wake one another: use any of them and the rest gain a little revival. This holds even between two with no signature reaction
-	// BurstName: Three Marks Break
-	// BurstNote: When three different marks meet on one target, they detonate together as a single hit, and every wraith involved pays one revival
+	RainHandName: Mano en la lluvia
+	RainHandNote: Las presas bajo la lluvia ya no están limitadas por el alcance del brazo. La mano seca cuelga del hilo de lluvia sobre su cabeza. En la lluvia salen como máximo cinco manos a la vez, y el daño de aplastamiento crece con el aguacero
+	RainShadeName: Filo mojado
+	RainShadeNote: Mientras el corte que deja la sombra al atravesar el cuerpo no cierre, cada tic de corrosión de lluvia se duplica en ese objetivo
+	HandShadeName: Sujetar y tajar
+	HandShadeNote: La sombra se lanza primero a la presa apretada por la mano seca. Su velocidad ya es cero; ese tajo no falla
+	LanternHandName: Iluminar
+	LanternHandNote: La presa que ha visto la linterna, la mano seca la encuentra incluso tras un obstáculo. Cuando el filo de las tres lámparas cae sobre un objetivo apretado, el daño aumenta un 60%
+	BrideName: Sala nupcial
+	BrideNote: Las presas encerradas en la sala nupcial en el instante de las copas no pierden el resto de marcas hasta que la sala se disipe
+	ScapeName: Recibir la calamidad
+	ScapeNote: Cada vez que el sustituto muere, el Resurgimiento de los demás espectros sirvientes del mismo círculo baja un grado
+	CallName: Llamarse
+	CallNote: Los espectros sirvientes del mismo círculo se despiertan unos a otros: si invocas a uno, los demás ganan un poco de Resurgimiento. También ocurre entre dos que no tienen reacción propia
+	BurstName: Tres sellos estallan
+	BurstNote: Cuando un mismo objetivo reúne tres marcas, las marcas estallan juntas como un solo golpe, y cada espectro sirviente que participa paga un Resurgimiento
 }

@@ -1,107 +1,107 @@
-/* GsDaedalusStormbow.Desc:
+GsDaedalusStormbow.Desc:
 	'''
-	Reforged: arrows now fall from the sky, and a silver seal marks each landing point before the bolt strikes
-	Shots build storm charge; at full charge the next shot lays a 3x3 sky matrix, corners then edges then center
-	The center bolt lands heaviest and bursts on impact. Right click to release a partial matrix early
-	Sky bolts stack hunt brands; branding a foe thrice calls a verdict bolt down upon it
-	''' */
-/* GsTsunami.Desc:
+	Reforja: las flechas caen del cielo; un sello de plata marca primero el punto de caída, y ahí cae la flecha
+	Los disparos acumulan carga de tormenta; al llenarse, el siguiente despliega una matriz celeste de nueve sellos: esquinas, lados y centro, en ese orden
+	La saeta pesada del centro estalla en una explosión sagrada al aterrizar. Clic derecho para soltar antes una matriz parcial
+	Las saetas celestes apilan marcas de caza; al llenar tres capas y volver a acertar, una saeta pesada de castigo persigue y cae sobre el marcado
 	'''
-	Reforged: each draw looses a rank of 5 arrows that surge forward in a rolling wave, one ammo per draw
-	Shots build tide charge; at full charge the next draw becomes a great wave: 7 piercing arrows in two ranks led by a sweeping foam crest
-	Wave arrows stack tide brands; branding a foe thrice sends a water spout erupting beneath it
-	While a branded foe stands, every 4th arrow splits off a tide-chaser that bites toward it
-	''' */
-/* GsFairyQueenRangedItem.Desc:
+GsTsunami.Desc:
 	'''
-	Reforged: all arrows become twilight lances; each sweep of the bow looses 5 lances along an arc, converging on the cursor
-	The 3rd lance of every sweep is the Queen's lance, striking nearly twice as hard
-	Shots build twilight; at full charge the next shot blooms into a prismatic fan of 5 lances
-	Lance hits stack brands; branding a foe thrice calls twin fae orbs to circle and peck it for 2 seconds
-	''' */
-/* GsDD2BetsyBow.Desc:
+	Reforja: cada tensado suelta cinco flechas en fila de ola; avanzan como oleaje y, tras romper, caen solas
+	Los disparos acumulan ímpetu de marea; al llenarse, el siguiente se vuelve un oleaje: siete flechas perforantes en dos filas, la cresta de espuma barre el camino
+	Las flechas de ola apilan marcas de marea; al llenar tres capas y volver a acertar, una columna de marea brota bajo los pies del enemigo
+	Si hay un enemigo marcado en el campo, cada cuarta flecha desprende una flecha cazamarea que muerde hacia él
 	'''
-	Reforged: each draw looses 5 dragonfire bolts that climb, stall, then dive-bomb the cursor area
-	Impacts burst into dragonfire rings; airborne foes take 35% more damage
-	Shots build airstrike charge; at full charge the next draw calls a carpet run of 9 bolts along the flight line
-	Bolt hits stack flame brands; branding a foe thrice drops one heavy bomb straight onto it
-	''' */
-/* GsPhantasm.Desc:
+GsFairyQueenRangedItem.Desc:
 	'''
-	Reforged: hold to channel; fire rate climbs with frenzy, and the bow splits into phantom after-bows
-	At frenzy rank 2 every volley gains two flanking phantom arrows
-	Striking the same foe 6 times in a row calls a phantom archer to hover at your back and loose soul bolts alongside you
-	Main arrows stack soul brands; branding a foe thrice makes the archer nail it with 4 homing soul bolts
-	''' */
-/* GsPearlwoodBow.Desc:
+	Reforja: todas las flechas se vuelven lanzas del crepúsculo; cada barrido suelta cinco lanzas que salen en arco, una tras otra, y se cierran hacia el punto de mira
+	La tercera de cada ronda es la lanza de la reina, con el daño casi al doble
+	Los disparos acumulan crepúsculo; al llenarse, el siguiente se abre en un abanico prismático de cinco lanzas
+	Las lanzas del crepúsculo apilan marcas; al llenar tres capas y volver a acertar, salen dos orbes de luz que orbitan al enemigo y lo picotean dos segundos
 	'''
-	Reforged: every 5 shots charge a rainbow arc volley, 5 arrows sweeping out one by one, one ammo per volley
-	Landing 3 arc arrows on the same foe pops a pearl prism burst
-	Right click releases the volley early at 60%+ charge
-	''' */
-/* GsCobaltRepeater.Desc:
+GsDD2BetsyBow.Desc:
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses 3 bolts one after another that accelerate in flight, one ammo per volley
-	Volley hits brand prey and grant you a short gust of Swiftness
-	''' */
-/* GsPalladiumRepeater.Desc:
+	Reforja: cada tensado suelta cinco saetas de llama de dragón que suben, pierden sustentación, se invierten y se lanzan en picado sobre el área del punto de mira
+	Al impactar estalla un anillo de fuego de dragón; los enemigos en el aire sufren un 35% más de daño
+	Los disparos acumulan carga de ataque aéreo; al llenarse, el siguiente llama un bombardeo de alfombra: nueve saetas caen en secuencia a lo largo de la ruta
+	Las saetas de llama de dragón apilan marcas de llama; al llenar tres capas y volver a acertar, una saeta pesada de llama de dragón cae en vertical sobre el marcado
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 3-bolt line, one ammo per volley
-	Branded foes slain restore 2 life; executions restore 5 more
-	''' */
-/* GsMythrilRepeater.Desc:
+GsPhantasm.Desc:
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge, one ammo per volley
-	The lead volley bolt always crits against branded foes; side bolts gain +8% crit
-	''' */
-/* GsOrichalcumRepeater.Desc:
+	Reforja: mantener pulsado el clic izquierdo tensa sin parar; la cadencia sube con el frenesí y el arco se parte en arcos fantasma
+	Al llegar a dos capas de frenesí, cada salva gana dos flechas fantasma en las alas
+	Seis golpes seguidos al mismo objetivo invocan un arquero fantasma que se queda a tu espalda y dispara saetas de alma contigo
+	Las flechas principales apilan marcas de alma; al llenar tres capas y volver a acertar, el arquero suelta cuatro saetas de alma que persiguen y clavan a ese enemigo
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge trailing petals, one ammo per volley
-	Volley hits burst into a small petal blast
-	''' */
-/* GsAdamantiteRepeater.Desc:
+GsPearlwoodBow.Desc:
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon at x1.5 knockback, one ammo per volley
-	The lead volley bolt lands with a crimson shockwave that splashes nearby foes
-	''' */
-/* GsTitaniumRepeater.Desc:
+	Reforja: cada 5 disparos llenan el arcoíris; el siguiente se vuelve un puente de cinco flechas que se abren en abanico, una tras otra, desde un lado; toda la ronda gasta solo 1 munición
+	Si el mismo enemigo recibe 3 flechas del arco, estalla una explosión prismática de perla
+	Con más del 60% de carga, clic derecho suelta la salva antes
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon, one ammo per volley
-	Volley bolts etch armor: each hit on the same foe adds +2 armor penetration, up to 5 stacks
-	''' */
-/* GsHallowedRepeater.Desc:
+GsCobaltRepeater.Desc:
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt cross, one ammo per volley
-	Executing a fully branded foe calls down a hallowed star trailing gold
-	''' */
-/* GsChlorophyteShotbow.Desc:
+	Reforja: cada 6.º disparo añade un triplete; al llenar la carga de salva, tres flechas salen una tras otra y van más rápidas en vuelo; toda la ronda gasta solo 1 munición
+	Los impactos de salva apilan marcas de caza y levantan un vendaval que te da unos pasos rápidos
 	'''
-	Reforged: every 6th shot triple-taps; volley charge looses a 6-arrow spore cone, one ammo per volley
-	Branded foes take +10% from this bow; execution bursts a spore cloud
-	''' */
-/* GsStakeLauncher.Desc:
+GsPalladiumRepeater.Desc:
 	'''
-	Reforged: every 6th stake triple-taps; volley charge looses a 3-stake wedge, one ammo per volley
-	Stakes pin and brand prey; the executing stake crucifies at x2.3, undead take a further +25%
-	Each crucifixion reloads 30 volley charge; silver light gathers at the muzzle when fully charged
-	''' */
-/* GsIceBow.Desc:
+	Reforja: cada 6.º disparo añade un triplete; al llenar la carga de salva suelta tres flechas en línea; toda la ronda gasta solo 1 munición
+	Al caer un enemigo marcado te devuelve 2 de vida; una ejecución, 5 más
 	'''
-	Reforged: volley charge hurls 6 icicles skyward to rain on the cursor, one ammo per volley
-	Icicle hits stack frostbrand; at 3 stacks the next icicle shatters into a frost burst
-	''' */
-/* GsMarrow.Desc:
+GsMythrilRepeater.Desc:
 	'''
-	Reforged: volley charge looses a 5-bone-arrow cross with +1 pierce, one ammo per volley
-	Executing a fully branded foe cages it with 4 converging bone arrows
-	''' */
-/* GsShadowflameBow.Desc:
+	Reforja: cada 6.º disparo añade un triplete; al llenar la carga de salva suelta cuatro flechas en cuña; toda la ronda gasta solo 1 munición
+	La flecha principal de la salva siempre es un crítico contra un marcado; las auxiliares ganan un 8% de crítico
 	'''
-	Reforged: volley charge looses 3 shadowflame arrows crossing at the cursor, one ammo per volley
-	Branded foes struck by any arrow draw a homing shadowflame wisp; execution erupts in shadow
-	''' */
-/* GsPulseBow.Desc:
+GsOrichalcumRepeater.Desc:
 	'''
-	Reforged: each wall bounce now grants +10% damage (up to 5); volley charge looses 3 parallel pulse tracks, one ammo per volley
-	Branded foes bend passing pulses toward them; execution chains a surge to 2 nearby foes
-	''' */
+	Reforja: cada 6.º disparo añade un triplete; al llenar la carga de salva suelta cuatro flechas en cuña que arrastran pétalos; toda la ronda gasta solo 1 munición
+	Los impactos de salva estallan en una explosión pequeña de pétalos
+	'''
+GsAdamantiteRepeater.Desc:
+	'''
+	Reforja: cada 6.º disparo añade un triplete; al llenar la carga de salva suelta cinco flechas en escalón, el retroceso sube la mitad; toda la ronda gasta solo 1 munición
+	La flecha principal de la salva golpea el suelo con un sello carmesí; la onda de choque salpica a los enemigos cercanos
+	'''
+GsTitaniumRepeater.Desc:
+	'''
+	Reforja: cada 6.º disparo añade un triplete; al llenar la carga de salva suelta cinco flechas en escalón; toda la ronda gasta solo 1 munición
+	Las flechas de salva graban la armadura: cada impacto al mismo enemigo suma 2 de penetración de armadura, hasta 5 capas
+	'''
+GsHallowedRepeater.Desc:
+	'''
+	Reforja: cada 6.º disparo añade un triplete; al llenar la carga de salva suelta cuatro flechas en cruz; toda la ronda gasta solo 1 munición
+	Al ejecutar a un enemigo con las marcas llenas, una estrella sagrada que arrastra oro cae sobre él
+	'''
+GsChlorophyteShotbow.Desc:
+	'''
+	Reforja: cada 6.º disparo añade un triplete; al llenar la carga de salva suelta seis flechas en cono de esporas; toda la ronda gasta solo 1 munición
+	Un enemigo marcado sufre un 10% más de daño de esta ballesta; la ejecución abre una nube de esporas
+	'''
+GsStakeLauncher.Desc:
+	'''
+	Reforja: cada 6.ª estaca añade un triplete; al llenar la carga de salva suelta tres estacas en cuña; toda la ronda gasta solo 1 munición
+	Cualquier estaca que acierte clava y marca a la presa; la que llega con las marcas llenas es la crucifixión: el daño se multiplica por 2.3, y contra no muertos suma otro 25%
+	Una crucifixión lograda rellena al instante 30 de carga; al llenarse, se junta un resplandor de plata en la boca
+	'''
+GsIceBow.Desc:
+	'''
+	Reforja: al llenar la carga de salva lanza al cielo 6 carámbanos que caen en lluvia de hielo alrededor del cursor; toda la salva gasta solo 1 munición
+	Los carámbanos apilan marcas de escarcha; al llenar 3 capas, el siguiente carámbano estalla en una explosión de escarcha
+	'''
+GsMarrow.Desc:
+	'''
+	Reforja: al llenar la carga de salva suelta una cruz de 5 saetas de hueso, con 1 capa más de perforación; toda la salva gasta solo 1 munición
+	Al ejecutar a un enemigo cubierto de marcas de caza, 4 saetas de hueso se cierran hacia el centro y lo enjaulan
+	'''
+GsShadowflameBow.Desc:
+	'''
+	Reforja: al llenar la carga de salva suelta 3 flechas de llama de las sombras que se cruzan en el cursor; toda la salva gasta solo 1 munición
+	Cualquier flecha que golpee a un enemigo con marca de caza llama un fuego fatuo de llama de las sombras que persigue; al ejecutar, estalla una explosión de sombra
+	'''
+GsPulseBow.Desc:
+	'''
+	Reforja: cada rebote contra un muro sube un 10% el daño de la flecha de pulso, hasta 5 veces; al llenar la carga de salva suelta 3 raíles de pulso paralelos; toda la salva gasta solo 1 munición
+	Un enemigo con marca de caza tuerce hacia sí los pulsos que pasan; al ejecutar, una oleada eléctrica encadena a 2 enemigos cercanos
+	'''

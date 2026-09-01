@@ -1,125 +1,125 @@
-/* GsShuriken.Desc:
+GsShuriken.Desc:
 	'''
-	Reforged: 15% chance not to consume; crits refund one; misses stuck in walls can be picked back up
-	At 5 combo stacks every throw splits off a free twin star
-	''' */
-/* GsThrowingKnife.Desc:
+	Umschmiedung: 15% Chance, nichts zu verbrauchen; kritische Treffer erstatten eines sofort; in die Wand genagelte Fehlwürfe kannst du aufsammeln
+	Bei fünf Wurf-Stapeln trägt jeder Wurf einen kostenlosen Zwillingsstern
 	'''
-	Reforged: crits refund one; knives stuck in walls often survive to be reclaimed
-	Each hit sharpens the next knife within 0.8s, +12% up to 3 stacks
-	''' */
-/* GsPoisonedKnife.Desc:
+GsThrowingKnife.Desc:
 	'''
-	Reforged: crits refund one; wall-stuck knives can be reclaimed
-	Hits stack venom, extending poison; at 6 stacks the target corrodes, taking your knives 5 armor deeper for 8s
-	''' */
-/* GsBoneDagger.Desc:
+	Umschmiedung: Kritische Treffer erstatten sofort; Messer in der Wand lassen sich meist bergen
+	Jeder Treffer schärft das nächste Messer innerhalb von 0,8 s, +12% Schaden, höchstens drei Stapel
 	'''
-	Reforged: crits refund one; strays can be reclaimed
-	Embed 4 daggers in the same foe and they all shatter for 60% each, always dropping one recovery pickup
-	''' */
-/* GsStarAnise.Desc:
+GsPoisonedKnife.Desc:
 	'''
-	Reforged: crits always refund one; strays can be reclaimed
-	Ricochets to a nearby foe up to twice, losing 15% per hop
-	''' */
-/* GsBone.Desc:
+	Umschmiedung: Kritische Treffer erstatten sofort; Messer an der Wand kannst du aufsammeln
+	Treffer häufen Gift und verlängern Vergiftung; bei sechs Stapeln korrodiert das Ziel, deine Messer durchschlagen 8 s lang 5 Rüstung extra
 	'''
-	Reforged: the bone arcs back to your hand and deals damage both ways; catch it to reclaim it outright
-	Misses can be picked back up; crits split off two half-damage shards
-	''' */
-/* GsJavelin.Desc:
+GsBoneDagger.Desc:
 	'''
-	Reforged: crits refund one; javelins left in walls are usually reclaimable
-	Throwing while sprinting adds 25% damage and 30% velocity; consecutive hits on one target stack +12% up to 3
-	''' */
-/* GsBoneJavelin.Desc:
+	Umschmiedung: Kritische Treffer erstatten sofort; Fehlwürfe kannst du aufsammeln
+	Stecken vier im selben Ziel, platzen alle, je 60% Schaden, und lassen immer ein Bergungsstück fallen
 	'''
-	Reforged: crits refund one
-	With 3 javelins embedded in one foe your javelins hit 15% harder; each embedded javelin has a 60% chance to drop a recovery pickup when it dies
-	''' */
-/* GsSpikyBall.Desc:
+GsStarAnise.Desc:
 	'''
-	Reforged: balls that expire on the field return straight to your bag
-	A foe standing on 3 or more of your balls sets off a chain spike-burst, 50% each, once per ball
-	''' */
-/* GsGrenade.Desc:
+	Umschmiedung: Kritische Treffer erstatten immer eines; Fehlwürfe kannst du aufsammeln
+	Springt zwischen Feinden, höchstens zweimal, jeder Sprung −15%
 	'''
-	Reforged: hitting 3+ foes in one blast refunds a grenade; fuses burn 20% faster inside your combo window
-	Right click for a low roll-throw with a 1.2s fuse
-	''' */
-/* GsStickyGrenade.Desc:
+GsBone.Desc:
 	'''
-	Reforged: blasts brand foes for 3s; branded foes take 30% more from your next blast and it always crits
-	Hitting 3+ foes refunds one; right click to roll-throw
-	''' */
-/* GsBouncyGrenade.Desc:
+	Umschmiedung: Der Flugknochen kehrt im Bogen zur Hand, Hin- und Rückweg verletzen; fängst du ihn, holst du ihn ganz zurück
+	Fehlwürfe kannst du aufsammeln; kritische Treffer spalten zwei Knochensplitter mit halbem Schaden
 	'''
-	Reforged: each bounce charges the blast +12%, up to 3 stacks
-	A grenade that bounced 3 times refunds itself when its blast finds a foe; right click to roll-throw
-	''' */
-/* GsBeenade.Desc:
+GsJavelin.Desc:
 	'''
-	Reforged: bursts release 2 extra bees; stung foes take 25% more from your bees for 4s
-	Hitting 3+ foes in one burst refunds one
-	''' */
-/* GsHappyGrenade.Desc:
+	Umschmiedung: Kritische Treffer erstatten sofort; Speere in der Wand lassen sich meist bergen
+	Wurf im Sprint +25% Schaden, +30% Anfangsgeschwindigkeit; Folgetreffer auf dasselbe Ziel je +12%, höchstens drei Stapel
 	'''
-	Reforged: the confetti blast leaves non-boss foes wandering confused for 1s
-	Crits refund one grenade; the party never has to end
-	''' */
-/* GsMolotovCocktail.Desc:
+GsBoneJavelin.Desc:
 	'''
-	Reforged: 25% chance not to consume; the fire pool spreads 40% wider and burns 50% longer
-	Shatter another bottle on the same spot within 5s to raise a firewall that burns 30% hotter
-	''' */
-/* GsFrostDaggerfish.Desc:
+	Umschmiedung: Kritische Treffer erstatten sofort
+	Stecken drei im selben Ziel, treffen deine Speere es +15% härter; eingebettete Speere lassen beim Tod mit 60% Chance ein Bergungsstück fallen
 	'''
-	Reforged: pierces one more foe; crits refund one
-	Hits stack hypothermia, 3 stacks shatter for +50% and frostburn; hitting a frosted foe always drops the fish back as a pickup
-	''' */
-/* GsSnowball.Desc:
+GsSpikyBall.Desc:
 	'''
-	Reforged: 30% chance not to consume; each consecutive throw flies 4% faster, up to 8
-	Every 8th throw packs into a great snowball: 2.5x damage and a chilling 90px burst
-	''' */
-/* GsRottenEgg.Desc:
+	Umschmiedung: Abgelaufene Stachelbälle auf dem Feld kehren direkt ins Inventar
+	Treten Feinde zugleich auf mehr als drei deiner Bälle, löst sich eine Kettenexplosion aus, jeder 50% Schaden, jeder Ball explodiert im Leben nur einmal
 	'''
-	Reforged: the egg bursts into a 4s stench cloud; foes inside take 8% more damage from everything
-	Crits refund one egg. It is still a rotten egg
-	''' */
-/* GsPaperAirplaneA.Desc:
+GsGrenade.Desc:
 	'''
-	Reforged: the plane banks gently toward your cursor; after striking it loops back for one more pass
-	Crits refund one; strays can be reclaimed
-	''' */
-/* GsPaperAirplaneB.Desc:
+	Umschmiedung: Triffst du drei oder mehr Feinde mit einer Explosion, erstattest du eine; im Wurf-Fenster brennt die Zündschnur 20% schneller
+	Rechtsklick: flacher Rollwurf, Zündschnur auf 1,2 s
 	'''
-	Reforged: the white plane banks toward your cursor and loops back after striking; +4% crit
-	Crits refund one; strays can be reclaimed
-	''' */
-/* GsHolyWater.Desc:
+GsStickyGrenade.Desc:
 	'''
-	Reforged: still hallows the land; the burst also raises a 3s radiant field
-	Foes inside take 10% more from everything, allies inside mend 1 life per second; covering 3 foes refunds a flask
-	''' */
-/* GsUnholyWater.Desc:
+	Umschmiedung: Die Explosion brennt 3 s ein Ätzmal; Feinde mit Mal erleiden von deinen Explosionen +30% Schaden und sind immer kritisch
+	Triffst du drei Feinde, erstattest du eine; Rechtsklick: Rollwurf
 	'''
-	Reforged: still corrupts the land; the burst also raises a 3s miasma
-	Foes inside smolder with shadowflame and wade as if through tar
-	''' */
-/* GsBloodWater.Desc:
+GsBouncyGrenade.Desc:
 	'''
-	Reforged: still spreads the crimson; the burst also raises a 3s blood haze
-	While you stand inside, your strikes leech 1 life, up to 3 per second
-	''' */
-/* GsAleTosser.Desc:
+	Umschmiedung: Jeder Absprung lädt die Explosion, +12% Schaden, höchstens drei Stapel
+	Platzt eine dreimal gehüpfte Granate an Feinden, erstattest du sie ganz; Rechtsklick: Rollwurf
 	'''
-	Reforged: 30% chance to not consume ale
-	Hits stack Tipsy, +8% damage each up to 5; every 6th throw is a keg blast that dazes non-boss foes
-	''' */
-/* GsShadowflameKnife.Desc:
+GsBeenade.Desc:
 	'''
-	Reforged: hits feed a combo that quickens your arm, up to 25% faster at 9 stacks
-	At full combo the blade enters Flame Edge: shadowflame burns a full 4s and every 4th knife splits off a shadow clone
-	''' */
+	Umschmiedung: Die Explosion lässt zwei Bienen extra frei; gestochenen Feinden fügt dein Bienenschwarm 4 s lang +25% Schaden zu
+	Triffst du drei Feinde mit einer Explosion, erstattest du eine
+	'''
+GsHappyGrenade.Desc:
+	'''
+	Umschmiedung: Die Konfettiexplosion lässt Nicht-Bosse 1 s berauscht taumeln
+	Kritische Treffer erstatten eine; die Feier endet nie
+	'''
+GsMolotovCocktail.Desc:
+	'''
+	Umschmiedung: 25% Chance, nichts zu verbrauchen; das Feuermeer wird 40% breiter, der Brand dauert halb länger
+	Triffst du dieselbe Fläche innerhalb von fünf Sekunden (120 Pixel), steigt eine Flammenwand, Feuerschaden nochmals +30%
+	'''
+GsFrostDaggerfish.Desc:
+	'''
+	Umschmiedung: Durchschlägt ein Ziel extra; kritische Treffer erstatten sofort
+	Treffer häufen Unterkühlung, bei drei Stapeln Eisbruch +50% Schaden und Frostbrand; triffst du Frosttragende, rutscht der glatte Fisch immer zurück und wird zum Bergungsstück
+	'''
+GsSnowball.Desc:
+	'''
+	Umschmiedung: 30% Chance, nichts zu verbrauchen; Folgewürfe +4% Anfangsgeschwindigkeit je Wurf, höchstens acht
+	Jeder achte wird zum großen Schneeball: 2,5-facher Schaden, 90-Pixel-Eisexplosion und Frostbrand
+	'''
+GsRottenEgg.Desc:
+	'''
+	Umschmiedung: Beim Platzen bleibt 4 s Gestankwolke, Feinde darin erleiden 8% mehr Schaden von allem
+	Kritische Treffer erstatten eines. Am Ende bleibt es ein stinkendes Ei
+	'''
+GsPaperAirplaneA.Desc:
+	'''
+	Umschmiedung: Das Papierflugzeug gleitet langsam dem Fadenkreuz nach; nach dem Treffer kreist es einmal und beißt nochmal
+	Kritische Treffer erstatten; Fehlwürfe kannst du aufsammeln
+	'''
+GsPaperAirplaneB.Desc:
+	'''
+	Umschmiedung: Das weiße Papierflugzeug gleitet dem Fadenkreuz nach, nach dem Treffer kreist es und greift wieder an; kritische Chance +4%
+	Kritische Treffer erstatten; Fehlwürfe kannst du aufsammeln
+	'''
+GsHolyWater.Desc:
+	'''
+	Umschmiedung: Biomwandel wie gewohnt; am Bruch steigt 3 s ein Heiligglanzfeld
+	Feinde darin erleiden 10% mehr Schaden von allem, Spieler darin heilen 1 Leben pro Sekunde; trifft eine Flasche drei Feinde, erstattest du eine
+	'''
+GsUnholyWater.Desc:
+	'''
+	Umschmiedung: Biomwandel wie gewohnt; am Bruch steigt 3 s Unheilnebel
+	Feinde im Feld brennen weiter an Schattenflamme und handeln etwas träger
+	'''
+GsBloodWater.Desc:
+	'''
+	Umschmiedung: Biomwandel wie gewohnt; am Bruch steigt 3 s Blutnebel
+	Stehst du im Nebel, saugen Treffer 1 Leben, höchstens 3 pro Sekunde
+	'''
+GsAleTosser.Desc:
+	'''
+	Umschmiedung: 30% Chance, das Bier nicht zu verbrauchen
+	Treffer häufen Rausch, je +8% Schaden, höchstens fünf Stapel; jeder sechste Wurf ist ein Fassbruch, der Nicht-Bosse berauscht taumeln lässt
+	'''
+GsShadowflameKnife.Desc:
+	'''
+	Umschmiedung: Treffer füttern die Kombo, Würfe werden schneller, bei neun Stapeln +25% Tempo
+	Bei voller Drehung trittst du in die Flammenklinge: Schattenflamme brennt volle 4 s, und jedes vierte Messer spaltet eine Schattenklinge mit 60% Schaden
+	'''

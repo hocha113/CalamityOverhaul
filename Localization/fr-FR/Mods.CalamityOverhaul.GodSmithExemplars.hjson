@@ -1,6 +1,6 @@
-/* GsIronBroadsword.Desc:
+GsIronBroadsword.Desc: 
 	'''
-	Reforged: a three-beat butcher combo of raise, poise and cleave;
-	the third strike lunges forward with a heavier arc
-	''' */
-// GsGoldArmor.EndowLine: Midas Verdict: strikes build gilding; at 8 stacks the next strike erupts into three homing molten-gold pearls
+	Reforgé : enchaînement de boucherie à trois temps, lever, pose et taille, chacun avec son poids ;
+	le troisième temps avance d'un pas et trace un arc plus lourd
+	'''
+GsGoldArmor.EndowLine: "Pierre d'or : les coups accumulent la dorure ; à huit charges, le prochain coup fait jaillir de la cible trois perles d'or fondu à tête chercheuse"

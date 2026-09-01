@@ -10,7 +10,7 @@ ModifyCrabulon: {
 	SaddleText: Silla
 	ReleaseText: Soltar
 	ReleasedText: "{0} ha sido soltado"
-	StatusRestText: "[DESCANSO]"
+	StatusRestText: "[En espera]"
 	StatusMountText: "[MONTADO]"
 	StatusFollowText: "[SIGUIENDO]"
 	UnsaddleText: Quitar silla

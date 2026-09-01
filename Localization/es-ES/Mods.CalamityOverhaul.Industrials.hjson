@@ -6,7 +6,7 @@ ElectricMinRocket: {
 
 WGGLifeWeaver: {
 	TurretBatteryDepleted: Batería agotada
-	DisplayName: Tejedor de Vida Silvestre
+	DisplayName: Plantador del yermo
 	Tooltip: ""
 }
 

@@ -1,99 +1,163 @@
 GodSmithExecutionEndow: {
-	// EndowName: Executioner's Line
-	// EndowDesc: Striking a foe below {0}% life looses an executioner's slash dealing {1}% of that hit
+	EndowName: Entaille d'exécution
+	EndowDesc: 
+		'''
+		Toucher un ennemi sous {0}% de vie relâche une taille d'exécution
+		Elle inflige {1}% de ce coup
+		'''
 }
-
 GodSmithOverkillEndow: {
-	// EndowName: Overkill Cascade
-	// EndowDesc: Kills send a crimson bolt to a nearby foe, carrying {0}% of the overkill plus {1}% of the hit
+	EndowName: Chaîne de surplus
+	EndowDesc: 
+		'''
+		Tuer un ennemi envoie un éclair cramoisi vers un proche
+		Il emporte {0}% des dégâts en surplus, plus {1}% de ce coup
+		'''
 }
-
 GodSmithCritMarkEndow: {
-	// EndowName: Critical Sigil
-	// EndowDesc: Hits engrave a sigil; at {0} stacks it detonates as a guaranteed critical dealing {1}% of that hit
+	EndowName: Sceau critique
+	EndowDesc: 
+		'''
+		Les coups gravent un sceau ; à {0} charges il explose
+		L'explosion est un critique assuré, de base {1}% de ce coup
+		'''
 }
-
 GodSmithEchoSlashEndow: {
-	// EndowName: Blade Echo
-	// EndowDesc: Hits echo outward as a blade-wind ring dealing {0}% of that hit to other nearby foes
+	EndowName: Écho du vent d'épée
+	EndowDesc: 
+		'''
+		Un coup soulève un vent d'épée qui s'ouvre autour
+		Il inflige {0}% de ce coup aux autres ennemis
+		'''
 }
-
 GodSmithShockwaveEndow: {
-	// EndowName: Concussive Wave
-	// EndowDesc: Every 1.5s, a hit slams out a shockwave knocking nearby foes away and dealing {0}% of that hit
+	EndowName: Onde de choc
+	EndowDesc: 
+		'''
+		Toutes les 1.5 s, un coup projette une onde de choc
+		Elle recule les ennemis proches et inflige {0}% de ce coup
+		'''
 }
-
 GodSmithComboEndow: {
-	// EndowName: Combo Surge
-	// EndowDesc: Consecutive hits build momentum; the {0}th strike erupts for {1}% of that hit in an area
+	EndowName: Éclat de combo
+	EndowDesc: 
+		'''
+		Les coups d'affilée accumulent l'élan ; le {0}e explose
+		Il inflige {1}% de ce coup en zone
+		Lâcher ou changer d'arme dissipe l'élan
+		'''
 }
-
 GodSmithAfterimageEndow: {
-	// EndowName: Afterimage Strike
-	// EndowDesc: Every {0}th use, a pale afterimage lashes toward the cursor dealing {1}% weapon damage
+	EndowName: Frappe-rémanence
+	EndowDesc: 
+		'''
+		Tous les {0} usages, une rémanence taille vers le viseur
+		Elle inflige {1}% des dégâts de l'arme
+		'''
 }
-
 GodSmithBallisticEndow: {
-	// EndowName: Piercing Tracer
-	// EndowDesc: Every {0}th shot adds a piercing tracer round dealing {1}% weapon damage
+	EndowName: Traçante perce-nuée
+	EndowDesc: 
+		'''
+		Tous les {0} tirs, une traçante s'ajoute
+		Elle traverse les ennemis et inflige {1}% des dégâts de l'arme
+		'''
 }
-
 GodSmithRicochetEndow: {
-	// EndowName: Wild Ricochet
-	// EndowDesc: Projectile hits ricochet a copper spark into another foe for {0}% of that hit
+	EndowName: Rebond errant
+	EndowDesc: 
+		'''
+		Après un impact, une balle rebondit vers un autre ennemi
+		Elle inflige {0}% de ce coup
+		'''
 }
-
 GodSmithPhantomVolleyEndow: {
-	// EndowName: Phantom Volley
-	// EndowDesc: Every {0}th shot conjures {1} phantom bolts, each dealing {2}% weapon damage
+	EndowName: Salve fantôme
+	EndowDesc: 
+		'''
+		Tous les {0} tirs, {1} projectiles fantômes accompagnent la salve
+		Chacun inflige {2}% des dégâts de l'arme
+		'''
 }
-
 GodSmithManaRefluxEndow: {
-	// EndowName: Mana Reflux
-	// EndowDesc: Hits have a {0}% chance to pull a wisp of mana back to you, restoring {1} mana
+	EndowName: Reflux de mana
+	EndowDesc: 
+		'''
+		Un coup a {0}% de chances d'arracher un filet de mana qui revient vers vous
+		Le rattraper rend {1} mana
+		'''
 }
-
 GodSmithOverloadEndow: {
-	// EndowName: Arcane Overload
-	// EndowDesc: While above {0}% mana, hits overload with violet arcs dealing {1}% of that hit
+	EndowName: Surcharge occulte
+	EndowDesc: 
+		'''
+		Au-dessus de {0}% de mana, un coup déclenche des arcs violets
+		Ils ajoutent {1}% de ce coup
+		'''
 }
-
 GodSmithMythicEchoEndow: {
-	// EndowName: Mythic Starcall
-	// EndowDesc: Casting calls a star spirit to your side; it hurls starbolts at nearby foes for {0}% weapon damage
+	EndowName: Invocation stellaire
+	EndowDesc: 
+		'''
+		Lancer un sort appelle un esprit d'étoile à vos côtés
+		Il jette de temps à autre des éclats stellaires sur les ennemis proches, pour {0}% des dégâts de l'arme
+		'''
 }
-
 GodSmithDesperationEndow: {
-	// EndowName: Desperate Burst
-	// EndowDesc: This battered weapon rages: hits have a {0}% chance to erupt for {1}% of that hit in an area
+	EndowName: Vaisseau brûlé
+	EndowDesc: 
+		'''
+		Cette arme brisée rugit dans l'adversité
+		Un coup a {0}% de chances d'exploser pour {1}% de ce coup en zone
+		Plus le préfixe est misérable, plus l'éclat est violent
+		'''
 }
-
 GodSmithHiddenEdgeEndow: {
-	// EndowName: Hidden Edge
-	// EndowDesc: A clumsy weapon hides its true edge: every {0}th use flashes a white slash dealing {1}% weapon damage
+	EndowName: Fil caché
+	EndowDesc: 
+		'''
+		Une lame maladroite cache son vrai fil
+		Tous les {0} usages, un éclair blanc tranche pour {1}% des dégâts de l'arme
+		Plus l'arme est lourde et lente, plus le fil caché est aigu
+		'''
 }
-
 GodSmithLuckyStarEndow: {
-	// EndowName: Lucky Starfall
-	// EndowDesc: Critical hits call down a lucky star dealing {0}% of that hit
+	EndowName: Étoile porte-bonheur
+	EndowDesc: 
+		'''
+		Un critique fait tomber une étoile porte-bonheur sur la cible
+		Elle inflige {0}% de ce coup
+		'''
 }
-
 GodSmithMenaceEndow: {
-	// EndowName: Killing Intent
-	// EndowDesc: Hits build killing intent; the {0}th strike rends the foe for {1}% of that hit
+	EndowName: Intent meurtrier
+	EndowDesc: 
+		'''
+		Les coups accumulent l'intent ; le {0}e déchire une griffe noir-rouge
+		Elle inflige {1}% de ce coup
+		'''
 }
-
 GodSmithSwiftFootEndow: {
-	// EndowName: Gale Stride
-	// EndowDesc: Running about {0} tiles charges a gale; your next hit looses a piercing wind blade dealing {1}% of that hit
+	EndowName: Vent de course
+	EndowDesc: 
+		'''
+		Courir environ {0} blocs charge le vent
+		Le prochain coup relâche une lame de vent perçante, pour {1}% de ce coup
+		'''
 }
-
 GodSmithViolentSurgeEndow: {
-	// EndowName: Violent Surge
-	// EndowDesc: Melee hits build fury; at {0} stacks it erupts as a crimson blade ring dealing {1}% of that hit
+	EndowName: Éclat de fureur
+	EndowDesc: 
+		'''
+		Les coups de mêlée accumulent la fureur ; à {0} charges un anneau de lames cramoisi éclate
+		Il inflige {1}% de ce coup en zone
+		'''
 }
-
 GodSmithArcaneWardEndow: {
-	// EndowName: Arcane Aegis
-	// EndowDesc: When struck, runes drink your mana: each point of mana blocks {0} damage, up to {1}% of the hit
+	EndowName: Garde arcanique
+	EndowDesc: 
+		'''
+		Subir un coup tisse une garde runique avec votre mana
+		Chaque point de mana absorbe {0} dégâts, jusqu'à {1}% de ce coup
+		'''
 }

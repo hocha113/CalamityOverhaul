@@ -53,14 +53,7 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
             });
             if (!Main.dedServ) {
                 MusicToast.Dismiss();
-                MusicToast.ShowMusic(
-                    title: "夢のきざはし",
-                    albumCover: ADVAsset.Shenyo_Calm,
-                    style: MusicToast.MusicStyle.WetInk,
-                    displayDuration: 360,
-                    titleTexture: ShenyoMenu.YumeNoKizahashi,
-                    screenYProvider: ResolveToastY,
-                    layoutScale: MusicToast.MenuLayoutScale);
+                ThemeMusicToast.ShowShenyo(MusicToast.MenuLayoutScale, ResolveToastY);
             }
         }
 

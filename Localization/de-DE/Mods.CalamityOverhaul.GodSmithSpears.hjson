@@ -1,100 +1,76 @@
-/* GsSpear.Desc:
+GsSpear.Desc: Umschmiedung: Exerzier-Dreierstich, jeder Takt tiefer und schneller; der dritte tritt nach und setzt nach wie ein alter Soldat
+GsTrident.Desc: Umschmiedung: Jeder Stich spritzt drei Wasserstrahlen aus der Wunde auf umstehende Feinde; im Wasser oder Regen steigt die Flut, die Strahlen sind schneller und reichen weiter
+GsThunderSpear.Desc: Umschmiedung: Ist der Speer voll ausgefahren, lädt die Spitze kurz; triffst du dann, springt eine Kette zum nächsten Feind; im Regen können zwei getroffen werden
+GsTheRottedFork.Desc: Umschmiedung: Zwei-Takt-Kombo, erst schneller Forkenstich, dann Schwerdruck; trifft der Druck, presst er ein Fäuleitergeschoss aus der Wunde, das am Boden zu einem ätzenden Tümpel zerläuft
+GsDarkLance.Desc:
 	'''
-	Reforged: drill-manual thrusts in three beats, each one deeper and faster than the last;
-	the third beat steps into the strike like a veteran
-	''' */
-/* GsTrident.Desc:
+	Umschmiedung: Halte zum Aufladen, Schwarzflamme umwickelt den Schaft; loslassen sticht weiter und härter;
+	ein voll aufgeladener Stich spritzt drei Schattenfresser-Feuer aus der Wunde, die nahe Feinde jagen
 	'''
-	Reforged: every strike bursts three jets of seawater from the wound;
-	while wet or in the rain the tide rises, jets fly faster and farther
-	''' */
-/* GsThunderSpear.Desc:
+GsSwordfish.Desc: Umschmiedung: Jeder Stich springt ein Stück in Spitzenrichtung, im Wasser doppelt so weit; im Wasser bist du in deinem Element, Schaden +15%
+GsObsidianSwordfish.Desc: Umschmiedung: Treffer entzünden und spritzen Obsidiansplitter aus der Wunde; brennst du selbst oder warst du in Lava, wärmt der Speerkern nach, Schaden +15%
+GsCobaltNaginata.Desc:
 	'''
-	Reforged: the tip charges while held at full extension; land a hit during that moment
-	and lightning arcs to the nearest other enemy, or two in the rain
-	''' */
-/* GsTheRottedFork.Desc:
+	Umschmiedung: Zwei-Takt-Naginata, erst ein Geradestich, dann ein weiter Querschnitt
+	Der Querschnitt erreicht den Bogen, den der Geradestich nicht trifft
 	'''
-	Reforged: two-beat strikes, a quick jab then a heavy squeeze;
-	the heavy beat squeezes a glob of gore from the wound that splats into a corroding pool
-	''' */
-/* GsDarkLance.Desc:
+GsPalladiumPike.Desc:
 	'''
-	Reforged: hold to feed the lance with devouring shadowflame, release to strike farther and harder;
-	a fully charged hit bursts three shadow embers from the wound
-	''' */
-/* GsSwordfish.Desc:
+	Umschmiedung: Jeder Stich häuft eine Lage Lebenskraft auf der Palladiumschneide
+	Bei 5 Stapeln platzt sie von selbst und heilt den Träger um 5 Leben
 	'''
-	Reforged: every thrust leaps you forward along the strike, twice as far underwater;
-	while wet the swordfish is in its element and deals 15% more damage
-	''' */
-/* GsObsidianSwordfish.Desc:
+GsMythrilHalberd.Desc:
 	'''
-	Reforged: strikes set enemies on fire and burst obsidian shards from the wound;
-	while you are burning or soaked in lava the core reheats, dealing 15% more damage
-	''' */
-/* GsCobaltNaginata.Desc:
+	Umschmiedung: Zwei-Takt-Kombo, der leichte Takt schnell, der schwere tief
+	Beim schweren Stich fliegt eine kurze Mithril-Mondsichel, durchschlägt höchstens zwei Ziele
 	'''
-	Reforged: alternating polework, a straight thrust then a wide cobalt sweep;
-	the sweep carves an arc where the thrust line cannot reach
-	''' */
-/* GsPalladiumPike.Desc:
+GsOrichalcumHalberd.Desc:
 	'''
-	Reforged: each hit stores a charge of vigor in the warm palladium edge;
-	at five charges the spear bursts them, restoring 5 life to its wielder
-	''' */
-/* GsMythrilHalberd.Desc:
+	Umschmiedung: Jeder Stich blüht zwei verfolgende Blütenblätter aus der Wunde
+	Die Blätter schrauben sich an nahe Feinde
 	'''
-	Reforged: two-beat halberd work, a quick jab then a deep heavy thrust;
-	the heavy beat looses a short-ranged mythril crescent that pierces twice
-	''' */
-/* GsOrichalcumHalberd.Desc:
+GsAdamantiteGlaive.Desc:
 	'''
-	Reforged: every thrust that lands blooms two homing petals from the wound,
-	each spiraling after nearby prey
-	''' */
-/* GsAdamantiteGlaive.Desc:
+	Umschmiedung: Das letzte Viertel der Schneide ist die Süßstelle
+	Triffst du mit der Spitze, brichst du stark Rüstung und lässt den Feind stocken; triffst du mit dem Schaft, ist es nur ein gewöhnlicher Stich
 	'''
-	Reforged: the last quarter of the blade is a sweet spot;
-	landing the very tip shatters armor and staggers, the shaft is just a poke
-	''' */
-/* GsTitaniumTrident.Desc:
+GsTitaniumTrident.Desc:
 	'''
-	Reforged: each thrust casts two parallel shade-tridents above and below the true blade,
-	flying a short lane before dissolving
-	''' */
-/* GsGungnir.Desc:
+	Umschmiedung: Jeder Stich erzeugt parallel über und unter der echten Klinge je einen Titansschatten-Phantomspeer
+	Die Phantomspeere fliegen ein kurzes Stück geradeaus und vergehen
 	'''
-	Reforged: a stately three-beat thrust crowned by a golden finisher;
-	right click hurls the oath-lance as a piercing bolt of light that never misses its sworn prey
-	''' */
-/* GsChlorophytePartisan.Desc:
+GsGungnir.Desc:
 	'''
-	Reforged: while the blade dwells at full reach, spores gather on its tip;
-	as the spear withdraws it looses a drifting spore cloud that hunts and poisons
-	''' */
-/* GsMushroomSpear.Desc:
+	Umschmiedung: Drei-Takt-Göttergewalt, der dritte trägt Goldring-Nachklang;
+	Rechtsklick wirft den Schwur-Speer, er rastet Beute auf der Bahn ein, knickt durch und verfehlt nie
 	'''
-	Reforged: the heavy second beat plants a glowing spore mine in the wound;
-	it bursts moments later, harming foes around and feeding 2 life back to the wielder
-	''' */
-/* GsNorthPole.Desc:
+GsChlorophytePartisan.Desc:
 	'''
-	Reforged: quick thrusts fling spiraling frost crystals, and the third strike plants a polar pillar
-	at the wound that rains icicles; the dwell wreathes the tip in freezing mist
-	''' */
-/* GsJoustingLance.Desc:
+	Umschmiedung: Bleibt die Schneide am weitesten Punkt, sammeln sich Sporen an der Spitze
+	Im Einziehen fliegt eine langsam treibende, verfolgende Sporenwolke, Treffer vergiften
 	'''
-	Reforged: hold to couch the lance, speed builds momentum, a full-tilt strike deals up to 2.4x damage;
-	the longer you ride at full tilt, the more bonus damage the next strike carries
-	''' */
-/* GsShadowJoustingLance.Desc:
+GsMushroomSpear.Desc:
 	'''
-	Reforged: charging at speed leaves shadowflame embers along your path;
-	foes touching an ember take 25% damage and catch shadowflame
-	''' */
-/* GsHallowJoustingLance.Desc:
+	Umschmiedung: Der schwere Stich des zweiten Takts pflanzt eine leuchtende Pilzmine ins Ziel
+	Die Mine platzt kurz darauf, verletzt Umstehende und heilt den Träger um 2 Leben
 	'''
-	Reforged: at full tilt, a prismatic star falls on the nearest foe every 0.7s for 40% damage;
-	full-tilt strikes burst with holy prismatic light
-	''' */
+GsNorthPole.Desc:
+	'''
+	Umschmiedung: Schnellstiche schleudern kreisende Frostkristalle, der dritte stellt eine Polarkaltsäule in die Wunde, von der Spitze fällt Eiszapfenregen;
+	hältst du den Speer, verdichtet sich Frostnebel an der Spitze, getroffene Feinde tragen Frostbrand
+	'''
+GsJoustingLance.Desc:
+	'''
+	Umschmiedung: Halte Linksklick, die Turnierlanze gerade; je schneller du dich bewegst, desto mehr Ansturm, ein voller Ansturm trifft bis zu 2,4-fach
+	Je länger du mit vollem Ansturm reitest, desto höher der Zusatzschaden des nächsten Stoßes
+	'''
+GsShadowJoustingLance.Desc:
+	'''
+	Umschmiedung: Halte Linksklick, die Turnierlanze gerade; bei hohem Tempo hinterlässt der Pfad Schattenrestflamme
+	Wer die Restflamme berührt, erleidet 25% Schaden und trägt Schattenflamme
+	'''
+GsHallowJoustingLance.Desc:
+	'''
+	Umschmiedung: Halte Linksklick, die Turnierlanze gerade; bei vollem Ansturm fällt etwa alle 0,7 s ein Regenbogenstern auf den nächsten Feind, 40% Schaden
+	Ein voller Ansturm-Stoß spritzt Heiliglicht-Prisma
+	'''

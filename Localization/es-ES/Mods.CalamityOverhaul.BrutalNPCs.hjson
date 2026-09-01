@@ -1,6 +1,6 @@
 HeadPrimeAI.SkeletronPrime_Text: ¡No intentes matarme con esa porquería! ¡Muere, organismo!
 
 WallOfFleshAI: {
-	// CurtainDeathReason: "{0} was swallowed by the blood tide"
-	// NetDeathReason: "{0} was shredded by the net of the Hungry"
+	CurtainDeathReason: "{0} fue engullido por la marea de sangre"
+	NetDeathReason: "{0} fue despedazado por la red de carne de los Hambrientos"
 }

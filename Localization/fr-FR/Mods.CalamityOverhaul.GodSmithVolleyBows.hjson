@@ -1,107 +1,107 @@
-/* GsDaedalusStormbow.Desc:
+GsDaedalusStormbow.Desc: 
 	'''
-	Reforged: arrows now fall from the sky, and a silver seal marks each landing point before the bolt strikes
-	Shots build storm charge; at full charge the next shot lays a 3x3 sky matrix, corners then edges then center
-	The center bolt lands heaviest and bursts on impact. Right click to release a partial matrix early
-	Sky bolts stack hunt brands; branding a foe thrice calls a verdict bolt down upon it
-	''' */
-/* GsTsunami.Desc:
+	Reforgé : les flèches tombent du ciel ; un sceau d'argent marque d'abord le point de chute
+	Les tirs accumulent la tempête ; à pleine charge, le prochain tir pose une matrice de neuf sceaux, coins, bords, puis centre
+	La flèche du centre est la plus lourde et explose. Clic droit pour relâcher une matrice partielle
+	Les flèches du ciel empilent des marques de chasse ; à trois charges, une flèche de châtiment s'abat sur la cible marquée
 	'''
-	Reforged: each draw looses a rank of 5 arrows that surge forward in a rolling wave, one ammo per draw
-	Shots build tide charge; at full charge the next draw becomes a great wave: 7 piercing arrows in two ranks led by a sweeping foam crest
-	Wave arrows stack tide brands; branding a foe thrice sends a water spout erupting beneath it
-	While a branded foe stands, every 4th arrow splits off a tide-chaser that bites toward it
-	''' */
-/* GsFairyQueenRangedItem.Desc:
+GsTsunami.Desc: 
 	'''
-	Reforged: all arrows become twilight lances; each sweep of the bow looses 5 lances along an arc, converging on the cursor
-	The 3rd lance of every sweep is the Queen's lance, striking nearly twice as hard
-	Shots build twilight; at full charge the next shot blooms into a prismatic fan of 5 lances
-	Lance hits stack brands; branding a foe thrice calls twin fae orbs to circle and peck it for 2 seconds
-	''' */
-/* GsDD2BetsyBow.Desc:
+	Reforgé : chaque tir relâche cinq flèches en rang de vague, qui avancent en houle puis retombent
+	Les tirs accumulent la marée ; à pleine charge, le prochain tir devient une grande vague : sept flèches perçantes en deux rangs, une crête d'écume ouvre la voie
+	Les flèches de vague empilent des marques de marée ; à trois charges, une colonne d'eau jaillit sous l'ennemi
+	Tant qu'un ennemi marqué est en vie, chaque quatrième flèche détache une flèche de chasse-marée
 	'''
-	Reforged: each draw looses 5 dragonfire bolts that climb, stall, then dive-bomb the cursor area
-	Impacts burst into dragonfire rings; airborne foes take 35% more damage
-	Shots build airstrike charge; at full charge the next draw calls a carpet run of 9 bolts along the flight line
-	Bolt hits stack flame brands; branding a foe thrice drops one heavy bomb straight onto it
-	''' */
-/* GsPhantasm.Desc:
+GsFairyQueenRangedItem.Desc: 
 	'''
-	Reforged: hold to channel; fire rate climbs with frenzy, and the bow splits into phantom after-bows
-	At frenzy rank 2 every volley gains two flanking phantom arrows
-	Striking the same foe 6 times in a row calls a phantom archer to hover at your back and loose soul bolts alongside you
-	Main arrows stack soul brands; branding a foe thrice makes the archer nail it with 4 homing soul bolts
-	''' */
-/* GsPearlwoodBow.Desc:
+	Reforgé : toutes les flèches deviennent des lances du crépuscule ; cinq lances partent en arc et se resserrent sur le viseur
+	La troisième de chaque salve est la lance de la reine, presque le double de dégâts
+	Les tirs accumulent le crépuscule ; à pleine charge, le prochain tir s'ouvre en éventail prismatique de cinq lances
+	Les lances empilent des marques ; à trois charges, deux orbes de lumière tournent autour de l'ennemi et le picorent deux secondes
 	'''
-	Reforged: every 5 shots charge a rainbow arc volley, 5 arrows sweeping out one by one, one ammo per volley
-	Landing 3 arc arrows on the same foe pops a pearl prism burst
-	Right click releases the volley early at 60%+ charge
-	''' */
-/* GsCobaltRepeater.Desc:
+GsDD2BetsyBow.Desc: 
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses 3 bolts one after another that accelerate in flight, one ammo per volley
-	Volley hits brand prey and grant you a short gust of Swiftness
-	''' */
-/* GsPalladiumRepeater.Desc:
+	Reforgé : chaque tir relâche cinq flèches de feu-dragon qui montent, décrochent, puis plongent sur le viseur
+	L'impact ouvre un anneau de feu-dragon ; les ennemis en l'air subissent +35% de dégâts
+	Les tirs accumulent le raid aérien ; à pleine charge, le prochain tir appelle un tapis de neuf flèches le long de la ligne de vol
+	Les flèches empilent des marques de flamme ; à trois charges, une lourde flèche de feu-dragon s'abat sur la cible
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 3-bolt line, one ammo per volley
-	Branded foes slain restore 2 life; executions restore 5 more
-	''' */
-/* GsMythrilRepeater.Desc:
+GsPhantasm.Desc: 
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge, one ammo per volley
-	The lead volley bolt always crits against branded foes; side bolts gain +8% crit
-	''' */
-/* GsOrichalcumRepeater.Desc:
+	Reforgé : maintenez le clic gauche, la cadence grimpe avec la frénésie, l'arc se fend en arcs fantômes
+	À deux charges de frénésie, chaque salve gagne deux flèches fantômes d'aile
+	Six impacts d'affilée sur la même cible appellent un archer fantôme dans votre dos, qui tire des flèches d'âme avec vous
+	Les flèches principales empilent des marques d'âme ; à trois charges, l'archer envoie quatre flèches d'âme qui clouent cet ennemi
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt wedge trailing petals, one ammo per volley
-	Volley hits burst into a small petal blast
-	''' */
-/* GsAdamantiteRepeater.Desc:
+GsPearlwoodBow.Desc: 
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon at x1.5 knockback, one ammo per volley
-	The lead volley bolt lands with a crimson shockwave that splashes nearby foes
-	''' */
-/* GsTitaniumRepeater.Desc:
+	Reforgé : tous les 5 tirs, l'arc-en-ciel est plein ; le prochain devient un pont de cinq flèches qui s'ouvre en éventail, 1 munition pour toute la salve
+	Le même ennemi touché par 3 flèches de l'arc fait éclater un prisme de perle
+	Au-dessus de 60% de charge, clic droit relâche la salve plus tôt
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 5-bolt echelon, one ammo per volley
-	Volley bolts etch armor: each hit on the same foe adds +2 armor penetration, up to 5 stacks
-	''' */
-/* GsHallowedRepeater.Desc:
+GsCobaltRepeater.Desc: 
 	'''
-	Reforged: every 6th bolt triple-taps; volley charge looses a 4-bolt cross, one ammo per volley
-	Executing a fully branded foe calls down a hallowed star trailing gold
-	''' */
-/* GsChlorophyteShotbow.Desc:
+	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, trois flèches partent l'une après l'autre et accélèrent, 1 munition pour toute la salve
+	Les impacts de salve marquent la proie et vous donnent un bref élan de Rapidité
 	'''
-	Reforged: every 6th shot triple-taps; volley charge looses a 6-arrow spore cone, one ammo per volley
-	Branded foes take +10% from this bow; execution bursts a spore cloud
-	''' */
-/* GsStakeLauncher.Desc:
+GsPalladiumRepeater.Desc: 
 	'''
-	Reforged: every 6th stake triple-taps; volley charge looses a 3-stake wedge, one ammo per volley
-	Stakes pin and brand prey; the executing stake crucifies at x2.3, undead take a further +25%
-	Each crucifixion reloads 30 volley charge; silver light gathers at the muzzle when fully charged
-	''' */
-/* GsIceBow.Desc:
+	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, trois flèches en ligne, 1 munition pour toute la salve
+	Un ennemi marqué qui tombe vous rend 2 vie ; une exécution en rend 5 de plus
 	'''
-	Reforged: volley charge hurls 6 icicles skyward to rain on the cursor, one ammo per volley
-	Icicle hits stack frostbrand; at 3 stacks the next icicle shatters into a frost burst
-	''' */
-/* GsMarrow.Desc:
+GsMythrilRepeater.Desc: 
 	'''
-	Reforged: volley charge looses a 5-bone-arrow cross with +1 pierce, one ammo per volley
-	Executing a fully branded foe cages it with 4 converging bone arrows
-	''' */
-/* GsShadowflameBow.Desc:
+	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, quatre flèches en coin, 1 munition pour toute la salve
+	La flèche de tête critique toujours contre une proie marquée ; les flèches d'aile ont +8% de critique
 	'''
-	Reforged: volley charge looses 3 shadowflame arrows crossing at the cursor, one ammo per volley
-	Branded foes struck by any arrow draw a homing shadowflame wisp; execution erupts in shadow
-	''' */
-/* GsPulseBow.Desc:
+GsOrichalcumRepeater.Desc: 
 	'''
-	Reforged: each wall bounce now grants +10% damage (up to 5); volley charge looses 3 parallel pulse tracks, one ammo per volley
-	Branded foes bend passing pulses toward them; execution chains a surge to 2 nearby foes
-	''' */
+	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, quatre flèches en coin traînant des pétales, 1 munition pour toute la salve
+	Les impacts de salve éclatent en une petite explosion de pétales
+	'''
+GsAdamantiteRepeater.Desc: 
+	'''
+	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, cinq flèches en échelon, recul augmenté de moitié, 1 munition pour toute la salve
+	La flèche de tête pose une onde cramoisie qui blesse autour
+	'''
+GsTitaniumRepeater.Desc: 
+	'''
+	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, cinq flèches en échelon, 1 munition pour toute la salve
+	Les flèches de salve gravent l'armure : +2 de pénétration d'armure par impact sur le même ennemi, jusqu'à 5 charges
+	'''
+GsHallowedRepeater.Desc: 
+	'''
+	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, quatre flèches en croix, 1 munition pour toute la salve
+	Exécuter une proie à marques pleines fait tomber une étoile sacrée traînant de l'or
+	'''
+GsChlorophyteShotbow.Desc: 
+	'''
+	Reforgé : chaque 6e flèche est un triple tap ; à salve pleine, six flèches en cône de spores, 1 munition pour toute la salve
+	Une proie marquée subit +10% de dégâts de cet arc ; l'exécution ouvre un nuage de spores
+	'''
+GsStakeLauncher.Desc: 
+	'''
+	Reforgé : chaque 6e pieu est un triple tap ; à salve pleine, trois pieux en coin, 1 munition pour toute la salve
+	Tout pieu cloue et marque ; le pieu d'exécution crucifie à ×2.3, +25% encore contre les morts-vivants
+	Une crucifixion réussie recharge 30 points de salve ; à charge pleine, une lueur d'argent se rassemble à la bouche
+	'''
+GsIceBow.Desc: 
+	'''
+	Reforgé : à salve pleine, 6 glaçons sont jetés vers le ciel et pleuvent autour du curseur, 1 munition pour toute la salve
+	Les glaçons empilent des marques de givre ; à 3 charges, le prochain glaçon explose en éclat de givre
+	'''
+GsMarrow.Desc: 
+	'''
+	Reforgé : à salve pleine, 5 flèches d'os en croix, +1 perçage, 1 munition pour toute la salve
+	Exécuter une proie à marques pleines la cage de 4 flèches d'os convergentes
+	'''
+GsShadowflameBow.Desc: 
+	'''
+	Reforgé : à salve pleine, 3 flèches de Flamme d'ombre se croisent au curseur, 1 munition pour toute la salve
+	Toute flèche qui touche une proie marquée appelle un feu follet de Flamme d'ombre ; l'exécution explose d'ombre
+	'''
+GsPulseBow.Desc: 
+	'''
+	Reforgé : chaque rebond mur +10% de dégâts, jusqu'à 5 ; à salve pleine, 3 rails d'impulsion parallèles, 1 munition pour toute la salve
+	Une proie marquée courbe vers elle les impulsions qui passent ; l'exécution enchaîne une surtension vers 2 ennemis proches
+	'''

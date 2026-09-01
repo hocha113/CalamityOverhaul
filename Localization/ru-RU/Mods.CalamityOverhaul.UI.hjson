@@ -1,13 +1,13 @@
 ItemFilterEditorUI: {
-	// ModeWhitelistText: Whitelist
-	// ModeBlacklistText: Blacklist
-	// ClearText: Clear
-	// UninstallText: Uninstall
-	// CountFormat: "{0} entries"
-	// EmptyHintText: Click here while holding an item to record it
-	// OperateHintText: Click with item = add · Click entry = remove · [Right-click/ESC] close
-	// InstalledText: Filter list installed
-	// UninstalledText: Filter uninstalled
+	ModeWhitelistText: Белый список
+	ModeBlacklistText: Чёрный список
+	ClearText: Очистить
+	UninstallText: Снять фильтр
+	CountFormat: "{0} шт."
+	EmptyHintText: Держите предмет и нажмите сюда, чтобы внести его
+	OperateHintText: Клик с предметом = добавить · клик по записи = убрать · [ПКМ/ESC] закрыть
+	InstalledText: Список установлен
+	UninstalledText: Фильтр снят
 }
 
 EntryDecisionUI: {
@@ -55,28 +55,28 @@ DialogueSystem: {
 	FastHint: Ускорить
 	AutoHint: Авто
 	SkipHint: Пропустить
-	BacklogHint: BACKLOG
+	BacklogHint: Журнал
 	ClaimHint: Нажмите, чтобы забрать
 	PopupContinueHint: Нажмите, чтобы продолжить
-	ChoiceTitle: Выберите
+	ChoiceTitle: Выбор
 }
 
 ExoMechdusaSumRender: {
-	ThanatosDescription: Танатос — ужасающий гигантский змей, покрытый тяжелой броней и оснащенный бесчисленными автопушками.
-	AresDescription: Арес — колоссальный механизм, вооруженный четырьмя сверхмощными экзо-орудиями.
-	ArtemisApolloDescription: Артемида и Аполлон — пара сверхпрочных автоматонов с крайне нестабильным запасом энергии.
+	ThanatosDescription: Танатос — ужасающий гигантский змей, покрытый тяжелой броней и оснащенный бесчисленными автопушками
+	AresDescription: Арес — колоссальный механизм, вооруженный четырьмя сверхмощными орудиями звёздного потока
+	ArtemisApolloDescription: Артемида и Аполлон — пара сверхпрочных автоматонов с крайне нестабильным запасом энергии
 }
 
 CQETConstructorTP: {
-	GuideText_NeedBlocks: Требуется {0} блоков звездного потока
+	GuideText_NeedBlocks: Требуется {0} блоков покрытия звёздного потока
 	GuideText_Ready: Готово!
-	GuideText_GroundIncomplete: Неровная поверхность!
+	GuideText_GroundIncomplete: Площадка не завершена!
 }
 
 SignalTowerTargetRenderer: {
 	InRangeText: В зоне действия
 	TargetCompletedText: Цель [NUM] выполнена!
-	AllCompletedText: Квантовая сеть завершена!
+	AllCompletedText: Сеть квантовой запутанности завершена!
 }
 
 DraedonCallUI: {
@@ -92,9 +92,9 @@ DraedonCallUI: {
 
 DraedonShopUI: {
 	TitleText: DRAEDON.EXCHANGE
-	FundsLabelText: БАЛАНС
-	BuyActionText: КУПИТЬ
-	HintText: "[ЛКМ] Купить · Удерживайте для повтора · [ESC] Закрыть"
+	FundsLabelText: Баланс
+	BuyActionText: Купить
+	HintText: "[ЛКМ] Купить · удерживать для повторной покупки · [ESC] закрыть"
 	EmptyText: Нет товаров для обмена
 }
 
@@ -105,7 +105,7 @@ EnchantUI: {
 }
 
 ConstructionBlueprintUI: {
-	UITitle: Автостроитель (Квантовая башня)
+	UITitle: Автостроитель (башня квантовой запутанности)
 	MaterialsRequired: Требуемые материалы:
 	CloseHint: Нажмите, чтобы закрыть
 	CraftingStation: Рабочее место:
@@ -123,121 +123,121 @@ Generator: {
 		EfficiencyText: Эффективность: {0}%
 		InsertFuelHint: Нажмите, чтобы вставить/извлечь топливо
 		TemperatureUnit: °C
-		PowerUnit: ЕЭ
+		PowerUnit: UE
 	}
 
 	GeneratorReadoutUI: {
-		// WindLabel: Wind
-		// FlowLabel: Flow
-		// StorageLabel: Charge
-		// OutputLine: Output: {0} UE/s
-		// RunningText: Running
-		// NoWindText: Weak Wind
-		// NoWaterText: Wheel Dry
-		// SunLabel: Sun
-		// NoSunText: No Sunlight
-		// MagmaLabel: Magma
-		// NoMagmaText: No Lava
-		// PowerUnitText: UE
+		WindLabel: Ветер
+		FlowLabel: Поток
+		StorageLabel: Запас
+		OutputLine: Выход: {0} UE/s
+		RunningText: В работе
+		NoWindText: Слабый ветер
+		NoWaterText: Колесо не в воде
+		SunLabel: Солнце
+		NoSunText: Мало солнца
+		MagmaLabel: Магма
+		NoMagmaText: Лава иссякла
+		PowerUnitText: UE
 	}
 
 	BiomassGeneratorUI: {
-		// TitleText: Biomass Generator
-		// FuelLabel: Fuel Bin
-		// PowerLabel: Power
-		// ActiveText: Running
-		// IdleText: Idle
-		// InsertFuelHint: Click to insert/remove biomass fuel
-		// PowerUnit: UE
+		TitleText: Биомассовый генератор
+		FuelLabel: Бункер
+		PowerLabel: Энергия
+		ActiveText: В работе
+		IdleText: Ожидание
+		InsertFuelHint: Нажмите, чтобы вставить/извлечь биомассу
+		PowerUnit: UE
 	}
 }
 
 SlimeVat: {
 	SlimeVatUI: {
-		// TitleText: Slime Culture Vat
-		// WaterLabel: Water
-		// ProduceLabel: Produce Bay
-		// EnableText: Enable
-		// DisableText: Disable
-		// StatusWorking: Culturing
-		// StatusIdle: Dormant
-		// StatusNoPower: No Power
-		// StatusNoWater: No Water
-		// StatusOff: Disabled
-		// EnergyLabel: Power
-		// PourHint: Click with a water bucket to pour, or let it draw from nearby water
-		// TakeHint: Click to retrieve
-		// PowerUnit: UE
+		TitleText: Чан для разведения слизней
+		WaterLabel: Вода
+		ProduceLabel: Отсек продукции
+		EnableText: Включить
+		DisableText: Отключить
+		StatusWorking: Культивирование
+		StatusIdle: Покой
+		StatusNoPower: Нет энергии
+		StatusNoWater: Нет воды
+		StatusOff: Отключено
+		EnergyLabel: Энергия
+		PourHint: Нажмите ведром воды, чтобы налить, или дайте машине взять воду рядом
+		TakeHint: Нажмите, чтобы забрать
+		PowerUnit: UE
 	}
 }
 
 ShimmerTransmuter: {
 	ShimmerTransmuterUI: {
-		// TitleText: Shimmer Transmuter
-		// InputLabel: Input
-		// OutputLabel: Output
-		// ProgressLabel: Progress
-		// PowerLabel: Power
-		// ShimmerLabel: Shimmer
-		// WorkingText: Transmuting
-		// IdleText: Idle
-		// NoPowerText: No Power
-		// NoShimmerText: No Shimmer
-		// OutputFullText: Output Full
-		// InputHint: Insert an item that shimmer can transmute
-		// OutputHint: Click to take the products
-		// PowerUnit: UE
+		TitleText: Чан мерцающей трансмутации
+		InputLabel: Вход
+		OutputLabel: Выход
+		ProgressLabel: Ход трансмутации
+		PowerLabel: Энергия
+		ShimmerLabel: Мерцание
+		WorkingText: Трансмутация
+		IdleText: Ожидание
+		NoPowerText: Нет энергии
+		NoShimmerText: Нет мерцания
+		OutputFullText: Выход заполнен
+		InputHint: Положите предмет, который мерцание может трансмутировать
+		OutputHint: Нажмите, чтобы забрать продукт
+		PowerUnit: UE
 	}
 }
 
 MushroomFarmer: {
 	MushroomFarmerUI: {
-		// TitleText: Mushroom Farming Machine
-		// ProduceLabel: Produce Bay
-		// EnableText: Enable
-		// DisableText: Disable
-		// StatusWorking: Growing
-		// StatusIdle: Idle
-		// StatusNoPower: No Power
-		// StatusOff: Disabled
-		// EnergyLabel: Power
-		// TakeHint: Click to retrieve
-		// PowerUnit: UE
+		TitleText: Грибная ферма
+		ProduceLabel: Отсек продукции
+		EnableText: Включить
+		DisableText: Отключить
+		StatusWorking: Выращивание
+		StatusIdle: Ожидание
+		StatusNoPower: Нет энергии
+		StatusOff: Отключено
+		EnergyLabel: Энергия
+		TakeHint: Нажмите, чтобы забрать
+		PowerUnit: UE
 	}
 }
 
 TeleportStation: {
 	TeleportStationUI: {
-		// TitleText: Teleport Network
-		// LocalLabel: This Station
-		// RenameText: Rename
-		// RenameHint: Enter to confirm, Esc to cancel
-		// EmptyListText: No other teleport stations in the world
-		// RowInfoLine: "{0} tiles · {1} UE"
-		// StatusReady: Ready
-		// StatusNoPower: This station lacks power
-		// StatusTargetDead: Destination lacks power
-		// EnergyLabel: Power
-		// PowerUnit: UE
+		TitleText: Сеть телепортов
+		LocalLabel: Эта станция
+		RenameText: Переименовать
+		RenameHint: Enter — подтвердить, Esc — отмена
+		EmptyListText: В мире нет других телепортов
+		RowInfoLine: "{0} кл. · {1} UE"
+		StatusReady: Можно телепортироваться
+		StatusNoPower: На этой станции нет энергии
+		StatusTargetDead: На той станции нет энергии
+		EnergyLabel: Энергия
+		PowerUnit: UE
 	}
 }
 
 Apiary: {
 	ApiaryUI: {
-		// TitleText: Electric Apiary
-		// BottleLabel: Bottle Bay
-		// ProduceLabel: Produce Bay
-		// EnableText: Enable
-		// DisableText: Disable
-		// StatusWorking: Brewing
-		// StatusWorkingBoost: Hive Thriving
-		// StatusIdle: Resting
-		// StatusNoPower: No Power
-		// StatusOff: Disabled
-		// EnergyLabel: Power
-		// BottleHint: Insert empty glass bottles
-		// TakeHint: Click to retrieve
-		// PowerUnit: UE
+		TitleText: Улей
+		BottleLabel: Отсек пустых бутылок
+		ProduceLabel: Отсек продукции
+		EnableText: Включить
+		DisableText: Отключить
+		StatusWorking: Варят мёд
+		StatusWorkingBoost: Рой активен
+		StatusIdle: Перерыв
+		StatusNoPower: Нет энергии
+		StatusOff: Отключено
+		EnergyLabel: Энергия
+		BottleHint: Положите пустые стеклянные бутылки
+		TakeHint: Нажмите, чтобы забрать
+		PowerUnit: UE
 	}
 }
 
@@ -252,7 +252,7 @@ ChargingStationUI: {
 	IdleText: Ожидание
 	InsertItemHint: Вставьте предмет для зарядки
 	InsertBatteryHint: Вставьте энергобатарею Дрэдона
-	EnergyUnit: ЕЭ
+	EnergyUnit: UE
 	StationText1: Только для заряжаемых предметов!
 	StationText2: Только для энергобатарей Дрэдона!
 }
@@ -277,7 +277,7 @@ QuestLog: {
 	ObjectiveText: Цель задания
 	RewardText: Награда
 	ReceiveAwardText: Получить награду
-	ProgressText: Прогресс
+	ProgressText: Доля выполнения
 	QuickReceiveAwardText: Получить всё
 	StyleSwitchText: Сменить стиль
 	NightModeText: Ночной режим
@@ -285,17 +285,17 @@ QuestLog: {
 	SunModeText: Дневной режим
 	LauncherHoverText: ЛКМ для взаимод., ПКМ для перетаскивания
 	QuestManagerText: Поручения
-	// ChronicleTitle: E X P E D I T I O N   R E C O R D
-	// ChronicleProgress: Sealed {0} / {1}
-	// ChronicleHint: Wheel to zoom   ·   Drag to pan   ·   Esc to close
-	// ChronicleStationChart: Quest Chart
-	// ChronicleStationEntrust: Commissions
-	// ChronicleChapterTitle: Chapters
-	// ChronicleLegendTitle: Legend
-	// ChronicleLegendSealed: Sealed
-	// ChronicleLegendUnclaimed: Reward Due
-	// ChronicleLegendActive: In Progress
-	// ChronicleLegendLocked: Not Begun
+	ChronicleTitle: Хроника похода
+	ChronicleProgress: Закрыто {0} / {1}
+	ChronicleHint: Колесо — масштаб   ·   перетаскивание — сдвиг   ·   Esc свернуть свиток
+	ChronicleStationChart: Карта заданий
+	ChronicleStationEntrust: Досье поручений
+	ChronicleChapterTitle: Главы
+	ChronicleLegendTitle: Легенда
+	ChronicleLegendSealed: Закрыто
+	ChronicleLegendUnclaimed: Награда ждёт
+	ChronicleLegendActive: В пути
+	ChronicleLegendLocked: Не начато
 	DisabledOverlayText:
 		'''
 		Проверка заданий в этом мире отключена.
@@ -305,7 +305,7 @@ QuestLog: {
 	ObjectiveTemplate: {
 		DefeatNpc: Победите {0}
 		ObtainItem: Получите {0}
-		CollectItem: Соберите {0} {1}
+		CollectItem: Соберите {0} шт. {1}
 	}
 }
 
@@ -334,82 +334,82 @@ Incinerator: {
 		NoPowerText: Нет энергии
 		InputHint: Вставьте предмет для сжигания
 		OutputHint: Нажмите, чтобы забрать
-		PowerUnit: ЕЭ
+		PowerUnit: UE
 	}
 }
 
 PlayerLauncher: {
 	PlayerLauncherUI: {
-		// TitleText: Launch Pad
-		// DirectionLabel: Direction
-		// PowerLabel: Launch Power
-		// EnableText: Enable
-		// DisableText: Disable
-		// StatusReady: Ready
-		// StatusNoPower: No Power
-		// StatusOff: Disabled
-		// EnergyLabel: Power
-		// CostTip: Each launch costs {0} UE
-		// PowerUnit: UE
+		TitleText: Пусковая платформа
+		DirectionLabel: Направление запуска
+		PowerLabel: Сила запуска
+		EnableText: Включить
+		DisableText: Отключить
+		StatusReady: Готово
+		StatusNoPower: Нет энергии
+		StatusOff: Отключено
+		EnergyLabel: Энергия
+		CostTip: Один запуск стоит {0} UE
+		PowerUnit: UE
 	}
 }
 
 PotionBeacon: {
 	PotionBeaconUI: {
-		// TitleText: Potion Diffuser Beacon
-		// SlotLabel: Potion Bay
-		// EnableText: Enable
-		// DisableText: Disable
-		// StatusWorking: Diffusing
-		// StatusIdle: Idle
-		// StatusNoPower: No Power
-		// StatusOff: Disabled
-		// EnergyLabel: Power
-		// DropHint: Place buff potions
-		// SupplyTip: "{0}s of supply left in this bottle"
-		// PowerUnit: UE
+		TitleText: Маяк рассеивания зелий
+		SlotLabel: Отсек зелий
+		EnableText: Включить
+		DisableText: Отключить
+		StatusWorking: Рассеивание
+		StatusIdle: Ожидание
+		StatusNoPower: Нет энергии
+		StatusOff: Отключено
+		EnergyLabel: Энергия
+		DropHint: Положите зелья усиления
+		SupplyTip: В этой бутылке осталось {0} с запаса
+		PowerUnit: UE
 	}
 }
 
 HerbFarmer: {
 	HerbFarmerUI: {
-		// TitleText: Herb Farming Machine
-		// SeedLabel: Seed Bay
-		// ProduceLabel: Produce Bay
-		// EnableText: Enable
-		// DisableText: Disable
-		// StatusWorking: Farming
-		// StatusIdle: Idle
-		// StatusNoPower: No Power
-		// StatusOff: Disabled
-		// EnergyLabel: Power
-		// SeedHint: Place herb seeds
-		// TakeHint: Click to retrieve
-		// PowerUnit: UE
+		TitleText: Травяная ферма
+		SeedLabel: Отсек семян
+		ProduceLabel: Отсек продукции
+		EnableText: Включить
+		DisableText: Отключить
+		StatusWorking: Обработка
+		StatusIdle: Ожидание
+		StatusNoPower: Нет энергии
+		StatusOff: Отключено
+		EnergyLabel: Энергия
+		SeedHint: Положите семена трав
+		TakeHint: Нажмите, чтобы забрать
+		PowerUnit: UE
 	}
 }
 
 AutoFisher: {
 	AutoFisherUI: {
-		// TitleText: Auto Fisher
-		// BaitLabel: Bait Bay
-		// CatchLabel: Catch Bay
-		// IntervalLabel: Cast Interval
-		// PowerReadout: Fishing Power {0}
-		// LakeReadout: Lake Size {0}
-		// EnableText: Enable
-		// DisableText: Disable
-		// StatusFishing: Fishing
-		// StatusIdle: Idle
-		// StatusNoPower: No Power
-		// StatusNoBait: No Bait
-		// StatusNoWater: No Water
-		// StatusFull: Storage Full
-		// StatusOff: Disabled
-		// EnergyLabel: Power
-		// BaitHint: Place bait
-		// CatchHint: Catches are stored here
-		// PowerUnit: UE
+		TitleText: Авторыболов
+		BaitLabel: Отсек наживки
+		CatchLabel: Отсек улова
+		IntervalLabel: Интервал заброса
+		PowerReadout: Сила рыбалки {0}
+		LakeReadout: Водоём {0}
+		EnableText: Включить
+		DisableText: Отключить
+		StatusFishing: Ловля
+		StatusIdle: Ожидание
+		StatusNoPower: Нет энергии
+		StatusNoBait: Нет наживки
+		StatusNoWater: Нет воды
+		StatusFull: Склад полон
+		StatusOff: Отключено
+		EnergyLabel: Энергия
+		BaitHint: Положите наживку
+		CatchHint: Улов складывается сюда
+		PowerUnit: UE
 	}
 }
 
@@ -442,40 +442,40 @@ ThrowerUI: {
 }
 
 CollectorUI: {
-	// TitleText: Collector Console
-	// ModeLabel: Storage Mode
-	// ModeAuto: Nearest
-	// ModeBoundFirst: Bound First
-	// ModeBoundOnly: Bound Only
-	// ModeAutoDesc: Deposits into the nearest available container in range
-	// ModeBoundFirstDesc: Prefers bound containers, falls back to nearest
-	// ModeBoundOnlyDesc: Only deposits into bound containers
-	// BindingsLabel: Storage Bindings
-	// AddBindingText: + Bind Container
-	// PickingTitle: Select Storage Container
-	// PickingHint: Left click a container in the world to bind it
-	// PickingExitHint: Right click or [ESC] to exit
-	// BindingFullText: Bindings Full
-	// InvalidText: Invalid
-	// OutOfRangeText: Out of Range
-	// ChestDefaultName: Chest
-	// MagicStorageName: Storage Heart
-	// NoBindingsHint: No containers bound, click the button below to start
-	// RemoveHint: Remove binding
-	// MoveUpHint: Raise priority
-	// FilterLabel: Collection Filter
-	// FilterNoneText: No filter (collects everything)
-	// ClearFilterText: Clear
-	// EditFilterText: Edit
-	// FilterHint: Right click the collector while holding an item to set a filter
-	// StatusLabel: Status
-	// ArmCountLabel: Arms
-	// EnergyLabel: Energy
-	// StatusWorking: Running
-	// StatusNoEnergy: No Energy
-	// StatusStarting: Starting Up
-	// StatusNoStorage: No Storage Available
-	// CloseHint: "[ESC] or right click again with empty hands to close"
+	TitleText: Консоль сборщика
+	ModeLabel: Режим хранения
+	ModeAuto: Ближайшее
+	ModeBoundFirst: Сначала привязанные
+	ModeBoundOnly: Только привязанные
+	ModeAutoDesc: Сам кладёт в ближайший доступный контейнер в радиусе
+	ModeBoundFirstDesc: Сначала в привязанные контейнеры, при неудаче — в ближайший
+	ModeBoundOnlyDesc: Кладёт только в привязанные контейнеры
+	BindingsLabel: Привязки хранения
+	AddBindingText: + Привязать контейнер
+	PickingTitle: Выбор контейнера
+	PickingHint: Нажмите ЛКМ по контейнеру в мире, чтобы привязать
+	PickingExitHint: ПКМ или [ESC], чтобы выйти из выбора
+	BindingFullText: Привязки заполнены
+	InvalidText: Недействительно
+	OutOfRangeText: Вне радиуса
+	ChestDefaultName: Сундук
+	MagicStorageName: Сердце хранилища
+	NoBindingsHint: Контейнеры ещё не привязаны, нажмите кнопку ниже
+	RemoveHint: Снять привязку
+	MoveUpHint: Поднять приоритет
+	FilterLabel: Фильтр сбора
+	FilterNoneText: Без фильтра (собирает всё)
+	ClearFilterText: Сбросить
+	EditFilterText: Править
+	FilterHint: Держите предмет и нажмите ПКМ по сборщику, чтобы задать фильтр
+	StatusLabel: Состояние
+	ArmCountLabel: Манипуляторы
+	EnergyLabel: Энергия
+	StatusWorking: В работе
+	StatusNoEnergy: Нет энергии
+	StatusStarting: Запуск
+	StatusNoStorage: Нет доступного хранилища
+	CloseHint: "[ESC] или ещё раз ПКМ пустой рукой, чтобы закрыть"
 }
 
 SHPCSoulSelectUI: {
@@ -492,27 +492,27 @@ SHPCSoulSelectUI: {
 }
 
 ElysiumRoseWindow: {
-	// TitleText: Elysium
-	// SeatAliveText: In Office
-	// SeatEmptyText: Vacant
-	// SeatMartyredText: Martyred
-	// MartyrdomPowerText: Martyrdom Power {0}/11
-	// DragHintText: Drag a seat to reassign holy offices
-	// AbilityBrief_0: When ready, blocks part of one incoming hit for you
-	// AbilityBrief_1: Casts a net of light that drags foes caught inside
-	// AbilityBrief_2: Chain lightning leaps between up to four foes
-	// AbilityBrief_3: Gazes upon foes, raising all damage they take
-	// AbilityBrief_4: Consecrates your projectiles to bend gently toward foes
-	// AbilityBrief_5: Throws a blade that strips armor and reveals the foe
-	// AbilityBrief_6: Your strikes are guaranteed to crit for a while
-	// AbilityBrief_7: Blesses foes to burst into devoted golden rain on death
-	// AbilityBrief_8: Offers healing when you are wounded
-	// AbilityBrief_9: Bestows a random miracle
-	// AbilityBrief_10: Ignites fervor; nearby foes catch holy fire
-	// AbilityBrief_11: Lavish gifts, and a traitor's blade
+	TitleText: Небесный Элизиум
+	SeatAliveText: На посту
+	SeatEmptyText: Вакантно
+	SeatMartyredText: Мученически пал
+	MartyrdomPowerText: Сила мученичества {0}/11
+	DragHintText: Перетащите место, чтобы сменить священный сан
+	AbilityBrief_0: Когда святой щит готов, принимает часть урона от одного удара вместо тебя
+	AbilityBrief_1: На врагов падает сеть света и тянет попавших, замедляя их
+	AbilityBrief_2: Цепная святая молния прыгает между не более чем четырьмя врагами
+	AbilityBrief_3: Взгляд на врага повышает любой урон, который тот получает
+	AbilityBrief_4: Освящает твои снаряды, и они медленно заворачивают к врагам
+	AbilityBrief_5: Брошенный клинок сдирает броню и проявляет врага
+	AbilityBrief_6: На время все твои удары становятся критическими
+	AbilityBrief_7: Благословляет врагов: при смерти они взрываются дождём жертвенного золота
+	AbilityBrief_8: Когда ты ранен, приносит исцеление
+	AbilityBrief_9: Дарует случайное чудо
+	AbilityBrief_10: Разжигает рвение: ближайшие враги загораются святым пламенем
+	AbilityBrief_11: Щедрые дары — и нож предателя
 }
 
-// ElysiumFaithHud.MartyrdomPowerText: Martyrdom Power {0}/11
+ElysiumFaithHud.MartyrdomPowerText: Сила мученичества {0}/11
 MenuModify.OverhaulSettingsButtonText: Настройки Overhaul
 
 OverhaulSettingsUI: {
@@ -521,7 +521,7 @@ OverhaulSettingsUI: {
 	ContentSettingsText: Настройки контента
 	ReloadHintText: "[c/FF6666:* Опции с этой меткой требуют перезагрузки мода]"
 	WeaponOverrideText: Управление изменениями оружия
-	SearchHintText: Поиск по названию...
+	SearchHintText: Поиск по названию или пиньинь...
 	EnableAllText: Включить всё
 	DisableAllText: Отключить всё
 	WorldGenSettingsText: Настройки генерации мира
@@ -554,8 +554,8 @@ GalacticCrisisRender: {
 	KortoPlanetCountInfo: Система Корто — 6 планет
 	KortoStatusCompromised: Статус: Захвачена
 	HeaderAndroidProfile: ◢ ТАКТИЧЕСКОЕ ДОСЬЕ АНДРОИДА ◣
-	AndroidArtisName: АРТИС
-	AndroidApolaName: АПОЛА
+	AndroidArtisName: АЛТИС
+	AndroidApolaName: АПОЛЛИЯ
 	AndroidCodename: КОДОВОЕ ИМЯ
 	AndroidClassLabel: КЛАСС: ТАКТИЧЕСКИЙ АНДРОИД
 	AndroidStatusLabel: СТАТУС
@@ -597,19 +597,19 @@ DraedonIncomingCall: {
 	NextLabel: Продолжить
 	TimerLabel: Длительность
 	UnknownCaller: Неизвестно
-	ChannelPrefix: КАНАЛ
+	ChannelPrefix: CH
 }
 
 QuestManagerUI: {
-	TitleText: Управление поручениями
-	// ProviderLabelText: Client
-	// ProviderHalibut: The Halibut
-	// ProviderOnikiri: Onikiri
-	// ProviderKikasa: Kikasa
-	// ProviderSHPC: SHPC
-	// ProviderOldDuke: The Old Duke
-	// ProviderSupCal: Supreme Calamitas
-	// ProviderDraedon: Draedon
+	TitleText: Управление заданиями
+	ProviderLabelText: Заказчик
+	ProviderHalibut: Палтус
+	ProviderOnikiri: Оникири
+	ProviderKikasa: Кикаса
+	ProviderSHPC: SHPC
+	ProviderOldDuke: Старый Герцог
+	ProviderSupCal: Высшая Каламитас
+	ProviderDraedon: Дрэдон
 	CategoryAll: Все
 	CategoryActive: Активные
 	CategoryCompleted: Выполненные
@@ -617,8 +617,8 @@ QuestManagerUI: {
 	EmptyHintText: Поручений нет...
 	TrackHintText: "[ПКМ] Отслеживать / Не отслеживать"
 	SuspendHintText: "[СКМ] Приостановить / Возобновить"
-	HeaderStatusTag: ◈ АКТИВНО
-	FooterStatsFormat: ВСЕГО: {0}  |  АКТИВНЫХ: {1}
+	HeaderStatusTag: ◈ ACTIVE
+	FooterStatsFormat: TOTAL: {0}  |  ACTIVE: {1}
 	ExpandHintText: "[ЛКМ] Развернуть / Свернуть детали"
 	EntryStatusActive: Активно
 	EntryStatusTracked: Отслеживается
@@ -629,11 +629,11 @@ QuestManagerUI: {
 
 CyberwareUI: {
 	TitleText: Киберимпланты
-	StatusText: Состояние системы: В норме
+	StatusText: Состояние системы: в работе
 	SlotSelectedText: "[ Выбрано ]"
 	SlotEmptyText: Пусто
-	ClinicRequiredTitle: КИБЕРИМПЛАНТ ЗАБЛОКИРОВАН
-	ClinicRequiredDesc: Импланты может ставить только кибердоктор. Загляни к Виктору.
+	ClinicRequiredTitle: Имплант заблокирован
+	ClinicRequiredDesc: Импланты ставит только кибердоктор. Иди к Виктору на операцию.
 	Slot_FrontalCortex: Лобная кора
 	Slot_OcularSystem: Оптическая система
 	Slot_LeftArm: Левая рука
@@ -646,13 +646,13 @@ CyberwareUI: {
 	Slot_Skeleton: Скелет
 	Slot_RightLeg: Правая нога
 	Slot_NervousSystem: Нервная система
-	TooltipSlot: СЛОТ:
-	TooltipCapacityCost: ЗАТРАТЫ ЁМКОСТИ: {0}
+	TooltipSlot: Слот:
+	TooltipCapacityCost: Расход ёмкости: {0}
 	SkillRamCost: RAM {0}
 }
 
 VictorTalkUI: {
-	SpeakerName: ВИКТОР
+	SpeakerName: Виктор
 	Greet0: Ещё один клиент? Заходи, пока сквозняк не растащил твои запчасти.
 	Greet1: Хочешь тело покрепче? Сталь тебя не предаст — предаст только твой кошелёк.
 	Greet2: Я видел слишком многих глупцов, ловивших пули плотью. Теперь они живут лишь в моей памяти... и на моём операционном столе.
@@ -665,150 +665,150 @@ VictorTalkUI: {
 	Greet9: Время — деньги. Моё, конкретно. Говори, что нужно, и без лишних слов.
 	Greet10: Новым деталям нужна обкатка. Постарайся несколько дней не попадать под плотный огонь.
 	Greet11: Тело — просто инструмент. Твой выглядит так, будто давно пропустил техобслуживание.
-	// TalkFirstMeet0: A new face. Let me guess - you're not here for a doctor, you're here for a miracle. Sit down, I sell both.
-	// TalkFirstMeet1: Welcome, customer. Three house rules: no credit, no questions about your past, and no critiquing my work.
-	// TalkPostSurgery0: The sutures are still warm. Don't block any blades with the new parts for twenty-four hours.
-	// TalkPostSurgery1: The surgery went perfectly. Of course, mine always do.
-	// TalkPostSurgery2: How does it feel? Any rattling, current leaks or phantom pain, come straight back - repairs cost extra.
-	// TalkMoodHomeless0: Until you people clear out a clinic room for me, the prices include an open-air operating fee.
-	// TalkMoodHomeless1: I can't do precision work with the table strapped to my back. Get me a house and we can talk prices.
-	// TalkMoodHappy0: I'm in a good mood today, so I rounded your quote down. Keep it to yourself.
-	// TalkMoodHappy1: I like this place. Enough to give you a discount, even.
-	// TalkMoodGrumpy0: Don't complain about the prices. Move me somewhere agreeable and they'll drop on their own.
-	// TalkMoodGrumpy1: Bad mood, unsteady scalpel. The risk surcharge is in the bill - and it's your fault.
-	// TalkNoChrome0: A fully original body... rare. Like an old machine that has never had a firmware update.
-	// TalkNoChrome1: Not a single implant? Are you here to browse, or to feel nostalgic?
-	// TalkFullChrome0: There's more chrome than flesh on you. Even your footsteps sound like my cash register.
-	// TalkFullChrome1: Your capacity is almost full, customer. Install any more and you'll need a power upgrade first.
-	// TalkLowHealth0: You're bleeding. Sit down first - customers dying in my doorway is bad for business.
-	// TalkLowHealth1: That blood pressure is setting off alarms. Wounds first, invoice later.
-	// TalkRich0: I smell platinum. What are we replacing today? A full set works too.
-	// TalkPoor0: Pockets cleaner than my sterile tray? Go earn some coin first - cyberware doesn't come on credit.
-	// TalkPoor1: No money? No matter. Sell some loot and come back - we're open all night.
-	// TalkSandevistan0: Is the Sandevistan running smooth? Don't get greedy with it - fried nerves bill as a full rebuild.
-	// TalkPreHardmode0: This world's technology is still wood and stone. Good thing I brought my own tools.
-	// TalkPreHardmode1: Upgrade the body before the calamity upgrades itself. That advice was free.
-	// TalkHardmode0: Business tripled since the world cracked open. Light and blight chew through flesh all the same.
-	// TalkHardmode1: The new monsters out there tear people apart fast. Can your reflexes keep up? If not, I have stock.
-	// TalkPostMoonlord0: Even the Moon Lord went down. Seems some of my customers really are monsters.
-	// TalkPostMoonlord1: A god's remains make excellent material. If you picked any up, save me a share.
-	// TalkPostSupCal0: You beat the Calamity herself and still keep this much flesh. I'm starting to think my chrome is just jewelry to you.
-	// TalkBloodMoon0: A blood moon? Just an overtime shift for me. There'll be a queue of severed limbs at the door soon.
-	// TalkBloodMoon1: Stay away from the doorway tonight. Under a blood moon even the rabbits want a bite of you.
-	// TalkEclipse0: Only hard cases go out during an eclipse. Be well-equipped or be fast.
-	// TalkRain0: Oil your exposed joints in the rain. I've fixed too many rusted elbows.
-	// TalkRain1: Rain. Humidity is bad for circuits and good for business.
-	// TalkDeepNight0: Still awake at this hour? Fair enough - cybereyes don't need to close.
-	// TalkDeepNight1: Deep night is my favorite business hour. Quiet, and the customers are always in a hurry.
-	// TalkUnderground0: The underground is good. Stable temperature, stable humidity, no signal, no interruptions mid-surgery.
-	// TalkUnderground1: My first clinic was underground too. The customers feared daylight just like these ones.
-	// TalkSnow0: Cold is good. Parts don't overheat, and the bodies - I mean the stock - keep longer.
-	// TalkJungle0: Jungle damp gets into sealed casings within three days. Book a maintenance check when you leave.
-	// TalkBeach0: The coast? Salt spray is the number one killer of cyberware. I'd advise against settling here.
-	// TalkEvil0: This land is corroding your parts and you alike. I can only fix one of the two.
+	TalkFirstMeet0: Новое лицо. Дай угадаю: ты не за врачом, ты за чудом. Садись, я торгую и тем и другим.
+	TalkFirstMeet1: Добро пожаловать, клиент. Три правила: в долг не даю, о прошлом не спрашиваю, в моё ремесло не лезь.
+	TalkPostSurgery0: Швы ещё тёплые. Двадцать четыре часа не подставляй новые детали под клинок.
+	TalkPostSurgery1: Операция прошла успешно. Впрочем, мои операции всегда успешны.
+	TalkPostSurgery2: Как ощущения? Стук, утечка тока, фантомная боль — заходи сразу. Ремонт отдельно.
+	TalkMoodHomeless0: Пока вы не выделите мне кабинет, в цену входит надбавка за работу под открытым небом.
+	TalkMoodHomeless1: Со столом на спине тонкую работу не сделаешь. Найдите мне комнату — о цене договоримся.
+	TalkMoodHappy0: Сегодня настроение хорошее, я скинул тебе мелочь с цены. Только молчи.
+	TalkMoodHappy1: Мне тут вполне уютно. Настолько, что готов дать скидку.
+	TalkMoodGrumpy0: Не ной из-за цен. Перевезите меня туда, где жить приятно — цены сами упадут.
+	TalkMoodGrumpy1: Настроение плохое — скальпель дрожит. В счёте есть надбавка за риск, и виноваты в этом вы.
+	TalkNoChrome0: Полностью родное тело… редкость. Как старая машина, которую ни разу не прошивали.
+	TalkNoChrome1: Ни одного импланта? Ты пришёл поглазеть или поностальгировать?
+	TalkFullChrome0: Хрома на тебе больше, чем плоти. Даже шаги звучат как моя касса.
+	TalkFullChrome1: Ёмкость почти полная, клиент. Ещё импланты — сначала апгрейд питания.
+	TalkLowHealth0: Ты истекаешь кровью. Сядь. Клиенты, умирающие в дверях, плохо влияют на дело.
+	TalkLowHealth1: Давление уже орёт сигнализацией. Сначала раны, счёт потом.
+	TalkRich0: Пахнет платиной. Что меняем сегодня? Можно и полный комплект.
+	TalkPoor0: Карманы чище стерильного лотка? Сначала заработай. Киберимпланты в долг не ставлю.
+	TalkPoor1: Нет денег — не унывай. Продай трофеи и возвращайся. Я работаю всю ночь.
+	TalkSandevistan0: Сандевистан ещё ровно ходит? Не жадничай со скоростью: сожжённые нервы считаются как полная пересборка.
+	TalkPreHardmode0: Техника этого мира всё ещё дерево и камень. Хорошо, что я привёз свой набор.
+	TalkPreHardmode1: Пока бедствие само не прокачалось, прокачай тело. Этот совет бесплатный.
+	TalkHardmode0: После того как мир треснул, дел стало втрое больше. Святой свет и скверна жрут плоть одинаково.
+	TalkHardmode1: Новые твари снаружи рвут людей быстро. Рефлексы успевают? Если нет — у меня есть товар.
+	TalkPostMoonlord0: Даже Лунный лорд пал. Видать, среди моих клиентов и впрямь водятся монстры.
+	TalkPostMoonlord1: Останки богов — отличный материал. Нашёл — оставь мне долю.
+	TalkPostSupCal0: Победил саму Каламитас и всё ещё ходишь в плоти. Начинаю думать, что импланты для тебя просто украшения.
+	TalkBloodMoon0: Кровавая луна? Для меня просто сверхурочная смена. Скоро у дверей выстроится очередь из оторванных конечностей.
+	TalkBloodMoon1: Сегодня не стой в дверях. Под кровавой луной даже кролики норовят откусить от тебя кусок.
+	TalkEclipse0: В солнечное затмение на улицу выходят только жёсткие. Либо ты в полном снаряжении, либо очень быстрый.
+	TalkRain0: В дождь смазывай открытые суставы. Ржавых локтей я чинил слишком много.
+	TalkRain1: Дождь. Сырость враг схем и друг кассы.
+	TalkDeepNight0: Ещё не спишь в такой час? Логично: киберглазам не нужно закрываться.
+	TalkDeepNight1: Глубокая ночь — мой любимый час. Тихо, и клиенты всегда торопятся.
+	TalkUnderground0: Под землёй хорошо: температура и влажность стабильны, сигнал глушится, никто не мешает резать.
+	TalkUnderground1: Моя первая клиника тоже была под землёй. Клиенты тогда так же боялись света.
+	TalkSnow0: Холод — это хорошо. Детали не перегреваются, а трупы… то есть запасы… хранятся дольше.
+	TalkJungle0: Сырость джунглей за три дня пролезает в герметичный корпус. Уйдёшь — загляни на обслуживание.
+	TalkBeach0: Побережье? Соляной туман — убийца номер один для имплантов. Не советую тут селиться.
+	TalkEvil0: Эта земля разъедает и детали, и тебя. Из двух я чиню только одно.
 	ClinicButtonText: Киберклиника
 	ChatButtonText: Поболтать
 	LeaveButtonText: Уйти
 }
 
 VictorClinicUI: {
-	TitleText: КЛИНИКА ВИКТОРА
-	StatusText: КИБЕРДОКТОР НА СВЯЗИ — ВЫБЕРИ КОНЕЧНОСТЬ
+	TitleText: Клиника Виктора
+	StatusText: Кибердоктор на связи: выбери часть тела
 	GuideText: Выбери часть тела, чтобы осмотреть, заменить и купить киберимпланты.
-	LabelOwned: В НАЛИЧИИ
-	LabelForSale: В ПРОДАЖЕ
-	EmptyOwned: ( в рюкзаке пусто )
-	EmptyShop: ( больше нечего продать )
-	// PriceFactorText: MOOD PRICE x{0}
-	// SlotFallbackText: CYBERWARE
+	LabelOwned: В наличии
+	LabelForSale: В продаже
+	EmptyOwned: (в рюкзаке пусто)
+	EmptyShop: (больше нечего продать)
+	PriceFactorText: Коэффициент цены ×{0}
+	SlotFallbackText: Киберимплант
 }
 
-// VictorSurgery.SurgeryInProgressText: SURGERY IN PROGRESS
+VictorSurgery.SurgeryInProgressText: Идёт операция
 
 TBUGTalkUI: {
-	// SpeakerName: TBUG
-	// Greet0: You're here? Browse away. Don't touch the bundle of cables behind the rig - that's my spine.
-	// Greet1: Your walk cycle has a tiny loop. Repeats every seven steps. Don't worry, most people have one.
-	// Greet2: This world's physics is decently written. The water part was clearly rushed.
-	// Greet3: Everything's on the shelf. I set the prices. Save the haggling breath.
-	// Greet4: Daylight glares all over my screens. Come at night - I'm nicer at night.
-	// Greet5: Don't ask where I'm from. What's the hometown of an error message?
-	// Greet6: Coins are funny. Heavy, waste pocket space - but you all trust them, so I do too.
-	// Greet7: I don't do repairs. I sell. If it breaks, that's a user-side issue.
-	// Greet8: I fell out the night Skeletron died. Not thanking him, but his grip did slip first.
-	// Greet9: You've got empty equipment slots. Empty slots are wasted slots.
-	// Greet10: Sleep is a patch, and a lazy one. I mostly skip it.
-	// Greet11: Make it quick. I've got three processes hanging and waiting for me.
-	// TalkFirstMeet0: New face. I'm TBUG - the one who fell out of that seam. Drop the look. My landing wasn't THAT bad.
-	// TalkFirstMeet1: Oh, it talks. Better than the slimes. Shelf's there if you're buying; talk fast if you're not.
-	// TalkFirstPurchase0: Deal. No receipt - my memory is more reliable than paper.
-	// TalkFirstPurchase1: Hold it tight. If it misbehaves, review your own usage habits first.
-	// TalkMoodHomeless0: I'm sleeping under open sky and my hardware dews up every morning. Get me a room, prices drop a notch.
-	// TalkMoodHomeless1: A shop without a roof is a street stall. I don't enjoy being a street vendor.
-	// TalkMoodHappy0: Good mood today. My hand slipped on the quotes - downward. Keep it quiet.
-	// TalkMoodHappy1: This place grows on me. Your architecture beats your physics engine.
-	// TalkMoodGrumpy0: Don't whine about prices. Move me somewhere decent and they'll fall on their own.
-	// TalkMoodGrumpy1: Bad mood, spiky quotes. That's market dynamics, not my problem.
-	// TalkHackUnlocked0: That rig in your eyes is decent work. Who installed it? Above this world's average.
-	// TalkHackUnlocked1: Customers who can breach are good customers. At least they never ask which end the chip goes in.
-	// TalkHackLocked0: Half my stock is useless to you right now. Get yourself breach-capable first.
-	// TalkLowHealth0: You're dripping. Nurse first - my shelf doesn't stock blood bags.
-	// TalkLowHealth1: Health bars only matter near the bottom. Yours is nearly there.
-	// TalkRich0: I smell platinum. Which shelf are we emptying today?
-	// TalkPoor0: Pockets cleaner than my recycle bin. Go earn something - I don't do credit.
-	// TalkPoor1: No money? Then it's an exhibition. Looking is free. Touching isn't.
-	// TalkPreHardmode0: The world is still early-game. Monster stats are written politely. Stock up while it lasts.
-	// TalkPreHardmode1: That wall of flesh hasn't fallen yet. When it does, you'll be back to clear my shelves.
-	// TalkHardmode0: The world took a major patch. Stronger monsters, better drops. Good for business.
-	// TalkHardmode1: Light and dark are tearing up the map out there. Don't stand next to fresh seams - I fell out of one.
-	// TalkPostMoonlord0: You dismantled the Moon Lord. I'd like a copy of your combat log. For study.
-	// TalkPostMoonlord1: You fight gods and still shop at my little stall. Should I raise prices or be touched?
-	// TalkPostSupCal0: Even the Calamity herself is down. At this point YOU are this world's biggest exploit.
-	// TalkBloodMoon0: Blood moon. Spawn rates doubled tonight - the things at the door are in more of a hurry than you.
-	// TalkBloodMoon1: All red out there tonight. I shrank the door's hitbox a little. Safety first.
-	// TalkEclipse0: An eclipse. Day got louder than night. Hard not to suspect someone flipped a config flag.
-	// TalkRain0: Rain. My gear is bagged. Yours is your call.
-	// TalkRain1: The raindrops fall in perfectly straight lines. Not even a wind term. Lazy.
-	// TalkDeepNight0: Still up at this hour? Fine. Night owls get five percent off - kidding, full price.
-	// TalkDeepNight1: Deep night. Fewer processes running. The world genuinely runs smoother.
-	// TalkUnderground0: Underground is good. Stable temperature, quiet, and the rock blocks all the signal noise.
-	// TalkUnderground1: Smell that? Server-room air. I suspect this world's host machine is buried somewhere down here.
-	// TalkSnow0: The tundra is honestly cold. Hardware lasts two extra years out here.
-	// TalkJungle0: Jungle humidity rides the alarm line all day. My stock wouldn't survive a week here.
-	// TalkBeach0: The coast? My gear took seawater once. That repair bill would've bought three new boards.
-	// TalkEvil0: The corrosion here genuinely chews circuits. Your gear and your skin - it isn't picky.
-	// ShopButtonText: Hack Shop
-	// ChatButtonText: Small Talk
-	// LeaveButtonText: Leave
-	// PriceFactorText: PRICE x{0}
+	SpeakerName: TBUG
+	Greet0: Пришёл? Смотри сколько хочешь. Только не трогай жгут за системником — это мой позвоночник.
+	Greet1: В твоей походке крошечный цикл. Повторяется каждые семь шагов. Не парься, у большинства так.
+	Greet2: Физика этого мира написана нормально. Воду явно клепали наспех.
+	Greet3: Товар на полках. Цену ставлю я. Силы на торг можешь не тратить.
+	Greet4: Днём слишком светло, экраны сплошь в бликах. Приходи ночью — ночью я добрее.
+	Greet5: Не спрашивай, откуда я. Как назвать родиной сообщение об ошибке?
+	Greet6: Монеты забавные: тяжёлые, жрут карман, но вы все в них верите — значит, и я верю.
+	Greet7: Я не чиню. Я продаю. Сломалось — проблемы на стороне пользователя.
+	Greet8: Я выпал в ночь, когда пал Скелетрон. Не то чтобы я ему благодарен, но пальцы разжал именно он.
+	Greet9: В слотах экипировки ещё дыры. Пустой слот — это пустая трата.
+	Greet10: Сон — это патч, да ещё кривой. Я его обычно пропускаю.
+	Greet11: Говори быстрее. У меня там три процесса висят и ждут.
+	TalkFirstMeet0: Новое лицо. Я TBUG — тот, кто вывалился из той щели. Убери этот взгляд. Приземление у меня было не настолько жалкое.
+	TalkFirstMeet1: О, умеет говорить. Уже лучше слизня. Покупать — смотри полки. Болтать — пока я компилирую.
+	TalkFirstPurchase0: Сделка. Чека нет: моя память надёжнее бумаги.
+	TalkFirstPurchase1: Держи крепче. Что-то не так — сначала разберись со своими привычками.
+	TalkMoodHomeless0: Сплю под открытым небом, железо каждое утро в росе. Дайте комнату — цены съедут на ступень.
+	TalkMoodHomeless1: Лавка без крыши — это лоток. Не люблю быть лоточником.
+	TalkMoodHappy0: Сегодня настроение хорошее. Палец соскользнул по ценнику — вниз. Только молчи.
+	TalkMoodHappy1: Это место всё больше нравится. Ваша архитектура сильнее вашего физического движка.
+	TalkMoodGrumpy0: Не ной, что дорого. Перевезите меня куда-нибудь приличное — цены сами упадут.
+	TalkMoodGrumpy1: Настроение дрянь — ценник злой. Это рынок, не я.
+	TalkHackUnlocked0: Штука в твоих глазах неплохая. Кто ставил? Выше среднего по этому миру.
+	TalkHackUnlocked1: Клиент, который умеет взламывать — хороший клиент. Хотя бы не спрашивает, каким концом вставлять чип.
+	TalkHackLocked0: Половина моего товара тебе сейчас бесполезна. Сначала раздобудь снарягу для взлома.
+	TalkLowHealth0: С тебя капает. Сначала к медсестре. Пакеты с кровью я не держу.
+	TalkLowHealth1: Полоска жизни имеет значение, только когда почти на дне. Твоя уже близко.
+	TalkRich0: Пахнет платиной. Какую полку сегодня опустошаем?
+	TalkPoor0: Карманы чище моей корзины. Сначала заработай. В долг не даю.
+	TalkPoor1: Нет денег — считай, что выставка. Смотреть можно. Трогать нельзя.
+	TalkPreHardmode0: Мир ещё на ранней стадии. Цифры у монстров вежливые. Запасайся, пока так.
+	TalkPreHardmode1: Стена плоти ещё стоит. Упадёт — вернёшься и выгребешь мои полки.
+	TalkHardmode0: Мир получил крупный патч. Монстры сильнее, лут дороже. Для бизнеса хорошо.
+	TalkHardmode1: Свет и тьма рвут карту снаружи. Не стой у свежих трещин. Я как раз оттуда и выпал.
+	TalkPostMoonlord0: Ты разобрал Лунного лорда. Хочу копию твоего боевого лога. Для учёбы.
+	TalkPostMoonlord1: Богов уже перебил и всё равно заходишь в мою лавчонку. Мне цены поднять или растрогаться?
+	TalkPostSupCal0: Даже Высшая Каламитас пала. Теперь главная дыра этого мира — это ты.
+	TalkBloodMoon0: Кровавая луна. Ночь с удвоенным спавном. Те, кто у дверей, торопятся сильнее тебя.
+	TalkBloodMoon1: Сегодня снаружи всё красное. Я чуть ужал хитбокс двери. Безопасность прежде всего.
+	TalkEclipse0: Затмение. День шумнее ночи. Трудно не подумать, что кто-то перепутал конфиг.
+	TalkRain0: Дождь. Моё железо в пакетах. Со своим снаряжением разбирайся сам.
+	TalkRain1: Капли падают строго по прямой. Даже члена ветра не дали. Халява.
+	TalkDeepNight0: Ещё не спишь? Ладно, совам скидка пять процентов. Шутка. Полная цена.
+	TalkDeepNight1: Глубокая ночь хороша: процессов меньше, мир и правда глаже, чем днём.
+	TalkUnderground0: Под землёй хорошо: температура ровная, тихо, камень глушит весь шум сигнала.
+	TalkUnderground1: Чуешь? Запах серверной. Подозреваю, хост этого мира закопан где-то внизу.
+	TalkSnow0: В снегах холод честный. Железо здесь протянет на два года дольше.
+	TalkJungle0: Влажность джунглей каждый день жмёт на аварийную черту. Мой товар тут неделю не проживёт.
+	TalkBeach0: Побережье? Моё железо один раз хлебнуло моря. Тот ремонт стоил трёх новых плат.
+	TalkEvil0: Коррозия здесь и вправду жрёт схемы. Снаряжение или кожа — ей всё равно.
+	ShopButtonText: Магазин хакера
+	ChatButtonText: Поболтать
+	LeaveButtonText: Уйти
+	PriceFactorText: Коэффициент цены ×{0}
 }
 
 TBUGShopUI: {
-	// TitleText: TBUG BUG MARKET
-	// BuyTabText: BUY
-	// SellTabText: SELL
-	// BalanceText: BALANCE
-	// PriceText: PRICE
-	// SellPriceText: OFFER
-	// TagAffordText: IN STOCK
-	// TagNoFundsText: NO FUNDS
-	// TagSoldOutText: SOLD OUT
-	// StockText: STOCK x{0}
-	// SpecialTagText: -25%
-	// SpecialTipText: daily special, 25% off
-	// RestockText: restock at dawn, {0} left
-	// SellHintText: left click sells one, right click sells the stack
-	// SellReceiptText: sold {0} x{1}
-	// SellEmptyText: nothing sellable in your bag
-	// StatusPendingText: awaiting authority...
-	// ResultSuccessText: exit 0 · transaction complete
-	// ResultInvalidText: ERR: bad request
-	// ResultOutOfRangeText: ERR: too far from vendor
-	// ResultNoFundsText: ERR: insufficient funds
-	// ResultNoSpaceText: ERR: inventory full
-	// ResultOutOfStockText: ERR: sold out, restock at dawn
-	// ResultBusyText: ERR: too many requests, slow down
-	// ResultTimeoutText: ERR: request timed out
+	TitleText: Чёрный рынок уязвимостей TBUG
+	BuyTabText: Купить
+	SellTabText: Продать
+	BalanceText: Баланс
+	PriceText: Цена
+	SellPriceText: Цена скупки
+	TagAffordText: Можно купить
+	TagNoFundsText: Не хватает средств
+	TagSoldOutText: Нет в наличии
+	StockText: Склад ×{0}
+	SpecialTagText: -25%
+	SpecialTipText: Сегодняшняя акция, скидка 25%
+	RestockText: Пополнение на рассвете, осталось {0}
+	SellHintText: ЛКМ — продать одну, ПКМ — продать стопку
+	SellReceiptText: Продано {0} ×{1}
+	SellEmptyText: В инвентаре нечего продать
+	StatusPendingText: Ожидание ответа авторитетной стороны…
+	ResultSuccessText: exit 0 · сделка завершена
+	ResultInvalidText: ERR: запрос недействителен
+	ResultOutOfRangeText: ERR: слишком далеко от торговца
+	ResultNoFundsText: ERR: не хватает средств
+	ResultNoSpaceText: ERR: инвентарь полон
+	ResultOutOfStockText: ERR: это уже распродано, приходи после рассвета
+	ResultBusyText: ERR: слишком часто, помедленнее
+	ResultTimeoutText: ERR: время запроса истекло
 }
 
 EntrustManagerNotification: {
@@ -830,9 +830,9 @@ HackTime: {
 	UploadQueue: Очередь загрузки
 	TargetLocked: Цель захвачена
 	HpFormat: HP {0}%
-	Protocols: "[{0} Протоколов]"
-	RamDepleted: !! RAM ИСЧЕРПАН !!
-	LowRam: ! НЕДОСТАТОЧНО RAM !
+	Protocols: "[{0} протоколов]"
+	RamDepleted: !! RAM исчерпан !!
+	LowRam: ! Недостаточно RAM !
 	Scanning: Сканирование...
 	AnalysisComplete: Анализ завершен
 	TypeLabel: Тип
@@ -856,7 +856,7 @@ HackTime: {
 	SystemBreach: Взлом системы
 	Rebooting: Перезагрузка...
 	SystemOnline: Система в сети
-	MemoryWiped: ПАМЯТЬ СТЁРТА
+	MemoryWiped: Память стёрта
 	Cyberpsychosis: Киберпсихоз
 	RamRefund: +{0} RAM
 	ActiveText: Активно
@@ -898,8 +898,8 @@ HackTime: {
 	ProjectileScanKnockback: Отбрасывание
 	ProjectileScanPenetrate: Пробивание
 	ProjectileScanTimeLeft: Оставшееся время
-	ProjectileScanOwner: Владелец
-	ProjectileScanAI: ИИ
+	ProjectileScanOwner: Источник
+	ProjectileScanAI: AI
 	ProjectileScanPosition: Координаты
 	ProjectileScanHostile: Враждебный снаряд
 	ProjectileScanFriendly: Союзный снаряд
@@ -963,8 +963,8 @@ HackTime: {
 	WaterScanStatusFlowing: В движении
 	CatParanormal: Паранормальное
 	TurretScanName: Кодовое имя
-	TurretScanLaserName: Массив Главных Орудий Пустоты
-	TurretScanGatlinName: Скорострельная Турель Пустоты
+	TurretScanLaserName: Пустота · массив главных орудий
+	TurretScanGatlinName: Пустота · скорострельная турель
 	TurretScanType: Механизм автозащиты
 	TurretScanPhase: Текущая фаза
 	TurretScanPhaseIdle: Ожидание
@@ -976,102 +976,102 @@ HackTime: {
 	TurretScanCircuitOnline: В сети
 	TurretScanCircuitShorted: Короткое замыкание
 	TurretScanCircuitOverload: Паралич от перегрузки
-	SignalTowerScanName: Сигнальная Башня Пустоты
+	SignalTowerScanName: Пустота · сигнальная башня
 	SignalTowerScanType: Широковещательный механизм ядра
 	SignalTowerScanThreat: Стратегический актив
 	SignalTowerScanStatus: Состояние башни
-	SignalTowerScanStatusOnline: В сети · Ожидание трансляции
-	SignalTowerScanStatusBroadcasting: Идет трансляция
+	SignalTowerScanStatusOnline: В сети · ожидание трансляции
+	SignalTowerScanStatusBroadcasting: Идёт трансляция
 	SignalTowerScanStatusElectrified: Остаточный заряд
 	SignalTowerScanProtocol: Доступные протоколы
-	RightClickHint: ПКМ для снятия выделения с цели
-	// StatusReady: READY
-	// StatusNoRam: NO RAM
-	// UplinkHeader: UPLINK
-	// DataTab: DATA
-	// ScanTab: SCAN
-	// TargetTagged: TARGET TAGGED
-	// FooterUpload: UPLOAD {0}s
-	// FooterCost: COST {0} RAM
+	RightClickHint: ПКМ, чтобы снять выделение с цели
+	StatusReady: Готово
+	StatusNoRam: Недостаточно RAM
+	UplinkHeader: Восходящий канал
+	DataTab: Данные
+	ScanTab: Сканер
+	TargetTagged: Цель отмечена
+	FooterUpload: Загрузка {0}с
+	FooterCost: Расход {0} RAM
 	AccessDeniedTitle: Время взлома недоступно
 	AccessDeniedDesc: Требуется умное оружие или сетевой киберимплант для использования навыков взлома
-	// ProtocolsOwned: "[{0}/{1} PROTOCOLS]"
-	// NoProtocolTitle: NO PROTOCOL AVAILABLE
-	// NoProtocolHint: No protocol in your daemon library works on this target. Use a protocol chip to write one in.
-	// ChipGrants: Writes protocol: {0}
-	// ChipTarget: Works on: {0}
-	// ChipOneShot: One-time write; unusable afterwards.
-	// ChipAlreadyOwned: Already in your daemon library.
-	// Erased: DELETED
+	ProtocolsOwned: "[{0}/{1} протоколов]"
+	NoProtocolTitle: Нет доступных протоколов
+	NoProtocolHint: В библиотеке протоколов нет ни одного, который действует на эту цель. Запиши его чипом протокола
+	ChipGrants: Записывает протокол: {0}
+	ChipTarget: Действует на: {0}
+	ChipOneShot: Одноразовая запись, после записи больше не использовать
+	ChipAlreadyOwned: Этот протокол уже в библиотеке протоколов
+	Erased: Снят с учёта
 }
 
 SelfRigScanText: {
-	// RamLabel: RAM
-	// RecoveryLabel: RECOVERY
-	// CyberCapacityLabel: CYBERWARE
-	// ImplantCountLabel: IMPLANTS
-	// HeldChargeLabel: HELD CHARGE
-	// SandeCooldownLabel: SANDE CD
-	// WraithLabel: WRAITH
-	// ErosionLabel: EROSION
-	// ProtocolLabel: PROTOCOLS
-	// NoneText: —
-	// RamLockFormat: RAM {0}%
-	// DormantFormat: DORMANT {0}s
-	// TransmuteGainFormat: +{0} RAM
-	// DriveSettleText: Erosion deepens; wraith dormant
+	RamLabel: RAM
+	RecoveryLabel: Восстановление
+	CyberCapacityLabel: Ёмкость имплантов
+	ImplantCountLabel: Установлено
+	HeldChargeLabel: Заряд в руках
+	SandeCooldownLabel: Перезарядка Санде
+	WraithLabel: Ведомый
+	ErosionLabel: Эрозия
+	ProtocolLabel: Библиотека протоколов
+	NoneText: Нет
+	RamLockFormat: RAM {0}%
+	DormantFormat: Сон {0} с
+	TransmuteGainFormat: +{0} RAM
+	DriveSettleText: Эрозия углубляется, ведомый спит
 }
 
 PlayerScanText: {
-	// NameLabel: OPERATOR
-	// StanceLabel: STANCE
-	// StancePeaceful: PVP OFF
-	// StanceAlly: SAME TEAM
-	// StanceHostile: HOSTILE
-	// StanceSealed: SEALED
-	// HpLabel: VITALS
-	// DefenseLabel: DEFENSE
-	// RamLabel: RAM BAND
-	// RamBandEmpty: EMPTY
-	// RamBandLow: LOW
-	// RamBandHalf: HALF
-	// RamBandHigh: HIGH
-	// RamBandFull: FULL
-	// CyberLabel: CYBERWARE
-	// CyberFirewallFormat: "{0} · FIREWALL"
-	// ProtocolLabel: PROTOCOLS
-	// ThreatLabel: THREAT
-	// ProbingText: PROBING…
+	NameLabel: Оператор
+	StanceLabel: Сторона
+	StancePeaceful: PvP выкл.
+	StanceAlly: Союзник
+	StanceHostile: Враг
+	StanceSealed: Недоступен для взлома
+	HpLabel: Жизнь
+	DefenseLabel: Защита
+	RamLabel: Диапазон RAM
+	RamBandEmpty: Пусто
+	RamBandLow: Низкий
+	RamBandHalf: Половина
+	RamBandHigh: Высокий
+	RamBandFull: Полный
+	CyberLabel: Импланты
+	CyberFirewallFormat: "{0} · обнаружен файрвол"
+	ProtocolLabel: Библиотека протоколов
+	ThreatLabel: Оценка угрозы
+	ProbingText: Зонд считывает…
 }
 
 PvPHudText: {
-	// BeingHackedBy: BEING HACKED BY {0}
-	// MoreIntrusions: +{0} INTRUSIONS
-	// UploadCanceled: LINK SEVERED
-	// UploadLanded: >> BREACHED <<
-	// PositionExposed: POSITION EXPOSED
-	// GaugeUntrusted: READOUT UNRELIABLE
-	// GaugeSyncTag: SYNC
-	// GaugeLifeTag: HP
-	// GaugeManaTag: MP
-	// TracebackFlip: TRACEBACK ACTIVE
-	// AlertTraced: LINK TRACED BACK
-	// AlertTargetLost: TARGET LOST · RAM REFUNDED
-	// AlertRejectedFormat: REJECTED · CODE {0}
-	// ImplantPanelTitle: IMPLANTS
-	// ImplantUninstalled: UNINSTALLED
-	// ImplantExpired: EXPIRED
-	// SignalLost: SIGNAL LOST
-	// RemainSecondsFormat: "{0}s"
-	// CasterFormat: BY {0}
-	// DistanceFormat: "{0}m"
+	BeingHackedBy: Вас взламывает {0}
+	MoreIntrusions: +{0} путей взлома
+	UploadCanceled: Канал оборван
+	UploadLanded: >> Вас имплантировали <<
+	PositionExposed: Позиция раскрыта
+	GaugeUntrusted: Показаниям нельзя верить
+	GaugeSyncTag: Калибровка
+	GaugeLifeTag: Жизнь
+	GaugeManaTag: Мана
+	TracebackFlip: Обратная трассировка активна
+	AlertTraced: Канал прослежен в обратную сторону
+	AlertTargetLost: Цель потеряна · RAM возвращён
+	AlertRejectedFormat: Имплант отклонён · код {0}
+	ImplantPanelTitle: Импланты
+	ImplantUninstalled: Снят
+	ImplantExpired: Срок истёк
+	SignalLost: Сигнал потерян
+	RemainSecondsFormat: "{0}с"
+	CasterFormat: От {0}
+	DistanceFormat: "{0}m"
 }
 
 PvPDefenderText: {
-	// CommsGarbled: COMMS GARBLED
-	// ActuationLagFormat: ACTUATION +{0}%
-	// Exposed: OUTLINE EXPOSED
-	// CyberOffline: CYBERWARE OFFLINE
+	CommsGarbled: Канал в каше
+	ActuationLagFormat: Задержка удара +{0}%
+	Exposed: Контур засвечен
+	CyberOffline: Импланты офлайн
 }
 
 DecryptionStrings: {
@@ -1107,53 +1107,53 @@ DecryptionStrings: {
 
 SHPCUI: {
 	CyberDomain_Title: Кибердомен
-	CyberDomain_Subtitle: КИБЕРПРОСТРАНСТВО
-	CyberDomain_Description: Развернуть/Управлять многоуровневым киберпространством
+	CyberDomain_Subtitle: CYBER DOMAIN
+	CyberDomain_Description: Развернуть/управлять многоуровневым киберпространством
 	Cyberware_Title: Киберимпланты
-	Cyberware_Subtitle: ИМПЛАНТЫ
+	Cyberware_Subtitle: CYBERWARE
 	Cyberware_Description: Открыть менеджер кибернетических улучшений
 	Cyberware_Status_Open: Открыто
 	Cyberware_Status_Closed: Закрыто
 	Status_Title: Информация о статусе
-	Status_Subtitle: СТАТУС
+	Status_Subtitle: STATUS
 	Status_Description: Просмотр текущей информации о перегрузке и откате
-	Status_OK: ОК
+	Status_OK: OK
 	Config_Title: Системные настройки
-	Config_Subtitle: КОНФИГУРАЦИЯ
+	Config_Subtitle: CONFIG
 	Config_Description: Настройка вспомогательных опций и параметров отображения
 	State_On: Вкл
 	State_Off: Выкл
-	State_Layer: УР
+	State_Layer: L
 	Cyber_PanelTitle: Кибердомен
-	Cyber_PanelSubtitle: ДОСТУП К ЗАСЛОНУ
+	Cyber_PanelSubtitle: BLACKWALL ACCESS
 	Cyber_BtnActivate: Активировать домен
-	Cyber_BtnDeactivate: Деактивировать домен
+	Cyber_BtnDeactivate: Закрыть домен
 	Cyber_LayerLabel: Уровень
 	Cyber_StateOnline: В сети
 	Cyber_StateOffline: Вне сети
-	Cyber_Hint: "[{0}] Переключить домен / Нажмите на сегмент кольца для смены уровня"
+	Cyber_Hint: "[{0}] Переключить домен / нажмите на сегмент кольца для смены уровня"
 	Cyber_Layer1_Title: Базовый доступ
 	Cyber_Layer2_Title: Глубокое погружение
 	Cyber_Layer3_Title: Прорыв заслона
 	Cyber_NoSkill: Нет уникальных навыков
-	Cyber_LayerBaseFooter: Базовый уровень — только для создания поля домена
+	Cyber_LayerBaseFooter: Базовый уровень: только для создания поля домена
 	Cyber_SkillUnlocked: "[#] Разблокировано"
 	Cyber_SkillLocked: "[X] Требуется домен {0} уровня"
 	Cyber_KeyUnbound: Не привязано
 	Cyber_Skill_Teleport_Name: Пространственный скачок
-	Cyber_Skill_Teleport_Desc: Разлагает тело на поток данных для перемещения в целевую точку и восстанавливает физическую форму под прикрытием протокола Черного заслона.
+	Cyber_Skill_Teleport_Desc: Разлагает тело на поток данных для перемещения в целевую точку и восстанавливает физическую форму под прикрытием протокола Чёрного заслона
 	Cyber_Skill_Restart_Name: Самоперезагрузка
-	Cyber_Skill_Restart_Desc: Разрывает область, принудительно прерывает текущие процессы и перезапускает ядро, мгновенно устраняя повреждения корпуса и возвращая все функции в идеальное состояние.
+	Cyber_Skill_Restart_Desc: Разрывает домен, принудительно прерывает текущие процессы и перезапускает ядро, мгновенно устраняя повреждения корпуса и возвращая все функции в идеальное состояние
 	Cyber_Skill_Banish_Name: Киберизгнание
-	Cyber_Skill_Banish_Desc: Отправить врага под курсором в глубины киберпространства.
+	Cyber_Skill_Banish_Desc: Отправить врага под курсором в глубины киберпространства
 	Cyber_Skill_Freeze_Name: Заморозка домена
-	Cyber_Skill_Freeze_Desc: Заблокировать движение всех враждебных сущностей внутри домена.
+	Cyber_Skill_Freeze_Desc: Третий уровень домена и есть весь мир: заблокировать движение всех враждебных сущностей в мире
 	Cyber_DrainHeader: Расход RAM
 	Cyber_DrainPerSec: -{0}/сек
-	Cyber_SustainTime: Поддержание ~{0} сек
-	Cyber_SustainInfinite: Поддержание ∞
+	Cyber_SustainTime: Можно держать ~{0} сек
+	Cyber_SustainInfinite: Можно держать ∞
 	Modify_Title: Модификация оружия
-	Modify_Subtitle: УЛУЧШЕНИЕ ОРУЖИЯ
+	Modify_Subtitle: Улучшение оружия
 	Modify_Description: Установка модификаций в шасси SHPC
 	Modify_SlotEmpty: Пусто
 	Modify_Install: Установить
@@ -1170,149 +1170,149 @@ SHPCUI: {
 	Modify_Slot_Grip: Рукоять
 	Modify_Slot_Frame: Ствольная коробка
 	Talk_Title: Диалог
-	Talk_Subtitle: НЕЙРОСВЯЗЬ
+	Talk_Subtitle: Нейросвязь
 	Talk_Description: Открыть канал прямой связи с SHPC
 	Talk_Status_Busy: Занято
 	Talk_Status_Ready: Готово
-	Modify_Preset_A: Пресет А
+	Modify_Preset_A: Пресет A
 	Modify_Preset_B: Пресет B
 	Modify_Preset_C: Пресет C
 }
 
 QuestBookGuideLead: {
-	// WelcomeTitle: This Book
-	// WelcomeLine1: Two things lie open in here: the quest chart and the commission dossier.
-	// WelcomeLine2: The chart records how far the main story has come; the dossier collects the jobs others have entrusted to you.
-	// RailTitle: The Two Tabs on the Left
-	// RailLine1: The upper one turns to the Quest Chart.
-	// RailLine2: The lower one turns to the Commission Dossier.
-	// RailLine3: Click a tab to switch stations. No need to close the book.
-	// RailAct: Click the upper tab to turn to the Quest Chart.
-	// ChartViewTitle: Reading the Chart
-	// ChartViewLine1: Scroll to zoom, hold Left-click to drag and pan.
-	// ChartViewLine2: If the view wanders off, the Recenter key at the bottom right brings it back.
-	// ChartViewAct: Try a scroll, or drag the chart a little.
-	// ChartNodeTitle: Open a Node
-	// ChartNodeLine1: The mark on a node is its state: hatching for not started, an ink ring for underway, a wax seal for a reward waiting, a cracked seal for closed.
-	// ChartNodeAct: Left-click the one circled here.
-	// ChartDetailTitle: The Slip on the Right
-	// ChartDetailLine1: The upper half is what this chapter asks of you; the lower half is what it pays.
-	// ChartDetailLine2: Claim All at the bottom collects every reward from closed chapters at once.
-	// OutroTitle: The Dossier Is Still Empty
-	// OutroLine1: As the story moves along, people will leave work at this station.
-	// OutroLine2: This guide will pick up again when your first commission arrives.
-	// KeyPromptTitle: Someone Left You a Job
-	// KeyPromptLine1: The first commission is filed in the dossier. Go take a look.
-	// KeyPromptBound: Press [{0}] to open the quest book.
-	// KeyPromptUnboundTitle: The Quest Book Hotkey Is Unbound
-	// KeyPromptUnboundLine: "[{0}] is the default, and it still works right now."
-	// KeyPromptBindHint: To rebind it, go to Settings → Controls.
-	// GotoTitle: Turn to the Dossier
-	// GotoLine1: The book remembers which station you left it on and opens there next time.
-	// GotoAct: Click the lower tab on the left.
-	// AnatomyTitle: One Commission
-	// AnatomyLine1: The round stamp on the left is the client, the middle holds the title and progress, the right shows its current state.
-	// AnatomyLine2: Expanding it shows the body text, progress and signature.
-	// AnatomyAct: Left-click this row to open it up.
-	// TrackTitle: Track It
-	// TrackLine1: Tracked commissions get pinned to the tracker on the left of the screen, readable without opening the book.
-	// TrackAct: Right-click this row  →  track.
-	// TrackAltLine1: This row was tracked automatically the moment it was filed, and it is already pinned to the tracker on the left of the screen.
-	// TrackAltAct: Right-click this row to untrack it, then right-click again to pin it back.
-	// TrackerTitle: The Tracker
-	// TrackerLine1: This column keeps every tracked commission on screen.
-	// TrackerLine2: Hold Left-click and drag up or down to move it.
-	// TrackerLine3: It folds away on its own when the quest book opens, so it never covers the page.
-	// SuspendTitle: Suspending and Sorting
-	// SuspendLine1: Middle-click a row  →  suspend, and it drops out of the tracker.
-	// SuspendLine2: The four tabs up top hold Active / All / Completed / Suspended. Suspended ones go in the last.
-	// SuspendLine3: Find it there and middle-click once more, and it goes back where it was.
-	// BtnConfirm: Understood
-	// BtnNext: Next
-	// BtnSkipStep: Skip this step
-	// BtnDismiss: Put the guide away
-	// BtnOpenBook: Just open it
-	// HelpButtonHover: Replay the quest book guide
+	WelcomeTitle: Эта книга
+	WelcomeLine1: Внутри лежат две вещи: карта заданий и досье поручений.
+	WelcomeLine2: Карта помнит, как далеко ушла основная линия. Досье собирает работу, которую тебе поручили разные люди.
+	RailTitle: Два ярлычка слева
+	RailLine1: Верхний открывает карту заданий.
+	RailLine2: Нижний открывает досье поручений.
+	RailLine3: Нажмите ярлычок — станция сменится, книгу закрывать не нужно.
+	RailAct: Нажмите верхний ярлычок и откройте карту заданий.
+	ChartViewTitle: Развернуть карту
+	ChartViewLine1: Колесо масштабирует, удерживайте ЛКМ и тащите, чтобы сдвинуть.
+	ChartViewLine2: Если вид уехал далеко, клавиша «Вернуть» справа внизу вернёт его.
+	ChartViewAct: Покрутите колесо или чуть оттащите карту.
+	ChartNodeTitle: Открыть узел
+	ChartNodeLine1: Знак на узле — его состояние: штриховка ещё не начат, чернильное кольцо в пути, сургуч ждёт награды, треснувший сургуч уже закрыт.
+	ChartNodeAct: Нажмите ЛКМ по обведённому здесь.
+	ChartDetailTitle: Полоска записи справа
+	ChartDetailLine1: Сверху — что делать в этой главе, снизу — что можно забрать, когда закончите.
+	ChartDetailLine2: «Забрать всё» внизу страницы сразу собирает награды со всех закрытых глав.
+	OutroTitle: Досье поручений ещё пусто
+	OutroLine1: По мере сюжета кто-нибудь оставит работу на этой станции.
+	OutroLine2: Когда придёт первое поручение, этот урок продолжится.
+	KeyPromptTitle: Тебе поручили работу
+	KeyPromptLine1: Первое поручение уже лежит в досье. Открой и посмотри.
+	KeyPromptBound: Нажмите [{0}], чтобы открыть журнал заданий.
+	KeyPromptUnboundTitle: Горячая клавиша журнала ещё не назначена
+	KeyPromptUnboundLine: Клавиша по умолчанию — [{0}], сейчас она тоже откроет книгу.
+	KeyPromptBindHint: Сменить клавишу можно в Настройки → Управление.
+	GotoTitle: Открыть досье поручений
+	GotoLine1: Книга помнит, на какой станции ты остановился, и в следующий раз откроется здесь.
+	GotoAct: Нажмите нижний ярлычок слева.
+	AnatomyTitle: Одно поручение
+	AnatomyLine1: Круглая печать слева — заказчик, в середине название и прогресс, справа текущее состояние.
+	AnatomyLine2: Если развернуть, видны текст, прогресс и подпись.
+	AnatomyAct: Нажмите ЛКМ по этой строке, чтобы развернуть её.
+	TrackTitle: Отслеживать
+	TrackLine1: Отслеживаемые поручения крепятся к панели слева на экране: прогресс виден и без книги.
+	TrackAct: Нажмите ПКМ по этой строке  →  отслеживать.
+	TrackAltLine1: Эту строку книга сама взяла на отслеживание, когда клала в досье. Она уже на панели слева.
+	TrackAltAct: Нажмите ПКМ по этой строке, чтобы снять отслеживание, затем ещё раз ПКМ, чтобы вернуть.
+	TrackerTitle: Панель отслеживания
+	TrackerLine1: Этот столбец слева постоянно показывает все отслеживаемые поручения.
+	TrackerLine2: Удерживайте ЛКМ и тащите вверх-вниз, чтобы сдвинуть её.
+	TrackerLine3: Когда журнал открыт, она сама убирается и не загораживает страницу.
+	SuspendTitle: Приостановка и вкладки
+	SuspendLine1: Нажмите СКМ по строке  →  приостановить, и она пропадёт с панели отслеживания.
+	SuspendLine2: Четыре вкладки сверху держат отдельно «в работе» / «все» / «выполненные» / «приостановленные». Приостановленные — в последней.
+	SuspendLine3: Найдите её там и нажмите СКМ ещё раз — она вернётся на место.
+	BtnConfirm: Понятно
+	BtnNext: Дальше
+	BtnSkipStep: Пропустить этот шаг
+	BtnDismiss: Убрать урок
+	BtnOpenBook: Сразу открыть
+	HelpButtonHover: Ещё раз пройти урок журнала
 }
 
 CyberwareSkillRadialUI: {
-	StatusOn: Активно
-	HintClickToSelect: «ЛКМ», чтобы выбрать как текущий навык
+	StatusOn: Включено
+	HintClickToSelect: «Нажать» — выбрать как текущий навык
 	HintAlreadySelected: «Текущий выбор»
-	HintKindCharge: Заряжаемый · Удерживайте клавишу активации для зарядки, отпустите для применения
-	HintKindToggle: Переключаемый · Нажмите клавишу активации для включения/выключения
-	HintKindInstant: Мгновенный · Нажмите клавишу активации для мгновенного применения
-	HintNotReady: Условия не выполнены
-	// WheelHint: "[{0}] Hold · release to confirm · LMB select · RMB cancel"
+	HintKindCharge: Заряжаемый · удерживать клавишу активации для зарядки, отпустить для применения
+	HintKindToggle: Переключаемый · нажать клавишу активации, чтобы включить/выключить
+	HintKindInstant: Мгновенный · нажать клавишу активации для мгновенного применения
+	HintNotReady: Сейчас условия не выполнены
+	WheelHint: "[{0}] удерживать · отпустить для подтверждения · ЛКМ выбрать · ПКМ отмена"
 }
 
 CyberwareGuideLead: {
-	// SelectTitle: Cyberware Skill Online
-	// SelectBody: Active cyberware detected. Hold {0} to summon the radial wheel — every eligible wheel appears together, and the cursor belongs to whichever is closest.
-	// SelectPrompt: Fling the cursor toward the cyberware sector, left-click or release to confirm
-	// TriggerTitle: Fire the Skill
-	// TriggerBody: Selecting only loads the skill onto your fingertip — firing takes the trigger key. Charge-type skills are held, then released.
-	// TriggerPrompt: Press {0} to fire the current cyberware skill
-	// SkipBtn: Skip
-	// WheelKeyUnbound: The radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls first, or click Skip.
-	// TriggerKeyUnbound: The trigger key is unbound. Bind it under Settings > Controls first, or click Skip.
+	SelectTitle: Навык киберимпланта подключён
+	SelectBody: Обнаружен активный имплант. Удерживайте {0}, чтобы вызвать радиальное меню: все подходящие диски появятся вместе, курсор принадлежит ближайшему.
+	SelectPrompt: Бросьте курсор к сектору импланта, ЛКМ выбрать или отпустить для подтверждения
+	TriggerTitle: Применить навык
+	TriggerBody: Выбор только кладёт навык на кончики пальцев. Применяет клавиша активации. Заряжаемый тип: удерживать, затем отпустить.
+	TriggerPrompt: Нажмите {0}, чтобы применить текущий навык импланта
+	SkipBtn: Пропустить
+	WheelKeyUnbound: Клавиша радиального меню не назначена, меню не вызвать. Сначала назначьте её в Настройки > Управление или нажмите «Пропустить».
+	TriggerKeyUnbound: Клавиша активации не назначена. Сначала назначьте её в Настройки > Управление или нажмите «Пропустить».
 }
 
 SHPCDomainWheelUI: {
-	// Layer1_Desc: Foundation layer — establishes the domain field around you.
-	// Layer2_Desc: Deep dive — a wider field, at a much steeper RAM cost.
-	// Layer3_Desc: Blackwall breach — the whole world becomes the domain.
-	// Layer_HintActivate: "[Click] Deploy"
-	// Layer_HintSwitch: "[Click] Switch layer"
-	// Layer_HintShutdown: "[Click] Shut down domain"
-	// Layer_HintLowRam: "// insufficient RAM"
-	// Layer_HintLocked: "// system crash lockout"
-	// Hack_Title: HACK TIME
-	// Hack_Subtitle: Neural Override
-	// Hack_Desc: Slow the world to a crawl and run protocols on whatever you can see.
-	// Hack_HintEnter: "[Click] Enter hack time"
-	// Hack_HintExit: "[Click] Leave hack time"
-	// Hack_HintDenied: "// no access"
-	// Hack_HintKeyUnbound: "// hack time key unbound — bind it under Settings > Controls"
-	// WheelHint: "[{0}] Hold · release to confirm · LMB select · RMB cancel"
+	Layer1_Desc: Базовый уровень: поле домена только вокруг тебя
+	Layer2_Desc: Ещё на слой глубже: поле шире, RAM горит быстрее
+	Layer3_Desc: Пробьёшь Заслон — весь мир станет доменом
+	Layer_HintActivate: «Нажать» — развернуть домен
+	Layer_HintSwitch: «Нажать» — переключить на этот слой
+	Layer_HintShutdown: «Нажать» — свернуть домен
+	Layer_HintLowRam: Недостаточно RAM
+	Layer_HintLocked: Система в аварийной блокировке
+	Hack_Title: Время взлома
+	Hack_Subtitle: Нейроразгон
+	Hack_Desc: Замедлить мир до ползания и наложить протоколы на всё в поле зрения
+	Hack_HintEnter: «Нажать» — войти во время взлома
+	Hack_HintExit: «Нажать» — выйти из времени взлома
+	Hack_HintDenied: Нет доступа
+	Hack_HintKeyUnbound: Клавиша времени взлома не назначена. Сначала назначьте её в Настройки > Управление
+	WheelHint: "[{0}] удерживать · отпустить для подтверждения · ЛКМ выбрать · ПКМ отмена"
 }
 
 AbandonedPortalStrings: {
 	Title: Консоль заброшенного портала
-	BrokenSubtitle: Структура разрушена · Ядро не в сети
-	RepairingSubtitle: Запущена программа самовосстановления
-	RepairedSubtitle: Канал стабилен · Доступны координаты Бездны
-	BrokenBody: В разрушенной раме врат всё ещё сохраняются слабые отголоски подпространства. После активации самовосстановления портал восстановит позиционирующее кольцо за несколько минут.
-	RepairingBody: Нано-сварка перестраивает сдерживатель разлома. Пожалуйста, поддерживайте стабильность в прилегающей зоне до завершения калибровки.
-	RepairedBody: Врата завершили самовосстановление. Последовательность телепортации сначала развернет разлом, а затем отправит вас в мир Бездны.
+	BrokenSubtitle: Структура разрушена · ядро не в сети
+	RepairingSubtitle: Идёт программа самовосстановления
+	RepairedSubtitle: Канал стабилен · доступны координаты Пустоты
+	BrokenBody: В разрушенной раме врат всё ещё слышны слабые отголоски подпространства. После запуска самовосстановления портал за несколько минут соберёт кольцо наведения.
+	RepairingBody: Наносварка перестраивает ограничитель разлома. Держите окрестности спокойными, пока калибровка не закончится.
+	RepairedBody: Врата закончили самовосстановление. Последовательность телепортации сначала развернёт разлом, затем отправит вас в мир Пустоты.
 	StartRepair: ▷ Запустить программу самовосстановления
 	Teleport: ▷ Начать телепортацию
 	Close: ✕ Закрыть
 	ProgressFormat: Прогресс восстановления {0}%
-	StatusBroken: СТАТУС  ▌ ВНЕ СЕТИ
-	StatusRepairing: СТАТУС  ▌ КАЛИБРОВКА
-	StatusRepaired: СТАТУС  ▌ В СЕТИ
-	DiagnosticHeader: "[ДИАГНОСТИКА]"
-	DiagnosticBroken: ERR-0xC4: Разрыв кольца позиционирования / Главный энергетический контур отключен
-	DiagnosticRepairing: INFO: Синхронизация массива нано-сварки... Не сдвигайте основание врат
-	DiagnosticRepaired: OK: Все подсистемы в сети / Разрешение координат готово
+	StatusBroken: Состояние  ▌ вне сети
+	StatusRepairing: Состояние  ▌ калибровка
+	StatusRepaired: Состояние  ▌ в сети
+	DiagnosticHeader: "[DIAG]"
+	DiagnosticBroken: ERR-0xC4: разрыв кольца наведения / главный энергетический контур отключён
+	DiagnosticRepairing: INFO: синхронизация массива наносварки… не сдвигайте основание врат
+	DiagnosticRepaired: OK: все подсистемы в сети / разбор координат готов
 }
 
 ArrowHolderUI: {
-	MarkArrowHint: ЛКМ - поставить метку
-	UnmarkArrowHint: ПКМ — снять метку
+	MarkArrowHint: Нажмите ЛКМ, чтобы отметить стрелу
+	UnmarkArrowHint: Нажмите ПКМ, чтобы снять метку
 }
 
 BulletinBoardUI: {
 	MenuHoverLabel: Перейти к репозиторию мода :)
-	WikiLabel: Wiki мода
+	WikiLabel: Вики мода
 	FeedbackLabel: Обратная связь
 	LogLabel: Просмотреть лог
 	AcknowledgmentLabel: Особая благодарность
 }
 
-// HimayoMenu.ThemeName: Sakura Night
-// ShenyoMenu.ThemeName: Ghost Lake Rains
+HimayoMenu.ThemeName: Царство ночной сакуры
+ShenyoMenu.ThemeName: Ночной дождь на озере духов
 
 AcknowledgmentUI: {
 	ArtistRole: Художник
@@ -1327,271 +1327,271 @@ AcknowledgmentUI: {
 }
 
 CWRPlayer: {
-	HellfireExplosionDeathReason: "{0} сгорел в адском пламени"
-	SoulfireExplosionDeathReason: "{0} — душа воспламенилась"
+	HellfireExplosionDeathReason: "{0} обратился в пепел в адском пламени"
+	SoulfireExplosionDeathReason: "{0}: душа вознеслась в пламени"
 }
 
 MiningMachineUI: {
-	// TitleText: Prospecting Terminal
-	// ReportTitle: Survey Report
-	// RescanText: Rescan
-	// ModuleSlotLabel: Modules
-	// StatusLabel: Status
-	// StateWorking: Operating
-	// StateNoPower: No Power
-	// StateNoFooting: Unstable Footing
-	// PickPowerLine: Pick Power: {0}%
-	// YieldRateLine: Yield: ~{0}/min
-	// EnergyLabel: Energy
-	// YieldLabel: Yield
-	// LayerLabel: Stratum
-	// BiomeLabel: Biome
-	// VeinLabel: Veins Found
-	// LayerSurface: Surface
-	// LayerUnderground: Underground
-	// LayerCavern: Cavern
-	// LayerUnderworld: Underworld
-	// BiomeJungle: Jungle
-	// BiomeSnow: Snow
-	// BiomeDesert: Desert
-	// BiomeCorrupt: Corruption
-	// BiomeCrimson: Crimson
-	// BiomeHallow: Hallow
-	// BiomeNone: Barren Rock
-	// GateNeedPick: Requires {0}% pick power
-	// GateNeedDrill: Requires a dedicated drill module
-	// GateNotInWorld: Ore source not yet surveyed
-	// VeinTilesFormat: "{0} vein tiles detected"
-	// DrillTargetText: Targets: {0}
-	// DrillEffectText: Grants extraction rights for its targets and quadruples their yield weight
+	TitleText: Терминал разведки
+	ReportTitle: Отчёт разведки
+	RescanText: Разведать снова
+	ModuleSlotLabel: Слот модуля
+	StatusLabel: Состояние
+	StateWorking: В работе
+	StateNoPower: Нет энергии
+	StateNoFooting: Опора неустойчива
+	PickPowerLine: Сила кирки: {0}%
+	YieldRateLine: Добыча: ~{0}/мин
+	EnergyLabel: Энергия
+	YieldLabel: Добыча
+	LayerLabel: Пласт
+	BiomeLabel: Биом
+	VeinLabel: Разведанные жилы
+	LayerSurface: Поверхность
+	LayerUnderground: Подземелье
+	LayerCavern: Пещерный слой
+	LayerUnderworld: Преисподняя
+	BiomeJungle: Джунгли
+	BiomeSnow: Снега
+	BiomeDesert: Пустыня
+	BiomeCorrupt: Порча
+	BiomeCrimson: Багрянец
+	BiomeHallow: Освящение
+	BiomeNone: Голый камень
+	GateNeedPick: Нужна сила кирки {0}%
+	GateNeedDrill: Нужен специальный буровой модуль
+	GateNotInWorld: Источник руды ещё не разведан
+	VeinTilesFormat: Разведано жил: {0} блоков
+	DrillTargetText: Целевая руда: {0}
+	DrillEffectText: Открывает право добывать целевую руду и поднимает её вес в выдаче в четыре раза
 }
 
 DungeonworldLoadingScreen: {
-	// BandName0: The Cathedral
-	// BandName1: The Gaols
-	// BandName2: The Great Archive
-	// BandName3: The Drowned Ward
-	// BandName4: The Ossuary
-	// BandName5: The Foundry
-	// BandName6: The Inverted Cathedral
-	// Toll0: First Toll · The Cathedral
-	// Toll1: Second Toll · The Gaols
-	// Toll2: Third Toll · The Great Archive
-	// Toll3: Fourth Toll · The Drowned Ward
-	// Toll4: Fifth Toll · The Ossuary
-	// Toll5: Sixth Toll · The Foundry
-	// Toll6: Seventh Toll · The Inverted Cathedral
-	// Tip0: The deeper you go, the older the bricks, the shorter the prayers.
-	// Tip1: The choir is still singing, just seven floors above.
-	// Tip2: One toll rung above; the well answers twice.
-	// Tip3: The candles grow shorter going down, and the wax grows thicker.
-	// Tip4: The Archive keeps everyone's name, including those yet to arrive.
-	// Tip5: The Ossuary lays its bricks without mortar; bone bites tighter than lime.
-	// Tip6: The gears have never stopped; seven generations have kept them oiled.
-	// Tip7: In the lowest cathedral, the altar is nailed to the ceiling.
-	// StatusDescend: The cage is descending
-	// StatusAscend: The cage is rising
-	// DepthLabel: Depth {0}%
-	// RevealHold: Lighting the candles
+	BandName0: Соборный квартал
+	BandName1: Тюремный ярус
+	BandName2: Великий архив
+	BandName3: Водяная темница
+	BandName4: Костница десяти тысяч
+	BandName5: Ярус литейных механизмов
+	BandName6: Перевёрнутый собор
+	Toll0: Первый удар · Соборный квартал
+	Toll1: Второй удар · Тюремный ярус
+	Toll2: Третий удар · Великий архив
+	Toll3: Четвёртый удар · Водяная темница
+	Toll4: Пятый удар · Костница десяти тысяч
+	Toll5: Шестой удар · Ярус литейных механизмов
+	Toll6: Седьмой удар · Перевёрнутый собор
+	Tip0: Чем глубже, тем старше кирпич и короче молитвы.
+	Tip1: Хор всё ещё поёт, просто через семь перекрытий.
+	Tip2: Наверху один удар колокола — со дна колодца отвечают два.
+	Tip3: Чем ниже, тем короче свечи и толще натёк воска.
+	Tip4: Архив хранит имя каждого, в том числе тех, кто ещё не пришёл.
+	Tip5: В костнице кирпичи кладут без раствора: кость держит крепче извести.
+	Tip6: Шестерни не останавливались. Масло меняли семь поколений.
+	Tip7: В самом нижнем соборе алтарь прибит к потолку.
+	StatusDescend: Клетка спускается
+	StatusAscend: Клетка поднимается
+	DepthLabel: Глубина {0}%
+	RevealHold: Зажигаем свечи
 }
 
 DungeonworldGuideNotes: {
-	// LayerNoteGaol: The Gaols. Where the shackles and rust hang thickest, that way lies the deep gaol cell.
-	// LayerNoteFlood: The Drowned Ward. All the water drains toward the flood gallery at the very bottom. So should you.
-	// LayerNoteProof: The Foundry. The gears never stopped, and the rail at the very bottom runs straight to the proofing hall.
-	// ApproachGaol: No room left on the walls for more shackles. The cell ahead is locked from the outside.
-	// ApproachFlood: The waterline has climbed to the ceiling. Something in the flood gallery ahead is still waiting for the water.
-	// ApproachProof: The rail ends here. The furnaces are still warm. The proofing hall expects today's workpiece.
+	LayerNoteGaol: Тюремный ярус. Куда гуще кандалы и ржавчина, там и глубокая запретная камера.
+	LayerNoteFlood: Водяная темница. Вся вода уходит в зал сброса на самом дне. И ты туда же.
+	LayerNoteProof: Ярус литейных механизмов. Шестерни не останавливались, а нижний рельс ведёт в зал приёмки.
+	ApproachGaol: Кандалов уже некуда вешать. Камера впереди заперта снаружи.
+	ApproachFlood: Вода доползла до потолка. В зале сброса впереди что-то всё ещё ждёт воду.
+	ApproachProof: Рельс кончился. Печи ещё горячие. Зал приёмки ждёт сегодняшнюю деталь.
 }
 
 HadalworldLoadingScreen: {
-	// BandName0: Sunlit Zone
-	// BandName1: Twilight Zone
-	// BandName2: Midnight Zone
-	// BandName3: Abyssal Zone
-	// BandName4: Hadal Zone
-	// Tip0: The light stays up there.
-	// Tip1: The deeper you go, the quieter the water.
-	// Tip2: Bubbles only travel one way.
-	// Tip3: The pressure doesn't knock.
-	// Tip4: Something glows below. It is not a lamp.
-	// StatusDescend: Descending
-	// StatusAscend: Surfacing
-	// DepthLabel: Depth {0} m
+	BandName0: Солнечная зона
+	BandName1: Сумеречная зона
+	BandName2: Полночная зона
+	BandName3: Абиссальная зона
+	BandName4: Хадальная зона
+	Tip0: Свет остался наверху.
+	Tip1: Чем глубже, тем тише вода.
+	Tip2: Пузыри идут только в одну сторону.
+	Tip3: Давление не стучится.
+	Tip4: Внизу что-то светится. Это не лампа.
+	StatusDescend: Погружение
+	StatusAscend: Всплытие
+	DepthLabel: Глубина {0} м
 }
 
 KiyumeLoadingScreen: {
-	// TitleEnter: Kiyume
-	// TitleExit: Waking
-	// VerseEnter: The fog is past the windowsills, and the lamps inside are still lit.
-	// VerseExit: The lake has let go. Don't look back.
-	// StatusEnter: Fog coming in off the lake
-	// StatusExit: The village sinking back into the fog
+	TitleEnter: Призрачный сон
+	TitleExit: Пробуждение
+	VerseEnter: Туман перелился через подоконник, а в доме ещё горят лампы.
+	VerseExit: Озеро разжало пальцы. Не оглядывайся.
+	StatusEnter: Туман ползёт с озера
+	StatusExit: Деревня тонет обратно в туман
 }
 
 KiameLoadingScreen: {
-	// TitleEnter: Kiame
-	// TitleExit: Rainbreak
-	// VerseEnter: The hollows filled overnight, and no one came for the umbrella.
-	// VerseExit: The umbrella is folded. The rain goes on.
-	// StatusEnter: Rain flooding the hollows
-	// StatusExit: The rain falling away
+	TitleEnter: Призрачный дождь
+	TitleExit: Дождь стих
+	VerseEnter: Вода в низине поднималась всю ночь, и никто не пришёл за зонтом.
+	VerseExit: Зонт сложили. Дождь всё ещё идёт.
+	StatusEnter: Дождь заливает низины
+	StatusExit: Шум дождя уходит
 }
 
-// KiameExitKeeper.ExitHint: "[Right Click] Fold the umbrella and return"
+KiameExitKeeper.ExitHint: "[ПКМ] Сложить зонт и вернуться"
 
 KiameWake: {
-	// WakeOni: The thing under the umbrella let go, and you woke.
-	// WakeDrowned: The black water closed over your head, and you woke.
-	// WakeGeneric: You woke from the rain.
+	WakeOni: То, что было под зонтом, разжало пальцы, и ты проснулся.
+	WakeDrowned: Чёрная вода закрыла голову, и ты проснулся.
+	WakeGeneric: Ты проснулся из дождя.
 }
 
 OldNetTexts: {
-	// OldNetHarvest: +{0} Mold Shards (uninscribed)
-	// OldNetNodeHint: Recover data
-	// OldNetTerminalHint: Log out and inscribe your haul
-	// OldNetSettleDone: Inscribed {0} Mold Shards — link severed safely
-	// OldNetSettleEmpty: Link severed safely — nothing recovered this dive
-	// OldNetEjectRam: RAM depleted — link burned out, uninscribed haul lost
-	// OldNetEjectDeath: Construct collapse — link burned out, uninscribed haul lost
-	// OldNetLedgerFull: Ledger full — hit a relay or log out first
-	// OldNetEncryptHint: Channel decryption (stand still ~3s, loud)
-	// OldNetEventHint: Pull the breaker: unseal the vaults, wake the whole net
-	// OldNetEventPulled: Seals released — purge wave inbound
-	// OldNetRelayHint: Relay uplink: inscribe current ledger (the uplink makes noise)
-	// OldNetRelayDone: Inscribed {0} Mold Shards — link holds
-	// OldNetRelayEmpty: Ledger empty, nothing to uplink
-	// OldNetEnterHint: Jack into the OldNet (dive beyond the Blackwall)
-	// OldNetEnterConfirm: Link warmed up — interact again to dive beyond the wall
-	// OldNetEnterArmedHint: Link warmed up: interact again to dive beyond the wall
-	// OldNetEnterSPOnly: Diving is single-player only
-	// OldNetDiveCharge: Hold the descent — crossing the wall
-	// OldNetBandFoot: Wallfoot Belt // FOOTHOLD
-	// OldNetBandRuin: Ruinfield // RUINFIELD
-	// OldNetBandFade: Signal Decay Zone // SIGNAL DECAY
-	// GuideNoiseTitle: The Noise Meter
-	// GuideNoiseBody: Bottom-left is your noise meter — moving, firing and cracking all light you up. The four ticks are four threat tiers; past T2, something comes from the wall. Stand still and the noise cools off on its own.
-	// GuideLedgerTitle: The Uninscribed Ledger
-	// GuideLedgerBody: Shards you harvest go into the ledger first (the LEDGER readout). Death or RAM burnout voids all of it — only what you inscribe is truly yours. The ledger has a capacity and refuses overflow.
-	// GuideNodesTitle: Node Grades
-	// GuideNodesBody: Cyan nodes harvest on right-click. Amber encrypted nodes need ~3s of channeling — loud, but worth triple. The red event breaker unseals every vault on the map, and brings the purge wave with it.
-	// GuideRelayTitle: Relay vs Logout
-	// GuideRelayBody: The amber column is a relay — inscribe on the spot and keep diving, but the uplink is loud. The mint column is the logout terminal — inscribe and sever safely. Greed or retreat, that is the only question here.
-	// GuideDrainTitle: Distance Drain
-	// GuideDrainBody: The farther from the wall, the pricier the RAM drain — the DEPTH readout shows your current cost per second. Burning out means ejection, so budget the trip home in advance.
-	// GuideSkip: Got it
-	// EntrustTitle: Dive Beyond the Wall
-	// EntrustSummary: The OldNet's entrance is the crashed sky-island above spawn: climb the anchor rope hanging down to the ground, and the cyan-lit pillar in the mid-hull is the access terminal. Right-click it to warm the link, then right-click again within 5 seconds to dive in (single-player only). Inside, right-click cyan nodes to recover mold shards; they land in your ledger first. To keep them, return to the foot of the Blackwall and right-click the mint column to log out. One safe logout completes this commission. RAM burnout or death on the way voids everything uninscribed.
-	// EntrustCategory: Deep-Dive Archaeology
-	// TrackerOverworld: Reach the mid-hull of the crashed pod above spawn; right-click the cyan terminal twice
-	// TrackerDive: Return to the Blackwall's foot; right-click the mint column to log out safely
-	// OldNetSignRuin: Ruinfield. Prime harvest grounds — encrypted nodes from here on. Mind your exit before you channel.
-	// OldNetSignFade: Signal Decay Zone. The drain climbs steeply past this point — the link won't hold long. Proceed at your own risk.
-	// OldNetEchoHint: Echo node — only tangible during time-freeze (zero noise, double yield)
-	// OldNetEchoFizzle: The echo is too faint — only tangible in frozen time
-	// OldNetCacheHint: Deep-dive cache — pry it open for a sealed module (loudly)
-	// OldNetTripwireHint: Raster tripwire: crossing the lit beam reports your position; hold right-click to cut it
-	// OldNetTripwireCut: Cut. This route is quiet now
-	// OldNetMineHint: Sentry mine: rush in and it detonates; approach slowly and hold right-click to defuse
-	// OldNetMineDefused: Defused. Nothing heard it
-	// OldNetMineScream: The sentry mine screams; your position is broadcast
-	// OldNetMineDeath: "{0} set off a sentry mine"
-	// OldNetBulkheadWarn: High-noise signature detected; shaft bulkheads pre-tensioning
-	// OldNetBulkheadShut: Shafts sealed. Quiet down and wait for reopen, or force one open with a pressure breaker
-	// OldNetBulkheadReopen: Noise has settled; shaft bulkheads reopening
-	// OldNetBreakerHint: Emergency breaker: pull to open the gate for 8 seconds, at the cost of more noise
-	// OldNetBreakerPulled: Pressure vented; gate open for 8 seconds
-	// OldNetSignCheckpoint: Quarantine Checkpoint K-3. Signals east of this line are unsanitized; no live protocols may pass. This checkpoint fell on Night 771.
-	// TaggerAttached: Signal tagged. While it lives, your noise will not decay on its own.
-	// TracerHowlWarn: The hound is broadcasting your position. Interrupt it.
-	// TracerConfused: Path crossed. It has lost the scent.
-	// WardenDispatch: Reclamation protocol authorized. An executor is peeling off the blackwall.
-	// WardenSlain: Executor archived. The whole net falls silent for you, 60 seconds.
-	// WardenGraceHud: Silence grace
-	// OldNetDockHint: Right-click to expand: +8 ledger slots this dive, +15 noise
-	// OldNetDockDone: Ledger +8 slots
-	// OldNetColdHint: Right-click to extract: costs 2 RAM, silent
-	// OldNetColdNoRam: Not enough RAM — extraction needs 2
-	// OldNetEscrowHint: Right-click to insure: 30% of the ledger as premium, +10 noise on uplink. Pays out the rest on burnout or death; no refund on safe logout
-	// OldNetEscrowEmpty: Ledger empty — nothing to insure
-	// OldNetEscrowTooThin: Ledger too thin — the premium would eat everything, nothing to insure
-	// OldNetEscrowSigned: Insured {0} shards, premium {1}
-	// OldNetEscrowPayout: Insurance paid out {0} Mold Shards
-	// OldNetVaultHint: Right-click to breach: costs 3 RAM, +2 noise per second while open. Every stage raises the stakes; miss and the pot burns
-	// OldNetVaultNoRam: Not enough RAM — breaching needs 3
-	// OldNetVaultLocked: Console already running
-	// OldNetVaultPayout: Pot banked — {0} shards (uninscribed)
-	// VaultTitle: Cipher Matrix
-	// VaultGuide: Click or press jump as the needle sweeps the lit arc. Getting hit or stepping away mid-spin counts as a miss
-	// VaultStage: Stage {0} / 5
-	// VaultPot: Pot: shards ×{0}
-	// VaultPotModule: Sealed modules ×{0}
-	// VaultPotChip: RAM capacity chip ×1
-	// VaultLedgerRoom: Ledger room: {0}
-	// VaultCashOut: Cash out
-	// VaultContinue: Next stage
-	// VaultBust: Bust — pot cleared
-	// VaultCounterHack: Console counter-hack: injection inbound
-	// VaultDiscard: Ledger full — {0} shards discarded
-	// OldNetEncryptFadeHint: Channel decryption: the mad zone's locks bite back — completing one always draws a hunt
-	// OldNetAftershockWarn: Residual exposure — the echo is tracing back
-	// OldNetAftershockHit: Traceback complete. They are coming
-	// OldNetDragnetWarn: The net is drawing shut — the threat is about to become irreversible // DRAGNET 75%
-	// OldNetDragnetOn: Dragnet engaged: the purge never lifts, every encrypted lock is offline // DRAGNET
-	// OldNetHotExtractHint: Link overheated: severing takes 10 seconds at the terminal, and the net will come for you
-	// OldNetHotExtractStart: Forced severance started — hold the line // SEVERING
-	// OldNetHotExtractAbort: Severance aborted — the link holds
-	// OldNetHotExtractTooFar: Too far from the terminal — get closer to sever
+	OldNetHarvest: +{0} осколков пресс-формы (не запечатлено)
+	OldNetNodeHint: Извлечь данные
+	OldNetTerminalHint: Выйти и запечатлеть добычу
+	OldNetSettleDone: Запечатлено осколков пресс-формы: {0}. Связь безопасно разорвана
+	OldNetSettleEmpty: Связь безопасно разорвана, в этот раз добычи нет
+	OldNetEjectRam: RAM исчерпан, связь выгорела, незапечатлённая добыча потеряна
+	OldNetEjectDeath: Конструкт распался, связь выгорела, незапечатлённая добыча потеряна
+	OldNetLedgerFull: Реестр полон. Сначала ретранслятор или выход
+	OldNetEncryptHint: Направленный взлом (стоять ~3 с, очень шумно)
+	OldNetEventHint: Рубильник: снять блокаду со всей карты, поднять всю сеть
+	OldNetEventPulled: Блокада снята, волна зачистки уже в пути
+	OldNetRelayHint: Ретрансляция вверх: запечатлеть текущий реестр (канал шумит)
+	OldNetRelayDone: Запечатлено осколков пресс-формы: {0}. Связь держится
+	OldNetRelayEmpty: Реестр пуст, нечего отправлять
+	OldNetEnterHint: Подключиться к Старой сети (нырок за Заслон)
+	OldNetEnterConfirm: Связь прогрета. Взаимодействуйте ещё раз — нырок за Заслон
+	OldNetEnterArmedHint: Связь прогрета: взаимодействуйте ещё раз — нырок за Заслон
+	OldNetEnterSPOnly: Нырок доступен только в одиночной игре
+	OldNetDiveCharge: Держите погружение, проход сквозь стену
+	OldNetBandFoot: Пояс у стены // FOOTHOLD
+	OldNetBandRuin: Пояс руин // RUINFIELD
+	OldNetBandFade: Зона затухания сигнала // SIGNAL DECAY
+	GuideNoiseTitle: Шумомер
+	GuideNoiseBody: Слева внизу шумомер: ходьба, стрельба и взлом тебя зажигают. Четыре риски — четыре уровня угрозы; после T2 с той стороны стены уже кто-то идёт. Стой на месте — шум сам остынет.
+	GuideLedgerTitle: Незапечатлённый реестр
+	GuideLedgerBody: Собранные осколки сначала попадают в реестр (показание LEDGER). Смерть или исчерпание RAM обнуляют всё; по-настоящему твоё только то, что запечатлено. У реестра есть ёмкость, переполненный отказывается принимать.
+	GuideNodesTitle: Классы узлов
+	GuideNodesBody: Бирюзовые узлы снимаются ПКМ сразу. Янтарные шифрованные требуют стоять и вести взлом ~3 с: очень шумно, но втрое выгоднее. Красный рубильник события снимает блокаду со всей карты, и волна зачистки приходит сразу.
+	GuideRelayTitle: Ретранслятор и выход
+	GuideRelayBody: Янтарный столб — ретранслятор: запечатлеть реестр на месте и не уходить, но восходящая передача очень громкая. Мятный столб — терминал выхода: запечатлеть и безопасно оборвать связь. Жадность или отход — здесь только один вопрос.
+	GuideDrainTitle: Фоновый шум от расстояния
+	GuideDrainBody: Чем дальше от стены, тем дороже фоновый расход RAM. Рядом с DEPTH на HUD написано, сколько уходит в секунду. Сжечь RAM значит вылететь: дорогу назад закладывай заранее.
+	GuideSkip: Понятно
+	EntrustTitle: Нырок за Заслон
+	EntrustSummary: Вход в Старую сеть — на упавшем небесном острове над точкой появления: по якорному тросу, свисающему с днища на землю, заберись в среднюю палубу. Голубой столб внутри — терминал доступа. ПКМ по терминалу прогревает связь, ещё раз ПКМ в течение 5 с — вход в сеть (только одиночная игра). Внутри ПКМ по бирюзовым узлам собирает осколки пресс-формы; добыча сначала пишется в реестр. Чтобы унести её, вернись к подножию Заслона и нажми ПКМ по мятному столбу — выход. Один безопасный выход закрывает это поручение. Если по пути кончится RAM или ты умрёшь, незапечатлённая добыча сгорит целиком.
+	EntrustCategory: Глубинная археология
+	TrackerOverworld: Доберись до средней палубы упавшей капсулы над точкой появления, дважды нажми ПКМ по голубому терминалу
+	TrackerDive: Вернись к подножию Заслона, нажми ПКМ по мятному столбу и выйди безопасно
+	OldNetSignRuin: Пояс руин. Главная добыча, с этих пор водятся шифрованные узлы. Прежде чем вести взлом, посмотри путь назад.
+	OldNetSignFade: Зона затухания сигнала. Фоновый шум отсюда резко растёт, связь долго не протянет. Дальше — на свой страх.
+	OldNetEchoHint: Узел эха: доступен только во время остановки времени (нулевой шум, добыча вдвое)
+	OldNetEchoFizzle: Эхо слишком тонкое, дотянуться можно только в остановленном времени
+	OldNetCacheHint: Кэш глубокого погружения: взломай и забери запечатанный модуль (шума немало)
+	OldNetTripwireHint: Растровая растяжка: если пересечь её, когда красная линия горит, она доложит твою позицию. Удерживайте ПКМ, чтобы перерезать
+	OldNetTripwireCut: Перерезано, этот путь снова тих
+	OldNetMineHint: Сторожевая мина: быстро подойдёшь — рванёт. Подходи медленно и удерживай ПКМ, чтобы снять
+	OldNetMineDefused: Снято, никто не услышал
+	OldNetMineScream: Сторожевая мина закричала, твою позицию разнесли по сети
+	OldNetMineDeath: "{0} наступил на сторожевую мину"
+	OldNetBulkheadWarn: Обнаружен громкий сигнал, створки шахты преднатягиваются
+	OldNetBulkheadShut: Шахта заперта. Снизь шум и жди повторного открытия или найди шток сброса и выломай силой
+	OldNetBulkheadReopen: Шум спал, створки шахты открылись снова
+	OldNetBreakerHint: Аварийный шток сброса: потяни — ворота на 8 с, цена — ещё больше шума
+	OldNetBreakerPulled: Сброс выполнен, ворота временно открыты на 8 с
+	OldNetSignCheckpoint: Карантинный пост K-3. Сигнал к востоку не обеззаражен, живые протоколы через пост не проводить. Этот пост пал в ночь 771.
+	TaggerAttached: Сигнал помечен. Пока метка жива, шум сам не рассеется.
+	TracerHowlWarn: Ищейка вещает твои координаты. Прерви её.
+	TracerConfused: Тропы пересеклись, она потеряла след.
+	WardenDispatch: Протокол изъятия разрешён. Исполнитель сходит с Заслона.
+	WardenSlain: Исполнитель сдан в архив. Вся сеть молчит для тебя 60 секунд.
+	WardenGraceHud: Остаток тишины
+	OldNetDockHint: ПКМ — расширить: в этом нырке реестр +8 ячеек, шум +15
+	OldNetDockDone: Реестр расширен на +8 ячеек
+	OldNetColdHint: ПКМ — извлечь: 2 RAM, беззвучно
+	OldNetColdNoRam: Недостаточно RAM, извлечение требует 2
+	OldNetEscrowHint: ПКМ — застраховать: треть реестра как премия, шум восходящего канала +10. При выгорании или смерти остальное выплатят; при безопасном выходе премию не вернут
+	OldNetEscrowEmpty: Реестр пуст, нечего страховать
+	OldNetEscrowTooThin: Реестр слишком тонкий, премия съест всё, нечего страховать
+	OldNetEscrowSigned: Застраховано {0} шт., премия {1} шт.
+	OldNetEscrowPayout: Страховка выплатила {0} осколков пресс-формы
+	OldNetVaultHint: ПКМ — открыть стол расшифровки: 3 RAM, после открытия +2 шума в секунду. Каждая ступень поднимает ставку, промах обнуляет банк
+	OldNetVaultNoRam: Недостаточно RAM, стол требует 3
+	OldNetVaultLocked: Главный пульт уже работает
+	OldNetVaultPayout: В банк легло {0} осколков (не запечатлено)
+	VaultTitle: Матрица главного дешифрования
+	VaultGuide: Когда стрелка заходит в светлую дугу, нажмите ЛКМ или клавишу прыжка. Удар или отход от стола во время вращения считается промахом
+	VaultStage: Ступень {0} / всего 5
+	VaultPot: Банк: осколки ×{0}
+	VaultPotModule: Запечатанный модуль ×{0}
+	VaultPotChip: Чип расширения RAM ×1
+	VaultLedgerRoom: Свободно в реестре {0}
+	VaultCashOut: Забрать и закрыть
+	VaultContinue: Следующая ступень
+	VaultBust: Перебор, банк обнулён
+	VaultCounterHack: Пульт отвечает: инъекция взлома
+	VaultDiscard: В реестр не влезло, {0} шт. выброшено
+	OldNetEncryptFadeHint: Направленный взлом: замки безумной зоны кусаются в ответ, после успеха охота придёт обязательно
+	OldNetAftershockWarn: Остаточный отзвук выдан, эхо идёт по следу назад
+	OldNetAftershockHit: След доведён, они здесь
+	OldNetDragnetWarn: Сеть стягивается, угроза вот-вот станет необратимой // DRAGNET 75%
+	OldNetDragnetOn: Облава началась, блокада больше не спадёт, шифрованные замки по всей сети офлайн // DRAGNET
+	OldNetHotExtractHint: Связь перегрета: чтобы оборвать, стой у терминала 10 с, сеть кинется на тебя
+	OldNetHotExtractStart: Принудительный разрыв начат, держись // SEVERING
+	OldNetHotExtractAbort: Разрыв прерван, связь держится
+	OldNetHotExtractTooFar: Слишком далеко от терминала, подойди ближе и рви связь
 }
 
 OldNetDebriefPanel: {
-	// DebriefSubtitle: Dive debrief
-	// DebriefDepth: Deepest reach
-	// DebriefHarvest: Nodes recovered
-	// DebriefSettled: Shards inscribed
-	// DebriefHunted: Times hunted
-	// DebriefTime: Dive time
-	// DebriefExitSafe: Clean disconnect
-	// DebriefExitBurnout: RAM depleted — link burned out
-	// DebriefExitDeath: Construct collapse — link burned out
-	// DebriefLost: "{0} uninscribed shards burned away"
-	// DebriefContinue: Continue
-	// DebriefMechHint: Uninscribed haul lives only in the link — it becomes yours once inscribed at a relay or the logout terminal
-	// DebriefScore: Score
-	// DebriefGrade: Grade
-	// DebriefBest: Personal best {0}
-	// DebriefNewRecord: NEW RECORD
-	// StyleGhost: Ghost run
-	// StyleHeat: Heat survivor
-	// StyleHotExtract: Hot extract
-	// StyleDragnet: Dragnet escape
+	DebriefSubtitle: Боевой отчёт связи
+	DebriefDepth: Дальше всего от стены
+	DebriefHarvest: Узлы собраны
+	DebriefSettled: Запечатлённые осколки
+	DebriefHunted: Преследований
+	DebriefTime: Время нырка
+	DebriefExitSafe: Безопасный разрыв
+	DebriefExitBurnout: RAM исчерпан, связь выгорела
+	DebriefExitDeath: Конструкт распался, связь выгорела
+	DebriefLost: "{0} незапечатлённых осколков сгорели"
+	DebriefContinue: Продолжить
+	DebriefMechHint: Незапечатлённая добыча живёт только в связи. Она станет твоей лишь после запечатления на ретрансляторе или терминале выхода
+	DebriefScore: Очки
+	DebriefGrade: Оценка
+	DebriefBest: Лучший результат {0}
+	DebriefNewRecord: Новый рекорд
+	StyleGhost: Призрачный ход
+	StyleHeat: Выживание в жаре
+	StyleHotExtract: Горячий разрыв
+	StyleDragnet: Уход из облавы
 }
 
 CharacterDockUI: {
-	// OpenHintLabel: Click to view portrait
-	// DragHintLabel: Drag to move · Scroll to zoom · Right-click to reset
-	// LockedHintLabel: Not yet unlocked
-	// SupCal.Name: Brimstone Witch
-	// Helen.Name: Helen
-	// Shenyo.Name: Shenyo
+	OpenHintLabel: Нажмите, чтобы открыть портрет
+	DragHintLabel: Перетаскивание — сдвиг · колесо — масштаб · ПКМ — сброс
+	LockedHintLabel: Ещё не открыто
+	SupCal.Name: Серная ведьма
+	Helen.Name: Хелен
+	Shenyo.Name: Шэнью
 }
 
 WeaponSkillHud: {
-	// ReadyHint: Ready, click to cast
-	// AimHint: Hold, drag to the aim point, release to cast
-	// ReleaseHint: Release to cast
-	// CooldownFormat: Cooldown: {0}s
-	// ActiveLine: Active
-	// ManaCostFormat: Mana cost: {0}
+	ReadyHint: Готово, нажмите, чтобы применить
+	AimHint: Удерживайте, тяните к точке, отпустите, чтобы применить
+	ReleaseHint: Отпустите, чтобы применить
+	CooldownFormat: До конца перезарядки {0} с
+	ActiveLine: Применяется
+	ManaCostFormat: Расход маны {0}
 }
 
 KiyumeHoundHints: {
-	// HintAlert: Stand still. The fog will hide you.
-	// HintChase: Get indoors, or into the deepest fog.
+	HintAlert: Стой. Не двигайся. Туман спрячет тебя.
+	HintChase: Зайди в дом или туда, где туман гуще всего.
 }
 
 KiyumeDreamWake: {
-	// WakeBitten: The moment the dog's jaws closed, you woke.
-	// WakeDrowned: The lake closed over your head, and you woke.
-	// WakeGeneric: The dream broke.
+	WakeBitten: В миг, когда сомкнулись клыки, ты проснулся.
+	WakeDrowned: Озёрная вода закрыла голову, и ты проснулся.
+	WakeGeneric: Сон оборвался.
 }

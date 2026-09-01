@@ -1,100 +1,76 @@
-/* GsSpear.Desc:
+GsSpear.Desc: "Reforgé : manuel à trois temps, chaque estoc plus profond et plus rapide ; le troisième avance d'un pas, comme un vétéran"
+GsTrident.Desc: "Reforgé : chaque estoc fait jaillir trois jets d'eau de la plaie vers les ennemis proches ; dans l'eau ou sous la pluie, la marée monte, les jets vont plus vite et plus loin"
+GsThunderSpear.Desc: "Reforgé : à pleine extension, la pointe charge un instant ; toucher à ce moment envoie un arc vers l'ennemi le plus proche ; sous la pluie, deux ennemis"
+GsTheRottedFork.Desc: "Reforgé : deux temps, un coup vif puis une pression lourde ; la pression extrait un globule de pus qui s'étale en un petit bassin corrosif"
+GsDarkLance.Desc: 
 	'''
-	Reforged: drill-manual thrusts in three beats, each one deeper and faster than the last;
-	the third beat steps into the strike like a veteran
-	''' */
-/* GsTrident.Desc:
+	Reforgé : maintenez pour charger, la flamme d'ombre s'enroule sur la hampe ; relâchez, l'estoc va plus loin et plus fort ;
+	un coup à pleine charge fait jaillir trois feux dévoreurs d'ombre de la plaie
 	'''
-	Reforged: every strike bursts three jets of seawater from the wound;
-	while wet or in the rain the tide rises, jets fly faster and farther
-	''' */
-/* GsThunderSpear.Desc:
+GsSwordfish.Desc: "Reforgé : chaque estoc vous fait bondir un peu dans l'axe, deux fois plus loin sous l'eau ; dans l'eau, l'espadon est dans son élément, +15% de dégâts"
+GsObsidianSwordfish.Desc: "Reforgé : les coups enflamment et projettent des éclats d'obsidienne ; si vous brûlez ou baignez dans la lave, le noyau se réchauffe, +15% de dégâts"
+GsCobaltNaginata.Desc: 
 	'''
-	Reforged: the tip charges while held at full extension; land a hit during that moment
-	and lightning arcs to the nearest other enemy, or two in the rain
-	''' */
-/* GsTheRottedFork.Desc:
+	Reforgé : naginata à deux temps, un estoc droit puis un large balayage
+	Le balayage atteint l'arc que la ligne d'estoc ne touche pas
 	'''
-	Reforged: two-beat strikes, a quick jab then a heavy squeeze;
-	the heavy beat squeezes a glob of gore from the wound that splats into a corroding pool
-	''' */
-/* GsDarkLance.Desc:
+GsPalladiumPike.Desc: 
 	'''
-	Reforged: hold to feed the lance with devouring shadowflame, release to strike farther and harder;
-	a fully charged hit bursts three shadow embers from the wound
-	''' */
-/* GsSwordfish.Desc:
+	Reforgé : chaque estoc stocke une couche de vigueur dans le palladium
+	À 5 charges, elle éclate et vous rend 5 vie
 	'''
-	Reforged: every thrust leaps you forward along the strike, twice as far underwater;
-	while wet the swordfish is in its element and deals 15% more damage
-	''' */
-/* GsObsidianSwordfish.Desc:
+GsMythrilHalberd.Desc: 
 	'''
-	Reforged: strikes set enemies on fire and burst obsidian shards from the wound;
-	while you are burning or soaked in lava the core reheats, dealing 15% more damage
-	''' */
-/* GsCobaltNaginata.Desc:
+	Reforgé : deux temps, un coup vif, un coup profond
+	Le coup lourd relâche un croissant de mythril à courte portée, jusqu'à deux cibles percées
 	'''
-	Reforged: alternating polework, a straight thrust then a wide cobalt sweep;
-	the sweep carves an arc where the thrust line cannot reach
-	''' */
-/* GsPalladiumPike.Desc:
+GsOrichalcumHalberd.Desc: 
 	'''
-	Reforged: each hit stores a charge of vigor in the warm palladium edge;
-	at five charges the spear bursts them, restoring 5 life to its wielder
-	''' */
-/* GsMythrilHalberd.Desc:
+	Reforgé : chaque estoc qui touche fait éclore deux pétales chasseurs de la plaie
+	Ils spirent vers les ennemis proches
 	'''
-	Reforged: two-beat halberd work, a quick jab then a deep heavy thrust;
-	the heavy beat looses a short-ranged mythril crescent that pierces twice
-	''' */
-/* GsOrichalcumHalberd.Desc:
+GsAdamantiteGlaive.Desc: 
 	'''
-	Reforged: every thrust that lands blooms two homing petals from the wound,
-	each spiraling after nearby prey
-	''' */
-/* GsAdamantiteGlaive.Desc:
+	Reforgé : le dernier quart de la lame est le point faible
+	Toucher de la pointe brise l'armure et fige l'ennemi ; toucher de la hampe n'est qu'un estoc ordinaire
 	'''
-	Reforged: the last quarter of the blade is a sweet spot;
-	landing the very tip shatters armor and staggers, the shaft is just a poke
-	''' */
-/* GsTitaniumTrident.Desc:
+GsTitaniumTrident.Desc: 
 	'''
-	Reforged: each thrust casts two parallel shade-tridents above and below the true blade,
-	flying a short lane before dissolving
-	''' */
-/* GsGungnir.Desc:
+	Reforgé : chaque estoc crée au-dessus et au-dessous de la vraie lame une ombre de trident parallèle
+	Les ombres volent un court instant puis se dissipent
 	'''
-	Reforged: a stately three-beat thrust crowned by a golden finisher;
-	right click hurls the oath-lance as a piercing bolt of light that never misses its sworn prey
-	''' */
-/* GsChlorophytePartisan.Desc:
+GsGungnir.Desc: 
 	'''
-	Reforged: while the blade dwells at full reach, spores gather on its tip;
-	as the spear withdraws it looses a drifting spore cloud that hunts and poisons
-	''' */
-/* GsMushroomSpear.Desc:
+	Reforgé : trois temps de puissance, le troisième porte un accent d'anneau d'or ;
+	clic droit : jetez la lance du serment, elle verrouille la proie sur sa ligne, courbe, perce, et ne rate jamais
 	'''
-	Reforged: the heavy second beat plants a glowing spore mine in the wound;
-	it bursts moments later, harming foes around and feeding 2 life back to the wielder
-	''' */
-/* GsNorthPole.Desc:
+GsChlorophytePartisan.Desc: 
 	'''
-	Reforged: quick thrusts fling spiraling frost crystals, and the third strike plants a polar pillar
-	at the wound that rains icicles; the dwell wreathes the tip in freezing mist
-	''' */
-/* GsJoustingLance.Desc:
+	Reforgé : tant que la pointe reste à pleine portée, les spores s'y rassemblent
+	Au retrait, un nuage de spores lent et à tête chercheuse part, et empoisonne
 	'''
-	Reforged: hold to couch the lance, speed builds momentum, a full-tilt strike deals up to 2.4x damage;
-	the longer you ride at full tilt, the more bonus damage the next strike carries
-	''' */
-/* GsShadowJoustingLance.Desc:
+GsMushroomSpear.Desc: 
 	'''
-	Reforged: charging at speed leaves shadowflame embers along your path;
-	foes touching an ember take 25% damage and catch shadowflame
-	''' */
-/* GsHallowJoustingLance.Desc:
+	Reforgé : le second temps, lourd, plante une mine-champignon lumineuse dans la cible
+	Elle explose un instant plus tard, blesse autour et vous rend 2 vie
 	'''
-	Reforged: at full tilt, a prismatic star falls on the nearest foe every 0.7s for 40% damage;
-	full-tilt strikes burst with holy prismatic light
-	''' */
+GsNorthPole.Desc: 
+	'''
+	Reforgé : les estocs vifs jettent des cristaux de givre en spirale ; le troisième dresse une colonne polaire à la plaie, et des glaçons tombent du sommet ;
+	en garde, la pointe s'entoure de brouillard froid, et les ennemis touchés prennent Brûlure de givre
+	'''
+GsJoustingLance.Desc: 
+	'''
+	Reforgé : maintenez le clic gauche, la lance de joute se couche ; plus vous allez vite, plus l'élan monte, jusqu'à 2.4 fois de dégâts à plein élan
+	Plus longtemps vous tenez le plein élan, plus le bonus du prochain coup grimpe
+	'''
+GsShadowJoustingLance.Desc: 
+	'''
+	Reforgé : maintenez le clic gauche, la lance se couche ; à haute vitesse, des braises de Flamme d'ombre jalonnent le passage
+	Les toucher inflige 25% de dégâts et enflamme (Flamme d'ombre)
+	'''
+GsHallowJoustingLance.Desc: 
+	'''
+	Reforgé : maintenez le clic gauche, la lance se couche ; à plein élan, une étoile arc-en-ciel tombe sur l'ennemi le plus proche toutes les 0.7 s environ, 40% de dégâts
+	Un coup à plein élan éclate de prisme sacré
+	'''

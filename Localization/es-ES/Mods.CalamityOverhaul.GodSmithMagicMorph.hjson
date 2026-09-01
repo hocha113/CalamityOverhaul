@@ -1,30 +1,30 @@
-/* GsSpiritFlame.Desc:
+GsSpiritFlame.Desc:
 	'''
-	Reforged: spirit flames trail pale soulfire; half of their hits split off a hunting wisp
-	Hold right click to charge; release to lay a five-flame ring at your cursor that pounces on intruders
-	''' */
-// GsSpiritFlameRingProj.DisplayName: Spirit Flame Ring
-// GsSpiritFlameWispProj.DisplayName: Hunting Wisp
-/* GsPoisonStaff.Desc:
+	Reforja: las llamas espirituales arrastran fuego de alma pálido; al impactar, hay un 50 % de probabilidad de desprender una llama espiritual cazadora
+	Mantén pulsado el clic derecho para cargar; al soltar, despliegas en el cursor un anillo de 5 llamas que se lanzan por turno contra los enemigos que se acercan
 	'''
-	Reforged: fangs trail venom mist and split into thin fangs on their second bite
-	Hold right click to charge the Serpent Kiss: a swift coiling viper that poisons everything on its path
-	''' */
-/* GsVenomStaff.Desc:
+GsSpiritFlameRingProj.DisplayName: Anillo de llamas espirituales
+GsSpiritFlameWispProj.DisplayName: Llama espiritual cazadora
+GsPoisonStaff.Desc:
 	'''
-	Reforged: fangs trail venom mist and split a heavy fang on their second bite
-	Hold right click to charge the Serpent Kiss: a massive pit viper whose corpse melts into a lingering acid pool
-	''' */
-/* GsShadowFlameHexDoll.Desc:
+	Reforja: los colmillos vuelan arrastrando niebla venenosa y, al morder al segundo objetivo, se parten en 2 colmillos finos
+	Mantén pulsado el clic derecho para cargar el Beso de la serpiente: una víbora pequeña y rápida que serpentea al abalanzarse y tiende un corredor de niebla venenosa
 	'''
-	Reforged: shadowflame tendrils pin a hex brand into whatever they touch; branded foes take more from this doll
-	Hold right click to charge the Grand Hex: a sigil at your cursor that lashes tendrils at intruders
-	''' */
-/* GsLeafBlower.Desc:
+GsVenomStaff.Desc:
 	'''
-	Reforged: leaf blades spin with a razor-green wake
-	Hold right click to charge Storm Mode: for six seconds every leaf flies faster, cuts deeper and spirals harder
-	''' */
-// GsMorphFangSerpentProj.DisplayName: Serpent Kiss
-// GsMorphFangAcidPoolProj.DisplayName: Acid Pool
-// GsShadowFlameHexSigilProj.DisplayName: Grand Hex Sigil
+	Reforja: los colmillos vuelan arrastrando niebla venenosa y, al morder al segundo objetivo, se parten en un colmillo pesado
+	Mantén pulsado el clic derecho para cargar el Beso de la serpiente: una víbora grande y pesada que avanza despacio; al disiparse el cuerpo, funde un charco de ácido persistente
+	'''
+GsShadowFlameHexDoll.Desc:
+	'''
+	Reforja: los tentáculos de llama sombría clavan un sello de maldición en todo lo que tocan; el enemigo marcado sufre más daño de esta muñeca
+	Mantén pulsado el clic derecho para cargar la Gran maldición: clava en el cursor un Dominio de la marca de la muñeca que azota sin cesar a quien entra con tentáculos de llama sombría
+	'''
+GsLeafBlower.Desc:
+	'''
+	Reforja: las hojas vuelan con una estela verde afilada
+	Mantén pulsado el clic derecho para cargar el modo Tormenta: durante 6 segundos, cada hoja vuela más rápido, corta más hondo y gira con más furia
+	'''
+GsMorphFangSerpentProj.DisplayName: Serpiente venenosa del Beso
+GsMorphFangAcidPoolProj.DisplayName: Charco de ácido virulento
+GsShadowFlameHexSigilProj.DisplayName: Dominio de la marca de la muñeca

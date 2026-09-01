@@ -8,12 +8,12 @@ CWRServerConfig: {
 	}
 
 	GenWGGCollector: {
-		Label: Generar puestos de chatarreros
-		Tooltip: Genera al azar estructuras hostiles de chatarreros. Solo tiene efecto en mundos legendarios
+		Label: Generar chatarreros
+		Tooltip: Genera al azar estructuras hostiles de chatarreros por el mundo. Solo tiene efecto en mundos legendarios
 	}
 
 	GenJunkmanBase: {
-		Label: Generar base del chatarrero
+		Label: Generar base de chatarreros
 		Tooltip: Genera una base fortificada de chatarreros en páramos o bajo tierra
 	}
 
@@ -24,16 +24,16 @@ CWRServerConfig: {
 
 	GenSylvanOutpost: {
 		Label: Generar puesto silvano
-		Tooltip: Genera puestos de avanzada de elfos o guardianes del bosque en lo profundo del bosque
+		Tooltip: Genera un puesto de madera de elfos o guardianes del bosque en lo profundo del bosque
 	}
 
 	GenSHPCCradle: {
-		// Label: Generate SHPC Cradle Island
-		// Tooltip: Generates a crashed vessel sky island above spawn with the SHPC sealed inside. When disabled, the weapon can only be found in Calamity's laboratory.
+		Label: Generar isla de la cuna de SHPC
+		Tooltip: Genera una isla flotante de cabina estrellada sobre el punto de aparición, con SHPC sellada en su interior. Si se desactiva, el arma solo podrá obtenerse en el laboratorio de Calamity
 	}
 
 	ConfigChangePrefix: Usuario
-	ConfigChangeSuffix: Se ha modificado la configuración del servidor
+	ConfigChangeSuffix: ha modificado la configuración del servidor
 }
 
 CWRClientConfig: {
@@ -41,22 +41,22 @@ CWRClientConfig: {
 	Headers.CWRWeapon: Ajustes de armas Overhaul
 
 	ScreenVibration: {
-		Label: Efecto de vibración de pantalla en ataques especiales de armas
-		Tooltip: Si se activa, al realizar algunos ataques, la pantalla vibrará, lo que podría intensificar la sensación de impacto.
+		Label: Vibración de pantalla en ataques especiales de armas
+		Tooltip: Si se activa, algunos ataques harán vibrar la pantalla, lo que puede intensificar la sensación de impacto
 	}
 
 	DomainConciseDisplay: {
 		Label: Dominio en modo minimalista
-		Tooltip: Desactivado por defecto. Al activarlo, se ocultan la mayoría de efectos visuales dentro del dominio.
+		Tooltip: Desactivado por defecto. Al activarlo, solo simplifica las puestas en escena de dominios como el Ciberespacio o el mar; no afecta al Reino espectral de Onikiri ni a efectos de armas e implantes como Desmembrar, efigie o Tiempo de hackeo
 	}
 
 	LensEasing: {
 		Label: Suavizado de la cámara
-		Tooltip: Al habilitar, los movimientos rápidos a larga distancia suavizarán la cámara, evitando la sensación de desajuste por moverse demasiado rápido.
+		Tooltip: Al habilitarlo, los desplazamientos rápidos a larga distancia suavizan la cámara y evitan la sensación extraña de moverse demasiado rápido
 	}
 
 	AmbienceDensity: {
-		// Label: Ambience Density
-		// Tooltip: Scales decorative ambience particle density only; telegraphs and hazards are never reduced.
+		Label: Densidad de ambiente
+		Tooltip: Solo escala la densidad de partículas decorativas de ambiente; la visibilidad de avisos y peligros no se reduce nunca
 	}
 }

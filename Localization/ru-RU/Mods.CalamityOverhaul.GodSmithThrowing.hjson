@@ -1,125 +1,125 @@
-/* GsShuriken.Desc:
+GsShuriken.Desc:
 	'''
-	Reforged: 15% chance not to consume; crits refund one; misses stuck in walls can be picked back up
-	At 5 combo stacks every throw splits off a free twin star
-	''' */
-/* GsThrowingKnife.Desc:
+	Перековка: 15% шанс не тратить; крит сразу возвращает один; сорвавшийся в стену сюрикен можно подобрать
+	После пяти слоёв серии каждый бросок несёт бесплатную звёздную двойню
 	'''
-	Reforged: crits refund one; knives stuck in walls often survive to be reclaimed
-	Each hit sharpens the next knife within 0.8s, +12% up to 3 stacks
-	''' */
-/* GsPoisonedKnife.Desc:
+GsThrowingKnife.Desc:
 	'''
-	Reforged: crits refund one; wall-stuck knives can be reclaimed
-	Hits stack venom, extending poison; at 6 stacks the target corrodes, taking your knives 5 armor deeper for 8s
-	''' */
-/* GsBoneDagger.Desc:
+	Перековка: крит сразу возвращает; нож в стене чаще всего можно забрать
+	Каждое попадание острит следующий нож на 0.8 с, +12% урона, до трёх слоёв
 	'''
-	Reforged: crits refund one; strays can be reclaimed
-	Embed 4 daggers in the same foe and they all shatter for 60% each, always dropping one recovery pickup
-	''' */
-/* GsStarAnise.Desc:
+GsPoisonedKnife.Desc:
 	'''
-	Reforged: crits always refund one; strays can be reclaimed
-	Ricochets to a nearby foe up to twice, losing 15% per hop
-	''' */
-/* GsBone.Desc:
+	Перековка: крит сразу возвращает; нож в стене можно подобрать
+	Попадание копит яд и продлевает отравление; на шести слоях цель корродирует, ваши ножи 8 с пробивают её броню на 5
 	'''
-	Reforged: the bone arcs back to your hand and deals damage both ways; catch it to reclaim it outright
-	Misses can be picked back up; crits split off two half-damage shards
-	''' */
-/* GsJavelin.Desc:
+GsBoneDagger.Desc:
 	'''
-	Reforged: crits refund one; javelins left in walls are usually reclaimable
-	Throwing while sprinting adds 25% damage and 30% velocity; consecutive hits on one target stack +12% up to 3
-	''' */
-/* GsBoneJavelin.Desc:
+	Перековка: крит сразу возвращает; сорвавшийся нож можно подобрать
+	Четыре клинка в одной цели все взрываются, каждый на 60% урона, и обязательно роняют трофей возврата
 	'''
-	Reforged: crits refund one
-	With 3 javelins embedded in one foe your javelins hit 15% harder; each embedded javelin has a 60% chance to drop a recovery pickup when it dies
-	''' */
-/* GsSpikyBall.Desc:
+GsStarAnise.Desc:
 	'''
-	Reforged: balls that expire on the field return straight to your bag
-	A foe standing on 3 or more of your balls sets off a chain spike-burst, 50% each, once per ball
-	''' */
-/* GsGrenade.Desc:
+	Перековка: крит всегда возвращает один; промах можно подобрать
+	Рикошетит между врагами до двух раз, каждый скачок −15%
 	'''
-	Reforged: hitting 3+ foes in one blast refunds a grenade; fuses burn 20% faster inside your combo window
-	Right click for a low roll-throw with a 1.2s fuse
-	''' */
-/* GsStickyGrenade.Desc:
+GsBone.Desc:
 	'''
-	Reforged: blasts brand foes for 3s; branded foes take 30% more from your next blast and it always crits
-	Hitting 3+ foes refunds one; right click to roll-throw
-	''' */
-/* GsBouncyGrenade.Desc:
+	Перековка: кость летит дугой назад в руку и бьёт туда и обратно; поймайте — заберёте целиком
+	Упавшие кости можно подобрать; крит раскалывает кость на два осколка с половиной урона
 	'''
-	Reforged: each bounce charges the blast +12%, up to 3 stacks
-	A grenade that bounced 3 times refunds itself when its blast finds a foe; right click to roll-throw
-	''' */
-/* GsBeenade.Desc:
+GsJavelin.Desc:
 	'''
-	Reforged: bursts release 2 extra bees; stung foes take 25% more from your bees for 4s
-	Hitting 3+ foes in one burst refunds one
-	''' */
-/* GsHappyGrenade.Desc:
+	Перековка: крит сразу возвращает; копьё в стене чаще всего можно забрать
+	Бросок с разбега +25% урона и +30% начальной скорости; серия по одной цели +12% за слой, до трёх
 	'''
-	Reforged: the confetti blast leaves non-boss foes wandering confused for 1s
-	Crits refund one grenade; the party never has to end
-	''' */
-/* GsMolotovCocktail.Desc:
+GsBoneJavelin.Desc:
 	'''
-	Reforged: 25% chance not to consume; the fire pool spreads 40% wider and burns 50% longer
-	Shatter another bottle on the same spot within 5s to raise a firewall that burns 30% hotter
-	''' */
-/* GsFrostDaggerfish.Desc:
+	Перековка: крит сразу возвращает
+	Три копья в одной цели дают вашим копьям +15% по ней; вбитые копья с шансом 60% выпадают трофеем, когда цель падает
 	'''
-	Reforged: pierces one more foe; crits refund one
-	Hits stack hypothermia, 3 stacks shatter for +50% and frostburn; hitting a frosted foe always drops the fish back as a pickup
-	''' */
-/* GsSnowball.Desc:
+GsSpikyBall.Desc:
 	'''
-	Reforged: 30% chance not to consume; each consecutive throw flies 4% faster, up to 8
-	Every 8th throw packs into a great snowball: 2.5x damage and a chilling 90px burst
-	''' */
-/* GsRottenEgg.Desc:
+	Перековка: шипастые шары, чей срок истёк, сразу возвращаются в инвентарь
+	Враг, наступивший сразу на три и больше ваших шара, вызывает цепной взрыв шипов — каждый на 50% урона, шар взрывается один раз за жизнь
 	'''
-	Reforged: the egg bursts into a 4s stench cloud; foes inside take 8% more damage from everything
-	Crits refund one egg. It is still a rotten egg
-	''' */
-/* GsPaperAirplaneA.Desc:
+GsGrenade.Desc:
 	'''
-	Reforged: the plane banks gently toward your cursor; after striking it loops back for one more pass
-	Crits refund one; strays can be reclaimed
-	''' */
-/* GsPaperAirplaneB.Desc:
+	Перековка: взрыв по трём и больше врагам возвращает одну; в окне серии фитиль горит на 20% быстрее
+	ПКМ — низкий катящийся бросок, фитиль сжат до 1.2 с
 	'''
-	Reforged: the white plane banks toward your cursor and loops back after striking; +4% crit
-	Crits refund one; strays can be reclaimed
-	''' */
-/* GsHolyWater.Desc:
+GsStickyGrenade.Desc:
 	'''
-	Reforged: still hallows the land; the burst also raises a 3s radiant field
-	Foes inside take 10% more from everything, allies inside mend 1 life per second; covering 3 foes refunds a flask
-	''' */
-/* GsUnholyWater.Desc:
+	Перековка: взрыв ставит на врагов клеймо выжигания на 3 с; меченые получают +30% урона от ваших взрывов и гарантированный крит
+	Взрыв по трём врагам возвращает одну; ПКМ — катящийся бросок
 	'''
-	Reforged: still corrupts the land; the burst also raises a 3s miasma
-	Foes inside smolder with shadowflame and wade as if through tar
-	''' */
-/* GsBloodWater.Desc:
+GsBouncyGrenade.Desc:
 	'''
-	Reforged: still spreads the crimson; the burst also raises a 3s blood haze
-	While you stand inside, your strikes leech 1 life, up to 3 per second
-	''' */
-/* GsAleTosser.Desc:
+	Перековка: каждый отскок копит взрыв, +12% урона, до трёх слоёв
+	Граната после трёх отскоков, попавшая во врага, возвращается целиком; ПКМ — катящийся бросок
 	'''
-	Reforged: 30% chance to not consume ale
-	Hits stack Tipsy, +8% damage each up to 5; every 6th throw is a keg blast that dazes non-boss foes
-	''' */
-/* GsShadowflameKnife.Desc:
+GsBeenade.Desc:
 	'''
-	Reforged: hits feed a combo that quickens your arm, up to 25% faster at 9 stacks
-	At full combo the blade enters Flame Edge: shadowflame burns a full 4s and every 4th knife splits off a shadow clone
-	''' */
+	Перековка: взрыв выпускает ещё двух пчёл; ужаленные 4 с получают +25% урона от вашего роя
+	Взрыв по трём врагам возвращает одну
+	'''
+GsHappyGrenade.Desc:
+	'''
+	Перековка: конфетти пьянит не-боссов на 1 с — они бродят в смятении
+	Крит возвращает одну; вечеринка не кончается
+	'''
+GsMolotovCocktail.Desc:
+	'''
+	Перековка: 25% шанс не тратить; море огня шире на 40%, горение дольше наполовину
+	Пять секунд ударов по одной зоне (в пределах 120 пикселей) поднимают стену пламени, огненный урон ещё +30%
+	'''
+GsFrostDaggerfish.Desc:
+	'''
+	Перековка: пробивает ещё одну цель; крит сразу возвращает
+	Попадание копит переохлаждение; три слоя дробят лёд на +50% урона и вешают морозный огонь; попадание по уже морозному всегда возвращает скользкую рыбу трофеем
+	'''
+GsSnowball.Desc:
+	'''
+	Перековка: 30% шанс не тратить; серия ускоряет каждую следующую на 4% начальной скорости, до восьми
+	Каждый восьмой — большой ком: 2.5× урона, взрывается ледяным хлопком на 90 пикселей и вешает морозный огонь
+	'''
+GsRottenEgg.Desc:
+	'''
+	Перековка: разбитие оставляет вонючее облако на 4 с, весь урон по врагам внутри +8%
+	Крит возвращает одно. В конце концов это всё же тухлое яйцо
+	'''
+GsPaperAirplaneA.Desc:
+	'''
+	Перековка: самолётик медленно скользит за прицелом; после попадания кружит круг и кусает ещё раз
+	Крит возвращает; промах можно подобрать
+	'''
+GsPaperAirplaneB.Desc:
+	'''
+	Перековка: белый самолётик скользит за прицелом, после попадания кружит и бьёт снова; шанс крита +4%
+	Крит возвращает; промах можно подобрать
+	'''
+GsHolyWater.Desc:
+	'''
+	Перековка: смена биома как прежде; в точке разбития на 3 с встаёт святой домен
+	Весь урон по врагам внутри +10%, игроки внутри восстанавливают 1 здоровья в секунду; бутыль на трёх врагах возвращает одну
+	'''
+GsUnholyWater.Desc:
+	'''
+	Перековка: смена биома как прежде; в точке разбития на 3 с встаёт скверный туман
+	Враги внутри горят теневым огнём и чуть медлят
+	'''
+GsBloodWater.Desc:
+	'''
+	Перековка: смена биома как прежде; в точке разбития на 3 с встаёт кровавый туман
+	Стоя в тумане, попадания крадут 1 здоровья, не больше 3 в секунду
+	'''
+GsAleTosser.Desc:
+	'''
+	Перековка: 30% шанс не тратить эль
+	Попадание копит хмель, +8% урона за слой, до пяти; каждый шестой бросок — взрыв бочки, не-боссы пьяно кружатся
+	'''
+GsShadowflameKnife.Desc:
+	'''
+	Перековка: попадания кормят серию, броски всё быстрее, на девяти слоях +25%
+	Полный разгон входит в остриё пламени: теневой огонь жжёт 4 с, каждый четвёртый нож делит теневой клинок на 60% урона
+	'''

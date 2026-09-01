@@ -1,125 +1,125 @@
-/* GsShuriken.Desc:
+GsShuriken.Desc:
 	'''
-	Reforged: 15% chance not to consume; crits refund one; misses stuck in walls can be picked back up
-	At 5 combo stacks every throw splits off a free twin star
-	''' */
-/* GsThrowingKnife.Desc:
+	Reforja: 15% de probabilidad de no consumir; un crítico devuelve uno; los shuriken fallidos clavados en la pared se pueden recoger
+	Al llenar cinco capas de lanzamientos seguidos, cada tiro lleva una estrella gemela gratis
 	'''
-	Reforged: crits refund one; knives stuck in walls often survive to be reclaimed
-	Each hit sharpens the next knife within 0.8s, +12% up to 3 stacks
-	''' */
-/* GsPoisonedKnife.Desc:
+GsThrowingKnife.Desc:
 	'''
-	Reforged: crits refund one; wall-stuck knives can be reclaimed
-	Hits stack venom, extending poison; at 6 stacks the target corrodes, taking your knives 5 armor deeper for 8s
-	''' */
-/* GsBoneDagger.Desc:
+	Reforja: un crítico devuelve una; las cuchillas clavadas en la pared casi siempre se recogen
+	Cada impacto afila la siguiente cuchilla en 0.8 segundos, +12% de daño, hasta tres capas
 	'''
-	Reforged: crits refund one; strays can be reclaimed
-	Embed 4 daggers in the same foe and they all shatter for 60% each, always dropping one recovery pickup
-	''' */
-/* GsStarAnise.Desc:
+GsPoisonedKnife.Desc:
 	'''
-	Reforged: crits always refund one; strays can be reclaimed
-	Ricochets to a nearby foe up to twice, losing 15% per hop
-	''' */
-/* GsBone.Desc:
+	Reforja: un crítico devuelve una; las cuchillas pegadas a la pared se pueden recoger
+	Los impactos apilan toxina y alargan el veneno; al llenar seis capas el objetivo se corroe y tus cuchillas le perforan 5 de armadura más durante 8 segundos
 	'''
-	Reforged: the bone arcs back to your hand and deals damage both ways; catch it to reclaim it outright
-	Misses can be picked back up; crits split off two half-damage shards
-	''' */
-/* GsJavelin.Desc:
+GsBoneDagger.Desc:
 	'''
-	Reforged: crits refund one; javelins left in walls are usually reclaimable
-	Throwing while sprinting adds 25% damage and 30% velocity; consecutive hits on one target stack +12% up to 3
-	''' */
-/* GsBoneJavelin.Desc:
+	Reforja: un crítico devuelve una; las fallidas se pueden recoger
+	Al clavar cuatro en el mismo objetivo, todas estallan, cada una al 60% de daño, y cae seguro un objeto recuperable
 	'''
-	Reforged: crits refund one
-	With 3 javelins embedded in one foe your javelins hit 15% harder; each embedded javelin has a 60% chance to drop a recovery pickup when it dies
-	''' */
-/* GsSpikyBall.Desc:
+GsStarAnise.Desc:
 	'''
-	Reforged: balls that expire on the field return straight to your bag
-	A foe standing on 3 or more of your balls sets off a chain spike-burst, 50% each, once per ball
-	''' */
-/* GsGrenade.Desc:
+	Reforja: un crítico siempre devuelve uno; los fallos se pueden recoger
+	Rebota entre enemigos hasta dos veces, y cada salto pierde un 15%
 	'''
-	Reforged: hitting 3+ foes in one blast refunds a grenade; fuses burn 20% faster inside your combo window
-	Right click for a low roll-throw with a 1.2s fuse
-	''' */
-/* GsStickyGrenade.Desc:
+GsBone.Desc:
 	'''
-	Reforged: blasts brand foes for 3s; branded foes take 30% more from your next blast and it always crits
-	Hitting 3+ foes refunds one; right click to roll-throw
-	''' */
-/* GsBouncyGrenade.Desc:
+	Reforja: el hueso traza un arco y vuelve a la mano; ida y vuelta hieren; si lo atrapas, lo recuperas entero
+	Los huesos que fallan se pueden recoger; un crítico se parte en dos esquirlas a la mitad de daño
 	'''
-	Reforged: each bounce charges the blast +12%, up to 3 stacks
-	A grenade that bounced 3 times refunds itself when its blast finds a foe; right click to roll-throw
-	''' */
-/* GsBeenade.Desc:
+GsJavelin.Desc:
 	'''
-	Reforged: bursts release 2 extra bees; stung foes take 25% more from your bees for 4s
-	Hitting 3+ foes in one burst refunds one
-	''' */
-/* GsHappyGrenade.Desc:
+	Reforja: un crítico devuelve una; las jabalinas clavadas en la pared casi siempre se recogen
+	Lanzada al correr: +25% de daño y +30% de velocidad inicial; los impactos seguidos al mismo objetivo suman +12% por capa, hasta tres capas
 	'''
-	Reforged: the confetti blast leaves non-boss foes wandering confused for 1s
-	Crits refund one grenade; the party never has to end
-	''' */
-/* GsMolotovCocktail.Desc:
+GsBoneJavelin.Desc:
 	'''
-	Reforged: 25% chance not to consume; the fire pool spreads 40% wider and burns 50% longer
-	Shatter another bottle on the same spot within 5s to raise a firewall that burns 30% hotter
-	''' */
-/* GsFrostDaggerfish.Desc:
+	Reforja: un crítico devuelve una
+	Con tres jabalinas clavadas en el mismo objetivo, las tuyas le hacen +15% de daño; cada jabalina clavada tiene un 60% de probabilidad de soltar un objeto recuperable al caer el objetivo
 	'''
-	Reforged: pierces one more foe; crits refund one
-	Hits stack hypothermia, 3 stacks shatter for +50% and frostburn; hitting a frosted foe always drops the fish back as a pickup
-	''' */
-/* GsSnowball.Desc:
+GsSpikyBall.Desc:
 	'''
-	Reforged: 30% chance not to consume; each consecutive throw flies 4% faster, up to 8
-	Every 8th throw packs into a great snowball: 2.5x damage and a chilling 90px burst
-	''' */
-/* GsRottenEgg.Desc:
+	Reforja: las bolas con pinchos que expiran en el campo vuelven directo a la mochila
+	Si un enemigo pisa a la vez tres o más de tus bolas, salta una explosión de pinchos en cadena, cada una al 50% de daño; cada bola solo explota una vez en su vida
 	'''
-	Reforged: the egg bursts into a 4s stench cloud; foes inside take 8% more damage from everything
-	Crits refund one egg. It is still a rotten egg
-	''' */
-/* GsPaperAirplaneA.Desc:
+GsGrenade.Desc:
 	'''
-	Reforged: the plane banks gently toward your cursor; after striking it loops back for one more pass
-	Crits refund one; strays can be reclaimed
-	''' */
-/* GsPaperAirplaneB.Desc:
+	Reforja: si una explosión alcanza a tres o más enemigos, devuelve una; en la ventana de combo la mecha arde un 20% más rápido
+	Clic derecho: un lanzamiento bajo y rodado, la mecha se acorta a 1.2 segundos
 	'''
-	Reforged: the white plane banks toward your cursor and loops back after striking; +4% crit
-	Crits refund one; strays can be reclaimed
-	''' */
-/* GsHolyWater.Desc:
+GsStickyGrenade.Desc:
 	'''
-	Reforged: still hallows the land; the burst also raises a 3s radiant field
-	Foes inside take 10% more from everything, allies inside mend 1 life per second; covering 3 foes refunds a flask
-	''' */
-/* GsUnholyWater.Desc:
+	Reforja: la explosión marca a los enemigos 3 segundos con una quemadura corrosiva; un marcado sufre +30% de tu siguiente explosión y es crítico asegurado
+	Alcanzar a tres enemigos devuelve una; clic derecho para un lanzamiento rodado
 	'''
-	Reforged: still corrupts the land; the burst also raises a 3s miasma
-	Foes inside smolder with shadowflame and wade as if through tar
-	''' */
-/* GsBloodWater.Desc:
+GsBouncyGrenade.Desc:
 	'''
-	Reforged: still spreads the crimson; the burst also raises a 3s blood haze
-	While you stand inside, your strikes leech 1 life, up to 3 per second
-	''' */
-/* GsAleTosser.Desc:
+	Reforja: cada rebote carga la explosión, +12% de daño, hasta tres capas
+	Una granada que rebotó tres veces se devuelve entera si la explosión alcanza a un enemigo; clic derecho para un lanzamiento rodado
 	'''
-	Reforged: 30% chance to not consume ale
-	Hits stack Tipsy, +8% damage each up to 5; every 6th throw is a keg blast that dazes non-boss foes
-	''' */
-/* GsShadowflameKnife.Desc:
+GsBeenade.Desc:
 	'''
-	Reforged: hits feed a combo that quickens your arm, up to 25% faster at 9 stacks
-	At full combo the blade enters Flame Edge: shadowflame burns a full 4s and every 4th knife splits off a shadow clone
-	''' */
+	Reforja: la explosión suelta dos abejas más; un enemigo picado sufre +25% de tu enjambre durante 4 segundos
+	Alcanzar a tres enemigos de un golpe devuelve una
+	'''
+GsHappyGrenade.Desc:
+	'''
+	Reforja: la explosión de confeti deja a los enemigos que no son jefes ebrios y dando vueltas 1 segundo
+	Un crítico devuelve una; la fiesta no se acaba nunca
+	'''
+GsMolotovCocktail.Desc:
+	'''
+	Reforja: 25% de probabilidad de no consumir; el mar de fuego se extiende un 40% más ancho y arde la mitad más de tiempo
+	Si en cinco segundos golpeas la misma zona (120 píxeles), se alza un muro de llamas y el daño de fuego sube otro 30%
+	'''
+GsFrostDaggerfish.Desc:
+	'''
+	Reforja: perfora un objetivo más; un crítico lo devuelve
+	Los impactos apilan hipotermia; a tres capas el hielo se rompe, +50% de daño y aplica quemadura gélida; al golpear a un enemigo ya escarchado, el pez se te resbala de la mano y vuelve siempre como objeto recuperable
+	'''
+GsSnowball.Desc:
+	'''
+	Reforja: 30% de probabilidad de no consumir; cada lanzamiento seguido sube un 4% la velocidad inicial, hasta ocho
+	Cada 8.º se aprieta en una gran bola de nieve: 2.5 veces el daño, una explosión de hielo de 90 píxeles y quemadura gélida
+	'''
+GsRottenEgg.Desc:
+	'''
+	Reforja: al romperse deja 4 segundos de nube fétida; los enemigos dentro sufren un 8% más de todo el daño
+	Un crítico devuelve uno. Al final, sigue siendo un huevo podrido
+	'''
+GsPaperAirplaneA.Desc:
+	'''
+	Reforja: el avión de papel planea siguiendo despacio el punto de mira; tras acertar da una vuelta y aún muerde otra vez
+	Un crítico lo devuelve; los fallos se pueden recoger
+	'''
+GsPaperAirplaneB.Desc:
+	'''
+	Reforja: el avión de papel blanco planea hacia el punto de mira y, tras acertar, da una vuelta y ataca de nuevo; +4% de crítico
+	Un crítico lo devuelve; los fallos se pueden recoger
+	'''
+GsHolyWater.Desc:
+	'''
+	Reforja: la conversión del entorno sigue igual; en el punto de rotura se alza 3 segundos un dominio de resplandor sacro
+	Los enemigos dentro sufren un 10% más de todo el daño; los jugadores dentro recuperan 1 de vida por segundo; si una botella cubre a tres enemigos, devuelve una
+	'''
+GsUnholyWater.Desc:
+	'''
+	Reforja: la conversión del entorno sigue igual; en el punto de rotura se alza 3 segundos una niebla impía
+	Los enemigos del dominio arden sin parar en llama de las sombras y se mueven un poco más lentos
+	'''
+GsBloodWater.Desc:
+	'''
+	Reforja: la conversión del entorno sigue igual; en el punto de rotura se alza 3 segundos una niebla de sangre
+	Si estás de pie en la niebla, tus impactos absorben 1 de vida, como mucho 3 por segundo
+	'''
+GsAleTosser.Desc:
+	'''
+	Reforja: 30% de probabilidad de no consumir cerveza
+	Los impactos apilan borrachera, +8% de daño por capa, hasta cinco; cada 6.º lanzamiento es una explosión de barril que deja a los que no son jefes ebrios y dando vueltas
+	'''
+GsShadowflameKnife.Desc:
+	'''
+	Reforja: los impactos alimentan el combo; el brazo se acelera al apilar, un 25% más rápido a nueve capas
+	Al llenar el combo entra en filo de llama: la llama de las sombras arde 4 segundos enteros, y cada 4.ª cuchilla se parte en una hoja de sombra al 60% de daño
+	'''

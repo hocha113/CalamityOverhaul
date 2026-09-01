@@ -1,68 +1,68 @@
 # GodSmith MeleeOddities (P5) weapon descriptions
 # Keys composed by the framework: Mods.CalamityOverhaul.GodSmithMeleeOddities.{SchemeClass}.Desc
 
-/* GsVampireKnives.Desc:
+GsVampireKnives.Desc:
 	'''
-	Reforged: hurls 4-8 knives that heal 7.5% of damage dealt;
-	stolen blood condenses into up to 3 orbiting blood pearls, each adding a knife to the next throw;
-	at 3 pearls the next throw is a crimson volley with doubled lifesteal
-	''' */
-/* GsScourgeoftheCorruptor.Desc:
+	Umschmiedung: Ein Wurf 4–8 Wurfmesser, Treffer saugen 7,5% des verursachten Schadens als Leben;
+	das gesaugte Blut gerinnt zu Blutperlen bei dir, höchstens 3, jede gibt dem nächsten Wurf 1 Messer extra;
+	bei 3 Perlen ist der nächste Wurf eine Karmesinsalve, diese Runde verdoppelt den Lebensraub
 	'''
-	Reforged: the javelin bursts into a brood of tiny eaters on impact;
-	it also pins a festering sore on whatever it strikes - eaters dive at the sore,
-	and after three passes the sore ruptures with cursed flames
-	''' */
-/* GsSolarEruption.Desc:
+GsScourgeoftheCorruptor.Desc:
 	'''
-	Reforged: lashes out a looping chain-blade that pierces walls and detonates sunlight on hit;
-	land 8 hits to charge a corona - the next lash ignites its whole path in a chain of blasts
-	''' */
-/* GsDayBreak.Desc:
+	Umschmiedung: Am Einschlag der Großlanze platzt ein Nest kleiner Seelenfresser;
+	am Speertreffer nagelt sich eine Verderbniswunde, die kleinen Seelenfresser stoßen bevorzugt auf Ziele an der Wunde,
+	wird die Wunde dreimal durchquert, platzt sie und entzündet Verfluchtes Inferno
 	'''
-	Reforged: spears stick and burn, up to 8 per target;
-	pinning 4 spears into one target detonates them into a cross of daylight
-	''' */
-/* GsSickle.Desc:
+GsSolarEruption.Desc:
 	'''
-	Reforged: still harvests hay from grass.
-	Slashes build Harvest, each stack swinging a little faster;
-	at 5 stacks the next slash becomes a widened reaping sweep
-	''' */
-/* GsIceSickle.Desc:
+	Umschmiedung: Wirf die Ringkettenschneide, sie durchdringt Wände, Treffer zünden Sonnenlicht;
+	8 Treffer in Folge füllen die Korona, die nächste Peitsche zündet die ganze Bahn und explodiert der Reihe nach
 	'''
-	Reforged: the thrown sickle freezes into an ice prism where it stops;
-	shatter the prism with a slash to burst a fan of icicles forward
-	''' */
-/* GsDeathSickle.Desc:
+GsDayBreak.Desc:
 	'''
-	Reforged: the wall-piercing scythe grows a tier for each new enemy it reaps;
-	at three tiers it erupts in a ring of soulfire where it halts
-	''' */
-/* GsTerragrim.Desc:
+	Umschmiedung: Sonnenspeere nageln sich in Feinde und brennen weiter, höchstens 8 im selben Ziel;
+	bei 4 Speeren detonieren sie von selbst zum Kreuz-Sonnentag
 	'''
-	Reforged: hold to become a storm of blades while Growth builds;
-	release to loose a blade wave scaled by Growth - at full power it takes the shape of the Terra Blade
-	''' */
-/* GsArkhalis.Desc:
+GsSickle.Desc:
 	'''
-	Reforged: the flurry pierces 20 armor;
-	sustained hits on one target build Insight, each stack adding 2 more armor penetration,
-	and at 8 stacks the flurry snaps into a piercing execution thrust
-	''' */
-/* GsMonkStaffT1.Desc:
+	Umschmiedung: Grasmähen wirft weiter Heu ab.
+	Hiebe häufen Ernte, jeder Stapel macht dich etwas schneller;
+	bei 5 Stapeln wird der nächste Hieb zu einem verbreiterten Querschnitt
 	'''
-	Reforged: the ground slam still deals triple damage in an area, and you can still turn or cut the spin short;
-	slammed enemies grow drowsy and slow, and a third slam on the same target puts it to sleep -
-	that slam hits harder and slows longer
-	''' */
-/* GsMonkStaffT2.Desc:
+GsIceSickle.Desc:
 	'''
-	Reforged: every landed thrust calls a ghast to pierce a nearby enemy;
-	the ghast then circles its victim for one more bite
-	''' */
-/* GsMonkStaffT3.Desc:
+	Umschmiedung: Die geworfene Wirbelsichel löst sich am Ende nicht auf, sondern gerinnt zum Eiskristall und bleibt;
+	zerschlägst du den Kristall mit einem Hieb, platzt ein Eissplitterfächer nach vorn
 	'''
-	Reforged: left-click swings build Dragon Breath, lighting up the pearl on the staff;
-	at 5 stacks the right-click dragon sphere ascends, calling down lightning along its path
-	''' */
+GsDeathSickle.Desc:
+	'''
+	Umschmiedung: Die wanddurchdringende Wirbelsichel wird mit jedem neuen getroffenen Feind eine Stufe größer und schwerer;
+	nach drei Stufen platzt am Haltpunkt ein Seelenflammenring
+	'''
+GsTerragrim.Desc:
+	'''
+	Umschmiedung: Halte, und du wirst zum Klingenwind-Wirbel und häufst Wachstum;
+	beim Loslassen fliegt eine Schwertaura je nach Wachstum, voll ist sie die volle Terra-Klingenform
+	'''
+GsArkhalis.Desc:
+	'''
+	Umschmiedung: Der Wirbel bringt 20 Rüstungsbruch mit;
+	bleibst du am selben Ziel, häufst du Durchblick, je Stapel +2 Rüstungsbruch,
+	bei 8 Stapeln zieht sich automatisch ein durchschlagender Stoß zusammen
+	'''
+GsMonkStaffT1.Desc:
+	'''
+	Umschmiedung: Der Bodenschlag richtet weiter dreifachen Flächenschaden an, auf halber Strecke kannst du noch umkehren oder den Stock früh einziehen;
+	getroffene Feinde werden schläfrig und verlangsamt, dasselbe Ziel nach drei Schlägen fällt in Tiefschlaf,
+	der dritte Schlag tut mehr weh und verlangsamt länger
+	'''
+GsMonkStaffT2.Desc:
+	'''
+	Umschmiedung: Jeder Stichtreffer ruft Grollseelen, die nahe Feinde durchstoßen;
+	nach dem Durchqueren kreisen sie noch einmal und beißen nach
+	'''
+GsMonkStaffT3.Desc:
+	'''
+	Umschmiedung: Linksklick schwingt den Stab und häuft Donneratem, die Drachenperle am Kopf leuchtet mit;
+	bei 5 Stapeln steigt der Rechtsklick-Donnerdrachenball zum Himmeldrachen-Abstieg auf und lässt Himmelsdonner fallen
+	'''

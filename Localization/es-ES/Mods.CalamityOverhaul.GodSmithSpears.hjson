@@ -1,100 +1,76 @@
-/* GsSpear.Desc:
+GsSpear.Desc: Reforja: tres estocadas de manual, cada tiempo más hondo y más rápido; el tercero pisa hacia adelante y clava como un veterano
+GsTrident.Desc: Reforja: cada estocada que acierta dispara tres chorros de agua desde la herida hacia los enemigos cercanos; en el agua o bajo la lluvia sube la marea y los chorros van más rápidos y más lejos
+GsThunderSpear.Desc: Reforja: al quedar la lanza del todo extendida, la punta carga un instante; si aciertas entonces, una cadena eléctrica salta al otro enemigo más cercano; con lluvia puede alcanzar a dos
+GsTheRottedFork.Desc: Reforja: dos estocadas seguidas, primero un pinchazo rápido y luego un aplastón; el aplastón que acierta exprime de la herida un globo de pus podrida que, al caer, se abre en un charco corrosivo que quema sin parar
+GsDarkLance.Desc:
 	'''
-	Reforged: drill-manual thrusts in three beats, each one deeper and faster than the last;
-	the third beat steps into the strike like a veteran
-	''' */
-/* GsTrident.Desc:
+	Reforja: mantener pulsado carga la lanza y la llama negra se enrosca en el asta; al soltar, la estocada llega más lejos y más dura;
+	el golpe a plena carga dispara tres llamas devorasombras que persiguen y muerden a los enemigos cercanos
 	'''
-	Reforged: every strike bursts three jets of seawater from the wound;
-	while wet or in the rain the tide rises, jets fly faster and farther
-	''' */
-/* GsThunderSpear.Desc:
+GsSwordfish.Desc: Reforja: cada estocada te lanza un salto de pez hacia adelante en la dirección de la punta, el doble de lejos bajo el agua; en el agua estás en tu elemento y el daño sube un 15%
+GsObsidianSwordfish.Desc: Reforja: al acertar prende al enemigo y dispara esquirlas de obsidiana desde la herida; si tú ardes o estás empapado de lava, el núcleo de la lanza se recalienta y el daño sube un 15%
+GsCobaltNaginata.Desc:
 	'''
-	Reforged: the tip charges while held at full extension; land a hit during that moment
-	and lightning arcs to the nearest other enemy, or two in the rain
-	''' */
-/* GsTheRottedFork.Desc:
+	Reforja: naginata de dos tiempos que se alternan, primero una estocada recta y luego un gran barrido
+	el barrido corta el arco al que la estocada no llega
 	'''
-	Reforged: two-beat strikes, a quick jab then a heavy squeeze;
-	the heavy beat squeezes a glob of gore from the wound that splats into a corroding pool
-	''' */
-/* GsDarkLance.Desc:
+GsPalladiumPike.Desc:
 	'''
-	Reforged: hold to feed the lance with devouring shadowflame, release to strike farther and harder;
-	a fully charged hit bursts three shadow embers from the wound
-	''' */
-/* GsSwordfish.Desc:
+	Reforja: cada estocada que acierta acumula una capa de vitalidad en el filo de paladio
+	al llenar 5 capas estalla sola y el portador recupera 5 de vida
 	'''
-	Reforged: every thrust leaps you forward along the strike, twice as far underwater;
-	while wet the swordfish is in its element and deals 15% more damage
-	''' */
-/* GsObsidianSwordfish.Desc:
+GsMythrilHalberd.Desc:
 	'''
-	Reforged: strikes set enemies on fire and burst obsidian shards from the wound;
-	while you are burning or soaked in lava the core reheats, dealing 15% more damage
-	''' */
-/* GsCobaltNaginata.Desc:
+	Reforja: dos estocadas seguidas, el tiempo ligero es rápido y el pesado es hondo
+	al clavar el pesado lanza un filo de medialuna de mithril de corto alcance que atraviesa hasta dos objetivos
 	'''
-	Reforged: alternating polework, a straight thrust then a wide cobalt sweep;
-	the sweep carves an arc where the thrust line cannot reach
-	''' */
-/* GsPalladiumPike.Desc:
+GsOrichalcumHalberd.Desc:
 	'''
-	Reforged: each hit stores a charge of vigor in the warm palladium edge;
-	at five charges the spear bursts them, restoring 5 life to its wielder
-	''' */
-/* GsMythrilHalberd.Desc:
+	Reforja: cada estocada que acierta abre dos pétalos perseguidores desde la herida
+	los pétalos muerden en espiral a los enemigos cercanos
 	'''
-	Reforged: two-beat halberd work, a quick jab then a deep heavy thrust;
-	the heavy beat looses a short-ranged mythril crescent that pierces twice
-	''' */
-/* GsOrichalcumHalberd.Desc:
+GsAdamantiteGlaive.Desc:
 	'''
-	Reforged: every thrust that lands blooms two homing petals from the wound,
-	each spiraling after nearby prey
-	''' */
-/* GsAdamantiteGlaive.Desc:
+	Reforja: el último cuarto del filo es el punto dulce que parte armadura
+	acertar con la punta recorta mucho la defensa y deja al enemigo tieso; acertar con el asta es solo una estocada normal
 	'''
-	Reforged: the last quarter of the blade is a sweet spot;
-	landing the very tip shatters armor and staggers, the shaft is just a poke
-	''' */
-/* GsTitaniumTrident.Desc:
+GsTitaniumTrident.Desc:
 	'''
-	Reforged: each thrust casts two parallel shade-tridents above and below the true blade,
-	flying a short lane before dissolving
-	''' */
-/* GsGungnir.Desc:
+	Reforja: cada estocada crea, encima y debajo del filo verdadero, una lanza fantasma de titanio en paralelo
+	las lanzas fantasma vuelan un tramo corto y se disipan
 	'''
-	Reforged: a stately three-beat thrust crowned by a golden finisher;
-	right click hurls the oath-lance as a piercing bolt of light that never misses its sworn prey
-	''' */
-/* GsChlorophytePartisan.Desc:
+GsGungnir.Desc:
 	'''
-	Reforged: while the blade dwells at full reach, spores gather on its tip;
-	as the spear withdraws it looses a drifting spore cloud that hunts and poisons
-	''' */
-/* GsMushroomSpear.Desc:
+	Reforja: tres estocadas de poder divino; la tercera lleva el acento grave del anillo de oro;
+	clic derecho lanza la lanza del juramento, que al salir ya fija a la presa de su trayectoria, se curva para atravesarla y no falla nunca
 	'''
-	Reforged: the heavy second beat plants a glowing spore mine in the wound;
-	it bursts moments later, harming foes around and feeding 2 life back to the wielder
-	''' */
-/* GsNorthPole.Desc:
+GsChlorophytePartisan.Desc:
 	'''
-	Reforged: quick thrusts fling spiraling frost crystals, and the third strike plants a polar pillar
-	at the wound that rains icicles; the dwell wreathes the tip in freezing mist
-	''' */
-/* GsJoustingLance.Desc:
+	Reforja: cuando el filo se detiene en el alcance máximo, las esporas se concentran en la punta
+	al recoger la lanza suelta una nube de esporas lenta que persigue; al acertar envenena al enemigo
 	'''
-	Reforged: hold to couch the lance, speed builds momentum, a full-tilt strike deals up to 2.4x damage;
-	the longer you ride at full tilt, the more bonus damage the next strike carries
-	''' */
-/* GsShadowJoustingLance.Desc:
+GsMushroomSpear.Desc:
 	'''
-	Reforged: charging at speed leaves shadowflame embers along your path;
-	foes touching an ember take 25% damage and catch shadowflame
-	''' */
-/* GsHallowJoustingLance.Desc:
+	Reforja: la estocada pesada del segundo tiempo planta una mina fúngica brillante en el objetivo
+	la mina estalla al cabo de un instante, daña a los enemigos cercanos y el portador recupera 2 de vida
 	'''
-	Reforged: at full tilt, a prismatic star falls on the nearest foe every 0.7s for 40% damage;
-	full-tilt strikes burst with holy prismatic light
-	''' */
+GsNorthPole.Desc:
+	'''
+	Reforja: las estocadas rápidas lanzan cristales de escarcha que giran; la tercera clava en la herida un pilar del polo, y desde la cima cae una lluvia de estalactitas;
+	al detener la lanza en el alcance, la punta condensa niebla gélida y todo enemigo que aciertes queda teñido de quemadura gélida
+	'''
+GsJoustingLance.Desc:
+	'''
+	Reforja: mantener pulsado clic izquierdo para encajar la lanza de justar; cuanto más rápido te mueves, más embestida acumulas; el golpe a plena embestida llega hasta 2.4 veces el daño
+	cuanto más rato cabalgues a plena embestida, más daño extra lleva el siguiente golpe
+	'''
+GsShadowJoustingLance.Desc:
+	'''
+	Reforja: mantener pulsado clic izquierdo para encajar la lanza de justar; al cargar a gran velocidad dejas llamas residuales de sombra en el camino
+	el enemigo que toque esas llamas recibe un 25% de daño y se prende de llamas de las sombras
+	'''
+GsHallowJoustingLance.Desc:
+	'''
+	Reforja: mantener pulsado clic izquierdo para encajar la lanza de justar; a plena embestida, cada 0.7 segundos aprox. cae una estrella irisada sobre el enemigo más cercano e inflige un 40% de daño
+	el golpe a plena embestida estalla en un prisma de luz sagrada
+	'''

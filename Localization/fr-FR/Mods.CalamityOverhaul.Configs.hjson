@@ -1,62 +1,50 @@
 CWRServerConfig: {
 	DisplayName: Paramétrage du contenu
 	Headers.CWRWorldGen: Paramètres des structures Overhaul
-
 	GenWindGrivenGenerator: {
 		Label: Générer des générateurs éoliens
 		Tooltip: Place des structures de générateurs éoliens dans le monde.
 	}
-
 	GenWGGCollector: {
 		Label: Générer des avant-postes de récupérateurs
 		Tooltip: Génère aléatoirement des structures hostiles de récupérateurs dans le monde. Ce réglage ne prend effet que dans les mondes légendaires.
 	}
-
 	GenJunkmanBase: {
 		Label: Générer la base du récupérateur
 		Tooltip: Génère une base fortifiée de récupérateurs dans les terres désolées ou sous terre.
 	}
-
 	GenRocketHut: {
 		Label: Générer la cabane à fusée
 		Tooltip: Génère une cabane mystérieuse contenant des composants de fusée ou des reliques technologiques.
 	}
-
 	GenSylvanOutpost: {
 		Label: Générer l'avant-poste sylvestre
 		Tooltip: Génère des avant-postes en bois d'elfes ou de gardiens de la forêt au plus profond des bois.
 	}
-
 	GenSHPCCradle: {
-		// Label: Generate SHPC Cradle Island
-		// Tooltip: Generates a crashed vessel sky island above spawn with the SHPC sealed inside. When disabled, the weapon can only be found in Calamity's laboratory.
+		Label: Générer l'île-berceau du SHPC
+		Tooltip: "Génère au-dessus du point d'apparition une île céleste formée d'un module écrasé, où le SHPC est scellé. Si désactivé, cette arme ne pourra être obtenue que dans le laboratoire de Calamity."
 	}
-
 	ConfigChangePrefix: Utilisateur
 	ConfigChangeSuffix: a modifié la configuration du serveur
 }
-
 CWRClientConfig: {
 	DisplayName: Paramétrage client
 	Headers.CWRWeapon: Paramètres des armes Overhaul
-
 	ScreenVibration: {
 		Label: Effet de vibration de l'écran pour les attaques spéciales des armes
-		Tooltip: Si activé, cela provoquera des vibrations de l'écran lors de certaines attaques, augmentant ainsi la sensation de coup
+		Tooltip: "Si activé, cela provoquera des vibrations de l'écran lors de certaines attaques, augmentant ainsi la sensation de coup"
 	}
-
 	DomainConciseDisplay: {
 		Label: Affichage minimal du domaine
-		Tooltip: Désactivé par défaut. Lorsqu'activé, la plupart des effets visuels du domaine seront masqués.
+		Tooltip: "Désactivé par défaut. Une fois activé, seuls les effets de domaine du type Cyberespace / mer sont simplifiés. Le domaine spectral d'Onikiri n'est pas affecté, ni les effets d'armes et d'implants tels que le démembrement, Omokage et le Temps de piratage."
 	}
-
 	LensEasing: {
 		Label: Adoucissement de la caméra
-		Tooltip: Lorsqu'activé, les déplacements rapides à longue distance adoucissent la caméra, évitant ainsi toute sensation de malaise due à un déplacement trop rapide
+		Tooltip: "Lorsqu'activé, les déplacements rapides à longue distance adoucissent la caméra, évitant ainsi toute sensation de malaise due à un déplacement trop rapide"
 	}
-
 	AmbienceDensity: {
-		// Label: Ambience Density
-		// Tooltip: Scales decorative ambience particle density only; telegraphs and hazards are never reduced.
+		Label: Densité d'ambiance
+		Tooltip: Ne met à l'échelle que la densité des particules d'ambiance décoratives; les préavis et les dangers ne sont jamais réduits.
 	}
 }

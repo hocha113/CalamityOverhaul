@@ -1,30 +1,30 @@
-/* GsSpiritFlame.Desc:
+GsSpiritFlame.Desc: 
 	'''
-	Reforged: spirit flames trail pale soulfire; half of their hits split off a hunting wisp
-	Hold right click to charge; release to lay a five-flame ring at your cursor that pounces on intruders
-	''' */
-// GsSpiritFlameRingProj.DisplayName: Spirit Flame Ring
-// GsSpiritFlameWispProj.DisplayName: Hunting Wisp
-/* GsPoisonStaff.Desc:
+	Reforgé : les flammes spirituelles traînent un feu d'âme pâle ; la moitié des impacts détache une flammèche chasseuse
+	Maintenez le clic droit pour charger ; relâchez pour poser au curseur un anneau de cinq flammes qui se jettent tour à tour sur les ennemis proches
 	'''
-	Reforged: fangs trail venom mist and split into thin fangs on their second bite
-	Hold right click to charge the Serpent Kiss: a swift coiling viper that poisons everything on its path
-	''' */
-/* GsVenomStaff.Desc:
+GsSpiritFlameRingProj.DisplayName: Anneau de flammes spirituelles
+GsSpiritFlameWispProj.DisplayName: Flammèche chasseuse
+GsPoisonStaff.Desc: 
 	'''
-	Reforged: fangs trail venom mist and split a heavy fang on their second bite
-	Hold right click to charge the Serpent Kiss: a massive pit viper whose corpse melts into a lingering acid pool
-	''' */
-/* GsShadowFlameHexDoll.Desc:
+	Reforgé : les crocs traînent un brouillard de venin et se scindent en deux crocs fins au second mors
+	Maintenez le clic droit pour charger le Baiser du serpent : une petite vipère rapide qui se faufile et pose un couloir de poison
 	'''
-	Reforged: shadowflame tendrils pin a hex brand into whatever they touch; branded foes take more from this doll
-	Hold right click to charge the Grand Hex: a sigil at your cursor that lashes tendrils at intruders
-	''' */
-/* GsLeafBlower.Desc:
+GsVenomStaff.Desc: 
 	'''
-	Reforged: leaf blades spin with a razor-green wake
-	Hold right click to charge Storm Mode: for six seconds every leaf flies faster, cuts deeper and spirals harder
-	''' */
-// GsMorphFangSerpentProj.DisplayName: Serpent Kiss
-// GsMorphFangAcidPoolProj.DisplayName: Acid Pool
-// GsShadowFlameHexSigilProj.DisplayName: Grand Hex Sigil
+	Reforgé : les crocs traînent un brouillard de venin et se scindent en un croc lourd au second mors
+	Maintenez le clic droit pour charger le Baiser du serpent : une grosse vipère lente dont le corps fondu laisse un bassin d'acide
+	'''
+GsShadowFlameHexDoll.Desc: 
+	'''
+	Reforgé : les tentacules de Flamme d'ombre plantent une marque de malédiction ; les ennemis marqués subissent plus de dégâts de cette poupée
+	Maintenez le clic droit pour charger le Grand hex : un domaine de marque au curseur qui fouette les intrus de tentacules
+	'''
+GsLeafBlower.Desc: 
+	'''
+	Reforgé : les lames de feuilles volent avec un sillage vert tranchant
+	Maintenez le clic droit pour charger le mode Tempête : six secondes durant, chaque feuille va plus vite, coupe plus profond et tourne plus fort
+	'''
+GsMorphFangSerpentProj.DisplayName: Serpent du Baiser
+GsMorphFangAcidPoolProj.DisplayName: Bassin d'acide
+GsShadowFlameHexSigilProj.DisplayName: Domaine de marque

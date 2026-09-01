@@ -1,25 +1,25 @@
 BloodAltarTP: {
-	ApproachingText: Карминовый взгляд снижается...
-	InsufficientOfferingText: У вас недостаточно кровавых слез для данного взноса перед Карминовым Королем...
-	SacrificeDeathReason: "{0} Затянут в бесконечную ярость крови и плоти"
+	ApproachingText: Багровый взгляд опускается...
+	InsufficientOfferingText: Кровавых слёз не хватает, чтобы принести дань Багровому королю...
+	SacrificeDeathReason: "{0} канул в бесконечный бред крови и плоти"
 }
 
-// OldNetDataNodeTile.MapEntry: Data Node
-// OldNetLogoutTerminalTile.MapEntry: Logout Terminal
-// OldNetEncryptedNodeTile.MapEntry: Encrypted Node
-// OldNetEventNodeTile.MapEntry: Event Node
-// OldNetSealGateTile.MapEntry: Seal Gate
-// OldNetRelayTile.MapEntry: Relay Station
-// OldNetAccessTerminalTile.MapEntry: OldNet Access Terminal
-// OldNetEchoNodeTile.MapEntry: Echo Node
-// OldNetCacheTile.MapEntry: Deep-Dive Cache
-// OldNetTripwireTile.MapEntry: Tripwire Emitter
-// OldNetSentryMineTile.MapEntry: Sentry Mine
-// OldNetBulkheadTile.MapEntry: Shaft Bulkhead
-// OldNetBreakerTile.MapEntry: Emergency Breaker
-// OldNetRelicTile.MapEntry: OldNet Relic
-// OldNetLedgerDockTile.MapEntry: Ledger Expansion Dock
-// OldNetColdNodeTile.MapEntry: Cold Storage Node
-// OldNetEscrowTile.MapEntry: Escrow Contract Terminal
-// OldNetCipherVaultTile.MapEntry: Cipher Vault Matrix
-// GaolRoomSealTile.MapEntry: Gaol Cell Seal
+OldNetDataNodeTile.MapEntry: Узел данных
+OldNetLogoutTerminalTile.MapEntry: Терминал выхода
+OldNetEncryptedNodeTile.MapEntry: Шифрованный узел
+OldNetEventNodeTile.MapEntry: Узел события
+OldNetSealGateTile.MapEntry: Блокировочный шлюз
+OldNetRelayTile.MapEntry: Ретранслятор
+OldNetAccessTerminalTile.MapEntry: Терминал доступа Старой сети
+OldNetEchoNodeTile.MapEntry: Узел эха
+OldNetCacheTile.MapEntry: Кэш глубокого погружения
+OldNetTripwireTile.MapEntry: Стойка растяжки
+OldNetSentryMineTile.MapEntry: Сторожевая мина
+OldNetBulkheadTile.MapEntry: Переборка шахты
+OldNetBreakerTile.MapEntry: Аварийный сброс давления
+OldNetRelicTile.MapEntry: Реликвия Старой сети
+OldNetLedgerDockTile.MapEntry: Док расширения реестра
+OldNetColdNodeTile.MapEntry: Узел холодного хранения
+OldNetEscrowTile.MapEntry: Терминал страхового договора
+OldNetCipherVaultTile.MapEntry: Матрица главного дешифрования
+GaolRoomSealTile.MapEntry: Печать запретной камеры

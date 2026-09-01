@@ -11,8 +11,8 @@ using Terraria.WorldBuilding;
 namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
 {
     /// <summary>
-    /// 鬼雨加载屏：湿墨夜穹下的废村剪影，斜雨不停，黑水随进度自屏底涨上来。<br/>
-    /// 一把立伞站在村口，水涨到哪，倒影就跟到哪；木桩水尺当进度。<br/>
+    /// 鬼雨加载屏：湿墨夜穹下的废村剪影，斜雨不停，黑水开场即漫过屋身。<br/>
+    /// 一把立伞站在村口，倒影跟在水面上；木桩水尺是淹在水里的景，进度只看底部文字。<br/>
     /// 语汇是怪谈志怪，色板全程冷灰青禁红禁暖；
     /// 纯 CPU 绘制零 shader 依赖（加载期 shader 资产未必就绪）；
     /// 接线走 A 路薄转发（KiameWorld 内各一行）
@@ -134,9 +134,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
                 return;
             }
             float horizonY = h * 0.60f;
-            //水面基准先算好：黑水随进度自屏底涨上来
-            float rise = MathHelper.SmoothStep(0f, 1f, Progress / 0.95f);
-            waterSurfaceY = MathHelper.Lerp(h * 1.04f, h * 0.74f, rise);
+            //钉死在近排墙身高度：挡方块墙，留屋脊/树/杆/伞盖；进度不靠水位
+            waterSurfaceY = h * 0.62f;
 
             DrawDome(sb, px, w, h, horizonY);
             //远排：小而密，雨里只剩个大概；近排：大而疏，黑得实。
@@ -216,7 +215,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
         //的脚点钉在同一条地形线上——没有一扇窗亮着，也没有一样东西悬空
         private static void DrawRuinRow(SpriteBatch sb, Texture2D px, int w, int h, float baseY,
             float unit, int cellDiv, int seed, Color sil) {
-            //地面剪影带：逐列填到屏底，顶缘随地形线起伏；上涨的黑水吞的就是这片地
+            //地面剪影带：逐列填到屏底，顶缘随地形线起伏；钉死的黑水吞的就是这片地
             const int colStep = 4;
             for (int x = 0; x < w; x += colStep) {
                 int top = (int)GroundTopAt(baseY, unit, x, seed);
@@ -432,7 +431,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
             }
         }
 
-        //黑水上涨：越深越沉的横带 + 面上一线尸斑青亮沿（带行波）
+        //黑水：越深越沉的横带 + 面上一线尸斑青亮沿（带行波，水位本身不动）
         private static void DrawWaterRise(SpriteBatch sb, Texture2D px, int w, int h) {
             float surfaceY = waterSurfaceY;
             if (surfaceY >= h) {
@@ -472,7 +471,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
                 return;
             }
 
-            //立伞倒影：水面涨近伞脚时，竖向拉长的一道暗影带一点湿光
+            //立伞倒影：伞脚没在水里，竖向拉长的一道暗影带一点湿光
             float above = umbrellaFootY < surfaceY ? surfaceY - umbrellaFootY : 0f;
             if (above < h * 0.30f) {
                 float fade = 1f - above / (h * 0.30f);
@@ -513,7 +512,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
             }
         }
 
-        //木桩水尺：进度即水位。桩体与刻度画在水前（会被淹掉），水线亮痕画在水后（浮在面上）。
+        //木桩水尺：淹在水里的景，不是进度条。桩体与刻度画在水前（会被淹掉），水线亮痕画在水后（浮在面上）。
         //桩要种进土里：下粗上细带底堆，一根裸线悬在半空读作坏像素
         private static void DrawWaterGauge(SpriteBatch sb, Texture2D px, int w, int h,
             float horizonY, bool afterWater) {
@@ -566,7 +565,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.UI
             if (verseFade > 0.01f) {
                 string verse = (entering ? VerseEnter : VerseExit)?.Value ?? string.Empty;
                 Vector2 vSz = bodyFont.MeasureString(verse);
-                Vector2 vPos = new(sw * 0.5f - vSz.X * 0.5f, sh * 0.66f);
+                Vector2 vPos = new(sw * 0.5f - vSz.X * 0.5f, sh * 0.50f);
                 sb.DrawString(bodyFont, verse, vPos + new Vector2(1f, 1f), Color.Black * (0.6f * verseFade));
                 sb.DrawString(bodyFont, verse, vPos, TextDim * (0.80f * verseFade));
             }

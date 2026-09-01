@@ -1,30 +1,29 @@
-// P10b armor endowments (17 hardmode sets + 5 pre-HM sets handed over from P10a); the four Ancient Hallowed combos share one line
-// GsCobaltArmor.EndowLine: Cobalt Flicker: strikes build swiftness; at 5 stacks enter a 5s stance where each strike calls a cobalt afterimage slash from the flank (6 charges)
-// GsPalladiumArmor.EndowLine: Vital Siphon: strikes build vigor; at 8 stacks the next strike plants a siphon bloom that gnaws the host and sends life motes back to you
-// GsMythrilArmor.EndowLine: Anvilborn Blades: strikes build temper; every 6 stacks forges a hovering mythril blade (up to 3), and with all three forged the next full charge commands a staggered triple thrust
-// GsOrichalcumArmor.EndowLine: Petal Waltz: strikes build pollen; at 7 stacks enter a 4s bloom where each strike looses two spiraling crystal petal blades (10 petals)
-// GsAdamantiteArmor.EndowLine: Furnace Overload: strikes stoke the furnace by 1, taking hits by 2; at 10 heat it erupts into a molten shockwave that seeds burning adamantite embers on the ground
-// GsTitaniumArmor.EndowLine: Mirror Riposte: taking hits builds cold-forge; at 4 stacks the next strike calls four mirror blades that converge on the target in a cross
-// GsPearlwoodArmor.EndowLine: Pearl Aegis: strikes build luster; every 6 stacks condenses an orbiting pearl (up to 3) that shatters in your defense, loosing five homing pearl shards
-// GsFrostArmor.EndowLine: Coldsnap Dominion: strikes build rime; at 8 stacks the next strike raises a 4s blizzard that rains crystal darts on foes inside
-// GsForbiddenArmor.EndowLine: Sandbound Shades: strikes build sand-soul; at 6 stacks a sand shade rises (up to 2) to haunt your side and spit whirling sand bolts
-// GsTurtleArmor.EndowLine: Spiked Sanctum: strikes build fury by 1, taking hits by 2; at 6 fury a turtle-shell dome rises for 4s, and every hit taken inside erupts an eight-way spike ring scaling with your defense
-// GsSpookyWoodArmor.EndowLine: Hallow's Patrol: strikes build soulfire; at 6 stacks a jack-o'-lantern rises (up to 2) to patrol around you and spit triple ghostflame at the nearest foe
-// GsTikiArmor.EndowLine: Totem Rite: strikes build ritual fire; at 8 stacks a three-faced totem is planted for 8s, waking face by face, each lit face adding a flame tongue lashed at the nearest foe
-// GsHallowedArmor.EndowLine: Radiant Verdict: strikes build radiance; at 10 stacks a verdict blade rises overhead, and striking one foe three times sends it plunging in holy judgement
-// GsHallowedArmorAncientBody.EndowLine: Radiant Verdict: strikes build radiance; at 10 stacks a verdict blade rises overhead, and striking one foe three times sends it plunging in holy judgement
-// GsHallowedArmorAncientLegs.EndowLine: Radiant Verdict: strikes build radiance; at 10 stacks a verdict blade rises overhead, and striking one foe three times sends it plunging in holy judgement
-// GsHallowedArmorAncientFull.EndowLine: Radiant Verdict: strikes build radiance; at 10 stacks a verdict blade rises overhead, and striking one foe three times sends it plunging in holy judgement
-// GsChlorophyteArmor.EndowLine: Symbiotic Vine: strikes build spores; at 8 stacks the next strike plants a parasite vine, and every strike on the host lashes a vine-blade at a second foe; the vine bursts into a spore cloud when it withers
-// GsBeetleScaleArmor.EndowLine: War Scarab: chain strikes to build momentum (breaks after 1.5s idle); at 5, 10 and 15 hits a war scarab charges from your back, each rank larger and heavier
-// GsBeetleShellArmor.EndowLine: Scarab Bulwark: taking hits builds shell-crystal; every 3 stacks condenses an orbiting shell plate (up to 3), and further hits shatter a plate into a retaliating fan of chitin shrapnel
-// GsShroomiteArrowArmor.EndowLine: Spore Nursery: ranged hits build spores; at 6 stacks the next hit plants a spore turret that snipes the nearest foe with fungal arrows for 5s
-// GsShroomiteBulletArmor.EndowLine: Mycelium Chain: ranged hits build mycelium; at 8 stacks the strike point erupts into a fungal blast that chain-jumps to nearby foes up to 3 times, growing each jump
-// GsShroomiteRocketArmor.EndowLine: Sporefall Barrage: ranged hits build charges; at 5 stacks the next hit calls three spore mortars crashing down on the target in a staggered barrage
-// GsSpectreHoodArmor.EndowLine: Soulmend Sanctum: magic hits build ectoplasm; at 10 stacks a sanctum unfolds underfoot for 5s, searing foes inside and drawing soul orbs back to mend you
-// GsSpectreMaskArmor.EndowLine: Nether Rift: magic hits build wraiths; at 8 stacks the next hit tears a rift that drags nearby foes inward and pulses soulflame for 3s
-// GsCactusArmor.EndowLine: Needle Shroud: strikes build barbs; at 6 stacks don a 4s needle shroud that pricks foes on contact and flings needles behind you as you run
-// GsPumpkinArmor.EndowLine: Gourd Harvest: strikes build vines; at 6 stacks the next strike plants a blast gourd that ripens in 3s (strike the victim again to force it), bursting into three spinning slices
-// GsFossilArmor.EndowLine: Boneage Wake: strikes build bone dust; at 6 stacks the next strike wakes the strata, thrusting three bone spurs up from the ground in a marching row
-// GsObsidianArmor.EndowLine: Glassfang Return: strikes build obsidian heat; at 7 stacks the next strike hurls two volcanic glass fangs that sweep out and boomerang home, searing all in their path
-// GsGladiatorArmor.EndowLine: Triumph Volley: strikes build acclaim; at 6 stacks the next strike hurls three bronze javelins over your shoulder in arcing volleys at the foe
+GsCobaltArmor.EndowLine: "Rémanence : les coups accumulent la coupe vive ; à cinq charges, pose de 5 s où chaque impact fait jaillir du flanc une lame-rémanence de cobalt, six en tout"
+GsPalladiumArmor.EndowLine: "Siphon vital : les coups accumulent la vigueur ; à huit charges, le prochain coup plante un bouton siphon qui ronge l'hôte et vous renvoie des filets d'or-sang"
+GsMythrilArmor.EndowLine: "Lames d'enclume : les coups accumulent le fil ; toutes les six charges, une lame de mythril flottante se forge, jusqu'à trois ; les trois prêtes, la prochaine charge pleine les lance en triple estoc décalé"
+GsOrichalcumArmor.EndowLine: "Valse de pétales : les coups accumulent le pollen ; à sept charges, fenêtre de 4 s où chaque impact relâche deux pétales de cristal à tête chercheuse, dix en tout"
+GsAdamantiteArmor.EndowLine: "Surcharge de fourneau : un coup ajoute 1 de chaleur, subir un coup en ajoute 2 ; à dix, une onde de lave éclate et laisse trois braises d'adamantite au sol"
+GsTitaniumArmor.EndowLine: "Riposte-miroir : subir des coups accumule la forge froide ; à quatre charges, le prochain coup appelle quatre lames-miroirs qui convergent en croix"
+GsPearlwoodArmor.EndowLine: "Égide nacrée : les coups accumulent le nacre ; toutes les six charges, une perle orbite, jusqu'à trois ; subir un coup en brise une, cinq éclats de perle à tête chercheuse en riposte"
+GsFrostArmor.EndowLine: "Domaine de vague froide : les coups accumulent le givre ; à huit charges, le prochain coup lève un blizzard de 4 s qui fait tomber des dards de glace sur les ennemis du domaine"
+GsForbiddenArmor.EndowLine: "Ombres de sable : les coups accumulent l'âme de sable ; à six charges, une ombre de sable se lève, jusqu'à deux ; elle crache des tourbillons de sable sur l'ennemi le plus proche"
+GsTurtleArmor.EndowLine: "Sanctuaire épineux : un coup ajoute 1 de fureur, subir un coup en ajoute 2 ; à six, un dôme de carapace se lève 4 s, et chaque coup subi à l'intérieur projette un anneau de huit épines, plus fort selon votre défense"
+GsSpookyWoodArmor.EndowLine: "Lanternes d'Halloween : les coups accumulent le feu d'âme ; à six charges, une lanterne-citrouille se lève, jusqu'à deux ; elle patrouille autour de vous et crache trois feux-follets sur l'ennemi le plus proche"
+GsTikiArmor.EndowLine: "Rite totémique : les coups accumulent le feu rituel ; à huit charges, un totem à trois faces se dresse 8 s ; chaque face allumée ajoute une langue de feu vers l'ennemi le plus proche"
+GsHallowedArmor.EndowLine: "Jugement radiant : les coups accumulent l'éclat sacré ; à dix charges, une épée de jugement s'élève au-dessus de vous ; trois coups sur la même cible en 8 s et elle plonge en exécution, laissant une colonne de lumière"
+GsHallowedArmorAncientBody.EndowLine: "Jugement radiant : les coups accumulent l'éclat sacré ; à dix charges, une épée de jugement s'élève au-dessus de vous ; trois coups sur la même cible en 8 s et elle plonge en exécution, laissant une colonne de lumière"
+GsHallowedArmorAncientLegs.EndowLine: "Jugement radiant : les coups accumulent l'éclat sacré ; à dix charges, une épée de jugement s'élève au-dessus de vous ; trois coups sur la même cible en 8 s et elle plonge en exécution, laissant une colonne de lumière"
+GsHallowedArmorAncientFull.EndowLine: "Jugement radiant : les coups accumulent l'éclat sacré ; à dix charges, une épée de jugement s'élève au-dessus de vous ; trois coups sur la même cible en 8 s et elle plonge en exécution, laissant une colonne de lumière"
+GsChlorophyteArmor.EndowLine: "Vigne parasite : les coups accumulent les spores ; à huit charges, le prochain coup plante une vigne dans la cible ; chaque coup sur l'hôte fouette un second ennemi proche ; en se fanant, la vigne éclate en nuage de spores"
+GsBeetleScaleArmor.EndowLine: "Scarabée de guerre : enchaîner les coups tient l'élan, 1.5 s sans toucher le brise ; à 5, 10 et 15 coups, un scarabée de guerre charge la cible, plus grand à chaque seuil"
+GsBeetleShellArmor.EndowLine: "Rempart de scarabée : subir des coups accumule le cristal de carapace ; toutes les trois charges, une plaque orbite, jusqu'à trois ; sous le bouclier, un nouveau coup brise une plaque en éventail de chitine"
+GsShroomiteArrowArmor.EndowLine: "Pépinière de spores : les impacts à distance accumulent les spores ; à six charges, le prochain impact plante une tour à flèches de spores pour 5 s, qui tire sur l'ennemi le plus proche"
+GsShroomiteBulletArmor.EndowLine: "Chaîne mycélienne : les impacts à distance accumulent le mycélium ; à huit charges, le point d'impact explose en chaîne jusqu'à trois sauts, chaque saut plus large"
+GsShroomiteRocketArmor.EndowLine: "Barrage de spores : les impacts à distance accumulent les mines ; à cinq charges, le prochain impact appelle trois mortiers de spores qui tombent en décalé"
+GsSpectreHoodArmor.EndowLine: "Sanctuaire d'âme : les sorts qui touchent accumulent l'ectoplasme ; à dix charges, un sanctuaire s'ouvre sous vos pieds 5 s ; il brûle les ennemis du domaine et chaque brûlure vous renvoie une orbe de soin"
+GsSpectreMaskArmor.EndowLine: "Faille du néant : les sorts qui touchent accumulent les âmes ; à huit charges, le prochain sort déchire une faille 3 s, qui tire les ennemis vers le centre et crache de la flamme d'âme"
+GsCactusArmor.EndowLine: "Manteau d'épines : les coups accumulent les épines ; à six charges, un manteau de 4 s pique les ennemis au contact et jette des aiguilles derrière vous en courant"
+GsPumpkinArmor.EndowLine: "Récolte de courges : les coups accumulent la vigne ; à six charges, le prochain coup plante une courge explosive sous la cible ; elle mûrit en 3 s (la frapper encore accélère), puis éclate en trois tranches tournoyantes"
+GsFossilArmor.EndowLine: "Tempête d'os : les coups accumulent la poussière d'os ; à six charges, le prochain coup réveille le sous-sol, trois éperons d'os se dressent en file sous la cible"
+GsObsidianArmor.EndowLine: "Lames d'obsidienne : les coups accumulent la chaleur d'obsidienne ; à sept charges, le prochain coup jette deux lames de verre volcanique qui balayent à l'aller et reviennent, brûlant sur le trajet"
+GsGladiatorArmor.EndowLine: "Javelots de triomphe : les coups accumulent l'acclamation ; à six charges, le prochain coup lance depuis l'épaule trois javelots de bronze en arc vers la cible"

@@ -1,26 +1,26 @@
-// GsSlimeStaff.Desc: Gel Legion: slimes roll in escort formation; two different slimes striking one foe within a beat triggers a gel burst, and the rally order piles them into a sticky mound
-// GsFinchStaff.Desc: Finch Phalanx: finches fly a V formation; after the first strike, follow-up pecks on that foe gain stacking power, and the rally order forms a wheeling flock
-// GsAbigailsFlower.Desc: Companion Soul: Abigail's strikes leave a soothing soul-light ring that empowers your minions inside it; under the assault order she focuses her wrath on the marked foe
-// GsFlinxStaff.Desc: Snowball Avalanche: flinxes bound in a relay column; the fourth tackle on one foe within the window lands half again harder and frostburns, and the rally order piles a snow drift
-// GsHornetStaff.Desc: Hive Firenet: hornets hover in a honeycomb lattice; three stingers into one foe burst a venom pod that lingers as poison mist, and the assault order quickens every stinger
-// GsVampireFrogStaff.Desc: Blood Frog Feast: frogs flank you in twin files; their bites may spill a marrow bead that flies back to heal you, and the blood moon whips them into a crimson frenzy
-// GsImpStaff.Desc: Hellfire Battery: imps hold a rear artillery line; under the assault order, three fireballs into one foe raise a pyre column beneath it
-// GsSpiderStaff.Desc: Web Hunt: three spider breeds hold a triangle watch; concerted bites truss the prey in a binding web that deepens every wound, and every bite now envenoms
-// GsBladeStaff.Desc: Bagua Blade Wheel: daggers orbit as a slow-turning wheel; a dagger's sixth consecutive strike on one foe cuts armor-deep and flashes a phantom cross-slash for 40% more, and the rally order raises a gate of blades
+GsSlimeStaff.Desc: Желейный легион: слаймы катятся строем стражи; два слайма, ударившие одну цель в одном такте, взрывают клей; по сбору они громоздятся в упругую кучу
+GsFinchStaff.Desc: Стая зябликов: птицы встают клином; после первого клевка следующие по той же цели бьют сильнее слой за слоем; по сбору они кружат роем
+GsAbigailsFlower.Desc: Дух спутницы: удары Эбигейл оставляют кольцо утешения, внутри ваши прислужники свирепее; по штурму она обрушивает гнев на меченого
+GsFlinxStaff.Desc: Снежная лавина: флинксы таранят эстафетой; четвёртый удар по одной цели в коротком окне сильнее наполовину и вешает морозный огонь; по сбору встаёт снежный вал
+GsHornetStaff.Desc: Сетка улья: шершни строят решётку сверху сбоку; три жала в одну цель роняют ядовитую капсулу, после взрыва остаётся туман; по штурму жала летят быстрее
+GsVampireFrogStaff.Desc: Пир кровяных лягушек: лягушки сторожат слева и справа; укус с шансом брызжет жемчужиной костного мозга, что летит к вам лечить; в Кровавую луну стая впадает в багровое бешенство
+GsImpStaff.Desc: Адская батарея: бесы строятся за спиной; по штурму три огненных шара сходятся в одну цель, под ней вспыхивает столб адского огня
+GsSpiderStaff.Desc: Охотничья паутина: три типа пауков держат треугольник; совместные укусы заворачивают добычу в путы — раны глубже, каждый укус льёт кислотный яд
+GsBladeStaff.Desc: Колесо восьми мечей: зачарованные кинжалы медленно крутятся; шестой удар одного кинжала по одной цели ломает броню и вспыхивает тенью на 40% урона; по сбору встают врата мириад мечей
 
 GsLegionBannerProj: {
-	// DisplayName: Legion Banner
-	// GuardTip: Guard
-	// AssaultTip: Assault!
-	// RallyTip: Rally!
-	// CommandHint: Right click: assault a foe, rally at a spot, or point near yourself to recall
+	DisplayName: Знамя легиона
+	GuardTip: Стража
+	AssaultTip: Штурм!
+	RallyTip: Сбор!
+	CommandHint: ПКМ командует: по врагу — штурм, по земле — сбор, у себя — снять приказ и вернуться в оборону
 }
 
-// GsRallyFieldProj.DisplayName: Rally Ground
-// GsGelBurstProj.DisplayName: Gel Burst
-// GsVenomPodProj.DisplayName: Venom Pod
-// GsImpPyreProj.DisplayName: Pyre Column
-// GsBloodSipProj.DisplayName: Marrow Bead
-// GsWebBindProj.DisplayName: Binding Web
-// GsSoulSolaceProj.DisplayName: Soul Solace Ring
-// GsBladeStaffPhantomProj.DisplayName: Gs Blade Staff Phantom Proj
+GsRallyFieldProj.DisplayName: Поле сбора
+GsGelBurstProj.DisplayName: Клеевой взрыв
+GsVenomPodProj.DisplayName: Ядовитая капсула
+GsImpPyreProj.DisplayName: Столб адского огня
+GsBloodSipProj.DisplayName: Жемчужина костного мозга
+GsWebBindProj.DisplayName: Путы
+GsSoulSolaceProj.DisplayName: Кольцо утешения
+GsBladeStaffPhantomProj.DisplayName: Зачарованный клинок

@@ -1,98 +1,98 @@
 GsMinishark: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: hold the trigger and the shark tastes blood; fire rate climbs while the spread runs wild.
-		At full frenzy every fourth round becomes a shark-tooth bite that tears the wound open.
-		A 50-round drum swaps in one piece; nail the sweet spot to start the next drum half-frenzied
-		''' */
-	// Frenzy: Frenzy!
+		Umschmiedung: Hältst du den Abzug, steigt der Hai ins Blut, die Schussfolge wird immer schneller, die Bahn immer wilder
+		Ist die Raserei voll, wird jeder vierte Schuss zum Haizahn, reißt die Wunde auf und beißt nach
+		Fünfzig-Schuss-Trommel, als Ganzes gewechselt, Rechtsklick wechselt jederzeit; triffst du beim Wechsel das Leuchtband, startet die nächste Trommel mit halber Raserei
+		'''
+	Frenzy: Flutwelle!
 }
 
 GsPhoenixBlaster: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: every hit feeds the ember nest and the gun glows brighter; kills feed it faster.
-		At 24 sparks the next shot is reborn as a phoenix that dives, detonates, and splits into three seeking chicks.
-		Reloading breathes the stray sparks back into the chamber; a sweet-spot reload grants 8 sparks outright
-		''' */
-	// Nirvana: Nirvana!
+		Umschmiedung: Treffer füttern das Feuernest, die Federflamme der Waffe leuchtet mit den Funken auf, Tötungen füttern schneller
+		Bei 24 Funken wird der nächste Schuss zum Phönixsturz, explodiert brennend und spaltet drei jagende Jungvögel
+		Beim Nachladen wirbeln versprühte Funken zurück in den Lauf; triffst du das Leuchtband, erhältst du 8 Funken gratis
+		'''
+	Nirvana: Nirwana!
 }
 
-/* GsBoomstick.Desc:
+GsBoomstick.Desc:
 	'''
-	Reforged: each barrel throws 4 slugs that converge on your cursor instead of spraying.
-	Where they cross, the jaws snap shut: a delayed bite tears whatever stands at the aim point.
-	Break open to reload both shells; nail the sweet spot for +1 slug per barrel
-	''' */
+	Umschmiedung: Jeder Lauf schickt 4 Schrotkörner zum Fadenkreuz, kein wildes Sprühen mehr
+	Die Körner treffen sich am Fadenkreuz und beißen zu, was dort steht, bekommt einen harten Biss
+	Rechtsklick knickt den Lauf und lädt beide Hülsen; triffst du das Leuchtband, gibt die nächste Ladung +1 Korn pro Lauf
+	'''
 
 GsHandgun: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: land 3 shots on the same target and the 4th becomes a pressure-point round;
-		it hits 80% harder and ignores 15 armor. The last round racks the slide with extra punch.
-		Box-magazine drills: tactical reload is nearly instant, and the sweet spot is generous
-		''' */
-	// PointShot: Pressure point!
+		Umschmiedung: Triffst du dasselbe Ziel dreimal hintereinander, wird der 4. Schuss automatisch zum Druckpunktgeschoss, deutlich mehr Schaden und ignoriert 15 Verteidigung
+		Der letzte Kammerreiniger fliegt schwerer und weiter
+		Magazin-Schnellwechsel: bei Restmunition wechselt Rechtsklick extrem schnell, das perfekte Leuchtband ist am breitesten
+		'''
+	PointShot: Druckpunkt!
 }
 
-/* GsTheUndertaker.Desc:
+GsTheUndertaker.Desc:
 	'''
-	Reforged: fell a foe, or wound one near death, and the gun collects a soul lantern
-	that drifts back to mend you once per cylinder.
-	The final chamber tolls the burial bell: a heavy blood round with doubled knockback
-	''' */
+	Umschmiedung: Tötest du einen Feind oder bringst ihn an den Rand des Todes, nimmt die Waffe eine Seelenlaterne auf, sie fliegt zurück und heilt dich, einmal pro Magazin
+	Der letzte Schuss ist eine Glocken-Schwere, Treffer schlagen eine Klagewelle, Rückstoß verdoppelt
+	Kammerweise laden, jederzeit durch Feuern unterbrechbar, so viele Schüsse wie geladen
+	'''
 
 GsRedRyder: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: copper BBs ricochet off blocks twice, jingling a bell with every bounce.
-		Ring the same target five times in quick succession and the next shot is a gift round
-		that bursts into festive shrapnel. Lever-load one BB at a time; fire whenever you like
-		''' */
-	// Gift: Gift round!
+		Umschmiedung: Die Kupferkugel prallt zweimal zwischen Blöcken, jeder Sprung läutet eine Glocke
+		Läuten fünf Glocken in kurzer Zeit am selben Ziel, wird der nächste Schuss zum Geschenk und platzt in buntem Konfetti mit schwerem Schlag
+		Hebel lädt Schuss für Schuss, so viele Schüsse wie gedrückt
+		'''
+	Gift: Geschenk!
 }
 
 GsPewMaticHorn: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: a seven-note magazine, do to ti, each pew tinted by its note.
-		Land three notes in a row on the same target to strike a chord: a paint burst in the third note's color.
-		Reloading plays the scale back up; catch the sweet spot on the high note for bigger chords
-		''' */
-	// Chord: Chord!
+		Umschmiedung: Sieben Schüsse pro Magazin steigen die Tonleiter, jeder Schuss eine Farbe und ein Ton
+		Triffst du dasselbe Ziel mit drei Tönen, erklingt ein Akkord und explodiert in der Farbe des dritten Tons
+		Nachladen ist eine aufsteigende Tonleiter; triffst du das Leuchtband am hohen Ton, wird der Akkord dieses Magazins größer und schmerzhafter
+		'''
+	Chord: Akkord!
 }
 
 GsSandgun: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: sustained fire heats the hopper; keep pouring and the sand melts in the chamber.
-		While molten, rounds leave as glass bolts that fly faster, pierce deeper, and shatter into razor facets.
-		Reload pours in three rustling beats; a sweet-spot pour ignites the hopper instantly
-		''' */
-	// Molten: Molten!
+		Umschmiedung: Dauerndes Sandstrahlen heizt den Sandtrichter, ist er heiß, brennt der Sand im Lauf zu Glasbolzen
+		Glasbolzen sind schneller und durchschlagen, Treffer spritzen klirrende Splitter; lässt du los, kühlt es langsam
+		Normale Sandgeschosse behalten ihren alten Charakter; triffst du das Leuchtband, brennt der Trichter sofort voll
+		'''
+	Molten: Schmelzglas!
 }
 
-/* GsBlowpipe.Desc:
+GsBlowpipe.Desc:
 	'''
-	Reforged: each hit on the same target threads in a venom fuse; three fuses burst into a lingering toxic cloud.
-	Reloading is catching your breath, one dart per gulp; stand still to breathe 25% faster.
-	A sweet-spot breath envenoms the next dart to detonate the fuses on contact
-	''' */
-/* GsBlowgun.Desc:
+	Umschmiedung: Treffer am selben Ziel ziehen einen Giftfaden, bei drei Fäden platzt stehender Giftnebel
+	Nachladen ist Atemholen, ein Dart pro Zug, jederzeit unterbrechbar; stillstehen holt ein Viertel schneller Atem
+	Triffst du das Leuchtband, zündet der nächste Treffer die Giftfäden sofort
 	'''
-	Reforged: one long breath drives 5 darts, each flying harder and faster than the last.
-	The fifth dart empties the lungs: a heavy bolt that bursts into a broad toxic cloud on impact.
-	Breathe back one dart per gulp, faster while standing still; a sweet-spot breath starts you at third-dart strength
-	''' */
-/* GsHarpoon.Desc:
+GsBlowgun.Desc:
 	'''
-	Reforged: the harpoon flies out and winds back; the reload IS the chain coming home.
-	Spear a heavy foe to set an anchor, then pull the trigger again to winch yourself to it.
-	Light foes get dragged back to you on the return pass
-	''' */
-/* GsFlareGun.Desc:
+	Umschmiedung: Ein langer Atem bläst fünf Darts, jeder schneller und härter als der letzte
+	Der fünfte Dart leert die Lunge und platzt in eine große Giftwolke
+	Atemzug für Atemzug, unterbrechbar, stillstehen holt schneller Atem; triffst du das Leuchtband, startet das ganze Magazin mit dem Schwung des dritten Zugs
 	'''
-	Reforged: a four-color canister, red, green, blue, then white, each flare pinning into flesh and burning there.
-	A pinned foe takes 12% more damage from you (16% for the white flare).
-	Swap canisters in two beats; a sweet-spot swap fires the next pull as a double flare
-	''' */
+GsHarpoon.Desc:
+	'''
+	Umschmiedung: Die Kettengabel fliegt hin und zurück, die Kette einholen ist das Nachladen
+	Triffst du einen schweren Feind, wird er zum Anker, noch einmal Abzug, und die Winde reißt dich hin
+	Triffst du einen leichten Feind, umgekehrt: die Rückkette zerrt ihn vor dich
+	'''
+GsFlareGun.Desc:
+	'''
+	Umschmiedung: Rot, Grün, Blau, Weiß, vier Signalhülsen im Wechsel, nageln sich ins Ziel und brennen weiter
+	Genagelte Feinde erleiden 12% mehr Schaden von dir, die weiße Schluss-Hülse hebt das auf 16%
+	Rechtsklick dreht den Behälter und lädt in zwei Takten; triffst du das Leuchtband, feuert der nächste Schuss zwei Hülsen
+	'''

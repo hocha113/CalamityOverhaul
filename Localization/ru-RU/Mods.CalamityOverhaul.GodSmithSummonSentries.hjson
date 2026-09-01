@@ -1,98 +1,98 @@
-/* GsHoundiusShootius.Desc:
+GsHoundiusShootius.Desc:
 	'''
-	Deploy doctrine: hits charge the eye, right-click when full to overdrive it into twin-pupil rapid fire
-	Its victims are briefly exposed, linked sentries deal 10% more to exposed foes
-	Linked kills on exposed foes feed the eye free charge; redeployed sentries keep a quarter charge
-	''' */
-/* GsQueenSpiderStaff.Desc:
+	Тактика развёртывания: попадания копят заряд; полный заряд — ПКМ разгоняет двойной зрачок
+	Попавшие враги кратко засвечены; связанные часовые бьют засвеченных на 10% сильнее
+	Убийство засвеченного связанным часовым бесплатно наполняет глаз-пса; повторное развёртывание несёт четверть заряда
 	'''
-	Deploy doctrine: hits charge the hive, right-click when full to overdrive into a full swarm
-	Eggs leave webbed ground where they land; linking a lightning aura magnetizes the spiders
-	''' */
-/* GsFrostHydraStaff.Desc:
+GsQueenSpiderStaff.Desc:
 	'''
-	Deploy doctrine: every 3 charge grows a phantom head (up to 2) that echoes each shot
-	Right-click when full to overdrive into a freezing breath; sentries linked to it inflict frostburn
-	''' */
-/* GsFlameburstT1.Desc:
+	Тактика развёртывания: попадания копят заряд; полный заряд — ПКМ выпускает весь выводок
+	Падение яиц оставляет полосу паутины; в связке с аурой молний малые пауки получают электромагнитный разгон
 	'''
-	Deploy doctrine: hits charge the tower, right-click when full for saturation barrage
-	Overdriven shots fly in triples and scorch a fire ring on hit; linking a ballista widens the blast
-	''' */
-/* GsFlameburstT2.Desc:
+GsFrostHydraStaff.Desc:
 	'''
-	Deploy doctrine: hits charge the tower, right-click when full for saturation barrage
-	Overdriven shots fly in triples and scorch a wider fire ring; linking a ballista widens the blast
-	''' */
-/* GsFlameburstT3.Desc:
+	Тактика развёртывания: каждые три слоя заряда растят фантомную голову, до двух, они стреляют с главной
+	Полный заряд — ПКМ даёт ледяное дыхание; связанные часовые вешают обморожение
 	'''
-	Deploy doctrine: hits charge the tower, right-click when full for saturation barrage
-	Overdrive adds mortar rain on top of triple shots and fire rings; linking a ballista widens the blast
-	''' */
-/* GsBallistaT1.Desc:
+GsFlameburstT1.Desc:
 	'''
-	Deploy doctrine: hits charge the tower, right-click when full for siege repeater fire
-	Two linked ballistas nail a cross-fire spike into any target both hit within moments
-	''' */
-/* GsBallistaT2.Desc:
+	Тактика развёртывания: попадания копят заряд; полный заряд — ПКМ даёт насыщенный обстрел
+	Разгон бьёт тройными огненными шарами и оставляет огненное кольцо; в связке с баллистой взрыв шире
 	'''
-	Deploy doctrine: hits charge the tower, right-click when full for siege repeater fire
-	Two linked ballistas nail a cross-fire spike into any target both hit within moments
-	''' */
-/* GsBallistaT3.Desc:
+GsFlameburstT2.Desc:
 	'''
-	Deploy doctrine: hits charge the tower, right-click when full for siege repeater fire
-	Overdriven bolts grow into massive siege shafts; paired ballistas nail cross-fire spikes
-	''' */
-/* GsExplosiveTrapT1.Desc:
+	Тактика развёртывания: попадания копят заряд; полный заряд — ПКМ даёт насыщенный обстрел
+	Разгон бьёт тройными огненными шарами и оставляет большее огненное кольцо; в связке с баллистой взрыв шире
 	'''
-	Deploy doctrine: traps placed near each other form a minefield web, any blast chain-detonates neighbors
-	Five blasts auto-overdrive the trap into high explosive; right-click to trigger a chain check
-	''' */
-/* GsExplosiveTrapT2.Desc:
+GsFlameburstT3.Desc:
 	'''
-	Deploy doctrine: traps placed near each other form a minefield web, any blast chain-detonates neighbors
-	Five blasts auto-overdrive the trap into high explosive; right-click to trigger a chain check
-	''' */
-/* GsExplosiveTrapT3.Desc:
+	Тактика развёртывания: попадания копят заряд; полный заряд — ПКМ даёт насыщенный обстрел
+	В разгоне добавляется миномётный огненный дождь, тройной залп и кольцо как прежде; в связке с баллистой взрыв шире
 	'''
-	Deploy doctrine: traps placed near each other form a minefield web, any blast chain-detonates neighbors
-	Overdriven blasts hurl shrapnel skyward; five blasts auto-overdrive, right-click for a chain check
-	''' */
-/* GsLightningAuraT1.Desc:
+GsBallistaT1.Desc:
 	'''
-	Deploy doctrine: two overlapping auras form a resonance zone dealing half again as much
-	Ticks charge the aura, right-click when full to overload it wider with a static field that shocks
-	''' */
-/* GsLightningAuraT2.Desc:
+	Тактика развёртывания: попадания копят заряд; полный заряд — ПКМ даёт осадный скорострел
+	Две связанные баллисты, попавшие в одну цель в одно мгновение, вбивают перекрёстный огонь
 	'''
-	Deploy doctrine: two overlapping auras form a resonance zone dealing half again as much
-	Ticks charge the aura, right-click when full to overload it wider with a static field that shocks
-	''' */
-/* GsLightningAuraT3.Desc:
+GsBallistaT2.Desc:
 	'''
-	Deploy doctrine: overlap auras for resonance, overload adds a wider static field and shock marks
-	While overdriven the aura hurls chain lightning arcing through four foes every second
-	''' */
-/* GsRainbowCrystalStaff.Desc:
+	Тактика развёртывания: попадания копят заряд; полный заряд — ПКМ даёт осадный скорострел
+	Две связанные баллисты, попавшие в одну цель в одно мгновение, вбивают перекрёстный огонь
 	'''
-	Deploy doctrine: linked to any sentry, each burst refracts a prism ray into another nearby foe
-	Hits charge the crystal, right-click when full to unfurl an aurora veil above it
-	''' */
-/* GsLunarPortalStaff.Desc:
+GsBallistaT3.Desc:
 	'''
-	Deploy doctrine: the portal is a link hub, every sentry linked to it strikes harder
-	Hits charge it, right-click when full for lunar phase volley: side lances and a rear gate
-	''' */
+	Тактика развёртывания: попадания копят заряд; полный заряд — ПКМ даёт осадный скорострел
+	Разгонная стрела становится гигантским осадным болтом; две связанные баллисты могут вбить перекрёстный шип
+	'''
+GsExplosiveTrapT1.Desc:
+	'''
+	Тактика развёртывания: близкие ловушки вяжут минную сеть — любой взрыв цепью рвёт соседей
+	Пять взрывов сами разгоняют фугас; ПКМ вручную запускает проверку детонации
+	'''
+GsExplosiveTrapT2.Desc:
+	'''
+	Тактика развёртывания: близкие ловушки вяжут минную сеть — любой взрыв цепью рвёт соседей
+	Пять взрывов сами разгоняют фугас; ПКМ вручную запускает проверку детонации
+	'''
+GsExplosiveTrapT3.Desc:
+	'''
+	Тактика развёртывания: близкие ловушки вяжут минную сеть — любой взрыв цепью рвёт соседей
+	Разгонный взрыв добавляет осколки вверх; пять взрывов сами разгоняют, ПКМ вручную запускает проверку детонации
+	'''
+GsLightningAuraT1.Desc:
+	'''
+	Тактика развёртывания: перекрытие двух аур даёт зону резонанса, урон +50%
+	Разряды копят заряд; полный заряд — ПКМ даёт перегруженное поле, внешнее кольцо и электризует цель
+	'''
+GsLightningAuraT2.Desc:
+	'''
+	Тактика развёртывания: перекрытие двух аур даёт зону резонанса, урон +50%
+	Разряды копят заряд; полный заряд — ПКМ даёт перегруженное поле, внешнее кольцо и электризует цель
+	'''
+GsLightningAuraT3.Desc:
+	'''
+	Тактика развёртывания: перекрытие аур даёт резонанс; разгон расширяет перегруженное поле и электризует
+	В разгоне каждую секунду бьёт цепная молния по четырём врагам
+	'''
+GsRainbowCrystalStaff.Desc:
+	'''
+	Тактика развёртывания: в связке с любым часовым каждая вспышка преломляет цветной луч в другого ближнего врага
+	Попадания копят заряд; полный заряд — ПКМ раскрывает над кристаллом завесу сияния
+	'''
+GsLunarPortalStaff.Desc:
+	'''
+	Тактика развёртывания: лунные врата — узел связи, связанные часовые получают прибавку к урону
+	Попадания копят заряд; полный заряд — ПКМ даёт лунный залп: боковые лучи и выстрел из задних врат
+	'''
 
 GsOverdriveProj: {
-	// DisplayName: Overdrive Field
-	// ChargeReady: Overdrive ready
-	// NotReady: No sentry charged
+	DisplayName: Поле разгона
+	ChargeReady: Заряд готов
+	NotReady: Нет полностью заряженных часовых
 }
 
-// GsSentryBurstProj.DisplayName: Sentry Burst
-// GsSentryZoneProj.DisplayName: Sentry Field
-// GsSentryBoltProj.DisplayName: Sentry Bolt
-// GsSentryChainBlastProj.DisplayName: Chain Charge
-// GsSentryChainLightningProj.DisplayName: Chain Lightning
+GsSentryBurstProj.DisplayName: Всплеск часового
+GsSentryZoneProj.DisplayName: Поле часового
+GsSentryBoltProj.DisplayName: Снаряд часового
+GsSentryChainBlastProj.DisplayName: Заряд детонации
+GsSentryChainLightningProj.DisplayName: Цепная молния

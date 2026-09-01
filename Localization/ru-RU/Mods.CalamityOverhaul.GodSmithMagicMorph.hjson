@@ -1,30 +1,30 @@
-/* GsSpiritFlame.Desc:
+GsSpiritFlame.Desc:
 	'''
-	Reforged: spirit flames trail pale soulfire; half of their hits split off a hunting wisp
-	Hold right click to charge; release to lay a five-flame ring at your cursor that pounces on intruders
-	''' */
-// GsSpiritFlameRingProj.DisplayName: Spirit Flame Ring
-// GsSpiritFlameWispProj.DisplayName: Hunting Wisp
-/* GsPoisonStaff.Desc:
+	Перековка: дух-пламя тянет бледный огонь душ; при попадании с шансом 50% отделяется охотящийся язычок
+	Удерживайте ПКМ для зарядки, отпустите — у курсора встанет кольцо из пяти огней, они по очереди бросаются на ближних
 	'''
-	Reforged: fangs trail venom mist and split into thin fangs on their second bite
-	Hold right click to charge the Serpent Kiss: a swift coiling viper that poisons everything on its path
-	''' */
-/* GsVenomStaff.Desc:
+GsSpiritFlameRingProj.DisplayName: Кольцо дух-пламени
+GsSpiritFlameWispProj.DisplayName: Охотящийся язычок
+GsPoisonStaff.Desc:
 	'''
-	Reforged: fangs trail venom mist and split a heavy fang on their second bite
-	Hold right click to charge the Serpent Kiss: a massive pit viper whose corpse melts into a lingering acid pool
-	''' */
-/* GsShadowFlameHexDoll.Desc:
+	Перековка: ядовитый клык летит в тумане и, укусив вторую цель, делится на два тонких клыка
+	Удерживайте ПКМ для зарядки и выпустите поцелуй змеи: малая быстрая змея петляет и кусает, стеля ядовитый коридор
 	'''
-	Reforged: shadowflame tendrils pin a hex brand into whatever they touch; branded foes take more from this doll
-	Hold right click to charge the Grand Hex: a sigil at your cursor that lashes tendrils at intruders
-	''' */
-/* GsLeafBlower.Desc:
+GsVenomStaff.Desc:
 	'''
-	Reforged: leaf blades spin with a razor-green wake
-	Hold right click to charge Storm Mode: for six seconds every leaf flies faster, cuts deeper and spirals harder
-	''' */
-// GsMorphFangSerpentProj.DisplayName: Serpent Kiss
-// GsMorphFangAcidPoolProj.DisplayName: Acid Pool
-// GsShadowFlameHexSigilProj.DisplayName: Grand Hex Sigil
+	Перековка: ядовитый клык летит в тумане и, укусив вторую цель, отделяет тяжёлый клык
+	Удерживайте ПКМ для зарядки и выпустите поцелуй змеи: крупная гадюка медленно вдавливается, тело тает в кислотную лужу
+	'''
+GsShadowFlameHexDoll.Desc:
+	'''
+	Перековка: щупальца теневого огня вбивают печать куклы во всё, чего касаются; меченые получают больше урона от этой куклы
+	Удерживайте ПКМ для зарядки большого проклятия: у курсора встаёт домен печати, внутри непрерывно хлещут щупальца теневого огня
+	'''
+GsLeafBlower.Desc:
+	'''
+	Перековка: листовые клинки летят с зелёным вихрем
+	Удерживайте ПКМ для зарядки режима бури: шесть секунд каждый лист летит быстрее, режет глубже, крутится круче
+	'''
+GsMorphFangSerpentProj.DisplayName: Змея поцелуя
+GsMorphFangAcidPoolProj.DisplayName: Ядовитая кислота
+GsShadowFlameHexSigilProj.DisplayName: Домен печати куклы

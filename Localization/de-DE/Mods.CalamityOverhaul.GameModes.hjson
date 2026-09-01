@@ -1,30 +1,49 @@
 GameModeText: {
 	BrutalName: Grausame Welt
 	AsuraName: Asura-Hölle
-	AnnihilationName: Ewiger Tod
-	// GodSmithName: Divine Artifice
-	BrutalOnLine: Diese Welt ist grausam, und doch liebst du sie noch immer.
-	BrutalOffLine: Die Welt zieht ihre Fänge ein. Ihre Milde ist nur eine Atempause.
-	AsuraOnLine: Der Asura-Pfad öffnet sich. Jeder Schmerz, den du zufügst, wird voll vergolten.
-	AsuraOffLine: Der Asura-Pfad schließt sich. Alle Schulden sind beglichen.
-	AnnihilationOnLine: Alles wird vergehen; nur der Tod lebt ewig.
-	AnnihilationOffLine: Der Tod ruht kurz; die Lebenden stehlen einen Atemzug.
-	// GodSmithOnLine: The Godsmith takes up the hammer; every common iron shall be reforged.
-	// GodSmithOffLine: The forge fire wanes; all arms return to their former shape.
-	BrutalDesc: Entfesselt die überarbeitete, gnadenlose KI der brutalen Bosse; alle übrigen Gegner erhalten 50% mehr Leben und Schaden, kleinere Feinde werden schnell und rasend
-	AsuraDesc: Die Verstärkung steigt auf 100%. Gegner passen sich wiederholtem Schaden derselben Art an, und jeder deiner Treffer setzt die Untergrenze ihres Gegenschlags
-	AnnihilationDesc: Die letzte Gestalt der Asura-Hölle in einer Zenit-Welt. Jeder Schrecken verdoppelt sich erneut: Gegner passen sich doppelt so schnell an, und dein Schmerz wird doppelt vergolten
-	// BrutalCreationDesc: Master is the floor: reworked bosses awaken, all foes empowered
-	// AsuraCreationDesc: Master is the floor: foes adapt to your blows and mirror your pain
-	// GodSmithDesc: Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched, and it toggles independently of every other mode
-	// GodSmithRecastTitle: Godsmith Reforged
-	// GodSmithEndowPrefix: "Endowment: "
+	AnnihilationName: Des Todes Ewigkeit
+	GodSmithName: Göttliches Werk
+	BrutalOnLine: Diese Welt ist grausam, und doch liebst du sie noch immer
+	BrutalOffLine: Die Welt zieht ihre Fänge ein. Ihre Milde ist nur eine Atempause
+	AsuraOnLine: Der Asura-Pfad öffnet sich. Jeder Schmerz, den du zufügst, wird voll vergolten
+	AsuraOffLine: Der Asura-Pfad schließt sich. Alle Schulden sind beglichen
+	AnnihilationOnLine: Alles wird vergehen; nur der Tod lebt ewig
+	AnnihilationOffLine: Der Tod ruht kurz; die Lebenden stehlen einen Atemzug
+	GodSmithOnLine: Der Gottesschmied hebt den Hammer; jedes gemeine Eisen wird umgeschmiedet
+	GodSmithOffLine: Das Schmiedefeuer erlischt; alle Waffen kehren zu ihrer alten Gestalt zurück
+	BrutalDesc:
+		'''
+		Entfesselt die überarbeitete, rasende Boss-KI. Ihre Werte stehen auf Meister-Schwierigkeit
+		Alle Feinde erhalten 50% mehr Leben und Schaden; kleinere Gegner werden schneller und bleiben rasend
+		'''
+	AsuraDesc:
+		'''
+		Die Verstärkung steigt auf 100%. Feinde gewöhnen sich an wiederholte Angriffe derselben Art,
+		und jeder Schaden, den du zufügst, wird zur Untergrenze ihres Gegenschlags.
+		Nahkampfangriffe gewöhnen sie sich schwerer ab, die Klinge selbst besonders;
+		je näher der Nahkampf am Feind, desto höher der Schaden
+		'''
+	AnnihilationDesc:
+		'''
+		Die letzte Gestalt der Asura-Hölle in einer Zenit-Welt. Jeder Schrecken verdoppelt sich erneut:
+		Feinde gewöhnen sich schneller, und der Schmerz, den du zufügst, wird doppelt vergolten
+		'''
+	BrutalCreationDesc: Meister ist die Untergrenze: überarbeitete Bosse erwachen, alle Feinde um die Hälfte verstärkt
+	AsuraCreationDesc: Meister ist die Untergrenze: Feinde gewöhnen sich an deine Schläge und spiegeln deinen Schmerz
+	GodSmithDesc:
+		'''
+		Alle Vanilla-Waffen erhalten völlig neue Angriffe,
+		Vanilla-Rüstungen eine zu ihrer Natur passende Göttergabe.
+		Feindstärke bleibt unberührt; der Schalter steht für sich und berührt keine andere Welt
+		'''
+	GodSmithRecastTitle: Gottesschmied-Umschmiedung
+	GodSmithEndowPrefix: "Göttergabe: "
 	StateOn: Aktiv
 	StateOff: Schlummernd
 	HintEnable: Klicken zum Erwecken
 	HintDisable: Klicken zum Versiegeln
 	BossRefuse: Ein Boss lebt noch. Der Pakt kann jetzt nicht geändert werden
-	// AsuraNeedBrutal: Awaken Cruel World first
+	AsuraNeedBrutal: Zuerst die Grausame Welt erwecken
 }
 
-// SporeshineAmbience.DazeDeathReason: "{0} drowsed away deep in the spore haze"
+SporeshineAmbience.DazeDeathReason: "{0} ist tief im Sporennebel betrunken umgesunken"

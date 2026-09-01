@@ -1,6 +1,6 @@
-/* GsIronBroadsword.Desc:
+GsIronBroadsword.Desc:
 	'''
-	Reforged: a three-beat butcher combo of raise, poise and cleave;
-	the third strike lunges forward with a heavier arc
-	''' */
-// GsGoldArmor.EndowLine: Midas Verdict: strikes build gilding; at 8 stacks the next strike erupts into three homing molten-gold pearls
+	Umschmiedung: Drei-Takt-Schlachterkombo, Heben, Innehalten, Hieb, jeder mit eigenem Gewicht;
+	der dritte Takt tritt vor und schlägt einen schwereren Bogen
+	'''
+GsGoldArmor.EndowLine: Stein zu Gold: Treffer häufen Vergoldung; bei acht Stapeln spritzt der nächste Schlag drei verfolgende Schmelzgoldperlen aus dem Ziel

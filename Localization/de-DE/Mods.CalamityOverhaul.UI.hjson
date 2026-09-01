@@ -1,13 +1,13 @@
 ItemFilterEditorUI: {
-	// ModeWhitelistText: Whitelist
-	// ModeBlacklistText: Blacklist
-	// ClearText: Clear
-	// UninstallText: Uninstall
-	// CountFormat: "{0} entries"
-	// EmptyHintText: Click here while holding an item to record it
-	// OperateHintText: Click with item = add · Click entry = remove · [Right-click/ESC] close
-	// InstalledText: Filter list installed
-	// UninstalledText: Filter uninstalled
+	ModeWhitelistText: Weißliste
+	ModeBlacklistText: Schwarze Liste
+	ClearText: Leeren
+	UninstallText: Filter entfernen
+	CountFormat: "{0} Einträge"
+	EmptyHintText: "Mit einem Item in der Hand hier klicken, um es aufzunehmen"
+	OperateHintText: "Mit Item klicken = hinzufügen · Eintrag klicken = entfernen · [Rechtsklick/ESC] schließen"
+	InstalledText: Liste installiert
+	UninstalledText: Filter entfernt
 }
 
 EntryDecisionUI: {
@@ -127,117 +127,117 @@ Generator: {
 	}
 
 	GeneratorReadoutUI: {
-		// WindLabel: Wind
-		// FlowLabel: Flow
-		// StorageLabel: Charge
-		// OutputLine: Output: {0} UE/s
-		// RunningText: Running
-		// NoWindText: Weak Wind
-		// NoWaterText: Wheel Dry
-		// SunLabel: Sun
-		// NoSunText: No Sunlight
-		// MagmaLabel: Magma
-		// NoMagmaText: No Lava
-		// PowerUnitText: UE
+		WindLabel: Wind
+		FlowLabel: Strömung
+		StorageLabel: Speicher
+		OutputLine: "Ausgabe: {0} UE/s"
+		RunningText: Läuft
+		NoWindText: Wind zu schwach
+		NoWaterText: Rad außer Wasser
+		SunLabel: Sonne
+		NoSunText: Zu wenig Sonne
+		MagmaLabel: Magma
+		NoMagmaText: Kein Magma
+		PowerUnitText: UE
 	}
 
 	BiomassGeneratorUI: {
-		// TitleText: Biomass Generator
-		// FuelLabel: Fuel Bin
-		// PowerLabel: Power
-		// ActiveText: Running
-		// IdleText: Idle
-		// InsertFuelHint: Click to insert/remove biomass fuel
-		// PowerUnit: UE
+		TitleText: Biomassegenerator
+		FuelLabel: Füllschacht
+		PowerLabel: Energie
+		ActiveText: Aktiv
+		IdleText: Leerlauf
+		InsertFuelHint: "Klicken, um Biomasse-Treibstoff einzulegen oder zu entnehmen"
+		PowerUnit: UE
 	}
 }
 
 SlimeVat: {
 	SlimeVatUI: {
-		// TitleText: Slime Culture Vat
-		// WaterLabel: Water
-		// ProduceLabel: Produce Bay
-		// EnableText: Enable
-		// DisableText: Disable
-		// StatusWorking: Culturing
-		// StatusIdle: Dormant
-		// StatusNoPower: No Power
-		// StatusNoWater: No Water
-		// StatusOff: Disabled
-		// EnergyLabel: Power
-		// PourHint: Click with a water bucket to pour, or let it draw from nearby water
-		// TakeHint: Click to retrieve
-		// PowerUnit: UE
+		TitleText: Schleim-Zuchtbecken
+		WaterLabel: Wasser
+		ProduceLabel: Ausgabefach
+		EnableText: Aktivieren
+		DisableText: Deaktivieren
+		StatusWorking: Züchtet
+		StatusIdle: Ruhend
+		StatusNoPower: Kein Strom
+		StatusNoWater: Kein Wasser
+		StatusOff: Deaktiviert
+		EnergyLabel: Energie
+		PourHint: "Mit einem Wassereimer klicken zum Eingießen, oder die Maschine aus nahem Wasser schöpfen lassen"
+		TakeHint: Klicken zum Entnehmen
+		PowerUnit: UE
 	}
 }
 
 ShimmerTransmuter: {
 	ShimmerTransmuterUI: {
-		// TitleText: Shimmer Transmuter
-		// InputLabel: Input
-		// OutputLabel: Output
-		// ProgressLabel: Progress
-		// PowerLabel: Power
-		// ShimmerLabel: Shimmer
-		// WorkingText: Transmuting
-		// IdleText: Idle
-		// NoPowerText: No Power
-		// NoShimmerText: No Shimmer
-		// OutputFullText: Output Full
-		// InputHint: Insert an item that shimmer can transmute
-		// OutputHint: Click to take the products
-		// PowerUnit: UE
+		TitleText: Schimmer-Umwandler
+		InputLabel: Eingang
+		OutputLabel: Ausgang
+		ProgressLabel: Umwandlung
+		PowerLabel: Energie
+		ShimmerLabel: Schimmer
+		WorkingText: Wandelt um
+		IdleText: Leerlauf
+		NoPowerText: Kein Strom
+		NoShimmerText: Kein Schimmer
+		OutputFullText: Ausgang voll
+		InputHint: "Ein Item einlegen, das Schimmer umwandeln kann"
+		OutputHint: "Klicken, um das Produkt zu entnehmen"
+		PowerUnit: UE
 	}
 }
 
 MushroomFarmer: {
 	MushroomFarmerUI: {
-		// TitleText: Mushroom Farming Machine
-		// ProduceLabel: Produce Bay
-		// EnableText: Enable
-		// DisableText: Disable
-		// StatusWorking: Growing
-		// StatusIdle: Idle
-		// StatusNoPower: No Power
-		// StatusOff: Disabled
-		// EnergyLabel: Power
-		// TakeHint: Click to retrieve
-		// PowerUnit: UE
+		TitleText: Pilzfarmmaschine
+		ProduceLabel: Ausgabefach
+		EnableText: Aktivieren
+		DisableText: Deaktivieren
+		StatusWorking: Züchtet
+		StatusIdle: Leerlauf
+		StatusNoPower: Kein Strom
+		StatusOff: Deaktiviert
+		EnergyLabel: Energie
+		TakeHint: Klicken zum Entnehmen
+		PowerUnit: UE
 	}
 }
 
 TeleportStation: {
 	TeleportStationUI: {
-		// TitleText: Teleport Network
-		// LocalLabel: This Station
-		// RenameText: Rename
-		// RenameHint: Enter to confirm, Esc to cancel
-		// EmptyListText: No other teleport stations in the world
-		// RowInfoLine: "{0} tiles · {1} UE"
-		// StatusReady: Ready
-		// StatusNoPower: This station lacks power
-		// StatusTargetDead: Destination lacks power
-		// EnergyLabel: Power
-		// PowerUnit: UE
+		TitleText: Teleportnetz
+		LocalLabel: Diese Station
+		RenameText: Umbenennen
+		RenameHint: "Enter bestätigt, Esc bricht ab"
+		EmptyListText: Keine anderen Teleportstationen in der Welt
+		RowInfoLine: "{0} Felder · {1} UE"
+		StatusReady: Bereit
+		StatusNoPower: Diese Station hat keinen Strom
+		StatusTargetDead: Gegenstelle hat keinen Strom
+		EnergyLabel: Energie
+		PowerUnit: UE
 	}
 }
 
 Apiary: {
 	ApiaryUI: {
-		// TitleText: Electric Apiary
-		// BottleLabel: Bottle Bay
-		// ProduceLabel: Produce Bay
-		// EnableText: Enable
-		// DisableText: Disable
-		// StatusWorking: Brewing
-		// StatusWorkingBoost: Hive Thriving
-		// StatusIdle: Resting
-		// StatusNoPower: No Power
-		// StatusOff: Disabled
-		// EnergyLabel: Power
-		// BottleHint: Insert empty glass bottles
-		// TakeHint: Click to retrieve
-		// PowerUnit: UE
+		TitleText: Bienenstock
+		BottleLabel: Leerflaschenfach
+		ProduceLabel: Ausgabefach
+		EnableText: Aktivieren
+		DisableText: Deaktivieren
+		StatusWorking: Honigt
+		StatusWorkingBoost: Volk aktiv
+		StatusIdle: Pause
+		StatusNoPower: Kein Strom
+		StatusOff: Deaktiviert
+		EnergyLabel: Energie
+		BottleHint: Leere Glasflaschen einlegen
+		TakeHint: Klicken zum Entnehmen
+		PowerUnit: UE
 	}
 }
 
@@ -285,17 +285,17 @@ QuestLog: {
 	SunModeText: Tagmodus
 	LauncherHoverText: Linksklick Interagieren, Rechtsklick Ziehen
 	QuestManagerText: Aufträge
-	// ChronicleTitle: E X P E D I T I O N   R E C O R D
-	// ChronicleProgress: Sealed {0} / {1}
-	// ChronicleHint: Wheel to zoom   ·   Drag to pan   ·   Esc to close
-	// ChronicleStationChart: Quest Chart
-	// ChronicleStationEntrust: Commissions
-	// ChronicleChapterTitle: Chapters
-	// ChronicleLegendTitle: Legend
-	// ChronicleLegendSealed: Sealed
-	// ChronicleLegendUnclaimed: Reward Due
-	// ChronicleLegendActive: In Progress
-	// ChronicleLegendLocked: Not Begun
+	ChronicleTitle: E X P E D I T I O N S A K T E
+	ChronicleProgress: "Versiegelt {0} / {1}"
+	ChronicleHint: Rad zoomen   ·   Ziehen verschieben   ·   Esc schließen
+	ChronicleStationChart: Questkarte
+	ChronicleStationEntrust: Auftragssakte
+	ChronicleChapterTitle: K A P I T E L
+	ChronicleLegendTitle: L E G E N D E
+	ChronicleLegendSealed: Versiegelt
+	ChronicleLegendUnclaimed: Belohnung offen
+	ChronicleLegendActive: Unterwegs
+	ChronicleLegendLocked: Nicht begonnen
 	DisabledOverlayText:
 		'''
 		Quest-Prüfung wurde in der aktuellen Welt deaktiviert.
@@ -340,76 +340,76 @@ Incinerator: {
 
 PlayerLauncher: {
 	PlayerLauncherUI: {
-		// TitleText: Launch Pad
-		// DirectionLabel: Direction
-		// PowerLabel: Launch Power
-		// EnableText: Enable
-		// DisableText: Disable
-		// StatusReady: Ready
-		// StatusNoPower: No Power
-		// StatusOff: Disabled
-		// EnergyLabel: Power
-		// CostTip: Each launch costs {0} UE
-		// PowerUnit: UE
+		TitleText: Schleuderplattform
+		DirectionLabel: Schleuderrichtung
+		PowerLabel: Schleuderkraft
+		EnableText: Aktivieren
+		DisableText: Deaktivieren
+		StatusReady: Bereit
+		StatusNoPower: Kein Strom
+		StatusOff: Deaktiviert
+		EnergyLabel: Energie
+		CostTip: "Jeder Start kostet {0} UE"
+		PowerUnit: UE
 	}
 }
 
 PotionBeacon: {
 	PotionBeaconUI: {
-		// TitleText: Potion Diffuser Beacon
-		// SlotLabel: Potion Bay
-		// EnableText: Enable
-		// DisableText: Disable
-		// StatusWorking: Diffusing
-		// StatusIdle: Idle
-		// StatusNoPower: No Power
-		// StatusOff: Disabled
-		// EnergyLabel: Power
-		// DropHint: Place buff potions
-		// SupplyTip: "{0}s of supply left in this bottle"
-		// PowerUnit: UE
+		TitleText: Trank-Streubake
+		SlotLabel: Trankfach
+		EnableText: Aktivieren
+		DisableText: Deaktivieren
+		StatusWorking: Verströmt
+		StatusIdle: Leerlauf
+		StatusNoPower: Kein Strom
+		StatusOff: Deaktiviert
+		EnergyLabel: Energie
+		DropHint: Stärkungstränke einlegen
+		SupplyTip: "In dieser Flasche noch {0} s Vorrat"
+		PowerUnit: UE
 	}
 }
 
 HerbFarmer: {
 	HerbFarmerUI: {
-		// TitleText: Herb Farming Machine
-		// SeedLabel: Seed Bay
-		// ProduceLabel: Produce Bay
-		// EnableText: Enable
-		// DisableText: Disable
-		// StatusWorking: Farming
-		// StatusIdle: Idle
-		// StatusNoPower: No Power
-		// StatusOff: Disabled
-		// EnergyLabel: Power
-		// SeedHint: Place herb seeds
-		// TakeHint: Click to retrieve
-		// PowerUnit: UE
+		TitleText: Kräuterfarmmaschine
+		SeedLabel: Samenfach
+		ProduceLabel: Ausgabefach
+		EnableText: Aktivieren
+		DisableText: Deaktivieren
+		StatusWorking: Baut an
+		StatusIdle: Leerlauf
+		StatusNoPower: Kein Strom
+		StatusOff: Deaktiviert
+		EnergyLabel: Energie
+		SeedHint: Kräutersamen einlegen
+		TakeHint: Klicken zum Entnehmen
+		PowerUnit: UE
 	}
 }
 
 AutoFisher: {
 	AutoFisherUI: {
-		// TitleText: Auto Fisher
-		// BaitLabel: Bait Bay
-		// CatchLabel: Catch Bay
-		// IntervalLabel: Cast Interval
-		// PowerReadout: Fishing Power {0}
-		// LakeReadout: Lake Size {0}
-		// EnableText: Enable
-		// DisableText: Disable
-		// StatusFishing: Fishing
-		// StatusIdle: Idle
-		// StatusNoPower: No Power
-		// StatusNoBait: No Bait
-		// StatusNoWater: No Water
-		// StatusFull: Storage Full
-		// StatusOff: Disabled
-		// EnergyLabel: Power
-		// BaitHint: Place bait
-		// CatchHint: Catches are stored here
-		// PowerUnit: UE
+		TitleText: Automatischer Angler
+		BaitLabel: Köderfach
+		CatchLabel: Fangfach
+		IntervalLabel: Wurfabstand
+		PowerReadout: "Angelkraft {0}"
+		LakeReadout: "Gewässer {0}"
+		EnableText: Aktivieren
+		DisableText: Deaktivieren
+		StatusFishing: Angelt
+		StatusIdle: Leerlauf
+		StatusNoPower: Kein Strom
+		StatusNoBait: Kein Köder
+		StatusNoWater: Kein Wasser
+		StatusFull: Fach voll
+		StatusOff: Deaktiviert
+		EnergyLabel: Energie
+		BaitHint: Köder einlegen
+		CatchHint: Fänge landen hier
+		PowerUnit: UE
 	}
 }
 
@@ -442,40 +442,40 @@ ThrowerUI: {
 }
 
 CollectorUI: {
-	// TitleText: Collector Console
-	// ModeLabel: Storage Mode
-	// ModeAuto: Nearest
-	// ModeBoundFirst: Bound First
-	// ModeBoundOnly: Bound Only
-	// ModeAutoDesc: Deposits into the nearest available container in range
-	// ModeBoundFirstDesc: Prefers bound containers, falls back to nearest
-	// ModeBoundOnlyDesc: Only deposits into bound containers
-	// BindingsLabel: Storage Bindings
-	// AddBindingText: + Bind Container
-	// PickingTitle: Select Storage Container
-	// PickingHint: Left click a container in the world to bind it
-	// PickingExitHint: Right click or [ESC] to exit
-	// BindingFullText: Bindings Full
-	// InvalidText: Invalid
-	// OutOfRangeText: Out of Range
-	// ChestDefaultName: Chest
-	// MagicStorageName: Storage Heart
-	// NoBindingsHint: No containers bound, click the button below to start
-	// RemoveHint: Remove binding
-	// MoveUpHint: Raise priority
-	// FilterLabel: Collection Filter
-	// FilterNoneText: No filter (collects everything)
-	// ClearFilterText: Clear
-	// EditFilterText: Edit
-	// FilterHint: Right click the collector while holding an item to set a filter
-	// StatusLabel: Status
-	// ArmCountLabel: Arms
-	// EnergyLabel: Energy
-	// StatusWorking: Running
-	// StatusNoEnergy: No Energy
-	// StatusStarting: Starting Up
-	// StatusNoStorage: No Storage Available
-	// CloseHint: "[ESC] or right click again with empty hands to close"
+	TitleText: Sammler-Konsole
+	ModeLabel: Lagermodus
+	ModeAuto: Nächstes Lager
+	ModeBoundFirst: Gebundene zuerst
+	ModeBoundOnly: Nur Gebundene
+	ModeAutoDesc: Legt in den nächsten verfügbaren Behälter in Reichweite
+	ModeBoundFirstDesc: "Bevorzugt gebundene Behälter, sonst den nächsten"
+	ModeBoundOnlyDesc: Legt nur in gebundene Behälter
+	BindingsLabel: Lagerbindungen
+	AddBindingText: + Behälter binden
+	PickingTitle: Lagerbehälter wählen
+	PickingHint: Linksklick auf einen Behälter in der Welt bindet ihn
+	PickingExitHint: "Rechtsklick oder [ESC] beendet die Auswahl"
+	BindingFullText: Bindungen voll
+	InvalidText: Ungültig
+	OutOfRangeText: Außer Reichweite
+	ChestDefaultName: Truhe
+	MagicStorageName: Speicherkern
+	NoBindingsHint: "Noch kein Behälter gebunden, klicke den Knopf unten"
+	RemoveHint: Bindung entfernen
+	MoveUpHint: Priorität erhöhen
+	FilterLabel: Sammelfilter
+	FilterNoneText: Kein Filter (sammelt alles)
+	ClearFilterText: Leeren
+	EditFilterText: Bearbeiten
+	FilterHint: "Mit einem Item in der Hand den Sammler rechtsklicken, um den Filter zu setzen"
+	StatusLabel: Status
+	ArmCountLabel: Arme
+	EnergyLabel: Energie
+	StatusWorking: Läuft
+	StatusNoEnergy: Zu wenig Energie
+	StatusStarting: Startet
+	StatusNoStorage: Kein Lager verfügbar
+	CloseHint: "[ESC] oder nochmals rechtsklicken mit leeren Händen schließt"
 }
 
 SHPCSoulSelectUI: {
@@ -492,27 +492,27 @@ SHPCSoulSelectUI: {
 }
 
 ElysiumRoseWindow: {
-	// TitleText: Elysium
-	// SeatAliveText: In Office
-	// SeatEmptyText: Vacant
-	// SeatMartyredText: Martyred
-	// MartyrdomPowerText: Martyrdom Power {0}/11
-	// DragHintText: Drag a seat to reassign holy offices
-	// AbilityBrief_0: When ready, blocks part of one incoming hit for you
-	// AbilityBrief_1: Casts a net of light that drags foes caught inside
-	// AbilityBrief_2: Chain lightning leaps between up to four foes
-	// AbilityBrief_3: Gazes upon foes, raising all damage they take
-	// AbilityBrief_4: Consecrates your projectiles to bend gently toward foes
-	// AbilityBrief_5: Throws a blade that strips armor and reveals the foe
-	// AbilityBrief_6: Your strikes are guaranteed to crit for a while
-	// AbilityBrief_7: Blesses foes to burst into devoted golden rain on death
-	// AbilityBrief_8: Offers healing when you are wounded
-	// AbilityBrief_9: Bestows a random miracle
-	// AbilityBrief_10: Ignites fervor; nearby foes catch holy fire
-	// AbilityBrief_11: Lavish gifts, and a traitor's blade
+	TitleText: Elysium
+	SeatAliveText: Im Amt
+	SeatEmptyText: Unbesetzt
+	SeatMartyredText: Martyriert
+	MartyrdomPowerText: "Martyriumskraft {0}/11"
+	DragHintText: "Ziehe einen Sitz, um Ämter zu tauschen"
+	AbilityBrief_0: "Ist der Schild bereit, fängt er einen Teil eines Treffers für dich ab"
+	AbilityBrief_1: "Wirft ein Lichtnetz, das gefangene Feinde bremst"
+	AbilityBrief_2: Kettenheiliger Blitz springt zwischen höchstens vier Feinden
+	AbilityBrief_3: "Blickt Feinde an und erhöht allen Schaden, den sie erleiden"
+	AbilityBrief_4: "Weiht deine Projektile, sodass sie sich sacht zu Feinden biegen"
+	AbilityBrief_5: "Wirft eine Klinge, die Rüstung schält und den Feind sichtbar macht"
+	AbilityBrief_6: Deine Angriffe treffen eine Weile zwangsläufig kritisch
+	AbilityBrief_7: "Segnet Feinde: im Tod sprühen sie hingebungsvollen Goldregen"
+	AbilityBrief_8: "Spendet Heilung, wenn du verwundet bist"
+	AbilityBrief_9: Lässt ein zufälliges Wunder niedergehen
+	AbilityBrief_10: Entzündet Eifer; nahe Feinde fangen heiliges Feuer
+	AbilityBrief_11: "Reiche Gaben, und die Klinge des Verrats"
 }
 
-// ElysiumFaithHud.MartyrdomPowerText: Martyrdom Power {0}/11
+ElysiumFaithHud.MartyrdomPowerText: "Martyriumskraft {0}/11"
 MenuModify.OverhaulSettingsButtonText: Overhaul-Einstellungen
 
 OverhaulSettingsUI: {
@@ -553,13 +553,13 @@ GalacticCrisisRender: {
 	KortoThreatCritical: Bedrohung: Kritisch
 	KortoPlanetCountInfo: Korto-System — 6 Planeten
 	KortoStatusCompromised: Status: Kompromittiert
-	HeaderAndroidProfile: ◢ TACTICAL ANDROID DOSSIER ◣
+	HeaderAndroidProfile: ◢ TAKTISCHES ANDROIDEN-DOSSIER ◣
 	AndroidArtisName: ARTIS
 	AndroidApolaName: APOLA
 	AndroidCodename: CODENAME
-	AndroidClassLabel: CLASS: TACTICAL ANDROID
+	AndroidClassLabel: TYP: TAKTISCHER ANDROID
 	AndroidStatusLabel: STATUS
-	AndroidStatusLost: SIGNAL LOST
+	AndroidStatusLost: SIGNAL VERLOREN
 }
 
 TransitionScene: {
@@ -586,7 +586,7 @@ ApolliaHeroPanelUI: {
 	CmdFollow: Folgen
 	CmdHold: Position halten
 	CmdAggressive: Angriff
-	CmdDefensive: Defensive
+	CmdDefensive: Verteidigung
 }
 
 DraedonIncomingCall: {
@@ -602,14 +602,14 @@ DraedonIncomingCall: {
 
 QuestManagerUI: {
 	TitleText: Auftragsverwaltung
-	// ProviderLabelText: Client
-	// ProviderHalibut: The Halibut
-	// ProviderOnikiri: Onikiri
-	// ProviderKikasa: Kikasa
-	// ProviderSHPC: SHPC
-	// ProviderOldDuke: The Old Duke
-	// ProviderSupCal: Supreme Calamitas
-	// ProviderDraedon: Draedon
+	ProviderLabelText: Auftraggeber
+	ProviderHalibut: Heilbutt
+	ProviderOnikiri: Onikiri
+	ProviderKikasa: Kikasa
+	ProviderSHPC: SHPC
+	ProviderOldDuke: Alter Herzog
+	ProviderSupCal: Oberhexe Calamitas
+	ProviderDraedon: Draedon
 	CategoryAll: Alle
 	CategoryActive: Laufend
 	CategoryCompleted: Abgeschlossen
@@ -665,47 +665,47 @@ VictorTalkUI: {
 	Greet9: Zeit ist Geld. Meins, genauer gesagt. Sag mir, was du brauchst, und spare dir das Geplauder.
 	Greet10: Neue Teile brauchen eine Einfahrzeit. Versuche, ein paar Tage keinem schweren Beschuss ausgesetzt zu sein.
 	Greet11: Der Körper ist nur ein Werkzeug. Deiner sieht aus, als hätte er lange keine Wartung mehr gehabt.
-	// TalkFirstMeet0: A new face. Let me guess - you're not here for a doctor, you're here for a miracle. Sit down, I sell both.
-	// TalkFirstMeet1: Welcome, customer. Three house rules: no credit, no questions about your past, and no critiquing my work.
-	// TalkPostSurgery0: The sutures are still warm. Don't block any blades with the new parts for twenty-four hours.
-	// TalkPostSurgery1: The surgery went perfectly. Of course, mine always do.
-	// TalkPostSurgery2: How does it feel? Any rattling, current leaks or phantom pain, come straight back - repairs cost extra.
-	// TalkMoodHomeless0: Until you people clear out a clinic room for me, the prices include an open-air operating fee.
-	// TalkMoodHomeless1: I can't do precision work with the table strapped to my back. Get me a house and we can talk prices.
-	// TalkMoodHappy0: I'm in a good mood today, so I rounded your quote down. Keep it to yourself.
-	// TalkMoodHappy1: I like this place. Enough to give you a discount, even.
-	// TalkMoodGrumpy0: Don't complain about the prices. Move me somewhere agreeable and they'll drop on their own.
-	// TalkMoodGrumpy1: Bad mood, unsteady scalpel. The risk surcharge is in the bill - and it's your fault.
-	// TalkNoChrome0: A fully original body... rare. Like an old machine that has never had a firmware update.
-	// TalkNoChrome1: Not a single implant? Are you here to browse, or to feel nostalgic?
-	// TalkFullChrome0: There's more chrome than flesh on you. Even your footsteps sound like my cash register.
-	// TalkFullChrome1: Your capacity is almost full, customer. Install any more and you'll need a power upgrade first.
-	// TalkLowHealth0: You're bleeding. Sit down first - customers dying in my doorway is bad for business.
-	// TalkLowHealth1: That blood pressure is setting off alarms. Wounds first, invoice later.
-	// TalkRich0: I smell platinum. What are we replacing today? A full set works too.
-	// TalkPoor0: Pockets cleaner than my sterile tray? Go earn some coin first - cyberware doesn't come on credit.
-	// TalkPoor1: No money? No matter. Sell some loot and come back - we're open all night.
-	// TalkSandevistan0: Is the Sandevistan running smooth? Don't get greedy with it - fried nerves bill as a full rebuild.
-	// TalkPreHardmode0: This world's technology is still wood and stone. Good thing I brought my own tools.
-	// TalkPreHardmode1: Upgrade the body before the calamity upgrades itself. That advice was free.
-	// TalkHardmode0: Business tripled since the world cracked open. Light and blight chew through flesh all the same.
-	// TalkHardmode1: The new monsters out there tear people apart fast. Can your reflexes keep up? If not, I have stock.
-	// TalkPostMoonlord0: Even the Moon Lord went down. Seems some of my customers really are monsters.
-	// TalkPostMoonlord1: A god's remains make excellent material. If you picked any up, save me a share.
-	// TalkPostSupCal0: You beat the Calamity herself and still keep this much flesh. I'm starting to think my chrome is just jewelry to you.
-	// TalkBloodMoon0: A blood moon? Just an overtime shift for me. There'll be a queue of severed limbs at the door soon.
-	// TalkBloodMoon1: Stay away from the doorway tonight. Under a blood moon even the rabbits want a bite of you.
-	// TalkEclipse0: Only hard cases go out during an eclipse. Be well-equipped or be fast.
-	// TalkRain0: Oil your exposed joints in the rain. I've fixed too many rusted elbows.
-	// TalkRain1: Rain. Humidity is bad for circuits and good for business.
-	// TalkDeepNight0: Still awake at this hour? Fair enough - cybereyes don't need to close.
-	// TalkDeepNight1: Deep night is my favorite business hour. Quiet, and the customers are always in a hurry.
-	// TalkUnderground0: The underground is good. Stable temperature, stable humidity, no signal, no interruptions mid-surgery.
-	// TalkUnderground1: My first clinic was underground too. The customers feared daylight just like these ones.
-	// TalkSnow0: Cold is good. Parts don't overheat, and the bodies - I mean the stock - keep longer.
-	// TalkJungle0: Jungle damp gets into sealed casings within three days. Book a maintenance check when you leave.
-	// TalkBeach0: The coast? Salt spray is the number one killer of cyberware. I'd advise against settling here.
-	// TalkEvil0: This land is corroding your parts and you alike. I can only fix one of the two.
+	TalkFirstMeet0: Neues Gesicht. Lass mich raten: Du suchst keinen Arzt, du suchst ein Wunder. Setz dich. Beides verkaufe ich.
+	TalkFirstMeet1: "Willkommen, Kunde. Drei Hausregeln: kein Kredit, keine Fragen nach deiner Herkunft, keine Kritik an meiner Arbeit"
+	TalkPostSurgery0: Die Nähte sind noch warm. In den nächsten vierundzwanzig Stunden keine Klinge mit den neuen Teilen abfangen.
+	TalkPostSurgery1: Die Operation war ein Erfolg. Meine sind das immer.
+	TalkPostSurgery2: "Wie fühlt es sich an? Klappern, Stromlecks oder Phantomschmerz: sofort wiederkommen. Reparatur extra."
+	TalkMoodHomeless0: "Solange ihr mir keinen Behandlungsraum freiräumt, steckt in jedem Angebot ein Zuschlag fürs Operieren unter freiem Himmel."
+	TalkMoodHomeless1: Mit dem Tisch auf dem Rücken geht keine Feinarbeit. Besorgt mir ein Haus, dann reden wir über Preise.
+	TalkMoodHappy0: Heute bin ich gut drauf, also habe ich dir den Preis etwas abgerundet. Sag's niemandem.
+	TalkMoodHappy1: Hier gefällt es mir. So sehr, dass ich dir sogar einen Rabatt gebe.
+	TalkMoodGrumpy0: Beschwer dich nicht über die Preise. Bring mich irgendwohin, wo ich mich wohlfühle, dann sinken sie von allein.
+	TalkMoodGrumpy1: Schlechte Laune, unsicheres Skalpell. Der Risikozuschlag steht auf der Rechnung, und das ist eure Schuld.
+	TalkNoChrome0: Ein komplett originaler Körper … selten. Wie eine alte Maschine, die nie ein Firmware-Update bekommen hat.
+	TalkNoChrome1: Kein einziges Implantat? Bist du zum Stöbern hier, oder aus Nostalgie?
+	TalkFullChrome0: An dir ist mehr Chrom als Fleisch. Sogar deine Schritte klingen wie meine Kasse.
+	TalkFullChrome1: Deine Kapazität ist fast voll, Kunde. Willst du noch mehr einbauen, musst du zuerst die Stromversorgung aufrüsten.
+	TalkLowHealth0: Du blutest. Setz dich erstmal. Kunden, die in meiner Tür sterben, sind schlecht fürs Geschäft.
+	TalkLowHealth1: Der Blutdruck schlägt Alarm. Erst die Wunden, die Rechnung kommt später.
+	TalkRich0: Ich rieche Platinmünzen. Was tauschen wir heute aus? Ein komplettes Set geht auch.
+	TalkPoor0: Taschen leerer als mein steriles Tablett? Erst Geld verdienen. Cyberware gibt's nicht auf Kredit.
+	TalkPoor1: Kein Geld? Macht nichts. Verkauf etwas Beute und komm wieder. Wir haben die ganze Nacht auf.
+	TalkSandevistan0: Läuft der Sandevistan noch rund? Sei nicht gierig damit. Durchgebrannte Nerven rechne ich als Komplettumbau.
+	TalkPreHardmode0: Die Technik dieser Welt steckt noch bei Holz und Stein. Gut, dass ich mein eigenes Werkzeug mitgebracht habe.
+	TalkPreHardmode1: Rüst den Körper auf, bevor die Calamity das selbst tut. Der Rat ist umsonst.
+	TalkHardmode0: Seit die Welt aufgerissen ist, hat sich mein Geschäft verdreifacht. Heiliges Licht und Seuche fressen Fleisch ganz gleich.
+	TalkHardmode1: Die neuen Monster da draußen reißen Leute schnell auseinander. Halten deine Reflexe mit? Wenn nicht, habe ich Ware.
+	TalkPostMoonlord0: Sogar der Mondherr ist gefallen. Unter meinen Kunden stecken offenbar echte Monster.
+	TalkPostMoonlord1: Die Überreste eines Gottes sind erstklassiges Material. Wenn du welche findest, heb mir einen Anteil auf.
+	TalkPostSupCal0: Du hast die Calamity selbst besiegt und trägst immer noch so viel Fleisch. Ich fange an zu glauben, Cyberware ist für dich nur Schmuck.
+	TalkBloodMoon0: Blutmond? Für mich nur eine Nachtschicht. Gleich steht vor der Tür eine Schlange aus abgerissenen Gliedern.
+	TalkBloodMoon1: Halt dich heute Nacht von der Tür fern. Unter dem Blutmond wollen selbst die Hasen ein Stück von dir.
+	TalkEclipse0: Bei einer Sonnenfinsternis gehen nur harte Fälle raus. Entweder du bist gut ausgerüstet, oder du bist schnell.
+	TalkRain0: Öl bei Regen die freiliegenden Gelenke. Verrostete Ellbogen habe ich schon zu viele geflickt.
+	TalkRain1: Regen. Feuchtigkeit ist schlecht für Schaltkreise und gut fürs Geschäft.
+	TalkDeepNight0: Um diese Uhrzeit noch wach? Stimmt, Cyberaugen müssen nicht zuklappen.
+	TalkDeepNight1: Tiefe Nacht ist meine liebste Geschäftszeit. Ruhig, und die Kunden haben immer Eile.
+	TalkUnderground0: "Unter der Erde ist gut. Stabile Temperatur, stabile Feuchte, kein Signal, niemand stört die Operation."
+	TalkUnderground1: Meine erste Klinik war auch unter der Erde. Die Kunden damals fürchteten das Tageslicht genau wie diese hier.
+	TalkSnow0: Kälte ist gut. Teile überhitzen nicht, und die Leichen … ich meine den Bestand … halten länger.
+	TalkJungle0: Dschungelnässe kriecht in drei Tagen in versiegelte Gehäuse. Komm nach dem Aufbruch zur Wartung.
+	TalkBeach0: Die Küste? Salznebel ist der größte Killer für Cyberware. Ich rate dir, dich hier nicht niederzulassen.
+	TalkEvil0: Dieses Land frisst an deinen Teilen und an dir. Von beidem kann ich nur eines richten.
 	ClinicButtonText: Cyberware-Klinik
 	ChatButtonText: Plaudern
 	LeaveButtonText: Verlassen
@@ -719,96 +719,96 @@ VictorClinicUI: {
 	LabelForSale: ZUM VERKAUF
 	EmptyOwned: ( nichts im Rucksack )
 	EmptyShop: ( nichts mehr im Angebot )
-	// PriceFactorText: MOOD PRICE x{0}
-	// SlotFallbackText: CYBERWARE
+	PriceFactorText: Preisfaktor ×{0}
+	SlotFallbackText: Cyberware
 }
 
-// VictorSurgery.SurgeryInProgressText: SURGERY IN PROGRESS
+VictorSurgery.SurgeryInProgressText: Operation läuft
 
 TBUGTalkUI: {
-	// SpeakerName: TBUG
-	// Greet0: You're here? Browse away. Don't touch the bundle of cables behind the rig - that's my spine.
-	// Greet1: Your walk cycle has a tiny loop. Repeats every seven steps. Don't worry, most people have one.
-	// Greet2: This world's physics is decently written. The water part was clearly rushed.
-	// Greet3: Everything's on the shelf. I set the prices. Save the haggling breath.
-	// Greet4: Daylight glares all over my screens. Come at night - I'm nicer at night.
-	// Greet5: Don't ask where I'm from. What's the hometown of an error message?
-	// Greet6: Coins are funny. Heavy, waste pocket space - but you all trust them, so I do too.
-	// Greet7: I don't do repairs. I sell. If it breaks, that's a user-side issue.
-	// Greet8: I fell out the night Skeletron died. Not thanking him, but his grip did slip first.
-	// Greet9: You've got empty equipment slots. Empty slots are wasted slots.
-	// Greet10: Sleep is a patch, and a lazy one. I mostly skip it.
-	// Greet11: Make it quick. I've got three processes hanging and waiting for me.
-	// TalkFirstMeet0: New face. I'm TBUG - the one who fell out of that seam. Drop the look. My landing wasn't THAT bad.
-	// TalkFirstMeet1: Oh, it talks. Better than the slimes. Shelf's there if you're buying; talk fast if you're not.
-	// TalkFirstPurchase0: Deal. No receipt - my memory is more reliable than paper.
-	// TalkFirstPurchase1: Hold it tight. If it misbehaves, review your own usage habits first.
-	// TalkMoodHomeless0: I'm sleeping under open sky and my hardware dews up every morning. Get me a room, prices drop a notch.
-	// TalkMoodHomeless1: A shop without a roof is a street stall. I don't enjoy being a street vendor.
-	// TalkMoodHappy0: Good mood today. My hand slipped on the quotes - downward. Keep it quiet.
-	// TalkMoodHappy1: This place grows on me. Your architecture beats your physics engine.
-	// TalkMoodGrumpy0: Don't whine about prices. Move me somewhere decent and they'll fall on their own.
-	// TalkMoodGrumpy1: Bad mood, spiky quotes. That's market dynamics, not my problem.
-	// TalkHackUnlocked0: That rig in your eyes is decent work. Who installed it? Above this world's average.
-	// TalkHackUnlocked1: Customers who can breach are good customers. At least they never ask which end the chip goes in.
-	// TalkHackLocked0: Half my stock is useless to you right now. Get yourself breach-capable first.
-	// TalkLowHealth0: You're dripping. Nurse first - my shelf doesn't stock blood bags.
-	// TalkLowHealth1: Health bars only matter near the bottom. Yours is nearly there.
-	// TalkRich0: I smell platinum. Which shelf are we emptying today?
-	// TalkPoor0: Pockets cleaner than my recycle bin. Go earn something - I don't do credit.
-	// TalkPoor1: No money? Then it's an exhibition. Looking is free. Touching isn't.
-	// TalkPreHardmode0: The world is still early-game. Monster stats are written politely. Stock up while it lasts.
-	// TalkPreHardmode1: That wall of flesh hasn't fallen yet. When it does, you'll be back to clear my shelves.
-	// TalkHardmode0: The world took a major patch. Stronger monsters, better drops. Good for business.
-	// TalkHardmode1: Light and dark are tearing up the map out there. Don't stand next to fresh seams - I fell out of one.
-	// TalkPostMoonlord0: You dismantled the Moon Lord. I'd like a copy of your combat log. For study.
-	// TalkPostMoonlord1: You fight gods and still shop at my little stall. Should I raise prices or be touched?
-	// TalkPostSupCal0: Even the Calamity herself is down. At this point YOU are this world's biggest exploit.
-	// TalkBloodMoon0: Blood moon. Spawn rates doubled tonight - the things at the door are in more of a hurry than you.
-	// TalkBloodMoon1: All red out there tonight. I shrank the door's hitbox a little. Safety first.
-	// TalkEclipse0: An eclipse. Day got louder than night. Hard not to suspect someone flipped a config flag.
-	// TalkRain0: Rain. My gear is bagged. Yours is your call.
-	// TalkRain1: The raindrops fall in perfectly straight lines. Not even a wind term. Lazy.
-	// TalkDeepNight0: Still up at this hour? Fine. Night owls get five percent off - kidding, full price.
-	// TalkDeepNight1: Deep night. Fewer processes running. The world genuinely runs smoother.
-	// TalkUnderground0: Underground is good. Stable temperature, quiet, and the rock blocks all the signal noise.
-	// TalkUnderground1: Smell that? Server-room air. I suspect this world's host machine is buried somewhere down here.
-	// TalkSnow0: The tundra is honestly cold. Hardware lasts two extra years out here.
-	// TalkJungle0: Jungle humidity rides the alarm line all day. My stock wouldn't survive a week here.
-	// TalkBeach0: The coast? My gear took seawater once. That repair bill would've bought three new boards.
-	// TalkEvil0: The corrosion here genuinely chews circuits. Your gear and your skin - it isn't picky.
-	// ShopButtonText: Hack Shop
-	// ChatButtonText: Small Talk
-	// LeaveButtonText: Leave
-	// PriceFactorText: PRICE x{0}
+	SpeakerName: TBUG
+	Greet0: "Da bist du. Schau dich um. Fass das Kabelbündel hinter dem Rechner nicht an, das ist meine Wirbelsäule."
+	Greet1: "Dein Gangzyklus hat eine winzige Schleife. Alle sieben Schritte. Keine Sorge, die meisten haben eine."
+	Greet2: Die Physik dieser Welt ist anständig geschrieben. Beim Wasser hat jemand eindeutig gehetzt.
+	Greet3: Die Ware steht im Regal. Die Preise setze ich. Das Feilschen kannst du dir sparen.
+	Greet4: Tagsüber blendet es auf allen Schirmen. Komm nachts. Nachts bin ich verträglicher.
+	Greet5: Frag nicht, woher ich komme. Was ist die Heimatstadt einer Fehlermeldung?
+	Greet6: "Münzen sind komisch. Schwer, fressen Taschenplatz. Aber ihr alle akzeptiert sie, also tue ich das auch."
+	Greet7: Ich repariere nichts. Ich verkaufe. Geht es kaputt, ist das ein Nutzerproblem.
+	Greet8: "Ich bin in der Nacht gefallen, in der Skeletron starb. Ich danke ihm nicht, aber er hat zuerst die Hand geöffnet."
+	Greet9: In deinen Ausrüstungsplätzen ist noch Luft. Leere Slots sind verschwendete Slots.
+	Greet10: "Schlaf ist ein Patch, und ein fauler. Ich überspringe ihn meist."
+	Greet11: Mach es kurz. Bei mir hängen noch drei Prozesse und warten.
+	TalkFirstMeet0: Neues Gesicht. Ich bin TBUG, der aus dieser Naht gefallen ist. Verzieh das Gesicht nicht. Meine Landung war nicht SO schlecht.
+	TalkFirstMeet1: "Oh, es spricht. Besser als Schleime. Ware steht im Regal, wenn du kaufst; willst du nur reden, dann schnell, solange ich noch kompiliere."
+	TalkFirstPurchase0: Deal. Keine Quittung. Mein Gedächtnis ist zuverlässiger als Papier.
+	TalkFirstPurchase1: Halt die Ware fest. Geht etwas schief, prüfe zuerst deine eigenen Nutzungsgewohnheiten.
+	TalkMoodHomeless0: "Ich schlafe unter freiem Himmel, und die Hardware ist jeden Morgen nass. Gib mir ein Zimmer, dann fallen die Preise eine Stufe."
+	TalkMoodHomeless1: Ein Laden ohne Dach ist ein Straßenstand. Ich stehe nicht gern als Straßenhändler da.
+	TalkMoodHappy0: "Heute gute Laune. Beim Angebot ist die Hand ausgerutscht, nach unten. Sag's niemandem."
+	TalkMoodHappy1: Der Ort wird mir sympathisch. Eure Architektur schlägt eure Physik-Engine.
+	TalkMoodGrumpy0: Meckere nicht über Preise. Bring mich an einen anständigen Ort, dann fallen sie von allein.
+	TalkMoodGrumpy1: "Schlechte Laune, scharfe Angebote. Das ist Marktgesetz, nicht mein Problem."
+	TalkHackUnlocked0: Das Ding in deinen Augen ist ordentliche Arbeit. Wer hat das eingebaut? Über dem Schnitt dieser Welt.
+	TalkHackUnlocked1: Gäste, die eindringen können, sind gute Gäste. Die fragen wenigstens nicht, welches Ende der Chip ist.
+	TalkHackLocked0: Die Hälfte meiner Ware kannst du gerade nicht nutzen. Besorg dir erst eine Ausrüstung, mit der du eindringen kannst.
+	TalkLowHealth0: Du tropfst. Erst zur Krankenschwester. Auf meinem Regal gibt es keine Blutbeutel.
+	TalkLowHealth1: Lebensbalken werden erst knapp vorm Boden wichtig. Deiner ist fast dort.
+	TalkRich0: Eine Fahne Platin. Welche Regalreihe räumen wir heute leer?
+	TalkPoor0: Taschen leerer als mein Papierkorb. Erst Geld verdienen. Ich gebe keinen Kredit.
+	TalkPoor1: "Kein Geld? Dann ist das eine Ausstellung. Schauen ja, anfassen nein."
+	TalkPreHardmode0: "Die Welt steckt noch im Anfang. Die Monsterwerte sind höflich geschrieben. Horte, solange das so bleibt."
+	TalkPreHardmode1: Die Fleischwand steht noch. Wenn sie fällt, kommst du zurück und räumst meine Regale leer.
+	TalkHardmode0: "Die Welt hat einen großen Patch bekommen. Stärkere Monster, wertvollere Drops. Gut fürs Geschäft."
+	TalkHardmode1: Licht und Dunkel reißen draußen die Karte auf. Stell dich nicht neben frische Nähte. Genau so bin ich rausgefallen.
+	TalkPostMoonlord0: Du hast den Mondherrn zerlegt. Ich hätte gern eine Kopie deines Kampfprotokolls. Zum Lernen.
+	TalkPostMoonlord1: Die Götter sind durch, und du kommst trotzdem in meinen kleinen Laden. Soll ich die Preise anheben oder gerührt sein?
+	TalkPostSupCal0: Sogar Oberhexe Calamitas ist gefallen. Der größte Exploit dieser Welt bist jetzt du.
+	TalkBloodMoon0: Blutmond. Spawnrate heute Nacht verdoppelt. Die Dinger an der Tür haben mehr Eile als du.
+	TalkBloodMoon1: Draußen ist alles rot. Ich habe die Trefferbox der Tür etwas verkleinert. Sicherheit zuerst.
+	TalkEclipse0: Sonnenfinsternis. Der Tag ist lauter als die Nacht. Schwer, nicht zu denken, jemand hat ein Config-Flag umgedreht.
+	TalkRain0: Regen. Meine Geräte stecken in Beuteln. Deine Ausrüstung ist deine Sache.
+	TalkRain1: Die Tropfen fallen in perfekten Geraden. Nicht einmal ein Windterm. Faul.
+	TalkDeepNight0: "Um diese Uhrzeit noch wach? Gut, Nachtmenschen bekommen 5 % Rabatt. Spaß. Vollpreis."
+	TalkDeepNight1: "Tiefe Nacht ist gut. Weniger Prozesse, die Welt läuft wirklich flüssiger als am Tag."
+	TalkUnderground0: "Unter der Erde ist gut. Konstante Temperatur, still, und der Stein schluckt das Signalrauschen."
+	TalkUnderground1: "Riechst du das? Serverraumluft. Ich vermute, der Host dieser Welt liegt irgendwo hier unten."
+	TalkSnow0: Der Schnee hier ist ehrlich kalt. Hardware hält hier zwei Jahre länger.
+	TalkJungle0: Die Dschungelfeuchte klebt den ganzen Tag an der Alarmgrenze. Meine Ware überlebt hier keine Woche.
+	TalkBeach0: Die Küste? Meine Sachen haben einmal Seewasser abbekommen. Die Reparatur hätte drei neue Platinen gekauft.
+	TalkEvil0: Die Korrosion hier knabbert wirklich an Schaltkreisen. Deine Ausrüstung und deine Haut, ihr ist das egal.
+	ShopButtonText: Hacker-Laden
+	ChatButtonText: Plaudern
+	LeaveButtonText: Gehen
+	PriceFactorText: Preisfaktor ×{0}
 }
 
 TBUGShopUI: {
-	// TitleText: TBUG BUG MARKET
-	// BuyTabText: BUY
-	// SellTabText: SELL
-	// BalanceText: BALANCE
-	// PriceText: PRICE
-	// SellPriceText: OFFER
-	// TagAffordText: IN STOCK
-	// TagNoFundsText: NO FUNDS
-	// TagSoldOutText: SOLD OUT
-	// StockText: STOCK x{0}
-	// SpecialTagText: -25%
-	// SpecialTipText: daily special, 25% off
-	// RestockText: restock at dawn, {0} left
-	// SellHintText: left click sells one, right click sells the stack
-	// SellReceiptText: sold {0} x{1}
-	// SellEmptyText: nothing sellable in your bag
-	// StatusPendingText: awaiting authority...
-	// ResultSuccessText: exit 0 · transaction complete
-	// ResultInvalidText: ERR: bad request
-	// ResultOutOfRangeText: ERR: too far from vendor
-	// ResultNoFundsText: ERR: insufficient funds
-	// ResultNoSpaceText: ERR: inventory full
-	// ResultOutOfStockText: ERR: sold out, restock at dawn
-	// ResultBusyText: ERR: too many requests, slow down
-	// ResultTimeoutText: ERR: request timed out
+	TitleText: TBUG Lücken-Schwarzmarkt
+	BuyTabText: Kaufen
+	SellTabText: Verkaufen
+	BalanceText: Guthaben
+	PriceText: Preis
+	SellPriceText: Ankauf
+	TagAffordText: Kaufbar
+	TagNoFundsText: Zu wenig Guthaben
+	TagSoldOutText: Ausverkauft
+	StockText: Bestand ×{0}
+	SpecialTagText: -25%
+	SpecialTipText: "Tagesangebot, 25 % Rabatt"
+	RestockText: "Nachschub im Morgengrauen, noch {0}"
+	SellHintText: "Linksklick verkauft eines, Rechtsklick den ganzen Stapel"
+	SellReceiptText: Verkauft {0} ×{1}
+	SellEmptyText: Im Rucksack ist nichts Verkaufbares
+	StatusPendingText: Warte auf Antwort der Autorität…
+	ResultSuccessText: exit 0 · Transaktion abgeschlossen
+	ResultInvalidText: "ERR: Anfrage ungültig"
+	ResultOutOfRangeText: "ERR: zu weit vom Händler"
+	ResultNoFundsText: "ERR: Guthaben reicht nicht"
+	ResultNoSpaceText: "ERR: Rucksack voll"
+	ResultOutOfStockText: "ERR: ausverkauft, komm nach Morgengrauen wieder"
+	ResultBusyText: "ERR: zu viele Anfragen, langsamer"
+	ResultTimeoutText: "ERR: Zeitüberschreitung"
 }
 
 EntrustManagerNotification: {
@@ -985,93 +985,93 @@ HackTime: {
 	SignalTowerScanStatusElectrified: Restladung
 	SignalTowerScanProtocol: Verfügbare Protokolle
 	RightClickHint: Rechtsklick zum Abwählen
-	// StatusReady: READY
-	// StatusNoRam: NO RAM
-	// UplinkHeader: UPLINK
-	// DataTab: DATA
-	// ScanTab: SCAN
-	// TargetTagged: TARGET TAGGED
-	// FooterUpload: UPLOAD {0}s
-	// FooterCost: COST {0} RAM
+	StatusReady: BEREIT
+	StatusNoRam: RAM KNAPP
+	UplinkHeader: UPLINK
+	DataTab: DATEN
+	ScanTab: SCAN
+	TargetTagged: ZIEL MARKIERT
+	FooterUpload: Hochladen {0}s
+	FooterCost: Verbrauch {0} RAM
 	AccessDeniedTitle: Hack-Time nicht verfügbar
 	AccessDeniedDesc: Verbinde eine intelligente Waffe oder installiere Netrunner-Cyberware, um Hack-Fähigkeiten zu nutzen.
-	// ProtocolsOwned: "[{0}/{1} PROTOCOLS]"
-	// NoProtocolTitle: NO PROTOCOL AVAILABLE
-	// NoProtocolHint: No protocol in your daemon library works on this target. Use a protocol chip to write one in.
-	// ChipGrants: Writes protocol: {0}
-	// ChipTarget: Works on: {0}
-	// ChipOneShot: One-time write; unusable afterwards.
-	// ChipAlreadyOwned: Already in your daemon library.
-	// Erased: DELETED
+	ProtocolsOwned: "[{0}/{1} Protokolle]"
+	NoProtocolTitle: KEIN PROTOKOLL VERFÜGBAR
+	NoProtocolHint: In der Hacker-Bibliothek wirkt kein Protokoll auf dieses Ziel. Schreibe eines mit einem Protokollchip ein.
+	ChipGrants: "Schreibt Protokoll: {0}"
+	ChipTarget: "Wirkt auf: {0}"
+	ChipOneShot: "Einmaliges Schreiben, danach unbrauchbar"
+	ChipAlreadyOwned: Dieses Protokoll ist bereits in der Hacker-Bibliothek
+	Erased: GELÖSCHT
 }
 
 SelfRigScanText: {
-	// RamLabel: RAM
-	// RecoveryLabel: RECOVERY
-	// CyberCapacityLabel: CYBERWARE
-	// ImplantCountLabel: IMPLANTS
-	// HeldChargeLabel: HELD CHARGE
-	// SandeCooldownLabel: SANDE CD
-	// WraithLabel: WRAITH
-	// ErosionLabel: EROSION
-	// ProtocolLabel: PROTOCOLS
-	// NoneText: —
-	// RamLockFormat: RAM {0}%
-	// DormantFormat: DORMANT {0}s
-	// TransmuteGainFormat: +{0} RAM
-	// DriveSettleText: Erosion deepens; wraith dormant
+	RamLabel: RAM
+	RecoveryLabel: ERHOLUNG
+	CyberCapacityLabel: CYBERWARE-KAPAZITÄT
+	ImplantCountLabel: EINGEBAUTE CYBERWARE
+	HeldChargeLabel: HANDLADUNG
+	SandeCooldownLabel: SANDE-CD
+	WraithLabel: DIENSTGEIST
+	ErosionLabel: EROSION
+	ProtocolLabel: PROTOKOLLBIBLIOTHEK
+	NoneText: keine
+	RamLockFormat: RAM {0}%
+	DormantFormat: RUHE {0}s
+	TransmuteGainFormat: +{0} RAM
+	DriveSettleText: Erosion vertieft sich, Dienstgeist ruht
 }
 
 PlayerScanText: {
-	// NameLabel: OPERATOR
-	// StanceLabel: STANCE
-	// StancePeaceful: PVP OFF
-	// StanceAlly: SAME TEAM
-	// StanceHostile: HOSTILE
-	// StanceSealed: SEALED
-	// HpLabel: VITALS
-	// DefenseLabel: DEFENSE
-	// RamLabel: RAM BAND
-	// RamBandEmpty: EMPTY
-	// RamBandLow: LOW
-	// RamBandHalf: HALF
-	// RamBandHigh: HIGH
-	// RamBandFull: FULL
-	// CyberLabel: CYBERWARE
-	// CyberFirewallFormat: "{0} · FIREWALL"
-	// ProtocolLabel: PROTOCOLS
-	// ThreatLabel: THREAT
-	// ProbingText: PROBING…
+	NameLabel: BEDIENER
+	StanceLabel: FREUND/FEIND
+	StancePeaceful: PVP AUS
+	StanceAlly: GLEICHES TEAM
+	StanceHostile: FEINDLICH
+	StanceSealed: NICHT EINDRINGBAR
+	HpLabel: LEBEN
+	DefenseLabel: ABWEHR
+	RamLabel: RAM-BAND
+	RamBandEmpty: LEER
+	RamBandLow: NIEDRIG
+	RamBandHalf: HALB
+	RamBandHigh: HOCH
+	RamBandFull: VOLL
+	CyberLabel: CYBERWARE
+	CyberFirewallFormat: "{0} · Firewall erkannt"
+	ProtocolLabel: PROTOKOLLBIBLIOTHEK
+	ThreatLabel: BEDROHUNGSBEWERTUNG
+	ProbingText: Sonde liest…
 }
 
 PvPHudText: {
-	// BeingHackedBy: BEING HACKED BY {0}
-	// MoreIntrusions: +{0} INTRUSIONS
-	// UploadCanceled: LINK SEVERED
-	// UploadLanded: >> BREACHED <<
-	// PositionExposed: POSITION EXPOSED
-	// GaugeUntrusted: READOUT UNRELIABLE
-	// GaugeSyncTag: SYNC
-	// GaugeLifeTag: HP
-	// GaugeManaTag: MP
-	// TracebackFlip: TRACEBACK ACTIVE
-	// AlertTraced: LINK TRACED BACK
-	// AlertTargetLost: TARGET LOST · RAM REFUNDED
-	// AlertRejectedFormat: REJECTED · CODE {0}
-	// ImplantPanelTitle: IMPLANTS
-	// ImplantUninstalled: UNINSTALLED
-	// ImplantExpired: EXPIRED
-	// SignalLost: SIGNAL LOST
-	// RemainSecondsFormat: "{0}s"
-	// CasterFormat: BY {0}
-	// DistanceFormat: "{0}m"
+	BeingHackedBy: Wird von {0} gehackt
+	MoreIntrusions: +{0} Eindringungen
+	UploadCanceled: Link getrennt
+	UploadLanded: >> Wurde implantiert <<
+	PositionExposed: Position enttarnt
+	GaugeUntrusted: Ablesung unzuverlässig
+	GaugeSyncTag: KALIBRIERUNG
+	GaugeLifeTag: LEBEN
+	GaugeManaTag: MANA
+	TracebackFlip: Rückverfolgung aktiv
+	AlertTraced: Link wurde zurückverfolgt
+	AlertTargetLost: Ziel verloren · RAM erstattet
+	AlertRejectedFormat: Implantat abgelehnt · Code {0}
+	ImplantPanelTitle: Implantate
+	ImplantUninstalled: Deinstalliert
+	ImplantExpired: Abgelaufen
+	SignalLost: Signal verloren
+	RemainSecondsFormat: "{0}s"
+	CasterFormat: von {0}
+	DistanceFormat: "{0}m"
 }
 
 PvPDefenderText: {
-	// CommsGarbled: COMMS GARBLED
-	// ActuationLagFormat: ACTUATION +{0}%
-	// Exposed: OUTLINE EXPOSED
-	// CyberOffline: CYBERWARE OFFLINE
+	CommsGarbled: Kanal verstümmelt
+	ActuationLagFormat: Einsatz verzögert +{0}%
+	Exposed: Umriss enttarnt
+	CyberOffline: Cyberware offline
 }
 
 DecryptionStrings: {
@@ -1085,16 +1085,16 @@ DecryptionStrings: {
 	DecryptionPanelSignalLock: Signalfestigkeit
 	DecryptionPanelSignalLockValue: "{0}%"
 	DecryptionPanelFooter: "[ESC] Trennen    [Linksklick] Interagieren    [?] Hilfe"
-	DecryptionPanelHintLocked: Signalebene von verschlüsseltem Raster umschlossen. Drücke [Leertaste] oder klicke [Breach starten], um die Eingabesequenz zu öffnen.
+	DecryptionPanelHintLocked: Signalebene von verschlüsseltem Raster umschlossen. Drücke [Leertaste] oder klicke [Eindringen starten], um die Eingabesequenz zu öffnen.
 	DecryptionPanelHintBreaching: Klicke Matrixzellen der Reihe nach, um die Zielsequenz zu füllen.
 	DecryptionPanelHintDataFlood: Protokollkanal geöffnet, Datenflut wird injiziert...
 	DecryptionPanelHintMessage: Dekodierung abgeschlossen — abgefangenes Fragment unten.
-	DecryptionPanelBeginBreach: ▷ Breach starten
+	DecryptionPanelBeginBreach: ▷ Eindringen starten
 	DecryptionPanelClose: ✕ Trennen
-	DecryptionPanelStatusLocked: LOCKED
-	DecryptionPanelStatusBreaching: BREACHING
-	DecryptionPanelStatusDataFlood: INJECTING
-	DecryptionPanelStatusMessage: DECODED
+	DecryptionPanelStatusLocked: GESPERRT
+	DecryptionPanelStatusBreaching: EINDRINGEN
+	DecryptionPanelStatusDataFlood: INJEKTION
+	DecryptionPanelStatusMessage: DEKODIERT
 	BreachBuffer: Puffer {0}/{1}
 	BreachTargets: Zielsequenz
 	BreachTimer: Restzeit
@@ -1180,59 +1180,59 @@ SHPCUI: {
 }
 
 QuestBookGuideLead: {
-	// WelcomeTitle: This Book
-	// WelcomeLine1: Two things lie open in here: the quest chart and the commission dossier.
-	// WelcomeLine2: The chart records how far the main story has come; the dossier collects the jobs others have entrusted to you.
-	// RailTitle: The Two Tabs on the Left
-	// RailLine1: The upper one turns to the Quest Chart.
-	// RailLine2: The lower one turns to the Commission Dossier.
-	// RailLine3: Click a tab to switch stations. No need to close the book.
-	// RailAct: Click the upper tab to turn to the Quest Chart.
-	// ChartViewTitle: Reading the Chart
-	// ChartViewLine1: Scroll to zoom, hold Left-click to drag and pan.
-	// ChartViewLine2: If the view wanders off, the Recenter key at the bottom right brings it back.
-	// ChartViewAct: Try a scroll, or drag the chart a little.
-	// ChartNodeTitle: Open a Node
-	// ChartNodeLine1: The mark on a node is its state: hatching for not started, an ink ring for underway, a wax seal for a reward waiting, a cracked seal for closed.
-	// ChartNodeAct: Left-click the one circled here.
-	// ChartDetailTitle: The Slip on the Right
-	// ChartDetailLine1: The upper half is what this chapter asks of you; the lower half is what it pays.
-	// ChartDetailLine2: Claim All at the bottom collects every reward from closed chapters at once.
-	// OutroTitle: The Dossier Is Still Empty
-	// OutroLine1: As the story moves along, people will leave work at this station.
-	// OutroLine2: This guide will pick up again when your first commission arrives.
-	// KeyPromptTitle: Someone Left You a Job
-	// KeyPromptLine1: The first commission is filed in the dossier. Go take a look.
-	// KeyPromptBound: Press [{0}] to open the quest book.
-	// KeyPromptUnboundTitle: The Quest Book Hotkey Is Unbound
-	// KeyPromptUnboundLine: "[{0}] is the default, and it still works right now."
-	// KeyPromptBindHint: To rebind it, go to Settings → Controls.
-	// GotoTitle: Turn to the Dossier
-	// GotoLine1: The book remembers which station you left it on and opens there next time.
-	// GotoAct: Click the lower tab on the left.
-	// AnatomyTitle: One Commission
-	// AnatomyLine1: The round stamp on the left is the client, the middle holds the title and progress, the right shows its current state.
-	// AnatomyLine2: Expanding it shows the body text, progress and signature.
-	// AnatomyAct: Left-click this row to open it up.
-	// TrackTitle: Track It
-	// TrackLine1: Tracked commissions get pinned to the tracker on the left of the screen, readable without opening the book.
-	// TrackAct: Right-click this row  →  track.
-	// TrackAltLine1: This row was tracked automatically the moment it was filed, and it is already pinned to the tracker on the left of the screen.
-	// TrackAltAct: Right-click this row to untrack it, then right-click again to pin it back.
-	// TrackerTitle: The Tracker
-	// TrackerLine1: This column keeps every tracked commission on screen.
-	// TrackerLine2: Hold Left-click and drag up or down to move it.
-	// TrackerLine3: It folds away on its own when the quest book opens, so it never covers the page.
-	// SuspendTitle: Suspending and Sorting
-	// SuspendLine1: Middle-click a row  →  suspend, and it drops out of the tracker.
-	// SuspendLine2: The four tabs up top hold Active / All / Completed / Suspended. Suspended ones go in the last.
-	// SuspendLine3: Find it there and middle-click once more, and it goes back where it was.
-	// BtnConfirm: Understood
-	// BtnNext: Next
-	// BtnSkipStep: Skip this step
-	// BtnDismiss: Put the guide away
-	// BtnOpenBook: Just open it
-	// HelpButtonHover: Replay the quest book guide
+	WelcomeTitle: Dieses Buch
+	WelcomeLine1: "Darin liegen zwei Dinge offen: die Questkarte und die Auftragssakte."
+	WelcomeLine2: Die Karte merkt, wie weit die Hauptgeschichte ist. Die Akte sammelt die Jobs, die andere dir anvertraut haben.
+	RailTitle: Die zwei Register links
+	RailLine1: Das obere blättert zur Questkarte.
+	RailLine2: Das untere blättert zur Auftragssakte.
+	RailLine3: Ein Klick aufs Register wechselt die Station. Das Buch muss nicht zu.
+	RailAct: Klick das obere Register, um zur Questkarte zu blättern.
+	ChartViewTitle: Die Karte aufschlagen
+	ChartViewLine1: "Rad zoomen, Linksklick halten und ziehen zum Verschieben."
+	ChartViewLine2: Läuft die Ansicht davon, holt sie die Zurücksetzen-Taste rechts unten zurück.
+	ChartViewAct: Probier einmal das Rad, oder zieh die Karte ein Stück weg.
+	ChartNodeTitle: Einen Knoten öffnen
+	ChartNodeLine1: "Die Marke am Knoten ist sein Stand: Schraffur heißt noch nicht begonnen, Tintenring unterwegs, Wachssiegel wartet auf die Belohnung, gesprungenes Siegel ist abgeschlossen."
+	ChartNodeAct: Linksklick auf den hier eingekreisten.
+	ChartDetailTitle: Der Zettel rechts
+	ChartDetailLine1: Oben steht, was dieses Kapitel von dir will. Unten, was es zahlt.
+	ChartDetailLine2: Alles abholen unten holt alle Belohnungen abgeschlossener Kapitel auf einmal.
+	OutroTitle: Die Auftragssakte ist noch leer
+	OutroLine1: Wenn die Geschichte weitergeht, legt jemand Arbeit an dieser Station ab.
+	OutroLine2: Kommt dein erster Auftrag, macht dieses Tutorial weiter.
+	KeyPromptTitle: Jemand hat dir einen Job hinterlassen
+	KeyPromptLine1: Der erste Auftrag liegt in der Akte. Schlag nach.
+	KeyPromptBound: "Drücke [{0}], um das Questbuch zu öffnen."
+	KeyPromptUnboundTitle: Die Questbuch-Taste ist nicht belegt
+	KeyPromptUnboundLine: "Die Standardtaste ist [{0}], und sie funktioniert jetzt noch."
+	KeyPromptBindHint: Zum Umlegen: Einstellungen → Steuerung.
+	GotoTitle: Zur Auftragssakte blättern
+	GotoLine1: Das Buch merkt sich, an welcher Station du aufgehört hast, und öffnet dort beim nächsten Mal.
+	GotoAct: Klick das untere Register links.
+	AnatomyTitle: Ein Auftrag
+	AnatomyLine1: "Der runde Stempel links ist der Auftraggeber, in der Mitte stehen Titel und Fortschritt, rechts der aktuelle Stand."
+	AnatomyLine2: "Aufgeklappt siehst du Text, Fortschritt und Unterschrift."
+	AnatomyAct: Linksklick auf diese Zeile, um sie aufzuklappen.
+	TrackTitle: Verfolge ihn
+	TrackLine1: "Verfolgte Aufträge sitzen in der Leiste links am Bildschirm. Den Fortschritt siehst du, ohne das Buch zu öffnen."
+	TrackAct: Rechtsklick auf diese Zeile  →  verfolgen.
+	TrackAltLine1: "Diese Zeile wurde beim Ablegen automatisch verfolgt und sitzt schon in der Leiste links am Bildschirm."
+	TrackAltAct: Rechtsklick hebt die Verfolgung auf. Noch ein Rechtsklick heftet sie wieder fest.
+	TrackerTitle: Die Verfolgungsleiste
+	TrackerLine1: Diese Spalte links zeigt dauerhaft alle verfolgten Aufträge.
+	TrackerLine2: Linksklick halten und nach oben oder unten ziehen, um sie zu verschieben.
+	TrackerLine3: Öffnet sich das Questbuch, klappt sie von selbst ein und verdeckt die Seite nicht.
+	SuspendTitle: Aussetzen und sortieren
+	SuspendLine1: "Mittelklick auf eine Zeile  →  aussetzen, dann verschwindet sie aus der Verfolgungsleiste."
+	SuspendLine2: Oben liegen vier Reiter: Laufend / Alle / Abgeschlossen / Ausgesetzt. Ausgesetzte stehen im letzten.
+	SuspendLine3: Dort noch einmal mittelklicken, und sie ist wieder, wo sie war.
+	BtnConfirm: Verstanden
+	BtnNext: Weiter
+	BtnSkipStep: Diesen Schritt überspringen
+	BtnDismiss: Tutorial weglegen
+	BtnOpenBook: Einfach öffnen
+	HelpButtonHover: Questbuch-Tutorial noch einmal ansehen
 }
 
 CyberwareSkillRadialUI: {
@@ -1243,38 +1243,38 @@ CyberwareSkillRadialUI: {
 	HintKindToggle: Schalter-Typ · Trigger drücken zum Umschalten
 	HintKindInstant: Sofort-Typ · Trigger drücken für sofortige Aktivierung
 	HintNotReady: Bedingungen derzeit nicht erfüllt
-	// WheelHint: "[{0}] Hold · release to confirm · LMB select · RMB cancel"
+	WheelHint: "[{0}] Halten · Loslassen bestätigt · Linksklick wählen · Rechtsklick abbrechen"
 }
 
 CyberwareGuideLead: {
-	// SelectTitle: Cyberware Skill Online
-	// SelectBody: Active cyberware detected. Hold {0} to summon the radial wheel — every eligible wheel appears together, and the cursor belongs to whichever is closest.
-	// SelectPrompt: Fling the cursor toward the cyberware sector, left-click or release to confirm
-	// TriggerTitle: Fire the Skill
-	// TriggerBody: Selecting only loads the skill onto your fingertip — firing takes the trigger key. Charge-type skills are held, then released.
-	// TriggerPrompt: Press {0} to fire the current cyberware skill
-	// SkipBtn: Skip
-	// WheelKeyUnbound: The radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls first, or click Skip.
-	// TriggerKeyUnbound: The trigger key is unbound. Bind it under Settings > Controls first, or click Skip.
+	SelectTitle: Cyberware-Fähigkeit online
+	SelectBody: Aktive Cyberware erkannt. Halte {0}, um das Schnellrad zu rufen. Alle berechtigten Räder erscheinen zusammen, und der Cursor gehört dem nächsten.
+	SelectPrompt: "Schleudere den Cursor in den Cyberware-Sektor, Linksklick oder Loslassen bestätigt"
+	TriggerTitle: Fähigkeit auslösen
+	TriggerBody: Auswählen lädt die Fähigkeit nur in die Fingerspitze. Auslösen braucht die Auslösetaste. Auflade-Typen hältst du, dann lässt du los.
+	TriggerPrompt: Drücke {0}, um die aktuelle Cyberware-Fähigkeit auszulösen
+	SkipBtn: Überspringen
+	WheelKeyUnbound: "Die Schnellrad-Taste ist nicht belegt, das Rad lässt sich nicht rufen. Belege sie zuerst unter Einstellungen > Steuerung, oder klicke Überspringen."
+	TriggerKeyUnbound: "Die Auslösetaste ist nicht belegt. Belege sie zuerst unter Einstellungen > Steuerung, oder klicke Überspringen."
 }
 
 SHPCDomainWheelUI: {
-	// Layer1_Desc: Foundation layer — establishes the domain field around you.
-	// Layer2_Desc: Deep dive — a wider field, at a much steeper RAM cost.
-	// Layer3_Desc: Blackwall breach — the whole world becomes the domain.
-	// Layer_HintActivate: "[Click] Deploy"
-	// Layer_HintSwitch: "[Click] Switch layer"
-	// Layer_HintShutdown: "[Click] Shut down domain"
-	// Layer_HintLowRam: "// insufficient RAM"
-	// Layer_HintLocked: "// system crash lockout"
-	// Hack_Title: HACK TIME
-	// Hack_Subtitle: Neural Override
-	// Hack_Desc: Slow the world to a crawl and run protocols on whatever you can see.
-	// Hack_HintEnter: "[Click] Enter hack time"
-	// Hack_HintExit: "[Click] Leave hack time"
-	// Hack_HintDenied: "// no access"
-	// Hack_HintKeyUnbound: "// hack time key unbound — bind it under Settings > Controls"
-	// WheelHint: "[{0}] Hold · release to confirm · LMB select · RMB cancel"
+	Layer1_Desc: "Basisschicht: spannt nur um dich herum das Domänenfeld auf"
+	Layer2_Desc: "Eine Schicht tiefer, das Feld reicht weiter, RAM verbrennt auch schneller"
+	Layer3_Desc: "Die Blackwall durchstoßen, die ganze Welt wird zur Domäne"
+	Layer_HintActivate: »Klick« Domäne entfalten
+	Layer_HintSwitch: »Klick« auf diese Schicht wechseln
+	Layer_HintShutdown: »Klick« Domäne einziehen
+	Layer_HintLowRam: RAM unzureichend
+	Layer_HintLocked: Systemsperre nach Absturz
+	Hack_Title: Hackerzeit
+	Hack_Subtitle: Neuronale Übersteuerung
+	Hack_Desc: "Die Welt auf Kriechtempo ziehen und auf alles im Blick Protokolle legen"
+	Hack_HintEnter: »Klick« Hackerzeit betreten
+	Hack_HintExit: »Klick« Hackerzeit verlassen
+	Hack_HintDenied: Kein Zugangsrecht
+	Hack_HintKeyUnbound: "Hackerzeit-Taste nicht belegt, zuerst unter Einstellungen > Steuerung belegen"
+	WheelHint: "[{0}] Halten · Loslassen bestätigt · Linksklick wählen · Rechtsklick abbrechen"
 }
 
 AbandonedPortalStrings: {
@@ -1289,9 +1289,9 @@ AbandonedPortalStrings: {
 	Teleport: ▷ Teleport starten
 	Close: ✕ Schließen
 	ProgressFormat: Reparaturfortschritt {0}%
-	StatusBroken: STATUS  ▌ OFFLINE
+	StatusBroken: STATUS  ▌ GETRENNT
 	StatusRepairing: STATUS  ▌ KALIBRIERUNG
-	StatusRepaired: STATUS  ▌ ONLINE
+	StatusRepaired: STATUS  ▌ VERBUNDEN
 	DiagnosticHeader: "[DIAG]"
 	DiagnosticBroken: ERR-0xC4: Positionierungsring gebrochen / Hauptstromkreis getrennt
 	DiagnosticRepairing: INFO: Nano-Schweiß-Array synchronisiert… Portalbasis nicht bewegen
@@ -1311,8 +1311,8 @@ BulletinBoardUI: {
 	AcknowledgmentLabel: Dankeschön-Liste
 }
 
-// HimayoMenu.ThemeName: Sakura Night
-// ShenyoMenu.ThemeName: Ghost Lake Rains
+HimayoMenu.ThemeName: Nachtsakurenreich
+ShenyoMenu.ThemeName: Geistersee-Nachtregen
 
 AcknowledgmentUI: {
 	ArtistRole: Künstler
@@ -1332,266 +1332,266 @@ CWRPlayer: {
 }
 
 MiningMachineUI: {
-	// TitleText: Prospecting Terminal
-	// ReportTitle: Survey Report
-	// RescanText: Rescan
-	// ModuleSlotLabel: Modules
-	// StatusLabel: Status
-	// StateWorking: Operating
-	// StateNoPower: No Power
-	// StateNoFooting: Unstable Footing
-	// PickPowerLine: Pick Power: {0}%
-	// YieldRateLine: Yield: ~{0}/min
-	// EnergyLabel: Energy
-	// YieldLabel: Yield
-	// LayerLabel: Stratum
-	// BiomeLabel: Biome
-	// VeinLabel: Veins Found
-	// LayerSurface: Surface
-	// LayerUnderground: Underground
-	// LayerCavern: Cavern
-	// LayerUnderworld: Underworld
-	// BiomeJungle: Jungle
-	// BiomeSnow: Snow
-	// BiomeDesert: Desert
-	// BiomeCorrupt: Corruption
-	// BiomeCrimson: Crimson
-	// BiomeHallow: Hallow
-	// BiomeNone: Barren Rock
-	// GateNeedPick: Requires {0}% pick power
-	// GateNeedDrill: Requires a dedicated drill module
-	// GateNotInWorld: Ore source not yet surveyed
-	// VeinTilesFormat: "{0} vein tiles detected"
-	// DrillTargetText: Targets: {0}
-	// DrillEffectText: Grants extraction rights for its targets and quadruples their yield weight
+	TitleText: Erkundungsterminal
+	ReportTitle: Erkundungsbericht
+	RescanText: Erneut erkunden
+	ModuleSlotLabel: Modulschacht
+	StatusLabel: Status
+	StateWorking: Im Einsatz
+	StateNoPower: Zu wenig Energie
+	StateNoFooting: Fundament instabil
+	PickPowerLine: "Spitzhackenkraft: {0}%"
+	YieldRateLine: "Ertrag: ca. {0}/min"
+	EnergyLabel: Energie
+	YieldLabel: Ertrag
+	LayerLabel: Schicht
+	BiomeLabel: Biom
+	VeinLabel: Erkundete Adern
+	LayerSurface: Oberfläche
+	LayerUnderground: Untergrund
+	LayerCavern: Höhlenschicht
+	LayerUnderworld: Unterwelt
+	BiomeJungle: Dschungel
+	BiomeSnow: Schnee
+	BiomeDesert: Wüste
+	BiomeCorrupt: Verderben
+	BiomeCrimson: Purpur
+	BiomeHallow: Heiligtum
+	BiomeNone: Öder Fels
+	GateNeedPick: Benötigt {0}% Spitzhackenkraft
+	GateNeedDrill: Benötigt ein eigenes Bohr-Modul
+	GateNotInWorld: Erzquelle noch nicht erkundet
+	VeinTilesFormat: Erkundete Ader {0} Blöcke
+	DrillTargetText: "Zielmineral: {0}"
+	DrillEffectText: "Gibt das Abbaurecht für die Zielmineralien und vervierfacht deren Ertragsgewicht"
 }
 
 DungeonworldLoadingScreen: {
-	// BandName0: The Cathedral
-	// BandName1: The Gaols
-	// BandName2: The Great Archive
-	// BandName3: The Drowned Ward
-	// BandName4: The Ossuary
-	// BandName5: The Foundry
-	// BandName6: The Inverted Cathedral
-	// Toll0: First Toll · The Cathedral
-	// Toll1: Second Toll · The Gaols
-	// Toll2: Third Toll · The Great Archive
-	// Toll3: Fourth Toll · The Drowned Ward
-	// Toll4: Fifth Toll · The Ossuary
-	// Toll5: Sixth Toll · The Foundry
-	// Toll6: Seventh Toll · The Inverted Cathedral
-	// Tip0: The deeper you go, the older the bricks, the shorter the prayers.
-	// Tip1: The choir is still singing, just seven floors above.
-	// Tip2: One toll rung above; the well answers twice.
-	// Tip3: The candles grow shorter going down, and the wax grows thicker.
-	// Tip4: The Archive keeps everyone's name, including those yet to arrive.
-	// Tip5: The Ossuary lays its bricks without mortar; bone bites tighter than lime.
-	// Tip6: The gears have never stopped; seven generations have kept them oiled.
-	// Tip7: In the lowest cathedral, the altar is nailed to the ceiling.
-	// StatusDescend: The cage is descending
-	// StatusAscend: The cage is rising
-	// DepthLabel: Depth {0}%
-	// RevealHold: Lighting the candles
+	BandName0: Kathedralenviertel
+	BandName1: Kerkerstock
+	BandName2: Großes Archiv
+	BandName3: Wasserkerker
+	BandName4: Gebeinkeller
+	BandName5: Gießerei-Getriebeschicht
+	BandName6: Umgekehrte Kathedrale
+	Toll0: Erster Schlag · Kathedralenviertel
+	Toll1: Zweiter Schlag · Kerkerstock
+	Toll2: Dritter Schlag · Großes Archiv
+	Toll3: Vierter Schlag · Wasserkerker
+	Toll4: Fünfter Schlag · Gebeinkeller
+	Toll5: Sechster Schlag · Gießerei-Getriebeschicht
+	Toll6: Siebter Schlag · Umgekehrte Kathedrale
+	Tip0: "Je tiefer, desto älter die Ziegel, desto kürzer die Gebete."
+	Tip1: "Der Chor singt noch, nur sieben Decken höher."
+	Tip2: Oben ein Glockenschlag, unten im Brunnen zwei.
+	Tip3: "Die Kerzen werden nach unten kürzer, das Wachs dicker."
+	Tip4: "Das Archiv bewahrt jeden Namen, auch den der noch nicht Dagewesenen."
+	Tip5: Der Gebeinkeller mauert ohne Mörtel. Knochen beißen fester als Kalk.
+	Tip6: "Die Zahnräder standen nie still, das Öl kam von sieben Generationen."
+	Tip7: "In der untersten Kathedrale hängt der Altar an der Decke."
+	StatusDescend: Der Korb fährt hinab
+	StatusAscend: Der Korb fährt hinauf
+	DepthLabel: Tiefe {0}%
+	RevealHold: Kerzen werden entzündet
 }
 
 DungeonworldGuideNotes: {
-	// LayerNoteGaol: The Gaols. Where the shackles and rust hang thickest, that way lies the deep gaol cell.
-	// LayerNoteFlood: The Drowned Ward. All the water drains toward the flood gallery at the very bottom. So should you.
-	// LayerNoteProof: The Foundry. The gears never stopped, and the rail at the very bottom runs straight to the proofing hall.
-	// ApproachGaol: No room left on the walls for more shackles. The cell ahead is locked from the outside.
-	// ApproachFlood: The waterline has climbed to the ceiling. Something in the flood gallery ahead is still waiting for the water.
-	// ApproachProof: The rail ends here. The furnaces are still warm. The proofing hall expects today's workpiece.
+	LayerNoteGaol: Kerkerstock. Wo Ketten und Rost am dichtesten hängen, liegt die tiefe Zelle.
+	LayerNoteFlood: Wasserkerker. Alles Wasser läuft in die Flutkammer ganz unten. Du auch.
+	LayerNoteProof: Gießerei-Getriebeschicht. Die Zahnräder standen nie still, und die unterste Himmelschiene führt zur Abnahmehalle.
+	ApproachGaol: An den Wänden ist kein Platz mehr für Ketten. Die Zelle vorn ist von außen verschlossen.
+	ApproachFlood: Die Wasserlinie hat die Decke erreicht. In der Flutkammer vorn wartet noch etwas auf das Wasser.
+	ApproachProof: Die Schiene endet hier. Die Öfen sind noch warm. Die Abnahmehalle wartet auf das heutige Werkstück.
 }
 
 HadalworldLoadingScreen: {
-	// BandName0: Sunlit Zone
-	// BandName1: Twilight Zone
-	// BandName2: Midnight Zone
-	// BandName3: Abyssal Zone
-	// BandName4: Hadal Zone
-	// Tip0: The light stays up there.
-	// Tip1: The deeper you go, the quieter the water.
-	// Tip2: Bubbles only travel one way.
-	// Tip3: The pressure doesn't knock.
-	// Tip4: Something glows below. It is not a lamp.
-	// StatusDescend: Descending
-	// StatusAscend: Surfacing
-	// DepthLabel: Depth {0} m
+	BandName0: Sonnenlichtzone
+	BandName1: Dämmerzone
+	BandName2: Mitternachtszone
+	BandName3: Abgrundzone
+	BandName4: Hadalzone
+	Tip0: Das Licht bleibt oben.
+	Tip1: "Je tiefer, desto stiller das Wasser."
+	Tip2: Blasen gehen nur in eine Richtung.
+	Tip3: Der Druck klopft nicht.
+	Tip4: Unten leuchtet etwas. Das ist keine Lampe.
+	StatusDescend: Taucht ab
+	StatusAscend: Steigt auf
+	DepthLabel: Tiefe {0} m
 }
 
 KiyumeLoadingScreen: {
-	// TitleEnter: Kiyume
-	// TitleExit: Waking
-	// VerseEnter: The fog is past the windowsills, and the lamps inside are still lit.
-	// VerseExit: The lake has let go. Don't look back.
-	// StatusEnter: Fog coming in off the lake
-	// StatusExit: The village sinking back into the fog
+	TitleEnter: Geistertraum
+	TitleExit: Erwachen
+	VerseEnter: "Der Nebel steht über den Fensterbänken, und drinnen brennen die Lampen noch."
+	VerseExit: Der See hat losgelassen. Sieh nicht zurück.
+	StatusEnter: Nebel kommt vom See herüber
+	StatusExit: Das Dorf sinkt zurück in den Nebel
 }
 
 KiameLoadingScreen: {
-	// TitleEnter: Kiame
-	// TitleExit: Rainbreak
-	// VerseEnter: The hollows filled overnight, and no one came for the umbrella.
-	// VerseExit: The umbrella is folded. The rain goes on.
-	// StatusEnter: Rain flooding the hollows
-	// StatusExit: The rain falling away
+	TitleEnter: Geisterregen
+	TitleExit: Regenpause
+	VerseEnter: "Das Wasser in den Senken ist über Nacht gestiegen, niemand kam den Schirm holen."
+	VerseExit: Der Schirm ist zusammen. Der Regen fällt weiter.
+	StatusEnter: Regen läuft über die Senken
+	StatusExit: Der Regenlaut rückt fort
 }
 
-// KiameExitKeeper.ExitHint: "[Right Click] Fold the umbrella and return"
+KiameExitKeeper.ExitHint: "[Rechtsklick] Schirm zusammenklappen und zurückkehren"
 
 KiameWake: {
-	// WakeOni: The thing under the umbrella let go, and you woke.
-	// WakeDrowned: The black water closed over your head, and you woke.
-	// WakeGeneric: You woke from the rain.
+	WakeOni: Das Ding unter dem Schirm ließ los, und du wachst auf.
+	WakeDrowned: Das schwarze Wasser lief über den Scheitel, und du wachst auf.
+	WakeGeneric: Du wachst aus dem Regen auf.
 }
 
 OldNetTexts: {
-	// OldNetHarvest: +{0} Mold Shards (uninscribed)
-	// OldNetNodeHint: Recover data
-	// OldNetTerminalHint: Log out and inscribe your haul
-	// OldNetSettleDone: Inscribed {0} Mold Shards — link severed safely
-	// OldNetSettleEmpty: Link severed safely — nothing recovered this dive
-	// OldNetEjectRam: RAM depleted — link burned out, uninscribed haul lost
-	// OldNetEjectDeath: Construct collapse — link burned out, uninscribed haul lost
-	// OldNetLedgerFull: Ledger full — hit a relay or log out first
-	// OldNetEncryptHint: Channel decryption (stand still ~3s, loud)
-	// OldNetEventHint: Pull the breaker: unseal the vaults, wake the whole net
-	// OldNetEventPulled: Seals released — purge wave inbound
-	// OldNetRelayHint: Relay uplink: inscribe current ledger (the uplink makes noise)
-	// OldNetRelayDone: Inscribed {0} Mold Shards — link holds
-	// OldNetRelayEmpty: Ledger empty, nothing to uplink
-	// OldNetEnterHint: Jack into the OldNet (dive beyond the Blackwall)
-	// OldNetEnterConfirm: Link warmed up — interact again to dive beyond the wall
-	// OldNetEnterArmedHint: Link warmed up: interact again to dive beyond the wall
-	// OldNetEnterSPOnly: Diving is single-player only
-	// OldNetDiveCharge: Hold the descent — crossing the wall
-	// OldNetBandFoot: Wallfoot Belt // FOOTHOLD
-	// OldNetBandRuin: Ruinfield // RUINFIELD
-	// OldNetBandFade: Signal Decay Zone // SIGNAL DECAY
-	// GuideNoiseTitle: The Noise Meter
-	// GuideNoiseBody: Bottom-left is your noise meter — moving, firing and cracking all light you up. The four ticks are four threat tiers; past T2, something comes from the wall. Stand still and the noise cools off on its own.
-	// GuideLedgerTitle: The Uninscribed Ledger
-	// GuideLedgerBody: Shards you harvest go into the ledger first (the LEDGER readout). Death or RAM burnout voids all of it — only what you inscribe is truly yours. The ledger has a capacity and refuses overflow.
-	// GuideNodesTitle: Node Grades
-	// GuideNodesBody: Cyan nodes harvest on right-click. Amber encrypted nodes need ~3s of channeling — loud, but worth triple. The red event breaker unseals every vault on the map, and brings the purge wave with it.
-	// GuideRelayTitle: Relay vs Logout
-	// GuideRelayBody: The amber column is a relay — inscribe on the spot and keep diving, but the uplink is loud. The mint column is the logout terminal — inscribe and sever safely. Greed or retreat, that is the only question here.
-	// GuideDrainTitle: Distance Drain
-	// GuideDrainBody: The farther from the wall, the pricier the RAM drain — the DEPTH readout shows your current cost per second. Burning out means ejection, so budget the trip home in advance.
-	// GuideSkip: Got it
-	// EntrustTitle: Dive Beyond the Wall
-	// EntrustSummary: The OldNet's entrance is the crashed sky-island above spawn: climb the anchor rope hanging down to the ground, and the cyan-lit pillar in the mid-hull is the access terminal. Right-click it to warm the link, then right-click again within 5 seconds to dive in (single-player only). Inside, right-click cyan nodes to recover mold shards; they land in your ledger first. To keep them, return to the foot of the Blackwall and right-click the mint column to log out. One safe logout completes this commission. RAM burnout or death on the way voids everything uninscribed.
-	// EntrustCategory: Deep-Dive Archaeology
-	// TrackerOverworld: Reach the mid-hull of the crashed pod above spawn; right-click the cyan terminal twice
-	// TrackerDive: Return to the Blackwall's foot; right-click the mint column to log out safely
-	// OldNetSignRuin: Ruinfield. Prime harvest grounds — encrypted nodes from here on. Mind your exit before you channel.
-	// OldNetSignFade: Signal Decay Zone. The drain climbs steeply past this point — the link won't hold long. Proceed at your own risk.
-	// OldNetEchoHint: Echo node — only tangible during time-freeze (zero noise, double yield)
-	// OldNetEchoFizzle: The echo is too faint — only tangible in frozen time
-	// OldNetCacheHint: Deep-dive cache — pry it open for a sealed module (loudly)
-	// OldNetTripwireHint: Raster tripwire: crossing the lit beam reports your position; hold right-click to cut it
-	// OldNetTripwireCut: Cut. This route is quiet now
-	// OldNetMineHint: Sentry mine: rush in and it detonates; approach slowly and hold right-click to defuse
-	// OldNetMineDefused: Defused. Nothing heard it
-	// OldNetMineScream: The sentry mine screams; your position is broadcast
-	// OldNetMineDeath: "{0} set off a sentry mine"
-	// OldNetBulkheadWarn: High-noise signature detected; shaft bulkheads pre-tensioning
-	// OldNetBulkheadShut: Shafts sealed. Quiet down and wait for reopen, or force one open with a pressure breaker
-	// OldNetBulkheadReopen: Noise has settled; shaft bulkheads reopening
-	// OldNetBreakerHint: Emergency breaker: pull to open the gate for 8 seconds, at the cost of more noise
-	// OldNetBreakerPulled: Pressure vented; gate open for 8 seconds
-	// OldNetSignCheckpoint: Quarantine Checkpoint K-3. Signals east of this line are unsanitized; no live protocols may pass. This checkpoint fell on Night 771.
-	// TaggerAttached: Signal tagged. While it lives, your noise will not decay on its own.
-	// TracerHowlWarn: The hound is broadcasting your position. Interrupt it.
-	// TracerConfused: Path crossed. It has lost the scent.
-	// WardenDispatch: Reclamation protocol authorized. An executor is peeling off the blackwall.
-	// WardenSlain: Executor archived. The whole net falls silent for you, 60 seconds.
-	// WardenGraceHud: Silence grace
-	// OldNetDockHint: Right-click to expand: +8 ledger slots this dive, +15 noise
-	// OldNetDockDone: Ledger +8 slots
-	// OldNetColdHint: Right-click to extract: costs 2 RAM, silent
-	// OldNetColdNoRam: Not enough RAM — extraction needs 2
-	// OldNetEscrowHint: Right-click to insure: 30% of the ledger as premium, +10 noise on uplink. Pays out the rest on burnout or death; no refund on safe logout
-	// OldNetEscrowEmpty: Ledger empty — nothing to insure
-	// OldNetEscrowTooThin: Ledger too thin — the premium would eat everything, nothing to insure
-	// OldNetEscrowSigned: Insured {0} shards, premium {1}
-	// OldNetEscrowPayout: Insurance paid out {0} Mold Shards
-	// OldNetVaultHint: Right-click to breach: costs 3 RAM, +2 noise per second while open. Every stage raises the stakes; miss and the pot burns
-	// OldNetVaultNoRam: Not enough RAM — breaching needs 3
-	// OldNetVaultLocked: Console already running
-	// OldNetVaultPayout: Pot banked — {0} shards (uninscribed)
-	// VaultTitle: Cipher Matrix
-	// VaultGuide: Click or press jump as the needle sweeps the lit arc. Getting hit or stepping away mid-spin counts as a miss
-	// VaultStage: Stage {0} / 5
-	// VaultPot: Pot: shards ×{0}
-	// VaultPotModule: Sealed modules ×{0}
-	// VaultPotChip: RAM capacity chip ×1
-	// VaultLedgerRoom: Ledger room: {0}
-	// VaultCashOut: Cash out
-	// VaultContinue: Next stage
-	// VaultBust: Bust — pot cleared
-	// VaultCounterHack: Console counter-hack: injection inbound
-	// VaultDiscard: Ledger full — {0} shards discarded
-	// OldNetEncryptFadeHint: Channel decryption: the mad zone's locks bite back — completing one always draws a hunt
-	// OldNetAftershockWarn: Residual exposure — the echo is tracing back
-	// OldNetAftershockHit: Traceback complete. They are coming
-	// OldNetDragnetWarn: The net is drawing shut — the threat is about to become irreversible // DRAGNET 75%
-	// OldNetDragnetOn: Dragnet engaged: the purge never lifts, every encrypted lock is offline // DRAGNET
-	// OldNetHotExtractHint: Link overheated: severing takes 10 seconds at the terminal, and the net will come for you
-	// OldNetHotExtractStart: Forced severance started — hold the line // SEVERING
-	// OldNetHotExtractAbort: Severance aborted — the link holds
-	// OldNetHotExtractTooFar: Too far from the terminal — get closer to sever
+	OldNetHarvest: +{0} Formscherben (nicht eingraviert)
+	OldNetNodeHint: Daten bergen
+	OldNetTerminalHint: Abmelden und die Ausbeute eingravieren
+	OldNetSettleDone: "{0} Formscherben eingraviert, Link sicher getrennt"
+	OldNetSettleEmpty: "Link sicher getrennt, diesmal keine Ausbeute"
+	OldNetEjectRam: "RAM leer, Link durchgebrannt, nicht eingravierte Ausbeute verloren"
+	OldNetEjectDeath: "Konstrukt zerfallen, Link durchgebrannt, nicht eingravierte Ausbeute verloren"
+	OldNetLedgerFull: "Hauptbuch voll, zuerst zum Relais oder abmelden"
+	OldNetEncryptHint: "Kanalführung knacken (ca. 3 s stehen, sehr laut)"
+	OldNetEventHint: "Hebel ziehen: alle Sperren der Karte lösen, das ganze Netz aufschrecken"
+	OldNetEventPulled: "Sperren gelöst, Säuberungswelle ist unterwegs"
+	OldNetRelayHint: "Relais-Uplink: aktuelles Hauptbuch eingravieren (Uplink macht Lärm)"
+	OldNetRelayDone: "{0} Formscherben eingraviert, Link bleibt"
+	OldNetRelayEmpty: "Hauptbuch leer, nichts zum Hochladen"
+	OldNetEnterHint: Ans OldNet koppeln (Tiefgang hinter die Blackwall)
+	OldNetEnterConfirm: "Link vorgewärmt, noch einmal interagieren, hinter die Mauer tauchen"
+	OldNetEnterArmedHint: "Link vorgewärmt: noch einmal interagieren, hinter die Mauer tauchen"
+	OldNetEnterSPOnly: Tiefgang nur im Einzelspieler
+	OldNetDiveCharge: "Abstieg halten, die Mauer wird durchstoßen"
+	OldNetBandFoot: Wandfußgürtel // FOOTHOLD
+	OldNetBandRuin: Ruinenband // RUINFIELD
+	OldNetBandFade: Signalabfallzone // SIGNAL DECAY
+	GuideNoiseTitle: Der Lärmmesser
+	GuideNoiseBody: "Unten links sitzt der Lärmmesser: Laufen, Schießen und Knacken leuchten dich auf. Vier Striche sind vier Bedrohungsstufen; über T2 kommt etwas von der Mauer. Stehst du still, kühlt der Lärm von selbst ab."
+	GuideLedgerTitle: Das nicht eingravierte Hauptbuch
+	GuideLedgerBody: "Geborgene Scherben landen zuerst im Hauptbuch (LEDGER-Anzeige). Tod oder leeres RAM macht alles zunichte. Erst Eingraviertes gehört dir wirklich. Das Hauptbuch hat ein Limit und weist Überlauf ab."
+	GuideNodesTitle: Knoteneinstufung
+	GuideNodesBody: "Cyan-Knoten: Rechtsklick und du erntest. Bernstein-Verschlüsselte brauchen ca. 3 s Führung, sehr laut, aber dreifach wert. Der rote Ereignishebel löst alle Sperren der Karte und holt sofort die Säuberungswelle."
+	GuideRelayTitle: Relais und Abmelden
+	GuideRelayBody: "Die Bernsteinsäule ist das Relais: vor Ort eingravieren, du bleibst, aber der Uplink ist laut. Die minzgrüne Säule ist das Abmelde-Terminal: eingravieren und sicher trennen. Gier oder Rückzug, das ist hier die einzige Frage."
+	GuideDrainTitle: Distanz-Grundrauschen
+	GuideDrainBody: "Je weiter von der Mauer, desto teurer das RAM-Grundrauschen. Neben der DEPTH-Anzeige steht der aktuelle Verbrauch pro Sekunde. RAM leer heißt Rauswurf, die Heimreise musst du vorher einrechnen."
+	GuideSkip: Verstanden
+	EntrustTitle: Tiefgang hinter die Mauer
+	EntrustSummary: "Der OldNet-Eingang liegt auf der abgestürzten Himmelinsel über dem Startpunkt: die Ankerleine vom Inselboden bis zum Grund hochklettern, die cyan leuchtende Säule im Mittelrumpf ist das Zugangsterminal. Rechtsklick wärmt den Link vor, innerhalb von 5 s noch ein Rechtsklick und du bist im Netz (nur Einzelspieler). Im Netz Rechtsklick auf Cyan-Knoten holt Formscherben, die Ausbeute steht zuerst im Hauptbuch. Willst du sie mitnehmen, zurück an den Fuß der Blackwall und Rechtsklick auf die minzgrüne Säule zum Abmelden. Ein sicheres Abmelden schließt diesen Auftrag. RAM-Leerlauf oder Tod unterwegs macht alle nicht eingravierte Ausbeute zunichte."
+	EntrustCategory: Tiefgang-Archäologie
+	TrackerOverworld: "Zum Mittelrumpf der Absturzgondel über dem Start, zweimal Rechtsklick auf das Cyan-Terminal"
+	TrackerDive: "Zurück an den Fuß der Blackwall, Rechtsklick auf die minzgrüne Säule und sicher abmelden"
+	OldNetSignRuin: "Ruinenband. Hauptfördergebiet, verschlüsselte Knoten ab hier. Bevor du führst, sieh dir den Rückweg an."
+	OldNetSignFade: "Signalabfallzone. Das Grundrauschen steigt hier steil, der Link hält nicht lange. Weiter auf eigene Gefahr."
+	OldNetEchoHint: "Echo-Knoten: nur im Zeitstopp greifbar (kein Lärm, doppelter Ertrag)"
+	OldNetEchoFizzle: Das Echo ist zu schwach, nur im Zeitstopp greifbar
+	OldNetCacheHint: "Tiefgang-Cache: aufbrechen und ein versiegeltes Modul holen (nicht leise)"
+	OldNetTripwireHint: "Raster-Stolperdraht: die leuchtende Linie zu kreuzen meldet deine Position, Rechtsklick halten schneidet ihn"
+	OldNetTripwireCut: "Durchtrennt, dieser Weg ist still"
+	OldNetMineHint: "Wachtmine: schnell nah detoniert sie, langsam heran und Rechtsklick halten entschärft sie"
+	OldNetMineDefused: "Entschärft, nichts hat es gehört"
+	OldNetMineScream: Die Wachtmine schreit, deine Position wird gesendet
+	OldNetMineDeath: "{0} hat eine Wachtmine ausgelöst"
+	OldNetBulkheadWarn: "Hohes Lärmsignal erkannt, Schachtore ziehen vor"
+	OldNetBulkheadShut: "Schächte versperrt. Lärm runter und aufs Wiederöffnen warten, oder mit dem Entlastungshebel eines aufzwingen"
+	OldNetBulkheadReopen: "Lärm gefallen, Schachtore öffnen wieder"
+	OldNetBreakerHint: "Not-Entlastungshebel: ziehen öffnet das Tor 8 s, Preis ist mehr Lärm"
+	OldNetBreakerPulled: "Druck abgelassen, Tor 8 s offen"
+	OldNetSignCheckpoint: Quarantänestation K-3. Signale östlich dieser Linie sind nicht desinfiziert, lebende Protokolle dürfen nicht durch. Diese Station fiel in der 771. Nacht.
+	TaggerAttached: Signal markiert. Solange es da ist, klingt der Lärm nicht von selbst ab.
+	TracerHowlWarn: Der Hund sendet deine Koordinaten. Unterbrich ihn.
+	TracerConfused: Wege gekreuzt. Es hat die Spur verloren.
+	WardenDispatch: Bergungsprotokoll freigegeben. Ein Vollstrecker löst sich von der Blackwall.
+	WardenSlain: Vollstrecker archiviert. Das ganze Netz schweigt 60 s für dich.
+	WardenGraceHud: Stille-Rest
+	OldNetDockHint: "Rechtsklick erweitern: Hauptbuch diesmal +8 Plätze, Lärm +15"
+	OldNetDockDone: Hauptbuch +8 Plätze
+	OldNetColdHint: "Rechtsklick entnehmen: kostet 2 RAM, lautlos"
+	OldNetColdNoRam: "RAM reicht nicht, Entnahme braucht 2"
+	OldNetEscrowHint: "Rechtsklick versichern: 30 % des Hauptbuchs als Prämie, Uplink-Lärm +10. Bei Durchbrennen oder Tod wird der Rest ausgezahlt, sicheres Abmelden erstattet die Prämie nicht"
+	OldNetEscrowEmpty: Das Hauptbuch ist leer, nichts zu versichern
+	OldNetEscrowTooThin: Das Hauptbuch ist zu dünn, die Prämie fräße alles, nichts zu versichern
+	OldNetEscrowSigned: "{0} Stück versichert, Prämie {1}"
+	OldNetEscrowPayout: Versicherung zahlt {0} Formscherben
+	OldNetVaultHint: "Rechtsklick Konsole knacken: kostet 3 RAM, danach +2 Lärm pro Sekunde. Jede Stufe hebt den Einsatz, daneben leert den Topf"
+	OldNetVaultNoRam: "RAM reicht nicht, die Konsole braucht 3"
+	OldNetVaultLocked: Die Konsole läuft bereits
+	OldNetVaultPayout: Topf gutgeschrieben {0} Scherben (nicht eingraviert)
+	VaultTitle: Konsolen-Entschlüsselungsmatrix
+	VaultGuide: "Wenn der Zeiger den hellen Bogen streift, Linksklick oder Sprung. Treffer oder Wegtreten während der Drehung gilt als daneben"
+	VaultStage: Stufe {0} / 5
+	VaultPot: "Topf: Scherben ×{0}"
+	VaultPotModule: Versiegelte Module ×{0}
+	VaultPotChip: RAM-Erweiterungschip ×1
+	VaultLedgerRoom: Hauptbuch-Restplätze {0}
+	VaultCashOut: Aussteigen und abrechnen
+	VaultContinue: Nächste Stufe
+	VaultBust: "Geplatzt, Topf leer"
+	VaultCounterHack: "Konsole schlägt zurück: Eindringen wird injiziert"
+	VaultDiscard: "Hauptbuch voll, {0} Stück verworfen"
+	OldNetEncryptFadeHint: "Kanalführung knacken: die Schlösser der Irrzone beißen zurück, danach kommt immer die Jagd"
+	OldNetAftershockWarn: "Restecho enttarnt, das Echo verfolgt zurück"
+	OldNetAftershockHit: Rückverfolgung fertig, sie kommen
+	OldNetDragnetWarn: Das Netz zieht sich zusammen, die Bedrohung wird gleich unumkehrbar // DRAGNET 75%
+	OldNetDragnetOn: "Netz schließt, die Sperre fällt nicht mehr, alle Verschlüsselungsschlösser sind offline // DRAGNET"
+	OldNetHotExtractHint: "Link überhitzt: Trennen braucht 10 s am Terminal, das Netz kommt auf dich zu"
+	OldNetHotExtractStart: Zwangstrennung läuft, halt durch // SEVERING
+	OldNetHotExtractAbort: "Trennung abgebrochen, Link bleibt"
+	OldNetHotExtractTooFar: Zu weit vom Terminal, näher heran und dann trennen
 }
 
 OldNetDebriefPanel: {
-	// DebriefSubtitle: Dive debrief
-	// DebriefDepth: Deepest reach
-	// DebriefHarvest: Nodes recovered
-	// DebriefSettled: Shards inscribed
-	// DebriefHunted: Times hunted
-	// DebriefTime: Dive time
-	// DebriefExitSafe: Clean disconnect
-	// DebriefExitBurnout: RAM depleted — link burned out
-	// DebriefExitDeath: Construct collapse — link burned out
-	// DebriefLost: "{0} uninscribed shards burned away"
-	// DebriefContinue: Continue
-	// DebriefMechHint: Uninscribed haul lives only in the link — it becomes yours once inscribed at a relay or the logout terminal
-	// DebriefScore: Score
-	// DebriefGrade: Grade
-	// DebriefBest: Personal best {0}
-	// DebriefNewRecord: NEW RECORD
-	// StyleGhost: Ghost run
-	// StyleHeat: Heat survivor
-	// StyleHotExtract: Hot extract
-	// StyleDragnet: Dragnet escape
+	DebriefSubtitle: Link-Bericht
+	DebriefDepth: Weiteste Entfernung zur Mauer
+	DebriefHarvest: Geborgene Knoten
+	DebriefSettled: Eingravierte Scherben
+	DebriefHunted: Gejagt
+	DebriefTime: Tiefgangdauer
+	DebriefExitSafe: Sicher getrennt
+	DebriefExitBurnout: "RAM leer, Link durchgebrannt"
+	DebriefExitDeath: "Konstrukt zerfallen, Link durchgebrannt"
+	DebriefLost: "{0} nicht eingravierte Scherben verbrannt"
+	DebriefContinue: Weiter
+	DebriefMechHint: "Nicht eingravierte Ausbeute lebt nur im Link. Erst nach dem Eingravieren am Relais oder Abmelde-Terminal gehört sie dir."
+	DebriefScore: Wertung
+	DebriefGrade: Rang
+	DebriefBest: Bisheriges Bestes {0}
+	DebriefNewRecord: NEUER REKORD
+	StyleGhost: Geistergang
+	StyleHeat: Hitzeüberleben
+	StyleHotExtract: Heiße Trennung
+	StyleDragnet: Netzflucht
 }
 
 CharacterDockUI: {
-	// OpenHintLabel: Click to view portrait
-	// DragHintLabel: Drag to move · Scroll to zoom · Right-click to reset
-	// LockedHintLabel: Not yet unlocked
-	// SupCal.Name: Brimstone Witch
-	// Helen.Name: Helen
-	// Shenyo.Name: Shenyo
+	OpenHintLabel: Klicken für das Standbild
+	DragHintLabel: Ziehen verschiebt · Rad zoomt · Rechtsklick setzt zurück
+	LockedHintLabel: Noch nicht freigeschaltet
+	SupCal.Name: Schwefelfeuer-Hexe
+	Helen.Name: Helen
+	Shenyo.Name: Shenyo
 }
 
 WeaponSkillHud: {
-	// ReadyHint: Ready, click to cast
-	// AimHint: Hold, drag to the aim point, release to cast
-	// ReleaseHint: Release to cast
-	// CooldownFormat: Cooldown: {0}s
-	// ActiveLine: Active
-	// ManaCostFormat: Mana cost: {0}
+	ReadyHint: "Bereit, klicken zum Wirken"
+	AimHint: "Halten, zum Zielpunkt ziehen, loslassen zum Wirken"
+	ReleaseHint: Loslassen zum Wirken
+	CooldownFormat: Abklingzeit noch {0} s
+	ActiveLine: Wird gewirkt
+	ManaCostFormat: Manakosten {0}
 }
 
 KiyumeHoundHints: {
-	// HintAlert: Stand still. The fog will hide you.
-	// HintChase: Get indoors, or into the deepest fog.
+	HintAlert: Bleib stehen. Der Nebel versteckt dich.
+	HintChase: "Geh ins Haus, oder dorthin, wo der Nebel am tiefsten ist."
 }
 
 KiyumeDreamWake: {
-	// WakeBitten: The moment the dog's jaws closed, you woke.
-	// WakeDrowned: The lake closed over your head, and you woke.
-	// WakeGeneric: The dream broke.
+	WakeBitten: In dem Moment, in dem die Hundezähne zuklappten, wachst du auf.
+	WakeDrowned: Das Seewasser lief über den Scheitel, und du wachst auf.
+	WakeGeneric: Der Traum riss ab.
 }

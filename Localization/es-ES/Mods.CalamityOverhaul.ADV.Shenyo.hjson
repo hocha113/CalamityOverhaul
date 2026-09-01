@@ -1,184 +1,184 @@
 FirstMetShenyo: {
-	// ShenyoName: Shenyo
-	// L1: It has been a long time since anything living walked in here
-	// L2: How did you get here?
-	// OptDead: Died once. When I woke up, I was here
-	// OptRain: Snatched an umbrella and charged in
-	// OptDeadLocked: (You are still alive. That answer will not leave your mouth)
-	// OptRainLocked: (Your hands are empty. No umbrella to speak of)
-	// A1: ...Back from the dead?
-	// A2: A rare thing. Though by the look of you, you hardly seem to care
-	// B1: Then your luck is not bad at all
-	// B2: Now start thinking about how to get out
-	// C1: The rain will hold the way open for you. Go back
-	// C2: That umbrella is yours from now on
+	ShenyoName: Shenyo
+	L1: Hace mucho que no veo a un vivo por aquí
+	L2: ¿Cómo has llegado hasta aquí?
+	OptDead: Morí una vez. Desperté y ya estaba aquí
+	OptRain: Le arrebaté un paraguas y me metí de golpe
+	OptDeadLocked: No has muerto
+	OptRainLocked: Tienes las manos vacías
+	A1: ……¿Muerto y de vuelta?
+	A2: Cosa rara. Aunque, por cómo te ves, parece que ya te es costumbre
+	B1: Entonces tu suerte no está nada mal
+	B2: Ya toca salir
+	C1: La lluvia te tendrá el camino abierto. Vuelve
+	C2: De ahora en adelante, ese paraguas es tuyo
 }
 
 ShenyoDerivedUmbrella: {
-	// L1: That umbrella looks like a derived paranormal entity
-	// Opt1: A derived paranormal entity? Meaning it is a part of you?
-	// L2: Exactly. I once dismembered my own paranormal form, and the severed fragments revive on their own once enough years go by
-	// L3: This umbrella intruding on reality, for instance, is a paranormal phenomenon derived from the Kikasa's source
-	// Opt2: So you are not actually the source of the Kikasa?
-	// L4: I was, once
-	// L5: I should have died long ago, but my consciousness woke again inside a paranormal fragment left in this world
-	// L6: Touch this derived umbrella, and you should be able to enter its ghost domain
-	// L7: Whether you go is your own business
-	// L8: If you die in there, I will pull you back with a Restart
+	L1: Este paraguas parece una anomalía derivada
+	Opt1: ¿Anomalía derivada? O sea, ¿es una parte de ti?
+	L2: Exacto. Una vez desmembré mi propia anomalía. Esos fragmentos desmembrados, pasado el tiempo, vuelven a resurgir
+	L3: Por ejemplo, este paraguas que se cuela en la realidad es un fenómeno anómalo derivado de la fuente de Kikasa
+	Opt2: Entonces, ¿tú no eres realmente la fuente de Kikasa?
+	L4: Lo fui
+	L5: Debería haberme muerto ya, pero mi conciencia despertó otra vez en un fragmento anómalo de este mundo
+	L6: Si tocas esta Kikasa derivada, deberías poder entrar en su Reino espectral
+	L7: Si vas o no, allá tú
+	L8: Si mueres en el Reino espectral, te saco con un Autorreinicio
 }
 
 ShenyoDollGift: {
-	// L0: I just remembered something worth giving you
-	// L1: Keep this doll close. It can save your life once
-	// L2: The one who sewed these was a silly girl. She made a whole pile for the man she secretly loved, though he could never possibly need them
-	// L3: Back then I traded her plenty of ghost money for them. They make fine gifts for the young ones
+	L0: Me he acordado de algo que merece la pena darte
+	L1: Guárdate bien esta muñeca. Puede salvarte la vida
+	L2: Quien las cosió era una chica tonta. Le hizo un montón al que le gustaba, pero ese jamás las iba a necesitar
+	L3: En su día le cambié unas cuantas. Las doy de regalo a los más jóvenes
 }
 
 ShenyoFesterSerpentGift: {
-	// L0: Things that fester in the sand look even worse than things that rot in water
-	// L1: That golden pus is not honey, one sniff up close and you will understand
-	// L2: Rinse the umbrella when you are done, dried pus stains never scrape off
+	L0: Lo que se pudre en la arena se ve peor que lo que se pudre en el agua
+	L1: Esa pus dorada no es miel. Acércate a olerla y lo entiendes
+	L2: Cuando termines, enjuaga la tela del paraguas. Si la pus se seca, ya no se rasca
 }
 
 ShenyoBossRushGift: {
-	// L0: 都回来了，还是深渊里那条老的醒了？
-	// L1: 不管是哪种，这一趟都不轻松
-	// L2: 站稳了，别在我面前晃
-	// L3: 这顿吃完，雨也该停了
+	L0: ¿Han vuelto todos, o se despertó esa vieja cosa del Abismo?
+	L1: Sea cual sea, este viaje no ha sido fácil
+	L2: Ponte firme. No te me tambalees delante
+	L3: Cuando acabes esta comida, la lluvia también debería parar
 }
 
 ShenyoCalamityEvilGift: {
-	// L0: 一窝一窝的，钻血又钻肉，看着都疼
-	// L1: 你倒是不怕疼
-	// L2: 下次当心点，我这把伞挡雨，挡不了那些虫子
+	L0: Nido tras nido, se meten en la sangre y en la carne. Solo de verlo duele
+	L1: Tú, en cambio, al dolor ni caso
+	L2: La próxima vez ten más cuidado. Este paraguas tapa la lluvia, no esos bichos
 }
 
 ShenyoCultistGift: {
-	// L0: 念念叨叨，吵得很
-	// L1: 他要放的那点东西，不是什么好东西
-	// L2: 打断得好，省得他把场面弄大了
+	L0: Murmurando y murmurando. Qué ruido
+	L1: Eso que iba a soltar no es nada bueno
+	L2: Bien que lo cortaste. Así no se te va de las manos
 }
 
 ShenyoDevourerOfGodsGift: {
-	// L0: 天上绕圈的那条，听说吞过神
-	// L1: 神是什么味道，我倒是有点好奇
-	// L2: 壳留着也好，肉不必留给我
+	L0: Ese que da vueltas por el cielo, dicen que se ha tragado dioses
+	L1: A qué sabe un dios, eso sí que me pica la curiosidad
+	L2: Quédate el caparazón, si quieres. La carne no me la dejes
 }
 
 ShenyoDukeFishronGift: {
-	// L0: 一头猪也学人掀浪，也是奇了
-	// L1: 水的脾气，轮不到它使
-	// L2: 按回水里也好，省得它总在我眼皮底下晃
+	L0: Hasta un cerdo se pone a levantar olas. Vaya rareza
+	L1: El genio del agua no le toca a él
+	L2: Bien que lo has hundido otra vez. Así deja de dar vueltas delante de mis ojos
 }
 
 ShenyoEmpressGift: {
-	// L0: 太亮的东西，我这双眼睛看着费劲
-	// L1: 白天不必去招惹她，你倒好，专挑难的
-	// L2: 光都揉暗了，也算你的本事
+	L0: Lo demasiado brillante, a estos ojos les cuesta
+	L1: De día no hace falta ir a molestarla. Tú, claro, vas a por lo difícil
+	L2: Has amasado la luz hasta oscurecerla. Eso también es oficio
 }
 
 ShenyoEvilBossGift: {
-	// L0Worm: 土里钻出来一条，一节一节的，恶心
-	// L1Worm: 腥气比雨水还重，我倒是不嫌，你受得住就好
-	// L0Brain: 脑子摊在外头，也不嫌凉
-	// L1Brain: 这种东西，多看一眼都嫌脏了眼睛
-	// L2: 了结了就好，别沾一身腥气回来找我
+	L0Worm: De la tierra ha salido una, trozo a trozo. Qué asco
+	L1Worm: El hedor pesa más que la lluvia... Si lo aguantas, bien
+	L0Brain: El cerebro ahí tendido, y ni siquiera le importa el frío
+	L1Brain: Cosas así, una mirada de más y ya te ensucian los ojos
+	L2: Bien que se acabó. No vuelvas empapado de ese hedor
 }
 
 ShenyoExoAndSCalGift: {
-	// L0: 工匠的得意，魔女的执念，凑一块倒是般配
-	// L1: 两桌都收了，算你今天没白忙
-	// L2: 往后这样的日子，不会再有几回了
+	L0: El orgullo del artesano, la obsesión de la bruja. Juntos, la verdad, combinan
+	L1: Has recogido las dos mesas. Hoy no has trabajado en vano
+	L2: Días como este, de ahora en adelante, no van a quedar muchos
 }
 
 ShenyoEyeOfCthulhuGift: {
-	// L0: 夜里睁着一只眼睛到处看，倒是不怕吓着自己
-	// L1: 眨都不眨，看得人心里发毛
-	// L2: 闭上了，也好，眼不见心不烦
+	L0: Por la noche, un ojo abierto mirándolo todo. Ni siquiera le da miedo asustarse a sí mismo
+	L1: Sin pestañear. Te pone los pelos de punta
+	L2: Se ha cerrado. Mejor. Ojos que no ven, corazón que no siente
 }
 
 ShenyoGolemGift: {
-	// L0: 石头脑袋，还会蹦跶
-	// L1: 砸开了也不过是个空壳子
-	// L2: 浪花是你自己挣的，我可没帮忙
+	L0: Cabeza de piedra, y todavía da brincos
+	L1: Lo rompes y no es más que un cascarón vacío
+	L2: El mérito te lo has ganado tú. Yo no he movido un dedo
 }
 
 ShenyoKingSlimeGift: {
-	// L0: 这也配称王？
-	// L1: 浑身软趴趴的，倒是挺能蹦
-	// L2: 往后碰上真正难缠的，别学它虚张声势
+	L0: ¿Y a esto le llaman rey?
+	L1: Todo blandito, y fíjate cómo salta
+	L2: Cuando te toque uno de verdad difícil, no copies su farol
 }
 
 ShenyoSeaShrimpGift: {
-	// L0: That shrimp under the beach, all crystal shell, one punch that knocks the water hollow
-	// L1: It sheds shell after shell, yet its temper never softens a bit
-	// L2: The hollow crack sounds scary, but you caught it, so your hands know their craft
+	L0: Ese camarón bajo la playa, todo caparazón de cristal. Un puñetazo y deja el agua hueca
+	L1: Muda capa tras capa, y el genio no se le ablanda ni un poco
+	L2: Ese golpe hueco asusta al oírlo. Tú lo has parado. En las manos ya hay oficio de verdad
 }
 
 ShenyoMechsGift: {
-	// L0: 链子、灯泡、骨架，凑一块倒像个笑话
-	// L1: 铁腥味重，我不爱，你倒是不嫌
-	// L2: 三件一起收拾，算你有耐心
+	L0: Cadenas, bombillas, un esqueleto. Juntos parecen un chiste
+	L1: El hedor a hierro es fuerte. A mí no me gusta, a ti te da igual
+	L2: Las tres de un golpe. Digamos que tienes paciencia
 }
 
 ShenyoMoonLordGift: {
-	// L0: 月亮后头那位，也算见过世面了
-	// L1: 浑身是眼睛，倒是和我这把伞下的雨有点像
-	// L2: 了结了，今晚的月色，替我看仔细些
+	L0: El de detrás de la luna, ese sí que ha visto mundo
+	L1: Todo ojos. Se parece un poco a la lluvia bajo mi paraguas
+	L2: Esta noche la luna no está nada mal, ¿eh?
 }
 
 ShenyoOldDukeGift: {
-	// L0: 硫海底下那老东西，脾气比酸水还酸
-	// L1: 跟我打过几次照面，谁也没让过谁
-	// L2: 这回是你赢了，替我记他一笔
+	L0: Esa vieja cosa, el genio más agrio que el agua agria
+	L1: Nos hemos cruzado unas cuantas veces. Ninguno le ha cedido al otro
+	L2: Esta vez has ganado tú
 }
 
 ShenyoPlanteraGift: {
-	// L0: 睡着的花，吵醒了她就得担着
-	// L1: 藤蔓缠人的样子，倒有点像我那把伞收不住的时候
-	// L2: 花汁染了手，回来记得洗干净
+	L0: Una flor dormida. Si la despiertas, hay problemas
+	L1: Cómo se enredan las enredaderas, se parece un poco a cuando mi paraguas no hay quien lo cierre
+	L2: Si te has manchado las manos de savia, al volver lávate
 }
 
 ShenyoPolterghastGift: {
-	// L0: 地牢里那团魂，缝缝补补好几百年
-	// L1: 跟我算是同类，你倒不必替它说情
-	// L2: 散了也好，好过在那儿吊着
+	L0: Esas almas de la mazmorra, zurcidas y zurcidas desde hace siglos
+	L1: Son unos pobres que sí se pueden matar de verdad
+	L2: Bien que se hayan dispersado. Mejor eso que quedarse colgando ahí
 }
 
 ShenyoQueenBeeOrDeerclopsGift: {
-	// L0Bee: 甜是甜，脾气也冲，倒是配
-	// L1Bee: 蜜是好东西，可惜它舍不得给
-	// L0Deer: 独眼的，脾气比我还倔
-	// L1Deer: 一根木头也能闹出这么大动静
-	// L2: 这一趟，没伤着吧
+	L0Bee: Dulce, sí. El genio, igual de fuerte. Encajan
+	L1Bee: La miel es buena. Lástima que no la suelte
+	L0Deer: Este tuerto, el genio sí que es terco
+	L1Deer: Con un palo ya monta todo este jaleo
+	L2: Este viaje, ¿no te has hecho daño?
 }
 
 ShenyoQueenSlimeGift: {
-	// L0: 粉粉嫩嫩的，倒是会打扮
-	// L1: 还带着侍卫，排场不小
-	// L2: 排场再大，也经不起一场雨
+	L0: Toda rosadita. Eso sí que sabe vestirse
+	L1: Y con escolta. El espectáculo no es pequeño
+	L2: Por mucho espectáculo, no aguanta una lluvia
 }
 
 ShenyoSkeletronGift: {
-	// L0: 守门守了这么多年，骨头都该酥了
-	// L1: 换了我，早就懒得守了
-	// L2: 地牢的门开了，进去仔细些，别学它守株待兔守出瘾来
+	L0: Tantos años guardando la puerta que los huesos ya deberían estar blandos
+	L1: Yo, en su lugar, hace tiempo que habría dejado de guardar
+	L2: La puerta de la mazmorra está abierta. Entra con cuidado. No copies su vicio de quedarse plantado a que te caiga la suerte
 }
 
 ShenyoSlimeGodGift: {
-	// L0: 紫的黑的搅在一起，也敢称神
-	// L1: 倒是有几分本事，能把这么多恶心东西糊成一团
-	// L2: 化开了就好，省得脏了地方
+	L0: Morado y negro revueltos, y todavía se atreven a llamarse dios
+	L1: Algo de oficio sí que tiene, para pegar tanta porquería en un solo montón
+	L2: Bien que se haya deshecho. Así no ensucia el sitio
 }
 
 ShenyoWallOfFleshGift: {
-	// L0: 地狱里那面肉墙，我隔着伞都嫌烫
-	// L1: 捅穿了，世界也就跟着变了，这种事你倒是干得挺熟练
-	// L2: 以后这种阵仗，还有的是
+	L0: Ese muro de carne del infierno. Hasta con el paraguas en medio me parece que quema
+	L1: Lo has atravesado y el mundo ha cambiado con él. Estas cosas, tú ya las haces con soltura
+	L2: De ahora en adelante, jaleos como este, te van a sobrar
 }
 
 ShenyoYharonGift: {
-	// L0: 烧了这么多年的一团火，也该熄了
-	// L1: 火和雨，本来就合不来
-	// L2: 羽毛湿了，就飘不起来了，正好
+	L0: Un fuego que lleva ardiendo tantos años. Ya le tocaba apagarse
+	L1: El fuego y la lluvia, de por sí, no se llevan
+	L2: Si las plumas se mojan, ya no flotan
 }

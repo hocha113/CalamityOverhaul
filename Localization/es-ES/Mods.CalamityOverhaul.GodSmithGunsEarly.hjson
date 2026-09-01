@@ -1,98 +1,98 @@
 GsMinishark: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: hold the trigger and the shark tastes blood; fire rate climbs while the spread runs wild.
-		At full frenzy every fourth round becomes a shark-tooth bite that tears the wound open.
-		A 50-round drum swaps in one piece; nail the sweet spot to start the next drum half-frenzied
-		''' */
-	// Frenzy: Frenzy!
+		Reforja: mantén pulsado el gatillo y al tiburón se le sube la sangre; la cadencia sube y las trayectorias se desmandan
+		Al llenar el frenesí, cada cuarto disparo se vuelve una bala de diente de tiburón que rasga la herida y cierra con un mordisco
+		El tambor de cincuenta balas se cambia de una pieza; clic derecho para cambiar cuando quieras; si aciertas la franja luminosa, el siguiente tambor arranca a medio frenesí
+		'''
+	Frenzy: ¡Marea!
 }
 
 GsPhoenixBlaster: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: every hit feeds the ember nest and the gun glows brighter; kills feed it faster.
-		At 24 sparks the next shot is reborn as a phoenix that dives, detonates, and splits into three seeking chicks.
-		Reloading breathes the stray sparks back into the chamber; a sweet-spot reload grants 8 sparks outright
-		''' */
-	// Nirvana: Nirvana!
+		Reforja: los impactos alimentan el nido de fuego; las plumas de la pistola se encienden con las brasas, y las muertes alimentan más rápido
+		Al juntar 24 brasas, el siguiente disparo se vuelve un fénix que se lanza en picado, explota y se parte en tres polluelos cazadores
+		Al recargar, las chispas que vuelan se enrollan de vuelta a la recámara; si aciertas la franja luminosa, ganas 8 brasas de golpe
+		'''
+	Nirvana: ¡Nirvana!
 }
 
-/* GsBoomstick.Desc:
+GsBoomstick.Desc:
 	'''
-	Reforged: each barrel throws 4 slugs that converge on your cursor instead of spraying.
-	Where they cross, the jaws snap shut: a delayed bite tears whatever stands at the aim point.
-	Break open to reload both shells; nail the sweet spot for +1 slug per barrel
-	''' */
+	Reforja: cada cañón lanza 4 perdigones que se cierran hacia el punto de mira, ya no rocían a lo loco
+	Los perdigones se cruzan en el punto de mira y muerden; lo que esté ahí se lleva un mordisco de verdad
+	Clic derecho: abre el cañón y recarga, los dos cartuchos salen a la vez; si aciertas la franja luminosa, el siguiente cargador lleva 1 perdigón más por cañón
+	'''
 
 GsHandgun: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: land 3 shots on the same target and the 4th becomes a pressure-point round;
-		it hits 80% harder and ignores 15 armor. The last round racks the slide with extra punch.
-		Box-magazine drills: tactical reload is nearly instant, and the sweet spot is generous
-		''' */
-	// PointShot: Pressure point!
+		Reforja: 3 impactos seguidos al mismo objetivo y el 4.º se vuelve automáticamente una bala de punto vital: el daño sube mucho e ignora 15 de defensa
+		La última bala del cargador, la que vacía la recámara, es más pesada y llega más lejos
+		Recarga de cargador: si te quedan balas, clic derecho cambia el cargador muy rápido, y la franja luminosa perfecta es la más ancha
+		'''
+	PointShot: ¡Punto vital!
 }
 
-/* GsTheUndertaker.Desc:
+GsTheUndertaker.Desc:
 	'''
-	Reforged: fell a foe, or wound one near death, and the gun collects a soul lantern
-	that drifts back to mend you once per cylinder.
-	The final chamber tolls the burial bell: a heavy blood round with doubled knockback
-	''' */
+	Reforja: mata a un enemigo o golpéalo al borde de la muerte y la pistola recoge una linterna de alma que vuela de vuelta y te cura, una vez por cilindro
+	La última recámara es una bala de campana: al acertar estalla un choque de lamento y el retroceso se duplica
+	La recarga recámara a recámara se puede interrumpir disparando cuando quieras; disparas tantas como hayas cargado
+	'''
 
 GsRedRyder: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: copper BBs ricochet off blocks twice, jingling a bell with every bounce.
-		Ring the same target five times in quick succession and the next shot is a gift round
-		that bursts into festive shrapnel. Lever-load one BB at a time; fire whenever you like
-		''' */
-	// Gift: Gift round!
+		Reforja: las canicas de cobre rebotan dos veces entre bloques, y cada salto hace sonar una campanilla
+		Si en poco tiempo suenan cinco campanillas en el mismo objetivo, el siguiente disparo se vuelve una bala de regalo que estalla en confeti y golpea duro
+		La palanca carga bala a bala; disparas tantas como hayas cargado
+		'''
+	Gift: ¡Bala de regalo!
 }
 
 GsPewMaticHorn: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: a seven-note magazine, do to ti, each pew tinted by its note.
-		Land three notes in a row on the same target to strike a chord: a paint burst in the third note's color.
-		Reloading plays the scale back up; catch the sweet spot on the high note for bigger chords
-		''' */
-	// Chord: Chord!
+		Reforja: un cargador de siete disparos sube la escala, cada uno con su color y su nota
+		Tres notas seguidas al mismo objetivo forman un acorde: una explosión de tinte del color de la tercera nota
+		Recargar es una escala ascendente; si aciertas la franja luminosa en la nota alta, los acordes de este cargador son más grandes y duelen más
+		'''
+	Chord: ¡Acorde!
 }
 
 GsSandgun: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: sustained fire heats the hopper; keep pouring and the sand melts in the chamber.
-		While molten, rounds leave as glass bolts that fly faster, pierce deeper, and shatter into razor facets.
-		Reload pours in three rustling beats; a sweet-spot pour ignites the hopper instantly
-		''' */
-	// Molten: Molten!
+		Reforja: el chorro continuo de arena calienta la tolva; al llenarse de calor, la arena se cuece en la recámara y sale como dardo de vidrio
+		Los dardos de vidrio van más rápidos y perforan más; al acertar salpican facetas con un crujido; si sueltas, se enfría poco a poco
+		Las balas de arena normales conservan su genio de siempre; si aciertas la franja luminosa al recargar, la tolva se quema a tope de golpe
+		'''
+	Molten: ¡Vidrio fundido!
 }
 
-/* GsBlowpipe.Desc:
+GsBlowpipe.Desc:
 	'''
-	Reforged: each hit on the same target threads in a venom fuse; three fuses burst into a lingering toxic cloud.
-	Reloading is catching your breath, one dart per gulp; stand still to breathe 25% faster.
-	A sweet-spot breath envenoms the next dart to detonate the fuses on contact
-	''' */
-/* GsBlowgun.Desc:
+	Reforja: cada impacto al mismo objetivo hila una mecha de veneno; al llenar tres mechas estalla una niebla tóxica que se queda
+	Recargar es recobrar el aliento, un dardo por bocanada, interrumpible cuando quieras; si te quedas quieto, el aliento vuelve un cuarto más rápido
+	Si aciertas la franja luminosa al recobrar el aliento, el siguiente dardo detona las mechas al acertar
 	'''
-	Reforged: one long breath drives 5 darts, each flying harder and faster than the last.
-	The fifth dart empties the lungs: a heavy bolt that bursts into a broad toxic cloud on impact.
-	Breathe back one dart per gulp, faster while standing still; a sweet-spot breath starts you at third-dart strength
-	''' */
-/* GsHarpoon.Desc:
+GsBlowgun.Desc:
 	'''
-	Reforged: the harpoon flies out and winds back; the reload IS the chain coming home.
-	Spear a heavy foe to set an anchor, then pull the trigger again to winch yourself to it.
-	Light foes get dragged back to you on the return pass
-	''' */
-/* GsFlareGun.Desc:
+	Reforja: un aliento largo sopla cinco dardos, cada uno más rápido y más duro que el anterior
+	El quinto vacía los pulmones y, al acertar, abre una gran nube tóxica
+	Recobrar el aliento bocanada a bocanada se puede interrumpir; quieto, el aliento vuelve más rápido; si aciertas la franja luminosa, el cargador arranca con el ímpetu de la tercera bocanada
 	'''
-	Reforged: a four-color canister, red, green, blue, then white, each flare pinning into flesh and burning there.
-	A pinned foe takes 12% more damage from you (16% for the white flare).
-	Swap canisters in two beats; a sweet-spot swap fires the next pull as a double flare
-	''' */
+GsHarpoon.Desc:
+	'''
+	Reforja: el arpón de cadena va y vuelve; recoger la cadena a la mano es recargar
+	Si clavas a un enemigo pesado, queda de ancla; pulsa el gatillo otra vez y el cabrestante te lanza hacia él
+	Si clavas a uno ligero, es al revés: en el retorno la cadena lo arrastra hasta ti
+	'''
+GsFlareGun.Desc:
+	'''
+	Reforja: cuatro bengalas en rueda, roja, verde, azul y blanca, se clavan en el enemigo y siguen ardiendo
+	Un enemigo clavado sufre un 12% más de todo tu daño; la bengala blanca, la última, lo sube al 16%
+	Clic derecho: gira y cambia el bote en dos tiempos; si aciertas la franja luminosa, el siguiente disparo suelta dos bengalas a la vez
+	'''

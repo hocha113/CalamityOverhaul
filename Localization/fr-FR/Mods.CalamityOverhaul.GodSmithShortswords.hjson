@@ -1,50 +1,14 @@
-/* GsCopperShortsword.Desc:
+GsCopperShortsword.Desc: "Reforgé : chaque coup arrache une étincelle à l'épée courte en cuivre ; à la quatrième, une petite explosion de braises jaillit de la pointe et enflamme la cible et les ennemis proches"
+GsTinShortsword.Desc: "Reforgé : enchaînez les estocs, l'échelle de l'étain monte d'une note à chaque fois ; à quatre charges, chaque estoc ouvre une ride sonore et mord un peu plus profond"
+GsIronShortsword.Desc: "Reforgé : la reprise porte une garde qui réduit de 30% les dégâts subis ; parer un coup allume la riposte, et le prochain estoc dans la seconde est un critique assuré"
+GsLeadShortsword.Desc: "Reforgé : le fil de plomb corrodé empoisonne tout ce qu'il touche ; frapper un ennemi déjà empoisonné augmente les dégâts de 25%"
+GsSilverShortsword.Desc: "Reforgé : l'argent miroir s'abreuve de lune, +25% de dégâts et +10% de vitesse d'estoc la nuit ; sous une Lune de sang, chaque coup vole un filet de vie"
+GsTungstenShortsword.Desc: "Reforgé : le noyau dense de tungstène récompense une courte charge ; un estoc plein part 50% plus loin, perce l'armure et embroche tout sur la ligne"
+GsGoldShortsword.Desc: "Reforgé : le fil doré secoue la monnaie hors des plaies, environ un coup sur quatre fait jaillir des pièces ; un kill en répand toujours une poignée"
+GsPlatinumShortsword.Desc: "Reforgé : l'estoc précède sa propre lumière et laisse une rémanence de platine sur la ligne ; un ennemi qui la traverse prend 40% de dégâts"
+GsGladius.Desc: 
 	'''
-	Reforged: every hit strikes a spark off the copper edge;
-	the fourth spark bursts into flame at the point, igniting nearby foes
-	''' */
-/* GsTinShortsword.Desc:
+	Reforgé : drill de légion à trois temps, deux estocs vifs puis un estoc lourd à pas de bouclier ;
+	tenez le rythme et chaque estoc s'accélère, jusqu'à trois charges de tempo
 	'''
-	Reforged: chain your thrusts to climb the tin scale, each note higher than the last;
-	at full chime every thrust rings out a rippling pulse and bites a little deeper
-	''' */
-/* GsIronShortsword.Desc:
-	'''
-	Reforged: the recovery stance holds a guard that blunts incoming blows by 30%;
-	block a hit to ready a riposte, and your next thrust within a second strikes true
-	''' */
-/* GsLeadShortsword.Desc:
-	'''
-	Reforged: the corroded lead edge poisons whatever it touches;
-	striking an already poisoned foe bites 25% deeper into the rot
-	''' */
-/* GsSilverShortsword.Desc:
-	'''
-	Reforged: mirror-polished silver that drinks moonlight, striking 25% harder and 10% faster at night;
-	under a blood moon each hit steals back a sliver of life
-	''' */
-/* GsTungstenShortsword.Desc:
-	'''
-	Reforged: a dense tungsten core rewards a brief hold before the thrust;
-	a full charge lunges half again as far, punching through armor and everything in line
-	''' */
-/* GsGoldShortsword.Desc:
-	'''
-	Reforged: gilded edge that shakes loose coins, one hit in four rattles change from the wound;
-	kills always spill a handful
-	''' */
-/* GsPlatinumShortsword.Desc:
-	'''
-	Reforged: the thrust outruns its own light, leaving a platinum afterimage hanging along the line;
-	foes that brush the lingering light take 40% damage
-	''' */
-/* GsGladius.Desc:
-	'''
-	Reforged: legion drill in three beats, two quick thrusts then a shield-step heavy;
-	keep the rhythm and each thrust comes faster, up to three tempo stacks
-	''' */
-/* GsRuler.Desc:
-	'''
-	Reforged: discipline demands exact measurement, land the very tip for a 1.6x graded strike;
-	sloppy hits closer to the hand are marked down to 0.85x
-	''' */
+GsRuler.Desc: "Reforgé : la discipline exige la mesure exacte ; toucher du bout de la règle vaut 1.6 fois, une frappe trop près de la main ne compte que 0.85"

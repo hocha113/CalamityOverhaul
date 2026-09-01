@@ -1,100 +1,76 @@
-/* GsSpear.Desc:
+GsSpear.Desc: Перековка: три укола по уставу, каждый глубже и быстрее; третий такт шагает вперёд, как старый солдат
+GsTrident.Desc: Перековка: каждый укол брызжет из раны тремя струями воды по ближним; в воде или под дождём прилив сильнее — струи быстрее и дальше
+GsThunderSpear.Desc: Перековка: на полном выпаде острие кратко копит заряд; попадание в этот миг бьёт цепью в ближайшего другого врага; под дождём цепь берёт двоих
+GsTheRottedFork.Desc: Перековка: два укола — быстрый, затем тяжёлый; тяжёлый выдавливает из раны гнойный шар, что падает в едкую лужу
+GsDarkLance.Desc:
 	'''
-	Reforged: drill-manual thrusts in three beats, each one deeper and faster than the last;
-	the third beat steps into the strike like a veteran
-	''' */
-/* GsTrident.Desc:
+	Перековка: удерживайте заряд — чёрное пламя обвивает древко; отпустите — укол дальше и злее;
+	полный заряд выбрасывает из раны три теневых огня, что охотятся на ближних
 	'''
-	Reforged: every strike bursts three jets of seawater from the wound;
-	while wet or in the rain the tide rises, jets fly faster and farther
-	''' */
-/* GsThunderSpear.Desc:
+GsSwordfish.Desc: Перековка: каждый укол рывком несёт вас вперёд по линии острия, в воде вдвое дальше; в воде вы как рыба, урон +15%
+GsObsidianSwordfish.Desc: Перековка: попадание поджигает и сыплет обсидиановой крошкой; когда вы горите или только что из лавы, ядро копья теплеет, урон +15%
+GsCobaltNaginata.Desc:
 	'''
-	Reforged: the tip charges while held at full extension; land a hit during that moment
-	and lightning arcs to the nearest other enemy, or two in the rain
-	''' */
-/* GsTheRottedFork.Desc:
+	Перековка: два такта нагинаты — прямой укол, затем широкий замах
+	Замах режет дугу, куда прямой укол не достаёт
 	'''
-	Reforged: two-beat strikes, a quick jab then a heavy squeeze;
-	the heavy beat squeezes a glob of gore from the wound that splats into a corroding pool
-	''' */
-/* GsDarkLance.Desc:
+GsPalladiumPike.Desc:
 	'''
-	Reforged: hold to feed the lance with devouring shadowflame, release to strike farther and harder;
-	a fully charged hit bursts three shadow embers from the wound
-	''' */
-/* GsSwordfish.Desc:
+	Перековка: каждый укол кладёт слой жизни на палладиевое лезвие
+	На 5 слоях вспышка сама лечит держащего на 5 здоровья
 	'''
-	Reforged: every thrust leaps you forward along the strike, twice as far underwater;
-	while wet the swordfish is in its element and deals 15% more damage
-	''' */
-/* GsObsidianSwordfish.Desc:
+GsMythrilHalberd.Desc:
 	'''
-	Reforged: strikes set enemies on fire and burst obsidian shards from the wound;
-	while you are burning or soaked in lava the core reheats, dealing 15% more damage
-	''' */
-/* GsCobaltNaginata.Desc:
+	Перековка: два укола — лёгкий быстрый, тяжёлый глубокий
+	Тяжёлый выпускает короткий мифриловый полумесяц, пронзает до двух целей
 	'''
-	Reforged: alternating polework, a straight thrust then a wide cobalt sweep;
-	the sweep carves an arc where the thrust line cannot reach
-	''' */
-/* GsPalladiumPike.Desc:
+GsOrichalcumHalberd.Desc:
 	'''
-	Reforged: each hit stores a charge of vigor in the warm palladium edge;
-	at five charges the spear bursts them, restoring 5 life to its wielder
-	''' */
-/* GsMythrilHalberd.Desc:
+	Перековка: каждый укол распускает из раны два охотящихся лепестка
+	Лепестки по спирали кусают ближних
 	'''
-	Reforged: two-beat halberd work, a quick jab then a deep heavy thrust;
-	the heavy beat looses a short-ranged mythril crescent that pierces twice
-	''' */
-/* GsOrichalcumHalberd.Desc:
+GsAdamantiteGlaive.Desc:
 	'''
-	Reforged: every thrust that lands blooms two homing petals from the wound,
-	each spiraling after nearby prey
-	''' */
-/* GsAdamantiteGlaive.Desc:
+	Перековка: последняя четверть клинка — лакомство против брони
+	Попадание остриём сильно режет броню и стопорит врага; древком — обычный укол
 	'''
-	Reforged: the last quarter of the blade is a sweet spot;
-	landing the very tip shatters armor and staggers, the shaft is just a poke
-	''' */
-/* GsTitaniumTrident.Desc:
+GsTitaniumTrident.Desc:
 	'''
-	Reforged: each thrust casts two parallel shade-tridents above and below the true blade,
-	flying a short lane before dissolving
-	''' */
-/* GsGungnir.Desc:
+	Перековка: каждый выпад рождает сверху и снизу параллельные титановые тени-копья
+	Тени летят коротко и гаснут
 	'''
-	Reforged: a stately three-beat thrust crowned by a golden finisher;
-	right click hurls the oath-lance as a piercing bolt of light that never misses its sworn prey
-	''' */
-/* GsChlorophytePartisan.Desc:
+GsGungnir.Desc:
 	'''
-	Reforged: while the blade dwells at full reach, spores gather on its tip;
-	as the spear withdraws it looses a drifting spore cloud that hunts and poisons
-	''' */
-/* GsMushroomSpear.Desc:
+	Перековка: три укола божественной мощи, третий с золотым кольцевым ударом;
+	ПКМ бросает копьё клятвы — оно сразу ловит добычу на линии, гнётся, пронзает и не промахивается
 	'''
-	Reforged: the heavy second beat plants a glowing spore mine in the wound;
-	it bursts moments later, harming foes around and feeding 2 life back to the wielder
-	''' */
-/* GsNorthPole.Desc:
+GsChlorophytePartisan.Desc:
 	'''
-	Reforged: quick thrusts fling spiraling frost crystals, and the third strike plants a polar pillar
-	at the wound that rains icicles; the dwell wreathes the tip in freezing mist
-	''' */
-/* GsJoustingLance.Desc:
+	Перековка: пока клинок застыл на дальней точке, споры стекаются к острию
+	В миг возврата вылетает медленное самонаводящееся облако спор и травит цель
 	'''
-	Reforged: hold to couch the lance, speed builds momentum, a full-tilt strike deals up to 2.4x damage;
-	the longer you ride at full tilt, the more bonus damage the next strike carries
-	''' */
-/* GsShadowJoustingLance.Desc:
+GsMushroomSpear.Desc:
 	'''
-	Reforged: charging at speed leaves shadowflame embers along your path;
-	foes touching an ember take 25% damage and catch shadowflame
-	''' */
-/* GsHallowJoustingLance.Desc:
+	Перековка: тяжёлый второй такт сажает на цель светящуюся грибную мину
+	Мину спустя миг взрывается, бьёт окружение и лечит держащего на 2 здоровья
 	'''
-	Reforged: at full tilt, a prismatic star falls on the nearest foe every 0.7s for 40% damage;
-	full-tilt strikes burst with holy prismatic light
-	''' */
+GsNorthPole.Desc:
+	'''
+	Перековка: быстрый укол швыряет кружащийся иней; третий ставит в ране столб полюса, с вершины сыплется град сосулек;
+	удерживая копьё, острие дышит стужей — попавшие получают морозный огонь
+	'''
+GsJoustingLance.Desc:
+	'''
+	Перековка: удерживайте ЛКМ — пика наперевес; чем быстрее едете, тем полнее натиск, полный удар до 2.4× урона
+	Чем дольше держите полный натиск, тем выше добавка следующего удара
+	'''
+GsShadowJoustingLance.Desc:
+	'''
+	Перековка: удерживайте ЛКМ — пика наперевес; на высокой скорости путь оставляет теневой дожор
+	Касание дожора наносит 25% урона и поджигает теневым огнём
+	'''
+GsHallowJoustingLance.Desc:
+	'''
+	Перековка: удерживайте ЛКМ — пика наперевес; на полном натиске примерно каждые 0.7 с радужная звезда падает на ближайшего врага, 40% урона
+	Полный удар вспыхивает святой призмой
+	'''

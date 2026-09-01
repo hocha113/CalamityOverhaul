@@ -2,23 +2,23 @@ HalibutOverride: {
 	FishByStudied:
 		'''
 		[i:CalamityOverhaul/HalibutItem]:
-		Este pez puede ser investigado.
+		Este pez puede ser investigado
 		'''
 	FishOnStudied:
 		'''
 		[i:CalamityOverhaul/HalibutItem]:
-		Este pez ha sido investigado.
+		Este pez ya ha sido investigado
 		'''
-	DisplayName: Halibut gigante
-	Tooltip: Convierte balas de mosquete en corrientes oceánicas.
-	// KeyLabelDomain: Domain Expansion
-	// KeyLabelClone: Past Self Invasion
-	// KeyLabelSuperpose: Superposition
-	// KeyLabelRestart: Self-Restart
-	// KeyLabelRestartWide: Wide-Area Restart
-	// KeyLabelTeleport: Domain Teleport
-	// KeyLabelWheel: Skill Wheel
-	// KeyLabelAtlas: Abyss Atlas
+	DisplayName: Fletán
+	Tooltip: Las balas de mosquete se transforman en chorros oceánicos
+	KeyLabelDomain: Despliegue de dominio
+	KeyLabelClone: Invasión del yo pasado
+	KeyLabelSuperpose: Superposición
+	KeyLabelRestart: Autorreinicio
+	KeyLabelRestartWide: Reinicio de gran alcance
+	KeyLabelTeleport: Teletransporte de dominio
+	KeyLabelWheel: Menú de habilidades
+	KeyLabelAtlas: Atlas abisal
 }
 
 HalibutText: {
@@ -26,78 +26,78 @@ HalibutText: {
 		TitleText: A T L A S  A B I S A L
 		NavSea: Mar de habilidades
 		NavEyes: Ojos del dominio
-		TierName0: Bajíos · Zona iluminada
-		TierName1: Alta mar · Zona crepuscular
-		TierName2: Mar profundo · Zona de medianoche
-		TierName3: Abismo · Zona sin luz
-		DockLabel: Equipamiento {0} / {1} · Clic para seleccionar
+		TierName0: Bajíos · Capa de luz
+		TierName1: Alta mar · Capa crepuscular
+		TierName2: Mar profundo · Capa de penumbra
+		TierName3: Abismo · Capa sin luz
+		DockLabel: Equipo {0} / {1} · Clic izquierdo para elegir · Clic derecho para quitar
 		LockedNodeName: Silueta desconocida
 		LockedNodeHint: Investiga {0} en el altar de investigación para iluminar esta habilidad
 		EquipBtn: Equipar
 		UnequipBtn: Quitar
-		SelectBtn: Seleccionar
-		SelectedTag: Activo
-		// EquippedTag: Equipped
-		// NodeEquipHint: Double-click to equip · Right-click works too · Or drag it into the loadout
-		// NodeUnequipHint: Already in the loadout · Right-click to remove
-		// DockSlotHint: Left-click to select · Right-click to remove · Drag to reorder
-		// DockDropHint: Release to slot it in
-		// DockRemoveHint: Release to remove
-		LoadoutFullHint: El equipamiento está lleno
+		SelectBtn: Elegir
+		SelectedTag: Actual
+		EquippedTag: Equipado
+		NodeEquipHint: Doble clic para equipar · Clic derecho también vale · O arrástralo al equipo
+		NodeUnequipHint: Ya está en el equipo · Clic derecho para quitar
+		DockSlotHint: Clic izquierdo para elegir · Clic derecho para quitar · Arrastra para cambiar de sitio
+		DockDropHint: Suelta para colocar
+		DockRemoveHint: Suelta para quitar
+		LoadoutFullHint: El equipo está lleno
 		UnlockFishLine: Fuente de investigación: {0}
 		AltarTitle: Altar de investigación
-		AltarHint: Haz clic en el altar para elegir un pez investigable de tu inventario.
+		AltarHint: Haz clic en el altar y elige un pez investigable del inventario para estudiarlo
 		StudyPickerTitle: Enviar a investigación
-		StudyPickerCount: Peces investigables · {0}
+		StudyPickerCount: Peces investigables · {0} especies
 		StudyPickerHint: Haz clic en un pez para colocarlo en el altar e investigarlo
-		StudyPickerEmpty: No hay peces investigables en tu inventario
-		StudyPlaceHint: Clic para colocar en el altar de investigación
+		StudyPickerEmpty: No hay peces investigables en el inventario
+		StudyPlaceHint: Clic para enviarlo al altar de investigación
 		StudyingFormat: Investigando: {0}
-		StudyReclaim: Recuperar
-		DragHint: Mantén y arrastra habilidades al equipamiento · Rueda para descender
-		LayerStateFormat: Capa del dominio {0}
-		UnlockCountFormat: Iluminado {0} / {1}
+		StudyReclaim: Retirar
+		DragHint: Doble clic en un pez para equiparlo · Arrastra para cambiar de sitio · Rueda para descender
+		LayerStateFormat: Dominio capa {0}
+		UnlockCountFormat: Iluminadas {0} / {1}
 	}
 
 	HalibutSkillWheel: {
-		ReleaseHint: Suelta {0} para confirmar
+		ReleaseHint: Suelta {0} para elegir la habilidad
 		CancelHint: Clic derecho para cancelar
-		NoSelection: Ninguna habilidad seleccionada
+		NoSelection: Ninguna habilidad elegida
 	}
 
 	HalibutHud: {
-		OpenAtlasHint: Clic izquierdo o {0} para abrir el Atlas abisal, {1} para invocar la rueda de habilidades
+		OpenAtlasHint: Clic izquierdo o {0} para abrir el Atlas abisal, {1} para llamar al menú de habilidades
 		DomainLayerFormat: Capas del dominio {0} / 10
 		StudyingLabel: Investigando
 	}
 
 	HalibutHudLead: {
-		// AskTitle: Shall I Walk You Through It?
-		// AskBody: The Abyssal Atlas, the Research Altar, the loadout and the wheel form one chain, and the two middle links are easy to miss on your own. You will only be asked this once
-		// AskPrompt: Walk through it now, or accept the Pilot Chart and unroll it yourself later
-		// AcceptBtn: Walk Me Through
-		// DeclineBtn: Not Now
-		// DeclineNotice: The Pilot Chart has been left with you; use it to open the guide any time
+		AskTitle: ¿Quieres que te lo enseñe primero?
+		AskBody: El Atlas abisal, el Altar de investigación, las ranuras de habilidades y el menú radial forman una sola cadena; si no los ves una vez, es fácil saltarse los dos eslabones del medio. Esta pregunta solo se hace una vez
+		AskPrompt: Recórrelo ahora; o quédate la Carta de piloto y ábrela tú más adelante
+		AcceptBtn: Enséñame
+		DeclineBtn: No hace falta
+		DeclineNotice: La Carta de piloto se ha quedado contigo; úsala para abrir la guía cuando quieras
 		HudTitle: Ojo del abismo
-		HudBody: Mientras sostengas el Halibut gigante, este ojo permanece abajo a la izquierda y muestra habilidad, resurrección y capas del dominio
-		HudPrompt: Haz clic izquierdo en el ojo, o pulsa {0} para abrir el Atlas abisal
-		HudOpenBtn: Abrir Atlas
+		HudBody: Mientras sostengas el Fletán, permanece abajo a la izquierda y muestra la habilidad actual, la Resurrección del Abismo y las capas del dominio
+		HudPrompt: Clic izquierdo en el ojo, o pulsa {0} para abrir el Atlas abisal
+		HudOpenBtn: Abrir el atlas
 		ResearchTitle: Altar de investigación
-		ResearchBody: Coloca un pez capturado en el altar para investigarlo y desbloquear la habilidad correspondiente
-		ResearchPrompt: Haz clic en el Altar de investigación resaltado y elige un pez para estudiar
-		EquipTitle: Equipamiento
-		EquipBody: Esa fila de ranuras de abajo es tu equipamiento; las habilidades investigadas van aquí, hasta 10
-		EquipWaiting: Investigando… la habilidad se añadirá al equipamiento al terminar
-		WheelTitle: Rueda de habilidades
-		WheelBody: Con una habilidad equipada, cambia la habilidad activa al instante en combate
-		WheelPrompt: Mantén {0} para invocar la rueda de habilidades — pruébalo
+		ResearchBody: Mete un pez capturado en el altar para investigarlo y desbloquear la habilidad de dominio correspondiente
+		ResearchPrompt: Haz clic en el Altar de investigación resaltado y elige un pez para investigarlo
+		EquipTitle: Ranuras de habilidades
+		EquipBody: Esa fila de huecos al pie de la pantalla es el equipo; las habilidades investigadas van ahí, hasta 10
+		EquipWaiting: Investigando… al terminar, la habilidad se colocará sola en el equipo
+		WheelTitle: Menú de habilidades
+		WheelBody: Tras equipar habilidades, puedes cambiar al instante la que usas en combate. Si hay varios menús radiales a la vez, el cursor se queda con el más cercano
+		WheelPrompt: Mantén pulsado {0} para llamar al menú de habilidades y pruébalo
 		SkipBtn: Saltar
 	}
 
 	DomainUI: {
-		TitleText: Dominio abisal
+		TitleText: Dominio oceánico
 		ExtraEyeTitleText: La  décima  capa
-		CrashedLabelText: Sistema bloqueado
+		CrashedLabelText: Bloqueado
 		EyeDesc1:
 			'''
 			El primer ojo se abre y desgarra una grieta en el lado oscuro de tu conciencia.
@@ -120,7 +120,7 @@ HalibutText: {
 		EyeDesc3:
 			'''
 			Un dolor desgarrador atraviesa tu frente; tres ojos espectrales azules, de luz funesta, ruedan bajo la piel.
-			La luz empieza a ser devorada por este espacio y los susurros abisales ya no parecen alucinaciones, sino masticar nítido.
+			La luz empieza a ser devorada por este espacio y los susurros abisales ya no parecen alucinaciones, sino un masticar nítido.
 			[Line]
 			Pulsa [Halibut_Domain] para abrir o cerrar el dominio.
 			Pulsa [Halibut_Teleport] para teletransportarte dentro del dominio.
@@ -139,12 +139,12 @@ HalibutText: {
 			'''
 			Tu piel se vuelve pálida e hinchada, como un cadáver sumergido durante mucho tiempo.
 			Incontables ojos inquietos nadan bajo la piel como peces y convergen en tu frente, abriendo un monstruoso ojo único.
-			Las cinco capas del dominio se fusionan por completo y obtienes el poder de retorcer la causalidad en el espacio distorsionado.
+			Las cinco capas del dominio se fusionan por completo y obtienes el poder de retorcer la causalidad dentro del dominio distorsionado.
 			[Line]
 			Pulsa [Halibut_Domain] para abrir o cerrar el dominio.
 			Pulsa [Halibut_Teleport] para teletransportarte dentro del dominio.
 			Pulsa [Halibut_Clone] para que el pasado invada el presente.
-			Pulsa [Halibut_Restart] para reiniciarte.
+			Pulsa [Halibut_Restart] para el Autorreinicio.
 			'''
 		EyeDesc6:
 			'''
@@ -155,7 +155,7 @@ HalibutText: {
 			Pulsa [Halibut_Domain] para abrir o cerrar el dominio.
 			Pulsa [Halibut_Teleport] para teletransportarte dentro del dominio.
 			Pulsa [Halibut_Clone] para que el pasado invada el presente.
-			Pulsa [Halibut_Restart] para reiniciarte.
+			Pulsa [Halibut_Restart] para el Autorreinicio.
 			'''
 		EyeDesc7:
 			'''
@@ -166,7 +166,7 @@ HalibutText: {
 			Pulsa [Halibut_Teleport] para teletransportarte dentro del dominio.
 			Pulsa [Halibut_Clone] para que el pasado invada el presente.
 			Pulsa [Halibut_Restart] para un reinicio de gran alcance.
-			Pulsa [Halibut_Superposition] para usar el Ataque de Superposición.
+			Pulsa [Halibut_Superposition] para usar el ataque de superposición.
 			'''
 		EyeDesc8:
 			'''
@@ -177,7 +177,7 @@ HalibutText: {
 			Pulsa [Halibut_Teleport] para teletransportarte dentro del dominio.
 			Pulsa [Halibut_Clone] para que el pasado invada el presente.
 			Pulsa [Halibut_Restart] para un reinicio de gran alcance.
-			Pulsa [Halibut_Superposition] para usar el Ataque de Superposición.
+			Pulsa [Halibut_Superposition] para usar el ataque de superposición.
 			'''
 		EyeDesc9:
 			'''
@@ -188,41 +188,41 @@ HalibutText: {
 			Pulsa [Halibut_Teleport] para teletransportarte dentro del dominio.
 			Pulsa [Halibut_Clone] para que el pasado invada el presente.
 			Pulsa [Halibut_Restart] para un reinicio de gran alcance.
-			Pulsa [Halibut_Superposition] para usar el Ataque de Superposición.
+			Pulsa [Halibut_Superposition] para usar el ataque de superposición.
 			'''
 		EyeDesc10:
 			'''
 			Las capas pierden sentido; uno es infinito.
 			Te has convertido en el abismo, y el abismo eres tú.
 			Donde cae tu mirada nace un nuevo Génesis.
-			Has llegado al final de esta orilla y te has convertido en la deidad del otro lado.
+			Has llegado al final de esta orilla y te has convertido en la deidad de la otra.
 			[Line]
 			Pulsa [Halibut_Domain] para abrir o cerrar el dominio.
 			Pulsa [Halibut_Teleport] para teletransportarte dentro del dominio.
 			Pulsa [Halibut_Clone] para que el pasado invada el presente.
 			Pulsa [Halibut_Restart] para un reinicio de gran alcance.
-			Pulsa [Halibut_Superposition] para usar el Ataque de Superposición.
+			Pulsa [Halibut_Superposition] para usar el ataque de superposición.
 			Mantén pulsado el clic izquierdo para iniciar superposición y reinicio infinitos.
 			'''
 		LayerTitleFormat: Capa {0}
 	}
 
 	ResurrectionUI: {
-		TitleText: Estado de resurrección abisal
+		TitleText: Estado de resurrección del Abismo
 		LinePercentFormat: Porcentaje : {0:F1}%
 		LineValueFormat: Valor de resurrección : {0:F1} / {1:F1}
-		LineRateFormat: Velocidad : {0:F3}/s
+		LineRateFormat: Velocidad   : {0:F3}/s
 		HeaderSummaryText: Evaluación de la situación actual
 		RateLevelVeryLow: Silencio de muerte
 		RateLevelLow: Susurros
 		RateLevelMedium: Inquietud
 		RateLevelHigh: Ebullición
-		RateLevelDanger: Ruptura
-		Phase1: La resurrección sigue en calma; el abismo permanece en silencio.
-		Phase2: Se oyen mareas inexistentes; los extremos del cuerpo empiezan a enfriarse.
-		Phase3: Las alucinaciones se intensifican. La presión del mar profundo pesa sobre ojos y corazón.
-		Phase4: La lógica de la realidad se derrumba; algo terrorífico y frío reescribe tu existencia.
-		Phase5: Se ha roto el punto crítico. La humanidad se disipa; estás a punto de formar parte de ese mar de cadáveres.
+		RateLevelDanger: Rotura de dique
+		Phase1: La resurrección sigue en calma; el abismo permanece en silencio
+		Phase2: Se oyen mareas inexistentes; los extremos del cuerpo empiezan a enfriarse
+		Phase3: Las alucinaciones se intensifican. La presión del mar profundo pesa sobre ojos y corazón
+		Phase4: La lógica de la realidad se derrumba; algo terrorífico y frío reescribe tu existencia
+		Phase5: Se ha roto el punto crítico. La humanidad se disipa; estás a punto de formar parte de ese mar de cadáveres
 		Trend1: Casi estancado
 		Trend2: Filtración lenta
 		Trend3: Oleada continua
@@ -236,27 +236,27 @@ SHPCOverride: {
 	DisplayName: SHPC
 	Tooltip:
 		'''
-		Clic izquierdo para disparar tres rayos láser
-		Mantén clic derecho para cargar energía
-		Todos los ataques pueden ser potenciados por el Dominio
+		Clic izquierdo para disparar tres haces láser
+		Mantén pulsado el clic derecho para cargar
+		Todos los ataques pueden potenciarse con el dominio
 		'''
-	// KeyLabelDomain: Domain Expansion
-	// KeyLabelWheel: Domain Wheel
-	// KeyLabelTeleport: Domain Teleport
-	// KeyLabelRestart: Self-Restart
-	// KeyLabelBanish: Banish
-	// KeyLabelFreeze: Freeze
+	KeyLabelDomain: Despliegue de dominio
+	KeyLabelWheel: Disco de dominio
+	KeyLabelTeleport: Teletransporte de dominio
+	KeyLabelRestart: Autorreinicio
+	KeyLabelBanish: Destierro
+	KeyLabelFreeze: Congelación
 }
 
 LegendUpgradeManagerSystem: {
 	QuestManagerHint: Pulsa [{KEY}] para abrir la lista de misiones
 	TrialPassed: Superada
-	World_Text0: Mundo mejorado anteriormente: <{0}> | Nivel registrado: <{1}>
+	World_Text0: Último mundo mejorado:<{0}>|Nivel registrado:<{1}>
 	Text_Lang_0: Prueba:
 }
 
-TrialBlockedHint: La siguiente prueba requiere que el contenido correspondiente esté activado.
-// TrialFrontierHint: Levels settle in order, and this trial is the current stop. Later trials cleared early are recorded first, then counted together once this one is done.
+TrialBlockedHint: La siguiente prueba requiere que el contenido correspondiente esté activado
+TrialFrontierHint: Los niveles se liquidan en orden, y esta prueba es el tope actual. Las de después que ya hayas hecho quedan apuntadas, y se contabilizan juntas al completar esta.
 
 HalibutTrialQuestLine: {
 	QuestCategory: Leyenda del fletán
@@ -271,7 +271,7 @@ HalibutTrialQuestLine: {
 	Trial_6: Pilas para las ruinas
 	Trial_7: Cara oculta de la luna
 	Trial_8: Ducha fría
-	Trial_9: Espectro indomable
+	Trial_9: Almas indomables
 	Trial_10: Matadioses
 	Trial_11: Subida de temperatura
 	Trial_12: Cumbre de la creación
@@ -281,7 +281,7 @@ HalibutTrialQuestLine: {
 	EventActiveFormat: "{0}: en curso"
 	TextDictionary_Content_0: Amigo, vamos a desafiar a esa enorme criatura terrestre pegajosa
 	TextDictionary_Content_1: Hay un gran ojo mirándonos, eso es muy grosero, necesitamos enseñarle una lección
-	TextDictionary_Content_2: En los lugares llenos de vida no solo hay abismos, también hay junglas, amigo, necesitamos visitar a la reina de las abejas
+	TextDictionary_Content_2: En los lugares llenos de vida no solo hay abismos, también hay junglas, amigo, necesitamos visitar a la jefa de las abejas de allí
 	TextDictionary_Content_3:
 		'''
 		Los huesos malditos que no se disuelven, necesitamos dejarlos descansar en paz
@@ -290,47 +290,47 @@ HalibutTrialQuestLine: {
 	TextDictionary_Content_4:
 		'''
 		¿Sabes cómo se mueven los inorgánicos? Una vez construí una enorme máquina submarina que podía disparar misiles de burbujas,
-		y un número interminable de torpedos de fusión térmica, la usé para cazar enormes criaturas que viven a 10,000 metros bajo el mar, hasta que encontré...
-		Oh, me estoy desviando: creo que en un momento llegarán cuatro amigos mecánicos a visitarnos, necesitamos prepararnos
-		Además, en las aguas contaminadas sobre el abismo, hay un gusano marino gigante mutado que solía ser el guardián de la Universidad del Mar de Azufre
-		Debería seguir siendo bastante amigable, podemos ir a tomar té por la tarde con él
+		y un número interminable de torpedos de fusión térmica, la usé para cazar enormes criaturas que viven a 10000 metros bajo el mar, hasta que encontré...
+		Ah, me estoy desviando: creo que en un momento llegarán cuatro amigos mecánicos a visitarnos, necesitamos prepararnos
+		Además, en las aguas contaminadas sobre el abismo, hay un gusano marino gigante mutado que solía ser el portero de la Universidad del Mar de Azufre
+		Debería seguir siendo bastante amigable, podemos ir a tomar el té de la tarde con él
 		'''
 	TextDictionary_Content_5:
 		'''
-		La siguiente muestra de estudio es el clon.
-		Una réplica torpe, sí, pero cargada de presencia de azufre... material excelente para el análisis.
+		La siguiente muestra de estudio es el clon
+		Una réplica torpe, sí, pero cargada de presencia de azufre y de lo extraño: material excelente para el análisis
 		… Ah, cierto, una cosa más.
 		Me encanta la jungla; es casi mi segundo hogar, rebosante de energía vital,
-		a la altura del fondo del abismo. Pero primero tenemos que encontrar la forma de liberarlos.
-		¿Recuerdas esos enormes capullos subterráneos? Ve a recogerlos; me ayudará con el título de botánica.
+		a la altura del fondo del abismo. Pero primero tenemos que encontrar la forma de liberarlos
+		¿Recuerdas esos enormes capullos subterráneos? Ve a recogerlos; me ayudará a sacar el título de botánica
 		'''
 	TextDictionary_Content_6:
 		'''
-		Me gusta la arqueología. La última vez que recorrí la jungla vi unas ruinas enormes.
-		Ahora deberíamos tener la llave para abrir esa puerta. Vamos a echar un vistazo.
-		Dentro hay una máquina ancestral esperando que le pongamos pilas, como el mando de un aire acondicionado.
+		Me gusta la arqueología. La última vez que recorrí la jungla vi unas ruinas enormes
+		Ahora deberíamos tener la llave para abrir esa puerta. Vamos a echar un vistazo,
+		dentro hay una máquina ancestral esperando que le pongamos pilas, como el mando de un aire acondicionado
 		'''
 	TextDictionary_Content_7:
 		'''
 		¿Sabes el secreto de la cara oculta de la luna? Allí hay un gran pulpo, una esponja y una estrella de mar...
-		Oh, quise decir que la crisis lunar se avecina
+		Ah, quise decir que la crisis lunar se avecina
 		'''
 	TextDictionary_Content_8:
 		'''
-		Ahora es la crisis solar, un poderoso ente energético ha escapado del lado oscuro del sol hacia el núcleo de este planeta,
+		Ahora toca la crisis solar, un poderoso ente energético ha escapado del lado oscuro del sol hacia el núcleo de este planeta,
 		necesitamos seguir bajando, encontrarlo y darle un baño frío
 		'''
 	TextDictionary_Content_9:
 		'''
-		Las innumerables almas indomables de antiguas batallas se han reunido ahora, se esconden en las profundidades de la mazmorras y están muy inquietas.
-		Podemos ir a matar algunas almas solitarias, esto podría hacer que la pequeña tormenta en el espacio llegue antes, pero también puede atraerlas
+		Las innumerables almas indomables de antiguos campos de batalla se han reunido, se esconden en lo hondo de la mazmorra y ahora están muy inquietas.
+		Podemos ir allí a matar algunas almas sueltas, esto podría adelantar la pequeña tormenta del subespacio, pero también puede atraerlas
 		'''
 	TextDictionary_Content_10:
 		'''
 		Hay una clase de seres que nacen y crecen en el espacio, sus cuerpos pueden soportar radiaciones cósmicas y energías de nivel celeste
-		Hace mucho tiempo nos encontramos con uno, y ahora, debemos enfrentar al más destacado entre ellos, uno que dice haber devorado a dioses
+		Hace mucho nos encontramos con uno, y ahora debemos enfrentar al más destacado entre ellos, uno que dice haber devorado dioses
 		'''
-	TextDictionary_Content_11: La temperatura de la jungla ha aumentado últimamente, creo que ese poderoso dragón ha vuelto
+	TextDictionary_Content_11: La temperatura de la jungla ha subido últimamente, creo que ese poderoso dragón ha vuelto
 	TextDictionary_Content_12:
 		'''
 		Nos enfrentaremos a la cúspide de los seres inorgánicos, tienen un gran poder de fuego y defensa.
@@ -341,7 +341,7 @@ HalibutTrialQuestLine: {
 		Hay una piedra especial en el abismo, úsala para enfrentar la batalla final
 		Y hay un poderoso ser marino que destruyó mi máquina, vamos a buscarlo para vengarnos
 		'''
-	TextDictionary_Content_14: Honestamente, quiero regresar al mar
+	TextDictionary_Content_14: Sinceramente, quiero volver al mar una vez
 }
 
 SHPCTrialQuestLine: {
@@ -353,7 +353,7 @@ SHPCTrialQuestLine: {
 	Trial_2: Origen del parasitismo
 	Trial_3: Dios del gel
 	Trial_4: Ruptura del sello
-	Trial_5: Contaminación de las profundidades
+	Trial_5: Cuarentena de mutación
 	Trial_6: Muestreo de azufre
 	Trial_7: Gusano mecánico
 	Trial_8: Desmontaje del doble ojo
@@ -362,123 +362,123 @@ SHPCTrialQuestLine: {
 	Trial_11: Estudio ecológico
 	Trial_12: Tecnología ancestral
 	Trial_13: Coordenadas interestelares
-	Trial_14: Secretos de la cara oculta lunar
+	Trial_14: Secretos de la cara oculta
 	Trial_15: Expedición al núcleo
 	Trial_16: Observación de espectros
-	Trial_17: El Devorador de Dioses
-	Trial_18: Pluma del descendiente dracónico
+	Trial_17: Devorador de dioses
+	Trial_18: Pluma del linaje dracónico
 	Trial_19: Visita al creador
 	Trial_20: Auditoría de la bruja
 	Trial_21: Batalla del Término
 	TrialSummary_0:
 		'''
 		Maestro, el primer objetivo es ese ojo gigante flotante.
-		Por favor, derrótelo. Necesito datos completos de sus mecanismos antigravitatorios.
+		Por favor, derrótelo. Necesito los datos completos de su mecanismo antigravedad.
 		'''
 	TrialSummary_1:
 		'''
-		Los gusanos gigantes en la tierra corrompida y los cerebros de carne son muestras biológicas de calidad.
-		Maestro, corta sus tejidos centrales. Debo analizar el mecanismo de propagación de esta erosión ecológica.
+		El gusano gigante de la tierra corrompida y el cerebro de carne son muestras biológicas de calidad.
+		Maestro, corte sus tejidos centrales. Debo analizar el mecanismo de propagación de esta erosión ecológica.
 		'''
 	TrialSummary_2:
 		'''
-		El cerebro de la corrupción y el agregado carnoso son fuentes infecciosas con mente de colmena.
-		Maestro, elimínalos. Su patrón parasitario coordinado ya está en la lista de recolección.
+		El cerebro de la corrupción y el agregado carnoso son fuentes infecciosas con mente de enjambre.
+		Maestro, elimínelos. Su patrón parasitario coordinado ya está en la lista de recolección.
 		'''
 	TrialSummary_3:
 		'''
 		El agregado gelatinoso: un objetivo de nivel divino sin sistema nervioso central ni forma fija.
-		Maestro, destroza su núcleo. Registraré adecuadamente esta arquitectura caótica.
+		Maestro, destroce su núcleo. Registraré esta arquitectura caótica como corresponde.
 		'''
 	TrialSummary_4:
 		'''
-		Un muro de carne atraviesa las profundidades del Inframundo; es un sello de una era pasada.
-		Maestro, ábrete paso a la fuerza. Es el avance necesario hacia una nueva era.
+		En lo hondo del infierno atraviesa un muro de carne; es un sello de una era pasada.
+		Maestro, ábrase paso a cañonazos. Es el avance necesario hacia una nueva era.
 		'''
 	TrialSummary_5:
 		'''
-		El gusano gigante del Mar de Azufre ha emergido.
-		Maestro, desmonta sus órganos devoradores. Necesito confirmar cómo opera esta fuente de contaminación.
+		La pitón de arena del desierto ha mutado, corrompida por la sombra; en su pus hay una concentración alta de icor
+		Maestro, recoja su tejido enfermo. Debo aclarar la vía de transmisión de esta mutación.
 		'''
 	TrialSummary_6:
 		'''
-		El Emisario de Azufre en las profundidades de la lava difunde una reacción de alta temperatura.
-		Maestro, apaga su llama central. Registraré a la vez su eficiencia de conversión energética.
+		El emisario de azufre en lo hondo de la lava está difundiendo una reacción de alta temperatura
+		Maestro, apague su llama central. Registraré a la vez su eficiencia de conversión energética.
 		'''
 	TrialSummary_7:
 		'''
-		El primer objetivo mecánico es un gusano de acero gigante.
-		Maestro, córtalo en chatarra reciclable. Intenta conservar intacta la estructura de propulsión.
+		El primer objetivo mecánico es un gusano de acero gigante
+		Maestro, córtelo en chatarra reciclable. Conserve lo más intacta posible la estructura de propulsión.
 		'''
 	TrialSummary_8:
 		'''
 		El segundo objetivo mecánico es ese par de ojos en espejo; el combate coordinado es su rasgo principal.
-		Maestro, desmonta sus módulos de armamento uno a uno y cuida el radio de quemadura del láser.
+		Maestro, desmonte sus módulos de armamento uno a uno y cuide el radio de quemadura del láser.
 		'''
 	TrialSummary_9:
 		'''
-		El último objetivo mecánico lleva el cráneo de un antiguo rey.
+		El último objetivo mecánico lleva el cráneo de un antiguo rey
 		Maestro, destrúyalo. Cuando este protocolo de invasión mecánica quede cerrado, haré el análisis final.
 		'''
 	TrialSummary_10:
 		'''
 		El clon de esa bruja deambula. Aunque solo sea una réplica de nigromancia,
-		basta para calibrar mi modelo de reacción ante la calamidad. Maestro, destrúyelo.
+		basta para calibrar mi modelo de reacción ante la calamidad. Maestro, destrúyalo.
 		'''
 	TrialSummary_11:
 		'''
-		Varios capullos grandes y llamativos han florecido bajo la jungla.
-		Maestro, acompáñame a verlos. Necesito recoger datos experimentales.
+		Varios capullos grandes y llamativos han florecido bajo la jungla
+		Maestro, acompáñeme a verlos. Necesito recoger datos experimentales.
 		'''
 	TrialSummary_12:
 		'''
-		El autómata ancestral en lo profundo del templo espera una secuencia de carga para activarse.
-		Maestro, llévame a visitarlo. Ingeniería inversa de tecnología antigua podría ser útil.
+		El autómata ancestral en lo profundo del templo espera una secuencia de carga para activarse
+		Maestro, lléveme a visitarlo. La ingeniería inversa de esa tecnología antigua podría ser útil.
 		'''
 	TrialSummary_13:
 		'''
-		En la entrada de la mazmorra, un grupo de cultistas fanáticos realiza un ritual antiguo para bloquear información del cielo.
-		Maestro, interrúmpeles. Necesito esas coordenadas interestelares ocultas.
+		En la puerta de la mazmorra, un grupo de cultistas fanáticos celebra un ritual antiguo para bloquear información del cielo
+		Maestro, interrúmpalos. Necesito esas coordenadas interestelares ocultas.
 		'''
 	TrialSummary_14:
 		'''
-		Los secretos de la cara oculta de la luna serán nuestros.
+		Los secretos de la cara oculta de la luna serán nuestros
 		Maestro, quizá esto devuelva ciertas cosas al buen camino.
 		'''
 	TrialSummary_15:
 		'''
-		La deidad parásita en el núcleo del planeta nos ha notado.
-		Maestro, ve al Inframundo. Su forma de aprovechar la energía térmica merece ser registrada.
+		La deidad parásita en el núcleo del planeta nos ha notado
+		Maestro, vaya al infierno. Su forma de aprovechar la energía térmica merece ser registrada.
 		'''
 	TrialSummary_16:
 		'''
 		Los espectros de la mazmorra se amalgaman en un simbionte enorme.
-		Maestro, la conciencia de colmena de esta arquitectura ectoplásmica es muy rara. Acompáñame a observarla.
+		Maestro, la conciencia de enjambre de esta arquitectura ectoplásmica es muy rara. Acompáñeme a observarla.
 		'''
 	TrialSummary_17:
 		'''
-		No es vida basada en carbono; con el solo cuerpo puede rasgar la membrana dimensional.
-		Devora dioses, pero nosotros no lo somos. Derrota y deja constancia en el registro.
+		No es vida basada en carbono; con el solo cuerpo puede rasgar la membrana del espacio.
+		Devora dioses, pero nosotros no lo somos. Derrótelo y deje constancia en el registro.
 		'''
 	TrialSummary_18:
 		'''
-		El único descendiente dracónico que queda en el mundo; su sola existencia es un milagro.
-		Maestro, llévame a verlo. Necesito una muestra de sus plumas.
+		El único linaje dracónico que queda en el mundo; su sola existencia es un milagro.
+		Maestro, lléveme a verlo. Necesito una muestra de sus plumas.
 		'''
 	TrialSummary_19:
 		'''
 		Ha llegado el momento de ver a mi antiguo creador.
-		Maestro, recupera el núcleo de control de los Exo Mechs.
+		Maestro, recupere el núcleo de control de las mecas del flujo estelar.
 		'''
 	TrialSummary_20:
 		'''
 		Esa bruja lleva tiempo haciendo experimentos caóticos. Ya hay datos suficientes.
-		Maestro, pon fin a sus operaciones. Esta farsa debe terminar.
+		Maestro, ponga fin a sus operaciones. Esta farsa debe terminar.
 		'''
 	TrialSummary_21:
 		'''
-		Maestro, los enemigos que derrotaste antes han formado una coalición y preparan el asalto final.
-		Prepárate. Supervisaré el campo de batalla y te ayudaré a zanjar esto de una vez por todas.
+		Maestro, los enemigos que derrotó antes han formado una coalición y preparan el asalto final.
+		Prepárese. Supervisaré el campo de batalla y le ayudaré a zanjar esto de una vez.
 		'''
 	TrackerBrief: Objetivo: {0}
 	BossRushTargetName: Batalla del Término
@@ -507,8 +507,8 @@ SHPCModuleStat: {
 	BeamExplodeOnHit: +Los haces detonan un micropulso al impactar
 	OrbDrainAura: +El orbe atrae enemigos cercanos al cargar
 	OrbExplosionPropels: +La detonación del orbe impulsa al portador
-	LaserMode: +Clic izq.: columna láser continua que sigue el cursor
-	LaserScorchOnHit: +El láser incendia enemigos al impactar
+	LaserMode: +Clic izquierdo: columna láser continua que sigue el cursor
+	LaserScorchOnHit: +El láser aplica quemadura al impactar
 	LaserPulse: +El láser detona un pulso al final del haz
 	OrbFlyingAttract: +El orbe persigue al enemigo más cercano en vuelo
 }
@@ -520,28 +520,28 @@ SHPCSlotName: {
 	Optic: Ranura óptica
 	Power: Ranura de energía
 	Stock: Ranura de culata
-	Grip: Ranura del empuñadura
+	Grip: Ranura de la empuñadura
 	Frame: Ranura del armazón
 }
 
 MoldProcessingUI: {
 	Title: Banco de moldes
-	Subtitle: Descomponer · Reforjar
+	Subtitle: Descomponer · Reforja
 	TabWorkbench: Banco de trabajo
 	TabCodex: Códice de moldes
 	Decompose: Descomponer
-	Reforge: Reforjar
+	Reforge: Reforja
 	ClearPin: Quitar fijación
-	RandomMode: Aleatorio · sin descubrir primero
-	PinnedMode: Fijado desde el códice
-	CostLine: Coste: {0}
+	RandomMode: Aleatorio · prioriza los no descubiertos
+	PinnedMode: Objetivo del códice fijado
+	CostLine: Consumo: {0}
 	HaveLine: En posesión: {0}
 	UnknownName: ??????
 	ProgressFormat: "{0}/{1}"
 	ShardSuffix: fragmentos
 	EmptyCandidates: "// no hay módulos compatibles en el inventario"
 	CloseHint: ESC para cerrar
-	DecomposeHint: Haz clic en un módulo para descomponerlo
+	DecomposeHint: Haz clic en un módulo de la lista para descomponerlo
 	CodexHint: Haz clic en un molde descubierto para fijarlo como objetivo de reforja
 	Discovered: Descubierto
 	PinnedTag: Fijado
@@ -549,760 +549,760 @@ MoldProcessingUI: {
 
 OnikiriText: {
 	OniRegisterUI: {
-		// TitleText: GHOST REGISTER
-		// StatusFormat: "{0} on the wheel · Erosion {1}%"
-		// RevivalFormat: Revival {0}%
-		// AbilityCostFormat: Per use: Revival +{0}% · Erosion +{1}%
-		// OriginLabel: Origin
-		// PowerLabel: Bestowal
-		// StateReady: Ready to bind
-		// StateDanger: Waking · Use with care
-		// StateArchive: Fragment · Cannot bind
-		// UsableSection: WRAITHS
-		// BrowseHint: Click a name to read its origin and bestowal. This scroll only records them; binding happens on the wheel
-		// CloseTagText: CLOSE
-		// CloseHintFormat: ESC · {0} · click outside to return to the wheel
-		// EquippedActive: On the wheel
+		TitleText: Libro  de  espectros
+		StatusFormat: En el disco {0} · Erosión {1}%
+		RevivalFormat: Resurgimiento {0}%
+		AbilityCostFormat: Por invocación: Resurgimiento +{0}% · Erosión +{1}%
+		OriginLabel: Origen
+		PowerLabel: Dádiva
+		StateReady: Invocable
+		StateDanger: A punto de despertar · con cuidado
+		StateArchive: Fragmento · no invocable
+		UsableSection: Espectros
+		BrowseHint: Pulsa un nombre de la lista para ver su origen y su dádiva. Este tomo solo los consigna; los sellos se colocan en el disco
+		CloseTagText: Cerrar
+		CloseHintFormat: ESC · {0} · clic fuera del tomo para volver al disco
+		EquippedActive: En sello
 	}
 
 	OniSigilUI: {
-		// TitleText: SIGIL WHEEL
-		// StatusFormat: Bound {0} / {1} · Erosion {2}%
-		// CostFormat: Per use: Revival +{0}% · Erosion +{1}%
-		// SlotEmptyHint: Lift a wraith seal from the outer ring, then press it onto an empty seat. Empty seats enable nothing
-		// SlotFullHint: All three seats taken. Press a carried seal onto one to swap; click empty-handed to release
-		// PickHint: "{0} in hand · press onto a seat to bind · click open space to put it back"
-		// SwapHint: Click to swap in {0}
-		// UnbindHint: Click to release
-		// PendingText: AWAITING
-		// BoundFormat: "{0} now sits on the wheel"
-		// UnboundFormat: "{0} released"
-		// DangerNote: Waking · Use with care
-		// CloseTagText: CLOSE
-		// CloseHintFormat: ESC · {0} · click outside the wheel to close
-		// MeiTabText: Inscription Stand
-		// MeiTabHint: Click to step over
-		// RegisterTabText: Ghost Register
-		// RegisterTabHint: Click to read
+		TitleText: Disco  de  sellos
+		StatusFormat: Sellos {0} / {1} · Erosión {2}%
+		CostFormat: Por invocación: Resurgimiento +{0}% · Erosión +{1}%
+		SlotEmptyHint: Pulsa el anillo exterior para tomar un sello de espectro sirviente, luego pulsa un asiento vacío para colocarlo. Un asiento vacío no activa nada
+		SlotFullHint: Los tres asientos están ocupados. Con un sello en mano, pulsa uno para cambiarlo; a manos vacías, pulsa uno para quitarlo
+		PickHint: «{0}» en mano · pulsa un asiento de sello para colocarlo · pulsa el vacío para guardarlo
+		SwapHint: Clic para poner «{0}»
+		UnbindHint: Clic para quitar
+		PendingText: En espera
+		BoundFormat: «{0}» ocupa un asiento de sello
+		UnboundFormat: «{0}» ha sido quitado
+		DangerNote: A punto de despertar · con cuidado
+		CloseTagText: Guardar
+		CloseHintFormat: ESC · {0} · clic fuera del disco para guardarlo
+		MeiTabText: Atril de inscripciones
+		MeiTabHint: Clic para ir
+		RegisterTabText: Libro de espectros
+		RegisterTabHint: Clic para leer
 	}
 
 	OniMeiUI: {
-		// TitleText: INSCRIPTION STAND
-		// CloseTagText: SHEATHE
-		// CloseHintFormat: ESC · {0} · click off the stand to sheathe
-		// StatusFormat: '''{0} inscriptions · Present name "{1}"'''
-		// SlotNakago: Tang Mei
-		// SlotHi: Groove
-		// SlotHorimono: Horimono
-		// EmptyName: (vacant)
-		// EmptyHintNakago: The tang bears no name — this slot sits empty, granting no boon and charging no price. Pick a chisel print and cut one in; that is what gives the blade its temper
-		// EmptyHintHi: No groove opened. Each groove cut is a measure of weight gone
-		// EmptyHintHorimono: The carving bed sits empty, granting nothing. Decide which one you would invite into the steel, then pick its chisel print and set to work
-		// EraseName: EFFACE
-		// EraseHint: File this inscription away — a mei can be cut again, but the blade forgets no scar
-		// OriginLabel: Provenance
-		// PowerLabel: Bestowal
-		// BurdenLabel: Price
-		// CurrentMark: Present
-		// GoldMark: Gold Inlay
-		// SigilTabText: Sigil Wheel
-		// SigilTabHint: Click to step over
-		// TrayTitle: Satchel Rubbings
-		// TrayEmpty: No rubbing for this seat in your satchel. Fan ribs of owned mei still carve
-		// CodexTabText: Mei Codex
-		// CodexTabHint: Click to open
+		TitleText: Atril  de  inscripciones
+		CloseTagText: Envainar
+		CloseHintFormat: ESC · {0} · clic fuera del atril para guardarlo
+		StatusFormat: Inscripciones {0} · Nombre actual «{1}»
+		SlotNakago: Mei del espigo
+		SlotHi: Surco
+		SlotHorimono: Talla
+		EmptyName: (asiento vacío)
+		EmptyHintNakago: El espigo no tiene nombre; este asiento está vacío, no da efecto ni cobra precio. Elige una estampa y grábalo: así la hoja toma carácter
+		EmptyHintHi: Surco sin abrir. Cada surco aligera la hoja un poco
+		EmptyHintHorimono: El asiento de talla está vacío y no activa ningún efecto. Decide a quién invitar a la hoja, elige la estampa y luego trabaja
+		EraseName: Borrar
+		EraseHint: Lima esta inscripción; se puede grabar de nuevo, pero la hoja no olvida la marca
+		OriginLabel: Procedencia
+		PowerLabel: Efecto
+		BurdenLabel: Precio
+		CurrentMark: Actual
+		GoldMark: Incrustación de oro
+		SigilTabText: Disco de sellos
+		SigilTabHint: Clic para ir
+		TrayTitle: Estampas del zurrón
+		TrayEmpty: No hay estampa de este asiento en el zurrón. Las que ya tienes en el abanico aún se pueden grabar
+		CodexTabText: Códice de inscripciones
+		CodexTabHint: Clic para leer
 	}
 
 	OniMeiDeedText: {
-		// LockedKind: Uncarved
-		// LockedCount: Bond {0} / {1}
-		// LockedFeat: The bond is not yet met
-		// LockedUnknown: This mei answers to no bond
-		// Settle: The blade's bond is sealed — the rubbing of "{0}" falls at your feet
+		LockedKind: Sin grabar
+		LockedCount: Afinidad {0} / {1}
+		LockedFeat: La afinidad aún no llega
+		LockedUnknown: Esta inscripción no tiene afinidad que seguir
+		Settle: El lazo de la hoja está cerrado: el calco de «{0}» cae a tus pies
 	}
 
-	// OniPlayerDismemberSystem.SelfHurtDeathReason: "{0} was severed by their own blade"
+	OniPlayerDismemberSystem.SelfHurtDeathReason: "{0} fue cortado en dos por su propia hoja"
 
 	OniTalismanHud: {
-		// HudTitle: Sealing Talisman
-		// HudHintFormat: "{0} toggles {1}; click the talisman to open it"
-		// HudMeiName: the Inscription Stand
-		// HudSigilName: the Sigil Wheel
-		// HudDangerLine: Revival nearly full; one more use and it wakes
-		// HudWraithFormat: Closest {0} · Revival {1}% · {2} on the wheel
-		// VigorTitle: Vigor
-		// VigorValueFormat: "{0} / {1}"
-		// StanceTitle: Stance
-		// StanceValueFormat: "{0} / {1}"
-		// StanceReadyLine: Full Stance — {0} auto-locks for Finale; double-dash remains available
-		// StanceHalfLine: Half Stance — double-tap {0}, then left-click for Annihilating Flash
-		// DomainTitle: Eye of the Oni Domain
-		// DomainStateClosed: Shut — no domain unfolded
-		// DomainStateOmote: Omote — the yellowed-paper world
-		// DomainStateUra: Ura — the ink-wash netherworld
-		// DomainStateShifting: Mid-rite — do not disturb
-		// DomainToggleHintFormat: "{0} or Left Click: unfold / fold the domain"
-		// DomainFlipHintFormat: "{0} or Right Click: flip Omote/Ura (unfolds if shut)"
+		HudTitle: Talismán de sello
+		HudHintFormat: "{0} abre o cierra {1} · clic en el talismán para abrir"
+		HudMeiName: Atril de inscripciones
+		HudSigilName: Disco de sellos
+		HudDangerLine: El Resurgimiento está a punto de llenarse; otra invocación y despertará
+		HudWraithFormat: El más feroz {0} · Resurgimiento {1}% · {2} en el disco
+		VigorTitle: Vigor
+		VigorValueFormat: "{0} / {1}"
+		StanceTitle: Postura
+		StanceValueFormat: "{0} / {1}"
+		StanceReadyLine: Postura llena: {0} fija al enemigo y lanza el tajo final; el doble paso relámpago sigue pudiendo atravesar
+		StanceHalfLine: Postura a medias: pulsa {0} dos veces seguidas, luego clic izquierdo para el destello aniquilador
+		DomainTitle: Ojo del Reino espectral
+		DomainStateClosed: Cerrado, el dominio no está desplegado
+		DomainStateOmote: Omote, papel amarillento
+		DomainStateUra: Ura, el más allá de tinta
+		DomainStateShifting: En transmutación, no interrumpas
+		DomainToggleHintFormat: "{0} o clic izquierdo: desplegar / recoger el dominio"
+		DomainFlipHintFormat: "{0} o clic derecho: voltear Omote/Ura (si está cerrado, primero lo despliega)"
 	}
 
 	OnikiriTutorialLead: {
-		// AskTitle: Take the Lesson First?
-		// AskBody: Vigor and Stance, the Omote and Ura of the domain, the backlash of dismemberment. These three are hard to work out alone without hearing them once. You will only be asked this once
-		// AskPrompt: Take the lesson now; skip it if you're in a hurry — it will count as completed; or accept the Keiko Rune and open it yourself later
-		// RefreshAskTitle: A Couple of New Pages
-		// RefreshAskBody: This version adds two lessons: how to read the codex beside the Inscription Stand, and what to know about the Eye of the Oni Domain before you act. You have already done the practice, so it won't be repeated
-		// RefreshAskPrompt: Take the additions now, or accept the Keiko Rune and open them later
-		// AcceptBtn: Teach Me
-		// DeclineBtn: Not Now
-		// DeclineNotice: The Keiko Rune has been left with you; use it to open the lesson any time
-		// HudTitle: Vigor & Stance
-		// HudBody: While holding Onikiri, the lower-left HUD keeps two read-only gauges. Vigor feeds flash steps and Sakura Flight and refills on its own; Stance builds as your cuts land, unlocking one execution tier at half and another when full. Learn the readouts here; the full moveset is written on the weapon itself
-		// HudPrompt: Learn these readouts; the sealing talisman is the HUD's only panel control
-		// SigilTitle: Sigil Wheel
-		// SigilBody: The beam plaque "Sigil Wheel" on the left of the Inscription Stand hangs a miniature of the wheel. Six wraiths sit on the outer ring, but the inner triangle has only three seats — pick one on the ring, then click an empty seat to bind it. Wraiths sharing the wheel wake each other, so their revival climbs together. The Ghost Register sits in the slot under the wheel's base; pull it out to read, never to bind
-		// SigilPrompt: Click the highlighted plaque or wheel; learn the outer ring and the three seats, then close it to continue
-		// MeiTitle: Inscription Stand
-		// MeiBody: The sealing talisman is the HUD's only panel control and opens the Inscription Stand by default. The blade takes an inscription at three places — tang, groove, and horimono — and each one carries a bestowal and a price. Click a slot to fan out the chisel ribs; the chisels already in your pack sit in the tray below
-		// MeiPrompt: Press {0} or click the highlighted talisman to open the stand, then learn the three slots
-		// CodexTitle: Mei Codex
-		// CodexBody: A stitched booklet sits under the ledger board of the Inscription Stand — that is the codex. The left page lists every inscription by tang, groove, and horimono; the right page gives its bestowal, price, and where it comes from, while unearned ones show only affinity progress. Read-only; chiselling still happens on the stand
-		// CodexPrompt: Click the highlighted booklet to read; closing it returns you to the stand
-		// DomainTitle: Eye of the Oni Domain
-		// DomainBody: That eye beside Vigor rules the domain — unfold Omote (yellowed paper), flip to Ura (ink-wash nether), then fold again. Dismemberment only works in Ura
-		// DomainPrompt: Left-click the eye to unfold or fold; Right-click or {0} flips Omote/Ura
-		// PrepareTitle: Prepare for Practice
-		// PrepareBody: Close the Inscription Stand and Ghost Register, then hold Onikiri. If the domain is open, I will fold it through the normal command first; after an interruption, I will also restore the state needed for your next step
-		// PreparePrompt: Keep Onikiri in hand and wait for the eye and panels to settle; if it stalls, hit Skip to go straight to practice
-		// OpenDomainTitle: Unfold Omote
-		// OpenDomainBody: Press the domain key (Q by default) to unfold the Oni Domain. From a shut eye, the first opening enters shallow Omote and covers the world in yellowed paper
-		// OpenDomainPrompt: Press {0} yourself, then wait until the domain settles in Omote
-		// FlipDomainTitle: Flip into Ura
-		// FlipDomainBody: While in Omote, press the flip key (Mouse3, the middle mouse button, by default) to turn the shallow domain into deep Ura
-		// FlipDomainPrompt: Press {0} to enter Ura, then wait for the ink to settle before drawing the blade
-		// DismemberTitle: Dismemberment Practice
-		// DismemberBody: Put the cursor over the highlighted Santa-NK1 body, release left-click, then press it once more. Onikiri will dismember the body directly; Omokage paper can also serve as a medium, but this lesson does not require it
-		// DismemberPrompt: Aim at the tank body, release left-click, then press it once
-		// BacklashTitle: Endure the Backlash
-		// BacklashBody: Directly dismembering a body deals a real 25% of maximum life to the wielder and locks movement during the sheathing rite. Watch the full sequence; I will restore you afterward
-		// BacklashPrompt: Stop input and wait for the backlash, sheathing, and recovery to finish
-		// CloseDomainTitle: Fold the Domain from the Eye
-		// CloseDomainBody: Finish by folding the domain yourself. Left-clicking the HUD eye is the shortest way; the domain key counts too, while right-clicking the eye flips Omote and Ura instead
-		// CloseDomainPrompt: Left-click the highlighted HUD eye and wait until it shuts completely
-		// DomainUnboundHint: No domain key is bound. For this lesson, press Q as the temporary default
-		// FlipUnboundHint: No flip key is bound. For this lesson, press Mouse3 (middle mouse) as the temporary default
-		// WaitingFeedback: Waiting for this step's result to settle
-		// BusyFeedback: The domain is still shifting. Wait until it settles before trying again
-		// RetryFeedback: That one didn't land. Follow the prompt and try again, or let me demonstrate
-		// NeedBladeHold: You don't have Onikiri. Retrieve it before continuing
-		// TargetStalledHint: The practice dummy hasn't arrived. It can't get a slot when the area is crowded — move somewhere open and wait
-		// AssistBtn: Demonstrate
-		// RetryBtn: Retry
-		// NextBtn: Understood
-		// OpenSigilBtn: Open Wheel
-		// OpenMeiBtn: Open Stand
-		// OpenCodexBtn: Read Codex
-		// SkipBtn: Skip
-		// SkipStepBtn: Skip Step
-		// AbortBtn: Dismiss
-		// SkipAllBtn: Skip Tutorial
-		// SkipAllNotice: The tutorial now counts as completed; trial commissions are open to you
+		AskTitle: ¿Quieres recibir primero la lección?
+		AskBody: El Vigor y la Postura, el anverso y el reverso del Reino espectral, el contragolpe del desmembramiento: sin oírlos una vez, estas tres cosas cuestan de pillar solas. Esta pregunta solo se hace una vez
+		AskPrompt: Recibe la lección ahora; si tienes prisa, salta el tutorial y contará como visto; o quédate el talismán de keiko y ábrelo tú más adelante
+		RefreshAskTitle: Un par de páginas nuevas
+		RefreshAskBody: Esta versión añade dos lecciones: cómo consultar el Códice de inscripciones junto al Atril, y qué hay que reconocer en el Ojo del Reino espectral antes de actuar. La práctica ya la hiciste; esta vez no se repite
+		RefreshAskPrompt: Completa ahora; o quédate el talismán de keiko y ábrelo tú más adelante
+		AcceptBtn: Enséñame
+		DeclineBtn: No hace falta
+		DeclineNotice: El talismán de keiko se ha quedado contigo; úsalo para abrir la lección cuando quieras
+		HudTitle: Vigor y Postura
+		HudBody: Mientras sostengas Onikiri, abajo a la izquierda permanecen dos lecturas. El Vigor se gasta en el paso relámpago y el vuelo de sakura, y se recupera solo; la Postura se acumula al golpear enemigos, y a medias y al llenarla desbloquea un escalón de ejecución. Aquí solo reconoce las lecturas; el detalle de las técnicas está en la descripción del arma
+		HudPrompt: Reconoce estas lecturas; el único acceso HUD a los paneles es el talismán de sello
+		SigilTitle: Disco de sellos
+		SigilBody: A la izquierda del dintel del Atril de inscripciones está clavado el letrero «Disco de sellos», con una miniatura del disco debajo. En el anillo exterior hay seis espectros, pero el triángulo interior solo tiene tres asientos de sello: pulsa el anillo para elegir, luego un asiento vacío para sellar. Los espectros del mismo disco se despiertan unos a otros y el Resurgimiento sube junto. En la ranura bajo la peana está el Libro de espectros; sácalo solo para leer, nunca para sellar
+		SigilPrompt: Pulsa el letrero o el disco resaltados; al abrir, reconoce el anillo y los tres asientos, luego guarda el disco para seguir
+		MeiTitle: Atril de inscripciones
+		MeiBody: El talismán de sello es el único acceso HUD a los paneles; la primera apertura entra en el Atril de inscripciones. La hoja admite inscripción en tres sitios: mei del espigo, surco y talla, cada una con un efecto y un precio. Pulsa un asiento para abrir el abanico de estampas; las que ya tienes en el zurrón están en la caja de abajo
+		MeiPrompt: Pulsa {0} o el talismán resaltado para abrir el atril, y reconoce estos tres asientos
+		CodexTitle: Códice de inscripciones
+		CodexBody: Bajo el tablero del Atril hay un cuaderno cosido: es el Códice de inscripciones. La página izquierda lista todas las inscripciones por mei del espigo, surco y talla; la derecha escribe efecto, precio y procedencia. Las no grabadas solo muestran el progreso de afinidad. Aquí solo se lee; grabar se hace en el atril
+		CodexPrompt: Pulsa el cuaderno resaltado para leerlo; al cerrarlo vuelves solo al atril
+		DomainTitle: Ojo del Reino espectral
+		DomainBody: El ojo junto al Vigor gobierna el Reino espectral: despliega Omote (papel amarillento), voltea a Ura (el más allá de tinta) y luego puedes recogerlo. El desmembramiento solo existe en Ura
+		DomainPrompt: Clic izquierdo en el ojo para desplegar o recoger; clic derecho o {0} para voltear Omote/Ura
+		PrepareTitle: Preparar la práctica
+		PrepareBody: Guarda el Atril de inscripciones y el Libro de espectros, y sostén Onikiri. Si el Reino espectral ya está desplegado, lo recogeré primero por el mando formal; al volver de una interrupción, también restauraré el estado que pide el siguiente paso
+		PreparePrompt: Mantén Onikiri en la mano y espera a que el ojo y los paneles se asienten; si no avanza, pulsa «Saltar» y entra directo a la práctica
+		OpenDomainTitle: Desplegar Omote
+		OpenDomainBody: Pulsa la tecla de dominio (Q por defecto) para desplegar el Reino espectral. Con el ojo cerrado, la primera apertura entra en el Omote superficial y cubre cielo y tierra de papel amarillento
+		OpenDomainPrompt: Pulsa {0} tú mismo y espera a que el dominio se estabilice en Omote
+		FlipDomainTitle: Voltear a Ura
+		FlipDomainBody: En Omote, pulsa la tecla de volteo (Mouse3, el clic de la rueda, por defecto) para pasar el dominio superficial al Ura profundo
+		FlipDomainPrompt: Pulsa {0} para entrar en Ura y espera a que la tinta se asiente antes de mover la hoja
+		DismemberTitle: Práctica de desmembramiento
+		DismemberBody: Pon el cursor sobre el cuerpo del Papá-NK-1 resaltado, suelta el clic izquierdo y púlsalo otra vez. Onikiri desmembrará el cuerpo de verdad; el papel de efigie también puede servir de medio, pero esta lección no lo pide
+		DismemberPrompt: Apunta al cuerpo del tanque, suelta y pulsa una vez el clic izquierdo
+		BacklashTitle: Recibir el contragolpe
+		BacklashBody: Desmembrar el cuerpo de verdad inflige al portador un 25% de su vida máxima en daño real, y le quita el movimiento mientras envaina. Mira la secuencia entera; después te restauraré
+		BacklashPrompt: No operes; espera el contragolpe, la envainada y que la herida cierre
+		CloseDomainTitle: Recoger el dominio desde el ojo
+		CloseDomainBody: Para terminar, recoge el dominio tú mismo. El clic izquierdo en el ojo del HUD es el atajo más corto; la tecla de dominio también cuenta, y el clic derecho en el ojo voltea Omote y Ura
+		CloseDomainPrompt: Clic izquierdo en el ojo resaltado y espera a que se cierre del todo
+		DomainUnboundHint: La tecla de dominio no está asignada. En esta lección puedes pulsar Q como tecla temporal por defecto
+		FlipUnboundHint: La tecla de volteo no está asignada. En esta lección puedes pulsar Mouse3 (clic de la rueda) como tecla temporal por defecto
+		WaitingFeedback: Esperando a que el resultado de este paso se asiente
+		BusyFeedback: El Reino espectral aún transmuta; espera a que se estabilice antes de operar
+		RetryFeedback: Ese no ha llegado a tierra. Sigue la pista y prueba otra vez, o deja que te lo demuestre
+		NeedBladeHold: No tienes Onikiri en el zurrón; recógelo antes de seguir
+		TargetStalledHint: El blanco de práctica aún no ha caído. Si hay demasiadas criaturas alrededor no le toca turno; vete a un claro, párate y espera
+		AssistBtn: Demuéstramelo
+		RetryBtn: Reintentar
+		NextBtn: Ya lo sé
+		OpenSigilBtn: Abrir el disco
+		OpenMeiBtn: Abrir el atril
+		OpenCodexBtn: Leer el códice
+		SkipBtn: Saltar
+		SkipStepBtn: Saltar este paso
+		AbortBtn: Guardar la lección
+		SkipAllBtn: Saltar el tutorial
+		SkipAllNotice: El tutorial cuenta como visto; los encargos de prueba ya se pueden aceptar
 	}
 
 	OniMeiCodexUI: {
-		// TitleText: Mei Codex
-		// CloseTagText: Close
-		// CloseHintFormat: ESC · {0} · click outside to return
-		// TabAll: All
-		// TallyFormat: Found {0} / {1}
-		// TallySlotFormat: "{0} {1}/{2}"
-		// PageFormat: "{0} / {1}"
-		// EmptyPage: No mei in this volume
-		// LockedTitle: Uncarved
-		// SectionAcquire: How to find
-		// SectionProgress: Bond
-		// SectionSource: Provenance
-		// HiddenBody: Uncarved mei keep power and burden off this ledger. Carve first, then read
-		// EngravedMark: On the blade
-		// SourceFactory: Already on the blade when drawn from under the torii
-		// SourceGiftFormat: After you cut down "{0}", Hiiro will bring the rubbing
-		// SourceGiftUnknown: Hiiro will bring the rubbing on some night
-		// SourceGiftJoin: " or "
-		// SourceDeed: No one gifts this. Prove it with the blade yourself
-		// SourceUnknown: Provenance unknown; the ledger is silent
-		// ProgressSettled: Bond sealed
-		// ProgressWaiting: Not yet
+		TitleText: Códice  de  inscripciones
+		CloseTagText: Cerrar
+		CloseHintFormat: ESC · {0} · clic fuera del cuaderno para volver al atril
+		TabAll: Todo
+		TallyFormat: Obtenidas {0} / {1}
+		TallySlotFormat: "{0} {1}/{2}"
+		PageFormat: "{0} / {1}"
+		EmptyPage: Este tomo no tiene inscripciones
+		LockedTitle: Sin grabar
+		SectionAcquire: Cómo hallarla
+		SectionProgress: Afinidad
+		SectionSource: Procedencia
+		HiddenBody: Una inscripción sin grabar no consigna en el códice ni efecto ni precio. Grábala primero, luego lee
+		EngravedMark: Ahora en la hoja
+		SourceFactory: Ya estaba en la hoja al desenvainarla bajo el torii
+		SourceGiftFormat: Tras abatir a «{0}», Himayo te entregará el calco
+		SourceGiftUnknown: Himayo te entregará el calco alguna noche
+		SourceGiftJoin: » o «
+		SourceDeed: Nadie la regala. Esta inscripción hay que demostrarla con la hoja
+		SourceUnknown: Procedencia desconocida; el códice no la consigna
+		ProgressSettled: Afinidad cerrada
+		ProgressWaiting: Aún no es su hora
 	}
 }
 
 OnikiriOverride: {
-	// DisplayName: Onikiri
-	/* Tooltip:
+	DisplayName: Onikiri
+	Tooltip:
 		'''
-		Hold left-click to drive the five-beat Crimson Rend combo; landing hits builds Stance
-		Vigor fuels Flash Step and Sakura Flight; half and full Stance each unlock a tier of execution
-		''' */
-	// KeyLabelFlashStep: Kamui Flash Step
-	// KeyLabelSakura: Sakura Flight
-	// KeyLabelExecute: Execute
-	// KeyLabelDomain: Domain Expansion
-	// KeyLabelFlip: Omote/Ura Flip
-	// KeyLabelTeleport: Domain Teleport
+		Mantén pulsado el clic izquierdo para lanzar el tajo carmesí del vacío en cinco tiempos; golpear enemigos acumula Postura
+		El Vigor se gasta en el paso relámpago y el vuelo de sakura; a mitad y al llenar la Postura se desbloquea un escalón de ejecución
+		'''
+	KeyLabelFlashStep: Paso relámpago Kamui
+	KeyLabelSakura: Vuelo de sakura
+	KeyLabelExecute: Ejecución
+	KeyLabelDomain: Despliegue de dominio
+	KeyLabelFlip: Volteo Omote/Ura
+	KeyLabelTeleport: Teletransporte de dominio
 }
 
 OnikiriTrialQuestLine: {
-	// QuestCategory: Onikiri · Trial Cuts
-	// TrackerWaiting: It isn't here yet. Wait, or we go ask for it
-	// TrackerFighting: "{0}: {1:0%}"
-	// TrackerBrief: Next cut: {0}
-	// BossRushTargetName: Night That Won't Break
-	// EventActiveFormat: "{0}: underway"
-	// Trial_0: Skybound Eye
-	// Trial_1: Twain Evils of the Soil
-	// Trial_2: Clustered Blight
-	// Trial_3: Presumptuous God
-	// Trial_4: The Dividing Flesh
-	// Trial_5: Pus-Rotten Scales
-	// Trial_6: Ashes in the Abyss
-	// Trial_7: Roaring Metal Serpent
-	// Trial_8: Twin Demon Eyes
-	// Trial_9: Mingled Remains
-	// Trial_10: Mimicked Silhouette
-	// Trial_11: Bloom in the Depths
-	// Trial_12: Temple Golem
-	// Trial_13: Mad Chant at the Gate
-	// Trial_14: Looming Pale Moon
-	// Trial_15: Corefire Radiance
-	// Trial_16: Phantasmal Cluster
-	// Trial_17: Void Devourer
-	// Trial_18: Lingering Fire Dragon
-	// Trial_19: Deafening Exo-Steel
-	// Trial_20: Stifling Calamity
-	// Trial_21: Recurrent Darkness
-	/* TrialSummary_0:
+	QuestCategory: Prueba
+	TrackerWaiting: Aún no está
+	TrackerFighting: "{0}: {1:0%}"
+	TrackerBrief: Siguiente tajo: {0}
+	BossRushTargetName: La noche que no se dispersa
+	EventActiveFormat: "{0}: en curso"
+	Trial_0: Ojo nocturno del firmamento
+	Trial_1: Dos males de la tierra impura
+	Trial_2: Nido de inmundicia apiñada
+	Trial_3: Dios de nombre prestado
+	Trial_4: Muro de carne que corta el mundo
+	Trial_5: Escamas de pus en arena podrida
+	Trial_6: Brasas del abismo
+	Trial_7: Serpiente de hierro atronadora
+	Trial_8: Pupilas demoníacas gemelas
+	Trial_9: Restos viejos y nuevos
+	Trial_10: Sombra que imita
+	Trial_11: Flor sombría de la jungla
+	Trial_12: Ídolo terco del templo
+	Trial_13: Plegaria loca a la puerta antigua
+	Trial_14: Luna que se viene abajo
+	Trial_15: Resplandor del fuego del corazón
+	Trial_16: Racimo de rencor en la humedad
+	Trial_17: Vacío que devora mundos
+	Trial_18: Dragón de fuego que quedó atrás
+	Trial_19: Fragor del flujo estelar
+	Trial_20: Tormenta de calamidad que ahoga
+	Trial_21: La noche que se reúne otra vez
+	TrialSummary_0:
 		'''
-		There's something going on up in the sky, and I can't say what
-		Just feels like we're being watched, and the blade's getting restless too
-		Go take a look, then come back and tell me what it even was
-		Oh—and don't tip your head back too long. Neck'll ache
-		''' */
-	/* TrialSummary_1:
+		En el cielo pasa algo, y yo no sabría decir qué
+		Solo que nos están mirando, y la hoja también se pone inquieta
+		Ve a ver, y cuando vuelvas dime qué demonios era
+		Ah, y no eches la cabeza atrás demasiado rato: se te va a cargar el cuello
 		'''
-		Two wrong pulls from the dirt that way—I can't tell them apart
-		Whichever sticks its head out first, cut that one. Don't stare at both
-		The blade will know the taste is off. You go first
-		''' */
-	/* TrialSummary_2:
+	TrialSummary_1:
 		'''
-		Filth bunched into one blob over there—even the wind of it is annoying
-		Don't stand around staring. Go deal with it
-		Getting it done matters more than anything else when you're back
-		''' */
-	/* TrialSummary_3:
+		Por la tierra podrida tiran dos cosas raras, no las distingo
+		La que saque la cabeza primero, esa cortas. No las mires a las dos
+		La hoja te dirá que el sabor no cuadra. Tú ve primero
 		'''
-		Heard some puddle calls itself a god. Almost made me laugh
-		If names were that easy, who'd bother working
-		Go check. If it really calls itself that, take the name apart
-		Hey—I'm not sending you to worship. Listen carefully
-		''' */
-	/* TrialSummary_4:
+	TrialSummary_2:
 		'''
-		Up ahead feels blocked shut, and I can't say by what
-		Road's closed, so open it
-		How it feels past that—we'll talk when you're back
-		''' */
-	/* TrialSummary_5:
+		Ahí la inmundicia se ha apelotonado; solo el viento de eso ya empalaga
+		No te quedes mirando. Ve y arréglalo
+		Volver con eso hecho importa más que cualquier otra cosa
 		'''
-		The desert smells different now, rotten blooms mixed with pus, something's burrowing
-		Don't let it dig deep. Go cut it off
-		And keep the blade out of the cysts, someone lives in here
-		''' */
-	/* TrialSummary_6:
+	TrialSummary_3:
 		'''
-		Fire pit that way is still lit, like someone won't go out
-		Put it out, and watch your feet while you're at it
-		If you burn yourself, I can't blow on it for you
-		''' */
-	/* TrialSummary_7:
+		Dicen que hay una cosa que se llama dios. Casi me río
+		Si los nombres se cogieran así, quién se iba a molestar en avanzar
+		Ve a comprobarlo. Si de verdad se atreve a llamarse así, desmóntalo
+		Oye, no te mando a rezar. Escucha bien
 		'''
-		There's a thing with a loud name. Sounds scary enough
-		Iron's making noise—go poke it, see if it's all bluster
-		Don't race it for whose name is bigger
-		''' */
-	/* TrialSummary_8:
+	TrialSummary_4:
 		'''
-		Two dots in the sky, like they agreed to come out together
-		If they show up as a pair, handle them separate—don't take both glares
-		When you're back you can complain whether they look human
-		''' */
-	/* TrialSummary_9:
+		Delante parece tapado, y yo no sabría decir con qué
+		Si el camino no pasa, ábrelo
+		Lo que se siente al otro lado, lo hablamos cuando vuelvas
 		'''
-		Old and new mixed together over there—feels wrong, but I haven't seen clear
-		Go sort it out. Don't get bluffed
-		We'll talk later which side was even real
-		''' */
-	/* TrialSummary_10:
+	TrialSummary_5:
 		'''
-		A shadow walking too much like a person—I haven't seen the face and I'm already annoyed
-		Don't freeze staring. Go deal with it
-		Who it's copying—we'll swear about that when you're back
-		''' */
-	/* TrialSummary_11:
+		El desierto huele distinto: flores podridas mezcladas con pus, algo está hozando
+		No dejes que cave hondo. Ve a cortarlo
+		Y no metas la hoja en los abscesos: aquí todavía vive alguien
 		'''
-		Something blooming down below that shouldn't. Smell's already wrong
-		If it's spent, deal with it. Don't leave it to bother me
-		Florist rules later. You go first
-		''' */
-	/* TrialSummary_12:
+	TrialSummary_6:
 		'''
-		Something in the stone house that doesn't like moving. Looks hard
-		Knock it down. Don't bash the blade on stone—I feel that too
-		If your hands go numb, rub them when you're back
-		''' */
-	/* TrialSummary_13:
+		El fogón de aquel lado sigue encendido, como si alguien se negara a apagarse
+		Ve a apagarlo, y mira por dónde pisa
+		Si te quemas, yo no te lo voy a soplar
 		'''
-		People muttering at the dungeon door, like they aren't finished
-		Interrupt them. Spare the ears
-		What they were chanting—we'll talk later. Don't believe it
-		''' */
-	/* TrialSummary_14:
+	TrialSummary_7:
 		'''
-		Something like it's pressing on the moon. Looking up feels heavy
-		Go get rid of it. Don't just stand there staring up
-		When you're back I'll ask if you're worn out
-		''' */
-	/* TrialSummary_15:
+		Hay uno con un nombre muy sonoro. De oído intimida
+		El hierro se mueve: ve a tocarlo, a ver si es solo humo
+		No compitas a ver quién tiene el nombre más grande
 		'''
-		Heat from the earth's heart that way—my side feels preheated too
-		Go. The edge will run hot—know that ahead of time
-		Don't linger in the heat. Finish and pull out
-		''' */
-	/* TrialSummary_16:
+	TrialSummary_8:
 		'''
-		Ghosts knotted in the damp over there. I'm not counting
-		Handle the whole clump. Don't pick them one by one
-		And don't overnight there—I'll nag you about that when you're back
-		''' */
-	/* TrialSummary_17:
+		Dos puntos en el cielo, como si hubieran quedado
+		Si salen en pareja, sepáralos. No te comas las dos miradas a la vez
+		Cuando vuelvas ya te quejarás de si se parecen a una persona
 		'''
-		That direction feels too empty. I'm going heavy on my side too
-		I can't say what it is. Just wrong
-		Go. Don't stand there alone spacing out—if you can't see clear, look after yourself first
-		We'll talk when you're back. Staying alive beats seeing clear
-		''' */
-	/* TrialSummary_18:
+	TrialSummary_9:
 		'''
-		Heard there's still a dragon like this. True or not, you go see
-		Edge'll probably burn—don't sheath it in a hurry
-		I don't want feathers. Just come back yourself
-		''' */
-	/* TrialSummary_19:
+		Allí lo viejo y lo nuevo están revueltos: se ve raro, pero yo aún no distingo
+		Ve a aclararlo. No te dejes blufear
+		Cuando vuelvas diremos de qué lado era de verdad
 		'''
-		One boom from far off and the ears quit first
-		Go make them stop, and cover your ears on the way
-		If they're still buzzing when you're back, find somewhere quiet
-		''' */
-	/* TrialSummary_20:
+	TrialSummary_10:
 		'''
-		Air over there goes heavy and stagnant, like a door that won't air out
-		Go end it. Don't freeze in the doorway breathing that in
-		When you're back I'll tell you how to clear your head
-		''' */
-	/* TrialSummary_21:
+		Hay una sombra que anda demasiado como una persona. No le he visto la cara y ya me crispa
+		No te quedes mirándola. Ve y arréglalo
+		A quién copia, lo hablamos cuando vuelvas
 		'''
-		They're gathering again, like nothing ever fully breaks apart
-		This one'll run long. You take it. I'll watch
-		Stand steady before you start—I'll nag you about swaying when you're back
-		''' */
+	TrialSummary_11:
+		'''
+		Abajo hay una flor que no debería haberse abierto. El olor ya no cuadra
+		Si está gastada, arréglalo. No me la dejes para que me fastidie
+		Las reglas del florista, luego. Tú ve primero
+		'''
+	TrialSummary_12:
+		'''
+		En la casa de piedra hay un ídolo que no le gusta moverse. Se ve duro
+		Tíralo. No golpees la hoja contra la piedra: yo también lo noto
+		Si se te duermen las manos, frótalas cuando vuelvas
+		'''
+	TrialSummary_13:
+		'''
+		En la puerta de la mazmorra hay quien murmura, como si no hubiera acabado
+		Interrúmpelos. Que las orejas descansen
+		Qué rezaban, lo hablamos luego. De todos modos no te lo creas
+		'''
+	TrialSummary_14:
+		'''
+		Encima de la luna parece que pesa algo. Alzar la cabeza ya carga
+		Ve a quitarlo. No te quedes ahí mirando al cielo
+		Cuando vuelvas te preguntaré si estás hecho polvo
+		'''
+	TrialSummary_15:
+		'''
+		El corazón de la tierra calienta por allí; de este lado también parece que precalienta
+		Ve. El filo va a quemar, tenlo claro de antemano
+		No te quedes mucho en el calor. Termina y lárgate
+		'''
+	TrialSummary_16:
+		'''
+		Por la humedad los espectros se han apelotonado. No los cuento
+		Arréglalo todo el racimo. No los recojas uno a uno
+		Y no pases la noche allí: cuando vuelvas ya te lo machaco
+		'''
+	TrialSummary_17:
+		'''
+		Esa dirección está demasiado vacía. De este lado también pesa
+		Yo no sabría decir qué es. Solo que no cuadra
+		Ve. Cuando llegues no te quedes solo mirando al vacío; si no ves claro, ocúpate primero de ti
+		Lo hablamos cuando vuelvas. Seguir vivo importa más que ver claro
+		'''
+	TrialSummary_18:
+		'''
+		Dicen que queda un dragón así. Si es verdad o no, ve a verlo
+		El filo probablemente queme: no lo envaines con prisa
+		Trofeos no quiero. Con que volváis con vida, basta
+		'''
+	TrialSummary_19:
+		'''
+		Un estruendo a lo lejos, y las orejas se rinden primero
+		Ve a hacerlos callar, y cuídate los oídos por el camino
+		Si al volver aún zumban, busca un sitio quieto
+		'''
+	TrialSummary_20:
+		'''
+		El aire por allí se pone pesado, se estanca, como una puerta que no ventila
+		Ve a cortarlo. No te quedes en el umbral aspirando eso
+		Cuando vuelvas te diré cómo tomar aire
+		'''
+	TrialSummary_21:
+		'''
+		Se vuelven a juntar, como si nada se dispersara del todo
+		Esta va a durar
+		Antes de empezar, ponte firme; cuando vuelvas ya te suelto el sermón
+		'''
 }
 
 KikasaOverride: {
-	// DisplayName: Kikasa
-	/* Tooltip:
+	DisplayName: Kikasa
+	Tooltip:
 		'''
-		Hold left click to hover the umbrella overhead, dropping homing ink rain to a steady beat
-		Hold right click to charge ink upside down; release to pour out an ink torrent
-		Rain and torrents you command by hand stamp an Ink Seal; your summons deal bonus damage to sealed targets
-		''' */
-	// GhostCountLine: Minion slots {0} · {1}
-	// TierName0: Drizzle
-	// TierName1: Side Toss
-	// TierName2: Volley
-	// TierName3: Lake Tilt
-	// KeyLabelDomain: Domain Expansion
-	// KeyLabelSink: Sink into the Lake
-	// KeyLabelMutate: Flip the Lake
-	// KeyLabelWheel: Shade Wheel
-	// KeyLabelRestart: Self-Restart
-	// KeyLabelTeleport: Domain Teleport
-	// KeyLabelPanorama: Lakeheart
-	// MutateFallback: Middle Mouse
+		Mantén pulsado el clic izquierdo para alzar el paraguas sobre la cabeza; al ritmo cae lluvia de tinta que persigue a los enemigos
+		Mantén pulsado el clic derecho para invertir el paraguas y acumular tinta; suelta para volcar una cascada de tinta
+		La lluvia y la cascada que diriges con la mano marcan a los enemigos con un sello de tinta; los invocados infligen daño extra a los marcados
+		'''
+	GhostCountLine: Espacios de invocación {0} · {1}
+	TierName0: Llovizna
+	TierName1: Lanzamiento lateral
+	TierName2: Descarga
+	TierName3: Vuelco del lago
+	KeyLabelDomain: Despliegue de dominio
+	KeyLabelSink: Hundir objeto en el lago
+	KeyLabelMutate: Anverso y reverso del lago de sangre
+	KeyLabelWheel: Menú radial de sombras
+	KeyLabelRestart: Autorreinicio
+	KeyLabelTeleport: Teletransporte de dominio
+	KeyLabelPanorama: Corazón del lago
+	MutateFallback: Clic de la rueda
 }
 
 KikasaTrialQuestLine: {
-	// QuestCategory: Kikasa · The Sinking Feast
-	// TrackerWaiting: Not seated yet—go invite it, or wait a while
-	// TrackerFighting: "{0}: {1:0%}"
-	// TrackerBrief: Next course: {0}
-	// BossRushTargetName: A Table Full of Guests
-	// EventActiveFormat: "{0}: In progress"
-	// Trial_0: Soft First Course
-	// Trial_1: Night-Staring Eye
-	// Trial_2: Foul Soil Morsels
-	// Trial_3: Festering Depths
-	// Trial_4: Sweet Nectar and Stubborn Hooves
-	// Trial_5: Old Bones at the Gate
-	// Trial_6: Motley God-Gel
-	// Trial_7: Flesh Across the Path
-	// Trial_8: Winged Pink Gel
-	// Trial_9: Golden Drool in Rotten Sand
-	// Trial_10: Three Tastes of Iron
-	// Trial_11: Crimson Bloom of the Jungle
-	// Trial_12: Crystal-Shelled Morsel
-	// Trial_13: Temple Boulder
-	// Trial_14: Wave-Stirring Winged Boar
-	// Trial_15: Nocturnal Radiance
-	// Trial_16: Chanting at the Portal
-	// Trial_17: Moonback Reflection
-	// Trial_18: Kinfolk at the Table
-	// Trial_19: Ancient Acid-Bather
-	// Trial_20: Void Serpent Beyond
-	// Trial_21: Unquenched Blazing Plume
-	// Trial_22: Peak Iron and Peak Flame
-	// Trial_23: The Full Table Feast
-	/* TrialSummary_0:
+	QuestCategory: Prueba
+	TrackerWaiting: Aún no se ha sentado
+	TrackerFighting: "{0}: {1:0%}"
+	TrackerBrief: Siguiente cubierto: {0}
+	BossRushTargetName: Mesa llena de invitados
+	EventActiveFormat: "{0}: en curso"
+	Trial_0: Primera ración: gelatina
+	Trial_1: Ojo que acecha el cielo nocturno
+	Trial_2: Dos carnes de tierra podrida
+	Trial_3: Rancio de las profundidades
+	Trial_4: Néctar y pezuñas tercas
+	Trial_5: Huesos secos a la puerta
+	Trial_6: Gelatina divina revuelta
+	Trial_7: Carne caliente a través del camino
+	Trial_8: Gelatina rosa alada
+	Trial_9: Baba dorada en arena podrida
+	Trial_10: Tres sabores de hierro
+	Trial_11: Estambre rojo de la selva
+	Trial_12: Carne elástica de caparazón de cristal
+	Trial_13: Piedra terca del templo
+	Trial_14: Cerdo alado que alborota las olas
+	Trial_15: Resplandor del cielo nocturno
+	Trial_16: Canto a medias a la puerta
+	Trial_17: Reflejo de la cara oculta
+	Trial_18: Los suyos a la misma mesa
+	Trial_19: Viejo huésped del mar ácido
+	Trial_20: Devorador de dioses más allá del cielo
+	Trial_21: Pluma ardiente que no se apaga
+	Trial_22: Hierro extremo y fuego extremo
+	Trial_23: Banquete final a mesa llena
+	TrialSummary_0:
 		'''
-		Something soft wobbles at the foot of the hills, blue and endless
-		The lake has never tasted gel—it wants to know what the bite sounds like
-		Lure it under the umbrella, never mind the stickiness
-		If it melts, call it soup
-		''' */
-	/* TrialSummary_1:
+		Al pie de la montaña se ha tendido algo blando, azul, que no para de temblar
+		El lago no ha probado gelatina: quiere saber qué eco deja el bocado
+		Tráelo bajo el paraguas, no te quejes de lo pegajoso
+		Si se deshace, que sea caldo
 		'''
-		An eye stares at people in the night, quite rudely
-		The lake wrinkles whenever it catches that stare—it makes the ribs itch
-		Go press that gaze into the water
-		Things that watch all learn to close their eyes eventually
-		''' */
-	/* TrialSummary_2:
+	TrialSummary_1:
 		'''
-		Things come burrowing out of the foul soil—one long, or one wet lump of brain
-		Both taste of rot; the lake isn't picky, take whichever crosses your path
-		Don't gather the pieces, let them flow in on their own
-		''' */
-	/* TrialSummary_3:
+		De noche hay un ojo, y mira sin ninguna educación
+		En cuanto el lago lo ve, frunce el ceño y las varillas pican
+		Ve, y hunde esa mirada en el agua
+		Quien mira, al final cierra los ojos
 		'''
-		A rotten thought festers underground, or a nest of blood-boring worms
-		One sniff downwind tells you: spoiled
-		The lake says spoiled is still a flavor—serve it
-		Keep your gloves on, that juice clings
-		''' */
-	/* TrialSummary_4:
+	TrialSummary_2:
 		'''
-		A jar of sweetness in the jungle, a stubborn head out in the snow
-		Pick one to bring—the lake is open to both tastes today
-		The sweet one stings, the stubborn one stomps
-		Either way, don't come back empty-handed
-		''' */
-	/* TrialSummary_5:
+		De la tierra podrida salen dos: una larga, o un seso húmedo
+		Las dos huelen a sangre; el lago no echa invitados, quédate con el que te cruce
+		Los trozos no hace falta recogerlos, ellos solos se cuelan
 		'''
-		Old bones hang at the dungeon door, addicted to keeping watch
-		Bones never soak soft, the lake knows—it just wants to hear the crack
-		End his vigil; keep the key for yourself
-		Bone dregs settle nicely, good for paving
-		''' */
-	/* TrialSummary_6:
+	TrialSummary_3:
 		'''
-		A heap of gel calls itself a god, purple and black stirred together
-		The lake never lacks water—what it lacks is a mouthful this big
-		Lay it flat, see what it really melts into
-		Don't drink; that isn't for you
-		''' */
-	/* TrialSummary_7:
+		Bajo tierra pudre un pensamiento, o un nido de gusanos que comen el corazón
+		Basta oler el viento: lo podrido ya ha criado bichos
+		El lago dice que lo rancio también es sabor. Tráelo
+		No te quites los guantes: ese jugo se pega a la gente
 		'''
-		A wall of flesh stands stacked across hell, blocking everyone's road
-		Something hot—just the thing to cool the lake's temper
-		Pierce it, and the world will change—that's not on you
-		The canopy stops sparks, go without worry
-		''' */
-	/* TrialSummary_8:
+	TrialSummary_4:
 		'''
-		A pink smear hangs over the Hallow, flying with a crystal guard
-		The lake has tasted grounded gel; never the flying kind
-		Drag her down, crystals and all
-		Mind the shards, they chafe the ribs
-		''' */
-	/* TrialSummary_9:
+		En la selva hay un néctar que rezuma; en la nieve, algo que patea con terquedad
+		Trae uno: hoy el lago abre los dos gustos
+		Lo dulce pica, lo terco pisotea
+		No vuelvas con las manos vacías
 		'''
-		The bloomsand serpent is back, its red blooms festered into cysts
-		Don't step in the golden puddles, that is its drool
-		The lake takes every flavor, it just hates what this one did to the sand
-		Go, invite it to the bottom, and shake the umbrella clean after
-		''' */
-	/* TrialSummary_10:
+	TrialSummary_5:
 		'''
-		Someone forged three iron things: a chain, two lamps, a frame of bones
-		Iron never soaks through; steep it forever and it still tastes of rust
-		Not the lake's favorite, but a feast can't lack these three courses
-		One at a time—don't let them all wake on the same night
-		''' */
-	/* TrialSummary_11:
+		En la puerta de la mazmorra cuelga un viejo de oficio, enganchado a velar por otros
+		Los huesos no se ablandan al remojo, el aura tampoco; el lago lo sabe, pero quiere oír ese crujido
+		Córtalo el aliento, quédate la llave
+		Las esquirlas al fondo pavimentan bien
 		'''
-		Deep in the jungle a great bloom smolders, red, asleep
-		Few who wake her come back whole
-		The lake wants her sap; it colors the water just right
-		Vines on the umbrella? Cut them, no courtesy needed
-		''' */
-	/* TrialSummary_12:
+	TrialSummary_6:
 		'''
-		A big shrimp nests under the beach, dressed in crystal shell, and it molts
-		When its claw snaps, the water cracks, heard half a sea away
-		The lake has craved this springy bite for ages, go and send the invitation
-		The shell it sheds on its own, the punch you dodge on your own
-		''' */
-	/* TrialSummary_13:
+		Hay una gelatina que habla y salta, roja y violeta revueltas
+		Al lago nunca le falta agua: le falta un bocado de este tamaño
+		Desmenúzala, a ver en qué se deshace de verdad
+		No bebas de prisa: eso no es para ti
 		'''
-		A stone one squats in the temple—blockheaded, fond of hopping
-		Stone sinks fastest; the lake's collection is short exactly one
-		Break its workings and bring the shell whole
-		The splash it throws up is your reward
-		''' */
-	/* TrialSummary_14:
+	TrialSummary_7:
 		'''
-		A pig out at sea grew wings and dares to stir up waves
-		The lake can't stand it: water's temper is not a pig's to wield
-		Press it back into the water—which water, you decide
-		The lake provides the bait; you dig the worm
-		''' */
-	/* TrialSummary_15:
+		En el infierno hay un muro de cara de carne, tapando el camino de todos
+		Lo caliente sienta bien: el lago apaga el fuego
+		Cuando muera, el mundo cambia; eso no es culpa tuya
+		La tela para las chispas. Ve sin miedo
 		'''
-		A glowing one flies the Hallow at night, her temper tied to the sun
-		The lake cannot hold her image—too bright for the surface to keep
-		Go by night; knead that light dim and bring it back
-		Provoke her at noon and the consequences are yours to keep
-		''' */
-	/* TrialSummary_16:
+	TrialSummary_8:
 		'''
-		A chanter stands at the dungeon door, chanting the sky half-open
-		The lake doesn't understand scripture—only that he means to let something in
-		Interrupt him; let the rite rot half-finished
-		If his beads drop, leave them—the lake takes no counterfeits
-		''' */
-	/* TrialSummary_17:
+		Sobre la tierra sagrada cuelga una gelatina rosa, y trae guardias
+		El lago ya probó la gelatina del suelo; la que vuela, nunca
+		Bájala, huesos y todo
+		No pises los cristales: lastiman las varillas
 		'''
-		The one behind the moon has come down, covered in eyes
-		Whatever falls from the sky is only a reflection once it's in the lake
-		Go collect the reflection's original
-		The moon will be lovely that night—watch it once for me
-		''' */
-	/* TrialSummary_18:
+	TrialSummary_9:
 		'''
-		A patched-up soul drifts in the dungeon's depths, mended over centuries
-		Even the ghosts steeping in the lake shrink into the ribs at the sight of it
-		Killing your own kind is an ugly phrase—call it sharing a table
-		After this order the umbrella gets crowded; bear with it
-		''' */
-	/* TrialSummary_19:
+		Ha vuelto la pitón de las flores del desierto: las flores rojas se han hecho abscesos
+		No pises los charcos dorados de la arena: eso es su baba
+		El lago acepta cualquier sabor; lo que le molesta es que haya agriado toda una playa de arena
+		Ve, invítala a hundirse. Sacude el paraguas antes de volver
 		'''
-		An old thing lies pressed under the Sulphurous Sea, sour in scale and temper
-		The lake and he go way back; neither respects the other's water
-		Deliver a message: the table is set, and he is invited to sink
-		He bites, and his teeth are still good—take care
-		''' */
-	/* TrialSummary_20:
+	TrialSummary_10:
 		'''
-		A long worm circles beyond the sky, and the stars keep out of its way
-		It has swallowed gods; the lake wonders what god tastes like
-		Make it dive into water it should never have entered
-		The shell is yours, the meat belongs to the lake
-		''' */
-	/* TrialSummary_21:
+		Alguien forjó tres soldados de oro: una cadena, dos lámparas, un armazón de cuatro brazos
+		El hierro no se empapa; a fuerza de remojo solo huele a óxido
+		Al lago no le gusta este bocado, pero en la mesa no puede faltar
+		Uno a uno. No los asustes a los tres la misma noche
 		'''
-		Across the jungle they keep a ball of fire, burning who knows how long
-		Fire and the lake are old rivals; time to settle it
-		Press that blaze out—the lake will pour the last ladle itself
-		Wet feathers don't fly; leave not one
-		''' */
-	/* TrialSummary_22:
+	TrialSummary_11:
 		'''
-		The last two tables open together: one all iron, one only fire
-		A craftsman's pride and a witch's obsession—the lake wants to watch both settle to the bottom
-		Any order you like; just come to the table alive
-		After this meal, the lake is about full
-		''' */
-	/* TrialSummary_23:
+		En la selva se esconde una flor enorme y roja: verla basta para dormirse
+		Quien la despierta, pocos vuelven enteros
+		El lago quiere su miel; en el agua queda justo
+		Si las lianas se enredan en el paraguas, córtalas. Sin cortesía
 		'''
-		They have all come back, or the old one in the abyss has woken
-		A full table at last—the lake's water rose just from waiting
-		You only mind the umbrella; take them one by one
-		When this feast is done, the rain stops
-		''' */
+	TrialSummary_12:
+		'''
+		Bajo la playa se esconde una gamba enorme, caparazón de cristal, y muda
+		Cuando la pinza azota, el agua estalla: se oye a media mar
+		El lago lleva tiempo deseando este bocado elástico. Ve, invítala
+		El caparazón lo cambia ella; el puñetazo, míralo tú
+		'''
+	TrialSummary_13:
+		'''
+		En el templo se agazapa una cabeza cuadrada
+		La piedra se hunde más rápido; a la colección del lago le falta justo una
+		Desmonta sus mecanismos y tráete el caparazón entero
+		La ola que levante, esa es tu propina
+		'''
+	TrialSummary_14:
+		'''
+		En el mar hay un cerdo que le han salido alas y se pone a alborotar las olas
+		Al lago no le gusta: el genio del agua no se lo dicta un cerdo
+		En qué agua lo hundes, lo decides tú
+		El cebo lo pongo yo; el gusano lo pescas tú
+		'''
+	TrialSummary_15:
+		'''
+		De noche, sobre la tierra sagrada vuela una luminosa, el humor atado al sol
+		El lago no la retiene: lo demasiado brillante no se queda en la superficie
+		Ve de noche; amasa esa luz hasta oscurecerla y tráela
+		Si la provocas de día, las consecuencias son tuyas
+		'''
+	TrialSummary_16:
+		'''
+		En la puerta de la mazmorra hay uno que reza, y reza tan fuerte que el cielo va a abrirse
+		El lago no entiende sutras: solo entiende que quiere meter algo
+		Córtalo. Que el rito se pudra a medias
+		Si se le cae el rosario, no lo recojas: el lago no acepta falsificaciones
+		'''
+	TrialSummary_17:
+		'''
+		El de detrás de la luna ha bajado, cubierto de ojos
+		Lo que cae del cielo al lago no es más que un reflejo
+		Ve, y recógele el original del reflejo
+		Esa noche la luna estará bonita: mírala una vez por mí
+		'''
+	TrialSummary_18:
+		'''
+		En lo hondo de la mazmorra flota un alma zurcida, remendada siglos
+		Hasta los espectros que remojan en el lago se encogen entre las varillas al verla
+		Matarse entre los suyos suena feo: dilo como compartir mesa
+		Después de este encargo, bajo el paraguas irá un poco justo. Aguanta
+		'''
+	TrialSummary_19:
+		'''
+		Bajo el Mar de Azufre pesa un viejo, ácido de escamas y de genio
+		El lago y él se conocen de años: ninguno acepta el agua del otro
+		Llévale recado: la mesa está puesta, que se hunda
+		Muerde, y los dientes aún sirven. Ten cuidado
+		'''
+	TrialSummary_20:
+		'''
+		Hay un gusano largo dando vueltas fuera del cielo, y las estrellas se apartan
+		Ha tragado dioses; al lago le pica saber a qué sabe un dios
+		Hazlo entrar en un agua en la que no debía entrar
+		El caparazón es tuyo, la carne del lago
+		'''
+	TrialSummary_21:
+		'''
+		Al otro lado de la jungla crían una bola de fuego, que arde no se sabe desde cuándo
+		El fuego y el lago son viejos enemigos; esta vez hay que zanjarse
+		Apaga ese fuego: la última cucharada la echa el lago
+		La pluma mojada ya no vuela. No dejes ni una
+		'''
+	TrialSummary_22:
+		'''
+		Las dos últimas mesas se abren juntas: una toda de hierro, otra solo de fuego
+		El orgullo de un artesano y la obsesión de una bruja: el lago quiere ver cómo se hunden
+		El orden lo eliges tú; con llegar vivo a la mesa, basta
+		Cuando se acabe este plato, el lago estará casi lleno
+		'''
+	TrialSummary_23:
+		'''
+		Han vuelto todos, o el viejo del abismo se ha despertado
+		Mesa llena: el lago ha esperado tanto que el agua ha subido
+		Tú solo lleva el paraguas, uno a uno
+		Cuando se acabe este plato, la lluvia para
+		'''
 }
 
 KikasaText: {
 	KikasaServantPlayer: {
-		// ServantUnknown: You can't command it yet
-		// AutoEvictFormat: Seats full — {0} steps down, {1} takes the seat
+		ServantUnknown: Aún no puedes mandarlo
+		AutoEvictFormat: Plazas llenas: {0} cede el asiento, {1} se sienta
 	}
 
 	KikasaUIText: {
-		// AffinityFlame: Flame
-		// AffinityNightmare: Nightmare
-		// AffinityRain: Rain
-		// AffinityWild: Any
-		// AffinityArms: Arms
-		// StateOut: Out
-		// StateHeld: Held back
-		// StateAwait: Waiting
-		// LakeNotReadyLine: The lake isn't open. It will come out once you raise it
-		// WispRainBlock: The ghost rain smothers any spark
-		// NeedSettleLine: The lake hasn't settled yet
+		AffinityFlame: Llama
+		AffinityNightmare: Pesadilla
+		AffinityRain: Lluvia
+		AffinityWild: Comodín
+		AffinityArms: Armas
+		StateOut: En campo
+		StateHeld: Guardado
+		StateAwait: Espera el lago
+		LakeNotReadyLine: El lago aún no está abierto; cuando lo abras, saldrá solo
+		WispRainBlock: La lluvia espectral lo aplasta, el fuego no prende
+		NeedSettleLine: La superficie aún no se ha asentado
 	}
 
 	KikasaHud: {
-		// ScrollName: Lakeheart
-		// OpenTag: Click to open
-		// TipWaterFormat: Water {0}%
-		// TipTideHintFormat: Hold {0} to draw the waterline to your cursor
-		// TipVaultFormat: Hoard {0} / {1}
-		// TipWispClick: Click the flame sprout to light or draw back the fire
-		// TipCooldownFormat: Cooling down · {0}%
-		// TipDrownTitle: Drown
-		// TipDrownHintFormat: Aim at an enemy or hold an item and press {0}
-		// TipDrownReady: Ready
-		// TipResetTitle: Wide Restart
-		// TipResetHintFormat: Press {0} anytime to rewind nearby things a few seconds
-		// TipTeleportTitle: Ghostwater Passage
-		// TipTeleportHintFormat: Press {0} to slip through a pool of water to the cursor; swifter within the lake, with a shorter cooldown
-		// TipThrallFormat: Thralls out {0} / {1}
-		// TipHoundCountFormat: Hounds out {0} / {1}
-		// TipDreamNoTalis: Only the hounds' bite counts here — talismans do not apply
-		// TipSeatsHintFormat: Hold {0} for the wheel · change the lineup in the Lakeheart
-		// TipSeatEmpty: Empty
-		// TipTalisHint: Click to open the Lakeheart and hang talismans on the rope
+		ScrollName: Corazón  del  lago
+		OpenTag: Clic para abrir
+		TipWaterFormat: Nivel {0}%
+		TipTideHintFormat: Mantén pulsado {0} y el nivel sigue al cursor
+		TipVaultFormat: Tesoro del lago {0} / {1}
+		TipWispClick: Clic en la llama para encender o recoger el fuego
+		TipCooldownFormat: En enfriamiento · {0}%
+		TipDrownTitle: Inmersión
+		TipDrownHintFormat: Apunta a un enemigo o sujeta un objeto y pulsa {0}
+		TipDrownReady: Listo para la Inmersión
+		TipResetTitle: Reinicio de gran alcance
+		TipResetHintFormat: Pulsa {0} cuando quieras y echa atrás unos segundos todo lo cercano
+		TipTeleportTitle: Teletransporte del Reino espectral
+		TipTeleportHintFormat: Pulsa {0} para cruzar un charco hasta el cursor; en el lago de sangre es más rápido y el enfriamiento más corto
+		TipThrallFormat: Siervos del paraguas en campo {0} / {1}
+		TipHoundCountFormat: Sabuesos en campo {0} / {1}
+		TipDreamNoTalis: En el sueño solo cuentan las dentelladas de los sabuesos; los talismanes no actúan
+		TipSeatsHintFormat: Mantén pulsado {0} para abrir el menú radial y llamar o recoger · Ajusta la formación en el Corazón del lago
+		TipSeatEmpty: Vacío
+		TipTalisHint: Clic para abrir el Corazón del lago y colgar talismanes en la cuerda de la lluvia
 	}
 
 	KikasaServantWheelUI: {
-		// WheelEmptyTitle: Empty
-		// WheelEmptyDesc: Drown a boss and its shade takes an empty seat on its own; you can also seat one by hand in the Lakeheart
-		// WheelEmptyStatus: Nothing here yet
-		// WheelSeatFormat: Seat {0}
-		// WheelStatusRecall: "[Release] Call it back"
-		// WheelStatusSummon: "[Release] Call it out"
-		// WheelStatusAwaitOrder: "[Release] Remember this; it comes out when the lake opens"
-		// WheelCenterTitle: All Seats
-		// WheelCenterDesc: If any are out, call them all back. If none are out, call them all out
-		// WheelCenterCountFormat: "{0}/{1} out"
-		// WheelCenterRecallAll: "[Release] Call all back"
-		// WheelCenterSummonAll: "[Release] Call all out"
-		// WheelCenterEmpty: No shades seated yet
-		// WheelDamageFormat: Damage per shade out {0}%
-		// WheelHint: "[{0}] Hold · Release to confirm · Right-click closes the wheel only, shades stay afield"
-		// WheelWispName: Gold Flame
-		// WheelWispDesc: Once lit, the gold flame spreads along the shore and scorches whatever it reaches
-		// WheelWispIgnite: "[Release] Light it"
-		// WheelWispSnuff: "[Release] Draw the fire back"
+		WheelEmptyTitle: Vacío
+		WheelEmptyDesc: Hunde a un jefe en el lago y su Sombra del lago ocupará sola una plaza vacía; también puedes formarla a mano en el Corazón del lago
+		WheelEmptyStatus: Aquí aún está vacío
+		WheelSeatFormat: Plaza de sombra {0}
+		WheelStatusRecall: "[Soltar] Recoger esta"
+		WheelStatusSummon: "[Soltar] Llamarla"
+		WheelStatusAwaitOrder: "[Soltar] Apúntala; al abrir el lago saldrá sola"
+		WheelCenterTitle: Orden general
+		WheelCenterDesc: Si queda alguna Sombra del lago en campo, se recogen todas; si no hay ninguna, se llaman todas
+		WheelCenterCountFormat: "{0}/{1} en combate"
+		WheelCenterRecallAll: "[Soltar] Recogerlas todas"
+		WheelCenterSummonAll: "[Soltar] Llamarlas todas"
+		WheelCenterEmpty: Aún no hay Sombras del lago formadas en una plaza
+		WheelDamageFormat: Daño de cada Sombra del lago en campo {0}%
+		WheelHint: "[{0}] Mantener pulsado · Soltar para confirmar · Clic derecho solo cierra el menú, las Sombras del lago se quedan"
+		WheelWispName: Llama dorada
+		WheelWispDesc: Encendida, la llama dorada cunde por la orilla y quema a quien toca
+		WheelWispIgnite: "[Soltar] Encender"
+		WheelWispSnuff: "[Soltar] Recoger el fuego"
 	}
 
 	KikasaPanoramaUI: {
-		// Title: Lakeheart
-		// HoundTitle: Hound · Ghost Dream
-		// WispTitle: Gold Flame · Ghost Fire
-		// ReflectAwake: The reflection is awake
-		// ReflectAsleep: The reflection is still asleep
-		// InDreamLine: You are in the Ghost Dream
-		// DreamReturnFormat: Press {0} again to return
-		// DreamEnterKeyFormat: Hold {0} to enter the Ghost Dream
-		// DreamEnterClick: Click the hound to enter the Ghost Dream
-		// NeedDomainFormat: Press {0} to open the Blood Lake
-		// NeedFullWater: The lake isn't full yet
-		// HoundBonusFormat: Hound cap {0} · damage {1}%
-		// WispBurning: Burning, scorching along the shore
-		// WispIdle: Unlit; the flame waits on your word
-		// WispBoil: Still burning in the rain
-		// WispQuenchedLine: Being put out by Ghost Rain
-		// WispBonusFormat: Burn {0}s · flame reach {1}
-		// WispIgniteClick: Click the gold flame to light the ghost fire
-		// WispSnuffClick: Click the gold flame to draw the fire back
-		// ActionDreamTag: Enter the Dream
-		// ActionIgniteTag: Ignite
-		// ActionSnuffTag: Snuff
-		// EdgeDreamFire: Dreamfire
-		// EdgeBoilRain: Boiling Rain
-		// EdgeRainNightmare: Rain-Nightmare
-		// EdgeTriSeal: Three-Shade Seal
-		// SeatsTitle: Three Seats
-		// SeatEmptyLine: Empty — pick a shade from the list below
-		// SeatPickHint: Click to pick up · right-click to remove
-		// SeatPlaceHint: Click to place it here
-		// SeatHeldLineFormat: Held back — hold {0} for the wheel to call it out
-		// RosterTallyFormat: Codex {0} / {1}
-		// RosterSeatTallyFormat: Seats {0} / {1}
-		// RosterUnknown: Not drowned yet
-		// RosterUnknownHintFormat: With the lake open, aim at it and press {0}
-		// RosterSeatedTag: Seated
-		// RosterPickHint: Click to pick up
-		// NotePlacedFormat: "{0} is now seated"
-		// NoteUnslottedFormat: "{0} was removed from its seat"
-		// NoteNotCollected: You haven't drowned it yet
-		// NotePickFirst: Pick a shade from the list below first
-		// NoteArmsNoStock: No original of that weapon in the hoard, so the shade can't take shape
-		// TalisTitle: Raincall Rope
-		// TalisEmptyLine: An empty knot — click to open the talisman case
-		// TalisNoneOwned: The talisman case is empty; craft a talisman at a workbench by the water first
-		// TalisNeedUmbrella: Hold Kikasa in hand — the talismans answer only the umbrella
-		// TalisSwapHint: Click to swap · drag onto another knot to relocate · right-click to take down
-		// TalisHangHint: Click to hang it here
-		// TalisTakeDownLabel: Take down
-		// TalisAlreadyHung: It already hangs on another knot
-		// TalisCurrentTag: Hanging here
-		// TalisStackRule: Every hung talisman keeps working, even with its ink hidden; each drop takes one talisman's color and signature effect, leftmost first
-		// TalisDragSwapHint: Release to trade knots
-		// TalisDragMoveHint: Release to move it here
-		// NoteFuHungFormat: 「{0}」rose onto the raincall rope
-		// NoteFuTakenFormat: 「{0}」returned to the talisman case
-		// VaultTitle: Lake Hoard
-		// VaultCountFormat: "{0} / {1}"
-		// VaultEmptyHint: Nothing here yet
-		// VaultExtractHint: Click to take it back
-		// VaultViewOnlyLine: The lake hasn't risen yet — you can only look
-		// ArmsStockFormat: Originals ×{0}
-		// ThrallLineFormat: Thrall cap {0} · convert one every {1}s
-		// FooterHintFormat: Esc or {0} to close · hold an item and press {1} to sink it · hold {2} for the wheel
+		Title: Corazón  del  lago
+		HoundTitle: Sabueso · Sueño espectral
+		WispTitle: Llama dorada · Fuego fatuo
+		ReflectAwake: El reflejo ya despertó
+		ReflectAsleep: El reflejo aún duerme
+		InDreamLine: Estás en el Sueño espectral
+		DreamReturnFormat: Pulsa {0} otra vez para volver
+		DreamEnterKeyFormat: Mantén pulsado {0} para entrar en el Sueño espectral
+		DreamEnterClick: Clic en el sabueso para entrar en el Sueño espectral
+		NeedDomainFormat: Pulsa {0} para alzar el lago de sangre
+		NeedFullWater: El lago aún no ha llenado
+		HoundBonusFormat: Tope de sabuesos {0} · daño {1}%
+		WispBurning: Ardiendo, quema a lo largo de la orilla
+		WispIdle: Apagado, el fuego espera tu orden
+		WispBoil: Sigue ardiendo bajo la lluvia espectral
+		WispQuenchedLine: La lluvia espectral lo está apagando
+		WispBonusFormat: Quemadura {0} s · alcance de llama {1}
+		WispIgniteClick: Clic en la llama dorada para encender el fuego fatuo
+		WispSnuffClick: Clic en la llama dorada para recoger el fuego fatuo
+		ActionDreamTag: Entrar al sueño
+		ActionIgniteTag: Encender
+		ActionSnuffTag: Recoger el fuego
+		EdgeDreamFire: Fuego onírico
+		EdgeBoilRain: Lluvia hirviente
+		EdgeRainNightmare: Pesadilla de lluvia
+		EdgeTriSeal: Tres sombras sellan el lago
+		SeatsTitle: Tres plazas de sombra
+		SeatEmptyLine: Vacía; elige una del registro de abajo y súbela
+		SeatPickHint: Clic para tomar · Clic derecho para quitar
+		SeatPlaceHint: Clic para colocarla aquí
+		SeatHeldLineFormat: Guardada; mantén pulsado {0} para abrir el menú radial y llamarla
+		RosterTallyFormat: Atlas {0} / {1}
+		RosterSeatTallyFormat: Plazas {0} / {1}
+		RosterUnknown: Aún no ha recibido Inmersión
+		RosterUnknownHintFormat: Con el lago abierto, apunta y pulsa {0} para la Inmersión
+		RosterSeatedTag: En formación
+		RosterPickHint: Clic para tomar
+		NotePlacedFormat: "{0} ha entrado en una plaza de sombra"
+		NoteUnslottedFormat: "{0} ha salido de su plaza de sombra"
+		NoteNotCollected: Aún no lo has hundido en el lago
+		NotePickFirst: Elige primero una del registro de abajo
+		NoteArmsNoStock: En el tesoro del lago no está el original de esta arma, la Sombra del lago no puede tomar forma
+		TalisTitle: Cuerda  de  la  lluvia
+		TalisEmptyLine: Nudo vacío; clic para abrir el estuche y elegir un talismán
+		TalisNoneOwned: El estuche aún está vacío; fabrica primero un talismán en un banco junto al agua
+		TalisNeedUmbrella: Sostén Kikasa en la mano; el talismán solo reconoce a su dueño
+		TalisSwapHint: Clic para cambiar de talismán · Arrastra a otro nudo para cambiar de sitio · Clic derecho para descolgar
+		TalisHangHint: Clic para colgar
+		TalisTakeDownLabel: Descolgar
+		TalisAlreadyHung: Ya está colgado en otro nudo
+		TalisCurrentTag: Colgado aquí
+		TalisStackRule: Todos los talismanes colgados siguen activos, aunque su tinta quede tapada; cada gota de tinta pertenece a un solo talismán, el de más a la izquierda primero, y el color y el efecto propio van con él
+		TalisDragSwapHint: Suelta para intercambiarlos
+		TalisDragMoveHint: Suelta para colgarlo aquí
+		NoteFuHungFormat: «{0}» ha subido a la cuerda de la lluvia
+		NoteFuTakenFormat: «{0}» ha vuelto al estuche
+		VaultTitle: Tesoro  del  lago
+		VaultCountFormat: "{0} / {1}"
+		VaultEmptyHint: Aquí aún está vacío
+		VaultExtractHint: Clic para recuperar
+		VaultViewOnlyLine: El agua aún no ha subido; ahora solo se puede mirar
+		ArmsStockFormat: Originales ×{0}
+		ThrallLineFormat: Tope de siervos del paraguas {0} · se puede convertir uno cada {1} s
+		FooterHintFormat: Esc o {0} para cerrar · Sujeta un objeto y pulsa {1} para hundirlo en el tesoro · Mantén pulsado {2} para abrir el menú radial
 	}
 
 	KikasaHudLead: {
-		// DomainTitle: Raise the Blood Lake
-		// DomainBody: The Blood Lake is where the umbrella does its work: storing items, drowning foes, and commanding shades all start with the lake open. Raise it and let the water climb. The tide answers you: hold the Command the Tide key (X by default) and the waterline follows your cursor.
-		// DomainPrompt: Hold Kikasa and press {0}
-		// SinkTitle: Sink Something
-		// SinkBody: Hold an item and press the sink key to store it on the lakebed; you can reclaim it in the Lakeheart. Press the same key aiming at an enemy to push it under. A drowned boss leaves behind a shade, and you can command it to fight for you later.
-		// SinkPrompt: Once the water reaches your feet, press {0} while holding an item or aiming at an enemy
-		// PanoramaTitle: Open the Lakeheart
-		// PanoramaBody: The Lakeheart is Kikasa's home screen: the hound and the ghost fire live up top, the three seats in the middle hold your shades, and everything you sank rests on the lakebed. The next steps all run through here.
-		// PanoramaPrompt: Click the wind chime at the bottom left, or hold Kikasa and press {0}
-		// WheelTitle: Call the Shades
-		// WheelBody: Seated shades come out to fight on their own once the lake is open. The wheel calls them out or back one by one at any time: the fewer afield, the harder each one hits. The gold-flame sector on the wheel lights or draws back the ghost fire.
-		// WheelPrompt: Hold {0} to open the wheel, then release on a seat
-		// WheelNoMemory: No shades in the lake yet. Drown a boss first, or skip this step.
-		// RainTitle: Mutate into Ghost Rain
-		// RainBody: The Flip the Lake key (middle mouse by default) works two ways: at full water, tap it to flip the Blood Lake into ghost rain; hold it to sink into the Ghost Dream, saved for the last step. Foes slain under the ghost rain rise as umbrella thralls that fight for you.
-		// RainPrompt: At full water, tap {0} to flip the lake
-		// RestartTitle: Wide Restart
-		// RestartBody: Press the restart key and the scene freezes into a black-and-white photograph, then washes open: nearby foes and you slide back to where you stood seconds ago, your life refills, debuffs rinse off, and nothing can touch you while it rewinds. It works outside the ghost rain too: the shutter borrows a ghost rain for that moment, and once the rewind settles the rain withdraws, leaving your domain as it was.
-		// RestartPrompt: Hold the umbrella and press {0}
-		// DreamTitle: Enter the Ghost Dream
-		// DreamBody: At full water, hold the Flip the Lake key and the reflection in the lake pulls you into the dream. Foes there are helpless and no ranged projectile can exist; your items are sealed too, so hold left click to loose the hounds instead. Press the same key again to wake.
-		// DreamPrompt: At full water, hold {0}
-		// SkipBtn: Skip
-		// ConfirmBtn: Got it
-		// AssistBtn: Show me
-		// OpenPanoramaBtn: Open it for me
-		// DismissBtn: Put away
-		// KeyUnbound: This step's key "{0}" isn't bound. Bind it in Settings > Controls, or click Skip.
-		// AlreadyDoneNote: You've already done this one. Read on, then press Got it.
-		// WaterRisingNote: Wait for the blood water to reach your feet. Water level: {0}%.
-		// ResetCooldownFormat: Restart still cooling down: {0}%
-		// HelpHover: Replay the umbrella tutorial
-		// MutateFallbackKey: middle mouse
+		DomainTitle: Alzar el lago de sangre
+		DomainBody: El lago de sangre es el sitio donde Kikasa se planta: guardar objetos, aplicar Inmersión a enemigos y mandar Sombras del lago, todo empieza por alzar el lago y dejar que el agua suba. El nivel te obedece: mantén pulsada la tecla «Guiar la marea» (X por defecto) y la superficie sube y baja con el cursor.
+		DomainPrompt: Sostén Kikasa y pulsa {0}
+		SinkTitle: Hundirlo en el lago
+		SinkBody: Sujeta un objeto y pulsa la tecla de hundir: irá al fondo, y luego lo puedes recuperar en el Corazón del lago. Apunta a un enemigo y pulsa la misma tecla para empujarlo al agua. Un jefe que haya recibido Inmersión deja una sombra: eso es una Sombra del lago, y después puedes mandarla a combatir por ti.
+		SinkPrompt: Cuando el agua te llegue a los pies, sujeta un objeto o apunta a un enemigo y pulsa {0}
+		PanoramaTitle: Abrir el Corazón del lago
+		PanoramaBody: El Corazón del lago es la pantalla principal de Kikasa: arriba viven el sabueso y el fuego fatuo, en el medio tres plazas de sombra alojan las Sombras del lago, y en el fondo se alinean los objetos hundidos. Los siguientes pasos pasan todos por aquí.
+		PanoramaPrompt: Pulsa el carillón de abajo a la izquierda, o sostén Kikasa y pulsa {0}
+		WheelTitle: Llamar a las Sombras del lago
+		WheelBody: Las Sombras del lago formadas en una plaza salen solas a combatir cuando el lago está abierto. Con el menú radial puedes llamarlas o recogerlas una a una en cualquier momento: cuantas menos haya en campo, más daño hace cada una. El sector de llama dorada del menú enciende y recoge el fuego fatuo.
+		WheelPrompt: Mantén pulsado {0} para abrir el menú radial, apunta a una plaza y suelta
+		WheelNoMemory: En el lago aún no hay Sombras del lago. Primero hunde a un jefe, o salta este paso.
+		RainTitle: Voltear a lluvia espectral
+		RainBody: La tecla «Anverso y reverso del lago de sangre» (clic de la rueda por defecto) se usa de dos modos: con el lago lleno, un pulso corto voltea el lago de sangre en lluvia espectral; mantener pulsado te hunde en el Sueño espectral, que queda para el último paso. Los enemigos que mueren bajo la lluvia espectral se vuelven siervos del paraguas y combaten por ti.
+		RainPrompt: Con el lago lleno, pulsa {0} un momento para voltear el lago de sangre
+		RestartTitle: Reinicio de gran alcance
+		RestartBody: Pulsa la tecla de Autorreinicio y la imagen se congela en una foto en blanco y negro, luego la lluvia la abre: los enemigos cercanos y tú volvéis a donde estabais unos segundos atrás, tu vida se llena, los perjuicios se lavan, y durante el retroceso eres invulnerable. También se puede pulsar fuera de la lluvia espectral: el obturador pide prestada una lluvia espectral para ese instante; al asentarse el retroceso, la lluvia se retira sola y el dominio queda como antes de pulsar.
+		RestartPrompt: Sostén Kikasa y pulsa {0}
+		DreamTitle: Entrar en el Sueño espectral
+		DreamBody: Con el lago lleno, mantén pulsada la tecla «Anverso y reverso del lago de sangre» y el reflejo del lago te arrastra al Sueño espectral. En el sueño los enemigos quedan incapaces y no puede existir ningún proyectil a distancia; tus objetos también quedan sellados, y en su lugar mantienes pulsado el clic izquierdo para soltar sabuesos que muerdan. Pulsa la misma tecla otra vez para despertar.
+		DreamPrompt: Con el lago lleno, mantén pulsado {0}
+		SkipBtn: Saltar
+		ConfirmBtn: Entendido
+		AssistBtn: Demuéstramelo
+		OpenPanoramaBtn: Ábrelo por mí
+		DismissBtn: Guardar el tutorial
+		KeyUnbound: La tecla «{0}» de este paso aún no está asignada. Asígnala primero en Ajustes > Controles, o pulsa «Saltar».
+		AlreadyDoneNote: Este paso ya lo has hecho. Cuando termines de leer, pulsa «Entendido».
+		WaterRisingNote: Espera primero a que el agua de sangre te llegue a los pies. Nivel {0}%.
+		ResetCooldownFormat: El reinicio aún está en enfriamiento: {0}%
+		HelpHover: Volver a ver el tutorial de Kikasa
+		MutateFallbackKey: Clic de la rueda
 	}
 }

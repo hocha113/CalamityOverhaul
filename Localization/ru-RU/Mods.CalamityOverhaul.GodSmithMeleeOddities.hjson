@@ -1,68 +1,68 @@
 # GodSmith MeleeOddities (P5) weapon descriptions
 # Keys composed by the framework: Mods.CalamityOverhaul.GodSmithMeleeOddities.{SchemeClass}.Desc
 
-/* GsVampireKnives.Desc:
+GsVampireKnives.Desc:
 	'''
-	Reforged: hurls 4-8 knives that heal 7.5% of damage dealt;
-	stolen blood condenses into up to 3 orbiting blood pearls, each adding a knife to the next throw;
-	at 3 pearls the next throw is a crimson volley with doubled lifesteal
-	''' */
-/* GsScourgeoftheCorruptor.Desc:
+	Перековка: один бросок швыряет 4~8 ножей, попадание крадёт 7.5% нанесённого урона как здоровье;
+	украденная кровь сгущается у вас в жемчужины, до 3, каждая даёт +1 нож к следующему броску;
+	на 3 жемчужинах следующий бросок — багровый залп, вампиризм этого круга удвоен
 	'''
-	Reforged: the javelin bursts into a brood of tiny eaters on impact;
-	it also pins a festering sore on whatever it strikes - eaters dive at the sore,
-	and after three passes the sore ruptures with cursed flames
-	''' */
-/* GsSolarEruption.Desc:
+GsScourgeoftheCorruptor.Desc:
 	'''
-	Reforged: lashes out a looping chain-blade that pierces walls and detonates sunlight on hit;
-	land 8 hits to charge a corona - the next lash ignites its whole path in a chain of blasts
-	''' */
-/* GsDayBreak.Desc:
+	Перековка: падение копья взрывает выводок малых пожирателей душ;
+	попадание пики вбивает порченую язву — малые пожиратели пикируют в неё первыми,
+	три прохода взрывают язву гноем и поджигают проклятым огнём
 	'''
-	Reforged: spears stick and burn, up to 8 per target;
-	pinning 4 spears into one target detonates them into a cross of daylight
-	''' */
-/* GsSickle.Desc:
+GsSolarEruption.Desc:
 	'''
-	Reforged: still harvests hay from grass.
-	Slashes build Harvest, each stack swinging a little faster;
-	at 5 stacks the next slash becomes a widened reaping sweep
-	''' */
-/* GsIceSickle.Desc:
+	Перековка: кольцевая цепь-клинок летит сквозь стены и при попадании взрывает солнечный свет;
+	8 попаданий подряд наполняют корону — следующий удар поджигает весь путь хлыста цепными взрывами
 	'''
-	Reforged: the thrown sickle freezes into an ice prism where it stops;
-	shatter the prism with a slash to burst a fan of icicles forward
-	''' */
-/* GsDeathSickle.Desc:
+GsDayBreak.Desc:
 	'''
-	Reforged: the wall-piercing scythe grows a tier for each new enemy it reaps;
-	at three tiers it erupts in a ring of soulfire where it halts
-	''' */
-/* GsTerragrim.Desc:
+	Перековка: солнечные копья впиваются и жгут; на одной цели до 8 копий;
+	на 4 копьях четвёрка сама взрывается крестовым солнцем
 	'''
-	Reforged: hold to become a storm of blades while Growth builds;
-	release to loose a blade wave scaled by Growth - at full power it takes the shape of the Terra Blade
-	''' */
-/* GsArkhalis.Desc:
+GsSickle.Desc:
 	'''
-	Reforged: the flurry pierces 20 armor;
-	sustained hits on one target build Insight, each stack adding 2 more armor penetration,
-	and at 8 stacks the flurry snaps into a piercing execution thrust
-	''' */
-/* GsMonkStaffT1.Desc:
+	Перековка: косьба по-прежнему роняет сено.
+	Удары копят урожай, каждый слой чуть ускоряет взмах;
+	на 5 слоях следующий удар становится широким замахом
 	'''
-	Reforged: the ground slam still deals triple damage in an area, and you can still turn or cut the spin short;
-	slammed enemies grow drowsy and slow, and a third slam on the same target puts it to sleep -
-	that slam hits harder and slows longer
-	''' */
-/* GsMonkStaffT2.Desc:
+GsIceSickle.Desc:
 	'''
-	Reforged: every landed thrust calls a ghast to pierce a nearby enemy;
-	the ghast then circles its victim for one more bite
-	''' */
-/* GsMonkStaffT3.Desc:
+	Перековка: брошенный серп в конце пути не гаснет, а застывает льдом на месте;
+	разбейте кристалл взмахом — вперёд рванёт веер ледяных граней
 	'''
-	Reforged: left-click swings build Dragon Breath, lighting up the pearl on the staff;
-	at 5 stacks the right-click dragon sphere ascends, calling down lightning along its path
-	''' */
+GsDeathSickle.Desc:
+	'''
+	Перековка: пронзающий стены серп с каждым новым врагом становится крупнее и тяжелее;
+	на трёх ступенях в точке остановки взрывается кольцо пламени душ
+	'''
+GsTerragrim.Desc:
+	'''
+	Перековка: удерживайте — вихрь клинков копит рост;
+	отпустите — по росту вылетает меч-волна; на полном росте это цельный терра-клинок
+	'''
+GsArkhalis.Desc:
+	'''
+	Перековка: вихрь сам несёт 20 пробития брони;
+	серия по одной цели копит прозрение, +2 пробития за слой,
+	на 8 слоях сама сжимается в пронзающий выпад
+	'''
+GsMonkStaffT1.Desc:
+	'''
+	Перековка: удар о землю по-прежнему бьёт тройным уроном по области, на полпути всё ещё можно развернуться или убрать посох раньше;
+	попавшие враги сонно замедляются; три удара по одной цели усыпляют её —
+	третий больнее и держит дольше
+	'''
+GsMonkStaffT2.Desc:
+	'''
+	Перековка: каждый укол вызывает духа, что пронзает ближних;
+	пройдя цель, дух ещё раз обходит и кусает снова
+	'''
+GsMonkStaffT3.Desc:
+	'''
+	Перековка: ЛКМ крутит посох и копит дыхание грома, жемчужина на навершии загорается;
+	на 5 слоях шар грома по ПКМ становится нисхождением небесного дракона и сыплет молнии по пути
+	'''

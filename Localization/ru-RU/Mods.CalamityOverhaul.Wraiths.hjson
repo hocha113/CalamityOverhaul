@@ -1,73 +1,73 @@
 LanternBoy: {
-	// DisplayName: The Lantern Boy
-	// Origin: Those who walk the mountain road at night tell of a lantern waiting at its end with no one beneath it. One traveler braved a longer look — and when he came to, he was the one looking out from inside the lamp
-	// Power: 「Guiding Light」Three Ghost Lanterns orbit the bearer, their shadows echoing Onikiri's normal slashes off-beat for a combined sixty percent of its power.
-	// DeathReason: "{0} became the one inside the fourth lantern"
+	DisplayName: Мальчик с фонарём
+	Origin: Те, кто ночью идёт горной тропой, говорят: в конце пути часто ждёт фонарь, а под ним никого. Один смельчак посмотрел дольше обычного — и, очнувшись, уже смотрел наружу изнутри лампы
+	Power: «Проводник» Три призрачных фонаря кружат вокруг носителя. Их тени сбитым тактом повторяют обычные рассечения Оникири и в сумме держат шестьдесят процентов силы.
+	DeathReason: "{0} стал тем, кто смотрит из четвёртого фонаря"
 }
 
 CrimsonBride: {
-	// DisplayName: The Crimson Bride
-	// Origin: A bridal palanquin once stood at somebody's gate with no bearers to carry it, and stood there seven nights. On the eighth night someone lifted the curtain — and from then on, the palanquin answered to a new bride
-	// Power: 「The Procession」Press the Self-Restart key and the palanquin comes following your trail of blood, carrying the blade-bearer into an empty wedding hall; at the nuptial toast, wounds and afflictions alike are restarted.
-	// DeathReason: "{0} boarded that palanquin"
+	DisplayName: Алая невеста
+	Origin: У чьих-то ворот однажды остановился свадебный паланкин без носильщиков и простоял семь ночей. На восьмую кто-то поднял занавес — с тех пор паланкин признаёт новую невесту
+	Power: «Свадебный ход» Нажмите клавишу «Самоперезагрузка» — паланкин придёт по кровавому следу и внесёт клинок в пустой свадебный зал. В миг обмена чашами раны и состояния перезапускаются.
+	DeathReason: "{0} сел в тот паланкин"
 }
 
 ScapeGhost: {
-	// DisplayName: The Scapegoat Wraith
-	// Origin: It left no name behind in life; it only remembers dying in other people's places, so many times it forgot which death was its own. The day it was entered into the register, its birth date was written beside your name — from then on, your death is its to take
-	// Power: 「Death's Stand-In」At the instant death arrives, it seizes a life from afar and forces your death into that body
-	// DeathReason: "{0} died in its place, this once"
+	DisplayName: Дух-подмена
+	Origin: При жизни оно не оставило имени. Помнит лишь, что умирало вместо других столько раз, что забыло, какая смерть была своей. В день записи в книгу его день рождения вписали рядом с твоим именем — с тех пор и твоя смерть принадлежит ему
+	Power: «Подмена смерти» В миг, когда приходит смерть, оно издалека хватает чужую жизнь и вдавливает твою смерть в то тело
+	DeathReason: "{0} умер вместо него один раз"
 }
 
 HeadlessShade: {
-	// DisplayName: The Headless Shade
-	// Origin: On a night of swaying lamplight, a man looked down and saw his shadow twitch when he had not moved — and looking closer, there was nothing above its shoulders. Something that lost its head had moved into a living man's shadow
-	// Power: 「Dismember」It lurks behind you, then rushes anything living and tears its body into pieces
-	// DeathReason: "{0} was torn into pieces by their own shadow"
+	DisplayName: Безголовая тень
+	Origin: В ночь, когда качался свет ламп, человек опустил взгляд и увидел, что его тень дёрнулась сама. Присмотрелся: над плечами тени не было ничего. То, что потеряло голову, так и вселилось в тень живого
+	Power: «Расчленение» Оно таится у тебя за спиной. Почуяв живое, бросается и рвёт тело на части
+	DeathReason: "{0} был разорван на части собственной тенью"
 }
 
 GhostHand: {
-	// DisplayName: The Charred Hand
-	// Origin: A charred, withered arm, burnt through and still gripping hard. No one knows whose it once was; all anyone knows is that it reaches for whatever lives
-	// Power: 「Grip」A withered hand lashes out from behind to seize prey, pinning it down and crushing it over and over; when prey abounds, more hands reach out — even colossal beings cannot slip its fingers
-	// DeathReason: "{0} was dragged into the wall"
+	DisplayName: Обгорелая рука
+	Origin: Обгорелая сухая рука. Сгорела до такого вида, а пальцы всё ещё сжаты намертво. Никто не знает, на ком она росла; знают лишь, что живое она хватает
+	Power: «Хватка» Сухая рука тянется из-за спины, стискивает добычу, держит и снова и снова давит. Когда добычи много, рук становится больше — даже громадина не ускользнёт из пальцев
+	DeathReason: "{0} втащили в стену"
 }
 
 GhostRain: {
-	// DisplayName: The Ghost Rain
-	// Origin: Everyone caught in that rain says the same thing: look up, and it is not clouds — it is faces, pressing down layer upon layer. The drops do not hurt when they land; it is just that every one feels like someone claiming you
-	// Power: 「Ghost Rain」While equipped and Onikiri is held, the gloom stays and the ghost rain pours; living things caught in the veil are slowly eaten away, or dragged up into the rain
-	// DeathReason: "{0} was claimed by the rain"
+	DisplayName: Призрачный дождь
+	Origin: Все, кто попадал под тот дождь, говорят одно: подняв голову, видишь не тучи, а лица, слой за слоем давящие сверху. Капли не больят — просто каждая будто заявляет на тебя права
+	Power: «Призрачный дождь» Пока ведомый призван и в руках Оникири, сумрак держится, дождь льёт. Живое под завесой медленно разъедается или утаскивается в дождь
+	DeathReason: "{0} был заявлен дождём"
 }
 
 System: {
-	// ScapeGhostActivated: 「Death's Stand-In」— {0} bore this death in your place
-	// ScapeGhostUnknownTarget: something living
-	// ScapeGhostDeathBroadcast: "{0} took the hit for {1} — {2}"
-	// ErosionCrawl: Something is crawling beneath the skin
-	// ErosionStain: A corpse-blue tinge creeps up the fingertips
-	// ErosionMirror: The thing in the mirror does not quite look like you
-	// RevivalStir: The name on the talisman shifted
-	// RevivalRise: It is watching you through the paper
-	// RevivalBrink: The talisman is too hot to hold
-	// RevivalHudBrink: One more use and it wakes
+	ScapeGhostActivated: "{0} стал духом-подменой"
+	ScapeGhostUnknownTarget: некое живое существо
+	ScapeGhostDeathBroadcast: "{0} стал духом-подменой для {1}, {2}"
+	ErosionCrawl: Под кожей что-то ползёт
+	ErosionStain: На кончиках пальцев проступает трупная синева
+	ErosionMirror: То, что в зеркале, уже не совсем ты
+	RevivalStir: Имя на талисмане дрогнуло
+	RevivalRise: Оно смотрит на тебя сквозь бумагу
+	RevivalBrink: Печать жжёт так, что не удержать
+	RevivalHudBrink: Ещё одно призвание — и оно проснётся
 }
 
 Coven: {
-	// RainHandName: Reach From The Rain
-	// RainHandNote: Soaked prey no longer sits beyond arm's reach — the withered hand hangs down from the rainline above it. Up to five hands reach out at once in the rain, and the crush grows heavier with the downpour
-	// RainShadeName: Wet Edge
-	// RainShadeNote: While the wound the shade tore is still open, every tick of rain-rot on that target is doubled
-	// HandShadeName: Held Down, Then Cut
-	// HandShadeNote: The shade goes for prey the withered hand has hold of first — its speed is already pinned to zero, so the strike cannot miss
-	// LanternHandName: Seen By Lanternlight
-	// LanternHandNote: Prey the lantern has lit can be found by the hand even through cover; lantern slashes land 60% heavier on a target already held
-	// BrideName: Wedding Hall
-	// BrideNote: Prey drawn into the hall at the cup-sharing frame keeps every other mark on it from fading until the hall breaks up
-	// ScapeName: Take The Blow
-	// ScapeNote: Each time the substitute dies, every other wraith on the wheel drops one step of revival
-	// CallName: Calling Each Other
-	// CallNote: Wraiths sharing the wheel wake one another: use any of them and the rest gain a little revival. This holds even between two with no signature reaction
-	// BurstName: Three Marks Break
-	// BurstNote: When three different marks meet on one target, they detonate together as a single hit, and every wraith involved pays one revival
+	RainHandName: Рука из дождя
+	RainHandNote: Добыча под дождём больше не вне досягаемости: сухая рука свисает с дождевой линии над ней. В дожде одновременно тянутся до пяти рук, и давление растёт вместе с ливнем
+	RainShadeName: Мокрый клинок
+	RainShadeNote: Пока рана, оставленная тенью, не закрылась, каждый тик дождевой эрозии по этой цели удваивается
+	HandShadeName: Прижал и рубанул
+	HandShadeNote: Тень сначала бросается на добычу, которую держит сухая рука. Скорость уже сбита до нуля — этот удар не промахнётся
+	LanternHandName: Освещено
+	LanternHandNote: Добычу, которую видел фонарь, рука находит даже сквозь укрытие. Удары трёх фонарей по схваченной цели тяжелее на 60%
+	BrideName: Свадебный зал
+	BrideNote: Добыча, втянутая в зал в миг обмена чашами, не теряет прочие метки, пока зал не распадётся
+	ScapeName: Принять удар
+	ScapeNote: Каждый раз, когда подмена умирает, возрождение остальных ведомых на том же круге падает на одну ступень
+	CallName: Перекличка
+	CallNote: Ведомые на одном круге будят друг друга: призвание любого слегка поднимает возрождение остальных. Так же и между теми, у кого нет особой реакции
+	BurstName: Три печати рвутся
+	BurstNote: Когда на одной добыче сходятся три разные метки, они взрываются вместе как один удар, и каждый участвовавший ведомый платит одно возрождение
 }

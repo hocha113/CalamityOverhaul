@@ -1,96 +1,96 @@
-/* GsBatScepter.Desc:
+GsBatScepter.Desc:
 	'''
-	Reforged: hits build Nightfall; at full charge, right click to call the bat deluge
-	A phantom moon rises, waves of bats dive at your foes, then circle you as a guard ring
-	Every 8th bat bite splits off a phantom bat that dives at another nearby foe
-	''' */
-/* GsRazorpine.Desc:
+	Umschmiedung: Treffer häufen Nachthimmel, ist er voll, ruft Rechtsklick den Abgrundschwarm
+	Das Mondrad steigt, Schwärme stürzen in Wellen, der Rest bildet einen Schutzring um dich
+	Jeder 8. Fledermausbiss spaltet eine Phantomfledermaus auf einen nahen anderen Feind
 	'''
-	Reforged: hits build Resin; at full charge, right click to raise the Needle Storm
-	A ring of needles tightens around you, then settles into a needle mat underfoot
-	Needle hits smear resin; 5 smears on one foe draw a ring of 4 needles closing in on it
-	''' */
-/* GsBlizzardStaff.Desc:
+GsRazorpine.Desc:
 	'''
-	Reforged: hits build Snowsquall; at full charge, right click to call the Whiteout over your cursor
-	A giant blizzard hammers the area and leaves rime spikes on the ground
-	Every 5th icicle is a rime seed that bursts into a small frost blast where it dies
-	''' */
-/* GsStaffofEarth.Desc:
+	Umschmiedung: Treffer häufen Harz, ist es voll, hebt Rechtsklick den Nadelsturm
+	Der Nadelwirbel zieht sich um dich zusammen und legt danach eine Nadelschicht unter deine Füße
+	Nadeln bestreichen mit Harz, bei 5 Stapeln am selben Feind schließen sich vier Nadeln im Ring und stechen
 	'''
-	Reforged: hits build Earthwrath; at full charge, right click to raise the Orogeny at your cursor
-	Rock pillars erupt in waves amid flying rubble, leaving a magma vein bed behind
-	The boulder grinds harder with every foe it crushes, and a half-height rock pillar erupts where it shatters
-	''' */
-/* GsBetsysWrath.Desc:
+GsBlizzardStaff.Desc:
 	'''
-	Reforged: hits build Dragonfire; at full charge, right click to invoke the Dragon's Wrath
-	Betsy's shade dives three times trailing flame curtains, leaving a cursed pyre bed
-	Hits on cursed foes bank extra Dragonfire, and every 4th cursed hit bursts into hexfire
-	''' */
-/* GsNightglow.Desc:
+	Umschmiedung: Treffer häufen Schneesturm, ist er voll, senkt Rechtsklick die Weißkatastrophe auf den Cursor
+	Ein gewaltiger Schneesturm hämmert das Gebiet, danach bleiben Eiskristalldornen am Boden
+	Jeder 5. Eispfeil ist Frostsaat und platzt beim Niedergehen in einer kleinen Frostexplosion
 	'''
-	Reforged: hits build Dawnlight; at full charge, right click to unfurl an Aurora Curtain over your cursor
-	The curtain sears foes within and rains light lances below
-	Every 5th bolt hit drops an aurora lance from above the target
-	''' */
-/* GsStellarTune.Desc:
+GsStaffofEarth.Desc:
 	'''
-	Reforged: hits build Melody; at full charge, right click to open the Stellar Finale
-	Star chords play themselves at your foes on the beat while you dance a little faster
-	Consecutive hits climb a scale; the 8th note lands as a star chord burst
-	''' */
-/* GsResonanceScepter.Desc:
+	Umschmiedung: Treffer häufen Erdzorn, ist er voll, setzt Rechtsklick Gebirgshebung am Cursor
+	Felsensäulen heben sich in Wellen, Schutt fliegt, danach bleibt ein Lavaader-Strand
+	Jeder Feind, den der Brocken durchwalzt, steigert den Schaden, am Bruch steigt eine halbe Felsensäule
 	'''
-	Reforged: hits build Resonance; at full charge, right click to collapse the harmonics at your cursor
-	Five standing waves cross the area and their nodes strike whatever lingers
-	The royal wave rings a standing wave pulse on every 3rd foe it pierces
-	''' */
-/* GsNebulaArcanum.Desc:
+GsBetsysWrath.Desc:
 	'''
-	Reforged: hits build Arcanum; at full charge, right click to spin up the Nebula Spiral
-	Three nebula arms orbit you, grinding foes and dragging the lesser ones inward
-	The arcanum orb itself now swells in flight and slowly drags lesser foes toward its heart
-	Nebula mist rises from the staff as the gauge fills
-	''' */
-/* GsNebulaBlaze.Desc:
+	Umschmiedung: Treffer häufen Drachenflamme, ist sie voll, ruft Rechtsklick Drachenkönig-Unheil
+	Betsys Schatten stürzt dreimal und zieht einen Flammenschleier, danach bleibt eine Fluchfeuerlache
+	Treffer auf verfluchte Feinde häufen extra Drachenflamme, jeder 4. Fluchfeuer-Treffer hebt eine Unheilexplosion
 	'''
-	Reforged: hits build Blaze; at full charge, right click to mark a nova on the target near your cursor
-	It detonates in three staggered blast rings around a gravity well
-	Nebula eruption bolts now always ignite a micro nova where they strike
-	''' */
-/* GsLunarFlare.Desc:
+GsNightglow.Desc:
 	'''
-	Reforged: hits build Moonphase; at full charge, right click to raise the Lunar Eclipse
-	An eclipse disk pours twelve woven flare falls, every third one backed by a phantom moonbeam
-	Every 4th cast pours a pale fourth flare from the sky
-	Moonlight gathers on the book as the gauge fills
-	''' */
-// GsBatSwarmDirector.DisplayName: Bat Deluge
-// GsPineStormDirector.DisplayName: Needle Storm
-// GsWhiteoutDirector.DisplayName: Whiteout
-// GsOrogenyDirector.DisplayName: Orogeny
-// GsEarthPillarProj.DisplayName: Orogeny Pillar
-// GsDragonWrathDirector.DisplayName: Dragon's Wrath
-// GsAuroraCurtainDirector.DisplayName: Aurora Curtain
-// GsAuroraLanceProj.DisplayName: Aurora Lance
-// GsStellarFinaleDirector.DisplayName: Stellar Finale
-// GsResonanceCollapseDirector.DisplayName: Harmonic Collapse
-// GsNebulaSpiralDirector.DisplayName: Nebula Spiral
-// GsNovaDetonationDirector.DisplayName: Nova Detonation
-/* GsSpectreStaff.Desc:
+	Umschmiedung: Treffer häufen Morgenlicht, ist es voll, spannt Rechtsklick einen Polarlichtvorhang über dem Cursor
+	Der Vorhang verbrennt Feinde darin und senkt Lichtlanzen nach unten
+	Jeder 5. Treffer senkt eine Polarlichtlanze vom Kopf des Feindes
 	'''
-	Reforged: hits build Soulharvest; when full, right click to raise the Soul Tide at your cursor
-	Every quarter of the gauge banked splits off an echo soul that hunts another nearby foe
-	Three tide crests sweep the ring; each crest hit ferries 1 life back to you, up to 6 a second
-	''' */
-// GsLunarEclipseDirector.DisplayName: Lunar Eclipse
-// GsMoonPillarProj.DisplayName: Phantom Moonbeam
-// GsSpectreStaffTideDirector.DisplayName: Soul Tide
-/* GsInfernoFork.Desc:
+GsStellarTune.Desc:
 	'''
-	Reforged: fireballs corkscrew with furnace slag and every hit banks Cinder
-	When the gauge is full, right click to set the Wildfire at your cursor: three waves of flame sweep the ground, fire rains between them, and an ember shoal smolders after
-	''' */
-// GsInfernoForkWildfireDirector.DisplayName: Wildfire
-// GsCataclysmRiderBurstProj.DisplayName: Cataclysm Aftershock
+	Umschmiedung: Treffer häufen Satz, ist er voll, spielt Rechtsklick das Sternenmeer-Finale
+	Sternenakkorde spielen automatisch im Takt auf Feinde, währenddessen gehst du leichter
+	Treffer hintereinander steigen die Tonleiter, der 8. Ton fällt als Akkord-Sternexplosion
+	'''
+GsResonanceScepter.Desc:
+	'''
+	Umschmiedung: Treffer häufen Resonanz, ist sie voll, löst Rechtsklick Resonanzkollaps im Cursorgebiet
+	Fünf stehende Wellen kreuzen und bleiben, ihre Knoten schlagen zurückgehaltene Feinde
+	Durchschlägt die Königswelle jeden 3. Feind, erklingt ein Stehwellen-Impuls an ihm
+	'''
+GsNebulaArcanum.Desc:
+	'''
+	Umschmiedung: Treffer häufen Arkanum, ist es voll, öffnet Rechtsklick Nebula-Spiralarme
+	Drei Arme kreisen um dich und mahlen Feinde, kleine Feinde werden langsam zum Armherz gezogen
+	Die Arkanum-Großkugel wächst im Flug und zieht kleine Feinde zum Kugelherz
+	Füllt sich die Anzeige, verdichtet sich Sternennebel an der Spitze
+	'''
+GsNebulaBlaze.Desc:
+	'''
+	Umschmiedung: Treffer häufen Lohe, ist sie voll, markiert Rechtsklick ein Nova-Ziel nahe dem Cursor
+	Drei Ringexplosionen zünden versetzt, das Gravitationsloch in der Mitte schluckt kleine Feinde
+	Verstärkte Nebula-Ausbrüche zünden beim Treffer immer eine Mikronova
+	'''
+GsLunarFlare.Desc:
+	'''
+	Umschmiedung: Treffer häufen Mondphase, ist sie voll, hebt Rechtsklick Mondfinsternis-Gericht
+	Die Finsterscheibe gießt zwölf Mondflammenfälle, jeder dritte Fall ergänzt eine Phantom-Mondlichtsäule
+	Jeder 4. Zauber fällt eine extra bleiche Mondflamme vom Firmament
+	Füllt sich die Anzeige, verdichtet sich Mondglanz auf den Seiten
+	'''
+GsBatSwarmDirector.DisplayName: Abgrundschwarm
+GsPineStormDirector.DisplayName: Nadelsturm
+GsWhiteoutDirector.DisplayName: Weißkatastrophe
+GsOrogenyDirector.DisplayName: Gebirgshebung
+GsEarthPillarProj.DisplayName: Gebirgssäule
+GsDragonWrathDirector.DisplayName: Drachenkönig-Unheil
+GsAuroraCurtainDirector.DisplayName: Polarlichtvorhang
+GsAuroraLanceProj.DisplayName: Polarlichtlanze
+GsStellarFinaleDirector.DisplayName: Sternenmeer-Finale
+GsResonanceCollapseDirector.DisplayName: Resonanzkollaps
+GsNebulaSpiralDirector.DisplayName: Nebula-Spiralarm
+GsNovaDetonationDirector.DisplayName: Nova-Zündung
+GsSpectreStaff.Desc:
+	'''
+	Umschmiedung: Treffer häufen Seelenernte, ist sie voll, hebt Rechtsklick die Seelenabgrund-Gezeit am Cursor
+	Jede Viertelanzeige spaltet eine Nebenseele auf einen nahen anderen Feind
+	Drei Wogen fegen ringförmig die Schar, Wogentreffer geben Seelenheilung, höchstens 6 Leben pro Sekunde
+	'''
+GsLunarEclipseDirector.DisplayName: Mondfinsternis-Gericht
+GsMoonPillarProj.DisplayName: Phantom-Mondlichtsäule
+GsSpectreStaffTideDirector.DisplayName: Seelenabgrund-Gezeit
+GsInfernoFork.Desc:
+	'''
+	Umschmiedung: Feuerbälle kreisen mit Schlackefunken, Treffer häufen Glutstau, ist er voll, zündet Rechtsklick Flächenbrand am Cursor
+	Feuerlinien kriechen am Boden, drei Feuerwogen fegen die Flügel, dazwischen fällt Feuerregen, danach bleibt eine Brandaschlache
+	'''
+GsInfernoForkWildfireDirector.DisplayName: Flächenbrand
+GsCataclysmRiderBurstProj.DisplayName: Kataklysmus-Nachwelle

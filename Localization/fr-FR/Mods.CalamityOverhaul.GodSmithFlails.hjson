@@ -1,75 +1,73 @@
-/* GsBallOHurt.Desc:
+GsBallOHurt.Desc: 
 	'''
-	Reforged: spin to charge the swing; the flying ball sheds hovering barbs along its path
-	A fully charged strike bursts a ring of barbs on the target
-	''' */
-/* GsChainKnife.Desc:
+	Reforgé : faites tourner pour charger ; la Boule de douleur sème des barbes suspendues sur sa trajectoire
+	Un coup à pleine rotation fait éclater un anneau de barbes sur la cible
 	'''
-	Reforged: landing a blade hit grants Momentum for 7 seconds
-	Each stack spins up and throws faster, up to 3 stacks
-	''' */
-/* GsTheMeatball.Desc:
+GsChainKnife.Desc: 
 	'''
-	Reforged: a fully charged strike bursts into a gout of gore
-	The burst wounds everything nearby and inflicts Bleeding
-	''' */
-/* GsBlueMoon.Desc:
+	Reforgé : un impact de lame accorde 7 s d'élan
+	Chaque charge accélère la rotation et le lancer, jusqu'à trois
 	'''
-	Reforged: charged strikes loose piercing crescent blades through the target
-	Half charge looses one blade, a full charge looses three
-	''' */
-/* GsSunfury.Desc:
+GsTheMeatball.Desc: 
 	'''
-	Reforged: the flying ball sears hovering scorch marks along its path
-	The marks linger and burn whoever touches them with hellfire
-	''' */
-/* GsMace.Desc:
+	Reforgé : un lancer à pleine rotation explose en brouillard de sang
+	Le brouillard déchire les ennemis proches et inflige Saignement
 	'''
-	Reforged: a fully charged strike cracks the target's armor, halving its defense for a few seconds
-	Heavier knockback backs up every blow
-	''' */
-/* GsFlamingMace.Desc:
+GsBlueMoon.Desc: 
 	'''
-	Reforged: spinning the mace flings burning embers outward
-	Faster spins throw the embers harder and farther, igniting whatever they strike
-	''' */
-/* GsDaoofPow.Desc:
+	Reforgé : un lancer chargé envoie des lames de croissant qui percent la cible
+	À demi-charge, une lame ; à pleine charge, trois
 	'''
-	Reforged: throws alternate between Yin and Yang; a Yin strike brands and slows the target
-	A Yang strike on a branded target detonates the brand into a burst of light and ink
-	''' */
-/* GsFlowerPow.Desc:
+GsSunfury.Desc: 
 	'''
-	Reforged: petals bloom around the head while spinning, up to five
-	Landing a throw sends every petal homing at the target as razor blades
-	''' */
-/* GsDripplerFlail.Desc:
+	Reforgé : le marteau en vol grave des brûlures suspendues sur sa trajectoire
+	Elles restent sur place et brûlent qui les touche (Feu infernal)
 	'''
-	Reforged: at high spin and through every throw, the head weeps gravity-bound blood beads
-	Beads burst into stinging blood spikes on contact or landing
-	''' */
-
+GsMace.Desc: 
+	'''
+	Reforgé : un lancer à pleine rotation fêle l'armure de la cible, défense réduite de moitié quelques secondes
+	Chaque coup porte un recul plus lourd
+	'''
+GsFlamingMace.Desc: 
+	'''
+	Reforgé : en tournant, la masse jette des braises
+	Plus la rotation est rapide, plus elles vont loin et fort, et elles enflamment
+	'''
+GsDaoofPow.Desc: 
+	'''
+	Reforgé : les lancers alternent Yin et Yang ; un coup Yin marque et ralentit
+	Un coup Yang sur une cible marquée fait exploser la marque en un jet d'encre et de lumière
+	'''
+GsFlowerPow.Desc: 
+	'''
+	Reforgé : en tournant, jusqu'à cinq pétales s'ouvrent autour de la tête
+	Un lancer qui touche les convertit tous en lames à tête chercheuse
+	'''
+GsDripplerFlail.Desc: 
+	'''
+	Reforgé : à haute rotation et à chaque lancer, la tête goutte des perles de sang sujettes à la gravité
+	Elles éclatent en épines de sang au contact ou à l'atterrissage
+	'''
 GsKOCannon: {
-	/* Desc:
+	Desc: 
 		'''
-		Reforged: a braced straight punch; land three solid hits on the same target within four seconds
-		The third punch is a KO: double damage, double knockback, and a concussive ring
-		''' */
-	// TipKO: KO!
+		Reforgé : un direct chargé ; trois coups francs sur la même cible en quatre secondes
+		Le troisième est un KO : dégâts doublés, recul doublé, plus un anneau de choc
+		'''
+	TipKO: KO!
 }
-
-/* GsChainGuillotines.Desc:
+GsChainGuillotines.Desc: 
 	'''
-	Reforged: hurls both guillotines at once, fanning apart mid-flight
-	When the two blades cross paths they shear, bursting cross-cut slashes between them
-	''' */
-/* GsGolemFist.Desc:
+	Reforgé : les deux guillotines partent ensemble et s'ouvrent en vol
+	Quand les lames se croisent, elles cisaillent et font éclater une entaille en croix au milieu
 	'''
-	Reforged: solid hits stack heat (up to 3, +8% damage each, fades after 8 seconds); at full heat the fist runs molten and impacts hurl 3 magma chunks
-	Every punch that lands on a foe or a wall slams out a stone shockwave
-	''' */
-/* GsFlairon.Desc:
+GsGolemFist.Desc: 
 	'''
-	Reforged: the chain squeezes out homing bubble blades while swinging and flying (up to 8 afield, 40% damage each)
-	A full-spin strike bursts a ring of six bubble blades around the target
-	''' */
+	Reforgé : les coups francs empilent la chaleur (jusqu'à 3, +8% de dégâts chacune, 8 s sans frapper pour refroidir) ; à pleine chaleur le poing fond et projette 3 blocs de lave
+	Chaque coup qui touche un ennemi ou un mur lance une onde de pierre
+	'''
+GsFlairon.Desc: 
+	'''
+	Reforgé : la chaîne exsude des lames-bulles à tête chercheuse en tournant et en vol (jusqu'à 8 en même temps, 40% de dégâts chacune)
+	Un coup à pleine rotation relâche six lames-bulles en anneau autour de la cible
+	'''

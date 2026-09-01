@@ -1,6 +1,6 @@
 HeadPrimeAI.SkeletronPrime_Text: Не пытайся убить меня этой дурацкой штукой! Умри, организм!
 
 WallOfFleshAI: {
-	// CurtainDeathReason: "{0} was swallowed by the blood tide"
-	// NetDeathReason: "{0} was shredded by the net of the Hungry"
+	CurtainDeathReason: "{0} поглотил кровавый прилив"
+	NetDeathReason: "{0} разорвала мясная сеть Голодных"
 }

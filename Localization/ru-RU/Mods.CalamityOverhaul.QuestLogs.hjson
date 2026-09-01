@@ -2,26 +2,26 @@ QuestNode: {
 	FirstQuest: {
 		DisplayName: Добро пожаловать в этот мир!
 		Description: Начало путешествия
-		DetailedDescription: Каждая легенда начинается с малого. Заберите свое стартовое снаряжение и приготовьтесь встретить этот мир, полный богов и чудовищ.
+		DetailedDescription: Заберите стартовые припасы. В этом мире есть боги и есть чудовища, а у вас сейчас пустые руки.
 		QuestObjective.Description: Нажмите, чтобы получить стартовые предметы
 	}
 
 	MiningQuest: {
 		DisplayName: Начало раскопок
 		Description: Добыть 10 ед. {0}
-		DetailedDescription: Подземелья хранят бесконечные богатства. Для начала нам понадобятся базовые металлы для создания инструментов.
+		DetailedDescription: Сначала нужен металл для инструментов. Жилы сами не вылезут — копайте.
 	}
 
 	MiningQuestII: {
 		DisplayName: Железный век
 		Description: Собрать 50 ед. {0}
-		DetailedDescription: Медь слишком мягкая, нам нужен более твердый металл, чтобы защитить себя. Спускайтесь глубже в поисках железных жил.
+		DetailedDescription: Медь слишком мягкая, тупится за пару ударов. Железо лежит глубже.
 	}
 
 	MiningQuestIII: {
 		DisplayName: Золотая лихорадка
 		Description: Собрать 100 ед. {0}
-		DetailedDescription: Золото — это не просто валюта, оно обладает отличной магической проводимостью и ковкостью. Хотя оно не так твердо, как железо, это важный материал для создания снаряжения высокого уровня.
+		DetailedDescription: Золото мягче железа, но лучше проводит магию и ковче. Без него не обойтись в снаряжении высокого уровня.
 	}
 
 	BrimstoneElementalQuest: {
@@ -33,7 +33,7 @@ QuestNode: {
 	CalamitasCloneQuest: {
 		DisplayName: Клон Каламитас
 		Description: Победить Клона Каламитас
-		DetailedDescription: Клон, наполненный ненавистью и жаждой разрушения. Победите его, чтобы доказать, что вы достойны встретиться с настоящей ведьмой.
+		DetailedDescription: Клон, полный ненависти и жажды уничтожения. Не одолеете даже тень — до самой ведьмы вам не добраться.
 	}
 
 	CrabulonQuest: {
@@ -45,7 +45,7 @@ QuestNode: {
 	CryogenQuest: {
 		DisplayName: Криоген
 		Description: Победить Криогена
-		DetailedDescription: Этот некогда могущественный криомант был заточен в вечной ледяной тюрьме. Освободите и победите его, чтобы высвободить холодную силу полярных льдов.
+		DetailedDescription: Некогда владыка льдов, запечатанный в глыбе. Разбейте её — он проснётся весь в кристаллах.
 	}
 
 	DesertScourgeQuest: {
@@ -64,7 +64,7 @@ QuestNode: {
 	EyeofCthulhuQuest: {
 		DisplayName: Глаз Ктулху
 		Description: Победить Глаз Ктулху
-		DetailedDescription: Стоит вам почувствовать этот злобный взгляд, как он появится. Это первое настоящее испытание вашей силы.
+		DetailedDescription: Стоит почувствовать этот злой взгляд — и он явится. Ночью. С неба.
 	}
 
 	GolemQuest: {
@@ -77,7 +77,7 @@ QuestNode: {
 		DisplayName: Разум улья / Перфораторы
 		Description: Победить истинное божество злого биома
 		QuestObjective.Description: Победить Разум улья или Перфораторов
-		DetailedDescription: Они являются воплощением сознания Порчи и Багрянца. Если их не уничтожить, эта земля никогда не узнает покоя.
+		DetailedDescription: У Порчи и Багрянца по своему мозгу. Пока не вырвете — зараза не остановится.
 	}
 
 	KingSlimeQuest: {
@@ -102,13 +102,13 @@ QuestNode: {
 	MoonLordQuest: {
 		DisplayName: Лунный лорд
 		Description: Победить Лунного лорда
-		DetailedDescription: Кукловод за кулисами всего происходящего, ужас с обратной стороны Луны. Положите конец этому долгому кошмару.
+		DetailedDescription: Кукловод за всем этим, ужас с обратной стороны Луны. Глаза у него не там, где положено.
 	}
 
 	PlaguebringerGoliathQuest: {
 		DisplayName: Предвестница чумы, Голиаф
 		Description: Победить Предвестницу чумы, Голиаф
-		DetailedDescription: Королева пчел, модифицированная нановирусом. Она не только смертоносна, но и переносит опасную чуму.
+		DetailedDescription: Пчелиная матка, переделанная нановирусом. Она несёт чуму: после укуса здоровье продолжает таять.
 	}
 
 	PlanteraQuest: {
@@ -156,7 +156,7 @@ QuestNode: {
 	ExoMechsQuest: {
 		DisplayName: Экзо-механизмы
 		Description: Победить Экзо-механизмы
-		DetailedDescription: Главный шедевр Дрэйдона, вершина технологий Террарии. Выживите в этом идеальном представлении.
+		DetailedDescription: Лучшее, что когда-либо собрал Дрэйдон. Все три сразу, а он стоит рядом и смотрит.
 	}
 
 	OldDukeQuest: {
@@ -204,13 +204,13 @@ QuestNode: {
 	SupremeCalamitasQuest: {
 		DisplayName: Высшая Каламитас
 		Description: Победить Высшую Каламитас
-		DetailedDescription: Легендарная серная ведьма. Это конец вашего пути или начало нового? Приготовьтесь встретить настоящий пулевой ад.
+		DetailedDescription: Сама серная ведьма. Тех клонов она слепила между делом. Экран будет забит.
 	}
 
 	YharonQuest: {
 		DisplayName: Ярон, Дракон джунглей
 		Description: Победить Ярона, Дракона джунглей
-		DetailedDescription: Верный соратник Тирана, дракон, обладающий способностью феникса к возрождению. Это испытание для вашей души.
+		DetailedDescription: Верный соратник Тирана, дракон с фениксовым возрождением. Повалить его один раз — ещё не конец.
 	}
 
 	BatteryQuest: {
@@ -222,13 +222,13 @@ QuestNode: {
 	HydroelectricQuest: {
 		DisplayName: Чистая энергия
 		Description: Создать гидроэлектрогенератор
-		DetailedDescription: Используйте силу текущей воды для выработки электричества. Это чистый и устойчивый источник энергии.
+		DetailedDescription: Электричество из текущей воды. Топливо не жжёт: пока течёт вода, он крутится.
 	}
 
 	IndustrialStartQuest: {
 		DisplayName: Промышленная революция
 		Description: Создать ветряной генератор
-		DetailedDescription: Первый шаг к автоматизации. Используйте энергию ветра, чтобы привести машины в действие и освободить свои руки.
+		DetailedDescription: Ветер крутит машины. Это первый механизм, которому не нужно, чтобы вы стояли рядом.
 	}
 
 	ItemFilterQuest: {
@@ -240,13 +240,13 @@ QuestNode: {
 	MiningMachineQuest: {
 		DisplayName: Автоматизированная добыча
 		Description: Создать буровую установку
-		DetailedDescription: Попрощайтесь с утомительной ручной копкой. Эта машина способна поглощать рудные жилы с невероятной эффективностью.
+		DetailedDescription: Копать самому больше не нужно. Поставьте на жилу — будет грызть вниз без остановки.
 	}
 
 	MiningMachineIIQuest: {
 		DisplayName: Глубокое бурение
 		Description: Создать буровую установку MK2
-		DetailedDescription: Усиленное энергетическое ядро обеспечивает непревзойденную скорость бурения.
+		DetailedDescription: Силовое ядро заменили, бур крутится быстрее.
 	}
 
 	PipelineQuest: {
@@ -262,153 +262,153 @@ QuestNode: {
 	}
 
 	FluidPumpQuest: {
-		// DisplayName: Fluid Engineering
-		// Description: Craft a Fluid Pump
-		// DetailedDescription: Water and lava are resources too. The pump is what invites them out of the world.
+		DisplayName: Жидкостная инженерия
+		Description: Создать жидкостный насос
+		DetailedDescription: Вода и лава тоже ресурсы. Насос вытаскивает их из мира.
 	}
 
 	FluidPipelineQuest: {
-		// DisplayName: Veins of Liquid
-		// Description: Craft Fluid Pipelines
-		// DetailedDescription: Liquids need a grid of their own. Fluid pipes carry only fluids and leave the power grid alone.
+		DisplayName: Жилы жидкости
+		Description: Создать жидкостные трубы
+		DetailedDescription: Жидкостям нужна своя сеть. Жидкостные трубы возят только жидкости и не мешают энергосети.
 	}
 
 	FluidTankQuest: {
-		// DisplayName: Vessel of Reserves
-		// Description: Craft a Fluid Tank
-		// DetailedDescription: Pumping fast means nothing without somewhere to keep it. The tank is the battery of the fluid network.
+		DisplayName: Сосуд запасов
+		Description: Создать резервуар для жидкости
+		DetailedDescription: Какой бы быстрый ни был насос, нужно куда складывать. Резервуар — батарея жидкостной сети.
 	}
 
 	MagmaGeneratorQuest: {
-		// DisplayName: Magma Thermal Power
-		// Description: Craft a Magma Thermal Generator
-		// DetailedDescription: The pumped magma finally has somewhere to go. It earns a little while touching lava, and runs at full power once its tank is fed.
+		DisplayName: Магмовая теплоэнергия
+		Description: Создать магмовый теплогенератор
+		DetailedDescription: Откачанная магма наконец нашла применение. Касание лавы даёт чуть-чуть, полная цистерна — полную мощность.
 	}
 
 	ShimmerTransmuterQuest: {
-		// DisplayName: Shimmer Alchemy
-		// Description: Craft a Shimmer Transmuter
-		// DetailedDescription: Pump shimmer into the machine, and item forms can be rewritten on an assembly line.
+		DisplayName: Алхимия мерцания
+		Description: Создать чан мерцающей трансмутации
+		DetailedDescription: Закачайте мерцание в машину — и форму предметов можно будет переписывать на конвейере.
 	}
 
 	CrusherQuest: {
-		// DisplayName: Ore from Rubble
-		// Description: Craft an Ore Crusher
-		// DetailedDescription: Two ore crushed into three. The incinerator's supply line just gained a yield step.
+		DisplayName: Руда из щебня
+		Description: Создать рудодробилку
+		DetailedDescription: Две порции руды дробятся в три. Перед инсинератором появляется ещё одна ступень прироста.
 	}
 
 	RecyclerQuest: {
-		// DisplayName: Waste into Worth
-		// Description: Craft a Recycler
-		// DetailedDescription: Don't toss retired gear. Break it into bars by rarity and send it back to the furnace.
+		DisplayName: Отходы в ценность
+		Description: Создать переработчик
+		DetailedDescription: Списанное снаряжение не выбрасывайте. Разберите по редкости на слитки и снова в печь.
 	}
 
 	AutoCrafterQuest: {
-		// DisplayName: Automated Assembly
-		// Description: Craft an Auto Crafter
-		// DetailedDescription: Pin a recipe; materials walk in and products walk out. The crafting bench no longer needs you standing by.
+		DisplayName: Автосборка
+		Description: Создать автоверстак
+		DetailedDescription: Закрепите рецепт: материалы входят сами, изделия выходят сами. У верстака больше не нужно дежурить.
 	}
 
 	MushroomFarmerQuest: {
-		// DisplayName: Fungiculture
-		// Description: Craft a Mushroom Farming Machine
-		// DetailedDescription: Harvests on grass and mushroom grass are its business. Glowing mushrooms included.
+		DisplayName: Грибоводство
+		Description: Создать грибную ферму
+		DetailedDescription: Урожай с травы и грибной травы — её работа. Светящиеся грибы тоже в списке.
 	}
 
 	ApiaryQuest: {
-		// DisplayName: Sweet Industry
-		// Description: Craft an Electric Apiary
-		// DetailedDescription: Empty bottles in, bottled honey out. The hive works harder near honey or in the jungle.
+		DisplayName: Сладкая индустрия
+		Description: Создать улей
+		DetailedDescription: Пустые банки входят, банки мёда выходят. Рядом с мёдом или в джунглях рой работает усерднее.
 	}
 
 	SlimeVatQuest: {
-		// DisplayName: Gel Production
-		// Description: Craft a Slime Culture Vat
-		// DetailedDescription: Water and power in, gel out. The vat is the first raw-material machine of the farm waste stream.
+		DisplayName: Массовое производство геля
+		Description: Создать чан для слизней
+		DetailedDescription: Вода и электричество в обмен на гель. Чан — первая сырьевая машина сельскохозяйственного цикла.
 	}
 
 	BiomassGeneratorQuest: {
-		// DisplayName: Closed Ecology
-		// Description: Craft a Biomass Generator
-		// DetailedDescription: Don't waste the farm's surplus. Feed it to the burner for power and the grow-burn loop starts turning.
+		DisplayName: Замкнутая экология
+		Description: Создать биомассовый генератор
+		DetailedDescription: Излишки фермы не выбрасывайте. Киньте в бункер и сожгите в электричество — цикл посев-сжигание пойдёт.
 	}
 
 	FlameTurretQuest: {
-		// DisplayName: Line of Fire
-		// Description: Craft a Flamethrower Turret
-		// DetailedDescription: A close-range wall of fire against crowds. Load gel and it burns harder.
+		DisplayName: Огненная линия
+		Description: Создать огнемётную башню
+		DetailedDescription: Ближняя стена огня против толпы. Зарядите гелем — жжёт больнее.
 	}
 
 	CryoTurretQuest: {
-		// DisplayName: Frost Lockdown
-		// Description: Craft a Cryo Turret
-		// DetailedDescription: Not built to kill, built to freeze. Enemies under the tower slow down until they can barely step.
+		DisplayName: Морозная блокада
+		Description: Создать ледяную башню
+		DetailedDescription: Не для убийства, а чтобы заморозить. Враги под башней всё медленнее, пока не перестанут ступать.
 	}
 
 	LaserTurretQuest: {
-		// DisplayName: Lightspeed Sniper
-		// Description: Craft a Laser Turret
-		// DetailedDescription: Anything in line of sight is one beam away. Longest range in the family, and it prefers big targets.
+		DisplayName: Снайпер на скорости света
+		Description: Создать лазерную башню
+		DetailedDescription: Что в зоне видимости — то в одном луче. Дальность самая большая в семействе, целит в крупных.
 	}
 
 	ShieldGeneratorQuest: {
-		// DisplayName: Energy Bulwark
-		// Description: Craft a Shield Generator
-		// DetailedDescription: Everyone in range gets a layer of absorbing shield. More allies, faster drain.
+		DisplayName: Энергетический бастион
+		Description: Создать генератор щита
+		DetailedDescription: Каждому союзнику в радиусе — слой поглощающего щита. Чем больше людей, тем быстрее садится энергия.
 	}
 
 	HealStationQuest: {
-		// DisplayName: Field Medicine
-		// Description: Craft a Healing Station
-		// DetailedDescription: Stand in the aura and wounds slowly close. The phrase "workplace injury" retires today.
+		DisplayName: Полевая медицина
+		Description: Создать станцию лечения
+		DetailedDescription: Стоите в ауре — раны медленно сходятся. Слово «производственная травма» отныне в прошлом.
 	}
 
 	TeleportStationQuest: {
-		// DisplayName: Teleport Network
-		// Description: Craft a Teleport Station
-		// DetailedDescription: Two stations make a network, and the whole map opens up. The farther the hop, the higher the toll.
+		DisplayName: Сеть телепортов
+		Description: Создать телепорт-станцию
+		DetailedDescription: Две станции — уже сеть на всю карту. Чем дальше прыжок, тем дороже проезд.
 	}
 
 	ElectricSundialQuest: {
-		// DisplayName: Winding the Sundial
-		// Description: Craft an Electric Sundial
-		// DetailedDescription: Store a thousand units of power to skip the night in one press. The whole server gets notified.
+		DisplayName: Завести солнечные часы
+		Description: Создать электрический солнечный диск
+		DetailedDescription: Накопите 1000 единиц энергии и одним нажатием перескочите ночь. Весь сервер получит уведомление.
 	}
 
 	SolarPanelQuest: {
-		// DisplayName: Facing the Sun
-		// Description: Craft a Solar Panel
-		// DetailedDescription: Generates by day and peaks at noon. Keep its sky clear; rain and eclipses are its days off.
+		DisplayName: Лицом к солнцу
+		Description: Создать солнечную панель
+		DetailedDescription: Днём даёт ток, в полдень — пик. Не загораживайте небо; в дождь и затмение ищите другой источник.
 	}
 
 	CapacitorMatrixQuest: {
-		// DisplayName: Grand Reservoir
-		// Description: Craft a Capacitor Matrix
-		// DetailedDescription: Forty thousand units in one bank. The grid's flywheel, and the end of the blackout era.
+		DisplayName: Гигантский накопитель
+		Description: Создать конденсаторную матрицу
+		DetailedDescription: Гигантская батарея на 40000 единиц. Маховик сети и конец эпохи отключений.
 	}
 
 	WeatherControllerQuest: {
-		// DisplayName: Rainmaker
-		// Description: Craft a Weather Controller
-		// DetailedDescription: Five hundred power buys a rain, and once more clears it. The wind takes no orders.
+		DisplayName: Призвать дождь
+		Description: Создать контроллер погоды
+		DetailedDescription: 500 энергии за дождь, ещё одно нажатие в дождь — и снова ясно. Ветер ей не подчиняется.
 	}
 
 	WireInterfaceQuest: {
-		// DisplayName: Wire Bridging
-		// Description: Craft Wire Interfaces
-		// DetailedDescription: The wire network and the power grid finally speak. Signals can toggle machines, and machines can send signals back.
+		DisplayName: Мост проводки
+		Description: Создать интерфейс проводки
+		DetailedDescription: Проводка и энергосеть наконец говорят. Сигнал включает машины, машины шлют сигнал обратно.
 	}
 
 	SensorQuest: {
-		// DisplayName: Electric Sentry Eye
-		// Description: Craft a Multi-Mode Sensor
-		// DetailedDescription: Charge levels, enemies and blood moons, nothing escapes its watch. The moment a condition holds, a wire signal goes out.
+		DisplayName: Электронный дозор
+		Description: Создать мультирежимный датчик
+		DetailedDescription: Заряд, враги, кровавая луна — от его глаз не уйти. Условие сработало — сигнал проводки уходит сразу.
 	}
 
 	GridSwitchQuest: {
-		// DisplayName: Grid Dispatch
-		// Description: Craft a Grid Switch
-		// DetailedDescription: A master switch built into the lines. Flip it open and the whole downstream grid falls silent at once.
+		DisplayName: Диспетчер сети
+		Description: Создать главный рубильник сети
+		DetailedDescription: Главный выключатель, врезанный в линии. Размыкаете — и вся сеть ниже мгновенно затихает.
 	}
 
 	ThermalPowerQuest: {
@@ -420,7 +420,7 @@ QuestNode: {
 	AnnihilatingUniverseQuest: {
 		DisplayName: Вселенское аннигилирование
 		Description: Получить "Вселенское аннигилирование"
-		DetailedDescription: Сила галактик, сжатая в тетиве лука. Это оружие обладает мощью, способной разрушать космические измерения, доказывая превосходство стрелка.
+		DetailedDescription: Целая галактика, сжатая на тетиве. Когда лук натянут до предела, он опаснее стрелы.
 	}
 
 	AriaofTheCosmosQuest: {
@@ -468,25 +468,25 @@ QuestNode: {
 	PandemoniumQuest: {
 		DisplayName: Пандемониум
 		Description: Получить "Пандемониум"
-		DetailedDescription: Абсолютное оружие, впитавшее бесчисленные души и силу бедствия. Держа его, вы держите ключи от Ада и Бездны.
+		DetailedDescription: Оружие, выплавленное из несчётных душ. Подержите подольше — услышите, как они всё ещё говорят.
 	}
 
 	RockQuest: {
 		DisplayName: Древний вечный камень
 		Description: Получить Древний вечный камень
-		DetailedDescription: С виду обычный камень, но он был свидетелем бесчисленных циклов конца света. Это символ вечной стойкости.
+		DetailedDescription: С виду обычный камень. Остался от прошлого конца света.
 	}
 
 	TerminusQuest: {
 		DisplayName: Терминус
 		Description: Получить Терминус
-		DetailedDescription: Ключ к финальному испытанию. Взгляните в этот камень и приготовьтесь к серии судов от сильнейших существ этого мира.
+		DetailedDescription: Ключ к финальному испытанию. Раздавите его — и сильнейшие существа мира выстроятся к вам в очередь.
 	}
 
 	SpearOfLonginusQuest: {
 		DisplayName: Копье Лонгина
 		Description: Получить Копье Лонгина
-		DetailedDescription: Легендарное святое копье, пронзившее бога, обладающее властью пробивать любые силовые поля и абсолютные барьеры. Когда его метают, даже закон причинности уступает ему дорогу.
+		DetailedDescription: Святое копьё, пронзившее бога. Силовые поля, щиты, абсолютные барьеры — для него их нет.
 	}
 
 	DragonsWordQuest: {
@@ -497,7 +497,7 @@ QuestNode: {
 
 	RockQuestII: {
 		DisplayName: Цикл войны
-		Description: Пройти финальную битву (Терминус) 5 раз и получить более 5 древних вечных камней
+		Description: Пройти финальную битву 5 раз и получить более 5 древних вечных камней
 		DetailedDescription: Символ истинного воина.
 	}
 
@@ -505,14 +505,14 @@ QuestNode: {
 		DisplayName: Искатель приключений
 		Description: Мир у моих ног!
 		QuestObjective.Description: Нажмите, чтобы получить
-		DetailedDescription: Путешествие в тысячу миль начинается с первого шага. Наденьте эти сапоги и отправляйтесь измерять этот огромный мир.
+		DetailedDescription: Наденьте эти сапоги. Мир велик, а шаг решает многое.
 	}
 
 	ExploreDungeon: {
 		DisplayName: Жуткая темница
 		Description: Найти вход в Темницу
 		QuestObjective.Description: Дойти до Темницы
-		DetailedDescription: За проклятыми стенами скрыты бесконечные тайны и опасности. Лишь самые храбрые исследователи осмеливаются ступить на эту землю мертвых.
+		DetailedDescription: За проклятыми кирпичами стоит страж Темницы. Кто зашёл, не победив Скелетрона, обычно не выходит.
 	}
 
 	ExploreHell: {
@@ -540,7 +540,7 @@ QuestNode: {
 		DisplayName: Ледяные земли
 		Description: Исследовать снежный биом
 		QuestObjective.Description: Дойти до снегов
-		DetailedDescription: Вечная мерзлота. Пронизывающий ветер и лед, покрывающий всё вокруг. Здесь жизнь существует в своей самой стойкой форме.
+		DetailedDescription: Здесь вечная мерзлота, ветер сбивает с ног. Живут пингвины и волки: первые безвредны, вторые — нет.
 	}
 
 	ExploreSpace: {
@@ -594,7 +594,7 @@ QuestNode: {
 	QueenSlimeQuest: {
 		DisplayName: Королева слизней
 		Description: Победить Королеву слизней
-		DetailedDescription: Кристальная императрица Святых земель, управляющая всеми святыми гелевыми существами. Она гораздо быстрее и смертоноснее своего супруга. Приготовьтесь к великолепному шквалу снарядов.
+		DetailedDescription: Кристальная императрица Святых земель, владычица всей святой гели. Куда быстрее и смертоноснее супруга — и она умеет летать.
 	}
 
 	BuildHouse: {
@@ -650,7 +650,7 @@ QuestNode: {
 		DisplayName: Исследователь бездны
 		Description: Исследовать все основные биомы
 		QuestObjective.Description: Завершить все задания по исследованию
-		DetailedDescription: Вы обошли каждый уголок мира, от самых высоких облаков до глубочайшего ада. Составленная вами карта доказывает вашу храбрость. Теперь весь мир у ваших ног.
+		DetailedDescription: Вы обошли каждый угол мира — от самых высоких облаков до самого глубокого ада. На карте больше нет белых пятен.
 	}
 
 	ExploreCaverns: {
@@ -678,7 +678,7 @@ QuestNode: {
 		DisplayName: Парящие острова
 		Description: Найти парящий остров в небе
 		QuestObjective.Description: Дойти до парящего острова
-		DetailedDescription: Легенды гласят, что над облаками хранятся сокровища древней цивилизации. Ищите гравитационные аномалии или стройте башню до небес, чтобы узнать правду.
+		DetailedDescription: Над облаками плывут острова с сокровищницами древней цивилизации. Ищите аномалии гравитации или стройте башню сами.
 	}
 
 	ExploreGlowingMushroom: {
@@ -692,7 +692,7 @@ QuestNode: {
 		DisplayName: Подземная экспедиция
 		Description: Углубиться в подземелье
 		QuestObjective.Description: Дойти до подземелья
-		DetailedDescription: Просто копать грязь на поверхности недостаточно. Настоящие приключения начинаются под землей. Берите факелы, первый слой камня — это только начало.
+		DetailedDescription: Под слоем земли — камень. Берите факелы, внизу ещё много ярусов.
 	}
 
 	FindLifeCrystal: {
@@ -706,7 +706,7 @@ QuestNode: {
 		DisplayName: Ядро зла
 		Description: Найти теневую сферу или багряное сердце в глубинах зла
 		QuestObjective.Description: Уничтожить теневую сферу или сердце
-		DetailedDescription: В глубинах злых разломов пульсируют гнилые сердца или теневые сферы. Разбив их, вы получите оружие, но будьте осторожны... если разобьете три, то пробудите нечто ужасное.
+		DetailedDescription: В глубинах злых разломов пульсируют гнилые сердца или теневые сферы. Разбив их, вы получите оружие, но будьте осторожны...... если разобьете три, то пробудите нечто ужасное.
 	}
 
 	FirstPotion: {
@@ -732,7 +732,7 @@ QuestNode: {
 	CollectorQuest: {
 		DisplayName: Помощник-сборщик
 		Description: Получить Сборщика
-		DetailedDescription: Устали наклоняться за каждым трофеем? Это устройство автоматически собирает предметы вокруг. Это ключевой компонент для создания автоматизированной логистики и систем сортировки, полностью освобождающий ваши руки.
+		DetailedDescription: Устройство само подбирает дроп вокруг. Вход в автоматическую логистику: с земли больше не нужно собирать по штуке.
 	}
 
 	LumberjackQuest: {
@@ -756,7 +756,7 @@ QuestNode: {
 	ItemPipelineQuest: {
 		DisplayName: Логистическая система
 		Description: Создать логистическую трубу
-		DetailedDescription: Всё еще бегаете между сундуками как дикарь? Эти трубы — вены промышленности. Соедините ими машины и контейнеры, и наблюдайте, как предметы сами текут туда, куда нужно. Постройте автоматизированную сборочную линию.
+		DetailedDescription: Трубы — вены промышленности. Соедините машины и контейнеры, и предметы сами пойдут куда надо. Бегать между сундуками больше не придётся.
 	}
 
 	ThrowerQuest: {
@@ -766,381 +766,381 @@ QuestNode: {
 	}
 
 	DeerclopsQuest: {
-		// DisplayName: Deerclops
-		// Description: Defeat Deerclops
-		// DetailedDescription: Deep in the blizzard stands a one-eyed giant deer. It does not come looking for you; you insist on looking for it.
+		DisplayName: Циклоп-олень
+		Description: Победить Циклопа-оленя
+		DetailedDescription: В глубине метели стоит одноглазый гигантский олень. Он сам за вами не придёт — это вы лезете к нему.
 	}
 
 	DukeFishronQuest: {
-		// DisplayName: Duke Fishron
-		// Description: Defeat Duke Fishron
-		// DetailedDescription: Bait your hook with a truffle worm and a duke will bite. Pig, dragon, fish; three kinds of menace on a single face.
+		DisplayName: Герцог Рыброн
+		Description: Победить Герцога Рыброна
+		DetailedDescription: Наживите крючок трюфельным червём — и в море клюнет герцог. Свинья, дракон и рыба: три лика ярости на одном лице.
 	}
 
 	EmpressOfLightQuest: {
-		// DisplayName: Empress of Light
-		// Description: Defeat the Empress of Light
-		// DetailedDescription: Step on a prismatic lacewing in the Hallow and the furious empress will come to settle the score herself. Anger her in daylight and every one of her attacks kills in one hit.
+		DisplayName: Императрица света
+		Description: Победить Императрицу света
+		DetailedDescription: Раздавите радужную бабочку в Святых землях — разгневанная императрица придёт выяснять сама. Если разозлить её днём, любой удар смертелен с одного попадания.
 	}
 
 	ZenithQuest: {
-		// DisplayName: Zenith
-		// Description: Forge the Zenith
-		// DetailedDescription: From the copper shortsword to the Starwrath, every blade you ever swung remembers you. Melt them together, and this journey takes its final shape.
+		DisplayName: Зенит
+		Description: Выковать Зенит
+		DetailedDescription: От медного короткого меча до Звездоубийцы — каждый клинок, которым вы махали, вас помнит. Сплавьте их вместе, и у этого пути появится форма.
 	}
 
 	BloodMoonQuest: {
-		// DisplayName: Night of Blood
-		// Description: Live through a Blood Moon
-		// QuestObjective.Description: Experience a Blood Moon
-		// DetailedDescription: On nights when the moon turns red, monsters stop knocking; they open the door themselves. Survive until dawn.
+		DisplayName: Алая ночь
+		Description: Пережить кровавую луну
+		QuestObjective.Description: Пережить кровавую луну
+		DetailedDescription: В ночи, когда луна краснеет, монстры больше не стучат — они открывают дверь сами. Доживите до рассвета.
 	}
 
 	TorchGodQuest: {
-		// DisplayName: The Torch God
-		// Description: Pass the Torch God's trial
-		// QuestObjective.Description: Earn the Torch God's Favor
-		// DetailedDescription: Plant a hundred torches underground and the master of flame will test you in person. Its favor hides within the extinguished lights.
+		DisplayName: Бог Факелов
+		Description: Пройти испытание Бога Факелов
+		QuestObjective.Description: Получить благословение Бога Факелов
+		DetailedDescription: Воткните под землёй сто факелов — и хозяин пламени сам испытает вас. В погасшем свете прячется его милость.
 	}
 
 	GoblinArmyQuest: {
-		// DisplayName: Goblin Invasion
-		// Description: Repel the Goblin Army
-		// QuestObjective.Description: Repel the Goblin Army
-		// DetailedDescription: Smashing Shadow Orbs draws them in, and so does a growing settlement. Short, swarming, endless; but win, and you may pick up a captive who repairs gear.
+		DisplayName: Нашествие гоблинов
+		Description: Отбить армию гоблинов
+		QuestObjective.Description: Отбить армию гоблинов
+		DetailedDescription: Разбитые теневые сферы их приманят, и растущее поселение тоже. Короткие, стаями, без конца; но победите — и, быть может, подберёте пленника, который чинит снаряжение.
 	}
 
 	OldOnesArmyQuest: {
-		// DisplayName: Old One's Army
-		// Description: Guard the Eternia Crystal and repel all three tiers of the Old One's Army
+		DisplayName: Армия Древних
+		Description: Удержать кристалл Этернии и отбить Армию Древних во всех трёх волнах
 
 		QuestObjective: {
 			Description: {
-				// T1: Repel the Old One's Army Tier 1
-				// T2: Repel the Old One's Army Tier 2
-				// T3: Repel the Old One's Army Tier 3
+				T1: Отбить Армию Древних, 1-я волна
+				T2: Отбить Армию Древних, 2-я волна
+				T3: Отбить Армию Древних, 3-я волна
 			}
 		}
 
-		// DetailedDescription: The Tavernkeep brings a plea from another world. Set the crystal, hold the portals, and let nothing touch it. Three tiers, each meaner than the last.
+		DetailedDescription: Трактирщик принёс просьбу из другого мира. Поставьте кристалл, держите порталы, не дайте ничему его коснуться. Три эшелона, каждый злее предыдущего.
 	}
 
 	PirateInvasionQuest: {
-		// DisplayName: Pirate Invasion
-		// Description: Repel the Pirate Invasion
-		// QuestObjective.Description: Repel the Pirate Invasion
-		// DetailedDescription: Once the world hardens, sails appear on the horizon. They come for your money; take theirs back, captain's belongings included.
+		DisplayName: Нашествие пиратов
+		Description: Отбить нашествие пиратов
+		QuestObjective.Description: Отбить нашествие пиратов
+		DetailedDescription: Когда мир затвердеет, на горизонте появятся паруса. Они грабят вас — грабьте обратно, заодно и пожитки капитана.
 	}
 
 	SolarEclipseQuest: {
-		// DisplayName: Eclipse Hunt
-		// Description: Slay a Mothron during a Solar Eclipse
-		// QuestObjective.Description: Slay a Mothron
-		// DetailedDescription: On days the moon blots out the sun, daytime is deadlier than night. Everything from the horror films takes to the streets, and the fastest flier among them is called Mothron.
+		DisplayName: Охота в затмении
+		Description: Убить Мотерона во время солнечного затмения
+		QuestObjective.Description: Убить Мотерона
+		DetailedDescription: В дни, когда луна закрывает солнце, день страшнее ночи. На улицу выходит всё из фильмов ужасов, а самый быстрый летун среди них — Мотерон.
 	}
 
 	MartianMadnessQuest: {
-		// DisplayName: Martian Madness
-		// Description: Repel the Martian invasion
-		// QuestObjective.Description: Repel the Martian invasion
-		// DetailedDescription: Do not stare at the probe in the sky; it flies home and brings friends. Saucers, death rays, mind-control helmets; the full alien invasion package.
+		DisplayName: Марсианское безумие
+		Description: Отбить нашествие марсиан
+		QuestObjective.Description: Отбить нашествие марсиан
+		DetailedDescription: Не пяльтесь на зонд в небе — он улетит домой и приведёт своих. Тарелки, лучи смерти, шлемы контроля разума: полный набор инопланетного вторжения.
 	}
 
 	PumpkinMoonQuest: {
-		// DisplayName: Pumpkin Moon
-		// Description: Defeat Pumpking during the Pumpkin Moon
-		// QuestObjective.Description: Defeat Pumpking
-		// DetailedDescription: Wake Halloween night with a Pumpkin Moon Medallion. Scarecrows line up to collect heads, and the closer is a king carrying twin scythes.
+		DisplayName: Тыквенная луна
+		Description: Победить Тыквенного короля во время Тыквенной луны
+		QuestObjective.Description: Победить Тыквенного короля
+		DetailedDescription: Медальоном Тыквенной луны разбудите Хэллоуин. Пугала выстраиваются за головами, а напоследок выходит король с двумя косами.
 	}
 
 	FrostMoonQuest: {
-		// DisplayName: Frost Moon
-		// Description: Defeat the Ice Queen during the Frost Moon
-		// QuestObjective.Description: Defeat the Ice Queen
-		// DetailedDescription: Open the present that should have stayed wrapped and Christmas Eve goes sour. Tanks patrol the snow while the queen dives through the blizzard.
+		DisplayName: Морозная луна
+		Description: Победить Ледяную королеву во время Морозной луны
+		QuestObjective.Description: Победить Ледяную королеву
+		DetailedDescription: Разверните тот подарок, который лучше было не открывать, — и канун Рождества скиснет. Танки патрулируют снег, королева пикирует в метели.
 	}
 
 	FishermanQuest: {
-		// DisplayName: Angler's Errands
-		// Description: Complete five Angler quests
-		// QuestObjective.Description: Complete Angler quests
-		// DetailedDescription: A bossy little brat lives by the sea, but his rewards are surprisingly solid. Where the fish are, the treasure is.
+		DisplayName: Поручения рыбака
+		Description: Выполнить пять поручений рыбака
+		QuestObjective.Description: Выполнить поручения рыбака
+		DetailedDescription: У моря живёт властный мальчишка, но награды у него на удивление весомые. Где рыба — там и клад.
 	}
 
 	LifeMaxQuest: {
-		// DisplayName: Fountain of Life
-		// Description: Raise your max life to 400
-		// QuestObjective.Description: Reach 400 max life
-		// DetailedDescription: Heart crystals only carry you halfway. The rest of the road is fought and grown through. Four hundred life is the ticket to standing firm in Hardmode.
+		DisplayName: Источник жизни
+		Description: Поднять запас здоровья до 400
+		QuestObjective.Description: Довести запас здоровья до 400
+		DetailedDescription: Кристаллы жизни доведут вас только до половины. Остальное — боями и ростом. Четыреста здоровья — билет, чтобы устоять в хардмоде.
 	}
 
 	ManaMaxQuest: {
-		// DisplayName: Heart of Mana
-		// Description: Raise your max mana to 200
-		// QuestObjective.Description: Reach 200 max mana
-		// DetailedDescription: Press fallen stars into crystals and feed them to yourself one by one. Twenty points a sip, nine sips in all, and the night sky runs in your veins.
+		DisplayName: Сердце маны
+		Description: Поднять запас маны до 200
+		QuestObjective.Description: Довести запас маны до 200
+		DetailedDescription: Спрессуйте упавшие звёзды в кристаллы и скармливайте себе по одному. Двадцать очков за глоток, девять глотков — и ночное небо течёт у вас в жилах.
 	}
 
 	WingsQuest: {
-		// DisplayName: Spread Your Wings
-		// Description: Equip any pair of wings
-		// QuestObjective.Description: Equip wings
-		// DetailedDescription: Sky vaults, fairy feathers, demon membranes. Whatever the source, the moment wings sprout from your back, fall damage becomes history.
+		DisplayName: Расправить крылья
+		Description: Надеть любую пару крыльев
+		QuestObjective.Description: Надеть крылья
+		DetailedDescription: Небесные сокровищницы, перья фей, кожи демонов. Откуда бы ни взялись — в миг, когда крылья вырастут за спиной, урон от падения станет историей.
 	}
 
 	MoneyQuest: {
-		// DisplayName: First Fortune
-		// Description: Hold a Platinum Coin
-		// QuestObjective.Description: Hold a Platinum Coin
-		// DetailedDescription: A hundred gold coins pressed into one platinum. You probably died plenty of times earning it; merchants call that a handling fee.
+		DisplayName: Первый капитал
+		Description: Иметь при себе платиновую монету
+		QuestObjective.Description: Иметь платиновую монету
+		DetailedDescription: Сто золотых спрессованы в одну платиновую. Пока копили, вы наверняка умирали не раз; торговцы называют это комиссией.
 	}
 
 	ExploreAetherQuest: {
-		// DisplayName: The Shimmering Lake
-		// Description: Find the Aether
-		// QuestObjective.Description: Reach the Shimmer
-		// DetailedDescription: Tucked in a corner of the world is a lake that does not belong here. Drop something in and it comes back changed. Do not jump in to test it yourself.
+		DisplayName: Озеро мерцания
+		Description: Найти озеро мерцания
+		QuestObjective.Description: Дойти до озера мерцания
+		DetailedDescription: В углу мира спрятано озеро, которому здесь не место. Бросьте вещь — вытащите уже другую. Сами не прыгайте проверять.
 	}
 
 	HardmodeOresQuest: {
-		// DisplayName: Three New Metals
-		// Description: Gather the three tiers of Hardmode ore
+		DisplayName: Три новых металла
+		Description: Собрать трёхъярусную руду хардмода
 
 		QuestObjective: {
 			Description: {
-				// T1: Collect Cobalt or Palladium Ore
-				// T2: Collect Mythril or Orichalcum Ore
-				// T3: Collect Adamantite or Titanium Ore
+				T1: Собрать кобальтовую или палладиевую руду
+				T2: Собрать мифриловую или орихалковую руду
+				T3: Собрать адамантитовую или титановую руду
 			}
 		}
 
-		// DetailedDescription: After the Wall of Flesh falls, smash the altars with a holy hammer and three new metals grow in the deep. Each is harder than everything that came before.
+		DetailedDescription: Когда падёт Стена плоти, разбейте алтари священным молотом — в глубине вырастут три новых металла. Каждый твёрже всего, что было раньше.
 	}
 
 	ChlorophyteQuest: {
-		// DisplayName: Power of Chlorophyte
-		// Description: Collect 30 Chlorophyte Ore
-		// DetailedDescription: With the machines destroyed, a glowing green metal starts growing in the deep jungle mud. It has a will of its own, and it spreads on its own too.
+		DisplayName: Сила хлорофита
+		Description: Собрать 30 хлорофитовой руды
+		DetailedDescription: Когда падут машины, в глубокой грязи джунглей начнёт расти светящийся зелёный металл. У него своя воля, и он сам себя размножает.
 	}
 
 	CalamityLoreHub: {
-		// DisplayName: Anomaly Survey
-		// Description: Something is wrong with this world
-		// QuestObjective.Description: Click to claim
-		// DetailedDescription: The sea is acid, the crags are burning, and things no field guide knows grow in the crater a star left behind. Write it all down; this world's dark side is bigger than you think.
+		DisplayName: Расследование аномалии
+		Description: С этим миром что-то не так
+		QuestObjective.Description: Нажмите, чтобы получить
+		DetailedDescription: Море кислое, скалы горят, в воронке от звезды растёт то, чего нет ни в одном справочнике. Записывайте: тёмная сторона этого мира куда больше, чем кажется.
 	}
 
 	ExploreSulphurSea: {
-		// DisplayName: Sulphurous Sea
-		// Description: Explore the Sulphurous Sea
-		// QuestObjective.Description: Reach the Sulphurous Sea
-		// DetailedDescription: One side of the world has no blue ocean, only yellowed acid water. Rain fizzes where it lands and the fish come up venomous. Cover your mouth, and do not drink.
+		DisplayName: Серное море
+		Description: Исследовать Серное море
+		QuestObjective.Description: Дойти до Серного моря
+		DetailedDescription: С одной стороны мира нет синего океана, только желтоватая кислота. Дождь шипит, рыба выплывает ядовитой. Закройте рот и нос, не пейте.
 	}
 
 	ExploreAbyss: {
-		// DisplayName: Mouth of the Abyss
-		// Description: Dive into the Abyss beneath the Sulphurous Sea
-		// QuestObjective.Description: Enter the Abyss
-		// DetailedDescription: A downward rift splits the floor of the sulphurous sea. Light cannot follow, neither can breath, and the deeper you go, the older the things that live there.
+		DisplayName: Устье Бездны
+		Description: Нырнуть в Бездну под Серным морем
+		QuestObjective.Description: Войти в Бездну
+		DetailedDescription: В дне Серного моря зияет щель вниз. Свет туда не доходит, дыхание тоже, и чем глубже — тем древнее то, что там живёт.
 	}
 
 	AbyssDeepQuest: {
-		// DisplayName: Bottom of the Abyss
-		// Description: Bring back Lumenyl and Voidstone from the Abyss
-		// DetailedDescription: Where mining lamps cannot reach, blue-glowing crystal grows along the rock walls. Dig it out and surface alive; only then have you truly been to the Abyss.
+		DisplayName: Дно Бездны
+		Description: Принести из Бездны люменил и камень Пустоты
+		DetailedDescription: Там, куда не достают шахтёрские лампы, по стенам растут голубые кристаллы. Выкопайте их и всплывите живыми — только тогда вы по-настоящему были в Бездне.
 	}
 
 	ExploreSunkenSea: {
-		// DisplayName: Sunken Sea
-		// Description: Find the Sunken Sea deep beneath the desert
-		// QuestObjective.Description: Reach the Sunken Sea
-		// DetailedDescription: Beneath the desert hides a quiet stretch of blue. Prisms glow in the water and the clams are bigger than your house. This may be the gentlest corner of the world.
+		DisplayName: Затерянное море
+		Description: Найти Затерянное море в глубинах подземной пустыни
+		QuestObjective.Description: Дойти до Затерянного моря
+		DetailedDescription: Под пустыней спрятана тихая синева. В воде светятся призмы, моллюски больше вашего дома. Пожалуй, самый мягкий угол этого мира.
 	}
 
 	ExploreBrimstoneCrag: {
-		// DisplayName: Brimstone Crags
-		// Description: Set foot in the Brimstone Crags at the edge of the Underworld
-		// QuestObjective.Description: Reach the Brimstone Crags
-		// DetailedDescription: On one side of Hell stands a cliff that has burned longer than anyone remembers. Dark red fire seeps from the brickwork, and an elemental spirit sleeps in the ruins.
+		DisplayName: Серные скалы
+		Description: Ступить на Серные скалы у края Ада
+		QuestObjective.Description: Дойти до Серных скал
+		DetailedDescription: С одной стороны Ада стоит утёс, который горит неизвестно сколько лет. Из щелей кирпича сочится тёмно-красный огонь, в руинах спит дух стихий.
 	}
 
 	ExploreAstral: {
-		// DisplayName: Astral Blight
-		// Description: Explore the star-tainted land
-		// QuestObjective.Description: Reach the Astral Infection
-		// DetailedDescription: A star crashed into the world, and what grows in the crater belongs to no bestiary. The land is changing color, the creatures are changing shape, and this is only the beginning.
+		DisplayName: Звёздная порча
+		Description: Исследовать землю, заражённую звёздным сиянием
+		QuestObjective.Description: Дойти до Астральной инфекции
+		DetailedDescription: Звезда врезалась в мир, и то, что выросло в воронке, не принадлежит ни одному бестиарию. Земля меняет цвет, твари меняют форму, и это только начало.
 	}
 
 	AcidRainQuest: {
-		// DisplayName: Acid Rain
-		// Description: Weather an acid rain
-		// QuestObjective.Description: Experience the Acid Rain event
-		// DetailedDescription: The clouds over the sulphurous sea are yellow. When it rains the whole sea boils, and the things in the water climb ashore with it. Bring an umbrella. Seriously.
+		DisplayName: Кислотный дождь близко
+		Description: Пережить кислотный дождь
+		QuestObjective.Description: Пережить событие кислотного дождя
+		DetailedDescription: Над Серным морем облака жёлтые. Когда идёт дождь, всё море кипит, и то, что в воде, ползёт на берег вместе с ним. Возьмите зонт. Серьёзно.
 	}
 
 	DeliciousMeatQuest: {
-		// DisplayName: Delicious Meat
-		// Description: Obtain a piece of Delicious Meat
-		// DetailedDescription: Nobody knows what animal it came from, and nobody cares. Tasty, filling, doubles as a building block. Stock up.
+		DisplayName: Вкусный стейк
+		Description: Добыть кусок вкусного стейка
+		DetailedDescription: Никто не знает, с какого это зверя, и никому не важно. Вкусно, сытно, ещё и как стройблок годится. Запасайтесь.
 	}
 
 	BrimlishQuest: {
-		// DisplayName: Brimlish
-		// Description: Fish up a Brimlish
-		// DetailedDescription: Even the acid water has fish in it, and they look surprisingly lively. Cast your line into the sulphurous sea and see what bites.
+		DisplayName: Серная рыба
+		Description: Выудить серную рыбу
+		DetailedDescription: Даже в кислоте водится рыба, да ещё на удивление бодрая. Закиньте крючок в Серное море и посмотрите, что клюнет.
 	}
 
 	GiantClamQuest: {
-		// DisplayName: Giant Clam
-		// Description: Defeat the Giant Clam
-		// DetailedDescription: The largest shell in the Sunken Sea. Quiet as a rock most days; everyone who pried it open regretted it.
+		DisplayName: Гигантский моллюск
+		Description: Победить Гигантского моллюска
+		DetailedDescription: Самая большая раковина Затерянного моря. Обычно тиха как камень; все, кто её вскрывал, жалели.
 	}
 
 	CragmawMireQuest: {
-		// DisplayName: Cragmaw Mire
-		// Description: Defeat the Cragmaw Mire during the Acid Rain
-		// DetailedDescription: Once the world hardens, something bitey floats up through the acid rain. It has far too many teeth, and all of them point at you.
+		DisplayName: Пасть трясины
+		Description: Победить Пасть трясины во время кислотного дождя
+		DetailedDescription: Когда мир затвердеет, в кислотном дожде всплывёт кусок ила, который кусается. Зубов слишком много, и все смотрят на вас.
 	}
 
 	MaulerQuest: {
-		// DisplayName: The Mauler
-		// Description: Defeat the Mauler during the Acid Rain
-		// DetailedDescription: A shark raised on acid, with a temper to match the pH. By the time it breaches, remembering to dodge is already too late.
+		DisplayName: Кровозубая акула
+		Description: Победить Кровозубую акулу во время кислотного дождя
+		DetailedDescription: Акула, выросшая на кислоте, с нравом под стать кислотности. Когда она выпрыгивает из воды, вспоминать уже поздно.
 	}
 
 	NuclearTerrorQuest: {
-		// DisplayName: Nuclear Terror
-		// Description: Defeat the Nuclear Terror during the Acid Rain
-		// DetailedDescription: At the deepest hour of the acid rain, something enormous and glowing hatches. Even the acid water pulls back from where it walks.
+		DisplayName: Ядерный ужас
+		Description: Победить Ядерный ужас во время кислотного дождя
+		DetailedDescription: В самой глубине кислотного дождя вылупляется светящийся колосс. Даже кислота отступает там, где он ступает.
 	}
 
 	GreatSandSharkQuest: {
-		// DisplayName: Great Sand Shark
-		// Description: Defeat the Great Sand Shark
-		// DetailedDescription: The fastest hunter in the desert; the dunes are its open sea. Cull enough of its kin and the king of the pack will show up in person.
+		DisplayName: Великая песчаная акула
+		Description: Победить Великую песчаную акулу
+		DetailedDescription: Самый быстрый охотник пустыни, дюны — её море. Перебейте достаточно родичей — и вожак стаи явится лично.
 	}
 
 	LeviathanQuest: {
-		// DisplayName: Anahita and the Leviathan
-		// Description: Defeat Anahita and the Leviathan
-		// DetailedDescription: The song comes first, the great shadow after. The siren's melody guides the deep-sea beast; do not stop to listen.
+		DisplayName: Анахита и Левиафан
+		Description: Победить Анахиту и Левиафана
+		DetailedDescription: Сначала песня, потом огромная тень. Мелодия сирены ведёт зверя бездны; не останавливайтесь слушать.
 	}
 
 	AstrumAureusQuest: {
-		// DisplayName: Astrum Aureus
-		// Description: Defeat Astrum Aureus
-		// DetailedDescription: Deep in the astral blight crouches an infected war machine. It wakes at night, and nothing grows where its treads have passed.
+		DisplayName: Аструм Ауреус
+		Description: Победить Аструм Ауреуса
+		DetailedDescription: В глубине Астральной инфекции лежит заражённая боевая машина. Ночью она просыпается, и там, где прошли гусеницы, ничего не растёт.
 	}
 
 	RavagerQuest: {
-		// DisplayName: Ravager
-		// Description: Defeat the Ravager
-		// DetailedDescription: A giant pieced together from flesh and masonry, every limb attacking on its own. Tear off all four before the body itself gets serious.
+		DisplayName: Опустошитель
+		Description: Победить Опустошителя
+		DetailedDescription: Гигант из плоти и кирпича, каждая часть бьёт отдельно. Оторвите все четыре конечности — тогда туловище возьмётся всерьёз.
 	}
 
 	AstrumDeusQuest: {
-		// DisplayName: Astrum Deus
-		// Description: Defeat Astrum Deus
-		// DetailedDescription: Lay an offering on the astral beacon and an infected god swims down out of the night sky. Only its death opens the astral ore to your pickaxe.
+		DisplayName: Аструм Деус
+		Description: Победить Аструм Деуса
+		DetailedDescription: Возложите дар на астральный маяк — и с ночного неба сойдёт заражённый бог. Только его смерть откроет астральную руду вашему кайлу.
 	}
 
 	BossRushQuest: {
-		// DisplayName: The Final Battle
-		// Description: Clear a Boss Rush
-		// QuestObjective.Description: Complete the Boss Rush
-		// DetailedDescription: Crush the Terminus and everything you have ever slain lines up to find you again. Kill them all a second time to put the seal on this journey.
+		DisplayName: Финальная битва
+		Description: Пройти финальную битву один раз
+		QuestObjective.Description: Завершить финальную битву
+		DetailedDescription: Раздавите Терминус — и всё, что вы когда-либо убивали, выстроится снова. Перебейте всех во второй раз, и на этом пути можно ставить печать.
 	}
 
 	AerialiteQuest: {
-		// DisplayName: Aerialite Gleam
-		// Description: Forge Aerialite Bars
-		// DetailedDescription: When the Desert Scourge dies, pale blue ore-dust settles from the sky. Light enough to float, yet sturdier than iron.
+		DisplayName: Сияние небесной лазури
+		Description: Выковать аэралитовые слитки
+		DetailedDescription: Когда умрёт Пустынный бич, с неба осядет бледно-голубая рудная пыль. Лёгкая, почти плывёт, но крепче железа.
 	}
 
 	CryonicQuest: {
-		// DisplayName: Cryonic Crystal
-		// Description: Forge Cryonic Bars
-		// DetailedDescription: With Cryogen shattered, blue veins crystallize in the deep ice of the tundra. It does not melt in your hand; it only gets colder.
+		DisplayName: Полярный кристалл
+		Description: Выковать крионические слитки
+		DetailedDescription: Когда Криоген расколется, в глубинном льду тундры проявятся синие жилы. В руке не тает — только холодеет.
 	}
 
 	PerennialQuest: {
-		// DisplayName: Perennial Gift
-		// Description: Forge Perennial Bars
-		// DetailedDescription: Where Plantera wilted, a breathing green metal grows from the soil. The jungle repays its debts in its own way.
+		DisplayName: Дар вечнозелёного
+		Description: Выковать многолетние слитки
+		DetailedDescription: Там, где увяла Плантера, из почвы растёт дышащий зелёный металл. Джунгли благодарят по-своему.
 	}
 
 	LifeAlloyQuest: {
-		// DisplayName: Life Alloy
-		// Description: Smelt Life Alloys
-		// DetailedDescription: Three living metals melted into one; the ingot still carries a pulse. Every high-end frame is built on it.
+		DisplayName: Сплав жизни
+		Description: Выплавить сплав жизни
+		DetailedDescription: Три живых металла сплавлены в один; на слитке ещё бьётся пульс. На нём держатся все каркасы высшего снаряжения.
 	}
 
 	AstralBarQuest: {
-		// DisplayName: Astral Smelting
-		// Description: Forge Astral Bars
-		// DetailedDescription: With the god-worm dead, the astral veins finally yield to the pickaxe. The bars glow on their own in the dark.
+		DisplayName: Астральная выплавка
+		Description: Выковать астральные слитки
+		DetailedDescription: Когда бог-червь мёртв, астральные жилы наконец поддаются кайлу. Слитки сами светятся в темноте.
 	}
 
 	UelibloomQuest: {
-		// DisplayName: Uelibloom in Blossom
-		// Description: Forge Uelibloom Bars
-		// DetailedDescription: After the goddess's holy fire swept through, metal flowers bloomed in the jungle mud. Smelt the petals into bars; the light stays inside.
+		DisplayName: Цветение уэлиблума
+		Description: Выковать уэлиблумовые слитки
+		DetailedDescription: После священного огня богини в грязи джунглей расцвели металлические цветы. Лепестки плавят в слитки, а свет остаётся внутри.
 	}
 
 	BloodstoneQuest: {
-		// DisplayName: Bloodstone Tempering
-		// Description: Gather Bloodstone Cores
-		// DetailedDescription: With the goddess fallen, dark red stones float up through the lava of the Brimstone Crags. They are still beating, like hearts outside their bodies.
+		DisplayName: Закалка кровавого камня
+		Description: Сгустить ядра кровавого камня
+		DetailedDescription: Когда богиня пала, из лавы Серных скал всплыли тёмно-красные камни. Они всё ещё бьются, как сердца вне тела.
 	}
 
 	AscendantEssenceQuest: {
-		// DisplayName: Ascendant Spirit
-		// Description: Condense Ascendant Spirit Essence
-		// DetailedDescription: Phantoms, stardust, moonlight, and a stubborn will that refuses to scatter. Press them into one essence; it is enough to light a legend.
+		DisplayName: Вознесённый дух
+		Description: Сгустить эссенцию вознесённого духа
+		DetailedDescription: Призраки, звёздная пыль, лунный свет и упрямство, которое не рассеялось. Сожмите в одну эссенцию — хватит зажечь легенду.
 	}
 
 	YharonSoulQuest: {
-		// DisplayName: Embers of the Dragon Soul
-		// Description: Collect Yharon Soul Fragments
-		// DetailedDescription: When the great dragon burned out, what remained in the flames was not ash but shards of soul, still hot. Mind your heart when you pick them up.
+		DisplayName: Угли драконьей души
+		Description: Собрать осколки души Ярона
+		DetailedDescription: Когда великий дракон выгорел, в пламени осталось не пепел, а всё ещё горячие осколки души. Поднимая, берегите сердце — обожжёт.
 	}
 
 	FruitQuest: {
-		// DisplayName: Gifts of Life
-		// Description: Gather all four life-enhancing fruits
-		// DetailedDescription: Strange fruit sometimes ripens beside the corpses of mighty foes. Four kinds in all, and every one pushes your life to a new limit.
+		DisplayName: Дары жизни
+		Description: Собрать все четыре плода, усиливающие здоровье
+		DetailedDescription: У тел сильных врагов иногда зреют странные плоды. Всего четыре вида, и каждый поднимает ваш запас здоровья к новому пределу.
 	}
 
 	DraedonPowerCellQuest: {
-		// DisplayName: Ancient Power
-		// Description: Collect Power Cells
-		// DetailedDescription: The lab ruins are littered with cells that still hold a charge. An energy density far beyond your generators; worth studying.
+		DisplayName: Древняя энергия
+		Description: Собрать энергоячейки
+		DetailedDescription: В руинах лабораторий валяются ячейки, в которых ещё остался заряд. Плотность энергии далеко за пределами ваших генераторов — стоит изучить.
 	}
 
 	DraedonsForgeQuest: {
-		// DisplayName: The Master's Forge
-		// Description: Obtain the master craftsman's forge
-		// DetailedDescription: At the end of industry stands a furnace that can smelt anything. Assemble it, and your workshop will never again meet something it cannot make.
+		DisplayName: Кузня мастера
+		Description: Получить кузню мастера
+		DetailedDescription: На конце промышленности стоит печь, которая плавит всё. Соберите её — и в мастерской больше не будет того, чего нельзя сделать.
 	}
 
 	ConquerorMilestone: {
-		// DisplayName: Chronicle of Conquest
-		// Description: Defeat every mighty foe of this world
-		// QuestObjective.Description: Complete all hunt quests
-		// DetailedDescription: From King Slime to the things at the world's end, finish every hard fight there is. Few ever fill this page.
+		DisplayName: Летопись завоеваний
+		Description: Победить каждого сильного врага этого мира
+		QuestObjective.Description: Завершить все охотничьи задания
+		DetailedDescription: От Короля слизней до того, что стоит на краю мира, — закончите каждый тяжёлый бой. Эту страницу заполняют немногие.
 	}
 
 	EventMilestone: {
-		// DisplayName: Peacekeeper
-		// Description: Quell every invasion and anomaly
-		// QuestObjective.Description: Complete all event quests
-		// DetailedDescription: Armies, fleets, moons from other worlds. Whatever came in numbers, you sent home.
+		DisplayName: Усмиритель событий
+		Description: Усмирить каждое нашествие и каждую аномалию
+		QuestObjective.Description: Завершить все задания событий
+		DetailedDescription: Армии, флоты, луны из других миров. Всё, что приходило толпами, вы отправили обратно.
 	}
 
 	CompletionistMilestone: {
-		// DisplayName: The Complete Codex
-		// Description: Finish everything in this book
-		// QuestObjective.Description: Complete all quests
-		// DetailedDescription: The last page of this book is reserved for whoever reads it all. By the time you close it, this world holds nothing you have not seen.
+		DisplayName: Полный кодекс
+		Description: Закончить всё в журнале заданий
+		QuestObjective.Description: Завершить все задания
+		DetailedDescription: Последняя страница этой книги оставлена тому, кто прочёл её целиком. Когда закроете, в этом мире не останется ничего, чего вы не видели.
 	}
 }

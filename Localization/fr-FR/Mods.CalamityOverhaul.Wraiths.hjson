@@ -1,73 +1,66 @@
 LanternBoy: {
-	// DisplayName: The Lantern Boy
-	// Origin: Those who walk the mountain road at night tell of a lantern waiting at its end with no one beneath it. One traveler braved a longer look — and when he came to, he was the one looking out from inside the lamp
-	// Power: 「Guiding Light」Three Ghost Lanterns orbit the bearer, their shadows echoing Onikiri's normal slashes off-beat for a combined sixty percent of its power.
-	// DeathReason: "{0} became the one inside the fourth lantern"
+	DisplayName: Enfant à la lanterne
+	Origin: "Ceux qui prennent le chemin de montagne la nuit disent qu'au bout de la route une lampe attend souvent, sans personne dessous. Un téméraire l'a regardée un peu trop longtemps. Quand il a repris ses esprits, c'est de l'intérieur de la lampe qu'il regardait"
+	Power: "「Guider」 Trois lanternes spectrales orbitent autour du porteur ; leurs ombres reprennent en décalé les tailles ordinaires d'Onikiri, pour soixante pour cent de leur puissance au total."
+	DeathReason: "{0} est devenu celui de la quatrième lampe"
 }
-
 CrimsonBride: {
-	// DisplayName: The Crimson Bride
-	// Origin: A bridal palanquin once stood at somebody's gate with no bearers to carry it, and stood there seven nights. On the eighth night someone lifted the curtain — and from then on, the palanquin answered to a new bride
-	// Power: 「The Procession」Press the Self-Restart key and the palanquin comes following your trail of blood, carrying the blade-bearer into an empty wedding hall; at the nuptial toast, wounds and afflictions alike are restarted.
-	// DeathReason: "{0} boarded that palanquin"
+	DisplayName: Mariée écarlate
+	Origin: "Devant une porte, un palanquin nuptial s'est arrêté sans porteur, et y est resté sept nuits. La huitième, quelqu'un a soulevé le voile. Depuis, ce palanquin reconnaît une nouvelle mariée"
+	Power: "「Cortège nuptial」 Appuyez sur la touche 「Auto-redémarrage」 : le palanquin vient en suivant le sang, et conduit le porteur du sabre dans une salle de noces vide ; à l'heure du partage des coupes, blessures et états sont tous redémarrés."
+	DeathReason: "{0} est monté dans ce palanquin"
 }
-
 ScapeGhost: {
-	// DisplayName: The Scapegoat Wraith
-	// Origin: It left no name behind in life; it only remembers dying in other people's places, so many times it forgot which death was its own. The day it was entered into the register, its birth date was written beside your name — from then on, your death is its to take
-	// Power: 「Death's Stand-In」At the instant death arrives, it seizes a life from afar and forces your death into that body
-	// DeathReason: "{0} died in its place, this once"
+	DisplayName: Fantôme substitut
+	Origin: "De son vivant, il n'a pas laissé de nom. Il se souvient seulement d'être mort à la place des autres, trop de fois pour savoir laquelle était la sienne. Le jour où on l'a inscrit au registre, sa date de naissance a été écrite à côté de ton nom. Désormais, tes morts, c'est lui qui les prend"
+	Power: "「Substitution」 À l'instant où la mort arrive, il arrache une vie au loin et enfonce ta mort dans ce corps"
+	DeathReason: "{0} est mort à sa place, cette fois"
 }
-
 HeadlessShade: {
-	// DisplayName: The Headless Shade
-	// Origin: On a night of swaying lamplight, a man looked down and saw his shadow twitch when he had not moved — and looking closer, there was nothing above its shoulders. Something that lost its head had moved into a living man's shadow
-	// Power: 「Dismember」It lurks behind you, then rushes anything living and tears its body into pieces
-	// DeathReason: "{0} was torn into pieces by their own shadow"
+	DisplayName: Ombre sans tête
+	Origin: "Une nuit où les lampes vacillaient, quelqu'un a baissé les yeux et vu son ombre bouger toute seule. En y regardant de plus près, au-dessus des épaules, il n'y avait plus rien. Ce qui avait perdu sa tête s'était logé dans l'ombre d'un vivant"
+	Power: "「Démembrement」 Il se tient tapi derrière toi. Dès qu'il sent un vivant, il s'élance et déchire le corps en plusieurs morceaux"
+	DeathReason: "{0} a été déchiré en morceaux par sa propre ombre"
 }
-
 GhostHand: {
-	// DisplayName: The Charred Hand
-	// Origin: A charred, withered arm, burnt through and still gripping hard. No one knows whose it once was; all anyone knows is that it reaches for whatever lives
-	// Power: 「Grip」A withered hand lashes out from behind to seize prey, pinning it down and crushing it over and over; when prey abounds, more hands reach out — even colossal beings cannot slip its fingers
-	// DeathReason: "{0} was dragged into the wall"
+	DisplayName: Main calcinée
+	Origin: "Un bras calciné, desséché. Brûlé à ce point, et les cinq doigts serrent encore. Personne ne sait à qui il appartenait. On sait seulement que dès qu'il voit un vivant, il attrape"
+	Power: "「Poigne」 La main desséchée sort dans ton dos, pince la proie, l'immobilise et l'écrase encore et encore ; quand le gibier est nombreux, d'autres mains apparaissent. Même une masse colossale n'échappe pas à ces cinq doigts"
+	DeathReason: "{0} a été enserré dans le mur"
 }
-
 GhostRain: {
-	// DisplayName: The Ghost Rain
-	// Origin: Everyone caught in that rain says the same thing: look up, and it is not clouds — it is faces, pressing down layer upon layer. The drops do not hurt when they land; it is just that every one feels like someone claiming you
-	// Power: 「Ghost Rain」While equipped and Onikiri is held, the gloom stays and the ghost rain pours; living things caught in the veil are slowly eaten away, or dragged up into the rain
-	// DeathReason: "{0} was claimed by the rain"
+	DisplayName: Pluie spectrale
+	Origin: "Tous ceux qui ont pris cette pluie disent la même chose : en levant la tête, ce n'étaient pas des nuages, mais des visages pressés les uns sur les autres. Les gouttes ne font pas mal. Seulement, chacune a l'air de te réclamer"
+	Power: "「Pluie spectrale」 Une fois le Spectre employé, tant que tu tiens le sabre, le voile sombre demeure et la pluie spectrale tombe ; les vivants pris dans le rideau sont lentement rongés, ou tirés dans la pluie"
+	DeathReason: "{0} a été réclamé par la pluie"
 }
-
 System: {
-	// ScapeGhostActivated: 「Death's Stand-In」— {0} bore this death in your place
-	// ScapeGhostUnknownTarget: something living
-	// ScapeGhostDeathBroadcast: "{0} took the hit for {1} — {2}"
-	// ErosionCrawl: Something is crawling beneath the skin
-	// ErosionStain: A corpse-blue tinge creeps up the fingertips
-	// ErosionMirror: The thing in the mirror does not quite look like you
-	// RevivalStir: The name on the talisman shifted
-	// RevivalRise: It is watching you through the paper
-	// RevivalBrink: The talisman is too hot to hold
-	// RevivalHudBrink: One more use and it wakes
+	ScapeGhostActivated: "{0} est devenu le substitut"
+	ScapeGhostUnknownTarget: une créature vivante
+	ScapeGhostDeathBroadcast: "{0} est devenu le substitut de {1}, {2}"
+	ErosionCrawl: Quelque chose rampe sous la peau
+	ErosionStain: Un bleu de cadavre monte aux doigts
+	ErosionMirror: Ce qu'il y a dans le miroir ne te ressemble plus tout à fait
+	RevivalStir: Le nom sur le talisman a bougé
+	RevivalRise: Il te regarde à travers le papier
+	RevivalBrink: Le talisman de sceau brûle trop pour qu'on le tienne
+	RevivalHudBrink: "Encore une utilisation, et il se réveille"
 }
-
 Coven: {
-	// RainHandName: Reach From The Rain
-	// RainHandNote: Soaked prey no longer sits beyond arm's reach — the withered hand hangs down from the rainline above it. Up to five hands reach out at once in the rain, and the crush grows heavier with the downpour
-	// RainShadeName: Wet Edge
-	// RainShadeNote: While the wound the shade tore is still open, every tick of rain-rot on that target is doubled
-	// HandShadeName: Held Down, Then Cut
-	// HandShadeNote: The shade goes for prey the withered hand has hold of first — its speed is already pinned to zero, so the strike cannot miss
-	// LanternHandName: Seen By Lanternlight
-	// LanternHandNote: Prey the lantern has lit can be found by the hand even through cover; lantern slashes land 60% heavier on a target already held
-	// BrideName: Wedding Hall
-	// BrideNote: Prey drawn into the hall at the cup-sharing frame keeps every other mark on it from fading until the hall breaks up
-	// ScapeName: Take The Blow
-	// ScapeNote: Each time the substitute dies, every other wraith on the wheel drops one step of revival
-	// CallName: Calling Each Other
-	// CallNote: Wraiths sharing the wheel wake one another: use any of them and the rest gain a little revival. This holds even between two with no signature reaction
-	// BurstName: Three Marks Break
-	// BurstNote: When three different marks meet on one target, they detonate together as a single hit, and every wraith involved pays one revival
+	RainHandName: Main dans la pluie
+	RainHandNote: "Les proies sous la pluie ne sont plus hors de portée : la main desséchée descend de la ligne de pluie au-dessus d'elles. Jusqu'à cinq mains peuvent sortir à la fois, et l'écrasement s'alourdit avec l'averse"
+	RainShadeName: Tranchant mouillé
+	RainShadeNote: "Tant que la plaie laissée par l'ombre n'est pas refermée, chaque vague d'érosion pluviale sur cette cible est doublée"
+	HandShadeName: "Plaqué, puis tranché"
+	HandShadeNote: "L'ombre se jette d'abord sur la proie déjà enserrée par la main desséchée : sa vitesse est déjà à zéro, ce coup-là ne rate pas"
+	LanternHandName: Mis en lumière
+	LanternHandNote: "Une proie que la lampe a vue, la main desséchée la trouve même à travers un obstacle ; quand les lames des trois lanternes touchent une cible déjà enserrée, elles frappent soixante pour cent plus fort"
+	BrideName: Salle de noces
+	BrideNote: "Les proies prises dans la salle à l'heure du partage des coupes gardent leurs autres marques, qui cessent de s'estomper jusqu'à ce que la salle se dissolve"
+	ScapeName: Encaisser le coup
+	ScapeNote: Chaque mort du substitut fait reculer d'un cran le Réveil des autres Spectres de la même roue
+	CallName: Appel mutuel
+	CallNote: "Les Spectres d'une même roue se réveillent entre eux : employer l'un d'eux fait un peu monter le Réveil des autres. Même entre deux qui n'ont pas de réaction propre"
+	BurstName: Rupture des trois sceaux
+	BurstNote: "Quand trois marques différentes se rejoignent sur une même proie, elles explosent ensemble en un seul coup, et chaque Spectre impliqué paie un Réveil"
 }

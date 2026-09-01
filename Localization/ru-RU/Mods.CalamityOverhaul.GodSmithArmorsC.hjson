@@ -1,12 +1,12 @@
-// GsMonkArmor.EndowLine: Zen Thunder: standing within your own Lightning Aura enters zen; every fourth melee or summon strike in zen unleashes a piercing thunder-palm wave
-// GsMonkShinobiArmor.EndowLine: Zen Thunder, Shinobi: zen palms come every third strike, and each wave splits two side palms on its first hit
-// GsSquireArmor.EndowLine: Oath Bulwark: taking a hit raises the oath shield for five seconds; melee strikes during it hurl a gilded oath lance from your shoulder
-// GsSquireValhallaArmor.EndowLine: Oath Bulwark, Valhalla: the shield holds six seconds and every strike hurls twin oath lances
-// GsHuntressArmor.EndowLine: Snare the Prey: enemies caught in your explosive traps are marked; ranged hits on marked prey call two thorn bolts from the flanks
-// GsHuntressRedRidingArmor.EndowLine: Snare the Prey, Red Riding: marked prey draws three venom-tipped thorn bolts instead
-// GsApprenticeArmor.EndowLine: Kindlecraft: your Flameburst tower's hits build kindling; at six stacks the next magic hit unfolds a fire glyph over the target, raining three ember bolts
-// GsApprenticeDarkArtistArmor.EndowLine: Kindlecraft, Dark Artist: five stacks suffice, and the glyph turns to shadowflame, raining four shadow embers
-// GsSolarArmor.EndowLine: Corona Burst: the instant a solar dash connects, four coronal fire tongues erupt in a ring and bite nearby enemies; a spare shield adds one more
-// GsVortexArmor.EndowLine: Breach Rend: entering vortex stealth primes a breach shot; a ranged hit from stealth, or right after leaving it, tears open a rift that drags enemies in
-// GsNebulaArmor.EndowLine: Triune Resonance: the moment any nebula booster reaches full level, a nebula bloom bursts forth, pulsing three searing waves before its petals drift back to you
-// GsStardustArmor.EndowLine: Stardust Vigil: enemies punched by your Stardust Guardian bear its seal; strike a sealed enemy yourself and a comet shard falls upon it from above
+GsMonkArmor.EndowLine: Дзэн грома: стоя в собственной ауре молний вы входите в дзэн; каждые четыре ближних или призывных попадания в дзэн бьют пронзающей ладонью грома
+GsMonkShinobiArmor.EndowLine: Дзэн грома · синоби: в дзэн ладонь каждые три попадания, после первого удара волна делит ещё две боковые ладони
+GsSquireArmor.EndowLine: Оплот клятвы: после удара на пять секунд встаёт щит клятвы; ближние попадания в это время швыряют с плеча позолоченное копьё клятвы
+GsSquireValhallaArmor.EndowLine: Оплот клятвы · Вальхалла: щит держится шесть секунд, каждое ближнее попадание швыряет два копья
+GsHuntressArmor.EndowLine: Охота сетью: враги, попавшие в ваши взрывные ловушки, несут охотничью метку; дальнее попадание по меченой цели вызывает две терновых стрелы с флангов
+GsHuntressRedRidingArmor.EndowLine: Охота сетью · красный плащ: стрел трое, и они отравлены
+GsApprenticeArmor.EndowLine: Растопка: попадания огненного часового копят растопку; после шести слоёв следующее магическое попадание раскрывает над целью огненную печать и сыплет три угольных болта
+GsApprenticeDarkArtistArmor.EndowLine: Растопка · тёмное искусство: хватает пяти слоёв, печать становится теневой, сыплет четыре теневых угля и поджигает теневым огнём
+GsSolarArmor.EndowLine: Вспышка короны: в миг солнечного рывка из точки удара кольцом рвутся четыре языка короны; если щит ещё с запасом — один язык сверх
+GsVortexArmor.EndowLine: Разрыв скрытности: вход в скрытность Вихря готовит разрыв; дальнее попадание из скрытности или в миг выхода рвёт у цели прореху Вихря и тянет ближних внутрь
+GsNebulaArmor.EndowLine: Тройной резонанс: когда любой усилитель Туманности достигает полного уровня, распускается цветок — три пульса жгут окружение, на исходе лепестки пылью возвращаются к вам
+GsStardustArmor.EndowLine: Стража звёздной пыли: враги, битые Стражем звёздной пыли, несут печать; ваше попадание по печатной цели роняет на неё осколок кометы с зенита

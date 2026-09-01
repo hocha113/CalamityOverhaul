@@ -94,6 +94,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo
 
         //抵达深层（无论夺伞还是被拖入）且演出全收、静默拍走完才开口；
         //完成判定走 PostFirstMetIsComplete：中途掉线重进会从头再播一遍
+        //切歌不在本脚本：深潜/深层起时 OniRainThemeClaim 认领 Rains，提示框跟认领首胜
         protected override NarrativePolicy ConfigurePolicy() => new() {
             IsCompleted = _ => ShenyoStorySync.PostFirstMetIsComplete,
             CanTrigger = (_, player) => CanTriggerFirstMet(player),

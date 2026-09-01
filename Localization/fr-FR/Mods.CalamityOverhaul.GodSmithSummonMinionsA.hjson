@@ -1,26 +1,24 @@
-// GsSlimeStaff.Desc: Gel Legion: slimes roll in escort formation; two different slimes striking one foe within a beat triggers a gel burst, and the rally order piles them into a sticky mound
-// GsFinchStaff.Desc: Finch Phalanx: finches fly a V formation; after the first strike, follow-up pecks on that foe gain stacking power, and the rally order forms a wheeling flock
-// GsAbigailsFlower.Desc: Companion Soul: Abigail's strikes leave a soothing soul-light ring that empowers your minions inside it; under the assault order she focuses her wrath on the marked foe
-// GsFlinxStaff.Desc: Snowball Avalanche: flinxes bound in a relay column; the fourth tackle on one foe within the window lands half again harder and frostburns, and the rally order piles a snow drift
-// GsHornetStaff.Desc: Hive Firenet: hornets hover in a honeycomb lattice; three stingers into one foe burst a venom pod that lingers as poison mist, and the assault order quickens every stinger
-// GsVampireFrogStaff.Desc: Blood Frog Feast: frogs flank you in twin files; their bites may spill a marrow bead that flies back to heal you, and the blood moon whips them into a crimson frenzy
-// GsImpStaff.Desc: Hellfire Battery: imps hold a rear artillery line; under the assault order, three fireballs into one foe raise a pyre column beneath it
-// GsSpiderStaff.Desc: Web Hunt: three spider breeds hold a triangle watch; concerted bites truss the prey in a binding web that deepens every wound, and every bite now envenoms
-// GsBladeStaff.Desc: Bagua Blade Wheel: daggers orbit as a slow-turning wheel; a dagger's sixth consecutive strike on one foe cuts armor-deep and flashes a phantom cross-slash for 40% more, and the rally order raises a gate of blades
-
+GsSlimeStaff.Desc: "Légion de gel : les slimes roulent en escortes ; deux slimes différents qui frappent la même cible dans le même temps déclenchent une explosion de gel, et l'ordre de rassemblement les empile en un tas élastique"
+GsFinchStaff.Desc: "Phalange de pinsons : les oiseaux volent en V ; après le premier coup de bec, les suivants sur la même cible s'empilent en force, et l'ordre de rassemblement forme une nuée en cercle"
+GsAbigailsFlower.Desc: "Âme de compagne : les coups d'Abigail laissent un anneau de réconfort, vos sbires y sont plus féroces ; sous l'ordre d'assaut, elle concentre sa colère sur la cible marquée"
+GsFlinxStaff.Desc: "Avalanche de neige : les flinx chargent en colonne-relais ; le quatrième choc sur la même cible dans la fenêtre frappe 50% plus fort et inflige Brûlure de givre, et l'ordre de rassemblement dresse une barrière de neige"
+GsHornetStaff.Desc: "Toile de ruche : les frelons tiennent une grille en nid d'abeilles au-dessus et sur le côté ; trois dards dans la même cible font tomber une capsule de venin, puis un brouillard toxique ; sous l'ordre d'assaut, les dards partent plus vite"
+GsVampireFrogStaff.Desc: "Festin de grenouilles : les grenouilles de sang flanquent à gauche et à droite ; une morsure a une chance de projeter une perle de moelle qui revient vous soigner ; sous une Lune de sang, la meute entre en frénésie cramoisie"
+GsImpStaff.Desc: "Batterie infernale : les diablotins tiennent une ligne d'artillerie dans votre dos ; sous l'ordre d'assaut, trois boules de feu sur la même cible font jaillir une colonne de Feu infernal sous ses pieds"
+GsSpiderStaff.Desc: "Chasse en toile : trois races d'araignées tiennent un triangle ; les morsures concertées emmaillotent la proie, les plaies s'approfondissent, et chaque morsure injecte un venin acide"
+GsBladeStaff.Desc: "Roue de lames bagua : les dagues enchantées orbitent lentement ; la sixième frappe d'affilée d'une même dague sur la même cible perce l'armure et flash une ombre bagua pour +40% de dégâts ; l'ordre de rassemblement dresse une porte de dix mille lames"
 GsLegionBannerProj: {
-	// DisplayName: Legion Banner
-	// GuardTip: Guard
-	// AssaultTip: Assault!
-	// RallyTip: Rally!
-	// CommandHint: Right click: assault a foe, rally at a spot, or point near yourself to recall
+	DisplayName: Bannière de légion
+	GuardTip: Garde
+	AssaultTip: Assaut !
+	RallyTip: Rassemblement !
+	CommandHint: "Clic droit pour commander : un ennemi pour l'assaut, le sol pour le rassemblement, près de vous pour rappeler en garde"
 }
-
-// GsRallyFieldProj.DisplayName: Rally Ground
-// GsGelBurstProj.DisplayName: Gel Burst
-// GsVenomPodProj.DisplayName: Venom Pod
-// GsImpPyreProj.DisplayName: Pyre Column
-// GsBloodSipProj.DisplayName: Marrow Bead
-// GsWebBindProj.DisplayName: Binding Web
-// GsSoulSolaceProj.DisplayName: Soul Solace Ring
-// GsBladeStaffPhantomProj.DisplayName: Gs Blade Staff Phantom Proj
+GsRallyFieldProj.DisplayName: Terrain de rassemblement
+GsGelBurstProj.DisplayName: Explosion de gel
+GsVenomPodProj.DisplayName: Capsule de venin
+GsImpPyreProj.DisplayName: Colonne infernale
+GsBloodSipProj.DisplayName: Perle de moelle
+GsWebBindProj.DisplayName: Toile de lien
+GsSoulSolaceProj.DisplayName: Anneau de réconfort
+GsBladeStaffPhantomProj.DisplayName: Lame enchantée fantôme

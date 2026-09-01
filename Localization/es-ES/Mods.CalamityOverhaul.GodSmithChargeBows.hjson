@@ -1,110 +1,110 @@
-/* GsWoodenBow.Desc:
+GsWoodenBow.Desc:
 	'''
-	Reforged: hold to draw, release to loose. A half draw flies faster and hits harder, a full draw becomes a wood-spirit arrow, an overdrawn hit splits into a fan of arrows
-	Rest at overdraw too long and the string destabilizes: the shot falls back to full-draw power with brief fatigue
-	''' */
-/* GsBorealWoodBow.Desc:
+	Reforja: sostener el arco es cargar; soltar es disparar. A media carga la flecha va más rápida y duele más; a plena carga transmuta en flecha de espíritu de madera; un impacto en sobrecarga se abre en un abanico de flechas
+	Si dejas la cuerda en sobrecarga demasiado tiempo, se desestabiliza: el disparo cae a la potencia de plena carga y te deja una fatiga breve
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Overdrawn arrows carry rime, chilling and briefly numbing lesser foes
-	''' */
-/* GsPalmWoodBow.Desc:
+GsBorealWoodBow.Desc:
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Overdrawn arrows fly dry and true, striking vitals more often
-	''' */
-/* GsRichMahoganyBow.Desc:
+	Reforja: tensado en tres fases, transmutación a plena carga, se parte en sobrecarga
+	Las flechas en sobrecarga llevan escarcha y, al acertar, congelan un instante a los enemigos más débiles
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Many-stemmed vines: overdrawn hits split into one extra arrow
-	''' */
-/* GsEbonwoodBow.Desc:
+GsPalmWoodBow.Desc:
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Overdrawn arrows have a chance to ignite shadowflame
-	''' */
-/* GsShadewoodBow.Desc:
+	Reforja: tensado en tres fases, transmutación a plena carga, se parte en sobrecarga
+	Las flechas en sobrecarga vuelan secas y limpias, y aciertan más a menudo en puntos vitales
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Overdrawn arrows have a chance to open a bleeding wound
-	''' */
-/* GsAshWoodBow.Desc:
+GsRichMahoganyBow.Desc:
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Overdrawn arrows set foes alight, scattering cinders
-	''' */
-/* GsCopperBow.Desc:
+	Reforja: tensado en tres fases, transmutación a plena carga, se parte en sobrecarga
+	Lianas de muchos tallos: un impacto en sobrecarga se parte en una flecha de madera extra
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdraw looses one free side arrow
-	''' */
-/* GsTinBow.Desc:
+GsEbonwoodBow.Desc:
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdraw looses one free side arrow in a denser spark shower
-	''' */
-/* GsIronBow.Desc:
+	Reforja: tensado en tres fases, transmutación a plena carga, se parte en sobrecarga
+	Las flechas en sobrecarga tienen probabilidad de prender llama de las sombras
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn press arrows: crushing knockback, briefly pinning lesser foes
-	''' */
-/* GsLeadBow.Desc:
+GsShadewoodBow.Desc:
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn press arrows carry lead: the slam pins and poisons
-	''' */
-/* GsSilverBow.Desc:
+	Reforja: tensado en tres fases, transmutación a plena carga, se parte en sobrecarga
+	Las flechas en sobrecarga tienen probabilidad de abrir una herida sangrante que desangra al enemigo
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn hallowed arrows ricochet once toward a nearby foe
-	''' */
-/* GsTungstenBow.Desc:
+GsAshWoodBow.Desc:
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn arrows ricochet twice; the final strike bursts
-	''' */
-/* GsGoldBow.Desc:
+	Reforja: tensado en tres fases, transmutación a plena carga, se parte en sobrecarga
+	Las flechas en sobrecarga prenden al enemigo y esparcen ascuas
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn royal arrows crit more often; critical hits burst into a few copper coins
-	''' */
-/* GsPlatinumBow.Desc:
+GsCopperBow.Desc:
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn crown arrows always crit, bursting into more copper coins
-	''' */
-/* GsDemonBow.Desc:
+	Reforja: tensado en tres fases; a plena carga, la punta templada estalla en chispas metálicas y salpica un área pequeña
+	En sobrecarga suelta una flecha auxiliar gratis
 	'''
-	Reforged: three-stage draw. A full draw transmutes the arrow into a piercing unholy bolt
-	An overdrawn hit releases two soul-seeking shadowflame wisps that slowly hunt nearby foes
-	''' */
-/* GsTendonBow.Desc:
+GsTinBow.Desc:
 	'''
-	Reforged: three-stage draw. Full-drawn clot arrows open bleeding wounds
-	Overdrawn heartstring slam: a heavier shaft with brutal knockback that spatters blood and sips a little life back
-	''' */
-/* GsBloodRainBow.Desc:
+	Reforja: tensado en tres fases; a plena carga, la punta templada estalla en chispas metálicas y salpica un área pequeña
+	En sobrecarga suelta una flecha auxiliar gratis, con chispas más densas
 	'''
-	Reforged: arrows still fall as blood rain. Three-stage draw
-	A full draw calls four extra bolts onto the cursor; an overdrawn flood calls eight, and the main bolt pools blood where it lands, trampling and slowing foes
-	''' */
-/* GsBeesKnees.Desc:
+GsIronBow.Desc:
 	'''
-	Reforged: wooden arrows still become bee arrows. Three-stage draw
-	Full-drawn hits release two extra bees; an overdrawn hit leaves a swirling bee vortex. At most twelve bees may serve you at once
-	''' */
-/* GsHellwingBow.Desc:
+	Reforja: tensado en tres fases; a plena carga, la punta templada estalla en chispas metálicas y salpica un área pequeña
+	Flecha de prensa en sobrecarga: el retroceso aumenta mucho y clava un instante a los enemigos más débiles
 	'''
-	Reforged: wooden arrows still become wall-piercing hellwings, and the draw is faster
-	A full draw looses three bats in a V; an overdrawn draw unleashes six in a spiral that scatters, then converges
-	''' */
-/* GsMoltenFury.Desc:
+GsLeadBow.Desc:
 	'''
-	Reforged: wooden arrows still become flaming arrows. Three-stage draw
-	Full-drawn molten cores spray magma beads on impact; an overdrawn volcanic shot calls five molten rain bolts down on the mark
-	''' */
+	Reforja: tensado en tres fases; a plena carga, la punta templada estalla en chispas metálicas y salpica un área pequeña
+	La flecha de prensa en sobrecarga lleva veneno de plomo: el golpe clava y envenena
+	'''
+GsSilverBow.Desc:
+	'''
+	Reforja: tensado en tres fases; a plena carga, la punta templada estalla en chispas metálicas y salpica un área pequeña
+	Flecha de resplandor sacro en sobrecarga: al acertar rebota una vez hacia un enemigo cercano
+	'''
+GsTungstenBow.Desc:
+	'''
+	Reforja: tensado en tres fases; a plena carga, la punta templada estalla en chispas metálicas y salpica un área pequeña
+	Las flechas en sobrecarga rebotan dos veces; el último golpe estalla en una explosión pequeña
+	'''
+GsGoldBow.Desc:
+	'''
+	Reforja: tensado en tres fases; a plena carga, la punta templada estalla en chispas metálicas y salpica un área pequeña
+	Las flechas reales en sobrecarga hacen críticos más a menudo; un crítico esparce unas monedas de cobre
+	'''
+GsPlatinumBow.Desc:
+	'''
+	Reforja: tensado en tres fases; a plena carga, la punta templada estalla en chispas metálicas y salpica un área pequeña
+	Las flechas de corona en sobrecarga siempre hacen crítico y esparcen más monedas de cobre
+	'''
+GsDemonBow.Desc:
+	'''
+	Reforja: tensado en tres fases. A plena carga transmuta en flecha de sombra, un dardo impío que atraviesa
+	Un impacto en sobrecarga suelta dos llamas cazalmas que persiguen despacio a los enemigos cercanos
+	'''
+GsTendonBow.Desc:
+	'''
+	Reforja: tensado en tres fases. A plena carga, la flecha de coágulo abre una herida sangrante que desangra
+	Golpe de cuerda de sangre en sobrecarga: el astil pesa más, el retroceso es más brutal; al acertar esparce perlas de sangre y te recupera un sorbo de vida
+	'''
+GsBloodRainBow.Desc:
+	'''
+	Reforja: las flechas siguen cayendo como lluvia de sangre. Tensado en tres fases
+	A plena carga caen cuatro saetas de sangre extra sobre el punto de mira; en sobrecarga, una riada de ocho, y la saeta principal deja un charco de sangre que, al pisarlo, ralentiza y frena
+	'''
+GsBeesKnees.Desc:
+	'''
+	Reforja: las flechas de madera siguen volviéndose flechas de abeja. Tensado en tres fases
+	Un impacto a plena carga suelta dos abejas más; en sobrecarga deja un vórtice de abejas que sigue soltando enjambre. Como mucho doce abejas a la vez
+	'''
+GsHellwingBow.Desc:
+	'''
+	Reforja: las flechas de madera siguen volviéndose murciélagos de fuego que atraviesan paredes, y el tensado es más rápido
+	A plena carga salen tres murciélagos en V; en sobrecarga, seis en espiral que se abren y luego se recogen hacia adelante
+	'''
+GsMoltenFury.Desc:
+	'''
+	Reforja: las flechas de madera siguen volviéndose flechas de llama. Tensado en tres fases
+	A plena carga, el núcleo fundido salpica perlas de magma; en sobrecarga, el rito volcánico hace caer cinco lluvias de lava sobre el objetivo
+	'''
 
 GsChargeBleedBuff: {
-	// DisplayName: Bloodletting
-	// Description: Bleeding out
+	DisplayName: Sangría
+	Description: La sangre no para
 }

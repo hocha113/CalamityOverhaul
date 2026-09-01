@@ -1,162 +1,162 @@
 FirstMetHimayo: {
-	// SpeakerName: Himura Mayo
-	// Line1: ...I'm still alive?
-	// Line2: Wait, let me make sure... Is this some kind of spirit summoning?
-	// Line3: No...
-	// Line4: Why is my consciousness inside a sword now?
-	// Line5: My head is spinning... I can't wrap my head around what's happening at all.
-	// Line6: Still, since the blade is in your hands...
-	// Line7: From today onward, please take good care of me!
+	SpeakerName: Химура Майо
+	Line1: …Я ещё жива?
+	Line2: Погоди, сначала проверю… Это призыв душ?
+	Line3: Нет…
+	Line4: Почему моё сознание сейчас внутри клинка?
+	Line5: Голова кругом… Совсем не пойму, что происходит
+	Line6: Но раз клинок у тебя в руке…
+	Line7: С сегодняшнего дня прошу любить и жаловать
 }
 
 ToriiShrine: {
-	// InteractHint: "[Right Click] Draw the blade"
-	// SealedHint: "[Right Click] Grip the hilt"
-	// InventoryFullHint: Inventory is full. Clear a slot before drawing the blade
+	InteractHint: "[ПКМ] Вытащить клинок"
+	SealedHint: "[ПКМ] Схватить рукоять"
+	InventoryFullHint: Инвентарь полон. Освободи слот и тогда вытаскивай
 }
 
 ItCametoThis: {
-	// Line1: Really didn't want it to come to this
-	// Line2: From now on, this world is in my hands
+	Line1: Как не хотелось до этого доходить
+	Line2: С этой минуты этот мир беру я
 }
 
 HimayoEyeOfCthulhuGift: {
-	// L0: Right—back home we used to have a guy who couldn't close his eyes when he slept.
-	// L1: Not the creepy wide-open kind. Lids half down, staring at the beam like he was spacing out.
-	// L2: Blankets tucked tight, house dead quiet. One time I walked past his window and almost yelled for help.
-	// L3: Next day he was fine, hollering from the fields for me to help haul flower pots.
-	// L4: Ah, talking about it… looking at that giant eye in the sky, I'm getting sleepy too.
+	L0: Кстати, у нас там был один. Спал — а глаза не закрывались
+	L1: Не страшные навыкате. Веки наполовину, в потолочную балку, будто завис
+	L2: Одеяло по самый нос, в доме тишина как могила. Раз шла под окном — чуть не закричала
+	L3: А наутро жив-здоров, с поля орёт, чтоб я горшки помогла таскать
+	L4: Эх, болтаю, гляжу на тот глаз в небе… И самой спать охота
 }
 
 HimayoEvilBossGift: {
-	// L0Worm: Gross… chunk after chunk jammed in the dirt.
-	// L1Worm: Reeks like a freshly turned mud ditch. Enough, I don't want to smell that again.
-	// L0Brain: Brains belong properly tucked inside a skull.
-	// L1Brain: Soggy and sprawled out in the open, one look and my head throbs.
+	L0Worm: Мерзость… Кусок за куском в земле
+	L1Worm: Вонь как из свежевскопанной канавы. Больше не хочу нюхать
+	L0Brain: Мозгам место в черепе
+	L1Brain: Мокрые, навыкат. Гляну — и голова раскалывается
 }
 
 HimayoCalamityEvilGift: {
-	// L0: Don't just stand there spacing out. Catch your breath, at least.
-	// L1: That clump earlier… doesn't it look a lot like spoiled red bean paste?
-	// L2: Great, now I made myself hungry talking about it.
-	// L3: If you're hungry too, go find something to eat. Toughing it out after a fight is the dumbest move.
-	// L4: And don't wipe your hands on your face. Not because you're dirty—it'll sting your eyes, seriously.
+	L0: Не стой столбом. Хоть отдышись
+	L1: Та куча, что клубком лежала… Тебе не кажется, прямо как прокисшая бобовая паста?
+	L2: Ну всё. Не была голодна — сама себя наговорила
+	L3: Если ты тоже голодный — иди поешь. Терпеть после драки глупо
+	L4: И руки по лицу не мажь… Не то чтоб ты грязный. Попадёт в глаза — жжёт по-настоящему
 }
 
 HimayoSlimeGodGift: {
-	// L0: Sticky, sure. But stepping in muddy sludge after rain as a kid was way worse than this.
-	// L1: At least this won't seep into boots. Well… pretty tolerable, all things considered.
-	// L2: Here. Ask where I pulled it from and I'll pretend I didn't hear.
+	L0: Липкое, да. Но в детстве в лужу после дождя наступала — то было хуже
+	L1: Хоть в сапоги не лезет. Ну… жить можно
+	L2: На. Откуда достала — не спрашивай. Спросишь — сделаю вид, что глухая
 }
 
 HimayoWallOfFleshGift: {
-	// L0: …It really fell. That wall of flesh collapsed.
-	// L1: Not sure if I'm happy or not. Just feels like… the weather is about to turn.
-	// L2: The road ahead is probably going to get a lot rougher. Just keep your wits about you.
+	L0: …И правда рухнула. Та мясная стена упала
+	L1: Радоваться или нет — не скажу. Просто чую… дальше погода ломается
+	L2: Дальше дорога, скорее всего, круче. Ты сам соображай
 }
 
 HimayoFesterSerpentGift: {
-	// L0: Hold on, what's on the blade this time… pus?
-	// L1: I live inside here! The seafood stall just closed and now it's a clinic.
-	// L2: Still no window—sick wards should at least get a vent!
-	// L3: Next time pick somewhere cleaner to cut. I have nowhere left to air this place out.
+	L0: Погоди. На лезвии в этот раз… гной?
+	L1: Я в клинке живу. Лавка с морепродуктами только закрылась — уже клиника
+	L2: Окон как не было. В палате даже отдушины нет
+	L3: В следующий раз режь в месте почище. Тут проветрить негде
 }
 
 HimayoBrimstoneElementalGift: {
-	// L0: Heat's still hanging. Look at that puddle over there, still steaming.
-	// L1: What happens if you stick a foot in? …Wait, I wasn't telling you to actually try!
-	// L2: Anyway, don't touch it. It'll burn.
+	L0: Жар ещё не сошёл. Глянь, та лужа всё белым парит
+	L1: А если ногу сунуть? …Стой, я не говорила пробовать по-настоящему
+	L2: Короче, не трогай. Обожжёшься
 }
 
 HimayoDestroyerGift: {
-	// L0: Called "The Destroyer"… sounds scary enough.
-	// L1: Turns out it's just a really long, clunky strip of scrap iron.
-	// L2: Here, take this. Don't drop it on the ground—I'm not picking it up for you.
+	L0: Зовут Уничтожитель… Звучит грозно
+	L1: Сбил — а это просто длиннющая железяка
+	L2: На, держи. На землю не урони. Уронишь — сама не подниму
 }
 
 HimayoTwinsGift: {
-	// L0: Stare at someone too long and you really can't help but laugh.
-	// L1: You know that feeling, right? The harder you try to hold it in, the more your mouth curls up on its own.
-	// L2: I used to have staring contests back home, and I always lost every single time.
-	// L3: Looking at those two up there… never mind, thinking about it makes me want to laugh again.
+	L0: Смотришь друг на друга слишком долго — и правда прёт смех
+	L1: Знаешь же. Чем сильнее держишь, тем смешнее, губы сами едут
+	L2: Раньше спорила, кто первый сдастся. Всегда проигрывала
+	L3: Только что смотрела на тех двоих в небе… Ладно. Вспомнила — опять смешно
 }
 
 HimayoSkeletronPrimeGift: {
-	// L0: Head's still the old skull, but the body got replaced with a shiny new iron frame.
-	// L1: Like someone rushed out in the middle of changing clothes—looks awkward as hell.
-	// L2: Next time, get fully dressed before charging into battle, okay? I'm getting second-hand anxiety just watching.
+	L0: Голова старая кость, а туловище уже на новом железном каркасе
+	L1: Как переодеваться бросил на середине и выскочил. Смотреть криво
+	L2: В следующий раз оденься до конца, потом бей. Я за него волнуюсь, глядя
 }
 
 HimayoCalamitasCloneGift: {
-	// L0: Even mimicking the walking posture… so irritating.
-	// L1: Not that I'm afraid of it… it just feels uncanny. The closer the mimicry, the faker it looks.
-	// L2: Here. Ask where I pulled this from and I'll pretend I didn't hear.
+	L0: Даже походку копирует. Смотреть бесит
+	L1: Не то что боюсь… Просто мурашки. Чем больше похоже, тем фальшивее
+	L2: На. Откуда вытащила — не спрашивай. Спросишь — сделаю вид, что глухая
 }
 
 HimayoPlanteraGift: {
-	// L0: When flowers wither, you snip them right off without hesitation.
-	// L1: Leaving dry stems is pointless. It takes up space and just makes people irritable.
-	// L2: Flower sellers back home always did it like that—spent means cut, no lingering around.
-	// L3: Ah, why am I babbling about this? You didn't come here to buy flowers from me anyway.
+	L0: Цветок отцвёл — стриги сразу, без жалости
+	L1: Сухие стебли держать незачем. Место занимают, ещё и бесят
+	L2: У нас цветочницы все так. Отцвело — срезала. Без канители
+	L3: Эх, зачем я тебе это. Ты же не за цветами ко мне пришёл
 }
 
 HimayoGolemGift: {
-	// L0: Are your wrists still numb? Take a moment to loosen up your shoulders too.
-	// L1: Striking hard stone like that sends the shockwave all the way into the center of your palm.
-	// L2: My grip used to go numb from the recoil too, and it felt awful.
-	// L3: And don't keep slamming the blade head-on into solid rock. If the edge chips, I'm the one who suffers!
+	L0: Запястья ещё деревянные? Плечи тоже разомни
+	L1: Бахнешь о такой камень — удар до самой ладони долетит
+	L2: Меня тоже так трясло, что ладонь немела. Мерзко было
+	L3: И клинок об камень не колоти. Щерба пойдёт — жалко будет меня
 }
 
 HimayoCultistGift: {
-	// L0: Finally quiet outside the door.
-	// L1: Our ears can rest at last. That frantic chanting earlier had me wanting to cover my ears the whole time.
+	L0: У двери наконец тихо
+	L1: Уши отдохнут. Та бормотня только что так орала, что руки к ушам тянулись
 }
 
 HimayoMoonLordGift: {
-	// L0: That moon looming over the sky has finally dispersed.
-	// L1: Can't say I feel relieved or happy…
-	// L2: Just feels like something that was pressing down on our heads forever is suddenly gone, and it feels a little strange.
+	L0: Луна, что давила с неба, наконец рассыпалась
+	L1: Радоваться вроде нечему…
+	L2: Просто то, что всё время жало в макушку, вдруг пропало. Даже непривычно
 }
 
 HimayoProvidenceGift: {
-	// L0: Tch, the air around here is practically scorched.
-	// L1: The back of my hand feels tight from the heat. Standing here is like being buried in a fire pit to roast sweet potatoes.
-	// L2: Take this. Don't just stand here getting baked—let's get out of here quick.
+	L0: Тц. Воздух кругом уже почти подгорел
+	L1: Тыл ладони тянет от жара. Стоишь тут — как тебя в яму кинули печь батат
+	L2: Бери и не торчи тут жариться. Валим
 }
 
 HimayoPolterghastGift: {
-	// L0: It's so damp here, like clothes hung indoors for a whole week that never dry out.
-	// L1: Sleeping in a chilly, gloomy place like this guarantees a sore back the next morning.
-	// L2: There's not even a window to air it out, and no charcoal to light a brazier.
-	// L3: Finish up and let's go. Definitely don't spend the night here.
+	L0: Тут сыро, как бельё неделю в комнате сушишь — и всё не сохнет
+	L1: Спать в такой сырости — наутро поясница ныть будет
+	L2: Даже окна проветрить нет. Жаровню разжечь — дров нет
+	L3: Кончил — уходим. Тут ночевать ни в коем случае
 }
 
 HimayoDevourerOfGodsGift: {
-	// L0: That head earlier… was so massive that staring at it made me forget what I was even looking at.
-	// L1: It felt as if a giant chunk of the sky had been violently bitten away.
-	// L2: …Never mind, putting it that way probably sounds even scarier.
+	L0: Та голова только что… такая огромная, смотришь-смотришь и уже не понимаешь, на что
+	L1: Будто у неба кто-то отгрыз здоровенный кусок
+	L2: …Ладно. Так ещё страшнее звучит
 }
 
 HimayoYharonGift: {
-	// L0: The blade is still burning hot, and my side is sweltering too.
-	// L1: Honestly, inside the scabbard right now feels no different from an oven.
-	// L2: Don't rush to sheath it just yet—I'm the one getting toasted in here!
-	// L3: Here, set this aside for now. We can look at it once things cool down.
+	L0: Лезвие ещё обжигает. У меня тут тоже жарко до дрожи
+	L1: Честно, в ножнах сейчас как в большой духовке
+	L2: Не суй сразу обратно. Жарко будет мне
+	L3: На, это пока в сторону. Остынет — поговорим
 }
 
 HimayoExoMechsGift: {
-	// L0: After all that deafening bombardment, my ears are still buzzing non-stop.
-	// L1: Feels like someone is tapping a tiny hammer inside my skull—so annoying!
-	// L2: Let's find somewhere quiet to rest up and give our ears a break.
+	L0: Та пальба только что — в ушах до сих пор гудит
+	L1: Прямо как кто-то молоточком по черепу стучит. Бесит же
+	L2: Давай найдём тихое место передохнуть. Ушам выходной
 }
 
 HimayoSupremeCalamitasGift: {
-	// L0: The atmosphere over there earlier was heavy and suffocating.
-	// L1: Go catch some fresh breeze, or splash some cold water on your face… not because you're dirty, but to clear your head.
-	// L2: Though… suffocating atmospheres like that, I used to be quite accustomed to them.
+	L0: Там только что воздух стоял, тяжёлый и густой
+	L1: Пойди к ветру, или холодной водой умойся… Не то чтоб ты грязный. Просто протрезвись
+	L2: Хотя… к таким удушающим сценам я раньше привыкла
 }
 
 HimayoBossRushGift: {
-	// L0: Hold on, don't move around yet.
-	// L1: Steady your footing… you haven't even caught your breath yet. It's good to have you back.
+	L0: Стой. Не дёргайся
+	L1: Ноги поставь… Ещё не отдышался. Главное, вернулся
 }

@@ -30,6 +30,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         //教程活跃时每帧调用 SetTutorialLease() 维持黄昏；停止调用后自动过期（90 帧渐出）
         private static bool tutorialLease;
         private static bool tutorialVisualSuppressed;
+        //初见窗口内 Future 提示只跟认领首胜弹一次；落幕后教程续租不再武装
+        private static bool firstMeetToastShown;
 
         /// <summary>教程活跃帧调用；下一帧未续租即自动失效</summary>
         public static void SetTutorialLease() => tutorialLease = true;
@@ -46,6 +48,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 Intensity + (hold ? FadeInPerTick : -FadeOutPerTick), 0f, 1f);
             VisualIntensity = MathHelper.Clamp(VisualIntensity
                 + (hold && !suppressVisuals ? FadeInPerTick : -FadeOutPerTick), 0f, 1f);
+            if (Intensity <= 0f && !HimayoStorySync.PostFirstMetIsComplete) {
+                firstMeetToastShown = false;
+            }
         }
 
         internal static void Reset() {
@@ -53,6 +58,16 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             VisualIntensity = 0f;
             tutorialLease = false;
             tutorialVisualSuppressed = false;
+            firstMeetToastShown = false;
+        }
+
+        /// <summary>认领胜出帧：初见窗口内弹一次「凭夜:未来」</summary>
+        internal static void NotifyThemeWon() {
+            if (Main.dedServ || HimayoStorySync.PostFirstMetIsComplete || firstMeetToastShown) {
+                return;
+            }
+            firstMeetToastShown = true;
+            ThemeMusicToast.ShowHimayo();
         }
 
         /// <summary>退场中或初见在播则保持，鬼域激活时让位</summary>
@@ -77,6 +92,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         public override bool YieldToBossRush => true;
         public override bool ShouldPlay() => ToriiDusk.Intensity > 0f;
         public override int GetMusicSlot() => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Future");
+        public override void OnWinFrame() => ToriiDusk.NotifyThemeWon();
     }
 
     internal class ToriiDuskSystem : ModSystem

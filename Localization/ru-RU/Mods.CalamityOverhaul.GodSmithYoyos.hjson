@@ -1,112 +1,112 @@
-/* GsWoodYoyo.Desc:
+GsWoodYoyo.Desc:
 	'''
-	Right click: anchor, the yoyo patrols in place at your cursor
-	Anchored hits on the same target build Heat, up to +40% damage
-	Every 4th anchored hit flings 2 spinning wood chips at 25% damage
-	''' */
-/* GsRallyYoyo.Desc:
+	ПКМ, щелчок: стоянка — йо-йо якорится у курсора и патрулирует на месте
+	Стоянка по одной цели копит жар, урон до +40%
+	Каждое 4-е попадание стоянки швыряет 2 деревянных дротика, по 25% урона
 	'''
-	Right click: anchor patrol
-	Every 5 anchored hits quicken the strike tempo, up to 3 ranks; ranks reset when the yoyo returns
-	''' */
-/* GsMalaiseYoyo.Desc:
+GsRallyYoyo.Desc:
 	'''
-	Right click: anchor patrol
-	A field of malaise around the anchor slows enemies by 8%
-	''' */
-/* GsArteryYoyo.Desc:
+	ПКМ, щелчок: стоянка и патруль
+	Каждые 5 попаданий стоянки поднимают ритм на ступень, до трёх; возврат обнуляет
 	'''
-	Right click: anchor patrol
-	Anchored hits have a 20% chance to fling a blood bead dealing 15% damage
-	''' */
-/* GsAmazonYoyo.Desc:
+GsMalaiseYoyo.Desc:
 	'''
-	Right click: anchor patrol
-	Anchored hits inflict Poisoned; at full Heat the poison lasts twice as long
-	At full Heat the yoyo also sprouts a venom vine, lashing the nearest foe for 20% damage every 0.75s
-	''' */
-/* GsCode1Yoyo.Desc:
+	ПКМ, щелчок: стоянка и патруль
+	Вокруг якоря висит поле уныния, скорость врагов −8%
 	'''
-	Right click: single tap to anchor, double tap to lash back through foes (2.2x speed, 135% damage)
-	A lash hit sets a Breakpoint on the target for 3s: anchored hits on it deal 30% more
-	''' */
-/* GsValorYoyo.Desc:
+GsArteryYoyo.Desc:
 	'''
-	Right click: tap to anchor, double tap to lash
-	Lash knockback is doubled; with 3 or more enemies near the anchor, anchored damage gains 15%
-	''' */
-/* GsCascadeYoyo.Desc:
+	ПКМ, щелчок: стоянка и патруль
+	Попадание стоянки с шансом 20% брызжет каплей крови на 15% урона
 	'''
-	Right click: tap to anchor, double tap to lash
-	Hits shed cascading sparks; the lash path leaves burning lines behind
-	''' */
-/* GsHiveFiveYoyo.Desc:
+GsAmazonYoyo.Desc:
 	'''
-	Right click: tap to anchor, double tap to lash
-	While anchored the yoyo becomes a hive, releasing a bee every 0.8s; bees benefit from your bee equipment
-	''' */
-/* GsFormatCYoyo.Desc:
+	ПКМ, щелчок: стоянка и патруль
+	Попадание стоянки травит; на полном жаре длительность яда удвоена
+	На полном жаре шар растит лозу и каждые 0.75 с хлещет ближайшего врага на 20% урона с ядом
 	'''
-	Right click: tap to anchor, double tap to lash
-	A lash hit formats the target's Heat straight to full; 6s cooldown, a white star marks it ready
-	''' */
-/* GsGradientYoyo.Desc:
+GsCode1Yoyo.Desc:
 	'''
-	Right click: tap to anchor, double tap to lash
-	Heat cap raised to +60%; the yoyo shifts gold, orange then red as Heat builds
-	''' */
-/* GsChikYoyo.Desc:
+	ПКМ: щелчок — стоянка, двойной — пронзающий возврат к руке (скорость шара ×2.2, 135% урона)
+	Попадание возврата ставит разрыв на 3 с; стоянка по разорванной цели +30% урона
 	'''
-	Right click: tap to anchor, double tap to lash
-	The lash flies at 2.6x speed with a sonic ring on launch
-	''' */
-/* GsHelFireYoyo.Desc:
+GsValorYoyo.Desc:
 	'''
-	Right click: tap to anchor, double tap to lash
-	Every 2s the anchor ignites the ground below with a ring of hellfire
-	''' */
-/* GsAmarokYoyo.Desc:
+	ПКМ: щелчок — стоянка, двойной — возврат
+	Отбрасывание возврата удвоено; если у якоря не меньше 3 врагов, урон стоянки +15%
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	The orbit trails frost mist, slowing enemies in the domain by 12% (spin time drains faster while orbiting)
-	''' */
-/* GsCode2Yoyo.Desc:
+GsCascadeYoyo.Desc:
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	The lash splits a parallel mirror track 40px aside, dealing 50% damage
-	''' */
-/* GsYeletsYoyo.Desc:
+	ПКМ: щелчок — стоянка, двойной — возврат
+	Попадание сыплет водопадом искр, путь возврата оставляет горящую линию
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	Every 6 anchored hits fling a ring of 8 spores, each dealing 40% damage
-	''' */
-/* GsRedsThrowYoyo.Desc:
+GsHiveFiveYoyo.Desc:
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	A lash hit loads 3 Red Flags into the target; while flags remain, anchored hits on it are guaranteed crits, one flag per hit
-	''' */
-/* GsValkyrieYoyo.Desc:
+	ПКМ: щелчок — стоянка, двойной — возврат
+	Стоянка становится ульем: каждые 0.8 с выпускает пчелу, пчелы получают ваши пчелиные бонусы
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	The orbit tilts into a valkyrie's gyre, shedding feather light on hits
-	''' */
-/* GsKrakenYoyo.Desc:
+GsFormatCYoyo.Desc:
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	While anchored, inky tendrils lash the two nearest foes for 30% damage per pulse
-	Infinite spin time makes it a true siege core
-	''' */
-/* GsEyeOfCthulhuYoyo.Desc:
+	ПКМ: щелчок — стоянка, двойной — возврат
+	Попадание возврата форматирует жар цели до полного, перезарядка 6 с; белая звезда значит готовность
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	The anchor stares down the nearest foe, spitting 3 blood tears every 2s; the lash becomes a ramming charge dealing 160% damage
-	''' */
-/* GsTerrarianYoyo.Desc:
+GsGradientYoyo.Desc:
 	'''
-	Right click taps: chart up to 3 waypoints, the yoyo patrols the bezier route and its beam rate doubles while patrolling
-	Each completed lap rings a Patrol Resonance: for 1s beams fire faster and 30% harder
-	Double tap to lash, hold to orbit; click again when the route is full to clear it
-	''' */
-// GsYoyoPelletProj.DisplayName: Yoyo Pellet
-// GsYoyoBurnZoneProj.DisplayName: Scorch Zone
-// GsYoyoMirrorProj.DisplayName: Mirror Track
+	ПКМ: щелчок — стоянка, двойной — возврат
+	Потолок жара до 60%; по мере роста шар идёт от золота к оранжевому и красному
+	'''
+GsChikYoyo.Desc:
+	'''
+	ПКМ: щелчок — стоянка, двойной — возврат
+	Возврат вылетает со скоростью шара ×2.6 и несёт звуковой удар
+	'''
+GsHelFireYoyo.Desc:
+	'''
+	ПКМ: щелчок — стоянка, двойной — возврат
+	Стоянка каждые 2 с зажигает кольцо адского огня на земле прямо под собой
+	'''
+GsAmarokYoyo.Desc:
+	'''
+	ПКМ: щелчок — стоянка, двойной — возврат, удерживать — орбита
+	Орбита тянет морозный туман, враги в домене −12% скорости (на орбите лимит времени течёт быстрее)
+	'''
+GsCode2Yoyo.Desc:
+	'''
+	ПКМ: щелчок — стоянка, двойной — возврат, удерживать — орбита
+	Возврат делит параллельную зеркальную трассу со сдвигом 40 пикселей, 50% урона
+	'''
+GsYeletsYoyo.Desc:
+	'''
+	ПКМ: щелчок — стоянка, двойной — возврат, удерживать — орбита
+	Каждые 6 попаданий стоянки сыплют кольцо из 8 спор, по 40% урона
+	'''
+GsRedsThrowYoyo.Desc:
+	'''
+	ПКМ: щелчок — стоянка, двойной — возврат, удерживать — орбита
+	Попадание возврата ставит 3 слоя красной метки; пока метка жива, стоянка по этой цели всегда крит и тратит слой
+	'''
+GsValkyrieYoyo.Desc:
+	'''
+	ПКМ: щелчок — стоянка, двойной — возврат, удерживать — орбита
+	Орбита наклоняется в валькирию, попадания сыплют перьевой свет
+	'''
+GsKrakenYoyo.Desc:
+	'''
+	ПКМ: щелчок — стоянка, двойной — возврат, удерживать — орбита
+	Стоянка тянет чернильные щупальца к двум ближайшим врагам, каждый рывок 30% урона
+	Бесконечный лимит полёта, ядро позиционной войны
+	'''
+GsEyeOfCthulhuYoyo.Desc:
+	'''
+	ПКМ: щелчок — стоянка, двойной — возврат, удерживать — орбита
+	Стоянка стережёт ближайшего врага и каждые 2 с плюёт 3 кровавые слезы; возврат — увеличенный таран на 160% урона
+	'''
+GsTerrarianYoyo.Desc:
+	'''
+	Серия щелчков ПКМ: отметить до 3 точек пути — йо-йо ходит по кривой Безье, в обходе зелёные сферы стреляют вдвое чаще
+	Каждый полный круг даёт 1 с резонанса обхода: дострел сфер быстрее, урон +30%
+	Двойной щелчок — возврат, удерживать — орбита; щелчок при полном пути стирает маршрут
+	'''
+GsYoyoPelletProj.DisplayName: Снаряд йо-йо
+GsYoyoBurnZoneProj.DisplayName: Зона горения
+GsYoyoMirrorProj.DisplayName: Зеркальная трасса

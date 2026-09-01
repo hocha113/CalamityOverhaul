@@ -4,22 +4,22 @@ BloodAltarTP: {
 	SacrificeDeathReason: "{0} versank in endlose Blut- und Fleischfantasien"
 }
 
-// OldNetDataNodeTile.MapEntry: Data Node
-// OldNetLogoutTerminalTile.MapEntry: Logout Terminal
-// OldNetEncryptedNodeTile.MapEntry: Encrypted Node
-// OldNetEventNodeTile.MapEntry: Event Node
-// OldNetSealGateTile.MapEntry: Seal Gate
-// OldNetRelayTile.MapEntry: Relay Station
-// OldNetAccessTerminalTile.MapEntry: OldNet Access Terminal
-// OldNetEchoNodeTile.MapEntry: Echo Node
-// OldNetCacheTile.MapEntry: Deep-Dive Cache
-// OldNetTripwireTile.MapEntry: Tripwire Emitter
-// OldNetSentryMineTile.MapEntry: Sentry Mine
-// OldNetBulkheadTile.MapEntry: Shaft Bulkhead
-// OldNetBreakerTile.MapEntry: Emergency Breaker
-// OldNetRelicTile.MapEntry: OldNet Relic
-// OldNetLedgerDockTile.MapEntry: Ledger Expansion Dock
-// OldNetColdNodeTile.MapEntry: Cold Storage Node
-// OldNetEscrowTile.MapEntry: Escrow Contract Terminal
-// OldNetCipherVaultTile.MapEntry: Cipher Vault Matrix
-// GaolRoomSealTile.MapEntry: Gaol Cell Seal
+OldNetDataNodeTile.MapEntry: Datenknoten
+OldNetLogoutTerminalTile.MapEntry: Abmeldeterminal
+OldNetEncryptedNodeTile.MapEntry: Verschlüsselter Knoten
+OldNetEventNodeTile.MapEntry: Ereignisknoten
+OldNetSealGateTile.MapEntry: Sperrschleuse
+OldNetRelayTile.MapEntry: Relaisstation
+OldNetAccessTerminalTile.MapEntry: OldNet-Zugangsterminal
+OldNetEchoNodeTile.MapEntry: Echoknoten
+OldNetCacheTile.MapEntry: Tieftauch-Cache
+OldNetTripwireTile.MapEntry: Stolperdraht-Werfer
+OldNetSentryMineTile.MapEntry: Wachmine
+OldNetBulkheadTile.MapEntry: Schacht-Sperrschott
+OldNetBreakerTile.MapEntry: Not-Entlastungshebel
+OldNetRelicTile.MapEntry: OldNet-Relikt
+OldNetLedgerDockTile.MapEntry: Kontobuch-Erweiterungsdock
+OldNetColdNodeTile.MapEntry: Kaltlager-Knoten
+OldNetEscrowTile.MapEntry: Treuhand-Vertragsterminal
+OldNetCipherVaultTile.MapEntry: Entschlüsselungsmatrix
+GaolRoomSealTile.MapEntry: Kerkerzellentor

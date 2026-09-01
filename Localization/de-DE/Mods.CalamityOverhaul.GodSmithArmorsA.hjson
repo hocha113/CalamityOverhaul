@@ -1,18 +1,18 @@
-// GsWoodArmor.EndowLine: Acorn Burst: strikes build sap; at 6 stacks the next strike bursts into three bouncing acorns that shatter into wooden splinters
-// GsCopperArmor.EndowLine: Conductive Veins: strikes build charge; at 5 stacks the next strike releases a chaining arc that leaps between up to three foes
-// GsTinArmor.EndowLine: Tin Resonance: strikes build resonance; at 5 stacks the next strike rings out three sonic rings that batter and bewilder foes
-// GsIronArmor.EndowLine: Tempered Rebuke: taking hits builds temper; at 4 stacks your next strike calls down a quenched forge hammer
-// GsLeadArmor.EndowLine: Lead Downpour: strikes build lead; at 6 stacks the next strike pours three heavy drops that splash into beads and poison what they touch
-// GsSilverArmor.EndowLine: Silver Vigil: strikes build moonlight; at 6 stacks a silver moon rises to orbit you, bursting into radiance on contact
-// GsTungstenArmor.EndowLine: Tungsten Cross: strikes build core pressure; at 5 stacks the next strike erupts four piercing tungsten spikes from the target
-// GsPlatinumArmor.EndowLine: Regal Hour: strikes build radiance; at 7 stacks the next strike begins the Regal Hour, every blow for 5 seconds looses a homing star shard, ending early if you are struck
-// GsNinjaArmor.EndowLine: Substitution Log: readies a decoy every 8 seconds; when you are struck it shatters into smoke and hurls three avenging shuriken
-// GsBeeArmor.EndowLine: Queen's Guard: strikes build brew; at 8 stacks the next strike releases four guard bees to maul the target
-// GsMeteorArmor.EndowLine: Stray Embers: strikes build starfire; at 7 stacks the next strike calls two burning meteor shards down on your foe
-// GsJungleArmor.EndowLine: Spore Blight: strikes build spores; at 6 stacks the next strike blooms a lingering cloud that poisons all foes inside
-// GsJungleArmorAncientCobalt.EndowLine: Spore Blight: strikes build spores; at 6 stacks the next strike blooms a lingering cloud that poisons all foes inside
-// GsNecroArmor.EndowLine: Bone Uprising: strikes build ossuary and kills feed it faster; at 6 stacks the next strike raises three bone lances from the earth
-// GsShadowArmor.EndowLine: Umbral Tide: strikes build shadowflame; at 8 stacks the tide rises, each strike within 6 seconds reaps a shadow scythe, and three more spiral out as it ebbs
-// GsShadowArmorAncient.EndowLine: Umbral Tide: strikes build shadowflame; at 8 stacks the tide rises, each strike within 6 seconds reaps a shadow scythe, and three more spiral out as it ebbs
-// GsCrimsonArmor.EndowLine: Leech Pact: strikes build blood; at 6 stacks the next strike tears out two crimson leeches that bite your foe and siphon life back to you
-// GsMoltenArmor.EndowLine: Core Eruption: strikes build magma pressure; at 10 stacks the next strike erupts three lava geysers underfoot, and your attacks ignite foes for 4 seconds after
+GsWoodArmor.EndowLine: Eichelausbruch: Treffer häufen Saft; bei sechs Stapeln platzt der nächste Schlag in drei hüpfende Eicheln, die beim Zerbrechen Holzsplitter spritzen
+GsCopperArmor.EndowLine: Kupferader: Treffer häufen Ladung; bei fünf Stapeln schlägt der nächste Treffer einen springenden Lichtbogen, der bis zu drei Feinde überspringt
+GsTinArmor.EndowLine: Zinngesang: Treffer häufen Resonanz; bei fünf Stapeln schlägt der nächste Treffer Zinnklang und wirft drei Schallringe, die verwunden und verwirren
+GsIronArmor.EndowLine: Anlassen: Erlittener Schaden häuft Anlassen; bei vier Stapeln schlägt der nächste Treffer einen abgeschreckten Schmiedehammer herab
+GsLeadArmor.EndowLine: Bleiregen: Treffer häufen Bleigewicht; bei sechs Stapeln gießt der nächste Schlag drei schwere Tropfen, die zu Perlen zerspritzen und vergiften
+GsSilverArmor.EndowLine: Silbermondwache: Treffer häufen Mondglanz; bei sechs Stapeln steigt ein Silbermond um dich, der bei Berührung Silberlicht entfaltet
+GsTungstenArmor.EndowLine: Wolframkreuz: Treffer häufen Kerndruck; bei fünf Stapeln spritzen aus dem Ziel vier durchschlagende Wolframnägel
+GsPlatinumArmor.EndowLine: Königsstunde: Treffer häufen Platinglanz; bei sieben Stapeln öffnet der nächste Schlag fünf Sekunden Königsstunde, jeder Treffer schickt einen Platin-Sternensplitter nach, ein erlittener Treffer beendet sie früh
+GsNinjaArmor.EndowLine: Ersatzpfahl: Alle acht Sekunden steht ein Doppelgänger bereit; bei Treffer zerbricht er zu Rauch und wirft drei Ninjasterne zurück
+GsBeeArmor.EndowLine: Königinnengarde: Treffer häufen Gebräu; bei acht Stapeln lässt der nächste Schlag vier Gardebienen auf das Ziel los
+GsMeteorArmor.EndowLine: Himmelsglut: Treffer häufen Sternenfeuer; bei sieben Stapeln ruft der nächste Schlag zwei brennende Meteoritenbrocken auf das Ziel
+GsJungleArmor.EndowLine: Sporenseuche: Treffer häufen Sporen; bei sechs Stapeln blüht der nächste Schlag eine Sporenwolke am Ziel, die darin Verweilende ätzt
+GsJungleArmorAncientCobalt.EndowLine: Sporenseuche: Treffer häufen Sporen; bei sechs Stapeln blüht der nächste Schlag eine Sporenwolke am Ziel, die darin Verweilende ätzt
+GsNecroArmor.EndowLine: Knochenlanzen: Treffer häufen Gebein, Tötungen schneller; bei sechs Stapeln hebt der nächste Schlag drei Knochenlanzen aus der Erde
+GsShadowArmor.EndowLine: Schattenflut: Treffer häufen Schattenflamme; bei acht Stapeln steigt die Flut, sechs Sekunden lang schleudert jeder Treffer eine Schattensichel, beim Ebben noch drei Sichelnovas
+GsShadowArmorAncient.EndowLine: Schattenflut: Treffer häufen Schattenflamme; bei acht Stapeln steigt die Flut, sechs Sekunden lang schleudert jeder Treffer eine Schattensichel, beim Ebben noch drei Sichelnovas
+GsCrimsonArmor.EndowLine: Blutegelpakt: Treffer häufen Blutstropfen; bei sechs Stapeln reißt der nächste Schlag zwei Blutegel ins Ziel, jeder Biss saugt dir etwas Leben
+GsMoltenArmor.EndowLine: Schmelzkern: Treffer häufen Schmelzdruck; bei zehn Stapeln spritzen drei Magmasäulen unter dem Ziel auf, danach tragen deine Angriffe vier Sekunden Flamme

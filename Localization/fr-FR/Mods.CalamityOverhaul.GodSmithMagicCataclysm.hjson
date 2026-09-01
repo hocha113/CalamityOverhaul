@@ -1,96 +1,96 @@
-/* GsBatScepter.Desc:
+GsBatScepter.Desc: 
 	'''
-	Reforged: hits build Nightfall; at full charge, right click to call the bat deluge
-	A phantom moon rises, waves of bats dive at your foes, then circle you as a guard ring
-	Every 8th bat bite splits off a phantom bat that dives at another nearby foe
-	''' */
-/* GsRazorpine.Desc:
+	Reforgé : les impacts accumulent la Nuit ; à jauge pleine, clic droit pour appeler le Déluge de chauves-souris
+	Une lune s'élève, les vagues plongent sur les ennemis, le reste forme un anneau autour de vous
+	Chaque 8e morsure détache une chauve-souris fantôme vers un autre ennemi proche
 	'''
-	Reforged: hits build Resin; at full charge, right click to raise the Needle Storm
-	A ring of needles tightens around you, then settles into a needle mat underfoot
-	Needle hits smear resin; 5 smears on one foe draw a ring of 4 needles closing in on it
-	''' */
-/* GsBlizzardStaff.Desc:
+GsRazorpine.Desc: 
 	'''
-	Reforged: hits build Snowsquall; at full charge, right click to call the Whiteout over your cursor
-	A giant blizzard hammers the area and leaves rime spikes on the ground
-	Every 5th icicle is a rime seed that bursts into a small frost blast where it dies
-	''' */
-/* GsStaffofEarth.Desc:
+	Reforgé : les impacts accumulent la Résine ; à jauge pleine, clic droit pour lever la Tempête d'aiguilles
+	Un tourbillon d'aiguilles se resserre autour de vous, puis un tapis d'aiguilles se pose sous vos pieds
+	Les aiguilles enduisent de résine ; à 5 charges sur le même ennemi, quatre aiguilles se referment en anneau
 	'''
-	Reforged: hits build Earthwrath; at full charge, right click to raise the Orogeny at your cursor
-	Rock pillars erupt in waves amid flying rubble, leaving a magma vein bed behind
-	The boulder grinds harder with every foe it crushes, and a half-height rock pillar erupts where it shatters
-	''' */
-/* GsBetsysWrath.Desc:
+GsBlizzardStaff.Desc: 
 	'''
-	Reforged: hits build Dragonfire; at full charge, right click to invoke the Dragon's Wrath
-	Betsy's shade dives three times trailing flame curtains, leaving a cursed pyre bed
-	Hits on cursed foes bank extra Dragonfire, and every 4th cursed hit bursts into hexfire
-	''' */
-/* GsNightglow.Desc:
+	Reforgé : les impacts accumulent le Blizzard ; à jauge pleine, clic droit pour faire tomber le Désastre blanc au curseur
+	Une tempête géante frappe la zone et laisse des épines de glace au sol
+	Chaque 5e glaçon est une graine de givre qui éclate en petit souffle de gel
 	'''
-	Reforged: hits build Dawnlight; at full charge, right click to unfurl an Aurora Curtain over your cursor
-	The curtain sears foes within and rains light lances below
-	Every 5th bolt hit drops an aurora lance from above the target
-	''' */
-/* GsStellarTune.Desc:
+GsStaffofEarth.Desc: 
 	'''
-	Reforged: hits build Melody; at full charge, right click to open the Stellar Finale
-	Star chords play themselves at your foes on the beat while you dance a little faster
-	Consecutive hits climb a scale; the 8th note lands as a star chord burst
-	''' */
-/* GsResonanceScepter.Desc:
+	Reforgé : les impacts accumulent la Colère de la terre ; à jauge pleine, clic droit pour l'Orogenèse au curseur
+	Des piliers de roche s'élèvent par vagues, les éclats volent, un lit de veines de lave reste
+	Le rocher frappe plus fort à chaque ennemi broyé ; là où il se brise, un pilier à mi-hauteur se dresse
 	'''
-	Reforged: hits build Resonance; at full charge, right click to collapse the harmonics at your cursor
-	Five standing waves cross the area and their nodes strike whatever lingers
-	The royal wave rings a standing wave pulse on every 3rd foe it pierces
-	''' */
-/* GsNebulaArcanum.Desc:
+GsBetsysWrath.Desc: 
 	'''
-	Reforged: hits build Arcanum; at full charge, right click to spin up the Nebula Spiral
-	Three nebula arms orbit you, grinding foes and dragging the lesser ones inward
-	The arcanum orb itself now swells in flight and slowly drags lesser foes toward its heart
-	Nebula mist rises from the staff as the gauge fills
-	''' */
-/* GsNebulaBlaze.Desc:
+	Reforgé : les impacts accumulent le Feu-dragon ; à jauge pleine, clic droit pour invoquer le Fléau du roi-dragon
+	L'ombre de Betsy plonge trois fois, des rideaux de flammes, puis un lit de Flammes maudites
+	Frapper un ennemi maudit accumule plus de Feu-dragon ; chaque 4e impact maudit soulève une explosion de fléau
 	'''
-	Reforged: hits build Blaze; at full charge, right click to mark a nova on the target near your cursor
-	It detonates in three staggered blast rings around a gravity well
-	Nebula eruption bolts now always ignite a micro nova where they strike
-	''' */
-/* GsLunarFlare.Desc:
+GsNightglow.Desc: 
 	'''
-	Reforged: hits build Moonphase; at full charge, right click to raise the Lunar Eclipse
-	An eclipse disk pours twelve woven flare falls, every third one backed by a phantom moonbeam
-	Every 4th cast pours a pale fourth flare from the sky
-	Moonlight gathers on the book as the gauge fills
-	''' */
-// GsBatSwarmDirector.DisplayName: Bat Deluge
-// GsPineStormDirector.DisplayName: Needle Storm
-// GsWhiteoutDirector.DisplayName: Whiteout
-// GsOrogenyDirector.DisplayName: Orogeny
-// GsEarthPillarProj.DisplayName: Orogeny Pillar
-// GsDragonWrathDirector.DisplayName: Dragon's Wrath
-// GsAuroraCurtainDirector.DisplayName: Aurora Curtain
-// GsAuroraLanceProj.DisplayName: Aurora Lance
-// GsStellarFinaleDirector.DisplayName: Stellar Finale
-// GsResonanceCollapseDirector.DisplayName: Harmonic Collapse
-// GsNebulaSpiralDirector.DisplayName: Nebula Spiral
-// GsNovaDetonationDirector.DisplayName: Nova Detonation
-/* GsSpectreStaff.Desc:
+	Reforgé : les impacts accumulent l'Aube ; à jauge pleine, clic droit pour déployer un Rideau d'aurore au-dessus du curseur
+	Le rideau brûle qui s'y trouve et fait tomber des lances de lumière
+	Chaque 5e impact fait tomber une lance d'aurore du dessus de l'ennemi
 	'''
-	Reforged: hits build Soulharvest; when full, right click to raise the Soul Tide at your cursor
-	Every quarter of the gauge banked splits off an echo soul that hunts another nearby foe
-	Three tide crests sweep the ring; each crest hit ferries 1 life back to you, up to 6 a second
-	''' */
-// GsLunarEclipseDirector.DisplayName: Lunar Eclipse
-// GsMoonPillarProj.DisplayName: Phantom Moonbeam
-// GsSpectreStaffTideDirector.DisplayName: Soul Tide
-/* GsInfernoFork.Desc:
+GsStellarTune.Desc: 
 	'''
-	Reforged: fireballs corkscrew with furnace slag and every hit banks Cinder
-	When the gauge is full, right click to set the Wildfire at your cursor: three waves of flame sweep the ground, fire rains between them, and an ember shoal smolders after
-	''' */
-// GsInfernoForkWildfireDirector.DisplayName: Wildfire
-// GsCataclysmRiderBurstProj.DisplayName: Cataclysm Aftershock
+	Reforgé : les impacts accumulent le Mouvement ; à jauge pleine, clic droit pour ouvrir le Final stellaire
+	Les accords d'étoiles se jouent d'eux-mêmes sur le tempo, et vos pas s'allègent
+	Les impacts d'affilée montent l'échelle ; la 8e note tombe en explosion d'accord stellaire
+	'''
+GsResonanceScepter.Desc: 
+	'''
+	Reforgé : les impacts accumulent la Résonance ; à jauge pleine, clic droit pour l'Effondrement harmonique au curseur
+	Cinq ondes stationnaires se croisent, les nœuds frappent qui s'attarde
+	L'onde royale, tous les 3 ennemis percés, fait sonner une impulsion de nœud sur cette cible
+	'''
+GsNebulaArcanum.Desc: 
+	'''
+	Reforgé : les impacts accumulent l'Arcanum ; à jauge pleine, clic droit pour ouvrir les Bras spiraux de Nébula
+	Trois bras orbitent autour de vous, broient, et tirent les petits ennemis vers le cœur
+	Le grand orbe d'Arcanum gonfle en vol et aspire lentement les petits vers son centre
+	À jauge qui se remplit, le brouillard d'étoiles s'épaissit au bout du sceptre
+	'''
+GsNebulaBlaze.Desc: 
+	'''
+	Reforgé : les impacts accumulent le Brasier ; à jauge pleine, clic droit pour marquer une nova sur la cible près du curseur
+	Trois anneaux explosent en décalé autour d'un puits de gravité
+	Un bolt d'éruption Nébula allume toujours une micro-nova à l'impact
+	'''
+GsLunarFlare.Desc: 
+	'''
+	Reforgé : les impacts accumulent la Phase lunaire ; à jauge pleine, clic droit pour lever le Jugement d'éclipse
+	Un disque d'éclipse verse douze chutes de flammes lunaires, chaque troisième doublée d'une colonne de lune fantôme
+	Chaque 4e sort fait tomber une quatrième flamme pâle du ciel
+	À jauge qui se remplit, l'éclat de lune s'épaissit sur le livre
+	'''
+GsBatSwarmDirector.DisplayName: Déluge de chauves-souris
+GsPineStormDirector.DisplayName: Tempête d'aiguilles
+GsWhiteoutDirector.DisplayName: Désastre blanc
+GsOrogenyDirector.DisplayName: Orogenèse
+GsEarthPillarProj.DisplayName: Pilier d'orogenèse
+GsDragonWrathDirector.DisplayName: Fléau du roi-dragon
+GsAuroraCurtainDirector.DisplayName: Rideau d'aurore
+GsAuroraLanceProj.DisplayName: Lance d'aurore
+GsStellarFinaleDirector.DisplayName: Final stellaire
+GsResonanceCollapseDirector.DisplayName: Effondrement harmonique
+GsNebulaSpiralDirector.DisplayName: Bras spiraux de Nébula
+GsNovaDetonationDirector.DisplayName: Détonation de nova
+GsSpectreStaff.Desc: 
+	'''
+	Reforgé : les impacts accumulent la Moisson d'âmes ; à jauge pleine, clic droit pour lever la Marée des âmes au curseur
+	Chaque quart de jauge accumulé détache une âme secondaire vers un autre ennemi proche
+	Trois crêtes balayent l'anneau ; chaque impact de crête vous rend 1 vie, 6 par seconde au plus
+	'''
+GsLunarEclipseDirector.DisplayName: Jugement d'éclipse
+GsMoonPillarProj.DisplayName: Colonne de lune fantôme
+GsSpectreStaffTideDirector.DisplayName: Marée des âmes
+GsInfernoFork.Desc: 
+	'''
+	Reforgé : les boules de feu vrillent avec des scories, chaque impact accumule la Braise ; à jauge pleine, clic droit pour allumer le Brasier au curseur
+	Le feu court au sol, trois vagues balayent les flancs, une pluie de feu entre les vagues, puis un banc de braises
+	'''
+GsInfernoForkWildfireDirector.DisplayName: Brasier
+GsCataclysmRiderBurstProj.DisplayName: Réplique du cataclysme

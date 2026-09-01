@@ -134,34 +134,34 @@ HackTimeTutorialLead: {
 }
 
 CybCourseWheelIntroDialogue: {
-	// Line1: Both core protocols check out. One last thing — a gesture that puts them both at your fingertips.
-	// Line2: Hold {0} and the radial wheel unfolds — the three domain layers sit on the ring, and dead center is the Hack Time shortcut.
-	// Line3: Go ahead. Hold {0}, fling the cursor toward the layer you want, and let go.
+	Line1: Beide Kernprotokolle sind geprüft. Zuletzt ein Griff, der sie an die Fingerspitzen legt
+	Line2: Halte {0}, und das Schnellrad öffnet sich. Die drei Domänenebenen liegen auf der Scheibe, genau in der Mitte ist der Eingang zur Hackerzeit
+	Line3: Komm. Halte {0}, wirf den Cursor zur gewünschten Ebene, lass los
 }
 
 WheelTutorialLead: {
-	// RW_S00_Title: Summon the Radial Wheel
-	// RW_S01_Title: Pick a Domain Layer
-	// RW_S02_Title: Center: Hack Time
-	/* RW_S00_Body:
+	RW_S00_Title: Schnellrad rufen
+	RW_S01_Title: Domänenebene wählen
+	RW_S02_Title: Mitte: Hackerzeit
+	RW_S00_Body:
 		'''
-		Hold {0} to summon the radial wheel.
-		Every eligible wheel appears together; the cursor belongs to whichever is closest.
-		''' */
-	/* RW_S01_Body:
+		Halte {0}, um das Schnellrad zu rufen
+		Alle berechtigten Räder erscheinen zusammen; der Cursor gehört dem nächsten
 		'''
-		Keep holding, fling the cursor toward any layer sector,
-		then left-click or simply release to confirm. The domain deploys at once.
-		''' */
-	/* RW_S02_Body:
+	RW_S01_Body:
 		'''
-		Dead center of the wheel is the Hack Time shortcut —
-		clicking it equals pressing {1}. That wraps up the training.
-		''' */
-	// RW_Calibrating: Synchronized
-	// RW_NextBtn: Skip >
-	// RW_HintStuck: Hint: click Skip to force past this step
-	// RW_KeyHintUnbound: Note: the radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls, or click Skip.
+		Weiter halten, den Cursor in ein Ebenensegment werfen,
+		Linksklick oder einfach loslassen bestätigt, die Domäne entfaltet sich
+		'''
+	RW_S02_Body:
+		'''
+		Genau in der Radmitte liegt der Schnelleingang zur Hackerzeit,
+		ein Klick darauf entspricht {1}. Damit ist die Ausbildung fertig
+		'''
+	RW_Calibrating: Synchronisiert
+	RW_NextBtn: Überspringen >
+	RW_HintStuck: Hinweis: Klicke Überspringen, um diesen Schritt zu erzwingen
+	RW_KeyHintUnbound: Hinweis: Die Schnellrad-Taste ist nicht belegt, das Rad lässt sich nicht rufen; unter Einstellungen > Steuerung belegen oder Überspringen
 }
 
 CybCourseOutroDialogue: {
@@ -174,7 +174,7 @@ CybCourseCompletePanel: {
 	Title: TRAINING ABGESCHLOSSEN
 	Subtitle: SUPERDREAM-KNOTEN
 	Stat1: "[#] SHPC-HUD bereit"
-	Stat2: "[#] Hack Time bereit"
+	Stat2: "[#] Hackerzeit bereit"
 	Stat3: "[#] Block-Scan bereit"
 	BtnRetry: NEUSTART
 	BtnExit: BEENDEN
@@ -196,11 +196,11 @@ CybCourseKeyBindReminderPanel: {
 }
 
 CybCourseWorld: {
-	// BootTag: NEURAL LINK · SUPERDREAM NODE
-	// BootTitle: Linking Superdream
-	// BootSubtitle: SHPC Immersion Training Protocol
-	// BootStatus: Compiling training space
-	// BootBarLabel: Sync Rate
+	BootTag: Neuronale Direktverbindung · Superdream-Knoten
+	BootTitle: Superdream anbinden
+	BootSubtitle: SHPC-Immersionstrainingsprotokoll
+	BootStatus: Trainingsraum wird kompiliert
+	BootBarLabel: Synchronrate
 }
 
 ShepelCyberActiveDialogue: {

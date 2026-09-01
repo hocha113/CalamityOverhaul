@@ -1,110 +1,110 @@
-/* GsWoodenBow.Desc:
+GsWoodenBow.Desc:
 	'''
-	Reforged: hold to draw, release to loose. A half draw flies faster and hits harder, a full draw becomes a wood-spirit arrow, an overdrawn hit splits into a fan of arrows
-	Rest at overdraw too long and the string destabilizes: the shot falls back to full-draw power with brief fatigue
-	''' */
-/* GsBorealWoodBow.Desc:
+	Umschmiedung: Bogen halten lädt, Loslassen schießt. Halb geladene Pfeile sind schneller und schmerzhafter, volle Ladung wird zum Holzgeist-Pfeil, Überladung trifft und spaltet in einen Fächerregen
+	Zu langes Spannen auf der Sehne wird instabil: fällt auf volle Ladung zurück und bringt kurze Ermüdung
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Overdrawn arrows carry rime, chilling and briefly numbing lesser foes
-	''' */
-/* GsPalmWoodBow.Desc:
+GsBorealWoodBow.Desc:
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Overdrawn arrows fly dry and true, striking vitals more often
-	''' */
-/* GsRichMahoganyBow.Desc:
+	Umschmiedung: Dreistufiges Spannen, volle Ladung wandelt, Überladung spaltet
+	Überladene Pfeile tragen Frost und frieren schwächere Feinde ein
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Many-stemmed vines: overdrawn hits split into one extra arrow
-	''' */
-/* GsEbonwoodBow.Desc:
+GsPalmWoodBow.Desc:
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Overdrawn arrows have a chance to ignite shadowflame
-	''' */
-/* GsShadewoodBow.Desc:
+	Umschmiedung: Dreistufiges Spannen, volle Ladung wandelt, Überladung spaltet
+	Überladene Pfeile sind trocken und sauber, treffen leichter vital
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Overdrawn arrows have a chance to open a bleeding wound
-	''' */
-/* GsAshWoodBow.Desc:
+GsRichMahoganyBow.Desc:
 	'''
-	Reforged: three-stage draw, full-draw transmutes, overdraw splits
-	Overdrawn arrows set foes alight, scattering cinders
-	''' */
-/* GsCopperBow.Desc:
+	Umschmiedung: Dreistufiges Spannen, volle Ladung wandelt, Überladung spaltet
+	Ranken-Vielstängel: Überladung trifft und spaltet einen Extra-Holzpfeil
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdraw looses one free side arrow
-	''' */
-/* GsTinBow.Desc:
+GsEbonwoodBow.Desc:
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdraw looses one free side arrow in a denser spark shower
-	''' */
-/* GsIronBow.Desc:
+	Umschmiedung: Dreistufiges Spannen, volle Ladung wandelt, Überladung spaltet
+	Überladene Pfeile entzünden mit etwas Chance Schattenflamme
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn press arrows: crushing knockback, briefly pinning lesser foes
-	''' */
-/* GsLeadBow.Desc:
+GsShadewoodBow.Desc:
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn press arrows carry lead: the slam pins and poisons
-	''' */
-/* GsSilverBow.Desc:
+	Umschmiedung: Dreistufiges Spannen, volle Ladung wandelt, Überladung spaltet
+	Überladene Pfeile reißen mit etwas Chance eine Blutwunde, das Ziel blutet weiter
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn hallowed arrows ricochet once toward a nearby foe
-	''' */
-/* GsTungstenBow.Desc:
+GsAshWoodBow.Desc:
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn arrows ricochet twice; the final strike bursts
-	''' */
-/* GsGoldBow.Desc:
+	Umschmiedung: Dreistufiges Spannen, volle Ladung wandelt, Überladung spaltet
+	Überladene Pfeile entzünden Feinde und spritzen Glut
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn royal arrows crit more often; critical hits burst into a few copper coins
-	''' */
-/* GsPlatinumBow.Desc:
+GsCopperBow.Desc:
 	'''
-	Reforged: three-stage draw; full-drawn quenched arrowheads burst into sparks and splash nearby foes
-	Overdrawn crown arrows always crit, bursting into more copper coins
-	''' */
-/* GsDemonBow.Desc:
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladung schießt einen kostenlosen Beipfeil
 	'''
-	Reforged: three-stage draw. A full draw transmutes the arrow into a piercing unholy bolt
-	An overdrawn hit releases two soul-seeking shadowflame wisps that slowly hunt nearby foes
-	''' */
-/* GsTendonBow.Desc:
+GsTinBow.Desc:
 	'''
-	Reforged: three-stage draw. Full-drawn clot arrows open bleeding wounds
-	Overdrawn heartstring slam: a heavier shaft with brutal knockback that spatters blood and sips a little life back
-	''' */
-/* GsBloodRainBow.Desc:
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladung schießt einen kostenlosen Beipfeil, Funken dichter
 	'''
-	Reforged: arrows still fall as blood rain. Three-stage draw
-	A full draw calls four extra bolts onto the cursor; an overdrawn flood calls eight, and the main bolt pools blood where it lands, trampling and slowing foes
-	''' */
-/* GsBeesKnees.Desc:
+GsIronBow.Desc:
 	'''
-	Reforged: wooden arrows still become bee arrows. Three-stage draw
-	Full-drawn hits release two extra bees; an overdrawn hit leaves a swirling bee vortex. At most twelve bees may serve you at once
-	''' */
-/* GsHellwingBow.Desc:
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladung prägt einen Stanzpfeil: Rückstoß steigt stark, schwächere Feinde kurz festgehalten
 	'''
-	Reforged: wooden arrows still become wall-piercing hellwings, and the draw is faster
-	A full draw looses three bats in a V; an overdrawn draw unleashes six in a spiral that scatters, then converges
-	''' */
-/* GsMoltenFury.Desc:
+GsLeadBow.Desc:
 	'''
-	Reforged: wooden arrows still become flaming arrows. Three-stage draw
-	Full-drawn molten cores spray magma beads on impact; an overdrawn volcanic shot calls five molten rain bolts down on the mark
-	''' */
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladung prägt einen bleivergifteten Stanzpfeil: schwerer Schlag hält fest und vergiftet
+	'''
+GsSilverBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladung wird zum Heiligenschein-Pfeil: nach dem Treffer prallt er einmal zum nächsten Feind
+	'''
+GsTungstenBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladene Pfeile prallen zweimal, der letzte Schlag platzt klein
+	'''
+GsGoldBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladung wird zum Königspfeil, trifft leichter kritisch, kritische Treffer spritzen ein paar Kupfermünzen
+	'''
+GsPlatinumBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladung wird zum Kronenpfeil und trifft immer kritisch, kritische Treffer spritzen mehr Kupfermünzen
+	'''
+GsDemonBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen. Volle Ladung wird zum Schattenpfeil, ein durchschlagender Unheilspfeil
+	Überladung trifft und lässt zwei Seelenjagd-Dämonenflammen langsam nahe Feinde jagen
+	'''
+GsTendonBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen. Volle Ladung wird zum Thrombus-Pfeil, reißt eine Blutwunde, das Ziel blutet weiter
+	Überladung ist ein Blutschlag: schwerer Pfeil, härterer Rückstoß, Treffer spritzen Blutperlen und heilen ein wenig
+	'''
+GsBloodRainBow.Desc:
+	'''
+	Umschmiedung: Pfeile werden weiterhin zu Blutregen vom Himmel. Dreistufiges Spannen
+	Volle Ladung fügt vier Blutpfeile hinzu, die aufs Fadenkreuz fallen, Überladung eine Blutflut aus acht, und am Einschlag der Hauptpfeile staut sich eine Blutlache, die Feinde verlangsamt
+	'''
+GsBeesKnees.Desc:
+	'''
+	Umschmiedung: Holzpfeile werden weiterhin zu Bienenpfeilen. Dreistufiges Spannen
+	Volle Ladung trifft und lässt zwei extra Bienen, Überladung trifft und hängt einen Bienensog auf, der weiter Bienen schickt. Höchstens zwölf Bienen gleichzeitig
+	'''
+GsHellwingBow.Desc:
+	'''
+	Umschmiedung: Holzpfeile werden weiterhin zu wanddurchschlagenden Feuerfledermäusen, Spannen geht schneller
+	Volle Ladung schickt drei Fledermäuse in V-Formation, Überladung sechs, die spiralig auseinander und wieder nach vorn zusammenlaufen
+	'''
+GsMoltenFury.Desc:
+	'''
+	Umschmiedung: Holzpfeile werden weiterhin zu Flammenpfeilen. Dreistufiges Spannen
+	Volle Ladung wird zum Schmelzkern-Pfeil, trifft und spritzt Schmelzperlen, Überladung ruft fünf Schmelzregen aufs Ziel
+	'''
 
 GsChargeBleedBuff: {
-	// DisplayName: Bloodletting
-	// Description: Bleeding out
+	DisplayName: Aderlass
+	Description: Das Bluten hört nicht auf
 }

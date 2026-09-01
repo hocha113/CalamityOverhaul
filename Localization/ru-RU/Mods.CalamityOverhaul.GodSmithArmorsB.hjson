@@ -1,30 +1,29 @@
-// P10b armor endowments (17 hardmode sets + 5 pre-HM sets handed over from P10a); the four Ancient Hallowed combos share one line
-// GsCobaltArmor.EndowLine: Cobalt Flicker: strikes build swiftness; at 5 stacks enter a 5s stance where each strike calls a cobalt afterimage slash from the flank (6 charges)
-// GsPalladiumArmor.EndowLine: Vital Siphon: strikes build vigor; at 8 stacks the next strike plants a siphon bloom that gnaws the host and sends life motes back to you
-// GsMythrilArmor.EndowLine: Anvilborn Blades: strikes build temper; every 6 stacks forges a hovering mythril blade (up to 3), and with all three forged the next full charge commands a staggered triple thrust
-// GsOrichalcumArmor.EndowLine: Petal Waltz: strikes build pollen; at 7 stacks enter a 4s bloom where each strike looses two spiraling crystal petal blades (10 petals)
-// GsAdamantiteArmor.EndowLine: Furnace Overload: strikes stoke the furnace by 1, taking hits by 2; at 10 heat it erupts into a molten shockwave that seeds burning adamantite embers on the ground
-// GsTitaniumArmor.EndowLine: Mirror Riposte: taking hits builds cold-forge; at 4 stacks the next strike calls four mirror blades that converge on the target in a cross
-// GsPearlwoodArmor.EndowLine: Pearl Aegis: strikes build luster; every 6 stacks condenses an orbiting pearl (up to 3) that shatters in your defense, loosing five homing pearl shards
-// GsFrostArmor.EndowLine: Coldsnap Dominion: strikes build rime; at 8 stacks the next strike raises a 4s blizzard that rains crystal darts on foes inside
-// GsForbiddenArmor.EndowLine: Sandbound Shades: strikes build sand-soul; at 6 stacks a sand shade rises (up to 2) to haunt your side and spit whirling sand bolts
-// GsTurtleArmor.EndowLine: Spiked Sanctum: strikes build fury by 1, taking hits by 2; at 6 fury a turtle-shell dome rises for 4s, and every hit taken inside erupts an eight-way spike ring scaling with your defense
-// GsSpookyWoodArmor.EndowLine: Hallow's Patrol: strikes build soulfire; at 6 stacks a jack-o'-lantern rises (up to 2) to patrol around you and spit triple ghostflame at the nearest foe
-// GsTikiArmor.EndowLine: Totem Rite: strikes build ritual fire; at 8 stacks a three-faced totem is planted for 8s, waking face by face, each lit face adding a flame tongue lashed at the nearest foe
-// GsHallowedArmor.EndowLine: Radiant Verdict: strikes build radiance; at 10 stacks a verdict blade rises overhead, and striking one foe three times sends it plunging in holy judgement
-// GsHallowedArmorAncientBody.EndowLine: Radiant Verdict: strikes build radiance; at 10 stacks a verdict blade rises overhead, and striking one foe three times sends it plunging in holy judgement
-// GsHallowedArmorAncientLegs.EndowLine: Radiant Verdict: strikes build radiance; at 10 stacks a verdict blade rises overhead, and striking one foe three times sends it plunging in holy judgement
-// GsHallowedArmorAncientFull.EndowLine: Radiant Verdict: strikes build radiance; at 10 stacks a verdict blade rises overhead, and striking one foe three times sends it plunging in holy judgement
-// GsChlorophyteArmor.EndowLine: Symbiotic Vine: strikes build spores; at 8 stacks the next strike plants a parasite vine, and every strike on the host lashes a vine-blade at a second foe; the vine bursts into a spore cloud when it withers
-// GsBeetleScaleArmor.EndowLine: War Scarab: chain strikes to build momentum (breaks after 1.5s idle); at 5, 10 and 15 hits a war scarab charges from your back, each rank larger and heavier
-// GsBeetleShellArmor.EndowLine: Scarab Bulwark: taking hits builds shell-crystal; every 3 stacks condenses an orbiting shell plate (up to 3), and further hits shatter a plate into a retaliating fan of chitin shrapnel
-// GsShroomiteArrowArmor.EndowLine: Spore Nursery: ranged hits build spores; at 6 stacks the next hit plants a spore turret that snipes the nearest foe with fungal arrows for 5s
-// GsShroomiteBulletArmor.EndowLine: Mycelium Chain: ranged hits build mycelium; at 8 stacks the strike point erupts into a fungal blast that chain-jumps to nearby foes up to 3 times, growing each jump
-// GsShroomiteRocketArmor.EndowLine: Sporefall Barrage: ranged hits build charges; at 5 stacks the next hit calls three spore mortars crashing down on the target in a staggered barrage
-// GsSpectreHoodArmor.EndowLine: Soulmend Sanctum: magic hits build ectoplasm; at 10 stacks a sanctum unfolds underfoot for 5s, searing foes inside and drawing soul orbs back to mend you
-// GsSpectreMaskArmor.EndowLine: Nether Rift: magic hits build wraiths; at 8 stacks the next hit tears a rift that drags nearby foes inward and pulses soulflame for 3s
-// GsCactusArmor.EndowLine: Needle Shroud: strikes build barbs; at 6 stacks don a 4s needle shroud that pricks foes on contact and flings needles behind you as you run
-// GsPumpkinArmor.EndowLine: Gourd Harvest: strikes build vines; at 6 stacks the next strike plants a blast gourd that ripens in 3s (strike the victim again to force it), bursting into three spinning slices
-// GsFossilArmor.EndowLine: Boneage Wake: strikes build bone dust; at 6 stacks the next strike wakes the strata, thrusting three bone spurs up from the ground in a marching row
-// GsObsidianArmor.EndowLine: Glassfang Return: strikes build obsidian heat; at 7 stacks the next strike hurls two volcanic glass fangs that sweep out and boomerang home, searing all in their path
-// GsGladiatorArmor.EndowLine: Triumph Volley: strikes build acclaim; at 6 stacks the next strike hurls three bronze javelins over your shoulder in arcing volleys at the foe
+GsCobaltArmor.EndowLine: Послеобразие: попадания копят стремительность; после пяти слоёв стойка на пять секунд — каждое попадание вызывает кобальтовую тень с фланга, всего шесть
+GsPalladiumArmor.EndowLine: Сифон жизни: попадания копят жизненность; после восьми слоёв следующий удар сажает на цель сифонный бутон, что грызёт хозяина и шлёт золотые нити крови вам
+GsMythrilArmor.EndowLine: Клинки с наковальни: попадания копят закалку; каждые шесть слоёв куют парящий клинок, до трёх; когда все три готовы и заряд снова полон, следующий удар велит трём клинкам колоть вразнобой
+GsOrichalcumArmor.EndowLine: Цветочный вихрь: попадания копят пыльцу; после семи слоёв окно вихря на четыре секунды — каждое попадание сыплет две самонаводящиеся лепестковые грани, всего десять
+GsAdamantiteArmor.EndowLine: Перегрузка горна: попадание +1 жара, полученный удар +2; на десяти горн сам извергает кольцо расплавленной волны и оставляет на земле три адамантитовых угля
+GsTitaniumArmor.EndowLine: Зеркальный ответ: получение ударов копит холодную ковку; после четырёх слоёв следующее попадание вызывает с четырёх сторон крест зеркальных клинков
+GsPearlwoodArmor.EndowLine: Жемчужная сень: попадания копят перламутр; каждые шесть слоёв сгущают орбитальную жемчужину, до трёх; при ударе одна крошится вместо вас и сыплет пять самонаводящихся осколков
+GsFrostArmor.EndowLine: Домен стужи: попадания копят иней; после восьми слоёв следующий удар зовёт метель на четыре секунды — на врагов в области с неба падают ледяные стрелы
+GsForbiddenArmor.EndowLine: Песчаные тени: попадания копят душу песка; после шести слоёв встаёт песчаный слуга, до двух; слуги плюют вихри в ближайшего врага
+GsTurtleArmor.EndowLine: Шипастая святыня: попадание +1 ярости панциря, полученный удар +2; на шести на четыре секунды встаёт купол — каждый удар внутри сразу сыплет восьмистороннее кольцо шипов, шипы сильнее от защиты
+GsSpookyWoodArmor.EndowLine: Патруль Хэллоуина: попадания копят огонь душ; после шести слоёв зажигается тыквенный фонарь, до двух; фонари кружат и плюют тройной огонёк в ближайшего врага
+GsTikiArmor.EndowLine: Обряд тотемов: попадания копят жертвенный огонь; после восьми слоёв на восемь секунд встают три тотема; лица загораются по очереди, каждое добавит язык пламени в ближайшего врага
+GsHallowedArmor.EndowLine: Святой приговор: попадания копят сияние; после десяти слоёв над головой встаёт меч суда; три удара по одной цели за восемь секунд — меч пикирует казнью и оставляет столб послесвечения
+GsHallowedArmorAncientBody.EndowLine: Святой приговор: попадания копят сияние; после десяти слоёв над головой встаёт меч суда; три удара по одной цели за восемь секунд — меч пикирует казнью и оставляет столб послесвечения
+GsHallowedArmorAncientLegs.EndowLine: Святой приговор: попадания копят сияние; после десяти слоёв над головой встаёт меч суда; три удара по одной цели за восемь секунд — меч пикирует казнью и оставляет столб послесвечения
+GsHallowedArmorAncientFull.EndowLine: Святой приговор: попадания копят сияние; после десяти слоёв над головой встаёт меч суда; три удара по одной цели за восемь секунд — меч пикирует казнью и оставляет столб послесвечения
+GsChlorophyteArmor.EndowLine: Симбиоз лозы: попадания копят споры; после восьми слоёв следующий удар сажает паразитную лозу; каждый удар по хозяину хлещет второго врага рядом, увядая лоза взрывается облаком спор
+GsBeetleScaleArmor.EndowLine: Боевой скарабей: серия держит натиск, полторы секунды без попадания срывают его; на пяти, десяти и пятнадцати ударах с вашей спины рвётся боевой скарабей, чем выше узел — тем он больше
+GsBeetleShellArmor.EndowLine: Бастион скарабея: получение ударов копит кристалл панциря; каждые три слоя сгущают орбитальную пластину, до трёх; ещё один удар при щите крошит пластину веером хитинового шрапнеля в сторону удара
+GsShroomiteArrowArmor.EndowLine: Споровый питомник: дальние попадания копят споры; после шести слоёв следующий удар сажает на месте башню спор на пять секунд, она стреляет споровыми стрелами в ближайшего врага
+GsShroomiteBulletArmor.EndowLine: Грибная цепь: дальние попадания копят мицелий; после восьми слоёв точка попадания сразу взрывает грибную цепь, до трёх прыжков, каждый шире
+GsShroomiteRocketArmor.EndowLine: Споровый сброс: дальние попадания копят грибные мины; после пяти слоёв следующий удар вызывает три споровых миномёта с неба, они бьют цель вразнобой
+GsSpectreHoodArmor.EndowLine: Святилище исцеления: магические попадания копят эктоплазму; после десяти слоёв под ногами на пять секунд раскрывается святилище; оно жжёт врагов внутри и за каждого шлёт шар исцеления к вам
+GsSpectreMaskArmor.EndowLine: Разлом загробья: магические попадания копят души; после восьми слоёв следующий удар рвёт у цели разлом на три секунды, тянет ближних к центру и пульсирует пламенем душ
+GsCactusArmor.EndowLine: Иглистый плащ: попадания копят шипы; после шести слоёв на четыре секунды надевается плащ — шипы колют ближних, на бегу сыплются иглы назад
+GsPumpkinArmor.EndowLine: Взрывная тыква: попадания копят лозу; после шести слоёв следующий удар сажает под цель тыкву; за три секунды она зреет и взрывается, повторные удары ускоряют созревание, взрыв шлёт три крутящихся дольки
+GsFossilArmor.EndowLine: Костяная буря: попадания копят костную пыль; после шести слоёв следующий удар будит пласт — из-под цели по очереди встают три костяных шипа
+GsObsidianArmor.EndowLine: Обсидиановый возврат: попадания копят жар; после семи слоёв следующий удар швыряет две стеклянные грани сверху и снизу; они метут наружу и возвращаются, жгут и поджигают по пути
+GsGladiatorArmor.EndowLine: Триумфальные пики: попадания копят овации; после шести слоёв следующий удар с плеча швыряет три бронзовых дротика по дуге в цель

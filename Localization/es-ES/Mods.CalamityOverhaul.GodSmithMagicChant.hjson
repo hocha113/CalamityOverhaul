@@ -1,143 +1,143 @@
-/* GsWandOfSparking.Desc:
+GsWandOfSparking.Desc:
 	'''
-	Reforged: casting on the beat builds resonance, on-beat sparks chain-ignite nearby foes;
-	at full resonance the next cast erupts into a fan of twelve stray sparks
-	''' */
-/* GsWandOfFrosting.Desc:
+	Reforja: conjurar al compás acumula resonancia; una chispa en el pulso, al impactar, salta en cadena e incendia a los enemigos cercanos;
+	a resonancia plena, el siguiente conjuro estalla en un abanico de 12 chispas
 	'''
-	Reforged: on-beat frost bolts refract into ice shards on hit, deeper resonance splits more;
-	at full resonance the next cast breathes a wide cone of freezing mist that inflicts frostbite
-	''' */
-/* GsThunderZapper.Desc:
+GsWandOfFrosting.Desc:
 	'''
-	Reforged: on-beat bolts zigzag like true lightning and may fork at each bend, resonance quickens the trigger;
-	at full resonance the next hit brands the target and calls down a thunder pillar
-	''' */
-/* GsAmethystStaff.Desc:
+	Reforja: un disparo gélido en el pulso refracta esquirlas de hielo al sesgo al impactar; a más resonancia, más refracciones;
+	a resonancia plena, el siguiente conjuro exhala un amplio cono de niebla helada que inflige Mordedura de escarcha
 	'''
-	Reforged: on-beat bolts shatter into piercing amethyst shards on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsTopazStaff.Desc:
+GsThunderZapper.Desc:
 	'''
-	Reforged: on-beat bolts shatter into homing topaz shards on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsSapphireStaff.Desc:
+	Reforja: un rayo en el pulso zigzaguea de verdad; cada quiebro puede ramificar un arco menor, y la resonancia acelera el gatillo;
+	a resonancia plena, el siguiente impacto clava una marca de trueno y luego cae un rayo del cielo
 	'''
-	Reforged: on-beat bolts shatter into swift sapphire lances on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsEmeraldStaff.Desc:
+GsAmethystStaff.Desc:
 	'''
-	Reforged: on-beat bolts burst into one extra emerald shard on hit;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsRubyStaff.Desc:
+	Reforja: un disparo de gema en el pulso se parte en amatista prismática al impactar; las esquirlas atraviesan un objetivo más;
+	a resonancia plena, el siguiente conjuro dispara 3 proyectiles de gema según el anillo cromático
 	'''
-	Reforged: on-beat bolts shatter into ruby shards that detonate in a small blast;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsDiamondStaff.Desc:
+GsTopazStaff.Desc:
 	'''
-	Reforged: on-beat bolts shatter into diamond shards that refract twin light rays;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsAmberStaff.Desc:
+	Reforja: un disparo de gema en el pulso se parte en esquirlas de topacio teledirigidas que muerden al enemigo siguiendo la luz;
+	a resonancia plena, el siguiente conjuro dispara 3 proyectiles de gema según el anillo cromático
 	'''
-	Reforged: on-beat bolts shatter into amber shards that linger as motes of stinging dust;
-	at full resonance the next cast fires three gem bolts of neighboring hues
-	''' */
-/* GsVilethorn.Desc:
+GsSapphireStaff.Desc:
 	'''
-	Reforged: on-beat thorns fork into vile spikes wherever they bite;
-	at full resonance the next cast also erupts a ring of thorns around you
-	''' */
-/* GsWaterBolt.Desc:
+	Reforja: un disparo de gema en el pulso se parte en lanzas de zafiro veloces que atraviesan en línea recta;
+	a resonancia plena, el siguiente conjuro dispara 3 proyectiles de gema según el anillo cromático
 	'''
-	Reforged: on-beat bolts bounce further and ripple on every ricochet;
-	at full resonance the next cast surges into a great tide that pierces through everything
-	''' */
-/* GsBookOfSkulls.Desc:
+GsEmeraldStaff.Desc:
 	'''
-	Reforged: hits brand foes into the registry, on-beat skulls hunt branded prey;
-	at full resonance the next cast looses three skulls, three brands detonate into a bone burst
-	''' */
-/* GsDemonScythe.Desc:
+	Reforja: un disparo de gema en el pulso estalla con más fuerza y suelta una esquirla de esmeralda más que las demás gemas;
+	a resonancia plena, el siguiente conjuro dispara 3 proyectiles de gema según el anillo cromático
 	'''
-	Reforged: on-beat scythes wind up faster and may boomerang back at high resonance;
-	at full resonance the next cast crosses two scythes over your cursor
-	''' */
-/* GsAquaScepter.Desc:
+GsRubyStaff.Desc:
 	'''
-	Reforged: sustained spraying swells into a surge window of crushing water pressure;
-	ride three full surges and the next cast breaks into a fan of tidal slams
-	''' */
-/* GsFlowerOfFire.Desc:
+	Reforja: un disparo de gema en el pulso se parte en esquirlas de rubí que, al tocar al enemigo, estallan en un radio corto;
+	a resonancia plena, el siguiente conjuro dispara 3 proyectiles de gema según el anillo cromático
 	'''
-	Reforged: on-beat fireballs burst into fans of flame tongues on first landing;
-	at full resonance the next fireball blooms into a burning field where it lands
-	''' */
-/* GsBeeGun.Desc:
+GsDiamondStaff.Desc:
 	'''
-	Reforged: on-beat volleys fly in a V formation, resonance breeds bigger bees;
-	at full resonance the next cast releases a queen bee that trails a living swarm
-	''' */
-/* GsSpaceGun.Desc:
+	Reforja: un disparo de gema en el pulso se parte en esquirlas de diamante que, al tocar al enemigo, refractan 2 rayos veloces;
+	a resonancia plena, el siguiente conjuro dispara 3 proyectiles de gema según el anillo cromático
 	'''
-	Reforged: every on-beat shot charges the coil, the charge never decays on a miss;
-	every fourth charge discharges as a wide piercing pulse that drags in lesser foes
-	''' */
-/* GsGrayZapinator.Desc:
+GsAmberStaff.Desc:
 	'''
-	Reforged: chaos stays chaos, but on-beat zaps always surge high voltage;
-	at full resonance the next zap overloads into a swollen piercing beam
-	''' */
-/* GsLaserRifle.Desc:
+	Reforja: un disparo de gema en el pulso se parte en esquirlas de ámbar que, al extinguirse, dejan un dominio de polvo punzante;
+	a resonancia plena, el siguiente conjuro dispara 3 proyectiles de gema según el anillo cromático
 	'''
-	Reforged: every third on-beat shot splits into twin parallel lasers;
-	at full resonance the next shot ignites a sweeping overdrive burst, then the barrel wilts briefly
-	''' */
-/* GsWeatherPain.Desc:
+GsVilethorn.Desc:
 	'''
-	Reforged: hits leave a storm eye, on-beat casts surge toward it and swell;
-	high resonance twins the whirlwinds, at full resonance the next cast summons a grand storm chorus
-	''' */
-/* GsCursedFlames.Desc:
+	Reforja: cada vez que una espina en el pulso muerde carne, en la herida se ramifican púas profanas;
+	a resonancia plena, la siguiente estocada abre a la vez un anillo de 8 espinas centrado en ti
 	'''
-	Reforged: on-beat bolts plant curse seeds; the third seed ignites into a ring of cursed spikes and a lingering fire pool
-	At full resonance the next cast unleashes a weaving curse serpent that sheds fire pools along its path
-	''' */
-// GsChantFlameFieldProj.DisplayName: Blazing Flower Field
-// GsChantStormChoirProj.DisplayName: Storm Chorus
-// GsCursedFlamesSerpentProj.DisplayName: Curse Serpent
-// GsCursedFlamesPoolProj.DisplayName: Cursed Fire Pool
-/* GsGoldenShower.Desc:
+GsWaterBolt.Desc:
 	'''
-	Reforged: hits etch molten ichor; the fifth layer bursts into an eight-way spray and a dripping ichor cluster
-	Spray without pause to build high pressure: faster bolts, denser streams, double etching
-	''' */
-/* GsCrystalVileShard.Desc:
+	Reforja: un disparo de agua en el pulso rebota más lejos; cada muro abre un anillo de ondas;
+	a resonancia plena, el siguiente conjuro se hincha en una gran marea que lo atraviesa todo
 	'''
-	Reforged: on-beat spears embed crystal seeds; when the spear shatters, every seeded foe erupts in a cross of shard rays
-	At full resonance the next cast raises six crystal spears around you
-	''' */
-/* GsUnholyTrident.Desc:
+GsBookOfSkulls.Desc:
 	'''
-	Reforged: on-beat casts split into a trident of three prongs that sear with hellfire
-	At full resonance the next cast raises four waves of infernal tridents from beneath your cursor
-	''' */
-/* GsNettleBurst.Desc:
+	Reforja: los impactos inscriben al enemigo en el registro; los cráneos en el pulso persiguen automáticamente a las presas inscritas;
+	a resonancia plena, el siguiente conjuro suelta 3 cráneos en triángulo; quien reúne 3 marcas estalla en huesos al instante
 	'''
-	Reforged: on-beat vines take root where they bite, leaving stinging nettle thickets (up to three)
-	At full resonance the next cast unleashes a great vine dragon that sweeps through the field
-	''' */
-/* GsWaspGun.Desc:
+GsDemonScythe.Desc:
 	'''
-	Reforged: on-beat wasps sting a pheromone mark into their prey; every wasp in the air hunts the marked target first
-	At full resonance the next cast releases a queen wasp that cruises ahead, seeding hunters along her path
-	''' */
-// GsGoldenShowerDripProj.DisplayName: Ichor Cluster
-// GsNettleBurstThicketProj.DisplayName: Nettle Thicket
-// GsNettleBurstDragonProj.DisplayName: Vine Dragon
-// GsWaspGunQueenProj.DisplayName: Queen Wasp
+	Reforja: una guadaña en el pulso se carga y sale más rápido; a resonancia alta, vuelve a girar para un segundo pase;
+	a resonancia plena, el siguiente conjuro invoca 2 guadañas, horizontal y vertical, que se cruzan sobre la mira
+	'''
+GsAquaScepter.Desc:
+	'''
+	Reforja: el chorro continuo hincha la marea; en la ventana de pleamar sube la presión, baja el coste de maná y hay un oleaje cada 3 alientos;
+	tras 3 oleajes completos, el siguiente conjuro suelta un abanico de rompientes
+	'''
+GsFlowerOfFire.Desc:
+	'''
+	Reforja: una bola de fuego en el pulso, al primer aterrizaje, abre un abanico de lenguas; la resonancia añade rebotes y lenguas;
+	a resonancia plena, la siguiente bola florece en un Campo de flores ígneas donde cae
+	'''
+GsBeeGun.Desc:
+	'''
+	Reforja: un enjambre en el pulso vuela en formación en V; a más resonancia, más jalea real y más abejas grandes;
+	a resonancia plena, el siguiente conjuro suelta una abeja reina que siembra un enjambre vivo a su paso
+	'''
+GsSpaceGun.Desc:
+	'''
+	Reforja: cada disparo en el pulso carga una casilla de la bobina; fallar el pulso no la vacía;
+	al llenar 4 casillas, ese láser se convierte en un pulso ancho que perfora y arrastra a los enemigos pequeños
+	'''
+GsGrayZapinator.Desc:
+	'''
+	Reforja: el caos sigue siendo caos, pero un zas en el pulso suelta siempre un tramo de alta tensión;
+	a resonancia plena, el siguiente disparo se sobrecarga en un haz hinchado que perfora
+	'''
+GsLaserRifle.Desc:
+	'''
+	Reforja: cada 3 disparos en el pulso seguidos, el tercero se parte en 2 láseres paralelos;
+	a resonancia plena, el siguiente disparo enciende un barrido sobrecalentado: la cadencia se dispara y luego el cañón se afloja un instante
+	'''
+GsWeatherPain.Desc:
+	'''
+	Reforja: el tornado deja un ojo de viento donde impacta; el siguiente disparo en el pulso se lanza hacia el ojo, gana presión y crece;
+	desde 3 capas de resonancia salen 2 tornados en contrarrotación; a resonancia plena, el siguiente conjuro invoca un Coro de la tormenta que se queda en el campo
+	'''
+GsCursedFlames.Desc:
+	'''
+	Reforja: un disparo de llamas malditas en el pulso planta una semilla maldita; a 3 semillas, arden solas, estallan en 8 púas y dejan un Charco de llamas malditas
+	A resonancia plena, el siguiente conjuro suelta una Serpiente incendiaria que gotea llamas malditas a su paso
+	'''
+GsChantFlameFieldProj.DisplayName: Campo de flores ígneas
+GsChantStormChoirProj.DisplayName: Coro de la tormenta
+GsCursedFlamesSerpentProj.DisplayName: Serpiente incendiaria
+GsCursedFlamesPoolProj.DisplayName: Charco de llamas malditas
+GsGoldenShower.Desc:
+	'''
+	Reforja: los impactos graban una marca de oro fundido; a 5 capas, estalla en un rociado de 8 direcciones y cae un glóbulo de oro sagrado que gotea;
+	un chorro ininterrumpido acumula alta presión: proyectiles más rápidos, flujo más denso, grabado doble
+	'''
+GsCrystalVileShard.Desc:
+	'''
+	Reforja: una lanza de cristal en el pulso incrusta una semilla en el enemigo; al romperse la lanza, todo enemigo con semilla estalla en una cruz de destellos;
+	a resonancia plena, el siguiente conjuro alza 6 lanzas de cristal en anillo a tu alrededor
+	'''
+GsUnholyTrident.Desc:
+	'''
+	Reforja: un conjuro en el pulso se parte en un tridente de 3 horquillas que queman con Fuego infernal;
+	a resonancia plena, el siguiente conjuro levanta desde bajo el cursor 4 oleadas de horquillas infernales
+	'''
+GsNettleBurst.Desc:
+	'''
+	Reforja: una liana en el pulso echa raíces donde muerde y deja un Matorral de ortigas que retiene (hasta 3);
+	a resonancia plena, el siguiente conjuro suelta un Dragón de lianas que barre el campo
+	'''
+GsWaspGun.Desc:
+	'''
+	Reforja: una avispa en el pulso clava una marca de feromona; todas las avispas en el aire priorizan a esa presa;
+	a resonancia plena, el siguiente conjuro suelta una avispa reina que, en su vuelo, siembra cazadoras
+	'''
+GsGoldenShowerDripProj.DisplayName: Glóbulo de oro sagrado
+GsNettleBurstThicketProj.DisplayName: Matorral de ortigas
+GsNettleBurstDragonProj.DisplayName: Dragón de lianas
+GsWaspGunQueenProj.DisplayName: Avispa reina

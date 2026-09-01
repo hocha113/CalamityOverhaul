@@ -1,24 +1,24 @@
-// GsOpticStaff.Desc: Twin Pact: the mini twins fly wing formation; under the assault order, a laser and a ram biting one foe in quick succession cross their sights into an X-flash that ignites cursed flames
-// GsSanguineStaff.Desc: Sanguine Homing: under the assault order, each bat bite tears a crescent of clotted blood off the marked prey that wings back to you, cutting whatever stands in its path
-// GsPirateStaff.Desc: Plunder Writ: every pirate strike stashes loot; under the rally order, six shares crack the chest open at the flag and five gilded mortar coins rain toward nearby foes, marking them with the Midas touch
-// GsPygmyStaff.Desc: Headhunt Drums: under the rally order, a spear strike raises a totem at the flag; inside its war-drum ring your minions hit 10% harder and pygmy spears steep their venom deeper
-// GsRavenStaff.Desc: Omen Collapse: under the assault order, four pecks from two different ravens fold the marked prey's shadow into a dire omen that detonates in shadowflame
-// GsDeadlySphereStaff.Desc: Grinder Protocol: under the assault order, three sphere slams within a breath rivet a whirling saw ring into the marked foe, grinding it with sparking steel teeth
-// GsTempestStaff.Desc: Confluence Surge: under the assault order, a tempest lash and a mini shark bite landing on one foe in quick succession merge into a sweeping tidal wall that batters everything in its path
-// GsXenoStaff.Desc: Orbital Calibration: under the assault order, four lasers into the marked foe finish the calibration and call down an annihilation lance from high orbit
-// GsStardustCellStaff.Desc: Mitosis Tide: under the assault order, once three little cells cling to the marked foe, the next cell slam splits into five seeking spores that each deepen the cellular corrosion
-// GsStardustDragonStaff.Desc: Skyrift Piercer: under the assault order, two drills of the dragon's head into the marked foe tear open a star rift at the wound that gushes falling stardust
-// GsEmpressBlade.Desc: Prismatic Finale: under the assault order, six slashes from at least two blades open the execution rite; six phantom blades fan out above the marked prey and plunge through it one by one in rainbow order
-// GsStormTigerStaff.Desc: Ambush Rend: under the assault order, three tiger strikes within a breath unleash the kill rite; three storm-sand claw tears rip through the marked prey, and a mightier tiger stalks a shorter cooldown
-// GsOpticCrossrayProj.DisplayName: Crossed Sights
-// GsSanguineArcProj.DisplayName: Homing Blood Arc
-// GsPiratePlunderProj.DisplayName: Plunder Coin
-// GsPygmyTotemProj.DisplayName: Headhunt Totem
-// GsRavenOmenProj.DisplayName: Dire Omen
-// GsDeadlySphereSawProj.DisplayName: Riveted Grinder
-// GsTempestSurgeProj.DisplayName: Confluence Wall
-// GsXenoOrbitalProj.DisplayName: Orbital Annihilation Lance
-// GsStardustCellMoteProj.DisplayName: Mitosis Spore
-// GsStardustDragonRiftProj.DisplayName: Star Rift
-// GsEmpressFinaleProj.DisplayName: Prismatic Finale
-// GsStormTigerRendProj.DisplayName: Ambush Claw Rend
+GsOpticStaff.Desc: "Pacte des pupilles : les jumeaux mécaniques volent en formation d'ailes. Sous l'ordre d'assaut, un laser du pupille rouge et un choc du vert qui mordent la même cible en un souffle croisent leurs regards en un X, et allument les Flammes maudites"
+GsSanguineStaff.Desc: "Arc de sang : sous l'ordre d'assaut, chaque morsure de chauve-souris sur la proie marquée arrache un croissant de sang qui revient vers vous, coupant qui barre le chemin"
+GsPirateStaff.Desc: "Ordre de butin : les pirates suivent en colonne d'équipage, chaque coup réussi empile l'or volé. Sous l'ordre de rassemblement, six parts ouvrent le coffre au drapeau, cinq pièces de mortier dorées pleuvent et marquent du toucher de Midas"
+GsPygmyStaff.Desc: "Tambours de chasse : sous l'ordre de rassemblement, un javelot qui touche dresse un totem de têtes au drapeau. Dans l'anneau de tambours, vos sbires infligent +10%, et le venin des javelots pygmées pénètre plus profond"
+GsRavenStaff.Desc: "Effondrement de mauvais augure : les corbeaux tournent autour de vous. Sous l'ordre d'assaut, deux corbeaux ou plus qui picorent quatre fois la même cible font s'effondrer les plumes vers le centre, explosion de Flamme d'ombre"
+GsDeadlySphereStaff.Desc: "Protocole de scie : les sphères mortelles tiennent un triangle flottant. Sous l'ordre d'assaut, trois chocs sur le foyer en un souffle rivettent un anneau de dents dans la cible, qui broie sur place, étincelles d'acier"
+GsTempestStaff.Desc: "Confluent de marée : les tornades s'alignent en front de tempête. Sous l'ordre d'assaut, un coup de tornade et un choc de mini-requin sur la même cible fusionnent en un mur de vague qui balaye tout"
+GsXenoStaff.Desc: "Calibration orbitale : les OVNI tiennent une ruche au zénith. Sous l'ordre d'assaut, quatre lasers dans le foyer achèvent la calibration, une lance d'annihilation tombe de haute orbite"
+GsStardustCellStaff.Desc: "Mitose : les cellules tournent serré contre vous. Sous l'ordre d'assaut, trois petites cellules accrochées au foyer, le prochain choc de la cellule-mère déclenche une marée de scission, cinq spores cherchent et approfondissent l'érosion"
+GsStardustDragonStaff.Desc: "Déchirure du firmament : le dragon de poussière d'étoile ignore les formations, il ne chasse. Sous l'ordre d'assaut, deux coups de tête dans le foyer déchirent une faille au point d'impact, et des éclats d'étoile tombent"
+GsEmpressBlade.Desc: "Final prismatique : sous l'ordre d'assaut, deux lames-prismes ou plus qui taillent six fois le foyer ouvrent le rite d'exécution. Six lames fantômes s'éventent au-dessus de la proie et la percent une à une, dans l'ordre de l'arc-en-ciel"
+GsStormTigerStaff.Desc: "Déchirure d'embuscade : le tigre du désert chasse seul. Sous l'ordre d'assaut, trois griffes sur le foyer en un souffle déclenchent l'embuscade, trois entailles de sable et de vent. Plus le tigre est haut en rang, plus l'embuscade revient vite"
+GsOpticCrossrayProj.DisplayName: Regards croisés
+GsSanguineArcProj.DisplayName: Arc de sang de retour
+GsPiratePlunderProj.DisplayName: Pièce de butin
+GsPygmyTotemProj.DisplayName: Totem de chasse
+GsRavenOmenProj.DisplayName: Effondrement de mauvais augure
+GsDeadlySphereSawProj.DisplayName: Scie rivetée
+GsTempestSurgeProj.DisplayName: Mur de confluent
+GsXenoOrbitalProj.DisplayName: Lance d'annihilation orbitale
+GsStardustCellMoteProj.DisplayName: Spore de mitose
+GsStardustDragonRiftProj.DisplayName: Faille du firmament
+GsEmpressFinaleProj.DisplayName: Final prismatique
+GsStormTigerRendProj.DisplayName: Entaille d'embuscade

@@ -2,29 +2,48 @@ GameModeText: {
 	BrutalName: Жестокий мир
 	AsuraName: Ад Асуры
 	AnnihilationName: Вечная жизнь Смерти
-	// GodSmithName: Divine Artifice
-	BrutalOnLine: Этот мир жесток, и всё же ты его любишь.
-	BrutalOffLine: Мир прячет клыки. Его милость лишь передышка.
-	AsuraOnLine: Путь Асуры открыт. Всякая причинённая тобой боль вернётся сполна.
-	AsuraOffLine: Путь Асуры закрыт. Все долги уплачены.
-	AnnihilationOnLine: Всё пройдёт; лишь Смерть живёт вечно.
-	AnnihilationOffLine: Смерть отдыхает мгновение; живые крадут вдох.
-	// GodSmithOnLine: The Godsmith takes up the hammer; every common iron shall be reforged.
-	// GodSmithOffLine: The forge fire wanes; all arms return to their former shape.
-	BrutalDesc: Пробуждает переработанный беспощадный ИИ жестоких боссов; остальные враги получают на 50% больше здоровья и урона, а мелкие враги становятся быстрыми и бешеными
-	AsuraDesc: Усиление возрастает до 100%. Враги приспосабливаются к повторному урону одного типа, а каждый твой удар задаёт нижний предел их ответного
-	AnnihilationDesc: Последняя форма Ада Асуры в зенитном мире. Каждый ужас удваивается вновь: враги приспосабливаются вдвое быстрее, а твоя боль возвращается вдвойне
-	// BrutalCreationDesc: Master is the floor: reworked bosses awaken, all foes empowered
-	// AsuraCreationDesc: Master is the floor: foes adapt to your blows and mirror your pain
-	// GodSmithDesc: Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched, and it toggles independently of every other mode
-	// GodSmithRecastTitle: Godsmith Reforged
-	// GodSmithEndowPrefix: "Endowment: "
+	GodSmithName: Божественное ремесло
+	BrutalOnLine: Этот мир жесток, и всё же ты его любишь
+	BrutalOffLine: Мир прячет клыки. Его милость лишь передышка
+	AsuraOnLine: Путь Асуры открыт. Всякая причинённая тобой боль вернётся сполна
+	AsuraOffLine: Путь Асуры закрыт. Все долги уплачены
+	AnnihilationOnLine: Всё пройдёт; лишь Смерть живёт вечно
+	AnnihilationOffLine: Смерть отдыхает мгновение; живые крадут вдох
+	GodSmithOnLine: Божественный кузнец берёт молот; любое простое железо будет перековано
+	GodSmithOffLine: Огонь горна гаснет; всё оружие возвращается к прежнему виду
+	BrutalDesc:
+		'''
+		Пробуждает переработанный яростный ИИ боссов; их числа опираются на сложность Мастер
+		Здоровье и урон всех врагов +50%; мелкие враги ускоряются и постоянно впадают в ярость
+		'''
+	AsuraDesc:
+		'''
+		Усиление растёт до 100%. Враги привыкают к одному и тому же удару,
+		а причинённый тобой урон становится нижним пределом их ответа.
+		Ближний бой привыканию поддаётся хуже, клинок — особенно;
+		чем ближе ты к врагу в ближнем бою, тем выше урон
+		'''
+	AnnihilationDesc:
+		'''
+		Конечная форма Ада Асуры в легендарном мире. Каждый ужас снова удваивается:
+		враги привыкают быстрее, а причинённая тобой боль возвращается вдвойне
+		'''
+	BrutalCreationDesc: Мастер — нижняя планка: переработанные боссы пробуждаются, все враги усилены наполовину
+	AsuraCreationDesc: Мастер — нижняя планка: враги привыкают к твоим ударам, боль возвращается сполна
+	GodSmithDesc:
+		'''
+		Всё ванильное оружие получает совершенно новые приёмы атаки,
+		а ванильная броня — дар, совпадающий с её природой.
+		Сила врагов не меняется; переключатель независим и не пересекается с другими режимами
+		'''
+	GodSmithRecastTitle: Перековка божественного кузнеца
+	GodSmithEndowPrefix: "Дар: "
 	StateOn: Активен
 	StateOff: Дремлет
 	HintEnable: Нажмите, чтобы пробудить
 	HintDisable: Нажмите, чтобы запечатать
 	BossRefuse: Босс ещё жив. Договор сейчас не изменить
-	// AsuraNeedBrutal: Awaken Cruel World first
+	AsuraNeedBrutal: Сначала пробудите Жестокий мир
 }
 
-// SporeshineAmbience.DazeDeathReason: "{0} drowsed away deep in the spore haze"
+SporeshineAmbience.DazeDeathReason: "{0} уснул в глубине спорового тумана"

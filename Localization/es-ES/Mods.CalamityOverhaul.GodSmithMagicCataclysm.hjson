@@ -1,96 +1,96 @@
-/* GsBatScepter.Desc:
+GsBatScepter.Desc:
 	'''
-	Reforged: hits build Nightfall; at full charge, right click to call the bat deluge
-	A phantom moon rises, waves of bats dive at your foes, then circle you as a guard ring
-	Every 8th bat bite splits off a phantom bat that dives at another nearby foe
-	''' */
-/* GsRazorpine.Desc:
+	Reforja: los impactos acumulan Anochecer; a medidor lleno, clic derecho para invocar el Murciélagos del abismo
+	Se alza un disco lunar, oleadas de murciélagos se lanzan contra los enemigos y los restantes te rodean en un anillo
+	Cada 8 mordiscos, se desprende un murciélago fantasma que se lanza a otro enemigo cercano
 	'''
-	Reforged: hits build Resin; at full charge, right click to raise the Needle Storm
-	A ring of needles tightens around you, then settles into a needle mat underfoot
-	Needle hits smear resin; 5 smears on one foe draw a ring of 4 needles closing in on it
-	''' */
-/* GsBlizzardStaff.Desc:
+GsRazorpine.Desc:
 	'''
-	Reforged: hits build Snowsquall; at full charge, right click to call the Whiteout over your cursor
-	A giant blizzard hammers the area and leaves rime spikes on the ground
-	Every 5th icicle is a rime seed that bursts into a small frost blast where it dies
-	''' */
-/* GsStaffofEarth.Desc:
+	Reforja: los impactos acumulan Resina; a medidor lleno, clic derecho para desatar la Tormenta de agujas
+	Un torbellino de agujas se cierra a tu alrededor y, al disiparse, tiende una alfombra de agujas a tus pies
+	Las agujas untan Resina; a 5 capas en el mismo enemigo, 4 agujas se cierran en anillo y lo atraviesan
 	'''
-	Reforged: hits build Earthwrath; at full charge, right click to raise the Orogeny at your cursor
-	Rock pillars erupt in waves amid flying rubble, leaving a magma vein bed behind
-	The boulder grinds harder with every foe it crushes, and a half-height rock pillar erupts where it shatters
-	''' */
-/* GsBetsysWrath.Desc:
+GsBlizzardStaff.Desc:
 	'''
-	Reforged: hits build Dragonfire; at full charge, right click to invoke the Dragon's Wrath
-	Betsy's shade dives three times trailing flame curtains, leaving a cursed pyre bed
-	Hits on cursed foes bank extra Dragonfire, and every 4th cursed hit bursts into hexfire
-	''' */
-/* GsNightglow.Desc:
+	Reforja: los impactos acumulan Ventisca; a medidor lleno, clic derecho para hacer caer el Desastre blanco en el cursor
+	Una ventisca colosal golpea la zona y, al disiparse, deja espinas de cristal de hielo en el suelo
+	Cada 5 saetas de hielo, una es semilla de escarcha y, al extinguirse, estalla en una pequeña explosión gélida
 	'''
-	Reforged: hits build Dawnlight; at full charge, right click to unfurl an Aurora Curtain over your cursor
-	The curtain sears foes within and rains light lances below
-	Every 5th bolt hit drops an aurora lance from above the target
-	''' */
-/* GsStellarTune.Desc:
+GsStaffofEarth.Desc:
 	'''
-	Reforged: hits build Melody; at full charge, right click to open the Stellar Finale
-	Star chords play themselves at your foes on the beat while you dance a little faster
-	Consecutive hits climb a scale; the 8th note lands as a star chord burst
-	''' */
-/* GsResonanceScepter.Desc:
+	Reforja: los impactos acumulan Ira terrestre; a medidor lleno, clic derecho para desencadenar la Orogénesis en el cursor
+	Pilares de roca emergen en oleadas, los escombros vuelan y queda un lecho de vetas de magma
+	El peñasco inflige más daño con cada enemigo que aplasta; donde se hace añicos, se alza un pilar de media altura
 	'''
-	Reforged: hits build Resonance; at full charge, right click to collapse the harmonics at your cursor
-	Five standing waves cross the area and their nodes strike whatever lingers
-	The royal wave rings a standing wave pulse on every 3rd foe it pierces
-	''' */
-/* GsNebulaArcanum.Desc:
+GsBetsysWrath.Desc:
 	'''
-	Reforged: hits build Arcanum; at full charge, right click to spin up the Nebula Spiral
-	Three nebula arms orbit you, grinding foes and dragging the lesser ones inward
-	The arcanum orb itself now swells in flight and slowly drags lesser foes toward its heart
-	Nebula mist rises from the staff as the gauge fills
-	''' */
-/* GsNebulaBlaze.Desc:
+	Reforja: los impactos acumulan Llama dragón; a medidor lleno, clic derecho para invocar la Llama nefanda del rey dragón
+	La sombra de Betsy se lanza en picado 3 veces, arrastra telones de fuego y deja un charco de llamas malditas
+	Golpear a un enemigo maldito acumula Llama dragón extra; cada 4 impactos de llamas malditas levantan una explosión de fuego nefando
 	'''
-	Reforged: hits build Blaze; at full charge, right click to mark a nova on the target near your cursor
-	It detonates in three staggered blast rings around a gravity well
-	Nebula eruption bolts now always ignite a micro nova where they strike
-	''' */
-/* GsLunarFlare.Desc:
+GsNightglow.Desc:
 	'''
-	Reforged: hits build Moonphase; at full charge, right click to raise the Lunar Eclipse
-	An eclipse disk pours twelve woven flare falls, every third one backed by a phantom moonbeam
-	Every 4th cast pours a pale fourth flare from the sky
-	Moonlight gathers on the book as the gauge fills
-	''' */
-// GsBatSwarmDirector.DisplayName: Bat Deluge
-// GsPineStormDirector.DisplayName: Needle Storm
-// GsWhiteoutDirector.DisplayName: Whiteout
-// GsOrogenyDirector.DisplayName: Orogeny
-// GsEarthPillarProj.DisplayName: Orogeny Pillar
-// GsDragonWrathDirector.DisplayName: Dragon's Wrath
-// GsAuroraCurtainDirector.DisplayName: Aurora Curtain
-// GsAuroraLanceProj.DisplayName: Aurora Lance
-// GsStellarFinaleDirector.DisplayName: Stellar Finale
-// GsResonanceCollapseDirector.DisplayName: Harmonic Collapse
-// GsNebulaSpiralDirector.DisplayName: Nebula Spiral
-// GsNovaDetonationDirector.DisplayName: Nova Detonation
-/* GsSpectreStaff.Desc:
+	Reforja: los impactos acumulan Alba; a medidor lleno, clic derecho para desplegar el Telón de aurora sobre el cursor
+	El telón quema a los enemigos bajo la cortina y deja caer lanzas de luz
+	Cada 5 impactos, una Lanza de aurora cae desde encima del enemigo
 	'''
-	Reforged: hits build Soulharvest; when full, right click to raise the Soul Tide at your cursor
-	Every quarter of the gauge banked splits off an echo soul that hunts another nearby foe
-	Three tide crests sweep the ring; each crest hit ferries 1 life back to you, up to 6 a second
-	''' */
-// GsLunarEclipseDirector.DisplayName: Lunar Eclipse
-// GsMoonPillarProj.DisplayName: Phantom Moonbeam
-// GsSpectreStaffTideDirector.DisplayName: Soul Tide
-/* GsInfernoFork.Desc:
+GsStellarTune.Desc:
 	'''
-	Reforged: fireballs corkscrew with furnace slag and every hit banks Cinder
-	When the gauge is full, right click to set the Wildfire at your cursor: three waves of flame sweep the ground, fire rains between them, and an ember shoal smolders after
-	''' */
-// GsInfernoForkWildfireDirector.DisplayName: Wildfire
-// GsCataclysmRiderBurstProj.DisplayName: Cataclysm Aftershock
+	Reforja: los impactos acumulan Movimiento; a medidor lleno, clic derecho para inaugurar el Final del mar estelar
+	Los acordes estelares se tocan solos al compás contra los enemigos; mientras interpretas, tus pasos se aligeran
+	Los impactos seguidos suben la escala; la octava nota cae como una explosión de acorde estelar
+	'''
+GsResonanceScepter.Desc:
+	'''
+	Reforja: los impactos acumulan Armónicos; a medidor lleno, clic derecho para desencadenar el Colapso resonante en la zona del cursor
+	5 ondas estacionarias se cruzan y permanecen; sus nodos golpean sin cesar a quien se queda
+	Cada 3 enemigos que perfora la onda regia, el nodo tañe un pulso de onda estacionaria sobre él
+	'''
+GsNebulaArcanum.Desc:
+	'''
+	Reforja: los impactos acumulan Arcano; a medidor lleno, clic derecho para desplegar los Brazos espirales de nebulosa
+	3 brazos orbitan a tu alrededor, muelen a los enemigos y arrastran poco a poco a los pequeños hacia el centro
+	El orbe arcano se hincha en vuelo y tira despacio de los enemigos pequeños hacia su núcleo
+	Según se llena el medidor, la niebla estelar se espesa en la punta del bastón
+	'''
+GsNebulaBlaze.Desc:
+	'''
+	Reforja: los impactos acumulan Llamarada; a medidor lleno, clic derecho para marcar una Nova en el objetivo cercano al cursor
+	3 anillos de explosión detonan a destiempo; un pozo gravitatorio en el centro traga a los enemigos pequeños
+	Los proyectiles potenciados de erupción nebular encienden siempre una micronova al impactar
+	'''
+GsLunarFlare.Desc:
+	'''
+	Reforja: los impactos acumulan Fase lunar; a medidor lleno, clic derecho para alzar el Juicio del eclipse
+	El disco eclipsado vierte 12 cascadas de llama lunar; cada tercera caída añade un Pilar lunar fantasma
+	Cada 4 conjuros hace caer del cielo una llama lunar pálida extra
+	Según se llena el medidor, el resplandor lunar se espesa en las páginas
+	'''
+GsBatSwarmDirector.DisplayName: Murciélagos del abismo
+GsPineStormDirector.DisplayName: Tormenta de agujas
+GsWhiteoutDirector.DisplayName: Desastre blanco
+GsOrogenyDirector.DisplayName: Orogénesis
+GsEarthPillarProj.DisplayName: Pilar de orogénesis
+GsDragonWrathDirector.DisplayName: Llama nefanda del rey dragón
+GsAuroraCurtainDirector.DisplayName: Telón de aurora
+GsAuroraLanceProj.DisplayName: Lanza de aurora
+GsStellarFinaleDirector.DisplayName: Final del mar estelar
+GsResonanceCollapseDirector.DisplayName: Colapso resonante
+GsNebulaSpiralDirector.DisplayName: Brazos espirales de nebulosa
+GsNovaDetonationDirector.DisplayName: Detonación nova
+GsSpectreStaff.Desc:
+	'''
+	Reforja: los impactos acumulan Cosecha de almas; a medidor lleno, clic derecho para desatar la Marea del abismo de almas en el cursor
+	Cada cuarto de medidor acumulado desprende un alma secundaria que se lanza a otro enemigo cercano
+	3 crestas barren el anillo; cada impacto de cresta te restituye vida, hasta 6 puntos por segundo
+	'''
+GsLunarEclipseDirector.DisplayName: Juicio del eclipse
+GsMoonPillarProj.DisplayName: Pilar lunar fantasma
+GsSpectreStaffTideDirector.DisplayName: Marea del abismo de almas
+GsInfernoFork.Desc:
+	'''
+	Reforja: las bolas de fuego giran con escoria de horno; los impactos acumulan Ascuas; a medidor lleno, clic derecho para prender el Incendio salvaje en el cursor
+	Una línea de fuego se arrastra por el suelo, 3 oleadas barren ambos flancos, entre olas cae lluvia de fuego y, al disiparse, queda un lecho de brasas
+	'''
+GsInfernoForkWildfireDirector.DisplayName: Incendio salvaje
+GsCataclysmRiderBurstProj.DisplayName: Réplica del cataclismo

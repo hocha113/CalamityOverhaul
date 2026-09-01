@@ -1,184 +1,184 @@
 FirstMetShenyo: {
-	// ShenyoName: Shenyo
-	// L1: It has been a long time since anything living walked in here
-	// L2: How did you get here?
-	// OptDead: Died once. When I woke up, I was here
-	// OptRain: Snatched an umbrella and charged in
-	// OptDeadLocked: (You are still alive. That answer will not leave your mouth)
-	// OptRainLocked: (Your hands are empty. No umbrella to speak of)
-	// A1: ...Back from the dead?
-	// A2: A rare thing. Though by the look of you, you hardly seem to care
-	// B1: Then your luck is not bad at all
-	// B2: Now start thinking about how to get out
-	// C1: The rain will hold the way open for you. Go back
-	// C2: That umbrella is yours from now on
+	ShenyoName: Шэнью
+	L1: Давно живых тут не видела
+	L2: Как ты сюда попал?
+	OptDead: Помер раз. Очнулся — уже тут
+	OptRain: Схватил зонт и вломился
+	OptDeadLocked: Ты не умирал
+	OptRainLocked: У тебя руки пустые
+	A1: …Помер и ожил?
+	A2: Редкая штука. Хотя по тебе — будто давно привык
+	B1: Тогда тебе и правда везёт
+	B2: Теперь пора выбираться
+	C1: Дождь тебе путь распахнёт. Иди назад
+	C2: Тот зонт отныне твой
 }
 
 ShenyoDerivedUmbrella: {
-	// L1: That umbrella looks like a derived paranormal entity
-	// Opt1: A derived paranormal entity? Meaning it is a part of you?
-	// L2: Exactly. I once dismembered my own paranormal form, and the severed fragments revive on their own once enough years go by
-	// L3: This umbrella intruding on reality, for instance, is a paranormal phenomenon derived from the Kikasa's source
-	// Opt2: So you are not actually the source of the Kikasa?
-	// L4: I was, once
-	// L5: I should have died long ago, but my consciousness woke again inside a paranormal fragment left in this world
-	// L6: Touch this derived umbrella, and you should be able to enter its ghost domain
-	// L7: Whether you go is your own business
-	// L8: If you die in there, I will pull you back with a Restart
+	L1: Этот зонт похож на производную аномалию
+	Opt1: Производная аномалия? То есть это часть тебя?
+	L2: Верно. Когда-то я расчленила собственную аномалию. Отсечённые осколки спустя годы сами оживают
+	L3: Вот этот зонт лезет в реальность. Это производная аномалия от истока Кикасы
+	Opt2: Значит, ты на самом деле не исток Кикасы?
+	L4: Когда-то была
+	L5: Я давно должна была умереть. Но сознание снова проснулось в осколке аномалии в этом мире
+	L6: Коснись этой производной Кикасы — должно пустить в её Призрачное царство
+	L7: Идти или нет — твоё дело
+	L8: Сдохнешь в Призрачном царстве — вытащу перезапуском
 }
 
 ShenyoDollGift: {
-	// L0: I just remembered something worth giving you
-	// L1: Keep this doll close. It can save your life once
-	// L2: The one who sewed these was a silly girl. She made a whole pile for the man she secretly loved, though he could never possibly need them
-	// L3: Back then I traded her plenty of ghost money for them. They make fine gifts for the young ones
+	L0: Вспомнила, есть кое-что тебе стоит отдать
+	L1: Куклу спрячь. Раз жизнь спасёт
+	L2: Шила дурочка. Наделала кучу тому, кто ей нравился. Ему они ни к чему
+	L3: Я у неё тогда много выменяла. Дарила младшим
 }
 
 ShenyoFesterSerpentGift: {
-	// L0: Things that fester in the sand look even worse than things that rot in water
-	// L1: That golden pus is not honey, one sniff up close and you will understand
-	// L2: Rinse the umbrella when you are done, dried pus stains never scrape off
+	L0: То, что в песке прогнило, ещё противнее того, что в воде размокло
+	L1: Этот золотой гной не мёд. Понюхаешь вблизи — поймёшь
+	L2: Кончишь — сполосни купол. Высохнет гной — уже не соскоблишь
 }
 
 ShenyoBossRushGift: {
-	// L0: 都回来了，还是深渊里那条老的醒了？
-	// L1: 不管是哪种，这一趟都不轻松
-	// L2: 站稳了，别在我面前晃
-	// L3: 这顿吃完，雨也该停了
+	L0: Все повылезали, или в Бездне та старая проснулась?
+	L1: Неважно какая. Эта ходка лёгкой не была
+	L2: Стой ровно. Не шатайся у меня на глазах
+	L3: Доешь — и дождю пора стихнуть
 }
 
 ShenyoCalamityEvilGift: {
-	// L0: 一窝一窝的，钻血又钻肉，看着都疼
-	// L1: 你倒是不怕疼
-	// L2: 下次当心点，我这把伞挡雨，挡不了那些虫子
+	L0: Гнездо за гнездом, в кровь, в мясо. Смотреть больно
+	L1: А тебе хоть бы хны
+	L2: В следующий раз гляди в оба. Мой зонт дождь держит, этих тварей — нет
 }
 
 ShenyoCultistGift: {
-	// L0: 念念叨叨，吵得很
-	// L1: 他要放的那点东西，不是什么好东西
-	// L2: 打断得好，省得他把场面弄大了
+	L0: Бубнит и бубнит. Шумно
+	L1: То, что он собирался выпустить — дрянь
+	L2: Правильно оборвал. Не дал раздуть
 }
 
 ShenyoDevourerOfGodsGift: {
-	// L0: 天上绕圈的那条，听说吞过神
-	// L1: 神是什么味道，我倒是有点好奇
-	// L2: 壳留着也好，肉不必留给我
+	L0: Тот, что кругами по небу ходит. Говорят, богов жрал
+	L1: Каковы боги на вкус — даже любопытно
+	L2: Панцирь оставь. Мясо мне не надо
 }
 
 ShenyoDukeFishronGift: {
-	// L0: 一头猪也学人掀浪，也是奇了
-	// L1: 水的脾气，轮不到它使
-	// L2: 按回水里也好，省得它总在我眼皮底下晃
+	L0: Свинья волны гоняет, прямо как люди. Диво
+	L1: Нрав воды — не ей распоряжаться
+	L2: Затолкал обратно в воду — и ладно. Не будет у меня под носом крутиться
 }
 
 ShenyoEmpressGift: {
-	// L0: 太亮的东西，我这双眼睛看着费劲
-	// L1: 白天不必去招惹她，你倒好，专挑难的
-	// L2: 光都揉暗了，也算你的本事
+	L0: Слишком яркое. Этим глазам тяжело
+	L1: Днём её лучше не трогать. Тебе же подавай посложнее
+	L2: Свет смял дотемна. Есть умение
 }
 
 ShenyoEvilBossGift: {
-	// L0Worm: 土里钻出来一条，一节一节的，恶心
-	// L1Worm: 腥气比雨水还重，我倒是不嫌，你受得住就好
-	// L0Brain: 脑子摊在外头，也不嫌凉
-	// L1Brain: 这种东西，多看一眼都嫌脏了眼睛
-	// L2: 了结了就好，别沾一身腥气回来找我
+	L0Worm: Из земли вылезла, звено за звеном. Тошно
+	L1Worm: Тянет рыбой гуще дождя... Терпишь — и ладно
+	L0Brain: Мозги навыкат. Холода не боится
+	L1Brain: На такое лишний раз глянуть — глаза пачкать
+	L2: Кончил — и хорошо. Только не тащи сюда эту вонь
 }
 
 ShenyoExoAndSCalGift: {
-	// L0: 工匠的得意，魔女的执念，凑一块倒是般配
-	// L1: 两桌都收了，算你今天没白忙
-	// L2: 往后这样的日子，不会再有几回了
+	L0: Гордость мастера, одержимость ведьмы. Вместе даже пара
+	L1: Оба стола забрал. Сегодня не зря крутился
+	L2: Таких дней впереди ещё раз-два, не больше
 }
 
 ShenyoEyeOfCthulhuGift: {
-	// L0: 夜里睁着一只眼睛到处看，倒是不怕吓着自己
-	// L1: 眨都不眨，看得人心里发毛
-	// L2: 闭上了，也好，眼不见心不烦
+	L0: Ночью одним глазом шарит. Самого себя не пугается
+	L1: Даже не моргнет. Мурашки по коже
+	L2: Закрылось. И ладно. С глаз долой, из сердца вон
 }
 
 ShenyoGolemGift: {
-	// L0: 石头脑袋，还会蹦跶
-	// L1: 砸开了也不过是个空壳子
-	// L2: 浪花是你自己挣的，我可没帮忙
+	L0: Каменная башка, ещё и прыгает
+	L1: Расколол — а внутри пустая скорлупа
+	L2: Брызги сам себе выбил. Я не помогала
 }
 
 ShenyoKingSlimeGift: {
-	// L0: 这也配称王？
-	// L1: 浑身软趴趴的，倒是挺能蹦
-	// L2: 往后碰上真正难缠的，别学它虚张声势
+	L0: И это король?
+	L1: Весь мятый, а прыгает знатно
+	L2: Как попадётся по-настоящему крепкий орешек — не пыжься, как он
 }
 
 ShenyoSeaShrimpGift: {
-	// L0: That shrimp under the beach, all crystal shell, one punch that knocks the water hollow
-	// L1: It sheds shell after shell, yet its temper never softens a bit
-	// L2: The hollow crack sounds scary, but you caught it, so your hands know their craft
+	L0: Та креветка под пляжем, вся в кристальной броне. Одним ударом воду выбивает насквозь
+	L1: Панцирь скидывает слой за слоем, нрав ни на каплю не мягче
+	L2: Пустой грохот пугает. Ты поймал — в руках есть умение
 }
 
 ShenyoMechsGift: {
-	// L0: 链子、灯泡、骨架，凑一块倒像个笑话
-	// L1: 铁腥味重，我不爱，你倒是不嫌
-	// L2: 三件一起收拾，算你有耐心
+	L0: Цепи, лампочка, скелет. Вместе — анекдот
+	L1: Железом несёт. Мне противно, тебе хоть бы хны
+	L2: Всех троих разом убрал. Терпения хватает, значит
 }
 
 ShenyoMoonLordGift: {
-	// L0: 月亮后头那位，也算见过世面了
-	// L1: 浑身是眼睛，倒是和我这把伞下的雨有点像
-	// L2: 了结了，今晚的月色，替我看仔细些
+	L0: Тот, что за луной. Видал виды, значит
+	L1: Весь в глазах. Чуть похож на дождь под моим зонтом
+	L2: Сегодня луна ничего так
 }
 
 ShenyoOldDukeGift: {
-	// L0: 硫海底下那老东西，脾气比酸水还酸
-	// L1: 跟我打过几次照面，谁也没让过谁
-	// L2: 这回是你赢了，替我记他一笔
+	L0: Старьё. Нрав кислее кислой воды
+	L1: Сходились не раз. Никто не уступил
+	L2: На этот раз ты выиграл
 }
 
 ShenyoPlanteraGift: {
-	// L0: 睡着的花，吵醒了她就得担着
-	// L1: 藤蔓缠人的样子，倒有点像我那把伞收不住的时候
-	// L2: 花汁染了手，回来记得洗干净
+	L0: Спящий цветок. Разбудишь — будут неприятности
+	L1: Лианы так вцепляются — как мой зонт, когда его не свернуть
+	L2: Сок на руки сел — вернёшься, вымой
 }
 
 ShenyoPolterghastGift: {
-	// L0: 地牢里那团魂，缝缝补补好几百年
-	// L1: 跟我算是同类，你倒不必替它说情
-	// L2: 散了也好，好过在那儿吊着
+	L0: Те души в темнице. Латали-перелатывали сотни лет
+	L1: Они жалкие люди. Их и правда можно убить
+	L2: Рассыпались — и ладно. Лучше чем там висеть
 }
 
 ShenyoQueenBeeOrDeerclopsGift: {
-	// L0Bee: 甜是甜，脾气也冲，倒是配
-	// L1Bee: 蜜是好东西，可惜它舍不得给
-	// L0Deer: 独眼的，脾气比我还倔
-	// L1Deer: 一根木头也能闹出这么大动静
-	// L2: 这一趟，没伤着吧
+	L0Bee: Сладкая — сладкая, нрав крутой. Подходит
+	L1Bee: Мёд вещь хорошая. Жаль, жадничает
+	L0Deer: У этого одноглазого нрав упрямый
+	L1Deer: Палка, а шуму как с пожара
+	L2: Эта ходка. Не задело?
 }
 
 ShenyoQueenSlimeGift: {
-	// L0: 粉粉嫩嫩的，倒是会打扮
-	// L1: 还带着侍卫，排场不小
-	// L2: 排场再大，也经不起一场雨
+	L0: Вся розовая, ещё и прихорашивается
+	L1: Да ещё со стражей. Размах не маленький
+	L2: Размах хоть на весь двор — одного дождя не выдержит
 }
 
 ShenyoSkeletronGift: {
-	// L0: 守门守了这么多年，骨头都该酥了
-	// L1: 换了我，早就懒得守了
-	// L2: 地牢的门开了，进去仔细些，别学它守株待兔守出瘾来
+	L0: Столько лет у двери стоял — кости давно труха
+	L1: На моём месте я бы давно забила
+	L2: Дверь темницы открыта. Заходи осторожнее. Не втянись сторожить и ждать, как он
 }
 
 ShenyoSlimeGodGift: {
-	// L0: 紫的黑的搅在一起，也敢称神
-	// L1: 倒是有几分本事，能把这么多恶心东西糊成一团
-	// L2: 化开了就好，省得脏了地方
+	L0: Фиолетовое с чёрным в кучу — и уже бог
+	L1: Руки есть, не спорю. Столько гадости в один ком слепить
+	L2: Растеклось — и ладно. Не будет пачкать землю
 }
 
 ShenyoWallOfFleshGift: {
-	// L0: 地狱里那面肉墙，我隔着伞都嫌烫
-	// L1: 捅穿了，世界也就跟着变了，这种事你倒是干得挺熟练
-	// L2: 以后这种阵仗，还有的是
+	L0: Та мясная стена в аду. Даже сквозь зонт печёт
+	L1: Пробил — мир следом поехал. В таких делах у тебя рука набита
+	L2: Таких побоищ впереди ещё хватит
 }
 
 ShenyoYharonGift: {
-	// L0: 烧了这么多年的一团火，也该熄了
-	// L1: 火和雨，本来就合不来
-	// L2: 羽毛湿了，就飘不起来了，正好
+	L0: Столько лет горела эта куча огня. Пора гаснуть
+	L1: Огонь и дождь друг друга не любят
+	L2: Перья намокли — уже не взлетят
 }

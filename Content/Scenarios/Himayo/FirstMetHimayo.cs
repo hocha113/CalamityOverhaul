@@ -55,6 +55,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
 
         //拿到鬼切即触发，但要等鸟居退场演出（含余响后的静默拍）收完
         //目送容身的鸟居沉没之后，真夜才开口
+        //切歌不在本脚本：黄昏起时 ToriiDuskMusicClaim 认领 Future，提示框跟认领首胜
         protected override NarrativePolicy ConfigurePolicy() => new() {
             IsCompleted = _ => HimayoStorySync.FirstMet,
             CanTrigger = (_, player) => player.HasItem(ModContent.ItemType<OnikiriItem>())

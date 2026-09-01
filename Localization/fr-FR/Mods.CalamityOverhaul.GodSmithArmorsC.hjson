@@ -1,12 +1,12 @@
-// GsMonkArmor.EndowLine: Zen Thunder: standing within your own Lightning Aura enters zen; every fourth melee or summon strike in zen unleashes a piercing thunder-palm wave
-// GsMonkShinobiArmor.EndowLine: Zen Thunder, Shinobi: zen palms come every third strike, and each wave splits two side palms on its first hit
-// GsSquireArmor.EndowLine: Oath Bulwark: taking a hit raises the oath shield for five seconds; melee strikes during it hurl a gilded oath lance from your shoulder
-// GsSquireValhallaArmor.EndowLine: Oath Bulwark, Valhalla: the shield holds six seconds and every strike hurls twin oath lances
-// GsHuntressArmor.EndowLine: Snare the Prey: enemies caught in your explosive traps are marked; ranged hits on marked prey call two thorn bolts from the flanks
-// GsHuntressRedRidingArmor.EndowLine: Snare the Prey, Red Riding: marked prey draws three venom-tipped thorn bolts instead
-// GsApprenticeArmor.EndowLine: Kindlecraft: your Flameburst tower's hits build kindling; at six stacks the next magic hit unfolds a fire glyph over the target, raining three ember bolts
-// GsApprenticeDarkArtistArmor.EndowLine: Kindlecraft, Dark Artist: five stacks suffice, and the glyph turns to shadowflame, raining four shadow embers
-// GsSolarArmor.EndowLine: Corona Burst: the instant a solar dash connects, four coronal fire tongues erupt in a ring and bite nearby enemies; a spare shield adds one more
-// GsVortexArmor.EndowLine: Breach Rend: entering vortex stealth primes a breach shot; a ranged hit from stealth, or right after leaving it, tears open a rift that drags enemies in
-// GsNebulaArmor.EndowLine: Triune Resonance: the moment any nebula booster reaches full level, a nebula bloom bursts forth, pulsing three searing waves before its petals drift back to you
-// GsStardustArmor.EndowLine: Stardust Vigil: enemies punched by your Stardust Guardian bear its seal; strike a sealed enemy yourself and a comet shard falls upon it from above
+GsMonkArmor.EndowLine: "Zen de foudre : entrer dans votre propre aura de foudre vous met en zen ; tous les quatre coups de mêlée ou d'invocation en zen, une onde de paume de foudre perçante part"
+GsMonkShinobiArmor.EndowLine: "Zen de foudre · shinobi : en zen, une paume tous les trois coups ; au premier impact, l'onde se scinde en deux paumes latérales"
+GsSquireArmor.EndowLine: "Rempart du serment : subir un coup lève le bouclier de serment 5 s ; pendant ce temps, un coup de mêlée jette depuis l'épaule une lance de serment dorée"
+GsSquireValhallaArmor.EndowLine: "Rempart du serment · Valhalla : le bouclier tient 6 s, et chaque coup de mêlée jette deux lances"
+GsHuntressArmor.EndowLine: "Chasse au filet : un ennemi pris dans vos pièges explosifs porte une marque de chasse ; un impact à distance sur une proie marquée appelle deux flèches d'épines des flancs"
+GsHuntressRedRidingArmor.EndowLine: "Chasse au filet · capuchon rouge : les flèches d'encerclement passent à trois, et elles sont venimeuses"
+GsApprenticeArmor.EndowLine: "Art du brasier : les impacts de votre sentinelle Burst de flammes accumulent l'allumage ; à six charges, le prochain sort déploie un glyphe de feu au-dessus de la cible et verse trois braises"
+GsApprenticeDarkArtistArmor.EndowLine: "Art du brasier · art sombre : cinq charges suffisent ; le glyphe devient ombre, verse quatre braises d'ombre et enflamme (Flamme d'ombre)"
+GsSolarArmor.EndowLine: "Éclat de couronne : à l'instant où une ruée solaire touche, quatre langues de feu coronaire jaillissent en anneau ; un bouclier encore en réserve en ajoute une"
+GsVortexArmor.EndowLine: "Déchirure de furtivité : entrer en furtivité du Vortex prépare une frappe de percée ; un impact à distance depuis la furtivité, ou à l'instant d'en sortir, déchire une faille qui aspire les ennemis"
+GsNebulaArmor.EndowLine: "Résonance triple : dès qu'un booster Nébula atteint le niveau max, une fleur de Nébula s'ouvre, trois impulsions brûlantes, puis les pétales reviennent vers vous en poussière d'étoile"
+GsStardustArmor.EndowLine: "Veille de poussière d'étoile : un ennemi frappé par votre Gardien de poussière d'étoile porte son sceau ; le frapper vous-même fait tomber un éclat de comète du zénith"

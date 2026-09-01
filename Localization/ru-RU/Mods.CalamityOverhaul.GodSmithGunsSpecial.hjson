@@ -1,82 +1,82 @@
 GsFlamethrower: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: sustained fire stream with two modes. Fan sweeps a wide cone and leaves burning ground; Lance focuses a long piercing jet
-		Right click to switch modes. Sustained spraying drains pressure and shortens the flame; ease off to recover
-		''' */
-	// Mode0: Fan Blaze
-	// Mode1: Lance Jet
+		Перековка: два режима непрерывного пламени. Веер метёт широкий конус и оставляет на земле догорающий след; струя сжимается в пронзающее копьё
+		ПКМ переключает режим. Долгий зажим сдувает давление и укорачивает струю — отпустите, чтобы набрать снова
+		'''
+	Mode0: Веер
+	Mode1: Струя
 }
 
 GsElfMelter: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: festive fire stream with two modes. Melt Fan sprays wide red-green flame laced with thaw mist; Gift Toss focuses a lance jet and lobs a burning present every 0.8s, worth 8 gel
-		Right click to switch modes. Pressure rules still apply: long sprays shorten the flame
-		''' */
-	// Mode0: Melt Fan
-	// Mode1: Gift Toss
+		Перековка: праздничное пламя в двух режимах. Снеготаялка льёт красно-зелёный широкий факел с паром; подарочный выстрел сжимается в узкое копьё и каждые 0.8 с швыряет горящую коробку ценой 8 геля
+		ПКМ переключает режим. Давление то же: долгий зажим укорачивает струю
+		'''
+	Mode0: Снеготаялка
+	Mode1: Подарочный выстрел
 }
 
 GsChainGun: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: hold to spin up Suppression mode, ramping to the fastest fire rate in the land until the barrels glow red-hot after 8s of sustained fire, forcing a slowdown until you let go
-		Right click to switch to Chain Focus: no spin-up, slower but precise and much harder-hitting. Firing slows your movement in Suppression
-		''' */
-	// Mode0: Suppression
-	// Mode1: Chain Focus
+		Перековка: удерживайте — ствол разгоняется до самого быстрого в Террарии; через 8 с полного нажима ствол краснеет и вынужденно сбавляет, пока не отпустите остыть
+		ПКМ — цепное сжатие: без разгона, медленнее, но точно и тяжело. В подавлении скорость передвижения падает
+		'''
+	Mode0: Тотальное подавление
+	Mode1: Цепное сжатие
 }
 
 GsDartPistol: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: two firing modes. Twin Sting fires quick two-round bursts, second dart at 70%; Still Fang rewards standing still 0.8s with a +60% double-speed ambush dart
-		Right click to switch modes. Dart ammo effects are fully preserved
-		''' */
-	// Mode0: Twin Sting
-	// Mode1: Still Fang
+		Перековка: два режима стрельбы. Двойная игла бьёт двумя быстрыми дротиками, второй на 70% урона; тихая охота требует 0.8 с стояния — взамен дротик +60% урона и вдвое быстрее
+		ПКМ переключает режим. Эффекты дротиковых боеприпасов сохранены целиком
+		'''
+	Mode0: Двойная игла
+	Mode1: Тихая охота
 }
 
 GsDartRifle: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: two firing modes. Pierce Draw charges while held with a fading-in aim line and looses on release: a full 1s draw gives x2 dart speed, +2 pierce and +50% damage; Triple Fan spits 3 darts at 60% each for a single dart
-		Right click to switch modes. Dart ammo effects are fully preserved
-		''' */
-	// Mode0: Pierce Draw
-	// Mode1: Triple Fan
+		Перековка: два режима стрельбы. Пронзающий заряд — удерживайте, линия прицела проявляется, отпустите дротик: за 1 с полной зарядки скорость вдвое, пробитие +2, урон +50%; тройной веер бьёт три дротика ±6°, по 60% урона, тратит 1 дротик
+		ПКМ переключает режим. Эффекты дротиковых боеприпасов сохранены целиком
+		'''
+	Mode0: Пронзающий заряд
+	Mode1: Тройной веер
 }
 
 GsPiranhaGun: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: two hunting modes. Latch is the classic bite-and-hold; School Patrol sends the fish circling your cursor for 6s, gnawing anything in the ring, then they swim home
-		Right click to switch modes. Patrol fish deal 85% damage per bite; at most 9 patrol fish at once
-		''' */
-	// Mode0: Latch
-	// Mode1: School Patrol
+		Перековка: две охоты. Укус — классическая фиксация; патруль стаи кружит пираний у курсора 6 с, всё в кольце кусают, затем плывут в гнездо
+		ПКМ переключает режим. Патрульная рыба кусает на 85% урона, на поле не больше 9
+		'''
+	Mode0: Укус
+	Mode1: Патруль стаи
 }
 
 GsToxikarp: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: two spit modes. Bubble Stream is the classic rapid fire; Pustule takes about triple the time to charge one bloated bubble at x2.4 damage that bursts into 6 spore bubbles and a lingering toxic cloud
-		Right click to switch modes. No ammo, as always
-		''' */
-	// Mode0: Bubble Stream
-	// Mode1: Pustule
+		Перековка: два режима пузырей. Поток — классическая скорострельность; нарыв около трёхкратного времени выдавливает раздутый пузырь на 2.4× урона, при разрыве сыплет 6 споровых пузырей и оставляет ядовитый туман
+		ПКМ переключает режим. Боеприпасы по-прежнему не нужны
+		'''
+	Mode0: Поток яда
+	Mode1: Нарыв
 }
 
 GsCoinGun: {
-	/* Desc:
+	Desc:
 		'''
-		Reforged: right click cycles the denomination, limited to coins you carry. Copper fires 3-coin sprays, Silver pierces one extra target, Gold hits 10% harder, Platinum bursts into golden light on hit
-		Return on Investment: kills refund 1 coin of that denomination, capped at 3 per second
-		''' */
-	// Denom0: Copper Spray
-	// Denom1: Silver Pierce
-	// Denom2: Gold Weight
-	// Denom3: Platinum Burst
-	// NoCoins: No coins to load!
+		Перековка: ПКМ крутит номинал, можно выбрать только монеты, что у вас есть. Медь бьёт тройным брызгом, серебро пронзает ещё одну цель, золото +10% урона, платина вспыхивает золотым светом
+		Возврат вложений: убийство возвращает 1 монету этого номинала, не больше 3 в секунду
+		'''
+	Denom0: Медный брызг
+	Denom1: Серебряное пробитие
+	Denom2: Золотой вес
+	Denom3: Платиновая вспышка
+	NoCoins: Нет монет для зарядки!
 }

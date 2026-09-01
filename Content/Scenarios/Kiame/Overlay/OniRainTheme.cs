@@ -23,6 +23,9 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
     {
         internal const string MusicPath = "CalamityOverhaul/Assets/Sounds/Music/Rains";
 
+        //初遇窗口内 Rains 提示只跟认领首胜弹一次；落幕后雨里常驻 / 教程卡不再武装
+        private static bool firstMeetToastShown;
+
         internal static bool ShouldPlay() {
             Player player = Main.LocalPlayer;
             if (player?.active != true) {
@@ -45,6 +48,24 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
                 || OniRainWorldState.LocalIn
                 || KikasaHudLead.CardVisible;
         }
+
+        /// <summary>认领胜出帧：初遇窗口内弹一次「夢のきざはし」</summary>
+        internal static void NotifyThemeWon() {
+            if (Main.dedServ || ShenyoStorySync.PostFirstMetIsComplete || firstMeetToastShown) {
+                return;
+            }
+            firstMeetToastShown = true;
+            ThemeMusicToast.ShowShenyo();
+        }
+
+        /// <summary>初遇未完成且曲已停，解除武装以便折返再靠近时再弹</summary>
+        internal static void TickToastArm() {
+            if (!ShouldPlay() && !ShenyoStorySync.PostFirstMetIsComplete) {
+                firstMeetToastShown = false;
+            }
+        }
+
+        internal static void ResetToastArm() => firstMeetToastShown = false;
     }
 
     /// <summary>鬼伞主题认领：初遇前演出压过 Boss 曲（沿旧语义），初遇后才让位；BossRush 恒让</summary>
@@ -55,5 +76,6 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
         public override bool YieldToBossRush => true;
         public override bool ShouldPlay() => OniRainTheme.ShouldPlay();
         public override int GetMusicSlot() => MusicLoader.GetMusicSlot(OniRainTheme.MusicPath);
+        public override void OnWinFrame() => OniRainTheme.NotifyThemeWon();
     }
 }

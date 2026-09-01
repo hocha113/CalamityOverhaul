@@ -1,56 +1,56 @@
 SoulBurning: {
 	DisplayName: Огонь душ
-	Description: Из пламени Ада
+	Description: Пламя из ада
 }
 
 RevelationMarkDebuff: {
-	// DisplayName: Mark of Revelation
-	// Description: Under John's gaze, all damage taken is increased
+	DisplayName: Печать откровения
+	Description: Под взглядом Иоанна весь получаемый урон повышен
 }
 
 TruthRevealDebuff: {
-	// DisplayName: Truth Revealed
-	// Description: Armor stripped away, nowhere to hide
+	DisplayName: Явленное слово
+	Description: Броня сорвана, спрятаться негде
 }
 
 WealthBlessingDebuff: {
-	// DisplayName: Blessing of Wealth
-	// Description: Bursts into a devoted golden rain upon death
+	DisplayName: Благословение богатства
+	Description: При смерти вспыхнет посвящённый золотой дождь
 }
 
 VerificationBuff: {
-	// DisplayName: Eye of Verification
-	// Description: Thomas has verified it, your strikes will surely crit
+	DisplayName: Око проверки
+	Description: Фома уже удостоверился: ваши удары обязательно критические
 }
 
 ZealotFervorBuff: {
-	// DisplayName: Fervor
-	// Description: The Zealot's holy fire burns within, attack and movement speed surge
+	DisplayName: Рвение
+	Description: Святой огонь зилота горит в груди; скорость атаки и передвижения взмывают
 }
 
 PlagueMarkDebuff: {
-	// DisplayName: Plague Mark
-	// Description: The Plague Horseman's holy pestilence is eating away at life
+	DisplayName: Печать чумы
+	Description: Святая мор всадника чумы разъедает жизнь
 }
 
 HellburnBuff: {
 	DisplayName: Адский жар
-	Description: Из пламени Ада
+	Description: Пламя из ада
 }
 
 KikasaWispBurn: {
-	// DisplayName: Wisp Fire
-	// Description: Golden wisp fire from the lake clings and burns
+	DisplayName: Ожог блуждающего огня
+	Description: Золотой блуждающий огонь с озера липнет и жжёт
 }
 
 KikasaInkTag: {
-	// DisplayName: Ink Seal
-	// Description: Stamped by the Kikasa's ink, summons deal bonus damage to this target
+	DisplayName: Чернильная печать
+	Description: На нём печать Кикасы; прислужники бьют эту цель дополнительным уроном
 }
 
 DivineSourceChargeBuff: {
-	// DisplayName: Auric Surge
-	// Description: The Divine Source Blade runs at full output, damage soars and bolts rain
+	DisplayName: Заряд золотого источника
+	Description: Клинок золотого источника работает на полную: урон резко растёт, световые стрелы сыплются дождём
 }
 
 VoidErosion: {
@@ -60,195 +60,195 @@ VoidErosion: {
 
 DestroyerSummonBuff: {
 	DisplayName: Уничтожитель
-	Description: Мини-Уничтожитель будет следовать за вами в бою
+	Description: Мини-Уничтожитель следует за вами в бой
 }
 
 DestroyerStalkBuff: {
-	// DisplayName: Stalk Protocol
-	// Description: Increased movement speed. Close in and right click to unleash the Destroyer's bite
+	DisplayName: Протокол засады
+	Description: Скорость передвижения повышена, вы ждёте момента. Подойдите к добыче и нажмите ПКМ, чтобы нанести укус Уничтожителя
 }
 
 DestroyerFrenzyBuff: {
-	// DisplayName: Annihilation Protocol
-	// Description: The blade overloads: increased damage, homing projectiles, and finishers launch Destroyer heads
+	DisplayName: Протокол истребления
+	Description: Клинок Уничтожителя полностью перегружен: урон растёт, снаряды наводятся, завершающий удар изрыгает головы Уничтожителя
 }
 
 EyekiteBuff: {
-	// DisplayName: Bound Gaze
-	// Description: A small Eye of Cthulhu is bound to you by a blood-soaked cord
+	DisplayName: Связанный взгляд
+	Description: Маленькое Око Ктулху, связанное кровавой нитью, держится рядом
 }
 
 DeepclawBuff: {
-	// DisplayName: Deepclaw Lobster
-	// Description: An abyssal lobster prowls at your side, pincers at the ready
+	DisplayName: Омар Клешни бездны
+	Description: Глубинный омар идёт рядом, размахивая огромными клешнями
 }
 
 BloomCallerBuff: {
-	// DisplayName: Wildbloom Company
-	// Description: A wildbloom sprout drifts at your side, thorns at the ready
+	DisplayName: Спутник дикого цветка
+	Description: Росток дикого цветка держится рядом, готовый метнуть свисающий шип
 }
 
 EyetoothWound: {
-	// DisplayName: Fang Wound
-	// Description: The bite keeps weeping blood
+	DisplayName: Клыковая рана
+	Description: Рана, вскрытая клыком, всё ещё сочится кровью
 }
 
 FrenziedMachineSoul: {
-	DisplayName: Душа Машины в Ярости
+	DisplayName: Душа машины в ярости
 	Description: Машинный дух вне себя от радости!
 }
 
 FishoilBuff: {
 	DisplayName: Рыбий жир
-	Description: Вы чувствуете, что ваша кожа становится жирной
+	Description: Кажется, кожа становится жирной
 }
 
 HyperDisintegration: {
-	DisplayName: Гипердезинтеграция
+	DisplayName: Сверхраспад
 	Description: Разрушает цель изнутри
 }
 
 FocusMark: {
 	DisplayName: Метка фокуса
-	Description: Лучи смерти наносят дополнительный урон по этой метке
+	Description: Луч смерти, попавший в эту метку, получает усиление
 }
 
 TemporalStasis: {
-	DisplayName: Временной стазис
-	Description: Время застывает вокруг цели
+	DisplayName: Остановка времени
+	Description: Время вокруг него застыло
 }
 
 GravitationalCollapse: {
 	DisplayName: Гравитационный коллапс
-	Description: Утаскивает в бездну собственным весом
+	Description: Собственный вес тащит в бездну
 }
 
 MarbleRiposteBuff: {
-	// DisplayName: Marble Riposte
-	// Description: Melee damage increased by 10%
+	DisplayName: Контратака каменного стража
+	Description: Урон ближнего боя +10%
 }
 
 MarblePetrify: {
-	// DisplayName: Marble Petrification
-	// Description: Flesh turns to marble, movements grind to a halt
+	DisplayName: Мраморное окаменение
+	Description: Плоть становится статуей, движения вязнут
 }
 
 PallbearerShrouded: {
-	// DisplayName: Marked for Collection
-	// Description: The coffin's breath clings to it; the casket knows whom to collect
+	DisplayName: Метка погребения
+	Description: Дыхание гроба осело на теле; этот гроб его узнаёт
 }
 
 PallbearerSealed: {
-	// DisplayName: Encoffined
-	// Description: The casket's weight lingers; damage taken is increased
+	DisplayName: Запечатан в гроб
+	Description: Давление гроба ещё держится; получаемый урон повышен
 }
 
 OniNeckGripDebuff: {
-	// DisplayName: Oni Chokehold
-	// Description: An oni hand is squeezing your throat; your movements grow heavy
+	DisplayName: Призрачная рука на горле
+	Description: Призрачная рука сжимает горло; движения тяжелеют
 }
 
 OniBindDebuff: {
-	// DisplayName: Ink-Bound
-	// Description: Ink clings to its footing; movement turns sluggish
+	DisplayName: Липкие путы
+	Description: Чернила прилипли к ногам, шаг вязнет
 }
 
 OniNumbDebuff: {
-	// DisplayName: Numbed
-	// Description: Limbs gone numb — slower to move, softer to strike
+	DisplayName: Онемение
+	Description: Руки и ноги немеют: двигаешься медленнее, бьёшь слабее
 }
 
 ScapeAfterburn: {
-	// DisplayName: Scapegoat Afterburn
-	// Description: Severe aftershocks from death evasion; movement speed reduced by 28%
+	DisplayName: После подмены смерти
+	Description: Жёсткое последствие подмены смерти; скорость передвижения −28%
 }
 
 GhostGripDebuff: {
-	// DisplayName: Withered Grip
-	// Description: Seized by the charred hand — there is no moving
+	DisplayName: Хватка сухой руки
+	Description: Схвачен обгорелой рукой, не сдвинуться
 }
 
 OniPaperBrandDebuff: {
-	// DisplayName: Effigy Wound
-	// Description: Backlash from the paper effigy being struck; takes increased damage from Onikiri slashes
+	DisplayName: Рана бумажной тени
+	Description: Отдача от ран бумажного двойника; урон рассечений Оникири повышен
 }
 
 FuHongBlessBuff: {
-	// DisplayName: Rainbow Bridge Grace
-	// Description: Under the rainbow bridge: +10% movement speed, +10% summon damage
+	DisplayName: Покров радужного моста
+	Description: Под радужным мостом скорость передвижения +10%, урон призыва +10%
 }
 
 IndustrialShieldBuff: {
-	// DisplayName: Energy Shield
-	// Description: The shield keeps charging and absorbs part of incoming damage
+	DisplayName: Энергетический щит
+	Description: Щит продолжает копить заряд и при ударе принимает часть урона за вас
 }
 
 IndustrialRegenBuff: {
-	// DisplayName: Healing Aura
-	// Description: A healing station is restoring your health
+	DisplayName: Лечебная аура
+	Description: Лечебная станция восстанавливает вам жизнь
 }
 
 RotsawRendDebuff: {
-	// DisplayName: Rotsaw
-	// Description: Flesh is being sawed apart, losing 40 life per second
+	DisplayName: Гнилая пила
+	Description: Плоть рвут зубья; −40 здоровья в секунду
 }
 
 WaxWardBuff: {
-	// DisplayName: Wax Ward
-	// Description: The swarm's wax ward is absorbing damage in your stead
+	DisplayName: Восковая броня
+	Description: Восковая броня роя принимает удары за вас
 }
 
 SwarmVortexDebuff: {
-	// DisplayName: Swarm Vortex
-	// Description: Shredded by the swarm vortex, movements slowed
+	DisplayName: В воронке роя
+	Description: Вас рвёт вихрь роя; движения замедлены
 }
 
 MawCorrosionBuff: {
-	// DisplayName: Acid Corrosion
-	// Description: Acid is eating through armor
+	DisplayName: Кислотная коррозия
+	Description: Кислота проедает броню
 }
 
 WhiteoutStormBuff: {
-	// DisplayName: Whiteout Storm
-	// Description: An extra 30% damage reduction and knockback immunity; the snow veil does not block your sight
+	DisplayName: Белая буря
+	Description: Дополнительно 30% снижения урона и иммунитет к отбрасыванию; снежная завеса не закрывает вам обзор
 }
 
 WhiteblindDebuff: {
-	// DisplayName: Whiteblind
-	// Description: Blinded by the blizzard, movements dulled, 10 frostbite damage per second
+	DisplayName: Белая слепота
+	Description: Метель застит глаза, движения вязнут, 10 единиц обморожения в секунду
 }
 
 BloomSnaredDebuff: {
-	// DisplayName: Thorn Snare
-	// Description: Entangled in bramble vines, bound and torn by thorns
+	DisplayName: Терновое обвитие
+	Description: Опутан терновником, скован, шипы рвут плоть
 }
 
 SoulbindCurseDebuff: {
-	// DisplayName: Soulbinding Curse
-	// Description: Trapped in the curse domain, taking increased damage from its owner
+	DisplayName: Проклятие связанной души
+	Description: Вы в проклятом домене; урон от хозяина домена повышен
 }
 
 SoulGripLockDebuff: {
-	// DisplayName: Soul Grip
-	// Description: Clutched in the ghostly hand's grasp, unable to move
+	DisplayName: Хватка призрачной длани
+	Description: Призрачная огромная рука стиснула вас, не сдвинуться
 }
 
 SoulbindOverwhelmDebuff: {
-	// DisplayName: Soul Crush
-	// Description: Cursed flames bear down; all damage taken is increased by 20%
+	DisplayName: Гнёт связанной души
+	Description: Проклятое пламя давит сверху; весь получаемый урон +20%
 }
 
 RefractionTag: {
-	// DisplayName: Refraction
-	// Description: Slowed; the Refraction Waltz wearer gains 8% crit chance against it
+	DisplayName: Преломление
+	Description: Движения замедлены; носитель Вальса преломления получает +8% шанса крита по этой цели
 }
 
 AbyssalPressure: {
-	// DisplayName: Abyssal Pressure
-	// Description: Wrapped in crushing deep-sea pressure, movement is severely impeded
+	DisplayName: Давление бездны
+	Description: Глубинное давление обхватывает тело, движения вязнут
 }
 
 BlessErosionBuff: {
-	// DisplayName: Erosion
-	// Description: The Ring of Rot gnaws the armor, reducing defense by 10
+	DisplayName: Эрозия
+	Description: Кольцо порчи гложет броню; защита −10
 }

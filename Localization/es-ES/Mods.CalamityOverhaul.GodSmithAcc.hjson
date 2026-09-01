@@ -1,215 +1,215 @@
-/* GodSmithFeralClaws.EffectDesc:
+GodSmithFeralClaws.EffectDesc:
 	'''
-	Wild Tempo: chaining melee hits within 2.5s stacks +1% melee speed each, up to 8 stacks
-	At 6+ stacks strikes shed feral claw sparks; taking a hit breaks the tempo
-	''' */
-/* GodSmithTitanGlove.EffectDesc:
+	Ritmo salvaje: encadenar golpes cuerpo a cuerpo en 2.5 s acumula Salvajismo, +1% de velocidad cuerpo a cuerpo por capa, hasta 8
+	A partir de 6 capas, los tajos echan chispas de garras; recibir un golpe corta el ritmo
 	'''
-	Titan Quake: every 5th melee strike slams a shockwave around the target
-	Deals 35% / 45% / 55% of that strike (Titan / Power / Mechanical) in an area with heavy knockback
-	''' */
-/* GodSmithFireGauntlet.EffectDesc:
+GodSmithTitanGlove.EffectDesc:
 	'''
-	Molten Quake: every 5th melee strike erupts a burning shockwave dealing 60% of that strike
-	The blast ignites foes with hellfire
-	''' */
-/* GodSmithBerserkerGlove.EffectDesc:
+	Sismo titánico: cada quinto golpe cuerpo a cuerpo estalla una onda de choque en el objetivo y lo empuja con fuerza
+	Inflige en área el 35%/45%/55% de ese golpe (Guante de titán/de poder/mecánico)
 	'''
-	Berserk Quake: every 5th melee strike detonates a shockwave dealing 70% of that strike
-	Each quake drives you berserk: +10% melee speed for 3s
-	''' */
-/* GodSmithWarriorEmblem.EffectDesc:
+GodSmithFireGauntlet.EffectDesc:
 	'''
-	War Momentum: melee hits build fervor, +1.5% melee damage per stack, up to 6 stacks (4s)
-	At full stacks strikes flare gold; taking a hit sheds 3 stacks
-	''' */
-/* GodSmithRangerEmblem.EffectDesc:
+	Sismo de magma: cada quinto golpe cuerpo a cuerpo estalla una onda abrasadora que inflige el 60% de ese golpe
+	La detonación prende a los enemigos (Fuego infernal)
 	'''
-	Long Hunt: ranged hits from over 25 tiles away grant Focus for 4s: +8% ranged damage
-	Focused hits gleam with silver tracer sparks
-	''' */
-/* GodSmithSorcererEmblem.EffectDesc:
+GodSmithBerserkerGlove.EffectDesc:
 	'''
-	Arcane Resurge: magic hits restore 6 mana, or 12 when below 30% mana
-	Triggers once every 0.75s
-	''' */
-/* GodSmithSummonerEmblem.EffectDesc:
+	Sismo berserker: cada quinto golpe cuerpo a cuerpo detona una onda que inflige el 70% de ese golpe
+	Cada sismo te vuelve berserker 3 s: +10% de velocidad cuerpo a cuerpo
 	'''
-	Legion Call: minion and whip hits rally the legion, +1.5% summon damage per stack, up to 4 stacks (6s)
-	Reaching full rally pulses a golden command ring
-	''' */
-/* GodSmithAvengerEmblem.EffectDesc:
+GodSmithWarriorEmblem.EffectDesc:
 	'''
-	Avenger's Brand: taking a hit brands you with vengeance for 5s: +8% damage of all types
-	The brand flares blood-gold when struck
-	''' */
-/* GodSmithDestroyerEmblem.EffectDesc:
+	Ímpetu de ruptura: los golpes cuerpo a cuerpo acumulan Ímpetu, +1.5% de daño cuerpo a cuerpo por capa, hasta 6, durante 4 s
+	A capas llenas, los tajos echan llama oro-roja; recibir un golpe pierde 3 capas
 	'''
-	Annihilation Protocol: striking a foe below 20% life fires a crimson probe pulse at it
-	The pulse deals 50% of that strike, once every 0.67s
-	''' */
-/* GodSmithEyeoftheGolem.EffectDesc:
+GodSmithRangerEmblem.EffectDesc:
 	'''
-	Golem's Gaze: landing a critical hit locks the gaze for 4s: +6% critical strike chance
-	Triggers once every 1.5s; gazing crits burn with sun sparks
-	''' */
-/* GodSmithMagicQuiver.EffectDesc:
+	Enfoque de caza larga: un impacto a distancia desde más de 25 bloques otorga 4 s de Enfoque: +8% de daño a distancia
+	Bajo Enfoque, los impactos dejan un destello plateado
 	'''
-	Lumen Draw: every 7th ranged hit conjures a spectral bolt that homes in on the target
-	The bolt deals 45% of that hit as it pierces
-	''' */
-/* GodSmithMoltenQuiver.EffectDesc:
+GodSmithSorcererEmblem.EffectDesc:
 	'''
-	Molten Core: ranged hits ignite the target with hellfire, once every 0.75s
-	Each ignition stokes your core for 4s: +6 ranged armor penetration
-	''' */
-/* GodSmithStalkersQuiver.EffectDesc:
+	Reflujo arcano: un impacto mágico devuelve 6 de maná, o 12 si el maná está por debajo del 30%
+	Como máximo una vez cada 0.75 s
 	'''
-	Stalker's Veil: after 4s without taking damage you slip into the veil: +8% ranged damage
-	Veiled hits trail dusk sparks; taking a hit breaks the veil
-	''' */
-/* GodSmithNaturesGift.EffectDesc:
+GodSmithSummonerEmblem.EffectDesc:
 	'''
-	Nature's Boon: magic hits bloom with life, healing 5 HP and restoring 5 mana
-	Triggers once every 1.5s
-	''' */
-/* GodSmithManaFlower.EffectDesc:
+	Orden de legión: los impactos de súbditos y látigos reúnen la Orden, +1.5% de daño de invocación por capa, hasta 4, durante 6 s
+	Al completar el efectivo, un anillo dorado de mando se abre a tu alrededor
 	'''
-	Nectar Surge: dropping below 20% mana instantly restores 50 mana in a burst of petals
-	Triggers once every 10s
-	''' */
-/* GodSmithArcaneFlower.EffectDesc:
+GodSmithAvengerEmblem.EffectDesc:
 	'''
-	Arcane Siphon: magic hits siphon power, +1% magic damage per stack, up to 6 stacks (5s)
-	At full siphon your spells also cost 5% less mana
-	''' */
-/* GodSmithMagnetFlower.EffectDesc:
+	Marca de venganza: recibir un golpe te marca 5 s: +8% a todo el daño
+	Al activarse, la marca echa llama oro-sangre
 	'''
-	Magnetic Arc: magic hits fling an arc of charge to another foe within 19 tiles
-	The arc deals 35% of that hit, once every 0.75s
-	''' */
-/* GodSmithManaCloak.EffectDesc:
+GodSmithDestroyerEmblem.EffectDesc:
 	'''
-	Woven Stars: magic hits weave mana stardust around you, up to 3 charges
-	When struck, all stored stardust flies out as homing star bolts dealing 60 damage each
-	''' */
-/* GodSmithRifleScope.EffectDesc:
+	Protocolo de aniquilación: al golpear a un enemigo por debajo del 20% de vida, le dispara un pulso de aniquilación
+	El pulso inflige el 50% de ese golpe, como máximo uno cada 0.67 s
 	'''
-	Steady Aim: standing still for 1.25s steadies the scope; your next ranged hit looses a piercing tracer
-	The tracer deals 45% / 60% / 75% of that hit (Rifle / Sniper / Recon) and pierces 2 / 3 / 4 foes
-	Moving fast drains your aim
-	''' */
-/* GodSmithPygmyNecklace.EffectDesc:
+GodSmithEyeoftheGolem.EffectDesc:
 	'''
-	War Dance: minion hits keep the dance alive, +1.2% summon damage per stack, up to 5 stacks (6s)
-	At full tempo minion strikes scatter tribal feather sparks
-	''' */
-/* GodSmithNecromanticScroll.EffectDesc:
+	Mirada del gólem: un golpe crítico fija la Mirada 4 s: +6% de probabilidad de golpe crítico
+	Como máximo una vez cada 1.5 s; los críticos bajo la Mirada echan chispas solares
 	'''
-	Soul Harvest: when a minion kill lands, a bound soulflame rises from the corpse
-	It homes in on the nearest foe dealing 40% of the killing blow, once every 1.5s
-	''' */
-/* GodSmithPapyrusScarab.EffectDesc:
+GodSmithMagicQuiver.EffectDesc:
 	'''
-	Gilded Scarab: minion hits gild the target with Midas, once every 1s
-	While any foe is gilded, your minions deal +5% damage
-	''' */
-/* GodSmithHerculesBeetle.EffectDesc:
+	Arco de luz: cada séptimo impacto a distancia condensa una flecha espectral que persigue al objetivo
+	La flecha inflige el 45% de ese golpe y puede atravesar
 	'''
-	Hercules Ram: minion hits build wrestling might; at 8 charges the next minion hit
-	looses a colossal beetle horn that rams through the line, dealing 90% of that hit with massive knockback
-	''' */
-/* GodSmithShackle.EffectDesc:
+GodSmithMoltenQuiver.EffectDesc:
 	'''
-	Soulbound Irons: taking a hit anchors you for 4s: immune to knockback and +4 defense
-	Triggers once every 5s
-	''' */
-/* GodSmithCobaltShield.EffectDesc:
+	Núcleo fundido: un impacto a distancia prende al objetivo (Fuego infernal), como máximo una vez cada 0.75 s
+	Cada ignición calienta el núcleo 4 s: +6 de penetración de armadura a distancia
 	'''
-	Bulwark Echo: taking a hit rings the shield, granting +6 / +8 / +10 defense (Cobalt / Obsidian / Ankh) for 3s
-	Obsidian's echo ignites nearby foes; Ankh's echo also cleanses up to 2 debuffs
-	Triggers once every 4s
-	''' */
-/* GodSmithPaladinsShield.EffectDesc:
+GodSmithStalkersQuiver.EffectDesc:
 	'''
-	Paladin's Retribution: taking a hit hurls a judging hammer at the nearest foe
-	The hammer deals 150% of the damage you took and pierces 3, once every 5s
-	Damage absorbed for teammates counts too
-	''' */
-/* GodSmithHeroShield.EffectDesc:
+	Velo de acecho: 4 s sin recibir daño y entras en el Velo: +8% de daño a distancia
+	Bajo el velo, los impactos dejan chispas púrpura; recibir un golpe rompe el velo
 	'''
-	Hero's Pact: taking a hit seals a pact for 5s: +8 defense, and your melee hits drain 1 HP
-	Triggers once every 4s
-	''' */
-/* GodSmithFrozenShield.EffectDesc:
+GodSmithNaturesGift.EffectDesc:
 	'''
-	Cryo Ward: a killing blow instead freezes into the crystal: you survive at 25% max life,
-	nearby foes are blasted with frostburn, and you gain brief immunity
-	Once every 90s
-	''' */
-/* GodSmithStarCloak.EffectDesc:
+	Don de la naturaleza: un impacto mágico abre una flor de vida, restaura 5 de vida y 5 de maná
+	Como máximo una vez cada 1.5 s
 	'''
-	Starfall Echo: taking a hit calls down 2 godsmith stars beyond the vanilla ones
-	Each deals 40 damage and rakes a golden trail, once every 2s
-	''' */
-/* GodSmithBeeCloak.EffectDesc:
+GodSmithManaFlower.EffectDesc:
 	'''
-	Guardian Swarm: taking a hit startles 3 bees from the cloak and coats you in honey for 5s
-	Triggers once every 3s
-	''' */
-/* GodSmithCrossNecklace.EffectDesc:
+	Néctar de emergencia: al caer por debajo del 20% de maná, recuperas al instante 50 de maná y estallan pétalos azul-blanco
+	Como máximo una vez cada 10 s
 	'''
-	Martyr's Mending: taking a hit opens a 3s mending window: +3 HP/s regeneration
-	and knockback immunity while it lasts
-	''' */
-/* GodSmithStarVeil.EffectDesc:
+GodSmithArcaneFlower.EffectDesc:
 	'''
-	Star Curtain: taking a hit draws a curtain of starlight for 2.5s: further damage taken is reduced by 30%
-	Triggers once every 5s
-	''' */
-/* GodSmithMoonCharm.EffectDesc:
+	Sifón arcano: un impacto mágico sifona poder, +1% de daño mágico por capa, hasta 6, durante 5 s
+	A capas llenas, el coste de los hechizos baja otro 5%
 	'''
-	Lunar Hunt: at night your melee bites drain 2 HP from the prey, once every 0.5s
-	Each bite gleams with moon-silver sparks
-	''' */
-/* GodSmithMoonStone.EffectDesc:
+GodSmithMagnetFlower.EffectDesc:
 	'''
-	Lunar Aegis: at night, taking a hit veils you in moonlight for 4s: +8 defense
-	Triggers once every 4s
-	''' */
-/* GodSmithNeptunesShell.EffectDesc:
+	Arco magnético: un impacto mágico lanza un arco de carga a otro enemigo en un radio de 19 bloques
+	El arco inflige el 35% de ese golpe, como máximo una vez cada 0.75 s
 	'''
-	Tidal Surge: plunging into water raises a tide guard for 5s: +6 defense, once every 5s
-	While wet your strikes splash with sea foam
-	''' */
-/* GodSmithCelestialStone.EffectDesc:
+GodSmithManaCloak.EffectDesc:
 	'''
-	Day and Night Phases: by day your strikes ignite foes with hellfire; by night they sear with frostburn
-	Triggers once every 2s, flaring sun-gold or moon-frost
-	''' */
-/* GodSmithCelestialShell.EffectDesc:
+	Polvo estelar tejido: un impacto mágico teje hasta 3 motas de maná a tu alrededor
+	Al recibir un golpe, todas salen persiguiendo enemigos, 60 de daño cada una
 	'''
-	Total Celestial: by day strikes ignite, by night they frostburn, once every 1.5s
-	Plunging into water raises a tide guard for 5s: +8 defense, once every 5s
-	''' */
-/* GodSmithCharmofMyths.EffectDesc:
+GodSmithRifleScope.EffectDesc:
 	'''
-	Mythic Afterglow: drinking a healing potion leaves an afterglow for 8s: +2 HP/s regeneration
-	The glow swirls emerald while it mends
-	''' */
-/* GodSmithWormScarf.EffectDesc:
+	Puntería estable: permanecer quieto 1.25 s carga la puntería; el siguiente impacto a distancia suelta una trazadora que atraviesa
+	La trazadora inflige el 45%/60%/75% de ese golpe (Mira de rifle/de francotirador/de reconocimiento) y atraviesa 2/3/4 enemigos
+	Moverte a gran velocidad disipa la puntería
 	'''
-	Symbiotic Carapace: each hit taken grows a carapace plate: -4% damage taken per plate, up to 3 plates (8s)
-	The scarf coils tighter the harder you are pressed
-	''' */
-/* GodSmithBrainOfConfusion.EffectDesc:
+GodSmithPygmyNecklace.EffectDesc:
 	'''
-	Neural Shockwave: taking a hit bursts a psychic wave: nearby foes are confused for 3s
-	and your own mind overclocks: +8% damage for 3s. Triggers once every 4s
-	''' */
-/* GodSmithShieldofCthulhu.EffectDesc:
+	Danza de guerra: los impactos de súbditos prolongan la danza, +1.2% de daño de invocación por capa, hasta 5, durante 6 s
+	A tempo lleno, los ataques de súbditos esparcen plumas de tótem
 	'''
-	Pupil Rupture: bashing a foe with your dash ruptures a crimson shockwave around it
-	dealing 25 damage with heavy knockback, once every 1.5s
-	Dashing trails a crimson gaze
-	''' */
+GodSmithNecromanticScroll.EffectDesc:
+	'''
+	Cosecha de almas: cuando un súbdito mata, una llama de alma atada se alza del cadáver y persigue al enemigo más cercano
+	La llama inflige el 40% del golpe mortal, como máximo una vez cada 1.5 s
+	'''
+GodSmithPapyrusScarab.EffectDesc:
+	'''
+	Escarabajo dorado: un impacto de súbdito dora al objetivo (suelta más monedas), como máximo una vez por segundo
+	Mientras haya un enemigo dorado, tus súbditos infligen +5% de daño
+	'''
+GodSmithHerculesBeetle.EffectDesc:
+	'''
+	Embestida de Hércules: los impactos de súbditos acumulan fuerza; al llenar 8 capas, el siguiente impacto de súbdito
+	suelta un cuerno de Hércules que ara la línea, inflige el 90% de ese golpe y empuja con fuerza
+	'''
+GodSmithShackle.EffectDesc:
+	'''
+	Grilletes de alma: recibir un golpe te ancla 4 s: inmunidad al retroceso y +4 de defensa
+	Como máximo una vez cada 5 s
+	'''
+GodSmithCobaltShield.EffectDesc:
+	'''
+	Eco del baluarte: recibir un golpe hace resonar el escudo y otorga 3 s de armadura: +6/+8/+10 de defensa (cobalto/obsidiana/ankh)
+	El eco de obsidiana prende a los enemigos cercanos; el del ankh también limpia hasta 2 perjuicios
+	Como máximo una vez cada 4 s
+	'''
+GodSmithPaladinsShield.EffectDesc:
+	'''
+	Retribución del paladín: recibir un golpe lanza un martillo de juicio al enemigo más cercano
+	El martillo inflige el 150% del daño recibido, atraviesa 3 enemigos, como máximo una vez cada 5 s
+	El daño absorbido por un aliado también cuenta
+	'''
+GodSmithHeroShield.EffectDesc:
+	'''
+	Pacto de héroe: recibir un golpe sella un pacto 5 s: +8 de defensa, y tus golpes cuerpo a cuerpo absorben 1 de vida
+	Como máximo una vez cada 4 s
+	'''
+GodSmithFrozenShield.EffectDesc:
+	'''
+	Guarda de cristal: un golpe letal te congela en el cristal: sobrevives con el 25% de la vida máxima
+	Los enemigos cercanos reciben Quemadura gélida, y ganas una breve invencibilidad
+	Como máximo una vez cada 90 s
+	'''
+GodSmithStarCloak.EffectDesc:
+	'''
+	Eco de lluvia de estrellas: recibir un golpe llama 2 estrellas del Herrero divino además de las de vainilla
+	Cada una inflige 40 de daño y deja un rastro dorado, como máximo una vez cada 2 s
+	'''
+GodSmithBeeCloak.EffectDesc:
+	'''
+	Enjambre guardián: recibir un golpe despierta 3 abejas y te cubre de miel 5 s
+	Como máximo una vez cada 3 s
+	'''
+GodSmithCrossNecklace.EffectDesc:
+	'''
+	Restitución del mártir: recibir un golpe abre una ventana de 3 s: +3 de vida por segundo
+	Inmunidad al retroceso mientras dura
+	'''
+GodSmithStarVeil.EffectDesc:
+	'''
+	Velo estelar: recibir un golpe baja un telón de luz de estrellas 2.5 s: el daño posterior se reduce un 30%
+	Como máximo una vez cada 5 s
+	'''
+GodSmithMoonCharm.EffectDesc:
+	'''
+	Caza lunar: de noche, tus mordiscos cuerpo a cuerpo absorben 2 de vida, como máximo una vez cada 0.5 s
+	Cada mordisco brilla en plata lunar
+	'''
+GodSmithMoonStone.EffectDesc:
+	'''
+	Égida lunar: de noche, recibir un golpe te cubre de gasa lunar 4 s: +8 de defensa
+	Como máximo una vez cada 4 s
+	'''
+GodSmithNeptunesShell.EffectDesc:
+	'''
+	Marea abisal: entrar en el agua alza una armadura de marea 5 s: +6 de defensa, como máximo una vez cada 5 s
+	Mojado, tus golpes salpican espuma
+	'''
+GodSmithCelestialStone.EffectDesc:
+	'''
+	Doble fase: de día, tus golpes prenden (Fuego infernal); de noche, aplican Quemadura gélida
+	Como máximo una vez cada 2 s, chispas de oro solar o de escarcha lunar
+	'''
+GodSmithCelestialShell.EffectDesc:
+	'''
+	Cielo total: de día los golpes prenden, de noche aplican Quemadura gélida, como máximo una vez cada 1.5 s
+	Entrar en el agua alza también una armadura de marea 5 s: +8 de defensa, como máximo una vez cada 5 s
+	'''
+GodSmithCharmofMyths.EffectDesc:
+	'''
+	Resplandor mítico: beber una poción curativa deja un posgusto 8 s: +2 de vida por segundo
+	Mientras dura, una luz esmeralda te rodea
+	'''
+GodSmithWormScarf.EffectDesc:
+	'''
+	Caparazón simbiótico: cada golpe recibido hace crecer una escama, -4% de daño recibido por escama, hasta 3, durante 8 s
+	Cuanto más te aprietan, más se ciñe la bufanda
+	'''
+GodSmithBrainOfConfusion.EffectDesc:
+	'''
+	Onda neural: recibir un golpe estalla una onda psíquica; los enemigos cercanos quedan confundidos 3 s
+	Tu mente se sobrecarga 3 s: +8% a todo el daño; como máximo una vez cada 4 s
+	'''
+GodSmithShieldofCthulhu.EffectDesc:
+	'''
+	Rotura de pupila: al embestir a un enemigo, estalla un choque carmesí en el impacto
+	El choque inflige 25 de daño y empuja con fuerza, como máximo una vez cada 1.5 s
+	La embestida arrastra una posimagen de mirada carmesí
+	'''

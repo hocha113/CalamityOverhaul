@@ -360,6 +360,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
             OniRainExitTransition.Update();
             OniRainWorldState.UpdateFx();
             KasaOnis.KasaOniDirector.Update();
+            OniRainTheme.TickToastArm();
             UpdateShenyoSendOff();
         }
 
@@ -415,6 +416,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
                 OniRainExitTransition.HardReset();
                 OniRainWorldState.ResetLocal();
                 KasaOnis.KasaOniDirector.ResetLocal();
+                OniRainTheme.ResetToastArm();
                 sendOffArmDelay = 0;
             }
         }

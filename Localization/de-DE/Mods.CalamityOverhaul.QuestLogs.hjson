@@ -262,153 +262,153 @@ QuestNode: {
 	}
 
 	FluidPumpQuest: {
-		// DisplayName: Fluid Engineering
-		// Description: Craft a Fluid Pump
-		// DetailedDescription: Water and lava are resources too. The pump is what invites them out of the world.
+		DisplayName: Flüssigkeitsbau
+		Description: Stelle eine Flüssigkeitspumpe her
+		DetailedDescription: Wasser und Lava sind auch Ressourcen. Die Pumpe holt sie aus der Welt.
 	}
 
 	FluidPipelineQuest: {
-		// DisplayName: Veins of Liquid
-		// Description: Craft Fluid Pipelines
-		// DetailedDescription: Liquids need a grid of their own. Fluid pipes carry only fluids and leave the power grid alone.
+		DisplayName: Adern aus Flüssigkeit
+		Description: Stelle Flüssigkeitsleitungen her
+		DetailedDescription: Flüssigkeiten brauchen ein eigenes Netz. Flüssigkeitsrohre transportieren nur Flüssigkeiten und lassen das Stromnetz in Ruhe.
 	}
 
 	FluidTankQuest: {
-		// DisplayName: Vessel of Reserves
-		// Description: Craft a Fluid Tank
-		// DetailedDescription: Pumping fast means nothing without somewhere to keep it. The tank is the battery of the fluid network.
+		DisplayName: Gefäß der Vorräte
+		Description: Stelle einen Flüssigkeitstank her
+		DetailedDescription: Schnell pumpen nützt nichts ohne Lagerplatz. Der Tank ist die Batterie des Flüssigkeitsnetzes.
 	}
 
 	MagmaGeneratorQuest: {
-		// DisplayName: Magma Thermal Power
-		// Description: Craft a Magma Thermal Generator
-		// DetailedDescription: The pumped magma finally has somewhere to go. It earns a little while touching lava, and runs at full power once its tank is fed.
+		DisplayName: Magmawärme
+		Description: Stelle einen Magma-Wärmegenerator her
+		DetailedDescription: Das gepumpte Magma hat endlich einen Zweck. An Lava verdient er ein bisschen, mit vollem Tank läuft er auf voller Leistung.
 	}
 
 	ShimmerTransmuterQuest: {
-		// DisplayName: Shimmer Alchemy
-		// Description: Craft a Shimmer Transmuter
-		// DetailedDescription: Pump shimmer into the machine, and item forms can be rewritten on an assembly line.
+		DisplayName: Schimmer-Alchemie
+		Description: Stelle einen Schimmer-Umwandler her
+		DetailedDescription: Pumpe Schimmer in die Maschine, und die Form von Gegenständen lässt sich am Fließband umschreiben.
 	}
 
 	CrusherQuest: {
-		// DisplayName: Ore from Rubble
-		// Description: Craft an Ore Crusher
-		// DetailedDescription: Two ore crushed into three. The incinerator's supply line just gained a yield step.
+		DisplayName: Erz aus Schutt
+		Description: Stelle einen Erzbrecher her
+		DetailedDescription: Zwei Teile Erz werden zu drei. Vor dem Verbrennungsofen liegt jetzt ein Schritt mehr Ausbeute.
 	}
 
 	RecyclerQuest: {
-		// DisplayName: Waste into Worth
-		// Description: Craft a Recycler
-		// DetailedDescription: Don't toss retired gear. Break it into bars by rarity and send it back to the furnace.
+		DisplayName: Aus Schrott wird Wert
+		Description: Stelle einen Wiederverwerter her
+		DetailedDescription: Wirf ausgediente Ausrüstung nicht weg. Zerlege sie nach Seltenheit in Barren und schick sie zurück in den Ofen.
 	}
 
 	AutoCrafterQuest: {
-		// DisplayName: Automated Assembly
-		// Description: Craft an Auto Crafter
-		// DetailedDescription: Pin a recipe; materials walk in and products walk out. The crafting bench no longer needs you standing by.
+		DisplayName: Automatische Montage
+		Description: Stelle einen Autofertiger her
+		DetailedDescription: Hefte ein Rezept an; Materialien kommen von selbst, Fertigteile gehen von selbst. Die Werkbank braucht dich nicht mehr daneben.
 	}
 
 	MushroomFarmerQuest: {
-		// DisplayName: Fungiculture
-		// Description: Craft a Mushroom Farming Machine
-		// DetailedDescription: Harvests on grass and mushroom grass are its business. Glowing mushrooms included.
+		DisplayName: Pilzzucht
+		Description: Stelle eine Pilzzuchtmaschine her
+		DetailedDescription: Ernten auf Gras und Pilzgras sind ihr Geschäft. Leuchtende Pilze inklusive.
 	}
 
 	ApiaryQuest: {
-		// DisplayName: Sweet Industry
-		// Description: Craft an Electric Apiary
-		// DetailedDescription: Empty bottles in, bottled honey out. The hive works harder near honey or in the jungle.
+		DisplayName: Süße Industrie
+		Description: Stelle einen Bienenstock her
+		DetailedDescription: Leere Flaschen rein, Honigflaschen raus. In der Nähe von Honig oder im Dschungel arbeiten die Bienen härter.
 	}
 
 	SlimeVatQuest: {
-		// DisplayName: Gel Production
-		// Description: Craft a Slime Culture Vat
-		// DetailedDescription: Water and power in, gel out. The vat is the first raw-material machine of the farm waste stream.
+		DisplayName: Gel-Massenfertigung
+		Description: Stelle einen Schleimzuchtbottich her
+		DetailedDescription: Wasser und Strom gegen Gel. Der Bottich ist die erste Rohstoffmaschine des Landwirtschaftskreislaufs.
 	}
 
 	BiomassGeneratorQuest: {
-		// DisplayName: Closed Ecology
-		// Description: Craft a Biomass Generator
-		// DetailedDescription: Don't waste the farm's surplus. Feed it to the burner for power and the grow-burn loop starts turning.
+		DisplayName: Geschlossener Kreislauf
+		Description: Stelle einen Biomassegenerator her
+		DetailedDescription: Verschwende den Überschuss der Farm nicht. Stopf ihn in den Brenner und hol Strom; der Anbau-Verbrennung-Kreis beginnt zu laufen.
 	}
 
 	FlameTurretQuest: {
-		// DisplayName: Line of Fire
-		// Description: Craft a Flamethrower Turret
-		// DetailedDescription: A close-range wall of fire against crowds. Load gel and it burns harder.
+		DisplayName: Flammenlinie
+		Description: Stelle einen Flammenwerferturm her
+		DetailedDescription: Eine Nahbereichs-Feuerwand gegen Gruppen. Lade Gel, dann brennt sie härter.
 	}
 
 	CryoTurretQuest: {
-		// DisplayName: Frost Lockdown
-		// Description: Craft a Cryo Turret
-		// DetailedDescription: Not built to kill, built to freeze. Enemies under the tower slow down until they can barely step.
+		DisplayName: Frostsperre
+		Description: Stelle einen Frostturm her
+		DetailedDescription: Nicht zum Töten gebaut, sondern zum Einfrieren. Feinde unter dem Turm werden immer langsamer, bis sie kaum noch einen Schritt tun.
 	}
 
 	LaserTurretQuest: {
-		// DisplayName: Lightspeed Sniper
-		// Description: Craft a Laser Turret
-		// DetailedDescription: Anything in line of sight is one beam away. Longest range in the family, and it prefers big targets.
+		DisplayName: Lichtgeschwindigkeitsscharfschütze
+		Description: Stelle einen Laserturm her
+		DetailedDescription: Was in Sichtlinie liegt, ist einen Strahl entfernt. Längste Reichweite der Familie, und er bevorzugt große Ziele.
 	}
 
 	ShieldGeneratorQuest: {
-		// DisplayName: Energy Bulwark
-		// Description: Craft a Shield Generator
-		// DetailedDescription: Everyone in range gets a layer of absorbing shield. More allies, faster drain.
+		DisplayName: Energiewall
+		Description: Stelle einen Schildgenerator her
+		DetailedDescription: Jeder in Reichweite bekommt eine Schicht absorbierenden Schild. Mehr Verbündete, schnellerer Verbrauch.
 	}
 
 	HealStationQuest: {
-		// DisplayName: Field Medicine
-		// Description: Craft a Healing Station
-		// DetailedDescription: Stand in the aura and wounds slowly close. The phrase "workplace injury" retires today.
+		DisplayName: Feldmedizin
+		Description: Stelle eine Heilstation her
+		DetailedDescription: Steh in der Aura, und Wunden schließen sich langsam. Das Wort Arbeitsunfall gehört von heute an der Vergangenheit an.
 	}
 
 	TeleportStationQuest: {
-		// DisplayName: Teleport Network
-		// Description: Craft a Teleport Station
-		// DetailedDescription: Two stations make a network, and the whole map opens up. The farther the hop, the higher the toll.
+		DisplayName: Teleportnetz
+		Description: Stelle eine Teleportstation her
+		DetailedDescription: Zwei Stationen sind der Anfang, dann ist die ganze Karte verbunden. Je weiter der Sprung, desto teurer die Maut.
 	}
 
 	ElectricSundialQuest: {
-		// DisplayName: Winding the Sundial
-		// Description: Craft an Electric Sundial
-		// DetailedDescription: Store a thousand units of power to skip the night in one press. The whole server gets notified.
+		DisplayName: Sonnenuhr vorspulen
+		Description: Stelle eine elektrische Sonnenuhr her
+		DetailedDescription: Lade tausend Einheiten Strom, dann überspringst du die Nacht mit einem Tastendruck. Der ganze Server bekommt deine Meldung.
 	}
 
 	SolarPanelQuest: {
-		// DisplayName: Facing the Sun
-		// Description: Craft a Solar Panel
-		// DetailedDescription: Generates by day and peaks at noon. Keep its sky clear; rain and eclipses are its days off.
+		DisplayName: Der Sonne entgegen
+		Description: Stelle ein Solarmodul her
+		DetailedDescription: Tagsüber Strom, mittags am stärksten. Halte den Himmel frei; Regen und Sonnenfinsternis sind seine arbeitsfreien Tage.
 	}
 
 	CapacitorMatrixQuest: {
-		// DisplayName: Grand Reservoir
-		// Description: Craft a Capacitor Matrix
-		// DetailedDescription: Forty thousand units in one bank. The grid's flywheel, and the end of the blackout era.
+		DisplayName: Riesenspeicher
+		Description: Stelle eine Kondensatormatrix her
+		DetailedDescription: Vierzigtausend Einheiten in einer Bank. Das Schwungrad des Netzes und das Ende der Stromausfall-Ära.
 	}
 
 	WeatherControllerQuest: {
-		// DisplayName: Rainmaker
-		// Description: Craft a Weather Controller
-		// DetailedDescription: Five hundred power buys a rain, and once more clears it. The wind takes no orders.
+		DisplayName: Regenmacher
+		Description: Stelle eine Wettersteuerung her
+		DetailedDescription: Fünfhundert Strom kaufen einen Regen, noch einmal drücken macht ihn wieder klar. Der Wind hört nicht auf sie.
 	}
 
 	WireInterfaceQuest: {
-		// DisplayName: Wire Bridging
-		// Description: Craft Wire Interfaces
-		// DetailedDescription: The wire network and the power grid finally speak. Signals can toggle machines, and machines can send signals back.
+		DisplayName: Mechanikbrücke
+		Description: Stelle Mechanikschnittstellen her
+		DetailedDescription: Mechanikdraht und Stromnetz sprechen endlich. Signale schalten Maschinen, und Maschinen können Signale zurückschicken.
 	}
 
 	SensorQuest: {
-		// DisplayName: Electric Sentry Eye
-		// Description: Craft a Multi-Mode Sensor
-		// DetailedDescription: Charge levels, enemies and blood moons, nothing escapes its watch. The moment a condition holds, a wire signal goes out.
+		DisplayName: Elektronisches Wachauge
+		Description: Stelle einen Multimodus-Sensor her
+		DetailedDescription: Ladestand, Feinde und Blutmonde entgehen seinem Blick nicht. Sobald die Bedingung gilt, geht ein Mechaniksignal raus.
 	}
 
 	GridSwitchQuest: {
-		// DisplayName: Grid Dispatch
-		// Description: Craft a Grid Switch
-		// DetailedDescription: A master switch built into the lines. Flip it open and the whole downstream grid falls silent at once.
+		DisplayName: Netzleitung
+		Description: Stelle einen Netzhauptschalter her
+		DetailedDescription: Ein Hauptschalter in der Leitung. Klapp ihn auf, und das ganze Netz stromabwärts verstummt sofort.
 	}
 
 	ThermalPowerQuest: {
@@ -766,381 +766,381 @@ QuestNode: {
 	}
 
 	DeerclopsQuest: {
-		// DisplayName: Deerclops
-		// Description: Defeat Deerclops
-		// DetailedDescription: Deep in the blizzard stands a one-eyed giant deer. It does not come looking for you; you insist on looking for it.
+		DisplayName: Hirschklopse
+		Description: Besiege Hirschklopse
+		DetailedDescription: Tief im Schneesturm steht ein einäugiger Riesenhirsch. Er kommt nicht zu dir; du bestehst darauf, ihn zu suchen.
 	}
 
 	DukeFishronQuest: {
-		// DisplayName: Duke Fishron
-		// Description: Defeat Duke Fishron
-		// DetailedDescription: Bait your hook with a truffle worm and a duke will bite. Pig, dragon, fish; three kinds of menace on a single face.
+		DisplayName: Herzog Fischron
+		Description: Besiege Herzog Fischron
+		DetailedDescription: Köder den Haken mit einem Trüffelwurm, und ein Herzog beißt an. Schwein, Drache, Fisch; drei bedrohliche Fratzen in einem Gesicht.
 	}
 
 	EmpressOfLightQuest: {
-		// DisplayName: Empress of Light
-		// Description: Defeat the Empress of Light
-		// DetailedDescription: Step on a prismatic lacewing in the Hallow and the furious empress will come to settle the score herself. Anger her in daylight and every one of her attacks kills in one hit.
+		DisplayName: Kaiserin des Lichts
+		Description: Besiege die Kaiserin des Lichts
+		DetailedDescription: Tritt im Heiligen Land eine prismatische Spitzenflüglerin tot, und die wütende Kaiserin kommt selbst, um die Rechnung zu begleichen. Reizst du sie bei Tag, tötet jeder ihrer Angriffe mit einem Treffer.
 	}
 
 	ZenithQuest: {
-		// DisplayName: Zenith
-		// Description: Forge the Zenith
-		// DetailedDescription: From the copper shortsword to the Starwrath, every blade you ever swung remembers you. Melt them together, and this journey takes its final shape.
+		DisplayName: Zenit
+		Description: Schmiede den Zenit
+		DetailedDescription: Vom Kupferkurzschwert bis zum Sternenzorn erinnert sich jedes Schwert, das du je geschwungen hast. Schmelz sie zusammen, und diese Reise bekommt ihre Form.
 	}
 
 	BloodMoonQuest: {
-		// DisplayName: Night of Blood
-		// Description: Live through a Blood Moon
-		// QuestObjective.Description: Experience a Blood Moon
-		// DetailedDescription: On nights when the moon turns red, monsters stop knocking; they open the door themselves. Survive until dawn.
+		DisplayName: Blutige Nacht
+		Description: Überstehe einen Blutmond
+		QuestObjective.Description: Erlebe einen Blutmond
+		DetailedDescription: In Nächten, in denen der Mond rot wird, klopfen Monster nicht mehr; sie öffnen die Tür selbst. Überlebe bis zum Morgengrauen.
 	}
 
 	TorchGodQuest: {
-		// DisplayName: The Torch God
-		// Description: Pass the Torch God's trial
-		// QuestObjective.Description: Earn the Torch God's Favor
-		// DetailedDescription: Plant a hundred torches underground and the master of flame will test you in person. Its favor hides within the extinguished lights.
+		DisplayName: Fackelgott
+		Description: Bestehe die Prüfung des Fackelgottes
+		QuestObjective.Description: Erhalte die Gunst des Fackelgottes
+		DetailedDescription: Steck unter der Erde hundert Fackeln, und der Herr der Flammen prüft dich persönlich. In den erloschenen Lichtern liegt seine Gunst.
 	}
 
 	GoblinArmyQuest: {
-		// DisplayName: Goblin Invasion
-		// Description: Repel the Goblin Army
-		// QuestObjective.Description: Repel the Goblin Army
-		// DetailedDescription: Smashing Shadow Orbs draws them in, and so does a growing settlement. Short, swarming, endless; but win, and you may pick up a captive who repairs gear.
+		DisplayName: Goblininvasion
+		Description: Schlage die Goblinarmee zurück
+		QuestObjective.Description: Schlage die Goblinarmee zurück
+		DetailedDescription: Schattenkugeln zu zertrümmern lockt sie, und eine wachsende Siedlung ebenso. Klein, in Schwärmen, ohne Ende; aber wenn du gewinnst, findest du vielleicht einen Gefangenen, der Ausrüstung repariert.
 	}
 
 	OldOnesArmyQuest: {
-		// DisplayName: Old One's Army
-		// Description: Guard the Eternia Crystal and repel all three tiers of the Old One's Army
+		DisplayName: Armee des Alten
+		Description: Bewache den Eternia-Kristall und schlage alle drei Stufen der Armee des Alten zurück
 
 		QuestObjective: {
 			Description: {
-				// T1: Repel the Old One's Army Tier 1
-				// T2: Repel the Old One's Army Tier 2
-				// T3: Repel the Old One's Army Tier 3
+				T1: Schlage die Armee des Alten zurück, Stufe 1
+				T2: Schlage die Armee des Alten zurück, Stufe 2
+				T3: Schlage die Armee des Alten zurück, Stufe 3
 			}
 		}
 
-		// DetailedDescription: The Tavernkeep brings a plea from another world. Set the crystal, hold the portals, and let nothing touch it. Three tiers, each meaner than the last.
+		DetailedDescription: Der Schankwirt bringt eine Bitte aus einer anderen Welt. Stell den Kristall auf, halte die Portale und lass nichts ihn berühren. Drei Staffeln, jede härter als die letzte.
 	}
 
 	PirateInvasionQuest: {
-		// DisplayName: Pirate Invasion
-		// Description: Repel the Pirate Invasion
-		// QuestObjective.Description: Repel the Pirate Invasion
-		// DetailedDescription: Once the world hardens, sails appear on the horizon. They come for your money; take theirs back, captain's belongings included.
+		DisplayName: Pirateninvasion
+		Description: Schlage die Pirateninvasion zurück
+		QuestObjective.Description: Schlage die Pirateninvasion zurück
+		DetailedDescription: Sobald die Welt hart wird, erscheinen Segel am Horizont. Sie wollen dein Geld; nimm ihres zurück, das Hab und Gut des Kapitäns inklusive.
 	}
 
 	SolarEclipseQuest: {
-		// DisplayName: Eclipse Hunt
-		// Description: Slay a Mothron during a Solar Eclipse
-		// QuestObjective.Description: Slay a Mothron
-		// DetailedDescription: On days the moon blots out the sun, daytime is deadlier than night. Everything from the horror films takes to the streets, and the fastest flier among them is called Mothron.
+		DisplayName: Sonnenfinsternisjagd
+		Description: Töte während einer Sonnenfinsternis ein Mottron
+		QuestObjective.Description: Töte ein Mottron
+		DetailedDescription: An Tagen, an denen der Mond die Sonne verdeckt, ist der Tag gefährlicher als die Nacht. Alles aus den Horrorfilmen geht auf die Straße, und der schnellste Flieger darunter heißt Mottron.
 	}
 
 	MartianMadnessQuest: {
-		// DisplayName: Martian Madness
-		// Description: Repel the Martian invasion
-		// QuestObjective.Description: Repel the Martian invasion
-		// DetailedDescription: Do not stare at the probe in the sky; it flies home and brings friends. Saucers, death rays, mind-control helmets; the full alien invasion package.
+		DisplayName: Marsianerwahnsinn
+		Description: Schlage die Marsianerinvasion zurück
+		QuestObjective.Description: Schlage die Marsianerinvasion zurück
+		DetailedDescription: Starr nicht die Sonde am Himmel an; sie fliegt nach Hause und holt Verstärkung. Untertassen, Todesstrahlen, Gedankenkontrollhelme; das volle Programm einer Alieninvasion.
 	}
 
 	PumpkinMoonQuest: {
-		// DisplayName: Pumpkin Moon
-		// Description: Defeat Pumpking during the Pumpkin Moon
-		// QuestObjective.Description: Defeat Pumpking
-		// DetailedDescription: Wake Halloween night with a Pumpkin Moon Medallion. Scarecrows line up to collect heads, and the closer is a king carrying twin scythes.
+		DisplayName: Kürbismond
+		Description: Besiege während des Kürbismonds den Kürbiskönig
+		QuestObjective.Description: Besiege den Kürbiskönig
+		DetailedDescription: Wecke die Halloween-Nacht mit einem Kürbismond-Medaillon. Vogelscheuchen stehen Schlange um Köpfe, und zum Finale kommt ein König mit zwei Sensen.
 	}
 
 	FrostMoonQuest: {
-		// DisplayName: Frost Moon
-		// Description: Defeat the Ice Queen during the Frost Moon
-		// QuestObjective.Description: Defeat the Ice Queen
-		// DetailedDescription: Open the present that should have stayed wrapped and Christmas Eve goes sour. Tanks patrol the snow while the queen dives through the blizzard.
+		DisplayName: Frostmond
+		Description: Besiege während des Frostmonds die Eiskönigin
+		QuestObjective.Description: Besiege die Eiskönigin
+		DetailedDescription: Öffne das Geschenk, das zugewickelt hätte bleiben sollen, und Heiligabend bekommt einen schalen Beigeschmack. Panzer patrouillieren im Schnee, die Königin stürzt durch den Schneesturm.
 	}
 
 	FishermanQuest: {
-		// DisplayName: Angler's Errands
-		// Description: Complete five Angler quests
-		// QuestObjective.Description: Complete Angler quests
-		// DetailedDescription: A bossy little brat lives by the sea, but his rewards are surprisingly solid. Where the fish are, the treasure is.
+		DisplayName: Aufträge des Anglers
+		Description: Erledige fünf Angleraufträge
+		QuestObjective.Description: Erledige Angleraufträge
+		DetailedDescription: Am Meer wohnt ein kommandierender Bengel, aber seine Belohnungen sind überraschend solide. Wo die Fische sind, da ist der Schatz.
 	}
 
 	LifeMaxQuest: {
-		// DisplayName: Fountain of Life
-		// Description: Raise your max life to 400
-		// QuestObjective.Description: Reach 400 max life
-		// DetailedDescription: Heart crystals only carry you halfway. The rest of the road is fought and grown through. Four hundred life is the ticket to standing firm in Hardmode.
+		DisplayName: Lebensbrunnen
+		Description: Hebe dein Lebensmaximum auf 400
+		QuestObjective.Description: Erreiche 400 maximales Leben
+		DetailedDescription: Herzkristalle bringen dich nur die Hälfte des Weges. Den Rest musst du erkämpfen und wachsen. Vierhundert Leben sind die Eintrittskarte, um im Hardmode festzustehen.
 	}
 
 	ManaMaxQuest: {
-		// DisplayName: Heart of Mana
-		// Description: Raise your max mana to 200
-		// QuestObjective.Description: Reach 200 max mana
-		// DetailedDescription: Press fallen stars into crystals and feed them to yourself one by one. Twenty points a sip, nine sips in all, and the night sky runs in your veins.
+		DisplayName: Herz des Manas
+		Description: Hebe dein Manamaximum auf 200
+		QuestObjective.Description: Erreiche 200 maximales Mana
+		DetailedDescription: Press Sternschnuppen zu Kristallen und fütter sie dir eine nach der anderen. Zwanzig Punkte pro Schluck, neun Schlucke insgesamt, und der Nachthimmel läuft in deinen Adern.
 	}
 
 	WingsQuest: {
-		// DisplayName: Spread Your Wings
-		// Description: Equip any pair of wings
-		// QuestObjective.Description: Equip wings
-		// DetailedDescription: Sky vaults, fairy feathers, demon membranes. Whatever the source, the moment wings sprout from your back, fall damage becomes history.
+		DisplayName: Flügel ausbreiten
+		Description: Rüste ein beliebiges Flügelpaar aus
+		QuestObjective.Description: Rüste Flügel aus
+		DetailedDescription: Himmelsschätze, Feenfedern, Dämonenhaut. Egal woher, in dem Moment, in dem dir Flügel wachsen, gehört Fallschaden der Vergangenheit an.
 	}
 
 	MoneyQuest: {
-		// DisplayName: First Fortune
-		// Description: Hold a Platinum Coin
-		// QuestObjective.Description: Hold a Platinum Coin
-		// DetailedDescription: A hundred gold coins pressed into one platinum. You probably died plenty of times earning it; merchants call that a handling fee.
+		DisplayName: Das erste Vermögen
+		Description: Halte eine Platinmünze
+		QuestObjective.Description: Halte eine Platinmünze
+		DetailedDescription: Hundert Goldmünzen gepresst zu einer Platinmünze. Auf dem Weg dahin bist du vermutlich oft gestorben; Händler nennen das Gebühr.
 	}
 
 	ExploreAetherQuest: {
-		// DisplayName: The Shimmering Lake
-		// Description: Find the Aether
-		// QuestObjective.Description: Reach the Shimmer
-		// DetailedDescription: Tucked in a corner of the world is a lake that does not belong here. Drop something in and it comes back changed. Do not jump in to test it yourself.
+		DisplayName: Der Schimmersee
+		Description: Finde den Schimmersee
+		QuestObjective.Description: Erreiche den Schimmersee
+		DetailedDescription: In einer Ecke der Welt liegt ein See, der nicht hierhergehört. Wirf etwas hinein, und es kommt verändert wieder. Spring nicht selbst hinein, um es zu testen.
 	}
 
 	HardmodeOresQuest: {
-		// DisplayName: Three New Metals
-		// Description: Gather the three tiers of Hardmode ore
+		DisplayName: Drei neue Metalle
+		Description: Sammle die drei Stufen Hardmode-Erz
 
 		QuestObjective: {
 			Description: {
-				// T1: Collect Cobalt or Palladium Ore
-				// T2: Collect Mythril or Orichalcum Ore
-				// T3: Collect Adamantite or Titanium Ore
+				T1: Sammle Kobalt- oder Palladiumerz
+				T2: Sammle Mithril- oder Orikalerz
+				T3: Sammle Adamantit- oder Titanerz
 			}
 		}
 
-		// DetailedDescription: After the Wall of Flesh falls, smash the altars with a holy hammer and three new metals grow in the deep. Each is harder than everything that came before.
+		DetailedDescription: Nach dem Fall der Fleischwand zerschlägst du die Altäre mit einem heiligen Hammer, und in der Tiefe wachsen drei neue Metalle. Jedes ist härter als alles zuvor.
 	}
 
 	ChlorophyteQuest: {
-		// DisplayName: Power of Chlorophyte
-		// Description: Collect 30 Chlorophyte Ore
-		// DetailedDescription: With the machines destroyed, a glowing green metal starts growing in the deep jungle mud. It has a will of its own, and it spreads on its own too.
+		DisplayName: Macht des Chlorophyts
+		Description: Sammle dreißig Chlorophyterz
+		DetailedDescription: Nach dem Fall der Maschinen wächst im tiefen Dschungelschlamm ein leuchtendes grünes Metall. Es hat einen eigenen Willen und vermehrt sich von selbst.
 	}
 
 	CalamityLoreHub: {
-		// DisplayName: Anomaly Survey
-		// Description: Something is wrong with this world
-		// QuestObjective.Description: Click to claim
-		// DetailedDescription: The sea is acid, the crags are burning, and things no field guide knows grow in the crater a star left behind. Write it all down; this world's dark side is bigger than you think.
+		DisplayName: Anomalie-Untersuchung
+		Description: Mit dieser Welt stimmt etwas nicht
+		QuestObjective.Description: Klicke zum Abholen
+		DetailedDescription: Das Meer ist Säure, die Klippen brennen, und im Krater eines Sterns wächst, was in keinem Bestimmungsbuch steht. Schreib alles auf; die dunkle Seite dieser Welt ist größer, als du denkst.
 	}
 
 	ExploreSulphurSea: {
-		// DisplayName: Sulphurous Sea
-		// Description: Explore the Sulphurous Sea
-		// QuestObjective.Description: Reach the Sulphurous Sea
-		// DetailedDescription: One side of the world has no blue ocean, only yellowed acid water. Rain fizzes where it lands and the fish come up venomous. Cover your mouth, and do not drink.
+		DisplayName: Schwefelsee
+		Description: Erkunde die Schwefelsee
+		QuestObjective.Description: Erreiche die Schwefelsee
+		DetailedDescription: Auf einer Seite der Welt gibt es kein blaues Meer, nur vergilbtes Säurewasser. Regen zischt, wo er landet, und die Fische kommen giftig herauf. Halte Mund und Nase zu, und trink nicht.
 	}
 
 	ExploreAbyss: {
-		// DisplayName: Mouth of the Abyss
-		// Description: Dive into the Abyss beneath the Sulphurous Sea
-		// QuestObjective.Description: Enter the Abyss
-		// DetailedDescription: A downward rift splits the floor of the sulphurous sea. Light cannot follow, neither can breath, and the deeper you go, the older the things that live there.
+		DisplayName: Mund des Abgrunds
+		Description: Tauche in den Abgrund unter der Schwefelsee
+		QuestObjective.Description: Betrete den Abgrund
+		DetailedDescription: Im Boden der Schwefelsee klafft ein Riss nach unten. Licht kommt nicht mit, Atem auch nicht, und je tiefer du gehst, desto älter sind die Dinge, die dort leben.
 	}
 
 	AbyssDeepQuest: {
-		// DisplayName: Bottom of the Abyss
-		// Description: Bring back Lumenyl and Voidstone from the Abyss
-		// DetailedDescription: Where mining lamps cannot reach, blue-glowing crystal grows along the rock walls. Dig it out and surface alive; only then have you truly been to the Abyss.
+		DisplayName: Grund des Abgrunds
+		Description: Bring Lumenyl und Leerenstein aus dem Abgrund mit
+		DetailedDescription: Wo Grubenlampen nicht hinreichen, wächst blau leuchtender Kristall an den Felswänden. Grab ihn und komm lebend wieder hoch; erst dann warst du wirklich im Abgrund.
 	}
 
 	ExploreSunkenSea: {
-		// DisplayName: Sunken Sea
-		// Description: Find the Sunken Sea deep beneath the desert
-		// QuestObjective.Description: Reach the Sunken Sea
-		// DetailedDescription: Beneath the desert hides a quiet stretch of blue. Prisms glow in the water and the clams are bigger than your house. This may be the gentlest corner of the world.
+		DisplayName: Versunkenes Meer
+		Description: Finde das Versunkene Meer tief unter der Wüste
+		QuestObjective.Description: Erreiche das Versunkene Meer
+		DetailedDescription: Unter der Wüste liegt ein stilles Stück Blau. Prismen leuchten im Wasser, und die Muscheln sind größer als dein Haus. Das ist vielleicht die sanfteste Ecke dieser Welt.
 	}
 
 	ExploreBrimstoneCrag: {
-		// DisplayName: Brimstone Crags
-		// Description: Set foot in the Brimstone Crags at the edge of the Underworld
-		// QuestObjective.Description: Reach the Brimstone Crags
-		// DetailedDescription: On one side of Hell stands a cliff that has burned longer than anyone remembers. Dark red fire seeps from the brickwork, and an elemental spirit sleeps in the ruins.
+		DisplayName: Schwefelfeuerklippe
+		Description: Betrete die Schwefelfeuerklippe am Rand der Unterwelt
+		QuestObjective.Description: Erreiche die Schwefelfeuerklippe
+		DetailedDescription: An einer Seite der Hölle steht eine Klippe, die länger brennt, als irgendwer sich erinnert. Dunkelrotes Feuer sickert aus dem Mauerwerk, und in den Ruinen schläft ein Elementargeist.
 	}
 
 	ExploreAstral: {
-		// DisplayName: Astral Blight
-		// Description: Explore the star-tainted land
-		// QuestObjective.Description: Reach the Astral Infection
-		// DetailedDescription: A star crashed into the world, and what grows in the crater belongs to no bestiary. The land is changing color, the creatures are changing shape, and this is only the beginning.
+		DisplayName: Sternenfleck
+		Description: Erkunde das sternenbefallene Land
+		QuestObjective.Description: Erreiche die Astralinfektion
+		DetailedDescription: Ein Stern ist in die Welt gekracht, und was im Krater wächst, steht in keinem Bestiarium. Das Land wechselt die Farbe, die Kreaturen die Gestalt, und das ist erst der Anfang.
 	}
 
 	AcidRainQuest: {
-		// DisplayName: Acid Rain
-		// Description: Weather an acid rain
-		// QuestObjective.Description: Experience the Acid Rain event
-		// DetailedDescription: The clouds over the sulphurous sea are yellow. When it rains the whole sea boils, and the things in the water climb ashore with it. Bring an umbrella. Seriously.
+		DisplayName: Säureregen naht
+		Description: Überstehe einen Säureregen
+		QuestObjective.Description: Erlebe das Säureregen-Ereignis
+		DetailedDescription: Die Wolken über der Schwefelsee sind gelb. Wenn es regnet, kocht das ganze Meer, und was im Wasser lebt, klettert mit dem Regen an Land. Nimm einen Schirm mit. Im Ernst.
 	}
 
 	DeliciousMeatQuest: {
-		// DisplayName: Delicious Meat
-		// Description: Obtain a piece of Delicious Meat
-		// DetailedDescription: Nobody knows what animal it came from, and nobody cares. Tasty, filling, doubles as a building block. Stock up.
+		DisplayName: Köstliches Fleisch
+		Description: Erhalte ein Stück köstliches Fleisch
+		DetailedDescription: Niemand weiß, von welchem Tier es stammt, und niemanden interessiert es. Schmeckt, sättigt, taugt sogar als Baustein. Leg Vorrat an.
 	}
 
 	BrimlishQuest: {
-		// DisplayName: Brimlish
-		// Description: Fish up a Brimlish
-		// DetailedDescription: Even the acid water has fish in it, and they look surprisingly lively. Cast your line into the sulphurous sea and see what bites.
+		DisplayName: Schwefelfisch
+		Description: Angle einen Schwefelfisch
+		DetailedDescription: Sogar im Säurewasser leben Fische, und sie wirken überraschend munter. Wirf die Leine in die Schwefelsee und sieh, was anbeißt.
 	}
 
 	GiantClamQuest: {
-		// DisplayName: Giant Clam
-		// Description: Defeat the Giant Clam
-		// DetailedDescription: The largest shell in the Sunken Sea. Quiet as a rock most days; everyone who pried it open regretted it.
+		DisplayName: Riesenmuschel
+		Description: Besiege die Riesenmuschel
+		DetailedDescription: Die größte Schale im Versunkenen Meer. Meistens still wie ein Stein; jeder, der sie aufgebrochen hat, hat es bereut.
 	}
 
 	CragmawMireQuest: {
-		// DisplayName: Cragmaw Mire
-		// Description: Defeat the Cragmaw Mire during the Acid Rain
-		// DetailedDescription: Once the world hardens, something bitey floats up through the acid rain. It has far too many teeth, and all of them point at you.
+		DisplayName: Schlammrachen
+		Description: Besiege während des Säureregens den Schlammrachen
+		DetailedDescription: Sobald die Welt hart wird, treibt im Säureregen etwas herauf, das beißt. Es hat viel zu viele Zähne, und alle zeigen auf dich.
 	}
 
 	MaulerQuest: {
-		// DisplayName: The Mauler
-		// Description: Defeat the Mauler during the Acid Rain
-		// DetailedDescription: A shark raised on acid, with a temper to match the pH. By the time it breaches, remembering to dodge is already too late.
+		DisplayName: Blutbeißerhai
+		Description: Besiege während des Säureregens den Blutbeißerhai
+		DetailedDescription: Ein Hai, großgezogen in Säure, mit einem Temperament passend zum pH-Wert. Wenn er aus dem Wasser schießt, ist Ausweichen schon zu spät.
 	}
 
 	NuclearTerrorQuest: {
-		// DisplayName: Nuclear Terror
-		// Description: Defeat the Nuclear Terror during the Acid Rain
-		// DetailedDescription: At the deepest hour of the acid rain, something enormous and glowing hatches. Even the acid water pulls back from where it walks.
+		DisplayName: Nuklearer Schrecken
+		Description: Besiege während des Säureregens den Nuklearen Schrecken
+		DetailedDescription: In der tiefsten Stunde des Säureregens schlüpft etwas Riesiges und Leuchtendes. Sogar das Säurewasser weicht zurück, wo es geht.
 	}
 
 	GreatSandSharkQuest: {
-		// DisplayName: Great Sand Shark
-		// Description: Defeat the Great Sand Shark
-		// DetailedDescription: The fastest hunter in the desert; the dunes are its open sea. Cull enough of its kin and the king of the pack will show up in person.
+		DisplayName: Großer Sandhai
+		Description: Besiege den Großen Sandhai
+		DetailedDescription: Der schnellste Jäger der Wüste; die Dünen sind seine offene See. Töte genug seiner Art, und der König des Rudels erscheint persönlich.
 	}
 
 	LeviathanQuest: {
-		// DisplayName: Anahita and the Leviathan
-		// Description: Defeat Anahita and the Leviathan
-		// DetailedDescription: The song comes first, the great shadow after. The siren's melody guides the deep-sea beast; do not stop to listen.
+		DisplayName: Anahita und Leviathan
+		Description: Besiege Anahita und Leviathan
+		DetailedDescription: Zuerst kommt der Gesang, dann der große Schatten. Die Melodie der Sirene führt das Tiefseebestie; bleib nicht stehen und hör zu.
 	}
 
 	AstrumAureusQuest: {
-		// DisplayName: Astrum Aureus
-		// Description: Defeat Astrum Aureus
-		// DetailedDescription: Deep in the astral blight crouches an infected war machine. It wakes at night, and nothing grows where its treads have passed.
+		DisplayName: Astrum Aureus
+		Description: Besiege Astrum Aureus
+		DetailedDescription: Tief in der Astralinfektion kauert eine infizierte Kriegsmaschine. Nachts wacht sie auf, und wo ihre Ketten durchgefahren sind, wächst nichts.
 	}
 
 	RavagerQuest: {
-		// DisplayName: Ravager
-		// Description: Defeat the Ravager
-		// DetailedDescription: A giant pieced together from flesh and masonry, every limb attacking on its own. Tear off all four before the body itself gets serious.
+		DisplayName: Verwüster
+		Description: Besiege den Verwüster
+		DetailedDescription: Ein Riese aus Fleisch und Mauerwerk, jedes Glied greift für sich an. Reiß alle vier Extremitäten ab, bevor der Rumpf ernst macht.
 	}
 
 	AstrumDeusQuest: {
-		// DisplayName: Astrum Deus
-		// Description: Defeat Astrum Deus
-		// DetailedDescription: Lay an offering on the astral beacon and an infected god swims down out of the night sky. Only its death opens the astral ore to your pickaxe.
+		DisplayName: Astrum Deus
+		Description: Besiege Astrum Deus
+		DetailedDescription: Lege ein Opfer auf den Astralaltar, und ein infizierter Gott schwimmt aus dem Nachthimmel herab. Erst sein Tod öffnet die Astralerze deiner Spitzhacke.
 	}
 
 	BossRushQuest: {
-		// DisplayName: The Final Battle
-		// Description: Clear a Boss Rush
-		// QuestObjective.Description: Complete the Boss Rush
-		// DetailedDescription: Crush the Terminus and everything you have ever slain lines up to find you again. Kill them all a second time to put the seal on this journey.
+		DisplayName: Endkampf
+		Description: Bestehe einen Endkampf
+		QuestObjective.Description: Schließe den Endkampf ab
+		DetailedDescription: Zerdrücke den Terminus, und alles, was du je getötet hast, stellt sich wieder in die Reihe. Töte sie alle ein zweites Mal, dann ist diese Reise besiegelt.
 	}
 
 	AerialiteQuest: {
-		// DisplayName: Aerialite Gleam
-		// Description: Forge Aerialite Bars
-		// DetailedDescription: When the Desert Scourge dies, pale blue ore-dust settles from the sky. Light enough to float, yet sturdier than iron.
+		DisplayName: Himmelsglanz
+		Description: Schmiede Aerialite-Barren
+		DetailedDescription: Stirbt die Wüstenplage, fällt blassblauer Erzstaub vom Himmel. Leicht genug zum Schweben, aber fester als Eisen.
 	}
 
 	CryonicQuest: {
-		// DisplayName: Cryonic Crystal
-		// Description: Forge Cryonic Bars
-		// DetailedDescription: With Cryogen shattered, blue veins crystallize in the deep ice of the tundra. It does not melt in your hand; it only gets colder.
+		DisplayName: Polar-Kristall
+		Description: Schmiede Kryonit-Barren
+		DetailedDescription: Nach dem Zerbrechen Kryogens kristallisieren in tiefem Tundraeis blaue Adern. In der Hand schmilzt es nicht; es wird nur kälter.
 	}
 
 	PerennialQuest: {
-		// DisplayName: Perennial Gift
-		// Description: Forge Perennial Bars
-		// DetailedDescription: Where Plantera wilted, a breathing green metal grows from the soil. The jungle repays its debts in its own way.
+		DisplayName: Immergrünes Geschenk
+		Description: Schmiede Perennial-Barren
+		DetailedDescription: Wo Plantera welkte, wächst atmendes grünes Metall aus der Erde. Der Dschungel dankt auf seine Weise.
 	}
 
 	LifeAlloyQuest: {
-		// DisplayName: Life Alloy
-		// Description: Smelt Life Alloys
-		// DetailedDescription: Three living metals melted into one; the ingot still carries a pulse. Every high-end frame is built on it.
+		DisplayName: Lebenslegierung
+		Description: Schmelze Lebenslegierungen
+		DetailedDescription: Drei lebende Metalle zu einem; der Barren trägt noch einen Puls. Jedes hochwertige Gerüst baut darauf.
 	}
 
 	AstralBarQuest: {
-		// DisplayName: Astral Smelting
-		// Description: Forge Astral Bars
-		// DetailedDescription: With the god-worm dead, the astral veins finally yield to the pickaxe. The bars glow on their own in the dark.
+		DisplayName: Astralschmelze
+		Description: Schmiede Astralbarren
+		DetailedDescription: Ist der Gotteswurm tot, geben die Astraladern endlich der Spitzhacke nach. Die Barren leuchten von selbst im Dunkeln.
 	}
 
 	UelibloomQuest: {
-		// DisplayName: Uelibloom in Blossom
-		// Description: Forge Uelibloom Bars
-		// DetailedDescription: After the goddess's holy fire swept through, metal flowers bloomed in the jungle mud. Smelt the petals into bars; the light stays inside.
+		DisplayName: Uelibloom in Blüte
+		Description: Schmiede Uelibloom-Barren
+		DetailedDescription: Nach dem heiligen Feuer der Göttin blühten Metallblumen im Dschungelschlamm. Schmelz die Blüten zu Barren; das Licht bleibt drin.
 	}
 
 	BloodstoneQuest: {
-		// DisplayName: Bloodstone Tempering
-		// Description: Gather Bloodstone Cores
-		// DetailedDescription: With the goddess fallen, dark red stones float up through the lava of the Brimstone Crags. They are still beating, like hearts outside their bodies.
+		DisplayName: Blutsteinhärten
+		Description: Sammle Blutsteinkerne
+		DetailedDescription: Nach dem Fall der Göttin steigen dunkelrote Steine aus der Lava der Schwefelfeuerklippe. Sie schlagen noch, wie Herzen außerhalb des Körpers.
 	}
 
 	AscendantEssenceQuest: {
-		// DisplayName: Ascendant Spirit
-		// Description: Condense Ascendant Spirit Essence
-		// DetailedDescription: Phantoms, stardust, moonlight, and a stubborn will that refuses to scatter. Press them into one essence; it is enough to light a legend.
+		DisplayName: Aufgestiegener Geist
+		Description: Kondensiere aufgestiegene Geisteressenz
+		DetailedDescription: Geister, Sternenstaub, Mondlicht und ein Wille, der sich nicht zerstreuen lässt. Press sie in eine Essenz; das reicht, um eine Legende zu entzünden.
 	}
 
 	YharonSoulQuest: {
-		// DisplayName: Embers of the Dragon Soul
-		// Description: Collect Yharon Soul Fragments
-		// DetailedDescription: When the great dragon burned out, what remained in the flames was not ash but shards of soul, still hot. Mind your heart when you pick them up.
+		DisplayName: Glut der Drachenseele
+		Description: Sammle Yharon-Seelenfragmente
+		DetailedDescription: Als der große Drache verbrannt war, blieb in den Flammen keine Asche, sondern noch heiße Seelensplitter. Pass auf dein Herz auf, wenn du sie aufhebst.
 	}
 
 	FruitQuest: {
-		// DisplayName: Gifts of Life
-		// Description: Gather all four life-enhancing fruits
-		// DetailedDescription: Strange fruit sometimes ripens beside the corpses of mighty foes. Four kinds in all, and every one pushes your life to a new limit.
+		DisplayName: Gaben des Lebens
+		Description: Sammle alle vier lebensstärkenden Früchte
+		DetailedDescription: Neben den Leichen mächtiger Feinde reifen manchmal seltsame Früchte. Vier Arten insgesamt, und jede schiebt dein Leben an eine neue Grenze.
 	}
 
 	DraedonPowerCellQuest: {
-		// DisplayName: Ancient Power
-		// Description: Collect Power Cells
-		// DetailedDescription: The lab ruins are littered with cells that still hold a charge. An energy density far beyond your generators; worth studying.
+		DisplayName: Uralte Energie
+		Description: Sammle Energiezellen
+		DetailedDescription: In den Laborruinen liegen Zellen, die noch Ladung halten. Eine Energiedichte weit über deinen Generatoren; das lohnt sich zu untersuchen.
 	}
 
 	DraedonsForgeQuest: {
-		// DisplayName: The Master's Forge
-		// Description: Obtain the master craftsman's forge
-		// DetailedDescription: At the end of industry stands a furnace that can smelt anything. Assemble it, and your workshop will never again meet something it cannot make.
+		DisplayName: Gigantenschmiede
+		Description: Erhalte die Schmiede des Giganten
+		DetailedDescription: Am Ende der Industrie steht ein Ofen, der alles schmelzen kann. Bau ihn zusammen, und deine Werkstatt trifft nie wieder auf etwas, das sie nicht herstellen kann.
 	}
 
 	ConquerorMilestone: {
-		// DisplayName: Chronicle of Conquest
-		// Description: Defeat every mighty foe of this world
-		// QuestObjective.Description: Complete all hunt quests
-		// DetailedDescription: From King Slime to the things at the world's end, finish every hard fight there is. Few ever fill this page.
+		DisplayName: Chronik der Eroberung
+		Description: Besiege jeden mächtigen Feind dieser Welt
+		QuestObjective.Description: Schließe alle Jagdaufträge ab
+		DetailedDescription: Vom Schleimkönig bis zu den Wesen am Ende der Welt, beende jeden harten Kampf. Wenige füllen je diese Seite.
 	}
 
 	EventMilestone: {
-		// DisplayName: Peacekeeper
-		// Description: Quell every invasion and anomaly
-		// QuestObjective.Description: Complete all event quests
-		// DetailedDescription: Armies, fleets, moons from other worlds. Whatever came in numbers, you sent home.
+		DisplayName: Ereignisfriedensstifter
+		Description: Befriede jede Invasion und jede Anomalie
+		QuestObjective.Description: Schließe alle Ereignisaufträge ab
+		DetailedDescription: Armeen, Flotten, Monde aus anderen Welten. Was in Scharen kam, hast du zurückgeschickt.
 	}
 
 	CompletionistMilestone: {
-		// DisplayName: The Complete Codex
-		// Description: Finish everything in this book
-		// QuestObjective.Description: Complete all quests
-		// DetailedDescription: The last page of this book is reserved for whoever reads it all. By the time you close it, this world holds nothing you have not seen.
+		DisplayName: Vollständiger Kodex
+		Description: Erledige alles in diesem Buch
+		QuestObjective.Description: Schließe alle Aufträge ab
+		DetailedDescription: Die letzte Seite dieses Buchs ist für den, der es ganz liest. Wenn du es zuklappst, hält diese Welt nichts mehr, das du nicht gesehen hast.
 	}
 }

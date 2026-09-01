@@ -28,8 +28,8 @@ CWRServerConfig: {
 	}
 
 	GenSHPCCradle: {
-		// Label: Generate SHPC Cradle Island
-		// Tooltip: Generates a crashed vessel sky island above spawn with the SHPC sealed inside. When disabled, the weapon can only be found in Calamity's laboratory.
+		Label: SHPC-Absturzinsel erzeugen
+		Tooltip: Erzeugt über dem Spawnpunkt eine Himmelsinsel mit einer abgestürzten Kapsel, in der die SHPC versiegelt ist. Ist dies deaktiviert, ist die Waffe nur in Calamitys Labor zu finden
 	}
 
 	ConfigChangePrefix: Benutzer
@@ -46,8 +46,8 @@ CWRClientConfig: {
 	}
 
 	DomainConciseDisplay: {
-		Label: Domain-Minimalanzeige
-		Tooltip: Standardmäßig aus. Wenn aktiviert, werden die meisten visuellen Effekte innerhalb der Domain ausgeblendet.
+		Label: Knappes Domänendisplay
+		Tooltip: Standardmäßig aus. Vereinfacht nur die Inszenierung von Domänen wie Cyberspace und Meeresgebiet; Onikiris Geisterreich sowie Zergliederung, Omokage, Hackerzeit und ähnliche Waffen- und Implantateffekte bleiben unberührt
 	}
 
 	LensEasing: {
@@ -56,7 +56,7 @@ CWRClientConfig: {
 	}
 
 	AmbienceDensity: {
-		// Label: Ambience Density
-		// Tooltip: Scales decorative ambience particle density only; telegraphs and hazards are never reduced.
+		Label: Atmosphärendichte
+		Tooltip: Skaliert nur die Dichte dekorativer Atmosphärenpartikel; Vorzeichen und Gefahren bleiben immer sichtbar
 	}
 }

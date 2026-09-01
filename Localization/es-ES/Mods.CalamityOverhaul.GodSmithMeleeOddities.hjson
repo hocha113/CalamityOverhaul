@@ -1,68 +1,68 @@
 # GodSmith MeleeOddities (P5) weapon descriptions
 # Keys composed by the framework: Mods.CalamityOverhaul.GodSmithMeleeOddities.{SchemeClass}.Desc
 
-/* GsVampireKnives.Desc:
+GsVampireKnives.Desc:
 	'''
-	Reforged: hurls 4-8 knives that heal 7.5% of damage dealt;
-	stolen blood condenses into up to 3 orbiting blood pearls, each adding a knife to the next throw;
-	at 3 pearls the next throw is a crimson volley with doubled lifesteal
-	''' */
-/* GsScourgeoftheCorruptor.Desc:
+	Reforja: un lanzamiento suelta 4~8 cuchillos; al acertar absorben un 7.5% del daño infligido como vida;
+	la sangre robada se cuaja a tu lado en perlas de sangre, hasta 3; cada una añade 1 cuchillo al siguiente lanzamiento;
+	al juntar 3, el siguiente lanzamiento es una andanada carmesí y, en esa ronda, el robo de vida se duplica
 	'''
-	Reforged: the javelin bursts into a brood of tiny eaters on impact;
-	it also pins a festering sore on whatever it strikes - eaters dive at the sore,
-	and after three passes the sore ruptures with cursed flames
-	''' */
-/* GsSolarEruption.Desc:
+GsScourgeoftheCorruptor.Desc:
 	'''
-	Reforged: lashes out a looping chain-blade that pierces walls and detonates sunlight on hit;
-	land 8 hits to charge a corona - the next lash ignites its whole path in a chain of blasts
-	''' */
-/* GsDayBreak.Desc:
+	Reforja: al caer, la gran lanza estalla en una camada de pequeños Devoraalmas;
+	donde acierta el venablo clava una llaga corrupta; los pequeños Devoraalmas se lanzan primero contra el objetivo de la llaga,
+	y si la llaga es atravesada tres veces revienta pus y prende llamas malditas
 	'''
-	Reforged: spears stick and burn, up to 8 per target;
-	pinning 4 spears into one target detonates them into a cross of daylight
-	''' */
-/* GsSickle.Desc:
+GsSolarEruption.Desc:
 	'''
-	Reforged: still harvests hay from grass.
-	Slashes build Harvest, each stack swinging a little faster;
-	at 5 stacks the next slash becomes a widened reaping sweep
-	''' */
-/* GsIceSickle.Desc:
+	Reforja: lanza un filo de cadena en anillo que atraviesa muros y, al acertar, detona luz solar;
+	8 impactos seguidos llenan la Corona solar; el siguiente latigazo prende todo el camino del látigo y encadena explosiones a lo largo
 	'''
-	Reforged: the thrown sickle freezes into an ice prism where it stops;
-	shatter the prism with a slash to burst a fan of icicles forward
-	''' */
-/* GsDeathSickle.Desc:
+GsDayBreak.Desc:
 	'''
-	Reforged: the wall-piercing scythe grows a tier for each new enemy it reaps;
-	at three tiers it erupts in a ring of soulfire where it halts
-	''' */
-/* GsTerragrim.Desc:
+	Reforja: las lanzas solares se clavan en el enemigo y queman sin parar; hasta 8 en el mismo objetivo;
+	al clavar 4, las cuatro detonan solas en una cruz de sol
 	'''
-	Reforged: hold to become a storm of blades while Growth builds;
-	release to loose a blade wave scaled by Growth - at full power it takes the shape of the Terra Blade
-	''' */
-/* GsArkhalis.Desc:
+GsSickle.Desc:
 	'''
-	Reforged: the flurry pierces 20 armor;
-	sustained hits on one target build Insight, each stack adding 2 more armor penetration,
-	and at 8 stacks the flurry snaps into a piercing execution thrust
-	''' */
-/* GsMonkStaffT1.Desc:
+	Reforja: al cortar hierba sigue cayendo heno.
+	Los tajos acumulan Cosecha; cada capa hace que el siguiente tajo salga un poco más rápido;
+	al llenar 5 capas, el siguiente tajo se vuelve un gran barrido más ancho
 	'''
-	Reforged: the ground slam still deals triple damage in an area, and you can still turn or cut the spin short;
-	slammed enemies grow drowsy and slow, and a third slam on the same target puts it to sleep -
-	that slam hits harder and slows longer
-	''' */
-/* GsMonkStaffT2.Desc:
+GsIceSickle.Desc:
 	'''
-	Reforged: every landed thrust calls a ghast to pierce a nearby enemy;
-	the ghast then circles its victim for one more bite
-	''' */
-/* GsMonkStaffT3.Desc:
+	Reforja: la hoz giratoria que lanzas, al llegar al final, ya no se disipa: se cuaja en un cristal de hielo y se queda;
+	si rompes el cristal con un tajo, estalla hacia adelante un abanico de prismas de hielo
 	'''
-	Reforged: left-click swings build Dragon Breath, lighting up the pearl on the staff;
-	at 5 stacks the right-click dragon sphere ascends, calling down lightning along its path
-	''' */
+GsDeathSickle.Desc:
+	'''
+	Reforja: la hoz giratoria que atraviesa muros, cada vez que siega a un enemigo nuevo, crece y se hace más pesada un grado;
+	al llenar tres grados, estalla un anillo de llamas de alma donde se detiene
+	'''
+GsTerragrim.Desc:
+	'''
+	Reforja: mantener pulsado te vuelve un vendaval de filos y, a la vez, acumulas Crecimiento;
+	al soltar, lanzas una onda de espada según el Crecimiento; a tope es la forma completa de la Espada terra
+	'''
+GsArkhalis.Desc:
+	'''
+	Reforja: el vendaval lleva 20 de perforación de armadura;
+	al golpear sin parar al mismo objetivo acumulas Lectura; cada capa añade 2 de perforación,
+	y al llenar 8 capas se recoge solo en una estocada que atraviesa
+	'''
+GsMonkStaffT1.Desc:
+	'''
+	Reforja: el porrazo al suelo sigue haciendo el triple de daño en área y a mitad de giro aún puedes dar la vuelta o recoger el palo antes;
+	los enemigos golpeados se adormecen y se ralentizan; el mismo objetivo que trague tres porrazos cae en sueño profundo,
+	y ese tercer porrazo duele más y ralentiza más rato
+	'''
+GsMonkStaffT2.Desc:
+	'''
+	Reforja: cada estocada que acierta llama a un alma rencorosa que atraviesa a los enemigos cercanos;
+	tras cruzar al objetivo, el alma aún da una vuelta y muerde otra vez
+	'''
+GsMonkStaffT3.Desc:
+	'''
+	Reforja: clic izquierdo: alzar el báculo acumula Aliento del trueno y la perla de dragón en la cabeza se enciende;
+	al llenar 5 capas, el orbe de dragón del trueno de clic derecho asciende a Descenso del dragón celeste y va dejando rayos del cielo
+	'''

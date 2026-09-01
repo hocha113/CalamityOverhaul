@@ -1,30 +1,49 @@
 GameModeText: {
 	BrutalName: Mundo Cruel
 	AsuraName: Infierno Asura
-	AnnihilationName: El Fin de la Muerte
-	// GodSmithName: Divine Artifice
-	BrutalOnLine: Este mundo es cruel, y aun así lo sigues amando.
-	BrutalOffLine: El mundo envaina sus colmillos. Su clemencia es solo una pausa.
-	AsuraOnLine: La senda Asura se abre. Todo dolor que inflijas será devuelto por completo.
-	AsuraOffLine: La senda Asura se cierra. Todas las deudas quedan saldadas.
-	AnnihilationOnLine: Todo pasará; solo la Muerte vive para siempre.
-	AnnihilationOffLine: La Muerte descansa un instante; los vivos roban un respiro.
-	// GodSmithOnLine: The Godsmith takes up the hammer; every common iron shall be reforged.
-	// GodSmithOffLine: The forge fire wanes; all arms return to their former shape.
-	BrutalDesc: Libera la IA rediseñada y despiadada de los jefes brutales; el resto de enemigos gana un 50% más de vida y daño, y los enemigos menores se vuelven veloces y frenéticos
-	AsuraDesc: La mejora sube al 100%. Los enemigos se adaptan al daño repetido del mismo tipo, y cada golpe tuyo fija el mínimo del suyo
-	AnnihilationDesc: La forma final del Infierno Asura en un mundo cénit. Todo terror se duplica de nuevo: los enemigos se adaptan el doble de rápido y tu dolor se devuelve por partida doble
-	// BrutalCreationDesc: Master is the floor: reworked bosses awaken, all foes empowered
-	// AsuraCreationDesc: Master is the floor: foes adapt to your blows and mirror your pain
-	// GodSmithDesc: Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched, and it toggles independently of every other mode
-	// GodSmithRecastTitle: Godsmith Reforged
-	// GodSmithEndowPrefix: "Endowment: "
+	AnnihilationName: Vida eterna de la Muerte
+	GodSmithName: Artificio divino
+	BrutalOnLine: Este mundo es cruel, y aun así lo sigues amando
+	BrutalOffLine: El mundo envaina sus colmillos. Su clemencia es solo una pausa
+	AsuraOnLine: La senda Asura se abre. Todo dolor que inflijas será devuelto por completo
+	AsuraOffLine: La senda Asura se cierra. Causa y efecto quedan en paz
+	AnnihilationOnLine: Todo pasará; solo la Muerte vive para siempre
+	AnnihilationOffLine: La Muerte descansa un instante; los vivos roban un respiro
+	GodSmithOnLine: El Herrero divino alza el martillo; todo hierro común será reforjado
+	GodSmithOffLine: El fuego de la forja se apaga; todas las armas vuelven a su forma primera
+	BrutalDesc:
+		'''
+		Libera la IA rediseñada y despiadada de los jefes; sus valores parten de la dificultad Maestro
+		Todos los enemigos ganan un 50% más de vida y daño; los menores se vuelven veloces y entran en frenesí permanente
+		'''
+	AsuraDesc:
+		'''
+		La mejora sube al 100%. Los enemigos se adaptan al mismo tipo de ataque si lo repites,
+		y el daño que infliges se convierte en el mínimo del que te devuelven.
+		Los ataques cuerpo a cuerpo se adaptan peor, sobre todo el filo mismo;
+		cuanto más cerca estés del enemigo, más daño causes
+		'''
+	AnnihilationDesc:
+		'''
+		La forma final del Infierno Asura en un mundo legendario. Todo terror se duplica de nuevo;
+		los enemigos se adaptan más rápido y el dolor que infliges se devuelve por partida doble
+		'''
+	BrutalCreationDesc: Maestro es el suelo: los jefes rehechos despiertan y todos los enemigos ganan un 50%
+	AsuraCreationDesc: Maestro es el suelo: los enemigos se adaptan a tus golpes y devuelven el dolor tal cual
+	GodSmithDesc:
+		'''
+		Todas las armas de vanilla ganan una forma de ataque renovada,
+		y las armaduras de vanilla reciben una Dádiva de conjunto fiel a su naturaleza.
+		No cambia la fuerza enemiga; se activa por separado y no interfiere con los demás modos
+		'''
+	GodSmithRecastTitle: Reforja del Herrero divino
+	GodSmithEndowPrefix: "Dádiva: "
 	StateOn: Activo
 	StateOff: Latente
 	HintEnable: Clic para despertar
 	HintDisable: Clic para sellar
-	BossRefuse: Un jefe sigue vivo. El pacto no puede alterarse ahora
-	// AsuraNeedBrutal: Awaken Cruel World first
+	BossRefuse: Un jefe sigue en el mundo. El pacto no puede alterarse ahora
+	AsuraNeedBrutal: Primero hay que despertar el Mundo Cruel
 }
 
-// SporeshineAmbience.DazeDeathReason: "{0} drowsed away deep in the spore haze"
+SporeshineAmbience.DazeDeathReason: "{0} se embriagó en lo profundo de la niebla de esporas"

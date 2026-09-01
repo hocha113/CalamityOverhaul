@@ -1,53 +1,53 @@
-/* GsLastPrism.Desc:
+GsLastPrism.Desc: 
 	'''
-	Reforged: heat is focus; six splayed beams converge into one white-hot lance, and at white heat the impact refracts prism shards
-	Capping the gauge never breaks the beam, it only surges mana upkeep
-	Right click while channeling to shatter the lance into a prismatic fan, spending all heat
-	''' */
-// GsLastPrismHeldProj.DisplayName: Last Prism Lance
-// GsLastPrismBurstProj.DisplayName: Prismatic Shatter
-// GsLastPrismShardProj.DisplayName: Prism Shard
-/* GsMagicalHarp.Desc:
+	Reforgé : la chaleur, c'est la focalisation ; six faisceaux colorés se resserrent, et à blanc ils fusionnent en un faisceau incandescent
+	Le point d'impact du faisceau blanc réfracte des éclats de prisme ; au plafond de la jauge le faisceau continue, mais le mana flambe
+	Clic droit pendant le canal : le faisceau éclate en un éventail de sept pétales, la puissance suit la chaleur, puis il faut tout refocaliser
 	'''
-	Reforged: unbroken play builds crescendo; at fortissimo the notes swell, race and rain music
-	Right click to resolve all crescendo into a ringing chord shockwave; rapid re-hits echo for bonus damage
-	''' */
-/* GsBubbleGun.Desc:
+GsLastPrismHeldProj.DisplayName: Faisceau du Dernier prisme
+GsLastPrismBurstProj.DisplayName: Éclat prismatique
+GsLastPrismShardProj.DisplayName: Éclat de prisme
+GsMagicalHarp.Desc: 
 	'''
-	Reforged: nonstop spray builds bubble pressure; at a boil the bubbles swell and burst into twin beads on impact
-	Cap the gauge and the barrel jams shut in a gush of foam
-	Right click to vent everything as a fan of seven great bubbles that pop in a rolling chain
-	''' */
-/* GsLaserMachinegun.Desc:
+	Reforgé : un jeu ininterrompu accumule le crescendo ; au fortissimo les notes gonflent, filent et pleuvent
+	Clic droit : tout le crescendo se résout en une onde d'accord ; les impacts rapides d'affilée font écho et blessent encore
 	'''
-	Reforged: heat is spin; the barrel drags cold and roars at white heat, where every sixth shot rides a piercing crimson lance
-	Holding the gauge at the redline only surges mana upkeep
-	Right click to vent the whole cylinder as a sweeping thirty-round fan
-	''' */
-/* GsRazorbladeTyphoon.Desc:
+GsBubbleGun.Desc: 
 	'''
-	Reforged: each cast banks storm charge; blades born at white heat never get lost, they wheel back to your side and hunt again
-	Right click to open the Eye of the Typhoon at your cursor: every blade in the air is drawn into the vortex, and the eye bursts as it closes
-	''' */
-/* GsMagnetSphere.Desc:
+	Reforgé : le jet continu accumule la pression ; à ébullition les bulles gonflent et éclatent en deux perles
+	Au plafond, le canon se bouche de mousse et se verrouille un instant
+	Clic droit : toute la pression part en un éventail de sept grandes bulles qui explosent en chaîne
 	'''
-	Reforged: while you hold the staff a feed-tether links you to your sphere, and magnetic flux climbs as long as the link holds
-	At full flux the sphere overcharges, lashing heavy arcs at anything close
-	Right click to detonate a magnet storm around the sphere that drags lesser foes toward its heart
-	''' */
-/* GsShadowbeamStaff.Desc:
+GsLaserMachinegun.Desc: 
 	'''
-	Reforged: hold to sustain a shadow beam that ricochets off the walls; white heat adds one more bounce and thickens the beam
-	Right click to vent everything as chained shadow bursts along every bend of the beam
-	''' */
-/* GsChargedBlasterCannon.Desc:
+	Reforgé : la chaleur, c'est le régime ; canon froid et lent, blanc et rugissant ; à blanc, chaque sixième tir porte un faisceau cramoisi perçant
+	Tenir la ligne rouge ne fait pas exploser le canon, ça double seulement le coût en mana
+	Clic droit : tout le barillet part en un éventail de trente tirs
 	'''
-	Reforged: hold to channel; cold plasma spits bolts, white heat pulses focused arc lances
-	Charging never stops: cap the gauge and the cannon itself fires the Annihilator, a massive plasma sphere that licks arcs at everything nearby
-	Right click to cash out early as a lesser charge shot
-	''' */
-// GsLaserMachinegunLanceProj.DisplayName: Crimson Lance
-// GsShadowbeamStaffHeldProj.DisplayName: Shadow Polyline Beam
-// GsChargedBlasterCannonHeldProj.DisplayName: Annihilation Charge
-// GsChargedBlasterCannonOrbProj.DisplayName: Annihilator
-// GsMagicalHarpNovaProj.DisplayName: Chord Shockwave
+GsRazorbladeTyphoon.Desc: 
+	'''
+	Reforgé : chaque sort accumule la tempête ; les lames nées à blanc ne se perdent jamais, elles reviennent à vos côtés et chassent encore
+	Clic droit : ouvrez l'Œil du typhon au curseur ; toutes les lames en l'air sont aspirées au cœur, et l'œil explose en se fermant
+	'''
+GsMagnetSphere.Desc: 
+	'''
+	Reforgé : tant que vous tenez le sceptre, un lien magnétique vous relie à la sphère et le flux grimpe
+	À flux plein, la sphère surcharge et verse des arcs lourds sur tout ce qui est proche
+	Clic droit : une tempête magnétique autour de la sphère aspire les petits ennemis vers le cœur
+	'''
+GsShadowbeamStaff.Desc: 
+	'''
+	Reforgé : maintenez pour tenir un faisceau d'ombre qui rebondit sur les murs ; à blanc, un rebond de plus et le faisceau s'épaissit
+	Clic droit : des explosions d'ombre s'enchaînent à chaque coude du faisceau
+	'''
+GsChargedBlasterCannon.Desc: 
+	'''
+	Reforgé : maintenez pour charger ; à froid, des bolts de plasma ; à blanc, des impulsions d'arc focalisé
+	La charge ne s'arrête jamais : au plafond, le canon tire de lui-même le Canon d'annihilation, une énorme sphère de plasma qui lèche d'arcs les ennemis proches
+	Clic droit : encaissez tôt, un tir de charge à puissance réduite
+	'''
+GsLaserMachinegunLanceProj.DisplayName: Faisceau rouge perçant
+GsShadowbeamStaffHeldProj.DisplayName: Faisceau d'ombre brisé
+GsChargedBlasterCannonHeldProj.DisplayName: Charge d'annihilation
+GsChargedBlasterCannonOrbProj.DisplayName: Canon d'annihilation
+GsMagicalHarpNovaProj.DisplayName: Onde d'accord

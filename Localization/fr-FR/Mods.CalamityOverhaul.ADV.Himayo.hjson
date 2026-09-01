@@ -1,162 +1,138 @@
 FirstMetHimayo: {
-	// SpeakerName: Himura Mayo
-	// Line1: ...I'm still alive?
-	// Line2: Wait, let me make sure... Is this some kind of spirit summoning?
-	// Line3: No...
-	// Line4: Why is my consciousness inside a sword now?
-	// Line5: My head is spinning... I can't wrap my head around what's happening at all.
-	// Line6: Still, since the blade is in your hands...
-	// Line7: From today onward, please take good care of me!
+	SpeakerName: Himura Mayo
+	Line1: ...Je suis encore en vie ?
+	Line2: "Attends, vérifions d'abord... C'est une invocation d'esprit ?"
+	Line3: Non...
+	Line4: "Pourquoi ma conscience est-elle dans un sabre, maintenant ?"
+	Line5: La tête me tourne... Je n'y comprends plus rien
+	Line6: "Enfin, puisque le sabre est dans tes mains..."
+	Line7: "À partir d'aujourd'hui, je compte sur toi"
 }
-
 ToriiShrine: {
-	// InteractHint: "[Right Click] Draw the blade"
-	// SealedHint: "[Right Click] Grip the hilt"
-	// InventoryFullHint: Inventory is full. Clear a slot before drawing the blade
+	InteractHint: "[Clic droit] Dégainer"
+	SealedHint: "[Clic droit] Saisir la poignée"
+	InventoryFullHint: L'inventaire est plein. Libère une case avant de dégainer
 }
-
 ItCametoThis: {
-	// Line1: Really didn't want it to come to this
-	// Line2: From now on, this world is in my hands
+	Line1: Je n'avais vraiment pas envie d'en arriver là
+	Line2: "À partir de maintenant, ce monde, c'est moi qui le prends"
 }
-
 HimayoEyeOfCthulhuGift: {
-	// L0: Right—back home we used to have a guy who couldn't close his eyes when he slept.
-	// L1: Not the creepy wide-open kind. Lids half down, staring at the beam like he was spacing out.
-	// L2: Blankets tucked tight, house dead quiet. One time I walked past his window and almost yelled for help.
-	// L3: Next day he was fine, hollering from the fields for me to help haul flower pots.
-	// L4: Ah, talking about it… looking at that giant eye in the sky, I'm getting sleepy too.
+	L0: "Au fait, chez nous, il y avait un type qui n'arrivait pas à fermer les yeux en dormant"
+	L1: "Pas le genre grand ouvert qui fait peur. Les paupières à demi baissées, pile en face de la poutre, comme s'il rêvassait"
+	L2: "Couette bien rentrée, maison d'un silence à faire peur. Une fois, en passant sous sa fenêtre, j'ai failli crier au secours"
+	L3: "Le lendemain il allait très bien, et m'appelait du champ pour l'aider à porter des pots de fleurs"
+	L4: "Ah, à force d'en parler, en regardant ce gros œil dans le ciel... moi aussi, ça me donne sommeil"
 }
-
 HimayoEvilBossGift: {
-	// L0Worm: Gross… chunk after chunk jammed in the dirt.
-	// L1Worm: Reeks like a freshly turned mud ditch. Enough, I don't want to smell that again.
-	// L0Brain: Brains belong properly tucked inside a skull.
-	// L1Brain: Soggy and sprawled out in the open, one look and my head throbs.
+	L0Worm: "Dégueu... morceau après morceau, coincés dans la terre"
+	L1Worm: Ça sent le fossé de boue tout juste retourné. Je ne veux plus sentir ça
+	L0Brain: "Un cerveau, ça devrait rester bien au chaud dans une boîte crânienne"
+	L1Brain: "Tout mou, étalé dehors... un seul regard et j'ai mal à la tête"
 }
-
 HimayoCalamityEvilGift: {
-	// L0: Don't just stand there spacing out. Catch your breath, at least.
-	// L1: That clump earlier… doesn't it look a lot like spoiled red bean paste?
-	// L2: Great, now I made myself hungry talking about it.
-	// L3: If you're hungry too, go find something to eat. Toughing it out after a fight is the dumbest move.
-	// L4: And don't wipe your hands on your face. Not because you're dirty—it'll sting your eyes, seriously.
+	L0: "Arrête de rester planté là à rêvasser. Reprends ton souffle, au moins"
+	L1: Ce tas tout à l'heure... tu ne trouves pas que ça ressemblait à de la pâte de haricots avariée ?
+	L2: "Super. Je n'avais pas faim, et je me suis donné faim moi-même"
+	L3: "Si tu as faim aussi, va te trouver à manger. S'obstiner après un combat, c'est bête"
+	L4: "Et ne te frotte pas le visage avec les mains... ce n'est pas que tu sois sale, mais ça pique vraiment les yeux"
 }
-
 HimayoSlimeGodGift: {
-	// L0: Sticky, sure. But stepping in muddy sludge after rain as a kid was way worse than this.
-	// L1: At least this won't seep into boots. Well… pretty tolerable, all things considered.
-	// L2: Here. Ask where I pulled it from and I'll pretend I didn't hear.
+	L0: "C'est collant, d'accord. Mais le jour où, gosse, j'ai marché dans la boue après la pluie, c'était bien pire"
+	L1: Au moins ça ne se faufile pas dans les chaussures. Bon... on peut vivre avec
+	L2: "Tiens. Ne me demande pas d'où je l'ai sorti. Si tu demandes, je ferai semblant de ne pas entendre"
 }
-
 HimayoWallOfFleshGift: {
-	// L0: …It really fell. That wall of flesh collapsed.
-	// L1: Not sure if I'm happy or not. Just feels like… the weather is about to turn.
-	// L2: The road ahead is probably going to get a lot rougher. Just keep your wits about you.
+	L0: ...Il est vraiment tombé. Ce mur de chair s'est écroulé
+	L1: Je ne saurais pas dire si je suis contente. Juste... on dirait que le temps va tourner
+	L2: "La suite sera probablement plus rude. Toi, tu le sais déjà"
 }
-
 HimayoFesterSerpentGift: {
-	// L0: Hold on, what's on the blade this time… pus?
-	// L1: I live inside here! The seafood stall just closed and now it's a clinic.
-	// L2: Still no window—sick wards should at least get a vent!
-	// L3: Next time pick somewhere cleaner to cut. I have nowhere left to air this place out.
+	L0: "Attends, cette fois sur la lame... c'est du pus ?"
+	L1: "Moi je vis là-dedans ! L'étal de fruits de mer vient de fermer, et voilà qu'on ouvre une infirmerie"
+	L2: "Toujours pas de fenêtre. Une salle de malades, ça devrait au moins avoir un soupirail"
+	L3: "La prochaine fois, choisis un endroit plus propre pour frapper. Ici, je n'ai nulle part où aérer"
 }
-
 HimayoBrimstoneElementalGift: {
-	// L0: Heat's still hanging. Look at that puddle over there, still steaming.
-	// L1: What happens if you stick a foot in? …Wait, I wasn't telling you to actually try!
-	// L2: Anyway, don't touch it. It'll burn.
+	L0: "La chaleur n'est pas encore partie. Regarde cette flaque, elle fume encore"
+	L1: "Et si on y mettait un pied ? ...Attends, je ne t'ai pas dit d'essayer pour de vrai"
+	L2: "Bref, n'y touche pas. Ça brûle"
 }
-
 HimayoDestroyerGift: {
-	// L0: Called "The Destroyer"… sounds scary enough.
-	// L1: Turns out it's just a really long, clunky strip of scrap iron.
-	// L2: Here, take this. Don't drop it on the ground—I'm not picking it up for you.
+	L0: On l'appelle le Destructeur... Ça en impose
+	L1: "Une fois à terre, ce n'était qu'une grande bande de ferraille"
+	L2: "Tiens, prends ça. Ne le laisse pas tomber. Si ça tombe, ce n'est pas moi qui ramasse"
 }
-
 HimayoTwinsGift: {
-	// L0: Stare at someone too long and you really can't help but laugh.
-	// L1: You know that feeling, right? The harder you try to hold it in, the more your mouth curls up on its own.
-	// L2: I used to have staring contests back home, and I always lost every single time.
-	// L3: Looking at those two up there… never mind, thinking about it makes me want to laugh again.
+	L0: "Quand deux personnes se regardent trop longtemps, on ne peut vraiment pas s'empêcher de rire"
+	L1: "Tu vois le genre ? Plus on retient, plus ça monte, et les commissures se lèvent toutes seules"
+	L2: "Avant, je faisais des concours de regard. C'était toujours moi qui perdais"
+	L3: "Tout à l'heure, en regardant ces deux-là dans le ciel... laisse tomber, rien que d'y penser j'ai encore envie de rire"
 }
-
 HimayoSkeletronPrimeGift: {
-	// L0: Head's still the old skull, but the body got replaced with a shiny new iron frame.
-	// L1: Like someone rushed out in the middle of changing clothes—looks awkward as hell.
-	// L2: Next time, get fully dressed before charging into battle, okay? I'm getting second-hand anxiety just watching.
+	L0: "La tête, c'est encore le vieux crâne. Le corps, par contre, tout neuf en fer"
+	L1: On dirait quelqu'un qui s'est rhabillé à moitié et s'est précipité dehors. C'est d'un maladroit
+	L2: "La prochaine fois, qu'il finisse de s'habiller avant de se battre, d'accord ? Je m'impatiente à sa place"
 }
-
 HimayoCalamitasCloneGift: {
-	// L0: Even mimicking the walking posture… so irritating.
-	// L1: Not that I'm afraid of it… it just feels uncanny. The closer the mimicry, the faker it looks.
-	// L2: Here. Ask where I pulled this from and I'll pretend I didn't hear.
+	L0: "Même la démarche, il faut qu'il la copie. Rien que de voir ça, ça m'agace"
+	L1: "Ce n'est pas que j'en aie peur... ça me donne juste la chair de poule. Plus c'est ressemblant, plus ça sonne faux"
+	L2: "Tiens. Ne me demande pas d'où je l'ai sorti. Si tu demandes, je ferai semblant de ne pas entendre"
 }
-
 HimayoPlanteraGift: {
-	// L0: When flowers wither, you snip them right off without hesitation.
-	// L1: Leaving dry stems is pointless. It takes up space and just makes people irritable.
-	// L2: Flower sellers back home always did it like that—spent means cut, no lingering around.
-	// L3: Ah, why am I babbling about this? You didn't come here to buy flowers from me anyway.
+	L0: "Quand une fleur a fini de s'ouvrir, on la coupe net"
+	L1: "Garder les tiges sèches ne sert à rien. Ça prend de la place, et ça agace rien qu'à les voir"
+	L2: "Chez nous, les fleuristes font tous comme ça : fanée, on coupe, sans s'éterniser"
+	L3: "Ah, pourquoi je te raconte ça ? Tu n'es pas venu m'acheter des fleurs"
 }
-
 HimayoGolemGift: {
-	// L0: Are your wrists still numb? Take a moment to loosen up your shoulders too.
-	// L1: Striking hard stone like that sends the shockwave all the way into the center of your palm.
-	// L2: My grip used to go numb from the recoil too, and it felt awful.
-	// L3: And don't keep slamming the blade head-on into solid rock. If the edge chips, I'm the one who suffers!
+	L0: Les poignets sont encore engourdis ? Il faudra aussi te masser les épaules
+	L1: "Quand on cogne contre une pierre pareille, le choc remonte jusqu'au creux de la paume"
+	L2: "Moi aussi, ça m'engourdissait le creux du pouce. C'était pénible"
+	L3: "Et n'envoie pas toujours le sabre se casser les dents sur la roche. Si le tranchant s'ébrèche, c'est moi qui en souffre"
 }
-
 HimayoCultistGift: {
-	// L0: Finally quiet outside the door.
-	// L1: Our ears can rest at last. That frantic chanting earlier had me wanting to cover my ears the whole time.
+	L0: "Devant la porte, ça s'est enfin calmé"
+	L1: "Les oreilles peuvent se reposer. Toute cette psalmodie à n'en plus finir, j'avais envie de me les boucher"
 }
-
 HimayoMoonLordGift: {
-	// L0: That moon looming over the sky has finally dispersed.
-	// L1: Can't say I feel relieved or happy…
-	// L2: Just feels like something that was pressing down on our heads forever is suddenly gone, and it feels a little strange.
+	L0: La lune qui pesait sur le ciel s'est enfin dissipée
+	L1: Je ne dirais pas que je suis contente...
+	L2: "C'est juste que ce qui nous écrasait le crâne depuis toujours a disparu d'un coup, et ça fait un peu bizarre"
 }
-
 HimayoProvidenceGift: {
-	// L0: Tch, the air around here is practically scorched.
-	// L1: The back of my hand feels tight from the heat. Standing here is like being buried in a fire pit to roast sweet potatoes.
-	// L2: Take this. Don't just stand here getting baked—let's get out of here quick.
+	L0: "Tch, l'air autour est presque grillé"
+	L1: "Le dos de la main est tendu par la chaleur. Rester ici, c'est comme être jeté dans un trou pour rôtir des patates"
+	L2: Prends ça. Ne reste pas planté à te faire cuire. On dégage
 }
-
 HimayoPolterghastGift: {
-	// L0: It's so damp here, like clothes hung indoors for a whole week that never dry out.
-	// L1: Sleeping in a chilly, gloomy place like this guarantees a sore back the next morning.
-	// L2: There's not even a window to air it out, and no charcoal to light a brazier.
-	// L3: Finish up and let's go. Definitely don't spend the night here.
+	L0: "Ici, c'est humide comme du linge séché une semaine à l'intérieur, qui ne sèche jamais"
+	L1: "Dormir dans un endroit aussi froid et sombre, le lendemain le dos est forcément en compote"
+	L2: "Pas même une fenêtre pour aérer, et pas de charbon pour un brasero"
+	L3: "On finit et on s'en va. Surtout, on ne passe pas la nuit ici"
 }
-
 HimayoDevourerOfGodsGift: {
-	// L0: That head earlier… was so massive that staring at it made me forget what I was even looking at.
-	// L1: It felt as if a giant chunk of the sky had been violently bitten away.
-	// L2: …Never mind, putting it that way probably sounds even scarier.
+	L0: "Cette tête, tout à l'heure... tellement énorme qu'à force de regarder, on ne savait plus ce qu'on regardait"
+	L1: Comme si on avait arraché d'un coup une énorme bouchée au ciel
+	L2: "...Laisse tomber. Dit comme ça, c'est encore plus flippant"
 }
-
 HimayoYharonGift: {
-	// L0: The blade is still burning hot, and my side is sweltering too.
-	// L1: Honestly, inside the scabbard right now feels no different from an oven.
-	// L2: Don't rush to sheath it just yet—I'm the one getting toasted in here!
-	// L3: Here, set this aside for now. We can look at it once things cool down.
+	L0: "La lame brûle encore, et de mon côté aussi ça étouffe"
+	L1: "Franchement, le fourreau en ce moment, c'est un four"
+	L2: Ne range pas le sabre tout de suite. C'est moi qui me fais griller là-dedans
+	L3: "Tiens, pose ça de côté. On verra quand ça aura refroidi"
 }
-
 HimayoExoMechsGift: {
-	// L0: After all that deafening bombardment, my ears are still buzzing non-stop.
-	// L1: Feels like someone is tapping a tiny hammer inside my skull—so annoying!
-	// L2: Let's find somewhere quiet to rest up and give our ears a break.
+	L0: "Après ce bombardement, j'ai encore les oreilles qui bourdonnent"
+	L1: On dirait que quelqu'un tape un petit marteau dans mon crâne. C'est insupportable
+	L2: Allons trouver un coin calme pour nous poser. Offrons des vacances à nos oreilles
 }
-
 HimayoSupremeCalamitasGift: {
-	// L0: The atmosphere over there earlier was heavy and suffocating.
-	// L1: Go catch some fresh breeze, or splash some cold water on your face… not because you're dirty, but to clear your head.
-	// L2: Though… suffocating atmospheres like that, I used to be quite accustomed to them.
+	L0: "L'ambiance, de ce côté-là, pesait l'air jusqu'à le figer"
+	L1: "Va te mettre au vent, ou rince-toi le visage à l'eau froide... ce n'est pas pour te laver, c'est pour te réveiller"
+	L2: "Ceci dit... ce genre de scène qui coupe le souffle, j'y étais assez habituée, avant"
 }
-
 HimayoBossRushGift: {
-	// L0: Hold on, don't move around yet.
-	// L1: Steady your footing… you haven't even caught your breath yet. It's good to have you back.
+	L0: Reste là. Ne bouge pas
+	L1: "Tiens-toi bien... tu n'as même pas encore repris ton souffle. Te revoilà, c'est déjà ça"
 }

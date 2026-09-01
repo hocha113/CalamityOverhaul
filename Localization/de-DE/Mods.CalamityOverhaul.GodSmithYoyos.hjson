@@ -1,112 +1,112 @@
-/* GsWoodYoyo.Desc:
+GsWoodYoyo.Desc:
 	'''
-	Right click: anchor, the yoyo patrols in place at your cursor
-	Anchored hits on the same target build Heat, up to +40% damage
-	Every 4th anchored hit flings 2 spinning wood chips at 25% damage
-	''' */
-/* GsRallyYoyo.Desc:
+	Rechtsklick: Stationieren, das Jojo ankert am Mauszeiger und patrouilliert
+	Stationieren auf dasselbe Ziel häuft Hitze, Schaden steigt um höchstens 40%
+	Jeder 4. Stationierungs-Treffer schleudert 2 Holzsplitter-Sterne, je 25% Schaden
 	'''
-	Right click: anchor patrol
-	Every 5 anchored hits quicken the strike tempo, up to 3 ranks; ranks reset when the yoyo returns
-	''' */
-/* GsMalaiseYoyo.Desc:
+GsRallyYoyo.Desc:
 	'''
-	Right click: anchor patrol
-	A field of malaise around the anchor slows enemies by 8%
-	''' */
-/* GsArteryYoyo.Desc:
+	Rechtsklick: Stationieren und patrouillieren
+	Alle 5 Stationierungs-Treffer steigt eine Schlagrampe, höchstens drei, Einholen setzt zurück
 	'''
-	Right click: anchor patrol
-	Anchored hits have a 20% chance to fling a blood bead dealing 15% damage
-	''' */
-/* GsAmazonYoyo.Desc:
+GsMalaiseYoyo.Desc:
 	'''
-	Right click: anchor patrol
-	Anchored hits inflict Poisoned; at full Heat the poison lasts twice as long
-	At full Heat the yoyo also sprouts a venom vine, lashing the nearest foe for 20% damage every 0.75s
-	''' */
-/* GsCode1Yoyo.Desc:
+	Rechtsklick: Stationieren und patrouillieren
+	Um den Anker liegt ein Siechfeld, Feinde −8% Bewegungsgeschwindigkeit
 	'''
-	Right click: single tap to anchor, double tap to lash back through foes (2.2x speed, 135% damage)
-	A lash hit sets a Breakpoint on the target for 3s: anchored hits on it deal 30% more
-	''' */
-/* GsValorYoyo.Desc:
+GsArteryYoyo.Desc:
 	'''
-	Right click: tap to anchor, double tap to lash
-	Lash knockback is doubled; with 3 or more enemies near the anchor, anchored damage gains 15%
-	''' */
-/* GsCascadeYoyo.Desc:
+	Rechtsklick: Stationieren und patrouillieren
+	Stationierungs-Treffer haben 20% Chance, Blutperlen zu spritzen, 15% Schaden
 	'''
-	Right click: tap to anchor, double tap to lash
-	Hits shed cascading sparks; the lash path leaves burning lines behind
-	''' */
-/* GsHiveFiveYoyo.Desc:
+GsAmazonYoyo.Desc:
 	'''
-	Right click: tap to anchor, double tap to lash
-	While anchored the yoyo becomes a hive, releasing a bee every 0.8s; bees benefit from your bee equipment
-	''' */
-/* GsFormatCYoyo.Desc:
+	Rechtsklick: Stationieren und patrouillieren
+	Stationierungs-Treffer vergiften, bei voller Hitze verdoppelt sich die Giftdauer
+	Bei voller Hitze wachsen Giftranken am Ball, alle 0,75 s peitschen sie den nächsten Feind, 20% Schaden plus Gift
 	'''
-	Right click: tap to anchor, double tap to lash
-	A lash hit formats the target's Heat straight to full; 6s cooldown, a white star marks it ready
-	''' */
-/* GsGradientYoyo.Desc:
+GsCode1Yoyo.Desc:
 	'''
-	Right click: tap to anchor, double tap to lash
-	Heat cap raised to +60%; the yoyo shifts gold, orange then red as Heat builds
-	''' */
-/* GsChikYoyo.Desc:
+	Rechtsklick: Klick stationiert, Doppelklick sticht umkehrend zur Hand (2,2-fache Ballgeschwindigkeit, 135% Schaden)
+	Umkehr-Treffer setzen 3 s einen Bruchpunkt, Stationierungs-Treffer gegen Bruchpunkt-Ziele +30% Schaden
 	'''
-	Right click: tap to anchor, double tap to lash
-	The lash flies at 2.6x speed with a sonic ring on launch
-	''' */
-/* GsHelFireYoyo.Desc:
+GsValorYoyo.Desc:
 	'''
-	Right click: tap to anchor, double tap to lash
-	Every 2s the anchor ignites the ground below with a ring of hellfire
-	''' */
-/* GsAmarokYoyo.Desc:
+	Rechtsklick: Klick stationiert, Doppelklick kehrt um
+	Umkehr-Rückstoß verdoppelt; stehen mindestens 3 Feinde nah am Anker, Stationierungsschaden +15%
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	The orbit trails frost mist, slowing enemies in the domain by 12% (spin time drains faster while orbiting)
-	''' */
-/* GsCode2Yoyo.Desc:
+GsCascadeYoyo.Desc:
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	The lash splits a parallel mirror track 40px aside, dealing 50% damage
-	''' */
-/* GsYeletsYoyo.Desc:
+	Rechtsklick: Klick stationiert, Doppelklick kehrt um
+	Treffer spritzen Funkenfälle, der Umkehrpfad hinterlässt eine Brennlinie
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	Every 6 anchored hits fling a ring of 8 spores, each dealing 40% damage
-	''' */
-/* GsRedsThrowYoyo.Desc:
+GsHiveFiveYoyo.Desc:
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	A lash hit loads 3 Red Flags into the target; while flags remain, anchored hits on it are guaranteed crits, one flag per hit
-	''' */
-/* GsValkyrieYoyo.Desc:
+	Rechtsklick: Klick stationiert, Doppelklick kehrt um
+	Stationiert wird es zum Bienenstock, alle 0,8 s eine Biene, Bienen nutzen deine Bienenausrüstungs-Boni
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	The orbit tilts into a valkyrie's gyre, shedding feather light on hits
-	''' */
-/* GsKrakenYoyo.Desc:
+GsFormatCYoyo.Desc:
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	While anchored, inky tendrils lash the two nearest foes for 30% damage per pulse
-	Infinite spin time makes it a true siege core
-	''' */
-/* GsEyeOfCthulhuYoyo.Desc:
+	Rechtsklick: Klick stationiert, Doppelklick kehrt um
+	Umkehr-Treffer formatieren die Zielhitze direkt auf voll, 6 s Abklingzeit, ein weißer Stern leuchtet wenn bereit
 	'''
-	Right click: tap to anchor, double tap to lash, hold to orbit
-	The anchor stares down the nearest foe, spitting 3 blood tears every 2s; the lash becomes a ramming charge dealing 160% damage
-	''' */
-/* GsTerrarianYoyo.Desc:
+GsGradientYoyo.Desc:
 	'''
-	Right click taps: chart up to 3 waypoints, the yoyo patrols the bezier route and its beam rate doubles while patrolling
-	Each completed lap rings a Patrol Resonance: for 1s beams fire faster and 30% harder
-	Double tap to lash, hold to orbit; click again when the route is full to clear it
-	''' */
-// GsYoyoPelletProj.DisplayName: Yoyo Pellet
-// GsYoyoBurnZoneProj.DisplayName: Scorch Zone
-// GsYoyoMirrorProj.DisplayName: Mirror Track
+	Rechtsklick: Klick stationiert, Doppelklick kehrt um
+	Hitzeobergrenze steigt auf 60%, beim Steigen wechselt der Ball von Gold über Orange nach Rot
+	'''
+GsChikYoyo.Desc:
+	'''
+	Rechtsklick: Klick stationiert, Doppelklick kehrt um
+	Die Umkehr schießt mit 2,6-facher Ballgeschwindigkeit, der Start trägt einen Knallring
+	'''
+GsHelFireYoyo.Desc:
+	'''
+	Rechtsklick: Klick stationiert, Doppelklick kehrt um
+	Stationiert zündet es alle 2 s einen Hel-Feuerring am Boden direkt darunter
+	'''
+GsAmarokYoyo.Desc:
+	'''
+	Rechtsklick: Klick stationiert, Doppelklick kehrt um, Halten geht in die Umlaufbahn
+	Der Umlauf zieht Frostnebel, Feinde in der Domäne −12% Tempo (in der Umlaufzeit läuft die Frist schneller)
+	'''
+GsCode2Yoyo.Desc:
+	'''
+	Rechtsklick: Klick stationiert, Doppelklick kehrt um, Halten umkreist
+	Die Umkehr spaltet eine parallele Spiegelbahn, 40 Pixel versetzt, 50% Schaden
+	'''
+GsYeletsYoyo.Desc:
+	'''
+	Rechtsklick: Klick stationiert, Doppelklick kehrt um, Halten umkreist
+	Alle 6 Stationierungs-Treffer fliegt ein Ring aus 8 Sporen, je 40% Schaden
+	'''
+GsRedsThrowYoyo.Desc:
+	'''
+	Rechtsklick: Klick stationiert, Doppelklick kehrt um, Halten umkreist
+	Umkehr-Treffer laden 3 Lagen Rotanzeige; solange Rotanzeige bleibt, sind Stationierungs-Treffer auf dieses Ziel immer kritisch, jeder Treffer verbraucht eine Lage
+	'''
+GsValkyrieYoyo.Desc:
+	'''
+	Rechtsklick: Klick stationiert, Doppelklick kehrt um, Halten umkreist
+	Die Umlaufbahn kippt zum Walkürenwirbel, Treffer streuen Federlicht
+	'''
+GsKrakenYoyo.Desc:
+	'''
+	Rechtsklick: Klick stationiert, Doppelklick kehrt um, Halten umkreist
+	Stationiert streckt er zu den nächsten zwei Feinden je einen Tintententakel, jeder Riss 30% Schaden
+	Unbegrenzte Flugzeit, Kern der Stellung
+	'''
+GsEyeOfCthulhuYoyo.Desc:
+	'''
+	Rechtsklick: Klick stationiert, Doppelklick kehrt um, Halten umkreist
+	Stationiert starrt er den nächsten Feind an und speit alle 2 s 3 Bluttränen; die Umkehr wird zum vergrößerten Rammstoß, 160% Schaden
+	'''
+GsTerrarianYoyo.Desc:
+	'''
+	Rechtsklick in Folge: markiere höchstens 3 Wegpunkte, das Jojo patrouilliert die Bézier-Route, unterwegs verdoppelt sich die Grünperlen-Kadenz
+	Jeder Hin-und-Rück löst 1 s Patrouillenresonanz aus: Nachschuss der Grünperlen wird schneller, Schaden +30%
+	Doppelklick kehrt um, Halten umkreist; ist die Route voll, löscht ein weiterer Klick die Bahn
+	'''
+GsYoyoPelletProj.DisplayName: Jojo-Geschoss
+GsYoyoBurnZoneProj.DisplayName: Brennzone
+GsYoyoMirrorProj.DisplayName: Spiegelbahn

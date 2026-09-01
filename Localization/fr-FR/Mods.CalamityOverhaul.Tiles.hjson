@@ -3,23 +3,22 @@ BloodAltarTP: {
 	InsufficientOfferingText: Vous n'avez pas assez de gouttes sanglantes sur vous pour rendre hommage au roi rouge profond...
 	SacrificeDeathReason: "{0} a sombré dans une folie sans fin de sang et de chair"
 }
-
-// OldNetDataNodeTile.MapEntry: Data Node
-// OldNetLogoutTerminalTile.MapEntry: Logout Terminal
-// OldNetEncryptedNodeTile.MapEntry: Encrypted Node
-// OldNetEventNodeTile.MapEntry: Event Node
-// OldNetSealGateTile.MapEntry: Seal Gate
-// OldNetRelayTile.MapEntry: Relay Station
-// OldNetAccessTerminalTile.MapEntry: OldNet Access Terminal
-// OldNetEchoNodeTile.MapEntry: Echo Node
-// OldNetCacheTile.MapEntry: Deep-Dive Cache
-// OldNetTripwireTile.MapEntry: Tripwire Emitter
-// OldNetSentryMineTile.MapEntry: Sentry Mine
-// OldNetBulkheadTile.MapEntry: Shaft Bulkhead
-// OldNetBreakerTile.MapEntry: Emergency Breaker
-// OldNetRelicTile.MapEntry: OldNet Relic
-// OldNetLedgerDockTile.MapEntry: Ledger Expansion Dock
-// OldNetColdNodeTile.MapEntry: Cold Storage Node
-// OldNetEscrowTile.MapEntry: Escrow Contract Terminal
-// OldNetCipherVaultTile.MapEntry: Cipher Vault Matrix
-// GaolRoomSealTile.MapEntry: Gaol Cell Seal
+OldNetDataNodeTile.MapEntry: Nœud de données
+OldNetLogoutTerminalTile.MapEntry: Terminal de déconnexion
+OldNetEncryptedNodeTile.MapEntry: Nœud chiffré
+OldNetEventNodeTile.MapEntry: Nœud d'événement
+OldNetSealGateTile.MapEntry: Porte de confinement
+OldNetRelayTile.MapEntry: Relais
+OldNetAccessTerminalTile.MapEntry: Terminal d'accès OldNet
+OldNetEchoNodeTile.MapEntry: Nœud d'écho
+OldNetCacheTile.MapEntry: Cache de plongée
+OldNetTripwireTile.MapEntry: Poteau émetteur de fil-piège
+OldNetSentryMineTile.MapEntry: Mine de sentinelle
+OldNetBulkheadTile.MapEntry: Sas de puits
+OldNetBreakerTile.MapEntry: Levier de décompression
+OldNetRelicTile.MapEntry: Relique OldNet
+OldNetLedgerDockTile.MapEntry: Dock d'extension du grand livre
+OldNetColdNodeTile.MapEntry: Nœud de stockage froid
+OldNetEscrowTile.MapEntry: Terminal de contrat séquestre
+OldNetCipherVaultTile.MapEntry: Matrice de déchiffrement
+GaolRoomSealTile.MapEntry: Sceau de cellule

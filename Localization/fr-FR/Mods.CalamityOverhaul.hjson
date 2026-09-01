@@ -1,35 +1,24 @@
 EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Dégâts sans fin
 MeleeMagicDamageClassTextContent.MeleeMagicDamageClass.DisplayName: dégâts de mêlée et de magie
 RangedMagicDamageClassTextContent.RangedMagicDamageClass.DisplayName: dégâts à distance et de magie
-
 Biomes: {
 	TungstenBiome: {
 		DisplayName: Révolte en acier tungstène
 		TownNPCDialogueName: biome en acier tungstène
 	}
-
 	MachineBiome: {
 		DisplayName: Biome mécanique
 		TownNPCDialogueName: biome mécanique
 	}
-
 	DropPodBiome: {
 		DisplayName: Biome de capsule de largage
 		TownNPCDialogueName: biome de capsule de largage
 	}
-
 	VoidColonyBiome: {
 		DisplayName: Biome de colonie du Vide
 		TownNPCDialogueName: biome de colonie du Vide
 	}
 }
-
-# For Language Pack Creators:
-# The keys here were previously in Items. Since EcTypeItem has been removed, all localization keys similar to "ItemNameEcType" have been moved here.
-# The corresponding format is "ItemNameEcType" → "RItemName" or "ItemNameOverride".
-# Apart from the class name change, the DisplayName and Tooltip remain the same as in the previous version.
-# So if you need to migrate your language pack to the new version, simply copy and paste the entries here and update the class names accordingly.
-
 Arcanes: {
 	Items: {
 		ArcaneTransformer: {
@@ -38,539 +27,452 @@ Arcanes: {
 		}
 	}
 }
-
 Resurrections: {
 	ResurrectionDeath: {
 		DeathText: "{0} est mort de la Résurrection abyssale"
 		WarningCombatText: L'Abysse vous consume...
 		DeathNoticeText: Vous avez été consumé par l'Abysse...
 		MarkRemainText: La marque de l'Abysse vous enveloppe encore...
-		RetainValueFormat: Valeur de résurrection : {0}%
+		RetainValueFormat: "Valeur de résurrection : {0}%"
 	}
 }
-
 QuickHack: {
 	SynapseBurn: {
 		DisplayName: Surcharge synaptique
-		Description: Surcharge les synapses neuronales de la cible, infligeant des dégâts thermiques continus.
+		Description: "Surcharge les synapses neuronales de la cible, infligeant des dégâts thermiques continus."
 	}
-
 	ShortCircuit: {
 		DisplayName: Court-circuit
 		Description: Libère une impulsion électromagnétique infligeant des dégâts instantanés et une brève paralysie.
 	}
-
 	Cyberpsychosis: {
 		DisplayName: Cyberpsychose
 		Description: Plonge la cible dans une frénésie et la pousse à attaquer toutes les unités alentour.
 	}
-
 	SystemReset: {
 		DisplayName: Réinitialisation système
-		Description: Force un redémarrage du système de la cible, la paralysant complètement.
+		Description: "Force un redémarrage du système de la cible, la paralysant complètement."
 	}
-
 	OpticOverload: {
 		DisplayName: Surcharge optique
-		Description: Aveugle la cible, l'empêchant de percevoir son environnement.
+		Description: "Aveugle la cible, l'empêchant de percevoir son environnement."
 	}
-
 	MemoryWipe: {
 		DisplayName: Effacement de mémoire
 		Description: Efface les données d'hostilité de la cible et réinitialise sa liste d'agressivité.
 	}
-
 	Contagion: {
 		DisplayName: Propagation
 		Description: Implante un programme malveillant autoréplicatif qui se propage aux cibles voisines.
 	}
-
 	TileDetonate: {
 		DisplayName: Détonation de bloc
 		Description: Compromet l'intégrité structurelle et déclenche une explosion localisée.
 	}
-
 	TilePhase: {
 		DisplayName: Protocole de virtualisation
-		Description: Altère les propriétés physiques d'un bloc, le rendant intangible pendant un certain temps.
+		Description: "Altère les propriétés physiques d'un bloc, le rendant intangible pendant un certain temps."
 	}
-
 	TileMagPull: {
 		DisplayName: Attraction magnétique
 		Description: Génère un champ magnétique qui attire les objets au sol à proximité vers vous.
 	}
-
 	MachineShortCircuit: {
 		DisplayName: Court-circuit mécanique
 		Description: Vide l'énergie électrique de la machine ciblée et libère des arcs électriques blessant les entités voisines.
 	}
-
 	TurretHijack: {
 		DisplayName: Piratage de tourelle
-		Description: Altère le module d'identification ami-ennemi, inversant temporairement l'allégeance de la tourelle.
+		Description: "Altère le module d'identification ami-ennemi, inversant temporairement l'allégeance de la tourelle."
 	}
-
 	FalseMemory: {
 		DisplayName: Fausse mémoire
-		Description: Implante de faux souvenirs, interrompant brièvement la poursuite ou supprimant son schéma meurtrier.
+		Description: "Implante de faux souvenirs, interrompant brièvement la poursuite ou supprimant son schéma meurtrier."
 	}
-
 	SelfDismember: {
 		DisplayName: Auto-démembrement
 		Description: Force l'entité paranormale à se démembrer elle-même.
 	}
-
 	SystemHalt: {
 		DisplayName: Blocage système
 		Description: Plonge la cible dans un silence temporaire et l'immobilise complètement.
 	}
-
 	TurretCircuitOverload: {
 		DisplayName: Surcharge de circuit
-		Description: Injecte un courant inverse dans le circuit d'alimentation de la tourelle, la rendant totalement inopérante longtemps.
+		Description: "Injecte un courant inverse dans le circuit d'alimentation de la tourelle, la rendant totalement inopérante longtemps."
 	}
-
 	TurretShortCircuit: {
 		DisplayName: Court-circuit de tourelle
 		Description: Décharge instantanément l'énergie de la tourelle pour un bref arrêt ; elle reprend le service dès la récupération.
 	}
-
 	VirusBroadcast: {
 		DisplayName: Diffusion virale
-		Description: Injecte un ver dans la tour de signalisation, provoquant des ondes EMP cybernétiques qui court-circuitent toutes les tourelles à portée longtemps.
+		Description: "Injecte un ver dans la tour de signalisation, provoquant des ondes EMP cybernétiques qui court-circuitent toutes les tourelles à portée longtemps."
 	}
-
 	MeltdownProtocol: {
-		// DisplayName: Meltdown Protocol
-		// Description: Locks the target's heat sinks shut; four seconds later it cooks off, catching nearby enemies.
+		DisplayName: Protocole de fusion
+		Description: "Verrouille le circuit de refroidissement de la cible ; elle surchauffe et explose quatre secondes plus tard, touchant les ennemis proches."
 	}
-
 	ProjectileHijack: {
-		// DisplayName: Ballistic Takeover
-		// Description: Reassigns an incoming projectile and sends it back the way it came.
+		DisplayName: Prise de contrôle balistique
+		Description: Réassigne un projectile adverse et le renvoie d'où il vient.
 	}
-
 	ProjectileFreeze: {
-		// DisplayName: Ballistic Freeze
-		// Description: Pins a projectile in midair for five seconds, then lets it go.
+		DisplayName: Gel balistique
+		Description: Cloue un projectile en l'air ; il reprend sa course cinq secondes plus tard.
 	}
-
 	DataPurge: {
-		// DisplayName: Data Purge
-		// Description: Erases an incoming projectile and every nearby one of the same type.
+		DisplayName: Purge de données
+		Description: Efface un projectile adverse et tous les projectiles du même type à proximité.
 	}
-
 	BallisticOverclock: {
-		// DisplayName: Ballistic Overclock
-		// Description: Adds damage, pierce and flight time to one of your own projectiles.
+		DisplayName: Surcadençage balistique
+		Description: "Augmente les dégâts, le perçage et le temps de vol d'un de vos projectiles."
 	}
-
 	Electrolysis: {
-		// DisplayName: Electrolysis
-		// Description: Runs current through the liquid; enemies soaking in it take damage over time.
+		DisplayName: Électrolyse
+		Description: "Électrifie cette nappe de liquide : les ennemis qui s'y trempent subissent des dégâts continus."
 	}
-
 	Cryostasis: {
-		// DisplayName: Cryostasis
-		// Description: Freezes a patch of liquid into ice you can stand on for eight seconds.
+		DisplayName: Cryostase
+		Description: Gèle une zone de liquide en une fine glace praticable ; elle fond au bout de huit secondes.
 	}
-
 	LiquidPurge: {
-		// DisplayName: Liquid Purge
-		// Description: Drains the surrounding liquid. Works on lava too.
+		DisplayName: Vidange
+		Description: Assèche le liquide alentour. La lave aussi.
 	}
-
 	ItemRecall: {
-		// DisplayName: Remote Recall
-		// Description: Yanks a dropped item to your feet.
+		DisplayName: Rappel à distance
+		Description: Tire un objet au sol jusqu'à vos pieds.
 	}
-
 	Reappraise: {
-		// DisplayName: Reappraise
-		// Description: Rerolls the prefix on that piece of gear on the ground.
+		DisplayName: Réévaluation
+		Description: Relance le préfixe de cet équipement au sol.
 	}
-
 	ArmorParse: {
-		// DisplayName: Armor Parse
-		// Description: Drops the target's defense to zero for six seconds.
+		DisplayName: Analyse d'armure
+		Description: Ramène la défense de la cible à zéro pendant six secondes.
 	}
-
 	Exorcise: {
-		// DisplayName: Forced Deletion
-		// Description: Marks the target for deletion; the fifth hit it takes triggers a heavy strike.
+		DisplayName: Déconnexion forcée
+		Description: "Pose une marque de déconnexion : au cinquième coup reçu, la cible encaisse une blessure grave."
 	}
-
 	DataLeech: {
-		// DisplayName: Data Leech
-		// Description: While active, hitting this target restores your RAM, up to a total cap.
+		DisplayName: Siphon de données
+		Description: "Tant que c'est actif, frapper cette cible vous rend de la RAM, dans une limite totale."
 	}
-
 	SwarmLink: {
-		// DisplayName: Swarm Link
-		// Description: Hitting the target also deals thirty percent to up to five nearby enemies.
+		DisplayName: Lien d'essaim
+		Description: "Quand vous touchez la cible, jusqu'à cinq ennemis proches subissent 30% des dégâts."
 	}
-
 	MachineOverclock: {
-		// DisplayName: Machine Overclock
-		// Description: Feeds the machine a fixed charge allowance for ten seconds, then burns it to nothing.
+		DisplayName: Surcadençage machine
+		Description: "Pendant dix secondes, une réserve d'électricité fixe alimente la machine ; à l'échéance, elle brûle toute la charge."
 	}
-
 	GridBlackout: {
-		// DisplayName: Grid Blackout
-		// Description: Uses the signal tower to cut power to every machine in a wide radius.
+		DisplayName: Black-out du réseau
+		Description: Emprunte la tour-signal pour couper l'alimentation de toutes les machines dans un large rayon.
 	}
-
 	PowerTransmute: {
-		// DisplayName: Power Transmute
-		// Description: Convert your held item's stored charge into RAM, then drain it empty
+		DisplayName: Conversion d'énergie
+		Description: "Convertit la charge stockée de l'objet en main en RAM, puis la vide."
 	}
-
 	NeuralOverclock: {
-		// DisplayName: Neural Overclock
-		// Description: Strike faster for eight seconds; RAM recovery halts and your health burns
+		DisplayName: Surcadençage neural
+		Description: "Vous frappez plus vite pendant huit secondes, mais la RAM cesse de se régénérer et vous perdez de la vie en continu."
 	}
-
 	WraithForceDrive: {
-		// DisplayName: Wraith Force Drive
-		// Description: Wraith acts cost nothing for ten seconds; then erosion deepens and it sleeps
+		DisplayName: Forçage de spectre
+		Description: "Pendant dix secondes, les actions du spectre ne coûtent rien ; ensuite l'érosion s'aggrave et il s'endort."
 	}
-
 	IndexPreread: {
-		// DisplayName: Index Preread
-		// Description: Reads a container's full inventory without opening it, flagging the most valuable entry
+		DisplayName: Prélecture d'index
+		Description: Lit tout le contenu d'un conteneur sans l'ouvrir et signale l'objet le plus précieux.
 	}
-
 	LockBurn: {
-		// DisplayName: Lock Burnthrough
-		// Description: Opens this locked container without a key, at the cost of burning one item inside
+		DisplayName: Brûlure de serrure
+		Description: "Ouvre ce coffre verrouillé sans clé, au prix de brûler un objet à l'intérieur."
 	}
-
 	DielSkip: {
-		// DisplayName: Diel Skip
-		// Description: Fast-forwards time to the nearest sunrise or sunset
+		DisplayName: Saut jour-nuit
+		Description: Avance le temps jusqu'au prochain lever ou coucher de soleil.
 	}
-
 	StormInject: {
-		// DisplayName: Storm Injection
-		// Description: Summons a thunderstorm; bolts only strike enemies carrying any hack effect
+		DisplayName: Injection d'orage
+		Description: "Convoque un orage : la foudre ne frappe que les ennemis déjà sous un effet d'intrusion."
 	}
-
 	GravityInvert: {
-		// DisplayName: Gravity Inversion
-		// Description: Inverts gravity around you; enemies and dropped items fall upward
+		DisplayName: Inversion de gravité
+		Description: "Inverse la gravité autour de vous : ennemis et objets au sol tombent vers le haut."
 	}
-
 	SegmentDelink: {
-		// DisplayName: Segment Delink
-		// Description: Damage to this segment is only logged; 60% settles on the anchor at expiry
+		DisplayName: Déconnexion de segment
+		Description: "Les dégâts infligés à ce segment sont seulement comptabilisés ; à l'échéance, 60% sont versés au corps."
 	}
-
 	LimbSeizure: {
-		// DisplayName: Limb Seizure
-		// Description: Turns this limb against its own anchor for eight seconds
+		DisplayName: Réquisition de membre
+		Description: Retourne ce membre contre son propre corps pendant huit secondes.
 	}
-
 	CommandLinkCut: {
-		// DisplayName: Command Link Cut
-		// Description: Severs its link to its partners; they fight alone for ten seconds
+		DisplayName: Coupure de liaison
+		Description: Coupe sa liaison avec ses alliés ; chacun se bat seul pendant dix secondes.
 	}
-
 	MunitionSwap: {
-		// DisplayName: Munition Swap
-		// Description: The turret fires ammo from your inventory, dealing your damage
+		DisplayName: Substitution de munitions
+		Description: "La tourelle tire les munitions de votre inventaire, et les dégâts suivent les vôtres."
 	}
-
 	TurretMesh: {
-		// DisplayName: Turret Mesh
-		// Description: Links nearby turrets into one volley at your cursor, forty shots total
+		DisplayName: Maillage de tourelles
+		Description: "Relie les tourelles proches en une salve vers votre curseur, quarante tirs en tout."
 	}
-
 	BeaconForge: {
-		// DisplayName: Beacon Forge
-		// Description: The tower fakes a distress call, luring enemies from a wide area
+		DisplayName: Balise falsifiée
+		Description: La tour-signal envoie un faux appel de détresse et attire les monstres d'une vaste zone.
 	}
-
 	PrivilegeEscalate: {
-		// DisplayName: Privilege Escalation
-		// Description: Protocols cost less, upload faster, ignore range; RAM stops recovering
+		DisplayName: Élévation de privilèges
+		Description: "Les protocoles coûtent moins, s'envoient plus vite et ignorent la distance ; la RAM ne se régénère plus."
 	}
-
 	ItemSalvage: {
-		// DisplayName: Salvage
-		// Description: Breaks this drop back into about 60% of its materials
+		DisplayName: Démontage
+		Description: Démonte cet objet au sol en environ 60% de ses matériaux.
 	}
-
 	DataBrand: {
-		// DisplayName: Data Brand
-		// Description: Copy this gear's modifier, then stamp it onto the next target
-		// HudTag: Brand: {0}
-		// DenyNoPrefix: Nothing on this item to copy
-		// DenyIncompatible: The recorded modifier does not fit this item
+		DisplayName: Marque de données
+		Description: "Copie le préfixe de cet équipement, puis l'imprime sur la prochaine cible d'intrusion."
+		HudTag: "Marque : {0}"
+		DenyNoPrefix: Cet objet n'a aucun préfixe à copier
+		DenyIncompatible: Le préfixe enregistré ne convient pas à cet objet
 	}
-
 	EntityMasquerade: {
-		// DisplayName: Masquerade
-		// Description: Enemies read this drop as you; it draws their fire for thirty seconds
+		DisplayName: Mascarade
+		Description: Les ennemis prennent cet objet au sol pour un joueur ; il encaisse à votre place pendant trente secondes.
 	}
-
 	TileConscript: {
-		// DisplayName: Tile Conscription
-		// Description: Tears nearby blocks into eight armor plates orbiting you, launched when time is up
+		DisplayName: Réquisition de blocs
+		Description: "Arrache ces blocs en huit plaques d'armure qui orbitent autour de vous, puis les lance à l'échéance."
 	}
-
 	VeinResonance: {
-		// DisplayName: Vein Resonance
-		// Description: Reveals matching ore through walls; mining it drops double but calls wardens
+		DisplayName: Résonance de filon
+		Description: Les filons du même minerai deviennent visibles à travers les murs ; les extraire double le butin mais attire des gardiens.
 	}
-
 	StressInvert: {
-		// DisplayName: Stress Inversion
-		// Description: Makes this terrain unbreakable for ten seconds; enemies slamming into it take damage
+		DisplayName: Inversion de contrainte
+		Description: Ces blocs sont indestructibles pendant dix secondes ; les ennemis qui s'y cognent subissent des dégâts.
 	}
-
 	PressureSurge: {
-		// DisplayName: Pressure Surge
-		// Description: Pressurizes this liquid; anything soaked in it is launched skyward
+		DisplayName: Surpression
+		Description: "Met cette nappe sous pression : tout ce qui s'y trempe est projeté vers le ciel."
 	}
-
 	MirrorSurface: {
-		// DisplayName: Mirror Surface
-		// Description: The surface turns to a mirror; enemy shots crossing it are copied to your side
+		DisplayName: Surface miroir
+		Description: "La surface devient un miroir : les projectiles ennemis qui la traversent sont copiés pour vous."
 	}
-
 	DelayFuse: {
-		// DisplayName: Delay Fuse
-		// Description: This projectile stops expiring and hovers in place for thirty seconds as a mine
+		DisplayName: Fusée retardée
+		Description: "Ce projectile ne disparaît plus : il reste en place trente secondes et devient une mine."
 	}
-
 	ProjectileTithe: {
-		// DisplayName: Projectile Tithe
-		// Description: This shot swallows nearby enemy fire, then detonates by how much it ate
+		DisplayName: Dîme de projectiles
+		Description: "Ce projectile avale les tirs ennemis proches, puis explose selon ce qu'il a avalé."
 	}
-
 	ProjectileSample: {
-		// DisplayName: Projectile Sample
-		// Description: Samples this shot; for twenty seconds every twelfth shot of yours echoes it
+		DisplayName: Échantillon de projectile
+		Description: "Échantillonne ce projectile ; pendant vingt secondes, un de vos tirs sur douze le reproduit."
 	}
-
 	CompensationProtocol: {
-		// DisplayName: Compensation Protocol
-		// Description: Advance 10% of the target's life; kill it within eight seconds or pay the debt yourself
+		DisplayName: Protocole de compensation
+		Description: "Avance 10% de la vie de la cible ; si vous ne la tuez pas en huit secondes, c'est vous qui payez la dette."
 	}
-
 	PayloadRewrite: {
-		// DisplayName: Payload Rewrite
-		// Description: For ten seconds the target's projectiles become yours, dealt at your damage
+		DisplayName: Réécriture de charge
+		Description: "Pendant dix secondes, tous les projectiles de la cible vous appartiennent et se règlent à vos dégâts."
 	}
-
 	PhaseDesync: {
-		// DisplayName: Phase Desync
-		// Description: Splits the target's body from its hitbox; both sides become harder to hit
+		DisplayName: Décalage de phase
+		Description: "Sépare le corps de la cible de sa zone de collision : les deux camps deviennent plus difficiles à toucher."
 	}
-
 	LiveCellTap: {
-		// DisplayName: Live Cell Tap
-		// Description: Pins the target immobile and immune, converting its life into your RAM
+		DisplayName: Prise sur cellule vive
+		Description: La cible ne peut plus bouger et ignore les dégâts ; sa vie se convertit en votre RAM.
 	}
-
 	FirmwareRollback: {
-		// DisplayName: Firmware Rollback
-		// Description: Rolls the target back to its previous phase; it runs berserk for five seconds after
+		DisplayName: Retour de micrologiciel
+		Description: "Ramène la cible au comportement de sa phase précédente ; à l'échéance, elle s'emballe pendant cinq secondes."
 	}
-
 	ShellRequisition: {
-		// DisplayName: Shell Requisition
-		// Description: Targets killed while marked rise again and fight for you for fifteen seconds
+		DisplayName: Réquisition de carcasse
+		Description: Une cible tuée pendant la marque se relève et se bat pour vous pendant quinze secondes.
 	}
-
 	PositionCast: {
-		// DisplayName: Position Cast
-		// Description: Their position is visible to your whole team through walls for fifteen seconds
+		DisplayName: Diffusion de coordonnées
+		Description: "Pendant quinze secondes, sa position est visible pour toute votre équipe."
 	}
-
 	GaugePollution: {
-		// DisplayName: Gauge Pollution
-		// Description: Corrupt their interface; health and ammo readouts scramble for eight seconds
+		DisplayName: Pollution des jauges
+		Description: "Salit son interface : les lectures de vie et de munitions sautent pendant huit secondes."
 	}
-
 	LinkTraceback: {
-		// DisplayName: Link Traceback
-		// Description: Sever every upload aimed at you, scorch the senders and mark them
+		DisplayName: Rétro-traçage
+		Description: "Coupe les envois qui vous visent, brûle l'expéditeur et le marque."
 	}
-
 	ForceUninstall: {
-		// DisplayName: Force Uninstall
-		// Description: Rip one hostile protocol off yourself; can't rip again for half a minute
+		DisplayName: Désinstallation forcée
+		Description: Arrache un protocole ennemi sur vous ; impossible d'en arracher un autre pendant une demi-minute.
 	}
-
 	MemoryScorch: {
-		// DisplayName: Memory Scorch
-		// Description: Burns three of their RAM on landing; their recovery stays at zero for ten seconds
-		// SealTag: RAM SEALED
+		DisplayName: Brûlure mémoire
+		Description: Brûle 3 points de RAM à la cible ; sa régénération reste à zéro pendant dix secondes.
+		SealTag: RAM scellée
 	}
-
 	BuffSiphon: {
-		// DisplayName: Buff Siphon
-		// Description: Steals their longest-lasting buff for yourself, up to thirty seconds
+		DisplayName: Siphon de bonus
+		Description: "Vole le bonus le plus long de la cible et vous le donne, jusqu'à trente secondes."
 	}
-
 	CombatSiphon: {
-		// DisplayName: Combat Siphon
-		// Description: For ten seconds the damage you deal them converts into your RAM
+		DisplayName: Siphon de combat
+		Description: "Pendant dix secondes, les dégâts que vous lui infligez se convertissent en RAM, au prorata."
 	}
-
 	BallisticTurncoat: {
-		// DisplayName: Ballistic Turncoat
-		// Description: Their next three shots turn around mid-flight and hunt their owner; holding fire keeps them safe
-		// HijackCounter: HIJACKED {0}/{1}
-		// DeathReason: "{0}'s shot was turned by {1} and came home."
+		DisplayName: Retournement balistique
+		Description: Ses trois prochains projectiles font demi-tour en vol et frappent leur tireur ; cesser le feu suffit à rester en sécurité.
+		HijackCounter: "Balistique détournée {0}/{1}"
+		DeathReason: "Le projectile de {0} a été retourné par {1} et lui est revenu"
 	}
-
 	MeltdownBrand: {
-		// DisplayName: Meltdown Brand
-		// Description: Plants a visible four-second fuse that detonates for eighty damage; uninstalling it defuses the charge
-		// FuseTag: MELTDOWN {0}s
-		// DeathReason: "{0} was blown apart by the meltdown brand {1} planted."
+		DisplayName: Marque de fusion
+		Description: "Une mèche de quatre secondes reste visible, puis explose pour 80 dégâts ; l'arracher à temps désamorce la charge."
+		FuseTag: "Fusion {0}s"
+		DeathReason: "{0} a été pulvérisé par la marque de fusion plantée par {1}"
 	}
-
 	MapBlackout: {
-		// DisplayName: Map Blackout
-		// Description: Buries their map under static for fifteen seconds, pins and team markers included
+		DisplayName: Extinction de carte
+		Description: "Sa carte se recouvre de neige pendant quinze secondes, épingles et marques d'équipe comprises."
 	}
-
 	ChannelScramble: {
-		// DisplayName: Channel Scramble
-		// Description: Garbles their chat for twenty seconds and wipes teammate nameplates off their screen
+		DisplayName: Brouillage de canal
+		Description: "Pendant vingt secondes, son chat devient illisible et les noms d'alliés disparaissent de son écran."
 	}
-
 	StealthStrip: {
-		// DisplayName: Stealth Strip
-		// Description: Strips all their invisibility and stealth for ten seconds; their outline glows for everyone
+		DisplayName: Dévoilement
+		Description: "Ôte toute invisibilité et furtivité ; pendant dix secondes, elle ne se reconstitue pas et son contour est visible pour tous."
 	}
-
 	CooldownInject: {
-		// DisplayName: Cooldown Inject
-		// Description: Slows their item use by 35% for six seconds; a ticking potion cooldown gains five more
+		DisplayName: Injection de recharge
+		Description: "Pendant six secondes, la cible utilise ses objets 35% plus lentement ; une potion déjà en recharge gagne cinq secondes de plus."
 	}
-
 	CyberwareOffline: {
-		// DisplayName: Cyberware Offline
-		// Description: Knocks all their cyberware offline for eight seconds
+		DisplayName: Cyberware hors ligne
+		Description: "Pendant huit secondes, tous ses Cyberware se coupent et passent hors ligne."
 	}
 }
-
 HackTargetType: {
-	ItemTargetType.DisplayName: Cible : objet au sol
-	NpcTargetType.DisplayName: Cible : PNJ
-	// PlayerTargetType.DisplayName: Player Target
-	ProjectileTargetType.DisplayName: Cible : projectile
-	// SelfRigTargetType.DisplayName: Self Rig
-	SignalTowerTargetType.DisplayName: Cible : tour de signalisation
-	TileTargetType.DisplayName: Cible : bloc
-	TurretTargetType.DisplayName: Cible : tourelle
-	WaterTargetType.DisplayName: Cible : liquide
-
+	ItemTargetType.DisplayName: "Cible : objet au sol"
+	NpcTargetType.DisplayName: "Cible : PNJ"
+	PlayerTargetType.DisplayName: Cible joueur
+	ProjectileTargetType.DisplayName: "Cible : projectile"
+	SelfRigTargetType.DisplayName: Cible personnelle
+	SignalTowerTargetType.DisplayName: "Cible : tour de signalisation"
+	TileTargetType.DisplayName: "Cible : bloc"
+	TurretTargetType.DisplayName: "Cible : tourelle"
+	WaterTargetType.DisplayName: "Cible : liquide"
 	BossPartTargetType: {
-		// DisplayName: Boss Part
-		// AnchorLabel: Anchor
-		// RoleLabel: Role
-		// PartHpLabel: Part HP
-		// AnchorHpLabel: Anchor HP
-		// InvulnLabel: Shield
-		// LinkLabel: Link
-		// RoleSegmentFormat: Segment {0}/{1}
-		// RoleLimb: Limb Unit
-		// SharedLifePool: Shared With Anchor
-		// InvulnYes: Immune
-		// InvulnNo: Breakable
-		// LinkOnline: Online
-		// LinkSevered: Severed
-		// LinkDelinked: Delinked
-		// AnchorHpFormat: Anchor {0}%
-		// DelinkTallyFormat: Logged {0}
+		DisplayName: Cible de pièce
+		AnchorLabel: Corps d'appartenance
+		RoleLabel: Rôle de la pièce
+		PartHpLabel: Vie de la pièce
+		AnchorHpLabel: Vie du corps
+		InvulnLabel: Invulnérabilité
+		LinkLabel: Liaison
+		RoleSegmentFormat: "Segment · {0}/{1}"
+		RoleLimb: Unité de membre
+		SharedLifePool: Réserve partagée avec le corps
+		InvulnYes: Immunisé
+		InvulnNo: Vulnérable
+		LinkOnline: Coordination active
+		LinkSevered: Coordination rompue
+		LinkDelinked: Hors réseau
+		AnchorHpFormat: "Corps {0}%"
+		DelinkTallyFormat: "Comptabilisé {0}"
 	}
-
 	ContainerTargetType: {
-		// DisplayName: Container
-		// ScanType: Container Type
-		// ScanLock: Lock
-		// ScanSlots: Slots Used
-		// ScanValue: Est. Value
-		// ScanTopRare: Top Rarity
-		// ScanTopValue: Most Valuable
-		// ScanCoord: Coordinates
-		// ScanRest: ...and {0} more entries
-		// ScanEmpty: Empty
-		// LockStateLocked: LOCKED
-		// LockStateOpen: Unlocked
-		// StateIndexed: Index Cached
+		DisplayName: Cible conteneur
+		ScanType: Type de conteneur
+		ScanLock: Verrou
+		ScanSlots: Emplacements utilisés
+		ScanValue: Valeur estimée
+		ScanTopRare: Rareté max
+		ScanTopValue: Objet le plus précieux
+		ScanCoord: Coordonnées
+		ScanRest: "... et {0} autres"
+		ScanEmpty: Vide
+		LockStateLocked: Verrouillé
+		LockStateOpen: Déverrouillé
+		StateIndexed: Index en cache
 	}
-
 	WorldTargetType: {
-		// DisplayName: World State
-		// ScanWorld: World
-		// ScanClock: Time
-		// ScanWeather: Weather
-		// ScanMoon: Moon Phase
-		// ScanBiome: Biome
-		// ScanEvent: Event
-		// ScanBoss: Active Bosses
-		// DayLabel: Day
-		// NightLabel: Night
-		// WeatherClear: Clear
-		// WeatherCloudy: Cloudy
-		// WeatherRain: Rain
-		// WeatherStorm: Storm
-		// EventNone: Stable
-		// EventBloodMoon: Blood Moon
-		// EventEclipse: Solar Eclipse
-		// EventPumpkinMoon: Pumpkin Moon
-		// EventFrostMoon: Frost Moon
-		// EventSlimeRain: Slime Rain
-		// EventInvasion: Invasion
-		// BiomeForest: Forest
-		// BiomeDesert: Desert
-		// BiomeSnow: Tundra
-		// BiomeJungle: Jungle
-		// BiomeCorruption: Corruption
-		// BiomeCrimson: Crimson
-		// BiomeHallow: Hallow
-		// BiomeDungeon: Dungeon
-		// BiomeMushroom: Glowing Mushroom
-		// BiomeOcean: Ocean
-		// BiomeUnderworld: Underworld
+		DisplayName: Cible monde
+		ScanWorld: Nom du monde
+		ScanClock: Heure actuelle
+		ScanWeather: Météo et vent
+		ScanMoon: Phase lunaire
+		ScanBiome: Biome
+		ScanEvent: Événement
+		ScanBoss: Boss actifs
+		DayLabel: Jour
+		NightLabel: Nuit
+		WeatherClear: Clair
+		WeatherCloudy: Nuageux
+		WeatherRain: Pluie
+		WeatherStorm: Orage
+		EventNone: Calme
+		EventBloodMoon: Lune de sang
+		EventEclipse: Éclipse solaire
+		EventPumpkinMoon: Lune citrouille
+		EventFrostMoon: Lune de givre
+		EventSlimeRain: Pluie de slimes
+		EventInvasion: Invasion
+		BiomeForest: Forêt
+		BiomeDesert: Désert
+		BiomeSnow: Toundra
+		BiomeJungle: Jungle
+		BiomeCorruption: Corruption
+		BiomeCrimson: Carmin
+		BiomeHallow: Saint
+		BiomeDungeon: Donjon
+		BiomeMushroom: Champignons lumineux
+		BiomeOcean: Océan
+		BiomeUnderworld: Enfer
 	}
 }
-
 HackCircuit: {
 	CircuitNodeSpawner: {
-		// TurretName: Sentry Turret
-		// TowerName: Signal Tower
-		// StatusLabel: Status
-		// IffLabel: IFF
-		// RateLabel: Rate
-		// MunitionLabel: Munition
-		// RangeLabel: Range
-		// CoverageLabel: Coverage
-		// LinkedLabel: Linked Nodes
-		// SourceLabel: Broadcast
-		// StatusOnline: ONLINE
-		// StatusDisabled: OFFLINE
-		// StatusHijacked: HIJACKED
-		// StatusMunition: FED
-		// StatusMeshed: MESHED
-		// StatusIdle: IDLE
-		// StatusVirus: VIRUS BROADCAST
-		// StatusBlackout: BLACKOUT
-		// StatusBeacon: FORGED BEACON
-		// StatusUplink: UPLINK
-		// IffHostile: Hostile
-		// IffFriendly: Friendly
-		// MunitionKinetic: Kinetic bolt
-		// BeaconCount: Lured {0}
+		TurretName: Tourelle de sentinelle
+		TowerName: Tour-signal
+		StatusLabel: État
+		IffLabel: Camp
+		RateLabel: Cadence
+		MunitionLabel: Munition
+		RangeLabel: Rayon de tir
+		CoverageLabel: Rayon de couverture
+		LinkedLabel: Nœuds liés
+		SourceLabel: Source
+		StatusOnline: En ligne
+		StatusDisabled: À l'arrêt
+		StatusHijacked: Détournée
+		StatusMunition: Approvisionnée
+		StatusMeshed: Maillée
+		StatusIdle: En attente
+		StatusVirus: Diffusion virale
+		StatusBlackout: Coupure
+		StatusBeacon: Fausse balise
+		StatusUplink: Liaison élevée
+		IffHostile: Hostile
+		IffFriendly: Allié
+		MunitionKinetic: Projectile cinétique
+		BeaconCount: "Attirés : {0}"
 	}
 }
-
 TileNameFallback: {
 	Dirt: Bloc de terre
 	Stone: Bloc de pierre
@@ -600,13 +502,13 @@ TileNameFallback: {
 	Ebonstone: Bloc d'ébénite
 	DemonAltar: Autel démoniaque
 	Sunflower: Tournesol
-	Pot: Pot
+	Pot: Jarre
 	PiggyBank: Tirelire
 	WoodBlock: Bois
 	ShadowOrb: Orbe des ombres
 	CorruptThorns: Épines corrompues
 	Candle: Bougie
-	Chandelier: Chandelier
+	Chandelier: Lustre
 	JackOLantern: Citrouille-lanterne
 	Present: Cadeau
 	Meteorite: Météorite
@@ -699,358 +601,398 @@ TileNameFallback: {
 	Tile187: Mauvaises herbes
 	Tile352: Épines
 }
-
 OniRainWorld: {
 	OniRainWorldSystem: {
-		// InteractHint: "[Right Click] Hold umbrella into the rain"
-		// DescendHint: "[Right Click] Hold umbrella into the deep rain"
-		// GrabHint: "[Right Click] Seize umbrella"
-		// OniDeathReason: "{0} was dragged into the rain by the thing beneath the umbrella"
+		InteractHint: "[Clic droit] Ouvrir l'ombrelle et entrer dans la pluie"
+		DescendHint: "[Clic droit] Ouvrir l'ombrelle et descendre dans la pluie profonde"
+		GrabHint: "[Clic droit] Saisir l'ombrelle"
+		OniDeathReason: "{0} a été entraîné sous la pluie par ce qui se tenait sous l'ombrelle"
 	}
 }
-
 GodSmithGunsEarly: {
-	/* GsFlintlockPistol.Desc:
+	GsFlintlockPistol.Desc: 
 		'''
-		Reforged: two chambers, the second shot comes 40% faster;
-		the last chamber fires a V-shaped double ball from a single bullet with doubled knockback.
-		Right-click to reload early; hit the sweet spot for +25% on the next shot
-		''' */
-
+		Reforgé : chargement à double chambre, le 2e coup part 40% plus vite ; la dernière chambre transforme une munition en double balle en V, recul doublé
+		Clic droit pour recharger plus tôt ; visez la bande lumineuse, le coup suivant inflige 25% de dégâts en plus
+		'''
 	GsGunsEarlyPlayer: {
-		// Perfect: Perfect reload!
-		// HighNoon: High Noon!
+		Perfect: Rechargement parfait !
+		HighNoon: Midi pile !
 	}
-
-	/* GsMusket.Desc:
+	GsMusket.Desc: 
 		'''
-		Reforged: a true muzzle-loader; every ball is a stone-piercer that flies faster and punches through one more foe.
-		Reload in three beats: pour, ram, prime. Right-click on the ram beat for +30% damage and extra pierce
-		''' */
-	/* GsQuadBarrelShotgun.Desc:
+		Reforgé : un vrai fusil à chargement par la bouche ; chaque balle de plomb vole plus vite, perce mieux, et traverse 1 ennemi de plus
+		Rechargement en trois temps : verser, tasser, amorcer ; clic droit sur le temps de tassement, le coup suivant inflige 30% de dégâts en plus et gagne une couche de perçage
 		'''
-		Reforged: fire one barrel at a time in a rapid four-count;
-		the fourth barrel roars all at once with 8 pellets and hurls you backward.
-		Aim down to rocket-jump. Right-click to break open and reload; nail the sweet spot for +2 pellets
-		''' */
-	/* GsRevolver.Desc:
+	GsQuadBarrelShotgun.Desc: 
 		'''
-		Reforged: a six-round cylinder; the final chamber always hits +40% harder.
-		Hold right-click to spin the wheel: instantly reload a random 1 to 6 rounds.
-		Roll exactly six and the next shot is High Noon: double damage, double knockback
-		''' */
+		Reforgé : les quatre canons tirent à tour de rôle, un par un ; le 4e envoie 8 plombs d'un coup, et le recul vous projette en arrière
+		Tirer vers le bas vous propulse en l'air
+		Clic droit pour briser le canon et recharger ; visez la bande lumineuse, chaque canon gagne 2 plombs au tour suivant
+		'''
+	GsRevolver.Desc: 
+		'''
+		Reforgé : barillet de six coups, la dernière chambre inflige toujours 40% de dégâts en plus
+		Maintenez clic droit pour faire tourner le barillet : recharge instantanée de 1 à 6 cartouches au hasard
+		Pile 6 cartouches, et le coup suivant est Midi pile : dégâts doublés, recul doublé
+		'''
 }
-
 GodSmithGunsHard: {
 	GsCandyCornRifle: {
-		/* Desc:
+		Desc: 
 			'''
-			Reforged: right click to switch coating
-			Candy Rain adds a sweet drooping arc to the classic spray
-			Sticky Burst fires three gummy rounds; hits stack Sugar Coat, slowing the target and sweetening your shots
-			''' */
-		// ModeCandyRain: Candy Rain
-		// ModeStickyBurst: Sticky Burst
+			Reforgé : clic droit pour changer d'enrobage
+			Pluie de bonbons : la rafale classique reste, mais les tirs suivent un arc sucré
+			Rafale collante : 3 balles de bonbon mou d'un coup ; chaque impact empile du glaçage, ralentit la cible et rend vos tirs sucrés plus douloureux
+			'''
+		ModeCandyRain: Pluie de bonbons
+		ModeStickyBurst: Rafale collante
 	}
-
 	GsClockworkAssaultRifle: {
-		/* Desc:
+		Desc: 
 			'''
-			Reforged: right click to switch fire mode
-			Gear Burst keeps the classic three round burst, the third round bites 30% harder
-			Overclock trades heat for 40% more speed; run it too hot and the gears jam
-			''' */
-		// ModeGearBurst: Gear Burst
-		// ModeOverclock: Overclock
+			Reforgé : clic droit pour changer de mode de tir
+			Rafale d'engrenages : la rafale classique de 3 coups reste, le 3e inflige 30% de dégâts en plus
+			Surcadençage : cadence +40%, au prix de la chaleur ; trop chaud, les engrenages se coincent
+			'''
+		ModeGearBurst: Rafale d'engrenages
+		ModeOverclock: Surcadençage
 	}
-
 	GsGatligator: {
-		/* Desc:
+		Desc: 
 			'''
-			Reforged: right click to switch temper
-			Swamp Riot keeps the wild spray but every round skips once off blocks
-			Death Roll fires tight four round strings; the last bite tears a bleeding wound
-			''' */
-		// ModeSwampRiot: Swamp Riot
-		// ModeDeathRoll: Death Roll
+			Reforgé : clic droit pour changer de tempérament
+			Émeute des marais : la dispersion sauvage reste, chaque balle rebondit une fois sur les blocs
+			Rouleau mortel : quatre tirs serrés d'affilée ; le dernier ouvre une plaie saignante
+			'''
+		ModeSwampRiot: Émeute des marais
+		ModeDeathRoll: Rouleau mortel
 	}
-
 	GsMegashark: {
-		/* Desc:
+		Desc: 
 			'''
-			Reforged: right click to switch jaw
-			Feeding Frenzy ramps fire rate the longer you hold the trigger; Shark Bite tightens the spread and bites 15% harder
-			Land 50 hits to draw blood: for 3 seconds every hit leaves a bleeding wound
-			''' */
-		// ModeFrenzy: Feeding Frenzy
-		// ModeSharkBite: Shark Bite
+			Reforgé : clic droit pour changer de morsure
+			Frénésie : plus vous maintenez la gâchette, plus la cadence monte ; Morsure de requin : resserre la dispersion, dégâts +15%
+			50 impacts cumulés font couler le sang : pendant 3 secondes, chaque impact laisse une plaie saignante
+			'''
+		ModeFrenzy: Frénésie
+		ModeSharkBite: Morsure de requin
 	}
-
 	GsOnyxBlaster: {
-		/* Desc:
+		Desc: 
 			'''
-			Reforged: right click to switch charge
-			Onyx Volley leaves a lingering dark stain at the blast that drags foes inward
-			Singularity Charge fires slower but hurls one huge onyx orb: its blast pulls everything toward the core and sprays your bullets in a ring
-			''' */
-		// ModeVolley: Onyx Volley
-		// ModeSingularity: Singularity Charge
+			Reforgé : clic droit pour changer de charge
+			Salve d'onyx : l'explosion laisse une tache sombre qui tire les ennemis vers le centre
+			Charge singularité : cadence réduite, une énorme sphère d'onyx ; l'explosion attire tout vers le noyau et disperse vos balles en anneau
+			'''
+		ModeVolley: Salve d'onyx
+		ModeSingularity: Charge singularité
 	}
-
 	GsSDMG: {
-		/* Desc:
+		Desc: 
 			'''
-			Reforged: right click to cycle three fire modes
-			Dolphin Tide keeps the legendary speed; Sonar Burst tags the third hit so the whole team's ranged shots dig 8% deeper
-			Orbital Guide gently homes for 10% less punch
-			''' */
-		// ModeDolphinTide: Dolphin Tide
-		// ModeSonarBurst: Sonar Burst
-		// ModeOrbitalGuide: Orbital Guide
+			Reforgé : clic droit pour cycler trois modes de tir
+			Marée du dauphin : la cadence légendaire reste telle quelle
+			Rafale sonar : chaque 3e hit pose une marque sonar ; les dégâts à distance de toute l'équipe sur cette cible augmentent de 8%
+			Guidage orbital : les balles suivent légèrement, dégâts -10%
+			'''
+		ModeDolphinTide: Marée du dauphin
+		ModeSonarBurst: Rafale sonar
+		ModeOrbitalGuide: Guidage orbital
 	}
-
 	GsShotgun: {
-		/* Desc:
+		Desc: 
 			'''
-			Reforged: right click to switch choke
-			Wide Bore throws six drooping pellets in a broad fan; landing 3 pellet hits in one blast bursts a rain of lead over the target
-			Tight Choke fires three heavy pellets dead straight; all three into one foe corrodes it, taking 12% more from this gun
-			Every trigger pull still costs one shell
-			''' */
-		// ModeWideBore: Wide Bore
-		// ModeTightChoke: Tight Choke
+			Reforgé : clic droit pour changer d'âme
+			Âme large : 6 plombs en éventail large, avec une courbe de chute ; 3 plombs dans le même tir font pleuvoir du plomb au-dessus de la cible
+			Âme serrée : 3 plombs lourds en ligne droite ; les 3 sur la même cible la corroient 1,5 s, et elle subit 12% de dégâts en plus de cette arme
+			Chaque pression de gâchette ne consomme toujours qu'1 munition
+			'''
+		ModeWideBore: Âme large
+		ModeTightChoke: Âme serrée
 	}
-
 	GsSniperRifle: {
-		/* Desc:
+		Desc: 
 			'''
-			Reforged: tap right click to switch fire mode, hold to scope
-			Snipe mode paints a piercing aim line; stand still to steady your breath, a steadied shot always crits
-			Rapid mode trades power for speed
-			''' */
-		// ModeSnipe: Snipe
-		// ModeRapid: Rapid Fire
+			Reforgé : tapotez clic droit pour changer de mode, maintenez pour viser
+			Tir de précision : une ligne de visée perçante ; restez immobile pour retenir votre souffle, ce tir est alors un critique assuré
+			Tir rapide : échange la puissance contre la cadence
+			'''
+		ModeSnipe: Tir de précision
+		ModeRapid: Tir rapide
 	}
-
 	GsTacticalShotgun: {
-		/* Desc:
+		Desc: 
 			'''
-			Reforged: right click to switch stance
-			Tactical Fan paints the spread cone so you know exactly what the six pellets cover
-			Triple Pump racks three fast shells then forces a rest; the first pump slams a breaching shockwave, and breached foes take 10% more from your pellets for a second
-			''' */
-		// ModeFan: Tactical Fan
-		// ModeTriplePump: Triple Pump
+			Reforgé : clic droit pour changer de posture
+			Éventail tactique : le cône de dispersion reste affiché, la couverture des 6 plombs se lit d'un coup d'œil
+			Triple pompe : 3 pompes rapides puis un temps forcé ; la première envoie une onde de choc, et les ennemis heurtés subissent 10% de dégâts en plus de vos plombs pendant 1 s
+			Chaque pompe consomme 1 munition comme d'habitude
+			'''
+		ModeFan: Éventail tactique
+		ModeTriplePump: Triple pompe
 	}
-
 	GsUzi: {
-		/* Desc:
+		Desc: 
 			'''
-			Reforged: right click to switch grip
-			Akimbo sprays 30% faster with a loose pattern; Burst fires tight three round strings dead on target
-			Every 4th round (the burst finisher) is an amber tracer: tracer hits light the target up, and your Uzi rounds dig 10% deeper into lit targets
-			''' */
-		// ModeAkimbo: Akimbo
-		// ModeBurst: Burst
+			Reforgé : clic droit pour changer de prise
+			Tir à deux armes : cadence +30%, dispersion lâche ; Rafale : trois tirs serrés, chaque balle trouve sa place
+			Chaque 4e coup (le dernier d'une rafale) est un traceur d'ambre : il allume la cible, et vos balles d'Uzi lui infligent 10% de dégâts en plus pendant 1,5 s
+			'''
+		ModeAkimbo: Tir à deux armes
+		ModeBurst: Rafale
 	}
-
 	GsVenusMagnum: {
-		/* Desc:
+		Desc: 
 			'''
-			Reforged: right click to switch bloom
-			Magnum Focus: after a crit the next round pierces one extra foe, the aim line lights up for the window
-			Petal Triplet fires three petals in a fan for one bullet
-			''' */
-		// ModeFocus: Magnum Focus
-		// ModeTriplet: Petal Triplet
+			Reforgé : clic droit pour changer de floraison
+			Focalisation : après un critique, le coup suivant traverse 1 ennemi de plus ; la ligne de visée s'allume pendant la fenêtre
+			Triplet de pétales : une munition se fend en trois pétales en éventail
+			'''
+		ModeFocus: Focalisation
+		ModeTriplet: Triplet de pétales
 	}
-
 	GsVortexBeater: {
-		/* Desc:
+		Desc: 
 			'''
-			Reforged: right click to switch flow
-			Vortex Sweep keeps the classic storm, rockets gently home in
-			Vortex Cannon fires slow charged rounds hitting 2.6 times harder; heavy impacts tear open a pulling vortex
-			''' */
-		// ModeSweep: Vortex Sweep
-		// ModeCannon: Vortex Cannon
+			Reforgé : clic droit pour changer de flux
+			Balayage vortex : la pluie de balles classique reste, les roquettes suivent légèrement
+			Canon vortex : tirs lourds lents chargés, 2,6 fois plus puissants ; l'impact déchire un vortex qui attire
+			'''
+		ModeSweep: Balayage vortex
+		ModeCannon: Canon vortex
 	}
-
 	GsXenopopper: {
-		/* Desc:
+		Desc: 
 			'''
-			Reforged: right click to switch bubble
-			Cluster pops five bubbles that converge and burst in a crossfire on your cursor
-			Vacuum floats one big bubble to the cursor, holds, then vents all five rounds at once
-			''' */
-		// ModeCluster: Cluster Pop
-		// ModeVacuum: Vacuum Bubble
+			Reforgé : clic droit pour changer de bulle
+			Grappe : 5 bulles convergent vers le curseur et explosent en croisement
+			Vide : une grande bulle flotte vers le curseur, s'y tient un instant, puis crache 5 munitions d'un coup
+			'''
+		ModeCluster: Grappe
+		ModeVacuum: Vide
 	}
-
-	// GsShotgunLeadRainProj.DisplayName: Gs Shotgun Lead Rain Proj
-	// GsTacticalShotgunBreachProj.DisplayName: Gs Tactical Shotgun Breach Proj
-	// GsUziTracerProj.DisplayName: Gs Uzi Tracer Proj
+	GsShotgunLeadRainProj.DisplayName: Pluie de plomb
+	GsTacticalShotgunBreachProj.DisplayName: Onde de choc
+	GsUziTracerProj.DisplayName: Traceur d'ambre
 }
-
 GodSmithLaunchers: {
 	GsElectrosphereLauncher: {
-		// Desc: Reforged: two or more of your spheres link up with tesla arcs (up to 3, half sphere damage); right click overloads them all: +40% radius, discharged in 2 seconds
-		// TipOverload: Overload!
-	}
-
-	GsGrenadeLauncher: {
-		// Desc: Reforged: grenades stick to walls and foes (+25% damage when stuck on flesh), no more self-fuse; right click to detonate all, up to 6 planted
-		// TipDetonate: Blast them all!
-	}
-
-	GsJackOLanternLauncher: {
-		// Desc: Reforged: right click makes every rolling pumpkin grin and burst, each releasing 3 homing flame wisps; every blast leaves a candle field that scorches whoever stands in it
-		// TipGrin: Grin in unison!
-	}
-
-	GsNailGun: {
-		// Desc: Reforged: nails embed into flesh (up to 5 per victim), each making the victim take +3% damage from all sources; right click rips every nail out in a burst of shrapnel
-		// TipExtract: Rip them out!
-	}
-
-	GsProximityMineLauncher: {
-		// Desc: Reforged: mines show their trigger radius to you; right click chains them in placement order; mines idle for 60s refund a rocket and self-clear
-		// TipChain: Domino!
-		// TipRecycle: Mine reclaimed
-	}
-
-	GsRocketLauncher: {
-		// Desc: Reforged: right click to detonate every rocket in flight; each airburst hurls 3 piercing darts toward your cursor
-		// TipDetonate: Airburst!
-	}
-
-	GsSnowmanCannon: {
-		// Desc: Reforged: right click swaps carriers. Homing swarm brands victims with a snowflake (+8% from this weapon); Blizzard orbit lofts rockets skyward to dive from above your cursor
-		// ModeHoming: Carrier: homing swarm
-		// ModeOrbital: Carrier: blizzard orbit
-	}
-
-	GsStarCannon: {
-		// Desc: Reforged: right click swaps trajectory. Direct fire, or Starfall: stars loft skyward and rain down around your cursor, splashing stardust on hit
-		// ModeDirect: Trajectory: direct
-		// ModeStarfall: Trajectory: starfall
-	}
-
-	GsStynger: {
-		// Desc: Reforged: right click cycles the fuze. Impact detonates on hit; Range airbursts at your cursor's distance with a focused shrapnel cone; Ricochet bounces off blocks once before arming
-		// ModeImpact: Fuze: impact
-		// ModeRange: Fuze: range airburst
-		// ModeRicochet: Fuze: ricochet
-	}
-}
-
-GodSmithMagicConduit: {
-	/* GsHeatRay.Desc:
-		'''
-		Reforged: hold to sustain a scorching ray; white heat widens the beam and molten stacks detonate on the fifth
-		Right click to vent all heat as a corona flash lance
-		''' */
-	/* GsMedusaHead.Desc:
-		'''
-		Reforged: hold to unleash a petrifying gaze cone; stone-mark stacks briefly petrify, white heat narrows the gaze into a focused glare
-		Right click to vent all heat as an eight-way stone glare
-		''' */
-
-	GsSoulDrain: {
-		/* Desc:
+		Desc: 
 			'''
-			Reforged: a leech conduit that tethers up to three foes and drains them together; white heat grants true life recovery
-			Right click to detonate the stored blood at your cursor; overload backfires for 10 life
-			''' */
-		// BloodPriceDeath: "{0} was drained by their own leech conduit"
+			Reforgé : dès que deux sphères ou plus sont en jeu, des arcs Tesla se tendent entre elles, jusqu'à 3 segments ; un arc inflige la moitié des dégâts d'une sphère
+			Clic droit : toutes les sphères surchargent, rayon +40%, et se déchargent en 2 secondes
+			'''
+		TipOverload: Surcharge !
+	}
+	GsGrenadeLauncher: {
+		Desc: 
+			'''
+			Reforgé : les grenades se collent aux murs et aux ennemis, plus d'explosion automatique ; collées à la chair, dégâts +25%
+			Clic droit pour tout faire sauter, jusqu'à 6 grenades posées
+			'''
+		TipDetonate: Tout faire sauter !
+	}
+	GsJackOLanternLauncher: {
+		Desc: 
+			'''
+			Reforgé : clic droit, les citrouilles en roulement rient d'une voix et explosent, chacune lâchant 3 feux follets à tête chercheuse
+			Chaque explosion laisse un champ de chandelles qui brûle les ennemis qui s'y tiennent
+			'''
+		TipGrin: Rictus collectif !
+	}
+	GsNailGun: {
+		Desc: 
+			'''
+			Reforgé : les clous plantés dans la chair ne tombent plus, jusqu'à 5 par ennemi ; chacun lui fait subir 3% de dégâts en plus de toutes sources
+			Clic droit arrache tous les clous avec la chair, en une gerbe d'éclats
+			'''
+		TipExtract: Arracher les clous !
+	}
+	GsProximityMineLauncher: {
+		Desc: 
+			'''
+			Reforgé : le rayon de déclenchement des mines n'est visible que pour vous
+			Clic droit les fait exploser en chaîne dans l'ordre de pose ; une mine oisive 60 secondes se récupère et rend une roquette
+			'''
+		TipChain: Domino !
+		TipRecycle: Mine récupérée
+	}
+	GsRocketLauncher: {
+		Desc: 
+			'''
+			Reforgé : clic droit pour faire exploser toutes les roquettes en vol
+			Chaque explosion aérienne lance 3 dards perçants vers votre curseur
+			'''
+		TipDetonate: Explosion aérienne !
+	}
+	GsSnowmanCannon: {
+		Desc: 
+			'''
+			Reforgé : clic droit pour changer de vecteur
+			Essaim à tête chercheuse : l'impact grave un flocon, la cible subit 8% de dégâts en plus de cette arme
+			Orbite de blizzard : les roquettes montent d'abord, puis plongent depuis au-dessus du curseur
+			'''
+		ModeHoming: "Vecteur : essaim à tête chercheuse"
+		ModeOrbital: "Vecteur : orbite de blizzard"
+	}
+	GsStarCannon: {
+		Desc: 
+			'''
+			Reforgé : clic droit pour changer de trajectoire
+			Tir tendu : les étoiles volent droit ; Chute d'étoiles : elles montent d'abord, puis une pluie tombe autour du curseur et éclabousse de poussière d'étoile
+			'''
+		ModeDirect: "Trajectoire : tir tendu"
+		ModeStarfall: "Trajectoire : chute d'étoiles"
+	}
+	GsStynger: {
+		Desc: 
+			'''
+			Reforgé : clic droit pour cycler la fusée
+			Impact : explose au contact ; Distance : explose à la distance du curseur, éclats en cône ; Ricochet : rebondit une fois sur un bloc avant de s'armer
+			'''
+		ModeImpact: "Fusée : impact"
+		ModeRange: "Fusée : explosion à distance"
+		ModeRicochet: "Fusée : ricochet"
 	}
 }
-
+GodSmithMagicConduit: {
+	GsHeatRay.Desc: 
+		'''
+		Reforgé : maintenez pour projeter un rayon brûlant ; à chaleur blanche le faisceau s'élargit, et 5 couches de fusion explosent
+		Clic droit pour relâcher toute la chaleur en une lance corona
+		'''
+	GsMedusaHead.Desc: 
+		'''
+		Reforgé : maintenez pour déployer un cône de regard pétrifiant ; les couches de veines de pierre pétrifient brièvement, et à chaleur blanche le regard se resserre
+		Clic droit pour relâcher toute la chaleur en regards de pierre dans huit directions
+		'''
+	GsSoulDrain: {
+		Desc: 
+			'''
+			Reforgé : conduit sangsue, jusqu'à 3 ennemis liés et drainés ensemble ; la vraie régénération de vie n'arrive qu'à chaleur blanche
+			Clic droit fait exploser le sang stocké au curseur ; une explosion en surcharge vous arrache 10 points de vie
+			'''
+		BloodPriceDeath: "{0} a été vidé par son propre conduit sangsue"
+	}
+}
 GodSmithMagicMorph: {
-	/* GsClingerStaff.Desc:
+	GsClingerStaff.Desc: 
 		'''
-		Reforged: hold right click briefly to lay a 260px cursed vine wall along your aim, at any angle.
-		Overcharge it and both ends sprout vertical skirt walls
-		''' */
-	/* GsCrimsonRod.Desc:
+		Reforgé : maintenez clic droit un instant pour poser un mur de lianes maudites d'environ 16 blocs dans l'axe de visée, à n'importe quel angle
+		Si la charge déborde, chaque extrémité pousse encore un pan vertical
 		'''
-		Reforged: the blood cloud becomes a sacrificial rain field.
-		Raindrops stack Blood Erosion, three stacks burst; allies inside slowly mend.
-		Right click migrates the field to your cursor for a sliver of mana
-		''' */
-	/* GsCrystalSerpent.Desc:
+	GsCrimsonRod.Desc: 
 		'''
-		Reforged: burst shards bounce once more.
-		Hold right click to charge; release a great crystal python that slithers in a sine wave and bursts into a richer shard shower
-		''' */
-	/* GsCrystalStorm.Desc:
+		Reforgé : le nuage de sang devient un champ de pluie sacrificielle
+		Les gouttes empilent l'érosion de sang ; à trois couches, ça explose ; les alliés dans le champ récupèrent lentement de la vie
+		Clic droit déplace le champ vers le curseur pour un peu de mana
 		'''
-		Reforged: hold right click to charge a refraction vortex at the cursor.
-		Your crystal shards passing through it refract, gaining speed and one extra pierce
-		''' */
-	/* GsFlamelash.Desc:
+	GsCrystalSerpent.Desc: 
 		'''
-		Reforged: guided flight steers 25% faster.
-		Hold right click to charge; release a serpent of flame whose coils trail your guidance and set foes ablaze
-		''' */
-	/* GsMagicMissile.Desc:
+		Reforgé : les éclats pulvérisés rebondissent une fois de plus
+		Maintenez clic droit pour charger, relâchez un python de cristal géant qui serpente et explose en une pluie d'éclats plus dense
 		'''
-		Reforged: guided flight steers 25% faster.
-		Hold right click to charge; release a triple volley that escorts your cursor in formation
-		''' */
-	/* GsMeteorStaff.Desc:
+	GsCrystalStorm.Desc: 
 		'''
-		Reforged: meteors leave a scorching crater where they land.
-		Hold right click to charge; release to call a five-meteor barrage across the cursor
-		''' */
-	/* GsNimbusRod.Desc:
+		Reforgé : maintenez clic droit pour charger un vortex de réfraction au curseur
+		Vos éclats de cristal qui le traversent se réfractent, vont plus vite et percent 1 ennemi de plus
 		'''
-		Reforged: with both clouds afield, a rain corridor bridges them, soaking and slowing foes inside.
-		Right click toggles warm rain or thunderstorm; the storm calls down bolts along the corridor
-		''' */
-	/* GsRainbowGun.Desc:
+	GsFlamelash.Desc: 
 		'''
-		Reforged: while the rainbow stands, your projectiles inside the band above the arc deal 8% more damage, and the arc sheds homing prism pulses.
-		Right click recalls the rainbow and refunds half its mana
-		''' */
-	/* GsRainbowRod.Desc:
+		Reforgé : le guidage en vol tourne 25% plus vite
+		Maintenez clic droit pour charger, relâchez un long serpent de flamme dont le corps suit votre guide et enflamme les ennemis sur le passage
 		'''
-		Reforged: guided bolts burst into prismatic shards on hit.
-		Hold right click to charge; release to raise a rainbow bridge that hurts foes crossing it and hastens allies standing on it
-		''' */
-	/* GsSkyFracture.Desc:
+	GsMagicMissile.Desc: 
 		'''
-		Reforged: blades tear a flash of fracture as they launch.
-		Hold right click to charge; release to open three rifts around the cursor that loose converging blades
-		''' */
+		Reforgé : le guidage en vol tourne 25% plus vite
+		Maintenez clic droit pour charger, relâchez trois missiles magiques qui escortent votre curseur en formation
+		'''
+	GsMeteorStaff.Desc: 
+		'''
+		Reforgé : les météores laissent un cratère brûlant à l'impact
+		Maintenez clic droit pour charger, relâchez une salve de cinq météores le long du curseur
+		'''
+	GsNimbusRod.Desc: 
+		'''
+		Reforgé : quand les deux nuages sont en place, un couloir de pluie les relie, trempant et ralentissant les ennemis à l'intérieur
+		Clic droit bascule entre pluie tiède et orage ; l'orage foudroie le long du couloir
+		'''
+	GsRainbowGun.Desc: 
+		'''
+		Reforgé : tant que l'arc-en-ciel tient, vos projectiles dans la bande au-dessus de l'arc infligent 8% de dégâts en plus, et l'arc répand des impulsions prismatiques à tête chercheuse
+		Clic droit rapatrie l'arc-en-ciel et rend la moitié du mana
+		'''
+	GsRainbowRod.Desc: 
+		'''
+		Reforgé : le projectile guidé explose en éclats prismatiques à l'impact
+		Maintenez clic droit pour charger, relâchez un pont arc-en-ciel : les ennemis qui le traversent souffrent, les alliés dessus accélèrent
+		'''
+	GsSkyFracture.Desc: 
+		'''
+		Reforgé : les lames magiques déchirent un éclair de fracture à l'envol
+		Maintenez clic droit pour charger, relâchez trois failles autour du curseur qui lancent des lames convergentes
+		'''
 }
-
 GodSmithSummonWhips: {
-	// GsCoolWhip.Desc: Reforged: snowflakes born from on-beat lashes grow larger and pierce one more foe; 4 frost scars seal the mark, and the next on-beat hit blooms it into a frost burst that inflicts Frostbite
-	// GsDarkHarvest.Desc: Reforged: dark energy leaps spread to nearby foes for each reap scar on the victim; 4 scars seal the mark, and the next on-beat hit reaps its soul, flash-scything every scarred enemy on the field
-	// GsDurendal.Desc: Reforged: after three on-beat lashes, every further on-beat swing looses a golden sword-wave from the whip tip; 5 scars seal the mark, and the next on-beat hit calls down a holy verdict blade
-	// GsFirecracker.Desc: Reforged: keeps the classic minion-detonated blast; on-beat lashes load fuses into the target, and at 3 fuses the next blast chains into 3 extra staggered explosions
-	// GsKaleidoscope.Desc: Reforged: the tightest beat window, and a missed swing resets all tempo; each scar lights one prism color, and at five colors the next on-beat hit unfolds a kaleidoscope of five prismatic slashes, exposing the victim to guaranteed-crit chances for 5 seconds
-	// GsLeatherWhip.Desc: Reforged: chain swings on the beat to build tempo and lash speed; 3 lash scars seal the mark, and the next on-beat hit cracks it for 200% damage, then your minions maul the target for 2 seconds
-	// GsMorningStar.Desc: Reforged: every on-beat swing slams a quake at the whip tip; 3 scars seal the mark, and the next on-beat hit calls a falling star mace down on the target's head
-	// GsSnapthorn.Desc: Reforged: on-beat lashes grow thorn scars on the prey; 4 scars seal the mark, and the next on-beat hit bursts it into a thorn explosion plus 4 homing venom barbs
-	// GsSpinalTap.Desc: Reforged: an on-beat sweep that tags 3 foes cracks a bone echo into everything it missed; 4 scars seal the mark, and the next on-beat hit erupts a bone spire from below
+	GsCoolWhip.Desc: 
+		'''
+		Reforgé : les flocons nés d'une frappe cadencée sont plus grands et percent 1 ennemi de plus
+		4 marques de givre scellent le sceau d'exécution ; la frappe cadencée suivante l'ouvre en une explosion de givre qui applique gelure
+		'''
+	GsDarkHarvest.Desc: 
+		'''
+		Reforgé : le saut d'énergie sombre se propage aux ennemis proches, une extra-cible par marque de récolte sur la victime
+		4 marques scellent le sceau d'exécution ; la frappe cadencée suivante moissonne son âme et fauche en un éclair tous les ennemis marqués
+		'''
+	GsDurendal.Desc: 
+		'''
+		Reforgé : après 3 frappes cadencées d'affilée, chaque frappe cadencée suivante lance une onde d'épée dorée depuis le bout du fouet
+		5 marques scellent le sceau d'exécution ; la frappe cadencée suivante fait descendre une lame de verdict sacré
+		'''
+	GsFirecracker.Desc: 
+		'''
+		Reforgé : conserve l'explosion classique déclenchée par les serviteurs
+		Les frappes cadencées chargent des mèches sur la cible ; à 3 mèches, la prochaine explosion enchaîne 3 détonations de plus
+		'''
+	GsKaleidoscope.Desc: 
+		'''
+		Reforgé : la fenêtre de tempo est la plus étroite de tous les fouets ; un coup dans le vide remet le rythme à zéro
+		Chaque marque allume une couleur prismatique ; les cinq réunies, la frappe cadencée suivante déploie cinq tailles prismatiques en kaléidoscope, et la cible subit ensuite des critiques assurés pendant 5 secondes
+		'''
+	GsLeatherWhip.Desc: 
+		'''
+		Reforgé : enchaînez les frappes cadencées pour accumuler le tempo, le fouet s'accélère
+		3 marques scellent le sceau d'exécution ; la frappe cadencée suivante l'ouvre pour 200% de dégâts, puis vos serviteurs tabassent la cible pendant 2 secondes
+		'''
+	GsMorningStar.Desc: 
+		'''
+		Reforgé : chaque frappe cadencée frappe un cercle de choc au bout du fouet
+		3 marques scellent le sceau d'exécution ; la frappe cadencée suivante fait tomber une masse d'étoile pile sur la tête de la cible
+		'''
+	GsSnapthorn.Desc: 
+		'''
+		Reforgé : les frappes cadencées plantent des marques d'épine sur la proie
+		4 marques scellent le sceau d'exécution ; la frappe cadencée suivante fait exploser les épines et lance 4 dards venimeux à tête chercheuse
+		'''
+	GsSpinalTap.Desc: 
+		'''
+		Reforgé : une frappe cadencée qui touche 3 ennemis d'un coup fait résonner une onde d'os sur tous ceux qu'elle a manqués
+		4 marques scellent le sceau d'exécution ; la frappe cadencée suivante fait surgir une flèche d'os depuis le sol
+		'''
 }
-
-/* GodSmithAcc.GodSmithSharkToothNecklace.EffectDesc:
+GodSmithAcc.GodSmithSharkToothNecklace.EffectDesc: 
 	'''
-	+4% damage
-	Strikes tear the target's hide, granting Rend: +1 armor penetration per stack, up to 8 stacks, lasts 3s
-	''' */
-
+	Dégâts +4%
+	Déchirure : l'attaque fend la peau de la cible, chaque couche équivaut à 1 point de perçage d'armure, jusqu'à 8 couches, 3 secondes
+	'''
 GodSmithEndow: {
 	GodSmithLegendaryEndow: {
-		// EndowName: Sword Saint's Echo
-		// EndowDesc: Swings have a {0}% chance to loose a golden sword wave dealing {1}% weapon damage
+		EndowName: Écho du saint d'épée
+		EndowDesc: "Les coups ont {0}% de chances de lancer une onde d'épée dorée infligeant {1}% des dégâts de l'arme"
 	}
-
 	GodSmithWardingEndow: {
-		// EndowName: Bulwark Oath
-		// EndowDesc: Reduces damage taken by {0}%
+		EndowName: Serment du rempart
+		EndowDesc: "Réduit les dégâts subis de {0}%"
 	}
 }
