@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.Narrative;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.MainMenus.Characters
@@ -21,7 +22,15 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
                 return chipFrames;
             }
         }
-        public override float ChipScale => 0.5f;//96x92->48x46
+        public override float ChipScale => 0.5f;//96x92 居中裁 74x92->37x46
+
+        /// <summary>对齐硫火芯片源幅，左右各切 11px 发丝</summary>
+        public override Rectangle? GetChipSource(Texture2D tex) {
+            const int w = 74, h = 92;
+            int srcW = Math.Min(w, tex.Width);
+            int srcH = Math.Min(h, tex.Height);
+            return new Rectangle((tex.Width - srcW) / 2, (tex.Height - srcH) / 2, srcW, srcH);
+        }
 
         public override IList<Texture2D> Expressions => null;//锁定期不展示立绘
 

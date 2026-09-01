@@ -123,6 +123,19 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
                 (int)(size.X + HimayoMenuTheme.ButtonHoverSlide + 24f), (int)size.Y + 8);
         }
 
+        /// <summary>退出钮文字底边，供音乐提示锚在其下</summary>
+        public static float ExitBottomY {
+            get {
+                if (entries == null || entries.Length == 0) {
+                    return Main.screenHeight * 0.5f;
+                }
+                int i = entries.Length - 1;
+                Vector2 size = FontAssets.DeathText.Value.MeasureString(entries[i].Label())
+                    * HimayoMenuTheme.ButtonTextScale;
+                return ButtonPos(i).Y + size.Y;
+            }
+        }
+
         public static void Draw(SpriteBatch spriteBatch, float fade) {
             if (entries == null) {
                 return;

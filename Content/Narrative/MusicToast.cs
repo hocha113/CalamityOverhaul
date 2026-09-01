@@ -21,7 +21,8 @@ namespace CalamityOverhaul.Content.Narrative
             Digital,  //数字音波
             Neon,  //霓虹光谱
             RedNeon,  //红霓虹
-            WetInk  //湿墨冷青，对齐鬼湖色板
+            WetInk,  //湿墨冷青，对齐鬼湖色板
+            Sakura  //夜樱朱红，对齐夜樱色板
         }
 
         public class MusicInfo
@@ -34,6 +35,7 @@ namespace CalamityOverhaul.Content.Narrative
             public MusicStyle Style { get; set; } = MusicStyle.Vinyl;
             public Action OnComplete { get; set; }
             public int DisplayDuration { get; set; } = 300;  //默认5秒
+            public float LayoutScale { get; set; } = 1f;
         }
 
         #region 数据字段
@@ -60,15 +62,23 @@ namespace CalamityOverhaul.Content.Narrative
         private const float MinPanelWidth = 320f;
         private const float MaxPanelWidth = 550f;
         internal const float PanelHeight = 90f;
+        internal const float MenuLayoutScale = 0.85f;
         private const float AlbumSize = 70f;
         private const float AlbumPadding = 10f;
         private const float TextStartX = 95f;
         private const float TextPaddingRight = 15f;
 
+        private float LayoutScale => currentMusic?.LayoutScale ?? 1f;
+        private float BoxH => PanelHeight * LayoutScale;
+        private float Cover => AlbumSize * LayoutScale;
+        private float CoverPad => AlbumPadding * LayoutScale;
+        private float TextX => TextStartX * LayoutScale;
+        private float TextPadR => TextPaddingRight * LayoutScale;
+
         private float currentPanelWidth = MinPanelWidth;
         private float OffscreenX => -currentPanelWidth - 50f;
         private const float OnscreenX = 15f;
-        private static float ScreenY => Main.screenHeight - PanelHeight - 120f;  //左下角
+        private float ScreenY => Main.screenHeight - BoxH - 120f;  //左下角
 
         private readonly float[] audioLevels = new float[32];
         private int audioUpdateTimer = 0;
@@ -93,7 +103,7 @@ namespace CalamityOverhaul.Content.Narrative
         #region 公共API
         public static void ShowMusic(string title, string artist = null, Texture2D albumCover = null,
             MusicStyle style = MusicStyle.Vinyl, int displayDuration = 300, Action onComplete = null,
-            Texture2D titleTexture = null, Func<float> screenYProvider = null) {
+            Texture2D titleTexture = null, Func<float> screenYProvider = null, float layoutScale = 1f) {
             var music = new MusicInfo {
                 Title = title,
                 Artist = artist,
@@ -102,7 +112,8 @@ namespace CalamityOverhaul.Content.Narrative
                 ScreenYProvider = screenYProvider,
                 Style = style,
                 DisplayDuration = displayDuration,
-                OnComplete = onComplete
+                OnComplete = onComplete,
+                LayoutScale = layoutScale > 0.01f ? layoutScale : 1f
             };
             Instance.musicQueue.Enqueue(music);
         }
@@ -178,15 +189,16 @@ namespace CalamityOverhaul.Content.Narrative
 
         private void CalculatePanelWidth() {
             var font = FontAssets.MouseText.Value;
-            float maxTextWidth = ResolveTitleSize(MaxPanelWidth - TextStartX - TextPaddingRight).X;
+            float s = LayoutScale;
+            float maxTextWidth = ResolveTitleSize(MaxPanelWidth * s - TextX - TextPadR).X;
 
             if (!string.IsNullOrEmpty(currentMusic.Artist)) {
-                Vector2 artistSize = font.MeasureString(currentMusic.Artist) * 0.65f;
+                Vector2 artistSize = font.MeasureString(currentMusic.Artist) * (0.65f * s);
                 maxTextWidth = Math.Max(maxTextWidth, artistSize.X);
             }
 
-            float requiredWidth = TextStartX + maxTextWidth + TextPaddingRight;
-            currentPanelWidth = Math.Clamp(requiredWidth, MinPanelWidth, MaxPanelWidth);
+            float requiredWidth = TextX + maxTextWidth + TextPadR;
+            currentPanelWidth = Math.Clamp(requiredWidth, MinPanelWidth * s, MaxPanelWidth * s);
         }
 
         private bool HasTitleTexture =>
@@ -196,8 +208,8 @@ namespace CalamityOverhaul.Content.Narrative
         private Vector2 ResolveTitleSize(float maxWidth) {
             if (HasTitleTexture) {
                 Texture2D tex = currentMusic.TitleTexture;
-                float lineH = FontAssets.MouseText.Value.MeasureString("A").Y * 0.85f;
-                float scale = Math.Min(1f, lineH / Math.Max(tex.Height, 1));
+                float lineH = FontAssets.MouseText.Value.MeasureString("A").Y * (0.85f * LayoutScale);
+                float scale = Math.Min(LayoutScale, lineH / Math.Max(tex.Height, 1));
                 float width = tex.Width * scale;
                 if (width > maxWidth && width > 0.01f) {
                     scale *= maxWidth / width;
@@ -206,7 +218,7 @@ namespace CalamityOverhaul.Content.Narrative
             }
 
             string titleText = currentMusic.Title ?? "Unknown Track";
-            return FontAssets.MouseText.Value.MeasureString(titleText) * 0.85f;
+            return FontAssets.MouseText.Value.MeasureString(titleText) * (0.85f * LayoutScale);
         }
 
         private void UpdateAnimation() {
@@ -242,7 +254,7 @@ namespace CalamityOverhaul.Content.Narrative
                 particleSpawnTimer = 0;
                 Vector2 panelPos = GetCurrentPanelPosition();
                 particles.Add(new MusicParticle(
-                    new Vector2(panelPos.X + currentPanelWidth, panelPos.Y + Main.rand.NextFloat(PanelHeight)),
+                    new Vector2(panelPos.X + currentPanelWidth, panelPos.Y + Main.rand.NextFloat(BoxH)),
                     currentMusic.Style
                 ));
             }
@@ -304,7 +316,7 @@ namespace CalamityOverhaul.Content.Narrative
             if (currentMusic == null || slideProgress <= 0.01f) return;
 
             Vector2 panelPos = GetCurrentPanelPosition();
-            Rectangle panelRect = new Rectangle((int)panelPos.X, (int)panelPos.Y, (int)currentPanelWidth, (int)PanelHeight);
+            Rectangle panelRect = new Rectangle((int)panelPos.X, (int)panelPos.Y, (int)currentPanelWidth, (int)BoxH);
 
             switch (currentMusic.Style) {
                 case MusicStyle.Vinyl:
@@ -321,6 +333,9 @@ namespace CalamityOverhaul.Content.Narrative
                     break;
                 case MusicStyle.WetInk:
                     DrawWetInkStyle(spriteBatch, panelRect);
+                    break;
+                case MusicStyle.Sakura:
+                    DrawSakuraStyle(spriteBatch, panelRect);
                     break;
             }
 
@@ -363,7 +378,7 @@ namespace CalamityOverhaul.Content.Narrative
         private void DrawVinylGrooves(SpriteBatch sb, Rectangle rect) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            Vector2 center = new Vector2(rect.X + AlbumPadding + AlbumSize / 2f, rect.Y + rect.Height / 2f);
+            Vector2 center = new Vector2(rect.X + CoverPad + Cover / 2f, rect.Y + rect.Height / 2f);
             int grooveCount = 8;
             for (int i = 0; i < grooveCount; i++) {
                 float radius = 25f + i * 3f;
@@ -436,10 +451,10 @@ namespace CalamityOverhaul.Content.Narrative
         private void DrawAudioWaveform(SpriteBatch sb, Rectangle rect, Color waveColor) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            float startX = rect.X + TextStartX;
-            float endX = rect.Right - TextPaddingRight;
-            float centerY = rect.Y + rect.Height - 15f;
-            float maxHeight = 10f;
+            float startX = rect.X + TextX;
+            float endX = rect.Right - TextPadR;
+            float centerY = rect.Y + rect.Height - 15f * LayoutScale;
+            float maxHeight = 10f * LayoutScale;
 
             for (int i = 0; i < audioLevels.Length - 1; i++) {
                 float t = i / (float)(audioLevels.Length - 1);
@@ -495,6 +510,39 @@ namespace CalamityOverhaul.Content.Narrative
         }
         #endregion
 
+        #region 夜樱朱红
+        //色值对齐 HimayoMenuTheme：夜底、灯笼朱红、樱瓣、象牙正文
+        private static readonly Color SakuraDeep = new(12, 6, 8);
+        private static readonly Color SakuraMurk = new(36, 14, 18);
+        private static readonly Color SakuraCrimson = new(158, 32, 46);
+        private static readonly Color SakuraBloom = new(255, 176, 196);
+        private static readonly Color SakuraIvory = new(240, 232, 238);
+        private static readonly Color SakuraPetal = new(250, 178, 194);
+
+        private void DrawSakuraStyle(SpriteBatch spriteBatch, Rectangle rect) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+
+            int segments = 16;
+            for (int i = 0; i < segments; i++) {
+                float t = i / (float)segments;
+                float t2 = (i + 1) / (float)segments;
+                int y1 = rect.Y + (int)(t * rect.Height);
+                int y2 = rect.Y + (int)(t2 * rect.Height);
+                Rectangle r = new(rect.X, y1, rect.Width, Math.Max(1, y2 - y1));
+                spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1),
+                    Color.Lerp(SakuraDeep, SakuraMurk, t) * (alpha * 0.88f));
+            }
+
+            Color hair = SakuraCrimson * (alpha * 0.55f);
+            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 1), new Rectangle(0, 0, 1, 1), hair);
+            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1), new Rectangle(0, 0, 1, 1), hair * 0.7f);
+            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, 1, rect.Height), new Rectangle(0, 0, 1, 1), hair * 0.85f);
+            spriteBatch.Draw(px, new Rectangle(rect.Right - 1, rect.Y, 1, rect.Height), new Rectangle(0, 0, 1, 1), hair * 0.5f);
+
+            DrawAudioWaveform(spriteBatch, rect, SakuraBloom * (alpha * 0.40f));
+        }
+        #endregion
+
         #region 霓虹光谱风格
         private void DrawNeonStyle(SpriteBatch spriteBatch, Rectangle rect) {
             Texture2D px = VaultAsset.placeholder2.Value;
@@ -525,13 +573,13 @@ namespace CalamityOverhaul.Content.Narrative
 
             float barWidth = 4f;
             float spacing = 2f;
-            float startX = rect.X + TextStartX;
+            float startX = rect.X + TextX;
             float bottomY = rect.Y + rect.Height - 10f;
             float maxBarHeight = 20f;
 
             for (int i = 0; i < spectrumBars.Length; i++) {
                 float x = startX + i * (barWidth + spacing);
-                if (x + barWidth > rect.Right - TextPaddingRight) break;
+                if (x + barWidth > rect.Right - TextPadR) break;
 
                 float height = spectrumBars[i] * maxBarHeight;
 
@@ -602,13 +650,13 @@ namespace CalamityOverhaul.Content.Narrative
 
             float barWidth = 4f;
             float spacing = 2f;
-            float startX = rect.X + TextStartX;
+            float startX = rect.X + TextX;
             float bottomY = rect.Y + rect.Height - 10f;
             float maxBarHeight = 20f;
 
             for (int i = 0; i < spectrumBars.Length; i++) {
                 float x = startX + i * (barWidth + spacing);
-                if (x + barWidth > rect.Right - TextPaddingRight) break;
+                if (x + barWidth > rect.Right - TextPadR) break;
 
                 float height = spectrumBars[i] * maxBarHeight;
 
@@ -641,23 +689,26 @@ namespace CalamityOverhaul.Content.Narrative
         private void DrawContent(SpriteBatch spriteBatch, Rectangle rect) {
             var font = FontAssets.MouseText.Value;
 
-            Vector2 albumPos = new Vector2(rect.X + AlbumPadding + AlbumSize / 2f, rect.Y + rect.Height / 2f);
+            Vector2 albumPos = new Vector2(rect.X + CoverPad + Cover / 2f, rect.Y + rect.Height / 2f);
 
             if (currentMusic.AlbumCover != null) {
                 Texture2D album = currentMusic.AlbumCover;
-                float albumScale = Math.Min(AlbumSize / album.Width, AlbumSize / album.Height);
+                float albumScale = Math.Min(Cover / album.Width, Cover / album.Height);
 
                 float rotation = currentMusic.Style == MusicStyle.Vinyl ? vinylRotation : 0f;
-                Color albumTint = currentMusic.Style == MusicStyle.WetInk
-                    ? WetInkMist * alpha
-                    : Color.White * alpha;
+                Color albumTint = currentMusic.Style switch {
+                    MusicStyle.WetInk => WetInkMist * alpha,
+                    MusicStyle.Sakura => SakuraPetal * alpha,
+                    _ => Color.White * alpha
+                };
                 spriteBatch.Draw(album, albumPos, null, albumTint, rotation, album.Size() / 2f, albumScale, SpriteEffects.None, 0f);
             }
             else {
                 DrawDefaultMusicIcon(spriteBatch, albumPos);
             }
 
-            Vector2 textStart = new Vector2(rect.X + TextStartX, rect.Y + 15);
+            float s = LayoutScale;
+            Vector2 textStart = new Vector2(rect.X + TextX, rect.Y + 15f * s);
 
             Color textColor = currentMusic.Style switch {
                 MusicStyle.Vinyl => new Color(220, 200, 180) * alpha,
@@ -665,57 +716,64 @@ namespace CalamityOverhaul.Content.Narrative
                 MusicStyle.Neon => new Color(255, 100, 255) * alpha,
                 MusicStyle.RedNeon => new Color(255, 125, 75) * alpha,
                 MusicStyle.WetInk => WetInkPale * alpha,
+                MusicStyle.Sakura => SakuraIvory * alpha,
                 _ => Color.White * alpha
             };
 
             string nowPlayingText = NowPlaying.Value;
-            Utils.DrawBorderString(spriteBatch, nowPlayingText, textStart, textColor * 0.7f, 0.6f);
+            Utils.DrawBorderString(spriteBatch, nowPlayingText, textStart, textColor * 0.7f, 0.6f * s);
 
-            Vector2 titlePos = textStart + new Vector2(0, 14);
-            float availableWidth = currentPanelWidth - TextStartX - TextPaddingRight;
+            Vector2 titlePos = textStart + new Vector2(0, 14f * s);
+            float availableWidth = currentPanelWidth - TextX - TextPadR;
             Vector2 titleSize = ResolveTitleSize(availableWidth);
 
             if (HasTitleTexture) {
                 Texture2D titleTex = currentMusic.TitleTexture;
                 float texScale = titleSize.X / Math.Max(titleTex.Width, 1);
-                Color titleTint = currentMusic.Style == MusicStyle.WetInk
-                    ? WetInkMoon * alpha
-                    : Color.White * alpha;
+                Color titleTint = currentMusic.Style switch {
+                    MusicStyle.WetInk => WetInkMoon * alpha,
+                    MusicStyle.Sakura => SakuraIvory * alpha,
+                    _ => Color.White * alpha
+                };
                 spriteBatch.Draw(titleTex, titlePos, null, titleTint, 0f,
                     Vector2.Zero, texScale, SpriteEffects.None, 0f);
             }
             else {
                 string titleText = currentMusic.Title ?? "Unknown Track";
-                Vector2 measured = font.MeasureString(titleText) * 0.85f;
+                Vector2 measured = font.MeasureString(titleText) * (0.85f * s);
                 if (measured.X > availableWidth) {
-                    float scale = Math.Max(0.55f, availableWidth / measured.X * 0.85f);
+                    float scale = Math.Max(0.55f * s, availableWidth / measured.X * (0.85f * s));
                     Utils.DrawBorderString(spriteBatch, titleText, titlePos, textColor, scale);
                     titleSize = font.MeasureString(titleText) * scale;
                 }
                 else {
-                    Utils.DrawBorderString(spriteBatch, titleText, titlePos, textColor, 0.85f);
+                    Utils.DrawBorderString(spriteBatch, titleText, titlePos, textColor, 0.85f * s);
                 }
             }
 
             if (!string.IsNullOrEmpty(currentMusic.Artist)) {
                 Vector2 artistPos = titlePos + new Vector2(0, titleSize.Y + 3);
-                Vector2 artistSize = font.MeasureString(currentMusic.Artist) * 0.65f;
+                Vector2 artistSize = font.MeasureString(currentMusic.Artist) * (0.65f * s);
 
                 if (artistSize.X > availableWidth) {
-                    float scale = Math.Max(0.45f, availableWidth / artistSize.X * 0.65f);
+                    float scale = Math.Max(0.45f * s, availableWidth / artistSize.X * (0.65f * s));
                     Utils.DrawBorderString(spriteBatch, currentMusic.Artist, artistPos, textColor * 0.75f, scale);
                 }
                 else {
-                    Utils.DrawBorderString(spriteBatch, currentMusic.Artist, artistPos, textColor * 0.75f, 0.65f);
+                    Utils.DrawBorderString(spriteBatch, currentMusic.Artist, artistPos, textColor * 0.75f, 0.65f * s);
                 }
             }
         }
 
         private void DrawDefaultMusicIcon(SpriteBatch sb, Vector2 center) {
             Texture2D px = VaultAsset.placeholder2.Value;
-            Color iconColor = (currentMusic.Style == MusicStyle.WetInk ? WetInkMoon : Color.White) * alpha;
+            Color iconColor = currentMusic.Style switch {
+                MusicStyle.WetInk => WetInkMoon,
+                MusicStyle.Sakura => SakuraBloom,
+                _ => Color.White
+            } * alpha;
 
-            float noteSize = AlbumSize * 0.6f;
+            float noteSize = Cover * 0.6f;
 
             Rectangle stem = new Rectangle(
                 (int)(center.X + noteSize * 0.15f),
@@ -764,6 +822,11 @@ namespace CalamityOverhaul.Content.Narrative
                         WetInkMoon,
                         WetInkMist,
                         WetInkPale
+                    }),
+                    MusicStyle.Sakura => Main.rand.Next(new Color[] {
+                        SakuraBloom,
+                        SakuraPetal,
+                        SakuraIvory
                     }),
                     MusicStyle.Neon => Main.hslToRgb(Main.rand.NextFloat(), 1f, 0.6f),
                     MusicStyle.RedNeon => Main.rand.Next(new Color[] {

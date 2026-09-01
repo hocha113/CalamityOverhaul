@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.MainMenus.Characters;
 using CalamityOverhaul.Content.MainMenus.Overs;
+using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.UIs.OverhaulSettings;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
@@ -52,9 +53,31 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
             HimayoMenuCamera.Reset();
             HimayoPetalField.Reset();
             HimayoMenuButtons.Reset();
+            if (!Main.dedServ) {
+                MusicToast.Dismiss();
+                MusicToast.ShowMusic(
+                    title: "凭夜:未来",
+                    albumCover: ADVAsset.Himayo,
+                    style: MusicToast.MusicStyle.Sakura,
+                    displayDuration: 360,
+                    screenYProvider: ResolveToastY,
+                    layoutScale: MusicToast.MenuLayoutScale);
+            }
         }
 
-        internal static void OnThemeDeselected() => HimayoPetalField.ReleaseCaught();
+        private static float ResolveToastY() {
+            float preferred = HimayoMenuButtons.ExitBottomY + 8f;
+            float aboveVersion = Main.screenHeight - 56f - MusicToast.PanelHeight * MusicToast.MenuLayoutScale;
+            float y = MathF.Min(preferred, aboveVersion);
+            return y < HimayoMenuButtons.ExitBottomY ? preferred : y;
+        }
+
+        internal static void OnThemeDeselected() {
+            HimayoPetalField.ReleaseCaught();
+            if (!Main.dedServ) {
+                MusicToast.Dismiss();
+            }
+        }
 
         public override void MenuLogicUpdate() {
             lastTickSeconds = clock.Elapsed.TotalSeconds;

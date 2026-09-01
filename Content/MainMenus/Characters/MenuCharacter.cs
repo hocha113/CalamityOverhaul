@@ -1,5 +1,7 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.MainMenus.Characters
@@ -32,6 +34,24 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
 
         /// <summary>芯片缩放，取干净除数保像素清晰</summary>
         public virtual float ChipScale => 0.5f;
+
+        /// <summary>芯片源矩形，空则整图。半身像比邻居宽时裁左右</summary>
+        public virtual Rectangle? GetChipSource(Texture2D tex) => null;
+
+        /// <summary>钳到贴图范围的芯片源矩形，布局与绘制共用</summary>
+        public Rectangle ChipSourceRect(Texture2D tex) {
+            Rectangle? custom = GetChipSource(tex);
+            if (custom is not Rectangle r) {
+                return tex.Bounds;
+            }
+            int x = Math.Clamp(r.X, 0, Math.Max(0, tex.Width - 1));
+            int y = Math.Clamp(r.Y, 0, Math.Max(0, tex.Height - 1));
+            int w = Math.Clamp(r.Width, 1, tex.Width - x);
+            int h = Math.Clamp(r.Height, 1, tex.Height - y);
+            return new Rectangle(x, y, w, h);
+        }
+
+        public Vector2 ChipDrawSize(Texture2D tex) => ChipSourceRect(tex).Size() * ChipScale;
 
         /// <summary>立绘表情组，空或 null 表示暂无立绘</summary>
         public abstract IList<Texture2D> Expressions { get; }

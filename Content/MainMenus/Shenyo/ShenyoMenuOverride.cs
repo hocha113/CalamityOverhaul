@@ -55,19 +55,19 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
                 MusicToast.Dismiss();
                 MusicToast.ShowMusic(
                     title: "夢のきざはし",
-                    artist: "腐姬",
                     albumCover: ADVAsset.Shenyo_Calm,
                     style: MusicToast.MusicStyle.WetInk,
                     displayDuration: 360,
                     titleTexture: ShenyoMenu.YumeNoKizahashi,
-                    screenYProvider: ResolveToastY);
+                    screenYProvider: ResolveToastY,
+                    layoutScale: MusicToast.MenuLayoutScale);
             }
         }
 
         //退出钮下方；能让开版本号就让，矮屏允许压住版本号但不能盖住退出
         private static float ResolveToastY() {
             float preferred = ShenyoMenuButtons.ExitBottomY + 8f;
-            float aboveVersion = Main.screenHeight - 56f - MusicToast.PanelHeight;
+            float aboveVersion = Main.screenHeight - 56f - MusicToast.PanelHeight * MusicToast.MenuLayoutScale;
             float y = MathF.Min(preferred, aboveVersion);
             return y < ShenyoMenuButtons.ExitBottomY ? preferred : y;
         }

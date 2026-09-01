@@ -222,7 +222,7 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
                     chip = new ChipRuntime { Def = def };
                     chipRuntime[def.Key] = chip;
                 }
-                chip.Size = def.ChipFrames[0].Size() * def.ChipScale;
+                chip.Size = def.ChipDrawSize(def.ChipFrames[0]);
                 visibleChips.Add(chip);
             }
 
@@ -570,11 +570,13 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
             IList<Texture2D> frames = def.ChipFrames;
             int frameIdx = Math.Clamp(def.GetChipFrame(GlobalTimer), 0, frames.Count - 1);
             Texture2D bust = frames[frameIdx] ?? frames[0];
-            sb.Draw(bust, center, null, Color.White * alpha, 0f, bust.Size() / 2f, def.ChipScale, SpriteEffects.None, 0f);
+            Rectangle source = def.ChipSourceRect(bust);
+            Vector2 origin = source.Size() / 2f;
+            sb.Draw(bust, center, source, Color.White * alpha, 0f, origin, def.ChipScale, SpriteEffects.None, 0f);
             if (chip.Hover > 0.01f) {
                 //悬停提亮，叠一层身份色薄光
-                sb.Draw(bust, center, null, def.AccentBright * (alpha * 0.12f * chip.Hover),
-                    0f, bust.Size() / 2f, def.ChipScale, SpriteEffects.None, 0f);
+                sb.Draw(bust, center, source, def.AccentBright * (alpha * 0.12f * chip.Hover),
+                    0f, origin, def.ChipScale, SpriteEffects.None, 0f);
             }
 
             //双线切角框
@@ -611,8 +613,9 @@ namespace CalamityOverhaul.Content.MainMenus.Characters
 
             //剪影压色，悬停微透形体
             Texture2D bust = def.ChipFrames[0];
+            Rectangle source = def.ChipSourceRect(bust);
             Color silhouette = Color.Lerp(new Color(30, 28, 35), new Color(54, 50, 62), chip.Hover) * alpha;
-            sb.Draw(bust, center, null, silhouette, 0f, bust.Size() / 2f, def.ChipScale, SpriteEffects.None, 0f);
+            sb.Draw(bust, center, source, silhouette, 0f, source.Size() / 2f, def.ChipScale, SpriteEffects.None, 0f);
 
             //灰暗框，拒绝期闪红
             Color edgeGray = new Color(96, 92, 104) * (alpha * (0.4f + 0.25f * chip.Hover));
