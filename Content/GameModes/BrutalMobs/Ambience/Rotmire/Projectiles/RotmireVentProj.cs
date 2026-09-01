@@ -93,8 +93,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rotmire.Project
                 && elapsed < TelegraphFrames + RiseFrames + HoldFrames;
 
             if (elapsed == 0 && !Main.dedServ) {
-                //预告起手：地底咕噜（听觉通道①）
-                SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 0.5f, Pitch = -0.5f, MaxInstances = 3 },
+                //预告起手：地底湿气翻涌（听觉通道①）。禁 Zombie104，那是死光起手
+                SoundEngine.PlaySound(SoundID.LiquidsWaterLava with { Volume = 0.5f, Pitch = -0.5f, MaxInstances = 3 },
                     Projectile.Center);
             }
             if (Main.dedServ) {

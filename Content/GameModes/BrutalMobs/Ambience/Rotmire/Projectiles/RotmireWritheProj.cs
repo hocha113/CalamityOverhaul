@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rotmire.Project
     /// <summary>
     /// 「邪土蠕动」土包。ai[0]=会爆旗标（出生时权威端掷定，随生成包同步）ai[1]=体型。
     /// 时间线：拱起 36 帧 → 蠕动 76~123 帧（时长由 identity 哈希取定，各端一致）→
-    /// 会爆者膨大变色 50 帧（充分预告：鼓大 1.5 倍+转亮色+咕噜与加速气泡声）→ 爆孢 8 帧微伤 → 余孢消散；
+    /// 会爆者膨大变色 50 帧（充分预告：鼓大 1.5 倍+转亮色+湿气与加速气泡声）→ 爆孢 8 帧微伤 → 余孢消散；
     /// 不会爆者静默消退。多数静默、少数爆开，制造"哪个会爆"的紧张感。
     /// 纯视觉阶段无任何判定；全程由 timeLeft 确定性推演，无追加同步
     /// </summary>
@@ -162,8 +162,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rotmire.Project
             if (elapsed < SwellEnd) {
                 int t = elapsed - WritheEnd;
                 if (t == 1) {
-                    //膨大起手：湿滑咕噜（听觉预告通道）
-                    SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 0.45f, Pitch = -0.4f, MaxInstances = 3 },
+                    //膨大起手：湿气翻涌（听觉预告通道）。禁 Zombie104，那是死光起手
+                    SoundEngine.PlaySound(SoundID.LiquidsWaterLava with { Volume = 0.45f, Pitch = -0.4f, MaxInstances = 3 },
                         Projectile.Center);
                 }
                 //加速的气泡声：预告后半拍点越来越密

@@ -149,9 +149,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rotmire
                 ? SoundID.Zombie3 with { Volume = 0.24f, Pitch = -0.62f, MaxInstances = 2 }
                 : SoundID.Zombie103 with { Volume = 0.20f, Pitch = -0.48f, MaxInstances = 2 };
             SoundEngine.PlaySound(style, pos);
-            //地下深处偶尔追一记湿滑的腹鸣咕噜
+            //地下深处偶尔追一记远处孢囊湿响。禁 Zombie104，那是死光起手
             if (RotmireAmbience.DepthGrade > 0.6f && Main.rand.NextBool(3)) {
-                SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 0.22f, Pitch = -0.66f, MaxInstances = 2 }, pos);
+                SoundEngine.PlaySound(SoundID.Item85 with { Volume = 0.22f, Pitch = -0.35f, MaxInstances = 2 }, pos);
             }
         }
 
