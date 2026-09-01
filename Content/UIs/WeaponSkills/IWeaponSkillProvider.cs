@@ -24,6 +24,10 @@ namespace CalamityOverhaul.Content.UIs.WeaponSkills
         public bool Alive;
         /// <summary>当前可触发</summary>
         public bool Ready;
+        /// <summary>true=按住拖到准星再松开;false=单击施放</summary>
+        public bool NeedsAim;
+        /// <summary>拖放预览世界圈半径,0=只画准星环</summary>
+        public float AimPreviewRadius;
     }
 
     /// <summary>
@@ -36,8 +40,8 @@ namespace CalamityOverhaul.Content.UIs.WeaponSkills
         /// <summary>取槽位快照,slot 恒为 0(左)或 1(右)</summary>
         WeaponSkillView GetWeaponSkill(int slot, Player player);
 
-        /// <summary>触发技能,仅本地客户端点击时调用;返回是否成功施放</summary>
-        bool TriggerWeaponSkill(int slot, Player player);
+        /// <summary>触发技能,仅本地客户端;aimWorld 为松手准星(自身技能可忽略)</summary>
+        bool TriggerWeaponSkill(int slot, Player player, Vector2 aimWorld);
 
         /// <summary>
         /// 绘制槽位图标,center/radius 为 UI 空间按钮心与图标半径

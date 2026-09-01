@@ -24,12 +24,19 @@ namespace CalamityOverhaul.Content.UIs.WeaponSkills
         public static WeaponSkillHud Instance => UIHandleLoader.GetUIHandleOfType<WeaponSkillHud>();
 
         public static LocalizedText ReadyHint { get; private set; }
+        public static LocalizedText AimHint { get; private set; }
+        public static LocalizedText ReleaseHint { get; private set; }
         public static LocalizedText CooldownFormat { get; private set; }
         public static LocalizedText ActiveLine { get; private set; }
         public static LocalizedText ManaCostFormat { get; private set; }
 
+        /// <summary>本地正在按住拖放落点技能,供 SetControls 锁普攻</summary>
+        public static bool IsAiming { get; private set; }
+
         public override void SetStaticDefaults() {
             ReadyHint = this.GetLocalization(nameof(ReadyHint), () => "就绪，点击施放");
+            AimHint = this.GetLocalization(nameof(AimHint), () => "按住拖到落点，松开施放");
+            ReleaseHint = this.GetLocalization(nameof(ReleaseHint), () => "松开施放");
             CooldownFormat = this.GetLocalization(nameof(CooldownFormat), () => "冷却剩余 {0} 秒");
             ActiveLine = this.GetLocalization(nameof(ActiveLine), () => "施放中");
             ManaCostFormat = this.GetLocalization(nameof(ManaCostFormat), () => "魔力消耗 {0}");
@@ -71,6 +78,8 @@ namespace CalamityOverhaul.Content.UIs.WeaponSkills
         private float fsFade = 1f;
         private float time;
         private int hoverSlot = -1;
+        private int dragSlot = -1;
+        private bool draggedOff;
         private readonly float[] hoverAnim = new float[SlotCount];
         private readonly float[] pressAnim = new float[SlotCount];
         private readonly float[] denyAnim = new float[SlotCount];
@@ -100,6 +109,14 @@ namespace CalamityOverhaul.Content.UIs.WeaponSkills
             }
             fsFade = MathHelper.Clamp(fsFade + (FullScreenUIHub.AnyOpen ? -0.12f : 0.12f), 0f, 1f);
 
+            Player lp = Main.LocalPlayer;
+            bool forceCancel = provider == null
+                || lp == null || !lp.active || lp.dead
+                || FullScreenUIHub.AnyOpen || RadialWheelHub.AnyOpen;
+            if (forceCancel) {
+                CancelAim(false);
+            }
+
             if (provider == null) {
                 //切离武器立即收起,视觉状态一并清零
                 appear = 0f;
@@ -110,12 +127,16 @@ namespace CalamityOverhaul.Content.UIs.WeaponSkills
                 return;
             }
             appear = MathHelper.Clamp(appear + 0.08f, 0f, 1f);
+            if (dragSlot >= 0) {
+                UIInputGuard.SuppressWeaponSwitch();
+            }
         }
 
         public override void Update() {
             //Update 跑在绘制阶段,首帧可能先于 LogicUpdate
             provider ??= ResolveProvider();
             if (provider == null) {
+                CancelAim(false);
                 return;
             }
 
@@ -129,6 +150,29 @@ namespace CalamityOverhaul.Content.UIs.WeaponSkills
             bool inputOk = appear > 0.9f && fsFade > 0.9f
                 && !FullScreenUIHub.AnyOpen && !RadialWheelHub.AnyOpen;
             Vector2 mouse = UIMouse;
+
+            if (dragSlot >= 0) {
+                HoldAimLock();
+                if (mouse.Distance(centers[dragSlot]) > HitR) {
+                    draggedOff = true;
+                }
+                hoverSlot = dragSlot;
+                TickButtonAnims();
+                if (keyRightPressState == KeyPressState.Pressed) {
+                    CancelAim(true);
+                    return;
+                }
+                if (keyLeftPressState == KeyPressState.Released) {
+                    if (draggedOff) {
+                        TryRelease(dragSlot, lp);
+                    }
+                    else {
+                        CancelAim(true);
+                    }
+                }
+                return;
+            }
+
             int nextHover = -1;
             if (inputOk) {
                 for (int i = 0; i < SlotCount; i++) {
@@ -143,34 +187,94 @@ namespace CalamityOverhaul.Content.UIs.WeaponSkills
                 SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.5f });
             }
             hoverSlot = nextHover;
-
-            for (int i = 0; i < SlotCount; i++) {
-                hoverAnim[i] = MathHelper.Lerp(hoverAnim[i], i == hoverSlot ? 1f : 0f, 0.22f);
-                pressAnim[i] *= 0.82f;
-                denyAnim[i] = MathF.Max(denyAnim[i] - 0.075f, 0f);
-            }
+            TickButtonAnims();
 
             if (hoverSlot >= 0) {
                 player.mouseInterface = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
-                    TryClick(hoverSlot, lp);
+                    TryPress(hoverSlot, lp);
                 }
             }
         }
 
-        private void TryClick(int slot, Player lp) {
-            bool ok = views[slot].Ready && provider.TriggerWeaponSkill(slot, lp);
+        private void TickButtonAnims() {
+            for (int i = 0; i < SlotCount; i++) {
+                hoverAnim[i] = MathHelper.Lerp(hoverAnim[i], i == hoverSlot ? 1f : 0f, 0.22f);
+                if (i == dragSlot) {
+                    pressAnim[i] = 1f;
+                }
+                else {
+                    pressAnim[i] *= 0.82f;
+                }
+                denyAnim[i] = MathF.Max(denyAnim[i] - 0.075f, 0f);
+            }
+        }
+
+        private void HoldAimLock() {
+            player.mouseInterface = true;
+            UIInputGuard.SuppressWeaponSwitch();
+        }
+
+        private void BeginAim(int slot) {
+            dragSlot = slot;
+            draggedOff = false;
+            IsAiming = true;
+            pressAnim[slot] = 1f;
+        }
+
+        private void CancelAim(bool softSound) {
+            if (dragSlot < 0) {
+                IsAiming = false;
+                draggedOff = false;
+                return;
+            }
+            if (softSound) {
+                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.4f });
+            }
+            pressAnim[dragSlot] = 0f;
+            dragSlot = -1;
+            draggedOff = false;
+            IsAiming = false;
+        }
+
+        private void TryPress(int slot, Player lp) {
+            WeaponSkillView view = views[slot];
+            if (!view.Ready) {
+                Deny(slot);
+                return;
+            }
+            if (view.NeedsAim) {
+                BeginAim(slot);
+                return;
+            }
+            Fire(slot, lp, Main.MouseWorld);
+        }
+
+        private void TryRelease(int slot, Player lp) {
+            int held = slot;
+            CancelAim(false);
+            if (!views[held].Ready) {
+                Deny(held);
+                return;
+            }
+            Fire(held, lp, Main.MouseWorld);
+        }
+
+        private void Fire(int slot, Player lp, Vector2 aimWorld) {
+            bool ok = provider.TriggerWeaponSkill(slot, lp, aimWorld);
             if (ok) {
                 pressAnim[slot] = 1f;
                 SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.25f, Volume = 0.65f });
-                //当帧刷新快照,冷却弧与状态行立即起步
                 views[slot] = provider.GetWeaponSkill(slot, lp);
             }
             else {
-                //点击不可用也必须有回应:红闪+横震+闷响
-                denyAnim[slot] = 1f;
-                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.7f, Volume = 0.75f });
+                Deny(slot);
             }
+        }
+
+        private void Deny(int slot) {
+            denyAnim[slot] = 1f;
+            SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.7f, Volume = 0.75f });
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -183,8 +287,12 @@ namespace CalamityOverhaul.Content.UIs.WeaponSkills
             for (int i = 0; i < SlotCount; i++) {
                 DrawButton(spriteBatch, i, centers[i] + new Vector2(0f, rise), a, ease);
             }
-            if (hoverSlot >= 0 && a > 0.85f) {
-                DrawHoverPanel(spriteBatch, hoverSlot, a);
+            int panelSlot = dragSlot >= 0 ? dragSlot : hoverSlot;
+            if (panelSlot >= 0 && a > 0.85f) {
+                DrawHoverPanel(spriteBatch, panelSlot, a);
+            }
+            if (dragSlot >= 0 && a > 0.85f) {
+                DrawAimPreview(spriteBatch, views[dragSlot], a);
             }
         }
 
@@ -270,13 +378,21 @@ namespace CalamityOverhaul.Content.UIs.WeaponSkills
 
             string status;
             Color statusCol;
-            if (view.Alive) {
+            if (dragSlot == slot) {
+                status = ReleaseHint.Value;
+                statusCol = Color.Lerp(view.Accent, Color.White, 0.35f);
+            }
+            else if (view.Alive) {
                 status = ActiveLine.Value;
                 statusCol = Color.Lerp(view.Accent, Color.White, 0.4f);
             }
             else if (view.CooldownLeft > 0) {
                 status = string.Format(CooldownFormat.Value, (view.CooldownLeft / 60f).ToString("0.0"));
                 statusCol = new Color(168, 168, 176);
+            }
+            else if (view.NeedsAim) {
+                status = AimHint.Value;
+                statusCol = view.Accent;
             }
             else {
                 status = ReadyHint.Value;
@@ -331,6 +447,30 @@ namespace CalamityOverhaul.Content.UIs.WeaponSkills
                     new Vector2(panel.X + PadX, curY), rowBuf[i].color * a, rowBuf[i].scale);
                 curY += rowH[i] + RowGap;
             }
+        }
+
+        private static void DrawAimPreview(SpriteBatch sb, WeaponSkillView view, float a) {
+            Vector2 c = UIMouse;
+            Color accent = view.Accent;
+            WeaponSkillBrush.DrawGlow(sb, c, 18f, accent, 0.28f * a);
+            WeaponSkillBrush.DrawRing(sb, c, 11f, 1.4f, accent * (0.9f * a), 28);
+            WeaponSkillBrush.DrawRing(sb, c, 4f, 1f,
+                Color.Lerp(accent, Color.White, 0.45f) * a, 16);
+            for (int i = 0; i < 4; i++) {
+                Vector2 dir = (MathHelper.PiOver2 * i).ToRotationVector2();
+                WeaponSkillBrush.Line(sb, c + dir * 7f, c + dir * 15f, accent * (0.85f * a), 1.3f);
+            }
+
+            if (view.AimPreviewRadius <= 8f) {
+                return;
+            }
+            float zoom = Main.GameViewMatrix.Zoom.X;
+            float uiR = view.AimPreviewRadius * zoom / Main.UIScale;
+            if (uiR < 12f) {
+                return;
+            }
+            int segs = Math.Clamp((int)(uiR * 0.35f), 36, 80);
+            WeaponSkillBrush.DrawRing(sb, c, uiR, 1.6f, accent * (0.55f * a), segs);
         }
     }
 }

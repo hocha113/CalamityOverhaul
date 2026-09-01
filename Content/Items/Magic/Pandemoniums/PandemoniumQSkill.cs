@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private ref float Timer => ref Projectile.ai[1];
 
         private Vector2 targetCenter;
-        private const float SkillRadius = 600f;
+        internal const float SkillRadius = 600f;
         private const int PillarCount = 20;
         private const int Duration = 180;
 
@@ -63,8 +63,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Timer++;
 
             if (Timer == 1) {
-                targetCenter = Main.MouseWorld;
-                Projectile.Center = targetCenter;
+                targetCenter = Projectile.Center;
                 InitializeSkill();
 
                 SoundEngine.PlaySound(SoundID.DD2_BetsyScream with {

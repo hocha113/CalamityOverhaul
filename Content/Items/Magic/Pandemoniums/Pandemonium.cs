@@ -129,19 +129,21 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 CooldownTotal = 0,
                 Alive = alive,
                 Ready = !alive,
+                NeedsAim = left,
+                AimPreviewRadius = left ? PandemoniumQSkill.SkillRadius : 0f,
             };
         }
 
-        bool IWeaponSkillProvider.TriggerWeaponSkill(int slot, Player player)
-            => slot == 0 ? TryCastJudgement(player) : TryCastFinale(player);
+        bool IWeaponSkillProvider.TriggerWeaponSkill(int slot, Player player, Vector2 aimWorld)
+            => slot == 0 ? TryCastJudgement(player, aimWorld) : TryCastFinale(player);
 
-        private static bool TryCastJudgement(Player player) {
+        private static bool TryCastJudgement(Player player, Vector2 aimWorld) {
             if (Main.myPlayer != player.whoAmI
                 || player.CountProjectilesOfID<PandemoniumQSkill>() > 0) {
                 return false;
             }
             ShootState shootState = player.GetShootState();
-            Projectile.NewProjectile(shootState.Source, player.Center
+            Projectile.NewProjectile(shootState.Source, aimWorld
                 , Vector2.Zero, ModContent.ProjectileType<PandemoniumQSkill>()
                 , shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI);
             return true;

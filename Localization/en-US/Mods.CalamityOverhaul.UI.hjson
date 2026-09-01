@@ -1580,6 +1580,8 @@ CharacterDockUI: {
 
 WeaponSkillHud: {
 	ReadyHint: Ready, click to cast
+	AimHint: Hold, drag to the aim point, release to cast
+	ReleaseHint: Release to cast
 	CooldownFormat: Cooldown: {0}s
 	ActiveLine: Active
 	ManaCostFormat: Mana cost: {0}

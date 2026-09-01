@@ -1,6 +1,5 @@
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -18,10 +17,6 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Starfall.Projec
     internal class StarfallAfterburstProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
-
-        //撕裂火舌贴图（黑底亮度型，只能加色/A=0 使用）
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> TearFlame01 = null;
 
         /// <summary>预告帧数（公平契约 ≥45，各档位一律不缩短）</summary>
         private const int TelegraphFrames = 48;
@@ -267,40 +262,49 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Starfall.Projec
         }
 
         /// <summary>
-        /// 火柱绘制：真 alpha 暗焦烟衬底给轮廓，撕裂火舌三层错高错宽（黑底图 A=0 加色），
-        /// 每层带独立抖动，顶端靠贴图撕裂口自然收头，柱顶加冠光
+        /// 火柱绘制：Extra_98 真 alpha 暗焦烟衬底给轮廓，同图三层热边错高错宽
+        /// （外层带 A，内层 A=0），每层独立抖动，柱顶加冠光
         /// </summary>
         private void DrawColumn(float columnVis, Texture2D glow) {
             float height = BaseHeight * Scale * columnVis;
             Vector2 basePos = Projectile.Center - Main.screenPosition;
 
-            //暗焦烟衬底（真 alpha 才能压出暗轮廓）
             Texture2D under = CWRAsset.Extra_98?.Value;
             if (under != null) {
+                Vector2 underOrigin = under.Size() / 2f;
+                //暗焦烟衬底（真 alpha 才能压出暗轮廓）
                 Vector2 underScale = new(BaseHalfWidth * 2.6f * Scale / under.Width, height * 1.18f / under.Height);
                 Color charcoal = new Color(52, 30, 22) * (0.55f * columnVis);
                 Main.EntitySpriteDraw(under, basePos - new Vector2(0f, height * 0.5f), null,
-                    charcoal, 0f, under.Size() / 2f, underScale, SpriteEffects.None, 0);
-            }
+                    charcoal, 0f, underOrigin, underScale, SpriteEffects.None, 0);
 
-            //三层撕裂火舌：外层深橙宽、中层橙、内芯金亮窄，各自独立呼吸
-            Texture2D flame = TearFlame01?.Value;
-            if (flame != null) {
-                Vector2 flameOrigin = new(flame.Width * 0.5f, flame.Height);
+                //热层：竖直短柱，外层焦暗带 A，内层橙金 A=0；判定半宽藏在外宽内
+                const float SootVisFrac = 0.65f;
+                float visW = under.Width * SootVisFrac;
+                float visH = under.Height * SootVisFrac;
                 ReadOnlySpan<float> layerH = [1f, 0.78f, 0.52f];
                 ReadOnlySpan<float> layerW = [1f, 0.72f, 0.48f];
                 Span<Color> layerC = [
-                    new Color(255, 96, 24, 0) * (0.7f * columnVis),
-                    new Color(255, 150, 40, 0) * (0.75f * columnVis),
-                    new Color(255, 210, 110, 0) * (0.8f * columnVis),
+                    new Color(150, 36, 20),
+                    new Color(255, 150, 40),
+                    new Color(255, 210, 110),
                 ];
                 for (int i = 0; i < 3; i++) {
                     float jitter = MathF.Sin(Main.GlobalTimeWrappedHourly * 34f
                         + Projectile.identity * 2.3f + i * 2.1f);
-                    float w = BaseHalfWidth * 2f * Scale * layerW[i] / flame.Width;
-                    float h = height * layerH[i] * (0.92f + 0.1f * jitter) / flame.Height;
-                    Vector2 pos = basePos + new Vector2(jitter * 2.5f, 1f);
-                    Main.EntitySpriteDraw(flame, pos, null, layerC[i], 0f, flameOrigin,
+                    float hPx = height * layerH[i] * (0.92f + 0.1f * jitter);
+                    float w = BaseHalfWidth * 2f * Scale * layerW[i] / visW;
+                    float h = hPx / visH;
+                    Color col = layerC[i];
+                    if (i == 0) {
+                        col *= 0.55f * columnVis;
+                    }
+                    else {
+                        col = col with { A = 0 };
+                        col *= (i == 1 ? 0.75f : 0.8f) * columnVis;
+                    }
+                    Vector2 pos = basePos + new Vector2(jitter * 2.5f, 0f) - new Vector2(0f, hPx * 0.5f);
+                    Main.EntitySpriteDraw(under, pos, null, col, 0f, underOrigin,
                         new Vector2(w, h), SpriteEffects.None, 0);
                 }
             }

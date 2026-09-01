@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             => BaseHeldGun.SpawnHeldProj<AriaofTheCosmosHeld>(player, source);
 
         public override void HoldItem(Player player) {
-            //冷却挂在物品持有上 不依赖手持弹幕;触发在技能按钮 HUD 点击时进来
+            //冷却挂在物品持有上 不依赖手持弹幕;触发在技能按钮 HUD 施放时进来
             if (QSkillCooldown > 0) {
                 QSkillCooldown--;
             }
@@ -111,10 +111,12 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 CooldownTotal = left ? QSkillMaxCooldown : RSkillMaxCooldown,
                 Alive = alive,
                 Ready = cdLeft <= 0 && !alive,
+                NeedsAim = !left,
+                AimPreviewRadius = 0f,
             };
         }
 
-        bool IWeaponSkillProvider.TriggerWeaponSkill(int slot, Player player)
+        bool IWeaponSkillProvider.TriggerWeaponSkill(int slot, Player player, Vector2 aimWorld)
             => slot == 0 ? TryCastStarRing(player) : TryCastGammaBurst(player);
 
         private bool TryCastStarRing(Player player) {

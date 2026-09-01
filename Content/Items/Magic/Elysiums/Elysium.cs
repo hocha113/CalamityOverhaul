@@ -188,6 +188,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         #region 技能按钮 HUD 接线
         public const int ThunderCooldownMax = 150;
         public const int MeteorCooldownMax = 24;
+        public const float ThunderSeekRange = 400f;
 
         WeaponSkillView IWeaponSkillProvider.GetWeaponSkill(int slot, Player player) {
             player.TryGetModPlayer(out ElysiumPlayer ep);
@@ -203,6 +204,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
                         CooldownTotal = 0,
                         Alive = false,
                         Ready = true,
+                        NeedsAim = false,
+                        AimPreviewRadius = 0f,
                     };
                 }
                 if (ep != null && ep.IsRevelationActive) {
@@ -217,6 +220,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
                         CooldownTotal = meteorMax,
                         Alive = false,
                         Ready = meteorCd <= 0 && !ep.IsSealJudgmentActive,
+                        NeedsAim = true,
+                        AimPreviewRadius = 0f,
                     };
                 }
                 int cooldown = ep?.ThunderCooldown ?? 0;
@@ -229,6 +234,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
                     CooldownTotal = ThunderCooldownMax,
                     Alive = false,
                     Ready = cooldown <= 0,
+                    NeedsAim = true,
+                    AimPreviewRadius = ThunderSeekRange,
                 };
             }
 
@@ -244,10 +251,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
                 CooldownTotal = 0,
                 Alive = judging,
                 Ready = revelation && !judging,
+                NeedsAim = false,
+                AimPreviewRadius = 0f,
             };
         }
 
-        bool IWeaponSkillProvider.TriggerWeaponSkill(int slot, Player player) {
+        bool IWeaponSkillProvider.TriggerWeaponSkill(int slot, Player player, Vector2 aimWorld) {
             if (!player.TryGetModPlayer(out ElysiumPlayer ep)) {
                 return false;
             }
@@ -257,19 +266,19 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
                     return true;
                 }
                 if (ep.IsRevelationActive) {
-                    return TryCastMeteor(player, ep);
+                    return TryCastMeteor(player, ep, aimWorld);
                 }
-                return TryCastThunder(player);
+                return TryCastThunder(player, aimWorld);
             }
             return TryCastSealJudgment(player, ep);
         }
 
         /// <summary>天体陨石：自准星上方唤落(本地客户端触发)</summary>
-        private static bool TryCastMeteor(Player player, ElysiumPlayer ep) {
+        private static bool TryCastMeteor(Player player, ElysiumPlayer ep, Vector2 aimWorld) {
             if (Main.myPlayer != player.whoAmI || ep.MeteorCooldown > 0 || ep.IsSealJudgmentActive) {
                 return false;
             }
-            Vector2 target = Main.MouseWorld;
+            Vector2 target = aimWorld;
             ShootState shootState = player.GetShootState();
             float damageMul = ep.HasDeathHorseman ? 2.4f : 1.8f;
             Projectile.NewProjectile(shootState.Source,
@@ -294,21 +303,21 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         }
 
         /// <summary>神圣天雷：劈向准星旁最近的敌人(本地客户端触发)</summary>
-        private static bool TryCastThunder(Player player) {
+        private static bool TryCastThunder(Player player, Vector2 aimWorld) {
             if (Main.myPlayer != player.whoAmI
                 || !player.TryGetModPlayer(out ElysiumPlayer ep) || ep.ThunderCooldown > 0) {
                 return false;
             }
 
             //落点：准星附近最近的敌人，没有就劈准星
-            Vector2 strikePoint = Main.MouseWorld;
-            float closest = 400f;
+            Vector2 strikePoint = aimWorld;
+            float closest = ThunderSeekRange;
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
                 if (!npc.active || !npc.CanBeChasedBy()) {
                     continue;
                 }
-                float dist = Vector2.Distance(npc.Center, Main.MouseWorld);
+                float dist = Vector2.Distance(npc.Center, aimWorld);
                 if (dist < closest) {
                     closest = dist;
                     strikePoint = npc.Center;

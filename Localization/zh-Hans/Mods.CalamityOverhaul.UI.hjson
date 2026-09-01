@@ -1578,6 +1578,8 @@ CharacterDockUI: {
 
 WeaponSkillHud: {
 	ReadyHint: 就绪，点击施放
+	AimHint: 按住拖到落点，松开施放
+	ReleaseHint: 松开施放
 	CooldownFormat: 冷却剩余 {0} 秒
 	ActiveLine: 施放中
 	ManaCostFormat: 魔力消耗 {0}

@@ -14,16 +14,13 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Cindercrag.Proj
     /// 生成帧锁死喷口与喷向（预告即承诺）：裂口蓄压 56 帧（红光渐盛+汽笛式嘶鸣，双通道预告）
     /// → 喷焰 38 帧（仅此窗口有判定，触碰微量伤害+短暂着火）→ 裂口冷却暗淡 20 帧。
     /// 喷长在生成时按净空钳过，火舌不穿岩；源头在崖壁裂口，与岩浆池液面熔泡严格分野。
-    /// 可见体=Extra_98 真 alpha 焦烟暗衬底（承遮挡与轮廓）+TearFlame 加色焰层敷其上（暗体+热边，同烬羽层序）
+    /// 可见体=Extra_98 真 alpha 焦烟暗衬 + 同图 A=0 热边（暗体+热边，同烬羽层序）
     /// </summary>
     internal class CindercragVentProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        [VaultLoaden(CWRConstant.Masking + "TearFlame01")]
-        private static Asset<Texture2D> FlameTex = null;
-
-        /// <summary>真 alpha 梭形，暗衬底专用（TearFlame/SoftGlow 是黑底贴图画不出暗体）</summary>
+        /// <summary>真 alpha 梭形：暗衬底与热边共用（SoftGlow 是黑底图画不出暗体）</summary>
         [VaultLoaden(CWRConstant.Masking + "Extra_98")]
         private static Asset<Texture2D> SootTex = null;
 
@@ -280,7 +277,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Cindercrag.Proj
                 DrawSlit(soot, mouthPos, sootOrigin, slitRot + MathHelper.PiOver2,
                     RockRim * ((0.62f + 0.18f * fade) * rimFade), new Vector2(1f, 2.45f));
 
-                //焦烟暗衬底：真 alpha 舌身剪影先落，加色焰层敷其上（暗体+热边，同烬羽层序）；
+                //焦烟暗衬底：真 alpha 舌身剪影先落，热边敷其上（暗体+热边，同烬羽层序）；
                 //剪影略宽略长于外焰，在亮红崖背景上兜出可辨轮廓，随喷发相位伸缩
                 float sootFade = 0.45f + 0.55f * fade;
                 float bodyLen = reachVis * 1.06f;
@@ -303,39 +300,38 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Cindercrag.Proj
                         tongueRot + side * (0.5f + 0.28f * wob), sootOrigin,
                         new Vector2(0.5f, reachVis * (0.34f - 0.06f * i) / visH), SpriteEffects.None, 0);
                 }
-                //舌尖烟帽：焰尖过渡成烟，端头不平滑收口，兜住焰层抖动越界的舌尖
+                //舌尖烟帽：焰尖过渡成烟，端头不平滑收口，兜住热层抖动越界的舌尖
                 Main.EntitySpriteDraw(soot, mouthPos + dir * (reachVis * 0.98f), null,
                     SootBody * (0.5f * sootFade), tongueRot + 0.35f * MathF.Sin(elapsed * 0.5f + Projectile.identity),
                     sootOrigin, new Vector2(0.9f, reachVis * 0.3f / visH), SpriteEffects.None, 0);
+
+                //热层：同图三层异宽异长，外层带 A 兜轮廓，内层 A=0 加色；判定半宽 15px 藏在外宽 46px 内
+                const float OuterWidthPx = 46f;
+                ReadOnlySpan<float> lenFrac = [1f, 0.82f, 0.6f];
+                ReadOnlySpan<float> widFrac = [1f, 0.72f, 0.48f];
+                Span<Color> cols = [FlameOuter, FlameMid, FlameCore];
+                for (int layer = 0; layer < 3; layer++) {
+                    float jitter = 0.86f + 0.24f * MathF.Sin((elapsed * 2.3f + layer * 2.1f + Projectile.identity) * 1.7f);
+                    float len = reachVis * lenFrac[layer] * jitter;
+                    Color col = Color.Lerp(FlameOuter, cols[layer], fade);
+                    if (layer == 0) {
+                        col *= 0.55f * fade;
+                    }
+                    else {
+                        col = col with { A = 0 };
+                        col *= 0.25f + 0.75f * fade;
+                    }
+                    Main.EntitySpriteDraw(soot, mouthPos + dir * (len * 0.5f), null, col,
+                        tongueRot, sootOrigin,
+                        new Vector2(OuterWidthPx * widFrac[layer] / visW, len / visH),
+                        SpriteEffects.None, 0);
+                }
             }
 
             //裂口口部辉光（喷焰期最亮，冷却期暗淡；加色在暗岩唇与舌根剪影之上）
             Color mouthDeep = CrackDeep with { A = 0 };
             DrawSlit(glow, mouthPos, glowOrigin, slitRot, mouthDeep * (0.5f * fade), new Vector2(1.9f, 0.7f));
             DrawSlit(glow, mouthPos, glowOrigin, slitRot, (FlameCore with { A = 0 }) * (0.35f * fade), new Vector2(0.8f, 0.3f));
-
-            Texture2D flame = FlameTex?.Value;
-            if (flame == null) {
-                return false;
-            }
-            //火舌加色焰层：根锚喷口向外舔，三层异宽异长，逐帧高频抖动是火的时域签名；
-            //贴图自带噪声撕裂端头，外缘焦暗→焰体红橙→窄焰芯暖金
-            var flameOrigin = new Vector2(flame.Width * 0.5f, flame.Height);
-            //外层全宽 ~46px，判定半宽 15px 藏在可见焰体之内（判定不宽于可见）
-            const float OuterWidthPx = 46f;
-            ReadOnlySpan<float> lenFrac = [1f, 0.82f, 0.6f];
-            ReadOnlySpan<float> widFrac = [1f, 0.72f, 0.48f];
-            Span<Color> cols = [FlameOuter, FlameMid, FlameCore];
-            for (int layer = 0; layer < 3; layer++) {
-                float jitter = 0.86f + 0.24f * MathF.Sin((elapsed * 2.3f + layer * 2.1f + Projectile.identity) * 1.7f);
-                float len = reachVis * lenFrac[layer] * jitter;
-                //冷却期焰色向焦暗收拢
-                Color col = Color.Lerp(FlameOuter, cols[layer], fade) with { A = 0 };
-                Main.EntitySpriteDraw(flame, mouthPos, null, col * (0.25f + 0.75f * fade),
-                    tongueRot, flameOrigin,
-                    new Vector2(OuterWidthPx * widFrac[layer] / flame.Width, len / flame.Height),
-                    SpriteEffects.None, 0);
-            }
             return false;
         }
 
