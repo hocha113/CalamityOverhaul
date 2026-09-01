@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.MainMenus.Shenyo;
+﻿using CalamityOverhaul.Content.MainMenus.Shenyo;
 using System;
 using Terraria;
 
@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Narrative
             }
             MusicToast.ShowMusic(
                 title: "凭夜:未来",
-                albumCover: ADVAsset.Himayo_grin,
+                albumCover: ADVAsset.Himayo_forsmile,
                 style: MusicToast.MusicStyle.Sakura,
                 displayDuration: DisplayDuration,
                 screenYProvider: screenYProvider,

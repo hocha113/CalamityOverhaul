@@ -551,8 +551,8 @@ OnikiriText: {
 	OniRegisterUI: {
 		TitleText: Geisterregister
 		StatusFormat: "{0} auf dem Rad · Erosion {1}%"
-		RevivalFormat: "Wiederbelebung {0}%"
-		AbilityCostFormat: "Jede Dienstnahme: Wiederbelebung +{0}% · Erosion +{1}%"
+		RevivalFormat: Wiederbelebung {0}%
+		AbilityCostFormat: Jede Dienstnahme: Wiederbelebung +{0}% · Erosion +{1}%
 		OriginLabel: Herkunft
 		PowerLabel: Gabe
 		StateReady: Bereit zum Dienst
@@ -567,16 +567,16 @@ OnikiriText: {
 
 	OniSigilUI: {
 		TitleText: Siegelrad
-		StatusFormat: "Siegel {0} / {1} · Erosion {2}%"
-		CostFormat: "Jede Dienstnahme: Wiederbelebung +{0}% · Erosion +{1}%"
+		StatusFormat: Siegel {0} / {1} · Erosion {2}%
+		CostFormat: Jede Dienstnahme: Wiederbelebung +{0}% · Erosion +{1}%
 		SlotEmptyHint: Nimm ein Dienstgeist-Siegel vom Außenring, dann setze es auf einen leeren Platz. Leere Plätze schalten nichts frei
 		SlotFullHint: Alle drei Plätze belegt. Mit Siegel klicken zum Tauschen, leerhanded klicken zum Ablegen
-		PickHint: "»{0}« in der Hand · auf einen Platz setzen · ins Leere klicken zum Zurücklegen"
+		PickHint: »{0}« in der Hand · auf einen Platz setzen · ins Leere klicken zum Zurücklegen
 		SwapHint: Klicken, »{0}« einzusetzen
 		UnbindHint: Klicken zum Ablegen
 		PendingText: Wartend
-		BoundFormat: "»{0}« sitzt jetzt auf dem Rad"
-		UnboundFormat: "»{0}« abgelegt"
+		BoundFormat: »{0}« sitzt jetzt auf dem Rad
+		UnboundFormat: »{0}« abgelegt
 		DangerNote: Erwacht bald · vorsichtig
 		CloseTagText: Rad schließen
 		CloseHintFormat: ESC · {0} · außerhalb klicken zum Schließen
@@ -590,7 +590,7 @@ OnikiriText: {
 		TitleText: Inschriftentisch
 		CloseTagText: Klinge bergen
 		CloseHintFormat: ESC · {0} · außerhalb klicken zum Bergen
-		StatusFormat: '''{0} Inschriften · jetziger Name »{1}«'''
+		StatusFormat: "{0} Inschriften · jetziger Name »{1}«"
 		SlotNakago: Angelinschrift
 		SlotHi: Hohlkehle
 		SlotHorimono: Schnitzbett
@@ -615,7 +615,7 @@ OnikiriText: {
 
 	OniMeiDeedText: {
 		LockedKind: Ungeschlagen
-		LockedCount: "Schicksalsband {0} / {1}"
+		LockedCount: Schicksalsband {0} / {1}
 		LockedFeat: Das Band ist noch nicht da
 		LockedUnknown: Diese Inschrift hat kein Band
 		Settle: Das Band der Klinge ist geschlossen. Die Abreibung von »{0}« fällt zu deinen Füßen
@@ -629,7 +629,7 @@ OnikiriText: {
 		HudMeiName: Inschriftentisch
 		HudSigilName: Siegelrad
 		HudDangerLine: Wiederbelebung fast voll. Noch einmal in Dienst, dann erwacht es
-		HudWraithFormat: "Wildester {0} · Wiederbelebung {1}% · {2} auf dem Rad"
+		HudWraithFormat: Wildester {0} · Wiederbelebung {1}% · {2} auf dem Rad
 		VigorTitle: Kraft
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: Haltung
@@ -713,7 +713,7 @@ OnikiriText: {
 		CloseTagText: Schließen
 		CloseHintFormat: ESC · {0} · außerhalb klicken, zurück zum Tisch
 		TabAll: Alles
-		TallyFormat: "Gefunden {0} / {1}"
+		TallyFormat: Gefunden {0} / {1}
 		TallySlotFormat: "{0} {1}/{2}"
 		PageFormat: "{0} / {1}"
 		EmptyPage: Keine Inschrift in diesem Band
@@ -753,7 +753,7 @@ OnikiriTrialQuestLine: {
 	QuestCategory: Prüfung
 	TrackerWaiting: Es ist noch nicht da
 	TrackerFighting: "{0}: {1:0%}"
-	TrackerBrief: "Nächster Schnitt: {0}"
+	TrackerBrief: Nächster Schnitt: {0}
 	BossRushTargetName: Nacht, die nicht zergeht
 	EventActiveFormat: "{0}: im Gange"
 	Trial_0: Himmelsauge
@@ -923,7 +923,7 @@ KikasaOverride: {
 		Rechte Taste halten, den Schirm umdrehen und Tinte sammeln; loslassen gießt einen Tintenfall
 		Regen und Fall, die du selbst führst, stempeln ein Tintenmal; Diener treffen Malträger härter
 		'''
-	GhostCountLine: "Beschwörungsplätze {0} · {1}"
+	GhostCountLine: Beschwörungsplätze {0} · {1}
 	TierName0: Niesel
 	TierName1: Seitwurf
 	TierName2: Salve
@@ -942,7 +942,7 @@ KikasaTrialQuestLine: {
 	QuestCategory: Prüfung
 	TrackerWaiting: Noch nicht am Platz
 	TrackerFighting: "{0}: {1:0%}"
-	TrackerBrief: "Nächster Platz: {0}"
+	TrackerBrief: Nächster Platz: {0}
 	BossRushTargetName: Ein voller Tisch
 	EventActiveFormat: "{0}: im Gange"
 	Trial_0: Weiches erstes Gericht
@@ -1161,20 +1161,20 @@ KikasaText: {
 	KikasaHud: {
 		ScrollName: Seeherz
 		OpenTag: Klicken zum Öffnen
-		TipWaterFormat: "Wasserstand {0}%"
+		TipWaterFormat: Wasserstand {0}%
 		TipTideHintFormat: "{0} halten, der Spiegel folgt dem Cursor"
-		TipVaultFormat: "Seespeicher {0} / {1}"
+		TipVaultFormat: Seespeicher {0} / {1}
 		TipWispClick: Flämmchen klicken, zünden oder Feuer einziehen
-		TipCooldownFormat: "Abkühlung · {0}%"
+		TipCooldownFormat: Abkühlung · {0}%
 		TipDrownTitle: Versenken
-		TipDrownHintFormat: "Auf einen Feind oder mit einem Gegenstand {0} drücken"
+		TipDrownHintFormat: Auf einen Feind oder mit einem Gegenstand {0} drücken
 		TipDrownReady: Bereit zum Versenken
 		TipResetTitle: Weitbereich-Neustart
-		TipResetHintFormat: "Jederzeit {0}: alles in der Nähe um Sekunden zurück"
+		TipResetHintFormat: Jederzeit {0}: alles in der Nähe um Sekunden zurück
 		TipTeleportTitle: Geisterreich-Teleport
 		TipTeleportHintFormat: "{0} leiht eine Wasserlache bis zum Cursor; im Blutsee schneller, kürzere Abkühlung"
-		TipThrallFormat: "Schirmsklaven im Feld {0} / {1}"
-		TipHoundCountFormat: "Höllenhunde im Feld {0} / {1}"
+		TipThrallFormat: Schirmsklaven im Feld {0} / {1}
+		TipHoundCountFormat: Höllenhunde im Feld {0} / {1}
 		TipDreamNoTalis: Im Traum zählt nur der Biss der Hunde. Talismane greifen nicht
 		TipSeatsHintFormat: "{0} halten: Rad zum Rufen oder Einziehen · Aufstellung im Seeherz"
 		TipSeatEmpty: Leer
@@ -1185,7 +1185,7 @@ KikasaText: {
 		WheelEmptyTitle: Leer
 		WheelEmptyDesc: Versenkst du einen Boss, setzt sich sein Versunkener Schatten von selbst. Du kannst auch im Seeherz von Hand setzen
 		WheelEmptyStatus: Hier ist noch leer
-		WheelSeatFormat: "Schattenplatz {0}"
+		WheelSeatFormat: Schattenplatz {0}
 		WheelStatusRecall: "[Loslassen] Diesen einziehen"
 		WheelStatusSummon: "[Loslassen] Diesen rufen"
 		WheelStatusAwaitOrder: "[Loslassen] Erst merken; ist der See auf, kommt es von selbst"
@@ -1195,7 +1195,7 @@ KikasaText: {
 		WheelCenterRecallAll: "[Loslassen] Alle einziehen"
 		WheelCenterSummonAll: "[Loslassen] Alle rufen"
 		WheelCenterEmpty: Noch kein Versunkener Schatten auf einem Platz
-		WheelDamageFormat: "Schaden je Versunkenem Schatten im Feld {0}%"
+		WheelDamageFormat: Schaden je Versunkenem Schatten im Feld {0}%
 		WheelHint: "[{0}] halten · loslassen bestätigt · Rechtsklick schließt nur das Rad, Schatten bleiben"
 		WheelWispName: Goldflamme
 		WheelWispDesc: Gezündet kriecht die Goldflamme am Ufer und verbrennt, was sie erreicht
@@ -1210,17 +1210,17 @@ KikasaText: {
 		ReflectAwake: Das Spiegelbild ist wach
 		ReflectAsleep: Das Spiegelbild schläft noch
 		InDreamLine: Du bist im Geistertraum
-		DreamReturnFormat: "Noch einmal {0}, dann zurück"
+		DreamReturnFormat: Noch einmal {0}, dann zurück
 		DreamEnterKeyFormat: "{0} halten, in den Geistertraum"
 		DreamEnterClick: Höllenhund klicken, in den Geistertraum
 		NeedDomainFormat: "{0} spannt den Blutsee auf"
 		NeedFullWater: Der See ist noch nicht voll
-		HoundBonusFormat: "Höllenhund-Maximum {0} · Schaden {1}%"
+		HoundBonusFormat: Höllenhund-Maximum {0} · Schaden {1}%
 		WispBurning: Brennt, sengt am Ufer
 		WispIdle: Nicht gezündet. Das Feuer wartet auf dein Wort
 		WispBoil: Brennt noch im Geisterregen
 		WispQuenchedLine: Der Geisterregen löscht es
-		WispBonusFormat: "Brand {0} s · Zungenlänge {1}"
+		WispBonusFormat: Brand {0} s · Zungenlänge {1}
 		WispIgniteClick: Goldflamme klicken, Irrlicht zünden
 		WispSnuffClick: Goldflamme klicken, Feuer einziehen
 		ActionDreamTag: In den Traum
@@ -1234,11 +1234,11 @@ KikasaText: {
 		SeatEmptyLine: Leer. Wähle eins aus dem Verzeichnis darunter
 		SeatPickHint: Klicken zum Aufnehmen · Rechtsklick zum Ablegen
 		SeatPlaceHint: Hierher klicken
-		SeatHeldLineFormat: "Eingezogen. {0} halten öffnet das Rad zum Rufen"
-		RosterTallyFormat: "Kodex {0} / {1}"
-		RosterSeatTallyFormat: "Plätze {0} / {1}"
+		SeatHeldLineFormat: Eingezogen. {0} halten öffnet das Rad zum Rufen
+		RosterTallyFormat: Kodex {0} / {1}
+		RosterSeatTallyFormat: Plätze {0} / {1}
 		RosterUnknown: Noch nicht versenkt
-		RosterUnknownHintFormat: "See offen, darauf zielen, {0} drücken"
+		RosterUnknownHintFormat: See offen, darauf zielen, {0} drücken
 		RosterSeatedTag: Eingesetzt
 		RosterPickHint: Klicken zum Aufnehmen
 		NotePlacedFormat: "{0} sitzt jetzt auf einem Platz"
@@ -1258,16 +1258,16 @@ KikasaText: {
 		TalisStackRule: Jeder hängende Talisman wirkt, auch wenn die Tinte verdeckt ist; jeder Tropfen gehört einem Talisman, von links zuerst, Farbe und Sonderwirkung mit ihm
 		TalisDragSwapHint: Loslassen zum Tauschen
 		TalisDragMoveHint: Loslassen, hier aufhängen
-		NoteFuHungFormat: "»{0}« ist auf die Regenleine gestiegen"
-		NoteFuTakenFormat: "»{0}« ist in den Kasten zurück"
+		NoteFuHungFormat: »{0}« ist auf die Regenleine gestiegen
+		NoteFuTakenFormat: »{0}« ist in den Kasten zurück
 		VaultTitle: Seespeicher
 		VaultCountFormat: "{0} / {1}"
 		VaultEmptyHint: Hier ist noch leer
 		VaultExtractHint: Klicken zum Zurückholen
 		VaultViewOnlyLine: Der See ist noch nicht gestiegen. Jetzt nur schauen
-		ArmsStockFormat: "Originale ×{0}"
-		ThrallLineFormat: "Schirmsklaven-Maximum {0} · alle {1} s einer"
-		FooterHintFormat: "Esc oder {0} schließt · Gegenstand halten und {1} versenkt in den Speicher · {2} halten öffnet das Rad"
+		ArmsStockFormat: Originale ×{0}
+		ThrallLineFormat: Schirmsklaven-Maximum {0} · alle {1} s einer
+		FooterHintFormat: Esc oder {0} schließt · Gegenstand halten und {1} versenkt in den Speicher · {2} halten öffnet das Rad
 	}
 
 	KikasaHudLead: {
@@ -1300,8 +1300,8 @@ KikasaText: {
 		DismissBtn: Tutorial weglegen
 		KeyUnbound: Die Taste »{0}« für diesen Schritt ist nicht gebunden. Unter Einstellungen > Steuerung binden, oder Überspringen.
 		AlreadyDoneNote: Diesen Schritt hast du schon. Lies zu Ende, dann Verstanden.
-		WaterRisingNote: "Warte, bis das Blutwasser an den Füßen steht. Wasserstand {0}%."
-		ResetCooldownFormat: "Neustart kühlt noch: {0}%"
+		WaterRisingNote: Warte, bis das Blutwasser an den Füßen steht. Wasserstand {0}%.
+		ResetCooldownFormat: Neustart kühlt noch: {0}%
 		HelpHover: Kikasa-Tutorial noch einmal
 		MutateFallbackKey: mittlere Maustaste
 	}
