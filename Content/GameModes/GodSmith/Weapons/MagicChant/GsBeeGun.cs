@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
 
         public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
             //蜂后产蜂：每 30 帧一只、至多六只，扑向最近敌
-            if (router.MarkData == FormQueen && proj.IsOwnedByLocalPlayer()) {
+            if (router.MarkData == FormQueen && proj.type == ProjectileID.GiantBee && proj.IsOwnedByLocalPlayer()) {
                 QueenState state = router.GetOrCreateState<QueenState>();
                 state.Timer++;
                 if (state.Timer >= 30 && state.Spawned < 6) {

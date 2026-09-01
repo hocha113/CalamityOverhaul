@@ -135,7 +135,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
         }
 
         public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, GodSmithProjRouter router) {
-            if (router.MarkData < 1f) {
+            //爆环本身也会走这条钩；只让牙弹产环，避免敌不死就一直咬（反馈五 #37）
+            if (router.MarkData < 1f || proj.type == ModContent.ProjectileType<GsGunsEarlyBurstProj>()) {
                 return;
             }
             target.AddBuff(BuffID.Bleeding, 150);

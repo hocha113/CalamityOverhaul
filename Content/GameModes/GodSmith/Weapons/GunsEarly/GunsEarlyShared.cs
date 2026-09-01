@@ -529,6 +529,16 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
             OnSpawnMarkedExtra(proj, router);
         }
 
+        public override void GsProjOnSpawnInherited(Projectile proj, GodSmithProjRouter router,
+            Projectile parent, GodSmithProjRouter parentRouter) {
+            //爆环由牙弹/尽息镖 OnHit 经 GetSource_FromAI 生成，承签会把父弹 MarkData 原样拷过来
+            //爆环再走方案 OnHit 就会继续产环，敌不死链不断（迷你鲨反馈五 #37）
+            if (proj.type == ModContent.ProjectileType<GsGunsEarlyBurstProj>()) {
+                router.MarkData = 0f;
+                router.MarkData2 = 0f;
+            }
+        }
+
         /// <summary>打标追加处理（改 penetrate 等，owner 端；penetrate 加法必须带 &gt;0 守卫）</summary>
         protected virtual void OnSpawnMarkedExtra(Projectile proj, GodSmithProjRouter router) { }
     }
@@ -642,6 +652,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.GunsEarly
         public override void AI() {
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
+                //父源承签会把方案形态标带过来；爆环再走方案 OnHit 会继续产环（迷你鲨 #37）
+                //非弹匣方案（鱼叉/雏凤）不走上面的族承签钩，这里兜住所有爆环
+                if (Projectile.TryGetGlobalProjectile(out GodSmithProjRouter router)) {
+                    router.MarkData = 0f;
+                    router.MarkData2 = 0f;
+                }
                 int size = (int)MathHelper.Clamp(Radius * 2f, 24f, 220f);
                 Projectile.Resize(size, size);
                 if (Flavor == 3) {
