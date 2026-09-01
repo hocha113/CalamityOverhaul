@@ -1,34 +1,18 @@
-﻿-Calamity Overhaul Mod
-[strike] The intro music of the preview video might be loud. If you want to watch it, please be prepared or lower your computer volume. [/strike]  
-[b] [url=https://calamity-overhaul.cc]Mod Wiki[/url] [/b]  
+﻿[h1] Calamity Overhaul Mod [/h1]
+[h2] [url=https://calamity-overhaul.cc]Mod Wiki[/url] [/h2]
 
--What does this mod do?
-Gun overhaul: Almost all guns have been reworked, introducing a magazine and recoil system for a more realistic combat experience.  
-Melee weapon enhancement: Many melee weapons have been comprehensively optimized, adding cooler and more practical attack methods.  
-Boss fight overhaul (in development): The battle mechanics of bosses are being reworked to provide more challenging and strategic combat experiences.  
-New weapons and equipment: Dozens of new weapons and equipment have been introduced, along with a brand-new crafting system to enrich the game.  
-Terrain generation optimization: Adjustments have been made to terrain generation, enhancing exploration fun and challenges.  
-Expanded crafting recipes: Multiple new crafting recipes have been added, offering more crafting choices.  
-Other weapon overhauls: Hundreds of previously unmentioned weapons have been reworked, giving players more choices and playstyles.  
-Draedon's Technology: Similar to MC technology mods, Draedon's Tech content has been overhauled.  
+This is a large content expansion. It adds more systems and story scenes, and also reworks a lot of what is already in the game.
 
--Upcoming & Improved Features
-Massive class rework: A complete overhaul of other classes is underway, including weapon and mechanic optimizations.  
-Death Mode AI overhaul: All AI will be reworked in Death Mode, bringing an entirely new combat experience.  
-More legendary weapons: More legendary weapons with unique attributes and abilities will be added.  
-Draedon's Technology improvements: We need more generators and power buildings! And more turrets!  
+[h2] Open Source & Community [/h2]
+The mod is open source on [url=https://github.com/hocha113/CalamityOverhaul]Github[/url]. File issues, leave suggestions, or help with translations.
 
--Open Source & Community Involvement
-This mod is open-source on [url=https://github.com/hocha113/CalamityOverhaul]Github[/url]. You are welcome to report issues, provide suggestions, or contribute to localization translations!  
+[h2] How to Contact the Author & Join the Community [/h2]
+QQ Group: 1081642139 - You can reach me here and join the discussion.
+Video page: [url=https://space.bilibili.com/441452460?spm_id_from=333.1007.0.0]Red Tea Object[/url] - Updates and videos land here.
 
--How to Contact the Author & Join the Community?
-QQ Group: 711243165 - You can directly contact me and participate in discussions here.  
-Video Homepage: [url=https://space.bilibili.com/441452460?spm_id_from=333.1007.0.0]Red Tea Object's Personal Page[/url] - Get more real-time updates and video content!  
-
--Gameplay Suggestions
-It is recommended to create a new map after enabling the mod to fully experience the content, as the mod adds new terrain structures that can only be encountered in new worlds!  
-It is recommended to install [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2619954303&searchtext=] Recipe Browser Mod [/url] and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2669644269&searchtext=] Boss Checklist Mod [/url] to assist your gameplay!  
-Try [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3316697363&searchtext=Calamity] Calamity Entropy Mod [/url]! We will have lots of exciting crossover content!  
-Finally, check out the FTB team's [url=https://www.mcmod.cn/modpack/526.html] Stone Block modpack series! [/url] I love you all—if it weren't for you, I wouldn't have become interested in mod development!
-Finally, finally... I would like to express my gratitude to the 'Escu:de' team for the mental support they provided me over the past few months. Their music is truly wonderful!
-
+[h2] Play Tips [/h2]
+-Make a new world after enabling the mod. It adds terrain that only appears in new maps.
+-Grab [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2619954303&searchtext=] Recipe Browser Mod [/url] and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2669644269&searchtext=] Boss Checklist Mod [/url] as well. They make the extra content easier to find.
+-Try [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3316697363&searchtext=Calamity] Calamity Entropy Mod [/url]! We have crossover content coming.
+-And try the FTB team's [url=https://www.mcmod.cn/modpack/526.html] Stone Block modpack series! [/url] I love you all. Without you I would never have gotten into modding.
+-One last thing: thanks to Escu:de. Their work kept me going these past few months. The music is wonderful!
